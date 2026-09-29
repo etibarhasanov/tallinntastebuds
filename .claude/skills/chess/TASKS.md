@@ -439,6 +439,16 @@ the queue moves, and a member's page says their game started without a reload.
 
 ---
 
+- [x] **5½. Taking a move back** — asked for by the owner after task 5 landed,
+  and landed on its own between 5 and 6. Whoever made a move may take it back
+  for ten seconds, while it is still the last move; a move that ended the game
+  is final. `undo` in `functions/api/chess.js`, the countdown in
+  `assets/chess.js`, `chessUndo` and `chessUndoLate` in ten languages,
+  `chess_undo` in **Analytics**, **Taking a move back** in the README, the row
+  and the state in `SKILL.md`. Task 6's flow gains the step.
+
+---
+
 - [ ] **6. The door, and the diagram**
 
 **Lands:** `#btn-chess` on the rail in `index.html` under `#btn-flash`, a row

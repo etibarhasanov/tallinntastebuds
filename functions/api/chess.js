@@ -52,6 +52,15 @@
  * game already moved on, is the `409 moved` the slower of them sees, carrying
  * the board as it now is. Nothing here decides who was first but the table.
  *
+ * TAKING A MOVE BACK
+ *
+ * Whoever made a move may take it back for ten seconds, while it is still the
+ * last move and the game is still playing — so a move that ended the game is
+ * final, and one the other side has answered is too late. "Whoever" is
+ * exactly what the move was filed under: the house, the member's id, or on
+ * Everybody's board the one device that played it, never the rest of the
+ * city. undo() below; the page shows the button only in the tab that moved.
+ *
  * Both rule functions throw on a FEN they cannot read. The route only ever
  * hands them START and what play() gave back, so a throw is a bug and is left
  * to be a 500 rather than dressed up as a refusal.
@@ -75,6 +84,13 @@ import { START, legalMoves, play, repetition } from './_chess.js';
    this number. */
 const QUIET_DAYS = 7;
 const MAX_QUEUE = 50;
+
+/* How long whoever made a move may take it back. The page counts UNDO_MS
+   from the moment its move came back; the route allows a little more, so a
+   press in the last second on a slow phone is not refused for the time the
+   request spent on the way. */
+const UNDO_MS = 10000;
+const UNDO_GRACE_MS = 3000;
 
 const DAY = 86400000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -342,7 +358,7 @@ async function gameById(env, id) {
   return env.DB.prepare(GAME_SQL + 'WHERE g.id = ?').bind(id).first();
 }
 
-const ACTIONS = { move, new: newGame, join, leave, start, resign, abandon };
+const ACTIONS = { move, undo, new: newGame, join, leave, start, resign, abandon };
 
 /* move { game, ply, move, client } — `ply` is the game's ply as the page read
    it, the number of half-moves already played; the move is filed at one past
@@ -354,37 +370,13 @@ async function move(env, who, body) {
   if (row.state !== 'playing' || body.ply !== row.ply) return refuse(env, who, 'moved', 409);
   if (!mayMove(row, who)) return json({ error: 'not-yours' }, 403);
 
-  let byKind;
-  let byId;
-  if (who.role === 'house') {
-    byKind = 'house';
-    byId = who.user.id;
-  } else if (who.user) {
-    byKind = 'user';
-    byId = who.user.id;
-  } else {
-    const client = typeof body.client === 'string' ? body.client : '';
-    if (!UUID.test(client)) return json({ error: 'client' }, 400);
-    byKind = 'device';
-    byId = client;
-  }
+  const by = moverOf(who, body);
+  if (!by) return json({ error: 'client' }, 400);
 
   const uci = typeof body.move === 'string' ? body.move : '';
   if (!UCI.test(uci)) return json({ error: 'illegal' }, 400);
 
-  /* The game as the rules say it is, every position on the way kept for the
-     repetition count. The stored FEN is a cache of this and is not trusted
-     over it. */
-  const history = await env.DB
-    .prepare('SELECT uci FROM chess_moves WHERE game = ? ORDER BY ply')
-    .bind(row.id)
-    .all();
-  const fens = [START];
-  for (const m of history.results || []) {
-    const step = play(fens[fens.length - 1], m.uci);
-    if (!step) throw new Error('chess: game ' + row.id + ' does not replay at ' + m.uci);
-    fens.push(step.fen);
-  }
+  const fens = await replay(env, row.id);
   if (fens.length - 1 !== row.ply) return refuse(env, who, 'moved', 409);
 
   const played = play(fens[fens.length - 1], uci);
@@ -403,7 +395,7 @@ async function move(env, who, body) {
           'SELECT ?, ?, ?, ?, ?, ?, ? WHERE EXISTS ' +
           "(SELECT 1 FROM chess_games WHERE id = ? AND ply = ? AND state = 'playing')"
         )
-        .bind(row.id, row.ply + 1, played.san, uci, byKind, byId, now, row.id, row.ply),
+        .bind(row.id, row.ply + 1, played.san, uci, by.kind, by.id, now, row.id, row.ply),
       env.DB
         .prepare(
           'UPDATE chess_games SET fen = ?, ply = ?, last_at = ?, state = ?, result = ?, reason = ?, finished_at = ? ' +
@@ -421,6 +413,80 @@ async function move(env, who, body) {
     throw e;
   }
   if (!results[0].meta.changes) return refuse(env, who, 'moved', 409);
+  return done(env, who);
+}
+
+/* Who a move is filed under: the house, a member by their id, or a visitor by
+   the device id the page sends as `client` — null when a visitor sent none
+   that is a v4 UUID. A move and its undo both ask, so the one who may take a
+   move back is exactly the one it was filed under. */
+function moverOf(who, body) {
+  if (who.role === 'house') return { kind: 'house', id: who.user.id };
+  if (who.user) return { kind: 'user', id: who.user.id };
+  const client = typeof body.client === 'string' ? body.client : '';
+  return UUID.test(client) ? { kind: 'device', id: client } : null;
+}
+
+/* The game as the rules say it is: every position from START through the
+   moves filed, kept for the repetition count. The stored FEN is a cache of
+   this and is not trusted over it. */
+async function replay(env, id) {
+  const history = await env.DB
+    .prepare('SELECT uci FROM chess_moves WHERE game = ? ORDER BY ply')
+    .bind(id)
+    .all();
+  const fens = [START];
+  for (const m of history.results || []) {
+    const step = play(fens[fens.length - 1], m.uci);
+    if (!step) throw new Error('chess: game ' + id + ' does not replay at ' + m.uci);
+    fens.push(step.fen);
+  }
+  return fens;
+}
+
+/* undo { game, ply, client } — whoever made the last move takes it back,
+   within UNDO_MS of it being filed. `ply` is the move's own, the game's ply
+   as the page read it. A move that ended the game is not taken back: the
+   game is over and the result stands. Nor is one the other side has already
+   answered — it is no longer the last move, and the game's ply has moved on.
+
+   The move row goes and the game steps back to the position before it, in
+   one batch, both only while the game is still playing at that ply: of an
+   undo and the other side's reply arriving together, whichever the table
+   takes first stands, and the other is the 409 the page redraws from. */
+async function undo(env, who, body) {
+  const row = await gameById(env, body.game);
+  if (!row) return json({ error: 'no-game' }, 404);
+  if (!Number.isInteger(body.ply)) return json({ error: 'malformed' }, 400);
+  if (row.state !== 'playing' || body.ply !== row.ply || row.ply < 1) return refuse(env, who, 'too-late', 409);
+
+  const by = moverOf(who, body);
+  if (!by) return json({ error: 'client' }, 400);
+  const last = await env.DB
+    .prepare('SELECT by_kind, by_id, at FROM chess_moves WHERE game = ? AND ply = ?')
+    .bind(row.id, row.ply)
+    .first();
+  if (!last) return refuse(env, who, 'too-late', 409);
+  if (last.by_kind !== by.kind || last.by_id !== by.id) return json({ error: 'not-yours' }, 403);
+  if (Date.now() - last.at > UNDO_MS + UNDO_GRACE_MS) return refuse(env, who, 'too-late', 409);
+
+  const fens = await replay(env, row.id);
+  if (fens.length - 1 !== row.ply) return refuse(env, who, 'too-late', 409);
+  const before = fens[fens.length - 2];
+
+  const now = Date.now();
+  const results = await env.DB.batch([
+    env.DB
+      .prepare(
+        'DELETE FROM chess_moves WHERE game = ? AND ply = ? AND EXISTS ' +
+        "(SELECT 1 FROM chess_games WHERE id = ? AND ply = ? AND state = 'playing')"
+      )
+      .bind(row.id, row.ply, row.id, row.ply),
+    env.DB
+      .prepare("UPDATE chess_games SET fen = ?, ply = ?, last_at = ? WHERE id = ? AND ply = ? AND state = 'playing'")
+      .bind(before, row.ply - 1, now, row.id, row.ply)
+  ]);
+  if (!results[0].meta.changes) return refuse(env, who, 'too-late', 409);
   return done(env, who);
 }
 
