@@ -36,14 +36,19 @@
  *            which is every chip on the row and nothing else. Turning one off
  *            is not a press of it, and All is not a filter: it is the way out
  *            of the chips, so pressing it counts nothing.
- *   list     a public list opened, once per load of its page — countOpen() in
+ *   list     a public list opened, once a day per visitor — countOpen() in
  *            assets/lists.js, called from boot() however the reader arrived:
  *            the directory, a link somebody sent, a byline, a search result.
- *            Not when its own owner opens it. This is the one
- *            kind nothing on /stats prints: it is read by _mostkept.js, which
- *            is what orders /lists, and the number is never drawn on a row.
- *            **Public lists** in README.md says why a ranking without a
- *            scoreboard is the point rather than an omission.
+ *            Never when its own owner opens it, which the page leaves out
+ *            and realList() below refuses as well, and not again the same
+ *            day from the same browser and network — firstToday() in
+ *            ./_visits.js, the rule profile views keep. Nothing on
+ *            /admin/stats prints it: it is read by _mostkept.js, which is
+ *            what orders /lists, and by listViews() in ./_visits.js, which
+ *            draws it back to the list's owner alone on /insights. It is
+ *            never drawn on a row anybody else reads, and **Public lists**
+ *            in README.md says why a ranking without a scoreboard is the
+ *            point rather than an omission.
  *   rail     a pill on the rail down the left of the map pressed — the nine
  *            in RAIL_PILLS below, which is every button inside #rail and
  *            nothing else. The radio is not one of them: it left the rail for
@@ -79,11 +84,11 @@
  * counted either: it is one person's row on one list, not on the map or in
  * Google's export, so there is nothing for a ranking to compare it against.
  *
- * Every kind but the rail is counted once per page load, and the rail every
- * press, which is not an oversight. A place or a chip is a question about
- * where to eat, asked once however many times the card is reopened while
- * somebody makes their mind up — and it has to agree with the one page view
- * TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
+ * Every kind but the rail is counted once per page load — a list once a day,
+ * above — and the rail every press, which is not an oversight. A place or a
+ * chip is a question about where to eat, asked once however many times the
+ * card is reopened while somebody makes their mind up — and it has to agree
+ * with the one page view TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
  * per press of one, and the question this table answers is the plain one:
  * which of the nine buttons do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
@@ -97,14 +102,14 @@
  */
 
 import {
-  json, wrongDatabase, knownPlaces, dataFile
+  json, wrongDatabase, knownPlaces, dataFile, sessionUser
 } from './_lib.js';
 /* The shape of a list id, so a request carrying something that could not be
    one is refused before it costs a query — the same way GOOGLE_KEY below
    guards the venue lookup. Imported rather than restated: _lists.js is a
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
-import { countView, countPress } from './_visits.js';
+import { countView, countPress, firstToday } from './_visits.js';
 import { countArrive, countLeave } from './_visitors.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
@@ -222,6 +227,11 @@ export async function onRequestPost(context) {
              : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 
+  /* A list opened a second time today by the same visitor is the same look,
+     and one its owner opened is not a look at all — realList() has already
+     said no to that. The profile's rule, from the same file. */
+  if (kind === LIST && !(await firstToday(context, LIST, id))) return json({ ok: false }, 200);
+
   /* One statement, and the row is made by the same one that increments it. The
      count is a running total rather than something recomputed from a log —
      db/schema.sql says why there is no log to recompute from — so this is the
@@ -297,6 +307,12 @@ async function realPlace(context, id) {
    growing, which is the honest thing — nothing here deletes a count, and the
    row costs one key in a table already bounded by the things there are.
 
+   And not the owner's: the page never sends their own open, but a count the
+   owner reads back on /insights is one the owner has a reason to climb, so
+   the session on the request says no here too, the way ownerOf() in
+   ./_visits.js does for a profile. The session is read only for a list that
+   exists, so a hand-written id costs nothing more than it did.
+
    The table not being there yet answers false, the way every other read on
    this route does: nothing was counted and nobody is waiting to hear it. */
 async function realList(context, id) {
@@ -304,10 +320,12 @@ async function realList(context, id) {
   if (!LIST_ID.test(id)) return false;
   try {
     const row = await env.DB
-      .prepare('SELECT 1 AS ok FROM lists WHERE id = ? AND public = 1')
+      .prepare('SELECT owner FROM lists WHERE id = ? AND public = 1')
       .bind(id)
       .first();
-    return !!row;
+    if (!row) return false;
+    const me = await sessionUser(context.request, env);
+    return !(me && me.id === row.owner);
   } catch (e) {
     return false;
   }

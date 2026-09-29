@@ -216,6 +216,26 @@ CREATE TABLE IF NOT EXISTS profile_counts (
   PRIMARY KEY (owner, day, kind, id)
 );
 
+-- --------------------------------------------------------------- view_seen
+-- Which opens have already been counted today, so a profile or a list
+-- refreshed over and over by one visitor is one view a day and not twenty.
+-- firstToday() in functions/api/_visits.js writes it, and ONCE A DAY,
+-- WHOEVER IS REFRESHING in that file's header is the reasoning.
+--
+-- `key` is an HMAC under SAVE_SALT of the day, the thing opened, the address
+-- and the user agent, cut to 32 hex: no address is stored, and the key is a
+-- different one for every thing and every day, so rows cannot be joined into
+-- what one visitor looked at. A row is only ever asked about on its own day,
+-- and yesterday's are deleted in passing, so the table holds about a day.
+-- Without it every open the page sends is counted, as before it existed.
+CREATE TABLE IF NOT EXISTS view_seen (
+  -- YYYY-MM-DD, UTC. First in the key so the delete of old days is a range
+  -- on the primary key rather than a scan.
+  day TEXT NOT NULL,
+  key TEXT NOT NULL,
+  PRIMARY KEY (day, key)
+);
+
 -- ---------------------------------------------------------- visitor_counts
 -- Who came to the site, roughly, and what they did — read by the owner
 -- alone, on /admin/visitors. functions/api/_visitors.js writes and reads it,

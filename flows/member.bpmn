@@ -144,13 +144,13 @@ ref: assets/edit.js</bpmn:documentation>
       <bpmn:incoming>member-e19</bpmn:incoming>
       <bpmn:outgoing>member-e20</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="insights" name="Reads who opened it">
+    <bpmn:userTask id="insights" name="Reads who opened it and their lists">
       <bpmn:documentation>ref: insights.html
 ref: assets/insights.js</bpmn:documentation>
       <bpmn:incoming>member-e20</bpmn:incoming>
       <bpmn:outgoing>member-e21</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="views" name="Counts views of their own page">
+    <bpmn:serviceTask id="views" name="Counts views of their own page and lists">
       <bpmn:documentation>ref: functions/api/insights.js GET</bpmn:documentation>
       <bpmn:incoming>member-e21</bpmn:incoming>
       <bpmn:outgoing>member-e22</bpmn:outgoing>

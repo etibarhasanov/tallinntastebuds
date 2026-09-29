@@ -12,18 +12,46 @@
  *   countPress()    one press of something on one — the same
  *   readInsights()  a range of it, for /insights — GET /api/insights
  *   recentViews()   the last seven days' views, for the account page's row
+ *   firstToday()    whether this visitor has already opened this thing today
+ *                   — asked before a profile or a list open is counted
+ *   listViews()     how often each of the owner's lists has been opened, for
+ *                   the Your lists card on /insights
  *
  * VIEWS, NOT PEOPLE
  *
  * The bargain press_counts makes, one floor down: nothing here is filed
- * under the person who opened the page. There is no IP, no device id, no
- * fingerprint, and no row per visit — a row is (whose page, which day, what
- * kind of fact, which one) and a number. A reload is another view, the way
- * it is another page view in GA, and one visitor coming back on five
+ * under the person who opened the page. There is no IP, no device id and no
+ * row per visit in the counts — a row is (whose page, which day, what kind
+ * of fact, which one) and a number. One visitor coming back on five
  * evenings is five. The owner's own opens are not counted, so somebody
  * checking how their page looks does not climb their own number — the
- * session on the request is what says so, and that is the only use this
- * file makes of it.
+ * session on the request is what says so.
+ *
+ * ONCE A DAY, WHOEVER IS REFRESHING
+ *
+ * A reload used to be another view, the way it is another page view in GA.
+ * It is not any more, because the number is one somebody reads as "how many
+ * people looked", and a page refreshed twenty times by one visitor — or by a
+ * script, to make a list look popular — answered that wrongly. So an open of
+ * a profile or of a list is counted the first time it happens in a UTC day
+ * from one browser on one network, and not again until tomorrow.
+ *
+ * Two halves. The page remembers what it has already sent today in
+ * localStorage and does not send it again, which stops the ordinary reload
+ * for free and costs the server nothing. And the server keeps view_seen: one
+ * row per (day, visitor, thing), where the visitor is an HMAC under
+ * SAVE_SALT of the address, the user agent and the thing, the same one-way
+ * fingerprint() the save cap files under. The address never reaches the
+ * table, the key means nothing without the secret, and it is a different key
+ * for every thing and every day, so the table cannot be joined into a trail
+ * of what one visitor opened. Yesterday's rows are useless by construction
+ * and deleted in passing. That half is what a script that clears storage
+ * runs into; one that also changes its address every request gets through,
+ * and that is the bargain — nobody is paid for the number.
+ *
+ * Where view_seen is not applied yet, or there is no salt, every open the
+ * page sends is counted, which is the page's own once-a-day and nothing
+ * more: the table arrives by hand, like every table here.
  *
  * WHERE THEY CAME FROM
  *
@@ -115,7 +143,7 @@
  * number, and /insights says the numbers are not switched on here yet.
  */
 
-import { sessionUser } from './_lib.js';
+import { sessionUser, clientIp, hmacHex } from './_lib.js';
 import { NETWORKS, USERNAME, readRows } from './_profile.js';
 import { LIST_ID } from './_lists.js';
 
@@ -213,6 +241,7 @@ export async function countView(context, name, from) {
   try {
     const owner = await ownerOf(request, env, name);
     if (!owner) return false;
+    if (!(await firstToday(context, 'profile', owner))) return false;
     const source = sourceOf(from, request.headers.get('user-agent'), siteOf(request));
     const day = today();
     await env.DB.batch([
@@ -223,6 +252,41 @@ export async function countView(context, name, from) {
   } catch (e) {
     /* No table yet, or the write failed. Nobody is waiting to hear it. */
     return false;
+  }
+}
+
+/* Whether this is the first time today that this visitor has opened this
+ * thing — ONCE A DAY, WHOEVER IS REFRESHING above. `kind` and `id` name the
+ * thing ('profile' and the owner's id, 'list' and the list's), and they go
+ * into the key rather than beside it, so no two rows share anything a
+ * reader could line up.
+ *
+ * One INSERT OR IGNORE, and the answer is whether it inserted: two opens in
+ * the same instant cannot both be first. True — count it — wherever the
+ * question cannot be asked: no salt, no table, a write that failed. Missing
+ * a repeat costs one extra view; refusing a real one because a table was
+ * not applied yet would stop the counting altogether.
+ *
+ * Yesterday's rows go one time in twenty, after the answer, so the table
+ * holds about a day and the delete is not a second write on every open. */
+export async function firstToday(context, kind, id) {
+  const { request, env } = context;
+  if (!env.SAVE_SALT) return true;
+  const day = today();
+  try {
+    const key = (await hmacHex(env.SAVE_SALT,
+      'seen|' + day + '|' + kind + '|' + id + '|' + clientIp(request) + '|' + (request.headers.get('user-agent') || '')
+    )).slice(0, 32);
+    const out = await env.DB
+      .prepare('INSERT OR IGNORE INTO view_seen (day, key) VALUES (?, ?)')
+      .bind(day, key)
+      .run();
+    if (Math.random() < 0.05) {
+      context.waitUntil(env.DB.prepare('DELETE FROM view_seen WHERE day < ?').bind(day).run().catch(() => {}));
+    }
+    return !(out && out.meta && out.meta.changes === 0);
+  } catch (e) {
+    return true;
   }
 }
 
@@ -293,6 +357,43 @@ export async function recentViews(env, owner) {
   } catch (e) {
     return null;
   }
+}
+
+/* Every list the owner has, with how often each has been opened, most first,
+ * or null where it cannot be read.
+ *
+ *   [{ id, title, public, n }]
+ *
+ * All time and not the range the page is on: a list's opens are one running
+ * number in press_counts under kind 'list' — what orders /lists — and have no
+ * day in them to cut by. The page says so under the card rather than letting
+ * the range chips above it seem to apply. Private lists are there too, with
+ * the number they had when they were last public, since functions/api/stats.js
+ * stops counting a list the moment it is not; a list never public reads 0.
+ *
+ * One read, the owner's lists joined to their counts on the primary key. A
+ * database without press_counts answers the lists with noughts rather than
+ * nothing, the way readingOpens() in ./_mostkept.js survives the same. */
+export async function listViews(env, owner) {
+  const read = (opens) => env.DB
+    .prepare(
+      'SELECT l.id, l.title, l.public, ' + (opens ? 'COALESCE(p.n, 0)' : '0') + ' AS n FROM lists l ' +
+      (opens ? "LEFT JOIN press_counts p ON p.kind = 'list' AND p.id = l.id " : '') +
+      'WHERE l.owner = ? ORDER BY n DESC, l.updated_at DESC, l.id ASC'
+    )
+    .bind(owner)
+    .all();
+  let results;
+  try {
+    ({ results } = await read(true));
+  } catch (e) {
+    try {
+      ({ results } = await read(false));
+    } catch (e2) {
+      return null;
+    }
+  }
+  return (results || []).map((r) => ({ id: r.id, title: r.title, public: r.public === 1, n: r.n || 0 }));
 }
 
 /* One range of the owner's numbers, or null where there is no table yet.

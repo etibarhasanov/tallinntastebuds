@@ -405,27 +405,24 @@
    * silence around it — see functions/api/stats.js, which holds all three
    * kinds, and countPress() in assets/app.js, which is the same six lines.
    *
-   * It is what orders /lists, and that is the whole of what the number does.
-   * Nothing draws it, nothing is told about it, and the answer is not read:
-   * the route replies 200 whatever happened, because a list that opened is
-   * the feature and a count that did not go up is not worth a word.
+   * It is what orders /lists, and it is drawn back to the list's owner on
+   * /insights. Nothing else draws it, and the answer is not read: the route
+   * replies 200 whatever happened, because a list that opened is the feature
+   * and a count that did not go up is not worth a word.
    *
-   * Once per load of a list's own page, whoever the reader came from — the
-   * directory, a link somebody sent, a byline, a search result — because that
-   * is the gesture the number is about. Not when the owner opens their own —
-   * the check for that is in boot(), beside the call: a list its author
-   * reloads while editing it would otherwise climb a page ranked on strangers.
-   *
-   * There is no `counted` map beside this one, unlike the two files named
-   * above.
-   * Those pages open a place, close it and open it again without reloading;
-   * this one is a page per list, and the only way to open the same list twice
-   * is to load the page twice — which is two opens, and is meant to be. */
+   * Once a day per reader, whoever they came from — the directory, a link
+   * somebody sent, a byline, a search result — because the number is read as
+   * how many people looked, and a reload is not somebody else looking.
+   * firstTime() below is this page's half of that and view_seen on the server
+   * is the other; functions/api/_visits.js, ONCE A DAY, says why both. Not
+   * when the owner opens their own — the check for that is in boot(), beside
+   * the call, and the server makes it again. */
   function countOpen(id) {
+    if (!firstTime('list:' + id)) return;
     tell({ kind: 'list', id: id });
   }
 
-  /* And a profile: opened once per load, and every press of a thing on it
+  /* And a profile: opened once a day, and every press of a thing on it
      that leads somewhere — a row, a handle, a list. Both are the owner's own
      numbers, drawn back to them on /insights and never to anybody else;
      functions/api/_visits.js is the other half and says what is kept. The
@@ -436,7 +433,28 @@
      out here and again on the server, where the session decides it. */
   function countProfile() {
     if (state.me === state.profile.name) return;
+    if (!firstTime('profile:' + state.profile.name.toLowerCase())) return;
     tell({ kind: 'profile', id: state.profile.name, from: document.referrer || '' });
+  }
+
+  /* Whether this browser has not yet said it opened this thing today, and a
+     note that it now has. One key in localStorage holding today's opens —
+     { day, seen: [...] } — which starts again on the first open of a new UTC
+     day, the clock the server counts by, so it never holds more than a day.
+     Where storage throws, every open is the first, and the server's own
+     view_seen is what stands between a reload and a second view. */
+  var OPENED_KEY = 'ttb.opened';
+
+  function firstTime(what) {
+    var day = new Date().toISOString().slice(0, 10);
+    try {
+      var kept = JSON.parse(localStorage.getItem(OPENED_KEY) || 'null');
+      var seen = kept && kept.day === day && kept.seen instanceof Array ? kept.seen : [];
+      if (seen.indexOf(what) !== -1) return false;
+      seen.push(what);
+      localStorage.setItem(OPENED_KEY, JSON.stringify({ day: day, seen: seen }));
+    } catch (e) { /* no storage: the server decides alone */ }
+    return true;
   }
 
   function countProfilePress(what) {

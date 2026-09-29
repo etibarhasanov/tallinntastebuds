@@ -4,9 +4,10 @@
  * GET ?days=7|28|90|0 answers what /insights draws: how often /u/<you> was
  * opened over that range and the one before it, a line of it over time,
  * where the views and the clicks came from, which country, and what on the
- * page was pressed. ./_visits.js holds all of it — what is counted, what is
- * not, and why — and this file is only the door: who may ask, and which
- * ranges may be asked for.
+ * page was pressed — and, beside the range rather than inside it, how often
+ * each of their lists has been opened, all time. ./_visits.js holds all of
+ * it — what is counted, what is not, and why — and this file is only the
+ * door: who may ask, and which ranges may be asked for.
  *
  * WHO MAY ASK
  *
@@ -23,13 +24,15 @@
  * the three things /api/account reports the same way, since no account can
  * exist without them. `insights: null` where profile_counts has not been
  * applied yet, and the page says the numbers are not switched on here.
+ * `lists` is read on its own and survives that: it comes out of lists and
+ * press_counts, and is null only where the lists themselves cannot be read.
  *
  * Never cached: the answer is one session's own, and `json()` without a
  * maxAge is `no-store`.
  */
 
 import { json, sessionUser, wrongDatabase } from './_lib.js';
-import { SPANS, readInsights } from './_visits.js';
+import { SPANS, readInsights, listViews } from './_visits.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -45,9 +48,9 @@ export async function onRequestGet(context) {
   const asked = raw === null || raw === '' ? NaN : Number(raw);
   const span = SPANS.indexOf(asked) !== -1 ? asked : SPANS[0];
 
-  return json({
-    ready: true,
-    user: user.username,
-    insights: await readInsights(env, user.id, span)
-  }, 200);
+  const [insights, lists] = await Promise.all([
+    readInsights(env, user.id, span),
+    listViews(env, user.id)
+  ]);
+  return json({ ready: true, user: user.username, insights, lists }, 200);
 }
