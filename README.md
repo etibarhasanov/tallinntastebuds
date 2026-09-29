@@ -14163,7 +14163,7 @@ Everything else stored on a visitor's device is seven `localStorage` keys and
 one cookie, all of them the
 visitor's own choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen` and
 `ttb.stories.sound`, `ttb.cid` (the random id this browser saves under, made
-on the first save and never before it), `ttb.saved`
+on the first save and never before it, kept by `assets/device.js`), `ttb.saved`
 (which places it has saved), `ttb.nudged` (the date an offer of an account was
 turned down), and the `ttb_s` session cookie, which is set by the server and
 only exists once somebody has signed in. A sign-in through Google passes two

@@ -60,11 +60,6 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
-  /* The id this browser is known by when nobody is signed in, and the same
-     key the map writes it under: a heart pressed on the map's own bookmark
-     and a heart pressed here belong to the same device. */
-  var CID_KEY = 'ttb.cid';
-
   /* What was in the field when the browser left for Google, so that coming
      back does not cost somebody the sentence they had written. Cleared the
      moment it is read. */
@@ -194,38 +189,6 @@
     toast(t('listsErrGeneric'));
   }
 
-  /* The id this browser is known by, made on the first thing it does here and
-     never before: a browser that only ever reads the page is not given an id
-     for something it has not done. The same arrangement, and the same key, as
-     clientId() in assets/app.js — which is the other copy of this and the
-     reason there is no third: two ES5 files served raw cannot import from
-     each other, and a shared global for eleven lines would be a fourth script
-     on every page that draws a heart. */
-  function clientId() {
-    var id = storeGet(CID_KEY);
-    if (id) return id;
-    id = (window.crypto && window.crypto.randomUUID)
-      ? window.crypto.randomUUID()
-      : uuidFromBytes();
-    storeSet(CID_KEY, id);
-    return id;
-  }
-
-  /* Safari before 15.4 has crypto but not randomUUID. getRandomValues is
-     everywhere, so the shape is assembled by hand from real entropy rather
-     than falling back to Math.random. */
-  function uuidFromBytes() {
-    var b = new Uint8Array(16);
-    window.crypto.getRandomValues(b);
-    b[6] = (b[6] & 0x0f) | 0x40;   /* version 4 */
-    b[8] = (b[8] & 0x3f) | 0x80;   /* variant 1 */
-    var hex = [];
-    for (var i = 0; i < 16; i++) hex.push((b[i] + 0x100).toString(16).slice(1));
-    return hex.slice(0, 4).join('') + '-' + hex.slice(4, 6).join('') + '-' +
-           hex.slice(6, 8).join('') + '-' + hex.slice(8, 10).join('') + '-' +
-           hex.slice(10, 16).join('');
-  }
-
   /* ------------------------------------------------------- look and feel */
 
   /* The style the site is wearing. The map has the swatch and writes the
@@ -308,10 +271,10 @@
     /* Read and never minted. The id says which rows are already yours and
        which you have already hearted, and a browser that has done neither has
        nothing to tell the server — so opening the page does not hand it an
-       id for something it has not done. clientId() below mints one, and only
-       the presses call it. The map draws the same line at the same place:
+       id for something it has not done. TTBDevice.id() mints one, and only the
+       presses call it. The map draws the same line at the same place:
        the id arrives with the first save, not with the first visit. */
-    var mine = storeGet(CID_KEY);
+    var mine = TTBDevice.known();
     var url = API + '?page=' + page + (mine ? '&client=' + encodeURIComponent(mine) : '');
     return getJSON(url).catch(function () {
       /* Nothing on this site waits on /api/*. A page that could not be read
@@ -419,7 +382,7 @@
         setTimeout(function () { b.classList.remove('is-beating'); }, 460);
       }
 
-      post({ action: want ? 'heart' : 'unheart', id: row.id, client: clientId() })
+      post({ action: want ? 'heart' : 'unheart', id: row.id, client: TTBDevice.id() })
         .then(function (a) {
           if (!a.ok) {
             show(!want, before);
@@ -461,7 +424,7 @@
       if (!window.confirm(t('feedbackRemoveSure'))) return;
       TTBTrack.event('feedback_remove');
       b.disabled = true;
-      post({ action: 'remove', id: row.id, client: clientId() }).then(function (a) {
+      post({ action: 'remove', id: row.id, client: TTBDevice.id() }).then(function (a) {
         if (!a.ok) {
           b.disabled = false;
           return failed();
@@ -740,7 +703,7 @@
       action: 'say',
       text: state.text,
       as: state.as,
-      client: clientId()
+      client: TTBDevice.id()
     };
 
     if (state.as === 'name' && !state.me) {

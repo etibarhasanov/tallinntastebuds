@@ -1102,24 +1102,3 @@
   .flash-pairfields { flex-direction: column; gap: 0; }
 }
 
-/* ---------- the language, in the header ---------- */
-
-/* The map's switch, on this page's header row. Everything it is drawn with is
-   already in assets/styles.css — #lang-switch holds the menu, .btn-lang-now is
-   the code and the chevron, .lang-list is the rows, which on this page are
-   three where the map's are ten, because the back of a card is written in
-   three languages — and all this adds is
-   the surface under the trigger, because the map's comes from `.controls .seg`
-   and there is no .controls here.
-
-   Paper rather than the map's frosted glass: that pane is see-through because
-   there is a city moving under it, and under this one there is a page. It is
-   the same surface the map falls back to on a browser with no backdrop-filter,
-   which is the argument already made in the stylesheet it comes from. */
-.flash-lang {
-  flex: 0 0 auto;
-  border-radius: var(--radius-soft);
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  box-shadow: var(--lift);
-}
