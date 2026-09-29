@@ -16,15 +16,6 @@ from the map by `node tools/places.mjs`. The validator refuses a catalogue that
 is not what the tool would write, or that is missing a place the map has. That
 one fact decides most of what follows.
 
-`db/type-lists.sql` is the second thing generated from the map: the thirteen
-filter chips published as lists, by `node tools/typelists.mjs`, and the
-validator refuses it stale the same way. Both tools run on every change here,
-because a place with `types` on it belongs on a list the moment it is on the
-map. The difference is that the catalogue ships with the push and the lists do
-not — the SQL is **loaded into D1 by hand, and that is the owner's yes**, not
-something a merge carries. See **The rules of a write** in `/api`, and
-**The chips, as lists** in `README.md`.
-
 ## Read first
 
 - `README.md` → **Add a place** (the field table), **What counts as a
@@ -105,10 +96,6 @@ its pin can land on the wrong side of the street. What it does, in order:
      about going green, and an **Edit** fails if it changed the name, the
      address or the coordinates. Check the branch out, run the tool, commit,
      push, and only then merge.
-   - **Run `node tools/typelists.mjs` and commit `db/type-lists.sql`** on the
-     same branch. The page does not touch that either, and CI fails on it for
-     an **Add** carrying any type, or an **Edit** that changed `types`, the
-     name or the English write-up.
    - The other nine languages of the write-up. The validator warns about
      them, and the PR body says so.
    - The README counts below.
@@ -132,7 +119,7 @@ its pin can land on the wrong side of the street. What it does, in order:
 4. **Is it one place?** A room that is a bakery in the morning and a
    restaurant at night is two entries, and the laptop tag goes on the one it
    is true of. Fotografiska is the precedent.
-5. `node tools/places.mjs`, then `node tools/typelists.mjs`. If the place
+5. `node tools/places.mjs`. If the place
    was a row in the directory already — `grep -i '<name>'
    exports/tallinn_restaurants.csv` says — then `node tools/googlevenues.mjs`
    too: `overlaps()` in that tool matches the new entry to its Google row by
@@ -176,9 +163,6 @@ its pin can land on the wrong side of the street. What it does, in order:
   type is what to argue from.
 - **The name, address or coordinates** change the catalogue row too, so
   `node tools/places.mjs` again.
-- **`types`, the name, or the English write-up** change the published lists,
-  so `node tools/typelists.mjs` again. The English first sentence is what a
-  list prints under a place; the other nine languages never reach one.
 - `db/google-venues.sql` never moves for a change to a place that is already
   on the map: the 62 export rows matched to it carry `map_id`, and that
   column survives every refresh. **Adding** a place the export already lists
@@ -198,12 +182,6 @@ being shut is a fact about the row, not a reason to hide it. Do not write the
 closure into the blurb. Move the
 README's list of closed places, which is written by name.
 
-The published lists do not skip it on their own: `node tools/typelists.mjs`
-takes it off every list it was on, and the rows only actually go when the SQL
-is loaded. A closed place left on a list is the loudest way this can be
-wrong — a page sending somebody to a restaurant that shut — so say in the PR
-which lists lost it.
-
 ## The commit
 
 The subject is a sentence about the place, not about the file:
@@ -219,7 +197,7 @@ entry land in one commit, so no commit lists a photo that is not there.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/places.mjs` and `node tools/typelists.mjs` — and `node
+2. `node tools/places.mjs` — and `node
    tools/googlevenues.mjs` for a place the export already lists — then
    `node tools/validate.mjs`. The catalogue is the check this process fails
    most.
@@ -230,11 +208,9 @@ entry land in one commit, so no commit lists a photo that is not there.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says why the place is on
    the map, what it was tagged and why, what the counts did, that the
-   catalogue was regenerated, which blurb languages are still to come, and
-   **which lists in `db/type-lists.sql` moved and that it has still to be
-   loaded** — with the two `wrangler d1 execute` lines, so the owner can run
-   them in a minute. A place the export already listed adds a third file to
-   that paragraph: the one `map_id` line in `db/google-venues.sql`.
+   catalogue was regenerated, which blurb languages are still to come, and, for
+   a place the export already listed, the one `map_id` line in
+   `db/google-venues.sql` that has still to be loaded.
 7. CI green — the validator, the QR check, the preview deploy — then **Rebase
    and merge**; the branch stays, `CLAUDE.md` says why. The place is on the
    live map within the minute.
@@ -244,22 +220,17 @@ red until the catalogue is regenerated, so it is landed like this:
 
 ```
 git fetch origin admin/add-<id> && git checkout admin/add-<id>
-node tools/places.mjs && node tools/typelists.mjs && node tools/validate.mjs
+node tools/places.mjs && node tools/validate.mjs
 git commit -am "The catalogue knows <name>" && git push
 ```
 
 Then the other nine blurb languages on the same branch, if you have them,
-and the same merge. The map is live with the push; the lists are not, until
-`db/type-lists.sql` is loaded into both databases, which is the owner's
-call.
+and the same merge. The map is live with the push.
 
 ## Where it goes wrong
 
 - `data/places.json` not regenerated — by hand, or by every **Add** PR the
   admin page opens. It is the most common way to fail CI.
-- `db/type-lists.sql` regenerated, committed, merged, and never loaded, so
-  the live lists are the map as it was a fortnight ago. CI cannot see this
-  one; only the PR body saying it is outstanding can.
 - A photo straight off a phone, 6 MB, committed, and in the history forever.
 - `lat` and `lng` the wrong way round.
 - A place the directory already listed, added without `node

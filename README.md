@@ -292,10 +292,6 @@ that is deliberate: a row of chips that rearranges between visits is a row
 nobody learns. Re-check it when a type has visibly grown, and move the line in
 `taxonomy.json`.
 
-Every chip in that table is also published as a list, under the map's own
-account, and a fourteenth row here is a fourteenth list that needs a name.
-See **[The chips, as lists](#the-chips-as-lists)** under **Lists**.
-
 The counts above are how many places carry each type, which is a fact about
 the map rather than about anybody reading it. `/admin/stats` is the other half and
 the one this order is really trying to guess: how often each chip is actually
@@ -5787,92 +5783,6 @@ naming the day more precisely: when the `GROUP BY` in
 no third option under **Who can open it**. A keep already existed and was a
 private bookmark that nothing consumed; this is the page that consumes it.
 
-### The chips, as lists
-
-Thirteen of the public lists are the map's own, one per filter chip:
-**All the bakeries in Tallinn**, **All the hidden gems in Tallinn**, **All
-the casual and solo places in Tallinn**, and ten more — the city on the end
-of each because the title is also the page's `<title>`, and "in Tallinn" is
-how the question ends. They are published under `tallinntastebuds` — the
-account whose map this is, not a generated name of its own — and each holds
-every open place on the map that carries that type, in the alphabet, with the
-first sentence of its write-up under it.
-
-They are generated. `tools/typelists.mjs` reads `data/restaurants.json` and
-`data/taxonomy.json` and writes `db/type-lists.sql`, which is loaded by hand
-into both databases the way `db/google-lists.sql` is. So they are one file's
-output rather than thirteen pages of typing, they cannot drift into a second
-opinion — the picks are `types` and nothing else, exactly what
-`matchesFilters()` in `assets/app.js` reads — and a place added to the map is
-a place missing from a list until the tool is re-run and the file loaded.
-`tools/validate.mjs` fails on the first half of that and cannot see the
-second.
-
-**Why a chip is worth a list when the chip already answers.** Pressing Bakery
-narrows the map to seventeen pins and the panel to seventeen rows, and that is
-a better way to look at them than any page is. What it is not is a thing you
-can send somebody: a filtered map is `?type=bakery` on the end of a URL that
-opens a map, with one `<title>` for the whole site, no line under any place,
-and nothing to keep. A list is the shape this site already has for *here are
-the ones, and here is what each is* — it unfurls in a chat with its own card,
-it has a bookmark, and it sits on `/lists` with everybody else's. The same
-thirteen questions, asked in the other shape.
-
-**Closed places are left off**, which is the one way these are not what the
-chip shows: a chip still draws a closed place, grey and dashed, because the
-links pointing at it still work. A list is somewhere to go, though — a page
-somebody opens on a phone in town — and **All the date night places** naming
-a restaurant that shut is the list being wrong in the way a reader notices
-first. The Google top tens skip closed places for the same reason. The line
-under each title says so.
-
-**The line under each place is the first sentence of the English write-up.**
-`list_items.say` is one string and there is no per-language version of it, the
-way a blurb in `restaurants.json` has ten, so whatever goes there is English
-on a site read in ten languages and had better earn the asymmetry. The first
-sentence is the one that says what the place is, in the map's own voice, and
-it is already written. The whole write-up is the wrong length — a list of
-forty-five paragraphs is not a list — and the must-order dish, which reads
-best of the three, is missing on twenty-five of the seventy-five places.
-
-**Whose they are is looked up, not written down.** `tallinntastebuds` is a
-real account with a real password and a UUID for an id, and neither belongs in
-a tracked file. So every list in the generated SQL takes its owner from a
-subquery on the username, and the account row above it is an `INSERT OR
-IGNORE`: on a database that already holds the name it does nothing at all, and
-the password, the profile line and the join date are the ones that were there.
-On one that does not — a fresh preview — it mints a stand-in with sixty-four
-zeros for a password hash, which is not the PBKDF2 of anything, so the lists
-have an owner and nobody can sign in as it. The cost is that claiming that
-name on a preview database means deleting the row first.
-
-**They are ordinary rows on `/lists`**, the way every list is now — Google's
-five included, since the strip that lifted those came off. Nothing keeps them
-apart and nothing lifts them, and with nobody having opened them yet they sort
-to the bottom, where the section above says a list nobody has opened belongs. `/u/tallinntastebuds` is where all thirteen are
-together.
-
-Adding a fourteenth chip to `data/taxonomy.json` makes `tools/typelists.mjs`
-throw, by name, until it is given a title in the tool and a `list` in the
-taxonomy. A title is a name somebody chose — "All the Coffee/tea" is not one
-— so the thirteen are written out in the tool rather than built from the
-chip's label. The id is the chip's own `list` in `data/taxonomy.json`, because
-the map reads it too — the line below — and the taxonomy is the one file both
-can open: a list's id is its address, and renaming one must not move the link
-somebody sent. Taking a chip away throws too, and says the part no tool can
-do — the list it wrote is still standing on `/lists`, in both databases, and
-only a hand takes it down.
-
-**And the map says so, under a pressed chip.** With exactly one type pressed,
-a line stands under the row — *Also a list you can send ›* — and it is the
-list for that chip. One chip and not two, because two chips are a map nobody
-has written a list of, and never the discount, which is an offer rather than a
-kind of place. It is the only thing on the map that points at these lists,
-and it points at the moment they are worth something: somebody has just
-narrowed the city to bakeries and is about to send the answer to a friend.
-`chipListLink()` in `assets/app.js` writes it out of the chip's `list` and
-hides it again the moment the chips change; `chip_list` is what it reports.
-
 ### The bar and the foot
 
 Somebody else's list is a page with two fixed edges and a scroll between them.
@@ -6653,15 +6563,10 @@ ten — room to overshoot and cut back, and short enough that a list still reads
 as a recommendation somebody stands behind rather than everywhere they have
 ever been.
 
-What moved it is **The chips, as lists** above. **All the casual and solo
-places** is forty-five and **All the restaurants** twenty-seven, and a chip's
-list that stops at twenty is not that chip: it is the first twenty of it in
-the alphabet, which is a slice nobody chose. So the number is what the longest
-of the thirteen needs with a little room over, and the argument the twenty was
-making — a list nobody finishes reading recommends nothing — is the feature's
-to make rather than the constant's. Casual/Solo is the one to watch: it is on
-three places in five, the cap is five above it, and the validator fails on a
-generated list that has outgrown it.
+What moved it, once, was the map publishing its own filter chips as lists —
+forty-five places on the longest — and those are gone. The number stayed,
+because lowering a cap under lists people have already saved is a migration
+nobody asked for; a list nobody finishes reading still recommends nothing.
 
 Two hundred keeps is higher than twenty-four lists because keeping is the cheap
 half of this. A list is published under your name and twenty-four of them is
@@ -12159,15 +12064,10 @@ databases to its own cases.
   write from `exports/tallinn_restaurants.csv` (run the tool and commit the
   result), or a `db/google-lists.sql` that is not what `tools/googlelists.mjs`
   would write from the same export — see **The six lists Google wrote**
-- a `db/type-lists.sql` that is not what `tools/typelists.mjs` would write from
-  `data/restaurants.json` and `data/taxonomy.json` (run the tool and commit the
-  result), or that holds a list longer than `MAX_ITEMS` in
-  `functions/api/lists.js`, which is imported rather than restated — see
-  **The chips, as lists**
 - a `?v=` cache stamp in the HTML that no longer matches the file it points at
   (run `node tools/stamp.mjs` and commit the result)
 - a `sitemap.xml` that is not what `tools/sitemap.mjs` would write from the
-  languages in `data/ui.json` and the thirteen lists in `tools/typelists.mjs`
+  languages in `data/ui.json` and the six lists in `tools/googlelists.mjs`
   (run the tool and commit the result) — a language added without it is a
   page no search engine is told about
 - a diagram in `flows/` that is not what `tools/flows.mjs` would write from
@@ -12413,8 +12313,6 @@ exports/build_review_sheet.py      through, and the script that builds it
 db/google-venues.sql       GENERATED — loads that export into D1
 db/google-lists.sql        GENERATED — the five top tens and a top twenty
                            under `google-statistics`
-db/type-lists.sql          GENERATED — the thirteen filter chips as lists, under
-                           `tallinntastebuds`
 data/taxonomy.json         the controlled vocabulary of types
 data/cuisines.json         the 37 cuisines only the directory needs, in ten
                            languages — taxonomy.json holds the other six
@@ -12430,7 +12328,7 @@ _routes.json               which paths reach the Functions, and which never do
 robots.txt                 what a crawler is told not to
 sitemap.xml                GENERATED — every address a crawler is told about:
                            the map in ten languages, every open place, /lists,
-                           /blog, the thirteen chip lists and Google's five
+                           /blog and Google's six lists
 indexnow.txt               the IndexNow key, public on purpose — see
                            tools/indexnow.mjs
 photos/<restaurant-id>/    photos, one folder per place
@@ -12441,9 +12339,8 @@ tools/city.mjs             turns the same export into data/city.json, the city
                            under every list's panel
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/googlelists.mjs      ranks the same export into db/google-lists.sql
-tools/typelists.mjs        turns the map's filter chips into db/type-lists.sql
 tools/sitemap.mjs          writes sitemap.xml from the languages, the places
-                           and the eighteen lists the site wrote
+                           and the six lists the site wrote
 tools/indexnow.mjs         submits every address in it to Bing once each deploy
                            is live
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
@@ -13869,10 +13766,6 @@ comes back a stranger and is dealt again, possibly the other rail.
   `drawerHolds()` says a chip standing out front does not need the drawer
   open to be seen, and a chip from inside it still does. Above 860px the
   whole row is flat on the map and the second nav draws nothing.
-- **The line under a pressed chip** — *Also a list you can send ›* — is on
-  both rails and every width: **The chips, as lists** is its argument, and it
-  arrived with this because a stranger narrowing the map for the first time
-  is the moment a list of the same thing is worth pointing at.
 - **The walk** points at whichever door this rail has: the Ask step is the
   full rail's and a More step is the short rail's, straight after the lists;
   `explainMore` is its sentence. **How this works, for the asking**.
@@ -14285,7 +14178,6 @@ The map, `assets/app.js`:
 | `flash_open_rail` | — the flashcards door on the rail, and the row behind More on the short rail: one door, one name |
 | `more_open`, `more_close` | — the More pill on the short rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` as the swatch does |
-| `chip_list` | — the line under a pressed chip that opens the same question as a list |
 | `ask_open` | — the pill on the full rail, and the row behind More on the short one |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
@@ -14636,7 +14528,6 @@ ends:
 | `/?lang=fi` | missä syödä Tallinnassa · Tallinnan ravintolat, kahvilat, leipomot, olutbaarit |
 | `/?lang=ru` | где поесть в Таллинне · рестораны, кафе, пекарни, пабы и пивные бары Таллинна |
 | `/?spot=<id>` | the place's name · what it is · the street · every dish in its `mustOrder` |
-| `/list/all-the-…-in-tallinn-…` | the thirteen kinds — pubs and beer bars, bakeries, hidden gems, cheap eats, laptop friendly, date night, vegan, Asian, Caucasus, fine dining — "in Tallinn" |
 | `/list/top-ten-…-by-google-…` | top ten restaurants, bakeries, cafés, bars, pizzerias in Tallinn |
 
 Two words are deliberately not there. "Best" — *parimad*, *parhaat*,
@@ -14706,13 +14597,12 @@ here, because nobody has shown that any assistant reads one.
 
 **The sitemap is generated.** `tools/sitemap.mjs` writes `sitemap.xml` from
 the languages in `data/ui.json`, the places in `data/restaurants.json`, the
-thirteen chip lists in `tools/typelists.mjs` and Google's five in
+Google's six lists in
 `tools/googlelists.mjs`: the map at each of its ten addresses, each carrying
 the full set of alternates; every open place at its English address, carrying
-the same; then `/lists`, `/blog` and the eighteen lists. The eighteen are
+the same; then `/lists`, `/blog` and the six lists. The six are
 listed by name because they are the pages that answer what people actually
-type — the pubs and beer bars in Tallinn, the bakeries, the top ten
-restaurants by Google's rating — and their ids never move; people's own
+type — the top ten restaurants by Google's rating — and their ids never move; people's own
 lists stay out, since the directory is where a crawler finds them. Nothing
 in the file carries a date: Google trusts a `lastmod` only when it is
 consistently right, and nothing in this repository knows when a page last

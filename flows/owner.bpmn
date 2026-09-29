@@ -108,7 +108,6 @@ ref: data/restaurants.json</bpmn:documentation>
     <bpmn:userTask id="place-land" name="Runs places.mjs, lands it">
       <bpmn:documentation>The page never writes data/places.json, so the pull request is red until this runs.
 ref: tools/places.mjs
-ref: tools/typelists.mjs
 ref: .claude/skills/place/SKILL.md</bpmn:documentation>
       <bpmn:incoming>owner-e13</bpmn:incoming>
       <bpmn:outgoing>owner-e14</bpmn:outgoing>

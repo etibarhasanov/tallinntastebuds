@@ -85,17 +85,12 @@ import { cleanPin, readingPins, pinSelect, pinsOf } from './_pins.js';
    short enough that the list still reads as a recommendation somebody stands
    behind rather than everywhere they have ever been.
 
-   What moved it is that the map publishes its own filter chips as lists now,
-   under the account whose map it is — db/type-lists.sql, out of
-   tools/typelists.mjs. "All the casual and solo places" is forty-five of
-   them and "All the restaurants" twenty-seven, and a chip's list that stops
-   at twenty is not that chip: it is the first twenty of it in the alphabet,
-   which is a slice nobody chose. So this is what the longest of those needs
-   with a little room over, and the argument the twenty was making is the
-   feature's to make rather than this number's. A list nobody finishes
-   reading still recommends nothing. */
+   It is fifty because the map used to publish its own filter chips as
+   lists, and the longest of those, forty-five places, needed room. Those are
+   gone; the number stayed, since lowering a cap under lists already saved is
+   a migration nobody asked for. */
 const MAX_LISTS = 24;
-export const MAX_ITEMS = 50;
+const MAX_ITEMS = 50;
 /* How many of other people's lists one account can keep. Higher than the
    twenty-four you can make, because keeping is the cheap half of this feature
    — it is a bookmark, and a bookmark drawer is allowed to be a drawer — and
@@ -110,13 +105,10 @@ const MAX_KEPT = 200;
 const MAX_ADDED = 100;
 const MAX_NAME = 80;
 const MAX_ADDRESS = 120;
-/* The three a generated list has to fit as well as a typed one. Exported for
-   tools/typelists.mjs, which builds db/type-lists.sql and throws rather than
-   write a row this route would refuse — the file is loaded past it, by hand,
-   so nothing else would ever check. */
-export const MAX_TITLE = 60;
-export const MAX_INTRO = 200;
-export const MAX_SAY = 280;
+/* The three lengths a list has to fit, mirrored by assets/lists.js. */
+const MAX_TITLE = 60;
+const MAX_INTRO = 200;
+const MAX_SAY = 280;
 /* Held to the same length as MAX_SAY, on purpose: it is a line about one
    dish rather than a paragraph, but nothing here enforces "short" beyond
    what the page's own box does, and there is no argument for a second

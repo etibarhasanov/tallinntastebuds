@@ -291,10 +291,7 @@ browser cannot import from `tools/`; change one, change the other.
   **Profiles**.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
-  type is also the one printed in the intro of that chip's published list, so
-  changing one means `node tools/typelists.mjs` and a stale
-  `db/type-lists.sql` to commit — see **The chips, as lists** in `README.md`.
-  Adding a language costs nothing there; the lists are English.
+  type is the chip's name on every rail; the other nine sit beside it.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the fifteen pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
