@@ -1,0 +1,167 @@
+/* Tallinn Tastebuds — /chess.html, the board and everything drawn around it.
+ *
+ * The page is the lists page's shape — its ground, its header, its cards, the
+ * tokens of both styles — and this file is only what a chessboard needs on top
+ * of that: the board, the turn line above it, the moves beside it. Every
+ * colour is a token: the squares are --paper and --hairline, the rings
+ * --accent and --muted, the pieces --ink, so pressing the swatch on the map
+ * recolours the board with nothing here to change. It was drawn as
+ * .claude/skills/chess/mockup.html first and this is what that carried under
+ * its <style>, with the squares turned into buttons.
+ */
+
+ is what
+     would become assets/chess.css; everything under <script> is what
+     assets/chess.js would draw out of one /api/chess answer, faked here from
+     ?state=. One page, three faces: ?state=visitor, member, waiting, playing,
+     house, house-playing, member-over. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/assets/lists.css">
+<link rel="stylesheet" href="/assets/flashcard.css">
+<style>
+/* The pieces are the platform's own chess glyphs, U+2654 to U+265F, in the
+   text presentation — the black pawn has an emoji form on some phones and
+   U+FE0E after every glyph keeps it a piece. A face of its own for the same
+   reason --emoji is one: none of the three site faces has these. */
+:root {
+  --pieces: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2",
+            "DejaVu Sans", "FreeSerif", sans-serif;
+}
+
+/* The page is the lists page's shape — its ground, its header, its cards —
+   and one thing wider: on a desktop a board wants its moves beside it rather
+   than under it, so the header and the main both open out to 960px there,
+   the way the editor's do to 1180px. A game is a grid of two cards. */
+.chess-grid { display: flex; flex-direction: column; gap: 18px; }
+@media (min-width: 900px) {
+  .chess-body .lists-brand, .chess-body .lists-main { max-width: 960px; }
+  .chess-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(280px, 1fr);
+    align-items: start;
+  }
+}
+
+.chess-head { margin: 4px 0 18px; }
+/* The board's own answer when the route is not there: a card in the place a
+   board would be, the words from the markup so it reads with no answer at all. */
+.chess-offline { margin: 0; padding: 14px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-head .lists-say { margin: 0; }
+
+/* ---------- the board card ---------- */
+
+.chess-board-card { padding: 14px; }
+
+/* Which game, whose move it is, and what that means for whoever is reading.
+   The eyebrow names the two sides; the line under it is mono because it is a
+   fact; the sentence is in the body face. Above the board and not under it:
+   nobody looks under the thing they are about to press. The one filled
+   action on the page lives here too, and only for the owner, only once a
+   game is over. */
+.chess-turn { display: flex; flex-direction: column; gap: 4px; margin: 0 0 12px; }
+.chess-turn .eyebrow { margin: 0 0 4px; }
+.chess-turn-who {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.chess-turn-why { margin: 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-turn .go { align-self: flex-start; margin-top: 8px; }
+
+/* Four squares in a row for a pawn that reached the last rank: the .seg the
+   language switch is, holding four .btns, in place of the sentence. */
+.chess-promote {
+  display: inline-flex;
+  margin-top: 6px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  overflow: hidden;
+}
+.chess-promote .btn { min-width: 44px; height: 44px; font-family: var(--pieces); font-size: 24px; color: var(--ink); background: none; border: 0; cursor: pointer; }
+.chess-promote .btn + .btn { border-left: 1px solid var(--hairline); }
+
+/* The board: eight columns of paper, the dark squares in the hairline colour,
+   so both styles colour it and nothing here names a hex. It is a container
+   so the pieces and the coordinates are sized off its width — the same board
+   is 358px on a phone and 530px on a desktop. */
+.chess-board {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* A square is a <button>, so a keyboard and a screen reader have a board too,
+   and its chrome is reset to nothing. No touch-action anywhere on it: a phone
+   has to be able to scroll the page with a thumb that starts on the board, and
+   a press is all this ever listens for. */
+.sq {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  font: inherit;
+  color: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.sq:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; z-index: 1; }
+.sq[disabled] { cursor: default; opacity: 1; }
+.sq.is-dark { background: var(--hairline); }
+.sq.can { cursor: pointer; }
+.pc { font-family: var(--pieces); font-size: 9.4cqw; line-height: 1; color: var(--ink); }
+/* The selected piece's square wears the accent as a ring; the two squares of
+   the last move wear a quieter one. Both are rings rather than fills so a
+   dark square and a light one say the same thing. */
+.sq.is-sel { box-shadow: inset 0 0 0 3px var(--accent); }
+.sq.is-last { box-shadow: inset 0 0 0 2px var(--muted); }
+/* Where the selected piece may go: a dot, or a ring round a piece it would
+   take. A shape as well as a colour — rule 10. */
+.sq.can::after { content: ''; position: absolute; width: 30%; height: 30%; border-radius: 50%; background: var(--accent); }
+.sq.can.has-pc::after { width: 86%; height: 86%; background: none; box-shadow: inset 0 0 0 3px var(--accent); }
+/* The king in check, and the checkmated king: the accent under the glyph
+   rather than round the square, so it reads as the piece's state. */
+.sq.is-check .pc { color: var(--accent); }
+.co { position: absolute; font-family: var(--mono); font-size: max(9px, 1.6cqw); font-weight: 500; line-height: 1; color: var(--muted); }
+.co-rank { top: 3px; left: 4px; }
+.co-file { bottom: 3px; right: 4px; }
+
+.chess-last { margin: 12px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-last b { font-weight: 500; color: var(--ink); }
+
+/* ---------- the moves card ---------- */
+
+.chess-moves { padding: 14px; }
+.chess-cols, .chess-list li { display: grid; grid-template-columns: 3ch 1fr 1fr; gap: 0 10px; }
+.chess-cols { margin: 10px 0 2px; }
+.chess-list { list-style: none; margin: 0; padding: 0; }
+.chess-list li { align-items: baseline; padding: 7px 0; border-top: 1px solid var(--hairline); }
+.chess-n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.chess-m { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chess-san { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--ink); }
+.chess-who { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chess-empty { margin: 10px 0 0; font-family: var(--body); font-size: 14px; color: var(--muted); }
+.chess-foot { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-signin { margin: 10px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-signin a { color: var(--accent); }
+.chess-moves .alt { margin: 8px 0 0 -12px; }

@@ -84,6 +84,10 @@
  * robots.txt says so where the Disallow lines are. Only the index is listed;
  * the posts are ?post=<id> on it and the index links every one of them.
  *
+ * /chess is the second, for the same reason and until a door on the map's rail
+ * makes it the third kind: one address, no alternates, since the page is one
+ * board for everybody and its words come from the visitor's own language.
+ *
  * NO DATES, NO FREQUENCIES, NO PRIORITIES
  *
  * The file used to carry a <lastmod>, a <changefreq> and a <priority> on
@@ -169,6 +173,7 @@ export function render(langs, placeIds, shelfIds, faces) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
+  entries.push(entry(SITE + '/chess'));
   for (const name of faces) entries.push(entry(SITE + '/u/' + name));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
      one address is found the way any linked page is; this file is still very
@@ -253,7 +258,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /flashcard and ${shelf.length} decks, lessons and songs, ` +
+    `/lists, /blog, /chess, /flashcard and ${shelf.length} decks, lessons and songs, ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }

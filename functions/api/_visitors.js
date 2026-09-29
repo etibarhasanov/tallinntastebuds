@@ -156,6 +156,7 @@ export const PAGES = [
   { id: 'list', label: 'visitorsPageList', prefix: '/list/' },
   { id: 'profile', label: 'visitorsPageProfile', prefix: '/u/' },
   { id: 'blog', label: 'blogTitle', paths: ['/blog', '/blog.html'] },
+  { id: 'chess', label: 'chessEyebrow', paths: ['/chess', '/chess.html'] },
   { id: 'flashcard', label: 'flashDoor', paths: ['/flashcard', '/flashcard.html'], host: 'flashcard.' },
   { id: 'split', label: 'visitorsPageSplit', paths: ['/split', '/split.html'], host: 'splitwise.' },
   { id: 'account', label: 'accountOpen', paths: ['/account', '/account.html'] },
