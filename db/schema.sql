@@ -1,6 +1,6 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Thirteen things live here: the saves and their counts, how often each place
+-- Fourteen things live here: the saves and their counts, how often each place
 -- and each filter has been pressed, how often somebody's profile was opened
 -- and from where, who came to the site and what they did, how they moved
 -- through the diagrams of what they can do, the accounts a save can follow a
@@ -10,7 +10,8 @@
 -- Places with what Google has said about them since, what people would
 -- change about this site and who agreed with them, the groups splitting a
 -- bill on the splitwise subdomain, the decks and answers of the flashcards,
--- and one meta row saying which database this is. Everything the map itself
+-- the games of chess the city and its members play against the house, and
+-- one meta row saying which database this is. Everything the map itself
 -- draws — the places, the write-ups, the discounts, the stories — is a JSON
 -- file in the repository and never a row.
 --
@@ -1557,3 +1558,89 @@ CREATE TABLE IF NOT EXISTS flashcard_reports (
 -- The cap's lookup: how many cards this fingerprint has reported in the last
 -- hour. The primary key starts with the deck, so it cannot answer this one.
 CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_hash, created_at);
+
+-- One row is one game of chess against the house — the owner's account, the
+-- one ADMINS in wrangler.toml names. Two kinds share the table. A public game
+-- is Everybody against Tallinn Tastebuds: one board for whoever opens /chess,
+-- one game playing at a time, the colours swapping every game. A private one
+-- is a member against the house, and it is a row from the moment the member
+-- joins the waiting list: the queue is the private games still waiting, oldest
+-- first, so there is no third table to keep in step with this one. See
+-- **Chess** in README.md and the header of functions/api/chess.js.
+--
+-- The position is kept as FEN, the line every chess program reads, so any
+-- game here can be pasted into one and looked at. It is a cache of the moves
+-- below and never the authority: the route replays a game's moves from the
+-- start through functions/api/_chess.js before it files another, so nothing
+-- about a game is believed that the rules did not produce.
+CREATE TABLE IF NOT EXISTS chess_games (
+  -- Sixteen hex characters, minted with the row. What the page sends back
+  -- with a move, so a move meant for the game that has just ended cannot land
+  -- on the one that replaced it.
+  id           TEXT    PRIMARY KEY,
+  -- 'public' or 'private'.
+  kind         TEXT    NOT NULL,
+  -- 'waiting' (a private game still in the queue), 'playing' or 'over'. A
+  -- public game is never waiting: the house starts it playing.
+  state        TEXT    NOT NULL,
+  -- Game 1, game 2 — counted per kind, one past the last. A public game's
+  -- number is what decides its colours: odd and the house plays black.
+  n            INTEGER NOT NULL,
+  -- The member's users.id on a private game, null on a public one. An id and
+  -- not a username, so a rename carries the game with it; the name is joined
+  -- from users when the game is read.
+  challenger   TEXT,
+  -- 'w' or 'b': which side the house plays. Everything else — who may move,
+  -- who won — is worked out from this and the side to move in the FEN.
+  house_colour TEXT    NOT NULL,
+  fen          TEXT    NOT NULL,
+  -- How many half-moves have been played. The move below is filed at one past
+  -- this, and the game is only moved on WHERE ply is still what it was read
+  -- as — half of the lock two people moving at once run into.
+  ply          INTEGER NOT NULL DEFAULT 0,
+  -- '1-0', '0-1', '1/2-1/2' or 'abandoned' once it is over, and null before.
+  -- 'abandoned' counts for nobody.
+  result       TEXT,
+  -- Why: mate, stalemate, material, fifty, repetition, resign or abandoned.
+  reason       TEXT,
+  -- Milliseconds, all four. created_at is when a private game joined the
+  -- queue, and so its place in it; started_at when it began to be played;
+  -- finished_at when it ended; last_at the last thing that happened to it —
+  -- the start or the latest move — which is what the seven quiet days before
+  -- the house may end a game are counted from.
+  created_at   INTEGER NOT NULL,
+  started_at   INTEGER,
+  finished_at  INTEGER,
+  last_at      INTEGER NOT NULL
+);
+-- The two reads every answer makes: the latest public game, and the queue —
+-- a kind in a state, oldest first.
+CREATE INDEX IF NOT EXISTS idx_chess_games_kind ON chess_games (kind, state, created_at);
+-- A member's own games, latest first: what their card draws, and whether they
+-- are already in line or playing when they ask to join.
+CREATE INDEX IF NOT EXISTS idx_chess_games_challenger ON chess_games (challenger, created_at);
+
+-- One row is one half-move. The primary key is the lock, and the only one:
+-- two people pressing a move on the same board at the same moment both try to
+-- write ply 5 of that game, the second insert is refused by the key, and that
+-- refusal is the 409 the second of them sees. No code in the route decides
+-- who was first.
+CREATE TABLE IF NOT EXISTS chess_moves (
+  -- chess_games.id.
+  game    TEXT    NOT NULL,
+  -- 1 for white's first move, 2 for black's reply, and so on.
+  ply     INTEGER NOT NULL,
+  -- The move as the list shows it, Nf3 or exd6 or O-O-O+, and as the rules
+  -- take it, g1f3 or e7e8q. Both written by functions/api/_chess.js; the UCI
+  -- is what a game is replayed from.
+  san     TEXT    NOT NULL,
+  uci     TEXT    NOT NULL,
+  -- Who played it: 'house', 'user' — a member, by_id their users.id, the name
+  -- joined at read time so a rename carries — or 'device', a visitor on the
+  -- public board, by_id the v4 UUID the browser files its saves under. The
+  -- list prints that last one as "a visitor" and never the id.
+  by_kind TEXT    NOT NULL,
+  by_id   TEXT    NOT NULL,
+  at      INTEGER NOT NULL,
+  PRIMARY KEY (game, ply)
+);
