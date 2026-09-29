@@ -239,11 +239,12 @@ sheet's, the rename step's and the one behind Continue with Google — and on
 copy. Change one, change the other, and the README's table under **The
 caps**.
 
-`MAX_ITEMS` is the one of them with a third reader: `tools/validate.mjs`
-imports it from `lists.js` — the only thing in `tools/` that imports a route —
-and fails on a generated list in `db/type-lists.sql` longer than it. That is
-not a copy and needs no moving, but it does mean a lowered `MAX_ITEMS` fails
-CI rather than going quiet. Casual/Solo is 45 of the 50.
+Four of them have a third reader in `tools/`, which is not a copy and needs no
+moving: `tools/validate.mjs` imports `MAX_ITEMS` from `lists.js` and fails on
+a generated list in `db/type-lists.sql` longer than it, and
+`tools/typelists.mjs` imports `MAX_TITLE`, `MAX_INTRO` and `MAX_SAY` from the
+same file and refuses to write a row that would not fit them. It does mean a
+lowered cap fails CI rather than going quiet. Casual/Solo is 45 of the 50.
 
 **And so does the pin table.** `PIN_GLYPHS` and `PIN_TONES` in
 `functions/api/_pins.js` are the ids a list may store; `GLYPHS` and `TONES` in

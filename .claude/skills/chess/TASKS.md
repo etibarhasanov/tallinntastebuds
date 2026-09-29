@@ -18,12 +18,13 @@ What is below is what is particular to each.
 
 ---
 
-- [ ] **1. The rules of the game, and a check that holds them**
+- [x] **1. The rules of the game, and a check that holds them**
 
 **Lands:** `functions/api/_chess.js`, `tools/chessperf.mjs`, one step in
-`.github/workflows/validate.yml`, the *There is no test suite* bullet in
-`CLAUDE.md`, a paragraph under **What the validator checks** in `README.md`.
-Nothing a visitor can see.
+`.github/workflows/validate.yml`, the three places in `CLAUDE.md` and the one
+in the `/site` skill that list what CI runs, a paragraph under **What the
+validator checks** in `README.md` and the two files under **Files**. Nothing a
+visitor can see.
 
 **Why first:** everything else stands on it, and it is the one piece that can
 be wrong in ways nobody notices for a month. It gets a check of its own before
@@ -48,25 +49,34 @@ it gets a caller.
    - `perft(fen, depth)` → the node count.
 2. Write `tools/chessperf.mjs`: with `--check`, run `perft` on the six
    published positions and fail on any count that differs; without it, print
-   the counts and the time each took. It imports from the route module the way
+   the counts and the time each took. It imports from the module the way
    `tools/validate.mjs` imports `MAX_ITEMS` from `lists.js`, and its header
-   says it is the second thing in `tools/` to do that. The counts:
+   says it is the third thing in `tools/` to reach into `functions/`, after
+   that one and `tools/typelists.mjs` — this brief said second, and was wrong.
+   The counts:
 
    | position | FEN | depth → nodes |
    |---|---|---|
    | start | `rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1` | 1 → 20, 2 → 400, 3 → 8902, 4 → 197281 |
    | Kiwipete | `r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1` | 1 → 48, 2 → 2039, 3 → 97862 |
-   | 3 | `8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1` | 1 → 14, 2 → 191, 3 → 2812, 4 → 43238 |
-   | 4 | `r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1` | 1 → 6, 2 → 264, 3 → 9467 |
+   | 3 | `8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1` | 1 → 14, 2 → 191, 3 → 2812, 4 → 43238, 5 → 674624 |
+   | 4 | `r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1` | 1 → 6, 2 → 264, 3 → 9467, 4 → 422333 |
    | 5 | `rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8` | 1 → 44, 2 → 1486, 3 → 62379 |
    | 6 | `r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10` | 1 → 46, 2 → 2079, 3 → 89890 |
 
    Keep the whole check under about five seconds on the CI runner; drop the
-   deepest row of a position if it is not.
+   deepest row of a position if it is not. It came to half a second, so
+   positions 3 and 4 kept one row deeper than this table first asked for.
+
+   A count cannot see how a move is written or when a game ends, so the check
+   landed with more than counts in it: the cases worked out by hand that the
+   module's header lists, two games from the start, and the refusals — every
+   square to every other from the six positions, and strings and FENs that are
+   not moves or positions. The tool's header says what each is for.
 3. Add the step to `.github/workflows/validate.yml` beside `qrperf --check`,
-   and update the bullet in `CLAUDE.md` that lists what CI runs, and the
-   paragraph in `README.md` under **What the validator checks** that says what
-   is held to what.
+   and update every place in `CLAUDE.md` and the skills that lists what CI
+   runs, and the paragraph in `README.md` under **What the validator checks**
+   that says what is held to what.
 
 **Done when:** `node tools/chessperf.mjs --check` passes and is run by CI;
 `play()` refuses every illegal move the check's positions contain; a hand
@@ -86,7 +96,10 @@ nothing visible changed.
 **Lands:** two tables in `db/schema.sql`, `functions/api/chess.js`, the route's
 row in the `/api` skill's table, the tables under **The tables** in the README
 section this task starts (a stub: the heading, a paragraph, the tables — task 4
-writes the rest), the `ADMINS` lines for preview in `wrangler.toml`. Nothing a
+writes the rest), the `ADMINS` lines for preview in `wrangler.toml`, the
+count of Functions in the opening sentence of `CLAUDE.md`, which the route
+takes from twenty-nine to thirty, and the first paragraph of the header of
+`functions/api/_chess.js`, which says its caller does not exist yet. Nothing a
 visitor can see: the page does not exist yet.
 
 **Do:**
@@ -101,10 +114,16 @@ visitor can see: the page does not exist yet.
      `saves.js` refuses it.
    - a move: load the game, refuse unless `state = 'playing'` and the reader is
      the side to move, replay the game's moves from `START` through `play()` to
-     rebuild the position list, check the move is in `legalMoves()`, apply it,
-     take `over` from `play()` or `repetition()`, then one `batch()`: insert the
-     move row, update the game `WHERE id = ? AND ply = ?`, and read
-     `meta.changes` — the insert's primary key refusing is the 409.
+     rebuild the position list, then `play()` the move itself — it answers null
+     for anything that is not exactly one of `legalMoves()`, and that null is
+     the `400 illegal`. Take `over` from its answer or, failing that, from
+     `repetition()` over the rebuilt list with the new position on the end, as
+     reason `repetition`. Then one `batch()`: insert the move row, update the
+     game `WHERE id = ? AND ply = ?`, and read `meta.changes` — the insert's
+     primary key refusing is the 409. Both functions throw on a FEN they cannot
+     read, and the route only ever hands them `START` and what `play()` gave
+     back, so a throw there is a bug and is left to be a 500. The `check` a GET
+     answers is the last move's, which its SAN already says with `+` or `#`.
    - a public game's `n` is one past the last; `house_colour` is `b` when `n`
      is odd. `new` refuses while a public game is playing.
    - `join`: one waiting-or-playing private game per `challenger`; 50 in line
@@ -133,9 +152,9 @@ visitor can see: the page does not exist yet.
    member and as nobody, and write the sequence into the PR: a game started,
    two moves, a 409 from a repeated ply, a join, a start, a resign.
 
-**Done when:** every row of the actions table answers as written, the perft
-check still passes, the route answers `ready: false` on a database without the
-tables, and the `/api` skill's table has the row.
+**Done when:** every row of the actions table answers as written, `node
+tools/chessperf.mjs --check` still passes, the route answers `ready: false` on
+a database without the tables, and the `/api` skill's table has the row.
 
 **The PR says:** the shape of the answer, what each refusal is, what was driven
 with `curl`, and — in so many words — that production needs the schema applied

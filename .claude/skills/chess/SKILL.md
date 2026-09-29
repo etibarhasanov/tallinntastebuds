@@ -182,8 +182,11 @@ material, the fifty-move rule off the FEN's halfmove clock, and threefold
 repetition off the list of positions the route replays from the start of the
 game. `perft()` beside them, and `node tools/chessperf.mjs --check` holds the
 generator to the published node counts of six positions on every push, the
-way `qrperf --check` holds the QR encoder. The browser runs none of it: the
-page draws the legal moves the answer carries.
+way `qrperf --check` holds the QR encoder — and the rest of the rules, SAN and
+the FEN the tables keep and the ends of a game, to positions worked out by hand
+and checked against python-chess, and `play()` to refusing whatever is not
+legal. The module's header says what was tried. The browser runs none of it:
+the page draws the legal moves the answer carries.
 
 ## How a task is done
 
@@ -202,7 +205,8 @@ page draws the legal moves the answer carries.
    task in the same PR, even when it is small.
 4. Every string in all ten languages before the validator will pass it. The
    generators the task names, then `node tools/validate.mjs`, `node
-   tools/qrperf.mjs --check`, `node .claude/hooks/d1-write-gate.mjs --check`.
+   tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`, `node
+   .claude/hooks/d1-write-gate.mjs --check`.
 5. Drive it under `npx wrangler pages dev .` against the preview database, in
    both styles, at 390px and on a desktop, in the states the task lists. The
    house's side needs a signed-in account the preview `ADMINS` names — task 2
@@ -246,3 +250,10 @@ page draws the legal moves the answer carries.
 - **Cutting a task in half and calling it done.** A task's *Done when* is the
   whole of it. A box ticked over a half-built state is the next session
   building on sand.
+- **A rule changed in `_chess.js` without a case in `tools/chessperf.mjs`.**
+  The perft counts only see which moves are allowed. How a move is written,
+  what the FEN says and when a game ends are held by the cases worked out by
+  hand, so a change to any of them adds its case in the same pull request —
+  with the expected answer checked against another implementation, python-chess
+  in a scratch virtualenv and never in the repository, rather than against the
+  file it is testing.

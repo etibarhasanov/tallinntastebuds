@@ -33,10 +33,11 @@ does not have to:
   built** below is the whole of it. Everything else, which is nearly all the
   work, goes straight to code the way it always has.
 - **There is no test suite.** `node tools/validate.mjs`, `node
-  tools/qrperf.mjs --check` and `node .claude/hooks/d1-write-gate.mjs --check`
-  are the whole of CI. Anything with a visible effect is driven in a browser;
-  the `/site` and `/api` skills say how. Do not go looking for a test runner,
-  and do not write one into a PR that was about something else.
+  tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check` and `node
+  .claude/hooks/d1-write-gate.mjs --check` are the whole of CI. Anything with
+  a visible effect is driven in a browser; the `/site` and `/api` skills say
+  how. Do not go looking for a test runner, and do not write one into a PR
+  that was about something else.
 - **Line numbers in the docs are not to be trusted; names are.** The skills
   and the README name functions and constants — `applyStyle()`,
   `STORY_HOURS`, `DEAL_KEYS`, `KITCHENS` — and `grep -n` finds them. A line
@@ -113,11 +114,11 @@ skill to load. Two roads, then: the prompt loads the skill by its
 description, and failing that, the first file opened does. Either way the
 checklist arrives before the change is made.
 
-The seventh rule is the main one: `.claude/rules/leave-it-better.md` loads by
-itself the moment a session reads or edits anything under `assets/`,
-`functions/`, `tools/`, `db/` or an HTML page. It outranks "keep the diff
-small", and its last section is the process for a session with nothing else
-to do.
+One rule points at no skill, and it is the main one:
+`.claude/rules/leave-it-better.md` loads by itself the moment a session reads
+or edits anything under `assets/`, `functions/`, `tools/`, `db/` or an HTML
+page. It outranks "keep the diff small", and its last section is the process
+for a session with nothing else to do.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
@@ -372,10 +373,12 @@ place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
 `node tools/qrperf.mjs --check` alongside it, which holds `assets/qr.js` to the
-exact matrix it drew when it was last scanned with a real camera, and `node
-.claude/hooks/d1-write-gate.mjs --check`, which runs the gate's own cases so
-that the thing standing between a session and the database cannot be loosened
-without the build saying so.
+exact matrix it drew when it was last scanned with a real camera; `node
+tools/chessperf.mjs --check`, which holds the rules of chess in
+`functions/api/_chess.js` to published move counts and to positions worked out
+by hand; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
+gate's own cases so that the thing standing between a session and the database
+cannot be loosened without the build saying so.
 
 And before the PR, the pass in `.claude/rules/leave-it-better.md`: read
 every file in the diff end to end and clean up what reading it as a whole
@@ -417,8 +420,9 @@ is small — the small ones are the ones that ship broken.
    run and what was driven in a browser, and anything a person has to do by
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
-5. **CI** runs `node tools/validate.mjs`, `node tools/qrperf.mjs --check` and
-   `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
+5. **CI** runs `node tools/validate.mjs`, `node tools/qrperf.mjs --check`,
+   `node tools/chessperf.mjs --check` and `node
+   .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
    Red CI is yours to fix before anything else happens. **There is no preview
    URL** — pushing the branch deploys nothing, and the PR's checks carry no
    Cloudflare link. Anything with a visible effect gets driven under `npx
