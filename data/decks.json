@@ -28999,6 +28999,408 @@
         }
       ],
       "level": "song"
+    },
+    {
+      "id": "randaja-words",
+      "name": {
+        "en": "The words of Rändaja õhtulaul",
+        "az": "Rändaja õhtulaul mahnısının sözləri",
+        "ru": "Слова из песни Rändaja õhtulaul"
+      },
+      "why": {
+        "en": "The words from the song the other decks do not have yet, each with its line",
+        "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+        "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+      },
+      "level": "song",
+      "cards": [
+        {
+          "id": "lopmata",
+          "front": "Lõpmata",
+          "back": {
+            "en": "Endless, without end",
+            "az": "Sonsuz",
+            "ru": "Бесконечный"
+          },
+          "sentence": {
+            "et": "Ma kõnnin hallil lõpmata teel,",
+            "en": "I walk on the grey, endless road,",
+            "az": "Mən boz, sonsuz yolda gəzirəm,",
+            "ru": "Я иду по серой бесконечной дороге,"
+          }
+        },
+        {
+          "id": "kesk",
+          "front": "Kesk",
+          "back": {
+            "en": "Among, in the middle of",
+            "az": "Arasında, ortasında",
+            "ru": "Среди, посреди"
+          },
+          "sentence": {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          }
+        },
+        {
+          "id": "nurm",
+          "front": "Nurm",
+          "back": {
+            "en": "Field, meadow",
+            "az": "Tarla, çəmən",
+            "ru": "Поле, нива"
+          },
+          "forms": [
+            "nurme",
+            "nurme"
+          ],
+          "sentence": {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          }
+        },
+        {
+          "id": "tais",
+          "front": "Täis",
+          "back": {
+            "en": "Full",
+            "az": "Dolu",
+            "ru": "Полный"
+          },
+          "sentence": {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          }
+        },
+        {
+          "id": "valmima",
+          "front": "Valmima",
+          "back": {
+            "en": "To ripen",
+            "az": "Yetişmək",
+            "ru": "Созревать"
+          },
+          "forms": [
+            "valmida",
+            "valmin"
+          ],
+          "sentence": {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          }
+        },
+        {
+          "id": "vili",
+          "front": "Vili",
+          "back": {
+            "en": "Grain, crop, fruit",
+            "az": "Taxıl, məhsul, meyvə",
+            "ru": "Хлеб, зерно, плод"
+          },
+          "forms": [
+            "vilja",
+            "vilja"
+          ],
+          "sentence": {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          }
+        },
+        {
+          "id": "otsata",
+          "front": "Otsata",
+          "back": {
+            "en": "Without end",
+            "az": "Sonu olmayan",
+            "ru": "Без конца"
+          },
+          "sentence": {
+            "et": "Ma kõnnin ja kõnnin otsata teed",
+            "en": "I walk and walk the road without end —",
+            "az": "Gəzirəm, gəzirəm sonu olmayan yolu —",
+            "ru": "Я иду и иду бесконечной дорогой —"
+          }
+        },
+        {
+          "id": "meel",
+          "front": "Meel",
+          "back": {
+            "en": "Mind, heart, mood",
+            "az": "Könül, ağıl, əhval",
+            "ru": "Душа, разум, настроение"
+          },
+          "forms": [
+            "meele",
+            "meelt"
+          ],
+          "sentence": {
+            "et": "ju lapsena teesid armastas meel.",
+            "en": "even as a child, my heart loved roads.",
+            "az": "hələ uşaqkən könlüm yolları sevirdi.",
+            "ru": "ещё ребёнком душа любила дороги."
+          }
+        },
+        {
+          "id": "hilja",
+          "front": "Hilja",
+          "back": {
+            "en": "Late",
+            "az": "Gec",
+            "ru": "Поздно"
+          },
+          "sentence": {
+            "et": "Teed laulavad õhtul hilja,",
+            "en": "The roads sing late in the evening,",
+            "az": "Yollar axşam gec saatlarda oxuyur,",
+            "ru": "Дороги поют поздно вечером,"
+          }
+        },
+        {
+          "id": "kee",
+          "front": "Kee",
+          "back": {
+            "en": "Chain, necklace",
+            "az": "Zəncir, boyunbağı",
+            "ru": "Цепь, ожерелье"
+          },
+          "forms": [
+            "kee",
+            "keed"
+          ],
+          "sentence": {
+            "et": "need teed, kuis on nad nii kõvad kui keed.",
+            "en": "these roads — how hard they are, as hard as chains.",
+            "az": "bu yollar — necə də bərkdir, zəncir kimi bərk.",
+            "ru": "эти дороги — как они тверды, тверды, как цепи."
+          }
+        },
+        {
+          "id": "joon",
+          "front": "Joon",
+          "back": {
+            "en": "Line",
+            "az": "Xətt",
+            "ru": "Линия"
+          },
+          "forms": [
+            "joone",
+            "joont"
+          ],
+          "sentence": {
+            "et": "Need otsata kutsuvad jooned,",
+            "en": "These endless, beckoning lines —",
+            "az": "Bu sonsuz, çağıran xətlər —",
+            "ru": "Эти бесконечные зовущие линии —"
+          }
+        },
+        {
+          "id": "tolmune",
+          "front": "Tolmune",
+          "back": {
+            "en": "Dusty",
+            "az": "Tozlu",
+            "ru": "Пыльный"
+          },
+          "forms": [
+            "tolmuse",
+            "tolmust"
+          ],
+          "sentence": {
+            "et": "Nii pikad ja tolmused kõik need teed,",
+            "en": "So long and dusty, all these roads,",
+            "az": "Nə qədər uzun və tozludur bütün bu yollar,",
+            "ru": "Такие длинные и пыльные все эти дороги,"
+          }
+        },
+        {
+          "id": "randaja",
+          "front": "Rändaja",
+          "back": {
+            "en": "Wanderer",
+            "az": "Sərgərdan, səyyah",
+            "ru": "Странник"
+          },
+          "forms": [
+            "rändaja",
+            "rändajat"
+          ],
+          "sentence": {
+            "et": "need rändaja eluhooned.",
+            "en": "these, the wanderer's homes.",
+            "az": "bunlar — sərgərdanın evləri.",
+            "ru": "они — дома странника."
+          }
+        },
+        {
+          "id": "jutt",
+          "front": "Jutt",
+          "back": {
+            "en": "Talk, story",
+            "az": "Söhbət, hekayə",
+            "ru": "Разговор, рассказ"
+          },
+          "forms": [
+            "jutu",
+            "juttu"
+          ],
+          "sentence": {
+            "et": "ju lapsena kuulda te juttu,",
+            "en": "even as a child, to hear you talk,",
+            "az": "hələ uşaqkən sizin söhbətinizi dinləməyi,",
+            "ru": "ещё ребёнком — слушать ваши речи,"
+          }
+        },
+        {
+          "id": "rutt",
+          "front": "Rutt",
+          "back": {
+            "en": "Hurry",
+            "az": "Tələsik",
+            "ru": "Спешка"
+          },
+          "forms": [
+            "rutu",
+            "ruttu"
+          ],
+          "sentence": {
+            "et": "kui polekski ilmas ruttu.",
+            "en": "as if there were no hurry in the world.",
+            "az": "sanki dünyada heç tələsmək lazım deyil.",
+            "ru": "будто и спешить на свете некуда."
+          }
+        },
+        {
+          "id": "hiline",
+          "front": "Hiline",
+          "back": {
+            "en": "Late",
+            "az": "Gec",
+            "ru": "Поздний"
+          },
+          "forms": [
+            "hilise",
+            "hilist"
+          ],
+          "sentence": {
+            "et": "Tund hiline nüüd laulab lõpmata,",
+            "en": "The late hour now sings without end,",
+            "az": "Gec saat indi sonsuz oxuyur,",
+            "ru": "Поздний час теперь поёт без конца,"
+          }
+        },
+        {
+          "id": "igatsema",
+          "front": "Igatsema",
+          "back": {
+            "en": "To long for, to miss",
+            "az": "Həsrət çəkmək, darıxmaq",
+            "ru": "Тосковать, скучать"
+          },
+          "forms": [
+            "igatseda",
+            "igatsen"
+          ],
+          "sentence": {
+            "et": "meel igatseb tolmuta randa.",
+            "en": "the heart longs for a shore with no dust.",
+            "az": "könül tozsuz bir sahil arzulayır.",
+            "ru": "душа тоскует по берегу без пыли."
+          }
+        },
+        {
+          "id": "tolmuta",
+          "front": "Tolmuta",
+          "back": {
+            "en": "Without dust",
+            "az": "Tozsuz",
+            "ru": "Без пыли"
+          },
+          "sentence": {
+            "et": "meel igatseb tolmuta randa.",
+            "en": "the heart longs for a shore with no dust.",
+            "az": "könül tozsuz bir sahil arzulayır.",
+            "ru": "душа тоскует по берегу без пыли."
+          }
+        },
+        {
+          "id": "morsja",
+          "front": "Mõrsja",
+          "back": {
+            "en": "Bride",
+            "az": "Gəlin",
+            "ru": "Невеста"
+          },
+          "forms": [
+            "mõrsja",
+            "mõrsjat"
+          ],
+          "sentence": {
+            "et": "mind hoiab kui mõrsjaks enesele,",
+            "en": "it holds me as though I were its bride,",
+            "az": "məni özünə gəlin kimi saxlayır,",
+            "ru": "держит меня, словно невесту для себя,"
+          }
+        },
+        {
+          "id": "siiski",
+          "front": "Siiski",
+          "back": {
+            "en": "Still, all the same",
+            "az": "Yenə də",
+            "ru": "Всё же"
+          },
+          "sentence": {
+            "et": "ei siiski saa pärale kanda.",
+            "en": "and still it cannot carry me all the way.",
+            "az": "amma yenə də məni mənzilə çatdıra bilmir.",
+            "ru": "и всё же не может донести до цели."
+          }
+        },
+        {
+          "id": "parale",
+          "front": "Pärale",
+          "back": {
+            "en": "To the destination, all the way",
+            "az": "Mənzilə, sona qədər",
+            "ru": "До места, до цели"
+          },
+          "sentence": {
+            "et": "ei siiski saa pärale kanda.",
+            "en": "and still it cannot carry me all the way.",
+            "az": "amma yenə də məni mənzilə çatdıra bilmir.",
+            "ru": "и всё же не может донести до цели."
+          }
+        },
+        {
+          "id": "helisema",
+          "front": "Helisema",
+          "back": {
+            "en": "To ring, to resound",
+            "az": "Səslənmək, cingildəmək",
+            "ru": "Звенеть, звучать"
+          },
+          "forms": [
+            "heliseda",
+            "helisen"
+          ],
+          "sentence": {
+            "et": "kui teede laul tee helisev meel.",
+            "en": "like the roads' song, the road's ringing heart.",
+            "az": "yolların mahnısı kimi — yolun səslənən könlü.",
+            "ru": "как песня дорог — звенящая душа дороги."
+          }
+        }
+      ]
     }
   ],
   "lessons": [
@@ -29384,6 +29786,10 @@
         "ru": "Эстонская песня, строка за строкой, со всеми её словами"
       },
       "video": "91YqQb61dZc",
+      "credit": {
+        "words": "Viivi Luik",
+        "music": "Rein Rannap"
+      },
       "deck": "naera-words",
       "verses": [
         [
@@ -30007,6 +30413,10 @@
         "ru": "Велли Йоонас: верблюд в пустыне и лимузин на дороге — строка за строкой"
       },
       "video": "FEb68L-3UWY",
+      "credit": {
+        "words": "Velly Joonas",
+        "music": "Jim Rafferty"
+      },
       "deck": "stopp-words",
       "verses": [
         [
@@ -31071,6 +31481,880 @@
             "ru": "время"
           },
           "deck": "paper"
+        }
+      }
+    },
+    {
+      "id": "randaja-ohtulaul",
+      "name": {
+        "en": "Rändaja õhtulaul — the wanderer's evening song",
+        "az": "Rändaja õhtulaul — sərgərdanın axşam mahnısı",
+        "ru": "Rändaja õhtulaul — вечерняя песня странника"
+      },
+      "why": {
+        "en": "Ernst Enno's wanderer on the grey, endless road, line by line",
+        "az": "Ernst Ennonun boz, sonsuz yoldakı sərgərdanı, misra-misra",
+        "ru": "Странник Эрнста Энно на серой бесконечной дороге, строка за строкой"
+      },
+      "video": "uORJCOIZ-yg",
+      "credit": {
+        "words": "Ernst Enno, 1910"
+      },
+      "deck": "randaja-words",
+      "verses": [
+        [
+          {
+            "et": "Ma kõnnin hallil lõpmata teel,",
+            "en": "I walk on the grey, endless road,",
+            "az": "Mən boz, sonsuz yolda gəzirəm,",
+            "ru": "Я иду по серой бесконечной дороге,"
+          },
+          {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          },
+          {
+            "et": "Ma kõnnin ja kõnnin otsata teed",
+            "en": "I walk and walk the road without end —",
+            "az": "Gəzirəm, gəzirəm sonu olmayan yolu —",
+            "ru": "Я иду и иду бесконечной дорогой —"
+          },
+          {
+            "et": "ju lapsena teesid armastas meel.",
+            "en": "even as a child, my heart loved roads.",
+            "az": "hələ uşaqkən könlüm yolları sevirdi.",
+            "ru": "ещё ребёнком душа любила дороги."
+          }
+        ],
+        [
+          {
+            "et": "Teed laulavad õhtul hilja,",
+            "en": "The roads sing late in the evening,",
+            "az": "Yollar axşam gec saatlarda oxuyur,",
+            "ru": "Дороги поют поздно вечером,"
+          },
+          {
+            "et": "need teed, kuis on nad nii kõvad kui keed.",
+            "en": "these roads — how hard they are, as hard as chains.",
+            "az": "bu yollar — necə də bərkdir, zəncir kimi bərk.",
+            "ru": "эти дороги — как они тверды, тверды, как цепи."
+          },
+          {
+            "et": "Need otsata kutsuvad jooned,",
+            "en": "These endless, beckoning lines —",
+            "az": "Bu sonsuz, çağıran xətlər —",
+            "ru": "Эти бесконечные зовущие линии —"
+          },
+          {
+            "et": "ma kõnnin ja kõnnin teed kõvad kui keed.",
+            "en": "I walk and walk roads as hard as chains.",
+            "az": "gəzirəm, gəzirəm zəncir kimi bərk yolları.",
+            "ru": "я иду и иду дорогами, твёрдыми, как цепи."
+          },
+          {
+            "et": "Nii pikad ja tolmused kõik need teed,",
+            "en": "So long and dusty, all these roads,",
+            "az": "Nə qədər uzun və tozludur bütün bu yollar,",
+            "ru": "Такие длинные и пыльные все эти дороги,"
+          },
+          {
+            "et": "need rändaja eluhooned.",
+            "en": "these, the wanderer's homes.",
+            "az": "bunlar — sərgərdanın evləri.",
+            "ru": "они — дома странника."
+          }
+        ],
+        [
+          {
+            "et": "Ju lapsena teesid armastas meel,",
+            "en": "Even as a child, my heart loved roads,",
+            "az": "Hələ uşaqkən könlüm yolları sevirdi,",
+            "ru": "Ещё ребёнком душа любила дороги,"
+          },
+          {
+            "et": "ju lapsena kuulda te juttu,",
+            "en": "even as a child, to hear you talk,",
+            "az": "hələ uşaqkən sizin söhbətinizi dinləməyi,",
+            "ru": "ещё ребёнком — слушать ваши речи,"
+          },
+          {
+            "et": "ju lapsena kõndida armastas meel,",
+            "en": "even as a child, my heart loved to walk,",
+            "az": "hələ uşaqkən könlüm gəzməyi sevirdi,",
+            "ru": "ещё ребёнком душа любила бродить,"
+          },
+          {
+            "et": "oma laulu nii laulda hallil teel,",
+            "en": "to sing its own song like this on the grey road,",
+            "az": "öz mahnısını belə boz yolda oxumağı,",
+            "ru": "петь свою песню вот так, на серой дороге,"
+          },
+          {
+            "et": "kui polekski ilmas ruttu.",
+            "en": "as if there were no hurry in the world.",
+            "az": "sanki dünyada heç tələsmək lazım deyil.",
+            "ru": "будто и спешить на свете некуда."
+          }
+        ],
+        [
+          {
+            "et": "Tund hiline nüüd laulab lõpmata,",
+            "en": "The late hour now sings without end,",
+            "az": "Gec saat indi sonsuz oxuyur,",
+            "ru": "Поздний час теперь поёт без конца,"
+          },
+          {
+            "et": "meel igatseb tolmuta randa.",
+            "en": "the heart longs for a shore with no dust.",
+            "az": "könül tozsuz bir sahil arzulayır.",
+            "ru": "душа тоскует по берегу без пыли."
+          },
+          {
+            "et": "Tund hiline, tee on kõva kui kee,",
+            "en": "The hour is late, the road is as hard as a chain,",
+            "az": "Saat gecdir, yol zəncir kimi bərkdir,",
+            "ru": "Час поздний, дорога тверда, как цепь,"
+          },
+          {
+            "et": "mind hoiab kui mõrsjaks enesele,",
+            "en": "it holds me as though I were its bride,",
+            "az": "məni özünə gəlin kimi saxlayır,",
+            "ru": "держит меня, словно невесту для себя,"
+          },
+          {
+            "et": "ei siiski saa pärale kanda.",
+            "en": "and still it cannot carry me all the way.",
+            "az": "amma yenə də məni mənzilə çatdıra bilmir.",
+            "ru": "и всё же не может донести до цели."
+          }
+        ],
+        [
+          {
+            "et": "Ma kõnnin hallil lõpmata teel,",
+            "en": "I walk on the grey, endless road,",
+            "az": "Mən boz, sonsuz yolda gəzirəm,",
+            "ru": "Я иду по серой бесконечной дороге,"
+          },
+          {
+            "et": "kesk nurmi täis valmivat vilja.",
+            "en": "among fields full of ripening grain.",
+            "az": "yetişən taxılla dolu tarlaların arasında.",
+            "ru": "среди полей, полных зреющего хлеба."
+          },
+          {
+            "et": "Ma kõnnin ja kõnnin otsata teed,",
+            "en": "I walk and walk the road without end,",
+            "az": "Gəzirəm, gəzirəm sonu olmayan yolu,",
+            "ru": "Я иду и иду бесконечной дорогой,"
+          },
+          {
+            "et": "kui teede laul tee helisev meel.",
+            "en": "like the roads' song, the road's ringing heart.",
+            "az": "yolların mahnısı kimi — yolun səslənən könlü.",
+            "ru": "как песня дорог — звенящая душа дороги."
+          }
+        ],
+        [
+          {
+            "et": "Ja kõik on nii õhtul hilja,",
+            "en": "And all of it is so, late in the evening,",
+            "az": "Və hər şey belədir, axşam gec saatda,",
+            "ru": "И всё так поздно вечером,"
+          },
+          {
+            "et": "ja kõik on nii õhtul hilja.",
+            "en": "and all of it is so, late in the evening.",
+            "az": "və hər şey belədir, axşam gec saatda.",
+            "ru": "и всё так поздно вечером."
+          }
+        ],
+        [
+          {
+            "et": "Ma kõnnin hallil lõpmata teel…",
+            "en": "I walk on the grey, endless road…",
+            "az": "Mən boz, sonsuz yolda gəzirəm…",
+            "ru": "Я иду по серой бесконечной дороге…"
+          }
+        ]
+      ],
+      "words": {
+        "ma": {
+          "base": "mina",
+          "means": {
+            "en": "I",
+            "az": "mən",
+            "ru": "я"
+          },
+          "note": {
+            "en": "Ma is the short mina.",
+            "az": "Ma — mina sözünün qısasıdır.",
+            "ru": "Ma — краткое mina."
+          }
+        },
+        "kõnnin": {
+          "base": "kõndima",
+          "means": {
+            "en": "I walk",
+            "az": "gəzirəm",
+            "ru": "иду, хожу"
+          },
+          "deck": "moreverbs"
+        },
+        "hallil": {
+          "base": "hall",
+          "means": {
+            "en": "on the grey",
+            "az": "boz (yolda)",
+            "ru": "по серой"
+          },
+          "deck": "describing"
+        },
+        "lõpmata": {
+          "base": "lõpmata",
+          "means": {
+            "en": "endless, without end",
+            "az": "sonsuz",
+            "ru": "бесконечный, без конца"
+          },
+          "deck": "randaja-words"
+        },
+        "teel": {
+          "base": "tee",
+          "means": {
+            "en": "on the road",
+            "az": "yolda",
+            "ru": "по дороге, в пути"
+          },
+          "deck": "around"
+        },
+        "kesk": {
+          "base": "kesk",
+          "means": {
+            "en": "among, in the middle of",
+            "az": "arasında, ortasında",
+            "ru": "среди, посреди"
+          },
+          "deck": "randaja-words"
+        },
+        "nurmi": {
+          "base": "nurm",
+          "means": {
+            "en": "fields, meadows",
+            "az": "tarlalar, çəmənlər",
+            "ru": "поля, нивы"
+          },
+          "deck": "randaja-words"
+        },
+        "täis": {
+          "base": "täis",
+          "means": {
+            "en": "full of",
+            "az": "dolu",
+            "ru": "полный"
+          },
+          "deck": "randaja-words"
+        },
+        "valmivat": {
+          "base": "valmima",
+          "means": {
+            "en": "ripening",
+            "az": "yetişən",
+            "ru": "зреющего"
+          },
+          "deck": "randaja-words"
+        },
+        "vilja": {
+          "base": "vili",
+          "means": {
+            "en": "grain, crop",
+            "az": "taxıl, məhsul",
+            "ru": "хлеба, зерна"
+          },
+          "deck": "randaja-words"
+        },
+        "ja": {
+          "base": "ja",
+          "means": {
+            "en": "and",
+            "az": "və",
+            "ru": "и"
+          },
+          "deck": "everyday"
+        },
+        "otsata": {
+          "base": "otsata",
+          "means": {
+            "en": "without end",
+            "az": "sonu olmayan",
+            "ru": "без конца"
+          },
+          "deck": "randaja-words",
+          "note": {
+            "en": "Ots is an end, and -ta is \"without\": otsata, tolmuta.",
+            "az": "Ots — son, -ta isə \"-sız\" deməkdir: otsata, tolmuta.",
+            "ru": "Ots — конец, а -ta значит «без»: otsata, tolmuta."
+          }
+        },
+        "teed": {
+          "base": "tee",
+          "means": {
+            "en": "the road; roads",
+            "az": "yolu; yollar",
+            "ru": "дорогу; дороги"
+          },
+          "deck": "around"
+        },
+        "ju": {
+          "base": "ju",
+          "means": {
+            "en": "already, even",
+            "az": "hələ, artıq",
+            "ru": "уже, ещё"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Ju here is the old juba, already — \"even as a child\". On a card it is the little word that softens a sentence.",
+            "az": "Burada ju köhnə juba, \"artıq, hələ\" deməkdir. Kartda isə cümləni yumşaldan kiçik sözdür.",
+            "ru": "Ju здесь — старое juba, «уже»: «ещё ребёнком». На карточке это смягчающее словечко."
+          }
+        },
+        "lapsena": {
+          "base": "laps",
+          "means": {
+            "en": "as a child",
+            "az": "uşaq ikən",
+            "ru": "ребёнком"
+          },
+          "deck": "talk",
+          "note": {
+            "en": "-na is \"as\": lapsena, as a child.",
+            "az": "-na \"kimi, ikən\" deməkdir: lapsena — uşaq ikən.",
+            "ru": "-na значит «в качестве»: lapsena — ребёнком."
+          }
+        },
+        "teesid": {
+          "base": "tee",
+          "means": {
+            "en": "roads",
+            "az": "yolları",
+            "ru": "дороги"
+          },
+          "deck": "around"
+        },
+        "armastas": {
+          "base": "armastama",
+          "means": {
+            "en": "loved",
+            "az": "sevirdi",
+            "ru": "любила"
+          },
+          "deck": "verbs"
+        },
+        "meel": {
+          "base": "meel",
+          "means": {
+            "en": "the mind, the heart",
+            "az": "könül, ağıl",
+            "ru": "душа, разум"
+          },
+          "deck": "randaja-words"
+        },
+        "laulavad": {
+          "base": "laulma",
+          "means": {
+            "en": "they sing",
+            "az": "oxuyurlar",
+            "ru": "поют"
+          },
+          "deck": "moreverbs"
+        },
+        "õhtul": {
+          "base": "õhtu",
+          "means": {
+            "en": "in the evening",
+            "az": "axşam",
+            "ru": "вечером"
+          },
+          "deck": "time"
+        },
+        "hilja": {
+          "base": "hilja",
+          "means": {
+            "en": "late",
+            "az": "gec",
+            "ru": "поздно"
+          },
+          "deck": "randaja-words"
+        },
+        "need": {
+          "base": "see",
+          "means": {
+            "en": "these",
+            "az": "bunlar",
+            "ru": "эти"
+          },
+          "deck": "pronouns"
+        },
+        "kuis": {
+          "base": "kuis",
+          "means": {
+            "en": "how",
+            "az": "necə",
+            "ru": "как"
+          },
+          "note": {
+            "en": "The old, sung kuidas.",
+            "az": "Kuidas sözünün köhnə, mahnı forması.",
+            "ru": "Старое, песенное kuidas."
+          }
+        },
+        "on": {
+          "base": "olema",
+          "means": {
+            "en": "are, is",
+            "az": "dır, var",
+            "ru": "есть"
+          },
+          "deck": "verbs"
+        },
+        "nad": {
+          "base": "nemad",
+          "means": {
+            "en": "they",
+            "az": "onlar",
+            "ru": "они"
+          },
+          "note": {
+            "en": "Nad is the short nemad.",
+            "az": "Nad — nemad sözünün qısasıdır.",
+            "ru": "Nad — краткое nemad."
+          }
+        },
+        "nii": {
+          "base": "nii",
+          "means": {
+            "en": "so",
+            "az": "belə, elə",
+            "ru": "так"
+          },
+          "deck": "everyday"
+        },
+        "kõvad": {
+          "base": "kõva",
+          "means": {
+            "en": "hard",
+            "az": "bərk",
+            "ru": "твёрдые"
+          },
+          "deck": "character"
+        },
+        "kui": {
+          "base": "kui",
+          "means": {
+            "en": "as, like",
+            "az": "kimi",
+            "ru": "как"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Kui is if and when on a card, and \"as\" in a comparison: kõva kui kee, as hard as a chain.",
+            "az": "Kui kartda \"əgər, nə vaxt\"dır, müqayisədə isə \"kimi\": kõva kui kee — zəncir kimi bərk.",
+            "ru": "Kui на карточке — «если, когда», а в сравнении — «как»: kõva kui kee — твёрдый, как цепь."
+          }
+        },
+        "keed": {
+          "base": "kee",
+          "means": {
+            "en": "chains",
+            "az": "zəncirlər",
+            "ru": "цепи"
+          },
+          "deck": "randaja-words"
+        },
+        "kutsuvad": {
+          "base": "kutsuma",
+          "means": {
+            "en": "beckoning, calling",
+            "az": "çağıran",
+            "ru": "зовущие"
+          },
+          "deck": "everyday"
+        },
+        "jooned": {
+          "base": "joon",
+          "means": {
+            "en": "lines",
+            "az": "xətlər",
+            "ru": "линии"
+          },
+          "deck": "randaja-words"
+        },
+        "pikad": {
+          "base": "pikk",
+          "means": {
+            "en": "long",
+            "az": "uzun",
+            "ru": "длинные"
+          },
+          "deck": "describing"
+        },
+        "tolmused": {
+          "base": "tolmune",
+          "means": {
+            "en": "dusty",
+            "az": "tozlu",
+            "ru": "пыльные"
+          },
+          "deck": "randaja-words"
+        },
+        "kõik": {
+          "base": "kõik",
+          "means": {
+            "en": "all",
+            "az": "bütün",
+            "ru": "все"
+          },
+          "deck": "everyday"
+        },
+        "rändaja": {
+          "base": "rändaja",
+          "means": {
+            "en": "the wanderer's",
+            "az": "sərgərdanın",
+            "ru": "странника"
+          },
+          "deck": "randaja-words"
+        },
+        "eluhooned": {
+          "base": "eluhoone",
+          "means": {
+            "en": "homes, dwelling houses",
+            "az": "evlər, yaşayış binaları",
+            "ru": "жилые дома"
+          },
+          "note": {
+            "en": "Elu, life, and hoone, a building: the house a farm lives in.",
+            "az": "Elu — həyat, hoone — bina: təsərrüfatın yaşadığı ev.",
+            "ru": "Elu — жизнь, hoone — здание: дом, где живут на хуторе."
+          }
+        },
+        "kuulda": {
+          "base": "kuulma",
+          "means": {
+            "en": "to hear",
+            "az": "eşitmək",
+            "ru": "слышать"
+          },
+          "deck": "verbs"
+        },
+        "te": {
+          "base": "teie",
+          "means": {
+            "en": "you — to more than one",
+            "az": "siz",
+            "ru": "вы"
+          },
+          "note": {
+            "en": "Te is the short teie. The song is talking to the roads.",
+            "az": "Te — teie sözünün qısasıdır. Mahnı yollarla danışır.",
+            "ru": "Te — краткое teie. Песня обращается к дорогам."
+          }
+        },
+        "juttu": {
+          "base": "jutt",
+          "means": {
+            "en": "talk",
+            "az": "söhbət",
+            "ru": "речи, разговор"
+          },
+          "deck": "randaja-words"
+        },
+        "kõndida": {
+          "base": "kõndima",
+          "means": {
+            "en": "to walk",
+            "az": "gəzmək",
+            "ru": "ходить, бродить"
+          },
+          "deck": "moreverbs"
+        },
+        "oma": {
+          "base": "oma",
+          "means": {
+            "en": "its own",
+            "az": "öz",
+            "ru": "свою"
+          },
+          "deck": "pronouns"
+        },
+        "laulu": {
+          "base": "laul",
+          "means": {
+            "en": "song",
+            "az": "mahnı",
+            "ru": "песню"
+          },
+          "deck": "plans"
+        },
+        "laulda": {
+          "base": "laulma",
+          "means": {
+            "en": "to sing",
+            "az": "oxumaq",
+            "ru": "петь"
+          },
+          "deck": "moreverbs"
+        },
+        "polekski": {
+          "base": "olema",
+          "means": {
+            "en": "as if there were not even",
+            "az": "sanki heç olmasa",
+            "ru": "будто и нет"
+          },
+          "deck": "verbs",
+          "note": {
+            "en": "Poleks is ei oleks, would not be, and -ki is \"even\".",
+            "az": "Poleks — ei oleks, \"olmazdı\"; -ki isə \"hətta\" deməkdir.",
+            "ru": "Poleks — ei oleks, «не было бы», а -ki значит «даже»."
+          }
+        },
+        "ilmas": {
+          "base": "ilm",
+          "means": {
+            "en": "in the world",
+            "az": "dünyada",
+            "ru": "на свете"
+          },
+          "deck": "weather",
+          "note": {
+            "en": "Ilm is weather on a card and the world here, as it is in Naera, naera.",
+            "az": "Ilm kartda havadır, burada isə dünya — Naera, naera mahnısındakı kimi.",
+            "ru": "На карточке ilm — погода, а здесь — мир, как в Naera, naera."
+          }
+        },
+        "ruttu": {
+          "base": "rutt",
+          "means": {
+            "en": "hurry",
+            "az": "tələsik",
+            "ru": "спешки"
+          },
+          "deck": "randaja-words"
+        },
+        "tund": {
+          "base": "tund",
+          "means": {
+            "en": "hour",
+            "az": "saat",
+            "ru": "час"
+          },
+          "deck": "time"
+        },
+        "hiline": {
+          "base": "hiline",
+          "means": {
+            "en": "late",
+            "az": "gec",
+            "ru": "поздний"
+          },
+          "deck": "randaja-words",
+          "note": {
+            "en": "Hilja is late as a thing is done; hiline is late as a thing is.",
+            "az": "Hilja — işin gec görülməsi, hiline — şeyin özünün gec olmasıdır.",
+            "ru": "Hilja — поздно (как), hiline — поздний (какой)."
+          }
+        },
+        "nüüd": {
+          "base": "nüüd",
+          "means": {
+            "en": "now",
+            "az": "indi",
+            "ru": "теперь"
+          },
+          "deck": "time"
+        },
+        "laulab": {
+          "base": "laulma",
+          "means": {
+            "en": "sings",
+            "az": "oxuyur",
+            "ru": "поёт"
+          },
+          "deck": "moreverbs"
+        },
+        "igatseb": {
+          "base": "igatsema",
+          "means": {
+            "en": "longs for",
+            "az": "arzulayır, həsrət çəkir",
+            "ru": "тоскует"
+          },
+          "deck": "randaja-words"
+        },
+        "tolmuta": {
+          "base": "tolmuta",
+          "means": {
+            "en": "with no dust",
+            "az": "tozsuz",
+            "ru": "без пыли"
+          },
+          "deck": "randaja-words"
+        },
+        "randa": {
+          "base": "rand",
+          "means": {
+            "en": "shore",
+            "az": "sahil",
+            "ru": "берег"
+          },
+          "deck": "country"
+        },
+        "tee": {
+          "base": "tee",
+          "means": {
+            "en": "road",
+            "az": "yol",
+            "ru": "дорога"
+          },
+          "deck": "around"
+        },
+        "kõva": {
+          "base": "kõva",
+          "means": {
+            "en": "hard",
+            "az": "bərk",
+            "ru": "твёрдая"
+          },
+          "deck": "character"
+        },
+        "kee": {
+          "base": "kee",
+          "means": {
+            "en": "a chain",
+            "az": "zəncir",
+            "ru": "цепь"
+          },
+          "deck": "randaja-words"
+        },
+        "mind": {
+          "base": "mina",
+          "means": {
+            "en": "me",
+            "az": "məni",
+            "ru": "меня"
+          }
+        },
+        "hoiab": {
+          "base": "hoidma",
+          "means": {
+            "en": "holds",
+            "az": "saxlayır",
+            "ru": "держит"
+          },
+          "deck": "moreverbs"
+        },
+        "mõrsjaks": {
+          "base": "mõrsja",
+          "means": {
+            "en": "as a bride",
+            "az": "gəlin kimi",
+            "ru": "невестой"
+          },
+          "deck": "randaja-words",
+          "note": {
+            "en": "-ks is \"into, as\": mõrsjaks, to be its bride.",
+            "az": "-ks \"kimi, olaraq\" deməkdir: mõrsjaks — gəlin olaraq.",
+            "ru": "-ks значит «в качестве»: mõrsjaks — невестой."
+          }
+        },
+        "enesele": {
+          "base": "ise",
+          "means": {
+            "en": "for itself",
+            "az": "özünə",
+            "ru": "для себя"
+          },
+          "deck": "pronouns"
+        },
+        "ei": {
+          "base": "ei",
+          "means": {
+            "en": "not",
+            "az": "yox, deyil",
+            "ru": "не"
+          },
+          "deck": "basics"
+        },
+        "siiski": {
+          "base": "siiski",
+          "means": {
+            "en": "still, all the same",
+            "az": "yenə də",
+            "ru": "всё же"
+          },
+          "deck": "randaja-words"
+        },
+        "saa": {
+          "base": "saama",
+          "means": {
+            "en": "can",
+            "az": "bacarır",
+            "ru": "может"
+          },
+          "deck": "verbs"
+        },
+        "pärale": {
+          "base": "pärale",
+          "means": {
+            "en": "to the end, all the way there",
+            "az": "mənzilə, sona qədər",
+            "ru": "до места, до цели"
+          },
+          "deck": "randaja-words"
+        },
+        "kanda": {
+          "base": "kandma",
+          "means": {
+            "en": "to carry",
+            "az": "daşımaq",
+            "ru": "нести"
+          },
+          "deck": "clothes",
+          "note": {
+            "en": "Kandma is to wear on a card and to carry here.",
+            "az": "Kandma kartda \"geyinmək\", burada isə \"daşımaq\"dır.",
+            "ru": "На карточке kandma — носить (одежду), здесь — нести."
+          }
+        },
+        "teede": {
+          "base": "tee",
+          "means": {
+            "en": "of the roads",
+            "az": "yolların",
+            "ru": "дорог"
+          },
+          "deck": "around"
+        },
+        "laul": {
+          "base": "laul",
+          "means": {
+            "en": "song",
+            "az": "mahnı",
+            "ru": "песня"
+          },
+          "deck": "plans"
+        },
+        "helisev": {
+          "base": "helisema",
+          "means": {
+            "en": "ringing",
+            "az": "səslənən",
+            "ru": "звенящая"
+          },
+          "deck": "randaja-words"
         }
       }
     }

@@ -106,7 +106,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Forty-four decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Forty-five decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.
@@ -192,8 +192,12 @@ function songWords(song) {
   const line = (one) =>
     '<dt lang="et">' + esc(one.et) + '</dt>' +
     DECK_LANGS.map((lang) => (one[lang] ? '<dd lang="' + lang + '">' + esc(one[lang]) + '</dd>' : '')).join('');
+  const credit = song.credit || {};
+  const by = [credit.words ? 'Words: ' + credit.words : '', credit.music ? 'Music: ' + credit.music : '']
+    .filter(Boolean).join(' · ');
   return '<h1>' + esc(inEnglish(song.name)) + '</h1>' +
     (song.why ? '<p>' + esc(inEnglish(song.why)) + '</p>' : '') +
+    (by ? '<p>' + esc(by) + '</p>' : '') +
     song.verses.map((verse) => '<dl>' + verse.map(line).join('') + '</dl>').join('') +
     (song.deck ? '<p><a href="' + PATH + '?d=' + esc(song.deck) + '">' + esc(inEnglish(song.name)) + ' — the words</a></p>' : '') +
     '<p><a href="' + PATH + '">' + esc(TITLE) + '</a></p>';

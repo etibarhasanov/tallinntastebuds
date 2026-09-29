@@ -275,8 +275,8 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: forty-four decks
-   and two thousand and eight cards, deployed as a file and read
+   data/decks.json — the Estonian the flashcards page ships: forty-five decks
+   and two thousand and thirty cards, deployed as a file and read
    as one.
    It is content rather than interface, so the ten languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
@@ -523,7 +523,8 @@ if (decksFile !== null) {
 
     /* The songs, which are listened to rather than turned over: an id in the
        decks' namespace, for the reason a lesson's is; a name and a line; the
-       eleven characters of a YouTube video; the deck its new words are in;
+       eleven characters of a YouTube video; who wrote it, where that is known;
+       the deck its new words are in;
        verses of lines, each the Estonian and what it means; and `words`, what
        every word in those lines means, keyed by the word as it is sung,
        lowercased. Every word the page draws is a word somebody can tap, so a
@@ -554,6 +555,16 @@ if (decksFile !== null) {
       said(song.why, where, `song "${song.id}" why`);
       if (!isNonEmptyString(song.video) || !/^[A-Za-z0-9_-]{11}$/.test(song.video)) {
         fail(where, `song "${song.id}" has a "video" that is not a YouTube id`);
+      }
+      /* Who wrote it: the words, the music, or both, as names — not translated,
+         since a name is not. Optional, because a song can arrive before anybody
+         has found out, and the page draws only the half it is given. */
+      if (song.credit !== undefined) {
+        const credit = song.credit;
+        const halves = isPlainObject(credit) ? Object.keys(credit) : [];
+        if (!halves.length || halves.some((k) => !['words', 'music'].includes(k) || !isNonEmptyString(credit[k]))) {
+          fail(where, `song "${song.id}" has a "credit" that is not a name for "words", "music" or both`);
+        }
       }
       const own = decksFile.decks.find((deck) => isPlainObject(deck) && deck.id === song.deck);
       if (!own) fail(where, `song "${song.id}" names a deck "${song.deck}" that is not in the file`);
