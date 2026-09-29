@@ -2810,6 +2810,8 @@ UPDATE google_venues SET map_id = 'bueno-gourmet-kadriorg' WHERE place_id = 'ChI
 
 UPDATE google_venues SET map_id = 'elman-bites' WHERE place_id = 'ChIJ--NPDdSTkkYRWjEU6yQjXnM' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'vegan-restoran-v' WHERE place_id = 'ChIJofpVY2KTkkYRGqX6iRi16jE' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'mix-resto' WHERE place_id = 'ChIJ4f4nB56UkkYRY4ShFk6YZHw' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'bekker-pagariari' WHERE place_id = 'ChIJG9TEnYaTkkYRLDYTan7s1FU' AND map_id IS NULL;
