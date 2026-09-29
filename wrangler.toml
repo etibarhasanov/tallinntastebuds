@@ -201,5 +201,5 @@ binding = "AI"
 
 [env.production.vars]
 ENVIRONMENT = "production"
-# etibar
-ADMINS = "e572e9c3-40e8-4be4-bc23-15fa339dd655"
+# etibar, tallinntastebuds
+ADMINS = "e572e9c3-40e8-4be4-bc23-15fa339dd655,6eaabc7b-3b77-412b-b61b-dd6588b07632"
