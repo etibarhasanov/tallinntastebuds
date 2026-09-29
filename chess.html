@@ -36,7 +36,7 @@
      page's own: the board, the line above it and the moves beside it. -->
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
 <link rel="stylesheet" href="/assets/lists.css?v=a1380410">
-<link rel="stylesheet" href="/assets/chess.css?v=34245691">
+<link rel="stylesheet" href="/assets/chess.css?v=39feeda6">
 </head>
 <body class="lists-body chess-body">
 
@@ -71,10 +71,13 @@
   <div class="chess-head">
     <p class="eyebrow" data-i18n="chessEyebrow">Chess</p>
     <h1 class="lists-title" data-i18n="chessTitle">Your move, Tallinn</h1>
-    <p class="lists-say" data-i18n="chessLead">One board for everybody who opens this page. Whoever is here plays the next move for the city, and Tallinn Tastebuds answers. No account and no clock: a game takes as long as it takes.</p>
+    <p class="lists-say" data-i18n="chessLead">One board for everybody who opens this page, and a waiting list to play the house yourself. Whoever is here plays the next move for the city, and Tallinn Tastebuds answers. No clock: a game takes as long as it takes.</p>
+    <!-- The house's own record, drawn by assets/chess.js for the house alone. -->
+    <p class="chess-you" id="you" hidden></p>
   </div>
-  <!-- The board and its moves, built by assets/chess.js out of the one answer.
-       Empty until it is in, with no spinner, like every page here. -->
+  <!-- The boards, their moves and the one-on-one card, built by
+       assets/chess.js out of the one answer, in the order the reader's face
+       puts them. Empty until it is in, with no spinner, like every page here. -->
   <div class="lists-stack" id="stack"></div>
   <!-- Where a board would be when the route is not answering. In the markup so
        it reads in the language the page has words for, or in English when it
@@ -106,6 +109,6 @@
 <script src="/assets/radio.js?v=f0656dd3" defer></script>
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
 <script src="/assets/device.js?v=4f9b3e9a" defer></script>
-<script src="/assets/chess.js?v=c992802d" defer></script>
+<script src="/assets/chess.js?v=cd3932e4" defer></script>
 </body>
 </html>

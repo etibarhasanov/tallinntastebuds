@@ -139,6 +139,15 @@ function mayMove(row, who) {
   return !!who.user && who.user.id === row.challenger;
 }
 
+/* Whether the house may end this game without a result: a private game on
+   the member's move, which they have left for QUIET_DAYS. Asked by the answer,
+   so the page offers the button only when the route would take it, and by
+   abandon() itself. */
+function mayAbandon(row) {
+  return row.kind === 'private' && row.state === 'playing' &&
+    turnOf(row.fen) !== row.house_colour && Date.now() - row.last_at >= QUIET_DAYS * DAY;
+}
+
 async function movesOf(env, id) {
   const { results } = await env.DB
     .prepare(
@@ -153,7 +162,8 @@ async function movesOf(env, id) {
 
 /* One game as the page reads it: the row, its moves, and the reader's legal
    moves when it is their turn. `check` is the last move's, which its SAN
-   already says with + or #. */
+   already says with + or #. `abandon` is there only for the house, only when
+   it may end the game. */
 async function gameAnswer(env, row, who) {
   if (!row) return null;
   const moves = await movesOf(env, row.id);
@@ -183,7 +193,8 @@ async function gameAnswer(env, row, who) {
       by: m.by_kind === 'house' ? 'house' : m.by_kind === 'user' && m.username ? m.username : 'visitor',
       at: m.at
     })),
-    ...(mayMove(row, who) ? { legal: legalMoves(row.fen) } : {})
+    ...(mayMove(row, who) ? { legal: legalMoves(row.fen) } : {}),
+    ...(who.role === 'house' && mayAbandon(row) ? { abandon: true } : {})
   };
 }
 
@@ -213,7 +224,7 @@ async function state(env, who) {
 
   const { results: queue } = await db
     .prepare(
-      'SELECT u.username AS name, g.created_at AS since FROM chess_games g ' +
+      'SELECT g.id, u.username AS name, g.created_at AS since FROM chess_games g ' +
       'LEFT JOIN users u ON u.id = g.challenger ' +
       "WHERE g.kind = 'private' AND g.state = 'waiting' ORDER BY g.created_at"
     )
@@ -261,7 +272,13 @@ async function state(env, who) {
     },
     public: await gameAnswer(env, publicRow, who),
     mine: await gameAnswer(env, mineRow, who),
-    queue: (queue || []).map((q) => ({ name: q.name || null, since: q.since }))
+    /* The house is handed each waiting game's id, which is what its Start
+       button sends; nobody else has anything to send one for. */
+    queue: (queue || []).map((q) => ({
+      name: q.name || null,
+      since: q.since,
+      ...(who.role === 'house' ? { game: q.id } : {})
+    }))
   };
 }
 
@@ -536,8 +553,7 @@ async function abandon(env, who, body) {
   if (who.role !== 'house') return json({ error: 'not-yours' }, 403);
   const row = await gameById(env, body.game);
   if (!row || row.kind !== 'private' || row.state !== 'playing') return json({ error: 'no-game' }, 404);
-  const theirs = turnOf(row.fen) !== row.house_colour;
-  if (!theirs || Date.now() - row.last_at < QUIET_DAYS * DAY) return refuse(env, who, 'not-yet', 409);
+  if (!mayAbandon(row)) return refuse(env, who, 'not-yet', 409);
   if (!(await finish(env, row.id, 'abandoned', 'abandoned'))) return json({ error: 'no-game' }, 404);
   return done(env, who);
 }

@@ -9820,15 +9820,14 @@ this feature exists except the file of words it reads.
 ## Chess
 
 A page at `/chess` where the whole city plays one game of chess against the
-house — the owner's account, the one `ADMINS` names. It is being built a task
-at a time, from `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and
-what is live so far is **the public game**: `chess.html`, `assets/chess.js` and
-`assets/chess.css` draw it, `functions/api/chess.js` answers it and
+house — the owner's account, the one `ADMINS` names — and where a member can
+queue to play the house one on one. It is being built a task at a time, from
+`.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
+far is **the public game** and **one on one**: `chess.html`, `assets/chess.js`
+and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
 `functions/api/_chess.js` holds the rules. **Nothing links to the page yet** —
 the blog's arrangement, unlinked and indexed, listed in `sitemap.xml` and not
 disallowed in `robots.txt` — and the last task puts a door on the map's rail.
-The one-on-one waiting list is in the route already and has no page yet; a
-member cannot join it until task 5 draws the card.
 
 ### The public game
 
@@ -9887,9 +9886,51 @@ SAN without running the rules, and the answer carries `score` — the public
 games' own tally, `everybody`, `house` and `drawn` — because `record` counts
 private games too and the line under the moves is about the city's game.
 
-**What it deliberately does not do yet**: the one-on-one card and the waiting
-list, the house's record line, a resign button, captured pieces beside the
-board, a clock, a drawn set of pieces.
+**What it deliberately does not do yet**: captured pieces beside the board, a
+clock, a drawn set of pieces, a download of a finished game.
+
+### One on one
+
+A member presses *Join the waiting list* and takes a place in a public line —
+one place an account, oldest first, fifty at most, and they may leave it any
+time before their game starts. The names in the line are usernames, and each
+row goes to that member's page under `/u/`. The house starts a game with the
+first in line, one private game at a time; the next starts when that one ends.
+The member opens as white. Either side may resign, after a *Resign this game?*
+the browser asks; the house may also end a game with no result once the member
+has left their move for seven days, and a game ended that way counts for
+nobody.
+
+**The page is in a different order for each reader**, the faces table in
+`SKILL.md`. A visitor sees the public game and, under it, *Play Tallinn
+Tastebuds yourself*: sign in on the map and join, and who is waiting now. A
+member not in line sees that card first, with the one filled button; in line,
+*You're in line*, how many are ahead of them and who, their own row marked
+*you*, and *Leave the list*. Once the house has started their game, their
+board comes first and the card goes, since there is nothing in it for them to
+do; once it is over, the board stays first with how it ended and *Join the
+waiting list* again, until they do. The house sees its own record in a mono
+line under the lead — games, won, lost and drawn, both kinds of game, a game
+ended without a result left out — then the line, *Waiting to play you*, with
+*Start a game with …* while no private game is on and the member it is playing
+at the top of the rows while one is; then that game; then the public game.
+
+**A member hears that their game has started on the page's next poll**, within
+twenty seconds and with no reload, and nowhere else: the site has no address
+for anybody. A private game is the same board component as the public one,
+with the member's name where Everybody's was and nothing under its moves,
+since each side is one player. The house's board is turned round, as it is on
+the public game. On the member's move after the seven quiet days, the house's
+turn line says how long it has been and *End without a result* sits beside
+*Resign* under the moves. The route decides when that is, not the page: the
+private game carries `abandon: true` for the house only while the route would
+take it, which is what keeps the seven days in one place. The line hands the
+house each waiting game's id for the same reason — its *Start* button sends
+one, and nobody else has anything to send one for.
+
+A join the line has no room for says *The line is full right now*; a second
+press on a page that was behind says *You're already in line* and draws the
+card as it now is.
 
 ### The tables
 
@@ -14423,12 +14464,16 @@ Flashcards, `assets/flashcard.js`:
 | `radio_play`, `radio_stop` | as on the map |
 
 The chess page, `assets/chess.js` — a move, the house starting the next game,
-and the switch the flashcards' header has:
+the waiting list and what can end a private game, and the switch the
+flashcards' header has:
 
 | Event | Parameters |
 |---|---|
-| `chess_move` | `kind` (`public`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
+| `chess_move` | `kind` (`public` or `private`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
 | `chess_new_game` | — the house's *Start the next game* or *Start the first game* |
+| `chess_join`, `chess_leave` | — a member's *Join the waiting list*, from the card or under a game of theirs that is over, and *Leave the list*. Sent on the press, so a join the full line refused is still one |
+| `chess_start` | — the house's *Start a game with …* |
+| `chess_resign`, `chess_abandon` | — *Resign*, pressed by either side and confirmed, and the house's *End without a result* |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
 | `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |

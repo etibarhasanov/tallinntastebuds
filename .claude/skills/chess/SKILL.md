@@ -55,7 +55,13 @@ for anybody.
 | under the title | — | — | a mono line: games, won, lost, drawn |
 | first card | the public game | their own game, if one is on; else the one-on-one card | the queue: *Waiting to play you*, the *Start a game with …* button while no private game is on |
 | then | *Play Tallinn Tastebuds yourself*: sign in on the map and join; who is waiting | the public game | the private game, if one is on |
-| then | — | the one-on-one card, when their game is on | the public game |
+| then | — | — | the public game |
+
+A member whose game is on, or over, sees their board and then the public game,
+and no one-on-one card: there is nothing in it for them to do while they play,
+and the *Join the waiting list* a finished game needs is under that game's
+result. The table first gave the card a third row for them; the mockup drew it
+without one, and the page follows the mockup.
 
 Every board is the same component: an eyebrow naming the two sides, a mono line
 saying whose move it is, a sentence saying what that means for whoever is
@@ -125,10 +131,13 @@ set is a later change and a licence row.
                                                 for the line under the moves
   record: { games, won, lost, drawn },          the house's, over both kinds
   public: { game, moves, legal } | null,        null before the first game
-  mine:   { game, moves, legal } | null,        the member's latest private
-                                                game; for the house, the one
-                                                being played
-  queue:  [ { name, since } ] }                 waiting, oldest first
+  mine:   { game, moves, legal, abandon } | null,   the member's latest
+                                                private game; for the house,
+                                                the one being played
+  queue:  [ { name, since, game } ] }           waiting, oldest first; `game`,
+                                                the waiting game's id, for the
+                                                house alone — its Start button
+                                                sends it
 
 game:  { id, kind: 'public'|'private', state: 'waiting'|'playing'|'over',
          n, white, black, turn: 'w'|'b', fen, ply, check, result, reason,
@@ -137,6 +146,10 @@ game:  { id, kind: 'public'|'private', state: 'waiting'|'playing'|'over',
 moves: [ { ply, san, uci, by, at } ]  by is 'house', 'visitor' or a username;
                                      uci is what draws the last move's ring
 legal: [ 'e2e4', 'e7e8q', … ]        only when the reader may move now
+abandon: true                        only for the house, only while it may end
+                                     the game without a result — the page
+                                     offers the button off this, so the seven
+                                     days live in the route alone
 ```
 
 `POST /api/chess` takes `{ action, … , client }` and answers the same shape
