@@ -7792,8 +7792,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-four
-decks of Estonian, two thousand and eight cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-five
+decks of Estonian, two thousand and thirty cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -7801,8 +7801,8 @@ sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, under a heading of their own on that page, two lessons of
 grammar about why the words on the cards come in threes — **Grammar, which is
-read rather than turned over** below — and after them a song, with what every
-line and every word in it means — **Songs, which are listened to**.
+read rather than turned over** below — and after them songs, with what every
+line and every word in them means — **Songs, which are listened to**.
 
 It is the second thing on this site that is not about restaurants, and it is
 here for the same reason the first one is: it is what the people this map is
@@ -7966,8 +7966,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: forty-four decks, two
-thousand and eight cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: forty-five decks, two
+thousand and thirty cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -8070,8 +8070,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the ninety-seven `flash*` keys are in `ui.json`, and taking this
-feature out means taking ninety-seven keys out of ten blocks rather than deleting
+in step. So the ninety-nine `flash*` keys are in `ui.json`, and taking this
+feature out means taking ninety-nine keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -9182,7 +9182,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **1,326 of the 2,008
+parts, and a row of three under it would be nonsense. **1,340 of the 2,030
 cards carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -9235,7 +9235,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **820 of the 2,008 cards** carry
+would be a stray clause with no translation. **842 of the 2,030 cards** carry
 one: every card in the twenty-three newer decks and in **Family and relatives**
 bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
@@ -9299,7 +9299,7 @@ the one knob it had went back to 1, the pace the model was trained at, and the
 take went to 2. Whatever robotic edge is left after that is Tartu's research
 voice itself, and there is no knob for it on this side. The better voice on
 offer is Microsoft's Azure — Anu, and Kert for a man — free to 500,000
-characters a month where the whole shelf is 33,107, but it wants an Azure
+characters a month where the whole shelf is 33,997, but it wants an Azure
 account and a key in the Pages settings, and it was left for later.
 
 **Only what is on a card.** The route speaks a string only if it is the front
@@ -9437,11 +9437,19 @@ lesson has no such line yet, and a wrong sentence in one is a pull request.
 A card teaches a word and a lesson says why it changes shape, and neither is
 how anybody actually comes to like a language. A song is. So the shelf carries
 a third heading, **Songs**, straight after **Grammar**, and under it a tile for
-each song and a tile for the deck of its words. The first is *Naera, naera*,
-and it was asked for with the lyrics pasted in and a list of every word in it
+each song and a tile for the deck of its words. There are three:
+
+| Song | Words | Music | Its deck |
+|---|---|---|---|
+| *Naera, naera* | Viivi Luik | Rein Rannap | twenty-four of its forty-seven words |
+| *Stopp, seisku aeg!* | Velly Joonas | Jim Rafferty — it is his *I See Red*, which Frida sang | twenty-four of its eighty-seven |
+| *Rändaja õhtulaul* | Ernst Enno, 1910 | not yet known | twenty-two of its sixty-eight |
+
+The first was asked for with the lyrics pasted in and a list of every word in it
 with what it means. The second is Velly Joonas's *Stopp, seisku aeg!* — a camel
 caravan in the desert and a limousine on the road, one refrain over both — and
-it was asked for with the lyrics alone, so every gloss in it is ours.
+it was asked for with the lyrics alone, so every gloss in it is ours; so was the
+third, Ernst Enno's wanderer on the grey road, which came with its video.
 
 **The song is one page.** The video at the top — YouTube's own player, from
 `youtube-nocookie.com`, which sets nothing until play is pressed — and under it
@@ -9466,11 +9474,11 @@ answered against. It opens and shuts in place rather than through `render()`,
 which rebuilds `<main>` and would start the video again from the beginning on
 every press.
 
-**Which words are a card, and which are only a press.** Every word in the song
+**Which words are a card, and which are only a press.** Every word in a song
 says what it means, so nobody is ever stuck on a line. The *deck* is only the
-words worth keeping that the shelf did not already teach: twenty-four of the
-forty-seven, from *naerma* to *kättpidi*, each with the line it is sung in as
-its sentence. *Suvi*, *päev*, *käsi* and the other twenty-odd are already on
+words worth keeping that the shelf did not already teach — in *Naera, naera*
+twenty-four of the forty-seven, from *naerma* to *kättpidi* — each with the
+line it is sung in as its sentence. *Suvi*, *päev*, *käsi* and the other twenty-odd are already on
 cards in other decks, and a second copy of each would count twice in *You know
 N words*. Those point at their deck instead — and the note is where a song
 teaches something a card cannot: *ilm* is weather on a card and the world in
@@ -9498,9 +9506,25 @@ way the rest of the song does — *nii kaebleb neid* above all, where *neid*,
 them, has nothing to be the object of — and those are glossed word for word
 and translated for the sense, until somebody who has the sleeve can say.
 
+**Who wrote it** is a line in the mono under the video — *Words: Viivi Luik ·
+Music: Rein Rannap* — out of `credit` on the song, which carries `words`,
+`music` or both as names and is never translated, since a name is not; only the
+word in front of each is, `flashSongWordsBy` and `flashSongMusicBy`. It is
+optional because a song can arrive before anybody has found out, and the page
+draws whichever half it is given: *Rändaja õhtulaul* says who wrote the poem
+and nothing about the tune.
+
+**The words are the ones sung, not the ones printed.** Enno's poem reads *Nii
+hallid ja tolmused* and *kuis on nad kõvad kui keed*; the version sung on the
+video, and the one written in here, has *pikad* for *hallid* and a *nii* in the
+second. Where the two differ the page follows the recording, since the lines
+are for listening along to. One line is read rather than known: *kui teede laul
+tee helisev meel* is translated with *tee* as the road, and it may as well be
+the imperative, *make the heart ring* — a native reader settles it.
+
 **Where it lives, and what shape it is.** `songs` in `data/decks.json`, beside
 the lessons: an `id` in the decks' namespace, a `name` and a `why`, `video` — the
-eleven characters of a YouTube id — `deck`, the id of the deck of its words,
+eleven characters of a YouTube id — an optional `credit`, `deck`, the id of the deck of its words,
 `verses`, each a list of lines of `et` and what it means in each language, and
 `words`, keyed by the word as it is sung, lowercased: its `base`, what it
 `means` there, the `deck` its base is taught in, and an optional `note`. The
@@ -9526,14 +9550,14 @@ decks and the lessons.
 
 **What it does not do.** The lines do not light up in time with the singing:
 that wants YouTube's player API and a timestamp on every line, and is worth
-building once it is clear people use the page. There are two songs. The words
+building once it is clear people use the page. There are three songs. The words
 are in the three languages the cards are, and the site's other seven get
 English. The video cannot be told apart from a missing one on this side — a
 frame from another origin says nothing about itself — so a video YouTube has
 taken down is YouTube's own message in the box, with every line under it still
-working. And the credit is missing: nobody here yet knows who wrote the words
-and the music, and the page should say, the day somebody does. The same
-question stands over printing all four verses, which the owner has been asked.
+working. Enno died in 1934 and his poem is free to print; Viivi Luik's words
+are hers, and printing all four verses of them is the owner's call, which has
+been put to them.
 
 ### This card is wrong
 
@@ -9785,7 +9809,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the ninety-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the ninety-nine `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its seven lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
@@ -12276,9 +12300,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-four decks of Estonian, 2,008 cards under four
-                           headings and a song's, two lessons of grammar and
-                           two songs; content rather
+data/decks.json            forty-five decks of Estonian, 2,030 cards under four
+                           headings and the songs', two lessons of grammar and
+                           three songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and

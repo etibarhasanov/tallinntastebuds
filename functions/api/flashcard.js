@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-four decks of Estonian, two
- * thousand and eight cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-five decks of Estonian, two
+ * thousand and thirty cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -15,7 +15,7 @@
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same two
- * thousand and eight cards. Nothing about them is in the
+ * thousand and thirty cards. Nothing about them is in the
  * database and nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
@@ -421,7 +421,7 @@ async function shippedSongs(context) {
 }
 
 /* A song as the page reads it: its name and line for the shelf, and — when it
-   is the one open — the video, the verses, and what every word means, with
+   is the one open — the video, who wrote it, the verses, and what every word means, with
    the deck a word is taught in named rather than only pointed at. The page
    opened at a song has no shelf in hand to look a deck's name up in, and a
    tap box saying "also in weather" in whatever language is not a sentence. */
@@ -441,7 +441,14 @@ function songAnswer(song, decks, known, whole) {
   for (const [key, word] of Object.entries(song.words || {})) {
     words[key] = { ...word, deck: named(word.deck) };
   }
-  return { ...answer, video: song.video, deck: named(song.deck), verses: song.verses, words };
+  return {
+    ...answer,
+    video: song.video,
+    credit: song.credit || null,
+    deck: named(song.deck),
+    verses: song.verses,
+    words
+  };
 }
 
 /* ------------------------------------------------------------- somebody's

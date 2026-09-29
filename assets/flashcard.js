@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-four decks of Estonian, two
- * thousand and eight cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-five decks of Estonian, two
+ * thousand and thirty cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who
@@ -3271,12 +3271,24 @@
     }
   }
 
+  /* Who wrote it, under the video: the words, the music, or both, whichever
+     the file knows. Names, so never translated; only the word in front of
+     each is. */
+  function songCredit(song) {
+    var credit = song.credit || {};
+    var said = [];
+    if (credit.words) said.push(t('flashSongWordsBy', { who: credit.words }));
+    if (credit.music) said.push(t('flashSongMusicBy', { who: credit.music }));
+    return said.length ? el('p', { className: 'flash-song-credit mono', textContent: said.join(' · ') }) : null;
+  }
+
   function songCard() {
     var song = state.song;
     var kids = [
       heading(means(song.name)),
       el('p', { className: 'lists-say', textContent: t('flashSongHow') }),
-      songVideo(song)
+      songVideo(song),
+      songCredit(song)
     ];
     song.verses.forEach(function (verse, i) {
       var box = el('section', { className: 'flash-song-verse' }, [

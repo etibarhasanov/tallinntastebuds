@@ -917,6 +917,14 @@
   border: 0;
 }
 
+.flash-song-video + .flash-song-credit { margin-top: -10px; }
+.flash-song-credit {
+  margin: 0 0 20px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
+
 .flash-song-verse { margin: 0 0 20px; }
 .flash-song-head {
   margin: 0 0 6px;
