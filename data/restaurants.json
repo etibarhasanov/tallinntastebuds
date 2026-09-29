@@ -2579,6 +2579,46 @@
     "closed": false
   },
   {
+    "id": "vegan-restoran-v",
+    "name": "Vegan Restoran V",
+    "address": "Rataskaevu tn 12, 10123 Tallinn",
+    "lat": 59.437158,
+    "lng": 24.742531,
+    "price": 2,
+    "types": [
+      "vegan",
+      "restaurant"
+    ],
+    "blurb": {
+      "az": "Köhnə Şəhərdə, köhnə bir binanın içində vegan restoran, uzun illərdir eyni yerdədir. Fine dining deyil və ucuz yemək də deyil: sadəcə yaxşı vegan yeməyi, ağlabatan qiymətlərə, göz oxşayan boşqablarda. Otaq çox rahatdır. Turistlərlə doludur, amma Köhnə Şəhərdə yemək axtaran turistsinizsə, bura yaxşı seçimdir.",
+      "hy": "Վեգան ռեստորան Հին քաղաքում՝ հին շենքի ներսում, տարիներ շարունակ նույն տեղում։ Fine dining չէ և էժան ուտելիք էլ չէ․ պարզապես լավ վեգան սնունդ՝ խելամիտ գներով և գեղեցիկ ափսեներով։ Սրահը շատ հարմարավետ է։ Զբոսաշրջիկներով լի է, բայց եթե զբոսաշրջիկ ես և Հին քաղաքում ուտելու տեղ ես փնտրում, լավ ընտրություն է։",
+      "en": "A vegan restaurant inside an old building in the Old Town, in the same spot for years. It is not fine dining and it is not cheap eats either: just good vegan food at reasonable prices, on plates that look the part. The room is very cozy. It is full of tourists, and if you are one looking for somewhere to eat in the Old Town, it is a good pick.",
+      "et": "Vegan restoran vanalinnas, vanas majas, aastaid samas kohas. See ei ole fine dining ega ka odav söök: lihtsalt hea vegantoit mõistliku hinnaga ja taldrikud, mis näevad head välja. Ruum on väga hubane. Turiste on palju, aga kui oled turist ja otsid vanalinnas söögikohta, on see hea valik.",
+      "fi": "Vegaaniravintola vanhassakaupungissa, vanhan talon sisällä, samassa paikassa jo vuosia. Se ei ole fine diningia eikä halpaa ruokaa: vain hyvää vegaaniruokaa kohtuulliseen hintaan, näyttävillä lautasilla. Sali on todella kodikas. Turisteja on paljon, mutta jos olet turisti ja etsit ruokapaikkaa vanhastakaupungista, tämä on hyvä valinta.",
+      "pt": "Um restaurante vegano dentro de um edifício antigo na Cidade Velha, no mesmo sítio há anos. Não é fine dining nem comida barata: apenas boa comida vegana a preços razoáveis, em pratos que ficam bem na foto. A sala é muito acolhedora. Está cheio de turistas, e se for um à procura de onde comer na Cidade Velha, é uma boa escolha.",
+      "ru": "Веганский ресторан в старом здании в Старом городе, много лет на одном и том же месте. Это не fine dining и не дешёвая еда: просто хорошая веганская кухня по разумным ценам, на красивых тарелках. Зал очень уютный. Туристов много, но если вы турист и ищете, где поесть в Старом городе, это хороший выбор.",
+      "es": "Un restaurante vegano dentro de un edificio antiguo del casco antiguo, en el mismo sitio desde hace años. No es alta cocina ni comida barata: simplemente buena comida vegana a precios razonables, en platos que lucen. El local es muy acogedor. Está lleno de turistas, y si eres uno buscando dónde comer en el casco antiguo, es una buena opción.",
+      "tr": "Eski Şehir'de eski bir binanın içinde, yıllardır aynı yerde duran bir vegan restoran. Fine dining değil, ucuz yemek de değil: makul fiyatlara, göze hoş gelen tabaklarda iyi vegan yemek. Salon çok samimi. Turist dolu, ama Eski Şehir'de yemek yiyecek yer arayan bir turistsen iyi bir seçim.",
+      "uk": "Веганський ресторан у старій будівлі в Старому місті, багато років на тому самому місці. Це не fine dining і не дешева їжа: просто добра веганська кухня за розумними цінами, на гарних тарілках. Зала дуже затишна. Туристів багато, але якщо ви турист і шукаєте, де поїсти в Старому місті, це добрий вибір."
+    },
+    "mustOrder": [
+      "Beetroot ravioli",
+      "Baked sweet potato"
+    ],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp"
+    ],
+    "website": "http://www.veganrestoran.ee/",
+    "phone": "+372 626 9087",
+    "added": "2026-09-29",
+    "visited": "2026-09",
+    "closed": false
+  },
+  {
     "id": "veino",
     "name": "Veino",
     "address": "Rataskaevu tn 6, 10123 Tallinn",

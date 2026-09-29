@@ -164,7 +164,7 @@ its pin can land on the wrong side of the street. What it does, in order:
 - **The name, address or coordinates** change the catalogue row too, so
   `node tools/places.mjs` again.
 - `db/google-venues.sql` never moves for a change to a place that is already
-  on the map: the 63 export rows matched to it carry `map_id`, and that
+  on the map: the 64 export rows matched to it carry `map_id`, and that
   column survives every refresh. **Adding** a place the export already lists
   does move it — step 5 of **The hand road** says how.
 

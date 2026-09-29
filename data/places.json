@@ -592,6 +592,14 @@
     "map": true
   },
   {
+    "id": "vegan-restoran-v",
+    "name": "Vegan Restoran V",
+    "address": "Rataskaevu tn 12, 10123 Tallinn",
+    "lat": 59.437158,
+    "lng": 24.742531,
+    "map": true
+  },
+  {
     "id": "veino",
     "name": "Veino",
     "address": "Rataskaevu tn 6, 10123 Tallinn",
