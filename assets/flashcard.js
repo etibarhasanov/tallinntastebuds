@@ -833,63 +833,15 @@
    */
   var langBar = null;
 
-  function markLangMenu(open) {
-    if (!langBar) return;
-    langBar.classList.toggle('is-open', open);
-    var now = langBar.querySelector('.btn-lang-now');
-    if (now) now.setAttribute('aria-expanded', String(open));
-  }
-
-  function closeLangMenu() { markLangMenu(false); }
-
+  /* Drawn by assets/language.js, which owns the trigger, the menu and the two
+     document listeners that shut it; this page keeps the press — pickLanguage()
+     — because only it knows how to ask its own route for the words. */
   function renderLanguageSwitch() {
     if (!langBar) return;
-    clear(langBar);
-    /* Nothing to choose between. Either the route could not read
-       data/ui.json — in which case this page has no words either and is
-       drawing the markup's own English — or the site speaks one language, and
-       a switch with one row in it is a button that does nothing. */
-    if (!state.langs || state.langs.length < 2) return;
-
-    var now = el('button', {
-      type: 'button',
-      className: 'btn btn-lang-now',
-      'aria-expanded': 'false',
-      'aria-label': t('language')
-    }, [
-      el('span', { textContent: state.lang.toUpperCase() }),
-      el('span', {
-        className: 'caret',
-        html: '<svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4"/></svg>'
-      })
-    ]);
-    now.addEventListener('click', function () {
-      var open = !langBar.classList.contains('is-open');
-      markLangMenu(open);
-      if (open) TTBTrack.event('language_open');
-    });
-    langBar.appendChild(now);
-
-    var list = el('div', { className: 'lang-list' });
-    state.langs.forEach(function (lang) {
-      var btn = el('button', {
-        type: 'button',
-        className: 'btn btn-lang',
-        lang: lang.code,
-        'aria-label': lang.name,
-        'aria-pressed': String(lang.code === state.lang)
-      }, [
-        el('span', { className: 'lang-code', textContent: lang.code.toUpperCase() }),
-        el('span', { className: 'lang-name', textContent: lang.name })
-      ]);
-      btn.addEventListener('click', function () { pickLanguage(lang.code); });
-      list.appendChild(btn);
-    });
-    langBar.appendChild(list);
+    window.TTBLanguage.mount(langBar, state.langs, state.lang, pickLanguage, t('language'));
   }
 
   function pickLanguage(code) {
-    closeLangMenu();
     if (code === state.lang) return;
     TTBTrack.event('language_select', { language: code });
 
@@ -2323,7 +2275,7 @@
       if (undoKey) {
         var at = ev.target;
         if (at && (at.isContentEditable || /^(?:INPUT|TEXTAREA|SELECT)$/.test(at.tagName))) return;
-        if (langBar && langBar.classList.contains('is-open')) return;
+        if (window.TTBLanguage.isOpen()) return;
         if (!state.run || !state.run.last || state.editing || state.gated) return;
         ev.preventDefault();
         undo();
@@ -2353,8 +2305,8 @@
 
       /* And nothing behind an open language menu, which stands over the card
          and is the thing the keyboard is in while it is open — the same rule
-         the press anywhere else is under, a few lines down in boot(). */
-      if (langBar && langBar.classList.contains('is-open')) return;
+         the press anywhere else is under, in assets/language.js. */
+      if (window.TTBLanguage.isOpen()) return;
 
       /* Only where a card is really on screen, which is the condition
          render() draws one under. The run outlives the two views that are not
@@ -3488,22 +3440,6 @@
        which hostname this is. The markup carries the site's own spelling, so
        the page is right when the script never runs; this is the subdomain's. */
     if (ON_SUBDOMAIN) document.getElementById('brand-home').href = MAP;
-
-    /* The menu shuts on a press anywhere else, which is the map's own rule and
-       the only thing on this page listening on the document. A press on the
-       switch itself is inside it and leaves it alone. */
-    document.addEventListener('click', function (ev) {
-      if (langBar && !langBar.contains(ev.target)) closeLangMenu();
-    });
-    /* And on Escape, with the focus handed back to the button it dropped from
-       — a keyboard that closes a menu and is left standing in nothing has been
-       put somewhere it cannot see. */
-    document.addEventListener('keydown', function (ev) {
-      if (ev.key !== 'Escape' || !langBar || !langBar.classList.contains('is-open')) return;
-      var now = langBar.querySelector('.btn-lang-now');
-      if (langBar.contains(document.activeElement) && now) now.focus();
-      closeLangMenu();
-    });
 
     /* And the arrows, which answer the card in hand from wherever the focus
        is. See wireKeys(). */

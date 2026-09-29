@@ -2106,3 +2106,25 @@ body.has-scrim { overflow: hidden; }
    not load, and the pin is going in at the city centre unless somebody says
    otherwise. */
 .picker-note.is-warn { color: var(--accent); }
+
+/* ---------- the language switch, on a page that carries its own ---------- */
+
+/* The surface under the trigger drawn by assets/language.js, on a
+   .lists-brand header row: the flashcards' and the chess page's. Everything
+   the switch is drawn with is already in assets/styles.css — #lang-switch
+   holds the menu, .btn-lang-now is the code and the chevron, .lang-list is the
+   rows — and all this adds is the surface, because the map's comes from
+   `.controls .seg` and there is no .controls here.
+
+   Paper rather than the map's frosted glass: that pane is see-through because
+   there is a city moving under it, and under this one there is a page. It is
+   the same surface the map falls back to on a browser with no backdrop-filter,
+   which is the argument already made in the stylesheet it comes from. It was
+   `.flash-lang` in assets/flashcard.css until the chess page needed it too. */
+.lang-surface {
+  flex: 0 0 auto;
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--lift);
+}

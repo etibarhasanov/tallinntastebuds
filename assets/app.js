@@ -2002,7 +2002,8 @@
    *
    * What is kept locally is only what the browser needs to draw itself:
    *
-   *   ttb.cid    a v4 UUID this browser made for itself the first time it
+   *   ttb.cid    (kept by assets/device.js) a v4 UUID this browser made for
+   *              itself the first time it
    *              saved anything. It is what the server uses as the unique
    *              half of a save, and what lets a save be taken back. It is
    *              not an account and identifies nobody: it never leaves this
@@ -2018,7 +2019,6 @@
    * be other people is worth being told fresh.
    */
 
-  var CID_KEY = 'ttb.cid';
   var SAVED_KEY = 'ttb.saved';
 
   /* A filter id that is not a taxonomy type, reserved the way "discount" is
@@ -2047,33 +2047,6 @@
         if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
       })
       .catch(function () { /* no counts is a fine state to be in */ });
-  }
-
-  /* Made once, on the first save, and never before: a browser that only ever
-     reads the map is not given an id for something it has not done. */
-  function clientId() {
-    var id = storeGet(CID_KEY);
-    if (id) return id;
-    id = (window.crypto && window.crypto.randomUUID)
-      ? window.crypto.randomUUID()
-      /* Safari before 15.4 has crypto but not randomUUID. getRandomValues is
-         everywhere, so the shape is assembled by hand from real entropy
-         rather than falling back to Math.random. */
-      : uuidFromBytes();
-    storeSet(CID_KEY, id);
-    return id;
-  }
-
-  function uuidFromBytes() {
-    var b = new Uint8Array(16);
-    window.crypto.getRandomValues(b);
-    b[6] = (b[6] & 0x0f) | 0x40;   /* version 4 */
-    b[8] = (b[8] & 0x3f) | 0x80;   /* variant 1 */
-    var hex = [];
-    for (var i = 0; i < 16; i++) hex.push((b[i] + 0x100).toString(16).slice(1));
-    return hex.slice(0, 4).join('') + '-' + hex.slice(4, 6).join('') + '-' +
-           hex.slice(6, 8).join('') + '-' + hex.slice(8, 10).join('') + '-' +
-           hex.slice(10, 16).join('');
   }
 
   function readSaved() {
@@ -2354,7 +2327,7 @@
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           place: place.id,
-          client: clientId(),
+          client: TTBDevice.id(),
           on: on,
           token: token
         })
@@ -3535,7 +3508,7 @@
         action: creating ? 'create' : 'login',
         username: v.username,
         password: v.password,
-        client: clientId()
+        client: TTBDevice.id()
       }).then(function (a) {
         accountBusy = false;
         if (!a.ok) return accountFail(a.out);
@@ -3595,12 +3568,12 @@
   }
 
   function googleHref() {
-    /* Read and never minted. clientId() makes one the first time it is asked,
+    /* Read and never minted. TTBDevice.id() makes one the first time it is asked,
        and a browser that has saved nothing has no id on purpose — see the
        comment there. Opening a sheet is not saving a place, so the id goes
        along only where there is already one to go along, and the claim on the
        way back is then a claim over rows that exist. */
-    var device = storeGet(CID_KEY) || '';
+    var device = TTBDevice.known();
     return '/api/google?then=' + encodeURIComponent(googleThen()) +
       (device ? '&client=' + encodeURIComponent(device) : '');
   }
@@ -3650,7 +3623,7 @@
       if (accountBusy) return;
       var v = accountValues();
       accountBusy = true; accountErr = ''; renderAccount();
-      accountPost({ action: 'google-name', username: v.username, client: clientId() })
+      accountPost({ action: 'google-name', username: v.username, client: TTBDevice.id() })
         .then(function (a) {
           accountBusy = false;
           if (!a.ok) return accountFail(a.out);

@@ -171,7 +171,7 @@ on landing.
 
 ---
 
-- [ ] **3. Share the language switch and the device id**
+- [x] **3. Share the language switch and the device id**
 
 **Lands:** `assets/language.js` (the switch the flashcards draw, as a global
 like `TTBRadio`), `assets/device.js` (the device id `app.js` and `feedback.js`
