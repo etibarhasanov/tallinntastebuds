@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en" data-style="red" data-layout="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<title>Chess | Tallinn Tastebuds — MOCKUP</title>
+
+<!-- MOCKUP. This file is not the change: it is a picture of the page
+     described in the session, drawn with the site's own stylesheets so the
+     tokens, the faces, the header and the four controls are the real ones.
+     Open it from the repo root — python3 -m http.server 8000, then
+     /.claude/skills/chess/mockup.html?state=house&style=green — so the
+     stylesheets resolve; shoot.mjs beside it draws every state to a PNG. It
+     is the picture the page is held to, not the page: ?state= fakes the one
+     answer /api/chess would give. Everything under <style> is what
+     would become assets/chess.css; everything under <script> is what
+     assets/chess.js would draw out of one /api/chess answer, faked here from
+     ?state=. One page, three faces: ?state=visitor, member, waiting, playing,
+     house, house-playing, member-over. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/assets/lists.css">
+<link rel="stylesheet" href="/assets/flashcard.css">
+<style>
+/* The pieces are the platform's own chess glyphs, U+2654 to U+265F, in the
+   text presentation — the black pawn has an emoji form on some phones and
+   U+FE0E after every glyph keeps it a piece. A face of its own for the same
+   reason --emoji is one: none of the three site faces has these. */
+:root {
+  --pieces: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2",
+            "DejaVu Sans", "FreeSerif", sans-serif;
+}
+
+/* The page is the lists page's shape — its ground, its header, its cards —
+   and one thing wider: on a desktop a board wants its moves beside it rather
+   than under it, so the header and the main both open out to 960px there,
+   the way the editor's do to 1180px. A game is a grid of two cards; the
+   one-on-one card stands on its own, no wider than a board. */
+.chess-grid { display: flex; flex-direction: column; gap: 18px; }
+@media (min-width: 900px) {
+  .chess-body .lists-brand, .chess-body .lists-main { max-width: 960px; }
+  .chess-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(280px, 1fr);
+    align-items: start;
+  }
+  .chess-play { max-width: 560px; }
+}
+
+.chess-head { margin: 4px 0 18px; }
+.chess-head .lists-say { margin: 0; }
+/* The house's own line under the lead: a fact, so mono. */
+.chess-you { margin: 10px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--muted); }
+
+/* ---------- the one-on-one card ---------- */
+
+/* Eyebrow, title, the line that says why, the one action, the ways out —
+   design rule 6 — and under those the people in line as rows, because a
+   list of people is a list of pages to go to. */
+.chess-play { padding: 14px 14px 12px; }
+.chess-play .lists-title { font-size: 20px; margin: 4px 0 6px; }
+.chess-play-why { margin: 0 0 12px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-play .go { margin: 0 0 14px; }
+.chess-play .alt { margin: 6px 0 0 -12px; }
+.chess-queue-head { margin: 4px 0 6px; }
+.chess-play .menu-item .menu-row.is-you .menu-name::after {
+  content: ' · you';
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.chess-play .menu-item .menu-row.is-playing .menu-why { color: var(--accent); }
+
+/* ---------- the board card ---------- */
+
+.chess-board-card { padding: 14px; }
+
+/* Which game, whose move it is, and what that means for whoever is reading.
+   The eyebrow names the two sides; the line under it is mono because it is a
+   fact; the sentence is in the body face. Above the board and not under it:
+   nobody looks under the thing they are about to press. The one filled
+   action on the page lives here too, and only for the owner, only once a
+   game is over. */
+.chess-turn { display: flex; flex-direction: column; gap: 4px; margin: 0 0 12px; }
+.chess-turn .eyebrow { margin: 0 0 4px; }
+.chess-turn-who {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.chess-turn-why { margin: 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-turn .go { align-self: flex-start; margin-top: 8px; }
+
+/* Four squares in a row for a pawn that reached the last rank: the .seg the
+   language switch is, holding four .btns, in place of the sentence. */
+.chess-promote {
+  display: inline-flex;
+  margin-top: 6px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  overflow: hidden;
+}
+.chess-promote .btn { min-width: 44px; height: 44px; font-family: var(--pieces); font-size: 24px; color: var(--ink); background: none; border: 0; cursor: pointer; }
+.chess-promote .btn + .btn { border-left: 1px solid var(--hairline); }
+
+/* The board: eight columns of paper, the dark squares in the hairline colour,
+   so both styles colour it and nothing here names a hex. It is a container
+   so the pieces and the coordinates are sized off its width — the same board
+   is 358px on a phone and 530px on a desktop. */
+.chess-board {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  }
+.sq { position: relative; display: grid; place-items: center; aspect-ratio: 1; background: var(--paper); }
+.sq.is-dark { background: var(--hairline); }
+.sq.can { cursor: pointer; }
+.pc { font-family: var(--pieces); font-size: 9.4cqw; line-height: 1; color: var(--ink); }
+/* The selected piece's square wears the accent as a ring; the two squares of
+   the last move wear a quieter one. Both are rings rather than fills so a
+   dark square and a light one say the same thing. */
+.sq.is-sel { box-shadow: inset 0 0 0 3px var(--accent); }
+.sq.is-last { box-shadow: inset 0 0 0 2px var(--muted); }
+/* Where the selected piece may go: a dot, or a ring round a piece it would
+   take. A shape as well as a colour — rule 10. */
+.sq.can::after { content: ''; position: absolute; width: 30%; height: 30%; border-radius: 50%; background: var(--accent); }
+.sq.can.has-pc::after { width: 86%; height: 86%; background: none; box-shadow: inset 0 0 0 3px var(--accent); }
+/* The king in check, and the checkmated king: the accent under the glyph
+   rather than round the square, so it reads as the piece's state. */
+.sq.is-check .pc { color: var(--accent); }
+.co { position: absolute; font-family: var(--mono); font-size: max(9px, 1.6cqw); font-weight: 500; line-height: 1; color: var(--muted); }
+.co-rank { top: 3px; left: 4px; }
+.co-file { bottom: 3px; right: 4px; }
+
+.chess-last { margin: 12px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-last b { font-weight: 500; color: var(--ink); }
+
+/* ---------- the moves card ---------- */
+
+.chess-moves { padding: 14px; }
+.chess-cols, .chess-list li { display: grid; grid-template-columns: 3ch 1fr 1fr; gap: 0 10px; }
+.chess-cols { margin: 10px 0 2px; }
+.chess-list { list-style: none; margin: 0; padding: 0; }
+.chess-list li { align-items: baseline; padding: 7px 0; border-top: 1px solid var(--hairline); }
+.chess-n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.chess-m { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chess-san { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--ink); }
+.chess-who { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chess-empty { margin: 10px 0 0; font-family: var(--body); font-size: 14px; color: var(--muted); }
+.chess-foot { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-signin { margin: 10px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-signin a { color: var(--accent); }
+.chess-moves .alt { margin: 8px 0 0 -12px; }
+</style>
+
+<script>
+/* The boot block every page carries, the style half: ?style=, else red. The
+   mockup has no localStorage worth reading. */
+(function () {
+  var q = location.search.slice(1).split('&'), i, p, style = 'red';
+  for (i = 0; i < q.length; i++) { p = q[i].split('='); if (p[0] === 'style' && (p[1] === 'red' || p[1] === 'green')) style = p[1]; }
+  document.documentElement.setAttribute('data-style', style);
+  document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
+})();
+</script>
+</head>
+<body class="lists-body chess-body">
+
+<a class="skip-link" href="#main">Skip to the board</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark">Tallinn Tastebuds</span>
+  </a>
+  <button type="button" class="rail-btn radio" id="btn-radio" aria-pressed="false" aria-label="Play the radio" title="Play the radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="ico-play" d="M8 5.5l11 6.5-11 6.5z"/>
+      <path class="ico-stop" d="M8 6.5h3v11H8zM13 6.5h3v11h-3z"/>
+    </svg>
+    <span class="radio-name rail-label" id="radio-name"></span>
+  </button>
+  <div class="seg flash-lang" id="lang-switch" role="group" aria-label="Language">
+    <button type="button" class="btn btn-lang-now" aria-expanded="false" aria-label="Language">
+      <span id="lang-now">EN</span>
+      <span class="caret"><svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4"/></svg></span>
+    </button>
+    <div class="lang-list" id="lang-list"></div>
+  </div>
+</header>
+
+<main class="lists-main" id="main" tabindex="-1">
+  <div class="chess-head">
+    <p class="eyebrow">Chess</p>
+    <h1 class="lists-title">Your move, Tallinn</h1>
+    <p class="lists-say">One board for everybody who opens this page, and a waiting list to play the house yourself. Whoever is here plays the next move for the city, and Tallinn Tastebuds answers. No clock: a game takes as long as it takes.</p>
+    <p class="chess-you" id="you" hidden></p>
+  </div>
+  <div class="lists-stack" id="stack"></div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙',
+                k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+  var FILES = 'abcdefgh';
+  var CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
+  var HOUSE = 'Tallinn Tastebuds';
+
+  /* The Ruy Lopez, eight moves in, as the public game's list. Everybody is
+     white in this game. */
+  var LOPEZ = [
+    ['e4', 'anna', 'e5'], ['Nf3', 'a visitor', 'Nc6'], ['Bb5', 'kaarel', 'a6'],
+    ['Ba4', 'a visitor', 'Nf6'], ['O-O', 'mari', 'Be7'], ['Re1', 'anna', 'b5'],
+    ['Bb3', 'joosep', 'd6'], ['c3', 'a visitor', 'O-O']
+  ];
+  var LOPEZ9 = LOPEZ.concat([['h3', 'anna', '']]);
+  var SCORE = 'Game 4 · Everybody 1 · Tallinn Tastebuds 2 · draws 0';
+
+  /* The public game, Everybody to move, as a visitor or member sees it: the
+     h-pawn picked up. */
+  var PUB_YOURS = {
+    eyebrow: 'Everybody against Tallinn Tastebuds', names: ['Everybody', HOUSE], showWho: true,
+    fen: 'r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1',
+    who: 'Everybody to move', why: 'Anyone here can play it — you included. Tap a piece, then where it goes.',
+    sel: 'h2', can: ['h3', 'h4'], last: ['e8', 'g8'],
+    lastLine: 'Last move <b>O-O</b> · Tallinn Tastebuds · 3 min ago',
+    moves: LOPEZ, flip: false, foot: SCORE
+  };
+  /* The same game, the house to move, as a visitor or member sees it. */
+  var PUB_WAIT = {
+    eyebrow: 'Everybody against Tallinn Tastebuds', names: ['Everybody', HOUSE], showWho: true,
+    fen: 'r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N1P/PP1P1PP1/RNBQR1K1',
+    who: 'Tallinn Tastebuds to move', why: 'Waiting for the house. This page looks again on its own — the radio is a good way to wait.',
+    sel: null, can: [], last: ['h2', 'h3'],
+    lastLine: 'Last move <b>h3</b> · anna · 1 min ago',
+    moves: LOPEZ9, flip: false, foot: SCORE
+  };
+  /* The same moment as the house sees it: the board turned round, the bishop
+     picked up, a pawn it could take ringed. */
+  var PUB_HOUSE = {
+    eyebrow: 'Everybody against Tallinn Tastebuds', names: ['Everybody', HOUSE], showWho: true,
+    fen: 'r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N1P/PP1P1PP1/RNBQR1K1',
+    who: 'Tallinn Tastebuds to move', why: 'That’s you. Tap a piece, then where it goes.',
+    sel: 'c8', can: ['b7', 'd7', 'e6', 'f5', 'g4', 'h3'], last: ['h2', 'h3'],
+    lastLine: 'Last move <b>h3</b> · anna · 1 min ago',
+    moves: LOPEZ9, flip: true, foot: SCORE
+  };
+  /* And when it is the city's turn, the house waits like anybody else. */
+  var PUB_HOUSE_WAITS = {
+    eyebrow: 'Everybody against Tallinn Tastebuds', names: ['Everybody', HOUSE], showWho: true,
+    fen: 'r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1',
+    who: 'Everybody to move', why: 'Waiting for the city.',
+    sel: null, can: [], last: ['e8', 'g8'],
+    lastLine: 'Last move <b>O-O</b> · you · 3 min ago',
+    moves: LOPEZ, flip: true, foot: SCORE
+  };
+
+  /* anna's own game against the house, three moves in. anna is white. */
+  var MINE_YOURS = {
+    eyebrow: 'anna against Tallinn Tastebuds', names: ['anna', HOUSE], showWho: false,
+    fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R',
+    who: 'Your move', why: 'Tap a piece, then where it goes.',
+    sel: 'f1', can: ['e2', 'd3', 'c4', 'b5', 'a6'], last: ['b8', 'c6'],
+    lastLine: 'Last move <b>Nc6</b> · Tallinn Tastebuds · 2 min ago',
+    moves: [['e4', '', 'e5'], ['Nf3', '', 'Nc6']], flip: false, foot: 'Started 20 min ago · your first game', resign: 'Resign'
+  };
+  /* The same game one move on, as the house sees it: black at the bottom,
+     the knight picked up. */
+  var MINE_HOUSE = {
+    eyebrow: 'anna against Tallinn Tastebuds', names: ['anna', HOUSE], showWho: false,
+    fen: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R',
+    who: 'Tallinn Tastebuds to move', why: 'That’s you. Tap a piece, then where it goes.',
+    sel: 'g8', can: ['f6', 'h6', 'e7'], last: ['f1', 'b5'],
+    lastLine: 'Last move <b>Bb5</b> · anna · just now',
+    moves: [['e4', '', 'e5'], ['Nf3', '', 'Nc6'], ['Bb5', '', '']], flip: true, foot: 'Started 20 min ago · anna’s first game', resign: 'End this game'
+  };
+  /* anna's game, lost: the four-move mate, seen from her side. */
+  var MINE_OVER = {
+    eyebrow: 'anna against Tallinn Tastebuds', names: ['anna', HOUSE], showWho: false,
+    fen: 'rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR',
+    who: 'Checkmate', why: 'Tallinn Tastebuds won, in two moves. Join the list again whenever you like.',
+    sel: null, can: [], last: ['d8', 'h4'], check: 'e1',
+    lastLine: 'Last move <b>Qh4#</b> · Tallinn Tastebuds · just now',
+    moves: [['f3', '', 'e5'], ['g4', '', 'Qh4#']], flip: false, foot: 'Lasted 9 min · your first game', go: 'Join the waiting list'
+  };
+
+  var QUEUE = [
+    { name: 'kaarel', why: 'since 2 h' },
+    { name: 'mari', why: 'since 40 min' },
+    { name: 'joosep', why: 'since 5 min' }
+  ];
+
+  var STATES = {
+    /* Signed out: the public game, then the invitation. */
+    visitor: {
+      games: [PUB_YOURS], signin: true,
+      play: { title: 'Play Tallinn Tastebuds yourself', why: 'Sign in on the map and join the waiting list. The house starts your game when your turn comes, and this page says so.', queue: QUEUE, after: true }
+    },
+    /* Signed in as anna, not in line yet. */
+    member: {
+      games: [PUB_YOURS], radio: true,
+      play: { title: 'Play Tallinn Tastebuds yourself', why: 'Join the waiting list and the house starts your game when your turn comes. This page will say when it has.', go: 'Join the waiting list', queue: QUEUE }
+    },
+    /* anna in line, fourth. */
+    waiting: {
+      games: [PUB_WAIT],
+      play: { title: 'You’re in line', why: 'Fourth, after kaarel, mari and joosep. The house starts your game when your turn comes, and this page will say so.', queue: QUEUE.concat([{ name: 'anna', why: 'since 1 min', you: true }]), alt: 'Leave the list' }
+    },
+    /* anna's game has started: her board first, the public one under it. */
+    playing: { games: [MINE_YOURS, PUB_WAIT], radio: true },
+    /* anna's game, over. */
+    'member-over': { games: [MINE_OVER, PUB_WAIT] },
+    /* The house, nobody playing it yet: the queue with the one action. */
+    house: {
+      you: 'You are the house · 5 games · 2 won · 2 lost · 1 drawn', house: true,
+      play: { title: 'Waiting to play you', why: 'One game at a time. Start the first in line, and the next one when that game ends.', go: 'Start a game with kaarel', queue: QUEUE },
+      games: [PUB_HOUSE]
+    },
+    /* The house with a game on: the queue says so, then both boards. */
+    'house-playing': {
+      you: 'You are the house · 6 games · 2 won · 2 lost · 1 drawn · 1 playing', house: true,
+      play: { title: 'Waiting to play you', why: 'anna is playing you now. The next game starts when this one ends.', queue: [{ name: 'anna', why: 'playing you now', playing: true }].concat(QUEUE) },
+      games: [MINE_HOUSE, PUB_HOUSE_WAITS]
+    }
+  };
+
+  function param(name, dflt) {
+    var q = location.search.slice(1).split('&'), i, p;
+    for (i = 0; i < q.length; i++) { p = q[i].split('='); if (p[0] === name) return decodeURIComponent(p[1] || ''); }
+    return dflt;
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function parseFen(fen) {
+    var rows = fen.split('/'), out = {}, r, i, c, f;
+    for (r = 0; r < 8; r++) {
+      f = 0;
+      for (i = 0; i < rows[r].length; i++) {
+        c = rows[r].charAt(i);
+        if (c >= '1' && c <= '8') { f += +c; } else { out[FILES.charAt(f) + (8 - r)] = c; f++; }
+      }
+    }
+    return out;
+  }
+
+  function board(g) {
+    var node = el('div', 'chess-board'), pos = parseFen(g.fen), ranks = [], files = [], r, f, sq, name, n, pc;
+    node.setAttribute('role', 'grid');
+    for (r = 8; r >= 1; r--) ranks.push(r);
+    for (f = 0; f < 8; f++) files.push(FILES.charAt(f));
+    if (g.flip) { ranks.reverse(); files.reverse(); }
+    ranks.forEach(function (rank) {
+      files.forEach(function (file) {
+        name = file + rank;
+        sq = el('div', 'sq' + (((FILES.indexOf(file) + rank) % 2 === 0) ? ' is-dark' : ''));
+        sq.setAttribute('data-sq', name);
+        sq.setAttribute('role', 'gridcell');
+        pc = pos[name];
+        if (pc) {
+          n = el('span', 'pc', GLYPH[pc] + '︎');
+          n.setAttribute('aria-label', name);
+          sq.appendChild(n);
+          sq.classList.add('has-pc');
+        }
+        if (g.sel === name) sq.classList.add('is-sel');
+        if (g.can.indexOf(name) !== -1) sq.classList.add('can');
+        if (g.last.indexOf(name) !== -1) sq.classList.add('is-last');
+        if (g.check === name) sq.classList.add('is-check');
+        /* Coordinates in the two edge squares only, the way a printed board
+           has them: the rank up the left, the file along the bottom. */
+        if (file === files[0]) sq.appendChild(el('span', 'co co-rank', String(rank)));
+        if (rank === ranks[7]) sq.appendChild(el('span', 'co co-file', file));
+        node.appendChild(sq);
+      });
+    });
+    return node;
+  }
+
+  function turn(g) {
+    var t = el('div', 'chess-turn'), seg, i, glyphs = ['Q', 'R', 'B', 'N'], names = ['Queen', 'Rook', 'Bishop', 'Knight'], b, go;
+    t.appendChild(el('p', 'eyebrow', g.eyebrow));
+    t.appendChild(el('p', 'chess-turn-who', g.promote ? 'Promote to' : g.who));
+    if (g.why) t.appendChild(el('p', 'chess-turn-why', g.why));
+    if (g.promote) {
+      seg = el('div', 'chess-promote seg');
+      seg.setAttribute('role', 'group');
+      seg.setAttribute('aria-label', 'Promote to');
+      for (i = 0; i < 4; i++) {
+        b = el('button', 'btn', GLYPH[glyphs[i]] + '︎');
+        b.type = 'button';
+        b.setAttribute('aria-label', names[i]);
+        seg.appendChild(b);
+      }
+      t.appendChild(seg);
+    }
+    if (g.go) {
+      go = el('button', 'go', g.go);
+      go.type = 'button';
+      t.appendChild(go);
+    }
+    return t;
+  }
+
+  function movesCard(g, view) {
+    var card = el('section', 'card chess-moves'), cols = el('div', 'chess-cols'), ol = el('ol', 'chess-list'), from = g.moveFrom || 1, p, alt;
+    card.setAttribute('aria-label', 'The moves');
+    card.appendChild(el('p', 'eyebrow', 'Moves'));
+    cols.appendChild(el('span'));
+    cols.appendChild(el('span', 'eyebrow', g.names[0]));
+    cols.appendChild(el('span', 'eyebrow', g.names[1]));
+    card.appendChild(cols);
+    g.moves.forEach(function (row, i) {
+      var li = el('li'), a = el('span', 'chess-m'), b = el('span', 'chess-m');
+      li.appendChild(el('span', 'chess-n', row[0] === '…' ? '' : String(from + i)));
+      a.appendChild(el('span', 'chess-san', row[0]));
+      if (g.showWho) a.appendChild(el('span', 'chess-who', row[1]));
+      b.appendChild(el('span', 'chess-san', row[2]));
+      li.appendChild(a);
+      li.appendChild(b);
+      ol.appendChild(li);
+    });
+    card.appendChild(ol);
+    if (!g.moves.length) card.appendChild(el('p', 'chess-empty', 'Nobody has moved yet. The first move is yours.'));
+    if (g.foot) card.appendChild(el('p', 'chess-foot', g.foot));
+    if (view.signin && g.showWho) {
+      p = el('p', 'chess-signin');
+      p.innerHTML = 'Sign in on <a href="/">the map</a> and your moves carry your name.';
+      card.appendChild(p);
+    }
+    if (g.resign) {
+      alt = el('button', 'alt', g.resign);
+      alt.type = 'button';
+      card.appendChild(alt);
+    }
+    return card;
+  }
+
+  function gameGrid(g, view) {
+    var grid = el('div', 'chess-grid'), card = el('section', 'card chess-board-card'), last = el('p', 'chess-last');
+    card.setAttribute('aria-label', 'The board');
+    card.appendChild(turn(g));
+    card.appendChild(board(g));
+    last.innerHTML = g.lastLine;
+    card.appendChild(last);
+    grid.appendChild(card);
+    grid.appendChild(movesCard(g, view));
+    return grid;
+  }
+
+  /* The one-on-one card: for a visitor the invitation, for a member the
+     door or their place in line, for the house the queue and the one action.
+     The people in line are rows, each a way to their page. */
+  function playCard(p) {
+    var card = el('section', 'card chess-play'), go, alt, ul;
+    card.setAttribute('aria-label', 'One on one');
+    card.appendChild(el('p', 'eyebrow', 'One on one'));
+    card.appendChild(el('h2', 'lists-title', p.title));
+    card.appendChild(el('p', 'chess-play-why', p.why));
+    if (p.go) {
+      go = el('button', 'go', p.go);
+      go.type = 'button';
+      card.appendChild(go);
+    }
+    card.appendChild(el('p', 'eyebrow chess-queue-head', 'Waiting now'));
+    ul = el('ul', 'menu');
+    p.queue.forEach(function (q) {
+      var li = el('li', 'menu-item'), a = el('a', 'menu-row' + (q.you ? ' is-you' : '') + (q.playing ? ' is-playing' : '')), say = el('span', 'menu-say'), goSpan = el('span', 'menu-go');
+      a.href = '/u/' + q.name;
+      say.appendChild(el('span', 'menu-name', q.name));
+      say.appendChild(el('span', 'menu-why', q.why));
+      goSpan.setAttribute('aria-hidden', 'true');
+      goSpan.innerHTML = CHEVRON;
+      a.appendChild(say);
+      a.appendChild(goSpan);
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    if (p.alt) {
+      alt = el('button', 'alt', p.alt);
+      alt.type = 'button';
+      card.appendChild(alt);
+    }
+    return card;
+  }
+
+  function drawHeader(view) {
+    var radio = document.getElementById('btn-radio'), list = document.getElementById('lang-list');
+    radio.setAttribute('aria-pressed', view.radio ? 'true' : 'false');
+    document.getElementById('radio-name').textContent = view.radio ? 'Raadio Tallinn' : '';
+    ['az', 'hy', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk'].forEach(function (code) {
+      var b = el('button', 'btn btn-lang');
+      b.type = 'button';
+      b.appendChild(el('span', 'lang-code', code.toUpperCase()));
+      b.appendChild(el('span', 'lang-name', code));
+      list.appendChild(b);
+    });
+  }
+
+  var view = STATES[param('state', 'visitor')] || STATES.visitor;
+  var stack = document.getElementById('stack'), you = document.getElementById('you');
+  drawHeader(view);
+  if (view.you) { you.textContent = view.you; you.hidden = false; }
+  if (view.play && !view.play.after) stack.appendChild(playCard(view.play));
+  view.games.forEach(function (g) { stack.appendChild(gameGrid(g, view)); });
+  if (view.play && view.play.after) stack.appendChild(playCard(view.play));
+})();
+</script>
+</body>
+</html>
