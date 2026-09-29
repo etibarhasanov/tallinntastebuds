@@ -4183,9 +4183,10 @@ repository because they are the file again.
 
 Then, in the Cloudflare dashboard — Storage & Databases, D1 SQL Database, the
 database, its **Console** tab — paste each piece in order and press Execute.
-Preview first, then production; both, always, because a preview deployment
-that cannot see these places would show an empty picker and look broken for
-no reason. Afterwards, in the same console:
+Production only: preview used to be loaded first so a preview deployment
+would not show an empty picker, but since 2026-09-29 it is set aside until it
+is replicated from production, and nothing is loaded into it. Afterwards, in
+the same console:
 
 ```sql
 select count(*), sum(map_id is not null), sum(missing_since is not null) from google_venues;
@@ -7615,12 +7616,12 @@ than at the round trip — change one, change the other.
 
 Two things, and neither is automatic:
 
-1. **Apply the schema to both databases.** `db/schema.sql` is re-runnable and
-   nothing in CI applies it:
+1. **Apply the schema to production.** `db/schema.sql` is re-runnable and
+   nothing in CI applies it. Preview is set aside until it is replicated from
+   production, so it gets nothing:
 
    ```
-   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
-   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
    ```
 
    Until it is run, `/api/split` answers `no such table` and the page shows
@@ -9656,19 +9657,19 @@ change the other.
 
 Two things, and neither is automatic:
 
-1. **Apply the schema to both databases.** `db/schema.sql` is re-runnable and
-   nothing in CI applies it:
+1. **Apply the schema to production.** `db/schema.sql` is re-runnable and
+   nothing in CI applies it. Preview is set aside until it is replicated from
+   production, so it gets nothing:
 
    ```
-   wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
-   wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
+   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
    ```
 
    Until it is run, the decks still turn over — they are a file — and every
    write answers `no such table`, which the page shows as the quiet line under
    the title saying nothing is being remembered. That is a better failure than
    splitwise's, which has nothing at all to show without its tables, and it is
-   still a failure: preview first, production the moment the change lands.
+   still a failure: production, the moment the change lands.
 
    **A database that already had `flashcard_known` needs the two spacing
    columns put on by hand.** `IF NOT EXISTS` cannot add a column to a table

@@ -12,12 +12,13 @@
  *
  * Then it goes into each database through the D1 console in the Cloudflare
  * dashboard — Storage & Databases, D1, the database, Console — pasted and
- * executed, preview first and then production. That is how it is done here,
- * because it needs nothing installed and no token anywhere; wrangler does the
- * same from a terminal that is signed in:
+ * executed, into production. Preview used to be loaded first; since 2026-09-29
+ * it is set aside until the owner replicates it, so production is the only
+ * database written (Production only, for now, in CLAUDE.md). The console is
+ * how it is done here, because it needs nothing installed and no token
+ * anywhere; wrangler does the same from a terminal that is signed in:
  *
- *   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
- *   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
+ *   wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql
  *
  * WRITTEN TO BE PASTED, WHICH IS WHY THERE IS NOT ONE COMMENT IN IT
  *
@@ -584,6 +585,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     });
     console.log(`\n${pieces.length} pieces to paste into the D1 console, in order, in ${dir}`);
   } else {
-    console.log('\nPaste it into the D1 console, preview first; --parts cuts it to size.');
+    console.log('\nPaste it into the D1 console, production only; --parts cuts it to size.');
   }
 }

@@ -64,9 +64,14 @@ does not have to:
   heatmaps and there is no button to press to stay out. Not a reason to avoid
   driving one — it is the whole point of a preview — just a reason to say so in
   the PR if you leant on it.
-- **The preview database is the only one to drive against**, and the
-  Cloudflare MCP `d1_database_query` tool reads either database without a
-  prompt. It writes to neither without one: `.claude/hooks/d1-write-gate.mjs`
+- **Production is the only database that is kept.** Every write goes to
+  production `tallinntastebuds` and nowhere else; preview
+  `tallinntastebuds-preview` is set aside until the owner replicates it
+  from production, so it is not loaded, not kept in step, and a difference
+  between the two is not worth reporting. **Production only, for now**
+  below is the whole of it. The Cloudflare MCP `d1_database_query` tool
+  reads either database without a prompt. It writes to neither without one:
+  `.claude/hooks/d1-write-gate.mjs`
   stops every write, refuses one past a hundred rows or one whose size is not
   in the statement, and never runs `DROP` at all. That and the two hard
   denials in `.claude/settings.json` are the owner's standing instruction and
@@ -246,6 +251,19 @@ to them is a decision, and it is theirs:
   "fix it" are about the pull request. The database is a separate sentence,
   and a merged PR whose `.sql` file is not loaded yet is a perfectly good
   place to stop — say so, and say which two lines would do it.
+
+**Production only, for now.** Since 2026-09-29 the owner keeps one database,
+production, and every write this file and the skills describe goes there and
+nowhere else. Preview is not loaded with a `.sql` file, not given a schema
+change, not corrected to match, and its drift from production is not a finding
+— it is expected, and it is not mentioned. Where a skill, a tool's header or
+the README still says "preview first", "both databases" or prints a
+`tallinntastebuds-preview` line beside the production one, read it as
+production alone. Preview stays bound in `wrangler.toml`, so `npx wrangler
+pages dev .` still reads and writes it: that is fine for driving a change
+whose rows nobody needs to keep, and it is the one use it has left. When it is
+needed again, the owner replicates it from production and this paragraph comes
+out.
 
 This is written down because it went wrong: a session that had been told to
 merge a fix loaded the corrected column into both databases on its own

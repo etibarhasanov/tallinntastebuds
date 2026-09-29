@@ -284,9 +284,10 @@ The procedure around it, which no hook can enforce and you have to:
 4. **Then let the prompt happen**, and take a no for an answer. One ask per
    write; asking again in the same turn hoping for a different answer is not
    how consent works.
-5. **Preview first, production after**, verified the same way against each.
-   They are separate databases, and a yes for one is not a yes for the other
-   unless that is what was said.
+5. **Production only.** Preview is set aside until the owner replicates it,
+   so a write goes to `tallinntastebuds` and nowhere else, and preview's
+   drift from it is not reported — **Production only, for now** in
+   `CLAUDE.md`.
 6. **Verify after**, as in step 1, and say what the numbers are now.
 
 "Merge it", "land it", "ship it" and "fix it" are about the pull request. The
@@ -298,20 +299,20 @@ unhappened.
 ## The schema
 
 `db/schema.sql` is the schema, not a migration: every statement is `IF NOT
-EXISTS`, and **nothing in CI applies it**. It is applied by hand, to both:
+EXISTS`, and **nothing in CI applies it**. It is applied by hand, to
+production only while preview is set aside:
 
 ```
-wrangler d1 execute tallinntastebuds         --remote --file=db/schema.sql
-wrangler d1 execute tallinntastebuds-preview --remote --file=db/schema.sql
+wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
 ```
 
 So a push does not apply it, and what is deployed and what is described can
 part company: `idx_saves_owner` existed in production before it was in the
 file, and `added_places.address` was added by a hand-run `ALTER TABLE`. A
-change that adds a table or an index goes to preview first, is driven there,
-and the PR says in so many words that production needs it applied on
-landing. A change to an existing column has no runner: write the `ALTER`
-out, run it on preview, say what it does to the rows, and list the columns
+change that adds a table or an index is driven under `pages dev`, and the PR
+says in so many words that production needs it applied on landing. A change
+to an existing column has no runner: write the `ALTER` out, say what it does
+to the rows, and list the columns
 in the file in the order the deployed table has them. **And make the readers
 survive its absence**, because there is always an afternoon between the deploy
 and somebody running it: `users.about` does that with a try and a second
