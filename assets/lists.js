@@ -2701,9 +2701,10 @@
   /* ------------------------------------------------------------- one place */
 
   /* Where a row points, and it is the other half of this page: this same list
-     on the map, standing on the place that was pressed — the pins above,
-     these same rows under them, and the one you asked for lit between the
-     two. `?at=` is the door; standOn() in assets/app.js is what it opens.
+     on the map with the place that was pressed open on it, and the list
+     under the place for closing it to land on — the pins above, these same
+     rows under them, scrolled to the one you asked for. `?at=` is the door;
+     openFromRow() in assets/app.js is what it opens.
 
      It used to leave the site. A place on my map went to its write-up and
      everything else opened a new tab on Google Maps, which is most of a top

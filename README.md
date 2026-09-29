@@ -6071,30 +6071,36 @@ rows ago — which is why the map kept being the half of a list nobody had
 noticed was there.
 
 So a row is a door too, and it goes to `/?list=<id>&at=<place>`: this same
-list on the map, the sheet at its half stop on a phone the way any list opens,
-and the place that was pressed lit, named and haloed between the two. The pins
-above, the list's own rows under them scrolled to that row and marking it, and
-both questions a row raises answered at once — where is this, and where is it
-next to the other nine.
+list on the map, with the place that was pressed open on it — its write-up,
+the way `?spot=` opens one, and the list's pins still around it. Closing the
+place lands back on the list: the sheet at its half stop on a phone, the rows
+scrolled to the one that was pressed, and that place left lit, named and
+haloed on the map above them. The cross, Escape and Back all get there, so
+Back from the place is the list and a second Back is the list's own page.
 
-Three details, and the two that can differ from what `?spot=` does both do,
-because the press means something else:
+It used to stop a step short of that — the list with the row lit and the
+write-up one more press away, on the argument that somebody who had not yet
+noticed the map should be shown the list on it before a single street. In use
+it read as the press having opened the list rather than the place anybody had
+pressed, so the place opens now and the list is what closing it hands back.
 
-- **The half stop.** A list opens there on a phone however it was arrived at,
-  because its pins are the map and at the full stop they were squeezed into the
-  strip under the brand card. `?spot=` lands there too, by a different road: a
-  place opens at the half stop however you got to it — see **The sheet** in the
-  design notes.
-- **The list's frame, not the place's.** `?spot=` comes in to `FOCUS_ZOOM`,
-  because opening a place is a street question. This does not zoom at all: it
-  keeps the fit that holds every pin on the list and only centres on this one.
-  A single pin on a street is exactly what somebody who has not yet noticed
-  the map does not need to be shown. The write-up is one more press away, on
-  the row or on the pin, and that press is what zooms.
+Three details:
+
+- **The half stop.** A place opens there on a phone however you got to it —
+  see **The sheet** in the design notes — and the list it closes to lands
+  there too, because a list's pins are the map and at the full stop they were
+  squeezed into the strip under the brand card.
+- **Only that place closes to the list.** `openFromRow()` in `assets/app.js`
+  remembers which place the row opened, and only closing that one goes back to
+  the list at its half stop. Open another place from there and it is an
+  ordinary open, which on a phone closes down to the list's band like any
+  other.
 - **`?at=` is a door, not a state.** Read once on the way in and taken straight
   back off, the way `?story=` and `?account=` are. What the address bar says
-  afterwards is `?list=<id>`, which is what the page is showing — a link copied
-  out of it is a link to the list on the map, not to somebody's eighth choice.
+  afterwards is what the page is showing: `?list=<id>&spot=<place>` while the
+  place is open, and `?list=<id>` once it is closed. A link copied out of it
+  opens that place or that list the way any other link does, and never
+  carries the close-to-the-list that belongs to the press on the row.
 
 **The door is the row and not the name across the top of it.** It was the name
 alone for as long as the door had existed, which made the target the width of
@@ -12379,8 +12385,9 @@ gone. `?account=up&then=/account.html` opens the account sheet on a view and
 says where to put somebody once they are signed in; it is how the account page
 borrows the map's sign-in form, and leaving it on would reopen the sign-up sheet for
 whoever the link was sent to. `?at=` rides with `?list=` and names the place a
-row on that list's own page was pressed on: the map arrives standing on it,
-and the address bar is left saying `?list=` — which is what is on the screen.
+row on that list's own page was pressed on: the map arrives with that place
+open over the list, and the address bar is left saying `?list=` and the
+`?spot=` of the open place — which is what is on the screen.
 See **Lists**.
 
 ---
