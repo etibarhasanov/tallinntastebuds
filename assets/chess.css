@@ -162,6 +162,10 @@
 
 .chess-last { margin: 12px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
 .chess-last b { font-weight: 500; color: var(--ink); }
+/* Undo, for the ten seconds after the reader's own move: a way out rather
+   than an action, so an .alt under the last move, its chevron-less padding
+   lined up with the text above. */
+.chess-undo { margin: 2px 0 0 -12px; }
 
 /* ---------- the moves card ---------- */
 

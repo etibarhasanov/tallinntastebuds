@@ -84,6 +84,11 @@ for four choices in the segmented control the language switch is.
   wait.* Read by the house: the board live and turned round, *That’s you.*
 - Somebody moved first: the server answers 409, the page redraws from the
   answer and toasts *Somebody got there first — here is the board now.*
+- Your own move, for ten seconds: *Undo (9)* under the last move, counting
+  down, in the tab that moved and nowhere else; pressed, the move goes and it is
+  your turn again; too late, *Too late to undo — here is the board now.* A move
+  that ended the game never offers it. Added after the six tasks were cut, at
+  the owner's asking, between tasks 5 and 6.
 - Check on the line; Checkmate, Stalemate or Draw with its reason when it ends,
   then *Tallinn Tastebuds starts the next game.* for readers and the button for
   the house.
@@ -164,6 +169,7 @@ without the words, or an error:
 | `start` `{ game }` | the house | the first waiting game becomes live | `409 busy` (one at a time), `409 not-first`, `404 no-game`, `403 not-yours` |
 | `resign` `{ game }` | the challenger, or the house on the private game | the other side wins | `404 no-game` |
 | `abandon` `{ game }` | the house | over with no result, only on the member's turn after seven quiet days | `409 not-yet`, `404 no-game`, `403 not-yours` |
+| `undo` `{ game, ply }` — `ply` the move's own, the game's ply as the page read it | whoever the last move was filed under: the house, the member, or the one device that played it for Everybody | deletes the move and steps the game back to the position before it, within ten seconds of it being filed (three more of grace), while the game is still playing — a move that ended it is final | `409 too-late` (answered, over, or past the time), `403 not-yours`, `400 client`, `404 no-game` |
 
 The move's primary key is the lock: `chess_moves (game, ply)` — the batch
 inserts the move row first and updates the game `WHERE ply = ?` second, so two

@@ -46,6 +46,15 @@
  * on screen, and asks at once when it comes back on screen — a tab left open
  * all night is not a request every twenty seconds until morning.
  *
+ * TAKING A MOVE BACK
+ *
+ * For ten seconds after a move, the tab that made it shows Undo with the
+ * seconds left, counting down; the route takes it back only from whoever the
+ * move was filed under, only while it is still the last move and the game is
+ * still on. A move that ended the game is final, so its answer never offers
+ * one. state.undo is the one thing this page remembers about a move after
+ * the answer, and it goes the moment the board has moved on.
+ *
  * THE PIECES
  *
  * The platform's own chess glyphs, U+2654 to U+265F, each followed by U+FE0E so
@@ -72,6 +81,10 @@
 
   /* How often the board is asked for again while the page is on screen. */
   var POLL_MS = 20000;
+
+  /* How long a move may be taken back, counted from when it came back. The
+     route allows a few seconds more, for the request on its way. */
+  var UNDO_MS = 10000;
 
   var FILES = 'abcdefgh';
 
@@ -102,6 +115,11 @@
     drawn: '',
     picked: null,       /* { game, ply, sq } */
     promoting: null,    /* { game, ply, from, to } */
+    /* The move this tab made last and may still take back. Only the tab
+       that moved knows it, which is the point: on Everybody's board the one
+       who played the move is the one who may undo it, and the route checks
+       the same by what the move was filed under. */
+    undo: null,         /* { game, ply, until } */
     busy: false
   };
 
@@ -109,6 +127,7 @@
   var offline = null;
   var record = null;
   var pollTimer = null;
+  var undoTimer = null;
 
   /* ------------------------------------------------------------ the pieces */
 
@@ -508,7 +527,54 @@
     if (!you || you.role === 'visitor') body.client = window.TTBDevice.id();
 
     window.TTBTrack.event('chess_move', { kind: g.game.kind, ply: g.game.ply + 1 });
-    write(body, { 409: 'chessGotThereFirst' });
+    write(body, { 409: 'chessGotThereFirst' }, function (out) {
+      /* The move went in. It may be taken back while the game is still on —
+         a move that ended it is final — so the answer is asked, not assumed. */
+      var now = out.public && out.public.game.id === g.game.id ? out.public
+              : out.mine && out.mine.game.id === g.game.id ? out.mine : null;
+      if (now && now.game.state === 'playing' && now.game.ply === body.ply + 1) {
+        state.undo = { game: now.game.id, ply: now.game.ply, until: Date.now() + UNDO_MS };
+        countDown();
+      }
+    });
+  }
+
+  /* Whether this tab may still take back its last move on this game: the
+     move is still the last one, the game is still on, the ten seconds are
+     not up. */
+  function undoable(game) {
+    var u = state.undo;
+    return !!u && u.game === game.id && u.ply === game.ply && game.state === 'playing' && Date.now() < u.until;
+  }
+
+  function undoLabel() {
+    return t('chessUndo', { n: Math.max(1, Math.ceil((state.undo.until - Date.now()) / 1000)) });
+  }
+
+  /* The button counts itself down, a second at a time, without redrawing the
+     board under a piece somebody may be holding; when the time is up it goes,
+     and that is one redraw. */
+  function countDown() {
+    if (undoTimer) clearInterval(undoTimer);
+    undoTimer = setInterval(function () {
+      var button = stack.querySelector('.chess-undo');
+      if (state.undo && Date.now() < state.undo.until && button) {
+        button.textContent = undoLabel();
+        return;
+      }
+      clearInterval(undoTimer);
+      undoTimer = null;
+      state.undo = null;
+      draw();
+    }, 1000);
+  }
+
+  function takeBack(game) {
+    var extra = { game: game.id, ply: game.ply };
+    var you = state.answer.you;
+    if (!you || you.role === 'visitor') extra.client = window.TTBDevice.id();
+    state.undo = null;
+    act('undo', 'chess_undo', extra, { 409: 'chessUndoLate' });
   }
 
   /* Every other write: the house's new public game, a member joining the line
@@ -526,12 +592,14 @@
      the board included, since the page may simply have been behind. `said`
      names the toast for a status the reader should hear about in words of its
      own; any other refusal is the one sentence for a write that did not go
-     through. */
-  function write(body, said) {
+     through. `landed` hears the answer to a write that went in, before it is
+     drawn. */
+  function write(body, said, landed) {
     state.busy = true;
     post(body).then(function (a) {
       state.busy = false;
       var toastKey = (said && said[a.status]) || (a.ok ? '' : 'chessMoveFailed');
+      if (a.ok && landed) landed(a.out);
       if (a.out.ready) take(a.out, true);
       else draw();
       if (toastKey) toast(t(toastKey));
@@ -705,6 +773,11 @@
     }));
     var line = lastLine(g);
     if (line) card.appendChild(line);
+    if (undoable(game)) {
+      var back = altButton(undoLabel(), function () { takeBack(game); });
+      back.className += ' chess-undo';
+      card.appendChild(back);
+    }
     return card;
   }
 

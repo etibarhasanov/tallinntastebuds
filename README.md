@@ -9933,6 +9933,30 @@ A join the line has no room for says *The line is full right now*; a second
 press on a page that was behind says *You're already in line* and draws the
 card as it now is.
 
+### Taking a move back
+
+For ten seconds after a move, whoever made it may take it back: an *Undo* link
+under the last move, with the seconds left beside it, counting down. On
+Everybody's board that is the one visitor or member who played the move and
+nobody else in the city — the route checks what the move was filed under, the
+device id or the account, and the page shows the link only in the tab that
+moved. The house may take back its own moves the same way, on either board.
+
+It is refused once the other side has answered, since the move is no longer
+the last one, and once the ten seconds are up; the route allows three more for
+the request on its way, and the page counts ten. **A move that ended the game
+is final**: checkmate, stalemate and a draw are not taken back, and the page
+never offers it. Taking a move back deletes its row and steps the game back to
+the position before it in one batch, both only while the game is still at that
+ply, so an undo and the other side's reply arriving together cannot both land:
+whichever the table takes first stands, and the other gets *Too late to undo —
+here is the board now*, or *Somebody got there first*, and the board as it now
+is. Nobody else is told that a move was taken back; their board simply redraws
+on its next poll.
+
+Not done: taking back more than one move, a takeback asked of the other side,
+taking back a resignation or a game ended without a result.
+
 ### The tables
 
 Two, in `db/schema.sql`, applied by hand like every table here:
@@ -14475,6 +14499,7 @@ flashcards' header has:
 | `chess_join`, `chess_leave` | — a member's *Join the waiting list*, from the card or under a game of theirs that is over, and *Leave the list*. Sent on the press, so a join the full line refused is still one |
 | `chess_start` | — the house's *Start a game with …* |
 | `chess_resign`, `chess_abandon` | — *Resign*, pressed by either side and confirmed, and the house's *End without a result* |
+| `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
 | `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |
