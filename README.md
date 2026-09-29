@@ -11001,13 +11001,17 @@ experiment is decided.
 ### What it does not do
 
 No recordings and no heatmaps — that is Clarity, and nothing here replaces
-it. No path through the site for one visitor, no funnels, and nothing in real
-time finer than **Right now**, which is pages a minute for the last half hour
-rather than people: everything else's finest grain is a day. No device or browser breakdown. Numbers will
-not match GA's exactly — GA and this count different things by different
-means — so the two are worth running side by side for a few weeks before
-Google's tag comes out. `/admin/` sends nothing, so the owner reading this
-page is not counted by it; the owner using the site is, as in GA.
+it. No path through the site for one visitor, and nothing in real time finer
+than **Right now**, which is pages a minute for the last half hour rather
+than people: everything else's finest grain is a day. The funnels are not
+on this page either: how people move from one step to the next is laid on
+the diagrams at `/admin/flows` — **The numbers on it** under **Who uses the
+site, drawn** — out of the same report this page is counted from. No device
+or browser breakdown. Numbers will not match GA's exactly — GA and this
+count different things by different means — so the two are worth running
+side by side for a few weeks before Google's tag comes out. `/admin/` sends
+nothing, so the owner reading this page is not counted by it; the owner
+using the site is, as in GA.
 
 ---
 
@@ -11094,6 +11098,117 @@ that moved — changes their diagram in the same pull request, the same way it
 changes the README section for that feature. Edit `data/flows.json`, run
 `node tools/flows.mjs`, commit both. The `/site` and `/api` skills say so, and
 a new kind of person is a new flow and a new chip, with nothing else to touch.
+A new step that the site can see somebody take also says what it is counted
+by — **The numbers on it** below — or it draws with no number on it.
+
+### The numbers on it
+
+The same page lays on each diagram how people actually move through it:
+over the diagram a range — today, 7, 28 or 90 days — and a who — everybody,
+signed out, signed in; on every step the site can see somebody take, how
+many page views reached it; on every arrow, how many walked it, and the
+arrow drawn thicker the more did; on an end event, how many journeys
+finished there. A pressed step's card says how many reached it and where
+they went next. Under the diagram, **Step by step** is every counted step in
+the order the diagram draws them, with its number, its share of the
+diagram's page views, and where its people went on to; and **Moves the
+diagram does not draw** is the pairs of steps people took one after the
+other that no arrow joins, most first — which is the card that argues for
+changing a diagram: an arrow it is missing, or a thing people do that it
+never expected. It has argued twice before a single row was counted, on
+the reports a scratch harness fed the count: the visitor's diagram had no
+arrow for opening a place straight off a pin, which is the first way
+anybody does, and the member's had *Makes a list*, *Edits the page under
+their name* and *Reads who opened it* branching off *What now?* when every
+one of them starts on the account page — so the member's diagram now goes
+through *Opens their account page* and a second gateway, and the visitor's
+has the pin.
+
+Nothing changes for a visitor. `assets/track.js` already reports every
+press by name when a page is put away; it now also reports the order they
+first happened in — the trail — and `functions/api/_flows.js` turns a trail
+into steps and pairs of steps for each diagram that recognises them,
+counted into `flow_counts` and read back walked. `GET /api/admin/flows` is
+the route, the owner's alone under the same lock as the rest, cached five
+minutes in the colo per diagram and range and handed to the browser
+`private, no-store`.
+
+**A press becomes a step by the diagram's own say-so.** Each step in
+`data/flows.json` that the site can see carries `when`: the signals that
+mean it. Three shapes — `page:map`, a page opened, by the ids `PAGES` in
+`_visitors.js` already tells apart; `view:map`, what that page counts as a
+view, a place on the map, a post on the blog, a deck on the flashcards;
+`save_place`, a press by the name it already reports to GA and to
+`/admin/visitors` — and a name that means something else on another page
+says which page it is on, `account_login@split`. A gateway never carries
+one: it is a question, not a thing that happens. A service step may, when a
+press is what asks the site to do it: `pass_shown` is the site admitting an
+account. `tools/flows.mjs` writes each signal into the `.bpmn` as a `when:`
+line beside `ref:`, so a modeler shows it, and the validator holds every
+signal to a page that exists and a press the **Analytics** table lists.
+One press can be a step in two diagrams, because the diagrams are lenses on
+the same gestures rather than a partition of them: a sign-in on the map is
+the visitor's last step and the discount's second.
+
+**What a number means.** A step is counted once per page opened, the rule a
+place and a chip already follow, never per person and never per press: a
+visitor who opens five places in one look at the map is one at *Opens a
+place*. An arrow's number is how many of those page views went from the
+step before it to the step after it, with the steps the site cannot see — a
+gateway, the site's own work — filled in from the diagram at read time, so
+somebody who opened a place and then shared it walked *Opens a place*,
+*Adds Google's block* and *Goes, or shares*, and all three arrows count
+them. The people who reached a step and took no counted step after it are
+walked forward as far as the diagram lets them be without guessing: along
+an arrow that is the only way on, through the site's own steps, into an
+end. At a gateway the walk goes on only when exactly one branch leads to an
+end through steps the site cannot see and every other branch leads to a
+counted step, because then not having taken those is the answer — a card
+turned by somebody who never met the sign-in card is a member's answer
+being kept. Where two ends sit behind one gateway, or the answer is a
+parameter the count never sees — a scan reads `pass_verify` whether the
+verdict was valid or refused — the ends carry no number rather than a
+guess, and a pressed one says so.
+
+**Signed in and signed out** is the session on the request, which the server
+knows and the page does not need to; everybody is the two added together.
+The visitor's diagram opens on the signed out, the member's on the signed
+in, the other four on everybody, and any of them can be switched: a member
+browsing the map is a real question, and the visitor's diagram under
+*Signed in* is what answers it. Nothing else about the person is kept.
+
+**Crossing pages.** A journey from the map to a list is two page views, so
+the tab keeps the last step it reported, in `sessionStorage` under
+`ttb.step`, and the next page sends it as the step before its first. One
+word, per tab, gone when the tab closes, and nothing that names anybody —
+but one more thing written to a device, beside the two dates **A visitor is
+a browser on a day** already puts there, and the same call.
+
+**A hand-over.** The pass shown to a waiter's camera, the splitwise link
+sent to the table: no one browser makes that journey, so the step it lands
+on carries `handover` in `flows.json`, the walk never enters it, and the
+arrow into it is drawn thin with no number. The step still counts when it
+is reached on the other device.
+
+**Pairs, not arrows, are what is stored.** `flow_counts` holds a step
+reached and a pair of steps taken one after the other, whether or not an
+arrow joins them, because which arrows a diagram has is a fact about
+today's file: the read walks each pair along the diagram as it stands, so
+an arrow drawn next month carries the numbers from before it existed, and
+the moves card is the pairs no path joins. One row per diagram, day, who
+and id, bounded by the steps a diagram has rather than by the traffic, and
+applied by hand to both databases the way every table is; until it has
+been, the page says the numbers are not in yet under a diagram it has
+already drawn.
+
+**What it does not do.** New against returning, which `/admin/visitors`
+has and which would double the rows here. One visitor's path: nothing here
+can, and nothing is written that could. A press's parameters. Numbers on the
+owner's diagram, since nothing under `/admin/` is counted. Anything from
+before it landed, and a chart over time: it is a total over the range.
+Which place was opened, which is `/admin/stats`. Arrows across devices. And
+it changes no diagram's shape on its own: the moves card argues, and the
+owner decides.
 
 ## The admin page
 
@@ -14145,6 +14260,8 @@ opened:
 | --- | --- |
 | `flow_open` | `flow` — a chip pressed, which diagram was opened |
 | `flow_step` | `flow`, `step` — a step pressed, to read what it does and where it lives |
+| `flow_range` | `flow`, `days` — a range chip pressed over the diagram, for the numbers on it |
+| `flow_who` | `flow`, `who` (`all`/`out`/`in`) — the who switch over the diagram |
 | `home` | — |
 
 And every page that carries `assets/back.js` — the map, the lists, the account

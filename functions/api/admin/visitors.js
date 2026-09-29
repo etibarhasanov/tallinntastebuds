@@ -31,7 +31,7 @@
  * The page says the numbers are not in yet.
  */
 
-import { json, wrongDatabase, wordsFor } from '../_lib.js';
+import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
 import { SPANS, readVisitors } from '../_visitors.js';
 import { LAYOUT } from '../stats.js';
 
@@ -80,14 +80,6 @@ async function readDealt(env) {
     /* No table yet. */
   }
   return dealt;
-}
-
-/* The colo's copy is public, because the Cache API stores nothing less; the
-   browser's is private — the same pair ./stats.js makes. */
-function privately(res) {
-  const out = new Response(res.body, res);
-  out.headers.set('cache-control', 'private, no-store');
-  return out;
 }
 
 /* The route, the language and the range, and never the rest of the address

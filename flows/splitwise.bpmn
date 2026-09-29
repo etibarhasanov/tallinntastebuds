@@ -39,11 +39,13 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="paid" name="Paid for dinner">
-      <bpmn:documentation>ref: split.html</bpmn:documentation>
+      <bpmn:documentation>when: page:split
+ref: split.html</bpmn:documentation>
       <bpmn:outgoing>splitwise-e1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="create" name="Names a group">
-      <bpmn:documentation>ref: assets/split.js</bpmn:documentation>
+      <bpmn:documentation>when: split_create
+ref: assets/split.js</bpmn:documentation>
       <bpmn:incoming>splitwise-e1</bpmn:incoming>
       <bpmn:outgoing>splitwise-e2</bpmn:outgoing>
     </bpmn:userTask>
@@ -54,12 +56,14 @@ ref: functions/api/split.js POST create</bpmn:documentation>
       <bpmn:outgoing>splitwise-e3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="send" name="Sends the link to the table">
-      <bpmn:documentation>ref: functions/split.js the head a message unfurls</bpmn:documentation>
+      <bpmn:documentation>when: split_share
+ref: functions/split.js the head a message unfurls</bpmn:documentation>
       <bpmn:incoming>splitwise-e3</bpmn:incoming>
       <bpmn:outgoing>splitwise-e4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="open-link" name="Opens the link">
-      <bpmn:documentation>ref: functions/split.js</bpmn:documentation>
+      <bpmn:documentation>handover: begins on somebody else's device
+ref: functions/split.js</bpmn:documentation>
       <bpmn:incoming>splitwise-e4</bpmn:incoming>
       <bpmn:outgoing>splitwise-e5</bpmn:outgoing>
     </bpmn:userTask>
@@ -75,13 +79,16 @@ ref: functions/api/split.js GET ?group=</bpmn:documentation>
       <bpmn:outgoing>splitwise-e8</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="sign-in" name="Signs in on the page">
-      <bpmn:documentation>ref: assets/split.js
+      <bpmn:documentation>when: account_login@split
+when: account_create@split
+ref: assets/split.js
 ref: functions/api/account.js POST login, create</bpmn:documentation>
       <bpmn:incoming>splitwise-e7</bpmn:incoming>
       <bpmn:outgoing>splitwise-e9</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="join" name="Presses Join">
-      <bpmn:documentation>ref: assets/split.js joinCard()</bpmn:documentation>
+      <bpmn:documentation>when: split_join
+ref: assets/split.js joinCard()</bpmn:documentation>
       <bpmn:incoming>splitwise-e8</bpmn:incoming>
       <bpmn:incoming>splitwise-e9</bpmn:incoming>
       <bpmn:outgoing>splitwise-e10</bpmn:outgoing>
@@ -101,21 +108,26 @@ ref: functions/api/split.js POST join</bpmn:documentation>
       <bpmn:outgoing>splitwise-e16</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="spend" name="Adds an expense, for anybody">
-      <bpmn:documentation>ref: assets/split.js spendForm()</bpmn:documentation>
+      <bpmn:documentation>when: split_spend
+ref: assets/split.js spendForm()</bpmn:documentation>
       <bpmn:incoming>splitwise-e12</bpmn:incoming>
       <bpmn:outgoing>splitwise-e17</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="settle" name="Marks a payment as paid">
-      <bpmn:documentation>ref: assets/split.js</bpmn:documentation>
+      <bpmn:documentation>when: split_settle
+ref: assets/split.js</bpmn:documentation>
       <bpmn:incoming>splitwise-e13</bpmn:incoming>
       <bpmn:outgoing>splitwise-e18</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="undo" name="Removes a line they wrote or paid">
+      <bpmn:documentation>when: split_unspend
+when: split_unsettle</bpmn:documentation>
       <bpmn:incoming>splitwise-e14</bpmn:incoming>
       <bpmn:outgoing>splitwise-e19</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="leave" name="Leaves">
-      <bpmn:documentation>Only while nothing in the sums names them: 409 spent otherwise.</bpmn:documentation>
+      <bpmn:documentation>Only while nothing in the sums names them: 409 spent otherwise.
+when: split_leave</bpmn:documentation>
       <bpmn:incoming>splitwise-e15</bpmn:incoming>
       <bpmn:outgoing>splitwise-e20</bpmn:outgoing>
     </bpmn:userTask>
@@ -133,6 +145,8 @@ ref: functions/api/split.js POST spend, settle, unspend, unsettle, leave</bpmn:d
     </bpmn:endEvent>
     <bpmn:userTask id="owner-acts" name="Removes a member, or deletes the group">
       <bpmn:documentation>Only a member nothing in the sums names. Deleting takes everything and has no undo.
+when: split_drop
+when: split_remove
 ref: assets/split.js</bpmn:documentation>
       <bpmn:incoming>splitwise-e16</bpmn:incoming>
       <bpmn:outgoing>splitwise-e22</bpmn:outgoing>

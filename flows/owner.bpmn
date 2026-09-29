@@ -7,7 +7,7 @@
     <bpmn:participant id="owner-pool" name="The owner" processRef="owner-process" />
   </bpmn:collaboration>
   <bpmn:process id="owner-process" name="The owner" isExecutable="false">
-    <bpmn:documentation>The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats and /admin/google answer only a signed-in account named in ADMINS.</bpmn:documentation>
+    <bpmn:documentation>The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.</bpmn:documentation>
     <bpmn:laneSet id="owner-lanes">
       <bpmn:lane id="owner-lane-owner" name="Owner">
         <bpmn:flowNodeRef>open</bpmn:flowNodeRef>
@@ -138,9 +138,10 @@ ref: .claude/skills/place/SKILL.md</bpmn:documentation>
     <bpmn:endEvent id="discount-live" name="Offer live">
       <bpmn:incoming>owner-e19</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="stats" name="Reads the stats, the visitors, Google's directory and budget">
+    <bpmn:userTask id="stats" name="Reads the stats, the visitors, the diagrams and their numbers, Google's directory and budget">
       <bpmn:documentation>ref: admin/stats.html
 ref: admin/visitors.html
+ref: admin/flows.html
 ref: admin/google.html
 ref: admin.html</bpmn:documentation>
       <bpmn:incoming>owner-e20</bpmn:incoming>
@@ -153,6 +154,7 @@ ref: functions/api/_admin.js adminUser()
 ref: functions/api/admin/stats.js GET
 ref: functions/api/admin/visitors.js GET
 ref: functions/api/admin/live.js GET
+ref: functions/api/admin/flows.js GET
 ref: functions/api/admin/venues.js GET
 ref: functions/api/admin/refreshes.js GET</bpmn:documentation>
       <bpmn:incoming>owner-e21</bpmn:incoming>

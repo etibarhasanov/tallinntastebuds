@@ -33,7 +33,8 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="offer" name="Sees an offer on a place">
-      <bpmn:documentation>ref: assets/app.js dealBlock()
+      <bpmn:documentation>when: deal_open
+ref: assets/app.js dealBlock()
 ref: data/deals.json</bpmn:documentation>
       <bpmn:outgoing>discount-e1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -43,17 +44,21 @@ ref: data/deals.json</bpmn:documentation>
       <bpmn:outgoing>discount-e3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="sign-in" name="Signs in from the sheet, lands back on the pass">
-      <bpmn:documentation>ref: index.html the account sheet</bpmn:documentation>
+      <bpmn:documentation>when: deal_signin
+when: pass_signin
+ref: index.html the account sheet</bpmn:documentation>
       <bpmn:incoming>discount-e3</bpmn:incoming>
       <bpmn:outgoing>discount-e4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="show-qr" name="Presses Show QR">
-      <bpmn:documentation>ref: deal.html</bpmn:documentation>
+      <bpmn:documentation>when: page:deal
+ref: deal.html</bpmn:documentation>
       <bpmn:incoming>discount-e2</bpmn:incoming>
       <bpmn:outgoing>discount-e5</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="admit" name="Admits the account, draws the hour's rate">
       <bpmn:documentation>401 sign-in without a session, 503 with no database or salt. The rate is the same for the whole hour and nothing is stored.
+when: pass_shown
 ref: functions/api/pass.js GET</bpmn:documentation>
       <bpmn:incoming>discount-e4</bpmn:incoming>
       <bpmn:incoming>discount-e5</bpmn:incoming>
@@ -73,12 +78,15 @@ ref: assets/qr.js</bpmn:documentation>
       <bpmn:outgoing>discount-e9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:manualTask id="scan" name="Points the phone's camera at the QR">
-      <bpmn:documentation>ref: verify.html</bpmn:documentation>
+      <bpmn:documentation>handover: begins on somebody else's device
+when: page:verify
+ref: verify.html</bpmn:documentation>
       <bpmn:incoming>discount-e8</bpmn:incoming>
       <bpmn:outgoing>discount-e10</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:task id="verify" name="Checks the hour and the code">
       <bpmn:documentation>Accepts the hour before and after. Everything is checked on the waiter's phone; no request is made.
+when: pass_verify
 ref: assets/verify.js
 ref: assets/pass.js verify()</bpmn:documentation>
       <bpmn:incoming>discount-e10</bpmn:incoming>
@@ -97,6 +105,8 @@ ref: assets/pass.js verify()</bpmn:documentation>
     </bpmn:endEvent>
     <bpmn:manualTask id="compare" name="Compares with this hour's code">
       <bpmn:documentation>The owner sends staff.html?r=&lt;id&gt; once and the restaurant bookmarks it.
+handover: begins on somebody else's device
+when: page:staff
 ref: staff.html
 ref: assets/staff.js</bpmn:documentation>
       <bpmn:incoming>discount-e9</bpmn:incoming>

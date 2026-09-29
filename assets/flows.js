@@ -6,14 +6,24 @@
  * under the diagram whatever step was last pressed: its note and the files
  * and routes that do it. See **Who uses the site, drawn** in README.md.
  *
+ * AND THE NUMBERS ON IT
+ *
+ * Over the diagram, a range and a who — everybody, signed out, signed in —
+ * and on it how many page views reached each step, how many walked each
+ * arrow, and under it where a pressed step's people went next, every
+ * counted step in a table, and the moves the diagram does not draw. The
+ * numbers are GET /api/admin/flows, and functions/api/_flows.js is what
+ * they mean; this file only draws them by id, on the shapes it has already
+ * drawn. See **The numbers on it** under **Who uses the site, drawn**.
+ *
  * WHAT IT DRAWS FROM
  *
  * data/flows.json is the source and flows/<id>.bpmn is what tools/flows.mjs
  * lays out from it. This page reads the source for the chips — a name and a
- * sentence per diagram — and the .bpmn for the drawing, so what is on the
- * screen is exactly the file the download link hands over and a modeler
- * would open. A .bpmn that does not draw here does not open there either,
- * and this is where somebody finds out.
+ * sentence per diagram — and for which steps are counted, and the .bpmn for
+ * the drawing, so what is on the screen is exactly the file the download
+ * link hands over and a modeler would open. A .bpmn that does not draw here
+ * does not open there either, and this is where somebody finds out.
  *
  * WHY NOT bpmn-js
  *
@@ -39,6 +49,25 @@
 
   var SOURCE = '/data/flows.json';
   var UI_URL = '/data/ui.json';
+  var NUMBERS = '/api/admin/flows';
+
+  /* The ranges, as the route answers them — SPANS in
+     functions/api/_visitors.js — and the three whos an answer carries. A
+     diagram opens on the who it is about: the visitor's on the signed out,
+     the member's on the signed in, the rest on everybody. */
+  var SPANS = [1, 7, 28, 90];
+  var WHO = ['all', 'out', 'in'];
+  var WHO_LABEL = { all: 'flowsEverybody', out: 'flowsSignedOut', 'in': 'flowsSignedIn' };
+  var DEFAULT_WHO = { visitor: 'out', member: 'in' };
+
+  /* An arrow's width says what its number says — rule 10 of the design
+     rules — between these two, by the square root of its share of the
+     busiest arrow, so the quiet ones still read as lines. And how many of
+     the steps people went on to a row names before it stops. */
+  var ARROW_MIN = 1.3;
+  var ARROW_MAX = 4.5;
+  var NEXT_SHOWN = 4;
+  var MOVES_SHOWN = 10;
 
   var NS = {
     bpmn: 'http://www.omg.org/spec/BPMN/20100524/MODEL',
@@ -70,7 +99,12 @@
     width: 0,        // its drawing's natural width, in diagram units
     zoom: 1,
     steps: {},       // id -> { name, kind, lane, doc } for the flow on screen
-    picked: null     // the <g> of the step last pressed
+    picked: null,    // the <g> of the step last pressed
+    drawn: null,     // the shapes and arrows on screen, by id — see draw()
+    span: 7,         // the range, in days
+    who: 'all',      // which of the answer's three whos is on screen
+    numbers: null,   // the answer for the flow on screen, or null
+    asked: 0         // how many times the numbers were asked for, so a late answer is dropped
   };
 
   /* --------------------------------------------------------------- helpers */
@@ -105,11 +139,30 @@
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
   }
 
-  function t(key) {
+  function t(key, vars) {
     var pack = state.ui[state.lang] || {};
     var s = pack[key];
     if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
-    return s === undefined ? key : s;
+    if (s === undefined) return key;
+    if (vars) {
+      Object.keys(vars).forEach(function (v) {
+        s = s.split('{' + v + '}').join(String(vars[v]));
+      });
+    }
+    return s;
+  }
+
+  function num(n) {
+    try { return Number(n || 0).toLocaleString(state.lang); } catch (e) { return String(n || 0); }
+  }
+
+  /* A day as the table files it, YYYY-MM-DD, as a date in the reading
+     language: the month's name out of ui.json rather than Intl, which draws
+     April as M04 in Chromium for some locales. */
+  function dateLabel(day) {
+    var parts = String(day || '').split('-');
+    var name = String(t('months') || '').split('|')[Number(parts[1]) - 1];
+    return name ? Number(parts[2]) + ' ' + name + ' ' + parts[0] : String(day || '');
   }
 
   function get(url, as) {
@@ -228,14 +281,24 @@
       shapes.push({ id: ref, el: model[ref], box: childBounds(ss[s]), label: labelBounds(ss[s]) });
     }
 
+    /* An arrow's two ends, so the numbers — which the route keys by
+       'from>to' — can find the line they belong on. */
+    var ends = {};
+    var sf = doc.getElementsByTagNameNS(NS.bpmn, 'sequenceFlow');
+    for (var f = 0; f < sf.length; f++) {
+      ends[sf[f].getAttribute('id')] = { from: sf[f].getAttribute('sourceRef'), to: sf[f].getAttribute('targetRef') };
+    }
+
     var edges = [];
     var es = doc.getElementsByTagNameNS(NS.bpmndi, 'BPMNEdge');
     for (var e = 0; e < es.length; e++) {
       var pts = [];
       var wps = es[e].getElementsByTagNameNS(NS.di, 'waypoint');
       for (var w = 0; w < wps.length; w++) pts.push([+wps[w].getAttribute('x'), +wps[w].getAttribute('y')]);
-      var flow = model[es[e].getAttribute('bpmnElement')] || { name: '' };
-      edges.push({ points: pts, name: flow.name, label: labelBounds(es[e]) });
+      var id = es[e].getAttribute('bpmnElement');
+      var flow = model[id] || { name: '' };
+      var link = ends[id] || {};
+      edges.push({ points: pts, name: flow.name, label: labelBounds(es[e]), from: link.from, to: link.to });
     }
 
     return { model: model, shapes: shapes, edges: edges };
@@ -339,17 +402,21 @@
       textBlock(g, s.el.name, s.label.x + s.label.w / 2, s.label.y + s.label.h / 2, s.label.w, 'flow-name flow-under', 11);
     }
     layer.appendChild(g);
+    state.drawn.steps[s.id] = { box: b };
   }
 
   function drawEdge(layer, e) {
     var d = '';
     for (var i = 0; i < e.points.length; i++) d += (i ? 'L' : 'M') + e.points[i][0] + ' ' + e.points[i][1];
-    layer.appendChild(svg('path', { 'class': 'flow-arrow', d: d, 'marker-end': 'url(#flow-head)' }));
+    var line = svg('path', { 'class': 'flow-arrow', d: d, 'marker-end': 'url(#flow-head)' });
+    layer.appendChild(line);
+    var name = null;
     if (e.name && e.label) {
-      var node = svg('text', { 'class': 'flow-edge-name', x: e.label.x + 2, y: e.label.y + e.label.h - 6 });
-      node.textContent = e.name;
-      layer.appendChild(node);
+      name = svg('text', { 'class': 'flow-edge-name', x: e.label.x + 2, y: e.label.y + e.label.h - 6 });
+      name.textContent = e.name;
+      layer.appendChild(name);
     }
+    if (e.from && e.to) state.drawn.arrows[e.from + '>' + e.to] = { line: line, points: e.points, name: name };
   }
 
   function draw(parsed) {
@@ -375,10 +442,15 @@
     var back = svg('g');
     var lines = svg('g');
     var steps = svg('g');
+    /* The numbers go on last, over everything, and are cleared and drawn
+       again whenever the range or the who changes — see paint(). */
+    var counts = svg('g', { 'class': 'flow-counts' });
     root.appendChild(back);
     root.appendChild(lines);
     root.appendChild(steps);
+    root.appendChild(counts);
 
+    state.drawn = { steps: {}, arrows: {}, counts: counts };
     parsed.shapes.forEach(function (s) {
       var k = s.el.kind;
       drawShape(k === 'participant' || k === 'lane' ? back : steps, s);
@@ -409,10 +481,11 @@
     nodes.stage.appendChild(el('p', { className: 'flows-state' + (cls ? ' ' + cls : ''), textContent: t(key) }));
   }
 
-  /* What a pressed step says: its name, whose lane it is in, the note, and
-     every reference as a line of code — those are what somebody opening this
-     page to find where a thing lives came for. */
-  function showStep(id) {
+  /* What a pressed step says: its name, whose lane it is in, the note, what
+     it is counted by, every reference as a line of code — those are what
+     somebody opening this page to find where a thing lives came for — and,
+     once the numbers are in, its own. */
+  function showStep(id, again) {
     var step = state.steps[id];
     if (state.picked) state.picked.classList.remove('is-picked');
     state.picked = nodes.stage.querySelector('[data-step="' + id + '"]');
@@ -425,26 +498,334 @@
     }
     var note = [];
     var refs = [];
+    var whens = [];
+    var handover = false;
     String(step.doc || '').split('\n').forEach(function (line) {
       if (/^ref: /.test(line)) refs.push(line.slice(5));
+      else if (/^when: /.test(line)) whens.push(line.slice(6));
+      else if (/^handover: /.test(line)) handover = true;
       else if (line) note.push(line);
     });
 
     nodes.detail.appendChild(el('p', { className: 'eyebrow', textContent: step.lane }));
     nodes.detail.appendChild(el('h3', { className: 'flows-step-name', textContent: step.name }));
     if (note.length) nodes.detail.appendChild(el('p', { className: 'flows-note', textContent: note.join(' ') }));
-    if (refs.length) {
-      nodes.detail.appendChild(el('p', { className: 'flows-where', textContent: t('flowsWhere') }));
-      nodes.detail.appendChild(el('ul', { className: 'flows-refs' }, refs.map(function (r) {
+    var codes = function (title, lines) {
+      nodes.detail.appendChild(el('p', { className: 'flows-where', textContent: t(title) }));
+      nodes.detail.appendChild(el('ul', { className: 'flows-refs' }, lines.map(function (r) {
         return el('li', null, [el('code', { textContent: r })]);
       })));
+    };
+    if (whens.length) codes('flowsWhen', whens);
+    if (refs.length) codes('flowsWhere', refs);
+    var numbers = detailNumbers(id, handover);
+    if (numbers) nodes.detail.appendChild(numbers);
+    if (!again && window.TTBTrack) window.TTBTrack.event('flow_step', { flow: state.current.id, step: id });
+  }
+
+  /* ------------------------------------------------------------ the numbers
+   * See AND THE NUMBERS ON IT at the top. Everything here draws from
+   * state.numbers, the route's answer for the flow on screen, by id on to
+   * what draw() recorded in state.drawn; nothing walks the diagram, the
+   * route has already done that.
+   */
+
+  /* The steps a diagram counts, out of the source. None on the owner's. */
+  function countedSteps(flow) {
+    return (flow.nodes || []).filter(function (n) { return n.when && n.when.length; });
+  }
+
+  function stepName(id) {
+    return (state.steps[id] || {}).name || id;
+  }
+
+  function rangeLabel() {
+    return state.span === 1 ? t('visitorsToday') : t('insightsDays', { n: state.span });
+  }
+
+  /* The line under the controls: what is being counted, or why nothing is. */
+  function say(key, error) {
+    clear(nodes.counted);
+    nodes.counted.classList.toggle('is-error', !!error);
+    nodes.counted.appendChild(document.createTextNode(t(key)));
+  }
+
+  function ranges() {
+    var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('insightsRange') });
+    SPANS.forEach(function (span) {
+      var chip = el('button', { type: 'button', className: 'chip', 'data-span': span, 'aria-pressed': 'false',
+        textContent: span === 1 ? t('visitorsToday') : t('insightsDays', { n: span }) });
+      chip.addEventListener('click', function () {
+        if (span === state.span) return;
+        state.span = span;
+        syncControls();
+        if (window.TTBTrack) window.TTBTrack.event('flow_range', { flow: state.current.id, days: span });
+        ask();
+      });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
+  /* The lists page's segmented control: a real radio for the keyboard and
+     the screen reader, and is-on moved by hand, since the radio itself is
+     one transparent pixel. */
+  function whoSwitch() {
+    return el('div', { className: 'lists-seg', role: 'radiogroup', 'aria-label': t('flowsWho') }, WHO.map(function (who) {
+      var input = el('input', { type: 'radio', name: 'flows-who', value: who });
+      input.addEventListener('change', function () {
+        if (!input.checked || who === state.who) return;
+        state.who = who;
+        syncControls();
+        if (window.TTBTrack) window.TTBTrack.event('flow_who', { flow: state.current.id, who: who });
+        paint();
+      });
+      return el('label', { className: 'lists-seg-opt', 'data-who': who }, [input, t(WHO_LABEL[who])]);
+    }));
+  }
+
+  function syncControls() {
+    var chips = nodes.controls.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].setAttribute('aria-pressed', Number(chips[i].getAttribute('data-span')) === state.span ? 'true' : 'false');
     }
-    if (window.TTBTrack) window.TTBTrack.event('flow_step', { flow: state.current.id, step: id });
+    var opts = nodes.controls.querySelectorAll('.lists-seg-opt');
+    for (var o = 0; o < opts.length; o++) {
+      var on = opts[o].getAttribute('data-who') === state.who;
+      opts[o].classList.toggle('is-on', on);
+      opts[o].querySelector('input').checked = on;
+    }
+  }
+
+  /* The numbers for the flow on screen, over the range. A late answer for a
+     flow or a range no longer on screen is dropped. */
+  function ask() {
+    var flow = state.current;
+    if (!flow || !countedSteps(flow).length) return;
+    var turn = ++state.asked;
+    say('flowsCounting');
+    get(NUMBERS + '?flow=' + encodeURIComponent(flow.id) + '&days=' + state.span).then(function (out) {
+      if (turn !== state.asked || state.current !== flow) return;
+      state.numbers = out;
+      paint();
+    }).catch(function () {
+      if (turn !== state.asked || state.current !== flow) return;
+      state.numbers = null;
+      paint();
+      say('flowsNumbersFailed', true);
+    });
+  }
+
+  /* Everything the numbers put on the page, taken off again: the badges and
+     the arrow numbers, the widths, the two cards. */
+  function clearNumbers() {
+    if (state.drawn) {
+      clear(state.drawn.counts);
+      Object.keys(state.drawn.arrows).forEach(function (key) {
+        var arrow = state.drawn.arrows[key];
+        arrow.line.style.strokeWidth = '';
+        var rode = arrow.name && arrow.name.querySelector('.flow-arrow-n');
+        if (rode) arrow.name.removeChild(rode);
+      });
+    }
+    nodes.stepsCard.hidden = true;
+    nodes.movesCard.hidden = true;
+  }
+
+  /* The answer, for the who on screen, drawn. */
+  function paint() {
+    clearNumbers();
+    var d = state.numbers;
+    if (!d) return;
+    if (!d.ready || !d.who || !d.who[state.who]) { say('flowsNotYet'); return; }
+    var who = d.who[state.who];
+    var any = Object.keys(who.steps).some(function (id) { return who.steps[id] > 0; });
+    if (any) countedLine(who, d.since); else say('flowsNothing');
+    badges(who);
+    arrowNumbers(who);
+    stepsCard(who, d.counted);
+    movesCard(who);
+    if (state.picked) showStep(state.picked.getAttribute('data-step'), true);
+  }
+
+  function countedLine(who, since) {
+    clear(nodes.counted);
+    nodes.counted.classList.remove('is-error');
+    nodes.counted.appendChild(el('b', { textContent: t('flowsViews', { n: num(who.views) }) }));
+    nodes.counted.appendChild(document.createTextNode(' · ' + t(WHO_LABEL[state.who]) + ' · ' + rangeLabel()));
+    nodes.counted.appendChild(el('br'));
+    nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
+  }
+
+  /* A count on every step the answer has one for, on the shape's top-right
+     corner. A nought is drawn, muted: what is not being used is the answer
+     the page is opened for most. */
+  function badges(who) {
+    Object.keys(who.steps).forEach(function (id) {
+      var shape = state.drawn.steps[id];
+      if (!shape) return;
+      var n = who.steps[id];
+      var text = num(n);
+      var b = shape.box;
+      var w = 10 + text.length * 6.6;
+      var right = b.x + b.w + 8;
+      var top = b.y + 2;
+      var g = svg('g', { 'class': 'flow-count' + (n ? '' : ' is-zero') });
+      g.appendChild(svg('rect', { x: right - w, y: top - 8, width: w, height: 16, rx: 8 }));
+      var label = svg('text', { x: right - w / 2, y: top + 3.8, 'text-anchor': 'middle' });
+      label.textContent = text;
+      g.appendChild(label);
+      state.drawn.counts.appendChild(g);
+    });
+  }
+
+  /* A number and a width on every arrow walked. Where the number goes is
+     about not landing on another arrow's, or on a step's badge: a labelled
+     arrow carries it after its label, which tools/flows.mjs has already
+     placed where no other label is, or over the label where the two
+     together would run into the box the arrow points at — the label is
+     measured as drawn, so this is decided by the pixels rather than by a
+     guess at them; an unlabelled arrow that bends carries it under its
+     first run, beside the step it leaves, since arrows that meet at one
+     step leave from different rows; and a straight one carries it under
+     its run, short of the head. A run coming in from above or below, which
+     the layout does not draw today, would carry it beside the line. */
+  function arrowNumbers(who) {
+    var max = 1;
+    Object.keys(who.arrows).forEach(function (key) { if (who.arrows[key] > max) max = who.arrows[key]; });
+    Object.keys(who.arrows).forEach(function (key) {
+      var arrow = state.drawn.arrows[key];
+      var n = who.arrows[key];
+      if (!arrow || !(n > 0)) return;
+      arrow.line.style.strokeWidth = (ARROW_MIN + (ARROW_MAX - ARROW_MIN) * Math.sqrt(n / max)).toFixed(2);
+      if (arrow.name) {
+        var rode = svg('tspan', { 'class': 'flow-arrow-n' });
+        rode.textContent = num(n);
+        var fits = false;
+        try {
+          var into = state.drawn.steps[key.split('>')[1]].box;
+          var from = Number(arrow.name.getAttribute('x'));
+          fits = from + arrow.name.getComputedTextLength() + 8 + rode.textContent.length * 6.6 < into.x - 4;
+        } catch (e) { fits = false; }
+        if (fits) rode.setAttribute('dx', 5);
+        else { rode.setAttribute('x', arrow.name.getAttribute('x')); rode.setAttribute('dy', -12); }
+        arrow.name.appendChild(rode);
+        return;
+      }
+      var pts = arrow.points;
+      var p = pts[pts.length - 2];
+      var q = pts[pts.length - 1];
+      var at;
+      if (pts.length > 2 && pts[0][1] === pts[1][1]) at = { x: pts[1][0] - 4, y: pts[0][1] + 14, anchor: 'end' };
+      else if (p[1] === q[1]) at = { x: q[0] - 12, y: q[1] + 14, anchor: 'end' };
+      else at = { x: q[0] + 8, y: (p[1] + q[1]) / 2 + 4, anchor: 'start' };
+      var label = svg('text', { 'class': 'flow-arrow-n', 'text-anchor': at.anchor, x: at.x, y: at.y });
+      label.textContent = num(n);
+      state.drawn.counts.appendChild(label);
+    });
+  }
+
+  /* Where the people who reached a step went next, most first: every pair
+     out of it, joined by an arrow or not. */
+  function nextOf(who, id) {
+    return Object.keys(who.pairs).filter(function (key) { return key.indexOf(id + '>') === 0; })
+      .map(function (key) { return { id: key.slice(id.length + 1), n: who.pairs[key] }; })
+      .sort(function (a, b) { return b.n - a.n || stepName(a.id).localeCompare(stepName(b.id)); });
+  }
+
+  function nextLine(who, id) {
+    var next = nextOf(who, id).slice(0, NEXT_SHOWN);
+    return next.length ? '→ ' + next.map(function (x) { return stepName(x.id) + ' ' + num(x.n); }).join(' · ') : '';
+  }
+
+  function table(label, heads, rows, wide) {
+    return el('div', { className: 'ins-table ' + (wide ? 'vis-table' : 'flows-moves'), role: 'table', 'aria-label': label },
+      (heads ? [el('div', { className: 'ins-row ins-head', role: 'row' },
+        [el('span', { role: 'columnheader' })].concat(heads.map(function (h) {
+          return el('span', { role: 'columnheader', textContent: h });
+        })))] : []).concat(rows.map(function (r) {
+        return el('div', { className: 'ins-row', role: 'row' },
+          [r[0]].concat(r.slice(1).map(function (c) { return el('span', { className: 'stats-n', role: 'cell', textContent: c }); })));
+      })));
+  }
+
+  /* Every counted step, in the order the diagram draws them — by where its
+     shape stands, the top row first and left to right along it, so the
+     main journey comes before the branches under it — with its number, its
+     share of the diagram's page views, and where its people went next. */
+  function stepsCard(who, counted) {
+    clear(nodes.stepsTable);
+    var rows = counted.filter(function (id) { return state.drawn.steps[id]; }).sort(function (a, b) {
+      var p = state.drawn.steps[a].box;
+      var q = state.drawn.steps[b].box;
+      return p.y - q.y || p.x - q.x;
+    }).map(function (id) {
+      var n = who.steps[id] || 0;
+      var next = nextLine(who, id);
+      return [
+        el('span', { className: 'stats-name', role: 'cell' }, [stepName(id), next ? el('span', { className: 'flows-next', textContent: next }) : null]),
+        num(n),
+        who.views ? Math.round(100 * n / who.views) + '%' : '–'
+      ];
+    });
+    nodes.stepsTable.appendChild(table(t('flowsSteps'), [t('flowsReached'), t('flowsOfViews')], rows, true));
+    nodes.stepsCard.hidden = false;
+  }
+
+  /* The pairs no arrow joins, most first. */
+  function movesCard(who) {
+    clear(nodes.movesTable);
+    var moves = (who.moves || []).slice(0, MOVES_SHOWN);
+    if (!moves.length) {
+      nodes.movesTable.appendChild(el('p', { className: 'flows-hint', textContent: t('flowsNoMoves') }));
+    } else {
+      nodes.movesTable.appendChild(table(t('flowsMoves'), null, moves.map(function (m) {
+        return [
+          el('span', { className: 'stats-name flows-move', role: 'cell' }, [stepName(m.from), el('span', { className: 'flows-next', textContent: '→' }), stepName(m.to)]),
+          num(m.n)
+        ];
+      }), false));
+    }
+    nodes.movesCard.hidden = false;
+  }
+
+  /* A pressed step's own number, in a sentence: reached in so many page
+     views and where they went next for a counted step, walked through so
+     many times for one the route filled in, or why it has none. */
+  function detailNumbers(id, handover) {
+    var d = state.numbers;
+    if (!d || !d.ready || !d.who || !d.who[state.who]) return null;
+    var who = d.who[state.who];
+    var parts = [];
+    if (d.counted.indexOf(id) !== -1) {
+      var n = who.steps[id] || 0;
+      var next = nextOf(who, id);
+      var went = 0;
+      next.forEach(function (x) { went += x.n; });
+      parts.push(t('flowsDetailReached', { n: num(n), views: num(who.views) }));
+      if (next.length) {
+        parts.push(t('flowsDetailWentOn') + ': ' + next.slice(0, NEXT_SHOWN).map(function (x) {
+          return stepName(x.id) + ' ' + num(x.n);
+        }).join(' · ') + '.');
+      }
+      if (n - went > 0) parts.push(t('flowsDetailStayed', { n: num(n - went) }));
+      if (handover) parts.push(t('flowsDetailHandover'));
+    } else if (handover) {
+      parts.push(t('flowsDetailHandover'));
+    } else if (id in who.steps) {
+      parts.push(t('flowsDetailWalked', { n: num(who.steps[id]) }));
+    } else {
+      parts.push(t('flowsDetailNoNumber'));
+    }
+    return el('p', { className: 'flows-detail-n', textContent: parts.join(' ') });
   }
 
   function open(flow, first) {
     state.current = flow;
     state.picked = null;
+    state.numbers = null;
+    state.asked += 1;
+    state.who = DEFAULT_WHO[flow.id] || 'all';
 
     var chips = nodes.chips.querySelectorAll('.chip');
     for (var i = 0; i < chips.length; i++) {
@@ -455,6 +836,15 @@
     nodes.download.setAttribute('href', '/flows/' + flow.id + '.bpmn');
     nodes.download.setAttribute('download', flow.id + '.bpmn');
     showStep(null);
+
+    /* The owner's diagram counts nothing — nothing under /admin/ does — so
+       it gets the sentence and no controls; every other gets the numbers
+       once its drawing is up. */
+    var counted = countedSteps(flow).length > 0;
+    nodes.controls.hidden = !counted;
+    syncControls();
+    clearNumbers();
+    if (!counted) say('flowsUncounted'); else say('flowsCounting');
 
     if (!first) {
       var url = new URL(window.location.href);
@@ -470,6 +860,7 @@
       clear(nodes.stage);
       nodes.stage.appendChild(drawn);
       setZoom(Math.min(1, Math.max(FIRST_ZOOM_FLOOR, fitZoom())));
+      ask();
     }).catch(function () {
       if (state.current === flow) stageMessage('flowsFailed', 'is-error');
     });
@@ -506,6 +897,24 @@
     nodes.stage = el('div', { className: 'flows-stage' });
     nodes.detail = el('div', { className: 'card flows-detail', 'aria-live': 'polite' });
 
+    /* The numbers' furniture: the range and the who over the diagram with
+       the line that says what was counted, and the two cards under the
+       detail, hidden until an answer fills them. */
+    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), whoSwitch()]);
+    nodes.counted = el('p', { className: 'flows-counted', 'aria-live': 'polite' });
+    nodes.stepsTable = el('div');
+    nodes.stepsCard = el('section', { className: 'card flows-detail', hidden: true }, [
+      el('h2', { className: 'lists-title', textContent: t('flowsSteps') }),
+      el('p', { className: 'stats-lead', textContent: t('flowsStepsLead') }),
+      nodes.stepsTable
+    ]);
+    nodes.movesTable = el('div');
+    nodes.movesCard = el('section', { className: 'card flows-detail', hidden: true }, [
+      el('h2', { className: 'lists-title', textContent: t('flowsMoves') }),
+      el('p', { className: 'stats-lead', textContent: t('flowsMovesLead') }),
+      nodes.movesTable
+    ]);
+
     /* One listener for every step, rather than one on each: a diagram is
        redrawn whole on every chip, and the steps are found by the attribute
        drawShape() puts on them. */
@@ -520,8 +929,10 @@
 
     clear(main);
     main.appendChild(nodes.chips);
-    main.appendChild(el('section', { className: 'card flows-card' }, [nodes.name, nodes.who, tools, nodes.stage]));
+    main.appendChild(el('section', { className: 'card flows-card' }, [nodes.name, nodes.who, nodes.controls, nodes.counted, tools, nodes.stage]));
     main.appendChild(nodes.detail);
+    main.appendChild(nodes.stepsCard);
+    main.appendChild(nodes.movesCard);
 
     var wanted = new URLSearchParams(window.location.search).get('f');
     var first = state.flows[0];

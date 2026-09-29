@@ -13,7 +13,12 @@
  *                      actor, a step per thing they can do, an arrow per
  *                      "and then". Short on purpose: it is the file a session
  *                      reads to learn what a kind of user can do, and the file
- *                      it edits when that changes.
+ *                      it edits when that changes. A step may also say `when`
+ *                      it is counted — the signals functions/api/_flows.js
+ *                      matches a page's presses against — and `handover`,
+ *                      that it begins on somebody else's device; problems()
+ *                      below holds both to their shape, and the validator
+ *                      holds the signals to the pages and presses that exist.
  *
  *   flows/<id>.bpmn    GENERATED — by this file. Standard BPMN 2.0 XML with the
  *                      diagram interchange (the coordinates) laid out here, so
@@ -81,6 +86,13 @@ const TYPES = {
 
 const ID = /^[a-z][a-z0-9-]*$/;
 
+/* A signal a step is counted by: a page opened, what a page counts as a view,
+   or a press by the name assets/track.js reports it under, on one page only
+   where it carries @<page>. Which pages and which names exist is the
+   validator's question — the same file cannot be read from here without
+   importing a Function — so this is the shape alone. */
+export const SIGNAL = /^(?:(?:page|view):[a-z]+|[a-z][a-z0-9_]*(?:@[a-z]+)?)$/;
+
 /* The grid. A column is wide enough that the gap after a task still holds a
    two-word label on the arrow out of a gateway, and a row is a task plus
    room for that label above the arrow into it. */
@@ -119,6 +131,10 @@ export function problems(doc) {
     }
     if (!lanes.size) out.push(`${at}: no lanes`);
     const nodes = new Map();
+    /* A signal names one step per flow: two steps counted by the same press
+       would each take every one of them, and the arrows between the two
+       would count nothing. */
+    const signals = new Map();
     for (const n of f.nodes || []) {
       if (!ID.test(n.id || '')) { out.push(`${at}: step id ${JSON.stringify(n.id)} is not a slug`); continue; }
       if (nodes.has(n.id)) out.push(`${at}: duplicate step ${n.id}`);
@@ -130,6 +146,19 @@ export function problems(doc) {
         const path = String(r).split(' ')[0];
         if (!existsSync(join(ROOT, path))) out.push(`${at} → ${n.id}: ref ${path} is not in the repository`);
       }
+      if (n.when !== undefined) {
+        if (!Array.isArray(n.when) || !n.when.length || !n.when.every((w) => typeof w === 'string')) {
+          out.push(`${at} → ${n.id}: when must be a list of signals`);
+        } else {
+          if (/gateway|parallel/.test(n.type)) out.push(`${at} → ${n.id}: a gateway is a question, not a thing that happens — it cannot carry when`);
+          for (const w of n.when) {
+            if (!SIGNAL.test(w)) out.push(`${at} → ${n.id}: signal ${JSON.stringify(w)} is not page:<id>, view:<id> or a press name, optionally @<page>`);
+            else if (signals.has(w)) out.push(`${at} → ${n.id}: signal ${w} already counts ${signals.get(w)}`);
+            signals.set(w, n.id);
+          }
+        }
+      }
+      if (n.handover !== undefined && n.handover !== true) out.push(`${at} → ${n.id}: handover is true or absent`);
     }
     if (![...nodes.values()].some((n) => n.type === 'start')) out.push(`${at}: no start event`);
     const into = new Set();
@@ -281,12 +310,16 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const n0 = (v) => Math.round(v);
 const bounds = (b) => `<dc:Bounds x="${n0(b.x)}" y="${n0(b.y)}" width="${n0(b.w)}" height="${n0(b.h)}" />`;
 
-/* A step's documentation is its note, then its references one to a line,
-   each marked "ref:" so a reader — a person in a modeler or a session with
-   the file open — can tell the pointer into the code from the prose. */
+/* A step's documentation is its note, then what it is counted by, then its
+   references one to a line, each marked "when:" or "ref:" so a reader — a
+   person in a modeler or a session with the file open — can tell the signal
+   and the pointer into the code from the prose. A hand-over says so in the
+   same way, so a modeler shows why the arrow into it carries no number. */
 function documentation(n) {
   const lines = [];
   if (n.note) lines.push(n.note);
+  if (n.handover) lines.push('handover: begins on somebody else\'s device');
+  for (const w of n.when || []) lines.push(`when: ${w}`);
   for (const r of n.ref || []) lines.push(`ref: ${r}`);
   return lines.length ? `\n      <bpmn:documentation>${esc(lines.join('\n'))}</bpmn:documentation>` : '';
 }

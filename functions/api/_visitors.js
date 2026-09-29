@@ -147,8 +147,9 @@ export const SPANS = [1, 7, 28, 90];
    names it by where there is one. A page is known by its address, and the
    two subdomains by their host, since both answer at the root. Anything not
    here — /admin/ above all, where the only visitor is the owner — is not
-   counted. */
-const PAGES = [
+   counted. Exported for tools/validate.mjs, which holds every `page:` and
+   `view:` signal in data/flows.json to these ids. */
+export const PAGES = [
   { id: 'map', label: 'visitorsPageMap', paths: ['/', '/index.html'] },
   { id: 'lists', label: 'listsAllTitle', paths: ['/lists'] },
   { id: 'mine', label: 'visitorsPageMine', paths: ['/lists.html'] },
@@ -223,8 +224,9 @@ function add(env, day, kind, id, n) {
 }
 
 /* Which page a report is about, off the request's own host — the beacon is
-   sent to the origin the page is on — and the path the page sends. */
-function pageOf(request, path) {
+   sent to the origin the page is on — and the path the page sends. Exported
+   for ./_flows.js, which reads the same report a third way. */
+export function pageOf(request, path) {
   const host = new URL(request.url).hostname;
   const at = String(path || '');
   const page = PAGES.find((p) =>

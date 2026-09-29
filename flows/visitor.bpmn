@@ -41,200 +41,231 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="open-map" name="Opens tallinntastebuds.ee">
-      <bpmn:documentation>ref: index.html
+      <bpmn:documentation>when: page:map
+ref: index.html
 ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
       <bpmn:outgoing>visitor-e1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:exclusiveGateway id="what-now" name="What now?">
       <bpmn:incoming>visitor-e1</bpmn:incoming>
       <bpmn:outgoing>visitor-e2</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e8</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e11</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e16</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e18</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e23</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e26</bpmn:outgoing>
-      <bpmn:outgoing>visitor-e28</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e3</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e9</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e12</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e17</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e19</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e24</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e27</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e29</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="browse" name="Browses the map, the chips and the search">
       <bpmn:documentation>A chip that would leave nothing on screen pulls the map back instead. Surprise me picks from what the chips allow.
+when: filter_select
+when: search@map
+when: find_pick
+when: find_submit
+when: find_area
+when: random_pick
+when: cluster_open
 ref: assets/app.js applyFilters()
 ref: data/taxonomy.json</bpmn:documentation>
-      <bpmn:incoming>visitor-e2</bpmn:incoming>
-      <bpmn:outgoing>visitor-e3</bpmn:outgoing>
+      <bpmn:incoming>visitor-e3</bpmn:incoming>
+      <bpmn:outgoing>visitor-e4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="find-anywhere" name="Finds anywhere in Tallinn">
       <bpmn:documentation>On the map first, then Google's 1,111 venues.
 ref: functions/api/places.js GET</bpmn:documentation>
-      <bpmn:incoming>visitor-e3</bpmn:incoming>
-      <bpmn:outgoing>visitor-e4</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:userTask id="open-place" name="Opens a place">
-      <bpmn:documentation>Deep link /?spot=&lt;id&gt;.
-ref: assets/app.js selectPlace()</bpmn:documentation>
       <bpmn:incoming>visitor-e4</bpmn:incoming>
       <bpmn:outgoing>visitor-e5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="open-place" name="Opens a place">
+      <bpmn:documentation>A pin, a row in the column, a result of the search, or a deep link /?spot=&lt;id&gt;.
+when: view:map
+ref: assets/app.js selectPlace()</bpmn:documentation>
+      <bpmn:incoming>visitor-e2</bpmn:incoming>
+      <bpmn:incoming>visitor-e5</bpmn:incoming>
+      <bpmn:outgoing>visitor-e6</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="place-card" name="Adds Google's block and the save counts">
       <bpmn:documentation>ref: functions/api/venues.js GET ?map= or ?ids=
 ref: functions/api/saves.js GET</bpmn:documentation>
-      <bpmn:incoming>visitor-e5</bpmn:incoming>
-      <bpmn:outgoing>visitor-e6</bpmn:outgoing>
+      <bpmn:incoming>visitor-e6</bpmn:incoming>
+      <bpmn:outgoing>visitor-e7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="share" name="Goes, or shares the place">
       <bpmn:documentation>Share sheet on a phone, else the clipboard. The link is /?spot=&lt;id&gt;.
+when: place_share
+when: directions
+when: website
+when: call_place
+when: google_listing
+when: reel_open
 ref: assets/app.js pressShare()</bpmn:documentation>
-      <bpmn:incoming>visitor-e6</bpmn:incoming>
-      <bpmn:outgoing>visitor-e7</bpmn:outgoing>
+      <bpmn:incoming>visitor-e7</bpmn:incoming>
+      <bpmn:outgoing>visitor-e8</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="found" name="Somewhere to eat">
-      <bpmn:incoming>visitor-e7</bpmn:incoming>
+      <bpmn:incoming>visitor-e8</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="ask" name="Asks the chat">
-      <bpmn:documentation>ref: assets/ask.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e8</bpmn:incoming>
-      <bpmn:outgoing>visitor-e9</bpmn:outgoing>
+      <bpmn:documentation>when: ask
+ref: assets/ask.js</bpmn:documentation>
+      <bpmn:incoming>visitor-e9</bpmn:incoming>
+      <bpmn:outgoing>visitor-e10</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="answer" name="Answers with one to three places">
       <bpmn:documentation>Workers AI on the free daily allowance, shared by preview and production. No account needed.
 ref: functions/api/ask.js POST</bpmn:documentation>
-      <bpmn:incoming>visitor-e9</bpmn:incoming>
-      <bpmn:outgoing>visitor-e10</bpmn:outgoing>
+      <bpmn:incoming>visitor-e10</bpmn:incoming>
+      <bpmn:outgoing>visitor-e11</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="asked" name="The answer's pins on the map">
-      <bpmn:incoming>visitor-e10</bpmn:incoming>
+      <bpmn:incoming>visitor-e11</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="save" name="Presses the bookmark on a place">
-      <bpmn:documentation>ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e11</bpmn:incoming>
-      <bpmn:outgoing>visitor-e12</bpmn:outgoing>
+      <bpmn:documentation>when: save_place
+ref: assets/app.js</bpmn:documentation>
+      <bpmn:incoming>visitor-e12</bpmn:incoming>
+      <bpmn:outgoing>visitor-e13</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="save-device" name="Files the save under this device">
       <bpmn:documentation>The owner is the device's random id. 403 challenge when Turnstile fails, 429 capped past five saves from one fingerprint.
 ref: functions/api/saves.js POST</bpmn:documentation>
-      <bpmn:incoming>visitor-e12</bpmn:incoming>
-      <bpmn:outgoing>visitor-e13</bpmn:outgoing>
+      <bpmn:incoming>visitor-e13</bpmn:incoming>
+      <bpmn:outgoing>visitor-e14</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="offer" name="Takes the account offer?">
       <bpmn:documentation>Offered once a visit, and not again for 14 days after a no.</bpmn:documentation>
-      <bpmn:incoming>visitor-e13</bpmn:incoming>
-      <bpmn:outgoing>visitor-e14</bpmn:outgoing>
+      <bpmn:incoming>visitor-e14</bpmn:incoming>
       <bpmn:outgoing>visitor-e15</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e16</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="saved-here" name="Saved on this device">
-      <bpmn:incoming>visitor-e14</bpmn:incoming>
+      <bpmn:incoming>visitor-e15</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="read" name="Watches a story, reads the blog, plays the radio">
-      <bpmn:documentation>ref: data/stories.json
+      <bpmn:documentation>when: story_open
+when: page:blog
+when: radio_play
+ref: data/stories.json
 ref: blog.html
 ref: assets/radio.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e16</bpmn:incoming>
-      <bpmn:outgoing>visitor-e17</bpmn:outgoing>
+      <bpmn:incoming>visitor-e17</bpmn:incoming>
+      <bpmn:outgoing>visitor-e18</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="read-done" name="Read and listened">
-      <bpmn:incoming>visitor-e17</bpmn:incoming>
+      <bpmn:incoming>visitor-e18</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="lists" name="Opens a list, a profile or /lists">
-      <bpmn:documentation>ref: functions/list/[id].js
+      <bpmn:documentation>when: page:lists
+when: page:list
+when: page:profile
+ref: functions/list/[id].js
 ref: functions/u/[name].js
 ref: functions/lists/index.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e18</bpmn:incoming>
-      <bpmn:outgoing>visitor-e19</bpmn:outgoing>
+      <bpmn:incoming>visitor-e19</bpmn:incoming>
+      <bpmn:outgoing>visitor-e20</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="public-only" name="Answers public lists only">
       <bpmn:documentation>A private list is its owner's alone; anybody else gets a 404.
 ref: functions/api/lists.js GET
 ref: functions/api/profile.js GET</bpmn:documentation>
-      <bpmn:incoming>visitor-e19</bpmn:incoming>
-      <bpmn:outgoing>visitor-e20</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="keep-it" name="Wants to keep the list?">
       <bpmn:incoming>visitor-e20</bpmn:incoming>
       <bpmn:outgoing>visitor-e21</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="keep-it" name="Wants to keep the list?">
+      <bpmn:incoming>visitor-e21</bpmn:incoming>
       <bpmn:outgoing>visitor-e22</bpmn:outgoing>
+      <bpmn:outgoing>visitor-e23</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="list-read" name="List read">
-      <bpmn:incoming>visitor-e21</bpmn:incoming>
+      <bpmn:incoming>visitor-e22</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="feedback" name="Posts feedback or hearts a post">
       <bpmn:documentation>Anonymous by default, filed under the device. Signing in on the same form puts a name on it.
+when: feedback_post
+when: feedback_heart
 ref: feedback.html
 ref: assets/feedback.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e23</bpmn:incoming>
-      <bpmn:outgoing>visitor-e24</bpmn:outgoing>
+      <bpmn:incoming>visitor-e24</bpmn:incoming>
+      <bpmn:outgoing>visitor-e25</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="feedback-in" name="Stores it, capped per hour">
       <bpmn:documentation>ref: functions/api/feedback.js POST say, heart, unheart, remove</bpmn:documentation>
-      <bpmn:incoming>visitor-e24</bpmn:incoming>
-      <bpmn:outgoing>visitor-e25</bpmn:outgoing>
+      <bpmn:incoming>visitor-e25</bpmn:incoming>
+      <bpmn:outgoing>visitor-e26</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="feedback-done" name="Feedback on the page">
-      <bpmn:incoming>visitor-e25</bpmn:incoming>
+      <bpmn:incoming>visitor-e26</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="deal" name="Presses Sign in to use it on a discount">
       <bpmn:documentation>The offer is drawn for everybody; the code takes an account.
+when: deal_signin
 ref: assets/app.js dealBlock()</bpmn:documentation>
-      <bpmn:incoming>visitor-e26</bpmn:incoming>
-      <bpmn:outgoing>visitor-e27</bpmn:outgoing>
+      <bpmn:incoming>visitor-e27</bpmn:incoming>
+      <bpmn:outgoing>visitor-e28</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="sign-in" name="Signs up or signs in">
       <bpmn:documentation>A username of 3 to 24 letters, numbers or dashes, and a password or Google. No email.
+when: account_create
+when: account_login
 ref: index.html the account sheet
 ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>visitor-e15</bpmn:incoming>
-      <bpmn:incoming>visitor-e22</bpmn:incoming>
-      <bpmn:incoming>visitor-e27</bpmn:incoming>
+      <bpmn:incoming>visitor-e16</bpmn:incoming>
+      <bpmn:incoming>visitor-e23</bpmn:incoming>
       <bpmn:incoming>visitor-e28</bpmn:incoming>
-      <bpmn:outgoing>visitor-e29</bpmn:outgoing>
+      <bpmn:incoming>visitor-e29</bpmn:incoming>
+      <bpmn:outgoing>visitor-e30</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="session" name="Opens a session, claims this device's saves">
       <bpmn:documentation>ref: functions/api/account.js POST create, login, google-name
 ref: functions/api/_account.js claimDeviceSaves()
 ref: functions/api/google.js GET</bpmn:documentation>
-      <bpmn:incoming>visitor-e29</bpmn:incoming>
-      <bpmn:outgoing>visitor-e30</bpmn:outgoing>
+      <bpmn:incoming>visitor-e30</bpmn:incoming>
+      <bpmn:outgoing>visitor-e31</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="member" name="Now a member">
-      <bpmn:incoming>visitor-e30</bpmn:incoming>
+      <bpmn:incoming>visitor-e31</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="visitor-e1" sourceRef="open-map" targetRef="what-now" />
-    <bpmn:sequenceFlow id="visitor-e2" name="find a place" sourceRef="what-now" targetRef="browse" />
-    <bpmn:sequenceFlow id="visitor-e3" sourceRef="browse" targetRef="find-anywhere" />
-    <bpmn:sequenceFlow id="visitor-e4" sourceRef="find-anywhere" targetRef="open-place" />
-    <bpmn:sequenceFlow id="visitor-e5" sourceRef="open-place" targetRef="place-card" />
-    <bpmn:sequenceFlow id="visitor-e6" sourceRef="place-card" targetRef="share" />
-    <bpmn:sequenceFlow id="visitor-e7" sourceRef="share" targetRef="found" />
-    <bpmn:sequenceFlow id="visitor-e8" name="ask" sourceRef="what-now" targetRef="ask" />
-    <bpmn:sequenceFlow id="visitor-e9" sourceRef="ask" targetRef="answer" />
-    <bpmn:sequenceFlow id="visitor-e10" sourceRef="answer" targetRef="asked" />
-    <bpmn:sequenceFlow id="visitor-e11" name="save" sourceRef="what-now" targetRef="save" />
-    <bpmn:sequenceFlow id="visitor-e12" sourceRef="save" targetRef="save-device" />
-    <bpmn:sequenceFlow id="visitor-e13" sourceRef="save-device" targetRef="offer" />
-    <bpmn:sequenceFlow id="visitor-e14" name="not now" sourceRef="offer" targetRef="saved-here" />
-    <bpmn:sequenceFlow id="visitor-e15" name="yes" sourceRef="offer" targetRef="sign-in" />
-    <bpmn:sequenceFlow id="visitor-e16" name="read" sourceRef="what-now" targetRef="read" />
-    <bpmn:sequenceFlow id="visitor-e17" sourceRef="read" targetRef="read-done" />
-    <bpmn:sequenceFlow id="visitor-e18" name="lists" sourceRef="what-now" targetRef="lists" />
-    <bpmn:sequenceFlow id="visitor-e19" sourceRef="lists" targetRef="public-only" />
-    <bpmn:sequenceFlow id="visitor-e20" sourceRef="public-only" targetRef="keep-it" />
-    <bpmn:sequenceFlow id="visitor-e21" name="no" sourceRef="keep-it" targetRef="list-read" />
-    <bpmn:sequenceFlow id="visitor-e22" name="keep" sourceRef="keep-it" targetRef="sign-in" />
-    <bpmn:sequenceFlow id="visitor-e23" name="feedback" sourceRef="what-now" targetRef="feedback" />
-    <bpmn:sequenceFlow id="visitor-e24" sourceRef="feedback" targetRef="feedback-in" />
-    <bpmn:sequenceFlow id="visitor-e25" sourceRef="feedback-in" targetRef="feedback-done" />
-    <bpmn:sequenceFlow id="visitor-e26" name="discount" sourceRef="what-now" targetRef="deal" />
-    <bpmn:sequenceFlow id="visitor-e27" sourceRef="deal" targetRef="sign-in" />
-    <bpmn:sequenceFlow id="visitor-e28" name="sign in" sourceRef="what-now" targetRef="sign-in" />
-    <bpmn:sequenceFlow id="visitor-e29" sourceRef="sign-in" targetRef="session" />
-    <bpmn:sequenceFlow id="visitor-e30" sourceRef="session" targetRef="member" />
+    <bpmn:sequenceFlow id="visitor-e2" name="a pin" sourceRef="what-now" targetRef="open-place" />
+    <bpmn:sequenceFlow id="visitor-e3" name="find a place" sourceRef="what-now" targetRef="browse" />
+    <bpmn:sequenceFlow id="visitor-e4" sourceRef="browse" targetRef="find-anywhere" />
+    <bpmn:sequenceFlow id="visitor-e5" sourceRef="find-anywhere" targetRef="open-place" />
+    <bpmn:sequenceFlow id="visitor-e6" sourceRef="open-place" targetRef="place-card" />
+    <bpmn:sequenceFlow id="visitor-e7" sourceRef="place-card" targetRef="share" />
+    <bpmn:sequenceFlow id="visitor-e8" sourceRef="share" targetRef="found" />
+    <bpmn:sequenceFlow id="visitor-e9" name="ask" sourceRef="what-now" targetRef="ask" />
+    <bpmn:sequenceFlow id="visitor-e10" sourceRef="ask" targetRef="answer" />
+    <bpmn:sequenceFlow id="visitor-e11" sourceRef="answer" targetRef="asked" />
+    <bpmn:sequenceFlow id="visitor-e12" name="save" sourceRef="what-now" targetRef="save" />
+    <bpmn:sequenceFlow id="visitor-e13" sourceRef="save" targetRef="save-device" />
+    <bpmn:sequenceFlow id="visitor-e14" sourceRef="save-device" targetRef="offer" />
+    <bpmn:sequenceFlow id="visitor-e15" name="not now" sourceRef="offer" targetRef="saved-here" />
+    <bpmn:sequenceFlow id="visitor-e16" name="yes" sourceRef="offer" targetRef="sign-in" />
+    <bpmn:sequenceFlow id="visitor-e17" name="read" sourceRef="what-now" targetRef="read" />
+    <bpmn:sequenceFlow id="visitor-e18" sourceRef="read" targetRef="read-done" />
+    <bpmn:sequenceFlow id="visitor-e19" name="lists" sourceRef="what-now" targetRef="lists" />
+    <bpmn:sequenceFlow id="visitor-e20" sourceRef="lists" targetRef="public-only" />
+    <bpmn:sequenceFlow id="visitor-e21" sourceRef="public-only" targetRef="keep-it" />
+    <bpmn:sequenceFlow id="visitor-e22" name="no" sourceRef="keep-it" targetRef="list-read" />
+    <bpmn:sequenceFlow id="visitor-e23" name="keep" sourceRef="keep-it" targetRef="sign-in" />
+    <bpmn:sequenceFlow id="visitor-e24" name="feedback" sourceRef="what-now" targetRef="feedback" />
+    <bpmn:sequenceFlow id="visitor-e25" sourceRef="feedback" targetRef="feedback-in" />
+    <bpmn:sequenceFlow id="visitor-e26" sourceRef="feedback-in" targetRef="feedback-done" />
+    <bpmn:sequenceFlow id="visitor-e27" name="discount" sourceRef="what-now" targetRef="deal" />
+    <bpmn:sequenceFlow id="visitor-e28" sourceRef="deal" targetRef="sign-in" />
+    <bpmn:sequenceFlow id="visitor-e29" name="sign in" sourceRef="what-now" targetRef="sign-in" />
+    <bpmn:sequenceFlow id="visitor-e30" sourceRef="sign-in" targetRef="session" />
+    <bpmn:sequenceFlow id="visitor-e31" sourceRef="session" targetRef="member" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="visitor-diagram">
     <bpmndi:BPMNPlane id="visitor-plane" bpmnElement="visitor-collaboration">
       <bpmndi:BPMNShape id="visitor-pool-di" bpmnElement="visitor-pool" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1600" height="880" />
+        <dc:Bounds x="0" y="0" width="1600" height="990" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="visitor-lane-visitor-di" bpmnElement="visitor-lane-visitor" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="1570" height="880" />
+        <dc:Bounds x="30" y="0" width="1570" height="990" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="open-map-di" bpmnElement="open-map">
         <dc:Bounds x="137" y="45" width="36" height="36" />
@@ -245,10 +276,10 @@ ref: functions/api/google.js GET</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="290" y="92" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="browse-di" bpmnElement="browse">
-        <dc:Bounds x="475" y="28" width="120" height="70" />
+        <dc:Bounds x="475" y="138" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="find-anywhere-di" bpmnElement="find-anywhere">
-        <dc:Bounds x="665" y="28" width="120" height="70" />
+        <dc:Bounds x="665" y="138" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="open-place-di" bpmnElement="open-place">
         <dc:Bounds x="855" y="28" width="120" height="70" />
@@ -264,72 +295,72 @@ ref: functions/api/google.js GET</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="1430" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ask-di" bpmnElement="ask">
-        <dc:Bounds x="475" y="138" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="answer-di" bpmnElement="answer">
-        <dc:Bounds x="665" y="138" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="asked-di" bpmnElement="asked">
-        <dc:Bounds x="897" y="155" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="195" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="save-di" bpmnElement="save">
         <dc:Bounds x="475" y="248" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="save-device-di" bpmnElement="save-device">
+      <bpmndi:BPMNShape id="answer-di" bpmnElement="answer">
         <dc:Bounds x="665" y="248" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="offer-di" bpmnElement="offer">
-        <dc:Bounds x="890" y="258" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="312" width="110" height="28" /></bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="asked-di" bpmnElement="asked">
+        <dc:Bounds x="897" y="265" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="305" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="saved-here-di" bpmnElement="saved-here">
-        <dc:Bounds x="1087" y="265" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="305" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="read-di" bpmnElement="read">
+      <bpmndi:BPMNShape id="save-di" bpmnElement="save">
         <dc:Bounds x="475" y="358" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="read-done-di" bpmnElement="read-done">
-        <dc:Bounds x="707" y="375" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="670" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="save-device-di" bpmnElement="save-device">
+        <dc:Bounds x="665" y="358" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="lists-di" bpmnElement="lists">
+      <bpmndi:BPMNShape id="offer-di" bpmnElement="offer">
+        <dc:Bounds x="890" y="368" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="422" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="saved-here-di" bpmnElement="saved-here">
+        <dc:Bounds x="1087" y="375" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="read-di" bpmnElement="read">
         <dc:Bounds x="475" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="public-only-di" bpmnElement="public-only">
-        <dc:Bounds x="665" y="468" width="120" height="70" />
+      <bpmndi:BPMNShape id="read-done-di" bpmnElement="read-done">
+        <dc:Bounds x="707" y="485" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="670" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="keep-it-di" bpmnElement="keep-it">
-        <dc:Bounds x="890" y="478" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="532" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="list-read-di" bpmnElement="list-read">
-        <dc:Bounds x="1087" y="485" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="feedback-di" bpmnElement="feedback">
+      <bpmndi:BPMNShape id="lists-di" bpmnElement="lists">
         <dc:Bounds x="475" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="feedback-in-di" bpmnElement="feedback-in">
+      <bpmndi:BPMNShape id="public-only-di" bpmnElement="public-only">
         <dc:Bounds x="665" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="feedback-done-di" bpmnElement="feedback-done">
-        <dc:Bounds x="897" y="595" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="keep-it-di" bpmnElement="keep-it">
+        <dc:Bounds x="890" y="588" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="642" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
+      <bpmndi:BPMNShape id="list-read-di" bpmnElement="list-read">
+        <dc:Bounds x="1087" y="595" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feedback-di" bpmnElement="feedback">
         <dc:Bounds x="475" y="688" width="120" height="70" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feedback-in-di" bpmnElement="feedback-in">
+        <dc:Bounds x="665" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feedback-done-di" bpmnElement="feedback-done">
+        <dc:Bounds x="897" y="705" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
+        <dc:Bounds x="475" y="798" width="120" height="70" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sign-in-di" bpmnElement="sign-in">
-        <dc:Bounds x="1045" y="798" width="120" height="70" />
+        <dc:Bounds x="1045" y="908" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="session-di" bpmnElement="session">
-        <dc:Bounds x="1235" y="798" width="120" height="70" />
+        <dc:Bounds x="1235" y="908" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="member-di" bpmnElement="member">
-        <dc:Bounds x="1467" y="815" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1430" y="855" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1467" y="925" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1430" y="965" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="visitor-e1-di" bpmnElement="visitor-e1">
         <di:waypoint x="173" y="63" />
@@ -337,151 +368,160 @@ ref: functions/api/google.js GET</bpmn:documentation>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="visitor-e2-di" bpmnElement="visitor-e2">
         <di:waypoint x="370" y="63" />
-        <di:waypoint x="475" y="63" />
-        <bpmndi:BPMNLabel><dc:Bounds x="374" y="33" width="97" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="855" y="63" />
+        <bpmndi:BPMNLabel><dc:Bounds x="374" y="33" width="477" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="visitor-e3-di" bpmnElement="visitor-e3">
-        <di:waypoint x="595" y="63" />
-        <di:waypoint x="665" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e4-di" bpmnElement="visitor-e4">
-        <di:waypoint x="785" y="63" />
-        <di:waypoint x="855" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e5-di" bpmnElement="visitor-e5">
-        <di:waypoint x="975" y="63" />
-        <di:waypoint x="1045" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e6-di" bpmnElement="visitor-e6">
-        <di:waypoint x="1165" y="63" />
-        <di:waypoint x="1235" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e7-di" bpmnElement="visitor-e7">
-        <di:waypoint x="1355" y="63" />
-        <di:waypoint x="1467" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e8-di" bpmnElement="visitor-e8">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="173" />
         <di:waypoint x="475" y="173" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="143" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e9-di" bpmnElement="visitor-e9">
+      <bpmndi:BPMNEdge id="visitor-e4-di" bpmnElement="visitor-e4">
         <di:waypoint x="595" y="173" />
         <di:waypoint x="665" y="173" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e10-di" bpmnElement="visitor-e10">
+      <bpmndi:BPMNEdge id="visitor-e5-di" bpmnElement="visitor-e5">
         <di:waypoint x="785" y="173" />
-        <di:waypoint x="897" y="173" />
+        <di:waypoint x="801" y="173" />
+        <di:waypoint x="801" y="63" />
+        <di:waypoint x="855" y="63" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e11-di" bpmnElement="visitor-e11">
+      <bpmndi:BPMNEdge id="visitor-e6-di" bpmnElement="visitor-e6">
+        <di:waypoint x="975" y="63" />
+        <di:waypoint x="1045" y="63" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e7-di" bpmnElement="visitor-e7">
+        <di:waypoint x="1165" y="63" />
+        <di:waypoint x="1235" y="63" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e8-di" bpmnElement="visitor-e8">
+        <di:waypoint x="1355" y="63" />
+        <di:waypoint x="1467" y="63" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e9-di" bpmnElement="visitor-e9">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="283" />
         <di:waypoint x="475" y="283" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="253" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e12-di" bpmnElement="visitor-e12">
+      <bpmndi:BPMNEdge id="visitor-e10-di" bpmnElement="visitor-e10">
         <di:waypoint x="595" y="283" />
         <di:waypoint x="665" y="283" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e13-di" bpmnElement="visitor-e13">
+      <bpmndi:BPMNEdge id="visitor-e11-di" bpmnElement="visitor-e11">
         <di:waypoint x="785" y="283" />
-        <di:waypoint x="890" y="283" />
+        <di:waypoint x="897" y="283" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e14-di" bpmnElement="visitor-e14">
-        <di:waypoint x="940" y="283" />
-        <di:waypoint x="1087" y="283" />
-        <bpmndi:BPMNLabel><dc:Bounds x="944" y="253" width="139" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e15-di" bpmnElement="visitor-e15">
-        <di:waypoint x="940" y="283" />
-        <di:waypoint x="956" y="283" />
-        <di:waypoint x="956" y="833" />
-        <di:waypoint x="1045" y="833" />
-        <bpmndi:BPMNLabel><dc:Bounds x="960" y="287" width="70" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e16-di" bpmnElement="visitor-e16">
+      <bpmndi:BPMNEdge id="visitor-e12-di" bpmnElement="visitor-e12">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="393" />
         <di:waypoint x="475" y="393" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="363" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e17-di" bpmnElement="visitor-e17">
+      <bpmndi:BPMNEdge id="visitor-e13-di" bpmnElement="visitor-e13">
         <di:waypoint x="595" y="393" />
-        <di:waypoint x="707" y="393" />
+        <di:waypoint x="665" y="393" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e18-di" bpmnElement="visitor-e18">
+      <bpmndi:BPMNEdge id="visitor-e14-di" bpmnElement="visitor-e14">
+        <di:waypoint x="785" y="393" />
+        <di:waypoint x="890" y="393" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e15-di" bpmnElement="visitor-e15">
+        <di:waypoint x="940" y="393" />
+        <di:waypoint x="1087" y="393" />
+        <bpmndi:BPMNLabel><dc:Bounds x="944" y="363" width="139" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e16-di" bpmnElement="visitor-e16">
+        <di:waypoint x="940" y="393" />
+        <di:waypoint x="956" y="393" />
+        <di:waypoint x="956" y="943" />
+        <di:waypoint x="1045" y="943" />
+        <bpmndi:BPMNLabel><dc:Bounds x="960" y="397" width="70" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e17-di" bpmnElement="visitor-e17">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="503" />
         <di:waypoint x="475" y="503" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e19-di" bpmnElement="visitor-e19">
+      <bpmndi:BPMNEdge id="visitor-e18-di" bpmnElement="visitor-e18">
         <di:waypoint x="595" y="503" />
-        <di:waypoint x="665" y="503" />
+        <di:waypoint x="707" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e20-di" bpmnElement="visitor-e20">
-        <di:waypoint x="785" y="503" />
-        <di:waypoint x="890" y="503" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e21-di" bpmnElement="visitor-e21">
-        <di:waypoint x="940" y="503" />
-        <di:waypoint x="1087" y="503" />
-        <bpmndi:BPMNLabel><dc:Bounds x="944" y="473" width="139" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e22-di" bpmnElement="visitor-e22">
-        <di:waypoint x="940" y="503" />
-        <di:waypoint x="956" y="503" />
-        <di:waypoint x="956" y="833" />
-        <di:waypoint x="1045" y="833" />
-        <bpmndi:BPMNLabel><dc:Bounds x="960" y="507" width="70" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e23-di" bpmnElement="visitor-e23">
+      <bpmndi:BPMNEdge id="visitor-e19-di" bpmnElement="visitor-e19">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="613" />
         <di:waypoint x="475" y="613" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="583" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e24-di" bpmnElement="visitor-e24">
+      <bpmndi:BPMNEdge id="visitor-e20-di" bpmnElement="visitor-e20">
         <di:waypoint x="595" y="613" />
         <di:waypoint x="665" y="613" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e25-di" bpmnElement="visitor-e25">
+      <bpmndi:BPMNEdge id="visitor-e21-di" bpmnElement="visitor-e21">
         <di:waypoint x="785" y="613" />
-        <di:waypoint x="897" y="613" />
+        <di:waypoint x="890" y="613" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e26-di" bpmnElement="visitor-e26">
+      <bpmndi:BPMNEdge id="visitor-e22-di" bpmnElement="visitor-e22">
+        <di:waypoint x="940" y="613" />
+        <di:waypoint x="1087" y="613" />
+        <bpmndi:BPMNLabel><dc:Bounds x="944" y="583" width="139" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e23-di" bpmnElement="visitor-e23">
+        <di:waypoint x="940" y="613" />
+        <di:waypoint x="956" y="613" />
+        <di:waypoint x="956" y="943" />
+        <di:waypoint x="1045" y="943" />
+        <bpmndi:BPMNLabel><dc:Bounds x="960" y="617" width="70" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e24-di" bpmnElement="visitor-e24">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="723" />
         <di:waypoint x="475" y="723" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="693" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e27-di" bpmnElement="visitor-e27">
+      <bpmndi:BPMNEdge id="visitor-e25-di" bpmnElement="visitor-e25">
         <di:waypoint x="595" y="723" />
-        <di:waypoint x="611" y="723" />
-        <di:waypoint x="611" y="833" />
-        <di:waypoint x="1045" y="833" />
+        <di:waypoint x="665" y="723" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="visitor-e28-di" bpmnElement="visitor-e28">
+      <bpmndi:BPMNEdge id="visitor-e26-di" bpmnElement="visitor-e26">
+        <di:waypoint x="785" y="723" />
+        <di:waypoint x="897" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e27-di" bpmnElement="visitor-e27">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="833" />
-        <di:waypoint x="1045" y="833" />
-        <bpmndi:BPMNLabel><dc:Bounds x="390" y="67" width="70" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="475" y="833" />
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="803" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e28-di" bpmnElement="visitor-e28">
+        <di:waypoint x="595" y="833" />
+        <di:waypoint x="611" y="833" />
+        <di:waypoint x="611" y="943" />
+        <di:waypoint x="1045" y="943" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="visitor-e29-di" bpmnElement="visitor-e29">
-        <di:waypoint x="1165" y="833" />
-        <di:waypoint x="1235" y="833" />
+        <di:waypoint x="370" y="63" />
+        <di:waypoint x="386" y="63" />
+        <di:waypoint x="386" y="943" />
+        <di:waypoint x="1045" y="943" />
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="67" width="70" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="visitor-e30-di" bpmnElement="visitor-e30">
-        <di:waypoint x="1355" y="833" />
-        <di:waypoint x="1467" y="833" />
+        <di:waypoint x="1165" y="943" />
+        <di:waypoint x="1235" y="943" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="visitor-e31-di" bpmnElement="visitor-e31">
+        <di:waypoint x="1355" y="943" />
+        <di:waypoint x="1467" y="943" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

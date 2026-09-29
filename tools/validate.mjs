@@ -88,6 +88,9 @@ import { stale as staleCity } from './city.mjs';
 import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 import { stale as staleSitemap } from './sitemap.mjs';
 import { stale as staleFlows, problems as flowProblems, load as loadFlows } from './flows.mjs';
+/* The page ids a diagram's step may say it is counted by — see the flows
+   block at the end. */
+import { PAGES } from '../functions/api/_visitors.js';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
    every id has a label in ten languages, and every pattern still matches
@@ -1967,6 +1970,34 @@ if (flowDoc) {
      one that does — otherwise every broken ref would fail twice. */
   if (!found.length) for (const file of staleFlows()) {
     fail(file, 'is not what tools/flows.mjs would write from data/flows.json — run `node tools/flows.mjs` and commit the result');
+  }
+
+  /* And what a step is counted by — its `when`, which **The numbers on it**
+     in README.md explains. tools/flows.mjs holds the shape; this holds the
+     names, which it cannot: a page is one of PAGES in
+     functions/api/_visitors.js, and a press is a name the **Analytics**
+     tables in README.md list, since that table is the list of what every
+     page reports. A press renamed without its `when` would otherwise count
+     nothing, quietly, for as long as nobody looked. */
+  const pageIds = new Set(PAGES.map((p) => p.id));
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  const start = readme.indexOf('\n### Analytics');
+  const stop = readme.indexOf('\n### ', start + 1);
+  const pressNames = new Set([...readme.slice(start, stop > start ? stop : undefined).matchAll(/`([a-z][a-z0-9_]*)`/g)].map((m) => m[1]));
+  for (const flow of flowDoc.flows) {
+    for (const node of flow.nodes || []) {
+      for (const signal of node.when || []) {
+        const at = `data/flows.json → ${flow.id} → ${node.id}`;
+        const paged = /^(?:page|view):([a-z]+)$/.exec(signal);
+        if (paged) {
+          if (!pageIds.has(paged[1])) fail(at, `"${signal}" names a page PAGES in functions/api/_visitors.js does not: ${[...pageIds].join(', ')}`);
+          continue;
+        }
+        const [name, page] = signal.split('@');
+        if (page !== undefined && !pageIds.has(page)) fail(at, `"${signal}" names a page PAGES in functions/api/_visitors.js does not`);
+        if (!pressNames.has(name)) fail(at, `"${name}" is not a press name the Analytics tables in README.md list — every name TTBTrack sends has a row there`);
+      }
+    }
   }
 }
 

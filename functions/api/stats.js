@@ -75,7 +75,9 @@
  * are the same arrangement for the whole site: a page opened, and a stretch
  * of one on screen with what was pressed meanwhile, sent by assets/track.js
  * from every page and counted into visitor_counts by ./_visitors.js, which
- * /admin/visitors reads.
+ * /admin/visitors reads — and the same `leave`, with its presses in the
+ * order they came, into flow_counts by ./_flows.js, which is what puts the
+ * numbers on the diagrams /admin/flows draws.
  *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
@@ -111,6 +113,7 @@ import {
 import { LIST_ID } from './_lists.js';
 import { countView, countPress, firstToday } from './_visits.js';
 import { countArrive, countLeave } from './_visitors.js';
+import { countFlows } from './_flows.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
@@ -216,9 +219,15 @@ export async function onRequestPost(context) {
 
   /* A page of the site opened, or put away. Counted into visitor_counts, the
      whole site's by the day, and read on /admin/visitors — ./_visitors.js is
-     the whole of it. `id` is the page's path. */
+     the whole of it. `id` is the page's path. A page put away also carries
+     the trail — the presses in the order they first happened — which
+     ./_flows.js counts into flow_counts for the diagrams on /admin/flows, in
+     a batch of its own so that neither table's absence fails the other. */
   if (kind === ARRIVE) return json({ ok: await countArrive(context, body) }, 200);
-  if (kind === LEAVE) return json({ ok: await countLeave(context, body) }, 200);
+  if (kind === LEAVE) {
+    const [counted] = await Promise.all([countLeave(context, body), countFlows(context, body)]);
+    return json({ ok: counted }, 200);
+  }
 
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)

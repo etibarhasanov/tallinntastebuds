@@ -32,7 +32,8 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="open" name="Opens flashcards">
-      <bpmn:documentation>ref: functions/flashcard.js</bpmn:documentation>
+      <bpmn:documentation>when: page:flashcard
+ref: functions/flashcard.js</bpmn:documentation>
       <bpmn:outgoing>flashcards-e1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="shelf" name="Answers the shelf and the words, in one request">
@@ -49,12 +50,17 @@
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="deck" name="Opens a deck or a lesson">
       <bpmn:documentation>Deeper stages open as the count of known words grows.
+when: flash_open
+when: flash_lesson_open
+when: flash_resume
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e3</bpmn:incoming>
       <bpmn:outgoing>flashcards-e4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="turn" name="Turns a card: got it, or not">
       <bpmn:documentation>Undo one answer, a hint once a card, hear it spoken.
+when: flash_knew
+when: flash_again
 ref: assets/flashcard.js
 ref: functions/api/say.js GET</bpmn:documentation>
       <bpmn:incoming>flashcards-e4</bpmn:incoming>
@@ -67,12 +73,15 @@ ref: functions/api/say.js GET</bpmn:documentation>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="one-word" name="One word, then the sign-in card">
       <bpmn:documentation>The answer is kept in the tab and sent once they sign in.
+when: flash_keep_ask
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e7</bpmn:incoming>
       <bpmn:outgoing>flashcards-e8</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="sign-in" name="Signs in">
-      <bpmn:documentation>ref: functions/api/account.js POST
+      <bpmn:documentation>when: account_login@flashcard
+when: account_create@flashcard
+ref: functions/api/account.js POST
 ref: functions/api/google.js GET</bpmn:documentation>
       <bpmn:incoming>flashcards-e8</bpmn:incoming>
       <bpmn:outgoing>flashcards-e9</bpmn:outgoing>
@@ -89,6 +98,8 @@ ref: functions/api/flashcard.js POST knew, again</bpmn:documentation>
     </bpmn:endEvent>
     <bpmn:userTask id="write" name="Writes a deck of their own">
       <bpmn:documentation>Members only. 20 decks, 200 cards each.
+when: flash_deck
+when: flash_card
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e11</bpmn:incoming>
       <bpmn:outgoing>flashcards-e12</bpmn:outgoing>
@@ -102,7 +113,8 @@ ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e13</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="reset" name="Starts a deck again">
-      <bpmn:documentation>ref: assets/flashcard.js</bpmn:documentation>
+      <bpmn:documentation>when: flash_reset
+ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e14</bpmn:incoming>
       <bpmn:outgoing>flashcards-e15</bpmn:outgoing>
     </bpmn:userTask>
@@ -116,6 +128,7 @@ ref: assets/flashcard.js</bpmn:documentation>
     </bpmn:endEvent>
     <bpmn:userTask id="report" name="Says a card is wrong">
       <bpmn:documentation>No account needed.
+when: flash_wrong
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e17</bpmn:incoming>
       <bpmn:outgoing>flashcards-e18</bpmn:outgoing>

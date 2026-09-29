@@ -1,12 +1,15 @@
-/* Tallinn Tastebuds — /flows, and only what a diagram needs.
+/* Tallinn Tastebuds — /admin/flows, and only what a diagram needs.
  *
  * The tokens, the card, the chips and the eyebrow come from assets/styles.css;
- * the brand header and the column from assets/lists.css. What is left is the
- * chip row, the stage the diagram scrolls inside, the card under it that says
- * what a pressed step is, and the diagram itself — whose shapes are SVG drawn
- * by assets/flows.js with a class each and no colour of their own, so that
- * pressing the swatch on the map and coming back brings the diagram with it,
- * which is rule 1 of **The design rules** in README.md.
+ * the brand header, the column and the segmented control from
+ * assets/lists.css; the range row and the tables of numbers from
+ * assets/stats.css. What is left is the chip row, the stage the diagram
+ * scrolls inside, the card under it that says what a pressed step is, and
+ * the diagram itself — whose shapes are SVG drawn by assets/flows.js with a
+ * class each and no colour of their own, so that pressing the swatch on the
+ * map and coming back brings the diagram with it, which is rule 1 of **The
+ * design rules** in README.md — and the numbers laid on it, at the bottom
+ * of this file.
  *
  * Who does a step is told by its outline: the accent for a person, the muted
  * ink for the site. The lane says the same thing, and the outline is there so
@@ -197,3 +200,88 @@
   font-size: 12px;
   overflow-wrap: anywhere;
 }
+
+/* ------------------------------------------------------- the numbers on it
+ * See **The numbers on it** under **Who uses the site, drawn** in README.md.
+ * The range row is the one /insights and /admin/visitors draw, the who
+ * switch is the lists page's segmented control, and both sit over the
+ * diagram in one wrapping row; the line under them says what was counted. */
+
+.flows-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 8px;
+}
+/* The owner's diagram counts nothing and gets no controls: `hidden` on its
+   own loses to the flex above. */
+.flows-controls[hidden] { display: none; }
+.flows-controls .ins-range { margin: 0; }
+
+.flows-counted {
+  margin: 0 0 12px;
+  max-width: 70ch;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: .02em;
+}
+.flows-counted b { color: var(--ink); font-weight: 500; }
+.flows-counted.is-error { color: var(--no); }
+
+/* A count on a step: a mono pill on the shape's top-right corner, paper
+   inside a hairline. A nought is muted, because a step nobody reached is
+   the answer the page is most often opened for and should read as quiet
+   rather than as missing. */
+.flow-count rect { fill: var(--paper); stroke: var(--muted); stroke-width: 1; }
+.flow-count text {
+  fill: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+.flow-count.is-zero rect { stroke: var(--hairline); }
+.flow-count.is-zero text { fill: var(--muted); font-weight: 400; }
+
+/* A count on an arrow: after the arrow's label where it has one, otherwise
+   under the arrow itself, on a stroke of the lane's own wash so the line
+   does not cut through the digits — arrowNumbers() in assets/flows.js says
+   where. The arrow's width says the same thing as the number — rule 10 —
+   and the same function sets it per arrow. */
+.flow-arrow-n {
+  fill: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  paint-order: stroke;
+  stroke: var(--wash);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+/* The step-by-step table: the name, a line under it saying where the
+   people who reached it went next, and the numbers on the right. The moves
+   card is two names and one number. */
+.flows-next {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .02em;
+}
+.flows-move .flows-next { display: inline; margin: 0 6px; }
+.flows-moves { grid-template-columns: minmax(0, 1fr) auto; margin-top: 4px; }
+.flows-moves .ins-row > :nth-child(2) { padding-left: 14px; }
+
+/* What a pressed step's number is, under its references. */
+.flows-detail-n {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.flows-detail-n b { font-family: var(--mono); font-weight: 500; font-size: 13px; }

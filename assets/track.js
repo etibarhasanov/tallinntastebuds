@@ -42,6 +42,20 @@
  * earlier, since the count is younger than the site. No id is made or sent. The owner's pages under /admin/ send
  * nothing.
  *
+ * THE ORDER THEY CAME IN
+ *
+ * The same report also carries the names in the order they first happened —
+ * the trail — so the diagrams on /admin/flows can say how people move from
+ * one step to the next, and functions/api/_flows.js is what turns a trail
+ * into steps and arrows. Each name is in it once per page, however many
+ * times it was pressed, the rule a place opened already follows, and a place
+ * opened rides in it as `view`, the same moment view() reports one. A
+ * journey that crosses pages — the map, then a list — is two page loads, so
+ * the tab keeps the last name it reported under `ttb.step` in
+ * sessionStorage and the next page sends it as the step before its first.
+ * One word, per tab, gone when the tab closes, and nothing that says who
+ * anybody is.
+ *
  * The language rides in the same reports. Every page writes the language it
  * is read in on to <html lang>, so the seconds on screen are split by what
  * that said while they passed, and a press of a language switch — the
@@ -85,6 +99,7 @@ window.TTBTrack = (function () {
     params = params || {};
     params.layout = layout();
     tallied[name] = (tallied[name] || 0) + 1;
+    step(name);
     if (name === 'language_select') switched(params.language);
     if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
@@ -127,6 +142,9 @@ window.TTBTrack = (function () {
      one per opened place, titled with the place, so the standard Pages and
      screens report doubles as a popularity ranking. */
   function view(title) {
+    /* Before the address check: a deep-linked place is one the tag already
+       counted, and still a step somebody took. */
+    step('view');
     if (here() === seenPath) return;
     seenPath = here();
     opened += 1;
@@ -176,6 +194,7 @@ window.TTBTrack = (function () {
   var STATS = '/api/stats';
   var SEEN_KEY = 'ttb.seen';
   var SINCE_KEY = 'ttb.since';
+  var STEP_KEY = 'ttb.step';
   var COUNTED = window.location.pathname.indexOf('/admin') !== 0;
   var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
   var arrived = false;
@@ -183,6 +202,10 @@ window.TTBTrack = (function () {
 
   var tallied = {};    // press name -> times, since the last report
   var opened = 0;      // places opened with view(), since the last report
+  var trail = [];      // names first seen this page, in order, since the last report
+  var walked = {};     // name -> true, once it is in a trail — THE ORDER THEY CAME IN
+  var earlier = '';    // the last name reported, this page or the one before it in this tab
+  var fresh = true;    // no report has left this page yet, so the first says the page opened
   var who = '';        // 'new' or 'back', once arrive() has read the dates
   var shown = 0;       // milliseconds on screen, since the last report
   var since = null;    // when the page last came on screen, null while hidden
@@ -209,6 +232,25 @@ window.TTBTrack = (function () {
   /* Today in UTC, the clock functions/api/_visitors.js files days by. */
   function today() {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  /* A step of a journey, once per page — THE ORDER THEY CAME IN. */
+  function step(name) {
+    if (!COUNTED || walked[name]) return;
+    walked[name] = true;
+    trail.push(name);
+  }
+
+  /* The name a trail ends on, as the next report or the next page will send
+     it, with this page's path on it: a view or the page itself says nothing
+     on its own about which page it was, and a press may mean one thing on
+     this page and another elsewhere — earlierOf() in
+     functions/api/_flows.js is what reads the path back into a page. */
+  function lastStep(names) {
+    var name = names[names.length - 1];
+    var path = window.location.pathname;
+    if (name === 'page' || name === 'view') return name + ':' + path;
+    return name + '@' + path;
   }
 
   /* The page opened. Whether it is this browser's first today, and whether
@@ -312,10 +354,12 @@ window.TTBTrack = (function () {
   }
 
   /* The page hidden or put away: the stretch it was on screen and the same
-     seconds by language, the presses, the places opened and the languages
-     switched since the last report, sent once and forgotten. The first
-     report of a browser's first page today also says which language it
-     arrived in — the one before any switch, which is the one the site chose. */
+     seconds by language, the presses, the places opened, the languages
+     switched and the trail since the last report, sent once and forgotten.
+     The first report of a browser's first page today also says which
+     language it arrived in — the one before any switch, which is the one the
+     site chose — and the first report of any page says the page opened, so
+     the diagrams count the page itself as a step before the trail. */
   function putAway() {
     /* A page put away before it said it was opened — the map, closed before
        its places came in — says so now, so the view is not lost. */
@@ -328,26 +372,40 @@ window.TTBTrack = (function () {
       var s = Math.round(spoken[code] / 1000);
       if (s) langs[code] = s;
     });
-    if (!secs && !opened && !first && !Object.keys(tallied).length && !Object.keys(moved).length) return;
+    if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length && !trail.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
-      places: opened, langs: langs, moved: moved, who: who, layout: dealt() };
+      places: opened, langs: langs, moved: moved, who: who, layout: dealt(),
+      trail: trail, earlier: earlier, opened: fresh };
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;
       first = false;
     }
+    /* Where this leaves off, for the next stretch or the next page: the last
+       name of the trail, or the page itself when its first report carried
+       no names, so a page nobody pressed anything on is still the step
+       before whatever the tab does next. */
+    var names = trail.length ? trail : (fresh ? ['page'] : []);
     send(body);
+    fresh = false;
+    if (names.length) {
+      earlier = lastStep(names);
+      try { window.sessionStorage.setItem(STEP_KEY, earlier); } catch (e) { /* the next page starts afresh */ }
+    }
     shown = 0;
     tallied = {};
     opened = 0;
     spoken = {};
     moved = {};
+    trail = [];
   }
 
   if (COUNTED) {
     if (window.MutationObserver) {
       new MutationObserver(relang).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
     }
+    /* Where this tab's last page left off — THE ORDER THEY CAME IN. */
+    try { earlier = window.sessionStorage.getItem(STEP_KEY) || ''; } catch (e) { earlier = ''; }
     onScreen();
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') putAway();
