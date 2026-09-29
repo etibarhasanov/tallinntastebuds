@@ -114,7 +114,7 @@
  *
  * THE SIXTH LIST IS NOT ONE OF THESE POOLS
  *
- * "Top twenty places in Tallinn, by Google" is not a category singled out and
+ * "Top 20 places, by Google" is not a category singled out and
  * weighed at PRIOR 300 the way the five above are. It is the export's own
  * rank column — overallOrder() in tools/googlevenues.mjs, RANK_PRIOR 100,
  * mean taken over all 1,111 rather than one pool — with its first twenty open
@@ -123,8 +123,8 @@
  * a second, differently-weighed pass over the same rows would answer it a
  * second way and the two would disagree over which twenty names belong.
  * Reusing it instead means this list is read straight off /google's own
- * order — its title says "in Tallinn" rather than naming a kind of place for
- * that reason, and rankOverall() below is the whole of how it is built.
+ * order — its title names no kind of place for that reason, and
+ * rankOverall() below is the whole of how it is built.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -228,7 +228,7 @@ export const LISTS = [
   },
   {
     id: 'top-twenty-places-by-google-kwb7l5',
-    title: 'Top twenty places in Tallinn, by Google',
+    title: 'Top 20 places, by Google',
     overall: true
   }
 ];

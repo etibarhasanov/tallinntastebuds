@@ -4515,7 +4515,7 @@ db/google-lists.sql      GENERATED — one account, six lists, seventy rows
 
 Six public lists under an account called `google-statistics`: **Top ten
 restaurants in Tallinn, by Google**, and the same for bakeries, cafés, bars
-and pizzerias, and a sixth — **Top twenty places in Tallinn, by Google** —
+and pizzerias, and a sixth — **Top 20 places, by Google** —
 across all of them at once. They are lists in every way the rest of this section means: a row
 each in `lists` and `list_items`, a byline that leads to
 `/u/google-statistics`, a bookmark, a way onto the map, and a row on `/lists`
@@ -4578,7 +4578,7 @@ than what a burger bar you know nothing about is. Ties go to the bigger
 count, a chain's branches are one row, and a place Google calls temporarily
 closed is on none of them.
 
-The sixth list, **Top twenty places in Tallinn, by Google**, is not weighed
+The sixth list, **Top 20 places, by Google**, is not weighed
 by these two settings at all. It has no pool of its own to single out and no
 `FLOOR` to hold small counts below — it is the export's own `rank` column,
 `overallOrder()` in `tools/googlevenues.mjs`, at the directory's `PRIOR` of

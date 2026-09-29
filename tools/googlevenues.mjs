@@ -391,7 +391,7 @@ const RANK_PRIOR = 100;
  * 1,111 with no gaps and the page's "of 1,111" is exact.
  *
  * overallOrder() below is the arithmetic itself, exported: tools/googlelists.mjs
- * takes its first twenty, open only, for "Top twenty places in Tallinn, by
+ * takes its first twenty, open only, for "Top 20 places, by
  * Google" — the sixth list under google-statistics, and the whole point of
  * exporting this rather than a second copy of it is that a list built from a
  * fresh weighing could rank a place fourth that this column calls ninth. One
