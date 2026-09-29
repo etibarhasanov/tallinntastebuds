@@ -196,6 +196,18 @@
 /blog
   Cache-Control: public, max-age=0, must-revalidate
 
+# Chess. Stored as chess.html and served at /chess as well, so both spellings
+# are spelled out, the way the blog's are. The same revalidating Cache-Control
+# for the ?v= stamps, and no X-Robots-Tag: like the blog it is unlinked and
+# indexed until the last of the chess tasks puts a door on the map's rail, and
+# what a search for it should find is the page. The board is never cached by
+# this file; /api/chess answers no-store on its own.
+/chess.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/chess
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Feedback. Stored as feedback.html and served at /feedback as well, so both
 # spellings are spelled out, the same reason "/" and "/index.html" both appear
 # at the top of this file. The address people are given is the short one.

@@ -71,6 +71,13 @@ Disallow: /account.html
 # link into the page anywhere. The posts are ?post=<id> on the same address
 # and the index links every one of them.
 
+# /chess is deliberately NOT disallowed either, and until the last of the
+# chess tasks puts a door on the map's rail nothing links to it at all — the
+# blog's arrangement, with sitemap.xml the only way in. It is one board for the
+# whole city, and somebody searching for a game of chess against Tallinn should
+# land on the page that is one. The board itself is /api/chess, which no page
+# a crawler reads depends on.
+
 # /flashcard is deliberately NOT disallowed, and the only link to it anywhere
 # on this site is one pill on the map's rail. That is the blog's arrangement
 # above rather than a contradiction of it: one door, no row in the sheet and

@@ -64,6 +64,7 @@ completely with the database switched off.
 - [Profiles](#profiles)
 - [Splitwise](#splitwise)
 - [Flashcards](#flashcards)
+- [Chess](#chess)
 - [Stories](#stories)
 - [The blog](#the-blog)
 - [Feedback](#feedback)
@@ -9819,24 +9820,76 @@ this feature exists except the file of words it reads.
 ## Chess
 
 A page at `/chess` where the whole city plays one game of chess against the
-house — the owner's account, the one `ADMINS` names — and where a member can
-queue to play the house one on one. It is being built a task at a time, from
-`.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and **the page does
-not exist yet**: what is live is the rules, `functions/api/_chess.js`, and the
-route that stands on them, `functions/api/chess.js`, which nothing links to and
-nothing calls. This section is a stub until the page lands, and says only what
-the route and the tables are; the rest is written with the page.
+house — the owner's account, the one `ADMINS` names. It is being built a task
+at a time, from `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and
+what is live so far is **the public game**: `chess.html`, `assets/chess.js` and
+`assets/chess.css` draw it, `functions/api/chess.js` answers it and
+`functions/api/_chess.js` holds the rules. **Nothing links to the page yet** —
+the blog's arrangement, unlinked and indexed, listed in `sitemap.xml` and not
+disallowed in `robots.txt` — and the last task puts a door on the map's rail.
+The one-on-one waiting list is in the route already and has no page yet; a
+member cannot join it until task 5 draws the card.
 
-`GET /api/chess` answers everything the page will draw in one go — who is
-reading (`house`, `member` or `visitor`), the house's record, the public game,
-the reader's own private game, the queue — and each game carries its moves and,
-only when it is the reader's turn, `legal`: every move they may make, worked out
-on the server, so the browser runs none of the rules. `?lang=` adds the page's
-words through `wordsFor()`, all ten languages, the way `/api/flashcard` does,
-and the poll leaves it off. `POST /api/chess` takes `move`, `new`, `join`,
-`leave`, `start`, `resign` and `abandon`, answers the same shape, and refuses in
-the shape every route here refuses in; `SKILL.md` has the table of who may do
-which and what each refusal means. `no-store` throughout.
+### The public game
+
+One board, always on the page: Everybody against Tallinn Tastebuds. Whoever is
+there when it is Everybody's turn may play the next move, signed in or not — a
+stranger's move is filed under the device id the map files a save under
+(`assets/device.js`) and reads *a visitor* in the list, a member's carries
+their username. The house answers when it gets to the board, from this same
+page, which shows it a different face: the board turned round so its side is
+at the bottom, live on its own turn and inert on the city's. The same person
+may play two of Everybody's moves in a row and the list shows who played what,
+so a hog is visible and a rule against one would only stall a quiet evening.
+No clock. Everybody opens the first game as white and the colours swap every
+game; when one ends, the result stays on the board until the house presses the
+page's one filled button, *Start the next game*.
+
+**The states it draws**: Everybody to move (a live board for a reader, *Waiting
+for the city* and an inert one for the house); the house to move (the other way
+round); check, carried on the turn line; checkmate, stalemate or a draw with its
+reason and who won in how many moves; no game yet, where only the house is
+offered a button; and the route not answering, where a card in the board's place
+says so from the markup, so it reads even with no words at all. A pawn
+reaching the last rank swaps the sentence for four choices — queen, rook,
+bishop, knight — in the segmented control the language switch is. A move that
+lost a race draws the board as the route says it now is and says so: *Somebody
+got there first*.
+
+**The browser runs none of the rules.** The answer carries `legal`, every move
+the reader may make now, and only when it is their turn; a press on a piece that
+starts one picks it up, rings its square in the accent and dots where it may go
+(a ring round a piece it would take), and a second press on a dot plays it. The
+last move's two squares wear a quieter ring and a king in check wears the
+accent. Nothing is dragged and the board has no `touch-action`, so a thumb that
+starts on it still scrolls the page. Every square is a `<button>` with an
+`aria-label` naming its piece and square, so the board is a board for a
+keyboard and a screen reader too. The pieces are the platform's own glyphs,
+U+2654 to U+265F with U+FE0E after each so the black pawn stays a piece, drawn
+out of `--pieces` and coloured out of `--ink`; on the dark style the filled
+glyph reads as the light side, which is why the words always say who is who.
+**An iPhone and an Android should be looked at**, and the black pawn is the
+glyph to check: it is the one with an emoji form.
+
+**Every write is sent with the ply the page read**, and the answer is drawn
+whatever it was: the page keeps no board of its own beyond the square somebody
+has picked up, which is dropped the moment its game has moved on. The page
+polls every twenty seconds while it is on screen — never while hidden, and at
+once when it comes back — for the board alone; the words are asked for once,
+with `lang=`, and again only when somebody picks a language, which redraws in
+place rather than reloading. The switch is `assets/language.js`, the radio the
+map's, and the station follows the language. This is the map's origin, so a
+radio playing there walks over playing.
+
+**Two things the route answers that the first draft of it did not:** each move
+carries its `uci`, because the last move's two squares cannot be got from its
+SAN without running the rules, and the answer carries `score` — the public
+games' own tally, `everybody`, `house` and `drawn` — because `record` counts
+private games too and the line under the moves is about the city's game.
+
+**What it deliberately does not do yet**: the one-on-one card and the waiting
+list, the house's record line, a resign button, captured pieces beside the
+board, a clock, a drawn set of pieces.
 
 ### The tables
 
@@ -9857,7 +9910,7 @@ Two, in `db/schema.sql`, applied by hand like every table here:
   authority.
 
 Without the tables the route answers `ready: false` with no games and every
-POST `503 no-database`, and the page will draw the board as not answering.
+POST `503 no-database`, and the page draws the board as not answering.
 
 ---
 
@@ -12220,6 +12273,15 @@ assets/split.css           what a column of money needs and the other pages
 data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
+chess.html                 the chess page, at /chess as well; unlinked and
+                           indexed until its door goes on the rail
+assets/chess.js            the board, the turn line, the moves and the poll,
+                           drawn out of the one /api/chess answer
+assets/chess.css           the board and the cards around it
+assets/language.js         the language switch the flashcards and the chess
+                           page draw on a .lists-brand header
+assets/device.js           the id this browser files a save, a heart or a chess
+                           move under when nobody is signed in
 flashcard.html             flashcards, at /flashcard and at the root of
                            flashcard.tallinntastebuds.ee; served by the route
                            above, which writes a deck's words into it
@@ -14358,6 +14420,17 @@ Flashcards, `assets/flashcard.js`:
 | `flash_keep_ask` | `deck_id` — the gate going up, one word into a deck signed out. Against `account_create` with `via: flashcard` it is how many of the people who meet it make an account, which is the only number that says whether the gate was right |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
+| `radio_play`, `radio_stop` | as on the map |
+
+The chess page, `assets/chess.js` — a move, the house starting the next game,
+and the switch the flashcards' header has:
+
+| Event | Parameters |
+|---|---|
+| `chess_move` | `kind` (`public`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
+| `chess_new_game` | — the house's *Start the next game* or *Start the first game* |
+| `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
+| `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is

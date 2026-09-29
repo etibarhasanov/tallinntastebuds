@@ -121,6 +121,8 @@ set is a later change and a licence row.
 { ready, lang, ui, langs,             ui and langs only when asked with lang=,
                                       never on the twenty-second poll
   you: { role: 'house'|'member'|'visitor', name },
+  score: { everybody, house, drawn },           the public games' own tally,
+                                                for the line under the moves
   record: { games, won, lost, drawn },          the house's, over both kinds
   public: { game, moves, legal } | null,        null before the first game
   mine:   { game, moves, legal } | null,        the member's latest private
@@ -132,7 +134,8 @@ game:  { id, kind: 'public'|'private', state: 'waiting'|'playing'|'over',
          n, white, black, turn: 'w'|'b', fen, ply, check, result, reason,
          createdAt, startedAt, finishedAt, lastAt }
          white and black are 'everybody', 'house' or a username
-moves: [ { ply, san, by, at } ]      by is 'house', 'visitor' or a username
+moves: [ { ply, san, uci, by, at } ]  by is 'house', 'visitor' or a username;
+                                     uci is what draws the last move's ring
 legal: [ 'e2e4', 'e7e8q', … ]        only when the reader may move now
 ```
 

@@ -179,6 +179,7 @@ async function gameAnswer(env, row, who) {
     moves: moves.map((m) => ({
       ply: m.ply,
       san: m.san,
+      uci: m.uci,
       by: m.by_kind === 'house' ? 'house' : m.by_kind === 'user' && m.username ? m.username : 'visitor',
       at: m.at
     })),
@@ -230,9 +231,28 @@ async function state(env, who) {
     )
     .first();
 
+  /* The public game's own tally, for the line under its moves: how the
+     city's games against the house have gone, private games left out. Everybody
+     is the side that is not the house, so a public game the house won is a win
+     for the house and one it lost is a win for Everybody. */
+  const score = await db
+    .prepare(
+      'SELECT ' +
+      "SUM(CASE WHEN (result = '1-0' AND house_colour = 'w') OR (result = '0-1' AND house_colour = 'b') THEN 1 ELSE 0 END) AS house, " +
+      "SUM(CASE WHEN (result = '0-1' AND house_colour = 'w') OR (result = '1-0' AND house_colour = 'b') THEN 1 ELSE 0 END) AS everybody, " +
+      "SUM(CASE WHEN result = '1/2-1/2' THEN 1 ELSE 0 END) AS drawn " +
+      "FROM chess_games WHERE kind = 'public' AND state = 'over'"
+    )
+    .first();
+
   return {
     ready: true,
     you: { role: who.role, name: who.user ? who.user.username : null },
+    score: {
+      everybody: (score && score.everybody) || 0,
+      house: (score && score.house) || 0,
+      drawn: (score && score.drawn) || 0
+    },
     record: {
       games: (rec && rec.games) || 0,
       won: (rec && rec.won) || 0,
@@ -247,6 +267,7 @@ async function state(env, who) {
 
 const EMPTY = {
   ready: false,
+  score: { everybody: 0, house: 0, drawn: 0 },
   record: { games: 0, won: 0, lost: 0, drawn: 0 },
   public: null,
   mine: null,

@@ -217,7 +217,7 @@ show nothing changed.
 
 ---
 
-- [ ] **4. The page, with the public game**
+- [x] **4. The page, with the public game**
 
 **Lands:** `chess.html`, `assets/chess.js`, `assets/chess.css`, about forty
 `chess*` strings in all ten languages, `'chess.html'` in `PAGES` in
@@ -333,6 +333,18 @@ default branch, and **linked from nowhere** — the blog's arrangement until tas
 **Done when:** every state in `SKILL.md`'s list for the public game draws and
 reads in the ten languages; a game can be played to its end and the next one
 started; nothing on the site links to the page yet.
+
+**Cut wrong, and corrected while doing it:** the route's answer had neither
+of two things the page needs, and this task added them rather than have the
+browser run the rules. Each move now carries its `uci`, because the last move's
+two squares — the quieter ring — cannot be read off its SAN without knowing the
+position; and the answer carries `score`, the public games' own tally, because
+`record` counts private games too and the line under the moves is the city's
+game. The two are in `SKILL.md`'s shape and the README section. Two of the
+strings the table gave read badly with Everybody as the subject in Russian,
+Ukrainian, Spanish, Portuguese, Finnish, Estonian and Armenian — "Everybody
+won" agrees with nothing there — so `chessWon` and `chessWonIn` say *Winner:
+{who}* in those seven.
 
 **The PR says:** what was driven and how, the name of the preview account the
 house was driven as, and that an iPhone and an Android should look at the black
