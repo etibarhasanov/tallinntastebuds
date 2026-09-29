@@ -6,10 +6,13 @@
  * A board that is always on the page: Everybody against Tallinn Tastebuds.
  * Whoever is here when it is Everybody's turn may play the next move, signed
  * in or not, and the house — the owner's account — answers when it gets to the
- * board, from this same page, which shows it a different face. **Chess** in
- * README.md is the whole of the feature and .claude/skills/chess/SKILL.md is
- * the shape that was agreed before any of it was written; this file is the
- * first of the pages that draw it, and the public game is all it draws so far.
+ * board, from this same page, which shows it a different face. Beside it, a
+ * waiting list: a member joins it, the house starts a game with the first in
+ * line, one at a time, and that game is drawn on the same board component
+ * with the member's name where Everybody's was. **Chess** in README.md is the
+ * whole of the feature and .claude/skills/chess/SKILL.md is the shape that was
+ * agreed before any of it was written, the three faces and the order each
+ * puts the cards in included — cards() below is that table.
  *
  * THE BROWSER RUNS NONE OF THE RULES
  *
@@ -23,13 +26,15 @@
  *
  * THE ANSWER IS THE BOARD
  *
- * Every write is sent with the ply the page read — how many half-moves had
+ * Every move is sent with the ply the page read — how many half-moves had
  * been played — and the route files the move one past it. If somebody got
  * there first the route says 409 and carries the board as it now is, and the
  * page redraws from that, never from what it sent. The same goes for every
- * other answer, the poll included: nothing on this page keeps a board of its
- * own beyond the square somebody has picked up, and that is dropped the moment
- * the game it was picked in has moved on.
+ * other answer, the other writes and the poll included: nothing on this page
+ * keeps a board of its own beyond the square somebody has picked up, and that
+ * is dropped the moment the game it was picked in has moved on. It is also how
+ * a member hears that the house has started their game — on the next poll,
+ * with no reload, since the site has no address to tell them at.
  *
  * ONE REQUEST ON THE WAY IN, AND A POLL
  *
@@ -102,6 +107,7 @@
 
   var stack = null;
   var offline = null;
+  var record = null;
   var pollTimer = null;
 
   /* ------------------------------------------------------------ the pieces */
@@ -293,22 +299,28 @@
 
   /* ------------------------------------------------------------------ time */
 
-  /* "just now", "3 min ago", "2 h ago", "4 d ago" — the unit is a word of its
-     own in each language and "ago" wraps it, since where the word goes is a
-     language's to say. */
-  function ago(at) {
-    var s = Math.max(0, Math.floor((Date.now() - at) / 1000));
-    if (s < 60) return t('chessJustNow');
-    var m = Math.floor(s / 60);
-    if (m < 60) return t('chessAgo', { when: t('chessMin', { n: m }) });
+  /* "3 min", "2 h", "4 d": how long, with the unit a word of its own in each
+     language. Never under a minute, since "started just now ago" is not a
+     sentence in any of the ten. */
+  function span(at) {
+    var m = Math.max(1, Math.floor((Date.now() - at) / 60000));
+    if (m < 60) return t('chessMin', { n: m });
     var h = Math.floor(m / 60);
-    if (h < 24) return t('chessAgo', { when: t('chessHours', { n: h }) });
-    return t('chessAgo', { when: t('chessDays', { n: Math.floor(h / 24) }) });
+    if (h < 24) return t('chessHours', { n: h });
+    return t('chessDays', { n: Math.floor(h / 24) });
+  }
+
+  /* "just now", "3 min ago" — "ago" wraps the unit, since where the word goes
+     is a language's to say. */
+  function ago(at) {
+    if (Date.now() - at < 60000) return t('chessJustNow');
+    return t('chessAgo', { when: span(at) });
   }
 
   /* ---------------------------------------------------------------- names */
 
-  /* The names a side or a mover goes by, as the page prints them. */
+  /* The names a side or a mover goes by, as the page prints them. A member
+     whose account has since gone comes back as null and reads as a visitor. */
   function sideName(who) {
     if (who === 'everybody') return t('chessEverybody');
     if (who === 'house') return t('wordmark');
@@ -320,6 +332,15 @@
     if (by === 'visitor') return t('chessVisitor');
     var you = state.answer && state.answer.you;
     return you && you.name && you.name === by ? t('chessYou') : by;
+  }
+
+  /* Whoever plays the house in this game: Everybody, or the member. */
+  function otherSide(game) {
+    return game.white === 'house' ? game.black : game.white;
+  }
+
+  function gameTitle(game) {
+    return t('chessGameOf', { a: sideName(otherSide(game)), b: t('wordmark') });
   }
 
   /* ----------------------------------------------------------------- board */
@@ -366,7 +387,7 @@
     var files = FILES.split('');
     if (view.flip) { ranks.reverse(); files.reverse(); }
 
-    var node = el('div', { className: 'chess-board', role: 'group' });
+    var node = el('div', { className: 'chess-board', role: 'group', 'data-game': view.game.id });
     var live = !!view.legal;
     var starts = live ? startsOf(view.legal) : [];
     var targets = live && view.picked ? targetsOf(view.legal, view.picked) : [];
@@ -410,7 +431,7 @@
           disabled: !live,
           tabindex: live && !pressable ? '-1' : null
         }, kids);
-        if (live) btn.addEventListener('click', function () { press(name); });
+        if (live) btn.addEventListener('click', function () { press(view.game.id, name); });
         node.appendChild(btn);
       });
     });
@@ -419,35 +440,49 @@
 
   /* ------------------------------------------------------- pressing a square */
 
-  function publicGame() {
-    return state.answer && state.answer.public;
+  /* The game with this id in the answer as it now is — the public one or the
+     reader's own — or null once it is neither. */
+  function gameOf(id) {
+    var a = state.answer;
+    if (!a) return null;
+    if (a.public && a.public.game.id === id) return a.public;
+    if (a.mine && a.mine.game.id === id) return a.mine;
+    return null;
+  }
+
+  /* What is picked on this game's board, if it was picked at the ply the
+     board is at now. */
+  function pickedOn(game) {
+    var p = state.picked;
+    return p && p.game === game.id && p.ply === game.ply ? p.sq : null;
   }
 
   /* A press picks a piece up, a second press on one of its dots puts it
      there, and a press anywhere else puts it back. The dots are only ever the
-     squares some legal move of that piece ends on. */
-  function press(sq) {
-    var pub = publicGame();
-    if (!pub || !pub.legal || state.busy) return;
+     squares some legal move of that piece ends on. The house may have two
+     live boards at once; a pick is on one of them, and a press on the other
+     starts over there. */
+  function press(id, sq) {
+    var g = gameOf(id);
+    if (!g || !g.legal || state.busy) return;
 
-    var picked = state.picked && state.picked.game === pub.game.id && state.picked.ply === pub.game.ply
-      ? state.picked.sq : null;
+    var picked = pickedOn(g.game);
     state.promoting = null;
 
-    if (picked && targetsOf(pub.legal, picked).indexOf(sq) !== -1) {
-      var options = pub.legal.filter(function (u) { return u.slice(0, 4) === picked + sq; });
+    if (picked && targetsOf(g.legal, picked).indexOf(sq) !== -1) {
+      var options = g.legal.filter(function (u) { return u.slice(0, 4) === picked + sq; });
       if (options.length > 1 || options[0].length === 5) {
         /* A pawn reaching the last rank: four choices where the sentence was. */
-        state.promoting = { game: pub.game.id, ply: pub.game.ply, from: picked, to: sq };
+        state.promoting = { game: g.game.id, ply: g.game.ply, from: picked, to: sq };
         draw();
         return;
       }
-      send(pub, options[0]);
+      send(g, options[0]);
       return;
     }
 
-    if (startsOf(pub.legal).indexOf(sq) !== -1 && sq !== picked) {
-      state.picked = { game: pub.game.id, ply: pub.game.ply, sq: sq };
+    if (startsOf(g.legal).indexOf(sq) !== -1 && sq !== picked) {
+      state.picked = { game: g.game.id, ply: g.game.ply, sq: sq };
     } else {
       state.picked = null;
     }
@@ -455,48 +490,51 @@
   }
 
   function promote(piece) {
-    var pub = publicGame();
     var p = state.promoting;
-    if (!pub || !p || state.busy) return;
-    send(pub, p.from + p.to + piece);
+    var g = p && gameOf(p.game);
+    if (!g || g.game.ply !== p.ply || state.busy) return;
+    send(g, p.from + p.to + piece);
   }
 
-  /* The write. What comes back is drawn whatever it was: a 409 carries the
+  /* The move. What comes back is drawn whatever it was: a 409 carries the
      board as it now is, and so does anything else the route refused after
      reading it. */
-  function send(pub, uci) {
-    state.busy = true;
+  function send(g, uci) {
     state.picked = null;
     state.promoting = null;
 
-    var body = { action: 'move', game: pub.game.id, ply: pub.game.ply, move: uci };
+    var body = { action: 'move', game: g.game.id, ply: g.game.ply, move: uci };
     var you = state.answer.you;
     if (!you || you.role === 'visitor') body.client = window.TTBDevice.id();
 
-    window.TTBTrack.event('chess_move', { kind: pub.game.kind, ply: pub.game.ply + 1 });
-
-    post(body).then(function (a) {
-      state.busy = false;
-      if (a.ok) {
-        take(a.out, true);
-      } else if (a.status === 409 && a.out.ready) {
-        take(a.out, true);
-        toast(t('chessGotThereFirst'));
-      } else {
-        toast(t('chessMoveFailed'));
-        draw();
-      }
-    });
+    window.TTBTrack.event('chess_move', { kind: g.game.kind, ply: g.game.ply + 1 });
+    write(body, { 409: 'chessGotThereFirst' });
   }
 
-  function startNext() {
+  /* Every other write: the house's new public game, a member joining the line
+     or leaving it, the house starting the first in line, a resignation, a game
+     ended without a result. Each is reported by name and sent. */
+  function act(action, event, extra, said) {
     if (state.busy) return;
+    var body = { action: action };
+    Object.keys(extra || {}).forEach(function (k) { body[k] = extra[k]; });
+    window.TTBTrack.event(event);
+    write(body, said);
+  }
+
+  /* Sends a write and redraws from what came back — a refusal that carries
+     the board included, since the page may simply have been behind. `said`
+     names the toast for a status the reader should hear about in words of its
+     own; any other refusal is the one sentence for a write that did not go
+     through. */
+  function write(body, said) {
     state.busy = true;
-    window.TTBTrack.event('chess_new_game');
-    post({ action: 'new' }).then(function (a) {
+    post(body).then(function (a) {
       state.busy = false;
-      if (a.ok || (a.status === 409 && a.out.ready)) take(a.out, true);
-      else { toast(t('chessMoveFailed')); draw(); }
+      var toastKey = (said && said[a.status]) || (a.ok ? '' : 'chessMoveFailed');
+      if (a.out.ready) take(a.out, true);
+      else draw();
+      if (toastKey) toast(t(toastKey));
     });
   }
 
@@ -506,62 +544,104 @@
     return !!(state.answer && state.answer.you && state.answer.you.role === 'house');
   }
 
+  /* How a game that is over ended: the line in mono, and the sentence under
+     it saying who won. */
+  function sayOver(game) {
+    var winner = game.result === '1-0' ? game.white : game.result === '0-1' ? game.black : null;
+    var loser = game.result === '1-0' ? game.black : game.result === '0-1' ? game.white : null;
+    var moves = winner ? (game.result === '1-0' ? Math.ceil(game.ply / 2) : Math.floor(game.ply / 2)) : 0;
+
+    if (game.reason === 'mate') {
+      return {
+        who: t('chessMate'),
+        why: moves > 1 ? t('chessWonIn', { who: sideName(winner), n: moves }) : t('chessWon', { who: sideName(winner) })
+      };
+    }
+    if (game.reason === 'resign') {
+      return { who: t('chessResigned', { who: sideName(loser) }), why: t('chessWon', { who: sideName(winner) }) };
+    }
+    if (game.reason === 'abandoned') return { who: t('chessAbandoned'), why: '' };
+    if (game.reason === 'stalemate') return { who: t('chessStalemate'), why: '' };
+    return {
+      who: t('chessDraw'),
+      why: game.reason === 'repetition' ? t('chessDrawRepetition')
+         : game.reason === 'fifty' ? t('chessDrawFifty')
+         : t('chessDrawMaterial')
+    };
+  }
+
   /* Whose move it is, and what that means for whoever is reading. */
-  function sayTurn(game) {
+  function sayTurn(g) {
+    var game = g.game;
     var house = isHouse();
-    var who;
-    var why;
-    var next = '';
 
     if (game.state === 'over') {
-      var winner = game.result === '1-0' ? game.white : game.result === '0-1' ? game.black : null;
-      var moves = winner ? (game.result === '1-0' ? Math.ceil(game.ply / 2) : Math.floor(game.ply / 2)) : 0;
-      if (game.reason === 'mate') {
-        who = t('chessMate');
-        why = moves > 1
-          ? t('chessWonIn', { who: sideName(winner), n: moves })
-          : t('chessWon', { who: sideName(winner) });
-      } else if (game.reason === 'stalemate') {
-        who = t('chessStalemate');
-        why = '';
-      } else {
-        who = t('chessDraw');
-        why = game.reason === 'repetition' ? t('chessDrawRepetition')
-            : game.reason === 'fifty' ? t('chessDrawFifty')
-            : t('chessDrawMaterial');
-      }
-      next = house ? t('chessNextYou') : t('chessNextHouse');
-      return { who: who, why: why ? why + ' ' + next : next };
+      var said = sayOver(game);
+      /* What happens next: the house starts the next public game; a member
+         whose own game is over may join the line again. */
+      var next = game.kind === 'public'
+        ? (house ? t('chessNextYou') : t('chessNextHouse'))
+        : t('chessAgain');
+      return { who: said.who, why: said.why ? said.why + ' ' + next : next };
     }
 
     var mover = game.turn === 'w' ? game.white : game.black;
-    who = t('chessTurnOf', { who: sideName(mover) });
+    var who = t('chessTurnOf', { who: sideName(mover) });
+    var why;
+    if (mover === 'house') {
+      why = house ? t('chessTurnYou') : t('chessTurnHouseWhy');
+    } else if (game.kind === 'public') {
+      why = house ? t('chessTurnCity') : t('chessTurnEverybodyWhy');
+    } else if (house) {
+      /* The member's move, read by the house: nothing to add until the route
+         says the quiet days are up, and then the reason for the button under
+         the moves. */
+      why = g.abandon
+        ? t('chessAbandonWhy', { name: sideName(mover), n: Math.floor((Date.now() - game.lastAt) / 86400000) })
+        : '';
+    } else {
+      who = t('chessTurnYours');
+      why = t('chessTurnYoursWhy');
+    }
     if (game.check) who += ' · ' + t('chessCheck');
-    if (mover === 'house') why = house ? t('chessTurnYou') : t('chessTurnHouseWhy');
-    else why = house ? t('chessTurnCity') : t('chessTurnEverybodyWhy');
     return { who: who, why: why };
   }
 
   /* --------------------------------------------------------------- drawing */
 
-  function turnNode(pub) {
-    var game = pub.game;
-    var said = sayTurn(game);
-    var kids = [
-      el('p', { className: 'eyebrow', textContent: t('chessGameOf', { a: t('chessEverybody'), b: t('wordmark') }) })
-    ];
+  function goButton(label, onPress) {
+    var go = el('button', { type: 'button', className: 'go', textContent: label });
+    go.addEventListener('click', onPress);
+    return go;
+  }
 
-    if (state.promoting) {
-      var mine = game.turn === 'w';
+  function altButton(label, onPress) {
+    var alt = el('button', { type: 'button', className: 'alt', textContent: label });
+    alt.addEventListener('click', onPress);
+    return alt;
+  }
+
+  function newGame() {
+    act('new', 'chess_new_game');
+  }
+
+  function turnNode(g) {
+    var game = g.game;
+    var said = sayTurn(g);
+    var kids = [el('p', { className: 'eyebrow', textContent: gameTitle(game) })];
+    var p = state.promoting;
+
+    if (p && p.game === game.id && p.ply === game.ply) {
+      var white = game.turn === 'w';
       var seg = el('div', { className: 'chess-promote seg', role: 'group', 'aria-label': t('chessPromote') });
-      PROMOTE.forEach(function (p) {
+      PROMOTE.forEach(function (piece) {
         var btn = el('button', {
           type: 'button',
           className: 'btn',
-          'aria-label': t(PIECE_NAME[p]),
-          textContent: GLYPH[mine ? p.toUpperCase() : p] + TEXT
+          'aria-label': t(PIECE_NAME[piece]),
+          textContent: GLYPH[white ? piece.toUpperCase() : piece] + TEXT
         });
-        btn.addEventListener('click', function () { promote(p); });
+        btn.addEventListener('click', function () { promote(piece); });
         seg.appendChild(btn);
       });
       kids.push(el('p', { className: 'chess-turn-who', textContent: t('chessPromote') }));
@@ -571,23 +651,23 @@
       if (said.why) kids.push(el('p', { className: 'chess-turn-why', textContent: said.why }));
     }
 
-    if (game.state === 'over' && isHouse()) {
-      var go = el('button', { type: 'button', className: 'go', textContent: t('chessNewGame') });
-      go.addEventListener('click', startNext);
-      kids.push(go);
+    /* The page's one filled action, where a game is over: the house starts
+       the next public game, the member joins the line again. */
+    if (game.state === 'over') {
+      if (game.kind === 'public' && isHouse()) kids.push(goButton(t('chessNewGame'), newGame));
+      else if (game.kind === 'private' && !isHouse()) kids.push(goButton(t('chessJoin'), join));
     }
     return el('div', { className: 'chess-turn' }, kids);
   }
 
-  function lastLine(pub) {
-    var last = pub.moves[pub.moves.length - 1];
+  function lastLine(g) {
+    var last = g.moves[g.moves.length - 1];
     if (!last) return null;
-    var line = el('p', { className: 'chess-last' }, [
+    return el('p', { className: 'chess-last' }, [
       t('chessLast') + ' ',
       el('b', { textContent: last.san }),
       ' · ' + moverName(last.by) + ' · ' + ago(last.at)
     ]);
-    return line;
   }
 
   /* King in check: the king of the side to move, when the last move's SAN
@@ -601,44 +681,40 @@
     return null;
   }
 
-  function boardCard(pub) {
-    var game = pub.game;
-    var house = isHouse();
-    var pieces = parseFen(game.fen);
-    var last = pub.moves[pub.moves.length - 1];
+  function boardCard(g) {
+    var game = g.game;
+    var last = g.moves[g.moves.length - 1];
 
     /* The reader's side at the bottom: the house sits on its own colour,
-       everybody else on Everybody's. */
+       everybody else on the other one — Everybody's, or the member's own. */
     var houseIsBlack = game.black === 'house';
-    var flip = house ? houseIsBlack : !houseIsBlack;
+    var flip = isHouse() ? houseIsBlack : !houseIsBlack;
 
-    var picked = state.picked && state.picked.game === game.id && state.picked.ply === game.ply
-      ? state.picked.sq : null;
-    if (!picked) state.picked = null;
+    var picked = pickedOn(game);
+    if (!picked && state.picked && state.picked.game === game.id) state.picked = null;
 
-    var card = el('section', {
-      className: 'card chess-board-card',
-      'aria-label': t('chessGameOf', { a: t('chessEverybody'), b: t('wordmark') })
-    });
-    card.appendChild(turnNode(pub));
+    var card = el('section', { className: 'card chess-board-card', 'aria-label': gameTitle(game) });
+    card.appendChild(turnNode(g));
     card.appendChild(boardNode({
       game: game,
       flip: flip,
-      legal: pub.legal || null,
+      legal: g.legal || null,
       picked: picked,
       last: last && last.uci ? [last.uci.slice(0, 2), last.uci.slice(2, 4)] : [],
-      checked: checkedSquare(game, pieces)
+      checked: checkedSquare(game, parseFen(game.fen))
     }));
-    var line = lastLine(pub);
+    var line = lastLine(g);
     if (line) card.appendChild(line);
     return card;
   }
 
-  /* The moves as numbered pairs, white's column then black's, and under the
-     move of Everybody's who played it — a hog is visible, which is why there
-     is no rule against one. */
-  function movesCard(pub) {
-    var game = pub.game;
+  /* The moves as numbered pairs, white's column then black's. Under a move of
+     Everybody's, who played it — a hog is visible, which is why there is no
+     rule against one; a private game has one player a side and says nothing
+     under its moves. */
+  function movesCard(g) {
+    var game = g.game;
+    var pub = game.kind === 'public';
     var card = el('section', { className: 'card chess-moves', 'aria-label': t('chessMoves') });
     card.appendChild(el('p', { className: 'eyebrow', textContent: t('chessMoves') }));
     card.appendChild(el('div', { className: 'chess-cols' }, [
@@ -649,35 +725,59 @@
 
     function cell(move, side) {
       var kids = [el('span', { className: 'chess-san', textContent: move ? move.san : '' })];
-      if (move && side !== 'house') kids.push(el('span', { className: 'chess-who', textContent: moverName(move.by) }));
+      if (move && pub && side !== 'house') kids.push(el('span', { className: 'chess-who', textContent: moverName(move.by) }));
       return el('span', { className: 'chess-m' }, kids);
     }
 
     var list = el('ol', { className: 'chess-list' });
-    for (var i = 0; i < pub.moves.length; i += 2) {
+    for (var i = 0; i < g.moves.length; i += 2) {
       list.appendChild(el('li', null, [
         el('span', { className: 'chess-n', textContent: String(i / 2 + 1) }),
-        cell(pub.moves[i], game.white),
-        cell(pub.moves[i + 1], game.black)
+        cell(g.moves[i], game.white),
+        cell(g.moves[i + 1], game.black)
       ]));
     }
     card.appendChild(list);
-    if (!pub.moves.length) card.appendChild(el('p', { className: 'chess-empty', textContent: t('chessNoMoves') }));
+    /* "The first move is yours" is only true for a reader who has one. */
+    if (!g.moves.length && g.legal) card.appendChild(el('p', { className: 'chess-empty', textContent: t('chessNoMoves') }));
 
-    var score = state.answer.score || { everybody: 0, house: 0, drawn: 0 };
-    card.appendChild(el('p', {
-      className: 'chess-foot',
-      textContent: t('chessScore', { n: game.n, a: score.everybody, b: score.house, d: score.drawn })
-    }));
+    if (pub) {
+      var score = state.answer.score || { everybody: 0, house: 0, drawn: 0 };
+      card.appendChild(el('p', {
+        className: 'chess-foot',
+        textContent: t('chessScore', { n: game.n, a: score.everybody, b: score.house, d: score.drawn })
+      }));
+      /* Signed out: a name would go on the moves, and the map is where the
+         account is made. */
+      var you = state.answer.you;
+      if (!you || you.role === 'visitor') {
+        card.appendChild(el('p', { className: 'chess-signin', textContent: t('chessSignIn') }));
+        card.appendChild(el('a', { className: 'alt', href: '/', textContent: t('chessSignInGo') }));
+      }
+      return card;
+    }
 
-    /* Signed out: a name would go on the moves, and the map is where the
-       account is made. */
-    var you = state.answer.you;
-    if (!you || you.role === 'visitor') {
-      card.appendChild(el('p', { className: 'chess-signin', textContent: t('chessSignIn') }));
-      card.appendChild(el('a', { className: 'alt', href: '/', textContent: t('chessSignInGo') }));
+    if (game.startedAt) {
+      card.appendChild(el('p', { className: 'chess-foot', textContent: t('chessStarted', { when: span(game.startedAt) }) }));
+    }
+    /* The ways out of a private game being played: either side may resign,
+       and the house may end it without a result once the route says the
+       member has been quiet long enough. */
+    if (game.state === 'playing') {
+      card.appendChild(altButton(t('chessResign'), function () {
+        if (window.confirm(t('chessResignSure'))) act('resign', 'chess_resign', { game: game.id });
+      }));
+      if (g.abandon) {
+        card.appendChild(altButton(t('chessAbandon'), function () {
+          act('abandon', 'chess_abandon', { game: game.id });
+        }));
+      }
     }
     return card;
+  }
+
+  function gameGrid(g) {
+    return el('div', { className: 'chess-grid' }, [boardCard(g), movesCard(g)]);
   }
 
   /* No game yet: the house sees the button that starts the first, everybody
@@ -687,42 +787,165 @@
       el('p', { className: 'eyebrow', textContent: t('chessGameOf', { a: t('chessEverybody'), b: t('wordmark') }) }),
       el('p', { className: 'chess-turn-who', textContent: t('chessNoGame') })
     ];
-    if (isHouse()) {
-      var go = el('button', { type: 'button', className: 'go', textContent: t('chessFirstGame') });
-      go.addEventListener('click', startNext);
-      kids.push(go);
-    } else {
-      kids.push(el('p', { className: 'chess-turn-why', textContent: t('chessNoGameWhy') }));
-    }
+    if (isHouse()) kids.push(goButton(t('chessFirstGame'), newGame));
+    else kids.push(el('p', { className: 'chess-turn-why', textContent: t('chessNoGameWhy') }));
     return el('section', { className: 'card chess-board-card' }, [el('div', { className: 'chess-turn' }, kids)]);
   }
 
+  /* ------------------------------------------------------------ one on one */
+
+  function join() {
+    act('join', 'chess_join', null, { 409: 'chessAlready', 429: 'chessFull' });
+  }
+
+  function chevron() {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('focusable', 'false');
+    var path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', 'M9 5l7 7-7 7');
+    svg.appendChild(path);
+    return svg;
+  }
+
+  /* One person in line, as a row that goes to their page. A member whose
+     account has gone keeps their place and has no page, so their row is the
+     row's shape with nothing to press. */
+  function queueRow(name, why, tag, playing) {
+    var cls = 'menu-row' + (playing ? ' is-playing' : '');
+    var kids = [
+      el('span', { className: 'menu-say' }, [
+        el('span', { className: 'menu-name' }, [
+          sideName(name),
+          tag ? el('span', { className: 'chess-tag', textContent: tag }) : null
+        ]),
+        el('span', { className: 'menu-why', textContent: why })
+      ])
+    ];
+    var row;
+    if (name) {
+      kids.push(el('span', { className: 'menu-go', 'aria-hidden': 'true' }, [chevron()]));
+      row = el('a', { className: cls, href: '/u/' + encodeURIComponent(name) }, kids);
+    } else {
+      row = el('div', { className: cls }, kids);
+    }
+    return el('li', { className: 'menu-item' }, [row]);
+  }
+
+  /* The one-on-one card, in whichever shape the reader's face needs: for a
+     visitor the invitation, for a member the door or their place in line, for
+     the house the line and the one action. Under each, who is waiting now. */
+  function playCard() {
+    var a = state.answer;
+    var you = a.you || { role: 'visitor' };
+    var queue = a.queue || [];
+    var mine = a.mine && a.mine.game;
+    var title;
+    var why;
+    var go = null;
+    var alt = null;
+    var rows = [];
+
+    if (you.role === 'house') {
+      title = t('chessWaitingToPlayYou');
+      if (mine) {
+        why = t('chessQueueBusy', { name: sideName(otherSide(mine)) });
+        rows.push(queueRow(otherSide(mine), t('chessPlayingYou'), null, true));
+      } else {
+        why = t('chessQueueFree');
+        if (queue.length) {
+          var first = queue[0];
+          go = goButton(t('chessStartWith', { name: sideName(first.name) }), function () {
+            act('start', 'chess_start', { game: first.game });
+          });
+        }
+      }
+    } else if (you.role === 'member' && mine && mine.state === 'waiting') {
+      var ahead = [];
+      for (var i = 0; i < queue.length && queue[i].name !== you.name; i++) ahead.push(sideName(queue[i].name));
+      title = t('chessInLine');
+      why = ahead.length ? t('chessAhead', { n: ahead.length, names: ahead.join(', ') }) : t('chessAheadNone');
+      alt = altButton(t('chessLeave'), function () { act('leave', 'chess_leave'); });
+    } else if (you.role === 'member') {
+      title = t('chessPlayTitle');
+      why = t('chessPlayWhy');
+      go = goButton(t('chessJoin'), join);
+    } else {
+      title = t('chessPlayTitle');
+      why = t('chessPlayWhySignedOut');
+    }
+
+    queue.forEach(function (q) {
+      var isYou = you.role === 'member' && q.name && q.name === you.name;
+      rows.push(queueRow(q.name, t('chessSince', { when: span(q.since) }), isYou ? t('chessYou') : null, false));
+    });
+
+    return el('section', { className: 'card chess-play', 'aria-label': t('chessOneOnOne') }, [
+      el('p', { className: 'eyebrow', textContent: t('chessOneOnOne') }),
+      el('h2', { className: 'lists-title', textContent: title }),
+      el('p', { className: 'chess-play-why', textContent: why }),
+      go,
+      el('p', { className: 'eyebrow chess-queue-head', textContent: t('chessWaitingNow') }),
+      rows.length
+        ? el('ul', { className: 'menu' }, rows)
+        : el('p', { className: 'chess-queue-none', textContent: t('chessNobodyWaiting') }),
+      alt
+    ]);
+  }
+
+  /* -------------------------------------------------------------- the page */
+
+  /* What the page holds, top to bottom, for whoever is reading — the faces
+     table in .claude/skills/chess/SKILL.md. A visitor: the public game, then
+     the invitation. A member: their own game while it is on or once it is
+     over, else the card with the line in it; then the public game. The house:
+     the line, the private game while one is on, the public game. */
+  function cards() {
+    var a = state.answer;
+    var role = a.you ? a.you.role : 'visitor';
+    var pub = a.public ? gameGrid(a.public) : emptyCard();
+    var mine = a.mine;
+
+    if (role === 'house') return [playCard(), mine ? gameGrid(mine) : null, pub];
+    if (role === 'member') {
+      if (mine && mine.game.state !== 'waiting') return [gameGrid(mine), pub];
+      return [playCard(), pub];
+    }
+    return [pub, playCard()];
+  }
+
   /* Pressing a square rebuilds the board, which would leave a keyboard
-     standing in nothing: the square that had the focus gets it back. */
+     standing in nothing: the square that had the focus gets it back, on the
+     board it was on. */
   function draw() {
     if (!haveWords()) return;
-    var focused = document.activeElement && document.activeElement.getAttribute
-      ? document.activeElement.getAttribute('data-sq') : null;
+    var focus = document.activeElement;
+    var focusSq = focus && focus.getAttribute ? focus.getAttribute('data-sq') : null;
+    var focusBoard = focusSq ? focus.parentNode.getAttribute('data-game') : null;
 
     clear(stack);
     var a = state.answer;
     if (!a || !a.ready) {
       stack.hidden = true;
+      record.hidden = true;
       offline.hidden = false;
       return;
     }
     stack.hidden = false;
     offline.hidden = true;
 
-    var pub = a.public;
-    if (!pub) {
-      stack.appendChild(emptyCard());
-      return;
+    /* The house's own record under the lead, over both kinds of game. */
+    record.hidden = !isHouse();
+    if (isHouse()) {
+      var r = a.record;
+      record.textContent = t('chessRecord', { games: r.games, won: r.won, lost: r.lost, drawn: r.drawn });
     }
-    stack.appendChild(el('div', { className: 'chess-grid' }, [boardCard(pub), movesCard(pub)]));
 
-    if (focused) {
-      var again = stack.querySelector('[data-sq="' + focused + '"]');
+    cards().forEach(function (node) { if (node) stack.appendChild(node); });
+
+    if (focusBoard) {
+      var again = stack.querySelector('[data-game="' + focusBoard + '"] [data-sq="' + focusSq + '"]');
       if (again && !again.disabled) again.focus();
     }
   }
@@ -794,6 +1017,7 @@
   function boot() {
     stack = document.getElementById('stack');
     offline = document.getElementById('offline');
+    record = document.getElementById('you');
 
     applyStyle();
     first();

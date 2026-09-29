@@ -354,7 +354,7 @@ pawn.
 
 ---
 
-- [ ] **5. One on one**
+- [x] **5. One on one**
 
 **Lands:** the one-on-one card in `assets/chess.js` and `chess.css`, the
 private game on the same board component, the house's record line, about
@@ -410,13 +410,25 @@ rewritten.
    | `chessWaitingToPlayYou` | Waiting to play you |
    | `chessQueueFree` | One game at a time. Start the first in line, and the next one when that game ends. |
    | `chessQueueBusy` | {name} is playing you now. The next game starts when this one ends. |
-   | `chessRecord` | You are the house · {games} games · {won} won · {lost} lost · {drawn} drawn |
+   | `chessRecord` | You are the house · {games} played · {won} won · {lost} lost · {drawn} drawn |
    | `chessAlready` | You’re already in line. |
    | `chessFull` | The line is full right now. Try again tomorrow. |
 
 6. Drive it with three browsers on preview — nobody, a member, the house: join,
    leave, join again, start, a game to a resignation, the record line moving,
    the 429 with the cap lowered locally and put back.
+
+   **What doing it found**, corrected here and in `SKILL.md` in the same pull
+   request. The house's *Start* button needs the first waiting game's id and
+   the queue carried none, so the route hands the house each waiting game's
+   `game`. *End without a result* "only when the route says it may" needed the
+   route to say it, so a private game carries `abandon: true` for the house
+   while it would be taken. The faces table gave a member whose game is on the
+   one-on-one card as a third row and the mockup did not; the page follows the
+   mockup. `chessRecord` read "1 games" on the first game and says `{games}
+   played` in English now. And `assets/chess.css` had carried a stray piece of
+   `mockup.html`'s head since task 4, which threw away the `:root` rule and
+   with it `--pieces`; the pieces fell back to the body face until this.
 
 **Done when:** every one-on-one state in `SKILL.md` draws in ten languages,
 the queue moves, and a member's page says their game started without a reload.
