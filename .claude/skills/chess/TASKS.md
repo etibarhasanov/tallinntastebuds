@@ -451,12 +451,13 @@ the queue moves, and a member's page says their game started without a reload.
 
 - [ ] **6. The door, and the diagram**
 
-**The door landed first, in a shape the owner asked for, and not the one
-below.** No pill: a *Play chess* row behind More on the short rail, for
-everybody, and nothing on the full rail. It was briefly also a knight pill for
-anybody signed in, and the owner moved it back behind More. The strings,
-`RAIL_PILLS`, `chess_open_rail`, its **Analytics** row and **The door** under
-**Chess** in the README came with it. **What is left of this task** is the
+**The page is hidden, at the owner's asking, and the door is theirs to
+reopen.** It had two — a knight pill for anybody signed in, then a *Play
+chess* row behind More on the short rail — and the owner took both away:
+nothing on the map links to `/chess` now. The strings, `RAIL_PILLS`,
+`chess_open_rail` and its **Analytics** row stay, so a door that comes back
+reports under the same name. **Do not put a door back** on the strength of
+this task: ask the owner where it goes first. What is left besides is the
 diagram — the flow, `flows/chess.bpmn`, the README's **Who uses the site,
 drawn** row — and the `CLAUDE.md` lines; tick the box when those land.
 

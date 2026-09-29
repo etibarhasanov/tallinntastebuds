@@ -9831,13 +9831,14 @@ not disallowed in `robots.txt`.
 
 ### The door
 
-One: a *Play chess* row behind More on the short rail, under *Learn Estonian*,
-for everybody who draws that rail, signed in or not. The full rail has no pill
-and no row for it, on purpose — the owner's call, so the column a stranger
-reads on arrival stays the eight pills it was. For a week it was also a knight
-pill on the rail for anybody signed in, and the owner moved it back behind
-More. The row reports `chess_open_rail` and counts on `/admin/stats` as
-`chess`, the way every row behind More counts under an id of its own.
+None, for now. The page is hidden: nothing on the map links to it, on either
+rail, and it is reached by typing `/chess` or from search. It has had two
+doors and lost both at the owner's asking — a knight pill on the rail for
+anybody signed in, and then a *Play chess* row behind More on the short rail,
+which went too. `chess_open_rail` and the `chess` id in `RAIL_PILLS` are kept
+so the presses already counted still read as chess on `/admin/stats`, and the
+`chessDoor` strings with them; a door that comes back reports under the same
+name.
 
 ### The public game
 
@@ -12348,8 +12349,8 @@ assets/split.css           what a column of money needs and the other pages
 data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
-chess.html                 the chess page, at /chess as well; a row behind More
-                           on the short rail
+chess.html                 the chess page, at /chess as well; hidden, with
+                           no door on the map
 assets/chess.js            the board, the turn line, the moves and the poll,
                            drawn out of the one /api/chess answer
 assets/chess.css           the board and the cards around it
@@ -13816,9 +13817,8 @@ in all ten languages. The pieces are `#tour` in
 Eight phones in ten get a shorter rail than the map had: **the account,
 everybody's lists, Surprise me and More** down the left, three
 chips standing outside the Filters drawer, and the other doors — Ask, the
-flashcards, chess, the colour and feedback — as rows behind More. Chess is
-the one row with no pill on the full rail at all — **The door** under
-**Chess**. The other two
+flashcards, the colour and feedback — as rows behind More. Chess has no door
+on either rail — **The door** under **Chess**. The other two
 in ten keep the full column of eight, which is what makes the short rail's
 numbers mean anything: there is a group of strangers on the old rail to set
 them against. Which of the two a browser
@@ -14324,7 +14324,7 @@ The map, `assets/app.js`:
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
 | `flash_open_rail` | — the flashcards door on the rail, and the row behind More on the short rail: one door, one name |
-| `chess_open_rail` | — the chess door: the row behind More on the short rail, the only one there is |
+| `chess_open_rail` | — the chess door, which the map no longer draws: the page is hidden, and the name is kept for the presses already counted |
 | `more_open`, `more_close` | — the More pill on the short rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` as the swatch does |
 | `ask_open` | — the pill on the full rail, and the row behind More on the short one |

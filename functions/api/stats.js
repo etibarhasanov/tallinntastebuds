@@ -139,8 +139,9 @@ const LEAVE = 'leave';
    buttons, which is where most of them came from. Ten across the two rails:
    the full one draws eight of them and the short one four — More is only
    the short rail's, and its rows count as the pills they stand in for — and
-   chess is the one id with no pill at all: a row behind More on the short
-   rail, counted here so /admin/stats can say how often it is opened.
+   chess has no door on the map at all any more: it was a row behind More
+   until the owner hid it, and it stays named here so the presses it
+   already counted still read as chess on /admin/stats.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is
