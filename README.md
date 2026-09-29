@@ -210,7 +210,7 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-30 of the 76 carry it today — nearly two places in five, which is why the
+30 of the 77 carry it today — nearly two places in five, which is why the
 chip sits at the end of the row rather than near the front. If one of them
 looks wrong to you, it is one line in `data/restaurants.json`.
 
@@ -242,7 +242,7 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 76 carry it today, and all eight are coffee or tea.
+8 of the 77 carry it today, and all eight are coffee or tea.
 
 ---
 
@@ -259,10 +259,10 @@ do not have to scroll for. Today that is:
 | 2 | Bakery | 17 |
 | 3 | Coffee/tea | 17 |
 | 4 | Beer/pub | 13 |
-| 5 | Hidden gem | 14 |
+| 5 | Hidden gem | 15 |
 | 6 | Cheap eats | 11 |
 | 7 | Laptop friendly | 8 |
-| 8 | Date night | 11 |
+| 8 | Date night | 12 |
 | 9 | Asian | 11 |
 | 10 | Vegan | 7 |
 | 11 | Fine dining | 5 |
@@ -306,7 +306,7 @@ of these stand outside the drawer — Discount while one is live, Bakery and
 Hidden gem, `FRONT_CHIPS` in `assets/app.js` — and they are the three the
 table said get pressed. Casual/Solo is pressed as often as Bakery and is not
 one of them, for the reason Restaurant is last above: a chip that keeps 46
-places of 76 has barely narrowed anything. See **The short rail**.
+places of 77 has barely narrowed anything. See **The short rail**.
 
 ## A filter never answers with an empty screen
 
@@ -793,7 +793,7 @@ and the street and not at the type labels or the dishes, because that page is
 sent its rows already filled out and never downloads the catalogue those two
 come from.
 
-**This field never leaves the seventy-six.** It is the list's own search and it
+**This field never leaves the seventy-seven.** It is the list's own search and it
 narrows the list. The question it cannot answer is "is this place on here at
 all", asked about somewhere that is not — and that one has a field of its own
 across the top of the map. See
@@ -838,7 +838,7 @@ input** in the design rules.
 
 They are two questions and they want two fields.
 
-The column's field narrows what the map is already showing: seventy-six places,
+The column's field narrows what the map is already showing: seventy-seven places,
 every one of them written up, and it tells you which of them was the ramen one.
 This bar asks whether somewhere is on here at all, over eleven hundred venues,
 and nearly everything it finds has no write-up behind it.
@@ -1219,7 +1219,7 @@ of the site answers that question.
 
 ### And a row you rest on takes the map there before you press it
 
-Reading seventy-six names is asking where they are, and the answer used to be a
+Reading seventy-seven names is asking where they are, and the answer used to be a
 press away for every one of them: press, read, close, press the next. Rest the
 pointer on a row now and the city comes to the name under it. The write-up is
 then for the one you actually want.
@@ -1246,7 +1246,7 @@ come to rest is where the last name you looked at is — which is the one thing
 you might still want to see.
 
 The listener is on `#list-body` rather than on each row, because `renderList()`
-throws every row away and builds seventy-six more whenever a chip or the
+throws every row away and builds seventy-seven more whenever a chip or the
 language moves. And it is behind the same `(min-width: 861px) and (hover:
 hover) and (pointer: fine)` query the corner is: a tap synthesises a `mouseover`
 before it synthesises a click, and on a phone the list is a sheet over the map
@@ -1255,7 +1255,7 @@ in any case.
 ### The list keeps its place
 
 The column is not redrawn when something opens beside it. `renderList()` builds
-seventy-six rows and puts the scroller back at the top, which is right when the
+seventy-seven rows and puts the scroller back at the top, which is right when the
 language or a chip has changed and exactly wrong when all that happened is that
 a place opened — you would lose the row you had your eye on and the scroll that
 got you to it. So the two transitions that must not disturb it, opening a place
@@ -1271,7 +1271,7 @@ paper instead of leaving a strip of Tallinn in it.
 
 And the row you have open is marked in the list: a bar down its inside edge and
 the name in the accent, so the eye can get from the write-up back to where it
-was without reading seventy-six names again. `markOpenRow()` puts the class on
+was without reading seventy-seven names again. `markOpenRow()` puts the class on
 rows that are already drawn; `renderList()` drawing fresh ones clears it, so
 nothing has to unmark on the way out.
 
@@ -1558,7 +1558,7 @@ place cooks beyond its name and its dishes, but the export files a place as
 those ids in ten languages for [the directory](#the-directory) — so the reader
 takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
 score a Thai row as a type would. The file is fetched the first time a
-question is asked, not on load. And the sixty-two of my places that have a Google
+question is asked, not on load. And the sixty-three of my places that have a Google
 row inherit its cuisine through the same join that gives them their hours —
 see **Where the opening hours come from** — so the one word scores both rolls,
 and the line the model reads for Ramen Taro says *asian japanese* where it
@@ -1567,7 +1567,7 @@ and mine among them when I have been; "khachapuri" still answers Gobi and
 Pirosmani first, off their dishes, with a Georgian place from the export
 after them; and "somewhere I can hear myself think" finds nothing in the
 export it can score, and the answer is whatever my places make of it. The
-sixty-two Google rows that are already places of mine are left out of the
+sixty-three Google rows that are already places of mine are left out of the
 export's half — offering the Google copy beside the write-up would be the
 same door twice.
 
@@ -1690,7 +1690,7 @@ does it work* finds nothing.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty-two of the seventy-six are also rows in
+`data/restaurants.json` — but sixty-three of the seventy-seven are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -2046,7 +2046,7 @@ Telegram or a Slack channel, `?spot=varkizana` arrived as the site:
 > All the places in this map I have personally been and approved.
 > *the watercolour mouth*
 
-The same card for all seventy-six places. Somebody sending a friend a Greek
+The same card for all seventy-seven places. Somebody sending a friend a Greek
 tavern in Lasnamäe got a card about a map, and the one thing the message was
 about — which place — was in the part of the link nobody reads. And a search
 for the place by name found the whole map or nothing, since the map was the
@@ -2078,7 +2078,7 @@ does. The blurb's own keys are the list of what counts, so nothing in this
 route needs touching on the day an eleventh language arrives.
 
 **The picture is the place's first photograph**, and the mark for a place that
-has none, which today is fifty-three of the seventy-six. They are photographs
+has none, which today is fifty of the seventy-seven. They are photographs
 off a phone and not cards drawn at 1200×630, so no `og:image:width` is claimed
 for one: nothing in this repository knows a photo's dimensions without opening
 the file, and a size claimed wrongly is worse than one an unfurler measures
@@ -2168,7 +2168,7 @@ down the right of the window — under the button the menu drops from, and
 straight through the ten languages under it. The panel is 1200 in the stack
 and the corner these buttons stand in is 1001, so what a press on the switch
 drew for a few days was the menu *behind* the list: the language somebody was
-reaching for, painted over by seventy-six restaurants. The menu cannot climb
+reaching for, painted over by seventy-seven restaurants. The menu cannot climb
 over it on its own, either, because it hangs inside `.controls` and that has a
 `z-index` of its own; so the corner is raised instead, to 1250, and only while
 there is a menu to raise it for — `body.lang-open`, put on by
@@ -4303,7 +4303,7 @@ one signal this site already has about which places matter: somebody opening
 one.
 
 When a place whose Google numbers the site prints is opened — a card on
-`/admin/google`, a Google place on the map, or one of the sixty-two places of mine the
+`/admin/google`, a Google place on the map, or one of the sixty-three places of mine the
 export also lists, whose panel ends "According to Google" (**Google, on a place
 of mine**) — the page tells `/api/stats` so the open is counted. For a place of
 mine the Google row is found by `map_id`, the same way that panel finds it. If
@@ -4448,7 +4448,7 @@ those needs: all 1,111 rows in one answer, so a filter can run over them. See
 ### Google, on a place of mine
 
 The panel for a place on my map closes with what Google says about the same
-door, when Google lists it — sixty-two of the seventy-six, the ones `map_id`
+door, when Google lists it — sixty-three of the seventy-seven, the ones `map_id`
 joins. Under a heading that reads **According to Google**, below the address,
 the phone and the directions:
 
@@ -10925,7 +10925,7 @@ one.
 ### What it does not do yet
 
 No time window, which **A count and not a log** above is the whole of. No
-chart: a ranking is a list and a bar chart of seventy-six rows is a list with
+chart: a ranking is a list and a bar chart of seventy-seven rows is a list with
 decoration on it. No visitors, referrers, countries or time on this page:
 those are **Visitors** below, the site's own count of who came and what they
 did, on a page of its own because this one is about places and that one is

@@ -2792,6 +2792,8 @@ UPDATE google_venues SET map_id = 'ramen-taro' WHERE place_id = 'ChIJAYRP8LuTkkY
 
 UPDATE google_venues SET map_id = 'crustum-bakery' WHERE place_id = 'ChIJsxeIB7OVkkYRSshyGvfj00U' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'veino' WHERE place_id = 'ChIJBTEaMMeTkkYRWwjQ52jxb8A' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'klorofull' WHERE place_id = 'ChIJq5zeFe6VkkYR_Qu-ciUi-3s' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'dvin' WHERE place_id = 'ChIJ87gTW--TkkYRx84DufhAmmU' AND map_id IS NULL;
