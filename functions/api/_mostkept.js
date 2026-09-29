@@ -38,17 +38,19 @@
 import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
 
-/* The floor a list clears before it is listed here, and the same three places
-   assets/lists.js has always wanted before it will offer to share one: two
-   places is a pair of opinions rather than a recommendation. Nothing is ever
-   deleted for falling under it — an unfinished list simply is not listed yet,
-   the same way it is not sharable yet.
+/* The floor a list clears before it is listed here: four places. Nothing is
+   ever deleted or made private for falling under it — an unfinished list
+   simply is not listed yet, and its owner can still open it, send its link
+   and find it on their own profile.
 
-   The two are separate judgements about the same number and neither is the
-   other's rule. That one is about what its owner is ready to send; this one
-   is about what a stranger's first sight of the feature should be, and a page
-   of half-filled drafts recommends nothing. */
-const MIN_ITEMS = 3;
+   It was three, the same three assets/lists.js wants before it will offer to
+   share one, and the owner raised this one to four: a page of three-place
+   lists read as a page of drafts. The two are separate judgements about the
+   same kind of number and neither is the other's rule. That one is about
+   what its owner is ready to send, and stays at three; this one is about what
+   a stranger's first sight of the feature should be, and a page of
+   half-filled lists recommends nothing. */
+const MIN_ITEMS = 4;
 
 /* One page of /lists. Long enough to be worth scrolling, short enough that
    Show more arrives before anybody has stopped reading. */
@@ -338,8 +340,8 @@ export async function mostKept(context, opts) {
 
   /* The lists themselves, and nothing about what is on them.
 
-     This asks list_items one question — is there a third row — and it asks it
-     as EXISTS with an OFFSET rather than as a count, so it stops at the third
+     This asks list_items one question — is there a fourth row — and it asks it
+     as EXISTS with an OFFSET rather than as a count, so it stops at the fourth
      row of each list instead of reading all twenty. The join it replaced read
      every item of every public list on the site to put twenty rows on a page,
      which is the one table here that grows fastest: a place count is not worth
@@ -348,7 +350,7 @@ export async function mostKept(context, opts) {
 
      OFFSET rather than `pos = 2`, because pos is not contiguous. drop() takes
      a row out and leaves the numbering alone — only order() renumbers — so a
-     list of three can sit at 0, 5 and 9, and asking for pos 2 would miss it.
+     list of four can sit at 0, 5, 9 and 12, and asking for pos 3 would miss it.
      Counting rows cannot be fooled that way.
 
      The keeps are grouped in a subquery and joined. Ordering by them means

@@ -5326,12 +5326,14 @@ are on it too — and now that the six Google wrote are ranked with everything
 else rather than set above it, there is nothing on the page the name has to
 make an exception for. See **One column, and nothing above it** below.
 
-**What is on it.** Every public list with at least three places — the same
-three `assets/lists.js` has always wanted before it will offer to share one,
-because two places is a pair of opinions rather than a recommendation, and a
-page whose first impression is somebody's half-filled draft recommends
-nothing. Nothing is deleted for falling under it; a short list simply is not
-listed yet.
+**What is on it.** Every public list with at least four places. It was three
+— the same three `assets/lists.js` wants before it will offer to share one —
+and the owner raised it, because a page of three-place lists read as a page
+of drafts, and a page whose first impression is somebody's half-filled draft
+recommends nothing. The share button stays at three: what an owner is ready
+to send and what a stranger should see first are two judgements. Nothing is
+deleted or made private for falling under it; a short list simply is not
+listed yet, and its link and its place on its owner's profile still work.
 
 **The order** is how many times the list has been opened, then the last edit,
 then the id. The last of those three is doing real work: two lists opened the
