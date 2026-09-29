@@ -203,6 +203,24 @@
     </svg>
     <span class="rail-label" data-i18n="flashDoor">Learn Estonian</span>
   </a>
+  <!-- The chess page, for somebody signed in: one board for the whole city,
+       against the house. Hidden in the markup and shown by paintChessButton()
+       in assets/app.js once /api/account says who is reading — a member's
+       door, on either rail, because a member is who the one-on-one waiting
+       list is for. A stranger finds it as a row behind More on the short rail
+       and not on the full rail at all: the owner's call, so the column a
+       stranger reads on arrival stays the one it was. A knight, in the rail's
+       own line style like the two cards above it. See **Chess** in README.md. -->
+  <a class="rail-btn" id="btn-chess" href="/chess" data-track="chess_open_rail" hidden
+     data-i18n-title="chessDoorWhy" data-i18n-aria-label="chessDoor"
+     title="One board for the whole city, against Tallinn Tastebuds."
+     aria-label="Play chess">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M7 19.5h10M8.5 19.5c0-3 1.5-4.5 3-6-1.8.3-3.4-.2-4.5-1.3l3.2-4.2c.4-1.6 1.6-3 3.3-3.5l.8 1.6c2.3 1 3.7 3.4 3.7 6.2v7.2"/>
+      <circle cx="12.6" cy="8.6" r=".6" class="pip"/>
+    </svg>
+    <span class="rail-label" data-i18n="chessDoor">Play chess</span>
+  </a>
   <!-- Then what the rail does, before what the rail looks like. Surprise me
        is the one button here that *does* something to the evening; the
        colour swatch and "where am I" are settings, and settings belong under
@@ -803,6 +821,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=c0621395" defer></script>
+<script src="assets/app.js?v=1ae2daa7" defer></script>
 </body>
 </html>

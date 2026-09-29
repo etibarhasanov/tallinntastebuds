@@ -451,6 +451,16 @@ the queue moves, and a member's page says their game started without a reload.
 
 - [ ] **6. The door, and the diagram**
 
+**The door landed first, in a shape the owner asked for, and not the one
+below.** Not a pill for everybody: a knight on the rail only for somebody
+signed in, on either rail (`paintChessButton()` in `assets/app.js`); a *Play
+chess* row behind More on the short rail for everybody; and nothing for a
+stranger on the full rail. The strings, `RAIL_PRESS`, `RAIL_PILLS`,
+`chess_open_rail`, its **Analytics** row and **The door** under **Chess** in
+the README came with it. **What is left of this task** is the diagram — the
+flow, `flows/chess.bpmn`, the README's **Who uses the site, drawn** row — and
+the `CLAUDE.md` lines; tick the box when those land.
+
 **Lands:** `#btn-chess` on the rail in `index.html` under `#btn-flash`, a row
 behind More, `chess` in `RAIL_PRESS` in `assets/app.js` and in `RAIL_PILLS` in
 `functions/api/stats.js`, the short rail's stylesheet rule hiding the new pill

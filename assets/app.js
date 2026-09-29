@@ -2595,6 +2595,7 @@
        button is the only way back to them — and saving has never needed the
        endpoint to work. What that sheet holds in that state is one row and
        no form: see renderAccountAuth. */
+    paintChessButton();
     var wasHidden = dom.btnAccount.hidden;
     dom.btnAccount.hidden = !state.account.ready && !savedCount();
     /* A pill arriving or going changes how tall the rail is, and the rail is
@@ -2644,6 +2645,21 @@
     dom.btnLists.hidden = !state.account.ready;
     if (dom.btnLists.hidden !== wasHidden) placeRail();
     if (!dom.btnLists.hidden && wasHidden && railIntroduced) openHint('lists', 0);
+  }
+
+  /* The chess door: a pill for somebody signed in, on either rail, and for
+     nobody else — a stranger reaches the page as a row behind More on the
+     short rail, and not from the full rail at all. That was the owner's call:
+     the column a stranger reads on arrival stays the one it was, and the
+     member the one-on-one waiting list is for gets a door of their own.
+     Called from paintAccountButton(), which runs every time the name on this
+     browser changes, so signing in and out moves it with nothing else to
+     remember. */
+  function paintChessButton() {
+    if (!dom.btnChess) return;
+    var wasHidden = dom.btnChess.hidden;
+    dom.btnChess.hidden = !state.account.user;
+    if (dom.btnChess.hidden !== wasHidden) placeRail();
   }
 
   /* ------------------------------------------------ arriving to sign in
@@ -2858,8 +2874,8 @@
   }
 
   /* --------------------------------------------------------- the More sheet
-   * The four doors the short rail does not draw as pills — Ask, the
-   * flashcards, the colour and feedback — as rows, in the account sheet's
+   * The doors the short rail does not draw as pills — Ask, the flashcards,
+   * chess, the colour and feedback — as rows, in the account sheet's
    * own menu shape and under its own card. Built when it opens, because the
    * colour row names the side you are about to get and that is decided at
    * the moment of opening, the way the swatch's label is. Never opened on the
@@ -2931,6 +2947,10 @@
           openAsk();
         }),
         row('flash', t('flashDoor'), t('flashDoorWhy'), '/flashcard', 'flash_open_rail'),
+        /* For everybody, signed in or not: this row is how a stranger on the
+           short rail finds the chess page, and the full rail has no row and
+           no pill for one — see paintChessButton(). */
+        row('chess', t('chessDoor'), t('chessDoorWhy'), '/chess', 'chess_open_rail'),
         /* The line under Colour is the side you are about to get, exactly as
            the swatch's label is; pressing it redraws the sheet so the line
            says the way back. */
@@ -3842,16 +3862,16 @@
    * buttons rather than one per load, so the two numbers agree here the same
    * way they agree up there — by counting the same gesture the same way.
    *
-   * One listener on the rail rather than nine on the buttons, because two of
+   * One listener on the rail rather than ten on the buttons, because three of
    * them are links that leave the page and the colour swatch is not in the
    * markup at all: renderStyleSwitch() draws it, and a listener bound at boot
    * would be bound to a button that did not exist yet. Delegation takes all
-   * nine, whenever they arrive, and takes the next one for free.
+   * ten, whenever they arrive, and takes the next one for free.
    *
    * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
    * the list this half has to be kept in step with: a pill counted here and
    * not named there is a press the route answers {ok:false} to. Nothing in
-   * #rail but these nine is counted, and the radio is outside it — it stands
+   * #rail but these ten is counted, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
    *
    * The rows behind More count as the pills they stand for — a row is that
@@ -3863,6 +3883,7 @@
     'btn-account': 'account',
     'btn-lists': 'lists',
     'btn-flash': 'flash',
+    'btn-chess': 'chess',
     'btn-random': 'random',
     'btn-ask': 'ask',
     'btn-locate': 'locate',
@@ -11440,6 +11461,7 @@
       moreScrim: $('more-scrim'),
       moreCard: $('more-card'),
       btnFlash: $('btn-flash'),
+      btnChess: $('btn-chess'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),

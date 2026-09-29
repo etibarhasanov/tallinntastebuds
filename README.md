@@ -9826,9 +9826,22 @@ queue to play the house one on one. It is being built a task at a time, from
 `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
 far is **the public game** and **one on one**: `chess.html`, `assets/chess.js`
 and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
-`functions/api/_chess.js` holds the rules. **Nothing links to the page yet** —
-the blog's arrangement, unlinked and indexed, listed in `sitemap.xml` and not
-disallowed in `robots.txt` — and the last task puts a door on the map's rail.
+`functions/api/_chess.js` holds the rules. It is listed in `sitemap.xml` and
+not disallowed in `robots.txt`.
+
+### The door
+
+Two doors, and which one somebody gets depends on who they are and which rail
+they drew. **Signed in**, a knight on the rail — `#btn-chess`, under the
+flashcards — on either rail, shown by `paintChessButton()` in `assets/app.js`
+once `/api/account` says who is reading and put away again on signing out.
+**Everybody on the short rail** gets a *Play chess* row behind More, under
+*Learn Estonian*. **A stranger on the full rail** gets neither, on purpose:
+the owner's call, so the column a stranger reads on arrival stays the eight
+pills it was, and the member the one-on-one waiting list is for is the one with
+a door of their own. Both the pill and the row report `chess_open_rail` and
+count on `/admin/stats` as `chess`, the way a row behind More counts as the
+pill it stands for.
 
 ### The public game
 
@@ -12339,8 +12352,8 @@ assets/split.css           what a column of money needs and the other pages
 data/split.json            that page's strings, in the same ten languages —
                            its own file so that deleting the feature is
                            deleting files
-chess.html                 the chess page, at /chess as well; unlinked and
-                           indexed until its door goes on the rail
+chess.html                 the chess page, at /chess as well; a pill on the
+                           rail for members, a row behind More on the short rail
 assets/chess.js            the board, the turn line, the moves and the poll,
                            drawn out of the one /api/chess answer
 assets/chess.css           the board and the cards around it
@@ -13806,8 +13819,10 @@ in all ten languages. The pieces are `#tour` in
 
 Eight phones in ten get a shorter rail than the map had: **the account,
 everybody's lists, Surprise me and More** down the left, three
-chips standing outside the Filters drawer, and the other four doors — Ask,
-the flashcards, the colour and feedback — as rows behind More. The other two
+chips standing outside the Filters drawer, and the other doors — Ask, the
+flashcards, chess, the colour and feedback — as rows behind More. Chess is
+the one door the full rail does not have for a stranger; a member gets it as a
+pill on either rail — **The door** under **Chess**. The other two
 in ten keep the full column of eight, which is what makes the short rail's
 numbers mean anything: there is a group of strangers on the old rail to set
 them against. Which of the two a browser
@@ -14313,6 +14328,7 @@ The map, `assets/app.js`:
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
 | `flash_open_rail` | — the flashcards door on the rail, and the row behind More on the short rail: one door, one name |
+| `chess_open_rail` | — the chess door: the pill a signed-in member gets on either rail, and the row behind More on the short rail: one door, one name |
 | `more_open`, `more_close` | — the More pill on the short rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` as the swatch does |
 | `ask_open` | — the pill on the full rail, and the row behind More on the short one |
