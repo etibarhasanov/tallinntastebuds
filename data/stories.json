@@ -68,5 +68,24 @@
       "en": "guilty pleasure"
     },
     "spot": "kotkot"
+  },
+  {
+    "id": "veino-2026-09-29",
+    "live": true,
+    "photo": "veino-2026-09-29.webp",
+    "from": "2026-09-29T20:45",
+    "caption": {
+      "en": "New on the map: Veino, a wine bar in the Old Town that knows every bottle on the shelf.",
+      "et": "Kaardil uus: Veino, veinibaar vanalinnas, kus tuntakse iga riiulil olevat pudelit.",
+      "ru": "Новое на карте: Veino, винный бар в Старом городе, где знают каждую бутылку на полке.",
+      "fi": "Uutta kartalla: Veino, viinibaari vanhassakaupungissa, jossa tunnetaan hyllyn jokainen pullo.",
+      "az": "Xəritədə yeni: Veino, Köhnə Şəhərdə rəfdəki hər şüşəni tanıyan şərab barı.",
+      "pt": "Novo no mapa: Veino, um bar de vinhos na Cidade Velha que conhece cada garrafa da prateleira.",
+      "es": "Nuevo en el mapa: Veino, un bar de vinos en el casco antiguo que conoce cada botella de la estantería.",
+      "tr": "Haritada yeni: Veino, Eski Şehir'de raftaki her şişeyi tanıyan bir şarap barı.",
+      "uk": "Нове на мапі: Veino, винний бар у Старому місті, де знають кожну пляшку на полиці.",
+      "hy": "Նոր քարտեզում՝ Veino, գինու բար Հին քաղաքում, որտեղ ճանաչում են դարակի ամեն շիշ։"
+    },
+    "spot": "veino"
   }
 ]
