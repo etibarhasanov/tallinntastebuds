@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-two decks of Estonian, one
- * thousand nine hundred and sixty cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-three decks of Estonian, one
+ * thousand nine hundred and eighty-four cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who
@@ -68,10 +68,20 @@
  * **Grammar, which is read rather than turned over** under **Flashcards** in
  * README.md is the reasoning.
  *
+ * AND THE SONGS, WHICH ARE LISTENED TO
+ *
+ * After the grammar, a heading of songs: a tile for each, and the deck of its
+ * words beside it as an ordinary row. A song opens to the video and the song
+ * line by line, what each line means under it and every word in it a press
+ * that opens a box saying what that word means there. Heard it at the foot is
+ * Got it again, under the deck id SONGS. songCard() is the drawing, and
+ * **Songs, which are listened to** under **Flashcards** in README.md is the
+ * reasoning.
+ *
  * WHERE YOU LEFT OFF
  *
  * The front door reopens what this device had open — the deck a run was going
- * in, or the lesson being read — rather than the shelf, for somebody signed
+ * in, or the lesson being read, or the song — rather than the shelf, for somebody signed
  * in. rememberHere() below writes it and boot() reads it; **Where you left
  * off** under **Flashcards** in README.md says why it is the device's and not
  * the account's.
@@ -249,6 +259,8 @@
     deck: null,      // the one that is open, whole, with its cards
     lessons: [],     // the grammar on the shelf: id, name, why, read
     lesson: null,    // the one being read, whole, with its body
+    songs: [],       // the songs on the shelf: id, name, why, heard
+    song: null,      // the one being listened to, whole, with its words
     run: null,       // the cards left to turn over, and where in them we are
     gated: false,    // whether the gate stands in place of the next card
     words: 0,        // how many shipped cards this person knows, all decks
@@ -398,6 +410,8 @@
     state.deck = out.deck || null;
     state.lessons = out.lessons || [];
     state.lesson = out.lesson || null;
+    state.songs = out.songs || [];
+    state.song = out.song || null;
     state.words = state.wordsIn = out.words || 0;
     state.gates = out.gates || {};
     state.run = null;
@@ -448,11 +462,13 @@
       state.locked = !!(state.user && gateFor(state.deck.level));
     }
 
-    /* And a lesson read in this tab before there was an account: the same
-       store, under the deck id the route files a lesson under, read back on
-       to its tile and on to the lesson itself. */
+    /* And a lesson read or a song heard in this tab before there was an
+       account: the same store, under the deck id the route files each under,
+       read back on to its tile and on to the page itself. */
     state.lessons.forEach(function (l) { if (sent[GRAMMAR + '/' + l.id]) l.read = true; });
     if (state.lesson && sent[GRAMMAR + '/' + state.lesson.id]) state.lesson.read = true;
+    state.songs.forEach(function (s) { if (sent[SONGS + '/' + s.id]) s.heard = true; });
+    if (state.song && sent[SONGS + '/' + state.song.id]) state.song.heard = true;
 
     /* A deck of your own with nothing in it yet opens as the editor rather
        than as a deck. There is nothing to turn over, and anything else would
@@ -576,12 +592,17 @@
      written out twice because neither dialect can import the other. */
   var GRAMMAR = 'grammar';
 
-  /* Whether the tab has answered a card, as opposed to read a lesson. The
-     free word is spent by an answer — see gateCard() — and reading is not an
-     answer, so a lesson read signed out must not raise the gate on the next
-     deck opened. */
+  /* And the one a song heard is filed under: SONG_DECK in the same route. */
+  var SONGS = 'songs';
+
+  /* Whether the tab has answered a card, as opposed to read a lesson or heard
+     a song. The free word is spent by an answer — see gateCard() — and
+     reading or listening is not an answer, so either done signed out must not
+     raise the gate on the next deck opened. */
   function answeredAny(sent) {
-    return Object.keys(sent).some(function (k) { return k.indexOf(GRAMMAR + '/') !== 0; });
+    return Object.keys(sent).some(function (k) {
+      return k.indexOf(GRAMMAR + '/') !== 0 && k.indexOf(SONGS + '/') !== 0;
+    });
   }
 
   /* Past this, the rest are answered again next time — the direction a failed
@@ -1466,6 +1487,26 @@
     return ul;
   }
 
+  /* A song's tile is a lesson's, saying Heard or Not heard yet at its foot. */
+  function songRow(song) {
+    var said = el('span', { className: 'lists-count mono' + (song.heard ? ' is-read' : ''),
+                            textContent: t(song.heard ? 'flashHeard' : 'flashUnheard') });
+    return el('li', { className: 'menu-item' }, [
+      TTBTrack.click(
+        inPage(el('a', { className: 'menu-row', href: deckHref(song.id) }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: means(song.name) }),
+            song.why ? el('span', { className: 'flash-why', textContent: means(song.why) }) : null
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true',
+                       html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' }),
+          el('span', { className: 'flash-meter' }, [said])
+        ]), song.id),
+        'flash_song_open', { song_id: song.id }
+      )
+    ]);
+  }
+
   /* The count itself, with the number set apart from the words around it: it
      is the thing the eye is meant to land on, and a figure in the middle of a
      sentence at the sentence's own size is a figure nobody sees.
@@ -1511,8 +1552,13 @@
   /* Which stage the grammar heading follows on the shelf. After the first
      rather than at the top: a stranger's first tile stays Hello and goodbye,
      and the lessons are about the three forms the restaurant decks under
-     them show on every card. */
+     them show on every card. The songs follow the grammar. */
   var LESSONS_AFTER = 'start';
+
+  /* The level of the deck a song keeps its new words in. Not a stage: it is
+     drawn under the Songs heading beside the song, and nothing holds it
+     back, since the route has no gate for it. */
+  var SONG_LEVEL = 'song';
 
   /* The decks the site ships, and the sentence saying what this page is for.
      The two gathered ones go at the top, above the headings, in the order the
@@ -1601,10 +1647,20 @@
         kids.push(el('h2', { className: 'lists-section', textContent: t('flashGrammar') }));
         kids.push(lessonList(state.lessons));
       }
+      /* And the songs under theirs, straight after: each song's tile, and
+         the decks of their words as ordinary rows in the same list. */
+      var sung = ours.filter(function (d) { return d.level === SONG_LEVEL; });
+      if (level.id === LESSONS_AFTER && (state.songs.length || sung.length)) {
+        kids.push(el('h2', { className: 'lists-section', textContent: t('flashSongs') }));
+        var songs = el('ul', { className: 'menu flash-shelf' });
+        state.songs.forEach(function (song) { songs.appendChild(songRow(song)); });
+        sung.forEach(function (deck) { songs.appendChild(deckRow(deck)); });
+        kids.push(songs);
+      }
     });
 
     var loose = ours.filter(function (d) {
-      return !LEVELS.some(function (l) { return l.id === d.level; });
+      return d.level !== SONG_LEVEL && !LEVELS.some(function (l) { return l.id === d.level; });
     });
     if (loose.length) kids.push(deckList(loose));
 
@@ -2551,7 +2607,7 @@
     }
     paintSay();
 
-    TTBTrack.event('flash_say', { deck_id: state.deck.id, what: what });
+    TTBTrack.event('flash_say', { deck_id: state.deck ? state.deck.id : state.song ? state.song.id : '', what: what });
   }
 
   /* What the S key says: the sentence where the back is up and there is one,
@@ -3088,9 +3144,184 @@
     }
   }
 
+  /* ------------------------------------------------------------------ a song
+   * Listened to rather than turned over: the video, and under it the song line
+   * by line — the Estonian, what it means, and a speaker that says the line
+   * slowly in the voice the cards use. Every word in a line is a press, and
+   * pressing one opens a box under its line saying what the word means here,
+   * which form it comes from, a note where one is owed, and where on the shelf
+   * the word is taught. One box open at a time, and pressing its word again
+   * shuts it.
+   *
+   * The box opens and shuts in place rather than through render(), because
+   * render() rebuilds <main> and that would start the video again from the
+   * beginning on every press. Nothing else on this page is on screen long
+   * enough for that to matter; a song is. See **Songs, which are listened
+   * to** under **Flashcards** in README.md.
+   */
+
+  /* What a word is, for splitting a line into presses: a run of Latin
+     letters, õ, ä, ö, ü, š and ž included. tools/validate.mjs splits with the
+     same class, written twice because neither can import the other, and fails
+     a line with a word nobody has said the meaning of. */
+  var WORD = /[A-Za-z\u00C0-\u024F]+/g;
+
+  function songHead() {
+    return el('div', { className: 'flash-deck' }, [
+      el('span', { className: 'eyebrow', textContent: t('flashSongs') }),
+      backOut({ song_id: state.song.id })
+    ]);
+  }
+
+  /* YouTube's own player, from the address that sets no cookie until play is
+     pressed. Where the video has gone or will not play, the player says so in
+     its own frame and every line under it still works — nothing here waits on
+     it. */
+  function songVideo(song) {
+    return el('div', { className: 'flash-song-video' }, [
+      el('iframe', {
+        src: 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(song.video) + '?rel=0',
+        title: t('flashSongVideo', { name: means(song.name) }),
+        allow: 'encrypted-media; picture-in-picture; fullscreen',
+        allowfullscreen: true,
+        referrerpolicy: 'strict-origin-when-cross-origin'
+      })
+    ]);
+  }
+
+  /* What one word says in its box. */
+  function wordBox(song, key) {
+    var word = song.words[key];
+    var where = null;
+    if (word.deck) {
+      where = word.deck.id === (song.deck && song.deck.id)
+        ? t('flashInSongDeck')
+        : t('flashAlsoIn', { deck: means(word.deck.name) });
+    }
+    return el('div', { className: 'flash-song-gloss', role: 'note' }, [
+      el('p', { className: 'flash-song-gloss-means' }, [
+        el('b', { lang: 'et', textContent: key }), ' — ' + means(word.means)
+      ]),
+      word.base.toLowerCase() !== key
+        ? el('p', { className: 'flash-song-gloss-base mono', lang: 'et', textContent: word.base })
+        : null,
+      word.note ? el('p', { className: 'flash-song-gloss-note', textContent: means(word.note) }) : null,
+      where ? el('p', { className: 'flash-song-gloss-deck mono', textContent: where }) : null
+    ]);
+  }
+
+  /* One line: the Estonian as a row of presses with the punctuation between
+     them left as it is, the speaker beside it, and what it means under it. */
+  function songLine(song, line) {
+    var row = el('div', { className: 'flash-song-line' });
+    var said = el('p', { className: 'flash-song-et', lang: 'et' });
+    var at = 0;
+    var found;
+    WORD.lastIndex = 0;
+    while ((found = WORD.exec(line.et))) {
+      if (found.index > at) said.appendChild(document.createTextNode(line.et.slice(at, found.index)));
+      said.appendChild(wordPress(song, row, found[0]));
+      at = found.index + found[0].length;
+    }
+    if (at < line.et.length) said.appendChild(document.createTextNode(line.et.slice(at)));
+
+    var speak = el('button', {
+      type: 'button',
+      className: 'alt flash-say flash-song-say',
+      'data-say': line.et,
+      'aria-pressed': 'false',
+      'aria-label': t('flashSayAria', { text: line.et })
+    }, [el('span', { className: 'flash-say-icon', 'aria-hidden': 'true' })]);
+    speak.addEventListener('click', function () { sayIt(line.et, 'line'); });
+
+    row.appendChild(said);
+    row.appendChild(speak);
+    row.appendChild(el('p', { className: 'flash-song-means', textContent: means(line) }));
+    return row;
+  }
+
+  function wordPress(song, row, text) {
+    var key = text.toLowerCase();
+    var b = el('button', {
+      type: 'button',
+      className: 'flash-song-w',
+      'aria-expanded': 'false',
+      textContent: text
+    });
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('aria-expanded') === 'true';
+      shutWord();
+      if (open || !song.words[key]) return;
+      b.setAttribute('aria-expanded', 'true');
+      b.classList.add('is-open');
+      row.appendChild(wordBox(song, key));
+      TTBTrack.event('flash_song_word', { song_id: song.id, word: key });
+    });
+    return b;
+  }
+
+  /* Whichever box is open, shut. */
+  function shutWord() {
+    var boxes = main.querySelectorAll('.flash-song-gloss');
+    for (var i = 0; i < boxes.length; i++) boxes[i].parentNode.removeChild(boxes[i]);
+    var open = main.querySelectorAll('.flash-song-w.is-open');
+    for (var j = 0; j < open.length; j++) {
+      open[j].classList.remove('is-open');
+      open[j].setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function songCard() {
+    var song = state.song;
+    var kids = [
+      heading(means(song.name)),
+      el('p', { className: 'lists-say', textContent: t('flashSongHow') }),
+      songVideo(song)
+    ];
+    song.verses.forEach(function (verse, i) {
+      var box = el('section', { className: 'flash-song-verse' }, [
+        el('h2', { className: 'flash-song-head', textContent: t('flashVerse', { n: i + 1 }) })
+      ]);
+      verse.forEach(function (line) { box.appendChild(songLine(song, line)); });
+      kids.push(box);
+    });
+
+    var heard = el('button', { type: 'button', className: 'go', textContent: t('flashHeardIt') });
+    heard.addEventListener('click', function () {
+      if (heard.disabled) return;
+      heard.disabled = true;
+      hearSong(song);
+    });
+    var acts = [heard];
+    if (song.deck) {
+      acts.push(TTBTrack.click(
+        inPage(el('a', { className: 'alt', href: deckHref(song.deck.id), textContent: t('flashSongCards') }), song.deck.id),
+        'flash_open', { deck_id: song.deck.id, own: 0 }
+      ));
+    }
+    kids.push(foot(acts));
+
+    var node = card(kids);
+    node.classList.add('flash-song');
+    return node;
+  }
+
+  /* Heard it: readLesson() again, under the songs' own deck id. */
+  function hearSong(song) {
+    song.heard = true;
+    TTBTrack.event('flash_song_heard', { song_id: song.id });
+    var back = function () { go('', true); };
+    if (state.user && state.ready) {
+      post(FLASH_API, { action: 'knew', deck: SONGS, card: song.id }).then(back);
+    } else {
+      keep(SONGS, song.id, true);
+      back();
+    }
+  }
+
   /* ------------------------------------------------- where you left off
    * What this device had open, so the front door can reopen it: the deck a
-   * run is going in, or the lesson being read. Written on every draw and
+   * run is going in, or the lesson being read, or the song being heard. Written on every draw and
    * cleared by the shelf, the end of a run, the gate, a shut stage and the
    * editor, so what is ever reopened is a card in hand or a page being read,
    * never a screen somebody had finished with. localStorage rather than the
@@ -3105,6 +3336,7 @@
   function rememberHere() {
     if (!state.user || !state.ready) return;
     var here = state.lesson ? state.lesson.id
+             : state.song ? state.song.id
              : state.deck && current() && !state.gated && !state.locked && !state.editing ? state.deck.id
              : '';
     if (here) storeSet(LAST_KEY, here);
@@ -3117,8 +3349,8 @@
 
   /* -------------------------------------------------------------- the deck is
    * gone, or was never there. A deck id in the address that answers with
-   * nothing: somebody's own deck deleted in another tab, a shipped deck or a
-   * lesson that has been taken out of the file, or a link that was mistyped.
+   * nothing: somebody's own deck deleted in another tab, a shipped deck, a
+   * lesson or a song that has been taken out of the file, or a link that was mistyped.
    * All of them are the same sentence and the way back to the decks.
    */
   function goneCard() {
@@ -3150,16 +3382,20 @@
        and nothing else would ever put it back. */
     if (state.deck) document.title = deckName(state.deck);
     else if (state.lesson) document.title = means(state.lesson.name);
+    else if (state.song) document.title = means(state.song.name);
     else document.title = t('flashDocumentTitle');
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
 
-    if (asked && !state.deck && !state.lesson) {
+    if (asked && !state.deck && !state.lesson && !state.song) {
       add(goneCard());
     } else if (state.lesson) {
       add(lessonHead());
       add(lessonCard());
+    } else if (state.song) {
+      add(songHead());
+      add(songCard());
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {
@@ -3269,7 +3505,7 @@
        this page ever wanted from it was a name to put in the sign-up field,
        and the form asks for that now rather than offering one. */
     /* Where this device left off, if the address does not say: the deck or
-       the lesson the front door reopens instead of the shelf — see
+       the lesson or the song the front door reopens instead of the shelf — see
        rememberHere(). Asked for in the same one request. */
     var resumed = asked ? '' : (storeGet(LAST_KEY) || '');
     if (resumed) asked = resumed;
@@ -3312,9 +3548,9 @@
         go(new URLSearchParams(window.location.search).get('d') || '', false);
       });
 
-      if (resumed && (!state.user || (!state.deck && !state.lesson))) {
-        /* A place remembered for somebody no longer signed in, or a deck or
-           a lesson that has gone since: the front door is the shelf after
+      if (resumed && (!state.user || (!state.deck && !state.lesson && !state.song))) {
+        /* A place remembered for somebody no longer signed in, or a deck, a
+           lesson or a song that has gone since: the front door is the shelf after
            all, asked for a second time — rare, and the one case where this
            page makes two requests on the way in. */
         forgetHere();

@@ -7792,8 +7792,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-two
-decks of Estonian, one thousand nine hundred and sixty cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-three
+decks of Estonian, one thousand nine hundred and eighty-four cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -7801,7 +7801,8 @@ sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, under a heading of their own on that page, two lessons of
 grammar about why the words on the cards come in threes — **Grammar, which is
-read rather than turned over** below.
+read rather than turned over** below — and after them a song, with what every
+line and every word in it means — **Songs, which are listened to**.
 
 It is the second thing on this site that is not about restaurants, and it is
 here for the same reason the first one is: it is what the people this map is
@@ -7965,8 +7966,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: forty-two decks, one
-thousand nine hundred and sixty cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: forty-three decks, one
+thousand nine hundred and eighty-four cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -8069,8 +8070,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the eighty-seven `flash*` keys are in `ui.json`, and taking this
-feature out means taking eighty-seven keys out of ten blocks rather than deleting
+in step. So the ninety-seven `flash*` keys are in `ui.json`, and taking this
+feature out means taking ninety-seven keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -8192,7 +8193,7 @@ in the middle of was somewhere down them — sorted to the top of its stage by
 at the same card would have put you.
 
 So the front door reopens what this device had open: the deck a run was going
-in, or the lesson being read. `rememberHere()` in `assets/flashcard.js` writes
+in, or the lesson being read, or the song being listened to. `rememberHere()` in `assets/flashcard.js` writes
 it on every draw and `boot()` reads it when the address does not name a deck —
 the page asks the route for that deck in the same one request it would have
 asked for the shelf with, then puts the deck's address on the history so the
@@ -9181,7 +9182,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **1,290 of the 1,960
+parts, and a row of three under it would be nonsense. **1,306 of the 1,984
 cards carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -9234,10 +9235,11 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **772 of the 1,960 cards** carry
+would be a stray clause with no translation. **796 of the 1,984 cards** carry
 one: every card in the twenty-three newer decks and in **Family and relatives**
-bar the ones that are a whole sentence already, and the ones in the older decks
-where an example says something the gloss does not. The words the course
+bar the ones that are a whole sentence already, every card in the song's deck —
+where the sentence is the line the word is sung in — and the ones in the older
+decks where an example says something the gloss does not. The words the course
 glossary brought in have none, and that is the one thing left undone about
 them — a glossary gives a word its principal parts and not a sentence to stand
 in, and nine hundred sentences guessed at in one sitting would be nine hundred
@@ -9297,7 +9299,7 @@ the one knob it had went back to 1, the pace the model was trained at, and the
 take went to 2. Whatever robotic edge is left after that is Tartu's research
 voice itself, and there is no knob for it on this side. The better voice on
 offer is Microsoft's Azure — Anu, and Kert for a man — free to 500,000
-characters a month where the whole shelf is 31,703, but it wants an Azure
+characters a month where the whole shelf is 32,236, but it wants an Azure
 account and a key in the Pages settings, and it was left for later.
 
 **Only what is on a card.** The route speaks a string only if it is the front
@@ -9429,6 +9431,93 @@ are the cards' own, copied rather than retyped, and the sentences in the prose
 say and no native speaker has read. The people reading them are the
 proofreaders, and **This card is wrong** below is where a card is reported; a
 lesson has no such line yet, and a wrong sentence in one is a pull request.
+
+### Songs, which are listened to
+
+A card teaches a word and a lesson says why it changes shape, and neither is
+how anybody actually comes to like a language. A song is. So the shelf carries
+a third heading, **Songs**, straight after **Grammar**, and under it a tile for
+each song and a tile for the deck of its words. The first is *Naera, naera*,
+and it was asked for with the lyrics pasted in and a list of every word in it
+with what it means.
+
+**The song is one page.** The video at the top — YouTube's own player, from
+`youtube-nocookie.com`, which sets nothing until play is pressed — and under it
+the song line by line: the Estonian, what it means in the language the page is
+being read in, and a speaker beside it that says the line slowly in Mari's
+voice, the same one the cards use, since a singer is the worst person to learn
+where one word ends and the next begins from. `/api/say` speaks a line of a
+song for the reason it speaks a card's sentence: it is in `data/decks.json`,
+exactly. At the foot, **Heard it**, which is Got it under another name and
+marks the tile *Heard*, and **The words, as cards**, which opens the song's
+deck.
+
+**Every word is a press.** Pressing one opens a box under its line: the word as
+it is sung and what it means *there* — *naerame*, "we laugh, let's laugh" — the
+form a dictionary files it under where that is different, a note where one is
+owed, and where on the shelf the word is taught: *In the song's deck*, or *Also
+in Weather and the season*. One box open at a time; pressing its word again
+shuts it. It opens under the line and pushes the lines below it down rather
+than floating over them, because on a phone a floating box covers the next line
+somebody is trying to read — that was the owner's answer, and the mockup it was
+answered against. It opens and shuts in place rather than through `render()`,
+which rebuilds `<main>` and would start the video again from the beginning on
+every press.
+
+**Which words are a card, and which are only a press.** Every word in the song
+says what it means, so nobody is ever stuck on a line. The *deck* is only the
+words worth keeping that the shelf did not already teach: twenty-four of the
+forty-seven, from *naerma* to *kättpidi*, each with the line it is sung in as
+its sentence. *Suvi*, *päev*, *käsi* and the other twenty-odd are already on
+cards in other decks, and a second copy of each would count twice in *You know
+N words*. Those point at their deck instead — and the note is where a song
+teaches something a card cannot: *ilm* is weather on a card and the world in
+this song, *läheb* is *minema* with its stem swapped out, and the *-ki* on
+*teretabki* means "even".
+
+Aysel's list was the starting point, with three corrections: *arem* is not a
+word — *aremini* is the comparative of *arg*, timid, which is already a card —
+*hulgub* comes from *hulkuma*, not *hulguma*, and *julged* and *kes* were
+missing. The rest of the Estonian, and all of the Azerbaijani and Russian, is
+mine, which is to say it wants a native reader the way the rest of the shelf
+does.
+
+**Where it lives, and what shape it is.** `songs` in `data/decks.json`, beside
+the lessons: an `id` in the decks' namespace, a `name` and a `why`, `video` — the
+eleven characters of a YouTube id — `deck`, the id of the deck of its words,
+`verses`, each a list of lines of `et` and what it means in each language, and
+`words`, keyed by the word as it is sung, lowercased: its `base`, what it
+`means` there, the `deck` its base is taught in, and an optional `note`. The
+deck is an ordinary deck with a `level` of `song`, which is not a stage — the
+route has no gate for it and the page draws it under Songs rather than under
+any of the four — and the validator allows that level only on a deck a song
+names. It fails a line with a word `words` does not know, an entry no line
+sings, and a `deck` with no card of that `base` on it, so the box can never say
+*Also in* a deck that does not have the word. The split into words is `WORD` in
+`assets/flashcard.js` and in `tools/validate.mjs`: a run of Latin letters, *õ*,
+*ä*, *ö*, *ü*, *š* and *ž* included.
+
+**Heard is a known row**, the way Read is: the `knew` action under the deck id
+`songs` — `SONG_DECK` in `functions/api/flashcard.js`, reserved in the
+validator — with the song's id as the card, kept in the tab signed out and
+posted on the load that has a session, and seen by nothing that counts cards.
+Hearing a song signed out does not spend the free word, for the reason reading
+a lesson does not. `functions/flashcard.js` writes the lyrics into the `<main>`
+as a description list per verse, the Estonian as the term and the three
+translations under it, because somebody searching for what a line means is
+asking what this page answers; `tools/sitemap.mjs` lists the song beside the
+decks and the lessons.
+
+**What it does not do.** The lines do not light up in time with the singing:
+that wants YouTube's player API and a timestamp on every line, and is worth
+building once it is clear people use the page. There is one song. The words
+are in the three languages the cards are, and the site's other seven get
+English. The video cannot be told apart from a missing one on this side — a
+frame from another origin says nothing about itself — so a video YouTube has
+taken down is YouTube's own message in the box, with every line under it still
+working. And the credit is missing: nobody here yet knows who wrote the words
+and the music, and the page should say, the day somebody does. The same
+question stands over printing all four verses, which the owner has been asked.
 
 ### This card is wrong
 
@@ -9661,7 +9750,8 @@ assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
 functions/api/say.js           the voice, which reads data/decks.json and nothing
                                else
-data/decks.json                the decks the site ships, and the grammar lessons
+data/decks.json                the decks the site ships, the grammar lessons and
+                               the songs
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -9679,7 +9769,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the eighty-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the ninety-seven `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its seven lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
@@ -9733,7 +9823,7 @@ route that speaks a card speaks only what `data/decks.json` says, so a deck
 somebody typed is read in silence: speaking it would mean saying whatever
 anybody chose, on a university's goodwill. The grammar lessons are read in
 silence too, for now — their Estonian is in prose and tables rather than on a
-card, and the route says only what is on one. And it is Mari's voice alone —
+card, and the route says only what is on one, or a line of a song. And it is Mari's voice alone —
 **Hearing it** above says why a man's voice is a small change and not yet
 made.
 
@@ -12125,8 +12215,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-two decks of Estonian, 1,960 cards under four
-                           headings, and two lessons of grammar; content rather
+data/decks.json            forty-three decks of Estonian, 1,984 cards under four
+                           headings and a song's, two lessons of grammar and
+                           one song; content rather
                            than interface, and written in three languages
                            rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
@@ -14246,11 +14337,14 @@ Flashcards, `assets/flashcard.js`:
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
 | `flash_lesson_read` | `lesson_id` — Got it at the foot of a lesson, read before or not — see **Grammar, which is read rather than turned over** |
+| `flash_song_open` | `song_id` — a song's tile under the Songs heading |
+| `flash_song_word` | `song_id`, `word` — a word of the song pressed and its box opened, as it is sung and lowercased; a press that shuts the box is not counted — see **Songs, which are listened to** |
+| `flash_song_heard` | `song_id` — Heard it at the foot of a song |
 | `flash_resume` | `deck_id` — the front door reopening the deck or the lesson this device was closed on, which is the deck's or the lesson's id — see **Where you left off** |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
-| `flash_say` | `deck_id`, `what` (`word`/`sentence`) — a card's Estonian asked for aloud, by a button under the card or the S key; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
+| `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |

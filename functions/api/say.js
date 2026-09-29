@@ -52,7 +52,8 @@
  *
  * An open text-to-speech proxy on a university's goodwill is a thing that
  * gets found and used, so the text has to be the front of a card in
- * data/decks.json, or the Estonian of a card's sentence, exactly. Nothing a
+ * data/decks.json, the Estonian of a card's sentence, or a line of a song in
+ * the same file, exactly. Nothing a
  * person typed is ever spoken: a deck somebody wrote is not in that file, and
  * speaking it would mean saying anything anybody chose. That is a decision for
  * a description rather than for this file — **What it does not do** under
@@ -111,6 +112,13 @@ function sayable(file) {
     for (const card of deck.cards || []) {
       if (card.front) set.add(card.front);
       if (card.sentence && card.sentence.et) set.add(card.sentence.et);
+    }
+  }
+  /* And a line of a song, which the page offers to say slowly beside the
+     singing. It is in the same file for the same reason, and just as exact. */
+  for (const song of (file && file.songs) || []) {
+    for (const verse of song.verses || []) {
+      for (const line of verse || []) if (line && line.et) set.add(line.et);
     }
   }
   spoken.set(file, set);

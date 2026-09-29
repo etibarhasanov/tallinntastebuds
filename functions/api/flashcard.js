@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-two decks of Estonian, one
- * thousand nine hundred and sixty cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-three decks of Estonian, one
+ * thousand nine hundred and eighty-four cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -15,7 +15,7 @@
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same one
- * thousand nine hundred and sixty cards. Nothing about them is in the
+ * thousand nine hundred and eighty-four cards. Nothing about them is in the
  * database and nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
@@ -37,6 +37,17 @@
  * the file and gathered() looks every row up in it, so a deck id that is in
  * neither is dropped rather than counted. See **Grammar, which is read rather
  * than turned over** under **Flashcards** in README.md.
+ *
+ * AND THE SONGS, WHICH ARE LISTENED TO
+ *
+ * The same again, a third time: `songs` in the file, each a video, its lines
+ * with what they mean, and what every word in them means. The shelf answer
+ * names them, ?deck=<song id> answers one whole — with the name of every deck
+ * a word's base form is taught in, since the page opened at a song has no
+ * shelf to look it up in — and Heard it is the `knew` action under SONG_DECK.
+ * The words worth keeping are an ordinary deck in `decks`, with a level of
+ * its own, and are counted like any other. See **Songs, which are listened
+ * to** under **Flashcards** in README.md.
  *
  * **Nothing here chooses which language a card is turned over into.** A deck
  * the site ships carries its name, the line under it and the back of every
@@ -302,11 +313,14 @@ const REVIEW_DECK = 'review';
    card_id is the lesson's id out of data/decks.json. */
 const GRAMMAR_DECK = 'grammar';
 
-/* Whether a known row is a lesson's rather than a card's, by the key knownOf()
-   files it under. The two gathered decks are built out of every known row
-   there is, and a lesson read must not be a card in either — not counted on
-   the shelf, not a slot in the run. */
-const lessonRow = (key) => key.startsWith(GRAMMAR_DECK + '/');
+/* And a song heard, the same way: card_id is the song's id. */
+const SONG_DECK = 'songs';
+
+/* Whether a known row is a lesson's or a song's rather than a card's, by the
+   key knownOf() files it under. The two gathered decks are built out of every
+   known row there is, and a lesson read or a song heard must not be a card in
+   either — not counted on the shelf, not a slot in the run. */
+const readRow = (key) => key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/');
 
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
@@ -391,6 +405,43 @@ function lessonAnswer(lesson, known, whole) {
     ...(whole ? { body: lesson.body } : {}),
     read: stateOf(known, GRAMMAR_DECK, lesson.id).known
   };
+}
+
+/* The songs, out of the same file and held to the same id shape. What a song
+   is made of is held to its shape by tools/validate.mjs, so nothing here has
+   to be. */
+async function shippedSongs(context) {
+  try {
+    const file = await dataFile(context, DECKS_FILE);
+    const songs = file && Array.isArray(file.songs) ? file.songs : [];
+    return songs.filter((s) => s && WRITTEN.test(String(s.id || '')) && Array.isArray(s.verses));
+  } catch (e) {
+    return [];
+  }
+}
+
+/* A song as the page reads it: its name and line for the shelf, and — when it
+   is the one open — the video, the verses, and what every word means, with
+   the deck a word is taught in named rather than only pointed at. The page
+   opened at a song has no shelf in hand to look a deck's name up in, and a
+   tap box saying "also in weather" in whatever language is not a sentence. */
+function songAnswer(song, decks, known, whole) {
+  const answer = {
+    id: song.id,
+    name: song.name,
+    why: song.why || null,
+    heard: stateOf(known, SONG_DECK, song.id).known
+  };
+  if (!whole) return answer;
+  const named = (id) => {
+    const deck = id ? shippedDeck(decks, id) : null;
+    return deck ? { id: deck.id, name: deck.name } : null;
+  };
+  const words = {};
+  for (const [key, word] of Object.entries(song.words || {})) {
+    words[key] = { ...word, deck: named(word.deck) };
+  }
+  return { ...answer, video: song.video, deck: named(song.deck), verses: song.verses, words };
 }
 
 /* ------------------------------------------------------------- somebody's
@@ -616,7 +667,7 @@ function reviewDeck(context, user, decks, known) {
   const due = [];
   const rest = [];
   known.forEach((was, key) => {
-    if (!was.known || lessonRow(key)) return;
+    if (!was.known || readRow(key)) return;
     (was.due ? due : rest).push({ ...keyed(key), at: was.at });
   });
   due.sort((a, b) => a.at - b.at);
@@ -686,6 +737,10 @@ export async function onRequestGet(context) {
     const lesson = (await shippedLessons(context)).find((l) => l.id === asked) || null;
     if (lesson) return json({ ...base, lesson: lessonAnswer(lesson, known, true) }, 200);
 
+    /* Or a song, the same way. */
+    const song = (await shippedSongs(context)).find((s) => s.id === asked) || null;
+    if (song) return json({ ...base, song: songAnswer(song, decks, known, true) }, 200);
+
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
     return json({ ...base, error: 'not-found' }, 404);
@@ -744,7 +799,7 @@ export async function onRequestGet(context) {
      wait has come round as due, so it reads "6 due" while there is something
      to do and "40 / 40" when there is not — the same two sentences every
      other row says, meaning the same things. */
-  const rows = [...known.entries()].filter(([key]) => !lessonRow(key)).map(([, was]) => was);
+  const rows = [...known.entries()].filter(([key]) => !readRow(key)).map(([, was]) => was);
   const learnt = rows.filter((was) => was.known);
   if (learnt.length > 0) {
     list.unshift({
@@ -818,7 +873,11 @@ export async function onRequestGet(context) {
      does not reach two tiles under a heading of their own. */
   const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
 
-  return json({ ...base, decks: list, lessons: lessons }, 200);
+  /* And the songs, on the same footing: a file, behind no gate, each with
+     whether it has been heard. */
+  const songs = (await shippedSongs(context)).map((s) => songAnswer(s, decks, known, false));
+
+  return json({ ...base, decks: list, lessons: lessons, songs: songs }, 200);
 }
 
 /* ---------------------------------------------------------------- writing */
@@ -1052,6 +1111,9 @@ async function mark(context, body, user, knew) {
        does. It climbs the boxes like a card and nothing reads which box it
        is in: known is the whole of the fact. */
     real = (await shippedLessons(context)).some((l) => l.id === cardId);
+  } else if (deckId === SONG_DECK && WRITTEN.test(cardId)) {
+    /* And a song heard, under its own. */
+    real = (await shippedSongs(context)).some((s) => s.id === cardId);
   } else if (WRITTEN.test(deckId) && WRITTEN.test(cardId)) {
     const deck = shippedDeck(await shipped(context), deckId);
     real = !!deck && deck.cards.some((c) => c.id === cardId);

@@ -275,8 +275,8 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: forty-two decks
-   and one thousand nine hundred and sixty cards, deployed as a file and read
+   data/decks.json — the Estonian the flashcards page ships: forty-three decks
+   and one thousand nine hundred and eighty-four cards, deployed as a file and read
    as one.
    It is content rather than interface, so the ten languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
@@ -314,6 +314,16 @@ if (decksFile !== null) {
        assets/flashcard.js draws them. A deck with any other level would fall
        to the bottom under no heading, which is a deck nobody finds. */
     const LEVELS = new Set(['start', 'eat', 'more', 'deep']);
+    /* And a fifth that is not a stage: the deck a song carries its new words
+       in, which the page draws under the Songs heading beside the song rather
+       than under any of the four. Only a deck a song names may have it — one
+       that no song points at would be drawn under nothing. */
+    const SONG_LEVEL = 'song';
+    const songDecks = new Set(
+      (Array.isArray(decksFile.songs) ? decksFile.songs : [])
+        .map((song) => isPlainObject(song) ? song.deck : null)
+        .filter(isNonEmptyString)
+    );
     /* The two ids a shipped deck may not have: functions/api/flashcard.js
        assembles a deck of each name out of somebody's own rows — the cards
        they got wrong, and the cards they know — and two decks answering to
@@ -324,6 +334,9 @@ if (decksFile !== null) {
        shipped deck of that name would have its known rows counted as lessons
        read and its cards' rows read back as lessons. */
     RESERVED.add('grammar');
+    /* And the fourth, for the same reason: the deck id a song heard is filed
+       under — SONG_DECK in the route. */
+    RESERVED.add('songs');
     const deckIds = new Set();
 
     /* A deck's name, the line under it, the back of a card, or what a card's
@@ -376,7 +389,9 @@ if (decksFile !== null) {
 
       said(deck.name, where, `deck "${deck.id}" name`);
       said(deck.why, where, `deck "${deck.id}" why`);
-      if (!LEVELS.has(deck.level)) {
+      if (deck.level === SONG_LEVEL) {
+        if (!songDecks.has(deck.id)) fail(where, `deck "${deck.id}" has the level "${SONG_LEVEL}" and no song names it`);
+      } else if (!LEVELS.has(deck.level)) {
         fail(where, `deck "${deck.id}" has a level of "${deck.level}", which is not one of: ${[...LEVELS].join(', ')}`);
       }
 
@@ -504,6 +519,83 @@ if (decksFile !== null) {
           });
         }
       });
+    });
+
+    /* The songs, which are listened to rather than turned over: an id in the
+       decks' namespace, for the reason a lesson's is; a name and a line; the
+       eleven characters of a YouTube video; the deck its new words are in;
+       verses of lines, each the Estonian and what it means; and `words`, what
+       every word in those lines means, keyed by the word as it is sung,
+       lowercased. Every word the page draws is a word somebody can tap, so a
+       line with a word `words` does not know fails, and so does an entry no
+       line sings. The split is WORD in assets/flashcard.js, written twice
+       because neither file can import the other. A word's `deck` is where its base
+       form is taught, and has to be a deck with a card of that front, or the
+       tap box would send somebody to a deck without it. See **Songs, which are
+       listened to** under **Flashcards** in README.md. */
+    const WORD = /[A-Za-z\u00C0-\u024F]+/g;
+    if (decksFile.songs !== undefined && !Array.isArray(decksFile.songs)) {
+      fail('data/decks.json', '"songs" must be an array');
+    }
+    const fronts = new Map(decksFile.decks.filter(isPlainObject).map((deck) => [
+      deck.id,
+      new Set((Array.isArray(deck.cards) ? deck.cards : []).map((card) => String(card && card.front || '').toLowerCase()))
+    ]));
+    (Array.isArray(decksFile.songs) ? decksFile.songs : []).forEach((song, i) => {
+      const where = `data/decks.json → songs[${i}]`;
+      if (!isPlainObject(song)) { fail(where, 'must be an object'); return; }
+      if (!isNonEmptyString(song.id)) { fail(where, 'has no "id"'); return; }
+      if (!SLUG.test(song.id)) fail(where, `id "${song.id}" is not a lowercase slug`);
+      if (deckIds.has(song.id)) fail(where, `id "${song.id}" is already a deck's, a lesson's or a song's`);
+      if (RESERVED.has(song.id)) fail(where, `id "${song.id}" is reserved — see functions/api/flashcard.js`);
+      deckIds.add(song.id);
+
+      said(song.name, where, `song "${song.id}" name`);
+      said(song.why, where, `song "${song.id}" why`);
+      if (!isNonEmptyString(song.video) || !/^[A-Za-z0-9_-]{11}$/.test(song.video)) {
+        fail(where, `song "${song.id}" has a "video" that is not a YouTube id`);
+      }
+      const own = decksFile.decks.find((deck) => isPlainObject(deck) && deck.id === song.deck);
+      if (!own) fail(where, `song "${song.id}" names a deck "${song.deck}" that is not in the file`);
+      else if (own.level !== SONG_LEVEL) fail(where, `song "${song.id}" names deck "${song.deck}", whose level is not "${SONG_LEVEL}"`);
+
+      const words = isPlainObject(song.words) ? song.words : null;
+      if (!words) { fail(where, `song "${song.id}" has no "words"`); return; }
+      if (!Array.isArray(song.verses) || song.verses.length === 0) {
+        fail(where, `song "${song.id}" has no verses`);
+        return;
+      }
+      const sung = new Set();
+      song.verses.forEach((verse, j) => {
+        const at = `${where} → verses[${j}]`;
+        if (!Array.isArray(verse) || verse.length === 0) { fail(at, 'a verse is a list of lines'); return; }
+        verse.forEach((line, k) => {
+          const row = `${at}[${k}]`;
+          if (!isPlainObject(line) || !isNonEmptyString(line.et)) { fail(row, 'a line has no Estonian in "et"'); return; }
+          const { et, ...means } = line;
+          said(means, row, 'what the line means');
+          for (const word of et.match(WORD) || []) {
+            const key = word.toLowerCase();
+            sung.add(key);
+            if (!isPlainObject(words[key])) fail(row, `"${word}" is sung and "words" does not say what it means`);
+          }
+        });
+      });
+      for (const [key, word] of Object.entries(words)) {
+        const at = `${where} → words.${key}`;
+        if (!sung.has(key)) fail(at, `"${key}" is in "words" and no line sings it`);
+        if (!isPlainObject(word)) { fail(at, 'must be an object'); continue; }
+        if (!isNonEmptyString(word.base)) fail(at, `"${key}" has no "base"`);
+        said(word.means, at, `"${key}" means`);
+        if (word.note !== undefined) said(word.note, at, `"${key}" note`);
+        if (word.deck !== undefined) {
+          const has = fronts.get(word.deck);
+          if (!has) fail(at, `"${key}" names a deck "${word.deck}" that is not in the file`);
+          else if (!has.has(String(word.base).toLowerCase())) {
+            fail(at, `"${key}" says "${word.base}" is in "${word.deck}", which has no card of that front`);
+          }
+        }
+      }
     });
   }
 }
