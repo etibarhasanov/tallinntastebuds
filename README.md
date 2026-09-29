@@ -11870,6 +11870,18 @@ to read and write first.
 `npm install`. It runs on every push and pull request via
 `.github/workflows/validate.yml`.
 
+The same workflow runs three checks beside it, each holding one piece of code
+to answers recorded somewhere other than the code. `node tools/qrperf.mjs
+--check` holds the QR encoder to the matrices it drew when they were last
+scanned with a real camera — see **Third-party pieces and their licences**.
+`node tools/chessperf.mjs --check` holds the rules of chess in
+`functions/api/_chess.js` to the published perft counts of six positions, to
+positions worked out by hand and checked against python-chess before they were
+written in, and to every move a visitor could send from those six, which
+`play()` must refuse unless it is legal. And `node
+.claude/hooks/d1-write-gate.mjs --check` holds the gate in front of the two
+databases to its own cases.
+
 **It fails the build on:**
 
 - invalid JSON in any of the data files
@@ -12021,8 +12033,9 @@ CLAUDE.md                  what a session reads before it starts, and which
                            about. `--check` runs its own cases, and CI runs
                            that
 .claude/skills/            one checklist per kind of change — a place, a story,
-                           a discount, a page, a Function, the export — loaded
-                           when the task matches, or by /name
+                           a discount, a page, a Function, the export — and the
+                           chess page's build, a task at a time; loaded when
+                           the task matches, or by /name
 .claude/rules/             the cleanup rule, loaded whenever code is opened,
                            and one pointer per checklist, loaded by the
                            files that process touches
@@ -12171,6 +12184,9 @@ assets/ask.js              a typed sentence read as a wish, for when the model
                            cannot: no DOM, no state, one global
 functions/api/ask.js       the chat box answered — a model on the free
                            allowance, and Google's opening hours
+functions/api/_chess.js    the rules of chess for the chess page: the legal
+                           moves, a move played and written down, the end of a
+                           game (not a route: leading _)
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -12238,10 +12254,13 @@ tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
+tools/chessperf.mjs        holds functions/api/_chess.js to published move
+                           counts and to positions worked out by hand, and
+                           times it
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
-.github/workflows/validate.yml     the validator, the QR check and the write gate, on every push
+.github/workflows/validate.yml     the validator, the QR check, the chess check and the write gate, on every push
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone
