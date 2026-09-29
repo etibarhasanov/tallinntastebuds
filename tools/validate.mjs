@@ -83,7 +83,7 @@ import { dirname, join, resolve } from 'node:path';
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
-import { stale as staleGoogleLists } from './googlelists.mjs';
+import { stale as staleGoogleLists, LISTS as GOOGLE_LISTS, build as buildGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
 import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 import { stale as staleSitemap } from './sitemap.mjs';
@@ -1568,6 +1568,30 @@ if (staleGoogleVenues()) {
    month's Tallinn. */
 if (staleGoogleLists()) {
   fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
+}
+
+/* And what those lists say in ten languages. assets/googlewords.js looks each
+   list up by its id and each place's category by a key, and a list or a
+   category it has no word for prints in English on every page — quietly, in
+   a site that is otherwise read in ten. The languages agreeing with each
+   other is checked above; this is the words agreeing with the lists. */
+{
+  const words = existsSync(join(ROOT, 'assets', 'googlewords.js'))
+    ? readFileSync(join(ROOT, 'assets', 'googlewords.js'), 'utf8') : '';
+  const en = isPlainObject(ui.en) ? ui.en : {};
+  for (const list of GOOGLE_LISTS) {
+    const m = words.match(new RegExp(`'${list.id}': '([A-Za-z]+)'`));
+    if (!m) fail('assets/googlewords.js', `has no title key for the list ${list.id}, so it prints in English on every page`);
+    else if (!(m[1] in en)) fail('assets/googlewords.js', `looks the title of ${list.id} up under "${m[1]}", which data/ui.json does not have`);
+  }
+  try {
+    for (const list of buildGoogleLists().lists) {
+      for (const place of list.places) {
+        const key = 'gcat' + place.category.replace(/[^A-Za-z]/g, '');
+        if (!(key in en)) fail('data/ui.json', `has no "${key}" for Google's category "${place.category}", which ${list.title} carries — add it in all ten languages`);
+      }
+    }
+  } catch (e) { /* the stale check above says why */ }
 }
 
 /* And the ground every list on /lists is drawn on, which is the same export

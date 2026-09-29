@@ -593,6 +593,9 @@
     renderLanguageSwitch();
     renderStyleSwitch();
     renderFilters();
+    /* The six lists Google wrote are English in the database and are said
+       again in the language just picked — see assets/googlewords.js. */
+    if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
     window.TTBRadio.language(code);
     /* applyStaticStrings has just put "Account" back on the button through
@@ -10666,6 +10669,7 @@
      knows" is a question about that file. */
   function seatList(list) {
     if (!list) return;
+    TTBGoogleWords.list(list, t, state.lang);
 
     var stand = [];
     var items = [];

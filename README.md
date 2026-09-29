@@ -4634,6 +4634,25 @@ list on its id, and replaces its rows whole — a place that fell out of a
 top ten or the top twenty has to leave it — so running it twice changes
 nothing and running it after a refresh moves the lists.
 
+**In ten languages, in the browser.** The rows are English — a title, an intro
+and a line under each place, in D1 — and stay so: ten copies of six lists would
+want a `lang` column on `lists` and `list_items` and sixty rows a language from
+the generator. `assets/googlewords.js` (`TTBGoogleWords`) translates them when
+they are drawn instead, out of `data/ui.json`: a list is found by its id, a
+title is `googleTitle…`, the two intros are `googleIntro` and
+`googleIntroOverall`, the account's profile line is `googleAbout`, and a line
+under a place is taken apart — Google's category, rating and count — and put
+back by `googleSay` in the language's own word order, with the category
+through `gcat<Category>` (`gcatBakery`, `gcatCocktailBar`) and the numbers
+through `toLocaleString`. It runs on the list's page, the map's list panel
+(again when the map's language is switched), the lists index and its search,
+the profile, and the account page's kept lists. Anything it has no word for
+stays Google's English rather than printing a key, and `tools/validate.mjs`
+fails the build for a list with no title key and for any category the lists
+carry that has no `gcat` key — so a refresh that brings a new category is
+caught before the page shows it in English. What it does not reach is the head
+`functions/list/[id].js` writes for crawlers, which stays English.
+
 **Loading it** is the venues file's process, one file later:
 
 ```

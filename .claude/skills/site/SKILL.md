@@ -272,6 +272,15 @@ browser cannot import from `tools/`; change one, change the other.
   ids. `mark` in either table fails outright, and so does a kind of place a
   list could pick — the mouth goes on a place I have eaten at, and what a
   Google row IS is not somebody's to choose. **The pins** in `README.md`.
+- **The six Google lists' words**: `assets/googlewords.js` translates the
+  titles, intros and per-place lines `db/google-lists.sql` stores in English.
+  Every list id in `tools/googlelists.mjs` needs a title key there and in
+  `data/ui.json`, and every Google category the lists carry needs a
+  `gcat<Category>` key in all ten languages — built out of the category, so
+  the scanner for `t()` calls cannot see them. The script is loaded by
+  `index.html`, `lists.html` and `account.html`, before their own. **In ten
+  languages, in the browser** under **The six lists Google wrote** in
+  `README.md`.
 - **The links a profile carries**: `assets/links.js` and `functions/api/_profile.js`
   hold the same three networks, written out twice for the same reason the
   pins are, and the build fails when their ids, the addresses they build or
