@@ -7792,8 +7792,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-three
-decks of Estonian, one thousand nine hundred and eighty-four cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-four
+decks of Estonian, two thousand and eight cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -7966,8 +7966,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: forty-three decks, one
-thousand nine hundred and eighty-four cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: forty-four decks, two
+thousand and eight cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -9182,7 +9182,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **1,306 of the 1,984
+parts, and a row of three under it would be nonsense. **1,326 of the 2,008
 cards carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -9235,9 +9235,9 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **796 of the 1,984 cards** carry
+would be a stray clause with no translation. **820 of the 2,008 cards** carry
 one: every card in the twenty-three newer decks and in **Family and relatives**
-bar the ones that are a whole sentence already, every card in the song's deck —
+bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
 decks where an example says something the gloss does not. The words the course
 glossary brought in have none, and that is the one thing left undone about
@@ -9299,7 +9299,7 @@ the one knob it had went back to 1, the pace the model was trained at, and the
 take went to 2. Whatever robotic edge is left after that is Tartu's research
 voice itself, and there is no knob for it on this side. The better voice on
 offer is Microsoft's Azure — Anu, and Kert for a man — free to 500,000
-characters a month where the whole shelf is 32,236, but it wants an Azure
+characters a month where the whole shelf is 33,107, but it wants an Azure
 account and a key in the Pages settings, and it was left for later.
 
 **Only what is on a card.** The route speaks a string only if it is the front
@@ -9439,7 +9439,9 @@ how anybody actually comes to like a language. A song is. So the shelf carries
 a third heading, **Songs**, straight after **Grammar**, and under it a tile for
 each song and a tile for the deck of its words. The first is *Naera, naera*,
 and it was asked for with the lyrics pasted in and a list of every word in it
-with what it means.
+with what it means. The second is Velly Joonas's *Stopp, seisku aeg!* — a camel
+caravan in the desert and a limousine on the road, one refrain over both — and
+it was asked for with the lyrics alone, so every gloss in it is ours.
 
 **The song is one page.** The video at the top — YouTube's own player, from
 `youtube-nocookie.com`, which sets nothing until play is pressed — and under it
@@ -9482,6 +9484,20 @@ missing. The rest of the Estonian, and all of the Azerbaijani and Russian, is
 mine, which is to say it wants a native reader the way the rest of the shelf
 does.
 
+*Stopp, seisku aeg!* has eighty-seven words and a deck of twenty-four, from
+*saatja* to *jääma*, by the same rule. Three things about its text. The refrain
+is printed each time it comes round — after each of the three verses, as its
+own section — but once, not the two or three times it is sung back to back,
+since the second time teaches nothing the first did not. Two words the singer
+clips, *sidun'd* and *ihkan'd*, are written out whole as *sidunud* and
+*ihkanud*, because `WORD` splits at an apostrophe and would make a word of the
+*d*, and because the voice beside the line says what is written; the box for
+each says how it is sung. And the text is the one that was pasted in, which
+matches what is printed of it elsewhere, but a few lines of it do not parse the
+way the rest of the song does — *nii kaebleb neid* above all, where *neid*,
+them, has nothing to be the object of — and those are glossed word for word
+and translated for the sense, until somebody who has the sleeve can say.
+
 **Where it lives, and what shape it is.** `songs` in `data/decks.json`, beside
 the lessons: an `id` in the decks' namespace, a `name` and a `why`, `video` — the
 eleven characters of a YouTube id — `deck`, the id of the deck of its words,
@@ -9510,7 +9526,7 @@ decks and the lessons.
 
 **What it does not do.** The lines do not light up in time with the singing:
 that wants YouTube's player API and a timestamp on every line, and is worth
-building once it is clear people use the page. There is one song. The words
+building once it is clear people use the page. There are two songs. The words
 are in the three languages the cards are, and the site's other seven get
 English. The video cannot be told apart from a missing one on this side — a
 frame from another origin says nothing about itself — so a video YouTube has
@@ -12260,9 +12276,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-three decks of Estonian, 1,984 cards under four
+data/decks.json            forty-four decks of Estonian, 2,008 cards under four
                            headings and a song's, two lessons of grammar and
-                           one song; content rather
+                           two songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and
