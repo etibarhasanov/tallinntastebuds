@@ -87,5 +87,24 @@
       "hy": "Նոր քարտեզում՝ Veino, գինու բար Հին քաղաքում, որտեղ ճանաչում են դարակի ամեն շիշ։"
     },
     "spot": "veino"
+  },
+  {
+    "id": "vegan-restoran-v-2026-09-30",
+    "live": true,
+    "photo": "vegan-restoran-v-2026-09-30.webp",
+    "from": "2026-09-30T09:00",
+    "caption": {
+      "en": "New on the map: Vegan Restoran V, good vegan food at fair prices in a cozy old house in the Old Town.",
+      "et": "Kaardil uus: Vegan Restoran V, hea vegantoit mõistliku hinnaga hubases vanas majas vanalinnas.",
+      "ru": "Новое на карте: Vegan Restoran V, хорошая веганская еда по честным ценам в уютном старом доме в Старом городе.",
+      "fi": "Uutta kartalla: Vegan Restoran V, hyvää vegaaniruokaa reiluun hintaan kodikkaassa vanhassa talossa vanhassakaupungissa.",
+      "az": "Xəritədə yeni: Vegan Restoran V, Köhnə Şəhərdə rahat köhnə binada münasib qiymətə yaxşı vegan yeməyi.",
+      "pt": "Novo no mapa: Vegan Restoran V, boa comida vegana a preços justos numa casa antiga e acolhedora na Cidade Velha.",
+      "es": "Nuevo en el mapa: Vegan Restoran V, buena comida vegana a precios justos en una casa antigua y acogedora del casco antiguo.",
+      "tr": "Haritada yeni: Vegan Restoran V, Eski Şehir'de samimi, eski bir evde uygun fiyatlı iyi vegan yemek.",
+      "uk": "Нове на мапі: Vegan Restoran V, добра веганська їжа за чесними цінами в затишному старому будинку в Старому місті.",
+      "hy": "Նոր քարտեզում՝ Vegan Restoran V, լավ վեգան սնունդ արդար գներով՝ հարմարավետ հին տանը Հին քաղաքում։"
+    },
+    "spot": "vegan-restoran-v"
   }
 ]
