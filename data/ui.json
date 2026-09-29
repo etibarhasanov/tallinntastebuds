@@ -865,7 +865,9 @@
     "chessQueueBusy": "{name} indi səninlə oynayır. Növbəti oyun bu bitəndə başlayır.",
     "chessRecord": "Sən evsən · {games} oyun · {won} qələbə · {lost} məğlubiyyət · {drawn} heç-heçə",
     "chessAlready": "Sən artıq növbədəsən.",
-    "chessFull": "Siyahı hazırda doludur. Sabah yenidən cəhd et."
+    "chessFull": "Siyahı hazırda doludur. Sabah yenidən cəhd et.",
+    "chessDoor": "Şahmat oyna",
+    "chessDoorWhy": "Bütün şəhər üçün bir taxta, Tallinn Tastebuds-a qarşı."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -1733,7 +1735,9 @@
     "chessQueueBusy": "{name}-ը հիմա խաղում է քեզ հետ։ Հաջորդ խաղը կսկսվի, երբ այս մեկն ավարտվի։",
     "chessRecord": "Դու տունն ես · խաղեր՝ {games} · հաղթանակ՝ {won} · պարտություն՝ {lost} · ոչ-ոքի՝ {drawn}",
     "chessAlready": "Դու արդեն հերթում ես։",
-    "chessFull": "Ցուցակը հիմա լիքն է։ Փորձիր վաղը։"
+    "chessFull": "Ցուցակը հիմա լիքն է։ Փորձիր վաղը։",
+    "chessDoor": "Խաղալ շախմատ",
+    "chessDoorWhy": "Մեկ տախտակ ամբողջ քաղաքի համար՝ Tallinn Tastebuds-ի դեմ։"
   },
   "en": {
     "langName": "English",
@@ -2601,7 +2605,9 @@
     "chessQueueBusy": "{name} is playing you now. The next game starts when this one ends.",
     "chessRecord": "You are the house · {games} played · {won} won · {lost} lost · {drawn} drawn",
     "chessAlready": "You’re already in line.",
-    "chessFull": "The line is full right now. Try again tomorrow."
+    "chessFull": "The line is full right now. Try again tomorrow.",
+    "chessDoor": "Play chess",
+    "chessDoorWhy": "One board for the whole city, against Tallinn Tastebuds."
   },
   "et": {
     "langName": "Eesti",
@@ -3469,7 +3475,9 @@
     "chessQueueBusy": "{name} mängib praegu sinuga. Järgmine mäng algab, kui see lõpeb.",
     "chessRecord": "Sina oled maja · mänge {games} · võite {won} · kaotusi {lost} · viike {drawn}",
     "chessAlready": "Oled juba järjekorras.",
-    "chessFull": "Järjekord on praegu täis. Proovi homme uuesti."
+    "chessFull": "Järjekord on praegu täis. Proovi homme uuesti.",
+    "chessDoor": "Mängi malet",
+    "chessDoorWhy": "Üks laud kogu linnale, Tallinn Tastebudsi vastu."
   },
   "fi": {
     "langName": "Suomi",
@@ -4337,7 +4345,9 @@
     "chessQueueBusy": "{name} pelaa nyt kanssasi. Seuraava peli alkaa, kun tämä päättyy.",
     "chessRecord": "Olet talo · pelejä {games} · voittoja {won} · tappioita {lost} · tasapelejä {drawn}",
     "chessAlready": "Olet jo jonossa.",
-    "chessFull": "Jono on nyt täynnä. Yritä huomenna uudelleen."
+    "chessFull": "Jono on nyt täynnä. Yritä huomenna uudelleen.",
+    "chessDoor": "Pelaa shakkia",
+    "chessDoorWhy": "Yksi lauta koko kaupungille, Tallinn Tastebudsia vastaan."
   },
   "pt": {
     "langName": "Português",
@@ -5205,7 +5215,9 @@
     "chessQueueBusy": "{name} está a jogar contigo agora. O próximo jogo começa quando este acabar.",
     "chessRecord": "És a casa · jogos: {games} · vitórias: {won} · derrotas: {lost} · empates: {drawn}",
     "chessAlready": "Já estás na fila.",
-    "chessFull": "A fila está cheia agora. Tenta amanhã."
+    "chessFull": "A fila está cheia agora. Tenta amanhã.",
+    "chessDoor": "Jogar xadrez",
+    "chessDoorWhy": "Um tabuleiro para a cidade inteira, contra o Tallinn Tastebuds."
   },
   "ru": {
     "langName": "Русский",
@@ -6073,7 +6085,9 @@
     "chessQueueBusy": "{name} сейчас играет с вами. Следующая партия начнётся, когда закончится эта.",
     "chessRecord": "Вы — хозяин · партий: {games} · побед: {won} · поражений: {lost} · ничьих: {drawn}",
     "chessAlready": "Вы уже в очереди.",
-    "chessFull": "Очередь сейчас заполнена. Попробуйте завтра."
+    "chessFull": "Очередь сейчас заполнена. Попробуйте завтра.",
+    "chessDoor": "Сыграть в шахматы",
+    "chessDoorWhy": "Одна доска на весь город против Tallinn Tastebuds."
   },
   "es": {
     "langName": "Español",
@@ -6941,7 +6955,9 @@
     "chessQueueBusy": "{name} está jugando contigo ahora. La siguiente partida empieza cuando termine esta.",
     "chessRecord": "Eres la casa · partidas: {games} · ganadas: {won} · perdidas: {lost} · tablas: {drawn}",
     "chessAlready": "Ya estás en la cola.",
-    "chessFull": "La cola está llena ahora mismo. Inténtalo mañana."
+    "chessFull": "La cola está llena ahora mismo. Inténtalo mañana.",
+    "chessDoor": "Jugar al ajedrez",
+    "chessDoorWhy": "Un tablero para toda la ciudad, contra Tallinn Tastebuds."
   },
   "tr": {
     "langName": "Türkçe",
@@ -7809,7 +7825,9 @@
     "chessQueueBusy": "{name} şu an seninle oynuyor. Sıradaki oyun bu bitince başlar.",
     "chessRecord": "Sen evsin · {games} oyun · {won} galibiyet · {lost} mağlubiyet · {drawn} beraberlik",
     "chessAlready": "Zaten sıradasın.",
-    "chessFull": "Liste şu an dolu. Yarın yeniden dene."
+    "chessFull": "Liste şu an dolu. Yarın yeniden dene.",
+    "chessDoor": "Satranç oyna",
+    "chessDoorWhy": "Tüm şehir için tek tahta, Tallinn Tastebuds’a karşı."
   },
   "uk": {
     "langName": "Українська",
@@ -8677,6 +8695,8 @@
     "chessQueueBusy": "{name} зараз грає з вами. Наступна партія почнеться, коли закінчиться ця.",
     "chessRecord": "Ви — господар · партій: {games} · перемог: {won} · поразок: {lost} · нічиїх: {drawn}",
     "chessAlready": "Ви вже в черзі.",
-    "chessFull": "Черга зараз заповнена. Спробуйте завтра."
+    "chessFull": "Черга зараз заповнена. Спробуйте завтра.",
+    "chessDoor": "Зіграти в шахи",
+    "chessDoorWhy": "Одна дошка на все місто проти Tallinn Tastebuds."
   }
 }
