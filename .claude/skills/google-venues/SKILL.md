@@ -292,6 +292,10 @@ categories renamed, patterns dropped — and that both databases were loaded.
 - A hand-edit to a Google column, gone at the next refresh.
 - A count that moved in one place and not the others — this file said 751
   for a refresh that brought 1,110.
+- A refresh that brought a Google category the six lists had not carried
+  before: the validator names the missing `gcat<Category>` key in
+  `data/ui.json`, and it wants all ten languages. Until it is added the lists
+  print that one category in English (`assets/googlewords.js`).
 - The venues file regenerated and the lists file not, so CI fails on a top
   ten that names last month's order; or the lists file loaded and the
   venues file not, so a top ten names a place the table has not got yet.

@@ -1160,6 +1160,8 @@
          be a second round trip, and a page that draws itself twice. */
       state.lists = loaded[3].out.lists || [];
       state.kept = loaded[3].out.kept || [];
+      /* A list somebody kept can be one Google wrote — see assets/googlewords.js. */
+      TTBGoogleWords.lists(state.kept, t, state.lang);
 
       mountRadio();
       render();

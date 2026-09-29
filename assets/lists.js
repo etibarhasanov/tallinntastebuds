@@ -269,6 +269,17 @@
     return s;
   }
 
+  /* The six lists Google wrote, said in this page's language — see
+     assets/googlewords.js. Called wherever an answer with lists in it lands,
+     before anything is drawn from it. */
+  function googleWords(out) {
+    if (!out) return out;
+    TTBGoogleWords.list(out.list, t, state.lang);
+    TTBGoogleWords.lists(out.all, t, state.lang);
+    TTBGoogleWords.about(out.profile, t);
+    return out;
+  }
+
   function toast(message) {
     dom.toast.textContent = message;
     dom.toast.hidden = false;
@@ -1220,7 +1231,7 @@
       state.searching = false;
       dom.allBody.classList.remove('is-searching');
       if (a.status === 0 || !a.out || !a.out.all) return toast(t('loadError'));
-      state.all = a.out.all;
+      state.all = googleWords(a.out).all;
       state.next = a.out.next || '';
       paintAll();
     });
@@ -1372,7 +1383,7 @@
         state.q = was;
         return toast(t('loadError'));
       }
-      state.all = a.out.all;
+      state.all = googleWords(a.out).all;
       state.next = a.out.next || '';
       paintAll();
 
@@ -1806,7 +1817,7 @@
         btn.textContent = t('listsAllMore');
         return toast(t('loadError'));
       }
-      state.all = state.all.concat(a.out.all);
+      state.all = state.all.concat(googleWords(a.out).all);
       state.next = a.out.next || '';
       a.out.all.forEach(function (l) { dom.allList.appendChild(allRow(l)); });
       dom.allBody.removeChild(btn.parentNode);
@@ -4453,7 +4464,7 @@
       document.title = t('listsDocumentTitle');
 
       var answer = loaded[1];
-      var out = answer.out;
+      var out = googleWords(answer.out);
 
       /* Nothing came back at all. Everything below would be a guess. */
       state.reached = answer.status !== 0;
