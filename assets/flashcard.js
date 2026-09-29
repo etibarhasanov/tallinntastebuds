@@ -1605,8 +1605,22 @@
       if (level.id === LESSONS_AFTER && (state.songs.length || sung.length)) {
         kids.push(el('h2', { className: 'lists-section', textContent: t('flashSongs') }));
         var songs = el('ul', { className: 'menu flash-shelf' });
-        state.songs.forEach(function (song) { songs.appendChild(songRow(song)); });
-        sung.forEach(function (deck) { songs.appendChild(deckRow(deck)); });
+        /* One song, then its words, then the next song: a song and the deck
+           of what it teaches read as a pair, and three songs then three
+           decks made somebody match them up. The pair is the id's first
+           word — naera-naera and naera-words — and a deck that matches no
+           song goes after them all rather than being dropped. */
+        var first = function (id) { return String(id).split('-')[0]; };
+        var left = sung.slice();
+        state.songs.forEach(function (song) {
+          songs.appendChild(songRow(song));
+          left = left.filter(function (deck) {
+            if (first(deck.id) !== first(song.id)) return true;
+            songs.appendChild(deckRow(deck));
+            return false;
+          });
+        });
+        left.forEach(function (deck) { songs.appendChild(deckRow(deck)); });
         kids.push(songs);
       }
     });
