@@ -9844,6 +9844,51 @@ this feature exists except the file of words it reads.
 
 ---
 
+## Chess
+
+A page at `/chess` where the whole city plays one game of chess against the
+house — the owner's account, the one `ADMINS` names — and where a member can
+queue to play the house one on one. It is being built a task at a time, from
+`.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and **the page does
+not exist yet**: what is live is the rules, `functions/api/_chess.js`, and the
+route that stands on them, `functions/api/chess.js`, which nothing links to and
+nothing calls. This section is a stub until the page lands, and says only what
+the route and the tables are; the rest is written with the page.
+
+`GET /api/chess` answers everything the page will draw in one go — who is
+reading (`house`, `member` or `visitor`), the house's record, the public game,
+the reader's own private game, the queue — and each game carries its moves and,
+only when it is the reader's turn, `legal`: every move they may make, worked out
+on the server, so the browser runs none of the rules. `?lang=` adds the page's
+words through `wordsFor()`, all ten languages, the way `/api/flashcard` does,
+and the poll leaves it off. `POST /api/chess` takes `move`, `new`, `join`,
+`leave`, `start`, `resign` and `abandon`, answers the same shape, and refuses in
+the shape every route here refuses in; `SKILL.md` has the table of who may do
+which and what each refusal means. `no-store` throughout.
+
+### The tables
+
+Two, in `db/schema.sql`, applied by hand like every table here:
+
+- **`chess_games`** — one row a game, public or private. A private game is a
+  row from the moment its member joins the waiting list, in state `waiting`,
+  so the queue is those rows oldest first and there is no third table.
+  `house_colour` says which side the house plays; who may move and who won are
+  worked out from it and the FEN. `result` is `abandoned` for a private game
+  the house ended after seven quiet days, and that counts for nobody.
+- **`chess_moves`** — one row a half-move, keyed on `(game, ply)`. The key is
+  the lock: of two people pressing a move on the same board at the same moment,
+  one insert lands and the other is refused, and that refusal is the `409
+  moved` the slower of them sees, carrying the board as it now is. A move is
+  filed only after the route has replayed the whole game from the start through
+  `play()`, so the FEN in `chess_games` is a cache of the moves and never the
+  authority.
+
+Without the tables the route answers `ready: false` with no games and every
+POST `503 no-database`, and the page will draw the board as not answering.
+
+---
+
 ## Stories
 
 The one thing on this map that is not permanent. Everything else here is a
@@ -12278,6 +12323,8 @@ functions/api/ask.js       the chat box answered — a model on the free
 functions/api/_chess.js    the rules of chess for the chess page: the legal
                            moves, a move played and written down, the end of a
                            game (not a route: leading _)
+functions/api/chess.js     the chess page's one route: both games, the queue,
+                           every move checked against _chess.js before it is filed
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are

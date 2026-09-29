@@ -5,13 +5,12 @@
  * Everything that page needs to know about the game, and nothing about the
  * page. Hand it a position and it says which moves are legal there; hand it a
  * position and a move and it says what the board is afterwards, how the move
- * is written, and whether that was the end of the game. Its caller is to be
- * the chess route, functions/api/chess.js, which is the next task in
- * .claude/skills/chess/TASKS.md and does not exist yet: it will replay a game
- * from START through play() before it files a move, so that nothing about a
- * game is believed that these rules did not produce. Until then the one reader
- * is tools/chessperf.mjs, which holds all of it to answers somebody else wrote
- * down, on every push.
+ * is written, and whether that was the end of the game. Its caller is the
+ * chess route, functions/api/chess.js, which replays a game from START through
+ * play() before it files a move, so that nothing about a game is believed that
+ * these rules did not produce, and hands the page legalMoves() for the one
+ * position on its board. The other reader is tools/chessperf.mjs, which holds
+ * all of it to answers somebody else wrote down, on every push.
  *
  * WHY THE BROWSER RUNS NONE OF IT
  *

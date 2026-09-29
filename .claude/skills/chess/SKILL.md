@@ -141,18 +141,19 @@ without the words, or an error:
 
 | action | who | what | refusals |
 |---|---|---|---|
-| `move` `{ game, ply, move }` | whoever's turn it is: anyone but the house on Everybody's, the challenger or the house on theirs | checks the move against the rules, files it, ends the game if it is over | `409 moved` (that ply is played), `403 not-yours`, `400 illegal`, `404 no-game`, `400 client` (a visitor with no uuid) |
-| `new` | the house | the next public game, colours swapped, once the current one is over | `409 playing` |
-| `join` | a member | a place in line | `409 already` (in line or playing), `429 full` past 50 |
-| `leave` | a member | out of the line | `404` |
-| `start` `{ game }` | the house | the first waiting game becomes live | `409 busy` (one at a time), `409 not-first` |
-| `resign` `{ game }` | the challenger, or the house on the private game | the other side wins | `404` |
-| `abandon` `{ game }` | the house | over with no result, only on the member's turn after seven quiet days | `409 not-yet` |
+| `move` `{ game, ply, move }` — `ply` the game's `ply` as the page read it, the move filed at one past it | whoever's turn it is: anyone but the house on Everybody's, the challenger or the house on theirs | checks the move against the rules, files it, ends the game if it is over | `409 moved` (that ply is played), `403 not-yours`, `400 illegal`, `404 no-game`, `400 client` (a visitor with no uuid) |
+| `new` | the house | the next public game, colours swapped, once the current one is over | `409 playing`, `403 not-yours` |
+| `join` | a member | a place in line | `409 already` (in line or playing), `429 full` past 50, `401 signed-out`, `403 not-yours` for the house |
+| `leave` | a member | out of the line | `404 not-in-line` |
+| `start` `{ game }` | the house | the first waiting game becomes live | `409 busy` (one at a time), `409 not-first`, `404 no-game`, `403 not-yours` |
+| `resign` `{ game }` | the challenger, or the house on the private game | the other side wins | `404 no-game` |
+| `abandon` `{ game }` | the house | over with no result, only on the member's turn after seven quiet days | `409 not-yet`, `404 no-game`, `403 not-yours` |
 
 The move's primary key is the lock: `chess_moves (game, ply)` — the batch
 inserts the move row first and updates the game `WHERE ply = ?` second, so two
 people moving at once produce one move and one 409. Every refusal is a JSON
-`{ error }` in the shape every route here answers in; `503 no-database` and
+`{ error }` — a 409 carries the whole answer beside it, so the page redraws
+from it — in the shape every route here answers in; `503 no-database` and
 `ready: false` where the tables are not applied, and the page then draws the
 not-answering line rather than a key.
 
@@ -209,8 +210,9 @@ the page draws the legal moves the answer carries.
    .claude/hooks/d1-write-gate.mjs --check`.
 5. Drive it under `npx wrangler pages dev .` against the preview database, in
    both styles, at 390px and on a desktop, in the states the task lists. The
-   house's side needs a signed-in account the preview `ADMINS` names — task 2
-   makes one. Say in the PR exactly what was driven.
+   house's side needs a signed-in account `ADMINS` names, and locally that is
+   one made under `pages dev` and named with `--binding` — **The house, and
+   driving without a token** below. Say in the PR exactly what was driven.
 6. The README section the task names, the flow where the task says, the
    `leave-it-better.md` pass over every file in the diff, and **tick the task's
    box in `TASKS.md`** — that tick is how the next session knows where to start.
@@ -238,9 +240,24 @@ the page draws the legal moves the answer carries.
 - **A visitor's `client` that is not a v4 UUID** is a 400, the same shape as
   `saves.js` refuses. Reuse the device id every other page files under, and
   mint one only when a move is about to be sent.
-- **The house on preview.** `ADMINS` is empty in the preview blocks until task
-  2 fills it, and `pages dev` reads the top level of `wrangler.toml`. Nobody is
-  the house until then, and the page shows the visitor's face to everyone.
+- **The house, and driving without a token.** `ADMINS` is empty at the top of
+  `wrangler.toml` and in the preview block, and stays so: `pages dev` binds D1
+  locally, into `.wrangler/`, so an account made under it has an id that
+  exists on one machine and nowhere else, and naming it in a file everybody
+  shares would name nobody. Make the house per session instead — sign up
+  `house-preview` with `POST /api/account`, read its id out of the local
+  database with `wrangler d1 execute tallinntastebuds-preview --local
+  --command "SELECT id, username FROM users"`, and start the server again
+  with `--binding ADMINS=<id> --binding SAVE_SALT=dev`, the salt because
+  account writes fail closed without one. Without that, nobody is the house
+  and the page shows the visitor's face to everyone. In a cloud session with
+  no `CLOUDFLARE_API_TOKEN`, `pages dev` will not start at all, because the
+  `[ai]` binding always runs remotely: copy the tree into the scratchpad,
+  delete the two `[ai]` blocks from the copy's `wrangler.toml`, and run it
+  there with `--persist-to` pointing at a scratch directory and the schema
+  applied with `--local`. Chess never touches the model; the copy is only a
+  way past the one binding it does not need. And stop the server by its pid,
+  never `pkill -f wrangler`, which matches the shell running it.
 - **A colour named anywhere.** The board is `--paper` and `--hairline`, the
   rings `--accent` and `--muted`, the pieces `--ink`. Press the swatch and look.
 - **The pieces on a real phone.** The glyphs render out of whatever symbol face

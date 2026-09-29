@@ -91,14 +91,16 @@ nothing visible changed.
 
 ---
 
-- [ ] **2. The tables and the route**
+- [x] **2. The tables and the route**
 
 **Lands:** two tables in `db/schema.sql`, `functions/api/chess.js`, the route's
 row in the `/api` skill's table, the tables under **The tables** in the README
 section this task starts (a stub: the heading, a paragraph, the tables — task 4
-writes the rest), the `ADMINS` lines for preview in `wrangler.toml`, the
+writes the rest), the
 count of Functions in the opening sentence of `CLAUDE.md`, which the route
-takes from twenty-nine to thirty, and the first paragraph of the header of
+takes to thirty-one — it said twenty-nine, and `api/admin/flows.js` had landed
+without moving it — the way to drive the house under **Where it goes wrong** in
+`SKILL.md`, and the first paragraph of the header of
 `functions/api/_chess.js`, which says its caller does not exist yet. Nothing a
 visitor can see: the page does not exist yet.
 
@@ -139,12 +141,16 @@ visitor can see: the page does not exist yet.
    - **every read survives the tables' absence**: `ready: false`, `public` and
      `mine` null, `queue` empty, and every POST `503 no-database`.
    - `json()` from `_lib.js` for every answer; `no-store` throughout.
-3. The house on preview: under `npx wrangler pages dev .`, sign up an account
-   on the preview database through the map's own sheet — `house-preview`, or
-   the nearest free name — read its `users.id` with a `SELECT`, and put that id
-   into `ADMINS` at the top level and under `[env.preview.vars]` in
-   `wrangler.toml`. Say the username in the PR; the owner may replace it with
-   an account of their own. It has power on preview only.
+3. The house, locally: under `npx wrangler pages dev .`, sign up an account
+   through `POST /api/account` — `house-preview` — read its `users.id` out of
+   the local database, and restart the server with `--binding ADMINS=<id>`.
+   This step first said to write that id into `ADMINS` in `wrangler.toml`, and
+   was wrong: `pages dev` binds D1 **locally** unless told otherwise, so an
+   account made under it lives in `.wrangler/` on one machine, and its id means
+   nothing in the preview database or in anybody else's checkout. The preview
+   database holds no account a session can sign in as, and there are no
+   preview deployments to sign in on. So `ADMINS` stays empty in both preview
+   blocks, the house is named on the command line, and `SKILL.md` says how.
 4. Apply the schema to preview: ask for the two `CREATE TABLE` statements
    through the write gate, or say in the PR that the owner runs `wrangler d1
    execute tallinntastebuds-preview --remote --file=db/schema.sql`. Drive every
