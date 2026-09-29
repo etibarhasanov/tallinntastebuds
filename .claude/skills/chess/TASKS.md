@@ -49,10 +49,7 @@ it gets a caller.
    - `perft(fen, depth)` → the node count.
 2. Write `tools/chessperf.mjs`: with `--check`, run `perft` on the six
    published positions and fail on any count that differs; without it, print
-   the counts and the time each took. It imports from the module the way
-   `tools/validate.mjs` imports `MAX_ITEMS` from `lists.js`, and its header
-   says it is the third thing in `tools/` to reach into `functions/`, after
-   that one and `tools/typelists.mjs` — this brief said second, and was wrong.
+   the counts and the time each took. It imports from the module it checks.
    The counts:
 
    | position | FEN | depth → nodes |

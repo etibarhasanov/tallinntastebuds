@@ -4217,28 +4217,6 @@
     updateFilterFades();
   }
 
-  /* The same question as a list, under the chips, while exactly one type is
-     pressed: every chip is also a public list under the map's own account —
-     "The chips, as lists" in README.md — and a filtered map is not a thing
-     you can send somebody where a list is. The address is the chip's `list`
-     in data/taxonomy.json, which is where tools/typelists.mjs reads it from
-     too. One chip and not two, because two chips are a map nobody has written
-     a list of; and never the discount, which is an offer rather than a kind
-     of place and has no list. Hidden again the moment the chips change. */
-  function chipListLink() {
-    var link = dom.chipList;
-    if (!link) return;
-    var id = state.active.length === 1 ? state.active[0] : '';
-    var type = null;
-    for (var i = 0; i < state.types.length; i++) {
-      if (state.types[i].id === id) type = state.types[i];
-    }
-    if (!type || !type.list) { link.hidden = true; return; }
-    link.href = '/list/' + encodeURIComponent(type.list);
-    link.textContent = t('chipList');
-    link.hidden = false;
-  }
-
   /* Keep the fade classes in step with how far a chip row is scrolled — the
      drawer's row, and the short rail's three outside it, which run past a
      390px phone the moment All joins them. */
@@ -4589,7 +4567,6 @@
     }
     syncUrl();
     renderFilters();
-    chipListLink();
     if (state.view === 'list') renderPanel();
     paintMarkers();
 
@@ -11415,7 +11392,6 @@
       langSwitch: $('lang-switch'),
       filters: $('filters'),
       chipsFront: $('chips-front'),
-      chipList: $('chip-list'),
       filterBar: $('filter-bar'),
       btnFilters: $('btn-filters'),
       styles: $('styles'),

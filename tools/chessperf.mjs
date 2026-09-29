@@ -50,10 +50,8 @@
  * whatever a visitor sends is one of these. And a FEN that cannot be read must
  * be thrown, not played.
  *
- * It imports what it checks rather than restating any of it, the way
- * tools/validate.mjs imports MAX_ITEMS from functions/api/lists.js: it is the
- * third tool that reaches into functions/, after that one and
- * tools/typelists.mjs. Zero dependencies, like every other tool here.
+ * It imports what it checks rather than restating any of it. Zero
+ * dependencies, like every other tool here.
  */
 
 import { START, legalMoves, play, repetition, perft } from '../functions/api/_chess.js';

@@ -2,7 +2,6 @@
   "types": [
     {
       "id": "casual",
-      "list": "all-the-casual-and-solo-places-5xjdth",
       "en": "Casual/Solo",
       "et": "Vabas vormis/üksi",
       "fi": "Rento/yksin",
@@ -16,7 +15,6 @@
     },
     {
       "id": "bakery",
-      "list": "all-the-bakeries-vncgvm",
       "en": "Bakery",
       "et": "Pagariäri",
       "fi": "Leipomo",
@@ -30,7 +28,6 @@
     },
     {
       "id": "coffee",
-      "list": "all-the-coffee-and-tea-places-gq9nms",
       "en": "Coffee/tea",
       "et": "Kohv/tee",
       "fi": "Kahvi/tee",
@@ -45,7 +42,6 @@
     },
     {
       "id": "pub",
-      "list": "all-the-pubs-and-beer-bars-3q29c9",
       "en": "Beer/pub",
       "et": "Õlu/pubi",
       "fi": "Olut/pubi",
@@ -59,7 +55,6 @@
     },
     {
       "id": "hidden-gem",
-      "list": "all-the-hidden-gems-htp2gd",
       "en": "Hidden gem",
       "et": "Peidetud pärl",
       "fi": "Piilohelmi",
@@ -73,7 +68,6 @@
     },
     {
       "id": "cheap-eats",
-      "list": "all-the-cheap-eats-t7yn32",
       "en": "Cheap eats",
       "et": "Soodne",
       "fi": "Edullinen",
@@ -87,7 +81,6 @@
     },
     {
       "id": "laptop",
-      "list": "all-the-laptop-friendly-places-qbf3nf",
       "en": "Laptop friendly",
       "et": "Sülearvutisõbralik",
       "fi": "Läppärille sopiva",
@@ -101,7 +94,6 @@
     },
     {
       "id": "date",
-      "list": "all-the-date-night-places-3n445f",
       "en": "Date night",
       "et": "Kohting",
       "fi": "Treffit",
@@ -115,7 +107,6 @@
     },
     {
       "id": "asian",
-      "list": "all-the-asian-places-jzhqqq",
       "en": "Asian",
       "et": "Aasia",
       "fi": "Aasialainen",
@@ -129,7 +120,6 @@
     },
     {
       "id": "vegan",
-      "list": "all-the-vegan-places-svmsrw",
       "en": "Vegan",
       "et": "Vegan",
       "fi": "Vegaani",
@@ -143,7 +133,6 @@
     },
     {
       "id": "fine-dining",
-      "list": "all-the-fine-dining-places-nvrz5g",
       "en": "Fine dining",
       "et": "Kõrgköök",
       "fi": "Fine dining",
@@ -157,7 +146,6 @@
     },
     {
       "id": "caucasian",
-      "list": "all-the-caucasus-places-r8xn4m",
       "en": "Caucasus",
       "et": "Kaukaasia",
       "fi": "Kaukasia",
@@ -171,7 +159,6 @@
     },
     {
       "id": "restaurant",
-      "list": "all-the-restaurants-rxz3tt",
       "en": "Restaurant",
       "et": "Restoran",
       "fi": "Ravintola",

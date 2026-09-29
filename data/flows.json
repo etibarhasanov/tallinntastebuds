@@ -322,7 +322,7 @@
         {"id": "story-live", "type": "end", "lane": "owner", "name": "Story on the map"},
         {"id": "place", "type": "user", "lane": "owner", "name": "Adds or edits a place", "ref": ["admin.html"]},
         {"id": "place-pr", "type": "service", "lane": "github", "name": "Opens a pull request", "note": "On a branch admin/add-<id> or admin/edit-<id>.", "ref": ["data/restaurants.json"]},
-        {"id": "place-land", "type": "user", "lane": "owner", "name": "Runs places.mjs, lands it", "note": "The page never writes data/places.json, so the pull request is red until this runs.", "ref": ["tools/places.mjs", "tools/typelists.mjs", ".claude/skills/place/SKILL.md"]},
+        {"id": "place-land", "type": "user", "lane": "owner", "name": "Runs places.mjs, lands it", "note": "The page never writes data/places.json, so the pull request is red until this runs.", "ref": ["tools/places.mjs", ".claude/skills/place/SKILL.md"]},
         {"id": "place-deploy", "type": "service", "lane": "site", "name": "Deploys within the minute"},
         {"id": "place-live", "type": "end", "lane": "owner", "name": "Place on the map"},
         {"id": "discount", "type": "user", "lane": "owner", "name": "Switches a discount", "ref": ["admin.html"]},

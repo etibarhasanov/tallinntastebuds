@@ -1772,8 +1772,7 @@ html:not([data-layout="b"]) #btn-more { display: none; }
    are mostly Google's, so they go while results are up; emptying the field
    brings them back. Hidden rather than taken out, so the row keeps the height
    the fit measures the chrome by, and Search this area stands in it. */
-body.is-results .filter-bar,
-body.is-results .chip-list {
+body.is-results .filter-bar {
   visibility: hidden;
   opacity: 0;
 }
@@ -1906,28 +1905,6 @@ body.is-results .chip-list {
    it. */
 .chips-front,
 .chips-front:empty { display: none; }
-
-/* Under the chips, with one of them on: the same question as a list. A word
-   on the map with no card under it, so it wears --glow the way the brand's
-   sentence does, and the accent because it is a link and goes somewhere. It
-   is the one thing in the bar that takes the pointer while the bar itself
-   passes it through to the map. */
-.chip-list {
-  position: fixed;
-  z-index: 1000;
-  left: calc(var(--gap) + var(--safe-l) + var(--brand-w) + 16px);
-  top: calc(var(--gap) + var(--safe-t) + 40px + 12px + 34px + 10px);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--accent);
-  text-shadow: var(--glow);
-}
-.chip-list::after { content: " \203A"; }
-.chip-list:hover { text-decoration: underline; }
-.chip-list[hidden] { display: none; }
 
 @keyframes chip-in {
   from { opacity: 0; transform: translateX(-16px); }
@@ -5135,14 +5112,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     clip: rect(0 0 0 0);
   }
   [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
-
-  /* And the line under a pressed chip stands under the bar, at the
-     gutter, rather than where the desktop's row begins. */
-  .chip-list {
-    left: 12px;
-    top: calc(var(--gap) + var(--safe-t) + 36px + 12px + var(--find-h) + 8px + 44px);
-  }
-  body.panel-open .chip-list { display: none; }
 
   /* The welcome card: what this site is, once, to a phone that has never
      been here — see showWelcome() in assets/app.js. On the shelf above the

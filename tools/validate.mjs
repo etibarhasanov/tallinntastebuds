@@ -21,12 +21,8 @@
  *     it is generated from, or a db/google-lists.sql — the five top tens and
  *     a top twenty under the `google-statistics` account — that is out of
  *     step with the same export
- *   - a db/type-lists.sql — the thirteen filter chips as lists — that is out
- *     of step with data/restaurants.json or data/taxonomy.json, that holds a
- *     list longer than MAX_ITEMS in functions/api/lists.js, or a chip and a
- *     list that have stopped answering to each other
  *   - a sitemap.xml that is not what tools/sitemap.mjs would write from the
- *     languages in data/ui.json and the thirteen lists
+ *     languages in data/ui.json and the six lists
  *   - a diagram in flows/ that is not what tools/flows.mjs would write from
  *     data/flows.json, or a step in that file whose ref names a path that is
  *     not in the repository
@@ -85,7 +81,6 @@ import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists, LISTS as GOOGLE_LISTS, build as buildGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
-import { stale as staleTypeLists, build as buildTypeLists } from './typelists.mjs';
 import { stale as staleSitemap } from './sitemap.mjs';
 import { stale as staleFlows, problems as flowProblems, load as loadFlows } from './flows.mjs';
 /* The page ids a diagram's step may say it is counted by — see the flows
@@ -108,7 +103,6 @@ import { SECURITY } from '../functions/_security.js';
 
 /* How many places a list may hold, from the route that enforces it, so the
    check below is the server's number and not a fourth copy of it. */
-import { MAX_ITEMS } from '../functions/api/lists.js';
 /* The languages the flashcards are in, from the file both Functions that
    serve that page read it out of — so the warning below about a card nobody
    has translated is about the same three the page will actually offer, rather
@@ -1601,33 +1595,6 @@ if (staleGoogleLists()) {
    panel still looks like a panel, and so worth the same check. */
 if (staleCity()) {
   fail('data/city.json', 'is not what tools/city.mjs would write from exports/tallinn_restaurants.csv — run `node tools/city.mjs` and commit the result');
-}
-
-/* ---------------------------------------------------------- type-lists.sql
-   And the thirteen the map wrote: one list per filter chip, generated from
-   data/restaurants.json and data/taxonomy.json. A place added to the map is a
-   place missing from a list until this is re-run, the same way it is a place
-   missing from the catalogue. */
-if (staleTypeLists()) {
-  fail('db/type-lists.sql', 'is not what tools/typelists.mjs would write from data/restaurants.json and data/taxonomy.json — run `node tools/typelists.mjs` and commit the result');
-}
-
-/* And that the API would accept what it holds. These lists are loaded by
-   hand, past the route that enforces MAX_ITEMS, so nothing else would notice
-   a chip that has grown past what a list can hold until somebody opened one
-   and could not drag a row. Casual/Solo is the one that gets there first.
-
-   The catch is the other half and the likelier one: build() throws by name
-   when a chip has no list or a list has no chip, and without this that
-   arrives as the staleness line above, which says to run a tool that throws. */
-try {
-  for (const list of buildTypeLists().lists) {
-    if (list.places.length > MAX_ITEMS) {
-      fail('db/type-lists.sql', `"${list.title}" holds ${list.places.length} places and a list holds ${MAX_ITEMS} — raise MAX_ITEMS in functions/api/lists.js, and in assets/lists.js with it`);
-    }
-  }
-} catch (e) {
-  fail('tools/typelists.mjs', `cannot build db/type-lists.sql: ${e.message}`);
 }
 
 /* And that it is current. data/places.csv is the file that actually changes,

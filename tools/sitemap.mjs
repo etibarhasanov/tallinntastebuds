@@ -3,11 +3,10 @@
  * Tallinn Tastebuds — the sitemap.
  *
  * Reads the languages out of data/ui.json, the places out of
- * data/restaurants.json, the decks out of data/decks.json, the thirteen chip
- * lists out of data/taxonomy.json, Google's six out of tools/googlelists.mjs
- * and the faces out of assets/faces/, and writes sitemap.xml: the map at each
+ * data/restaurants.json, the decks out of data/decks.json, Google's six
+ * lists out of tools/googlelists.mjs and the faces out of assets/faces/, and writes sitemap.xml: the map at each
  * of its ten addresses, every open place at its own, the directory, the blog,
- * the flashcards and every deck of them, the nineteen lists, and a profile
+ * the flashcards and every deck of them, the six lists, and a profile
  * for every face.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
@@ -64,12 +63,10 @@
  * them means should find it. The decks people write for themselves are not
  * here and could not be: they need their owner's session to read at all.
  *
- * The nineteen lists the site itself wrote are the exception to that, and
- * are listed by name: the thirteen chip lists, one per filter on the map,
- * and Google's five top tens and a top twenty, all generated on ids that
- * never move, and all pages that answer the questions people actually type —
- * the pubs and beer bars in Tallinn, the bakeries, the top ten restaurants by
- * Google's own rating. They are as fixed as the map itself, and there is no
+ * The six lists the site itself wrote are the exception to that, and
+ * are listed by name: Google's five top tens and a top twenty, generated on
+ * ids that never move, and pages that answer the questions people actually
+ * type — the top ten restaurants by Google's own rating. They are as fixed as the map itself, and there is no
  * reason for a crawler to wait to meet them through the directory.
  *
  * A profile is in the database and this file cannot list what it does not
@@ -111,10 +108,6 @@ import { LISTS as GOOGLE_LISTS } from './googlelists.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'sitemap.xml');
 const UI = join(ROOT, 'data', 'ui.json');
-/* The thirteen chip lists' addresses are each chip's own `list` in the
-   taxonomy — tools/typelists.mjs reads them from there too, and so does the
-   map, which is why they are not in that tool's table any more. */
-const TAXONOMY = join(ROOT, 'data', 'taxonomy.json');
 const PLACES = join(ROOT, 'data', 'restaurants.json');
 const DECKS = join(ROOT, 'data', 'decks.json');
 const FACES = join(ROOT, 'assets', 'faces');
@@ -186,7 +179,6 @@ export function render(langs, placeIds, shelfIds, faces) {
      is no tenth translation of them to point at. */
   entries.push(entry(SITE + '/flashcard'));
   for (const id of shelfIds) entries.push(entry(SITE + '/flashcard?d=' + id));
-  for (const id of chipLists()) entries.push(entry(SITE + '/list/' + id));
   for (const list of GOOGLE_LISTS) entries.push(entry(SITE + '/list/' + list.id));
   for (const id of placeIds) entries.push(entry(mapAt(DEFAULT_LANG, id), alternates(id)));
 
@@ -206,10 +198,6 @@ export function render(langs, placeIds, shelfIds, faces) {
 
 function languages() {
   return Object.keys(JSON.parse(readFileSync(UI, 'utf8')));
-}
-
-function chipLists() {
-  return JSON.parse(readFileSync(TAXONOMY, 'utf8')).types.map((type) => type.list);
 }
 
 /* Everything on the shelf the site ships, by id, in the order of the file —
@@ -251,7 +239,7 @@ function main() {
   const faces = faceNames();
   const next = render(langs, ids, shelf, faces);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 3 + chipLists().length + GOOGLE_LISTS.length + ids.length + shelf.length + faces.length;
+  const count = langs.length + 3 + GOOGLE_LISTS.length + ids.length + shelf.length + faces.length;
 
   if (check) {
     if (now === next) {
@@ -265,7 +253,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /flashcard and ${shelf.length} decks, lessons and songs, ${chipLists().length} chip lists and ` +
+    `/lists, /blog, /flashcard and ${shelf.length} decks, lessons and songs, ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }
