@@ -17,10 +17,10 @@
  * The file loads the way db/google-venues.sql does — pasted into the D1
  * console, or from a signed-in terminal:
  *
- *   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
- *   wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
+ *   wrangler d1 execute tallinntastebuds --remote --file=db/google-lists.sql
  *
- * Preview first, and both, always. It is re-runnable: the account is inserted
+ * Production only: preview is set aside until the owner replicates it
+ * (Production only, for now, in CLAUDE.md). It is re-runnable: the account is inserted
  * once and never touched again, each list is upserted on its fixed id, and
  * the rows under it are replaced whole, so a refresh of the export moves
  * a list without moving its address. Statements and no comments, for the
@@ -410,5 +410,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     `db/google-lists.sql — ${result.lists.length} lists, ` +
     `${result.lists.reduce((n, list) => n + list.places.length, 0)} places.`
   );
-  console.log('\nPaste it into the D1 console, preview first.');
+  console.log('\nPaste it into the D1 console, production only.');
 }

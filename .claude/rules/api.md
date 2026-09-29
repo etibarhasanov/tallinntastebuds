@@ -12,7 +12,9 @@ You are in the **api** process: a Cloudflare Function, the D1 schema, or the
 bindings. If the `api` skill is not already loaded, load it now (`/api`, or
 `.claude/skills/api/SKILL.md`) and follow it end to end, including its
 pull-request section. The rows are other people's, nothing in CI applies the
-schema, and the preview database is the only one to test against.
+schema, and production is the only database that is written to — **Production
+only, for now** in `CLAUDE.md`. Preview is what `pages dev` happens to read,
+and nothing more.
 
 A write to either database is the owner's yes, asked for with the change
 described — **The rules of a write** in that skill. `.claude/hooks/d1-write-gate.mjs`

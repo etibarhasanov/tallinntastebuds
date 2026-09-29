@@ -175,8 +175,8 @@ not-answering line rather than a key.
 
 ## The tables
 
-Two, in `db/schema.sql`, applied by hand to preview first and production on
-landing — **The rules of a write** in the `/api` skill:
+Two, in `db/schema.sql`, applied by hand to production on landing (preview is
+set aside, **Production only, for now** in `CLAUDE.md`) — **The rules of a write** in the `/api` skill:
 
 ```sql
 chess_games  id TEXT PRIMARY KEY, kind, state, n INTEGER, challenger TEXT,

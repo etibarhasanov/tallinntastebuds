@@ -1,6 +1,6 @@
 ---
 name: google-venues
-description: Refresh the Google Places export: a new exports/tallinn_restaurants.csv, the generated db/google-venues.sql, and loading it into both databases.
+description: Refresh the Google Places export: a new exports/tallinn_restaurants.csv, the generated db/google-venues.sql, and loading it into production.
 ---
 
 # Refresh the Google Places export
@@ -117,8 +117,9 @@ else runs.
    you write before it. Diff the export against the rows that are actually in
    the table — a `GROUP BY`, per-column aggregates, the counts — and say
    which columns move, on how many rows, from what to what, with the handful
-   a person would want to check by eye named outright. Then preview, then
-   production, with a fresh yes for each. Landing the pull request is not
+   a person would want to check by eye named outright. Then production, and
+   only production — preview is set aside, **Production only, for now** in
+   `CLAUDE.md`. Landing the pull request is not
    that yes; see **The rules of a write** in the `api` skill.
 
    **And a whole-file load does not go through the MCP tool at all.** The gate
@@ -128,14 +129,12 @@ else runs.
    always have been; what the tool is for here is the reading either side of
    them, and the occasional handful of rows.
 
-   **Apply it to both databases** once you have the yes, schema first if the
+   **Apply it to production** once you have the yes, schema first if the
    table is new:
 
    ```
-   wrangler d1 execute tallinntastebuds         --remote --file=db/google-venues.sql
-   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql
-   wrangler d1 execute tallinntastebuds         --remote --file=db/google-lists.sql
-   wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-lists.sql
+   wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql
+   wrangler d1 execute tallinntastebuds --remote --file=db/google-lists.sql
    ```
 
    The lists file after the venues file, always: its rows point at
@@ -239,7 +238,7 @@ What that means for this process:
 > A place off the Google export says everything Google knows about it
 
 The body says what changed in the export — rows added, rows now missing,
-categories renamed, patterns dropped — and that both databases were loaded.
+categories renamed, patterns dropped — and that production was loaded.
 
 ## The pull request
 
@@ -247,22 +246,16 @@ categories renamed, patterns dropped — and that both databases were loaded.
 2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`,
    `node tools/city.mjs`, then `node tools/validate.mjs`, and read both SQL
    diffs before going on.
-3. Ask to load the SQL into **preview** from the branch, with the delta
-   described as in step 5 above —
-   `wrangler d1 execute tallinntastebuds-preview --remote --file=db/google-venues.sql`,
-   then the same with `db/google-lists.sql` — then check `/admin/google`, the list
-   picker and `/u/google-statistics` under `npx wrangler pages dev .`, which
-   reads that same preview database, to see the rows arrive. Pushing deploys
-   no preview; `CLAUDE.md` says why. A no here is an answer: push the branch
-   anyway and say in the PR that preview is unloaded.
+3. Preview is not loaded — **Production only, for now** in `CLAUDE.md`. Work
+   out the delta against production as in step 5 above, so it is ready to
+   ask with on landing.
 4. One commit for the export and its SQL; a second for any `KITCHENS`
    pattern and cuisine label that had to go with it, and a third for the
    counts, if they moved.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
 6. Open the PR against the default branch. The body says how many rows came
-   and went, which categories renamed, which patterns were dropped, that
-   preview was loaded, and that **production needs the same load on
-   landing**.
+   and went, which categories renamed, which patterns were dropped, and that
+   **production needs the load on landing**.
 7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
    why — and then ask, again and separately, to load production:
    `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
@@ -280,7 +273,8 @@ categories renamed, patterns dropped — and that both databases were loaded.
   included, on its own judgement. The rows were right, which is not the
   point — nobody had said to write them. That is what the gate and step 5
   are for now.
-- The SQL regenerated and applied to production only.
+- The SQL regenerated and never applied to production, so the files and the
+  live directory say two different things.
 - The cleaner's output left under its default name, so the tool reads the
   old file and reports nothing stale.
 - A row typed into the CSV by hand — RØST Bakery was, once — and dropped by
