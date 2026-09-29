@@ -129,13 +129,13 @@ second exception is two files to keep in step.
 **That rule has been tested once and held.** The flashcards page arrived on a
 subdomain of its own, built to be removable the way splitwise is, and wanted a
 file of its own by exactly the same argument. It did not get one: its
-eighty-seven `flash*` keys are in `data/ui.json` with everything else, and taking
-the feature out means `grep -n '"flash' data/ui.json` and eighty-seven deletions
+ninety-seven `flash*` keys are in `data/ui.json` with everything else, and taking
+the feature out means `grep -n '"flash' data/ui.json` and ninety-seven deletions
 from ten blocks. What it *does* keep to itself is `data/decks.json` — the words
-on the cards and the two grammar lessons, which are content rather than
-interface and are written in three languages rather than the site's ten. A
-card's `back`, a deck's `name` and its `why`, and every paragraph, heading and
-gloss of a lesson are each an object keyed by language, English required and
+on the cards, the two grammar lessons and the song, which are content rather
+than interface and are written in three languages rather than the site's ten. A
+card's `back`, a deck's `name` and its `why`, every paragraph, heading and
+gloss of a lesson, and every line and word of a song are each an object keyed by language, English required and
 Azerbaijani and Russian written; `means()` in `assets/flashcard.js` picks the
 one the page is being read in and falls back to the English. A key there is not
 a `ui.json` key and the parity rule does not reach it. See **Flashcards** in

@@ -106,7 +106,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Forty-two decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Forty-three decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.
@@ -149,26 +149,24 @@ function where(request, path) {
   return new URL(request.url).hostname === FLASH_HOST ? SITE + path : canonical(request, path);
 }
 
-/* Both lists out of the one file: the decks, and the grammar lessons that sit
-   under a heading of their own on the shelf. A missing or malformed file is two
-   empty lists rather than a throw — this route improves a load and is never a
-   requirement for one. */
+/* All three lists out of the one file: the decks, and the grammar lessons and
+   the songs that sit under headings of their own on the shelf. A missing or
+   malformed file is three empty lists rather than a throw — this route
+   improves a load and is never a requirement for one. */
 async function shelfOf(context) {
   try {
     const file = await dataFile(context, DECKS_FILE);
-    return {
-      decks: file && Array.isArray(file.decks) ? file.decks : [],
-      lessons: file && Array.isArray(file.lessons) ? file.lessons : []
-    };
+    const list = (key) => (file && Array.isArray(file[key]) ? file[key] : []);
+    return { decks: list('decks'), lessons: list('lessons'), songs: list('songs') };
   } catch (e) {
-    return { decks: [], lessons: [] };
+    return { decks: [], lessons: [], songs: [] };
   }
 }
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
    forty-two under it rather than treating it as a leaf. */
-function deckList(decks, lessons) {
+function deckList(decks, lessons, songs) {
   const row = (one) =>
     '<li><h2><a href="' + PATH + '?d=' + esc(one.id) + '">' + esc(inEnglish(one.name)) + '</a></h2>' +
     (one.why ? '<p>' + esc(inEnglish(one.why)) + '</p>' : '') +
@@ -178,7 +176,27 @@ function deckList(decks, lessons) {
      so the same row draws it. */
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
     '<ol>' + decks.map(row).join('') + '</ol>' +
-    (lessons.length ? '<h2>Grammar</h2><ol>' + lessons.map(row).join('') + '</ol>' : '');
+    (lessons.length ? '<h2>Grammar</h2><ol>' + lessons.map(row).join('') + '</ol>' : '') +
+    (songs.length ? '<h2>Songs</h2><ol>' + songs.map(row).join('') + '</ol>' : '');
+}
+
+/* And one song, as the lyrics and what they mean: a verse is a description
+   list the way a deck is, the Estonian line as the term and what it means in
+   each of the three languages under it, each saying which language it is in.
+   Somebody searching for the words of a song they heard, or for what one of
+   its lines means, is asking what this page answers. The words one at a time
+   are the tap boxes' and stay the page's: forty-seven glosses of "and" and
+   "you" are not what anybody searches for, and the ones worth finding are in
+   the song's own deck, which is a page of its own. */
+function songWords(song) {
+  const line = (one) =>
+    '<dt lang="et">' + esc(one.et) + '</dt>' +
+    DECK_LANGS.map((lang) => (one[lang] ? '<dd lang="' + lang + '">' + esc(one[lang]) + '</dd>' : '')).join('');
+  return '<h1>' + esc(inEnglish(song.name)) + '</h1>' +
+    (song.why ? '<p>' + esc(inEnglish(song.why)) + '</p>' : '') +
+    song.verses.map((verse) => '<dl>' + verse.map(line).join('') + '</dl>').join('') +
+    (song.deck ? '<p><a href="' + PATH + '?d=' + esc(song.deck) + '">' + esc(inEnglish(song.name)) + ' — the words</a></p>' : '') +
+    '<p><a href="' + PATH + '">' + esc(TITLE) + '</a></p>';
 }
 
 /* And one lesson, as the prose it is. A paragraph is a <p> with the Estonian
@@ -301,7 +319,7 @@ const LANGUAGE = { '@type': 'Language', name: 'Estonian', alternateName: 'et' };
 /* What the page is, said the same way whether it is the shelf or one deck: a
    page, and a thing to learn from. `teaches` is the one property here that a
    reader could not have worked out from the words on the page. */
-function learningPage(self, name, description, lesson) {
+function learningPage(self, name, description, kind) {
   return {
     '@type': ['WebPage', 'LearningResource'],
     '@id': self + '#page',
@@ -311,11 +329,11 @@ function learningPage(self, name, description, lesson) {
     inLanguage: DEFAULT_LANG,
     isPartOf: { '@id': SITE + '#website' },
     isAccessibleForFree: true,
-    /* A lesson is the one page here that is read rather than turned over, and
-       it teaches the grammar the cards only show. */
-    learningResourceType: lesson ? 'Reading' : 'Flashcards',
+    /* A lesson is read rather than turned over, and teaches the grammar the
+       cards only show; a song is listened to, and teaches the words in it. */
+    learningResourceType: kind === 'lesson' ? 'Reading' : kind === 'song' ? 'Song lyrics' : 'Flashcards',
     educationalLevel: 'Beginner',
-    teaches: lesson ? 'Estonian grammar' : 'Estonian vocabulary',
+    teaches: kind === 'lesson' ? 'Estonian grammar' : 'Estonian vocabulary',
     about: LANGUAGE
   };
 }
@@ -350,19 +368,20 @@ function definedTerm(card, set) {
    or the shelf as a list of the decks on it. One deck is named in the shelf's
    list by its name and its line and never by its cards — a crawler that wants
    those follows the link, which is the same bargain the <ol> above strikes. */
-function structuredData(request, decks, deck, lesson) {
+function structuredData(request, decks, deck, lesson, song) {
   const site = { '@type': 'WebSite', '@id': SITE + '#website', url: SITE, name: 'Tallinn Tastebuds' };
 
-  /* A lesson is the page and its breadcrumb and nothing more: there is no
-     glossary in it to list, and its words are already on the page as prose. */
-  if (lesson) {
-    const self = where(request, PATH + '?d=' + lesson.id);
-    const name = inEnglish(lesson.name);
+  /* A lesson or a song is the page and its breadcrumb and nothing more: there
+     is no glossary in either to list, and the words are already on the page. */
+  const read = lesson || song;
+  if (read) {
+    const self = where(request, PATH + '?d=' + read.id);
+    const name = inEnglish(read.name);
     return {
       '@context': 'https://schema.org',
       '@graph': [
         site,
-        learningPage(self, name, inEnglish(lesson.why) || DESCRIPTION, true),
+        learningPage(self, name, inEnglish(read.why) || DESCRIPTION, lesson ? 'lesson' : 'song'),
         {
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -480,7 +499,7 @@ export async function onRequest(context) {
   }
 
   const asked = new URL(request.url).searchParams.get('d') || '';
-  const { decks, lessons } = await shelfOf(context);
+  const { decks, lessons, songs } = await shelfOf(context);
   const deck = WRITTEN.test(asked)
     ? decks.find((d) => d && d.id === asked && Array.isArray(d.cards)) || null
     : null;
@@ -488,6 +507,9 @@ export async function onRequest(context) {
      lists from sharing a name. */
   const lesson = !deck && WRITTEN.test(asked)
     ? lessons.find((l) => l && l.id === asked && Array.isArray(l.body)) || null
+    : null;
+  const song = !deck && !lesson && WRITTEN.test(asked)
+    ? songs.find((one) => one && one.id === asked && Array.isArray(one.verses)) || null
     : null;
 
   /* The site's own words, for the head. A missing or malformed file is the
@@ -509,7 +531,7 @@ export async function onRequest(context) {
      what one would file is a page of nothing under a title it was not given,
      and what an unfurled link should say about an address whose contents are
      not the sender's to share is the page rather than the deck. */
-  const own = asked !== '' && deck === null && lesson === null;
+  const own = asked !== '' && deck === null && lesson === null && song === null;
 
   const tags = deck
     ? head({
@@ -522,11 +544,11 @@ export async function onRequest(context) {
         type: 'article',
         image: CARD
       })
-    : lesson
+    : lesson || song
     ? head({
-        title: inLanguage(lesson.name, lang),
-        description: inLanguage(lesson.why, lang) || DESCRIPTION,
-        url: where(request, PATH + '?d=' + lesson.id),
+        title: inLanguage((lesson || song).name, lang),
+        description: inLanguage((lesson || song).why, lang) || DESCRIPTION,
+        url: where(request, PATH + '?d=' + (lesson || song).id),
         type: 'article',
         image: CARD
       })
@@ -542,7 +564,10 @@ export async function onRequest(context) {
         image: CARD
       });
 
-  const words = deck ? deckWords(deck) : lesson ? lessonWords(lesson) : own ? '' : deckList(decks, lessons);
+  const words = deck ? deckWords(deck)
+    : lesson ? lessonWords(lesson)
+    : song ? songWords(song)
+    : own ? '' : deckList(decks, lessons, songs);
 
   /* And the same thing as data, on everything that is indexed. A deck out of
      the database gets none: its words are behind a session, so what this would
@@ -550,7 +575,7 @@ export async function onRequest(context) {
   const said = own || (!deck && decks.length === 0)
     ? tags
     : tags + '\n<script type="application/ld+json">' +
-      seed(structuredData(request, decks, deck, lesson)) + '</script>';
+      seed(structuredData(request, decks, deck, lesson, song)) + '</script>';
 
   return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], words), 200, !own);
 }

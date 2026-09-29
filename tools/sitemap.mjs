@@ -213,15 +213,15 @@ function chipLists() {
 }
 
 /* Everything on the shelf the site ships, by id, in the order of the file —
-   which is the order it is drawn in: the decks, and then the grammar lessons,
-   which open at the same kind of address. The decks people write for
+   which is the order it is drawn in: the decks, then the grammar lessons and
+   then the songs, which open at the same kind of address. The decks people write for
    themselves are not here and never will be: they need their owner's session
    to read at all. */
 function shelfIds() {
   if (!existsSync(DECKS)) return [];
   const file = JSON.parse(readFileSync(DECKS, 'utf8'));
-  return [...(Array.isArray(file.decks) ? file.decks : []), ...(Array.isArray(file.lessons) ? file.lessons : [])]
-    .map((one) => one.id);
+  const list = (key) => (Array.isArray(file[key]) ? file[key] : []);
+  return [...list('decks'), ...list('lessons'), ...list('songs')].map((one) => one.id);
 }
 
 /* Every open place, by id, in the order of the file — which is the order a
@@ -265,7 +265,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /flashcard and ${shelf.length} decks and lessons, ${chipLists().length} chip lists and ` +
+    `/lists, /blog, /flashcard and ${shelf.length} decks, lessons and songs, ${chipLists().length} chip lists and ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }

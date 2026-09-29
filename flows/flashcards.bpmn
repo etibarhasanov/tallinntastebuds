@@ -48,10 +48,11 @@ ref: functions/flashcard.js</bpmn:documentation>
       <bpmn:outgoing>flashcards-e14</bpmn:outgoing>
       <bpmn:outgoing>flashcards-e17</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="deck" name="Opens a deck or a lesson">
-      <bpmn:documentation>Deeper stages open as the count of known words grows.
+    <bpmn:userTask id="deck" name="Opens a deck, a lesson or a song">
+      <bpmn:documentation>Deeper stages open as the count of known words grows. A song is listened to, and every word in it pressed for what it means.
 when: flash_open
 when: flash_lesson_open
+when: flash_song_open
 when: flash_resume
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e3</bpmn:incoming>
