@@ -319,7 +319,12 @@ no step 1 until the owner has answered it.
    the argument is a bug. And if the change gives somebody a thing to do
    they could not do before — or takes one away, or moves where it lives —
    their diagram in `data/flows.json` moves with it, then
-   `node tools/flows.mjs`. **Who uses the site, drawn** in `README.md`.
+   `node tools/flows.mjs`. A new step the site can see somebody take says
+   what it is counted by in `when` — the event name the press reports, a
+   `page:` or a `view:` — or `/admin/flows` draws it with no number; a
+   press renamed is a `when` renamed, and the validator holds the two to
+   the README's **Analytics** table. **Who uses the site, drawn** in
+   `README.md`.
 7. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language

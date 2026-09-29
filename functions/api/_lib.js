@@ -28,6 +28,18 @@ export function json(body, status, maxAge) {
   });
 }
 
+/* An owner-only answer that the colo may keep and the browser may not. The
+   Cache API stores nothing marked private, so the copy put in the colo is
+   built public with a maxAge; this is the same body on its way to the
+   browser, told `private, no-store` so nothing in between can pass it on.
+   The three routes under /api/admin/ that cache do this, and it lived in
+   each of them until the third. */
+export function privately(res) {
+  const out = new Response(res.body, res);
+  out.headers.set('cache-control', 'private, no-store');
+  return out;
+}
+
 export function clientIp(request) {
   return request.headers.get('CF-Connecting-IP') || '';
 }

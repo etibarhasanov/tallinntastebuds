@@ -19,7 +19,8 @@
  * The colo cache stays, because it is still the cost control, and what goes
  * back to the browser is `private, no-store` whatever the cached copy says,
  * so no cache between here and the owner's phone can hand the ranking to the
- * next person to ask. See privately() below.
+ * next person to ask. See privately() in ../_lib.js, which the three cached
+ * routes under /api/admin/ share.
  *
  * THE MAP IS THE RANKING AND THE OTHER THREE ARE FOOTNOTES
  *
@@ -57,7 +58,7 @@
  */
 
 import {
-  json, wrongDatabase, mapPlaces, venuesByIds, dataFile, wordsFor
+  json, wrongDatabase, mapPlaces, venuesByIds, dataFile, wordsFor, privately
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
@@ -223,15 +224,6 @@ export async function onRequestGet(context) {
   );
   context.waitUntil(cache.put(key, res.clone()));
   return privately(res);
-}
-
-/* The colo's copy carries `public, max-age` because the Cache API will not
-   store anything less; the browser's copy carries `private, no-store`,
-   because the only person allowed to read it is the one who just asked. */
-function privately(res) {
-  const out = new Response(res.body, res);
-  out.headers.set('cache-control', 'private, no-store');
-  return out;
 }
 
 /* Every chip on the map, most pressed first, named in the reading language.

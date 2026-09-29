@@ -1,14 +1,18 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Ten things live here: the saves and their counts, how often each place and
--- each filter has been pressed, the accounts a save can follow a person on, the lists somebody
--- builds and shares, the keeps that are a bookmark on somebody else's list,
--- 1,110 Tallinn venues mirrored out of Google Places, the places somebody adds
--- by hand when the catalogue does not have them, what people would change
--- about this site and who agreed with them, the groups splitting a bill on the
--- splitwise subdomain, and one meta row saying which database this is. Everything the map itself draws —
--- the places, the write-ups, the discounts, the stories — is a JSON file in
--- the repository and never a row.
+-- Thirteen things live here: the saves and their counts, how often each place
+-- and each filter has been pressed, how often somebody's profile was opened
+-- and from where, who came to the site and what they did, how they moved
+-- through the diagrams of what they can do, the accounts a save can follow a
+-- person on, the lists somebody builds and shares with the keeps that are a
+-- bookmark on somebody else's, the places somebody adds by hand when the
+-- catalogue does not have them, 1,110 Tallinn venues mirrored out of Google
+-- Places with what Google has said about them since, what people would
+-- change about this site and who agreed with them, the groups splitting a
+-- bill on the splitwise subdomain, the decks and answers of the flashcards,
+-- and one meta row saying which database this is. Everything the map itself
+-- draws — the places, the write-ups, the discounts, the stories — is a JSON
+-- file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -299,6 +303,50 @@ CREATE TABLE IF NOT EXISTS visitor_live (
   -- Minutes since the Unix epoch — which minute the slot holds now.
   minute INTEGER NOT NULL,
   n      INTEGER NOT NULL DEFAULT 0
+) WITHOUT ROWID;
+
+-- ------------------------------------------------------------- flow_counts
+-- How people move through the diagrams on /admin/flows: which steps of each
+-- one they reached, and which two they took one after the other. Read by the
+-- owner alone. functions/api/_flows.js writes and reads it, and its header
+-- is the reasoning; **The numbers on it** under **Who uses the site, drawn**
+-- in README.md is the page's half.
+--
+-- visitor_counts once more, per diagram: the day in the key, one row per
+-- fact per day, and a number. `flow` is a diagram's id out of
+-- data/flows.json, `who` is 'in' or 'out' — whether the page view's request
+-- carried a session — and `id` is one of two things:
+--
+--   a step's id       'open-place'        a page view reached this step,
+--                                         once per page opened
+--   'from>to'         'open-place>share'  it took these two steps one after
+--                                         the other, once per page opened
+--
+-- A pair is stored whether or not an arrow joins the two, because which
+-- arrows a diagram has is a fact about today's file: the read walks each
+-- pair along the diagram as it stands, so an arrow drawn next month carries
+-- the numbers from before it was drawn, and a pair no arrow joins is what
+-- the page lists as a move the diagram does not draw.
+--
+-- Nothing is filed under a person and there is no row per visit: the browser
+-- sends the order its presses came in and the table hears which steps that
+-- was. The size is bounded by the diagrams rather than by the traffic — the
+-- counted steps of a diagram plus the pairs anybody took, under each of two
+-- whos, a day — so a year is a few thousand short rows per diagram at the
+-- very most, and a busy day costs no more rows than a quiet one with the
+-- same journeys in it.
+--
+-- The key leads with the diagram, because a read is one diagram over a
+-- range and nothing ever asks for a day across all six. WITHOUT ROWID, for
+-- the reason visitor_counts is.
+CREATE TABLE IF NOT EXISTS flow_counts (
+  flow TEXT    NOT NULL,
+  -- YYYY-MM-DD, UTC.
+  day  TEXT    NOT NULL,
+  who  TEXT    NOT NULL,
+  id   TEXT    NOT NULL,
+  n    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (flow, day, who, id)
 ) WITHOUT ROWID;
 
 

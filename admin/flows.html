@@ -33,11 +33,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
 
 <!-- The tokens, the card, the chips and the eyebrow come from the map's
-     stylesheet; the brand header and the column from the lists page's, the
-     way /admin/stats takes them. The third file is the diagram. -->
+     stylesheet; the brand header, the column and the segmented control from
+     the lists page's, the way /admin/stats takes them; the range row and the
+     tables of numbers from the statistics pages'. The fourth file is the
+     diagram, and the numbers on it. -->
 <link rel="stylesheet" href="/assets/styles.css?v=6e1c5999">
 <link rel="stylesheet" href="/assets/lists.css?v=5e87e65e">
-<link rel="stylesheet" href="/assets/flows.css?v=02a8ff7d">
+<link rel="stylesheet" href="/assets/stats.css?v=8235fd74">
+<link rel="stylesheet" href="/assets/flows.css?v=dd18779e">
 </head>
 <body class="lists-body">
 
@@ -53,12 +56,14 @@
 <!-- The title and the sentence under it are in the markup, so the page says
      what it is before the diagrams arrive and still says it if they never do.
      Everything under them is #main, which assets/flows.js fills once: the
-     chips, the diagram on its card, and the card under it that says what the
-     step last pressed is and where it lives in the code. -->
+     chips, the diagram on its card with the range row and the who switch
+     over it and the numbers on it, the card under it that says what the
+     step last pressed is and where it lives in the code, and the two cards
+     of numbers under that. -->
 <div class="lists-main is-wide">
   <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
   <h1 class="lists-title" data-i18n="flowsTitle">Who uses the site</h1>
-  <p class="flows-lead" data-i18n="flowsLead">Each kind of person this site answers, and what they can do on it, drawn as a BPMN diagram. Press a step to see where it lives in the code.</p>
+  <p class="flows-lead" data-i18n="flowsLead">Each kind of person this site answers, and what they can do on it, drawn as a BPMN diagram, with how many people took each step laid on it. Press a step to see where it lives in the code.</p>
 </div>
 
 <main class="lists-main is-wide" id="main" tabindex="-1">
@@ -79,7 +84,7 @@
 <!-- What every press reports to Google Analytics, shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=98a55049" defer></script>
-<script src="/assets/flows.js?v=6d45a1fd" defer></script>
+<script src="/assets/track.js?v=18d05086" defer></script>
+<script src="/assets/flows.js?v=2608c62e" defer></script>
 </body>
 </html>
