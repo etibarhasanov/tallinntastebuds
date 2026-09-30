@@ -274,8 +274,9 @@
  * the languages browsers ask for, `found` and the four kinds of HOW THEY
  * FOUND IT are not — a host, a press name or a search is whatever the
  * request says — so each of those kinds takes at most MAX_IDS ids a day,
- * and past that only ids already counted that day go up. A press name must
- * also be shaped like one, which every name TTBTrack sends is.
+ * the presses MAX_PRESS_IDS, and past that only ids already counted that
+ * day go up. A press name must also be shaped like one, which every name
+ * TTBTrack sends is, and a report carries at most MAX_NAMES of them.
  *
  * SIGNING UP
  *
@@ -315,17 +316,19 @@
  * The difference between google_out and the backs is the people who never
  * came back from Google's screen at all.
  *
- * A closed list and not the `press` kind's capped one, for two reasons. The
- * presses were at seventy-odd names a day of the hundred the day this began,
- * and sign-up names are rare ones that arrive late in the day, which is
- * exactly what a cap drops. And a report carries at most MAX_NAMES press
- * names, first come first counted, which a long visit to the map passes —
- * so these are picked out of the whole report rather than out of the first
- * twenty. Nothing typed is in any of it: the error is one of the words
- * ./account.js answers, and a word not on the list is not counted here. A
- * name also rides on the press kind as every press does, and GA hears it
- * with the view and the reason as parameters. Pages, not people, as
- * everything here is: a funnel of counts, never one person's way through it.
+ * A closed list of its own rather than the `press` kind, because sign-up
+ * names are rare ones that arrive late in a visit and late in the day,
+ * which is exactly what a cap drops: the presses were capped at a hundred
+ * names a day and twenty a report when this began, the busiest day came
+ * within fourteen of the first, and a long visit to the map passed the
+ * second. Both caps sit higher now — MAX_PRESS_IDS and MAX_NAMES — but
+ * these are still picked out of the whole report rather than out of its
+ * first MAX_NAMES, along with the sign-ins and accounts made that NEW
+ * AGAINST RETURNING counts. Nothing typed is in any of it: the error is one
+ * of the words ./account.js answers, and a word not on the list is not
+ * counted here. A name also rides on the press kind as every press does, and
+ * GA hears it with the view and the reason as parameters. Pages, not people,
+ * as everything here is: a funnel of counts, never one person's way through.
  *
  * THE LAST HALF HOUR
  *
@@ -362,10 +365,12 @@ export const SPANS = [1, 7, 28, 90];
 
 /* The pages worth telling apart, each with the string data/ui.json already
    names it by where there is one. A page is known by its address, and the
-   two subdomains by their host, since both answer at the root. Anything not
-   here — /admin/ above all, where the only visitor is the owner — is not
-   counted. Exported for tools/validate.mjs, which holds every `page:` and
-   `view:` signal in data/flows.json to these ids. */
+   two subdomains by their host, since both answer at the root. An address
+   none of them claims is the map — pageOf() says why — and /admin/ sends
+   nothing at all, since the only visitor there is the owner. Exported for
+   tools/validate.mjs, which holds every `page:` and `view:` signal in
+   data/flows.json to these ids, and every page that loads assets/track.js
+   to being named here: a page left out would be counted as the map. */
 export const PAGES = [
   { id: 'map', label: 'visitorsPageMap', paths: ['/', '/index.html'] },
   { id: 'lists', label: 'listsAllTitle', paths: ['/lists'] },
@@ -415,9 +420,15 @@ const SIGNUP = new Set([
 
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
-   good day; a hundred press names is every button on the site. */
+   good day, and so would a hundred different searches. The presses are the
+   one open kind whose ids the site writes itself, and their cap has to sit
+   above every name the pages can send, or it drops exactly the rare, late
+   names worth counting: it was a hundred, the busiest day came within
+   fourteen of it, and the pages send a little over two hundred names — the
+   table under **Analytics** in README.md is the list. */
 const OPEN = new Set(['country', 'from', 'press', 'asks', 'found', 'ref', 'tag', 'search', 'nothing']);
 const MAX_IDS = 100;
+const MAX_PRESS_IDS = 300;
 
 /* The language a browser asks for, as the two letters of navigator.language
    — WHICH LANGUAGE THE BROWSER ASKED FOR — and the longest step a page may
@@ -440,9 +451,11 @@ const ENDINGS = ['places', 'words', 'none', 'resting'];
 const PRODUCTS = ['map', 'lists', 'flashcards', 'splitwise', 'chess'];
 
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
-   the most presses one report may carry, by name and in all. */
+   the most presses one report may carry, by name and in all. Sixty names,
+   because twenty was passed by an ordinary long visit to the map, which can
+   send over a hundred, and a name past the cap was simply not counted. */
 const MAX_SECS = 1800;
-const MAX_NAMES = 20;
+const MAX_NAMES = 60;
 const MAX_PRESS = 50;
 const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
 
@@ -487,22 +500,31 @@ const ADD =
   'INSERT INTO visitor_counts (day, kind, id, n) VALUES (?1, ?2, ?3, ?4) ' +
   'ON CONFLICT(day, kind, id) DO UPDATE SET n = visitor_counts.n + excluded.n';
 
-/* The same, for an OPEN kind: a new id only while the day has room for one.
-   The EXISTS is a lookup on the key and comes first, so an id already
-   counted today goes up without the day's ids being counted. */
+/* The same, for an OPEN kind: a new id only while the day has room for one,
+   the room being ?5. The EXISTS is a lookup on the key and comes first, so
+   an id already counted today goes up without the day's ids being counted. */
 const ADD_CAPPED =
   'INSERT INTO visitor_counts (day, kind, id, n) SELECT ?1, ?2, ?3, ?4 ' +
   'WHERE EXISTS (SELECT 1 FROM visitor_counts WHERE day = ?1 AND kind = ?2 AND id = ?3) ' +
-  'OR (SELECT COUNT(*) FROM visitor_counts WHERE day = ?1 AND kind = ?2) < ' + MAX_IDS + ' ' +
+  'OR (SELECT COUNT(*) FROM visitor_counts WHERE day = ?1 AND kind = ?2) < ?5 ' +
   'ON CONFLICT(day, kind, id) DO UPDATE SET n = visitor_counts.n + excluded.n';
 
 function add(env, day, kind, id, n) {
-  return env.DB.prepare(OPEN.has(kind) ? ADD_CAPPED : ADD).bind(day, kind, id, n);
+  if (!OPEN.has(kind)) return env.DB.prepare(ADD).bind(day, kind, id, n);
+  return env.DB.prepare(ADD_CAPPED).bind(day, kind, id, n, kind === 'press' ? MAX_PRESS_IDS : MAX_IDS);
 }
 
 /* Which page a report is about, off the request's own host — the beacon is
    sent to the origin the page is on — and the path the page sends. Exported
-   for ./_flows.js, which reads the same report a third way. */
+   for ./_flows.js, which reads the same report a third way.
+
+   An address no page claims is the map. The project has no 404.html, so
+   Pages answers a mistyped or out-of-date link with index.html, and the
+   person reading it is on the map. It used to be counted nowhere, which
+   lost more than a view: the page had already written today into ttb.seen,
+   so every later page that day said it was not the first, and the visitor
+   was never counted at all. tools/validate.mjs holds every page that
+   reports to being named in PAGES, so a page left out cannot hide here. */
 export function pageOf(request, path) {
   const host = new URL(request.url).hostname;
   const at = String(path || '');
@@ -510,7 +532,7 @@ export function pageOf(request, path) {
     (p.host && host.startsWith(p.host)) ||
     (p.paths && p.paths.includes(at)) ||
     (p.prefix && at.startsWith(p.prefix) && at.length > p.prefix.length));
-  return page ? page.id : null;
+  return page ? page.id : 'map';
 }
 
 /* The step a page names as the one before its first — `page:/lists`,
@@ -521,9 +543,7 @@ export function pageOf(request, path) {
 export function stepBefore(request, sent) {
   const text = typeof sent === 'string' && sent.length <= MAX_STEP ? sent : '';
   const m = /^(page|view):(.+)$/.exec(text) || /^([a-z][a-z0-9_]*)@(.+)$/.exec(text);
-  if (!m) return null;
-  const page = pageOf(request, m[2]);
-  return page ? { kind: m[1], page: page } : null;
+  return m ? { kind: m[1], page: pageOf(request, m[2]) } : null;
 }
 
 /* The rail the browser was dealt, or null where it has not been dealt one. */
@@ -598,7 +618,6 @@ function foundOf(from, at) {
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  if (!page) return false;
   const rail = railOf(body);
 
   const facts = [['view', page, 1], ['hour', hourNow(), 1]];
@@ -695,17 +714,18 @@ export async function readLive(env) {
 
 /* A stretch on screen ended: `secs` of it on the page at `id`, `presses`,
    { name: times }, what TTBTrack reported meanwhile, and `places`, how many
-   places were opened on the map in it. `langs` is the same seconds by
-   language, { code: secs }, `moved` the switches pressed, { 'from>to': n },
-   and on a browser's first page today `first` is true and `lang` the
-   language it arrived in. `opened` is true on a page's first report,
-   `trail` the names pressed on it so far and `earlier` the step before —
-   the three ./_flows.js reads, read here for THE VIEWS THAT REPORTED and
-   WHERE A VISIT GOES. */
+   views TTBTrack.view() reported in it — places opened on the map, which is
+   the only page whose views are places: the blog's are posts and the
+   flashcards' decks, and they are not counted as places. `langs` is the
+   same seconds by language, { code: secs }, `moved` the switches pressed,
+   { 'from>to': n }, and on a browser's first page today `first` is true and
+   `lang` the language it arrived in. `opened` is true on a page's first
+   report, `trail` the names pressed on it so far and `earlier` the step
+   before — the three ./_flows.js reads, read here for THE VIEWS THAT
+   REPORTED and WHERE A VISIT GOES. */
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  if (!page) return false;
   const rail = railOf(body);
   const who = whoOf(body);
 
@@ -721,25 +741,27 @@ export async function countLeave(context, body) {
   split(facts, rail, who, 'secs', secs);
 
   let pressed = 0;
-  const signs = { login: 0, signup: 0 };
   const presses = body.presses && typeof body.presses === 'object' ? body.presses : {};
   for (const name of Object.keys(presses).slice(0, MAX_NAMES)) {
     const n = Math.min(MAX_PRESS, Math.round(Number(presses[name]) || 0));
     if (!PRESS.test(name) || n < 1) continue;
     facts.push(['press', name, n]);
     pressed += n;
-    if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
-  /* The steps of signing up out of the whole report, not the first
-     MAX_NAMES — SIGNING UP. */
+  /* The steps of signing up, and the sign-ins and accounts they end in, out
+     of the whole report rather than its first MAX_NAMES — they are the rare
+     names that come late in a visit, which is what a cap drops. SIGNING UP. */
+  const signs = { login: 0, signup: 0 };
   for (const name of Object.keys(presses)) {
     const n = Math.min(MAX_PRESS, Math.round(Number(presses[name]) || 0));
-    if (SIGNUP.has(name) && n > 0) facts.push(['signup', page + ':' + name, n]);
+    if (n < 1) continue;
+    if (SIGNUP.has(name)) facts.push(['signup', page + ':' + name, n]);
+    if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
   split(facts, rail, who, 'presses', pressed);
   split(facts, rail, who, 'login', signs.login);
   split(facts, rail, who, 'signup', signs.signup);
-  split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
+  if (page === 'map') split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
   facts.push(...await languageFacts(context, body, who));
   facts.push(...searchFacts(body));
 

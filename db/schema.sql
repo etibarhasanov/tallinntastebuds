@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- the answer. The size is bounded by the day, not by the traffic — the
 -- kinds with ids nobody chose from a list (country, from, press, asks,
 -- found, ref, tag, search, nothing) are capped at a hundred ids a day each
--- in the code — so a year is tens of thousands
+-- in the code, the presses at three hundred — so a year is tens of thousands
 -- of short rows at the very most, and a busy day costs no more rows than a
 -- quiet one with the same pages in it.
 --
