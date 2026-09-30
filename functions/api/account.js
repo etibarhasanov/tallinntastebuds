@@ -80,7 +80,7 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, SESSION_DAYS, SESSION_COOKIE, readCookie, wrongDatabase
+  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase
 } from './_lib.js';
 import {
   USERNAME_RE, MIN_PASSWORD, HOLD_DAYS,
@@ -291,8 +291,9 @@ export async function onRequestPost(context) {
   const action = body.action;
 
   if (action === 'logout') {
-    const token = readCookie(request, SESSION_COOKIE);
-    if (token) {
+    /* Every session the browser holds a token for, not only the first: see
+       sessionTokens() in ./_lib.js for why there can be two. */
+    for (const token of sessionTokens(request)) {
       await env.DB
         .prepare('DELETE FROM sessions WHERE token_hash = ?')
         .bind(await sha256Hex(token))
