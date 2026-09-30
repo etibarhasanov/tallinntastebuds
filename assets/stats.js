@@ -2,7 +2,8 @@
  *
  * Five tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
- * are the answer, which is why it is the whole ranking rather than a top ten.
+ * are the answer, which is why it is the whole ranking rather than a top ten
+ * — each saying under its name how many people saved it, where anybody has.
  * Then Google's directory, only the venues somebody has opened on the map. Then
  * the filter chips, in full, which is the table that argues about the order of
  * the chip row: see **The order of the filter chips** in README.md. Then the
@@ -10,11 +11,11 @@
  * argues about what earns a slot on it. Then every list anybody has opened,
  * whose it is beside the title and the countries it was opened from on a
  * line under it — the number /lists orders by and never prints, drawn here
- * for the owner alone. Under all five, footnotes about the
- * site rather than about a press: how many opens have been counted and how
- * many accounts exist. How many strangers got each of the map's two rails,
- * and how many of them opened a place with it, is on /admin/visitors with
- * everything else about the rails.
+ * for the owner alone. Under all five, what the site holds — nine counts of
+ * its tables, accounts to decks, which are not presses at all — and a
+ * footnote of how many opens have been counted. How many strangers got each
+ * of the map's two rails, and how many of them opened a place with it, is on
+ * /admin/visitors with everything else about the rails.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -73,7 +74,7 @@
     ui: {},
     ready: false,   // whether the numbers came back at all
     opens: 0,
-    users: 0,
+    held: null,     // what the site holds, nine counts — holdings() below
     map: [],
     venues: [],
     filters: [],
@@ -206,7 +207,9 @@
    * owner's name after the title leading to their page, the word Private
    * where the list has been made so since — it keeps the number it had, the
    * way /insights marks it — and the countries on a line under, where any
-   * have been counted. */
+   * have been counted. A place's row says on the same line how many people
+   * saved it, where anybody has: the one other number the map keeps about a
+   * place, beside how often it is opened. */
   function row(place, rank, href) {
     var name = href
       ? el('a', { className: 'stats-name', href: href, textContent: place.name })
@@ -231,6 +234,9 @@
           : null,
         place.country && place.country.length
           ? el('span', { className: 'stats-where', textContent: countryLine(place.country) })
+          : null,
+        place.saves
+          ? el('span', { className: 'stats-where', textContent: t('saveCount', { n: place.saves }) })
           : null
       ]),
       el('span', { className: 'stats-n', textContent: String(place.n) })
@@ -316,6 +322,35 @@
     return '/list/' + encodeURIComponent(list.id);
   }
 
+  /* What the site holds — WHAT THE SITE HOLDS in
+     functions/api/admin/stats.js: nine counts of the tables as they stand,
+     in the figures /admin/visitors draws, three across and two on a phone.
+     Not presses, so drawn whether anything has been opened or not. */
+  function holdings() {
+    var h = state.held;
+    var figure = function (label, n) {
+      return el('div', { className: 'ins-kpi' }, [
+        el('dt', { className: 'eyebrow', textContent: t(label) }),
+        el('dd', null, [el('div', { className: 'ins-kpi-n', textContent: String(n) })])
+      ]);
+    };
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('statsHeld') }),
+      el('p', { className: 'stats-lead', textContent: t('statsHeldLead') }),
+      el('dl', { className: 'ins-kpis vis-kpis' }, [
+        figure('statsAccounts', h.users),
+        figure('statsSaves', h.saves),
+        figure('statsSavedPlaces', h.saved),
+        figure('statsLists', h.lists),
+        figure('statsPublicLists', h.public),
+        figure('statsKeeps', h.keeps),
+        figure('feedbackTitle', h.feedback),
+        figure('statsDecks', h.decks),
+        figure('statsAdded', h.added)
+      ])
+    ]);
+  }
+
   /* Whether a list was opened before its countries were counted: the line
      under it then adds up to less than its number, and the sentence under
      the table says why, only where it is true. A list with no countries
@@ -381,20 +416,15 @@
       stack.appendChild(lists);
     }
 
-    /* The page's two footnotes about itself, under the tables rather than over
-       them, because nobody opens a ranking to read a total first: every open
-       counted, and how many accounts exist. Places only in the first — the
-       chips are presses of a different thing, and adding the two would be a
-       number about nothing — and the second is not about a press at all, which
-       is why it draws whether anything has been opened or not.
-
-       One block holding both, rather than two lines appended to the stack: the
-       stack sets 18px between whatever it is given, which is right between
-       cards and far too much between two lines of the same footnote — it read
-       as one stray sentence that had come off something. */
+    /* What the site holds, and then the page's footnote about itself: both
+       under the tables rather than over them, because nobody opens a ranking
+       to read a total first. The footnote is every open counted — places
+       only, since the chips are presses of a different thing and adding the
+       two would be a number about nothing. How many accounts exist was a
+       second footnote, and is the first of the figures now. */
+    if (state.held) stack.appendChild(holdings());
     stack.appendChild(el('div', { className: 'stats-totals' }, [
-      el('p', { className: 'stats-total', textContent: t('statsTotal', { n: state.opens }) }),
-      el('p', { className: 'stats-total', textContent: t('statsUsersTotal', { n: state.users }) })
+      el('p', { className: 'stats-total', textContent: t('statsTotal', { n: state.opens }) })
     ]));
 
     main.appendChild(stack);
@@ -425,7 +455,7 @@
         state.ui = out.ui;
         state.ready = !!out.ready;
         state.opens = out.opens || 0;
-        state.users = out.users || 0;
+        state.held = out.held || null;
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];
