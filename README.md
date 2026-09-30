@@ -11290,8 +11290,10 @@ kinds of visitor differ, then the experiment, then what was done.
   made as counts — see **New against returning** below.
 - **The two rails**, the experiment the map is running — see **The two
   rails** below.
-- **What they did**: **pages** with their views and average time, and **what
-  was pressed**, named by the event it is reported to GA under.
+- **What they did**: **pages** with their views, the time a view stayed and
+  the share of views on which nothing was pressed; **journeys**, the page a
+  visitor's day began on and which page followed which; and **what was
+  pressed**, named by the event it is reported to GA under.
 
 ### A visitor is a browser on a day
 
@@ -11341,6 +11343,33 @@ open on a desk all afternoon adds thirty minutes rather than five hours.
 **Time per visitor** is all the seconds over the visitors, which is what GA
 calls average engagement time.
 
+### The views that reported, and where a visit goes
+
+A page says it opened as it opens and how long it stayed only as it is put
+away, and the second report is the one a phone loses: on the count's second
+day four map views in ten had a view and no time. Seconds over every view
+then read as a shorter stay than anybody had, so a page's first put-away
+report is counted once more, as a view that **reported** at all, and the
+**Time** column on the pages table is the seconds over those alone — with the
+line under the table saying what share of views reported. Before that count
+began the column falls back to the seconds over every view, which is what it
+was. The same report says whether anything was pressed on the page, so a
+first report with an empty trail — no press, no place opened — is a view on
+which somebody looked and left, and **Pressed nothing** is that share of the
+views that reported.
+
+**Journeys** is where a visit begins and where it goes. **Where they land**
+is the page a browser's first view of the day was on, one per visitor, which
+the pages table cannot say: the map is the most viewed page whether or not
+anybody arrives on it. **Where they go next** is the pairs of pages opened
+one after the other in one tab, most first, out of the step the tab already
+carries from one page to the next for the diagrams — **Crossing pages** under
+**Who uses the site, drawn**. A reload is not a move, and a page opened in a
+fresh tab has nothing before it and is not one either. It is pages and not
+people, and the pair alone: nothing here can lay one visitor's pages end to
+end, and nothing is written that could. The funnels within a page — from the
+map to a place to going there — stay on the diagrams.
+
 ### The language it was read in
 
 Every page writes the language it is read in on to `<html lang>`, and
@@ -11367,9 +11396,15 @@ way it loses the last stretch of time. Every code is checked against the
 languages `data/ui.json` speaks, so the `lang` kind is a closed list. Nothing
 from before it landed was counted.
 
-What it cannot say is which language is missing: a browser that asks for
-German and gets English is counted under English. That is still GA's
-**Language** report, which reads the browser's own setting.
+What that alone could not say is which language is missing: a browser that
+asks for German and gets English is counted under English there. So under the
+two tables, **Browsers asked for** is the language each visitor's browser
+asks for — the two letters of `navigator.language`, once per visitor off the
+first page of the day, spoken here or not — with the ones the site does not
+speak marked. It is the one thing on this page read straight off the browser
+rather than off what the site did with it, and it is the list to read before
+adding a language: the languages people arrive wanting, against the ten the
+site has. An open list, capped a day the way the countries are.
 
 ### New against returning
 
@@ -11464,11 +11499,15 @@ then.
 Per page load that is two requests to `POST /api/stats` — the page opened,
 and a stretch on screen with its presses — and one batch of upserts each:
 one row for a page view and two for it as new or returning and on its rail,
-four more on a visitor's first page of the day, and on the way out one for
+six more on a visitor's first page of the day — the visitor, the country,
+the source, the page landed on, the rail and the language the browser asked
+for — and on the way out one for
 the time, one per press name, and two for each of the time, the presses, the
 places, a sign-in and an account made that the stretch had, one per language
-it was read in and one per switch, and on a visitor's first page one for the
-language they arrived in. That is ten to fifteen writes for an ordinary page. On the free plan's hundred thousand
+it was read in and one per switch, on a visitor's first page one for the
+language they arrived in, and on a page's first report one for having
+reported, one if nothing was pressed and one for the page before it. That is
+twelve to eighteen writes for an ordinary page. On the free plan's hundred thousand
 writes a day it is room for six thousand page views a day or so alongside
 everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the

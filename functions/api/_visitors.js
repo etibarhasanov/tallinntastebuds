@@ -59,6 +59,43 @@
  * came from Instagram and then read six pages is one visitor from Instagram
  * rather than six.
  *
+ * THE VIEWS THAT REPORTED
+ *
+ * A page says it opened as it opens, and how long it stayed only as it is
+ * hidden or closed — and a phone that kills a tab outright never sends the
+ * second report, so on the count's second day four map views in ten had a
+ * view and no time. Dividing the seconds by every view then reads as a
+ * shorter stay than anybody had. So a page's first put-away report is also
+ * counted under `left`, one per page that reported at all, and the time
+ * per view the owner reads is the seconds over those — and under `idle`
+ * when that report carried no trail, which is a view on which nothing was
+ * pressed and no place opened: the views where somebody looked and left.
+ * Both come off the report the flows read, so they cost the page nothing.
+ *
+ * WHERE A VISIT BEGINS, AND WHERE IT GOES
+ *
+ * The page a browser's first view of the day was — `entry`, one per
+ * visitor — says where people land, which the pages table cannot, since
+ * the map is the most viewed page whether or not anybody arrives on it.
+ * And the step a page names as the one before its first — the one the tab
+ * carries across pages for the diagrams, THE ORDER THEY CAME IN in
+ * assets/track.js — names the page before, so a first report whose step
+ * before was on another page is counted once under `nav` as `from>to`. A
+ * page reloaded is not a move, and a page opened in a fresh tab has no
+ * step before and is not one either. Pages, not people, and the pair alone:
+ * nothing here can lay one visitor's pages end to end.
+ *
+ * WHICH LANGUAGE THE BROWSER ASKED FOR
+ *
+ * The site picks a language out of ?lang=, a saved choice or the browser's
+ * own, and the `lang` kind below counts what it picked. A browser that
+ * asked for a language the site does not speak is counted under English
+ * there, so the question the owner actually has — is a language missing —
+ * had no answer here. `asks` is the two letters of navigator.language, one
+ * per visitor off the first page of the day, spoken or not: the languages
+ * people arrive wanting, against the ten the site has. An open kind,
+ * capped like the countries, since a browser may ask for anything.
+ *
  * NEW AGAINST RETURNING
  *
  * A visitor is new on the first day its browser ever came and returning on
@@ -183,8 +220,14 @@ const SIGNS = { account_login: 'login', account_create: 'signup' };
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
    good day; a hundred press names is every button on the site. */
-const OPEN = new Set(['country', 'from', 'press']);
+const OPEN = new Set(['country', 'from', 'press', 'asks']);
 const MAX_IDS = 100;
+
+/* The language a browser asks for, as the two letters of navigator.language
+   — WHICH LANGUAGE THE BROWSER ASKED FOR — and the longest step a page may
+   name as the one before its first, which is a path with a word in front. */
+const CODE = /^[a-z]{2}$/;
+const MAX_STEP = 200;
 
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
    the most presses one report may carry, by name and in all. */
@@ -237,6 +280,19 @@ export function pageOf(request, path) {
   return page ? page.id : null;
 }
 
+/* The step a page names as the one before its first — `page:/lists`,
+   `view:/`, `save_place@/` — as the kind of step and the page it was on, or
+   null where it cannot be read. THE ORDER THEY CAME IN in assets/track.js
+   is how the tab carries it from one page to the next; ./_flows.js reads
+   the kind, and WHERE A VISIT GOES reads the page. */
+export function stepBefore(request, sent) {
+  const text = typeof sent === 'string' && sent.length <= MAX_STEP ? sent : '';
+  const m = /^(page|view):(.+)$/.exec(text) || /^([a-z][a-z0-9_]*)@(.+)$/.exec(text);
+  if (!m) return null;
+  const page = pageOf(request, m[2]);
+  return page ? { kind: m[1], page: page } : null;
+}
+
 /* The rail the browser was dealt, or null where it has not been dealt one. */
 function railOf(body) {
   return RAILS.includes(body.layout) ? body.layout : null;
@@ -269,7 +325,7 @@ async function file(env, facts) {
 
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
    `who` what ttb.since said, `from` the referrer it was opened with,
-   `layout` the rail if any. */
+   `layout` the rail if any, `asks` the language the browser asks for. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -283,9 +339,11 @@ export async function countArrive(context, body) {
     facts.push(
       ['visitor', who, 1],
       ['country', countryOf(request), 1],
-      ['from', sourceOf(body.from, request.headers.get('user-agent'), siteOf(request)), 1]
+      ['from', sourceOf(body.from, request.headers.get('user-agent'), siteOf(request)), 1],
+      ['entry', page, 1]
     );
     if (rail) facts.push(['layout', rail + ':' + who, 1]);
+    if (CODE.test(body.asks)) facts.push(['asks', body.asks, 1]);
   }
   const [counted] = await Promise.all([file(env, facts), countLive(env)]);
   return counted;
@@ -325,7 +383,10 @@ export async function readLive(env) {
    places were opened on the map in it. `langs` is the same seconds by
    language, { code: secs }, `moved` the switches pressed, { 'from>to': n },
    and on a browser's first page today `first` is true and `lang` the
-   language it arrived in. */
+   language it arrived in. `opened` is true on a page's first report,
+   `trail` the names pressed on it so far and `earlier` the step before —
+   the three ./_flows.js reads, read here for THE VIEWS THAT REPORTED and
+   WHERE A VISIT GOES. */
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -334,6 +395,12 @@ export async function countLeave(context, body) {
   const who = whoOf(body);
 
   const facts = [];
+  if (body.opened === true) {
+    facts.push(['left', page, 1]);
+    if (!Array.isArray(body.trail) || !body.trail.length) facts.push(['idle', page, 1]);
+    const before = stepBefore(request, body.earlier);
+    if (before && before.page !== page) facts.push(['nav', before.page + '>' + page, 1]);
+  }
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
   if (secs > 0) facts.push(['time', page, secs]);
   split(facts, rail, who, 'secs', secs);
@@ -439,13 +506,25 @@ function most(map) {
  *              days of the range that tell them apart
  *   layouts    [{ id, visitors, back, ...FACTS, fresh }] the two rails over
  *              the same days, `fresh` being the rail's new visitors alone
- *   pages      [{ id, name, views, secs }] most viewed first
+ *   pages      [{ id, name, views, secs, left, idle, secsLeft }] most
+ *              viewed first: `left` the views that reported how they ended,
+ *              `idle` the ones that reported nothing pressed, and `secsLeft`
+ *              the seconds over the days that counted `left` — the
+ *              numerator for a time per reported view, THE VIEWS THAT
+ *              REPORTED
+ *   entries    [{ id, name, n }] the page a visitor's day began on, most
+ *              first
+ *   moves      [{ id: 'from>to', from, to, n }] pages opened one after the
+ *              other in one tab, most first, `from` and `to` named
  *   countries  [{ id, n }] visitors, most first
  *   sources    [{ id, name?, n }] visitors, most first
  *   presses    [{ id, n }] most first
  *   languages  [{ id, visitors: { new, back }, secs: { new, back } }] by
  *              the language visitors arrived in, most first, then by time
  *   switches   [{ id: 'from>to', n }] language switches, most first
+ *   asked      [{ id, n, spoken }] visitors by the language their browser
+ *              asks for, most first, `spoken` whether the site has it —
+ *              `spoken` is the codes data/ui.json speaks
  *
  * One read of the range and the one before it; the rest is arithmetic on at
  * most 180 days of a hundred-odd rows each.
@@ -453,8 +532,9 @@ function most(map) {
  * Who did what is counted only over the days that have `cohort` rows, and
  * the visitors divided among it only over the same days, so a range reaching
  * back past the day it began is not a week of visitors over two days of what
- * they did. */
-export async function readVisitors(env, span, ui) {
+ * they did. A page's `secsLeft` is held to the days that have `left` rows
+ * the same way, for the same reason. */
+export async function readVisitors(env, span, ui, spoken) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
   const day = today();
@@ -481,13 +561,19 @@ export async function readVisitors(env, span, ui) {
   const presses = new Map();
   const languages = new Map();
   const switches = new Map();
+  const entries = new Map();
+  const moves = new Map();
+  const asked = new Map();
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
   const sofar = { ...quad(), rails: { a: quad(), b: quad(), none: quad() } };
 
-  /* The days that tell new from returning — see the note above. */
+  /* The days that tell new from returning, and the days that counted which
+     views reported — see the note above. */
   const told = new Set(rows.filter((r) => r.kind === 'cohort').map((r) => r.day));
+  const heard = new Set(rows.filter((r) => r.kind === 'left').map((r) => r.day));
+  const PAGE_FACTS = { view: 'views', time: 'secs', left: 'left', idle: 'idle' };
 
   for (const r of rows) {
     const inside = r.day >= cut;
@@ -499,11 +585,15 @@ export async function readVisitors(env, span, ui) {
       d[r.id === 'back' ? 'back' : 'fresh'] += r.n;
       byDay.set(r.day, d);
       if (told.has(r.day) && cohorts.has(r.id)) cohorts.get(r.id).visitors += r.n;
-    } else if (r.kind === 'view' || r.kind === 'time') {
-      const p = pages.get(r.id) || { views: 0, secs: 0 };
-      p[r.kind === 'view' ? 'views' : 'secs'] += r.n;
+    } else if (PAGE_FACTS[r.kind]) {
+      const p = pages.get(r.id) || { views: 0, secs: 0, left: 0, idle: 0, secsLeft: 0 };
+      p[PAGE_FACTS[r.kind]] += r.n;
+      if (r.kind === 'time' && heard.has(r.day)) p.secsLeft += r.n;
       pages.set(r.id, p);
-    } else if (r.kind === 'country') bump(countries, r.id, r.n);
+    } else if (r.kind === 'entry') bump(entries, r.id, r.n);
+    else if (r.kind === 'nav') bump(moves, r.id, r.n);
+    else if (r.kind === 'asks') bump(asked, r.id, r.n);
+    else if (r.kind === 'country') bump(countries, r.id, r.n);
     else if (r.kind === 'from') bump(sources, r.id, r.n);
     else if (r.kind === 'press') bump(presses, r.id, r.n);
     else if (r.kind === 'lang') countLanguage(languages, switches, r);
@@ -543,8 +633,14 @@ export async function readVisitors(env, span, ui) {
     layouts: [...rails.values()],
     pages: PAGES
       .filter((p) => pages.has(p.id))
-      .map((p) => ({ id: p.id, name: ui[p.label] || p.id, ...pages.get(p.id) }))
+      .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))
       .sort((a, b) => b.views - a.views),
+    entries: most(entries).map((e) => ({ ...e, name: pageName(ui, e.id) })),
+    moves: most(moves).map((m) => {
+      const [from, to] = m.id.split('>');
+      return { ...m, from: pageName(ui, from), to: pageName(ui, to) };
+    }),
+    asked: most(asked).map((a) => ({ ...a, spoken: (spoken || []).includes(a.id) })),
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
     presses: most(presses),
@@ -553,6 +649,13 @@ export async function readVisitors(env, span, ui) {
       (b.secs.new + b.secs.back) - (a.secs.new + a.secs.back) || a.id.localeCompare(b.id)),
     switches: most(switches)
   };
+}
+
+/* A page named in the reading language, by the string PAGES gives it, or
+   its id where the block has none. */
+function pageName(ui, id) {
+  const page = PAGES.find((p) => p.id === id);
+  return (page && ui[page.label]) || id;
 }
 
 /* One `lang` row into the languages or the switches — see THE LANGUAGE IT

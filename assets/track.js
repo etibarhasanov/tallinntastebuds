@@ -47,12 +47,15 @@
  * The same report also carries the names in the order they first happened —
  * the trail — so the diagrams on /admin/flows can say how people move from
  * one step to the next, and functions/api/_flows.js is what turns a trail
- * into steps and arrows. Each name is in it once per page, however many
- * times it was pressed, the rule a place opened already follows, and a place
- * opened rides in it as `view`, the same moment view() reports one. A
- * journey that crosses pages — the map, then a list — is two page loads, so
- * the tab keeps the last name it reported under `ttb.step` in
- * sessionStorage and the next page sends it as the step before its first.
+ * into steps and arrows — and functions/api/_visitors.js reads the same
+ * report a second way, as the views that reported at all, the ones that
+ * pressed nothing, and the page before this one. Each name is in it once
+ * per page, however many times it was pressed, the rule a place opened
+ * already follows, and a place opened rides in it as `view`, the same
+ * moment view() reports one. A journey that crosses pages — the map, then
+ * a list — is two page loads, so the tab keeps the last name it reported
+ * under `ttb.step` in sessionStorage and the next page sends it as the step
+ * before its first.
  * One word, per tab, gone when the tab closes, and nothing that says who
  * anybody is.
  *
@@ -301,7 +304,12 @@ window.TTBTrack = (function () {
       back: who === 'back',
       who: who,
       from: document.referrer,
-      layout: dealt()
+      layout: dealt(),
+      /* The language the browser asks for, as two letters — the site's
+         count of which languages people arrive wanting, spoken here or not.
+         Read straight off the browser, never off the page, which has
+         already picked one out of it. */
+      asks: String(window.navigator.language || '').slice(0, 2).toLowerCase()
     });
   }
 

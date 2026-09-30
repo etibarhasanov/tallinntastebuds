@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS view_seen (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Nine kinds:
+-- the key, one row per fact per day, and a number. Fourteen kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -267,11 +267,18 @@ CREATE TABLE IF NOT EXISTS view_seen (
 --   kind 'lang'     id is '<who>:<code>' for the language a visitor arrived
 --                   in, '<who>:secs:<code>' for seconds read in it, and
 --                   '<from>><to>' for a switch pressed
+--   kind 'asks'     id is the two letters the browser asks for, spoken here
+--                   or not, once per visitor per day
+--   kind 'entry'    id is which page a visitor's day began on
+--   kind 'left'     id is which page; a view that reported how it ended
+--   kind 'idle'     id is which page; a view that reported nothing pressed
+--   kind 'nav'      id is '<from>><to>', two pages opened one after the
+--                   other in one tab
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
 -- the answer. The size is bounded by the day, not by the traffic — the
--- kinds with ids nobody chose from a list (country, from, press) are capped
+-- kinds with ids nobody chose from a list (country, from, press, asks) are capped
 -- at a hundred ids a day each in the code — so a year is tens of thousands
 -- of short rows at the very most, and a busy day costs no more rows than a
 -- quiet one with the same pages in it.
