@@ -1086,6 +1086,12 @@
 
     form.appendChild(actor(creating || naming ? 'accountCreate' : 'accountSignIn', 'go', function (done) {
       var pass = form.querySelector('#fc-pass');
+      /* The try, the refusal and the account, as the map's sheet reports
+         them, so SIGNING UP in functions/api/_visitors.js can say why people
+         who pressed this did not come out of it with an account. There is no
+         sheet here to count opening or shutting: the form is the page. */
+      var view = naming ? 'google' : creating ? 'up' : 'in';
+      TTBTrack.event('account_try_' + view);
       post(ACCOUNT_API, naming ? {
         action: 'google-name',
         username: value(form, 'fc-user')
@@ -1096,11 +1102,13 @@
       }).then(function (a) {
         if (!a.ok) {
           done();
+          TTBTrack.refused(a.out, view);
           complain(form, say(a.out));
           return;
         }
         TTBTrack.event(naming || creating ? 'account_create' : 'account_login',
                        { via: naming ? 'google' : 'flashcard' });
+        TTBTrack.event('account_done_' + view);
         /* Straight back to the route rather than patching state: signing in
            changes every answer on this page, including how much of the deck on
            screen this browser is allowed to remember. go() asks it the same
