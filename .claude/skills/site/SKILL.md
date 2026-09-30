@@ -170,15 +170,15 @@ place is a fourth, and it belongs there in the same commit — see
 **Statistics** in `README.md`, which is also where the reasoning for what is
 deliberately *not* counted lives.
 
-**Every button reports.** A press that matters is reported to the site's own
-count through the global `assets/track.js` sets, on every page:
+**Every button reports.** A press that matters is reported to Google
+Analytics through the global `assets/track.js` sets, on every page:
 `TTBTrack.event(name, params)` in a handler, `TTBTrack.click(node, name,
 params)` around a link or button built inline, and `data-track="name"` on
 one written straight into the markup. The name says what the person meant
 (`list_keep`, `place_close`), the parameters are what the handler already
 holds, and the event gets a row in the table under **Analytics** in
 `README.md` in the same commit — that table is the list, and a name that is
-not in it is a name nobody will know the meaning of. `grep -n TTBTrack
+not in it is a name nobody will find in the console. `grep -n TTBTrack
 assets/<file>.js` shows what the page beside yours reports, and the same
 press on two pages reports the same name. The name also lands in
 `/admin/visitors` under **What was pressed**, because `track.js` tallies every
@@ -196,20 +196,19 @@ says so in CSS the way the chips and the grips do, and needs nothing here.
 The map hears it only on the panel with a place open. **A swipe to the right
 is Back** in `README.md`.
 
-**And every page is watched.** That is the other
+**And every page is watched, once somebody agrees to it.** That is the other
 half of analytics and it costs nothing per press: Microsoft Clarity records the
 page itself — heatmaps, and a replay of the DOM as it changed. Nothing calls
 into it, so a new button needs nothing here. Two things do:
 
 - **A new page carries `assets/analytics.js`**, in its head, deferred, before
-  every other script on the page. That one file is the whole of Clarity: its
-  snippet and the consentv2 signal it needs. (It carried Google Analytics as
-  well until 30 September 2026; the counting is `track.js` now.) Copy the tag from the page
+  every other script on the page. That one file is the whole of analytics: both
+  snippets and the consentv2 signal Clarity needs. Copy the tag from the page
   whose asset spelling yours shares — `lists.html` writes `/assets/...` from
   the root, `index.html` writes `assets/...` relative, and the head of
   `tools/stamp.mjs` says why they disagree. A page that ships without it is
-  invisible in Clarity, and fails nothing while nobody notices.
-  `admin.html` is the one page that deliberately has none; the head of
+  invisible in both GA and Clarity, and fails nothing while nobody notices.
+  `admin.html` is the one page that deliberately has neither; the head of
   `analytics.js` says why, and it is not an oversight to correct.
 - **Anything a replay should not hold gets `data-clarity-mask="true"`.**
   Clarity masks every input box and dropdown in all three of its masking
@@ -225,11 +224,12 @@ clarity.microsoft.com, Balanced by default, which masks numbers and email
 addresses on top of the input boxes. A change that leans on it says so in the
 PR, because nobody reviewing the diff can see it.
 
-**Nothing asks first.** Clarity loads on sight, and the banner that stood in
-front of it for a day was taken out on purpose — **No consent banner** in
+**Nothing asks first.** Both tags load on sight, and the banner that stood in
+front of them for a day was taken out on purpose — **No consent banner** in
 `README.md` is the reasoning, and it is not an oversight to correct. Driving
-any page in a browser therefore records into the live Clarity project,
-including a preview; there is no button to press to stay out of it.
+any page in a browser therefore reports into the live GA property and the live
+Clarity project, including a preview; there is no longer a button to press to
+stay out of the numbers.
 
 **A clip on a blog post is a scene, and a scene is a function of time.**
 `clips/scenes/<post-id>.html` is the site's own components arranged into one
@@ -437,9 +437,8 @@ it, and what was driven in a browser to check it.
 - A new page that renders light for somebody who chose the dark style,
   because the boot block was not copied.
 - A new page shipped without `assets/analytics.js` in its head, so nothing it
-  does reaches Clarity — or, for a page without `track.js`, the site's own
-  count. It fails nothing and nobody notices for months; that is how the map
-  came to be the only page Google Analytics had heard of while it ran, and
+  does reaches either GA or Clarity. It fails nothing and nobody notices for
+  months; that is how the map came to be the only page GA had heard of, and
   how `blog.html` arrived carrying a script tag for a file that no longer
   existed — the validator caught that one, because it checks every `assets/`
   reference against the repo.

@@ -383,13 +383,14 @@
       focusRun();
       window.scrollTo(0, id ? 0 : deckScroll);
 
-      /* And the view, which the landing used to count for us: every deck was
-         a document and each load counted. Nothing loads now, so it is counted
-         the way assets/blog.js counts a walk between the index and a post.
-         What stays as the server wrote it is the canonical and the og: tags,
-         because the address a crawler or a chat window is served is always a
-         fresh load of it, never this walk. */
-      TTBTrack.view();
+      /* And the page view, which the tag used to count for us: every deck was
+         a document and the tag counted every one. Nothing loads now, so it is
+         reported the way assets/blog.js reports a walk between the index and
+         a post, and titled the same way — render() has just put the deck's
+         name in the tab. What stays as the server wrote it is the canonical
+         and the og: tags, because the address a crawler or a chat window is
+         served is always a fresh load of it, never this walk. */
+      TTBTrack.view(document.title);
     });
   }
 

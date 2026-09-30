@@ -1,23 +1,14 @@
-/* Tallinn Tastebuds — Microsoft Clarity, said once.
+/* Tallinn Tastebuds — the two analytics tags, said once.
  *
- * Clarity records the page rather than counting it: heatmaps of where
- * presses and scrolls land, and a replay of the DOM as it changed through a
- * visit. The counting is the site's own — assets/track.js reports to
- * /api/stats, and /admin/visitors is drawn from that — so this file is the
- * only third party left watching. It loads on every page but admin.html —
- * the list at the top of tools/stamp.mjs — and from here rather than from a
- * snippet pasted into each head, which would be Microsoft's block in every
- * one of them and one id to change in as many places as there are pages.
- * Same reason assets/track.js exists rather than seven copies of three
- * functions.
- *
- * GOOGLE ANALYTICS WAS THE OTHER HALF, AND IT IS GONE
- *
- * This file loaded Google's tag too, until 30 September 2026, when the owner
- * took it out: the site's own count had come to answer everything GA was
- * open in a tab for, without a third party's cookie on every visitor's
- * device. The filename is the one every page's head already names, so it
- * stayed rather than seventeen pages changing to say "clarity".
+ * Google Analytics counts, and takes the events assets/track.js sends beside
+ * it. Microsoft Clarity records the page instead of counting it: heatmaps of
+ * where presses and scrolls land, and a replay of the DOM as it changed
+ * through a visit. Both load on every page but admin.html — the list at the
+ * top of tools/stamp.mjs — and both load from here rather than from a snippet
+ * pasted into each head, which would have been Google's block in every one of
+ * them and Microsoft's in every one again, and two ids to change in twice as
+ * many places as there are pages. Same reason assets/track.js exists rather
+ * than seven copies of three functions.
  *
  * THERE WAS A CONSENT BAR HERE, AND IT WAS TAKEN OUT ON PURPOSE
  *
@@ -30,9 +21,9 @@
  *
  * ePrivacy, which Estonia applies, asks whether you wrote to somebody's
  * device — not whether what you wrote was personal data — and analytics
- * cookies are not "strictly necessary". This file writes `_clck` and `_clsk`
- * with nobody asked, and a session replay is a recording of somebody's
- * visit. Putting the question back is a revert, not a
+ * cookies are not "strictly necessary". This file writes `_ga`, `_ga_*`,
+ * `_clck` and `_clsk` with nobody asked, and a session replay is a recording
+ * of somebody's visit. Putting the question back is a revert, not a
  * discussion: `git log` has both versions of it, and the reasoning with them.
  *
  * WHY consentv2 GOES OUT WITH NOTHING IN FRONT OF IT
@@ -45,12 +36,14 @@
  * of a visit into a heap of one-page fragments — the opposite of the thing
  * Clarity is here for. So the signal is sent unconditionally.
  *
- * TO REMOVE CLARITY
+ * TO REMOVE TRACKING
  *
- * Delete this file's script tag from every page that carries it, and the
- * file. assets/track.js checks for window.clarity before every call and goes
- * on counting without it — written for visitors running an ad blocker, and
- * it covers this too — so none of the call sites has to change.
+ * Delete this file's script tag from every page that carries it, or the
+ * file. Everything in assets/track.js checks for window.gtag and returns
+ * quietly when it is missing — written for visitors running an ad blocker,
+ * and it covers this too — so every call site becomes a harmless no-op and
+ * none of them has to change. To drop one tag and keep the other, delete its
+ * half below.
  *
  * NOT ON admin.html
  *
@@ -64,11 +57,22 @@
 (function () {
   'use strict';
 
+  var GA = 'G-2XNTC15F28';
   var CLARITY = 'yay3pxtg4w';
 
-  /* Microsoft's snippet, as its console emits it. window.clarity is a queue
-     until its script lands, so a TTBTrack call in the same tick queues
-     rather than falling on the floor. */
+  /* Google's snippet, as its console emits it. gtag is defined synchronously
+     — only the script it fetches is async — so a TTBTrack call in the same
+     tick queues rather than falling on the floor. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', GA);
+  var g = document.createElement('script');
+  g.async = true;
+  g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA;
+  document.head.appendChild(g);
+
+  /* Microsoft's, likewise. window.clarity is a queue until its script lands. */
   (function (c, l, a, r, i, t, y) {
     c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
     t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;

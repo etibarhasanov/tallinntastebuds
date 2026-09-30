@@ -1,26 +1,22 @@
-/* Tallinn Tastebuds — what gets reported, to this site's own count of its
- * visitors and to Clarity, said once.
+/* Tallinn Tastebuds — what gets reported, to Google Analytics and to this
+ * site's own count of its visitors, said once.
  *
- * The map is one address on which everything happens, and even the pages
- * that do change address — a list, a profile, the account page — are mostly
- * buttons that change nothing in the address bar, so a count of addresses
- * would say almost nothing about what anybody did here. Each page reports
- * its presses as events instead, and this is the one place they are sent
- * from. It used to live inside assets/app.js, which was fine while the map
- * was the only page that reported anything; the day the other seven wanted
- * to, it was either seven copies of the same three functions or this file.
- * The events themselves are listed in the README under "Analytics", page by
- * page.
+ * Every page carries Google's tag in its head, exactly as the console emits
+ * it, and the tag on its own records one page view per address. That was
+ * enough for nothing here: the map is one address on which everything
+ * happens, and even the pages that do change address — a list, a profile,
+ * the account page — are mostly buttons that change nothing in the address
+ * bar. GA only ever sees a URL, so without a report of its own every press
+ * was invisible.
  *
- * GOOGLE ANALYTICS IS GONE
- *
- * These events went to Google Analytics as well until the owner took it out
- * on 30 September 2026: the site's own count, below, had come to answer every
- * question GA was open in a tab for, out of the site's own database and
- * without a third party's cookie. The parameters an event is called with are
- * still passed, because the count reads some of them — the language a switch
- * went to, the words typed into a search — and the call sites are the record
- * of what each press means; nothing else receives them now.
+ * So each page reports its presses as events, and this is the one place
+ * they are sent from. It used to live inside assets/app.js, which was fine
+ * while the map was the only page that reported anything; the day the other
+ * seven wanted to, it was either seven copies of the same three functions
+ * or this file. The events themselves are listed in the README under
+ * "Analytics", page by page, and the parameters — place, list_id, language,
+ * style — need registering once as custom dimensions in Admin before GA
+ * will break the numbers down by them.
  *
  * WHY A GLOBAL AND NOT A MODULE
  *
@@ -31,8 +27,8 @@
  *
  * AND THE SITE'S OWN COUNT
  *
- * The same file tells this site that a page was opened and how long it was
- * on screen: /admin/visitors is drawn from what the bottom
+ * The same file tells this site, not only Google, that a page was opened and
+ * how long it was on screen: /admin/visitors is drawn from what the bottom
  * of this file sends, and functions/api/_visitors.js is what is counted and
  * why. Two reports a page, and no more — one when it opens, and one each
  * time it is hidden or put away, carrying the seconds it was visible and the
@@ -42,9 +38,8 @@
  * how a page knows it is the browser's first today and whether there was an
  * earlier one; and the first day it ever did, `ttb.since`, which is how every
  * later page that day still knows whether it belongs to a new visitor or a
- * returning one — or the day an old Google `_ga` cookie says, where one is
- * left and it is earlier, since the count is younger than the site. No id is
- * made or sent. The owner's pages under /admin/ send
+ * returning one — or the day Google's `_ga` cookie says, where that is
+ * earlier, since the count is younger than the site. No id is made or sent. The owner's pages under /admin/ send
  * nothing.
  *
  * THE ORDER THEY CAME IN
@@ -78,17 +73,20 @@
  * was, from and to. The first report of a browser's first page today also
  * says which language it arrived in.
  *
- * TO REMOVE CLARITY
+ * TO REMOVE TRACKING
  *
- * The site's own count lives here, so this file stays for as long as that
- * does. Clarity is assets/analytics.js alone: take that file's script tag
- * out of every page and this one goes on counting, since every call below
- * to window.clarity checks for it first.
+ * Delete the gtag block from every page's head, or this file's script tag,
+ * or both. Everything below checks for the tag and returns quietly when it
+ * is missing, which is also what happens for a visitor running an ad
+ * blocker, so every call site becomes a harmless no-op and none of them has
+ * to change. The site's own count is the part that does not check for the
+ * tag: removing Google leaves it running, and removing this file's script
+ * tag stops both.
  */
 window.TTBTrack = (function () {
   'use strict';
 
-  /* The address already counted as a view, so a place opened and closed
+  /* The address the tag has already counted, so a place opened and closed
      and opened again is two views and the landing URL is not two. */
   var seenPath = null;
 
@@ -96,19 +94,25 @@ window.TTBTrack = (function () {
     return window.location.pathname + window.location.search;
   }
 
-  /* Every press is tallied for the site's own count, and goes to Clarity by
-     name as a custom event, which is what lets its dashboard filter
-     recordings and heatmaps by the button that was pressed rather than by
-     where on the page a click landed. Without that a heatmap says a spot on
-     the screen was pressed and a replay says what one visit did, and neither
-     can answer "who pressed Keep" across a week. Clarity's queue takes the
-     call before its script lands. */
+  function live() {
+    return typeof window.gtag === 'function';
+  }
+
+  /* Every press goes to both tags. Google gets the name and the parameters;
+     Clarity gets the name alone, as a custom event, which is what lets its
+     dashboard filter recordings and heatmaps by the button that was pressed
+     rather than by where on the page a click landed. Without this a heatmap
+     says a spot on the screen was pressed and a replay says what one visit
+     did, and neither can answer "who pressed Keep" across a week. Clarity's
+     queue takes the call before its script lands, the same as gtag's. */
   function event(name, params) {
     params = params || {};
+    params.layout = layout();
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
     if (name === 'search') searchedFor(params);
+    if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
 
@@ -129,13 +133,14 @@ window.TTBTrack = (function () {
 
   /* Which rail this browser was dealt on the map — 'a', the full column, or
      'b', the short one — read off the key pickLayout() in assets/app.js
-     writes, so every page's report carries it and the count can be split
-     by it: what the short rail's visitors press against what the full
-     rail's do. Every page and not the map alone, because the question is about the
+     writes, so every event on every page carries it and GA can be split by
+     it: what the short rail's visitors press against what the full rail's
+     do. Every page and not the map alone, because the question is about the
      visitor and they carry the rail with them to the lists and back. 'a'
      where nothing is written, which is every browser from before the split
      and every page opened before the map has dealt one. Read on every event
-     rather than once, since the map deals it after this script has loaded. Clarity gets
+     rather than once, since the map deals it after this script has loaded;
+     a storage read is nothing next to the request it rides on. Clarity gets
      it as a tag once the page is up, below, which is what lets its
      recordings be filtered the same way. */
   var LAYOUT_KEY = 'ttb.layout';
@@ -159,21 +164,26 @@ window.TTBTrack = (function () {
     return node;
   }
 
-  /* A view of something the page drew without a new document: the map
-     calls it once per opened place, the blog and the flashcards once per
-     post or deck walked to. It is a step in the trail, and a place opened
-     is counted in the report the page sends when it is put away. */
-  function view() {
-    /* Before the address check: a deep-linked place is one the landing
-       already counted, and still a step somebody took. */
+  /* A page view for something the tag did not see change: the map reports
+     one per opened place, titled with the place, so the standard Pages and
+     screens report doubles as a popularity ranking. */
+  function view(title) {
+    /* Before the address check: a deep-linked place is one the tag already
+       counted, and still a step somebody took. */
     step('view');
     if (here() === seenPath) return;
     seenPath = here();
     opened += 1;
+    if (live()) {
+      window.gtag('event', 'page_view', {
+        page_location: window.location.href,
+        page_title: title
+      });
+    }
   }
 
-  /* The address on screen has been counted already — by the landing, or by
-     view() before the page walked back to it. */
+  /* The address on screen has been counted already — by the tag itself on
+     landing, or by view() before the page walked back to it. */
   function seen() {
     seenPath = here();
   }
@@ -297,14 +307,12 @@ window.TTBTrack = (function () {
      Both dates are this count's own, though, and the count began on
      28 September 2026 — so on its first day every browser was new, the ones
      that had been coming for weeks included, and /admin/visitors showed no
-     returning visitor at all. Google's `_ga` cookie had been on every
+     returning visitor at all. Google's `_ga` cookie has been on every
      visitor's device since long before and carries the day that browser
      first came, so the first day is the earlier of the two wherever the
-     cookie is there to read. Google Analytics is gone now and nothing writes
-     that cookie any more, so this only reaches a browser that still carries
-     one from before — a fading help, which has done its work for a browser
-     the first time it is read, since ttb.since keeps the answer. Only the
-     day is read out of it and only a day's comparison leaves the page. */
+     cookie is there to read. Only the day is read out of it and only a
+     day's comparison leaves the page; a browser with Google blocked has no
+     cookie and goes by the site's own dates alone. */
   function arrive() {
     if (arrived || !COUNTED) return;
     arrived = true;
@@ -396,9 +404,8 @@ window.TTBTrack = (function () {
     return window.innerWidth < 768 ? 'phone' : 'tablet';
   }
 
-  /* The day Google's tag first saw this browser, out of a `_ga` cookie left
-     from when the site carried it — GA1.<n>.<random>.<seconds> — or null
-     where there is none. The random
+  /* The day Google's tag first saw this browser, out of the `_ga` cookie
+     — GA1.<n>.<random>.<seconds> — or null where there is none. The random
      part is Google's id for the browser and is never read, let alone sent:
      only the last field, which is a time. */
   function gaDay() {
