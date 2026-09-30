@@ -7281,8 +7281,8 @@ page's first card, beside **Your public profile** and **Build your page**,
 and that row's second line is the one number worth having without opening
 it: *46 views in the last 7 days*.
 
-`/admin/visitors` has all of this for the whole site, and it is the owner's.
-What it cannot do is hand one person the slice that is about their own page, and that is the whole of
+Google Analytics has all of this for the whole site. What it cannot do is hand
+one person the slice that is about their own page, and that is the whole of
 what this is. It is meant to be roughly right rather than exactly right, and
 it says what it is counting in its first sentence: **views, not people**. One
 person coming back on five evenings is five — but one person reloading twenty
@@ -7292,7 +7292,7 @@ knows it is yours, and the server leaves them out again by the session, so
 checking how your page looks never moves its number.
 
 **Once a day, whoever is refreshing.** A reload used to be another view, the
-way it is another page view to most counters, and that was wrong for a number somebody
+way it is another page view in GA, and that was wrong for a number somebody
 reads as "how many people looked": a page refreshed over and over by one
 visitor, or by a script to make a list look popular, said something that was
 not true. So an open of a profile or of a list now counts the first time it
@@ -7366,13 +7366,12 @@ says the page was opened from, and every site that matters sends only its
 origin — `https://l.instagram.com/`, never the post — which is enough for a
 bucket and no more. But Instagram, TikTok and Facebook open a link from a bio
 in a browser of their own, and those browsers often send no referrer at all.
-That is why Google Analytics, while the site carried it, only *sometimes* said
-Instagram: the rest of the time it has
+That is why GA only *sometimes* says Instagram: the rest of the time it has
 nothing to go on and files the visit as direct. Each of those in-app
 browsers does name itself in its user agent, though — `Instagram 312.0…`,
 `BytedanceWebview`, `FBAN` — and `sourceOf()` in `functions/api/_visits.js`
 reads that first, off the request the count arrives on. So a view from a link
-in somebody's Instagram bio is Instagram here far more often than it was in GA.
+in somebody's Instagram bio is Instagram here far more often than it is in GA.
 
 The buckets are Instagram, TikTok, Facebook, **Search** (Google in any of its
 country domains, Bing, DuckDuckGo and the rest), **This site** (a byline, the
@@ -10834,11 +10833,11 @@ the places and the lists and never how many there are, and where Google's
 order is described it says *as this is written*, because the lists are worked
 out again with every refresh of the export.
 
-Opening a post is counted as a view of its own through `TTBTrack.view()`, the
-way the map counts an opened place, and `blog_post` names which post it was —
-so **What was pressed** on `/admin/visitors` says which of these anybody read.
-That and the four presses are in the table under [Analytics](#analytics), which
-is where every event on this site is listed.
+Opening a post is reported as a page view of its own, titled with the post and
+pointing at its `?post=` URL, the way the map reports an opened place — so the
+standard **Pages and screens** report says which of these anybody read. That
+and the four presses are in the table under [Analytics](#analytics), which is
+where every event on this site is listed.
 
 ---
 
@@ -11156,14 +11155,15 @@ read as how many people looked, and a reload is not somebody else looking —
 table behind it. A list its own owner opens is not counted at all, left out
 by the page and again by the server's session, so an author reloading their
 draft cannot climb a ranking of strangers or their own number. For places and
-chips the rule is the one `TTBTrack.view()` already applies to the view it
-counts for an opened place, and the two agree on purpose: two numbers about the same gesture that counted it differently would
+chips the rule is `TTBTrack.view()` already applies to the page view
+it reports to Google Analytics beside an opened place, and the two agree on
+purpose: two numbers about the same gesture that counted it differently would
 be two numbers somebody eventually puts side by side. So comparing three
 places is three, walking back through history is not thirty, and a chip
 flicked on and off while somebody makes their mind up is one press.
 
 A reload of the map counts a place again, exactly as a reload is a fresh
-page view to the site's own count.
+page view in GA.
 
 ### The rail is the one that counts every press
 
@@ -11175,9 +11175,9 @@ it at all", which is a different question and a quieter one. So the die
 pressed four times is four, and the colour swatch flicked back and forth is
 every flick.
 
-It agrees with **What was pressed** on `/admin/visitors` for the same reason
-the others do: `TTBTrack` tallies an event per press of these buttons rather
-than one per load, so both numbers count the same gesture the same way. That is the rule —
+It agrees with Google Analytics here for the same reason the others do:
+`TTBTrack` is sent an event per press of these buttons rather than one per
+load, so both numbers count the same gesture the same way. That is the rule —
 agree with the report beside it — and once per load is how it comes out for a
 place, every press for a pill.
 
@@ -11197,8 +11197,8 @@ it stands for and is counted under that pill's id — `renderMore()` posts it
 — so Ask pressed on either rail is one number, and the table reads the two
 rails against each other without a column for which one it was.
 
-**The radio is not on this table.** It wears the rail's pill and reports its
-presses like everything else, but it stands next to the language switch in the corner
+**The radio is not on this table.** It wears the rail's pill and reports to GA
+like everything else, but it stands next to the language switch in the corner
 rather than in the rail — see **The radio** — and the question this table asks
 is about the column down the left. The name in `data/ui.json` each row is
 printed by is the button's own label — `accountOpen`, `randomPick`,
@@ -11393,9 +11393,8 @@ see it at all rather than a missing link.
 ## Visitors
 
 `/admin/visitors` — who came to the site, from where, and what they did. The
-page Google Analytics used to be open in a tab for, drawn from this site's own
-count instead — which is what let Google's tag come out, on 30 September 2026,
-without the numbers going with it.
+page Google Analytics is open in a tab for, drawn from this site's own count
+instead, so that the day Google's tag comes out the numbers do not go with it.
 The owner's alone, under the same lock as **Statistics** — a 404 for the page
 and a 403 for `GET /api/admin/visitors` to anybody else — the first row of
 **The numbers** on `/admin.html`, not indexed, and not disallowed either.
@@ -11431,7 +11430,7 @@ kinds of visitor differ, then the experiment, then what was done.
 - **What they did**: **pages** with their views, the time a view stayed and
   the share of views on which nothing was pressed; **journeys**, the page a
   visitor's day began on and which page followed which; and **what was
-  pressed**, named by the event `TTBTrack.event()` reports it under.
+  pressed**, named by the event it is reported to GA under.
 
 ### A visitor is a browser on a day
 
@@ -11450,10 +11449,8 @@ visitors at all although the site had had them for weeks. Google's `_ga`
 cookie ends in the time that browser was first seen, and `arrive()` takes
 the first day as the earlier of that and `ttb.since`, so a browser GA knew
 before the count began is returning from its first page. Only the time is
-read out of the cookie, never Google's id beside it. Google Analytics is off
-the site now and nothing writes the cookie any more, so this reaches only a
-browser still carrying one from before, and only once: `ttb.since` keeps the
-answer from then on. That is all that is
+read out of the cookie, never Google's id beside it; a browser with Google
+blocked has no cookie and goes by the two dates alone. That is all that is
 sent: whether this is the first page today, whether there was an earlier day,
 new or returning, the page's path, where it was opened from and which rail
 the map dealt it. No id is made, no address is read, no
@@ -11461,7 +11458,7 @@ fingerprint is taken, and nothing in the table could tell one visitor from
 another. A browser that cannot write storage is counted as views and never as
 a visitor, which undercounts rather than counting a visitor per page; two
 browsers of one person are two visitors, and clearing site data makes a
-returning visitor new — the same limits GA had with a cookie in the date's
+returning visitor new — the same limits GA has with a cookie in the date's
 place. Bots mostly never reach it: the count is sent by the page's script and
 a crawler runs none.
 
@@ -11481,7 +11478,7 @@ sometimes takes the last stretch with it, so time and presses run slightly
 short and never long, and one stretch is capped at half an hour, so a tab left
 open on a desk all afternoon adds thirty minutes rather than five hours.
 **Time per visitor** is all the seconds over the visitors, which is what GA
-called average engagement time.
+calls average engagement time.
 
 ### The views that reported, and where a visit goes
 
@@ -11546,8 +11543,8 @@ reaches either table, `visitor_counts` or `flow_counts`. On the count's
 first days a few returning browsers, the owner's among them, were most of
 the returning visitors' minutes and presses, and a page about who comes to
 the site should not be read through the person who built it. It costs one
-session lookup per report. Signed out, the owner is a visitor like anybody —
-and `press_counts`, which ranks places and chips, still counts
+session lookup per report. Signed out, the owner is a visitor like anybody,
+as in GA — and `press_counts`, which ranks places and chips, still counts
 everyone, because it counts presses rather than people and says so.
 
 ### The language it was read in
@@ -11820,12 +11817,12 @@ on this page either: how people move from one step to the next is laid on
 the diagrams at `/admin/flows` — **The numbers on it** under **Who uses the
 site, drawn** — out of the same report this page is counted from. No
 browser breakdown, and no device finer than phone, tablet or desktop.
-`/admin/` sends nothing, so the owner reading this page is not counted by it,
-and the owner using the site signed in is not either — **When they come, on
-what, and not the owner** above. The two ran side by side from 28 September
-until Google's tag came out on the 30th, and did not match exactly — they
-counted different things by different means — which is a reason the site
-keeps one set of numbers rather than two. What a search visitor was searching for is not here either,
+Numbers will not match GA's exactly — GA and this count different things by
+different means — so the two are worth running side by side for a few weeks
+before Google's tag comes out. `/admin/` sends nothing, so the owner reading
+this page is not counted by it, and the owner using the site signed in is
+not either — **When they come, on what, and not the owner** above — where
+GA counts them. What a search visitor was searching for is not here either,
 and the next section says why it is not anywhere.
 
 ---
@@ -12053,7 +12050,7 @@ minutes in the colo per diagram and range and handed to the browser
 mean it. Three shapes — `page:map`, a page opened, by the ids `PAGES` in
 `_visitors.js` already tells apart; `view:map`, what that page counts as a
 view, a place on the map, a post on the blog, a deck on the flashcards;
-`save_place`, a press by the name it already reports to
+`save_place`, a press by the name it already reports to GA and to
 `/admin/visitors` — and a name that means something else on another page
 says which page it is on, `account_login@split`. A gateway never carries
 one: it is a question, not a thing that happens. A service step may, when a
@@ -12762,7 +12759,7 @@ differently.
 What is deliberately not here yet: a content policy. A
 `Content-Security-Policy` that names what may load would have to list Google
 Fonts, unpkg, CARTO's tiles, the Instagram, TikTok and YouTube players,
-Turnstile and Clarity, and a wrong line in it breaks a page
+Turnstile, Google Analytics and Clarity, and a wrong line in it breaks a page
 silently for everybody — so it starts as `Content-Security-Policy-Report-Only`
 with somewhere to send the reports, which is a change of its own. HSTS is not
 preloaded, because a preload is a promise to a list the browsers ship and
@@ -13097,8 +13094,8 @@ assets/pins.js             the eight markers, the five kinds of place, the six
 functions/api/_pins.js     the same ids, on the side that decides whether a
                            list may store them (not a route: leading _)
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
-assets/track.js            what a press reports to the site's own count, said
-                           once for every page that has a button
+assets/track.js            what a press reports to Google Analytics, said once
+                           for every page that has a button
 assets/radio.js            the station, and the on/off that survives a navigation
 assets/ask.js              a typed sentence read as a wish, for when the model
                            cannot: no DOM, no state, one global
@@ -14621,13 +14618,16 @@ the site's own numbers rather than only from Google's:
   two rails side by side — how many strangers each was dealt, the share of
   them that opened a place on that first visit, and a line saying whether
   the gap is bigger than chance yet — see **The two rails** under
-  **Visitors**. Returning visitors are there too, because
-- **every report carries the rail.** `assets/track.js` reads `ttb.layout` on
-  every page — the lists, the account page, feedback and the rest included,
-  since the visitor carries the rail with them — and sends it with the
-  page's reports to the site's own count, and once per page it tags the
-  Clarity session with the same word. So the count splits by rail, and a
-  recording can be filtered to the short rail's strangers alone.
+  **Visitors**. Returning visitors are there too, and in Google Analytics,
+  because
+- **every event carries `layout`.** `assets/track.js` reads `ttb.layout` on
+  every event, on every page — the lists, the account page, feedback and the
+  rest included, since the visitor carries the rail with them — and sends it
+  as a parameter, and once per page it tags the Clarity session with the
+  same word. So any report in **Analytics** splits by rail, and a recording
+  can be filtered to the short rail's strangers alone. `layout` needs
+  registering once as a custom dimension in GA's admin before the console
+  will break a report down by it, the way `place` and `style` did.
 
 ### Making it everybody's, or nobody's
 
@@ -14882,6 +14882,7 @@ data; those do not belong in a static site at all.
 | [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | `/p/<shortcode>/embed/`, whatever kind of post the permalink calls itself. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
+| [Google Analytics 4](https://developers.google.com/analytics) (gtag.js) | — | Google terms | Property `G-2XNTC15F28`. Counts, and takes the events `assets/track.js` sends. Loads on every page but `admin.html`, and sets cookies. |
 | [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
 | [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js` and `assets/split.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
 
@@ -14890,10 +14891,9 @@ both OpenStreetMap and CARTO. Do not remove it.**
 
 No scripts or fonts beyond the table above — the row below the last two is a
 drawing rather than a request, and nothing about it reaches Google until
-somebody presses it. Clarity sets cookies of its own the moment a page opens —
-`_clck` and `_clsk` — and see [No consent banner](#no-consent-banner) for why
-nothing is asked first. Google Analytics was in this table until 30 September
-2026; see [Analytics](#analytics) for why it went.
+somebody presses it. Those two set cookies of their own the moment a page
+opens — `_ga` and `_ga_*` for Google, `_clck` and `_clsk` for Clarity — and
+see [No consent banner](#no-consent-banner) for why nothing is asked first.
 Everything else stored on a visitor's device is seven `localStorage` keys and
 one cookie, all of them the
 visitor's own choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen` and
@@ -14924,44 +14924,36 @@ in front of somebody at a till.
 
 ### Analytics
 
-**The counting is the site's own.** `assets/track.js`, on every page in `PAGES`
-at the top of `tools/stamp.mjs`, tells `POST /api/stats` when a page opens and
-how long it was on screen, with the names of the presses `TTBTrack.event()` saw
-meanwhile, and that is what `/admin/visitors` and `/admin/found` are drawn
-from — see **Visitors** and **How they found it**. Every event name below is a
-row in that page's **What was pressed**. Microsoft Clarity is the one third
-party left watching, and it records rather than counts — **What Clarity adds**
-below.
+Google Analytics 4 is wired up, property `G-2XNTC15F28`. The tag lives in the
+`<head>` of every page — every one in `PAGES` at the top of
+`tools/stamp.mjs` — exactly as Google's console emits it. It used to be on
+the map alone, which made the map the only page GA had heard of; the lists,
+the account page, the directory, the three pass pages and splitwise were
+invisible, and so was every press on any of them.
 
-**Google Analytics was taken out on 30 September 2026.** Property
-`G-2XNTC15F28` was on every page from `assets/analytics.js` and took every
-event below as well, and by then it answered nothing the site's own count did
-not: who came and from where, new against returning, pages, time on screen,
-presses, the countries, the languages, the search engines and the addresses
-they sent people to. What it cost was a third party's cookie — `_ga` and
-`_ga_*` — on every visitor's device with nobody asked, a script from
-googletagmanager.com on every page load, and a second set of numbers that
-never quite agreed with the first. The property still holds what it gathered
-until then; nothing sends it anything now. `track.js` still reads the day out
-of an old `_ga` cookie where a browser carries one, since that is the one
-place a returning visitor from before the count began is remembered — see
-**Visitors**.
+**The same file also counts for the site itself.** Besides GA, `assets/track.js`
+tells `POST /api/stats` when a page opens and how long it was on screen, with
+the names of the presses `TTBTrack.event()` saw meanwhile, and that is what
+`/admin/visitors` and `/admin/found` are drawn from — see **Visitors** and
+**How they found it**. It does not check for
+Google's tag, so taking GA out leaves it running; every event name below is
+also a row in that page's **What was pressed**.
 
-A count of addresses would say almost nothing here. The map is one address on
-which everything happens, and even the pages that do change address are
-mostly buttons that change nothing in the address bar. So every deliberate
-press on every page is reported as an event, through the one global
+The tag on its own records one view per address, and that is where its
+usefulness ends. The map is one address on which everything happens, and
+even the pages that do change address are mostly buttons that change nothing
+in the address bar. GA only ever sees a URL. So every deliberate press on
+every page is reported as an event, through the one global
 `assets/track.js` sets — `TTBTrack.event(name, params)`, and
-`TTBTrack.click(node, name, params)` for a link or button built inline — and
-each page's reports carry `layout`, which rail this browser was dealt on the
-map (**The short rail**), so the count can be split by it; Clarity gets the
-same word as a tag, so its recordings can be too. Opening a place on the map
-is counted as a view of its own through `TTBTrack.view()`, and the place is
-counted by name on `/admin/stats` — which is the popularity ranking of the
-map. The parameters an event is called with are kept at every call site:
-the count reads some of them — the language a switch went to, the words
-typed into a search — and they are the record of what each press means. The
-links written straight into the
+`TTBTrack.click(node, name, params)` for a link or button built inline —
+every one of them carrying `layout`, which rail this browser was dealt on the
+map (**The short rail**), so any report below can be split by it — and
+Clarity gets the same word as a tag, so its recordings can be too —
+and opening a place on the map is reported as a page view of its own,
+titled with the place and pointing at its `?spot=` URL, through
+`TTBTrack.view()`. Those views land in GA's standard **Pages and screens**
+report with no configuration in the console, which means the report doubles
+as a popularity ranking of the map. The links written straight into the
 markup — the wordmark, the Instagram link, the mark on a pass — carry the
 event's name as a `data-track` attribute, and `track.js` wires them itself.
 
@@ -14974,6 +14966,7 @@ The map, `assets/app.js`:
 
 | event | parameters |
 | --- | --- |
+| `page_view` | one per opened place: `page_title` is the place, `page_location` its `?spot=` URL |
 | `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
 | `filter_clear` | `filters`, `filter_count`, `places_shown` |
 | `filters_open`, `filters_close` | — |
@@ -15122,12 +15115,14 @@ The statistics, `assets/stats.js`: nothing but `home`, the wordmark, which
 `track.js` wires from its `data-track`. There is nothing else on the page to
 press — it is three tables of numbers and a link per place — and the presses
 it is *about* are reported by the pages they happen on, not by this one. Its
-own counts are what **Statistics** is for.
+own counts do not go to GA at all and are not meant to: **Statistics** is what
+they are for, and that is the site keeping a number GA cannot be asked for.
 
 The blog, `assets/blog.js`:
 
 | event | parameters |
 | --- | --- |
+| `page_view` | one per post opened in the page: `page_title` is the post, `page_location` its `?post=` URL |
 | `blog_post` | `post` — a row on the index |
 | `blog_all` | — the way back to the index |
 | `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
@@ -15170,6 +15165,7 @@ Flashcards, `assets/flashcard.js`:
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
 | `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
+| `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
 | `flash_lesson_read` | `lesson_id` — Got it at the foot of a lesson, read before or not — see **Grammar, which is read rather than turned over** |
@@ -15238,8 +15234,10 @@ page, the blog, the feedback page, a deal, a page of links and its editor:
 | --- | --- |
 | `swipe_back` | `can_go_back` (`1`/`0`) — a thumb dragged to the right, answered as Back; `0` is the one that went to the map instead because there was no entry behind. See **A swipe to the right is Back** |
 
-They appear on `/admin/visitors` under **What was pressed** by name, with
-nothing to register first.
+They appear under **Reports → Engagement → Events** on their own. To break the
+numbers down by a parameter — which chip, which language, which list — register
+it once in **Admin → Custom definitions** as a custom dimension; GA only
+collects parameters from that point on, so it is worth doing early.
 
 **Back.** Opening a place is a step you can come back from, so it gets a
 history entry of its own; a filter, a language or a colour rewrites the entry
@@ -15258,13 +15256,13 @@ standing on the place that was shared. Whatever entry the browser lands on,
 `popstate` matches it and writes nothing back.
 
 The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
-a link worth sending, and the address the landing is counted at names the
-filters.
+a link worth sending, and the landing page view GA records for it names the
+filters, so shared filtered links show up in **Pages and screens** too.
 
 #### What Clarity adds
 
-Counting has a floor. The site's own count can say that eleven people opened
-the filters and two pressed a chip. They cannot say that the other nine
+Counting has a floor. GA and the events beside it can say that eleven people
+opened the filters and two pressed a chip. They cannot say that the other nine
 scrolled the row to its end and found nothing they wanted, or that the chip
 they were after was the one cut off at the edge at 390px. A count says a thing
 did not happen and then has nothing further to offer about why.
@@ -15274,14 +15272,13 @@ records the page rather than counting it: heatmaps of where presses and scrolls
 actually land, and a replay of the DOM as it changed through a visit. On a site
 that is one address with everything happening on it, the replay is the part
 that earns its place — it follows a single visit through the filters, the
-panel and the chat, none of which a count can see as anything but events in a
-list.
+panel and the chat, none of which GA can see as anything but events in a list.
 
-It loads from `assets/analytics.js` — one file rather than a snippet pasted
-into every head, and the file that carried Google's tag as well until that
-came out. Every page in `PAGES` at the top of `tools/stamp.mjs` carries it.
-`admin.html` deliberately does not: the only visits it could record are the
-owner's own, and it is the page holding a GitHub token.
+It loads from `assets/analytics.js`, which is also where the Google tag lives
+— one file rather than two snippets pasted into every head. Every page in
+`PAGES` at the top of `tools/stamp.mjs` carries it. `admin.html` deliberately
+carries neither tag: the only visits it could record are the owner's own, and
+it is the page holding a GitHub token.
 
 **Every press is a Clarity event too.** A heatmap says where on the screen
 clicks landed and a replay says what one visit did; neither can say which
@@ -15541,15 +15538,16 @@ rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
 preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
-To remove Clarity, delete the `assets/analytics.js` script tag from every page
-that carries it, and the file. Everything in `track.js` checks for
-`window.clarity` before calling it — which is what already happens for a
-visitor running an ad blocker — so none of the call sites has to change, and
-the site's own count goes on as it was.
+To remove tracking entirely, delete the `assets/analytics.js` script tag from
+every page that carries it, or the file. Everything in `track.js` checks for
+`window.gtag` and returns quietly when it is missing — which is what already
+happens for a visitor running an ad blocker — so every call site becomes a
+harmless no-op and none of them has to change. To remove one tag and keep the
+other, delete its half of the file.
 
 ### No consent banner
 
-**Clarity loads on sight, and nothing is asked first.** There was a banner
+**Both tags load on sight, and nothing is asked first.** There was a banner
 here for a day — first a bar with one sentence and two buttons, then a dialog
 listing what was used regardless and what agreeing added on top — and it was
 taken out on purpose. The reasoning is kept because the decision is easier to
@@ -15558,9 +15556,8 @@ re-make than to re-derive.
 The rule it was built for has not changed. Estonia applies the EU ones, and
 ePrivacy asks about *writing to somebody's device*, not about whether what you
 write is personal data — which is why "we do not collect anything" was never
-the answer it sounded like. `_clck` and `_clsk` are written with nobody asked
-— and until 30 September 2026 Google's `_ga` and `_ga_*` were too — and a
-session replay is a recording of somebody's visit.
+the answer it sounded like. `_ga`, `_ga_*`, `_clck` and `_clsk` are written
+with nobody asked, and a session replay is a recording of somebody's visit.
 Putting the question back is a revert rather than a project: `git log` has
 both versions of it.
 
@@ -15577,9 +15574,10 @@ last day this browser opened a page here, and `ttb.since`, the first, which
 is how **Visitors** tells a visitor from a view and a returning one from a
 new one without an id. They are first-party, never sent as themselves and
 read by nothing else, which is a much
-smaller thing than a third-party tag and a session replay — but it is
+smaller thing than two third-party tags and a session replay — but it is
 still a write to the device for the purpose of counting, and it is in the
-same question as Clarity is. Taking Clarity out leaves them the only ones.
+same question as they are. Taking Google and Clarity out leaves them the
+only ones.
 
 It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
 which is deprecated. The object carries **both spellings** of its two keys —

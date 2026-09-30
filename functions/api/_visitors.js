@@ -2,11 +2,11 @@
  * Tallinn Tastebuds — who came to the site, roughly, and what they did.
  *
  * /admin/visitors is drawn out of this file and nothing else. It answers the
- * questions Google Analytics used to be open in a tab to answer — how many people
+ * questions Google Analytics is open in a tab to answer — how many people
  * came each day, how many had been before, from which country and from
  * where, which pages they read and for how long, and what they pressed — out
- * of the site's own database, which is why Google's tag could come out, on
- * 30 September 2026, without the numbers going with it. Not to be confused with ./_visits.js, which is the same
+ * of the site's own database, so the day Google's tag comes out the numbers
+ * do not go with it. Not to be confused with ./_visits.js, which is the same
  * idea for one person's /u/<name> and is read by that person on /insights;
  * this is the whole site, and it is the owner's.
  *
@@ -27,7 +27,7 @@
  * this browser opened a page here. A page opened on a day that is not that
  * one is the browser's first today, and it says so with `first`; `back` is
  * whether there was an earlier day at all — by `ttb.since`, the first day it
- * came, which the page takes from an old Google `_ga` cookie where one remembers
+ * came, which the page takes from Google's `_ga` cookie where that remembers
  * an earlier one, since this count is younger than the site (arrive() in
  * assets/track.js). That is the whole of it. No id is
  * sent, no address is read, no fingerprint is made, and nothing here could
@@ -38,10 +38,10 @@
  * off is never a visitor, only views — undercounted rather than counted on
  * every page. Two browsers are two visitors, a phone and a laptop of the same
  * person included, and clearing site data makes a returning visitor new
- * again. GA had every one of the same limits with a cookie in place of the
- * date, which is to say this and GA agreed to within a few percent while both ran,
+ * again. GA has every one of the same limits with a cookie in place of the
+ * date, which is to say this and GA should agree to within a few percent,
  * and when they do not, bots are the usual reason: a crawler that runs no
- * script never reaches this at all, and GA filtered only the ones it knew.
+ * script never reaches this at all, and GA filters only the ones it knows.
  *
  * The date is written on to the visitor's device, and whether that needs
  * asking first is a question about the law rather than about this file.
@@ -169,7 +169,7 @@
  * the owner's among them, were most of the returning visitors' minutes
  * and presses, and a page about who comes to the site should not be read
  * through the person who built it. Signed out, the owner is a visitor
- * like anybody, as they were in GA.
+ * like anybody, as in GA.
  *
  * NEW AGAINST RETURNING
  *
@@ -323,7 +323,8 @@
  * so these are picked out of the whole report rather than out of the first
  * twenty. Nothing typed is in any of it: the error is one of the words
  * ./account.js answers, and a word not on the list is not counted here. A
- * name also rides on the press kind as every press does. Pages, not people, as
+ * name also rides on the press kind as every press does, and GA hears it
+ * with the view and the reason as parameters. Pages, not people, as
  * everything here is: a funnel of counts, never one person's way through it.
  *
  * THE LAST HALF HOUR
