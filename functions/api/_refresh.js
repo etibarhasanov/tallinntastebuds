@@ -17,8 +17,9 @@
  * place nobody opens costs nothing. A queue ordered by press_counts would work
  * out the same order the long way round; this is that order without the queue,
  * without a cron, and without a second thing to deploy. It rides on the one
- * request that already happens at that moment — the POST that counts the open,
- * in functions/api/stats.js — and runs after that answer has gone out, through
+ * request that already happens at that moment — the POST that reports the
+ * open, in functions/api/stats.js, which counts one on the map and not one on
+ * the owner's directory — and runs after that answer has gone out, through
  * waitUntil, so nobody ever waits on Google. The visitor who triggers a refresh
  * sees the row as it was; the next one sees it fresh.
  *

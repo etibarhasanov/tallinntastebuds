@@ -4322,7 +4322,9 @@ one.
 When a place whose Google numbers the site prints is opened — a card on
 `/admin/google`, a Google place on the map, or one of the sixty-four places of mine the
 export also lists, whose panel ends "According to Google" (**Google, on a place
-of mine**) — the page tells `/api/stats` so the open is counted. For a place of
+of mine**) — the page tells `/api/stats`: an open on the map is counted, and a
+card on the directory, which only the owner can open, is not (**It counts
+opens, and an open is a gesture** under **Statistics**). For a place of
 mine the Google row is found by `map_id`, the same way that panel finds it. If
 the row's `refreshed_at` is empty or more than thirty days old, the same
 request, after its answer has gone, asks Google's Place Details about that one
@@ -11084,7 +11086,7 @@ the feedback page listens; this is the one that counts.
 One page, the frame every page that is not the map wears — the brand header,
 the 640px column, the cards — and five tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
-zeros in it, then the Google venues somebody has pressed, then all fourteen
+zeros in it, then the Google venues somebody has opened on the map, then all fourteen
 filter chips, then the nine pills across the rail's two shapes, then every
 list anybody has opened with where they opened it from — see **Which lists,
 and from where** below — then the
@@ -11130,24 +11132,35 @@ put a preview `users.id` there to drive the page under `wrangler pages dev`.
 
 ### It counts opens, and an open is a gesture
 
-Five gestures, and no others:
+Four gestures, and no others:
 
 | What | Where | Counted as |
 | --- | --- | --- |
-| a place opened on the map | `selectPlace()` in `assets/app.js` | `place`, the slug |
-| a card pressed on the directory | `select()` in `assets/venues.js` | `place`, the Google key |
+| a place opened on the map | `selectPlace()` in `assets/app.js` | `place` — the slug for one of mine, Google's key for one of Google's the find bar put there |
 | a chip turned on | `applyFilters()` in `assets/app.js` | `filter`, the type id or `discount` |
 | a public list's page drawn | `boot()` in `assets/lists.js` | `list`, the list id |
 | a pill on the rail pressed | `countRailPress()` in `assets/app.js`, and the rows behind **More** in `renderMore()` | `rail`, one of the nine ids |
 
-**The list is not on this page**, and it is the only one of the five that is
-not. A list opened is counted into the same table under `kind = 'list'`, and
-what reads it is `/lists`, which puts the most opened list at the top — see
-**Public lists**. It is not in the ranking here because this page is about
-restaurants: a table of lists under a table of places would be two different
-questions sharing a heading, and the number is deliberately not drawn on the
-directory's rows either. It is also left out of the total at the foot of this
-page, the way the filters are.
+**A card pressed on the directory is not one of them.** It was, as a
+`place` under Google's key, while `/google` was anybody's page. Since the
+directory became the owner's alone — **The directory** — every one of those
+presses was the owner's own look through Google's list, and the second
+table here ranked it beside the city's opens on the map, and the total
+under the tables added it in. So `select()` in `assets/venues.js` now sends
+a `venue`, which `POST /api/stats` counts nowhere and carries only for the
+other thing an open does: asking Google whether the row's numbers still
+hold, **Keeping it current** under **Google venues**. The owner opening a
+place on the map is still counted, like anybody's open, since that is the
+same gesture a visitor makes — **Presses, not people** below.
+
+**The list has a table of its own**, the fifth, rather than a row in the
+ranking of places. A list opened is counted into the same table under
+`kind = 'list'`, and what else reads it is `/lists`, which puts the most
+opened list at the top — see **Public lists**. It is not among the places
+because this page is mostly about restaurants and a list is somebody's page,
+and the number is deliberately not drawn on the rows of `/lists`. It is
+left out of the total at the foot of this page, the way the filters are —
+**Which lists, and from where** below is its table.
 
 A row on somebody's list, a search that narrows to one name, a pin passed
 over: none of those is somebody asking for a restaurant, and counting them
@@ -11176,7 +11189,7 @@ page view in GA.
 
 ### The rail is the one that counts every press
 
-The other four gestures are one question asked once. A pill is not: the
+The other three gestures are one question asked once. A pill is not: the
 question **Buttons on the map** exists to answer is the plain one — which of
 the buttons down the left of the map do people actually push, and how
 often — and counting a press once a load would answer "how many visits pressed

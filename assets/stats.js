@@ -3,7 +3,7 @@
  * Five tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
  * are the answer, which is why it is the whole ranking rather than a top ten.
- * Then Google's directory, only the venues somebody has actually pressed. Then
+ * Then Google's directory, only the venues somebody has opened on the map. Then
  * the filter chips, in full, which is the table that argues about the order of
  * the chip row: see **The order of the filter chips** in README.md. Then the
  * nine pills across the map's two rails, in full, which is the table that
@@ -18,11 +18,13 @@
  *
  * WHERE THE NUMBERS COME FROM
  *
- * Pressing something posts to /api/stats, from five places: selectPlace() in
- * assets/app.js opens a place on the map, applyFilters() in the same file
- * turns a chip on, countRailPress() in the same file again presses a pill on
- * the rail, select() in assets/venues.js presses a card on the directory, and
- * countOpen() in assets/lists.js opens a list. The first, second and fourth
+ * Pressing something posts to /api/stats, from four places: selectPlace() in
+ * assets/app.js opens a place on the map — one of its own, or one of Google's
+ * the find bar put there — applyFilters() in the same file turns a chip on,
+ * countRailPress() in the same file again presses a pill on the rail, and
+ * countOpen() in assets/lists.js opens a list. A card pressed on the
+ * directory is not among them: only the owner can open that page, and
+ * functions/api/stats.js says what it asks for instead. The first two
  * are counted once per page load, the way TTBTrack.view() reports one page
  * view per opened place and no more, so comparing three places is three and
  * pressing back and forth is not thirty. A pill is counted every press,

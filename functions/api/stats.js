@@ -27,11 +27,11 @@
  *
  * Five kinds, which is the whole of `kind` in db/schema.sql:
  *
- *   place    a place opened. selectPlace() in assets/app.js, which is the
- *            same moment TTBTrack.view() reports one to Google Analytics, and
- *            select() in assets/venues.js, which is a card pressed on the
- *            directory. Those are the two gestures on this site that mean
- *            "show me this place".
+ *   place    a place opened on the map — selectPlace() in assets/app.js,
+ *            which is the same moment TTBTrack.view() reports one to Google
+ *            Analytics — whether one of the map's own, by its slug, or one of
+ *            Google's the find bar put there, by Google's key. That is the
+ *            gesture on this site that means "show me this place".
  *   filter   a chip on the map turned on — applyFilters() in assets/app.js,
  *            which is every chip on the row and nothing else. Turning one off
  *            is not a press of it, and All is not a filter: it is the way out
@@ -83,6 +83,15 @@
  * order they came, into flow_counts by ./_flows.js, which is what puts the
  * numbers on the diagrams /admin/flows draws.
  *
+ * And one kind counted nowhere: `venue`, a card pressed on /admin/google.
+ * Only the owner can open the directory, so every one of those presses was
+ * the owner's own look through Google's list, and while they were counted
+ * as a `place` they sat in the ranking of Google's venues on /admin/stats
+ * beside the city's opens on the map, and in the total under it. It is
+ * carried only for the other thing an open does, which is to ask Google
+ * whether the row's numbers still hold — refreshOnOpen() at the foot of the
+ * POST.
+ *
  * Nothing else does. A row on somebody's list, a search that narrows to one
  * name, a pin hovered on the way past: none of them is somebody asking for a
  * restaurant, and counting them would make the number mean less rather than
@@ -132,11 +141,13 @@ export const FILTER = 'filter';
 export const LIST = 'list';
 export const RAIL = 'rail';
 export const LAYOUT = 'layout';
-/* And four that are not counted here at all but handed on — see the POST. */
+/* And four that are not counted here at all but handed on — see the POST —
+   and one counted nowhere, which only asks Google — see the header. */
 const PROFILE = 'profile';
 const PROFILE_PRESS = 'profile-press';
 const ARRIVE = 'arrive';
 const LEAVE = 'leave';
+const VENUE = 'venue';
 
 /* The pills on the rail, top to bottom as index.html stands them, each with
    the string data/ui.json already names it by — the same string the button
@@ -207,7 +218,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -243,6 +254,16 @@ export async function onRequestPost(context) {
   if (kind === LEAVE) {
     const [counted] = await Promise.all([countLeave(context, body), countFlows(context, body)]);
     return json({ ok: counted }, 200);
+  }
+
+  /* A card pressed on the directory — the owner's, see the header. Counted
+     nowhere, and still a Google place somebody is reading the numbers of, so
+     worth asking about the way an open on the map is. refreshOnOpen() looks
+     the id up itself and stops at one that is not a row, so a hand-written
+     one costs the query realPlace() would have. */
+  if (kind === VENUE) {
+    context.waitUntil(refreshOnOpen(env, id));
+    return json({ ok: false }, 200);
   }
 
   const real = kind === PLACE ? await realPlace(context, id)
@@ -300,13 +321,13 @@ export async function onRequestPost(context) {
    real rows: without it, it fills with whatever anybody posts and the ranking
    has to start explaining rows it cannot name. A slug is checked against the
    map for nothing — the roll is already in memory — and a Google key costs one
-   lookup on the primary key of google_venues, which is the price of the
-   directory's half being counted at all.
+   lookup on the primary key of google_venues, which is the price of Google's
+   places opened on the map being counted at all.
 
    `hidden` is honoured: a row kept out of the picker is a duplicate or a car
    park Google thinks is a restaurant, and it has no business in a ranking.
-   Nothing can reach one on the directory in any case, so this is belt and
-   braces on a hand-written request. */
+   Nothing can reach one on the map in any case, so this is belt and braces
+   on a hand-written request. */
 async function realPlace(context, id) {
   const { env } = context;
   let known;

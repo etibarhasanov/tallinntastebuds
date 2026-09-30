@@ -784,27 +784,29 @@
     dots = window.L.layerGroup().addTo(map);
   }
 
-  /* ------------------------------------------------- how often it is opened
-   * A venue pressed is one row on /admin/stats, the way a place opened on the map
-   * is: same route, same rule, and the same silence around it. Once per venue
-   * per load — `counted` — because pressing a card lights it and pressing it
-   * again puts it out, and a ranking of how often somebody toggled a card is
-   * a ranking of nothing.
+  /* ---------------------------------------------- the numbers kept current
+   * A card pressed here is a Google place somebody is reading the numbers
+   * of, which is the moment functions/api/_refresh.js asks Google whether its
+   * rating, reviews and week still hold — the same moment an open on the map
+   * is. So the site is told, through the route every press goes to, as a
+   * `venue` rather than a `place`: only the owner can open this page, and
+   * while a press here counted as an open, the owner's own look through
+   * Google's list sat on /admin/stats beside the city's opens on the map.
+   * functions/api/stats.js says what a `venue` is.
    *
-   * Google's places are the second table on that page rather than the first,
-   * and functions/api/stats.js says why: the map is seventy-odd places this
-   * site has been to and this is eleven hundred it has not. Nothing waits on
-   * the answer and the page draws the same either way. */
-  var counted = {};
+   * Once per venue per load — `asked` — because pressing a card lights it and
+   * pressing it again puts it out. Nothing waits on the answer and the page
+   * draws the same either way. */
+  var asked = {};
 
-  function countOpen(id) {
-    if (counted[id]) return;
-    counted[id] = true;
+  function askRefresh(id) {
+    if (asked[id]) return;
+    asked[id] = true;
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind: 'place', id: id })
-    }).catch(function () { /* the ranking misses one, the card still opened */ });
+      body: JSON.stringify({ kind: 'venue', id: id })
+    }).catch(function () { /* the numbers wait for the next open, the card still opened */ });
   }
 
   /* ------------------------------------------------------------ selecting */
@@ -822,7 +824,7 @@
           break;
         }
       }
-      countOpen(id);
+      askRefresh(id);
     }
 
     /* A dot can be pressed for a place whose card has not been built yet: the
