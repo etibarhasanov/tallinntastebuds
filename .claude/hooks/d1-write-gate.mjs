@@ -202,7 +202,12 @@ function primaryKeys(root) {
      identifier here that Google guarantees" once read as a column called `is`.
      So the comments come off before anything is matched. */
   const sql = schema.replace(/--[^\n]*/g, '');
-  const tables = sql.matchAll(/create\s+table\s+(?:if\s+not\s+exists\s+)?([a-z_0-9]+)\s*\(([\s\S]*?)\n\)\s*;/gi);
+  /* A table ends at the `)` that opens its own line, and whatever follows it
+     up to the semicolon — `WITHOUT ROWID` on three of them. Matching only a
+     bare `);` there read past visitor_counts into the next three tables, so
+     users, visitor_live and flow_counts had no key and every write to them
+     was refused however few rows it named. */
+  const tables = sql.matchAll(/create\s+table\s+(?:if\s+not\s+exists\s+)?([a-z_0-9]+)\s*\(([\s\S]*?)\n\)[^;\n]*;/gi);
   for (const [, table, body] of tables) {
     const composite = body.match(/\bprimary\s+key\s*\(([^)]+)\)/i);
     if (composite) {
@@ -370,6 +375,10 @@ const CASES = [
   ['ask', "INSERT INTO google_venues (place_id, name) VALUES ('x', 'y') ON CONFLICT(place_id) DO UPDATE SET name = excluded.name"],
   ['ask', "DELETE FROM list_items WHERE list_id = 'l1' AND place_id IN ('a', 'b', 'c')"],
   ['ask', "UPDATE lists SET title = 'x' WHERE id = 'l1'"],
+  /* users comes after a table that ends `) WITHOUT ROWID;`, which once hid
+     its key from the reader and refused this outright. */
+  ['ask', "UPDATE users SET links = '' WHERE id = 'u1'"],
+  ['ask', "UPDATE visitor_live SET n = 0 WHERE slot = 3"],
   /* Over twenty and under a hundred: it runs, with the count in the prompt. */
   ['ask', `UPDATE google_venues SET cuisine = 'Burgers' WHERE place_id IN (${Array.from({ length: 49 }, (_, i) => `'id${i}'`).join(', ')})`],
   /* The line itself. */
