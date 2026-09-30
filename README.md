@@ -2200,7 +2200,11 @@ every profile — because a profile is handed out as a link to people in other
 countries, and what its owner wrote can be in their language: **Your page, in
 other languages** under **Profiles**. There, picking a language stores it
 where the map's switch does and loads the page again with `?lang=`, since
-every view on that page is drawn from words and data fetched for one language.
+every view on that page is drawn from words and data fetched for one language. On a profile it offers only the languages that page is written in — the
+site's default, taken to be the one it was first written in, and every
+language its line or a row has a version in — so a page written in English,
+Azerbaijani, Russian and Estonian offers those four, and a page written in
+one offers none and draws no switch; `pageWrittenIn()` in `assets/lists.js`.
 The account page and splitwise still read the map's choice and have none of
 their own; nobody has asked for them yet.
 
