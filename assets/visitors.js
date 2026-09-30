@@ -8,7 +8,8 @@
  * day, phone against desktop, the countries, where they came from and the
  * languages they read in. Then what a new visitor
  * does against a returning one, then the two rails against each other, and
- * last what was done — pages, where a visit begins and goes, and presses.
+ * last what was done — pages, where a visit begins and goes, presses, and
+ * which stories, posts, decks and discounts were opened.
  * The shape is the one /insights already has, because it is the same kind
  * of question and the owner has met that page; the rows, the figures and
  * the chart borrow its classes and /admin/stats' out of assets/stats.css.
@@ -478,6 +479,35 @@
     return table;
   }
 
+  /* Which stories, posts, decks and discounts — WHAT IT WAS ABOUT in
+     functions/api/_visitors.js: the stories with how many came up and how
+     many were watched to the end, the posts and the decks as rankings, and
+     the discounts with the passes shown and the scans that said yes. Each
+     under the name its page wears in the pages table, and by the id in the
+     file it ships in, which reads as what it is. Left out until any of it
+     has been counted, and on an answer from before it was. */
+  function whatOpened() {
+    var a = state.data.about;
+    if (!a || !(a.stories.length || a.posts.length || a.decks.length || a.deals.length)) return null;
+    var id = function (r) { return r.id; };
+    var under = function (key) { return el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }); };
+    var kids = [
+      el('h2', { className: 'lists-title', textContent: t('visitorsAbout') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsAboutLead') })
+    ];
+    if (a.stories.length) {
+      kids.push(under('storiesTitle'), grid(t('storiesTitle'), [t('visitorsCameUp'), t('visitorsWatched')], a.stories, id,
+        function (r) { return [num(r.up), num(r.watched)]; }));
+    }
+    if (a.posts.length) kids.push(under('blogTitle'), ranked(a.posts, id));
+    if (a.decks.length) kids.push(under('flashDoor'), ranked(a.decks, id));
+    if (a.deals.length) {
+      kids.push(under('passTitle'), grid(t('passTitle'), [t('visitorsOfferShown'), t('visitorsVerified')], a.deals, id,
+        function (r) { return [num(r.shown), num(r.verified)]; }));
+    }
+    return card(kids);
+  }
+
   /* The pages, each with its views, the time a view stayed and the share of
      views on which nothing was pressed. Time is over the views that reported
      how they ended where a page has any — THE VIEWS THAT REPORTED in
@@ -899,6 +929,8 @@
       if (d.presses.length) {
         stack.appendChild(ranking(t('insightsPressed'), d.presses, function (r) { return r.id; }, true));
       }
+      var opened = whatOpened();
+      if (opened) stack.appendChild(opened);
     }
 
     stack.appendChild(el('div', { className: 'stats-totals' }, [

@@ -189,7 +189,12 @@ accepts, and a new page that loads `track.js` is counted there with nothing
 more to do, once its path is named in `PAGES` in that file. Name it in the
 same commit: an address `PAGES` does not claim is counted as the map, which
 is what Pages serves at one, and `node tools/validate.mjs` fails a page that
-loads `track.js` without it.
+loads `track.js` without it. The site's count keeps a press's name and never
+its parameters, so a page that shows one of the owner's things — a story, a
+post, a deck, a discount — also says which through `TTBTrack.about(what,
+id)`, once a load, and `ABOUT` in `functions/api/_visitors.js` holds the id
+to the file it ships in: **What was opened** under **Visitors** in
+`README.md`.
 
 **And every page a visitor walks back from carries `assets/back.js`**, after
 `track.js` and before the page's own script: a swipe to the right from

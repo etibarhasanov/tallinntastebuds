@@ -51,6 +51,11 @@
       /* The verdict is the whole page, so it is the report: how often a
          scan says yes, and what the no's were. */
       TTBTrack.event('pass_verify', { place: result.deal ? result.deal.name : placeId, status: result.status });
+      /* A yes is a discount used at the table: which place's, for the site's
+         own count — WHAT IT WAS ABOUT in functions/api/_visitors.js. A deal
+         still in the drawer is the owner trying it, and is left out, the way
+         deal.html leaves out its pass. */
+      if (ok && result.deal && result.deal.live) TTBTrack.about('verified', placeId);
 
       P.clear(card);
 

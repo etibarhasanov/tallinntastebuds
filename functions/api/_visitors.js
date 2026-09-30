@@ -228,6 +228,29 @@
  * thought — was still a question asked and still Neurons spent, and
  * `resting` is the count of how often the day's allowance ran out.
  *
+ * WHAT IT WAS ABOUT
+ *
+ * A press name says what was done and never to what: `story_view` is a
+ * story come up, and which one is a parameter Google hears and this table
+ * does not. So for the four things the owner makes and wants to know the
+ * reach of, a page also says which, through TTBTrack.about() in
+ * assets/track.js, once per thing per load, on the report it next sends —
+ * and it is counted under the `about` kind as `<what>:<id>`:
+ *
+ *   story     a story came up on the map
+ *   watched   ... and was watched to the end, as story_watch judges it
+ *   post      a post on the blog was read, however the reader arrived at it
+ *   deck      a deck, a grammar lesson or a song opened on the flashcards —
+ *             never a deck of somebody's own, which is theirs alone
+ *   pass      a discount's pass was put in front of somebody on deal.html,
+ *             a deal switched on only
+ *   verified  the staff's scan of one said yes, on verify.html
+ *
+ * Every id is checked against the file the site ships it in — ABOUT says
+ * which — so the kind is a closed list the size of what there is, never
+ * whatever a request says, and a story taken down stops being counted with
+ * it. Nothing about who: a thing opened, a day, a number.
+ *
  * WHAT THE PRODUCTS WERE USED FOR, AND BY HOW MANY
  *
  * Most of the site's tables hold what is there now rather than what
@@ -270,7 +293,8 @@
  * written here — forty ids a day at the most between the `cohort` and
  * `layout` kinds, and ten for `ask` — and so are the steps of SIGNING UP,
  * a page's worth of them for each page that has a form; the languages are
- * the ones data/ui.json speaks. The countries, the sources, the presses,
+ * the ones data/ui.json speaks, and WHAT IT WAS ABOUT is the stories, posts,
+ * decks and deals the site ships. The countries, the sources, the presses,
  * the languages browsers ask for, `found` and the four kinds of HOW THEY
  * FOUND IT are not — a host, a press name or a search is whatever the
  * request says — so each of those kinds takes at most MAX_IDS ids a day,
@@ -357,7 +381,7 @@
  */
 
 import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_visits.js';
-import { uiStrings, hmacHex } from './_lib.js';
+import { uiStrings, dataFile, hmacHex } from './_lib.js';
 import { adminIds } from './_admin.js';
 
 /* The ranges the page offers, in days. 1 is today so far. */
@@ -445,6 +469,18 @@ const DEVICES = ['phone', 'tablet', 'desktop'];
    nothing (no model, or an answer that could not be read), and resting
    (the day's allowance spent). */
 const ENDINGS = ['places', 'words', 'none', 'resting'];
+
+/* What a page can say it was about — WHAT IT WAS ABOUT — each with the file
+   whose ids it is held to, and the most one report may carry. */
+const ABOUT = {
+  story: '/data/stories.json',
+  watched: '/data/stories.json',
+  post: '/data/blog.json',
+  deck: '/data/decks.json',
+  pass: '/data/deals.json',
+  verified: '/data/deals.json'
+};
+const MAX_ABOUT = 20;
 
 /* The products countUse() is called for — WHAT THE PRODUCTS WERE USED FOR,
    AND BY HOW MANY. `map` is the saves, which are made on the map. */
@@ -683,6 +719,37 @@ function searchFacts(body) {
   return facts;
 }
 
+/* The `about` facts a report carries — WHAT IT WAS ABOUT — each held to the
+   ids of the file ABOUT names for it, which is read only when a report
+   names something out of it, through the cache every data file is read
+   through. */
+async function aboutFacts(context, body) {
+  const sent = Array.isArray(body.about) ? body.about.slice(0, MAX_ABOUT) : [];
+  const shipped = {};
+  const facts = [];
+  for (const key of sent) {
+    const at = typeof key === 'string' ? key.indexOf(':') : -1;
+    const file = at > 0 ? ABOUT[key.slice(0, at)] : null;
+    if (!file) continue;
+    if (!shipped[file]) shipped[file] = idsIn(context, file);
+    if ((await shipped[file]).has(key.slice(at + 1))) facts.push(['about', key, 1]);
+  }
+  return facts;
+}
+
+/* The ids a data file ships: the stories, the posts and the deals are an
+   array each, and the flashcards' file holds its decks, lessons and songs
+   under three keys. None, where the file cannot be read. */
+async function idsIn(context, file) {
+  try {
+    const doc = await dataFile(context, file);
+    const rows = Array.isArray(doc) ? doc : [].concat(doc.decks || [], doc.lessons || [], doc.songs || []);
+    return new Set(rows.filter((r) => r && typeof r.id === 'string').map((r) => r.id));
+  } catch (e) {
+    return new Set();
+  }
+}
+
 /* One page opened, into this minute's slot — THE LAST HALF HOUR. */
 async function countLive(env) {
   const minute = minuteNow();
@@ -722,7 +789,9 @@ export async function readLive(env) {
    `lang` the language it arrived in. `opened` is true on a page's first
    report, `trail` the names pressed on it so far and `earlier` the step
    before — the three ./_flows.js reads, read here for THE VIEWS THAT
-   REPORTED and WHERE A VISIT GOES. */
+   REPORTED and WHERE A VISIT GOES. `searches` is what was typed into a
+   search field, HOW THEY FOUND IT, and `about` what the page said it was
+   about, ['<what>:<id>'] — WHAT IT WAS ABOUT. */
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -764,6 +833,7 @@ export async function countLeave(context, body) {
   if (page === 'map') split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
   facts.push(...await languageFacts(context, body, who));
   facts.push(...searchFacts(body));
+  facts.push(...await aboutFacts(context, body));
 
   return facts.length ? file(env, facts) : false;
 }
@@ -897,6 +967,15 @@ function most(map) {
   return [...map].map(([id, n]) => ({ id, n })).sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
 }
 
+/* Two counts of the same things side by side — a story that came up and was
+   watched to the end, a pass shown and verified — as [{ id, <a>, <b> }],
+   most of the first first. */
+function paired(one, two, a, b) {
+  return [...new Set([...one.keys(), ...two.keys()])]
+    .map((id) => ({ id, [a]: one.get(id) || 0, [b]: two.get(id) || 0 }))
+    .sort((x, y) => y[a] - x[a] || y[b] - x[b] || x.id.localeCompare(y.id));
+}
+
 /* One range, or null where there is no table yet. `ui` is the reading
  * language's block, which names the pages and the three networks.
  *
@@ -946,6 +1025,9 @@ function most(map) {
  *              every page, and { } before it began
  *   made       [{ id, name, n }] accounts made or signed into through a
  *              form, account_done_*, by the page the form was on
+ *   about      WHAT IT WAS ABOUT: { stories: [{ id, up, watched }],
+ *              posts: [{ id, n }], decks: [{ id, n }],
+ *              deals: [{ id, shown, verified }] }, each most first
  *
  * One read of the range and the one before it; the rest is arithmetic on at
  * most 180 days of a hundred-odd rows each.
@@ -989,6 +1071,7 @@ export async function readVisitors(env, span, ui, spoken) {
   const devices = new Map();
   const signup = new Map();
   const made = new Map();
+  const about = new Map(Object.keys(ABOUT).map((what) => [what, new Map()]));
   const hours = new Array(24).fill(0);
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
@@ -1026,6 +1109,11 @@ export async function readVisitors(env, span, ui, spoken) {
       const name = r.id.slice(at + 1);
       bump(signup, name, r.n);
       if (name.startsWith('account_done_')) bump(made, r.id.slice(0, at), r.n);
+    }
+    else if (r.kind === 'about') {
+      const at = r.id.indexOf(':');
+      const into = about.get(r.id.slice(0, at));
+      if (into) bump(into, r.id.slice(at + 1), r.n);
     }
     else if (r.kind === 'hour') { if (hours[Number(r.id)] !== undefined) hours[Number(r.id)] += r.n; }
     else if (r.kind === 'country') bump(countries, r.id, r.n);
@@ -1081,6 +1169,12 @@ export async function readVisitors(env, span, ui, spoken) {
     devices: most(devices),
     signup: Object.fromEntries(signup),
     made: most(made).map((m) => ({ ...m, name: pageName(ui, m.id) })),
+    about: {
+      stories: paired(about.get('story'), about.get('watched'), 'up', 'watched'),
+      posts: most(about.get('post')),
+      decks: most(about.get('deck')),
+      deals: paired(about.get('pass'), about.get('verified'), 'shown', 'verified')
+    },
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
     presses: most(presses),

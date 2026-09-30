@@ -476,6 +476,14 @@
        way to fill it. */
     if (state.deck && state.deck.own && !state.deck.cards.length) state.editing = true;
 
+    /* Which deck, lesson or song is open, for the site's own count — WHAT IT
+       WAS ABOUT in functions/api/_visitors.js. Once a load, however many
+       answers come back for it. A deck of somebody's own is theirs alone and
+       is left out, and so is anything data/decks.json does not ship, which
+       the route checks. */
+    var open = state.deck || state.lesson || state.song;
+    if (open && !open.own) TTBTrack.about('deck', open.id);
+
     /* And whether the gate is already up. Two cases, and mark() has the
        ordinary third.
      *

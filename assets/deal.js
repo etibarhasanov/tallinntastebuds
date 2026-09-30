@@ -170,6 +170,10 @@
       var shown = { place: deal.name, live: deal.live ? 'yes' : 'no' };
       if (run) shown.rate = rate;
       TTBTrack.event('pass_shown', shown);
+      /* And which place's, for the site's own count, once a load — WHAT IT
+         WAS ABOUT in functions/api/_visitors.js. A deal not switched on yet
+         is the owner looking at it before anybody else can, and is left out. */
+      if (deal.live) TTBTrack.about('pass', placeId);
 
       if (!deal.live) {
         card.appendChild(el('p', { className: 'pass-flag', textContent: t('passNotLive') }));
