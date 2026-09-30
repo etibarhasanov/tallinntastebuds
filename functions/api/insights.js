@@ -5,7 +5,8 @@
  * opened over that range and the one before it, a line of it over time,
  * where the views and the clicks came from, which country, and what on the
  * page was pressed — and, beside the range rather than inside it, how often
- * each of their lists has been opened, all time. ./_visits.js holds all of
+ * each of their lists has been opened and from which countries, all time.
+ * ./_visits.js holds all of
  * it — what is counted, what is not, and why — and this file is only the
  * door: who may ask, and which ranges may be asked for.
  *
@@ -24,8 +25,10 @@
  * the three things /api/account reports the same way, since no account can
  * exist without them. `insights: null` where profile_counts has not been
  * applied yet, and the page says the numbers are not switched on here.
- * `lists` is read on its own and survives that: it comes out of lists and
- * press_counts, and is null only where the lists themselves cannot be read.
+ * `lists` is read on its own and survives that: it comes out of lists,
+ * press_counts and list_counts, and is null only where the lists themselves
+ * cannot be read — each list's `country` is null on its own where the last
+ * of those tables is not applied yet.
  *
  * Never cached: the answer is one session's own, and `json()` without a
  * maxAge is `no-store`.

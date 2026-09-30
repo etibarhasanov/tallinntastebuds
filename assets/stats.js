@@ -1,13 +1,16 @@
 /* Tallinn Tastebuds — /admin/stats, what gets pressed on this site.
  *
- * Four tables, and the first one is the page. The map's own places, every one
+ * Five tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
  * are the answer, which is why it is the whole ranking rather than a top ten.
  * Then Google's directory, only the venues somebody has actually pressed. Then
  * the filter chips, in full, which is the table that argues about the order of
  * the chip row: see **The order of the filter chips** in README.md. Then the
  * nine pills across the map's two rails, in full, which is the table that
- * argues about what earns a slot on it. Under all four, footnotes about the
+ * argues about what earns a slot on it. Then every list anybody has opened,
+ * whose it is beside the title and the countries it was opened from on a
+ * line under it — the number /lists orders by and never prints, drawn here
+ * for the owner alone. Under all five, footnotes about the
  * site rather than about a press: how many opens have been counted and how
  * many accounts exist. How many strangers got each of the map's two rails,
  * and how many of them opened a place with it, is on /admin/visitors with
@@ -15,16 +18,23 @@
  *
  * WHERE THE NUMBERS COME FROM
  *
- * Pressing something posts to /api/stats, from four places: selectPlace() in
+ * Pressing something posts to /api/stats, from five places: selectPlace() in
  * assets/app.js opens a place on the map, applyFilters() in the same file
  * turns a chip on, countRailPress() in the same file again presses a pill on
- * the rail, and select() in assets/venues.js presses a card on the directory.
- * The first, second and fourth are counted once per page load, the way
- * TTBTrack.view() reports one page view per opened place and no more, so
- * comparing three places is three and pressing back and forth is not thirty.
- * A pill is counted every press, because "how often is this button pushed" is
- * the whole of the question it is there to answer. This page only reads. See
- * **Statistics** in README.md for what the numbers do and do not mean.
+ * the rail, select() in assets/venues.js presses a card on the directory, and
+ * countOpen() in assets/lists.js opens a list. The first, second and fourth
+ * are counted once per page load, the way TTBTrack.view() reports one page
+ * view per opened place and no more, so comparing three places is three and
+ * pressing back and forth is not thirty. A pill is counted every press,
+ * because "how often is this button pushed" is the whole of the question it
+ * is there to answer. A list is counted once a day per visitor and never for
+ * its owner — the rules /insights keeps, in functions/api/_visits.js — and
+ * the same open is filed under the country it came from, which is what the
+ * line under a list is made of. This page only reads. See **Statistics** in
+ * README.md for what the numbers do and do not mean.
+ *
+ * assets/country.js names a country and draws the line of them under a
+ * list, and is loaded before this file.
  *
  * ONE REQUEST ON THE WAY IN
  *
@@ -65,7 +75,8 @@
     map: [],
     venues: [],
     filters: [],
-    rail: []
+    rail: [],
+    lists: []   // [{ id, name, by, public, n, country }], most opened first
   };
 
   var main = null;
@@ -169,8 +180,14 @@
     return el('section', { className: 'card lists-card' }, kids);
   }
 
+  /* Several countries on one line, under a list. */
+  function countryLine(rows) {
+    return TTBCountry.line(rows, state.lang, { unknown: t('insightsUnknown'), other: t('insightsOther') });
+  }
+
   /* One row of a ranking: where it came in, what it is, and how many times it
-     was pressed.
+     was pressed — and, on a list's row, whose it is and where it was opened
+     from.
    *
    * The rank is printed rather than left to the eye counting rows, because the
    * number people actually want off this page is a position — "which one is
@@ -183,7 +200,11 @@
    * reason to notice a place near the bottom is to go and read what it says.
    * A Google row is not a link: the directory has no address per place, and a
    * row that led out to Google would be this site handing its traffic to the
-   * thing it exists instead of. */
+   * thing it exists instead of. A list's row is a link to the list, with the
+   * owner's name after the title leading to their page, the word Private
+   * where the list has been made so since — it keeps the number it had, the
+   * way /insights marks it — and the countries on a line under, where any
+   * have been counted. */
   function row(place, rank, href) {
     var name = href
       ? el('a', { className: 'stats-name', href: href, textContent: place.name })
@@ -193,12 +214,21 @@
       el('span', { className: 'stats-rank', textContent: rank }),
       el('span', { className: 'stats-who' }, [
         name,
+        place.by
+          ? el('a', { className: 'stats-by', href: '/u/' + encodeURIComponent(place.by), textContent: place.by })
+          : null,
         /* A shut place still has a card and can still be opened, so it is
            still ranked — and a row at the bottom of a ranking has to say why
            it is there rather than let the number read as a verdict. */
         place.closed
           ? el('span', { className: 'stats-shut',
               textContent: t(place.closed === 'temporary' ? 'venuesShutFor' : 'closed') })
+          : null,
+        place.public === false
+          ? el('span', { className: 'stats-shut', textContent: t('listsWhoPrivate') })
+          : null,
+        place.country && place.country.length
+          ? el('span', { className: 'stats-where', textContent: countryLine(place.country) })
           : null
       ]),
       el('span', { className: 'stats-n', textContent: String(place.n) })
@@ -280,6 +310,24 @@
     return '/?spot=' + encodeURIComponent(place.id);
   }
 
+  function page(list) {
+    return '/list/' + encodeURIComponent(list.id);
+  }
+
+  /* Whether a list was opened before its countries were counted: the line
+     under it then adds up to less than its number, and the sentence under
+     the table says why, only where it is true. A list with no countries
+     read at all — the table not applied yet — draws no line and no
+     sentence, since there is nothing to explain the shortfall of. */
+  function unplaced(lists) {
+    return lists.some(function (l) {
+      if (!l.country) return false;
+      var placed = 0;
+      l.country.forEach(function (c) { placed += c.n; });
+      return placed < l.n;
+    });
+  }
+
   function render() {
     clear(main);
 
@@ -318,6 +366,17 @@
        in the header. */
     if (state.rail.length) {
       stack.appendChild(table('statsRailHead', 'statsRailLead', state.rail));
+    }
+
+    /* And the lists, under the rail: the one table here about somebody's
+       page rather than about the map, and the only one whose rows carry a
+       second line. Absent rather than empty, like Google's venues. */
+    if (state.lists.length) {
+      var lists = table('statsListsHead', 'statsListsLead', state.lists, page);
+      if (unplaced(state.lists)) {
+        lists.appendChild(el('p', { className: 'ins-note', textContent: t('insightsListsWhere') }));
+      }
+      stack.appendChild(lists);
     }
 
     /* The page's two footnotes about itself, under the tables rather than over
@@ -369,6 +428,7 @@
         state.venues = out.venues || [];
         state.filters = out.filters || [];
         state.rail = out.rail || [];
+        state.lists = out.lists || [];
 
         applyStaticStrings();
         render();

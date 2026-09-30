@@ -1,8 +1,9 @@
 /**
  * Tallinn Tastebuds — who opened your page, roughly, and what they pressed.
  *
- * /insights is drawn out of this file and nothing else, and so is the one
- * number on the Insights row of /account.html. It answers three questions
+ * /insights is drawn out of this file and nothing else, and so are the one
+ * number on the Insights row of /account.html and the countries under each
+ * list on /admin/stats. It answers three questions
  * about /u/<you>, for its owner and nobody else: how often it was opened,
  * where the people opening it came from, and what on it they pressed.
  * Google Analytics already knows all three for the whole site; what it
@@ -14,8 +15,15 @@
  *   recentViews()   the last seven days' views, for the account page's row
  *   firstToday()    whether this visitor has already opened this thing today
  *                   — asked before a profile or a list open is counted
- *   listViews()     how often each of the owner's lists has been opened, for
- *                   the Your lists card on /insights
+ *   countListOpen() one open of a list, filed under the country it was
+ *                   opened from — called from POST /api/stats beside the
+ *                   running count that orders /lists
+ *   listViews()     how often each of the owner's lists has been opened, and
+ *                   from which countries, for the Your lists card on
+ *                   /insights
+ *   listCountries() the countries under a handful of lists, by id — what
+ *                   listViews() and /api/admin/stats both draw the line
+ *                   under a list out of
  *
  * VIEWS, NOT PEOPLE
  *
@@ -297,6 +305,30 @@ export function countryOf(request) {
   return /^[A-Z][A-Z0-9]$/.test(code) ? code : 'XX';
 }
 
+/* One open of a list, filed under the country it was opened from — the same
+ * two letters a profile's view is filed under, into list_counts: one row per
+ * list, per day, per country. POST /api/stats calls it after the running
+ * count in press_counts has moved and after the same three questions have
+ * been answered — a public list, not its owner, the first time today from
+ * this visitor — so the two tables count the same opens, and this one is the
+ * half with a day and a place in it. Its own statement rather than a batch
+ * with the running count, so a database this table has not reached yet still
+ * orders /lists; a write that fails is nothing anybody is waiting to hear. */
+export async function countListOpen(context, list) {
+  const { request, env } = context;
+  try {
+    await env.DB
+      .prepare(
+        'INSERT INTO list_counts (list, day, kind, id, n) VALUES (?, ?, ?, ?, 1) ' +
+        'ON CONFLICT(list, day, kind, id) DO UPDATE SET n = list_counts.n + 1'
+      )
+      .bind(list, today(), 'country', countryOf(request))
+      .run();
+  } catch (e) {
+    /* No table yet, or the write failed. */
+  }
+}
+
 /* One press of something on /u/<name>, checked against that page, and
    filed twice in one batch: what was pressed, and where the person pressing
    it came from. */
@@ -360,20 +392,26 @@ export async function recentViews(env, owner) {
 }
 
 /* Every list the owner has, with how often each has been opened, most first,
- * or null where it cannot be read.
+ * and from which countries — or null where the lists cannot be read.
  *
- *   [{ id, title, public, n }]
+ *   [{ id, title, public, n, country }]
  *
- * All time and not the range the page is on: a list's opens are one running
- * number in press_counts under kind 'list' — what orders /lists — and have no
- * day in them to cut by. The page says so under the card rather than letting
- * the range chips above it seem to apply. Private lists are there too, with
- * the number they had when they were last public, since functions/api/stats.js
- * stops counting a list the moment it is not; a list never public reads 0.
+ * `n` is all time and not the range the page is on: a list's opens are one
+ * running number in press_counts under kind 'list' — what orders /lists —
+ * and have no day in them to cut by. The page says so under the card rather
+ * than letting the range chips above it seem to apply. `country` is [{ id,
+ * n }], most first, out of list_counts through listCountries() below, and
+ * all time as well; it is null where that table is not applied, so the page
+ * draws no line rather than a line of nothing, and its rows add up to less
+ * than `n` for a list opened before the table existed. Private lists are
+ * there too, with the number they had when they were last public, since
+ * functions/api/stats.js stops counting a list the moment it is not; a list
+ * never public reads 0.
  *
- * One read, the owner's lists joined to their counts on the primary key. A
- * database without press_counts answers the lists with noughts rather than
- * nothing, the way readingOpens() in ./_mostkept.js survives the same. */
+ * One read, the owner's lists joined to their counts on the primary key, and
+ * one more for the countries. A database without press_counts answers the
+ * lists with noughts rather than nothing, the way readingOpens() in
+ * ./_mostkept.js survives the same. */
 export async function listViews(env, owner) {
   const read = (opens) => env.DB
     .prepare(
@@ -393,7 +431,46 @@ export async function listViews(env, owner) {
       return null;
     }
   }
-  return (results || []).map((r) => ({ id: r.id, title: r.title, public: r.public === 1, n: r.n || 0 }));
+  const lists = (results || []).map((r) => ({ id: r.id, title: r.title, public: r.public === 1, n: r.n || 0 }));
+  const where = await listCountries(env, lists.map((l) => l.id));
+  return lists.map((l) => ({ ...l, country: where ? where.get(l.id) || [] : null }));
+}
+
+/* How many lists one statement asks about. D1 binds a hundred parameters at
+   most, and fifty leaves room for the rest of any statement that joins in. */
+const LIST_BATCH = 50;
+
+/* The countries each of those lists has been opened from, all time —
+ * Map(list → [{ id, n }], most first) — or null where list_counts is not
+ * applied yet, so a reader can tell "nowhere" from "not counted". A list
+ * with no rows is simply absent from the map, and the callers read that as
+ * an empty line.
+ *
+ * Grouped over the days in the statement, LIST_BATCH ids at a time, which
+ * is one read for anybody's own lists and one or two for the site's. */
+export async function listCountries(env, ids) {
+  const out = new Map();
+  for (let at = 0; at < ids.length; at += LIST_BATCH) {
+    const batch = ids.slice(at, at + LIST_BATCH);
+    let rows;
+    try {
+      rows = (await env.DB
+        .prepare(
+          'SELECT list, id, SUM(n) AS n FROM list_counts ' +
+          "WHERE kind = 'country' AND list IN (" + batch.map(() => '?').join(',') + ') ' +
+          'GROUP BY list, id ORDER BY n DESC, id ASC'
+        )
+        .bind(...batch)
+        .all()).results || [];
+    } catch (e) {
+      return null;
+    }
+    for (const r of rows) {
+      if (!out.has(r.list)) out.set(r.list, []);
+      out.get(r.list).push({ id: r.id, n: r.n || 0 });
+    }
+  }
+  return out;
 }
 
 /* One range of the owner's numbers, or null where there is no table yet.

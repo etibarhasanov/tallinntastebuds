@@ -22,7 +22,7 @@
  * next person to ask. See privately() in ../_lib.js, which the three cached
  * routes under /api/admin/ share.
  *
- * THE MAP IS THE RANKING AND THE OTHER THREE ARE FOOTNOTES
+ * THE MAP IS THE RANKING AND THE OTHER FOUR ARE FOOTNOTES
  *
  * The answer carries the map's own places in full, zeros included, because
  * those are the places this site is about and the bottom of that list is as
@@ -33,7 +33,11 @@
  * tied at nought is not a ranking, and the directory is not the map. The
  * filters are the third array, in full, because there are fourteen of them,
  * and the rail is the fourth, in full, because there are nine across its
- * two shapes — "The short rail" in README.md.
+ * two shapes — "The short rail" in README.md. The lists are the fifth, and
+ * only the ones somebody has opened, capped at LISTS, each with the
+ * countries it was opened from: the number a stranger never sees — the one
+ * that orders /lists, **Public lists** in README.md — drawn here for the
+ * owner alone, beside where the readers were.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
@@ -62,7 +66,9 @@ import {
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
-import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER } from '../stats.js';
+import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST } from '../stats.js';
+/* The countries under a list, read the way /insights reads them. */
+import { listCountries } from '../_visits.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -86,6 +92,11 @@ const TTL = 300;
    is one query however many venues have been pressed. */
 const VENUES = 25;
 
+/* And how many lists the fifth table prints, most opened first. Fifty is
+   every list anybody has opened for a long while yet, and it is also what
+   listCountries() in ../_visits.js reads in one statement. */
+const LISTS = 50;
+
 export async function onRequestGet(context) {
   const { request, env } = context;
 
@@ -108,7 +119,7 @@ export async function onRequestGet(context) {
 
   const empty = {
     ready: false, opens: 0, users: 0,
-    map: [], venues: [], filters: [], rail: [], ...words
+    map: [], venues: [], filters: [], rail: [], lists: [], ...words
   };
   if (!env.DB) return json(empty, 200);
   /* A deployment holding the other environment's database answers as though it
@@ -202,6 +213,7 @@ export async function onRequestGet(context) {
 
   const filters = await ranked(context, words, countOf);
   const rail = railed(words, countOf);
+  const lists = await opened(env, rows);
 
   /* How many accounts exist, about the site rather than about a press — see
      ONE NUMBER ABOUT THE SITE above. Failing this never fails the ranking: a table not
@@ -217,7 +229,7 @@ export async function onRequestGet(context) {
   const res = json(
     {
       ready: true, opens: opens, users: users,
-      map: map, venues: venues, filters: filters, rail: rail,
+      map: map, venues: venues, filters: filters, rail: rail, lists: lists,
       ...words
     },
     200, TTL
@@ -294,6 +306,60 @@ function railed(words, countOf) {
     .filter((row) => typeof row.name === 'string' && row.name)
     .sort((a, b) => b.n - a.n || a.at - b.at)
     .map((row) => ({ id: row.id, name: row.name, n: row.n }));
+}
+
+/* Every list somebody has opened, most opened first, capped at LISTS, each
+ * with whose it is and where it was opened from:
+ *
+ *   [{ id, name, by, public, n, country }]
+ *
+ * `n` is the running count press_counts keeps under kind 'list' — the rows
+ * are already in hand — and `country` is [{ id, n }] out of list_counts,
+ * most first, or null where that table is not applied. `by` is the owner's
+ * username, so the row can lead to their page, and `public` is whether the
+ * list still is: one made private since keeps the number it had and stops
+ * growing, and the page marks it, the way /insights does. A list deleted
+ * since is dropped rather than printed with its id for a name; its count
+ * stays in the table, because it happened.
+ *
+ * Sorted before the lookup, so the cap is what bounds the query. The names
+ * did not come back, or `lists` is not there yet: an empty table rather
+ * than a failed page, the way Google's venues answer. */
+async function opened(env, rows) {
+  const most = rows
+    .filter((row) => row.kind === LIST)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, LISTS);
+  if (!most.length) return [];
+
+  let named;
+  try {
+    const { results } = await env.DB
+      .prepare(
+        'SELECT l.id, l.title, l.public, u.username FROM lists l ' +
+        'LEFT JOIN users u ON u.id = l.owner ' +
+        'WHERE l.id IN (' + most.map(() => '?').join(',') + ')'
+      )
+      .bind(...most.map((row) => row.id))
+      .all();
+    named = new Map((results || []).map((l) => [l.id, l]));
+  } catch (e) {
+    return [];
+  }
+
+  const kept = most.filter((row) => named.has(row.id));
+  const where = await listCountries(env, kept.map((row) => row.id));
+  return kept.map((row) => {
+    const l = named.get(row.id);
+    return {
+      id: row.id,
+      name: l.title,
+      by: l.username || '',
+      public: l.public === 1,
+      n: row.n,
+      country: where ? where.get(row.id) || [] : null
+    };
+  });
 }
 
 /* What the colo files the answer under: the route and the language, and never

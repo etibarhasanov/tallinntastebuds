@@ -42,13 +42,17 @@
  *            Never when its own owner opens it, which the page leaves out
  *            and realList() below refuses as well, and not again the same
  *            day from the same browser and network — firstToday() in
- *            ./_visits.js, the rule profile views keep. Nothing on
- *            /admin/stats prints it: it is read by _mostkept.js, which is
- *            what orders /lists, and by listViews() in ./_visits.js, which
- *            draws it back to the list's owner alone on /insights. It is
- *            never drawn on a row anybody else reads, and **Public lists**
- *            in README.md says why a ranking without a scoreboard is the
- *            point rather than an omission.
+ *            ./_visits.js, the rule profile views keep. It is read by
+ *            _mostkept.js, which is what orders /lists, by listViews() in
+ *            ./_visits.js, which draws it back to the list's owner on
+ *            /insights, and by ./admin/stats.js, which draws every opened
+ *            list to the site's owner. It is never drawn on a row anybody
+ *            else reads, and **Public lists** in README.md says why a
+ *            ranking without a scoreboard is the point rather than an
+ *            omission. The same open is also filed under the country it
+ *            came from, into list_counts through countListOpen() in
+ *            ./_visits.js — the half with a day and a place in it, which
+ *            both of those pages draw as a line under the list.
  *   rail     a pill on the rail down the left of the map pressed — the nine
  *            in RAIL_PILLS below, which is every button inside #rail and
  *            nothing else. The radio is not one of them: it left the rail for
@@ -111,7 +115,7 @@ import {
    guards the venue lookup. Imported rather than restated: _lists.js is a
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
-import { countView, countPress, firstToday } from './_visits.js';
+import { countView, countPress, countListOpen, firstToday } from './_visits.js';
 import { countArrive, countLeave } from './_visitors.js';
 import { countFlows } from './_flows.js';
 /* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
@@ -125,7 +129,7 @@ import { refreshOnOpen } from './_refresh.js';
    splits the rows on it. */
 export const PLACE = 'place';
 export const FILTER = 'filter';
-const LIST = 'list';
+export const LIST = 'list';
 export const RAIL = 'rail';
 export const LAYOUT = 'layout';
 /* And four that are not counted here at all but handed on — see the POST. */
@@ -272,6 +276,13 @@ export async function onRequestPost(context) {
        nobody is waiting to hear it. */
     return json({ ok: false }, 200);
   }
+
+  /* A list opened: the same open again, under the country it came from,
+     after the answer has gone — countListOpen() in ./_visits.js, which is
+     what puts the line of countries under a list on /insights and on
+     /admin/stats. After the running count and not inside its statement, so
+     a database without list_counts still orders /lists. */
+  if (kind === LIST) context.waitUntil(countListOpen(context, id));
 
   /* A place opened: ask Google whether its numbers still hold, if they are
      old enough to be worth asking about. After the answer has gone, so nobody
