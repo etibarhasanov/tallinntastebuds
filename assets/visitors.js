@@ -747,6 +747,15 @@
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
       if (d.sources.length) stack.appendChild(ranking(t('insightsFrom'), d.sources, sourceName));
+      /* Which address a search engine sent each of them to — FOUND BY A
+         SEARCH ENGINE in functions/api/_visitors.js. The engine and the
+         address as they were counted, in mono like the press names: an
+         address is an id, and translating it would only hide which page it
+         is. Under the sources, because it is the search row of that card
+         taken apart. */
+      if (d.found && d.found.length) {
+        stack.appendChild(ranking(t('visitorsFound'), d.found, function (r) { return r.id; }, true));
+      }
       if (d.languages.length || d.asked.length) stack.appendChild(languages());
       if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
       [cohorts(), layouts()].forEach(function (c) { if (c) stack.appendChild(c); });

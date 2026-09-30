@@ -1348,6 +1348,31 @@ const CLIP_BUDGET = 600 * 1024;
 const CLIPS_DIR = join(ROOT, 'clips');
 const usedClipFiles = new Set();
 
+/* The one piece of markup a post may carry: [words](/path), drawn as a link
+   by assets/blog.js and by functions/blog.js, which both refuse anything that
+   does not start with a single slash. So that is held here as a failure
+   rather than left to vanish into plain brackets on the page — and a link to
+   a place on the map, ?spot=<id>, is held to a place that is on it and open,
+   since a post sending somebody to a closed place is sending them to a card
+   that says so. A list's address cannot be checked from here: lists live in
+   the database. */
+const BLOG_LINK = /\[([^\]]+)\]\(([^)]*)\)/g;
+const openSpots = new Set((Array.isArray(places) ? places : [])
+  .filter((p) => p && !p.closed).map((p) => p.id));
+
+function blogLinks(where, lang, para) {
+  for (const [, words, href] of para.matchAll(BLOG_LINK)) {
+    if (!/^\/(?!\/)\S*$/.test(href)) {
+      fail(where, `"body" in ${lang} links "${words}" to "${href}", which is not a path on this site`);
+      continue;
+    }
+    const spot = new URL(href, 'https://x').searchParams.get('spot');
+    if (spot !== null && !openSpots.has(spot)) {
+      fail(where, `"body" in ${lang} links "${words}" to ?spot=${spot}, which is not an open place in data/restaurants.json`);
+    }
+  }
+}
+
 const blogPath = join(DATA, 'blog.json');
 const blog = existsSync(blogPath) ? readJSON('data/blog.json') : [];
 const seenPosts = new Set();
@@ -1446,6 +1471,8 @@ if (blog !== null && !Array.isArray(blog)) {
             fail(where, `"body" in ${lang} must be an array of paragraphs`);
           } else if (!value.every(isNonEmptyString)) {
             fail(where, `"body" in ${lang} has a paragraph that is not text`);
+          } else {
+            for (const para of value) blogLinks(where, lang, para);
           }
         } else if (!isNonEmptyString(value)) {
           fail(where, `"${field}" in ${lang} must be a sentence`);
@@ -2047,15 +2074,16 @@ for (const ref of staleStamps()) {
 }
 
 /* --------------------------------------------------------------- the head
-   Three pages are served through a Function that swaps the block between
+   Five pages are served through a Function that swaps the block between
    their PAGE-HEAD markers for a head of that address's own — the map in the
-   language ?lang= names, a list, a person, the directory, a group. rehead()
+   language ?lang= names, a list, a person, the directory, a group, a deck, a
+   post on the blog. rehead()
    in functions/_shell.js leaves a page alone when it cannot find both
    markers, so a page that lost one would go on answering at every address
    with its static head and nothing would say so. Exactly one of each, the
    opening one first. */
 
-for (const page of ['index.html', 'lists.html', 'split.html', 'flashcard.html']) {
+for (const page of ['index.html', 'lists.html', 'split.html', 'flashcard.html', 'blog.html']) {
   const html = readFileSync(join(ROOT, page), 'utf8');
   const open = html.indexOf('<!--PAGE-HEAD-->');
   const close = html.indexOf('<!--/PAGE-HEAD-->');
@@ -2066,10 +2094,10 @@ for (const page of ['index.html', 'lists.html', 'split.html', 'flashcard.html'])
   }
 }
 
-/* Two of those pages have a second thing written into them, outside the
+/* Four of those pages have a second thing written into them, outside the
    head: what the page is about, as text, into an element the page ships
    empty — the map's places into #list-body, a list or the directory or a
-   person into the list page's <main>. fill() in functions/_shell.js matches
+   person into the list page's <main>, a deck and a post into theirs. fill() in functions/_shell.js matches
    the element's exact markup and does nothing when it is not there, so the
    spelling is held here rather than trusted. */
 for (const [page, empty] of Object.entries(EMPTY)) {

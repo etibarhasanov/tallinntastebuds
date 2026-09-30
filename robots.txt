@@ -68,8 +68,9 @@ Disallow: /account.html
 # ratings should land on the post that answers it.
 #
 # That leaves sitemap.xml as the only way in for a crawler, since there is no
-# link into the page anywhere. The posts are ?post=<id> on the same address
-# and the index links every one of them.
+# link into the page anywhere. The posts are ?post=<id> on the same address,
+# each one is in sitemap.xml, and functions/blog.js writes every one of them
+# into the page as text for a crawler that runs no script.
 
 # /chess is deliberately NOT disallowed either, and until the last of the
 # chess tasks puts a door on the map's rail nothing links to it at all — the

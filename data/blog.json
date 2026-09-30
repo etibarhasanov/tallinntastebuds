@@ -365,5 +365,132 @@
         "Оборот карточки написан по-английски, по-азербайджански и по-русски, а сайт вокруг говорит на большем числе языков. Разница сделана нарочно: строку интерфейса можно перевести, а что слово значит — должен написать тот, кто держит обе стороны сразу. Что значит leib — это тот же вопрос, что и what does leib mean, и какое-то время этот сайт умел отвечать только на один из них, причём на языке, которого спросивший другой может и не знать. Запоминает, какие слова вы знаете, аккаунт; но и без него первая карточка любой колоды — ваша, переверните её."
       ]
     }
+  },
+  {
+    "id": "where-to-eat-in-tallinn",
+    "date": "2026-09-30",
+    "link": "/",
+    "title": {
+      "en": "Where to eat in Tallinn, from somebody who has eaten there"
+    },
+    "standfirst": {
+      "en": "Every place on one map is somewhere I have eaten. How to use it, neighbourhood by neighbourhood, and where the lists come in."
+    },
+    "body": {
+      "en": [
+        "Search for where to eat in Tallinn and you get the same twenty places ranked by the same stars. This site is the other way round: [a map](/) of the places I have eaten at myself and would send a friend to, with no score on any of them. Being on the map is the verdict, and [why there are no scores](/blog?post=no-scores-on-this-map) is a post of its own.",
+        "In the Old Town, the walls hide more than tourist menus. [Pulla Bakery](/?spot=pulla-bakery) bakes sourdough buns in a room that feels like a living room, [Koht](/?spot=koht) keeps more than 800 beers behind a small door on Lai, [Izakaya Taro](/?spot=izakaya-taro) does Japanese small plates on Müürivahe, and [MIX Resto](/?spot=mix-resto) serves a three-course lunch for twenty euro. [Vegan Restoran V](/?spot=vegan-restoran-v) has been on Rataskaevu for years, and [Veino](/?spot=veino) is a small wine bar a few doors down, run by people who know every bottle on the shelf.",
+        "Telliskivi and Kalamaja are where most of an ordinary week happens. [F-Hoone](/?spot=f-hoone) for breakfast or pelmeni, [Põhja Konn](/?spot=pohja-konn) for Põhjala's beer on a balcony, [The Brick Coffee Roastery](/?spot=the-brick-coffee) for a date, [Kartul](/?spot=kartul) for a fully vegan stuffed potato by the tram stop, and [Xinhai 1911](/?spot=xinhai-1911) by Balti jaam for biang biang noodles, one noodle metres long in chili oil.",
+        "In Kadriorg, [Radio](/?spot=radio-restoran) is for sharing whatever is on the menu, [Faehlmanni kohvik](/?spot=faehlmanni-kohvik) is brunch on one of the nicest corners in the neighbourhood, and [Magussoolane](/?spot=magussoolane) is a bakery I only found because of the smell. On the Noblessner waterfront, [180° by Matthias Diether](/?spot=180-degrees) is the only two Michelin star restaurant in the Baltics, and [KotKot](/?spot=kotkot) is the chicken burger for every other night.",
+        "Some of the best cooking in the city is fifteen minutes from any postcard. [Annön](/?spot=annon) does Soviet Korean comfort food in Lasnamäe, [Varkizana](/?spot=varkizana) is a Greek tavern out there too, [DVIN](/?spot=dvin) makes khinkali in Kopli at prices you will not believe, and [Crustum Bakery](/?spot=crustum-bakery) has been feeding Mustamäe for years.",
+        "The chips along the top of the map narrow it down — [bakeries](/?type=bakery), [beer](/?type=pub), [cheap eats](/?type=cheap-eats), [hidden gems](/?type=hidden-gem), [somewhere to bring a laptop](/?type=laptop) — and every place opens on what to order, which is the question you actually have once you are through the door.",
+        "The map is one person's. For everybody else's there are [lists](/lists): [Google's top ten restaurants in Tallinn](/list/top-ten-restaurants-by-google-pt7mwk), worked out from its reviews, and lists people wrote under their own names, like [the tallinneats top thirty](/list/top-30-places-in-tallinn-zdmz94). The posts after this one go through them kind by kind: [Google's top tens](/blog?post=top-restaurants-in-tallinn-by-google), [bakeries and coffee](/blog?post=bakeries-and-coffee-in-tallinn), [craft beer](/blog?post=craft-beer-in-tallinn), [cheap eats](/blog?post=cheap-eats-in-tallinn) and [Georgian and Azerbaijani food](/blog?post=georgian-and-azerbaijani-food-in-tallinn)."
+      ]
+    }
+  },
+  {
+    "id": "top-restaurants-in-tallinn-by-google",
+    "date": "2026-09-30",
+    "link": "/lists",
+    "title": {
+      "en": "The top restaurants in Tallinn, by Google, and how the ranking works"
+    },
+    "standfirst": {
+      "en": "Six lists worked out from Google’s own reviews: restaurants, bakeries, cafés, bars, pizzerias, and twenty places over all of them."
+    },
+    "body": {
+      "en": [
+        "The one word this map will not say is best. Google will, and it has a city's worth of reviews to say it with, so the site keeps six lists that are Google's verdict rather than mine, each under Google's name: [the top ten restaurants](/list/top-ten-restaurants-by-google-pt7mwk), [the top ten bakeries](/list/top-ten-bakeries-by-google-65nfrf), [the top ten cafés](/list/top-ten-cafes-by-google-jz7c2b), [the top ten bars](/list/top-ten-bars-by-google-8y6grz), [the top ten pizzerias](/list/top-ten-pizzerias-by-google-k83p93) and [the top twenty over everything](/list/top-twenty-places-by-google-kwb7l5).",
+        "The rating is weighed by how many people gave it. A 4.5 from five thousand reviews outranks a 4.7 from sixty, and a place with fewer than a hundred reviews is not counted at all, because a perfect score from a dozen friends is not the same claim as a 4.8 from a city.",
+        "At the top of the restaurants, as this is written, is Restaurant Rataskaevu 16, which the tallinneats list sums up as a medieval room and a kitchen that takes elk seriously. Then [Vegan Restoran V](/?spot=vegan-restoran-v), [Saffron](/?spot=saffron), Väike-Rataskaevu, Restoran Mimosa, The Kurze, [Ramen Taro](/?spot=ramen-taro), Pizzeria Santa Lucia, Osteria Moderna and [MIX](/?spot=mix-resto).",
+        "Several of those are on my map as well, which is about the overlap you would expect between a city's average and one person's week. Where the two agree, go. Where they do not, it is usually because Google's list is full of places a lot of people visit once, and mine is full of places I go back to.",
+        "The bakeries list is the one I argue with least. [Pulla Bakery](/?spot=pulla-bakery) is at the top, then [Crustum](/?spot=crustum-bakery), RØST, [Bruto Bakehouse](/?spot=bruto-bakehouse) and [Buxhöwden](/?spot=buxhowden-pagar), with [Magussoolane](/?spot=magussoolane) and [La Boulangerie](/?spot=la-boulangerie) further down. [The post about bakeries](/blog?post=bakeries-and-coffee-in-tallinn) goes through them.",
+        "The bars list leans towards cocktails and wine — Toro, Whisper Sister, Botaanik, Vixen Vinoteek — with [Koht](/?spot=koht) the one beer bar in its top five. For beer on its own terms, [the post about craft beer](/blog?post=craft-beer-in-tallinn) is the other half.",
+        "The lists are worked out again whenever the site's copy of Google's places is refreshed, so the order moves. The address does not: every one of them is a page you can send somebody, with a line under each place saying what Google's rating was and how many people gave it."
+      ]
+    }
+  },
+  {
+    "id": "bakeries-and-coffee-in-tallinn",
+    "date": "2026-09-30",
+    "link": "/?type=bakery",
+    "title": {
+      "en": "Bakeries and coffee in Tallinn: cinnamon buns, kringel and a Saturday croissant"
+    },
+    "standfirst": {
+      "en": "The bakeries on the map, the two lists that argue with it, and where to sit with a coffee for a morning."
+    },
+    "body": {
+      "en": [
+        "Tallinn is a bakery city, and the map shows it: press [Bakery](/?type=bakery) along the top and see how much of the map is still standing.",
+        "In the Old Town, [Pulla Bakery](/?spot=pulla-bakery) on Voorimehe is handmade sourdough buns baked by a mother and daughter, and the cinnamon bun is the thing to order. On the same street, [Karu Talu Šokolaad](/?spot=karu-talu-sokolaad) makes three hundred family-size cookies on the days it is open, and when they are gone they are gone. [Bruto Bakehouse](/?spot=bruto-bakehouse) on Suur-Karja lives for cookies too, and the pistachio one is the favourite.",
+        "[François Boulangerie](/?spot=francois-boulangerie) is the one you plan for: Saturdays only, ordered in advance, collected from a queue outside the house on Härjapea. [La Boulangerie](/?spot=la-boulangerie) is the everyday version, with a pistachio roll worth crossing town for, and [Crustum](/?spot=crustum-bakery) in Mustamäe is where the same team started.",
+        "Kringel is the Estonian twisted loaf, and two places make it worth seeking out: [Bekker Pagariäri](/?spot=bekker-pagariari) in Kopli, the old bakery that supplies bread and kringel to lots of places in town, where the salted caramel one is ridiculous, and [Kringel](/?spot=kringel) in Uus Maailm, which is vegan and hugely popular for good reason.",
+        "For coffee, [Paper Mill Coffee](/?spot=paper-mill-coffee) is in a fire station built in 1912 and counts among the top thirty speciality coffee shops in Europe, and [its second shop in Volta](/?spot=paper-mill-coffee-volta) is where the monkey bread is. [The Brick](/?spot=the-brick-coffee) roasts its own in Telliskivi, [Kokomo](/?spot=kokomo) on Ankru is the cosiest room going, and [Värav](/?spot=varav-coffee-toast) is a little white house under the Old Town bastion. For tea rather than coffee, [Chamber Tea](/?spot=chamber-tea) and [Morii Tea House](/?spot=morii-tea-house).",
+        "Then the two lists that do not quite agree with me. [Google's top ten bakeries](/list/top-ten-bakeries-by-google-65nfrf) puts Pulla at the top as well, and adds RØST, Mathilda on the Hill and Kalamaja Bakery, which are not on the map yet. [The top ten coffee, tea and bakery](/list/top-10-bakery-bwvp2x) by [etibar](/u/etibar) is one person's Saturday morning instead: François first, then Pulla, The Brick, Fotografiska's café, Paper Mill Volta and Porgandipomm, with Põhjala's taproom slipped in because a list is allowed its opinions.",
+        "And for somewhere to stay with a book, [the best places to read a book](/list/best-places-to-read-book-7t76c8) by [qarin-qulu](/u/qarin-qulu) picks by the chairs: Chamber Tea, Kokomo, a chocolate shop and a bookshop café in Telliskivi."
+      ]
+    }
+  },
+  {
+    "id": "craft-beer-in-tallinn",
+    "date": "2026-09-30",
+    "link": "/?type=pub",
+    "title": {
+      "en": "Craft beer in Tallinn: taprooms, 800 bottles and the cheapest pint in the centre"
+    },
+    "standfirst": {
+      "en": "Where the beer is good, from Põhjala’s own bar to a sauna in the city wall."
+    },
+    "body": {
+      "en": [
+        "Estonian craft beer punches well above the size of the country, and Tallinn is where to drink it. Press [Beer/pub](/?type=pub) on the map and these are the places left.",
+        "[Põhja Konn](/?spot=pohja-konn) is Põhjala's own bar in Telliskivi, pouring their beers next to plenty of other craft; take the balcony if it is free. [Tuletorn](/?spot=tuletorn) on Ankru is brewers from Põhjala who set out to make something better, and nailed it.",
+        "[Koht](/?spot=koht) on Lai has more than 800 kinds of beer: start light, work up through the IPAs, finish on a stout. [Mikkeller](/?spot=mikkeller-old-town) on Kullassepa pairs one of the biggest names in craft beer with a kitchen run by Viljandi Burger. [Hell Hunt](/?spot=hell-hunt) on Pikk pours Humalakoda, and the fish and chips hold up.",
+        "[Pühaste Taproom](/?spot=puhaste-taproom) in Rotermann is a Tartu brewery whose double IPAs are the reason to come. [Vaat](/?spot=vaat-brewery) is a brewery and taproom well out in Paljassaare, reachable by bus or by bike. And [Laboratooriumi 23](/?spot=laboratooriumi-23) is foosball, sandwiches, craft beer and a sauna in one place by the city wall; finding it is half of it.",
+        "For the cheaper end, [Uba ja Humal](/?spot=uba-ja-humal) has the cheapest beer in the centre, over twenty taps and a kebab from next door. [Vana Villem](/?spot=vana-villem) is a cozy local pub, open late every day. [Pilsneri baar](/?spot=pilsneri-baar) pours Pilsner Urquell three different ways in a garden, and [Pudel](/?spot=pudel) in Telliskivi is where to take a group for the evening.",
+        "[Best beer bars](/list/top-bars-hxzz7m), the list this site keeps under [its own name](/u/tallinntastebuds), puts eight of those in an order with a line on each: Põhjala Brewery's taproom for its American barbecue, Koht for the 800, Uba ja Humal for the prices. [Google's top ten bars](/list/top-ten-bars-by-google-8y6grz) is a different city altogether, cocktails and wine, with Koht the one beer bar near the top."
+      ]
+    }
+  },
+  {
+    "id": "cheap-eats-in-tallinn",
+    "date": "2026-09-30",
+    "link": "/?type=cheap-eats",
+    "title": {
+      "en": "Cheap eats in Tallinn that are not a compromise"
+    },
+    "standfirst": {
+      "en": "Khinkali, a stuffed potato, a twenty-euro lunch menu, and a kebab worth the ride out."
+    },
+    "body": {
+      "en": [
+        "Eating out in Tallinn is not cheap any more, which is why the map has a [Cheap eats](/?type=cheap-eats) chip. Everything under it is somewhere I would go even if it cost more.",
+        "[DVIN](/?spot=dvin) in Kopli is honest Georgian food at prices you would not believe: khinkali, shashlik, and a napoleon cake to finish. [Annön](/?spot=annon) in Lasnamäe cooks Soviet Korean comfort food — beef heart salad, lamb soup — on the principle that food should be useful to the body.",
+        "[Kartul](/?spot=kartul) by the Telliskivi tram stop is fully vegan and built entirely around the potato: stuffed baked potatoes and homemade dumplings. [Burger Box](/?spot=burger-box) on Kopli started as a small burger window and kept its street-food soul, with kimchi fries, cheese balls and laksa. [KotKot](/?spot=kotkot) at Noblessner is the chicken burger.",
+        "[MIX Resto](/?spot=mix-resto) is the one that sounds wrong: fine dining in the Old Town, at a three-course lunch menu for twenty euro that changes with the seasons. [Pulla Bakery](/?spot=pulla-bakery) is a cinnamon bun and a coffee for very little.",
+        "[Shaurma Kebab Linnamäe](/?spot=shaurma-kebab-linnamae) is a Turkish kebab counter out in Linnamäe, and worth every penny. For drinks, [Uba ja Humal](/?spot=uba-ja-humal) has the cheapest beer in the centre, [Vana Villem](/?spot=vana-villem) big portions and cheap beer until late, and [Vabrik](/?spot=vabrik) the cheapest wine in town, with a bottle shop to take one home from."
+      ]
+    }
+  },
+  {
+    "id": "georgian-and-azerbaijani-food-in-tallinn",
+    "date": "2026-09-30",
+    "link": "/?type=caucasian",
+    "title": {
+      "en": "Georgian and Azerbaijani food in Tallinn: khinkali, plov and qutab"
+    },
+    "standfirst": {
+      "en": "The Caucasian kitchens on the map, from somebody who grew up on the food."
+    },
+    "body": {
+      "en": [
+        "I am from Azerbaijan, so this is the part of the map I am hardest to please about. Press [Caucasian](/?type=caucasian) and these are the ones that passed.",
+        "[Badam](/?spot=badam), next to the bus station, is the most authentic Azerbaijani cooking in Tallinn: küftə, dolma, xangal, piti and plov, lamb plov included. [Faeton](/?spot=faeton) on Köleri serves proper Azerbaijani cuisine beyond the shashlik, and its qutab has a twist that works — filled with greens and mozzarella — with ayran to drink.",
+        "For Georgian, [Gobi](/?spot=gobi) in Rotermann is the modern version, and the adjaruli khachapuri and the khinkali are why you go back. [Pirosmani](/?spot=pirosmani) on Tartu maantee is big on flavour and generous in size, made for sharing: chashushuli, adjarian khachapuri, khinkali. [DVIN](/?spot=dvin) in Kopli is the honest, cheap one, with a napoleon cake to finish.",
+        "Two more for the grill: [Baklažaan](/?spot=baklazaan), out on the way to the Nõmme bike route, for shashlik, and [Telliskivi Šašlõkk](/?spot=telliskivi-saslokk), which is really Turkish, bakes its own bread, and does a lahmajun worth ordering.",
+        "And if the menu in front of you is in Estonian rather than Georgian, [the flashcards](/flashcard) have a deck for [at the table](/flashcard?d=table)."
+      ]
+    }
   }
 ]

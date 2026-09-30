@@ -300,6 +300,12 @@ window.TTBTrack = (function () {
     send({
       kind: 'arrive',
       id: window.location.pathname,
+      /* The whole address, query and all, which the count reads only for a
+         visitor a search engine sent — FOUND BY A SEARCH ENGINE in
+         functions/api/_visitors.js: /blog?post=… and /?spot=… are the pages
+         a search lands on, and the path alone would file them all as the
+         blog and the map. */
+      at: (window.location.pathname + window.location.search).slice(0, 200),
       first: first,
       back: who === 'back',
       who: who,

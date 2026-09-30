@@ -85,6 +85,24 @@
  * step before and is not one either. Pages, not people, and the pair alone:
  * nothing here can lay one visitor's pages end to end.
  *
+ * FOUND BY A SEARCH ENGINE
+ *
+ * `from` says how many visitors a search engine sent and `entry` which
+ * page each visitor's day began on, but not the two together, and not
+ * finely enough: every post on the blog is one page to `entry`, and so is
+ * every place on the map. `found` is the answer to the question the blog's
+ * posts about food were written for — did anybody search for bakeries in
+ * Tallinn and land on the post about them — and it is counted once per
+ * visitor, off the first page of the day, only when that visitor came from
+ * a search engine. Its id is the engine and the address together, "google
+ * /blog?post=…", with the query cut down to the one key that makes an
+ * address a page of its own — ?post=, ?spot=, ?d= or ?lang= — so a
+ * ?style= or a tracking tag does not split one page into many. The engine
+ * is read off the referrer's host, which is all a search engine still
+ * sends: never the words that were searched. Those are in Search Console
+ * and Bing Webmaster Tools, and nowhere else. An open kind, capped like
+ * the countries.
+ *
  * WHICH LANGUAGE THE BROWSER ASKED FOR
  *
  * The site picks a language out of ?lang=, a saved choice or the browser's
@@ -242,7 +260,7 @@ const SIGNS = { account_login: 'login', account_create: 'signup' };
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
    good day; a hundred press names is every button on the site. */
-const OPEN = new Set(['country', 'from', 'press', 'asks']);
+const OPEN = new Set(['country', 'from', 'press', 'asks', 'found']);
 const MAX_IDS = 100;
 
 /* The language a browser asks for, as the two letters of navigator.language
@@ -363,8 +381,43 @@ async function file(env, facts) {
   }
 }
 
+/* The search engines a referrer may name, by the host it names — the same
+   hosts sourceOf() in ./_visits.js files under `search` — and the query
+   keys that make an address a page of its own. FOUND BY A SEARCH ENGINE. */
+const ENGINES = [
+  ['google', /(^|\.)google\.[a-z.]{2,6}$/],
+  ['bing', /(^|\.)bing\.com$/],
+  ['duckduckgo', /(^|\.)duckduckgo\.com$/],
+  ['yandex', /(^|\.)yandex\.(ru|com)$/],
+  ['ecosia', /(^|\.)ecosia\.org$/],
+  ['yahoo', /(^|\.)search\.yahoo\.com$/]
+];
+const PAGE_KEYS = ['post', 'spot', 'd', 'lang'];
+const MAX_FOUND = 120;
+
+/* "google /blog?post=…" for a visitor a search engine sent to that address,
+   or null when the referrer is not one of the engines or the address will
+   not read. */
+function foundOf(from, at) {
+  let host = '';
+  let url = null;
+  try {
+    host = new URL(String(from || '')).hostname.toLowerCase().replace(/^www\./, '');
+    url = new URL(String(at || ''), 'https://x');
+  } catch (e) {
+    return null;
+  }
+  const engine = ENGINES.find(([, test]) => test.test(host));
+  if (!engine || !url.pathname.startsWith('/')) return null;
+  const key = PAGE_KEYS.find((k) => url.searchParams.has(k));
+  const address = url.pathname +
+    (key ? '?' + key + '=' + encodeURIComponent(url.searchParams.get(key)) : '');
+  return (engine[0] + ' ' + address).slice(0, MAX_FOUND);
+}
+
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
-   `who` what ttb.since said, `from` the referrer it was opened with,
+   `who` what ttb.since said, `from` the referrer it was opened with, `at`
+   its whole address,
    `layout` the rail if any, `asks` the language the browser asks for,
    `device` phone, tablet or desktop. */
 export async function countArrive(context, body) {
@@ -384,6 +437,8 @@ export async function countArrive(context, body) {
       ['entry', page, 1]
     );
     if (rail) facts.push(['layout', rail + ':' + who, 1]);
+    const found = foundOf(body.from, body.at);
+    if (found) facts.push(['found', found, 1]);
     if (CODE.test(body.asks)) facts.push(['asks', body.asks, 1]);
     if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
   }
@@ -556,6 +611,9 @@ function most(map) {
  *              REPORTED
  *   entries    [{ id, name, n }] the page a visitor's day began on, most
  *              first
+ *   found      [{ id: 'engine /address', n }] visitors a search engine
+ *              sent, by the engine and the address they landed on, most
+ *              first — FOUND BY A SEARCH ENGINE
  *   moves      [{ id: 'from>to', from, to, n }] pages opened one after the
  *              other in one tab, most first, `from` and `to` named
  *   countries  [{ id, n }] visitors, most first
@@ -607,6 +665,7 @@ export async function readVisitors(env, span, ui, spoken) {
   const languages = new Map();
   const switches = new Map();
   const entries = new Map();
+  const found = new Map();
   const moves = new Map();
   const asked = new Map();
   const devices = new Map();
@@ -638,6 +697,7 @@ export async function readVisitors(env, span, ui, spoken) {
       if (r.kind === 'time' && heard.has(r.day)) p.secsLeft += r.n;
       pages.set(r.id, p);
     } else if (r.kind === 'entry') bump(entries, r.id, r.n);
+    else if (r.kind === 'found') bump(found, r.id, r.n);
     else if (r.kind === 'nav') bump(moves, r.id, r.n);
     else if (r.kind === 'asks') bump(asked, r.id, r.n);
     else if (r.kind === 'device') bump(devices, r.id, r.n);
@@ -685,6 +745,7 @@ export async function readVisitors(env, span, ui, spoken) {
       .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))
       .sort((a, b) => b.views - a.views),
     entries: most(entries).map((e) => ({ ...e, name: pageName(ui, e.id) })),
+    found: most(found),
     moves: most(moves).map((m) => {
       const [from, to] = m.id.split('>');
       return { ...m, from: pageName(ui, from), to: pageName(ui, to) };

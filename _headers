@@ -188,8 +188,14 @@
 # words, and being found by somebody searching for one of those questions is
 # most of what it is for. Unlinked and indexed, rather than unlinked and
 # hidden — robots.txt has the argument in full. The posts themselves are
-# ?post=<id> on this same path, so they are covered by this rule and by the
-# canonical assets/blog.js writes for each of them.
+# ?post=<id> on this same path, each with the canonical functions/blog.js
+# writes for it.
+#
+# /blog is answered by that Function now, which sets its own Cache-Control
+# and X-Robots-Tag through page() in functions/_shell.js — Pages applies this
+# file to static assets and not to a Function's answer. The rule stays for
+# the one case that still reaches the file: the route handing the request
+# back when it cannot read the page.
 /blog.html
   Cache-Control: public, max-age=0, must-revalidate
 

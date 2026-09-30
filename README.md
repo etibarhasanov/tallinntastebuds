@@ -10549,8 +10549,17 @@ reasoning already existed; it was in this file, which is written for whoever
 maintains the site and is five thousand lines long, and a visitor who wondered
 why the map has no ratings had nowhere to read the answer.
 
+And, since the end of September 2026, posts about where to eat: the map
+neighbourhood by neighbourhood, Google's six top tens and how they are
+ranked, bakeries and coffee, craft beer, cheap eats, Georgian and Azerbaijani
+food. Those are the pages on this site most likely to be what somebody typed
+into a search engine, and each one leads to the places on the map and the
+lists people made of them — **Found as text** and **Links inside a post**
+below.
+
 ```
 blog.html              the page, served at /blog as well
+functions/blog.js      the head and the text for the address that was opened
 assets/blog.js         ES5, one IIFE, like every other file in assets/
 assets/blog.css        only what a page of prose has and the other pages do not
 data/blog.json         the posts
@@ -10561,7 +10570,9 @@ tools/blogclips.mjs    draws every clip out of every scene
 
 Nothing else. There is no endpoint, no database and no build step: the page
 fetches `data/ui.json` and `data/blog.json` and draws from them, the same way
-the map draws from `data/restaurants.json`.
+the map draws from `data/restaurants.json`. The Function in front of it only
+writes the head and a plain copy of the words for the readers that run no
+script; nothing the page draws waits on it.
 
 ### The two states
 
@@ -10586,20 +10597,58 @@ press opens a post in a tab of its own.
 different words on it, so `assets/blog.js` rewrites `<link rel="canonical">`
 on every draw — the index's own address on the index, the post's on a post. A
 single canonical pointing at `/blog` would ask a crawler to treat every post
-as the same page, which is the opposite of what a blog is for. Only the index
-is in `sitemap.xml`; the posts are linked from it, which is how a crawler
-reaches them, and it is the same argument that keeps people's own lists out
-of that file.
+as the same page, which is the opposite of what a blog is for. That rewrite
+is for the walks between posts; the head a post arrives with is already its
+own, below.
 
-**The head is not swapped per post**, and that is a decision rather than an
-oversight. `functions/_shell.js` does exactly that for the map, a list, a
-profile, the directory and a group — a Function in front of the page, writing
-that page's own title and social card into the head — and it buys one thing
-here: a post pasted into a chat unfurling as itself rather than as the blog. Nothing on this page is
-written by a stranger and nothing on it is private, so the cost is a whole
-route to maintain for a nicer preview card. If that is ever wanted,
-`_shell.js` is where it starts, and the comment in the head of `blog.html`
-says so.
+### Found as text
+
+`functions/blog.js` serves `blog.html` at `/blog` and at every `?post=`, the
+way `functions/flashcard.js` serves a deck: the post's own title,
+description, canonical and card written between the page's `PAGE-HEAD`
+markers, a `BlogPosting` in JSON-LD beside them (a `Blog` listing every post
+on the index), and the post itself — title, date, standfirst, every
+paragraph with its links, and every other post as a link under it — written
+into the `<main>` the page ships empty. `render()` empties that before it
+draws, so nobody sees it. A `?post=` that names nothing gets the page's own
+head and a `noindex`.
+
+It used to be a decision that this was not worth a route: all it bought was a
+post pasted into a chat unfurling as itself, and nothing on the page is
+written by a stranger or private. That held while every post was about the
+site. It stopped holding when the posts about food arrived, because a
+crawler that runs no script — Bing on many of its visits, every assistant
+that fetches a page to read it — was getting an empty `<main>` under the
+title "Notes on the map" at every address, and Google was getting the post's
+words under the index's title. **Getting found** has the other pages that
+are served this way and why.
+
+The head and the text are the English whatever `?lang=` asks for: one address
+is one page, and what is written in there is for a reader asking for the page
+rather than for a language — the argument `functions/list/[id].js` makes. The
+script still draws a post in the reader's own language where it has one.
+
+**Every post is in `sitemap.xml`**, one `/blog?post=<id>` each, alongside the
+index. Only the index was, on the reasoning that it links every post; it did,
+for a reader that ran the script and for nobody else.
+
+### Links inside a post
+
+A paragraph may carry `[words](/path)` — a link to somewhere on this site and
+nowhere else, drawn as an ordinary link by `assets/blog.js` and by the
+Function alike. It is the one piece of markup a post has, and it is what the
+posts about food are for: a paragraph about bakeries that cannot send anybody
+to the bakery, or to the list somebody made of them, has nowhere to go. The
+validator fails a link that is not a path on this site and a `?spot=` that is
+not an open place on the map; a `/list/<id>` it cannot check, since lists
+live in the database, so a post that links one is read once in a browser
+before it lands.
+
+Every link pressed reports `blog_link` with the post and where it went, and a
+visitor a search engine sent straight to a post is counted by address under
+**Found by a search engine** on `/admin/visitors` — the two numbers that say
+whether a post is doing its job. See [Analytics](#analytics) and
+[Visitors](#visitors).
 
 ### The clip
 
@@ -10660,7 +10709,9 @@ bite you when you write one.
 ```
 
 `id` is what `?post=` names, so it is a lowercase slug and it never changes
-once a link to it has gone out. `date` is the day it was written, `YYYY-MM-DD`
+once a link to it has gone out. For a post written to be found, the id is
+the words somebody would search — `craft-beer-in-tallinn` — since it is the
+one part of the address a search result prints. `date` is the day it was written, `YYYY-MM-DD`
 — every post on the page is drawn, so a date after today is a post claiming to
 have been written tomorrow and the validator refuses it. Scheduling something
 is a story's job. `link` is optional and is a path on this site: it is what
@@ -10743,8 +10794,15 @@ it is in `sitemap.xml`, and `robots.txt` says out loud that the omission of a
 
 Which makes the sitemap load-bearing here in a way it is nowhere else: with
 no link into the page anywhere on the site, that file is how a crawler learns
-the address exists at all. A post is reachable from the index, and the index
-is reachable from the sitemap, and there is no third road in.
+the address exists at all. Every post is in it, each post links every other,
+and the index links all of them.
+
+That is still the weakest part of the blog's reach. A page nothing on its own
+site links to is a page a search engine is told exists and given no reason to
+rank, and the posts about food are the ones that would most earn a door —
+from the lists page, from a place's panel on the map, from the welcome card.
+Each of those is a new thing on a page somebody can see, so it is a question
+for the owner rather than a line to slip into a post's pull request.
 
 ### Writing one
 
@@ -10763,12 +10821,15 @@ and the skills already carry "seventy-five places" and "eleven hundred and
 ten" in enough places that changing one is a `grep` and a careful afternoon,
 and a blog is the last place that should quietly become one more copy of a
 number that drifts. A post says *the map* and *the whole export of the city*
-and stays true.
+and stays true. The posts about food keep to it the same way: a post names
+the places and the lists and never how many there are, and where Google's
+order is described it says *as this is written*, because the lists are worked
+out again with every refresh of the export.
 
 Opening a post is reported as a page view of its own, titled with the post and
 pointing at its `?post=` URL, the way the map reports an opened place — so the
 standard **Pages and screens** report says which of these anybody read. That
-and the three presses are in the table under [Analytics](#analytics), which is
+and the four presses are in the table under [Analytics](#analytics), which is
 where every event on this site is listed.
 
 ---
@@ -11431,7 +11492,19 @@ the pages table cannot say: the map is the most viewed page whether or not
 anybody arrives on it. **Where they go next** is the pairs of pages opened
 one after the other in one tab, most first, out of the step the tab already
 carries from one page to the next for the diagrams — **Crossing pages** under
-**Who uses the site, drawn**. A reload is not a move, and a page opened in a
+**Who uses the site, drawn**.
+
+**Found by a search engine, landed on** is the search row of **Where they came
+from** taken apart: for each visitor whose first page of the day was opened
+from a search engine, the engine and the address, `google /blog?post=…` or
+`bing /?spot=badam`. The address keeps only the one key that makes it a page
+of its own — `?post=`, `?spot=`, `?d=` or `?lang=` — so a `?style=` or a
+tracking tag does not split a page in two, and the engine is read off the
+referrer's host, which is all a search engine still sends: the words that were
+searched are in Search Console and Bing Webmaster Tools and nowhere here. It is
+how the posts written to be found are held to account, and it is an open kind,
+capped at a hundred ids a day like the countries. `assets/track.js` sends the
+whole address with every arrival for it, and it is read for nothing else. A reload is not a move, and a page opened in a
 fresh tab has nothing before it and is not one either. It is pages and not
 people, and the pair alone: nothing here can lay one visitor's pages end to
 end, and nothing is written that could. The funnels within a page — from the
@@ -14816,6 +14889,7 @@ The blog, `assets/blog.js`:
 | `blog_post` | `post` — a row on the index |
 | `blog_all` | — the way back to the index |
 | `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
+| `blog_link` | `post`, `to` — a link inside a post's paragraphs, `to` the path it goes to |
 | `radio_play`, `radio_stop`, `home` | as on the map |
 
 Feedback, `assets/feedback.js`:
@@ -15097,6 +15171,15 @@ version. `fill()` in `functions/_shell.js` is the one mechanism for the map
 and the lists both, and the validator holds both pages to the exact spelling
 of the element it fills.
 
+**The blog, as text.** The same again for `/blog`: `functions/blog.js` writes
+each post's own head, a `BlogPosting` in JSON-LD, and the post itself with
+its links into the page, and every post is in the sitemap. The posts about
+where to eat — the neighbourhoods, bakeries, craft beer, cheap eats, the
+Caucasian kitchens, Google's top tens — are written for the questions under
+**The words** that a map cannot answer in a title: *bakeries in Tallinn*,
+*craft beer Tallinn*, *cheap eats Tallinn*, *Georgian food Tallinn*. **Found
+as text** under [The blog](#the-blog).
+
 It costs no extra Functions invocation, since `_routes.json` was already
 sending every request for `/` through `functions/_middleware.js`. It costs
 the JSON-LD and the list on the wire — some eighty-five kilobytes together,
@@ -15139,7 +15222,7 @@ the languages in `data/ui.json`, the places in `data/restaurants.json`, the
 Google's six lists in
 `tools/googlelists.mjs`: the map at each of its ten addresses, each carrying
 the full set of alternates; every open place at its English address, carrying
-the same; then `/lists`, `/blog` and the six lists. The six are
+the same; then `/lists`, `/blog` and every post on it, and the six lists. The six are
 listed by name because they are the pages that answer what people actually
 type — the top ten restaurants by Google's rating — and their ids never move; people's own
 lists stay out, since the directory is where a crawler finds them. Nothing
