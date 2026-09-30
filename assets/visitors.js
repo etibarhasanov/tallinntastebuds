@@ -69,6 +69,26 @@
   /* What a browser is driven with, by the ids assets/track.js decides. */
   var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
 
+  /* Signing up — SIGNING UP in functions/api/_visitors.js. The three views
+     of the sheet, which are the table's columns; what put the sheet up, by
+     the door in account_from_<door>; and the refusals by the word
+     /api/account answered, the five that are the site's own fault sharing
+     one line, since the owner's question about them is the same. A word
+     not here is drawn as itself. */
+  var SIGN_VIEWS = ['up', 'in', 'google'];
+  var DOORS = {
+    rail: 'visitorsFromRail', nudge: 'visitorsFromNudge', deal: 'visitorsFromDeal',
+    keep: 'visitorsFromKeep', expired: 'visitorsFromExpired', link: 'visitorsFromLink',
+    google: 'visitorsFromGoogle'
+  };
+  var REFUSALS = {
+    taken: 'visitorsErrTaken', username: 'visitorsErrUsername', password: 'visitorsErrPassword',
+    no_match: 'visitorsErrNoMatch', slow_down: 'visitorsErrSlow', no_pending: 'visitorsErrPending',
+    linked: 'visitorsErrLinked', network: 'visitorsErrNetwork', generic: 'visitorsErrGeneric',
+    malformed: 'visitorsErrSite', no_database: 'visitorsErrSite', no_salt: 'visitorsErrSite',
+    wrong_database: 'visitorsErrSite'
+  };
+
   var state = { lang: DEFAULT_LANG, ui: {}, data: null, live: null };
 
   var main = null;
@@ -421,6 +441,20 @@
     return ol;
   }
 
+  /* A few counts in an order that means something — the steps of a trip —
+     rather than most first, so drawn without the rank beside each. */
+  function listed(rows) {
+    var ol = el('ol', { className: 'stats-list ins-list' });
+    rows.forEach(function (r) {
+      ol.appendChild(el('li', { className: 'stats-row' }, [
+        el('span', { className: 'stats-rank' }),
+        el('span', { className: 'stats-who' }, [el('span', { className: 'stats-name', textContent: r.name })]),
+        el('span', { className: 'stats-n', textContent: num(r.n) })
+      ]));
+    });
+    return ol;
+  }
+
   /* The same, as a card of its own under a title. */
   function ranking(title, rows, name, mono) {
     return card([el('h2', { className: 'lists-title', textContent: title }), ranked(rows, name, mono)]);
@@ -515,6 +549,98 @@
         function (r) { return r[0]; },
         function (r) { return cols.map(function (c) { return num(d.rails[c][r[1]]); }); })
     ]);
+  }
+
+  /* Signing up, over the range: how far people got with the sheet and the
+     forms, and where they stopped — SIGNING UP in functions/api/_visitors.js.
+     A table of the three views of the sheet by the four things that happen
+     on one, then why the button was refused, what put the sheet up, the
+     trip to Google and back, the offer over the map, and the pages people
+     got in on. Each part is left out while it is all noughts, and the card
+     while everything is, which is every range from before it began. */
+  function signingUp() {
+    var s = state.data.signup || {};
+    var n = function (name) { return s[name] || 0; };
+    if (!Object.keys(s).some(function (k) { return s[k] > 0; })) return null;
+
+    var starting = function (prefix, labels) {
+      var sum = {};
+      Object.keys(s).forEach(function (k) {
+        if (k.indexOf(prefix) !== 0 || !(s[k] > 0)) return;
+        var word = k.slice(prefix.length);
+        var name = labels[word] ? t(labels[word]) : word;
+        sum[name] = (sum[name] || 0) + s[k];
+      });
+      return Object.keys(sum).map(function (name) { return { id: name, n: sum[name] }; })
+        .sort(function (a, b) { return b.n - a.n || a.id.localeCompare(b.id); });
+    };
+    var byName = function (r) { return r.id; };
+
+    var kids = [
+      el('h2', { className: 'lists-title', textContent: t('visitorsSignup') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsSignupLead') }),
+      grid(t('visitorsSignup'), [t('accountCreate'), t('accountSignIn'), t('visitorsSignupNaming')], [
+        [t('visitorsSignupOpened'), 'sheet'],
+        [t('visitorsSignupTried'), 'try'],
+        [t('visitorsSignupDone'), 'done'],
+        [t('visitorsSignupLeft'), 'leave']
+      ], function (r) { return r[0]; }, function (r) {
+        return SIGN_VIEWS.map(function (v) { return num(n('account_' + r[1] + '_' + v)); });
+      })
+    ];
+    if (n('account_left_err')) {
+      kids.push(el('p', { className: 'ins-note', textContent: t('visitorsSignupLeftErr', { n: num(n('account_left_err')) }) }));
+    }
+
+    var refused = starting('account_err_', REFUSALS);
+    if (refused.length) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsSignupRefused') }),
+        ranked(refused, byName));
+    }
+    var doors = starting('account_from_', DOORS);
+    if (doors.length) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsSignupFrom') }),
+        ranked(doors, byName));
+    }
+
+    /* Everybody sent to Google less everybody who came back, however they
+       came back, is the people who never did. */
+    var out = n('google_out');
+    var backs = ['in', 'name', 'cancel', 'failed'];
+    var back = 0;
+    backs.forEach(function (w) { back += n('google_back_' + w); });
+    if (out || back) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('accountGoogle') }), listed([
+        { name: t('visitorsGoogleOut'), n: out },
+        { name: t('visitorsGoogleIn'), n: n('google_back_in') },
+        { name: t('visitorsGoogleName'), n: n('google_back_name') },
+        { name: t('visitorsGoogleCancel'), n: n('google_back_cancel') },
+        { name: t('visitorsGoogleFailed'), n: n('google_back_failed') },
+        { name: t('visitorsGoogleLost'), n: Math.max(0, out - back) }
+      ]));
+    }
+
+    /* Turned down is what is left of the offers shown once the taken and
+       the faded are out of them: `account_nudge` reports it with a
+       parameter the count does not keep. */
+    var shown = n('account_nudge_shown');
+    if (shown) {
+      var taken = n('account_from_nudge');
+      var faded = n('account_nudge_faded');
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsFromNudge') }), listed([
+        { name: t('visitorsOfferShown'), n: shown },
+        { name: t('visitorsOfferTaken'), n: taken },
+        { name: t('nudgeLater'), n: Math.max(0, shown - taken - faded) },
+        { name: t('visitorsOfferFaded'), n: faded }
+      ]));
+    }
+
+    if (state.data.made && state.data.made.length) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsSignupMade') }),
+        ranked(state.data.made, function (r) { return r.name; }));
+    }
+    kids.push(el('p', { className: 'ins-note', textContent: t('visitorsSignupFoot') }));
+    return card(kids);
   }
 
   /* The per-visitor rows the two cards below share, as [label, of(row)]
@@ -766,7 +892,7 @@
       }
       if (d.languages.length || d.asked.length) stack.appendChild(languages());
       if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
-      [cohorts(), layouts()].forEach(function (c) { if (c) stack.appendChild(c); });
+      [cohorts(), layouts(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
       if (d.pages.length) stack.appendChild(pages());
       var trips = journeys();
       if (trips) stack.appendChild(trips);

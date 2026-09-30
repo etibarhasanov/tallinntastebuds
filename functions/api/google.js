@@ -39,6 +39,21 @@
  * tab mid-trip silently attaches somebody's Google account to whatever
  * account happened to be open. Sealed at the start, it is the question the
  * person actually answered.
+ *
+ * AND WHAT IT COUNTS
+ *
+ * A page that sends somebody to Google cannot see what happened to them
+ * there, and one that never sees them back cannot report anything at all.
+ * This route sees both ends, so it counts both: `google_out` for a sign-in
+ * that left, and `google_back_<word>` for how one came back — `in`, `name`,
+ * `cancel`, `failed` — into the sign-up funnel on /admin/visitors.
+ * SIGNING UP in ./_visitors.js is the whole of it. A connect, which is
+ * somebody already signed in, is not a sign-up and is counted nowhere, and
+ * neither is the owner coming back in, whom the route can tell only once
+ * Google has said who they are — a trip out of theirs is one google_out
+ * too many, which is the price of not asking the database on the way out.
+ * The count is written after the redirect has gone, through waitUntil, and
+ * a count that fails is nobody's problem.
  */
 
 import {
@@ -50,6 +65,14 @@ import {
   FLOW_COOKIE, flowCookie, pendingCookie,
   sealFlow, sealPending, unseal, pkce, authorizeUrl, identify
 } from './_google.js';
+import { adminIds } from './_admin.js';
+import { countSignup } from './_visitors.js';
+
+/* One step of the round trip into the sign-up funnel, after the answer has
+   gone — AND WHAT IT COUNTS. */
+function tally(context, name) {
+  context.waitUntil(countSignup(context.env, name).catch(() => false));
+}
 
 /* A path on this site and nothing else, which is the rule ?then= keeps on the
    map and for the same reason: a parameter that could name any URL turns this
@@ -157,6 +180,7 @@ async function depart(context, url, origin) {
      an account for a person who is no longer the one signing in. */
   off.append('set-cookie', pendingCookie(''));
 
+  if (!user) tally(context, 'google_out');
   return new Response(null, { status: 302, headers: off });
 }
 
@@ -170,18 +194,31 @@ async function arrive(context, url, origin, { code, state, failure }) {
      minutes ago. There is nowhere trustworthy to send them but the front of
      the site: `then` lives in the cookie, so a missing cookie is also a
      missing destination. */
-  if (!flow) return land(origin, '/', 'failed', [clear]);
+  if (!flow) {
+    tally(context, 'google_back_failed');
+    return land(origin, '/', 'failed', [clear]);
+  }
 
   const then = safePath(flow.then, origin);
+  const signing = flow.intent !== 'link';
 
   /* Pressing Cancel on Google's screen. A decision, not a fault: back where
      they were, with nothing said about it. */
-  if (failure === 'access_denied') return land(origin, then, '', [clear]);
-  if (failure || !code) return land(origin, then, 'failed', [clear]);
+  if (failure === 'access_denied') {
+    if (signing) tally(context, 'google_back_cancel');
+    return land(origin, then, '', [clear]);
+  }
+  if (failure || !code) {
+    if (signing) tally(context, 'google_back_failed');
+    return land(origin, then, 'failed', [clear]);
+  }
 
   /* What the state parameter is for: this answer belongs to the trip this
      browser started, and not to one somebody else started in a link. */
-  if (state !== flow.state) return land(origin, then, 'failed', [clear]);
+  if (state !== flow.state) {
+    if (signing) tally(context, 'google_back_failed');
+    return land(origin, then, 'failed', [clear]);
+  }
 
   const identity = await identify(env, {
     code,
@@ -189,9 +226,12 @@ async function arrive(context, url, origin, { code, state, failure }) {
     nonce: flow.nonce,
     redirectUri: origin + GOOGLE_PATH
   });
-  if (!identity) return land(origin, then, 'failed', [clear]);
+  if (!identity) {
+    if (signing) tally(context, 'google_back_failed');
+    return land(origin, then, 'failed', [clear]);
+  }
 
-  if (flow.intent === 'link') return connect(context, origin, then, identity, clear);
+  if (!signing) return connect(context, origin, then, identity, clear);
   return signIn(context, origin, then, identity, flow.client, clear);
 }
 
@@ -232,6 +272,7 @@ async function signIn(context, origin, then, identity, client, clear) {
       provider: PROVIDER,
       subject: identity.subject
     });
+    tally(context, 'google_back_name');
     return land(origin, then, 'name', [clear, pendingCookie(pending)]);
   }
 
@@ -243,5 +284,6 @@ async function signIn(context, origin, then, identity, client, clear) {
   if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
 
   const token = await openSession(env, userId);
+  if (!adminIds(env).has(String(userId).toLowerCase())) tally(context, 'google_back_in');
   return land(origin, then, 'in', [clear, sessionCookie(token, SESSION_DAYS, request)]);
 }

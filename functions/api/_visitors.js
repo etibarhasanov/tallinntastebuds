@@ -212,13 +212,65 @@
  * with the same pages in them are the same number of rows. The pages, the
  * visitor kinds, the rails and the facts counted under them are lists
  * written here — forty ids a day at the most between the `cohort` and
- * `layout` kinds — and the languages are the ones data/ui.json speaks. The
+ * `layout` kinds — and so are the steps of SIGNING UP, a page's worth of
+ * them for each page that has a form; the languages are the ones
+ * data/ui.json speaks. The
  * countries, the sources, the presses, the languages browsers ask for,
  * `found` and the four kinds of HOW THEY FOUND IT are not — a host, a press
  * name or a search is whatever the request says — so each of those kinds
  * takes at most MAX_IDS ids a day, and past that only ids already counted
  * that day go up. A press name must also be shaped like one, which every
  * name TTBTrack sends is.
+ *
+ * SIGNING UP
+ *
+ * Accounts made and sign-ins are two numbers, and two numbers cannot say
+ * why the people who opened the sign-in sheet and did not come out of it
+ * with an account did not. So every step of it is a press name of its own,
+ * reported from the sheet on the map and the forms on splitwise and the
+ * flashcards — SIGNUP below is the whole list — and counted a second time
+ * under the `signup` kind as `<page>:<name>`:
+ *
+ *   account_nudge_shown, _faded      the offer over the map, and it going
+ *                                    away unanswered; account_from_nudge is
+ *                                    it taken
+ *   account_from_<door>              what put the sheet up: the rail, the
+ *                                    offer, a discount, a list to keep, a
+ *                                    session that ran out under a press, a
+ *                                    link from another page, the way back
+ *                                    from Google
+ *   account_sheet_<view>             the sheet up, on 'up' (make one), 'in'
+ *                                    or 'google' (naming a Google account)
+ *   account_try_<view>               its button pressed
+ *   account_err_<error>              refused, and the word the route said —
+ *                                    TTBTrack.refused() in assets/track.js
+ *   account_done_<view>              an account made or signed into
+ *   account_leave_<view>             the sheet shut with neither
+ *   account_left_err                 ... with a refusal on screen as it went
+ *
+ * and, counted by ./google.js rather than by a page, since a page that has
+ * sent somebody to Google cannot see what happened there:
+ *
+ *   google_out                       sent to Google to sign in
+ *   google_back_<word>               back, and how: `in`, `name` (a new
+ *                                    Google account, sent to pick a name),
+ *                                    `cancel` (Cancel on Google's screen)
+ *                                    or `failed`
+ *
+ * The difference between google_out and the backs is the people who never
+ * came back from Google's screen at all.
+ *
+ * A closed list and not the `press` kind's capped one, for two reasons. The
+ * presses were at seventy-odd names a day of the hundred the day this began,
+ * and sign-up names are rare ones that arrive late in the day, which is
+ * exactly what a cap drops. And a report carries at most MAX_NAMES press
+ * names, first come first counted, which a long visit to the map passes —
+ * so these are picked out of the whole report rather than out of the first
+ * twenty. Nothing typed is in any of it: the error is one of the words
+ * ./account.js answers, and a word not on the list is not counted here. A
+ * name also rides on the press kind as every press does, and GA hears it
+ * with the view and the reason as parameters. Pages, not people, as
+ * everything here is: a funnel of counts, never one person's way through it.
  *
  * THE LAST HALF HOUR
  *
@@ -288,6 +340,22 @@ const WHO = ['new', 'back'];
    The last two are presses already, picked out of a report by SIGNS. */
 const FACTS = ['views', 'secs', 'presses', 'places', 'login', 'signup'];
 const SIGNS = { account_login: 'login', account_create: 'signup' };
+
+/* Every step of signing up that is counted under the `signup` kind — see
+   SIGNING UP. The errors are the words functions/api/account.js answers a
+   sign-in, a sign-up or a Google name with, dashes as underscores, plus
+   `network` for a request that never came back and `generic` for one that
+   came back saying nothing. */
+const SIGN_VIEWS = ['up', 'in', 'google'];
+const SIGNUP = new Set([
+  'account_nudge_shown', 'account_nudge_faded', 'account_left_err',
+  ...['rail', 'nudge', 'deal', 'keep', 'expired', 'link', 'google'].map((d) => 'account_from_' + d),
+  ...['sheet', 'try', 'done', 'leave'].flatMap((step) => SIGN_VIEWS.map((v) => 'account_' + step + '_' + v)),
+  ...['taken', 'username', 'password', 'no_match', 'slow_down', 'no_pending', 'linked',
+    'malformed', 'no_database', 'no_salt', 'wrong_database', 'network', 'generic'].map((e) => 'account_err_' + e),
+  'google_out',
+  ...['in', 'name', 'cancel', 'failed'].map((w) => 'google_back_' + w)
+]);
 
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
@@ -596,6 +664,12 @@ export async function countLeave(context, body) {
     pressed += n;
     if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
+  /* The steps of signing up out of the whole report, not the first
+     MAX_NAMES — SIGNING UP. */
+  for (const name of Object.keys(presses)) {
+    const n = Math.min(MAX_PRESS, Math.round(Number(presses[name]) || 0));
+    if (SIGNUP.has(name) && n > 0) facts.push(['signup', page + ':' + name, n]);
+  }
   split(facts, rail, who, 'presses', pressed);
   split(facts, rail, who, 'login', signs.login);
   split(facts, rail, who, 'signup', signs.signup);
@@ -604,6 +678,13 @@ export async function countLeave(context, body) {
   facts.push(...searchFacts(body));
 
   return facts.length ? file(env, facts) : false;
+}
+
+/* One step of signing up that no page can see — the Google round trip's,
+   from ./google.js — filed under that route rather than under a page. */
+export function countSignup(env, name) {
+  if (!SIGNUP.has(name)) return Promise.resolve(false);
+  return file(env, [['signup', 'google:' + name, 1]]);
 }
 
 /* The `lang` facts a report carries — THE LANGUAGE IT WAS READ IN — with
@@ -713,6 +794,10 @@ function most(map) {
  *   hours      [24 numbers] page views by the hour of the day in Tallinn,
  *              midnight first
  *   devices    [{ id, n }] visitors by phone, tablet or desktop, most first
+ *   signup     { name: n } every step of SIGNING UP in the range, over
+ *              every page, and { } before it began
+ *   made       [{ id, name, n }] accounts made or signed into through a
+ *              form, account_done_*, by the page the form was on
  *
  * One read of the range and the one before it; the rest is arithmetic on at
  * most 180 days of a hundred-odd rows each.
@@ -754,6 +839,8 @@ export async function readVisitors(env, span, ui, spoken) {
   const moves = new Map();
   const asked = new Map();
   const devices = new Map();
+  const signup = new Map();
+  const made = new Map();
   const hours = new Array(24).fill(0);
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
@@ -786,6 +873,12 @@ export async function readVisitors(env, span, ui, spoken) {
     else if (r.kind === 'nav') bump(moves, r.id, r.n);
     else if (r.kind === 'asks') bump(asked, r.id, r.n);
     else if (r.kind === 'device') bump(devices, r.id, r.n);
+    else if (r.kind === 'signup') {
+      const at = r.id.indexOf(':');
+      const name = r.id.slice(at + 1);
+      bump(signup, name, r.n);
+      if (name.startsWith('account_done_')) bump(made, r.id.slice(0, at), r.n);
+    }
     else if (r.kind === 'hour') { if (hours[Number(r.id)] !== undefined) hours[Number(r.id)] += r.n; }
     else if (r.kind === 'country') bump(countries, r.id, r.n);
     else if (r.kind === 'from') bump(sources, r.id, r.n);
@@ -838,6 +931,8 @@ export async function readVisitors(env, span, ui, spoken) {
     asked: most(asked).map((a) => ({ ...a, spoken: (spoken || []).includes(a.id) })),
     hours: hours,
     devices: most(devices),
+    signup: Object.fromEntries(signup),
+    made: most(made).map((m) => ({ ...m, name: pageName(ui, m.id) })),
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
     presses: most(presses),

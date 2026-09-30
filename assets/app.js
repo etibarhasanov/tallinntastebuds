@@ -2469,7 +2469,15 @@
        sitting over the map waiting to be dealt with. Turning it down is what
        starts the quiet fortnight; ignoring it only ends the visit's one ask. */
     window.clearTimeout(nudgeTimer);
-    nudgeTimer = window.setTimeout(hideNudge, 9000);
+    nudgeTimer = window.setTimeout(function () {
+      TTBTrack.event('account_nudge_faded');
+      hideNudge();
+    }, 9000);
+    /* Shown and faded are what the site's own count needs to say how often
+       the offer is taken: account_nudge reports the two presses, and the
+       third answer — reading it and doing nothing — used to report nothing
+       at all. See SIGNING UP in functions/api/_visitors.js. */
+    TTBTrack.event('account_nudge_shown');
   }
 
   function hideNudge() {
@@ -2757,7 +2765,7 @@
       window.location.href = ACCOUNT_PAGE;
       return;
     }
-    openAccount(view);
+    openAccount(view, '', 'link');
   }
 
   /* The other half of the round trip, once /api/account has answered.
@@ -2775,7 +2783,7 @@
 
     /* A Google account with nobody here yet. The sheet asks for the one thing
        the round trip deliberately did not go and find out. */
-    if (said === 'name') { openAccount('google'); return; }
+    if (said === 'name') { openAccount('google', '', 'google'); return; }
 
     if (said === 'in') {
       TTBTrack.event('account_login', { via: 'google' });
@@ -2794,7 +2802,7 @@
     /* Already signed in, so the sheet has nothing to offer: there is no
        second try to put the sentence next to. */
     if (state.account.user) { toast(t(err)); return; }
-    openAccount('in');
+    openAccount('in', '', 'google');
     accountErr = t(err);
     renderAccount();
   }
@@ -2823,6 +2831,9 @@
    */
   var accountView = 'in';
   /* 'in' | 'up' | 'me' | 'password' | 'username' | 'google' */
+  /* The three of those somebody with no account is standing in, and so the
+     three the sign-up funnel is counted on. */
+  var SIGN_VIEWS = ['up', 'in', 'google'];
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -2832,11 +2843,12 @@
      assigned accountNote and then called this would have it wiped on the way
      in. Moving between steps and saying what just happened is one action, so
      it is one call. */
-  function openAccount(view, note) {
+  function openAccount(view, note, from) {
     /* Only when arriving from outside: stepping between views inside an open
        sheet must not record a field in the sheet as the thing to hand focus
        back to when it shuts. */
-    if (dom.accountScrim.hidden) state.lastFocus = document.activeElement;
+    var arriving = dom.accountScrim.hidden;
+    if (arriving) state.lastFocus = document.activeElement;
     /* Signing in is the only thing this sheet opens on its own, because the
        one caller that names no view is the rail button and it only reaches
        here signed out — signed in it leaves for the account page. */
@@ -2844,6 +2856,17 @@
     accountNote = note || '';
     accountErr = '';
     hideNudge();
+    /* The top of the funnel: the sheet put up in front of somebody with no
+       account, which view it opened on and what sent it. `from` is the door —
+       the rail, the offer, a discount, a list to keep, a session that ran out
+       under a press, a link from another page, the way back from Google — and
+       is a press name of its own because the site's count keeps names and
+       not their parameters. Moving between views inside an open sheet is not
+       another opening. See SIGNING UP in functions/api/_visitors.js. */
+    if (arriving && !state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) {
+      TTBTrack.event('account_sheet_' + accountView);
+      TTBTrack.event('account_from_' + (from || 'link'));
+    }
     dom.accountScrim.hidden = false;
     document.body.classList.add('has-scrim');
     renderAccount();
@@ -2944,6 +2967,15 @@
   }
 
   function closeAccount() {
+    /* Shut without an account — the cross, the scrim, Escape — which is the
+       one ending of the sheet nothing else reports. Every way it shuts on a
+       success has set the user first, so this cannot count one of those.
+       Whether a refusal was on screen as it went is the difference between
+       somebody who changed their mind and somebody the sheet turned away. */
+    if (!dom.accountScrim.hidden && !state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) {
+      TTBTrack.event('account_leave_' + accountView);
+      if (accountErr) TTBTrack.event('account_left_err', { view: accountView });
+    }
     dom.accountScrim.hidden = true;
     document.body.classList.remove('has-scrim');
     var back = state.lastFocus;
@@ -3330,6 +3362,7 @@
   };
 
   function accountFail(out) {
+    if (!state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) TTBTrack.refused(out, accountView);
     accountErr = t(ACCOUNT_ERRORS[out && out.error] || 'accountErrGeneric');
     accountBusy = false;
     renderAccount();
@@ -3512,6 +3545,7 @@
       if (accountBusy) return;
       var v = accountValues();
       accountBusy = true; accountErr = ''; renderAccount();
+      TTBTrack.event('account_try_' + (creating ? 'up' : 'in'));
       accountPost({
         action: creating ? 'create' : 'login',
         username: v.username,
@@ -3524,13 +3558,14 @@
         if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
         paintAccountButton();
         TTBTrack.event(creating ? 'account_create' : 'account_login', {});
+        TTBTrack.event('account_done_' + (creating ? 'up' : 'in'));
         closeAccount();
         /* Sent here from somewhere that needed an account — the lists page.
            Straight back to it, and no toast: the page they land on is about
            to say who they are in its own header. */
         if (returnAfterAccount()) return;
         toast(t('accountSignedIn', { name: a.out.user }));
-      }).catch(function () { accountFail({}); });
+      }).catch(function () { accountFail({ error: 'network' }); });
     });
     form.appendChild(go);
 
@@ -3631,6 +3666,7 @@
       if (accountBusy) return;
       var v = accountValues();
       accountBusy = true; accountErr = ''; renderAccount();
+      TTBTrack.event('account_try_google');
       accountPost({ action: 'google-name', username: v.username, client: TTBDevice.id() })
         .then(function (a) {
           accountBusy = false;
@@ -3644,10 +3680,11 @@
           if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
           paintAccountButton();
           TTBTrack.event('account_create', { via: 'google' });
+          TTBTrack.event('account_done_google');
           closeAccount();
           if (returnAfterAccount()) return;
           toast(t('accountSignedIn', { name: a.out.user }));
-        }).catch(function () { accountFail({}); });
+        }).catch(function () { accountFail({ error: 'network' }); });
     });
     form.appendChild(go);
   }
@@ -6762,7 +6799,7 @@
       open.addEventListener('click', function () {
         TTBTrack.event('deal_signin', { place: place.name });
         accountThen = passHref;
-        openAccount('in');
+        openAccount('in', '', 'deal');
       });
     } else {
       open = el('a', { className: 'link-btn is-primary', href: passHref, textContent: t('passGet') });
@@ -9642,7 +9679,7 @@
     b.addEventListener('click', function () {
       if (!state.account.user) {
         TTBTrack.event('list_keep', { list_id: list.id, list_state: 'signed_out' });
-        openAccount('up');
+        openAccount('up', '', 'keep');
         return;
       }
       /* Whichever list this button was drawn for. Read off the closure rather
@@ -9675,7 +9712,7 @@
           if (a.out && a.out.error === 'signed-out') {
             state.account.user = null;
             paintAccountButton();
-            openAccount('in');
+            openAccount('in', '', 'expired');
           }
           paint();
           return;
@@ -11008,7 +11045,7 @@
       closeHint('account');
       TTBTrack.event('account_open', { view: state.account.user ? 'page' : 'sheet' });
       if (state.account.user) { window.location.href = ACCOUNT_PAGE; return; }
-      openAccount();
+      openAccount('', '', 'rail');
     });
 
     dom.nudgeGo.addEventListener('click', function () {
@@ -11016,7 +11053,7 @@
       /* Straight to the sign-up sheet rather than the sign-in one: somebody
          who pressed this does not have an account yet, and the sheet offers
          the way across for the few who do. */
-      openAccount('up');
+      openAccount('up', '', 'nudge');
       TTBTrack.event('account_nudge', { taken: true });
     });
 

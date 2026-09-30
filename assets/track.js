@@ -116,6 +116,21 @@ window.TTBTrack = (function () {
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
 
+  /* A refusal from /api/account, reported as a press of its own:
+     account_err_ and the error the route sent, its dashes as underscores —
+     `taken`, `password`, `slow_down` — and `generic` where it sent none,
+     which is a network that failed as often as a server that did. The map,
+     splitwise and the flashcards each carry a sign-in form, and all three
+     report a refusal through this so the one word is spelt one way. The
+     name is a press like any other here; functions/api/_visitors.js is
+     what also files it under SIGNING UP, which is where /admin/visitors
+     reads why people who tried to make an account did not. `view` is the
+     form it happened on — 'up', 'in' or 'google', the naming step. */
+  function refused(out, view) {
+    var said = out && typeof out.error === 'string' ? out.error.replace(/-/g, '_') : '';
+    event('account_err_' + (/^[a-z_]{1,20}$/.test(said) ? said : 'generic'), { view: view });
+  }
+
   /* Which rail this browser was dealt on the map — 'a', the full column, or
      'b', the short one — read off the key pickLayout() in assets/app.js
      writes, so every event on every page carries it and GA can be split by
@@ -501,5 +516,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive };
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused };
 })();

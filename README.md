@@ -11418,6 +11418,8 @@ kinds of visitor differ, then the experiment, then what was done.
   made as counts — see **New against returning** below.
 - **The two rails**, the experiment the map is running — see **The two
   rails** below.
+- **Signing up**: how far people got with the sign-in sheet and the other
+  two sign-in forms, and where they stopped — see **Signing up** below.
 - **What they did**: **pages** with their views, the time a view stayed and
   the share of views on which nothing was pressed; **journeys**, the page a
   visitor's day began on and which page followed which; and **what was
@@ -11620,6 +11622,53 @@ the rail once its places are in, which is after the page is ready, so its
 `track.js` tag carries `data-arrive="late"` and `assets/app.js` calls
 `TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
 the comparison most needs, a stranger's first, would arrive with no rail.
+
+### Signing up
+
+Sign-ins and accounts made are two numbers, and on the count's first three
+days they said eighteen accounts had been made and nothing about the people
+who opened the sheet and did not make one — not how many there were, not
+what they were refused, not whether they left at Google's screen. The rail's
+account button even reported the same `account_open` signed in as signed
+out, so the top of the funnel could not be told from a member going to
+their account page. This card is the funnel.
+
+Every step of the sheet on the map is a press of its own — the whole list is
+under [Analytics](#analytics), and `SIGNUP` in `functions/api/_visitors.js`
+is the closed list they are counted from: what put the sheet up
+(`account_from_<door>`), which view it opened on (`account_sheet_<view>`),
+the button pressed (`account_try_<view>`), a refusal and the word the route
+answered with (`account_err_<error>`), getting in (`account_done_<view>`),
+and shutting it with neither (`account_leave_<view>`, and
+`account_left_err` when a refusal was on screen as it went). The offer over
+the map reports being shown and fading away unanswered as well as the two
+presses. Splitwise and the flashcards carry a form of their own rather than
+a sheet, and report the try, the refusal and getting in the same way.
+
+The trip to Google is counted by `/api/google` itself, since a page that has
+sent somebody there cannot see what happened: `google_out` for a sign-in
+that left, and `google_back_in`, `_name`, `_cancel` or `_failed` for how it
+came back. Out less back is the people who never came back from Google's
+screen. A connect is not a sign-up and is not counted, nor is the owner
+coming back in; the owner's trip out is counted, because the route cannot
+tell who is leaving without asking the database.
+
+They are counted a second time under a kind of their own, `signup`, as
+`<page>:<name>`, for two reasons. The presses kind takes a hundred names a
+day and was at seventy-odd when this began, and a rare name that arrives
+late in the day is exactly what a cap drops; and a report carries at most
+twenty press names, which a long visit to the map passes, so these are
+picked out of the whole report. It is still counts and pages, never one
+person's way through: nothing here can say that the somebody refused at
+10:02 is the somebody who got in at 10:03.
+
+The card lays them out in the order the questions come: a table of the
+sheet's three views by opened, pressed, got in and gave up; why the button
+was refused, the five words that are the site's own fault on one line; what
+opened the sheet; the trip to Google; the offer; and the pages people got in
+on. Opened less everything after it is mostly people who closed the tab with
+the sheet up, which no report survives reliably. Nothing from before it
+landed was counted, and the card is left out of every range that holds none.
 
 ### Right now
 
@@ -14885,6 +14934,13 @@ The map, `assets/app.js`:
 | `account_create`, `account_login` | — |
 | `account_password_change`, `account_rename` | — on success |
 | `account_nudge` | `taken` |
+| `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account button, the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
+| `account_sheet_up`, `_in`, `_google` | — the sheet up, and on which view: making an account, signing in, or naming one Google has just vouched for. Not reported again for moving between views |
+| `account_try_up`, `_in`, `_google` | — its button pressed |
+| `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`, `no_pending`, `linked`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
+| `account_done_up`, `_in`, `_google` | — an account made or signed into through that view; beside `account_create` and `account_login`, which cannot say which view |
+| `account_leave_up`, `_in`, `_google`, `account_left_err` | the last with `view` — the sheet shut without an account, and whether a refusal was on screen as it went |
 | `saved_open` | — the row in the sheet |
 | `welcome_ok`, `welcome_tour` | — the two buttons on the welcome card; the cross and a touch on the map put it away without reporting |
 | `explain_open` | — |
@@ -15019,6 +15075,7 @@ Splitwise, `assets/split.js`:
 | event | parameters |
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`split`) — its own sign-in form |
+| `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
 | `split_open` | `group_id` — a row under Your groups |
 | `split_create`, `split_join`, `split_leave`, `split_remove` | `group_id` |
 | `split_share` | `group_id` — the copied invite link |
@@ -15030,6 +15087,7 @@ Flashcards, `assets/flashcard.js`:
 | event | parameters |
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
+| `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
