@@ -31,7 +31,7 @@
      rows, figures and line /admin/stats and /insights already draw with. -->
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
 <link rel="stylesheet" href="/assets/lists.css?v=d1b4f23b">
-<link rel="stylesheet" href="/assets/stats.css?v=557532e4">
+<link rel="stylesheet" href="/assets/stats.css?v=f061e17a">
 </head>
 <body class="lists-body">
 
@@ -43,6 +43,20 @@
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
 </header>
+
+<!-- The owner's five pages, as one row of chips, so that they read as a
+     set rather than as five addresses to remember: the same five rows
+     /admin.html lists under The numbers, in the same order, the page you are
+     on filled the way the map fills the view you are in. Static markup rather
+     than something each script draws, so the row is there before the numbers
+     arrive and still there if they never do. -->
+<nav class="numbers-nav" data-i18n-aria-label="numbersNav" aria-label="The numbers">
+  <a class="chip" href="/admin/visitors" data-i18n="numbersVisitors" aria-current="page">Visitors</a>
+  <a class="chip" href="/admin/found" data-i18n="numbersFound">How they found it</a>
+  <a class="chip" href="/admin/stats" data-i18n="numbersStats">What people open</a>
+  <a class="chip" href="/admin/google" data-i18n="numbersGoogle">Google’s directory</a>
+  <a class="chip" href="/admin/flows" data-i18n="numbersFlows">Who uses the site</a>
+</nav>
 
 <!-- The title and the sentence under it are in the markup, so the page says
      what it is before the numbers arrive and still says it if they never do.

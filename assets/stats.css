@@ -13,6 +13,30 @@
  * rather than a sentence, which is rule 2.
  */
 
+/* ----------------------------------------------------------- the five pages */
+
+/* The owner's five pages under /admin/ as one row of the map's chips, under
+   the brand header on every one of them, the page you are on filled through
+   aria-current the way the map fills the view you are in. They are five
+   pages rather than one because each answers a different question out of a
+   different table over a different stretch of time — what gets opened is
+   all-time, who came and how they found it are a chosen range, the
+   directory is Google's list, the diagrams are a drawing — and one page of
+   all of it would be a scroll nobody finishes on a phone. What they lacked
+   was being a set, and this row is that. Wrapping, for the reason the range
+   row wraps: five of them in the mono do not fit across 390px, and a row that
+   scrolled sideways would hide the one being looked for. The column is the
+   lists page's on four of them; on the directory the row sits inside its
+   wider header and takes that header's padding. */
+.numbers-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 640px;
+  margin: 0 auto 14px;
+}
+.venues-brand .numbers-nav { max-width: none; margin: 14px 0 0; }
+
 /* ---------------------------------------------------------------- the lead */
 
 /* The sentence under a card's title, saying what the table below it counts.
