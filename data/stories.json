@@ -106,5 +106,15 @@
       "hy": "Նոր քարտեզում՝ Vegan Restoran V, լավ վեգան սնունդ արդար գներով՝ հարմարավետ հին տանը Հին քաղաքում։"
     },
     "spot": "vegan-restoran-v"
+  },
+  {
+    "id": "pohja-konn-2026-09-30",
+    "live": true,
+    "photo": "pohja-konn-2026-09-30.jpg",
+    "from": "2026-09-30T21:40",
+    "caption": {
+      "en": "nice stuff always"
+    },
+    "spot": "pohja-konn"
   }
 ]
