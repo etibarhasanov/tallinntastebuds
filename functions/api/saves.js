@@ -46,6 +46,8 @@ import {
   json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
   RECOUNT_SQL, countsKey
 } from './_lib.js';
+/* Every write that went through is counted — countUse() in ./_visitors.js. */
+import { countUse } from './_visitors.js';
 
 /* How many saves for one place may come from a single network fingerprint.
  *
@@ -306,5 +308,6 @@ export async function onRequestPost(context) {
      depend on it. */
   context.waitUntil(caches.default.delete(countsKey(request)));
 
-  return json({ place: place, n: total ? total.n : 0, on: on }, 200);
+  return countUse(context, 'map', on ? 'save' : 'unsave',
+    json({ place: place, n: total ? total.n : 0, on: on }, 200), user, user ? '' : client);
 }

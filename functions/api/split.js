@@ -75,6 +75,8 @@
 
 import { json, sessionUser, wrongDatabase, randomHex } from './_lib.js';
 import { googleReady } from './_google.js';
+/* Every write that went through is counted — countUse() in ./_visitors.js. */
+import { countUse } from './_visitors.js';
 
 /* Caps. All of them are about somebody with a script rather than somebody
    with a dinner, with one exception.
@@ -603,22 +605,23 @@ export async function onRequestPost(context) {
   if (!user) return json({ error: 'signed-out' }, 401);
 
   const action = body.action;
-  if (action === 'create') return create(context, body, user);
+  const counted = (answer) => countUse(context, 'splitwise', action, answer, user);
+  if (action === 'create') return counted(create(context, body, user));
   /* The one action taken on a group you are not yet in — that is what it is
      for — so it is routed above the membership check and does its own. */
-  if (action === 'join') return join(context, body, user);
+  if (action === 'join') return counted(join(context, body, user));
 
   const group = await groupFor(env, body.group, user);
   if (!group) return json({ error: 'not-found' }, 404);
 
-  if (action === 'spend')    return spend(context, body, user, group);
-  if (action === 'unspend')  return unspend(context, body, user, group);
-  if (action === 'settle')   return settle(context, body, user, group);
-  if (action === 'unsettle') return unsettle(context, body, user, group);
-  if (action === 'rename')   return rename(context, body, user, group);
-  if (action === 'leave')    return leave(context, user, group);
-  if (action === 'drop')     return drop(context, body, user, group);
-  if (action === 'remove')   return remove(context, user, group);
+  if (action === 'spend')    return counted(spend(context, body, user, group));
+  if (action === 'unspend')  return counted(unspend(context, body, user, group));
+  if (action === 'settle')   return counted(settle(context, body, user, group));
+  if (action === 'unsettle') return counted(unsettle(context, body, user, group));
+  if (action === 'rename')   return counted(rename(context, body, user, group));
+  if (action === 'leave')    return counted(leave(context, user, group));
+  if (action === 'drop')     return counted(drop(context, body, user, group));
+  if (action === 'remove')   return counted(remove(context, user, group));
 
   return json({ error: 'action' }, 400);
 }

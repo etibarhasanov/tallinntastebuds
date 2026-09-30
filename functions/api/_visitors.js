@@ -18,6 +18,8 @@
  *   readFound()     how people found the site, over a range — GET /api/admin/found
  *   countAsk()      a question put to the chat on the map — called from
  *                   POST /api/ask
+ *   countUse()      something done with one of the products — called from
+ *                   the write routes of each
  *
  * A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY
  *
@@ -226,6 +228,40 @@
  * thought — was still a question asked and still Neurons spent, and
  * `resting` is the count of how often the day's allowance ran out.
  *
+ * WHAT THE PRODUCTS WERE USED FOR, AND BY HOW MANY
+ *
+ * Most of the site's tables hold what is there now rather than what
+ * happened: an unsaved place is a deleted row, and a flashcard reviewed
+ * twice is one row with the second date on it. So "how much were lists used
+ * last week" had no answer, and "how many different people used the
+ * flashcards" had none anywhere. countUse() answers both, from the write
+ * routes of the five products those tables cannot speak for — saves,
+ * lists, flashcards, splitwise and chess — once a write has succeeded:
+ *
+ *   `use`         `<product>:<action>`, a day's count of each thing done —
+ *                 `lists:add`, `flashcards:knew`, `splitwise:spend`, the
+ *                 action named as the route names it
+ *   usage_people  one row per person per product per week, so a week's
+ *                 rows for a product are how many people used it. The row
+ *                 is a key and nothing else: an HMAC under SAVE_SALT of the
+ *                 week, the product and the account or device id, cut to
+ *                 32 hex, so it cannot be turned back into who, and it is a
+ *                 different key every week and for every product — the
+ *                 table cannot be joined into what one person did, or into
+ *                 whether they came back
+ *
+ * A person is the account where there is a session and the device id where
+ * there is not, so somebody signed out who signs in during the week counts
+ * twice that week, and so does one person on two devices signed out — the
+ * limit the visitors have too. The owner is left out, by the session, the
+ * way ./stats.js leaves them out. Without the salt the people are not
+ * counted at all rather than filed under an id anybody could read; the
+ * actions still are. The weeks begin on Monday, UTC.
+ *
+ * Accounts made, sign-ins and feedback are not here because their tables
+ * already keep a dated row for each, and the chat's questions are
+ * WHAT THE CHAT WAS ASKED.
+ *
  * WHAT IS BOUNDED, AND HOW
  *
  * One row per fact per day, like profile_counts: a busy day and a quiet one
@@ -317,7 +353,8 @@
  */
 
 import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_visits.js';
-import { uiStrings } from './_lib.js';
+import { uiStrings, hmacHex } from './_lib.js';
+import { adminIds } from './_admin.js';
 
 /* The ranges the page offers, in days. 1 is today so far. */
 export const SPANS = [1, 7, 28, 90];
@@ -396,6 +433,10 @@ const DEVICES = ['phone', 'tablet', 'desktop'];
    nothing (no model, or an answer that could not be read), and resting
    (the day's allowance spent). */
 const ENDINGS = ['places', 'words', 'none', 'resting'];
+
+/* The products countUse() is called for — WHAT THE PRODUCTS WERE USED FOR,
+   AND BY HOW MANY. `map` is the saves, which are made on the map. */
+const PRODUCTS = ['map', 'lists', 'flashcards', 'splitwise', 'chess'];
 
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
    the most presses one report may carry, by name and in all. */
@@ -725,6 +766,50 @@ export async function countAsk(env, { ended, followup, near, retried, mine, goog
   if (mine > 0) facts.push(['ask', 'mine', mine]);
   if (google > 0) facts.push(['ask', 'google', google]);
   return file(env, facts);
+}
+
+/* Something done with one of PRODUCTS — WHAT THE PRODUCTS WERE USED FOR,
+   AND BY HOW MANY. `answer` is the route's own answer, or the promise of
+   it, and is handed back as it is: a write route wraps each action as
+   `return countUse(context, 'lists', action, create(...), user)`, and it
+   is counted only where the answer says the write went through. `user` is
+   the session's, `device` the device id a signed-out write is filed under.
+   The counting runs through waitUntil, after the answer. */
+export async function countUse(context, product, action, answer, user, device) {
+  const res = await answer;
+  if (!res || !res.ok || !PRODUCTS.includes(product)) return res;
+  const { env } = context;
+  if (user && adminIds(env).has(String(user.id).toLowerCase())) return res;
+  const person = user ? 'user:' + user.id : device ? 'device:' + device : '';
+  context.waitUntil(Promise.all([
+    file(env, [['use', product + ':' + action, 1]]),
+    countPerson(env, product, person)
+  ]));
+  return res;
+}
+
+/* This person, once this week, for this product — usage_people. Nothing
+   without a person or without the salt, and nothing but a failed write
+   where the table has not been applied yet. */
+async function countPerson(env, product, person) {
+  if (!person || !env.SAVE_SALT) return;
+  const week = weekOf(today());
+  try {
+    const key = (await hmacHex(env.SAVE_SALT, 'use|' + week + '|' + product + '|' + person)).slice(0, 32);
+    await env.DB
+      .prepare('INSERT OR IGNORE INTO usage_people (week, product, key) VALUES (?, ?, ?)')
+      .bind(week, product, key)
+      .run();
+  } catch (e) {
+    /* No table yet. The action was still counted. */
+  }
+}
+
+/* The Monday a YYYY-MM-DD day's week begins on, in the same form. */
+function weekOf(day) {
+  const d = new Date(day + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - (d.getUTCDay() + 6) % 7);
+  return d.toISOString().slice(0, 10);
 }
 
 /* The `lang` facts a report carries — THE LANGUAGE IT WAS READ IN — with

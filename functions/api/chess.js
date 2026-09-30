@@ -96,6 +96,8 @@ import {
   json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp
 } from './_lib.js';
 import { adminIds } from './_admin.js';
+/* Every write that went through is counted — countUse() in ./_visitors.js. */
+import { countUse } from './_visitors.js';
 import { START, legalMoves, play, repetition } from './_chess.js';
 
 /* How long a member may leave their move before the house may end the game
@@ -416,9 +418,9 @@ export async function onRequestPost(context) {
   if (!body || typeof body !== 'object') return json({ error: 'malformed' }, 400);
 
   const who = await whoIs(request, env, body.client);
-  const act = ACTIONS[body.action];
+  const act = Object.hasOwn(ACTIONS, body.action) ? ACTIONS[body.action] : null;
   if (!act) return json({ error: 'action' }, 400);
-  return act(env, who, body, request);
+  return countUse(context, 'chess', body.action, act(env, who, body, request), who.user, who.client);
 }
 
 /* A refusal that says what the board is now, for the ones the page redraws

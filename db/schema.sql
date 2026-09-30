@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Twenty-three kinds:
+-- the key, one row per fact per day, and a number. Twenty-four kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -321,6 +321,9 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --   kind 'signup'   id is '<page>:<name>', a step of signing up — SIGNING
 --                   UP in _visitors.js — or 'google:<name>' for one on the
 --                   Google round trip
+--   kind 'use'      id is '<product>:<action>', something done with a
+--                   product — countUse() in _visitors.js, beside
+--                   usage_people below
 --   kind 'ask'      id is one of ten facts about a question put to the chat
 --                   on the map — asked, how it ended, follow-ups, retries,
 --                   picks off each roll — counted by POST /api/ask, never
@@ -407,6 +410,32 @@ CREATE TABLE IF NOT EXISTS flow_counts (
   id   TEXT    NOT NULL,
   n    INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (flow, day, who, id)
+) WITHOUT ROWID;
+
+-- ------------------------------------------------------------ usage_people
+-- How many different people used each product in a week: one row per
+-- person per product per week, and a week's rows for a product are the
+-- answer. countUse() in functions/api/_visitors.js writes it, once a write
+-- on saves, lists, flashcards, splitwise or chess has gone through, and
+-- WHAT THE PRODUCTS WERE USED FOR, AND BY HOW MANY in that file's header is
+-- the reasoning; **Usage, week by week** in README.md is the reading half.
+--
+-- `key` is an HMAC under SAVE_SALT of the week, the product and the
+-- account or device id, cut to 32 hex. No id is stored, and the key is a
+-- different one every week and for every product, so rows cannot be joined
+-- into what one person used or whether they came back. Kept rather than
+-- deleted, since the history is the point: at this site's size a week is a
+-- few hundred rows. The owner is never counted.
+--
+-- The key leads with the week, which is how it is read — a range of weeks,
+-- grouped by product. WITHOUT ROWID, for the reason visitor_counts is.
+CREATE TABLE IF NOT EXISTS usage_people (
+  -- YYYY-MM-DD, the Monday the week begins on, UTC.
+  week    TEXT NOT NULL,
+  -- map, lists, flashcards, splitwise or chess — PRODUCTS in _visitors.js.
+  product TEXT NOT NULL,
+  key     TEXT NOT NULL,
+  PRIMARY KEY (week, product, key)
 ) WITHOUT ROWID;
 
 
