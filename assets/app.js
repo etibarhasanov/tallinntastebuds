@@ -2858,8 +2858,8 @@
   }
 
   /* --------------------------------------------------------- the More sheet
-   * The doors the short rail does not draw as pills — Ask, the flashcards,
-   * chess, the colour and feedback — as rows, in the account sheet's
+   * The four doors the short rail does not draw as pills — Ask, the
+   * flashcards, the colour and feedback — as rows, in the account sheet's
    * own menu shape and under its own card. Built when it opens, because the
    * colour row names the side you are about to get and that is decided at
    * the moment of opening, the way the swatch's label is. Never opened on the
@@ -2931,10 +2931,6 @@
           openAsk();
         }),
         row('flash', t('flashDoor'), t('flashDoorWhy'), '/flashcard', 'flash_open_rail'),
-        /* The chess page's one door on the map: a row here, for everybody on
-           the short rail. The full rail has no pill for it, on purpose — the
-           owner's call, so its column stays the eight it was. */
-        row('chess', t('chessDoor'), t('chessDoorWhy'), '/chess', 'chess_open_rail'),
         /* The line under Colour is the side you are about to get, exactly as
            the swatch's label is; pressing it redraws the sheet so the line
            says the way back. */
@@ -3855,7 +3851,7 @@
    * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
    * the list this half has to be kept in step with: a pill counted here and
    * not named there is a press the route answers {ok:false} to. Nothing in
-   * #rail but these nine is counted, the chess row behind More aside,, and the radio is outside it — it stands
+   * #rail but these nine is counted,, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
    *
    * The rows behind More count as the pills they stand for — a row is that

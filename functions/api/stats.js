@@ -49,7 +49,7 @@
  *            never drawn on a row anybody else reads, and **Public lists**
  *            in README.md says why a ranking without a scoreboard is the
  *            point rather than an omission.
- *   rail     a pill on the rail down the left of the map pressed — the ten
+ *   rail     a pill on the rail down the left of the map pressed — the nine
  *            in RAIL_PILLS below, which is every button inside #rail and
  *            nothing else. The radio is not one of them: it left the rail for
  *            the corner beside the language switch, and a table about the rail
@@ -92,7 +92,7 @@
  * card is reopened while somebody makes their mind up — and it has to agree
  * with the one page view TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
  * per press of one, and the question this table answers is the plain one:
- * which of the ten buttons do people actually push, and how often. Counting
+ * which of the nine buttons do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.
  *
@@ -136,11 +136,9 @@ const LEAVE = 'leave';
    wears as its own label on the map, so the table reads as the rail does and
    nothing new was written into ten languages to name a button that is already
    named. The ids are the keys hintPill() in assets/app.js uses for the same
-   buttons, which is where most of them came from. Ten across the two rails:
+   nine buttons, which is where they came from. Nine across the two rails:
    the full one draws eight of them and the short one four — More is only
-   the short rail's, and its rows count as the pills they stand in for — and
-   chess is the one id with no pill at all: a row behind More on the short
-   rail, counted here so /admin/stats can say how often it is opened.
+   the short rail's, and its rows count as the four pills it stands in for.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is
@@ -153,7 +151,6 @@ export const RAIL_PILLS = [
   { id: 'lists', label: 'listsAllTitle' },
   { id: 'more', label: 'moreOpen' },
   { id: 'flash', label: 'flashDoor' },
-  { id: 'chess', label: 'chessDoor' },
   { id: 'random', label: 'randomPick' },
   { id: 'ask', label: 'askOpen' },
   { id: 'style', label: 'styleLabel' },
@@ -344,7 +341,7 @@ async function realList(context, id) {
 }
 
 /* And whether that id is a pill the rail actually draws. RAIL_PILLS is the
-   whole of it: ten ids written into this file, checked against so that the
+   whole of it: nine ids written into this file, checked against so that the
    table cannot fill with names of buttons that do not exist. The radio is not
    one of them and neither is anything in the header. */
 function realPill(id) {
