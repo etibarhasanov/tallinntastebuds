@@ -177,6 +177,15 @@
  * used to fall back to a keyword reader in the browser at that point, and
  * that reader drew rows for questions it had no clue about with nothing
  * under them saying why; the chat brings nothing rather than that now.
+ *
+ * WHAT IS COUNTED
+ *
+ * How each question ended — places, a sentence, nothing, or resting — and
+ * what the answer was made of, into visitor_counts through countAsk() in
+ * ./_visitors.js, after the answer has gone and never for the owner: WHAT
+ * THE CHAT WAS ASKED in that file. Never the words of the question. It is
+ * what lets "how much is the chat used" be read week by week, where the
+ * press the page sends says only that something was typed.
  */
 
 import { json, mapPlaces, nearTallinn, venueCard, venueHours, wrongDatabase } from './_lib.js';
@@ -190,6 +199,9 @@ import { kitchensOf, KITCHENS } from './venues.js';
 /* The one lookup behind /api/geocode's suggestions, asked here for where a
    visitor said they are. See WHERE THE VISITOR IS above. */
 import { suggest } from './geocode.js';
+/* WHAT IS COUNTED above: the count, and the owner it leaves out. */
+import { countAsk } from './_visitors.js';
+import { adminUser } from './_admin.js';
 
 /* A model that is on the Workers Free plan, and a fast one. Cloudflare has
    moved the larger ones behind Workers Paid before now — @cf/moonshotai/kimi-k2.6
@@ -1257,8 +1269,12 @@ export async function onRequestPost(context) {
      true` for their own dot, which the browser has the words for in the
      visitor's language. */
   const farOf = new Map([...mine, ...google].map((p) => [p.id, p.far]));
-  const answer = (source, picks, say, note) =>
-    json({
+  /* Set when the rules below send the model back for a second answer, which
+     is a second call against the day's allowance — WHAT IS COUNTED. */
+  let retried = false;
+  const answer = (source, picks, say, note) => {
+    context.waitUntil(countThis(source, picks));
+    return json({
       ok: true, source, say, note, model: MODEL, open,
       picks: picks.map((pick) => {
         const far = farOf.get(pick.id);
@@ -1272,6 +1288,23 @@ export async function onRequestPost(context) {
         where: at.where.replace(/,\s*Tallinn$/, '')
       }
     });
+  };
+
+  /* WHAT IS COUNTED. The source is the ending, except that an answer from
+     the model with no places in it is a sentence rather than places. */
+  const countThis = async (source, picks) => {
+    if (await adminUser(request, env)) return;
+    const onGoogle = new Set(google.map((g) => g.id));
+    const fromGoogle = picks.filter((pick) => onGoogle.has(pick.id)).length;
+    await countAsk(env, {
+      ended: source === 'ai' ? (picks.length ? 'places' : 'words') : source,
+      followup: history.length > 0,
+      near: !!at,
+      retried,
+      mine: picks.length - fromGoogle,
+      google: fromGoogle
+    });
+  };
 
   /* Exactly what was sent, so an id the model did not see is dropped rather
      than drawn. It is the guard that makes a hallucinated place unreachable
@@ -1448,6 +1481,7 @@ export async function onRequestPost(context) {
     }
 
     if (faults.length) {
+      retried = true;
       const again = await askModel(messages.concat(
         { role: 'assistant', content: JSON.stringify({ say: said.say, picks: said.picks }) },
         { role: 'user', content: faults.join('\n') }

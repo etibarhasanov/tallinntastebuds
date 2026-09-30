@@ -1687,6 +1687,13 @@ a substring of Piti and of Vesta: a leftover word now has to be three
 letters and has to start a word, so *khinkal* still finds khinkali and *how
 does it work* finds nothing.
 
+**How often it is asked, and how it ends, is counted** — by the Function,
+after the answer has gone, into `visitor_counts` under the kind `ask`: a
+question, then whether it ended in places, a sentence, nothing or resting,
+with the follow-ups, the retries and how many picks came off each roll
+beside it. Never the words. **What the chat was asked** under **Visitors**
+says what each count is and why it is the server's rather than the page's.
+
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
@@ -11696,6 +11703,34 @@ The card is left out until `visitor_live` has been applied; its write is a
 statement of its own rather than part of the day's batch, so a missing table
 never takes the day's counts down with it.
 
+### What the chat was asked
+
+The press the map sends when a question is typed says that somebody asked
+and nothing else — not whether anything answered, and not how often the
+day's allowance ran out. So `POST /api/ask` counts its own questions into
+`visitor_counts`, under the kind `ask`, once the answer has gone and never
+for the owner. Ten ids, a list in `functions/api/_visitors.js`:
+
+| id | counts |
+|---|---|
+| `asked` | every question that reached the model's half |
+| `places` | an answer with places drawn |
+| `words` | an answer that was a sentence and no places — a question back, or *nothing fits* |
+| `none` | nothing answered: no model, or a reply that could not be read |
+| `resting` | the day's Neurons were spent — **Except when it is the allowance** under **Ask for somewhere** |
+| `followup` | a question with earlier turns in its thread |
+| `near` | a question measured from somewhere — a place named, or the visitor's own dot |
+| `retry` | a question the rules sent back to the model once, which is a second call against the allowance |
+| `mine`, `google` | how many picks came off my map and off Google's rows — `n` is picks, not questions |
+
+`asked` is always the sum of the four endings. The words of a question are
+never kept: what somebody typed is theirs, and the weekly question — is the
+chat used, and does it answer — needs only the counts. They are counted on
+the server rather than by the page because a tab closed while the model was
+thinking was still a question asked and still Neurons spent. Nothing on
+`/admin/visitors` draws them yet; they are read with a query over
+`visitor_counts WHERE kind = 'ask'`, grouped by week.
+
 ### Rows by the day, not by the visit
 
 `visitor_counts` is `profile_counts` for the whole site: one row per fact per
@@ -11724,7 +11759,8 @@ places, a sign-in and an account made that the stretch had, one per language
 it was read in and one per switch, on a visitor's first page one for the
 language they arrived in, and on a page's first report one for having
 reported, one if nothing was pressed and one for the page before it. That is
-fourteen to twenty writes for an ordinary page. On the free plan's hundred thousand
+fourteen to twenty writes for an ordinary page, and a question to the chat
+is two to seven more. On the free plan's hundred thousand
 writes a day it is room for six thousand page views a day or so alongside
 everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the

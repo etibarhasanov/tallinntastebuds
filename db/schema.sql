@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Sixteen kinds:
+-- the key, one row per fact per day, and a number. Twenty-three kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -311,12 +311,27 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --   kind 'hour'     id is '00' to '23', the hour of the day in Tallinn a
 --                   page was opened in
 --   kind 'device'   id is phone, tablet or desktop, once per visitor per day
+--   kind 'found'    id is the engine and the address a search visitor
+--                   landed on — HOW THEY FOUND IT in _visitors.js
+--   kind 'ref'      id is '<host><path>' of a link on another site
+--   kind 'tag'      id is the owner's own ?from= on a link they shared
+--   kind 'search'   id is the words typed into one of the site's own
+--                   search fields
+--   kind 'nothing'  id is the same words, where the field found nothing
+--   kind 'signup'   id is '<page>:<name>', a step of signing up — SIGNING
+--                   UP in _visitors.js — or 'google:<name>' for one on the
+--                   Google round trip
+--   kind 'ask'      id is one of ten facts about a question put to the chat
+--                   on the map — asked, how it ended, follow-ups, retries,
+--                   picks off each roll — counted by POST /api/ask, never
+--                   the words
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
 -- the answer. The size is bounded by the day, not by the traffic — the
--- kinds with ids nobody chose from a list (country, from, press, asks) are capped
--- at a hundred ids a day each in the code — so a year is tens of thousands
+-- kinds with ids nobody chose from a list (country, from, press, asks,
+-- found, ref, tag, search, nothing) are capped at a hundred ids a day each
+-- in the code — so a year is tens of thousands
 -- of short rows at the very most, and a busy day costs no more rows than a
 -- quiet one with the same pages in it.
 --

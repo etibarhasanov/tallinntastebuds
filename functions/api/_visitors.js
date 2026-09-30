@@ -16,6 +16,8 @@
  *   readVisitors()  a range of it, for /admin/visitors — GET /api/admin/visitors
  *   readLive()      the last half hour, a minute at a time — GET /api/admin/live
  *   readFound()     how people found the site, over a range — GET /api/admin/found
+ *   countAsk()      a question put to the chat on the map — called from
+ *                   POST /api/ask
  *
  * A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY
  *
@@ -206,21 +208,38 @@
  * dealt each and how many opened a place on that first visit is press_counts'
  * and ./stats.js's, and ./admin/visitors.js reads it beside this.
  *
+ * WHAT THE CHAT WAS ASKED
+ *
+ * The chat on the map — **Ask for somewhere** in README.md — is the one
+ * thing on the site a press name cannot measure: `ask` says a question was
+ * sent, and nothing says whether it was answered. So ./ask.js counts each
+ * question itself, under the `ask` kind, once the answer has gone: `asked`,
+ * then exactly one of ENDINGS — `places`, `words`, `none` or `resting` —
+ * and beside them `followup` for a question with earlier turns in its
+ * thread, `near` for one measured from somewhere, `retry` where the rules
+ * sent the model back for a second answer, and `mine` and `google`, how
+ * many of the picks came off each roll. Ten ids a day at the most, from a
+ * list written here, and never the words of the question, for the reason
+ * HOW THEY FOUND IT leaves them out: a count of how often the chat answered
+ * is what the weekly question needs. It runs on the server rather than in the page
+ * because an answer the page never drew — a tab closed while the model
+ * thought — was still a question asked and still Neurons spent, and
+ * `resting` is the count of how often the day's allowance ran out.
+ *
  * WHAT IS BOUNDED, AND HOW
  *
  * One row per fact per day, like profile_counts: a busy day and a quiet one
  * with the same pages in them are the same number of rows. The pages, the
  * visitor kinds, the rails and the facts counted under them are lists
  * written here — forty ids a day at the most between the `cohort` and
- * `layout` kinds — and so are the steps of SIGNING UP, a page's worth of
- * them for each page that has a form; the languages are the ones
- * data/ui.json speaks. The
- * countries, the sources, the presses, the languages browsers ask for,
- * `found` and the four kinds of HOW THEY FOUND IT are not — a host, a press
- * name or a search is whatever the request says — so each of those kinds
- * takes at most MAX_IDS ids a day, and past that only ids already counted
- * that day go up. A press name must also be shaped like one, which every
- * name TTBTrack sends is.
+ * `layout` kinds, and ten for `ask` — and so are the steps of SIGNING UP,
+ * a page's worth of them for each page that has a form; the languages are
+ * the ones data/ui.json speaks. The countries, the sources, the presses,
+ * the languages browsers ask for, `found` and the four kinds of HOW THEY
+ * FOUND IT are not — a host, a press name or a search is whatever the
+ * request says — so each of those kinds takes at most MAX_IDS ids a day,
+ * and past that only ids already counted that day go up. A press name must
+ * also be shaped like one, which every name TTBTrack sends is.
  *
  * SIGNING UP
  *
@@ -372,6 +391,12 @@ const MAX_STEP = 200;
 /* What a browser is driven with, as assets/track.js decides it — WHEN THEY
    COME, AND ON WHAT. */
 const DEVICES = ['phone', 'tablet', 'desktop'];
+
+/* How a question to the chat ended, as `source` in ./ask.js's answer says
+   it — WHAT THE CHAT WAS ASKED: places drawn, a sentence and no places,
+   nothing (no model, or an answer that could not be read), and resting
+   (the day's allowance spent). */
+const ENDINGS = ['places', 'words', 'none', 'resting'];
 
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
    the most presses one report may carry, by name and in all. */
@@ -685,6 +710,22 @@ export async function countLeave(context, body) {
 export function countSignup(env, name) {
   if (!SIGNUP.has(name)) return Promise.resolve(false);
   return file(env, [['signup', 'google:' + name, 1]]);
+}
+
+/* A question put to the chat on the map and how it was answered — WHAT THE
+   CHAT WAS ASKED. `ended` is one of ENDINGS, and the rest are what the
+   answer was made of. Called by ./ask.js through waitUntil once the answer
+   has gone, and never for the owner, whom that route leaves out the way
+   ./stats.js does. */
+export async function countAsk(env, { ended, followup, near, retried, mine, google }) {
+  if (!ENDINGS.includes(ended)) return false;
+  const facts = [['ask', 'asked', 1], ['ask', ended, 1]];
+  if (followup) facts.push(['ask', 'followup', 1]);
+  if (near) facts.push(['ask', 'near', 1]);
+  if (retried) facts.push(['ask', 'retry', 1]);
+  if (mine > 0) facts.push(['ask', 'mine', mine]);
+  if (google > 0) facts.push(['ask', 'google', google]);
+  return file(env, facts);
 }
 
 /* The `lang` facts a report carries — THE LANGUAGE IT WAS READ IN — with
