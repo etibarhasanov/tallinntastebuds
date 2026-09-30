@@ -2132,6 +2132,16 @@ themselves. The card an unfurler draws for it is then in whatever language the
 link is opened in, which is the same answer the section above gives for a link
 that carries no `?lang=`.
 
+It does carry one thing more, `&from=share`, and so does a list's link and a
+profile's: the tag that tells the site the page was opened from a link
+somebody sent, which a message opened in a phone's own browser otherwise
+looks exactly like — no referrer, nothing to go on. It is none of the
+sharer's state and changes nothing the reader is shown; `assets/track.js`
+counts it and takes it off the address as the page opens, so the reader's
+address bar, and anything they send on, is `/?spot=<id>` alone again, and the
+canonical and the card never saw it. **Tagged links** under **How they found
+it** is where it is read.
+
 **A stand-in gets no button.** A place that arrived on somebody's list and is
 not on this map resolves under `?spot=` only while that list's `?list=` is
 still in the address — `byId()` looks down the list's own places after the
@@ -11953,8 +11963,8 @@ and the next section says why it is not anywhere.
 
 `/admin/found` — how people found the site: which search engine, the address
 a search visitor landed on, the pages on other sites that linked here, the
-owner's own tagged links, and the words typed into the site's own search
-fields. The owner's alone, under the same lock as **Visitors** — a 404 for
+tagged links — the owner's own and the site's Share buttons' — and the words
+typed into the site's own search fields. The owner's alone, under the same lock as **Visitors** — a 404 for
 the page and a 403 for `GET /api/admin/found` to anybody else — the second
 row of **The numbers** on `/admin.html`, and linked from **Where they came
 from** on `/admin/visitors`.
@@ -11994,14 +12004,21 @@ nothing to load.
   origin — a Reddit thread, a blog post. Most sites send their origin alone,
   which `from` already has, so this list is short by nature. Never the
   query, which is where other sites keep their session ids.
-- **Your own links**, `tag`: a page opened with `?from=` in its address,
+- **Tagged links**, `tag`: a page opened with `?from=` in its address,
   its value lowercased and held to forty letters, digits, hyphens and
   underscores. Counted on any page opened with one, not only a first page
   of the day, because the tag is the point of that visit. `track.js` takes
   the parameter off the address once it has sent it, so a reload is not a
-  second visit by the link and a copy shared onward is not the owner's link
-  any more. The card stays on the page when it is empty, because its
-  sentence is how to make one.
+  second visit by the link and a copy shared onward is not the tagged link
+  any more. Most are the owner's own, put on a link by hand; one is the
+  site's, `share`, which every Share button — a place's on the map, a
+  list's on the map and on its page, a profile's — puts on the link it hands
+  out, and which the card names on a line under it. That row is the
+  visitors who came because somebody sent them, which without it read as
+  typed addresses: a link opened from a message in a phone's own browser
+  carries no referrer at all. **Sharing a place** says why the tag is the
+  one thing a shared link carries besides the place. The card stays on the
+  page when it is empty, because its sentence is how to make one.
 - **What people searched for here**, `search` and `nothing`: the words typed
   into the map's field, the find bar, the directory and the lists — the
   `search` events those fields already report to Google, caught in
@@ -12033,14 +12050,14 @@ most.
 
 The range chips of `/admin/visitors`, then four figures against the range
 before — visitors **from search**, **from other sites** (every `from` bucket
-but search, this site and nothing), pages opened **by your links**, and
+but search, this site and nothing), pages opened **by tagged links**, and
 **searches here** — then a card each, most first, fifteen rows before the
 rest are Other: the engines, where search visitors landed with the engine
 under each address, what was searched with how often it found nothing, the
-pages elsewhere, and the owner's own links. A card with no rows in the range
+pages elsewhere, and the tagged links. A card with no rows in the range
 says so rather than disappearing, so the page's shape does not change from
 one range to the next. Until anything has been counted, the four figures and
-the owner's links are all there is, with a sentence saying counting starts
+the tagged links are all there is, with a sentence saying counting starts
 the day the page went live — nothing from before it can be recovered, since
 none of it was kept. `GET /api/admin/found` is `/api/admin/visitors`' shape:
 the words come with the numbers, five minutes of edge cache on the range and

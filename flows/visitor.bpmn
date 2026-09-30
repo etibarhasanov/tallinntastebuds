@@ -93,7 +93,7 @@ ref: functions/api/saves.js GET</bpmn:documentation>
       <bpmn:outgoing>visitor-e7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="share" name="Goes, or shares the place">
-      <bpmn:documentation>Share sheet on a phone, else the clipboard. The link is /?spot=&lt;id&gt;.
+      <bpmn:documentation>Share sheet on a phone, else the clipboard. The link is /?spot=&lt;id&gt;&amp;from=share, the tag taken off the address again as it opens.
 when: place_share
 when: directions
 when: website

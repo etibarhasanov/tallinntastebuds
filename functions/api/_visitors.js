@@ -79,8 +79,10 @@
  *   ref      `<host><path>` of a link on another site, off a visitor's
  *            first page of the day, where that site sent more than its
  *            origin — a thread, a post — and never its query
- *   tag      the owner's own `?from=` on a link they shared, on any page
- *            opened with one, since the tag is the point of the visit
+ *   tag      the `?from=` on a link — the owner's own on a link they
+ *            shared, or `share`, which the site's Share buttons put on
+ *            every link they hand out — on any page opened with one,
+ *            since the tag is the point of the visit
  *            rather than the day's first page. assets/track.js takes it off
  *            the address once sent, so it is not shared onwards
  *   search   `<words>`: what was typed into one of the site's own search
@@ -495,7 +497,7 @@ const MAX_NAMES = 60;
 const MAX_PRESS = 50;
 const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
 
-/* The owner's own tag on a link, the longest page elsewhere kept as one
+/* The `?from=` tag on a link, the longest page elsewhere kept as one
    that linked here, and the search fields whose words are counted — the
    `scope` each already reports to Google under. HOW THEY FOUND IT. */
 const TAG = /^[a-z0-9][a-z0-9_-]{0,39}$/;
@@ -650,7 +652,7 @@ function foundOf(from, at) {
    `who` what ttb.since said, `from` the referrer it was opened with, `at`
    its whole address, `layout` the rail if any, `asks` the language the
    browser asks for, `device` phone, tablet or desktop, and `tag` the
-   owner's own `?from=` where the address had one. */
+   `?from=` where the address had one. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -1249,7 +1251,7 @@ function bars(span, byDay) {
 const FOUND = ['from', 'found', 'ref', 'tag', 'search', 'nothing'];
 
 /* The four figures a range adds up to: visitors from a search engine, from a
-   link on another site, pages opened by one of the owner's own tagged links,
+   link on another site, pages opened by a tagged link,
    and searches typed into the site's own fields. */
 function foundBlank() {
   return { search: 0, sites: 0, tags: 0, searches: 0 };
@@ -1268,7 +1270,7 @@ function foundBlank() {
  *   lands      [{ id, engine, at, n }] the `found` rows themselves: where
  *              search visitors landed, and from which engine
  *   refs       [{ id, n }] pages on other sites that linked here
- *   tags       [{ id, n }] the owner's own tagged links
+ *   tags       [{ id, n }] the tagged links, the owner's and `share`
  *   searches   [{ id, n, nothing }] words searched for here, `nothing`
  *              being how many of those times the field found nothing */
 export async function readFound(env, span) {

@@ -60,11 +60,12 @@
  * anybody is.
  *
  * And how the page was found: the first report carries the address the
- * page was opened at and the owner's own `?from=` tag if the link had one,
- * and a report when the page is put away carries the words typed into a
- * search field meanwhile — out of the `search` events every field already
- * sends. /admin/found reads them; HOW THEY FOUND IT in
- * functions/api/_visitors.js says what they are and what cannot be had.
+ * page was opened at and its `?from=` tag if the link had one — the owner's
+ * own, or `share` from a Share button — and a report when the page is put
+ * away carries the words typed into a search field meanwhile, out of the
+ * `search` events every field already sends. /admin/found reads them; HOW
+ * THEY FOUND IT in functions/api/_visitors.js says what they are and what
+ * cannot be had.
  *
  * And what the page was about, where a press name alone cannot say: the
  * story that came up and whether it was watched to the end, the post read,
@@ -254,7 +255,7 @@ window.TTBTrack = (function () {
      script has had a chance to rewrite it — the map puts a place's ?spot= in
      the address as somebody opens one, and it arrives late (see LATE), so
      reading it in arrive() could file a search visitor under a place they
-     opened rather than the one they landed on. The owner's own `?from=` tag
+     opened rather than the one they landed on. The `?from=` tag
      rides in it: functions/api/_visitors.js, HOW THEY FOUND IT. */
   var LANDED = window.location.search;
   var TAGGED = (function () {
