@@ -364,10 +364,30 @@
     return langs.indexOf(DEFAULT_LANG) !== -1 ? DEFAULT_LANG : langs[0];
   }
 
-  /* There is no language switch on this page. The map has one, it writes the
-     choice to localStorage, and this reads it — so the two pages agree without
-     a second copy of the switch, and a shared link can still carry ?lang= for
-     somebody who has never opened the map at all. */
+  /* The language switch in the header — assets/language.js, the same one the
+     flashcards and the chess page draw. A profile is where it matters most:
+     it is handed out as a link to people in other countries, and what its
+     owner wrote is in as many languages as they wrote it in. Picking one is
+     stored where the map's switch stores it, so every page follows, and the
+     page is loaded again in it with ?lang= in the address — every view here
+     is drawn from words and data fetched for one language, and asking again
+     is simpler than redrawing each of them in place. */
+  function mountLanguage() {
+    var host = $('lang-switch');
+    if (!host || !window.TTBLanguage) return;
+    var langs = Object.keys(state.ui).map(function (code) {
+      return { code: code, name: (state.ui[code] && state.ui[code].langName) || code };
+    });
+    window.TTBLanguage.mount(host, langs, state.lang, function (code) {
+      if (code === state.lang) return;
+      TTBTrack.event('language_select', { language: code });
+      try { window.localStorage.setItem(LANG_KEY, code); } catch (e) { /* the address below still carries it */ }
+      var params = new URLSearchParams(window.location.search);
+      params.set('lang', code);
+      window.location.search = params.toString();
+    }, t('language'));
+  }
+
   function applyStaticStrings() {
     document.documentElement.lang = state.lang;
 
@@ -949,6 +969,19 @@
     document.body.classList.add('is-page');
     dom.pageShare.hidden = false;
 
+    /* The rows in the reader's language, where their owner wrote them in it
+       — rowLines() in functions/api/_profile.js — and as first written
+       everywhere else. A press is still counted under the first title, so
+       the owner's numbers are one row's whatever language it was read in. */
+    var rows = who.rows.map(function (row) {
+      var version = row.lines && row.lines[state.lang];
+      if (!version) return row;
+      var out = { title: version.title };
+      if (row.url) out.url = row.url;
+      else if (row.note) out.note = version.note || row.note;
+      return out;
+    });
+
     var sheet = TTBRows.sheet(t, true);
     var wrap = el('div', { className: 'lists-stack' }, [
       el('header', { className: 'lists-page-top' }, [
@@ -961,7 +994,7 @@
         pageSocial(who.links),
         profileSpeaks(who.speaks)
       ]),
-      TTBRows.draw(who.rows, {
+      TTBRows.draw(rows, {
         t: t,
         play: true,
         /* Every press the rows report is one on this page's own rows, so the
@@ -978,7 +1011,7 @@
     ]);
     /* After render() has put this in the document: a dialog opens only from
        inside one, and a link to a note arrives wanting it open. */
-    setTimeout(function () { sheet.arrive(who.rows); }, 0);
+    setTimeout(function () { sheet.arrive(rows); }, 0);
     return wrap;
   }
 
@@ -4532,6 +4565,7 @@
 
       wire();
       mountRadio();
+      mountLanguage();
       render();
 
       /* And the open is counted, once the page is on the screen and out of the

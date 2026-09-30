@@ -532,6 +532,15 @@ CREATE TABLE IF NOT EXISTS profile_rows (
   url       TEXT    NOT NULL DEFAULT '',
   -- The note, or '' for a link and for a heading. Never both filled.
   note      TEXT    NOT NULL DEFAULT '',
+  -- The title and the note again in the site's other languages, as JSON
+  -- keyed by language — {"az":{"title":"…","note":"…"}} — or '' for a row
+  -- written in one. Added after the table shipped, so it arrives by hand:
+  --   ALTER TABLE profile_rows ADD COLUMN lines TEXT NOT NULL DEFAULT '';
+  -- and listed after the others because that is where SQLite puts an added
+  -- column.
+  -- readRows() and the `rows` write in functions/api/account.js both stand
+  -- without it. See rowLines() in functions/api/_profile.js.
+  lines     TEXT    NOT NULL DEFAULT '',
   PRIMARY KEY (owner, position)
 );
 

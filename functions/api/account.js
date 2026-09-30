@@ -708,17 +708,27 @@ export async function onRequestPost(context) {
     const cleaned = cleanRows(body.rows);
     if (cleaned.error) return json({ error: cleaned.error, row: cleaned.row }, 400);
 
-    const writes = [
+    /* The rows with their versions in other languages, or — where
+       profile_rows.lines has not been added yet — without them, rather than
+       not at all: the page the form answers with then has no versions on it,
+       which is what is stored and what the form redraws. */
+    const writes = (withLines) => [
       env.DB.prepare('DELETE FROM profile_rows WHERE owner = ?').bind(user.id)
-    ];
-    cleaned.rows.forEach((row, i) => {
-      writes.push(env.DB
+    ].concat(cleaned.rows.map((row, i) => withLines
+      ? env.DB
+        .prepare('INSERT INTO profile_rows (owner, position, title, url, note, lines) VALUES (?, ?, ?, ?, ?, ?)')
+        .bind(user.id, i, row.title, row.url, row.note, row.lines)
+      : env.DB
         .prepare('INSERT INTO profile_rows (owner, position, title, url, note) VALUES (?, ?, ?, ?, ?)')
-        .bind(user.id, i, row.title, row.url, row.note));
-    });
+        .bind(user.id, i, row.title, row.url, row.note)));
 
     try {
-      await env.DB.batch(writes);
+      try {
+        await env.DB.batch(writes(true));
+      } catch (e) {
+        if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+        await env.DB.batch(writes(false));
+      }
     } catch (e) {
       if (/no such table/i.test(String((e && e.message) || e))) return json({ error: 'no-rows-table' }, 503);
       throw e;

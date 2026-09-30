@@ -66,7 +66,7 @@
      stylesheet; only what a list page has and the map does not is in the
      second file. -->
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
-<link rel="stylesheet" href="/assets/lists.css?v=c6a5c07f">
+<link rel="stylesheet" href="/assets/lists.css?v=d1b4f23b">
 </head>
 <body class="lists-body">
 
@@ -105,6 +105,10 @@
     </svg>
     <span class="rail-label" data-i18n="listsShare">Share</span>
   </button>
+  <!-- The language, drawn by assets/language.js out of data/ui.json once it is
+       read — mountLanguage() in assets/lists.js. Empty in the markup. -->
+  <div class="seg lang-surface" id="lang-switch" role="group"
+       data-i18n-aria-label="language" aria-label="Language"></div>
 </header>
 
 <!-- Every state this page has — one list, one list somebody else made,
@@ -210,6 +214,8 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="/assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="/assets/lists.js?v=5656bfbc" defer></script>
+<!-- The language switch in the header; see mountLanguage() in assets/lists.js. -->
+<script src="/assets/language.js?v=fcaf98e0" defer></script>
+<script src="/assets/lists.js?v=0b8d6f0a" defer></script>
 </body>
 </html>

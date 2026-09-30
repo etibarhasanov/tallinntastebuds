@@ -425,15 +425,79 @@ function httpsOnly(url) {
   }
 }
 
+/* A row's title and note again in the site's other languages, the way the
+ * line has them — see **the line, in other languages** above. Keyed by code,
+ * each version a title and, for a note, the note: `{"az":{"title":"…",
+ * "note":"…"}}`. A reader whose page is in one of those languages gets that
+ * version of the row; the address is the same in every language, so a link
+ * row's version is only ever a title. A version with no title is not one.
+ *
+ * In profile_rows.lines, a column added to that table by hand — the rows
+ * already have a table of their own, so this is where a row's words go, and
+ * readRows() and the `rows` write both stand without it. */
+function shapeNote(value) {
+  /* Paragraphs are blank lines and nothing else: line ends made one kind,
+     trailing spaces off each line, and never more than one blank line in a
+     row, so what is stored is what the sheet will show. */
+  return String(typeof value === 'string' ? value : '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+    .slice(0, MAX_ROW_NOTE);
+}
+
+function shapeTitle(value) {
+  return String(typeof value === 'string' ? value : '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, MAX_ROW_TITLE);
+}
+
+/* The versions of one row, shaped the way its first title and note are; the
+   note only where the row is a note. Null when what was sent is not an object
+   of code → version, or names a language the site does not speak. */
+function rowLines(value, isNote) {
+  if (value === undefined || value === null || value === '') return {};
+  if (typeof value !== 'object' || Array.isArray(value)) return null;
+  const out = {};
+  for (const code of Object.keys(value)) {
+    const given = value[code];
+    if (!LINE_LANGS.includes(code) || !given || typeof given !== 'object') return null;
+    const title = shapeTitle(given.title);
+    if (!title) continue;
+    const version = { title: title };
+    const note = isNote ? shapeNote(given.note) : '';
+    if (note) version.note = note;
+    out[code] = version;
+  }
+  return out;
+}
+
 /* One row as the page wants it, or null for one that has stopped being one:
    no title, or an address the rule above no longer takes. A field with
    nothing in it is left out rather than sent as '', the way `about` is. */
-function rowOut(title, url, note) {
+function rowOut(title, url, note, lines) {
   if (!title) return null;
   if (url && !httpsOnly(url)) return null;
   const out = { title: title };
   if (url) out.url = url;
   else if (note) out.note = note;
+
+  /* Read against the rule the way the row is, and dropped rather than
+     refused where it no longer passes: a language the site has stopped
+     speaking costs its own version and not the others. */
+  let parsed = null;
+  try {
+    parsed = lines ? JSON.parse(lines) : null;
+  } catch (e) { /* a hand-written value costs its versions and nothing else */ }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return out;
+  const known = {};
+  for (const code of LINE_LANGS) {
+    if (parsed[code] && typeof parsed[code] === 'object') known[code] = parsed[code];
+  }
+  const versions = rowLines(known, !!out.note);
+  if (versions && Object.keys(versions).length) out.lines = versions;
   return out;
 }
 
@@ -448,26 +512,18 @@ export function cleanRows(raw) {
   const rows = [];
   for (let i = 0; i < raw.length; i++) {
     const given = raw[i] && typeof raw[i] === 'object' ? raw[i] : {};
-    const title = String(typeof given.title === 'string' ? given.title : '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, MAX_ROW_TITLE);
+    const title = shapeTitle(given.title);
     if (!title) return { error: 'row-title', row: i };
 
     const url = String(typeof given.url === 'string' ? given.url : '').trim();
     if (url && (url.length > MAX_ROW_URL || !httpsOnly(url))) return { error: 'row-url', row: i };
 
-    /* Paragraphs are blank lines and nothing else: line ends made one kind,
-       trailing spaces off each line, and never more than one blank line in
-       a row, so what is stored is what the sheet will show. */
-    const note = url ? '' : String(typeof given.note === 'string' ? given.note : '')
-      .replace(/\r\n?/g, '\n')
-      .replace(/[ \t]+\n/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim()
-      .slice(0, MAX_ROW_NOTE);
+    const note = url ? '' : shapeNote(given.note);
 
-    rows.push({ title: title, url: url, note: note });
+    const lines = rowLines(given.lines, !!note);
+    if (!lines) return { error: 'row-lines', row: i };
+
+    rows.push({ title: title, url: url, note: note, lines: Object.keys(lines).length ? JSON.stringify(lines) : '' });
   }
   return { rows: rows };
 }
@@ -481,19 +537,29 @@ export function cleanRows(raw) {
    deploy and the two commands. Only "no such table" is an answer; anything
    else is the request having failed and is rethrown. */
 export async function readRows(env, ownerId) {
+  const ask = (columns) => env.DB
+    .prepare('SELECT ' + columns + ' FROM profile_rows WHERE owner = ? ORDER BY position')
+    .bind(ownerId)
+    .all();
+
   let results;
   try {
-    results = (await env.DB
-      .prepare('SELECT title, url, note FROM profile_rows WHERE owner = ? ORDER BY position')
-      .bind(ownerId)
-      .all()).results;
+    /* `lines` is a column added to this table by hand after it shipped, so
+       a database without it yet is asked again without it — the same one
+       failed statement per read, for the same reason as the table. */
+    try {
+      results = (await ask('title, url, note, lines')).results;
+    } catch (e) {
+      if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+      results = (await ask('title, url, note')).results;
+    }
   } catch (e) {
     if (!/no such table/i.test(String((e && e.message) || e))) throw e;
     return [];
   }
   /* Read against the rule rather than trusted as stored, the way the handles
      are: a row this site would no longer accept stops being printed. */
-  return results.map((r) => rowOut(r.title, r.url, r.note)).filter(Boolean);
+  return results.map((r) => rowOut(r.title, r.url, r.note, r.lines)).filter(Boolean);
 }
 
 /* The face, where there is one: assets/faces/<name>.jpg in the deployment,
