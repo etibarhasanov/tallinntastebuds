@@ -9963,7 +9963,8 @@ A page at `/chess` where the whole city plays one game of chess against the
 house — the owner's account, the one `ADMINS` names — and where a member can
 queue to play the house one on one. It is being built a task at a time, from
 `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
-far is **the public game** and **one on one**: `chess.html`, `assets/chess.js`
+far is **the public game**, **one on one** and **notes for the next
+player**: `chess.html`, `assets/chess.js`
 and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
 `functions/api/_chess.js` holds the rules. It is listed in `sitemap.xml` and
 not disallowed in `robots.txt`.
@@ -10104,9 +10105,63 @@ on its next poll.
 Not done: taking back more than one move, a takeback asked of the other side,
 taking back a resignation or a game ended without a result.
 
+### Notes for the next player
+
+Under the public game's moves — beside the board on a desktop — a card where
+anybody on the page may leave a line for whoever plays Everybody's next move:
+*don't take the knight*, *castle, please*. Asked for by the owner after the
+five tasks and the takeback had landed, described before it was built, and
+agreed as written.
+
+**Anybody may write one, and a name on it is a choice.** A visitor's note is
+filed under the device id their moves are and reads *a visitor*; the line
+under the field says so, and that signing in on the map would put their name
+on it. A member gets *Post as* — their username or *Anonymously*, the feedback
+composer's two-sided control — and an anonymous note is still filed under
+their account, so it is still theirs to delete and still counts against their
+cap, while the answer never says whose it is. The house may write too, and a
+note of its with a name on it reads as the wordmark, as its moves do.
+
+**Each note says which position it was about**: who, how long ago, and *after
+14. Nf3* — or *before the first move* — so a note about the opening read in
+the endgame reads as old. The list is oldest first, the way a chat reads, and
+opens at its foot; past about six notes it scrolls inside the card, so the
+page stays a page. The author sees *Delete* under their own; **the house sees
+*Hide* under everybody else's**, which takes a note off the page and keeps the
+row, so a hidden note still counts against the cap of whoever wrote it. There
+is no filter on the words: the house hiding what should not be there is the
+moderation, the way it is on `/feedback`.
+
+**The notes belong to one game.** They are written only while it is playing;
+once it is over they stay under its result with *This game is over. Its notes
+stay here until the next one starts.* in the composer's place, and the next
+game starts with none. There are no notes on a private game, where the two
+players are each other's only reader.
+
+**The caps**: 280 characters a note — `MAX_NOTE` in `functions/api/chess.js`,
+restated as the field's `maxlength` in `assets/chess.js` — and five notes an
+hour from one network, counted by the same hashed fingerprint under
+`SAVE_SALT` that feedback is capped by, so without the salt a note fails
+closed. The sixth says *That's a lot of notes — try again in a little while.*
+The answer carries the newest fifty.
+
+**Nothing asks for the notes separately.** They ride in the public game's
+answer as `notes` — `{ id, ply, name, text, at, mine }`, `name` null for an
+anonymous note and `'house'` for the house's — and arrive with the same
+twenty-second poll as the board. `mine` needs to know who is asking, so the
+page adds the device id to its reads as `client=` when the browser already
+has one, and never mints one to read. Because a poll that brings somebody
+else's note redraws the card, the page keeps the draft and the choice of name
+itself and puts the focus and the caret back where they were, so a note being
+typed is never lost to a redraw. Three writes, each answered with the whole
+page: `note`, `unnote` for the author, and `hide` for the house.
+
+Not done: replies, hearts, notes on private games, a notification when
+somebody leaves one, links or formatting in a note.
+
 ### The tables
 
-Two, in `db/schema.sql`, applied by hand like every table here:
+Three, in `db/schema.sql`, applied by hand like every table here:
 
 - **`chess_games`** — one row a game, public or private. A private game is a
   row from the moment its member joins the waiting list, in state `waiting`,
@@ -10121,6 +10176,12 @@ Two, in `db/schema.sql`, applied by hand like every table here:
   filed only after the route has replayed the whole game from the start through
   `play()`, so the FEN in `chess_games` is a cache of the moves and never the
   authority.
+- **`chess_notes`** — one row a note beside the public game: the game, the ply
+  it was written at, who it is filed under and whether their name shows, the
+  text, the hashed fingerprint the cap counts, and `hidden` once the house has
+  taken it off the page. Applied after the other two, and read on its own: a
+  database without it draws the page with no notes card and nothing else
+  missing.
 
 Without the tables the route answers `ready: false` with no games and every
 POST `503 no-database`, and the page draws the board as not answering.
@@ -14647,6 +14708,8 @@ flashcards' header has:
 | `chess_start` | — the house's *Start a game with …* |
 | `chess_resign`, `chess_abandon` | — *Resign*, pressed by either side and confirmed, and the house's *End without a result* |
 | `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
+| `chess_note` | `named` — whether a member's name was left on it; *Post* under the notes, sent on the press, so a note the cap refused is still one |
+| `chess_note_delete`, `chess_note_hide` | — *Delete* under the reader's own note, and the house's *Hide* under anybody else's |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
 | `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |

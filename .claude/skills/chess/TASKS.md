@@ -447,6 +447,19 @@ the queue moves, and a member's page says their game started without a reload.
   `chess_undo` in **Analytics**, **Taking a move back** in the README, the row
   and the state in `SKILL.md`. Task 6's flow gains the step.
 
+- [x] **5¾. Notes for the next player** — asked for by the owner after 5½,
+  described before it was built and agreed as written, and landed on its own
+  before 6. A card under the public game's moves where anybody leaves a line
+  for whoever moves next, with or without their name; the author deletes
+  their own, the house hides any. `chess_notes` in `db/schema.sql`, applied by
+  hand to production; `note`, `unnote` and `hide` in `functions/api/chess.js`
+  and `notes` on the public game's answer; the card in `assets/chess.js` and
+  `assets/chess.css`; thirteen `chessNote*` strings in ten languages;
+  `chess_note`, `chess_note_delete` and `chess_note_hide` in **Analytics**;
+  **Notes for the next player** in the README; the row, the state and the
+  table in `SKILL.md`. Task 6's flow gains the step — leave a note — in the
+  visitor's and the member's lanes.
+
 ---
 
 - [ ] **6. The door, and the diagram**

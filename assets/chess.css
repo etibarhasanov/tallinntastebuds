@@ -23,9 +23,10 @@
 /* The page is the lists page's shape — its ground, its header, its cards —
    and one thing wider: on a desktop a board wants its moves beside it rather
    than under it, so the header and the main both open out to 960px there,
-   the way the editor's do to 1180px. A game is a grid of two cards; the
-   one-on-one card stands on its own, no wider than a board. */
-.chess-grid { display: flex; flex-direction: column; gap: 18px; }
+   the way the editor's do to 1180px. A game is a grid of the board and a
+   column beside it — the moves, and on the public game the notes under
+   them; the one-on-one card stands on its own, no wider than a board. */
+.chess-grid, .chess-side { display: flex; flex-direction: column; gap: 18px; }
 @media (min-width: 900px) {
   .chess-body .lists-brand, .chess-body .lists-main { max-width: 960px; }
   .chess-grid {
@@ -184,3 +185,22 @@
 .chess-signin a { color: var(--accent); }
 .chess-moves .alt { margin: 8px 0 0 -12px; }
 .chess-moves .alt + .alt { margin-left: 0; }
+
+/* ---------- the notes ---------- */
+
+/* Lines people leave for whoever moves next, oldest at the top like a chat,
+   in a list that scrolls inside the card past about six of them so the page
+   stays a page. Each is the sentence in the body face and a mono line under
+   it saying who, when and about which position — facts, so mono. */
+.chess-notes { padding: 14px; }
+.chess-note-list { list-style: none; margin: 10px 0 0; padding: 0; max-height: 380px; overflow-y: auto; }
+.chess-note { padding: 8px 0; border-top: 1px solid var(--hairline); }
+.chess-note-text { margin: 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.chess-note-meta { margin: 3px 0 0; font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); }
+.chess-note .alt { margin: 2px 0 0 -12px; }
+/* The composer: the field at 16px, which is what keeps iOS from zooming the
+   page when it takes focus — design rule 9 — then who it goes out as, then
+   Post. */
+.chess-note-form { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline); }
+.chess-note-input { min-height: 64px; max-height: 120px; font-size: 16px; line-height: 1.45; resize: vertical; }
+.chess-note-form .chess-note-meta { margin: 0; }

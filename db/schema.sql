@@ -10,10 +10,10 @@
 -- Places with what Google has said about them since, what people would
 -- change about this site and who agreed with them, the groups splitting a
 -- bill on the splitwise subdomain, the decks and answers of the flashcards,
--- the games of chess the city and its members play against the house, and
--- one meta row saying which database this is. Everything the map itself
--- draws — the places, the write-ups, the discounts, the stories — is a JSON
--- file in the repository and never a row.
+-- the games of chess the city and its members play against the house and the
+-- notes left beside the public one, and one meta row saying which database
+-- this is. Everything the map itself draws — the places, the write-ups, the
+-- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
 -- "tallinntastebuds-preview" behind every preview deployment. They hold the
@@ -1653,3 +1653,38 @@ CREATE TABLE IF NOT EXISTS chess_moves (
   at      INTEGER NOT NULL,
   PRIMARY KEY (game, ply)
 );
+
+-- One row is one note left beside the public game for whoever plays
+-- Everybody's next move — "don't take the knight", "castle, please". Filed the
+-- way a move is: a member by users.id, a visitor by the device id, the house
+-- as the house, so the one who wrote a note is the one who may delete it.
+-- `named` is whether the author asked for their name on it: an anonymous note
+-- still has an owner, and the owner is never sent to anybody. The notes belong
+-- to one game, so a new game starts with none. **Notes for the next player**
+-- under **Chess** in README.md.
+CREATE TABLE IF NOT EXISTS chess_notes (
+  -- Sixteen hex characters.
+  id         TEXT    PRIMARY KEY,
+  -- chess_games.id — a public game, the only kind that has notes.
+  game       TEXT    NOT NULL,
+  -- The game's ply when the note was written, so the page can say which
+  -- position it was about: "after 14. Nf3".
+  ply        INTEGER NOT NULL,
+  -- 'house', 'user' or 'device', and the id that goes with it.
+  owner_kind TEXT    NOT NULL,
+  owner      TEXT    NOT NULL,
+  named      INTEGER NOT NULL DEFAULT 0,
+  -- Up to MAX_NOTE in functions/api/chess.js, restated in assets/chess.js.
+  text       TEXT    NOT NULL,
+  -- The HMAC of the address and the user agent under SAVE_SALT that the
+  -- hourly cap counts by, never the address itself — feedback's arrangement.
+  ip_hash    TEXT    NOT NULL,
+  at         INTEGER NOT NULL,
+  -- 1 once the house has hidden it. Kept rather than deleted, so a hidden
+  -- note still counts against its author's cap.
+  hidden     INTEGER NOT NULL DEFAULT 0
+);
+-- The one read: a game's notes that are still showing, in order.
+CREATE INDEX IF NOT EXISTS idx_chess_notes_game ON chess_notes (game, hidden, at);
+-- The cap's lookup: how many notes this fingerprint has left in the last hour.
+CREATE INDEX IF NOT EXISTS idx_chess_notes_ip ON chess_notes (ip_hash, at);
