@@ -164,6 +164,8 @@ import {
   DECK_LANGS
 } from './_lib.js';
 import { googleReady } from './_google.js';
+/* Every write that went through is counted — countUse() in ./_visitors.js. */
+import { countUse } from './_visitors.js';
 
 /* The decks the site ships, as deployed. */
 const DECKS_FILE = '/data/decks.json';
@@ -911,20 +913,21 @@ export async function onRequestPost(context) {
      progress — and this one is about the card: the decks turn over signed out,
      most of the people reading them are, and a mistake nobody can report
      without making an account is a mistake nobody reports. */
-  if (action === 'report') return report(context, body);
+  if (action === 'report') return countUse(context, 'flashcards', action, report(context, body));
 
   /* Every other write, the two that only say a card was known included. There
      is nothing else on this page filed under anything but an account. */
   const user = await sessionUser(request, env);
   if (!user) return json({ error: 'signed-out' }, 401);
+  const counted = (answer) => countUse(context, 'flashcards', action, answer, user);
 
-  if (action === 'deck')   return newDeck(context, body, user);
-  if (action === 'knew')   return mark(context, body, user, true);
-  if (action === 'again')  return mark(context, body, user, false);
+  if (action === 'deck')   return counted(newDeck(context, body, user));
+  if (action === 'knew')   return counted(mark(context, body, user, true));
+  if (action === 'again')  return counted(mark(context, body, user, false));
   /* Starting a deck again is about this person's own rows and not about the
      deck, so it is routed above the ownership check with the two above it: a
      built-in deck has no row to own and is the one most likely to be reset. */
-  if (action === 'reset')  return reset(context, user, body.deck);
+  if (action === 'reset')  return counted(reset(context, user, body.deck));
 
   /* Everything left names a deck of this person's own, and reading it is how
      the ownership rule is applied — once, here, rather than in each of the
@@ -932,11 +935,11 @@ export async function onRequestPost(context) {
   const deck = await deckOf(env, body.deck, user);
   if (!deck) return json({ error: 'not-found' }, 404);
 
-  if (action === 'rename')   return rename(context, body, user, deck);
-  if (action === 'drop')     return dropDeck(context, user, deck);
-  if (action === 'card')     return addCard(context, body, user, deck);
-  if (action === 'uncard')   return dropCard(context, body, user, deck);
-  if (action === 'editcard') return editCard(context, body, user, deck);
+  if (action === 'rename')   return counted(rename(context, body, user, deck));
+  if (action === 'drop')     return counted(dropDeck(context, user, deck));
+  if (action === 'card')     return counted(addCard(context, body, user, deck));
+  if (action === 'uncard')   return counted(dropCard(context, body, user, deck));
+  if (action === 'editcard') return counted(editCard(context, body, user, deck));
 
   return json({ error: 'action' }, 400);
 }

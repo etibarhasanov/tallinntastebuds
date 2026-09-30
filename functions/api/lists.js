@@ -64,6 +64,8 @@
  */
 
 import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearTallinn } from './_lib.js';
+/* Every write that went through is counted — countUse() in ./_visitors.js. */
+import { countUse } from './_visitors.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
 import { readList, LIST_ID, readingMustOrder } from './_lists.js';
@@ -343,11 +345,12 @@ export async function onRequestPost(context) {
   if (!user) return json({ error: 'signed-out' }, 401);
 
   const action = body.action;
-  if (action === 'create') return create(context, body, user);
+  const counted = (answer) => countUse(context, 'lists', action, answer, user);
+  if (action === 'create') return counted(create(context, body, user));
   /* Adding a place to the catalogue-that-is-not-the-catalogue. It names no
      list, so it is routed here with create() rather than below, where every
      action has a list to prove ownership of. */
-  if (action === 'place') return addPlace(context, body, user);
+  if (action === 'place') return counted(addPlace(context, body, user));
 
   /* Everything else acts on a list that already exists, so it is the same
      two lines every time: is that a list id at all, and is it yours. */
@@ -365,20 +368,20 @@ export async function onRequestPost(context) {
      Everything below this line still cannot touch a row without having proved
      whose it is. */
   if (action === 'keep' || action === 'unkeep') {
-    return keep(context, id, row, user, action === 'keep');
+    return counted(keep(context, id, row, user, action === 'keep'));
   }
 
   /* Somebody else's list and a list that does not exist get the same answer.
      Anything else would make this a way of asking which codes are taken. */
   if (!row || row.owner !== user.id) return json({ error: 'not-found' }, 404);
 
-  if (action === 'edit')   return edit(context, body, id);
-  if (action === 'delete') return remove(context, id);
-  if (action === 'add')    return add(context, body, id);
-  if (action === 'say')    return say(context, body, id);
-  if (action === 'mustOrder') return mustOrder(context, body, id);
-  if (action === 'drop')   return drop(context, body, id);
-  if (action === 'order')  return order(context, body, id);
+  if (action === 'edit')   return counted(edit(context, body, id));
+  if (action === 'delete') return counted(remove(context, id));
+  if (action === 'add')    return counted(add(context, body, id));
+  if (action === 'say')    return counted(say(context, body, id));
+  if (action === 'mustOrder') return counted(mustOrder(context, body, id));
+  if (action === 'drop')   return counted(drop(context, body, id));
+  if (action === 'order')  return counted(order(context, body, id));
 
   return json({ error: 'action' }, 400);
 }

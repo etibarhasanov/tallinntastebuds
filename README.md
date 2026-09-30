@@ -11734,6 +11734,47 @@ thinking was still a question asked and still Neurons spent. Nothing on
 `/admin/visitors` draws them yet; they are read with a query over
 `visitor_counts WHERE kind = 'ask'`, grouped by week.
 
+### Usage, week by week
+
+Most tables here hold what is there now rather than what happened: an
+unsaved place is a deleted row, a list item taken off a list is gone, and a
+flashcard reviewed twice is one row with the second date on it. So *how
+much were lists used last week* had no answer, and *how many different
+people used the flashcards* had none anywhere. Two counts answer them, both
+written by `countUse()` in `functions/api/_visitors.js` from the write
+routes of the five products those tables cannot speak for — saves (`map`),
+`lists`, `flashcards`, `splitwise` and `chess` — once a write has gone
+through, and never for the owner:
+
+- **What was done**: `visitor_counts` under the kind `use`, one row a day
+  per `<product>:<action>` — `map:save`, `lists:add`, `flashcards:knew`,
+  `splitwise:spend`, `chess:move` — the action named as the route names it.
+- **How many people did it**: `usage_people`, one row per person per
+  product per week. A person is the account where there is a session and
+  the device id where there is not; the row is only an HMAC under
+  `SAVE_SALT` of the week, the product and that id, a different one every
+  week and for every product, so the table can say how many and never who,
+  and cannot be joined into what one person used or whether they came back.
+  Somebody signed out who signs in during the week, or one person on two
+  devices signed out, counts twice that week, which is the same limit the
+  visitors have. Weeks begin on Monday, UTC.
+
+Accounts made, sign-ins and feedback are left out because their tables
+already keep a dated row for each; the chat is **What the chat was asked**.
+Nothing on `/admin/visitors` draws either count yet. They are read by the
+weekly usage report, with:
+
+```sql
+SELECT date(day, 'weekday 0', '-6 days') AS week, id, SUM(n) AS n
+  FROM visitor_counts WHERE kind = 'use' GROUP BY week, id;
+SELECT week, product, COUNT(*) AS people
+  FROM usage_people GROUP BY week, product;
+```
+
+It costs two writes per action, the day's count and the week's person, and
+`usage_people` arrives by hand like every table here; until it has, the
+actions are counted and the people are not.
+
 ### Rows by the day, not by the visit
 
 `visitor_counts` is `profile_counts` for the whole site: one row per fact per
