@@ -358,7 +358,7 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Nine things in this repo are **generated**. Editing a source without
+Ten things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
@@ -368,6 +368,7 @@ re-running its generator is the single most common way to fail CI:
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
 | `exports/tallinn_restaurants.csv`, or a place added to `data/restaurants.json` that the export already lists | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
+| `exports/<city>_restaurants.csv` for Tartu, Narva or Pärnu, or a city added to `AREAS` in the tool | `node tools/cityvenues.mjs` | `db/city-venues.sql`, the other cities, which nothing on the site reads |
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 | `assets/logo/og-flashcard.html`, or a token or rule it draws itself with | `node tools/ogcard.mjs` | `assets/logo/og-flashcard.png`, the card a link to the flashcards unfurls as — it needs a Chromium, and nothing in CI can see that it went stale |
 | `data/flows.json` | `node tools/flows.mjs` | `flows/<id>.bpmn`, the diagrams on `/admin/flows` of who uses the site and what each can do |

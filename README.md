@@ -4664,6 +4664,48 @@ After `db/google-venues.sql`, always, because the rows point at its keys.
 `tools/validate.mjs` holds the file to the export the same way, so a refresh
 that forgot the lists fails CI.
 
+### The other cities, kept and not shown
+
+Tartu, Narva and Pärnu are swept the same way Tallinn was, cleaned into the
+same eighteen columns, and loaded into a table of their own, `city_venues`,
+which nothing on the site reads. Not the directory, not the picker, not the
+find bar, not the chat, not a list, not the refresh that spends the Google
+budget. They are in the database so that the day the site grows past Tallinn it
+starts from a city it already knows, and until that day they are invisible by
+construction rather than by a filter somebody has to remember.
+
+That is why it is a second table rather than an `area` column on this one.
+Seventeen files read `google_venues`, and every one of them would need the
+filter, and so would every query written after them by a session that did not
+know. A table no query names cannot turn up in a search.
+
+```
+exports/<city>_restaurants.csv   one per city, the same cleaned shape as Tallinn's
+tools/cityvenues.mjs             AREAS names the cities; writes the SQL
+db/city-venues.sql               GENERATED — upserts, and a missing mark per city
+```
+
+Every row carries `area`, the id of the city whose sweep found it (`tartu`,
+`narva`, `parnu`), because Google's own `city` says a district or a village as
+often as the town. `rank` is the place's position within its own city, by the
+same `overallOrder()` as Tallinn's. A refresh of one city marks only that
+city's missing rows, and the tool stops if two cities' circles ever find the
+same place. A city in `AREAS` with no export yet is skipped, and with no export
+at all there is no SQL file either — `tools/validate.mjs` holds the file to
+whatever exports are here, the same way it holds `db/google-venues.sql`.
+
+Loading it is the same yes as every other write, production only, from a
+terminal:
+
+```
+wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql      # once, for the table
+wrangler d1 execute tallinntastebuds --remote --file=db/city-venues.sql
+```
+
+How each city is swept, and what it costs against Google's free allowance, is
+in `exports/README.md`. Showing a city is a different change: something new a
+visitor can see, described before it is built.
+
 ---
 
 ## The directory
