@@ -11475,8 +11475,10 @@ its own.
   two sign-in forms, and where they stopped — see **Signing up** below.
 - **What they did**: **pages** with their views, the time a view stayed and
   the share of views on which nothing was pressed; **journeys**, the page a
-  visitor's day began on and which page followed which; and **what was
-  pressed**, named by the event it is reported to GA under.
+  visitor's day began on and which page followed which; **what was
+  pressed**, named by the event it is reported to GA under; and **what was
+  opened** — which stories, posts, decks and discounts — see **What was
+  opened** below.
 
 ### A visitor is a browser on a day
 
@@ -11737,6 +11739,41 @@ opened the sheet; the trip to Google; the offer; and the pages people got in
 on. Opened less everything after it is mostly people who closed the tab with
 the sheet up, which no report survives reliably. Nothing from before it
 landed was counted, and the card is left out of every range that holds none.
+
+### What was opened
+
+A press name says what was done and never to what: `story_view` is a story
+come up, and which story is a parameter Google hears and this count did
+not. For the four things the owner makes and wants to know the reach of,
+that was the question with no answer — which stories get watched, which
+posts get read, which decks get opened, which restaurants' discounts get
+used. So a page also says which, through `TTBTrack.about()` in
+`assets/track.js`, once per thing per load, on the report it next sends,
+and `functions/api/_visitors.js` counts it under the kind `about` as
+`<what>:<id>`:
+
+| what | when | from |
+| --- | --- | --- |
+| `story` | a story comes up on the map | `beginStoryWatch()` in `assets/app.js` |
+| `watched` | it is watched to the end, as `story_watch` judges it | `endStoryWatch()` |
+| `post` | a post is read — arrived at, walked to or come back to | `render()` in `assets/blog.js` |
+| `deck` | a deck, a grammar lesson or a song opens on the flashcards; never a deck of somebody's own | `settle()` in `assets/flashcard.js` |
+| `pass` | a discount's code is put in front of somebody, a deal switched on only | `draw()` in `assets/deal.js` |
+| `verified` | the staff's scan of one says yes | `assets/verify.js` |
+
+Every id is checked against the file the site ships it in —
+`data/stories.json`, `data/blog.json`, `data/decks.json` and
+`data/deals.json`, `ABOUT` in the module — so the kind is a closed list the
+size of what there is rather than whatever a request says, a story taken
+down stops counting with it, and nothing needs a cap. It is things and days
+and numbers: nothing about who.
+
+The card, **What was opened**, is at the foot of the page: the stories as a
+table of how many came up and how many were watched to the end, the posts
+and the decks as rankings, and the discounts as a table of the passes shown
+and the scans that said yes, each under the name its page already wears in
+the pages table and by the id it ships under. It is left out until any of
+it has been counted, and nothing from before it landed was.
 
 ### Right now
 
@@ -15004,9 +15041,12 @@ invisible, and so was every press on any of them.
 
 **The same file also counts for the site itself.** Besides GA, `assets/track.js`
 tells `POST /api/stats` when a page opens and how long it was on screen, with
-the names of the presses `TTBTrack.event()` saw meanwhile, and that is what
-`/admin/visitors` and `/admin/found` are drawn from — see **Visitors** and
-**How they found it**. It does not check for
+the names of the presses `TTBTrack.event()` saw meanwhile — and, from the
+pages that show one, which story, post, deck or discount it was, through
+`TTBTrack.about()`, since the site's count keeps names and never the
+parameters below — and that is what
+`/admin/visitors` and `/admin/found` are drawn from — see **Visitors**,
+**What was opened** and **How they found it**. It does not check for
 Google's tag, so taking GA out leaves it running; every event name below is
 also a row in that page's **What was pressed**.
 

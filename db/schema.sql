@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Twenty-four kinds:
+-- the key, one row per fact per day, and a number. Twenty-five kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -328,6 +328,9 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   on the map — asked, how it ended, follow-ups, retries,
 --                   picks off each roll — counted by POST /api/ask, never
 --                   the words
+--   kind 'about'    id is '<what>:<id>', a story, a post, a deck or a
+--                   discount a page said it was about — WHAT IT WAS ABOUT in
+--                   _visitors.js — each id one the site ships
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears

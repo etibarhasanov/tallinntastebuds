@@ -10259,6 +10259,10 @@
       format: story.photo ? 'photo' : 'video',
       position: state.story.index + 1
     });
+    /* And which story, for the site's own count, which keeps a press name
+       and not its parameters — WHAT IT WAS ABOUT in
+       functions/api/_visitors.js. */
+    TTBTrack.about('story', story.id);
   }
 
   /* Videos rarely report the last hundredth of themselves before the browser
@@ -10278,6 +10282,7 @@
       percent_watched: percent,
       completed: percent >= 95 ? 'yes' : 'no'
     });
+    if (percent >= 95) TTBTrack.about('watched', watch.story.id);
   }
 
   /* Draw whichever story the queue is standing on, and start it. */

@@ -66,6 +66,12 @@
  * sends. /admin/found reads them; HOW THEY FOUND IT in
  * functions/api/_visitors.js says what they are and what cannot be had.
  *
+ * And what the page was about, where a press name alone cannot say: the
+ * story that came up and whether it was watched to the end, the post read,
+ * the deck opened, the discount's pass shown and the scan that said yes to
+ * it. A page tells about() once per thing per load, and the next report
+ * carries it. WHAT IT WAS ABOUT in functions/api/_visitors.js is the rest.
+ *
  * The language rides in the same reports. Every page writes the language it
  * is read in on to <html lang>, so the seconds on screen are split by what
  * that said while they passed, and a press of a language switch — the
@@ -227,7 +233,9 @@ window.TTBTrack = (function () {
   var DAY = /^\d{4}-\d{2}-\d{2}$/;
 
   var tallied = {};    // press name -> times, since the last report
-  var opened = 0;      // places opened with view(), since the last report
+  var opened = 0;      // views reported with view() — a place, a post, a deck — since the last report
+  var abouts = [];     // 'what:id' the page was about, since the last report
+  var told = {};       // 'what:id' -> true, once it is in abouts: once a page
   var trail = [];      // names first seen this page, in order, since the last report
   var walked = {};     // name -> true, once it is in a trail — THE ORDER THEY CAME IN
   var earlier = '';    // the last name reported, this page or the one before it in this tab
@@ -393,6 +401,17 @@ window.TTBTrack = (function () {
     }
   }
 
+  /* What the page is about — see the header: `what` is story, watched, post,
+     deck, pass or verified, and `id` the thing's own id out of the file the
+     site ships it in. Once per thing per load, however often the page shows
+     it again, and sent with the next report. */
+  function about(what, id) {
+    var key = what + ':' + id;
+    if (!COUNTED || !id || told[key]) return;
+    told[key] = true;
+    abouts.push(key);
+  }
+
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
      coarse primary pointer is a finger, and a finger on something narrower
      than 768px is a phone. A laptop with a touchscreen keeps its mouse as
@@ -472,10 +491,10 @@ window.TTBTrack = (function () {
       if (s) langs[code] = s;
     });
     if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
-        !trail.length && !searched.length) return;
+        !trail.length && !searched.length && !abouts.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(),
-      trail: trail, earlier: earlier, opened: fresh, searches: searched };
+      trail: trail, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;
@@ -499,6 +518,7 @@ window.TTBTrack = (function () {
     moved = {};
     trail = [];
     searched = [];
+    abouts = [];
   }
 
   if (COUNTED) {
@@ -516,5 +536,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused };
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about };
 })();

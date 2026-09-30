@@ -446,6 +446,13 @@
        back to the index would leave the last post's canonical standing. */
     var canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', window.location.origin + (post ? postHref(post) : PAGE));
+
+    /* And which post is being read, for the site's own count — on arrival,
+       on a walk and on Back alike, which are the three ways here, and once a
+       load whichever of them it was. blog_post, below, is sent on a walk
+       alone, and the site's count keeps no parameters: WHAT IT WAS ABOUT in
+       functions/api/_visitors.js. */
+    if (post) TTBTrack.about('post', post.id);
   }
 
   /* Walking between the index and a post. The row is a real link and this is
