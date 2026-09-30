@@ -14,7 +14,7 @@
  * functions/_middleware.js first — adminUser() in ../_admin.js, a 403 to
  * anybody else — so this file never sees a request that is not the owner's
  * and does not check again. The ranking is how the site is used: which places
- * get opened, which buttons get pushed, how many accounts there are.
+ * get opened and saved, which buttons get pushed, and what the site holds.
  *
  * The colo cache stays, because it is still the cost control, and what goes
  * back to the browser is `private, no-store` whatever the cached copy says,
@@ -29,10 +29,10 @@
  * much of an answer as the top: a ranking that printed only what has been
  * opened would quietly drop the places nobody has, which is the half the page
  * was asked for. The 1,111 Google venues are an array of their own and only
- * the ones somebody has opened on the map, capped at VENUES — never the
- * owner's presses on the directory, which ../stats.js counts nowhere since
- * only the owner can open it — a thousand rows
- * tied at nought is not a ranking, and the directory is not the map. The
+ * the ones somebody has opened on the map, capped at VENUES — a thousand
+ * rows tied at nought is not a ranking, and the directory is not the map —
+ * and never the owner's presses on the directory, which ../stats.js counts
+ * nowhere, since only the owner can open it. The
  * filters are the third array, in full, because there are fourteen of them,
  * and the rail is the fourth, in full, because there are nine across its
  * two shapes — "The short rail" in README.md. The lists are the fifth, and
@@ -40,6 +40,11 @@
  * countries it was opened from: the number a stranger never sees — the one
  * that orders /lists, **Public lists** in README.md — drawn here for the
  * owner alone, beside where the readers were.
+ *
+ * A place on the map or of Google's also carries `saves`, how many people
+ * have saved it, out of save_counts — the number the map already keeps per
+ * place and never ranks by, set beside how often the place is opened for
+ * the owner alone.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
@@ -49,14 +54,17 @@
  * and there is always an afternoon between the deploy and somebody running it.
  * The page then says the numbers are not in yet and draws the rest of itself.
  *
- * ONE NUMBER ABOUT THE SITE RATHER THAN ABOUT A PRESS
+ * WHAT THE SITE HOLDS
  *
- * `users` is how many accounts exist, `SELECT COUNT(*) FROM users` read fresh
- * on every cache miss — the table is small enough that a running counter
- * would be one more thing to keep in step for no reason. It answers 0 rather
- * than failing the rest of the page when `users` is not there yet, the same
- * way the ranking above answers empty rather than failing when `press_counts`
- * is not.
+ * `held` is nine numbers about the site rather than about a press — the
+ * accounts, the saves and the places they are on, the lists and the public
+ * ones among them, the lists saved by somebody else, the feedback still up,
+ * the decks people made and the places added to lists by hand — each a
+ * COUNT(*) of its table read fresh on every cache miss, HELD below. The
+ * tables are small enough that a running counter would be one more thing to
+ * keep in step for no reason, and each count is a statement of its own, so a
+ * table not there yet answers 0 rather than failing the others, the way the
+ * ranking answers empty rather than failing when `press_counts` is not.
  *
  * The two rails' strangers are in the same table, under the `layout` kind,
  * and are not read here: ./visitors.js carries them to /admin/visitors, to
@@ -99,6 +107,20 @@ const VENUES = 25;
    listCountries() in ../_visits.js reads in one statement. */
 const LISTS = 50;
 
+/* What the site holds — see the header — as the statement that counts each.
+   Feedback taken down is not held any more; a list made private still is. */
+const HELD = {
+  users: 'SELECT COUNT(*) AS n FROM users',
+  saves: 'SELECT COUNT(*) AS n FROM saves',
+  saved: 'SELECT COUNT(*) AS n FROM save_counts WHERE n > 0',
+  lists: 'SELECT COUNT(*) AS n FROM lists',
+  public: 'SELECT COUNT(*) AS n FROM lists WHERE public = 1',
+  keeps: 'SELECT COUNT(*) AS n FROM list_keeps',
+  feedback: 'SELECT COUNT(*) AS n FROM feedback WHERE hidden = 0',
+  decks: 'SELECT COUNT(*) AS n FROM flashcard_decks',
+  added: 'SELECT COUNT(*) AS n FROM added_places'
+};
+
 export async function onRequestGet(context) {
   const { request, env } = context;
 
@@ -120,7 +142,7 @@ export async function onRequestGet(context) {
   if (hit) return privately(hit);
 
   const empty = {
-    ready: false, opens: 0, users: 0,
+    ready: false, opens: 0, held: null,
     map: [], venues: [], filters: [], rail: [], lists: [], ...words
   };
   if (!env.DB) return json(empty, 200);
@@ -145,6 +167,16 @@ export async function onRequestGet(context) {
   for (const row of rows) counted.set(row.kind + '\u0000' + row.id, row.n);
   const countOf = (kind, id) => counted.get(kind + '\u0000' + id) || 0;
 
+  /* How many people saved each place — see the header. Nothing under any
+     place where save_counts is not there yet. */
+  let saved = new Map();
+  try {
+    const { results } = await env.DB.prepare('SELECT place_id, n FROM save_counts WHERE n > 0').all();
+    saved = new Map((results || []).map((r) => [r.place_id, r.n]));
+  } catch (e) {
+    saved = new Map();
+  }
+
   let places;
   try {
     places = await mapPlaces(context);
@@ -167,6 +199,7 @@ export async function onRequestGet(context) {
       id: p.id,
       name: p.name,
       n: countOf(PLACE, p.id),
+      saves: saved.get(p.id) || 0,
       /* A shut place is still on the map, still has a card and can still be
          opened, so it is still in the ranking — but a row at the bottom of one
          needs to say why it is there, or the table reads as a verdict on a
@@ -195,7 +228,7 @@ export async function onRequestGet(context) {
          stays in the table and in `opens` below, because it happened. */
       venues = strangers
         .filter((row) => found.has(row.id))
-        .map((row) => ({ id: row.id, name: found.get(row.id).name, n: row.n }));
+        .map((row) => ({ id: row.id, name: found.get(row.id).name, n: row.n, saves: saved.get(row.id) || 0 }));
     } catch (e) {
       /* The names did not come back. The map's own ranking is the page, and
          this half of it is not worth failing the other half for. */
@@ -217,20 +250,16 @@ export async function onRequestGet(context) {
   const rail = railed(words, countOf);
   const lists = await opened(env, rows);
 
-  /* How many accounts exist, about the site rather than about a press — see
-     ONE NUMBER ABOUT THE SITE above. Failing this never fails the ranking: a table not
-     yet applied answers 0, the same way press_counts answers empty. */
-  let users = 0;
-  try {
-    const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first();
-    users = (row && row.n) || 0;
-  } catch (e) {
-    users = 0;
-  }
+  /* What the site holds — see the header. Each count on its own, so a table
+     not applied yet answers 0 and never fails the others or the ranking. */
+  const kinds = Object.keys(HELD);
+  const counts = await Promise.all(kinds.map((k) =>
+    env.DB.prepare(HELD[k]).first().then((row) => (row && row.n) || 0, () => 0)));
+  const held = Object.fromEntries(kinds.map((k, i) => [k, counts[i]]));
 
   const res = json(
     {
-      ready: true, opens: opens, users: users,
+      ready: true, opens: opens, held: held,
       map: map, venues: venues, filters: filters, rail: rail, lists: lists,
       ...words
     },

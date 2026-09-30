@@ -11086,12 +11086,13 @@ the feedback page listens; this is the one that counts.
 One page, the frame every page that is not the map wears — the brand header,
 the 640px column, the cards — and five tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
-zeros in it, then the Google venues somebody has opened on the map, then all fourteen
+zeros in it and how many people saved each, then the Google venues somebody
+has opened on the map, then all fourteen
 filter chips, then the nine pills across the rail's two shapes, then every
 list anybody has opened with where they opened it from — see **Which lists,
-and from where** below — then the
-footnotes under all five: every open counted, and how many accounts exist —
-see **How many accounts exist** below. How many strangers got each of the
+and from where** below — then what the site holds, nine counts of its
+tables from the accounts to the decks people made, and a footnote under all
+of it, every open counted — see **What the site holds** below. How many strangers got each of the
 map's two rails and how many of them opened a place with it used to be two
 more footnotes here, and is now on `/admin/visitors` with everything else
 about the rails — see **The two rails** under **Visitors**. Nothing on the
@@ -11346,17 +11347,34 @@ the map's table links to a place on the map, which is indexed and meant to be.
 Both of which matter less than they did: a crawler is not the owner, so since
 **Only the owner can open it** it is answered 404 and never sees the page.
 
-### How many accounts exist
+### What the site holds
 
-One more number, under the total of opens and in the same style: `SELECT
-COUNT(*) FROM users`, read fresh on every cache miss rather than kept as a
-running total — the table this counts is small enough, unlike `press_counts`,
-that there is nothing to save by not asking it directly. `users` in the
-answer `/api/admin/stats` gives, `statsUsersTotal` in `data/ui.json` the sentence
-around it, drawn in `assets/stats.js` right under **A count and not a log**'s
-own footnote.
+The ranking counts presses, and a press is not the only thing worth
+counting. Under the tables, a card of nine figures says what the site holds
+as its tables stand: **Accounts**; **Saves** and the **Places saved** they
+are on; **Lists** and the **Public lists** among them; **Lists saved** —
+somebody else's list kept, `list_keeps`; **Feedback** still up; **Decks
+made** on the flashcards; and **Places added** to a list by hand. Each is a
+`SELECT COUNT(*)` of its own table, read fresh on every cache miss rather
+than kept as a running total — the tables are small enough, unlike
+`press_counts`, that there is nothing to save by not asking them directly —
+and each is a statement of its own, so a table not applied yet answers 0
+rather than taking the others with it. `held` in the answer
+`/api/admin/stats` gives, `HELD` in `functions/api/admin/stats.js` the nine
+statements, and the figures are the ones `/admin/visitors` draws. They draw
+whenever the ranking is in at all, `opened` or not: none of them is a press.
+Splitwise's groups and chess's games are not among them.
 
-It is a count of accounts, not of people who visited: `users.last_seen_at`
+It used to be one number, how many accounts, in a footnote under the total
+of opens. That footnote is the first figure now.
+
+And a place's row in the ranking says, on a line under its name, how many
+people saved it — **saved by 3 people**, `save_counts`, the one other number
+the map keeps about a place. It stands beside how often the place is opened
+for the owner alone and ranks nothing: the map has no **Most saved**, for the
+reason **Saves** gives.
+
+The accounts figure is a count of accounts, not of people who visited: `users.last_seen_at`
 only moves on a sign-in (`enterAccount()` in `functions/api/_account.js`, and
 the Google round trip in `functions/api/google.js`), never on an ordinary page
 load with an already-valid session, so a figure about who came back *today*
