@@ -15,7 +15,8 @@
  *
  * functions/api/_visits.js is what is counted and how, and it is worth
  * reading before changing anything here: it says why a view is not a person,
- * why Instagram shows up far more often than it does in GA, and why a range
+ * why Instagram shows up far more often than it did in Google Analytics while
+ * the site carried it, and why a range
  * reaching back far enough has clicks with no source.
  *
  * WHAT IS DIFFERENT FROM THE PAGES IT LOOKS LIKE

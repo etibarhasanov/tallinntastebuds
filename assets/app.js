@@ -675,7 +675,7 @@
    * of each opened a place on that first visit; see selectPlace(). Only
    * strangers, because a returning visitor's first visit is long gone and
    * what they do next is not the same question. Their rail still rides on
-   * every event to Google Analytics — assets/track.js.
+   * every report to the site's own count — assets/track.js.
    *
    * Storage that throws cannot keep a deal, and a rail rolled afresh on every
    * load would be the one thing worse than either rail, so it draws the short
@@ -3834,8 +3834,8 @@
    * than one a load.
    *
    * Once per thing per load, which is what `counted` holds. That is the rule
-   * TTBTrack.view() already applies to the page view it reports beside an
-   * opened place — a place opened, closed and opened again is one — and the
+   * TTBTrack.view() already applies to the view it counts for an opened
+   * place — a place opened, closed and opened again is one — and the
    * two want to agree: two numbers about the same gesture that count it
    * differently are two numbers somebody will one day put side by side. So
    * comparing three places is three, walking back through history is not
@@ -3843,7 +3843,7 @@
    * is one press of it rather than four.
    *
    * In memory and not in storage, on purpose. A reload counts again, exactly
-   * as a reload is a fresh page view in Google Analytics, and this page keeps
+   * as a reload is a fresh page view in the site's own count, and this page keeps
    * nothing about what anybody looked at: the count is filed under the thing
    * and under nobody.
    *
@@ -3874,10 +3874,10 @@
    * A place and a chip are one question asked once — see above. A pill is a
    * press: the question /admin/stats answers about the rail is which of the nine
    * buttons people actually push and how often, and pressing the die four
-   * times is somebody asking for four restaurants. It is also what this page
-   * already tells Google Analytics, which gets an event per press of these
-   * buttons rather than one per load, so the two numbers agree here the same
-   * way they agree up there — by counting the same gesture the same way.
+   * times is somebody asking for four restaurants. It is also how
+   * assets/track.js tallies these buttons for /admin/visitors — an event per
+   * press rather than one per load — so the two numbers agree here the same
+   * way they agree up there, by counting the same gesture the same way.
    *
    * One listener on the rail rather than nine on the buttons, because two of
    * them are links that leave the page and the colour swatch is not in the
@@ -6457,7 +6457,7 @@
     var heading = dom.detail.querySelector('.place-name');
     if (heading) heading.focus();
 
-    TTBTrack.view(place.name);
+    TTBTrack.view();
     countPress('place', place.id);
     /* The first place this visit opened, on a stranger's first visit — the
        number /admin/stats sets against how many were dealt that rail.
@@ -10812,7 +10812,7 @@
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
     /* Chips in the address bar: a filtered map becomes a link worth sending,
-       and the landing view GA records for it says which filters it was.
+       and the address the landing is counted at says which filters it was.
 
        Every filter but one. The saved filter narrows to what this browser
        has pressed, so ?type=saved sent to somebody else is a link to an empty
@@ -10944,13 +10944,12 @@
   }
 
   /* ------------------------------------------------------------- analytics
-   * Google Analytics, through the global assets/track.js sets: this is one
-   * page, so GA on its own records a single view per visit and tells you
-   * nothing about what anyone did on it. So every deliberate press here —
-   * a chip, a language, Surprise me, a reel, the buttons on an open place —
-   * is reported as an event through TTBTrack.event(), and opening a place
-   * is reported as a page view of its own through TTBTrack.view(), titled
-   * with the place. The events the map sends, with their parameters, are
+   * The site's own count, through the global assets/track.js sets: this is
+   * one page, so a count of page views alone would say nothing about what
+   * anyone did on it. So every deliberate press here — a chip, a language,
+   * Surprise me, a reel, the buttons on an open place — is reported as an
+   * event through TTBTrack.event(), and opening a place is counted as a
+   * view of its own through TTBTrack.view(). The events the map sends, with their parameters, are
    * the map's rows of the table under "Analytics" in the README; a new
    * press that matters gets a row there in the same commit.
    */
@@ -11657,7 +11656,7 @@
          the visitor never sees fail. */
       drawn = true;
 
-      /* gtag already reported the landing URL, deep link and all. */
+      /* The landing already counted this address, deep link and all. */
       TTBTrack.seen();
 
       placeRail();

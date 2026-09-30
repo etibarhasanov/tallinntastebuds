@@ -1,7 +1,8 @@
 /* Tallinn Tastebuds — /admin/visitors, who came to the site and what they did.
  *
- * The page Google Analytics is open in a tab for, drawn from the site's own
- * count instead, in the order the questions are asked. Today so far first,
+ * The page Google Analytics used to be open in a tab for — until it was
+ * taken off the site on 30 September 2026 — drawn from the site's own count,
+ * in the order the questions are asked. Today so far first,
  * whatever the range: who came, who signed in and made an account, and on
  * which of the map's two rails. Then a range and who came in it — five
  * figures, a bar a day of new and returning visitors, a bar an hour of the

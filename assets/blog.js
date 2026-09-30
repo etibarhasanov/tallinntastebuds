@@ -459,7 +459,7 @@
     render();
     window.scrollTo(0, 0);
     main.focus();
-    TTBTrack.view(document.title);
+    TTBTrack.view();
     if (post) TTBTrack.event('blog_post', { post: post.id });
   }
 
@@ -539,7 +539,7 @@
     window.addEventListener('popstate', function () {
       readUrl();
       render();
-      TTBTrack.view(document.title);
+      TTBTrack.view();
     });
   }
 

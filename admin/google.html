@@ -8,11 +8,12 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
-     two snippets pasted into every head. assets/analytics.js holds the ids and
-     the consentv2 signal Clarity needs, and its head carries the reasoning of
-     the consent bar that stood in front of both of them for a day. -->
-<script src="/assets/analytics.js?v=a44b6b90" defer></script>
+<!-- Microsoft Clarity's heatmaps and replays, from one file rather than a
+     snippet pasted into every head. assets/analytics.js holds the id and the
+     consentv2 signal Clarity needs, and its head carries the reasoning of the
+     consent bar that stood in front of it for a day. The counting is the
+     site's own, in assets/track.js further down. -->
+<script src="/assets/analytics.js?v=60461a26" defer></script>
 
 <!-- Not part of the map, and deliberately not linked from it. This is Google's
      description of the city rather than anywhere I have been, so it must never
@@ -167,10 +168,10 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
         defer></script>
-<!-- What every press reports to Google Analytics, shared by every page.
+<!-- What every press reports to the site's own count, shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=c3be77ee" defer></script>
+<script src="/assets/track.js?v=693861bd" defer></script>
 <!-- The tiles, the key and the attribution, shared with the map and the lists
      picker. Before venues.js and deferred like it, so document order puts the
      global in place first. -->
