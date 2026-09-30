@@ -7634,6 +7634,15 @@ Signing out clears the cookie twice, host-only as well as domain-scoped, so a
 browser still holding the one this site set for years before any of this is not
 left signed in by a Sign out that appeared to work.
 
+And a browser holding both sends both, under the same name, the older first.
+Reading only the first was a bug for three days: that older one is usually a
+session already gone — a password change deletes them all and sets only the
+new cookie — so the owner, signed in with a perfectly good second cookie, was
+read as nobody and got a 404 on every page under `/admin/`. `sessionTokens()`
+in `_lib.js` hands over every `ttb_s` the request carries, two at most, and
+`sessionUser()` takes the first that names a live session; Sign out ends every
+one of them rather than the first.
+
 ### The invitation
 
 A group's id is its invitation: `dinner-at-rataskaevu-k3fmqw`, minted exactly

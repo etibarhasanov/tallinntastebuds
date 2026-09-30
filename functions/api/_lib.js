@@ -236,25 +236,51 @@ export function readCookie(request, name) {
   return '';
 }
 
+/* Every session token the browser sent, in the order it sent them, shaped
+   ones only and at most two.
+ *
+   There can be two because the cookie changed scope under people: a browser
+   that signed in before sessionCookie() named a Domain holds a host-only
+   `ttb_s`, and signing in again since has given it a domain-scoped one beside
+   it, same name. Both are sent, and the browser sends the older first. That
+   older one is usually dead — a password change deletes every session and
+   sets only the new cookie, a Sign out on the subdomain could never clear it —
+   and reading only the first `ttb_s`, as this did, answered "signed out" with
+   a good session sitting right behind it in the same header. The owner saw
+   that as a 404 on every page under /admin/. Two is the most the two scopes
+   can make, so the cap costs nobody anything and keeps a header stuffed with
+   copies from turning into that many reads. */
+export function sessionTokens(request) {
+  const raw = request.headers.get('Cookie') || '';
+  const out = [];
+  for (const part of raw.split(';')) {
+    const at = part.indexOf('=');
+    if (at === -1 || part.slice(0, at).trim() !== SESSION_COOKIE) continue;
+    const token = part.slice(at + 1).trim();
+    if (/^[0-9a-f]{64}$/.test(token) && !out.includes(token)) out.push(token);
+    if (out.length === 2) break;
+  }
+  return out;
+}
+
 /* Who is signed in, or null. Every route that can act on somebody's behalf
    goes through this and nothing else — there is no other way to become a
-   user in this codebase. */
+   user in this codebase. The first token that names a live session wins;
+   sessionTokens() above says why there may be more than one to try. */
 export async function sessionUser(request, env) {
-  const token = readCookie(request, SESSION_COOKIE);
-  if (!token || !/^[0-9a-f]{64}$/.test(token)) return null;
+  for (const token of sessionTokens(request)) {
+    const row = await env.DB
+      .prepare(
+        'SELECT u.id AS id, u.username AS username, s.expires_at AS expires_at ' +
+        'FROM sessions s JOIN users u ON u.id = s.user_id ' +
+        'WHERE s.token_hash = ?'
+      )
+      .bind(await sha256Hex(token))
+      .first();
 
-  const row = await env.DB
-    .prepare(
-      'SELECT u.id AS id, u.username AS username, s.expires_at AS expires_at ' +
-      'FROM sessions s JOIN users u ON u.id = s.user_id ' +
-      'WHERE s.token_hash = ?'
-    )
-    .bind(await sha256Hex(token))
-    .first();
-
-  if (!row) return null;
-  if (row.expires_at < Date.now()) return null;
-  return { id: row.id, username: row.username };
+    if (row && row.expires_at >= Date.now()) return { id: row.id, username: row.username };
+  }
+  return null;
 }
 
 /* ------------------------------------------------- which database is this
