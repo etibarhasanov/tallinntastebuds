@@ -15,6 +15,7 @@
  *                   was pressed on it — the same
  *   readVisitors()  a range of it, for /admin/visitors — GET /api/admin/visitors
  *   readLive()      the last half hour, a minute at a time — GET /api/admin/live
+ *   readFound()     how people found the site, over a range — GET /api/admin/found
  *
  * A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY
  *
@@ -58,6 +59,36 @@
  * file's — once per visitor per day, off the first page, so a visitor who
  * came from Instagram and then read six pages is one visitor from Instagram
  * rather than six.
+ *
+ * HOW THEY FOUND IT
+ *
+ * `from` says a visitor came from a search engine and stops there, and the
+ * owner's question is what they searched for. That cannot be answered by
+ * anybody's code: Google, Bing and the rest keep the words out of the
+ * referrer, and browsers cut every referrer from another site down to its
+ * origin unless that site asks otherwise. So /admin/found is drawn out of
+ * what does arrive — `found`, the engine and the address a search visitor
+ * landed on (FOUND BY A SEARCH ENGINE below), which is the nearest honest
+ * stand-in for the words — and four more, each an OPEN kind capped like
+ * the countries:
+ *
+ *   ref      `<host><path>` of a link on another site, off a visitor's
+ *            first page of the day, where that site sent more than its
+ *            origin — a thread, a post — and never its query
+ *   tag      the owner's own `?from=` on a link they shared, on any page
+ *            opened with one, since the tag is the point of the visit
+ *            rather than the day's first page. assets/track.js takes it off
+ *            the address once sent, so it is not shared onwards
+ *   search   `<words>`: what was typed into one of the site's own search
+ *            fields, once the typing settled — the `search` events the
+ *            pages already report to Google, caught by assets/track.js and
+ *            carried on the report a page sends when it is put away
+ *   nothing  the same words, where the field said it found nothing
+ *
+ * The words are lowercased, their spaces folded, cut at MAX_WORDS, and
+ * dropped where they look like an address or a phone number rather than a
+ * search. The chat's questions are not among them: a sentence to the chat is
+ * a sentence somebody might put anything in, and it was left out on purpose.
  *
  * THE VIEWS THAT REPORTED
  *
@@ -182,11 +213,12 @@
  * visitor kinds, the rails and the facts counted under them are lists
  * written here — forty ids a day at the most between the `cohort` and
  * `layout` kinds — and the languages are the ones data/ui.json speaks. The
- * countries, the
- * sources and the presses are not — a host or a press name is whatever the
- * request says — so those three kinds take at most MAX_IDS ids a day each,
- * and past that only ids already counted that day go up. A press name must
- * also be shaped like one, which every name TTBTrack sends is.
+ * countries, the sources, the presses, the languages browsers ask for,
+ * `found` and the four kinds of HOW THEY FOUND IT are not — a host, a press
+ * name or a search is whatever the request says — so each of those kinds
+ * takes at most MAX_IDS ids a day, and past that only ids already counted
+ * that day go up. A press name must also be shaped like one, which every
+ * name TTBTrack sends is.
  *
  * THE LAST HALF HOUR
  *
@@ -260,7 +292,7 @@ const SIGNS = { account_login: 'login', account_create: 'signup' };
 /* The kinds whose ids nobody chose from a list, and how many ids a day each
    may hold — see WHAT IS BOUNDED. A hundred countries in a day would be a
    good day; a hundred press names is every button on the site. */
-const OPEN = new Set(['country', 'from', 'press', 'asks', 'found']);
+const OPEN = new Set(['country', 'from', 'press', 'asks', 'found', 'ref', 'tag', 'search', 'nothing']);
 const MAX_IDS = 100;
 
 /* The language a browser asks for, as the two letters of navigator.language
@@ -279,6 +311,15 @@ const MAX_SECS = 1800;
 const MAX_NAMES = 20;
 const MAX_PRESS = 50;
 const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
+
+/* The owner's own tag on a link, the longest page elsewhere kept as one
+   that linked here, and the search fields whose words are counted — the
+   `scope` each already reports to Google under. HOW THEY FOUND IT. */
+const TAG = /^[a-z0-9][a-z0-9_-]{0,39}$/;
+const MAX_REF = 120;
+const SCOPES = ['map', 'find', 'google', 'lists', 'list'];
+const MAX_WORDS = 40;
+const MAX_SEARCHES = 10;
 
 /* The last half hour — see THE LAST HALF HOUR. LIVE_SLOTS is the ring's
    size, and LIVE_SPAN how much of it the page is sent. */
@@ -417,9 +458,9 @@ function foundOf(from, at) {
 
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
    `who` what ttb.since said, `from` the referrer it was opened with, `at`
-   its whole address,
-   `layout` the rail if any, `asks` the language the browser asks for,
-   `device` phone, tablet or desktop. */
+   its whole address, `layout` the rail if any, `asks` the language the
+   browser asks for, `device` phone, tablet or desktop, and `tag` the
+   owner's own `?from=` where the address had one. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -430,20 +471,63 @@ export async function countArrive(context, body) {
   split(facts, rail, whoOf(body), 'views', 1);
   if (body.first === true) {
     const who = body.back === true ? 'back' : 'new';
+    const site = siteOf(request);
+    const source = sourceOf(body.from, request.headers.get('user-agent'), site);
     facts.push(
       ['visitor', who, 1],
       ['country', countryOf(request), 1],
-      ['from', sourceOf(body.from, request.headers.get('user-agent'), siteOf(request)), 1],
+      ['from', source, 1],
       ['entry', page, 1]
     );
     if (rail) facts.push(['layout', rail + ':' + who, 1]);
     const found = foundOf(body.from, body.at);
     if (found) facts.push(['found', found, 1]);
+    const ref = refOf(body.from, source, site);
+    if (ref) facts.push(['ref', ref, 1]);
     if (CODE.test(body.asks)) facts.push(['asks', body.asks, 1]);
     if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
   }
+  const tag = typeof body.tag === 'string' ? body.tag.toLowerCase() : '';
+  if (TAG.test(tag)) facts.push(['tag', tag, 1]);
   const [counted] = await Promise.all([file(env, facts), countLive(env)]);
   return counted;
+}
+
+/* The page on another site that linked here — HOW THEY FOUND IT — as its
+   host and path, or null: for a search engine, which `found` has, for this
+   site itself, and for a referrer that is only an origin, which `from`
+   already has. Never the query, which is where another site keeps its
+   session ids and its tracking. */
+function refOf(referrer, source, site) {
+  let url;
+  try {
+    url = new URL(String(referrer || ''));
+  } catch (e) {
+    return null;
+  }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+  const host = url.hostname.toLowerCase().replace(/^www\./, '');
+  if (source === 'search' || host === site || host.endsWith('.' + site)) return null;
+  if (!url.pathname || url.pathname === '/') return null;
+  return (host + url.pathname).slice(0, MAX_REF);
+}
+
+/* The words typed into the site's own search fields — HOW THEY FOUND IT —
+   off a report's `searches`, [{ scope, term, results }], `results` present
+   only where the field knows how many it found. */
+function searchFacts(body) {
+  const facts = [];
+  const sent = Array.isArray(body.searches) ? body.searches.slice(0, MAX_SEARCHES) : [];
+  for (const s of sent) {
+    if (!s || !SCOPES.includes(s.scope)) continue;
+    const words = String(s.term || '').toLowerCase().replace(/\s+/g, ' ').trim().slice(0, MAX_WORDS).trim();
+    if (words.length < 2 || !/[\p{L}\p{N}]/u.test(words)) continue;
+    /* An address or a phone number is somebody's, not a search. */
+    if (/@/.test(words) || /\d[\d ]{5,}\d/.test(words)) continue;
+    facts.push(['search', words, 1]);
+    if (s.results === 0) facts.push(['nothing', words, 1]);
+  }
+  return facts;
 }
 
 /* One page opened, into this minute's slot — THE LAST HALF HOUR. */
@@ -517,6 +601,7 @@ export async function countLeave(context, body) {
   split(facts, rail, who, 'signup', signs.signup);
   split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
   facts.push(...await languageFacts(context, body, who));
+  facts.push(...searchFacts(body));
 
   return facts.length ? file(env, facts) : false;
 }
@@ -818,4 +903,88 @@ function bars(span, byDay) {
     series.push(bar);
   }
   return { unit: per === 7 ? 'week' : 'day', series: series };
+}
+
+/* ------------------------------------------------------- how they found it */
+
+/* The kinds /admin/found reads — HOW THEY FOUND IT — and `from`, which its
+   figures are made of. */
+const FOUND = ['from', 'found', 'ref', 'tag', 'search', 'nothing'];
+
+/* The four figures a range adds up to: visitors from a search engine, from a
+   link on another site, pages opened by one of the owner's own tagged links,
+   and searches typed into the site's own fields. */
+function foundBlank() {
+  return { search: 0, sites: 0, tags: 0, searches: 0 };
+}
+
+/* One range of how people found the site, or null where there is no table.
+ *
+ *   span       1, 7, 28 or 90
+ *   from       the first day of the range
+ *   since      the first day any of it was counted, or null for never — the
+ *              figures' `from` rows are older, and not what this asks
+ *   now        { search, sites, tags, searches } in the range
+ *   before     the same over the range before it; null for today
+ *   engines    [{ id, n }] search visitors by engine, most first — the
+ *              `found` rows added up by their engine
+ *   lands      [{ id, engine, at, n }] the `found` rows themselves: where
+ *              search visitors landed, and from which engine
+ *   refs       [{ id, n }] pages on other sites that linked here
+ *   tags       [{ id, n }] the owner's own tagged links
+ *   searches   [{ id, n, nothing }] words searched for here, `nothing`
+ *              being how many of those times the field found nothing */
+export async function readFound(env, span) {
+  const first = dayBack(2 * span - 1);
+  const cut = dayBack(span - 1);
+  const marks = FOUND.map(() => '?').join(', ');
+  let rows;
+  let since;
+  try {
+    [rows, since] = await Promise.all([
+      env.DB.prepare(`SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND kind IN (${marks})`)
+        .bind(first, ...FOUND).all(),
+      env.DB.prepare("SELECT MIN(day) AS day FROM visitor_counts WHERE kind IN ('found', 'ref', 'tag', 'search')").first()
+    ]);
+  } catch (e) {
+    return null;
+  }
+
+  const now = foundBlank();
+  const was = foundBlank();
+  const engines = new Map();
+  const lands = new Map();
+  const refs = new Map();
+  const tags = new Map();
+  const searches = new Map();
+  const nothing = new Map();
+  const into = { found: lands, ref: refs, tag: tags, search: searches, nothing: nothing };
+
+  for (const r of rows.results || []) {
+    const figures = r.day >= cut ? now : was;
+    if (r.kind === 'from') {
+      if (r.id === 'search') figures.search += r.n;
+      else if (r.id !== 'here' && r.id !== 'direct') figures.sites += r.n;
+    } else if (r.kind === 'tag') figures.tags += r.n;
+    else if (r.kind === 'search') figures.searches += r.n;
+    if (r.day < cut || !into[r.kind]) continue;
+    bump(into[r.kind], r.id, r.n);
+    if (r.kind === 'found') bump(engines, r.id.split(' ')[0], r.n);
+  }
+
+  return {
+    span: span,
+    from: cut,
+    since: (since && since.day) || null,
+    now: now,
+    before: span > 1 ? was : null,
+    engines: most(engines),
+    lands: most(lands).map((l) => {
+      const gap = l.id.indexOf(' ');
+      return { ...l, engine: l.id.slice(0, gap), at: l.id.slice(gap + 1) };
+    }),
+    refs: most(refs),
+    tags: most(tags),
+    searches: most(searches).map((s) => ({ ...s, nothing: nothing.get(s.id) || 0 }))
+  };
 }

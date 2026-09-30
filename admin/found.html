@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Visitors | Tallinn Tastebuds</title>
-<meta name="description" content="Who came to the site, from where, and what they did. Counted on this site, without cookies.">
+<title>How they found it | Tallinn Tastebuds</title>
+<meta name="description" content="How people found the site: which search engine, where they landed, links from elsewhere and what they searched for here.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
@@ -28,14 +28,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
 
 <!-- The map's tokens and card, the lists page's header and column, and the
-     rows, figures and line /admin/stats and /insights already draw with. -->
+     rows and figures /admin/visitors already draws with. -->
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
 <link rel="stylesheet" href="/assets/lists.css?v=d1b4f23b">
 <link rel="stylesheet" href="/assets/stats.css?v=557532e4">
 </head>
 <body class="lists-body">
 
-<a class="skip-link" href="#main" data-i18n="visitorsSkip">Skip to the numbers</a>
+<a class="skip-link" href="#main" data-i18n="foundSkip">Skip to the numbers</a>
 
 <header class="lists-brand">
   <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
@@ -46,11 +46,11 @@
 
 <!-- The title and the sentence under it are in the markup, so the page says
      what it is before the numbers arrive and still says it if they never do.
-     Everything else is the one element assets/visitors.js fills. -->
+     Everything else is the one element assets/found.js fills. -->
 <div class="lists-main">
   <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
-  <h1 class="lists-title" data-i18n="visitorsTitle">Who came, and what they did</h1>
-  <p class="stats-lead" data-i18n="visitorsLead">Counted on this site, with no cookies. A visitor is a browser on a day, a returning one had been here on an earlier day, and nothing here says who anybody is.</p>
+  <h1 class="lists-title" data-i18n="foundTitle">How people found the site</h1>
+  <p class="stats-lead" data-i18n="foundLead">Counted on this site, with no cookies. Search engines never pass on the words somebody typed, so this is what does arrive: which engine, the page they landed on, links from other sites, your own links, and what people searched for here.</p>
 </div>
 
 <main class="lists-main" id="main" tabindex="-1"></main>
@@ -58,15 +58,12 @@
 <noscript>
   <div class="noscript card">
     <p class="eyebrow">Tallinn</p>
-    <h2>Who came, and what they did</h2>
+    <h2>How people found the site</h2>
     <p>This page is fetched and drawn with JavaScript. <a href="/">The map is over here</a>.</p>
   </div>
 </noscript>
 
 <script src="/assets/track.js?v=9698cab8" defer></script>
-<!-- A country named in the reading language, and a line of them under a
-     list. Before the page's own script and deferred like it. -->
-<script src="/assets/country.js?v=407fa021" defer></script>
-<script src="/assets/visitors.js?v=3f9840c0" defer></script>
+<script src="/assets/found.js?v=b5af7729" defer></script>
 </body>
 </html>

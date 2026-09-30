@@ -126,9 +126,9 @@ Disallow: /account.html
 # it and it carries its own noindex tag.
 Disallow: /admin.html
 
-# And the owner's pages under it: the statistics, the visitors, Google's
-# directory and who uses the site — /admin/stats, /admin/visitors,
-# /admin/google and /admin/flows. functions/_middleware.js answers a crawler
+# And the owner's pages under it: the statistics, the visitors, how they
+# found the site, Google's directory and who uses the site — /admin/stats,
+# /admin/visitors, /admin/found, /admin/google and /admin/flows. functions/_middleware.js answers a crawler
 # 404 there anyway; this saves it the trip.
 Disallow: /admin/
 

@@ -7809,6 +7809,11 @@
 
   var searchTimer = null;
 
+  /* How many places the last drawing of the column left on screen, which is
+     what the search report says it found — nought is a search that found
+     nothing, and /admin/found marks those. */
+  var searchHits = 0;
+
   function setQuery(value) {
     var next = String(value == null ? '' : value);
     if (dom.search.value !== next) dom.search.value = next;
@@ -7831,7 +7836,7 @@
     var term = q.trim();
     if (term.length < 2) return;
     searchTimer = setTimeout(function () {
-      TTBTrack.event('search', { search_term: term.toLowerCase(), scope: 'map' });
+      TTBTrack.event('search', { search_term: term.toLowerCase(), scope: 'map', results: searchHits });
     }, 900);
   }
 
@@ -9198,6 +9203,7 @@
       var level = {};
       places = bestOnly(places.filter(function (p) { return matches(p, words, level); }), level);
     }
+    searchHits = places.length;
 
     /* Whether what is on screen is your own saves and nothing else. One
        chip, that chip, and nothing typed: the moment a second filter or a

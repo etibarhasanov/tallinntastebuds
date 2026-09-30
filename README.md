@@ -11492,7 +11492,11 @@ the pages table cannot say: the map is the most viewed page whether or not
 anybody arrives on it. **Where they go next** is the pairs of pages opened
 one after the other in one tab, most first, out of the step the tab already
 carries from one page to the next for the diagrams — **Crossing pages** under
-**Who uses the site, drawn**.
+**Who uses the site, drawn**. A reload is not a move, and a page opened in a
+fresh tab has nothing before it and is not one either. It is pages and not
+people, and the pair alone: nothing here can lay one visitor's pages end to
+end, and nothing is written that could. The funnels within a page — from the
+map to a place to going there — stay on the diagrams.
 
 **Found by a search engine, landed on** is the search row of **Where they came
 from** taken apart: for each visitor whose first page of the day was opened
@@ -11501,14 +11505,12 @@ from a search engine, the engine and the address, `google /blog?post=…` or
 of its own — `?post=`, `?spot=`, `?d=` or `?lang=` — so a `?style=` or a
 tracking tag does not split a page in two, and the engine is read off the
 referrer's host, which is all a search engine still sends: the words that were
-searched are in Search Console and Bing Webmaster Tools and nowhere here. It is
-how the posts written to be found are held to account, and it is an open kind,
-capped at a hundred ids a day like the countries. `assets/track.js` sends the
-whole address with every arrival for it, and it is read for nothing else. A reload is not a move, and a page opened in a
-fresh tab has nothing before it and is not one either. It is pages and not
-people, and the pair alone: nothing here can lay one visitor's pages end to
-end, and nothing is written that could. The funnels within a page — from the
-map to a place to going there — stay on the diagrams.
+searched never reach the site — **How they found it** says why. It is how the
+posts written to be found are held to account, and it is an open kind, capped
+at a hundred ids a day like the countries. `assets/track.js` sends the whole
+address with every arrival for it — the query as the page was opened, before
+the map can write a place into it — and `/admin/found` reads the same rows as
+its engines and its landing addresses.
 
 ### When they come, on what, and not the owner
 
@@ -11694,7 +11696,108 @@ different means — so the two are worth running side by side for a few weeks
 before Google's tag comes out. `/admin/` sends nothing, so the owner reading
 this page is not counted by it, and the owner using the site signed in is
 not either — **When they come, on what, and not the owner** above — where
-GA counts them.
+GA counts them. What a search visitor was searching for is not here either,
+and the next section says why it is not anywhere.
+
+---
+
+## How they found it
+
+`/admin/found` — how people found the site: which search engine, the address
+a search visitor landed on, the pages on other sites that linked here, the
+owner's own tagged links, and the words typed into the site's own search
+fields. The owner's alone, under the same lock as **Visitors** — a 404 for
+the page and a 403 for `GET /api/admin/found` to anybody else — the second
+row of **The numbers** on `/admin.html`, and linked from **Where they came
+from** on `/admin/visitors`.
+
+### The words typed into Google are not to be had
+
+The question the page was asked for was which keywords people searched to
+find the site, and the honest answer comes first: no code on this site can
+see them. Google stopped passing the words on to the site clicked through to
+years ago, Bing, DuckDuckGo and the rest did the same, and a browser cuts a
+link from another site down to that site's name unless the site asks it not
+to. Google Search Console is the one place Google tells a site's owner what
+it was found under, and the owner chose to build the site's own rather than
+lean on another system. So the page is drawn out of what does arrive, and
+says so in its first sentence.
+
+### What it counts
+
+All of it rides on the two reports `assets/track.js` already sends from every
+page, and is counted into `visitor_counts` by `functions/api/_visitors.js` —
+**HOW THEY FOUND IT** in that file's header. No table, no route that writes,
+nothing to load.
+
+- **Which search engine** and **where search visitors landed** are both the
+  `found` kind the blog's posts brought in — **Visitors** has it under the
+  sources — read a second way: the engine and the address a search
+  visitor's first page of the day was opened at, with the one query key that
+  makes the address a page of its own (`post`, `spot`, `d`, `lang`). The
+  engines are those rows added up by engine. It is the nearest honest
+  stand-in for the words: `/?lang=ru` is somebody who searched in Russian,
+  `/?d=verbs` on the flashcards somebody after Estonian verbs, a place's
+  `?spot=` somebody who searched its name. `track.js` reads the query as the
+  script loads, before the map has had a chance to write a place it opened
+  into the address.
+- **Pages on other sites that linked here**, `ref`: the host and path of a
+  visitor's first page's referrer, where that site sent more than its
+  origin — a Reddit thread, a blog post. Most sites send their origin alone,
+  which `from` already has, so this list is short by nature. Never the
+  query, which is where other sites keep their session ids.
+- **Your own links**, `tag`: a page opened with `?from=` in its address,
+  its value lowercased and held to forty letters, digits, hyphens and
+  underscores. Counted on any page opened with one, not only a first page
+  of the day, because the tag is the point of that visit. `track.js` takes
+  the parameter off the address once it has sent it, so a reload is not a
+  second visit by the link and a copy shared onward is not the owner's link
+  any more. The card stays on the page when it is empty, because its
+  sentence is how to make one.
+- **What people searched for here**, `search` and `nothing`: the words typed
+  into the map's field, the find bar, the directory and the lists — the
+  `search` events those fields already report to Google, caught in
+  `TTBTrack.event()` and carried on the report a page sends when it is put
+  away. The directory reports after a pause short enough that `piz` and
+  `pizza` can both arrive, so a search that only lengthens or shortens the
+  last one in the same field replaces it rather than joining it. The words
+  are lowercased with their spaces folded, cut at forty characters, and
+  dropped where they look like an email address or a phone number. Where the
+  field knows how many it found — the map's column and the directory, which
+  now send `results` with the event — a search that found nothing is also
+  counted under `nothing`, and the page marks the words with how often. That
+  is the list to read before adding a place.
+
+What the chat is asked is not among them, on purpose: a sentence to the chat
+is a sentence somebody might put anything in, and the owner chose to leave
+it out.
+
+### Bounded like the rest
+
+Every one of these is an open kind — whatever a request says — so each
+takes at most a hundred ids a day, like the countries, and the line at the
+foot of the page says so. A visitor's first page of the day from another
+site's page adds one row to the batch it already sends, a tagged page one,
+and a report carrying searches two per search, ten searches a report at
+most.
+
+### The page
+
+The range chips of `/admin/visitors`, then four figures against the range
+before — visitors **from search**, **from other sites** (every `from` bucket
+but search, this site and nothing), pages opened **by your links**, and
+**searches here** — then a card each, most first, fifteen rows before the
+rest are Other: the engines, where search visitors landed with the engine
+under each address, what was searched with how often it found nothing, the
+pages elsewhere, and the owner's own links. A card with no rows in the range
+says so rather than disappearing, so the page's shape does not change from
+one range to the next. Until anything has been counted, the four figures and
+the owner's links are all there is, with a sentence saying counting starts
+the day the page went live — nothing from before it can be recovered, since
+none of it was kept. `GET /api/admin/found` is `/api/admin/visitors`' shape:
+the words come with the numbers, five minutes of edge cache on the range and
+the language, `private, no-store` to the browser, and `ready: false` without
+the table.
 
 ---
 
@@ -14705,7 +14808,8 @@ invisible, and so was every press on any of them.
 **The same file also counts for the site itself.** Besides GA, `assets/track.js`
 tells `POST /api/stats` when a page opens and how long it was on screen, with
 the names of the presses `TTBTrack.event()` saw meanwhile, and that is what
-`/admin/visitors` is drawn from — see **Visitors**. It does not check for
+`/admin/visitors` and `/admin/found` are drawn from — see **Visitors** and
+**How they found it**. It does not check for
 Google's tag, so taking GA out leaves it running; every event name below is
 also a row in that page's **What was pressed**.
 
@@ -14740,7 +14844,7 @@ The map, `assets/app.js`:
 | `filter_select` | `filter_id`, `filter_state` (`on`/`off`), `filters`, `filter_count`, `places_shown` |
 | `filter_clear` | `filters`, `filter_count`, `places_shown` |
 | `filters_open`, `filters_close` | — |
-| `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map |
+| `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map — and for `map`, `results`, how many places the column was left showing. `/admin/found` counts the words too; see **How they found it** |
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
 | `find_clear` | — the cross on the find bar |
@@ -14863,7 +14967,7 @@ The directory, `assets/venues.js`:
 
 | event | parameters |
 | --- | --- |
-| `search` | `search_term`, `scope` (`google`) |
+| `search` | `search_term`, `scope` (`google`), `results` — how many venues were left showing |
 | `search_clear` | `scope` |
 | `venues_filter` | `filter` (`open`/`cuisine`/`rating`/`price`/`sort`), `value`, `places_shown` |
 | `venues_clear` | — |

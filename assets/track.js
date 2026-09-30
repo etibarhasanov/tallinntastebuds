@@ -59,6 +59,13 @@
  * One word, per tab, gone when the tab closes, and nothing that says who
  * anybody is.
  *
+ * And how the page was found: the first report carries the address the
+ * page was opened at and the owner's own `?from=` tag if the link had one,
+ * and a report when the page is put away carries the words typed into a
+ * search field meanwhile — out of the `search` events every field already
+ * sends. /admin/found reads them; HOW THEY FOUND IT in
+ * functions/api/_visitors.js says what they are and what cannot be had.
+ *
  * The language rides in the same reports. Every page writes the language it
  * is read in on to <html lang>, so the seconds on screen are split by what
  * that said while they passed, and a press of a language switch — the
@@ -104,6 +111,7 @@ window.TTBTrack = (function () {
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
+    if (name === 'search') searchedFor(params);
     if (live()) window.gtag('event', name, params);
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
@@ -217,6 +225,18 @@ window.TTBTrack = (function () {
   var lang = langNow();  // the language on screen, as <html lang> last said
   var first = false;   // this page is the browser's first today, not yet told
   var arrivedIn = '';  // the language on screen before the first switch
+  var searched = [];   // { scope, term, results } typed into a search field, since the last report
+
+  /* The query as the page was opened, read now, before the page's own
+     script has had a chance to rewrite it — the map puts a place's ?spot= in
+     the address as somebody opens one, and it arrives late (see LATE), so
+     reading it in arrive() could file a search visitor under a place they
+     opened rather than the one they landed on. The owner's own `?from=` tag
+     rides in it: functions/api/_visitors.js, HOW THEY FOUND IT. */
+  var LANDED = window.location.search;
+  var TAGGED = (function () {
+    try { return new URLSearchParams(LANDED).get('from') || ''; } catch (e) { return ''; }
+  })();
 
   /* A beacon survives the page being put away, which is when half of these
      are sent; fetch with keepalive is the same promise where there is no
@@ -304,8 +324,8 @@ window.TTBTrack = (function () {
          visitor a search engine sent — FOUND BY A SEARCH ENGINE in
          functions/api/_visitors.js: /blog?post=… and /?spot=… are the pages
          a search lands on, and the path alone would file them all as the
-         blog and the map. */
-      at: (window.location.pathname + window.location.search).slice(0, 200),
+         blog and the map. The query as the page was opened — LANDED. */
+      at: (window.location.pathname + LANDED).slice(0, 200),
       first: first,
       back: who === 'back',
       who: who,
@@ -316,8 +336,46 @@ window.TTBTrack = (function () {
          Read straight off the browser, never off the page, which has
          already picked one out of it. */
       asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
-      device: device()
+      device: device(),
+      tag: TAGGED
     });
+    untag();
+  }
+
+  /* The `?from=` tag off the address once it has been counted, so a reload
+     is not a second visit by the link and a copy of the address shared on
+     is not the owner's link any more. Only that parameter, and only if it is
+     still there. */
+  function untag() {
+    if (!TAGGED) return;
+    try {
+      var url = new URL(window.location.href);
+      if (!url.searchParams.has('from')) return;
+      url.searchParams.delete('from');
+      history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+    } catch (e) { /* the tag stays in the address, and is counted again on a reload */ }
+  }
+
+  /* A search, for the site's own count of what people look for — HOW THEY
+     FOUND IT in functions/api/_visitors.js. Every field reports one once the
+     typing pauses, and the directory's pause is short enough that "piz" and
+     "pizza" can both arrive; so a search that only lengthens or shortens the
+     last one in the same field takes its place rather than joining it, and
+     the words that are sent are the ones the typing settled on. `results`
+     rides along where the field knows it, which is how a search that found
+     nothing is told apart. Ten a report at most. */
+  function searchedFor(params) {
+    var term = String(params.search_term || '');
+    var scope = String(params.scope || '');
+    if (!COUNTED || !term || !scope) return;
+    var entry = { scope: scope, term: term };
+    if (typeof params.results === 'number') entry.results = params.results;
+    var last = searched[searched.length - 1];
+    if (last && last.scope === scope && (term.indexOf(last.term) === 0 || last.term.indexOf(term) === 0)) {
+      searched[searched.length - 1] = entry;
+    } else if (searched.length < 10) {
+      searched.push(entry);
+    }
   }
 
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
@@ -398,10 +456,11 @@ window.TTBTrack = (function () {
       var s = Math.round(spoken[code] / 1000);
       if (s) langs[code] = s;
     });
-    if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length && !trail.length) return;
+    if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
+        !trail.length && !searched.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(),
-      trail: trail, earlier: earlier, opened: fresh };
+      trail: trail, earlier: earlier, opened: fresh, searches: searched };
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;
@@ -424,6 +483,7 @@ window.TTBTrack = (function () {
     spoken = {};
     moved = {};
     trail = [];
+    searched = [];
   }
 
   if (COUNTED) {

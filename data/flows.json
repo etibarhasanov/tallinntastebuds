@@ -303,7 +303,7 @@
     {
       "id": "owner",
       "name": "The owner",
-      "who": "The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
+      "who": "The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
       "lanes": [
         { "id": "owner", "name": "Owner" },
         { "id": "github", "name": "GitHub" },
@@ -329,8 +329,8 @@
         {"id": "discount-commit", "type": "service", "lane": "github", "name": "Commits deals.json to the live branch", "ref": ["data/deals.json"]},
         {"id": "staff-link", "type": "user", "lane": "owner", "name": "Sends the restaurant its staff link, once", "ref": ["staff.html"]},
         {"id": "discount-live", "type": "end", "lane": "owner", "name": "Offer live"},
-        {"id": "stats", "type": "user", "lane": "owner", "name": "Reads the stats, the visitors, the diagrams and their numbers, Google's directory and budget", "ref": ["admin/stats.html", "admin/visitors.html", "admin/flows.html", "admin/google.html", "admin.html"]},
-        {"id": "owner-only", "type": "service", "lane": "site", "name": "Answers the owner only", "note": "Anybody else gets a 404 for the pages and a 403 for the data.", "ref": ["functions/_middleware.js", "functions/api/_admin.js adminUser()", "functions/api/admin/stats.js GET", "functions/api/admin/visitors.js GET", "functions/api/admin/live.js GET", "functions/api/admin/flows.js GET", "functions/api/admin/venues.js GET", "functions/api/admin/refreshes.js GET"]},
+        {"id": "stats", "type": "user", "lane": "owner", "name": "Reads the stats, the visitors, how they found the site, the diagrams and their numbers, Google's directory and budget", "ref": ["admin/stats.html", "admin/visitors.html", "admin/found.html", "admin/flows.html", "admin/google.html", "admin.html"]},
+        {"id": "owner-only", "type": "service", "lane": "site", "name": "Answers the owner only", "note": "Anybody else gets a 404 for the pages and a 403 for the data.", "ref": ["functions/_middleware.js", "functions/api/_admin.js adminUser()", "functions/api/admin/stats.js GET", "functions/api/admin/visitors.js GET", "functions/api/admin/found.js GET", "functions/api/admin/live.js GET", "functions/api/admin/flows.js GET", "functions/api/admin/venues.js GET", "functions/api/admin/refreshes.js GET"]},
         {"id": "knows", "type": "end", "lane": "owner", "name": "Knows what gets opened"}
       ],
       "edges": [
