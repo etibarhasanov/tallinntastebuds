@@ -1,7 +1,9 @@
-/* Tallinn Tastebuds — the three places somebody can say they are.
+/* Tallinn Tastebuds — the three places somebody can say they are, and the
+ * languages they speak.
  *
  * Instagram, TikTok, Facebook, written under the line on /u/<name> and edited
- * on /account.html. Two pages draw them, which is why this is a file of its
+ * on /edit — and under them, the languages, picked from SPEAKS at the foot of
+ * this file and named in whichever language the page is read in. Two pages draw them, which is why this is a file of its
  * own rather than a table inside one of them — the same arrangement
  * assets/pins.js has, and for the same reason: a second copy is a second
  * thing to move.
@@ -160,5 +162,52 @@ window.TTBLinks = (function () {
     facebook: '<path class="is-fill" d="M15.5 4h-2.2A3.8 3.8 0 0 0 9.5 7.8V10H7.5v3h2v7h3v-7h2.3l.5-3h-2.8V8.2c0-.7.4-1.2 1.2-1.2h1.8z"/>'
   };
 
-  return { NETWORKS: NETWORKS, GLYPHS: GLYPHS, clean: clean, of: of };
+  /* The languages somebody can say they speak, printed under the handles.
+     Codes, in the same order as SPEAKS in functions/api/_profile.js — the
+     site's own ten, then the rest — each with the language's name for
+     itself, which is what is printed where the browser cannot name it in
+     the reader's language. node tools/validate.mjs holds the codes here to
+     the server's. **Which languages you speak** under **Profiles** in
+     README.md. */
+  var SPEAKS = {
+    az: 'Azərbaycan dili', hy: 'Հայերեն', en: 'English', et: 'Eesti', fi: 'Suomi',
+    pt: 'Português', ru: 'Русский', es: 'Español', tr: 'Türkçe', uk: 'Українська',
+    ar: 'العربية', be: 'Беларуская', bg: 'Български', ca: 'Català', cs: 'Čeština',
+    da: 'Dansk', de: 'Deutsch', el: 'Ελληνικά', fa: 'فارسی', fr: 'Français',
+    he: 'עברית', hi: 'हिन्दी', hr: 'Hrvatski', hu: 'Magyar', id: 'Bahasa Indonesia',
+    it: 'Italiano', ja: '日本語', ka: 'ქართული', kk: 'Қазақ тілі', ko: '한국어',
+    lt: 'Lietuvių', lv: 'Latviešu', nl: 'Nederlands', no: 'Norsk', pl: 'Polski',
+    ro: 'Română', sk: 'Slovenčina', sl: 'Slovenščina', sr: 'Српски', sv: 'Svenska',
+    th: 'ไทย', uz: 'Oʻzbekcha', vi: 'Tiếng Việt', zh: '中文'
+  };
+
+  /* One language's name, in the language the page is being read in —
+     "Estonian" to an English reader, "эстонский" to a Russian one — out of
+     the browser's own Intl.DisplayNames, capitalised the way a name in a
+     list is. Its own name for itself where the browser has no such thing,
+     which is every browser older than about 2021. '' for a code that is not
+     in the table. */
+  function langName(code, reading) {
+    if (!Object.prototype.hasOwnProperty.call(SPEAKS, code)) return '';
+    var name = '';
+    try {
+      name = new Intl.DisplayNames([reading], { type: 'language' }).of(code);
+    } catch (e) { /* no Intl.DisplayNames: the language's own name below */ }
+    if (!name || name === code) return SPEAKS[code];
+    return name.charAt(0).toLocaleUpperCase(reading) + name.slice(1);
+  }
+
+  /* The codes somebody picked, named for the reader, in the order they were
+     picked; the ones no longer in the table are left out, the way of() leaves
+     out a handle that no longer cleans. */
+  function spoken(codes, reading) {
+    var out = [];
+    (codes || []).forEach(function (code) {
+      var name = langName(code, reading);
+      if (name) out.push(name);
+    });
+    return out;
+  }
+
+  return { NETWORKS: NETWORKS, GLYPHS: GLYPHS, SPEAKS: SPEAKS, clean: clean, of: of, langName: langName, spoken: spoken };
 }());

@@ -213,6 +213,87 @@ export function linkUrl(id, handle) {
   return net && handle ? net.base + encodeURIComponent(handle) : '';
 }
 
+/* ------------------------------------------------- the languages spoken
+ *
+ * Which languages somebody speaks, printed on /u/<name> under their handles.
+ * A thing they typed — picked, rather — and pressed Save on, which is the
+ * same test the line and the handles pass, and it answers the one question a
+ * reader in a city of Estonian, Russian and English speakers asks before
+ * writing to anybody: can we talk.
+ *
+ * WHAT IS STORED IS A CODE, NEVER A NAME
+ *
+ * Two-letter ISO 639-1 codes out of the list below, and the page names each
+ * one in the reader's language — "Estonian" in English, "эстонский" in
+ * Russian — so a profile reads the same in all ten of this site's languages
+ * without anybody having written a word of it twice. A list rather than a
+ * free box because a name somebody typed is a name the page cannot translate,
+ * and because a free box on a profile is a line nobody asked for.
+ *
+ * The site's own ten first, then the languages this city hears most often
+ * after them. Adding one is a code here and the same code, with its own name
+ * for itself, in SPEAKS in assets/links.js — node tools/validate.mjs fails the
+ * build when the two lists drift, the way it does for the networks above.
+ *
+ * INSIDE users.links, AND WHY
+ *
+ * Under the key `speaks`, beside the handles, rather than in a column of its
+ * own. That column is JSON precisely so that one more small thing about a
+ * person is not one more ALTER run by hand against a live table, and this is
+ * that thing: read on one page, about one person, by primary key, and never
+ * queried. readLinks() reads only the networks, so a `speaks` key is invisible
+ * to everything that was there before it; the two writes in
+ * functions/api/account.js each keep the other's half — mergeLinks() below.
+ */
+export const SPEAKS = [
+  'az', 'hy', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk',
+  'ar', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'fa', 'fr',
+  'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ka', 'kk', 'ko',
+  'lt', 'lv', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sr', 'sv',
+  'th', 'uz', 'vi', 'zh'
+];
+
+/* Eight is more than anybody who is not showing off speaks, and a line of
+   eight names still fits a phone in two rows. */
+export const MAX_SPEAKS = 8;
+
+/* The list as stored: known codes only, each once, in the order they were
+   picked, at most MAX_SPEAKS. Null when anything given is not a code in the
+   list, so the write can refuse rather than quietly drop what was picked. */
+export function cleanSpeaks(value) {
+  if (!Array.isArray(value)) return null;
+  const out = [];
+  for (const code of value) {
+    if (typeof code !== 'string' || !SPEAKS.includes(code)) return null;
+    if (!out.includes(code)) out.push(code);
+  }
+  return out.length > MAX_SPEAKS ? null : out;
+}
+
+/* The same, read off a stored column: whatever no longer passes is dropped
+   rather than refused, the way readLinks() drops a handle. */
+export function readSpeaks(raw) {
+  let parsed;
+  try {
+    parsed = JSON.parse(String(raw || '') || '{}');
+  } catch (e) {
+    return [];
+  }
+  const list = parsed && Array.isArray(parsed.speaks) ? parsed.speaks : [];
+  return list.filter((code, i) => SPEAKS.includes(code) && list.indexOf(code) === i).slice(0, MAX_SPEAKS);
+}
+
+/* The column rewritten with one half replaced and the other kept: the
+   handles from `links`, or the stored ones, and the languages from `speaks`,
+   or the stored ones. '' when both halves are empty, so "never filled
+   anything in" and "took everything down" stay the same row. */
+export function mergeLinks(raw, links, speaks) {
+  const next = Object.assign({}, links || readLinks(raw));
+  const list = speaks || readSpeaks(raw);
+  if (list.length) next.speaks = list;
+  return Object.keys(next).length ? JSON.stringify(next) : '';
+}
+
 /* ----------------------------------------------------- the page of links
  *
  * The rows under somebody's name on /u/<name>, written on /account.html and
@@ -439,6 +520,7 @@ export async function readProfile(context, name) {
      this site has stopped drawing, or a handle that would no longer be
      accepted, stops being printed rather than outliving the rule. */
   const links = readLinks(row.links);
+  const speaks = readSpeaks(row.links);
 
   /* Their public lists, newest edit first — the same row the index draws for
      your own, minus the ones nobody else may read. The keeps are a scalar
@@ -484,6 +566,9 @@ export async function readProfile(context, name) {
        never a string somebody typed in full. Left out when there are none,
        which is nearly every account. */
     links: Object.keys(links).length ? links : undefined,
+    /* The languages they speak, as codes the page names in the reader's own
+       language. Left out when there are none, like everything above. */
+    speaks: speaks.length ? speaks : undefined,
     /* The four things a row on this page draws and no more — listRow() in
        assets/lists.js takes a title, a count and a number of keeps, and the
        id is what it links to. The line under a list and the date it was last

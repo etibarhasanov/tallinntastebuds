@@ -96,7 +96,7 @@ import { KITCHENS, said } from '../functions/api/venues.js';
    what make "change one, change the other" something other than a promise in
    a comment. */
 import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
-import { NETWORKS } from '../functions/api/_profile.js';
+import { NETWORKS, SPEAKS } from '../functions/api/_profile.js';
 /* The security headers every Function's answer carries, which `_headers`
    has to carry too for the files the Functions never see. */
 import { SECURITY } from '../functions/_security.js';
@@ -1960,6 +1960,17 @@ if (ui !== null && isPlainObject(ui)) {
           fail('assets/links.js', `reads a ${net.id} handle as ${drawn.re} and functions/api/_profile.js as ${String(net.re)} — the page would accept a handle the server refuses, or refuse one it takes`);
         }
       }
+    }
+
+    /* And the languages somebody can say they speak, the same two-copies
+       arrangement: the codes in SPEAKS there, in the same order, against the
+       codes of the table here, each written `xx: '…'`. A code the picker
+       offers and the server refuses is a Save that fails for no reason
+       anybody could see. */
+    const table = (text.match(/var SPEAKS = \{([\s\S]*?)\};/) || [, ''])[1];
+    const drawn = [...table.matchAll(/\b([a-z]{2}): '/g)].map((m) => m[1]).join(', ');
+    if (drawn !== SPEAKS.join(', ')) {
+      fail('assets/links.js', `offers the languages [${drawn}], and functions/api/_profile.js allows [${SPEAKS.join(', ')}] — one of the two has moved`);
     }
   }
 }

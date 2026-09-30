@@ -6538,6 +6538,7 @@ the drag and the save — is appended rather than left to collide.
 | an Instagram handle | 30 characters |
 | a TikTok handle | 24 |
 | a Facebook username | 50 |
+| languages you speak | 8 |
 | what you say about a place | 280 |
 | places before a list is listed on `/lists` | 3 |
 | rows on your page | 20 |
@@ -6549,7 +6550,8 @@ Most of them are about somebody with a script rather than somebody with
 opinions. They are in `functions/api/lists.js`, and the pages restate the
 lengths so a field stops you at the keystroke rather than at the round trip.
 
-The three handles and the four for the page of links are in
+The three handles, the languages (`MAX_SPEAKS`, restated in `assets/edit.js`,
+which takes the menu away at eight) and the four for the page of links are in
 `functions/api/_profile.js` — the handles inside the pattern that says what a
 handle on each site looks like rather than beside it, the page's beside
 `cleanRows()`, which is also where an address over its cap is refused rather
@@ -6697,8 +6699,9 @@ year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
 And the line they wrote about themselves, when they wrote one, with the three
-places they said they are under it, and the page of links they put together
-under those — **Your page** below. That is the whole of it.
+places they said they are under it, the languages they speak under those, and
+the page of links they put together under all of it — **Your page** below.
+That is the whole of it.
 
 Nothing else. Not their saves — those are anonymous by design and filed under
 a device as often as under an account, and a page that turned them into a
@@ -6708,10 +6711,10 @@ people's pages rather than anything they published. There is no email on an
 account to leave off — see **Accounts**.
 
 A profile discloses no fact about anybody that a list of theirs was not
-already printing. That is the test it was built to pass, and the three things
+already printing. That is the test it was built to pass, and the four things
 below are the only things on the page that are not a consequence of it: the
-line, the handles under it, and the page of links under those. All three are
-there because somebody typed them and pressed Save, which is the opposite of
+line, the handles under it, the languages under those, and the page of links
+under all of it. All four are there because somebody typed them and pressed Save, which is the opposite of
 a page revealing something.
 
 ### The line about yourself
@@ -6869,6 +6872,47 @@ other, the same as the pins, so `node tools/validate.mjs` fails the build when
 the ids, the bases or the caps drift. A base that moved on one side only would
 send every link on every profile somewhere the other half never agreed to,
 which is the one kind of drift here that would be worth a real apology.
+
+### Which languages you speak
+
+One line under the handles — *Speaks Estonian · English · Russian* — picked
+on `/edit` under **Languages you speak**, below the three handle boxes, and
+printed on the card and on the page a profile becomes alike. Nothing at all
+for an account that picked none. It is there because the question a reader in
+a city of Estonian, Russian and English speakers asks before writing to
+anybody is whether they can, and it passes the test everything else on a
+profile passes: somebody picked it and pressed Save.
+
+**Picked from a list, stored as codes, named in the reader's language.**
+What is stored is `["et","en","ru"]`, in the order they were picked, and the
+page names each one in whichever language it is being read in — *Estonian*
+to an English reader, *Эстонский* to a Russian one, *Eesti* to an Estonian —
+out of the browser's own `Intl.DisplayNames`, so a profile reads the same in
+all ten of this site's languages without anybody writing a word twice or this
+repository carrying forty-four names in ten languages. Where a browser is too
+old to have it, each language is printed in its own name for itself instead,
+which is the second column of `SPEAKS` in `assets/links.js`. A free box would
+have been a name the page could not translate.
+
+The list is the site's own ten, then thirty-four more that this city hears
+after them — forty-four, and at most eight picked. The picker is a pill per
+language, pressed to take it off, and a native menu of the rest under them in
+the reader's alphabetical order, because a list of forty-four is what a
+phone's own picker is for. Adding one is a code in `SPEAKS` in
+`functions/api/_profile.js` and the same code with its own name in `SPEAKS`
+in `assets/links.js`; `node tools/validate.mjs` fails the build when the two
+drift, the way it does for the networks.
+
+**It lives in `users.links`, under `speaks`**, beside the handles, rather
+than in a column of its own. That column is JSON so that one more small thing
+about a person is not one more `ALTER` run by hand against a live table, and
+this is the first thing to use it that way — so it shipped with no hand step.
+`readLinks()` reads only the networks, so the key is invisible to everything
+that was there before it; the `links` write and the `speaks` write in
+`functions/api/account.js` each read the column first and carry the other
+half across, through `mergeLinks()`. It asks for a session and no password,
+for the reason the handles do, and saves with the editor's one Save. The
+profile route writes it into the JSON-LD as `knowsLanguage`.
 
 ### Your page
 

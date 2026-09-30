@@ -116,6 +116,8 @@ function structuredData(request, profile) {
   if (profile.about) person.description = profile.about;
   if (profile.face) person.image = canonical(request, profile.face);
   if (sameAs.length) person.sameAs = sameAs;
+  /* The languages they said they speak, as the codes schema.org takes. */
+  if (profile.speaks) person.knowsLanguage = profile.speaks;
 
   return {
     '@context': 'https://schema.org',
