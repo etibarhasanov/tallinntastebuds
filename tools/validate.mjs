@@ -18,6 +18,7 @@
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
  *   - a db/google-venues.sql that is out of step with the Google Places export
+ *   - a db/city-venues.sql that is out of step with the other cities' exports
  *     it is generated from, or a db/google-lists.sql — the five top tens and
  *     a top twenty under the `google-statistics` account — that is out of
  *     step with the same export
@@ -81,6 +82,7 @@ import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists, LISTS as GOOGLE_LISTS, build as buildGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
+import { stale as staleCityVenues } from './cityvenues.mjs';
 import { stale as staleSitemap } from './sitemap.mjs';
 import { stale as staleFlows, problems as flowProblems, load as loadFlows } from './flows.mjs';
 /* The page ids a diagram's step may say it is counted by — see the flows
@@ -1586,6 +1588,14 @@ if (staleGoogleLists()) {
       }
     }
   } catch (e) { /* the stale check above says why */ }
+}
+
+/* And the other cities — Tartu, Narva, Pärnu — which are kept in city_venues
+   and read by nothing on the site. The same fault as google-venues.sql above
+   if the file and the exports drift, and no file at all is right while no
+   city has an export yet. */
+if (staleCityVenues()) {
+  fail('db/city-venues.sql', 'is not what tools/cityvenues.mjs would write from exports/<city>_restaurants.csv — run `node tools/cityvenues.mjs` and commit the result');
 }
 
 /* And the ground every list on /lists is drawn on, which is the same export

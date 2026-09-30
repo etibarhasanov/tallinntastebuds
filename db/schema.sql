@@ -1056,6 +1056,68 @@ CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DES
 CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
 
+-- -------------------------------------------------------- the other cities
+-- Tartu, Narva and Pärnu, out of the same Google sweep as Tallinn, cleaned into
+-- the same eighteen columns and loaded by db/city-venues.sql, which
+-- tools/cityvenues.mjs writes from exports/<city>_restaurants.csv.
+--
+-- A TABLE OF THEIR OWN, SO THAT NOTHING FINDS THEM
+--
+-- They are kept, not shown. google_venues is read by the directory, the list
+-- picker, the chat, the map's card for a Google place, the six lists and the
+-- refresh that spends the Google budget, and a Tartu café turning up in any of
+-- those would be a Tallinn site recommending somewhere two hours down the
+-- road. Putting them in google_venues behind an `area` filter would mean the
+-- filter in every one of those queries, and in every query written after them
+-- by somebody who did not know. A table nothing names cannot leak: no route,
+-- page or prompt on the site reads this one. The day a city is shown, that is
+-- a decision about what the site is, and it starts here.
+--
+-- The columns are google_venues' Google half, with `area` in front and
+-- without map_id, hidden, note and refreshed_at — there is no map of Tartu to
+-- match, nothing to hide a row from, and nothing that refreshes one. They join
+-- when something needs them.
+CREATE TABLE IF NOT EXISTS city_venues (
+  -- Google's key, as in google_venues. A place is in one city's export or
+  -- another's, never two: tools/cityvenues.mjs stops if circles overlap.
+  place_id      TEXT PRIMARY KEY,
+  -- Which city's sweep found it: 'tartu', 'narva', 'parnu' — AREAS in
+  -- tools/cityvenues.mjs. Not Google's `city` below, which says Tähtvere or
+  -- a village over the line as often as Tartu.
+  area          TEXT    NOT NULL,
+
+  -- ---------------------------------------------- Google's, overwritten
+  name          TEXT    NOT NULL,
+  category      TEXT    NOT NULL DEFAULT '',
+  cuisine       TEXT    NOT NULL DEFAULT '',
+  rating        REAL,
+  reviews       INTEGER,
+  price         TEXT    NOT NULL DEFAULT '',
+  status        TEXT    NOT NULL DEFAULT '',
+  address       TEXT    NOT NULL DEFAULT '',
+  postal_code   TEXT    NOT NULL DEFAULT '',
+  city          TEXT    NOT NULL DEFAULT '',
+  phone         TEXT    NOT NULL DEFAULT '',
+  website       TEXT    NOT NULL DEFAULT '',
+  opening_hours TEXT    NOT NULL DEFAULT '',
+  tags          TEXT    NOT NULL DEFAULT '',
+  latitude      REAL,
+  longitude     REAL,
+  maps_url      TEXT    NOT NULL DEFAULT '',
+  -- Its position within its own city, by the same arithmetic google_venues'
+  -- rank uses for Tallinn — overallOrder() in tools/googlevenues.mjs.
+  rank          INTEGER,
+
+  -- ------------------------------------------------------------ bookkeeping
+  first_seen_at INTEGER NOT NULL,
+  synced_at     INTEGER NOT NULL,
+  -- Set when that city's next export no longer carries it. Never deleted,
+  -- for the same reason as google_venues: nothing is lost by keeping it.
+  missing_since INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_city_venues_area ON city_venues (area, rank);
+
 -- ------------------------------------------------------- what Google is paid
 -- One row per UTC day and kind of call to Google's Places API, counting up.
 -- The spending limit for the whole site lives here rather than in the Google

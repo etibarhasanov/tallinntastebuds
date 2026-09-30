@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reshape the raw Google Places export of Tallinn restaurants into a readable CSV.
+"""Reshape a raw Google Places export — Tallinn's, or another city's — into a readable CSV.
 
 Usage: python3 clean_restaurants_csv.py [RAW_CSV] [OUT_CSV]
 
@@ -171,6 +171,12 @@ FIELDS = ["name","category","cuisine","rating","reviews","price","status","addre
           "latitude","longitude","maps_url","place_id"]
 
 rows = list(csv.DictReader(open(SRC, encoding="utf-8")))
+# A sweep is a circle, and Narva's crosses the river into Ivangorod, which is
+# Russia. Anything Google files under another country is not a place in the
+# city, so it goes here rather than in every reader. Tallinn's export is
+# Estonia on every row, so this drops nothing from it.
+abroad = [r for r in rows if r.get("country_code", "EE") not in ("", "EE")]
+rows = [r for r in rows if r not in abroad]
 clean = []
 for r in rows:
     clean.append({
@@ -202,6 +208,7 @@ with open(DST, "w", encoding="utf-8", newline="") as f:
     w.writeheader(); w.writerows(clean)
 
 print(f"wrote {len(clean)} rows x {len(FIELDS)} cols -> {DST}")
+if abroad: print(f"dropped {len(abroad)} rows outside Estonia")
 print(f"cuisine assigned: {sum(1 for c in clean if c['cuisine'])}/{len(clean)}")
 if unparsed:
     print(f"UNPARSED HOUR SPANS ({len(unparsed)}):")

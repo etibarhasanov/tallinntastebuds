@@ -206,3 +206,50 @@ The wider sweep also drags in a handful of places that serve coffee but are not
 somewhere to eat — a barber, a toy shop, two bookshops, a ceramics maker, an
 axe-throwing club. They are left in, because the export is a mirror; the review
 sheet flags them and `google_venues.hidden` is where they go.
+
+## The other cities — Tartu, Narva, Pärnu
+
+`tartu_restaurants.csv`, `narva_restaurants.csv` and `parnu_restaurants.csv`, when
+they are here, are the same sweep and the same cleaning as Tallinn's, one file a
+city, named after the id in `AREAS` in `tools/cityvenues.mjs`. They load into
+`city_venues`, which nothing on the site reads — **The other cities, kept and not
+shown** under **Google venues** in the root `README.md` is why.
+
+The sweep, from a checkout of `allRestaurants` with `GOOGLE_MAPS_API_KEY` set. One
+SQLite file a city, so a city's export is that city and nothing else, and one pass
+with the widened type list Tallinn needed two passes to arrive at:
+
+```bash
+TYPES="restaurant,cafe,coffee_shop,bakery,bar,pub,wine_bar,meal_takeaway,\
+ice_cream_shop,dessert_shop,sandwich_shop,tea_house,brewery,chocolate_shop,\
+confectionery,donut_shop,deli"
+
+allrestaurants --db data/tartu.db scan --center "58.3780,26.7290" --radius-km 5 --budget 250 --types "$TYPES"
+allrestaurants --db data/narva.db scan --center "59.3772,28.1903" --radius-km 4 --budget 150 --types "$TYPES"
+allrestaurants --db data/parnu.db scan --center "58.3859,24.4971" --radius-km 5 --budget 150 --types "$TYPES"
+
+allrestaurants --db data/tartu.db export --format csv --out exports/tartu_raw.csv   # and narva, parnu
+```
+
+Then, from this repository:
+
+```bash
+cd exports
+python3 clean_restaurants_csv.py ../../allRestaurants/exports/tartu_raw.csv tartu_restaurants.csv
+cd ..
+node tools/cityvenues.mjs
+node tools/validate.mjs
+```
+
+The centres and radii are the ones in `AREAS`, and a refresh should ask for the
+same circles. Narva's reaches over the river into Ivangorod, which is Russia; the
+cleaner drops every row Google does not file under Estonia and says how many.
+
+**What it costs.** `allrestaurants estimate` puts the three at roughly 250–700
+calls between them at the 25-review bar, and the budgets above cap them at 550.
+A call that asks for ratings, phone and hours is billed as Google's Nearby Search
+Enterprise, which has a free monthly allowance of its own (about a thousand calls
+when this was written; check the Maps Platform pricing page) — separate from the
+Place Details allowance the site's refresh on open spends. The sweep is resumable:
+running the same command again carries on where the budget stopped it rather than
+paying twice, so a city that wants more can have it next month.

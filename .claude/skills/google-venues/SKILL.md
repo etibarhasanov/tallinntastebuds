@@ -193,6 +193,21 @@ What that means for this process:
 - **`rank` and the six lists still come from the export alone**, so a refresh
   is still how they move.
 
+## The other cities
+
+Tartu, Narva and Pärnu go through the same sweep and the same cleaner, one
+`exports/<city>_restaurants.csv` a city, and into `city_venues` through
+`node tools/cityvenues.mjs` and `db/city-venues.sql` — never into
+`google_venues`. Nothing on the site reads `city_venues`, and that is the whole
+design: a Tallinn refresh cannot touch those rows, and those rows cannot turn
+up in the directory, the picker, the find bar, the chat or a list. Do not add
+them to `google_venues` and do not add a reader of `city_venues` as part of a
+refresh. Showing a city is something new a visitor can see, and is described
+before it is built. The sweep commands and the cost are under **The other
+cities** in `exports/README.md`; **The other cities, kept and not shown** under
+**Google venues** in `README.md` is the argument. The load is the same yes as
+any other, production only.
+
 ## The rules of the table
 
 - `place_id`, Google's key, is the primary key and what a list item holds. A

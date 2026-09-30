@@ -102,7 +102,7 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -183,7 +183,7 @@ export function fold(value) {
    them exactly — no renaming, not even latitude/longitude to the lat/lng the
    rest of the site uses — because the contract of that table is "the export,
    in SQL", and a contract with exceptions is one you have to look up. */
-const GOOGLE_COLUMNS = [
+export const GOOGLE_COLUMNS = [
   'name', 'category', 'cuisine', 'rating', 'reviews', 'price', 'status',
   'address', 'postal_code', 'city', 'phone', 'website', 'opening_hours',
   'tags', 'latitude', 'longitude', 'maps_url'
@@ -204,7 +204,7 @@ const REFRESHED = new Set(['rating', 'reviews', 'status', 'price', 'phone', 'web
 
 /* The two that are numbers in SQL and text in a CSV. Everything else is text,
    including price ("$$") and postal_code, which has leading zeroes to lose. */
-const NUMERIC = new Set(['rating', 'reviews', 'latitude', 'longitude']);
+export const NUMERIC = new Set(['rating', 'reviews', 'latitude', 'longitude']);
 
 /* Google's key: "ChIJUdUjCV2TkkYRcg8TxVp1XUI". Checked rather than trusted,
    because it becomes a primary key and it is what a list item will hold. */
@@ -218,7 +218,7 @@ export function q(value) {
   return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 
-function num(value) {
+export function num(value) {
   const n = Number(String(value == null ? '' : value).trim());
   return Number.isFinite(n) ? String(n) : 'NULL';
 }
@@ -227,24 +227,29 @@ function num(value) {
    here. Two reasons: the generated file then has no clock in it, so --check
    can compare it byte for byte; and the timestamp is when the sync actually
    happened rather than when somebody last ran this tool. */
-const NOW = "CAST(strftime('%s','now') AS INTEGER) * 1000";
+export const NOW = "CAST(strftime('%s','now') AS INTEGER) * 1000";
 
-export function read() {
-  if (!existsSync(CSV)) throw new Error('exports/tallinn_restaurants.csv is not here');
-  const rows = parseCsv(readFileSync(CSV, 'utf8'));
-  if (rows.length < 2) throw new Error('exports/tallinn_restaurants.csv has no rows');
+/* Any export in the cleaned 18-column shape, not only Tallinn's: the other
+   cities in tools/cityvenues.mjs are read through this same function, so the
+   checks below hold for every one of them and there is one CSV contract in the
+   repository rather than one per city. */
+export function read(csv = CSV) {
+  const name = relative(ROOT, csv);
+  if (!existsSync(csv)) throw new Error(`${name} is not here`);
+  const rows = parseCsv(readFileSync(csv, 'utf8'));
+  if (rows.length < 2) throw new Error(`${name} has no rows`);
 
   /* The header is read rather than assumed, and then checked: a refreshed
      export that quietly drops a column should fail here, loudly, rather than
      write NULLs over eleven hundred rows of real data. */
   const header = rows[0].map((h) => h.trim());
   const at = {};
-  header.forEach((name, i) => { at[name] = i; });
+  header.forEach((column, i) => { at[column] = i; });
 
   const missing = ['place_id', ...GOOGLE_COLUMNS].filter((c) => at[c] === undefined);
   if (missing.length) {
     throw new Error(
-      'the export is missing column(s) this expects: ' + missing.join(', ') +
+      name + ' is missing column(s) this expects: ' + missing.join(', ') +
       '\nIt carries: ' + header.join(', ')
     );
   }
@@ -256,11 +261,11 @@ export function read() {
     const cell = (c) => String(rows[i][at[c]] || '').trim();
     const id = cell('place_id');
     if (!id) continue;
-    if (!PLACE_ID.test(id)) throw new Error(`row ${i + 1}: "${id}" is not a Google place id`);
+    if (!PLACE_ID.test(id)) throw new Error(`${name} row ${i + 1}: "${id}" is not a Google place id`);
     /* Google's key is unique in this export — all 1,111 of them — and the table
        makes it a primary key, so a duplicate would silently become one row
        with the later one's values. Better to stop. */
-    if (seen.has(id)) throw new Error(`row ${i + 1}: place_id ${id} appears twice`);
+    if (seen.has(id)) throw new Error(`${name} row ${i + 1}: place_id ${id} appears twice`);
     seen.add(id);
 
     const place = { place_id: id };
@@ -434,7 +439,7 @@ export function overallOrder(places) {
   return { mean, order };
 }
 
-function ranked(places) {
+export function ranked(places) {
   const scores = new Map();
   overallOrder(places).order.forEach((place, i) => { scores.set(place.place_id, i + 1); });
   return scores;
