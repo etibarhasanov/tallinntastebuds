@@ -5567,6 +5567,10 @@ needs; a figure under every title would make twenty pieces of writing into a
 scoreboard with somebody's name under each score, and the ranking already
 says everything the number would. It is not even sent to the browser — see
 `shape()` in `functions/api/_mostkept.js`, which leaves it out of the row.
+Two people read it, and neither on this page: the list's owner under **Your
+lists** on `/insights`, and the site's owner on `/admin/stats`, each with the
+countries the list was opened from — **Insights** under **Profiles**, and
+**Which lists, and from where** under **Statistics**.
 
 **There was a fourth, Changed lately, and it went.** It ordered on
 `updated_at`, which is a fact about when somebody was last editing and not
@@ -7262,7 +7266,7 @@ statement per read — and a save says *Pages are not switched on here yet.*
 `/insights`: how the page under your name is doing. How often `/u/<you>` was
 opened, where the people opening it came from, which country, and what on it
 they pressed — over the last 7, 28 or 90 days or all of it — and under that,
-how often each of your lists has been opened. It is read by
+how often each of your lists has been opened, and from which countries. It is read by
 the owner of the page and by nobody else; nothing about it is printed on the
 profile, on `/admin/stats` or anywhere a stranger can see, and the route has no way
 to ask about anybody but yourself. The door to it is a row on the account
@@ -7319,9 +7323,23 @@ by, and the line under the card says so rather than letting the chips seem to
 apply. It is read out of another table from the page's own numbers, so it is
 there in every state below, a page nobody has opened included. No lists is no
 card; lists nobody has opened yet are *None of your lists has been opened yet*
-rather than a column of noughts. Following one to a range would take a table
-of list opens by day, and is not worth building until somebody asks which
-week a list took off.
+rather than a column of noughts.
+
+**And where each was opened from**, on a line under its name: *Estonia 7 ·
+Finland 2 · Unknown 1*, most first, the same two letters and the same names
+as the **Country** table above, five countries and then an **Other**, the cut
+that table makes. All time, like the number beside the list. The same open
+that moves the running count is filed again under its country, into
+`list_counts` — one row per list, per day, per country — by the same rules:
+a public list, not its owner, once a day per visitor. That table arrived a
+while after the count did, so a list opened before it has a number and no
+line, or a line that adds up to less than its number; one more sentence under
+the card says so — *Some of these opens were counted before countries were* —
+and only where it is true. A list nobody has opened from anywhere yet has no
+line and no sentence, and on a database without the table the card is what
+it was before: numbers, and nothing under them. The day has been in the key
+since the table was made, so following a list to a range — which week it
+took off — is a read away when somebody asks, and is not drawn yet.
 
 Where it parts from those hosts, on purpose. **Every range is there for
 everybody** — there is no ninety days behind an upgrade, because this site
@@ -7402,7 +7420,10 @@ already uses to say something was pressed. They are read by `GET
 /api/insights?days=`, which takes the session and nothing else and answers
 only the four ranges — one grouped read of the range and the one before it,
 and the arithmetic in `readInsights()` — plus one read of your lists joined to
-their opens, `listViews()`. Nothing in the counts is filed under the visitor:
+their opens, `listViews()`, and one of their countries out of `list_counts`,
+`listCountries()`, which `/api/admin/stats` reads the same way for every list
+anybody has opened — **Which lists, and from where** under **Statistics**.
+Nothing in the counts is filed under the visitor:
 no address, no device id, no row per visit. The one keyed hash is
 `view_seen`'s, which lives a day and says only that something was already
 counted.
@@ -7421,13 +7442,15 @@ count under somebody's name on a page strangers read would be a score, and
 there are none of those here. The same goes for a list: its opens are yours
 on this page and an order on `/lists`, and never a number on the list.
 
-**Turning it on** is two tables, applied by hand to both databases the way
+**Turning it on** is three tables, applied by hand to both databases the way
 every table is — `db/schema.sql` is all `IF NOT EXISTS`. Both databases have
 `profile_counts`; on one that does not, profiles are not counted, the account
 page's row says what Insights is for instead of a number, and the page says
 the numbers are not switched on, with Your lists still under it. `view_seen`
 is the once-a-day, and on a database without it every open the page sends is
 counted — which is still once a day per browser, by the page's own memory.
+`list_counts` is the countries under a list, and without it a list's opens
+are counted as they always were and no line is drawn under any list.
 
 ### Private lists are not on it, including for its owner
 
@@ -10982,11 +11005,13 @@ The map says where to eat, the blog says why the site works the way it does,
 the feedback page listens; this is the one that counts.
 
 One page, the frame every page that is not the map wears — the brand header,
-the 640px column, the cards — and four tables. Two facts at the top, **Most
+the 640px column, the cards — and five tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
 zeros in it, then the Google venues somebody has pressed, then all fourteen
-filter chips, then the nine pills across the rail's two shapes, then the
-footnotes under all four: every open counted, and how many accounts exist —
+filter chips, then the nine pills across the rail's two shapes, then every
+list anybody has opened with where they opened it from — see **Which lists,
+and from where** below — then the
+footnotes under all five: every open counted, and how many accounts exist —
 see **How many accounts exist** below. How many strangers got each of the
 map's two rails and how many of them opened a place with it used to be two
 more footnotes here, and is now on `/admin/visitors` with everything else
@@ -11253,11 +11278,37 @@ the table holds, full stop. It draws whenever the ranking above it is in at
 all, `opened` or not — an account is not a press, so it is not gated behind
 one.
 
+### Which lists, and from where
+
+The fifth table is the one that is not about the map: every public list
+somebody has opened, most opened first, capped at fifty, the owner's name
+after the title leading to their page, and under each a line of the
+countries it was opened from — *Estonia 7 · Finland 2 · Other 1*, the same
+line the list's owner reads under it on `/insights`, drawn by the same
+`assets/country.js`. The number is the one `/lists` orders by and never
+prints — **Public lists** says why a ranking without a scoreboard is the
+point — and it is printed here because this page is the owner's alone: a
+figure a stranger cannot see is a figure, not a score. A list made private
+since keeps the number it had, stops growing, and is marked **Private**; one
+deleted since is dropped, its count staying in the table because it
+happened.
+
+The countries come out of `list_counts`, which `POST /api/stats` writes on
+the same open that moves the running count and under the same rules — a
+public list, not its owner, once a day per visitor, `countListOpen()` in
+`functions/api/_visits.js` — and which `listCountries()` in the same file
+reads for both pages. It arrived after the count did, so a list opened
+before it has a line that adds up to less than its number, or none, and the
+sentence under the table says so where it is true. A database without the
+table draws the lists with their numbers and no lines.
+
 ### What it does not do yet
 
-No time window, which **A count and not a log** above is the whole of. No
+No time window, which **A count and not a log** above is the whole of — the
+lists' countries have a day in their key and are not cut by one yet. No
 chart: a ranking is a list and a bar chart of seventy-eight rows is a list with
-decoration on it. No visitors, referrers, countries or time on this page:
+decoration on it. No visitors, referrers or time on this page, and no
+countries but a list's:
 those are **Visitors** below, the site's own count of who came and what they
 did, on a page of its own because this one is about places and that one is
 about people. The one other place this site keeps a referrer and a country is

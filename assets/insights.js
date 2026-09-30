@@ -7,7 +7,7 @@
  * the page was opened over a range, the same over the range before it, a
  * line of it over time, where the views and the clicks came from, which
  * country, and what on the page was pressed — and under all of that, how
- * often each of their lists has been opened. The shape is the one every
+ * often each of their lists has been opened and from which countries. The shape is the one every
  * page-of-links host already has for this — a range, three figures, a line,
  * a table of sources — because the people with a page here have met it
  * there, and a new arrangement of the same four things would be something
@@ -32,7 +32,11 @@
  *
  *   /data/ui.json              the strings
  *   /api/insights?days=        who is signed in, the range asked for, and
- *                              the lists with their opens, all time
+ *                              the lists with their opens and their
+ *                              countries, all time
+ *
+ * assets/country.js names a country and draws the line of them under a
+ * list, and is loaded before this file.
  *
  * A press on a range asks the route again for that range alone and redraws
  * the page from the answer; the range is kept in the address, so a reload or
@@ -72,7 +76,7 @@
     user: null,
     span: 7,
     data: null,  // the answer's `insights`, null where the table is not there
-    lists: null  // the answer's `lists`: [{ id, title, public, n }], all time
+    lists: null  // the answer's `lists`: [{ id, title, public, n, country }], all time
   };
 
   var main = null;
@@ -217,16 +221,15 @@
   }
 
   /* The browser's own name for a country, in the language the page is being
-     read in — Intl carries every one of them in all ten, which is two
-     hundred names nobody has to write into data/ui.json. XX is Cloudflare
-     not knowing, T1 is Tor. */
+     read in — assets/country.js, which is where the two hundred names that
+     are not in data/ui.json come from. */
   function countryName(code) {
-    if (code === 'XX' || code === 'T1') return t('insightsUnknown');
-    try {
-      return new Intl.DisplayNames([state.lang], { type: 'region' }).of(code) || code;
-    } catch (e) {
-      return code;
-    }
+    return TTBCountry.name(code, state.lang, t('insightsUnknown'));
+  }
+
+  /* Several of them on one line, under a list. */
+  function countryLine(rows) {
+    return TTBCountry.line(rows, state.lang, { unknown: t('insightsUnknown'), other: t('insightsOther') });
   }
 
   /* A point on the line's own label: a weekday and a date for a day, a date
@@ -415,26 +418,36 @@
   }
 
   /* Your lists, and how often each has been opened: one row a list, most
-     opened first, the name a way into it. All time whatever range the chips
-     above are on — a list's opens have no day in them to cut by, see
+     opened first, the name a way into it, and under the name the countries
+     it was opened from, on one line. All time whatever range the chips
+     above are on — a list's running count has no day in it to cut by, see
      listViews() in functions/api/_visits.js — and the line under the card
      says so, and says what is not counted, since that is the question a
-     number like this raises first. No lists is no card; lists nobody has
-     opened yet are one sentence rather than a column of noughts, with no
-     note under it about numbers there are none of. */
+     number like this raises first. The countries started being counted
+     later than the opens, so a list opened before that has a number and no
+     line, or a line that adds up to less than its number; one more sentence
+     under the card says so, only where it is true. No lists is no card;
+     lists nobody has opened yet are one sentence rather than a column of
+     noughts, with no note under it about numbers there are none of. */
   function listsCard(lists) {
     if (!lists || !lists.length) return null;
     var opened = lists.some(function (l) { return l.n > 0; });
+    var short = false;
     var body;
     if (opened) {
       body = el('ol', { className: 'stats-list ins-list' });
       lists.forEach(function (l, i) {
+        var where = l.country || [];
+        var placed = 0;
+        where.forEach(function (c) { placed += c.n; });
+        if (l.country && placed < l.n) short = true;
         body.appendChild(el('li', { className: 'stats-row' }, [
           el('span', { className: 'stats-rank', textContent: String(i + 1) }),
           el('span', { className: 'stats-who' }, [
             TTBTrack.click(el('a', { className: 'stats-name', href: '/list/' + encodeURIComponent(l.id), textContent: l.title }),
               'list_page', { list_id: l.id }),
-            l.public ? null : el('span', { className: 'stats-shut', textContent: t('listsWhoPrivate') })
+            l.public ? null : el('span', { className: 'stats-shut', textContent: t('listsWhoPrivate') }),
+            where.length ? el('span', { className: 'stats-where', textContent: countryLine(where) }) : null
           ]),
           el('span', { className: 'stats-n', textContent: num(l.n) })
         ]));
@@ -445,7 +458,8 @@
     return card([
       el('h2', { className: 'lists-title', textContent: t('listsYours') }),
       body,
-      opened ? el('p', { className: 'ins-note', textContent: t('insightsListsNote') }) : null
+      opened ? el('p', { className: 'ins-note', textContent: t('insightsListsNote') }) : null,
+      short ? el('p', { className: 'ins-note', textContent: t('insightsListsWhere') }) : null
     ]);
   }
 

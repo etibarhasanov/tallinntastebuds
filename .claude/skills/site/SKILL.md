@@ -114,7 +114,7 @@ the page is read in together, and **Three languages, not ten** under
 copies the block whole, and its head carries `<meta name="color-scheme">`
 and `<meta name="theme-color">` like `lists.html`'s.
 
-**Two things every page used to copy are globals now.** `assets/device.js`
+**Three things pages used to copy are globals now.** `assets/device.js`
 is `TTBDevice.id()` — the v4 UUID under `ttb.cid`, minted on the first ask —
 and `TTBDevice.known()`, the same id read without minting one; the map and the
 feedback page load it before their own script, and a page that files
@@ -123,7 +123,12 @@ something under a device does the same rather than growing a third
 onPick, label)`, the switch the flashcards and the chess page draw on a
 `.lists-brand` header, its surface `.lang-surface` in `assets/lists.css`;
 picking stays the page's own. The map's switch in `assets/app.js` is not on
-it and is not to be moved without a change of its own.
+it and is not to be moved without a change of its own. `assets/country.js` is
+`TTBCountry.name(code, lang, unknown)`, a country's name in the reading
+language out of `Intl.DisplayNames`, and `TTBCountry.line(rows, lang, words)`,
+the *Estonia 7 · Finland 2 · Other 1* line under a list; `/insights`,
+`/admin/stats` and `/admin/visitors` load it before their own script, and a
+page that names a country does the same rather than growing a copy.
 
 **Every UI string lives in `data/ui.json`, in all ten languages** — az, hy,
 en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback

@@ -157,17 +157,14 @@
     return visitors ? total / visitors : 0;
   }
 
+  /* A country by its two letters, named in the reading language —
+     assets/country.js, loaded before this file. */
   function countryName(code) {
-    if (code === 'XX' || code === 'T1') return t('insightsUnknown');
-    try {
-      return new Intl.DisplayNames([state.lang], { type: 'region' }).of(code) || code;
-    } catch (e) {
-      return code;
-    }
+    return TTBCountry.name(code, state.lang, t('insightsUnknown'));
   }
 
-  /* A language by its code, named in the reading language — countryName()'s
-     arrangement, so data/ui.json needs no word for each of the ten. */
+  /* A language by its code, named the same way, so data/ui.json needs no
+     word for each of the ten. */
   function languageName(code) {
     try {
       return new Intl.DisplayNames([state.lang], { type: 'language' }).of(code) || code;

@@ -241,6 +241,40 @@ CREATE TABLE IF NOT EXISTS view_seen (
   PRIMARY KEY (day, key)
 );
 
+-- ------------------------------------------------------------- list_counts
+-- Where each list is opened from: one row per list, per day, per country,
+-- beside the one running number press_counts keeps under kind 'list'. That
+-- number is what orders /lists and is all the page ever draws to a stranger;
+-- this is the half with a day and a place in it, read by the list's owner
+-- on /insights under each of their lists, and by the site's owner on
+-- /admin/stats under every list anybody has opened. countListOpen() in
+-- functions/api/_visits.js writes it, on the same open and under the same
+-- rules — a public list, not its owner, once a UTC day per visitor — and
+-- listCountries() in the same file reads it; **Your lists** under
+-- **Insights** in README.md is the page's half.
+--
+-- profile_counts' shape, keyed on the list rather than on a person, because
+-- the question is about the list: whose it is is a join away, and the site's
+-- owner reads every list at once. `kind` is 'country' and nothing else today; it is in
+-- the key so that where an open came from — the source, Instagram or a
+-- search — can join it the day somebody asks, without a second table. Opens
+-- counted before this table existed have no row here, so a list's countries
+-- can add up to less than its number, and both pages say so.
+--
+-- The key leads with the list, which is how it is read: a handful of lists
+-- at a time, by id, so the primary key is the index.
+CREATE TABLE IF NOT EXISTS list_counts (
+  -- lists.id.
+  list TEXT    NOT NULL,
+  -- YYYY-MM-DD, UTC.
+  day  TEXT    NOT NULL,
+  kind TEXT    NOT NULL,
+  -- Cloudflare's two letters, XX where it does not know.
+  id   TEXT    NOT NULL,
+  n    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (list, day, kind, id)
+);
+
 -- ---------------------------------------------------------- visitor_counts
 -- Who came to the site, roughly, and what they did — read by the owner
 -- alone, on /admin/visitors. functions/api/_visitors.js writes and reads it,

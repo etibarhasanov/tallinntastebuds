@@ -42,7 +42,7 @@
      page's own and it is short: the rows of a ranking. -->
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
 <link rel="stylesheet" href="/assets/lists.css?v=d1b4f23b">
-<link rel="stylesheet" href="/assets/stats.css?v=8235fd74">
+<link rel="stylesheet" href="/assets/stats.css?v=e87cc0d6">
 </head>
 <body class="lists-body">
 
@@ -59,7 +59,8 @@
      the script, so the page says what it is before the numbers arrive and
      still says it if they never do. Everything below them is one element that
      assets/stats.js fills once: the two headlines, the map's ranking, Google's
-     where there is one, the chips, the rail, and the footnote under them all.
+     where there is one, the chips, the rail, the lists anybody has opened,
+     and the footnote under them all.
      Nothing in the markup depends on which of those there turned out to be, so
      nothing can be left standing from a state the page is no longer in. -->
 <div class="lists-main">
@@ -83,6 +84,9 @@
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
 <script src="/assets/track.js?v=5e66df1d" defer></script>
-<script src="/assets/stats.js?v=a6ffe0ab" defer></script>
+<!-- A country named in the reading language, and a line of them under a
+     list. Before the page's own script and deferred like it. -->
+<script src="/assets/country.js?v=407fa021" defer></script>
+<script src="/assets/stats.js?v=fabcd829" defer></script>
 </body>
 </html>
