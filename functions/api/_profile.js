@@ -13,7 +13,8 @@
  * WHAT A PROFILE IS
  *
  * The public lists somebody has made, how many times anybody has kept them,
- * the name they go by, the line they wrote about themselves, the three places
+ * the name they go by, the line they wrote about themselves — in each of the
+ * site's languages they wrote it in — the three places
  * they said they are — Instagram, TikTok, Facebook — and the page of links
  * they put under all of that: a showreel, an agency, a note, in the order they chose. Nothing
  * else. Not their saves, which are anonymous by design and filed under a
@@ -283,14 +284,100 @@ export function readSpeaks(raw) {
   return list.filter((code, i) => SPEAKS.includes(code) && list.indexOf(code) === i).slice(0, MAX_SPEAKS);
 }
 
-/* The column rewritten with one half replaced and the other kept: the
-   handles from `links`, or the stored ones, and the languages from `speaks`,
-   or the stored ones. '' when both halves are empty, so "never filled
+/* ------------------------------------------ the line, in other languages
+ *
+ * The line under somebody's name is written once, in whatever language they
+ * wrote it in, and that is what everybody reads — `users.about`, written by
+ * the `about` action in functions/api/account.js. This is
+ * the same line again in any of the site's other languages, one box each on
+ * /edit, and a reader whose page is in one of them gets that one instead.
+ * A reader in a language nobody wrote it in gets the line as it was first
+ * written, exactly as before this existed.
+ *
+ * WHY THE SITE'S TEN AND NOT THE FORTY-FOUR ABOVE
+ *
+ * A version is chosen by the language the page is being read in, and a page
+ * on this site is only ever read in one of the ten data/ui.json speaks. A
+ * line in German would be a box nobody's page could ever choose. So these are
+ * exactly the languages of data/ui.json, and node tools/validate.mjs fails the
+ * build when the two part company — a language added to the site is a code
+ * added here in the same commit.
+ *
+ * KEYED BY LANGUAGE, THE WAY EVERYTHING TRANSLATED HERE IS
+ *
+ * `{"et":"…","ru":"…"}`, which is the shape a card's back and a deck's name
+ * have in data/decks.json and a place's blurb has in data/restaurants.json:
+ * an object keyed by code, and the page picks the one it is read in. Not a
+ * column per language — ten ALTERs run by hand against a live table, and an
+ * eleventh with the next language — and not a table of its own, for a thing
+ * read on one page, about one person, by primary key. It rides in
+ * users.links under `lines`, beside the handles and the languages, for the
+ * reason the languages do: that column is JSON so that one more small thing
+ * about a person costs no ALTER at all.
+ *
+ * Same cap as the line, same flatten-and-cut, and an empty box is a version
+ * taken down rather than stored as ''.
+ */
+export const LINE_LANGS = ['az', 'hy', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk'];
+
+/* The line's cap, and every version's. Two hundred because a line under a
+   title is what this is — **The line about yourself** in README.md — and
+   restated in assets/edit.js, which carries the only boxes that write it. */
+export const MAX_ABOUT = 200;
+
+/* The flatten-and-cut the line has always had, in one place now that there
+   are two callers of it. */
+export function cleanLine(value) {
+  return String(typeof value === 'string' ? value : '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, MAX_ABOUT);
+}
+
+/* The versions as stored: known codes only, each cleaned, the empty ones
+   left out. Null when what was sent is not an object of code → string at
+   all, or names a language the site does not speak, so the write refuses
+   rather than dropping a box somebody filled. */
+export function cleanLines(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const out = {};
+  for (const code of Object.keys(value)) {
+    if (!LINE_LANGS.includes(code) || typeof value[code] !== 'string') return null;
+    const line = cleanLine(value[code]);
+    if (line) out[code] = line;
+  }
+  return out;
+}
+
+/* The same, read off a stored column: whatever no longer passes is dropped
+   rather than refused, the way readSpeaks() does, and they come back in the
+   order of LINE_LANGS so the editor draws them the same way every time. */
+export function readLines(raw) {
+  let parsed;
+  try {
+    parsed = JSON.parse(String(raw || '') || '{}');
+  } catch (e) {
+    return {};
+  }
+  const lines = parsed && parsed.lines && typeof parsed.lines === 'object' && !Array.isArray(parsed.lines) ? parsed.lines : {};
+  const out = {};
+  for (const code of LINE_LANGS) {
+    const line = typeof lines[code] === 'string' ? cleanLine(lines[code]) : '';
+    if (line) out[code] = line;
+  }
+  return out;
+}
+
+/* The column rewritten with one part replaced and the rest kept: the handles,
+   the languages and the lines each come from what was given, or where nothing
+   was, from what is stored. '' when all three are empty, so "never filled
    anything in" and "took everything down" stay the same row. */
-export function mergeLinks(raw, links, speaks) {
-  const next = Object.assign({}, links || readLinks(raw));
-  const list = speaks || readSpeaks(raw);
+export function mergeLinks(raw, given) {
+  const next = Object.assign({}, given.links || readLinks(raw));
+  const list = given.speaks || readSpeaks(raw);
   if (list.length) next.speaks = list;
+  const lines = given.lines || readLines(raw);
+  if (Object.keys(lines).length) next.lines = lines;
   return Object.keys(next).length ? JSON.stringify(next) : '';
 }
 
@@ -521,6 +608,7 @@ export async function readProfile(context, name) {
      accepted, stops being printed rather than outliving the rule. */
   const links = readLinks(row.links);
   const speaks = readSpeaks(row.links);
+  const lines = readLines(row.links);
 
   /* Their public lists, newest edit first — the same row the index draws for
      your own, minus the ones nobody else may read. The keeps are a scalar
@@ -561,6 +649,12 @@ export async function readProfile(context, name) {
        answer here drops a field with nothing in it. Nearly every account has
        no line, and the page draws nothing for one it was not given. */
     about: row.about || undefined,
+    /* The same line in the site's other languages, keyed by code, for the
+       page to choose from by the language it is read in — see readLines().
+       Left out where there are none, and never without the line itself:
+       a version is a translation of something, and a profile whose line was
+       taken down reads as having none in every language. */
+    lines: row.about && Object.keys(lines).length ? lines : undefined,
     /* The same, for the same reason, and handles rather than addresses: the
        page builds the URL out of the table above, so a link on a profile is
        never a string somebody typed in full. Left out when there are none,

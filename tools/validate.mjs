@@ -96,7 +96,7 @@ import { KITCHENS, said } from '../functions/api/venues.js';
    what make "change one, change the other" something other than a promise in
    a comment. */
 import { PIN_GLYPHS, DEFAULT_PIN } from '../functions/api/_pins.js';
-import { NETWORKS, SPEAKS } from '../functions/api/_profile.js';
+import { NETWORKS, SPEAKS, LINE_LANGS } from '../functions/api/_profile.js';
 /* The security headers every Function's answer carries, which `_headers`
    has to carry too for the files the Functions never see. */
 import { SECURITY } from '../functions/_security.js';
@@ -1971,6 +1971,21 @@ if (ui !== null && isPlainObject(ui)) {
     const drawn = [...table.matchAll(/\b([a-z]{2}): '/g)].map((m) => m[1]).join(', ');
     if (drawn !== SPEAKS.join(', ')) {
       fail('assets/links.js', `offers the languages [${drawn}], and functions/api/_profile.js allows [${SPEAKS.join(', ')}] — one of the two has moved`);
+    }
+  }
+
+  /* And the languages a profile's line can be written again in, which are
+     the site's own: a version is chosen by the language a page is read in,
+     and a page is only ever read in one data/ui.json speaks. A language added
+     to the site and not here is one whose readers can never be given a line
+     of their own; one here and not on the site is a box on /edit that no
+     reader's page could ever choose. The editor reads its list off ui.json,
+     so it is this array that can fall behind. */
+  if (languages.length) {
+    const site = [...languages].sort().join(', ');
+    const lines = [...LINE_LANGS].sort().join(', ');
+    if (site !== lines) {
+      fail('functions/api/_profile.js', `LINE_LANGS is [${lines}] and data/ui.json speaks [${site}] — a profile's line is written again in the site's own languages, no more and no fewer`);
     }
   }
 }

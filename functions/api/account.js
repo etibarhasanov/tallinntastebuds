@@ -88,18 +88,19 @@ import {
   enterAccount, nameGoogleAccount
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
-import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, cleanSpeaks, readSpeaks, mergeLinks } from './_profile.js';
+import {
+  NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, cleanSpeaks, readSpeaks,
+  cleanLine, cleanLines, readLines, mergeLinks
+} from './_profile.js';
 import { recentViews } from './_visits.js';
 
-/* The line somebody writes about themselves on /u/<name>. The same length as
-   a list's intro in functions/api/lists.js, and the same reasoning: it is a
-   line under a title rather than a page, and a profile opening with six
-   paragraphs about somebody stops being a page about their lists. Restated as
-   a maxlength in assets/account.js, the way every cap here is. */
-const MAX_ABOUT = 200;
+/* The line somebody writes about themselves is capped by MAX_ABOUT in
+   ./_profile.js now, beside cleanLine(), because the same line in the site's
+   other languages is held to it too and is read there. */
 /* The name somebody goes by, over the username: the heading of a profile
    that is a page. A list's title's cap, because it is a heading, and restated
-   as a maxlength in assets/account.js the same way. */
+   as a maxlength in assets/edit.js, which carries the only box that writes
+   it. */
 const MAX_DISPLAY = 60;
 
 /* The places this account has saved, so a fresh device can draw its marks
@@ -172,6 +173,7 @@ export async function onRequestGet(context) {
   let about;
   let links;
   let speaks;
+  let lines;
   let display;
   const extra = await readingExtras(env, (extras) => extras
     ? env.DB.prepare('SELECT ' + extras + ' FROM users WHERE id = ?').bind(user.id).first()
@@ -188,6 +190,9 @@ export async function onRequestGet(context) {
        says why — so they are there exactly when the handles can be. */
     const spoken = readSpeaks(extra.links);
     speaks = spoken.length ? spoken : undefined;
+    /* And so does the line in the site's other languages — readLines(). */
+    const versions = readLines(extra.links);
+    lines = Object.keys(versions).length ? versions : undefined;
     /* Only where that column is there too, for the same reason. */
     display = extra.display_name || undefined;
   }
@@ -234,6 +239,9 @@ export async function onRequestGet(context) {
     links: links,
     /* The languages they said they speak, as codes, for the picker. */
     speaks: speaks,
+    /* The line again in other languages, code → line, for the boxes that
+       write them. */
+    lines: lines,
     /* The page of links under the profile, in its order, for the form that
        rewrites it. Guarded inside readRows() for the reason the two above
        are: the table arrives by hand, and until it has, an account has no
@@ -513,18 +521,15 @@ export async function onRequestPost(context) {
    * box that did not need it, which is the habit the rest of this file is
    * built not to build.
    *
-   * The shaping is the same flatten-and-cut lists.js does to a title, said
-   * again in one expression rather than shared: two copies is where
-   * .claude/rules/leave-it-better.md leaves it, and a third is a helper.
+   * The shaping is cleanLine() in ./_profile.js: the flatten-and-cut lists.js
+   * does to a title, shared there now that the line's versions in other
+   * languages below are held to it too.
    */
   if (action === 'about') {
     const user = await sessionUser(request, env);
     if (!user) return json({ error: 'signed-out' }, 401);
 
-    const about = String(typeof body.about === 'string' ? body.about : '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, MAX_ABOUT);
+    const about = cleanLine(body.about);
 
     await env.DB
       .prepare('UPDATE users SET about = ? WHERE id = ?')
@@ -607,7 +612,7 @@ export async function onRequestPost(context) {
 
     await env.DB
       .prepare('UPDATE users SET links = ? WHERE id = ?')
-      .bind(mergeLinks(was && was.links, next, null), user.id)
+      .bind(mergeLinks(was && was.links, { links: next }), user.id)
       .run();
 
     return json({ links: next }, 200);
@@ -634,10 +639,38 @@ export async function onRequestPost(context) {
 
     await env.DB
       .prepare('UPDATE users SET links = ? WHERE id = ?')
-      .bind(mergeLinks(was && was.links, null, next), user.id)
+      .bind(mergeLinks(was && was.links, { speaks: next }), user.id)
       .run();
 
     return json({ speaks: next }, 200);
+  }
+
+  /* ------------------------------------ the line, in other languages
+   *
+   * The line under the name again in any of the site's ten languages, for a
+   * reader whose page is in that one — see cleanLines() in ./_profile.js.
+   * A session and no password, for the reason the line itself takes none.
+   * The whole set every time, so what is in the boxes when Save is pressed
+   * is what is stored, and an empty box is that version taken down; a code
+   * the site does not speak refuses the whole write rather than being
+   * dropped. Stored beside the handles and the languages in users.links,
+   * which are carried across.
+   */
+  if (action === 'lines') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const next = cleanLines(body.lines);
+    if (!next) return json({ error: 'bad-lines' }, 400);
+
+    const was = await env.DB.prepare('SELECT links FROM users WHERE id = ?').bind(user.id).first();
+
+    await env.DB
+      .prepare('UPDATE users SET links = ? WHERE id = ?')
+      .bind(mergeLinks(was && was.links, { lines: next }), user.id)
+      .run();
+
+    return json({ lines: next }, 200);
   }
 
   /* ------------------------------------------------ the page of links

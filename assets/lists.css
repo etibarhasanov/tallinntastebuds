@@ -897,6 +897,32 @@
 .ed-lang:hover { border-color: var(--muted); }
 .ed-lang span[aria-hidden] { color: var(--muted); }
 
+/* The line again in other languages, under the line: each version a box
+   like the line's, its language named over it where a field's label goes,
+   and a quiet cross at the end of that label that takes it off — the muted
+   ink the pills' crosses wear, design rule 5, and a tap target that is the
+   height of the row rather than of the glyph. See linesField() in
+   assets/edit.js. */
+.ed-line-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
+.ed-line-off {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 28px;
+  margin-right: -6px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ed-line-off:hover { color: var(--ink); }
+
 .ed-add { margin-bottom: 14px; }
 .ed-empty { padding: 18px 0 6px; }
 
