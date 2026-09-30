@@ -153,7 +153,6 @@ function earlierOf(request, sent) {
 export async function countFlows(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  if (!page) return false;
 
   const trail = (Array.isArray(body.trail) ? body.trail : [])
     .slice(0, MAX_TRAIL)

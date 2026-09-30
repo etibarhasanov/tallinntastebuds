@@ -185,7 +185,10 @@ press on two pages reports the same name. The name also lands in
 event it sends and reports the tally with the time on screen — so a name is a
 lowercase word with underscores, which is the shape `functions/api/_visitors.js`
 accepts, and a new page that loads `track.js` is counted there with nothing
-more to do, once its path is named in `PAGES` in that file.
+more to do, once its path is named in `PAGES` in that file. Name it in the
+same commit: an address `PAGES` does not claim is counted as the map, which
+is what Pages serves at one, and `node tools/validate.mjs` fails a page that
+loads `track.js` without it.
 
 **And every page a visitor walks back from carries `assets/back.js`**, after
 `track.js` and before the page's own script: a swipe to the right from

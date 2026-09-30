@@ -11495,6 +11495,15 @@ returning visitor new — the same limits GA has with a cookie in the date's
 place. Bots mostly never reach it: the count is sent by the page's script and
 a crawler runs none.
 
+An address no page claims — a mistyped link, an old one somebody kept — is
+counted as the map, because that is what it shows: the site has no 404 page,
+so Pages answers it with `index.html`. It used to be counted nowhere, which
+lost the visitor as well as the view, since the page had already written
+today into `ttb.seen` and every later page that day said it was not the
+first. So a page that reports has to be named in `PAGES` in
+`functions/api/_visitors.js`, or its views land on the map's row, and
+`node tools/validate.mjs` fails a page that loads `track.js` without it.
+
 The dates are written on to the visitor's device, and ePrivacy asks about
 exactly that — see **No consent banner**. They are two dates, first-party,
 read by nothing but this count, and never sent anywhere as themselves;
@@ -11622,8 +11631,12 @@ Everything a visit does — pages, seconds, presses, places opened on the map,
 sign-ins and accounts made — is counted a second time under the kind of
 visitor it was, so the page can put a first day here against a later one.
 Sign-ins and accounts made are the `account_login` and `account_create`
-presses picked out of the same report; a place opened is one of
-`TTBTrack.view()`'s. Pages, time, clicks and places are per visitor, and
+presses picked out of the whole of the same report, however many other
+names it carries; a place opened is one of `TTBTrack.view()`'s on the map.
+The blog and the flashcards report views the same way, and theirs are a
+post and a deck, so they are not counted as places — they were, until the
+blog's readers started turning up as people who opened places. Pages, time,
+clicks and places are per visitor, and
 sign-ins and accounts are counts, because one person can sign in three times
 and a share of that would be a number about nothing.
 
@@ -11694,13 +11707,15 @@ coming back in; the owner's trip out is counted, because the route cannot
 tell who is leaving without asking the database.
 
 They are counted a second time under a kind of their own, `signup`, as
-`<page>:<name>`, for two reasons. The presses kind takes a hundred names a
-day and was at seventy-odd when this began, and a rare name that arrives
-late in the day is exactly what a cap drops; and a report carries at most
-twenty press names, which a long visit to the map passes, so these are
-picked out of the whole report. It is still counts and pages, never one
-person's way through: nothing here can say that the somebody refused at
-10:02 is the somebody who got in at 10:03.
+`<page>:<name>`, because a rare name that arrives late in a visit and late
+in the day is exactly what a cap drops. The presses kind took a hundred
+names a day when this began, and the busiest day had come within fourteen
+of it; a report carried at most twenty press names, which a long visit to
+the map passed. Both are higher now — three hundred a day and sixty a
+report, **Rows by the day, not by the visit** — and these are still picked
+out of the whole report rather than out of its first sixty. It is still
+counts and pages, never one person's way through: nothing here can say that
+the somebody refused at 10:02 is the somebody who got in at 10:03.
 
 The card lays them out in the order the questions come: a table of the
 sheet's three views by opened, pressed, got in and gave up; why the button
@@ -11816,11 +11831,17 @@ the six facts counted under new, returning and each rail are lists in
 the languages are the ones `data/ui.json` speaks, four rows a language a day
 at most and one per pair of a switch somebody pressed; the countries, the sources and the
 press names are whatever a request says, so each of those takes at most a
-hundred ids a day, after which only ids already counted that day go up. A day
-is a hundred-odd short rows at most, which is tens of thousands a year —
-megabytes, not gigabytes — and nothing needs deleting. The day it stops being
-small the answer is a monthly roll-up, and it is not worth writing before
-then.
+hundred ids a day, after which only ids already counted that day go up. The
+press names take three hundred: they are the one open kind whose names the
+site writes itself, the pages send a little over two hundred of them — the
+tables under **Analytics** are the list — and at a hundred the busiest day
+had already come within fourteen, which would have dropped the rare names
+that arrive late, a sign-up step or a discount verified. A report carries
+sixty press names at most, where it carried twenty and a long visit to the
+map passed that. A day is a couple of hundred short rows on this site's
+traffic, which is tens of thousands a year — megabytes, not gigabytes — and
+nothing needs deleting. The day it stops being small the answer is a monthly
+roll-up, and it is not worth writing before then.
 
 Per page load that is two requests to `POST /api/stats` — the page opened,
 and a stretch on screen with its presses — and one batch of upserts each:
@@ -12919,6 +12940,10 @@ databases to its own cases.
 - a diagram in `flows/` that is not what `tools/flows.mjs` would write from
   `data/flows.json`, or a step there whose `ref` names a path that is not in
   the repository — see **Who uses the site, drawn**
+- a page that loads `assets/track.js` whose address `PAGES` in
+  `functions/api/_visitors.js` does not name, since an address nothing
+  claims is counted as the map and every view of the page would be filed on
+  the map's row — see **A visitor is a browser on a day** under **Visitors**
 - `index.html`, `lists.html`, `split.html` or `flashcard.html` without exactly
   one pair of `PAGE-HEAD` markers, which is where the Function serving that
   page writes its head; `rehead()` in `functions/_shell.js` leaves a page

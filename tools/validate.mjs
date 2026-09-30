@@ -27,6 +27,9 @@
  *   - a diagram in flows/ that is not what tools/flows.mjs would write from
  *     data/flows.json, or a step in that file whose ref names a path that is
  *     not in the repository
+ *   - a page that loads assets/track.js without its address in PAGES in
+ *     functions/api/_visitors.js, which would count its every view as the
+ *     map's
  *   - a page served through a Function with a head of its own — index.html,
  *     lists.html, split.html, flashcard.html — missing the pair of PAGE-HEAD markers that
  *     head goes between, which would leave it wearing its static head at
@@ -2156,6 +2159,20 @@ if (flowDoc) {
         if (!pressNames.has(name)) fail(at, `"${name}" is not a press name the Analytics tables in README.md list — every name TTBTrack sends has a row there`);
       }
     }
+  }
+}
+
+/* And every page that reports to the site's own count, named by its address
+   in PAGES. An address no page there claims is counted as the map, because
+   that is what Pages answers one with — pageOf() in
+   functions/api/_visitors.js — so a new page that loads assets/track.js and
+   is not named would put every view of it on the map's row, quietly. The
+   owner's pages under admin/ send nothing and are not asked. */
+for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
+  if (!/assets\/track\.js/.test(readFileSync(join(ROOT, file), 'utf8'))) continue;
+  const at = file === 'index.html' ? '/' : '/' + file.replace(/\.html$/, '');
+  if (!PAGES.some((p) => (p.paths || []).includes(at))) {
+    fail(file, `loads assets/track.js, and no page in PAGES in functions/api/_visitors.js names ${at} — its views would be counted as the map's`);
   }
 }
 
