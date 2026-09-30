@@ -188,8 +188,11 @@ const SITE_CARD = '/assets/logo/og.jpg';
    shows. It is square and small, so it is a "summary" card with the picture
    beside the words rather than a banner stretched across them. And its size
    is whatever the photograph in assets/faces/ is, so no size is claimed: the
-   two tags are hints, and a wrong hint is worse than none. The profile is the
-   one caller that has one — see functions/u/[name].js. */
+   two tags are hints, and a wrong hint is worse than none. It is a picture
+   of somebody, so it says who in og:image:alt — the name and line the card
+   already carries — which is what a screen reader gets where the picture
+   does not load. The profile is the one caller that has one — see
+   functions/u/[name].js. */
 export function head(meta) {
   const title = esc(meta.title) + ' | Tallinn Tastebuds';
   const description = esc(meta.description);
@@ -199,6 +202,7 @@ export function head(meta) {
     ? [
         '<meta property="og:title" content="' + esc(meta.title) + '">',
         '<meta property="og:image" content="' + image + '">',
+        '<meta property="og:image:alt" content="' + esc(meta.title) + '">',
         '<meta name="twitter:card" content="summary">'
       ]
     : [

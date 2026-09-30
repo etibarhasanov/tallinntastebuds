@@ -29,15 +29,45 @@
  * A username is lowercase letters and a search is for a person: "etibar
  * adalat", "etibar actor". The one place on a profile the person writes
  * their own name and what they do is the line under it, so the line goes
- * into the head — the title is the username and the line, the description is
- * the line and then the first three rows, and the JSON-LD below is a
- * ProfilePage whose Person carries the line as its description and every
- * address on the page as sameAs. The line used to be kept out of the
- * description on the argument that "i like cats" is useless under a search
- * result; a page of links made a profile a page about a person, and the
- * person's own sentence is what a search for them matches. assets/lists.js
- * writes the same title once the script runs, so a crawler that renders
- * sees the one it was served.
+ * into the head — the title is the name they go by and the line, the
+ * description is the line and then the first three rows, and the JSON-LD
+ * below is a ProfilePage whose Person carries the line as its description
+ * and the addresses on the page that name them as sameAs. The line used to
+ * be kept out of the description on the argument that "i like cats" is
+ * useless under a search result; a page of links made a profile a page
+ * about a person, and the person's own sentence is what a search for them
+ * matches. assets/lists.js writes the same title once the script runs, so a
+ * crawler that renders sees the one it was served.
+ *
+ * WRITTEN FOR A SEARCH RESULT, NOT COPIED INTO ONE
+ *
+ * The line and the rows are written for the page, where a clapperboard in
+ * front of "Actor" and a star in front of a heading are the person's own
+ * typography, and the page keeps them. The head does not. A title that
+ * opens with an emoji is one a search engine rewrites — Google says as much
+ * — and a flag in a description is a box on the half of the machines that
+ * open a preview card, so plain() below takes every pictograph out of what
+ * the head says and leaves the words. The title is also cut to the length
+ * a result shows, which is about seventy characters with the site name
+ * after it: the name they go by and the first sentence of their line, and
+ * no more, because the two profiles this was written against had a line of
+ * two hundred characters and a title that was all of it. The description
+ * is not cut — a search engine picks the part of it that matches the query,
+ * and a longer one gives it more to pick from — but it skips a row that is
+ * only a heading: "About me · Work" says nothing about anybody, where the
+ * link under the heading does.
+ *
+ * sameAs is the property a search engine uses to tie a person's pages
+ * together, so it wants the pages that *are* them — a LinkedIn, a GitHub,
+ * an ORCID — and not every address they linked to: a showreel on YouTube, a
+ * reel, an employer's home page, a file on a drive. Given those, a search
+ * engine learns nothing and may learn the wrong thing. IDENTITY below is
+ * the list of hosts, and the shape a path has to have on each, for an
+ * address to count. It is short on purpose and it is a whitelist: a
+ * personal site is a perfectly good sameAs and is left off, because
+ * nothing here can tell it from the site of the company they work for.
+ * Every address is still on the page as a link; this is only about which
+ * are claimed as the person.
  *
  * INDEXED, AND WHY
  *
@@ -60,13 +90,46 @@ import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, USERNAME, NETWORKS, linkUrl } from '../api/_profile.js';
 import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
+/* The words of a line, without the pictures. Surrogate pairs are every
+   character above the basic plane, which is where the emoji, the flags and
+   the skin tones live and where none of the site's ten languages does; the
+   ranges are the symbol and dingbat blocks that sit inside it (☕ ⭐ ✉ ⌚
+   ✨), and the three singles are the joiner, the presentation selector and
+   the keycap that dress one. The same expression, in ES5, is plainOf() in
+   assets/lists.js, which writes the same title once the script runs — keep
+   the two the same. Whitespace an emoji stood in is closed up afterwards. */
+const PICTURES = /[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2300-\u23FF\u2600-\u27BF\u2B00-\u2BFF\u200D\uFE0F\u20E3]/g;
+
+function plain(text) {
+  return String(text || '').replace(PICTURES, '').replace(/\s+/g, ' ').trim();
+}
+
+/* The first sentence of a line: up to the first full stop, question mark,
+   exclamation mark or ellipsis that has a space after it, so "Ph.D." and
+   "memona.app" stay whole, and without a full stop at its end, which a
+   title does not carry. A line with no sentence end is one sentence. */
+function firstSentence(text) {
+  const m = /^(.*?[.!?…])\s/.exec(text);
+  return (m ? m[1] : text).replace(/\.$/, '');
+}
+
+/* About what a search result shows of a title, before " | Tallinn
+   Tastebuds" goes after it. assets/lists.js carries the same number. */
+const TITLE_MAX = 70;
+
 /* What the tab and the search result call the page: the name they go by,
-   or the username where they gave none, and the line under it where there
-   is one — which is where what they do is. assets/lists.js writes the
-   same, with the reader's own version of the line where there is one. */
+   or the username where they gave none, and the first sentence of the line
+   under it where there is one — which is where what they do is — cut at a
+   word to the length a result shows. assets/lists.js writes the same, with
+   the reader's own version of the line where there is one. */
 function title(profile) {
-  const who = profile.display || profile.name;
-  return profile.about ? who + ' · ' + profile.about : who;
+  const who = plain(profile.display || profile.name);
+  const line = profile.about ? firstSentence(plain(profile.about)) : '';
+  if (!line) return who;
+  const whole = who + ' · ' + line;
+  if (whole.length <= TITLE_MAX) return whole;
+  const cut = whole.lastIndexOf(' ', TITLE_MAX - 1);
+  return (cut > who.length + 3 ? whole.slice(0, cut) : whole.slice(0, TITLE_MAX - 1)).replace(/[\s,;:·-]+$/, '') + '…';
 }
 
 /* The line under the name in a preview card, and under a search result.
@@ -77,14 +140,21 @@ function title(profile) {
  * forwarded to rather than to the person who fetched it. The page underneath
  * follows the reader's own language as usual.
  *
- * Their own line first, then the first three things on their page, then the
- * lists as the footnote — in the order the page draws them, and each only
- * where there is one. */
+ * Their own line first, then the first three things on their page that are
+ * things — a link or a note, not a heading over them — then the lists as
+ * the footnote: in the order the page draws them, each only where there is
+ * one, and each with its pictures taken out. */
 function describe(profile) {
   const parts = [];
-  if (profile.about) parts.push(/[.!?…]$/.test(profile.about) ? profile.about : profile.about + '.');
+  const about = plain(profile.about);
+  if (about) parts.push(/[.!?…]$/.test(about) ? about : about + '.');
 
-  const heads = profile.rows.slice(0, 3).map((row) => row.title).join(' · ');
+  const heads = profile.rows
+    .filter((row) => row.url || row.note)
+    .slice(0, 3)
+    .map((row) => plain(row.title))
+    .filter(Boolean)
+    .join(' · ');
   if (heads) parts.push(heads + '.');
 
   const n = profile.lists.length;
@@ -97,23 +167,59 @@ function describe(profile) {
   return parts.length ? parts.join(' ') : profile.name + ' has not published a list yet.';
 }
 
+/* The hosts on which an address is a person, and the shape of the path that
+   makes it one — a handle, and not a post, a video or a search. A host is
+   matched without its www. The three in NETWORKS are here too, because a
+   row may carry the same address in full. */
+const HANDLE = /^\/@?[^/@][^/]*\/?$/;
+const IDENTITY = [
+  { host: 'instagram.com', path: HANDLE },
+  { host: 'facebook.com', path: HANDLE },
+  { host: 'tiktok.com', path: HANDLE },
+  { host: 'x.com', path: HANDLE },
+  { host: 'twitter.com', path: HANDLE },
+  { host: 'github.com', path: HANDLE },
+  { host: 'threads.net', path: HANDLE },
+  { host: 'linkedin.com', path: /^\/in\/[^/]+\/?$/ },
+  { host: 'youtube.com', path: /^\/(@[^/]+|(channel|c|user)\/[^/]+)\/?$/ },
+  { host: 'scholar.google.com', path: /^\/citations\/?$/ },
+  { host: 'orcid.org', path: /^\/\d{4}-\d{4}-\d{4}-\d{3}[\dX]\/?$/ },
+  { host: 'researchgate.net', path: /^\/profile\/[^/]+\/?$/ },
+  { host: 'imdb.com', path: /^\/name\/nm\d+\/?$/ }
+];
+
+/* Whether an address is one of the person's own pages elsewhere, by the
+   table above. Never throws: a row's address passed httpsOnly() to be
+   stored, but this is the head and a surprise here costs the page. */
+function isIdentity(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, '');
+    return IDENTITY.some((id) => id.host === host && id.path.test(u.pathname));
+  } catch (e) {
+    return false;
+  }
+}
+
 /* The page as a search engine reads it: a ProfilePage whose main entity is
    the Person, with the line as their description, the face as their picture
-   where there is one, and every address on the page — the three handles and
-   the rows that are links — as sameAs, which is the property a search engine
-   uses to tie a person's pages together. Written only where the page is
-   indexed at all. */
+   where there is one, and the addresses on the page that are them — the
+   three handles, and the rows whose link isIdentity() takes — as sameAs,
+   which is the property a search engine uses to tie a person's pages
+   together. The name and the description are the head's, pictures out.
+   Written only where the page is indexed at all. */
 function structuredData(request, profile) {
   const self = canonical(request, '/u/' + profile.name);
   const links = profile.links || {};
   const sameAs = NETWORKS
     .filter((net) => links[net.id])
     .map((net) => linkUrl(net.id, links[net.id]))
-    .concat(profile.rows.filter((row) => row.url).map((row) => row.url));
+    .concat(profile.rows.filter((row) => row.url && isIdentity(row.url)).map((row) => row.url))
+    .filter((url, i, all) => all.indexOf(url) === i);
 
-  const person = { '@type': 'Person', '@id': self + '#person', name: profile.display || profile.name, url: self };
+  const person = { '@type': 'Person', '@id': self + '#person', name: plain(profile.display || profile.name), url: self };
   if (profile.display) person.alternateName = profile.name;
-  if (profile.about) person.description = profile.about;
+  if (profile.about) person.description = plain(profile.about);
   if (profile.face) person.image = canonical(request, profile.face);
   if (sameAs.length) person.sameAs = sameAs;
   /* The languages they said they speak, as the codes schema.org takes. */
@@ -131,13 +237,23 @@ function structuredData(request, profile) {
 }
 
 /* Their page, as text: a link is a link, a heading is bold, a note is its
-   title over its text. Every link out is nofollow, as the script writes it. */
+   title over its text. Every link out is nofollow, as the script writes it.
+   A row written in other languages too — `lines`, keyed by code, each a
+   title and for a note its text — follows in each of them, tagged with its
+   language, for the same reason the line under the name does below: the
+   page that runs a script prints the reader's version, and a search in
+   Estonian should find the Estonian one. */
 function rowsAsText(rows) {
   if (!rows.length) return '';
   return '<ul>' + rows.map((row) => {
-    if (row.url) return '<li><a rel="nofollow noopener" href="' + esc(row.url) + '">' + esc(row.title) + '</a></li>';
-    if (row.note) return '<li>' + esc(row.title) + '<p>' + esc(row.note) + '</p></li>';
-    return '<li><strong>' + esc(row.title) + '</strong></li>';
+    const versions = Object.keys(row.lines || {}).map((code) => {
+      const v = row.lines[code];
+      return (v.title ? '<span lang="' + esc(code) + '">' + esc(v.title) + '</span>' : '') +
+        (v.note ? '<p lang="' + esc(code) + '">' + esc(v.note) + '</p>' : '');
+    }).join('');
+    if (row.url) return '<li><a rel="nofollow noopener" href="' + esc(row.url) + '">' + esc(row.title) + '</a>' + versions + '</li>';
+    if (row.note) return '<li>' + esc(row.title) + '<p>' + esc(row.note) + '</p>' + versions + '</li>';
+    return '<li><strong>' + esc(row.title) + '</strong>' + versions + '</li>';
   }).join('') + '</ul>';
 }
 
@@ -190,7 +306,11 @@ export async function onRequest(context) {
        unfurls as them rather than as the map — and under their name alone.
        head() says what else a face changes about the card. */
     face: profile.face
-  });
+  }) +
+    /* The one property Open Graph's profile type has that a person here
+       has: the username. The first and last names are the display name's to
+       split, which nothing here can do, so neither is claimed. */
+    '\n<meta property="profile:username" content="' + esc(profile.name) + '">';
   html = rehead(html, indexable
     ? tags + '\n<script type="application/ld+json">' + seed(structuredData(request, profile)) + '</script>'
     : tags);

@@ -1117,6 +1117,31 @@
     return (Object.prototype.hasOwnProperty.call(lines, state.lang) && lines[state.lang]) || who.about || '';
   }
 
+  /* The words of a line without its pictures, and the title the tab and
+     a search result get — the same two functions/u/[name].js serves, plain()
+     and title() there, written again in ES5 because the two cannot share a
+     file: a crawler that renders the page must see the title it was served.
+     The expression and the number are copied from there; change both. */
+  var PICTURES = /[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2300-\u23FF\u2600-\u27BF\u2B00-\u2BFF\u200D\uFE0F\u20E3]/g;
+  var TITLE_MAX = 70;
+
+  function plainOf(text) {
+    return String(text || '').replace(PICTURES, '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+  }
+
+  function profileTitle(who) {
+    var name = plainOf(who.display || who.name);
+    var line = plainOf(lineOf(who));
+    var m = /^(.*?[.!?\u2026])\s/.exec(line);
+    if (m) line = m[1];
+    line = line.replace(/\.$/, '');
+    if (!line) return name;
+    var whole = name + ' \u00b7 ' + line;
+    if (whole.length <= TITLE_MAX) return whole;
+    var cut = whole.lastIndexOf(' ', TITLE_MAX - 1);
+    return (cut > name.length + 3 ? whole.slice(0, cut) : whole.slice(0, TITLE_MAX - 1)).replace(/[\s,;:\u00b7-]+$/, '') + '\u2026';
+  }
+
   /* That line as a paragraph, tagged with its language when it is one of the
      versions, so a screen reader says it in the right voice. The first line
      is left untagged: nothing records which language it was written in. */
@@ -4567,15 +4592,12 @@
       /* A seeded page already carries its own title in the head; only a page
          that fetched what it is showing has to set one. */
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
-      /* The username and the line under it, which is where a person's own
-         name and what they do are — the same title functions/u/[name].js
-         serves, so a crawler that renders sees the one it was served, except
-         that the line is the reader's version where there is one. */
-      if (state.profile) {
-        var who = state.profile.display || state.profile.name;
-        var line = lineOf(state.profile);
-        document.title = (line ? who + ' · ' + line : who) + ' | Tallinn Tastebuds';
-      }
+      /* The name they go by and the first sentence of the line under it,
+         which is where a person's own name and what they do are — the same
+         title functions/u/[name].js serves, so a crawler that renders sees
+         the one it was served, except that the line is the reader's version
+         where there is one. profileTitle() says what is left out and why. */
+      if (state.profile) document.title = profileTitle(state.profile) + ' | Tallinn Tastebuds';
       if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 
       wire();
