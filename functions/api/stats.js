@@ -114,6 +114,9 @@ import { LIST_ID } from './_lists.js';
 import { countView, countPress, firstToday } from './_visits.js';
 import { countArrive, countLeave } from './_visitors.js';
 import { countFlows } from './_flows.js';
+/* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
+   ./_visitors.js. */
+import { adminUser } from './_admin.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
@@ -222,7 +225,16 @@ export async function onRequestPost(context) {
      the whole of it. `id` is the page's path. A page put away also carries
      the trail — the presses in the order they first happened — which
      ./_flows.js counts into flow_counts for the diagrams on /admin/flows, in
-     a batch of its own so that neither table's absence fails the other. */
+     a batch of its own so that neither table's absence fails the other.
+     Neither hears from the owner's own session. */
+  if (kind === ARRIVE || kind === LEAVE) {
+    /* The owner signed in is not a visitor: their own afternoon on the site
+       would otherwise be most of the returning visitors' minutes, and a
+       page about who comes should not be read through whoever built it.
+       One session lookup per report; signed out, the owner counts like
+       anybody. */
+    if (await adminUser(request, env)) return json({ ok: false }, 200);
+  }
   if (kind === ARRIVE) return json({ ok: await countArrive(context, body) }, 200);
   if (kind === LEAVE) {
     const [counted] = await Promise.all([countLeave(context, body), countFlows(context, body)]);

@@ -11281,7 +11281,8 @@ kinds of visitor differ, then the experiment, then what was done.
   each against the same length of time just before it — **visitors**, the
   share of them **returning**, **page views**, **time per visitor** and
   **clicks per visitor** — then a bar a day of new and returning visitors (a
-  bar a week for ninety days, and none for today), **countries**, **where
+  bar a week for ninety days, and none for today), a bar an hour of the day
+  on Tallinn's clock, **phone, tablet or desktop**, **countries**, **where
   they came from**, and **languages** with the switches between them — see
   **The language it was read in** below. Today is not set against yesterday:
   half a day against a whole one says nothing.
@@ -11369,6 +11370,32 @@ fresh tab has nothing before it and is not one either. It is pages and not
 people, and the pair alone: nothing here can lay one visitor's pages end to
 end, and nothing is written that could. The funnels within a page — from the
 map to a place to going there — stay on the diagrams.
+
+### When they come, on what, and not the owner
+
+Every page opened is also counted under the hour of the day it opened in,
+on Tallinn's clock rather than UTC — the clock the stories and the opening
+hours already keep, since the question is when people in the city are
+looking — and the card **By hour of the day** is a bar an hour over the
+range. Twenty-four rows a day at most, and a card that is left out while
+every hour is nought. Each visitor's first page of the day also says what
+the browser is driven with, decided in `assets/track.js`: a coarse primary
+pointer is a finger, a finger on something narrower than 768px is a phone
+and on anything wider a tablet, and everything else is a desktop, a laptop
+with a touchscreen included, since its mouse stays the primary pointer.
+The layouts are drawn for a 390px phone first, and how much of the traffic
+that is was a guess until this.
+
+And the owner is not one of them. A report that arrives with the owner's
+own session — an account `ADMINS` in `wrangler.toml` names, `adminUser()`
+in `functions/api/_admin.js` — is dropped by `POST /api/stats` before it
+reaches either table, `visitor_counts` or `flow_counts`. On the count's
+first days a few returning browsers, the owner's among them, were most of
+the returning visitors' minutes and presses, and a page about who comes to
+the site should not be read through the person who built it. It costs one
+session lookup per report. Signed out, the owner is a visitor like anybody,
+as in GA — and `press_counts`, which ranks places and chips, still counts
+everyone, because it counts presses rather than people and says so.
 
 ### The language it was read in
 
@@ -11498,16 +11525,16 @@ then.
 
 Per page load that is two requests to `POST /api/stats` — the page opened,
 and a stretch on screen with its presses — and one batch of upserts each:
-one row for a page view and two for it as new or returning and on its rail,
-six more on a visitor's first page of the day — the visitor, the country,
-the source, the page landed on, the rail and the language the browser asked
-for — and on the way out one for
+one row for a page view and one for its hour, two for it as new or returning
+and on its rail, seven more on a visitor's first page of the day — the
+visitor, the country, the source, the page landed on, the rail, the
+language the browser asked for and the device — and on the way out one for
 the time, one per press name, and two for each of the time, the presses, the
 places, a sign-in and an account made that the stretch had, one per language
 it was read in and one per switch, on a visitor's first page one for the
 language they arrived in, and on a page's first report one for having
 reported, one if nothing was pressed and one for the page before it. That is
-twelve to eighteen writes for an ordinary page. On the free plan's hundred thousand
+fourteen to twenty writes for an ordinary page. On the free plan's hundred thousand
 writes a day it is room for six thousand page views a day or so alongside
 everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the
@@ -11521,12 +11548,14 @@ than **Right now**, which is pages a minute for the last half hour rather
 than people: everything else's finest grain is a day. The funnels are not
 on this page either: how people move from one step to the next is laid on
 the diagrams at `/admin/flows` — **The numbers on it** under **Who uses the
-site, drawn** — out of the same report this page is counted from. No device
-or browser breakdown. Numbers will not match GA's exactly — GA and this
-count different things by different means — so the two are worth running
-side by side for a few weeks before Google's tag comes out. `/admin/` sends
-nothing, so the owner reading this page is not counted by it; the owner
-using the site is, as in GA.
+site, drawn** — out of the same report this page is counted from. No
+browser breakdown, and no device finer than phone, tablet or desktop.
+Numbers will not match GA's exactly — GA and this count different things by
+different means — so the two are worth running side by side for a few weeks
+before Google's tag comes out. `/admin/` sends nothing, so the owner reading
+this page is not counted by it, and the owner using the site signed in is
+not either — **When they come, on what, and not the owner** above — where
+GA counts them.
 
 ---
 
