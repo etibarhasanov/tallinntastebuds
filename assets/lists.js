@@ -899,7 +899,7 @@
          the same rule the standing and every save count on this site follow.
          A box saying "this person has not written anything" is a page telling
          a reader about an empty field rather than about a person. */
-      who.about ? el('p', { className: 'lists-say', textContent: who.about }) : null,
+      profileLine(who, 'lists-say'),
       /* And the three places they said they are, under the line and above the
          number for the same reason the line is: what somebody chose to say
          about themselves comes before what strangers did with their lists. */
@@ -957,7 +957,7 @@
            it is the name. */
         who.face ? el('img', { className: 'lists-page-face', src: who.face, alt: '', width: 96, height: 96 }) : null,
         el('h1', { className: 'lists-page-name', textContent: who.display || who.name }),
-        who.about ? el('p', { className: 'lists-page-line', textContent: who.about }) : null,
+        profileLine(who, 'lists-page-line'),
         pageSocial(who.links),
         profileSpeaks(who.speaks)
       ]),
@@ -1058,6 +1058,26 @@
       ]));
     });
     return ul;
+  }
+
+  /* The line under their name, in the language this page is being read in
+     where they wrote it in that one, and as they first wrote it everywhere
+     else — `lines` from readLines() in functions/api/_profile.js, keyed by
+     code. '' where they wrote none. */
+  function lineOf(who) {
+    var lines = who.lines || {};
+    return (Object.prototype.hasOwnProperty.call(lines, state.lang) && lines[state.lang]) || who.about || '';
+  }
+
+  /* That line as a paragraph, tagged with its language when it is one of the
+     versions, so a screen reader says it in the right voice. The first line
+     is left untagged: nothing records which language it was written in. */
+  function profileLine(who, className) {
+    var line = lineOf(who);
+    if (!line) return null;
+    var p = el('p', { className: className, textContent: line });
+    if (line !== who.about) p.setAttribute('lang', state.lang);
+    return p;
   }
 
   /* The languages they said they speak, under the handles on the card and on
@@ -4501,10 +4521,12 @@
       if (state.list) document.title = state.list.title + ' | Tallinn Tastebuds';
       /* The username and the line under it, which is where a person's own
          name and what they do are — the same title functions/u/[name].js
-         serves, so a crawler that renders sees the one it was served. */
+         serves, so a crawler that renders sees the one it was served, except
+         that the line is the reader's version where there is one. */
       if (state.profile) {
         var who = state.profile.display || state.profile.name;
-        document.title = (state.profile.about ? who + ' · ' + state.profile.about : who) + ' | Tallinn Tastebuds';
+        var line = lineOf(state.profile);
+        document.title = (line ? who + ' · ' + line : who) + ' | Tallinn Tastebuds';
       }
       if (state.view === 'all') document.title = t('listsAllDocumentTitle');
 

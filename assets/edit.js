@@ -50,8 +50,9 @@
  * ONE SAVE FOR ALL OF IT
  *
  * Everything on the page is one draft, and Save sends what changed and
- * nothing else — up to five writes to /api/account, the four actions the
- * account page's boxes made and the languages, one after the other. Each of
+ * nothing else — up to six writes to /api/account, the four actions the
+ * account page's boxes made, the languages and the line's versions in other
+ * languages, one after the other. Each of
  * those writes is whole on its own, so a Save that fails halfway leaves the
  * parts before it saved and says which part stopped it; the bar goes on saying there are
  * unsaved changes for as long as there are. What is drawn afterwards is what
@@ -94,8 +95,9 @@
   var DEFAULT_LANG = 'en';
 
   /* The caps, written a second time so a keystroke stops rather than a round
-     trip. MAX_ABOUT and MAX_DISPLAY in functions/api/account.js, and
-     cleanRows() and MAX_SPEAKS in functions/api/_profile.js, are what bind. */
+     trip. MAX_DISPLAY in functions/api/account.js, and MAX_ABOUT, cleanRows()
+     and MAX_SPEAKS in functions/api/_profile.js, are what bind. MAX_ABOUT
+     holds the line and every version of it alike. */
   var MAX_ABOUT = 200;
   var MAX_DISPLAY = 60;
   var MAX_ROWS = 20;
@@ -122,7 +124,7 @@
     face: '',
     /* What the server holds, and what the form holds. Save sends the
        difference; Discard copies the first over the second. */
-    saved: { display: '', about: '', links: {}, speaks: [], rows: [] },
+    saved: { display: '', about: '', lines: {}, links: {}, speaks: [], rows: [] },
     draft: null,
     open: -1,     // the row whose fields are showing, -1 for none
     err: '',      // the sentence over the fields after a refusal
@@ -266,6 +268,7 @@
     return {
       display: saved.display,
       about: saved.about,
+      lines: linesOut(saved.lines),
       links: links,
       speaks: saved.speaks.slice(),
       rows: saved.rows.map(function (row) {
@@ -289,13 +292,37 @@
 
   function flat(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
 
+  /* The languages the line can be written again in: the site's own ten, in
+     the order LINE_LANGS in functions/api/_profile.js has them, which is the
+     order SPEAKS in assets/links.js starts with. Read off the strings this
+     page loaded rather than written a third time, since a page is only ever
+     read in a language data/ui.json speaks — and that is the whole reason a
+     version is in one of these and not in any of the forty-four. */
+  function lineLangs() {
+    return Object.keys(TTBLinks.SPEAKS).filter(function (code) {
+      return Object.prototype.hasOwnProperty.call(state.ui, code);
+    });
+  }
+
+  /* The versions as the server stores them: each flattened, the empty ones
+     left out — so a box added and never filled is not a change, and a box
+     emptied is that version taken down. */
+  function linesOut(lines) {
+    var out = {};
+    lineLangs().forEach(function (code) {
+      var line = flat(lines[code]);
+      if (line) out[code] = line;
+    });
+    return out;
+  }
+
   function linksOut(links) {
     var out = {};
     TTBLinks.NETWORKS.forEach(function (net) { out[net.id] = (links[net.id] || '').replace(/^\s+|\s+$/g, ''); });
     return out;
   }
 
-  /* Which of the five parts differ from what is stored. Compared the way the
+  /* Which of the six parts differ from what is stored. Compared the way the
      server would store them, so a trailing space is not a change. */
   function changed() {
     var d = state.draft;
@@ -303,6 +330,7 @@
     var parts = [];
     if (flat(d.display) !== s.display) parts.push('display');
     if (flat(d.about) !== s.about) parts.push('about');
+    if (JSON.stringify(linesOut(d.lines)) !== JSON.stringify(linesOut(s.lines))) parts.push('lines');
     var links = linksOut(d.links);
     var sameLinks = TTBLinks.NETWORKS.every(function (net) {
       return (TTBLinks.clean(net.id, links[net.id]) || links[net.id]) === (s.links[net.id] || '');
@@ -435,6 +463,7 @@
 
     box.appendChild(field(t('accountDisplay'), display));
     box.appendChild(field(t('editLine'), about));
+    box.appendChild(linesField());
 
     /* The handles take a pasted address and show what they made of it once
        the field is left — **Where else you are** in README.md, and the
@@ -521,13 +550,90 @@
     return box;
   }
 
+  /* The line again in other languages, under the line: a box for each
+     version, named for the language it is in, with a cross that takes it off,
+     and a menu of the languages not written yet under them. A reader whose
+     page is in one of them gets that version instead of the line; everybody
+     else gets the line. **The line, in other languages** under **Profiles**
+     in README.md.
+
+     The first line is not tagged with a language — nothing asks which it was
+     written in, and the menu offers all ten because of that — so somebody
+     who wrote it in English and adds an English version has said the same
+     thing twice, and the English reader gets the second. Not worth a
+     question on a page whose job is to be short. */
+  function linesField() {
+    var d = state.draft;
+    var box = el('div', { className: 'ed-fields ed-lines' });
+
+    lineLangs().forEach(function (code) {
+      if (!Object.prototype.hasOwnProperty.call(d.lines, code)) return;
+      var name = TTBLinks.langName(code, state.lang);
+      var id = 'ed-line-' + code;
+      var text = el('textarea', {
+        className: 'lists-input', maxlength: String(MAX_ABOUT), rows: '2',
+        lang: code, 'aria-labelledby': id
+      });
+      text.value = d.lines[code];
+      text.addEventListener('input', function () { d.lines[code] = text.value; touched(); });
+
+      var off = el('button', {
+        type: 'button', className: 'ed-line-off',
+        'aria-label': t('editLinesRemove', { name: name }),
+        textContent: '×'
+      });
+      off.addEventListener('click', function () {
+        delete d.lines[code];
+        redraw('lines');
+      });
+
+      /* Not a <label> round the pair, for the reason speaksField() gives: a
+         label with two controls in it hands every press to the first. */
+      box.appendChild(el('div', { className: 'ed-field' }, [
+        el('div', { className: 'ed-line-head' }, [
+          el('span', { className: 'ed-label mono', id: id, textContent: name }),
+          off
+        ]),
+        text
+      ]));
+    });
+
+    var rest = lineLangs().filter(function (code) {
+      return !Object.prototype.hasOwnProperty.call(d.lines, code);
+    }).map(function (code) {
+      return { code: code, name: TTBLinks.langName(code, state.lang) };
+    }).sort(function (a, b) { return a.name.localeCompare(b.name, state.lang); });
+
+    if (rest.length) {
+      var pick = el('select', { className: 'lists-input', 'aria-label': t('editLinesAdd'), 'data-pick': 'lines' },
+        [el('option', { value: '', textContent: '+ ' + t('editLinesAdd') })].concat(rest.map(function (row) {
+          return el('option', { value: row.code, textContent: row.name });
+        })));
+      pick.addEventListener('change', function () {
+        if (!pick.value) return;
+        var code = pick.value;
+        d.lines[code] = '';
+        redraw();
+        /* Straight into the new box: it was added to be written in. */
+        var added = dom.pane.querySelector('textarea[aria-labelledby="ed-line-' + code + '"]');
+        if (added) added.focus();
+      });
+      box.appendChild(pick);
+    }
+
+    return box;
+  }
+
   /* The field changes shape with every pick, so it is drawn again, and the
      menu is given the focus back — where a keyboard was, and where it goes
-     next. */
-  function redraw() {
+     next. Which menu is the one that was pressed: the languages spoken by
+     default, the line's versions when it was one of those. */
+  function redraw(which) {
     touched();
     drawPane();
-    var pick = dom.pane.querySelector('select[aria-labelledby="ed-speaks-label"]');
+    var pick = which === 'lines'
+      ? dom.pane.querySelector('select[data-pick="lines"]')
+      : dom.pane.querySelector('select[aria-labelledby="ed-speaks-label"]');
     if (pick) pick.focus();
   }
 
@@ -808,11 +914,16 @@
 
     var social = TTBLinks.of(d.links);
     var spoken = TTBLinks.spoken(d.speaks, state.lang);
+    /* The line as a reader in this page's language gets it — their version
+       where there is one, the line where there is not — which is what
+       lineOf() in assets/lists.js picks. Nothing without the line itself,
+       because readProfile() sends no versions of a line taken down. */
+    var line = flat(d.about) ? (flat(d.lines[state.lang]) || flat(d.about)) : '';
     clear(dom.screen);
     dom.screen.appendChild(el('header', { className: 'lists-page-top' }, [
       state.face ? el('img', { className: 'lists-page-face', src: state.face, alt: '', width: 96, height: 96 }) : null,
       el('h1', { className: 'lists-page-name', textContent: flat(d.display) || state.user }),
-      flat(d.about) ? el('p', { className: 'lists-page-line', textContent: flat(d.about) }) : null,
+      line ? el('p', { className: 'lists-page-line', textContent: line }) : null,
       social.length ? el('ul', { className: 'lists-page-social' }, social.map(function (row) {
         return el('li', null, [el('a', {
           href: row.href,
@@ -911,6 +1022,7 @@
     var bodies = {
       display: { action: 'display', display: d.display },
       about: { action: 'about', about: d.about },
+      lines: { action: 'lines', lines: linesOut(d.lines) },
       links: (function () { var b = linksOut(d.links); b.action = 'links'; return b; }()),
       speaks: { action: 'speaks', speaks: d.speaks },
       rows: { action: 'rows', rows: rows }
@@ -934,6 +1046,7 @@
             if (part === 'rows') state.saved.rows = isArray(out.rows) ? out.rows : [];
             else if (part === 'links') state.saved.links = out.links || {};
             else if (part === 'speaks') state.saved.speaks = isArray(out.speaks) ? out.speaks : [];
+            else if (part === 'lines') state.saved.lines = out.lines || {};
             else state.saved[part] = out[part] || '';
           });
         });
@@ -962,6 +1075,7 @@
       if (err === 'row-url' && typeof out.row === 'number') return fail(t('rowsErrUrl', { n: out.row + 1 }), out.row);
       if (err === 'rows-many') return fail(t('rowsErrMany'));
       if (err === 'bad-speaks') return fail(t('editErrSpeaks'));
+      if (err === 'bad-lines') return fail(t('editErrLines'));
       if (err === 'no-rows-table') return fail(t('rowsErrOff'));
       if (err === 'bad-link') {
         var named = '';
@@ -1028,6 +1142,7 @@
       state.saved = {
         display: account.out.display || '',
         about: account.out.about || '',
+        lines: account.out.lines || {},
         links: account.out.links || {},
         speaks: isArray(account.out.speaks) ? account.out.speaks : [],
         rows: isArray(account.out.rows) ? account.out.rows : []

@@ -63,7 +63,7 @@ import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } fro
 /* What the tab and the search result call the page: the name they go by,
    or the username where they gave none, and the line under it where there
    is one — which is where what they do is. assets/lists.js writes the
-   same. */
+   same, with the reader's own version of the line where there is one. */
 function title(profile) {
   const who = profile.display || profile.name;
   return profile.about ? who + ' · ' + profile.about : who;
@@ -206,12 +206,22 @@ export async function onRequest(context) {
       esc(net.label) + '</a></li>')
     .join('');
 
+  /* The line again in each language they wrote it in, each tagged with its
+     language, so a search in Estonian finds the Estonian one. The page that
+     runs a script prints the one its reader's language chooses; the text
+     underneath is for a reader that reads them all. */
+  const lines = profile.lines || {};
+  const versions = Object.keys(lines)
+    .map((code) => '<p lang="' + esc(code) + '">' + esc(lines[code]) + '</p>')
+    .join('');
+
   /* The page as text, for the reader that runs no script — see fill() in
-     functions/_shell.js: the name, the line they wrote, where else they are,
-     their page of links, and their lists, each a link. */
+     functions/_shell.js: the name, the line they wrote and its versions,
+     where else they are, their page of links, and their lists, each a link. */
   html = fill(html, EMPTY['lists.html'],
     '<h1>' + esc(profile.display || profile.name) + '</h1>' +
     (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
+    versions +
     (elsewhere ? '<ul>' + elsewhere + '</ul>' : '') +
     rowsAsText(profile.rows) +
     '<ol>' + profile.lists.map((list) =>

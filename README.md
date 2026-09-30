@@ -6534,6 +6534,7 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
+| that line in each other language | 200, in any of the site's ten |
 | the name you go by | 60 |
 | an Instagram handle | 30 characters |
 | a TikTok handle | 24 |
@@ -6698,7 +6699,8 @@ draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
 
-And the line they wrote about themselves, when they wrote one, with the three
+And the line they wrote about themselves, when they wrote one — in the
+reader's own language, where they wrote it in that one too — with the three
 places they said they are under it, the languages they speak under those, and
 the page of links they put together under all of it — **Your page** below.
 That is the whole of it.
@@ -6780,6 +6782,63 @@ no line and the editor offers a field for one anyway, which is the one thing
 in that window that is not quite honest — pressing Save there fails and says
 so. The rest of every page is exactly what it was before this existed, which
 is the point.
+
+### The line, in other languages
+
+The line is written once, in whatever language somebody wrote it in, and on
+a site read in ten languages that is a line most of its readers get in
+somebody else's. So it can be written again: under **Your line** on `/edit`,
+*Add your line in another language* is a menu of the site's ten, and each
+one picked is a box of its own, named for its language, with a cross that
+takes it off. A reader whose page is in one of those languages gets that
+version in place of the line; everybody else gets the line as it was first
+written, which is exactly what they got before this existed. The preview
+beside the editor shows the version this page's own language would get.
+
+**Chosen by the page's language, not by the reader's country.** The
+language a page is read in is already settled — `?lang=`, then the reader's
+last choice, then the browser's — **Languages** above. Tallinn alone is read
+in Estonian, Russian and English, so a country is a poor guess at which of
+them somebody reads, and the site has never guessed one from it anywhere
+else.
+
+**The site's ten, and no more.** A version is only ever chosen by the language
+a page is being read in, and a page on this site is only ever read in one of
+the ten in `data/ui.json`, so a line in German would be a box no reader's page
+could choose. `LINE_LANGS` in `functions/api/_profile.js` is the list, and
+`node tools/validate.mjs` fails the build when it and `data/ui.json` part
+company — a language added to the site is a code added there in the same
+commit. The editor reads its list off `ui.json` directly. The first line is
+not tagged with a language, because nothing asks which it is in; the menu
+therefore offers all ten, and a version in the line's own language simply
+wins for that language's readers.
+
+**Keyed by language, the way every translated thing here is.** What is
+stored is `{"et":"…","ru":"…"}` — the shape a card's back has in
+`data/decks.json` and a blurb has in `data/restaurants.json` — inside
+`users.links` under `lines`, beside the handles and the languages. Not a
+column per language, which would be ten `ALTER`s run by hand against a live
+table and an eleventh with the next language, and not a table of its own for
+something read on one page, about one person, by primary key. So, like the
+languages, **it shipped with no hand step**. `cleanLines()` holds each
+version to the line's own two hundred characters and its flatten-and-cut —
+`cleanLine()`, which the line itself now goes through as well — and an empty
+box is that version taken down. A code the site does not speak refuses the
+whole write rather than being dropped.
+
+**Never without the line.** `readProfile()` sends no versions for a profile
+whose line was taken down, so emptying the line takes it down in every
+language at once; the versions stay stored, and come back if the line does.
+
+**What reads it.** `lineOf()` in `assets/lists.js` picks the version, on the
+card and on the page alike, and the tab's title follows it; the paragraph is
+tagged `lang` when it is a version, so a screen reader says it in the right
+voice. The head a crawler is served stays the first line, for the reason
+`describe()` in `functions/u/[name].js` gives for keeping every card in one
+language — a card is shown to whoever the link is forwarded to — and
+the text written into the page for a reader that runs no script carries every
+version, each as a `<p lang>`, so a search in Estonian can find the Estonian
+one.
 
 ### Where else you are
 
@@ -6909,8 +6968,10 @@ about a person is not one more `ALTER` run by hand against a live table, and
 this is the first thing to use it that way — so it shipped with no hand step.
 `readLinks()` reads only the networks, so the key is invisible to everything
 that was there before it; the `links` write and the `speaks` write in
-`functions/api/account.js` each read the column first and carry the other
-half across, through `mergeLinks()`. It asks for a session and no password,
+`functions/api/account.js` each read the column first and carry the rest
+across, through `mergeLinks()` — and so does the `lines` write, which keeps
+the line's other languages in the same column, **The line, in other
+languages** above. It asks for a session and no password,
 for the reason the handles do, and saves with the editor's one Save. The
 profile route writes it into the JSON-LD as `knowsLanguage`.
 
