@@ -28,7 +28,7 @@
  * Five kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened. selectPlace() in assets/app.js, which is the
- *            same moment TTBTrack.view() reports one to Google Analytics, and
+ *            same moment TTBTrack.view() counts one for the site's own count, and
  *            select() in assets/venues.js, which is a card pressed on the
  *            directory. Those are the two gestures on this site that mean
  *            "show me this place".
@@ -94,8 +94,8 @@
  * above — and the rail every press, which is not an oversight. A place or a
  * chip is a question about where to eat, asked once however many times the
  * card is reopened while somebody makes their mind up — and it has to agree
- * with the one page view TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
- * per press of one, and the question this table answers is the plain one:
+ * with the one view TTBTrack.view() counts beside it. A pill is a press,
+ * assets/track.js tallies one per press, and the question this table answers is the plain one:
  * which of the nine buttons do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.
