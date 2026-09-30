@@ -7211,14 +7211,29 @@ and are **What is not built yet**.
 profile with rows and no lists is indexed, as one with lists is. A search is
 for a person — *etibar actor*, *etibar adalat* — and a username is neither
 of those, so the line under the name is what the head is built from:
-`functions/u/[name].js` writes the name they go by and the line as the title,
-the line and then the first three rows as the description, and a `ProfilePage`
-in JSON-LD whose `Person` carries the line as its description, the face as
-its picture and every address on the page as `sameAs`. `rowsAsText()` writes
-the rows into the page as text for the reader that runs no script, and
-`assets/lists.js` writes the same title once the script runs. So the line is
-where a person puts the name they go by and what they do: *Etibar Ädalät,
-actor and talent in Tallinn* is what makes the page answer to either search.
+`functions/u/[name].js` writes the name they go by and the first sentence of
+the line as the title, cut at a word to about seventy characters, which is
+what a search result shows before the site name; the line and then the first
+three rows that are a link or a note — not a heading over them — as the
+description; and a `ProfilePage` in JSON-LD whose `Person` carries the line
+as its description, the face as its picture and, as `sameAs`, the three
+handles and the rows whose address is one of the person's own pages
+elsewhere — a LinkedIn, a GitHub, an ORCID, by the `IDENTITY` table in the
+route — rather than every address on the page, since `sameAs` is how a
+search engine ties one person's pages together and a showreel on YouTube or
+an employer's home page teaches it the wrong thing. The head takes the
+pictures out of all of it: the page keeps the clapperboard in front of
+*Actor* and the star in front of a heading, because they are the person's
+own typography, but a title that opens with an emoji is one a search engine
+rewrites and a flag in a preview card is a box on half the machines that
+open one. `rowsAsText()` writes the rows into the page as text for the
+reader that runs no script, each with its versions in the other languages
+tagged with theirs, and `assets/lists.js` writes the same title once the
+script runs, with `plainOf()` and `profileTitle()` copied from the route in
+ES5. So the line is where a person puts the name they go by and what they
+do, in its first sentence: *Etibar Ädalät, actor and talent in Tallinn* is
+what makes the page answer to either search, and *Actor | Estonia Europe*
+answers to neither *Tallinn* nor *Ädalät*.
 A profile with a face in the repository is also in `sitemap.xml` —
 `tools/sitemap.mjs` lists `/u/<name>` for every `assets/faces/<name>.jpg`,
 because that is the one kind of profile the repository can know exists.
