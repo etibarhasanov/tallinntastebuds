@@ -375,7 +375,7 @@
   function mountLanguage() {
     var host = $('lang-switch');
     if (!host || !window.TTBLanguage) return;
-    var langs = Object.keys(state.ui).map(function (code) {
+    var langs = Object.keys(state.ui).filter(pageWrittenIn).map(function (code) {
       return { code: code, name: (state.ui[code] && state.ui[code].langName) || code };
     });
     window.TTBLanguage.mount(host, langs, state.lang, function (code) {
@@ -386,6 +386,21 @@
       params.set('lang', code);
       window.location.search = params.toString();
     }, t('language'));
+  }
+
+  /* On a profile the switch offers the languages that page is written in and
+     no others: the one it was first written in, which nothing records and is
+     taken to be the site's default, and every language its line or a row has
+     a version in. A reader picking Finnish on a page nobody wrote in Finnish
+     would get the page they already had, so Finnish is not offered — and a
+     page written in one language offers one, which TTBLanguage draws as no
+     switch at all. Every other view offers all ten. */
+  function pageWrittenIn(code) {
+    var who = state.view === 'who' && state.profile;
+    if (!who) return true;
+    if (code === DEFAULT_LANG) return true;
+    if (who.lines && who.lines[code]) return true;
+    return (who.rows || []).some(function (row) { return row.lines && row.lines[code]; });
   }
 
   function applyStaticStrings() {
