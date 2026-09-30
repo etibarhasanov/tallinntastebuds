@@ -746,7 +746,15 @@
       if (d.countries.length) {
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
-      if (d.sources.length) stack.appendChild(ranking(t('insightsFrom'), d.sources, sourceName));
+      if (d.sources.length) {
+        var sources = ranking(t('insightsFrom'), d.sources, sourceName);
+        /* What people searched for here, the pages elsewhere that linked
+           here and the owner's own links are the page next door. */
+        sources.appendChild(el('p', { className: 'ins-note' }, [
+          el('a', { href: '/admin/found', textContent: t('foundLink') })
+        ]));
+        stack.appendChild(sources);
+      }
       /* Which address a search engine sent each of them to — FOUND BY A
          SEARCH ENGINE in functions/api/_visitors.js. The engine and the
          address as they were counted, in mono like the press names: an

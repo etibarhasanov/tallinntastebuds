@@ -399,10 +399,14 @@ a.stats-name:hover { color: var(--accent); }
 }
 
 /* A press is named by the id it is reported under, which is a word nobody
-   translated, so it is set as one. */
+   translated, so it is set as one — and so are the addresses and the words
+   somebody typed on /admin/found, which is why it breaks anywhere: a
+   Reddit thread's path is one long word of underscores, and at 390px it
+   would push the page sideways. */
 .vis-id {
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }

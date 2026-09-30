@@ -970,7 +970,9 @@
         refresh();
         /* Once the typing has stopped, so a word is one search and not one
            per letter — the same reason the redraw waits. */
-        if (state.q) TTBTrack.event('search', { search_term: state.q.toLowerCase(), scope: 'google' });
+        if (state.q) {
+          TTBTrack.event('search', { search_term: state.q.toLowerCase(), scope: 'google', results: state.shown.length });
+        }
       }, 140);
     });
 
