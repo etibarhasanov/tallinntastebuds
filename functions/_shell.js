@@ -1,8 +1,8 @@
 /**
  * Tallinn Tastebuds — serving a page of this site with a head of its own.
  *
- * Underscore-prefixed, so this is a module and never a route. Six Functions
- * hand back one of four static pages with different tags written into it:
+ * Underscore-prefixed, so this is a module and never a route. Seven Functions
+ * hand back one of five static pages with different tags written into it:
  *
  *   functions/index.js        index.html, in the language its address names
  *                             and standing on the place it names, so a search
@@ -19,6 +19,9 @@
  *   functions/flashcard.js    flashcard.html: one deck of Estonian, written
  *                             into the page as text so a search for what a
  *                             word means finds this site answering
+ *   functions/blog.js         blog.html: one post, written into the page as
+ *                             text, so a search for where to eat finds the
+ *                             post that answers it
  *
  * The map and the split page write their own tags rather than taking head():
  * it spells one title for every caller and hands every caller the mark as its
@@ -136,7 +139,8 @@ export const EMPTY = {
      out of the same furniture. Two keys with one value rather than one key
      for both: what this table is is a page's promise about its own markup, and
      two pages that happen to agree today are two pages that may not. */
-  'flashcard.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
+  'flashcard.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
+  'blog.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
 };
 
 export const SITE = 'https://tallinntastebuds.ee';

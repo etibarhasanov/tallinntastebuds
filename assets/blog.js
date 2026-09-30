@@ -9,6 +9,8 @@
  * WHAT IT IS MADE OF
  *
  * data/blog.json and nothing else — no endpoint, no database, no build step.
+ * functions/blog.js serves the page, but only to write its head and its text
+ * for a crawler; nothing here waits on it.
  * Two states, the index and one post, decided by ?post=<id> and built into
  * the one <main> in blog.html, which is how lists.html and account.html are
  * put together too. Walking between them is pushState rather than a fresh
@@ -19,7 +21,11 @@
  * The page keeps the address honest as it goes. document.title and the
  * canonical tag are rewritten for the post being read, because ?post= is a
  * different page with different words on it, and one canonical pointing at
- * the index would ask a crawler to treat every post as the same page.
+ * the index would ask a crawler to treat every post as the same page. The
+ * head the page arrives with is already the right one: functions/blog.js
+ * writes it for the address that was opened, with the post as text in <main>
+ * for the readers that run no script, and render() empties that before it
+ * draws. The rewriting here is for the walks after that.
  *
  * THE CLIP
  *
@@ -297,6 +303,30 @@
     ]);
   }
 
+  /* The one piece of markup a post carries: [words](/path), a link to
+     somewhere on this site and nowhere else — the path starts with one slash,
+     never two. functions/blog.js draws the same pattern into the text it
+     serves, and tools/validate.mjs holds every one to a real address. Each
+     link reports blog_link with the post it was pressed in and where it went,
+     which is how the owner finds out whether a post about bakeries sends
+     anybody to a bakery. */
+  var LINK = /\[([^\]]+)\]\((\/(?!\/)[^)\s]*)\)/g;
+
+  function prose(text, post) {
+    var kids = [];
+    var at = 0;
+    var m;
+    LINK.lastIndex = 0;
+    while ((m = LINK.exec(text)) !== null) {
+      if (m.index > at) kids.push(text.slice(at, m.index));
+      kids.push(TTBTrack.click(el('a', { href: m[2], textContent: m[1] }),
+        'blog_link', { post: post.id, to: m[2] }));
+      at = m.index + m[0].length;
+    }
+    if (at < text.length) kids.push(text.slice(at));
+    return kids;
+  }
+
   function findPost(id) {
     for (var i = 0; i < state.posts.length; i++) {
       if (state.posts[i].id === id) return state.posts[i];
@@ -387,7 +417,7 @@
           : el('p', { className: 'blog-note', textContent: t('blogEnglishOnly') }),
         clip(post),
         el('div', { className: 'blog-body' }, body.map(function (para) {
-          return el('p', { textContent: para });
+          return el('p', {}, prose(para, post));
         })),
         post.link ? el('p', { className: 'blog-foot' }, [
           TTBTrack.click(

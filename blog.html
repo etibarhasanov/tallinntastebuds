@@ -3,8 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Notes on the map | Tallinn Tastebuds</title>
-<meta name="description" content="One post for each thing this site does — saves, lists, stories, discounts, the chat, the radio — what it does and why it does it that way.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 <meta name="robots" content="index, follow">
@@ -15,32 +13,35 @@
      the consent bar that stood in front of both of them for a day. -->
 <script src="/assets/analytics.js?v=a44b6b90" defer></script>
 
-<!-- The index's own address, and the tag is rewritten by assets/blog.js the
-     moment a post is opened, because ?post=<id> is a different page with
-     different words on it and a canonical pointing back here would ask a
-     crawler to treat every post as one page. Every crawler that matters runs
-     the script; one that does not gets the index, which is what this file
-     actually is.
+<!-- The block between the two PAGE-HEAD markers below is replaced whenever
+     this file is served at /blog or /blog?post=<id>: functions/blog.js writes
+     the post's own title, description, canonical and card in here, and a
+     BlogPosting in JSON-LD beside them, so a search result and a link pasted
+     into a chat both say which post it is. Opened directly at /blog.html the
+     markers are left alone and these defaults stand.
 
-     The head is not swapped per post the way lists.html's is. That takes a
-     Function in front of the page — see functions/_shell.js, which does it
-     for a list, a profile and the directory — and it buys one thing: the
-     preview card in a chat naming the post rather than the blog. Nothing
-     here is written by a stranger and nothing here is private, so the cost
-     of that Function is a whole route to maintain for a nicer unfurl. If a
-     post ever needs to arrive in a message as itself, _shell.js is where to
-     start and this comment is the reason it was left undone. -->
+     assets/blog.js still rewrites the canonical and the title as a reader
+     walks from one post to the next without reloading, because the head this
+     route wrote is the head of the address the page was opened at and not of
+     the one it has walked to.
+
+     The markers are spelled out only where they actually mark something, for
+     the reason the same comment in lists.html gives: HTML comments do not
+     nest. -->
+<!--PAGE-HEAD-->
+<title>Notes on the map | Tallinn Tastebuds</title>
+<meta name="description" content="Where to eat in Tallinn, and why the map works the way it does: bakeries, craft beer, cheap eats, Georgian and Azerbaijani food, Google's top tens, and one post for each thing this site does.">
 <link rel="canonical" href="https://tallinntastebuds.ee/blog">
-
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tallinntastebuds.ee/blog">
 <meta property="og:site_name" content="Tallinn Tastebuds">
 <meta property="og:title" content="Notes on the map | Tallinn Tastebuds">
-<meta property="og:description" content="What each part of this site does, and why it does it that way.">
+<meta property="og:description" content="Where to eat in Tallinn, and why the map works the way it does.">
 <meta property="og:image" content="https://tallinntastebuds.ee/assets/logo/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<!--/PAGE-HEAD-->
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
@@ -110,7 +111,7 @@
 <!-- What every press reports to Google Analytics, shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=5e66df1d" defer></script>
+<script src="/assets/track.js?v=545684a5" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
@@ -119,6 +120,6 @@
      station carries across the walk between them. Before blog.js and deferred
      like it, so document order puts the global in place first. -->
 <script src="/assets/radio.js?v=f0656dd3" defer></script>
-<script src="/assets/blog.js?v=322cab34" defer></script>
+<script src="/assets/blog.js?v=a3f9d60f" defer></script>
 </body>
 </html>

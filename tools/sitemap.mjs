@@ -3,11 +3,12 @@
  * Tallinn Tastebuds — the sitemap.
  *
  * Reads the languages out of data/ui.json, the places out of
- * data/restaurants.json, the decks out of data/decks.json, Google's six
- * lists out of tools/googlelists.mjs and the faces out of assets/faces/, and writes sitemap.xml: the map at each
- * of its ten addresses, every open place at its own, the directory, the blog,
- * the flashcards and every deck of them, the six lists, and a profile
- * for every face.
+ * data/restaurants.json, the decks out of data/decks.json, the posts out of
+ * data/blog.json, Google's six lists out of tools/googlelists.mjs and the
+ * faces out of assets/faces/, and writes sitemap.xml: the map at each of its
+ * ten addresses, every open place at its own, the directory, the blog and
+ * every post on it, the flashcards and every deck of them, the six lists, and
+ * a profile for every face.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
  *   node tools/sitemap.mjs --check   report that it is out of date, exit 1
@@ -81,8 +82,17 @@
  * site links to the blog, on purpose, so this file is how a crawler learns the
  * address exists at all. It is still a page written to be found — a post per
  * thing this site does, in prose — which is why it is indexed at all, and
- * robots.txt says so where the Disallow lines are. Only the index is listed;
- * the posts are ?post=<id> on it and the index links every one of them.
+ * robots.txt says so where the Disallow lines are.
+ *
+ * And every post is listed too, one /blog?post=<id> each, in the order of
+ * data/blog.json. For a while only the index was, on the reasoning that the
+ * index links every post — which was true for a reader that ran the script
+ * and nobody else, because the index was drawn by assets/blog.js into an
+ * empty <main>. functions/blog.js writes the posts into the page as text now,
+ * so the links are there for any crawler; the posts are here as well because
+ * they are the pages on the blog written to answer what people type — where
+ * to eat, the bakeries, the beer — and there is no reason to make a crawler
+ * find them second-hand.
  *
  * /chess is the second, for the same reason and until a door on the map's rail
  * makes it the third kind: one address, no alternates, since the page is one
@@ -114,6 +124,7 @@ const OUT = join(ROOT, 'sitemap.xml');
 const UI = join(ROOT, 'data', 'ui.json');
 const PLACES = join(ROOT, 'data', 'restaurants.json');
 const DECKS = join(ROOT, 'data', 'decks.json');
+const POSTS = join(ROOT, 'data', 'blog.json');
 const FACES = join(ROOT, 'assets', 'faces');
 
 /* The host, spelled out. robots.txt, the pages' own og: tags,
@@ -160,7 +171,7 @@ function faceNames() {
     .sort();
 }
 
-export function render(langs, placeIds, shelfIds, faces) {
+export function render(langs, placeIds, shelfIds, faces, postIds) {
   /* Sorted by code, the way the switcher lists them and functions/index.js
      writes them into the head. */
   const codes = langs.slice().sort();
@@ -173,6 +184,7 @@ export function render(langs, placeIds, shelfIds, faces) {
   for (const code of codes) entries.push(entry(mapAt(code), alternates()));
   entries.push(entry(SITE + '/lists'));
   entries.push(entry(SITE + '/blog'));
+  for (const id of postIds || []) entries.push(entry(SITE + '/blog?post=' + id));
   entries.push(entry(SITE + '/chess'));
   for (const name of faces) entries.push(entry(SITE + '/u/' + name));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
@@ -217,6 +229,12 @@ function shelfIds() {
   return [...list('decks'), ...list('lessons'), ...list('songs')].map((one) => one.id);
 }
 
+/* Every post on the blog, by id, in the order of the file. */
+function postIds() {
+  if (!existsSync(POSTS)) return [];
+  return JSON.parse(readFileSync(POSTS, 'utf8')).map((post) => post.id);
+}
+
 /* Every open place, by id, in the order of the file — which is the order a
    place was added in and never moves, so the file only changes when the map
    does. */
@@ -228,7 +246,7 @@ function placeIds() {
 
 export function stale() {
   try {
-    const want = render(languages(), placeIds(), shelfIds(), faceNames());
+    const want = render(languages(), placeIds(), shelfIds(), faceNames(), postIds());
     const got = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
     return want !== got;
   } catch (e) {
@@ -242,9 +260,10 @@ function main() {
   const ids = placeIds();
   const shelf = shelfIds();
   const faces = faceNames();
-  const next = render(langs, ids, shelf, faces);
+  const posts = postIds();
+  const next = render(langs, ids, shelf, faces, posts);
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const count = langs.length + 3 + GOOGLE_LISTS.length + ids.length + shelf.length + faces.length;
+  const count = langs.length + 4 + GOOGLE_LISTS.length + ids.length + shelf.length + faces.length + posts.length;
 
   if (check) {
     if (now === next) {
@@ -258,7 +277,7 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog, /chess, /flashcard and ${shelf.length} decks, lessons and songs, ` +
+    `/lists, /blog and ${posts.length} posts, /chess, /flashcard and ${shelf.length} decks, lessons and songs, ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }
