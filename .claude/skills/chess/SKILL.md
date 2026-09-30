@@ -105,6 +105,14 @@ for four choices in the segmented control the language switch is.
   reason, *Join the waiting list* again.
 - Loading: the head from the markup, the cards empty until the one answer is in
   — no spinner, like every page here.
+- Notes for the next player, under the public game's moves: *No notes yet —
+  leave one for whoever moves next.*, or the notes oldest first, each with
+  who, when and *after 14. Nf3*; under them the field, *Post as* your name or
+  *Anonymously* for a member and the line saying a visitor posts as *a
+  visitor*; *Delete* under your own, *Hide* under anybody's for the house;
+  once the game is over, the notes and *This game is over.* where the field
+  was; past five in an hour, *That's a lot of notes*. Added at the owner's
+  asking between 5½ and 6 — **Notes for the next player** in `README.md`.
 - The language switch and the radio are the flashcards page's, in the same
   header, and the station follows the language. This is the map's origin, so
   the radio walks over from the map already playing.
@@ -135,7 +143,9 @@ set is a later change and a licence row.
   score: { everybody, house, drawn },           the public games' own tally,
                                                 for the line under the moves
   record: { games, won, lost, drawn },          the house's, over both kinds
-  public: { game, moves, legal } | null,        null before the first game
+  public: { game, moves, legal, notes } | null, null before the first game;
+                                                notes null where chess_notes
+                                                is not applied
   mine:   { game, moves, legal, abandon } | null,   the member's latest
                                                 private game; for the house,
                                                 the one being played
@@ -151,6 +161,10 @@ game:  { id, kind: 'public'|'private', state: 'waiting'|'playing'|'over',
 moves: [ { ply, san, uci, by, at } ]  by is 'house', 'visitor' or a username;
                                      uci is what draws the last move's ring
 legal: [ 'e2e4', 'e7e8q', … ]        only when the reader may move now
+notes: [ { id, ply, name, text, at, mine } ]   the newest fifty, oldest
+                                     first; name null when anonymous, 'house'
+                                     for the house's; mine off the session, or
+                                     off `client=` on the query for a visitor
 abandon: true                        only for the house, only while it may end
                                      the game without a result — the page
                                      offers the button off this, so the seven
@@ -171,6 +185,10 @@ without the words, or an error:
 | `abandon` `{ game }` | the house | over with no result, only on the member's turn after seven quiet days | `409 not-yet`, `404 no-game`, `403 not-yours` |
 | `undo` `{ game, ply }` — `ply` the move's own, the game's ply as the page read it | whoever the last move was filed under: the house, the member, or the one device that played it for Everybody | deletes the move and steps the game back to the position before it, within ten seconds of it being filed (three more of grace), while the game is still playing — a move that ended it is final | `409 too-late` (answered, over, or past the time), `403 not-yours`, `400 client`, `404 no-game` |
 
+| `note` `{ game, text, as }` — `as: 'name'` puts a member's name on it | anybody, on the public game while it is playing | files the note, at the game's ply | `409 over`, `429 often` past five an hour from one network, `400 empty`, `400 client`, `503 no-salt` |
+| `unnote` `{ id }` | whoever the note is filed under | deletes it | `404 no-note` (not yours, or gone), `400 client` |
+| `hide` `{ id }` | the house | takes any note off the page, keeping the row | `404 no-note`, `403 not-yours` |
+
 The move's primary key is the lock: `chess_moves (game, ply)` — the batch
 inserts the move row first and updates the game `WHERE ply = ?` second, so two
 people moving at once produce one move and one 409. Every refusal is a JSON
@@ -190,6 +208,16 @@ chess_games  id TEXT PRIMARY KEY, kind, state, n INTEGER, challenger TEXT,
              created_at, started_at, finished_at, last_at INTEGER
 chess_moves  game TEXT, ply INTEGER, san TEXT, uci TEXT, by_kind TEXT,
              by_id TEXT, at INTEGER, PRIMARY KEY (game, ply)
+```
+
+And a third, added with the notes, applied after the other two and read on its
+own — without it the public game answers `notes: null` and the page draws no
+card:
+
+```sql
+chess_notes  id TEXT PRIMARY KEY, game TEXT, ply INTEGER, owner_kind TEXT,
+             owner TEXT, named INTEGER, text TEXT, ip_hash TEXT, at INTEGER,
+             hidden INTEGER
 ```
 
 The queue is `chess_games WHERE kind = 'private' AND state = 'waiting' ORDER BY

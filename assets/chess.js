@@ -55,6 +55,19 @@
  * one. state.undo is the one thing this page remembers about a move after
  * the answer, and it goes the moment the board has moved on.
  *
+ * NOTES FOR THE NEXT PLAYER
+ *
+ * Beside the public game's moves, a card of short lines people leave for
+ * whoever plays Everybody's next move, oldest at the top, the way a chat
+ * reads. Anybody may write one while the game is on; a member chooses whether
+ * their name goes on it, a visitor's reads *a visitor*. Each says which
+ * position it was written about, so a note about move 3 read at move 20 reads
+ * as old. The author may delete their own and the house may hide any. The
+ * notes ride in the same answer as the board and the same poll, so nothing
+ * here asks for them; what the page keeps is the draft and the choice of name,
+ * which a redraw puts back, focus and caret included, so a poll that brought
+ * somebody else's note does not eat the one being typed.
+ *
  * THE PIECES
  *
  * The platform's own chess glyphs, U+2654 to U+265F, each followed by U+FE0E so
@@ -85,6 +98,10 @@
   /* How long a move may be taken back, counted from when it came back. The
      route allows a few seconds more, for the request on its way. */
   var UNDO_MS = 10000;
+
+  /* MAX_NOTE in functions/api/chess.js, restated for the field's maxlength;
+     the route is the one that binds. */
+  var MAX_NOTE = 280;
 
   var FILES = 'abcdefgh';
 
@@ -120,6 +137,9 @@
        who played the move is the one who may undo it, and the route checks
        the same by what the move was filed under. */
     undo: null,         /* { game, ply, until } */
+    /* The note being written, and whether a member's name goes on it. */
+    draft: '',
+    as: 'name',
     busy: false
   };
 
@@ -284,7 +304,7 @@
       window.history.replaceState(null, '', window.location.pathname + '?' + params.toString());
     } catch (e) { /* an old browser keeps the address */ }
 
-    ask(API + '?lang=' + encodeURIComponent(code)).then(function (answer) {
+    ask(readUrl(API + '?lang=' + encodeURIComponent(code))).then(function (answer) {
       /* The site did not answer, or answered without words. The page stays in
          the language it is in and says so in that language: the one thing it
          must not do is start printing its own keys because somebody pressed a
@@ -522,9 +542,7 @@
     state.picked = null;
     state.promoting = null;
 
-    var body = { action: 'move', game: g.game.id, ply: g.game.ply, move: uci };
-    var you = state.answer.you;
-    if (!you || you.role === 'visitor') body.client = window.TTBDevice.id();
+    var body = { action: 'move', game: g.game.id, ply: g.game.ply, move: uci, client: visitorId() };
 
     window.TTBTrack.event('chess_move', { kind: g.game.kind, ply: g.game.ply + 1 });
     write(body, { 409: 'chessGotThereFirst' }, function (out) {
@@ -570,11 +588,8 @@
   }
 
   function takeBack(game) {
-    var extra = { game: game.id, ply: game.ply };
-    var you = state.answer.you;
-    if (!you || you.role === 'visitor') extra.client = window.TTBDevice.id();
     state.undo = null;
-    act('undo', 'chess_undo', extra, { 409: 'chessUndoLate' });
+    act('undo', 'chess_undo', { game: game.id, ply: game.ply, client: visitorId() }, { 409: 'chessUndoLate' });
   }
 
   /* Every other write: the house's new public game, a member joining the line
@@ -607,6 +622,21 @@
   }
 
   /* ---------------------------------------------------------- what to say */
+
+  /* The device id a visitor's move or note is filed under, minted only when
+     one is about to be sent; undefined for anybody signed in, who is filed
+     under their account and leaves it out of the request. */
+  function visitorId() {
+    var you = state.answer.you;
+    return !you || you.role === 'visitor' ? window.TTBDevice.id() : undefined;
+  }
+
+  /* The same id for a read, never minted: it is only how the answer knows
+     which notes are this browser's to delete. */
+  function readUrl(url) {
+    var known = window.TTBDevice.known();
+    return known ? url + (url.indexOf('?') === -1 ? '?' : '&') + 'client=' + encodeURIComponent(known) : url;
+  }
 
   function isHouse() {
     return !!(state.answer && state.answer.you && state.answer.you.role === 'house');
@@ -849,8 +879,120 @@
     return card;
   }
 
+  /* The board, and beside it — under it on a phone — the moves and, on the
+     public game once chess_notes is applied, the notes under those. */
   function gameGrid(g) {
-    return el('div', { className: 'chess-grid' }, [boardCard(g), movesCard(g)]);
+    return el('div', { className: 'chess-grid' }, [
+      boardCard(g),
+      el('div', { className: 'chess-side' }, [movesCard(g), g.notes ? notesCard(g) : null])
+    ]);
+  }
+
+  /* ------------------------------------------------------------------ notes */
+
+  /* Which position a note was written about: "after 14. Nf3", "after 14… Nf6",
+     or before anybody had moved. Nothing where that move has since been taken
+     back and not replayed. */
+  function notePly(g, ply) {
+    if (!ply) return t('chessNoteBefore');
+    var move = g.moves[ply - 1];
+    if (!move) return '';
+    return t('chessNoteAfter', { move: Math.ceil(ply / 2) + (ply % 2 ? '. ' : '… ') + move.san });
+  }
+
+  function noteRow(g, note) {
+    var meta = [note.name === 'house' ? t('wordmark') : note.name || t('chessVisitor'), ago(note.at), notePly(g, note.ply)]
+      .filter(Boolean).join(' · ');
+    var kids = [
+      el('p', { className: 'chess-note-text', textContent: note.text }),
+      el('p', { className: 'chess-note-meta' }, [
+        meta,
+        note.mine ? el('span', { className: 'chess-tag', textContent: t('chessYou') }) : null
+      ])
+    ];
+    if (note.mine) {
+      kids.push(altButton(t('chessNoteDelete'), function () {
+        act('unnote', 'chess_note_delete', { id: note.id, client: visitorId() });
+      }));
+    } else if (isHouse()) {
+      kids.push(altButton(t('chessNoteHide'), function () {
+        act('hide', 'chess_note_hide', { id: note.id });
+      }));
+    }
+    return el('li', { className: 'chess-note' }, kids);
+  }
+
+  /* Whether a member's name goes on the note: both answers drawn, the filled
+     one the answer — the feedback composer's control, and its is-on has to be
+     moved by hand for the reason written over postAs() in assets/feedback.js. */
+  function noteAs(you) {
+    /* The house's name on a note is the wordmark, as on its moves. */
+    var name = isHouse() ? t('wordmark') : you.name;
+    var seg = el('div', { className: 'lists-seg' }, [['name', name], ['anon', t('chessNoteAnon')]].map(function (pair) {
+      var input = el('input', { type: 'radio', name: 'chess-note-as', value: pair[0], checked: state.as === pair[0] });
+      var option = el('label', { className: 'lists-seg-opt' + (state.as === pair[0] ? ' is-on' : '') },
+        [input, el('span', { textContent: pair[1] })]);
+      input.addEventListener('change', function () {
+        if (!input.checked) return;
+        var opts = option.parentNode.querySelectorAll('.lists-seg-opt');
+        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-on', opts[i] === option);
+        state.as = pair[0];
+      });
+      return option;
+    }));
+    return el('fieldset', { className: 'lists-vis' }, [
+      el('legend', { className: 'lists-vis-legend mono', textContent: t('chessNoteAs') }),
+      seg
+    ]);
+  }
+
+  /* The field, who it goes out as, and Post. The draft lives in state, so a
+     redraw puts it back. */
+  function noteComposer(g) {
+    var you = state.answer.you || { role: 'visitor' };
+    var text = el('textarea', {
+      id: 'chess-note-text',
+      className: 'lists-input chess-note-input',
+      rows: '2',
+      maxlength: String(MAX_NOTE),
+      placeholder: t('chessNotePlaceholder'),
+      'aria-label': t('chessNotePlaceholder')
+    });
+    text.value = state.draft;
+    var go = el('button', { type: 'submit', className: 'go', textContent: t('chessNoteSend'), disabled: !state.draft.trim() });
+    text.addEventListener('input', function () {
+      state.draft = text.value;
+      go.disabled = !state.draft.trim();
+    });
+
+    var form = el('form', { className: 'chess-note-form' }, [
+      text,
+      you.role === 'visitor'
+        ? el('p', { className: 'chess-note-meta', textContent: t('chessNoteAsVisitor') })
+        : noteAs(you),
+      go
+    ]);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!state.draft.trim() || state.busy) return;
+      var body = { action: 'note', game: g.game.id, text: state.draft, as: state.as, client: visitorId() };
+      window.TTBTrack.event('chess_note', { named: you.role !== 'visitor' && state.as === 'name' });
+      write(body, { 409: 'chessNotesOver', 429: 'chessNotesCap' }, function () { state.draft = ''; });
+    });
+    return form;
+  }
+
+  function notesCard(g) {
+    var card = el('section', { className: 'card chess-notes', 'aria-label': t('chessNotes') }, [
+      el('p', { className: 'eyebrow', textContent: t('chessNotes') })
+    ]);
+    card.appendChild(g.notes.length
+      ? el('ol', { className: 'chess-note-list' }, g.notes.map(function (n) { return noteRow(g, n); }))
+      : el('p', { className: 'chess-empty', textContent: t('chessNotesEmpty') }));
+    card.appendChild(g.game.state === 'playing'
+      ? noteComposer(g)
+      : el('p', { className: 'chess-foot', textContent: t('chessNotesOver') }));
+    return card;
   }
 
   /* No game yet: the house sees the button that starts the first, everybody
@@ -996,6 +1138,9 @@
     var focus = document.activeElement;
     var focusSq = focus && focus.getAttribute ? focus.getAttribute('data-sq') : null;
     var focusBoard = focusSq ? focus.parentNode.getAttribute('data-game') : null;
+    /* The note being typed keeps the focus and the caret through a redraw. */
+    var typing = focus && focus.id === 'chess-note-text'
+      ? { start: focus.selectionStart, end: focus.selectionEnd } : null;
 
     clear(stack);
     var a = state.answer;
@@ -1016,6 +1161,16 @@
     }
 
     cards().forEach(function (node) { if (node) stack.appendChild(node); });
+
+    /* The newest note is the one at the foot, so that is where the list
+       opens. */
+    var notes = stack.querySelector('.chess-note-list');
+    if (notes) notes.scrollTop = notes.scrollHeight;
+    var field = typing && document.getElementById('chess-note-text');
+    if (field) {
+      field.focus();
+      field.setSelectionRange(typing.start, typing.end);
+    }
 
     if (focusBoard) {
       var again = stack.querySelector('[data-game="' + focusBoard + '"] [data-sq="' + focusSq + '"]');
@@ -1045,7 +1200,7 @@
     /* Nothing has ever arrived, so there are no words and no board to keep:
        the poll is the first ask again. */
     if (!haveWords()) { first(); return; }
-    ask(API).then(function (answer) {
+    ask(readUrl(API)).then(function (answer) {
       if (state.busy) return;
       /* A poll that did not get through leaves what is on the board where it
          is; the page has been right until now and will be again on the next
@@ -1068,7 +1223,7 @@
   /* The first ask, and the ask a poll repeats while there is still nothing to
      draw with: the words, the codes and the board in one answer. */
   function first() {
-    ask(API + '?lang=' + encodeURIComponent(wanted().join(','))).then(function (answer) {
+    ask(readUrl(API + '?lang=' + encodeURIComponent(wanted().join(',')))).then(function (answer) {
       /* Nothing arrived, not even the words to say so. What is left is the
          markup's own English, which says the board is not answering, and the
          poll keeps trying. */

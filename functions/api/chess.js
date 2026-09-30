@@ -18,6 +18,7 @@
  * the one being played — and the queue. Each game comes with its moves, and
  * with `legal`, every move the reader may make now, only when it is their
  * turn: the browser runs none of the rules, it draws the moves it was handed.
+ * The public game also carries its notes, below.
  * With `?lang=` the page's words come beside it through wordsFor(), all ten
  * languages, the way /api/flashcard carries its own; the twenty-second poll
  * leaves that off and gets the board alone. Every POST answers the same shape
@@ -61,6 +62,23 @@
  * Everybody's board the one device that played it, never the rest of the
  * city. undo() below; the page shows the button only in the tab that moved.
  *
+ * NOTES FOR THE NEXT PLAYER
+ *
+ * Beside the public game, a card where anybody on the page may leave a line
+ * for whoever plays Everybody's next move. A note is filed the way a move is —
+ * the house, a member's id, or a visitor's device id — so the one who wrote it
+ * is the one who may delete it, and `named` says whether the author wanted
+ * their name on it: signed out it never is, signed in it is their choice. The
+ * owner itself is never sent to anybody; `mine` is what the page is told.
+ * The house may hide any note, which keeps the row, so a hidden note still
+ * counts against its author's cap. The cap is feedback's: a hashed network
+ * fingerprint under SAVE_SALT, NOTES_PER_HOUR an hour, and without the salt a
+ * note fails closed `503 no-salt` the way every capped write here does. Notes
+ * belong to one game and are written only while it is playing; the answer
+ * carries the latest NOTES_SHOWN, and a new game starts with none. The table
+ * arrives by hand after the other two, so its absence answers `notes: null`
+ * and the page draws no card, and never takes the board down with it.
+ *
  * Both rule functions throw on a FEN they cannot read. The route only ever
  * hands them START and what play() gave back, so a throw is a bug and is left
  * to be a 500 rather than dressed up as a refusal.
@@ -74,7 +92,9 @@
  * at all and for the wrong one.
  */
 
-import { json, sessionUser, wrongDatabase, randomHex, wordsFor } from './_lib.js';
+import {
+  json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp
+} from './_lib.js';
 import { adminIds } from './_admin.js';
 import { START, legalMoves, play, repetition } from './_chess.js';
 
@@ -91,6 +111,16 @@ const MAX_QUEUE = 50;
    request spent on the way. */
 const UNDO_MS = 10000;
 const UNDO_GRACE_MS = 3000;
+
+/* A note is a line or two, not a letter: the length of a list's say, and
+   restated as MAX_NOTE in assets/chess.js, which carries the only field that
+   writes it — **Notes for the next player** in README.md. Five an hour from one network is
+   room for a table of friends arguing about a move and stops a loop; fifty
+   is as many as the card shows, the newest. */
+const MAX_NOTE = 280;
+const NOTES_PER_HOUR = 5;
+const NOTES_SHOWN = 50;
+const HOUR = 3600000;
 
 const DAY = 86400000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -117,12 +147,30 @@ async function ready(env) {
   return true;
 }
 
-/* Who is reading: the house, a member or a visitor, and their row. */
-async function whoIs(request, env) {
+/* Whether chess_notes is there, the same way and for the same reason as the
+   two tables above — it is applied on its own, after them. */
+let notesSeen = false;
+
+async function notesReady(env) {
+  if (notesSeen) return true;
+  try {
+    await env.DB.prepare('SELECT 1 FROM chess_notes LIMIT 1').all();
+    notesSeen = true;
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+/* Who is reading: the house, a member or a visitor, and their row. `client`
+   is the device id the page sent, a visitor's only name here — read off the
+   query on the GET and the body on a POST — and '' when it is not a v4 UUID. */
+async function whoIs(request, env, client) {
   const user = await sessionUser(request, env);
-  if (!user) return { role: 'visitor', user: null };
+  const device = typeof client === 'string' && UUID.test(client) ? client : '';
+  if (!user) return { role: 'visitor', user: null, client: device };
   const house = adminIds(env).has(String(user.id).toLowerCase());
-  return { role: house ? 'house' : 'member', user: user };
+  return { role: house ? 'house' : 'member', user: user, client: device };
 }
 
 /* ------------------------------------------------------------ one game */
@@ -238,6 +286,9 @@ async function state(env, who) {
       .first();
   }
 
+  const pub = await gameAnswer(env, publicRow, who);
+  if (pub) pub.notes = await notesOf(env, publicRow.id, who);
+
   const { results: queue } = await db
     .prepare(
       'SELECT g.id, u.username AS name, g.created_at AS since FROM chess_games g ' +
@@ -286,7 +337,7 @@ async function state(env, who) {
       lost: (rec && rec.lost) || 0,
       drawn: (rec && rec.drawn) || 0
     },
-    public: await gameAnswer(env, publicRow, who),
+    public: pub,
     mine: await gameAnswer(env, mineRow, who),
     /* The house is handed each waiting game's id, which is what its Start
        button sends; nobody else has anything to send one for. */
@@ -296,6 +347,33 @@ async function state(env, who) {
       ...(who.role === 'house' ? { game: q.id } : {})
     }))
   };
+}
+
+/* The public game's notes that are still showing, the newest NOTES_SHOWN of
+   them in the order they were written, or null where the table is not
+   applied. An anonymous note carries no name and a named one its author's —
+   the house's as 'house', which the page prints as the wordmark the way it
+   prints the house's moves. */
+async function notesOf(env, game, who) {
+  if (!(await notesReady(env))) return null;
+  const me = actorOf(who);
+  const { results } = await env.DB
+    .prepare(
+      'SELECT * FROM (SELECT n.id, n.ply, n.owner_kind, n.owner, n.named, n.text, n.at, u.username ' +
+      'FROM chess_notes n ' +
+      "LEFT JOIN users u ON n.owner_kind = 'user' AND u.id = n.owner " +
+      'WHERE n.game = ? AND n.hidden = 0 ORDER BY n.at DESC LIMIT ?) ORDER BY at'
+    )
+    .bind(game, NOTES_SHOWN)
+    .all();
+  return (results || []).map((n) => ({
+    id: n.id,
+    ply: n.ply,
+    name: !n.named ? null : n.owner_kind === 'house' ? 'house' : n.username || null,
+    text: n.text,
+    at: n.at,
+    mine: !!me && n.owner_kind === me.kind && n.owner === me.id
+  }));
 }
 
 const EMPTY = {
@@ -317,7 +395,7 @@ export async function onRequestGet(context) {
   if (!(await ready(env))) {
     return json({ ...EMPTY, ...words, you: { role: 'visitor', name: null } });
   }
-  const who = await whoIs(request, env);
+  const who = await whoIs(request, env, params.get('client'));
   return json({ ...(await state(env, who)), ...words });
 }
 
@@ -337,10 +415,10 @@ export async function onRequestPost(context) {
   }
   if (!body || typeof body !== 'object') return json({ error: 'malformed' }, 400);
 
-  const who = await whoIs(request, env);
+  const who = await whoIs(request, env, body.client);
   const act = ACTIONS[body.action];
   if (!act) return json({ error: 'action' }, 400);
-  return act(env, who, body);
+  return act(env, who, body, request);
 }
 
 /* A refusal that says what the board is now, for the ones the page redraws
@@ -358,7 +436,7 @@ async function gameById(env, id) {
   return env.DB.prepare(GAME_SQL + 'WHERE g.id = ?').bind(id).first();
 }
 
-const ACTIONS = { move, undo, new: newGame, join, leave, start, resign, abandon };
+const ACTIONS = { move, undo, new: newGame, join, leave, start, resign, abandon, note, unnote, hide };
 
 /* move { game, ply, move, client } — `ply` is the game's ply as the page read
    it, the number of half-moves already played; the move is filed at one past
@@ -370,7 +448,7 @@ async function move(env, who, body) {
   if (row.state !== 'playing' || body.ply !== row.ply) return refuse(env, who, 'moved', 409);
   if (!mayMove(row, who)) return json({ error: 'not-yours' }, 403);
 
-  const by = moverOf(who, body);
+  const by = actorOf(who);
   if (!by) return json({ error: 'client' }, 400);
 
   const uci = typeof body.move === 'string' ? body.move : '';
@@ -416,15 +494,15 @@ async function move(env, who, body) {
   return done(env, who);
 }
 
-/* Who a move is filed under: the house, a member by their id, or a visitor by
-   the device id the page sends as `client` — null when a visitor sent none
-   that is a v4 UUID. A move and its undo both ask, so the one who may take a
-   move back is exactly the one it was filed under. */
-function moverOf(who, body) {
+/* Who a move or a note is filed under: the house, a member by their id, or a
+   visitor by the device id the page sends as `client` — null when a visitor
+   sent none that is a v4 UUID. A move and its undo both ask, and a note and
+   its deletion, so the one who may take either back is exactly the one it was
+   filed under. */
+function actorOf(who) {
   if (who.role === 'house') return { kind: 'house', id: who.user.id };
   if (who.user) return { kind: 'user', id: who.user.id };
-  const client = typeof body.client === 'string' ? body.client : '';
-  return UUID.test(client) ? { kind: 'device', id: client } : null;
+  return who.client ? { kind: 'device', id: who.client } : null;
 }
 
 /* The game as the rules say it is: every position from START through the
@@ -460,7 +538,7 @@ async function undo(env, who, body) {
   if (!Number.isInteger(body.ply)) return json({ error: 'malformed' }, 400);
   if (row.state !== 'playing' || body.ply !== row.ply || row.ply < 1) return refuse(env, who, 'too-late', 409);
 
-  const by = moverOf(who, body);
+  const by = actorOf(who);
   if (!by) return json({ error: 'client' }, 400);
   const last = await env.DB
     .prepare('SELECT by_kind, by_id, at FROM chess_moves WHERE game = ? AND ply = ?')
@@ -621,5 +699,77 @@ async function abandon(env, who, body) {
   if (!row || row.kind !== 'private' || row.state !== 'playing') return json({ error: 'no-game' }, 404);
   if (!mayAbandon(row)) return refuse(env, who, 'not-yet', 409);
   if (!(await finish(env, row.id, 'abandoned', 'abandoned'))) return json({ error: 'no-game' }, 404);
+  return done(env, who);
+}
+
+/* ------------------------------------------------------------------ notes */
+
+/* The text as it is kept: one paragraph, its runs of white space closed up,
+   counted after the tidying so nobody is refused for spaces they cannot see.
+   It reaches the page as textContent, so there is nothing to escape. */
+function noteText(text) {
+  return String(typeof text === 'string' ? text : '').replace(/\s+/g, ' ').trim().slice(0, MAX_NOTE);
+}
+
+/* note { game, text, as, client } — a line beside the public game while it is
+   being played. `as: 'name'` puts the author's name on it, and only a signed-in
+   author has one to put; anything else is anonymous. */
+async function note(env, who, body, request) {
+  if (!(await notesReady(env))) return json({ error: 'no-database' }, 503);
+  if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
+
+  const row = await gameById(env, body.game);
+  if (!row || row.kind !== 'public') return json({ error: 'no-game' }, 404);
+  if (row.state !== 'playing') return refuse(env, who, 'over', 409);
+
+  const by = actorOf(who);
+  if (!by) return json({ error: 'client' }, 400);
+  const text = noteText(body.text);
+  if (!text) return json({ error: 'empty' }, 400);
+
+  const hash = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+  const now = Date.now();
+  const seen = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM chess_notes WHERE ip_hash = ? AND at > ?')
+    .bind(hash, now - HOUR)
+    .first();
+  if (seen && seen.n >= NOTES_PER_HOUR) return json({ error: 'often' }, 429);
+
+  await env.DB
+    .prepare(
+      'INSERT INTO chess_notes (id, game, ply, owner_kind, owner, named, text, ip_hash, at, hidden) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)'
+    )
+    .bind(randomHex(8), row.id, row.ply, by.kind, by.id, who.user && body.as === 'name' ? 1 : 0, text, hash, now)
+    .run();
+  return done(env, who);
+}
+
+/* unnote { id, client } — the author deletes their own note. The owner is in
+   the WHERE, so the statement cannot take anybody else's whatever is edited
+   above it; a note that was not theirs, or is gone, is the same 404. */
+async function unnote(env, who, body) {
+  if (!(await notesReady(env))) return json({ error: 'no-database' }, 503);
+  const by = actorOf(who);
+  if (!by) return json({ error: 'client' }, 400);
+  const id = typeof body.id === 'string' && /^[0-9a-f]{16}$/.test(body.id) ? body.id : '';
+  const res = await env.DB
+    .prepare('DELETE FROM chess_notes WHERE id = ? AND owner_kind = ? AND owner = ?')
+    .bind(id, by.kind, by.id)
+    .run();
+  if (!res.meta.changes) return json({ error: 'no-note' }, 404);
+  return done(env, who);
+}
+
+/* hide { id } — the house takes any note off the page. */
+async function hide(env, who, body) {
+  if (who.role !== 'house') return json({ error: 'not-yours' }, 403);
+  if (!(await notesReady(env))) return json({ error: 'no-database' }, 503);
+  const id = typeof body.id === 'string' && /^[0-9a-f]{16}$/.test(body.id) ? body.id : '';
+  const res = await env.DB
+    .prepare('UPDATE chess_notes SET hidden = 1 WHERE id = ? AND hidden = 0')
+    .bind(id)
+    .run();
+  if (!res.meta.changes) return json({ error: 'no-note' }, 404);
   return done(env, who);
 }
