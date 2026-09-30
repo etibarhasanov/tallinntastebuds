@@ -2178,6 +2178,16 @@
      The owner's decision; the list's Share button builds its URL the same
      way, out of the list's id and nothing else.
 
+     BUT WHERE IT CAME FROM
+     Except the tag saying it was shared, ?from=share, which is none of the
+     sharer's state and changes nothing about what the reader is shown: it
+     is how the site tells a link somebody sent a friend from a typed
+     address, which a message opened in a phone's own browser otherwise
+     looks exactly like. assets/track.js counts it and takes it off the
+     address as the page opens, so the reader's address bar, and anything
+     they send on, is nothing but ?spot= again — HOW THEY FOUND IT in
+     functions/api/_visitors.js.
+
      The three steps are shareButton() in this file and shareList() in
      assets/lists.js, and this is the third copy of them: the sheet on a
      phone, the clipboard on a laptop, a prompt for anything with neither.
@@ -2188,7 +2198,7 @@
   function pressShare() {
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
     if (!place) return;
-    var url = window.location.origin + '/?spot=' + encodeURIComponent(place.id);
+    var url = window.location.origin + '/?spot=' + encodeURIComponent(place.id) + '&from=share';
 
     if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
       TTBTrack.event('place_share', { place: place.name, method: 'sheet' });
@@ -9586,7 +9596,8 @@
 
      The URL is the list's own page and not this map view, because a list has
      one address whichever surface it was copied from — and that page opens
-     the map in one press anyway.
+     the map in one press anyway — with ?from=share on it, which pressShare()
+     says the reason for.
 
      The three steps are shareList() in assets/lists.js: the sheet on a phone,
      the clipboard on a laptop, a prompt for anything with neither. There are
@@ -9600,7 +9611,7 @@
     });
 
     b.addEventListener('click', function () {
-      var url = window.location.origin + '/list/' + list.id;
+      var url = window.location.origin + '/list/' + list.id + '?from=share';
       /* Asked by pointer rather than by feature: every desktop browser has
          navigator.share, and there it opens an OS sheet of applications with
          no "copy link" in it — which is the one thing somebody sharing from a

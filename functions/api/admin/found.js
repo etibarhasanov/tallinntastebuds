@@ -11,8 +11,7 @@
  * — the part worth reading first — what cannot be: the words somebody typed
  * into a search engine never reach this site, so what is here is the engine,
  * the address they landed on, the pages elsewhere that linked here, the
- * owner's own tagged links, and the words typed into the site's own search
- * fields.
+ * tagged links, and the words typed into the site's own search fields.
  *
  * It is ./visitors.js's shape on purpose, and behind the same lock: the words
  * come back with the numbers, so the page makes one request on the way in; the

@@ -7,12 +7,12 @@
  * unless the site says otherwise. So the page is drawn out of what does
  * arrive, in the order it is asked about. Four figures for the range —
  * visitors from a search engine, from a link on another site, pages opened
- * by one of the owner's own tagged links, and searches typed into the site's
- * own fields — then which search engine, the address each search visitor
- * landed on (the nearest honest stand-in for the words: `/?lang=ru` is a
- * search in Russian), the pages elsewhere that linked here, the owner's own
- * links, and last the words typed into the site's own search fields, with
- * the ones that found nothing marked.
+ * by a tagged link — one of the owner's own, or a Share button's — and
+ * searches typed into the site's own fields — then which search engine, the
+ * address each search visitor landed on (the nearest honest stand-in for the
+ * words: `/?lang=ru` is a search in Russian), the pages elsewhere that linked
+ * here, the tagged links, and last the words typed into the site's own
+ * search fields, with the ones that found nothing marked.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -259,8 +259,12 @@
     return ranked(rows, function (r) { return r.id; }, null, true);
   }
 
+  /* The tags as they were counted. `share` is the site's own rather than the
+     owner's — the Share buttons put it on every link they hand out — and
+     says so on a line under it. */
   function tags(rows) {
-    return ranked(rows, function (r) { return r.id; }, null, true);
+    return ranked(rows, function (r) { return r.id; },
+      function (r) { return r.id === 'share' ? t('foundTagShare') : ''; }, true);
   }
 
   function words(rows) {
@@ -299,7 +303,7 @@
       stack.appendChild(section(t('foundWords'), t('foundWordsNote'), d.searches, words, quiet));
       stack.appendChild(section(t('foundRefs'), t('foundRefsNote'), d.refs, refs, quiet));
     }
-    /* The owner's own links keep their card with nothing in it, because the
+    /* The tagged links keep their card with nothing in it, because the
        sentence saying how to make one is the part worth reading first. */
     stack.appendChild(section(t('foundTags'), t('foundTagsHow'), d.tags || [], tags, t('foundQuiet')));
 

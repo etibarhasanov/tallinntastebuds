@@ -3589,8 +3589,13 @@
   }
 
   /* One address, handed on: a list's, or a profile that is a page's. The
-     event is the caller's, with `method` added — `sheet` or `copy`. */
+     event is the caller's, with `method` added — `sheet` or `copy`. The
+     address goes out with ?from=share on it, which is how the site tells a
+     link a friend sent from one typed in; the page it opens counts the tag
+     and takes it off its own address, so nothing the reader copies on
+     carries it — pressShare() in assets/app.js has the rest. */
   function shareUrl(title, url, event, params) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'from=share';
     if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
       params.method = 'sheet';
       TTBTrack.event(event, params);
