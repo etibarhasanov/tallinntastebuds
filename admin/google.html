@@ -39,6 +39,9 @@
       crossorigin="">
 <link rel="stylesheet" href="/assets/styles.css?v=a4472bd9">
 <link rel="stylesheet" href="/assets/venues.css?v=fcb8b067">
+<!-- The row of the owner's pages under the header, which the other four
+     draw from the same sheet. -->
+<link rel="stylesheet" href="/assets/stats.css?v=f061e17a">
 </head>
 <body class="venues-body">
 
@@ -49,6 +52,19 @@
     <img class="venues-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="venues-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
+  <!-- The owner's five pages, as one row of chips, so that they read as a
+       set rather than as five addresses to remember: the same five rows
+       /admin.html lists under The numbers, in the same order, the page you are
+       on filled the way the map fills the view you are in. Static markup rather
+       than something each script draws, so the row is there before the numbers
+       arrive and still there if they never do. -->
+  <nav class="numbers-nav" data-i18n-aria-label="numbersNav" aria-label="The numbers">
+    <a class="chip" href="/admin/visitors" data-i18n="numbersVisitors">Visitors</a>
+    <a class="chip" href="/admin/found" data-i18n="numbersFound">How they found it</a>
+    <a class="chip" href="/admin/stats" data-i18n="numbersStats">What people open</a>
+    <a class="chip" href="/admin/google" data-i18n="numbersGoogle" aria-current="page">Google’s directory</a>
+    <a class="chip" href="/admin/flows" data-i18n="numbersFlows">Who uses the site</a>
+  </nav>
   <div class="venues-intro">
     <p class="eyebrow" data-i18n="eyebrow">Tallinn</p>
     <h1 class="venues-title" data-i18n="venuesTitle">Every place in Tallinn</h1>

@@ -11403,6 +11403,30 @@ It is laid out in the order the questions get asked, which is also how an
 analyst would group it: right now, today, then who came, then how the two
 kinds of visitor differ, then the experiment, then what was done.
 
+### Five pages, one row
+
+The owner's numbers are five pages — this one, **How they found it**,
+**Statistics**, the Google directory and **Who uses the site, drawn** — and
+the question of folding some of them together was asked once and answered
+no. Each answers a different question out of a different table over a
+different stretch of time: what gets opened is all-time out of
+`press_counts`, who came and how they found it are a chosen range out of
+`visitor_counts`, the directory is Google's list, and the diagrams are a
+drawing. This page alone is the longest script on the site after the map's,
+and one page of all of it would be a scroll nobody finishes on a phone, with
+a range control that means one thing for half of it and nothing for the rest.
+What the five lacked was being a set: each was an address to remember and
+the way from one to the next went back through `/admin.html`. So every one
+of them now carries the same row under its brand header — the five as the
+map's chips, in the order `/admin.html` lists them, the page you are on
+filled through `aria-current` the way the map fills the view you are in.
+It is static markup in each page, `.numbers-nav` in `assets/stats.css`,
+which the directory page loads for it, and six `numbers*` keys in
+`data/ui.json`. Where a list is opened from — **Which lists, and from
+where** under **Statistics** — stays where it is, a column of the lists
+table rather than a page: it is one fact about each list, not a question of
+its own.
+
 - **Right now**: pages opened in the last five minutes and the last thirty,
   and a bar for each of those thirty minutes. It asks again every minute
   while the page is on screen — see **Right now** below.
@@ -12152,7 +12176,7 @@ three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
 `lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
 same header, eyebrow and title, and reads the style the map's swatch left in
 `ttb.style`, so the dark style reaches it too. Unlocked, it is three cards.
-**The numbers** comes first — the four pages under `/admin/` as the account
+**The numbers** comes first — the five pages under `/admin/` as the account
 sheet's rows, Visitors at the top — because reading them is what the door is
 opened for most days. Then **Edit the site**, a fold that is shut when the
 door opens: the account page's `.lists-fold`, with the Google count beside
