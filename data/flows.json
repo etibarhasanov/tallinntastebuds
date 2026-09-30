@@ -101,7 +101,7 @@
         {"id": "deal", "type": "user", "lane": "member", "name": "Opens a discount pass", "when": ["page:deal"], "ref": ["deal.html", "assets/deal.js"]},
         {"id": "admit", "type": "service", "lane": "member", "name": "Admits the account, draws the hour's rate", "when": ["pass_shown"], "ref": ["functions/api/pass.js GET"]},
         {"id": "deal-done", "type": "end", "lane": "member", "name": "Shows the code (see the discount diagram)"},
-        {"id": "edit-page", "type": "user", "lane": "member", "name": "Edits the page under their name", "when": ["page:edit"], "note": "A line about themselves and the same line in the site's other languages, three handles, the languages they speak, a page of links.", "ref": ["edit.html", "assets/edit.js"]},
+        {"id": "edit-page", "type": "user", "lane": "member", "name": "Edits the page under their name", "when": ["page:edit"], "note": "A line about themselves, three handles, the languages they speak, a page of links — the line and the links in as many of the site's languages as they write them in.", "ref": ["edit.html", "assets/edit.js"]},
         {"id": "page-saved", "type": "service", "lane": "member", "name": "Stores the page", "when": ["edit_save"], "ref": ["functions/api/account.js POST display, about, lines, links, speaks, rows"]},
         {"id": "page-done", "type": "end", "lane": "member", "name": "Profile up to date"},
         {"id": "insights", "type": "user", "lane": "member", "name": "Reads who opened it and their lists", "when": ["page:insights"], "ref": ["insights.html", "assets/insights.js"]},

@@ -272,22 +272,41 @@
       links: links,
       speaks: saved.speaks.slice(),
       rows: saved.rows.map(function (row) {
-        return { title: row.title, url: row.url || '', note: row.note || '', kind: kindOf(row) };
+        return { title: row.title, url: row.url || '', note: row.note || '', kind: kindOf(row), lines: copyRowLines(row.lines) };
       })
     };
   }
 
   /* The rows as the server takes them: the kind decides which of the two
      boxes is sent, so a link that was a note once does not carry the note it
-     was along with it. */
+     was along with it — and the same for each version in another language,
+     where a version with no title is not one. */
   function rowsOut(rows) {
     return rows.map(function (row) {
+      var lines = {};
+      lineLangs().forEach(function (code) {
+        var version = row.lines && row.lines[code];
+        var title = version ? flat(version.title) : '';
+        if (!title) return;
+        lines[code] = { title: title };
+        var note = row.kind === 'note' ? String(version.note || '').trim() : '';
+        if (note) lines[code].note = note;
+      });
       return {
         title: row.title.replace(/\s+/g, ' ').trim(),
         url: row.kind === 'link' ? row.url.trim() : '',
-        note: row.kind === 'note' ? row.note : ''
+        note: row.kind === 'note' ? row.note : '',
+        lines: lines
       };
     });
+  }
+
+  function copyRowLines(lines) {
+    var out = {};
+    Object.keys(lines || {}).forEach(function (code) {
+      out[code] = { title: lines[code].title || '', note: lines[code].note || '' };
+    });
+    return out;
   }
 
   function flat(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
@@ -301,6 +320,18 @@
   function lineLangs() {
     return Object.keys(TTBLinks.SPEAKS).filter(function (code) {
       return Object.prototype.hasOwnProperty.call(state.ui, code);
+    });
+  }
+
+  /* The languages this page is written in besides its first: every one the
+     line has a box for, and every one a row carries a version in. Added
+     under the line — see linesField() — and each open row then offers its
+     title, and its note, in every one of them. */
+  function pageLangs() {
+    var d = state.draft;
+    return lineLangs().filter(function (code) {
+      if (Object.prototype.hasOwnProperty.call(d.lines, code)) return true;
+      return d.rows.some(function (row) { return row.lines && row.lines[code]; });
     });
   }
 
@@ -337,8 +368,10 @@
     });
     if (!sameLinks) parts.push('links');
     if (d.speaks.join(',') !== s.speaks.join(',')) parts.push('speaks');
-    var stored = s.rows.map(function (r) { return { title: r.title, url: r.url || '', note: r.note || '' }; });
-    if (JSON.stringify(rowsOut(d.rows)) !== JSON.stringify(stored)) parts.push('rows');
+    var stored = s.rows.map(function (r) {
+      return { title: r.title, url: r.url || '', note: r.note || '', kind: kindOf(r), lines: r.lines };
+    });
+    if (JSON.stringify(rowsOut(d.rows)) !== JSON.stringify(rowsOut(stored))) parts.push('rows');
     return parts;
   }
 
@@ -550,11 +583,13 @@
     return box;
   }
 
-  /* The line again in other languages, under the line: a box for each
-     version, named for the language it is in, with a cross that takes it off,
-     and a menu of the languages not written yet under them. A reader whose
-     page is in one of them gets that version instead of the line; everybody
-     else gets the line. **The line, in other languages** under **Profiles**
+  /* The page's other languages, under the line: a box for the line in each,
+     named for the language it is in, with a cross that takes that language
+     off the whole page — the line's version and every row's — and a menu of
+     the languages not on it yet under them. Each open row then has a title
+     box, and a note box, in every one of them; see rowItem(). A reader whose
+     page is in one of them gets those versions; everybody else gets the page
+     as first written. **Your page, in other languages** under **Profiles**
      in README.md.
 
      The first line is not tagged with a language — nothing asks which it was
@@ -566,24 +601,25 @@
     var d = state.draft;
     var box = el('div', { className: 'ed-fields ed-lines' });
 
-    lineLangs().forEach(function (code) {
-      if (!Object.prototype.hasOwnProperty.call(d.lines, code)) return;
+    pageLangs().forEach(function (code) {
       var name = TTBLinks.langName(code, state.lang);
       var id = 'ed-line-' + code;
       var text = el('textarea', {
         className: 'lists-input', maxlength: String(MAX_ABOUT), rows: '2',
         lang: code, 'aria-labelledby': id
       });
-      text.value = d.lines[code];
+      text.value = d.lines[code] || '';
       text.addEventListener('input', function () { d.lines[code] = text.value; touched(); });
 
       var off = el('button', {
         type: 'button', className: 'ed-line-off',
-        'aria-label': t('editLinesRemove', { name: name }),
+        'aria-label': t('editSpeaksRemove', { name: name }),
         textContent: '×'
       });
+      /* Off the whole page: the line's version and every row's with it. */
       off.addEventListener('click', function () {
         delete d.lines[code];
+        d.rows.forEach(function (row) { if (row.lines) delete row.lines[code]; });
         redraw('lines');
       });
 
@@ -598,8 +634,9 @@
       ]));
     });
 
+    var taken = pageLangs();
     var rest = lineLangs().filter(function (code) {
-      return !Object.prototype.hasOwnProperty.call(d.lines, code);
+      return taken.indexOf(code) < 0;
     }).map(function (code) {
       return { code: code, name: TTBLinks.langName(code, state.lang) };
     }).sort(function (a, b) { return a.name.localeCompare(b.name, state.lang); });
@@ -649,7 +686,7 @@
 
   function addRow(kind) {
     if (state.draft.rows.length >= MAX_ROWS) { toast(t('rowsErrMany')); return; }
-    state.draft.rows.push({ title: '', url: '', note: '', kind: kind });
+    state.draft.rows.push({ title: '', url: '', note: '', kind: kind, lines: {} });
     state.open = state.draft.rows.length - 1;
     TTBTrack.event('edit_add', { kind: kind });
     drawPane();
@@ -773,6 +810,31 @@
       note.addEventListener('input', function () { row.note = note.value; touched(); });
       fields.push(field(t('rowsNote'), note));
     }
+
+    /* The same title, and the same note, in each of the page's other
+       languages — the address is one address in all of them. */
+    pageLangs().forEach(function (code) {
+      var name = TTBLinks.langName(code, state.lang);
+      if (!row.lines) row.lines = {};
+      var version = function () {
+        if (!row.lines[code]) row.lines[code] = { title: '', note: '' };
+        return row.lines[code];
+      };
+      var vt = el('input', {
+        type: 'text', className: 'lists-input', maxlength: String(MAX_ROW_TITLE),
+        autocomplete: 'off', lang: code
+      });
+      vt.value = row.lines[code] ? row.lines[code].title : '';
+      vt.addEventListener('input', function () { version().title = vt.value; touched(); });
+      fields.push(field(t('rowsTitle') + ' · ' + name, vt));
+      if (row.kind !== 'note') return;
+      var vn = el('textarea', {
+        className: 'lists-input', maxlength: String(MAX_ROW_NOTE), rows: '5', lang: code
+      });
+      vn.value = row.lines[code] ? row.lines[code].note : '';
+      vn.addEventListener('input', function () { version().note = vn.value; touched(); });
+      fields.push(field(t('rowsNote') + ' · ' + name, vn));
+    });
 
     var foot = [];
     /* A link and a note swap into each other, keeping what was typed in
@@ -905,10 +967,15 @@
          untitled one with an ellipsis for its title, and a note or a link
          with nothing in it yet as a note or a link rather than as the
          heading it would be if it were saved like that. */
+      /* In this page's language where the row has a version in it, the way
+         rowsIn() in assets/lists.js draws it for a reader. */
+      var version = row.lines && row.lines[state.lang];
+      var title = (version && flat(version.title)) || flat(row.title);
+      var note = (version && flat(version.title) && version.note) || row.note;
       return {
-        title: flat(row.title) || '…',
+        title: title || '…',
         url: row.kind === 'link' ? (row.url.trim() || 'https://') : '',
-        note: row.kind === 'note' ? (row.note || ' ') : ''
+        note: row.kind === 'note' ? (note || ' ') : ''
       };
     });
 
@@ -1075,7 +1142,7 @@
       if (err === 'row-url' && typeof out.row === 'number') return fail(t('rowsErrUrl', { n: out.row + 1 }), out.row);
       if (err === 'rows-many') return fail(t('rowsErrMany'));
       if (err === 'bad-speaks') return fail(t('editErrSpeaks'));
-      if (err === 'bad-lines') return fail(t('editErrLines'));
+      if (err === 'bad-lines' || err === 'row-lines') return fail(t('editErrLines'));
       if (err === 'no-rows-table') return fail(t('rowsErrOff'));
       if (err === 'bad-link') {
         var named = '';

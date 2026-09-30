@@ -2195,9 +2195,14 @@ long as every other page was a view of the map and read `ttb.lang` off it.
 The flashcards are on a hostname of their own, where that store belongs to
 another origin and is always empty, so that page carries the same switch in
 its own header — see **A language of your own to learn it in** under
-**Flashcards**. The lists, the account page and splitwise still read the map's
-choice and have none of their own; on `splitwise.` the same gap is open and
-the same switch would close it, and nobody has asked for it yet.
+**Flashcards**. **The lists page carries it too** — every list, `/lists` and
+every profile — because a profile is handed out as a link to people in other
+countries, and what its owner wrote can be in their language: **Your page, in
+other languages** under **Profiles**. There, picking a language stores it
+where the map's switch does and loads the page again with `?lang=`, since
+every view on that page is drawn from words and data fetched for one language.
+The account page and splitwise still read the map's choice and have none of
+their own; nobody has asked for them yet.
 
 ### Each language is an address
 
@@ -6534,7 +6539,7 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
-| that line in each other language | 200, in any of the site's ten |
+| that line, or a row, in each other language | its own cap, in any of the site's ten |
 | the name you go by | 60 |
 | an Instagram handle | 30 characters |
 | a TikTok handle | 24 |
@@ -6783,17 +6788,25 @@ in that window that is not quite honest — pressing Save there fails and says
 so. The rest of every page is exactly what it was before this existed, which
 is the point.
 
-### The line, in other languages
+### Your page, in other languages
 
-The line is written once, in whatever language somebody wrote it in, and on
-a site read in ten languages that is a line most of its readers get in
-somebody else's. So it can be written again: under **Your line** on `/edit`,
-*Add your line in another language* is a menu of the site's ten, and each
-one picked is a box of its own, named for its language, with a cross that
-takes it off. A reader whose page is in one of those languages gets that
-version in place of the line; everybody else gets the line as it was first
-written, which is exactly what they got before this existed. The preview
-beside the editor shows the version this page's own language would get.
+Everything on a profile that its owner wrote — the line under the name and
+every row's title and note — is written once, in whatever language they
+wrote it in, and on a site read in ten languages that is a page most of its
+readers get in somebody else's. The first profile to run into it put two
+languages into one row's title, *About me · Haqqımda*, which is the workaround
+this replaces.
+
+So a page can be written again. Under **Your line** on `/edit`, *Add another
+language* is a menu of the site's ten; each one picked is a box for the line
+in that language, named for it, with a cross that takes that language off the
+whole page. And every row, opened, has a title box — and for a note, a note
+box — in each of the page's languages. The address of a link is one address
+in all of them. A reader whose page is in one of those languages gets those
+versions; everybody else gets the page as first written, which is exactly what
+they got before this existed. The preview beside the editor shows what this
+page's own language would get. And the page carries the language switch in
+its header — **Languages** above — so a reader can pick.
 
 **Chosen by the page's language, not by the reader's country.** The
 language a page is read in is already settled — `?lang=`, then the reader's
@@ -6839,6 +6852,23 @@ language — a card is shown to whoever the link is forwarded to — and
 the text written into the page for a reader that runs no script carries every
 version, each as a `<p lang>`, so a search in Estonian can find the Estonian
 one.
+
+**The rows' versions are in the rows' own table.** `profile_rows.lines`, JSON
+keyed by language the same way — `{"az":{"title":"…","note":"…"}}` — because
+the rows already have a table of their own and a row's words belong with it.
+That is a column added after the table shipped, so it arrives by hand:
+
+```
+ALTER TABLE profile_rows ADD COLUMN lines TEXT NOT NULL DEFAULT '';
+```
+
+Until it is run, `readRows()` asks again without it and the `rows` write
+stores the rows without their versions, so nothing breaks and the editor
+redraws what was actually kept. `rowLines()` in `functions/api/_profile.js`
+holds each version to the row's own caps; a version with no title is not
+one. On the page, `renderPage()` in `assets/lists.js` draws each row in the
+reader's language and counts a press under the row's first title, so the
+owner's numbers are one row's whatever language it was read in.
 
 ### Where else you are
 
@@ -6970,7 +7000,7 @@ this is the first thing to use it that way — so it shipped with no hand step.
 that was there before it; the `links` write and the `speaks` write in
 `functions/api/account.js` each read the column first and carry the rest
 across, through `mergeLinks()` — and so does the `lines` write, which keeps
-the line's other languages in the same column, **The line, in other
+the line's other languages in the same column, **Your page, in other
 languages** above. It asks for a session and no password,
 for the reason the handles do, and saves with the editor's one Save. The
 profile route writes it into the JSON-LD as `knowsLanguage`.

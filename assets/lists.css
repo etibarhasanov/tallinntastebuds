@@ -623,7 +623,7 @@
    as a card about their lists — renderPage() in assets/lists.js: the face,
    the name they go by, their line and their handles as glyphs, centred, and
    the rows under them, and nothing else. The header keeps the mark as the
-   way home and gains Share; the wordmark, the account pill and the radio go,
+   way home and the language, and gains Share; the wordmark, the account pill and the radio go,
    because a page handed out as somebody's own carries nothing that is about
    this site. */
 .lists-body.is-page .lists-wordmark,
@@ -2172,7 +2172,8 @@ body.has-scrim { overflow: hidden; }
 /* ---------- the language switch, on a page that carries its own ---------- */
 
 /* The surface under the trigger drawn by assets/language.js, on a
-   .lists-brand header row: the flashcards' and the chess page's. Everything
+   .lists-brand header row: the flashcards', the chess page's and this
+   page's — every list and every profile. Everything
    the switch is drawn with is already in assets/styles.css — #lang-switch
    holds the menu, .btn-lang-now is the code and the chevron, .lang-list is the
    rows — and all this adds is the surface, because the map's comes from
