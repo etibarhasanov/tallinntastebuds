@@ -166,7 +166,7 @@ ref: functions/api/pass.js GET</bpmn:documentation>
       <bpmn:incoming>member-e20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="edit-page" name="Edits the page under their name">
-      <bpmn:documentation>A line about themselves, three handles, a page of links.
+      <bpmn:documentation>A line about themselves, three handles, the languages they speak, a page of links.
 when: page:edit
 ref: edit.html
 ref: assets/edit.js</bpmn:documentation>

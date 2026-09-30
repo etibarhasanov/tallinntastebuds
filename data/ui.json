@@ -865,7 +865,12 @@
     "chessQueueBusy": "{name} indi səninlə oynayır. Növbəti oyun bu bitəndə başlayır.",
     "chessRecord": "Sən evsən · {games} oyun · {won} qələbə · {lost} məğlubiyyət · {drawn} heç-heçə",
     "chessAlready": "Sən artıq növbədəsən.",
-    "chessFull": "Siyahı hazırda doludur. Sabah yenidən cəhd et."
+    "chessFull": "Siyahı hazırda doludur. Sabah yenidən cəhd et.",
+    "profileSpeaks": "Dillər",
+    "editSpeaks": "Danışdığın dillər",
+    "editSpeaksAdd": "Dil əlavə et",
+    "editSpeaksRemove": "{name} dilini sil",
+    "editErrSpeaks": "Dillər saxlanmadı — yenidən seç və yadda saxla."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -1733,7 +1738,12 @@
     "chessQueueBusy": "{name}-ը հիմա խաղում է քեզ հետ։ Հաջորդ խաղը կսկսվի, երբ այս մեկն ավարտվի։",
     "chessRecord": "Դու տունն ես · խաղեր՝ {games} · հաղթանակ՝ {won} · պարտություն՝ {lost} · ոչ-ոքի՝ {drawn}",
     "chessAlready": "Դու արդեն հերթում ես։",
-    "chessFull": "Ցուցակը հիմա լիքն է։ Փորձիր վաղը։"
+    "chessFull": "Ցուցակը հիմա լիքն է։ Փորձիր վաղը։",
+    "profileSpeaks": "Լեզուներ",
+    "editSpeaks": "Լեզուները, որոնցով խոսում ես",
+    "editSpeaksAdd": "Ավելացնել լեզու",
+    "editSpeaksRemove": "Հեռացնել {name}",
+    "editErrSpeaks": "Լեզուները չպահպանվեցին — ընտրիր նորից և պահպանիր։"
   },
   "en": {
     "langName": "English",
@@ -2601,7 +2611,12 @@
     "chessQueueBusy": "{name} is playing you now. The next game starts when this one ends.",
     "chessRecord": "You are the house · {games} played · {won} won · {lost} lost · {drawn} drawn",
     "chessAlready": "You’re already in line.",
-    "chessFull": "The line is full right now. Try again tomorrow."
+    "chessFull": "The line is full right now. Try again tomorrow.",
+    "profileSpeaks": "Speaks",
+    "editSpeaks": "Languages you speak",
+    "editSpeaksAdd": "Add a language",
+    "editSpeaksRemove": "Remove {name}",
+    "editErrSpeaks": "The languages didn't save — pick them again and press Save."
   },
   "et": {
     "langName": "Eesti",
@@ -3469,7 +3484,12 @@
     "chessQueueBusy": "{name} mängib praegu sinuga. Järgmine mäng algab, kui see lõpeb.",
     "chessRecord": "Sina oled maja · mänge {games} · võite {won} · kaotusi {lost} · viike {drawn}",
     "chessAlready": "Oled juba järjekorras.",
-    "chessFull": "Järjekord on praegu täis. Proovi homme uuesti."
+    "chessFull": "Järjekord on praegu täis. Proovi homme uuesti.",
+    "profileSpeaks": "Räägib",
+    "editSpeaks": "Keeled, mida räägid",
+    "editSpeaksAdd": "Lisa keel",
+    "editSpeaksRemove": "Eemalda {name}",
+    "editErrSpeaks": "Keeli ei salvestatud — vali need uuesti ja vajuta Salvesta."
   },
   "fi": {
     "langName": "Suomi",
@@ -4337,7 +4357,12 @@
     "chessQueueBusy": "{name} pelaa nyt kanssasi. Seuraava peli alkaa, kun tämä päättyy.",
     "chessRecord": "Olet talo · pelejä {games} · voittoja {won} · tappioita {lost} · tasapelejä {drawn}",
     "chessAlready": "Olet jo jonossa.",
-    "chessFull": "Jono on nyt täynnä. Yritä huomenna uudelleen."
+    "chessFull": "Jono on nyt täynnä. Yritä huomenna uudelleen.",
+    "profileSpeaks": "Puhuu",
+    "editSpeaks": "Kielet, joita puhut",
+    "editSpeaksAdd": "Lisää kieli",
+    "editSpeaksRemove": "Poista {name}",
+    "editErrSpeaks": "Kieliä ei tallennettu — valitse ne uudelleen ja paina Tallenna."
   },
   "pt": {
     "langName": "Português",
@@ -5205,7 +5230,12 @@
     "chessQueueBusy": "{name} está a jogar contigo agora. O próximo jogo começa quando este acabar.",
     "chessRecord": "És a casa · jogos: {games} · vitórias: {won} · derrotas: {lost} · empates: {drawn}",
     "chessAlready": "Já estás na fila.",
-    "chessFull": "A fila está cheia agora. Tenta amanhã."
+    "chessFull": "A fila está cheia agora. Tenta amanhã.",
+    "profileSpeaks": "Fala",
+    "editSpeaks": "Línguas que falas",
+    "editSpeaksAdd": "Adicionar uma língua",
+    "editSpeaksRemove": "Remover {name}",
+    "editErrSpeaks": "As línguas não foram guardadas — escolhe-as de novo e carrega em Guardar."
   },
   "ru": {
     "langName": "Русский",
@@ -6073,7 +6103,12 @@
     "chessQueueBusy": "{name} сейчас играет с вами. Следующая партия начнётся, когда закончится эта.",
     "chessRecord": "Вы — хозяин · партий: {games} · побед: {won} · поражений: {lost} · ничьих: {drawn}",
     "chessAlready": "Вы уже в очереди.",
-    "chessFull": "Очередь сейчас заполнена. Попробуйте завтра."
+    "chessFull": "Очередь сейчас заполнена. Попробуйте завтра.",
+    "profileSpeaks": "Языки",
+    "editSpeaks": "Языки, на которых ты говоришь",
+    "editSpeaksAdd": "Добавить язык",
+    "editSpeaksRemove": "Убрать: {name}",
+    "editErrSpeaks": "Языки не сохранились — выбери их снова и нажми «Сохранить»."
   },
   "es": {
     "langName": "Español",
@@ -6941,7 +6976,12 @@
     "chessQueueBusy": "{name} está jugando contigo ahora. La siguiente partida empieza cuando termine esta.",
     "chessRecord": "Eres la casa · partidas: {games} · ganadas: {won} · perdidas: {lost} · tablas: {drawn}",
     "chessAlready": "Ya estás en la cola.",
-    "chessFull": "La cola está llena ahora mismo. Inténtalo mañana."
+    "chessFull": "La cola está llena ahora mismo. Inténtalo mañana.",
+    "profileSpeaks": "Habla",
+    "editSpeaks": "Idiomas que hablas",
+    "editSpeaksAdd": "Añadir un idioma",
+    "editSpeaksRemove": "Quitar {name}",
+    "editErrSpeaks": "Los idiomas no se guardaron: elígelos de nuevo y pulsa Guardar."
   },
   "tr": {
     "langName": "Türkçe",
@@ -7809,7 +7849,12 @@
     "chessQueueBusy": "{name} şu an seninle oynuyor. Sıradaki oyun bu bitince başlar.",
     "chessRecord": "Sen evsin · {games} oyun · {won} galibiyet · {lost} mağlubiyet · {drawn} beraberlik",
     "chessAlready": "Zaten sıradasın.",
-    "chessFull": "Liste şu an dolu. Yarın yeniden dene."
+    "chessFull": "Liste şu an dolu. Yarın yeniden dene.",
+    "profileSpeaks": "Diller",
+    "editSpeaks": "Konuştuğun diller",
+    "editSpeaksAdd": "Dil ekle",
+    "editSpeaksRemove": "{name} dilini kaldır",
+    "editErrSpeaks": "Diller kaydedilmedi — yeniden seç ve Kaydet’e bas."
   },
   "uk": {
     "langName": "Українська",
@@ -8677,6 +8722,11 @@
     "chessQueueBusy": "{name} зараз грає з вами. Наступна партія почнеться, коли закінчиться ця.",
     "chessRecord": "Ви — господар · партій: {games} · перемог: {won} · поразок: {lost} · нічиїх: {drawn}",
     "chessAlready": "Ви вже в черзі.",
-    "chessFull": "Черга зараз заповнена. Спробуйте завтра."
+    "chessFull": "Черга зараз заповнена. Спробуйте завтра.",
+    "profileSpeaks": "Мови",
+    "editSpeaks": "Мови, якими ти розмовляєш",
+    "editSpeaksAdd": "Додати мову",
+    "editSpeaksRemove": "Прибрати: {name}",
+    "editErrSpeaks": "Мови не збереглися — вибери їх знову й натисни «Зберегти»."
   }
 }

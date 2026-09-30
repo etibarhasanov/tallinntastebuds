@@ -50,10 +50,10 @@
  * ONE SAVE FOR ALL OF IT
  *
  * Everything on the page is one draft, and Save sends what changed and
- * nothing else — up to four writes to /api/account, the same four actions
- * the account page's boxes made, one after the other. Each of those writes is
- * whole on its own, so a Save that fails halfway leaves the parts before it
- * saved and says which part stopped it; the bar goes on saying there are
+ * nothing else — up to five writes to /api/account, the four actions the
+ * account page's boxes made and the languages, one after the other. Each of
+ * those writes is whole on its own, so a Save that fails halfway leaves the
+ * parts before it saved and says which part stopped it; the bar goes on saying there are
  * unsaved changes for as long as there are. What is drawn afterwards is what
  * came back, for the reason every form on this site does that: the server is
  * what decides what a handle is, and a pasted address comes back as one.
@@ -94,14 +94,15 @@
   var DEFAULT_LANG = 'en';
 
   /* The caps, written a second time so a keystroke stops rather than a round
-     trip. MAX_ABOUT and MAX_DISPLAY in functions/api/account.js and
-     cleanRows() in functions/api/_profile.js are what bind. */
+     trip. MAX_ABOUT and MAX_DISPLAY in functions/api/account.js, and
+     cleanRows() and MAX_SPEAKS in functions/api/_profile.js, are what bind. */
   var MAX_ABOUT = 200;
   var MAX_DISPLAY = 60;
   var MAX_ROWS = 20;
   var MAX_ROW_TITLE = 60;
   var MAX_ROW_URL = 2048;
   var MAX_ROW_NOTE = 3000;
+  var MAX_SPEAKS = 8;
 
   /* The same line the map, the lists page and assets/rows.js draw between a
      phone and everything else. Under it there is no room beside the editor,
@@ -121,7 +122,7 @@
     face: '',
     /* What the server holds, and what the form holds. Save sends the
        difference; Discard copies the first over the second. */
-    saved: { display: '', about: '', links: {}, rows: [] },
+    saved: { display: '', about: '', links: {}, speaks: [], rows: [] },
     draft: null,
     open: -1,     // the row whose fields are showing, -1 for none
     err: '',      // the sentence over the fields after a refusal
@@ -266,6 +267,7 @@
       display: saved.display,
       about: saved.about,
       links: links,
+      speaks: saved.speaks.slice(),
       rows: saved.rows.map(function (row) {
         return { title: row.title, url: row.url || '', note: row.note || '', kind: kindOf(row) };
       })
@@ -293,7 +295,7 @@
     return out;
   }
 
-  /* Which of the four parts differ from what is stored. Compared the way the
+  /* Which of the five parts differ from what is stored. Compared the way the
      server would store them, so a trailing space is not a change. */
   function changed() {
     var d = state.draft;
@@ -306,6 +308,7 @@
       return (TTBLinks.clean(net.id, links[net.id]) || links[net.id]) === (s.links[net.id] || '');
     });
     if (!sameLinks) parts.push('links');
+    if (d.speaks.join(',') !== s.speaks.join(',')) parts.push('speaks');
     var stored = s.rows.map(function (r) { return { title: r.title, url: r.url || '', note: r.note || '' }; });
     if (JSON.stringify(rowsOut(d.rows)) !== JSON.stringify(stored)) parts.push('rows');
     return parts;
@@ -463,8 +466,69 @@
       ]));
     });
     box.appendChild(social);
+    box.appendChild(speaksField());
 
     return box;
+  }
+
+  /* The languages somebody speaks: the ones picked, in the order they were
+     picked, each a word that takes it off again, and a menu of the rest
+     under them — a native select, because a list of forty-four is what a
+     phone's own picker is for. Every name is in the language this page is
+     read in, TTBLinks.langName(), and the menu is in that alphabet's order.
+     Not a <label> round the lot the way field() is: a label with several
+     controls in it hands every press on it to the first. */
+  function speaksField() {
+    var d = state.draft;
+    var box = el('div', { className: 'ed-field' }, [
+      el('span', { className: 'ed-label mono', id: 'ed-speaks-label', textContent: t('editSpeaks') })
+    ]);
+
+    if (d.speaks.length) {
+      box.appendChild(el('ul', { className: 'ed-speaks' }, d.speaks.map(function (code) {
+        var name = TTBLinks.langName(code, state.lang);
+        var off = el('button', {
+          type: 'button', className: 'ed-lang',
+          'aria-label': t('editSpeaksRemove', { name: name })
+        }, [el('span', { textContent: name }), el('span', { 'aria-hidden': 'true', textContent: '×' })]);
+        off.addEventListener('click', function () {
+          d.speaks = d.speaks.filter(function (c) { return c !== code; });
+          redraw();
+        });
+        return el('li', null, [off]);
+      })));
+    }
+
+    if (d.speaks.length < MAX_SPEAKS) {
+      var rest = Object.keys(TTBLinks.SPEAKS).filter(function (code) {
+        return d.speaks.indexOf(code) < 0;
+      }).map(function (code) {
+        return { code: code, name: TTBLinks.langName(code, state.lang) };
+      }).sort(function (a, b) { return a.name.localeCompare(b.name, state.lang); });
+
+      var pick = el('select', { className: 'lists-input', 'aria-labelledby': 'ed-speaks-label' },
+        [el('option', { value: '', textContent: t('editSpeaksAdd') })].concat(rest.map(function (row) {
+          return el('option', { value: row.code, textContent: row.name });
+        })));
+      pick.addEventListener('change', function () {
+        if (!pick.value) return;
+        d.speaks.push(pick.value);
+        redraw();
+      });
+      box.appendChild(pick);
+    }
+
+    return box;
+  }
+
+  /* The field changes shape with every pick, so it is drawn again, and the
+     menu is given the focus back — where a keyboard was, and where it goes
+     next. */
+  function redraw() {
+    touched();
+    drawPane();
+    var pick = dom.pane.querySelector('select[aria-labelledby="ed-speaks-label"]');
+    if (pick) pick.focus();
   }
 
   /* ----------------------------------------------------------------- rows */
@@ -743,6 +807,7 @@
     });
 
     var social = TTBLinks.of(d.links);
+    var spoken = TTBLinks.spoken(d.speaks, state.lang);
     clear(dom.screen);
     dom.screen.appendChild(el('header', { className: 'lists-page-top' }, [
       state.face ? el('img', { className: 'lists-page-face', src: state.face, alt: '', width: 96, height: 96 }) : null,
@@ -755,7 +820,11 @@
           title: row.label,
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + TTBLinks.GLYPHS[row.id] + '</svg>'
         })]);
-      })) : null
+      })) : null,
+      spoken.length ? el('p', { className: 'lists-speaks' }, [
+        el('span', { className: 'lists-link-net mono', textContent: t('profileSpeaks') }),
+        el('span', { className: 'lists-link-who', textContent: spoken.join(' · ') })
+      ]) : null
     ]));
 
     if (rows.length) {
@@ -843,6 +912,7 @@
       display: { action: 'display', display: d.display },
       about: { action: 'about', about: d.about },
       links: (function () { var b = linksOut(d.links); b.action = 'links'; return b; }()),
+      speaks: { action: 'speaks', speaks: d.speaks },
       rows: { action: 'rows', rows: rows }
     };
 
@@ -863,6 +933,7 @@
             if (!res.ok) throw { part: part, status: res.status, out: out || {} };
             if (part === 'rows') state.saved.rows = isArray(out.rows) ? out.rows : [];
             else if (part === 'links') state.saved.links = out.links || {};
+            else if (part === 'speaks') state.saved.speaks = isArray(out.speaks) ? out.speaks : [];
             else state.saved[part] = out[part] || '';
           });
         });
@@ -890,6 +961,7 @@
       if (err === 'row-title' && typeof out.row === 'number') return fail(t('rowsErrTitle', { n: out.row + 1 }), out.row);
       if (err === 'row-url' && typeof out.row === 'number') return fail(t('rowsErrUrl', { n: out.row + 1 }), out.row);
       if (err === 'rows-many') return fail(t('rowsErrMany'));
+      if (err === 'bad-speaks') return fail(t('editErrSpeaks'));
       if (err === 'no-rows-table') return fail(t('rowsErrOff'));
       if (err === 'bad-link') {
         var named = '';
@@ -957,6 +1029,7 @@
         display: account.out.display || '',
         about: account.out.about || '',
         links: account.out.links || {},
+        speaks: isArray(account.out.speaks) ? account.out.speaks : [],
         rows: isArray(account.out.rows) ? account.out.rows : []
       };
       state.draft = draftOf(state.saved);

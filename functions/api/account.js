@@ -88,7 +88,7 @@ import {
   enterAccount, nameGoogleAccount
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
-import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows } from './_profile.js';
+import { NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, cleanSpeaks, readSpeaks, mergeLinks } from './_profile.js';
 import { recentViews } from './_visits.js';
 
 /* The line somebody writes about themselves on /u/<name>. The same length as
@@ -171,6 +171,7 @@ export async function onRequestGet(context) {
      it. */
   let about;
   let links;
+  let speaks;
   let display;
   const extra = await readingExtras(env, (extras) => extras
     ? env.DB.prepare('SELECT ' + extras + ' FROM users WHERE id = ?').bind(user.id).first()
@@ -183,6 +184,10 @@ export async function onRequestGet(context) {
        that has nowhere to keep them. */
     const some = readLinks(extra.links);
     links = Object.keys(some).length ? some : undefined;
+    /* The languages ride in the same column — readSpeaks() in ./_profile.js
+       says why — so they are there exactly when the handles can be. */
+    const spoken = readSpeaks(extra.links);
+    speaks = spoken.length ? spoken : undefined;
     /* Only where that column is there too, for the same reason. */
     display = extra.display_name || undefined;
   }
@@ -227,6 +232,8 @@ export async function onRequestGet(context) {
        the server validates against. Left out entirely where there are none,
        which is nearly every account. */
     links: links,
+    /* The languages they said they speak, as codes, for the picker. */
+    speaks: speaks,
     /* The page of links under the profile, in its order, for the form that
        rewrites it. Guarded inside readRows() for the reason the two above
        are: the table arrives by hand, and until it has, an account has no
@@ -590,17 +597,47 @@ export async function onRequestPost(context) {
       next[net.id] = handle;
     }
 
-    /* '' rather than '{}' for somebody who has taken all three down, so that
-       "never wrote one" and "wrote three and removed them" are the same row —
-       the same reasoning DEFAULT_PIN is stored as '' for. */
-    const stored = Object.keys(next).length ? JSON.stringify(next) : '';
+    /* The languages share the column and are not this form's to change, so
+       what is stored is read first and they are carried across — mergeLinks()
+       in ./_profile.js. '' rather than '{}' for somebody who has taken
+       everything down, so that "never wrote one" and "wrote three and removed
+       them" are the same row — the same reasoning DEFAULT_PIN is stored as ''
+       for. */
+    const was = await env.DB.prepare('SELECT links FROM users WHERE id = ?').bind(user.id).first();
 
     await env.DB
       .prepare('UPDATE users SET links = ? WHERE id = ?')
-      .bind(stored, user.id)
+      .bind(mergeLinks(was && was.links, next, null), user.id)
       .run();
 
     return json({ links: next }, 200);
+  }
+
+  /* ------------------------------------------- the languages you speak
+   *
+   * Up to eight codes out of SPEAKS in ./_profile.js, in the order they were
+   * picked, printed under the handles on /u/<name> in the reader's language.
+   * A session and no password, for the reason the handles above take none.
+   * The whole list every time, so an empty one is every language taken
+   * down; a code that is not in the list refuses the whole write rather than
+   * being dropped, which a hand-written request is the only way to send.
+   * Stored beside the handles in users.links, which are carried across.
+   */
+  if (action === 'speaks') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const next = cleanSpeaks(body.speaks);
+    if (!next) return json({ error: 'bad-speaks' }, 400);
+
+    const was = await env.DB.prepare('SELECT links FROM users WHERE id = ?').bind(user.id).first();
+
+    await env.DB
+      .prepare('UPDATE users SET links = ? WHERE id = ?')
+      .bind(mergeLinks(was && was.links, null, next), user.id)
+      .run();
+
+    return json({ speaks: next }, 200);
   }
 
   /* ------------------------------------------------ the page of links

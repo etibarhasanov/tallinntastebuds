@@ -585,6 +585,20 @@
 .lists-link-net { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .lists-link-who { font-family: var(--body); font-size: 14px; }
 
+/* The languages somebody speaks, under the handles: one line, the label in
+   the mono and the names beside it, wrapping at 390px rather than scrolling.
+   Centred under the glyphs on a profile that is a page, and on the editor's
+   preview of one. See profileSpeaks() in assets/lists.js. */
+.lists-speaks {
+  margin: 0 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  color: var(--ink);
+}
+.lists-page-top .lists-speaks { justify-content: center; margin: 10px 0 0; }
+
 /* ---------- the page of links ----------
    The rows under somebody's name on a profile, between the handles and the
    lists — assets/rows.js draws them, and /edit draws the same rows, with
@@ -860,6 +874,28 @@
   font-size: 15px;
 }
 .ed-handle:focus { outline: none; }
+
+/* The languages picked, each a quiet pill that takes itself off again: the
+   hairline and the paper the handle boxes wear, so they read as part of the
+   same block rather than as actions — design rule 5 keeps the accent for
+   Save. The menu of the rest is a .lists-input under them. See speaksField()
+   in assets/edit.js. */
+.ed-speaks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ed-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 14px;
+  cursor: pointer;
+}
+.ed-lang:hover { border-color: var(--muted); }
+.ed-lang span[aria-hidden] { color: var(--muted); }
 
 .ed-add { margin-bottom: 14px; }
 .ed-empty { padding: 18px 0 6px; }

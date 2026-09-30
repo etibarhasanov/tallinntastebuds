@@ -904,6 +904,7 @@
          number for the same reason the line is: what somebody chose to say
          about themselves comes before what strangers did with their lists. */
       profileLinks(who.links),
+      profileSpeaks(who.speaks),
       standing(who.kept),
       /* The year and not the day. When somebody made an account is context
          for the number above it rather than a record of them — and a year is
@@ -957,7 +958,8 @@
         who.face ? el('img', { className: 'lists-page-face', src: who.face, alt: '', width: 96, height: 96 }) : null,
         el('h1', { className: 'lists-page-name', textContent: who.display || who.name }),
         who.about ? el('p', { className: 'lists-page-line', textContent: who.about }) : null,
-        pageSocial(who.links)
+        pageSocial(who.links),
+        profileSpeaks(who.speaks)
       ]),
       TTBRows.draw(who.rows, {
         t: t,
@@ -1056,6 +1058,20 @@
       ]));
     });
     return ul;
+  }
+
+  /* The languages they said they speak, under the handles on the card and on
+     the page alike: the label in the mono and the names in the body face,
+     the same pairing a handle has, each name in the language this page is
+     being read in — TTBLinks.spoken() in assets/links.js. Nothing where they
+     picked none, which is nearly every account. */
+  function profileSpeaks(codes) {
+    var names = TTBLinks.spoken(codes, state.lang);
+    if (!names.length) return null;
+    return el('p', { className: 'lists-speaks' }, [
+      el('span', { className: 'lists-link-net mono', textContent: t('profileSpeaks') }),
+      el('span', { className: 'lists-link-who', textContent: names.join(' · ') })
+    ]);
   }
 
   /* A link on a profile, counted for its owner when it is pressed. */
