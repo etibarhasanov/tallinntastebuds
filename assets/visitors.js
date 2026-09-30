@@ -4,8 +4,9 @@
  * count instead, in the order the questions are asked. Today so far first,
  * whatever the range: who came, who signed in and made an account, and on
  * which of the map's two rails. Then a range and who came in it — five
- * figures, a bar a day of new and returning visitors, the countries, where
- * they came from and the languages they read in. Then what a new visitor
+ * figures, a bar a day of new and returning visitors, a bar an hour of the
+ * day, phone against desktop, the countries, where they came from and the
+ * languages they read in. Then what a new visitor
  * does against a returning one, then the two rails against each other, and
  * last what was done — pages, where a visit begins and goes, and presses.
  * The shape is the one /insights already has, because it is the same kind
@@ -64,6 +65,9 @@
   var FEWEST = 30;
 
   var SOURCES = { search: 'insightsSearch', here: 'insightsHere', direct: 'insightsDirect' };
+
+  /* What a browser is driven with, by the ids assets/track.js decides. */
+  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
 
   var state = { lang: DEFAULT_LANG, ui: {}, data: null, live: null };
 
@@ -355,6 +359,43 @@
       ]),
       svg('svg', { 'class': 'ins-chart', viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': said }, kids)
     ];
+  }
+
+  /* Page views by the hour of the day in Tallinn, over the range — WHEN THEY
+     COME in functions/api/_visitors.js. One bar an hour, the foot marked
+     every six, and no card at all while every hour is nought. */
+  function hours() {
+    var bars = state.data.hours;
+    var W = 340, H = 150, L = 30, R = 4, T = 10, B = 118;
+    var max = 0;
+    bars.forEach(function (n) { if (n > max) max = n; });
+    if (!max) return null;
+    var top = ceiling(max);
+    var slot = (W - R - L) / bars.length;
+    var wide = Math.max(2, slot * 0.7);
+    var y = function (n) { return B - (B - T) * n / top; };
+    var label = function (h) { return (h < 10 ? '0' : '') + h + ':00'; };
+
+    var kids = [];
+    [0, top / 2, top].forEach(function (v) {
+      kids.push(svg('line', { 'class': 'ins-grid', x1: L, x2: W - R, y1: y(v), y2: y(v) }));
+      kids.push(svg('text', { x: L - 6, y: y(v) + 3.5, 'text-anchor': 'end' }, [num(v)]));
+    });
+    bars.forEach(function (n, i) {
+      if (!n) return;
+      kids.push(svg('rect', { 'class': 'vis-new', x: (L + slot * i + (slot - wide) / 2).toFixed(1),
+        width: wide.toFixed(1), y: y(n).toFixed(1), height: (B - y(n)).toFixed(1) }));
+    });
+    for (var h = 0; h < bars.length; h += 6) {
+      kids.push(svg('text', { x: (L + slot * (h + 0.5)).toFixed(1), y: B + 18, 'text-anchor': 'middle' }, [label(h)]));
+    }
+    var said = bars.map(function (n, i) { return label(i) + ': ' + num(n); }).join('; ');
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsHours') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsHoursLead') }),
+      svg('svg', { 'class': 'ins-chart', viewBox: '0 0 ' + W + ' ' + H, role: 'img',
+        'aria-label': t('visitorsHoursAria', { list: said }) }, kids)
+    ]);
   }
 
   /* The first TOP rows and the rest as one Other — topOf() in
@@ -700,6 +741,11 @@
       stack.appendChild(card([el('p', { className: 'lists-none', textContent: t('visitorsQuiet') })]));
     } else {
       if (d.series) stack.appendChild(card(chart()));
+      var byHour = hours();
+      if (byHour) stack.appendChild(byHour);
+      if (d.devices.length) {
+        stack.appendChild(ranking(t('visitorsDevices'), d.devices, function (r) { return DEVICES[r.id] ? t(DEVICES[r.id]) : r.id; }));
+      }
       if (d.countries.length) {
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
@@ -717,7 +763,8 @@
 
     stack.appendChild(el('div', { className: 'stats-totals' }, [
       note('visitorsSince', { date: dateLabel(d.since, true) }),
-      note('visitorsFoot')
+      note('visitorsFoot'),
+      note('visitorsOwnerFoot')
     ]));
     main.appendChild(stack);
   }

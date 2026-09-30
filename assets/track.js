@@ -309,8 +309,20 @@ window.TTBTrack = (function () {
          count of which languages people arrive wanting, spoken here or not.
          Read straight off the browser, never off the page, which has
          already picked one out of it. */
-      asks: String(window.navigator.language || '').slice(0, 2).toLowerCase()
+      asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
+      device: device()
     });
+  }
+
+  /* Phone, tablet or desktop, by what the browser says it is driven with: a
+     coarse primary pointer is a finger, and a finger on something narrower
+     than 768px is a phone. A laptop with a touchscreen keeps its mouse as
+     the primary pointer and counts as a desktop, which is what it is. */
+  function device() {
+    var coarse = false;
+    try { coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch (e) { coarse = false; }
+    if (!coarse) return 'desktop';
+    return window.innerWidth < 768 ? 'phone' : 'tablet';
   }
 
   /* The day Google's tag first saw this browser, out of the `_ga` cookie

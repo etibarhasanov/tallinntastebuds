@@ -96,6 +96,28 @@
  * people arrive wanting, against the ten the site has. An open kind,
  * capped like the countries, since a browser may ask for anything.
  *
+ * WHEN THEY COME, AND ON WHAT
+ *
+ * Every page opened is also counted under the hour of the day it was
+ * opened in, `hour`, by Tallinn's clock rather than UTC, since the question
+ * is when people in the city are looking and that is the clock the stories
+ * and the opening hours already keep. Twenty-four rows a day at most. And
+ * each visitor's first page of the day says what the browser is driven
+ * with — `device`, phone, tablet or desktop, decided in assets/track.js
+ * from the primary pointer and the width — because the layouts are drawn
+ * for a 390px phone first, and how much of the traffic that is was a guess.
+ *
+ * THE OWNER IS NOT ONE OF THEM
+ *
+ * A report that arrives with the owner's own session — an account ADMINS
+ * in wrangler.toml names, adminUser() in ./_admin.js — is not counted at
+ * all, by ./stats.js before it reaches this file, into neither this table
+ * nor flow_counts. On the count's first days a few returning browsers,
+ * the owner's among them, were most of the returning visitors' minutes
+ * and presses, and a page about who comes to the site should not be read
+ * through the person who built it. Signed out, the owner is a visitor
+ * like anybody, as in GA.
+ *
  * NEW AGAINST RETURNING
  *
  * A visitor is new on the first day its browser ever came and returning on
@@ -229,6 +251,10 @@ const MAX_IDS = 100;
 const CODE = /^[a-z]{2}$/;
 const MAX_STEP = 200;
 
+/* What a browser is driven with, as assets/track.js decides it — WHEN THEY
+   COME, AND ON WHAT. */
+const DEVICES = ['phone', 'tablet', 'desktop'];
+
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
    the most presses one report may carry, by name and in all. */
 const MAX_SECS = 1800;
@@ -248,6 +274,20 @@ const LIVE_ADD =
 
 function minuteNow() {
   return Math.floor(Date.now() / 60000);
+}
+
+/* The hour of the day in Tallinn, '00' to '23' — the clock the site's
+   opening hours and stories already keep, tallinnNow() in ./ask.js being
+   the other reader of the zone. UTC where the runtime has no zone data,
+   which it has not lacked yet. */
+function hourNow() {
+  let hour = new Date().getUTCHours();
+  try {
+    const said = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Tallinn', hour: '2-digit', hour12: false })
+      .format(new Date());
+    if (/^\d\d$/.test(said)) hour = Number(said) % 24;
+  } catch (e) { /* no zone data */ }
+  return (hour < 10 ? '0' : '') + hour;
 }
 
 const ADD =
@@ -325,14 +365,15 @@ async function file(env, facts) {
 
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
    `who` what ttb.since said, `from` the referrer it was opened with,
-   `layout` the rail if any, `asks` the language the browser asks for. */
+   `layout` the rail if any, `asks` the language the browser asks for,
+   `device` phone, tablet or desktop. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
   if (!page) return false;
   const rail = railOf(body);
 
-  const facts = [['view', page, 1]];
+  const facts = [['view', page, 1], ['hour', hourNow(), 1]];
   split(facts, rail, whoOf(body), 'views', 1);
   if (body.first === true) {
     const who = body.back === true ? 'back' : 'new';
@@ -344,6 +385,7 @@ export async function countArrive(context, body) {
     );
     if (rail) facts.push(['layout', rail + ':' + who, 1]);
     if (CODE.test(body.asks)) facts.push(['asks', body.asks, 1]);
+    if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
   }
   const [counted] = await Promise.all([file(env, facts), countLive(env)]);
   return counted;
@@ -525,6 +567,9 @@ function most(map) {
  *   asked      [{ id, n, spoken }] visitors by the language their browser
  *              asks for, most first, `spoken` whether the site has it —
  *              `spoken` is the codes data/ui.json speaks
+ *   hours      [24 numbers] page views by the hour of the day in Tallinn,
+ *              midnight first
+ *   devices    [{ id, n }] visitors by phone, tablet or desktop, most first
  *
  * One read of the range and the one before it; the rest is arithmetic on at
  * most 180 days of a hundred-odd rows each.
@@ -564,6 +609,8 @@ export async function readVisitors(env, span, ui, spoken) {
   const entries = new Map();
   const moves = new Map();
   const asked = new Map();
+  const devices = new Map();
+  const hours = new Array(24).fill(0);
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
@@ -593,6 +640,8 @@ export async function readVisitors(env, span, ui, spoken) {
     } else if (r.kind === 'entry') bump(entries, r.id, r.n);
     else if (r.kind === 'nav') bump(moves, r.id, r.n);
     else if (r.kind === 'asks') bump(asked, r.id, r.n);
+    else if (r.kind === 'device') bump(devices, r.id, r.n);
+    else if (r.kind === 'hour') { if (hours[Number(r.id)] !== undefined) hours[Number(r.id)] += r.n; }
     else if (r.kind === 'country') bump(countries, r.id, r.n);
     else if (r.kind === 'from') bump(sources, r.id, r.n);
     else if (r.kind === 'press') bump(presses, r.id, r.n);
@@ -641,6 +690,8 @@ export async function readVisitors(env, span, ui, spoken) {
       return { ...m, from: pageName(ui, from), to: pageName(ui, to) };
     }),
     asked: most(asked).map((a) => ({ ...a, spoken: (spoken || []).includes(a.id) })),
+    hours: hours,
+    devices: most(devices),
     countries: most(countries),
     sources: most(sources).map((s) => ({ ...s, name: networkName(s.id) })),
     presses: most(presses),

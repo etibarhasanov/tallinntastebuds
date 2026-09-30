@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS view_seen (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Fourteen kinds:
+-- the key, one row per fact per day, and a number. Sixteen kinds:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -274,6 +274,9 @@ CREATE TABLE IF NOT EXISTS view_seen (
 --   kind 'idle'     id is which page; a view that reported nothing pressed
 --   kind 'nav'      id is '<from>><to>', two pages opened one after the
 --                   other in one tab
+--   kind 'hour'     id is '00' to '23', the hour of the day in Tallinn a
+--                   page was opened in
+--   kind 'device'   id is phone, tablet or desktop, once per visitor per day
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
