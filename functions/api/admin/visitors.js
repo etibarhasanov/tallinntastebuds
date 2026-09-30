@@ -45,7 +45,7 @@ export async function onRequestGet(context) {
   const params = new URL(request.url).searchParams;
 
   /* The words first, because every answer carries them — see ./stats.js. */
-  const { lang, ui } = await wordsFor(context, params.get('lang'));
+  const { lang, langs, ui } = await wordsFor(context, params.get('lang'));
   const asked = Number(params.get('days'));
   const span = SPANS.includes(asked) ? asked : 7;
 
@@ -58,7 +58,8 @@ export async function onRequestGet(context) {
   if (!env.DB) return json(empty, 200);
   if (await wrongDatabase(env)) return json(empty, 200);
 
-  const [visitors, dealt] = await Promise.all([readVisitors(env, span, ui), readDealt(env)]);
+  const spoken = langs.map((l) => l.code);
+  const [visitors, dealt] = await Promise.all([readVisitors(env, span, ui, spoken), readDealt(env)]);
   if (!visitors) return json(empty, 200);
 
   const res = json({ ready: true, ...visitors, dealt: dealt, lang: lang, ui: ui }, 200, TTL);
@@ -87,7 +88,7 @@ async function readDealt(env) {
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
-const SHAPE = '2';
+const SHAPE = '3';
 
 function visitorsKey(request, lang, span) {
   const url = new URL('/api/admin/visitors', request.url);

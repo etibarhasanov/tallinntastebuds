@@ -96,14 +96,13 @@
 
 import { sessionUser, dataFile } from './_lib.js';
 import { today, dayBack } from './_visits.js';
-import { pageOf } from './_visitors.js';
+import { pageOf, stepBefore } from './_visitors.js';
 
 /* The most names one report may carry — the visitor's diagram counts eleven
    steps, so forty is every button on a page and then some — and the shape a
    name has to have, which is every name TTBTrack sends. */
 const MAX_TRAIL = 40;
 const NAME = /^[a-z][a-z0-9_]*$/;
-const MAX_PATH = 200;
 
 const WHO = ['out', 'in'];
 
@@ -140,13 +139,12 @@ function candidates(name, page) {
 
 /* The step before the trail's first, as the browser sent it — see WHAT
    ARRIVES: `page:/lists`, `view:/`, or `save_place@/`, the path carried so
-   the page it was on can be told here. Nothing, where it cannot be. */
+   the page it was on can be told. stepBefore() in ./_visitors.js reads it,
+   since that file counts the same step as a move between pages. Nothing,
+   where it cannot be read. */
 function earlierOf(request, sent) {
-  const text = typeof sent === 'string' && sent.length <= MAX_PATH ? sent : '';
-  const m = /^(page|view):(.+)$/.exec(text) || /^([a-z][a-z0-9_]*)@(.+)$/.exec(text);
-  if (!m) return [];
-  const page = pageOf(request, m[2]);
-  return page ? candidates(m[1], page) : [];
+  const before = stepBefore(request, sent);
+  return before ? candidates(before.kind, before.page) : [];
 }
 
 /* A page put away: `trail` the names in order, `opened` whether this is the

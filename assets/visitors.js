@@ -5,12 +5,12 @@
  * whatever the range: who came, who signed in and made an account, and on
  * which of the map's two rails. Then a range and who came in it — five
  * figures, a bar a day of new and returning visitors, the countries, where
- * they came from and the languages they read in. Then what a new visitor does against a returning
- * one, then the two rails against each other, and last what was done —
- * pages and presses. The shape is the one /insights already has, because it
- * is the same kind of question and the owner has met that page; the rows,
- * the figures and the chart borrow its classes and /admin/stats' out of
- * assets/stats.css.
+ * they came from and the languages they read in. Then what a new visitor
+ * does against a returning one, then the two rails against each other, and
+ * last what was done — pages, where a visit begins and goes, and presses.
+ * The shape is the one /insights already has, because it is the same kind
+ * of question and the owner has met that page; the rows, the figures and
+ * the chart borrow its classes and /admin/stats' out of assets/stats.css.
  *
  * WHERE THE NUMBERS COME FROM
  *
@@ -368,7 +368,7 @@
 
   /* A ranking of one number, as /admin/stats draws them. `mono` for names
      that are ids rather than words. */
-  function ranking(title, rows, name, mono) {
+  function ranked(rows, name, mono) {
     var ol = el('ol', { className: 'stats-list ins-list' });
     topOf(rows).forEach(function (r, i) {
       ol.appendChild(el('li', { className: 'stats-row' }, [
@@ -380,7 +380,12 @@
         el('span', { className: 'stats-n', textContent: num(r.n) })
       ]));
     });
-    return card([el('h2', { className: 'lists-title', textContent: title }), ol]);
+    return ol;
+  }
+
+  /* The same, as a card of its own under a title. */
+  function ranking(title, rows, name, mono) {
+    return card([el('h2', { className: 'lists-title', textContent: title }), ranked(rows, name, mono)]);
   }
 
   /* A table of a name and two numbers — the grid /insights draws its
@@ -401,13 +406,50 @@
     return table;
   }
 
+  /* The pages, each with its views, the time a view stayed and the share of
+     views on which nothing was pressed. Time is over the views that reported
+     how they ended where a page has any — THE VIEWS THAT REPORTED in
+     functions/api/_visitors.js — and over every view before that count
+     began, and the line under the table says how many reported at all. */
   function pages() {
+    var rows = state.data.pages;
+    var views = 0;
+    var left = 0;
+    rows.forEach(function (p) { views += p.views; left += p.left; });
     return card([
       el('h2', { className: 'lists-title', textContent: t('visitorsPages') }),
-      grid(t('visitorsPages'), [t('insightsViews'), t('visitorsTimeShort')], state.data.pages,
+      grid(t('visitorsPages'), [t('insightsViews'), t('visitorsTimeShort'), t('visitorsIdle')], rows,
         function (p) { return p.name; },
-        function (p) { return [num(p.views), duration(per(p.secs, p.views))]; })
+        function (p) {
+          return [
+            num(p.views),
+            duration(p.left ? per(p.secsLeft, p.left) : per(p.secs, p.views)),
+            p.left ? share(p.idle, p.left) : '—'
+          ];
+        }),
+      left ? el('p', { className: 'ins-note', textContent: t('visitorsReported', { share: share(left, views) }) }) : null
     ]);
+  }
+
+  /* Where a visit begins and which page follows which — WHERE A VISIT
+     BEGINS, AND WHERE IT GOES in functions/api/_visitors.js. Left out until
+     either has a row. */
+  function journeys() {
+    var d = state.data;
+    if (!d.entries.length && !d.moves.length) return null;
+    var kids = [
+      el('h2', { className: 'lists-title', textContent: t('visitorsJourneys') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsJourneysLead') })
+    ];
+    if (d.entries.length) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsLanding') }),
+        ranked(d.entries, function (r) { return r.name; }));
+    }
+    if (d.moves.length) {
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsNext') }),
+        ranked(d.moves, function (r) { return r.from + ' → ' + r.to; }));
+    }
+    return card(kids);
   }
 
   /* Today so far, whatever the range: four figures, and under them new and
@@ -485,21 +527,38 @@
      the minutes of somebody who arrived in English and changed to Russian
      are English's up to the switch and Russian's after it. Two tables of a
      language a row rather than one of four columns, which would not fit
-     across a phone. */
+     across a phone. Under them, the languages browsers asked for, spoken
+     here or not — WHICH LANGUAGE THE BROWSER ASKED FOR in
+     functions/api/_visitors.js — with the ones the site lacks marked, since
+     that is what the list is for. The tables ride on the put-away report
+     and the list on the page opening, so either can have rows while the
+     other has none. */
   function languages() {
     var rows = state.data.languages;
+    var asked = state.data.asked;
     var heads = [t('visitorsNew'), t('visitorsReturning')];
     var name = function (l) { return languageName(l.id); };
-    return card([
+    var kids = [
       el('h2', { className: 'lists-title', textContent: t('visitorsLanguages') }),
-      el('p', { className: 'stats-lead', textContent: t('visitorsLanguagesLead') }),
-      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsVisitors') }),
-      grid(t('visitorsVisitors'), heads, rows, name,
-        function (l) { return [num(l.visitors.new), num(l.visitors.back)]; }),
-      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsTimeShort') }),
-      grid(t('visitorsTimeShort'), heads, rows, name,
-        function (l) { return [duration(l.secs.new), duration(l.secs.back)]; })
-    ]);
+      el('p', { className: 'stats-lead', textContent: t('visitorsLanguagesLead') })
+    ];
+    if (rows.length) {
+      kids.push(
+        el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsVisitors') }),
+        grid(t('visitorsVisitors'), heads, rows, name,
+          function (l) { return [num(l.visitors.new), num(l.visitors.back)]; }),
+        el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsTimeShort') }),
+        grid(t('visitorsTimeShort'), heads, rows, name,
+          function (l) { return [duration(l.secs.new), duration(l.secs.back)]; }));
+    }
+    if (asked.length) {
+      kids.push(
+        el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsAsked') }),
+        ranked(asked, function (a) {
+          return languageName(a.id) + (a.spoken ? '' : ' · ' + t('visitorsNotSpoken'));
+        }));
+    }
+    return card(kids);
   }
 
   /* Whether the two rails' strangers found a place at rates that differ by
@@ -645,10 +704,12 @@
         stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
       }
       if (d.sources.length) stack.appendChild(ranking(t('insightsFrom'), d.sources, sourceName));
-      if (d.languages.length) stack.appendChild(languages());
+      if (d.languages.length || d.asked.length) stack.appendChild(languages());
       if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
       [cohorts(), layouts()].forEach(function (c) { if (c) stack.appendChild(c); });
       if (d.pages.length) stack.appendChild(pages());
+      var trips = journeys();
+      if (trips) stack.appendChild(trips);
       if (d.presses.length) {
         stack.appendChild(ranking(t('insightsPressed'), d.presses, function (r) { return r.id; }, true));
       }
