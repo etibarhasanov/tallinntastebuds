@@ -829,14 +829,14 @@
      The things you can do to the account are along this card's foot, as the
      quiet words under the row: a door is a row and a thing you do is a word,
      which is what tells the profile from the password at a glance. There are
-     three of them since a name became something you can change, and they
+     four of them since an account became something you can delete, and they
      are still not the menu that once stood here and made the page read as
      settings — that was three *rows*, each the width of the card, standing
      between somebody's name and their things. See the header.
 
      The two that change the account come first and in the order they are
-     reached for — the name far oftener than the password — and the way out
-     is last, where a way out belongs. */
+     reached for — the name far oftener than the password — then the way
+     out, and after it the way out that does not come back. */
   function youCard() {
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
@@ -867,7 +867,10 @@
         link(state.password ? 'accountChange' : 'accountSetPassword',
              SHEET + 'password' + BACK, 'account_password_open'),
         googleRow(),
-        signOut()
+        signOut(),
+        /* A step on the map's sheet like the first two, since it asks for
+           the password too. */
+        link('accountDelete', SHEET + 'delete' + BACK, 'account_delete_open', null, 'alt is-danger')
       ])
     ]);
   }
