@@ -9,6 +9,8 @@
       "Bash(node tools/stamp.mjs --check)",
       "Bash(node tools/places.mjs)",
       "Bash(node tools/places.mjs --check)",
+      "Bash(node tools/languages.mjs)",
+      "Bash(node tools/languages.mjs --check)",
       "Bash(node tools/qrperf.mjs --check)",
       "Bash(node .claude/hooks/d1-write-gate.mjs --check)",
       "Bash(git status *)",

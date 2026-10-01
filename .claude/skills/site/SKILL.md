@@ -135,6 +135,18 @@ en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback
 to a visitor. A key nothing prints any more goes, in all ten, in the commit
 that orphaned it.
 
+**The map does not read that file.** It reads `data/lang/<code>.json` — one
+language's block of `ui.json` and every place's write-up in that language —
+and `data/map.json`, the places without their write-ups, all written by
+`node tools/languages.mjs`. So every edit to `ui.json` or
+`data/restaurants.json` is followed by that tool, and the validator fails the
+build until it has been. `t()` in `assets/app.js` holds one language and
+falls back to nothing but the key, which is safe only because the validator
+holds every language to the same set of keys. A language switch on the map
+is a request, and `setLanguage()` keeps the old language on screen until the
+new file has arrived. **One language at a time** under **Languages** in
+`README.md`. Every other page still fetches `ui.json` whole.
+
 One exception, and it is a deliberate one: the splitwise page's strings are in
 `data/split.json`, same shape and same ten languages, so that removing that
 feature is removing files — see **Taking it out** under **Splitwise** in
@@ -337,7 +349,8 @@ no step 1 until the owner has answered it.
    leaves a picture of last month's site on every link anybody sends. It needs
    a Chromium, it takes a second, and nothing in CI can see that it went
    stale. **When somebody sends the link** under **Flashcards** in `README.md`.
-4. `node tools/validate.mjs`.
+4. `node tools/languages.mjs`, if `data/ui.json` moved, then
+   `node tools/validate.mjs`.
 5. **Drive it in a browser.** There is no test suite and no Playwright
    harness in the repo; reading the diff is not the same as watching it.
    `python3 -m http.server 8000` over the repo root is enough for the map,
@@ -393,7 +406,10 @@ complain about them:
    rather than an interface string: a new language is owed none of them, and
    a post it does not have falls back to English with a line in the new
    language saying so. See **The blog** in `README.md`.
-8. `node tools/sitemap.mjs`, and commit `sitemap.xml`. The language is a new
+8. `node tools/languages.mjs`, and commit `data/lang/`: the map reads the
+   new language out of a file of its own there, and lists it in the switch
+   out of `data/lang/index.json`.
+9. `node tools/sitemap.mjs`, and commit `sitemap.xml`. The language is a new
    address for the map — `/?lang=<code>` — and every other language's entry
    links to it; the validator fails on a sitemap that was not re-run.
 

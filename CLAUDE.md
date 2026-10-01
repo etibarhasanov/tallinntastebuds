@@ -359,13 +359,14 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Ten things in this repo are **generated**. Editing a source without
+Eleven things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every page named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
+| `data/ui.json` or `data/restaurants.json` | `node tools/languages.mjs` | `data/lang/<code>.json` and `data/lang/index.json`, one language's strings and write-ups to a file, and `data/map.json`, the places without their write-ups — what the map reads instead of the two whole files |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
 | `exports/tallinn_restaurants.csv`, or a place added to `data/restaurants.json` that the export already lists | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
@@ -466,7 +467,8 @@ is small — the small ones are the ones that ship broken.
 
 A pull request the admin page opened — a branch named `admin/add-<id>` or
 `admin/edit-<id>` — is landed the same way, with one step in front: check it
-out, `node tools/places.mjs`, commit `data/places.json`, push. The `/place`
+out, `node tools/places.mjs` and `node tools/languages.mjs`, commit
+`data/places.json`, `data/map.json` and `data/lang/`, push. The `/place`
 skill says why.
 
 ## Say where it stands, in the first line
