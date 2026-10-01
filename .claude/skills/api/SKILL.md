@@ -332,7 +332,13 @@ no step 1 until the owner has answered it.
 1. Make the change with the README section open and the file's header
    re-read against what the code now does.
 2. `node tools/validate.mjs`. It checks `wrangler.toml`, the `KITCHENS`
-   patterns in `venues.js` against the export, and the generated SQL.
+   patterns in `venues.js` against the export, and the generated SQL. Then
+   `node tools/functions-check.mjs`, which imports every module under
+   `functions/` the way the deploy bundles them: a name imported from a
+   module that no longer exports it, or a syntax error, fails here rather
+   than taking every route down with the one that was wrong. It takes a
+   second, and the outage it answers is the last bullet of **Where it goes
+   wrong**.
 3. **Drive it under `npx wrangler pages dev .`**, at `127.0.0.1:8788`, which
    reads the top of `wrangler.toml` and so hits the preview database. Never
    production, and never by pointing a binding at it. `.wrangler/` is the
@@ -363,10 +369,10 @@ what it costs per request, and what has to be applied by hand and where.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/validate.mjs`. If `db/schema.sql` changed, apply it to
-   **preview** now — `wrangler d1 execute tallinntastebuds-preview --remote
-   --file=db/schema.sql` — so the preview deployment has the table the code
-   expects.
+2. `node tools/validate.mjs` and `node tools/functions-check.mjs`. If
+   `db/schema.sql` changed, apply it to **preview** now — `wrangler d1
+   execute tallinntastebuds-preview --remote --file=db/schema.sql` — so the
+   preview deployment has the table the code expects.
 3. `npx wrangler pages dev .` against the preview database, and the page
    half driven in a browser through it.
 4. Commits that stand alone, subjects about what the rows or the answer now
@@ -405,3 +411,10 @@ what it costs per request, and what has to be applied by hand and where.
   add one.
 - The chat driven hard on a preview, and the live site out of model until
   midnight UTC. Same allowance, one account.
+- An export taken out of `_lib.js` by the commit that wrote its replacement,
+  while a route still imported the old name. An ES module resolves its
+  imports before any of it runs and Pages bundles everything under
+  `functions/` into one Worker, so the deployment went down whole rather
+  than the one route, and nothing in CI had opened either file — the
+  comment above `uiStrings()` is the record. `node tools/functions-check.mjs`
+  loads every module now, in CI and in step 2 of **The steps**.

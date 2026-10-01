@@ -256,8 +256,9 @@ the page draws the legal moves the answer carries.
    task in the same PR, even when it is small.
 4. Every string in all ten languages before the validator will pass it. The
    generators the task names, then `node tools/validate.mjs`, `node
-   tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`, `node
-   .claude/hooks/d1-write-gate.mjs --check`.
+   tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
+   tools/chessperf.mjs --check`, `node .claude/hooks/d1-write-gate.mjs
+   --check`.
 5. Drive it under `npx wrangler pages dev .` against the preview database, in
    both styles, at 390px and on a desktop, in the states the task lists. The
    house's side needs a signed-in account `ADMINS` names, and locally that is
