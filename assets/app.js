@@ -2581,6 +2581,7 @@
            one to answer, and whichever runs last is the one on screen. */
         openAskedAccount();
         answerGoogle();
+        if (accountDeleted) toast(t('accountDeleteDone'));
       })
       .catch(function () { /* signed out is a fine place to be */ accountSettled(); });
   }
@@ -2684,13 +2685,13 @@
      for, and it is answered by sending them there. */
   var ACCOUNT_PAGE = '/account.html';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'google'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'delete', 'google'];
 
   /* Which of those are a step somebody already signed in is standing in,
      rather than a way of becoming signed in. A link asking for one of these
      is answered where it stands; any other view asked for by somebody who
      already has an account is answered by their account page. */
-  var ACCOUNT_STEPS = ['password', 'username'];
+  var ACCOUNT_STEPS = ['password', 'username', 'delete'];
 
   /* What /api/google says happened, read here for the same reason the two
      above are: syncUrl takes it back off the address bar long before
@@ -2698,11 +2699,15 @@
      open nor a name to say. See the header of functions/api/google.js for
      what each of them means. */
   var googleSaid = '';
+  /* ?deleted=1, which the delete step lands on: the account it belonged to is
+     gone, and this is the one word left to say about it. */
+  var accountDeleted = false;
   var GOOGLE_SAID = ['in', 'name', 'linked', 'taken', 'failed'];
 
   function readAccountLink(params) {
     var said = params.get('google') || '';
     if (GOOGLE_SAID.indexOf(said) !== -1) googleSaid = said;
+    accountDeleted = params.get('deleted') === '1';
 
     var view = params.get('account') || '';
     if (ACCOUNT_VIEWS.indexOf(view) === -1) return;
@@ -2840,7 +2845,7 @@
    * you started on: one surface asks one thing.
    */
   var accountView = 'in';
-  /* 'in' | 'up' | 'me' | 'password' | 'username' | 'google' */
+  /* 'in' | 'up' | 'me' | 'password' | 'username' | 'delete' | 'google' */
   /* The three of those somebody with no account is standing in, and so the
      three the sign-up funnel is counted on. */
   var SIGN_VIEWS = ['up', 'in', 'google'];
@@ -3368,7 +3373,8 @@
        or was never there. The way out is the button, not this form. */
     'no-pending': 'accountErrGooglePending',
     linked: 'accountErrGoogleTaken',
-    'needs-password': 'accountErrNeedsPassword'
+    'needs-password': 'accountErrNeedsPassword',
+    confirm: 'accountErrDeleteConfirm'
   };
 
   function accountFail(out) {
@@ -3408,6 +3414,7 @@
 
     if (accountView === 'password') return renderAccountPassword(form);
     if (accountView === 'username') return renderAccountUsername(form);
+    if (accountView === 'delete') return renderAccountDelete(form);
     if (accountView === 'google') return renderAccountGoogle(form);
     return renderAccountAuth(form);
   }
@@ -3831,6 +3838,64 @@
           closeAccount();
           toast(t('accountNameDone', { name: a.out.user }));
           returnAfterAccount();
+        }).catch(function () { accountFail({}); });
+    });
+    form.appendChild(go);
+  }
+
+  /* ------------------------------------------------ deleting the account
+   * The one step on this sheet that cannot be undone, and it reads like it:
+   * what goes, said before the button, and the button in the danger colour.
+   * It is here and not on the account page for the reason the other two steps
+   * are — it asks for the password, and this is the one place on the site
+   * that does. An account made through Google has none, so it is asked to
+   * type its own username instead, which proves the press was meant.
+   *
+   * Afterwards there is nothing to go back to: the account page belongs to
+   * somebody who no longer exists. So it lands on the map, signed out, with
+   * the saves this browser was drawing for the account wiped from it, the way
+   * Sign out leaves it. See `delete` in functions/api/account.js for what
+   * goes and what stays.
+   */
+  function renderAccountDelete(form) {
+    var hasPassword = !!state.account.password;
+
+    form.appendChild(accountBack());
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountDelete') }));
+    form.appendChild(el('p', {
+      className: 'ac-why',
+      textContent: t('accountDeleteWhy', { name: state.account.user || '' })
+    }));
+    accountMessages(form);
+
+    if (hasPassword) {
+      form.appendChild(accountField('ac-current', 'accountCurrentPassword', 'password', {
+        autocomplete: 'current-password'
+      }));
+    } else {
+      form.appendChild(accountField('ac-user', 'accountDeleteTypeName', 'text', {
+        maxlength: '24',
+        hint: state.account.user || ''
+      }));
+    }
+    form.appendChild(accountWarn(t('accountDeleteCosts')));
+
+    var go = accountSubmit('accountDeleteGo');
+    go.addEventListener('click', function () {
+      if (accountBusy) return;
+      var v = accountValues();
+      accountBusy = true; accountErr = ''; renderAccount();
+      accountPost({ action: 'delete', current: v.current, username: v.username })
+        .then(function (a) {
+          accountBusy = false;
+          if (!a.ok) return accountFail(a.out);
+          TTBTrack.event('account_delete');
+          storeSet(SAVED_KEY, '[]');
+          /* A fresh load of the map rather than a redraw of this one: every
+             mark, the rail and the header were drawn for the account, and a
+             load is the one thing that redraws all of them as nobody's. The
+             word on the address is what says it worked on the other side. */
+          window.location.href = '/?deleted=1';
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
@@ -10887,6 +10952,8 @@
        your own marks with it, and a link copied afterwards is a link to the
        map, not to a filter nobody else can answer. */
     params.delete('saved');
+    /* And ?deleted=, which has said its one word by now. */
+    params.delete('deleted');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;

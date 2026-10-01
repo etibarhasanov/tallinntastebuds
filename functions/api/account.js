@@ -80,7 +80,7 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase
+  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey
 } from './_lib.js';
 import {
   USERNAME_RE, MIN_PASSWORD, HOLD_DAYS,
@@ -113,6 +113,26 @@ async function savedByUser(env, userId) {
     .bind(userId)
     .all();
   return results.map((r) => r.place_id);
+}
+
+/* An answer that clears the session cookie: signing out, and deleting the
+   account, which signs out on the way.
+
+   Two clears, and the second one is not a mistake. The session cookie is
+   scoped to tallinntastebuds.ee so that the splitwise subdomain is signed in
+   when the map is — see sessionCookie() in ./_lib.js — and a browser that
+   signed in before it was may still be holding the host-only cookie this site
+   set for years. Clearing only the domain-scoped one would leave that one
+   standing and Sign out would appear to do nothing. On a preview host the two
+   are the same string, and clearing a cookie twice costs nothing. */
+function signedOut(request, body) {
+  const gone = new Headers({
+    'content-type': 'application/json; charset=utf-8',
+    'cache-control': 'no-store'
+  });
+  gone.append('set-cookie', sessionCookie('', 0, request));
+  gone.append('set-cookie', sessionCookie('', 0, null));
+  return new Response(JSON.stringify(body), { headers: gone });
 }
 
 /* ------------------------------------------------------------------- who
@@ -299,21 +319,7 @@ export async function onRequestPost(context) {
         .bind(await sha256Hex(token))
         .run();
     }
-    /* Two clears, and the second one is not a mistake. The session cookie is
-       scoped to tallinntastebuds.ee so that the splitwise subdomain is signed
-       in when the map is — see sessionCookie() in ./_lib.js — and a browser
-       that signed in before it was may still be holding the host-only cookie
-       this site set for years. Clearing only the domain-scoped one would
-       leave that one standing and Sign out would appear to do nothing. On a
-       preview host the two are the same string, and clearing a cookie twice
-       costs nothing. */
-    const gone = new Headers({
-      'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'no-store'
-    });
-    gone.append('set-cookie', sessionCookie('', 0, request));
-    gone.append('set-cookie', sessionCookie('', 0, null));
-    return new Response(JSON.stringify({ user: null }), { headers: gone });
+    return signedOut(request, { user: null });
   }
 
   /* ------------------------------------------------- changing a password
@@ -812,6 +818,131 @@ export async function onRequestPost(context) {
 
     await unlinkGoogle(env, user.id);
     return json({ linked: false }, 200);
+  }
+
+  /* ------------------------------------------------- deleting an account
+   * The way out that does not come back. Everything filed under this
+   * account's id goes, in one batch, and the browser asking is signed out on
+   * the way back.
+   *
+   * WHAT GOES
+   *
+   *   users, sessions, identities   the account itself and every way into it
+   *   saves                         recounted, so a place's number drops
+   *   lists, list_items             every list it wrote, and the places on
+   *                                 them; other people's keeps on those
+   *                                 lists with them, as a list delete does
+   *   list_keeps                    the lists it kept of other people's
+   *   profile_rows                  the page of links under its name
+   *   added_places                  the places it added by hand, unless a
+   *                                 list somebody else wrote still has one
+   *   flashcard_decks, _cards,      the decks it wrote and what it knew
+   *   flashcard_known
+   *   split_*                       every group it owns, whole, as the
+   *                                 owner's own delete takes one; and its
+   *                                 place in everybody else's
+   *
+   * WHAT STAYS, AND WHY IT IS NOT THE PERSON
+   *
+   * The numbers: press_counts, profile_counts, list_counts, visitor_counts,
+   * usage_people and the rest. They are filed under a list, a day or a hashed
+   * key rather than under anybody, and a site that unwound its own history
+   * every time somebody left would be counting nothing. Feedback, hearts and
+   * the chess games stay too — they are things said and played in public, and
+   * every reader of them is a LEFT JOIN against users, so with the row gone
+   * they draw with no name on them, which is what a deleted account is.
+   *
+   * In somebody else's splitwise group, an expense this account paid or owed
+   * a share of stays in the list and draws with no name, the way a member who
+   * left does — see readGroup() in ./split.js. Deleting those lines would be
+   * this account rewriting what other people paid; keeping the membership
+   * would be keeping the account. The group's balances then add up among the
+   * people still in it.
+   *
+   * The name is held for thirty days, exactly as a rename holds the old one:
+   * /u/<name> answers nothing rather than a stranger who signed up a minute
+   * later. The hold is keyed by an id nobody has any more, so nobody can take
+   * it back, and it is swept on the way past like any other.
+   *
+   * WHAT IT ASKS FOR
+   *
+   * The password in use, where there is one, counted against the same
+   * fingerprint every other guess is. An account made through Google has no
+   * password, so it is asked to type its own username instead: not a secret,
+   * but proof that the press was meant, on a step that cannot be undone.
+   */
+  if (action === 'delete') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    const hash = await failHash(env, request);
+    if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
+
+    const pw = await passwordOn(env, user.id);
+    if (pw.hash) {
+      if (!(await matches(pw, typeof body.current === 'string' ? body.current : ''))) {
+        await noteFail(env, hash);
+        return json({ error: 'current' }, 401);
+      }
+    } else {
+      const typed = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
+      if (typed !== user.username.toLowerCase()) return json({ error: 'confirm' }, 400);
+    }
+
+    const id = user.id;
+    const now = Date.now();
+    const { results: saved } = await env.DB
+      .prepare('SELECT place_id FROM saves WHERE owner = ?')
+      .bind(id)
+      .all();
+
+    const statements = [
+      'DELETE FROM saves WHERE owner = ?',
+      'DELETE FROM list_items WHERE list_id IN (SELECT id FROM lists WHERE owner = ?)',
+      'DELETE FROM list_keeps WHERE list_id IN (SELECT id FROM lists WHERE owner = ?)',
+      'DELETE FROM lists WHERE owner = ?',
+      'DELETE FROM list_keeps WHERE owner = ?',
+      /* After the lists, so a place that was only ever on this account's own
+         lists is free to go. */
+      'DELETE FROM added_places WHERE owner = ? AND id NOT IN (SELECT place_id FROM list_items)',
+      'DELETE FROM profile_rows WHERE owner = ?',
+      'DELETE FROM flashcard_cards WHERE deck_id IN (SELECT id FROM flashcard_decks WHERE owner = ?)',
+      'DELETE FROM flashcard_decks WHERE owner = ?',
+      'DELETE FROM flashcard_known WHERE user_id = ?',
+      /* The groups it owns, in the order remove() in ./split.js takes one. */
+      'DELETE FROM split_shares WHERE expense_id IN (SELECT e.id FROM split_expenses e ' +
+        'JOIN split_groups g ON g.id = e.group_id WHERE g.owner = ?)',
+      'DELETE FROM split_expenses WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
+      'DELETE FROM split_settlements WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
+      'DELETE FROM split_members WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
+      'DELETE FROM split_groups WHERE owner = ?',
+      'DELETE FROM split_members WHERE user_id = ?',
+      'DELETE FROM identities WHERE user_id = ?',
+      'DELETE FROM sessions WHERE user_id = ?',
+      'DELETE FROM users WHERE id = ?'
+    ].map((sql) => env.DB.prepare(sql).bind(id));
+
+    statements.push(
+      env.DB
+        .prepare('INSERT OR REPLACE INTO username_holds (user_id, username, released_at) VALUES (?, ?, ?)')
+        .bind(id, user.username, now),
+      env.DB.prepare('DELETE FROM username_holds WHERE released_at < ?').bind(now - HOLD_DAYS * 86400000)
+    );
+    for (const { place_id: place } of saved) {
+      statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));
+    }
+
+    /* One batch is one transaction, so a table missing from a database the
+       schema has not reached fails the lot and deletes nothing — the account
+       is either gone or exactly as it was, never half of each. */
+    try {
+      await env.DB.batch(statements);
+    } catch (e) {
+      return json({ error: 'failed' }, 500);
+    }
+    if (saved.length) await caches.default.delete(countsKey(request));
+
+    return signedOut(request, { deleted: true, user: null });
   }
 
   /* ---------------------------------------- making one, and entering one

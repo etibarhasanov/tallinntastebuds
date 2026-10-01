@@ -112,7 +112,10 @@
         {"id": "account-done", "type": "end", "lane": "member", "name": "Account changed"},
         {"id": "sign-out", "type": "user", "lane": "member", "name": "Signs out", "when": ["account_logout"], "ref": ["assets/account.js"]},
         {"id": "session-gone", "type": "service", "lane": "member", "name": "Deletes the session", "ref": ["functions/api/account.js POST logout"]},
-        {"id": "visitor", "type": "end", "lane": "member", "name": "A visitor again"}
+        {"id": "visitor", "type": "end", "lane": "member", "name": "A visitor again"},
+        {"id": "delete", "type": "user", "lane": "member", "name": "Deletes their account", "when": ["account_delete"], "note": "Asks for the password, or the username on an account made through Google. No undo.", "ref": ["assets/account.js", "assets/app.js"]},
+        {"id": "account-gone", "type": "service", "lane": "member", "name": "Deletes the account and everything filed under it, keeps the numbers", "ref": ["functions/api/account.js POST delete"]},
+        {"id": "deleted", "type": "end", "lane": "member", "name": "Nobody, on the map"}
       ],
       "edges": [
         ["signed-in", "what-now"],
@@ -146,7 +149,10 @@
         ["account-change", "account-done"],
         ["account-what", "sign-out", "sign out"],
         ["sign-out", "session-gone"],
-        ["session-gone", "visitor"]
+        ["session-gone", "visitor"],
+        ["account-what", "delete", "delete"],
+        ["delete", "account-gone"],
+        ["account-gone", "deleted"]
       ]
     },
     {

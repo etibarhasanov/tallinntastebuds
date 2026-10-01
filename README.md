@@ -3348,6 +3348,46 @@ Thirty days is a guess, and it is `HOLD_DAYS` at the top of
 undone, short enough that a name somebody has genuinely finished with comes
 back to the pool.
 
+### Deleting the account
+
+**Delete account**, last along the foot of the card that carries your name on
+**/account.html**, after Sign out. It opens the map's sheet on a step of its
+own and is the one thing on the site that cannot be undone, so the step says
+what goes before the button and the button says *for good*.
+
+**It asks for the password in use**, the way the other two steps do, counted
+against the same fingerprint. An account made through Google has no password,
+so it is asked to type its own username instead — not a secret, but proof the
+press was meant.
+
+**What goes is everything filed under the account**, in one batch, so it is
+either all gone or none of it: the account itself, its sessions and its Google
+identity; its saves, recounted so a place's number drops; every list it wrote
+with the places on them, and other people's keeps of those lists; the lists it
+kept; the page of links under its name; the places it added by hand, unless a
+list somebody else wrote still has one on it; its flashcard decks and what it
+knew; every splitwise group it owns, whole, and its place in everybody else's.
+
+**What stays is the numbers**, and the things said and played in public.
+`press_counts`, `profile_counts`, `list_counts`, `visitor_counts`,
+`usage_people` and the rest are filed under a place, a list, a day or a hashed
+key rather than under anybody, and a site that unwound its history whenever
+somebody left would be counting nothing. Feedback, hearts and chess games stay
+too; every reader of them is a `LEFT JOIN` against `users`, so with the row
+gone they draw with no name. In somebody else's splitwise group, an expense
+the account paid or owed a share of stays and draws with no name, the way a
+member who left does — deleting it would be rewriting what other people paid —
+and the group's balances add up among the people still in it.
+
+**The name is held for thirty days**, exactly as a rename holds the old one,
+so `/u/<name>` answers nothing rather than a stranger who signed up a minute
+later. The hold is keyed by an id nobody has any more, so nobody can take it
+back, and it is swept like any other.
+
+Afterwards the browser is signed out, the saves it was drawing for the account
+are wiped from it, and it lands on the map with a toast saying the account is
+gone. `delete` in `functions/api/account.js` is the whole of it.
+
 ### Signing in with Google
 
 **Continue with Google**, above the username and password on the map's sheet
@@ -3782,7 +3822,8 @@ etibar                          the name, one line saying what the page is,
   Your public profile >         the door to how it looks to everybody else,
   Build your page >             and the door to where that page is written,
   Change username ·             and everything you can do to the account
-  Change password · Sign out
+  Change password · Sign out ·
+  Delete account
 Places I saved        8 places  a fold: six rows a place, newest first
   Show more                     inside it, once there are more than six
   See them on the map           outside it, so a long fold cannot bury it
@@ -15167,7 +15208,7 @@ The map, `assets/app.js`:
 | `account_switch` | `view` (`in`/`up`) |
 | `account_close`, `account_page` | — |
 | `account_create`, `account_login` | — |
-| `account_password_change`, `account_rename` | — on success |
+| `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
 | `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account button, the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
@@ -15221,7 +15262,7 @@ The account page, `assets/account.js`:
 | `list_create` | `list_id` |
 | `layout_select` | `layout` (`a`/`b`) — the Map layout card, which rail this browser draws |
 | `account_open` | `view` — the two doors when signed out |
-| `account_rename_open`, `account_password_open` | — into the map's sheet |
+| `account_rename_open`, `account_password_open`, `account_delete_open` | — into the map's sheet |
 | `edit_open` | — the door to `/edit`, where the page under your name is written |
 | `insights_open` | `views` — the door to `/insights`, with the week's number its row was showing |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
