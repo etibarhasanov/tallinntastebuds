@@ -4,6 +4,7 @@
     "allow": [
       "mcp__Cloudflare_Developer_Platform__d1_databases_list",
       "Bash(node tools/validate.mjs)",
+      "Bash(node tools/functions-check.mjs)",
       "Bash(node tools/stamp.mjs)",
       "Bash(node tools/stamp.mjs --check)",
       "Bash(node tools/places.mjs)",

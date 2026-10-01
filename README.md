@@ -12921,8 +12921,8 @@ to read and write first.
 `npm install`. It runs on every push and pull request via
 `.github/workflows/validate.yml`.
 
-The same workflow runs three checks beside it, each holding one piece of code
-to answers recorded somewhere other than the code. `node tools/qrperf.mjs
+The same workflow runs four checks beside it. Three hold one piece of code
+each to answers recorded somewhere other than the code. `node tools/qrperf.mjs
 --check` holds the QR encoder to the matrices it drew when they were last
 scanned with a real camera — see **Third-party pieces and their licences**.
 `node tools/chessperf.mjs --check` holds the rules of chess in
@@ -12932,6 +12932,16 @@ written in, and to every move a visitor could send from those six, which
 `play()` must refuse unless it is legal. And `node
 .claude/hooks/d1-write-gate.mjs --check` holds the gate in front of the two
 databases to its own cases.
+
+The fourth has no recorded answers, because the thing it holds the code to is
+the deploy itself: `node tools/functions-check.mjs` imports every module under
+`functions/`. Pages bundles them into one Worker, so a route importing a name
+its module no longer exports, or a file with a syntax error in it, fails the
+whole deployment rather than its own route — which is how the site went down
+once; the comment above `uiStrings()` in `functions/api/_lib.js` is the
+record. An ES module resolves its imports before any of it runs, so importing
+each file under Node fails on exactly what the bundle would, on the push
+instead of a minute after the merge.
 
 **It fails the build on:**
 
@@ -13316,10 +13326,12 @@ tools/qrperf.mjs           checks the QR encoder still draws the same code, and 
 tools/chessperf.mjs        holds functions/api/_chess.js to published move
                            counts and to positions worked out by hand, and
                            times it
+tools/functions-check.mjs  imports every module under functions/, the way the
+                           deploy bundles them, and fails on what it would
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
-.github/workflows/validate.yml     the validator, the QR check, the chess check and the write gate, on every push
+.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check and the write gate, on every push
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone

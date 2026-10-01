@@ -4,6 +4,7 @@ paths:
   - "db/schema.sql"
   - "wrangler.toml"
   - "_routes.json"
+  - "tools/functions-check.mjs"
   - ".claude/hooks/**"
   - ".claude/settings.json"
 ---

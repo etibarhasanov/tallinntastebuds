@@ -23,6 +23,14 @@ jobs:
       - name: Validate data
         run: node tools/validate.mjs
 
+      # The Functions, loaded. Pages bundles everything under functions/ into
+      # one Worker, so a route importing a name its module no longer exports
+      # takes every route down rather than its own, and nothing above opens
+      # those files. An ES module resolves its imports before any of it runs,
+      # so importing each one under Node asks the question the deploy would.
+      - name: Load every Function
+        run: node tools/functions-check.mjs
+
       # The encoder that draws the discount QR. --check compares every fixture
       # against the matrix it drew when it was last scanned with a real camera
       # and skips the timing, which would only be noise on a shared runner.

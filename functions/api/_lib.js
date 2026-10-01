@@ -451,12 +451,13 @@ export async function dataFile(context, path) {
  *
  * It went out with the commit that wrote wordsFor(), which read the same file
  * for the other shape and looked like the whole of what anybody wanted from
- * it. Nothing failed: nothing in CI builds the Functions, and the import left
- * standing over there took the entire deployment down rather than that one
- * route. It is here rather than inlined over there because the path is: one
- * spelling of '/data/ui.json' on this side, read through the same five-minute
- * cache every other data file is. It throws the way dataFile() throws, and its
- * caller catches. */
+ * it. Nothing failed: nothing in CI loaded the Functions then, and the import
+ * left standing over there took the entire deployment down rather than that
+ * one route — tools/functions-check.mjs imports every one of them now, and is
+ * what would have said so. It is here rather than inlined over there because
+ * the path is: one spelling of '/data/ui.json' on this side, read through the
+ * same five-minute cache every other data file is. It throws the way
+ * dataFile() throws, and its caller catches. */
 export function uiStrings(context) {
   return dataFile(context, '/data/ui.json');
 }
