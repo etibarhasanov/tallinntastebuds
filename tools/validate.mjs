@@ -17,6 +17,9 @@
  *     from the same export
  *   - a catalogue in data/places.json that is not what tools/places.mjs would
  *     write, holds a duplicate id, or has lost a place that is on the map
+ *   - a file in data/lang/, or data/map.json, that is not what
+ *     tools/languages.mjs would write from data/ui.json and
+ *     data/restaurants.json — the one language at a time the map reads
  *   - a db/google-venues.sql that is out of step with the Google Places export
  *   - a db/city-venues.sql that is out of step with the other cities' exports
  *     it is generated from, or a db/google-lists.sql — the five top tens and
@@ -82,6 +85,7 @@ import { dirname, join, resolve } from 'node:path';
 
 import { stale as staleStamps } from './stamp.mjs';
 import { stale as staleCatalogue } from './places.mjs';
+import { stale as staleLanguages } from './languages.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists, LISTS as GOOGLE_LISTS, build as buildGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
@@ -1642,6 +1646,15 @@ if (staleCity()) {
    disagrees with what the API will accept. */
 if (staleCatalogue()) {
   fail('data/places.json', 'is not what tools/places.mjs would write from data/restaurants.json and data/places.csv — run `node tools/places.mjs` and commit the result');
+}
+
+/* And the map's own copies of the two files it used to fetch whole: each
+   language's strings and write-ups in a file of its own, and the places
+   without their write-ups. A string or a blurb changed without these
+   rewritten is a map still printing yesterday's, in every language but none
+   of the checks above, so this is what notices. */
+for (const path of staleLanguages()) {
+  fail(path, 'is not what tools/languages.mjs would write from data/ui.json and data/restaurants.json — run `node tools/languages.mjs` and commit the result');
 }
 
 /* -------------------------------------------------- taxonomy / photo sweeps */

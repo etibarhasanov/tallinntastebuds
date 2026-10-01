@@ -101,7 +101,12 @@
     deals: [],           // data/deals.json, usually empty
     types: [],
     layout: 'a',         // which rail, see pickLayout()
+    /* One language's strings and one language's write-ups, out of
+       data/lang/<code>.json, and every language's own name for itself out of
+       data/lang/index.json. Never all ten at once: see loadLanguage(). */
     ui: {},
+    blurbs: {},
+    langNames: {},
     langs: [],
     q: '',
     /* What is typed into the find bar across the top of the map, which is a
@@ -300,11 +305,13 @@
      see closePanel, which lands on it instead of closing. */
   function listIsFixed() { return !isNarrow(); }
 
-  /* Interface string lookup: current language, then English, then the key. */
+  /* Interface string lookup: the language on screen, then the key. There is
+     no English to fall back on in here any more, because only one language
+     was fetched — and nothing needs one: tools/validate.mjs fails a key that
+     one language has and another does not, so every file under data/lang/
+     carries the whole set. */
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -323,9 +330,12 @@
     return id;
   }
 
+  /* A place's write-up in the language on screen. Which translation stands
+     in for one still owed — English, then Estonian, then Russian — was
+     settled by tools/languages.mjs when it wrote the file, so a place missing
+     here has none in any language. */
   function blurbFor(place) {
-    var b = place.blurb || {};
-    return b[state.lang] || b[DEFAULT_LANG] || b.et || b.ru || '';
+    return state.blurbs[place.id] || '';
   }
 
   /* Month names come from ui.json, not from Intl.
@@ -568,7 +578,7 @@
 
     var list = el('div', { className: 'lang-list' });
     state.langs.forEach(function (code) {
-      var name = (state.ui[code] && state.ui[code].langName) || code;
+      var name = state.langNames[code] || code;
       /* The code the trigger wears, so the row and the button it came from
          read as the same thing, and the language's own name for itself beside
          it — which is the whole reason the row of bare codes this replaced was
@@ -589,9 +599,50 @@
     dom.langSwitch.appendChild(list);
   }
 
+  /* The map's words come one language to a file — data/lang/<code>.json, the
+     strings and every place's write-up, written by tools/languages.mjs out of
+     data/ui.json and data/restaurants.json. Ten languages of both used to be
+     most of what a phone downloaded before the map drew, to print one of
+     them; **Languages** in README.md has the numbers. The price is that a
+     switch is a request now rather than a lookup, which is a few dozen
+     kilobytes once per language somebody actually picks. */
+  function loadLanguage(code) {
+    return getJSON('data/lang/' + code + '.json').then(function (pack) {
+      return { lang: code, ui: (pack && pack.ui) || {}, blurbs: (pack && pack.blurbs) || {} };
+    });
+  }
+
+  function seatLanguage(loaded) {
+    state.lang = loaded.lang;
+    state.ui = loaded.ui;
+    state.blurbs = loaded.blurbs;
+  }
+
+  /* The language somebody pressed last, so that two presses in quick
+     succession land on the second even when the first one's file arrives
+     after it. */
+  var wantedLang = null;
+
   function setLanguage(code) {
-    if (code === state.lang || state.langs.indexOf(code) === -1) return;
-    state.lang = code;
+    if (state.langs.indexOf(code) === -1) return;
+    /* Before the early return, so that pressing back to the language on
+       screen while another is still on its way keeps the one on screen. */
+    wantedLang = code;
+    if (code === state.lang) return;
+    loadLanguage(code).then(function (loaded) {
+      if (wantedLang !== code) return;
+      switchLanguage(loaded);
+    }, function (err) {
+      if (wantedLang !== code) return;
+      if (window.console && console.error) console.error(err);
+      /* Said in the language still on screen, which is the one that loaded. */
+      toast(t('languageFail'));
+    });
+  }
+
+  function switchLanguage(loaded) {
+    var code = loaded.lang;
+    seatLanguage(loaded);
     state.langPinned = true;
     storeSet(STORE_KEY, code);
     applyStaticStrings();
@@ -11574,9 +11625,23 @@
     var drawn = false;
 
     Promise.all([
-      getJSON('data/restaurants.json'),
+      /* The map's places without their write-ups, which arrive in the
+         language's own file below — tools/languages.mjs writes both. */
+      getJSON('data/map.json'),
       getJSON('data/taxonomy.json'),
-      getJSON('data/ui.json'),
+      /* Which languages there are, then the one this visitor reads in. Two
+         requests in a row, but the first is a few hundred bytes and both run
+         beside the places rather than in front of them. */
+      getJSON('data/lang/index.json').then(function (names) {
+        var langs = sortLanguages(Object.keys(names || {}));
+        var chosen = pickLanguage(langs);
+        return loadLanguage(chosen.lang).then(function (loaded) {
+          loaded.names = names;
+          loaded.langs = langs;
+          loaded.pinned = chosen.pinned;
+          return loaded;
+        });
+      }),
       /* Optional: no file, no deals, and the panel never grows the
          section. */
       getJSON('data/deals.json').catch(function () { return []; }),
@@ -11594,18 +11659,16 @@
       state.types = (loaded[1] && loaded[1].types) || [];
       state.deals = loaded[3] || [];
       state.stories = Array.isArray(loaded[4]) ? loaded[4] : [];
-      state.ui = loaded[2] || {};
-      state.langs = sortLanguages(Object.keys(state.ui));
+      state.langNames = loaded[2].names;
+      state.langs = loaded[2].langs;
+      seatLanguage(loaded[2]);
+      state.langPinned = loaded[2].pinned;
 
       /* Which places this browser has saved, and whether the bot check is
          switched on. Both are local and instant. The counts themselves are a
          request over the network and are not waited for — see loadSaves. */
       readSaved();
       readTurnstileKey();
-
-      var chosen = pickLanguage(state.langs);
-      state.lang = chosen.lang;
-      state.langPinned = chosen.pinned;
 
       /* Read before anything else touches the address bar: syncUrl below
          rebuilds the query out of state and takes ?account= and ?then= off it,
@@ -11783,7 +11846,7 @@
       var note = el('div', { className: 'noscript card' }, [
         el('p', { className: 'eyebrow', textContent: 'Tallinn' }),
         el('h2', { textContent: 'Tallinn Tastebuds' }),
-        el('p', { textContent: (state.ui.en && state.ui.en.loadError) || 'Something went wrong loading the data. Try refreshing the page.' })
+        el('p', { textContent: state.ui.loadError || 'Something went wrong loading the data. Try refreshing the page.' })
       ]);
       document.body.appendChild(note);
     });

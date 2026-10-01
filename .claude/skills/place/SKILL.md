@@ -90,12 +90,16 @@ its pin can land on the wrong side of the street. What it does, in order:
    and `phone` are deleted from the object; `types` come out in checkbox
    order. A new place gets `added` = today in Tallinn.
 4. **What the page does not do, and a laptop must, before the PR merges:**
-   - **Run `node tools/places.mjs` and commit `data/places.json`.** The page
-     never touches the catalogue, so every **Add** PR it opens fails CI with
-     "is on the map but not in the catalogue", whatever the PR body says
-     about going green, and an **Edit** fails if it changed the name, the
-     address or the coordinates. Check the branch out, run the tool, commit,
-     push, and only then merge.
+   - **Run `node tools/places.mjs` and `node tools/languages.mjs`, and
+     commit `data/places.json`, `data/map.json` and `data/lang/`.** The page
+     never touches the catalogue or the map's own copies, so every **Add**
+     PR it opens fails CI with "is on the map but not in the catalogue",
+     whatever the PR body says about going green, and every **Edit** fails
+     on `data/map.json` or a file in `data/lang/` — the map reads the
+     places without their write-ups and each write-up in a file of its
+     language, both written by `tools/languages.mjs` (**One language at a
+     time** under **Languages** in `README.md`). Check the branch out, run
+     both, commit, push, and only then merge.
    - The other nine languages of the write-up. The validator warns about
      them, and the PR body says so.
    - The README counts below.
@@ -119,7 +123,9 @@ its pin can land on the wrong side of the street. What it does, in order:
 4. **Is it one place?** A room that is a bakery in the morning and a
    restaurant at night is two entries, and the laptop tag goes on the one it
    is true of. Fotografiska is the precedent.
-5. `node tools/places.mjs`. If the place
+5. `node tools/places.mjs` and `node tools/languages.mjs` — the second
+   writes `data/map.json` and the write-ups into `data/lang/`, which is what
+   the map actually reads, so any change to `restaurants.json` wants it. If the place
    was a row in the directory already — `grep -i '<name>'
    exports/tallinn_restaurants.csv` says — then `node tools/googlevenues.mjs`
    too: `overlaps()` in that tool matches the new entry to its Google row by
@@ -197,7 +203,7 @@ entry land in one commit, so no commit lists a photo that is not there.
 ## The pull request
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/places.mjs` — and `node
+2. `node tools/places.mjs` and `node tools/languages.mjs` — and `node
    tools/googlevenues.mjs` for a place the export already lists — then
    `node tools/validate.mjs`. The catalogue is the check this process fails
    most.
@@ -220,8 +226,9 @@ red until the catalogue is regenerated, so it is landed like this:
 
 ```
 git fetch origin admin/add-<id> && git checkout admin/add-<id>
-node tools/places.mjs && node tools/validate.mjs
-git commit -am "The catalogue knows <name>" && git push
+node tools/places.mjs && node tools/languages.mjs && node tools/validate.mjs
+git add data/places.json data/map.json data/lang
+git commit -m "The catalogue knows <name>" && git push
 ```
 
 Then the other nine blurb languages on the same branch, if you have them,

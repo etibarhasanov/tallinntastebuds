@@ -2242,6 +2242,60 @@ ten — and every open place at its own address, `?spot=`, which the same
 route serves with the place's own head. **Getting found** under **Deploy to
 Cloudflare Pages** has the whole of it, including what it costs.
 
+### One language at a time
+
+The map used to open by fetching `data/ui.json` whole — every string the site
+has, in all ten languages — and `data/restaurants.json`, whose write-ups were
+also in all ten. Measured at phone width, which is what this site is built
+for, that was most of the first load that was not the script:
+
+| File | Raw | Compressed |
+|---|---|---|
+| `data/ui.json` | 653 KB | 185 KB |
+| `data/restaurants.json` | 260 KB | 101 KB |
+
+Nine tenths of both was languages the visitor was not reading in, and 170 KB
+of the places file was write-ups.
+
+So the map reads neither. `node tools/languages.mjs` writes three things out
+of them, and they are what `assets/app.js` fetches:
+
+- `data/lang/index.json` — every language's code and its own name for
+  itself, a few hundred bytes. The switch lists it, and the boot picks the
+  visitor's language out of it before it knows which file to ask for.
+- `data/lang/<code>.json` — that language's block of `ui.json`, and every
+  place's write-up in it, by place id. 72 KB raw and 24 KB compressed in
+  English; the Cyrillic and Armenian files are the largest, at 110 KB and
+  30 KB.
+- `data/map.json` — `restaurants.json` without the write-ups, 33 KB raw and
+  6 KB compressed.
+
+From 913 KB and 285 KB over the wire to about 105 KB and 30 KB. The script,
+`assets/app.js`, is one file on purpose and is left alone.
+
+**Which translation stands in for a missing write-up is decided by the
+tool**, not the browser: the reading language, then English, Estonian and
+Russian, the order `blurbFor()` used to apply at run time. A string needs no
+stand-in at all — the validator fails a key one language has and another does
+not — so `t()` holds one language and falls back to nothing but the key.
+
+**The sources do not move.** `data/ui.json` and `data/restaurants.json` are
+still the only files anybody edits, every other page still fetches `ui.json`
+whole, and `functions/index.js`, `functions/api/ask.js` and the rest still
+read the places with their write-ups. Both stay deployed, which is also what
+keeps a browser holding yesterday's `app.js` working: it asks for the two old
+files and gets them. The generated files are committed, like the stamps, and
+`node tools/validate.mjs` fails on any of them that is not what the tool would
+write — or on a file left in `data/lang/` for a language that has gone.
+
+**What it costs**: a language switch on the map is a request now rather than a
+lookup, a few dozen kilobytes the first time somebody picks a language. The
+page keeps the language it has until the new file has arrived, so a slow one
+changes nothing on screen until it lands, and one that fails says so in a
+toast — `languageFail` — in the language still showing. And booting is one
+request longer: the index first, then the language, both small and both
+alongside the places rather than in front of them.
+
 ### Adding a language
 
 1. Add a block to `data/ui.json` with the same string ids as the others, plus
@@ -2263,10 +2317,13 @@ Cloudflare Pages** has the whole of it, including what it costs.
 6. `node tools/sitemap.mjs`, and commit `sitemap.xml`: the new language is a
    new address for the map, and every other language's entry has to link to
    it. The validator fails on a sitemap that has not been re-run.
+7. `node tools/languages.mjs`, and commit `data/lang/`: the map reads the new
+   language out of a file of its own and lists it from `data/lang/index.json`.
+   The validator fails on that too.
 
-The language switch, `functions/index.js`, the sitemap tool and the validator
-all read the language list from `data/ui.json`, so there is nothing else to
-change. Steps 2 and 6 are the ones the validator fails on: a type with no
+The language switch (through `data/lang/index.json`), `functions/index.js`,
+the sitemap tool and the validator all read the language list from
+`data/ui.json`, so there is nothing else to change. Steps 2, 6 and 7 are the ones the validator fails on: a type with no
 label in some language is an error, and so is a stale sitemap, while missing
 blurb translations are warnings, so you can ship as you translate. The order
 of the blocks in `ui.json` does not matter: the switch sorts the languages

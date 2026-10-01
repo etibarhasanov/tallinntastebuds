@@ -1,0 +1,1837 @@
+[
+ {
+  "id": "180-degrees",
+  "name": "180° by Matthias Diether",
+  "address": "Staapli 4, 10415 Tallinn",
+  "lat": 59.4520538,
+  "lng": 24.7289234,
+  "price": 4,
+  "types": [
+   "restaurant",
+   "fine-dining",
+   "date"
+  ],
+  "mustOrder": [
+   "Tasting menu"
+  ],
+  "reel": "https://www.instagram.com/p/DG5yah-tQhy/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 661 0180",
+  "added": "2026-08-24",
+  "visited": "2025-03",
+  "closed": false
+ },
+ {
+  "id": "annon",
+  "name": "Annön",
+  "address": "Kalevipoja põik 10, 13614 Tallinn",
+  "lat": 59.4389373,
+  "lng": 24.8311022,
+  "price": 1,
+  "types": [
+   "restaurant",
+   "asian",
+   "cheap-eats",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Beef heart salad",
+   "Lamb soup",
+   "Beef soup"
+  ],
+  "reel": "https://www.instagram.com/reel/DJjxpMupy-f/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 632 7802",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": false
+ },
+ {
+  "id": "ariran",
+  "name": "Ariran",
+  "address": "Telliskivi 35, 10611 Tallinn",
+  "lat": 59.4372396,
+  "lng": 24.7227705,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "hidden-gem",
+   "casual"
+  ],
+  "mustOrder": [
+   "Beef bulgogi",
+   "Kimchi"
+  ],
+  "reel": "https://www.instagram.com/reel/DS5hsjGEy5J/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 673 3992",
+  "added": "2026-08-23",
+  "visited": "2025-12",
+  "closed": false
+ },
+ {
+  "id": "badam",
+  "name": "Badam",
+  "address": "Lastekodu tn 35, 10113 Tallinn",
+  "lat": 59.4276428,
+  "lng": 24.7754944,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "caucasian"
+  ],
+  "mustOrder": [
+   "Kofta",
+   "Dolma",
+   "Hangal",
+   "Piti",
+   "Plov",
+   "Lamb plov"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp"
+  ],
+  "website": "https://badam.ee/",
+  "phone": "+372 5821 4430",
+  "added": "2026-08-28",
+  "closed": false
+ },
+ {
+  "id": "baklazaan",
+  "name": "Baklažaan",
+  "address": "Mäepealse 30, Tallinn",
+  "lat": 59.394698,
+  "lng": 24.6447491,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "caucasian",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5633 3113",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "balta-chill",
+  "name": "Balta Chill",
+  "address": "Vana-Kalamaja 3, 10415 Tallinn",
+  "lat": 59.4416944,
+  "lng": 24.7382778,
+  "price": 1,
+  "types": [
+   "pub",
+   "hidden-gem",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp"
+  ],
+  "website": "",
+  "phone": "",
+  "added": "2026-08-29",
+  "closed": false
+ },
+ {
+  "id": "bekker-pagariari",
+  "name": "Bekker Pagariäri",
+  "address": "Kopli 27, 10412 Tallinn",
+  "lat": 59.4489528,
+  "lng": 24.7104732,
+  "price": 2,
+  "types": [
+   "bakery",
+   "coffee"
+  ],
+  "mustOrder": [
+   "Salted caramel kringel"
+  ],
+  "reel": "",
+  "photos": [
+   "01.jpg"
+  ],
+  "website": "",
+  "phone": "+372 5854 2224",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "borsch-ja-varenyk",
+  "name": "Borsch & Varenyk",
+  "address": "Endla 56, 10613 Tallinn",
+  "lat": 59.4278699,
+  "lng": 24.718032,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "casual",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Borscht",
+   "Varenyky"
+  ],
+  "reel": "https://www.instagram.com/reel/DHbAWclq5H_/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5757 1015",
+  "added": "2026-08-23",
+  "visited": "2025-03",
+  "closed": "temporary"
+ },
+ {
+  "id": "bruto-bakehouse",
+  "name": "Bruto Bakehouse",
+  "address": "Suur-Karja 12, 10140 Tallinn",
+  "lat": 59.4355717,
+  "lng": 24.7462442,
+  "price": 2.5,
+  "types": [
+   "bakery",
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [
+   "Pistachio cookie",
+   "Carrot cake cookie"
+  ],
+  "reel": "https://www.instagram.com/reel/DcQR6nMo9L9/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5897 5016",
+  "added": "2026-08-23",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "bueno-gourmet-kadriorg",
+  "name": "Bueno Gourmet Kadriorg",
+  "address": "Vesivärava 7, 10126 Tallinn",
+  "lat": 59.4378103,
+  "lng": 24.7763952,
+  "price": 1,
+  "types": [],
+  "mustOrder": [
+   "Philly Cheese Steak",
+   "Pulled Pork Taco",
+   "Beef Burrito"
+  ],
+  "reel": "https://www.instagram.com/reel/DJJM_NhsfgP/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5832 3530",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": true
+ },
+ {
+  "id": "burger-box",
+  "name": "Burger Box",
+  "address": "Kopli 4a, 10412 Tallinn",
+  "lat": 59.4413251,
+  "lng": 24.7368718,
+  "price": 2,
+  "types": [
+   "casual",
+   "cheap-eats",
+   "asian",
+   "vegan"
+  ],
+  "mustOrder": [
+   "Cheese balls",
+   "Kimchi fries",
+   "Laksa soup"
+  ],
+  "reel": "https://www.instagram.com/reel/DKHwvljB_bU/",
+  "photos": [],
+  "phone": "+372 5800 6780",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": false
+ },
+ {
+  "id": "buxhowden-pagar",
+  "name": "Buxhöwden pagar",
+  "address": "Ranna tee 5/2, Miiduranna, Viimsi",
+  "lat": 59.4955512,
+  "lng": 24.8269404,
+  "price": 2,
+  "types": [
+   "bakery"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 653 5000",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "cafe-cape-town",
+  "name": "Cafe Cape Town",
+  "address": "Kopli 1, 10412 Tallinn",
+  "lat": 59.4412173,
+  "lng": 24.7347696,
+  "price": 1,
+  "types": [],
+  "mustOrder": [
+   "Bobotie pie",
+   "Mushroom pie"
+  ],
+  "reel": "https://www.instagram.com/reel/DFFghzltZdX/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5309 6455",
+  "added": "2026-08-23",
+  "visited": "2025-01",
+  "closed": true
+ },
+ {
+  "id": "cafe-tempo",
+  "name": "Cafe Tempo",
+  "address": "Reisijate 62-3, 10412 Tallinn",
+  "lat": 59.441043,
+  "lng": 24.7334466,
+  "price": 2.5,
+  "types": [
+   "restaurant",
+   "bakery",
+   "date",
+   "casual"
+  ],
+  "mustOrder": [
+   "Bread"
+  ],
+  "reel": "https://www.instagram.com/reel/DNqd6mYz9pq/",
+  "photos": [
+   "01.webp",
+   "02.webp"
+  ],
+  "website": "",
+  "phone": "+372 5397 9111",
+  "added": "2026-08-23",
+  "visited": "2025-08",
+  "closed": false
+ },
+ {
+  "id": "chakra",
+  "name": "Chakra",
+  "address": "Bremeni käik 1, 10123 Tallinn",
+  "lat": 59.439357,
+  "lng": 24.7493884,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "vegan"
+  ],
+  "mustOrder": [
+   "Onion bhaji (ask nicely, it's off menu)"
+  ],
+  "reel": "https://www.instagram.com/reel/DNn6V21TsLA/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 641 2615",
+  "added": "2026-08-23",
+  "visited": "2025-08",
+  "closed": false
+ },
+ {
+  "id": "chamber-tea",
+  "name": "Chamber Tea",
+  "address": "Ankru 8, 11713 Tallinn",
+  "lat": 59.4554149,
+  "lng": 24.6760982,
+  "price": 2,
+  "types": [
+   "coffee",
+   "hidden-gem",
+   "laptop"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5603 0566",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "chocolala",
+  "name": "Chocolala",
+  "address": "Suur-Karja 20, 10146 Tallinn",
+  "lat": 59.436,
+  "lng": 24.747,
+  "price": 1,
+  "types": [
+   "bakery",
+   "casual"
+  ],
+  "mustOrder": [
+   "Bean-to-bar chocolate"
+  ],
+  "reel": "https://www.instagram.com/p/DHvtbQbNK27/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5565 4333",
+  "added": "2026-08-24",
+  "visited": "2025-03",
+  "closed": false
+ },
+ {
+  "id": "crustum-bakery",
+  "name": "Crustum Bakery",
+  "address": "Iva 12, Mustamäe, 12618 Tallinn",
+  "lat": 59.4030085,
+  "lng": 24.6476513,
+  "price": 2,
+  "types": [
+   "bakery",
+   "hidden-gem"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5770 4909",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "dvin",
+  "name": "DVIN",
+  "address": "Kopli 71, 11713 Tallinn",
+  "lat": 59.4553836,
+  "lng": 24.6799773,
+  "price": 1,
+  "types": [
+   "casual",
+   "restaurant",
+   "hidden-gem",
+   "cheap-eats",
+   "caucasian"
+  ],
+  "mustOrder": [
+   "Khinkali",
+   "Shashlik"
+  ],
+  "reel": "https://www.instagram.com/reel/DXMsafDjGxE/",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp"
+  ],
+  "phone": "+372 5814 6100",
+  "added": "2026-08-23",
+  "visited": "2026-04",
+  "closed": false
+ },
+ {
+  "id": "elman-bites",
+  "name": "Elmans Bites",
+  "address": "Kopli, 10412 Tallinn",
+  "lat": 59.441622,
+  "lng": 24.7374496,
+  "price": 2,
+  "types": [
+   "casual"
+  ],
+  "mustOrder": [
+   "Falafel",
+   "Beef liver"
+  ],
+  "reel": "https://www.instagram.com/p/DZc_dXnoKP4/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5382 6600",
+  "added": "2026-08-24",
+  "visited": "2026-06",
+  "closed": "temporary"
+ },
+ {
+  "id": "f-hoone",
+  "name": "F-Hoone",
+  "address": "Telliskivi tn 60a-4, 10412 Tallinn",
+  "lat": 59.4397095,
+  "lng": 24.7292113,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "casual",
+   "date"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp"
+  ],
+  "website": "",
+  "phone": "+372 5322 6855",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "faehlmanni-kohvik",
+  "name": "Faehlmanni kohvik",
+  "address": "F. R. Faehlmanni tn 18, 10125 Tallinn",
+  "lat": 59.4347529,
+  "lng": 24.7732181,
+  "price": 2,
+  "types": [
+   "bakery",
+   "coffee",
+   "casual",
+   "laptop"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5632 7888",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "faeton",
+  "name": "Faeton",
+  "address": "J. Köleri 2, 10150 Tallinn",
+  "lat": 59.4384988,
+  "lng": 24.7752398,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "caucasian"
+  ],
+  "mustOrder": [
+   "Qutab",
+   "Küftä",
+   "Ayran"
+  ],
+  "reel": "https://www.instagram.com/reel/DJAFJMWKaPZ/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 687 2125",
+  "added": "2026-08-23",
+  "visited": "2025-04",
+  "closed": false
+ },
+ {
+  "id": "ferment",
+  "name": "Ferment",
+  "address": "Peetri 6, 10414 Tallinn",
+  "lat": 59.4506949,
+  "lng": 24.7285009,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "date",
+   "casual"
+  ],
+  "mustOrder": [
+   "Salami Picante pizza",
+   "Charred cabbage"
+  ],
+  "reel": "https://www.instagram.com/reel/DLt9Z7cqsSx/",
+  "photos": [],
+  "website": "",
+  "phone": "",
+  "added": "2026-08-23",
+  "visited": "2025-07",
+  "closed": false
+ },
+ {
+  "id": "fotografiska",
+  "name": "Fotografiska",
+  "address": "Telliskivi 60a-8, 10412 Tallinn",
+  "lat": 59.4383561,
+  "lng": 24.7284409,
+  "price": 3,
+  "types": [
+   "restaurant",
+   "fine-dining",
+   "date"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp"
+  ],
+  "website": "",
+  "phone": "+372 5745 0922",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "fotografiska-cafe",
+  "name": "Fotografiska Café & Bakery",
+  "address": "Telliskivi 60a-8, 10412 Tallinn",
+  "lat": 59.4381678,
+  "lng": 24.7282801,
+  "price": 2,
+  "types": [
+   "casual",
+   "bakery",
+   "coffee",
+   "laptop"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp",
+   "06.jpg"
+  ],
+  "website": "",
+  "phone": "",
+  "added": "2026-09-07",
+  "visited": "2026-09",
+  "closed": false
+ },
+ {
+  "id": "francois-boulangerie",
+  "name": "François Boulangerie",
+  "address": "Härjapea 17, 10320 Tallinn",
+  "lat": 59.4376932,
+  "lng": 24.7162062,
+  "price": 2,
+  "types": [
+   "bakery",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Croissant"
+  ],
+  "reel": "https://www.instagram.com/reel/DZjsu_zIETc/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5591 3909",
+  "added": "2026-08-23",
+  "visited": "2026-06",
+  "closed": false
+ },
+ {
+  "id": "gobi",
+  "name": "Gobi",
+  "address": "Rotermanni 14, 10111 Tallinn",
+  "lat": 59.4389817,
+  "lng": 24.7576905,
+  "price": 3,
+  "types": [
+   "restaurant",
+   "caucasian",
+   "date",
+   "fine-dining"
+  ],
+  "mustOrder": [
+   "Khinkali",
+   "Adjaruli khachapuri"
+  ],
+  "reel": "https://www.instagram.com/reel/DOf3xlPk9OV/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5554 4990",
+  "added": "2026-08-23",
+  "visited": "2025-09",
+  "closed": false
+ },
+ {
+  "id": "gotsu-kyuho",
+  "name": "Gotsu Kyuho's Kitchen",
+  "address": "Pärnu mnt 62a, 10135 Tallinn",
+  "lat": 59.4257277,
+  "lng": 24.7420539,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "hidden-gem",
+   "casual"
+  ],
+  "mustOrder": [
+   "Fried chicken",
+   "Bibimbap",
+   "Kimchi"
+  ],
+  "reel": "https://www.instagram.com/reel/DPOyEWNiHlF/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 614 0022",
+  "added": "2026-08-23",
+  "visited": "2025-09",
+  "closed": false
+ },
+ {
+  "id": "hans",
+  "name": "HAN's Restoran",
+  "address": "A. Lauteri 5, 10114 Tallinn",
+  "lat": 59.4314716,
+  "lng": 24.7577192,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "casual"
+  ],
+  "mustOrder": [
+   "Dumplings"
+  ],
+  "reel": "https://www.instagram.com/reel/DP_GM7XgPdq/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5687 6979",
+  "added": "2026-08-23",
+  "visited": "2025-10",
+  "closed": false
+ },
+ {
+  "id": "hell-hunt",
+  "name": "Hell Hunt",
+  "address": "Pikk 39, 10123 Tallinn",
+  "lat": 59.4393711,
+  "lng": 24.74666,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [
+   "Chicken strips",
+   "Fish and chips"
+  ],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 681 8333",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "izakaya-taro",
+  "name": "Izakaya Taro",
+  "address": "Müürivahe 31, 10140 Tallinn",
+  "lat": 59.4372248,
+  "lng": 24.7493633,
+  "price": 2.5,
+  "types": [
+   "restaurant",
+   "asian",
+   "casual"
+  ],
+  "mustOrder": [
+   "Salmon Ponzu",
+   "Yodare Dori (Spicy Chicken)"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp"
+  ],
+  "website": "",
+  "phone": "+372 335 7477",
+  "added": "2026-08-29",
+  "closed": false
+ },
+ {
+  "id": "kalve-kadriorg",
+  "name": "Kalve Kadriorg",
+  "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
+  "lat": 59.4350482,
+  "lng": 24.7732126,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual",
+   "laptop"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.jpg"
+  ],
+  "website": "",
+  "phone": "+372 5826 7165",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "kartul",
+  "name": "Kartul",
+  "address": "Kopli 16, 10412 Tallinn",
+  "lat": 59.4418266,
+  "lng": 24.7332385,
+  "price": 1,
+  "types": [
+   "restaurant",
+   "vegan",
+   "cheap-eats",
+   "casual"
+  ],
+  "mustOrder": [
+   "Stuffed baked potato",
+   "Homemade dumplings"
+  ],
+  "reel": "https://www.tiktok.com/@tallinntastebuds/video/7568039651458436374",
+  "photos": [],
+  "website": "",
+  "phone": "+372 529 2456",
+  "added": "2026-08-24",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "karu-talu-sokolaad",
+  "name": "Karu Talu Šokolaad",
+  "address": "Voorimehe 4, 10123 Tallinn",
+  "lat": 59.4376459,
+  "lng": 24.743759,
+  "price": 1,
+  "types": [
+   "bakery",
+   "vegan",
+   "casual"
+  ],
+  "mustOrder": [
+   "Family size cookie"
+  ],
+  "reel": "https://www.instagram.com/p/DOG_KSHEVRR/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5390 4888",
+  "added": "2026-08-24",
+  "visited": "2025-09",
+  "closed": false
+ },
+ {
+  "id": "klorofull",
+  "name": "Klorofüll",
+  "address": "Pärnu mnt 154, ruum 208, 11317 Tallinn",
+  "lat": 59.4082133,
+  "lng": 24.7341188,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "vegan",
+   "hidden-gem",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5650 7996",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "koho",
+  "name": "KoHo",
+  "address": "Telliskivi tn 60-1, 10412 Tallinn",
+  "lat": 59.4401373,
+  "lng": 24.7303523,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "bakery"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "04.webp",
+   "01.webp",
+   "02.webp",
+   "03.webp"
+  ],
+  "website": "https://telliskivi.koho.ee",
+  "phone": "+372 650 1020",
+  "added": "2026-08-26",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "koht",
+  "name": "Koht",
+  "address": "Lai 8, 10133 Tallinn",
+  "lat": 59.4383107,
+  "lng": 24.7439751,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [
+   "Hazy IPA",
+   "A stout to finish"
+  ],
+  "reel": "https://www.instagram.com/reel/DIouPsLv7oO/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 644 3302",
+  "added": "2026-08-23",
+  "visited": "2025-04",
+  "closed": false
+ },
+ {
+  "id": "kokomo",
+  "name": "Kokomo Coffee Roasters",
+  "address": "Ankru 10, 11713 Tallinn",
+  "lat": 59.4552323,
+  "lng": 24.6757265,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [
+   "Filter coffee",
+   "Focaccia"
+  ],
+  "reel": "https://www.instagram.com/reel/DNDNAEzzMmA/",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5624 0970",
+  "added": "2026-08-23",
+  "visited": "2025-08",
+  "closed": false
+ },
+ {
+  "id": "kotkot",
+  "name": "KotKot",
+  "address": "Peetri 12, 10411 Tallinn",
+  "lat": 59.4524531,
+  "lng": 24.7308239,
+  "price": 1,
+  "types": [
+   "casual",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Chicken burger",
+   "Fried chicken"
+  ],
+  "reel": "https://www.instagram.com/p/DDXKDgctiP9/",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5630 3977",
+  "added": "2026-08-24",
+  "visited": "2024-12",
+  "closed": false
+ },
+ {
+  "id": "kringel",
+  "name": "Kringel",
+  "address": "Koidu 101, Uue Maailm, Tallinn",
+  "lat": 59.4215893,
+  "lng": 24.7400125,
+  "price": 2,
+  "types": [
+   "bakery",
+   "vegan",
+   "coffee"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5919 6222",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "la-boulangerie",
+  "name": "La Boulangerie",
+  "address": "Poordi 3, 10151 Tallinn",
+  "lat": 59.4409,
+  "lng": 24.7583,
+  "price": 2,
+  "types": [
+   "bakery",
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [
+   "Pistachio roll"
+  ],
+  "reel": "https://www.instagram.com/p/C_SvgWoOTQH/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5855 0320",
+  "added": "2026-08-24",
+  "visited": "2024-08",
+  "closed": false
+ },
+ {
+  "id": "laboratooriumi-23",
+  "name": "Laboratooriumi 23",
+  "address": "Laboratooriumi 23, 10133 Tallinn",
+  "lat": 59.4407266,
+  "lng": 24.7443032,
+  "price": 2,
+  "types": [
+   "pub",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Sandwiches"
+  ],
+  "reel": "https://www.instagram.com/reel/DLCZ3s1SzJk/",
+  "photos": [],
+  "phone": "+372 5395 7134",
+  "added": "2026-08-23",
+  "visited": "2025-06",
+  "closed": false
+ },
+ {
+  "id": "lendav-maaler",
+  "name": "Lendav Maaler",
+  "address": "Kentmanni 4, 10116 Tallinn",
+  "lat": 59.4324804,
+  "lng": 24.7483049,
+  "price": 2,
+  "types": [
+   "restaurant"
+  ],
+  "mustOrder": [
+   "Mushroom taco",
+   "Beef burrito"
+  ],
+  "reel": "https://www.instagram.com/reel/DUDff1qDI0C/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5800 5171",
+  "added": "2026-08-23",
+  "visited": "2026-01",
+  "closed": true
+ },
+ {
+  "id": "lokaal-tilk",
+  "name": "Lokaal Tilk",
+  "address": "Pärnu mnt 66, 10135 Tallinn",
+  "lat": 59.4249623,
+  "lng": 24.742078,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "date",
+   "asian",
+   "vegan"
+  ],
+  "mustOrder": [
+   "Ramen",
+   "Crispy portobello"
+  ],
+  "reel": "https://www.instagram.com/reel/DJqx5zFsZT2/",
+  "photos": [],
+  "phone": "+372 5656 9974",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": true
+ },
+ {
+  "id": "magussoolane",
+  "name": "Magussoolane",
+  "address": "F. R. Faehlmanni tn 3, 10125 Tallinn",
+  "lat": 59.4344578,
+  "lng": 24.7782927,
+  "price": 2,
+  "types": [
+   "bakery",
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "https://www.instagram.com/p/DcVXcSQoeAP/",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5685 5965",
+  "added": "2026-08-24",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "maison-francois",
+  "name": "Maison François",
+  "address": "Dunkri 8, 10123 Tallinn",
+  "lat": 59.4369683,
+  "lng": 24.7432969,
+  "price": 2,
+  "types": [],
+  "mustOrder": [
+   "Croissant",
+   "French onion soup",
+   "Éclair"
+  ],
+  "reel": "https://www.instagram.com/reel/DKhS5g4sDr5/",
+  "photos": [],
+  "website": "",
+  "phone": "",
+  "added": "2026-08-23",
+  "visited": "2025-06",
+  "closed": true
+ },
+ {
+  "id": "mikkeller-old-town",
+  "name": "Mikkeller Tallinn Old Town",
+  "address": "Kullassepa 4, 10146 Tallinn",
+  "lat": 59.4365201,
+  "lng": 24.7444086,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.jpg"
+  ],
+  "website": "",
+  "phone": "+372 5445 0150",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "mix-resto",
+  "name": "MIX Resto",
+  "address": "Vana-Posti 11, 10146 Tallinn",
+  "lat": 59.4353205,
+  "lng": 24.7459026,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "fine-dining",
+   "date",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Three-course lunch menu"
+  ],
+  "reel": "https://www.instagram.com/reel/DFdGJeviVmy/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 622 0998",
+  "added": "2026-08-23",
+  "visited": "2025-01",
+  "closed": false
+ },
+ {
+  "id": "morii-tea-house",
+  "name": "Morii Tea House",
+  "address": "Kopli 16, 10412 Tallinn",
+  "lat": 59.4418049,
+  "lng": 24.7324773,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual",
+   "laptop"
+  ],
+  "mustOrder": [
+   "Matcha",
+   "Hojicha"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp"
+  ],
+  "website": "",
+  "phone": "+372 5833 6859",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "nullijook",
+  "name": "Nullijook",
+  "address": "Ankru, 11713 Tallinn",
+  "lat": 59.4551178,
+  "lng": 24.6756483,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [
+   "Kombucha",
+   "Proxy drinks"
+  ],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "paper-mill-coffee",
+  "name": "Paper Mill Coffee",
+  "address": "Masina 20, 10144 Tallinn",
+  "lat": 59.4261018,
+  "lng": 24.7779116,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual",
+   "laptop"
+  ],
+  "mustOrder": [
+   "Batch brew",
+   "Cruffin"
+  ],
+  "reel": "https://www.instagram.com/reel/DaLL9iiI4xo/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5344 5110",
+  "added": "2026-08-23",
+  "visited": "2026-06",
+  "closed": false
+ },
+ {
+  "id": "paper-mill-coffee-volta",
+  "name": "Paper Mill Coffee Volta",
+  "address": "Tööstuse 47d, 10416 Tallinn",
+  "lat": 59.4499521,
+  "lng": 24.7235408,
+  "price": 2.5,
+  "types": [
+   "coffee",
+   "bakery",
+   "casual",
+   "laptop"
+  ],
+  "mustOrder": [
+   "Monkey bread",
+   "Donut"
+  ],
+  "reel": "",
+  "photos": [
+   "02.webp",
+   "05.webp",
+   "01.webp",
+   "04.webp",
+   "03.webp"
+  ],
+  "website": "",
+  "phone": "+372 655 0072",
+  "added": "2026-08-26",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "pilsneri-baar",
+  "name": "Pilsneri baar",
+  "address": "Kopli, 10412 Tallinn",
+  "lat": 59.4415391,
+  "lng": 24.7381598,
+  "price": 2,
+  "types": [
+   "pub"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "pirosmani",
+  "name": "Pirosmani",
+  "address": "Tartu mnt 157, 10112 Tallinn",
+  "lat": 59.4026194,
+  "lng": 24.813618,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "caucasian",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Tšašušuli",
+   "Adjarian khachapuri",
+   "Khinkali"
+  ],
+  "reel": "https://www.instagram.com/reel/DKrxcSBTu-H/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 609 9778",
+  "added": "2026-08-23",
+  "visited": "2025-06",
+  "closed": false
+ },
+ {
+  "id": "porgandipomm",
+  "name": "Porgandipomm",
+  "address": "Manufaktuuri kvartal, Tallinn",
+  "lat": 59.4491566,
+  "lng": 24.703142,
+  "price": 1,
+  "types": [
+   "bakery",
+   "hidden-gem"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5812 3916",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "pudel",
+  "name": "Pudel",
+  "address": "Telliskivi 62, 10412 Tallinn",
+  "lat": 59.4405426,
+  "lng": 24.7319195,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5866 4496",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "pulla-bakery",
+  "name": "Pulla Bakery",
+  "address": "Voorimehe 7, 10146 Tallinn",
+  "lat": 59.4375173,
+  "lng": 24.7438257,
+  "price": 1,
+  "types": [
+   "bakery",
+   "coffee",
+   "casual"
+  ],
+  "mustOrder": [
+   "Cinnamon bun",
+   "Coffee"
+  ],
+  "reel": "https://www.instagram.com/reel/DJTZPVYPK9X/",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5918 9100",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": false
+ },
+ {
+  "id": "pohja-konn",
+  "name": "Põhja Konn",
+  "address": "Telliskivi 60a-5, 10412 Tallinn",
+  "lat": 59.4389365,
+  "lng": 24.7283935,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.jpg"
+  ],
+  "website": "",
+  "phone": "+372 5445 0510",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "puhaste-taproom",
+  "name": "Pühaste Taproom",
+  "address": "Rotermanni 2, 10111 Tallinn",
+  "lat": 59.4386681,
+  "lng": 24.758085,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 557 9787",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "q-pizza-jaam",
+  "name": "Q Pizza Jaam",
+  "address": "Telliskivi tn 62, 10412 Tallinn",
+  "lat": 59.4405324,
+  "lng": 24.7306484,
+  "price": 2,
+  "types": [
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp"
+  ],
+  "website": "",
+  "phone": "+372 502 0185",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "radio-restoran",
+  "name": "Radio",
+  "address": "Terase 16, 10125 Tallinn",
+  "lat": 59.4349703,
+  "lng": 24.7718684,
+  "price": 3,
+  "types": [
+   "restaurant",
+   "date"
+  ],
+  "mustOrder": [
+   "Whatever the table can share"
+  ],
+  "reel": "https://www.instagram.com/reel/DMaNNpfthTo/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 550 4499",
+  "added": "2026-08-23",
+  "visited": "2025-07",
+  "closed": false
+ },
+ {
+  "id": "ramen-taro",
+  "name": "Ramen Taro",
+  "address": "Laulupeo 1, 10121 Tallinn",
+  "lat": 59.4302614,
+  "lng": 24.7726871,
+  "price": 2,
+  "types": [
+   "casual",
+   "restaurant",
+   "asian"
+  ],
+  "mustOrder": [
+   "Yuzu Hakata ramen"
+  ],
+  "reel": "https://www.instagram.com/reel/DHS6_rVMJ9Z/",
+  "photos": [],
+  "phone": "+372 335 7735",
+  "added": "2026-08-23",
+  "visited": "2025-03",
+  "closed": false
+ },
+ {
+  "id": "saffron",
+  "name": "Saffron",
+  "address": "Gonsiori 12, 10117 Tallinn",
+  "lat": 59.4348202,
+  "lng": 24.7619912,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "casual"
+  ],
+  "mustOrder": [
+   "Chicken saagwala",
+   "Saffron naan",
+   "Garlic naan"
+  ],
+  "reel": "https://www.instagram.com/reel/DTK1MYBkyj2/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 558 4898",
+  "added": "2026-08-23",
+  "visited": "2026-01",
+  "closed": false
+ },
+ {
+  "id": "shaurma-kebab-linnamae",
+  "name": "Shaurma Kebab Linnamäe",
+  "address": "Linnamäe tee 17-19, 13912 Tallinn",
+  "lat": 59.4496523,
+  "lng": 24.8677282,
+  "price": 1,
+  "types": [
+   "cheap-eats",
+   "casual"
+  ],
+  "mustOrder": [
+   "Shaurma",
+   "Döner",
+   "Ayran"
+  ],
+  "reel": "https://www.instagram.com/reel/DCRmS4GNG_E/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5555 6525",
+  "added": "2026-08-23",
+  "visited": "2024-11",
+  "closed": false
+ },
+ {
+  "id": "telliskivi-saslokk",
+  "name": "Telliskivi Šašlõkk",
+  "address": "Telliskivi tn 62, 10412 Tallinn",
+  "lat": 59.4405498,
+  "lng": 24.7304552,
+  "price": 2,
+  "types": [
+   "casual",
+   "caucasian"
+  ],
+  "mustOrder": [
+   "Lahmajun"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp"
+  ],
+  "website": "",
+  "phone": "+372 5810 2434",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "the-brick-coffee",
+  "name": "The Brick Coffee Roastery",
+  "address": "Telliskivi 60M, 10412 Tallinn",
+  "lat": 59.440262,
+  "lng": 24.7332009,
+  "price": 2,
+  "types": [
+   "coffee",
+   "date",
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.jpg"
+  ],
+  "website": "",
+  "phone": "+372 5668 2150",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "tuletorn",
+  "name": "Tuletorn",
+  "address": "Ankru 10, 11713 Tallinn",
+  "lat": 59.4561323,
+  "lng": 24.6749319,
+  "price": 2,
+  "types": [
+   "pub"
+  ],
+  "mustOrder": [],
+  "reel": "https://www.instagram.com/p/DMvZEVWz9ym/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5860 5504",
+  "added": "2026-08-24",
+  "visited": "2025-07",
+  "closed": false
+ },
+ {
+  "id": "uba-ja-humal",
+  "name": "Uba ja Humal",
+  "address": "Võrgu 3, 10415 Tallinn",
+  "lat": 59.445073,
+  "lng": 24.7478562,
+  "price": 1,
+  "types": [
+   "pub",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Whatever's on tap"
+  ],
+  "reel": "https://www.instagram.com/reel/DGnwcMctBKP/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5694 2142",
+  "added": "2026-08-23",
+  "visited": "2025-02",
+  "closed": false
+ },
+ {
+  "id": "vaat-brewery",
+  "name": "Vaat Brewery and Taproom",
+  "address": "Paljassaare tee 18, Tallinn",
+  "lat": 59.4602996,
+  "lng": 24.707586,
+  "price": 2,
+  "types": [
+   "pub",
+   "hidden-gem"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5623 9800",
+  "added": "2026-08-24",
+  "closed": false
+ },
+ {
+  "id": "vabrik",
+  "name": "Vabrik",
+  "address": "Vabriku tn 6, 10414 Tallinn",
+  "lat": 59.442553,
+  "lng": 24.733203,
+  "price": 1,
+  "types": [
+   "casual"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "",
+  "phone": "+372 5699 5398",
+  "added": "2026-08-25",
+  "closed": false
+ },
+ {
+  "id": "vana-villem",
+  "name": "Vana Villem",
+  "address": "Tartu mnt 50, 10115 Tallinn",
+  "lat": 59.4303182,
+  "lng": 24.7707966,
+  "price": 1,
+  "types": [
+   "pub",
+   "cheap-eats"
+  ],
+  "mustOrder": [
+   "Beer",
+   "Pub food"
+  ],
+  "reel": "https://www.instagram.com/reel/DKT7qv0PU6x/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 601 0782",
+  "added": "2026-08-23",
+  "visited": "2025-05",
+  "closed": false
+ },
+ {
+  "id": "varkizana",
+  "name": "Varkizana Kreeka tavern",
+  "address": "Virbi 4, 13629 Tallinn",
+  "lat": 59.440814,
+  "lng": 24.842208,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "casual",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Moussaka",
+   "Tzatziki",
+   "Souvlaki",
+   "Dolma"
+  ],
+  "reel": "https://www.instagram.com/p/DdW3ZLmRCX6/",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp"
+  ],
+  "website": "",
+  "phone": "+372 644 6000",
+  "added": "2026-09-16",
+  "visited": "2026-09",
+  "closed": false
+ },
+ {
+  "id": "vegan-restoran-v",
+  "name": "Vegan Restoran V",
+  "address": "Rataskaevu tn 12, 10123 Tallinn",
+  "lat": 59.437158,
+  "lng": 24.742531,
+  "price": 2,
+  "types": [
+   "vegan",
+   "restaurant"
+  ],
+  "mustOrder": [
+   "Beetroot ravioli",
+   "Baked sweet potato"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp"
+  ],
+  "website": "http://www.veganrestoran.ee/",
+  "phone": "+372 626 9087",
+  "added": "2026-09-29",
+  "visited": "2026-09",
+  "closed": false
+ },
+ {
+  "id": "veino",
+  "name": "Veino",
+  "address": "Rataskaevu tn 6, 10123 Tallinn",
+  "lat": 59.437339,
+  "lng": 24.742808,
+  "price": 2,
+  "types": [
+   "date",
+   "hidden-gem"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "03.webp",
+   "04.webp"
+  ],
+  "website": "https://www.instagram.com/veinoveinikas/",
+  "phone": "+372 5429 0900",
+  "added": "2026-09-29",
+  "visited": "2026-09",
+  "closed": false
+ },
+ {
+  "id": "vesta",
+  "name": "Vesta",
+  "address": "Tööstuse 88, 10416 Tallinn",
+  "lat": 59.454133,
+  "lng": 24.7072027,
+  "price": 3,
+  "types": [
+   "restaurant",
+   "fine-dining",
+   "date"
+  ],
+  "mustOrder": [
+   "Beef tartare",
+   "Onion pie"
+  ],
+  "reel": "https://www.instagram.com/reel/DScUsF-k8ve/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5353 3576",
+  "added": "2026-08-23",
+  "visited": "2025-12",
+  "closed": false
+ },
+ {
+  "id": "varav-coffee-toast",
+  "name": "Värav Coffee and toast",
+  "address": "Väike-Rannavärav 4, 10111 Tallinn",
+  "lat": 59.4415101,
+  "lng": 24.7508032,
+  "price": 2,
+  "types": [
+   "coffee",
+   "casual",
+   "laptop",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Flatwhite",
+   "Filterkohv"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp",
+   "05.webp",
+   "06.webp"
+  ],
+  "website": "",
+  "added": "2026-09-01",
+  "visited": "2026-08",
+  "closed": false
+ },
+ {
+  "id": "xinhai-1911",
+  "name": "Xinhai 1911 Restoran & Baar",
+  "address": "Kopli 2c, 10412 Tallinn",
+  "lat": 59.4412874,
+  "lng": 24.7385644,
+  "price": 2,
+  "types": [
+   "restaurant",
+   "asian",
+   "casual"
+  ],
+  "mustOrder": [
+   "Biang biang noodles",
+   "Crispy pork belly",
+   "Pork wonton soup"
+  ],
+  "reel": "https://www.instagram.com/p/DW4DsociIIf/",
+  "photos": [],
+  "website": "",
+  "phone": "+372 5786 0291",
+  "added": "2026-08-24",
+  "visited": "2026-08",
+  "closed": false
+ }
+]
