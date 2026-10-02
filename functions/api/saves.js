@@ -16,8 +16,10 @@
  *     from a request is ever concatenated into SQL.
  *   - The only DELETE takes an owner as well as a place, so it can only ever
  *     remove the caller's own row.
- *   - A place id that is not in data/restaurants.json is refused, so nobody
- *     can fill the table with rows for places that do not exist.
+ *   - A place id that is on none of the three rolls — the map's own
+ *     data/restaurants.json, the Google venues in google_venues, the places
+ *     somebody added by hand in added_places — is refused, so nobody can
+ *     fill the table with rows for places that do not exist.
  *   - Nothing personal is stored. Not the IP, not the user agent — only an
  *     HMAC of them under a secret that never leaves the environment.
  *
@@ -44,7 +46,7 @@
 
 import {
   json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
-  RECOUNT_SQL, countsKey
+  addedByIds, isAdded, RECOUNT_SQL, countsKey
 } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
@@ -175,6 +177,55 @@ function withNotModified(request, res) {
   return res;
 }
 
+/* Whether an id is somewhere real, on any of the three rolls a place can be
+   opened from: true, false, or null when no roll could be read at all — which
+   is this site being unwell rather than the place being wrong, and the two
+   must not be answered alike.
+
+   It used to be the map's seventy-five and nothing else, which was right
+   while those were the only places with a bookmark on them. Then the find
+   bar, a list and the chat each began opening Google's places and the ones
+   people typed in, every card carried the same mark, and pressing it on one
+   of those was a 400 and a toast saying the save had failed. Everything that
+   opens with a bookmark is savable now, and the check is the one
+   add() in lists.js makes, in the same order and for the same reason: the
+   map is a file this isolate already holds, a Google key is one lookup on
+   the primary key of google_venues, and an added id says by its shape that
+   it is in neither — see isAdded() in _lib.js.
+
+   `hidden` is honoured for Google's rows, as realPlace() in stats.js does: a
+   row kept out of the picker is a duplicate or a car park, and nothing on
+   the map can open one to press its bookmark. */
+async function realPlace(context, id) {
+  const { env } = context;
+  if (!id || id.length > 128) return false;
+
+  if (isAdded(id)) {
+    try {
+      return (await addedByIds(env, [id])).has(id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  try {
+    if ((await knownPlaces(context)).has(id)) return true;
+  } catch (e) { /* google_venues below may still know it */ }
+
+  /* Asked even when the file could not be read: a Google key is answered by
+     the table alone. A table that cannot be asked is the unwell case, never
+     "no such place", whatever the file said. */
+  try {
+    const row = await env.DB
+      .prepare('SELECT hidden FROM google_venues WHERE place_id = ?')
+      .bind(id)
+      .first();
+    return !!row && !row.hidden;
+  } catch (e) {
+    return null;
+  }
+}
+
 /* -------------------------------------------------------------- one save
  * { place, client, on, token } in, { place, n, on } back.
  *
@@ -232,13 +283,9 @@ export async function onRequestPost(context) {
     return json({ error: 'client' }, 400);
   }
 
-  let places;
-  try {
-    places = await knownPlaces(context);
-  } catch (e) {
-    return json({ error: 'places' }, 503);
-  }
-  if (!places.has(place)) return json({ error: 'place' }, 400);
+  const real = await realPlace(context, place);
+  if (real === null) return json({ error: 'places' }, 503);
+  if (!real) return json({ error: 'place' }, 400);
 
   const ip = clientIp(request);
   const ua = request.headers.get('User-Agent') || '';

@@ -146,6 +146,12 @@
  * All four at once and one paint at the end. Nothing here waits on anything
  * else, and a page that drew twice would draw a card and then move it.
  *
+ * And one more, only for somebody who has saved a Google venue:
+ * /api/venues?ids= for its name and street, which places.json does not
+ * carry. It has to follow the other four — which ids are saved is what they
+ * answer — so it is the one round trip that waits, and it is asked before
+ * the paint rather than after it for the reason above.
+ *
  * There was a fifth, /api/lists?all=1, for the three of everybody's lists the
  * foot of the page used to name. Those three became a door and the door has
  * gone too, so the one route this page reads twice is read once.
@@ -156,6 +162,7 @@
   var UI_URL = '/data/ui.json';
   var PLACES_URL = '/data/places.json';
   var ACCOUNT_API = '/api/account';
+  var VENUES_API = '/api/venues?ids=';
   var LISTS_API = '/api/lists';
 
   /* The same two keys the map writes and the lists page reads. Walking from
@@ -632,10 +639,11 @@
     }
   }
 
-  /* An id nothing on the map answers to is dropped rather than drawn as a row
-     that opens an empty map: a place that has since been taken down leaves its
-     save behind, and the map's own list does the same thing for the same
-     reason. */
+  /* An id nothing answers to is dropped rather than drawn as a row that opens
+     an empty map: a place that has since been taken down leaves its save
+     behind, and the map's own list does the same thing for the same reason.
+     A Google venue answers once seatVenues() has asked after it; a place
+     somebody added by hand is drawn only by its list, and has no row here. */
   function savedPlaces() {
     var out = [];
     savedIds().forEach(function (id) {
@@ -645,10 +653,35 @@
     return out;
   }
 
+  /* A Google venue opens on the map with Places I saved on, because that is
+     the door that knows to draw it — ?spot= on its own is a door for my
+     places only. See seatSaved() in assets/app.js. */
   function placeRow(place) {
-    return row('/?spot=' + encodeURIComponent(place.id), place.name, [
+    var href = place.google
+      ? '/?saved=1&spot=' + encodeURIComponent(place.id)
+      : '/?spot=' + encodeURIComponent(place.id);
+    return row(href, place.name, [
       place.address ? el('span', { textContent: place.address }) : null
     ], 'place_link', { place: place.name, map: 'mine' });
+  }
+
+  /* The saved Google venues' names and streets, which places.json does not
+     carry. A Google key always has a capital in it and neither of the other
+     two kinds of id ever does — see isAdded() in functions/api/_lib.js — so
+     that is the whole test. Fifty at most, which is all the route answers in
+     one go; a failure leaves those rows out, as an id nothing answers to is.
+     `google` is what tells placeRow() which door to send it through. */
+  function seatVenues() {
+    var ids = savedIds().filter(function (id) {
+      return typeof id === 'string' && /[A-Z]/.test(id) && !state.places[id];
+    }).slice(0, 50);
+    if (!ids.length) return null;
+    return getJSON(VENUES_API + ids.map(encodeURIComponent).join(',')).then(function (rows) {
+      (rows || []).forEach(function (venue) {
+        if (!venue || !venue.id || !venue.name) return;
+        state.places[venue.id] = { id: venue.id, name: venue.name, address: venue.address || '', google: true };
+      });
+    }).catch(function () { /* the rest of the page draws without them */ });
   }
 
   function savedCard() {
@@ -1166,6 +1199,8 @@
       /* A list somebody kept can be one Google wrote — see assets/googlewords.js. */
       TTBGoogleWords.lists(state.kept, t, state.lang);
 
+      return seatVenues();
+    }).then(function () {
       mountRadio();
       render();
     }).catch(function () {

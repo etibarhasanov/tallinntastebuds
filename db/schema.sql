@@ -30,9 +30,10 @@
 -- client) twice hits the conflict and the second write is a no-op, whatever
 -- the caller intended.
 CREATE TABLE IF NOT EXISTS saves (
-  -- The place's id from data/restaurants.json. Checked against that file by
-  -- the Function before anything reaches this table, so a row here always
-  -- points at somewhere real.
+  -- The place's id: a map slug out of data/restaurants.json, a Google key out
+  -- of google_venues, or an added_places id. Checked against all three by the
+  -- Function before anything reaches this table, so a row here always points
+  -- at somewhere real.
   place_id   TEXT    NOT NULL,
   -- Who the save belongs to: a users.id when the request carried a signed-in
   -- session, otherwise the v4 UUID the browser generated for itself. One
