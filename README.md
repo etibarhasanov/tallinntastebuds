@@ -2630,6 +2630,44 @@ already saved goes with you. Press the bookmark again to take it back. The
 count hides at zero — a "0" under a bookmark reads as a verdict on the
 restaurant rather than as nobody having pressed it yet.
 
+### Every place with a bookmark can be saved
+
+The bookmark is on every card the map opens, and the map opens more than my
+seventy-five: a Google venue out of the find bar, a place on somebody's list,
+one the chat answered with, one somebody added by hand. For a while the mark
+was on all of those and the save behind it was not — `/api/saves` checked the
+id against `data/restaurants.json` alone, so pressing it on anything else was
+a 400 and a toast saying the save had failed, and the browser dropped the id
+from its own list on the next load besides.
+
+Now `realPlace()` in `functions/api/saves.js` asks the same three rolls a
+list item is checked against, in the same order: the map's file, then
+`google_venues` (a row kept `hidden` is refused, as `/api/stats` refuses it),
+and for an id shaped like a hand-added one, `added_places`. Anything on none
+of them is still refused, so the table still only holds places that exist.
+
+Keeping one is the easy half; drawing it again tomorrow is the other, because
+none of those doors is open on the next visit. So:
+
+- **The browser keeps the id** whatever kind it is. Only an id shaped like
+  one of mine — lowercase, digits and hyphens — is dropped when the map no
+  longer has it; a Google key or an added id never can be placed on arrival,
+  and dropping them is what made the mark come back empty. `keptSaves()` in
+  `assets/app.js`.
+- **Places I saved seats them.** With that filter on and a saved id the map
+  cannot place, `seatSaved()` asks for the find bar's own roll —
+  `/api/places`, once, and only then — and puts a stand-in on the map for
+  each, the way the find bar does, contact half and all once it is opened.
+  They show while that filter is on and never under a chip: a chip narrows my
+  places, and a saved Google café is not one of them. A hand-added place has
+  no roll of its own outside its list, so it stays saved, its mark is right
+  wherever its list draws it, and it has no pin here.
+- **`/account.html` names them.** The saved Google venues' names and streets
+  come from `/api/venues?ids=`, one request after the page knows what was
+  saved, and each row opens `/?saved=1&spot=<key>` — the saved filter is the
+  door that knows how to draw one, and `?spot=` alone is a door to my places
+  only.
+
 ### Where your own saves live, and why one bookmark does both jobs
 
 The count is on the list rows too, not only inside an open place: a small

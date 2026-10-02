@@ -182,6 +182,17 @@
        the results after Enter is pressed, which is the one time the bar does
        narrow the map — see state.results below. */
     foundPlaces: [],
+    /* And the fourth: the Google venues somebody has saved, so that Places I
+       saved can draw them. A bookmark is on every card, so a place out of
+       the find bar, a list or an answer can be saved as readily as one of
+       mine — and the next day none of those doors is open, and the saved
+       filter would narrow the map to a place it had no pin for. These are
+       seated by seatSaved() out of the find bar's own roll, the first time
+       the filter is on with a saved id the map cannot place, and then stay:
+       visiblePlaces() shows one only while that filter is on, so outside it
+       they are pins nothing draws. See matchesFilters() for why a chip never
+       answers for one. */
+    savedPlaces: [],
     /* What the map is narrowed to after Enter in the find bar: every place
        the words reached, mine and the city's, in the order the card's arrows
        step through them — nearest the dot, or the middle of the map, first.
@@ -365,11 +376,13 @@
 
   /* Everything that has a pin on the map right now: my seventy-six, plus the
      stand-ins for a list's places that are not among them, the ones an answer
-     on the whole city put there, and the ones the find bar put there. A list,
-     an answer and the find bar's results are never up together — each puts
-     the others away before it draws — and one venue looked up in the find bar
-     can be up with a list or an answer, because a pick narrows nothing. The
-     loops below do not need to know any of that.
+     on the whole city put there, the ones the find bar put there, and the
+     saved ones seatSaved() put there. A list, an answer and the find bar's
+     results are never up together — each puts the others away before it
+     draws — and one venue looked up in the find bar can be up with a list or
+     an answer, because a pick narrows nothing. The saved ones stay once
+     seated and are shown only under their filter. The loops below do not
+     need to know any of that.
 
      Deliberately not "everything the map knows about". state.places is the
      map and stays the map — the chips, the search, Surprise me, the just-added
@@ -377,10 +390,11 @@
      a Google venue that arrived with a link. Only the loops that draw, dress,
      label and cluster pins ask for this wider set. */
   function allPlaces() {
-    if (!state.listPlaces.length && !state.askPlaces.length && !state.foundPlaces.length) {
+    if (!state.listPlaces.length && !state.askPlaces.length && !state.foundPlaces.length &&
+        !state.savedPlaces.length) {
       return state.places;
     }
-    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces);
+    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces, state.savedPlaces);
   }
 
   function byId(id) {
@@ -399,11 +413,15 @@
     for (var m = 0; m < state.foundPlaces.length; m++) {
       if (state.foundPlaces[m].id === id) return state.foundPlaces[m];
     }
+    /* And last, the saves the map had no other door to — see seatSaved(). */
+    for (var n = 0; n < state.savedPlaces.length; n++) {
+      if (state.savedPlaces[n].id === id) return state.savedPlaces[n];
+    }
     return null;
   }
 
   /* Why a place with no write-up is on this map at all. A stand-in arrives
-     three ways now. Two of them are modes and are never on screen together —
+     four ways now; the fourth, a saved one, is answered with the third. Two of them are modes and are never on screen together —
      an answer puts a list away before it draws — so for those the mode says
      which and the place carries no flag for it.
 
@@ -414,11 +432,21 @@
      the bar's results after Enter too, which are its venues by the same
      door. Called without one it answers as it always did. */
   function standInNote(place) {
-    if (place && isFound(place.id)) return t('findNotMine');
+    /* A saved one was found somewhere in Tallinn too — that is how it came
+       to be saved — so it says what the find bar's say. */
+    if (place && (isFound(place.id) || isSavedStandIn(place.id))) return t('findNotMine');
     if (state.answer) return t('askNotMine');
     return state.list && state.list.by
       ? t('listNotMineBy', { name: state.list.by })
       : t('listNotMine');
+  }
+
+  /* Whether this is a saved venue seatSaved() put on the map. */
+  function isSavedStandIn(id) {
+    for (var i = 0; i < state.savedPlaces.length; i++) {
+      if (state.savedPlaces[i].id === id) return true;
+    }
+    return false;
   }
 
   /* Whether this is a venue the find bar put on the map. */
@@ -2067,16 +2095,71 @@
       } catch (e) { /* unreadable is the same as none */ }
     }
     /* Trusted as far as: parses, is an array, holds strings, no id twice, and
-       a place of that id is still on the map. The chip built from this is a
-       door to a list, and a door has to open onto what it claims — an id for
-       somewhere that has left restaurants.json would be counted here and then
-       not drawn there. The save itself is unaffected: that lives in the
-       database, and this is only which marks to fill in. */
+       an id shaped like one of mine is still on the map. The row built from
+       this is a door to a list, and a door has to open onto what it claims —
+       an id for somewhere that has left restaurants.json would be counted
+       here and then not drawn there. The save itself is unaffected: that
+       lives in the database, and this is only which marks to fill in. */
+    state.saved = keptSaves(ids);
+  }
+
+  /* Which of a list of saved ids to hold on to. One of mine is held while it
+     is on the map. Anything else — a Google key, a place somebody added by
+     hand — is held whether or not the map can place it yet, because on
+     arrival it never can: those come in by a door (the find bar, a list, an
+     answer, or seatSaved() below) that has not opened. Dropping them here is
+     what made a saved Google venue's mark come back empty on the next visit.
+     The shape is exact: a map id is lowercase letters, digits and hyphens,
+     and neither of the other two ever is — see isAdded() in
+     functions/api/_lib.js. */
+  function keptSaves(ids) {
     var seen = {};
-    state.saved = ids.filter(function (id) {
-      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
+    return ids.filter(function (id) {
+      if (typeof id !== 'string' || !id || seen[id]) return false;
+      if (/^[a-z0-9-]+$/.test(id) && !byId(id)) return false;
       seen[id] = true;
       return true;
+    });
+  }
+
+  /* The saved Google venues on the map, while Places I saved is on.
+
+     Out of the find bar's roll — /api/places, the map's places and every
+     open Google venue with its kinds and its pin — rather than a request of
+     its own, because it is the same rows in the shape foundStandIn() already
+     turns into a stand-in, and the bar may well have asked for it already.
+     Only when the filter is on and a saved id is one the map cannot place:
+     somebody whose saves are all mine never asks for it at all.
+
+     An id the roll does not carry either — a place Google has closed, or one
+     somebody added by hand, which only its list draws — stays saved and
+     simply has no pin here; the mark is right wherever it does turn up.
+     `then` runs once the stand-ins are in, which is how ?spot= opens one
+     that arrived with ?saved=1 from /account.html. */
+  var savedSeating = false;
+
+  function seatSaved(then) {
+    if (state.active.indexOf(SAVED_FILTER) === -1) { if (then) then(); return; }
+    var missing = state.saved.filter(function (id) { return !byId(id); });
+    if (!missing.length || savedSeating) { if (then) then(); return; }
+
+    savedSeating = true;
+    findLoad().then(function (roll) {
+      savedSeating = false;
+      var rows = {};
+      roll.forEach(function (row) { rows[row.id] = row; });
+      var seated = [];
+      missing.forEach(function (id) {
+        if (rows[id] && !byId(id)) seated.push(foundStandIn(rows[id]));
+      });
+      if (seated.length) {
+        state.savedPlaces = state.savedPlaces.concat(seated);
+        addPins(seated);
+        if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderPanel();
+        paintMarkers();
+        if (!then) fitToPins({ animate: true });
+      }
+      if (then) then();
     });
   }
 
@@ -2591,13 +2674,9 @@
      localStorage all the same, so the marks are right on the next load
      before the network has answered. */
   function adoptSaved(list) {
-    var seen = {};
-    state.saved = list.filter(function (id) {
-      if (typeof id !== 'string' || seen[id] || !byId(id)) return false;
-      seen[id] = true;
-      return true;
-    });
+    state.saved = keptSaves(list);
     storeSet(SAVED_KEY, JSON.stringify(state.saved));
+    seatSaved();
     paintSave();
     paintAccountButton();
     if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
@@ -4081,6 +4160,11 @@
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
+    /* Saving is the one thing a place I have never eaten at can answer. A
+       stand-in off the Google export carries types, and a chip answering for
+       one would put a pin I have not vouched for under "Coffee" — the chips
+       are my places, narrowed. */
+    if (place.standIn) return false;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
@@ -4092,11 +4176,11 @@
 
      A list, because while one is open it is the whole of what the map
      is showing — the mode above, answered before the chips are consulted at
-     all. It is also the only state in which a stand-in is on the map at all:
-     leaving a list empties state.listPlaces, so allPlaces() below the first
-     line is my seventy-four and nothing else. That is what keeps a chip from
-     ever standing over a place I have not eaten at — a stand-in off the Google
-     export does carry types now, and would answer one.
+     all. Outside it, allPlaces() can still hold stand-ins — a venue the find
+     bar picked, the saves seatSaved() put there — and a stand-in off the
+     Google export carries types, so it would answer a chip. matchesFilters()
+     is what refuses it, and what keeps a chip from ever standing over a place
+     I have not eaten at: only the saved filter answers for one.
 
      Then the chips, over my own places. No chips is the whole map, and the
      whole map is mine. */
@@ -4669,6 +4753,7 @@
   }
 
   function applyFilters(change) {
+    seatSaved();
     /* A chip that rules the marked place out takes the mark with it: a lit
        pin for a place the filter says you are not looking at is the map
        arguing with the chips. */
@@ -6544,7 +6629,7 @@
     }
     /* The phone, the site and the week of a venue the find bar put there,
        fetched the first time it is opened — see dressFound(). */
-    if (isFound(id)) dressFound(place);
+    if (isFound(id) || isSavedStandIn(id)) dressFound(place);
   }
 
   function showList(focus, opts) {
@@ -8692,20 +8777,22 @@
      and the week. One venue, one request, and the card is already on screen
      before it goes out — so a database that cannot answer costs the card its
      contact block and nothing else. A reply that arrives after the visitor
-     has moved on is dropped rather than drawn: state.foundPlaces is checked
-     again on the way back in, which is what stops a slow answer redressing a
-     place that is no longer the one being read.
+     has moved on is dropped rather than drawn: the place is looked up again
+     on the way back in, which is what stops a slow answer redressing a
+     place that is no longer the one on the map.
 
      Asked by selectPlace() the first time a venue the bar put there is
      opened, however it was opened — a row, a pin, or the arrows on the card
-     stepping through results — and once: `dressed` is set on the way out, so
-     stepping back to a place does not ask for it twice. */
+     stepping through results — and the same for a saved one seatSaved() put
+     there, which came off the same roll and is missing the same half. Once:
+     `dressed` is set on the way out, so stepping back to a place does not
+     ask for it twice. */
   function dressFound(place) {
     if (place.dressed) return;
     place.dressed = true;
     getJSON('/api/venues?ids=' + encodeURIComponent(place.id)).then(function (rows) {
       if (!rows || !rows.length || !rows[0]) return;
-      if (!isFound(place.id)) return;
+      if (byId(place.id) !== place) return;
       var row = rows[0];
       place.phone = row.phone || '';
       place.website = row.website || '';
@@ -11770,6 +11857,19 @@
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
+      /* A saved Google venue named by /account.html arrives with ?saved=1
+         and a ?spot= nothing on the map answers to yet: its stand-in is
+         seated out of the find bar's roll, and opened once it is in. Every
+         other arrival with the saved filter on is seated the same way, and
+         the map frames them when they land. */
+      if (spot && !byId(spot) && isSaved(spot)) {
+        seatSaved(function () {
+          if (byId(spot) && !state.selected) selectPlace(spot, { fly: true, arrived: true });
+        });
+      } else {
+        seatSaved();
+      }
+
       /* `arrived` says this open was the link's and not a press, which the
          count of first places opened on the short rail leaves out. */
       if (spot && byId(spot)) selectPlace(spot, { fly: true, arrived: true });
