@@ -89,6 +89,11 @@ for four choices in the segmented control the language switch is.
   your turn again; too late, *Too late to undo — here is the board now.* A move
   that ended the game never offers it. Added after the six tasks were cut, at
   the owner's asking, between tasks 5 and 6.
+- A move arriving, anybody's: the piece glides from its square to the new one
+  in 700 ms, a castling rook with it, and an undone move glides home. Not on
+  the first draw, a language switch or a poll several moves on, and not with
+  reduced motion. Added at the owner's asking after 5¾ — **A move is seen to
+  happen** in `README.md`.
 - Check on the line; Checkmate, Stalemate or Draw with its reason when it ends,
   then *Tallinn Tastebuds starts the next game.* for readers and the button for
   the house.

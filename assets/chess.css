@@ -157,6 +157,10 @@
 /* The king in check, and the checkmated king: the accent under the glyph
    rather than round the square, so it reads as the piece's state. */
 .sq.is-check .pc { color: var(--accent); }
+/* A piece on its way to a square, raised over every square's background so
+   none of them paints over it in passing. The glide itself is a transform
+   the script sets: slide() in assets/chess.js. */
+.pc.is-moving { z-index: 2; }
 .co { position: absolute; font-family: var(--mono); font-size: max(9px, 1.6cqw); font-weight: 500; line-height: 1; color: var(--muted); }
 .co-rank { top: 3px; left: 4px; }
 .co-file { bottom: 3px; right: 4px; }
