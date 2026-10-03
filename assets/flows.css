@@ -245,6 +245,27 @@
 .flow-count.is-zero rect { stroke: var(--hairline); }
 .flow-count.is-zero text { fill: var(--muted); font-weight: 400; }
 
+/* Where a step's people stopped: the count's pill again on the opposite
+   corner, dashed, in the colour the site says no in — they are the ones no
+   arrow carries away. And the typical time at a step, under it, quiet,
+   on a stroke of the wash so a line passing under does not cut it. */
+.flow-stopped rect { fill: var(--paper); stroke: var(--no); stroke-width: 1; stroke-dasharray: 3 2; }
+.flow-stopped text {
+  fill: var(--no);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+.flow-time {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  paint-order: stroke;
+  stroke: var(--wash);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
 /* A count on an arrow: after the arrow's label where it has one, otherwise
    under the arrow itself, on a stroke of the lane's own wash so the line
    does not cut through the digits — arrowNumbers() in assets/flows.js says
@@ -272,6 +293,16 @@
   letter-spacing: .02em;
 }
 .flows-move .flows-next { display: inline; margin: 0 6px; }
+
+/* Three numbers beside a name is one too many on a phone, where the
+   headers alone — STOPPED, in Russian ОСТАНОВИЛИСЬ — took the name's width
+   and stood it one word to a line. The share of views goes, since it is
+   the reached number over the line above the diagram. */
+@media (max-width: 480px) {
+  .flows-steps { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .flows-steps .ins-row > :nth-child(3) { display: none; }
+  .flows-steps .ins-head > * { letter-spacing: .03em; }
+}
 .flows-moves { grid-template-columns: minmax(0, 1fr) auto; margin-top: 4px; }
 .flows-moves .ins-row > :nth-child(2) { padding-left: 14px; }
 
@@ -285,3 +316,32 @@
   line-height: 1.5;
 }
 .flows-detail-n b { font-family: var(--mono); font-weight: 500; font-size: 13px; }
+.flows-detail-n p { margin: 0; }
+
+/* The spread of a pressed step's times: one bar in four shades of the
+   accent, short times palest, and the same four written out under it. */
+.flows-times { margin-top: 12px; }
+.flows-time-bar {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.flows-time-bar span { flex-basis: 0; min-width: 3px; }
+.flows-times .is-0 { background: var(--accent); opacity: .3; }
+.flows-times .is-1 { background: var(--accent); opacity: .55; }
+.flows-times .is-2 { background: var(--accent); opacity: .8; }
+.flows-times .is-3 { background: var(--accent); }
+.flows-detail-n .flows-time-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+.flows-time-key span { display: inline-flex; align-items: center; gap: 6px; }
+.flows-time-key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
