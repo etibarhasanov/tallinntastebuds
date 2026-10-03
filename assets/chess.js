@@ -9,7 +9,10 @@
  * board, from this same page, which shows it a different face. Beside it, a
  * waiting list: a member joins it, the house starts a game with the first in
  * line, one at a time, and that game is drawn on the same board component
- * with the member's name where Everybody's was. **Chess** in README.md is the
+ * with the member's name where Everybody's was. Under those, a card for
+ * playing another member: find them by username, challenge them, and the game
+ * they accept opens on the same board in the card's place — duelsCard() below.
+ * **Chess** in README.md is the
  * whole of the feature and .claude/skills/chess/SKILL.md is the shape that was
  * agreed before any of it was written, the three faces and the order each
  * puts the cards in included — cards() below is that table.
@@ -147,6 +150,11 @@
     /* The note being written, and whether a member's name goes on it. */
     draft: '',
     as: 'name',
+    /* The duel the reader has open on the board, by id — sent with every read
+       and write, so the answer carries it whole — and what is typed in the
+       search for a player, with the names it last found. */
+    duel: null,
+    find: { typed: '', players: null },
     busy: false
   };
 
@@ -155,6 +163,7 @@
   var record = null;
   var pollTimer = null;
   var undoTimer = null;
+  var findTimer = null;
 
   /* ------------------------------------------------------------ the pieces */
 
@@ -380,12 +389,21 @@
     return you && you.name && you.name === by ? t('chessYou') : by;
   }
 
-  /* Whoever plays the house in this game: Everybody, or the member. */
+  function yourName() {
+    var you = state.answer && state.answer.you;
+    return you && you.name;
+  }
+
+  /* The other side from the reader's: in a duel, whoever they are playing;
+     in a game of the house's, whoever plays the house — Everybody, or the
+     member. */
   function otherSide(game) {
+    if (game.kind === 'duel') return game.white === yourName() ? game.black : game.white;
     return game.white === 'house' ? game.black : game.white;
   }
 
   function gameTitle(game) {
+    if (game.kind === 'duel') return t('chessGameOf', { a: sideName(game.white), b: sideName(game.black) });
     return t('chessGameOf', { a: sideName(otherSide(game)), b: t('wordmark') });
   }
 
@@ -486,14 +504,19 @@
 
   /* ------------------------------------------------------- pressing a square */
 
-  /* The game with this id in the answer as it now is — the public one or the
-     reader's own — or null once it is neither. */
+  /* The game with this id in an answer — the public one, the reader's own
+     with the house, or the duel they have open — or null once it is none of
+     them. */
+  function gameIn(a, id) {
+    var found = null;
+    if (a) {
+      [a.public, a.mine, a.duel].forEach(function (g) { if (g && g.game.id === id) found = g; });
+    }
+    return found;
+  }
+
   function gameOf(id) {
-    var a = state.answer;
-    if (!a) return null;
-    if (a.public && a.public.game.id === id) return a.public;
-    if (a.mine && a.mine.game.id === id) return a.mine;
-    return null;
+    return gameIn(state.answer, id);
   }
 
   /* What is picked on this game's board, if it was picked at the ply the
@@ -555,8 +578,7 @@
     write(body, { 409: 'chessGotThereFirst' }, function (out) {
       /* The move went in. It may be taken back while the game is still on —
          a move that ended it is final — so the answer is asked, not assumed. */
-      var now = out.public && out.public.game.id === g.game.id ? out.public
-              : out.mine && out.mine.game.id === g.game.id ? out.mine : null;
+      var now = gameIn(out, g.game.id);
       if (now && now.game.state === 'playing' && now.game.ply === body.ply + 1) {
         state.undo = { game: now.game.id, ply: now.game.ply, until: Date.now() + UNDO_MS };
         countDown();
@@ -601,13 +623,14 @@
 
   /* Every other write: the house's new public game, a member joining the line
      or leaving it, the house starting the first in line, a resignation, a game
-     ended without a result. Each is reported by name and sent. */
-  function act(action, event, extra, said) {
+     ended without a result, and a duel's challenge, answer and claim. Each is
+     reported by name and sent. */
+  function act(action, event, extra, said, landed) {
     if (state.busy) return;
     var body = { action: action };
     Object.keys(extra || {}).forEach(function (k) { body[k] = extra[k]; });
     window.TTBTrack.event(event);
-    write(body, said);
+    write(body, said, landed);
   }
 
   /* Sends a write and redraws from what came back — a refusal that carries
@@ -617,6 +640,7 @@
      through. `landed` hears the answer to a write that went in, before it is
      drawn. */
   function write(body, said, landed) {
+    if (state.duel) body.duel = state.duel;
     state.busy = true;
     post(body).then(function (a) {
       state.busy = false;
@@ -639,10 +663,13 @@
   }
 
   /* The same id for a read, never minted: it is only how the answer knows
-     which notes are this browser's to delete. */
+     which notes are this browser's to delete. And the duel open on the page,
+     which the answer then carries whole. */
   function readUrl(url) {
     var known = window.TTBDevice.known();
-    return known ? url + (url.indexOf('?') === -1 ? '?' : '&') + 'client=' + encodeURIComponent(known) : url;
+    var extra = (known ? '&client=' + encodeURIComponent(known) : '') +
+      (state.duel ? '&duel=' + encodeURIComponent(state.duel) : '');
+    return extra ? url + (url.indexOf('?') === -1 ? '?' : '&') + extra.slice(1) : url;
   }
 
   function isHouse() {
@@ -666,6 +693,9 @@
       return { who: t('chessResigned', { who: sideName(loser) }), why: t('chessWon', { who: sideName(winner) }) };
     }
     if (game.reason === 'abandoned') return { who: t('chessAbandoned'), why: '' };
+    if (game.reason === 'claimed') {
+      return { who: t('chessClaimed', { who: sideName(loser) }), why: t('chessWon', { who: sideName(winner) }) };
+    }
     if (game.reason === 'stalemate') return { who: t('chessStalemate'), why: '' };
     return {
       who: t('chessDraw'),
@@ -683,17 +713,29 @@
     if (game.state === 'over') {
       var said = sayOver(game);
       /* What happens next: the house starts the next public game; a member
-         whose own game is over may join the line again. */
-      var next = game.kind === 'public'
-        ? (house ? t('chessNextYou') : t('chessNextHouse'))
-        : t('chessAgain');
-      return { who: said.who, why: said.why ? said.why + ' ' + next : next };
+         whose own game is over may join the line again; a duel has Rematch
+         under it and nothing to add. */
+      var next = game.kind === 'public' ? (house ? t('chessNextYou') : t('chessNextHouse'))
+               : game.kind === 'private' ? t('chessAgain') : '';
+      return { who: said.who, why: [said.why, next].filter(Boolean).join(' ') };
     }
 
     var mover = game.turn === 'w' ? game.white : game.black;
     var who = t('chessTurnOf', { who: sideName(mover) });
     var why;
-    if (mover === 'house') {
+    if (game.kind === 'duel') {
+      /* Both players read it and only one may move. The other is told who
+         they are waiting for, and once the quiet days are up, why Claim is
+         under the moves. */
+      if (mover === yourName()) {
+        who = t('chessTurnYours');
+        why = t('chessTurnYoursWhy');
+      } else {
+        why = g.claim
+          ? t('chessClaimWhy', { name: sideName(mover), n: Math.floor((Date.now() - game.lastAt) / 86400000) })
+          : t('chessDuelWait', { name: sideName(mover) });
+      }
+    } else if (mover === 'house') {
       why = house ? t('chessTurnYou') : t('chessTurnHouseWhy');
     } else if (game.kind === 'public') {
       why = house ? t('chessTurnCity') : t('chessTurnEverybodyWhy');
@@ -761,6 +803,9 @@
     if (game.state === 'over') {
       if (game.kind === 'public' && isHouse()) kids.push(goButton(t('chessNewGame'), newGame));
       else if (game.kind === 'private' && !isHouse()) kids.push(goButton(t('chessJoin'), join));
+      else if (game.kind === 'duel' && otherSide(game)) {
+        kids.push(goButton(t('chessRematch'), function () { challenge(otherSide(game), true); }));
+      }
     }
     return el('div', { className: 'chess-turn' }, kids);
   }
@@ -791,9 +836,11 @@
     var last = g.moves[g.moves.length - 1];
 
     /* The reader's side at the bottom: the house sits on its own colour,
-       everybody else on the other one — Everybody's, or the member's own. */
+       everybody else on the other one — Everybody's, or the member's own; in
+       a duel, black is turned round for whoever plays it. */
     var houseIsBlack = game.black === 'house';
-    var flip = isHouse() ? houseIsBlack : !houseIsBlack;
+    var flip = game.kind === 'duel' ? game.black === yourName()
+             : isHouse() ? houseIsBlack : !houseIsBlack;
 
     var picked = pickedOn(game);
     if (!picked && state.picked && state.picked.game === game.id) state.picked = null;
@@ -870,9 +917,10 @@
     if (game.startedAt) {
       card.appendChild(el('p', { className: 'chess-foot', textContent: t('chessStarted', { when: span(game.startedAt) }) }));
     }
-    /* The ways out of a private game being played: either side may resign,
-       and the house may end it without a result once the route says the
-       member has been quiet long enough. */
+    /* The ways out of a private game or a duel being played: either side
+       may resign; the house may end a private game without a result, and a
+       duel's player claim it, once the route says the other side has been
+       quiet long enough. */
     if (game.state === 'playing') {
       card.appendChild(altButton(t('chessResign'), function () {
         if (window.confirm(t('chessResignSure'))) act('resign', 'chess_resign', { game: game.id });
@@ -880,6 +928,11 @@
       if (g.abandon) {
         card.appendChild(altButton(t('chessAbandon'), function () {
           act('abandon', 'chess_abandon', { game: game.id });
+        }));
+      }
+      if (g.claim) {
+        card.appendChild(altButton(t('chessClaim'), function () {
+          act('claim', 'chess_claim', { game: game.id });
         }));
       }
     }
@@ -1116,25 +1169,210 @@
     ]);
   }
 
+  /* ------------------------------------------------------ member v member */
+
+  /* A challenge, from a search row or Rematch under a duel that is over. */
+  function challenge(name, rematch) {
+    act('challenge', rematch ? 'chess_rematch' : 'chess_challenge', { name: name },
+      { 404: 'chessDuelGone', 409: 'chessDuelAlready', 429: 'chessDuelsFull' });
+  }
+
+  /* Opens a duel on the board in the card's place, and asks for it at once
+     rather than waiting for the poll: the list carries the row, the answer to
+     a read with `duel=` carries the game. */
+  function openDuel(id) {
+    state.duel = id;
+    state.picked = null;
+    state.promoting = null;
+    draw();
+    ask(readUrl(API)).then(function (answer) {
+      if (answer.status === 0 || !answer.out.ready || state.duel !== id) return;
+      take(answer.out, true);
+      var card = stack.querySelector('.chess-duel-open');
+      if (card && card.scrollIntoView) card.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  function closeDuel() {
+    state.duel = null;
+    state.picked = null;
+    state.promoting = null;
+    draw();
+  }
+
+  /* What is typed in the search, asked for a quarter of a second after the
+     typing stops, and drawn only if it is still what is typed when the answer
+     comes back. */
+  function findTyped(value) {
+    state.find.typed = value;
+    if (findTimer) clearTimeout(findTimer);
+    if (value.trim().length < 2) {
+      if (state.find.players !== null) { state.find.players = null; draw(); }
+      return;
+    }
+    findTimer = setTimeout(function () {
+      ask(API + '?find=' + encodeURIComponent(value.trim())).then(function (answer) {
+        if (state.find.typed !== value || !answer.ok) return;
+        state.find.players = answer.out.players || [];
+        draw();
+      });
+    }, 250);
+  }
+
+  /* One row of the card: a name and the line under it, and whatever may be
+     pressed at its end. `open` makes the whole row the press, for a game. */
+  function duelRow(name, why, end, open, mark) {
+    var say = el('span', { className: 'menu-say' }, [
+      el('span', { className: 'menu-name', textContent: sideName(name) }),
+      el('span', { className: 'menu-why', textContent: why })
+    ]);
+    var row;
+    if (open) {
+      row = el('button', { type: 'button', className: 'menu-row' + (mark ? ' is-playing' : '') },
+        [say, el('span', { className: 'menu-go', 'aria-hidden': 'true' }, [chevron()])]);
+      row.addEventListener('click', open);
+    } else {
+      row = el('div', { className: 'menu-row chess-duel-row' }, [say, el('span', { className: 'chess-duel-end' }, end)]);
+    }
+    return el('li', { className: 'menu-item' }, [row]);
+  }
+
+  function rowList(head, rows) {
+    if (!rows.length) return null;
+    return el('div', null, [
+      el('p', { className: 'eyebrow chess-queue-head', textContent: head }),
+      el('ul', { className: 'menu' }, rows)
+    ]);
+  }
+
+  /* The search, and what it found: each name with Challenge, or a word for
+     what the reader already has going with them. */
+  function findNode(duels) {
+    var input = el('input', {
+      id: 'chess-find',
+      type: 'search',
+      className: 'lists-input chess-find-input',
+      autocomplete: 'off',
+      autocapitalize: 'none',
+      spellcheck: 'false',
+      placeholder: t('chessFind'),
+      'aria-label': t('chessFind')
+    });
+    input.value = state.find.typed;
+    input.addEventListener('input', function () { findTyped(input.value); });
+
+    var players = state.find.players;
+    var found = null;
+    if (players && !players.length) {
+      found = el('p', { className: 'chess-queue-none', textContent: t('chessFindNone') });
+    } else if (players) {
+      found = el('ul', { className: 'menu chess-found' }, players.map(function (name) {
+        var had = null;
+        duels.forEach(function (d) {
+          if (d.state !== 'over' && otherSide(d) === name) had = d;
+        });
+        var end = !had ? [altButton(t('chessChallenge'), function () { challenge(name, false); })]
+                : [el('span', {
+                    className: 'chess-tag',
+                    textContent: had.state === 'playing' ? t('chessPlayingTag')
+                               : had.yours ? t('chessChallengedYouTag') : t('chessChallengedTag')
+                  })];
+        return duelRow(name, '', end, null, false);
+      }));
+    }
+    return el('div', { className: 'chess-find' }, [input, found]);
+  }
+
+  /* Member against member. A visitor is told where the account is made; a
+     member gets the search, then what they have going: challenges sent to
+     them, challenges they sent, and their games — each game a row that opens
+     it on the board, which then stands where this card was with the way back
+     above it. */
+  function duelsCard() {
+    var a = state.answer;
+    var you = a.you || { role: 'visitor' };
+
+    if (state.duel && a.duel && a.duel.game.id === state.duel) {
+      var back = altButton(t('chessDuelBack'), closeDuel);
+      back.className += ' chess-duel-back';
+      return el('div', { className: 'chess-duel-open' }, [back, gameGrid(a.duel)]);
+    }
+
+    var kids = [
+      el('p', { className: 'eyebrow', textContent: t('chessDuels') }),
+      el('h2', { className: 'lists-title', textContent: t('chessDuelsTitle') })
+    ];
+    if (you.role === 'visitor') {
+      kids.push(el('p', { className: 'chess-play-why', textContent: t('chessDuelsSignedOut') }));
+      kids.push(el('a', { className: 'alt', href: '/', textContent: t('chessSignInGo') }));
+      return el('section', { className: 'card chess-play chess-duels', 'aria-label': t('chessDuels') }, kids);
+    }
+
+    var duels = a.duels;
+    var incoming = [];
+    var outgoing = [];
+    var games = [];
+    duels.forEach(function (d) {
+      var name = otherSide(d);
+      if (d.state === 'waiting' && d.yours) {
+        incoming.push(duelRow(name, t('chessChallengedYou', { when: ago(d.createdAt) }), [
+          altButton(t('chessAccept'), function () {
+            act('accept', 'chess_accept', { game: d.id }, { 404: 'chessDuelGone', 429: 'chessDuelsFull' },
+              function () { state.duel = d.id; });
+          }),
+          altButton(t('chessDecline'), function () {
+            act('decline', 'chess_decline', { game: d.id }, { 404: 'chessDuelGone' });
+          })
+        ]));
+      } else if (d.state === 'waiting') {
+        outgoing.push(duelRow(name, t('chessSent', { when: ago(d.createdAt) }), [
+          altButton(t('chessCancel'), function () {
+            act('cancel', 'chess_cancel', { game: d.id }, { 404: 'chessDuelGone' });
+          })
+        ]));
+      } else {
+        var why;
+        if (d.state === 'over') {
+          var said = sayOver(d);
+          why = [said.who, said.why].filter(Boolean).join(' · ');
+        } else {
+          why = d.yours ? t('chessTurnYours') : t('chessTurnOf', { who: sideName(name) });
+        }
+        games.push(duelRow(name, why, null, function () { openDuel(d.id); }, d.yours));
+      }
+    });
+
+    kids.push(el('p', { className: 'chess-play-why', textContent: t('chessDuelsWhy') }));
+    kids.push(findNode(duels));
+    kids.push(rowList(t('chessDuelsIn'), incoming));
+    kids.push(rowList(t('chessDuelsOut'), outgoing));
+    kids.push(rowList(t('chessDuelsGames'), games));
+    if (!duels.length) kids.push(el('p', { className: 'chess-queue-none', textContent: t('chessDuelsNone') }));
+    return el('section', { className: 'card chess-play chess-duels', 'aria-label': t('chessDuels') }, kids);
+  }
+
   /* -------------------------------------------------------------- the page */
 
   /* What the page holds, top to bottom, for whoever is reading — the faces
      table in .claude/skills/chess/SKILL.md. A visitor: the public game, then
      the invitation. A member: their own game while it is on or once it is
      over, else the card with the line in it; then the public game. The house:
-     the line, the private game while one is on, the public game. */
+     the line, the private game while one is on, the public game. And last,
+     for all three, member against member — no card at all where the route
+     says `duels: null`, a database without the column it needs. */
   function cards() {
     var a = state.answer;
     var role = a.you ? a.you.role : 'visitor';
     var pub = a.public ? gameGrid(a.public) : emptyCard();
     var mine = a.mine;
+    var duels = a.duels ? duelsCard() : null;
 
-    if (role === 'house') return [playCard(), mine ? gameGrid(mine) : null, pub];
+    if (role === 'house') return [playCard(), mine ? gameGrid(mine) : null, pub, duels];
     if (role === 'member') {
-      if (mine && mine.game.state !== 'waiting') return [gameGrid(mine), pub];
-      return [playCard(), pub];
+      if (mine && mine.game.state !== 'waiting') return [gameGrid(mine), pub, duels];
+      return [playCard(), pub, duels];
     }
-    return [pub, playCard()];
+    return [pub, playCard(), duels];
   }
 
   /* Pressing a square rebuilds the board, which would leave a keyboard
@@ -1145,9 +1383,10 @@
     var focus = document.activeElement;
     var focusSq = focus && focus.getAttribute ? focus.getAttribute('data-sq') : null;
     var focusBoard = focusSq ? focus.parentNode.getAttribute('data-game') : null;
-    /* The note being typed keeps the focus and the caret through a redraw. */
-    var typing = focus && focus.id === 'chess-note-text'
-      ? { start: focus.selectionStart, end: focus.selectionEnd } : null;
+    /* A field being typed in — the note, the search for a player — keeps
+       the focus and the caret through a redraw. */
+    var typing = focus && focus.id && /^(INPUT|TEXTAREA)$/.test(focus.tagName)
+      ? { id: focus.id, start: focus.selectionStart, end: focus.selectionEnd } : null;
 
     clear(stack);
     var a = state.answer;
@@ -1173,7 +1412,7 @@
        opens. */
     var notes = stack.querySelector('.chess-note-list');
     if (notes) notes.scrollTop = notes.scrollHeight;
-    var field = typing && document.getElementById('chess-note-text');
+    var field = typing && document.getElementById(typing.id);
     if (field) {
       field.focus();
       field.setSelectionRange(typing.start, typing.end);
@@ -1184,7 +1423,7 @@
       if (again && !again.disabled) again.focus();
     }
 
-    [a.public, a.mine].forEach(function (g) { if (g) glideOn(g); });
+    [a.public, a.mine, a.duel].forEach(function (g) { if (g) glideOn(g); });
   }
 
   /* ------------------------------------------------------------- the glide */

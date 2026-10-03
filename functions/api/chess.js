@@ -7,9 +7,29 @@
  * front of /admin/. A public game is Everybody against Tallinn Tastebuds: one
  * board for whoever opens the page, signed in or not. A private game is one
  * member against the house, and it starts as a place in a public waiting
- * list. **Chess** in README.md is the whole of it, and
+ * list. A third kind has no house in it: a duel is one member against another,
+ * by challenge — **Member against member** under **Chess** in README.md.
+ * **Chess** in README.md is the whole of it, and
  * .claude/skills/chess/SKILL.md is the shape that was agreed before any of it
  * was written.
+ *
+ * MEMBER AGAINST MEMBER
+ *
+ * A member finds another by username — GET ?find=, members only, a prefix of
+ * the name and nothing else about anybody, since a username is already a
+ * public address — and challenges them. The challenge is a duel row in state
+ * `waiting` with the challenger on white and the one challenged on black, in
+ * `opponent`; accepting starts it, declining or cancelling deletes it, and a
+ * challenge nobody answered in QUIET_DAYS is read as gone. One challenge or
+ * game between two people at a time, and MAX_DUELS going for one member. The
+ * game itself is the same board with the same lock, undo and resignation; in
+ * place of the house's abandon, either player may claim a game the other has
+ * left their move in for QUIET_DAYS, and it is a win. The reader's duels come
+ * in the answer as a list, and the one they have open — `duel=` on a read,
+ * `duel` in a POST's body — as a whole game with its moves. `opponent`
+ * arrives on a deployed table by hand, so it is asked after the way
+ * chess_notes is, and without it the answer says `duels: null` and the page
+ * draws no card.
  *
  * ONE ANSWER FOR THE WHOLE PAGE
  *
@@ -35,10 +55,11 @@
  * in a public game anybody but the house — a member filed under their id, a
  * visitor under the device id the browser files its saves under, which has to
  * be a v4 UUID and is refused `400 client` exactly as /api/saves refuses it;
- * in a private game the challenger alone. The house is found by reading the
- * session once and asking adminIds() whether that id is one of the owner's,
- * rather than calling adminUser() and then sessionUser() again for everybody
- * who is not: the same test with one query instead of two.
+ * in a private game the challenger alone; in a duel the member whose colour
+ * it is, the house included when it is one of the two. The house is found by
+ * reading the session once and asking adminIds() whether that id is one of
+ * the owner's, rather than calling adminUser() and then sessionUser() again
+ * for everybody who is not: the same test with one query instead of two.
  *
  * THE MOVE IS THE LOCK
  *
@@ -107,6 +128,15 @@ import { START, legalMoves, play, repetition } from './_chess.js';
 const QUIET_DAYS = 7;
 const MAX_QUEUE = 50;
 
+/* How many duels one member may have going — playing, or challenges they
+   sent that are still waiting — and how many players a search answers with.
+   A challenge somebody else sent does not count against you, so nobody can
+   fill another member's five by challenging them. Restated in words as
+   chessDuelsFull, which names the number. Finished duels stay in the list for
+   QUIET_DAYS, long enough to see how one ended and press Rematch. */
+const MAX_DUELS = 5;
+const FOUND = 10;
+
 /* How long whoever made a move may take it back. The page counts UNDO_MS
    from the moment its move came back; the route allows a little more, so a
    press in the last second on a slow phone is not refused for the time the
@@ -127,6 +157,8 @@ const HOUR = 3600000;
 const DAY = 86400000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const UCI = /^[a-h][1-8][a-h][1-8][qrbn]?$/;
+/* A game's id and a note's: sixteen hex characters, minted by randomHex(8). */
+const ID = /^[0-9a-f]{16}$/;
 
 /* ------------------------------------------------------------- the tables */
 
@@ -164,40 +196,79 @@ async function notesReady(env) {
   return true;
 }
 
+/* Whether chess_games has `opponent`, which duels need and which reaches a
+   deployed table by an ALTER somebody runs — the same way again. */
+let duelsSeen = false;
+
+async function duelsReady(env) {
+  if (duelsSeen) return true;
+  try {
+    await env.DB.prepare('SELECT opponent FROM chess_games LIMIT 1').all();
+    duelsSeen = true;
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 /* Who is reading: the house, a member or a visitor, and their row. `client`
-   is the device id the page sent, a visitor's only name here — read off the
-   query on the GET and the body on a POST — and '' when it is not a v4 UUID. */
-async function whoIs(request, env, client) {
+   is the device id the page sent, a visitor's only name here, and `duel` the
+   duel they have open — both read off the query on the GET and the body on a
+   POST, and '' when they are not the shape they must be. */
+async function whoIs(request, env, client, duel) {
   const user = await sessionUser(request, env);
   const device = typeof client === 'string' && UUID.test(client) ? client : '';
-  if (!user) return { role: 'visitor', user: null, client: device };
+  const open = typeof duel === 'string' && ID.test(duel) ? duel : '';
+  if (!user) return { role: 'visitor', user: null, client: device, duel: '' };
   const house = adminIds(env).has(String(user.id).toLowerCase());
-  return { role: house ? 'house' : 'member', user: user, client: device };
+  return { role: house ? 'house' : 'member', user: user, client: device, duel: open };
 }
 
 /* ------------------------------------------------------------ one game */
 
+/* One game and the names of the people in it. Where `opponent` is not on the
+   table yet there are no duels to read it for, and asking for it would take
+   every game down with it. */
 const GAME_SQL =
   'SELECT g.*, u.username AS challenger_name FROM chess_games g ' +
   'LEFT JOIN users u ON u.id = g.challenger ';
+const DUEL_SQL =
+  'SELECT g.*, u.username AS challenger_name, o.username AS opponent_name FROM chess_games g ' +
+  'LEFT JOIN users u ON u.id = g.challenger LEFT JOIN users o ON o.id = g.opponent ';
+
+async function gameSql(env) {
+  return (await duelsReady(env)) ? DUEL_SQL : GAME_SQL;
+}
 
 function turnOf(fen) {
   return String(fen).split(' ')[1] === 'b' ? 'b' : 'w';
 }
 
-/* The two sides' names as the page prints them: 'everybody', 'house', or the
-   challenger's username — null for an account that has since been deleted,
-   which the page reads as a visitor. */
+/* The two sides' names as the page prints them: 'everybody', 'house', or a
+   username — null for an account that has since been deleted, which the page
+   reads as a visitor. A duel has no house in it: the challenger plays white
+   and the one challenged black, by name, whoever they are. */
 function sides(row) {
+  if (row.kind === 'duel') return { white: row.challenger_name || null, black: row.opponent_name || null };
   const other = row.kind === 'public' ? 'everybody' : row.challenger_name || null;
   return row.house_colour === 'w'
     ? { white: 'house', black: other }
     : { white: other, black: 'house' };
 }
 
+/* The users.id playing the side to move in a duel. */
+function duelMover(row) {
+  return turnOf(row.fen) === 'w' ? row.challenger : row.opponent;
+}
+
+function inDuel(row, who) {
+  return row.kind === 'duel' && !!who.user && (who.user.id === row.challenger || who.user.id === row.opponent);
+}
+
 /* Whether this reader may play the side to move in this game now. */
 function mayMove(row, who) {
   if (row.state !== 'playing') return false;
+  if (row.kind === 'duel') return !!who.user && who.user.id === duelMover(row);
   const houseTurn = turnOf(row.fen) === row.house_colour;
   if (who.role === 'house') return houseTurn;
   if (houseTurn) return false;
@@ -212,6 +283,13 @@ function mayMove(row, who) {
 function mayAbandon(row) {
   return row.kind === 'private' && row.state === 'playing' &&
     turnOf(row.fen) !== row.house_colour && Date.now() - row.last_at >= QUIET_DAYS * DAY;
+}
+
+/* Whether this reader may claim a duel: they are in it, it is the other
+   player's move, and the other player has left it for QUIET_DAYS. */
+function mayClaim(row, who) {
+  return inDuel(row, who) && row.state === 'playing' && duelMover(row) !== who.user.id &&
+    Date.now() - row.last_at >= QUIET_DAYS * DAY;
 }
 
 async function movesOf(env, id) {
@@ -229,7 +307,8 @@ async function movesOf(env, id) {
 /* One game as the page reads it: the row, its moves, and the reader's legal
    moves when it is their turn. `check` is the last move's, which its SAN
    already says with + or #. `abandon` is there only for the house, only when
-   it may end the game. */
+   it may end the game; `claim` only for a player in a duel, only when they
+   may claim it. */
 async function gameAnswer(env, row, who) {
   if (!row) return null;
   const moves = await movesOf(env, row.id);
@@ -260,7 +339,8 @@ async function gameAnswer(env, row, who) {
       at: m.at
     })),
     ...(mayMove(row, who) ? { legal: legalMoves(row.fen) } : {}),
-    ...(who.role === 'house' && mayAbandon(row) ? { abandon: true } : {})
+    ...(who.role === 'house' && mayAbandon(row) ? { abandon: true } : {}),
+    ...(mayClaim(row, who) ? { claim: true } : {})
   };
 }
 
@@ -299,15 +379,16 @@ async function state(env, who) {
     )
     .all();
 
-  /* The house's own record, over both kinds. A game ended without a result
-     counts for nobody, so it is not a game here either. */
+  /* The house's own record, over both kinds it plays as the house — a duel
+     it played as a member is not the house's game. A game ended without a
+     result counts for nobody, so it is not a game here either. */
   const rec = await db
     .prepare(
       'SELECT COUNT(*) AS games, ' +
       "SUM(CASE WHEN (result = '1-0' AND house_colour = 'w') OR (result = '0-1' AND house_colour = 'b') THEN 1 ELSE 0 END) AS won, " +
       "SUM(CASE WHEN (result = '0-1' AND house_colour = 'w') OR (result = '1-0' AND house_colour = 'b') THEN 1 ELSE 0 END) AS lost, " +
       "SUM(CASE WHEN result = '1/2-1/2' THEN 1 ELSE 0 END) AS drawn " +
-      "FROM chess_games WHERE state = 'over' AND result != 'abandoned'"
+      "FROM chess_games WHERE kind IN ('public', 'private') AND state = 'over' AND result != 'abandoned'"
     )
     .first();
 
@@ -347,7 +428,51 @@ async function state(env, who) {
       name: q.name || null,
       since: q.since,
       ...(who.role === 'house' ? { game: q.id } : {})
-    }))
+    })),
+    ...(await duelsOf(env, who))
+  };
+}
+
+/* The reader's duels: every challenge still standing either way, every game
+   being played, and the ones that ended in the last QUIET_DAYS — as a list of
+   rows, which is all the card draws — and the one they have open as a whole
+   game, if they are in it — `who.duel`, off the read's `duel=` or the
+   write's body. `duels` is null where `opponent` is not on the
+   table, which the page reads as no card at all, and empty for a visitor,
+   who is shown the card's way in. */
+async function duelsOf(env, who) {
+  if (!(await duelsReady(env))) return { duels: null, duel: null };
+  if (!who.user) return { duels: [], duel: null };
+
+  const now = Date.now();
+  const me = who.user.id;
+  const { results } = await env.DB
+    .prepare(
+      DUEL_SQL +
+      "WHERE g.kind = 'duel' AND (g.challenger = ? OR g.opponent = ?) AND (g.state = 'playing' " +
+      "OR (g.state = 'waiting' AND g.created_at > ?) OR (g.state = 'over' AND g.finished_at > ?)) " +
+      'ORDER BY g.last_at DESC LIMIT 50'
+    )
+    .bind(me, me, now - QUIET_DAYS * DAY, now - QUIET_DAYS * DAY)
+    .all();
+
+  const open = (results || []).find((r) => r.id === who.duel && r.state !== 'waiting') || null;
+  return {
+    duels: (results || []).map((r) => ({
+      id: r.id,
+      kind: 'duel',
+      state: r.state,
+      ...sides(r),
+      turn: turnOf(r.fen),
+      /* Whose the next press is: a challenge the reader was sent, or a game
+         where the move is theirs. */
+      yours: r.state === 'waiting' ? r.opponent === me : r.state === 'playing' && duelMover(r) === me,
+      result: r.result || null,
+      reason: r.reason || null,
+      createdAt: r.created_at,
+      lastAt: r.last_at
+    })),
+    duel: open ? await gameAnswer(env, open, who) : null
   };
 }
 
@@ -384,7 +509,9 @@ const EMPTY = {
   record: { games: 0, won: 0, lost: 0, drawn: 0 },
   public: null,
   mine: null,
-  queue: []
+  queue: [],
+  duels: null,
+  duel: null
 };
 
 /* ---------------------------------------------------------------- reading */
@@ -395,10 +522,30 @@ export async function onRequestGet(context) {
   const words = params.has('lang') ? await wordsFor(context, params.get('lang')) : {};
 
   if (!(await ready(env))) {
+    if (params.has('find')) return json({ error: 'no-database' }, 503);
     return json({ ...EMPTY, ...words, you: { role: 'visitor', name: null } });
   }
-  const who = await whoIs(request, env, params.get('client'));
+  const who = await whoIs(request, env, params.get('client'), params.get('duel'));
+  if (params.has('find')) return find(env, who, params.get('find'));
   return json({ ...(await state(env, who)), ...words });
+}
+
+/* GET ?find=<the start of a username> — members only, the reader left out,
+   FOUND at most, alphabetical. Usernames and nothing else: they are already
+   the public address of everybody's page under /u/, and what the reader has
+   going with each of them the page reads off its own `duels`. Two characters
+   at least, so a search is a search rather than the member list a page at a
+   time. */
+async function find(env, who, typed) {
+  if (!who.user) return json({ error: 'signed-out' }, 401);
+  if (!(await duelsReady(env))) return json({ error: 'no-database' }, 503);
+  const start = String(typed || '').trim().toLowerCase().slice(0, 40);
+  if (start.length < 2) return json({ players: [] });
+  const { results } = await env.DB
+    .prepare("SELECT username FROM users WHERE username LIKE ? ESCAPE '\\' AND id != ? ORDER BY username LIMIT ?")
+    .bind(start.replace(/[\\%_]/g, '\\$&') + '%', who.user.id, FOUND)
+    .all();
+  return json({ players: (results || []).map((r) => r.username) });
 }
 
 /* ---------------------------------------------------------------- writing */
@@ -417,7 +564,7 @@ export async function onRequestPost(context) {
   }
   if (!body || typeof body !== 'object') return json({ error: 'malformed' }, 400);
 
-  const who = await whoIs(request, env, body.client);
+  const who = await whoIs(request, env, body.client, body.duel);
   const act = Object.hasOwn(ACTIONS, body.action) ? ACTIONS[body.action] : null;
   if (!act) return json({ error: 'action' }, 400);
   return countUse(context, 'chess', body.action, act(env, who, body, request), who.user, who.client);
@@ -434,11 +581,14 @@ async function done(env, who) {
 }
 
 async function gameById(env, id) {
-  if (typeof id !== 'string' || !/^[0-9a-f]{16}$/.test(id)) return null;
-  return env.DB.prepare(GAME_SQL + 'WHERE g.id = ?').bind(id).first();
+  if (typeof id !== 'string' || !ID.test(id)) return null;
+  return env.DB.prepare((await gameSql(env)) + 'WHERE g.id = ?').bind(id).first();
 }
 
-const ACTIONS = { move, undo, new: newGame, join, leave, start, resign, abandon, note, unnote, hide };
+const ACTIONS = {
+  move, undo, new: newGame, join, leave, start, resign, abandon, note, unnote, hide,
+  challenge, accept, decline: drop, cancel: drop, claim
+};
 
 /* move { game, ply, move, client } — `ply` is the game's ply as the page read
    it, the number of half-moves already played; the move is filed at one past
@@ -450,7 +600,7 @@ async function move(env, who, body) {
   if (row.state !== 'playing' || body.ply !== row.ply) return refuse(env, who, 'moved', 409);
   if (!mayMove(row, who)) return json({ error: 'not-yours' }, 403);
 
-  const by = actorOf(who);
+  const by = actorOf(who, row);
   if (!by) return json({ error: 'client' }, 400);
 
   const uci = typeof body.move === 'string' ? body.move : '';
@@ -500,9 +650,10 @@ async function move(env, who, body) {
    visitor by the device id the page sends as `client` — null when a visitor
    sent none that is a v4 UUID. A move and its undo both ask, and a note and
    its deletion, so the one who may take either back is exactly the one it was
-   filed under. */
-function actorOf(who) {
-  if (who.role === 'house') return { kind: 'house', id: who.user.id };
+   filed under. In a duel the house is one member among two, and its moves
+   there are filed as a member's, under its name. */
+function actorOf(who, row) {
+  if (who.role === 'house' && !(row && row.kind === 'duel')) return { kind: 'house', id: who.user.id };
   if (who.user) return { kind: 'user', id: who.user.id };
   return who.client ? { kind: 'device', id: who.client } : null;
 }
@@ -540,7 +691,7 @@ async function undo(env, who, body) {
   if (!Number.isInteger(body.ply)) return json({ error: 'malformed' }, 400);
   if (row.state !== 'playing' || body.ply !== row.ply || row.ply < 1) return refuse(env, who, 'too-late', 409);
 
-  const by = actorOf(who);
+  const by = actorOf(who, row);
   if (!by) return json({ error: 'client' }, 400);
   const last = await env.DB
     .prepare('SELECT by_kind, by_id, at FROM chess_moves WHERE game = ? AND ply = ?')
@@ -678,16 +829,20 @@ async function finish(env, id, result, reason) {
 }
 
 /* resign { game } — the challenger, or the house, on a private game being
-   played. Whoever resigned lost. A public game has nobody who could resign for
-   the city, so it cannot be. */
+   played; either player on a duel. Whoever resigned lost. A public game has
+   nobody who could resign for the city, so it cannot be. */
 async function resign(env, who, body) {
   const row = await gameById(env, body.game);
-  const mine = row && row.kind === 'private' && row.state === 'playing' &&
-    (who.role === 'house' || (who.user && who.user.id === row.challenger));
-  if (!mine) return json({ error: 'no-game' }, 404);
+  if (!row || row.state !== 'playing') return json({ error: 'no-game' }, 404);
 
-  const loser = who.role === 'house' ? row.house_colour : row.house_colour === 'w' ? 'b' : 'w';
-  if (!(await finish(env, row.id, loser === 'w' ? '0-1' : '1-0', 'resign'))) {
+  let loser = null;
+  if (row.kind === 'duel') {
+    if (inDuel(row, who)) loser = who.user.id === row.challenger ? 'w' : 'b';
+  } else if (row.kind === 'private') {
+    if (who.role === 'house') loser = row.house_colour;
+    else if (who.user && who.user.id === row.challenger) loser = row.house_colour === 'w' ? 'b' : 'w';
+  }
+  if (!loser || !(await finish(env, row.id, loser === 'w' ? '0-1' : '1-0', 'resign'))) {
     return json({ error: 'no-game' }, 404);
   }
   return done(env, who);
@@ -701,6 +856,109 @@ async function abandon(env, who, body) {
   if (!row || row.kind !== 'private' || row.state !== 'playing') return json({ error: 'no-game' }, 404);
   if (!mayAbandon(row)) return refuse(env, who, 'not-yet', 409);
   if (!(await finish(env, row.id, 'abandoned', 'abandoned'))) return json({ error: 'no-game' }, 404);
+  return done(env, who);
+}
+
+/* ------------------------------------------------------------------ duels */
+
+/* challenge { name } — a member challenges another by username, and plays
+   white. Refused for oneself, for somebody with whom a challenge or a game is
+   already standing — either way round, so two people challenging each other
+   at once make one challenge and a 409 — and past MAX_DUELS of the
+   challenger's own. The check and the insert are one statement, as join's
+   are, so a second press cannot make a second challenge. A challenge nobody
+   answered in QUIET_DAYS is not standing any more, and is deleted on the way
+   past by the next one between the two. */
+async function challenge(env, who, body) {
+  if (!who.user) return json({ error: 'signed-out' }, 401);
+  if (!(await duelsReady(env))) return json({ error: 'no-database' }, 503);
+
+  const name = typeof body.name === 'string' ? body.name.trim() : '';
+  const them = name
+    ? await env.DB.prepare('SELECT id FROM users WHERE username = ? COLLATE NOCASE').bind(name).first()
+    : null;
+  if (!them) return json({ error: 'no-player' }, 404);
+  if (them.id === who.user.id) return json({ error: 'self' }, 400);
+
+  const me = who.user.id;
+  const now = Date.now();
+  const stale = now - QUIET_DAYS * DAY;
+  const PAIR = "kind = 'duel' AND ((challenger = ? AND opponent = ?) OR (challenger = ? AND opponent = ?))";
+  await env.DB
+    .prepare("DELETE FROM chess_games WHERE " + PAIR + " AND state = 'waiting' AND created_at <= ?")
+    .bind(me, them.id, them.id, me, stale)
+    .run();
+
+  const going = await env.DB
+    .prepare(
+      "SELECT COUNT(*) AS n FROM chess_games WHERE kind = 'duel' AND " +
+      "((state = 'playing' AND (challenger = ? OR opponent = ?)) OR (state = 'waiting' AND challenger = ? AND created_at > ?))"
+    )
+    .bind(me, me, me, stale)
+    .first();
+  if (going && going.n >= MAX_DUELS) return json({ error: 'full' }, 429);
+
+  const res = await env.DB
+    .prepare(
+      'INSERT INTO chess_games (id, kind, state, n, challenger, opponent, house_colour, fen, ply, created_at, last_at) ' +
+      "SELECT ?, 'duel', 'waiting', n, ?, ?, '', ?, 0, ?, ? " +
+      "FROM (SELECT COALESCE(MAX(n), 0) + 1 AS n FROM chess_games WHERE kind = 'duel') " +
+      "WHERE NOT EXISTS (SELECT 1 FROM chess_games WHERE " + PAIR + " AND state IN ('waiting', 'playing'))"
+    )
+    .bind(randomHex(8), me, them.id, START, now, now, me, them.id, them.id, me)
+    .run();
+  if (!res.meta.changes) return refuse(env, who, 'already', 409);
+  return done(env, who);
+}
+
+/* accept { game } — the one challenged starts the game, while the challenge
+   is still standing and they have fewer than MAX_DUELS being played. */
+async function accept(env, who, body) {
+  const row = await gameById(env, body.game);
+  const now = Date.now();
+  if (!row || row.kind !== 'duel' || row.state !== 'waiting' || !who.user || row.opponent !== who.user.id ||
+      row.created_at <= now - QUIET_DAYS * DAY) {
+    return refuse(env, who, 'no-game', 404);
+  }
+  const playing = await env.DB
+    .prepare("SELECT COUNT(*) AS n FROM chess_games WHERE kind = 'duel' AND state = 'playing' AND (challenger = ? OR opponent = ?)")
+    .bind(who.user.id, who.user.id)
+    .first();
+  if (playing && playing.n >= MAX_DUELS) return json({ error: 'full' }, 429);
+
+  const res = await env.DB
+    .prepare("UPDATE chess_games SET state = 'playing', started_at = ?, last_at = ? WHERE id = ? AND state = 'waiting'")
+    .bind(now, now, row.id)
+    .run();
+  if (!res.meta.changes) return refuse(env, who, 'no-game', 404);
+  /* The game is open on the page that accepted it. */
+  who.duel = row.id;
+  return done(env, who);
+}
+
+/* decline and cancel { game } — a challenge comes off the page, deleted:
+   declined by the one it was sent to, cancelled by the one who sent it. One
+   statement for both, since which of the two you are is in the WHERE. */
+async function drop(env, who, body) {
+  if (!who.user || typeof body.game !== 'string' || !ID.test(body.game)) return refuse(env, who, 'no-game', 404);
+  const res = await env.DB
+    .prepare("DELETE FROM chess_games WHERE id = ? AND kind = 'duel' AND state = 'waiting' AND (challenger = ? OR opponent = ?)")
+    .bind(body.game, who.user.id, who.user.id)
+    .run();
+  if (!res.meta.changes) return refuse(env, who, 'no-game', 404);
+  return done(env, who);
+}
+
+/* claim { game } — a player in a duel takes the win from one the other has
+   left their move in for QUIET_DAYS. The duel's answer to the house's
+   abandon: between two members nobody is the house, so a game left standing
+   goes to the one still there rather than to nobody. */
+async function claim(env, who, body) {
+  const row = await gameById(env, body.game);
+  if (!row || !inDuel(row, who) || row.state !== 'playing') return json({ error: 'no-game' }, 404);
+  if (!mayClaim(row, who)) return refuse(env, who, 'not-yet', 409);
+  const winner = who.user.id === row.challenger ? 'w' : 'b';
+  if (!(await finish(env, row.id, winner === 'w' ? '1-0' : '0-1', 'claimed'))) return json({ error: 'no-game' }, 404);
   return done(env, who);
 }
 
@@ -754,7 +1012,7 @@ async function unnote(env, who, body) {
   if (!(await notesReady(env))) return json({ error: 'no-database' }, 503);
   const by = actorOf(who);
   if (!by) return json({ error: 'client' }, 400);
-  const id = typeof body.id === 'string' && /^[0-9a-f]{16}$/.test(body.id) ? body.id : '';
+  const id = typeof body.id === 'string' && ID.test(body.id) ? body.id : '';
   const res = await env.DB
     .prepare('DELETE FROM chess_notes WHERE id = ? AND owner_kind = ? AND owner = ?')
     .bind(id, by.kind, by.id)
@@ -767,7 +1025,7 @@ async function unnote(env, who, body) {
 async function hide(env, who, body) {
   if (who.role !== 'house') return json({ error: 'not-yours' }, 403);
   if (!(await notesReady(env))) return json({ error: 'no-database' }, 503);
-  const id = typeof body.id === 'string' && /^[0-9a-f]{16}$/.test(body.id) ? body.id : '';
+  const id = typeof body.id === 'string' && ID.test(body.id) ? body.id : '';
   const res = await env.DB
     .prepare('UPDATE chess_notes SET hidden = 1 WHERE id = ? AND hidden = 0')
     .bind(id)

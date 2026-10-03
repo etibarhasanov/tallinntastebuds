@@ -10209,11 +10209,12 @@ this feature exists except the file of words it reads.
 ## Chess
 
 A page at `/chess` where the whole city plays one game of chess against the
-house — the owner's account, the one `ADMINS` names — and where a member can
-queue to play the house one on one. It is being built a task at a time, from
+house — the owner's account, the one `ADMINS` names — where a member can
+queue to play the house one on one, and where any member can challenge any
+other. It is being built a task at a time, from
 `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
-far is **the public game**, **one on one** and **notes for the next
-player**: `chess.html`, `assets/chess.js`
+far is **the public game**, **one on one**, **notes for the next player** and
+**member against member**: `chess.html`, `assets/chess.js`
 and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
 `functions/api/_chess.js` holds the rules. It is listed in `sitemap.xml` and
 not disallowed in `robots.txt`.
@@ -10426,16 +10427,84 @@ page: `note`, `unnote` for the author, and `hide` for the house.
 Not done: replies, hearts, notes on private games, a notification when
 somebody leaves one, links or formatting in a note.
 
+### Member against member
+
+Under everything else on the page, for all three faces, a card where one
+member challenges another to a game of their own. Asked for by the owner
+after the notes had landed — first with a rule that both players had to be
+in Tallinn with location on, which the owner dropped when the shape came back
+saying a website cannot prove where anybody is.
+
+**Finding somebody is by username and nothing else.** A field, *Find a
+player*: two letters and it asks the route, which answers the first ten
+usernames that start with what was typed, the reader left out. A username is
+already the public address of everybody's page under `/u/`, so the search
+tells nobody anything a link would not; it says nothing about who is online,
+nearby or playing. A visitor gets no field, only *Sign in on the map*. Each
+name found has *Challenge* at its end, or a word for what the reader already
+has going with them — *challenged*, *challenged you*, *playing*.
+
+**A challenge is a game waiting to be accepted.** Whoever challenges plays
+white. The one challenged sees it under *Challenges for you* with *Accept*
+and *Decline*; the one who sent it sees it under *Waiting on them* with
+*Cancel*. Declined or cancelled, it is deleted; left unanswered for seven
+days, it lapses and is read as gone. There is no notice anywhere else — the
+site has no address for anybody — so a challenge is heard about on the
+page's next poll, the way a member hears their game with the house started.
+One challenge or game between two people at a time, either way round, so two
+people challenging each other at once make one challenge and *There is
+already a challenge or a game between you two.* And five going for one
+member — games being played and challenges they sent — counted in the route
+as `MAX_DUELS` and in words as *You have five games going*; a challenge
+somebody else sent does not count against you, so nobody can fill another
+member's five.
+
+**The game is the same board.** *Your games* lists every duel being played
+and every one that ended in the last seven days, each a row that opens it:
+the card gives way to the board, with *Back to your games* above it, and the
+answer carries that one game whole because the page sends its id with every
+read and write (`duel=`, and `duel` in a write's body). The reader's side is
+at the bottom — black is turned round for whoever plays it — and the turn
+line says *Your move* or *Waiting for anna*. Undo, the 409 redraw, check and
+the ends of a game are the public game's own; *Resign* is either player's.
+Where the house abandons a private game, a duel has **Claim the game**: once
+the other player has left their move for seven days, the one still there may
+take the win, which reads *anna stopped playing · boris won.* A duel that is
+over has *Rematch*, which is a new challenge to the same person with whoever
+pressed it on white.
+
+A duel counts for nobody's record: the house's mono line is the house's
+games, and a duel it plays as a member is not one of them. The house is a
+member here like any other — it can be found and challenged, and its moves in
+a duel are filed under its name rather than as the house.
+
+**The column, and the afternoon without it.** A duel is a row in
+`chess_games` with `kind = 'duel'`, `challenger` on white and a new column,
+`opponent`, on black; `house_colour` is `''`. The column reaches a deployed
+table by hand — `ALTER TABLE chess_games ADD COLUMN opponent TEXT`, then the
+`idx_chess_games_opponent` index under it in `db/schema.sql` — and the route
+asks whether it is there before reading it: without it the answer carries
+`duels: null`, the page draws no card, `?find=` and `challenge` answer `503
+no-database`, and the house's games go on exactly as before.
+
+Not done: a notice anywhere but this page, choosing colours, a clock, more
+than five, watching somebody else's duel, notes on a duel, search by
+anything but the start of a username.
+
 ### The tables
 
 Three, in `db/schema.sql`, applied by hand like every table here:
 
-- **`chess_games`** — one row a game, public or private. A private game is a
-  row from the moment its member joins the waiting list, in state `waiting`,
-  so the queue is those rows oldest first and there is no third table.
+- **`chess_games`** — one row a game: public, private or a duel. A private
+  game is a row from the moment its member joins the waiting list, in state
+  `waiting`, so the queue is those rows oldest first and there is no third
+  table; a duel is a row from the moment it is challenged, `waiting` until it
+  is accepted, with the one challenged in `opponent`.
   `house_colour` says which side the house plays; who may move and who won are
-  worked out from it and the FEN. `result` is `abandoned` for a private game
-  the house ended after seven quiet days, and that counts for nobody.
+  worked out from it and the FEN — on a duel, from `challenger` and
+  `opponent` instead. `result` is `abandoned` for a private game the house
+  ended after seven quiet days, and that counts for nobody; `reason` is
+  `claimed` for a duel one player took from the other the same way.
 - **`chess_moves`** — one row a half-move, keyed on `(game, ply)`. The key is
   the lock: of two people pressing a move on the same board at the same moment,
   one insert lands and the other is refused, and that refusal is the `409
@@ -15508,7 +15577,7 @@ flashcards' header has:
 
 | Event | Parameters |
 |---|---|
-| `chess_move` | `kind` (`public` or `private`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
+| `chess_move` | `kind` (`public`, `private` or `duel`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
 | `chess_new_game` | — the house's *Start the next game* or *Start the first game* |
 | `chess_join`, `chess_leave` | — a member's *Join the waiting list*, from the card or under a game of theirs that is over, and *Leave the list*. Sent on the press, so a join the full line refused is still one |
 | `chess_start` | — the house's *Start a game with …* |
@@ -15516,6 +15585,9 @@ flashcards' header has:
 | `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
 | `chess_note` | `named` — whether a member's name was left on it; *Post* under the notes, sent on the press, so a note the cap refused is still one |
 | `chess_note_delete`, `chess_note_hide` | — *Delete* under the reader's own note, and the house's *Hide* under anybody else's |
+| `chess_challenge`, `chess_rematch` | — *Challenge* beside a name the search found, and *Rematch* under a duel that is over; sent on the press, so a challenge the route refused is still one |
+| `chess_accept`, `chess_decline`, `chess_cancel` | — a challenge's *Accept* and *Decline*, for the one it was sent to, and *Cancel*, for the one who sent it |
+| `chess_claim` | — *Claim the game*, in a duel the other player has left for seven days |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
 | `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |
