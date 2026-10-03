@@ -236,13 +236,15 @@ note field is the only one that writes it;
 counter under that field reads `{n} / {max}` out of `data/ui.json` rather than
 spelling the number, so the cap is two edits and not twelve; `MAX_NAME 80` and
 `MAX_ADDRESS 120` as literal `maxlength: '80'` and `'120'` in the add-a-place
-form in `assets/lists.js`; the username's 3–24 in `account.js` as a
-`maxlength: '24'` on all three of `app.js`'s username fields — the sign-up
-sheet's, the rename step's and the one behind Continue with Google — and on
-`split.js`'s, which is one field worn by three views, and in words as
-`accountUsernameHint` and `accountErrUsername` in `data/ui.json`. `grep -n maxlength assets/*.js` finds every
-copy. Change one, change the other, and the README's table under **The
-caps**.
+form in `assets/lists.js`; the username's 3–24 in `_account.js` —
+`USERNAME_RE`, read by `asUsername()` alone, which every route that takes a
+name calls rather than keeping a copy, `_profile.js` and `_visits.js` included
+— as a `maxlength: '24'` on all three of `app.js`'s username fields — the
+sign-up sheet's, the rename step's and the one behind Continue with Google —
+on `split.js`'s and `flashcard.js`'s, each one field worn by three views, and
+in words as `accountUsernameHint`, `accountErrUsername` and `feedbackNameHint`
+in `data/ui.json`. `grep -n maxlength assets/*.js` finds every copy. Change
+one, change the other, and the README's table under **The caps**.
 
 
 **And so does the pin table.** `PIN_GLYPHS` and `PIN_TONES` in
@@ -411,6 +413,16 @@ what it costs per request, and what has to be applied by hand and where.
   add one.
 - The chat driven hard on a preview, and the live site out of model until
   midnight UTC. Same allowance, one account.
+- A pattern and the sentence that restated it meaning different things.
+  `USERNAME_RE` was `[a-z0-9-]` for a month while `accountUsernameHint`
+  promised "letters" in ten languages — which in Tallinn includes ü and õ, and
+  in Kyiv a whole alphabet — so `jüri` was refused with the sentence it had
+  just followed. Nothing in the code could show it; the sign-up funnel on
+  `/admin/visitors` did, where `account_err_username` was the only refusal
+  counted in its first three days. When a sentence under a field restates a
+  pattern, read the sentence in a language that is not English before
+  deciding the two agree, and when people give up on a form, read the funnel
+  before the code: it says which word the route refused them with.
 - An export taken out of `_lib.js` by the commit that wrote its replacement,
   while a route still imported the old name. An ES module resolves its
   imports before any of it runs and Pages bundles everything under

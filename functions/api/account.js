@@ -83,7 +83,7 @@ import {
   sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey
 } from './_lib.js';
 import {
-  USERNAME_RE, MIN_PASSWORD, HOLD_DAYS,
+  asUsername, MIN_PASSWORD, HOLD_DAYS,
   nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash,
   enterAccount, nameGoogleAccount
 } from './_account.js';
@@ -454,13 +454,15 @@ export async function onRequestPost(context) {
     const user = await sessionUser(request, env);
     if (!user) return json({ error: 'signed-out' }, 401);
 
-    const next = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
+    const next = asUsername(body.username);
     const current = typeof body.current === 'string' ? body.current : '';
 
-    if (!USERNAME_RE.test(next)) return json({ error: 'username' }, 400);
+    if (!next) return json({ error: 'username' }, 400);
     /* Its own answer rather than 'taken', which would be the site telling
-       somebody their own name belongs to somebody else. */
-    if (next === user.username.toLowerCase()) return json({ error: 'same-name' }, 400);
+       somebody their own name belongs to somebody else. A stored name is
+       already in the spelling asUsername() answers, so the two compare as
+       they are. */
+    if (next === user.username) return json({ error: 'same-name' }, 400);
 
     const hash = await failHash(env, request);
     if (await tooManyFails(env, hash)) return json({ error: 'slow-down' }, 429);
@@ -885,8 +887,10 @@ export async function onRequestPost(context) {
         return json({ error: 'current' }, 401);
       }
     } else {
-      const typed = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
-      if (typed !== user.username.toLowerCase()) return json({ error: 'confirm' }, 400);
+      /* Through asUsername(), so the name is held to be typed the way it is
+         spelt here rather than the way it was typed when it was chosen —
+         "Etibar Hasanov" confirms etibar-hasanov. */
+      if (asUsername(body.username) !== user.username) return json({ error: 'confirm' }, 400);
     }
 
     const id = user.id;

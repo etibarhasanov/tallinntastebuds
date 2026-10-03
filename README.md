@@ -3215,16 +3215,42 @@ for them — and a field that fills itself in under the cursor a moment late is
 its own small rudeness on a slow connection.
 
 So the box is empty and the rule is printed under it instead: **3 to 24
-letters, numbers or dashes**, plus the part that is actually worth knowing
-before you choose — that the name goes on any list you share. It is
-`accountUsernameHint` in `data/ui.json`, in all ten languages, and it sits
-inside the field's own `<label>` so a screen reader reads it when the field
-takes focus rather than never. The rule itself is not new; before, the only
-way to meet it was to get it wrong, because the name already in the box had
-been built to satisfy it. `USERNAME_RE` in `functions/api/account.js` is the
-one that binds — lowercase, opening on a letter or a digit so that a name
-cannot begin with the character that separates its words — and the field
-restates it as a `maxlength` of 24 and that sentence.
+letters, numbers, dots, dashes or underscores**, plus the part that is
+actually worth knowing before you choose — that the name goes on any list you
+share. It is `accountUsernameHint` in `data/ui.json`, in all ten languages,
+and it sits inside the field's own `<label>` so a screen reader reads it when
+the field takes focus rather than never. The rule itself is not new; before,
+the only way to meet it was to get it wrong, because the name already in the
+box had been built to satisfy it. `USERNAME_RE` in `functions/api/_account.js`
+is the one that binds — opening on a letter or a digit so that a name cannot
+begin with a character that separates its words — and the field restates it
+as a `maxlength` of 24 and that sentence.
+
+**Letters means letters, in every alphabet the site is read in.** For the
+first month the pattern was `[a-z0-9-]` while the sentence under the field
+promised "letters" in ten languages, and to a reader in Tallinn, Baku or Kyiv
+that means their own: `jüri`, `Саша` and `İlknur` were refused with the
+sentence they had just followed, and so was a name typed with a space in it,
+or spelt the way it is on Instagram with a dot or an underscore. Nobody saw it
+in the code. The sign-up funnel on `/admin/visitors` did — **Signing up**
+under [Visitors](#visitors): in the first three days it was counted,
+`username` was the only word the route refused anybody with, three times,
+every one on the step after Google where the one thing left to type is a
+name. So the pattern is Unicode letters, marks and digits now, with the dot
+and the underscore beside the dash, and `asUsername()` beside it is the one
+function every name passes through, on its way in and on its way out of an
+address: trimmed, spaces folded to the dash that separates words here — so
+"Etibar Hasanov" gets in as `etibar-hasanov` rather than being refused for the
+space — NFC, lowercased, and the Turkish capital İ folded to a plain i so that
+İlknur signs in by typing `ilknur`. `readProfile()` in `_profile.js` and
+`ownerOf()` in `_visits.js` each used to keep a copy of the pattern; they call
+that function now, so `/u/Jüri%20Tamm` finds `jüri-tamm` and the two halves
+cannot disagree again. What it still refuses is a name under three characters
+or over twenty-four, and a character that is none of those — an `@` or an
+emoji gets the same sentence. What it does not do is tell alphabets apart: a
+`Саша` spelt with a Latin a is a different name from one spelt with a Cyrillic
+one, and telling the two apart on a byline is a problem this site is too small
+to have yet.
 
 The splitwise page carries the same sheet and lost the same thing, and with it
 the `/api/account` request it made on every boot: `/api/split` already says who
@@ -4642,12 +4668,12 @@ a password hash that is not the hash of anything, so nobody can sign in as
 it; `db/google-lists.sql` is the only thing that writes under its name, and
 it is generated from the export the way `db/google-venues.sql` is.
 
-The name is hyphenated rather than `google_statistics` because a username
-here is lowercase letters, digits and hyphens — `USERNAME_RE` in
-`functions/api/account.js`, restated in `functions/api/_profile.js` — and an
-underscore is not one of them. Widening that rule for one account would
-change what every sign-up after it may be called, which is a larger change
-than this account is worth; the two names read the same.
+The name is hyphenated rather than `google_statistics` because, when the
+account was made, a username here was lowercase ASCII letters, digits and
+hyphens and an underscore was not one of them. The rule has widened since —
+**The name is chosen, not handed out** under [Accounts](#accounts) — and the
+name stays as it was: `db/google-lists.sql` writes every row under it, and the
+two read the same.
 
 **Why a site that does not rank has six rankings on it.** The map carries no
 score and never sorts by one, and that stands. A list is the other kind of
@@ -7204,8 +7230,8 @@ is not about them. The header is `lists.html`'s own with three things hidden
 and one shown (`.lists-body.is-page`), not a second header. A profile
 without rows is the card it has always been.
 
-**The name you go by.** A username is lowercase letters and a page needs a
-heading — *Etibar Ädalät* over `etibar`. `users.display_name`, sixty
+**The name you go by.** A username is lowercase and a page needs a heading —
+*Etibar Ädalät* over `etibar`. `users.display_name`, sixty
 characters, written on `/edit` above the line, and drawn as the page's heading and in its title; the username stands
 wherever it is empty, which is nearly everywhere. The other way — a display
 name for everybody, everywhere — would have put a second name on every
@@ -7639,6 +7665,14 @@ can alter: a rename moves a profile to a new address and leaves the old one
 answering 404. That is the honest cost of letting anybody pick a better name,
 and it is said on the sheet that does the renaming rather than discovered from
 a dead link.
+
+It is also the one address that may carry a letter outside ASCII, since a
+username may — **The name is chosen, not handed out** under
+[Accounts](#accounts). On the wire that is `/u/j%C3%BCri` for `jüri`: the
+Pages router hands the segment over as it stood in the address, so
+`functions/u/[name].js` decodes it before asking `asUsername()` whether it is
+a name, and the canonical tag it writes carries the encoded spelling, so the
+raw letter and its encoding are one page rather than two.
 
 What it is not is a way to become somebody else. The name a rename releases is
 held for thirty days before anybody may sign up as it — see **The old name is

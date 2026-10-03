@@ -152,7 +152,8 @@
  */
 
 import { sessionUser, clientIp, hmacHex } from './_lib.js';
-import { NETWORKS, USERNAME, readRows } from './_profile.js';
+import { NETWORKS, readRows } from './_profile.js';
+import { asUsername } from './_account.js';
 import { LIST_ID } from './_lists.js';
 
 /* How long a host kept as a source may be. A real one is a dozen characters;
@@ -219,8 +220,8 @@ export function dayBack(back) {
 /* The owner of /u/<name>, or null — and null as well when it is the person
    asking, so their own opens and presses are never counted. */
 async function ownerOf(request, env, name) {
-  const who = String(name || '').trim().toLowerCase();
-  if (!USERNAME.test(who)) return null;
+  const who = asUsername(name);
+  if (!who) return null;
   const row = await env.DB
     .prepare('SELECT id FROM users WHERE username = ? COLLATE NOCASE')
     .bind(who)

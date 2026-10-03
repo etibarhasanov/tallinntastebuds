@@ -160,9 +160,13 @@ function entry(loc, alternates) {
 }
 
 /* The profiles the repository knows exist: one per photograph in
-   assets/faces/, named for the username, and only names shaped the way
-   functions/api/account.js mints one, so a stray file cannot become an
-   address. Sorted, so the file is the same whatever order the disk answers. */
+   assets/faces/, named for the username — and only a file named in lowercase
+   ASCII letters, digits and hyphens, so a stray file cannot become an
+   address. That is narrower than asUsername() in functions/api/_account.js
+   lets an account be called now, on purpose: the owner names these files by
+   hand, and a face for a name outside it is a line here that encodes it, when
+   the first one arrives. Sorted, so the file is the same whatever order the
+   disk answers. */
 function faceNames() {
   if (!existsSync(FACES)) return [];
   return readdirSync(FACES)

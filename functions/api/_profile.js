@@ -59,6 +59,7 @@
  */
 
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
+import { asUsername } from './_account.js';
 
 /* ------------------------------------------------------------ the links
  *
@@ -564,9 +565,12 @@ export async function readRows(env, ownerId) {
 
 /* The face, where there is one: assets/faces/<name>.jpg in the deployment,
    asked for with a HEAD through the same binding _shell.js reads a page
-   with. A username is [a-z0-9-], so the path is never anything but a file
-   under that folder. Nothing is stored — the picture is in the repository or
-   it is not — and nothing is drawn for the many who have none.
+   with. A username is letters, digits, dots, dashes and underscores — see
+   asUsername() in ./_account.js — with no slash, percent sign, query or hash
+   in it, so the path is never anything but a file under that folder, and the
+   URL parser percent-encodes a letter outside ASCII on the way. Nothing is
+   stored — the picture is in the repository or it is not — and nothing is
+   drawn for the many who have none.
 
    A 200 alone does not say the picture is there. The site has no top-level
    404.html, so Pages serves it as a single-page app: a path that matches no
@@ -631,10 +635,6 @@ export async function readingExtras(env, make) {
   return make('');
 }
 
-/* The same shape functions/api/account.js mints a username in, said again
-   here so nothing that is not a plausible name goes near a query. */
-export const USERNAME = /^[a-z0-9][a-z0-9-]{2,23}$/;
-
 /**
  * One profile, or null.
  *
@@ -651,8 +651,12 @@ export const USERNAME = /^[a-z0-9][a-z0-9-]{2,23}$/;
 export async function readProfile(context, name) {
   const { env } = context;
 
-  const who = String(name || '').trim().toLowerCase();
-  if (!USERNAME.test(who)) return null;
+  /* The name as the table spells it, through the same function that minted
+     it — asUsername() in ./_account.js — so nothing that is not a plausible
+     name goes near a query, and the same name typed with its space or its
+     capital finds the same person. */
+  const who = asUsername(name);
+  if (!who) return null;
 
   /* `about` and `links` are columns applied by hand — see db/schema.sql — so
      a deployment can reach the site before somebody has run either ALTER.
@@ -698,9 +702,9 @@ export async function readProfile(context, name) {
 
   return {
     name: row.username,
-    /* The name they go by, over a username that is lowercase letters. Left
-       out when it is empty, and the page puts the username where it would
-       have gone. */
+    /* The name they go by, over a username that is lowercase. Left out when
+       it is empty, and the page puts the username where it would have
+       gone. */
     display: row.display_name || undefined,
     since: row.created_at,
     kept: kept,
