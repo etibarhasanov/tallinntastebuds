@@ -24,7 +24,16 @@
 
 /* ---------- the header: the mark, home, and who you are ---------- */
 
+/* Stacked above the page under it, because the language menu drops out of
+   this row and over whatever is below. With no z-index of its own the header
+   left that menu at z-index 1 among the page's layers, and on a list the
+   sticky .lists-bar (4) and the fixed .lists-dock (5) painted over it: Map and
+   List stood on top of Español and Eesti. Six clears both, and every sheet and
+   overlay this page can open sits in the hundreds or above, so nothing that
+   should cover the header stops doing so. */
 .lists-brand {
+  position: relative;
+  z-index: 6;
   display: flex;
   align-items: center;
   gap: 12px;
