@@ -68,5 +68,43 @@
       "en": "guilty pleasure"
     },
     "spot": "kotkot"
+  },
+  {
+    "id": "q-pizza-jaam-2026-10-03",
+    "live": true,
+    "photo": "q-pizza-jaam-2026-10-03.webp",
+    "from": "2026-10-03T14:00",
+    "caption": {
+      "en": "Sütlaç at Q Pizza Jaam — Turkish rice pudding, baked in a clay pot.",
+      "et": "Sütlaç Q Pizza Jaamas — Türgi riisipuding, küpsetatud savipotis.",
+      "ru": "Сютлач в Q Pizza Jaam — турецкий рисовый пудинг, запечённый в глиняном горшочке.",
+      "fi": "Sütlaç Q Pizza Jaamissa — turkkilainen riisivanukas, uunissa paistettu saviruukussa.",
+      "az": "Q Pizza Jaam-da südlaç — gil qabda bişirilmiş türk düyü pudinqi.",
+      "pt": "Sütlaç no Q Pizza Jaam — arroz-doce turco, assado num pote de barro.",
+      "es": "Sütlaç en Q Pizza Jaam — arroz con leche turco, horneado en una cazuela de barro.",
+      "tr": "Q Pizza Jaam’da sütlaç — toprak güveçte fırınlanmış.",
+      "uk": "Сютлач у Q Pizza Jaam — турецький рисовий пудинг, запечений у глиняному горщику.",
+      "hy": "Սյութլաչ Q Pizza Jaam-ում՝ թուրքական բրնձով պուդինգ, թխված կավե ամանում։"
+    },
+    "spot": "q-pizza-jaam"
+  },
+  {
+    "id": "fotografiska-2026-10-04",
+    "live": true,
+    "photo": "fotografiska-2026-10-04.webp",
+    "from": "2026-10-04T18:00",
+    "caption": {
+      "en": "Wasteless Lager at Fotografiska — brewed from yesterday’s bread.",
+      "et": "Wasteless Lager Fotografiskas — pruulitud eilsest leivast.",
+      "ru": "Wasteless Lager в Fotografiska — сварен из вчерашнего хлеба.",
+      "fi": "Wasteless Lager Fotografiskassa — pantu eilisestä leivästä.",
+      "az": "Fotografiska-da Wasteless Lager — dünənki çörəkdən dəmlənib.",
+      "pt": "Wasteless Lager no Fotografiska — fermentada com o pão de ontem.",
+      "es": "Wasteless Lager en Fotografiska — elaborada con el pan de ayer.",
+      "tr": "Fotografiska’da Wasteless Lager — dünün ekmeğinden demlenmiş.",
+      "uk": "Wasteless Lager у Fotografiska — зварене з учорашнього хліба.",
+      "hy": "Wasteless Lager Fotografiska-ում՝ եփված երեկվա հացից։"
+    },
+    "spot": "fotografiska"
   }
 ]
