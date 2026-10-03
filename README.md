@@ -12405,7 +12405,8 @@ has the pin.
 
 Nothing changes for a visitor. `assets/track.js` already reports every
 press by name when a page is put away; it now also reports the order they
-first happened in — the trail — and `functions/api/_flows.js` turns a trail
+first happened in — the trail — with the on-screen second each happened
+at, and `functions/api/_flows.js` turns a trail
 into steps and pairs of steps for each diagram that recognises them,
 counted into `flow_counts` and read back walked. `GET /api/admin/flows` is
 the route, the owner's alone under the same lock as the rest, cached five
@@ -12449,6 +12450,37 @@ parameter the count never sees — a scan reads `pass_verify` whether the
 verdict was valid or refused — the ends carry no number rather than a
 guess, and a pressed one says so.
 
+**Where they stopped, and how long they spent.** An arrow says where
+people went; it cannot say where they did not. So every counted step
+carries two marks of its own, on a line under it. A dashed pill —
+*106 stopped* — is how many of the people who reached it took no counted
+step after it: they closed the page, or went quiet, or did something no
+diagram counts, and the page cannot tell those apart and does not try.
+Where the walk carries them on into an end without guessing, that end is
+where they finished and the pill says nothing; on the visitor's diagram
+that makes the pill on *Opens tallinntastebuds.ee* the bounce, and the
+one on *Opens a place* the people who looked and went no further. It is
+the step's number less its pairs out, worked out when the page is read,
+so it reaches back over every day already counted.
+
+Beside it is the typical time at the step — *~55 s* — from reaching it to
+the next counted step of the same diagram, or to the page being put away
+where none came: how long somebody looked at a place before sharing it, or
+before putting the phone down. It is the time on screen the visitors page
+already counts, split at each step, and a stretch is a page on screen until
+it was hidden, so a tab brought back from behind another app starts its
+clock again rather than counting the hour it sat there. Each time is filed
+in `flow_counts` as one of nine buckets — `t:<step>:<i>`, edges at 5, 10,
+20, 30 seconds, one, two, five and ten minutes, `BUCKETS` in
+`functions/api/_flows.js` — because a median wants the spread and a sum
+would let one tab left on a desk outweigh a hundred glances; the page
+reads the median along the bucket it falls in. A pressed step's card
+spells both out, with the spread as one bar in four parts — under ten
+seconds, to a minute, to five, past it — and **Step by step** carries the
+stopped as a column and the time on the line under each name, dropping the
+share of views on a phone to make room. Times start the day this landed;
+before it, a step has a pill and no time.
+
 **Signed in and signed out** is the session on the request, which the server
 knows and the page does not need to; everybody is the two added together.
 The visitor's diagram opens on the signed out, the member's on the signed
@@ -12485,7 +12517,9 @@ has and which would double the rows here. One visitor's path: nothing here
 can, and nothing is written that could. A press's parameters. Numbers on the
 owner's diagram, since nothing under `/admin/` is counted. Anything from
 before it landed, and a chart over time: it is a total over the range.
-Which place was opened, which is `/admin/stats`. Arrows across devices. And
+Which place was opened, which is `/admin/stats`. Arrows across devices.
+How long a whole visit across several pages lasted, or told apart from a
+page left open with nothing more pressed: the pill counts both as a stop. And
 it changes no diagram's shape on its own: the moves card argues, and the
 owner decides.
 
