@@ -99,6 +99,10 @@
      route allows a few seconds more, for the request on its way. */
   var UNDO_MS = 10000;
 
+  /* How long a piece takes to cross the board to where it was played. Slow
+     on purpose: a move should be seen to happen, not found to have. */
+  var GLIDE_MS = 700;
+
   /* MAX_NOTE in functions/api/chess.js, restated for the field's maxlength;
      the route is the one that binds. */
   var MAX_NOTE = 280;
@@ -137,6 +141,9 @@
        who played the move is the one who may undo it, and the route checks
        the same by what the move was filed under. */
     undo: null,         /* { game, ply, until } */
+    /* The ply and last move each board was last drawn at, so the next draw
+       knows whether a move arrived (glide it in) or went (glide it back). */
+    seen: {},           /* { <game id>: { ply, uci } } */
     /* The note being written, and whether a member's name goes on it. */
     draft: '',
     as: 'name',
@@ -1176,7 +1183,79 @@
       var again = stack.querySelector('[data-game="' + focusBoard + '"] [data-sq="' + focusSq + '"]');
       if (again && !again.disabled) again.focus();
     }
+
+    [a.public, a.mine].forEach(function (g) { if (g) glideOn(g); });
   }
+
+  /* ------------------------------------------------------------- the glide */
+
+  /* A board is rebuilt whole on every draw, so a move would otherwise simply
+     be there. Instead, when a board is one ply on from the last time it was
+     drawn, the piece that moved starts on the square it came from and slides
+     to the one it went to; when it is one ply back — a move taken back — it
+     slides home the other way. The house's reply, somebody else's move on
+     Everybody's board and your own all arrive the same way. The first draw,
+     a language switch and a poll that missed several moves draw the board
+     as it is: there is no one move to show. A castling king brings its rook
+     with it. Nothing here is a rule — the squares come from the uci the
+     answer carries — and with reduced motion asked for, nothing moves. */
+  function glideOn(g) {
+    var game = g.game;
+    var moves = g.moves || [];
+    var last = moves.length ? moves[moves.length - 1] : null;
+    var was = state.seen[game.id];
+    state.seen[game.id] = { ply: game.ply, uci: last ? last.uci : null };
+    if (!was) return;
+
+    var uci = null;
+    var back = false;
+    if (game.ply === was.ply + 1 && last && last.uci) uci = last.uci;
+    else if (game.ply === was.ply - 1 && was.uci) { uci = was.uci; back = true; }
+    if (!uci) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var board = stack.querySelector('.chess-board[data-game="' + game.id + '"]');
+    if (!board) return;
+    var from = uci.slice(0, 2);
+    var to = uci.slice(2, 4);
+    if (back) slide(board, to, from);
+    else slide(board, from, to);
+
+    /* Castling is the one move where a second piece goes too: a king that
+       went two files, wherever it now stands. The step is the move's own,
+       so a castle taken back finds the same rook it brought. */
+    var stands = board.querySelector('[data-sq="' + (back ? from : to) + '"] .pc');
+    var glyph = stands ? stands.textContent.charAt(0) : '';
+    var step = FILES.indexOf(to.charAt(0)) - FILES.indexOf(from.charAt(0));
+    if ((glyph === GLYPH.K || glyph === GLYPH.k) && (step === 2 || step === -2)) {
+      var rank = to.charAt(1);
+      var corner = (step > 0 ? 'h' : 'a') + rank;
+      var beside = (step > 0 ? 'f' : 'd') + rank;
+      if (back) slide(board, beside, corner);
+      else slide(board, corner, beside);
+    }
+  }
+
+  /* Draws the piece now standing on `to` as though it were still on `from`,
+     then lets it go. The piece itself is lifted for the crossing, not its
+     square: a square paints a background, and a castling king's square would
+     cover the rook passing over it. */
+  function slide(board, from, to) {
+    var start = board.querySelector('[data-sq="' + from + '"]');
+    var end = board.querySelector('[data-sq="' + to + '"]');
+    var piece = end && end.querySelector('.pc');
+    if (!start || !piece) return;
+    var a = start.getBoundingClientRect();
+    var b = end.getBoundingClientRect();
+    piece.classList.add('is-moving');
+    piece.style.transition = 'none';
+    piece.style.transform = 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px)';
+    void piece.offsetWidth;
+    piece.style.transition = 'transform ' + GLIDE_MS + 'ms cubic-bezier(.45, 0, .2, 1)';
+    piece.style.transform = '';
+    setTimeout(function () { piece.classList.remove('is-moving'); }, GLIDE_MS);
+  }
+
 
   /* An answer arrives — the first, a poll's, or a write's. A poll that found
      the board as it was is not drawn again, so the piece somebody is holding

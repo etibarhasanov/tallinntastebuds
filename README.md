@@ -10320,6 +10320,24 @@ on its next poll.
 Not done: taking back more than one move, a takeback asked of the other side,
 taking back a resignation or a game ended without a result.
 
+### A move is seen to happen
+
+Every move glides. When a board arrives one ply on from the one the page last
+drew, the piece that moved starts on the square it came from and slides,
+for 700 milliseconds, to the one it went to — your own move once the route has
+taken it, the house's reply, somebody else's move on Everybody's board when the
+poll brings it. A castling king brings its rook along. A move taken back
+slides home the other way, so an undo reads as the piece being put back rather
+than the board changing its mind. It is slow on purpose: the owner asked for a
+move to be something you watch, and the ten seconds of *Undo* under it are the
+time to think again.
+
+There is no glide when there is no one move to show: the first draw of the
+page, a language switch, a poll that comes back several moves on, a new game.
+With reduced motion asked for, the pieces simply stand where they now are.
+Nothing here knows a rule; the squares are the `uci` the answer already
+carries. `glideOn()` and `slide()` in `assets/chess.js`.
+
 ### Notes for the next player
 
 Under the public game's moves — beside the board on a desktop — a card where
