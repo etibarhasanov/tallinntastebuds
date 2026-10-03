@@ -80,7 +80,8 @@ Google and Clarity; `TTBTrack.view(title)` reports a place, post or deck
 opened; `TTBTrack.about(what, id)` says which story, post, deck or deal the
 page showed; `arrive()` sends one report as the page opens and `putAway()`
 one each time it is hidden, carrying the seconds on screen, the tally, the
-trail, the languages, the searches and the abouts. Two reports a page and
+trail with the on-screen second each name happened at, the languages, the
+searches and the abouts. Two reports a page and
 no more — a visit of twelve presses is not twelve requests.
 
 `stats.js` is the door for all of it. Ten kinds, and each is handed on or
@@ -124,7 +125,9 @@ validator passes and the page draws.
 3. **A row per fact per day, never a log.** `press_counts` has no day;
    `profile_counts`, `list_counts`, `visitor_counts` and `flow_counts`
    have one and are keyed on it. The size is bounded by the day and the
-   kinds, not the traffic. Do not add a timestamp column, a session id or
+   kinds, not the traffic — the time at a step on `/admin/flows` is a
+   count per bucket, `t:<step>:<i>`, for that reason and not a list of
+   durations. Do not add a timestamp column, a session id or
    a "raw events" table: **A count and not a log** under **Statistics** is
    the argument, and the day it stops holding the answer is a monthly
    roll-up, not a log.

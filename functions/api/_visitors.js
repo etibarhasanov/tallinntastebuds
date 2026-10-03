@@ -492,7 +492,7 @@ const PRODUCTS = ['map', 'lists', 'flashcards', 'splitwise', 'chess'];
    the most presses one report may carry, by name and in all. Sixty names,
    because twenty was passed by an ordinary long visit to the map, which can
    send over a hundred, and a name past the cap was simply not counted. */
-const MAX_SECS = 1800;
+export const MAX_SECS = 1800;
 const MAX_NAMES = 60;
 const MAX_PRESS = 50;
 const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
