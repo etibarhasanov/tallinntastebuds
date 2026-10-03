@@ -2838,6 +2838,8 @@ UPDATE google_venues SET map_id = 'francois-boulangerie' WHERE place_id = 'ChIJ3
 
 UPDATE google_venues SET map_id = 'koht' WHERE place_id = 'ChIJ-2SoW2KTkkYRwfWb2eatzsw' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'la-boulangerie' WHERE place_id = 'ChIJreR0XQaTkkYRbx61GFJoUdo' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'gotsu-kyuho' WHERE place_id = 'ChIJOxoZNpiUkkYRzjFdO3yqz0M' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'gobi' WHERE place_id = 'ChIJofGOoaCTkkYRN218DMRRQd0' AND map_id IS NULL;

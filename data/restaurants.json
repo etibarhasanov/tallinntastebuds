@@ -1475,8 +1475,8 @@
     "id": "la-boulangerie",
     "name": "La Boulangerie",
     "address": "Poordi 3, 10151 Tallinn",
-    "lat": 59.4409,
-    "lng": 24.7583,
+    "lat": 59.441532,
+    "lng": 24.754743,
     "price": 2,
     "types": [
       "bakery",
