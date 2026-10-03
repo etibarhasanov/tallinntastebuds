@@ -499,3 +499,11 @@ it, and what was driven in a browser to check it.
   does change and the write really does go out under it, so nothing fails and
   nothing is logged; the only clue on screen is the focus ring landing on a
   pill that stays empty. It shipped that way once.
+- **One place, two ids.** A list row stores the id it was added under, and
+  for the six lists Google wrote that is Google's key even when the place is
+  on the map; `mapId` on the row is the map's own id for it. Everything on
+  the map — `byId()`, `isOnList()`, `listSay()`, the order, `?at=` — reads
+  one id, so a row has to be moved under the map's id once, in `seatList()`,
+  before any of them see it. Checked by `byId(item.place)` alone, seven of
+  Google's ten bakeries drew as Google's card over places with a reel and
+  photographs, and nothing failed: a stand-in is a valid row.

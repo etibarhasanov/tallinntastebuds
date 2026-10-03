@@ -6108,6 +6108,14 @@ differently on purpose:
 - A place **on my map** is not invented at all. It is matched by id to the real
   entry and keeps everything it has — its pin, its write-up, its reel, its
   price, its types, its save mark. The list's sentence is added under it.
+  Matched by the id the list stores, or — when the list holds the place under
+  Google's key, which every row of the six lists Google wrote does and any
+  list that picked a Google row before the place was written up still does —
+  by the `mapId` the export's `map_id` ties it to: `seatList()` in
+  `assets/app.js` moves such a row under the map's own id before anything
+  reads it, so the pin, the sentence, the order and the `?at=` door all find
+  the same place. For a while it did not, and seven of Google's ten bakeries
+  drew as Google's card over places with a reel and photographs behind them.
 - A place **not on my map** gets a stand-in: a pin, a name, and what the
   list's owner said. The pin is the list's own — the glyph its owner picked
   out of the eight, so ten of them read as one
@@ -6313,9 +6321,10 @@ colour it always did — and its row is not dressed as a door either, because a
 box that looks pressable with nothing behind it is worse than a line of muted
 text. `seatList()` in `assets/app.js` drops a place it cannot put a pin for, so
 a link to the map for one would arrive on a map that does not have it. The id in
-the link is the one the list stores and never `mapId`: the pin and the row on
-the map both stand under the id the list was written with, and `mapId` names the
-write-up's own address, which is what `?spot=` wants and this does not.
+the link is the one the map seats the place under: the id the list stores, or
+`mapId` for a place of mine the list holds under Google's key, since
+`seatList()` moves that row under the map's own id — see **What is drawn, and
+what is invented** above. The pin, the row and the door all stand under it.
 
 ### Both views of a list can be searched
 
@@ -6502,7 +6511,10 @@ draws when one of those rows is pressed — see **The card for a place I have
 never eaten at**. The map's own places carry no such line — they have a
 write-up, which is the fuller version of the same thing — and a hand-typed
 place carries none either, because a name somebody typed is not a description
-of anything.
+of anything. A Google row the export ties to a place of mine keeps the line on
+the list's page, where it came off Google's roll, and loses it on the map,
+which seats the row as my place: there Google's half is the block at the foot
+of the panel, **Google, on a place of mine**.
 
 ### The card for a place I have never eaten at
 
