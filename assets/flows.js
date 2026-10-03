@@ -16,6 +16,12 @@
  * they mean; this file only draws them by id, on the shapes it has already
  * drawn. See **The numbers on it** under **Who uses the site, drawn**.
  *
+ * And on every counted step two things an arrow cannot say: how many of
+ * the people who reached it stopped there — a dashed pill, because they
+ * are the ones no arrow carries away — and the typical time spent at it,
+ * the median of the route's buckets, under it. The pressed step's card
+ * spells both out, with the spread of the times as a bar.
+ *
  * WHAT IT DRAWS FROM
  *
  * data/flows.json is the source and flows/<id>.bpmn is what tools/flows.mjs
@@ -68,6 +74,12 @@
   var ARROW_MAX = 4.5;
   var NEXT_SHOWN = 4;
   var MOVES_SHOWN = 10;
+
+  /* The spread of a step's times, in the pressed step's card, is the
+     route's buckets gathered into four — under 10 s, to a minute, to five,
+     and past it — since nine bars on a phone read as noise. Upper edges in
+     seconds; the last group is everything past the last. */
+  var TIME_GROUPS = [10, 60, 300];
 
   var NS = {
     bpmn: 'http://www.omg.org/spec/BPMN/20100524/MODEL',
@@ -402,7 +414,7 @@
       textBlock(g, s.el.name, s.label.x + s.label.w / 2, s.label.y + s.label.h / 2, s.label.w, 'flow-name flow-under', 11);
     }
     layer.appendChild(g);
-    state.drawn.steps[s.id] = { box: b };
+    state.drawn.steps[s.id] = { box: b, label: s.label, task: /Task$|^task$/.test(kind) };
   }
 
   function drawEdge(layer, e) {
@@ -539,6 +551,59 @@
     return (state.steps[id] || {}).name || id;
   }
 
+  /* A number of seconds as the page says a time: seconds under a minute,
+     to the nearest five past ten, and minutes past it, to the half under
+     ten. */
+  function duration(secs) {
+    if (secs < 10) return t('flowsSecs', { n: num(Math.max(1, Math.round(secs))) });
+    if (secs < 60) return t('flowsSecs', { n: num(Math.min(55, Math.round(secs / 5) * 5)) });
+    var mins = secs / 60;
+    mins = mins < 10 ? Math.round(mins * 2) / 2 : Math.round(mins);
+    try { return t('flowsMins', { n: mins.toLocaleString(state.lang) }); } catch (e) { return t('flowsMins', { n: String(mins) }); }
+  }
+
+  /* The typical time at a step: the median of its bucket counts, read
+     along the bucket it falls in as though its times were spread evenly
+     there. Past the last edge there is nothing to read along, so it says
+     "over" the edge. Null where no time was counted. */
+  function typical(counts, edges) {
+    var total = 0;
+    (counts || []).forEach(function (n) { total += n; });
+    if (!total) return null;
+    var half = total / 2;
+    var below = 0;
+    for (var i = 0; i < counts.length; i++) {
+      if (below + counts[i] >= half && counts[i] > 0) {
+        if (i >= edges.length) return t('flowsOver', { d: duration(edges[edges.length - 1]) });
+        var lo = i ? edges[i - 1] : 0;
+        return '~' + duration(lo + (edges[i] - lo) * (half - below) / counts[i]);
+      }
+      below += counts[i];
+    }
+    return null;
+  }
+
+  /* The bucket counts gathered into TIME_GROUPS, each with what it spans. */
+  function spread(counts, edges) {
+    var groups = TIME_GROUPS.map(function (hi, i) {
+      return { n: 0, label: i ? duration(TIME_GROUPS[i - 1]) + '–' + duration(hi) : t('flowsUnder', { d: duration(hi) }) };
+    });
+    groups.push({ n: 0, label: t('flowsOver', { d: duration(TIME_GROUPS[TIME_GROUPS.length - 1]) }) });
+    (counts || []).forEach(function (n, i) {
+      var hi = i < edges.length ? edges[i] : Infinity;
+      var g = 0;
+      while (g < TIME_GROUPS.length && hi > TIME_GROUPS[g]) g++;
+      groups[g].n += n;
+    });
+    return groups;
+  }
+
+  function timeOf(id) {
+    var d = state.numbers;
+    var who = d && d.who && d.who[state.who];
+    return who && who.times && d.buckets ? typical(who.times[id], d.buckets) : null;
+  }
+
   function rangeLabel() {
     return state.span === 1 ? t('visitorsToday') : t('insightsDays', { n: state.span });
   }
@@ -655,6 +720,8 @@
     nodes.counted.appendChild(document.createTextNode(' · ' + t(WHO_LABEL[state.who]) + ' · ' + rangeLabel()));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
+    nodes.counted.appendChild(el('br'));
+    nodes.counted.appendChild(document.createTextNode(t('flowsMarks')));
   }
 
   /* A count on every step the answer has one for, on the shape's top-right
@@ -676,7 +743,44 @@
       label.textContent = text;
       g.appendChild(label);
       state.drawn.counts.appendChild(g);
+      marks(id, shape, who);
     });
+  }
+
+  /* The two marks on a counted step, on a line of their own under it: how
+     many stopped there, as a dashed pill, and the typical time spent at it.
+     Under a task the pill ends where the count above it does and the time
+     stands just left of it, so the two read as one line however narrow the
+     box; an event's label is already under it, so both go under the label,
+     the time and then the pill. Neither is drawn where it would say nought
+     or nothing: a quiet diagram stays as it was. */
+  function marks(id, shape, who) {
+    var b = shape.box;
+    var stopped = (who.stopped || {})[id] || 0;
+    var time = timeOf(id);
+    if (!time && !(stopped > 0)) return;
+    var task = shape.task || !shape.label;
+    var under = task ? b.y + b.h : shape.label.y + shape.label.h;
+    var cx = b.x + b.w / 2;
+    var text = stopped > 0 ? t('flowsStopped', { n: num(stopped) }) : '';
+    var w = text ? 12 + text.length * 6.3 : 0;
+    var pillX = task ? b.x + b.w + 8 - w : cx - w / 2;
+    var pillY = task || !time ? under + 13 : under + 30;
+    if (time) {
+      var tl = task && text
+        ? svg('text', { 'class': 'flow-time', x: pillX - 6, y: under + 17, 'text-anchor': 'end' })
+        : svg('text', { 'class': 'flow-time', x: cx, y: under + 17, 'text-anchor': 'middle' });
+      tl.textContent = time;
+      state.drawn.counts.appendChild(tl);
+    }
+    if (text) {
+      var g = svg('g', { 'class': 'flow-stopped' });
+      g.appendChild(svg('rect', { x: pillX, y: pillY - 8, width: w, height: 16, rx: 8 }));
+      var label = svg('text', { x: pillX + w / 2, y: pillY + 3.8, 'text-anchor': 'middle' });
+      label.textContent = text;
+      g.appendChild(label);
+      state.drawn.counts.appendChild(g);
+    }
   }
 
   /* A number and a width on every arrow walked. Where the number goes is
@@ -733,13 +837,19 @@
       .sort(function (a, b) { return b.n - a.n || stepName(a.id).localeCompare(stepName(b.id)); });
   }
 
+  /* The line under a step's name in the table: its typical time, then
+     where its people went. */
   function nextLine(who, id) {
     var next = nextOf(who, id).slice(0, NEXT_SHOWN);
-    return next.length ? '→ ' + next.map(function (x) { return stepName(x.id) + ' ' + num(x.n); }).join(' · ') : '';
+    var parts = [];
+    var time = timeOf(id);
+    if (time) parts.push(time);
+    if (next.length) parts.push('→ ' + next.map(function (x) { return stepName(x.id) + ' ' + num(x.n); }).join(' · '));
+    return parts.join(' · ');
   }
 
   function table(label, heads, rows, wide) {
-    return el('div', { className: 'ins-table ' + (wide ? 'vis-table' : 'flows-moves'), role: 'table', 'aria-label': label },
+    return el('div', { className: 'ins-table ' + (wide ? 'vis-table vis-table-3' : 'flows-moves'), role: 'table', 'aria-label': label },
       (heads ? [el('div', { className: 'ins-row ins-head', role: 'row' },
         [el('span', { role: 'columnheader' })].concat(heads.map(function (h) {
           return el('span', { role: 'columnheader', textContent: h });
@@ -765,10 +875,13 @@
       return [
         el('span', { className: 'stats-name', role: 'cell' }, [stepName(id), next ? el('span', { className: 'flows-next', textContent: next }) : null]),
         num(n),
-        who.views ? Math.round(100 * n / who.views) + '%' : '–'
+        who.views ? Math.round(100 * n / who.views) + '%' : '–',
+        n ? num((who.stopped || {})[id] || 0) : '–'
       ];
     });
-    nodes.stepsTable.appendChild(table(t('flowsSteps'), [t('flowsReached'), t('flowsOfViews')], rows, true));
+    var steps = table(t('flowsSteps'), [t('flowsReached'), t('flowsOfViews'), t('flowsStoppedHead')], rows, true);
+    steps.classList.add('flows-steps');
+    nodes.stepsTable.appendChild(steps);
     nodes.stepsCard.hidden = false;
   }
 
@@ -797,18 +910,23 @@
     if (!d || !d.ready || !d.who || !d.who[state.who]) return null;
     var who = d.who[state.who];
     var parts = [];
+    var bar = null;
     if (d.counted.indexOf(id) !== -1) {
       var n = who.steps[id] || 0;
       var next = nextOf(who, id);
-      var went = 0;
-      next.forEach(function (x) { went += x.n; });
+      var stopped = (who.stopped || {})[id] || 0;
       parts.push(t('flowsDetailReached', { n: num(n), views: num(who.views) }));
       if (next.length) {
         parts.push(t('flowsDetailWentOn') + ': ' + next.slice(0, NEXT_SHOWN).map(function (x) {
           return stepName(x.id) + ' ' + num(x.n);
         }).join(' · ') + '.');
       }
-      if (n - went > 0) parts.push(t('flowsDetailStayed', { n: num(n - went) }));
+      if (stopped > 0) parts.push(t('flowsDetailStopped', { n: num(stopped) }));
+      if (n > 0) {
+        var time = timeOf(id);
+        parts.push(time ? t('flowsDetailTime', { d: time }) : t('flowsDetailNoTime'));
+        if (time) bar = timeBar(who.times[id], d.buckets);
+      }
       if (handover) parts.push(t('flowsDetailHandover'));
     } else if (handover) {
       parts.push(t('flowsDetailHandover'));
@@ -817,7 +935,28 @@
     } else {
       parts.push(t('flowsDetailNoNumber'));
     }
-    return el('p', { className: 'flows-detail-n', textContent: parts.join(' ') });
+    return el('div', { className: 'flows-detail-n' }, [el('p', { textContent: parts.join(' ') }), bar]);
+  }
+
+  /* The spread of a step's times as one bar of four parts, each as wide as
+     its share, and the same four written out under it, so the bar is never
+     the only place a number is. */
+  function timeBar(counts, edges) {
+    var groups = spread(counts, edges);
+    var total = 0;
+    groups.forEach(function (g) { total += g.n; });
+    if (!total) return null;
+    var shown = groups.filter(function (g) { return g.n > 0; });
+    return el('div', { className: 'flows-times' }, [
+      el('p', { className: 'flows-where', textContent: t('flowsTimeSpread') }),
+      el('div', { className: 'flows-time-bar', 'aria-hidden': 'true' }, groups.map(function (g, i) {
+        return g.n ? el('span', { className: 'is-' + i, style: 'flex-grow:' + g.n }) : null;
+      })),
+      el('p', { className: 'flows-time-key' }, shown.map(function (g) {
+        var i = groups.indexOf(g);
+        return el('span', null, [el('i', { className: 'is-' + i, 'aria-hidden': 'true' }), g.label + ' ' + Math.round(100 * g.n / total) + '%']);
+      }))
+    ]);
   }
 
   function open(flow, first) {

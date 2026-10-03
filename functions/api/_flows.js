@@ -78,6 +78,40 @@
  * — `handover` in flows.json, the pass shown to a waiter's camera — is
  * never walked into: no one browser makes that journey.
  *
+ * WHERE PEOPLE STOPPED
+ *
+ * A counted step's people either took another counted step after it — the
+ * pairs out of it, joined by an arrow or not — or they did not, and the
+ * second number is the one an arrow cannot show: they closed the tab, or
+ * went quiet, or did something no diagram counts. Where the walk carries
+ * them on into an end without guessing, that end is where they finished,
+ * and it is not a stop; where it cannot, they are `stopped` at the step
+ * they last took. Nothing is stored for it — it is the step's number less
+ * its pairs out, worked out at read time — so it reaches back over every
+ * day already counted. It cannot tell a tab closed from a page left open
+ * with nothing more pressed, and it does not try.
+ *
+ * TIME AT A STEP
+ *
+ * The report carries `at` beside the trail, the on-screen second into the
+ * stretch each name happened at, and `secs`, the stretch's length; the page
+ * itself is at nought on its first report. A counted step's time is from
+ * it to the next counted step of the same diagram in the same stretch, or
+ * to the end of the stretch where none followed: how long somebody looked
+ * at a place before sharing it, or before putting the phone down. A stretch
+ * is a page on screen until it was hidden, so a tab brought back from
+ * behind another app starts its clock again and its first step pairs with
+ * the last one before with no time on it — the hour it sat hidden was not
+ * time spent at anything. Capped at MAX_SECS, the cap ./_visitors.js puts
+ * on a stretch.
+ *
+ * A time is filed as one of BUCKETS, `t:<step>:<i>`, in the same table: a
+ * median wants the spread, and a sum would be one tab left on a desk for
+ * half an hour outweighing a hundred glances. Nine rows a step at most, a
+ * day and a who, bounded by the diagram rather than the traffic. A report
+ * from a page holding yesterday's script carries no `at` and is counted
+ * without times.
+ *
  * WHAT IS BOUNDED, AND HOW
  *
  * One row per flow, day, who and id, and the ids are the diagram's own:
@@ -96,7 +130,7 @@
 
 import { sessionUser, dataFile } from './_lib.js';
 import { today, dayBack } from './_visits.js';
-import { pageOf, stepBefore } from './_visitors.js';
+import { pageOf, stepBefore, MAX_SECS } from './_visitors.js';
 
 /* The most names one report may carry — the visitor's diagram counts eleven
    steps, so forty is every button on a page and then some — and the shape a
@@ -105,6 +139,25 @@ const MAX_TRAIL = 40;
 const NAME = /^[a-z][a-z0-9_]*$/;
 
 const WHO = ['out', 'in'];
+
+/* The upper edges, in seconds, of the buckets a time at a step is filed
+   under — TIME AT A STEP — the last bucket being everything past the last
+   edge. They ride in the answer as `buckets`, and assets/flows.js reads
+   them from there to say what each count spans, so this is the one copy. */
+export const BUCKETS = [5, 10, 20, 30, 60, 120, 300, 600];
+const TIME = 't:';
+
+function bucketOf(secs) {
+  let i = 0;
+  while (i < BUCKETS.length && secs >= BUCKETS[i]) i++;
+  return i;
+}
+
+/* A second off the report, or null where it is not one. */
+function second(v) {
+  const n = Number(v);
+  return Number.isFinite(n) && n >= 0 ? Math.min(MAX_SECS, Math.round(n)) : null;
+}
 
 const ADD =
   'INSERT INTO flow_counts (flow, day, who, id, n) VALUES (?1, ?2, ?3, ?4, ?5) ' +
@@ -154,11 +207,17 @@ export async function countFlows(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
 
-  const trail = (Array.isArray(body.trail) ? body.trail : [])
-    .slice(0, MAX_TRAIL)
-    .filter((name) => typeof name === 'string' && NAME.test(name) && name !== 'page');
+  /* The names, each with its second where the report carried one that
+     lines up with the trail — TIME AT A STEP. */
+  const sent = Array.isArray(body.trail) ? body.trail.slice(0, MAX_TRAIL) : [];
+  const ats = Array.isArray(body.at) && body.at.length === (Array.isArray(body.trail) ? body.trail.length : -1) ? body.at : null;
+  const trail = [];
+  sent.forEach((name, i) => {
+    if (typeof name === 'string' && NAME.test(name) && name !== 'page') trail.push({ name, at: ats ? second(ats[i]) : null });
+  });
   const opened = body.opened === true;
   if (!trail.length && !opened) return false;
+  const until = ats ? second(body.secs) : null;
 
   /* The signals in the order they happened. The step before is not counted
      again — the report that carried it did that — and on a later stretch of
@@ -167,8 +226,8 @@ export async function countFlows(context, body) {
   const seq = [];
   const earlier = earlierOf(request, body.earlier);
   if (earlier.length) seq.push({ any: earlier, before: true, taken: !opened });
-  if (opened) seq.push({ any: candidates('page', page) });
-  for (const name of trail) seq.push({ any: candidates(name, page) });
+  if (opened) seq.push({ any: candidates('page', page), at: ats ? 0 : null });
+  for (const item of trail) seq.push({ any: candidates(item.name, page), at: item.at });
 
   let flows;
   try {
@@ -183,6 +242,7 @@ export async function countFlows(context, body) {
     const index = signalIndex(flow);
     if (!index.size) continue;
     const seen = new Set();
+    const timed = [];
     let prev = null;
     for (const item of seq) {
       const step = item.any.map((s) => index.get(s)).find(Boolean);
@@ -197,7 +257,14 @@ export async function countFlows(context, body) {
       facts.push([flow.id, who, step]);
       if (prev && prev !== step) facts.push([flow.id, who, prev + '>' + step]);
       prev = step;
+      timed.push({ step, at: item.at });
     }
+    /* Each step's time, to the next one or to the end of the stretch. */
+    timed.forEach((x, i) => {
+      const next = i + 1 < timed.length ? timed[i + 1].at : until;
+      if (x.at === null || next === null || next < x.at) return;
+      facts.push([flow.id, who, TIME + x.step + ':' + bucketOf(next - x.at)]);
+    });
   }
   if (!facts.length) return false;
 
@@ -229,6 +296,12 @@ export async function countFlows(context, body) {
  *     pairs    { 'from>to': n } every pair of counted steps taken one after
  *              the other, joined by an arrow or not
  *     moves    [{ from, to, n }] the pairs no path joins, most first
+ *     stopped  { id: n } the counted steps' people who took no counted
+ *              step after it and were not walked into an end — WHERE
+ *              PEOPLE STOPPED
+ *     times    { id: [n, …] } a counted step's times, one count per bucket
+ *              of BUCKETS and one past it — TIME AT A STEP
+ *   buckets    BUCKETS, so the page can say what each count spans
  *
  * One read of the range's rows for this diagram; the rest is arithmetic on
  * a few dozen rows a day. */
@@ -245,11 +318,21 @@ export async function readFlows(env, flow, span) {
     return null;
   }
 
-  const sums = { all: { steps: new Map(), pairs: new Map() } };
-  for (const w of WHO) sums[w] = { steps: new Map(), pairs: new Map() };
+  const fresh = () => ({ steps: new Map(), pairs: new Map(), times: new Map() });
+  const sums = { all: fresh() };
+  for (const w of WHO) sums[w] = fresh();
   for (const r of rows.results || []) {
     if (!sums[r.who]) continue;
     for (const into of [sums[r.who], sums.all]) {
+      if (r.id.indexOf(TIME) === 0) {
+        const cut = r.id.lastIndexOf(':');
+        const id = r.id.slice(TIME.length, cut);
+        const i = Number(r.id.slice(cut + 1));
+        if (!(i >= 0 && i <= BUCKETS.length)) continue;
+        if (!into.times.has(id)) into.times.set(id, new Array(BUCKETS.length + 1).fill(0));
+        into.times.get(id)[i] += r.n;
+        continue;
+      }
       const map = r.id.indexOf('>') === -1 ? into.steps : into.pairs;
       map.set(r.id, (map.get(r.id) || 0) + r.n);
     }
@@ -264,6 +347,7 @@ export async function readFlows(env, flow, span) {
     since: (since && since.day) || null,
     counted: (flow.nodes || []).filter((n) => n.when && n.when.length).map((n) => n.id),
     handover: (flow.nodes || []).filter((n) => n.handover).map((n) => n.id),
+    buckets: BUCKETS,
     who: out
   };
 }
@@ -315,7 +399,8 @@ function reachesEnd(g, id, depth) {
 
 /* The people who reached `id` and took no counted step after it, walked
    forward as far as the diagram lets them be without guessing — THE WALK.
-   `add` is called with every arrow and step they pass. */
+   `add` is called with every arrow and step they pass, and the step they
+   were walked to is the answer: an end where they finished. */
 function advance(g, id, add) {
   let at = id;
   for (let hops = 0; hops < 50; hops++) {
@@ -329,10 +414,11 @@ function advance(g, id, add) {
       const rest = outs.filter((e) => !reachesEnd(g, e.to, 0));
       if (ends.length === 1 && rest.every((e) => g.counted.has(e.to) || g.handover.has(e.to))) next = ends[0];
     }
-    if (!next) return;
+    if (!next) return at;
     add(next.key, next.to);
     at = next.to;
   }
+  return at;
 }
 
 /* One who's steps and pairs, walked — THE WALK, and readFlows() for the
@@ -362,20 +448,35 @@ function walk(flow, sums) {
   const pairs = {};
   const moves = [];
   const wentOn = new Map();
+  const tookAny = new Map();
   for (const [key, n] of sums.pairs) {
     const [a, b] = key.split('>');
     if (!g.counted.has(a) || !g.counted.has(b)) continue;
     pairs[key] = n;
+    bump(tookAny, a, n);
     const path = route(g, a, b);
     if (!path) { moves.push({ from: a, to: b, n }); continue; }
     bump(wentOn, a, n);
     for (const e of path) { bump(arrows, e.key, n); if (e.to !== b) bump(steps, e.to, n); }
   }
 
+  /* The rest walked on, and the ones the walk could not carry into an end
+     are where they stopped — WHERE PEOPLE STOPPED. A move the diagram does
+     not draw is still a step taken, so it is not a stop. */
+  const stopped = {};
   for (const a of g.counted) {
-    const rest = (steps.get(a) || 0) - (wentOn.get(a) || 0);
-    if (rest > 0) advance(g, a, (key, to) => { bump(arrows, key, rest); bump(steps, to, rest); });
+    const reached = steps.get(a) || 0;
+    const rest = reached - (wentOn.get(a) || 0);
+    let finished = false;
+    if (rest > 0) {
+      const last = advance(g, a, (key, to) => { bump(arrows, key, rest); bump(steps, to, rest); });
+      finished = (g.nodes.get(last) || {}).type === 'end';
+    }
+    if (reached > 0) stopped[a] = finished ? 0 : Math.max(0, reached - (tookAny.get(a) || 0));
   }
+
+  const times = {};
+  for (const [id, counts] of sums.times) if (g.counted.has(id)) times[id] = counts;
 
   const drawn = {};
   for (const [key, n] of arrows) if (n > 0) drawn[key] = n;
@@ -384,6 +485,8 @@ function walk(flow, sums) {
     steps: Object.fromEntries(steps),
     arrows: drawn,
     pairs,
-    moves: moves.sort((x, y) => y.n - x.n || (x.from + x.to).localeCompare(y.from + y.to))
+    moves: moves.sort((x, y) => y.n - x.n || (x.from + x.to).localeCompare(y.from + y.to)),
+    stopped,
+    times
   };
 }

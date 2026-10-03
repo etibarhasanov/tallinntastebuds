@@ -59,6 +59,14 @@
  * One word, per tab, gone when the tab closes, and nothing that says who
  * anybody is.
  *
+ * Beside each name rides the second it happened at — on-screen seconds into
+ * the stretch the report covers, the same clock `secs` is — so the diagrams
+ * can say how long people spent at a step before the next one, or before
+ * the page was put away. A clock that starts again with every stretch, so a
+ * tab hidden and brought back starts its time afresh rather than counting
+ * the hour it sat behind another app. TIME AT A STEP in
+ * functions/api/_flows.js is what is made of it.
+ *
  * And how the page was found: the first report carries the address the
  * page was opened at and its `?from=` tag if the link had one — the owner's
  * own, or `share` from a Share button — and a report when the page is put
@@ -238,6 +246,7 @@ window.TTBTrack = (function () {
   var abouts = [];     // 'what:id' the page was about, since the last report
   var told = {};       // 'what:id' -> true, once it is in abouts: once a page
   var trail = [];      // names first seen this page, in order, since the last report
+  var at = [];         // the second on screen, into the stretch, each of `trail` happened at
   var walked = {};     // name -> true, once it is in a trail — THE ORDER THEY CAME IN
   var earlier = '';    // the last name reported, this page or the one before it in this tab
   var fresh = true;    // no report has left this page yet, so the first says the page opened
@@ -286,6 +295,8 @@ window.TTBTrack = (function () {
     if (!COUNTED || walked[name]) return;
     walked[name] = true;
     trail.push(name);
+    charge();
+    at.push(Math.round(shown / 1000));
   }
 
   /* The name a trail ends on, as the next report or the next page will send
@@ -495,7 +506,7 @@ window.TTBTrack = (function () {
         !trail.length && !searched.length && !abouts.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(),
-      trail: trail, earlier: earlier, opened: fresh, searches: searched, about: abouts };
+      trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;
@@ -518,6 +529,7 @@ window.TTBTrack = (function () {
     spoken = {};
     moved = {};
     trail = [];
+    at = [];
     searched = [];
     abouts = [];
   }

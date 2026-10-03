@@ -71,7 +71,7 @@ export async function onRequestGet(context) {
    is the answer's own version: moved on when the answer gains a field the
    page cannot draw without, so a colo's copy from before a deploy is not
    handed to the page that came with it. */
-const SHAPE = '1';
+const SHAPE = '2';
 
 function flowsKey(request, flow, span) {
   const url = new URL('/api/admin/flows', request.url);
