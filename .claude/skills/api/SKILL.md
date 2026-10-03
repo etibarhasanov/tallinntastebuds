@@ -27,6 +27,10 @@ is the functions you touch plus what they call and what calls them.
   that touches a binding, a secret or the schema.
 - The header of the file, and of `functions/api/_lib.js`. The header of
   `lists.js` states the ownership rule every write in it follows.
+- A route that counts something — `stats.js`, `_visitors.js`, `_visits.js`,
+  `_flows.js`, anything under `api/admin/` — is also the `/stats` process:
+  **The rules of a count** there are the invariants the route table below
+  only hints at.
 
 ## Is it new?
 

@@ -101,6 +101,7 @@ command does the same by hand, and is the way to be sure.
 | Change the flashcards — the page, the decks in `data/decks.json`, what a deck can do, or the subdomain itself | `/site` **and** `/api`, and **Flashcards** in `README.md` |
 | Refresh the Google Places export | `/google-venues` |
 | Build the chess page — the next unticked task in `.claude/skills/chess/TASKS.md`, one per session | `/chess` |
+| Change what the site counts about its visitors, or one of the owner's five pages under `/admin/` that read it — `assets/track.js`, `functions/api/stats.js`, `_visitors.js`, `_visits.js`, `_flows.js`, `functions/api/admin/` — or read the numbers to decide what to build next | `/stats`, with `/site` **and** `/api` |
 
 Each skill is written from the code, not from memory: which files a change
 touches, in what order, the exact commands and flags, every check the
