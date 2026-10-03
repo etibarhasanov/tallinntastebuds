@@ -66,6 +66,27 @@
 .chess-tag { margin-left: 6px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .chess-play .is-playing .menu-why { color: var(--accent); }
 
+/* ---------- member against member ---------- */
+
+/* The one-on-one card's shape again, with a search on top: the field at 16px
+   so iOS does not zoom the page into it — design rule 9 — and under it the
+   names it found. A row that is a challenge or a name to challenge carries
+   its presses at its end, quiet ones, since a list of people each with a
+   filled button would spend the accent once a row; a row that is a game is
+   a press itself, chevron and all, like a row in the line. */
+.chess-find { margin: 0 0 6px; }
+.chess-find-input { font-size: 16px; }
+.chess-found { margin-top: 8px; }
+.chess-duel-row { flex-wrap: wrap; row-gap: 4px; }
+.chess-duel-row .menu-why:empty { display: none; }
+.chess-duel-end { display: flex; align-items: center; flex-shrink: 0; }
+.chess-duel-end .alt { margin: 0; }
+.chess-duels button.menu-row { font: inherit; }
+/* A duel open on the board stands where the card was, with the way back to
+   the card above it, lined up with the card's edge. */
+.chess-duel-open { display: flex; flex-direction: column; gap: 6px; }
+.chess-duel-back { align-self: flex-start; margin-left: -12px; }
+
 /* ---------- the board card ---------- */
 
 .chess-board-card { padding: 14px; }

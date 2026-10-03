@@ -1722,14 +1722,16 @@ CREATE TABLE IF NOT EXISTS flashcard_reports (
 -- hour. The primary key starts with the deck, so it cannot answer this one.
 CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_hash, created_at);
 
--- One row is one game of chess against the house — the owner's account, the
--- one ADMINS in wrangler.toml names. Two kinds share the table. A public game
+-- One row is one game of chess. Two kinds are against the house — the owner's
+-- account, the one ADMINS in wrangler.toml names — and share the table with a
+-- third that is not, a duel between two members. A public game
 -- is Everybody against Tallinn Tastebuds: one board for whoever opens /chess,
 -- one game playing at a time, the colours swapping every game. A private one
 -- is a member against the house, and it is a row from the moment the member
 -- joins the waiting list: the queue is the private games still waiting, oldest
--- first, so there is no third table to keep in step with this one. See
--- **Chess** in README.md and the header of functions/api/chess.js.
+-- first, so there is no third table to keep in step with this one. A duel is
+-- a row from the moment one member challenges another, waiting until the
+-- other accepts. See **Chess** in README.md and the header of functions/api/chess.js.
 --
 -- The position is kept as FEN, the line every chess program reads, so any
 -- game here can be pasted into one and looked at. It is a cache of the moves
@@ -1741,20 +1743,23 @@ CREATE TABLE IF NOT EXISTS chess_games (
   -- with a move, so a move meant for the game that has just ended cannot land
   -- on the one that replaced it.
   id           TEXT    PRIMARY KEY,
-  -- 'public' or 'private'.
+  -- 'public', 'private' or 'duel'.
   kind         TEXT    NOT NULL,
-  -- 'waiting' (a private game still in the queue), 'playing' or 'over'. A
-  -- public game is never waiting: the house starts it playing.
+  -- 'waiting' (a private game still in the queue, a duel not accepted yet),
+  -- 'playing' or 'over'. A public game is never waiting: the house starts it
+  -- playing.
   state        TEXT    NOT NULL,
   -- Game 1, game 2 — counted per kind, one past the last. A public game's
   -- number is what decides its colours: odd and the house plays black.
   n            INTEGER NOT NULL,
-  -- The member's users.id on a private game, null on a public one. An id and
-  -- not a username, so a rename carries the game with it; the name is joined
-  -- from users when the game is read.
+  -- The member's users.id on a private game — and on a duel the one who
+  -- challenged, who plays white — null on a public one. An id and not a
+  -- username, so a rename carries the game with it; the name is joined from
+  -- users when the game is read.
   challenger   TEXT,
   -- 'w' or 'b': which side the house plays. Everything else — who may move,
-  -- who won — is worked out from this and the side to move in the FEN.
+  -- who won — is worked out from this and the side to move in the FEN. ''
+  -- on a duel, which has no house in it.
   house_colour TEXT    NOT NULL,
   fen          TEXT    NOT NULL,
   -- How many half-moves have been played. The move below is filed at one past
@@ -1764,17 +1769,30 @@ CREATE TABLE IF NOT EXISTS chess_games (
   -- '1-0', '0-1', '1/2-1/2' or 'abandoned' once it is over, and null before.
   -- 'abandoned' counts for nobody.
   result       TEXT,
-  -- Why: mate, stalemate, material, fifty, repetition, resign or abandoned.
+  -- Why: mate, stalemate, material, fifty, repetition, resign, abandoned, or
+  -- claimed — a duel one player left for seven days and the other took.
   reason       TEXT,
   -- Milliseconds, all four. created_at is when a private game joined the
-  -- queue, and so its place in it; started_at when it began to be played;
+  -- queue, and so its place in it, or when a duel's challenge was sent, which
+  -- it lapses seven days after; started_at when it began to be played;
   -- finished_at when it ended; last_at the last thing that happened to it —
   -- the start or the latest move — which is what the seven quiet days before
-  -- the house may end a game are counted from.
+  -- the house may end a game, or a duel's player claim one, are counted from.
   created_at   INTEGER NOT NULL,
   started_at   INTEGER,
   finished_at  INTEGER,
-  last_at      INTEGER NOT NULL
+  last_at      INTEGER NOT NULL,
+  -- The users.id of the member a duel challenged, who plays black; null on
+  -- the other two kinds.
+  --
+  -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUTS IT
+  --
+  -- chess_games was deployed before duels, so this reaches it by hand —
+  -- ALTER TABLE chess_games ADD COLUMN opponent TEXT — and then the index
+  -- under the table, which names it. functions/api/chess.js asks whether it
+  -- is there before it reads it, and without it answers the page with no
+  -- duels rather than with no games.
+  opponent     TEXT
 );
 -- The two reads every answer makes: the latest public game, and the queue —
 -- a kind in a state, oldest first.
@@ -1782,6 +1800,8 @@ CREATE INDEX IF NOT EXISTS idx_chess_games_kind ON chess_games (kind, state, cre
 -- A member's own games, latest first: what their card draws, and whether they
 -- are already in line or playing when they ask to join.
 CREATE INDEX IF NOT EXISTS idx_chess_games_challenger ON chess_games (challenger, created_at);
+-- The same from the other side: the duels a member was challenged to.
+CREATE INDEX IF NOT EXISTS idx_chess_games_opponent ON chess_games (opponent, created_at);
 
 -- One row is one half-move. The primary key is the lock, and the only one:
 -- two people pressing a move on the same board at the same moment both try to

@@ -460,6 +460,20 @@ the queue moves, and a member's page says their game started without a reload.
   table in `SKILL.md`. Task 6's flow gains the step — leave a note — in the
   visitor's and the member's lanes.
 
+- [x] **5⅞. Member against member** — asked for by the owner after 5¾,
+  described before it was built; the owner dropped the first draft's rule
+  that both players be in Tallinn, and the rest was built as described.
+  A card at the foot of the page where a member finds another by username,
+  challenges them, and plays the game they accept on the same board.
+  `opponent` on `chess_games` in `db/schema.sql`, an `ALTER` applied by hand
+  to production; `?find=`, `challenge`, `accept`, `decline`, `cancel` and
+  `claim` in `functions/api/chess.js`, and `duels` and `duel` on the answer;
+  `duelsCard()` in `assets/chess.js` and its rules in `assets/chess.css`;
+  twenty-eight strings in ten languages and `chessLead` extended; six events
+  in **Analytics**; **Member against member** in the README; the section,
+  the rows and the faces in `SKILL.md`. Task 6's flow gains a lane's worth
+  of steps in the member's — find, challenge, accept, play, claim.
+
 ---
 
 - [ ] **6. The door, and the diagram**
