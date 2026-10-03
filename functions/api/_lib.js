@@ -664,7 +664,7 @@ export function venueEntry(row) {
     address: where,
     lat: typeof row.latitude === 'number' ? row.latitude : null,
     lng: typeof row.longitude === 'number' ? row.longitude : null,
-    /* Sixty of them are also places on my map. `map` is what makes a row
+    /* Sixty-five of them are also places on my map. `map` is what makes a row
        link to a write-up instead of out to Google, and `mapId` is where that
        write-up lives — the map's own id, not Google's key. */
     map: !!row.map_id,

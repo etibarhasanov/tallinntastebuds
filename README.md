@@ -1558,7 +1558,7 @@ place cooks beyond its name and its dishes, but the export files a place as
 those ids in ten languages for [the directory](#the-directory) — so the reader
 takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
 score a Thai row as a type would. The file is fetched the first time a
-question is asked, not on load. And the sixty-four of my places that have a Google
+question is asked, not on load. And the sixty-five of my places that have a Google
 row inherit its cuisine through the same join that gives them their hours —
 see **Where the opening hours come from** — so the one word scores both rolls,
 and the line the model reads for Ramen Taro says *asian japanese* where it
@@ -1567,7 +1567,7 @@ and mine among them when I have been; "khachapuri" still answers Gobi and
 Pirosmani first, off their dishes, with a Georgian place from the export
 after them; and "somewhere I can hear myself think" finds nothing in the
 export it can score, and the answer is whatever my places make of it. The
-sixty-four Google rows that are already places of mine are left out of the
+sixty-five Google rows that are already places of mine are left out of the
 export's half — offering the Google copy beside the write-up would be the
 same door twice.
 
@@ -1697,7 +1697,7 @@ says what each count is and why it is the server's rather than the page's.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty-four of the seventy-eight are also rows in
+`data/restaurants.json` — but sixty-five of the seventy-eight are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -4409,7 +4409,7 @@ one signal this site already has about which places matter: somebody opening
 one.
 
 When a place whose Google numbers the site prints is opened — a card on
-`/admin/google`, a Google place on the map, or one of the sixty-four places of mine the
+`/admin/google`, a Google place on the map, or one of the sixty-five places of mine the
 export also lists, whose panel ends "According to Google" (**Google, on a place
 of mine**) — the page tells `/api/stats`: an open on the map is counted, and a
 card on the directory, which only the owner can open, is not (**It counts
@@ -4556,7 +4556,7 @@ those needs: all 1,111 rows in one answer, so a filter can run over them. See
 ### Google, on a place of mine
 
 The panel for a place on my map closes with what Google says about the same
-door, when Google lists it — sixty-four of the seventy-eight, the ones `map_id`
+door, when Google lists it — sixty-five of the seventy-eight, the ones `map_id`
 joins. Under a heading that reads **According to Google**, below the address,
 the phone and the directions:
 
