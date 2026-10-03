@@ -204,7 +204,9 @@ export async function readList(context, id, user) {
         lng: known && typeof known.lng === 'number' ? known.lng : null,
         map: !!(known && known.map),
         /* Set only on a Google row for a place that is also on my map: the
-           write-up is filed under the map's id, not Google's key. */
+           write-up is filed under the map's id, not Google's key, and
+           seatList() in assets/app.js moves the row under it so the map
+           draws the place rather than a Google card for it. */
         mapId: (known && known.mapId) || null,
         /* Whether this place was added by hand rather than found on either
            roll. The page draws the row the same; this is what lets it say so,

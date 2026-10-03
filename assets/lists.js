@@ -2824,10 +2824,13 @@
      map draws. **Pressing a row is the third way across** in README.md is
      the argument in full.
 
-     The id is the one the list stores, never `mapId` — that is the exception
-     ?spot= has to make, because a write-up is filed under the map's own id.
-     The pin and the row on the map both stand under the id the list was
-     written with, which is what isOnList() in assets/app.js reads.
+     The id is the one the map seats the place under, which is what
+     isOnList() in assets/app.js reads: the id the list stores, except for a
+     place of mine the list holds under Google's key — every row of the six
+     lists Google wrote is one — where it is `mapId`, the map's own id,
+     because seatList() there moves such a row under it so that the row gets
+     the real entry, write-up and all, rather than a Google card.
+     functions/list/[id].js links the same rows to ?spot= by the same rule.
 
      A place with nowhere to draw points nowhere at all and says so, which is
      seatList()'s rule restated: it drops a place it cannot put a pin for, so
@@ -2835,7 +2838,7 @@
   function placeHref(item) {
     if (!item.map && (typeof item.lat !== 'number' || typeof item.lng !== 'number')) return '';
     return '/?list=' + encodeURIComponent(state.list.id) +
-      '&at=' + encodeURIComponent(item.place);
+      '&at=' + encodeURIComponent(item.mapId || item.place);
   }
 
   /* The name, as the link it is — and, when `whole` says so, as the row's link

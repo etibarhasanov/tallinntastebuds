@@ -10895,7 +10895,20 @@
       /* On my map: the real entry, with everything it carries. The id in a
          list row is a catalogue id, and a catalogue id for a place on the map
          IS its restaurants.json id — see tools/places.mjs, which folds the
-         two together rather than minting a second id for the same place. */
+         two together rather than minting a second id for the same place.
+
+         Or Google's key for one of mine. The six lists Google's numbers
+         wrote hold every place under the export's key — tools/googlelists.mjs
+         never asks the catalogue — and so does any list that picked a Google
+         row before the place was written up. google_venues.map_id ties such
+         a row to the place, and readList() sends the tie as `mapId`. From
+         here on the row stands under the map's own id: the pin, the sentence
+         under the row, the list's order and the ?at= door all look a row up
+         by the id it stands under, and that has to be the one the real entry
+         answers to. Left under the key, seven of Google's ten bakeries drew
+         as stand-ins — a Google card and no write-up — over places with a
+         reel and photographs behind them. */
+      if (item.mapId && byMapId(item.mapId)) item.place = item.mapId;
       if (byId(item.place)) { items.push(item); return; }
 
       /* Not on the map, and nowhere to draw: it stays on the list's own page
