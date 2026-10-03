@@ -37,10 +37,12 @@
  * line says where the order comes from. Nothing on them is the map's verdict,
  * and the intro says so.
  *
- * The name is hyphenated because a username here is lowercase letters, digits
- * and hyphens — USERNAME_RE in functions/api/account.js — so `google_statistics`
- * is not a name this site can hold. Widening that rule for one account would
- * change what every future sign-up may be called, and the two read the same.
+ * The name is hyphenated because, when this account was made, a username here
+ * was lowercase ASCII letters, digits and hyphens and `google_statistics` was
+ * not a name the site could hold. USERNAME_RE in functions/api/_account.js has
+ * widened since — every alphabet, with the dot and the underscore — and the
+ * name stays as it was: every row this file writes is under it, and the two
+ * read the same.
  *
  * HOW THE ORDER IS DECIDED, AND WHY IT IS NOT THE RATING
  *

@@ -206,7 +206,7 @@ ref: assets/app.js dealBlock()</bpmn:documentation>
       <bpmn:outgoing>visitor-e28</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="sign-in" name="Signs up or signs in">
-      <bpmn:documentation>A username of 3 to 24 letters, numbers or dashes, and a password or Google. No email.
+      <bpmn:documentation>A username of 3 to 24 letters, numbers, dots, dashes or underscores, in any alphabet, and a password or Google. No email.
 when: account_create
 when: account_login
 ref: index.html the account sheet

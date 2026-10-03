@@ -26,8 +26,8 @@
  *
  * FOUND BY THE NAME SOMEBODY GOES BY, WHICH IS IN THE LINE
  *
- * A username is lowercase letters and a search is for a person: "etibar
- * adalat", "etibar actor". The one place on a profile the person writes
+ * A username is lowercase and a search is for a person: "etibar adalat",
+ * "etibar actor". The one place on a profile the person writes
  * their own name and what they do is the line under it, so the line goes
  * into the head — the title is the name they go by and the line, the
  * description is the line and then the first three rows, and the JSON-LD
@@ -87,7 +87,8 @@
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { readProfile, USERNAME, NETWORKS, linkUrl } from '../api/_profile.js';
+import { readProfile, NETWORKS, linkUrl } from '../api/_profile.js';
+import { asUsername } from '../api/_account.js';
 import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
 
 /* The words of a line, without the pictures. Surrogate pairs are every
@@ -209,7 +210,7 @@ function isIdentity(url) {
    together. The name and the description are the head's, pictures out.
    Written only where the page is indexed at all. */
 function structuredData(request, profile) {
-  const self = canonical(request, '/u/' + profile.name);
+  const self = canonical(request, '/u/' + encodeURIComponent(profile.name));
   const links = profile.links || {};
   const sameAs = NETWORKS
     .filter((net) => links[net.id])
@@ -270,9 +271,18 @@ export async function onRequest(context) {
     return new Response('Not found', { status: 404 });
   }
 
-  const name = String(params.name || '');
+  /* Decoded here, because the router hands the segment over as it stood in
+     the address: a name may carry a letter outside ASCII now, and on the
+     wire that is %C3%BC until something turns it back into the ü. A segment
+     that will not decode was never a name. */
+  let name;
+  try {
+    name = decodeURIComponent(String(params.name || ''));
+  } catch (e) {
+    return page(html, 404);
+  }
 
-  if (!USERNAME.test(name.toLowerCase())) return page(html, 404);
+  if (!asUsername(name)) return page(html, 404);
   if (!env.DB || (await wrongDatabase(env))) return page(html, 200);
 
   let profile;
@@ -299,8 +309,10 @@ export async function onRequest(context) {
     description: describe(profile),
     /* The stored spelling, not the one in the URL. Usernames are minted
        lowercase and matched without case, so /u/KATE and /u/kate are one page
-       and only one of them is the address it should be indexed at. */
-    url: canonical(request, '/u/' + profile.name),
+       and only one of them is the address it should be indexed at — and
+       encoded, so a name with a ü in it is one address rather than a raw
+       letter and its percent-encoding both claiming to be canonical. */
+    url: canonical(request, '/u/' + encodeURIComponent(profile.name)),
     type: 'profile',
     /* Their photograph, where the repository has one, so a link to them
        unfurls as them rather than as the map — and under their name alone.

@@ -36,15 +36,60 @@ import { googleUser, PENDING_COOKIE, unseal, PROVIDER } from './_google.js';
 const MAX_FAILS = 10;
 const FAIL_WINDOW = 15 * 60 * 1000;
 
-/* Three to twenty-four, lowercase, and a letter or a digit to open with, so
-   that a name cannot begin with the character that separates words in it.
+/* Three to twenty-four letters, digits, dots, dashes or underscores, in any
+   alphabet, opening on a letter or a digit so that a name cannot begin with
+   a character that separates words in it.
+
+   IT USED TO BE ASCII, AND THE SHEET NEVER SAID SO
+
+   From the first account the pattern was [a-z0-9-], and the sentence under
+   the field said "letters, numbers or dashes" in ten languages — which to a
+   reader in Tallinn, Baku or Kyiv means their own letters. `jüri`, `Саша`
+   and `İlknur` were refused with the sentence they had just followed, and so
+   was a name typed with a space in it, or spelt the way it is on Instagram
+   with a dot or an underscore. In the first three days the sign-up funnel on
+   /admin/visitors was counted, `username` was the only word this file ever
+   refused anybody with — three times, every one on the step after Google
+   where the one thing left to type is a name. So the pattern now means what
+   the sentence always said, and asUsername() below folds what somebody typed
+   into the one spelling the table holds.
+
+   \p{M} is the combining marks some alphabets write a letter with, once NFC
+   has joined the ones that can be joined; \p{Nd} is a digit in any of them.
    Every sheet that asks for a name restates this as a line under the field
-   and as `maxlength`, and `accountUsernameHint` and `accountErrUsername` in
-   data/ui.json are the two sentences that say it in ten languages — change
-   the pattern, change all of them. `grep -n maxlength assets/*.js` finds the
-   fields. */
-export const USERNAME_RE = /^[a-z0-9][a-z0-9-]{2,23}$/;
+   and as `maxlength`, and `accountUsernameHint`, `accountErrUsername` and
+   `feedbackNameHint` in data/ui.json are the sentences that say it in ten
+   languages — change the pattern, change all of them. `grep -n maxlength
+   assets/*.js` finds the fields. */
+const USERNAME_RE = /^[\p{L}\p{Nd}][\p{L}\p{M}\p{Nd}._-]{2,23}$/u;
 export const MIN_PASSWORD = 8;
+
+/* The username somebody typed, as the table holds it — or '' where it cannot
+   be one, which every caller answers with the `username` refusal.
+
+   One spelling per name, whatever the keyboard did: trimmed; a run of spaces
+   folded to the dash that separates words in a name here, because somebody
+   on the step after Google types "Etibar Hasanov" and should get in as
+   etibar-hasanov rather than be refused for the space; NFC, so a ü that
+   arrived as a u and a combining mark is the same ü as one that arrived
+   whole; lowercased, as every name here has been since the first; and the
+   Turkish capital İ, which lowercases to an i with a dot stacked on it,
+   folded to the plain i, so that İlknur signs in by typing ilknur.
+
+   Read through as well as written through — readProfile() in ./_profile.js
+   and ownerOf() in ./_visits.js take a name out of an address with it — so
+   /u/Jüri%20Tamm and a sign-in typed with the shift key down both find
+   jüri-tamm. The COLLATE NOCASE on every query against users.username folds
+   ASCII alone and is the belt under this function's braces. */
+export function asUsername(raw) {
+  const name = String(typeof raw === 'string' ? raw : '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/i\u0307/g, 'i');
+  return USERNAME_RE.test(name) ? name : '';
+}
 
 /* How long a name stays with the account that just left it. A username is
    the byline on somebody's lists and the whole of /u/<name>, so a name put
@@ -157,12 +202,12 @@ export function failHash(env, request) {
 export async function enterAccount(context, opts) {
   const { request, env } = context;
 
-  const username = typeof opts.username === 'string' ? opts.username.trim().toLowerCase() : '';
+  const username = asUsername(opts.username);
   const password = typeof opts.password === 'string' ? opts.password : '';
   const client = typeof opts.client === 'string' ? opts.client : '';
   const mode = opts.mode || 'either';
 
-  if (!USERNAME_RE.test(username)) return { ok: false, error: 'username', status: 400 };
+  if (!username) return { ok: false, error: 'username', status: 400 };
   if (password.length < MIN_PASSWORD) return { ok: false, error: 'password', status: 400 };
 
   const hash = await failHash(env, request);
@@ -309,9 +354,9 @@ export async function nameGoogleAccount(context, opts) {
     return { ok: false, error: 'no-pending', status: 401 };
   }
 
-  const name = typeof opts.username === 'string' ? opts.username.trim().toLowerCase() : '';
+  const name = asUsername(opts.username);
   const client = typeof opts.client === 'string' ? opts.client : '';
-  if (!USERNAME_RE.test(name)) return { ok: false, error: 'username', status: 400 };
+  if (!name) return { ok: false, error: 'username', status: 400 };
 
   /* Every hold counts, exactly as on the sign-up sheet: a name somebody
      walked away from last week is not a name a stranger may take, whichever

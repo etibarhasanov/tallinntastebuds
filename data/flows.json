@@ -34,7 +34,7 @@
         {"id": "feedback-in", "type": "service", "lane": "visitor", "name": "Stores it, capped per hour", "ref": ["functions/api/feedback.js POST say, heart, unheart, remove"]},
         {"id": "feedback-done", "type": "end", "lane": "visitor", "name": "Feedback on the page"},
         {"id": "deal", "type": "user", "lane": "visitor", "name": "Presses Sign in to use it on a discount", "when": ["deal_signin"], "note": "The offer is drawn for everybody; the code takes an account.", "ref": ["assets/app.js dealBlock()"]},
-        {"id": "sign-in", "type": "user", "lane": "visitor", "name": "Signs up or signs in", "when": ["account_create", "account_login"], "note": "A username of 3 to 24 letters, numbers or dashes, and a password or Google. No email.", "ref": ["index.html the account sheet", "assets/app.js"]},
+        {"id": "sign-in", "type": "user", "lane": "visitor", "name": "Signs up or signs in", "when": ["account_create", "account_login"], "note": "A username of 3 to 24 letters, numbers, dots, dashes or underscores, in any alphabet, and a password or Google. No email.", "ref": ["index.html the account sheet", "assets/app.js"]},
         {"id": "session", "type": "service", "lane": "visitor", "name": "Opens a session, claims this device's saves", "ref": ["functions/api/account.js POST create, login, google-name", "functions/api/_account.js claimDeviceSaves()", "functions/api/google.js GET"]},
         {"id": "member", "type": "end", "lane": "visitor", "name": "Now a member"}
       ],
