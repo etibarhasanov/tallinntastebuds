@@ -4676,6 +4676,12 @@ constants at the top of `tools/googlelists.mjs`:
 - `FLOOR` is 100: under a hundred reviews a place is not weighed at all. The
   prior pulls a small count towards the middle, and the middle of a top ten
   is still a top ten.
+- And the pull only goes down. The average pulls towards the mean from either
+  side, and in a pool whose mean is 4.74 a bakery rated 4.7 by 127 people was
+  lifted above two rated 4.7 by a thousand each — a small count rewarded for
+  being small, which is the prior's own purpose inverted. So a place is pulled
+  towards the lower of the pool's mean and its own rating, and the same rating
+  with more reviews always comes out ahead.
 
 The mean each place is pulled towards is its own pool's, review-weighted —
 what a bakery you know nothing about is likely to score, which is higher
@@ -4706,7 +4712,17 @@ is a claim about each name on it, and only the category makes that claim.
 So a bakery is what Google calls a Bakery, and a restaurant any category
 ending in Restaurant bar the fast-food, takeout and delivery ones.
 
-Two pools let a tag add a place, in one direction each, because a place
+With one opening, because Google's one word is sometimes the wrong one of
+two. Bekker Pagariäri — *pagariäri* is Estonian for bakery, and the map
+has it as one — is a Cafe to Google with Bakery second among its tags, and
+Kringel is a Coffee Shop the same way. A Cafe or Coffee Shop tagged Bakery
+joins the pool only when every tag it carries is one of Cafe, Coffee Shop,
+Bakery or Food Store: a place with nothing else to its name, filed under
+the counter rather than the oven. One more tag — a wine bar, a dessert
+shop, a brunch restaurant — and it is a place that also sells bread, and
+stays out, which keeps the kiosk and the chocolate shops off a second time.
+
+Three pools let a tag add a place, in one direction each, because a place
 can honestly be two of these things. A pizzeria is a Pizza Restaurant, or
 an Italian or plain Restaurant that Google also tags Pizza Restaurant: a
 pizzeria is a restaurant, so a place can be on both lists, and when Google

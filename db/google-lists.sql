@@ -45,12 +45,12 @@ VALUES
   ('top-ten-bakeries-by-google-65nfrf', 'ChIJWW3O-o-TkkYRBHFb2Ufl3S8', 'PullaBakery', 'Bakery · 4.9 from 1,689 reviews on Google', 0, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-bakeries-by-google-65nfrf', 'ChIJsxeIB7OVkkYRSshyGvfj00U', 'Crustum Bakery', 'Bakery · 4.9 from 484 reviews on Google', 1, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-bakeries-by-google-65nfrf', 'ChIJP73vtWCTkkYRAAmn7hNt9aM', 'RØST Bakery', 'Bakery · 4.8 from 3,040 reviews on Google', 2, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJUZeGR-OVkkYRZG3R8p3B0Dk', 'BRUTO BAKEHOUSE', 'Bakery · 4.9 from 140 reviews on Google', 3, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJvWIuoiWTkkYRcWotAowQqLI', 'Buxhöwden pagar', 'Bakery · 4.8 from 313 reviews on Google', 4, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJDxCIqs6VkkYRplHv58D_GIE', 'Mathilda on the Hill', 'Bakery · 4.8 from 165 reviews on Google', 5, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJK2sN67STkkYRwHN4UDCWjaQ', 'Magussoolane', 'Bakery · 4.8 from 130 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJ_Wjlj5iUkkYRJ9PNHRiaUsU', 'Pagari Liisu', 'Bakery · 4.7 from 127 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('top-ten-bakeries-by-google-65nfrf', 'ChIJj1TYVnqTkkYRqp9mU8r8gog', 'Kalamaja Bakery', 'Bakery · 4.7 from 1,015 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJG9TEnYaTkkYRLDYTan7s1FU', 'Bekker Pagariäri', 'Cafe · 4.8 from 716 reviews on Google', 3, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJ5SJF0niVkkYRjkBykLAAVwQ', 'Kringel', 'Coffee Shop · 4.8 from 572 reviews on Google', 4, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJUZeGR-OVkkYRZG3R8p3B0Dk', 'BRUTO BAKEHOUSE', 'Bakery · 4.9 from 140 reviews on Google', 5, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJvWIuoiWTkkYRcWotAowQqLI', 'Buxhöwden pagar', 'Bakery · 4.8 from 313 reviews on Google', 6, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJDxCIqs6VkkYRplHv58D_GIE', 'Mathilda on the Hill', 'Bakery · 4.8 from 165 reviews on Google', 7, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('top-ten-bakeries-by-google-65nfrf', 'ChIJK2sN67STkkYRwHN4UDCWjaQ', 'Magussoolane', 'Bakery · 4.8 from 130 reviews on Google', 8, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-ten-bakeries-by-google-65nfrf', 'ChIJreR0XQaTkkYRbx61GFJoUdo', 'La Boulangerie', 'Bakery · 4.7 from 1,419 reviews on Google', 9, CAST(strftime('%s','now') AS INTEGER) * 1000);
 
 INSERT INTO list_items (list_id, place_id, name, say, pos, created_at)
