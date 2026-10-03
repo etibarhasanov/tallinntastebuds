@@ -71,6 +71,17 @@
  * than out, and "the middle of a top ten" is still a top ten. A hundred is
  * where a Google rating stops being the opinion of one big table.
  *
+ * The pull only ever goes down. A Bayesian average pulls towards the mean
+ * from either side, and in a pool whose mean is 4.74 a bakery rated 4.7 by
+ * 127 people was lifted to 4.73 and placed above two bakeries rated 4.7 by
+ * a thousand people each, who were lifted less because they had more
+ * reviews to hold them where they were. That is the thing the prior was
+ * written to prevent, upside down: a small count was being rewarded for
+ * being small. So a place is pulled towards the lower of the pool's mean
+ * and its own rating — held back when it is above the mean, left where it
+ * is when it is below — and the same rating with more reviews always comes
+ * out ahead.
+ *
  * Ties go to the bigger count, one place per name so a chain's five branches
  * are one row, and a place Google calls temporarily closed is not on any of
  * them: a top ten is a list somebody walks to.
@@ -90,7 +101,18 @@
  * Bakery, and a restaurant is any category ending in Restaurant except the
  * fast-food, takeout and delivery ones, which answer a different question.
  *
- * Two pools let a tag add a place, in one direction each, because a place
+ * With one opening, because Google's one word is sometimes the wrong one
+ * of two. Bekker Pagariäri — pagariäri is the Estonian for bakery, and it
+ * is on the map as one — is a Cafe to Google, with Bakery second among its
+ * tags, and Kringel is a Coffee Shop the same way. A Cafe or Coffee Shop
+ * tagged Bakery joins the pool only when every tag it carries is one of
+ * Cafe, Coffee Shop, Bakery or Food Store: a place with nothing else to its
+ * name, which Google filed under the counter rather than the oven. One
+ * more tag — a wine bar, a dessert shop, a brunch restaurant, a bar — and
+ * it is a place that also sells bread, and stays out, which is what keeps
+ * the kiosk and the chocolate shops off the list a second time.
+ *
+ * Three pools let a tag add a place, in one direction each, because a place
  * can honestly be two of these things. A pizzeria is a Pizza Restaurant —
  * or an Italian or plain Restaurant that Google also tags Pizza Restaurant:
  * a pizzeria is a restaurant, so a place can be on both lists, and when
@@ -206,7 +228,9 @@ export const LISTS = [
   {
     id: 'top-ten-bakeries-by-google-65nfrf',
     title: 'Top ten bakeries in Tallinn, by Google',
-    pick: (place) => place.category === 'Bakery'
+    pick: (place) => place.category === 'Bakery' ||
+      (/^(Cafe|Coffee Shop)$/.test(place.category) && /\bBakery\b/.test(place.tags) &&
+        place.tags.split('; ').every((tag) => /^(Cafe|Coffee Shop|Bakery|Food Store)$/.test(tag)))
   },
   {
     id: 'top-ten-cafes-by-google-jz7c2b',
@@ -262,7 +286,7 @@ export function rank(list, roll) {
     .filter((place) => place.reviews >= FLOOR)
     .map((place) => ({
       ...place,
-      score: (place.reviews * place.rating + PRIOR * mean) / (place.reviews + PRIOR)
+      score: (place.reviews * place.rating + PRIOR * Math.min(mean, place.rating)) / (place.reviews + PRIOR)
     }))
     .sort((a, b) => b.score - a.score || b.reviews - a.reviews)
     .filter((place) => {
