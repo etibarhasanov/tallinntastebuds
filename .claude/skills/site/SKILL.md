@@ -160,6 +160,11 @@ a `ui.json` key and the parity rule does not reach it. See **Flashcards** in
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
 in some private-browsing modes, and the site is meant to work with it absent.
 
+**A change to the counting itself is the `/stats` process** — `assets/track.js`,
+the owner's five pages under `admin/` and their scripts — and that skill
+holds the invariants a count keeps and how one is driven and read back. The
+two paragraphs below are the part of it every page shares.
+
 **A press on a place or a chip is also counted on this site.** `/admin/stats` ranks
 what gets opened, out of `press_counts`, and two call sites feed it:
 `selectPlace()` and `applyFilters()` in `assets/app.js`, each once per thing
