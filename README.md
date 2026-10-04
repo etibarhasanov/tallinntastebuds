@@ -603,13 +603,34 @@ It measures from two points, and only two:
 - **From Raekoja plats** otherwise. The heading reads **Nearest the Old Town**,
   and the rows carry no distances at all.
 
-**Nothing asks the device.** Opening the map puts up no permission prompt, and
-neither does opening the panel. The dot is the only claim this site holds about
-where anybody is, and only the locate button puts it there — the rule **Ask for
-somewhere** already follows, where the site's own prompt over a question nobody
-asked would itself be a question nobody asked. So the Old Town order is not a
-degraded version of the feature waiting on a prompt. It is what the list does
-until you press the button that has always been on the map.
+**Nothing asks a stranger's device.** Opening the map for the first time puts
+up no permission prompt, and neither does opening the panel. The dot is the
+only claim this site holds about where anybody is, and only the locate button
+— or a question that asked to be near — puts it there the first time: the rule
+**Ask for somewhere** already follows, where the site's own prompt over a
+question nobody asked would itself be a question nobody asked. So the Old Town
+order is not a degraded version of the feature waiting on a prompt. It is what
+the list does until you press the button that has always been on the map.
+
+**After that, the map remembers the yes.** The first reading this browser
+hands over writes `ttb.located` into `localStorage`, and every later visit to
+the plain map asks for a fresh one on arrival — `resumeHere()` in
+`assets/app.js` — and frames the dot exactly as a press would, the list
+turning to **Nearest you** with it. Only the flag is kept, never the
+coordinates: a dot drawn from yesterday's reading would be a lie about today.
+The owner asked for it in as many words — somebody who gave their location
+once should not have to give it again to land on their own street.
+
+It stays out of the way in four places. A link that was about something — a
+place, a row of a list, a list, a story — opens on that and not on you. A
+place opened in the seconds the fix takes is not flown away from. A reading
+that fails, or lands more than 25 km from everything, says nothing and leaves
+the city on screen, because nobody pressed anything. And a refusal — the
+browser's permission reading `denied`, or a locate that comes back with code
+1 — takes the flag off, so a no given later in the browser's settings is a no
+here too. Where the browser has forgotten rather than refused — Safari's
+ask-every-time setting reads `prompt` — the map asks again: that prompt only
+ever reaches somebody who has said yes before.
 
 **Why the rows go quiet from the square.** "1,4 km" under a place reads as 1,4
 km *from you*, wherever it was actually measured from, and no wording in a row
@@ -640,7 +661,7 @@ comparing. The directory offered a nearest-first order and dropped it — see
 **The filters** under **The directory** — for three reasons: the permission
 prompt it needed, the revert it did when that prompt was refused, and the
 distance it wrote under every address. None of the three is here. There is no
-prompt, because only the locate button asks. There is nothing to revert to,
+prompt for a stranger, because only the locate button asks first. There is nothing to revert to,
 because the Old Town order is the resting state rather than a fallback after a
 refusal — a visitor who never presses the button never finds out there was a
 question. And the distances appear only once they are the reader's own. That is
