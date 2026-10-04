@@ -8686,9 +8686,9 @@ one card stands and says the rest of the deck needs an account. There is no way
 past it.
 
 **The gate is not about the account, it is about what a flashcard is.** A deck
-here is not a list of words to read — it is the asking again tomorrow, then in
-three days, then in a week, and **The spacing** below is most of the feature.
-That takes a row per card per person, and there is nowhere to put one for
+here is not a list of words to read — it is what you knew and what you missed,
+kept card by card, so that a finished deck stays finished and a missed word
+comes round until it is got right. That takes a row per card per person, and there is nowhere to put one for
 somebody the site has never met. A page that went on handing out cards with
 nothing recording the answers would not be a lighter version of this; it would
 be this page pretending, and the person doing it would find that out at the end
@@ -8827,12 +8827,12 @@ would leave the card above with nothing true to say. The tab is the compromise:
 long enough that an evening's work is not thrown away by a stray navigation,
 short enough that it is still the account that keeps things.
 
-### How a run works, and when a card comes back
+### How a run works
 
 Opening a deck builds a run of what is **due**: everything you have never got
-right, and everything whose wait has come round again. The ones you have never
-got right come first, so a deck opened after a fortnight away starts with what
-is new rather than with a revision.
+right — never answered, or got wrong last time. A card you have got right is
+not in it; it stays known (**The spacing, which is off** below), and *Go through it anyway*
+is how to go over it again.
 
 Turn a card over and the two words appear. **Knew it** writes the row and moves
 on. **Show me again** drops the row into box nought — **The deck of what you
@@ -8979,7 +8979,7 @@ the two ends of one row.
 
 Both start at nought and neither is written down anywhere. A run is a sitting,
 the tallies are about that sitting, and what is kept afterwards is the box each
-card moved to — **The spacing** above, and the count in the next section, which
+card moved to — **The spacing, which is off** above, and the count in the next section, which
 is the number that survives the tab being closed.
 
 **Their own row, above the card.** The bar's own row was the obvious place and
@@ -9067,7 +9067,7 @@ standing under it would leave the card looking untouched.
 
 **And the answer afterwards is still both answers.** A *Knew it* that needed a
 hint is not quite a *Knew it*, and the strict-looking thing would be to take
-that press away. The spacing here is built on one boolean — did you know it —
+that press away. Every card here is answered with one boolean — did you know it —
 and a page that decides that on somebody's behalf is a page arguing with them
 about their own memory, so nothing about the boxes changes. What does happen is
 that the event carries `hint`, beside the `how` and `face` it already carried,
@@ -9116,13 +9116,9 @@ known, and due", and the row prints both halves of that now.
 
 **Words you know** stands under *Words you missed*, whenever there is
 anything in it: every card you have got right at least once, from every deck,
-in one place — with the ones whose wait has come round in front. It is the
-spacing's own queue. A deck's row says "6 due" and opening the deck runs those
-six; this row says how many are due across *all* of them, and opening it runs
-the lot in one sitting, the card that has waited longest first. That is what
-a spaced repetition system is for, and until this deck existed the only way to
-do a day's revision was to open forty-two decks one after another and read
-the number on each.
+in one place, to go back over whenever you like. Until this deck existed the
+only way to look over everything you had learnt was to open forty-two decks
+one after another.
 
 **It is the same query as the missed deck with the other half of the rows.**
 Box nought is what you got wrong; box one and up is what you know; both decks
@@ -9134,25 +9130,17 @@ really from, so answering it here writes to that row, moves that card up a
 box or down to nought, and takes it out of this run and back into its own
 deck's exactly as if it had been answered there.
 
-**The run is what is due, and the deck is everything.** Opening it builds a
-run of the cards whose wait has come round, which is the same rule every deck
-is opened under; the rest are in the deck so that *Go through it anyway* has
-the whole of what you know to go through. That is the on-demand half of what
-was asked for — sit and check every word you have learnt — and it is
+**Nothing in it is ever due, and the deck is everything.** A known card is
+not due anywhere, so opening this deck lands on the card every finished deck
+lands on, and *Go through it anyway* runs the whole of what you know. That is
 deliberately the same *anyway* every other deck offers rather than a mode of
-its own. **The spacing** below says what the page does when you do not ask,
-and this deck is that sentence applied across the decks rather than a way
-round it: nothing is bumped up a box a day after it was learnt unless you
-asked for the whole deck and pressed *Knew it* on it, and that has been true of
-every deck since the boxes existed.
+its own.
 
-**The row reads the way every other row reads.** Its size is every card you
-know, its due count is the ones waiting, so it says "6 due" while there is
-something to do and "40 / 40" when there is not — and it is left out entirely
-until you know a card at all, for the reason the missed row is left out at
-nought. The two lifted rows keep the route's order, missed first, rather than
-going through `standing()`: a list of two that swapped itself over on any
-morning something was due would not be worth reading.
+**The row reads the way a finished row reads**: "40 / 40", every card you
+know — and it is left out entirely until you know a card at all, for the
+reason the missed row is left out at nought. The two lifted rows keep the
+route's order, missed first, rather than going through `standing()`: a list
+of two that swapped itself over would not be worth reading.
 
 **No *Forget what I know* on it.** The button forgets a deck's rows, and this
 deck's rows are every row you have. Forgetting the whole of a language's
@@ -9162,22 +9150,37 @@ than deleting nothing under a name and reporting that it did. A card is
 forgotten in the deck it came from. The missed deck's *Forget* is still the
 only write that reaches rows across several decks.
 
-**Capped at two hundred, and the due ones are never the part cut off.**
-`MAX_CARDS` bounds this the way it bounds the missed deck, and eight hundred
-known cards is a reader who has been through everything the site ships. The
-due ones are put in front before the cut, so what the cap costs a reader that
-far along is the tail of their *anyway*, never their morning's revision.
+**Capped at two hundred.** `MAX_CARDS` bounds this the way it bounds the
+missed deck, and eight hundred known cards is a reader who has been through
+everything the site ships. What the cap costs a reader that far along is the
+tail of an *anyway* they chose to go through.
 
-### The spacing
+### The spacing, which is off
 
-A card answered right goes up a box and waits: **a day, then three, then a
-week, then a fortnight, then five weeks, then eleven.** Six rungs, and a card
-that reaches the last stays there — a little over four months between askings,
-past which the thing being remembered is not the word, it is the site.
+**A card known once stays known.** Answered right, it is out of every run
+until you ask for it with *Go through it anyway*; a deck got right all the
+way through reads "27 / 27" and stays that way. Answered wrong, it goes to box
+nought, due now, so it is back in the next run from the beginning and in
+**The deck of what you got wrong** above — and stays due until it is got
+right.
 
-A card answered wrong does not go down a box. It goes to box nought, due now,
-so it is back in the next run from the beginning and in **The deck of what you
-got wrong** above.
+That is the owner's call, made on 2026-10-04 after *Hello and goodbye* read
+"7 due" one day and "20 due" the next, every one of its twenty-seven cards
+having been answered right: twenty of them had been learnt in one sitting a
+week earlier and their week was up together. The spacing below did exactly
+what it said, and what it said was not wanted — a word you knew is a word you
+know. `knownOf()` in `functions/api/flashcard.js` is the one line that
+decides: a card is due while it is in box nought, and at no other time.
+
+**The boxes are still kept**, so turning it back on is that one line and
+nothing to backfill. What follows is the scheme as it ran until then, and as
+it would run again.
+
+A card answered right goes up a box, and would wait: **a day, then three,
+then a week, then a fortnight, then five weeks, then eleven.** Six rungs, and
+a card that reaches the last stays there — a little over four months between
+askings, past which the thing being remembered is not the word, it is the
+site. A card answered wrong does not go down a box; it goes to nought.
 
 **Leitner's scheme rather than SM-2**, and the reason is what this page asks. A
 scheduler cannot be cleverer than what it is told, and it is told one thing:
@@ -9185,20 +9188,20 @@ did you know it. SM-2 wants a grade out of five to move an ease factor, and
 five grades from a page with two buttons would be four of them invented.
 
 The intervals are `BOXES` in `functions/api/flashcard.js`, which is the copy
-that binds, and the columns are `box` and `due_at` on `flashcard_known`.
+that binds, and the columns are `box` and `due_at` on `flashcard_known` —
+both still written on every answer, `due_at` read by nothing.
 Nothing on the page computes a date: it is told per card whether that card is
 due, which is one boolean rather than a clock in a browser that may be in
 another country.
 
 **Days rather than a time of day**, measured from when you answered. A card
-learnt at eleven at night comes back at eleven the next night, not at midnight
-in Tallinn — nobody revising in the evening should find the deck empty because
-the day turned over in a city they are not in.
+learnt at eleven at night would come back at eleven the next night, not at
+midnight in Tallinn — nobody revising in the evening should find the deck
+empty because the day turned over in a city they are not in.
 
-**And the spacing is what the page does when you do not ask.** A deck with
-nothing due says so and offers *Go through it anyway*; the end of a run offers
-*Go through it again*. Both build a run of the whole deck. Somebody who wants
-to sit and read a deck they wrote is not to be told to come back on Thursday.
+**A deck with nothing due says so** and offers *Go through it anyway*; the
+end of a run offers *Go through it again*. Both build a run of the whole deck,
+the cards not yet known first.
 
 On the decks page, a deck with anything waiting says **"6 due"** where it would
 otherwise say "9 / 22" — one is a reason to open a deck and the other is a fact
@@ -9384,7 +9387,7 @@ So the rows go in the order of what each deck is asking for. Three rungs, and
 |---|---|
 | **waiting, and started** | cards are due and some have been got right — this is picking up where you left off |
 | **not started** | nothing answered in it yet, so it is the new thing rather than the unfinished one |
-| **resting** | everything known, and none of it come round again yet |
+| **resting** | everything known, which stays known |
 
 **Nothing is pressed and nothing is stored.** The two numbers this turns on are
 already on every row the route answers — `due` and `known`, which are what draw
@@ -9393,18 +9396,16 @@ page is already holding, and it costs no column, no write, no string in ten
 languages and nothing to run by hand against either database.
 
 **And a press would have been the wrong thing anyway**, which is worth saying
-because it is what was asked for first. A deck is never finished here, only
-resting: **The spacing** above brings its cards back after a day, then three,
-then a week, then a fortnight, then five weeks, then eleven. A deck put at the
-bottom by hand would still be at the bottom on the morning it came round again
-— which is the one morning this page exists for. Sinking by what is due rises
-again on its own, on the day it should.
+because it is what was asked for first. A finished deck is not finished for
+good: one card got wrong in it — in the deck of what you know, say — puts it
+back to waiting. A deck put at the bottom by hand would still be at the
+bottom then. Sinking by what is due rises again on its own, on the day it
+should.
 
 **Sorted and not filtered**, within the stage you are in. Nothing is hidden by
 the sort, nothing is collapsed, and no row goes away: a resting deck is still a
 row, still opens, and still offers *Go through it anyway*, because somebody who
-wants to sit and read a deck is not to be told the spacing has nothing for them
-today. There is no fourth heading either — the three say where you are, and a
+wants to sit and read a deck is not to be told they already know it. There is no fourth heading either — the three say where you are, and a
 *Finished* group at the foot would put a beginner's deck next to an advanced
 one. What the sort never sees is a stage that has not opened: its decks are not
 in the answer at all — **Which decks are open** below — so there is nothing
@@ -9458,8 +9459,8 @@ arrangement here until now; what it cost was a page of forty-two rows with
 nothing on it to say where to start.
 
 A stage rather than a deck, because a deck is already paced from inside — the
-spacing brings it back, the sort under **And a finished deck sinks** puts the
-one you are in the middle of at the top — and a lock on each deck would have
+sort under **And a finished deck sinks** puts the one you are in the middle of
+at the top — and a lock on each deck would have
 been Duolingo's path laid over that, with the two fighting over which deck is
 next. Two numbers rather than forty-two, and the level a deck already carries
 in `data/decks.json` is which of them it is held to, or neither.
@@ -10134,12 +10135,11 @@ Two things, and neither is automatic:
      ON flashcard_known (user_id, deck_id, due_at);
    ```
 
-   Every row already in it becomes a card in box one that is due, which is
-   exactly right: it was known, and it has waited long enough to be asked
-   again. The route survives their absence — `readingBoxes()` asks once per
-   isolate and falls back to answering everything as due — so the gap between a
-   deploy and the `ALTER` is a page without spacing rather than a page that
-   does not work.
+   Every row already in it becomes a card in box one, which is exactly
+   right: it was known. The route survives their absence — `readingBoxes()`
+   asks once per isolate and falls back to reading every row as box one — so
+   the gap between a deploy and the `ALTER` is a page without the deck of what
+   you got wrong rather than a page that does not work.
 
 2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
    `tallinntastebuds` project → **Custom domains** → add
@@ -10231,16 +10231,14 @@ deliberately not made in the change that brought this page.
 No typing the answer in, no matching game, no test
 mode — not even one to jump a stage with — no streaks, no decks anybody can
 share, and no notifications — this site has no address for anybody, and that
-has not changed for this. The spacing has
-six fixed rungs and no per-card ease: see **The spacing** above for why that is
-a decision rather than a first version.
+has not changed for this. And no spacing: a card known stays known, and
+**The spacing, which is off** above says why and how it would come back.
 
 **And no shuffle**, which was asked for in the same sentence the tallies and
 the hint arrived in. A shuffle undoes the two orders a run is built in — what
 you have never got right first, and, inside that, the progression somebody
 wrote the deck in — so what it would fix is a deck whose order has been
-memorised, which is a rarer complaint than it sounds and one the spacing
-already answers by changing what is due. It is a description away from being
+memorised, which is a rarer complaint than it sounds. It is a description away from being
 built if it is wanted. The undo asked for in the same sentence has since been
 built: **Undo** above.
 
