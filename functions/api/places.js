@@ -54,6 +54,16 @@
  * chat's Function lends the same thing for the same reason (cooksOf() in
  * ./ask.js); this is where the two rolls are already joined, so it is one
  * line here rather than a second join in the browser.
+ *
+ * THE FIND BAR'S ORDER
+ *
+ * Google's `rating`, `reviews` and `rank` ride on the roll for the same
+ * reader. A Google row carries its own; a place of mine is lent its linked
+ * row's, by map_id, the way it is lent the kitchens. The bar offers at most
+ * three of my places first, best by Google's reviews, and everything after
+ * that — mine included — in the order `rank` puts the whole export in. None
+ * of the three is ever printed on a row of the bar; the owner's reasoning is
+ * under **The find bar's order** in README.md. The picker reads none of them.
  */
 
 import { json, catalogue, venueEntry, wrongDatabase } from './_lib.js';
@@ -68,6 +78,39 @@ function fold(value) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '');
+}
+
+/* The export's half of the roll, with `rank` when the table has it. The
+   column arrived by a hand-run ALTER (db/schema.sql says so beside it), and a
+   SELECT naming a column that is not there throws — which here would cost the
+   find bar and the picker all eleven hundred of Google's rows over one number
+   used for ordering. So a database without it is asked again without it, the
+   way rankedRows() in ./venues.js does, and the bar falls back on the score. */
+let ranks;
+async function googleRows(env) {
+  const select = (withRank) => env.DB
+    .prepare(
+      'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
+      'address, postal_code, city, latitude, longitude, map_id' + (withRank ? ', rank ' : ' ') +
+      'FROM google_venues ' +
+      /* hidden is the curation switch — a duplicate, or a car park Google
+         thinks is a restaurant. missing_since is a row the last sync no
+         longer carried. A place Google says is shut is not somewhere to
+         send anybody, so it is not offered; it is never deleted, and a
+         list already holding one still draws it. */
+      "WHERE hidden = 0 AND missing_since IS NULL AND status <> 'Temporarily closed'"
+    )
+    .all();
+  if (ranks === false) return select(false);
+  try {
+    const answer = await select(true);
+    ranks = true;
+    return answer;
+  } catch (e) {
+    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    ranks = false;
+    return select(false);
+  }
 }
 
 export async function onRequestGet(context) {
@@ -109,34 +152,30 @@ export async function onRequestGet(context) {
      rather than on an error. */
   if (env.DB && !(await wrongDatabase(env))) {
     try {
-      const { results } = await env.DB
-        .prepare(
-          'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
-          'address, postal_code, city, latitude, longitude, map_id ' +
-          'FROM google_venues ' +
-          /* hidden is the curation switch — a duplicate, or a car park Google
-             thinks is a restaurant. missing_since is a row the last sync no
-             longer carried. A place Google says is shut is not somewhere to
-             send anybody, so it is not offered; it is never deleted, and a
-             list already holding one still draws it. */
-          "WHERE hidden = 0 AND missing_since IS NULL AND status <> 'Temporarily closed'"
-        )
-        .all();
+      const { results } = await googleRows(env);
 
       for (const row of results || []) {
         if (!row || typeof row.name !== 'string' || !row.name) continue;
         if (ids.has(row.place_id)) continue;
         if (row.map_id && ids.has(row.map_id)) {
           /* The row goes, and what Google says it cooks stays with the place
-             it is a row for. */
-          mine.get(row.map_id).kitchens = kitchensOf(row);
+             it is a row for — and so do Google's numbers for it, which the
+             find bar orders my places by and never prints: see "The find
+             bar's order" at the top. */
+          const place = mine.get(row.map_id);
+          place.kitchens = kitchensOf(row);
+          if (typeof row.rating === 'number') place.rating = row.rating;
+          if (typeof row.reviews === 'number') place.reviews = row.reviews;
+          if (typeof row.rank === 'number') place.rank = row.rank;
           continue;
         }
         const name = fold(row.name);
         if (names.has(name)) continue;
         ids.add(row.place_id);
         names.add(name);
-        out.push({ ...venueEntry(row), kitchens: kitchensOf(row), category: row.category || '' });
+        const entry = { ...venueEntry(row), kitchens: kitchensOf(row), category: row.category || '' };
+        if (typeof row.rank === 'number') entry.rank = row.rank;
+        out.push(entry);
       }
     } catch (e) {
       /* No table, or a database that cannot answer. The map's places are

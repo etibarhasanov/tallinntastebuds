@@ -8164,11 +8164,15 @@
    * one time this bar narrows the map; RESULTS below is the whole of it.
    */
 
-  /* How many rows each group offers. Mine are few and all of them are worth
-     showing; the city's are eleven hundred and a dropdown is a way to one
-     place rather than a directory — /admin/google is the directory, and the note at
-     the foot of the list says so when there are more. */
-  var FIND_MINE = 24;
+  /* How many rows each group offers. Mine open the dropdown, three at most,
+     best by Google's reviews; everything after them — the rest of mine
+     among the city's — goes in the order `rank` puts the whole export in,
+     so a place of mine a word reaches is still in the dropdown, only no
+     longer ahead of a better one for being mine. That group is a way to one
+     place rather than a directory — /admin/google is the directory, and the
+     note at the foot of the list says so when there are more. See THE ORDER
+     above findOrder(). */
+  var FIND_MINE = 3;
   var FIND_CITY = 16;
 
   /* The roll behind /api/places once it has arrived, the folded haystack
@@ -8188,6 +8192,12 @@
      place is matched on what is known so far. */
   var findCuisines = [];
   var findLent = {};
+
+  /* Google's numbers for a place of mine, by the map's id, off the row the
+     export has tied to it: { rating, reviews, rank }. Only for ordering —
+     a row of the bar never prints them. Empty until the roll is in, and for
+     a place the export has no linked row for. */
+  var findRated = {};
 
   /* The one reading of the device this bar makes, while it is in the air,
      and whether it came back with nothing — after which the bar does not ask
@@ -8226,6 +8236,7 @@
       findHay = {};
       findKind = {};
       findLent = {};
+      findRated = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
@@ -8233,6 +8244,11 @@
           if (row.kitchens && row.kitchens.length) {
             findLent[row.mapId || row.id] = fold(row.kitchens.map(kitchenWords).join(' '));
           }
+          findRated[row.mapId || row.id] = {
+            rating: row.rating,
+            reviews: row.reviews,
+            rank: row.rank
+          };
           continue;
         }
         if (typeof row.lat !== 'number' || typeof row.lng !== 'number') continue;
@@ -8261,6 +8277,7 @@
       findRoll = [];
       findHay = {};
       findKind = {};
+      findRated = {};
       return findRoll;
     });
     return findAsking;
@@ -8310,19 +8327,27 @@
     return null;
   }
 
-  /* The city's half, best first: under the map's own places, which always
-     come ahead of it, "pizza" is the city's best-rated pizzerias from the
-     top down. It used to be the most-reviewed first, on the argument that a
-     review count is how well known somewhere is, and what that drew was a
-     4.2 in third place over a 4.9 because more tourists had passed the
-     first — the owner's objection, and a fair one: a dropdown is read top
-     to bottom as a ranking whether it means to be one or not.
+  /* THE ORDER
 
-     Best is Google's score pulled towards the city's average by how few
-     people it rests on — findScore() below — so a 5.0 from three reviews
-     does not outrank a 4.9 from four hundred. A row with no score goes
-     last. The score is still not printed on the row (see findRow()); it
-     only decides the order.
+     Two groups, and the owner's rule for each. At most three of my own
+     places open the dropdown — findMine() below orders them — and then
+     everything else a field reaches, the rest of mine among the city's, by
+     `rank`: where the export puts a place once Google's rating is weighed by
+     how many people gave it, the same number /admin/google prints as
+     "Best overall" and ranked() in tools/googlevenues.mjs works out. A place
+     of mine past the first three is lent its linked row's rank by
+     /api/places, so it stands where the export would put it rather than
+     ahead of everything for being mine; one the export has no row for goes
+     under every ranked row, by the score. Neither number is printed on a row
+     of the bar (see findRow()); they only decide the order.
+
+     It used to be the most-reviewed first, on the argument that a review
+     count is how well known somewhere is, and what that drew was a 4.2 in
+     third place over a 4.9 because more tourists had passed the first — the
+     owner's objection, and a fair one: a dropdown is read top to bottom as
+     a ranking whether it means to be one or not. Then it was findScore(),
+     which is rank's arithmetic with the bar's own prior; rank is the one
+     the directory already prints, so the two pages cannot disagree.
 
      A name that starts with what was typed still goes first when the field
      is a name — "riva" is looking for Riva — but not when it is a kind of
@@ -8331,7 +8356,8 @@
      that land in what Google files some matching row as — its category, its
      types, its kitchens — rather than only in names and streets. The
      reader's own vocabulary was the first test tried, and "sushi" is not in
-     it, so the export's categories are the ones asked.
+     it, so the export's categories are the ones asked; `named` is that
+     test, made by findHits() over the city's rows.
 
      Asked for somewhere near, with a dot to measure from, and the order is
      the distance instead: "nearby pizza" is a question about the corner you
@@ -8340,9 +8366,45 @@
      order, the rows that carry the words as typed come before the rows that
      only reached them by a stem — see hasWords() — and within each, the rows
      the words land on squarely before the ones they only brush: see
-     findTier(). `area` is the part of the map the search is held to, or null
-     for the whole city; see findArea(). */
-  function findCity(words, wish, away, area, level, tier) {
+     findTier(). */
+  function findOrder(words, wish, away, level, tier, named) {
+    var q = words.join(' ');
+    return function (a, b) {
+      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
+      if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
+      if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
+      if (named) {
+        var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
+        var bh = fold(b.name).indexOf(q) === 0 ? 0 : 1;
+        if (ah !== bh) return ah - bh;
+      }
+      var ak = findRank(a);
+      var bk = findRank(b);
+      if (ak !== bk) return ak - bk;
+      var as = findScore(findGoogle(a));
+      var bs = findScore(findGoogle(b));
+      if (as !== bs) return bs - as;
+      return fold(a.name) < fold(b.name) ? -1 : 1;
+    };
+  }
+
+  /* Google's numbers for a row of either half: a Google row carries its own,
+     a place of mine borrows its linked row's out of findRated. */
+  function findGoogle(row) {
+    return byMapId(row.id) ? (findRated[row.id] || {}) : row;
+  }
+
+  /* Where the export ranks a row, 1 the best; a row it gave no rank goes
+     under all of them. */
+  function findRank(row) {
+    var rank = findGoogle(row).rank;
+    return typeof rank === 'number' ? rank : Infinity;
+  }
+
+  /* The city's half: every row of the roll the words reach, inside `area`
+     when there is one — null is the whole city; see findArea(). Unordered:
+     findHits() puts it among the rest of mine and orders the lot. */
+  function findCity(words, wish, area, level, tier) {
     var hits = [];
     if (!findRoll) return hits;
     for (var i = 0; i < findRoll.length; i++) {
@@ -8355,25 +8417,6 @@
         hits.push(row);
       }
     }
-    var q = words.join(' ');
-    var named = !hits.some(function (row) { return hasWords(findKind[row.id] || '', words) === 3; });
-    hits.sort(function (a, b) {
-      if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
-      if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
-      if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
-      if (named) {
-        var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
-        var bh = fold(b.name).indexOf(q) === 0 ? 0 : 1;
-        if (ah !== bh) return ah - bh;
-      }
-      var as = findScore(a);
-      var bs = findScore(b);
-      if (as !== bs) return bs - as;
-      var ar = typeof a.reviews === 'number' ? a.reviews : 0;
-      var br = typeof b.reviews === 'number' ? b.reviews : 0;
-      if (ar !== br) return br - ar;
-      return fold(a.name) < fold(b.name) ? -1 : 1;
-    });
     return hits;
   }
 
@@ -8385,7 +8428,8 @@
      have fewer than ninety-odd reviews; fifty is about half that —
      enough that "pizza" opens on a 4.9 from 455 rather than a 5.0 from 20,
      and not so much that a well-liked new place is buried. No score at all
-     is -1, under every row that has one. */
+     is -1, under every row that has one. It orders the three places of mine
+     that open the dropdown, and breaks ties under `rank` in the rest. */
   var FIND_PRIOR = 50;
   var FIND_MEAN = 4.4;
   function findScore(row) {
@@ -8396,9 +8440,14 @@
 
   /* Mine: the words as typed ahead of the words by their stems and their
      slips, then the squarest hits ahead of the glancing ones — findTier() —
-     then nearest first when there is a dot, else the catalogue's own order,
-     spelled out as the last tiebreak rather than left to the sort, which
-     older engines do not keep stable. What a place of mine is, for the tier,
+     then nearest first when the field asked to be near and there is a dot
+     — the city's rule, so the three do not open on whichever is closest to a
+     visitor who asked for the best — else best first by Google's
+     reviews — findScore() over the numbers lent to it, so a place the export
+     has no row for comes after every one it has — and the catalogue's own
+     order as the last tiebreak, spelled out rather than left to the sort,
+     which older engines do not keep stable. The first FIND_MINE of these open
+     the dropdown; the rest join the city's. What a place of mine is, for the tier,
      is its types in ten languages, its dishes and the kitchens lent to it:
      the same haystack hayIndex is built from, cut into its three parts. */
   function findMine(words, wish, away, area, level, tier) {
@@ -8427,7 +8476,10 @@
     hits.sort(function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
-      if (away && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
+      if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
+      var as = findScore(findRated[a.id] || {});
+      var bs = findScore(findRated[b.id] || {});
+      if (as !== bs) return bs - as;
       return order[a.id] - order[b.id];
     });
     return hits;
@@ -8651,22 +8703,29 @@
     var level = {};
     var tier = {};
     var mine = findMine(words, wish, away, area, level, tier);
-    var city = findCity(words, wish, away, area, level, tier);
+    var city = findCity(words, wish, area, level, tier);
     if (!bounds && area && findRoll && !anyFirm(mine.concat(city), tier)) {
       area = null;
       outside = true;
       mine = findMine(words, wish, away, null, level, tier);
-      city = findCity(words, wish, away, null, level, tier);
+      city = findCity(words, wish, null, level, tier);
     }
     var firm = anyFirm(mine.concat(city), tier);
+    mine = firmOnly(bestOnly(mine, level), tier, firm);
+    city = firmOnly(bestOnly(city, level), tier, firm);
+    /* The first three of mine, then the rest of mine among the city's, in
+       one order: see THE ORDER above findOrder(). */
+    var named = !city.some(function (row) { return hasWords(findKind[row.id] || '', words) === 3; });
+    var rest = mine.slice(FIND_MINE).concat(city);
+    rest.sort(findOrder(words, wish, away, level, tier, named));
     return {
       wish: wish,
       at: at,
       away: away,
       area: area,
       outside: outside,
-      mine: firmOnly(bestOnly(mine, level), tier, firm),
-      city: firmOnly(bestOnly(city, level), tier, firm)
+      mine: mine.slice(0, FIND_MINE),
+      city: rest
     };
   }
 
@@ -8694,7 +8753,7 @@
     var area = hits.area;
     var outside = hits.outside;
     var far = function (place) { return away ? farWords(away[place.id] / 1000) : ''; };
-    var mine = hits.mine.slice(0, FIND_MINE);
+    var mine = hits.mine;
     var city = hits.city;
     var shown = city.slice(0, FIND_CITY);
 
@@ -8712,8 +8771,9 @@
         className: 'find-group',
         textContent: t(area ? 'findInArea' : 'findInCity')
       }));
+      /* The rest of mine are among these, drawn and picked as mine. */
       for (var c = 0; c < shown.length; c++) {
-        var crow = findRow(shown[c], false, far(shown[c]));
+        var crow = findRow(shown[c], !!byMapId(shown[c].id), far(shown[c]));
         findRows.push(crow);
         dom.findBody.appendChild(crow);
       }
@@ -8997,9 +9057,10 @@
   }
 
   function showResults(typed, found, hits, bounds) {
-    /* In the dropdown's order: my own places first, then the city's best
-       first — findCity() says what best is — or nearest first when the field
-       asked to be near, which findHits() has already done. The results used
+    /* In the dropdown's order: up to three of my own places first, then the
+       rest by the export's rank — THE ORDER above findOrder() says which —
+       or nearest first when the field asked to be near, which findHits() has
+       already done. The results used
        to be sorted again here, nearest to the middle of the map first, so
        that "next" walked to a neighbour rather than across the city and
        back; what that opened on was whichever place happened to be closest

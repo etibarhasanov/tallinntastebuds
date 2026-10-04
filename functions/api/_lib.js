@@ -633,7 +633,9 @@ const VENUE_TYPES = [
  * scores on this site — none of the seventy-five places I have eaten at is
  * ranked, and none ever will be — and this is not one: it is Google's number,
  * on Google's place, with Google's name on it, which is the only shape in
- * which a number like that can be honest here.
+ * which a number like that can be honest here. The one exception is the find
+ * bar's order, which /api/places lends a place of mine its linked row's
+ * numbers for and never prints — **The find bar's order** in README.md.
  *
  * The contact half — the phone, the site, the week of opening hours and the
  * Google listing — is not here. It is added by venuesByIds() below, because

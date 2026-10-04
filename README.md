@@ -961,19 +961,36 @@ better, and a map zoomed in on a part of town where the words only brushed a
 street name counts as a part of town with nothing in it, so the bar looks
 across the whole city instead.
 
-My own places always come first, and within each of those tiers the city's
-half under them goes **best first**: by Google's score, pulled towards the
-city's average of 4.4 as if fifty more people had reviewed it (`findScore()`), so a 5.0 from twenty reviews does not
-open the list over a 4.9 from four hundred, and a row with no score goes last.
-It used to go by how many people had reviewed a place, which put a 4.2 third
-for *pizza* over a 4.9 because more tourists had passed it; a dropdown is read
-as a ranking whether it means to be one or not. A name that *starts* with what
+#### The find bar's order
+
+**At most three of my own places come first**, and within each of those tiers
+they go best first by what Google's reviewers say of them: Google's score,
+pulled towards the city's average of 4.4 as if fifty more people had reviewed
+it (`findScore()`), so a 5.0 from twenty reviews does not open the list over a
+4.9 from four hundred. A place of mine has no score of its own; `/api/places`
+lends it the one on the export row tied to it by `map_id` — sixty-four of the
+seventy-odd have one — and a place with none comes after every place that has.
+**Everything after those three goes by the export's `rank`** — the position
+`ranked()` in `tools/googlevenues.mjs` gives every venue once the rating is
+weighed by the review count, the number `/admin/google` prints as *Best
+overall* — and that includes the rest of my own places, lent their rank the
+same way, so *coffee* still reaches all seventeen cafés on the map, only the
+fourth of them stands where the export puts it rather than ahead of every café
+in town for being mine. A row with no rank goes under every ranked row, by the
+score. This was the owner's call in October 2026, and it is a change of
+argument rather than of code: until then my places always came first, in the
+catalogue's order, and Google's numbers ordered only Google's half. See **And
+on ordering my places by it** under **On "no scores, stars or rankings"**.
+
+The city's half used to go by how many people had reviewed a place, which put
+a 4.2 third for *pizza* over a 4.9 because more tourists had passed it; a
+dropdown is read as a ranking whether it means to be one or not. A name that *starts* with what
 was typed still goes ahead of that when the field is a name — *riva* is
 looking for Riva — but not when it is a kind of place, words that land in what
 Google files some matching row as (its category, types or kitchens) rather than
 only in names, because a 3.9 called Sushi Something is not better sushi than a
 4.8 for the word it starts with. The
-score decides the order and is still not printed on the row. All of that
+score and the rank decide the order, and neither is printed on the row. All of that
 gives way when the field asked for somewhere near, which **Where you are**
 below takes up.
 
@@ -1019,11 +1036,11 @@ it does it.
 
 A field that is nothing but a wish — *nearby*, *lähedal*, *cheap* — looks for
 everything and lets the wish choose, which is how *near me* on its own
-answers with up to twenty-four places of mine and the sixteen of Google's
-nearest to you. Twenty-four is `FIND_MINE`, and it is that many so that every
-place of mine a word reaches is in the dropdown: it was eight, which is how
-*coffee* showed eight of the seventeen cafés on the map and the owner went
-looking for the other nine. And a field the reader makes nothing of — a letter, *the* — is looked for
+answers with the three places of mine nearest to you and then the sixteen
+nearest after them, mine and Google's together. Three is `FIND_MINE`, and the
+rest of mine are not dropped but folded in under it: it was once eight with
+nothing after, which is how *coffee* showed eight of the seventeen cafés on
+the map and the owner went looking for the other nine. And a field the reader makes nothing of — a letter, *the* — is looked for
 as typed, so the first letters of a name still bring the name.
 
 ### Where you are, and what it changes
@@ -1036,9 +1053,9 @@ it is. See **A number on a row only when it is the reader's own** under
 
 With a dot within reach of the map, every row in both groups says how far —
 *450 m*, *1,2 km*, out of `askMetres` and `askKm` and rounded the way the
-chat's rows round — in front of the street on the same mono line, and my own
-places come nearest first the way the list does. The city's half keeps its
-dropdown order until the field says *near*; then it goes nearest first too,
+chat's rows round — in front of the street on the same mono line. Both groups
+keep their dropdown order until the field says *near*; then they go nearest
+first,
 because *nearby pizza* is a question about the corner you are standing on and
 not about which pizzeria is best.
 
@@ -2840,10 +2857,21 @@ in front of it, in the same line and the same breath. On a place of mine it is
 the last section of the panel, under a heading that says the same thing — see
 **And on printing it on a place of mine** below. The rule is that **this site
 does not rate anything** — not that a card may never repeat what somebody
-else's rating is, with their name attached. Nothing sorts by it, I give it to
+else's rating is, with their name attached. Nothing but the find bar sorts by it (below), I give it to
 none of my places, and the day a score of Google's appears without the
 attribution is the day the rule has actually been broken. See **A Google row says whose
 description it is**.
+
+**And on ordering my places by it, which the find bar does.** Since October
+2026 the find bar opens on at most three of my places in the order Google's
+reviewers put them, and folds the rest in among Google's own by the export's
+rank — **The find bar's order** under **Finding anywhere in Tallinn**. That is a
+ranking of my places by somebody else's number, and the paragraph above said
+nothing sorts by it. The owner asked for it in as many words. What still
+holds: no number is printed beside a place of mine anywhere but the panel's
+attributed Google section, the list down the side is ordered by distance and
+nothing else, every pin is the same size, and the site itself scores nothing —
+the order is Google's, read, the way the directory's is.
 
 If a future change wants to sort *places* by saves, it is changing the
 argument of the site rather than adding a feature. That is a decision for a
