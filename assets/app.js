@@ -286,6 +286,9 @@
   function storeSet(key, value) {
     try { window.localStorage.setItem(key, value); } catch (e) { /* ignore */ }
   }
+  function storeDel(key) {
+    try { window.localStorage.removeItem(key); } catch (e) { /* ignore */ }
+  }
 
   function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -9364,7 +9367,8 @@
   /* Where the list is ordered from, and how far each place is from it.
 
      NOTHING HERE ASKS THE DEVICE. The dot is the only claim this site holds
-     about where anybody is, and only the locate button puts it there. The
+     about where anybody is, and only the locate button puts it there — the
+     first time; after a yes, resumeHere() puts it back on each arrival. The
      reasoning is the one whereabouts() already follows for the chat: the
      site's own permission prompt over a list nobody asked to have sorted
      would be a question nobody asked. So the square is not a degraded
@@ -11293,6 +11297,9 @@
     dom.btnLocate.addEventListener('click', function () {
       TTBTrack.event('locate');
       if (!navigator.geolocation) { toast(t('locateFail')); return; }
+      /* A press is a press even with the arrival's reading still in flight:
+         its answer, or its failure, is now owed out loud. */
+      hereQuiet = false;
       /* setView is off: the framing is done in locationfound, which knows
          where the places are and Leaflet does not. Nothing here says how close
          to go, because Leaflet reads its own maxZoom only when it is the one
@@ -11518,6 +11525,12 @@
 
     map.on('locationfound', function (ev) {
       var c = markerColours();
+      var quiet = hereQuiet;
+      hereQuiet = false;
+
+      /* A reading arrived, so this browser has said yes at least once, and
+         the next visit opens on it — see resumeHere(). */
+      storeSet(HERE_KEY, '1');
 
       if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
       if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
@@ -11565,10 +11578,55 @@
          the time it is not. */
       renderList();
 
-      frameHere(ev.latlng);
+      /* Opened on its own at arrival, the map leaves alone a place somebody
+         has opened in the seconds the fix took: flying them off it to frame
+         where they are standing answers a question they stopped asking. */
+      if (quiet && state.selected) return;
+      frameHere(ev.latlng, quiet);
     });
 
-    map.on('locationerror', function () { toast(t('locateFail')); });
+    /* Code 1 is a refusal: the browser has been told no since the yes, so
+       the map stops asking on arrival. A slow or missing fix leaves the
+       yes standing — the next visit may well have one. */
+    map.on('locationerror', function (ev) {
+      var quiet = hereQuiet;
+      hereQuiet = false;
+      if (ev && ev.code === 1) storeDel(HERE_KEY);
+      if (!quiet) toast(t('locateFail'));
+    });
+  }
+
+  /* Whether this browser has handed the map a location before. Set on the
+     first reading, by any of the three ways one is asked for — the button,
+     the find bar, the chat — and cleared on a refusal. Only a flag: where
+     somebody was is not kept, because a dot drawn from yesterday's reading is
+     a lie about today. */
+  var HERE_KEY = 'ttb.located';
+
+  /* The locate the map makes on its own at arrival, while it is in flight. It
+     draws the dot and frames it exactly as a press would, but says nothing
+     when it fails or when the reading is out of town: nobody pressed
+     anything, so a toast about it would be the page talking to itself. */
+  var hereQuiet = false;
+
+  /* Somebody who gave the map their location once opens it on themselves
+     every time after, the way a map app does. Never the first time — that is
+     still the button's to ask — and never once the browser says the answer
+     is no. Where the browser can say it has forgotten ("prompt", which is
+     Safari's ask-every-time setting), it asks again anyway: the owner's
+     instruction is that a yes is remembered, and the prompt only ever reaches
+     somebody who has already said it. */
+  function resumeHere() {
+    if (!storeGet(HERE_KEY) || !navigator.geolocation) return;
+    var go = function () {
+      hereQuiet = true;
+      map.locate({ setView: false, timeout: 10000, maximumAge: 60000 });
+    };
+    if (!navigator.permissions || !navigator.permissions.query) { go(); return; }
+    navigator.permissions.query({ name: 'geolocation' }).then(function (status) {
+      if (status.state === 'denied') { storeDel(HERE_KEY); return; }
+      go();
+    }, go);
   }
 
   /* How far the nearest place can be and still be worth framing next to you.
@@ -11595,7 +11653,7 @@
      pin on it, and no amount of pressing filter chips fills it in. So the view
      is framed on you *and* the nearest place the chips allow — you always land
      looking at somewhere you could walk to. */
-  function frameHere(latlng) {
+  function frameHere(latlng, quiet) {
     /* A closed place is a grey pin kept for the links pointing at it, not
        somewhere to send you, so it is only the nearest thing if nothing open
        is left to be. */
@@ -11611,7 +11669,10 @@
       if (away < best) { best = away; nearest = p; }
     });
 
+    /* Out of town on arrival, the map keeps the city it opened on and says
+       nothing: the toast and the refit are the answer to a press. */
     if (best > HERE_MAX_M) {
+      if (quiet) return;
       toast(t('locateAway'));
       fitToPins({ animate: true });
       return;
@@ -11939,6 +12000,12 @@
           if (queue[q].id === wanted) { openStories(q, null); break; }
         }
       }
+
+      /* And a visitor who has shown the map where they are before opens on
+         themselves — unless the link was about something: a place, a row of
+         a list, a list, a story. Those are what was sent, and framing the
+         reader's own street instead would bury it. */
+      if (!spot && !stand && !state.list && !wanted) resumeHere();
 
       /* And on a phone, the rail says what it is for — the first time this
          browser opens the map, and not on the visits after; a language
