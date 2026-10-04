@@ -42,7 +42,7 @@
  * in wrangler.toml fixes; the cost the other way is the statistics handed out.
  */
 
-import { sessionUser, wrongDatabase } from './_lib.js';
+import { sessionUser, wrongDatabase, SESSION_DOMAIN } from './_lib.js';
 
 /* The ids ADMINS names, trimmed, empties dropped. A users.id is a UUID, and
    anything that is not shaped like one is ignored rather than trusted, so a
@@ -71,4 +71,38 @@ export async function adminUser(request, env) {
   } catch (e) {
     return null;
   }
+}
+
+/* ------------------------------------------------- THE OWNER'S BROWSER
+ *
+ * The server leaves the owner out of every count by the session — see
+ * adminUser() above and the top of ./stats.js — but two of the things that
+ * count are not the server. Google Analytics and Microsoft Clarity are
+ * loaded by assets/analytics.js and count in the browser, before anything
+ * has asked who is signed in; and a browser the owner has signed out of is,
+ * to the server, anybody. The owner asked to be out of all of it, so the
+ * browser is told: `ttb_owner=1`, set beside the answer to GET /api/account
+ * when the session is the owner's, and on every page under /admin/.
+ * assets/analytics.js then loads neither tag, and assets/track.js, app.js
+ * and lists.js send nothing to /api/stats.
+ *
+ * Not HttpOnly, because the page has to read it before either tag loads, and
+ * not a secret, because it is not one: all it does is switch off counting in
+ * the browser that carries it, which an ad blocker does already and which
+ * anybody may do to themselves. A year, renewed on every visit signed in, so
+ * it outlasts a sign-out on the owner's own devices — that is the point of
+ * it — and domain-scoped on the live site, the way the session is, so the
+ * flashcards and splitwise subdomains see it too. The first page a browser
+ * ever opens signed in as the owner is counted once, because the tags load
+ * before the account is read; every page after it is not. Clearing the
+ * site's cookies puts that browser back in the count until the owner signs
+ * in again. */
+export const OWNER_COOKIE = 'ttb_owner';
+
+export function ownerCookie(request) {
+  const host = request ? new URL(request.url).hostname : '';
+  const ours = host === SESSION_DOMAIN || host.endsWith('.' + SESSION_DOMAIN);
+  const parts = [OWNER_COOKIE + '=1', 'Path=/', 'Secure', 'SameSite=Lax', 'Max-Age=' + 365 * 86400];
+  if (ours) parts.push('Domain=' + SESSION_DOMAIN);
+  return parts.join('; ');
 }

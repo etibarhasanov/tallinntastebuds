@@ -111,7 +111,7 @@ const PAGES_HOST = 'tallinntastebuds.pages.dev';
    functions/api/_admin.js. /admin.html itself is not under the prefix: it is
    a door with its own lock and has to open for a device that is not signed in
    yet. */
-import { adminUser } from './api/_admin.js';
+import { adminUser, ownerCookie } from './api/_admin.js';
 
 const OWNER_PAGES = '/admin/';
 const OWNER_API = '/api/admin/';
@@ -229,6 +229,9 @@ async function route(context) {
     const res = await context.next();
     const out = new Response(res.body, res);
     out.headers.set('Cache-Control', 'private, no-store');
+    /* And the browser is told it is the owner's, so the analytics tags this
+       page loads count nothing — THE OWNER'S BROWSER in ./api/_admin.js. */
+    out.headers.append('Set-Cookie', ownerCookie(context.request));
     return out;
   }
   /* ------------------------------------------------------ end OWNER ONLY */

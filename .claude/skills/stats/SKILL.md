@@ -110,7 +110,9 @@ validator passes and the page draws.
 1. **The owner is not a visitor.** `adminUser()` in `stats.js` answers
    `{ok:false}` to any report but `venue` that carries the owner's session
    before anything is counted — `press_counts` and `profile_counts`
-   included, since 2026-10-04; `countUse()` checks `adminIds()` itself;
+   included, since 2026-10-04 — and the browser it signs in on carries
+   `ttb_owner`, which keeps Google, Clarity and every beacon out of the
+   count even signed out (`ownerCookie()` in `_admin.js`); `countUse()` checks `adminIds()` itself;
    `ask.js` leaves the owner out the same way; `realList()` and `_visits.js`
    refuse the owner of a list or a profile. A new counter leaves the owner
    out the same way, by the session and never by a header the browser

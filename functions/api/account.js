@@ -93,6 +93,7 @@ import {
   cleanLine, cleanLines, readLines, mergeLinks
 } from './_profile.js';
 import { recentViews } from './_visits.js';
+import { adminIds, ownerCookie } from './_admin.js';
 
 /* The line somebody writes about themselves is capped by MAX_ABOUT in
    ./_profile.js now, beside cleanLine(), because the same line in the site's
@@ -242,7 +243,7 @@ export async function onRequestGet(context) {
     linked = await hasGoogle(env, user.id);
   } catch (e) { /* no table yet: nothing is connected, and the page stands */ }
 
-  return json({
+  const res = json({
     ready: true,
     google: google,
     user: user.username,
@@ -274,6 +275,13 @@ export async function onRequestGet(context) {
     views: (await recentViews(env, user.id)) ?? undefined,
     saved: await savedByUser(env, user.id)
   }, 200);
+
+  /* The owner's browser is told so, and counts nothing from here on —
+     THE OWNER'S BROWSER in ./_admin.js. Every page that knows who is signed
+     in asks this route, the subdomains included, so this is the one place
+     it needs saying. */
+  if (adminIds(env).has(String(user.id).toLowerCase())) res.headers.append('set-cookie', ownerCookie(request));
+  return res;
 }
 
 /* ---------------------------------------------------------------- create,

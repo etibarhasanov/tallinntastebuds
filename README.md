@@ -11927,8 +11927,19 @@ no longer hear from the owner either; before it they did, on the argument
 that they count presses rather than people, and the owner asked for their
 own presses out. The rows already counted stay as they are: nothing in a
 counts table says who made a row, so there is nothing to take back out.
-Google Analytics and Clarity are not this: they are counted in the browser,
-before any session is read, and still see the owner signed in.
+
+Google Analytics and Clarity count in the browser, before any session is
+read, so the server cannot drop them; it tells the browser instead. When
+`GET /api/account` or a page under `/admin/` sees the owner's session it
+sets `ttb_owner=1`, a cookie kept a year and scoped to the domain the way
+the session is, and in a browser carrying it `assets/analytics.js` loads
+neither tag and `assets/track.js`, `app.js` and `lists.js` send nothing to
+`/api/stats` — signed in or not, so signing out does not put the owner's
+own phone back in the count. The first page a browser ever opens signed in
+as the owner is still counted once, because the tags load before the
+account is read; clearing the site's cookies puts that browser back in
+until the owner next signs in. **THE OWNER'S BROWSER** in
+`functions/api/_admin.js` is the whole of it.
 
 ### The language it was read in
 

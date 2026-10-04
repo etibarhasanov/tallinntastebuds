@@ -186,8 +186,11 @@ export const SESSION_DAYS = 365;
    where the row for this file says so. It goes when the last subdomain goes,
    and then it is the SESSION_DOMAIN constant, the two lines that read it, the
    third parameter and the second Set-Cookie in the logout branch of
-   account.js — and sessionCookie(token, days) is back to what it was. */
-const SESSION_DOMAIN = 'tallinntastebuds.ee';
+   account.js — and sessionCookie(token, days) is back to what it was.
+   ownerCookie() in ./_admin.js reads it too, so the owner's browser is
+   left out of the count on the subdomains as well, and keeps reading it
+   after the last subdomain goes. */
+export const SESSION_DOMAIN = 'tallinntastebuds.ee';
 
 /* `request` may be null, which asks for the host-only cookie whatever the
    host is. Only signing out passes null, to clear the cookie a session made

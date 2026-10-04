@@ -4013,6 +4013,9 @@
   var counted = {};
 
   function postPress(kind, id) {
+    /* Nothing from the owner's browser — THE OWNER'S BROWSER in
+       functions/api/_admin.js. Signed in, the server would drop it anyway. */
+    if (window.TTBTrack && window.TTBTrack.owner) return;
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },

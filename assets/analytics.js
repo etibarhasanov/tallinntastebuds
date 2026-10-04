@@ -53,9 +53,22 @@
  * input box in all three of its masking modes and nothing renders the token
  * as anything else — but a page nobody but the owner opens has nothing to say
  * about how the map is used.
+ *
+ * NOT IN THE OWNER'S BROWSER EITHER
+ *
+ * The owner asked to be out of every statistic, these two included. The
+ * server cannot keep them out — both count from here, before anything has
+ * asked who is signed in — so it tells the browser instead: a `ttb_owner`
+ * cookie, set when the account route or a page under /admin/ sees the
+ * owner's session, and kept a year so that signing out does not put the
+ * owner's own devices back in. Where it is, neither tag loads and
+ * window.gtag is never defined, which assets/track.js already reads as "no
+ * Google here". THE OWNER'S BROWSER in functions/api/_admin.js is the rest.
  */
 (function () {
   'use strict';
+
+  if (/(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie)) return;
 
   var GA = 'G-2XNTC15F28';
   var CLARITY = 'yay3pxtg4w';
