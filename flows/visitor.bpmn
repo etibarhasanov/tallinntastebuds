@@ -73,7 +73,7 @@ ref: data/taxonomy.json</bpmn:documentation>
       <bpmn:outgoing>visitor-e4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="find-anywhere" name="Finds anywhere in Tallinn">
-      <bpmn:documentation>On the map first, then Google's 1,111 venues.
+      <bpmn:documentation>On the map first, then Google's 1,112 venues.
 ref: functions/api/places.js GET</bpmn:documentation>
       <bpmn:incoming>visitor-e4</bpmn:incoming>
       <bpmn:outgoing>visitor-e5</bpmn:outgoing>

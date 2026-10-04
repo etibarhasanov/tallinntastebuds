@@ -5,7 +5,7 @@ description: Refresh the Google Places export: a new exports/tallinn_restaurants
 
 # Refresh the Google Places export
 
-1,111 places in Tallinn out of the Google Places API, mirrored into the
+1,112 places in Tallinn out of the Google Places API, mirrored into the
 `google_venues` table so a list can hold a place that is not on the map and
 `/admin/google` can be a directory of the city. The number moves with every
 refresh — the first pull found 750 restaurants, the second sweep, over
@@ -123,7 +123,7 @@ else runs.
    that yes; see **The rules of a write** in the `api` skill.
 
    **And a whole-file load does not go through the MCP tool at all.** The gate
-   refuses a call naming more than a hundred rows, and this file names 1,111 —
+   refuses a call naming more than a hundred rows, and this file names 1,112 —
    deliberately, because a load that size is a terminal job with a file behind
    it, not a paste behind a prompt. The two lines below are how it is done and
    always have been; what the tool is for here is the reading either side of
@@ -151,7 +151,7 @@ else runs.
    `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
    and the comment above the check in `tools/validate.mjs`, along with the
    numbers that hang off it — how many are matched to the map (the `SET
-   map_id` lines at the end of the SQL, 62 today), how many have no cuisine,
+   map_id` lines at the end of the SQL, 66 today), how many have no cuisine,
    how many rows the raw export ran to. This finds the copies:
 
    ```

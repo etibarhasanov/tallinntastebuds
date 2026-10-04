@@ -1,6 +1,6 @@
 # Tallinn restaurants — cleaned export
 
-`tallinn_restaurants.csv` — **1,111 places, 18 columns**, reshaped from the raw
+`tallinn_restaurants.csv` — **1,112 places, 18 columns**, reshaped from the raw
 Google Places export in
 [`etibarhasanov/allRestaurants`](https://github.com/etibarhasanov/allRestaurants/blob/claude/google-maps-restaurants-salesforce-iz2bj5/exports/tallinn_restaurants.csv)
 (44 columns). Regenerate with `clean_restaurants_csv.py` when the upstream export refreshes:
@@ -93,11 +93,12 @@ hand-correction down is not having none — it is having one nobody can find.
 | 108 rows, `rating` and `reviews` | `rating`, `reviews` | the 3 Sep sweep | what `google_venues` held on 29 Sep 2026 | Every place the directory had refreshed from Google's Place Details on open (115 rows, 108 of them moved — Morii Tea House above among them) had its pair copied over the sweep's, so the top 20 is drawn from current counts rather than three-week-old ones. Nothing but those two columns moved. The owner asked for it. Gone at the next refresh, which is the point: the sweep is fresher than this |
 | Varkizana Kreeka tavern | `status` | `Temporarily closed` | `Open` | The tavern reopened after the 3 Sep sweep and Google had not caught up on 15 Sep 2026. The owner said so |
 | Q Pizza Jaam | the whole row | not in the sweep | added | A new Google listing (`ChIJFQD2R7iTkkYRGgFVTpGcEIM`) at Telliskivi 62, opened after the 3 Sep sweep, which only found the old Q Pizza&Pan listing at the same door. Typed in from Google Maps on 26 Sep 2026 so the map's Q Pizza Jaam has a Google row to take its hours from. The owner asked for it. `category`, `rating`, `reviews`, `price`, `phone` and `opening_hours` are what Google showed; `cuisine` is Pizza by reading the name, `tags` is empty because the Maps page does not show Google's types, the pin is the map's, and `maps_url` is the `place_id` form because the page gives no `cid` |
+| KOKOMO Coffee Roasters | the whole row | not in the sweep | added | Google's listing (`ChIJ8fqXMWGTkkYR4yJmeLSLG04`) at Ankru tn 10, which no sweep has found — the KIOSK NO3 row at the same number is a different café. Typed in on 4 Oct 2026 so the map's Kokomo has a Google row to print under "According to Google". The owner asked for it and gave the name, the address and the `place_id`. `rating`, `reviews`, `price`, `website` and `opening_hours` are blank on purpose: the Maps page could not be read from where the row was written, and the first open of Kokomo's panel asks Google's Place Details for all seven of the columns a refresh writes. `phone` is the map's, which that refresh overwrites. `category` is Coffee Shop by reading the place, and a refresh does not move it. The pin is the map's, and `maps_url` is the `place_id` form |
 
 A whole row is the other kind of hand-correction, and it goes a different way at
 the next refresh: if the sweep finds the place, its own row replaces this one
 under the same key; if it does not, the row is marked missing like any other that
-left the export. So Q Pizza Jaam stays only as long as Google keeps listing it,
+left the export. So Q Pizza Jaam and Kokomo stay only as long as Google keeps listing them,
 which is the right terms for a row wearing Google's name.
 
 **Every one of these is erased by the next refresh, silently and correctly.** The

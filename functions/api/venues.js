@@ -27,7 +27,7 @@
  *                 rating, the review count, where the two of them together put
  *                 the place among all eleven hundred, the price band, the
  *                 phone, the website and the week's opening hours, for all
- *                 1,111 rows at once — which is what a directory filters and
+ *                 1,112 rows at once — which is what a directory filters and
  *                 sorts on, and what the picker deliberately leaves behind.
  *
  * venuesByIds() in _lib.js hands the map that same contact half for a place on

@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the six lists Google wrote.
  *
- * Reads exports/tallinn_restaurants.csv — the same 1,111 places
+ * Reads exports/tallinn_restaurants.csv — the same 1,112 places
  * tools/googlevenues.mjs loads into google_venues — and writes
  * db/google-lists.sql: one account called `google-statistics`, six public
  * lists under its name, in Google's order. Top ten restaurants, bakeries,
