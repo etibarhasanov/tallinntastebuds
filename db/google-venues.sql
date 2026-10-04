@@ -1638,7 +1638,8 @@ VALUES
   ('ChIJX60gYl-TkkYRWQWSYdvu_uE', 'Ron Maca Resto', 'Restaurant', '', 2.7, 41, '', 'Open', 'Rävala pst', '10117', 'Tallinn', '', '', 'Mon 10:00-19:00; Tue 10:00-19:00; Wed 10:00-19:00; Thu 10:00-19:00; Fri 10:00-19:00; Sat 10:00-19:00; Sun 10:00-18:00', '', 59.431948, 24.761537, 'https://maps.google.com/?cid=16284715928620500313', 993, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('ChIJs2u9QwCTkkYRHjufxgS6-MA', 'Bailabaila', 'Bar', '', 2.4, 49, '', 'Open', 'Sauna tn 1', '10140', 'Tallinn', '', 'https://www.facebook.com/BailaBarTallinn', 'Mon closed; Tue closed; Wed closed; Thu closed; Fri 23:00-05:00; Sat 23:00-05:00; Sun closed', 'Bar', 59.435947, 24.747659, 'https://maps.google.com/?cid=13905068379181366046', 1021, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('ChIJN_ETXACTkkYRhv5Ktdf7gMo', 'K-Town Telliskivi', 'Korean Restaurant', 'Korean', 2.3, 74, '$$', 'Open', 'Telliskivi tn 62a', '10412', 'Tallinn', '', '', 'Mon 11:00-23:00; Tue 11:00-23:00; Wed 11:00-23:00; Thu 11:00-23:00; Fri 12:00-03:00; Sat 12:00-03:00; Sun 11:00-23:00', 'Korean Restaurant', 59.440544, 24.730324, 'https://maps.google.com/?cid=14591939696558538374', 1038, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
-  ('ChIJD8GGW9-UkkYRvRlnb46fMyU', 'ChopSticks Järve keskus', 'Restaurant', '', 2.2, 101, '$$', 'Open', 'Pärnu mnt. 238', '11624', 'Tallinn', '+372 622 9161', 'http://www.chopsticks.ee/', 'Mon 10:00-21:00; Tue 10:00-21:00; Wed 10:00-21:00; Thu 10:00-21:00; Fri 10:00-21:00; Sat 10:00-21:00; Sun 10:00-19:00', '', 59.392163, 24.72095, 'https://maps.google.com/?cid=2680661637318777277', 1045, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
+  ('ChIJD8GGW9-UkkYRvRlnb46fMyU', 'ChopSticks Järve keskus', 'Restaurant', '', 2.2, 101, '$$', 'Open', 'Pärnu mnt. 238', '11624', 'Tallinn', '+372 622 9161', 'http://www.chopsticks.ee/', 'Mon 10:00-21:00; Tue 10:00-21:00; Wed 10:00-21:00; Thu 10:00-21:00; Fri 10:00-21:00; Sat 10:00-21:00; Sun 10:00-19:00', '', 59.392163, 24.72095, 'https://maps.google.com/?cid=2680661637318777277', 1045, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000),
+  ('ChIJ8fqXMWGTkkYR4yJmeLSLG04', 'KOKOMO Coffee Roasters', 'Coffee Shop', '', NULL, NULL, '', 'Open', 'Ankru tn 10', '11713', 'Tallinn', '+372 5624 0970', '', '', '', 59.455232, 24.675727, 'https://www.google.com/maps/place/?q=place_id:ChIJ8fqXMWGTkkYR4yJmeLSLG04', NULL, CAST(strftime('%s','now') AS INTEGER) * 1000, CAST(strftime('%s','now') AS INTEGER) * 1000)
 ON CONFLICT(place_id) DO UPDATE SET
     name = excluded.name,
     category = excluded.category,
@@ -2773,7 +2774,8 @@ WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (
   'ChIJX60gYl-TkkYRWQWSYdvu_uE',
   'ChIJs2u9QwCTkkYRHjufxgS6-MA',
   'ChIJN_ETXACTkkYRhv5Ktdf7gMo',
-  'ChIJD8GGW9-UkkYRvRlnb46fMyU'
+  'ChIJD8GGW9-UkkYRvRlnb46fMyU',
+  'ChIJ8fqXMWGTkkYR4yJmeLSLG04'
 );
 
 UPDATE google_venues SET map_id = 'morii-tea-house' WHERE place_id = 'ChIJnYxLw5WTkkYRbBZIQ-rVs70' AND map_id IS NULL;
@@ -2905,3 +2907,5 @@ UPDATE google_venues SET map_id = 'fotografiska-cafe' WHERE place_id = 'ChIJhQUC
 UPDATE google_venues SET map_id = 'ariran' WHERE place_id = 'ChIJAwQUdoGUkkYRft_77SHCWQg' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'badam' WHERE place_id = 'ChIJvcRW8vCVkkYRLZQ8UtBb4kE' AND map_id IS NULL;
+
+UPDATE google_venues SET map_id = 'kokomo' WHERE place_id = 'ChIJ8fqXMWGTkkYR4yJmeLSLG04' AND map_id IS NULL;

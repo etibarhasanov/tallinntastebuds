@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the Google Places export, into D1.
  *
- * Reads exports/tallinn_restaurants.csv — 1,111 places, 18 columns, the
+ * Reads exports/tallinn_restaurants.csv — 1,112 places, 18 columns, the
  * cleaned form of the raw Google export; see exports/README.md — and writes
  * db/google-venues.sql, which is what actually loads them.
  *
@@ -218,8 +218,14 @@ export function q(value) {
   return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 
+/* A number, or NULL for a cell with none in it. The empty test comes first for
+   the reason overallOrder() below gives: Number('') is 0, and a row Google has
+   not rated yet would load as 0.0 from 0 reviews — which the panel on the map
+   prints as a score — instead of as no score at all. */
 export function num(value) {
-  const n = Number(String(value == null ? '' : value).trim());
+  const cell = String(value == null ? '' : value).trim();
+  if (cell === '') return 'NULL';
+  const n = Number(cell);
   return Number.isFinite(n) ? String(n) : 'NULL';
 }
 
@@ -262,7 +268,7 @@ export function read(csv = CSV) {
     const id = cell('place_id');
     if (!id) continue;
     if (!PLACE_ID.test(id)) throw new Error(`${name} row ${i + 1}: "${id}" is not a Google place id`);
-    /* Google's key is unique in this export — all 1,111 of them — and the table
+    /* Google's key is unique in this export — all 1,112 of them — and the table
        makes it a primary key, so a duplicate would silently become one row
        with the later one's values. Better to stop. */
     if (seen.has(id)) throw new Error(`${name} row ${i + 1}: place_id ${id} appears twice`);
@@ -393,8 +399,10 @@ const RANK_PRIOR = 100;
  * A row Google gave no rating or no review count for is not ranked at all and
  * its column stays NULL — there is no honest place to put it among the rows it
  * did give numbers for, and both the route and the card already draw nothing
- * where the rank is absent. All 1,111 carry both today, so the ranks run 1 to
- * 1,111 with no gaps and the page's "of 1,111" is exact.
+ * where the rank is absent. 1,111 of the 1,112 carry both today — the one
+ * without is Kokomo, typed in by hand until Google's numbers for it arrive —
+ * so the ranks run 1 to 1,111 with no gaps, and the page's "of 1,111" counts
+ * the ranked rows rather than the table, which keeps it exact either way.
  *
  * overallOrder() below is the arithmetic itself, exported: tools/googlelists.mjs
  * takes its first twenty, open only, for "Top 20 places, by
@@ -464,7 +472,7 @@ export function build() {
   const out = [];
 
   /* Rows per INSERT. The console and wrangler both send one request per
-     statement, so a row-at-a-time file is 1,111 round trips to Cloudflare
+     statement, so a row-at-a-time file is 1,112 round trips to Cloudflare
      and several minutes of watching a progress bar; batched, it is
      twenty-three and a few seconds. Fifty keeps each statement around 26KB,
      which is comfortably inside every limit involved and still small enough
