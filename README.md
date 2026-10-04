@@ -11532,8 +11532,9 @@ was translated twice.
 
 Nothing in `press_counts` is filed under a person — there is no owner column,
 no device id, no fingerprint, and the route stores nothing about who pressed
-anything. The number is how many times a thing was pressed, by anybody, and
-one visitor opening the same place on five evenings is five.
+anything. The number is how many times a thing was pressed, by anybody but
+the owner signed in — **Visitors** says why — and one visitor opening the
+same place on five evenings is five.
 
 Which also means nothing stops somebody posting to `/api/stats` in a loop, and
 this does not pretend otherwise. The counts are not money and nobody is paid
@@ -11919,8 +11920,15 @@ first days a few returning browsers, the owner's among them, were most of
 the returning visitors' minutes and presses, and a page about who comes to
 the site should not be read through the person who built it. It costs one
 session lookup per report. Signed out, the owner is a visitor like anybody,
-as in GA — and `press_counts`, which ranks places and chips, still counts
-everyone, because it counts presses rather than people and says so.
+as in GA. Since 2026-10-04 the same check stands in front of every other
+kind the route takes, so `press_counts` — the ranking of places, chips,
+pills and lists on `/admin/stats` — and the profile numbers on `/insights`
+no longer hear from the owner either; before it they did, on the argument
+that they count presses rather than people, and the owner asked for their
+own presses out. The rows already counted stay as they are: nothing in a
+counts table says who made a row, so there is nothing to take back out.
+Google Analytics and Clarity are not this: they are counted in the browser,
+before any session is read, and still see the owner signed in.
 
 ### The language it was read in
 

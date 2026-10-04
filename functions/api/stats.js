@@ -228,6 +228,19 @@ export async function onRequestPost(context) {
   if (!env.DB) return json({ ok: false }, 200);
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
 
+  /* The owner signed in is not a visitor, and nothing they do is counted —
+     not a page, not a press, not a place, chip, pill or list opened, not a
+     look at somebody's profile. Their own afternoon on the site was most of
+     the returning visitors' minutes on the count's first days, and their
+     own opens sat in the ranking on /admin/stats beside everybody else's
+     until 2026-10-04: a page about how the site is used should not be read
+     through whoever built it. ADMINS in wrangler.toml names the accounts —
+     both the owner's, today. One session lookup per report, and none at
+     all where ADMINS is empty; signed out, the owner counts like anybody.
+     `venue` goes on past this, because it counts nothing and is the
+     owner's by definition: what it is carried for is the refresh. */
+  if (kind !== VENUE && (await adminUser(request, env))) return json({ ok: false }, 200);
+
   /* A profile opened, or something on one pressed. Counted into a table of
      their own and not press_counts, because the number belongs to the person
      whose page it is and is read by them on /insights rather than ranked
@@ -241,15 +254,7 @@ export async function onRequestPost(context) {
      the trail — the presses in the order they first happened — which
      ./_flows.js counts into flow_counts for the diagrams on /admin/flows, in
      a batch of its own so that neither table's absence fails the other.
-     Neither hears from the owner's own session. */
-  if (kind === ARRIVE || kind === LEAVE) {
-    /* The owner signed in is not a visitor: their own afternoon on the site
-       would otherwise be most of the returning visitors' minutes, and a
-       page about who comes should not be read through whoever built it.
-       One session lookup per report; signed out, the owner counts like
-       anybody. */
-    if (await adminUser(request, env)) return json({ ok: false }, 200);
-  }
+     Neither hears from the owner's own session — see above. */
   if (kind === ARRIVE) return json({ ok: await countArrive(context, body) }, 200);
   if (kind === LEAVE) {
     const [counted] = await Promise.all([countLeave(context, body), countFlows(context, body)]);
