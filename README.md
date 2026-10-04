@@ -4585,7 +4585,10 @@ When a place whose Google numbers the site prints is opened — a card on
 export also lists, whose panel ends "According to Google" (**Google, on a place
 of mine**) — the page tells `/api/stats`: an open on the map is counted, and a
 card on the directory, which only the owner can open, is not (**It counts
-opens, and an open is a gesture** under **Statistics**). For a place of
+opens, and an open is a gesture** under **Statistics**). Nor is the owner's
+own open on the map, which goes as a `venue` the way a directory card does:
+counted nowhere, but still asked about — otherwise a row typed in by hand,
+blank until its first refresh, would wait for a stranger to find it. For a place of
 mine the Google row is found by `map_id`, the same way that panel finds it. If
 the row's `refreshed_at` is empty or more than thirty days old, the same
 request, after its answer has gone, asks Google's Place Details about that one

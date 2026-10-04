@@ -4013,9 +4013,18 @@
   var counted = {};
 
   function postPress(kind, id) {
-    /* Nothing from the owner's browser — THE OWNER'S BROWSER in
-       functions/api/_admin.js. Signed in, the server would drop it anyway. */
-    if (window.TTBTrack && window.TTBTrack.owner) return;
+    /* Nothing counted from the owner's browser — THE OWNER'S BROWSER in
+       functions/api/_admin.js. Signed in, the server would drop it anyway.
+       Except that a place opened is also the moment its Google numbers get
+       asked about again, and for a row typed in by hand with every number
+       blank — Kokomo's, the day it went in — the owner is the one person
+       certain to open it first. So their place goes as a `venue`, the kind
+       the directory on /admin/google already sends: counted nowhere, and
+       carried only to refreshOnOpen(), which finds a slug's row by map_id. */
+    if (window.TTBTrack && window.TTBTrack.owner) {
+      if (kind !== 'place') return;
+      kind = 'venue';
+    }
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },

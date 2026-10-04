@@ -96,7 +96,7 @@ counted in one place:
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
 | `profile`, `profile-press` | the owner's own page | `countView()`, `countPress()` in `_visits.js` | `profile_counts` |
 | `arrive`, `leave` | every field, in `_visitors.js` | `countArrive()`, `countLeave()` + `countFlows()` | `visitor_counts`, `visitor_live`, `flow_counts` |
-| `venue` | nothing | nobody — it only asks `refreshOnOpen()` | — |
+| `venue` | nothing | nobody — it only asks `refreshOnOpen()`; sent by the directory, and by the map for a place the owner's browser opens | — |
 
 Every ending is `200 {ok:false}` unless the body itself would not parse. A
 press that did not count is not the visitor's problem, and the page is not
