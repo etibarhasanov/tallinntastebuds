@@ -982,6 +982,21 @@ argument rather than of code: until then my places always came first, in the
 catalogue's order, and Google's numbers ordered only Google's half. See **And
 on ordering my places by it** under **On "no scores, stars or rankings"**.
 
+Ahead of either order, and just behind how squarely the words landed, a
+place that **is** what was typed goes before one that is only filed beside it
+(`findSays()`): every word at the start of a word of its name or of Google's
+category for it. The taxonomy files cafés, tea rooms and bakeries alike under
+`coffee`, whose label is *Coffee/tea*, so *coffee* landed squarely on all of
+them, and the three best-rated were Pulla Bakery, Bekker Pagariäri and Morii
+Tea House — a bakery, a bakery and a matcha bar, which Google itself calls
+Bakery, Cafe and Cafe. Now *coffee* opens on Kringel, Paper Mill Coffee and
+The Brick, which Google calls a coffee shop and two roasteries, and the other
+three are still offered after every place that says the word. The dishes are
+deliberately not asked — Pulla's must-order is its coffee and it is still a
+bakery. Google's category is English, so a word typed in another language
+(*kohv*) lands on names alone, and where nothing says it the order is what it
+was.
+
 The city's half used to go by how many people had reviewed a place, which put
 a 4.2 third for *pizza* over a 4.9 because more tourists had passed it; a
 dropdown is read as a ranking whether it means to be one or not. A name that *starts* with what
