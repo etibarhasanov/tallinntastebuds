@@ -108,8 +108,9 @@ These are the invariants. A change that breaks one is wrong even when the
 validator passes and the page draws.
 
 1. **The owner is not a visitor.** `adminUser()` in `stats.js` answers
-   `{ok:false}` to an `arrive` or `leave` that carries the owner's session
-   before anything is counted; `countUse()` checks `adminIds()` itself;
+   `{ok:false}` to any report but `venue` that carries the owner's session
+   before anything is counted — `press_counts` and `profile_counts`
+   included, since 2026-10-04; `countUse()` checks `adminIds()` itself;
    `ask.js` leaves the owner out the same way; `realList()` and `_visits.js`
    refuse the owner of a list or a profile. A new counter leaves the owner
    out the same way, by the session and never by a header the browser
