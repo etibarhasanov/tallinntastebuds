@@ -274,7 +274,14 @@ Google's rows are filed by Google's words, because nobody here has been to
 them: `VENUE_TYPES` in `functions/api/_lib.js` and `KITCHENS` in
 `functions/api/venues.js` read *cafe*, *coffee* and *cafeteria* as Coffee and
 *tea house*, *tea store* and *bubble tea* as Tea. Fourteen rows of the export
-say tea, and eight of those say coffee as well and are both. The pins do not
+say tea, and eight of those say coffee as well and are both. Where Google is
+short a word the owner knows, `SAID_TOO` in `functions/api/_lib.js` adds it
+to the end of that one row's tags, by Google's key, wherever the row is read
+— never in the database, which stays a mirror of Google, so a refresh of the
+export cannot overwrite it. Gourmet Coffee on L. Koidula is the first: Google
+calls it a Restaurant tagged Coffee Shop and Cafe, and the owner knows it for
+its tea too, so it is Coffee and Tea. Only ever more words, never fewer; a
+Google row that is wrong is `hidden`. The pins do not
 split: a tea house draws the same cup a café does (`KINDS` in
 `assets/pins.js`), because the picture is of the kind of door, and it is the
 same door.
@@ -1060,6 +1067,17 @@ deliberately not asked — Pulla's must-order is its coffee and it is still a
 bakery. Google's category is English, so a word typed in another language
 (*kohv*) lands on names alone, and where nothing says it the order is what it
 was.
+
+**What I filed a place under outranks what Google calls it.** A place of mine
+is lent the kitchens of its Google row, so *thai* reaches my Thai place when
+its write-up never says the word — and that lending is how Kringel, filed as a
+Bakery, still opened *coffee* after the split, on Google's word that it is a
+Coffee Shop and on a better Google score than any café. So the lent kitchens
+find a place and do not rank it: how squarely the words land (`findTier()`)
+is measured against a place's own name, types and dishes alone, and a place
+the word only reached through Google's kitchen is a 1, under every place I
+filed under it. *Coffee* opens on Paper Mill Coffee, The Brick and Värav, and
+Kringel, Pulla and Bekker are still in the list, at the foot of it.
 
 The city's half used to go by how many people had reviewed a place, which put
 a 4.2 third for *pizza* over a 4.9 because more tourists had passed it; a

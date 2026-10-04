@@ -117,7 +117,7 @@
  * every one of them as absent.
  */
 
-import { json, wrongDatabase, venueHours } from './_lib.js';
+import { json, wrongDatabase, venueHours, tagsOf } from './_lib.js';
 
 /* Google's words for what a place cooks, in ids the site can say in ten
  * languages. data/cuisines.json carries the labels; this is the only thing
@@ -233,10 +233,10 @@ export const KITCHENS = [
  * still matching a row of the export, and it has to ask that question of the
  * same string this does. Two copies of this line would be two copies that
  * drift, and the check would then be passing on a haystack the site does not
- * build.
+ * build. The tags carry the owner's words on the end — SAID_TOO in ./_lib.js.
  */
 export function said(row) {
-  return [row.category, row.cuisine, row.tags]
+  return [row.category, row.cuisine, tagsOf(row)]
     .map((part) => String(part || '').toLowerCase())
     .join(' | ');
 }

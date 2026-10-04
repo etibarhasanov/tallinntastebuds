@@ -8494,8 +8494,14 @@
      order as the last tiebreak, spelled out rather than left to the sort,
      which older engines do not keep stable. The first FIND_MINE of these open
      the dropdown; the rest join the city's. What a place of mine is, for the tier,
-     is its types in ten languages, its dishes and the kitchens lent to it:
-     the same haystack hayIndex is built from, cut into its three parts. */
+     is its types in ten languages and its dishes: the haystack hayIndex is
+     built from, cut into its three parts. The kitchens Google lends it are
+     in the haystack the place is found by and not in the one it is ranked
+     by, because what I filed a place under outranks what Google calls it:
+     Kringel is a Coffee Shop to Google and a Bakery to me, and "coffee"
+     opened on it over every place I had filed as Coffee. Lent a word and
+     not filed under it, a place still answers — as a 1, under every place
+     the word lands on squarely; see findTier(). */
   function findMine(words, wish, away, area, level, tier, says) {
     var hits = [];
     var order = {};
@@ -8514,7 +8520,7 @@
         tier[place.id] = findTier(fold(place.name), fold([
           (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
           (place.mustOrder || []).join(' ')
-        ].join(' ')) + ' ' + (findLent[place.id] || ''), fold(place.address || ''), words);
+        ].join(' ')), fold(place.address || ''), words);
         says[place.id] = findSays(place, words);
         order[place.id] = i;
         hits.push(place);
