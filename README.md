@@ -242,7 +242,58 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 78 carry it today, and all eight are coffee or tea.
+8 of the 78 carry it today, and all eight are cafés, tea rooms or bakeries.
+
+---
+
+## What counts as Coffee, and what counts as Tea
+
+Until October 2026 these were one chip, *Coffee/tea*, and seventeen places
+carried it — every café, the two tea rooms, a kombucha bar and nearly every
+bakery. Pressing it answered "somewhere with a cup" and nothing more exact, and
+searching *coffee* opened on a bakery, a bakery and a matcha bar. The owner split
+it, and drew the line the same way the other two sections above draw theirs:
+**a place carries Coffee or Tea when that is what people go there for**, not
+when it is on the menu.
+
+- **Coffee** is where the coffee is the point: the roasteries and the cafés —
+  Paper Mill, The Brick, Kalve, Kokomo, Värav, Paper Mill Volta.
+- **Tea** is where the tea is the point: Morii, which people cross town for
+  the matcha and the hojicha, and Chamber Tea.
+- **Both**, when both are worth the trip. Nothing on the map is yet; a place
+  that is gets both ids, and the Coffee chip and a search for tea both find it.
+- **A bakery is a Bakery.** Almost all of them serve coffee, and none of them
+  is popular for it, so Pulla, Bekker, Bruto, Kringel, Magussoolane, La
+  Boulangerie, Faehlmanni and the Fotografiska café carry Bakery and not
+  Coffee. Paper Mill Volta is the exception that proves it: it is a Paper Mill
+  coffee shop that bakes, and carries both.
+- **Nullijook is neither** — it pours kombucha and alcohol-free drinks, not
+  coffee or tea.
+
+Google's rows are filed by Google's words, because nobody here has been to
+them: `VENUE_TYPES` in `functions/api/_lib.js` and `KITCHENS` in
+`functions/api/venues.js` read *cafe*, *coffee* and *cafeteria* as Coffee and
+*tea house*, *tea store* and *bubble tea* as Tea. Fourteen rows of the export
+say tea, and eight of those say coffee as well and are both. The pins do not
+split: a tea house draws the same cup a café does (`KINDS` in
+`assets/pins.js`), because the picture is of the kind of door, and it is the
+same door.
+
+**Tea is a type and not a chip.** Two places are too few to earn a slot on
+the row, so the owner kept it off: `"chip": false` beside its labels in
+`data/taxonomy.json` is what `usedTypeIds()` in `assets/app.js` reads, and the
+validator lets that one key through as false and nothing else. Everywhere
+else it is a type like any other — a row says *Tea* in ten languages, both
+searches and the chat find *tea*, *чай*, *matcha* and *hojicha*, a Google
+venue can be one — so somebody after tea types it into the search rather
+than pressing for it. A `?type=tea` link is ignored the way a type no place
+carries is, and `/admin/stats` leaves it out of its table of chips rather
+than print a row that reads nought forever. If tea grows into a chip's worth
+of places, taking the key out is the whole change.
+
+The `coffee` id did not change, so a link, a list or a count on `/admin/stats`
+from before the split still means coffee — presses of the old chip are counted
+there as presses of Coffee, which is the larger half of what they were.
 
 ---
 
@@ -257,7 +308,7 @@ do not have to scroll for. Today that is:
 | --- | --- | --- |
 | 1 | Casual/Solo | 46 |
 | 2 | Bakery | 17 |
-| 3 | Coffee/tea | 17 |
+| 3 | Coffee | 6 |
 | 4 | Beer/pub | 13 |
 | 5 | Hidden gem | 15 |
 | 6 | Cheap eats | 11 |
@@ -269,7 +320,10 @@ do not have to scroll for. Today that is:
 | 12 | Caucasus | 7 |
 | 13 | Restaurant | 31 |
 
-Two places in that table are hand-set against the counts, and both are about
+Tea is written fourth in the file, beside Coffee, and draws no chip — see
+**What counts as Coffee, and what counts as Tea**.
+
+Three places in that table are hand-set against the counts, and all three are about
 what a chip is *for* rather than how big it is.
 
 **Restaurant is last, on 30 places.** By frequency it would be second, ahead of
@@ -278,6 +332,11 @@ two places in five has barely answered the question it was pressed to answer.
 It earns its place in the row — the shape of a place is a real thing to ask
 about, and the line is drawn above — but it is the one people reach for last,
 so it is the one they scroll to.
+
+**Coffee stays where Coffee/tea was**, third, on six places. It was one chip
+in that place when it was split — see **What counts as Coffee, and what
+counts as Tea** — and somebody who learnt the row looks for a cup there; the
+count says it belongs at the end, beside Fine dining.
 
 **Laptop friendly sits with Date night**, above the cuisines, on fewer places
 than either. Somebody scanning the row is usually after a kind of afternoon or
@@ -742,7 +801,7 @@ work as well as `fırın`.
 
 A word of five letters or more is also tried without its last two, so the
 endings ten languages put on a word still reach the label it came from:
-`kohvik` and `kohvi` reach *Kohv/tee*, `kahvila` reaches *Kahvi/tee*,
+`kohvik` and `kohvi` reach *Kohv*, `kahvila` reaches *Kahvi*,
 `пиццу` reaches *Пицца*, `kebabi` the kebab shops. That is the cheap end of
 stemming — one rule and no dictionary — and the only end a site in ten
 languages can afford. Four letters is the floor: `pizza` is looked for as
@@ -770,9 +829,10 @@ the city's half goes when one of mine carries the word itself.
 **And a kind of place can carry words that are not its name.** A type in
 `data/taxonomy.json` may have a `words` key beside its ten labels — what else
 somebody types when they mean that kind of place, in no language in
-particular, joined by `/` the way a label is. Coffee/tea carries the drinks —
-*espresso*, *cappuccino*, *latte*, *flatwhite*, *matcha* and the rest — and
-the words for a café in the languages whose label does not say it. Nothing
+particular, joined by `/` the way a label is. Coffee carries the drinks —
+*espresso*, *cappuccino*, *latte*, *flatwhite* and the rest — and the words
+for a café in the languages whose label does not say it; Tea carries
+*matcha*, *hojicha*, *oolong* and the words for a tea house. Nothing
 ever prints them; both searches on the map and the chat's reader match them
 exactly as they match a label, so *cappuccino* is the seventeen cafés on the
 map and not the none that have the word in a dish. The validator lets that one
@@ -938,7 +998,7 @@ know more about them.
 
 A word has to land somewhere in the haystack for the row to match, so
 `telliskivi kohvik` narrows rather than widening — and a word of five letters
-or more also lands on its first letters, so `kohvik` reaches *Kohv/tee*, and
+or more also lands on its first letters, so `kohvik` reaches *Kohv*, and
 failing that on a word one slip away, so `cappucino` reaches the cafés;
 **Searching the list** has both rules. Ahead of any other order, the rows that
 carry the words as typed come before the rows that only reached them by a
@@ -985,13 +1045,17 @@ on ordering my places by it** under **On "no scores, stars or rankings"**.
 Ahead of either order, and just behind how squarely the words landed, a
 place that **is** what was typed goes before one that is only filed beside it
 (`findSays()`): every word at the start of a word of its name or of Google's
-category for it. The taxonomy files cafés, tea rooms and bakeries alike under
-`coffee`, whose label is *Coffee/tea*, so *coffee* landed squarely on all of
+category for it. The taxonomy filed cafés, tea rooms and bakeries alike under
+`coffee`, whose label was *Coffee/tea*, so *coffee* landed squarely on all of
 them, and the three best-rated were Pulla Bakery, Bekker Pagariäri and Morii
 Tea House — a bakery, a bakery and a matcha bar, which Google itself calls
 Bakery, Cafe and Cafe. Now *coffee* opens on Kringel, Paper Mill Coffee and
 The Brick, which Google calls a coffee shop and two roasteries, and the other
-three are still offered after every place that says the word. The dishes are
+three are still offered after every place that says the word. The split that
+followed — **What counts as Coffee, and what counts as Tea** — took the
+bakeries and the tea rooms off `coffee` altogether; this rule is still what
+orders a place Google calls a coffee shop ahead of one that only lends it a
+coffee kitchen. The dishes are
 deliberately not asked — Pulla's must-order is its coffee and it is still a
 bakery. Google's category is English, so a word typed in another language
 (*kohv*) lands on names alone, and where nothing says it the order is what it
@@ -1708,7 +1772,7 @@ drew three places for a question it had no clue about, with nothing under
 them, in the model's voice. A shrug is honest; that was not.
 
 What `assets/ask.js` still does is read. It turns a sentence into the wish
-the Function narrows on — which of the thirteen types, cheap or fancy, open
+the Function narrows on — which of the fourteen types, cheap or fancy, open
 now, what to be near, and the words left over that might be a dish or a
 street — in all ten languages at once, because its vocabulary is the taxonomy
 labels this page already holds, so *pagariäri*, *bakery* and *пекарня* all

@@ -60,8 +60,8 @@
  * Google's `rating`, `reviews`, `rank` and `category` ride on the roll for
  * the same reader. A Google row carries its own; a place of mine is lent its
  * linked row's, by map_id, the way it is lent the kitchens — the category so
- * that "coffee" can tell a coffee shop of mine from a bakery filed under
- * Coffee/tea. The bar offers at most
+ * that "coffee" can tell a coffee shop of mine from a bakery Google lends a
+ * coffee kitchen to. The bar offers at most
  * three of my places first, best by Google's reviews, and everything after
  * that — mine included — in the order `rank` puts the whole export in. None
  * of the four is ever printed on a row of the bar; the owner's reasoning is

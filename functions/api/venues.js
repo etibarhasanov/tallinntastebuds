@@ -127,7 +127,7 @@ import { json, wrongDatabase, venueHours } from './_lib.js';
  *
  * That table answers "which of the map's own types is this", because a list
  * row drawn from the export has to sit beside places from data/restaurants.json
- * and be described in the same seven words. This one answers "what would you
+ * and be described in the same eight words. This one answers "what would you
  * come here to eat", which is a directory's question and needs a directory's
  * vocabulary: `japanese` and `thai` where the map says `asian`, `pizza` and
  * `burgers` where it says `restaurant`.
@@ -194,7 +194,10 @@ export const KITCHENS = [
   ['seafood',          /seafood|oyster|\bfish\b/],
   ['vegan',            /vegan|vegetarian/],
   ['bakery',           /bakery|pastry|donut|dessert|confectionery|patisserie/],
-  ['coffee',           /\bcafe\b|coffee|tea house|cafeteria/],
+  ['coffee',           /\bcafe\b|coffee|cafeteria/],
+  /* The fourteen tea houses, bubble tea bars and leaf shops, eight of them
+     also coffee — _lib.js says the same words for the same split. */
+  ['tea',              /tea house|tea store|teahouse|bubble tea/],
   /* Beer, and only beer. This used to carry \bbar\b as well, which Google hangs
      on any restaurant with a drinks licence: it would file 202 places under
      the map's word for a beer hall, of which 30 have a beer word and the rest

@@ -171,7 +171,7 @@ window.TTBAsk = (function () {
   /* Every way a label could be typed. A label is written for a chip on a
      filter row, and nobody types a chip:
 
-       "Coffee/tea"       two words for one thing, and one of them is typed
+       "Beer/pub"         two words for one thing, and one of them is typed
        "Date night"       asked for as "a date", never as "a date night"
        "Vabas vormis/üksi" both halves, and either word of the first
 

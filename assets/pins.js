@@ -150,9 +150,11 @@ window.TTBPins = (function () {
      coffee, 160 bar, 135 fast, 66 bakery. The eighteen ice cream, chocolate
      and dessert shops among them land in bakery, which is where a sweet thing you take
      away belongs — no cuisine id names them, and inventing one would put a
-     chip on the directory to serve a pin. */
+     chip on the directory to serve a pin. A tea house is a cup too, and
+     draws as one. */
   var KINDS = {
     coffee: 'coffee',
+    tea: 'coffee',
     bar: 'bar',
     pub: 'bar',
     'fast-food': 'fast',
