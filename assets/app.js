@@ -8194,7 +8194,8 @@
   var findLent = {};
 
   /* Google's numbers for a place of mine, by the map's id, off the row the
-     export has tied to it: { rating, reviews, rank }. Only for ordering —
+     export has tied to it: { rating, reviews, rank, category }. Only for
+     ordering —
      a row of the bar never prints them. Empty until the roll is in, and for
      a place the export has no linked row for. */
   var findRated = {};
@@ -8247,7 +8248,8 @@
           findRated[row.mapId || row.id] = {
             rating: row.rating,
             reviews: row.reviews,
-            rank: row.rank
+            rank: row.rank,
+            category: row.category || ''
           };
           continue;
         }
@@ -8366,12 +8368,14 @@
      order, the rows that carry the words as typed come before the rows that
      only reached them by a stem — see hasWords() — and within each, the rows
      the words land on squarely before the ones they only brush: see
-     findTier(). */
-  function findOrder(words, wish, away, level, tier, named) {
+     findTier() — and among those, the ones that ARE what was typed before
+     the ones only filed beside it: see findSays(). */
+  function findOrder(words, wish, away, level, tier, says, named) {
     var q = words.join(' ');
     return function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
+      if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
       if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
       if (named) {
         var ah = fold(a.name).indexOf(q) === 0 ? 0 : 1;
@@ -8401,10 +8405,37 @@
     return typeof rank === 'number' ? rank : Infinity;
   }
 
+  /* WHAT A PLACE IS, AGAINST WHAT IT IS FILED UNDER
+
+     1 when every word lands at the start of a word of the place's name or
+     of Google's category for it — the one word the export says a place is,
+     "Coffee Shop", "Bakery", "Cafe" — and 0 when the words only reached it
+     some other way. The taxonomy files cafés, tea rooms and bakeries alike
+     under `coffee`, whose label is Coffee/tea, so "coffee" lands squarely on
+     all of them, and the best-rated of them were a bakery, a bakery and a
+     matcha bar: Pulla, Bekker and Morii opened the dropdown over Kringel and
+     two roasteries. The owner's objection, and the data agreed with it —
+     Google calls the first Bakery and the other two Cafe. So a place that
+     says the word, in its name or in what Google calls it, goes ahead of one
+     that is only filed beside it; the rest are still offered, in the order
+     they were. The dishes are deliberately not asked: Pulla's must-order is
+     its coffee and it is still a bakery. A place of mine reads its linked
+     row's category out of findRated, a Google row its own. Google's category
+     is English, so a word typed in another language lands on names alone,
+     and where nothing says it the order is what it was. */
+  function findSays(row, words) {
+    var name = fold(row.name);
+    var category = fold(byMapId(row.id) ? (findRated[row.id] || {}).category || '' : row.category || '');
+    for (var i = 0; i < words.length; i++) {
+      if (wordAt(name, words[i]) < 2 && wordAt(category, words[i]) < 2) return 0;
+    }
+    return 1;
+  }
+
   /* The city's half: every row of the roll the words reach, inside `area`
      when there is one — null is the whole city; see findArea(). Unordered:
      findHits() puts it among the rest of mine and orders the lot. */
-  function findCity(words, wish, area, level, tier) {
+  function findCity(words, wish, area, level, tier, says) {
     var hits = [];
     if (!findRoll) return hits;
     for (var i = 0; i < findRoll.length; i++) {
@@ -8414,6 +8445,7 @@
       if (hit && findPriced(row, wish)) {
         level[row.id] = hit;
         tier[row.id] = findTier(fold(row.name), findKind[row.id] || '', fold(row.address || ''), words);
+        says[row.id] = findSays(row, words);
         hits.push(row);
       }
     }
@@ -8440,7 +8472,8 @@
 
   /* Mine: the words as typed ahead of the words by their stems and their
      slips, then the squarest hits ahead of the glancing ones — findTier() —
-     then nearest first when the field asked to be near and there is a dot
+     then the ones that are what was typed ahead of the ones filed beside it
+     — findSays() — then nearest first when the field asked to be near and there is a dot
      — the city's rule, so the three do not open on whichever is closest to a
      visitor who asked for the best — else best first by Google's
      reviews — findScore() over the numbers lent to it, so a place the export
@@ -8450,7 +8483,7 @@
      the dropdown; the rest join the city's. What a place of mine is, for the tier,
      is its types in ten languages, its dishes and the kitchens lent to it:
      the same haystack hayIndex is built from, cut into its three parts. */
-  function findMine(words, wish, away, area, level, tier) {
+  function findMine(words, wish, away, area, level, tier, says) {
     var hits = [];
     var order = {};
     for (var i = 0; i < state.places.length; i++) {
@@ -8469,6 +8502,7 @@
           (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
           (place.mustOrder || []).join(' ')
         ].join(' ')) + ' ' + (findLent[place.id] || ''), fold(place.address || ''), words);
+        says[place.id] = findSays(place, words);
         order[place.id] = i;
         hits.push(place);
       }
@@ -8476,6 +8510,7 @@
     hits.sort(function (a, b) {
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
+      if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
       if (away && wish.nearby && away[a.id] !== away[b.id]) return away[a.id] - away[b.id];
       var as = findScore(findRated[a.id] || {});
       var bs = findScore(findRated[b.id] || {});
@@ -8702,13 +8737,14 @@
     var outside = false;
     var level = {};
     var tier = {};
-    var mine = findMine(words, wish, away, area, level, tier);
-    var city = findCity(words, wish, area, level, tier);
+    var says = {};
+    var mine = findMine(words, wish, away, area, level, tier, says);
+    var city = findCity(words, wish, area, level, tier, says);
     if (!bounds && area && findRoll && !anyFirm(mine.concat(city), tier)) {
       area = null;
       outside = true;
-      mine = findMine(words, wish, away, null, level, tier);
-      city = findCity(words, wish, null, level, tier);
+      mine = findMine(words, wish, away, null, level, tier, says);
+      city = findCity(words, wish, null, level, tier, says);
     }
     var firm = anyFirm(mine.concat(city), tier);
     mine = firmOnly(bestOnly(mine, level), tier, firm);
@@ -8717,7 +8753,7 @@
        one order: see THE ORDER above findOrder(). */
     var named = !city.some(function (row) { return hasWords(findKind[row.id] || '', words) === 3; });
     var rest = mine.slice(FIND_MINE).concat(city);
-    rest.sort(findOrder(words, wish, away, level, tier, named));
+    rest.sort(findOrder(words, wish, away, level, tier, says, named));
     return {
       wish: wish,
       at: at,

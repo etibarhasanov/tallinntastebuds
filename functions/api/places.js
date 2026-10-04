@@ -57,12 +57,14 @@
  *
  * THE FIND BAR'S ORDER
  *
- * Google's `rating`, `reviews` and `rank` ride on the roll for the same
- * reader. A Google row carries its own; a place of mine is lent its linked
- * row's, by map_id, the way it is lent the kitchens. The bar offers at most
+ * Google's `rating`, `reviews`, `rank` and `category` ride on the roll for
+ * the same reader. A Google row carries its own; a place of mine is lent its
+ * linked row's, by map_id, the way it is lent the kitchens — the category so
+ * that "coffee" can tell a coffee shop of mine from a bakery filed under
+ * Coffee/tea. The bar offers at most
  * three of my places first, best by Google's reviews, and everything after
  * that — mine included — in the order `rank` puts the whole export in. None
- * of the three is ever printed on a row of the bar; the owner's reasoning is
+ * of the four is ever printed on a row of the bar; the owner's reasoning is
  * under **The find bar's order** in README.md. The picker reads none of them.
  */
 
@@ -167,6 +169,7 @@ export async function onRequestGet(context) {
           if (typeof row.rating === 'number') place.rating = row.rating;
           if (typeof row.reviews === 'number') place.reviews = row.reviews;
           if (typeof row.rank === 'number') place.rank = row.rank;
+          if (row.category) place.category = row.category;
           continue;
         }
         const name = fold(row.name);
