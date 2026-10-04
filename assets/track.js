@@ -40,7 +40,10 @@
  * later page that day still knows whether it belongs to a new visitor or a
  * returning one — or the day Google's `_ga` cookie says, where that is
  * earlier, since the count is younger than the site. No id is made or sent. The owner's pages under /admin/ send
- * nothing.
+ * nothing, and neither does any page in a browser carrying the `ttb_owner`
+ * cookie — the owner's, signed in or not; THE OWNER'S BROWSER in
+ * functions/api/_admin.js. `owner` on the object below says so, for the two
+ * pages that post a press of their own.
  *
  * THE ORDER THEY CAME IN
  *
@@ -236,7 +239,8 @@ window.TTBTrack = (function () {
   var SEEN_KEY = 'ttb.seen';
   var SINCE_KEY = 'ttb.since';
   var STEP_KEY = 'ttb.step';
-  var COUNTED = window.location.pathname.indexOf('/admin') !== 0;
+  var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
+  var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER;
   var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
   var arrived = false;
   var DAY = /^\d{4}-\d{2}-\d{2}$/;
@@ -549,5 +553,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about };
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, owner: OWNER };
 })();

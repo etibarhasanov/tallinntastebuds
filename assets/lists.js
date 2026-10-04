@@ -511,6 +511,9 @@
   /* The one POST all three make. keepalive, so a press on a link that leaves
      the page in this tab is still sent after the page has gone. */
   function tell(payload) {
+    /* Nothing from the owner's browser — THE OWNER'S BROWSER in
+       functions/api/_admin.js. Signed in, the server would drop it anyway. */
+    if (window.TTBTrack && window.TTBTrack.owner) return;
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
