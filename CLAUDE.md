@@ -47,7 +47,7 @@ does not have to:
   answer changes month to month and the rule says how to read a file on
   either side of that line.
 - **The counts are written into the prose** — seventy-five places, 1,111
-  Google venues, ten languages, thirteen types — in the README, the code
+  Google venues, ten languages, fourteen types — in the README, the code
   comments and the skills, and each skill says where its own copies live and
   gives the `grep` that finds them. Change a count, move the copies you are
   standing in, and say which you left.

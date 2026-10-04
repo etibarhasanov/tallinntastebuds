@@ -295,8 +295,10 @@ async function ranked(context, words, countOf) {
     return [];
   }
 
+  /* A type the taxonomy keeps off the chip row (`"chip": false` — Tea) has
+     no chip to press, and a row for it would read nought forever. */
   const rows = types
-    .filter((type) => type && typeof type[words.lang] === 'string' && type[words.lang])
+    .filter((type) => type && type.chip !== false && typeof type[words.lang] === 'string' && type[words.lang])
     .map((type) => ({ id: type.id, name: type[words.lang], n: countOf(FILTER, type.id) }));
 
   if (words.ui.filterDiscount) {

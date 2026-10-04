@@ -613,7 +613,13 @@ export async function wordsFor(context, asked, only) {
 const VENUE_TYPES = [
   ['restaurant',  /restaurant|bistro|steak|grill|buffet/],
   ['bakery',      /bakery|pastry|donut|dessert/],
-  ['coffee',      /cafe|coffee|tea house|brunch|cafeteria/],
+  ['coffee',      /cafe|coffee|brunch|cafeteria/],
+  /* Tea was half of `coffee` until October 2026, when the owner split the
+     two. Fourteen rows of the export say one of these: the tea houses, the
+     bubble tea bars and the shops selling leaves — and the eight of them
+     that also say coffee or cafe are both, which is what a place with good
+     coffee and good tea should be. */
+  ['tea',         /tea house|tea store|teahouse|bubble tea/],
   ['pub',         /\bbar\b|\bpub\b|brewpub|brewery|beer|wine|cocktail/],
   ['asian',       /asian|japanese|sushi|ramen|izakaya|chinese|thai|korean|vietnamese|taiwanese|indonesian|malaysian|filipino|noodle|dumpling/],
   ['vegan',       /vegan|vegetarian/],

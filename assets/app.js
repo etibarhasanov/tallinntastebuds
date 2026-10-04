@@ -90,7 +90,7 @@
   var LAYOUT_DEAL_KEY = 'ttb.layout.deal';
   var LAYOUTS = ['a', 'b'];
   /* The chips the short rail stands outside the drawer, in this order, out
-     of the thirteen and the discount. The three /admin/stats says get
+     of the thirteen chips and the discount. The three /admin/stats says get
      pressed; the discount only while one is live, since renderFilters draws
      it nowhere otherwise. */
   var FRONT_CHIPS = [DEAL_FILTER, 'bakery', 'hidden-gem'];
@@ -4146,12 +4146,20 @@
     return picked.split(',').filter(function (id) { return live.indexOf(id) !== -1; });
   }
 
+  /* The types the chip row draws, in the taxonomy's order: the ones some
+     place carries, less any the taxonomy marks `"chip": false`. Tea is that:
+     two places are too few for a chip worth a slot on the row, so the owner
+     kept it off, and it is a type everywhere else — the label on a row, a
+     word both searches and the chat find, a kind of Google venue. A ?type=
+     link naming it is ignored for the same reason. See **What counts as
+     Coffee, and what counts as Tea** in README.md. */
   function usedTypeIds() {
     var used = {};
     state.places.forEach(function (p) {
       (p.types || []).forEach(function (id) { used[id] = true; });
     });
     return state.types
+      .filter(function (t2) { return t2.chip !== false; })
       .map(function (t2) { return t2.id; })
       .filter(function (id) { return used[id]; });
   }
@@ -7904,8 +7912,8 @@
 
      A word of five letters or more is also tried without its last two, so
      that the endings ten languages put on a word still reach the label it
-     came from: "kohvik" and "kohvi" reach Kohv/tee, "kahvila" reaches
-     Kahvi/tee, "пиццу" reaches Пицца, "kebabi" the kebab shops. That is the
+     came from: "kohvik" and "kohvi" reach Kohv, "kahvila" reaches
+     Kahvi, "пиццу" reaches Пицца, "kebabi" the kebab shops. That is the
      cheap end of stemming, and the only end this site can afford in ten
      languages. Four letters is the floor, so "pizza" is looked for as
      "pizz" at the shortest and a three-letter stem never matches half the
@@ -8413,15 +8421,17 @@
      1 when every word lands at the start of a word of the place's name or
      of Google's category for it — the one word the export says a place is,
      "Coffee Shop", "Bakery", "Cafe" — and 0 when the words only reached it
-     some other way. The taxonomy files cafés, tea rooms and bakeries alike
-     under `coffee`, whose label is Coffee/tea, so "coffee" lands squarely on
+     some other way. The taxonomy filed cafés, tea rooms and bakeries alike
+     under `coffee`, whose label was Coffee/tea, so "coffee" landed squarely on
      all of them, and the best-rated of them were a bakery, a bakery and a
      matcha bar: Pulla, Bekker and Morii opened the dropdown over Kringel and
      two roasteries. The owner's objection, and the data agreed with it —
      Google calls the first Bakery and the other two Cafe. So a place that
      says the word, in its name or in what Google calls it, goes ahead of one
      that is only filed beside it; the rest are still offered, in the order
-     they were. The dishes are deliberately not asked: Pulla's must-order is
+     they were. The split into Coffee and Tea that followed took the bakeries
+     and the tea rooms off `coffee`, and this still orders a coffee shop ahead
+     of a place Google only lends a coffee kitchen to. The dishes are deliberately not asked: Pulla's must-order is
      its coffee and it is still a bakery. A place of mine reads its linked
      row's category out of findRated, a Google row its own. Google's category
      is English, so a word typed in another language lands on names alone,

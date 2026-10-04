@@ -264,7 +264,7 @@ function schemaType(place) {
   const types = place.types || [];
   if (types.indexOf('bakery') !== -1) return 'Bakery';
   if (types.indexOf('pub') !== -1) return 'BarOrPub';
-  if (types.indexOf('coffee') !== -1) return 'CafeOrCoffeeShop';
+  if (types.indexOf('coffee') !== -1 || types.indexOf('tea') !== -1) return 'CafeOrCoffeeShop';
   return 'Restaurant';
 }
 

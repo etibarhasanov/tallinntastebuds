@@ -229,8 +229,7 @@
     "lng": 24.7104732,
     "price": 2,
     "types": [
-      "bakery",
-      "coffee"
+      "bakery"
     ],
     "blurb": {
       "az": "Şəhərdəki bir çox yerə çörək və krinqel verən əsl köhnə çörəkxana. Duzlu karamelli olan ağlasığmazdır. Zalın özünün gizli küncləri var və hava soyuduqca daha da rahat olur. Duzlu və şirin xəmir işlərini sınayın. Qrup halındasınızsa, hər birindən bir dənə sifariş edin. Və hər şeyi bölüşün.",
@@ -301,7 +300,6 @@
     "price": 2.5,
     "types": [
       "bakery",
-      "coffee",
       "casual"
     ],
     "blurb": {
@@ -542,7 +540,7 @@
     "lng": 24.6760982,
     "price": 2,
     "types": [
-      "coffee",
+      "tea",
       "hidden-gem",
       "laptop"
     ],
@@ -751,7 +749,6 @@
     "price": 2,
     "types": [
       "bakery",
-      "coffee",
       "casual",
       "laptop"
     ],
@@ -897,7 +894,6 @@
     "types": [
       "casual",
       "bakery",
-      "coffee",
       "laptop"
     ],
     "blurb": {
@@ -1448,8 +1444,7 @@
     "price": 2,
     "types": [
       "bakery",
-      "vegan",
-      "coffee"
+      "vegan"
     ],
     "blurb": {
       "az": "Çox yaxşı kringellər olan vegan məkan. İrad tutmağa bir şey yoxdur. Çox populyardır və səbəbsiz deyil.",
@@ -1480,7 +1475,6 @@
     "price": 2,
     "types": [
       "bakery",
-      "coffee",
       "casual"
     ],
     "blurb": {
@@ -1618,7 +1612,6 @@
     "price": 2,
     "types": [
       "bakery",
-      "coffee",
       "casual"
     ],
     "blurb": {
@@ -1755,7 +1748,7 @@
     "lng": 24.7324773,
     "price": 2,
     "types": [
-      "coffee",
+      "tea",
       "casual",
       "laptop"
     ],
@@ -1795,7 +1788,6 @@
     "lng": 24.6756483,
     "price": 2,
     "types": [
-      "coffee",
       "casual"
     ],
     "blurb": {
@@ -2038,7 +2030,6 @@
     "price": 1,
     "types": [
       "bakery",
-      "coffee",
       "casual"
     ],
     "blurb": {
