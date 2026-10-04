@@ -200,7 +200,18 @@ const HOUR = 3600000;
    only because MAX_CARDS is twice this. */
 const PER_READ = 99;
 
-/* ------------------------------------------------------------- the spacing
+/* ------------------------------------------------------------- the boxes
+ * A card known once stays known. Nothing below brings it back on its own:
+ * knownOf() calls a card due only while it is in box nought, so a deck that
+ * has been got right all the way through stays at "27 / 27" rather than
+ * reading "20 due" a week later. That was the spacing, and it was switched
+ * off on 2026-10-04 at the owner's word — a word known is a word known.
+ *
+ * The boxes are still climbed and due_at still written, because the rows
+ * are worth keeping exactly as they were: the day somebody wants the
+ * spacing back, it is the one line in knownOf() and nothing to backfill.
+ * What follows is the scheme as it was, and as it would be again.
+ *
  * How long a card waits before it is asked again, by the box it is in: one
  * day, three, a week, a fortnight, five weeks, eleven. Six rungs, and a card
  * that reaches the last one stays there, which is a little over four months
@@ -302,9 +313,8 @@ function shutAt(level, words, ready) {
 }
 
 /* And the other one: every card, from every deck, that this person has got
-   right at least once — box one and up — with the ones whose wait has come
-   round put first. It is the spacing's own queue, "what to look at again
-   today", gathered out of the same rows in the same way, and its id is
+   right at least once — box one and up — to go through whenever they like.
+   It is gathered out of the same rows in the same way, and its id is
    reserved for the same reason. */
 const REVIEW_DECK = 'review';
 
@@ -482,8 +492,8 @@ async function cardsOf(env, deckId) {
  * This is readingPins() in ./_pins.js, which solves the same problem for the
  * column a list's marker lives in: try the query that wants them, and on the
  * one error that means they are missing, remember that for the life of the
- * isolate and run the other one instead. Without them every known card reads
- * as due, which is what this page did before there was any spacing at all.
+ * isolate and run the other one instead. Without them every row reads as box
+ * one — known, and resting, which is all a row meant before box nought.
  */
 let spaced = null;
 
@@ -500,19 +510,18 @@ async function readingBoxes(env, make) {
   }
 }
 
-/* Every card this person has said they know, and whether it is due to be
-   asked again: a Map of "<deck>/<card>" to true for due, false for resting.
+/* Every card this person has answered, and what that answer left it as: a
+   Map of "<deck>/<card>" to whether it is known, missed and due.
    One indexed read over their own rows, rather than a query per deck — an
    account that has been through everything this site ships holds eight hundred
    rows, which is smaller than the answer the page is about to draw anyway. */
 async function knownOf(env, user) {
   if (!user) return new Map();
-  const now = Date.now();
   const { results } = await readingBoxes(env, (boxes) =>
     env.DB
       .prepare(boxes
-        ? 'SELECT deck_id, card_id, box, due_at FROM flashcard_known WHERE user_id = ?'
-        : 'SELECT deck_id, card_id, 1 AS box, 0 AS due_at FROM flashcard_known WHERE user_id = ?')
+        ? 'SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ?'
+        : 'SELECT deck_id, card_id, 1 AS box FROM flashcard_known WHERE user_id = ?')
       .bind(user.id)
       .all());
   const out = new Map();
@@ -522,10 +531,12 @@ async function knownOf(env, user) {
          seen and got wrong, which is the opposite of knowing it. */
       known: row.box > MISSED,
       missed: row.box === MISSED,
-      due: row.due_at <= now,
-      /* When it came due, kept so the review deck can put the card that has
-         waited longest first. Nothing else reads it. */
-      at: row.due_at
+      /* Due is box nought and nothing else. A card got right stays known
+         and is never brought back on its own — the owner's call, after a
+         deck of twenty-seven read "20 due" a week after every one of them
+         had been answered. due_at is still written and still climbs; it is
+         just not read here, so the spacing is one line from coming back. */
+      due: row.box === MISSED
     });
   }
   return out;
@@ -563,9 +574,10 @@ function stateOf(known, deckId, cardId) {
 
    Two booleans per card and they are not the same question. `known` is
    whether this person has ever got it right, which is what the count on the
-   deck's row is made of. `due` is whether it is in today's run: a card nobody
-   has ever answered is due because it has never been asked, and a card
-   answered right is not due again until its box says so. */
+   deck's row is made of. `due` is whether it is in the run: a card nobody
+   has ever answered is due because it has never been asked, a card got
+   wrong is due until it is got right, and a card answered right is not due
+   again. */
 function deckAnswer(deck, cards, own, known) {
   return {
     id: deck.id,
@@ -599,7 +611,7 @@ function deckAnswer(deck, cards, own, known) {
  * Every card, from every deck, that is sitting in box nought, as one deck —
  * and every card that has been got right at least once, as another. Each is
  * the thing people actually want after a run: show me the ones I got wrong,
- * and show me what I have learnt, when it is time. They are queries rather
+ * and show me what I have learnt. They are queries rather
  * than tables: the rows are already there, and a second table holding the
  * same cards under a different name is two places for a card to be.
  *
@@ -610,8 +622,8 @@ function deckAnswer(deck, cards, own, known) {
  * two hundred rather than a query that grows without a ceiling. The review
  * deck is the one where the cap can bite for an ordinary reader — eight
  * hundred known cards is somebody who has been through everything the site
- * ships — which is why the due ones are put in front of the rest before the
- * cut: what is waiting is never the part that gets left out.
+ * ships — and what it costs them is the tail of a deck they are going
+ * through by choice, since nothing in it is ever due.
  *
  * Each card keeps the id of the deck it is really from, so that answering it
  * here writes to that row. Nothing is ever written under either id.
@@ -666,21 +678,13 @@ function missedDeck(context, user, decks, known) {
   return gathered(context, user, decks, MISSED_DECK, want);
 }
 
-/* Due first, and among the due the one that has waited longest first — a card
-   a fortnight overdue is nearer to being forgotten than one due this morning,
-   and it is the spacing's whole point that it is asked before it goes. The
-   rest follow in the order the rows came, and the page leaves them out of a
-   run until they come round: they are there so that Go through it anyway has
-   the whole of what somebody knows to go through. */
+/* Every known card, in the order the rows came. None of them is due — a card
+   known stays known — so the page opens this on its rested card and Go
+   through it anyway has the whole of what somebody knows to go through. */
 function reviewDeck(context, user, decks, known) {
-  const due = [];
-  const rest = [];
-  known.forEach((was, key) => {
-    if (!was.known || readRow(key)) return;
-    (was.due ? due : rest).push({ ...keyed(key), at: was.at });
-  });
-  due.sort((a, b) => a.at - b.at);
-  return gathered(context, user, decks, REVIEW_DECK, due.concat(rest));
+  const want = [];
+  known.forEach((was, key) => { if (was.known && !readRow(key)) want.push(keyed(key)); });
+  return gathered(context, user, decks, REVIEW_DECK, want);
 }
 
 /* ---------------------------------------------------------------- reading */
@@ -801,13 +805,12 @@ export async function onRequestGet(context) {
   /* And the two that are assembled rather than stored, at the top where they
      belong: what somebody got wrong is the most useful thing on this page and
      the only part of it they did not choose, and what they have learnt is the
-     thing the spacing exists to bring back. Each is left out entirely when it
-     is empty — a row reading "0" would be a standing reminder of nothing.
+     other thing worth going back over. Each is left out entirely when it is
+     empty — a row reading "0" would be a standing reminder of nothing.
 
-     The review row counts every known card as its size and the ones whose
-     wait has come round as due, so it reads "6 due" while there is something
-     to do and "40 / 40" when there is not — the same two sentences every
-     other row says, meaning the same things. */
+     The review row counts every known card as its size and nothing as due,
+     since a known card never is, so it reads "40 / 40" — the sentence every
+     row says once there is nothing left to do in it. */
   const rows = [...known.entries()].filter(([key]) => !readRow(key)).map(([, was]) => was);
   const learnt = rows.filter((was) => was.known);
   if (learnt.length > 0) {
@@ -818,7 +821,7 @@ export async function onRequestGet(context) {
       level: null,
       cards: learnt.length,
       known: learnt.length,
-      due: learnt.filter((was) => was.due).length,
+      due: 0,
       own: false,
       review: true
     });
@@ -1064,7 +1067,7 @@ async function dropCard(context, body, user, deck) {
    word to the back of the editor or to the front of the next run — see
    startRun() in assets/flashcard.js for what "the front" means there. A card
    that has been learnt keeps what it has been learnt as, wrong side and all;
-   editing the words is not a way to reset the spacing, and dropping the card
+   editing the words is not a way to reset its box, and dropping the card
    and adding it again already does that for anybody who wants it. */
 async function editCard(context, body, user, deck) {
   const { env } = context;
@@ -1131,7 +1134,8 @@ async function mark(context, body, user, knew) {
   if (!real) return json({ error: 'not-found' }, 404);
 
   if (knew) {
-    /* Up a box, and away for as long as that box is worth. The box it goes to
+    /* Up a box, with the date that box would bring it back on — written and
+       not read, see the boxes above: known is known. The box it goes to
        is read first rather than nudged in SQL, because "the next one after
        whatever it is now, and not past the last" is an arithmetic nobody
        should have to read out of an UPDATE — and the row usually does not

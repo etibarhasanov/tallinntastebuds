@@ -1380,8 +1380,7 @@
                                 this is picking up where you left off
        2  not started           nothing answered in it yet, so it is the new
                                 thing rather than the unfinished one
-       3  resting               everything known, and none of it come round
-                                again yet
+       3  resting               everything known, which stays known
 
      An empty deck of your own is the middle rung rather than the bottom one.
      It has nothing to rest; it is a deck somebody made a minute ago and has
@@ -1404,13 +1403,13 @@
      `due` and `known` — are already on every row the route answers, because
      they are what draws "6 due" against "22 / 22" at its foot. A press
      would have wanted somewhere to keep the answer, and it would have fought
-     the spacing besides: a deck is never finished here, only resting, and one
-     put at the bottom by hand would still be at the bottom on the morning its
-     cards came round again. Sinking by what is due rises again on its own.
+     the deck itself besides: a card got wrong in a finished deck puts it back
+     to waiting, and one put at the bottom by hand would still be at the
+     bottom then. Sinking by what is due rises again on its own.
 
      Sorted and not filtered. Every deck is still a row, still opens, and still
      offers Go through it anyway — a deck somebody wants to sit and read is not
-     to be hidden because the spacing has nothing to say today. And stable, so
+     to be hidden because they already know it. And stable, so
      inside a rung the order is the one it arrived in: the file's for the decks
      the site ships, most-recently-edited-first for the ones somebody wrote.
 
@@ -1533,9 +1532,9 @@
      route sends them and not the order standing() would put them in: what
      somebody got wrong first, because it is the most useful thing on the page
      and the only part of it they did not choose, and under it what they know,
-     which is the spacing's own queue and the reason to come back. Sorting
-     them would put the second above the first on any day something is due,
-     and a list of two that swaps itself is not worth reading. */
+     to go back over whenever they like. Sorting them would put the second
+     above the first whenever nothing had been got wrong, and a list of two
+     that swaps itself is not worth reading. */
   function shippedCard() {
     var ours = state.decks.filter(function (d) { return !d.own && !gathered(d); });
     var lifted = state.decks.filter(gathered);
@@ -1690,18 +1689,15 @@
    * A run is the cards of one deck in the order they will be shown, and where
    * in that order we are.
    *
-   * What goes in it is what is **due**: everything never answered, plus
-   * everything whose box has come round again. The boxes are the server's —
-   * BOXES in functions/api/flashcard.js — and this page never computes a date;
-   * it is told per card whether that card is due and puts the due ones in.
-   * The ones you have never got right come first, so a deck opened after a
-   * fortnight away starts with what is new rather than with a revision.
+   * What goes in it is what is **due**: everything never got right — never
+   * answered, or sitting in box nought. A card known once stays known and is
+   * not asked again unless asked for; knownOf() in functions/api/flashcard.js
+   * decides, and this page is told per card and puts the due ones in.
    *
    * `all` is the way past it: Go through it again at the end of a run, and Go
    * through it anyway on a deck with nothing waiting, both build a run of the
-   * whole deck. The spacing is what the page does when you do not ask;
-   * somebody who wants to sit and read their own deck is not to be told to
-   * come back on Thursday.
+   * whole deck — the ones not yet known first, then the ones that are — so
+   * somebody who wants to go over what they already know can.
    *
    * Pressing Show me again still puts the card back on the end of the run, so
    * it comes round once more before the deck is finished — and, on the server,
@@ -1742,10 +1738,9 @@
     }
     var queue = [];
     /* `c.due !== false` and not `c.due`: a card that arrives without the field
-       at all is due. That is the same direction the route errs in when the two
-       spacing columns are missing — see readingBoxes() there — and it is the
-       safe one, because a card wrongly called due is a card asked twice, and a
-       card wrongly called resting is a card that silently leaves the deck. */
+       at all is due. That is the safe direction, because a card wrongly called
+       due is a card asked twice, and a card wrongly called resting is a card
+       that silently leaves the deck. */
     cards.forEach(function (c) { if ((all || c.due !== false) && !c.known) queue.push(c); });
     cards.forEach(function (c) { if ((all || c.due !== false) && c.known) queue.push(c); });
     state.run = { queue: queue, at: 0, turned: false, back: {}, said: {},
@@ -1820,7 +1815,7 @@
       /* And whether the first letters had been asked for before this answer
          was given, which is the one question a hint raises: a Knew it after a
          hint is not quite a Knew it, and nothing else here can tell. The
-         spacing is not touched by it — hintLine() says why the answer stays
+         box is not touched by it — hintLine() says why the answer stays
          both people's to give — so this parameter is how anybody finds out
          whether that was the right call. */
       hint: state.run.hint ? 1 : 0
@@ -2468,8 +2463,8 @@
    *
      The answer afterwards is still both answers. A Knew it that needed a hint
      is not quite a Knew it, and the honest-looking thing would be to take that
-     press away — but the spacing here is built on one boolean, did you know
-     it, and a page that decides that on somebody's behalf is a page arguing
+     press away — but every card here is answered with one boolean, did you
+     know it, and a page that decides that on somebody's behalf is a page arguing
      with them about their own memory. So the card is answered the way every
      card is and the event carries `hint`, which is what will say in a month
      whether people hint and then know. See **The hint** in README.md. */
@@ -2790,9 +2785,9 @@
 
   /* ------------------------------------------------------------ the end of it */
 
-  /* A deck with nothing waiting: everything in it has been answered right and
-     none of it has come round again yet. It is not the end-of-run card — there
-     was no run — and it is not an error, it is the spacing working. The way
+  /* A deck with nothing waiting: everything in it has been answered right,
+     and a card known stays known. It is not the end-of-run card — there was
+     no run — and it is not an error, it is a deck finished. The way
      past it is the same words the end of a run offers. */
   function restedCard() {
     var acts = el('div', { className: 'flash-doneacts' });
@@ -3408,7 +3403,7 @@
         else {
           add(runHead());
           /* Two different empties. A run that was never built because nothing
-             was due is the spacing doing its job; a run that has been gone
+             was due is a deck already known; a run that has been gone
              through is the end of a sitting. They say different things and
              offer different ways on. */
           add(state.run && state.run.queue.length === 0 ? restedCard() : doneCard());
