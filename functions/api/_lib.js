@@ -610,6 +610,29 @@ export async function wordsFor(context, asked, only) {
  * counting the rows each word is the only match for takes a minute and says
  * which of these have started or stopped earning their place.
  */
+/* What Google does not say about a place and the owner does, by Google's key.
+ *
+ * Google's rows are filed by Google's words, because nobody here has been to
+ * most of them — but somebody has been to some, and Google is sometimes
+ * short a word. Gourmet Coffee is a Restaurant tagged Coffee Shop and Cafe,
+ * and the owner knows it for its tea as well. So these words are added to
+ * the end of the row's tags wherever a row is read — VENUE_TYPES below and
+ * KITCHENS in ./venues.js, through said() there — and never written to the
+ * database, which stays a mirror of what Google says: a refresh of the export
+ * cannot overwrite a word that was never in it. One line per place, a word
+ * the tables already read, and only ever more words, not fewer — a place
+ * Google has wrong is `hidden`, which is the curation switch for that. See
+ * **What counts as Coffee, and what counts as Tea** in README.md. */
+export const SAID_TOO = new Map([
+  ['ChIJcQIweVCTkkYRZi0y-o4yPiM', 'tea house']  // Gourmet Coffee, L. Koidula 13a
+]);
+
+/* A row's tags with the owner's words on the end. */
+export function tagsOf(row) {
+  const extra = SAID_TOO.get(row.place_id);
+  return [row.tags, extra].filter(Boolean).join('; ');
+}
+
 const VENUE_TYPES = [
   ['restaurant',  /restaurant|bistro|steak|grill|buffet/],
   ['bakery',      /bakery|pastry|donut|dessert/],
@@ -667,7 +690,7 @@ export function venueEntry(row) {
      one line wherever it is actually needed. This is that line. A hundred
      and eighteen of the rows carry no price at all and get no gauge. */
   const dollars = /^\$+$/.test(row.price || '') ? String(row.price).length : 0;
-  const said = [row.category, row.cuisine, row.tags].join(' ').toLowerCase();
+  const said = [row.category, row.cuisine, tagsOf(row)].join(' ').toLowerCase();
 
   return {
     id: row.place_id,
