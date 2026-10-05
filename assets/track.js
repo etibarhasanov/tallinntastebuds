@@ -62,6 +62,16 @@
  * One word, per tab, gone when the tab closes, and nothing that says who
  * anybody is.
  *
+ * And how the tab arrived, so a diagram can be drawn for the people one
+ * link brought: the first page a tab opens keeps its `?from=` tag and the
+ * origin of the site that sent it under `ttb.via`, and every report after
+ * that, on any page of the same tab, carries them. The server makes a
+ * source of them the way it does for a visitor — Facebook, Instagram, a
+ * search engine — and files the diagram's steps under it as well as under
+ * everybody: ARRIVED VIA in functions/api/_flows.js. Two short strings, per
+ * tab, gone with it, and never a person. A tab opened from a link on this
+ * site arrives from here and is filed under nothing.
+ *
  * Beside each name rides the second it happened at — on-screen seconds into
  * the stretch the report covers, the same clock `secs` is — so the diagrams
  * can say how long people spent at a step before the next one, or before
@@ -289,6 +299,7 @@ window.TTBTrack = (function () {
   var SEEN_KEY = 'ttb.seen';
   var SINCE_KEY = 'ttb.since';
   var STEP_KEY = 'ttb.step';
+  var VIA_KEY = 'ttb.via';
   var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
   var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER;
   var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
@@ -313,6 +324,7 @@ window.TTBTrack = (function () {
   var first = false;   // this page is the browser's first today, not yet told
   var arrivedIn = '';  // the language on screen before the first switch
   var searched = [];   // { scope, term, results } typed into a search field, since the last report
+  var via = null;      // { tag, from } — how this tab arrived, sent on every report; see the top
 
   /* The query as the page was opened, read now, before the page's own
      script has had a chance to rewrite it — the map puts a place's ?spot= in
@@ -428,6 +440,25 @@ window.TTBTrack = (function () {
       tag: TAGGED
     });
     untag();
+  }
+
+  /* How this tab arrived — see the top: what the tab's first page kept, or,
+     on that first page, its tag and the origin of the page before it, kept
+     now for the rest of the tab. Only the origin, which is all a browser
+     sends another site anyway. Null where storage cannot be read, and then
+     the tab's steps are filed under everybody alone. */
+  function arrivedVia() {
+    try {
+      var kept = window.sessionStorage.getItem(VIA_KEY);
+      if (kept) return JSON.parse(kept);
+      var from = '';
+      try { from = document.referrer ? new URL(document.referrer).origin : ''; } catch (e) { from = ''; }
+      var now = { tag: TAGGED.slice(0, 40), from: from.slice(0, 120) };
+      window.sessionStorage.setItem(VIA_KEY, JSON.stringify(now));
+      return now;
+    } catch (e) {
+      return null;
+    }
   }
 
   /* The `?from=` tag off the address once it has been counted, so a reload
@@ -613,6 +644,7 @@ window.TTBTrack = (function () {
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(), phone: phoneArm(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
+    if (via) body.via = via;
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;
@@ -707,6 +739,7 @@ window.TTBTrack = (function () {
     }
     /* Where this tab's last page left off — THE ORDER THEY CAME IN. */
     try { earlier = window.sessionStorage.getItem(STEP_KEY) || ''; } catch (e) { earlier = ''; }
+    via = arrivedVia();
     onScreen();
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') putAway();

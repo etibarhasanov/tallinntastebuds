@@ -12971,6 +12971,45 @@ page left open with nothing more pressed: the pill counts both as a stop. And
 it changes no diagram's shape on its own: the moves card argues, and the
 owner decides.
 
+### Arrived via
+
+The weekend of 3 and 4 October 2026 ran two campaigns, a Facebook post that
+landed on Kartul and an Instagram story that landed on a list, and the
+question afterwards was what the Facebook people did once they were in.
+Nothing here could say. `in` and `out` pool everybody, and only the first
+page of a visit knows where it came from — every later page's referrer is
+this site — so a campaign's people were in the diagrams, mixed with
+everybody else's, and could not be taken back out.
+
+So each tab now remembers how it arrived. `assets/track.js` keeps the first
+page's `?from=` tag and the origin of the site that sent it under `ttb.via`
+in `sessionStorage`, and every report from that tab carries them, and
+`countFlows()` in `functions/api/_flows.js` files the diagram's steps a
+second time under the segment: the tag where there is one —
+`tag:fb-kartul` — since that is the owner's own label for a link, and
+otherwise the source, read the way a visitor's is — `src:facebook`,
+`src:instagram`, `src:tiktok`, `src:search`, `src:direct`, or `src:other`
+for any other site. A tab opened from a link on this site is filed under
+nothing more. Over the diagram, under the range and the who, a row of chips
+says **Arrived via**: *Anywhere*, then each segment the range has with its
+page views, busiest first; pressing one draws the same diagram, the same
+cards and the same stops for those people alone.
+
+**What it costs.** No table and no column: the segment is another `who` in
+`flow_counts`, so the rows a day holds are the diagram-bounded ones `in` and
+`out` already have, again per segment that came. The sources are a closed
+list; a tag has the shape the `tag` kind under **How they found it** takes,
+and a day files at most twenty of them, past which only the day's own go up
+— one lookup per tagged report. A read walks the twelve busiest segments.
+
+**What it does not do.** Reach back: it began on 5 October 2026, and the
+weekend it was written for is not in it — Clarity's recordings and Google's
+path exploration are where that weekend can still be read. Say which place
+somebody landed on, unless the link's tag says so, which is why a campaign's
+link carries `?from=` with the place in it — `?from=fb-kartul` rather than a
+bare link. Join a segment to the other pages' numbers: it is the diagrams
+alone. Follow a tab into a second tab, which starts with no segment.
+
 ## The admin page
 
 `/admin.html` — a door, and behind it the tools for posting without opening a
@@ -16302,6 +16341,7 @@ opened:
 | `flow_step` | `flow`, `step` — a step pressed, to read what it does and where it lives |
 | `flow_range` | `flow`, `days` — a range chip pressed over the diagram, for the numbers on it |
 | `flow_who` | `flow`, `who` (`all`/`out`/`in`) — the who switch over the diagram |
+| `flow_via` | `flow`, `via` (`anywhere`, `src:<source>`, `tag:<tag>`) — a chip in the Arrived via row over the diagram |
 | `home` | — |
 
 And every page that carries `assets/back.js` — the map, the lists, the account

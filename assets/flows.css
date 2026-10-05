@@ -218,6 +218,16 @@
    own loses to the flex above. */
 .flows-controls[hidden] { display: none; }
 .flows-controls .ins-range { margin: 0; }
+/* How the tab arrived — ARRIVED VIA in functions/api/_flows.js — on a row
+   of its own under the range and the who, since a campaign's tags can be
+   more than fit beside them on a phone. Hidden until a range has one. */
+.flows-controls .flows-via { flex-basis: 100%; align-items: center; }
+.flows-controls .flows-via[hidden] { display: none; }
+.flows-via-label {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
 
 .flows-counted {
   margin: 0 0 12px;

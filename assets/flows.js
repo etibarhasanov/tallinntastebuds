@@ -22,6 +22,13 @@
  * the median of the route's buckets, under it. The pressed step's card
  * spells both out, with the spread of the times as a bar.
  *
+ * And a row of chips for how the tab arrived — a source, Facebook or a
+ * search engine, or the `?from=` tag on the owner's own link — which draws
+ * the same diagram for only the people one link brought: the segments the
+ * answer's `via` lists, busiest first, each with its views. Choosing one
+ * sets the who switch aside until a who is pressed again. ARRIVED VIA in
+ * functions/api/_flows.js is what they are and from when.
+ *
  * WHAT IT DRAWS FROM
  *
  * data/flows.json is the source and flows/<id>.bpmn is what tools/flows.mjs
@@ -65,6 +72,12 @@
   var WHO = ['all', 'out', 'in'];
   var WHO_LABEL = { all: 'flowsEverybody', out: 'flowsSignedOut', 'in': 'flowsSignedIn' };
   var DEFAULT_WHO = { visitor: 'out', member: 'in' };
+
+  /* What a segment of `via` is called: a source by the word /admin/visitors
+     already uses for it, or by its own name, and a tag as the link carries
+     it. */
+  var VIA_LABEL = { 'src:search': 'insightsSearch', 'src:direct': 'insightsDirect', 'src:other': 'flowsViaOther' };
+  var VIA_NAME = { 'src:facebook': 'Facebook', 'src:instagram': 'Instagram', 'src:tiktok': 'TikTok' };
 
   /* An arrow's width says what its number says — rule 10 of the design
      rules — between these two, by the square root of its share of the
@@ -114,7 +127,8 @@
     picked: null,    // the <g> of the step last pressed
     drawn: null,     // the shapes and arrows on screen, by id — see draw()
     span: 7,         // the range, in days
-    who: 'all',      // which of the answer's three whos is on screen
+    who: 'all',      // which of the answer's three whos the switch is on
+    via: '',         // the segment on screen instead, or '' for the who — ARRIVED VIA
     numbers: null,   // the answer for the flow on screen, or null
     asked: 0         // how many times the numbers were asked for, so a late answer is dropped
   };
@@ -599,7 +613,7 @@
 
   function timeOf(id) {
     var d = state.numbers;
-    var who = d && d.who && d.who[state.who];
+    var who = d && d.who && d.who[shown()];
     return who && who.times && d.buckets ? typical(who.times[id], d.buckets) : null;
   }
 
@@ -638,8 +652,9 @@
     return el('div', { className: 'lists-seg', role: 'radiogroup', 'aria-label': t('flowsWho') }, WHO.map(function (who) {
       var input = el('input', { type: 'radio', name: 'flows-who', value: who });
       input.addEventListener('change', function () {
-        if (!input.checked || who === state.who) return;
+        if (!input.checked || (who === state.who && !state.via)) return;
         state.who = who;
+        state.via = '';
         syncControls();
         if (window.TTBTrack) window.TTBTrack.event('flow_who', { flow: state.current.id, who: who });
         paint();
@@ -648,14 +663,50 @@
     }));
   }
 
+  /* The answer's key for what is on screen: the segment, or the who. */
+  function shown() {
+    return state.via || state.who;
+  }
+
+  function viaLabel(id) {
+    if (VIA_LABEL[id]) return t(VIA_LABEL[id]);
+    if (VIA_NAME[id]) return VIA_NAME[id];
+    return id.indexOf('tag:') === 0 ? '?from=' + id.slice(4) : id;
+  }
+
+  /* The chips for how a tab arrived, out of the answer on screen — see the
+     top. Hidden where the range has no segment. A segment the new range
+     does not carry falls back to the who. */
+  function viaRow() {
+    var d = state.numbers;
+    var list = (d && d.ready && d.via) || [];
+    if (state.via && !list.some(function (v) { return v.id === state.via; })) state.via = '';
+    clear(nodes.via);
+    nodes.via.hidden = !list.length;
+    if (!list.length) return;
+    nodes.via.appendChild(el('span', { className: 'flows-via-label', textContent: t('flowsVia') }));
+    [{ id: '', views: null }].concat(list).forEach(function (v) {
+      var chip = el('button', { type: 'button', className: 'chip', 'aria-pressed': v.id === state.via ? 'true' : 'false',
+        textContent: v.id ? viaLabel(v.id) + ' · ' + num(v.views) : t('flowsViaAnywhere') });
+      chip.addEventListener('click', function () {
+        if (v.id === state.via) return;
+        state.via = v.id;
+        syncControls();
+        if (window.TTBTrack) window.TTBTrack.event('flow_via', { flow: state.current.id, via: v.id || 'anywhere' });
+        paint();
+      });
+      nodes.via.appendChild(chip);
+    });
+  }
+
   function syncControls() {
-    var chips = nodes.controls.querySelectorAll('.chip');
+    var chips = nodes.controls.querySelectorAll('.chip[data-span]');
     for (var i = 0; i < chips.length; i++) {
       chips[i].setAttribute('aria-pressed', Number(chips[i].getAttribute('data-span')) === state.span ? 'true' : 'false');
     }
     var opts = nodes.controls.querySelectorAll('.lists-seg-opt');
     for (var o = 0; o < opts.length; o++) {
-      var on = opts[o].getAttribute('data-who') === state.who;
+      var on = !state.via && opts[o].getAttribute('data-who') === state.who;
       opts[o].classList.toggle('is-on', on);
       opts[o].querySelector('input').checked = on;
     }
@@ -699,10 +750,12 @@
   /* The answer, for the who on screen, drawn. */
   function paint() {
     clearNumbers();
+    viaRow();
+    syncControls();
     var d = state.numbers;
     if (!d) return;
-    if (!d.ready || !d.who || !d.who[state.who]) { say('flowsNotYet'); return; }
-    var who = d.who[state.who];
+    if (!d.ready || !d.who || !d.who[shown()]) { say('flowsNotYet'); return; }
+    var who = d.who[shown()];
     var any = Object.keys(who.steps).some(function (id) { return who.steps[id] > 0; });
     if (any) countedLine(who, d.since); else say('flowsNothing');
     badges(who);
@@ -716,7 +769,7 @@
     clear(nodes.counted);
     nodes.counted.classList.remove('is-error');
     nodes.counted.appendChild(el('b', { textContent: t('flowsViews', { n: num(who.views) }) }));
-    nodes.counted.appendChild(document.createTextNode(' · ' + t(WHO_LABEL[state.who]) + ' · ' + rangeLabel()));
+    nodes.counted.appendChild(document.createTextNode(' · ' + (state.via ? viaLabel(state.via) : t(WHO_LABEL[state.who])) + ' · ' + rangeLabel()));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
     nodes.counted.appendChild(el('br'));
@@ -906,8 +959,8 @@
      many times for one the route filled in, or why it has none. */
   function detailNumbers(id, handover) {
     var d = state.numbers;
-    if (!d || !d.ready || !d.who || !d.who[state.who]) return null;
-    var who = d.who[state.who];
+    if (!d || !d.ready || !d.who || !d.who[shown()]) return null;
+    var who = d.who[shown()];
     var parts = [];
     var bar = null;
     if (d.counted.indexOf(id) !== -1) {
@@ -964,6 +1017,7 @@
     state.numbers = null;
     state.asked += 1;
     state.who = DEFAULT_WHO[flow.id] || 'all';
+    state.via = '';
 
     var chips = nodes.chips.querySelectorAll('.chip');
     for (var i = 0; i < chips.length; i++) {
@@ -1038,7 +1092,8 @@
     /* The numbers' furniture: the range and the who over the diagram with
        the line that says what was counted, and the two cards under the
        detail, hidden until an answer fills them. */
-    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), whoSwitch()]);
+    nodes.via = el('div', { className: 'ins-range flows-via', role: 'group', 'aria-label': t('flowsVia'), hidden: true });
+    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), whoSwitch(), nodes.via]);
     nodes.counted = el('p', { className: 'flows-counted', 'aria-live': 'polite' });
     nodes.stepsTable = el('div');
     nodes.stepsCard = el('section', { className: 'card flows-detail', hidden: true }, [
