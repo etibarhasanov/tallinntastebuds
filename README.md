@@ -11986,8 +11986,8 @@ under the countries and the languages, and the owner went looking for the
 lists' test the day it began and could not find it. The tests come first
 because they are what the page is most often opened for, the lists' card
 before the rails' because the rails' is three tables long and would push the
-short one a screen and a half down, with the colours' between them; and a
-test's card is drawn from the day it begins, noughts and all, rather than
+short ones a screen and a half down, with **Time on phones** after the
+looks and the colours' before the rails; and a test's card is drawn from the day it begins, noughts and all, rather than
 waiting for its first newcomer.
 `group()` in `assets/visitors.js` draws a heading only over a group with a
 card in it.
@@ -12029,9 +12029,10 @@ its own.
   share of them **returning**, **page views**, **time per visitor** and
   **clicks per visitor**. Today is not set against yesterday: half a day
   against a whole one says nothing.
-- **Tests**: **The lists' two looks**, the directory's own test; **The four
+- **Tests**: **The lists' two looks**, the directory's own test; **Time on
+  phones**, how long newcomers on a phone stay by colour and rail; **The four
   colours**, the swatch's; and **The two rails**, the map's — see **The two
-  rails** below.
+  rails** and **Time on phones** below.
 - **Who they are**: a bar a day of new and returning visitors (a bar a week
   for ninety days, and none for today), **new against returning** — see
   **New against returning** below — a bar an hour of the day on Tallinn's
@@ -12290,6 +12291,48 @@ that sets the best colour against the worst; then everyone dealt each colour
 over the range and its new visitors alone, with the rails' per-visitor
 figures, out of the `style` kind of `visitor_counts`. **The four styles,
 dealt** has the rest.
+
+### Time on phones
+
+The rails and the colours are two tests dealt independently, and the owner's
+question about them was one question: how long does somebody new on a phone
+stay, by the colour and the rail they got? Neither card could say. Both mix
+phones with desktops, and a desktop always draws the full rail unless its
+owner picked otherwise, so the rails' time per visitor was partly a
+comparison of desks against phones; and the time a visit spent was never
+filed with its device at all — `device` was counted once, on the day's first
+page, and nowhere near the seconds.
+
+So the card is one grid, the colours down the side and the rails across —
+full, short, and **no rail yet** for a newcomer who never reached the map —
+with **all rails** as the last column and **all colours** as the last row,
+so the margins are each test alone and the cells are the two together. Each
+cell is the time per new visitor over the range, and a second grid under it
+is the head count each average was taken over: four minutes out of three
+visitors is three visitors. The line over them says a cell under thirty is
+too few to compare. There is no verdict sentence, because a time is not the
+yes-or-no the z-test is asked of; and no median, because a count is a sum
+and a median needs every visit.
+
+**Where a visitor's cell comes from.** The arm is pinned, not read off each
+report. A newcomer who lands on the flashcards has no rail until they open
+the map, and read fresh their visit would be counted under no rail and their
+minutes on the map under one, dividing a cell's time by visitors it never
+had. So `assets/track.js`, on a phone newcomer's first page of the day,
+writes `<rail>:<colour>` into `ttb.phoneday` with the date — `pinPhone()` —
+and every report until midnight UTC carries it as `phone`. The map's own
+first page is reported after the rail is dealt (`data-arrive="late"`, see
+**The two rails**), so somebody who lands there is filed under the rail they
+got. Only a colour that was dealt counts, the colours' rule: a newcomer who
+arrived on a link carrying a colour is in no cell. Returning visitors,
+tablets and desktops are in none either.
+
+**What is counted:** the `phone` kind of `visitor_counts`,
+`<rail>:<colour>:visitors` on that first page and `<rail>:<colour>:secs` on
+every report after, closed to `PHONE_ARMS` in `functions/api/_visitors.js` —
+three rails by four colours, two facts — **TIME ON PHONES** there. It counts
+from the day it shipped, 2026-10-05; nothing before that can be split by
+device.
 
 ### Signing up
 

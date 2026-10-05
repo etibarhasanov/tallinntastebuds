@@ -403,6 +403,7 @@ window.TTBTrack = (function () {
       kept = true;
     } catch (e) { kept = false; }
     first = kept && last !== day;
+    if (first) pinPhone();
     send({
       kind: 'arrive',
       id: window.location.pathname,
@@ -424,6 +425,7 @@ window.TTBTrack = (function () {
          already picked one out of it. */
       asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
       device: device(),
+      phone: phoneArm(),
       tag: TAGGED
     });
     untag();
@@ -498,6 +500,35 @@ window.TTBTrack = (function () {
   function newcomer() {
     if (!COUNTED) return false;
     try { return firstDay(today()) === today(); } catch (e) { return false; }
+  }
+
+  /* Somebody new on a phone, filed for the rest of the day under the rail and
+     the colour they arrived with — TIME ON PHONES in
+     functions/api/_visitors.js. Pinned on the day's first page rather than
+     read off each report, because the rail is dealt on the map and somebody
+     who lands on the flashcards has none until they get there: read fresh,
+     their visit would be counted under no rail and their minutes on the map
+     under one, and a cell's time would be divided by visitors it never had.
+     So `<rail>:<colour>` is written once, with today, and every report until
+     midnight UTC carries it; `none` for no rail yet. Only a colour that was
+     dealt counts, the colours' own rule, and nothing at all for a returning
+     browser, a tablet or a desktop. */
+  var PHONE_KEY = 'ttb.phoneday';
+
+  function pinPhone() {
+    var colour = styleDealt();
+    if (who !== 'new' || device() !== 'phone' || !colour) return;
+    try {
+      window.localStorage.setItem(PHONE_KEY, JSON.stringify({ day: today(), arm: (dealt() || 'none') + ':' + colour }));
+    } catch (e) { /* not pinned, not counted */ }
+  }
+
+  /* The pinned `<rail>:<colour>`, or '' on any day but the one it was
+     pinned. */
+  function phoneArm() {
+    var p = null;
+    try { p = JSON.parse(window.localStorage.getItem(PHONE_KEY) || 'null'); } catch (e) { p = null; }
+    return p && p.day === today() && typeof p.arm === 'string' ? p.arm : '';
   }
 
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
@@ -581,7 +612,7 @@ window.TTBTrack = (function () {
     if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
         !trail.length && !searched.length && !abouts.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
-      places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(),
+      places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(), phone: phoneArm(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (first) {
       body.first = true;
