@@ -5225,6 +5225,17 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
   }
 
+  /* While a walk is drawn the sheet is hidden but still open, so --sheet-h
+     measures a sheet nobody can see and both of the above rode that height
+     up the middle of the map, over the line, with nothing under them. The
+     route bar is what stands at the foot now — two rows, about 108px with
+     its 14px of air — so the arrow and the rail's row sit on the strip
+     above it, which is the old arrangement with the bar for a floor. */
+  body.route-on.panel-open #btn-locate,
+  body.route-on.panel-open .rail {
+    bottom: calc(var(--locate-b) + 40px);
+  }
+
   /* ---- the short rail, on a phone ----
 
      Surprise me is the third of the short rail's four pills, under the
