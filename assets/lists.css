@@ -1659,6 +1659,18 @@
    pointer anywhere over the sheet is a pointer on the link, and a.item-name's
    own hover rules below were already waiting for it.
 
+   A phone has no hover, and a phone is who reads a shared list: on the day an
+   Instagram story sent 117 people to the bakeries, two thirds of the views
+   ended with nothing pressed, and nothing on a row said it was a door except
+   a pin the size of a letter. So the row also carries a chevron in a column
+   of its own, drawn always rather than on hover — the mark every phone already
+   reads as "this opens" — and tints on :active, which is the touch screen's
+   hover. The chevron is the row's own ::after, a third grid item stood beside
+   the body across every row of the grid; the press sheet is the link's
+   ::after, so the two never meet. It is a mark and not a word, so it costs no
+   string in ten languages and says nothing a screen reader has not already
+   been told by the link it sits beside.
+
    What it costs is dragging over the note to copy it: a sheet across the row
    is a sheet across the sentence somebody wrote about the place. That is the
    trade the directory already takes for .lists-all-taste, and a list is read
@@ -1666,8 +1678,26 @@
 
    Not on .item.is-mine and not on .item.is-slot: the editor's rows hold a
    textarea and two buttons, and a slot is a shape rather than a place. */
-.item.is-door { position: relative; }
-.item.is-door:hover { border-color: var(--accent); }
+.item.is-door {
+  position: relative;
+  grid-template-columns: 28px 1fr auto;
+}
+.item.is-door::after {
+  content: '';
+  grid-column: 3;
+  grid-row: 1 / -1;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  margin-right: 2px;
+  border-top: 2px solid var(--muted);
+  border-right: 2px solid var(--muted);
+  transform: rotate(45deg);
+}
+.item.is-door:hover,
+.item.is-door:active { border-color: var(--accent); }
+.item.is-door:hover::after,
+.item.is-door:active::after { border-color: var(--accent); }
 
 /* A place this list does not have yet. Dashed rather than solid, because it
    is the shape of a row and not a row, and it carries the number it would
