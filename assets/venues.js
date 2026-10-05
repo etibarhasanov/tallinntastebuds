@@ -535,9 +535,16 @@
       encodeURIComponent(venue.name) + '&query_place_id=' + encodeURIComponent(venue.id);
   }
 
+  /* The route to it, by the same key — and the destination beside the key
+     is the name and the street, not the coordinates. It was the coordinates
+     for a while, and Google Maps on a phone labelled the end of the route
+     "Dropped pin" with the key sitting right there in the address: the
+     string is what it draws, the key only decides which listing the string
+     means. directionsUrl() in assets/app.js sends the same shape from the
+     map, and says so at more length. */
   function directionsUrl(venue) {
     return 'https://www.google.com/maps/dir/?api=1&destination=' +
-      encodeURIComponent(venue.lat + ',' + venue.lng) +
+      encodeURIComponent(venue.address ? venue.name + ', ' + venue.address : venue.name) +
       '&destination_place_id=' + encodeURIComponent(venue.id);
   }
 

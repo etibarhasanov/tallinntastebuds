@@ -4839,12 +4839,17 @@ MON  Closed          TUE  16:00–21:00   …
 - **And the Directions button above the block takes the same key.** It used
   to send Google the coordinates alone, and Google routed to a pin on the
   pavement with no name on it: the door, not the place. Now `directionsUrl()`
-  in `assets/app.js` adds `destination_place_id` the moment this row lands —
-  `fillGoogle()` repoints the button rather than drawing the panel again —
-  and until then, and for the dozen places Google does not list, it sends the
-  name and the street, which Google resolves to the listing where a pair of
-  numbers never would. A card for a place off the export carries the key from
-  the start, since the place is filed under it.
+  in `assets/app.js` sends the name and the street as the destination, and
+  adds `destination_place_id` the moment this row lands — `fillGoogle()`
+  repoints the button rather than drawing the panel again. The name goes even
+  once the key is known, because Google Maps on a phone labels the end of the
+  route by the destination string and reads the key only to pick which
+  listing the string means: the first version sent the coordinates beside the
+  key and the route still ended at "Dropped pin". For the dozen places Google
+  does not list, the name and the street alone are what Google resolves to the
+  listing, where a pair of numbers never would. A card for a place off the
+  export carries the key from the start, since the place is filed under it,
+  and the directory's cards in `assets/venues.js` send the same shape.
 
 Every string here was already in `data/ui.json` for `/admin/google` or the card, so
 it costs no new keys and speaks all ten languages on the day it lands.
