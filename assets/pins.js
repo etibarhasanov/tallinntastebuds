@@ -85,7 +85,7 @@ window.TTBPins = (function () {
    *
    * Each row is id, emoji, and the tone it wears when nothing has chosen one
    * for it, which for a marker is always the accent. The tones are custom
-   * properties both styles restate — see the token block at the top of
+   * properties every style restates — see the token block at the top of
    * assets/styles.css — so "amber" is Red's amber on Red and Green's amber
    * on Green, and a pin follows the swatch without knowing either value.
    *

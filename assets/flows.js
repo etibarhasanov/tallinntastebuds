@@ -41,7 +41,7 @@
  * is this file. It draws only what tools/flows.mjs writes — a task, an event,
  * a gateway, a pool and its lanes, an arrow and its label — and a .bpmn from
  * elsewhere with a data object or a sub-process in it would draw without
- * those. That is the trade: no dependency, both styles for free, and the
+ * those. That is the trade: no dependency, every style for free, and the
  * page still works in five years, against a viewer that is only as general
  * as the generator in front of it.
  *
@@ -89,7 +89,7 @@
     svg: 'http://www.w3.org/2000/svg'
   };
 
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var LANG_KEY = 'ttb.lang';
@@ -197,7 +197,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {

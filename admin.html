@@ -2937,7 +2937,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   /* The owner's style, as every other page on the site takes it — see
      applyStyle() in assets/lists.js, which is the fullest copy. The door
      writes nothing to ttb.style; it only reads what the map's swatch left. */
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
     var stored = null;
@@ -2946,7 +2946,6 @@ ul.log li button.quiet { width: auto; display: inline-block; }
               : STYLES.indexOf(stored) !== -1 ? stored
               : 'red';
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
     var meta = document.querySelector('meta[name="theme-color"]');
     var wash = getComputedStyle(document.documentElement).getPropertyValue('--wash').trim();
     if (meta && wash) meta.setAttribute('content', wash);

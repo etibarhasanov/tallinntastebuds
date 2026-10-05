@@ -127,6 +127,8 @@
   "styleLabel": "Väri",
   "styleRed": "Punainen",
   "styleGreen": "Vihreä (tumma)",
+  "styleBlue": "Sininen",
+  "stylePlum": "Luumu (tumma)",
   "video": "Tallinn Tastebudsin video",
   "videoFallback": "Ongelmia latauksessa? Avaa se TikTokissa.",
   "months": "tammikuu|helmikuu|maaliskuu|huhtikuu|toukokuu|kesäkuu|heinäkuu|elokuu|syyskuu|lokakuu|marraskuu|joulukuu",

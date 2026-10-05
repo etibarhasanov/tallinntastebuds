@@ -56,7 +56,7 @@
   /* The two styles the site has, the key they are kept under and the one it
      opens on — the same names and the same default as assets/app.js, which is
      where they are actually chosen. There is no swatch on this page. */
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
@@ -204,7 +204,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {

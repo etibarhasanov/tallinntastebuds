@@ -127,6 +127,8 @@
   "styleLabel": "Värv",
   "styleRed": "Punane",
   "styleGreen": "Roheline (tume)",
+  "styleBlue": "Sinine",
+  "stylePlum": "Ploom (tume)",
   "video": "Tallinn Tastebudsi video",
   "videoFallback": "Ei laadi? Ava see TikTokis.",
   "months": "jaanuar|veebruar|märts|aprill|mai|juuni|juuli|august|september|oktoober|november|detsember",

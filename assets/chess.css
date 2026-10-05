@@ -1,7 +1,7 @@
 /* Tallinn Tastebuds — /chess.html, the board and everything drawn around it.
  *
  * The page is the lists page's shape — its ground, its header, its cards, the
- * tokens of both styles — and this file is only what a chessboard needs on top
+ * tokens of every style — and this file is only what a chessboard needs on top
  * of that: the board, the turn line above it, the moves beside it, and the
  * card that holds the waiting list to play the house one on one. Every
  * colour is a token: the squares are --paper and --hairline, the rings
@@ -125,7 +125,7 @@
 .chess-promote .btn + .btn { border-left: 1px solid var(--hairline); }
 
 /* The board: eight columns of paper, the dark squares in the hairline colour,
-   so both styles colour it and nothing here names a hex. It is a container
+   so every style colours it and nothing here names a hex. It is a container
    so the pieces and the coordinates are sized off its width — the same board
    is 358px on a phone and 530px on a desktop. */
 .chess-board {

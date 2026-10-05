@@ -177,7 +177,7 @@
      anyway. */
   var OPEN_KEY = 'ttb.account.open';
 
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var DEFAULT_LANG = 'en';
 
@@ -323,7 +323,7 @@
    * Copied whole from assets/lists.js, which copied it from the pass pages:
    * the style and the language are chosen on the map, written to localStorage,
    * and read by every other page. A page that skipped this block renders in
-   * red for somebody who chose green — see "The two styles" in README.md.
+   * red for somebody who chose green — see "The four styles" in README.md.
    */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
@@ -333,7 +333,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {

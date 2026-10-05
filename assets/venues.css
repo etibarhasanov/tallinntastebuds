@@ -8,7 +8,7 @@
    does not: a filter bar, a column of results, and a map beside them rather
    than under everything.
 
-   Nothing here names a colour. Both styles restate every token in
+   Nothing here names a colour. Every style restates every token in
    assets/styles.css, so a swatch pressed on the map changes this page too —
    including the dots, which read --accent out of the computed style rather
    than carrying a hex of their own. See paintDots() in assets/venues.js.

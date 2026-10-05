@@ -21,7 +21,7 @@ here. It is the main rule and it applies to every line you touch.
   **Saves**, **Accounts**, **The account page**, **Lists**, **Public lists**,
   **Profiles**, **Stories**, **The blog**, **The directory**, **Statistics**,
   **Ask for somewhere**, **Restaurant discounts**, **The radio**, **Surprise
-  me**, **Languages**, **The mark**, **The pins**, **The two styles** — and it
+  me**, **Languages**, **The mark**, **The pins**, **The four styles** — and it
   carries the reasoning the code only hints at.
   `grep -n '^## ' README.md` is the table of contents with line numbers;
   read the section, not the file.
@@ -59,7 +59,7 @@ What the description has to settle before a stylesheet is worth opening:
   languages in `data/ui.json` before the validator will pass it. Translating
   the wrong wording ten times is the expensive way to find out it was wrong.
 - **What it does at 390 px**, which is the phone the README measures its
-  layouts against, and which of **The two styles** it has to work in. Both,
+  layouts against, and which of **The four styles** it has to work in. All,
   always — but say what changes between them.
 - **What it deliberately does not do yet.**
 
@@ -361,7 +361,7 @@ no step 1 until the owner has answered it.
    database. The chat (`assets/ask.js` and the panel in `app.js`) only
    answers with the model under `pages dev`, and each question spends from
    the daily Workers AI allowance the live site shares — a few questions,
-   not an afternoon. Look at both styles, and at a 390 px width, which is
+   not an afternoon. Look at a light and a dark style, and at a 390 px width, which is
    the phone the README measures its layouts against.
 6. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
@@ -437,7 +437,7 @@ it, and what was driven in a browser to check it.
    `git rebase --continue`; never type a hash.
 2. `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
    `node tools/qrperf.mjs --check` if `assets/qr.js` moved.
-3. The page in a browser, both styles, 390 px, and the README paragraph
+3. The page in a browser, a light and a dark style, 390 px, and the README paragraph
    rewritten. The `leave-it-better.md` pass over every file in the diff.
 4. Commits that stand alone, subjects about what a visitor can now do.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
