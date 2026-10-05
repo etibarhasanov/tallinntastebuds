@@ -14927,6 +14927,16 @@ at once is one too many. The switch is left off, so it stays off when the
 visitor walks on — turning the radio down for a story is a decision about the
 radio rather than about the page it was made on.
 
+The button is the part of the screen that stays put. It used to arrive
+only when the page had finished its own boot and then pop in; now
+`preshow()` in `assets/radio.js` reveals the markup's own button as soon as
+the document is parsed, named and pressed, from the station name the last
+page wrote under `ttb.radio.name`, and `mount()` paints the real thing over
+it. The stream itself still reconnects on every page, because a document
+takes its `<audio>` with it. Keeping it unbroken would mean one document, a
+list opened inside the map rather than beside it, and that is a change of
+its own.
+
 ### The button follows the phone
 
 A phone call pauses whatever is playing, and so does the pause button on the
