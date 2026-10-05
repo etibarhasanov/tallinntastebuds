@@ -145,8 +145,6 @@ window.TTBTrack = (function () {
   function event(name, params) {
     params = params || {};
     params.layout = layout();
-    var dealtLook = look();
-    if (dealtLook) params.look = dealtLook;
     var given = styleDeal();
     if (given) params.style_dealt = given.style;
     if (name === 'style_select') styleTold('changed');
@@ -202,10 +200,11 @@ window.TTBTrack = (function () {
   /* Which of the directory's two looks this browser was dealt — 'a', the page
      as it was, or 'b', at rest — read off the key pickLook() in
      assets/lists.js writes, and '' where none was, which is everybody who
-     was not new to the site when they first opened /lists. Sent on every
-     event only where there is one, so GA can split what the two looks'
-     visitors go on to do, on every page, and a browser with no look is not
-     filed under either. "The lists' two looks" in README.md. */
+     was not new to the site when they first opened /lists. Set as a
+     Clarity tag where there is one, so a recording can be filtered to a
+     look. It is not sent to Google: the site's own count is where the test
+     is read, and Google is on its way out — "The lists' two looks" in
+     README.md. */
   var LOOK_KEY = 'ttb.look';
 
   function look() {
