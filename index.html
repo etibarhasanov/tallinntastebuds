@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=e3073670">
+<link rel="stylesheet" href="assets/styles.css?v=bddd402b">
 </head>
 <body>
 
@@ -472,6 +472,20 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     <span class="save-n" id="panel-save-n" aria-hidden="true"></span>
   </button>
+  <!-- The way there, in the strip with the other things you do about the open
+       place. The Directions button in the write-up scrolls away with it; this
+       one holds the top of the sheet, so the most common thing anybody does
+       with a place is one press from anywhere in it. A plain link to Google's
+       route, built by directionsUrl() in assets/app.js and the same address
+       the button below the name carries, so nothing is opened in the map's own
+       tab. Between the mark and the share: the mark grows leftwards with its
+       count, so everything fixed-width sits to its right. -->
+  <a class="panel-directions" id="panel-directions" target="_blank" rel="noopener"
+     aria-label="Directions" title="Directions" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M3 11l18-8-8 18-2-8z"/>
+    </svg>
+  </a>
   <!-- The link to this place, handed over. functions/index.js has served every
        ?spot= address its own unfurl card and its own title for a while now —
        the place's name, its write-up and its first photograph, rather than the
@@ -803,6 +817,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=c09ba7a8" defer></script>
+<script src="assets/app.js?v=c41678ba" defer></script>
 </body>
 </html>

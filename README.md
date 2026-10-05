@@ -2251,12 +2251,19 @@ All of the above was true for months while the only way to *get* one of these
 links was to read it out of the address bar — which on a laptop is a select
 and a copy, and on a phone, inside the browser Facebook or Instagram opens a
 link in, is not a thing anybody does. So an open place has a share button in
-the panel's chrome, between the close and the save mark: the sheet on a phone,
+the panel's chrome, between the close and the way there: the sheet on a phone,
 the clipboard on a laptop with *Link copied.* under it, and a `window.prompt`
 holding the link for anything with neither. Three steps, the same three
 `shareList()` in `assets/lists.js` has always used and the same three the
 list's own button on this page uses; `pressShare()` in `assets/app.js` is the
 third copy and they are kept in step by hand.
+
+The way there has a button of its own in the same strip, between the share and
+the save mark — a plain link to Google's route, built by `directionsUrl()` and
+painted by `paintDirections()`, carrying Google's key once the block at the foot
+of the panel has fetched it. It is the same address the Directions button under
+the name sends, kept up top so it does not scroll away with the write-up, and it
+reports the same `directions` event.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
