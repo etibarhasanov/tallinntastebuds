@@ -14224,22 +14224,28 @@ kept by something other than a comment asking nicely.
 
 ---
 
-## The two styles
+## The four styles
 
-One swatch sits on the left rail: brick and forest, day and night. Pressing it
-changes the **whole** colour world — not just an accent.
+One swatch sits on the left rail, and **Colour** in the More sheet is the same
+choice: brick, forest, Baltic and plum, two by day and two by night. Pressing
+either changes the **whole** colour world — not just an accent.
 
 | Style | Accent | Card | Ground | Map |
 | --- | --- | --- | --- | --- |
 | Red | `#a81e28` | `#fff0ea` | `#f7ddd4` | Positron, tinted brick |
 | Green (dark) | `#6fd39a` | `#1d2a23` | `#101a15` | CARTO Dark Matter |
+| Blue | `#1b4a8c` | `#edf3fb` | `#d6e3f2` | Positron, tinted navy |
+| Plum (dark) | `#c9a6f2` | `#271f30` | `#16111c` | CARTO Dark Matter |
 
 There used to be seven, one per colour of the spectrum. Seven colours of chrome
 is a settings screen, and the rail was asking a question nobody opens a
 restaurant map to answer — the strip read as the loudest thing on the page and
 was the only control on it that changes nothing about what you are looking at.
-The two that survive are the two that are actually a choice: the light one and
-the dark one.
+Then there were two, the light one and the dark one. Four is the owner's
+call from October 2026, so that a member has a look to choose rather than a
+light to switch, and it holds to the lesson of the seven: every one is a whole
+colour world, card and ground included, and no two of the light ones or the
+dark ones are a hue apart on the same paper.
 
 **The card is what carries the colour.** An earlier version kept every light
 style's paper within a point of white — `#fffaf9`, `#fffbf5`, `#fffdf3`,
@@ -14257,17 +14263,27 @@ reads 5.7-5.8 against the 5.0 the tiles have untouched.
 Its swatch wears the card colour with a ring of the accent, so the rail says
 which of the two is the dark one before you press it.
 
-**One button, not two.** There were two swatches, and with only two styles one
-of them was always the one you were already looking at — a control that did
-nothing, sitting next to the one that did. What is left is a single button
-showing the side you are *not* on: the dark swatch to go dark, the light one to
-come back. It is written against `STYLES` rather than against the two ids, so
-it is still a switch if a third palette ever turns up.
+**One button, not four.** There were two swatches once, and with only two
+styles one of them was always the one you were already looking at — a control
+that did nothing, sitting next to the one that did. What is left is a single
+button showing the style you are about to get, the next one in `STYLES` in
+`assets/app.js`. That list alternates light and dark — Red, Green, Blue, Plum —
+so every press changes the light as well as the colour, and four presses come
+back round. The Colour row in the More sheet says the same next style under its
+name and does the same thing.
 
-Both styles are **nothing but a block of custom properties** near the top of
-`assets/styles.css`, keyed off `[data-style="…"]` on the root element. No
-component rule anywhere names a colour, so adding a third style is one block
-there plus one entry in `STYLES` in `assets/app.js`. Nothing else. The `:root`
+Every style is **nothing but a block of custom properties** near the top of
+`assets/styles.css`, keyed off `[data-style="…"]` on the root element, and the
+block also says its own `color-scheme`, which is what tells the browser to draw
+dark form controls and scrollbars. No component rule anywhere names a colour.
+Adding a fifth is that block, a `.sw-<id>` swatch rule, an entry in `STYLES` in
+`assets/app.js`, the id in the `STYLES` list every other page script keeps to
+read `?style=` and `ttb.style` (seventeen of them — `grep -n "var STYLES"
+assets/*.js admin.html`), and a `style<Id>` label in all ten languages. A dark
+one also takes the tile-pane lift and screen pass below. The `color-scheme`
+used to be set by each of those page scripts with a test for the word
+`green`, which would have drawn a second dark style's fields light on seventeen
+pages; it is the style's own now. The `:root`
 block above them is Red's palette to the value, because Red is what the page
 opens on and `:root` is what it wears for the instant before the script sets
 `data-style`.
@@ -14291,15 +14307,23 @@ Two things to know before you retune them:
   to hold much saturation either way; it is the bay the tint is for, and in a
   coastal city the bay is a third of the screen.
 
-Both accents clear 4.5:1 against both their card and their ground, every
-`--muted` clears 4.5:1 on its card, and every `--ink` clears 12:1.
+Every accent clears 4.5:1 against both its card and its ground, every
+`--muted` clears 4.5:1 on its card, and every `--ink` clears 12:1 — Blue's
+accent 7.8:1 on its card and 6.7:1 on its ground, Plum's 7.7:1 and 9.0:1.
 
-`--here` paints the "you are here" dot and is deliberately a hue neither accent
-uses: a blue dot next to brick pins, a warm one against green. Otherwise you
-cannot tell yourself from a restaurant.
+`--here` paints the "you are here" dot and is deliberately a hue its own accent
+does not use: a blue dot next to brick pins, a magenta one against navy, a
+warm one against green and plum. Otherwise you cannot tell yourself from a
+restaurant.
 
-Green swaps to CARTO Dark Matter — a dark card over the pale Positron map would
-be unreadable. It is the only style that changes basemap.
+Green and Plum swap to CARTO Dark Matter — a dark card over the pale Positron
+map would be unreadable. They are the two styles that change basemap, and each
+lifts it in its own hue.
+
+**The blog's clips are drawn in two of them.** `tools/blogclips.mjs` draws each
+clip in Red and Green; Blue shows the light clip and Plum the dark one, read off
+the computed `color-scheme` in `clip()` in `assets/blog.js`, so a style is never
+named there.
 
 The choice is saved to `localStorage` (wrapped in `try/catch`, like the
 language) and mirrors into `?style=`, so a shared link opens in the same look.
@@ -15275,8 +15299,8 @@ comes back a stranger and is dealt again, possibly the other rail.
   Feedback. Each row is the pill it stands for: it reports the pill's event
   and is counted under the pill's id, so a door pressed here and the same
   door pressed on the full rail are one number. The Colour row's second line
-  is the side you are about to get, exactly as the swatch's label is, and
-  pressing it redraws the sheet so the line says the way back. Escape and the
+  is the style you are about to get, exactly as the swatch's label is, and
+  pressing it redraws the sheet so the line names the next one. Escape and the
   scrim close it, like the account sheet.
 - **Three chips outside the drawer**, on a phone: Discount while one is
   live, Bakery and Hidden gem — `FRONT_CHIPS` — drawn by `renderFilters()`
@@ -15298,8 +15322,8 @@ the owner asked for was the short rail for most people and the full one for
 the rest, and a choice on the account page — which is what this is, and it
 costs no table. It does not touch the desktop beyond putting four pills
 behind one: the column, the corner and the chip row up there are what they
-were. And it is not a third style: **The two styles** are the colours, and
-both rails wear both.
+were. And it is not another style: **The four styles** are the colours, and
+both rails wear all four.
 
 ### What is counted
 
@@ -16601,7 +16625,7 @@ larger program than this site.
 and the price gauge are `--accent`, with `--accent-lit` a brighter step up for
 hover and the locate dot. Near-black ink cast towards the style's own hue, one
 hairline weight, one soft shadow, nothing else. The tokens are the first thing
-in `assets/styles.css` and each of the two styles restates every one of them;
+in `assets/styles.css` and each of the four styles restates every one of them;
 change those values and the whole site follows.
 
 **The chrome.** Everything floats on the map: nothing has a page around it,

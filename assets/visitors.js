@@ -42,7 +42,7 @@
   var LIVE_API = '/api/admin/live';
   var LIVE_EVERY = 60 * 1000;
 
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var LANG_KEY = 'ttb.lang';
@@ -228,7 +228,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {

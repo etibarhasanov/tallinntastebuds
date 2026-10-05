@@ -31,14 +31,19 @@
      just before this file — three maps on this site draw the same basemap and
      used to hold three copies of it. See the note at the top of that file. */
 
-  /* Two styles, which is the choice worth offering: day or night. Seven
-     colours of the spectrum made the rail look like a settings screen and
-     asked a question nobody came here to answer. Green is the dark one, and
-     dark is the half that needs different tiles: dark cards over the pale
-     Positron basemap would be unreadable. */
+  /* Four styles, two by day and two by night, in the order the swatch walks
+     them: light, dark, light, dark, so one press always changes the light as
+     well as the colour. There were seven, one per colour of the spectrum, and
+     then two; four is the owner's choice of how many colour worlds a member
+     can pick from — see **The four styles** in README.md. `dark` is the half
+     that needs different tiles: dark cards over the pale Positron basemap
+     would be unreadable. Which form controls the browser draws is not decided
+     here: each block in assets/styles.css says `color-scheme` itself. */
   var STYLES = [
     { id: 'red',   dark: false },
-    { id: 'green', dark: true  }
+    { id: 'green', dark: true  },
+    { id: 'blue',  dark: false },
+    { id: 'plum',  dark: true  }
   ];
   var DEFAULT_STYLE = 'red';
 
@@ -806,8 +811,6 @@
 
   function applyStyle(id) {
     document.documentElement.setAttribute('data-style', id);
-    /* Tell the browser which form controls and scrollbars to draw. */
-    document.documentElement.style.colorScheme = isDarkStyle(id) ? 'dark' : 'light';
 
     var theme = document.querySelector('meta[name="theme-color"]');
     if (theme) theme.setAttribute('content', cssVar('--wash') || '#dceaf9');
@@ -877,13 +880,13 @@
     }
   }
 
-  /* With two styles and no third one coming, two buttons were one too many:
-     whichever you were looking at, one of them was already pressed and did
-     nothing, and the rail read like a settings screen for a choice that is
-     just day or night. So it is one button, and it shows the side you are not
-     on — press the dark swatch to go dark, press the light one to come back.
-     Written against STYLES rather than against the two ids, so the switch is
-     still a switch if a third palette ever turns up. */
+  /* One button rather than one per style: with two styles, whichever you
+     were looking at, one of them was already pressed and did nothing, and a
+     row of four would read like a settings screen. So it is one button, and
+     it shows the style you are about to get — the next one in STYLES, which
+     alternates light and dark, so every press is a visible change. Written
+     against STYLES rather than against the ids, which is why going from two
+     to four styles changed nothing in it. */
   function nextStyle() {
     for (var i = 0; i < STYLES.length; i++) {
       if (STYLES[i].id === state.style) return STYLES[(i + 1) % STYLES.length].id;

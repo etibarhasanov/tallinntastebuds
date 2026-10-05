@@ -127,6 +127,8 @@
   "styleLabel": "Colour",
   "styleRed": "Red",
   "styleGreen": "Green (dark)",
+  "styleBlue": "Blue",
+  "stylePlum": "Plum (dark)",
   "video": "Tallinn Tastebuds video",
   "videoFallback": "Trouble loading? Open it on TikTok.",
   "months": "January|February|March|April|May|June|July|August|September|October|November|December",

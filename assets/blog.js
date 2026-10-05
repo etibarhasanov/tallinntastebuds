@@ -36,9 +36,10 @@
  * autoplay policy to satisfy, no poster, no controls to hide. Somebody who
  * has asked their machine for less motion gets the still instead, through the
  * <picture> below, because nothing can pause an APNG once it is playing. The
- * clips are drawn in both styles and this picks the one the page is wearing:
- * a light card in a dark page is the one thing on this site that cannot be
- * true. tools/blogclips.mjs makes all four files.
+ * clips are drawn in Red and Green and this picks the one with the page's
+ * light — Blue wears Red's, Plum wears Green's: a light card in a dark page is
+ * the one thing on this site that cannot be true. tools/blogclips.mjs makes
+ * all four files.
  *
  * A POST IS NOT HELD TO THE TEN LANGUAGES
  *
@@ -63,7 +64,7 @@
   /* The two styles the site has, the key they are kept under and the one it
      opens on — the same names and the same default as assets/app.js, which is
      where they are actually chosen. There is no swatch on this page. */
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
@@ -153,7 +154,7 @@
      choice to localStorage; this page reads it, exactly as the lists, account
      and directory pages do — walking from the map to something to read should
      not feel like leaving. Everything drawn here is built out of the tokens
-     both styles restate, so this one attribute is the whole of it. */
+     every style restates, so this one attribute is the whole of it. */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
     var stored = storeGet(STYLE_KEY);
@@ -162,7 +163,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
@@ -286,7 +286,11 @@
   function clip(post) {
     if (!post.clip) return null;
 
-    var dark = document.documentElement.getAttribute('data-style') === 'green';
+    /* The clips are drawn in two styles, Red and Green, and each of the other
+       two wears the one with its light: Blue the light clip, Plum the dark.
+       Read off the computed color-scheme each style block declares in
+       assets/styles.css, so a style is never named here. */
+    var dark = getComputedStyle(document.documentElement).colorScheme === 'dark';
     var stem = CLIPS + post.id + (dark ? '-green' : '');
 
     return el('figure', { className: 'blog-clip' }, [

@@ -1240,7 +1240,7 @@ body.lang-open .controls { z-index: 1250; }
 }
 
 /* ==========================================================================
-   The two styles — brick by day, forest by night.
+   The four styles — brick and Baltic by day, forest and plum by night.
 
    Each is a colour world rather than an accent swap: card, ground, ink,
    hairline and shadow all move to the hue, and the map takes the same hue
@@ -1266,19 +1266,24 @@ body.lang-open .controls { z-index: 1250; }
      .22 it used to run at: Positron's land is too light to hold saturation
      either way, but the bay is not, and in a coastal city the bay is a
      third of the screen.
-   - Both accents clear 4.5:1 on their own paper and their own wash.
+   - Every accent clears 4.5:1 on its own paper and its own wash.
    - --here paints the "you are here" dot and the button that drops it, and is
-     deliberately a hue neither accent uses: a blue dot next to brick pins, a
-     warm one against green. Otherwise you cannot tell yourself from a
+     deliberately a hue its own accent does not use: a blue dot next to brick
+     pins, a magenta one against navy, a warm one against green and plum. Otherwise you cannot tell yourself from a
      restaurant — and in the corner the button stands in, a red arrow on
      red paper was one more red thing rather than the one control that is
      about you.
-   - Green is the dark one and swaps to CARTO Dark Matter.
+   - Green and Plum are the dark ones and swap to CARTO Dark Matter.
+   - Each block says its own color-scheme, which is what tells the browser to
+     draw dark form controls and scrollbars. It used to be set from every
+     page's script with a test for the word "green", eighteen times; a second
+     dark style would have been light in seventeen of them.
    ========================================================================== */
 
 /* Brick and ceramic — the daylight one, and what the page opens on. Its
    accent is darker than its own hue reads: oxblood, not pillarbox. */
 [data-style="red"] {
+  color-scheme: light;
   --ink: #27141a; --muted: #7d5754; --paper: #fff0ea; --wash: #f7ddd4;
   --hairline: #f0cec3; --accent: #a81e28; --accent-lit: #c9323d;
   --map-tint: rgba(168, 30, 40, .36);
@@ -1305,6 +1310,7 @@ body.lang-open .controls { z-index: 1250; }
 
 /* Forest — the dark one. */
 [data-style="green"] {
+  color-scheme: dark;
   --ink: #e7f1ea; --muted: #a2b7a9; --paper: #1d2a23; --wash: #101a15;
   --hairline: #354740; --accent: #6fd39a; --accent-lit: #93e7b7;
   --map-tint: transparent;
@@ -1342,6 +1348,57 @@ body.lang-open .controls { z-index: 1250; }
   --no:  #f08a80;
 }
 
+/* Baltic — the second daylight one: pale sea paper and a navy accent. Its
+   --here is magenta, because the other light style's blue dot would be one
+   more blue thing here, and the orange of --pin-amber is taken. */
+[data-style="blue"] {
+  color-scheme: light;
+  --ink: #0f1d31; --muted: #4d6079; --paper: #edf3fb; --wash: #d6e3f2;
+  --hairline: #c6d6ea; --accent: #1b4a8c; --accent-lit: #2d63b0;
+  --map-tint: rgba(27, 74, 140, .36);
+  --shadow: 0 1px 2px rgba(16, 34, 64, .06), 0 8px 28px rgba(16, 34, 64, .14);
+  --lift: 0 1px 6px rgba(16, 34, 64, .28);
+  --glass: rgba(237, 243, 251, .74);
+  --attrib-bg: rgba(237, 243, 251, .88);
+  --swatch-edge: rgba(0, 0, 0, .14);
+  --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
+  --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
+  --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
+  --here: #c0267e;
+  --story-ring: conic-gradient(from 210deg, #1b4a8c, #2f7fc0, #f2a63c, #4f9bd6, #1b4a8c);
+  --story-ring-seen: linear-gradient(#c6d6ea, #c6d6ea);
+  --pin-accent: var(--accent);
+  --pin-sea:    #1a6b73;
+  --pin-amber:  #b4650f;
+  --yes: #2e7a4c;
+  --no:  #b3262f;
+}
+
+/* Plum — the second dark one. Green's pins and --here carry over: neither
+   the teal nor the two warm tones is anywhere near lavender. */
+[data-style="plum"] {
+  color-scheme: dark;
+  --ink: #f1e9f6; --muted: #b9a8c6; --paper: #271f30; --wash: #16111c;
+  --hairline: #43384f; --accent: #c9a6f2; --accent-lit: #dcc3fa;
+  --map-tint: transparent;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .34), 0 8px 28px rgba(0, 0, 0, .46);
+  --lift: 0 1px 6px rgba(0, 0, 0, .5);
+  --glass: rgba(39, 31, 48, .82);
+  --attrib-bg: rgba(22, 17, 28, .86);
+  --swatch-edge: rgba(255, 255, 255, .22);
+  --rest-wash: #17121d; --rest-paper: #221b2a; --rest-line: #352c40;
+  --rest-ground: #2e2638; --rest-muted: #b0a0bd;
+  --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
+  --here: #e0873a;
+  --story-ring: conic-gradient(from 210deg, #c9a6f2, #f0b8d8, #f2a63c, #dcc3fa, #c9a6f2);
+  --story-ring-seen: linear-gradient(#43384f, #43384f);
+  --pin-accent: var(--accent);
+  --pin-sea:    #6bd0d6;
+  --pin-amber:  #edc064;
+  --yes: #6fd39a;
+  --no:  #f08a80;
+}
+
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
    to the panel. The tiles get a brightness lift, then a screen pass in the
    style's own hue.
@@ -1352,10 +1409,15 @@ body.lang-open .controls { z-index: 1250; }
    #0e1013 to #353843, while label contrast reads 5.7-5.8 against the 5.0 it
    has untouched. Lighter and still more legible than raw, which is the trade
    worth making; past this the labels start giving that back. */
-[data-style="green"] .leaflet-tile-pane { filter: brightness(1.4); }
+[data-style="green"] .leaflet-tile-pane,
+[data-style="plum"] .leaflet-tile-pane { filter: brightness(1.4); }
 [data-style="green"] #map::after {
   mix-blend-mode: screen;
   background: rgba(176, 226, 197, .18);
+}
+[data-style="plum"] #map::after {
+  mix-blend-mode: screen;
+  background: rgba(214, 190, 240, .18);
 }
 
 /* ---- the left rail: who you are, everybody else, the picks, the settings ---
@@ -1497,11 +1559,11 @@ html:not([data-layout="b"]) #btn-more { display: none; }
    reader. */
 .styles { display: flex; }
 
-/* One button, not two. There are two styles and one of them is always the one
-   you are already looking at, so the second swatch was a control that did
-   nothing. What is left shows the side you are not on: press the dark swatch
-   to go dark, press the light one to come back — and the label beside it
-   names that side, so the pill reads as the thing you are about to get.
+/* One button, not one per style. A swatch for the style you are already
+   looking at is a control that does nothing. What is left shows the next
+   style along — light and dark alternate, see STYLES in assets/app.js — and
+   the label beside it names it, so the pill reads as the thing you are about
+   to get.
 
    The colour is a dot inside the button rather than the button itself, which
    is what lets the switch wear the same pill as the rest of the rail. It is
@@ -1522,6 +1584,8 @@ html:not([data-layout="b"]) #btn-more { display: none; }
    press it. */
 .sw-red    { background: #a81e28; }
 .sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4.3px #6fd39a; }
+.sw-blue   { background: #1b4a8c; }
+.sw-plum   { background: #271f30; box-shadow: inset 0 0 0 4.3px #c9a6f2; }
 
 /* ---------- the radio ---------- */
 
@@ -2556,7 +2620,7 @@ body.panel-detail .panel {
    same mono, on paper inside a hairline instead of filled with the accent:
    the accent is spent once per surface and the sheet spends it on its own
    button, so this one is the quiet half of a pair that are nonetheless
-   equals. The mark keeps its four colours in both styles, which is the one
+   equals. The mark keeps its four colours in every style, which is the one
    place on this site a component names a colour — it is Google's colour and
    not ours, and it is inside an <svg> rather than in this file. */
 .ac-google {

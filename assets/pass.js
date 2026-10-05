@@ -74,7 +74,7 @@ window.TTBPass = (function () {
   var DEFAULT_LANG = 'en';
   var LANG_KEY = 'ttb.lang';
   var STYLE_KEY = 'ttb.style';
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
 
   /* ------------------------------------------------------------- building
    * The same two helpers app.js opens with. Three pages share them, which is
@@ -317,7 +317,6 @@ window.TTBPass = (function () {
               : STYLES.indexOf(stored) !== -1 ? stored
               : 'red';
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
     return style;
   }
 

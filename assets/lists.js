@@ -71,7 +71,7 @@
   /* The two styles the site has, and the one it opens on — the same names,
      the same key and the same default as assets/app.js, which is where they
      are chosen. */
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
@@ -350,9 +350,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    /* Which form controls and scrollbars the browser should draw — this page
-       is mostly fields, so getting it wrong is a white box on a dark card. */
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     /* And the browser's own chrome, which the document had to name in the
        head before any of this ran. */

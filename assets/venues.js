@@ -42,7 +42,7 @@
   /* The two styles the site has, the key they are stored under and the one it
      opens on — the same names and the same default as assets/app.js, which is
      where they are actually chosen. There is no swatch on this page. */
-  var STYLES = ['red', 'green'];
+  var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
@@ -204,8 +204,8 @@
   /* The style the site is wearing. The map has the swatches and writes the
      choice to localStorage; this page reads it, exactly as the lists and pass
      pages do — walking from the map to the directory should not feel like
-     leaving. Everything drawn here is built out of the tokens both styles
-     restate, so this one attribute is the whole of it. */
+     leaving. Everything drawn here is built out of the tokens every style
+     restates, so this one attribute is the whole of it. */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
     var stored = storeGet(STYLE_KEY);
@@ -214,7 +214,6 @@
               : DEFAULT_STYLE;
 
     document.documentElement.setAttribute('data-style', style);
-    document.documentElement.style.colorScheme = style === 'green' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
@@ -778,7 +777,7 @@
     map = window.L.map('venues-map', { preferCanvas: true }).setView(CENTRE, ZOOM);
 
     window.TTBBasemap
-      .layer(window.L, { dark: document.documentElement.getAttribute('data-style') === 'green' })
+      .layer(window.L, { dark: getComputedStyle(document.documentElement).colorScheme === 'dark' })
       .addTo(map);
 
     dots = window.L.layerGroup().addTo(map);

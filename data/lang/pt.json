@@ -127,6 +127,8 @@
   "styleLabel": "Cor",
   "styleRed": "Vermelho",
   "styleGreen": "Verde (escuro)",
+  "styleBlue": "Azul",
+  "stylePlum": "Ameixa (escuro)",
   "video": "Vídeo do Tallinn Tastebuds",
   "videoFallback": "Problemas para carregar? Abra no TikTok.",
   "months": "janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro",
