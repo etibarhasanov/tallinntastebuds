@@ -4836,6 +4836,15 @@ MON  Closed          TUE  16:00–21:00   …
   above is contradicted.
 - **The listing**, by its key, at the address Google documents for opening a
   place by `place_id` — nothing `/api/venues` does not already send.
+- **And the Directions button above the block takes the same key.** It used
+  to send Google the coordinates alone, and Google routed to a pin on the
+  pavement with no name on it: the door, not the place. Now `directionsUrl()`
+  in `assets/app.js` adds `destination_place_id` the moment this row lands —
+  `fillGoogle()` repoints the button rather than drawing the panel again —
+  and until then, and for the dozen places Google does not list, it sends the
+  name and the street, which Google resolves to the listing where a pair of
+  numbers never would. A card for a place off the export carries the key from
+  the start, since the place is filed under it.
 
 Every string here was already in `data/ui.json` for `/admin/google` or the card, so
 it costs no new keys and speaks all ten languages on the day it lands.
@@ -6827,7 +6836,11 @@ sentence the list's owner wrote, led by the attribution:
   own. Fifty-odd rows carry no hours at all and get no section.
 - Directions, Call, Website, and last, **See on Google** — `maps_url`, for the
   half the export does not carry: the photographs, the reviews, and what
-  somebody said about the queue on a Saturday.
+  somebody said about the queue on a Saturday. Directions goes by Google's
+  key, the id the stand-in is filed under, so it opens the listing and not a
+  pin at its coordinates — the same `destination_place_id` the directory's
+  cards send, and **Google, on a place of mine** says what a place of mine
+  sends instead.
 
 A place somebody added by hand draws none of it and keeps the short card: a
 name typed into a form is not a description, a phone number or a week.

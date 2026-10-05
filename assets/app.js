@@ -6989,6 +6989,47 @@
      to the dialler with the number already typed in, and a desktop passes it to
      whichever calling app is registered. That is also why it never opens a new
      tab — there is no page to open. */
+  /* Directions to a place, as the place rather than as a point.
+   *
+   * For a long time this sent Google the latitude and longitude alone, and
+   * Google did exactly that: it routed to a pin on a pavement, with no name on
+   * it, no photographs and no "open until" — the door was there but the
+   * place was not, and somebody who had just read a write-up arrived on a
+   * page that did not know which restaurant it was. Google's documented way
+   * of asking for the place is `destination_place_id`, the same key
+   * assets/venues.js hands over from the directory, and when the key is
+   * known that is what goes: the coordinates stay beside it as the
+   * destination the address requires, and the key is what Google reads.
+   *
+   * The key is known in two shapes. A stand-in off the export is filed under
+   * it — `place.google` says so, and its id is the key. A place of mine is
+   * not: its key arrives with the rest of Google's block, asked for when the
+   * panel opens (googleBlock() below), so renderPlace() draws the button
+   * with whatever the cache already holds and fillGoogle() rewrites the href
+   * once the row lands. Until then, and for the dozen places Google does
+   * not list at all, the name and the street go instead of the coordinates:
+   * Google finds the listing from those where a pair of numbers would only
+   * ever find the pavement. A place with no address — a hand-typed one from
+   * a list, pinned by hand — falls back to the pin, which is all it has. */
+  function directionsUrl(place, key) {
+    var dest = key || !place.address
+      ? place.lat + ',' + place.lng
+      : place.name + ', ' + place.address;
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) +
+      (key ? '&destination_place_id=' + encodeURIComponent(key) : '');
+  }
+
+  function directionsButton(place, key) {
+    return TTBTrack.click(el('a', {
+      className: 'link-btn is-primary',
+      'data-directions': true,
+      href: directionsUrl(place, key),
+      target: '_blank',
+      rel: 'noopener',
+      textContent: t('directions')
+    }), 'directions', { place: place.name });
+  }
+
   function callButton(place) {
     var link = el('a', {
       className: 'link-btn call-btn',
@@ -7160,16 +7201,12 @@
        Directions only when the catalogue knows where it is. A row imported
        from a CSV with no coordinates has a name and an address and nothing to
        point a map at, and a button leading to the middle of the sea is worse
-       than no button. */
+       than no button. A place off the export is filed under Google's key, and
+       the button carries it, so Google opens the listing rather than the
+       pavement — directionsUrl() says how. */
     var ways = [];
     if (typeof place.lat === 'number' && typeof place.lng === 'number') {
-      ways.push(TTBTrack.click(el('a', {
-        className: 'link-btn is-primary',
-        href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
-        target: '_blank',
-        rel: 'noopener',
-        textContent: t('directions')
-      }), 'directions', { place: place.name }));
+      ways.push(directionsButton(place, place.google ? place.id : ''));
     }
     if (place.phone) ways.push(callButton(place));
     if (place.website) {
@@ -7351,6 +7388,15 @@
 
   function fillGoogle(holder, place, row) {
     var kids = [];
+
+    /* The Directions button above was drawn before the key was known, so
+       it is pointed at the listing now rather than drawn again — a second
+       render of the panel would restart the reel. The button is found on the
+       panel rather than kept in a variable because the panel may have been
+       drawn twice since this was asked for, and only the one on the page
+       matters. */
+    var dir = dom.detail.querySelector('a[data-directions]');
+    if (dir) dir.href = directionsUrl(place, row.id);
 
     /* The score and the count, never apart — scoreMark() says why. */
     if (typeof row.rating === 'number') {
@@ -7620,13 +7666,12 @@
         place.visited ? el('dd', { textContent: formatMonth(place.visited) }) : null
       ]),
       el('div', { className: 'link-row' }, [
-        TTBTrack.click(el('a', {
-          className: 'link-btn is-primary',
-          href: 'https://www.google.com/maps/dir/?api=1&destination=' + place.lat + ',' + place.lng,
-          target: '_blank',
-          rel: 'noopener',
-          textContent: t('directions')
-        }), 'directions', { place: place.name }),
+        /* With Google's key when the block at the foot of the panel has
+           already fetched it — a panel drawn again in another language, or
+           a place opened twice — and without it until fillGoogle() fills it
+           in. directionsUrl() says what each shape sends. */
+        directionsButton(place, googleFor[place.id] && googleFor[place.id] !== ASKING
+          ? googleFor[place.id].id : ''),
         /* Calling sits next to the directions, which is the other thing you
            do about a place rather than to read about it: how to get there,
            and how to ask whether it is worth setting off. It rode with the
