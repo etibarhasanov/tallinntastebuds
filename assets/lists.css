@@ -1437,11 +1437,12 @@
    again — the account page, "Yours" and "Everybody else's" over its two
    halves, see the header of assets/account.js; and the directory, over the
    strip of Google's five and the rows under it, until the strip went and the
-   page became one column of lists with nothing to divide. The one reader left
-   is the flashcards page, over each of its three levels, and it is spaced for
-   that where it is used: `.lists-card > .lists-section` in
-   assets/flashcard.css. This rule stays here because that page's stylesheet
-   is written as an extension of this one. */
+   page became one column of lists with nothing to divide. Two readers are
+   left, each spacing it where it is used: the flashcards page, over each of
+   its three levels — `.lists-card > .lists-section` in assets/flashcard.css —
+   and /admin/visitors, over each group of its cards — `.vis-group` in
+   assets/stats.css. This rule stays here because both pages' stylesheets
+   are written as extensions of this one. */
 .lists-section {
   display: flex;
   align-items: baseline;

@@ -1,15 +1,21 @@
 /* Tallinn Tastebuds — /admin/visitors, who came to the site and what they did.
  *
  * The page Google Analytics is open in a tab for, drawn from the site's own
- * count instead, in the order the questions are asked. Today so far first,
- * whatever the range: who came, who signed in and made an account, and on
- * which of the map's two rails. Then a range and who came in it — five
- * figures, a bar a day of new and returning visitors, a bar an hour of the
- * day, phone against desktop, the countries, where they came from and the
- * languages they read in. Then what a new visitor
- * does against a returning one, then the two rails against each other, and
- * last what was done — pages, where a visit begins and goes, presses, and
- * which stories, posts, decks and discounts were opened.
+ * count instead. Right now and today so far first, whatever the range: who
+ * came, who signed in and made an account, and on which of the map's two
+ * rails. Then a range and its five figures, and under them four groups, each
+ * under a heading — see group():
+ *
+ *   Tests            the directory's two looks, the four colours, then
+ *                    the map's two rails
+ *   Who they are     a bar a day, new against returning, a bar an hour,
+ *                    phone against desktop, countries, languages
+ *   How they found it  where they came from, where search landed them
+ *   What they did    signing up, pages, journeys, presses, and which
+ *                    stories, posts, decks and discounts were opened
+ *
+ * It was one column of twenty cards in the order they were built, and the
+ * tests sat twelfth; the owner went looking for one and could not find it.
  * The shape is the one /insights already has, because it is the same kind
  * of question and the owner has met that page; the rows, the figures and
  * the chart borrow its classes and /admin/stats' out of assets/stats.css.
@@ -772,7 +778,6 @@
      the test's own three sentences: early, none and ahead. */
   function verdict(dealt, names, words) {
     var a = dealt.a, b = dealt.b;
-    if (!a.given && !b.given) return null;
     var say = function (key, vars) { return el('p', { className: 'vis-verdict', textContent: t(key, vars) }); };
     if (Math.min(a.given, b.given) < FEWEST) {
       return say(words[0], { a: num(a.given), b: num(b.given), min: FEWEST });
@@ -826,11 +831,12 @@
      open of /lists, and the share of them that opened a list from it, and
      that kept one, on the day they were dealt it. Since the test began, like
      the rails' strangers, because press_counts has no day. Opened is what
-     the verdict is on; kept is beside it, too rare to call a test on. Absent
-     until either look has been dealt. */
+     the verdict is on; kept is beside it, too rare to call a test on. Drawn
+     from the day the test began, noughts and all: a card that waited for its
+     first newcomer was a test the owner went looking for and could not find. */
   function looks() {
     var d = state.data.looks;
-    if (!d || (!d.a.given && !d.b.given)) return null;
+    if (!d) return null;
     var arms = ['a', 'b'];
     var heads = arms.map(function (id) { return t(LOOKS[id]); });
     return card([
@@ -856,13 +862,14 @@
      two, so the verdict sets the best colour on `opened` against the worst
      one, with the same z-test the other two cards use, and only once every
      colour has FEWEST — the weakest arm is the one that decides whether
-     there is anything to say yet. Absent until a colour has been dealt. */
+     there is anything to say yet. Drawn from the day the test began,
+     noughts and all, the way the lists' looks are — see looks(). */
   function colours() {
     var d = state.data.styles;
     var arms = Object.keys(COLOURS);
     var lived = (state.data.colours || []).filter(function (c) { return COLOURS[c.id]; });
     var anyLived = lived.some(function (c) { return c.visitors; });
-    if (!d || (!anyLived && !arms.some(function (id) { return d[id] && d[id].given; }))) return null;
+    if (!d) return null;
     var heads = arms.map(function (id) { return t(COLOURS[id]); });
     var rate = function (id) { return d[id].given ? d[id].opened / d[id].given : 0; };
     var fewest = Math.min.apply(null, arms.map(function (id) { return d[id].given; }));
@@ -899,6 +906,41 @@
         .concat([splitSince()]);
     }
     return card(kids);
+  }
+
+  /* A heading and the cards under it, or nothing at all where every card
+     came back empty — a heading over nothing reads as a section that failed
+     to load. The heading is the quiet one .lists-section draws, because it
+     names a run of cards rather than opening a page. */
+  function group(stack, key, cards) {
+    var drawn = cards.filter(function (c) { return c; });
+    if (!drawn.length) return;
+    stack.appendChild(el('h2', { className: 'lists-section vis-group', textContent: t(key) }));
+    drawn.forEach(function (c) { stack.appendChild(c); });
+  }
+
+  /* Where they came from, with the way to the page that takes it apart. */
+  function sources() {
+    var d = state.data;
+    if (!d.sources.length) return null;
+    var box = ranking(t('insightsFrom'), d.sources, sourceName);
+    /* What people searched for here, the pages elsewhere that linked here
+       and the owner's own links are the page next door. */
+    box.appendChild(el('p', { className: 'ins-note' }, [
+      el('a', { href: '/admin/found', textContent: t('foundLink') })
+    ]));
+    return box;
+  }
+
+  /* Which address a search engine sent each of them to — FOUND BY A SEARCH
+     ENGINE in functions/api/_visitors.js. The engine and the address as they
+     were counted, in mono like the press names: an address is an id, and
+     translating it would only hide which page it is. Under the sources,
+     because it is the search row of that card taken apart. */
+  function found() {
+    var d = state.data;
+    if (!d.found || !d.found.length) return null;
+    return ranking(t('visitorsFound'), d.found, function (r) { return r.id; }, true);
   }
 
   /* Right now: pages opened in the last five minutes and the last thirty,
@@ -984,44 +1026,33 @@
     if (!d.now.visitors && !d.now.views) {
       stack.appendChild(card([el('p', { className: 'lists-none', textContent: t('visitorsQuiet') })]));
     } else {
-      if (d.series) stack.appendChild(card(chart()));
-      var byHour = hours();
-      if (byHour) stack.appendChild(byHour);
-      if (d.devices.length) {
-        stack.appendChild(ranking(t('visitorsDevices'), d.devices, function (r) { return DEVICES[r.id] ? t(DEVICES[r.id]) : r.id; }));
-      }
-      if (d.countries.length) {
-        stack.appendChild(ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }));
-      }
-      if (d.sources.length) {
-        var sources = ranking(t('insightsFrom'), d.sources, sourceName);
-        /* What people searched for here, the pages elsewhere that linked
-           here and the owner's own links are the page next door. */
-        sources.appendChild(el('p', { className: 'ins-note' }, [
-          el('a', { href: '/admin/found', textContent: t('foundLink') })
-        ]));
-        stack.appendChild(sources);
-      }
-      /* Which address a search engine sent each of them to — FOUND BY A
-         SEARCH ENGINE in functions/api/_visitors.js. The engine and the
-         address as they were counted, in mono like the press names: an
-         address is an id, and translating it would only hide which page it
-         is. Under the sources, because it is the search row of that card
-         taken apart. */
-      if (d.found && d.found.length) {
-        stack.appendChild(ranking(t('visitorsFound'), d.found, function (r) { return r.id; }, true));
-      }
-      if (d.languages.length || d.asked.length) stack.appendChild(languages());
-      if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
-      [cohorts(), layouts(), looks(), colours(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
-      if (d.pages.length) stack.appendChild(pages());
-      var trips = journeys();
-      if (trips) stack.appendChild(trips);
-      if (d.presses.length) {
-        stack.appendChild(ranking(t('insightsPressed'), d.presses, function (r) { return r.id; }, true));
-      }
-      var opened = whatOpened();
-      if (opened) stack.appendChild(opened);
+      /* Four groups under the range, each under a heading of its own, so the
+         page is four things to look for rather than twenty cards in the
+         order they were built. The tests first, straight under the figures:
+         they are what a look at this page is most often for, and at the
+         twelfth card they were found by scrolling past everything else. The
+         short cards before the long inside it — the lists' looks is a few
+         rows, the colours and the rails are three tables each — so the
+         short one is not a screen and a half under the heading. A group
+         with nothing in it draws no heading. */
+      group(stack, 'visitorsTests', [looks(), colours(), layouts()]);
+      group(stack, 'visitorsWho', [
+        d.series ? card(chart()) : null,
+        cohorts(),
+        hours(),
+        d.devices.length ? ranking(t('visitorsDevices'), d.devices, function (r) { return DEVICES[r.id] ? t(DEVICES[r.id]) : r.id; }) : null,
+        d.countries.length ? ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }) : null,
+        d.languages.length || d.asked.length ? languages() : null,
+        d.switches.length ? ranking(t('visitorsSwitches'), d.switches, switchName) : null
+      ]);
+      group(stack, 'numbersFound', [sources(), found()]);
+      group(stack, 'visitorsDid', [
+        signingUp(),
+        d.pages.length ? pages() : null,
+        journeys(),
+        d.presses.length ? ranking(t('insightsPressed'), d.presses, function (r) { return r.id; }, true) : null,
+        whatOpened()
+      ]);
     }
 
     stack.appendChild(el('div', { className: 'stats-totals' }, [

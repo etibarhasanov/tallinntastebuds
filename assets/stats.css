@@ -410,6 +410,22 @@ a.stats-name:hover { color: var(--accent); }
 .vis-table-4 .ins-row > :nth-child(n+2) { padding-left: 8px; }
 .vis-table .ins-row > :nth-child(2) { padding-left: 14px; }
 
+/* A heading over a run of cards on /admin/visitors — the tests, who they
+   are, how they found it, what they did — see group() in assets/visitors.js.
+   .lists-section is the quiet heading assets/lists.css draws; this gives it
+   room above, so the gap before a group reads wider than the gap between
+   two cards inside one, and sets it nearly at a card title's size: here it
+   is the only thing breaking a column of twenty cards, and at the
+   flashcards' thirteen pixels it was a caption nobody found while
+   scrolling. A hairline under it ties it to the run it names. */
+.lists-section.vis-group {
+  margin: 30px 2px -4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 22px;
+  letter-spacing: -.01em;
+}
+
 /* The three blocks of the two rails' card, each under a line of its own. */
 .vis-sub { margin: 22px 0 0; }
 
