@@ -92,15 +92,18 @@ ref: functions/api/saves.js GET</bpmn:documentation>
       <bpmn:incoming>visitor-e6</bpmn:incoming>
       <bpmn:outgoing>visitor-e7</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="share" name="Goes, or shares the place">
+    <bpmn:userTask id="share" name="Goes, walks to, or shares the place">
       <bpmn:documentation>Share sheet on a phone, else the clipboard. The link is /?spot=&lt;id&gt;&amp;from=share, the tag taken off the address again as it opens.
 when: place_share
 when: directions
+when: route_google
 when: website
 when: call_place
 when: google_listing
 when: reel_open
-ref: assets/app.js pressShare()</bpmn:documentation>
+ref: assets/app.js pressShare()
+ref: assets/app.js showRoute()
+ref: functions/api/route.js</bpmn:documentation>
       <bpmn:incoming>visitor-e7</bpmn:incoming>
       <bpmn:outgoing>visitor-e8</bpmn:outgoing>
     </bpmn:userTask>

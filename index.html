@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=bddd402b">
+<link rel="stylesheet" href="assets/styles.css?v=4bb193b3">
 </head>
 <body>
 
@@ -475,10 +475,11 @@
   <!-- The way there, in the strip with the other things you do about the open
        place. The Directions button in the write-up scrolls away with it; this
        one holds the top of the sheet, so the most common thing anybody does
-       with a place is one press from anywhere in it. A plain link to Google's
-       route, built by directionsUrl() in assets/app.js and the same address
-       the button below the name carries, so nothing is opened in the map's own
-       tab. Between the mark and the share: the mark grows leftwards with its
+       with a place is one press from anywhere in it. A press draws the walk on
+       our own map first (showRoute() in assets/app.js, the bar further down
+       this page); underneath it is still a link to Google's route, built by
+       directionsUrl() and the same address the button below the name carries,
+       so a modified click and the bar's own button both reach it. Between the mark and the share: the mark grows leftwards with its
        count, so everything fixed-width sits to its right. -->
   <a class="panel-directions" id="panel-directions" target="_blank" rel="noopener"
      aria-label="Directions" title="Directions" hidden>
@@ -748,6 +749,21 @@
   </button>
 </div>
 
+<!-- The walk, drawn on the map, and the way out of it. Shown by showRoute() in
+     assets/app.js when the arrow in a place's top strip is pressed: the sheet
+     steps out of the way so the line has the whole map, and this is what is
+     left standing — how long, how far, Google's own directions as a button, and
+     the cross that brings the sheet back. The Google link is also what stands
+     in for the route when there is none to draw (no location, no walk), so the
+     arrow never ends on nothing. -->
+<div class="route-bar" id="route-bar" role="status" aria-live="polite" hidden>
+  <p class="route-say" id="route-say"></p>
+  <a class="link-btn is-primary route-google" id="route-google" target="_blank" rel="noopener"
+     data-i18n="routeGoogle">Open in Google Maps</a>
+  <button type="button" class="route-close" id="route-close" data-i18n-aria-label="close" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <!-- The offer to keep a list somewhere better than this browser. Shown after
@@ -817,6 +833,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=c41678ba" defer></script>
+<script src="assets/app.js?v=338d3835" defer></script>
 </body>
 </html>

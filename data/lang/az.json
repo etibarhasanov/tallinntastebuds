@@ -1069,7 +1069,12 @@
   "foundQuiet": "Bu günlərdə heç nə yoxdur.",
   "foundSince": "{date} tarixindən sayılır.",
   "foundFoot": "Hər siyahı gündə ən çox yüz fərqli sətir saxlayır.",
-  "foundLink": "Saytı necə tapıblar →"
+  "foundLink": "Saytı necə tapıblar →",
+  "routeWalk": "{min} dəq piyada · {dist}",
+  "routeGoogle": "Google Maps-də aç",
+  "routeNone": "Piyada marşrut tapılmadı.",
+  "routeLocate": "Yolu görmək üçün məkanınızı paylaşın.",
+  "routeFinding": "Yol axtarılır…"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

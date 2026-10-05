@@ -257,6 +257,9 @@
   var clusterPins = [];
   var hereMarker = null;
   var hereAccuracy = null;
+  var routeLine = null;   // the walk drawn on the map, while the bar is up
+  var routeFor = null;    // the place it is a walk to
+  var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var tileLayer = null;
   var haloMarker = null;
   var toastTimer = null;
@@ -1972,6 +1975,7 @@
     if (hereAccuracy) {
       hereAccuracy.setStyle({ color: c.here, fillColor: c.here });
     }
+    if (routeLine) routeLine.setStyle({ color: c.here });
   }
 
   /* Centre the chosen place in the part of the map you can actually see. The
@@ -2282,7 +2286,8 @@
     dom.panelSave.setAttribute('title', label);
   }
 
-  /* The way there, in the panel's top strip. Drawn on any place the catalogue
+  /* The way there, in the panel's top strip: a link to Google's route that a
+     plain press turns into our own map's walk first — showRoute(). Drawn on any place the catalogue
      can point a map at — the same condition the button in the write-up has —
      and carrying Google's key when it is known, the way that one does: a
      stand-in is filed under it, and a place of mine gets it from the block at
@@ -2296,6 +2301,83 @@
     dom.panelDirections.href = directionsUrl(place, key);
     dom.panelDirections.setAttribute('aria-label', t('directions'));
     dom.panelDirections.setAttribute('title', t('directions'));
+  }
+
+  /* The walk to the open place, drawn on our own map before anything is
+     handed to Google. Pressed from the arrow in the panel's top strip, which is
+     still a real link to Google's route — so a press this cannot answer for
+     (no location shared, no walk found, the service down) ends in the bar's
+     own Google button rather than in nothing, and a middle-click or a long
+     press still goes to Google as it always did.
+
+     The sheet steps out of the way while the line is up (body.route-on) so it
+     has the whole map, and the bar is the one thing left: how long, how far,
+     Google, and the cross. Where the visitor is comes from the dot if the map
+     already has one and from one reading otherwise, taken quietly — a reading
+     asked for here must not fly the map to the visitor and off the place they
+     are looking at. The route is /api/route, on foot only. */
+  function showRoute(place) {
+    var token = ++routeToken;
+    routeFor = place.id;
+    clearRouteLine();
+    dom.routeGoogle.href = dom.panelDirections.href;
+    dom.routeSay.textContent = t('routeFinding');
+    dom.routeBar.hidden = false;
+    document.body.classList.add('route-on');
+
+    var here = hereMarker ? hereMarker.getLatLng() : null;
+    var got = here ? Promise.resolve({ lat: here.lat, lng: here.lng }) : (hereQuiet = true, locateOnce());
+    got.then(function (from) {
+      if (token !== routeToken) return null;
+      if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
+      return fetch('/api/route?from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (walk) {
+          if (token !== routeToken) return;
+          if (!walk || !walk.line || walk.line.length < 2) { dom.routeSay.textContent = t('routeNone'); return; }
+          drawRoute(walk);
+        });
+    }).catch(function () {
+      if (token === routeToken) dom.routeSay.textContent = t('routeNone');
+    });
+  }
+
+  function drawRoute(walk) {
+    routeLine = L.polyline(walk.line, {
+      color: markerColours().here,
+      weight: 5,
+      opacity: .85,
+      lineCap: 'round',
+      lineJoin: 'round',
+      className: 'route-line',
+      interactive: false
+    }).addTo(map);
+    var m = walk.meters;
+    dom.routeSay.textContent = t('routeWalk', {
+      min: Math.max(1, Math.round(walk.seconds / 60)),
+      dist: m < 1000 ? t('askMetres', { n: Math.max(10, Math.round(m / 10) * 10) })
+        : t('askKm', { n: formatDecimal(m / 1000, 1) })
+    });
+    /* Room for the search field and the chips above, and for the bar below. */
+    map.fitBounds(routeLine.getBounds(), {
+      paddingTopLeft: [40, isNarrow() ? 220 : 90],
+      paddingBottomRight: [40, 120],
+      maxZoom: 17
+    });
+  }
+
+  function clearRouteLine() {
+    if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+  }
+
+  /* Gone: the line, the bar, and the sheet comes back as it was left. Also what
+     renderPanel() calls when anything but this place is on the panel. */
+  function clearRoute() {
+    routeToken++;
+    routeFor = null;
+    clearRouteLine();
+    dom.routeBar.hidden = true;
+    document.body.classList.remove('route-on');
   }
 
   /* Whether there is a link worth handing over, which is nearly always and
@@ -6904,6 +6986,7 @@
 
   function renderPanel(opts) {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
+    if (routeFor && (state.view !== 'detail' || state.selected !== routeFor)) clearRoute();
     paintSave();
     /* Beside the mark, and painted with it: both turn on which place is open,
        and the label is a string that moves with the language. */
@@ -11466,10 +11549,17 @@
     dom.panelShare.addEventListener('click', pressShare);
     /* The same press the button in the write-up reports, so the name is read
        when it happens: which place is open is not known as the page boots. */
-    dom.panelDirections.addEventListener('click', function () {
+    dom.panelDirections.addEventListener('click', function (ev) {
       var place = byId(state.selected);
       TTBTrack.event('directions', { place: place ? place.name : '' });
+      /* Our map first. A modified click is somebody asking for the link
+         itself, and it is left to be one. */
+      if (!place || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+      ev.preventDefault();
+      showRoute(place);
     });
+    dom.routeClose.addEventListener('click', clearRoute);
+    TTBTrack.click(dom.routeGoogle, 'route_google');
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
@@ -11975,6 +12065,10 @@
       panelSaveN: $('panel-save-n'),
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
+      routeBar: $('route-bar'),
+      routeSay: $('route-say'),
+      routeGoogle: $('route-google'),
+      routeClose: $('route-close'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       btnMore: $('btn-more'),

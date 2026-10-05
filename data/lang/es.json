@@ -1069,7 +1069,12 @@
   "foundQuiet": "Nada en estos días.",
   "foundSince": "Contado desde el {date}.",
   "foundFoot": "Cada lista guarda como mucho cien filas distintas al día.",
-  "foundLink": "Cómo encontraron el sitio →"
+  "foundLink": "Cómo encontraron el sitio →",
+  "routeWalk": "{min} min a pie · {dist}",
+  "routeGoogle": "Abrir en Google Maps",
+  "routeNone": "No se encontró una ruta a pie.",
+  "routeLocate": "Comparte tu ubicación para ver el camino.",
+  "routeFinding": "Buscando el camino…"
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",
