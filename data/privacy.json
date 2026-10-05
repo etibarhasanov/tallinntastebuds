@@ -1,0 +1,556 @@
+{
+  "updated": "2026-10-05",
+  "title": {
+    "en": "Privacy",
+    "et": "Privaatsus",
+    "ru": "Конфиденциальность",
+    "uk": "Конфіденційність",
+    "fi": "Tietosuoja",
+    "pt": "Privacidade",
+    "es": "Privacidad",
+    "tr": "Gizlilik",
+    "az": "Məxfilik",
+    "hy": "Գաղտնիություն"
+  },
+  "lead": {
+    "en": "What this site keeps about you, why, and for how long.",
+    "et": "Mida see sait sinu kohta hoiab, miks ja kui kaua.",
+    "ru": "Что этот сайт хранит о вас, зачем и как долго.",
+    "uk": "Що цей сайт зберігає про вас, навіщо і як довго.",
+    "fi": "Mitä tämä sivusto säilyttää sinusta, miksi ja kuinka kauan.",
+    "pt": "O que este site guarda sobre si, porquê e durante quanto tempo.",
+    "es": "Qué guarda este sitio sobre ti, por qué y durante cuánto tiempo.",
+    "tr": "Bu sitenin senin hakkında ne tuttuğu, neden ve ne kadar süre.",
+    "az": "Bu saytın sənin haqqında nə saxladığı, niyə və nə qədər.",
+    "hy": "Ինչ է այս կայքը պահում քո մասին, ինչու և որքան ժամանակ։"
+  },
+  "updatedLabel": {
+    "en": "Last changed {date}",
+    "et": "Viimati muudetud {date}",
+    "ru": "Последнее изменение: {date}",
+    "uk": "Востаннє змінено: {date}",
+    "fi": "Viimeksi muutettu {date}",
+    "pt": "Última alteração: {date}",
+    "es": "Último cambio: {date}",
+    "tr": "Son değişiklik: {date}",
+    "az": "Son dəyişiklik: {date}",
+    "hy": "Վերջին փոփոխություն՝ {date}"
+  },
+  "translated": {
+    "en": "",
+    "et": "See on tõlge. Kehtiv on ingliskeelne versioon.",
+    "ru": "Это перевод. Действующей считается английская версия.",
+    "uk": "Це переклад. Чинною вважається англійська версія.",
+    "fi": "Tämä on käännös. Englanninkielinen versio on se, joka pätee.",
+    "pt": "Esta é uma tradução. A versão inglesa é a que conta.",
+    "es": "Esto es una traducción. La versión en inglés es la que vale.",
+    "tr": "Bu bir çeviridir. Geçerli olan İngilizce sürümdür.",
+    "az": "Bu tərcümədir. Qüvvədə olan ingiliscə versiyadır.",
+    "hy": "Սա թարգմանություն է։ Գործում է անգլերեն տարբերակը։"
+  },
+  "sections": [
+    {
+      "id": "who",
+      "title": {
+        "en": "Who runs this site",
+        "et": "Kes seda saiti haldab",
+        "ru": "Кто ведёт этот сайт",
+        "uk": "Хто веде цей сайт",
+        "fi": "Kuka ylläpitää sivustoa",
+        "pt": "Quem gere este site",
+        "es": "Quién lleva este sitio",
+        "tr": "Bu siteyi kim yönetiyor",
+        "az": "Bu saytı kim idarə edir",
+        "hy": "Ով է վարում այս կայքը"
+      },
+      "body": {
+        "en": [
+          "Tallinn Tastebuds — the map at tallinntastebuds.ee and its lists, flashcards and splitwise — is run by the people behind the Tallinn Tastebuds Instagram page. They decide what is kept here and why.",
+          "For anything about your data, write to [@tallinntastebuds on Instagram](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "et": [
+          "Tallinn Tastebudsi — kaarti aadressil tallinntastebuds.ee koos nimekirjade, mälukaartide ja splitwise'iga — haldavad Tallinn Tastebudsi Instagrami lehe taga olevad inimesed. Nemad otsustavad, mida siin hoitakse ja miks.",
+          "Kõige oma andmetega seonduva kohta kirjuta [@tallinntastebuds Instagramis](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "ru": [
+          "Tallinn Tastebuds — карту на tallinntastebuds.ee с её списками, карточками и splitwise — ведут люди, стоящие за страницей Tallinn Tastebuds в Instagram. Они решают, что здесь хранится и зачем.",
+          "По любым вопросам о ваших данных пишите [@tallinntastebuds в Instagram](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "uk": [
+          "Tallinn Tastebuds — мапу на tallinntastebuds.ee з її списками, картками і splitwise — ведуть люди, які стоять за сторінкою Tallinn Tastebuds в Instagram. Вони вирішують, що тут зберігається і навіщо.",
+          "З будь-яких питань про ваші дані пишіть [@tallinntastebuds в Instagram](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "fi": [
+          "Tallinn Tastebudsia — karttaa osoitteessa tallinntastebuds.ee sekä sen listoja, sanakortteja ja splitwiseä — ylläpitävät Tallinn Tastebudsin Instagram-sivun takana olevat ihmiset. He päättävät, mitä täällä säilytetään ja miksi.",
+          "Kaikissa tietoihisi liittyvissä asioissa kirjoita [@tallinntastebuds Instagramissa](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "pt": [
+          "O Tallinn Tastebuds — o mapa em tallinntastebuds.ee e as suas listas, cartões e splitwise — é gerido pelas pessoas por trás da página Tallinn Tastebuds no Instagram. São elas que decidem o que aqui se guarda e porquê.",
+          "Para qualquer assunto sobre os seus dados, escreva para [@tallinntastebuds no Instagram](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "es": [
+          "Tallinn Tastebuds — el mapa en tallinntastebuds.ee y sus listas, tarjetas y splitwise — lo llevan las personas detrás de la página de Tallinn Tastebuds en Instagram. Ellas deciden qué se guarda aquí y por qué.",
+          "Para cualquier cosa sobre tus datos, escribe a [@tallinntastebuds en Instagram](https://www.instagram.com/tallinntastebuds/)."
+        ],
+        "tr": [
+          "Tallinn Tastebuds'ı — tallinntastebuds.ee'deki haritayı ve listelerini, kartlarını ve splitwise'ı — Tallinn Tastebuds Instagram sayfasının arkasındaki kişiler yönetiyor. Burada neyin, neden tutulduğuna onlar karar veriyor.",
+          "Verilerinle ilgili her konuda [Instagram'da @tallinntastebuds](https://www.instagram.com/tallinntastebuds/) adresine yaz."
+        ],
+        "az": [
+          "Tallinn Tastebuds-ı — tallinntastebuds.ee ünvanındakı xəritəni, onun siyahılarını, kartlarını və splitwise-ı — Tallinn Tastebuds Instagram səhifəsinin arxasındakı insanlar idarə edir. Burada nəyin və niyə saxlanacağına onlar qərar verir.",
+          "Məlumatlarınla bağlı istənilən məsələ üçün [Instagram-da @tallinntastebuds](https://www.instagram.com/tallinntastebuds/) ünvanına yaz."
+        ],
+        "hy": [
+          "Tallinn Tastebuds-ը՝ tallinntastebuds.ee հասցեի քարտեզը իր ցանկերով, քարտերով և splitwise-ով, վարում են Tallinn Tastebuds Instagram էջի հետևում կանգնած մարդիկ։ Նրանք են որոշում, թե ինչ է այստեղ պահվում և ինչու։",
+          "Քո տվյալների վերաբերյալ ցանկացած հարցով գրիր [@tallinntastebuds-ին Instagram-ում](https://www.instagram.com/tallinntastebuds/)։"
+        ]
+      }
+    },
+    {
+      "id": "visiting",
+      "title": {
+        "en": "If you only look around",
+        "et": "Kui sa ainult vaatad ringi",
+        "ru": "Если вы просто смотрите",
+        "uk": "Якщо ви просто дивитеся",
+        "fi": "Jos vain katselet",
+        "pt": "Se só estiver a ver",
+        "es": "Si solo estás mirando",
+        "tr": "Yalnızca göz atıyorsan",
+        "az": "Sadəcə baxırsansa",
+        "hy": "Եթե պարզապես նայում ես"
+      },
+      "body": {
+        "en": [
+          "You do not need an account, and the site keeps no record of who you are. Your browser keeps a few things for you, on your own device: your language, your colour style, the places you saved, a random code that makes those saves yours, and the date you were last here.",
+          "The site counts visits as totals per day — how many people, from which country and from where, which pages and for how long — and never as a list of people.",
+          "To stop abuse, such as too many saves, sign-in attempts or messages from one place, the site keeps a scrambled code made from your internet address with a secret key. It cannot be turned back into the address, and it is cleared once it is no longer needed. Cloudflare, which hosts the site, sees your internet address in order to deliver each page, as any host does."
+        ],
+        "et": [
+          "Sul pole kontot vaja ja sait ei pea arvet selle üle, kes sa oled. Sinu brauser hoiab mõnda asja sinu jaoks sinu enda seadmes: keelt, värvistiili, salvestatud kohti, juhuslikku koodi, mis teeb need salvestused sinu omaks, ja kuupäeva, millal sa viimati siin käisid.",
+          "Sait loeb külastusi päevaste kogusummadena — mitu inimest, mis riigist ja kust, millised lehed ja kui kaua — ning mitte kunagi inimeste nimekirjana.",
+          "Kuritarvitamise peatamiseks, näiteks liiga paljude salvestuste, sisselogimiskatsete või sõnumite puhul ühest kohast, hoiab sait sinu internetiaadressist salajase võtmega tehtud segatud koodi. Seda ei saa tagasi aadressiks muuta ja see kustutatakse, kui seda enam vaja pole. Saiti majutav Cloudflare näeb sinu internetiaadressi, et iga lehte kohale toimetada, nagu iga majutaja."
+        ],
+        "ru": [
+          "Аккаунт не нужен, и сайт не хранит сведений о том, кто вы. Ваш браузер хранит для вас кое-что на вашем же устройстве: язык, цветовой стиль, сохранённые места, случайный код, который делает эти сохранения вашими, и дату вашего последнего визита.",
+          "Сайт считает посещения как итоги за день — сколько людей, из какой страны и откуда, какие страницы и как долго — и никогда как список людей.",
+          "Чтобы остановить злоупотребления — слишком много сохранений, попыток входа или сообщений из одного места, — сайт хранит зашифрованный код, полученный из вашего интернет-адреса с секретным ключом. Его нельзя превратить обратно в адрес, и он удаляется, когда больше не нужен. Cloudflare, на котором размещён сайт, видит ваш интернет-адрес, чтобы доставить каждую страницу, как любой хостинг."
+        ],
+        "uk": [
+          "Акаунт не потрібен, і сайт не зберігає відомостей про те, хто ви. Ваш браузер зберігає для вас дещо на вашому ж пристрої: мову, колірний стиль, збережені місця, випадковий код, який робить ці збереження вашими, і дату вашого останнього візиту.",
+          "Сайт рахує відвідування як підсумки за день — скільки людей, з якої країни і звідки, які сторінки і як довго — і ніколи як список людей.",
+          "Щоб зупинити зловживання — забагато збережень, спроб входу чи повідомлень з одного місця, — сайт зберігає зашифрований код, отриманий з вашої інтернет-адреси за допомогою секретного ключа. Його неможливо перетворити назад на адресу, і він видаляється, коли більше не потрібен. Cloudflare, на якому розміщено сайт, бачить вашу інтернет-адресу, щоб доставити кожну сторінку, як будь-який хостинг."
+        ],
+        "fi": [
+          "Et tarvitse tiliä, eikä sivusto pidä kirjaa siitä, kuka olet. Selaimesi säilyttää muutamia asioita puolestasi omalla laitteellasi: kielesi, värityylisi, tallentamasi paikat, satunnaisen koodin, joka tekee tallennuksista sinun, ja päivän, jolloin kävit viimeksi.",
+          "Sivusto laskee käynnit päiväkohtaisina summina — kuinka monta ihmistä, mistä maasta ja mistä, mitkä sivut ja kuinka kauan — eikä koskaan ihmisten listana.",
+          "Väärinkäytösten estämiseksi, kuten liian monien tallennusten, kirjautumisyritysten tai viestien samasta paikasta, sivusto säilyttää internetosoitteestasi salaisella avaimella tehdyn sekoitetun koodin. Sitä ei voi muuttaa takaisin osoitteeksi, ja se poistetaan, kun sitä ei enää tarvita. Sivustoa ylläpitävä Cloudflare näkee internetosoitteesi toimittaakseen jokaisen sivun, kuten mikä tahansa palveluntarjoaja."
+        ],
+        "pt": [
+          "Não precisa de conta, e o site não guarda registo de quem é. O seu navegador guarda algumas coisas por si, no seu próprio dispositivo: o idioma, o estilo de cor, os sítios que guardou, um código aleatório que torna essas escolhas suas e a data da última visita.",
+          "O site conta as visitas como totais por dia — quantas pessoas, de que país e de onde, que páginas e durante quanto tempo — e nunca como uma lista de pessoas.",
+          "Para travar abusos, como demasiados guardados, tentativas de entrada ou mensagens do mesmo sítio, o site guarda um código baralhado feito a partir do seu endereço de internet com uma chave secreta. Não pode ser transformado de volta no endereço e é apagado quando deixa de ser preciso. A Cloudflare, que aloja o site, vê o seu endereço de internet para entregar cada página, como qualquer alojamento."
+        ],
+        "es": [
+          "No necesitas una cuenta, y el sitio no guarda registro de quién eres. Tu navegador guarda algunas cosas por ti, en tu propio dispositivo: tu idioma, tu estilo de color, los sitios que guardaste, un código aleatorio que hace que esos guardados sean tuyos y la fecha de tu última visita.",
+          "El sitio cuenta las visitas como totales por día — cuántas personas, de qué país y desde dónde, qué páginas y durante cuánto tiempo — y nunca como una lista de personas.",
+          "Para frenar abusos, como demasiados guardados, intentos de acceso o mensajes desde un mismo lugar, el sitio guarda un código revuelto hecho a partir de tu dirección de internet con una clave secreta. No puede convertirse de nuevo en la dirección y se borra cuando ya no hace falta. Cloudflare, que aloja el sitio, ve tu dirección de internet para entregar cada página, como cualquier alojamiento."
+        ],
+        "tr": [
+          "Hesaba ihtiyacın yok ve site kim olduğuna dair bir kayıt tutmuyor. Tarayıcın senin için kendi cihazında birkaç şey saklar: dilini, renk stilini, kaydettiğin yerleri, bu kayıtları senin yapan rastgele bir kodu ve buraya en son geldiğin tarihi.",
+          "Site ziyaretleri günlük toplamlar olarak sayar — kaç kişi, hangi ülkeden ve nereden, hangi sayfalar ve ne kadar süre — asla kişi listesi olarak değil.",
+          "Kötüye kullanımı durdurmak için, örneğin tek bir yerden çok fazla kayıt, giriş denemesi ya da mesaj geldiğinde, site internet adresinden gizli bir anahtarla üretilmiş karıştırılmış bir kod tutar. Bu kod tekrar adrese çevrilemez ve artık gerekmediğinde silinir. Siteyi barındıran Cloudflare, her sayfayı iletebilmek için her barındırıcı gibi internet adresini görür."
+        ],
+        "az": [
+          "Hesaba ehtiyacın yoxdur və sayt sənin kim olduğun barədə qeyd saxlamır. Brauzerin sənin üçün öz cihazında bir neçə şey saxlayır: dilini, rəng üslubunu, yadda saxladığın yerləri, bu yadda saxlamaları sənin edən təsadüfi kodu və buraya sonuncu dəfə gəldiyin tarixi.",
+          "Sayt ziyarətləri gündəlik cəmlər kimi sayır — neçə nəfər, hansı ölkədən və haradan, hansı səhifələr və nə qədər — heç vaxt insanların siyahısı kimi yox.",
+          "Sui-istifadənin qarşısını almaq üçün, məsələn, bir yerdən həddən artıq yadda saxlama, giriş cəhdi və ya mesaj olduqda, sayt internet ünvanından gizli açarla hazırlanmış qarışdırılmış kod saxlayır. Onu yenidən ünvana çevirmək olmur və artıq lazım olmayanda silinir. Saytı yerləşdirən Cloudflare hər səhifəni çatdırmaq üçün, istənilən hostinq kimi, internet ünvanını görür."
+        ],
+        "hy": [
+          "Հաշիվ պետք չէ, և կայքը չի պահում որևէ գրառում, թե ով ես դու։ Քո դիտարկիչը քո փոխարեն քո իսկ սարքում պահում է մի քանի բան՝ լեզուն, գունային ոճը, պահված վայրերը, պատահական կոդ, որը այդ պահումները դարձնում է քոնը, և վերջին այցիդ ամսաթիվը։",
+          "Կայքն այցերը հաշվում է որպես օրական ընդհանուր թվեր՝ քանի մարդ, որ երկրից և որտեղից, որ էջերը և որքան ժամանակ, և երբեք որպես մարդկանց ցուցակ։",
+          "Չարաշահումները կանխելու համար, օրինակ՝ մեկ տեղից չափազանց շատ պահումների, մուտքի փորձերի կամ հաղորդագրությունների դեպքում, կայքը պահում է քո ինտերնետ հասցեից գաղտնի բանալիով ստացված խառնված կոդ։ Այն հնարավոր չէ ետ վերածել հասցեի և ջնջվում է, երբ այլևս պետք չէ։ Կայքը հյուրընկալող Cloudflare-ը տեսնում է քո ինտերնետ հասցեն՝ յուրաքանչյուր էջ հասցնելու համար, ինչպես ցանկացած հոսթինգ։"
+        ]
+      }
+    },
+    {
+      "id": "analytics",
+      "title": {
+        "en": "Google Analytics and Microsoft Clarity",
+        "et": "Google Analytics ja Microsoft Clarity",
+        "ru": "Google Analytics и Microsoft Clarity",
+        "uk": "Google Analytics і Microsoft Clarity",
+        "fi": "Google Analytics ja Microsoft Clarity",
+        "pt": "Google Analytics e Microsoft Clarity",
+        "es": "Google Analytics y Microsoft Clarity",
+        "tr": "Google Analytics ve Microsoft Clarity",
+        "az": "Google Analytics və Microsoft Clarity",
+        "hy": "Google Analytics և Microsoft Clarity"
+      },
+      "body": {
+        "en": [
+          "The pages load Google Analytics, which counts visits and what is pressed, and Microsoft Clarity, which records how a visit moves through a page — scrolls, taps and the page as it changed — so the site can be made easier to use. Clarity hides whatever you type into a box.",
+          "Both set their own cookies on your device, and both may send what they collect to servers in the United States. They load without asking first. Blocking them in your browser or with an ad blocker leaves the site working exactly as before."
+        ],
+        "et": [
+          "Lehed laadivad Google Analyticsi, mis loendab külastusi ja vajutusi, ning Microsoft Clarity, mis salvestab, kuidas külastus lehel liigub — kerimised, puudutused ja lehe muutumise —, et saiti saaks lihtsamaks teha. Clarity peidab kõik, mida kasti kirjutad.",
+          "Mõlemad panevad sinu seadmesse oma küpsised ja mõlemad võivad saata kogutu serveritesse Ameerika Ühendriikides. Need laaditakse enne küsimata. Kui blokeerid need brauseris või reklaamiblokeerijaga, töötab sait täpselt nagu varem."
+        ],
+        "ru": [
+          "Страницы загружают Google Analytics, который считает посещения и нажатия, и Microsoft Clarity, который записывает, как визит движется по странице — прокрутки, касания и изменения страницы, — чтобы сайт можно было сделать удобнее. Clarity скрывает всё, что вы вводите в поля.",
+          "Оба ставят на ваше устройство свои куки, и оба могут отправлять собранное на серверы в США. Они загружаются без предварительного вопроса. Если заблокировать их в браузере или блокировщиком рекламы, сайт будет работать так же, как раньше."
+        ],
+        "uk": [
+          "Сторінки завантажують Google Analytics, який рахує відвідування і натискання, і Microsoft Clarity, який записує, як візит рухається сторінкою — прокручування, дотики і зміни сторінки, — щоб сайт можна було зробити зручнішим. Clarity приховує все, що ви вводите в поля.",
+          "Обидва ставлять на ваш пристрій власні кукі, і обидва можуть надсилати зібране на сервери в США. Вони завантажуються без попереднього запитання. Якщо заблокувати їх у браузері чи блокувальником реклами, сайт працюватиме так само, як раніше."
+        ],
+        "fi": [
+          "Sivut lataavat Google Analyticsin, joka laskee käynnit ja painallukset, sekä Microsoft Clarityn, joka tallentaa, miten käynti etenee sivulla — vieritykset, napautukset ja sivun muuttumisen — jotta sivustosta voidaan tehdä helpompi käyttää. Clarity piilottaa kaiken, mitä kirjoitat kenttiin.",
+          "Molemmat asettavat laitteellesi omat evästeensä, ja molemmat voivat lähettää keräämänsä tiedot palvelimille Yhdysvaltoihin. Ne latautuvat kysymättä. Jos estät ne selaimessa tai mainosten estäjällä, sivusto toimii täsmälleen kuten ennenkin."
+        ],
+        "pt": [
+          "As páginas carregam o Google Analytics, que conta visitas e o que é premido, e o Microsoft Clarity, que regista como uma visita percorre a página — deslizes, toques e as mudanças na página — para que o site possa ficar mais fácil de usar. O Clarity esconde tudo o que escreve numa caixa.",
+          "Ambos colocam os seus próprios cookies no seu dispositivo e ambos podem enviar o que recolhem para servidores nos Estados Unidos. Carregam sem perguntar primeiro. Bloqueá-los no navegador ou com um bloqueador de anúncios deixa o site a funcionar exatamente como antes."
+        ],
+        "es": [
+          "Las páginas cargan Google Analytics, que cuenta las visitas y lo que se pulsa, y Microsoft Clarity, que graba cómo avanza una visita por la página — desplazamientos, toques y cambios en la página — para poder hacer el sitio más fácil de usar. Clarity oculta todo lo que escribes en una casilla.",
+          "Ambos ponen sus propias cookies en tu dispositivo y ambos pueden enviar lo que recogen a servidores en Estados Unidos. Se cargan sin preguntar antes. Bloquearlos en el navegador o con un bloqueador de anuncios deja el sitio funcionando exactamente igual."
+        ],
+        "tr": [
+          "Sayfalar, ziyaretleri ve basılanları sayan Google Analytics'i ve sitenin daha kolay kullanılabilmesi için bir ziyaretin sayfada nasıl ilerlediğini — kaydırmaları, dokunuşları ve sayfanın değişimini — kaydeden Microsoft Clarity'yi yükler. Clarity bir kutuya yazdığın her şeyi gizler.",
+          "Her ikisi de cihazına kendi çerezlerini yerleştirir ve topladıklarını Amerika Birleşik Devletleri'ndeki sunuculara gönderebilir. Önceden sormadan yüklenirler. Onları tarayıcında veya bir reklam engelleyiciyle engellemek siteyi tam olarak eskisi gibi çalışır halde bırakır."
+        ],
+        "az": [
+          "Səhifələr ziyarətləri və basılanları sayan Google Analytics-i və saytı istifadəsi daha asan etmək üçün ziyarətin səhifədə necə irəlilədiyini — sürüşdürmələri, toxunuşları və səhifənin dəyişməsini — qeydə alan Microsoft Clarity-ni yükləyir. Clarity xanaya yazdığın hər şeyi gizlədir.",
+          "Hər ikisi cihazına öz kukilərini yerləşdirir və hər ikisi topladığını ABŞ-dakı serverlərə göndərə bilər. Onlar əvvəlcədən soruşmadan yüklənir. Onları brauzerdə və ya reklam bloklayıcısı ilə bloklamaq saytın tam əvvəlki kimi işləməsinə mane olmur."
+        ],
+        "hy": [
+          "Էջերը բեռնում են Google Analytics-ը, որը հաշվում է այցերը և սեղմումները, և Microsoft Clarity-ն, որը գրանցում է, թե ինչպես է այցը շարժվում էջով՝ ոլորումները, հպումները և էջի փոփոխությունները, որպեսզի կայքը հնարավոր լինի ավելի հարմար դարձնել։ Clarity-ն թաքցնում է այն ամենը, ինչ գրում ես դաշտում։",
+          "Երկուսն էլ քո սարքում տեղադրում են իրենց թխուկները, և երկուսն էլ կարող են հավաքածն ուղարկել ԱՄՆ-ում գտնվող սերվերներ։ Դրանք բեռնվում են առանց նախապես հարցնելու։ Եթե դրանք արգելափակես դիտարկիչում կամ գովազդի արգելափակիչով, կայքը կաշխատի ճիշտ ինչպես նախկինում։"
+        ]
+      }
+    },
+    {
+      "id": "account",
+      "title": {
+        "en": "If you make an account",
+        "et": "Kui teed konto",
+        "ru": "Если вы создаёте аккаунт",
+        "uk": "Якщо ви створюєте акаунт",
+        "fi": "Jos luot tilin",
+        "pt": "Se criar uma conta",
+        "es": "Si creas una cuenta",
+        "tr": "Hesap açarsan",
+        "az": "Hesab yaratsan",
+        "hy": "Եթե հաշիվ ես ստեղծում"
+      },
+      "body": {
+        "en": [
+          "An account is a username and either a password or Google. The site keeps your username and a scrambled form of your password that cannot be turned back into it. If you use Google, it keeps the number Google gives you for this site — never your email address, your name or your picture.",
+          "It also keeps what you make: your saves, your lists, your profile line and links, your flashcard decks and progress, the splitwise groups you are in with their names and amounts, your chess games, and feedback you post. A cookie keeps you signed in for up to a year, or until you sign out.",
+          "Your profile, your public lists and anything you post as feedback can be seen by anyone. Everything else is yours alone."
+        ],
+        "et": [
+          "Konto on kasutajanimi ja kas parool või Google. Sait hoiab sinu kasutajanime ja parooli segatud kuju, mida ei saa tagasi parooliks muuta. Kui kasutad Google'it, hoiab sait numbrit, mille Google sulle selle saidi jaoks annab — mitte kunagi sinu e-posti aadressi, nime ega pilti.",
+          "Samuti hoiab see seda, mida sa teed: salvestusi, nimekirju, profiilirida ja linke, mälukaardipakke ja edenemist, splitwise'i gruppe, kuhu kuulud, koos nende nimede ja summadega, malepartiisid ja tagasisidet, mille postitad. Küpsis hoiab sind sisselogituna kuni aasta või kuni välja logid.",
+          "Sinu profiili, avalikke nimekirju ja kõike, mida tagasisidena postitad, näevad kõik. Kõik muu on ainult sinu."
+        ],
+        "ru": [
+          "Аккаунт — это имя пользователя и либо пароль, либо Google. Сайт хранит ваше имя пользователя и зашифрованный вид пароля, который нельзя превратить обратно в пароль. Если вы входите через Google, сайт хранит номер, который Google выдаёт вам для этого сайта, — но никогда ваш адрес почты, имя или фото.",
+          "Также хранится то, что вы создаёте: сохранения, списки, строка и ссылки профиля, колоды карточек и прогресс, группы splitwise, в которых вы состоите, с их названиями и суммами, ваши шахматные партии и отзывы, которые вы публикуете. Куки держит вас в аккаунте до года или пока вы не выйдете.",
+          "Ваш профиль, публичные списки и всё, что вы публикуете как отзыв, видны всем. Всё остальное принадлежит только вам."
+        ],
+        "uk": [
+          "Акаунт — це ім'я користувача і або пароль, або Google. Сайт зберігає ваше ім'я користувача і зашифрований вигляд пароля, який неможливо перетворити назад на пароль. Якщо ви входите через Google, сайт зберігає номер, який Google видає вам для цього сайту, — але ніколи вашу адресу пошти, ім'я чи фото.",
+          "Також зберігається те, що ви створюєте: збереження, списки, рядок і посилання профілю, колоди карток і прогрес, групи splitwise, у яких ви є, з їхніми назвами і сумами, ваші шахові партії і відгуки, які ви публікуєте. Кукі тримає вас в акаунті до року або доки ви не вийдете.",
+          "Ваш профіль, публічні списки і все, що ви публікуєте як відгук, бачать усі. Усе інше належить лише вам."
+        ],
+        "fi": [
+          "Tili on käyttäjänimi ja joko salasana tai Google. Sivusto säilyttää käyttäjänimesi ja salasanasi sekoitetun muodon, jota ei voi muuttaa takaisin salasanaksi. Jos käytät Googlea, sivusto säilyttää numeron, jonka Google antaa sinulle tätä sivustoa varten — ei koskaan sähköpostiosoitettasi, nimeäsi tai kuvaasi.",
+          "Se säilyttää myös sen, mitä teet: tallennukset, listat, profiilirivin ja linkit, sanakorttipakat ja edistymisen, splitwise-ryhmät, joihin kuulut, nimineen ja summineen, shakkipelisi ja lähettämäsi palautteen. Eväste pitää sinut kirjautuneena enintään vuoden tai kunnes kirjaudut ulos.",
+          "Profiilisi, julkiset listasi ja kaikki palautteena lähettämäsi näkyvät kaikille. Kaikki muu on vain sinun."
+        ],
+        "pt": [
+          "Uma conta é um nome de utilizador e uma palavra-passe ou o Google. O site guarda o seu nome de utilizador e uma forma baralhada da palavra-passe, que não pode ser transformada de volta nela. Se usar o Google, guarda o número que o Google lhe dá para este site — nunca o seu endereço de email, o seu nome ou a sua fotografia.",
+          "Guarda também o que cria: os seus guardados, as suas listas, a linha e as ligações do perfil, os baralhos e o progresso nos cartões, os grupos do splitwise de que faz parte, com os nomes e os valores, as suas partidas de xadrez e o feedback que publica. Um cookie mantém a sessão iniciada até um ano, ou até sair.",
+          "O seu perfil, as suas listas públicas e o que publicar como feedback podem ser vistos por qualquer pessoa. Tudo o resto é só seu."
+        ],
+        "es": [
+          "Una cuenta es un nombre de usuario y una contraseña o Google. El sitio guarda tu nombre de usuario y una forma revuelta de tu contraseña que no puede convertirse de nuevo en ella. Si usas Google, guarda el número que Google te da para este sitio — nunca tu correo, tu nombre ni tu foto.",
+          "También guarda lo que creas: tus guardados, tus listas, la línea y los enlaces de tu perfil, tus mazos de tarjetas y tu progreso, los grupos de splitwise en los que estás con sus nombres e importes, tus partidas de ajedrez y los comentarios que publicas. Una cookie mantiene tu sesión iniciada hasta un año, o hasta que la cierres.",
+          "Tu perfil, tus listas públicas y lo que publiques como comentario puede verlo cualquiera. Todo lo demás es solo tuyo."
+        ],
+        "tr": [
+          "Hesap bir kullanıcı adı ve ya bir şifre ya da Google'dır. Site kullanıcı adını ve şifrenin, tekrar şifreye çevrilemeyen karıştırılmış bir biçimini tutar. Google kullanırsan Google'ın sana bu site için verdiği numarayı tutar — asla e-posta adresini, adını ya da fotoğrafını değil.",
+          "Ayrıca oluşturduklarını da tutar: kayıtlarını, listelerini, profil satırını ve bağlantılarını, kart destelerini ve ilerlemeni, içinde bulunduğun splitwise gruplarını adları ve tutarlarıyla, satranç oyunlarını ve paylaştığın geri bildirimleri. Bir çerez seni bir yıla kadar ya da çıkış yapana kadar oturumda tutar.",
+          "Profilini, herkese açık listelerini ve geri bildirim olarak paylaştığın her şeyi herkes görebilir. Geri kalan her şey yalnızca senindir."
+        ],
+        "az": [
+          "Hesab istifadəçi adı və ya şifrə, ya da Google deməkdir. Sayt istifadəçi adını və şifrənin yenidən şifrəyə çevrilə bilməyən qarışdırılmış formasını saxlayır. Google istifadə etsən, Google-un sənə bu sayt üçün verdiyi nömrəni saxlayır — heç vaxt e-poçt ünvanını, adını və ya şəklini yox.",
+          "Həmçinin yaratdıqlarını saxlayır: yadda saxlamalarını, siyahılarını, profil sətrini və keçidlərini, kart dəstlərini və irəliləyişini, üzvü olduğun splitwise qruplarını adları və məbləğləri ilə, şahmat oyunlarını və paylaşdığın rəyləri. Kuki səni bir ilədək və ya çıxana qədər hesabda saxlayır.",
+          "Profilini, açıq siyahılarını və rəy kimi paylaşdığın hər şeyi hamı görə bilər. Qalan hər şey yalnız sənindir."
+        ],
+        "hy": [
+          "Հաշիվը օգտանուն է և կա՛մ գաղտնաբառ, կա՛մ Google։ Կայքը պահում է քո օգտանունը և գաղտնաբառի խառնված ձևը, որը հնարավոր չէ ետ վերածել գաղտնաբառի։ Եթե օգտվում ես Google-ից, պահվում է այն համարը, որ Google-ը տալիս է քեզ այս կայքի համար, և երբեք՝ քո էլ. հասցեն, անունը կամ նկարը։",
+          "Պահվում է նաև այն, ինչ ստեղծում ես՝ պահումները, ցանկերը, պրոֆիլի տողն ու հղումները, քարտերի կապուկներն ու առաջընթացը, splitwise խմբերը, որոնց անդամ ես, իրենց անուններով և գումարներով, շախմատի խաղերը և հրապարակած կարծիքները։ Թխուկը քեզ մուտք գործած է պահում մինչև մեկ տարի կամ մինչև դուրս գալը։",
+          "Քո պրոֆիլը, հանրային ցանկերը և ամենը, ինչ հրապարակում ես որպես կարծիք, կարող է տեսնել յուրաքանչյուրը։ Մնացած ամեն ինչ միայն քոնն է։"
+        ]
+      }
+    },
+    {
+      "id": "others",
+      "title": {
+        "en": "Who else handles it",
+        "et": "Kes veel sellega tegeleb",
+        "ru": "Кто ещё имеет к этому доступ",
+        "uk": "Хто ще має до цього доступ",
+        "fi": "Kuka muu käsittelee tietoja",
+        "pt": "Quem mais lida com isto",
+        "es": "Quién más lo maneja",
+        "tr": "Başka kimler işliyor",
+        "az": "Bunu daha kim emal edir",
+        "hy": "Ով ևս է մշակում դրանք"
+      },
+      "body": {
+        "en": [
+          "Cloudflare hosts the site, its database and the chat, and its AI answers the chat's questions without keeping them. Google provides sign-in with Google, the fonts and Analytics; Microsoft provides Clarity. CARTO draws the map, so it receives your device's internet address in order to send the map tiles.",
+          "If you press play on an Instagram, TikTok or YouTube video, that service's player loads and may set its own cookies. The flashcards' voice comes from the University of Tartu, which only ever receives the Estonian words on a card. If you ask the chat for somewhere near you, your location is sent with that one question and is not kept."
+        ],
+        "et": [
+          "Cloudflare majutab saiti, selle andmebaasi ja vestlust ning tema tehisintellekt vastab vestluse küsimustele neid hoidmata. Google pakub Google'iga sisselogimist, fonte ja Analyticsi; Microsoft pakub Clarityt. CARTO joonistab kaardi, seega saab ta sinu seadme internetiaadressi, et kaardiplaadid saata.",
+          "Kui vajutad Instagrami, TikToki või YouTube'i video esitusnuppu, laaditakse selle teenuse mängija, mis võib panna oma küpsised. Mälukaartide hääl tuleb Tartu Ülikoolist, mis saab alati ainult kaardi eestikeelsed sõnad. Kui küsid vestluselt kohta enda lähedal, saadetakse sinu asukoht selle ühe küsimusega ja seda ei hoita."
+        ],
+        "ru": [
+          "Cloudflare размещает сайт, его базу данных и чат, а его ИИ отвечает на вопросы чата, не сохраняя их. Google обеспечивает вход через Google, шрифты и Analytics; Microsoft — Clarity. CARTO рисует карту и поэтому получает интернет-адрес вашего устройства, чтобы отправить фрагменты карты.",
+          "Если вы нажмёте воспроизведение видео Instagram, TikTok или YouTube, загрузится плеер этого сервиса, который может поставить свои куки. Голос карточек — от Тартуского университета, который получает только эстонские слова с карточки. Если вы спрашиваете чат о месте рядом с вами, ваше местоположение отправляется вместе с этим одним вопросом и не хранится."
+        ],
+        "uk": [
+          "Cloudflare розміщує сайт, його базу даних і чат, а його ШІ відповідає на запитання чату, не зберігаючи їх. Google забезпечує вхід через Google, шрифти й Analytics; Microsoft — Clarity. CARTO малює мапу і тому отримує інтернет-адресу вашого пристрою, щоб надіслати фрагменти мапи.",
+          "Якщо ви натиснете відтворення відео Instagram, TikTok чи YouTube, завантажиться плеєр цього сервісу, який може поставити власні кукі. Голос карток — від Тартуського університету, який отримує лише естонські слова з картки. Якщо ви питаєте чат про місце поруч із вами, ваше місцезнаходження надсилається разом із цим одним запитанням і не зберігається."
+        ],
+        "fi": [
+          "Cloudflare ylläpitää sivustoa, sen tietokantaa ja chattia, ja sen tekoäly vastaa chatin kysymyksiin säilyttämättä niitä. Google tarjoaa Google-kirjautumisen, fontit ja Analyticsin; Microsoft tarjoaa Clarityn. CARTO piirtää kartan, joten se saa laitteesi internetosoitteen lähettääkseen karttaruudut.",
+          "Jos painat Instagram-, TikTok- tai YouTube-videon toistopainiketta, palvelun soitin latautuu ja voi asettaa omia evästeitään. Sanakorttien ääni tulee Tarton yliopistolta, joka saa aina vain kortin virolaiset sanat. Jos kysyt chatilta paikkaa lähelläsi, sijaintisi lähetetään tuon yhden kysymyksen mukana eikä sitä säilytetä."
+        ],
+        "pt": [
+          "A Cloudflare aloja o site, a sua base de dados e o chat, e a sua IA responde às perguntas do chat sem as guardar. O Google fornece a entrada com o Google, os tipos de letra e o Analytics; a Microsoft fornece o Clarity. A CARTO desenha o mapa e, por isso, recebe o endereço de internet do seu dispositivo para enviar os mosaicos do mapa.",
+          "Se carregar em reproduzir num vídeo do Instagram, TikTok ou YouTube, o leitor desse serviço é carregado e pode colocar os seus próprios cookies. A voz dos cartões vem da Universidade de Tartu, que só recebe as palavras em estónio de um cartão. Se pedir ao chat um sítio perto de si, a sua localização é enviada com essa pergunta e não é guardada."
+        ],
+        "es": [
+          "Cloudflare aloja el sitio, su base de datos y el chat, y su IA responde a las preguntas del chat sin guardarlas. Google ofrece el acceso con Google, las tipografías y Analytics; Microsoft ofrece Clarity. CARTO dibuja el mapa, así que recibe la dirección de internet de tu dispositivo para enviar las teselas del mapa.",
+          "Si pulsas reproducir en un vídeo de Instagram, TikTok o YouTube, se carga el reproductor de ese servicio, que puede poner sus propias cookies. La voz de las tarjetas viene de la Universidad de Tartu, que solo recibe las palabras en estonio de una tarjeta. Si pides al chat un sitio cerca de ti, tu ubicación se envía con esa única pregunta y no se guarda."
+        ],
+        "tr": [
+          "Cloudflare siteyi, veritabanını ve sohbeti barındırır; yapay zekâsı sohbetteki soruları saklamadan yanıtlar. Google, Google ile girişi, yazı tiplerini ve Analytics'i; Microsoft ise Clarity'yi sağlar. CARTO haritayı çizer, bu yüzden harita parçalarını göndermek için cihazının internet adresini alır.",
+          "Bir Instagram, TikTok veya YouTube videosunda oynat'a basarsan, o hizmetin oynatıcısı yüklenir ve kendi çerezlerini yerleştirebilir. Kartların sesi Tartu Üniversitesi'nden gelir ve bu üniversite yalnızca bir karttaki Estonca kelimeleri alır. Sohbete yakınında bir yer sorarsan, konumun yalnızca o soruyla birlikte gönderilir ve saklanmaz."
+        ],
+        "az": [
+          "Cloudflare saytı, onun verilənlər bazasını və söhbəti yerləşdirir, onun süni intellekti isə söhbətin suallarını saxlamadan cavablandırır. Google Google ilə girişi, şriftləri və Analytics-i, Microsoft isə Clarity-ni təmin edir. CARTO xəritəni çəkir, ona görə də xəritə parçalarını göndərmək üçün cihazının internet ünvanını alır.",
+          "Instagram, TikTok və ya YouTube videosunda oynat düyməsini bassan, həmin xidmətin oyunçusu yüklənir və öz kukilərini yerləşdirə bilər. Kartların səsi Tartu Universitetindən gəlir və o, yalnız kartdakı eston sözlərini alır. Söhbətdən yaxınlığında bir yer soruşsan, məkanın yalnız həmin sualla göndərilir və saxlanmır."
+        ],
+        "hy": [
+          "Cloudflare-ը հյուրընկալում է կայքը, նրա տվյալների բազան և զրուցարանը, իսկ նրա արհեստական բանականությունը պատասխանում է զրուցարանի հարցերին՝ առանց դրանք պահելու։ Google-ը տրամադրում է Google-ով մուտքը, տառատեսակները և Analytics-ը, Microsoft-ը՝ Clarity-ն։ CARTO-ն գծում է քարտեզը, ուստի ստանում է քո սարքի ինտերնետ հասցեն՝ քարտեզի սալիկներն ուղարկելու համար։",
+          "Եթե սեղմես Instagram-ի, TikTok-ի կամ YouTube-ի տեսանյութի նվագարկումը, բեռնվում է այդ ծառայության նվագարկիչը, որը կարող է տեղադրել իր թխուկները։ Քարտերի ձայնը Տարտուի համալսարանից է, որը միշտ ստանում է միայն քարտի էստոներեն բառերը։ Եթե զրուցարանին հարցնում ես քո մոտակայքում գտնվող վայրի մասին, քո գտնվելու վայրն ուղարկվում է միայն այդ հարցի հետ և չի պահվում։"
+        ]
+      }
+    },
+    {
+      "id": "why",
+      "title": {
+        "en": "Why",
+        "et": "Miks",
+        "ru": "Зачем",
+        "uk": "Навіщо",
+        "fi": "Miksi",
+        "pt": "Porquê",
+        "es": "Por qué",
+        "tr": "Neden",
+        "az": "Niyə",
+        "hy": "Ինչու"
+      },
+      "body": {
+        "en": [
+          "What you make with an account is kept to give you what you asked for. The counts, the protection against abuse and the analytics are kept because the site has a legitimate interest in knowing how it is used and in keeping it working."
+        ],
+        "et": [
+          "Seda, mida kontoga teed, hoitakse selleks, et anda sulle see, mida palusid. Loendusi, kuritarvituste vastast kaitset ja analüütikat hoitakse, sest saidil on õigustatud huvi teada, kuidas seda kasutatakse, ja hoida see töökorras."
+        ],
+        "ru": [
+          "То, что вы создаёте в аккаунте, хранится, чтобы дать вам то, о чём вы просили. Подсчёты, защита от злоупотреблений и аналитика хранятся, потому что у сайта есть законный интерес знать, как им пользуются, и поддерживать его работу."
+        ],
+        "uk": [
+          "Те, що ви створюєте в акаунті, зберігається, щоб дати вам те, про що ви просили. Підрахунки, захист від зловживань і аналітика зберігаються, бо сайт має законний інтерес знати, як ним користуються, і підтримувати його роботу."
+        ],
+        "fi": [
+          "Tilillä tekemäsi säilytetään, jotta saat sen, mitä pyysit. Laskennat, väärinkäytösten esto ja analytiikka säilytetään, koska sivustolla on oikeutettu etu tietää, miten sitä käytetään, ja pitää se toiminnassa."
+        ],
+        "pt": [
+          "O que cria com uma conta é guardado para lhe dar o que pediu. As contagens, a proteção contra abusos e a análise são guardadas porque o site tem um interesse legítimo em saber como é usado e em mantê-lo a funcionar."
+        ],
+        "es": [
+          "Lo que creas con una cuenta se guarda para darte lo que pediste. Los recuentos, la protección contra abusos y la analítica se guardan porque el sitio tiene un interés legítimo en saber cómo se usa y en mantenerlo funcionando."
+        ],
+        "tr": [
+          "Bir hesapla oluşturduklarının saklanmasının nedeni, istediğini sana verebilmektir. Sayımlar, kötüye kullanıma karşı koruma ve analitik ise sitenin nasıl kullanıldığını bilmek ve çalışır halde tutmak konusunda meşru bir menfaati olduğu için saklanır."
+        ],
+        "az": [
+          "Hesabla yaratdıqların istədiyini sənə vermək üçün saxlanır. Saylar, sui-istifadədən qorunma və analitika isə saytın necə istifadə olunduğunu bilmək və onu işlək saxlamaq üçün qanuni marağı olduğuna görə saxlanır."
+        ],
+        "hy": [
+          "Այն, ինչ ստեղծում ես հաշվով, պահվում է, որպեսզի քեզ տրվի այն, ինչ խնդրել ես։ Հաշվարկները, չարաշահումներից պաշտպանությունը և վերլուծությունը պահվում են, որովհետև կայքն օրինական շահ ունի իմանալու, թե ինչպես է այն օգտագործվում, և պահելու այն աշխատունակ։"
+        ]
+      }
+    },
+    {
+      "id": "howlong",
+      "title": {
+        "en": "How long",
+        "et": "Kui kaua",
+        "ru": "Как долго",
+        "uk": "Як довго",
+        "fi": "Kuinka kauan",
+        "pt": "Durante quanto tempo",
+        "es": "Durante cuánto tiempo",
+        "tr": "Ne kadar süre",
+        "az": "Nə qədər",
+        "hy": "Որքան ժամանակ"
+      },
+      "body": {
+        "en": [
+          "Until you delete your account. The Delete account button on your [account page](/account) removes your account, your saves, lists, profile, decks, splitwise groups and sign-in at once. Your username stays reserved for 30 days, so nobody can take it straight away.",
+          "Feedback you posted and chess games you played are not removed by the button; ask on Instagram and they will be. The daily totals are kept, since they hold no people."
+        ],
+        "et": [
+          "Kuni kustutad oma konto. [Kontolehe](/account) nupp Kustuta konto eemaldab korraga sinu konto, salvestused, nimekirjad, profiili, pakid, splitwise'i grupid ja sisselogimise. Sinu kasutajanimi jääb 30 päevaks reserveerituks, et keegi ei saaks seda kohe võtta.",
+          "Postitatud tagasisidet ja mängitud malepartiisid nupp ei eemalda; küsi Instagramis ja need eemaldatakse. Päevased kogusummad jäävad alles, sest neis pole inimesi."
+        ],
+        "ru": [
+          "Пока вы не удалите аккаунт. Кнопка «Удалить аккаунт» на [странице аккаунта](/account) сразу удаляет аккаунт, сохранения, списки, профиль, колоды, группы splitwise и вход. Ваше имя пользователя остаётся зарезервированным 30 дней, чтобы его не заняли сразу.",
+          "Опубликованные отзывы и сыгранные шахматные партии кнопка не удаляет — напишите в Instagram, и их удалят. Дневные итоги остаются, потому что в них нет людей."
+        ],
+        "uk": [
+          "Доки ви не видалите акаунт. Кнопка «Видалити акаунт» на [сторінці акаунта](/account) одразу видаляє акаунт, збереження, списки, профіль, колоди, групи splitwise і вхід. Ваше ім'я користувача залишається зарезервованим 30 днів, щоб його не зайняли одразу.",
+          "Опубліковані відгуки та зіграні шахові партії кнопка не видаляє — напишіть в Instagram, і їх видалять. Денні підсумки залишаються, бо в них немає людей."
+        ],
+        "fi": [
+          "Kunnes poistat tilisi. [Tilisivun](/account) Poista tili -painike poistaa kerralla tilisi, tallennuksesi, listasi, profiilisi, pakkasi, splitwise-ryhmäsi ja kirjautumisesi. Käyttäjänimesi pysyy varattuna 30 päivää, jottei kukaan voi ottaa sitä heti.",
+          "Painike ei poista lähettämääsi palautetta eikä pelaamiasi shakkipelejä; kysy Instagramissa, niin ne poistetaan. Päivittäiset summat säilyvät, koska niissä ei ole ihmisiä."
+        ],
+        "pt": [
+          "Até apagar a sua conta. O botão Apagar conta na sua [página de conta](/account) remove de uma vez a conta, os guardados, as listas, o perfil, os baralhos, os grupos do splitwise e a sessão. O seu nome de utilizador fica reservado durante 30 dias, para que ninguém o possa ficar logo.",
+          "O feedback que publicou e as partidas de xadrez que jogou não são removidos pelo botão; peça no Instagram e serão. Os totais diários ficam, porque não contêm pessoas."
+        ],
+        "es": [
+          "Hasta que elimines tu cuenta. El botón Eliminar cuenta de tu [página de cuenta](/account) elimina de una vez tu cuenta, tus guardados, listas, perfil, mazos, grupos de splitwise y tu sesión. Tu nombre de usuario queda reservado 30 días, para que nadie pueda quedárselo enseguida.",
+          "Los comentarios que publicaste y las partidas de ajedrez que jugaste no los elimina el botón; pídelo en Instagram y se eliminarán. Los totales diarios se conservan, porque no contienen personas."
+        ],
+        "tr": [
+          "Hesabını silene kadar. [Hesap sayfandaki](/account) Hesabı sil düğmesi hesabını, kayıtlarını, listelerini, profilini, destelerini, splitwise gruplarını ve oturumunu bir kerede kaldırır. Kullanıcı adın, kimse hemen alamasın diye 30 gün ayrılmış kalır.",
+          "Paylaştığın geri bildirimler ve oynadığın satranç oyunları düğmeyle silinmez; Instagram'dan iste, silinsinler. Günlük toplamlar kalır, çünkü içlerinde insan yoktur."
+        ],
+        "az": [
+          "Hesabını silənə qədər. [Hesab səhifəndəki](/account) Hesabı sil düyməsi hesabını, yadda saxlamalarını, siyahılarını, profilini, dəstlərini, splitwise qruplarını və girişini bir dəfəyə silir. İstifadəçi adın 30 gün ehtiyatda qalır ki, heç kim onu dərhal götürə bilməsin.",
+          "Paylaşdığın rəylər və oynadığın şahmat oyunları bu düymə ilə silinmir; Instagram-da xahiş et, silinəcək. Gündəlik cəmlər qalır, çünki onlarda insan yoxdur."
+        ],
+        "hy": [
+          "Մինչև քո հաշիվը ջնջելը։ [Հաշվի էջի](/account) «Ջնջել հաշիվը» կոճակը միանգամից հեռացնում է հաշիվը, պահումները, ցանկերը, պրոֆիլը, կապուկները, splitwise խմբերը և մուտքը։ Քո օգտանունը մնում է ամրագրված 30 օր, որպեսզի ոչ ոք չկարողանա այն անմիջապես վերցնել։",
+          "Հրապարակած կարծիքները և խաղացած շախմատի խաղերը կոճակը չի հեռացնում․ խնդրիր Instagram-ում, և դրանք կհեռացվեն։ Օրական ընդհանուր թվերը մնում են, քանի որ դրանցում մարդիկ չկան։"
+        ]
+      }
+    },
+    {
+      "id": "rights",
+      "title": {
+        "en": "Your rights",
+        "et": "Sinu õigused",
+        "ru": "Ваши права",
+        "uk": "Ваші права",
+        "fi": "Oikeutesi",
+        "pt": "Os seus direitos",
+        "es": "Tus derechos",
+        "tr": "Hakların",
+        "az": "Hüquqların",
+        "hy": "Քո իրավունքները"
+      },
+      "body": {
+        "en": [
+          "You can ask to see what is kept about you, to have it corrected or deleted, or to stop it being used, by writing to [@tallinntastebuds on Instagram](https://www.instagram.com/tallinntastebuds/). You can also complain to Estonia's Data Protection Inspectorate at [aki.ee](https://www.aki.ee/en)."
+        ],
+        "et": [
+          "Võid küsida, mida sinu kohta hoitakse, lasta seda parandada või kustutada või selle kasutamise peatada, kirjutades [@tallinntastebuds Instagramis](https://www.instagram.com/tallinntastebuds/). Samuti võid esitada kaebuse Andmekaitse Inspektsioonile aadressil [aki.ee](https://www.aki.ee/)."
+        ],
+        "ru": [
+          "Вы можете попросить показать, что о вас хранится, исправить или удалить это или прекратить использование, написав [@tallinntastebuds в Instagram](https://www.instagram.com/tallinntastebuds/). Вы также можете пожаловаться в Инспекцию по защите данных Эстонии на [aki.ee](https://www.aki.ee/ru)."
+        ],
+        "uk": [
+          "Ви можете попросити показати, що про вас зберігається, виправити чи видалити це або припинити використання, написавши [@tallinntastebuds в Instagram](https://www.instagram.com/tallinntastebuds/). Ви також можете поскаржитися до Інспекції із захисту даних Естонії на [aki.ee](https://www.aki.ee/en)."
+        ],
+        "fi": [
+          "Voit pyytää nähdä, mitä sinusta säilytetään, korjauttaa tai poistattaa sen tai lopettaa sen käytön kirjoittamalla [@tallinntastebuds Instagramissa](https://www.instagram.com/tallinntastebuds/). Voit myös tehdä valituksen Viron tietosuojavirastolle osoitteessa [aki.ee](https://www.aki.ee/en)."
+        ],
+        "pt": [
+          "Pode pedir para ver o que se guarda sobre si, para o corrigir ou apagar, ou para deixar de ser usado, escrevendo para [@tallinntastebuds no Instagram](https://www.instagram.com/tallinntastebuds/). Pode também apresentar queixa à Inspeção de Proteção de Dados da Estónia em [aki.ee](https://www.aki.ee/en)."
+        ],
+        "es": [
+          "Puedes pedir ver lo que se guarda sobre ti, que se corrija o se borre, o que deje de usarse, escribiendo a [@tallinntastebuds en Instagram](https://www.instagram.com/tallinntastebuds/). También puedes reclamar ante la Inspección de Protección de Datos de Estonia en [aki.ee](https://www.aki.ee/en)."
+        ],
+        "tr": [
+          "Hakkında neyin tutulduğunu görmeyi, düzeltilmesini ya da silinmesini veya kullanılmasının durdurulmasını [Instagram'da @tallinntastebuds](https://www.instagram.com/tallinntastebuds/) adresine yazarak isteyebilirsin. Ayrıca Estonya Veri Koruma Müfettişliği'ne [aki.ee](https://www.aki.ee/en) üzerinden şikâyette bulunabilirsin."
+        ],
+        "az": [
+          "Haqqında nəyin saxlandığını görmək, onu düzəltmək və ya silmək, yaxud istifadəsini dayandırmaq üçün [Instagram-da @tallinntastebuds](https://www.instagram.com/tallinntastebuds/) ünvanına yaza bilərsən. Həmçinin Estoniyanın Məlumatların Mühafizəsi İnspeksiyasına [aki.ee](https://www.aki.ee/en) vasitəsilə şikayət edə bilərsən."
+        ],
+        "hy": [
+          "Կարող ես խնդրել տեսնել, թե ինչ է պահվում քո մասին, ուղղել կամ ջնջել այն, կամ դադարեցնել դրա օգտագործումը՝ գրելով [@tallinntastebuds-ին Instagram-ում](https://www.instagram.com/tallinntastebuds/)։ Կարող ես նաև բողոքել Էստոնիայի տվյալների պաշտպանության տեսչությանը [aki.ee](https://www.aki.ee/en) կայքում։"
+        ]
+      }
+    },
+    {
+      "id": "changes",
+      "title": {
+        "en": "Changes",
+        "et": "Muudatused",
+        "ru": "Изменения",
+        "uk": "Зміни",
+        "fi": "Muutokset",
+        "pt": "Alterações",
+        "es": "Cambios",
+        "tr": "Değişiklikler",
+        "az": "Dəyişikliklər",
+        "hy": "Փոփոխություններ"
+      },
+      "body": {
+        "en": [
+          "When this page changes, the date at the top changes with it."
+        ],
+        "et": [
+          "Kui see leht muutub, muutub koos sellega ka üleval olev kuupäev."
+        ],
+        "ru": [
+          "Когда эта страница меняется, вместе с ней меняется и дата вверху."
+        ],
+        "uk": [
+          "Коли ця сторінка змінюється, разом із нею змінюється і дата вгорі."
+        ],
+        "fi": [
+          "Kun tämä sivu muuttuu, myös ylhäällä oleva päivämäärä muuttuu."
+        ],
+        "pt": [
+          "Quando esta página muda, a data no topo muda com ela."
+        ],
+        "es": [
+          "Cuando esta página cambia, la fecha de arriba cambia con ella."
+        ],
+        "tr": [
+          "Bu sayfa değiştiğinde, en üstteki tarih de onunla birlikte değişir."
+        ],
+        "az": [
+          "Bu səhifə dəyişəndə yuxarıdakı tarix də onunla birlikdə dəyişir."
+        ],
+        "hy": [
+          "Երբ այս էջը փոխվում է, վերևի ամսաթիվը նույնպես փոխվում է։"
+        ]
+      }
+    }
+  ]
+}

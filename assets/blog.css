@@ -1,7 +1,8 @@
 /* ==========================================================================
    Tallinn Tastebuds — the blog.
 
-   Loaded after assets/styles.css and assets/lists.css and only by blog.html,
+   Loaded after assets/styles.css and assets/lists.css by blog.html, and by
+   privacy.html, which is a page of prose too and reads the way a post does,
    so everything three pages already share is in place before this file is
    read: the tokens, .card, .eyebrow, the four controls, the toast and the
    row — .menu-row, the shape the account sheet draws a way-on in — from the

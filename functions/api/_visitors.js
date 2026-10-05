@@ -447,7 +447,8 @@ export const PAGES = [
   /* 404.html, which Pages serves at any address nothing else answers. It
      says /404 itself, through data-page on its track.js tag, because the
      address it is read at is whatever somebody mistyped. */
-  { id: 'missing', label: 'visitorsPageMissing', paths: ['/404', '/404.html'] }
+  { id: 'missing', label: 'visitorsPageMissing', paths: ['/404', '/404.html'] },
+  { id: 'privacy', label: 'privacyLink', paths: ['/privacy', '/privacy.html'] }
 ];
 
 /* The two rails, as pickLayout() in assets/app.js deals them. */

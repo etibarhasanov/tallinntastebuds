@@ -11158,6 +11158,54 @@ is everybody: nothing about a story is cached beyond the page it is on.
 
 ---
 
+## Privacy
+
+`/privacy` — what the site keeps about the person reading it, why, and for how
+long, in plain words and in all ten languages. It was the one thing the audit
+against specification.website found missing that the law, rather than good
+practice, asks for: the site has accounts, a sign-in cookie, Google
+Analytics, Clarity and Google sign-in, and nowhere said so.
+
+It names **Tallinn Tastebuds**, run by the people behind its Instagram page,
+as who decides what is kept, and that page as where to write; it says what a
+visit leaves on the device and in the counts, what Analytics and Clarity do —
+including that they load without asking first — what an account keeps and
+who can see it, who else handles anything, why, how long, and the reader's
+rights, with the Estonian regulator. Every sentence is about what the code
+does today, checked against it rather than against what a policy usually
+says: the **Delete account** button, for one, takes the account, saves,
+lists, profile, decks, splitwise groups and sign-in, holds the username for
+thirty days, and does *not* take posted feedback or chess games, and the page
+says exactly that and that Instagram is where to ask for the rest.
+
+**The words are in `data/privacy.json`, not `data/ui.json`.** It is prose,
+like a post, and `ui.json` is fetched by the map one language at a time on
+every visit; three thousand words of policy in it would ride along on every
+map load. Unlike a post it is held to every language: `tools/validate.mjs`
+fails a piece missing in one, a section a paragraph short in one, or a link
+that is neither a path on this site nor https.
+
+**Written on the server, one language per address.** `functions/privacy.js`
+writes the policy into `privacy.html` in the language `?lang=` names, with
+that language's head — English, the version that counts, at the bare address
+— so it reads with scripts off and nothing in the browser draws it again.
+`assets/privacy.js` only wears the visitor's style, sends a visitor who reads
+in another language from the bare address to theirs, the way the map is read
+at `?lang=`, and puts the frame's two words into that language. Every
+translation says at the top that it is one. The page wears the lists page's
+frame and the blog's prose styles and has no stylesheet of its own.
+
+**Where it is linked.** A row on the map's **More** sheet, under Feedback; the
+account page, beside **Delete account**; and one line on the sign-up sheet,
+*How your account is kept*, under the warning about the password — a link
+and not a box to tick, since nothing is agreed to, it is said. It is in the
+sitemap, in English.
+
+**When it changes**, `updated` in the file moves with it and the page prints
+the new date. What it does not do: it does not ask for consent — that is
+**No consent banner**, and this page documents the arrangement rather than
+changing it.
+
 ## The blog
 
 `/blog` — one post per thing this site does. Why there are no scores on the
@@ -16300,6 +16348,11 @@ Feedback, `assets/feedback.js`:
 | `feedback_google` | — Continue with Google, from inside the composer |
 | `feedback_open` | — the door on the map's rail, reported through `data-track` |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
+
+The privacy policy is read rather than pressed, so what is reported is the way
+in: `privacy_open`, from the row on the map's **More** sheet with no
+parameters, from the sign-up sheet with `from` `signup`, and from the account
+page with `from` `account`.
 
 No id travels with any of these. The page is a handful of sentences and the
 interesting question is how many people say something rather than which

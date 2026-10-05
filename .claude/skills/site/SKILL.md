@@ -326,11 +326,11 @@ browser cannot import from `tools/`; change one, change the other.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is the chip's name on every rail; the other nine sit beside it.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the nineteen pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `edit.html`, `insights.html`, `chess.html`, `404.html`, and the owner's five under
+  `flashcard.html`, `edit.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's five under
   `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is
