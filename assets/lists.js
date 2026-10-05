@@ -93,6 +93,12 @@
      under it — an unfinished list is simply not sharable yet. */
   var MIN_ITEMS = 3;
 
+  /* How long somebody else's list has to be before it gets a search field.
+     A top ten is one screen and a half of scrolling, which is quicker than
+     typing, and on a phone the field was most of the reason the first place
+     sat under the fold — see listFind(). */
+  var FIND_FROM = 13;
+
   /* Where everybody's lists are: the directory, and the one way out of a
      list's own page. */
   var ALL_PATH = '/lists';
@@ -226,6 +232,12 @@
      gone off the top — see nameWhenPast(). Same rule: one at a time, rebuilt
      with the view. */
   var barWatch = null;
+
+  /* And the one on the last row of somebody else's list, which reports
+     list_end the first time it is on screen — see watchEnd(). `endSaid` is
+     what keeps that to once a load, however often the rows are repainted. */
+  var endWatch = null;
+  var endSaid = false;
 
   /* --------------------------------------------------------------- helpers */
 
@@ -1989,7 +2001,7 @@
     } else if (!list.items.length) {
       wrap.appendChild(el('p', { className: 'lists-none', textContent: t('listsEmpty') }));
     } else {
-      wrap.appendChild(listFind());
+      if (list.items.length >= FIND_FROM) wrap.appendChild(listFind());
       /* A plain box, with nothing of its own to say or to draw. It is here so
          that a keystroke repaints the rows without rebuilding the field above
          them — see paintFound(). */
@@ -2039,6 +2051,13 @@
    * numbered and carry a grip, and they are dragged into the order that is
    * the whole point of a top ten — an order there is no sense in rearranging
    * four rows of.
+   *
+   * And only on one of FIND_FROM places or more. Measured at 390 by 664, a
+   * phone inside Instagram's own browser, the field was most of what kept the
+   * bakeries' first place under the fold, on a list of ten that a thumb
+   * scrolls through faster than it types. There is no other way into the
+   * field, so a short list can never be left narrowed with nothing on screen
+   * to clear it.
    */
   function listFind() {
     var input = el('input', {
@@ -2137,11 +2156,35 @@
       if (hit) ol.appendChild(itemRow(item, i));
     });
 
-    if (ol.firstChild) { dom.found.appendChild(ol); return; }
+    if (ol.firstChild) {
+      dom.found.appendChild(ol);
+      if (!words.length) watchEnd(ol.lastChild);
+      return;
+    }
     dom.found.appendChild(el('p', {
       className: 'lists-none',
       textContent: t('searchNone', { q: state.find.trim() })
     }));
+  }
+
+  /* Somebody reached the last place on the list. A view that ends with
+     nothing pressed is a reader who left at the title or a reader who read
+     all ten and had what they came for, and the count cannot tell the two
+     apart without this: list_end once a load, the first time the last row is
+     on screen, and only over the whole list — a search that leaves one row
+     standing has not been read to the end. A browser with no observer reports
+     nothing rather than a guess. */
+  function watchEnd(row) {
+    if (endWatch) { endWatch.disconnect(); endWatch = null; }
+    if (endSaid || !window.IntersectionObserver) return;
+    endWatch = new IntersectionObserver(function (entries) {
+      if (!entries[entries.length - 1].isIntersecting) return;
+      endSaid = true;
+      endWatch.disconnect();
+      endWatch = null;
+      TTBTrack.event('list_end', { list_id: state.list.id, places_on: state.list.items.length });
+    });
+    endWatch.observe(row);
   }
 
   /* The bar over somebody else's list, and the same bar the map's panel draws
@@ -2249,13 +2292,22 @@
      lines of mono in a bar that never leaves the screen took the dock past a
      tenth of a phone, off a list it is meant to sit under rather than compete
      with, and a filled button does not need a footnote. The map's rail says
-     no more than this one does either. */
+     no more than this one does either.
+
+     It says "More lists" and not the directory's name. "Everybody's lists"
+     is what the page behind it is called, and on the map's rail, beside
+     Your lists, the "everybody" is the point. Here it was a name for a place
+     the reader had never heard of: on the day an Instagram story sent 117
+     strangers to the bakeries, twelve of 158 views pressed it, with the pill
+     filled and on screen the whole time. Somebody who has just read a list
+     wants more of what they were reading, and the label now says that is
+     what is behind it. */
   function listDock() {
     return el('div', { className: 'lists-dock' }, [
       TTBTrack.click(el('a', {
         className: 'go lists-dock-out',
         href: ALL_PATH,
-        textContent: t('listsAllTitle')
+        textContent: t('listsMore')
       }), 'lists_all')
     ]);
   }
@@ -2897,16 +2949,25 @@
 
      A place the catalogue has lost is not dressed as a door, because it has
      nowhere to go: placeHref() gives it no address, placeName() draws the
-     muted span it always did, and the row keeps its plain edge. */
+     muted span it always did, and the row keeps its plain edge.
+
+     On the six lists Google wrote, the sentence under a place is Google's
+     type and Google's two numbers, which sourceLine() has just drawn in the
+     line above it — so it is left out wherever that line was drawn, and every
+     row is a line shorter on the lists strangers arrive on most. It stays
+     where the venue is gone and sourceLine() has nothing: that is the case it
+     was written into the list for. See **The six lists Google wrote**. */
   function itemRow(item, i) {
     var door = !!placeHref(item);
+    var source = sourceLine(item);
+    var said = item.say && !(source && state.list.by === GOOGLE_BY);
     return el('li', { className: 'item' + (door ? ' is-door' : '') }, [
       el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
       el('div', { className: 'item-body' }, [
         placeName(item, door),
         item.address ? el('p', { className: 'item-address mono', textContent: item.address }) : null,
-        sourceLine(item),
-        item.say ? el('p', { className: 'item-say', textContent: item.say }) : null,
+        source,
+        said ? el('p', { className: 'item-say', textContent: item.say }) : null,
         mustOrderLine(item)
       ])
     ]);

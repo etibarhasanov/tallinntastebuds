@@ -4891,7 +4891,11 @@ are not this map's verdict, and the line under each place is Google's word
 for it and Google's two numbers: *Bakery · 4.9 from 1,656 reviews on
 Google*. The page already draws both beside a Google row; the line is the
 same fact in the list's own voice, and the one copy that survives if a row
-ever loses its venue, since a list renders from `list_items` alone.
+ever loses its venue, since a list renders from `list_items` alone. So the
+list's page draws it only then: where the row has its venue and the
+*According to Google* line is drawn, `itemRow()` in `assets/lists.js` leaves
+the sentence out, rather than print the same two numbers twice on every row
+of the page strangers arrive on most.
 
 **The order is not the rating.** Sorted by Google's rating alone, a top ten
 is a list of places thirty people rated 5.0, above a restaurant six thousand
@@ -6241,6 +6245,17 @@ and it took the dock past a tenth of a phone — off a list it is meant to sit
 under rather than compete with. A filled button does not need a footnote, and
 the pill on the map's rail carries none either.
 
+**It says More lists, not the directory's name.** It said *Everybody's lists*,
+which is what `/lists` is called and what the map's rail still calls it, where
+it stands beside *Your lists* and the "everybody" is the whole point. On a
+list somebody was sent it was the name of a place the reader had never heard
+of. On 3 October an Instagram story sent 117 strangers to the bakeries, and
+twelve of 158 views pressed it, with the pill filled and on screen the whole
+time. Somebody who has just read a list wants more of the same thing, so the
+label says that is what is behind it, and the page they arrive on is still
+called what it is called. `listsMore`, in all ten languages; the press is
+still `lists_all`, so the count before and after reads as one line.
+
 **Your own list has a foot but no head.** That page is an editor — its title
 is a field you type into rather than a heading, so there is nothing for a bar
 to repeat once it scrolls off, and the way onto the map is in its row of
@@ -6529,7 +6544,14 @@ box, the name is still the `<a>`, and `.lists-open` stretches the press over
 the face of it — so the accessible name of that link stays the place's name
 rather than the street and Google's score and somebody's two sentences read out
 in one breath, and the focus ring goes round the row, which is what opens. The
-row's edge takes the accent on hover the way a directory card's does. What it
+row's edge takes the accent on hover the way a directory card's does, and on
+`:active`, because a phone has no hover and a phone is who reads a shared list.
+And every row carries a chevron at its right edge, drawn always: on 3 October
+two thirds of the views of the bakery list ended with nothing pressed, and
+nothing on a row said it was a door except a pin the size of a letter. The
+chevron is the mark every phone already reads as "this opens", it costs no
+string in ten languages, and it is the row's own `::after` in a third grid
+column — the press sheet is the link's `::after`, so the two never meet. What it
 costs is dragging over a note to copy it, since a sheet across the row is a
 sheet across the words on it; that is the same trade every row on the directory
 already takes. **Your own list keeps the word-width target.** Those rows are a
@@ -6573,6 +6595,15 @@ three elements in `assets/styles.css` that the map's panel and the "add a
 place" picker use — `listFind()` in `assets/lists.js`. Same folding, so `sasl`
 still finds Šašlõkk and `pagari` still finds the bakeries, and the same rule
 about several words: `telliskivi kohvik` narrows rather than widening.
+
+**Only on a list of thirteen or more** — `FIND_FROM`. A top ten is a screen and
+a half of scrolling, which is quicker than typing, and on a phone the field was
+most of what kept the first place under the fold: measured at 390 by 664, the
+size of a phone inside Instagram's own browser, the bakeries' first row showed
+its name and nothing else above the dock. Without the field, and without the
+line the Google rows used to say twice (see **The six lists Google wrote**),
+the whole first row is on the first screen. The map's panel keeps its field
+whatever the length, because there it is the field the map always had.
 
 **A row keeps its number.** A place that is third on the list is still drawn
 `3` when a word has left four of the seven standing. The order is what a top
@@ -15692,7 +15723,8 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
-| `lists_all` | — the way to the directory: the bar at the foot of a list, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
+| `lists_all` | — the way to the directory: **More lists** in the bar at the foot of a list, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
+| `list_end` | `list_id`, `places_on` — the last place on somebody else's list came on screen, once a load and only with nothing typed in the field. What tells a view that ended with nothing pressed apart: read to the bottom, or left at the title |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The account page, `assets/account.js`:
