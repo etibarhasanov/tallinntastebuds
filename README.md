@@ -15560,11 +15560,10 @@ swatch still picks which resting palette that is and no rule names a colour.
   `a-kept` and `b-kept` for the first it kept. Once each — `ttb.look.new`
   remembers which have gone — and `LOOK_IDS` in `functions/api/stats.js` is
   the closed list the route holds them to.
-- **`look` on every event**, on every page, where a look was dealt — sent by
-  `assets/track.js` beside `layout`, and set once a page as a Clarity tag —
-  so any report in **Analytics** splits by look and a recording can be
-  filtered to one. Like `layout`, it needs registering once as a custom
-  dimension in GA's admin before the console breaks a report down by it.
+- **`look` as a Clarity tag**, once a page wherever a look was dealt, so a
+  recording can be filtered to one. It is not sent to Google Analytics: the
+  test is read on `/admin/visitors`, and Google is being taken out of the
+  site a piece at a time.
 
 `/admin/visitors` sets the two side by side in **The lists' two looks**,
 the first card under **Tests**, drawn from the day the test began: how many newcomers each was dealt, and the share that
@@ -15635,7 +15634,7 @@ and a small one.
   different colour than the one they were given. `STYLE_IDS` in
   `functions/api/stats.js` is the closed list the route holds them to.
 - **`style_dealt` on every event**, on every page, where a colour was dealt,
-  and `style` as a Clarity tag, beside `layout` and `look`. Like them it
+  and `style` as a Clarity tag, beside `layout` and `look`. Like `layout` it
   needs registering once as a custom dimension in GA's admin.
 - **`style` in `visitor_counts`**, the way the rails are in it under
   `layout`: both of the site's own reports carry the dealt colour, and
@@ -15993,9 +15992,10 @@ every page is reported as an event, through the one global
 `TTBTrack.click(node, name, params)` for a link or button built inline —
 every one of them carrying `layout`, which rail this browser was dealt on the
 map (**The short rail**), so any report below can be split by it — and
-`look` beside it wherever the directory dealt one (**The lists' two looks**),
-and `style_dealt` wherever a colour was (**The four styles, dealt**) —
-and Clarity gets the same words as tags, so its recordings can be too —
+`style_dealt` wherever a colour was (**The four styles, dealt**) — and
+Clarity gets those words as tags, and `look` beside them wherever the
+directory dealt one (**The lists' two looks**), so its recordings can be
+split too —
 and opening a place on the map is reported as a page view of its own,
 titled with the place and pointing at its `?spot=` URL, through
 `TTBTrack.view()`. Those views land in GA's standard **Pages and screens**
