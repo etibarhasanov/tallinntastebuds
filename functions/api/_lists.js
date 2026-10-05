@@ -22,6 +22,12 @@ import { readingPins, pinSelect, pinsOf } from './_pins.js';
    anything but a plausible id before it goes near a query. */
 export const LIST_ID = /^[a-z0-9][a-z0-9-]{2,47}$/;
 
+/* How many lists one account can make — twenty-four, more than anybody
+   keeps. Enforced in ./lists.js, where a list is made, and read by
+   cleanRows() in ./_profile.js, since every public list may stand among the
+   rows of a profile's page of links and the page is capped by it. */
+export const MAX_LISTS = 24;
+
 /* --------------------------------------------------- the optional column
  *
  * list_items.must_order reaches a deployed database by hand — ALTER TABLE,

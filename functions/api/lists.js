@@ -68,7 +68,7 @@ import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDa
 import { countUse } from './_visitors.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
    page a link opens with the list already in it. */
-import { readList, LIST_ID, readingMustOrder } from './_lists.js';
+import { readList, LIST_ID, MAX_LISTS, readingMustOrder } from './_lists.js';
 /* Every public list, most opened first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
 import { mostKept, sortOf } from './_mostkept.js';
@@ -90,8 +90,9 @@ import { cleanPin, readingPins, pinSelect, pinsOf } from './_pins.js';
    It is fifty because the map used to publish its own filter chips as
    lists, and the longest of those, forty-five places, needed room. Those are
    gone; the number stayed, since lowering a cap under lists already saved is
-   a migration nobody asked for. */
-const MAX_LISTS = 24;
+   a migration nobody asked for. MAX_LISTS is in ./_lists.js, because a
+   profile's page of links is held to it too: every public list may stand
+   among the rows. */
 const MAX_ITEMS = 50;
 /* How many of other people's lists one account can keep. Higher than the
    twenty-four you can make, because keeping is the cheap half of this feature

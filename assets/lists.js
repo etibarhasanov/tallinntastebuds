@@ -1067,10 +1067,15 @@
    * has, which is what it stands in for: the face, the name they go by, their
    * line, their handles as glyphs, and the rows, centred, with the mark as
    * the way home on the left and Share on the right. No eyebrow, no standing,
-   * no year, no lists and no way back to the map but the mark: a page handed
-   * out as somebody's own carries nothing that is about this site. Their
-   * lists are still theirs and still on /lists and under every byline; they
-   * are not on this page, because this page is not about them.
+   * no year and no way back to the map but the mark: a page handed out as
+   * somebody's own carries nothing that is about this site.
+   *
+   * Their public lists are rows on it like the others, where they dragged
+   * each one on /edit, and the ones never dragged at the bottom — `at` on
+   * each list, out of placeLists() in functions/api/_profile.js. They were
+   * left off this page for a while, as being about the site rather than the
+   * person; they are the person's as much as the showreel is, and putting
+   * them where they want them is what the page is for.
    *
    * The header is the static one lists.html has, with three things hidden
    * and one shown — see .lists-body.is-page in assets/lists.css — rather than
@@ -1082,16 +1087,31 @@
 
     /* The rows in the reader's language, where their owner wrote them in it
        — rowLines() in functions/api/_profile.js — and as first written
-       everywhere else. A press is still counted under the first title, so
-       the owner's numbers are one row's whatever language it was read in. */
-    var rows = who.rows.map(function (row) {
+       everywhere else, with each list put in front of the row it stands
+       before. And beside them what a press on each is counted under: a
+       row's first title, so the owner's numbers are one row's whatever
+       language it was read in, and a list's id, the way listRow() files
+       one. */
+    var rows = [];
+    var whats = [];
+    function lists(at) {
+      who.lists.forEach(function (l) {
+        if (l.at !== at) return;
+        rows.push({ list: l.id, title: l.title, why: countLabel(l.n) });
+        whats.push('list:' + l.id);
+      });
+    }
+    who.rows.forEach(function (row, i) {
+      lists(i);
+      whats.push('row:' + row.title);
       var version = row.lines && row.lines[state.lang];
-      if (!version) return row;
+      if (!version) { rows.push(row); return; }
       var out = { title: version.title };
       if (row.url) out.url = row.url;
       else if (row.note) out.note = version.note || row.note;
-      return out;
+      rows.push(out);
     });
+    lists(who.rows.length);
 
     var sheet = TTBRows.sheet(t, true);
     var wrap = el('div', { className: 'lists-stack' }, [
@@ -1108,13 +1128,11 @@
       TTBRows.draw(rows, {
         t: t,
         play: true,
-        /* Every press the rows report is one on this page's own rows, so the
-           row's title is what the owner's count is filed under — see
-           countProfilePress(). */
+        /* Every press the rows report is one on this page's own rows, filed
+           under what `whats` says it is — see countProfilePress(). */
         report: function (name, params) {
           TTBTrack.event(name, params);
-          var row = who.rows[params.row - 1];
-          if (row) countProfilePress('row:' + row.title);
+          if (whats[params.row - 1]) countProfilePress(whats[params.row - 1]);
         },
         onNote: sheet.open
       }),
