@@ -1,9 +1,9 @@
 /* Tallinn Tastebuds — the page of links on a profile.
  *
- * The rows under somebody's name on /u/<name>, between the handles and the
- * lists: a showreel, an agency page, a note, a heading over a group of them,
- * in the order they put them. Two pages draw them — the profile, and the
- * account page where they are written — which is why this is a file of its
+ * The rows under somebody's name on /u/<name>, under the handles: a
+ * showreel, an agency page, a note, a heading over a group of them, their
+ * lists, in the order they put them. Two pages draw them — the profile, and the
+ * editor on /edit where they are written — which is why this is a file of its
  * own rather than a block inside one of them, the same arrangement
  * assets/links.js and assets/pins.js have.
  *
@@ -12,6 +12,10 @@
  * A title with an address is a link. A title with a note is a note, and the
  * page opens it as a sheet. A title on its own is a heading. Nothing stores
  * the kind and nothing here asks for one — see db/schema.sql.
+ *
+ * And one of their lists, which the page hands over as `list`, the list's
+ * id, with `why` — how many places are on it — to print under its title.
+ * It goes to the list's own page, in the same tab, because it is this site.
  *
  * A LINK TO A VIDEO IS A PLAYER, AND THE PLAYER'S ADDRESS IS BUILT HERE
  *
@@ -176,10 +180,10 @@ window.TTBRows = (function () {
     return node('div', { className: 'lists-page-player' }, [frame, out]);
   }
 
-  /* The rows, as the profile draws them.
+  /* The rows, as the profile draws them, lists among them.
      opts.t        the page's t()
      opts.play     whether a video row opens a player here; off on the
-                   account page, where the rows are a picture of the profile
+                   editor on /edit, where the rows are a picture of the profile
      opts.onNote   what opens a note: (row, slug)
      opts.report   the page's reporter, (name, params), or none */
   function draw(rows, opts) {
@@ -190,6 +194,15 @@ window.TTBRows = (function () {
     var ul = node('ul', { className: 'lists-page' });
 
     rows.forEach(function (row, i) {
+      if (row.list) {
+        var to = node('a', { className: 'lists-page-row', href: '/list/' + row.list }, [say(row.title, row.why), mark(false)]);
+        to.addEventListener('click', function () {
+          report('list_page', { row: i + 1, list_id: row.list });
+        });
+        ul.appendChild(node('li', { className: 'card' }, [to]));
+        return;
+      }
+
       if (!row.url && !row.note) {
         ul.appendChild(node('li', { className: 'lists-page-heading' }, [
           node('h2', { className: 'lists-page-head', textContent: row.title })
@@ -253,7 +266,7 @@ window.TTBRows = (function () {
      `addressed` is the profile: there the address says which note is open —
      /u/kate#acting-cv, the slug of its title — so a link to a note arrives
      with it already up, and closing it takes the hash off without adding a
-     step to Back. The account page draws the same sheet and leaves its
+     step to Back. The editor on /edit draws the same sheet and leaves its
      address alone. The caller puts `node` in the document before arrive(),
      because a dialog opens only from inside one. */
   function sheet(t, addressed) {

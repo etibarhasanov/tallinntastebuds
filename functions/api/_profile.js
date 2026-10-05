@@ -60,6 +60,7 @@
 
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
 import { asUsername } from './_account.js';
+import { LIST_ID, MAX_LISTS } from './_lists.js';
 
 /* ------------------------------------------------------------ the links
  *
@@ -395,13 +396,26 @@ export function mergeLinks(raw, given) {
  * kind. An address wins over a note where both were sent, so a row is never
  * two things at once.
  *
+ * A LIST IS A ROW TOO, AND ITS PLACE IS ALL THAT IS STORED
+ *
+ * Every public list of theirs stands among the rows, where its owner dragged
+ * it, and the ones never dragged stand at the bottom, newest edit first —
+ * which is where a list made tomorrow lands. Stored as a row like any other,
+ * with the list's own address on this site, /list/<id>, and no title: the
+ * title, the count and whether it is still public are read off the list
+ * every time, so a list renamed is renamed here too, and one made private or
+ * deleted simply stops being drawn. Being a path rather than an https
+ * address is also what keeps it from ever being taken for a link — by
+ * rowOut() below, and by any copy of this file older than the rule.
+ *
  * THE CAPS
  *
- * Twenty rows, sixty characters of title — the same as a list's — an address
- * of two thousand and a note of three thousand. The title and the note are
- * cut, the way every line here is; an address is refused rather than cut,
- * because a cut address points somewhere else. Restated as maxlengths in
- * assets/account.js, which carries the only form that writes them.
+ * Twenty rows besides the lists, sixty characters of title — the same as a
+ * list's — an address of two thousand and a note of three thousand. The
+ * title and the note are cut, the way every line here is; an address is
+ * refused rather than cut, because a cut address points somewhere else.
+ * Restated as maxlengths in assets/edit.js, which carries the only form that
+ * writes them.
  *
  * https AND NOTHING ELSE
  *
@@ -416,6 +430,8 @@ export const MAX_ROWS = 20;
 export const MAX_ROW_TITLE = 60;
 export const MAX_ROW_URL = 2048;
 export const MAX_ROW_NOTE = 3000;
+
+const LIST_ROW = '/list/';
 
 function httpsOnly(url) {
   try {
@@ -508,11 +524,25 @@ function rowOut(title, url, note, lines) {
    and nothing anywhere saying why. */
 export function cleanRows(raw) {
   if (!Array.isArray(raw)) return { error: 'rows' };
-  if (raw.length > MAX_ROWS) return { error: 'rows-many' };
+  if (raw.length > MAX_ROWS + MAX_LISTS) return { error: 'rows-many' };
 
   const rows = [];
+  const lists = new Set();
   for (let i = 0; i < raw.length; i++) {
     const given = raw[i] && typeof raw[i] === 'object' ? raw[i] : {};
+
+    /* A list, by its id and nothing else. Whether it is theirs and public is
+       the caller's to settle, since that is a read and this is not one. */
+    if (given.list !== undefined) {
+      if (typeof given.list !== 'string' || !LIST_ID.test(given.list) || lists.has(given.list)) {
+        return { error: 'row-list', row: i };
+      }
+      lists.add(given.list);
+      rows.push({ list: given.list });
+      continue;
+    }
+    if (rows.length - lists.size >= MAX_ROWS) return { error: 'rows-many' };
+
     const title = shapeTitle(given.title);
     if (!title) return { error: 'row-title', row: i };
 
@@ -559,8 +589,55 @@ export async function readRows(env, ownerId) {
     return [];
   }
   /* Read against the rule rather than trusted as stored, the way the handles
-     are: a row this site would no longer accept stops being printed. */
-  return results.map((r) => rowOut(r.title, r.url, r.note, r.lines)).filter(Boolean);
+     are: a row this site would no longer accept stops being printed. A list
+     comes back as its id alone, for placeLists() to put the list in. */
+  return results.map((r) => {
+    const list = r.url.startsWith(LIST_ROW) ? r.url.slice(LIST_ROW.length) : '';
+    if (list) return LIST_ID.test(list) ? { list: list } : null;
+    return rowOut(r.title, r.url, r.note, r.lines);
+  }).filter(Boolean);
+}
+
+/* The rows as written to profile_rows: a list as its address and nothing
+   else, see the header of this section. */
+export function rowToStore(row) {
+  return row.list
+    ? { title: '', url: LIST_ROW + row.list, note: '', lines: '' }
+    : row;
+}
+
+/* Somebody's public lists, newest edit first — the order the ones they never
+   dragged stand in at the bottom of their page. `extra` is whatever else the
+   reader wants of each list: the profile asks for its keeps. */
+export async function publicLists(env, ownerId, extra) {
+  const { results } = await readingPins(env, (pins) => env.DB
+    .prepare(
+      'SELECT l.id AS id, l.title AS title, ' + pinSelect(pins) +
+      'COUNT(i.place_id) AS n' + (extra ? ', ' + extra : '') + ' ' +
+      'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
+      'WHERE l.owner = ? AND l.public = 1 GROUP BY l.id ORDER BY l.updated_at DESC'
+    )
+    .bind(ownerId)
+    .all());
+  return results;
+}
+
+/* The rows readRows() gave back with each list put in where its row stands,
+   as { list: <the list> } — left out where it is no longer one of `lists` —
+   and every list no row names put after the lot, in the order `lists` has
+   them. One array, in the order the page draws it. */
+export function placeLists(rows, lists) {
+  const byId = new Map(lists.map((l) => [l.id, l]));
+  const out = [];
+  for (const row of rows) {
+    if (!row.list) out.push(row);
+    else if (byId.has(row.list)) {
+      out.push({ list: byId.get(row.list) });
+      byId.delete(row.list);
+    }
+  }
+  for (const list of byId.values()) out.push({ list: list });
+  return out;
 }
 
 /* The face, where there is one: assets/faces/<name>.jpg in the deployment,
@@ -680,25 +757,29 @@ export async function readProfile(context, name) {
   const speaks = readSpeaks(row.links);
   const lines = readLines(row.links);
 
-  /* Their public lists, newest edit first — the same row the index draws for
-     your own, minus the ones nobody else may read. The keeps are a scalar
-     subquery rather than a second join for the reason the index gives: two
-     aggregates over two tables in one GROUP BY multiply each other, and a
-     list of ten places kept by three people would report thirty of each. */
-  const { results } = await readingPins(env, (pins) => env.DB
-    .prepare(
-      'SELECT l.id AS id, l.title AS title, ' +
-      'COUNT(i.place_id) AS n, ' +
-      pinSelect(pins) +
-      '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps ' +
-      'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
-      'WHERE l.owner = ? AND l.public = 1 GROUP BY l.id ORDER BY l.updated_at DESC'
-    )
-    .bind(row.id)
-    .all());
+  /* Their public lists — the same row the index draws for your own, minus
+     the ones nobody else may read. The keeps are a scalar subquery rather
+     than a second join for the reason the index gives: two aggregates over
+     two tables in one GROUP BY multiply each other, and a list of ten places
+     kept by three people would report thirty of each. */
+  const results = await publicLists(env, row.id,
+    '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps');
 
   let kept = 0;
   for (const r of results) kept += r.keeps;
+
+  /* The page of links with the lists put in where their owner dragged them,
+     and the rest after — see placeLists(). Sent apart again, the rows as
+     every reader of them has always had them and each list carrying `at`,
+     the row it stands in front of, so the card can draw the lists in this
+     order without the rows and the page can draw both together. */
+  const placed = placeLists(await readRows(env, row.id), results);
+  const rows = [];
+  const lists = [];
+  for (const item of placed) {
+    if (item.list) lists.push({ ...item.list, at: rows.length });
+    else rows.push(item);
+  }
 
   return {
     name: row.username,
@@ -711,10 +792,10 @@ export async function readProfile(context, name) {
     /* The photograph, for the few who have one in the repository. Left out
        for everybody else, and the page draws nothing in its place. */
     face: await faceOf(context, row.username),
-    /* Their page of links, in their order. Always an array, the way `lists`
-       is: the page counts it, and the route decides whether the profile is
-       worth indexing by it. */
-    rows: await readRows(env, row.id),
+    /* Their page of links, in their order, without the lists among them.
+       Always an array, the way `lists` is: the page counts it, and the route
+       decides whether the profile is worth indexing by it. */
+    rows: rows,
     /* Left out when it is empty rather than sent as '', the way every other
        answer here drops a field with nothing in it. Nearly every account has
        no line, and the page draws nothing for one it was not given. */
@@ -735,13 +816,15 @@ export async function readProfile(context, name) {
     speaks: speaks.length ? speaks : undefined,
     /* The four things a row on this page draws and no more — listRow() in
        assets/lists.js takes a title, a count and a number of keeps, and the
-       id is what it links to. The line under a list and the date it was last
+       id is what it links to — in the order their owner put them, and where
+       among the rows: `at`. The line under a list and the date it was last
        edited are on the list's own page, one press away. */
-    lists: results.map((r) => ({
+    lists: lists.map((r) => ({
       id: r.id,
       title: r.title,
       n: r.n,
       keeps: r.keeps,
+      at: r.at,
       /* Their pin, in front of their title, the same as on every other page
          a list is named on. A profile is the page that is most obviously a
          collection of somebody's, so it is the page where telling one of

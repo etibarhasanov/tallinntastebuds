@@ -7179,8 +7179,9 @@ work. There is no second HTML file, no second stylesheet and no second boot.
 
 ### What is on one
 
-The public lists somebody has made, newest edit first, each with how many
-places are on it and how many people kept it — the same row `/account.html`
+The public lists somebody has made, in the order they put them on `/edit` and
+the rest after those, newest edit first — **Your lists are rows too** under
+**Your page** — each with how many places are on it and how many people kept it — the same row `/account.html`
 draws for your own, which is what `listRow()` in `assets/lists.js` is for. The
 year they turned up. And one number over the lot: **how many times, in all,
 other people have kept these lists.**
@@ -7500,14 +7501,43 @@ still answers — `functions/_middleware.js` sends it to `/u/etibar`.
 puts rows on their profile it stops being a card about their lists and is
 drawn as the page they made — `renderPage()` in `assets/lists.js`: the face,
 the name they go by, their line, their handles as glyphs, all centred, and
-the rows under them, with the mark as the way home on the left of the header
-and Share on the right. No eyebrow, no standing, no year, no lists, and
-nothing else of this site's: a page handed out as somebody's own carries
-nothing that is about the site it is on. Their lists are still theirs, on
-`/lists` and under every byline; they are not on this page because this page
-is not about them. The header is `lists.html`'s own with three things hidden
-and one shown (`.lists-body.is-page`), not a second header. A profile
-without rows is the card it has always been.
+the rows under them — their public lists among them — with the mark as the
+way home on the left of the header and Share on the right. No eyebrow, no
+standing, no year, and nothing else of this site's: a page handed out as
+somebody's own carries nothing that is about the site it is on. The header is
+`lists.html`'s own with three things hidden and one shown
+(`.lists-body.is-page`), not a second header. A profile with no rows but its
+lists is the card it has always been, with the lists in their owner's order.
+
+**Your lists are rows too.** They were left off the page at first, as being
+about the site rather than the person, and that was the wrong way round: a
+list somebody published is as much theirs as their showreel, and where it
+stands among the rest is theirs to say. So every public list is a row on
+`/edit`, drawn closed — its title and how many places are on it, nothing to
+type — and moved by the same handle as every other row. **A list nobody has
+dragged stands at the bottom**, newest edit first, and that is where a list
+made tomorrow lands; a row added on `/edit` goes in above the lists, so they
+stay at the foot until somebody moves one. On the page a list is a card like
+a link, and goes to the list. A list comes off the page by being made
+private, not on `/edit`: a page that kept a public list off it would
+disagree with `/lists` and every byline.
+
+What is stored is the place and nothing else: a row in `profile_rows` whose
+`url` is the list's own path, `/list/<id>`, and whose title is empty. The
+title, the count and whether the list is still public are read off the list
+each time, so a renamed list is renamed on the page, and one made private or
+deleted stops being drawn without anything having to tidy its row away.
+Being a path rather than an `https` address is what keeps the row from ever
+being taken for a link — by `rowOut()` in `functions/api/_profile.js`, and by
+anything older than the rule. `placeLists()` there puts the lists where their
+rows are and the rest after, the profile and `/edit` both read through it,
+and the `rows` write drops a list that is not the writer's own and public
+rather than refusing the save: nobody typed that id, and the list most likely
+went private on another phone. No column was added and nothing needs loading.
+
+One thing `/edit`'s preview does not show: a profile with lists and no other
+rows is drawn as the card, while the preview draws every page as a page. The
+order is the same in both, and the order is what is being edited.
 
 **The name you go by.** A username is lowercase and a page needs a heading —
 *Etibar Ädalät* over `etibar`. `users.display_name`, sixty
@@ -7518,7 +7548,8 @@ byline, and a byline is the one place a name has to be the address.
 
 **A row is a title and one other thing, and that decides what it is.** A
 title with an address is a link. A title with a note is a note, and it opens
-as a sheet over the page. A title on its own is a heading. Nothing stores the
+as a sheet over the page. A title on its own is a heading. An address that is
+one of their lists and no title is that list, above. Nothing stores the
 kind: `profile_rows` in `db/schema.sql` has `title`, `url` and `note`, and
 `assets/rows.js` reads the kind off which of the two is filled.
 
@@ -7674,7 +7705,8 @@ A profile with a face in the repository is also in `sitemap.xml` —
 because that is the one kind of profile the repository can know exists.
 
 **The caps**, in `functions/api/_profile.js` and restated as maxlengths in
-`assets/edit.js`: twenty rows, a title of 60, an address of 2,048, a note
+`assets/edit.js`: twenty rows besides the lists, which are held to the
+twenty-four a person can make (`MAX_LISTS` in `functions/api/_lists.js`), a title of 60, an address of 2,048, a note
 of 3,000. The title and the note are cut, the way every line here is; an
 address over the cap is refused, because a cut address points somewhere
 else.
@@ -16083,7 +16115,7 @@ The account page, `assets/account.js`:
 | `edit_open` | — the door to `/edit`, where the page under your name is written |
 | `insights_open` | `views` — the door to `/insights`, with the week's number its row was showing |
 | `profile_link_open` | `network` (`instagram`/`tiktok`/`facebook`) — a handle pressed on somebody's profile |
-| `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note. Reported from `assets/rows.js`, which the profile hands its reporter |
+| `profile_row`, `profile_play`, `profile_note` | `row`, one-based, and `host` on the first two — a row on somebody's page: left through, opened as a player, opened as a note — and `list_page`, with `row` and `list_id`, for one of their lists among the rows. Reported from `assets/rows.js`, which the profile hands its reporter |
 | `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |

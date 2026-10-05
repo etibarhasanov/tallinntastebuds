@@ -63,6 +63,19 @@
  * page whose whole job is editing, saving is the thing it is asking for. The
  * three ways to add a row are .alts beside each other at the top.
  *
+ * THE LISTS ARE ROWS HERE TOO
+ *
+ * Every public list of theirs is a row among the others, drawn closed and
+ * never opened — there is nothing to type into one, its title is the list's
+ * — and moved by the same handle, which is the whole of what this page does
+ * to a list. Where it was never dragged it stands at the bottom, newest edit
+ * first, and that is where a list made tomorrow will be; a row added here
+ * goes in above them, so the lists stay at the bottom until somebody moves
+ * one. A list is taken off the page by making it private, on the list,
+ * rather than here: a page somebody keeps a public list off is a page that
+ * disagrees with /lists. placeLists() in functions/api/_profile.js is the
+ * rule, and the server is what holds it.
+ *
  * A ROW MOVES BY BEING DRAGGED, AND ONLY THAT
  *
  * By its handle, with a mouse or a thumb alike — drag() — or, with the
@@ -270,10 +283,15 @@
       lines: linesOut(saved.lines),
       links: links,
       speaks: saved.speaks.slice(),
-      rows: saved.rows.map(function (row) {
-        return { title: row.title, url: row.url || '', note: row.note || '', kind: kindOf(row), lines: copyRowLines(row.lines) };
-      })
+      rows: saved.rows.map(draftRow)
     };
+  }
+
+  /* A row as the server sent it, as the form holds it. A list keeps its
+     whole self, which is only ever read; see the header. */
+  function draftRow(row) {
+    if (row.list) return { kind: 'list', list: row.list, title: row.list.title, lines: {} };
+    return { title: row.title, url: row.url || '', note: row.note || '', kind: kindOf(row), lines: copyRowLines(row.lines) };
   }
 
   /* The rows as the server takes them: the kind decides which of the two
@@ -282,6 +300,7 @@
      where a version with no title is not one. */
   function rowsOut(rows) {
     return rows.map(function (row) {
+      if (row.kind === 'list') return { list: row.list.id };
       var lines = {};
       lineLangs().forEach(function (code) {
         var version = row.lines && row.lines[code];
@@ -367,10 +386,7 @@
     });
     if (!sameLinks) parts.push('links');
     if (d.speaks.join(',') !== s.speaks.join(',')) parts.push('speaks');
-    var stored = s.rows.map(function (r) {
-      return { title: r.title, url: r.url || '', note: r.note || '', kind: kindOf(r), lines: r.lines };
-    });
-    if (JSON.stringify(rowsOut(d.rows)) !== JSON.stringify(rowsOut(stored))) parts.push('rows');
+    if (JSON.stringify(rowsOut(d.rows)) !== JSON.stringify(rowsOut(s.rows.map(draftRow)))) parts.push('rows');
     return parts;
   }
 
@@ -675,7 +691,7 @@
 
   /* ----------------------------------------------------------------- rows */
 
-  var KIND_WORD = { link: 'editKindLink', note: 'rowsNote', heading: 'editKindHeading' };
+  var KIND_WORD = { link: 'editKindLink', note: 'rowsNote', heading: 'editKindHeading', list: 'editKindList' };
 
   function word(label, onPress, className) {
     var b = el('button', { type: 'button', className: className || 'alt', textContent: label });
@@ -683,10 +699,20 @@
     return b;
   }
 
+  /* In above the lists at the bottom — after the last row that is not a
+     list — so a page's lists stay at its foot until one is dragged. */
   function addRow(kind) {
-    if (state.draft.rows.length >= MAX_ROWS) { toast(t('rowsErrMany')); return; }
-    state.draft.rows.push({ title: '', url: '', note: '', kind: kind, lines: {} });
-    state.open = state.draft.rows.length - 1;
+    var rows = state.draft.rows;
+    var at = 0;
+    var mine = 0;
+    rows.forEach(function (row, i) {
+      if (row.kind === 'list') return;
+      at = i + 1;
+      mine++;
+    });
+    if (mine >= MAX_ROWS) { toast(t('rowsErrMany')); return; }
+    rows.splice(at, 0, { title: '', url: '', note: '', kind: kind, lines: {} });
+    state.open = at;
     TTBTrack.event('edit_add', { kind: kind });
     drawPane();
     touched();
@@ -712,12 +738,17 @@
   /* The line under a closed row: what kind of row it is, and for a link,
      where it goes — what the profile prints under it. */
   function rowWhy(row) {
+    if (row.kind === 'list') return t('editKindList') + ' · ' + places(row.list.n);
     if (row.kind !== 'link') return t(KIND_WORD[row.kind]);
     var play = row.url ? TTBRows.player(row.url.trim()) : null;
     if (play) return t('editKindVideo') + ' · ' + play.host;
     var host = '';
     try { host = new URL(row.url.trim()).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
     return host ? t('editKindLink') + ' · ' + host : t('editKindLink');
+  }
+
+  function places(n) {
+    return n === 1 ? t('listCountOne') : t('listCount', { n: n });
   }
 
   function rowsList() {
@@ -742,7 +773,7 @@
   }
 
   function rowItem(row, i, count) {
-    var open = state.open === i;
+    var open = state.open === i && row.kind !== 'list';
     var li = el('li', { className: 'ed-row' + (open ? ' is-open' : ''), 'data-at': String(i) });
 
     /* The handle: dragged by a mouse or a thumb — see drag() — or moved with
@@ -767,12 +798,16 @@
     });
 
     if (!open) {
-      var head = el('button', { type: 'button', className: 'ed-row-open' }, [
-        el('span', { className: 'menu-say' }, [
-          el('span', { className: 'menu-name' + (row.title ? '' : ' is-empty'), textContent: row.title || t('editUntitled') }),
-          el('span', { className: 'menu-why', textContent: rowWhy(row) })
-        ])
+      var say = el('span', { className: 'menu-say' }, [
+        el('span', { className: 'menu-name' + (row.title ? '' : ' is-empty'), textContent: row.title || t('editUntitled') }),
+        el('span', { className: 'menu-why', textContent: rowWhy(row) })
       ]);
+      /* A list has nothing to open: the same face, standing still. */
+      if (row.kind === 'list') {
+        li.appendChild(el('div', { className: 'ed-row-head' }, [grip, el('span', { className: 'ed-row-open is-still' }, [say])]));
+        return li;
+      }
+      var head = el('button', { type: 'button', className: 'ed-row-open' }, [say]);
       head.addEventListener('click', function () {
         state.open = i;
         drawPane();
@@ -962,6 +997,7 @@
     if (!dom.screen) return;
     var d = state.draft;
     var rows = d.rows.map(function (row) {
+      if (row.kind === 'list') return { list: row.list.id, title: row.title, why: places(row.list.n) };
       /* A row still being written is drawn as what it is meant to be: an
          untitled one with an ellipsis for its title, and a note or a link
          with nothing in it yet as a note or a link rather than as the
@@ -1068,6 +1104,7 @@
     var rows = rowsOut(d.rows);
 
     for (var i = 0; i < rows.length; i++) {
+      if (rows[i].list) continue;
       if (!rows[i].title) return fail(t('rowsErrTitle', { n: i + 1 }), i);
       /* A link with no address and a note with no note would be stored as
          headings — which is what the server makes of either — and a row

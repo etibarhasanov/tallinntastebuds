@@ -642,7 +642,10 @@ CREATE TABLE IF NOT EXISTS profile_rows (
   -- Where on the page, from 0.
   position  INTEGER NOT NULL,
   title     TEXT    NOT NULL,
-  -- The address, or '' for a note and for a heading.
+  -- The address, or '' for a note and for a heading. Or /list/<id>, with
+  -- the title '', for one of the owner's public lists standing here: the
+  -- row is its place on the page and nothing else, and the list itself is
+  -- read each time — see placeLists() in functions/api/_profile.js.
   url       TEXT    NOT NULL DEFAULT '',
   -- The note, or '' for a link and for a heading. Never both filled.
   note      TEXT    NOT NULL DEFAULT '',

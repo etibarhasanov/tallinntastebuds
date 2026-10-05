@@ -89,7 +89,8 @@ import {
 } from './_account.js';
 import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
 import {
-  NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, cleanSpeaks, readSpeaks,
+  NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, rowToStore, publicLists, placeLists,
+  cleanSpeaks, readSpeaks,
   cleanLine, cleanLines, readLines, mergeLinks
 } from './_profile.js';
 import { recentViews } from './_visits.js';
@@ -263,11 +264,13 @@ export async function onRequestGet(context) {
     /* The line again in other languages, code → line, for the boxes that
        write them. */
     lines: lines,
-    /* The page of links under the profile, in its order, for the form that
-       rewrites it. Guarded inside readRows() for the reason the two above
-       are: the table arrives by hand, and until it has, an account has no
-       rows rather than no account page. */
-    rows: await readRows(env, user.id),
+    /* The page of links under the profile, in its order and with every
+       public list among it where it stands — placeLists() in ./_profile.js —
+       for the form that rewrites it. Guarded inside readRows() for the
+       reason the two above are: the table arrives by hand, and until it
+       has, an account has no rows but its lists rather than no account
+       page. */
+    rows: placeLists(await readRows(env, user.id), await publicLists(env, user.id)),
     /* How often /u/<you> was opened in the last seven days — the number on
        the Insights row, whose page has the rest. Left out where
        profile_counts is not applied yet, and the row says what it is for
@@ -692,8 +695,9 @@ export async function onRequestPost(context) {
 
   /* ------------------------------------------------ the page of links
    *
-   * The rows drawn on /u/<name> under the handles and above the lists — see
-   * db/schema.sql for what one is. The third thing anybody writes here about
+   * The rows drawn on /u/<name> under the handles, with the lists among them
+   * — see db/schema.sql for what one is, and **the page of links** in
+   * ./_profile.js for how a list is one. The third thing anybody writes here about
    * themselves rather than about a restaurant, and it asks for a session and
    * no password for the reason the two above do.
    *
@@ -711,6 +715,14 @@ export async function onRequestPost(context) {
    * nothing is written until every row is a row — the same reasoning the
    * handles follow, and the page has the index to put the cursor in the box.
    *
+   * A LIST THAT IS NOT THEIRS TO PLACE IS LEFT OUT, NOT REFUSED
+   *
+   * Nobody typed a list's id. One that is private now, or gone, was public
+   * and theirs when the form was drawn — made private on another phone in
+   * between — so it is dropped and the rest is saved, and the form redraws
+   * without it. Somebody else's list is dropped the same way, and is never
+   * drawn on anybody's page whatever was sent.
+   *
    * NO TABLE YET IS ITS OWN ANSWER
    *
    * profile_rows arrives by hand. A save against a database that has not
@@ -725,13 +737,17 @@ export async function onRequestPost(context) {
     const cleaned = cleanRows(body.rows);
     if (cleaned.error) return json({ error: cleaned.error, row: cleaned.row }, 400);
 
+    const theirs = await publicLists(env, user.id);
+    const placeable = new Set(theirs.map((l) => l.id));
+    const kept = cleaned.rows.filter((row) => !row.list || placeable.has(row.list)).map(rowToStore);
+
     /* The rows with their versions in other languages, or — where
        profile_rows.lines has not been added yet — without them, rather than
        not at all: the page the form answers with then has no versions on it,
        which is what is stored and what the form redraws. */
     const writes = (withLines) => [
       env.DB.prepare('DELETE FROM profile_rows WHERE owner = ?').bind(user.id)
-    ].concat(cleaned.rows.map((row, i) => withLines
+    ].concat(kept.map((row, i) => withLines
       ? env.DB
         .prepare('INSERT INTO profile_rows (owner, position, title, url, note, lines) VALUES (?, ?, ?, ?, ?, ?)')
         .bind(user.id, i, row.title, row.url, row.note, row.lines)
@@ -753,7 +769,7 @@ export async function onRequestPost(context) {
 
     /* What was stored, read the way the profile will read it, so the form
        redraws exactly what the page now shows. */
-    return json({ rows: await readRows(env, user.id) }, 200);
+    return json({ rows: placeLists(await readRows(env, user.id), theirs) }, 200);
   }
 
   /* ------------------------------------------ naming a Google account
