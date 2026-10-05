@@ -105,6 +105,7 @@ window.TTBRadio = (function () {
   var SOURCE = '/data/radio.json';
   var KEY = 'ttb.radio';
   var STATION_KEY = 'ttb.radio.station';
+  var NAME_KEY = 'ttb.radio.name';
 
   var stations = null;      // data/radio.json, once it has arrived
   var audio = null;
@@ -146,12 +147,15 @@ window.TTBRadio = (function () {
   function readStation() {
     try {
       var url = window.sessionStorage.getItem(STATION_KEY);
-      return url ? { url: url } : null;
+      return url ? { url: url, name: window.sessionStorage.getItem(NAME_KEY) || '' } : null;
     } catch (e) { return null; }
   }
 
   function writeStation(station) {
-    try { window.sessionStorage.setItem(STATION_KEY, station.url); } catch (e) { /* private mode */ }
+    try {
+      window.sessionStorage.setItem(STATION_KEY, station.url);
+      window.sessionStorage.setItem(NAME_KEY, station.name || '');
+    } catch (e) { /* private mode */ }
   }
 
   /* One station per language where there is one, and the default everywhere
@@ -165,7 +169,13 @@ window.TTBRadio = (function () {
 
   function paint() {
     if (!btn) return;
-    var station = stationFor(lang);
+    /* Until data/radio.json has arrived the button is drawn from the station
+       the last page wrote down, so it is on screen, named and in the right
+       state from the first frame of a new page instead of appearing a beat
+       later: a page walked to should look like the one walked from. Only a
+       radio that is on has one to draw; a visitor who never pressed it sees
+       the button arrive with the file, as before. */
+    var station = stations ? stationFor(lang) : (wanted ? readStation() : null);
     if (!station || !station.url) { btn.hidden = true; return; }
     btn.hidden = false;
     nameEl.textContent = station.name || '';
@@ -458,6 +468,26 @@ window.TTBRadio = (function () {
     if (last) tune(last);
   }
 
+  /* The button on screen before the page has mounted it. Every page mounts
+     after its own data is in, which on the map is the whole catalogue, so a
+     radio that was playing on the last page used to arrive without its
+     button for that long and then pop in: the one part of the screen that
+     should have stayed where it was. The markup already carries the button,
+     hidden, with its icons and its translated labels; all that is missing
+     is the station's name and the state, and the last page wrote both down.
+     mount() paints over it with the real thing. */
+  function preshow() {
+    var el = document.getElementById('btn-radio');
+    var last = wanted ? readStation() : null;
+    if (!el || btn || !last) return;
+    el.hidden = false;
+    el.setAttribute('aria-pressed', 'true');
+    var label = document.getElementById('radio-name');
+    if (label) label.textContent = last.name || '';
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', preshow);
+  else preshow();
+
   /* The page hands over its button, the words to put on it and somewhere to
      send the news; this takes over from there, the press included.
 
@@ -474,6 +504,7 @@ window.TTBRadio = (function () {
     told = opts.onchange;
 
     btn.addEventListener('click', toggle);
+    paint();
 
     loading.then(function () {
       paint();
