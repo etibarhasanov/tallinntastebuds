@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-five decks of Estonian, two
- * thousand and thirty cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-six decks of Estonian, two
+ * thousand and forty-nine cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who

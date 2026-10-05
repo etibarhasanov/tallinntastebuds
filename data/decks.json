@@ -29401,6 +29401,371 @@
           }
         }
       ]
+    },
+    {
+      "id": "tana-words",
+      "name": {
+        "en": "The words of Täna ma ei skoori",
+        "az": "Täna ma ei skoori mahnısının sözləri",
+        "ru": "Слова из песни Täna ma ei skoori"
+      },
+      "why": {
+        "en": "The words from the song the other decks do not have yet, each with its line",
+        "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+        "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+      },
+      "level": "song",
+      "cards": [
+        {
+          "id": "skoorima",
+          "front": "Skoorima",
+          "back": {
+            "en": "To score",
+            "az": "Qazanmaq, tora salmaq",
+            "ru": "Забить, закадрить"
+          },
+          "forms": [
+            "skoorida",
+            "skoorin"
+          ],
+          "sentence": {
+            "et": "Mulle tundub, et täna ma ei skoori,",
+            "en": "I have a feeling that today I won't score,",
+            "az": "Mənə elə gəlir ki, bu gün heç kimi tora salmayacağam,",
+            "ru": "Мне кажется, что сегодня мне не светит,"
+          }
+        },
+        {
+          "id": "kuigi",
+          "front": "Kuigi",
+          "back": {
+            "en": "Although",
+            "az": "Baxmayaraq ki",
+            "ru": "Хотя"
+          },
+          "sentence": {
+            "et": "Kuigi siin on nii vanemaid kui noori,",
+            "en": "Although there are older ones and young ones here alike,",
+            "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+            "ru": "Хотя здесь есть и постарше, и помоложе,"
+          }
+        },
+        {
+          "id": "vanem",
+          "front": "Vanem",
+          "back": {
+            "en": "Older; a parent",
+            "az": "Daha yaşlı; valideyn",
+            "ru": "Старше; родитель"
+          },
+          "forms": [
+            "vanema",
+            "vanemat"
+          ],
+          "sentence": {
+            "et": "Kuigi siin on nii vanemaid kui noori,",
+            "en": "Although there are older ones and young ones here alike,",
+            "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+            "ru": "Хотя здесь есть и постарше, и помоложе,"
+          }
+        },
+        {
+          "id": "valdama",
+          "front": "Valdama",
+          "back": {
+            "en": "To master, to have a command of",
+            "az": "Bilmək, sahib olmaq",
+            "ru": "Владеть"
+          },
+          "forms": [
+            "vallata",
+            "valdan"
+          ],
+          "sentence": {
+            "et": "Uskumatu, kuidas valdab mõni kehakeeli —",
+            "en": "Unbelievable, how well some people speak with their bodies —",
+            "az": "İnanılmazdır, bəziləri bədən dilini necə də yaxşı bilir —",
+            "ru": "Невероятно, как некоторые владеют языком тела —"
+          }
+        },
+        {
+          "id": "kehakeel",
+          "front": "Kehakeel",
+          "back": {
+            "en": "Body language",
+            "az": "Bədən dili",
+            "ru": "Язык тела"
+          },
+          "forms": [
+            "kehakeele",
+            "kehakeelt"
+          ],
+          "sentence": {
+            "et": "Uskumatu, kuidas valdab mõni kehakeeli —",
+            "en": "Unbelievable, how well some people speak with their bodies —",
+            "az": "İnanılmazdır, bəziləri bədən dilini necə də yaxşı bilir —",
+            "ru": "Невероятно, как некоторые владеют языком тела —"
+          }
+        },
+        {
+          "id": "tombama",
+          "front": "Tõmbama",
+          "back": {
+            "en": "To pull, to draw",
+            "az": "Çəkmək",
+            "ru": "Тянуть, притягивать"
+          },
+          "forms": [
+            "tõmmata",
+            "tõmban"
+          ],
+          "sentence": {
+            "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+            "en": "They get themselves going and shake in the party's shared current,",
+            "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+            "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+          }
+        },
+        {
+          "id": "rappuma",
+          "front": "Rappuma",
+          "back": {
+            "en": "To shake, to jolt",
+            "az": "Silkələnmək",
+            "ru": "Трястись"
+          },
+          "forms": [
+            "rappuda",
+            "rappun"
+          ],
+          "sentence": {
+            "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+            "en": "They get themselves going and shake in the party's shared current,",
+            "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+            "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+          }
+        },
+        {
+          "id": "uhine",
+          "front": "Ühine",
+          "back": {
+            "en": "Shared, common",
+            "az": "Ümumi, birgə",
+            "ru": "Общий"
+          },
+          "forms": [
+            "ühise",
+            "ühist"
+          ],
+          "sentence": {
+            "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+            "en": "They get themselves going and shake in the party's shared current,",
+            "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+            "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+          }
+        },
+        {
+          "id": "kupsus",
+          "front": "Küpsus",
+          "back": {
+            "en": "Ripeness, maturity",
+            "az": "Yetkinlik",
+            "ru": "Зрелость"
+          },
+          "forms": [
+            "küpsuse",
+            "küpsust"
+          ],
+          "sentence": {
+            "et": "kui biit on hea ja piiri pead ei küpsus ega toorus loe.",
+            "en": "when the beat is good and you keep in bounds, neither ripe nor green counts.",
+            "az": "biit yaxşı olanda və həddi gözləyəndə nə yetkinlik, nə də xamlıq sayılır.",
+            "ru": "когда бит хороший и держишь меру, ни зрелость, ни зелёность не в счёт."
+          }
+        },
+        {
+          "id": "toorus",
+          "front": "Toorus",
+          "back": {
+            "en": "Rawness",
+            "az": "Xamlıq",
+            "ru": "Незрелость, сырость"
+          },
+          "forms": [
+            "tooruse",
+            "toorust"
+          ],
+          "sentence": {
+            "et": "kui biit on hea ja piiri pead ei küpsus ega toorus loe.",
+            "en": "when the beat is good and you keep in bounds, neither ripe nor green counts.",
+            "az": "biit yaxşı olanda və həddi gözləyəndə nə yetkinlik, nə də xamlıq sayılır.",
+            "ru": "когда бит хороший и держишь меру, ни зрелость, ни зелёность не в счёт."
+          }
+        },
+        {
+          "id": "proovima",
+          "front": "Proovima",
+          "back": {
+            "en": "To try",
+            "az": "Cəhd etmək, sınamaq",
+            "ru": "Пробовать"
+          },
+          "forms": [
+            "proovida",
+            "proovin"
+          ],
+          "sentence": {
+            "et": "Täna ma ei proovi,",
+            "en": "Today I don't try,",
+            "az": "Bu gün cəhd etmirəm,",
+            "ru": "Сегодня я не пробую,"
+          }
+        },
+        {
+          "id": "tants",
+          "front": "Tants",
+          "back": {
+            "en": "Dance",
+            "az": "Rəqs",
+            "ru": "Танец"
+          },
+          "forms": [
+            "tantsu",
+            "tantsu"
+          ],
+          "sentence": {
+            "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+            "en": "It seems my dance just can't manage to be that charming,",
+            "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+            "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+          }
+        },
+        {
+          "id": "suutma",
+          "front": "Suutma",
+          "back": {
+            "en": "To manage, to be able",
+            "az": "Bacarmaq",
+            "ru": "Суметь, быть в силах"
+          },
+          "forms": [
+            "suuta",
+            "suudan"
+          ],
+          "sentence": {
+            "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+            "en": "It seems my dance just can't manage to be that charming,",
+            "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+            "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+          }
+        },
+        {
+          "id": "nonda",
+          "front": "Nõnda",
+          "back": {
+            "en": "So, thus",
+            "az": "Belə, o qədər",
+            "ru": "Так, настолько"
+          },
+          "sentence": {
+            "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+            "en": "It seems my dance just can't manage to be that charming,",
+            "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+            "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+          }
+        },
+        {
+          "id": "veetlev",
+          "front": "Veetlev",
+          "back": {
+            "en": "Charming, alluring",
+            "az": "Cazibəli",
+            "ru": "Обаятельный"
+          },
+          "forms": [
+            "veetleva",
+            "veetlevat"
+          ],
+          "sentence": {
+            "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+            "en": "It seems my dance just can't manage to be that charming,",
+            "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+            "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+          }
+        },
+        {
+          "id": "loks",
+          "front": "Lõks",
+          "back": {
+            "en": "Trap",
+            "az": "Tələ",
+            "ru": "Ловушка"
+          },
+          "forms": [
+            "lõksu",
+            "lõksu"
+          ],
+          "sentence": {
+            "et": "mu puusanõks ei ole lõks, see polegi nii lihtne.",
+            "en": "my hip move is no trap — it isn't that simple after all.",
+            "az": "omba hərəkətim tələ deyil — bu, heç də o qədər asan deyil.",
+            "ru": "моё движение бёдрами — не ловушка, всё не так уж просто."
+          }
+        },
+        {
+          "id": "tantsima",
+          "front": "Tantsima",
+          "back": {
+            "en": "To dance",
+            "az": "Rəqs etmək",
+            "ru": "Танцевать"
+          },
+          "forms": [
+            "tantsida",
+            "tantsin"
+          ],
+          "sentence": {
+            "et": "Tantsin küll, kuid ligi kedagi see siin ei tõmba,",
+            "en": "I do dance, but it draws nobody close in here,",
+            "az": "Rəqs edirəm, amma bu, burada heç kimi yaxına çəkmir,",
+            "ru": "Танцевать-то я танцую, но никого здесь это не притягивает,"
+          }
+        },
+        {
+          "id": "ligi",
+          "front": "Ligi",
+          "back": {
+            "en": "Close, near",
+            "az": "Yaxın, yaxına",
+            "ru": "Близко"
+          },
+          "sentence": {
+            "et": "Tantsin küll, kuid ligi kedagi see siin ei tõmba,",
+            "en": "I do dance, but it draws nobody close in here,",
+            "az": "Rəqs edirəm, amma bu, burada heç kimi yaxına çəkmir,",
+            "ru": "Танцевать-то я танцую, но никого здесь это не притягивает,"
+          }
+        },
+        {
+          "id": "leekima",
+          "front": "Leekima",
+          "back": {
+            "en": "To blaze",
+            "az": "Alovlanmaq",
+            "ru": "Пылать"
+          },
+          "forms": [
+            "leekida",
+            "leegin"
+          ],
+          "sentence": {
+            "et": "ei lõika siin mu lihtne stiil, kuid eile kõik ju leekis veel.",
+            "en": "my simple style doesn't cut it here — and yet yesterday it was all still ablaze.",
+            "az": "sadə üslubum burada keçmir — halbuki dünən hər şey hələ alov içində idi.",
+            "ru": "мой простой стиль тут не катит — а ведь вчера всё ещё пылало."
+          }
+        }
+      ]
     }
   ],
   "lessons": [
@@ -32355,6 +32720,1014 @@
             "ru": "звенящая"
           },
           "deck": "randaja-words"
+        }
+      }
+    },
+    {
+      "id": "tana-ma-ei-skoori",
+      "name": {
+        "en": "Täna ma ei skoori — today I won't score",
+        "az": "Täna ma ei skoori — bu gün qismətim yoxdur",
+        "ru": "Täna ma ei skoori — сегодня мне не светит"
+      },
+      "why": {
+        "en": "Genialistid on a dance floor where everybody else's moves work, line by line",
+        "az": "Genialistid hamının hərəkətlərinin alındığı rəqs meydançasında, misra-misra",
+        "ru": "Genialistid на танцполе, где у всех, кроме них, всё получается, строка за строкой"
+      },
+      "video": "llwKncMXrc0",
+      "deck": "tana-words",
+      "verses": [
+        [
+          {
+            "et": "Mulle tundub, et täna ma ei skoori,",
+            "en": "I have a feeling that today I won't score,",
+            "az": "Mənə elə gəlir ki, bu gün heç kimi tora salmayacağam,",
+            "ru": "Мне кажется, что сегодня мне не светит,"
+          },
+          {
+            "et": "mulle tundub, et täna ma ei skoori.",
+            "en": "I have a feeling that today I won't score.",
+            "az": "mənə elə gəlir ki, bu gün heç kimi tora salmayacağam.",
+            "ru": "мне кажется, что сегодня мне не светит."
+          },
+          {
+            "et": "Kuigi siin on nii vanemaid kui noori,",
+            "en": "Although there are older ones and young ones here alike,",
+            "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+            "ru": "Хотя здесь есть и постарше, и помоложе,"
+          },
+          {
+            "et": "siiski mulle tundub, et täna ma ei skoori —",
+            "en": "still I have a feeling that today I won't score —",
+            "az": "yenə də mənə elə gəlir ki, bu gün heç kimi tora salmayacağam —",
+            "ru": "всё же мне кажется, что сегодня мне не светит —"
+          },
+          {
+            "et": "ei vanemaid ei noori.",
+            "en": "not the older ones, not the young ones.",
+            "az": "nə yaşlıları, nə cavanları.",
+            "ru": "ни тех, кто постарше, ни тех, кто помоложе."
+          }
+        ],
+        [
+          {
+            "et": "Uskumatu, kuidas valdab mõni kehakeeli —",
+            "en": "Unbelievable, how well some people speak with their bodies —",
+            "az": "İnanılmazdır, bəziləri bədən dilini necə də yaxşı bilir —",
+            "ru": "Невероятно, как некоторые владеют языком тела —"
+          },
+          {
+            "et": "koks või kaks, tšikk ja plaks, kõikidele meeldib.",
+            "en": "a tap or two, a click and a clap, and everybody likes it.",
+            "az": "bir-iki taq, bir çık, bir şappıltı — hamının xoşuna gəlir.",
+            "ru": "тук-другой, щёлк да хлоп — и всем нравится."
+          },
+          {
+            "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+            "en": "They get themselves going and shake in the party's shared current,",
+            "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+            "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+          },
+          {
+            "et": "kui biit on hea ja piiri pead ei küpsus ega toorus loe.",
+            "en": "when the beat is good and you keep in bounds, neither ripe nor green counts.",
+            "az": "biit yaxşı olanda və həddi gözləyəndə nə yetkinlik, nə də xamlıq sayılır.",
+            "ru": "когда бит хороший и держишь меру, ни зрелость, ни зелёность не в счёт."
+          },
+          {
+            "et": "Täna ma ei proovi,",
+            "en": "Today I don't try,",
+            "az": "Bu gün cəhd etmirəm,",
+            "ru": "Сегодня я не пробую,"
+          },
+          {
+            "et": "täna ma ei pea,",
+            "en": "today I don't have to,",
+            "az": "bu gün məcbur deyiləm,",
+            "ru": "сегодня я не обязан,"
+          },
+          {
+            "et": "täna ma ei soovi,",
+            "en": "today I don't want to,",
+            "az": "bu gün istəmirəm,",
+            "ru": "сегодня я не хочу,"
+          },
+          {
+            "et": "täna ma ei saa.",
+            "en": "today I can't.",
+            "az": "bu gün bacarmıram.",
+            "ru": "сегодня я не могу."
+          }
+        ],
+        [
+          {
+            "et": "Mulle tundub, et täna ma ei skoori,",
+            "en": "I have a feeling that today I won't score,",
+            "az": "Mənə elə gəlir ki, bu gün heç kimi tora salmayacağam,",
+            "ru": "Мне кажется, что сегодня мне не светит,"
+          },
+          {
+            "et": "mulle tundub, et täna ma ei skoori.",
+            "en": "I have a feeling that today I won't score.",
+            "az": "mənə elə gəlir ki, bu gün heç kimi tora salmayacağam.",
+            "ru": "мне кажется, что сегодня мне не светит."
+          },
+          {
+            "et": "Kuigi siin on nii vanemaid kui noori,",
+            "en": "Although there are older ones and young ones here alike,",
+            "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+            "ru": "Хотя здесь есть и постарше, и помоложе,"
+          },
+          {
+            "et": "siiski mulle tundub, et täna ma ei skoori —",
+            "en": "still I have a feeling that today I won't score —",
+            "az": "yenə də mənə elə gəlir ki, bu gün heç kimi tora salmayacağam —",
+            "ru": "всё же мне кажется, что сегодня мне не светит —"
+          },
+          {
+            "et": "ei vanemaid ei noori.",
+            "en": "not the older ones, not the young ones.",
+            "az": "nə yaşlıları, nə cavanları.",
+            "ru": "ни тех, кто постарше, ни тех, кто помоложе."
+          }
+        ],
+        [
+          {
+            "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+            "en": "It seems my dance just can't manage to be that charming,",
+            "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+            "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+          },
+          {
+            "et": "mu puusanõks ei ole lõks, see polegi nii lihtne.",
+            "en": "my hip move is no trap — it isn't that simple after all.",
+            "az": "omba hərəkətim tələ deyil — bu, heç də o qədər asan deyil.",
+            "ru": "моё движение бёдрами — не ловушка, всё не так уж просто."
+          },
+          {
+            "et": "Tantsin küll, kuid ligi kedagi see siin ei tõmba,",
+            "en": "I do dance, but it draws nobody close in here,",
+            "az": "Rəqs edirəm, amma bu, burada heç kimi yaxına çəkmir,",
+            "ru": "Танцевать-то я танцую, но никого здесь это не притягивает,"
+          },
+          {
+            "et": "ei lõika siin mu lihtne stiil, kuid eile kõik ju leekis veel.",
+            "en": "my simple style doesn't cut it here — and yet yesterday it was all still ablaze.",
+            "az": "sadə üslubum burada keçmir — halbuki dünən hər şey hələ alov içində idi.",
+            "ru": "мой простой стиль тут не катит — а ведь вчера всё ещё пылало."
+          },
+          {
+            "et": "Täna ma ei proovi,",
+            "en": "Today I don't try,",
+            "az": "Bu gün cəhd etmirəm,",
+            "ru": "Сегодня я не пробую,"
+          },
+          {
+            "et": "täna ma ei pea,",
+            "en": "today I don't have to,",
+            "az": "bu gün məcbur deyiləm,",
+            "ru": "сегодня я не обязан,"
+          },
+          {
+            "et": "täna ma ei soovi,",
+            "en": "today I don't want to,",
+            "az": "bu gün istəmirəm,",
+            "ru": "сегодня я не хочу,"
+          },
+          {
+            "et": "täna ma ei saa.",
+            "en": "today I can't.",
+            "az": "bu gün bacarmıram.",
+            "ru": "сегодня я не могу."
+          }
+        ],
+        [
+          {
+            "et": "Mulle tundub, et täna ma ei skoori,",
+            "en": "I have a feeling that today I won't score,",
+            "az": "Mənə elə gəlir ki, bu gün heç kimi tora salmayacağam,",
+            "ru": "Мне кажется, что сегодня мне не светит,"
+          },
+          {
+            "et": "mulle tundub, et täna ma ei skoori.",
+            "en": "I have a feeling that today I won't score.",
+            "az": "mənə elə gəlir ki, bu gün heç kimi tora salmayacağam.",
+            "ru": "мне кажется, что сегодня мне не светит."
+          },
+          {
+            "et": "Kuigi siin on nii vanemaid kui noori,",
+            "en": "Although there are older ones and young ones here alike,",
+            "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+            "ru": "Хотя здесь есть и постарше, и помоложе,"
+          },
+          {
+            "et": "siiski mulle tundub, et täna ma ei skoori —",
+            "en": "still I have a feeling that today I won't score —",
+            "az": "yenə də mənə elə gəlir ki, bu gün heç kimi tora salmayacağam —",
+            "ru": "всё же мне кажется, что сегодня мне не светит —"
+          },
+          {
+            "et": "ei vanemaid ei noori.",
+            "en": "not the older ones, not the young ones.",
+            "az": "nə yaşlıları, nə cavanları.",
+            "ru": "ни тех, кто постарше, ни тех, кто помоложе."
+          }
+        ]
+      ],
+      "words": {
+        "mulle": {
+          "base": "mulle",
+          "means": {
+            "en": "to me",
+            "az": "mənə",
+            "ru": "мне"
+          },
+          "deck": "pronouns",
+          "note": {
+            "en": "Mulle tundub is it seems to me: the one it seems to goes in the -le case, to.",
+            "az": "Mulle tundub — mənə elə gəlir: kimə göründüyü -le halındadır.",
+            "ru": "Mulle tundub — «мне кажется»: тот, кому кажется, стоит в падеже на -le."
+          }
+        },
+        "tundub": {
+          "base": "tunduma",
+          "means": {
+            "en": "seems",
+            "az": "görünür, elə gəlir",
+            "ru": "кажется"
+          },
+          "deck": "moreverbs"
+        },
+        "et": {
+          "base": "et",
+          "means": {
+            "en": "that",
+            "az": "ki",
+            "ru": "что"
+          },
+          "deck": "everyday"
+        },
+        "täna": {
+          "base": "täna",
+          "means": {
+            "en": "today",
+            "az": "bu gün",
+            "ru": "сегодня"
+          },
+          "deck": "time"
+        },
+        "ma": {
+          "base": "mina",
+          "means": {
+            "en": "I",
+            "az": "mən",
+            "ru": "я"
+          },
+          "note": {
+            "en": "Ma is the short mina.",
+            "az": "Ma — mina sözünün qısasıdır.",
+            "ru": "Ma — краткое mina."
+          }
+        },
+        "ei": {
+          "base": "ei",
+          "means": {
+            "en": "not",
+            "az": "yox, deyil",
+            "ru": "не"
+          },
+          "deck": "basics"
+        },
+        "skoori": {
+          "base": "skoorima",
+          "means": {
+            "en": "score",
+            "az": "tora salmaq, qazanmaq",
+            "ru": "набрать очки — здесь: «закадрить»"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "From the English score, and at a party it means what it does in English. After ei the verb loses its ending: ma skoorin, ma ei skoori.",
+            "az": "İngiliscə score sözündəndir; məclisdə kimisə ələ almaq deməkdir. Ei-dən sonra fel sonluğunu itirir: ma skoorin, ma ei skoori.",
+            "ru": "От английского score, и на вечеринке значит то же, что там. После ei глагол теряет окончание: ma skoorin, ma ei skoori."
+          }
+        },
+        "kuigi": {
+          "base": "kuigi",
+          "means": {
+            "en": "although",
+            "az": "baxmayaraq ki",
+            "ru": "хотя"
+          },
+          "deck": "tana-words"
+        },
+        "siin": {
+          "base": "siin",
+          "means": {
+            "en": "here",
+            "az": "burada",
+            "ru": "здесь"
+          },
+          "deck": "everyday"
+        },
+        "on": {
+          "base": "olema",
+          "means": {
+            "en": "there are",
+            "az": "var",
+            "ru": "есть"
+          },
+          "deck": "verbs"
+        },
+        "nii": {
+          "base": "nii",
+          "means": {
+            "en": "both",
+            "az": "həm",
+            "ru": "и … и"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Nii … kui … is both … and …: nii vanemaid kui noori, the old and the young alike.",
+            "az": "Nii … kui … — həm … həm də …: nii vanemaid kui noori, həm yaşlılar, həm cavanlar.",
+            "ru": "Nii … kui … — «и … и …»: nii vanemaid kui noori — и старших, и молодых."
+          }
+        },
+        "vanemaid": {
+          "base": "vanem",
+          "means": {
+            "en": "older ones",
+            "az": "yaşlıları, böyükləri",
+            "ru": "тех, кто постарше"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "Vanem is older, the comparative of vana — and, as a noun, a parent. Vanemaid is it in the plural partitive.",
+            "az": "Vanem — vana sözünün müqayisə dərəcəsidir, daha yaşlı; isim kimi isə valideyn. Vanemaid — cəm partitivdir.",
+            "ru": "Vanem — сравнительная степень от vana, «старше», а как существительное — родитель. Vanemaid — партитив множественного числа."
+          }
+        },
+        "kui": {
+          "base": "kui",
+          "means": {
+            "en": "and (in nii … kui)",
+            "az": "həm də",
+            "ru": "и (в nii … kui)"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "On a card kui is if or when; after nii it is the and of both … and.",
+            "az": "Kartda kui — əgər, nə vaxt; nii-dən sonra isə «həm … həm də».",
+            "ru": "На карточке kui — «если, когда»; после nii это второе «и» в «и … и»."
+          }
+        },
+        "noori": {
+          "base": "noor",
+          "means": {
+            "en": "young ones",
+            "az": "cavanları",
+            "ru": "молодых"
+          },
+          "deck": "family",
+          "note": {
+            "en": "Noori is noor in the plural partitive, the case nii … kui leaves it in.",
+            "az": "Noori — noor sözünün cəm partitividir.",
+            "ru": "Noori — партитив множественного числа от noor."
+          }
+        },
+        "siiski": {
+          "base": "siiski",
+          "means": {
+            "en": "still, all the same",
+            "az": "yenə də",
+            "ru": "всё же"
+          },
+          "deck": "randaja-words"
+        },
+        "uskumatu": {
+          "base": "uskumatu",
+          "means": {
+            "en": "unbelievable",
+            "az": "inanılmaz",
+            "ru": "невероятно"
+          },
+          "deck": "describing"
+        },
+        "kuidas": {
+          "base": "kuidas",
+          "means": {
+            "en": "how",
+            "az": "necə",
+            "ru": "как"
+          },
+          "note": {
+            "en": "The same word as the card Kuidas? in Asking, here without a question.",
+            "az": "Asking dəstindəki Kuidas? kartı ilə eyni sözdür, burada sualsız.",
+            "ru": "То же слово, что на карточке Kuidas? в колоде вопросов, только без вопроса."
+          }
+        },
+        "valdab": {
+          "base": "valdama",
+          "means": {
+            "en": "masters, has a command of",
+            "az": "bilir, sahibdir",
+            "ru": "владеет"
+          },
+          "deck": "tana-words"
+        },
+        "mõni": {
+          "base": "mõni",
+          "means": {
+            "en": "some (people)",
+            "az": "bəziləri",
+            "ru": "некоторые"
+          },
+          "deck": "everyday"
+        },
+        "kehakeeli": {
+          "base": "kehakeel",
+          "means": {
+            "en": "body language",
+            "az": "bədən dili",
+            "ru": "язык тела"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "Keha, body, and keel, language. Valdama wants the partitive, and the song has it in the plural, kehakeeli.",
+            "az": "Keha — bədən, keel — dil. Valdama partitiv tələb edir; mahnıda cəmdədir: kehakeeli.",
+            "ru": "Keha — тело, keel — язык. Valdama требует партитива, и в песне он во множественном числе: kehakeeli."
+          }
+        },
+        "koks": {
+          "base": "koks",
+          "means": {
+            "en": "a tap, a knock",
+            "az": "taq, döymə",
+            "ru": "тук, стук"
+          },
+          "note": {
+            "en": "A sound word, like tšikk and plaks: what the move sounds like rather than what it is.",
+            "az": "Səs sözüdür, tšikk və plaks kimi: hərəkətin nə olduğunu yox, necə səsləndiyini deyir.",
+            "ru": "Звукоподражание, как tšikk и plaks: не что за движение, а как оно звучит."
+          }
+        },
+        "või": {
+          "base": "või",
+          "means": {
+            "en": "or",
+            "az": "və ya",
+            "ru": "или"
+          },
+          "note": {
+            "en": "Või is also butter — that is the card in Food, and the same word.",
+            "az": "Või həm də kərə yağıdır — Food dəstindəki kart odur, söz eynidir.",
+            "ru": "Või — это ещё и масло: так на карточке в колоде еды, слово то же."
+          }
+        },
+        "kaks": {
+          "base": "kaks",
+          "means": {
+            "en": "two",
+            "az": "iki",
+            "ru": "два"
+          },
+          "deck": "numbers"
+        },
+        "tšikk": {
+          "base": "tšikk",
+          "means": {
+            "en": "a click",
+            "az": "çık",
+            "ru": "щёлк"
+          },
+          "note": {
+            "en": "A sound word, like koks and plaks.",
+            "az": "Səs sözüdür, koks və plaks kimi.",
+            "ru": "Звукоподражание, как koks и plaks."
+          }
+        },
+        "ja": {
+          "base": "ja",
+          "means": {
+            "en": "and",
+            "az": "və",
+            "ru": "и"
+          },
+          "deck": "everyday"
+        },
+        "plaks": {
+          "base": "plaks",
+          "means": {
+            "en": "a clap, a smack",
+            "az": "şappıltı",
+            "ru": "хлоп"
+          },
+          "note": {
+            "en": "A sound word, like koks and tšikk.",
+            "az": "Səs sözüdür, koks və tšikk kimi.",
+            "ru": "Звукоподражание, как koks и tšikk."
+          }
+        },
+        "kõikidele": {
+          "base": "kõik",
+          "means": {
+            "en": "to everybody",
+            "az": "hamıya",
+            "ru": "всем"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Estonian likes the other way round: kõikidele meeldib, it pleases everybody. The one who likes goes in the -le case, to.",
+            "az": "Eston dilində «xoşa gəlmək» tərsinədir: kõikidele meeldib — hamının xoşuna gəlir. Xoşlayan -le halındadır.",
+            "ru": "По-эстонски «нравиться» устроено как по-русски: kõikidele meeldib — всем нравится. Кому — в падеже на -le."
+          }
+        },
+        "meeldib": {
+          "base": "meeldima",
+          "means": {
+            "en": "pleases, is liked",
+            "az": "xoşa gəlir",
+            "ru": "нравится"
+          },
+          "deck": "verbs"
+        },
+        "tõmbab": {
+          "base": "tõmbama",
+          "means": {
+            "en": "pulls, gets (going)",
+            "az": "çəkir, işə salır",
+            "ru": "тянет, заводит"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "Ennast käima tõmbama is to get yourself going, the way an engine is pulled into starting.",
+            "az": "Ennast käima tõmbama — özünü işə salmaq, mühərrik kimi.",
+            "ru": "Ennast käima tõmbama — завестись, как заводят мотор."
+          }
+        },
+        "ennast": {
+          "base": "ise",
+          "means": {
+            "en": "oneself, themselves",
+            "az": "özünü",
+            "ru": "себя"
+          },
+          "deck": "pronouns",
+          "note": {
+            "en": "Ennast, or end, is ise in the partitive: self as the object of a verb.",
+            "az": "Ennast (və ya end) — ise sözünün partitividir: felin obyekti kimi «özünü».",
+            "ru": "Ennast (или end) — ise в партитиве: «себя» как дополнение."
+          }
+        },
+        "käima": {
+          "base": "käima",
+          "means": {
+            "en": "going, running",
+            "az": "işləməyə, hərəkətə",
+            "ru": "на ход, в ход"
+          },
+          "deck": "moreverbs",
+          "note": {
+            "en": "On a card käima is to go somewhere regularly; an engine that käib is running.",
+            "az": "Kartda käima — müntəzəm getmək; mühərrik käib — işləyir.",
+            "ru": "На карточке käima — регулярно ходить; мотор, который käib, работает."
+          }
+        },
+        "rappub": {
+          "base": "rappuma",
+          "means": {
+            "en": "shakes, jolts",
+            "az": "silkələnir",
+            "ru": "трясётся"
+          },
+          "deck": "tana-words"
+        },
+        "ühises": {
+          "base": "ühine",
+          "means": {
+            "en": "in the shared, common",
+            "az": "ümumi",
+            "ru": "в общем"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "-s is in: ühises peovoolus, in the shared current of the party.",
+            "az": "-s «içində» deməkdir: ühises peovoolus — məclisin ümumi axınında.",
+            "ru": "-s значит «в»: ühises peovoolus — в общем потоке вечеринки."
+          }
+        },
+        "peovoolus": {
+          "base": "peovool",
+          "means": {
+            "en": "in the party's flow",
+            "az": "məclis axınında",
+            "ru": "в потоке вечеринки"
+          },
+          "note": {
+            "en": "Pidu, party — a card in Family — and vool, a current, made into one word; pidu becomes peo- in front of another.",
+            "az": "Pidu (məclis, Family dəstində kartdır) və vool (axın) bir söz olub; pidu başqa sözün önündə peo- olur.",
+            "ru": "Pidu, вечеринка (карточка в колоде о семье), и vool, течение, в одном слове; перед другим словом pidu становится peo-."
+          }
+        },
+        "biit": {
+          "base": "biit",
+          "means": {
+            "en": "the beat",
+            "az": "biit, ritm",
+            "ru": "бит"
+          },
+          "note": {
+            "en": "The English beat, spelt the Estonian way.",
+            "az": "İngiliscə beat, eston yazılışı ilə.",
+            "ru": "Английское beat в эстонском написании."
+          }
+        },
+        "hea": {
+          "base": "hea",
+          "means": {
+            "en": "good",
+            "az": "yaxşı",
+            "ru": "хороший"
+          },
+          "deck": "basics"
+        },
+        "piiri": {
+          "base": "piir",
+          "means": {
+            "en": "the limit, the line",
+            "az": "hədd, sərhəd",
+            "ru": "меру, границу"
+          },
+          "deck": "country",
+          "note": {
+            "en": "Piir is a border on a card. Piiri pidama is to keep within bounds — read that way here, though the line is hard to hear.",
+            "az": "Kartda piir — sərhəddir. Piiri pidama — həddi gözləmək; burada belə oxunur, amma misra çətin eşidilir.",
+            "ru": "На карточке piir — граница. Piiri pidama — держать меру; здесь прочитано так, хотя строку трудно расслышать."
+          }
+        },
+        "pead": {
+          "base": "pidama",
+          "means": {
+            "en": "you keep",
+            "az": "gözləyirsən",
+            "ru": "держишь"
+          },
+          "deck": "moreverbs",
+          "note": {
+            "en": "Pidama is to have to on a card, and to keep in piiri pidama. Pead is its you.",
+            "az": "Kartda pidama — məcbur olmaqdır, piiri pidama-da isə gözləmək. Pead — «sən» formasıdır.",
+            "ru": "На карточке pidama — «быть должным», а в piiri pidama — «держать». Pead — форма «ты»."
+          }
+        },
+        "küpsus": {
+          "base": "küpsus",
+          "means": {
+            "en": "ripeness, maturity",
+            "az": "yetkinlik",
+            "ru": "зрелость"
+          },
+          "deck": "tana-words"
+        },
+        "ega": {
+          "base": "ega",
+          "means": {
+            "en": "nor",
+            "az": "nə də",
+            "ru": "ни"
+          },
+          "deck": "everyday"
+        },
+        "toorus": {
+          "base": "toorus",
+          "means": {
+            "en": "rawness, being green",
+            "az": "xamlıq",
+            "ru": "незрелость, зелёность"
+          },
+          "deck": "tana-words"
+        },
+        "loe": {
+          "base": "lugema",
+          "means": {
+            "en": "counts, matters",
+            "az": "sayılır",
+            "ru": "считается, имеет значение"
+          },
+          "deck": "moreverbs",
+          "note": {
+            "en": "Lugema is to read on a card, and to count here: ei loe, it does not count.",
+            "az": "Kartda lugema — oxumaqdır, burada isə saymaq: ei loe — sayılmır.",
+            "ru": "На карточке lugema — читать, а здесь — считать: ei loe, не в счёт."
+          }
+        },
+        "proovi": {
+          "base": "proovima",
+          "means": {
+            "en": "try",
+            "az": "cəhd etmək",
+            "ru": "пробовать"
+          },
+          "deck": "tana-words"
+        },
+        "pea": {
+          "base": "pidama",
+          "means": {
+            "en": "have to",
+            "az": "məcbur olmaq",
+            "ru": "быть должным"
+          },
+          "deck": "moreverbs",
+          "note": {
+            "en": "After ei the verb loses its ending: ma pean, ma ei pea.",
+            "az": "Ei-dən sonra fel sonluğunu itirir: ma pean, ma ei pea.",
+            "ru": "После ei глагол теряет окончание: ma pean, ma ei pea."
+          }
+        },
+        "soovi": {
+          "base": "soovima",
+          "means": {
+            "en": "want, wish",
+            "az": "istəmək",
+            "ru": "хотеть"
+          },
+          "deck": "moreverbs"
+        },
+        "saa": {
+          "base": "saama",
+          "means": {
+            "en": "can",
+            "az": "bacarmaq",
+            "ru": "мочь"
+          },
+          "deck": "verbs"
+        },
+        "mu": {
+          "base": "mina",
+          "means": {
+            "en": "my",
+            "az": "mənim",
+            "ru": "мой"
+          },
+          "note": {
+            "en": "Mu is the short minu, the way ma is the short mina.",
+            "az": "Mu — minu sözünün qısası, ma da mina sözünün qısası kimi.",
+            "ru": "Mu — краткое minu, как ma — краткое mina."
+          }
+        },
+        "tants": {
+          "base": "tants",
+          "means": {
+            "en": "dance",
+            "az": "rəqs",
+            "ru": "танец"
+          },
+          "deck": "tana-words"
+        },
+        "suuda": {
+          "base": "suutma",
+          "means": {
+            "en": "manage, be able",
+            "az": "bacarmaq",
+            "ru": "суметь"
+          },
+          "deck": "tana-words"
+        },
+        "olla": {
+          "base": "olema",
+          "means": {
+            "en": "to be",
+            "az": "olmaq",
+            "ru": "быть"
+          },
+          "deck": "verbs"
+        },
+        "nõnda": {
+          "base": "nõnda",
+          "means": {
+            "en": "so, that",
+            "az": "o qədər, belə",
+            "ru": "так, настолько"
+          },
+          "deck": "tana-words"
+        },
+        "veetlev": {
+          "base": "veetlev",
+          "means": {
+            "en": "charming, alluring",
+            "az": "cazibəli",
+            "ru": "обаятельный"
+          },
+          "deck": "tana-words"
+        },
+        "puusanõks": {
+          "base": "puusanõks",
+          "means": {
+            "en": "a hip move",
+            "az": "omba hərəkəti",
+            "ru": "движение бёдрами"
+          },
+          "note": {
+            "en": "Puus, hip — a card in The body — and nõks, a knack, a little trick move.",
+            "az": "Puus (omba, The body dəstində kartdır) və nõks (fənd, kiçik hərəkət).",
+            "ru": "Puus, бедро (карточка в колоде о теле), и nõks, приём, ловкое движение."
+          }
+        },
+        "ole": {
+          "base": "olema",
+          "means": {
+            "en": "is (not)",
+            "az": "deyil",
+            "ru": "(не) является"
+          },
+          "deck": "verbs",
+          "note": {
+            "en": "After ei, olema is ole: ei ole, is not.",
+            "az": "Ei-dən sonra olema — ole olur: ei ole, deyil.",
+            "ru": "После ei olema становится ole: ei ole, не есть."
+          }
+        },
+        "lõks": {
+          "base": "lõks",
+          "means": {
+            "en": "a trap",
+            "az": "tələ",
+            "ru": "ловушка"
+          },
+          "deck": "tana-words"
+        },
+        "see": {
+          "base": "see",
+          "means": {
+            "en": "it",
+            "az": "bu",
+            "ru": "это"
+          },
+          "deck": "pronouns"
+        },
+        "polegi": {
+          "base": "olema",
+          "means": {
+            "en": "isn't, after all",
+            "az": "heç də deyil",
+            "ru": "вовсе не"
+          },
+          "deck": "verbs",
+          "note": {
+            "en": "Pole is the short ei ole, and the -gi on it means after all, at all.",
+            "az": "Pole — ei ole-nin qısasıdır, -gi isə «heç də» mənasını verir.",
+            "ru": "Pole — краткое ei ole, а -gi добавляет «вовсе, всё-таки»."
+          }
+        },
+        "lihtne": {
+          "base": "lihtne",
+          "means": {
+            "en": "simple",
+            "az": "sadə, asan",
+            "ru": "простой"
+          },
+          "deck": "feelings"
+        },
+        "tantsin": {
+          "base": "tantsima",
+          "means": {
+            "en": "I dance",
+            "az": "rəqs edirəm",
+            "ru": "я танцую"
+          },
+          "deck": "tana-words"
+        },
+        "küll": {
+          "base": "küll",
+          "means": {
+            "en": "I do (…but)",
+            "az": "…, amma",
+            "ru": "-то (…но)"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Küll … kuid is the yes-but: tantsin küll, kuid — I do dance, but.",
+            "az": "Küll … kuid — «bəli, amma»: tantsin küll, kuid — rəqs edirəm, amma.",
+            "ru": "Küll … kuid — «-то …, но»: tantsin küll, kuid — танцевать-то танцую, но."
+          }
+        },
+        "kuid": {
+          "base": "kuid",
+          "means": {
+            "en": "but",
+            "az": "amma",
+            "ru": "но"
+          },
+          "deck": "everyday"
+        },
+        "ligi": {
+          "base": "ligi",
+          "means": {
+            "en": "close, near",
+            "az": "yaxına",
+            "ru": "близко, к себе"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "Ligi tõmbama is to draw close, to attract.",
+            "az": "Ligi tõmbama — yaxına çəkmək, cəlb etmək.",
+            "ru": "Ligi tõmbama — притягивать."
+          }
+        },
+        "kedagi": {
+          "base": "keegi",
+          "means": {
+            "en": "anybody — with ei, nobody",
+            "az": "heç kimi",
+            "ru": "никого"
+          },
+          "deck": "everyday",
+          "note": {
+            "en": "Kedagi is keegi in the partitive, the case a not leaves its object in.",
+            "az": "Kedagi — keegi sözünün partitividir; inkardan sonra obyekt bu haldadır.",
+            "ru": "Kedagi — keegi в партитиве: после отрицания дополнение стоит в нём."
+          }
+        },
+        "tõmba": {
+          "base": "tõmbama",
+          "means": {
+            "en": "draws",
+            "az": "çəkir",
+            "ru": "притягивает"
+          },
+          "deck": "tana-words",
+          "note": {
+            "en": "After ei the verb loses its ending: see tõmbab, see ei tõmba.",
+            "az": "Ei-dən sonra fel sonluğunu itirir: see tõmbab, see ei tõmba.",
+            "ru": "После ei глагол теряет окончание: see tõmbab, see ei tõmba."
+          }
+        },
+        "lõika": {
+          "base": "lõikama",
+          "means": {
+            "en": "cut (it)",
+            "az": "keçmir",
+            "ru": "катит"
+          },
+          "deck": "cooking",
+          "note": {
+            "en": "Lõikama is to cut on a card; ei lõika is slang for does not cut it, does not work.",
+            "az": "Kartda lõikama — kəsməkdir; ei lõika isə jarqonda «keçmir, alınmır».",
+            "ru": "На карточке lõikama — резать; ei lõika на сленге — «не катит, не работает»."
+          }
+        },
+        "stiil": {
+          "base": "stiil",
+          "means": {
+            "en": "style",
+            "az": "üslub",
+            "ru": "стиль"
+          }
+        },
+        "eile": {
+          "base": "eile",
+          "means": {
+            "en": "yesterday",
+            "az": "dünən",
+            "ru": "вчера"
+          },
+          "deck": "time"
+        },
+        "kõik": {
+          "base": "kõik",
+          "means": {
+            "en": "everything",
+            "az": "hər şey",
+            "ru": "всё"
+          },
+          "deck": "everyday"
+        },
+        "ju": {
+          "base": "ju",
+          "means": {
+            "en": "after all, you know",
+            "az": "axı",
+            "ru": "ведь"
+          },
+          "deck": "everyday"
+        },
+        "leekis": {
+          "base": "leekima",
+          "means": {
+            "en": "was ablaze",
+            "az": "alovlanırdı",
+            "ru": "пылало"
+          },
+          "deck": "tana-words"
+        },
+        "veel": {
+          "base": "veel",
+          "means": {
+            "en": "still",
+            "az": "hələ",
+            "ru": "ещё"
+          },
+          "deck": "everyday"
         }
       }
     }
