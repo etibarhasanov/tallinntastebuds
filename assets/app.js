@@ -6998,8 +6998,12 @@
    * page that did not know which restaurant it was. Google's documented way
    * of asking for the place is `destination_place_id`, the same key
    * assets/venues.js hands over from the directory, and when the key is
-   * known that is what goes: the coordinates stay beside it as the
-   * destination the address requires, and the key is what Google reads.
+   * known that is what goes. Beside it goes the name, never the coordinates:
+   * the first version of this sent the pair with the key next to it, and
+   * Google Maps on a phone drew the route to "Dropped pin" all the same — it
+   * labels the destination by what the destination string says, and reads
+   * the key only to pick which listing the name means. Google's own example
+   * is a name plus a key, and that is the shape this sends.
    *
    * The key is known in two shapes. A stand-in off the export is filed under
    * it — `place.google` says so, and its id is the key. A place of mine is
@@ -7009,12 +7013,13 @@
    * once the row lands. Until then, and for the dozen places Google does
    * not list at all, the name and the street go instead of the coordinates:
    * Google finds the listing from those where a pair of numbers would only
-   * ever find the pavement. A place with no address — a hand-typed one from
-   * a list, pinned by hand — falls back to the pin, which is all it has. */
+   * ever find the pavement. A place with no address and no key — a
+   * hand-typed one from a list, pinned by hand — falls back to the pin,
+   * which is all it has. */
   function directionsUrl(place, key) {
-    var dest = key || !place.address
-      ? place.lat + ',' + place.lng
-      : place.name + ', ' + place.address;
+    var dest = place.address ? place.name + ', ' + place.address
+      : key ? place.name
+      : place.lat + ',' + place.lng;
     return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) +
       (key ? '&destination_place_id=' + encodeURIComponent(key) : '');
   }
