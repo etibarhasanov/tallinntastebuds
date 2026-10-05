@@ -536,7 +536,7 @@ const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
 /* The `?from=` tag on a link, the longest page elsewhere kept as one
    that linked here, and the search fields whose words are counted — the
    `scope` each already reports to Google under. HOW THEY FOUND IT. */
-const TAG = /^[a-z0-9][a-z0-9_-]{0,39}$/;
+export const TAG = /^[a-z0-9][a-z0-9_-]{0,39}$/;
 const MAX_REF = 120;
 const SCOPES = ['map', 'find', 'google', 'lists', 'list'];
 const MAX_WORDS = 40;
