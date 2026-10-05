@@ -68,7 +68,13 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
 
-  var UI_URL = '/data/ui.json';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — written by tools/languages.mjs out of data/ui.json,
+     which is ten languages of every string the site has, 190 KB on the wire
+     against this script's 8. **One language at a time** under **Languages**
+     in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   var POSTS_URL = '/data/blog.json';
 
   /* Where the clips are, and what the four files for one post are called.
@@ -120,10 +126,9 @@
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
   }
 
+  /* state.ui is the one language this page was read in; see LANGS_URL. */
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -512,9 +517,16 @@
     applyStyle();
     main = document.getElementById('main');
 
-    Promise.all([getJSON(UI_URL), getJSON(POSTS_URL)]).then(function (answers) {
-      state.ui = answers[0];
-      state.lang = pickLanguage(Object.keys(state.ui));
+    var words = getJSON(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names));
+      return getJSON(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui };
+      });
+    });
+
+    Promise.all([words, getJSON(POSTS_URL)]).then(function (answers) {
+      state.ui = answers[0].ui;
+      state.lang = answers[0].lang;
       applyStaticStrings();
 
       /* Newest first, and sorted here rather than trusted from the file: the
@@ -532,16 +544,15 @@
       mountRadio();
     }).catch(function (err) {
       /* Whatever went wrong, the reader gets a sentence rather than an empty
-         page. Reached through state.ui rather than t(), and with the English
-         written out behind it, because the thing that failed may well be
-         ui.json — and t() with no strings in it returns the key, which is a
-         visitor reading "loadError" off the page. Same last resort the map,
-         the lists and the directory all fall back on. */
+         page. In English and written out rather than through t(), because the
+         thing that failed may well be the words — and t() with no strings in
+         it returns the key, which is a visitor reading "loadError" off the
+         page. Same last resort the lists and the directory fall back on. */
       clear(main);
       main.appendChild(el('div', { className: 'lists-stack' }, [
         el('div', { className: 'card lists-card' }, [
-          el('p', { className: 'blog-lead', textContent: (state.ui.en && state.ui.en.loadError) ||
-            'Something went wrong loading the data. Try refreshing the page.' })
+          el('p', { className: 'blog-lead',
+            textContent: 'Something went wrong loading the data. Try refreshing the page.' })
         ])
       ]));
       if (window.console && window.console.error) window.console.error(err);

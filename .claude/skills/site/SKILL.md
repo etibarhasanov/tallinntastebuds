@@ -145,7 +145,11 @@ falls back to nothing but the key, which is safe only because the validator
 holds every language to the same set of keys. A language switch on the map
 is a request, and `setLanguage()` keeps the old language on screen until the
 new file has arrived. **One language at a time** under **Languages** in
-`README.md`. Every other page still fetches `ui.json` whole.
+`README.md`. The pass pages (through `TTBPass.load()` in `assets/pass.js`),
+the blog and the lists page read the same files for their strings, each
+picking the language with its own `pickLanguage()` out of
+`data/lang/index.json` and then fetching that one; every other page still
+fetches `ui.json` whole, and a page moved over is moved the same way.
 
 One exception, and it is a deliberate one: the splitwise page's strings are in
 `data/split.json`, same shape and same ten languages, so that removing that

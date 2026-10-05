@@ -191,7 +191,11 @@
   }
 
   var state = {
+    /* One language's strings, out of data/lang/<code>.json, and every
+       language's own name for itself out of data/lang/index.json, which is
+       what the switch lists. See the strings in boot(). */
     ui: {},
+    langNames: {},
     types: [],         // data/taxonomy.json, for the rows that carry Google's words
     lang: DEFAULT_LANG,
     /* 'one' | 'all' | 'who'. Which of the three addresses this is. */
@@ -268,10 +272,11 @@
     try { return window.localStorage.getItem(key); } catch (e) { return null; }
   }
 
+  /* The one language this page was read in, else the key. No English behind
+     it: tools/validate.mjs fails a key one language has and another does not,
+     so every file under data/lang/ has them all. */
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -384,8 +389,8 @@
   function mountLanguage() {
     var host = $('lang-switch');
     if (!host || !window.TTBLanguage) return;
-    var langs = Object.keys(state.ui).filter(pageWrittenIn).map(function (code) {
-      return { code: code, name: (state.ui[code] && state.ui[code].langName) || code };
+    var langs = Object.keys(state.langNames).filter(pageWrittenIn).map(function (code) {
+      return { code: code, name: state.langNames[code] || code };
     });
     window.TTBLanguage.mount(host, langs, state.lang, function (code) {
       if (code === state.lang) return;
@@ -4671,12 +4676,21 @@
     state.view = all ? 'all' : who ? 'who' : 'one';
     if (all) { state.q = wantedQuery(); state.sort = wantedSort(); pickLook(); }
 
-    /* The strings and the data at once. The strings are a static file behind a
+    /* The strings and the data at once. The strings are static files behind a
        revalidating cache and usually free; the data is the one request this
-       page cannot start without. */
-    var strings = getJSON('/data/ui.json');
-    /* And the type names, which are four kilobytes next to the strings' hundred
-       and fifty and come from the same cache. Only the rows carrying Google's
+       page cannot start without. One language of them rather than the ten
+       data/ui.json holds: the list of languages first, a few hundred bytes,
+       then the one this reader is in, both written by tools/languages.mjs —
+       **One language at a time** under **Languages** in README.md. The switch
+       reloads the page in the language picked, so one is all it ever needs. */
+    var strings = getJSON('/data/lang/index.json').then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return getJSON('/data/lang/' + lang + '.json').then(function (pack) {
+        return { names: names, lang: lang, ui: pack.ui };
+      });
+    });
+    /* And the type names, which are four kilobytes next to the strings' thirty
+       and come from the same cache. Only the rows carrying Google's
        description of a place use them — see sourceLine() — so a list that
        cannot fetch them draws those rows without their types rather than not
        at all. */
@@ -4720,9 +4734,10 @@
     }
 
     Promise.all([strings, data, types]).then(function (loaded) {
-      state.ui = loaded[0] || {};
+      state.ui = loaded[0].ui;
+      state.langNames = loaded[0].names;
+      state.lang = loaded[0].lang;
       state.types = (loaded[2] && loaded[2].types) || [];
-      state.lang = pickLanguage(Object.keys(state.ui).sort());
       applyStaticStrings();
       document.title = t('listsDocumentTitle');
 
@@ -4769,8 +4784,7 @@
         el('p', { className: 'eyebrow', textContent: 'Tallinn' }),
         el('h2', { textContent: 'Tallinn Tastebuds' }),
         el('p', {
-          textContent: (state.ui.en && state.ui.en.loadError) ||
-            'Something went wrong loading the data. Try refreshing the page.'
+          textContent: 'Something went wrong loading the data. Try refreshing the page.'
         })
       ]));
     });

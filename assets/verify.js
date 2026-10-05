@@ -40,8 +40,8 @@
   P.applyStyle();
 
   P.load().then(function (data) {
-    var lang = P.pickLanguage(Object.keys(data.ui));
-    var t = P.translator(data.ui, lang);
+    var lang = data.lang;
+    var t = P.translator(data.ui);
     document.documentElement.lang = lang;
     document.title = t('verifyTitle') + ' | Tallinn Tastebuds';
 
