@@ -53,6 +53,8 @@ must keep, and where this area has gone wrong.
     what `layout` counts about it.
   - **The lists' two looks** — the directory's own A/B test, apart from
     the rails, and what `look` counts about it.
+  - **The four styles, dealt** — the colour each newcomer is given, and
+    what `style` counts about it.
 - The header of the file you are standing in. The four behind the count
   are written as essays, section by section, and each section is the
   reasoning for one kind: `functions/api/_visitors.js` (the whole site),
@@ -86,7 +88,7 @@ trail with the on-screen second each name happened at, the languages, the
 searches and the abouts. Two reports a page and
 no more — a visit of twelve presses is not twelve requests.
 
-`stats.js` is the door for all of it. Ten kinds, and each is handed on or
+`stats.js` is the door for all of it. Twelve kinds, and each is handed on or
 counted in one place:
 
 | `kind` | checked against | counted by | into |
@@ -95,6 +97,8 @@ counted in one place:
 | `filter` | `data/taxonomy.json` plus `DEAL_FILTER` | `stats.js` | `press_counts` |
 | `rail` | `RAIL_PILLS` | `stats.js`, every press | `press_counts` |
 | `layout` | `LAYOUT_IDS` | `stats.js` | `press_counts` |
+| `look` | `LOOK_IDS` | `stats.js` | `press_counts` |
+| `style` | `STYLE_IDS` | `stats.js` | `press_counts` |
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
 | `profile`, `profile-press` | the owner's own page | `countView()`, `countPress()` in `_visits.js` | `profile_counts` |
 | `arrive`, `leave` | every field, in `_visitors.js` | `countArrive()`, `countLeave()` + `countFlows()` | `visitor_counts`, `visitor_live`, `flow_counts` |
@@ -217,6 +221,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `SIGNUP` in `functions/api/_visitors.js` | the `account_*` names the sheet and forms report; the error words `account.js` answers | the funnel |
 | `LAYOUT_IDS` in `functions/api/stats.js` | `pickLayout()` in `assets/app.js` | the two rails and their opens |
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
+| `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
 | the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-five today | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |

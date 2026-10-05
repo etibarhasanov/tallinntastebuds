@@ -403,6 +403,11 @@ a.stats-name:hover { color: var(--accent); }
    gives its columns. */
 .vis-table { grid-template-columns: minmax(0, 1fr) auto auto; margin-top: 4px; }
 .vis-table-3 { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+/* The four colours' card, the one table with four columns. At 390px four
+   headings in spaced capitals do not fit on one line each, so they wrap —
+   GREEN over (DARK) — and every column keeps room for a "54%". */
+.vis-table-4 { grid-template-columns: minmax(0, 1fr) repeat(4, 3.6em); }
+.vis-table-4 .ins-row > :nth-child(n+2) { padding-left: 8px; }
 .vis-table .ins-row > :nth-child(2) { padding-left: 14px; }
 
 /* The three blocks of the two rails' card, each under a line of its own. */

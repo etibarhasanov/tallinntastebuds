@@ -20,6 +20,12 @@
  * A test apart from the rails, read in the same query because it is the
  * same table. "The lists' two looks" in README.md.
  *
+ * And `styles`, the four colours somebody new to the site is dealt as their
+ * first page opens — the sixteen `style` rows: for each of red, green, blue
+ * and plum, `given`, and `opened`, `back` and `changed`, how many of them
+ * opened something that day, came back on a later one, and chose another
+ * colour. "The four styles, dealt" in README.md.
+ *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.
  * This is the other end of the same table, and it is the owner's alone: the
@@ -40,7 +46,7 @@
 
 import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
 import { SPANS, readVisitors } from '../_visitors.js';
-import { LAYOUT, LOOK } from '../stats.js';
+import { LAYOUT, LOOK, STYLE, STYLE_ARMS } from '../stats.js';
 
 /* Five minutes in the colo, for the reason ./stats.js holds its ranking that
    long: it is what the page may be stale by, and the only thing between the
@@ -74,22 +80,25 @@ export async function onRequestGet(context) {
   return privately(res);
 }
 
-/* Both tests' rows — `dealt` the rails', `looks` the directory's — see the
-   header. An id is the arm, then the fact after a dash where there is one:
-   `b` is how many were given B, `b-opened` how many of them opened
-   something. Nought all round where press_counts is not there. */
+/* The three tests' rows — `dealt` the rails', `looks` the directory's,
+   `styles` the colours' — see the header. An id is the arm, then the fact
+   after a dash where there is one: `b` is how many were given B, `b-opened`
+   how many of them opened something. Nought all round where press_counts is
+   not there. */
 async function readDeals(env) {
   const arms = () => ({ a: { given: 0, opened: 0, kept: 0 }, b: { given: 0, opened: 0, kept: 0 } });
-  const deals = { dealt: arms(), looks: arms() };
+  const colours = Object.fromEntries(STYLE_ARMS.map((id) => [id, { given: 0, opened: 0, back: 0, changed: 0 }]));
+  const deals = { dealt: arms(), looks: arms(), styles: colours };
+  const tests = { [LAYOUT]: deals.dealt, [LOOK]: deals.looks, [STYLE]: deals.styles };
   try {
     const got = await env.DB
-      .prepare('SELECT kind, id, n FROM press_counts WHERE kind IN (?, ?)')
-      .bind(LAYOUT, LOOK)
+      .prepare('SELECT kind, id, n FROM press_counts WHERE kind IN (?, ?, ?)')
+      .bind(LAYOUT, LOOK, STYLE)
       .all();
     for (const r of got.results || []) {
       const [arm, fact] = r.id.split('-');
-      const test = r.kind === LAYOUT ? deals.dealt : deals.looks;
-      if (test[arm]) test[arm][fact || 'given'] = r.n;
+      const test = tests[r.kind];
+      if (test && test[arm]) test[arm][fact || 'given'] = r.n;
     }
   } catch (e) {
     /* No table yet. */
@@ -102,7 +111,7 @@ async function readDeals(env) {
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
-const SHAPE = '5';
+const SHAPE = '6';
 
 function visitorsKey(request, lang, span) {
   const url = new URL('/api/admin/visitors', request.url);

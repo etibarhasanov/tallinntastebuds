@@ -12246,6 +12246,12 @@ them that opened a list from it and kept one that day, under the same
 verdict asked of the opens. The six `look` rows of `press_counts`, all-time
 like the rails' strangers; **The lists' two looks** has the rest.
 
+And under that, **The four colours** reads the colour test the same way, a
+column per colour: newcomers dealt each, and the share that opened something
+that day, came back another day and chose another colour, under a verdict
+that sets the best colour against the worst. The sixteen `style` rows; **The
+four styles, dealt** has the rest.
+
 ### Signing up
 
 Sign-ins and accounts made are two numbers, and on the count's first three
@@ -15463,6 +15469,79 @@ way `pickLook()`, `lookTold()`, `look` in `assets/track.js`, `LOOK_IDS`, the
 card and its strings go with it, and the six rows stay in `press_counts` as
 the record of what was decided.
 
+## The four styles, dealt
+
+The four colours on the swatch — **The four styles** — are a test as well as
+a choice. Somebody new to the site is dealt one of them at random, a quarter
+each, as their first page opens, and the site counts what they do with it.
+It is a test of its own beside the rails and the lists' two looks: its own
+key, its own roll and its own kind, so a browser can hold any combination of
+the three.
+
+### Who gets it
+
+`dealStyle()` in `assets/track.js`, as that file loads. Every page loads it
+before its own script, so the colour is in place before anything is painted,
+on whichever page somebody lands — the map, a list from Instagram, a deck,
+the blog:
+
+1. **Somebody new**, by `TTBTrack.newcomer()` — the browser's first day here
+   is today, the same `new` every report on **Visitors** is filed under — and
+   never the owner's browser, which the count never hears.
+2. **No colour already chosen.** A colour in `ttb.style` — pressed on the
+   swatch, or from before the test — is kept and nothing is dealt.
+3. **No colour in the address.** A link that carries `?style=` opens in that
+   colour, which is what the person sharing it saw, and is not dealt or
+   counted.
+
+The deal is written into `ttb.style`, the key every page already reads its
+colour from, so no page knows there is a test; and into `ttb.styledeal`,
+which keeps the colour, the day and which of the three facts below have been
+told. A deal storage cannot keep is not made: the page draws Red and counts
+nobody. A dealt colour is a stored one to the map, which writes it into the
+address as `?style=` the way it writes a chosen one, so a link somebody dealt
+Blue copies and sends opens in Blue — and the person it reaches arrives on a
+link that carries a colour, and is left out. The flashcards live on their own address and keep their own storage,
+so somebody new who goes from the map to the flashcards on their first day
+is dealt there too, possibly a different colour — the one leak in the test,
+and a small one.
+
+### What is counted
+
+- **`style`, a seventh kind in `press_counts`**, sixteen rows: `red`,
+  `green`, `blue` and `plum`, once per newcomer dealt each; and after each,
+  once per browser, `-opened` for the first place, post or deck opened on
+  the day it was dealt, `-back` for the first visit on a later day, and
+  `-changed` for the first press of the swatch — somebody choosing a
+  different colour than the one they were given. `STYLE_IDS` in
+  `functions/api/stats.js` is the closed list the route holds them to.
+- **`style_dealt` on every event**, on every page, where a colour was dealt,
+  and `style` as a Clarity tag, beside `layout` and `look`. Like them it
+  needs registering once as a custom dimension in GA's admin.
+
+`/admin/visitors` sets the four side by side in **The four colours**, under
+the looks' card: how many newcomers each was dealt, and the share that
+opened something that day, came back another day, and chose another colour.
+Four arms rather than two, so the sentence over them sets the best colour on
+`opened` against the worst one, with the same two-proportion z-test the other
+cards use, and says **too early to call** until every colour has thirty.
+`back` and `changed` are beside it and not under it: `back` takes days to
+arrive, and `changed` is the plainest reading of whether a colour was liked,
+but is rare.
+
+What it will take: around sixty newcomers arrive on an ordinary day, so
+thirty a colour is two or three days, and a real difference between four is
+likelier a few weeks.
+
+### Ending it
+
+When the numbers say so, delete `dealStyle()`, `styleTold()`, `styleDeal()`
+and their calls in `assets/track.js`, `STYLE_IDS` and the `style` kind in
+`functions/api/stats.js`, the card and its strings. The colours stay as a
+choice, everybody new opens in Red again — or `DEFAULT_STYLE` in every page
+moves to the colour that won — and the sixteen rows stay in `press_counts`
+as the record of what was decided.
+
 ---
 
 ## A swipe to the right is Back
@@ -15775,7 +15854,8 @@ every page is reported as an event, through the one global
 `TTBTrack.click(node, name, params)` for a link or button built inline —
 every one of them carrying `layout`, which rail this browser was dealt on the
 map (**The short rail**), so any report below can be split by it — and
-`look` beside it wherever the directory dealt one (**The lists' two looks**) —
+`look` beside it wherever the directory dealt one (**The lists' two looks**),
+and `style_dealt` wherever a colour was (**The four styles, dealt**) —
 and Clarity gets the same words as tags, so its recordings can be too —
 and opening a place on the map is reported as a page view of its own,
 titled with the place and pointing at its `?spot=` URL, through

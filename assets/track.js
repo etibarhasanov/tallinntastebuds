@@ -91,6 +91,22 @@
  * was, from and to. The first report of a browser's first page today also
  * says which language it arrived in.
  *
+ * AND THE COLOUR SOMEBODY NEW IS GIVEN
+ *
+ * The four styles are a test as well as a choice. A browser whose first day
+ * here is today, opening a page with no ?style= in the address and no
+ * colour stored, is dealt one of the four at random before the page's own
+ * script paints anything — it is written into `ttb.style`, the key every
+ * page already reads its colour from, so the page has nothing to learn. The
+ * deal is counted, and three things after it, once each: the first place,
+ * post or deck opened on the day it was dealt (`-opened`), the first visit
+ * on a later day (`-back`), and the first press of the swatch, which is
+ * somebody choosing a different colour than the one they were given
+ * (`-changed`). `ttb.styledeal` keeps what was dealt and what has been told.
+ * Nobody else is dealt anything: a colour already chosen is kept, and so is
+ * one a link carried. dealStyle() below; "The four styles, dealt" in
+ * README.md.
+ *
  * TO REMOVE TRACKING
  *
  * Delete the gtag block from every page's head, or this file's script tag,
@@ -128,6 +144,9 @@ window.TTBTrack = (function () {
     params.layout = layout();
     var dealtLook = look();
     if (dealtLook) params.look = dealtLook;
+    var given = styleDeal();
+    if (given) params.style_dealt = given.style;
+    if (name === 'style_select') styleTold('changed');
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
@@ -209,6 +228,7 @@ window.TTBTrack = (function () {
     if (here() === seenPath) return;
     seenPath = here();
     opened += 1;
+    styleTold('opened');
     if (live()) {
       window.gtag('event', 'page_view', {
         page_location: window.location.href,
@@ -241,6 +261,11 @@ window.TTBTrack = (function () {
          of /lists is dealt one before this runs — pickLook() is called as
          the page's own deferred script boots — so that visit is tagged. */
       if (look()) window.clarity('set', 'look', look());
+      /* And the colour, where one was dealt — dealStyle() ran as this file
+         loaded, before every page's own script, so even the first visit is
+         tagged. */
+      var given = styleDeal();
+      if (given) window.clarity('set', 'style', given.style);
     }
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
@@ -580,6 +605,60 @@ window.TTBTrack = (function () {
     searched = [];
     abouts = [];
   }
+
+  /* ------------------------------------------------- the colour dealt
+   * See AND THE COLOUR SOMEBODY NEW IS GIVEN at the top. STYLE_DEALS is the
+   * four ids every page's STYLES knows, and STYLE_IDS in
+   * functions/api/stats.js is these with the three facts after them. */
+  var STYLE_KEY = 'ttb.style';
+  var STYLE_DEAL_KEY = 'ttb.styledeal';
+  var STYLE_DEALS = ['red', 'green', 'blue', 'plum'];
+
+  /* What this browser was dealt and what has been told about it, or null —
+     nothing dealt, or a record this file did not write. */
+  function styleDeal() {
+    var d = null;
+    try { d = JSON.parse(window.localStorage.getItem(STYLE_DEAL_KEY) || 'null'); } catch (e) { d = null; }
+    if (!d || STYLE_DEALS.indexOf(d.style) === -1 || !DAY.test(d.day || '') || !(d.told instanceof Array)) return null;
+    return d;
+  }
+
+  /* Somebody new, a page with no colour in its address and none stored:
+     one of the four, at random, kept and counted. A deal storage cannot keep
+     is not made — a colour rolled afresh on every load would be worse than
+     any of the four. */
+  function dealStyle() {
+    if (!COUNTED || !newcomer() || styleDeal()) return;
+    var dealt = STYLE_DEALS[Math.floor(Math.random() * STYLE_DEALS.length)];
+    try {
+      if (new URLSearchParams(LANDED).get('style')) return;
+      if (STYLE_DEALS.indexOf(window.localStorage.getItem(STYLE_KEY)) !== -1) return;
+      window.localStorage.setItem(STYLE_KEY, dealt);
+      window.localStorage.setItem(STYLE_DEAL_KEY, JSON.stringify({ style: dealt, day: today(), told: [] }));
+      if (window.localStorage.getItem(STYLE_KEY) !== dealt) return;
+    } catch (e) { return; }
+    send({ kind: 'style', id: dealt });
+  }
+
+  /* One of the three facts after a deal, once each: `opened` only on the
+     day it was dealt, `back` only on a later one, `changed` whenever it
+     comes. Written down before it is sent, so a page that is put away
+     mid-send does not tell it twice. */
+  function styleTold(what) {
+    if (!COUNTED) return;
+    var d = styleDeal();
+    if (!d || d.told.indexOf(what) !== -1) return;
+    if (what === 'opened' && d.day !== today()) return;
+    if (what === 'back' && d.day >= today()) return;
+    d.told.push(what);
+    try { window.localStorage.setItem(STYLE_DEAL_KEY, JSON.stringify(d)); } catch (e) { return; }
+    send({ kind: 'style', id: d.style + '-' + what });
+  }
+
+  /* As the file loads — every page loads it before its own script, so the
+     page reads the dealt colour the way it reads a chosen one. */
+  dealStyle();
+  styleTold('back');
 
   if (COUNTED) {
     if (window.MutationObserver) {
