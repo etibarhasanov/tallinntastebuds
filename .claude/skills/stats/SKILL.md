@@ -223,7 +223,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
 | `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
-| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-five today | what the table holds |
+| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-six today | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 
 ## Adding a press

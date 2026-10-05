@@ -743,6 +743,7 @@
   "visitorsStyles": "Neljä väriä",
   "visitorsStylesLead": "Sivuston uudet kävijät saavat ensimmäisellä sivullaan satunnaisesti yhden neljästä väristä. Jos väri on jo valittu tai kävijä tuli linkillä, jossa väri on mukana, väriä ei jaeta eikä sitä lasketa.",
   "visitorsStylesNew": "Uudet kävijät testin alusta",
+  "visitorsColoursEveryone": "Kaikki värin saaneet tällä aikavälillä",
   "visitorsStyleDealt": "Saivat värin",
   "visitorsStyleOpened": "Avasivat jotain samana päivänä",
   "visitorsStyleBack": "Palasivat toisena päivänä",

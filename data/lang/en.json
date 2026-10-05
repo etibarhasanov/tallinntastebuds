@@ -743,6 +743,7 @@
   "visitorsStyles": "The four colours",
   "visitorsStylesLead": "People new to the site are dealt one of the four colours at random on their first page. Anybody who already chose a colour, or arrived on a link that carries one, is not dealt one or counted.",
   "visitorsStylesNew": "New visitors, since the test began",
+  "visitorsColoursEveryone": "Everyone dealt the colour, in this range",
   "visitorsStyleDealt": "Dealt the colour",
   "visitorsStyleOpened": "Opened something that day",
   "visitorsStyleBack": "Came back another day",

@@ -12249,8 +12249,10 @@ like the rails' strangers; **The lists' two looks** has the rest.
 And under that, **The four colours** reads the colour test the same way, a
 column per colour: newcomers dealt each, and the share that opened something
 that day, came back another day and chose another colour, under a verdict
-that sets the best colour against the worst. The sixteen `style` rows; **The
-four styles, dealt** has the rest.
+that sets the best colour against the worst; then everyone dealt each colour
+over the range and its new visitors alone, with the rails' per-visitor
+figures, out of the `style` kind of `visitor_counts`. **The four styles,
+dealt** has the rest.
 
 ### Signing up
 
@@ -15518,16 +15520,36 @@ and a small one.
 - **`style_dealt` on every event**, on every page, where a colour was dealt,
   and `style` as a Clarity tag, beside `layout` and `look`. Like them it
   needs registering once as a custom dimension in GA's admin.
+- **`style` in `visitor_counts`**, the way the rails are in it under
+  `layout`: both of the site's own reports carry the dealt colour, and
+  `countArrive()` and `countLeave()` file the visitors dealt each colour as
+  `<colour>:new` and `<colour>:back`, and every visit's pages, seconds,
+  presses, places opened, sign-ins and accounts made as
+  `<colour>:<who>:<fact>`. Per day, so it reads over any range on
+  `/admin/visitors`; and every visit, not one fact per browser, so it says
+  which colour people stay longest in — **The four colours** in
+  `functions/api/_visitors.js`.
 
 `/admin/visitors` sets the four side by side in **The four colours**, under
-the looks' card: how many newcomers each was dealt, and the share that
-opened something that day, came back another day, and chose another colour.
-Four arms rather than two, so the sentence over them sets the best colour on
-`opened` against the worst one, with the same two-proportion z-test the other
-cards use, and says **too early to call** until every colour has thirty.
-`back` and `changed` are beside it and not under it: `back` takes days to
-arrive, and `changed` is the plainest reading of whether a colour was liked,
-but is rare.
+the looks' card, in the three blocks the rails' card has: how many newcomers
+each was dealt, and the share that opened something that day, came back
+another day, and chose another colour; then everyone dealt each colour in the
+range — visitors, the returning share, and pages, time, clicks and places
+opened per visitor, sign-ins and accounts made; then the colour's new
+visitors alone. Four arms rather than two, so the sentence over them sets the
+best colour on `opened` against the worst one, with the same two-proportion
+z-test the other cards use, and says **too early to call** until every colour
+has thirty. `back` and `changed` are beside it and not under it: `back` takes
+days to arrive, and `changed` is the plainest reading of whether a colour was
+liked, but is rare.
+
+**How to read it when deciding.** The verdict is one number and a colour can
+win it by accident of who landed that day, so a decision rests on the
+per-visitor block agreeing with it: the colour to keep is the one whose new
+visitors stay longest and open most places, whose `changed` share is lowest,
+and whose `back` share is not the worst — on at least a fortnight's range,
+once every column has a hundred or so. Two colours level on all of that are
+the same colour, and the one the owner prefers wins.
 
 What it will take: around sixty newcomers arrive on an ordinary day, so
 thirty a colour is two or three days, and a real difference between four is

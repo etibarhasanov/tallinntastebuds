@@ -24,7 +24,9 @@
  * first page opens — the sixteen `style` rows: for each of red, green, blue
  * and plum, `given`, and `opened`, `back` and `changed`, how many of them
  * opened something that day, came back on a later one, and chose another
- * colour. "The four styles, dealt" in README.md.
+ * colour. "The four styles, dealt" in README.md. And `colours` out of
+ * readVisitors(), beside `layouts`: everyone dealt each colour over the
+ * range, with the same per-visitor facts as the rails.
  *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.
@@ -111,7 +113,7 @@ async function readDeals(env) {
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
-const SHAPE = '6';
+const SHAPE = '7';
 
 function visitorsKey(request, lang, span) {
   const url = new URL('/api/admin/visitors', request.url);
