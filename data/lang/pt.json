@@ -1069,7 +1069,12 @@
   "foundQuiet": "Nada nestes dias.",
   "foundSince": "Contado desde {date}.",
   "foundFoot": "Cada lista guarda no máximo cem linhas diferentes por dia.",
-  "foundLink": "Como encontraram o site →"
+  "foundLink": "Como encontraram o site →",
+  "routeWalk": "{min} min a pé · {dist}",
+  "routeGoogle": "Abrir no Google Maps",
+  "routeNone": "Não foi possível encontrar um percurso a pé.",
+  "routeLocate": "Partilhe a sua localização para ver o caminho.",
+  "routeFinding": "A procurar o caminho…"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

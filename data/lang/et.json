@@ -1069,7 +1069,12 @@
   "foundQuiet": "Neil päevadel mitte midagi.",
   "foundSince": "Loetud alates {date}.",
   "foundFoot": "Iga nimekiri hoiab päevas kuni sada erinevat rida.",
-  "foundLink": "Kuidas leiti →"
+  "foundLink": "Kuidas leiti →",
+  "routeWalk": "{min} min jala · {dist}",
+  "routeGoogle": "Ava Google Mapsis",
+  "routeNone": "Jalgsimarsruuti ei leitud.",
+  "routeLocate": "Tee nägemiseks jaga oma asukohta.",
+  "routeFinding": "Otsin teed…"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

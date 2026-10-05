@@ -4278,6 +4278,62 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 }
 .toast[hidden] { display: none; }
 
+/* ---------- the walk ---------- */
+
+/* What stands on the map while a route is drawn: the sheet is gone, and this is
+   the one thing left to read and press. Under the toast, over everything else.
+   Nothing here names a colour; the line itself takes the dot's, --here. */
+.route-bar {
+  position: fixed;
+  z-index: 2400;
+  left: 50%;
+  bottom: calc(14px + var(--safe-b));
+  transform: translateX(-50%);
+  width: min(440px, calc(100vw - 24px));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 14px 14px 14px 18px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.route-bar[hidden] { display: none; }
+.route-say {
+  margin: 0;
+  grid-column: 1;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+.route-close {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--ink);
+}
+.route-close svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.route-google { grid-column: 1 / -1; justify-content: center; text-align: center; }
+/* Out of the way, not closed: the panel keeps its place and its scroll, so the
+   cross on the bar gives back the sheet exactly as it was left. */
+body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
+
 /* ---------- noscript ---------- */
 
 .noscript {
@@ -5311,7 +5367,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .panel-directions, .panel-share, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .panel-directions, .panel-share, .route-bar, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;

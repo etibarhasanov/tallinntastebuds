@@ -1069,7 +1069,12 @@
     "foundQuiet": "Bu günlərdə heç nə yoxdur.",
     "foundSince": "{date} tarixindən sayılır.",
     "foundFoot": "Hər siyahı gündə ən çox yüz fərqli sətir saxlayır.",
-    "foundLink": "Saytı necə tapıblar →"
+    "foundLink": "Saytı necə tapıblar →",
+    "routeWalk": "{min} dəq piyada · {dist}",
+    "routeGoogle": "Google Maps-də aç",
+    "routeNone": "Piyada marşrut tapılmadı.",
+    "routeLocate": "Yolu görmək üçün məkanınızı paylaşın.",
+    "routeFinding": "Yol axtarılır…"
   },
   "hy": {
     "langName": "Հայերեն",
@@ -2141,7 +2146,12 @@
     "foundQuiet": "Այս օրերին ոչինչ։",
     "foundSince": "Հաշվվում է {date}-ից։",
     "foundFoot": "Յուրաքանչյուր ցուցակ օրական պահում է առավելագույնը հարյուր տարբեր տող։",
-    "foundLink": "Ինչպես են գտել կայքը →"
+    "foundLink": "Ինչպես են գտել կայքը →",
+    "routeWalk": "{min} րոպե ոտքով · {dist}",
+    "routeGoogle": "Բացել Google Maps-ում",
+    "routeNone": "Հնարավոր չեղավ գտնել ոտքով երթուղի։",
+    "routeLocate": "Ճանապարհը տեսնելու համար կիսվեք ձեր գտնվելու վայրով։",
+    "routeFinding": "Փնտրում ենք ճանապարհը…"
   },
   "en": {
     "langName": "English",
@@ -3213,7 +3223,12 @@
     "foundQuiet": "Nothing in these days.",
     "foundSince": "Counted since {date}.",
     "foundFoot": "Each list keeps at most a hundred different rows a day.",
-    "foundLink": "How they found it →"
+    "foundLink": "How they found it →",
+    "routeWalk": "{min} min on foot · {dist}",
+    "routeGoogle": "Open in Google Maps",
+    "routeNone": "Couldn't find a walking route.",
+    "routeLocate": "Share your location to see the way.",
+    "routeFinding": "Finding the way…"
   },
   "et": {
     "langName": "Eesti",
@@ -4285,7 +4300,12 @@
     "foundQuiet": "Neil päevadel mitte midagi.",
     "foundSince": "Loetud alates {date}.",
     "foundFoot": "Iga nimekiri hoiab päevas kuni sada erinevat rida.",
-    "foundLink": "Kuidas leiti →"
+    "foundLink": "Kuidas leiti →",
+    "routeWalk": "{min} min jala · {dist}",
+    "routeGoogle": "Ava Google Mapsis",
+    "routeNone": "Jalgsimarsruuti ei leitud.",
+    "routeLocate": "Tee nägemiseks jaga oma asukohta.",
+    "routeFinding": "Otsin teed…"
   },
   "fi": {
     "langName": "Suomi",
@@ -5357,7 +5377,12 @@
     "foundQuiet": "Ei mitään näinä päivinä.",
     "foundSince": "Laskettu {date} alkaen.",
     "foundFoot": "Kukin lista pitää enintään sata eri riviä päivässä.",
-    "foundLink": "Miten löydettiin →"
+    "foundLink": "Miten löydettiin →",
+    "routeWalk": "{min} min kävellen · {dist}",
+    "routeGoogle": "Avaa Google Mapsissa",
+    "routeNone": "Kävelyreittiä ei löytynyt.",
+    "routeLocate": "Jaa sijaintisi nähdäksesi reitin.",
+    "routeFinding": "Etsitään reittiä…"
   },
   "pt": {
     "langName": "Português",
@@ -6429,7 +6454,12 @@
     "foundQuiet": "Nada nestes dias.",
     "foundSince": "Contado desde {date}.",
     "foundFoot": "Cada lista guarda no máximo cem linhas diferentes por dia.",
-    "foundLink": "Como encontraram o site →"
+    "foundLink": "Como encontraram o site →",
+    "routeWalk": "{min} min a pé · {dist}",
+    "routeGoogle": "Abrir no Google Maps",
+    "routeNone": "Não foi possível encontrar um percurso a pé.",
+    "routeLocate": "Partilhe a sua localização para ver o caminho.",
+    "routeFinding": "A procurar o caminho…"
   },
   "ru": {
     "langName": "Русский",
@@ -7501,7 +7531,12 @@
     "foundQuiet": "За эти дни ничего.",
     "foundSince": "Считается с {date}.",
     "foundFoot": "Каждый список хранит не больше ста разных строк в день.",
-    "foundLink": "Как нашли сайт →"
+    "foundLink": "Как нашли сайт →",
+    "routeWalk": "{min} мин пешком · {dist}",
+    "routeGoogle": "Открыть в Google Картах",
+    "routeNone": "Не удалось найти пешеходный маршрут.",
+    "routeLocate": "Поделитесь местоположением, чтобы увидеть путь.",
+    "routeFinding": "Ищем путь…"
   },
   "es": {
     "langName": "Español",
@@ -8573,7 +8608,12 @@
     "foundQuiet": "Nada en estos días.",
     "foundSince": "Contado desde el {date}.",
     "foundFoot": "Cada lista guarda como mucho cien filas distintas al día.",
-    "foundLink": "Cómo encontraron el sitio →"
+    "foundLink": "Cómo encontraron el sitio →",
+    "routeWalk": "{min} min a pie · {dist}",
+    "routeGoogle": "Abrir en Google Maps",
+    "routeNone": "No se encontró una ruta a pie.",
+    "routeLocate": "Comparte tu ubicación para ver el camino.",
+    "routeFinding": "Buscando el camino…"
   },
   "tr": {
     "langName": "Türkçe",
@@ -9645,7 +9685,12 @@
     "foundQuiet": "Bu günlerde hiçbir şey yok.",
     "foundSince": "{date} tarihinden beri sayılıyor.",
     "foundFoot": "Her liste günde en fazla yüz farklı satır tutar.",
-    "foundLink": "Siteyi nasıl buldular →"
+    "foundLink": "Siteyi nasıl buldular →",
+    "routeWalk": "{min} dk yürüyerek · {dist}",
+    "routeGoogle": "Google Haritalar'da aç",
+    "routeNone": "Yürüyüş rotası bulunamadı.",
+    "routeLocate": "Yolu görmek için konumunu paylaş.",
+    "routeFinding": "Yol aranıyor…"
   },
   "uk": {
     "langName": "Українська",
@@ -10717,6 +10762,11 @@
     "foundQuiet": "За ці дні нічого.",
     "foundSince": "Рахується з {date}.",
     "foundFoot": "Кожен список зберігає не більше ста різних рядків на день.",
-    "foundLink": "Як знайшли сайт →"
+    "foundLink": "Як знайшли сайт →",
+    "routeWalk": "{min} хв пішки · {dist}",
+    "routeGoogle": "Відкрити в Google Картах",
+    "routeNone": "Не вдалося знайти пішохідний маршрут.",
+    "routeLocate": "Поділіться місцем, щоб побачити шлях.",
+    "routeFinding": "Шукаємо шлях…"
   }
 }

@@ -1069,7 +1069,12 @@
   "foundQuiet": "Ei mitään näinä päivinä.",
   "foundSince": "Laskettu {date} alkaen.",
   "foundFoot": "Kukin lista pitää enintään sata eri riviä päivässä.",
-  "foundLink": "Miten löydettiin →"
+  "foundLink": "Miten löydettiin →",
+  "routeWalk": "{min} min kävellen · {dist}",
+  "routeGoogle": "Avaa Google Mapsissa",
+  "routeNone": "Kävelyreittiä ei löytynyt.",
+  "routeLocate": "Jaa sijaintisi nähdäksesi reitin.",
+  "routeFinding": "Etsitään reittiä…"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

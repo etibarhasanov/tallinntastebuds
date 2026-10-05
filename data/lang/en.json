@@ -1069,7 +1069,12 @@
   "foundQuiet": "Nothing in these days.",
   "foundSince": "Counted since {date}.",
   "foundFoot": "Each list keeps at most a hundred different rows a day.",
-  "foundLink": "How they found it →"
+  "foundLink": "How they found it →",
+  "routeWalk": "{min} min on foot · {dist}",
+  "routeGoogle": "Open in Google Maps",
+  "routeNone": "Couldn't find a walking route.",
+  "routeLocate": "Share your location to see the way.",
+  "routeFinding": "Finding the way…"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

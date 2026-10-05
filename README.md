@@ -2259,11 +2259,28 @@ list's own button on this page uses; `pressShare()` in `assets/app.js` is the
 third copy and they are kept in step by hand.
 
 The way there has a button of its own in the same strip, between the share and
-the save mark — a plain link to Google's route, built by `directionsUrl()` and
-painted by `paintDirections()`, carrying Google's key once the block at the foot
-of the panel has fetched it. It is the same address the Directions button under
-the name sends, kept up top so it does not scroll away with the write-up, and it
-reports the same `directions` event.
+the save mark: an arrow, kept up top so it does not scroll away with the
+write-up. **It shows the walk on our own map before it hands anybody to
+Google.** A press takes the visitor's dot — or one quiet reading, which must not
+fly the map off the place — asks `GET /api/route` for the way on foot, and
+`showRoute()` in `assets/app.js` draws it as a line in the dot's colour, fits the
+map to it and steps the sheet out of the way (`body.route-on`) so the line has
+the whole screen. What is left is a bar: *22 min on foot · 1.8 km*, **Open in
+Google Maps**, and a cross that brings the sheet back as it was left. Under all
+of it the arrow is still a plain link to Google's route, built by
+`directionsUrl()` and painted by `paintDirections()` with Google's key once the
+block at the foot of the panel has fetched it — the same address the Directions
+button under the name sends — so a modified click or a long press reaches it, and
+so does the bar's button. A press the map cannot answer for does not end on
+nothing: no location shared says *Share your location to see the way.*, no walk
+or a service that is down says *Couldn't find a walking route.*, and the bar's
+Google button is there in both. Walking only, and no turn-by-turn; the route is
+`functions/api/route.js`, which calls the OpenStreetMap Germany foot router, rounds
+both ends and caches the answer a day. The location is read, answered and
+forgotten — never stored or counted. Opening another place, the chat or a list
+puts the line away (`renderPanel()`); a language switch while the bar is up does
+not retranslate it. The arrow reports `directions` and the bar's button
+`route_google`.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
@@ -16040,7 +16057,8 @@ The map, `assets/app.js`:
 | `language_open` | — |
 | `language_select` | `language` |
 | `style_select` | `style` |
-| `directions`, `website`, `google_listing` | `place` |
+| `directions`, `website`, `google_listing` | `place` — `directions` is the button under the name and the arrow in the top strip alike |
+| `route_google` | — the Open in Google Maps button on the walk's bar |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
