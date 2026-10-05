@@ -564,7 +564,7 @@
   "flashKeepTitle": "Jäta meelde, kuhu jõudsid",
   "flashKeepWhy": "Konto peab meeles, milliseid kaarte sa tead — igas telefonis, kus selle avad — ja lubab teha oma pakke. Google või kaks lahtrit, e-posti pole vaja, ja see on sama konto mis kaardil.",
   "flashFirstTitle": "Paki ülejäänud osa jaoks on vaja kontot",
-  "flashFirstWhy": "Kaardid töötavad ainult siis, kui miski peab meeles, milliseid sa teadsid — just see toob sõna homme tagasi ja siis nädala pärast uuesti. Ilma kontota pole seda kuhugi panna, nii et pakk peatub siin. Google või kaks lahtrit, e-posti pole vaja, ja sõna, millele just vastasid, tuleb sinuga kaasa.",
+  "flashFirstWhy": "Kaardid töötavad ainult siis, kui miski peab meeles, milliseid sa teadsid — just see toob sõna homme tagasi ja siis nädala pärast uuesti. Ilma kontota pole seda kuhugi panna, nii et pakk peatub siin. Google või kaks lahtrit, e-posti pole vaja, ja sõnad, millele just vastasid, tulevad sinuga kaasa.",
   "flashTurn": "Puuduta, et ümber keerata",
   "flashTurned": "Kas teadsid?",
   "flashAt": "{at} / {n}",

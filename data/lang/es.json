@@ -564,7 +564,7 @@
   "flashKeepTitle": "Recuerda dónde te quedaste",
   "flashKeepWhy": "Una cuenta recuerda qué tarjetas sabes, en cualquier teléfono donde abras esto, y te deja escribir tus propios mazos. Google, o dos campos y ningún correo — y es la misma cuenta que el mapa.",
   "flashFirstTitle": "El resto del mazo necesita una cuenta",
-  "flashFirstWhy": "Las tarjetas solo funcionan si algo recuerda cuáles sabías: eso es lo que trae una palabra de vuelta mañana, y otra vez dentro de una semana. Sin cuenta no hay dónde guardarlo, así que el mazo se detiene aquí. Google, o dos campos y ningún correo, y la palabra que acabas de responder se va contigo.",
+  "flashFirstWhy": "Las tarjetas solo funcionan si algo recuerda cuáles sabías: eso es lo que trae una palabra de vuelta mañana, y otra vez dentro de una semana. Sin cuenta no hay dónde guardarlo, así que el mazo se detiene aquí. Google, o dos campos y ningún correo, y las palabras que acabas de responder se van contigo.",
   "flashTurn": "Toca para darle la vuelta",
   "flashTurned": "¿La sabías?",
   "flashAt": "{at} / {n}",
