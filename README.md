@@ -11978,9 +11978,19 @@ The owner's alone, under the same lock as **Statistics** — a 404 for the page
 and a 403 for `GET /api/admin/visitors` to anybody else — the first row of
 **The numbers** on `/admin.html`, not indexed, and not disallowed either.
 
-It is laid out in the order the questions get asked, which is also how an
-analyst would group it: right now, today, then who came, then how the two
-kinds of visitor differ, then the experiment, then what was done.
+It is right now and today at the top, then the range and its five figures,
+and then four groups under headings of their own: **Tests**, **Who they
+are**, **How they found it** and **What they did**. It was one column of
+twenty cards in the order they were written, which put the tests twelfth,
+under the countries and the languages, and the owner went looking for the
+lists' test the day it began and could not find it. The tests come first
+because they are what the page is most often opened for, the lists' card
+before the rails' because the rails' is three tables long and would push the
+short one a screen and a half down, with the colours' between them; and a
+test's card is drawn from the day it begins, noughts and all, rather than
+waiting for its first newcomer.
+`group()` in `assets/visitors.js` draws a heading only over a group with a
+card in it.
 
 ### Five pages, one row
 
@@ -12017,25 +12027,25 @@ its own.
 - **Who came**, over a range — today so far, 7, 28 or 90 days: five figures,
   each against the same length of time just before it — **visitors**, the
   share of them **returning**, **page views**, **time per visitor** and
-  **clicks per visitor** — then a bar a day of new and returning visitors (a
-  bar a week for ninety days, and none for today), a bar an hour of the day
-  on Tallinn's clock, **phone, tablet or desktop**, **countries**, **where
-  they came from**, and **languages** with the switches between them — see
-  **The language it was read in** below. Today is not set against yesterday:
-  half a day against a whole one says nothing.
-- **New against returning**: a column each, and per visitor the pages, the
-  time, the clicks and the places opened, with the sign-ins and the accounts
-  made as counts — see **New against returning** below.
-- **The two rails**, the experiment the map is running — see **The two
+  **clicks per visitor**. Today is not set against yesterday: half a day
+  against a whole one says nothing.
+- **Tests**: **The lists' two looks**, the directory's own test; **The four
+  colours**, the swatch's; and **The two rails**, the map's — see **The two
   rails** below.
-- **Signing up**: how far people got with the sign-in sheet and the other
-  two sign-in forms, and where they stopped — see **Signing up** below.
-- **What they did**: **pages** with their views, the time a view stayed and
-  the share of views on which nothing was pressed; **journeys**, the page a
-  visitor's day began on and which page followed which; **what was
-  pressed**, named by the event it is reported to GA under; and **what was
-  opened** — which stories, posts, decks and discounts — see **What was
-  opened** below.
+- **Who they are**: a bar a day of new and returning visitors (a bar a week
+  for ninety days, and none for today), **new against returning** — see
+  **New against returning** below — a bar an hour of the day on Tallinn's
+  clock, **phone, tablet or desktop**, **countries**, and **languages** with
+  the switches between them — see **The language it was read in** below.
+- **How they found it**: **where they came from**, and which address a
+  search engine landed them on. `/admin/found` takes both apart.
+- **What they did**: **signing up**, how far people got with the sign-in
+  sheet and the other two sign-in forms — see **Signing up** below —
+  **pages** with their views, the time a view stayed and the share of views
+  on which nothing was pressed; **journeys**, the page a visitor's day began
+  on and which page followed which; **what was pressed**, named by the event
+  it is reported under; and **what was opened** — which stories, posts,
+  decks and discounts — see **What was opened** below.
 
 ### A visitor is a browser on a day
 
@@ -12266,13 +12276,14 @@ the rail once its places are in, which is after the page is ready, so its
 `TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
 the comparison most needs, a stranger's first, would arrive with no rail.
 
-Under it, **The lists' two looks** reads the directory's own test the same
-way, in one block: how many newcomers each look was dealt, and the share of
-them that opened a list from it and kept one that day, under the same
-verdict asked of the opens. The six `look` rows of `press_counts`, all-time
-like the rails' strangers; **The lists' two looks** has the rest.
+Above it, under the same **Tests** heading, **The lists' two looks** reads
+the directory's own test the same way, in one block: how many newcomers each
+look was dealt, and the share of them that opened a list from it and kept one
+that day, under the same verdict asked of the opens. The six `look` rows of
+`press_counts`, all-time like the rails' strangers; **The lists' two looks**
+has the rest.
 
-And under that, **The four colours** reads the colour test the same way, a
+Between the two, **The four colours** reads the colour test the same way, a
 column per colour: newcomers dealt each, and the share that opened something
 that day, came back another day and chose another colour, under a verdict
 that sets the best colour against the worst; then everyone dealt each colour
@@ -15476,7 +15487,7 @@ swatch still picks which resting palette that is and no rule names a colour.
   dimension in GA's admin before the console breaks a report down by it.
 
 `/admin/visitors` sets the two side by side in **The lists' two looks**,
-under the rails' card: how many newcomers each was dealt, and the share that
+the first card under **Tests**, drawn from the day the test began: how many newcomers each was dealt, and the share that
 opened a list and that kept one that day. The sentence over them is the
 rails' own verdict — a two-proportion z-test at 95%, **too early to call**
 until each look has thirty — asked of the opens. Keeping a list is beside it
@@ -15557,7 +15568,7 @@ and a small one.
   `functions/api/_visitors.js`.
 
 `/admin/visitors` sets the four side by side in **The four colours**, under
-the looks' card, in the three blocks the rails' card has: how many newcomers
+**Tests** between the looks' card and the rails', in the three blocks the rails' card has: how many newcomers
 each was dealt, and the share that opened something that day, came back
 another day, and chose another colour; then everyone dealt each colour in the
 range — visitors, the returning share, and pages, time, clicks and places
