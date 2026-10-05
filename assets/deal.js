@@ -236,8 +236,7 @@
   P.applyStyle();
 
   P.load().then(function (data) {
-    data.lang = P.pickLanguage(Object.keys(data.ui));
-    t = P.translator(data.ui, data.lang);
+    t = P.translator(data.ui);
     document.documentElement.lang = data.lang;
     document.title = t('passTitle') + ' | Tallinn Tastebuds';
 

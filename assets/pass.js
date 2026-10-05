@@ -224,13 +224,25 @@ window.TTBPass = (function () {
      before the QR could be drawn, which on a slow connection was well over a
      second of blank card. So the name travels in deals.json instead, beside
      the offer it belongs to, and tools/validate.mjs refuses a deploy where
-     the two files disagree about what a place is called. */
+     the two files disagree about what a place is called.
+
+     And not data/ui.json either, for the same reason at twice the size: ten
+     languages of every string the site has, to print a dozen of them in one.
+     The words come the way the map's do — the list of languages out of
+     data/lang/index.json, then the one this guest reads in out of
+     data/lang/<code>.json, both written by tools/languages.mjs — so `lang`
+     is settled here and `ui` is that one language's strings. */
   function load() {
     return Promise.all([
       getJSON('data/deals.json').catch(function () { return []; }),
-      getJSON('data/ui.json')
+      getJSON('data/lang/index.json').then(function (names) {
+        var lang = pickLanguage(Object.keys(names || {}));
+        return getJSON('data/lang/' + lang + '.json').then(function (pack) {
+          return { lang: lang, ui: (pack && pack.ui) || {} };
+        });
+      })
     ]).then(function (loaded) {
-      return { deals: loaded[0] || [], ui: loaded[1] || {} };
+      return { deals: loaded[0] || [], lang: loaded[1].lang, ui: loaded[1].ui };
     });
   }
 
@@ -335,14 +347,14 @@ window.TTBPass = (function () {
     return langs.indexOf(DEFAULT_LANG) !== -1 ? DEFAULT_LANG : langs[0];
   }
 
-  /* Interface string lookup, identical in behaviour to the map's own: current
-     language, then English, then the key itself so a missing string is
-     visible rather than blank. */
-  function translator(ui, lang) {
+  /* Interface string lookup over the one language load() fetched, identical
+     in behaviour to the map's own: the string, else the key itself so a
+     missing one is visible rather than blank. No English behind it, because
+     there is nothing to fall back to — tools/validate.mjs fails a key one
+     language has and another does not, so every language file has them all. */
+  function translator(ui) {
     return function (key, vars) {
-      var pack = ui[lang] || {};
-      var s = pack[key];
-      if (s === undefined) s = (ui[DEFAULT_LANG] || {})[key];
+      var s = ui[key];
       if (s === undefined) return key;
       if (vars) {
         Object.keys(vars).forEach(function (v) {
@@ -390,7 +402,6 @@ window.TTBPass = (function () {
     windowState: windowState,
     verify: verify,
     applyStyle: applyStyle,
-    pickLanguage: pickLanguage,
     translator: translator,
     textFor: textFor,
     offerText: offerText

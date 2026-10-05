@@ -2416,8 +2416,8 @@ stand-in at all — the validator fails a key one language has and another does
 not — so `t()` holds one language and falls back to nothing but the key.
 
 **The sources do not move.** `data/ui.json` and `data/restaurants.json` are
-still the only files anybody edits, every other page still fetches `ui.json`
-whole, and `functions/index.js`, `functions/api/ask.js` and the rest still
+still the only files anybody edits, the account page, feedback, insights,
+the editor, splitwise and the owner's pages still fetch `ui.json` whole, and `functions/index.js`, `functions/api/ask.js` and the rest still
 read the places with their write-ups. Both stay deployed, which is also what
 keeps a browser holding yesterday's `app.js` working: it asks for the two old
 files and gets them. The generated files are committed, like the stamps, and
@@ -2431,6 +2431,19 @@ changes nothing on screen until it lands, and one that fails says so in a
 toast — `languageFail` — in the language still showing. And booting is one
 request longer: the index first, then the language, both small and both
 alongside the places rather than in front of them.
+
+**Three more pages read it the same way**, for their strings only: the
+discount pass — `deal.html`, `verify.html` and `staff.html`, all through
+`TTBPass.load()` — the blog, and the lists page with every list and profile
+on it. Each still picks its language exactly as it did, out of the same ten
+codes in the same order, and then fetches that one file rather than all ten:
+25 to 30 KB on the wire where `ui.json` is 190, which on the pass was most of
+what a guest's phone waited for before it could draw the code. Nothing a
+visitor sees moved. The one difference is in a page that could not load at
+all: the line saying so is the English written into the script rather than
+`ui.json`'s English copy of it, which are the same sentence. The language
+switch on the lists page lists `data/lang/index.json` and still reloads the
+page in the language picked, so one file is all it needs.
 
 ### Adding a language
 

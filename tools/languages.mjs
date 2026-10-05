@@ -35,8 +35,11 @@
  *
  * WHO READS WHAT
  *
- * Only the map, assets/app.js. Every other page still fetches data/ui.json
- * whole, and functions/index.js, functions/api/ask.js and the rest read
+ * The map, assets/app.js, reads all three. The discount pass (assets/pass.js,
+ * for deal.html, verify.html and staff.html), the blog and the lists page read
+ * the index and one language file each, for the strings and not the
+ * write-ups. Every other page still fetches data/ui.json whole, and
+ * functions/index.js, functions/api/ask.js and the rest read
  * data/restaurants.json with its blurbs, so both sources stay deployed and
  * nothing that reads them changes. A browser still holding yesterday's
  * app.js asks for those two and is answered as it always was, which is the

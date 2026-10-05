@@ -220,10 +220,11 @@
  *   /api/say?text=             a card's Estonian aloud, only when a speaker
  *                              under the card is pressed — see sayLine()
  *
- * Every other page but the map fetches data/ui.json whole on the way in — ten
- * languages of every string the site has, 185 KB gzipped — to print its few
- * dozen keys in one of them. The map reads one language's file out of
- * data/lang/, written by tools/languages.mjs. Here the words ride in the same answer as the decks: the page
+ * Most other pages fetch data/ui.json whole on the way in — ten languages of
+ * every string the site has, 190 KB gzipped — to print their few dozen keys in
+ * one of them; the map, the pass, the blog and the lists page read one
+ * language's file out of data/lang/ instead, written by tools/languages.mjs.
+ * Here the words ride in the same answer as the decks: the page
  * sends what it would have picked a language from, in order, and the route
  * answers with the language it settled on and that language's block, eight to
  * ten KB. One request before a card can be drawn rather than two, and a tenth
