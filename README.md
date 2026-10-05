@@ -8749,9 +8749,9 @@ card in hand or on `<main>` under it; and the page view is reported through
 `TTBTrack.view()`, because the tag counted every one of those documents and now
 counts only the first.
 
-What does **not** change is the gate. One word signed out is one word, and the
+What does **not** change is the gate. Five words signed out are five words, and the
 tab's own store is read back on every one of these walks exactly as it was read
-on every reload — see **Signed out, one word of a deck**. Walking out of a deck
+on every reload — see **Signed out, five words to a tab**. Walking out of a deck
 and into another one was never a way past it and is not one now.
 
 ### Where you left off
@@ -8862,12 +8862,12 @@ the same way this page did, and each would drop 75 KB from its first load the
 same way. That is a change to `assets/app.js` and three others, and it was
 deliberately not made in the change that made this page fast.
 
-### Signed out, one word of a deck
+### Signed out, five words to a tab
 
-Open any deck signed out and the first card comes up, turns over and is
-answered the way every card is. Then, where the second card would have been,
-one card stands and says the rest of the deck needs an account. There is no way
-past it.
+Open any deck signed out and the first cards come up, turn over and are
+answered the way every card is. After the fifth answer — `FREE_WORDS` in
+`assets/flashcard.js` — one card stands where the next would have been and
+says the rest of the deck needs an account. There is no way past it.
 
 **The gate is not about the account, it is about what a flashcard is.** A deck
 here is not a list of words to read — it is what you knew and what you missed,
@@ -8876,30 +8876,40 @@ comes round until it is got right. That takes a row per card per person, and the
 somebody the site has never met. A page that went on handing out cards with
 nothing recording the answers would not be a lighter version of this; it would
 be this page pretending, and the person doing it would find that out at the end
-of the deck rather than at the start of it. Better to say so at the second
-card.
+of the deck rather than at the start of it. Better to say so five cards in.
 
-**One word rather than none.** Somebody who has been shown nothing is being
+**Some words rather than none.** Somebody who has been shown nothing is being
 asked to sign up for a description, which is both rude and dull, and the only
 route into this page from outside is a search result — see **How it is found**
 — so the first thing a visitor sees has to be the thing they came for. So the
-word is a real card, answered the real way, and `keep()` writes that answer
-into the tab as it is given, which is what lets the card say that the one
-already done comes with them.
+words are real cards, answered the real way, and `keep()` writes each answer
+into the tab as it is given, which is what lets the card say that the ones
+already done come with them.
 
-**And one word rather than one a deck.** A free word in each of forty-two
-decks is forty-two words, which is a product rather than a sample: the tab
-holding any answer at all is what raises the gate, on that deck and on every
-other. That is also what stops the reload button being the way past — the run
+**Five, and not one.** It was one word until October 2026, and one word was a
+card turned, a card answered and then a form. From 1 to 5 October the gate
+stood 29 times and three accounts came out of the flashcards, and three views
+of the page in five ended with nothing pressed. One card shows that the page
+has cards. It does not show what the page is for, which is a word you missed
+coming round again, and that only starts a few cards in. Five is enough to
+feel it and still a sample rather than a deck — the shortest deck the site
+ships is eighteen. The number is a reading of a week rather than a law: put
+`flash_keep_ask` against `account_done_*` on the flashcards' sign-up funnel
+and move it if that says to.
+
+**And five to a tab rather than five a deck.** Five free words in each of
+forty-two decks is two hundred words, which is a product rather than a sample:
+the tab holding five answers is what raises the gate, on that deck and on every
+other. A card answered twice is one word. That is also what stops the reload button being the way past — the run
 rebuilds itself from what the route answered, and the route has no idea who is
 asking, so without this line a refresh would hand over the next card for
 nothing.
 
-It is **the tab's** word, in `sessionStorage`, so somebody who comes back
-tomorrow gets another one. That is not a hole to close. Closing it means
+They are **the tab's** words, in `sessionStorage`, so somebody who comes back
+tomorrow gets another five. That is not a hole to close. Closing it means
 following people who have not signed in, which this site does not do anywhere
 else and is not going to start doing here; and the person it would catch — the
-one who opens a new tab each day to read one Estonian word — is not the person
+one who opens a new tab each day to read five Estonian words — is not the person
 the gate is for.
 
 **What is not behind it.** The decks this page offers a stranger — *First
@@ -8929,7 +8939,8 @@ and the sensible thing to do with a form like that is to go round it. Then it
 stood one word in with *Go through it without saving* under it, which read well
 and left the page doing the one thing it cannot do. Each of those was a
 reasonable answer and each was answering the wrong question; the question is
-what a deck of flashcards is for.
+what a deck of flashcards is for. The fourth kept its shape and moved its line
+from one word to five — **Five, and not one** above.
 
 **It is drawn only where an account would work.** With the database off there
 is nothing behind the form but a 503, nothing to sign in to and nothing being
@@ -9695,7 +9706,7 @@ restaurant*, and the two shut headings under them with their lines. That is
 the one thing about the stages that changed after they shipped, and it is the
 whole point of them said at the one person who most needs it: forty-two rows
 handed to somebody who has never seen an Estonian word has nothing on it
-saying where to start, and nine is where to start. The one-word gate under **Signed out, one word of a deck**
+saying where to start, and nine is where to start. The five-word gate under **Signed out, five words to a tab**
 still stands where it always did, in front of every deck this page does offer.
 
 **What is never held.** With the database off, nothing: there is no count to
@@ -10267,9 +10278,9 @@ knew better.
 | | who |
 |---|---|
 | read the decks page, whole | anybody at all, signed in or not |
-| turn over the first card of a deck the site ships | anybody at all, signed in or not — one word to a tab, and then **Signed out, one word of a deck** above |
+| turn over the first cards of a deck the site ships | anybody at all, signed in or not — five words to a tab, and then **Signed out, five words to a tab** above |
 | turn over the rest of it | any account |
-| say one of its cards is wrong | anybody at all, signed in or not — once per card per network, and the one word is enough to reach the line that does it |
+| say one of its cards is wrong | anybody at all, signed in or not — once per card per network, and the five words are enough to reach the line that does it |
 | have any of it remembered | any account, and it is the only thing an account is for here |
 | write a deck | any account |
 | read one, add to it, edit a card in it, rename it, delete it | its owner, and nobody else |
@@ -15952,6 +15963,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_resume` | `deck_id` — the front door reopening the deck or the lesson this device was closed on, which is the deck's or the lesson's id — see **Where you left off** |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
+| `flash_turn` | `deck_id` — the first card turned over in a load, and only the first: every turn after it is said by the answer that follows. Before it, a visitor who turned cards and answered none counted as a view with nothing pressed |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
 | `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |

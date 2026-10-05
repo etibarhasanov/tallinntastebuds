@@ -7,7 +7,7 @@
     <bpmn:participant id="flashcards-pool" name="Flashcards, a learner" processRef="flashcards-process" />
   </bpmn:collaboration>
   <bpmn:process id="flashcards-process" name="Flashcards, a learner" isExecutable="false">
-    <bpmn:documentation>Somebody learning Estonian on flashcard.tallinntastebuds.ee. Signed out they get the decks page and one word; an account remembers every answer, spaces the next time, and lets them write decks of their own.</bpmn:documentation>
+    <bpmn:documentation>Somebody learning Estonian on flashcard.tallinntastebuds.ee. Signed out they get the decks page and five words; an account remembers every answer, spaces the next time, and lets them write decks of their own.</bpmn:documentation>
     <bpmn:laneSet id="flashcards-lanes">
       <bpmn:lane id="flashcards-lane-learner" name="Learner">
         <bpmn:flowNodeRef>open</bpmn:flowNodeRef>
@@ -60,6 +60,7 @@ ref: assets/flashcard.js</bpmn:documentation>
     </bpmn:userTask>
     <bpmn:userTask id="turn" name="Turns a card: got it, or not">
       <bpmn:documentation>Undo one answer, a hint once a card, hear it spoken.
+when: flash_turn
 when: flash_knew
 when: flash_again
 ref: assets/flashcard.js
@@ -72,8 +73,8 @@ ref: functions/api/say.js GET</bpmn:documentation>
       <bpmn:outgoing>flashcards-e6</bpmn:outgoing>
       <bpmn:outgoing>flashcards-e7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="one-word" name="One word, then the sign-in card">
-      <bpmn:documentation>The answer is kept in the tab and sent once they sign in.
+    <bpmn:userTask id="one-word" name="Five words, then the sign-in card">
+      <bpmn:documentation>The answers are kept in the tab and sent once they sign in. The step keeps the id it had when it was one word, so its counts stay one line.
 when: flash_keep_ask
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e7</bpmn:incoming>

@@ -109,11 +109,11 @@
  * phone is half through on a laptop. Signed out the run still runs, and it is
  * kept in this tab and nowhere else.
  *
- * SO ONE WORD IS FREE AND THE REST OF A DECK IS NOT
+ * SO FIVE WORDS ARE FREE AND THE REST OF A DECK IS NOT
  *
- * Signed out, a deck is opened, its first card is turned over and answered the
- * way every card is, and then gateCard() below stands where the second card
- * would have been, until there is an account. It has no way past.
+ * Signed out, a deck is opened, its first FREE_WORDS cards are turned over and
+ * answered the way every card is, and then gateCard() below stands where the
+ * next card would have been, until there is an account. It has no way past.
  *
  * That took three goes to arrive at and the two it replaced are worth knowing,
  * because each was a reasonable answer to a different question. The offer
@@ -132,11 +132,13 @@
  * to tell is the page pretending, and the person doing it finds out at the end
  * of the deck rather than at the start of it.
  *
- * One word rather than none, because somebody shown nothing is being asked to
- * sign up for a description, and one word rather than one a deck, because a
- * free word per deck across forty-two decks is the product. It is the tab's
- * word: the run below is sessionStorage, so tomorrow is somebody arriving
- * again, and nothing here follows anybody who has not signed in.
+ * Some words rather than none, because somebody shown nothing is being asked
+ * to sign up for a description, and five to a tab rather than five a deck,
+ * because five free words per deck across forty-two decks is the product. It
+ * was one word until October 2026, and one word was a card and then a form —
+ * FREE_WORDS says what that cost. They are the tab's words: the run below is
+ * sessionStorage, so tomorrow is somebody arriving again, and nothing here
+ * follows anybody who has not signed in.
  *
  * And making the account keeps the run that argued for it, which took a
  * mechanism rather than a promise: both ways of signing in leave the page, so
@@ -459,7 +461,7 @@
          links — gateFor() says why — and the one route into this page from
          outside is a search result, so the first thing they are shown has to
          be the thing they came for. What stands in front of them is the
-         one-word gate under mark(), which always did. */
+         five-word gate under mark(), which always did. */
       state.locked = !!(state.user && gateFor(state.deck.level));
     }
 
@@ -488,13 +490,13 @@
     /* And whether the gate is already up. Two cases, and mark() has the
        ordinary third.
      *
-       The tab has answered a word signed out already — `sent` is what it is
-       holding, read above rather than posted — so the free word is spent, on
+       The tab has answered its FREE_WORDS signed out already — `sent` is what
+       it is holding, read above rather than posted — so they are spent, on
        this deck and on every other. Without this line the reload button, or
        the way back to the decks and in again, would be the way past the gate:
        the run rebuilds from the route's answer, which has no idea who this is,
-       and the next card would be handed over for nothing. One word is one
-       word, not one a deck opened.
+       and the next card would be handed over for nothing. Five words are five
+       words, not five a deck opened.
      *
        And Google has come back wanting a name. That round trip returns to the
        address it left from, so it lands on the deck, and the form that asks a
@@ -507,7 +509,7 @@
        being kept from anybody — so the deck runs as it always did, which is
        the same rule authCard() is drawn under. */
     if (state.deck && !state.user && state.ready &&
-        (state.view === 'google' || answeredAny(sent))) standGate();
+        (state.view === 'google' || answered(sent) >= FREE_WORDS)) standGate();
   }
 
   /* A link to one of this page's two addresses, answered here rather than by
@@ -572,8 +574,9 @@
 
   /* ------------------------------------------- what this tab is holding for you
    * Signed out, an answer has nobody to tell: the run is this tab's, it is
-   * read back out of here on the next load, and the account is offered one word
-   * into the first deck this tab opens and again at the end of a run.
+   * read back out of here on the next load, and the account is offered
+   * FREE_WORDS words into the decks this tab opens and again at the end of a
+   * run.
    *
    * What that cost until this existed was the run itself. The card says
    * "Remember where you got to", and both ways of taking it up leave the page
@@ -604,22 +607,36 @@
   /* And the one a song heard is filed under: SONG_DECK in the same route. */
   var SONGS = 'songs';
 
-  /* Whether the tab has answered a card, as opposed to read a lesson or heard
-     a song. The free word is spent by an answer — see gateCard() — and
-     reading or listening is not an answer, so either done signed out must not
-     raise the gate on the next deck opened. */
-  function answeredAny(sent) {
-    return Object.keys(sent).some(function (k) {
+  /* How many words a tab may answer signed out before the gate goes up —
+     see gateCard(). Five words to a tab, not five a deck.
+
+     It was one. One word is a card turned and answered, and then a form: from
+     1 to 5 October the gate stood 29 times and three accounts came out of the
+     flashcards, and the page's views ended with nothing pressed three times in
+     five. One card shows that the page has cards; it does not show what the
+     page is for, which is a word you missed coming round again — and that
+     only starts to happen a few cards in. Five is enough for a Show me again
+     to be felt, and still a sample rather than a deck: the shortest deck the
+     site ships is eighteen. keep() carries all five into the account, so the
+     copy promises the words come along, not the word. */
+  var FREE_WORDS = 5;
+
+  /* How many cards the tab has answered, as opposed to lessons read or songs
+     heard. The free words are spent by answers — see gateCard() — and reading
+     or listening is not an answer, so neither done signed out brings the
+     gate nearer. A card answered twice is one word. */
+  function answered(sent) {
+    return Object.keys(sent).filter(function (k) {
       return k.indexOf(GRAMMAR + '/') !== 0 && k.indexOf(SONGS + '/') !== 0;
-    });
+    }).length;
   }
 
   /* Past this, the rest are answered again next time — the direction a failed
      write already errs in, and the harmless one.
 
      It is a cap on one case now, and it is worth saying which. Signed out with
-     the database bound, the gate stops a run at one word, so this holds one
-     answer and never comes near the number. What fills it is the database
+     the database bound, the gate stops a tab at FREE_WORDS, so this holds
+     five answers and never comes near the number. What fills it is the database
      being off: nothing is gated then, because there is nothing to sign in to,
      and nothing is sent either, so a tab can go through deck after deck. Two
      hundred is a little over three of the longest deck the site ships, which is
@@ -1173,8 +1190,8 @@
     ])]);
   }
 
-  /* The gate. One word of a deck is turned over and answered signed out, and
-     then this stands where the second card would have been, until there is an
+  /* The gate. FREE_WORDS cards are turned over and answered signed out, and
+     then this stands where the next card would have been, until there is an
      account. See the header for the argument; this is the shape of it.
    *
      There is no way past, and that is the whole change from the card it grew
@@ -1185,17 +1202,17 @@
      version of this page. It is the page pretending, and the person doing it
      finds out at the end of the deck rather than at the start.
    *
-     One word rather than none, and that is deliberate: somebody who has been
-     shown nothing is being asked to sign up for a description. The word is the
-     sample, it is a real card answered in the real way, and keep() above has
-     written that answer into the tab, so the one thing already done comes with
+     Five words rather than none, and that is deliberate: somebody who has been
+     shown nothing is being asked to sign up for a description. The words are
+     the sample, real cards answered in the real way, and keep() above has
+     written those answers into the tab, so what is already done comes with
      them when they make the account. That last part is why the copy can promise
      it.
    *
      The way out of a deck is not on this card and does not need to be: All the
      decks stands in the head above, where it stands on every view of a deck,
      and the whole of the decks page is still open signed out. What is behind
-     the gate is the second word of a deck, not the site. */
+     the gate is the sixth word a tab answers, not the site. */
   function gateCard() {
     return card([authForm([
       el('p', { className: 'eyebrow', textContent: t('flashKeepEyebrow') }),
@@ -1873,8 +1890,13 @@
        finished, properly, and then the deck stops. See gateCard().
      *
        `current()` because a deck with nothing left has nothing to gate: the end
-       of a run says its own thing and carries the same offer already. */
-    if (!state.user && state.ready && current()) standGate();
+       of a run says its own thing and carries the same offer already. The
+       answer just given is not in the tab yet — it waits on the next one for
+       Undo, see flush() — so it is added to what the tab holds, unless the tab
+       already holds it from the last time it came round. */
+    var held = kept();
+    if (!state.user && state.ready && current() &&
+        answered(held) + (held[key] ? 0 : 1) >= FREE_WORDS) standGate();
 
     render();
     focusRun();
@@ -2068,12 +2090,27 @@
          pointer anywhere near it. */
       if (dragged() || state.run.flying) return;
       state.run.turned = !state.run.turned;
+      if (state.run.turned && !turnSaid) {
+        turnSaid = true;
+        TTBTrack.event('flash_turn', { deck_id: state.deck.id });
+      }
       render();
       focusRun();
     });
 
     return node;
   }
+
+  /* Whether this load has reported flash_turn. Turning a card over is the
+     first thing anybody does with one, and it reported nothing: somebody who
+     arrived on a deck, turned five cards and closed the tab was a view that
+     ended with nothing pressed, the same as somebody who never saw a card —
+     and that was most of the flashcards' "idle" share, 62 of 103 views from
+     1 to 5 October, against seventy seconds on screen a view. So the first
+     turn of a load is reported, and only the first: every turn after it is
+     already said by the flash_knew or flash_again that follows it, and a
+     second name per card would only double the tally. */
+  var turnSaid = false;
 
   /* Where the keyboard is after anything that starts or advances a run: the
      card turned over, a card answered, and the three buttons that build a run
