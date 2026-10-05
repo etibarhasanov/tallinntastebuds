@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Six
+-- This is what /stats ranks and what functions/api/stats.js writes. Seven
 -- kinds of thing are counted and `kind` is which:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
@@ -135,6 +135,12 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              /lists, and `-opened` and `-kept` after either, the first list
 --              they opened and kept from it that day. LOOK_IDS beside the
 --              rails'; **The lists' two looks** in README.md.
+--   'style'    the four colours, a test of its own: `red`, `green`, `blue`
+--              and `plum`, somebody new to the site dealt each as their
+--              first page opened, and after each `-opened` (something opened
+--              that day), `-back` (a later day's visit) and `-changed` (the
+--              swatch pressed), once each. STYLE_IDS in functions/api/
+--              stats.js; **The four styles, dealt** in README.md.
 --
 -- ONE TABLE AND NOT FOUR
 --
@@ -147,7 +153,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- and a place called `bakery` could never collide.
 --
 -- The third and fourth kinds are the argument having been made and then taken
--- twice, and the fifth and sixth twice more. `list` was added when /lists stopped being ordered by how many
+-- twice, and the fifth, sixth and seventh three times more. `list` was added when /lists stopped being ordered by how many
 -- signed-in people had bookmarked a list and started being ordered by how many
 -- people had opened it; `rail` was added to rank the nine pills down the left
 -- of the map. Each cost one string in two files and nothing at all here — no

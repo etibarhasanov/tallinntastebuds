@@ -63,6 +63,10 @@
      them — a test apart from the rails. */
   var LOOKS = { a: 'visitorsLookA', b: 'visitorsLookB' };
 
+  /* And the four colours by the id dealStyle() in assets/track.js deals them,
+     named by the words the swatch itself uses. */
+  var COLOURS = { red: 'styleRed', green: 'styleGreen', blue: 'styleBlue', plum: 'stylePlum' };
+
   /* How many strangers each rail needs before the two are set against each
      other at all. Thirty is where a share out of them stops swinging ten
      points on one visitor; below it the page says it is too early rather
@@ -467,7 +471,8 @@
   /* A table of a name and two numbers — the grid /insights draws its
      sources in. `heads` names the two columns, `cells` gives a row's. */
   function grid(label, heads, rows, name, cells) {
-    var table = el('div', { className: 'ins-table vis-table' + (heads.length > 2 ? ' vis-table-3' : ''),
+    var table = el('div', { className: 'ins-table vis-table' +
+      (heads.length > 3 ? ' vis-table-4' : heads.length > 2 ? ' vis-table-3' : ''),
       role: 'table', 'aria-label': label }, [
       el('div', { className: 'ins-row ins-head', role: 'row' },
         [el('span', { role: 'columnheader' })].concat(heads.map(function (h) {
@@ -758,7 +763,8 @@
     return card(kids);
   }
 
-  /* Whether the two arms of a test — the rails, or the directory's looks —
+  /* Whether the two arms of a test — the rails, the directory's looks, or
+     the best and worst of the four colours —
      opened something at rates that differ by more than chance: a
      two-proportion z-test on `opened` out of `given`, with 1.96 as the line,
      which is the ordinary 95%. Said in words, and only once each arm has
@@ -836,6 +842,45 @@
         [t('visitorsLookDealt'), function (id) { return num(d[id].given); }],
         [t('visitorsLookOpened'), function (id) { return share(d[id].opened, d[id].given); }],
         [t('visitorsLookKept'), function (id) { return share(d[id].kept, d[id].given); }]
+      ])
+    ]);
+  }
+
+  /* The four colours against each other — "The four styles, dealt" in
+     README.md: how many people new to the site were dealt each as their
+     first page opened, and the share of them that opened a place, a post or
+     a deck that day, came back on a later day, and chose a different colour.
+     Four arms rather than two, so the verdict sets the best colour on
+     `opened` against the worst one, with the same z-test the other two
+     cards use, and only once every colour has FEWEST — the weakest arm is
+     the one that decides whether there is anything to say yet. Absent until
+     a colour has been dealt. */
+  function colours() {
+    var d = state.data.styles;
+    var arms = Object.keys(COLOURS);
+    if (!d || !arms.some(function (id) { return d[id] && d[id].given; })) return null;
+    var heads = arms.map(function (id) { return t(COLOURS[id]); });
+    var rate = function (id) { return d[id].given ? d[id].opened / d[id].given : 0; };
+    var fewest = Math.min.apply(null, arms.map(function (id) { return d[id].given; }));
+    var said;
+    if (fewest < FEWEST) {
+      said = el('p', { className: 'vis-verdict', textContent: t('visitorsStyleEarly', { n: num(fewest), min: FEWEST }) });
+    } else {
+      var ranked = arms.slice().sort(function (x, y) { return rate(y) - rate(x); });
+      var best = ranked[0], worst = ranked[ranked.length - 1];
+      said = verdict({ a: d[best], b: d[worst] }, { a: COLOURS[best], b: COLOURS[worst] },
+        ['visitorsStyleEarly', 'visitorsStyleNone', 'visitorsStyleAhead']);
+    }
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsStyles') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsStylesLead') }),
+      said,
+      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsStylesNew') }),
+      sideBySide(t('visitorsStylesNew'), arms, heads, [
+        [t('visitorsStyleDealt'), function (id) { return num(d[id].given); }],
+        [t('visitorsStyleOpened'), function (id) { return share(d[id].opened, d[id].given); }],
+        [t('visitorsStyleBack'), function (id) { return share(d[id].back, d[id].given); }],
+        [t('visitorsStyleChanged'), function (id) { return share(d[id].changed, d[id].given); }]
       ])
     ]);
   }
@@ -952,7 +997,7 @@
       }
       if (d.languages.length || d.asked.length) stack.appendChild(languages());
       if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
-      [cohorts(), layouts(), looks(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
+      [cohorts(), layouts(), looks(), colours(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
       if (d.pages.length) stack.appendChild(pages());
       var trips = journeys();
       if (trips) stack.appendChild(trips);
