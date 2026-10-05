@@ -504,7 +504,7 @@
   var OPENED_KEY = 'ttb.opened';
 
   function firstTime(what) {
-    var day = new Date().toISOString().slice(0, 10);
+    var day = today();
     try {
       var kept = JSON.parse(localStorage.getItem(OPENED_KEY) || 'null');
       var seen = kept && kept.day === day && kept.seen instanceof Array ? kept.seen : [];
@@ -513,6 +513,11 @@
       localStorage.setItem(OPENED_KEY, JSON.stringify({ day: day, seen: seen }));
     } catch (e) { /* no storage: the server decides alone */ }
     return true;
+  }
+
+  /* Today in UTC — the day the server files its counts by. */
+  function today() {
+    return new Date().toISOString().slice(0, 10);
   }
 
   function countProfilePress(what) {
@@ -532,6 +537,76 @@
       body: JSON.stringify(payload),
       keepalive: true
     }).catch(function () { /* a count missed, and nothing the reader needs to hear */ });
+  }
+
+  /* ------------------------------------------------ the directory's two looks
+   * Somebody new to the site who opens /lists is dealt one of two looks for
+   * it, half and half, and keeps it: 'a', the page as it was, or 'b', the
+   * resting palette and the quieter desk — everything under [data-look="b"]
+   * in assets/lists.css. "The lists' two looks" in README.md is the whole of
+   * it; this is the deal and the three things counted about it.
+   *
+   * A test of its own, beside the map's two rails and not inside them: its
+   * own key, its own roll of the dice and its own kind in press_counts. Each
+   * deal is random whatever the other dealt, so neither can lean on the
+   * other's result.
+   *
+   * In order:
+   * 1. ?look=a or ?look=b names one and pins it, the way ?layout= does on the
+   *    map — how the owner sees either on a browser dealt the other. A look
+   *    pinned by hand is never counted.
+   * 2. A look already dealt is kept, for good: a page that changed its face
+   *    between visits would be measuring the change rather than either face.
+   * 3. Otherwise, somebody new to the site — TTBTrack.newcomer(), whose
+   *    first day here is today — is dealt one and counted as `a` or `b`.
+   *    Everybody else sees A and is dealt nothing, which keeps the people who
+   *    already know the page out of a question about how it reads to a
+   *    stranger; and the owner's browser is never new.
+   *
+   * Then, on the day it was dealt, the first list opened from the directory
+   * counts `<look>-opened` and the first list kept counts `<look>-kept` —
+   * once each, LOOK_NEW_KEY remembering which have gone. Storage that throws
+   * cannot keep a deal, so it draws A and counts nobody. */
+  var LOOKS = ['a', 'b'];
+  var LOOK_SHARE = 0.5;
+  var LOOK_KEY = 'ttb.look';
+  var LOOK_NEW_KEY = 'ttb.look.new';
+
+  function pickLook() {
+    var asked = new URLSearchParams(window.location.search).get('look');
+    var look = storeGet(LOOK_KEY);
+    try {
+      if (LOOKS.indexOf(asked) !== -1) {
+        if (asked !== look) {
+          localStorage.setItem(LOOK_KEY, asked);
+          localStorage.removeItem(LOOK_NEW_KEY);
+        }
+        look = asked;
+      } else if (LOOKS.indexOf(look) === -1) {
+        look = 'a';
+        if (TTBTrack.newcomer()) {
+          var dealt = Math.random() < LOOK_SHARE ? 'b' : 'a';
+          localStorage.setItem(LOOK_KEY, dealt);
+          localStorage.setItem(LOOK_NEW_KEY, JSON.stringify({ day: today(), told: [] }));
+          look = dealt;
+          tell({ kind: 'look', id: dealt });
+        }
+      }
+    } catch (e) { look = 'a'; }
+    document.documentElement.setAttribute('data-look', look);
+  }
+
+  /* A list opened or kept from the directory, on the day this browser was
+     dealt its look — once each, and nothing for a look nobody dealt. */
+  function lookTold(what) {
+    try {
+      var look = localStorage.getItem(LOOK_KEY);
+      var fresh = JSON.parse(localStorage.getItem(LOOK_NEW_KEY) || 'null');
+      if (LOOKS.indexOf(look) === -1 || !fresh || fresh.day !== today() || fresh.told.indexOf(what) !== -1) return;
+      fresh.told.push(what);
+      localStorage.setItem(LOOK_NEW_KEY, JSON.stringify(fresh));
+      tell({ kind: 'look', id: look + '-' + what });
+    } catch (e) { /* no storage, no deal, nothing to count */ }
   }
 
   /* One sentence per refusal the server can send, and the general one for
@@ -821,6 +896,10 @@
        view keeps the 640px a list reads at. Toggled here rather than set once
        at boot so a view that is not the directory never inherits it. */
     dom.main.classList.toggle('is-wide', state.view === 'all');
+    /* And on the body, for what the directory's look B changes outside its
+       own column: the header widened to the rows' measure, and the resting
+       palette — see [data-look="b"] .lists-body.is-all in assets/lists.css. */
+    document.body.classList.toggle('is-all', state.view === 'all');
 
     /* A list read on its own page is the one view with a bar fixed to the foot
        of the window, and the page has to keep its last card out from under it.
@@ -1814,6 +1893,13 @@
   function allRow(l) {
     var line = el('p', { className: 'lists-all-meta mono' });
     allMeta(l, line);
+    var open = TTBTrack.click(el('a', {
+      className: 'lists-index-title lists-open',
+      href: '/list/' + l.id
+    }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id });
+    /* A list opened from here is what the directory's two looks are judged
+       on — see pickLook(). */
+    open.addEventListener('click', function () { lookTold('opened'); });
 
     /* The card is a box and the title is the link that fills it — see
        listRow() above, and .lists-open in assets/lists.css — so the byline in
@@ -1842,10 +1928,7 @@
       el('div', { className: 'lists-all-card' + (l.mine ? '' : ' has-keep') }, [
         /* The sky first, above the title, where a picture goes on a card. */
         wide() ? sky(l) : null,
-        TTBTrack.click(el('a', {
-          className: 'lists-index-title lists-open',
-          href: '/list/' + l.id
-        }, [listPin(l), el('span', { textContent: l.title })]), 'list_page', { list_id: l.id }),
+        open,
         line,
         l.taste && l.taste.length
           ? el('p', { className: 'lists-all-taste', textContent: l.taste.join(' \u00b7 ') })
@@ -2461,6 +2544,7 @@
          phone, and there is nothing here that a failure cannot put back. */
       var want = !list.kept;
       TTBTrack.event('list_keep', { list_id: list.id, list_state: want ? 'on' : 'off' });
+      if (want && state.view === 'all') lookTold('kept');
       list.kept = want;
       list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
       b.classList.toggle('is-kept', want);
@@ -4588,7 +4672,7 @@
       return;
     }
     state.view = all ? 'all' : who ? 'who' : 'one';
-    if (all) { state.q = wantedQuery(); state.sort = wantedSort(); }
+    if (all) { state.q = wantedQuery(); state.sort = wantedSort(); pickLook(); }
 
     /* The strings and the data at once. The strings are a static file behind a
        revalidating cache and usually free; the data is the one request this

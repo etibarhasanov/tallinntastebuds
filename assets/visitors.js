@@ -59,6 +59,10 @@
   /* The two rails by the id pickLayout() in assets/app.js deals them. */
   var RAILS = { a: 'visitorsLayoutFull', b: 'visitorsLayoutShort' };
 
+  /* The directory's two looks by the id pickLook() in assets/lists.js deals
+     them — a test apart from the rails. */
+  var LOOKS = { a: 'visitorsLookA', b: 'visitorsLookB' };
+
   /* How many strangers each rail needs before the two are set against each
      other at all. Thirty is where a share out of them stops swinging ten
      points on one visitor; below it the page says it is too early rather
@@ -755,24 +759,26 @@
     return card(kids);
   }
 
-  /* Whether the two rails' strangers found a place at rates that differ by
-     more than chance: a two-proportion z-test on `opened` out of `given`,
-     with 1.96 as the line, which is the ordinary 95%. Said in words, and
-     only once each rail has FEWEST strangers — see there. */
-  function verdict(dealt) {
+  /* Whether the two arms of a test — the rails, or the directory's looks —
+     opened something at rates that differ by more than chance: a
+     two-proportion z-test on `opened` out of `given`, with 1.96 as the line,
+     which is the ordinary 95%. Said in words, and only once each arm has
+     FEWEST strangers — see there. `names` is the arms' keys, and `words`
+     the test's own three sentences: early, none and ahead. */
+  function verdict(dealt, names, words) {
     var a = dealt.a, b = dealt.b;
     if (!a.given && !b.given) return null;
     var say = function (key, vars) { return el('p', { className: 'vis-verdict', textContent: t(key, vars) }); };
     if (Math.min(a.given, b.given) < FEWEST) {
-      return say('visitorsVerdictEarly', { a: num(a.given), b: num(b.given), min: FEWEST });
+      return say(words[0], { a: num(a.given), b: num(b.given), min: FEWEST });
     }
     var pool = (a.opened + b.opened) / (a.given + b.given);
     var spread = Math.sqrt(pool * (1 - pool) * (1 / a.given + 1 / b.given));
     var z = spread ? (a.opened / a.given - b.opened / b.given) / spread : 0;
     var pa = share(a.opened, a.given), pb = share(b.opened, b.given);
-    if (Math.abs(z) < 1.96) return say('visitorsVerdictNone', { a: pa, b: pb });
-    return z > 0 ? say('visitorsVerdictAhead', { rail: t(RAILS.a), ahead: pa, behind: pb })
-                 : say('visitorsVerdictAhead', { rail: t(RAILS.b), ahead: pb, behind: pa });
+    if (Math.abs(z) < 1.96) return say(words[1], { a: pa, b: pb });
+    return z > 0 ? say(words[2], { name: t(names.a), ahead: pa, behind: pb })
+                 : say(words[2], { name: t(names.b), ahead: pb, behind: pa });
   }
 
   /* The map's two rails against each other, in three blocks under one
@@ -795,7 +801,7 @@
     var kids = [
       el('h2', { className: 'lists-title', textContent: t('visitorsLayouts') }),
       el('p', { className: 'stats-lead', textContent: t('visitorsLayoutsLead') }),
-      verdict(dealt)
+      verdict(dealt, RAILS, ['visitorsVerdictEarly', 'visitorsVerdictNone', 'visitorsVerdictAhead'])
     ].concat(block('visitorsStrangers', rails, [
       [t('visitorsDealt'), function (r) { return num(dealt[r.id].given); }],
       [t('visitorsOpened'), function (r) { return share(dealt[r.id].opened, dealt[r.id].given); }]
@@ -808,6 +814,31 @@
         .concat([splitSince()]);
     }
     return card(kids);
+  }
+
+  /* The directory's two looks against each other — "The lists' two looks" in
+     README.md: how many people new to the site were dealt each on their first
+     open of /lists, and the share of them that opened a list from it, and
+     that kept one, on the day they were dealt it. Since the test began, like
+     the rails' strangers, because press_counts has no day. Opened is what
+     the verdict is on; kept is beside it, too rare to call a test on. Absent
+     until either look has been dealt. */
+  function looks() {
+    var d = state.data.looks;
+    if (!d || (!d.a.given && !d.b.given)) return null;
+    var arms = ['a', 'b'];
+    var heads = arms.map(function (id) { return t(LOOKS[id]); });
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsLooks') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsLooksLead') }),
+      verdict(d, LOOKS, ['visitorsLookEarly', 'visitorsLookNone', 'visitorsLookAhead']),
+      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsLooksNew') }),
+      sideBySide(t('visitorsLooksNew'), arms, heads, [
+        [t('visitorsLookDealt'), function (id) { return num(d[id].given); }],
+        [t('visitorsLookOpened'), function (id) { return share(d[id].opened, d[id].given); }],
+        [t('visitorsLookKept'), function (id) { return share(d[id].kept, d[id].given); }]
+      ])
+    ]);
   }
 
   /* Right now: pages opened in the last five minutes and the last thirty,
@@ -922,7 +953,7 @@
       }
       if (d.languages.length || d.asked.length) stack.appendChild(languages());
       if (d.switches.length) stack.appendChild(ranking(t('visitorsSwitches'), d.switches, switchName));
-      [cohorts(), layouts(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
+      [cohorts(), layouts(), looks(), signingUp()].forEach(function (c) { if (c) stack.appendChild(c); });
       if (d.pages.length) stack.appendChild(pages());
       var trips = journeys();
       if (trips) stack.appendChild(trips);

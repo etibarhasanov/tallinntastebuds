@@ -1520,7 +1520,7 @@
 }
 
 @media (min-width: 900px) {
-  /* Cards two across, and the strip three. The row is made a flex box so the
+  /* Cards two across. The row is made a flex box so the
      card fills the row's height and a short list stands as tall as the long
      one beside it; the bookmark is laid against the row, so it keeps its
      corner. */
@@ -1532,6 +1532,82 @@
 
 @media (min-width: 1180px) {
   .lists-all .lists-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- the directory, look B: at rest ---------- */
+
+/* One of the directory's two looks, dealt half and half to people new to the
+   site — pickLook() in assets/lists.js, and **The lists' two looks** in
+   README.md. Look A is everything above, the page as it was; look B is this
+   section and nothing else, every rule in it under [data-look="b"] on <html>,
+   so taking the test out is deleting either this section or that attribute.
+
+   A page of twenty cards is read differently from a page of one list. A list
+   is read down; the directory is scanned across, for minutes, and pink paper
+   on a pink wash with a pink city in every card and a red mark on every place
+   leaves the eye nowhere to land. So B wears the resting palette — paler,
+   with a little sage in it — by restating the tokens the page reads rather
+   than by naming a colour anywhere below: every rule here that says --paper
+   or --wash says the resting one, the sticky search row and the chips and
+   the header's pills with it, and the swatch still decides which resting
+   palette that is. The accent is left alone. It is the colour of the marks
+   and the one filled chip, and against this ground it is the only warm thing
+   on the screen, which is the point. */
+[data-look="b"] .lists-body.is-all {
+  --wash: var(--rest-wash);
+  --paper: var(--rest-paper);
+  --hairline: var(--rest-line);
+  --muted: var(--rest-muted);
+  --shadow: var(--rest-shadow);
+}
+/* The city a shade firmer than a card's edge, so it still reads as land on
+   the paler paper rather than as a stain — the argument for --hairline on
+   --paper above, made again on B's lighter ground. */
+[data-look="b"] .lists-sky-city circle { fill: var(--rest-ground); }
+
+@media (min-width: 900px) {
+  /* The header on the rows' measure. At 640px it is a narrow strip centred
+     over a page three cards wide, its pills ending a third of the way in. */
+  [data-look="b"] .lists-body.is-all .lists-brand { max-width: 1180px; }
+
+  /* The head is the page's title, not a card among cards: on the ground, with
+     no edge, so the first box the eye meets is a list. */
+  [data-look="b"] .lists-all > .lists-card:first-child {
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+    padding: 18px 2px 8px;
+  }
+  [data-look="b"] .lists-all > .lists-card:first-child .lists-title { font-size: 32px; letter-spacing: -.01em; }
+
+  /* More air between the cards than inside them, so each one reads as one
+     thing rather than as a cell in a table. */
+  [data-look="b"] .lists-all .lists-index { gap: 28px 24px; }
+  [data-look="b"] .lists-all .lists-all-card { padding: 18px 22px 20px; overflow: hidden; }
+  [data-look="b"] .lists-all .lists-all-card.has-keep { padding-bottom: 56px; }
+
+  /* The sky as the card's picture, edge to edge, rather than a framed box
+     inside a framed box: the negative margins are the card's padding just
+     above. One hairline under it says where the words begin. */
+  [data-look="b"] .lists-all-card > .lists-sky {
+    margin: -18px -22px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--hairline);
+    border-radius: 0;
+  }
+  [data-look="b"] .lists-sky-span { left: 12px; bottom: 8px; }
+
+  [data-look="b"] .lists-all .lists-all-taste { margin-top: 9px; font-size: 14px; line-height: 1.6; }
+
+  /* Twenty Save pills in outline are twenty more edges. At rest the bookmark
+     is the mark and the word in the muted ink; it takes its outline when it
+     is pointed at or reached by the keyboard, and kept is still the filled
+     mark in the accent. */
+  [data-look="b"] .lists-all .lists-index-row > .lists-keep-wrap { right: 16px; bottom: 14px; }
+  [data-look="b"] .lists-all .lists-keep { background: none; border-color: transparent; color: var(--muted); }
+  [data-look="b"] .lists-all .lists-keep:hover,
+  [data-look="b"] .lists-all .lists-keep:focus-visible { border-color: var(--hairline); color: var(--ink); }
+  [data-look="b"] .lists-all .lists-keep.is-kept { color: var(--accent); }
 }
 
 /* ---------- keeping somebody else's list ---------- */

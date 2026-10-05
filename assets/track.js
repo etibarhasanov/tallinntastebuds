@@ -126,6 +126,8 @@ window.TTBTrack = (function () {
   function event(name, params) {
     params = params || {};
     params.layout = layout();
+    var dealtLook = look();
+    if (dealtLook) params.look = dealtLook;
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
@@ -175,6 +177,21 @@ window.TTBTrack = (function () {
     return id === 'a' || id === 'b' ? id : '';
   }
 
+  /* Which of the directory's two looks this browser was dealt — 'a', the page
+     as it was, or 'b', at rest — read off the key pickLook() in
+     assets/lists.js writes, and '' where none was, which is everybody who
+     was not new to the site when they first opened /lists. Sent on every
+     event only where there is one, so GA can split what the two looks'
+     visitors go on to do, on every page, and a browser with no look is not
+     filed under either. "The lists' two looks" in README.md. */
+  var LOOK_KEY = 'ttb.look';
+
+  function look() {
+    var id = '';
+    try { id = window.localStorage.getItem(LOOK_KEY); } catch (e) { id = ''; }
+    return id === 'a' || id === 'b' ? id : '';
+  }
+
   /* Attaches a report to a link or button that is built inline, and hands
      the same node back so it can stay inside the array it was written in. */
   function click(node, name, params) {
@@ -218,7 +235,13 @@ window.TTBTrack = (function () {
        later than this, so that one visit is tagged 'a' here — see LATE
        below for how the site's own count avoids the same mistake. Clarity's
        queue takes the call before its script lands, the same as an event. */
-    if (typeof window.clarity === 'function') window.clarity('set', 'layout', layout());
+    if (typeof window.clarity === 'function') {
+      window.clarity('set', 'layout', layout());
+      /* The look the same way, where there is one. A stranger's first open
+         of /lists is dealt one before this runs — pickLook() is called as
+         the page's own deferred script boots — so that visit is tagged. */
+      if (look()) window.clarity('set', 'look', look());
+    }
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
       click(marked[i], marked[i].getAttribute('data-track'));
@@ -345,12 +368,8 @@ window.TTBTrack = (function () {
     var kept = false;
     try {
       last = window.localStorage.getItem(SEEN_KEY);
-      var began = window.localStorage.getItem(SINCE_KEY);
-      var was = began;
-      if (!DAY.test(began || '')) began = DAY.test(last || '') && last < day ? last : day;
-      var ga = gaDay();
-      if (ga && ga < began) began = ga;
-      if (began !== was) window.localStorage.setItem(SINCE_KEY, began);
+      var began = firstDay(day);
+      if (began !== window.localStorage.getItem(SINCE_KEY)) window.localStorage.setItem(SINCE_KEY, began);
       window.localStorage.setItem(SEEN_KEY, day);
       who = began < day ? 'back' : 'new';
       kept = true;
@@ -426,6 +445,30 @@ window.TTBTrack = (function () {
     if (!COUNTED || !id || told[key]) return;
     told[key] = true;
     abouts.push(key);
+  }
+
+  /* The first day this browser was here, as arrive() above reads it: the day
+     ttb.since kept, else the earlier day ttb.seen remembers, else today — and
+     Google's day where that is earlier still. Reads and never writes, so it
+     can be asked before arrive() has run as well as after it; throws where
+     storage does, and the caller decides what that means. */
+  function firstDay(day) {
+    var last = window.localStorage.getItem(SEEN_KEY);
+    var began = window.localStorage.getItem(SINCE_KEY);
+    if (!DAY.test(began || '')) began = DAY.test(last || '') && last < day ? last : day;
+    var ga = gaDay();
+    return ga && ga < began ? ga : began;
+  }
+
+  /* Whether this browser is new to the site — its first day here is today —
+     the same `new` arrive() reports. What the directory's two looks are
+     dealt by: pickLook() in assets/lists.js gives one only to somebody this
+     says yes to. No where the count is off — the owner's browser, an /admin
+     page — and where storage cannot be read, since a deal that cannot be
+     kept is no deal. */
+  function newcomer() {
+    if (!COUNTED) return false;
+    try { return firstDay(today()) === today(); } catch (e) { return false; }
   }
 
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
@@ -553,5 +596,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, owner: OWNER };
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, newcomer: newcomer, owner: OWNER };
 })();

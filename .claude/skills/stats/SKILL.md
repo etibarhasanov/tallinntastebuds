@@ -51,6 +51,8 @@ must keep, and where this area has gone wrong.
     is a name nobody will find in the console or on `/admin/visitors`.
   - **The short rail** — why the map deals strangers one of two rails and
     what `layout` counts about it.
+  - **The lists' two looks** — the directory's own A/B test, apart from
+    the rails, and what `look` counts about it.
 - The header of the file you are standing in. The four behind the count
   are written as essays, section by section, and each section is the
   reasoning for one kind: `functions/api/_visitors.js` (the whole site),
@@ -214,6 +216,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `ABOUT` in `functions/api/_visitors.js` | `TTBTrack.about()` calls in `assets/app.js`, `blog.js`, `flashcard.js`, `deal.js`, `verify.js` | what a page may say it was about |
 | `SIGNUP` in `functions/api/_visitors.js` | the `account_*` names the sheet and forms report; the error words `account.js` answers | the funnel |
 | `LAYOUT_IDS` in `functions/api/stats.js` | `pickLayout()` in `assets/app.js` | the two rails and their opens |
+| `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
 | the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-five today | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |

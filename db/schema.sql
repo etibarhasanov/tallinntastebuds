@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Four
+-- This is what /stats ranks and what functions/api/stats.js writes. Six
 -- kinds of thing are counted and `kind` is which:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
@@ -126,6 +126,15 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              random, ask, style, locate, explain, feedback — and the radio
 --              is not among them, because it stands beside the language
 --              switch rather than in the rail.
+--   'layout'   the map's two rails: `a` and `b`, a stranger dealt each, and
+--              `a-opened` and `b-opened`, the first place that stranger
+--              opened on the visit. LAYOUT_IDS in functions/api/stats.js;
+--              **The short rail** in README.md.
+--   'look'     the directory's two looks, a test of its own: `a` and `b`,
+--              somebody new to the site dealt each on their first open of
+--              /lists, and `-opened` and `-kept` after either, the first list
+--              they opened and kept from it that day. LOOK_IDS beside the
+--              rails'; **The lists' two looks** in README.md.
 --
 -- ONE TABLE AND NOT FOUR
 --
@@ -138,7 +147,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- and a place called `bakery` could never collide.
 --
 -- The third and fourth kinds are the argument having been made and then taken
--- twice. `list` was added when /lists stopped being ordered by how many
+-- twice, and the fifth and sixth twice more. `list` was added when /lists stopped being ordered by how many
 -- signed-in people had bookmarked a list and started being ordered by how many
 -- people had opened it; `rail` was added to rank the nine pills down the left
 -- of the map. Each cost one string in two files and nothing at all here — no
