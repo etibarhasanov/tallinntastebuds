@@ -743,6 +743,7 @@
   "visitorsStyles": "Dört renk",
   "visitorsStylesLead": "Siteye yeni gelenlere ilk sayfalarında dört renkten biri rastgele verilir. Zaten bir renk seçmiş ya da renk taşıyan bir bağlantıyla gelen kişiye renk verilmez ve sayılmaz.",
   "visitorsStylesNew": "Testin başından beri yeni ziyaretçiler",
+  "visitorsColoursEveryone": "Bu rengi alan herkes, bu aralıkta",
   "visitorsStyleDealt": "Bu rengi aldı",
   "visitorsStyleOpened": "O gün bir şey açtı",
   "visitorsStyleBack": "Başka bir gün geri geldi",

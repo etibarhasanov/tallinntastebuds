@@ -847,18 +847,22 @@
   }
 
   /* The four colours against each other — "The four styles, dealt" in
-     README.md: how many people new to the site were dealt each as their
-     first page opened, and the share of them that opened a place, a post or
-     a deck that day, came back on a later day, and chose a different colour.
-     Four arms rather than two, so the verdict sets the best colour on
-     `opened` against the worst one, with the same z-test the other two
-     cards use, and only once every colour has FEWEST — the weakest arm is
-     the one that decides whether there is anything to say yet. Absent until
-     a colour has been dealt. */
+     README.md, in three blocks under one verdict, the shape of the rails'
+     card: how many people new to the site were dealt each as their first
+     page opened, and the share of them that opened a place, a post or a
+     deck that day, came back on a later day, and chose a different colour;
+     then everyone dealt each colour in the range, with the per-visitor
+     figures; then the colour's new visitors alone. Four arms rather than
+     two, so the verdict sets the best colour on `opened` against the worst
+     one, with the same z-test the other two cards use, and only once every
+     colour has FEWEST — the weakest arm is the one that decides whether
+     there is anything to say yet. Absent until a colour has been dealt. */
   function colours() {
     var d = state.data.styles;
     var arms = Object.keys(COLOURS);
-    if (!d || !arms.some(function (id) { return d[id] && d[id].given; })) return null;
+    var lived = (state.data.colours || []).filter(function (c) { return COLOURS[c.id]; });
+    var anyLived = lived.some(function (c) { return c.visitors; });
+    if (!d || (!anyLived && !arms.some(function (id) { return d[id] && d[id].given; }))) return null;
     var heads = arms.map(function (id) { return t(COLOURS[id]); });
     var rate = function (id) { return d[id].given ? d[id].opened / d[id].given : 0; };
     var fewest = Math.min.apply(null, arms.map(function (id) { return d[id].given; }));
@@ -871,7 +875,7 @@
       said = verdict({ a: d[best], b: d[worst] }, { a: COLOURS[best], b: COLOURS[worst] },
         ['visitorsStyleEarly', 'visitorsStyleNone', 'visitorsStyleAhead']);
     }
-    return card([
+    var kids = [
       el('h2', { className: 'lists-title', textContent: t('visitorsStyles') }),
       el('p', { className: 'stats-lead', textContent: t('visitorsStylesLead') }),
       said,
@@ -882,7 +886,19 @@
         [t('visitorsStyleBack'), function (id) { return share(d[id].back, d[id].given); }],
         [t('visitorsStyleChanged'), function (id) { return share(d[id].changed, d[id].given); }]
       ])
-    ]);
+    ];
+    if (anyLived) {
+      var visitors = [t('visitorsVisitors'), function (c) { return num(c.visitors); }];
+      var block = function (key, cols, rows) {
+        return [el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }), sideBySide(t(key), cols, heads, rows)];
+      };
+      kids = kids
+        .concat(block('visitorsColoursEveryone', lived, [visitors,
+          [t('visitorsReturning'), function (c) { return share(c.back, c.visitors); }]].concat(perVisitor())))
+        .concat(block('visitorsNewOnly', lived.map(function (c) { return c.fresh; }), [visitors].concat(perVisitor())))
+        .concat([splitSince()]);
+    }
+    return card(kids);
   }
 
   /* Right now: pages opened in the last five minutes and the last thirty,

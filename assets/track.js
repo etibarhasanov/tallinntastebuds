@@ -104,8 +104,11 @@
  * somebody choosing a different colour than the one they were given
  * (`-changed`). `ttb.styledeal` keeps what was dealt and what has been told.
  * Nobody else is dealt anything: a colour already chosen is kept, and so is
- * one a link carried. dealStyle() below; "The four styles, dealt" in
- * README.md.
+ * one a link carried. And the colour rides on both of the site's own
+ * reports, as `style`, the way the rail rides as `layout`, so THE FOUR
+ * COLOURS in functions/api/_visitors.js can count every visit's seconds,
+ * pages and places under the colour it was spent in. dealStyle() below;
+ * "The four styles, dealt" in README.md.
  *
  * TO REMOVE TRACKING
  *
@@ -414,6 +417,7 @@ window.TTBTrack = (function () {
       who: who,
       from: document.referrer,
       layout: dealt(),
+      style: styleDealt(),
       /* The language the browser asks for, as two letters — the site's
          count of which languages people arrive wanting, spoken here or not.
          Read straight off the browser, never off the page, which has
@@ -577,7 +581,7 @@ window.TTBTrack = (function () {
     if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
         !trail.length && !searched.length && !abouts.length) return;
     var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
-      places: opened, langs: langs, moved: moved, who: who, layout: dealt(),
+      places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (first) {
       body.first = true;
@@ -621,6 +625,13 @@ window.TTBTrack = (function () {
     try { d = JSON.parse(window.localStorage.getItem(STYLE_DEAL_KEY) || 'null'); } catch (e) { d = null; }
     if (!d || STYLE_DEALS.indexOf(d.style) === -1 || !DAY.test(d.day || '') || !(d.told instanceof Array)) return null;
     return d;
+  }
+
+  /* The colour as it was dealt, or '' where none was — what both reports
+     carry, so the count files a visit under its colour or under no arm. */
+  function styleDealt() {
+    var d = styleDeal();
+    return d ? d.style : '';
   }
 
   /* Somebody new, a page with no colour in its address and none stored:

@@ -743,6 +743,7 @@
   "visitorsStyles": "Neli värvi",
   "visitorsStylesLead": "Saidile uued inimesed saavad esimesel lehel juhuslikult ühe neljast värvist. Kes on juba värvi valinud või tuli lingiga, milles värv on kaasas, see värvi ei saa ega lähe arvesse.",
   "visitorsStylesNew": "Uued külastajad testi algusest",
+  "visitorsColoursEveryone": "Kõik, kes selle värvi said, selles vahemikus",
   "visitorsStyleDealt": "Said selle värvi",
   "visitorsStyleOpened": "Avasid samal päeval midagi",
   "visitorsStyleBack": "Tulid mõnel teisel päeval tagasi",

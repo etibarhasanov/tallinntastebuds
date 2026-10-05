@@ -743,6 +743,7 @@
   "visitorsStyles": "Los cuatro colores",
   "visitorsStylesLead": "Quien es nuevo en el sitio recibe al azar uno de los cuatro colores en su primera página. Quien ya eligió un color, o llegó con un enlace que trae uno, no recibe ninguno ni se cuenta.",
   "visitorsStylesNew": "Nuevos visitantes, desde que empezó la prueba",
+  "visitorsColoursEveryone": "Todos los que recibieron el color, en este periodo",
   "visitorsStyleDealt": "Recibieron el color",
   "visitorsStyleOpened": "Abrieron algo ese día",
   "visitorsStyleBack": "Volvieron otro día",

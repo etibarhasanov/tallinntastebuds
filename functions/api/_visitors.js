@@ -212,6 +212,19 @@
  * dealt each and how many opened a place on that first visit is press_counts'
  * and ./stats.js's, and ./admin/visitors.js reads it beside this.
  *
+ * THE FOUR COLOURS
+ *
+ * Somebody new is dealt one of the four styles as their first page opens —
+ * dealStyle() in assets/track.js, **The four styles, dealt** in README.md —
+ * and the same facts are counted a fourth time per colour and per kind of
+ * visitor, under the `style` kind as `<colour>:<who>:<fact>`, with the
+ * visitors dealt each as `<colour>:new` and `<colour>:back`. Only a browser
+ * that was dealt a colour is counted here, the rails' rule: one that chose
+ * a colour, or arrived on a link carrying one, is in no arm. This is what
+ * says which colour people stay longest in and open most under, which the
+ * deal's own counts in press_counts — dealt, opened, back, changed — cannot:
+ * those are one fact per browser, these are every visit.
+ *
  * WHAT THE CHAT WAS ASKED
  *
  * The chat on the map — **Ask for somewhere** in README.md — is the one
@@ -293,7 +306,8 @@
  * with the same pages in them are the same number of rows. The pages, the
  * visitor kinds, the rails and the facts counted under them are lists
  * written here — forty ids a day at the most between the `cohort` and
- * `layout` kinds, and ten for `ask` — and so are the steps of SIGNING UP,
+ * `layout` kinds, another sixty-four for `style`, and ten for `ask` — and so
+ * are the steps of SIGNING UP,
  * a page's worth of them for each page that has a form; the languages are
  * the ones data/ui.json speaks, and WHAT IT WAS ABOUT is the stories, posts,
  * decks and deals the site ships. The countries, the sources, the presses,
@@ -418,6 +432,9 @@ export const PAGES = [
 
 /* The two rails, as pickLayout() in assets/app.js deals them. */
 const RAILS = ['a', 'b'];
+/* The four colours a newcomer may be dealt — STYLE_DEALS in assets/track.js,
+   STYLE_ARMS in ./stats.js. THE FOUR COLOURS. */
+const COLOURS = ['red', 'green', 'blue', 'plum'];
 
 /* New and returning — see NEW AGAINST RETURNING. */
 const WHO = ['new', 'back'];
@@ -589,17 +606,24 @@ function railOf(body) {
   return RAILS.includes(body.layout) ? body.layout : null;
 }
 
+/* The colour the browser was dealt, or null where it was not dealt one. */
+function colourOf(body) {
+  return COLOURS.includes(body.style) ? body.style : null;
+}
+
 /* New or returning, or null where the browser could not keep the date. */
 function whoOf(body) {
   return WHO.includes(body.who) ? body.who : null;
 }
 
 /* One fact about a visit, filed under its kind of visitor and, where it has
-   one, under its rail as well — NEW AGAINST RETURNING and THE TWO RAILS. */
-function split(facts, rail, who, fact, n) {
+   them, under its rail and its colour as well — NEW AGAINST RETURNING, THE
+   TWO RAILS and THE FOUR COLOURS. */
+function split(facts, arms, who, fact, n) {
   if (!who || !(n > 0)) return;
   facts.push(['cohort', who + ':' + fact, n]);
-  if (rail) facts.push(['layout', rail + ':' + who + ':' + fact, n]);
+  if (arms.rail) facts.push(['layout', arms.rail + ':' + who + ':' + fact, n]);
+  if (arms.colour) facts.push(['style', arms.colour + ':' + who + ':' + fact, n]);
 }
 
 /* One batch of [kind, id, n] facts, today. True when it was counted. */
@@ -656,10 +680,10 @@ function foundOf(from, at) {
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  const rail = railOf(body);
+  const arms = { rail: railOf(body), colour: colourOf(body) };
 
   const facts = [['view', page, 1], ['hour', hourNow(), 1]];
-  split(facts, rail, whoOf(body), 'views', 1);
+  split(facts, arms, whoOf(body), 'views', 1);
   if (body.first === true) {
     const who = body.back === true ? 'back' : 'new';
     const site = siteOf(request);
@@ -670,7 +694,8 @@ export async function countArrive(context, body) {
       ['from', source, 1],
       ['entry', page, 1]
     );
-    if (rail) facts.push(['layout', rail + ':' + who, 1]);
+    if (arms.rail) facts.push(['layout', arms.rail + ':' + who, 1]);
+    if (arms.colour) facts.push(['style', arms.colour + ':' + who, 1]);
     const found = foundOf(body.from, body.at);
     if (found) facts.push(['found', found, 1]);
     const ref = refOf(body.from, source, site);
@@ -797,7 +822,7 @@ export async function readLive(env) {
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  const rail = railOf(body);
+  const arms = { rail: railOf(body), colour: colourOf(body) };
   const who = whoOf(body);
 
   const facts = [];
@@ -809,7 +834,7 @@ export async function countLeave(context, body) {
   }
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
   if (secs > 0) facts.push(['time', page, secs]);
-  split(facts, rail, who, 'secs', secs);
+  split(facts, arms, who, 'secs', secs);
 
   let pressed = 0;
   const presses = body.presses && typeof body.presses === 'object' ? body.presses : {};
@@ -829,10 +854,10 @@ export async function countLeave(context, body) {
     if (SIGNUP.has(name)) facts.push(['signup', page + ':' + name, n]);
     if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
-  split(facts, rail, who, 'presses', pressed);
-  split(facts, rail, who, 'login', signs.login);
-  split(facts, rail, who, 'signup', signs.signup);
-  if (page === 'map') split(facts, rail, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
+  split(facts, arms, who, 'presses', pressed);
+  split(facts, arms, who, 'login', signs.login);
+  split(facts, arms, who, 'signup', signs.signup);
+  if (page === 'map') split(facts, arms, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
   facts.push(...await languageFacts(context, body, who));
   facts.push(...searchFacts(body));
   facts.push(...await aboutFacts(context, body));
@@ -996,6 +1021,8 @@ function paired(one, two, a, b) {
  *              included; `day` is the first day the bar covers
  *   cohorts    [{ id, visitors, ...FACTS }] new and returning, over the
  *              days of the range that tell them apart
+ *   colours    [{ id, visitors, back, ...FACTS, fresh }] the four colours,
+ *              the same shape as the rails — THE FOUR COLOURS
  *   layouts    [{ id, visitors, back, ...FACTS, fresh }] the two rails over
  *              the same days, `fresh` being the rail's new visitors alone
  *   pages      [{ id, name, views, secs, left, idle, secsLeft }] most
@@ -1077,6 +1104,7 @@ export async function readVisitors(env, span, ui, spoken) {
   const hours = new Array(24).fill(0);
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
+  const colours = new Map(COLOURS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
   const sofar = { ...quad(), rails: { a: quad(), b: quad(), none: quad() } };
 
@@ -1125,9 +1153,9 @@ export async function readVisitors(env, span, ui, spoken) {
     else if (r.kind === 'cohort') {
       const [who, fact] = r.id.split(':');
       if (cohorts.has(who) && FACTS.includes(fact)) cohorts.get(who)[fact] += r.n;
-    } else if (r.kind === 'layout' && told.has(r.day)) {
-      const [rail, who, fact] = r.id.split(':');
-      const into = rails.get(rail);
+    } else if ((r.kind === 'layout' || r.kind === 'style') && told.has(r.day)) {
+      const [arm, who, fact] = r.id.split(':');
+      const into = (r.kind === 'layout' ? rails : colours).get(arm);
       if (!into || !WHO.includes(who)) continue;
       if (!fact) {
         into.visitors += r.n;
@@ -1156,6 +1184,7 @@ export async function readVisitors(env, span, ui, spoken) {
     ...bars(span, byDay),
     cohorts: [...cohorts.values()],
     layouts: [...rails.values()],
+    colours: [...colours.values()],
     pages: PAGES
       .filter((p) => pages.has(p.id))
       .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))
