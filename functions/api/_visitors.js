@@ -421,11 +421,12 @@ export const SPANS = [1, 7, 28, 90];
 /* The pages worth telling apart, each with the string data/ui.json already
    names it by where there is one. A page is known by its address, and the
    two subdomains by their host, since both answer at the root. An address
-   none of them claims is the map — pageOf() says why — and /admin/ sends
-   nothing at all, since the only visitor there is the owner. Exported for
-   tools/validate.mjs, which holds every `page:` and `view:` signal in
-   data/flows.json to these ids, and every page that loads assets/track.js
-   to being named here: a page left out would be counted as the map. */
+   none of them claims is the not-found page — pageOf() says why — and
+   /admin/ sends nothing at all, since the only visitor there is the owner.
+   Exported for tools/validate.mjs, which holds every `page:` and `view:`
+   signal in data/flows.json to these ids, and every page that loads
+   assets/track.js to being named here: a page left out would be counted as
+   not found. */
 export const PAGES = [
   { id: 'map', label: 'visitorsPageMap', paths: ['/', '/index.html'] },
   { id: 'lists', label: 'listsAllTitle', paths: ['/lists'] },
@@ -442,7 +443,11 @@ export const PAGES = [
   { id: 'feedback', label: 'feedbackTitle', paths: ['/feedback', '/feedback.html'] },
   { id: 'deal', label: 'passTitle', paths: ['/deal', '/deal.html'] },
   { id: 'verify', label: 'verifyTitle', paths: ['/verify', '/verify.html'] },
-  { id: 'staff', label: 'visitorsPageStaff', paths: ['/staff', '/staff.html'] }
+  { id: 'staff', label: 'visitorsPageStaff', paths: ['/staff', '/staff.html'] },
+  /* 404.html, which Pages serves at any address nothing else answers. It
+     says /404 itself, through data-page on its track.js tag, because the
+     address it is read at is whatever somebody mistyped. */
+  { id: 'missing', label: 'visitorsPageMissing', paths: ['/404', '/404.html'] }
 ];
 
 /* The two rails, as pickLayout() in assets/app.js deals them. */
@@ -592,13 +597,17 @@ function add(env, day, kind, id, n) {
    sent to the origin the page is on — and the path the page sends. Exported
    for ./_flows.js, which reads the same report a third way.
 
-   An address no page claims is the map. The project has no 404.html, so
-   Pages answers a mistyped or out-of-date link with index.html, and the
-   person reading it is on the map. It used to be counted nowhere, which
-   lost more than a view: the page had already written today into ttb.seen,
-   so every later page that day said it was not the first, and the visitor
-   was never counted at all. tools/validate.mjs holds every page that
-   reports to being named in PAGES, so a page left out cannot hide here. */
+   An address no page claims is the not-found page. Pages answers a
+   mistyped or out-of-date link with 404.html, which reports itself as /404
+   and so is claimed above; what falls through to here is a report nothing
+   on the site would send, and filing it as not found is the honest guess.
+   It is filed somewhere rather than nowhere, because counting nothing loses
+   more than a view: the page has already written today into ttb.seen, so
+   every later page that day says it is not the first, and the visitor is
+   never counted at all. This used to be the map, when the project had no
+   404.html and Pages answered every unknown address with index.html.
+   tools/validate.mjs holds every page that reports to being named in PAGES,
+   so a page left out cannot hide here. */
 export function pageOf(request, path) {
   const host = new URL(request.url).hostname;
   const at = String(path || '');
@@ -606,7 +615,7 @@ export function pageOf(request, path) {
     (p.host && host.startsWith(p.host)) ||
     (p.paths && p.paths.includes(at)) ||
     (p.prefix && at.startsWith(p.prefix) && at.length > p.prefix.length));
-  return page ? page.id : 'map';
+  return page ? page.id : 'missing';
 }
 
 /* The step a page names as the one before its first — `page:/lists`,

@@ -303,6 +303,12 @@ window.TTBTrack = (function () {
   var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
   var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER;
   var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
+  /* Which page this is, for the count: its own address, except where its tag
+     says otherwise. 404.html is the one that does — Pages serves it at
+     whatever address was mistyped, and that address names no page, so it
+     reports itself as /404, the address PAGES in functions/api/_visitors.js
+     knows it by. */
+  var PAGE = (document.currentScript && document.currentScript.getAttribute('data-page')) || window.location.pathname;
   var arrived = false;
   var DAY = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -372,9 +378,8 @@ window.TTBTrack = (function () {
      functions/api/_flows.js is what reads the path back into a page. */
   function lastStep(names) {
     var name = names[names.length - 1];
-    var path = window.location.pathname;
-    if (name === 'page' || name === 'view') return name + ':' + path;
-    return name + '@' + path;
+    if (name === 'page' || name === 'view') return name + ':' + PAGE;
+    return name + '@' + PAGE;
   }
 
   /* The page opened. Whether it is this browser's first today, and whether
@@ -417,13 +422,13 @@ window.TTBTrack = (function () {
     if (first) pinPhone();
     send({
       kind: 'arrive',
-      id: window.location.pathname,
+      id: PAGE,
       /* The whole address, query and all, which the count reads only for a
          visitor a search engine sent — FOUND BY A SEARCH ENGINE in
          functions/api/_visitors.js: /blog?post=… and /?spot=… are the pages
          a search lands on, and the path alone would file them all as the
          blog and the map. The query as the page was opened — LANDED. */
-      at: (window.location.pathname + LANDED).slice(0, 200),
+      at: (PAGE + LANDED).slice(0, 200),
       first: first,
       back: who === 'back',
       who: who,
@@ -641,7 +646,7 @@ window.TTBTrack = (function () {
     });
     if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
         !trail.length && !searched.length && !abouts.length) return;
-    var body = { kind: 'leave', id: window.location.pathname, secs: secs, presses: tallied,
+    var body = { kind: 'leave', id: PAGE, secs: secs, presses: tallied,
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(), phone: phoneArm(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (via) body.via = via;

@@ -208,9 +208,8 @@ event it sends and reports the tally with the time on screen — so a name is a
 lowercase word with underscores, which is the shape `functions/api/_visitors.js`
 accepts, and a new page that loads `track.js` is counted there with nothing
 more to do, once its path is named in `PAGES` in that file. Name it in the
-same commit: an address `PAGES` does not claim is counted as the map, which
-is what Pages serves at one, and `node tools/validate.mjs` fails a page that
-loads `track.js` without it. The site's count keeps a press's name and never
+same commit: an address `PAGES` does not claim is counted as not found, and
+`node tools/validate.mjs` fails a page that loads `track.js` without it. The site's count keeps a press's name and never
 its parameters, so a page that shows one of the owner's things — a story, a
 post, a deck, a discount — also says which through `TTBTrack.about(what,
 id)`, once a load, and `ABOUT` in `functions/api/_visitors.js` holds the id
@@ -327,11 +326,11 @@ browser cannot import from `tools/`; change one, change the other.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is the chip's name on every rail; the other nine sit beside it.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the eighteen pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the nineteen pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`, `split.html`,
-  `flashcard.html`, `edit.html`, `insights.html`, `chess.html`, and the owner's five under
+  `flashcard.html`, `edit.html`, `insights.html`, `chess.html`, `404.html`, and the owner's five under
   `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` is

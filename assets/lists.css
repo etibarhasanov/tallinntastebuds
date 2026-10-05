@@ -256,6 +256,19 @@
 .lists-say { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .lists-say:last-child { margin-bottom: 0; }
 
+/* The address 404.html was asked at, under its title: in the mono, because
+   it is something typed rather than a sentence, and broken anywhere, because
+   a long one has no spaces to wrap at and must not push the card wider than
+   a phone. */
+.notfound-at {
+  margin: 4px 0 14px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 /* The byline under a list's own title. The phrase inside it, and the link in
    the phrase, are .lists-index-by — the same byline every directory row
    carries. */
