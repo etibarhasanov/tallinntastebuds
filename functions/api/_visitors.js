@@ -225,6 +225,21 @@
  * deal's own counts in press_counts — dealt, opened, back, changed — cannot:
  * those are one fact per browser, these are every visit.
  *
+ * TIME ON PHONES
+ *
+ * How long somebody new spends on a phone, by the rail and the colour they
+ * were dealt together — the question neither test's card answers alone,
+ * since each mixes phones with desktops, which always draw the full rail.
+ * Under the `phone` kind, `<rail>:<colour>:visitors` once on a newcomer's
+ * first page of the day and `<rail>:<colour>:secs` on every report after,
+ * the rail `a`, `b` or `none` for one not dealt yet. The arm is not read
+ * off each report but pinned by assets/track.js on that first page and
+ * carried all day — pinPhone() there says why — so a visitor and their
+ * minutes are always in the same cell. New visitors only, on phones only,
+ * and only under a dealt colour: PHONE_ARMS is the closed list, twelve arms
+ * and two facts. It began counting the day it shipped and nothing before
+ * that can be split by device, because the time was never filed with one.
+ *
  * WHAT THE CHAT WAS ASKED
  *
  * The chat on the map — **Ask for somewhere** in README.md — is the one
@@ -479,6 +494,10 @@ const MAX_PRESS_IDS = 300;
 const CODE = /^[a-z]{2}$/;
 const MAX_STEP = 200;
 
+/* The twelve cells of TIME ON PHONES: each rail, or none yet, by each
+   colour. */
+const PHONE_ARMS = ['a', 'b', 'none'].flatMap((rail) => COLOURS.map((colour) => rail + ':' + colour));
+
 /* What a browser is driven with, as assets/track.js decides it — WHEN THEY
    COME, AND ON WHAT. */
 const DEVICES = ['phone', 'tablet', 'desktop'];
@@ -611,6 +630,11 @@ function colourOf(body) {
   return COLOURS.includes(body.style) ? body.style : null;
 }
 
+/* The cell a phone newcomer was pinned to today, or null — TIME ON PHONES. */
+function phoneOf(body) {
+  return PHONE_ARMS.includes(body.phone) ? body.phone : null;
+}
+
 /* New or returning, or null where the browser could not keep the date. */
 function whoOf(body) {
   return WHO.includes(body.who) ? body.who : null;
@@ -702,6 +726,8 @@ export async function countArrive(context, body) {
     if (ref) facts.push(['ref', ref, 1]);
     if (CODE.test(body.asks)) facts.push(['asks', body.asks, 1]);
     if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
+    const phone = phoneOf(body);
+    if (phone) facts.push(['phone', phone + ':visitors', 1]);
   }
   const tag = typeof body.tag === 'string' ? body.tag.toLowerCase() : '';
   if (TAG.test(tag)) facts.push(['tag', tag, 1]);
@@ -835,6 +861,8 @@ export async function countLeave(context, body) {
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
   if (secs > 0) facts.push(['time', page, secs]);
   split(facts, arms, who, 'secs', secs);
+  const phone = phoneOf(body);
+  if (phone && secs > 0) facts.push(['phone', phone + ':secs', secs]);
 
   let pressed = 0;
   const presses = body.presses && typeof body.presses === 'object' ? body.presses : {};
@@ -1025,6 +1053,8 @@ function paired(one, two, a, b) {
  *              the same shape as the rails — THE FOUR COLOURS
  *   layouts    [{ id, visitors, back, ...FACTS, fresh }] the two rails over
  *              the same days, `fresh` being the rail's new visitors alone
+ *   phones     [{ id, visitors, secs }] the twelve `<rail>:<colour>` cells
+ *              of phone newcomers over the range — TIME ON PHONES
  *   pages      [{ id, name, views, secs, left, idle, secsLeft }] most
  *              viewed first: `left` the views that reported how they ended,
  *              `idle` the ones that reported nothing pressed, and `secsLeft`
@@ -1105,6 +1135,7 @@ export async function readVisitors(env, span, ui, spoken) {
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const colours = new Map(COLOURS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
+  const phones = new Map(PHONE_ARMS.map((id) => [id, { id: id, visitors: 0, secs: 0 }]));
   const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
   const sofar = { ...quad(), rails: { a: quad(), b: quad(), none: quad() } };
 
@@ -1134,6 +1165,12 @@ export async function readVisitors(env, span, ui, spoken) {
     else if (r.kind === 'nav') bump(moves, r.id, r.n);
     else if (r.kind === 'asks') bump(asked, r.id, r.n);
     else if (r.kind === 'device') bump(devices, r.id, r.n);
+    else if (r.kind === 'phone') {
+      const at = r.id.lastIndexOf(':');
+      const cell = phones.get(r.id.slice(0, at));
+      const fact = r.id.slice(at + 1);
+      if (cell && (fact === 'visitors' || fact === 'secs')) cell[fact] += r.n;
+    }
     else if (r.kind === 'signup') {
       const at = r.id.indexOf(':');
       const name = r.id.slice(at + 1);
@@ -1185,6 +1222,7 @@ export async function readVisitors(env, span, ui, spoken) {
     cohorts: [...cohorts.values()],
     layouts: [...rails.values()],
     colours: [...colours.values()],
+    phones: [...phones.values()],
     pages: PAGES
       .filter((p) => pages.has(p.id))
       .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))

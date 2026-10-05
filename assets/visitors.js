@@ -6,8 +6,8 @@
  * rails. Then a range and its five figures, and under them four groups, each
  * under a heading — see group():
  *
- *   Tests            the directory's two looks, the four colours, then
- *                    the map's two rails
+ *   Tests            the directory's two looks, time on phones by colour
+ *                    and rail, the four colours, then the map's two rails
  *   Who they are     a bar a day, new against returning, a bar an hour,
  *                    phone against desktop, countries, languages
  *   How they found it  where they came from, where search landed them
@@ -908,6 +908,57 @@
     return card(kids);
   }
 
+  /* Time on phones — TIME ON PHONES in functions/api/_visitors.js: how long
+     somebody new on a phone stayed, by the colour they were dealt down the
+     side and the rail across, with a column for those who never reached the
+     map and so were dealt no rail, and a total each way — the last column
+     is the colours alone, the last row the rails alone. Then the same grid
+     as head counts, so a long average out of three visitors is read as the
+     three it is. No verdict: a time is not the yes-or-no the z-test asks
+     about. Drawn from the day it began counting, noughts and all, like the
+     other tests. */
+  function phones() {
+    var cells = state.data.phones;
+    if (!cells) return null;
+    var RAIL_COLS = ['a', 'b', 'none', ''];
+    var COLOUR_ROWS = Object.keys(COLOURS).concat(['']);
+    var sum = function (rail, colour) {
+      var out = { visitors: 0, secs: 0 };
+      cells.forEach(function (c) {
+        var at = c.id.indexOf(':');
+        if ((rail && c.id.slice(0, at) !== rail) || (colour && c.id.slice(at + 1) !== colour)) return;
+        out.visitors += c.visitors;
+        out.secs += c.secs;
+      });
+      return out;
+    };
+    var heads = [t('visitorsLayoutFull'), t('visitorsLayoutShort'), t('visitorsNoRail'), t('visitorsAllRails')];
+    var name = function (colour) { return colour ? t(COLOURS[colour]) : t('visitorsAllColours'); };
+    var table = function (key, show) {
+      return [
+        el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }),
+        grid(t(key), heads, COLOUR_ROWS, name, function (colour) {
+          return RAIL_COLS.map(function (rail) { return show(sum(rail, colour)); });
+        })
+      ];
+    };
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('visitorsPhones') }),
+      el('p', { className: 'stats-lead', textContent: t('visitorsPhonesLead', { min: FEWEST }) })
+    ].concat(
+      table('visitorsPhonesTime', function (c) { return c.visitors ? clock(c.secs / c.visitors) : '–'; }),
+      table('visitorsPhonesCount', function (c) { return num(c.visitors); })
+    ));
+  }
+
+  /* A time as minutes and seconds, 3:48 — for a grid four times across,
+     where duration()'s "3m 48s" breaks onto two lines in every cell. */
+  function clock(secs) {
+    secs = Math.round(secs);
+    var s = secs % 60;
+    return Math.floor(secs / 60) + ':' + (s < 10 ? '0' : '') + s;
+  }
+
   /* A heading and the cards under it, or nothing at all where every card
      came back empty — a heading over nothing reads as a section that failed
      to load. The heading is the quiet one .lists-section draws, because it
@@ -1032,10 +1083,10 @@
          they are what a look at this page is most often for, and at the
          twelfth card they were found by scrolling past everything else. The
          short cards before the long inside it — the lists' looks is a few
-         rows, the colours and the rails are three tables each — so the
-         short one is not a screen and a half under the heading. A group
-         with nothing in it draws no heading. */
-      group(stack, 'visitorsTests', [looks(), colours(), layouts()]);
+         rows and time on phones two small grids, the colours and the rails
+         three tables each — so the short ones are not a screen and a half
+         under the heading. A group with nothing in it draws no heading. */
+      group(stack, 'visitorsTests', [looks(), phones(), colours(), layouts()]);
       group(stack, 'visitorsWho', [
         d.series ? card(chart()) : null,
         cohorts(),
