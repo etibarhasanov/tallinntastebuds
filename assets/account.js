@@ -902,6 +902,9 @@
         signOut(),
         /* A step on the map's sheet like the first two, since it asks for
            the password too. */
+        /* What the account keeps and how long, beside the one link that
+           takes all of it away. */
+        link('privacyLink', '/privacy', 'privacy_open', { from: 'account' }),
         link('accountDelete', SHEET + 'delete' + BACK, 'account_delete_open', null, 'alt is-danger')
       ])
     ]);

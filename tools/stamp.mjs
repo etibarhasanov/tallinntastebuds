@@ -43,7 +43,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PAGES = [
   'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
   'deal.html', 'verify.html', 'staff.html', 'split.html',
-  'flashcard.html', 'edit.html', 'insights.html', 'chess.html', '404.html',
+  'flashcard.html', 'edit.html', 'insights.html', 'chess.html', '404.html', 'privacy.html',
   /* The owner's five, under admin/ — see functions/_middleware.js. */
   'admin/google.html', 'admin/stats.html', 'admin/visitors.html', 'admin/found.html',
   'admin/flows.html'

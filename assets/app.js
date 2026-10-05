@@ -3173,7 +3173,9 @@
     dom.moreCard.appendChild(close);
 
     /* A row that leaves for an address is an <a>, the way the two doors are
-       on the rail; a row that does something to this page is a button. */
+       on the rail; a row that does something to this page is a button. `id`
+       is the pill the row stands in for, counted as a press of it; Privacy
+       stands in for no pill, so it passes none and counts only its event. */
     function row(id, name, why, href, event, press) {
       var node = el(href ? 'a' : 'button', href
         ? { className: 'menu-row', href: href }
@@ -3186,7 +3188,7 @@
       ]);
       node.addEventListener('click', function () {
         TTBTrack.event(event);
-        postPress('rail', id);
+        if (id) postPress('rail', id);
         if (press) press();
       });
       return el('li', { className: 'menu-item' }, [node]);
@@ -3210,7 +3212,8 @@
           setStyle(next);
           renderMore();
         }),
-        row('feedback', t('feedbackTitle'), t('feedbackWhy'), '/feedback', 'feedback_open')
+        row('feedback', t('feedbackTitle'), t('feedbackWhy'), '/feedback', 'feedback_open'),
+        row('', t('privacyLink'), t('privacyWhy'), '/privacy', 'privacy_open')
       ])
     ]));
   }
@@ -3790,6 +3793,15 @@
        it is yours, so nobody — including whoever runs this site — can hand it
        back. */
     if (creating) form.appendChild(accountWarn(t('accountNoReset')));
+
+    /* And where it says what an account keeps, for anybody who wants to know
+       before they make one rather than after. A link and not a box to tick:
+       nothing here is agreed to, it is said. */
+    if (creating) {
+      form.appendChild(el('p', { className: 'ac-why' }, [
+        TTBTrack.click(el('a', { href: '/privacy', textContent: t('privacySignup') }), 'privacy_open', { from: 'signup' })
+      ]));
+    }
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
     go.addEventListener('click', function () {

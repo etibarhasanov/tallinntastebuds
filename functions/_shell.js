@@ -140,7 +140,8 @@ export const EMPTY = {
      for both: what this table is is a page's promise about its own markup, and
      two pages that happen to agree today are two pages that may not. */
   'flashcard.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
-  'blog.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
+  'blog.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
+  'privacy.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
 };
 
 export const SITE = 'https://tallinntastebuds.ee';

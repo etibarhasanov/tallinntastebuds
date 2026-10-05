@@ -190,6 +190,9 @@ export function render(langs, placeIds, shelfIds, faces, postIds) {
   entries.push(entry(SITE + '/blog'));
   for (const id of postIds || []) entries.push(entry(SITE + '/blog?post=' + id));
   entries.push(entry(SITE + '/chess'));
+  /* The privacy policy, in English — the version that counts; the nine
+     translations are the same page at ?lang= and say so at the top. */
+  entries.push(entry(SITE + '/privacy'));
   for (const name of faces) entries.push(entry(SITE + '/u/' + name));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
      one address is found the way any linked page is; this file is still very
