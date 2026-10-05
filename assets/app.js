@@ -2282,6 +2282,22 @@
     dom.panelSave.setAttribute('title', label);
   }
 
+  /* The way there, in the panel's top strip. Drawn on any place the catalogue
+     can point a map at — the same condition the button in the write-up has —
+     and carrying Google's key when it is known, the way that one does: a
+     stand-in is filed under it, and a place of mine gets it from the block at
+     the foot of the panel, whose fillGoogle() calls this again once it lands. */
+  function paintDirections() {
+    var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
+    dom.panelDirections.hidden = !place || typeof place.lat !== 'number' || typeof place.lng !== 'number';
+    if (dom.panelDirections.hidden) return;
+    var row = googleFor[place.id];
+    var key = place.google ? place.id : row && row !== ASKING ? row.id : '';
+    dom.panelDirections.href = directionsUrl(place, key);
+    dom.panelDirections.setAttribute('aria-label', t('directions'));
+    dom.panelDirections.setAttribute('title', t('directions'));
+  }
+
   /* Whether there is a link worth handing over, which is nearly always and
      not quite.
 
@@ -6892,6 +6908,7 @@
     /* Beside the mark, and painted with it: both turn on which place is open,
        and the label is a string that moves with the language. */
     paintShare();
+    paintDirections();
     renderBand();
     var detail = state.view === 'detail' && state.selected;
     var asking = state.view === 'ask';
@@ -7402,6 +7419,7 @@
        matters. */
     var dir = dom.detail.querySelector('a[data-directions]');
     if (dir) dir.href = directionsUrl(place, row.id);
+    paintDirections();
 
     /* The score and the count, never apart — scoreMark() says why. */
     if (typeof row.rating === 'number') {
@@ -11446,6 +11464,12 @@
     });
     dom.panelSave.addEventListener('click', pressSave);
     dom.panelShare.addEventListener('click', pressShare);
+    /* The same press the button in the write-up reports, so the name is read
+       when it happens: which place is open is not known as the page boots. */
+    dom.panelDirections.addEventListener('click', function () {
+      var place = byId(state.selected);
+      TTBTrack.event('directions', { place: place ? place.name : '' });
+    });
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
@@ -11950,6 +11974,7 @@
       panelSave: $('panel-save'),
       panelSaveN: $('panel-save-n'),
       panelShare: $('panel-share'),
+      panelDirections: $('panel-directions'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       btnMore: $('btn-more'),

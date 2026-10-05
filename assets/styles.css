@@ -2294,7 +2294,7 @@ body.panel-detail .panel {
   position: absolute;
   z-index: 3;
   top: 5px;
-  right: 96px;             /* the close and the share, 36px each, 8px apart */
+  right: 140px;            /* the close, the share and the way there, 36px each, 8px apart */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2352,7 +2352,10 @@ body.panel-detail .panel {
   100% { transform: scale(1); }
 }
 
-/* The link out, between the close and the mark. A disc and always a disc —
+/* The way there sits between the share and the mark and is the same disc: a
+   link to Google's route, nothing pressed, nothing kept.
+
+   The link out, between the close and the mark. A disc and always a disc —
    there is no count on it and no pressed state, since a share is a thing you
    do once and it is over — so it takes the anchor next to the close and lets
    the mark grow leftwards past it.
@@ -2360,11 +2363,11 @@ body.panel-detail .panel {
    It answers in the accent on hover the way the mark does, and never fills:
    an outline that fills in is this panel's word for "kept", and nothing is
    kept by sending a link. */
-.panel-share {
+.panel-share,
+.panel-directions {
   position: absolute;
   z-index: 3;
   top: 5px;
-  right: 52px;             /* the close, its 36px, and the same 8px again */
   display: grid;
   place-items: center;
   width: 36px;
@@ -2374,11 +2377,16 @@ body.panel-detail .panel {
   background: var(--paper);
   color: var(--muted);
 }
+.panel-share { right: 52px; }       /* the close, its 36px, and the same 8px again */
+.panel-directions { right: 96px; }  /* and the share, the same again */
 /* display on a class beats the UA sheet's [hidden] rule, the same trap the
    mark above falls into. */
-.panel-share[hidden] { display: none; }
-.panel-share:hover { background: var(--wash); color: var(--accent); }
-.panel-share svg {
+.panel-share[hidden],
+.panel-directions[hidden] { display: none; }
+.panel-share:hover,
+.panel-directions:hover { background: var(--wash); color: var(--accent); }
+.panel-share svg,
+.panel-directions svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -4505,6 +4513,11 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   body.panel-detail .panel-save,
   body.panel-ask .panel-save {
     top: calc(5px + var(--band-h, 0px));
+    right: calc(var(--panel-w) + var(--gap) + 140px);
+  }
+  body.panel-detail .panel-directions,
+  body.panel-ask .panel-directions {
+    top: calc(5px + var(--band-h, 0px));
     right: calc(var(--panel-w) + var(--gap) + 96px);
   }
   body.panel-detail .panel-share,
@@ -4949,17 +4962,20 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
      This is the screen the whole button is for — a link read off the address
      bar of the browser Facebook opens inside itself is the thing nobody
      does — so it gets the full 40px. */
-  .panel-share {
+  .panel-share,
+  .panel-directions {
     top: 4px;
-    right: 56px;
     width: 40px;
     height: 40px;
     color: var(--ink);
   }
-  .panel-share svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .panel-share { right: 56px; }
+  .panel-directions { right: 104px; }
+  .panel-share svg,
+  .panel-directions svg { width: 20px; height: 20px; stroke-width: 1.8; }
   .panel-save {
     top: 4px;
-    right: 104px;
+    right: 152px;
     min-width: 40px;
     height: 40px;
   }
@@ -5295,7 +5311,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* ---------- print: the list, on paper ---------- */
 
 @media print {
-  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .panel-share, .toast, .lightbox, .stories { display: none !important; }
+  #map, .controls, .filter-bar, .rail, .brand, .panel-close, .panel-save, .panel-directions, .panel-share, .toast, .lightbox, .stories { display: none !important; }
   body { overflow: visible; background: #fff; }
   .panel {
     position: static;
