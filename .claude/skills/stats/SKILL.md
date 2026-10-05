@@ -249,9 +249,10 @@ file adds:
 ## Adding a page
 
 1. Its path in `PAGES` in `_visitors.js`, with the `ui.json` key it is
-   already named by. An address `PAGES` does not claim is counted as the
-   map, and `node tools/validate.mjs` fails a page that loads `track.js`
-   without it.
+   already named by. An address `PAGES` does not claim is counted as not
+   found, and `node tools/validate.mjs` fails a page that loads `track.js`
+   without it. A page read at an address that is not its own — 404.html is
+   the one — says which it is with `data-page` on its `track.js` tag.
 2. `<script src="/assets/track.js">` before the page's own script, after
    `analytics.js`; `back.js` after it where the page is walked back from.
 3. Nothing else: its views, time, presses, entries and moves count with no

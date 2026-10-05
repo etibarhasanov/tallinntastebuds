@@ -7689,10 +7689,11 @@ beside it. A face is committed at **at least 200 × 200**, square: Facebook
 drops a preview picture smaller than that and unfurls the link with none,
 which is what the first, 168-pixel photograph did. `faceOf()` in
 `functions/api/_profile.js` asks the deployment for it
-with one HEAD, and counts it there only when the answer is an image: the
-site has no `404.html`, so Pages answers a missing file with `index.html` and
-a 200, and a check on the status alone once drew a broken picture on every
-profile without a face. Nothing is uploaded and nothing is stored: a photograph comes
+with one HEAD, and counts it there only when the answer is an image. Pages
+answers a missing file with a 404 now, but it answered with `index.html` and
+a 200 until the site had a `404.html`, and a check on the status alone once
+drew a broken picture on every profile without a face — so it still asks for
+both. Nothing is uploaded and nothing is stored: a photograph comes
 in by the road every photograph on this site takes, a commit, which today
 means the owner's. Uploads are a bucket, a route and a moderation question,
 and are **What is not built yet**.
@@ -11708,9 +11709,10 @@ counts a press, stays open, because every page on the site sends it. The page
 lives at `/admin/stats` and the ranking at `GET /api/admin/stats`, and
 `functions/_middleware.js` answers everything under `/admin/` and
 `/api/admin/` only for a signed-in account whose `users.id` is named in
-`ADMINS` in `wrangler.toml`. Anybody else gets a plain 404 for the page — a
-404 rather than a 403, so the address does not advertise itself — and a 403
-for the data, before the route or its cache is reached. `/stats`, where the
+`ADMINS` in `wrangler.toml`. Anybody else gets the site's not-found page for
+the page, byte for byte the answer any unknown address gets — a 404 rather
+than a 403, so the address does not advertise itself; **Not found** — and a
+403 for the data, before the route or its cache is reached. `/stats`, where the
 page used to be, is a 404 to everybody, and so is `GET /api/stats`.
 
 One lock on two prefixes rather than a check in each route, so a page or a
@@ -12140,13 +12142,15 @@ place. Bots mostly never reach it: the count is sent by the page's script and
 a crawler runs none.
 
 An address no page claims — a mistyped link, an old one somebody kept — is
-counted as the map, because that is what it shows: the site has no 404 page,
-so Pages answers it with `index.html`. It used to be counted nowhere, which
-lost the visitor as well as the view, since the page had already written
-today into `ttb.seen` and every later page that day said it was not the
-first. So a page that reports has to be named in `PAGES` in
-`functions/api/_visitors.js`, or its views land on the map's row, and
-`node tools/validate.mjs` fails a page that loads `track.js` without it.
+answered with the not-found page, **Not found**, which reports itself as
+`/404` and is counted under its own row, *Not found*. It is counted rather
+than left out because leaving it out lost the visitor as well as the view:
+the page has already written today into `ttb.seen`, so every later page that
+day would say it was not the first. Before 404.html existed, Pages answered
+such an address with the map and it was counted as the map. A page that
+reports has to be named in `PAGES` in `functions/api/_visitors.js`, or its
+views land on the not-found row, and `node tools/validate.mjs` fails a page
+that loads `track.js` without it.
 
 The dates are written on to the visitor's device, and ePrivacy asks about
 exactly that — see **No consent banner**. They are two dates, first-party,
@@ -13653,6 +13657,43 @@ with somewhere to send the reports, which is a change of its own. HSTS is not
 preloaded, because a preload is a promise to a list the browsers ship and
 takes months to take back.
 
+### Not found
+
+`404.html` is what every address nothing answers is answered with, and with a
+404: a mistyped link, an old one, a robot asking for `/llms.txt` or
+`/.well-known/` something. Until it existed Pages treated the site as a
+single-page app and answered all of those with the map and a 200, which told
+a search engine every typo was a page worth keeping and every robot that the
+file it asked for was there. The audit against specification.website counted
+that three times — error pages, a soft 404, and stable addresses.
+
+One card in the frame every page but the map wears: **Nothing at this
+address**, the address that was asked for under it in the mono so a typo can
+be seen for what it is, a line saying the page may have moved, and two ways
+on — **Back to the map** and **Everybody's lists**. All of it is in the markup
+in English, so it reads the same with scripts off; `assets/notfound.js` only
+wears the visitor's style, puts the words into their language — the index and
+one language file, the way the blog and the pass pages fetch theirs — and
+prints the address, as text, cut at 120 characters. Every address in the page
+is written from the root, because it is read at any depth. `noindex, follow`.
+
+**The owner's pages wear it too.** Everything under `/admin/` was a plain-text
+`Not found` to anybody but the owner, and so were the retired `/stats` and
+`/google`. Once every other wrong address showed a page, a bare line there
+would have said that something was behind it, so `notFound()` in
+`functions/_middleware.js` serves this same file with the same 404 instead.
+
+**It is counted as itself.** The page loads `assets/track.js` like any other,
+and the address it is read at names no page, so its tag carries
+`data-page="/404"` and it reports as that: `missing` in `PAGES` in
+`functions/api/_visitors.js`, *Not found* on `/admin/visitors`. What that row
+holds is how often people land on an address that is not there — a broken
+link somewhere worth finding. The individual addresses are not kept: they
+are whatever anybody typed, which is an open list the count does not take.
+
+Not done: no "did you mean", no search box, and no 410 for the retired
+addresses, which get this page like any other.
+
 ### Other hosts
 
 The same repo works unchanged on GitHub Pages, Netlify or any static host —
@@ -13786,8 +13827,8 @@ instead of a minute after the merge.
   the repository — see **Who uses the site, drawn**
 - a page that loads `assets/track.js` whose address `PAGES` in
   `functions/api/_visitors.js` does not name, since an address nothing
-  claims is counted as the map and every view of the page would be filed on
-  the map's row — see **A visitor is a browser on a day** under **Visitors**
+  claims is counted as not found and every view of the page would be filed
+  on that row — see **A visitor is a browser on a day** under **Visitors**
 - `index.html`, `lists.html`, `split.html` or `flashcard.html` without exactly
   one pair of `PAGE-HEAD` markers, which is where the Function serving that
   page writes its head; `rehead()` in `functions/_shell.js` leaves a page
@@ -16207,6 +16248,13 @@ How the page under your name is doing, `assets/insights.js`:
 | `list_page` | `list_id` — a row on **Your lists**, as on the lists |
 | `account_open` | `view` — the two doors when signed out |
 | `home` | as on the map |
+
+The not-found page, `404.html` (written into its markup as `data-track`):
+
+| event | parameters |
+| --- | --- |
+| `home` | the wordmark and **Back to the map** |
+| `notfound_lists` | — **Everybody's lists**, the second way on |
 
 The directory, `assets/venues.js`:
 

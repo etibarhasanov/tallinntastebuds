@@ -649,11 +649,13 @@ export function placeLists(rows, lists) {
    stored — the picture is in the repository or it is not — and nothing is
    drawn for the many who have none.
 
-   A 200 alone does not say the picture is there. The site has no top-level
-   404.html, so Pages serves it as a single-page app: a path that matches no
-   file answers 200 with index.html. Asking only for res.ok gave every
+   A 200 alone did not say the picture was there. Until the site had a
+   404.html, Pages served it as a single-page app: a path that matched no
+   file answered 200 with index.html. Asking only for res.ok gave every
    profile without a face the path to one, and the page drew a broken image
-   in an empty circle. So the answer has to be an image as well. */
+   in an empty circle. A missing face is a 404 now, but the answer is still
+   held to being an image as well, so the check does not rest on how Pages
+   answers a missing file. */
 export async function faceOf(context, name) {
   const url = new URL('/assets/faces/' + name + '.jpg', context.request.url);
   try {

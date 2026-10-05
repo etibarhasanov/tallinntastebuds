@@ -2182,16 +2182,17 @@ if (flowDoc) {
 }
 
 /* And every page that reports to the site's own count, named by its address
-   in PAGES. An address no page there claims is counted as the map, because
-   that is what Pages answers one with — pageOf() in
-   functions/api/_visitors.js — so a new page that loads assets/track.js and
-   is not named would put every view of it on the map's row, quietly. The
+   in PAGES. An address no page there claims is counted as not found —
+   pageOf() in functions/api/_visitors.js — so a new page that loads
+   assets/track.js and is not named would put every view of it on the
+   not-found row, quietly. 404.html is named by /404, the address it reports
+   itself as through data-page on its tag. The
    owner's pages under admin/ send nothing and are not asked. */
 for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
   if (!/assets\/track\.js/.test(readFileSync(join(ROOT, file), 'utf8'))) continue;
   const at = file === 'index.html' ? '/' : '/' + file.replace(/\.html$/, '');
   if (!PAGES.some((p) => (p.paths || []).includes(at))) {
-    fail(file, `loads assets/track.js, and no page in PAGES in functions/api/_visitors.js names ${at} — its views would be counted as the map's`);
+    fail(file, `loads assets/track.js, and no page in PAGES in functions/api/_visitors.js names ${at} — its views would be counted as not found`);
   }
 }
 

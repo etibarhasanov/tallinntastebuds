@@ -224,9 +224,9 @@ const GOOGLE_KEY = /^[A-Za-z0-9_-]{16,128}$/;
 /* ------------------------------------------------------- the ranking moved */
 
 /* The ranking is GET /api/admin/stats now. Without this, a GET here falls
-   through to the static files — the project has no 404.html, so Pages answers
-   an unknown address with the map — and a page still asking the old address
-   would be handed HTML where it expected numbers. */
+   through to the static files, which answer an unknown address with the
+   not-found page, 404.html — and a page still asking the old address would
+   be handed HTML where it expected numbers. */
 export function onRequestGet() {
   return json({ error: 'not-found' }, 404);
 }

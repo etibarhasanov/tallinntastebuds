@@ -117,21 +117,33 @@ const OWNER_PAGES = '/admin/';
 const OWNER_API = '/api/admin/';
 
 /* Where the statistics and the directory were before they moved under
-   /admin/. Nothing is served there now. Said out loud because this project
-   has no 404.html, so Pages would otherwise answer an unknown address with
-   the map, and a bookmark to /stats should say the page is gone rather than
-   quietly open something else. */
+   /admin/. Nothing is served there now, and a bookmark to /stats should say
+   so rather than be handed whatever a static file of that name might one day
+   be. */
 const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
 
-function notFound() {
-  return new Response('Not found', {
-    status: 404,
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-store',
-      'X-Robots-Tag': 'noindex, nofollow'
-    }
-  });
+/* The answer any other unknown address gets — 404.html with a 404 — so an
+   address under /admin/ looks exactly like one that was never there and says
+   nothing about what is behind it: the same bytes and the same headers,
+   because they are the asset server's own answer for an address that is not
+   there, handed back unchanged. NOWHERE is that address, and nothing in the
+   deployment is to be called it. Plain text only if the deployment cannot
+   be read at all, which is a broken deploy rather than a state anybody
+   visits. */
+const NOWHERE = '/__not-found__';
+
+async function notFound(context) {
+  try {
+    const url = new URL(NOWHERE, context.request.url);
+    return context.env.ASSETS
+      ? await context.env.ASSETS.fetch(new Request(url.toString()))
+      : await fetch(url.toString());
+  } catch (e) {
+    return new Response('Not found', {
+      status: 404,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' }
+    });
+  }
 }
 /* ------------------------------------------------------- end OWNER ONLY */
 
@@ -207,7 +219,7 @@ async function route(context) {
   try { path = decodeURIComponent(path); } catch (e) { /* as it came */ }
   const bare = path.length > 1 ? path.replace(/\/+$/, '') : path;
   const lower = bare.toLowerCase();
-  if (RETIRED.has(lower)) return notFound();
+  if (RETIRED.has(lower)) return notFound(context);
 
   if (lower.startsWith(OWNER_API)) {
     if (!(await adminUser(context.request, context.env))) {
@@ -223,7 +235,7 @@ async function route(context) {
   }
 
   if (lower.startsWith(OWNER_PAGES)) {
-    if (!(await adminUser(context.request, context.env))) return notFound();
+    if (!(await adminUser(context.request, context.env))) return notFound(context);
     /* The owner's copy is nobody else's either: no-store, so no cache between
        here and the browser can hand it to the next person to ask. */
     const res = await context.next();
