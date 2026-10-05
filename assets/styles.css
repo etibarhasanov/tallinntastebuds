@@ -32,6 +32,21 @@
   --map-tint: rgba(168, 30, 40, .36);
   --swatch-edge: rgba(0, 0, 0, .14);
 
+  /* The resting palette: what a page made of many cards wears instead of
+     the brick and ceramic the map stands on. One reader, the directory's
+     look B — [data-look="b"] .lists-body.is-all in assets/lists.css, and
+     "The lists' two looks" in README.md. Twenty cards of paper on wash, each
+     with a pink city and red marks on it, is pink on pink on pink with
+     nowhere for the eye to land; this is a paler ground with a breath of
+     sage in it, so the accent and the marks are the only warm things on the
+     page. Red's, to the value, like everything else here. */
+  --rest-wash:   #f1f4ec;
+  --rest-paper:  #fcfdfa;
+  --rest-line:   #e1e6dc;
+  --rest-ground: #e0e7d9;
+  --rest-muted:  #6b6c5f;
+  --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
+
   /* The three tones a pin can wear, and there are three because that is what
      a five-pixel dot on the directory's map can carry. See "The pins" in
      README.md: the mark goes on every place I have eaten at and cannot be
@@ -1272,6 +1287,9 @@ body.lang-open .controls { z-index: 1250; }
   --glass: rgba(255, 240, 234, .74);
   --attrib-bg: rgba(255, 240, 234, .88);
   --swatch-edge: rgba(0, 0, 0, .14);
+  --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
+  --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
+  --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
   --here: #0b62c4;
   --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
   --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
@@ -1298,6 +1316,12 @@ body.lang-open .controls { z-index: 1250; }
   --glass: rgba(29, 42, 35, .82);
   --attrib-bg: rgba(16, 26, 21, .86);
   --swatch-edge: rgba(255, 255, 255, .22);
+  /* Already green, and already dark, so resting is a step quieter rather
+     than a different world: the cards a shade nearer the ground, the edges
+     softer, no cast shadow on a page that is already night. */
+  --rest-wash: #111b16; --rest-paper: #18241e; --rest-line: #2a3832;
+  --rest-ground: #25332c; --rest-muted: #9fb2a5;
+  --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
   --here: #e0873a;
   /* The same ring in the dark style's own hue, with the ember arc left in it:
      a red ring on a green page would be the one thing on the site that did

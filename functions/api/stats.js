@@ -25,7 +25,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Five kinds, which is the whole of `kind` in db/schema.sql:
+ * Six kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened on the map — selectPlace() in assets/app.js,
  *            which is the same moment TTBTrack.view() reports one to Google
@@ -68,6 +68,13 @@
  *            the two rails' strangers side by side: how many got each, and
  *            how many of them found a place with it. "The short rail" in
  *            README.md.
+ *   look     the directory's look somebody new to the site was dealt on
+ *            their first open of /lists — `a` the page as it was or `b` at
+ *            rest, from pickLook() in assets/lists.js — and, on the day it
+ *            was dealt, `a-opened` / `b-opened` for the first list they
+ *            opened from it and `a-kept` / `b-kept` for the first they kept.
+ *            Six ids and no more, LOOK_IDS below. A test apart from the
+ *            rails, with its own deal; "The lists' two looks" in README.md.
  *
  * And four kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
@@ -133,7 +140,7 @@ import { adminUser } from './_admin.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
-/* The four kinds of thing a press can be about. In one place because the POST
+/* The six kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the ranking in ./admin/stats.js
    splits the rows on it. */
 export const PLACE = 'place';
@@ -141,6 +148,7 @@ export const FILTER = 'filter';
 export const LIST = 'list';
 export const RAIL = 'rail';
 export const LAYOUT = 'layout';
+export const LOOK = 'look';
 /* And four that are not counted here at all but handed on — see the POST —
    and one counted nowhere, which only asks Google — see the header. */
 const PROFILE = 'profile';
@@ -178,6 +186,9 @@ export const RAIL_PILLS = [
 
 /* The four things a stranger's deal can say — see the header. */
 export const LAYOUT_IDS = ['a', 'b', 'a-opened', 'b-opened'];
+
+/* And the six the directory's two looks can — see the header. */
+export const LOOK_IDS = ['a', 'b', 'a-opened', 'b-opened', 'a-kept', 'b-kept'];
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
@@ -218,7 +229,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, LOOK, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -275,6 +286,7 @@ export async function onRequestPost(context) {
              : kind === LIST ? await realList(context, id)
              : kind === RAIL ? realPill(id)
              : kind === LAYOUT ? LAYOUT_IDS.indexOf(id) !== -1
+             : kind === LOOK ? LOOK_IDS.indexOf(id) !== -1
              : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 

@@ -5779,6 +5779,14 @@ chips share the sticky row with the search field, so what narrows the page and
 what orders it are in one place and both stay under the thumb while the page
 grows.
 
+**And there are two of it, for now.** Twenty cards of paper on the pink wash,
+each with a pink city and red marks on it, was pink on pink on pink — every
+card lifted on the map's long shadow and every one carrying an outlined Save
+pill — and somebody said the eye had nowhere to rest. A calmer page was drawn,
+and rather than replace this one on a hunch, the two are set against each
+other: half the people new to the site see the page as it was and half the
+calm one. **The lists' two looks** is the whole of it.
+
 **A phone gets the title, whose list it is, the keep count and the three
 places, and that is all.** Under that same 900px the row carries no panel of
 city, and the bookmark loses its word and moves to the top corner as a mark —
@@ -5862,7 +5870,9 @@ the list.
 
 It is `--hairline` on `--paper` and not on `--wash`, which is the other half
 of why it used to read as empty: hairline against wash is seven values of
-difference, and seven values is a texture rather than a map.
+difference, and seven values is a texture rather than a map. The calm look
+draws it in `--rest-ground` instead, a shade firmer than its cards' edges, so
+the city still reads as land on that look's paler paper.
 
 **And the frame is fitted to the list, not to the city.** It was one fixed
 box — the same square of Tallinn on every card — on the argument that a
@@ -12202,6 +12212,12 @@ the rail once its places are in, which is after the page is ready, so its
 `TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
 the comparison most needs, a stranger's first, would arrive with no rail.
 
+Under it, **The lists' two looks** reads the directory's own test the same
+way, in one block: how many newcomers each look was dealt, and the share of
+them that opened a list from it and kept one that day, under the same
+verdict asked of the opens. The six `look` rows of `press_counts`, all-time
+like the rails' strangers; **The lists' two looks** has the rest.
+
 ### Signing up
 
 Sign-ins and accounts made are two numbers, and on the count's first three
@@ -15313,6 +15329,90 @@ list of what it leaves out.
 
 ---
 
+## The lists' two looks
+
+Everybody's lists has two faces, and the site deals one to half of the people
+new to it each. **A** is the page as it was: pink paper on the pink wash, the
+map's shadow under every card, a framed city inside each, an outlined Save
+pill in each corner. **B** is the same page at rest — a paler ground with a
+breath of sage in it, cards lifted no more than a hairline, and on a desk the
+head as the page's title rather than a card, the header on the rows' 1180px,
+more air between the cards than inside them, the city running to the card's
+edges, and Save its mark and its word in muted ink until it is pointed at.
+Kept is still the filled mark in the accent; on B's ground the accent and the
+marks are the only warm things on the screen, which is the point. A phone
+keeps its layout under either and gets B's colours under B.
+
+It is a test of its own, beside **The short rail** and not inside it: its own
+key, `ttb.look`, its own roll of the dice and its own kind in `press_counts`.
+Each deal is random whatever the other dealt, so neither can lean on the
+other's result, and a browser can hold any of the four pairs.
+
+### Who gets it
+
+`pickLook()` in `assets/lists.js`, called as the directory boots, before
+anything is drawn:
+
+1. `?look=a` or `?look=b` names one and pins it — how the owner sees either on
+   a browser dealt the other. A look pinned by hand is never counted.
+2. A look already dealt is kept, for good: a page that changed its face
+   between visits would be measuring the change rather than either face.
+3. Otherwise, **somebody new to the site** is dealt one, half and half
+   (`LOOK_SHARE`), and counted. New is `TTBTrack.newcomer()` in
+   `assets/track.js`: the browser's first day here is today, the same `new`
+   every report on **Visitors** is filed under, read through the one
+   `firstDay()` that `arrive()` reads it through. Everybody else sees A and
+   is dealt nothing, which keeps the people who have already learnt the page
+   out of a question about how it reads to a stranger; and the owner's
+   browser, which the count never hears, is never new.
+
+Storage that throws cannot keep a deal, so it draws A and counts nobody, and
+Safari's seven-day rule applies the way it does to the rail. Which look is on
+screen is `data-look` on `<html>`, and B is one section of `assets/lists.css`
+— **the directory, look B: at rest** — every rule in it under
+`[data-look="b"]`. The tokens it restates are six of its own,
+`--rest-wash`, `--rest-paper`, `--rest-line`, `--rest-ground`, `--rest-muted`
+and `--rest-shadow`, declared by both styles like every other token, so the
+swatch still picks which resting palette that is and no rule names a colour.
+
+### What is counted
+
+- **`look`, a sixth kind in `press_counts`**, six rows: `a` and `b`, once per
+  newcomer dealt each; and, on the UTC day it was dealt, `a-opened` and
+  `b-opened` for the first list that browser opened from the directory and
+  `a-kept` and `b-kept` for the first it kept. Once each — `ttb.look.new`
+  remembers which have gone — and `LOOK_IDS` in `functions/api/stats.js` is
+  the closed list the route holds them to.
+- **`look` on every event**, on every page, where a look was dealt — sent by
+  `assets/track.js` beside `layout`, and set once a page as a Clarity tag —
+  so any report in **Analytics** splits by look and a recording can be
+  filtered to one. Like `layout`, it needs registering once as a custom
+  dimension in GA's admin before the console breaks a report down by it.
+
+`/admin/visitors` sets the two side by side in **The lists' two looks**,
+under the rails' card: how many newcomers each was dealt, and the share that
+opened a list and that kept one that day. The sentence over them is the
+rails' own verdict — a two-proportion z-test at 95%, **too early to call**
+until each look has thirty — asked of the opens. Keeping a list is beside it
+and not under it: one in eight days at the start was too rare to call a test
+on.
+
+What it will take: in the eight days before the deal began `/lists` was
+opened forty-eight times and twenty-four lists were opened from it, so thirty
+newcomers a look is about two weeks, and a real difference between them is
+likelier a month or more.
+
+### Ending it
+
+When the numbers say so, one of two deletions. B for everybody: drop the
+`[data-look="b"]` from the selectors of that section of `assets/lists.css`.
+A for everybody: delete the section and the six `--rest-*` tokens. Either
+way `pickLook()`, `lookTold()`, `look` in `assets/track.js`, `LOOK_IDS`, the
+card and its strings go with it, and the six rows stay in `press_counts` as
+the record of what was decided.
+
+---
+
 ## A swipe to the right is Back
 
 On a phone the way back is a thumb dragged across the screen from left to
@@ -15623,7 +15723,8 @@ every page is reported as an event, through the one global
 `TTBTrack.click(node, name, params)` for a link or button built inline —
 every one of them carrying `layout`, which rail this browser was dealt on the
 map (**The short rail**), so any report below can be split by it — and
-Clarity gets the same word as a tag, so its recordings can be too —
+`look` beside it wherever the directory dealt one (**The lists' two looks**) —
+and Clarity gets the same words as tags, so its recordings can be too —
 and opening a place on the map is reported as a page view of its own,
 titled with the place and pointing at its `?spot=` URL, through
 `TTBTrack.view()`. Those views land in GA's standard **Pages and screens**
