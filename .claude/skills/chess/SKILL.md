@@ -95,7 +95,9 @@ Every board is the same component: an eyebrow naming the two sides, a mono line
 saying whose move it is, a sentence saying what that means for whoever is
 reading, the board, and under it the last move, who played it and when. Beside
 it — under it on a phone — the moves card: numbered pairs, the mover's name
-under Everybody's moves, the score line at the foot. The board is turned round
+under Everybody's moves, the score line at the foot, the list scrolling
+inside the card and open at the newest move — the card is the board's height
+on a desktop, and shows about six pairs on a phone. The board is turned round
 so the reader's side is at the bottom. A pressable board rings the picked
 piece's square in the accent and dots the squares it may go to, a ring round a
 piece it would take; the two squares of the last move wear a quieter ring; a
@@ -138,7 +140,8 @@ for four choices in the segmented control the language switch is.
   reason, *Join the waiting list* again.
 - Loading: the head from the markup, the cards empty until the one answer is in
   — no spinner, like every page here.
-- Notes for the next player, under the public game's moves: *No notes yet —
+- Notes for the next player, under the public game's moves — under its board
+  on a desktop: *No notes yet —
   leave one for whoever moves next.*, or the notes oldest first, each with
   who, when and *after 14. Nf3*; under them the field, *Post as* your name or
   *Anonymously* for a member and the line saying a visitor posts as *a
@@ -369,6 +372,13 @@ the page draws the legal moves the answer carries.
   applied with `--local`. Chess never touches the model; the copy is only a
   way past the one binding it does not need. And stop the server by its pid,
   never `pkill -f wrangler`, which matches the shell running it.
+- **A list that grows with the game.** The moves card listed every move at
+  full height for its first weeks, and a sixty-move game put the next card
+  two screens under the board, beside an empty column. Anything that grows
+  with play — the moves, the notes — scrolls inside its card, opens at its
+  foot, and is put back where it was scrolled to on a redraw:
+  `keepScroll()` in `assets/chess.js`, since every poll and every press on a
+  square redraws the page.
 - **A colour named anywhere.** The board is `--paper` and `--hairline`, the
   rings `--accent` and `--muted`, the pieces `--ink`. Press the swatch and look.
 - **The pieces on a real phone.** The glyphs render out of whatever symbol face

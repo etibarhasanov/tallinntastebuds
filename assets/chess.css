@@ -23,10 +23,19 @@
 /* The page is the lists page's shape — its ground, its header, its cards —
    and one thing wider: on a desktop a board wants its moves beside it rather
    than under it, so the header and the main both open out to 960px there,
-   the way the editor's do to 1180px. A game is a grid of the board and a
-   column beside it — the moves, and on the public game the notes under
-   them; the one-on-one card stands on its own, no wider than a board. */
-.chess-grid, .chess-side { display: flex; flex-direction: column; gap: 18px; }
+   the way the editor's do to 1180px. A game is a grid of the board, a
+   column beside it holding the moves, and on the public game the notes:
+   under the moves on a phone, and on a desktop under the board, no wider
+   than it, where the one-on-one card and the duels already stand.
+
+   The moves card is the board card's height on a desktop, exactly, whatever
+   the game's length: the column is the box the row gives it, stretched to
+   the row, and the card is laid over that box rather than sized by its own
+   moves — so the column asks nothing of the row's height and the list
+   inside scrolls within what the board leaves. The first version let the
+   column grow with the game and the notes, and a sixty-move game put the
+   page's next card two screens under the board, beside nothing. */
+.chess-grid { display: flex; flex-direction: column; gap: 18px; }
 @media (min-width: 900px) {
   .chess-body .lists-brand, .chess-body .lists-main { max-width: 960px; }
   .chess-grid {
@@ -34,6 +43,21 @@
     grid-template-columns: minmax(0, 560px) minmax(280px, 1fr);
     align-items: start;
   }
+  .chess-side { position: relative; align-self: stretch; }
+  .chess-side .chess-moves {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  /* The list gives way, never grows: a short game is its few pairs at the
+     top of the card with room under the score line, not a score line pinned
+     to the foot of an empty card. */
+  .chess-side .chess-list { flex: 0 1 auto; min-height: 0; max-height: none; }
+  /* The column stretches its children, and a stretched .alt is a centred
+     one: the ways out keep to the left edge, where they are on a phone. */
+  .chess-side .chess-moves .alt { align-self: flex-start; }
   .chess-play { max-width: 560px; }
 }
 
@@ -201,10 +225,16 @@
 
 /* ---------- the moves card ---------- */
 
+/* Numbered pairs under a header naming the two sides, in a list that scrolls
+   inside the card and opens at its foot, where the newest move is — the
+   notes' rule, below. On a phone the cap is about what six pairs with a
+   mover's name under each come to; on a desktop the card is the board's
+   height and the list takes what the header and the score line leave,
+   above. The header and the score line stay put either side of the scroll. */
 .chess-moves { padding: 14px; }
 .chess-cols, .chess-list li { display: grid; grid-template-columns: 3ch 1fr 1fr; gap: 0 10px; }
 .chess-cols { margin: 10px 0 2px; }
-.chess-list { list-style: none; margin: 0; padding: 0; }
+.chess-list { list-style: none; margin: 0; padding: 0; max-height: 270px; overflow-y: auto; }
 .chess-list li { align-items: baseline; padding: 7px 0; border-top: 1px solid var(--hairline); }
 .chess-n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .chess-m { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -221,8 +251,10 @@
 
 /* Lines people leave for whoever moves next, oldest at the top like a chat,
    in a list that scrolls inside the card past about six of them so the page
-   stays a page. Each is the sentence in the body face and a mono line under
-   it saying who, when and about which position — facts, so mono. */
+   stays a page — and, like the moves, open at its foot and put back where it
+   was scrolled to on a redraw: keepScroll() in assets/chess.js. Each is the
+   sentence in the body face and a mono line under it saying who, when and
+   about which position — facts, so mono. */
 .chess-notes { padding: 14px; }
 .chess-note-list { list-style: none; margin: 10px 0 0; padding: 0; max-height: 380px; overflow-y: auto; }
 .chess-note { padding: 8px 0; border-top: 1px solid var(--hairline); }
