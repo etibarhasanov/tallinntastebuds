@@ -9,7 +9,7 @@
  * **The mark** in README.md — and nothing anybody types can put it on a place
  * that is not. It is the one thing on this site that means "I have eaten here
  * and it is worth your evening", so it is not an option in a picker; it is
- * what being on the map looks like. A list wears one of the sixteen markers
+ * what being on the map looks like. A list wears one of the thirty-six markers
  * below instead, and a place on that list which is also on my map keeps the
  * mouth regardless of what the list chose.
  *
@@ -18,7 +18,7 @@
  * Those are the other table, and it is not in this file at all. A Google row
  * draws what kind of door it is — five of them, see PLACES in assets/pins.js
  * — and that is the site describing a place rather than somebody choosing
- * something about it. The sixteen below are symbols: a pin, a flame, a flag.
+ * something about it. The thirty-six below are symbols: a pin, a flame, a flag.
  * They mark a spot, which is the one thing true of every place on a top ten,
  * and they make no claim about what any of them cooks.
  *
@@ -30,7 +30,7 @@
  *
  * WHY THE IDS ARE HERE AND THE DRAWING IS NOT
  *
- * assets/pins.js is the other half: the same sixteen ids, plus the emoji each
+ * assets/pins.js is the other half: the same thirty-six ids, plus the emoji each
  * one draws, the five kinds of place, and the table that reads a Google
  * venue's words into one of those. It cannot import this file — assets/ is
  * ES5 served raw to the browser and this is ESM on the Workers runtime — so
@@ -48,13 +48,16 @@
  * is what an unset column already means.
  */
 
-/* The sixteen a list may choose from, in the order the picker draws them.
+/* The thirty-six a list may choose from, in the order the picker draws them.
    They are marks on a map and mean nothing beyond that, which is the point
    of them; assets/pins.js says which emoji each one is and why there are
-   sixteen, and why it once went down to eight. */
+   thirty-six, and why it once went down to eight. */
 export const PIN_GLYPHS = [
   'pin', 'flag', 'flame', 'sun', 'heart', 'blossom', 'gem', 'balloon',
-  'laptop', 'star', 'rainbow', 'cat', 'bow', 'sparkles', 'music', 'moon'
+  'laptop', 'star', 'rainbow', 'cat', 'bow', 'sparkles', 'music', 'moon',
+  'dog', 'unicorn', 'bunny', 'bear', 'panda', 'fox', 'frog', 'chick',
+  'penguin', 'octopus', 'whale', 'ladybird', 'sunflower', 'tulip', 'cactus', 'snowflake',
+  'cloud', 'gift', 'camera', 'books'
 ];
 
 /* What an unset column means, said once. Stored as '' rather than as this,
@@ -67,7 +70,7 @@ export const PIN_GLYPHS = [
    one column and one decision. */
 export const DEFAULT_PIN = 'pin';
 
-/* One of the eight, or '' — which is what the column holds for a list
+/* One of the thirty-six, or '' — which is what the column holds for a list
    nobody has dressed, and what the page reads as the default. Never throws
    and never corrects: a value this site does not know is a value it does not
    store, which covers a hand-written request, a glyph taken out of the table

@@ -45,7 +45,7 @@
  *     the directory's KITCHENS table cannot produce
  *   - a KITCHENS pattern that no longer matches a single row of the Google
  *     Places export, or one whose id nothing can say in ten languages
- *   - an assets/pins.js whose sixteen markers have drifted from the ids
+ *   - an assets/pins.js whose thirty-six markers have drifted from the ids
  *     functions/api/_pins.js will let a list store, a glyph called `mark` in
  *     either table, a kind of place a list could also pick, a tone with no
  *     colour token behind it, or a marker nobody has named in ten languages
@@ -100,7 +100,7 @@ import { PAGES } from '../functions/api/_visitors.js';
    every id has a label in ten languages, and every pattern still matches
    something in the export it was measured against. */
 import { KITCHENS, said } from '../functions/api/venues.js';
-/* The sixteen markers a list may wear. The server half of a table that is
+/* The thirty-six markers a list may wear. The server half of a table that is
    written out twice — assets/pins.js is the other — so the checks below are
    what make "change one, change the other" something other than a promise in
    a comment. */
@@ -2064,7 +2064,7 @@ if (ui !== null && isPlainObject(ui)) {
    same table.
 
    And the labels with them. The picker builds its keys — pinKey('flame') is
-   'pinFlame' — so the scanner above cannot see a single one of the sixteen, and
+   'pinFlame' — so the scanner above cannot see a single one of the thirty-six, and
    a marker nobody had translated would reach a visitor as the word "pinFlame"
    on a swatch. The list is here, so they are checked the way a literal would
    have been. The five kinds of place are deliberately not checked for labels:

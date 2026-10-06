@@ -39,7 +39,7 @@
  *
  * KEEP IT IN STEP WITH functions/api/_pins.js
  *
- * That file holds the same sixteen ids, because the server is what decides
+ * That file holds the same thirty-six ids, because the server is what decides
  * whether the string a list wants to store is one of them. It cannot import this one and this one cannot import it — different
  * dialects, different runtimes — so they are written out twice, the way the
  * story clock in assets/app.js restates tools/clock.mjs. Change one, change
@@ -55,13 +55,13 @@ window.TTBPins = (function () {
    * croissant put a croissant on a sushi place, which reads as the map being
    * wrong about the sushi place rather than as the list being somebody's.
    *
-   *   MARKERS  what a LIST wears. Sixteen symbols, none of them food — a pin,
-   *            a flame, a flag — because a list is somebody's choice of
+   *   MARKERS  what a LIST wears. Thirty-six symbols, none of them food —
+   *            a pin, a flame, a flag — because a list is somebody's choice of
    *            places and not a claim about what any one of them cooks. They
    *            mark a spot, which is the only thing that is true of all ten
    *            places on a top ten.
    *
-   *            Eight and not eighteen. A grid of eighteen is a decision to
+   *            First eight and not eighteen. A grid of eighteen is a decision to
    *            make before you can name your list, and the ones that went
    *            were the ones nobody would miss: a trophy and a crown say the
    *            same thing, a butterfly and a clover say nothing at all. What
@@ -73,12 +73,19 @@ window.TTBPins = (function () {
    *            anything cute with, and that was asked for. The second row is
    *            softer than the first and still not food — a laptop for the
    *            places you can work from, a star, a rainbow, a cat, a bow,
-   *            sparkles, music, a moon for late. Sixteen is two rows of
-   *            eight, which is still one glance rather than a scroll; the
-   *            eighteen that went were a grid you had to read.
+   *            sparkles, music, a moon for late.
    *
-   *            All sixteen draw in the style's accent: a colour picker under
-   *            them was a second decision to make before you could name a
+   *            Then thirty-six, because more of the cute ones were asked
+   *            for: animals — a dog, a unicorn, a bunny, a bear, a panda,
+   *            a fox, a frog, a chick, a penguin, an octopus, a whale, a
+   *            ladybird — then a sunflower, a tulip, a cactus, a snowflake,
+   *            a cloud, a gift, a camera and books. Still none of them food. Eight to a row still, so it
+   *            is four full rows and four over; a grid this size is a thing
+   *            to browse rather than a decision to make, which is the trade
+   *            the owner chose once eight had been tried.
+   *
+   *            All thirty-six draw in the style's accent: a colour picker
+   *            under them was a second decision to make before you could name a
    *            list, for a difference the marker was already making.
    *
    *   PLACES   what a GOOGLE ROW is. Five kinds of place, not thirty-eight
@@ -106,22 +113,42 @@ window.TTBPins = (function () {
    * keyboard is the way to lose it.
    */
   var MARKERS = [
-    ['pin',     '\uD83D\uDCCD'],
-    ['flag',    '\uD83D\uDEA9'],
-    ['flame',   '\uD83D\uDD25'],
-    ['sun',     '\u2600\uFE0F'],
-    ['heart',   '\u2764\uFE0F'],
-    ['blossom', '\uD83C\uDF38'],
-    ['gem',     '\uD83D\uDC8E'],
-    ['balloon', '\uD83C\uDF88'],
-    ['laptop',   '\uD83D\uDCBB'],
-    ['star',     '\u2B50\uFE0F'],
-    ['rainbow',  '\uD83C\uDF08'],
-    ['cat',      '\uD83D\uDC31'],
-    ['bow',      '\uD83C\uDF80'],
-    ['sparkles', '\u2728\uFE0F'],
-    ['music',    '\uD83C\uDFB5'],
-    ['moon',     '\uD83C\uDF19']
+    ['pin',       '\uD83D\uDCCD'],
+    ['flag',      '\uD83D\uDEA9'],
+    ['flame',     '\uD83D\uDD25'],
+    ['sun',       '\u2600\uFE0F'],
+    ['heart',     '\u2764\uFE0F'],
+    ['blossom',   '\uD83C\uDF38'],
+    ['gem',       '\uD83D\uDC8E'],
+    ['balloon',   '\uD83C\uDF88'],
+    ['laptop',    '\uD83D\uDCBB'],
+    ['star',      '\u2B50\uFE0F'],
+    ['rainbow',   '\uD83C\uDF08'],
+    ['cat',       '\uD83D\uDC31'],
+    ['bow',       '\uD83C\uDF80'],
+    ['sparkles',  '\u2728\uFE0F'],
+    ['music',     '\uD83C\uDFB5'],
+    ['moon',      '\uD83C\uDF19'],
+    ['dog',       '\uD83D\uDC36'],
+    ['unicorn',   '\uD83E\uDD84'],
+    ['bunny',     '\uD83D\uDC30'],
+    ['bear',      '\uD83D\uDC3B'],
+    ['panda',     '\uD83D\uDC3C'],
+    ['fox',       '\uD83E\uDD8A'],
+    ['frog',      '\uD83D\uDC38'],
+    ['chick',     '\uD83D\uDC25'],
+    ['penguin',   '\uD83D\uDC27'],
+    ['octopus',   '\uD83D\uDC19'],
+    ['whale',     '\uD83D\uDC33'],
+    ['ladybird',  '\uD83D\uDC1E'],
+    ['sunflower', '\uD83C\uDF3B'],
+    ['tulip',     '\uD83C\uDF37'],
+    ['cactus',    '\uD83C\uDF35'],
+    ['snowflake', '\u2744\uFE0F'],
+    ['cloud',     '\u2601\uFE0F'],
+    ['gift',      '\uD83C\uDF81'],
+    ['camera',    '\uD83D\uDCF7'],
+    ['books',     '\uD83D\uDCDA']
   ];
 
   /* Five kinds, three colours, and the third field is the only place a tone
