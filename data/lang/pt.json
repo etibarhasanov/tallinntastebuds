@@ -1117,6 +1117,7 @@
   "foundLink": "Como encontraram o site →",
   "routeWalk": "{min} min a pé · {dist}",
   "routeGoogle": "Abrir no Google Maps",
+  "routeWaze": "Abrir no Waze",
   "routeNone": "Não foi possível encontrar um percurso a pé.",
   "routeLocate": "Partilhe a sua localização para ver o caminho.",
   "routeFinding": "A procurar o caminho…",

@@ -2287,7 +2287,11 @@ Car**.
 The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
 the bus to one place takes it to the next. Google is a small link at the foot
 of the bar rather than the bar's button — ours is the answer, Google the way
-out — and it asks Google for the same mode with `travelmode=`. Under all of it
+out — and it asks Google for the same mode with `travelmode=`. **On the Car
+tab the way out is Waze instead**, *Open in Waze*, because Waze is what people
+in Tallinn drive with and Google is what they walk and ride with; it is handed
+the pin (`waze.com/ul?ll=…&navigate=yes`) rather than the name, since Waze has
+no place id to match a name against. Under all of it
 the arrow is still a plain link to Google's route, built by `directionsUrl()`
 and painted by `paintDirections()` with Google's key once the block at the foot
 of the panel has fetched it — the same address the Directions button under the
@@ -2302,7 +2306,7 @@ and a bus journey a minute. The location is read, answered and forgotten —
 never stored or counted. Opening another place, the chat or a list puts the
 line away (`renderPanel()`); a language switch while the bar is up does not
 retranslate it. The arrow reports `directions`, a tab `route_mode`, a journey
-`route_trip` and the Google link `route_google`.
+`route_trip`, the Google link `route_google` and the Waze link `route_waze`.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
@@ -16705,7 +16709,8 @@ The map, `assets/app.js`:
 | `language_select` | `language` |
 | `style_select` | `style` |
 | `directions`, `website`, `google_listing` | `place` — `directions` is the button under the name and the arrow in the top strip alike |
-| `route_google` | — the Open in Google Maps link on the route's bar |
+| `route_google` | — the Open in Google Maps link on the route's bar, Walk or Bus |
+| `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
 | `route_mode` | `mode` (`foot`, `bus`, `car`), `place` — Walk, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `call_place` | `place` — the button and the number in the facts alike |

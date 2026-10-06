@@ -1117,6 +1117,7 @@
   "foundLink": "Miten löydettiin →",
   "routeWalk": "{min} min kävellen · {dist}",
   "routeGoogle": "Avaa Google Mapsissa",
+  "routeWaze": "Avaa Wazessa",
   "routeNone": "Kävelyreittiä ei löytynyt.",
   "routeLocate": "Jaa sijaintisi nähdäksesi reitin.",
   "routeFinding": "Etsitään reittiä…",

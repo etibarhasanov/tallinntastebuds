@@ -1117,6 +1117,7 @@
   "foundLink": "How they found it →",
   "routeWalk": "{min} min on foot · {dist}",
   "routeGoogle": "Open in Google Maps",
+  "routeWaze": "Open in Waze",
   "routeNone": "Couldn't find a walking route.",
   "routeLocate": "Share your location to see the way.",
   "routeFinding": "Finding the way…",

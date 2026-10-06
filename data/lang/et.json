@@ -1117,6 +1117,7 @@
   "foundLink": "Kuidas leiti →",
   "routeWalk": "{min} min jala · {dist}",
   "routeGoogle": "Ava Google Mapsis",
+  "routeWaze": "Ava Waze'is",
   "routeNone": "Jalgsimarsruuti ei leitud.",
   "routeLocate": "Tee nägemiseks jaga oma asukohta.",
   "routeFinding": "Otsin teed…",
