@@ -10810,6 +10810,16 @@ fills round the die, shown after a quarter of a second so an ordinary tap
 never flashes it, and the page goes when the ring closes. Let go before, or
 slide off the pill, and the ring goes and nothing happens but the die.
 
+**The pill swells from the first touch**, before the ring. The ring's
+quarter-second of waiting is right for the ring, but it left a tap with
+nothing at all — the owner pressed the die on a phone and could not feel that
+the page had noticed — so the pill grows the moment a finger lands on it,
+quickly at first and then slowly for as long as it is held, and eases back to
+size when the finger comes up. A tap is answered before the die has rolled,
+and a hold is felt before the ring says what it is for. `.is-holding` in
+`assets/styles.css`, timed by the same `--hold-ms` as the ring; under
+`prefers-reduced-motion` it is one small step up and no swell.
+
 The first version had no ring and ended the hold on `pointercancel` and
 `pointerleave`, and a phone sends one of those partway through a long press;
 the owner held it on a phone, nothing happened, and nothing said whether it
