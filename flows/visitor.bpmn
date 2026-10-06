@@ -59,7 +59,7 @@ ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
       <bpmn:outgoing>visitor-e29</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="browse" name="Browses the map, the chips and the search">
-      <bpmn:documentation>A chip that would leave nothing on screen pulls the map back instead. Surprise me picks from what the chips allow.
+      <bpmn:documentation>A chip that would leave nothing on screen pulls the map back instead. Surprise me picks from what the chips allow. The locate button draws the dot the list measures from, and takes a typed place when the device will not say.
 when: filter_select
 when: search@map
 when: find_pick
@@ -67,7 +67,9 @@ when: find_submit
 when: find_area
 when: random_pick
 when: cluster_open
+when: where_pick
 ref: assets/app.js applyFilters()
+ref: assets/app.js openWhere()
 ref: data/taxonomy.json</bpmn:documentation>
       <bpmn:incoming>visitor-e3</bpmn:incoming>
       <bpmn:outgoing>visitor-e4</bpmn:outgoing>

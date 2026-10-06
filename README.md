@@ -699,6 +699,43 @@ here too. Where the browser has forgotten rather than refused — Safari's
 ask-every-time setting reads `prompt` — the map asks again: that prompt only
 ever reaches somebody who has said yes before.
 
+**Or type where you are.** The device was the only way to put the dot there
+for a year, and a phone that had refused the site, a laptop with no fix, or
+somebody planning tomorrow's lunch from a hotel room got *Couldn't get your
+location.* and nothing to do about it. The owner's answer was that they could
+enter their location themselves, so the locate button has a sheet behind it
+now — **Where are you?** — with one field: a street, a district or a landmark,
+and under it the same five suggestions the add-a-place form draws out of
+`/api/geocode`, as rows. Picking one puts the dot there through the same
+`drawHere()` in `assets/app.js` a reading from the device goes through, so the
+list turns to **Nearest you**, the find bar prints its distances and the chat
+measures *near me* from it without any of them knowing the difference. Enter
+takes the first row, the way Find does on the add-a-place form.
+
+It opens three ways, all from the button. A press on a browser with no
+geolocation at all opens it straight away, and a press the device answers
+with a refusal, no fix or a reading from out of town opens it with that
+failure as the note at the top, where the sheet order puts what just
+happened. And a press when there is a dot already opens it with no note, so a
+dot can be moved by hand from wherever it is; *Use my device instead* at the
+foot asks the device the way the button does, for whoever opened it by
+mistake or has since said yes in the browser's settings. The find bar's and
+the chat's own asks of the device never open it — those are not presses, and
+a sheet over a half-typed question would be the page talking over somebody —
+so they keep the toast and the line under the rows they always had.
+
+A typed dot is a device reading in every respect but two. It draws no
+accuracy ring, because there is no accuracy to draw. And it does not write
+`ttb.located`: the next visit opens on the device only where the device has
+actually answered once, and a point typed yesterday says nothing about
+today. The route it asks is open to anybody for the same reason the sheet
+exists — a stranger whose phone has refused the map is exactly who needs it,
+and a sign-in in front of that question would be a question nobody asked —
+and is bounded by what it answers rather than by who asks: three letters
+before anything goes upstream, five rows back, and a day in the edge cache
+for the answer as well as the upstream call. **Finding anywhere in Tallinn**
+says what the dot changes once it is there.
+
 **Why the rows go quiet from the square.** "1,4 km" under a place reads as 1,4
 km *from you*, wherever it was actually measured from, and no wording in a row
 three words wide undoes that. The order is still the useful half — the nearest
@@ -1168,7 +1205,9 @@ rearrange when the answer lands. Refused, unavailable or slow, and they stay
 in that order under *Couldn't get your location.* (`locateFail`), and the bar
 does not ask again for the life of the page — a permission prompt on every
 letter of the next word would be the bar nagging. The locate button still
-can, and a dot it draws is used the moment it is there. A dot further from
+can, and so can the sheet behind it, where a place typed becomes the dot —
+**Or type where you are** under **The list is ordered by distance** — and a
+dot either draws is used the moment it is there. A dot further from
 every place than `HERE_MAX_M` — a visitor asking from the ferry — is the same
 as none, under *You're away from the map* (`locateAway`), since a row reading
 *82 km* says nothing anybody can use.
@@ -14856,9 +14895,10 @@ functions/api/admin/       the owner's routes, locked by functions/_middleware.j
                            refreshes.js what the Google refresh has done lately
                            for the Google tab on /admin.html
 functions/api/_admin.js    who the owner is (not a route: leading _)
-functions/api/geocode.js   a typed street to a point, for the add-a-place form
-                           and for "near Laulupeo" in the chat; Photon behind it,
-                           a session in front of the route
+functions/api/geocode.js   a typed street to a point, for the add-a-place form,
+                           for the Where sheet behind the map's locate button
+                           and for "near Laulupeo" in the chat; Photon behind
+                           it, open to anybody and cached a day
 functions/api/profile.js   one person's public lists, and their standing
 functions/api/split.js     splitwise: a group, who is in it, what everybody
                            paid, and who hands what to whom
@@ -17219,7 +17259,11 @@ The map, `assets/app.js`:
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
 | `chess_open_hold` | — *Surprise me* held for five seconds, the way in to `/chess`; sent as the map leaves for it |
-| `locate` | — |
+| `locate` | — the button; what it did next is the sheet or the device |
+| `where_open` | `why` — the Where sheet opened: `locateFail` after the device refused, had no fix or does not exist, `locateAway` after a reading from out of town, `dot` when the button was pressed with a dot already drawn |
+| `where_pick` | — a typed place taken as the dot |
+| `where_device` | — *Use my device instead* on the Where sheet |
+| `where_close` | — the Where sheet shut by the cross or the scrim |
 | `language_open` | — |
 | `language_select` | `language` |
 | `style_select` | `style` |

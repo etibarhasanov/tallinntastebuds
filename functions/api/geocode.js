@@ -5,12 +5,16 @@
  *   → { "results": [ { "lat": 59.4389, "lng": 24.7291,
  *                      "label": "Telliskivi 60a", "where": "Tallinn" }, … ] }
  *
- * Two things ask. The "add a place" form on the lists page asks through the
- * route: it has a map with a draggable pin, and dragging is still the thing
- * that decides where a place is — see the note above addForm() in
+ * Three things ask. The "add a place" form on the lists page asks through
+ * the route: it has a map with a draggable pin, and dragging is still the
+ * thing that decides where a place is — see the note above addForm() in
  * assets/lists.js. This is the shortcut: type the street, pick it off the
  * list, and the pin is already on the right building before anybody drags
- * anything. And the chat on the map asks through suggest() below, in the
+ * anything. The map asks through the route too, from the sheet behind the
+ * locate button — openWhere() in assets/app.js — where a visitor whose phone
+ * will not say where they are, or who is planning from a hotel room, types a
+ * street or a district and the dot every distance is measured from goes
+ * there. And the chat on the map asks through suggest() below, in the
  * Function rather than over the wire, when a question says "near Laulupeo"
  * — see WHERE THE VISITOR IS in functions/api/ask.js — and takes the first
  * suggestion as the point to measure from.
@@ -42,15 +46,22 @@
  * suggestion can never put the pin somewhere the save would then reject, and
  * the page is handed four fields rather than a GeoJSON document.
  *
- * A SESSION IS REQUIRED
+ * OPEN TO ANYBODY, AND WHAT BOUNDS IT INSTEAD
  *
- * Not because a street name is private, but because an open geocoding proxy
- * on somebody else's quota is a thing that gets found and used. Everybody who
- * can see this form is signed in already. The chat's use is not behind one —
- * /api/ask is open to everybody — and is bounded another way: one lookup a
- * question, only for a question that says it wants to be near somewhere,
- * over a question capped at two hundred characters, and never the raw
- * query somebody chose.
+ * This route asked for a session for its first year, not because a street
+ * name is private but because an open geocoding proxy on somebody else's
+ * quota is a thing that gets found and used, and everybody who could see the
+ * add-a-place form was signed in already. The sheet behind the locate button
+ * ended that: a stranger whose phone has refused the map is exactly who
+ * needs to type where they are, and a sign-in in front of that question is
+ * a question nobody asked. So the route is open, the owner's decision in as
+ * many words, and it is bounded the way the chat's use always was rather
+ * than by who is asking: three characters before anything goes upstream,
+ * MAX_Q on what does, LIMIT rows back, and a day in Cloudflare's cache for
+ * the upstream call and now for the answer too — the same prefix typed by
+ * everybody in Tallinn reaches Photon once. What an abuser gets for their
+ * trouble is five rows of OpenStreetMap, which they could fetch from Photon
+ * directly with less effort than finding this.
  *
  * IF THIS EVER NEEDS TO BE BETTER
  *
@@ -61,7 +72,7 @@
  * a change to ask() below and nothing else.
  */
 
-import { json, sessionUser, TALLINN, nearTallinn } from './_lib.js';
+import { json, TALLINN, nearTallinn } from './_lib.js';
 
 const ENDPOINT = 'https://photon.komoot.io/api';
 
@@ -192,13 +203,7 @@ export async function suggest(raw) {
 }
 
 export async function onRequestGet(context) {
-  const { request, env } = context;
-
-  const q = new URL(request.url).searchParams.get('q');
-
-  if (!env.DB) return json({ error: 'no-database' }, 503);
-  const user = await sessionUser(request, env);
-  if (!user) return json({ error: 'signed-out' }, 401);
+  const q = new URL(context.request.url).searchParams.get('q');
 
   let answer;
   try {
@@ -212,10 +217,10 @@ export async function onRequestGet(context) {
   if (answer.busy) return json({ error: 'busy' }, 429);
   if (answer.failed) return json({ error: 'upstream' }, 502);
 
-  /* No cache header on the way out, deliberately. The answer is behind a
-     session and json()'s cache directive is a public one — a shared cache
-     holding this would hand a signed-in answer to somebody who is not. The
-     saving that matters already happened in ask(), in Cloudflare's cache of
-     the upstream call, which is keyed on the query and not on who asked. */
-  return json({ results: answer.results });
+  /* Cached on the way out for as long as the upstream call is, now that
+     nothing about the answer depends on who asked: the same five rows for
+     the same words, from the edge, without waking the Worker. While the
+     route was behind a session this header would have handed a signed-in
+     answer to somebody who was not, and the only cache was ask()'s. */
+  return json({ results: answer.results }, 200, CACHE_SECONDS);
 }
