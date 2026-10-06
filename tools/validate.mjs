@@ -391,17 +391,31 @@ if (decksFile !== null) {
     };
 
     /* A taste: the one line of Estonian a deck, a lesson or a song shows on
-       the Start here row of the flashcards' front door, with what it means
-       left for the tap. Optional, short enough for a teaser card, and for a
+       its card on the Start view of the flashcards, with what it means left
+       for the tap. Optional, short enough for a teaser card, and for a
        deck or a song tied to the words it teaches — a card's front, or the
        start of a line that is sung — so a card rewritten later cannot leave
-       the row advertising a word the deck no longer has. A lesson's is its
-       own, since a lesson has no cards; tasteRow() in assets/flashcard.js. */
+       the Start view advertising a word the deck no longer has. A lesson's is its
+       own, since a lesson has no cards; partCard() in assets/flashcard.js. */
     const tasted = (taste, at, what, ours) => {
       if (taste === undefined) return;
       if (!isNonEmptyString(taste)) { fail(at, `${what} has a "taste" that is not a line of Estonian`); return; }
       if (taste.length > MAX_TASTE) fail(at, `${what} has a "taste" of ${taste.length} characters, past the ${MAX_TASTE} its card draws`);
       if (ours && !ours(taste)) fail(at, `${what} has a "taste", "${taste}", that none of its own words say`);
+    };
+
+    /* And the day it went in, which is what the Start view of the flashcards
+       reads to put a New tag on the newest deck, lesson or song for two weeks
+       — newest() in assets/flashcard.js. The ones already in the file were
+       read out of this repo's own history, the way a place's `added` was.
+       Missing is a warning rather than a failure: the thing still works, it
+       just can never be new, which is exactly what somebody adding one without
+       a date would want told and not stopped by. */
+    const dated = (day, at, what) => {
+      if (day === undefined) { warn(at, `${what} has no "added" — the Start view can never call it new`); return; }
+      if (!isNonEmptyString(day) || !/^\d{4}-\d{2}-\d{2}$/.test(day) || isNaN(Date.parse(day))) {
+        fail(at, `${what} has an "added" that is not a day like 2026-10-06: ${JSON.stringify(day)}`);
+      }
     };
 
     decksFile.decks.forEach((deck, i) => {
@@ -420,6 +434,7 @@ if (decksFile !== null) {
 
       said(deck.name, where, `deck "${deck.id}" name`);
       said(deck.why, where, `deck "${deck.id}" why`);
+      dated(deck.added, where, `deck "${deck.id}"`);
       tasted(deck.taste, where, `deck "${deck.id}"`,
         (taste) => Array.isArray(deck.cards) && deck.cards.some((c) => c && c.front === taste));
       if (deck.level === SONG_LEVEL) {
@@ -514,6 +529,7 @@ if (decksFile !== null) {
 
       said(lesson.name, where, `lesson "${lesson.id}" name`);
       said(lesson.why, where, `lesson "${lesson.id}" why`);
+      dated(lesson.added, where, `lesson "${lesson.id}"`);
       tasted(lesson.taste, where, `lesson "${lesson.id}"`, null);
       /* A lesson may name the deck that follows it on the shelf, and that
          deck has to be in the file with the level only such a deck has. */
@@ -616,6 +632,7 @@ if (decksFile !== null) {
 
       said(song.name, where, `song "${song.id}" name`);
       said(song.why, where, `song "${song.id}" why`);
+      dated(song.added, where, `song "${song.id}"`);
       tasted(song.taste, where, `song "${song.id}"`, (taste) => Array.isArray(song.verses) &&
         song.verses.some((verse) => Array.isArray(verse) && verse.some((line) => line && String(line.et || '').indexOf(taste) === 0)));
       if (!isNonEmptyString(song.video) || !/^[A-Za-z0-9_-]{11}$/.test(song.video)) {

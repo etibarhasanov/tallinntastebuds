@@ -8478,7 +8478,8 @@ or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
 sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
-know in all. And, under a heading of their own on that page, four lessons of
+know in all. And, in a part of their own behind the menu at the top of that page — **The
+menu, and Start** below — four lessons of
 grammar about why the words on the cards come in threes and what grows out of them — **Grammar, which is
 read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
@@ -9562,40 +9563,40 @@ With the database off it is not drawn either — a count of what is remembered i
 a promise a deployment that is remembering nothing should not make, and the
 line above it has already said so.
 
-### Start here
+### The menu, and Start
 
-Somebody who has not started gets a row of cards across the top of the shelf,
-under the heading *Start here*: each one a deck, a song or a grammar lesson,
-showing one line of its Estonian — *Kas see laud on vaba?*, *Naera, naera,
-naerame võidu*, *leib · leiva · leiba* — with the deck's name above it and
-*What does it mean?*, *Hear it, line by line* or *Why? Find out* under it, and
-nothing else. What it means is the tap, which opens that deck, song or lesson.
+The shelf is four parts with a menu across the top of it — **Start · Words ·
+Grammar · Songs** — and the front door opens on Start. It was one column, and
+the column had become fifty-two decks with the grammar, the fourteen cases and
+the songs filed between its first stage and its second: somebody who came for
+a song scrolled past *Hello and goodbye* to find it. Turning a card over,
+reading a lesson and listening to a song are three different things to do,
+and the menu says so before anything is scrolled. Words is the decks by stage,
+with the two gathered decks on top and your own under them; Grammar is the
+four lessons and then the cases, each followed by its deck; Songs is each song
+with the deck of its words under it.
 
-It is there because the front door was a heading, a paragraph and a column of
-tiles, and from 30 September to 6 October two opens in three ended without a
-deck opened. The tiles say what each deck is about; none of them shows what the
-page does, which is put a word in front of you and ask whether you know it. A
-line you cannot read yet is that question asked on the shelf. And it is a row
-rather than a stack, each card narrower than the phone so the next is cut off
-at the edge: it says there is more this way without an arrow saying so, and it
-puts the songs and the grammar within the first three cards instead of three
-screens down, so the site looks like more than *Hello and goodbye* before
-anybody has scrolled.
+Start is a card for each of the other three: what is in it, how many, and one
+thing out of it — **the newest, with a New tag, for two weeks** after the
+`added` day `data/decks.json` gives it, and otherwise the first with a line of
+Estonian to show. Every deck, lesson and song carries `added`; the ones already
+in the file were read out of this repository's history, and
+`tools/validate.mjs` fails a date that is not a day and warns on one that is
+missing, since a thing with no date simply can never be new.
 
-The lines are `taste` on a deck, a lesson or a song in `data/decks.json` — eight
-of them today — and `tools/validate.mjs` holds a deck's to one of its cards'
-fronts and a song's to the start of one of its lines, so rewriting a card cannot
-leave the row selling a word the deck no longer has. A lesson has no cards, so
-its line is its own. The order is a deck, then a song or a lesson, in the
-shelf's own order, and only what the route sent is in it: a deck whose stage
-has not opened is not on the shelf, so it is not in the row either.
+That line of Estonian is the job the *Start here* row did before the menu,
+and the reason for it has not changed: from 30 September to 6 October two
+opens in three ended without a deck opened, because tiles saying what a deck
+is about never show what the page does, which is put a word in front of you
+and ask. A tap on it still reports `flash_taste`, so the two can be read
+against each other on `/admin/visitors`; a press on the menu or on a card's
+way in reports `flash_part`.
 
-The row goes as soon as there is something to come back to — a word known, a
-word answered in this tab, a gathered deck — because by then the shelf under
-it is the better way in. A tap reports `flash_taste` with the deck's id and
-whether it was a deck, a song or a lesson, so **What was pressed** on
-`/admin/visitors` says whether the row is what people open, beside
-`flash_open` for the tiles.
+Each part is an address — `/flashcard?part=grammar` — so a link can open
+straight into the songs, the back button walks between parts, and the way out
+of a deck is back to the part it was opened from. Moving between them asks the
+route for nothing: the shelf is already in hand. The sign-in offer and your
+own decks are drawn under Start and Words only.
 
 ### A deck's row, which is a tile
 
@@ -16648,7 +16649,8 @@ Flashcards, `assets/flashcard.js`:
 | `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
-| `flash_taste` | `deck_id`, `what` (`deck`, `song` or `lesson`) — a card on the *Start here* row, shown to somebody who has not started. **Start here** under **Flashcards** |
+| `flash_taste` | `deck_id`, `what` (`deck`, `song` or `lesson`) — the deck, lesson or song shown on a card on Start. **The menu, and Start** under **Flashcards** |
+| `flash_part` | `part` (`start`, `words`, `grammar` or `songs`), `from` (`menu` or `start`) — a part of the flashcards' shelf opened. **The menu, and Start** under **Flashcards** |
 | `flash_lesson_open` | `lesson_id` — a lesson's tile under the Grammar heading |
 | `flash_lesson_read` | `lesson_id` — Got it at the foot of a lesson, read before or not — see **Grammar, which is read rather than turned over** |
 | `flash_song_open` | `song_id` — a song's tile under the Songs heading |

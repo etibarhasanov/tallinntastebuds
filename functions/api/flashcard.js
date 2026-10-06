@@ -418,6 +418,7 @@ function lessonAnswer(lesson, known, whole) {
     name: lesson.name,
     why: lesson.why || null,
     taste: lesson.taste || null,
+    added: lesson.added || null,
     deck: lesson.deck || null,
     ...(whole ? { body: lesson.body } : {}),
     read: stateOf(known, GRAMMAR_DECK, lesson.id).known
@@ -448,6 +449,7 @@ function songAnswer(song, decks, known, whole) {
     name: song.name,
     why: song.why || null,
     taste: song.taste || null,
+    added: song.added || null,
     heard: stateOf(known, SONG_DECK, song.id).known
   };
   if (!whole) return answer;
@@ -801,9 +803,11 @@ export async function onRequestGet(context) {
     id: d.id,
     name: d.name,
     why: d.why || null,
-    /* The line the front door's Start here row shows, where the file gives
-       one — `tasted` in tools/validate.mjs holds it to the deck's own words. */
+    /* The line its card on the Start view shows, where the file gives one —
+       `tasted` in tools/validate.mjs holds it to the deck's own words — and
+       the day it went in, which is what that view calls new or does not. */
     taste: d.taste || null,
+    added: d.added || null,
     level: d.level || null,
     cards: d.cards.length,
     known: Math.min(counts[d.id] || 0, d.cards.length),
