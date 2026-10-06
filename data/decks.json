@@ -37008,6 +37008,531 @@
           }
         }
       ]
+    },
+    {
+      "id": "adjectives-cards",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Bigger, biggest, and the opposite — the cards",
+        "az": "Daha böyük, ən böyük, və əksi — kartlar",
+        "ru": "Больше, самый большой, и наоборот — карточки"
+      },
+      "why": {
+        "en": "More and most, built on the second form, for after the lesson",
+        "az": "Daha və ən, ikinci formanın üstündə, dərsdən sonra",
+        "ru": "Больше и самый, на второй форме, после урока"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "suurem",
+          "front": "Suurem",
+          "back": {
+            "en": "Bigger",
+            "az": "Daha böyük",
+            "ru": "Больше, больший"
+          },
+          "build": {
+            "forms": [
+              "suur",
+              "suure",
+              "suurt"
+            ],
+            "on": 1,
+            "from": "suure",
+            "end": "m",
+            "makes": "suurem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Tallinn on suurem kui Tartu.",
+            "en": "Tallinn is bigger than Tartu.",
+            "az": "Tallinn Tartudan böyükdür.",
+            "ru": "Таллинн больше Тарту."
+          }
+        },
+        {
+          "id": "vanem",
+          "front": "Vanem",
+          "back": {
+            "en": "Older",
+            "az": "Daha köhnə, böyük",
+            "ru": "Старше, старший"
+          },
+          "build": {
+            "forms": [
+              "vana",
+              "vana",
+              "vana"
+            ],
+            "from": "vane",
+            "end": "m",
+            "makes": "vanem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Mul on vanem vend.",
+            "en": "I have an older brother.",
+            "az": "Mənim böyük qardaşım var.",
+            "ru": "У меня есть старший брат."
+          }
+        },
+        {
+          "id": "noorem",
+          "front": "Noorem",
+          "back": {
+            "en": "Younger",
+            "az": "Daha gənc, kiçik",
+            "ru": "Младше, моложе"
+          },
+          "build": {
+            "forms": [
+              "noor",
+              "noore",
+              "noort"
+            ],
+            "on": 1,
+            "from": "noore",
+            "end": "m",
+            "makes": "noorem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Mu õde on minust noorem.",
+            "en": "My sister is younger than me.",
+            "az": "Bacım məndən kiçikdir.",
+            "ru": "Моя сестра младше меня."
+          }
+        },
+        {
+          "id": "pikem",
+          "front": "Pikem",
+          "back": {
+            "en": "Longer, taller",
+            "az": "Daha uzun",
+            "ru": "Длиннее, выше"
+          },
+          "build": {
+            "forms": [
+              "pikk",
+              "pika",
+              "pikka"
+            ],
+            "from": "pike",
+            "end": "m",
+            "makes": "pikem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Tema tee on pikem.",
+            "en": "His way is longer.",
+            "az": "Onun yolu daha uzundur.",
+            "ru": "Его путь длиннее."
+          }
+        },
+        {
+          "id": "kulmem",
+          "front": "Külmem",
+          "back": {
+            "en": "Colder",
+            "az": "Daha soyuq",
+            "ru": "Холоднее"
+          },
+          "build": {
+            "forms": [
+              "külm",
+              "külma",
+              "külma"
+            ],
+            "from": "külme",
+            "end": "m",
+            "makes": "külmem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Täna on külmem kui eile.",
+            "en": "Today is colder than yesterday.",
+            "az": "Bu gün dünəndən soyuqdur.",
+            "ru": "Сегодня холоднее, чем вчера."
+          }
+        },
+        {
+          "id": "uuem",
+          "front": "Uuem",
+          "back": {
+            "en": "Newer",
+            "az": "Daha yeni",
+            "ru": "Новее"
+          },
+          "build": {
+            "forms": [
+              "uus",
+              "uue",
+              "uut"
+            ],
+            "on": 1,
+            "from": "uue",
+            "end": "m",
+            "makes": "uuem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Mul on uuem telefon.",
+            "en": "I have a newer phone.",
+            "az": "Mənim daha yeni telefonum var.",
+            "ru": "У меня более новый телефон."
+          }
+        },
+        {
+          "id": "ilusam",
+          "front": "Ilusam",
+          "back": {
+            "en": "More beautiful",
+            "az": "Daha gözəl",
+            "ru": "Красивее"
+          },
+          "build": {
+            "forms": [
+              "ilus",
+              "ilusa",
+              "ilusat"
+            ],
+            "on": 1,
+            "from": "ilusa",
+            "end": "m",
+            "makes": "ilusam",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "See kleit on ilusam.",
+            "en": "This dress is more beautiful.",
+            "az": "Bu don daha gözəldir.",
+            "ru": "Это платье красивее."
+          }
+        },
+        {
+          "id": "vaiksem",
+          "front": "Väiksem",
+          "back": {
+            "en": "Smaller",
+            "az": "Daha kiçik",
+            "ru": "Меньше, меньший"
+          },
+          "build": {
+            "forms": [
+              "väike",
+              "väikese",
+              "väikest"
+            ],
+            "from": "väikse",
+            "end": "m",
+            "makes": "väiksem",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Mul on väiksem auto.",
+            "en": "I have a smaller car.",
+            "az": "Mənim daha kiçik maşınım var.",
+            "ru": "У меня машина поменьше."
+          }
+        },
+        {
+          "id": "odavam",
+          "front": "Odavam",
+          "back": {
+            "en": "Cheaper",
+            "az": "Daha ucuz",
+            "ru": "Дешевле"
+          },
+          "build": {
+            "forms": [
+              "odav",
+              "odava",
+              "odavat"
+            ],
+            "on": 1,
+            "from": "odava",
+            "end": "m",
+            "makes": "odavam",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "Turul on köögivili odavam.",
+            "en": "Vegetables are cheaper at the market.",
+            "az": "Bazarda tərəvəz daha ucuzdur.",
+            "ru": "На рынке овощи дешевле."
+          }
+        },
+        {
+          "id": "magusam",
+          "front": "Magusam",
+          "back": {
+            "en": "Sweeter",
+            "az": "Daha şirin",
+            "ru": "Слаще"
+          },
+          "build": {
+            "forms": [
+              "magus",
+              "magusa",
+              "magusat"
+            ],
+            "on": 1,
+            "from": "magusa",
+            "end": "m",
+            "makes": "magusam",
+            "case": {
+              "et": "keskvõrre",
+              "en": "more",
+              "az": "daha",
+              "ru": "больше"
+            }
+          },
+          "sentence": {
+            "et": "See kook on magusam.",
+            "en": "This cake is sweeter.",
+            "az": "Bu tort daha şirindir.",
+            "ru": "Этот торт слаще."
+          }
+        },
+        {
+          "id": "parem",
+          "front": "Parem",
+          "back": {
+            "en": "Better",
+            "az": "Daha yaxşı",
+            "ru": "Лучше"
+          },
+          "forms": [
+            "parema",
+            "paremat"
+          ],
+          "sentence": {
+            "et": "See kohv on parem.",
+            "en": "This coffee is better.",
+            "az": "Bu qəhvə daha yaxşıdır.",
+            "ru": "Этот кофе лучше."
+          }
+        },
+        {
+          "id": "halvem",
+          "front": "Halvem",
+          "back": {
+            "en": "Worse",
+            "az": "Daha pis",
+            "ru": "Хуже"
+          },
+          "forms": [
+            "halvema",
+            "halvemat"
+          ],
+          "sentence": {
+            "et": "Ilm läheb halvemaks.",
+            "en": "The weather is getting worse.",
+            "az": "Hava pisləşir.",
+            "ru": "Погода становится хуже."
+          }
+        },
+        {
+          "id": "kas-teil-on-vaiksemat",
+          "front": "Kas teil on väiksemat?",
+          "back": {
+            "en": "Do you have a smaller one?",
+            "az": "Daha kiçiyi var?",
+            "ru": "У вас есть поменьше?"
+          },
+          "build": {
+            "forms": [
+              "väiksem",
+              "väiksema",
+              "väiksemat"
+            ],
+            "on": 2,
+            "makes": "väiksemat",
+            "case": {
+              "et": "osastav",
+              "en": "some, part of",
+              "az": "təsirlik hal",
+              "ru": "винительный, частичный"
+            }
+          }
+        },
+        {
+          "id": "suurim",
+          "front": "Suurim",
+          "back": {
+            "en": "The biggest",
+            "az": "Ən böyük",
+            "ru": "Самый большой"
+          },
+          "build": {
+            "forms": [
+              "suur",
+              "suure",
+              "suurt"
+            ],
+            "on": 0,
+            "from": "suur",
+            "end": "im",
+            "makes": "suurim",
+            "case": {
+              "et": "ülivõrre",
+              "en": "most",
+              "az": "ən",
+              "ru": "самый"
+            }
+          },
+          "sentence": {
+            "et": "Tallinn on Eesti suurim linn.",
+            "en": "Tallinn is Estonia's biggest city.",
+            "az": "Tallinn Estoniyanın ən böyük şəhəridir.",
+            "ru": "Таллинн — самый большой город Эстонии."
+          }
+        },
+        {
+          "id": "ilusaim",
+          "front": "Ilusaim",
+          "back": {
+            "en": "The most beautiful",
+            "az": "Ən gözəl",
+            "ru": "Самый красивый"
+          },
+          "build": {
+            "forms": [
+              "ilus",
+              "ilusa",
+              "ilusat"
+            ],
+            "on": 1,
+            "from": "ilusa",
+            "end": "im",
+            "makes": "ilusaim",
+            "case": {
+              "et": "ülivõrre",
+              "en": "most",
+              "az": "ən",
+              "ru": "самый"
+            }
+          },
+          "sentence": {
+            "et": "See on linna ilusaim tänav.",
+            "en": "This is the city's most beautiful street.",
+            "az": "Bu, şəhərin ən gözəl küçəsidir.",
+            "ru": "Это самая красивая улица города."
+          }
+        },
+        {
+          "id": "parim",
+          "front": "Parim",
+          "back": {
+            "en": "The best",
+            "az": "Ən yaxşı",
+            "ru": "Лучший"
+          },
+          "forms": [
+            "parima",
+            "parimat"
+          ],
+          "sentence": {
+            "et": "Parim kohv linnas.",
+            "en": "The best coffee in town.",
+            "az": "Şəhərin ən yaxşı qəhvəsi.",
+            "ru": "Лучший кофе в городе."
+          }
+        },
+        {
+          "id": "koige-parem",
+          "front": "Kõige parem",
+          "back": {
+            "en": "The best",
+            "az": "Ən yaxşı",
+            "ru": "Самый лучший"
+          },
+          "sentence": {
+            "et": "See on kõige parem restoran Tallinnas.",
+            "en": "This is the best restaurant in Tallinn.",
+            "az": "Bu, Tallinndə ən yaxşı restorandır.",
+            "ru": "Это лучший ресторан в Таллинне."
+          }
+        },
+        {
+          "id": "koige-odavam",
+          "front": "Kõige odavam",
+          "back": {
+            "en": "The cheapest",
+            "az": "Ən ucuz",
+            "ru": "Самый дешёвый"
+          },
+          "build": {
+            "forms": [
+              "odav",
+              "odava",
+              "odavat"
+            ],
+            "on": 1,
+            "from": "odava",
+            "end": "m",
+            "makes": "odavam",
+            "case": {
+              "et": "ülivõrre",
+              "en": "most",
+              "az": "ən",
+              "ru": "самый"
+            }
+          },
+          "sentence": {
+            "et": "Milline on kõige odavam?",
+            "en": "Which is the cheapest?",
+            "az": "Hansı ən ucuzdur?",
+            "ru": "Какой самый дешёвый?"
+          }
+        }
+      ]
     }
   ],
   "lessons": [
@@ -39016,6 +39541,7 @@
     {
       "id": "adjectives",
       "added": "2026-10-06",
+      "deck": "adjectives-cards",
       "name": {
         "en": "Bigger, biggest, and the opposite",
         "az": "Daha böyük, ən böyük, və əksi",
@@ -39579,6 +40105,7 @@
       "id": "cases-three",
       "added": "2026-10-06",
       "deck": "cases-three-cards",
+      "heading": "cases",
       "name": {
         "en": "The first three cases",
         "az": "İlk üç hal",
@@ -39853,6 +40380,7 @@
       "id": "cases-inside",
       "added": "2026-10-06",
       "deck": "cases-inside-cards",
+      "heading": "cases",
       "name": {
         "en": "Into, in, out of",
         "az": "İçinə, içində, içindən",
@@ -40115,6 +40643,7 @@
       "id": "cases-surface",
       "added": "2026-10-06",
       "deck": "cases-surface-cards",
+      "heading": "cases",
       "name": {
         "en": "Onto, on, off",
         "az": "Üstünə, üstündə, üstündən",
@@ -40377,6 +40906,7 @@
       "id": "cases-becoming",
       "added": "2026-10-06",
       "deck": "cases-becoming-cards",
+      "heading": "cases",
       "name": {
         "en": "Becoming, and until",
         "az": "Olmaq və -dək",
@@ -40562,6 +41092,7 @@
       "id": "cases-with",
       "added": "2026-10-06",
       "deck": "cases-with-cards",
+      "heading": "cases",
       "name": {
         "en": "As, without, with",
         "az": "Kimi, -sız, -la",

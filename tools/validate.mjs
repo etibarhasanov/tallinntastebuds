@@ -282,9 +282,8 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: fifty-two decks
-   and two thousand four hundred and eighty-two cards, deployed as a file and read
-   as one.
+   data/decks.json — the Estonian the flashcards page ships: fifty-three decks
+   and two thousand five hundred cards, deployed as a file and read as one.
    It is content rather than interface, so the ten languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
    instead is the three it has been written in, in the shape a place's blurb
@@ -334,9 +333,10 @@ if (decksFile !== null) {
         .map((song) => isPlainObject(song) ? song.deck : null)
         .filter(isNonEmptyString)
     );
-    /* And a sixth, on the songs' footing: the deck of cards a case lesson is
-       followed by, which the page draws under The cases, one by one, straight
-       after the lesson that names it. Only a deck a lesson names may have it,
+    /* And a sixth, on the songs' footing: the deck of cards a lesson is
+       followed by — each of the five case lessons, and the adjectives — which
+       the page draws straight after the lesson that names it, under whichever
+       heading the lesson is under. Only a deck a lesson names may have it,
        for the same reason. See **The cases, one at a time** under
        **Flashcards** in README.md. */
     const CASE_LEVEL = 'case';
@@ -595,6 +595,15 @@ if (decksFile !== null) {
         const own = decksFile.decks.find((deck) => isPlainObject(deck) && deck.id === lesson.deck);
         if (!own) fail(where, `lesson "${lesson.id}" names a deck "${lesson.deck}" that is not in the file`);
         else if (own.level !== CASE_LEVEL) fail(where, `lesson "${lesson.id}" names deck "${lesson.deck}", whose level is not "${CASE_LEVEL}"`);
+      }
+      /* And which heading on the shelf it is drawn under: "cases" for the
+         five that teach the cases one at a time, under The cases, one by one;
+         nothing for the rest, under Grammar. Separate from `deck`, because a
+         Grammar lesson can be followed by a deck too — the adjectives are —
+         and before the two were separate, naming a deck moved a lesson under
+         the cases' heading. */
+      if (lesson.heading !== undefined && lesson.heading !== 'cases') {
+        fail(where, `lesson "${lesson.id}" has a "heading" of "${lesson.heading}", which is not "cases"`);
       }
 
       if (!Array.isArray(lesson.body) || lesson.body.length === 0) {

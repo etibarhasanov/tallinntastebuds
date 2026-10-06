@@ -106,7 +106,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Fifty-two decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Fifty-three decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.
@@ -165,7 +165,7 @@ async function shelfOf(context) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   fifty-two decks, nine lessons and four songs under it rather than treating
+   fifty-three decks, ten lessons and four songs under it rather than treating
    it as a leaf. */
 function deckList(decks, lessons, songs) {
   const row = (one) =>
@@ -175,16 +175,17 @@ function deckList(decks, lessons, songs) {
   /* And the lessons as a second list under their own heading, the way the
      page draws them — a lesson is a name and a line the same as a deck is,
      so the same row draws it. The cases taught one at a time are a third,
-     each lesson followed by the deck it names, and those decks are left out
-     of the first list so that each is linked once, where it belongs. */
-  const grammar = lessons.filter((l) => !l.deck);
-  const cases = lessons.filter((l) => l.deck);
-  const after = new Set(cases.map((l) => l.deck));
-  const steps = cases.flatMap((l) => [l, ...decks.filter((d) => d.id === l.deck)]);
+     by the lesson's `heading`. In both, a lesson that names a deck is
+     followed by it, and those decks are left out of the first list so that
+     each is linked once, where it belongs. */
+  const after = new Set(lessons.map((l) => l.deck).filter(Boolean));
+  const steps = (which) => lessons.filter(which).flatMap((l) => [l, ...decks.filter((d) => d.id === l.deck)]);
+  const grammar = steps((l) => l.heading !== 'cases');
+  const cases = steps((l) => l.heading === 'cases');
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
     '<ol>' + decks.filter((d) => !after.has(d.id)).map(row).join('') + '</ol>' +
     (grammar.length ? '<h2>Grammar</h2><ol>' + grammar.map(row).join('') + '</ol>' : '') +
-    (steps.length ? '<h2>The cases, one by one</h2><ol>' + steps.map(row).join('') + '</ol>' : '') +
+    (cases.length ? '<h2>The cases, one by one</h2><ol>' + cases.map(row).join('') + '</ol>' : '') +
     (songs.length ? '<h2>Songs</h2><ol>' + songs.map(row).join('') + '</ol>' : '');
 }
 
@@ -318,7 +319,7 @@ function deckSays(deck, ui, lang) {
  * string on the page without sniffing it, and that is exactly the question
  * "что значит leib" turns on.
  *
- * It costs twenty-seven kilobytes on the shelf, which is fifty-two names and
+ * It costs twenty-seven kilobytes on the shelf, which is fifty-three names and
  * their lines with the lessons and the songs, and between seven and
  * seventy-six on a deck, which is one line per card and more where a card
  * carries its three forms and a sentence in three languages — a quarter of
