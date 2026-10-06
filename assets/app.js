@@ -11595,32 +11595,119 @@
      Surprise me for five seconds and the page goes there instead of rolling
      the die. Five seconds is past any press that meant the die and past the
      half-second a phone takes to call a press long, so nobody arrives by
-     accident; nothing on screen says it is there, which is the point of a
-     door the owner did not want on the rail.
-     The press that started it still ends in a click when the finger comes
-     up, so the click after a hold that fired is swallowed before it reaches
-     the die or the rail's count, and a phone's long-press menu is kept off
-     the pill while it is held. */
+     accident.
+
+     While it is held a ring fills round the die, and when the ring closes
+     the page goes: the owner tried the first version on a phone, held it,
+     saw nothing happen and could not tell whether it was working. The ring
+     shows itself only after a moment, so an ordinary tap never flashes it,
+     but it is counting from the first touch.
+
+     That first version also let go on pointercancel and pointerleave, and a
+     phone sends one of those partway through a long press — the browser
+     deciding the touch is now a gesture of its own — so on a phone the hold
+     ended itself before five seconds came round. Now only the finger coming
+     up ends it, as pointerup, touchend or mouseup, whichever the browser
+     sends, or the finger wandering off the pill, measured rather than taken
+     from an event that also means "the browser took over". The rail takes
+     no scroll or pinch (touch-action: none in assets/styles.css), so a
+     finger held still on it is somebody holding.
+
+     The press still ends in a click when the finger comes up, so the click
+     after a hold that fired is swallowed before it reaches the die or the
+     rail's count, and a phone's long-press menu is kept off the pill. */
   var CHESS_HOLD_MS = 5000;
+  /* How far a finger may drift before the hold is somebody doing something
+     else. */
+  var CHESS_HOLD_SLOP = 14;
 
   function holdForChess(btn) {
     var timer = null;
     var fired = false;
-    var stop = function () { if (timer) clearTimeout(timer); timer = null; };
-    btn.addEventListener('pointerdown', function (ev) {
-      if (ev.button) return;
+    var from = null;
+    var ring = null;
+    var ns = 'http://www.w3.org/2000/svg';
+
+    /* The ring, centred on the die rather than on the pill: on a phone the
+       pill is a disc round the die, and on a wide screen it is a pill with
+       the label beside it, and the die is where the eye already is. */
+    function showRing() {
+      var icon = btn.querySelector('svg');
+      if (!icon) return;
+      var box = btn.getBoundingClientRect();
+      var at = icon.getBoundingClientRect();
+      ring = document.createElementNS(ns, 'svg');
+      ring.setAttribute('class', 'hold-ring');
+      ring.setAttribute('viewBox', '0 0 32 32');
+      ring.setAttribute('aria-hidden', 'true');
+      ring.setAttribute('focusable', 'false');
+      ['hold-track', 'hold-fill'].forEach(function (cls) {
+        var c = document.createElementNS(ns, 'circle');
+        c.setAttribute('class', cls);
+        c.setAttribute('cx', '16');
+        c.setAttribute('cy', '16');
+        c.setAttribute('r', '14');
+        c.setAttribute('pathLength', '100');
+        ring.appendChild(c);
+      });
+      ring.style.left = (at.left - box.left + at.width / 2 - btn.clientLeft) + 'px';
+      ring.style.top = (at.top - box.top + at.height / 2 - btn.clientTop) + 'px';
+      ring.style.setProperty('--hold-ms', CHESS_HOLD_MS + 'ms');
+      btn.appendChild(ring);
+      void ring.getBoundingClientRect();
+      btn.classList.add('is-holding');
+    }
+
+    function stop() {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      from = null;
+      btn.classList.remove('is-holding');
+      if (ring && ring.parentNode) ring.parentNode.removeChild(ring);
+      ring = null;
+    }
+
+    function start(x, y) {
+      if (timer) return;
       fired = false;
-      stop();
+      from = { x: x, y: y };
+      showRing();
       timer = setTimeout(function () {
         timer = null;
         fired = true;
         TTBTrack.event('chess_open_hold');
         window.location.href = '/chess';
       }, CHESS_HOLD_MS);
+    }
+
+    btn.addEventListener('pointerdown', function (ev) {
+      if (ev.button) return;
+      start(ev.clientX, ev.clientY);
     });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (type) {
-      btn.addEventListener(type, stop);
+    /* For a browser that sends touches and no pointers; start() ignores the
+       second of the two where a browser sends both. */
+    btn.addEventListener('touchstart', function (ev) {
+      var touch = ev.touches && ev.touches[0];
+      if (touch) start(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    function drift(x, y) {
+      if (!from) return;
+      if (Math.abs(x - from.x) > CHESS_HOLD_SLOP || Math.abs(y - from.y) > CHESS_HOLD_SLOP) stop();
+    }
+    document.addEventListener('pointermove', function (ev) { drift(ev.clientX, ev.clientY); }, { passive: true });
+    document.addEventListener('touchmove', function (ev) {
+      var touch = ev.touches && ev.touches[0];
+      if (touch) drift(touch.clientX, touch.clientY);
+    }, { passive: true });
+    ['pointerup', 'touchend', 'mouseup'].forEach(function (type) {
+      document.addEventListener(type, function () { if (!fired) stop(); }, true);
     });
+    /* Leaving the page with a finger still down, or coming back to it from
+       /chess with the back button, starts from nothing. */
+    document.addEventListener('visibilitychange', stop);
+    window.addEventListener('pageshow', function () { fired = false; stop(); });
+
     btn.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
     document.addEventListener('click', function (ev) {
       if (!fired || !btn.contains(ev.target)) return;
