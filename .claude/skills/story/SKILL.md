@@ -167,8 +167,12 @@ kalve-kadriorg/02.jpg", "Take down laboratooriumi-23-2026-09-03") and pushes.
 The push is the deploy — Cloudflare's Git connection sees it like any other;
 what a push made with the built-in token does not start is another Actions
 workflow, so `validate.yml` does not run on a tick's commit, which is why the
-tick runs the validator itself before it pushes. `node tools/stories.mjs
---tick --dry-run` shows what the next tick would do.
+workflow runs the validator itself before it pushes — and, before that,
+`node tools/places.mjs` and `node tools/languages.mjs`, because a filed
+photograph is a new line on its place in `data/restaurants.json` and
+`data/map.json` is generated from that file. A tick run by hand wants the
+same two tools before the validator. `node tools/stories.mjs --tick
+--dry-run` shows what the next tick would do.
 
 To pull one early, set `live` to `false` or remove the entry; either is
 immediate for everybody. Once a switched-off video has been gone a while,
@@ -178,7 +182,9 @@ again, so a poster still named on one is yours to move or delete.
 
 If stories stop clearing themselves, the first thing to check is the Actions
 tab: GitHub stops scheduled workflows in a repository with no activity for 60
-days, and one push starts them again.
+days, and one push starts them again. A run that is red rather than missing
+is the validator refusing the tick's own edit, and its log names the
+generated file it wants rewritten.
 
 ## The commit
 
@@ -230,3 +236,12 @@ device a direct edit of `data/stories.json` on the default branch.
 - A replaced file under the same name: `/stories/*` is cached for a week, so
   anyone who saw the old one keeps seeing it. New content is a new name.
 - The cron silently stopped after two quiet months.
+- The tick's commit refused by its own validator. The map started reading
+  `data/map.json`, generated from `data/restaurants.json`, on 2026-10-05, and
+  the workflow went on running the tick and then the validator with nothing
+  between them; the first story to run out after that failed every hourly run
+  from seven in the morning until a session read the Actions tab that night,
+  and its picture sat in `stories/` unfiled. A new file generated from
+  `restaurants.json` is a new tool in the regenerate step of `stories.yml`,
+  and a red run in the Actions tab is the second thing to look for after the
+  sixty quiet days.

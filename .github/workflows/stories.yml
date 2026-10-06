@@ -64,6 +64,18 @@ jobs:
         id: tick
         run: node tools/stories.mjs --tick
 
+      # A filed photograph is a new line on its place in data/restaurants.json,
+      # and two things are generated from that file — the catalogue, and the
+      # map's own copies in data/map.json and data/lang/ — which the validator
+      # refuses when they are stale. A person runs the two tools before the
+      # validator, and so does this. Without this step every tick that filed a
+      # picture failed its own validate step, three runs in a row on the day
+      # the map started reading data/map.json, and the picture sat unfiled
+      # until somebody read the Actions tab.
+      - name: Regenerate what the tick's edit moved
+        if: steps.tick.outputs.changed == 'true'
+        run: node tools/places.mjs && node tools/languages.mjs
+
       # The same gate every other path to the live site goes through: this
       # writes data/restaurants.json, so it is held to the same standard as a
       # person writing it.

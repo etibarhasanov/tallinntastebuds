@@ -11621,11 +11621,21 @@ You can run the same thing yourself, and look before you leap:
 ```bash
 node tools/stories.mjs --tick --dry-run    # say what would happen
 node tools/stories.mjs --tick              # do it
+node tools/places.mjs && node tools/languages.mjs   # then what is generated from the place it wrote
 ```
+
+A filed photograph is a new line on its place in `data/restaurants.json`, and
+the catalogue and the map's own copies are generated from that file, so the
+two tools follow the tick before the validator does — by hand as above, and in
+the workflow as a step of its own between its tick and its validate step. For
+most of a day in October 2026 the workflow had no such step, and every tick
+that filed a picture failed its own validator and committed nothing.
 
 > GitHub stops scheduled workflows in a repository that has had no activity for
 > 60 days, and says so in the Actions tab. If stories ever stop clearing
-> themselves, that is the first thing to check — one push starts it again.
+> themselves, that is the first thing to check — one push starts it again. A
+> run that is red rather than missing is the validator refusing the tick's
+> edit, and its log names the generated file it wants rewritten.
 
 ### The clock
 
