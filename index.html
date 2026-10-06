@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=4f6fd081">
+<link rel="stylesheet" href="assets/styles.lean.css?v=8fbf7673">
 </head>
 <body>
 
@@ -857,6 +857,10 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=34096279" defer></script>
+<!-- The page's own script, as the copy tools/lean.mjs writes of assets/app.js:
+     the same code with the comments taken out, a third of the bytes on the
+     wire. assets/app.js is the file to read and to edit; the validator fails
+     a page that loads it directly. "The lean copies" in README.md. -->
+<script src="assets/app.lean.js?v=bcb48807" defer></script>
 </body>
 </html>

@@ -331,6 +331,9 @@ browser cannot import from `tools/`; change one, change the other.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is the chip's name on every rail; the other nine sit beside it.
+- **The lean copies**: `assets/app.lean.js` and `assets/styles.lean.css`
+  must be what `node tools/lean.mjs` writes from `assets/app.js` and
+  `assets/styles.css`, and no stamped page may load either source directly.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-one pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
@@ -347,9 +350,14 @@ If the change is something new, **Is it new?** above comes first and there is
 no step 1 until the owner has answered it.
 
 1. Make the change, in the dialect above, with the README section open.
-2. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
+2. `node tools/lean.mjs`, if `assets/app.js` or `assets/styles.css` moved.
+   The pages load `assets/app.lean.js` and `assets/styles.lean.css`, the
+   same two files with the comments taken out, and CI refuses a copy that is
+   not what the tool would write. Never edit a copy — **The lean copies**
+   under **Cache stamps** in `README.md`.
+3. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
    and CI refuses a stale one. Never type a hash by hand.
-3. `node tools/ogcard.mjs`, **if the change moved a colour token or anything
+4. `node tools/ogcard.mjs`, **if the change moved a colour token or anything
    in `assets/flashcard.css`**, and commit the redrawn
    `assets/logo/og-flashcard.png`. That card is the flashcards' share picture
    and it is drawn from those two stylesheets — `assets/logo/og-flashcard.html`
@@ -357,9 +365,9 @@ no step 1 until the owner has answered it.
    leaves a picture of last month's site on every link anybody sends. It needs
    a Chromium, it takes a second, and nothing in CI can see that it went
    stale. **When somebody sends the link** under **Flashcards** in `README.md`.
-4. `node tools/languages.mjs`, if `data/ui.json` moved, then
+5. `node tools/languages.mjs`, if `data/ui.json` moved, then
    `node tools/validate.mjs`.
-5. **Drive it in a browser.** There is no test suite and no Playwright
+6. **Drive it in a browser.** There is no test suite and no Playwright
    harness in the repo; reading the diff is not the same as watching it.
    `python3 -m http.server 8000` over the repo root is enough for the map,
    because `fetch()` refuses `file://` and the page comes up empty. For a
@@ -371,7 +379,7 @@ no step 1 until the owner has answered it.
    the daily Workers AI allowance the live site shares — a few questions,
    not an afternoon. Look at a light and a dark style, and at a 390 px width, which is
    the phone the README measures its layouts against.
-6. **Rewrite the README paragraph** the change made wrong, and the comment
+7. **Rewrite the README paragraph** the change made wrong, and the comment
    above the function. A paragraph that now describes the version that lost
    the argument is a bug. And if the change gives somebody a thing to do
    they could not do before — or takes one away, or moves where it lives —
@@ -382,7 +390,7 @@ no step 1 until the owner has answered it.
    press renamed is a `when` renamed, and the validator holds the two to
    the README's **Analytics** table. **Who uses the site, drawn** in
    `README.md`.
-7. The pass in `leave-it-better.md`, over every file in the diff, whole.
+8. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language
 
@@ -443,7 +451,8 @@ it, and what was driven in a browser to check it.
    When `index.html` or `lists.html` conflicts on a `?v=` line, take the
    structure from both sides, `node tools/stamp.mjs`, `git add`,
    `git rebase --continue`; never type a hash.
-2. `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
+2. `node tools/lean.mjs` if `app.js` or `styles.css` moved, then
+   `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
    `node tools/qrperf.mjs --check` if `assets/qr.js` moved.
 3. The page in a browser, a light and a dark style, 390 px, and the README paragraph
    rewritten. The `leave-it-better.md` pass over every file in the diff.
@@ -463,6 +472,10 @@ it, and what was driven in a browser to check it.
 
 ## Where it goes wrong
 
+- The lean copies: `app.js` or `styles.css` edited and `node tools/lean.mjs`
+  not run, so the page keeps loading last week's code — the validator
+  catches it, but only after the push. Or a fix typed into
+  `assets/app.lean.js` directly, which the next run of the tool erases.
 - The stamps: not run, or hand-merged after a rebase. `index.html` and
   `lists.html` conflict on the `?v=` lines whenever two branches touch
   `assets/`. Take the structure from both sides, run the stamper, let it
