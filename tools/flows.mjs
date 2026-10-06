@@ -4,10 +4,12 @@
  *
  * One diagram for each kind of person this site answers: a visitor who has
  * not signed in, a member who has, the waiter and the counter a discount is
- * shown to, the friends in a splitwise group, and the owner. Each is a pool
- * with three lanes — the person, the page in their browser, the Function and
- * the database behind it — and every step names the file or the route that
- * does it, so the picture is also an index into the code.
+ * shown to, the friends in a splitwise group, a learner on the flashcards,
+ * the three around a game of chess, and the owner. Each is a pool with a lane
+ * per actor — the site among them where work is handed to it and back, and
+ * otherwise its steps marked in the person's own lane — and every step names
+ * the file or the route that does it, so the picture is also an index into
+ * the code. **Who uses the site, drawn** in README.md says which is which.
  *
  *   data/flows.json    the source, written by hand. A person, a lane per
  *                      actor, a step per thing they can do, an arrow per

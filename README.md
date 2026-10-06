@@ -10822,7 +10822,7 @@ there for whoever has the address, the blog's arrangement — unlinked, and
 listed in `sitemap.xml`. It had a door for a day, first as a knight pill on the
 rail for anybody signed in and a *Play chess* row behind More on the short
 rail, then as the row alone, and the owner took both away. Putting one back is
-the rest of the sixth task in `.claude/skills/chess/TASKS.md`.
+task 6b in `.claude/skills/chess/TASKS.md`.
 
 **There is a way in for whoever knows it**: hold *Surprise me* on the map for
 five seconds and the map goes to `/chess` instead of rolling the die —
@@ -13182,7 +13182,7 @@ public page at `/flows` for the length of one pull request, and moved under
 `/admin/` before it landed: the page is the owner's workbench, and a file is
 the better thing to hand somebody anyway.
 
-Six diagrams, and the line between them is a person rather than a feature:
+Seven diagrams, and the line between them is a person rather than a feature:
 
 | Diagram | Who | Lanes |
 |---|---|---|
@@ -13191,11 +13191,18 @@ Six diagrams, and the line between them is a person rather than a feature:
 | `discount` | the guest, the waiter and the counter, around one code | four: guest, site, waiter, counter |
 | `splitwise` | the owner of a group, somebody holding its link, a member | four: owner, link holder, member, site |
 | `flashcards` | a learner, signed in or not | one |
+| `chess` | anybody at the city's board, a member with a game of their own, and the house | three: anybody, member, the house |
 | `owner` | the person whose site this is | three: owner, GitHub, site |
 
 Flashcards is a sixth rather than a part of the visitor and the member because
 it lives on its own subdomain and a learner is somebody who may never open the
-map at all.
+map at all. Chess is a seventh for the same reason the discount is one: it is
+three people around one thing — the city's game, a member's own, and the
+owner at both as the house — and its steps are theirs, not the map's. It
+was drawn without waiting for the door the chess task list still holds:
+`/admin/flows` is the owner's, so the diagram shows nobody where the page is,
+and its first step is the way in that exists today, the address or
+*Surprise me* held for five seconds.
 
 ### The source, and what is generated from it
 
@@ -13230,6 +13237,13 @@ and the learner it did not: each is one person fanning out into eight
 journeys, and a second lane underneath drew every branch down through every
 other one to reach it. So those three are one lane, and the site's steps are
 told apart by the cog in their corner and the washed fill.
+
+Chess was drawn with a site lane first and went the same way, three times
+over: each of the three people fans out from a gateway of their own, and
+every branch crossed the other two lanes to reach the shared steps below. So
+it has a lane per person and none for the site — the site's steps sit in the
+lane of whoever set them off — and each branch ends where it happens rather
+than travelling back to one shared end.
 
 ### Why not bpmn-js
 
