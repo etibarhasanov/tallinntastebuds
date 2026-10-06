@@ -570,7 +570,11 @@ window.TTBTrack = (function () {
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
      coarse primary pointer is a finger, and a finger on something narrower
      than 768px is a phone. A laptop with a touchscreen keeps its mouse as
-     the primary pointer and counts as a desktop, which is what it is. */
+     the primary pointer and counts as a desktop, which is what it is. Handed
+     out as TTBTrack.device() as well, because pickLayout() in assets/app.js
+     draws a newcomer on anything but a phone the full rail by this same
+     rule: a rail decided by one test and counted by another would file some
+     laptops under a deal they were never in. */
   function device() {
     var coarse = false;
     try { coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch (e) { coarse = false; }
@@ -767,5 +771,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, newcomer: newcomer, owner: OWNER };
+  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, newcomer: newcomer, device: device, owner: OWNER };
 })();

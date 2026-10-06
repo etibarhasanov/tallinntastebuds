@@ -755,7 +755,17 @@
    *    /account.html, layoutCard() in assets/account.js — is never dealt
    *    over. LAYOUT_BY_KEY says a hand chose it.
    * 3. A rail dealt under this deal, which LAYOUT_DEAL_KEY records, is kept.
-   * 4. Otherwise the deal: the short rail with LAYOUT_SHARE, the full one
+   * 4. Anything but a phone — a desktop or a tablet, device() in
+   *    assets/track.js, the same rule /admin/visitors files a visitor's
+   *    device by — is dealt nothing and draws the full rail. The short rail
+   *    was cut for a thumb on a 390px screen, and a laptop or a tablet has
+   *    room for the whole column; the owner, on a laptop, asked for it. This
+   *    is for browsers with no rail yet: one already holding a rail from
+   *    the steps above keeps it, on a laptop too, because a returning
+   *    visitor is left exactly as they were. Its key is cleared rather than
+   *    written, so track.js files its visits under no rail, and the
+   *    strangers counted on /admin/visitors are phones alone.
+   * 5. Otherwise the deal: the short rail with LAYOUT_SHARE, the full one
    *    otherwise, for a stranger and for somebody who was here before alike.
    *    The first deal gave every stranger the short rail and everybody else
    *    the full one; a browser holding the short rail from then keeps it,
@@ -787,6 +797,11 @@
     var known = stored && LAYOUTS.indexOf(stored) !== -1;
     if (known && (storeGet(LAYOUT_BY_KEY) === 'hand' || storeGet(LAYOUT_DEAL_KEY) === LAYOUT_DEAL || stored === 'b')) {
       return stored;
+    }
+    if (TTBTrack.device() !== 'phone') {
+      storeDel(LAYOUT_KEY);
+      storeDel(LAYOUT_DEAL_KEY);
+      return 'a';
     }
     var dealt = Math.random() < LAYOUT_SHARE ? 'b' : 'a';
     storeSet(LAYOUT_KEY, dealt);
