@@ -138,12 +138,21 @@
  * from a page holding yesterday's script carries no `at` and is counted
  * without times.
  *
+ * BY DEVICE
+ *
+ * Every fact is filed a second time under its device, the flow written
+ * `<device>.<flow>` — `phone.visitor`, `desktop.member` — the way
+ * ./_visitors.js files its kinds, and BY DEVICE there is the reasoning.
+ * readFlows() reads the plain flow for every device, or one device's,
+ * when /admin/flows asks for it with `?device=`. Since 2026-10-06.
+ *
  * WHAT IS BOUNDED, AND HOW
  *
  * One row per flow, day, who and id, and the ids are the diagram's own:
  * a busy day and a quiet one with the same journeys in them are the same
  * number of rows, and a day is at most the counted steps of a diagram plus
- * the pairs anybody took, under each of `in` and `out`. A trail is at most
+ * the pairs anybody took, under each of `in` and `out`, and as much again
+ * under the device. A trail is at most
  * MAX_TRAIL names, and a name has to be shaped like one. Per page put away
  * that is one session lookup and a handful of upserts in a batch of their
  * own, so a missing flow_counts never fails the day's visitor facts.
@@ -156,7 +165,7 @@
 
 import { sessionUser, dataFile } from './_lib.js';
 import { today, dayBack } from './_visits.js';
-import { pageOf, stepBefore, MAX_SECS, TAG } from './_visitors.js';
+import { pageOf, stepBefore, MAX_SECS, TAG, DEVICES } from './_visitors.js';
 import { sourceOf, siteOf } from './_visits.js';
 
 /* The most names one report may carry — the visitor's diagram counts eleven
@@ -333,7 +342,10 @@ export async function countFlows(context, body) {
   /* The same facts again under how the tab arrived — ARRIVED VIA. */
   let via = viaOf(request, body.via);
   if (via && via.indexOf('tag:') === 0 && !(await tagRoom(env, day, via))) via = null;
-  const all = via ? facts.concat(facts.map(([flow, , id]) => [flow, via, id])) : facts;
+  const filed = via ? facts.concat(facts.map(([flow, , id]) => [flow, via, id])) : facts;
+  /* And all of it again under the device — BY DEVICE. */
+  const device = DEVICES.includes(body.device) ? body.device : null;
+  const all = device ? filed.concat(filed.map(([flow, w, id]) => [device + '.' + flow, w, id])) : filed;
   try {
     await env.DB.batch(all.map(([flow, w, id]) => env.DB.prepare(ADD).bind(flow, day, w, id, 1)));
     return true;
@@ -345,7 +357,8 @@ export async function countFlows(context, body) {
 
 /* ------------------------------------------------------------- reading */
 
-/* One diagram over `span` days, or null where there is no table yet.
+/* One diagram over `span` days, or null where there is no table yet —
+ * one device's half of it where `device` names one, BY DEVICE.
  *
  *   flow       the diagram's id
  *   span       1, 7, 28 or 90
@@ -374,14 +387,17 @@ export async function countFlows(context, body) {
  *
  * One read of the range's rows for this diagram; the rest is arithmetic on
  * a few dozen rows a day. */
-export async function readFlows(env, flow, span) {
+export async function readFlows(env, flow, span, device) {
   const cut = dayBack(span - 1);
+  const filed = device ? device + '.' + flow.id : flow.id;
   let rows;
   let since;
   try {
     [rows, since] = await Promise.all([
-      env.DB.prepare('SELECT who, id, n FROM flow_counts WHERE flow = ? AND day >= ?').bind(flow.id, cut).all(),
-      env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts').first()
+      env.DB.prepare('SELECT who, id, n FROM flow_counts WHERE flow = ? AND day >= ?').bind(filed, cut).all(),
+      device
+        ? env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts WHERE flow = ?').bind(filed).first()
+        : env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts').first()
     ]);
   } catch (e) {
     return null;

@@ -12828,6 +12828,41 @@ three rails by four colours, two facts — **TIME ON PHONES** there. It counts
 from the day it shipped, 2026-10-05; nothing before that can be split by
 device.
 
+### By device
+
+Every number on the four count pages can be read for one kind of device. A
+row of chips beside the range — **All devices**, **Phone**, **Tablet**,
+**Desktop** — sits on `/admin/visitors`, `/admin/found` and `/admin/flows`,
+and at the head of `/admin/stats`, which has no range; the address keeps the
+choice as `?device=` on the first three pages, so a reload lands on it. All
+is the page as it always was.
+
+The device is the one **When they come, on what, and not the owner** above
+describes: `device()` in `assets/track.js`, a mouse for the primary pointer
+being a desktop, a laptop with a touchscreen included. Every report a page
+sends carries it now, and so does every press the map and the lists post,
+and the count files each fact twice — once as before and once under its
+device, the kind written `<device>.<kind>`: `phone.view`, `desktop.press`,
+`tablet.layout`. `press_counts` does the same with its kinds, so
+`desktop.rail` is the rail's pills pressed on a computer, and `flow_counts`
+with its flows, `phone.visitor`. No kind or flow had a dot in it before, so a
+row without one is every device and a row with one is one device, in the same
+tables under the same keys, and nothing had to be applied to the database.
+The routes take `?device=` and read the half asked for, through `forDevice()`
+in `functions/api/_visitors.js`, and the edge cache keys on it.
+
+It doubles the rows each report writes, which a day can afford: the size is
+still bounded by the kinds, and each open kind is capped per device as it is
+overall. What it cannot split is anything a route counts rather than a page,
+because no route knows the device — the chat, the products, the Google round
+trip's sign-up steps, Right now — and the saves and what the site holds on
+`/admin/stats`, which are not presses. A device's view shows those for every
+device, and a line under the chips says so. **Time on phones** is phones
+already, and shows under Phone alone. And it began on 2026-10-06, the same day
+the map stopped dealing a rail to newcomers on a laptop or a tablet: nothing
+before it can be split, and a range reaching back past it shows a device's
+numbers only from then.
+
 ### Signing up
 
 Sign-ins and accounts made are two numbers, and on the count's first three

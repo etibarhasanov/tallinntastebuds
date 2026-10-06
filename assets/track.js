@@ -45,6 +45,11 @@
  * functions/api/_admin.js. `owner` on the object below says so, for the two
  * pages that post a press of their own.
  *
+ * Every report says what it was made on — phone, tablet or desktop, device()
+ * below — and those two pages put the same word on the presses they post
+ * through `device` on the object, so every number on the owner's pages can
+ * be read for one kind of device. BY DEVICE in functions/api/_visitors.js.
+ *
  * THE ORDER THEY CAME IN
  *
  * The same report also carries the names in the order they first happened —
@@ -346,8 +351,11 @@ window.TTBTrack = (function () {
 
   /* A beacon survives the page being put away, which is when half of these
      are sent; fetch with keepalive is the same promise where there is no
-     beacon. Nothing waits on either. */
+     beacon. Nothing waits on either. Every report carries the device it
+     was made on, so the count can file it a second time under it — BY
+     DEVICE in functions/api/_visitors.js. */
   function send(body) {
+    body.device = device();
     var data = JSON.stringify(body);
     try {
       if (navigator.sendBeacon && navigator.sendBeacon(STATS, data)) return;
@@ -441,7 +449,6 @@ window.TTBTrack = (function () {
          Read straight off the browser, never off the page, which has
          already picked one out of it. */
       asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
-      device: device(),
       phone: phoneArm(),
       tag: TAGGED
     });

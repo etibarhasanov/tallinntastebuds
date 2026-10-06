@@ -4318,7 +4318,9 @@
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind: kind, id: id })
+      /* The device, so the press is counted a second time under it — BY
+         DEVICE in functions/api/stats.js. */
+      body: JSON.stringify({ kind: kind, id: id, device: TTBTrack.device() })
     }).catch(function () { /* the ranking misses one, the map is unaffected */ });
   }
 

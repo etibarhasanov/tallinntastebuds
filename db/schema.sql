@@ -355,14 +355,23 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   discount a page said it was about — WHAT IT WAS ABOUT in
 --                   _visitors.js — each id one the site ships
 --
+-- And every kind but 'device', 'phone' and the ones a route counts ('ask',
+-- 'use', a 'signup' of the Google round trip) a second time under the device
+-- the report was made on, the kind written '<device>.<kind>' — 'phone.view',
+-- 'desktop.press', 'tablet.layout' — with the same ids. No kind above has a
+-- dot in it, so a row without one is every device and a row with one is one
+-- device. BY DEVICE in _visitors.js, since 2026-10-06; press_counts and
+-- flow_counts are split the same way, by '<device>.<kind>' and
+-- '<device>.<flow>'.
+--
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
 -- the answer. The size is bounded by the day, not by the traffic — the
 -- kinds with ids nobody chose from a list (country, from, press, asks,
 -- found, ref, tag, search, nothing) are capped at a hundred ids a day each
--- in the code, the presses at three hundred — so a year is tens of thousands
--- of short rows at the very most, and a busy day costs no more rows than a
--- quiet one with the same pages in it.
+-- in the code, the presses at three hundred, and each again per device — so a
+-- year is a hundred thousand short rows at the very most, and a busy day
+-- costs no more rows than a quiet one with the same pages in it.
 --
 -- WITHOUT ROWID, because the primary key is the only way the table is read
 -- and every row is a few short strings and a number: the key is the table,

@@ -1,8 +1,13 @@
 /**
  * Tallinn Tastebuds — /api/admin/stats, the ranking of what gets pressed.
  *
- *   GET ?lang=   the whole ranking, the page's words beside it, and five
+ *   GET ?lang=&device=
+ *                the whole ranking, the page's words beside it, and five
  *                minutes of edge cache on the pair. What /admin/stats draws.
+ *                `device` is phone, tablet or desktop for the presses made
+ *                on that device alone — BY DEVICE in ../stats.js — and
+ *                every device without. The saves and what the site holds
+ *                are not presses and stay the same under any device.
  *
  * The presses themselves are counted by POST /api/stats in ../stats.js, which
  * anybody may send and every page does; that file says what is counted and
@@ -79,6 +84,7 @@ import {
 import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST } from '../stats.js';
 /* The countries under a list, read the way /insights reads them. */
 import { listCountries } from '../_visits.js';
+import { askedDevice } from '../_visitors.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -133,11 +139,13 @@ export async function onRequestGet(context) {
      ten codes with each language's own name, and it is dropped here: the
      flashcards page has a switch to draw out of it and this one does not, so
      sending it would be ten pairs in every answer that nothing reads. */
-  const { lang, ui } = await wordsFor(context, new URL(request.url).searchParams.get('lang'));
-  const words = { lang: lang, ui: ui };
+  const params = new URL(request.url).searchParams;
+  const { lang, ui } = await wordsFor(context, params.get('lang'));
+  const device = askedDevice(params);
+  const words = { lang: lang, ui: ui, device: device };
 
   const cache = caches.default;
-  const key = statsKey(request, words.lang);
+  const key = statsKey(request, words.lang, device);
   const hit = await cache.match(key);
   if (hit) return privately(hit);
 
@@ -162,6 +170,12 @@ export async function onRequestGet(context) {
     /* No table yet — see the header. */
     return json(empty, 200);
   }
+  /* Every device's rows, which have no dot in their kind, or one device's
+     with the device taken back off — BY DEVICE in ../stats.js. */
+  const at = device ? device + '.' : '';
+  rows = rows
+    .filter((row) => (device ? row.kind.startsWith(at) : !row.kind.includes('.')))
+    .map((row) => (device ? { ...row, kind: row.kind.slice(at.length) } : row));
 
   const counted = new Map();
   for (const row of rows) counted.set(row.kind + '\u0000' + row.id, row.n);
@@ -395,14 +409,15 @@ async function opened(env, rows) {
   });
 }
 
-/* What the colo files the answer under: the route and the language, and never
-   the rest of the address. The page sends its whole list of candidate
-   languages — "et,en,ru" — and the answer only depends on which one of them
-   won, so keying on the raw query would file the same ten answers under
-   however many orders browsers happen to send. Ten keys per colo, one per
-   language the site speaks. */
-function statsKey(request, lang) {
+/* What the colo files the answer under: the route, the language and the
+   device, and never the rest of the address. The page sends its whole list
+   of candidate languages — "et,en,ru" — and the answer only depends on
+   which one of them won, so keying on the raw query would file the same ten
+   answers under however many orders browsers happen to send. Forty keys per
+   colo, one per language the site speaks and device. */
+function statsKey(request, lang, device) {
   const url = new URL('/api/admin/stats', request.url);
   url.searchParams.set('lang', lang);
+  if (device) url.searchParams.set('device', device);
   return new Request(url.toString());
 }

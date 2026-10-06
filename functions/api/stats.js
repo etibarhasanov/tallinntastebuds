@@ -123,6 +123,17 @@
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.
  *
+ * BY DEVICE
+ *
+ * Every press counted into press_counts is counted a second time under the
+ * device the page says it was pressed on, the kind written
+ * `<device>.<kind>` — `desktop.rail`, `phone.layout` — so /admin/stats and
+ * the tests on /admin/visitors can be read for phones, tablets or
+ * computers alone. BY DEVICE in ./_visitors.js is the reasoning, and the
+ * visits are split the same way there. A list's countries are not: they
+ * are the list owner's numbers on /insights. Since 2026-10-06; a page
+ * holding an older script sends no device and is counted once, as before.
+ *
  * WHAT A FAILURE LOOKS LIKE
  *
  * Every ending is 200 with {ok:false} unless the request itself was
@@ -139,7 +150,7 @@ import {
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
 import { countView, countPress, countListOpen, firstToday } from './_visits.js';
-import { countArrive, countLeave } from './_visitors.js';
+import { countArrive, countLeave, DEVICES } from './_visitors.js';
 import { countFlows } from './_flows.js';
 /* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
    ./_visitors.js. */
@@ -316,14 +327,17 @@ export async function onRequestPost(context) {
      one place on this site where a number is nudged rather than rebuilt, and
      it is safe here for the reason save_counts is not: there is no second
      table that could disagree with it. */
+  const device = DEVICES.includes(body.device) ? body.device : null;
+  const bump = (k) => env.DB
+    .prepare(
+      'INSERT INTO press_counts (kind, id, n) VALUES (?, ?, 1) ' +
+      'ON CONFLICT(kind, id) DO UPDATE SET n = press_counts.n + 1'
+    )
+    .bind(k, id);
   try {
-    await env.DB
-      .prepare(
-        'INSERT INTO press_counts (kind, id, n) VALUES (?, ?, 1) ' +
-        'ON CONFLICT(kind, id) DO UPDATE SET n = press_counts.n + 1'
-      )
-      .bind(kind, id)
-      .run();
+    /* And again under the device — BY DEVICE. One batch, so the two never
+       disagree about whether the press landed. */
+    await env.DB.batch(device ? [bump(kind), bump(device + '.' + kind)] : [bump(kind)]);
   } catch (e) {
     /* No table yet, or the write failed. Either way nothing was counted and
        nobody is waiting to hear it. */

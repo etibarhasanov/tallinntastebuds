@@ -128,6 +128,7 @@
     picked: null,    // the <g> of the step last pressed
     drawn: null,     // the shapes and arrows on screen, by id — see draw()
     span: 7,         // the range, in days
+    device: '',      // one of DEVICE_IDS, '' for every device — BY DEVICE
     who: 'all',      // which of the answer's three whos the switch is on
     via: '',         // the segment on screen instead, or '' for the who — ARRIVED VIA
     numbers: null,   // the answer for the flow on screen, or null
@@ -629,6 +630,27 @@
     nodes.counted.appendChild(document.createTextNode(t(key)));
   }
 
+  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js, and
+     BY DEVICE in functions/api/_flows.js. */
+  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
+  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+
+  function devices() {
+    var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
+    DEVICE_IDS.forEach(function (id) {
+      var chip = el('button', { type: 'button', className: 'chip', 'data-device': id, 'aria-pressed': 'false',
+        textContent: id ? t(DEVICES[id]) : t('devicesAll') });
+      chip.addEventListener('click', function () {
+        if (id === state.device) return;
+        state.device = id;
+        syncControls();
+        ask();
+      });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
   function ranges() {
     var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('insightsRange') });
     SPANS.forEach(function (span) {
@@ -705,6 +727,10 @@
     for (var i = 0; i < chips.length; i++) {
       chips[i].setAttribute('aria-pressed', Number(chips[i].getAttribute('data-span')) === state.span ? 'true' : 'false');
     }
+    var kinds = nodes.controls.querySelectorAll('.chip[data-device]');
+    for (var k = 0; k < kinds.length; k++) {
+      kinds[k].setAttribute('aria-pressed', kinds[k].getAttribute('data-device') === state.device ? 'true' : 'false');
+    }
     var opts = nodes.controls.querySelectorAll('.lists-seg-opt');
     for (var o = 0; o < opts.length; o++) {
       var on = !state.via && opts[o].getAttribute('data-who') === state.who;
@@ -720,7 +746,8 @@
     if (!flow || !countedSteps(flow).length) return;
     var turn = ++state.asked;
     say('flowsCounting');
-    get(NUMBERS + '?flow=' + encodeURIComponent(flow.id) + '&days=' + state.span).then(function (out) {
+    get(NUMBERS + '?flow=' + encodeURIComponent(flow.id) + '&days=' + state.span +
+        (state.device ? '&device=' + state.device : '')).then(function (out) {
       if (turn !== state.asked || state.current !== flow) return;
       state.numbers = out;
       paint();
@@ -770,11 +797,16 @@
     clear(nodes.counted);
     nodes.counted.classList.remove('is-error');
     nodes.counted.appendChild(el('b', { textContent: t('flowsViews', { n: num(who.views) }) }));
-    nodes.counted.appendChild(document.createTextNode(' · ' + (state.via ? viaLabel(state.via) : t(WHO_LABEL[state.who])) + ' · ' + rangeLabel()));
+    nodes.counted.appendChild(document.createTextNode(' · ' + (state.via ? viaLabel(state.via) : t(WHO_LABEL[state.who])) +
+      (state.device ? ' · ' + t(DEVICES[state.device]) : '') + ' · ' + rangeLabel()));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsMarks')));
+    if (state.device) {
+      nodes.counted.appendChild(el('br'));
+      nodes.counted.appendChild(document.createTextNode(t('devicesNote')));
+    }
   }
 
   /* A count on every step the answer has one for, on the shape's top-right
@@ -1094,7 +1126,7 @@
        the line that says what was counted, and the two cards under the
        detail, hidden until an answer fills them. */
     nodes.via = el('div', { className: 'ins-range flows-via', role: 'group', 'aria-label': t('flowsVia'), hidden: true });
-    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), whoSwitch(), nodes.via]);
+    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), devices(), whoSwitch(), nodes.via]);
     nodes.counted = el('p', { className: 'flows-counted', 'aria-live': 'polite' });
     nodes.stepsTable = el('div');
     nodes.stepsCard = el('section', { className: 'card flows-detail', hidden: true }, [

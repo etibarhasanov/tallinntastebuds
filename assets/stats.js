@@ -69,9 +69,15 @@
   var LANG_KEY = 'ttb.lang';
   var DEFAULT_LANG = 'en';
 
+  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js, and
+     BY DEVICE in functions/api/stats.js. '' is every device. */
+  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
+  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+
   var state = {
     lang: DEFAULT_LANG,
     ui: {},
+    device: '',     // one of DEVICE_IDS
     ready: false,   // whether the numbers came back at all
     opens: 0,
     held: null,     // what the site holds, nine counts — holdings() below
@@ -381,6 +387,10 @@
     var opened = !!(state.map[0] && state.map[0].n);
 
     var stack = el('div', { className: 'lists-stack' });
+    stack.appendChild(card([
+      devices(),
+      state.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null
+    ]));
     if (opened) stack.appendChild(card([headline()]));
     stack.appendChild(table('statsMapHead', 'statsMapLead', opened && state.map, spot));
 
@@ -429,13 +439,43 @@
     main.appendChild(stack);
   }
 
+  /* Every device or one — devices() in assets/visitors.js. Over the
+     ranking rather than in a card of its own lower down, because it changes
+     every table under it. */
+  function devices() {
+    var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
+    DEVICE_IDS.forEach(function (id) {
+      var chip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': id === state.device ? 'true' : 'false',
+        textContent: id ? t(DEVICES[id]) : t('devicesAll')
+      });
+      chip.addEventListener('click', function () {
+        if (id !== state.device) load(id);
+      });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
   /* ------------------------------------------------------------------ start */
+
+  function wantedDevice() {
+    var id = new URLSearchParams(window.location.search).get('device') || '';
+    return DEVICE_IDS.indexOf(id) !== -1 ? id : '';
+  }
 
   function boot() {
     main = document.getElementById('main');
     applyStyle();
+    load(wantedDevice());
+  }
 
-    fetch(API + '?lang=' + encodeURIComponent(wanted().join(',')), {
+  /* The ranking for every device or one, asked for and drawn; what was on
+     screen stays until the answer is in. */
+  function load(device) {
+    fetch(API + '?lang=' + encodeURIComponent(wanted().join(',')) + (device ? '&device=' + device : ''), {
       headers: { accept: 'application/json' }
     })
       .then(function (res) { return res.json(); })
@@ -460,6 +500,12 @@
         state.filters = out.filters || [];
         state.rail = out.rail || [];
         state.lists = out.lists || [];
+        state.device = out.device || '';
+
+        var url = new URL(window.location.href);
+        if (state.device) url.searchParams.set('device', state.device);
+        else url.searchParams.delete('device');
+        if (url.href !== window.location.href) history.replaceState(null, '', url.href);
 
         applyStaticStrings();
         render();
