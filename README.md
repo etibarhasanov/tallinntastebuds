@@ -14319,9 +14319,10 @@ user input.
 
 ### The lean copies
 
-The two files every visit to the map downloads are three fifths prose.
-`assets/app.js` is 578 KB, of which 342 KB is comments; `assets/styles.css`
-is 214 KB, of which 128 KB is. That is on purpose — **How the code is
+The files every visit downloads are three fifths prose. `assets/app.js` is
+578 KB, of which 342 KB is comments; `assets/styles.css` is 214 KB, of which
+128 KB is; `assets/lists.js` and `assets/lists.css`, which every page but the
+map and the pass loads, are 224 KB and 94 KB in the same proportion. That is on purpose — **How the code is
 written** in `CLAUDE.md` says the comments carry the reasoning and are not
 to be shortened — but a phone opening the site for the first time was
 downloading all of it, and no browser reads a comment. Measured in October
@@ -14331,9 +14332,13 @@ downloading all of it, and no browser reads a comment. Measured in October
 |---|---|---|
 | `assets/app.js` | 149 KB | 48 KB |
 | `assets/styles.css` | 54 KB | 13 KB |
+| `assets/lists.js` | 58 KB | 20 KB |
+| `assets/lists.css` | 23 KB | 6 KB |
 
-So the pages do not load those two files. They load `assets/app.lean.js` and
-`assets/styles.lean.css`, which `node tools/lean.mjs` writes from them: the
+So the pages do not load those files. They load `assets/app.lean.js`,
+`assets/styles.lean.css`, `assets/lists.lean.js` and `assets/lists.lean.css`,
+which `node tools/lean.mjs` writes from them — `LEAN` at the top of the tool
+is the list, and adding a file to it is one line: the
 same code, line for line, with the comments taken out. Nothing is minified
 and nothing is renamed; the indentation stays, so what devtools shows on the
 live site is the readable file with the prose removed. The sources are still
@@ -14354,10 +14359,11 @@ quotes tracked so a `content: "/*"` would survive. The tool is zero
 dependencies like every other one here.
 
 **What it costs**: a twelfth generated thing, and a second file beside each
-of the two sources. The map's own script evaluates in about a hundred
+of the four sources. The map's own script evaluates in about a hundred
 milliseconds on a throttled phone and that did not change — the saving is
-the first download, around 140 KB, which is about a second on a slow
-connection and nothing on a return visit, when both are a 304. Splitting
+the first download — around 140 KB on the map, 55 KB on a list — which is
+about a second on a slow connection and nothing on a return visit, when they
+are a 304. Splitting
 `app.js` by feature was measured against this and would have bought almost
 nothing, because V8 only pre-parses a function nobody has called yet; the
 file is one file on purpose and stays so.
@@ -14802,8 +14808,10 @@ lists.html                 the one a stranger reads, everybody's, and whoever
                            wrote one; the address itself sends you to the page
                            below
 assets/lists.js            all three of those; no map, no Leaflet
+assets/lists.lean.js       the same without the comments — generated, what the pages load
 assets/lists.css           what a list page has and the map does not, and the
                            furniture the account page is built from too
+assets/lists.lean.css      the same without the comments — generated, what the pages load
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
 assets/account.js          all three of its states; no stylesheet of its own

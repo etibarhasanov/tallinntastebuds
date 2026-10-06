@@ -2,15 +2,16 @@
 /**
  * Tallinn Tastebuds — the lean copies.
  *
- * The two files every visit to the map downloads, assets/app.js and
- * assets/styles.css, are three fifths prose. That is on purpose: the comments
+ * The files every visit downloads — assets/app.js and assets/styles.css on
+ * the map, assets/lists.js and assets/lists.css on nearly every other page —
+ * are three fifths prose. That is on purpose: the comments
  * are where the reasoning lives, and CLAUDE.md says not to shorten them. But
  * a phone opening the site for the first time was downloading all of it —
  * 145 KB of app.js over the wire with brotli, 44 of them code; 52 KB of
  * styles.css, 13 of them rules — and no browser reads a comment.
  *
- * So the pages do not load those two files. They load assets/app.lean.js and
- * assets/styles.lean.css, which this tool writes from them: the same code,
+ * So the pages do not load those files. They load the copies LEAN below names
+ * — assets/app.lean.js and the rest — which this tool writes from them: the same code,
  * line for line, with the comments taken out. Nothing is minified, nothing
  * is renamed and the indentation stays, so what devtools shows on the live
  * site is still the readable file — one that reads as the source with the
@@ -59,11 +60,14 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* Source → copy. A page references the copy; the stamper hashes whichever it
    is told. Adding a file here is one line, and is worth it for a file a
-   visitor downloads whose prose outweighs its code — the lists page's two
-   would be the next, if they ever are. */
+   visitor downloads whose prose outweighs its code: the map's two came
+   first, and the lists page's two the same day, since every page but the map
+   and the pass loads them. */
 export const LEAN = {
   'assets/app.js': 'assets/app.lean.js',
-  'assets/styles.css': 'assets/styles.lean.css'
+  'assets/styles.css': 'assets/styles.lean.css',
+  'assets/lists.js': 'assets/lists.lean.js',
+  'assets/lists.css': 'assets/lists.lean.css'
 };
 
 /* The two lines at the top of a copy. */
