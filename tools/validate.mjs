@@ -304,6 +304,9 @@ if (decksFile !== null) {
        card longer than a typed one would be a card the page draws and nobody
        could have written. */
     const MAX_SIDE = 60;
+    /* And a taste, which is drawn three lines deep on a card most of a phone
+       wide — see `tasted` below. */
+    const MAX_TASTE = 36;
     /* DECK_LANGS is imported above, and English is the one of the three that
        binds. It is not a preference: it is what assets/flashcard.js falls back
        to for anybody who asked for one of the site's other seven, so a card
@@ -387,6 +390,20 @@ if (decksFile !== null) {
       }
     };
 
+    /* A taste: the one line of Estonian a deck, a lesson or a song shows on
+       the Start here row of the flashcards' front door, with what it means
+       left for the tap. Optional, short enough for a teaser card, and for a
+       deck or a song tied to the words it teaches — a card's front, or the
+       start of a line that is sung — so a card rewritten later cannot leave
+       the row advertising a word the deck no longer has. A lesson's is its
+       own, since a lesson has no cards; tasteRow() in assets/flashcard.js. */
+    const tasted = (taste, at, what, ours) => {
+      if (taste === undefined) return;
+      if (!isNonEmptyString(taste)) { fail(at, `${what} has a "taste" that is not a line of Estonian`); return; }
+      if (taste.length > MAX_TASTE) fail(at, `${what} has a "taste" of ${taste.length} characters, past the ${MAX_TASTE} its card draws`);
+      if (ours && !ours(taste)) fail(at, `${what} has a "taste", "${taste}", that none of its own words say`);
+    };
+
     decksFile.decks.forEach((deck, i) => {
       const where = `data/decks.json → decks[${i}]`;
       if (!isPlainObject(deck)) { fail(where, 'must be an object'); return; }
@@ -403,6 +420,8 @@ if (decksFile !== null) {
 
       said(deck.name, where, `deck "${deck.id}" name`);
       said(deck.why, where, `deck "${deck.id}" why`);
+      tasted(deck.taste, where, `deck "${deck.id}"`,
+        (taste) => Array.isArray(deck.cards) && deck.cards.some((c) => c && c.front === taste));
       if (deck.level === SONG_LEVEL) {
         if (!songDecks.has(deck.id)) fail(where, `deck "${deck.id}" has the level "${SONG_LEVEL}" and no song names it`);
       } else if (deck.level === CASE_LEVEL) {
@@ -495,6 +514,7 @@ if (decksFile !== null) {
 
       said(lesson.name, where, `lesson "${lesson.id}" name`);
       said(lesson.why, where, `lesson "${lesson.id}" why`);
+      tasted(lesson.taste, where, `lesson "${lesson.id}"`, null);
       /* A lesson may name the deck that follows it on the shelf, and that
          deck has to be in the file with the level only such a deck has. */
       if (lesson.deck !== undefined) {
@@ -596,6 +616,8 @@ if (decksFile !== null) {
 
       said(song.name, where, `song "${song.id}" name`);
       said(song.why, where, `song "${song.id}" why`);
+      tasted(song.taste, where, `song "${song.id}"`, (taste) => Array.isArray(song.verses) &&
+        song.verses.some((verse) => Array.isArray(verse) && verse.some((line) => line && String(line.et || '').indexOf(taste) === 0)));
       if (!isNonEmptyString(song.video) || !/^[A-Za-z0-9_-]{11}$/.test(song.video)) {
         fail(where, `song "${song.id}" has a "video" that is not a YouTube id`);
       }

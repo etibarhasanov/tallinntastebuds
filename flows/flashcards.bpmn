@@ -54,6 +54,7 @@ when: flash_open
 when: flash_lesson_open
 when: flash_song_open
 when: flash_resume
+when: flash_taste
 ref: assets/flashcard.js</bpmn:documentation>
       <bpmn:incoming>flashcards-e3</bpmn:incoming>
       <bpmn:outgoing>flashcards-e4</bpmn:outgoing>

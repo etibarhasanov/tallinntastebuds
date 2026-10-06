@@ -271,6 +271,7 @@
         "az": "Bəli, xeyr, zəhmət olmasa, bağışla — və başqa heç nə bilməyəndə dediklərin",
         "ru": "Да, нет, пожалуйста, простите — и те, что говорят, пока не знают других"
       },
+      "taste": "Ma ei saa aru",
       "cards": [
         {
           "id": "jah",
@@ -885,6 +886,7 @@
         "az": "Kim, nə, harada — və bəli-xeyr sualını düzəldən söz",
         "ru": "Кто, что, где — и словечко, которое делает вопрос «да или нет»"
       },
+      "taste": "Kui palju?",
       "level": "start",
       "cards": [
         {
@@ -1876,6 +1878,7 @@
         "az": "Qapı ilə hesab arasında",
         "ru": "Между дверью и счётом"
       },
+      "taste": "Kas see laud on vaba?",
       "cards": [
         {
           "id": "kas-see-laud-on-vaba",
@@ -3550,6 +3553,7 @@
         "az": "Sifariş, ona qatılan süd, suyun adı və sonda ödəniş",
         "ru": "Заказ, молоко к нему, как называется вода и оплата в конце"
       },
+      "taste": "Kas siia või kaasa?",
       "level": "eat",
       "cards": [
         {
@@ -35848,6 +35852,7 @@
         "az": "Niyə kartda leib, hesabda leiva, menyuda isə leiba yazılır — və niyə kartın arxasında üçü də var.",
         "ru": "Почему на карточке leib, в счёте leiva, а в меню leiba — и зачем на обороте карточки все три."
       },
+      "taste": "leib · leiva · leiba",
       "body": [
         {
           "say": {
@@ -36879,6 +36884,7 @@
         "az": "Niyə minema tahan-dan sonra minna olur, gedən siz olanda isə lähen — və niyə fel kartında üçü də var.",
         "ru": "Почему minema после tahan становится minna, а когда идёте вы — lähen, и зачем на карточке глагола все три."
       },
+      "taste": "minema · minna · lähen",
       "body": [
         {
           "say": {
@@ -39093,6 +39099,7 @@
         "az": "Estonca mahnı, misra-misra, hər sözü ilə",
         "ru": "Эстонская песня, строка за строкой, со всеми её словами"
       },
+      "taste": "Naera, naera, naerame võidu",
       "video": "91YqQb61dZc",
       "credit": {
         "words": "Viivi Luik",
@@ -39720,6 +39727,7 @@
         "az": "Velly Joonas: səhrada dəvə, yolda limuzin — misra-misra",
         "ru": "Велли Йоонас: верблюд в пустыне и лимузин на дороге — строка за строкой"
       },
+      "taste": "Päike on kuum.",
       "video": "FEb68L-3UWY",
       "credit": {
         "words": "Velly Joonas",
