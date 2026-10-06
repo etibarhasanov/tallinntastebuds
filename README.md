@@ -15061,6 +15061,23 @@ site, which is not the shape this site is.
 keeps playing, and a visit tomorrow opens silent — the same judgement as the
 autoplay rule above, and the same reason.
 
+**The browser's own pause on the way out is not a press.** Leaving a page
+pauses its `<audio>`, and the browser does that itself, before the document
+is torn down or put in the back-forward cache for the back button. On a
+desktop that pause was heard as one from outside — the kind a phone call
+makes, which turns the switch off and says so — so the page being left wrote
+`off` on its way out, and the list arrived silent with the button showing
+the radio stopped: the walk this whole section exists to carry the music
+across. From `pagehide` to `pageshow` the element is not listened to. And
+the back button is the other half: it can bring the first document back as
+it was, without running `radio.js` again, holding the element the browser
+paused over a stream connection that has had minutes to die, and a switch
+the other page may since have turned off. A page restored from the cache
+reads the switch again from `sessionStorage`, drops the old element, and a
+radio that is on rejoins the stream live on a new one — refused, it waits
+for a gesture as the rejoin on arrival does. One that was turned off on the
+other page is off here too.
+
 The browser holds that rule harder than we do. A fresh document has no gesture
 behind it, so `play()` on arrival is refused unless the browser has decided
 this is a site the visitor plays sound on: Chrome usually has by then, Safari

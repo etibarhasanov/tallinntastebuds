@@ -46,6 +46,11 @@
  * this file's to shorten: a page is a document, and a document that goes
  * takes its <audio> with it.
  *
+ * The browser pauses the element on the way out, and the back button can
+ * bring the first document back with its paused element still in it. Neither
+ * is a press, and neither is a phone call either — see THE PAGE ON ITS WAY
+ * OUT, AND BACK by the pagehide listener at the foot of this file.
+ *
  * sessionStorage and not localStorage, deliberately. The tab that was playing
  * keeps playing; a visit tomorrow opens silent. Autoplay is blocked in every
  * browser and should be — a map that starts making noise on its own is a map
@@ -110,6 +115,11 @@ window.TTBRadio = (function () {
   var stations = null;      // data/radio.json, once it has arrived
   var audio = null;
   var armed = false;        // whether a gesture is being waited for
+
+  /* True from pagehide until pageshow: the page is being left, or is held
+     in the browser's back-forward cache. Nothing the element says in that
+     window is about the radio — see THE PAGE ON ITS WAY OUT below. */
+  var leaving = false;
 
   /* The URL attached to the element and meant to be playing, or '' once it
      has been taken off or the browser has paused it from outside. What
@@ -283,7 +293,7 @@ window.TTBRadio = (function () {
      nothing to paint: the switch goes off, and the page finds it off when it
      mounts. */
   function fail() {
-    if (!wanted) return;
+    if (!wanted || leaving) return;
     halt();
     wanted = false;
     writeWanted();
@@ -310,7 +320,7 @@ window.TTBRadio = (function () {
      The page is not told. Its onchange is for a press and for a stream that
      failed, and this is neither: nothing to close, nothing to count. */
   function interrupted() {
-    if (!wanted || !audio.paused || audio.ended) return;
+    if (!wanted || leaving || !audio.paused || audio.ended) return;
     current = '';
     wanted = false;
     writeWanted();
@@ -352,6 +362,33 @@ window.TTBRadio = (function () {
     if (station && station.url) tune(station);
   }
 
+  function build() {
+    audio = document.createElement('audio');
+    audio.preload = 'none';
+    audio.addEventListener('error', fail);
+    audio.addEventListener('ended', fail);
+    audio.addEventListener('pause', interrupted);
+    audio.addEventListener('play', resumed);
+  }
+
+  /* The element let go of, with nothing left listening to it. Whatever it
+     still has to say — the error for a source taken away, the pause the
+     browser gave it in the cache — lands on nobody, and the next tune()
+     builds a fresh one. */
+  function discard() {
+    if (!audio) return;
+    var old = audio;
+    audio = null;
+    current = '';
+    old.removeEventListener('error', fail);
+    old.removeEventListener('ended', fail);
+    old.removeEventListener('pause', interrupted);
+    old.removeEventListener('play', resumed);
+    old.pause();
+    old.removeAttribute('src');
+    old.load();
+  }
+
   /* Join a station live. One that is attached and meant to be playing is
      left alone — see `current` — so a second call for the same station is
      not a second connection. */
@@ -360,14 +397,7 @@ window.TTBRadio = (function () {
     current = station.url;
     writeStation(station);
 
-    if (!audio) {
-      audio = document.createElement('audio');
-      audio.preload = 'none';
-      audio.addEventListener('error', fail);
-      audio.addEventListener('ended', fail);
-      audio.addEventListener('pause', interrupted);
-      audio.addEventListener('play', resumed);
-    }
+    if (!audio) build();
     /* A live stream has no position to resume from, so it is re-attached
        rather than un-paused: pressing play always joins it where it is now. */
     audio.src = station.url;
@@ -456,6 +486,44 @@ window.TTBRadio = (function () {
     .then(function (res) { return res.ok ? res.json() : null; })
     .catch(function () { return null; })
     .then(function (loaded) { stations = loaded; });
+
+  /* THE PAGE ON ITS WAY OUT, AND BACK
+
+     Leaving a page pauses its element, and the browser does that itself
+     before the document is torn down, or before it is put in the
+     back-forward cache for the back button to bring back. On a desktop that
+     pause was heard here as one from outside — a phone call, the lock
+     screen — and interrupted() answered it the way it answers those: switch
+     off, and 'off' written to sessionStorage. So the next page read 'off'
+     and arrived silent with the button showing the radio stopped, which is
+     exactly the walk this file exists to carry the music across. Nothing the
+     element says between pagehide and pageshow is about the radio, so none
+     of it is listened to.
+
+     Coming back from the cache is the other half. The document is restored
+     as it was, this file does not run again, and the rejoin below has
+     already happened once: so the element it holds is the one the browser
+     paused on the way out, over a stream connection that has had seconds or
+     minutes to die, and the switch is whatever it was when the page was
+     left — which the page walked to may since have changed. Both are read
+     afresh: the switch from sessionStorage, and a radio that is on rejoins
+     the stream live on a new element, a refusal waiting for a gesture as
+     the rejoin on arrival does. The old element is discarded, listeners and
+     all, so a late pause or error from it cannot turn off the stream that
+     replaced it. A radio turned off on the other page is turned off here
+     too, before the browser can un-pause the old element on its own. */
+  window.addEventListener('pagehide', function () {
+    leaving = true;
+    stopWaiting();
+  });
+  window.addEventListener('pageshow', function (ev) {
+    if (!leaving) return;
+    leaving = false;
+    if (!ev.persisted) return;
+    discard();
+    wanted = readWanted();
+    if (wanted) start(); else paint();
+  });
 
   /* Where the radio comes back after a navigation: as this file runs, from
      the station the last page wrote down, before this page has fetched a
