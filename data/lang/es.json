@@ -753,6 +753,7 @@
   "statsRailLead": "Con qué frecuencia se pulsa cada botón de la barra a la izquierda del mapa. Se cuenta cada pulsación: un botón pulsado dos veces son dos.",
   "statsListsHead": "Listas",
   "statsListsLead": "Cada lista pública que alguien ha abierto, las más abiertas primero, y desde dónde la abrieron. Cuenta una apertura al día por visitante, y nunca la del dueño de la lista.",
+  "statsPostsLead": "Cada entrada de un miembro que alguien ha leído en el blog, las más leídas primero. Cuenta una lectura al día por lector, y nunca la del propio autor. Las entradas del propio sitio están en la página de visitantes.",
   "statsNone": "Todavía no se ha abierto nada.",
   "statsOff": "Los números aún no están.",
   "statsTotal": "{n} aperturas contadas hasta ahora.",

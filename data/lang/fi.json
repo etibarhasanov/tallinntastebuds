@@ -753,6 +753,7 @@
   "statsRailLead": "Kuinka usein kartan vasemman reunan kutakin painiketta painetaan. Jokainen painallus lasketaan: kahdesti painettu nappi on kaksi.",
   "statsListsHead": "Listat",
   "statsListsLead": "Jokainen julkinen lista, jonka joku on avannut, eniten avattu ensin, ja mistä se avattiin. Kultakin kävijältä lasketaan yksi avaus päivässä, eikä listan omaa omistajaa koskaan.",
+  "statsPostsLead": "Jokainen jäsenen kirjoitus, jonka joku on lukenut blogissa, eniten luettu ensin. Kultakin lukijalta lasketaan yksi luku päivässä, eikä kirjoittajan omaa koskaan. Sivuston omat kirjoitukset ovat kävijäsivulla.",
   "statsNone": "Mitään ei ole vielä avattu.",
   "statsOff": "Lukuja ei ole vielä.",
   "statsTotal": "avauksia yhteensä: {n}",

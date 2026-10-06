@@ -753,6 +753,7 @@
   "statsRailLead": "How often each pill on the rail down the left of the map is pressed. Every press is counted, so a button pushed twice is two.",
   "statsListsHead": "Lists",
   "statsListsLead": "Every public list somebody has opened, most opened first, and where they opened it from. One open a day from each visitor, and never the list's own owner.",
+  "statsPostsLead": "Every member's post somebody has read on the blog, most read first. One read a day from each reader, and never the post's own author. The site's own posts are on the visitors page.",
   "statsNone": "Nothing has been opened yet.",
   "statsOff": "The numbers are not in yet.",
   "statsTotal": "{n} opens counted so far.",

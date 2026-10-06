@@ -57,8 +57,9 @@
  *            draws one, however the reader arrived at it. Published and not
  *            the reader's own, which realPost() below checks against the
  *            session, and once a day through firstToday() as a list is. It
- *            is read by postViews() in ./_visits.js and drawn back to the
- *            post's author on /insights and nowhere else. The house's own
+ *            is read by postViews() in ./_visits.js, which draws it back to
+ *            the post's author on /insights, and by ./admin/stats.js, which
+ *            draws every post read to the site's owner. The house's own
  *            posts in data/blog.json are not this kind: they are the
  *            owner's, counted under `about` by ./_visitors.js and read on
  *            /admin/visitors.

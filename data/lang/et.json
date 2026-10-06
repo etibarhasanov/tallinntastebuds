@@ -753,6 +753,7 @@
   "statsRailLead": "Kui tihti vajutatakse iga nuppu kaardi vasakus servas. Iga vajutus loetakse: kaks korda vajutatud nupp on kaks.",
   "statsListsHead": "Nimekirjad",
   "statsListsLead": "Iga avalik nimekiri, mille keegi on avanud, enim avatud eespool, ja kust seda avati. Igalt külastajalt loetakse üks avamine päevas ja nimekirja omaniku oma mitte kunagi.",
+  "statsPostsLead": "Iga liikme postitus, mida keegi on blogis lugenud, enim loetud eespool. Igalt lugejalt loetakse üks lugemine päevas ja postituse autori oma mitte kunagi. Saidi enda postitused on külastajate lehel.",
   "statsNone": "Veel ei ole midagi avatud.",
   "statsOff": "Numbreid ei ole veel.",
   "statsTotal": "kokku avamisi: {n}",

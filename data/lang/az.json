@@ -753,6 +753,7 @@
   "statsRailLead": "Xəritənin solundakı zolaqda hər düymənin nə qədər tez-tez basıldığı. Hər basış sayılır: iki dəfə basılan düymə ikidir.",
   "statsListsHead": "Siyahılar",
   "statsListsLead": "Kiminsə açdığı hər açıq siyahı, ən çox açılan öndə, və haradan açılıb. Hər ziyarətçidən gündə bir açılış sayılır, siyahının sahibininki isə heç vaxt.",
+  "statsPostsLead": "Üzvlərin yazdığı və kiminsə bloqda oxuduğu hər yazı, ən çox oxunan öndə. Hər oxucudan gündə bir oxunuş sayılır, yazının müəllifininki isə heç vaxt. Saytın öz yazıları ziyarətçilər səhifəsindədir.",
   "statsNone": "Hələ heç nə açılmayıb.",
   "statsOff": "Rəqəmlər hələ yoxdur.",
   "statsTotal": "indiyədək {n} açılış sayılıb.",
