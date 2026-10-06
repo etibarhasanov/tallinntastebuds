@@ -1020,8 +1020,6 @@
   "chessStarted": "Started {when} ago",
   "chessStartWith": "Start a game with {name}",
   "chessWaitingToPlayYou": "Waiting to play you",
-  "chessQueueFree": "One game at a time, first in line first.",
-  "chessQueueBusy": "{name} is playing you now. The next game starts when this one ends.",
   "chessRecord": "You are the house · {games} played · {won} won · {lost} lost · {drawn} drawn",
   "chessAlready": "You’re already in line.",
   "chessFull": "The line is full right now. Try again tomorrow.",

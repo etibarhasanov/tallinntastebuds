@@ -92,7 +92,7 @@
 .chess-play { padding: 14px 14px 12px; }
 .chess-play .lists-title { font-size: 20px; margin: 4px 0 6px; }
 .chess-play-why { margin: 0 0 12px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
-.chess-play .go { margin: 0 0 14px; }
+.chess-play .go { margin: 4px 0 14px; }
 .chess-play .alt { margin: 6px 0 0 -12px; }
 .chess-queue-head { margin: 4px 0 6px; }
 .chess-queue-none { margin: 0; font-family: var(--body); font-size: 14px; color: var(--muted); }

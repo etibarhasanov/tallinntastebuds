@@ -1020,8 +1020,6 @@
   "chessStarted": "Розпочато {when} тому",
   "chessStartWith": "Почати партію: {name}",
   "chessWaitingToPlayYou": "Чекають на партію з вами",
-  "chessQueueFree": "Одна партія за раз, по черзі.",
-  "chessQueueBusy": "{name} зараз грає з вами. Наступна партія почнеться, коли закінчиться ця.",
   "chessRecord": "Ви — господар · партій: {games} · перемог: {won} · поразок: {lost} · нічиїх: {drawn}",
   "chessAlready": "Ви вже в черзі.",
   "chessFull": "Черга зараз заповнена. Спробуйте завтра.",

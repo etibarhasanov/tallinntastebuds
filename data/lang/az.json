@@ -1020,8 +1020,6 @@
   "chessStarted": "{when} əvvəl başladı",
   "chessStartWith": "{name} ilə oyuna başla",
   "chessWaitingToPlayYou": "Səninlə oynamağı gözləyənlər",
-  "chessQueueFree": "Bir dəfəyə bir oyun, növbə ilə.",
-  "chessQueueBusy": "{name} indi səninlə oynayır. Növbəti oyun bu bitəndə başlayır.",
   "chessRecord": "Sən evsən · {games} oyun · {won} qələbə · {lost} məğlubiyyət · {drawn} heç-heçə",
   "chessAlready": "Sən artıq növbədəsən.",
   "chessFull": "Siyahı hazırda doludur. Sabah yenidən cəhd et.",

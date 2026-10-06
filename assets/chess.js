@@ -1257,20 +1257,22 @@
     /* The card is the line and nothing else, so the line's own heading is
        its title rather than an eyebrow under one. */
     var lineOnly = false;
+    /* The house's title already says who the rows are, so it gets neither a
+       sentence under it nor a second heading over them: the card began with
+       both — "One game at a time…" and *Waiting now* — and, with nobody in
+       line, was five lines to say nobody was in line. */
+    var noHead = false;
 
     if (you.role === 'house') {
       title = t('chessWaitingToPlayYou');
+      noHead = true;
       if (mine) {
-        why = t('chessQueueBusy', { name: sideName(otherSide(mine)) });
         rows.push(queueRow(otherSide(mine), t('chessPlayingYou'), null, true));
-      } else {
-        why = t('chessQueueFree');
-        if (queue.length) {
-          var first = queue[0];
-          go = goButton(t('chessStartWith', { name: sideName(first.name) }), function () {
-            act('start', 'chess_start', { game: first.game });
-          });
-        }
+      } else if (queue.length) {
+        var first = queue[0];
+        go = goButton(t('chessStartWith', { name: sideName(first.name) }), function () {
+          act('start', 'chess_start', { game: first.game });
+        });
       }
     } else if (you.role === 'member' && mine && mine.state === 'waiting') {
       var ahead = [];
@@ -1303,7 +1305,7 @@
     /* Nobody waiting is not worth a card to somebody whose game is on. */
     if (lineOnly && !rows.length) return null;
 
-    var head = lineOnly ? null
+    var head = lineOnly || noHead ? null
       : el('p', { className: 'eyebrow chess-queue-head', textContent: t('chessWaitingNow') });
     return el('section', { className: 'card chess-play', 'aria-label': t('chessOneOnOne') }, [
       el('p', { className: 'eyebrow chess-kind', textContent: t('chessOneOnOne') }),
