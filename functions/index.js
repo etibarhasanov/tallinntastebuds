@@ -123,27 +123,89 @@
  * whole answer per request to give one back would save it a few kilobytes it
  * is about to spend on the tiles.
  *
+ * THE PAGE IS KEPT IN THE COLO, AND THE BROWSER GETS ITS 304 BACK
+ *
+ * Everything above is built from three files that change only when a deploy
+ * changes them, and for a year it was built again on every visit: the page
+ * fetched out of the deployment, the head swapped, the JSON-LD serialised,
+ * seventy places written out as text, and all of it sent, because without an
+ * ETag the browser's revalidation could never be answered with a 304. The
+ * map is the page every visit to this site begins on, so that was the whole
+ * site paying for its front door on each opening.
+ *
+ * Now the rendered page is put in the Cache API — caches.default, the same
+ * per-colo cache /api/saves keeps its counts in — under the page's own
+ * address with nothing else on it: the language and the place, which are
+ * the two things the page is rendered from, and the deployment, which is
+ * the third. ?type=, ?style=, ?list= and the ?from= a shared link carries
+ * are not in the key, because they are not in the render, so one copy of
+ * the map answers every tracked link to it. A visit that finds the copy
+ * skips the fetch and the render both and costs a cache read.
+ *
+ * THE DEPLOYMENT IS IN THE KEY
+ *
+ * The page changes when a deploy changes it and not otherwise, so the right
+ * life for a copy is the life of the deployment that rendered it, and the
+ * wrong one is a clock: a clock either serves yesterday's map for a while
+ * after a deploy or throws away a good copy every few minutes for nothing.
+ * Pages hands a Function no deployment id at runtime — the CF_PAGES_*
+ * variables are the build's — but it does hand one in effect: the asset
+ * server puts an ETag on every static file, a hash of its bytes, and a
+ * deployment that changed the page or the data it is rendered from changed
+ * one of those four. deployStamp() reads the four ETags once per isolate —
+ * an isolate belongs to one deployment and the files cannot change under
+ * it — and folds them into one short stamp, which mapKey() writes into the
+ * address the copy is kept under. A new deployment is new isolates with a
+ * new stamp, so its first visit in each colo misses, renders and keeps,
+ * and the copies the old deployment left are never asked for again; they
+ * fall out on their own when MAP_TTL runs out, a day, which is long enough
+ * that a map nobody has redeployed is a map nobody is rendering. The
+ * browser is not told any of this: it revalidates on every visit, as it
+ * always did, and the ETag below answers it.
+ *
+ * A file the asset server gives without an ETag is hashed here instead,
+ * so the stamp does not depend on a header one host might not send; what
+ * it does depend on is the four files being readable, and when they are not
+ * the answer is the static page, the same as when the data cannot be read.
+ *
+ * And the copy carries an ETag again. The static file's was dropped because
+ * it described a document with a different head and different text on it,
+ * and hashing the whole answer per request to replace it was not worth the
+ * kilobytes it saved; hashed once per cache fill it is. A browser that holds
+ * the map sends If-None-Match and gets a 304 and nothing else back, which is
+ * what the revalidating rule in _headers was always meant to end in.
+ *
+ * The Cache API stores nothing told max-age=0, which is what _headers tells
+ * the browser, so the copy in the colo is written `public, max-age=MAP_TTL`
+ * and the browser is told REVALIDATE on the way out — the same move
+ * privately() in functions/api/_lib.js makes for the owner's routes. That
+ * puts the map's cache rule in this file as well as in _headers, and
+ * tools/validate.mjs holds the two to each other.
+ *
  * WHAT IT COSTS
  *
  * Nothing new per request. _routes.json already sends every request for a
  * page through functions/_middleware.js, so a Functions invocation was being
- * spent on / before this file existed; this is the same invocation doing more.
- * The two data files come out of the deployment through the ASSETS binding,
- * a subrequest rather than a fetch across the internet, and are kept for five
- * minutes per isolate by dataFile() in functions/api/_lib.js, the way the
- * places are. What a visitor pays is the JSON-LD and the list on the wire —
- * some eighty-five kilobytes before compression, twenty or so after, on a
- * page that was ten compressed — and the 304 above.
+ * spent on / before this file existed; this is the same invocation doing
+ * less. The three data files come out of the deployment through the ASSETS
+ * binding, a subrequest rather than a fetch across the internet, and are
+ * kept for five minutes per isolate by dataFile() in functions/api/_lib.js,
+ * the way the places are; the stamp reads the same three and the page once
+ * more per isolate, for their ETags, and keeps the answer for good. What a
+ * visitor pays is the JSON-LD and the list on the wire — some eighty-five
+ * kilobytes before compression, twenty or so after, on a page that was ten
+ * compressed — once, and the 304 after that.
  *
  * WHEN IT CANNOT
  *
  * The page or a data file missing from the deployment is a broken build, and
  * the answer is the static file, English head, no JSON-LD — the map exactly
  * as it was served before this route existed. This is an improvement on the
- * load, never a requirement for it.
+ * load, never a requirement for it. Nothing but a 200 is put in the colo: a
+ * page the asset server could not give is not a page to keep.
  */
 
-import { mapPlaces, dataFile } from './api/_lib.js';
+import { mapPlaces, dataFile, weakTag, withNotModified, hex } from './api/_lib.js';
 import { SITE, esc, seed, rehead, canonical, fill, EMPTY } from './_shell.js';
 
 /* The language the static file is written in, which is also what an address
@@ -155,6 +217,25 @@ const DEFAULT_LANG = 'en';
    _shell.js puts after a list's name and assets/lists.js after a profile's,
    and the one renderPanel() in assets/app.js writes while a place is open. */
 const SUFFIX = ' | Tallinn Tastebuds';
+
+/* How long a colo keeps a rendered page, in seconds — a day. Not what
+   decides when a deploy shows: the deployment is in the key, THE DEPLOYMENT
+   IS IN THE KEY in the header, so this only says when the copies a
+   deployment left behind are let go of. */
+const MAP_TTL = 86400;
+
+/* The four files a rendered page is made of, by the addresses the asset
+   server knows them at. The page itself is asked for as "/" and not as
+   "/index.html", for the reason the header gives under THE PAGE COMES FROM
+   context.next(). The same three data files dataFile() and mapPlaces() read
+   in onRequest(); a fourth file joining the render joins this list. */
+const RENDERED_FROM = ['/', '/data/ui.json', '/data/taxonomy.json', '/data/restaurants.json'];
+
+/* What the browser is told about the map, the same words `_headers` gives
+   the static file at / and /index.html: revalidate on every visit, which the
+   ETag turns into a 304. Exported for tools/validate.mjs, which holds the two
+   spellings to each other. */
+export const REVALIDATE = 'public, max-age=0, must-revalidate';
 
 /* How much of a write-up goes under the name on a card. The blurbs run to 370
    characters and an unfurler cuts its own at somewhere between 200 and 300
@@ -181,6 +262,62 @@ function addressOf(request, lang, spot) {
   if (spot) url.searchParams.set('spot', spot);
   if (lang !== DEFAULT_LANG) url.searchParams.set('lang', lang);
   return url.toString();
+}
+
+/* ----------------------------------------------------------- the stamp
+ * One short string that changes when and only when a deployment changed
+ * the page or the data it is rendered from — THE DEPLOYMENT IS IN THE KEY
+ * in the header. Read once per isolate and held for its life: the promise
+ * rather than the value, so two visits arriving on a cold isolate together
+ * read the files once between them, and dropped on failure so the next
+ * visit asks again rather than inheriting a broken stamp. Throws the way
+ * dataFile() throws, and onRequest() catches it in the same place.
+ */
+let stamped = null;
+
+function deployStamp(context) {
+  if (!stamped) {
+    stamped = readStamp(context).catch((e) => { stamped = null; throw e; });
+  }
+  return stamped;
+}
+
+async function readStamp(context) {
+  const marks = await Promise.all(RENDERED_FROM.map(async (path) => {
+    const url = new URL(path, context.request.url);
+    const res = context.env.ASSETS
+      ? await context.env.ASSETS.fetch(new Request(url.toString()))
+      : await fetch(url.toString());
+    if (!res.ok) throw new Error(path + ' unreadable: ' + res.status);
+    /* The asset server's own hash of the file where it gives one, and a hash
+       of the bytes where it does not; either way the body is read, so the
+       subrequest is not left open. */
+    const tag = res.headers.get('etag');
+    const body = await res.arrayBuffer();
+    return tag || hex(await crypto.subtle.digest('SHA-1', body));
+  }));
+  const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(marks.join(' ')));
+  return hex(digest).slice(0, 16);
+}
+
+/* Where a rendered page is kept in the colo: its own address, with only the
+   three things it was rendered from on it — the language, the place and
+   the deployment, as ?v=, the same spelling tools/stamp.mjs gives a script.
+   A closed place is on the key too — it is not a page, but its card is its
+   own — which is why this takes the place asked for rather than the page
+   it makes. The query is only a key: nothing is ever served at it. */
+function mapKey(request, lang, spot, stamp) {
+  const url = new URL(addressOf(request, lang, spot && spot.id));
+  url.searchParams.set('v', stamp);
+  return new Request(url.toString());
+}
+
+/* The copy the browser gets: the one in the colo, told to revalidate rather
+   than to keep it five minutes, or a 304 when it already holds it. */
+function toBrowser(request, kept) {
+  const out = new Response(kept.body, kept);
+  out.headers.set('cache-control', REVALIDATE);
+  return withNotModified(request, out);
 }
 
 /* The write-up in this language, or the English one while the translation is
@@ -402,20 +539,25 @@ function card(request, spot, ui, lang, self) {
 export async function onRequest(context) {
   const { request } = context;
 
-  /* The page, and the headers _headers gives it — see the header. */
-  const res = await context.next();
-
+  /* The three files and the stamp first, because the key is read out of
+     them — the language has to be one the site speaks and the place one the
+     map knows before either is an address, and the deployment is the third
+     thing on it — and because without them there is nothing to render and
+     nothing to look up: the answer is then the page as the asset server
+     gives it, see WHEN IT CANNOT. */
   let languages;
   let taxonomy;
   let places;
+  let stamp;
   try {
-    [languages, taxonomy, places] = await Promise.all([
+    [languages, taxonomy, places, stamp] = await Promise.all([
       dataFile(context, '/data/ui.json'),
       dataFile(context, '/data/taxonomy.json'),
-      mapPlaces(context)
+      mapPlaces(context),
+      deployStamp(context)
     ]);
   } catch (e) {
-    return res;
+    return context.next();
   }
 
   const params = new URL(request.url).searchParams;
@@ -427,6 +569,15 @@ export async function onRequest(context) {
   const wanted = params.get('spot');
   const spot = wanted ? places.find((place) => place.id === wanted) || null : null;
   const page = spot && !spot.closed ? spot : null;
+
+  /* The copy this colo already holds, if it does — see the header. */
+  const cache = caches.default;
+  const key = mapKey(request, lang, spot, stamp);
+  const hit = await cache.match(key);
+  if (hit) return toBrowser(request, hit);
+
+  /* The page, and the headers _headers gives it — see the header. */
+  const res = await context.next();
 
   const self = addressOf(request, lang, page && page.id);
   const title = spot ? spot.name + SUFFIX : ui.documentTitle;
@@ -461,11 +612,20 @@ export async function onRequest(context) {
     ? onePlace(request, page, places, taxonomy.types, ui, lang)
     : listOfPlaces(request, places, taxonomy.types, ui, lang));
 
-  /* The response this page would have had, minus its ETag, which is a hash
-     of a document with a different head on it, and minus a Content-Length
-     measured before the swap. */
+  /* The response this page would have had, with its ETag replaced and its
+     Last-Modified dropped — both described the static file, and this is a
+     document with a different head and different text on it — minus a
+     Content-Length measured before the swap, and told the colo's rule rather
+     than the browser's, for the reason in the header. Last-Modified goes
+     rather than being rewritten because nothing here knows when the data
+     changed, and a date that is not known is not claimed; the tag is what
+     carries the 304 now. */
   const headers = new Headers(res.headers);
-  headers.delete('etag');
   headers.delete('content-length');
-  return new Response(html, { status: res.status, headers });
+  headers.delete('last-modified');
+  headers.set('etag', await weakTag(html));
+  headers.set('cache-control', 'public, max-age=' + MAP_TTL);
+  const kept = new Response(html, { status: res.status, headers });
+  if (res.ok) context.waitUntil(cache.put(key, kept.clone()));
+  return toBrowser(request, kept);
 }

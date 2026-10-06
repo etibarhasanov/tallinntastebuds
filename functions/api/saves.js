@@ -46,7 +46,7 @@
 
 import {
   json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
-  addedByIds, isAdded, RECOUNT_SQL, countsKey
+  addedByIds, isAdded, RECOUNT_SQL, countsKey, weakTag, withNotModified
 } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
@@ -154,27 +154,6 @@ export async function onRequestGet(context) {
   });
   context.waitUntil(cache.put(key, res.clone()));
   return withNotModified(context.request, res);
-}
-
-/* A hash of the answer itself, so the tag changes when and only when the
-   numbers do. No version column to keep in step with anything. */
-async function weakTag(body) {
-  const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(body));
-  const hex = Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-  return 'W/"' + hex.slice(0, 16) + '"';
-}
-
-function withNotModified(request, res) {
-  const tag = res.headers.get('etag');
-  if (tag && request.headers.get('if-none-match') === tag) {
-    return new Response(null, {
-      status: 304,
-      headers: { etag: tag, 'cache-control': res.headers.get('cache-control') }
-    });
-  }
-  return res;
 }
 
 /* Whether an id is somewhere real, on any of the three rolls a place can be
