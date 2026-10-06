@@ -169,9 +169,9 @@ many are switched on.
    is handed to the restaurant once and they bookmark it; put it in the
    commit body so it is on record. Nothing links to any of the three pages,
    they are `no-store` and `noindex` in `_headers`, in the markup and in
-   `robots.txt`, and the QR points at whichever origin drew it, so a preview
-   deployment verifies against itself rather than sending a waiter to the
-   live site.
+   `robots.txt`, and the QR points at whichever origin drew it, so a page
+   driven on a local server verifies against itself rather than sending a
+   waiter to the live site.
 
 ## Switching one off
 

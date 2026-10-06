@@ -12,9 +12,10 @@ and the one where a mistake is quiet: the map still draws, and nobody notices
 for weeks.
 
 `.claude/rules/leave-it-better.md` loads itself when you open a file here.
-`functions/api/lists.js` and `functions/api/ask.js` are over the ~600-line
-mark (`wc -l functions/api/*.js` is the current answer), so the reach there
-is the functions you touch plus what they call and what calls them.
+Most of the routes and the modules behind them are over the ~600-line mark
+(`wc -l functions/api/*.js functions/api/admin/*.js` is the current answer,
+and a list written here was wrong within the week), so the reach in those is
+the functions you touch plus what they call and what calls them.
 
 ## Read first
 
@@ -24,7 +25,8 @@ is the functions you touch plus what they call and what calls them.
   deliberately not, and where a count comes from. `grep -n '^## ' README.md`
   is the table of contents with line numbers.
 - **Two databases, and never one** and **Setting it up**, before anything
-  that touches a binding, a secret or the schema.
+  that touches a binding, a secret or the schema — read with **Production
+  only, for now** in `CLAUDE.md`, which is newer than both and wins.
 - The header of the file, and of `functions/api/_lib.js`. The header of
   `lists.js` states the ownership rule every write in it follows.
 - A route that counts something — `stats.js`, `_visitors.js`, `_visits.js`,
@@ -53,7 +55,7 @@ What the description has to settle before a Function is worth opening:
   ownership rule in the header of `lists.js` is the pattern, and an answer of
   "anyone" is an answer that has to be said out loud.
 - **Whether it needs the schema.** A new table or column is `db/schema.sql`
-  and a load into two databases that only the owner approves — **The rules of
+  and a load into production that only the owner approves — **The rules of
   a write** below — so it belongs in the description rather than in the PR
   that discovers it.
 - **What it caps**, if it takes anything a person typed, and the second home
@@ -99,12 +101,12 @@ leading underscore are modules, not routes.
 | `GET/POST /api/split` | `api/split.js` | **splitwise** — `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`. Every write that went through is also counted through `countUse()` in `_visitors.js`, into `visitor_counts` and `usage_people` — **Usage, week by week** in `README.md`. **Reading one group needs only its code**, no session — holding the link is the permission, see `groupById()`. **Every write needs a session and a membership**: each action but `create` and `join` reads the caller's own membership first, and a non-member is told the group does not exist | `no-store`, for the reason `lists.js` is |
 | `GET/POST /api/feedback` | `feedback.js` | `feedback`, `feedback_hearts` — and `users`/`sessions` through `enterAccount()` in `_account.js`, which is the one route besides `account.js` and `google.js` that can mint an account: `say` with `as: 'name'` and no session makes one or signs into it in the same request, or — where the browser holds `/api/google`'s sealed note — names the Google account that has just proved itself, so nothing on that page sends anybody to the map and back. **Saying something and hearting need no account**, filed under the device id the way a save is; `remove` needs the row's owner. Both tables arrive by hand and every read here survives their absence | `no-store` |
 | `/privacy` | `privacy.js` | none; `privacy.html` with the whole policy out of `data/privacy.json` written into its `<main>` as text, in the language `?lang=` names — English, the version that counts, at the bare address and for a language the file does not have — with that language's title, description and canonical in its head and its `<html lang>`. Links in a paragraph are `[words](/path)` or `[words](https://…)`. `tools/validate.mjs` holds every piece to every language. Falls through to the static file when it cannot read either. **Privacy** in `README.md` | `no-store` |
-| `GET/POST /api/posts` | `api/posts.js` | `posts`, `post_texts` — the blog members write. **GET**: `?id=` one post whole, every language with its body, a draft only to its owner and to anybody else 404; `?by=<name>` one person's published posts; `?mine=1` the session's own, drafts included; nothing, everybody's published — each list `PAGE_SIZE` rows with every language's title and standfirst and never a body, `next` the cursor for `?before=`. **POST**, session required: `save` (`id?`, `lang`, `texts`, `publish`) makes or replaces a post whole, `delete` removes one — both read `posts.owner` first and answer 404 to anybody else. What a body may hold is blocks, never HTML, kept by `cleanBody()` in `_posts.js` — a place card naming the map's id or a `google_venues` key, which `save` looks up by the ids the post carries through `venuesByIds()` — which holds the caps `MAX_TITLE 120`, `MAX_LEAD 280`, `MAX_BODY 20000`, `MAX_POSTS 200`, `MAX_NEW_A_DAY 10`, restated in `assets/write.js`. `ready: false` and every POST 503 where the tables are not applied — `postsReady()`. **Everybody's posts** under **The blog** in `README.md` | `no-store` |
+| `GET/POST /api/posts` | `api/posts.js` | `posts`, `post_texts` — the blog members write. **GET**: `?id=` one post whole, every language with its body, a draft only to its owner and to anybody else 404; `?by=<name>` one person's published posts; `?mine=1` the session's own, drafts included; nothing, everybody's published — each list `PAGE_SIZE` rows with every language's title and standfirst and never a body, `next` the cursor for `?before=`. **POST**, session required: `save` (`id?`, `lang`, `texts`, `publish`) makes or replaces a post whole, `delete` removes one — both read `posts.owner` first and answer 404 to anybody else. What a body may hold is blocks, never HTML, kept by `cleanBody()` in `_posts.js` — a place card naming the map's id or a `google_venues` key, which `save` looks up by the ids the post carries through `venuesByIds()` — or a list card, `{ k: 'list', id }`, somebody's public list drawn as a row of its places to swipe through, kept by the shape of its id alone and asked about again each time the post is read, so a list made private leaves every post it was in (**A list inside a post** under **The blog**) — which holds the caps `MAX_TITLE 120`, `MAX_LEAD 280`, `MAX_BODY 20000`, `MAX_POSTS 200`, `MAX_NEW_A_DAY 10`, restated in `assets/write.js`. `ready: false` and every POST 503 where the tables are not applied — `postsReady()`. **Everybody's posts** under **The blog** in `README.md` | `no-store` |
 | `/blog/sitemap` | `blog/sitemap.js` | none; every published member's post as a sitemap, `<lastmod>` its last save, named in `robots.txt` beside `sitemap.xml`; empty where the database cannot be read | `public, max-age=3600` |
 | `/blog` | `blog.js` | none; `blog.html` with the post named by `?post=` written into its head — title, description, canonical, card and a `BlogPosting` in JSON-LD, or a `Blog` listing every post on the index — **and into its `<main>` as text**, every paragraph with its `[words](/path)` links made links and every other post linked under it, so a search for where to eat finds the post that answers it. English whatever `?lang=` says; `noindex` for a `?post=` that names nothing. A `?post=` that is a member's published post gets its own head, a `BlogPosting` with a `Person` author, and its text in the language it was first written in; `?by=<name>` is one person's posts; the index carries the newest page of members' posts as text after the house's. **Found as text** and **Everybody's posts** under **The blog** in `README.md` | `private, max-age=0, must-revalidate` with a weak ETag, plus the edge cache under `blogKey()` — the address with `?post=` or `?by=` on it — for `PAGE_TTL`, a minute, stamped with the deployment and kept for everybody, since the route reads no session |
 | `GET/POST /api/flashcard` | `api/flashcard.js` | **flashcards** — `flashcard_decks`, `flashcard_cards`, `flashcard_known`, `flashcard_reports`. Every write that went through is also counted through `countUse()` in `_visitors.js`, into `visitor_counts` and `usage_people` — **Usage, week by week** in `README.md`. The decks the site ships are `data/decks.json` read through `dataFile()`, and they are answered to anybody, signed in or not. **Every GET answer also carries the page's words**: `?lang=` is the page's candidates in order, `wordsFor()` in `_lib.js` picks the first `data/lang/index.json` lists and reads that language's own file, never `data/ui.json` whole, and `lang`, `ui` — that one language's block — and `langs` — three codes with each language's own name, for the switch in that page's header — come back beside the decks, as do `words` — how many shipped cards this person knows, across every deck — and `gates`, what *Getting by* and *Going deeper* open at, which the page prints and never decides: `GATES` in the route is the one copy, **Which decks are open** under **Flashcards** in `README.md` is why a hundred and four hundred. **A stage that has not opened sends no decks**: `shutAt()` filters them out of the list, signed out included — a stranger is nought words and gets *First words* and *At a restaurant*, which has no `GATES` entry and so is never shut — and the page draws the heading and the line saying what opens it out of `gates` and `words`. A deck asked for by `?deck=` is never filtered, whatever stage it is in, because the page has to draw the card that says so and a search result is the one way in from outside. **That page speaks three languages where the site speaks ten**: every `wordsFor()` call in it passes `DECK_LANGS` from `_lib.js`, the three `data/decks.json` writes a card's back in, which narrows the switch and the language the page is read in together — **Three languages, not ten** under **Flashcards** in `README.md`, so the page fetches nothing else on the way in and asks again only when somebody picks a language. **Everything in the database needs a session but one**, the two actions that only say a card was known included — the exception is `report`, which says a shipped card is wrong, is filed under a hashed network fingerprint rather than a person and is the only thing here that wants `SAVE_SALT` — and **a deck somebody wrote has one reader**: every read of one goes through `deckOf()`, which takes the session's own id, and somebody else's answers as not found. The boxes live in `box` and `due_at` on `flashcard_known` — a card is due only in box nought, since a card known stays known (**The spacing, which is off** under **Flashcards** in `README.md`) — added to that table after it was deployed — `readingBoxes()` is `readingPins()`'s pattern and is what makes the route work on a database the `ALTER` has not reached. **A shelf deck, lesson or song carries `taste`** where `data/decks.json` gives it one, the line of Estonian its card on the page's Start view shows, **and `added`**, the day it went in, which is what that view calls new for two weeks — **The menu, and Start** under **Flashcards** in `README.md`. **The grammar lessons ride in the same file and the same answers**: the list carries `lessons`, each with a `read` flag, `?deck=<lesson id>` answers one with its body, and Got it is the `knew` action under the reserved deck id `grammar` — `GRAMMAR_DECK` — which is one row in `flashcard_known` that nothing counting cards can see; **Grammar, which is read rather than turned over** under **Flashcards** in `README.md`. **The songs ride the same way**: the list carries `songs` with a `heard` flag, `?deck=<song id>` answers one whole — the video, the verses and `words`, each word's `deck` named as well as pointed at — and Heard it is `knew` under `songs`, `SONG_DECK`; **Songs, which are listened to** | `no-store`, for the reason `lists.js` is |
 | `GET/POST /api/chess` | `api/chess.js` | **chess** — `chess_games` (its `opponent` column for duels), `chess_moves`, `chess_notes`, `chess_asks`. Every write that went through is also counted through `countUse()` in `_visitors.js`, into `visitor_counts` and `usage_people` — **Usage, week by week** in `README.md`. Nothing links to the page yet: the door on the rail is the last task in `.claude/skills/chess/TASKS.md`. The GET answers the whole page at once — `you` (`house`, `member` or `visitor`; the house is a session whose id `adminIds()` in `_admin.js` names), the house's `record`, the public games' `score`, the `public` game, `mine`, the `queue` (each waiting game's id beside it, for the house alone) — each game with its moves, `legal` only when it is the reader's turn, and `abandon` only for the house while it may end a private game without a result, worked out by `_chess.js` so the browser runs none of the rules; `?lang=` adds the words through `wordsFor()`, all ten languages. The public game carries `notes`, the lines left for whoever moves next, `mine` worked out from the session or from `?client=`, the device id the page adds to a read without ever minting one; `null` where `chess_notes` is not applied, read on its own so the board never waits on it. The answer also carries `duels`, the reader's games and challenges against other members, and `duel`, the one open on the page off `duel=` — `null` both where `chess_games` has no `opponent` column yet, asked after on its own the way `chess_notes` is — and `?find=` answers a member the first ten usernames starting with what they typed. Every game being played also carries `asks`, `declined` and `mayAsk` — the asks to give it up or draw it that stand on it and what this reader may press, worked out by `standing()` from `chess_asks` and the moves on every read, never kept; absent where that table is not applied. The POST takes `move`, `undo`, `new`, `join`, `leave`, `start`, `ask`, `unask`, `refuse`, `abandon`, `note`, `unnote`, `hide`, `challenge`, `accept`, `decline`, `cancel` and `claim`, each answered with the same shape — `undo` only from whoever the last move was filed under, within ten seconds, and never for a move that ended the game; `ask` is one person's resignation on the spot, or one of the two names Everybody's give-up or draw needs, and a public game ended by an ask starts the next one itself; the table in the chess skill's `SKILL.md` says who may do which. **A move replays the game from `START` through `play()` before it is filed**, and the primary key `(game, ply)` is the lock: of two moves at one ply the second is `409 moved`, carrying the board. **Anybody may move for Everybody**, a visitor under the device id, which must be a v4 UUID and is refused `400 client` as `saves.js` refuses it. **Anybody may leave a note on the public game too**, capped five an hour by the hashed fingerprint feedback is capped by, so `note` fails closed `503 no-salt` without `SAVE_SALT`; `unnote` only by whoever it is filed under, `hide` only by the house. `ready: false` and every POST `503 no-database` where the tables are not applied. **Chess** in `README.md` | `no-store`: `you` and `legal` are per person |
-| `GET /api/say` | `api/say.js` | **flashcards** — none; `?text=` said aloud as `audio/wav` in Mari's voice, by the University of Tartu's Estonian text-to-speech. Speaks only the front of a card, the Estonian of a card's sentence or a line of a song in `data/decks.json`, exactly, and answers anything else `404 not-a-card`, so it is not an open proxy on somebody else's goodwill; `502 no-voice` when Tartu does not answer within fifteen seconds, and the page goes quiet with one line. Honours a `Range` header, answering `206` with the slice: Safari's first request for any media is two bytes of it, and an iPhone may not play a file from a server that answers that with all of it. Nothing is stored anywhere but Cloudflare's cache, keyed on the voice, the pace and the words; the `take=` the page adds is its own cache-buster for the browser and is not read here — change `VOICE` or `SPEED` and bump `SAY_TAKE` in `assets/flashcard.js` with it. **Hearing it** under **Flashcards** in `README.md` | `public, max-age=2592000`, plus the edge cache keyed on the voice, the pace and the words |
+| `GET /api/say` | `api/say.js` | **flashcards** — none; `?text=` said aloud as `audio/wav` in Mari's voice, by the University of Tartu's Estonian text-to-speech. Speaks only the front of a card, the Estonian of a card's sentence, a sentence or a form out of a grammar lesson, or a line of a song in `data/decks.json`, exactly — `sayable()` in the route builds that set from the file once per isolate, so a new kind of thing to hear is a line there — and answers anything else `404 not-a-card`, so it is not an open proxy on somebody else's goodwill; `502 no-voice` when Tartu does not answer within fifteen seconds, and the page goes quiet with one line. Honours a `Range` header, answering `206` with the slice: Safari's first request for any media is two bytes of it, and an iPhone may not play a file from a server that answers that with all of it. Nothing is stored anywhere but Cloudflare's cache, keyed on the voice, the pace and the words; the `take=` the page adds is its own cache-buster for the browser and is not read here — change `VOICE` or `SPEED` and bump `SAY_TAKE` in `assets/flashcard.js` with it. **Hearing it** under **Flashcards** in `README.md` | `public, max-age=2592000`, plus the edge cache keyed on the voice, the pace and the words |
 | `POST /api/ask` | `ask.js` | `visitor_counts`, the kind `ask` — how each question ended and what its answer was made of, through `countAsk()` in `_visitors.js` after the answer has gone, never for the owner and never the words (**What the chat was asked** under **Visitors** in `README.md`); narrows the two rolls to what a question could be about and puts it to Workers AI; measures "near" from the place named through `geocode.js`, or from the visitor's own dot sent as `here` | `no-store` |
 | `/list/<id>` | `list/[id].js` | none; `lists.html` with the list unfurled, and written into its `<main>` as text | `no-store` to anybody signed in; to everybody else `private, max-age=0, must-revalidate` with a weak ETag, plus the edge cache under the list's address for `PAGE_TTL`, a minute, stamped with the deployment — **Kept in the colo** in `_shell.js` |
 | `/lists` | `lists/index.js` | none; `lists.html` with the first page of everybody's lists seeded in — with the five Google lists as `start`, and each row's places as `dots` — searched when the address carries `?q=`, ordered by `?sort=` (`kept`, `new`) | `no-store` to anybody signed in; to everybody else the same minute in the edge cache as `/list/<id>`, under `directoryKey()` — the address with `?q=` and `?sort=` on it |
@@ -138,7 +140,8 @@ session-gated answer behind a `maxAge`**; the directive is public.
 opposite dialect to `assets/`; do not carry either into the other.
 
 **Two databases, and the split is load-bearing.** `wrangler.toml` declares
-`tallinntastebuds-preview` at the top level (what `wrangler pages dev` reads)
+`tallinntastebuds-preview` at the top level (the binding `wrangler pages dev`
+names its local copy after)
 and again under `[env.preview]`, and `tallinntastebuds` under
 `[env.production]`, each with an `ENVIRONMENT` var equal to its block's
 name. Both blocks must list every binding: Pages does not inherit from the
@@ -350,14 +353,24 @@ no step 1 until the owner has answered it.
    than taking every route down with the one that was wrong. It takes a
    second, and the outage it answers is the last bullet of **Where it goes
    wrong**.
-3. **Drive it under `npx wrangler pages dev .`**, at `127.0.0.1:8788`, which
-   reads the top of `wrangler.toml` and so hits the preview database. Never
-   production, and never by pointing a binding at it. `.wrangler/` is the
-   dev server's scratch and is ignored. The `AI` binding runs remotely even
-   there and spends from the shared daily allowance, so drive the chat a
-   few questions at a time. To look at rows without a dev server, the
-   Cloudflare MCP tool `d1_database_query` reads either database without a
-   prompt and writes to neither without one — see **The rules of a write**.
+3. **Drive it under `npx wrangler pages dev .`**, at `127.0.0.1:8788`. Its
+   D1 is a local copy, under `.wrangler/state` and named after the preview
+   binding at the top of `wrangler.toml` — Pages' dev server cannot be
+   pointed at a remote database, so nothing it does reaches
+   `tallinntastebuds-preview`, let alone production — and it is empty until
+   `wrangler d1 execute tallinntastebuds-preview --local --file=db/schema.sql`
+   has run, after which every route that answered `ready: false` answers.
+   Rows to look at go in the same way, `--local`, and the owner's routes
+   want an account made under it and named with `--binding ADMINS=<id>`:
+   **Driving it** in the `/stats` skill. `.wrangler/` is the dev server's
+   scratch and is ignored. The `AI` binding is the exception and runs
+   remotely even there, spending from the shared daily allowance, so drive
+   the chat a few questions at a time — and in a cloud session with no
+   Cloudflare token it stops the server starting at all; **The house, and
+   driving without a token** in the `/chess` skill is the way round it. To
+   look at rows in a real database without a dev server, the Cloudflare MCP
+   tool `d1_database_query` reads either without a prompt and writes to
+   neither without one — see **The rules of a write**.
 4. Rewrite the README paragraph the change made wrong, and the header. A
    route added, removed or gated differently is a step in somebody's
    diagram: the `ref` in `data/flows.json` that names it moves too, then
@@ -381,11 +394,13 @@ what it costs per request, and what has to be applied by hand and where.
 
 1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
 2. `node tools/validate.mjs` and `node tools/functions-check.mjs`. If
-   `db/schema.sql` changed, apply it to **preview** now — `wrangler d1
-   execute tallinntastebuds-preview --remote --file=db/schema.sql` — so the
-   preview deployment has the table the code expects.
-3. `npx wrangler pages dev .` against the preview database, and the page
-   half driven in a browser through it.
+   `db/schema.sql` changed, apply it to the **local** database now —
+   `wrangler d1 execute tallinntastebuds-preview --local
+   --file=db/schema.sql` — so `pages dev` has the table the code expects.
+   The remote preview gets nothing: **Production only, for now** in
+   `CLAUDE.md`.
+3. `npx wrangler pages dev .` against that local copy, and the page half
+   driven in a browser through it.
 4. Commits that stand alone, subjects about what the rows or the answer now
    are.
 5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
@@ -414,7 +429,9 @@ what it costs per request, and what has to be applied by hand and where.
   deployment did not.
 - A preview binding changed in `wrangler.toml` and not picked up, because
   each environment's configuration is written by a deployment *of that
-  environment*: open a PR, or run the workflow from a non-production branch.
+  environment* — and there are no preview deployments now, so nothing local
+  or in CI can show it. Say so in the PR; `CLAUDE.md` says what the owner
+  runs to make the one that would.
 - Comments that fell behind the routes: the README's "the attack surface of
   the database is that one file" was true when `saves.js` was alone, and the
   header of `_lib.js` named three routes of eight for a month. Fix the one

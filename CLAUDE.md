@@ -52,17 +52,32 @@ does not have to:
   gives the `grep` that finds them. Change a count, move the copies you are
   standing in, and say which you left.
 - **The chat costs nothing and is easy to exhaust.** `/api/ask` runs on
-  Workers AI's free daily allowance, and preview and production spend from
-  the same pot. Driving the chat on a preview for an afternoon puts the live
-  site out of model until midnight UTC. Ask it a few questions, not fifty.
-- **A preview deploy reports into the live analytics.** Microsoft Clarity's
-  tag is written into the pages rather than set per environment, so every
-  `*.pages.dev` branch records into the same Clarity project as
-  tallinntastebuds.ee. Nothing stands in front of it: the banner that did for a day was taken out on
-  purpose, so an afternoon spent driving a preview lands in the owner's real
-  heatmaps and there is no button to press to stay out. Not a reason to avoid
-  driving one — it is the whole point of a preview — just a reason to say so in
-  the PR if you leant on it.
+  Workers AI's free daily allowance, and `pages dev` spends from the same
+  pot as the live site, since that one binding runs remotely even there.
+  Driving the chat for an afternoon puts the live site out of model until
+  midnight UTC. Ask it a few questions, not fifty.
+- **Driving a page anywhere reports into the live analytics.** Microsoft
+  Clarity's tag is written into the pages rather than set per environment, so
+  a page opened in any browser, a localhost under `pages dev` or `http.server`
+  included, records into the same Clarity project as
+  tallinntastebuds.ee. Nothing stands in front of it: the banner that did for
+  a day was taken out on purpose, so an afternoon spent driving a change lands
+  in the owner's real heatmaps and there is no button to press to stay out.
+  Not a reason to avoid driving one — it is the whole point — just a reason
+  to say so in the PR if you leant on it.
+- **`pages dev` keeps the database on your machine and the chat on
+  Cloudflare's.** `npx wrangler pages dev .` is where every visible change is
+  driven, and two things about it have each cost a session an hour. Its D1
+  is a local copy under `.wrangler/state`, named after the preview binding
+  and empty until `wrangler d1 execute tallinntastebuds-preview --local
+  --file=db/schema.sql` has run — Pages' dev server cannot be pointed at a
+  remote database, so nothing it does reaches `tallinntastebuds-preview`,
+  and the owner's pages under it need an account made there and named with
+  `--binding ADMINS=<id>`; **Driving it** in the `/stats` skill is the
+  recipe. And the `[ai]` binding runs remotely whatever else does, so in a
+  cloud session with no Cloudflare token the server does not start at all;
+  **The house, and driving without a token** in the `/chess` skill is the
+  way round it, a copy of the tree with the two `[ai]` blocks taken out.
 - **Production is the only database that is kept.** Every write goes to
   production `tallinntastebuds` and nowhere else; preview
   `tallinntastebuds-preview` is set aside until the owner replicates it
@@ -120,11 +135,15 @@ skill to load. Two roads, then: the prompt loads the skill by its
 description, and failing that, the first file opened does. Either way the
 checklist arrives before the change is made.
 
-One rule points at no skill, and it is the main one:
-`.claude/rules/leave-it-better.md` loads by itself the moment a session reads
-or edits anything under `assets/`, `functions/`, `tools/`, `db/` or an HTML
-page. It outranks "keep the diff small", and its last section is the process
-for a session with nothing else to do.
+Three rules point at no skill of their own. The main one is
+`.claude/rules/leave-it-better.md`, which loads by itself the moment a session
+reads or edits anything under `assets/`, `functions/`, `tools/`, `db/` or an
+HTML page; it outranks "keep the diff small", and its last section is the
+process for a session with nothing else to do. The other two are
+`flashcards.md` and `splitwise.md`: the two products on subdomains have no
+skill, so their files load a rule that sends a session to the `/site` and
+`/api` skills and to the README section the table above names, with the few
+facts about each that sessions kept rediscovering.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
@@ -260,11 +279,13 @@ change, not corrected to match, and its drift from production is not a finding
 — it is expected, and it is not mentioned. Where a skill, a tool's header or
 the README still says "preview first", "both databases" or prints a
 `tallinntastebuds-preview` line beside the production one, read it as
-production alone. Preview stays bound in `wrangler.toml`, so `npx wrangler
-pages dev .` still reads and writes it: that is fine for driving a change
-whose rows nobody needs to keep, and it is the one use it has left. When it is
-needed again, the owner replicates it from production and this paragraph comes
-out.
+production alone. Preview stays bound in `wrangler.toml`, and `npx wrangler
+pages dev .` does not reach it either: Pages' dev server runs D1 as a local
+copy under `.wrangler/state` and cannot be pointed at a remote database, so a
+change is driven against rows on your own machine, put there with `wrangler d1
+execute tallinntastebuds-preview --local`. Nothing writes the remote preview
+now. When it is needed again, the owner replicates it from production and this
+paragraph comes out.
 
 This is written down because it went wrong: a session that had been told to
 merge a fix loaded the corrected column into both databases on its own
@@ -316,15 +337,16 @@ the step that gets skipped is always the one nobody re-read.
   previews. The first three weeks ran 773 of them across 191 pull requests and
   next to none of those URLs was opened, so they were switched off rather than
   rationed. **Drive everything under `npx wrangler pages dev .`**: same
-  bindings, same preview database, your own machine, no deploy.
+  bindings, a local copy of the database, your own machine, no deploy.
 - **Two things `pages dev` cannot show you**, and both are rare: a
   `wrangler.toml` change to the `[env.preview]` block, which takes effect only
   once a preview carries it and which `pages dev` cannot reach because it reads
   the top level instead; and anything whose point is how it behaves on a real
   phone, which a localhost is not. Everything else it does show, the database
-  included — `pages dev` talks to the same remote `tallinntastebuds-preview`
-  that a preview deployment would, so a `db/` load is visible there without
-  deploying anything. On the two that are left, do not work around it and do
+  included — `pages dev` runs D1 locally, under `.wrangler/state`, so a `db/`
+  file loaded there with `wrangler d1 execute tallinntastebuds-preview --local
+  --file=<file>` is visible without deploying anything or touching a remote
+  row. On the two that are left, do not work around it and do
   not assume: say in the pull request that the change wants a preview and what
   you would look at on it. One `npx wrangler pages deploy . --branch=<name>`
   from a terminal makes one, and that is the owner's to run. If it starts

@@ -28,13 +28,14 @@ here. It is the main rule and it applies to every line you touch.
 - `README.md` → **The design rules**: twelve rules a new sheet, page or
   button is held to. Two of them the validator enforces; the other ten are
   read by a person, and that person is you.
-- The header block of the file you are about to change. `assets/app.js`,
-  `assets/lists.js`, `assets/venues.js`, `assets/account.js` and both big
-  stylesheets are over the ~600-line mark (`wc -l assets/*` is the current
-  answer), so the reach there is the functions you touch plus what they call
-  and what calls them. Say which ones you read. Line numbers written into
-  this file rot within a week; find things by name — `grep -n 'function
-  applyStyle' assets/*.js` — never by the number a document remembers.
+- The header block of the file you are about to change. Most of the page
+  scripts and both big stylesheets are over the ~600-line mark (`wc -l
+  assets/*.js assets/*.css` is the current answer; a list written here was
+  wrong within the week), so the reach there is the functions you touch plus
+  what they call and what calls them. Say which ones you read. Line numbers
+  written into this file rot within a week; find things by name — `grep -n
+  'function applyStyle' assets/*.js` — never by the number a document
+  remembers.
 
 ## Is it new?
 
@@ -99,7 +100,11 @@ three pass pages keep light browser chrome under the dark style.
 `flashcard.js` carries the style half and a language half of its own shape: it
 does not fetch `data/ui.json` at all, but sends its candidates to
 `/api/flashcard` and prints from the one block that comes back — **One request
-on the way in** under **Flashcards** in `README.md` says why; the other
+on the way in** under **Flashcards** in `README.md` says why, and
+`assets/flashcard-first.js` is why that ask leaves from the head before the
+page's own scripts have arrived: `boot()` takes the early answer only when the
+address it would have asked is the same character for character, so a change
+to what `boot()` asks is a change there too; the other
 pages shed the same weight the other way, one language to a file. It is
 also the one page besides the map with a **language switch** on it, because on
 its own subdomain `ttb.lang` belongs to another origin: it is drawn from the
@@ -374,8 +379,9 @@ no step 1 until the owner has answered it.
    because `fetch()` refuses `file://` and the page comes up empty. For a
    page that needs a live-looking API, Playwright with `/api/*` stubbed —
    Chromium is at `/opt/pw-browsers/chromium` in this environment — or
-   `npx wrangler pages dev .` for the real bindings against the preview
-   database. The chat (`assets/ask.js` and the panel in `app.js`) only
+   `npx wrangler pages dev .` for the real bindings against a local copy of
+   the database, filled as the `/api` skill's step 3 says. The chat
+   (`assets/ask.js` and the panel in `app.js`) only
    answers with the model under `pages dev`, and each question spends from
    the daily Workers AI allowance the live site shares — a few questions,
    not an afternoon. Look at a light and a dark style, and at a 390 px width, which is
@@ -464,7 +470,8 @@ it, and what was driven in a browser to check it.
    what was driven in a browser and how — and that account matters more than
    it used to, because the push deploys no preview and there is no URL for a
    reviewer to open instead. `npx wrangler pages dev .` is where a visible
-   change gets driven, on the same bindings against the same database.
+   change gets driven, on the same bindings against a local copy of the
+   database.
    `CLAUDE.md` says why previews are off and what to do on the rare change
    that truly needs one.
 7. CI green, then **Rebase and merge**; the branch stays, `CLAUDE.md` says

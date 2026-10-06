@@ -9,8 +9,10 @@ description: Refresh the Google Places export: a new exports/tallinn_restaurants
 `google_venues` table so a list can hold a place that is not on the map and
 `/admin/google` can be a directory of the city. The number moves with every
 refresh — the first pull found 750 restaurants, the second sweep, over
-seventeen Google types, found the rest — so read it off the first line of
-`db/google-venues.sql` rather than off this page. It is somebody else's data
+seventeen Google types, found the rest — so count it out of
+`db/google-venues.sql` rather than reading it off this page:
+`grep -o "('Ch[A-Za-z0-9_-]*'" db/google-venues.sql | sort -u | wc -l`. It
+is somebody else's data
 about the city, kept apart from mine about the food, and the whole design of
 the refresh is that running it again is safe. The pipeline is five files:
 
@@ -83,11 +85,14 @@ else runs.
    of them. That is the correct outcome and not a loss to undo — the fresher
    figure is upstream's to carry now — but say in the PR which corrections
    went, because somebody asked for each of them.
-2. `node tools/googlevenues.mjs`. It writes `db/google-venues.sql`: a
-   comment line with the count, one `UPDATE … SET missing_since = now WHERE
-   missing_since IS NULL`, then upserts fifty rows to a statement, then one
-   `UPDATE … SET map_id = … WHERE place_id = … AND map_id IS NULL` per row
-   matched to the map. The count is in the diff.
+2. `node tools/googlevenues.mjs`. It writes `db/google-venues.sql`:
+   statements and no comments — upserts fifty rows to a statement, then one
+   `UPDATE … SET missing_since = now` that names every key the file has just
+   written and marks the rows that are not among them, so a file that stops
+   part-way marks nothing, then one `UPDATE … SET map_id = … WHERE place_id =
+   … AND map_id IS NULL` per row matched to the map. The header of the tool
+   says why the mark moved from the front of the file to the end. The count
+   is the number of keys, which the grep at the top of this file prints.
    Then `node tools/googlelists.mjs`, which rewrites `db/google-lists.sql`
    from the new export; `--show` first prints the six lists with the score,
    rating and count beside each name, which is the diff worth reading
@@ -141,21 +146,23 @@ else runs.
    `google_venues` keys, and a top ten loaded before the venue it names is a
    row that draws by its stored name and links nowhere. Its one `DELETE`
    names the six lists in its `WHERE`, so the denials let it through.
-   Nothing in CI applies it. A preview that cannot see these places shows an
-   empty picker and looks broken for no reason. The mark-missing `UPDATE`
+   Nothing in CI applies it. A database that cannot see these places shows
+   an empty picker and looks broken for no reason. The mark-missing `UPDATE`
    carries a `WHERE`, so the D1 denials in `.claude/settings.json` let it
-   through; a half-applied file leaves the rows after the break marked
-   missing until the next complete run.
-6. **The counts.** The total is written in digits ("1,111") and in words
+   through; it comes last and names the keys it spares, so a half-applied
+   file marks nothing and leaves the rows after the break on last month's
+   numbers until the next complete run.
+6. **The counts.** The total is written in digits ("1,112") and in words
    ("eleven hundred") across the README, `exports/README.md`,
    `exports/REVIEW.md`, `functions/api/ask.js`, `functions/api/venues.js`
    and the comment above the check in `tools/validate.mjs`, along with the
    numbers that hang off it — how many are matched to the map (the `SET
    map_id` lines at the end of the SQL, 66 today), how many have no cuisine,
-   how many rows the raw export ran to. This finds the copies:
+   how many rows the raw export ran to. This finds the copies, with the
+   digits the files carried *before* the refresh, which today are these:
 
    ```
-   grep -rn '1,111\|eleven hundred\|1110' --include=*.md --include=*.js --include=*.mjs --include=*.sql . | grep -v google-venues.sql
+   grep -rn '1,112\|eleven hundred\|1112' --include=*.md --include=*.js --include=*.mjs --include=*.sql . | grep -v google-venues.sql
    ```
 
    One of those numbers is load-bearing rather than descriptive:
