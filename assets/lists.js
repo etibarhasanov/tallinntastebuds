@@ -1103,7 +1103,10 @@
         slot.appendChild(card([
           rows.length ? el('ul', { className: 'menu' }, rows) : el('p', { className: 'lists-say', textContent: t('blogMembersNone') }),
           el('p', { className: 'lists-row lists-foot' }, [
-            out && out.next ? TTBTrack.click(el('a', { className: 'alt', href: '/blog?by=' + encodeURIComponent(who.name),
+            /* Their blog, the page of everything they published, whenever
+               there is anything on it — it was offered only past the first
+               ten, which left most people's blog a page nothing led to. */
+            rows.length ? TTBTrack.click(el('a', { className: 'alt', href: '/blog?by=' + encodeURIComponent(who.name),
               textContent: t('blogMoreBy', { name: who.name }) }), 'blog_more_by', { name: who.name }) : null,
             mine ? TTBTrack.click(el('a', { className: 'go', href: '/write?post=new', textContent: t('blogWriteYours') }), 'blog_write') : null
           ])

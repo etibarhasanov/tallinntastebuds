@@ -1195,7 +1195,8 @@
   "writeErrMany": "Bir hesabın şimdilik başlatabileceği yazı sınırı bu.",
   "writeErrGeneric": "Kaydedilmedi. Birazdan tekrar dene.",
   "writeBack": "Tüm yazıların",
-  "blogHouse": "Haritadan notlar"
+  "blogHouse": "Haritadan notlar",
+  "writeYourBlog": "Blogun"
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",

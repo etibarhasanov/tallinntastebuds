@@ -1195,7 +1195,8 @@
     "writeErrMany": "Bu gün üçün və ya bir hesab üçün yazı limiti dolub.",
     "writeErrGeneric": "Saxlanılmadı. Bir azdan yenidən cəhd et.",
     "writeBack": "Bütün yazıların",
-    "blogHouse": "Saytın qeydləri"
+    "blogHouse": "Saytın qeydləri",
+    "writeYourBlog": "Sənin bloqun"
   },
   "hy": {
     "langName": "Հայերեն",
@@ -2393,7 +2394,8 @@
     "writeErrMany": "Այսօրվա կամ մեկ հաշվի գրառումների սահմանը լրացել է։",
     "writeErrGeneric": "Չպահպանվեց։ Փորձիր մի փոքր ուշ։",
     "writeBack": "Քո բոլոր գրառումները",
-    "blogHouse": "Կայքի նշումները"
+    "blogHouse": "Կայքի նշումները",
+    "writeYourBlog": "Քո բլոգը"
   },
   "en": {
     "langName": "English",
@@ -3591,7 +3593,8 @@
     "writeErrMany": "That is as many posts as one account can start for now.",
     "writeErrGeneric": "That did not save. Try again in a moment.",
     "writeBack": "All your posts",
-    "blogHouse": "Notes from the map"
+    "blogHouse": "Notes from the map",
+    "writeYourBlog": "Your blog"
   },
   "et": {
     "langName": "Eesti",
@@ -4789,7 +4792,8 @@
     "writeErrMany": "Ühe konto postituste piir on praeguseks täis.",
     "writeErrGeneric": "Ei salvestunud. Proovi hetke pärast uuesti.",
     "writeBack": "Kõik sinu postitused",
-    "blogHouse": "Märkmed kaardilt"
+    "blogHouse": "Märkmed kaardilt",
+    "writeYourBlog": "Sinu blogi"
   },
   "fi": {
     "langName": "Suomi",
@@ -5987,7 +5991,8 @@
     "writeErrMany": "Tili ei voi juuri nyt aloittaa enempää kirjoituksia.",
     "writeErrGeneric": "Tallennus ei onnistunut. Yritä hetken päästä uudelleen.",
     "writeBack": "Kaikki kirjoituksesi",
-    "blogHouse": "Muistiinpanot kartalta"
+    "blogHouse": "Muistiinpanot kartalta",
+    "writeYourBlog": "Blogisi"
   },
   "pt": {
     "langName": "Português",
@@ -7185,7 +7190,8 @@
     "writeErrMany": "É o máximo de posts que uma conta pode começar por agora.",
     "writeErrGeneric": "Não foi salvo. Tente de novo em instantes.",
     "writeBack": "Todos os seus posts",
-    "blogHouse": "Notas do mapa"
+    "blogHouse": "Notas do mapa",
+    "writeYourBlog": "Seu blog"
   },
   "ru": {
     "langName": "Русский",
@@ -8383,7 +8389,8 @@
     "writeErrMany": "Это предел постов для одного аккаунта на сейчас.",
     "writeErrGeneric": "Не сохранилось. Попробуйте чуть позже.",
     "writeBack": "Все ваши посты",
-    "blogHouse": "Заметки с карты"
+    "blogHouse": "Заметки с карты",
+    "writeYourBlog": "Ваш блог"
   },
   "es": {
     "langName": "Español",
@@ -9581,7 +9588,8 @@
     "writeErrMany": "Es el máximo de entradas que una cuenta puede empezar por ahora.",
     "writeErrGeneric": "No se guardó. Inténtalo de nuevo en un momento.",
     "writeBack": "Todas tus entradas",
-    "blogHouse": "Notas del mapa"
+    "blogHouse": "Notas del mapa",
+    "writeYourBlog": "Tu blog"
   },
   "tr": {
     "langName": "Türkçe",
@@ -10779,7 +10787,8 @@
     "writeErrMany": "Bir hesabın şimdilik başlatabileceği yazı sınırı bu.",
     "writeErrGeneric": "Kaydedilmedi. Birazdan tekrar dene.",
     "writeBack": "Tüm yazıların",
-    "blogHouse": "Haritadan notlar"
+    "blogHouse": "Haritadan notlar",
+    "writeYourBlog": "Blogun"
   },
   "uk": {
     "langName": "Українська",
@@ -11977,6 +11986,7 @@
     "writeErrMany": "Це межа дописів для одного облікового запису наразі.",
     "writeErrGeneric": "Не збереглося. Спробуйте трохи згодом.",
     "writeBack": "Усі ваші дописи",
-    "blogHouse": "Нотатки з мапи"
+    "blogHouse": "Нотатки з мапи",
+    "writeYourBlog": "Ваш блог"
   }
 }

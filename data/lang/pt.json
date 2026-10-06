@@ -1195,7 +1195,8 @@
   "writeErrMany": "É o máximo de posts que uma conta pode começar por agora.",
   "writeErrGeneric": "Não foi salvo. Tente de novo em instantes.",
   "writeBack": "Todos os seus posts",
-  "blogHouse": "Notas do mapa"
+  "blogHouse": "Notas do mapa",
+  "writeYourBlog": "Seu blog"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",
