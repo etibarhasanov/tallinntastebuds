@@ -486,6 +486,8 @@
   "insightsListsNone": "Sinu nimekirju pole veel keegi avanud.",
   "insightsListsNote": "Kogu aja jooksul, olenemata ülal valitud ajavahemikust. Igalt külastajalt loetakse üks avamine päevas ja sinu enda avamisi ei loeta.",
   "insightsListsWhere": "Osa neist avamistest loeti enne, kui riike loeti, nii et nimekirja riigid võivad kokku anda vähem kui selle arv.",
+  "insightsPostsNone": "Sinu postitusi pole veel keegi lugenud.",
+  "insightsPostsNote": "Kogu aja jooksul, olenemata ülal valitud vahemikust. Igalt lugejalt loetakse üks lugemine päevas ja sinu enda lugemisi ei loeta.",
   "profileSince": "Siin {when}. aastast",
   "profileKept": "Neid nimekirju on salvestatud {n} korda",
   "profileKeptOne": "Neid nimekirju on salvestatud üks kord",

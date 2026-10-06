@@ -486,6 +486,8 @@
   "insightsListsNone": "Siyahılarını hələ heç kim açmayıb.",
   "insightsListsNote": "Bütün vaxt, yuxarıdakı müddətdən asılı olmayaraq. Hər ziyarətçidən gündə bir açılış sayılır, öz açılışların isə sayılmır.",
   "insightsListsWhere": "Bu açılışların bir qismi ölkələr sayılmağa başlamazdan əvvəl sayılıb, ona görə siyahının ölkələri cəmdə onun sayından az ola bilər.",
+  "insightsPostsNone": "Yazılarını hələ heç kim oxumayıb.",
+  "insightsPostsNote": "Bütün vaxt, yuxarıdakı müddətdən asılı olmayaraq. Hər oxucudan gündə bir oxunuş sayılır, öz oxunuşların isə sayılmır.",
   "profileSince": "Burada {when} ilindən bəri",
   "profileKept": "Bu siyahılar {n} dəfə saxlanılıb",
   "profileKeptOne": "Bu siyahılar bir dəfə saxlanılıb",

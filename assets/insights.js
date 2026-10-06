@@ -7,7 +7,8 @@
  * the page was opened over a range, the same over the range before it, a
  * line of it over time, where the views and the clicks came from, which
  * country, and what on the page was pressed — and under all of that, how
- * often each of their lists has been opened and from which countries. The shape is the one every
+ * often each of their lists has been opened and from which countries, and
+ * how often each of their posts on the blog has been read. The shape is the one every
  * page-of-links host already has for this — a range, three figures, a line,
  * a table of sources — because the people with a page here have met it
  * there, and a new arrangement of the same four things would be something
@@ -31,9 +32,10 @@
  * WHAT IT READS
  *
  *   /data/ui.json              the strings
- *   /api/insights?days=        who is signed in, the range asked for, and
- *                              the lists with their opens and their
- *                              countries, all time
+ *   /api/insights?days=        who is signed in, the range asked for, the
+ *                              lists with their opens and their
+ *                              countries, and the posts with their reads,
+ *                              all time
  *
  * assets/country.js names a country and draws the line of them under a
  * list, and is loaded before this file.
@@ -76,7 +78,8 @@
     user: null,
     span: 7,
     data: null,  // the answer's `insights`, null where the table is not there
-    lists: null  // the answer's `lists`: [{ id, title, public, n, country }], all time
+    lists: null, // the answer's `lists`: [{ id, title, public, n, country }], all time
+    posts: null  // the answer's `posts`: [{ id, lang, status, titles, n }], all time
   };
 
   var main = null;
@@ -462,6 +465,43 @@
     ]);
   }
 
+  /* Your posts, and how often each has been read on the blog: the lists'
+     card again, one row a post, most read first, the title a way into it —
+     in the reading language where the post is written in it, the one it was
+     first written in where it is not, as the blog picks. All time, like the
+     lists, and the line under it says so. No countries: a post's reads are
+     one running number and nothing else, see postViews() in
+     functions/api/_visits.js. A post taken back to draft keeps its row and
+     its number, marked the way /write marks it. No posts is no card; posts
+     nobody has read yet are one sentence. */
+  function postsCard(posts) {
+    if (!posts || !posts.length) return null;
+    var read = posts.some(function (p) { return p.n > 0; });
+    var body;
+    if (read) {
+      body = el('ol', { className: 'stats-list ins-list' });
+      posts.forEach(function (p, i) {
+        var title = p.titles[state.lang] || p.titles[p.lang] || p.titles[Object.keys(p.titles)[0]] || p.id;
+        body.appendChild(el('li', { className: 'stats-row' }, [
+          el('span', { className: 'stats-rank', textContent: String(i + 1) }),
+          el('span', { className: 'stats-who' }, [
+            TTBTrack.click(el('a', { className: 'stats-name', href: '/blog?post=' + encodeURIComponent(p.id), textContent: title }),
+              'blog_member', { post: p.id }),
+            p.status === 'published' ? null : el('span', { className: 'stats-shut', textContent: t('writeDraft') })
+          ]),
+          el('span', { className: 'stats-n', textContent: num(p.n) })
+        ]));
+      });
+    } else {
+      body = el('p', { className: 'lists-none', textContent: t('insightsPostsNone') });
+    }
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('writeTitle') }),
+      body,
+      read ? el('p', { className: 'ins-note', textContent: t('insightsPostsNote') }) : null
+    ]);
+  }
+
   /* ----------------------------------------------------------- the states */
 
   function page() {
@@ -513,12 +553,15 @@
     return withLists(stack);
   }
 
-  /* The lists last, under the page's own numbers, and in every state the page
-     has once somebody is signed in: they are counted out of another table, so
-     a page nobody has opened yet can still have a list somebody has. */
+  /* The lists and then the posts last, under the page's own numbers, and in
+     every state the page has once somebody is signed in: they are counted
+     out of another table, so a page nobody has opened yet can still have a
+     list or a post somebody has. */
   function withLists(stack) {
     var lists = listsCard(state.lists);
     if (lists) stack.appendChild(lists);
+    var posts = postsCard(state.posts);
+    if (posts) stack.appendChild(posts);
     return stack;
   }
 
@@ -581,6 +624,7 @@
     state.user = answer.out.user || null;
     state.data = answer.out.insights || null;
     state.lists = answer.out.lists || null;
+    state.posts = answer.out.posts || null;
     state.span = state.data ? state.data.span : span;
 
     var url = new URL(window.location.href);

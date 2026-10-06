@@ -92,7 +92,7 @@ trail with the on-screen second each name happened at, the languages, the
 searches and the abouts. Two reports a page and
 no more — a visit of twelve presses is not twelve requests.
 
-`stats.js` is the door for all of it. Twelve kinds, and each is handed on or
+`stats.js` is the door for all of it. Thirteen kinds, and each is handed on or
 counted in one place:
 
 | `kind` | checked against | counted by | into |
@@ -104,6 +104,7 @@ counted in one place:
 | `look` | `LOOK_IDS` | `stats.js` | `press_counts` |
 | `style` | `STYLE_IDS` | `stats.js` | `press_counts` |
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
+| `post` | a published member's post not the caller's own, then `firstToday()` | `stats.js` | `press_counts`, read back by `postViews()` in `_visits.js` on `/insights` |
 | `profile`, `profile-press` | the owner's own page | `countView()`, `countPress()` in `_visits.js` | `profile_counts` |
 | `arrive`, `leave` | every field, in `_visitors.js` | `countArrive()`, `countLeave()` + `countFlows()` | `visitor_counts`, `visitor_live`, `flow_counts` |
 | `venue` | nothing | nobody — it only asks `refreshOnOpen()`; sent by the directory, and by the map for a place the owner's browser opens | — |

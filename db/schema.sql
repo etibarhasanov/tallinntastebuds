@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Seven
+-- This is what /stats ranks and what functions/api/stats.js writes. Eight
 -- kinds of thing are counted and `kind` is which:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
@@ -113,13 +113,19 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              data/taxonomy.json, or 'discount', which is the one chip that
 --              is not a type. All is not a filter and is not counted: it is
 --              the way out of the chips rather than a choice of what to eat.
---   'list'     a public list opened, once per load of its page, however the
---              reader got there. The id is a lists.id. It is the one kind
---              /stats does not print: it is read by functions/api/_mostkept.js
---              instead, which is what puts the most opened list at the top of
---              /lists, and no row on that page draws the number. A list its
+--   'list'     a public list opened, once a day per visitor and never by its
+--              owner, however the reader got there. The id is a lists.id. It
+--              is read by functions/api/_mostkept.js, which is what puts the
+--              most opened list at the top of /lists — no row on that page
+--              draws the number — and drawn back to the list's owner on
+--              /insights and to the site's owner on /admin/stats. A list its
 --              owner has since made private keeps the count it had and stops
 --              growing; nothing here deletes one.
+--   'post'     a member's post read on the blog, once a day per reader and
+--              never by its author. The id is a posts.id. Read by postViews()
+--              in functions/api/_visits.js and drawn back to the author on
+--              /insights and nowhere else; a post taken back to draft keeps
+--              its count and stops growing, the way a private list does.
 --   'rail'     a pill on the rail down the left of the map pressed, every
 --              press rather than once a load. The id is one of the nine in
 --              RAIL_PILLS in functions/api/stats.js — account, lists, flash,
@@ -153,7 +159,8 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- and a place called `bakery` could never collide.
 --
 -- The third and fourth kinds are the argument having been made and then taken
--- twice, and the fifth, sixth and seventh three times more. `list` was added when /lists stopped being ordered by how many
+-- twice, the fifth, sixth and seventh three times more, and `post` once
+-- again. `list` was added when /lists stopped being ordered by how many
 -- signed-in people had bookmarked a list and started being ordered by how many
 -- people had opened it; `rail` was added to rank the nine pills down the left
 -- of the map. Each cost one string in two files and nothing at all here — no
