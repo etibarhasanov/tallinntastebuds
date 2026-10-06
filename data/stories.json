@@ -68,24 +68,5 @@
       "en": "guilty pleasure"
     },
     "spot": "kotkot"
-  },
-  {
-    "id": "fotografiska-2026-10-04",
-    "live": true,
-    "photo": "fotografiska-2026-10-04.webp",
-    "from": "2026-10-04T18:00",
-    "caption": {
-      "en": "Wasteless Lager at Fotografiska — brewed from yesterday’s bread.",
-      "et": "Wasteless Lager Fotografiskas — pruulitud eilsest leivast.",
-      "ru": "Wasteless Lager в Fotografiska — сварен из вчерашнего хлеба.",
-      "fi": "Wasteless Lager Fotografiskassa — pantu eilisestä leivästä.",
-      "az": "Fotografiska-da Wasteless Lager — dünənki çörəkdən dəmlənib.",
-      "pt": "Wasteless Lager no Fotografiska — fermentada com o pão de ontem.",
-      "es": "Wasteless Lager en Fotografiska — elaborada con el pan de ayer.",
-      "tr": "Fotografiska’da Wasteless Lager — dünün ekmeğinden demlenmiş.",
-      "uk": "Wasteless Lager у Fotografiska — зварене з учорашнього хліба.",
-      "hy": "Wasteless Lager Fotografiska-ում՝ եփված երեկվա հացից։"
-    },
-    "spot": "fotografiska"
   }
 ]
