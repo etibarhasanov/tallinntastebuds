@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-six decks of Estonian, two
- * thousand and forty-nine cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-seven decks of Estonian, two
+ * thousand one hundred and seventy-four cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -882,7 +882,7 @@ export async function onRequestGet(context) {
   /* And the lessons, every one, with whether each has been read. They are in
      no stage and behind no gate: they are a file, prose, and the argument for
      holding a deck back — forty-two rows with nothing saying where to start —
-     does not reach two tiles under a heading of their own. */
+     does not reach four tiles under a heading of their own. */
   const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
 
   /* And the songs, on the same footing: a file, behind no gate, each with

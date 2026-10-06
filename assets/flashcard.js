@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-six decks of Estonian, two
- * thousand and forty-nine cards, Estonian on the front and what it
+ * menu. This is the other half of that: forty-seven decks of Estonian, two
+ * thousand one hundred and seventy-four cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who
@@ -57,8 +57,9 @@
  *
  * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
  *
- * Two lessons sit on the shelf under a heading of their own, after the first
- * stage: why a noun has three forms, and why a verb does. A lesson is a tile
+ * Four lessons sit on the shelf under a heading of their own, after the first
+ * stage: why a noun has three forms and the fourteen cases they open, and why
+ * a verb does and every tense it grows into. A lesson is a tile
  * like a deck's and opens at the same kind of address, and what it opens to is
  * prose — paragraphs, small headings and a paradigm or two — with one filled
  * action at its foot, Got it, which marks it read and goes back to the shelf.

@@ -28105,6 +28105,1647 @@
       ]
     },
     {
+      "id": "twowords",
+      "name": {
+        "en": "Verbs of two words",
+        "az": "İki sözlü fellər",
+        "ru": "Глаголы из двух слов"
+      },
+      "why": {
+        "en": "Ma annan alla — the little word goes after the verb, and it changes what the verb means",
+        "az": "Ma annan alla — kiçik söz feldən sonra gəlir və felin mənasını dəyişir",
+        "ru": "Ma annan alla — маленькое слово идёт после глагола и меняет его смысл"
+      },
+      "level": "deep",
+      "cards": [
+        {
+          "id": "alla-andma",
+          "front": "Alla andma",
+          "back": {
+            "en": "To give up, surrender",
+            "az": "təslim olmaq",
+            "ru": "сдаваться"
+          },
+          "forms": [
+            "alla anda",
+            "annan alla"
+          ]
+        },
+        {
+          "id": "alla-kirjutama",
+          "front": "Alla kirjutama",
+          "back": {
+            "en": "To sign",
+            "az": "imzalamaq",
+            "ru": "подписывать"
+          },
+          "forms": [
+            "alla kirjutada",
+            "kirjutan alla"
+          ]
+        },
+        {
+          "id": "alla-laadima",
+          "front": "Alla laadima",
+          "back": {
+            "en": "To download",
+            "az": "endirmək, yükləmək",
+            "ru": "скачивать"
+          },
+          "forms": [
+            "alla laadida",
+            "laadin alla"
+          ]
+        },
+        {
+          "id": "alla-tombama",
+          "front": "Alla tõmbama",
+          "back": {
+            "en": "To download — said casually",
+            "az": "endirmək — danışıqda",
+            "ru": "скачивать — разговорное"
+          },
+          "forms": [
+            "alla tõmmata",
+            "tõmban alla"
+          ]
+        },
+        {
+          "id": "ette-kandma",
+          "front": "Ette kandma",
+          "back": {
+            "en": "To present, perform, report",
+            "az": "təqdim etmək, ifa etmək",
+            "ru": "докладывать, исполнять"
+          },
+          "forms": [
+            "ette kanda",
+            "kannan ette"
+          ]
+        },
+        {
+          "id": "ette-kujutama",
+          "front": "Ette kujutama",
+          "back": {
+            "en": "To imagine",
+            "az": "təsəvvür etmək",
+            "ru": "представлять себе"
+          },
+          "forms": [
+            "ette kujutada",
+            "kujutan ette"
+          ]
+        },
+        {
+          "id": "ette-nagema",
+          "front": "Ette nägema",
+          "back": {
+            "en": "To foresee",
+            "az": "qabaqcadan görmək",
+            "ru": "предвидеть"
+          },
+          "forms": [
+            "ette näha",
+            "näen ette"
+          ]
+        },
+        {
+          "id": "ette-tulema",
+          "front": "Ette tulema",
+          "back": {
+            "en": "To happen, come up",
+            "az": "baş vermək, rast gəlmək",
+            "ru": "случаться, встречаться"
+          },
+          "forms": [
+            "ette tulla",
+            "tuleb ette"
+          ]
+        },
+        {
+          "id": "ette-vaatama",
+          "front": "Ette vaatama",
+          "back": {
+            "en": "To look out, be careful",
+            "az": "ehtiyatlı olmaq",
+            "ru": "быть осторожным"
+          },
+          "forms": [
+            "ette vaadata",
+            "vaatan ette"
+          ]
+        },
+        {
+          "id": "ette-votma",
+          "front": "Ette võtma",
+          "back": {
+            "en": "To take on, undertake",
+            "az": "girişmək, üzərinə götürmək",
+            "ru": "предпринимать, браться"
+          },
+          "forms": [
+            "ette võtta",
+            "võtan ette"
+          ]
+        },
+        {
+          "id": "jalga-laskma",
+          "front": "Jalga laskma",
+          "back": {
+            "en": "To run off, bolt",
+            "az": "aradan çıxmaq, qaçmaq",
+            "ru": "удрать, смыться"
+          },
+          "forms": [
+            "jalga lasta",
+            "lasen jalga"
+          ]
+        },
+        {
+          "id": "jalga-panema",
+          "front": "Jalga panema",
+          "back": {
+            "en": "To put on — shoes, trousers",
+            "az": "geyinmək — ayaqqabı, şalvar",
+            "ru": "надевать — обувь, брюки"
+          },
+          "forms": [
+            "jalga panna",
+            "panen jalga"
+          ]
+        },
+        {
+          "id": "jarele-andma",
+          "front": "Järele andma",
+          "back": {
+            "en": "To give in",
+            "az": "güzəştə getmək",
+            "ru": "уступать"
+          },
+          "forms": [
+            "järele anda",
+            "annan järele"
+          ]
+        },
+        {
+          "id": "jarele-joudma",
+          "front": "Järele jõudma",
+          "back": {
+            "en": "To catch up",
+            "az": "çatmaq, yetişmək",
+            "ru": "догонять"
+          },
+          "forms": [
+            "järele jõuda",
+            "jõuan järele"
+          ]
+        },
+        {
+          "id": "jarele-tulema",
+          "front": "Järele tulema",
+          "back": {
+            "en": "To come for, pick up",
+            "az": "dalınca gəlmək",
+            "ru": "заходить за, забирать"
+          },
+          "forms": [
+            "järele tulla",
+            "tulen järele"
+          ]
+        },
+        {
+          "id": "jarele-vaatama",
+          "front": "Järele vaatama",
+          "back": {
+            "en": "To look up, check",
+            "az": "yoxlamaq, baxmaq",
+            "ru": "проверять, посмотреть"
+          },
+          "forms": [
+            "järele vaadata",
+            "vaatan järele"
+          ]
+        },
+        {
+          "id": "kaasa-elama",
+          "front": "Kaasa elama",
+          "back": {
+            "en": "To root for, feel with",
+            "az": "azarkeş olmaq, ürəkdən izləmək",
+            "ru": "болеть за, сопереживать"
+          },
+          "forms": [
+            "kaasa elada",
+            "elan kaasa"
+          ]
+        },
+        {
+          "id": "kaasa-tooma",
+          "front": "Kaasa tooma",
+          "back": {
+            "en": "To bring along; to bring about",
+            "az": "özü ilə gətirmək; səbəb olmaq",
+            "ru": "приносить с собой; влечь за собой"
+          },
+          "forms": [
+            "kaasa tuua",
+            "toon kaasa"
+          ]
+        },
+        {
+          "id": "kaasa-tundma",
+          "front": "Kaasa tundma",
+          "back": {
+            "en": "To sympathise",
+            "az": "həmdərd olmaq",
+            "ru": "сочувствовать"
+          },
+          "forms": [
+            "kaasa tunda",
+            "tunnen kaasa"
+          ]
+        },
+        {
+          "id": "kaasa-votma",
+          "front": "Kaasa võtma",
+          "back": {
+            "en": "To take along",
+            "az": "özü ilə götürmək",
+            "ru": "брать с собой"
+          },
+          "forms": [
+            "kaasa võtta",
+            "võtan kaasa"
+          ]
+        },
+        {
+          "id": "kaasas-kandma",
+          "front": "Kaasas kandma",
+          "back": {
+            "en": "To carry about with you",
+            "az": "üstündə gəzdirmək",
+            "ru": "носить с собой"
+          },
+          "forms": [
+            "kaasas kanda",
+            "kannan kaasas"
+          ]
+        },
+        {
+          "id": "kaasas-olema",
+          "front": "Kaasas olema",
+          "back": {
+            "en": "To be on you — mul on pass kaasas",
+            "az": "yanında olmaq",
+            "ru": "быть при себе"
+          },
+          "forms": [
+            "kaasas olla",
+            "on kaasas"
+          ]
+        },
+        {
+          "id": "kinni-hoidma",
+          "front": "Kinni hoidma",
+          "back": {
+            "en": "To hold on to",
+            "az": "bərk tutmaq",
+            "ru": "держаться за"
+          },
+          "forms": [
+            "kinni hoida",
+            "hoian kinni"
+          ]
+        },
+        {
+          "id": "kinni-jaama",
+          "front": "Kinni jääma",
+          "back": {
+            "en": "To get stuck",
+            "az": "ilişib qalmaq",
+            "ru": "застревать"
+          },
+          "forms": [
+            "kinni jääda",
+            "jään kinni"
+          ]
+        },
+        {
+          "id": "kinni-pidama",
+          "front": "Kinni pidama",
+          "back": {
+            "en": "To keep to; to stop, detain",
+            "az": "əməl etmək; saxlamaq",
+            "ru": "соблюдать; задерживать"
+          },
+          "forms": [
+            "kinni pidada",
+            "pean kinni"
+          ]
+        },
+        {
+          "id": "kinni-puudma",
+          "front": "Kinni püüdma",
+          "back": {
+            "en": "To catch",
+            "az": "tutmaq",
+            "ru": "ловить, поймать"
+          },
+          "forms": [
+            "kinni püüda",
+            "püüan kinni"
+          ]
+        },
+        {
+          "id": "kinni-votma",
+          "front": "Kinni võtma",
+          "back": {
+            "en": "To arrest",
+            "az": "həbs etmək",
+            "ru": "задерживать, арестовывать"
+          },
+          "forms": [
+            "kinni võtta",
+            "võtan kinni"
+          ]
+        },
+        {
+          "id": "kokku-hoidma",
+          "front": "Kokku hoidma",
+          "back": {
+            "en": "To save money; to stick together",
+            "az": "qənaət etmək; bir-birinə dayaq olmaq",
+            "ru": "экономить; держаться вместе"
+          },
+          "forms": [
+            "kokku hoida",
+            "hoian kokku"
+          ]
+        },
+        {
+          "id": "kokku-keerama",
+          "front": "Kokku keerama",
+          "back": {
+            "en": "To mess up; to roll up",
+            "az": "korlamaq; bükmək",
+            "ru": "напортачить; свернуть"
+          },
+          "forms": [
+            "kokku keerata",
+            "keeran kokku"
+          ]
+        },
+        {
+          "id": "kokku-leppima",
+          "front": "Kokku leppima",
+          "back": {
+            "en": "To agree, arrange",
+            "az": "razılaşmaq",
+            "ru": "договариваться"
+          },
+          "forms": [
+            "kokku leppida",
+            "lepin kokku"
+          ]
+        },
+        {
+          "id": "kokku-panema",
+          "front": "Kokku panema",
+          "back": {
+            "en": "To put together",
+            "az": "yığmaq, quraşdırmaq",
+            "ru": "собирать, составлять"
+          },
+          "forms": [
+            "kokku panna",
+            "panen kokku"
+          ]
+        },
+        {
+          "id": "kokku-saama",
+          "front": "Kokku saama",
+          "back": {
+            "en": "To meet up",
+            "az": "görüşmək",
+            "ru": "встречаться"
+          },
+          "forms": [
+            "kokku saada",
+            "saan kokku"
+          ]
+        },
+        {
+          "id": "korda-ajama",
+          "front": "Korda ajama",
+          "back": {
+            "en": "To sort out",
+            "az": "qaydaya salmaq, həll etmək",
+            "ru": "улаживать"
+          },
+          "forms": [
+            "korda ajada",
+            "ajan korda"
+          ]
+        },
+        {
+          "id": "korda-pidama",
+          "front": "Korda pidama",
+          "back": {
+            "en": "To keep order",
+            "az": "qaydanı qorumaq",
+            "ru": "поддерживать порядок"
+          },
+          "forms": [
+            "korda pidada",
+            "pean korda"
+          ]
+        },
+        {
+          "id": "korda-tegema",
+          "front": "Korda tegema",
+          "back": {
+            "en": "To tidy up, fix",
+            "az": "səliqəyə salmaq, düzəltmək",
+            "ru": "приводить в порядок, чинить"
+          },
+          "forms": [
+            "korda teha",
+            "teen korda"
+          ]
+        },
+        {
+          "id": "korvale-hoidma",
+          "front": "Kõrvale hoidma",
+          "back": {
+            "en": "To avoid, dodge",
+            "az": "yayınmaq",
+            "ru": "уклоняться, избегать"
+          },
+          "forms": [
+            "kõrvale hoida",
+            "hoian kõrvale"
+          ]
+        },
+        {
+          "id": "korvale-jaama",
+          "front": "Kõrvale jääma",
+          "back": {
+            "en": "To be left out",
+            "az": "kənarda qalmaq",
+            "ru": "оставаться в стороне"
+          },
+          "forms": [
+            "kõrvale jääda",
+            "jään kõrvale"
+          ]
+        },
+        {
+          "id": "katte-joudma",
+          "front": "Kätte jõudma",
+          "back": {
+            "en": "To come — of a time",
+            "az": "gəlib çatmaq — vaxt",
+            "ru": "наступать — о времени"
+          },
+          "forms": [
+            "kätte jõuda",
+            "jõuab kätte"
+          ]
+        },
+        {
+          "id": "katte-maksma",
+          "front": "Kätte maksma",
+          "back": {
+            "en": "To take revenge",
+            "az": "qisas almaq",
+            "ru": "мстить"
+          },
+          "forms": [
+            "kätte maksta",
+            "maksan kätte"
+          ]
+        },
+        {
+          "id": "katte-saama",
+          "front": "Kätte saama",
+          "back": {
+            "en": "To get, receive; to catch",
+            "az": "almaq, əldə etmək; tutmaq",
+            "ru": "получать; поймать"
+          },
+          "forms": [
+            "kätte saada",
+            "saan kätte"
+          ]
+        },
+        {
+          "id": "katte-votma",
+          "front": "Kätte võtma",
+          "back": {
+            "en": "To pull yourself together",
+            "az": "özünü ələ almaq",
+            "ru": "взять себя в руки"
+          },
+          "forms": [
+            "kätte võtta",
+            "võtan kätte"
+          ]
+        },
+        {
+          "id": "lahti-laskma",
+          "front": "Lahti laskma",
+          "back": {
+            "en": "To let go; to fire",
+            "az": "buraxmaq; işdən çıxarmaq",
+            "ru": "отпускать; увольнять"
+          },
+          "forms": [
+            "lahti lasta",
+            "lasen lahti"
+          ]
+        },
+        {
+          "id": "lahti-saama",
+          "front": "Lahti saama",
+          "back": {
+            "en": "To get rid of",
+            "az": "qurtulmaq",
+            "ru": "избавляться"
+          },
+          "forms": [
+            "lahti saada",
+            "saan lahti"
+          ]
+        },
+        {
+          "id": "labi-ajama",
+          "front": "Läbi ajama",
+          "back": {
+            "en": "To make do, get by",
+            "az": "keçinmək",
+            "ru": "обходиться"
+          },
+          "forms": [
+            "läbi ajada",
+            "ajan läbi"
+          ]
+        },
+        {
+          "id": "labi-kukkuma",
+          "front": "Läbi kukkuma",
+          "back": {
+            "en": "To fail — an exam",
+            "az": "kəsilmək — imtahandan",
+            "ru": "провалиться — на экзамене"
+          },
+          "forms": [
+            "läbi kukkuda",
+            "kukun läbi"
+          ]
+        },
+        {
+          "id": "labi-laskma",
+          "front": "Läbi laskma",
+          "back": {
+            "en": "To let through",
+            "az": "buraxmaq, keçirmək",
+            "ru": "пропускать"
+          },
+          "forms": [
+            "läbi lasta",
+            "lasen läbi"
+          ]
+        },
+        {
+          "id": "labi-raakima",
+          "front": "Läbi rääkima",
+          "back": {
+            "en": "To talk over, negotiate",
+            "az": "danışıb razılaşmaq",
+            "ru": "обсуждать, вести переговоры"
+          },
+          "forms": [
+            "läbi rääkida",
+            "räägin läbi"
+          ]
+        },
+        {
+          "id": "labi-saama",
+          "front": "Läbi saama",
+          "back": {
+            "en": "To get on with; to be over",
+            "az": "yola getmək; bitmək",
+            "ru": "ладить; заканчиваться"
+          },
+          "forms": [
+            "läbi saada",
+            "saan läbi"
+          ]
+        },
+        {
+          "id": "maha-minema",
+          "front": "Maha minema",
+          "back": {
+            "en": "To get off — a bus",
+            "az": "düşmək — avtobusdan",
+            "ru": "выходить — из автобуса"
+          },
+          "forms": [
+            "maha minna",
+            "lähen maha"
+          ]
+        },
+        {
+          "id": "maha-jatma",
+          "front": "Maha jätma",
+          "back": {
+            "en": "To leave behind; to dump",
+            "az": "tərk etmək, atmaq",
+            "ru": "бросать, оставлять"
+          },
+          "forms": [
+            "maha jätta",
+            "jätan maha"
+          ]
+        },
+        {
+          "id": "maha-jaama",
+          "front": "Maha jääma",
+          "back": {
+            "en": "To fall behind; to miss — a bus",
+            "az": "geri qalmaq; çatmamaq",
+            "ru": "отставать; опаздывать на"
+          },
+          "forms": [
+            "maha jääda",
+            "jään maha"
+          ]
+        },
+        {
+          "id": "maha-magama",
+          "front": "Maha magama",
+          "back": {
+            "en": "To oversleep, sleep through",
+            "az": "yatıb qalmaq",
+            "ru": "проспать"
+          },
+          "forms": [
+            "maha magada",
+            "magan maha"
+          ]
+        },
+        {
+          "id": "maha-mangima",
+          "front": "Maha mängima",
+          "back": {
+            "en": "To lose, throw away",
+            "az": "uduzmaq, əldən vermək",
+            "ru": "проиграть, упустить"
+          },
+          "forms": [
+            "maha mängida",
+            "mängin maha"
+          ]
+        },
+        {
+          "id": "maha-tombama",
+          "front": "Maha tõmbama",
+          "back": {
+            "en": "To cross out",
+            "az": "üstündən xətt çəkmək",
+            "ru": "зачёркивать"
+          },
+          "forms": [
+            "maha tõmmata",
+            "tõmban maha"
+          ]
+        },
+        {
+          "id": "maha-votma",
+          "front": "Maha võtma",
+          "back": {
+            "en": "To take down; to lose weight",
+            "az": "endirmək; arıqlamaq",
+            "ru": "снимать; худеть"
+          },
+          "forms": [
+            "maha võtta",
+            "võtan maha"
+          ]
+        },
+        {
+          "id": "meelde-jaama",
+          "front": "Meelde jääma",
+          "back": {
+            "en": "To stick in your mind",
+            "az": "yadda qalmaq",
+            "ru": "запоминаться"
+          },
+          "forms": [
+            "meelde jääda",
+            "jääb meelde"
+          ]
+        },
+        {
+          "id": "meelde-tulema",
+          "front": "Meelde tulema",
+          "back": {
+            "en": "To come back to you",
+            "az": "yada düşmək",
+            "ru": "вспоминаться"
+          },
+          "forms": [
+            "meelde tulla",
+            "tuleb meelde"
+          ]
+        },
+        {
+          "id": "meelde-tuletama",
+          "front": "Meelde tuletama",
+          "back": {
+            "en": "To remind",
+            "az": "xatırlatmaq",
+            "ru": "напоминать"
+          },
+          "forms": [
+            "meelde tuletada",
+            "tuletan meelde"
+          ]
+        },
+        {
+          "id": "meeles-olema",
+          "front": "Meeles olema",
+          "back": {
+            "en": "To be remembered — mul on meeles",
+            "az": "yadda olmaq",
+            "ru": "помниться"
+          },
+          "forms": [
+            "meeles olla",
+            "on meeles"
+          ]
+        },
+        {
+          "id": "meeles-pidama",
+          "front": "Meeles pidama",
+          "back": {
+            "en": "To keep in mind",
+            "az": "yadda saxlamaq",
+            "ru": "помнить, иметь в виду"
+          },
+          "forms": [
+            "meeles pidada",
+            "pean meeles"
+          ]
+        },
+        {
+          "id": "mooda-minema",
+          "front": "Mööda minema",
+          "back": {
+            "en": "To go past; to pass",
+            "az": "yanından keçmək; keçib getmək",
+            "ru": "проходить мимо; проходить"
+          },
+          "forms": [
+            "mööda minna",
+            "lähen mööda"
+          ]
+        },
+        {
+          "id": "mooda-soitma",
+          "front": "Mööda sõitma",
+          "back": {
+            "en": "To drive past",
+            "az": "yanından ötüb keçmək",
+            "ru": "проезжать мимо"
+          },
+          "forms": [
+            "mööda sõita",
+            "sõidan mööda"
+          ]
+        },
+        {
+          "id": "otsa-saama",
+          "front": "Otsa saama",
+          "back": {
+            "en": "To run out",
+            "az": "qurtarmaq, tükənmək",
+            "ru": "заканчиваться"
+          },
+          "forms": [
+            "otsa saada",
+            "saab otsa"
+          ]
+        },
+        {
+          "id": "otsa-vaatama",
+          "front": "Otsa vaatama",
+          "back": {
+            "en": "To look in the face",
+            "az": "üzünə baxmaq",
+            "ru": "смотреть в лицо"
+          },
+          "forms": [
+            "otsa vaadata",
+            "vaatan otsa"
+          ]
+        },
+        {
+          "id": "peale-minema",
+          "front": "Peale minema",
+          "back": {
+            "en": "To get on — a bus",
+            "az": "minmək — avtobusa",
+            "ru": "садиться — в автобус"
+          },
+          "forms": [
+            "peale minna",
+            "lähen peale"
+          ]
+        },
+        {
+          "id": "peale-hakkama",
+          "front": "Peale hakkama",
+          "back": {
+            "en": "To do with — mis ma sellega peale hakkan?",
+            "az": "nə etmək — bununla nə edim?",
+            "ru": "делать с — что мне с этим делать?"
+          },
+          "forms": [
+            "peale hakata",
+            "hakkan peale"
+          ]
+        },
+        {
+          "id": "peale-votma",
+          "front": "Peale võtma",
+          "back": {
+            "en": "To pick up — a passenger",
+            "az": "götürmək — sərnişin",
+            "ru": "подбирать — пассажира"
+          },
+          "forms": [
+            "peale võtta",
+            "võtan peale"
+          ]
+        },
+        {
+          "id": "pahe-tulema",
+          "front": "Pähe tulema",
+          "back": {
+            "en": "To occur to you",
+            "az": "ağlına gəlmək",
+            "ru": "приходить в голову"
+          },
+          "forms": [
+            "pähe tulla",
+            "tuleb pähe"
+          ]
+        },
+        {
+          "id": "pahe-saama",
+          "front": "Pähe saama",
+          "back": {
+            "en": "To get a beating — said casually",
+            "az": "döyülmək — danışıqda",
+            "ru": "получить по голове — разговорное"
+          },
+          "forms": [
+            "pähe saada",
+            "saan pähe"
+          ]
+        },
+        {
+          "id": "pahe-oppima",
+          "front": "Pähe õppima",
+          "back": {
+            "en": "To learn by heart",
+            "az": "əzbərləmək",
+            "ru": "учить наизусть"
+          },
+          "forms": [
+            "pähe õppida",
+            "õpin pähe"
+          ]
+        },
+        {
+          "id": "ringi-jooksma",
+          "front": "Ringi jooksma",
+          "back": {
+            "en": "To run around",
+            "az": "o yan-bu yana qaçmaq",
+            "ru": "бегать туда-сюда"
+          },
+          "forms": [
+            "ringi joosta",
+            "jooksen ringi"
+          ]
+        },
+        {
+          "id": "ringi-kaima",
+          "front": "Ringi käima",
+          "back": {
+            "en": "To walk around",
+            "az": "gəzib-dolaşmaq",
+            "ru": "ходить, бродить"
+          },
+          "forms": [
+            "ringi käia",
+            "käin ringi"
+          ]
+        },
+        {
+          "id": "segi-ajama",
+          "front": "Segi ajama",
+          "back": {
+            "en": "To mix up",
+            "az": "qarışdırmaq",
+            "ru": "путать"
+          },
+          "forms": [
+            "segi ajada",
+            "ajan segi"
+          ]
+        },
+        {
+          "id": "segi-minema",
+          "front": "Segi minema",
+          "back": {
+            "en": "To get mixed up; to go mad",
+            "az": "qarışmaq; ağlını itirmək",
+            "ru": "перепутаться; сойти с ума"
+          },
+          "forms": [
+            "segi minna",
+            "läheb segi"
+          ]
+        },
+        {
+          "id": "sisse-kukkuma",
+          "front": "Sisse kukkuma",
+          "back": {
+            "en": "To fall in; to flop",
+            "az": "içinə düşmək; uğursuz olmaq",
+            "ru": "проваливаться"
+          },
+          "forms": [
+            "sisse kukkuda",
+            "kukun sisse"
+          ]
+        },
+        {
+          "id": "sisse-saama",
+          "front": "Sisse saama",
+          "back": {
+            "en": "To get in",
+            "az": "içəri girə bilmək",
+            "ru": "попасть внутрь, поступить"
+          },
+          "forms": [
+            "sisse saada",
+            "saan sisse"
+          ]
+        },
+        {
+          "id": "sisse-soitma",
+          "front": "Sisse sõitma",
+          "back": {
+            "en": "To drive in; to land in trouble",
+            "az": "içəri sürmək; başı bəlaya düşmək",
+            "ru": "въезжать; влипнуть"
+          },
+          "forms": [
+            "sisse sõita",
+            "sõidan sisse"
+          ]
+        },
+        {
+          "id": "taga-ajama",
+          "front": "Taga ajama",
+          "back": {
+            "en": "To chase, pursue",
+            "az": "təqib etmək, dalınca düşmək",
+            "ru": "преследовать, гнаться за"
+          },
+          "forms": [
+            "taga ajada",
+            "ajan taga"
+          ]
+        },
+        {
+          "id": "taga-raakima",
+          "front": "Taga rääkima",
+          "back": {
+            "en": "To talk behind a back",
+            "az": "arxasınca danışmaq",
+            "ru": "говорить за спиной"
+          },
+          "forms": [
+            "taga rääkida",
+            "räägin taga"
+          ]
+        },
+        {
+          "id": "vahele-jaama",
+          "front": "Vahele jääma",
+          "back": {
+            "en": "To get caught",
+            "az": "yaxalanmaq",
+            "ru": "попадаться"
+          },
+          "forms": [
+            "vahele jääda",
+            "jään vahele"
+          ]
+        },
+        {
+          "id": "vahele-segama",
+          "front": "Vahele segama",
+          "back": {
+            "en": "To butt in, interrupt",
+            "az": "sözə qarışmaq, sözünü kəsmək",
+            "ru": "вмешиваться, перебивать"
+          },
+          "forms": [
+            "vahele segada",
+            "segan vahele"
+          ]
+        },
+        {
+          "id": "vastu-ajama",
+          "front": "Vastu ajama",
+          "back": {
+            "en": "To do, be good enough — said casually",
+            "az": "yaramaq, bəs etmək — danışıqda",
+            "ru": "сгодиться — разговорное"
+          },
+          "forms": [
+            "vastu ajada",
+            "ajab vastu"
+          ]
+        },
+        {
+          "id": "vastu-hakkama",
+          "front": "Vastu hakkama",
+          "back": {
+            "en": "To resist, talk back",
+            "az": "müqavimət göstərmək, ağız-ağıza vermək",
+            "ru": "сопротивляться, перечить"
+          },
+          "forms": [
+            "vastu hakata",
+            "hakkan vastu"
+          ]
+        },
+        {
+          "id": "vastu-olema",
+          "front": "Vastu olema",
+          "back": {
+            "en": "To be against",
+            "az": "əleyhinə olmaq",
+            "ru": "быть против"
+          },
+          "forms": [
+            "vastu olla",
+            "olen vastu"
+          ]
+        },
+        {
+          "id": "vastu-pidama",
+          "front": "Vastu pidama",
+          "back": {
+            "en": "To hold out, last",
+            "az": "dözmək, tab gətirmək",
+            "ru": "выдерживать"
+          },
+          "forms": [
+            "vastu pidada",
+            "pean vastu"
+          ]
+        },
+        {
+          "id": "vastu-tulema",
+          "front": "Vastu tulema",
+          "back": {
+            "en": "To come to meet; to meet halfway",
+            "az": "qarşılamağa çıxmaq; güzəştə getmək",
+            "ru": "встречать; идти навстречу"
+          },
+          "forms": [
+            "vastu tulla",
+            "tulen vastu"
+          ]
+        },
+        {
+          "id": "vastu-votma",
+          "front": "Vastu võtma",
+          "back": {
+            "en": "To receive, accept",
+            "az": "qəbul etmək",
+            "ru": "принимать"
+          },
+          "forms": [
+            "vastu võtta",
+            "võtan vastu"
+          ]
+        },
+        {
+          "id": "valja-andma",
+          "front": "Välja andma",
+          "back": {
+            "en": "To publish, issue",
+            "az": "nəşr etmək, vermək",
+            "ru": "издавать, выдавать"
+          },
+          "forms": [
+            "välja anda",
+            "annan välja"
+          ]
+        },
+        {
+          "id": "valja-arvestama",
+          "front": "Välja arvestama",
+          "back": {
+            "en": "To work out",
+            "az": "hesablamaq",
+            "ru": "рассчитывать"
+          },
+          "forms": [
+            "välja arvestada",
+            "arvestan välja"
+          ]
+        },
+        {
+          "id": "valja-arvutama",
+          "front": "Välja arvutama",
+          "back": {
+            "en": "To calculate",
+            "az": "hesablamaq",
+            "ru": "вычислять"
+          },
+          "forms": [
+            "välja arvutada",
+            "arvutan välja"
+          ]
+        },
+        {
+          "id": "valja-nagema",
+          "front": "Välja nägema",
+          "back": {
+            "en": "To look — ta näeb hea välja",
+            "az": "görünmək",
+            "ru": "выглядеть"
+          },
+          "forms": [
+            "välja näha",
+            "näen välja"
+          ]
+        },
+        {
+          "id": "valja-paistma",
+          "front": "Välja paistma",
+          "back": {
+            "en": "To show, stand out",
+            "az": "görünmək, seçilmək",
+            "ru": "виднеться, выделяться"
+          },
+          "forms": [
+            "välja paista",
+            "paistab välja"
+          ]
+        },
+        {
+          "id": "valja-tegema",
+          "front": "Välja tegema",
+          "back": {
+            "en": "To treat — pay for somebody",
+            "az": "qonaq etmək — pulunu vermək",
+            "ru": "угощать"
+          },
+          "forms": [
+            "välja teha",
+            "teen välja"
+          ]
+        },
+        {
+          "id": "valja-tulema",
+          "front": "Välja tulema",
+          "back": {
+            "en": "To come out; to work out",
+            "az": "çıxmaq; alınmaq",
+            "ru": "выходить; получаться"
+          },
+          "forms": [
+            "välja tulla",
+            "tulen välja"
+          ]
+        },
+        {
+          "id": "valja-tombama",
+          "front": "Välja tõmbama",
+          "back": {
+            "en": "To pull out",
+            "az": "çəkib çıxarmaq",
+            "ru": "вытаскивать"
+          },
+          "forms": [
+            "välja tõmmata",
+            "tõmban välja"
+          ]
+        },
+        {
+          "id": "ara-arvama",
+          "front": "Ära arvama",
+          "back": {
+            "en": "To guess",
+            "az": "tapmaq, düz təxmin etmək",
+            "ru": "угадывать"
+          },
+          "forms": [
+            "ära arvata",
+            "arvan ära"
+          ]
+        },
+        {
+          "id": "ara-elama",
+          "front": "Ära elama",
+          "back": {
+            "en": "To get by",
+            "az": "dolanmaq",
+            "ru": "сводить концы с концами"
+          },
+          "forms": [
+            "ära elada",
+            "elan ära"
+          ]
+        },
+        {
+          "id": "ara-hoidma",
+          "front": "Ära hoidma",
+          "back": {
+            "en": "To prevent",
+            "az": "qarşısını almaq",
+            "ru": "предотвращать"
+          },
+          "forms": [
+            "ära hoida",
+            "hoian ära"
+          ]
+        },
+        {
+          "id": "ara-jaama",
+          "front": "Ära jääma",
+          "back": {
+            "en": "To be cancelled",
+            "az": "ləğv olunmaq",
+            "ru": "отменяться"
+          },
+          "forms": [
+            "ära jääda",
+            "jääb ära"
+          ]
+        },
+        {
+          "id": "ara-utlema",
+          "front": "Ära ütlema",
+          "back": {
+            "en": "To say no, turn down",
+            "az": "imtina etmək",
+            "ru": "отказываться, отказывать"
+          },
+          "forms": [
+            "ära öelda",
+            "ütlen ära"
+          ]
+        },
+        {
+          "id": "ule-andma",
+          "front": "Üle andma",
+          "back": {
+            "en": "To hand over",
+            "az": "təhvil vermək",
+            "ru": "передавать"
+          },
+          "forms": [
+            "üle anda",
+            "annan üle"
+          ]
+        },
+        {
+          "id": "ule-elama",
+          "front": "Üle elama",
+          "back": {
+            "en": "To live through",
+            "az": "yaşayıb keçirmək, sağ çıxmaq",
+            "ru": "переживать"
+          },
+          "forms": [
+            "üle elada",
+            "elan üle"
+          ]
+        },
+        {
+          "id": "ule-hindama",
+          "front": "Üle hindama",
+          "back": {
+            "en": "To overrate",
+            "az": "artıq qiymətləndirmək",
+            "ru": "переоценивать"
+          },
+          "forms": [
+            "üle hinnata",
+            "hindan üle"
+          ]
+        },
+        {
+          "id": "ule-jaama",
+          "front": "Üle jääma",
+          "back": {
+            "en": "To be left over",
+            "az": "artıq qalmaq",
+            "ru": "оставаться лишним"
+          },
+          "forms": [
+            "üle jääda",
+            "jääb üle"
+          ]
+        },
+        {
+          "id": "ule-kandma",
+          "front": "Üle kandma",
+          "back": {
+            "en": "To transfer; to broadcast",
+            "az": "köçürmək; yayımlamaq",
+            "ru": "переводить; транслировать"
+          },
+          "forms": [
+            "üle kanda",
+            "kannan üle"
+          ]
+        },
+        {
+          "id": "ule-minema",
+          "front": "Üle minema",
+          "back": {
+            "en": "To cross; to wear off",
+            "az": "keçmək; keçib getmək",
+            "ru": "переходить; проходить"
+          },
+          "forms": [
+            "üle minna",
+            "lähen üle"
+          ]
+        },
+        {
+          "id": "ule-saama",
+          "front": "Üle saama",
+          "back": {
+            "en": "To get over",
+            "az": "öhdəsindən gəlmək, unudub keçmək",
+            "ru": "преодолевать, пережить"
+          },
+          "forms": [
+            "üle saada",
+            "saan üle"
+          ]
+        },
+        {
+          "id": "ule-vaatama",
+          "front": "Üle vaatama",
+          "back": {
+            "en": "To look over, check",
+            "az": "nəzərdən keçirmək",
+            "ru": "просматривать, проверять"
+          },
+          "forms": [
+            "üle vaadata",
+            "vaatan üle"
+          ]
+        },
+        {
+          "id": "ules-kaaluma",
+          "front": "Üles kaaluma",
+          "back": {
+            "en": "To outweigh",
+            "az": "üstün gəlmək",
+            "ru": "перевешивать"
+          },
+          "forms": [
+            "üles kaaluda",
+            "kaalub üles"
+          ]
+        },
+        {
+          "id": "ules-kirjutama",
+          "front": "Üles kirjutama",
+          "back": {
+            "en": "To write down",
+            "az": "yazıb götürmək",
+            "ru": "записывать"
+          },
+          "forms": [
+            "üles kirjutada",
+            "kirjutan üles"
+          ]
+        },
+        {
+          "id": "ules-kutsuma",
+          "front": "Üles kutsuma",
+          "back": {
+            "en": "To call on, urge",
+            "az": "çağırmaq, çağırış etmək",
+            "ru": "призывать"
+          },
+          "forms": [
+            "üles kutsuda",
+            "kutsun üles"
+          ]
+        },
+        {
+          "id": "ules-laadima",
+          "front": "Üles laadima",
+          "back": {
+            "en": "To upload",
+            "az": "yükləmək",
+            "ru": "загружать"
+          },
+          "forms": [
+            "üles laadida",
+            "laadin üles"
+          ]
+        },
+        {
+          "id": "ules-markima",
+          "front": "Üles märkima",
+          "back": {
+            "en": "To note down",
+            "az": "qeyd etmək",
+            "ru": "отмечать, записывать"
+          },
+          "forms": [
+            "üles märkida",
+            "märgin üles"
+          ]
+        },
+        {
+          "id": "ules-panema",
+          "front": "Üles panema",
+          "back": {
+            "en": "To put up",
+            "az": "asmaq, qurmaq",
+            "ru": "вешать, устанавливать"
+          },
+          "forms": [
+            "üles panna",
+            "panen üles"
+          ]
+        },
+        {
+          "id": "ules-tunnistama",
+          "front": "Üles tunnistama",
+          "back": {
+            "en": "To confess",
+            "az": "etiraf etmək",
+            "ru": "признаваться"
+          },
+          "forms": [
+            "üles tunnistada",
+            "tunnistan üles"
+          ]
+        },
+        {
+          "id": "ules-aratama",
+          "front": "Üles äratama",
+          "back": {
+            "en": "To wake somebody up",
+            "az": "oyatmaq",
+            "ru": "будить"
+          },
+          "forms": [
+            "üles äratada",
+            "äratan üles"
+          ]
+        },
+        {
+          "id": "umber-ajama",
+          "front": "Ümber ajama",
+          "back": {
+            "en": "To knock over",
+            "az": "aşırmaq",
+            "ru": "опрокидывать"
+          },
+          "forms": [
+            "ümber ajada",
+            "ajan ümber"
+          ]
+        },
+        {
+          "id": "umber-istuma",
+          "front": "Ümber istuma",
+          "back": {
+            "en": "To change — trains, buses",
+            "az": "minik dəyişmək",
+            "ru": "пересаживаться"
+          },
+          "forms": [
+            "ümber istuda",
+            "istun ümber"
+          ]
+        },
+        {
+          "id": "umber-jutustama",
+          "front": "Ümber jutustama",
+          "back": {
+            "en": "To retell",
+            "az": "nəql etmək",
+            "ru": "пересказывать"
+          },
+          "forms": [
+            "ümber jutustada",
+            "jutustan ümber"
+          ]
+        },
+        {
+          "id": "umber-poorama",
+          "front": "Ümber pöörama",
+          "back": {
+            "en": "To turn round, turn over",
+            "az": "çevirmək",
+            "ru": "поворачивать, переворачивать"
+          },
+          "forms": [
+            "ümber pöörata",
+            "pööran ümber"
+          ]
+        },
+        {
+          "id": "umber-tegema",
+          "front": "Ümber tegema",
+          "back": {
+            "en": "To redo",
+            "az": "yenidən etmək",
+            "ru": "переделывать"
+          },
+          "forms": [
+            "ümber teha",
+            "teen ümber"
+          ]
+        },
+        {
+          "id": "hakkama-saama",
+          "front": "Hakkama saama",
+          "back": {
+            "en": "To cope, manage",
+            "az": "öhdəsindən gəlmək",
+            "ru": "справляться"
+          },
+          "forms": [
+            "hakkama saada",
+            "saan hakkama"
+          ]
+        },
+        {
+          "id": "pihta-hakkama",
+          "front": "Pihta hakkama",
+          "back": {
+            "en": "To get started",
+            "az": "işə başlamaq",
+            "ru": "приниматься"
+          },
+          "forms": [
+            "pihta hakata",
+            "hakkan pihta"
+          ]
+        },
+        {
+          "id": "meelest-minema",
+          "front": "Meelest minema",
+          "back": {
+            "en": "To slip your mind",
+            "az": "yaddan çıxmaq",
+            "ru": "вылетать из головы"
+          },
+          "forms": [
+            "meelest minna",
+            "läheb meelest"
+          ]
+        },
+        {
+          "id": "toime-tulema",
+          "front": "Toime tulema",
+          "back": {
+            "en": "To cope, manage",
+            "az": "öhdəsindən gəlmək",
+            "ru": "справляться"
+          },
+          "forms": [
+            "toime tulla",
+            "tulen toime"
+          ]
+        }
+      ]
+    },
+    {
       "id": "naera-words",
       "name": {
         "en": "The words of Naera, naera",
@@ -29956,9 +31597,622 @@
         },
         {
           "say": {
-            "en": "That is what the line under the meaning is for. Read it every time. Verbs come with three forms as well, and the next lesson is those.",
-            "az": "Mənanın altındakı sətir bunun üçündür. Hər dəfə oxuyun. Fellərin də üç forması var, və növbəti dərs onlar haqqındadır.",
-            "ru": "Для этого и стоит строка под значением. Читайте её каждый раз. У глаголов тоже три формы, и следующий урок — о них."
+            "en": "That is what the line under the meaning is for. Read it every time. The next lesson is the eleven cases the omastav opens; verbs, which come in threes as well, are after it.",
+            "az": "Mənanın altındakı sətir bunun üçündür. Hər dəfə oxuyun. Növbəti dərs omastav-ın açdığı on bir hal haqqındadır; üç formalı fellər ondan sonradır.",
+            "ru": "Для этого и стоит строка под значением. Читайте её каждый раз. Следующий урок — об одиннадцати падежах, которые открывает omastav; глаголы, у которых тоже три формы, — после него."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases",
+      "name": {
+        "en": "The fourteen cases",
+        "az": "On dörd hal",
+        "ru": "Четырнадцать падежей"
+      },
+      "why": {
+        "en": "Every ending an Estonian noun can take, the question each one answers, and the one form nearly all of them are built on.",
+        "az": "Eston isminin ala biləcəyi hər şəkilçi, hər birinin cavab verdiyi sual və demək olar hamısının qurulduğu bir forma.",
+        "ru": "Все окончания, которые может принять эстонское существительное, вопрос, на который отвечает каждое, и одна форма, на которой строятся почти все."
+      },
+      "body": [
+        {
+          "say": {
+            "en": "Estonian has fourteen cases, and that sounds worse than it is. The first three are the three forms on the back of every card — *laps · lapse · last*, child — and you have met them already. The other eleven are endings, and they are the same endings on every noun in the language: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Where English puts a little word in front — into, on, from, with, without — Estonian puts an ending at the back.",
+            "az": "Eston dilində on dörd hal var, və bu, eşidildiyi qədər qorxulu deyil. İlk üçü hər kartın arxasındakı üç formadır — *laps · lapse · last*, uşaq — və onlarla artıq tanışsınız. Qalan on biri şəkilçidir, və dildəki hər isimdə eyni şəkilçilərdir: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Bu sizə tanışdır: evə, evdə, evdən — şəkilçi sözün sonuna gəlir. Eston dilində sadəcə belə hallar daha çoxdur.",
+            "ru": "В эстонском четырнадцать падежей, и это звучит страшнее, чем есть. Первые три — это три формы на обороте каждой карточки: *laps · lapse · last*, ребёнок, — и вы с ними уже знакомы. Остальные одиннадцать — окончания, и они одинаковы у каждого существительного в языке: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Там, где русский ставит предлог — в, на, из, с, без, — эстонский ставит окончание."
+          }
+        },
+        {
+          "say": {
+            "en": "The table asks with *mis*, what, and its forms — *millesse? milles?* For a person it is *kes* and the same endings: *kellesse? kellel?*",
+            "az": "Cədvəl *mis* — nə — sözü və onun formaları ilə soruşur: *millesse? milles?* İnsan üçün *kes* və eyni şəkilçilərdir: *kellesse? kellel?*",
+            "ru": "Таблица спрашивает через *mis*, что, и его формы — *millesse? milles?* О человеке — *kes* и те же окончания: *kellesse? kellel?*"
+          }
+        },
+        {
+          "head": {
+            "en": "The three you know",
+            "az": "Bildiyiniz üç hal",
+            "ru": "Три, которые вы знаете"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kes? mis?",
+                  "laps",
+                  "lapsed"
+                ],
+                "means": {
+                  "en": "1 · nimetav — who, what: the name",
+                  "az": "1 · nimetav — kim, nə: adlıq",
+                  "ru": "1 · nimetav — кто, что: именительный"
+                }
+              },
+              {
+                "et": [
+                  "kelle? mille?",
+                  "lapse",
+                  "laste"
+                ],
+                "means": {
+                  "en": "2 · omastav — whose, of",
+                  "az": "2 · omastav — kimin, nəyin: yiyəlik",
+                  "ru": "2 · omastav — чей, чего: родительный"
+                }
+              },
+              {
+                "et": [
+                  "keda? mida?",
+                  "last",
+                  "lapsi"
+                ],
+                "means": {
+                  "en": "3 · osastav — some, part of",
+                  "az": "3 · osastav — kimi, nəyi: hissə",
+                  "ru": "3 · osastav — кого, что: частичный"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "Into, in, out of",
+            "az": "İçinə, içində, içindən",
+            "ru": "Внутрь, внутри, изнутри"
+          }
+        },
+        {
+          "say": {
+            "en": "The next three are the inside of a thing: where to, where, and where from. *Ma sõidan Tartusse* — I am driving to Tartu. *Raamat on kotis* — the book is in the bag. *Ma olen Tallinnast* — I am from Tallinn. Many everyday words also have a short form of the first: *kooli, poodi, linna* — to school, to the shop, into town. The *-sse* is never wrong, and the short one is what you will hear.",
+            "az": "Növbəti üçü bir şeyin içidir: hara, harada, haradan. *Ma sõidan Tartusse* — Tartuya gedirəm. *Raamat on kotis* — kitab çantadadır. *Ma olen Tallinnast* — mən Tallinndənəm. Gündəlik sözlərin çoxunda birincinin qısa forması da var: *kooli, poodi, linna* — məktəbə, mağazaya, şəhərə. *-sse* heç vaxt səhv deyil, amma eşidəcəyiniz qısa formadır.",
+            "ru": "Следующие три — внутренность предмета: куда, где и откуда. *Ma sõidan Tartusse* — я еду в Тарту. *Raamat on kotis* — книга в сумке. *Ma olen Tallinnast* — я из Таллинна. У многих обиходных слов есть и короткая форма первого: *kooli, poodi, linna* — в школу, в магазин, в город. *-sse* никогда не ошибка, но слышать вы будете короткую."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "millesse?",
+                  "lapsesse",
+                  "lastesse"
+                ],
+                "means": {
+                  "en": "4 · sisseütlev — into",
+                  "az": "4 · sisseütlev — içinə",
+                  "ru": "4 · sisseütlev — в (куда)"
+                }
+              },
+              {
+                "et": [
+                  "milles?",
+                  "lapses",
+                  "lastes"
+                ],
+                "means": {
+                  "en": "5 · seesütlev — in, inside",
+                  "az": "5 · seesütlev — içində",
+                  "ru": "5 · seesütlev — в (где)"
+                }
+              },
+              {
+                "et": [
+                  "millest?",
+                  "lapsest",
+                  "lastest"
+                ],
+                "means": {
+                  "en": "6 · seestütlev — out of; about",
+                  "az": "6 · seestütlev — içindən; haqqında",
+                  "ru": "6 · seestütlev — из; о"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "Onto, on, off",
+            "az": "Üstünə, üstündə, üstündən",
+            "ru": "На, у, с"
+          }
+        },
+        {
+          "say": {
+            "en": "The next three are the surface of a thing, and people. *Pane see lauale* — put it on the table. *Raamat on laual* — the book is on the table. *Ma sain kirja sõbralt* — I got a letter from a friend. The middle one also says who has something, because Estonian has no verb for to have: *Mul on auto* — I have a car, word for word on me is a car.",
+            "az": "Növbəti üçü bir şeyin üstü və insanlardır. *Pane see lauale* — bunu masanın üstünə qoy. *Raamat on laual* — kitab masanın üstündədir. *Ma sain kirja sõbralt* — dostdan məktub aldım. Ortadakı həm də kimdə nə olduğunu deyir, çünki eston dilində «sahib olmaq» feli yoxdur: *Mul on auto* — mənim maşınım var, hərfən «məndə maşın var».",
+            "ru": "Следующие три — поверхность предмета и люди. *Pane see lauale* — положи это на стол. *Raamat on laual* — книга на столе. *Ma sain kirja sõbralt* — я получил письмо от друга. Средний падеж ещё и говорит, у кого что есть, потому что глагола «иметь» в эстонском нет: *Mul on auto* — у меня есть машина, совсем как по-русски: у меня."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "millele?",
+                  "lapsele",
+                  "lastele"
+                ],
+                "means": {
+                  "en": "7 · alaleütlev — onto; to somebody",
+                  "az": "7 · alaleütlev — üstünə; kiməsə",
+                  "ru": "7 · alaleütlev — на (куда); кому"
+                }
+              },
+              {
+                "et": [
+                  "millel?",
+                  "lapsel",
+                  "lastel"
+                ],
+                "means": {
+                  "en": "8 · alalütlev — on, at; who has",
+                  "az": "8 · alalütlev — üstündə; kimdə var",
+                  "ru": "8 · alalütlev — на (где); у кого"
+                }
+              },
+              {
+                "et": [
+                  "millelt?",
+                  "lapselt",
+                  "lastelt"
+                ],
+                "means": {
+                  "en": "9 · alaltütlev — off; from somebody",
+                  "az": "9 · alaltütlev — üstündən; kimdən",
+                  "ru": "9 · alaltütlev — с; от кого"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "And the last five",
+            "az": "Və son beşi",
+            "ru": "И последние пять"
+          }
+        },
+        {
+          "say": {
+            "en": "*Ta sai arstiks* — she became a doctor. *Ma olen tööl viieni* — I am at work until five. *Ta töötab kokana* — he works as a cook. *Kohv suhkruta* — coffee without sugar. *Ma tulen sõbraga* — I am coming with a friend. The last two are the ones you will say at a counter tomorrow.",
+            "az": "*Ta sai arstiks* — o, həkim oldu. *Ma olen tööl viieni* — beşədək işdəyəm. *Ta töötab kokana* — o, aşpaz işləyir. *Kohv suhkruta* — şəkərsiz qəhvə. *Ma tulen sõbraga* — dostumla gəlirəm. Son ikisini sabah piştaxtanın qarşısında deyəcəksiniz.",
+            "ru": "*Ta sai arstiks* — она стала врачом. *Ma olen tööl viieni* — я на работе до пяти. *Ta töötab kokana* — он работает поваром. *Kohv suhkruta* — кофе без сахара. *Ma tulen sõbraga* — я приду с другом. Последние два вы скажете у стойки уже завтра."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "milleks?",
+                  "lapseks",
+                  "lasteks"
+                ],
+                "means": {
+                  "en": "10 · saav — becoming, as, for",
+                  "az": "10 · saav — olmaq; üçün",
+                  "ru": "10 · saav — кем стать; для"
+                }
+              },
+              {
+                "et": [
+                  "milleni?",
+                  "lapseni",
+                  "lasteni"
+                ],
+                "means": {
+                  "en": "11 · rajav — up to, until",
+                  "az": "11 · rajav — -dək, qədər",
+                  "ru": "11 · rajav — до"
+                }
+              },
+              {
+                "et": [
+                  "millena?",
+                  "lapsena",
+                  "lastena"
+                ],
+                "means": {
+                  "en": "12 · olev — as, in the role of",
+                  "az": "12 · olev — kimi, sifətində",
+                  "ru": "12 · olev — в качестве, кем"
+                }
+              },
+              {
+                "et": [
+                  "milleta?",
+                  "lapseta",
+                  "lasteta"
+                ],
+                "means": {
+                  "en": "13 · ilmaütlev — without",
+                  "az": "13 · ilmaütlev — -sız, olmadan",
+                  "ru": "13 · ilmaütlev — без"
+                }
+              },
+              {
+                "et": [
+                  "millega?",
+                  "lapsega",
+                  "lastega"
+                ],
+                "means": {
+                  "en": "14 · kaasaütlev — with",
+                  "az": "14 · kaasaütlev — ilə",
+                  "ru": "14 · kaasaütlev — с"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "Built on the omastav",
+            "az": "Omastav üstündə",
+            "ru": "На основе omastav"
+          }
+        },
+        {
+          "say": {
+            "en": "Here is the part that makes it easy. All eleven endings go on the omastav, the second form on the card — never on the first. *Sõber* is a friend and its omastav is *sõbra*, so: *sõbrale, sõbralt, sõbraga, sõbrata*. That is why the card shows you the omastav: once you have it, you have eleven cases more. The plural works the same way on the plural omastav — *sõprade*, so *sõpradele, sõpradega* — and the plural itself is the singular omastav with a *-d*: *sõbrad, lapsed, veed*.",
+            "az": "İşi asanlaşdıran hissə budur. On bir şəkilçinin hamısı omastav-a — kartdakı ikinci formaya — gəlir, heç vaxt birinciyə yox. *Sõber* — dost, omastav-ı *sõbra*, deməli: *sõbrale, sõbralt, sõbraga, sõbrata*. Kart omastav-ı buna görə göstərir: onu bildinizsə, daha on bir hal da sizindir. Cəm də eyni cür, cəmin omastav-ı üstündə qurulur — *sõprade*, deməli *sõpradele, sõpradega* — cəmin özü isə təkin omastav-ı üstəgəl *-d*-dir: *sõbrad, lapsed, veed*.",
+            "ru": "Вот что делает всё это простым. Все одиннадцать окончаний ставятся на omastav, вторую форму на карточке, — и никогда на первую. *Sõber* — друг, его omastav — *sõbra*, значит: *sõbrale, sõbralt, sõbraga, sõbrata*. Поэтому карточка и показывает omastav: зная его, вы знаете ещё одиннадцать падежей. Множественное число устроено так же, на omastav множественного — *sõprade*, значит *sõpradele, sõpradega*, — а само множественное число — это omastav единственного плюс *-d*: *sõbrad, lapsed, veed*."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "the name",
+                "az": "ad",
+                "ru": "имя"
+              },
+              {
+                "en": "omastav",
+                "az": "omastav",
+                "ru": "omastav"
+              },
+              {
+                "en": "+ an ending",
+                "az": "+ şəkilçi",
+                "ru": "+ окончание"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "sõber",
+                  "sõbra",
+                  "sõbraga"
+                ],
+                "means": {
+                  "en": "friend — with a friend",
+                  "az": "dost — dostla",
+                  "ru": "друг — с другом"
+                }
+              },
+              {
+                "et": [
+                  "sõbrad",
+                  "sõprade",
+                  "sõpradega"
+                ],
+                "means": {
+                  "en": "friends — with friends",
+                  "az": "dostlar — dostlarla",
+                  "ru": "друзья — с друзьями"
+                }
+              },
+              {
+                "et": [
+                  "laps",
+                  "lapse",
+                  "lapsele"
+                ],
+                "means": {
+                  "en": "child — to a child",
+                  "az": "uşaq — uşağa",
+                  "ru": "ребёнок — ребёнку"
+                }
+              },
+              {
+                "et": [
+                  "lapsed",
+                  "laste",
+                  "lastele"
+                ],
+                "means": {
+                  "en": "children — to children",
+                  "az": "uşaqlar — uşaqlara",
+                  "ru": "дети — детям"
+                }
+              },
+              {
+                "et": [
+                  "vesi",
+                  "vee",
+                  "veeta"
+                ],
+                "means": {
+                  "en": "water — without water",
+                  "az": "su — susuz",
+                  "ru": "вода — без воды"
+                }
+              },
+              {
+                "et": [
+                  "leib",
+                  "leiva",
+                  "leivaga"
+                ],
+                "means": {
+                  "en": "bread — with bread",
+                  "az": "çörək — çörəklə",
+                  "ru": "хлеб — с хлебом"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "Two, and many",
+            "az": "İki və çox",
+            "ru": "Два и много"
+          }
+        },
+        {
+          "say": {
+            "en": "After a number the noun stands in the singular osastav: *kaks kohvi*, two coffees. After *palju*, a lot of, it takes the plural osastav, and that one swaps its last vowel by a rule worth knowing: *e* becomes *i*; *i* and *u* become *e*; and *a* becomes *u*, *i* or *e*. A word that will not swap takes *-sid* or *-id* instead.",
+            "az": "Saydan sonra isim təkin osastav-ında durur: *kaks kohvi*, iki qəhvə. *Palju* — çox — sözündən sonra cəmin osastav-ı gəlir, və onun son saiti bilməyə dəyən bir qaydaya görə dəyişir: *e* olur *i*; *i* və *u* olur *e*; *a* isə *u*, *i* və ya *e* olur. Saiti dəyişməyən söz əvəzinə *-sid* və ya *-id* alır.",
+            "ru": "После числа существительное стоит в osastav единственного числа: *kaks kohvi*, два кофе. После *palju*, много, — в osastav множественного, и там последняя гласная меняется по правилу, которое стоит знать: *e* становится *i*; *i* и *u* становятся *e*; а *a* становится *u*, *i* или *e*. Слово, которое гласную не меняет, берёт вместо этого *-sid* или *-id*."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "one",
+                "az": "bir",
+                "ru": "один"
+              },
+              {
+                "en": "kaks — two",
+                "az": "kaks — iki",
+                "ru": "kaks — два"
+              },
+              {
+                "en": "palju — many",
+                "az": "palju — çox",
+                "ru": "palju — много"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "täht",
+                  "tähte",
+                  "tähti"
+                ],
+                "means": {
+                  "en": "letter, star — e → i",
+                  "az": "hərf, ulduz — e → i",
+                  "ru": "буква, звезда — e → i"
+                }
+              },
+              {
+                "et": [
+                  "pilt",
+                  "pilti",
+                  "pilte"
+                ],
+                "means": {
+                  "en": "picture — i → e",
+                  "az": "şəkil — i → e",
+                  "ru": "картинка — i → e"
+                }
+              },
+              {
+                "et": [
+                  "lind",
+                  "lindu",
+                  "linde"
+                ],
+                "means": {
+                  "en": "bird — u → e",
+                  "az": "quş — u → e",
+                  "ru": "птица — u → e"
+                }
+              },
+              {
+                "et": [
+                  "sõber",
+                  "sõpra",
+                  "sõpru"
+                ],
+                "means": {
+                  "en": "friend — a → u",
+                  "az": "dost — a → u",
+                  "ru": "друг — a → u"
+                }
+              },
+              {
+                "et": [
+                  "loom",
+                  "looma",
+                  "loomi"
+                ],
+                "means": {
+                  "en": "animal — a → i",
+                  "az": "heyvan — a → i",
+                  "ru": "животное — a → i"
+                }
+              },
+              {
+                "et": [
+                  "tuba",
+                  "tuba",
+                  "tube"
+                ],
+                "means": {
+                  "en": "room — a → e",
+                  "az": "otaq — a → e",
+                  "ru": "комната — a → e"
+                }
+              },
+              {
+                "et": [
+                  "auto",
+                  "autot",
+                  "autosid"
+                ],
+                "means": {
+                  "en": "car — -sid",
+                  "az": "maşın — -sid",
+                  "ru": "машина — -sid"
+                }
+              },
+              {
+                "et": [
+                  "kuu",
+                  "kuud",
+                  "kuid"
+                ],
+                "means": {
+                  "en": "moon, month — -id",
+                  "az": "ay — -id",
+                  "ru": "луна, месяц — -id"
+                }
+              },
+              {
+                "et": [
+                  "aasta",
+                  "aastat",
+                  "aastaid"
+                ],
+                "means": {
+                  "en": "year — -id",
+                  "az": "il — -id",
+                  "ru": "год — -id"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "head": {
+            "en": "This good child",
+            "az": "Bu yaxşı uşaq",
+            "ru": "Этот хороший ребёнок"
+          }
+        },
+        {
+          "say": {
+            "en": "A word that goes with a noun — *see*, this, and *hea*, good — stands in the same case, and through the first ten it takes the same ending: *selles heas lapses*, in this good child; *nendele headele lastele*, to these good children. The last four are the exception. With *-ni, -na, -ta* and *-ga* only the last word takes the ending, and the ones in front of it stay in the omastav: *selle hea lapsega*, with this good child; *nende heade lasteta*, without these good children.",
+            "az": "İsimlə gələn söz — *see*, bu, və *hea*, yaxşı — eyni halda durur, və ilk onunda eyni şəkilçini alır: *selles heas lapses*, bu yaxşı uşaqda; *nendele headele lastele*, bu yaxşı uşaqlara. Son dördü istisnadır. *-ni, -na, -ta* və *-ga* ilə şəkilçini yalnız sonuncu söz alır, qabaqdakılar isə omastav-da qalır: *selle hea lapsega*, bu yaxşı uşaqla; *nende heade lasteta*, bu yaxşı uşaqlar olmadan.",
+            "ru": "Слово при существительном — *see*, этот, и *hea*, хороший, — стоит в том же падеже, и в первых десяти берёт то же окончание: *selles heas lapses*, в этом хорошем ребёнке; *nendele headele lastele*, этим хорошим детям. Последние четыре — исключение. С *-ni, -na, -ta* и *-ga* окончание берёт только последнее слово, а стоящие перед ним остаются в omastav: *selle hea lapsega*, с этим хорошим ребёнком; *nende heade lasteta*, без этих хороших детей."
+          }
+        },
+        {
+          "say": {
+            "en": "And in the plural *see* has a short form beside the long one: *nendesse* or *neisse*, *nendel* or *neil*. Both are right, and the short one is the one you will hear.",
+            "az": "Cəmdə *see*-nin uzun formanın yanında qısa forması da var: *nendesse* və ya *neisse*, *nendel* və ya *neil*. İkisi də düzdür, eşidəcəyiniz isə qısasıdır.",
+            "ru": "А во множественном числе у *see* есть рядом с длинной и короткая форма: *nendesse* или *neisse*, *nendel* или *neil*. Обе верны, а слышать вы будете короткую."
           }
         }
       ]
@@ -30125,6 +32379,589 @@
             "en": "And as with the nouns, most verbs are easy. *Elama, elada, elan* — to live; *töötama, töötada, töötan* — to work; *õppima, õppida, õpin* — to learn. Once you know a few hundred verbs by their three forms you will hear the pattern before you can say it, and a new verb will fall into its family on its own. The three forms are the whole verb; every tense and every person is an ending on one of them.",
             "az": "Və isimlərdə olduğu kimi, fellərin çoxu asandır. *Elama, elada, elan* — yaşamaq; *töötama, töötada, töötan* — işləmək; *õppima, õppida, õpin* — öyrənmək. Bir neçə yüz feli üç forması ilə bildikdən sonra qəlibi deməzdən əvvəl eşidəcəksiniz, və yeni fel öz ailəsinə özü düşəcək. Üç forma felin özüdür; hər zaman və hər şəxs onlardan birinin üstündə bir şəkilçidir.",
             "ru": "И, как у существительных, большинство глаголов простые. *Elama, elada, elan* — жить; *töötama, töötada, töötan* — работать; *õppima, õppida, õpin* — учить. Когда вы будете знать несколько сотен глаголов по трём формам, вы начнёте слышать образец раньше, чем сможете его назвать, и новый глагол сам встанет в свою семью. Три формы — это весь глагол; каждое время и каждое лицо — окончание на одной из них."
+          }
+        },
+        {
+          "say": {
+            "en": "The next lesson takes one verb through every tense, and shows which of the three each tense is built on.",
+            "az": "Növbəti dərs bir feli bütün zamanlardan keçirir və hər zamanın üç formadan hansının üstündə qurulduğunu göstərir.",
+            "ru": "Следующий урок проводит один глагол через все времена и показывает, на какой из трёх форм строится каждое."
+          }
+        }
+      ]
+    },
+    {
+      "id": "verb-tenses",
+      "name": {
+        "en": "Every tense of a verb",
+        "az": "Felin bütün zamanları",
+        "ru": "Все времена глагола"
+      },
+      "why": {
+        "en": "Elama, to live, in the present, the past, would and do it! — and which of its three forms each one grows out of.",
+        "az": "Elama — yaşamaq — indiki, keçmiş, şərt və əmr formalarında, və hər birinin üç formadan hansından çıxdığı.",
+        "ru": "Elama, жить, в настоящем, прошедшем, условном и повелительном — и из какой из трёх форм вырастает каждое."
+      },
+      "body": [
+        {
+          "say": {
+            "en": "The last lesson said a verb is three forms — *elama, elada, elan* — and that every tense is an ending on one of them. Here is every tense, on *elama*, to live, which is as regular as a verb gets: six people, a yes and a no. And one rule makes the no easy before you start: it never changes with the person. *Ma ei ela, sa ei ela, nad ei ela.*",
+            "az": "Əvvəlki dərs dedi ki, fel üç formadır — *elama, elada, elan* — və hər zaman onlardan birinin üstündə bir şəkilçidir. Burada *elama* — yaşamaq — felinin bütün zamanları var; bu, ən qaydalı fellərdən biridir: altı şəxs, təsdiq və inkar. Başlamazdan əvvəl bir qayda inkarı asanlaşdırır: o, şəxsə görə heç vaxt dəyişmir. *Ma ei ela, sa ei ela, nad ei ela.*",
+            "ru": "Прошлый урок сказал, что глагол — это три формы, *elama, elada, elan*, и что каждое время — окончание на одной из них. Вот все времена на *elama*, жить, — глаголе настолько правильном, насколько это бывает: шесть лиц, да и нет. И одно правило делает «нет» лёгким с самого начала: оно никогда не меняется по лицам. *Ma ei ela, sa ei ela, nad ei ela.*"
+          }
+        },
+        {
+          "head": {
+            "en": "Now — olevik",
+            "az": "İndi — olevik",
+            "ru": "Сейчас — olevik"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              },
+              {
+                "en": "not",
+                "az": "inkar",
+                "ru": "нет"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "elan",
+                  "elame",
+                  "ei ela"
+                ],
+                "means": {
+                  "en": "ma · me — I · we",
+                  "az": "ma · me — mən · biz",
+                  "ru": "ma · me — я · мы"
+                }
+              },
+              {
+                "et": [
+                  "elad",
+                  "elate",
+                  "ei ela"
+                ],
+                "means": {
+                  "en": "sa · te — you · you all",
+                  "az": "sa · te — sən · siz",
+                  "ru": "sa · te — ты · вы"
+                }
+              },
+              {
+                "et": [
+                  "elab",
+                  "elavad",
+                  "ei ela"
+                ],
+                "means": {
+                  "en": "ta · nad — he, she · they",
+                  "az": "ta · nad — o · onlar",
+                  "ru": "ta · nad — он, она · они"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "The endings are the same on every verb in the present — *-n, -d, -b, -me, -te, -vad* — so they are learnt once. The no is *ei* and the present without its ending.",
+            "az": "İndiki zamanda şəkilçilər hər feldə eynidir — *-n, -d, -b, -me, -te, -vad* — deməli, bir dəfə öyrənilir. İnkar *ei* və şəkilçisiz indiki formadır.",
+            "ru": "В настоящем времени окончания одинаковы у всех глаголов — *-n, -d, -b, -me, -te, -vad*, — так что учатся они один раз. Отрицание — *ei* и настоящее без окончания."
+          }
+        },
+        {
+          "head": {
+            "en": "Before — lihtminevik",
+            "az": "Keçmiş — lihtminevik",
+            "ru": "Прошедшее — lihtminevik"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              },
+              {
+                "en": "not",
+                "az": "inkar",
+                "ru": "нет"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "elasin",
+                  "elasime",
+                  "ei elanud"
+                ],
+                "means": {
+                  "en": "ma · me — I · we",
+                  "az": "ma · me — mən · biz",
+                  "ru": "ma · me — я · мы"
+                }
+              },
+              {
+                "et": [
+                  "elasid",
+                  "elasite",
+                  "ei elanud"
+                ],
+                "means": {
+                  "en": "sa · te — you · you all",
+                  "az": "sa · te — sən · siz",
+                  "ru": "sa · te — ты · вы"
+                }
+              },
+              {
+                "et": [
+                  "elas",
+                  "elasid",
+                  "ei elanud"
+                ],
+                "means": {
+                  "en": "ta · nad — he, she · they",
+                  "az": "ta · nad — o · onlar",
+                  "ru": "ta · nad — он, она · они"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "The past is *-si-* and the same endings, and *ta* has none: *elas*. The no is *ei* and the *-nud* form, and that does not change with the person either.",
+            "az": "Keçmiş *-si-* və eyni şəkilçilərdir, *ta* isə şəkilçisizdir: *elas*. İnkar *ei* və *-nud* formasıdır, və o da şəxsə görə dəyişmir.",
+            "ru": "Прошедшее — это *-si-* и те же окончания, а у *ta* окончания нет: *elas*. Отрицание — *ei* и форма на *-nud*, и она тоже не меняется по лицам."
+          }
+        },
+        {
+          "head": {
+            "en": "Have done — täisminevik",
+            "az": "Bitmiş keçmiş — täisminevik",
+            "ru": "Перфект — täisminevik"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              },
+              {
+                "en": "not",
+                "az": "inkar",
+                "ru": "нет"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "olen elanud",
+                  "oleme elanud",
+                  "ei ole elanud"
+                ],
+                "means": {
+                  "en": "ma · me — I · we",
+                  "az": "ma · me — mən · biz",
+                  "ru": "ma · me — я · мы"
+                }
+              },
+              {
+                "et": [
+                  "oled elanud",
+                  "olete elanud",
+                  "ei ole elanud"
+                ],
+                "means": {
+                  "en": "sa · te — you · you all",
+                  "az": "sa · te — sən · siz",
+                  "ru": "sa · te — ты · вы"
+                }
+              },
+              {
+                "et": [
+                  "on elanud",
+                  "on elanud",
+                  "ei ole elanud"
+                ],
+                "means": {
+                  "en": "ta · nad — he, she · they",
+                  "az": "ta · nad — o · onlar",
+                  "ru": "ta · nad — он, она · они"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "*Olema*, to be, in the present, and the same *-nud* form the past said no with. *Ma olen kaks aastat Tallinnas elanud* — I have lived in Tallinn for two years.",
+            "az": "İndiki zamanda *olema* — olmaq — və keçmişin inkarındakı eyni *-nud* forması. *Ma olen kaks aastat Tallinnas elanud* — iki ildir Tallinndə yaşayıram.",
+            "ru": "*Olema*, быть, в настоящем и та же форма на *-nud*, что и в отрицании прошедшего. *Ma olen kaks aastat Tallinnas elanud* — я прожил в Таллинне два года."
+          }
+        },
+        {
+          "head": {
+            "en": "Would — tingiv kõneviis",
+            "az": "Şərt — tingiv kõneviis",
+            "ru": "Бы — tingiv kõneviis"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              },
+              {
+                "en": "not",
+                "az": "inkar",
+                "ru": "нет"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "elaksin",
+                  "elaksime",
+                  "ei elaks"
+                ],
+                "means": {
+                  "en": "ma · me — I · we",
+                  "az": "ma · me — mən · biz",
+                  "ru": "ma · me — я · мы"
+                }
+              },
+              {
+                "et": [
+                  "elaksid",
+                  "elaksite",
+                  "ei elaks"
+                ],
+                "means": {
+                  "en": "sa · te — you · you all",
+                  "az": "sa · te — sən · siz",
+                  "ru": "sa · te — ты · вы"
+                }
+              },
+              {
+                "et": [
+                  "elaks",
+                  "elaksid",
+                  "ei elaks"
+                ],
+                "means": {
+                  "en": "ta · nad — he, she · they",
+                  "az": "ta · nad — o · onlar",
+                  "ru": "ta · nad — он, она · они"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "*-ks-* where the past had *-si-*. In speech *elaks* does for every person — *ma elaks siin*, I would live here — and *Ma tahaksin kohvi*, I would like a coffee, is the one you will say every morning.",
+            "az": "Keçmişdəki *-si-* yerinə *-ks-*. Danışıqda *elaks* hər şəxs üçün işlənir — *ma elaks siin*, burada yaşayardım — *Ma tahaksin kohvi*, qəhvə istərdim, isə hər səhər deyəcəyiniz cümlədir.",
+            "ru": "*-ks-* там, где в прошедшем было *-si-*. В речи *elaks* годится для всех лиц — *ma elaks siin*, я бы жил здесь, — а *Ma tahaksin kohvi*, я бы хотел кофе, вы будете говорить каждое утро."
+          }
+        },
+        {
+          "head": {
+            "en": "Do it! — käskiv kõneviis",
+            "az": "Əmr — käskiv kõneviis",
+            "ru": "Сделай! — käskiv kõneviis"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "to one",
+                "az": "birinə",
+                "ru": "одному"
+              },
+              {
+                "en": "to more",
+                "az": "bir neçəsinə",
+                "ru": "нескольким"
+              },
+              {
+                "en": "let them",
+                "az": "qoy",
+                "ru": "пусть"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "ela!",
+                  "elage!",
+                  "elagu!"
+                ],
+                "means": {
+                  "en": "live!",
+                  "az": "yaşa!",
+                  "ru": "живи!"
+                }
+              },
+              {
+                "et": [
+                  "ära ela!",
+                  "ärge elage!",
+                  "ärgu elagu!"
+                ],
+                "means": {
+                  "en": "do not live!",
+                  "az": "yaşama!",
+                  "ru": "не живи!"
+                }
+              },
+              {
+                "et": [
+                  "tule!",
+                  "tulge!",
+                  "tulgu!"
+                ],
+                "means": {
+                  "en": "come!",
+                  "az": "gəl!",
+                  "ru": "иди сюда!"
+                }
+              },
+              {
+                "et": [
+                  "ära tule!",
+                  "ärge tulge!",
+                  "ärgu tulgu!"
+                ],
+                "means": {
+                  "en": "do not come!",
+                  "az": "gəlmə!",
+                  "ru": "не приходи!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "To one person the command is the present without its *-n*: *elan* → *ela!*, *tulen* → *tule!* To more than one, or politely, it is *-ge* on the *-da* form's stem: *elage! tulge!* The no is *ära* to one and *ärge* to more — *Ära karda!*, don't be afraid. And *-gu* is for somebody else: *Elagu Eesti!* — long live Estonia.",
+            "az": "Bir nəfərə əmr *-n*-siz indiki formadır: *elan* → *ela!*, *tulen* → *tule!* Bir neçə nəfərə, ya da nəzakətlə, *-da* formasının kökünə *-ge* gəlir: *elage! tulge!* İnkar birinə *ära*, bir neçəsinə *ärge*-dir — *Ära karda!*, qorxma. *-gu* isə başqası üçündür: *Elagu Eesti!* — yaşasın Estoniya.",
+            "ru": "Одному человеку повеление — это настоящее без *-n*: *elan* → *ela!*, *tulen* → *tule!* Нескольким, или вежливо, — *-ge* на основе формы на *-da*: *elage! tulge!* Отрицание — *ära* одному и *ärge* нескольким: *Ära karda!*, не бойся. А *-gu* — о третьем лице: *Elagu Eesti!* — да здравствует Эстония."
+          }
+        },
+        {
+          "head": {
+            "en": "Nobody in particular — umbisikuline",
+            "az": "Şəxssiz — umbisikuline",
+            "ru": "Безлично — umbisikuline"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "now",
+                "az": "indi",
+                "ru": "сейчас"
+              },
+              {
+                "en": "before",
+                "az": "keçmiş",
+                "ru": "прошедшее"
+              },
+              {
+                "en": "have done",
+                "az": "bitmiş",
+                "ru": "перфект"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "elatakse",
+                  "elati",
+                  "on elatud"
+                ],
+                "means": {
+                  "en": "people live, it is lived",
+                  "az": "yaşanılır",
+                  "ru": "живут (безлично)"
+                }
+              },
+              {
+                "et": [
+                  "ei elata",
+                  "ei elatud",
+                  "ei ole elatud"
+                ],
+                "means": {
+                  "en": "not",
+                  "az": "inkar",
+                  "ru": "нет"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "For when it does not matter who. *Eestis räägitakse eesti keelt* — Estonian is spoken in Estonia. *Siin ei suitsetata* — no smoking here, word for word here is not smoked. You will read it on doors long before you say it.",
+            "az": "Kimin etdiyi önəmli olmayanda. *Eestis räägitakse eesti keelt* — Estoniyada eston dilində danışılır. *Siin ei suitsetata* — burada siqaret çəkilmir. Bunu deməzdən çox əvvəl qapıların üstündə oxuyacaqsınız.",
+            "ru": "Когда неважно, кто. *Eestis räägitakse eesti keelt* — в Эстонии говорят по-эстонски. *Siin ei suitsetata* — здесь не курят. Вы прочтёте это на дверях задолго до того, как скажете сами."
+          }
+        },
+        {
+          "head": {
+            "en": "Where each one comes from",
+            "az": "Hər biri haradan çıxır",
+            "ru": "Откуда что берётся"
+          }
+        },
+        {
+          "say": {
+            "en": "Every form above grows out of one of four starting points, and once you know which, a new verb hands you the whole table. From the *-ma* form: the past, *õppisin*, and *-mas*, in the middle of doing it — *ma olen lugemas*, I am busy reading. From the *-da* form: the *-nud* form, for have done and did not, and the command to more than one. From the present without its *-n*: the no, the would, and the command to one.",
+            "az": "Yuxarıdakı hər forma dörd başlanğıc nöqtəsindən birindən çıxır, və hansı olduğunu bildikdə yeni fel sizə bütün cədvəli verir. *-ma* formasından: keçmiş, *õppisin*, və *-mas*, işin ortasında — *ma olen lugemas*, oxumaqla məşğulam. *-da* formasından: *-nud* forması — «etmişəm» və «etmədim» üçün — və bir neçə nəfərə əmr. *-n*-siz indiki formadan: inkar, şərt və bir nəfərə əmr.",
+            "ru": "Каждая форма выше вырастает из одной из четырёх точек, и, зная, из какой, новый глагол отдаёт вам всю таблицу. Из формы на *-ma*: прошедшее, *õppisin*, и *-mas*, в процессе — *ma olen lugemas*, я занят чтением. Из формы на *-da*: форма на *-nud* — для перфекта и для «не сделал» — и повеление нескольким. Из настоящего без *-n*: отрицание, условное и повеление одному."
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "-ma",
+                "az": "-ma",
+                "ru": "-ma"
+              },
+              {
+                "en": "-da",
+                "az": "-da",
+                "ru": "-da"
+              },
+              {
+                "en": "ma …n",
+                "az": "ma …n",
+                "ru": "ma …n"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "õppima",
+                  "õppida",
+                  "õpin"
+                ],
+                "means": {
+                  "en": "to learn: the three",
+                  "az": "öyrənmək: üç forma",
+                  "ru": "учить: три формы"
+                }
+              },
+              {
+                "et": [
+                  "õppisin",
+                  "õppinud",
+                  "ei õpi"
+                ],
+                "means": {
+                  "en": "learnt · have learnt · not",
+                  "az": "öyrəndim · öyrənmişəm · inkar",
+                  "ru": "учил · выучил · нет"
+                }
+              },
+              {
+                "et": [
+                  "õppimas",
+                  "õppige!",
+                  "õpi! õpiks"
+                ],
+                "means": {
+                  "en": "at it · learn! · would",
+                  "az": "öyrənməkdə · öyrənin! · şərt",
+                  "ru": "в процессе · учите! · бы"
+                }
+              },
+              {
+                "et": [
+                  "lugema",
+                  "lugeda",
+                  "loen"
+                ],
+                "means": {
+                  "en": "to read: the three",
+                  "az": "oxumaq: üç forma",
+                  "ru": "читать: три формы"
+                }
+              },
+              {
+                "et": [
+                  "lugesin",
+                  "lugenud",
+                  "ei loe"
+                ],
+                "means": {
+                  "en": "read · have read · not",
+                  "az": "oxudum · oxumuşam · inkar",
+                  "ru": "читал · прочёл · нет"
+                }
+              },
+              {
+                "et": [
+                  "lugemas",
+                  "lugege!",
+                  "loe! loeks"
+                ],
+                "means": {
+                  "en": "at it · read! · would",
+                  "az": "oxumaqda · oxuyun! · şərt",
+                  "ru": "в процессе · читайте! · бы"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "And the fourth is the *-takse* form, which hands on its own no, past and perfect: *õpitakse, ei õpita, õpiti, on õpitud*. Look at *õppi-* against *õpi-*, and *luge-* against *loe-*: the stem is strong in some forms and weak in others, which is the whole reason the card makes you learn three forms rather than one.",
+            "az": "Dördüncüsü *-takse* formasıdır, o da öz inkarını, keçmişini və bitmiş keçmişini verir: *õpitakse, ei õpita, õpiti, on õpitud*. *õppi-* ilə *õpi-*, *luge-* ilə *loe-* fərqinə baxın: kök bəzi formalarda güclü, bəzilərində zəifdir, və kartın sizə bir yox, üç forma öyrətməsinin bütün səbəbi budur.",
+            "ru": "А четвёртая — форма на *-takse*, которая даёт своё отрицание, прошедшее и перфект: *õpitakse, ei õpita, õpiti, on õpitud*. Сравните *õppi-* и *õpi-*, *luge-* и *loe-*: основа в одних формах сильная, в других слабая, и именно поэтому карточка заставляет учить три формы, а не одну."
           }
         },
         {

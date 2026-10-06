@@ -8450,15 +8450,15 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-six
-decks of Estonian, two thousand and forty-nine cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-seven
+decks of Estonian, two thousand one hundred and seventy-four cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
 sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
-know in all. And, under a heading of their own on that page, two lessons of
-grammar about why the words on the cards come in threes — **Grammar, which is
+know in all. And, under a heading of their own on that page, four lessons of
+grammar about why the words on the cards come in threes and what grows out of them — **Grammar, which is
 read rather than turned over** below — and after them songs, with what every
 line and every word in them means — **Songs, which are listened to**.
 
@@ -8624,8 +8624,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: forty-six decks, two
-thousand and forty-nine cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: forty-seven decks, two
+thousand one hundred and seventy-four cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -9852,7 +9852,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **1,356 of the 2,049
+parts, and a row of three under it would be nonsense. **1,481 of the 2,174
 cards carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -9891,6 +9891,19 @@ there is one, so the book's third person became a first. The five that no
 person does — *algama*, *lõppema*, *paistma*, *sadama*, *sulama* — keep it,
 because *ma sajan* is not a thing anybody says.
 
+**And the verbs of two words are the same book's page, carried the same way.**
+**Verbs of two words** is the hundred and twenty-five *ühendverbid* on the page
+of them in that book — *alla andma*, *kokku leppima*, *üle saama* — in the
+deep stage after *The words in between*. The book prints them bare, so the
+meaning in all three languages is mine and so are the two forms: the *-da*
+form with the little word in front, *alla anda*, and the present with it
+behind, *annan alla*, because the word moving to the end is the whole thing a
+learner has to be shown and the card is the place to show it. The ones that
+nobody does in the first person keep the third, for the reason *sadama* does:
+*tuleb ette*, *jääb ära*, *saab otsa*. No sentences under them yet, and
+*vastu ajama* — to do, to be good enough — is the one gloss I am least sure
+of.
+
 ### And the word in a sentence
 
 Under the forms, where a card has one: the Estonian and what it means, as two
@@ -9905,7 +9918,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **861 of the 2,049 cards** carry
+would be a stray clause with no translation. **861 of the 2,174 cards** carry
 one: every card in the twenty-three newer decks and in **Family and relatives**
 bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
@@ -10019,8 +10032,10 @@ the whole case system hangs off those two forms and the words that change most
 are the commonest.
 
 So the shelf carries a heading of its own, **Grammar**, between *First words*
-and *At a restaurant*, and under it two tiles that open to prose rather than
-to a run: **Why a noun has three forms** and **Why a verb has three forms**.
+and *At a restaurant*, and under it four tiles that open to prose rather than
+to a run: **Why a noun has three forms**, **The fourteen cases**, **Why a verb
+has three forms** and **Every tense of a verb** — each pair the forms first
+and then what grows out of them.
 Each is a page of a few hundred words in the language the cards are being read
 in — the three the decks speak, not the ten the site does — with a paradigm or
 two set in the mono the card prints its forms in, and one filled action at the
@@ -10036,7 +10051,7 @@ card wears the forms it explains. And it holds nothing back: the lessons are a
 file, prose, open signed out and behind no gate — a lesson never stands between
 anybody and a deck, and reading one does not spend the free word. It could not
 be the other way round: **Which decks are open** holds a *deck* back so that a
-beginner has somewhere to start, and two tiles under a heading called Grammar
+beginner has somewhere to start, and four tiles under a heading called Grammar
 are not that problem.
 
 **Each language argues from its own grammar.** The three texts are not
@@ -10089,11 +10104,26 @@ answers, and until this section existed the answer was a card that showed the
 forms and said nothing.
 
 **What it does not do.** No quiz at the end; four hundred words known is the
-test, as it is for the stages. No third lesson yet — the second ends by saying
+test, as it is for the stages. No fifth lesson yet — the last ends by saying
 more will come as the decks grow, which is true and promises no number. No
 lessons in the other seven languages: they get English, as the cards do. No
 scroll position remembered inside a lesson. And no lessons for a deck somebody
 wrote, for the reason there are no forms on one.
+
+**The second pair is a course book's page, rewritten for a phone.** The
+fourteen cases and the tenses came off the grammar pages at the back of the
+book **Verbs of two words** came from, which draw each as one wide table —
+case, question, singular and plural across; every tense, a yes and a no, for
+six people. That table does not fit 390 px, so it is cut into the shape the
+lessons already had: the cases four or five at a time under a heading that
+says what they share (*into, in, out of*; *onto, on, off*), each row the
+question, the singular and the plural of *laps* with the case's number and
+name in the gloss; the tenses one to a table, three people a row, with the no
+in the third column because it is the same for all of them. What the book
+draws as arrows — the eleven cases built on the omastav, the plural osastav's
+vowel swaps, which form each tense grows from — is a paradigm with a paragraph
+over it saying what the arrow said. No new block and no new style: the lesson
+format held, and a fourth column would have been the thing that did not.
 
 **The Estonian in them is mine**, like the rest of it: the forms in the tables
 are the cards' own, copied rather than retyped, and the sentences in the prose
@@ -14032,8 +14062,8 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-six decks of Estonian, 2,049 cards under four
-                           headings and the songs', two lessons of grammar and
+data/decks.json            forty-seven decks of Estonian, 2,174 cards under four
+                           headings and the songs', four lessons of grammar and
                            four songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten
