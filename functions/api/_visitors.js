@@ -216,7 +216,11 @@
  * the visitors on each rail as `<rail>:new` and `<rail>:back`. Only a
  * browser that has been dealt one is counted there — one that has never
  * opened the map has not, and filing it under the full rail by default would
- * be comparing the short rail against everybody. How many strangers were
+ * be comparing the short rail against everybody. Since 2026-10-06 only a
+ * newcomer on a phone is dealt one — a desktop or a tablet with no rail yet
+ * draws the full one undealt, pickLayout() in assets/app.js — so from then
+ * the strangers on each rail are phones alone. How
+ * many strangers were
  * dealt each and how many opened a place on that first visit is press_counts'
  * and ./stats.js's, and ./admin/visitors.js reads it beside this.
  *

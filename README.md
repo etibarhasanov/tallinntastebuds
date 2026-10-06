@@ -12757,6 +12757,12 @@ or **the full rail (or the short one) is ahead** once the gap is bigger than
 chance would make. It is there so that four strangers against five is never
 read as a result.
 
+From 2026-10-06 a stranger is dealt a rail only on a phone — **Who gets it**
+under **The short rail** — so the first block's new strangers are phones
+alone. It is all-time, and the strangers before that day include desktops and
+tablets on both rails. Returning visitors keep whatever rail they held, so the
+range blocks still carry a returning laptop dealt either rail before then.
+
 Only a browser that has been dealt a rail counts in the second and third
 blocks: one that has never opened the map has not, and filing it under the
 full rail by default would be comparing the short rail against everybody. The map deals
@@ -16029,7 +16035,8 @@ in all ten languages. The pieces are `#tour` in
 
 ## The short rail
 
-Eight phones in ten get a shorter rail than the map had: **the account,
+Eight phones in ten get a shorter rail than the map had — somebody new on a
+laptop or a tablet draws the full one, **Who gets it** says why — **the account,
 everybody's lists, Surprise me and More** down the left, three
 chips standing outside the Filters drawer, and the other four doors — Ask, the
 flashcards, the colour and feedback — as rows behind More. The other two
@@ -16075,7 +16082,19 @@ stranger — **How this works, for the asking**.
    dealt over: `ttb.layout.by` says a hand chose it.
 3. A rail dealt under this deal is kept: `ttb.layout.deal` records which deal
    wrote `ttb.layout`.
-4. Otherwise the deal: the short rail with `LAYOUT_SHARE` — 0.8 — and the
+4. A browser with no rail yet that is not a phone — a desktop or a tablet —
+   is dealt nothing and draws the full rail. Which it is comes from `device()`
+   in `assets/track.js`, the same rule **Visitors** files a visitor's device
+   by, handed to the map as `TTBTrack.device()`: a mouse for the primary
+   pointer is a desktop, a laptop with a touchscreen included, and a finger
+   on a screen 768px or wider is a tablet. The short rail was cut for a thumb
+   on a 390px screen and either has the room for the whole column; the
+   owner, on a laptop, asked for it on 2026-10-06. It is for newcomers only:
+   a returning browser keeps the rail steps 1 to 3 kept for it, a laptop
+   dealt the short rail before then included. `ttb.layout` is cleared rather
+   than written, so its visits are filed under no rail and the strangers in
+   **The two rails** are phones alone from that day.
+5. Otherwise the deal: the short rail with `LAYOUT_SHARE` — 0.8 — and the
    full one otherwise, **for a stranger and for somebody who was here before
    alike**. The first deal, for the first hour this was live, gave every
    stranger the short rail and everybody else the full one; a browser holding
@@ -16136,9 +16155,10 @@ It is a split of two, at random, and nothing more. The first draft of this
 was an experiment with three arms and a page of its own to read them on; what
 the owner asked for was the short rail for most people and the full one for
 the rest, and a choice on the account page — which is what this is, and it
-costs no table. It does not touch the desktop beyond putting four pills
-behind one: the column, the corner and the chip row up there are what they
-were. And it is not another style: **The four styles** are the colours, and
+costs no table. A newcomer on a desktop or a tablet is not dealt, and
+draws the column, the corner and the chip row as they were; one that picks the
+short rail by hand on `/account.html` gets it, with four pills behind one and
+nothing else moved. And it is not another style: **The four styles** are the colours, and
 both rails wear all four.
 
 ### What is counted
