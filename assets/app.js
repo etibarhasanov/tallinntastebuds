@@ -777,7 +777,8 @@
    * of each opened a place on that first visit; see selectPlace(). Only
    * strangers, because a returning visitor's first visit is long gone and
    * what they do next is not the same question. Their rail still rides on
-   * every event to Google Analytics — assets/track.js.
+   * every report the site's own count gets, and is a Clarity tag —
+   * assets/track.js.
    *
    * Storage that throws cannot keep a deal, and a rail rolled afresh on every
    * load would be the one thing worse than either rail, so it draws the short
@@ -4290,7 +4291,7 @@
    * is one press of it rather than four.
    *
    * In memory and not in storage, on purpose. A reload counts again, exactly
-   * as a reload is a fresh page view in Google Analytics, and this page keeps
+   * as a reload is a fresh page load, and this page keeps
    * nothing about what anybody looked at: the count is filed under the thing
    * and under nobody.
    *
@@ -4336,9 +4337,9 @@
    * press: the question /admin/stats answers about the rail is which of the nine
    * buttons people actually push and how often, and pressing the die four
    * times is somebody asking for four restaurants. It is also what this page
-   * already tells Google Analytics, which gets an event per press of these
-   * buttons rather than one per load, so the two numbers agree here the same
-   * way they agree up there — by counting the same gesture the same way.
+   * already tells Clarity, which gets an event per press of these buttons
+   * rather than one per load, so the two agree here the same way they agree
+   * up there — by counting the same gesture the same way.
    *
    * One listener on the rail rather than nine on the buttons, because two of
    * them are links that leave the page and the colour swatch is not in the
@@ -11494,7 +11495,7 @@
     if (state.selected) params.set('spot', state.selected);
     else params.delete('spot');
     /* Chips in the address bar: a filtered map becomes a link worth sending,
-       and the landing view GA records for it says which filters it was.
+       and the landing view the count records for it says which filters it was.
 
        Every filter but one. The saved filter narrows to what this browser
        has pressed, so ?type=saved sent to somebody else is a link to an empty
@@ -11635,9 +11636,9 @@
   }
 
   /* ------------------------------------------------------------- analytics
-   * Google Analytics, through the global assets/track.js sets: this is one
-   * page, so GA on its own records a single view per visit and tells you
-   * nothing about what anyone did on it. So every deliberate press here —
+   * Reported through the global assets/track.js sets. This is one page, so
+   * a count of page loads alone records a single view per visit and tells
+   * you nothing about what anyone did on it. So every deliberate press here —
    * a chip, a language, Surprise me, a reel, the buttons on an open place —
    * is reported as an event through TTBTrack.event(), and opening a place
    * is reported as a page view of its own through TTBTrack.view(), titled
@@ -12587,7 +12588,7 @@
          the visitor never sees fail. */
       drawn = true;
 
-      /* gtag already reported the landing URL, deep link and all. */
+      /* The landing already counted this address, deep link and all. */
       TTBTrack.seen();
 
       placeRail();

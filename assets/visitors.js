@@ -1,9 +1,8 @@
 /* Tallinn Tastebuds — /admin/visitors, who came to the site and what they did.
  *
- * The page Google Analytics is open in a tab for, drawn from the site's own
- * count instead. Right now and today so far first, whatever the range: who
- * came, who signed in and made an account, and on which of the map's two
- * rails. Then a range and its five figures, and under them four groups, each
+ * Drawn from the site's own count. Right now and today so far first,
+ * whatever the range: who came, who signed in and made an account, and on
+ * which of the map's two rails. Then a range and its five figures, and under them four groups, each
  * under a heading — see group():
  *
  *   Tests            the directory's two looks, time on phones by colour

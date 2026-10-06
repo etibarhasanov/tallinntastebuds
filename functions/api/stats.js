@@ -28,8 +28,7 @@
  * Seven kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened on the map — selectPlace() in assets/app.js,
- *            which is the same moment TTBTrack.view() reports one to Google
- *            Analytics — whether one of the map's own, by its slug, or one of
+ *            which is the same moment TTBTrack.view() reports one — whether one of the map's own, by its slug, or one of
  *            Google's the find bar put there, by Google's key. That is the
  *            gesture on this site that means "show me this place".
  *   filter   a chip on the map turned on — applyFilters() in assets/app.js,
@@ -117,8 +116,8 @@
  * above — and the rail every press, which is not an oversight. A place or a
  * chip is a question about where to eat, asked once however many times the
  * card is reopened while somebody makes their mind up — and it has to agree
- * with the one page view TTBTrack.view() reports beside it. A pill is a press, GA is sent an event
- * per press of one, and the question this table answers is the plain one:
+ * with the one page view TTBTrack.view() reports beside it. A pill is a press, Clarity is sent an
+ * event per press of one, and the question this table answers is the plain one:
  * which of the nine buttons do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.

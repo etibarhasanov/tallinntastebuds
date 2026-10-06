@@ -14,11 +14,11 @@
 <meta name="theme-color" content="#f7ddd4">
 <meta name="robots" content="index, follow">
 
-<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
-     two snippets pasted into every head. assets/analytics.js holds the ids and
-     the consentv2 signal Clarity needs, and its head carries the reasoning of
-     the consent bar that stood in front of both of them for a day. -->
-<script src="assets/analytics.js?v=ff6f3c33" defer></script>
+<!-- Analytics: Microsoft Clarity, from one file rather than a snippet
+     pasted into every head. assets/analytics.js holds the id and the
+     consentv2 signal Clarity needs, and its head carries the reasoning of the
+     consent bar that stood in front of it for a day. -->
+<script src="assets/analytics.js?v=43d1c258" defer></script>
 
 <!-- The block between the two PAGE-HEAD markers below is the English head,
      and it is what a browser gets only when functions/index.js could not do
@@ -811,13 +811,14 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
         defer></script>
-<!-- What every press reports to Google Analytics, shared by every page.
+<!-- What every press reports, to Clarity and to the site's own count,
+     shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. data-arrive="late" because this is the page
      that deals the rail, and it does that once the places are in — after the
      page is ready, which is when track.js would otherwise say the page was
      opened. assets/app.js says it instead, once the rail is dealt. -->
-<script src="assets/track.js?v=c063dc65" data-arrive="late" defer></script>
+<script src="assets/track.js?v=2ebd2c3f" data-arrive="late" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
@@ -856,6 +857,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=b36ce038" defer></script>
+<script src="assets/app.js?v=34096279" defer></script>
 </body>
 </html>

@@ -79,16 +79,16 @@ export async function adminUser(request, env) {
  *
  * The server leaves the owner out of every count by the session — see
  * adminUser() above and the top of ./stats.js — but two of the things that
- * count are not the server. Google Analytics and Microsoft Clarity are
- * loaded by assets/analytics.js and count in the browser, before anything
+ * count are not the server. Microsoft Clarity is loaded by
+ * assets/analytics.js and records in the browser, before anything
  * has asked who is signed in; and a browser the owner has signed out of is,
  * to the server, anybody. The owner asked to be out of all of it, so the
  * browser is told: `ttb_owner=1`, set beside the answer to GET /api/account
  * when the session is the owner's, and on every page under /admin/.
- * assets/analytics.js then loads neither tag, and assets/track.js, app.js
+ * assets/analytics.js then does not load it, and assets/track.js, app.js
  * and lists.js send nothing to /api/stats.
  *
- * Not HttpOnly, because the page has to read it before either tag loads, and
+ * Not HttpOnly, because the page has to read it before the tag loads, and
  * not a secret, because it is not one: all it does is switch off counting in
  * the browser that carries it, which an ad blocker does already and which
  * anybody may do to themselves. A year, renewed on every visit signed in, so

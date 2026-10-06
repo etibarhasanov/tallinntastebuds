@@ -55,11 +55,10 @@ does not have to:
   Workers AI's free daily allowance, and preview and production spend from
   the same pot. Driving the chat on a preview for an afternoon puts the live
   site out of model until midnight UTC. Ask it a few questions, not fifty.
-- **A preview deploy reports into the live analytics.** Both tags — Google's
-  and Microsoft Clarity's — are written into the pages rather than set per
-  environment, so every `*.pages.dev` branch counts into the same GA property
-  and records into the same Clarity project as tallinntastebuds.ee. Nothing
-  stands in front of them: the banner that did for a day was taken out on
+- **A preview deploy reports into the live analytics.** Microsoft Clarity's
+  tag is written into the pages rather than set per environment, so every
+  `*.pages.dev` branch records into the same Clarity project as
+  tallinntastebuds.ee. Nothing stands in front of it: the banner that did for a day was taken out on
   purpose, so an afternoon spent driving a preview lands in the owner's real
   heatmaps and there is no button to press to stay out. Not a reason to avoid
   driving one — it is the whole point of a preview — just a reason to say so in
