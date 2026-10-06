@@ -67,7 +67,7 @@
  */
 
 import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile, uiStrings, DECK_LANGS } from './api/_lib.js';
+import { dataFile, languageIndex, wordsIn, DECK_LANGS } from './api/_lib.js';
 
 const PATH = '/flashcard';
 const FILE = '/flashcard.html';
@@ -293,8 +293,7 @@ function deckWords(deck) {
  * glosses themselves there, each with a lang= on it, rather than a claim about
  * them in one language. What is left is what somebody forwarded the link is
  * actually asking, which is what this deck is and how long it takes. */
-function deckSays(deck, languages, lang) {
-  const ui = languages[lang] || {};
+function deckSays(deck, ui, lang) {
   const why = inLanguage(deck.why, lang);
   const many = (ui.flashCards || '{n} cards').replace('{n}', deck.cards.length);
   return (why ? why + ' — ' : '') + many + '.';
@@ -532,17 +531,20 @@ export async function onRequest(context) {
     ? songs.find((one) => one && one.id === asked && Array.isArray(one.verses)) || null
     : null;
 
-  /* The site's own words, for the head. A missing or malformed file is the
-     English constants above rather than a page without a head — this route
-     improves a load and is never a requirement for one. */
+  /* The site's own words, for the head: which languages there are, out of
+     data/lang/index.json, and then the one file of the language the link
+     carried — a tenth of the bytes and of the parse of the whole strings
+     file, which this read until October 2026. A missing or malformed file is
+     the English constants above rather than a page without a head — this
+     route improves a load and is never a requirement for one. */
   let languages;
   try {
-    languages = await uiStrings(context);
+    languages = await languageIndex(context);
   } catch (e) {
     languages = {};
   }
   const lang = languageOf(request, languages);
-  const ui = languages[lang] || {};
+  const ui = await wordsIn(context, lang);
 
   /* An id that answers with nothing is somebody's own deck — sixteen hex
      characters that mean anything only to their session — or an id that was
@@ -556,7 +558,7 @@ export async function onRequest(context) {
   const tags = deck
     ? head({
         title: inLanguage(deck.name, lang),
-        description: deckSays(deck, languages, lang),
+        description: deckSays(deck, ui, lang),
         /* The deck's own address rather than the page's, because a deck is a
            page of its own — the same call the map makes for ?spot=, and the
            same set of addresses tools/sitemap.mjs writes out. */

@@ -35,15 +35,20 @@
  *
  * WHO READS WHAT
  *
- * The map, assets/app.js, reads all three. The discount pass (assets/pass.js,
- * for deal.html, verify.html and staff.html), the blog and the lists page read
- * the index and one language file each, for the strings and not the
- * write-ups. Every other page still fetches data/ui.json whole, and
- * functions/index.js, functions/api/ask.js and the rest read
- * data/restaurants.json with its blurbs, so both sources stay deployed and
- * nothing that reads them changes. A browser still holding yesterday's
- * app.js asks for those two and is answered as it always was, which is the
- * incident in the header of tools/stamp.mjs not happening again.
+ * The map, assets/app.js, reads all three. Every other page reads the index
+ * and one language file, for the strings and not the write-ups: the discount
+ * pass (assets/pass.js, for deal.html, verify.html and staff.html), the blog,
+ * the lists page, and since October 2026 the account page, the editor,
+ * feedback, insights, splitwise and the owner's pages, each through a
+ * loadWords() of its own. So do the Functions that answer with a page's
+ * words — wordsFor(), languageIndex() and wordsIn() in functions/api/_lib.js
+ * — and the one that writes the flashcards' head. functions/index.js alone
+ * still reads data/ui.json whole, for the map's head, once per deployment
+ * per colo; it, functions/api/ask.js and the rest read data/restaurants.json
+ * with its blurbs. So both sources stay deployed and nothing that reads them
+ * changes, and a browser still holding yesterday's app.js asks for those two
+ * and is answered as it always was, which is the incident in the header of
+ * tools/stamp.mjs not happening again.
  *
  *   node tools/languages.mjs           rewrite the files above
  *   node tools/languages.mjs --check   report that they are out of date, exit 1

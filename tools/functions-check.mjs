@@ -9,7 +9,7 @@
  * out of functions/api/_lib.js in the commit that wrote its replacement, a
  * route still imported the old name, nothing in CI opened either file, and
  * the whole deployment went down rather than that one route — the comment
- * above uiStrings() there is the record.
+ * above languageIndex() there is the record.
  *
  * This is what notices now. It walks functions/, imports every .js file under
  * it, and prints each one that does not load with the first line of the
