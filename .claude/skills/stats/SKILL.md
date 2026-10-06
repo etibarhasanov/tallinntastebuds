@@ -55,6 +55,10 @@ must keep, and where this area has gone wrong.
     the rails, and what `look` counts about it.
   - **The four styles, dealt** — the colour each newcomer is given, and
     what `style` counts about it.
+  - **By device** (a `###` under **Visitors**) — every fact filed a second
+    time under phone, tablet or desktop, and the chips that read it on all
+    four pages. A new kind or flow must not have a dot in it, or it reads
+    as one device's.
 - The header of the file you are standing in. The four behind the count
   are written as essays, section by section, and each section is the
   reasoning for one kind: `functions/api/_visitors.js` (the whole site),
@@ -225,6 +229,7 @@ Each of these exists twice, and `grep -n` finds both:
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
 | the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-seven today | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
+| `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |
 
 ## Adding a press
 
@@ -244,7 +249,8 @@ file adds:
    funnel will not see it — the press cap is exactly what drops a rare late
    name.
 6. Nothing in the database. A press is a row in `visitor_counts` under
-   `press` by its name the first time it arrives.
+   `press` by its name the first time it arrives, and under
+   `<device>.press` beside it.
 
 ## Adding a page
 

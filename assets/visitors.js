@@ -84,6 +84,12 @@
   /* What a browser is driven with, by the ids assets/track.js decides. */
   var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
 
+  /* The device switch over the range: every device, then each alone, as
+     `?device=` asks the route for it — BY DEVICE in
+     functions/api/_visitors.js. '' is every device. The same four on
+     /admin/stats, /admin/found and /admin/flows. */
+  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
+
   /* Signing up — SIGNING UP in functions/api/_visitors.js. The three views
      of the sheet, which are the table's columns; what put the sheet up, by
      the door in account_from_<door>; and the refusals by the word
@@ -285,7 +291,26 @@
         textContent: span === 1 ? t('visitorsToday') : t('insightsDays', { n: span })
       });
       chip.addEventListener('click', function () {
-        if (span !== state.data.span) load(span);
+        if (span !== state.data.span) load(span, state.data.device || '');
+      });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
+  /* Every device or one, beside the range — see DEVICE_IDS. */
+  function devices() {
+    var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
+    var on = state.data.device || '';
+    DEVICE_IDS.forEach(function (id) {
+      var chip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': id === on ? 'true' : 'false',
+        textContent: id ? t(DEVICES[id]) : t('devicesAll')
+      });
+      chip.addEventListener('click', function () {
+        if (id !== on) load(state.data.span, id);
       });
       row.appendChild(chip);
     });
@@ -1069,9 +1094,11 @@
     stack.appendChild(today());
     stack.appendChild(card([
       ranges(),
+      devices(),
       el('h2', { className: 'lists-title vis-range-title', textContent: t('visitorsWhoCame') }),
       figures(),
-      d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null
+      d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null,
+      d.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null
     ]));
 
     if (!d.now.visitors && !d.now.views) {
@@ -1121,12 +1148,18 @@
     return SPANS.indexOf(n) !== -1 ? n : DEFAULT_SPAN;
   }
 
+  function wantedDevice() {
+    var id = new URLSearchParams(window.location.search).get('device') || '';
+    return DEVICE_IDS.indexOf(id) !== -1 ? id : '';
+  }
+
   /* One range asked for and drawn. What was on screen stays until the answer
      is in, so a press on a range does not flash an empty page; an answer
      with no words — offline, the route not deployed — leaves the markup's
      English title standing and draws nothing rather than printing keys. */
-  function load(span) {
-    return fetch(API + '?days=' + span + '&lang=' + encodeURIComponent(wanted().join(',')), {
+  function load(span, device) {
+    return fetch(API + '?days=' + span + (device ? '&device=' + device : '') +
+        '&lang=' + encodeURIComponent(wanted().join(',')), {
       headers: { accept: 'application/json' }
     })
       .then(function (res) { return res.json(); })
@@ -1140,6 +1173,8 @@
         var url = new URL(window.location.href);
         if (out.span === DEFAULT_SPAN) url.searchParams.delete('days');
         else url.searchParams.set('days', String(out.span));
+        if (out.device) url.searchParams.set('device', out.device);
+        else url.searchParams.delete('device');
         if (url.href !== window.location.href) history.replaceState(null, '', url.href);
 
         applyStaticStrings();
@@ -1154,7 +1189,7 @@
     liveCard = card([]);
     liveCard.hidden = true;
     applyStyle();
-    load(wantedSpan());
+    load(wantedSpan(), wantedDevice());
     /* Right now asks again every minute, but only while somebody is looking:
        a tab in the background asks nothing, and coming back asks at once.
        Only once the words are in, which the first load() brings. */

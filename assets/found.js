@@ -42,6 +42,10 @@
   var SPANS = [1, 7, 28, 90];
   var DEFAULT_SPAN = 7;
 
+  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js. */
+  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
+  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+
   /* How many rows a list names before the rest are one line of Other. More
      than /admin/visitors' eight, because the words and the addresses are the
      point of this page and the long tail is where the surprises are. */
@@ -173,7 +177,27 @@
         textContent: span === 1 ? t('visitorsToday') : t('insightsDays', { n: span })
       });
       chip.addEventListener('click', function () {
-        if (span !== state.data.span) load(span);
+        if (span !== state.data.span) load(span, state.data.device || '');
+      });
+      row.appendChild(chip);
+    });
+    return row;
+  }
+
+  /* Every device or one, beside the range — devices() in
+     assets/visitors.js. */
+  function devices() {
+    var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
+    var on = state.data.device || '';
+    DEVICE_IDS.forEach(function (id) {
+      var chip = el('button', {
+        type: 'button',
+        className: 'chip',
+        'aria-pressed': id === on ? 'true' : 'false',
+        textContent: id ? t(DEVICES[id]) : t('devicesAll')
+      });
+      chip.addEventListener('click', function () {
+        if (id !== on) load(state.data.span, id);
       });
       row.appendChild(chip);
     });
@@ -289,8 +313,10 @@
     var stack = el('div', { className: 'lists-stack' });
     stack.appendChild(card([
       ranges(),
+      devices(),
       figures(),
-      d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null
+      d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null,
+      d.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null
     ]));
 
     if (!d.since) {
@@ -321,11 +347,17 @@
     return SPANS.indexOf(n) !== -1 ? n : DEFAULT_SPAN;
   }
 
+  function wantedDevice() {
+    var id = new URLSearchParams(window.location.search).get('device') || '';
+    return DEVICE_IDS.indexOf(id) !== -1 ? id : '';
+  }
+
   /* One range asked for and drawn — load() in assets/visitors.js: what was
      on screen stays until the answer is in, and an answer with no words
      leaves the markup's English standing rather than printing keys. */
-  function load(span) {
-    return fetch(API + '?days=' + span + '&lang=' + encodeURIComponent(wanted().join(',')), {
+  function load(span, device) {
+    return fetch(API + '?days=' + span + (device ? '&device=' + device : '') +
+        '&lang=' + encodeURIComponent(wanted().join(',')), {
       headers: { accept: 'application/json' }
     })
       .then(function (res) { return res.json(); })
@@ -339,6 +371,8 @@
         var url = new URL(window.location.href);
         if (out.span === DEFAULT_SPAN) url.searchParams.delete('days');
         else url.searchParams.set('days', String(out.span));
+        if (out.device) url.searchParams.set('device', out.device);
+        else url.searchParams.delete('device');
         if (url.href !== window.location.href) history.replaceState(null, '', url.href);
 
         applyStaticStrings();
@@ -350,7 +384,7 @@
   function boot() {
     main = document.getElementById('main');
     applyStyle();
-    load(wantedSpan());
+    load(wantedSpan(), wantedDevice());
   }
 
   if (document.readyState === 'loading') {

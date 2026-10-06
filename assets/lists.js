@@ -479,7 +479,7 @@
    * the call, and the server makes it again. */
   function countOpen(id) {
     if (!firstTime('list:' + id)) return;
-    tell({ kind: 'list', id: id });
+    press({ kind: 'list', id: id });
   }
 
   /* And a profile: opened once a day, and every press of a thing on it
@@ -541,6 +541,15 @@
     }).catch(function () { /* a count missed, and nothing the reader needs to hear */ });
   }
 
+  /* A press counted into press_counts, with the device it was made on, so
+     it is counted a second time under it — BY DEVICE in
+     functions/api/stats.js. The profile's own counts are its owner's, read
+     on /insights, and are not split. */
+  function press(payload) {
+    if (window.TTBTrack && window.TTBTrack.device) payload.device = window.TTBTrack.device();
+    tell(payload);
+  }
+
   /* ------------------------------------------------ the directory's two looks
    * Somebody new to the site who opens /lists is dealt one of two looks for
    * it, half and half, and keeps it: 'a', the page as it was, or 'b', the
@@ -591,7 +600,7 @@
           localStorage.setItem(LOOK_KEY, dealt);
           localStorage.setItem(LOOK_NEW_KEY, JSON.stringify({ day: today(), told: [] }));
           look = dealt;
-          tell({ kind: 'look', id: dealt });
+          press({ kind: 'look', id: dealt });
         }
       }
     } catch (e) { look = 'a'; }
@@ -607,7 +616,7 @@
       if (LOOKS.indexOf(look) === -1 || !fresh || fresh.day !== today() || fresh.told.indexOf(what) !== -1) return;
       fresh.told.push(what);
       localStorage.setItem(LOOK_NEW_KEY, JSON.stringify(fresh));
-      tell({ kind: 'look', id: look + '-' + what });
+      press({ kind: 'look', id: look + '-' + what });
     } catch (e) { /* no storage, no deal, nothing to count */ }
   }
 

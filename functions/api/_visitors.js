@@ -252,6 +252,30 @@
  * and two facts. It began counting the day it shipped and nothing before
  * that can be split by device, because the time was never filed with one.
  *
+ * BY DEVICE
+ *
+ * Every fact a page reports is counted twice: once as it always was, and
+ * once more under its device, the kind written `<device>.<kind>` — so
+ * `phone.view`, `desktop.press`, `tablet.layout` — with the id and the
+ * number the same. The device is the one assets/track.js reads off the
+ * primary pointer and the width, and both reports carry it. No kind had a
+ * dot in it before, so a row without one is every device together and a
+ * row with one is one device, in the same table and under the same key,
+ * and no schema moved. /admin/visitors, /admin/found, /admin/stats and
+ * /admin/flows each read either half, by `?device=`, through forDevice()
+ * below and its likes in ./_flows.js and ./stats.js.
+ *
+ * It doubles the rows a report writes and the size of a day, which is
+ * still bounded by the kinds rather than the traffic: an OPEN kind is
+ * capped per device as it is overall, by its own kind. Two kinds are not
+ * filed again — `device`, which would only say a phone is a phone, and
+ * `phone`, which is phones already — and nor is anything counted by a
+ * route rather than a page, since no route knows the device: the chat
+ * (`ask`), the products (`use`), the Google round trip's steps of signing
+ * up and Right now. A device's view shows those for every device, and
+ * says so. It began on 2026-10-06, the day the map stopped dealing a rail
+ * to newcomers on a laptop or a tablet, and nothing before it can be split.
+ *
  * WHAT THE CHAT WAS ASKED
  *
  * The chat on the map — **Ask for somewhere** in README.md — is the one
@@ -518,7 +542,38 @@ const PHONE_ARMS = ['a', 'b', 'none'].flatMap((rail) => COLOURS.map((colour) => 
 
 /* What a browser is driven with, as assets/track.js decides it — WHEN THEY
    COME, AND ON WHAT. */
-const DEVICES = ['phone', 'tablet', 'desktop'];
+export const DEVICES = ['phone', 'tablet', 'desktop'];
+
+/* The kinds not filed a second time by device, and the ones a device's view
+   reads for every device because only a route counts them — BY DEVICE. */
+const ANY_DEVICE = new Set(['device', 'phone']);
+const SHARED = new Set(['ask', 'use']);
+
+/* The device a report says it was made on, or null. */
+function deviceOf(body) {
+  return DEVICES.includes(body.device) ? body.device : null;
+}
+
+/* The `?device=` an admin route was asked for, or null for every device. */
+export function askedDevice(params) {
+  const asked = params.get('device');
+  return DEVICES.includes(asked) ? asked : null;
+}
+
+/* visitor_counts rows as one device's view sees them — its own, their kind
+   stripped back, the SHARED kinds as they are, and TIME ON PHONES for the
+   phones, which is phones already — or, with no device, the rows of every
+   device together. BY DEVICE. */
+export function forDevice(rows, device) {
+  if (!device) return rows.filter((r) => !r.kind.includes('.'));
+  const at = device + '.';
+  const out = [];
+  for (const r of rows) {
+    if (r.kind.startsWith(at)) out.push({ ...r, kind: r.kind.slice(at.length) });
+    else if (SHARED.has(r.kind) || (r.kind === 'phone' && device === 'phone')) out.push(r);
+  }
+  return out;
+}
 
 /* How a question to the chat ended, as `source` in ./ask.js's answer says
    it — WHAT THE CHAT WAS ASKED: places drawn, a sentence and no places,
@@ -602,8 +657,9 @@ const ADD_CAPPED =
   'ON CONFLICT(day, kind, id) DO UPDATE SET n = visitor_counts.n + excluded.n';
 
 function add(env, day, kind, id, n) {
-  if (!OPEN.has(kind)) return env.DB.prepare(ADD).bind(day, kind, id, n);
-  return env.DB.prepare(ADD_CAPPED).bind(day, kind, id, n, kind === 'press' ? MAX_PRESS_IDS : MAX_IDS);
+  const own = kind.slice(kind.indexOf('.') + 1);
+  if (!OPEN.has(own)) return env.DB.prepare(ADD).bind(day, kind, id, n);
+  return env.DB.prepare(ADD_CAPPED).bind(day, kind, id, n, own === 'press' ? MAX_PRESS_IDS : MAX_IDS);
 }
 
 /* Which page a report is about, off the request's own host — the beacon is
@@ -672,11 +728,15 @@ function split(facts, arms, who, fact, n) {
   if (arms.colour) facts.push(['style', arms.colour + ':' + who + ':' + fact, n]);
 }
 
-/* One batch of [kind, id, n] facts, today. True when it was counted. */
-async function file(env, facts) {
+/* One batch of [kind, id, n] facts, today, and the same again under the
+   device where the report named one — BY DEVICE. True when it was counted. */
+async function file(env, facts, device) {
   const day = today();
+  const all = device
+    ? facts.concat(facts.filter(([kind]) => !ANY_DEVICE.has(kind)).map(([kind, id, n]) => [device + '.' + kind, id, n]))
+    : facts;
   try {
-    await env.DB.batch(facts.map(([kind, id, n]) => add(env, day, kind, id, n)));
+    await env.DB.batch(all.map(([kind, id, n]) => add(env, day, kind, id, n)));
     return true;
   } catch (e) {
     /* No table yet, or the write failed. Nobody is waiting to hear it. */
@@ -753,7 +813,7 @@ export async function countArrive(context, body) {
   }
   const tag = typeof body.tag === 'string' ? body.tag.toLowerCase() : '';
   if (TAG.test(tag)) facts.push(['tag', tag, 1]);
-  const [counted] = await Promise.all([file(env, facts), countLive(env)]);
+  const [counted] = await Promise.all([file(env, facts, deviceOf(body)), countLive(env)]);
   return counted;
 }
 
@@ -918,7 +978,7 @@ export async function countLeave(context, body) {
   facts.push(...searchFacts(body));
   facts.push(...await aboutFacts(context, body));
 
-  return facts.length ? file(env, facts) : false;
+  return facts.length ? file(env, facts, deviceOf(body)) : false;
 }
 
 /* One step of signing up that no page can see — the Google round trip's,
@@ -1124,23 +1184,26 @@ function paired(one, two, a, b) {
  * back past the day it began is not a week of visitors over two days of what
  * they did. A page's `secsLeft` is held to the days that have `left` rows
  * the same way, for the same reason. */
-export async function readVisitors(env, span, ui, spoken) {
+export async function readVisitors(env, span, ui, spoken, device) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
   const day = today();
+  const at = device ? device + '.' : '';
   let rows;
   let since;
   let began;
   try {
     [rows, since, began] = await Promise.all([
       env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(first).all(),
-      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts').first(),
-      env.DB.prepare("SELECT MIN(day) AS day FROM visitor_counts WHERE kind = 'cohort'").first()
+      device
+        ? env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?').bind(at + 'view').first()
+        : env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts').first(),
+      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?').bind(at + 'cohort').first()
     ]);
   } catch (e) {
     return null;
   }
-  rows = rows.results || [];
+  rows = forDevice(rows.results || [], device);
 
   const now = blank();
   const was = blank();
@@ -1372,21 +1435,25 @@ function foundBlank() {
  *   tags       [{ id, n }] the tagged links, the owner's and `share`
  *   searches   [{ id, n, nothing }] words searched for here, `nothing`
  *              being how many of those times the field found nothing */
-export async function readFound(env, span) {
+export async function readFound(env, span, device) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
-  const marks = FOUND.map(() => '?').join(', ');
+  const at = device ? device + '.' : '';
+  const kinds = FOUND.map((k) => at + k);
+  const marks = kinds.map(() => '?').join(', ');
+  const began = ['found', 'ref', 'tag', 'search'].map((k) => at + k);
   let rows;
   let since;
   try {
     [rows, since] = await Promise.all([
       env.DB.prepare(`SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND kind IN (${marks})`)
-        .bind(first, ...FOUND).all(),
-      env.DB.prepare("SELECT MIN(day) AS day FROM visitor_counts WHERE kind IN ('found', 'ref', 'tag', 'search')").first()
+        .bind(first, ...kinds).all(),
+      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind IN (?, ?, ?, ?)').bind(...began).first()
     ]);
   } catch (e) {
     return null;
   }
+  rows = { results: forDevice(rows.results || [], device) };
 
   const now = foundBlank();
   const was = foundBlank();
