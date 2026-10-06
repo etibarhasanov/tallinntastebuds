@@ -83,7 +83,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
-import { stale as staleStamps } from './stamp.mjs';
+import { stale as staleStamps, PAGES as STAMPED } from './stamp.mjs';
+import { stale as staleLean, LEAN } from './lean.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleLanguages } from './languages.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
@@ -2281,6 +2282,26 @@ if (existsSync(cssPath)) {
    an old copy of assets/app.js with today's restaurants.json. That guarantee
    is only worth anything if the stamps are current, so a stale one fails the
    build rather than shipping. See tools/stamp.mjs. */
+
+/* And the lean copies, which are what the pages actually load: assets/app.js
+   and assets/styles.css with the comments taken out, written by
+   tools/lean.mjs. A stale copy is a page running last week's code against
+   this week's data, which is the stamps' failure by another road; a page
+   that loads the source instead of the copy sends a phone three fifths prose.
+   "The lean copies" in README.md. */
+for (const { src, copy } of staleLean()) {
+  fail(copy, `is not what tools/lean.mjs would write from ${src} — run \`node tools/lean.mjs\` and commit the result`);
+}
+for (const page of STAMPED) {
+  const file = join(ROOT, page);
+  if (!existsSync(file)) continue;
+  const html = readFileSync(file, 'utf8');
+  for (const src of Object.keys(LEAN)) {
+    if (new RegExp(`(?:src|href)="/?${src.replace(/[.]/g, '\\.')}(?:\\?|")`).test(html)) {
+      fail(page, `loads ${src} itself — load ${LEAN[src]}, the copy tools/lean.mjs writes without the comments`);
+    }
+  }
+}
 
 for (const ref of staleStamps()) {
   fail(ref.page, ref.want === null

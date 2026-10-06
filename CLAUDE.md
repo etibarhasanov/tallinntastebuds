@@ -359,11 +359,12 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Eleven things in this repo are **generated**. Editing a source without
+Twelve things in this repo are **generated**. Editing a source without
 re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
+| `assets/app.js` or `assets/styles.css` | `node tools/lean.mjs` | `assets/app.lean.js` and `assets/styles.lean.css`, the same two without the comments, which are what the pages load — run it before the stamper, since the stamper hashes the copies |
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every page named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/ui.json` or `data/restaurants.json` | `node tools/languages.mjs` | `data/lang/<code>.json` and `data/lang/index.json`, one language's strings and write-ups to a file, and `data/map.json`, the places without their write-ups — what the map reads instead of the two whole files |

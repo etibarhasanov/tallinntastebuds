@@ -37,7 +37,10 @@ wc -l assets/*.js assets/*.css functions/*.js functions/*/*.js tools/*.mjs *.htm
 ```
 
 Everything under the line is a few hundred lines a file and is meant to be
-read in full while you are in it.
+read in full while you are in it. `assets/app.lean.js` and
+`assets/styles.lean.css` will be on the list and are not files at all in this
+sense: `tools/lean.mjs` writes them from the two sources beside them, and
+nothing in them is read or edited by hand.
 
 Do not "skim" a long file and report it as read. Say which functions you read.
 
