@@ -486,6 +486,8 @@
   "insightsListsNone": "None of your lists has been opened yet.",
   "insightsListsNote": "All time, whatever the range above. One open a day from each visitor, and your own opens are not counted.",
   "insightsListsWhere": "Some of these opens were counted before countries were, so a list's countries can add up to less than its number.",
+  "insightsPostsNone": "Nobody has read your posts yet.",
+  "insightsPostsNote": "All time, whatever the range above. One read a day from each reader, and your own reads are not counted.",
   "profileSince": "Here since {when}",
   "profileKept": "These lists have been saved {n} times",
   "profileKeptOne": "These lists have been saved once",

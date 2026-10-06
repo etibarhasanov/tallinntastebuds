@@ -486,6 +486,8 @@
   "insightsListsNone": "Nadie ha abierto todavía ninguna de tus listas.",
   "insightsListsNote": "Desde siempre, sea cual sea el periodo de arriba. Cuenta una apertura al día por visitante, y las tuyas no cuentan.",
   "insightsListsWhere": "Algunas de estas aperturas se contaron antes de que se contaran los países, así que los países de una lista pueden sumar menos que su número.",
+  "insightsPostsNone": "Nadie ha leído todavía ninguna de tus entradas.",
+  "insightsPostsNote": "Desde siempre, sea cual sea el periodo de arriba. Se cuenta una lectura al día de cada lector, y tus propias lecturas no cuentan.",
   "profileSince": "Aquí desde {when}",
   "profileKept": "Estas listas se han guardado {n} veces",
   "profileKeptOne": "Estas listas se han guardado una vez",

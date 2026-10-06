@@ -486,6 +486,8 @@
   "insightsListsNone": "Listelerini henüz kimse açmadı.",
   "insightsListsNote": "Tüm zamanlar, yukarıdaki aralıktan bağımsız. Her ziyaretçiden günde bir açılış sayılır, kendi açılışların sayılmaz.",
   "insightsListsWhere": "Bu açılışların bir kısmı ülkeler sayılmaya başlamadan önce sayıldı, bu yüzden bir listenin ülkeleri toplamda sayısından az olabilir.",
+  "insightsPostsNone": "Yazılarını henüz kimse okumadı.",
+  "insightsPostsNote": "Tüm zamanlar, yukarıdaki aralıktan bağımsız. Her okurdan günde bir okuma sayılır, kendi okumaların sayılmaz.",
   "profileSince": "{when} yılından beri burada",
   "profileKept": "Bu listeler {n} kez kaydedildi",
   "profileKeptOne": "Bu listeler bir kez kaydedildi",

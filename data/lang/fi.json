@@ -486,6 +486,8 @@
   "insightsListsNone": "Kukaan ei ole vielä avannut listojasi.",
   "insightsListsNote": "Koko ajalta, riippumatta yllä valitusta ajanjaksosta. Kultakin kävijältä lasketaan yksi avaus päivässä, eikä omia avauksiasi lasketa.",
   "insightsListsWhere": "Osa näistä avauksista laskettiin ennen kuin maita laskettiin, joten listan maat voivat olla yhteensä vähemmän kuin sen luku.",
+  "insightsPostsNone": "Kukaan ei ole vielä lukenut kirjoituksiasi.",
+  "insightsPostsNote": "Koko ajalta, valitusta jaksosta riippumatta. Jokaiselta lukijalta lasketaan yksi luku päivässä, eikä omia lukujasi lasketa.",
   "profileSince": "Täällä vuodesta {when}",
   "profileKept": "Nämä listat on tallennettu {n} kertaa",
   "profileKeptOne": "Nämä listat on tallennettu kerran",

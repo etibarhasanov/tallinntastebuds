@@ -560,6 +560,39 @@
        alone, and the site's count keeps no parameters: WHAT IT WAS ABOUT in
        functions/api/_visitors.js. */
     if (post) TTBTrack.about('post', post.id);
+    if (member && !member.mine) countRead(member.id);
+  }
+
+  /* A member's post read, for its author: one row in press_counts under
+     `post`, drawn back to them under Your posts on /insights and nowhere
+     else — functions/api/stats.js holds the kind and postViews() in
+     functions/api/_visits.js reads it. Once a day per reader, the rule a
+     list keeps, and under the same key in localStorage as assets/lists.js
+     keeps its own, `post:<id>` beside `list:<id>`; view_seen on the server
+     is the other half. Not when the author reads their own, which `mine`
+     says and the server checks again by the session, and nothing from the
+     owner's browser. The answer is not read: a post that drew is the
+     feature, and a count that did not go up is not worth a word. */
+  var OPENED_KEY = 'ttb.opened';
+
+  function countRead(id) {
+    if (window.TTBTrack && window.TTBTrack.owner) return;
+    var day = new Date().toISOString().slice(0, 10);
+    try {
+      var kept = JSON.parse(localStorage.getItem(OPENED_KEY) || 'null');
+      var seen = kept && kept.day === day && kept.seen instanceof Array ? kept.seen : [];
+      if (seen.indexOf('post:' + id) !== -1) return;
+      seen.push('post:' + id);
+      localStorage.setItem(OPENED_KEY, JSON.stringify({ day: day, seen: seen }));
+    } catch (e) { /* no storage: the server decides alone */ }
+    var payload = { kind: 'post', id: id };
+    if (window.TTBTrack && window.TTBTrack.device) payload.device = window.TTBTrack.device();
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function () { /* a count missed, and nothing the reader needs to hear */ });
   }
 
   /* Walking between the index and a post. The row is a real link and this is

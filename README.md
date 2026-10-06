@@ -7799,7 +7799,8 @@ statement per read — and a save says *Pages are not switched on here yet.*
 `/insights`: how the page under your name is doing. How often `/u/<you>` was
 opened, where the people opening it came from, which country, and what on it
 they pressed — over the last 7, 28 or 90 days or all of it — and under that,
-how often each of your lists has been opened, and from which countries. It is read by
+how often each of your lists has been opened, and from which countries, and
+how often each of your posts on the blog has been read. It is read by
 the owner of the page and by nobody else; nothing about it is printed on the
 profile, on `/admin/stats` or anywhere a stranger can see, and the route has no way
 to ask about anybody but yourself. The door to it is a row on the account
@@ -7821,7 +7822,7 @@ checking how your page looks never moves its number.
 way it is another page load, and that was wrong for a number somebody
 reads as "how many people looked": a page refreshed over and over by one
 visitor, or by a script to make a list look popular, said something that was
-not true. So an open of a profile or of a list now counts the first time it
+not true. So an open of a profile, of a list or of a post now counts the first time it
 happens in a UTC day from one browser on one network and not again until the
 next. The page remembers what it sent today in `localStorage` under
 `ttb.opened` and does not send it twice, which stops the ordinary reload for
@@ -7873,6 +7874,27 @@ line and no sentence, and on a database without the table the card is what
 it was before: numbers, and nothing under them. The day has been in the key
 since the table was made, so following a list to a range — which week it
 took off — is a read away when somebody asks, and is not drawn yet.
+
+**Your posts** is the card under it, and it is the lists' card again for what
+you have written on the blog: every post you have published, most read first,
+the title a way into it — in the language the page is being read in where the
+post is written in it, the one it was first written in where it is not, as
+the blog itself picks — and the number beside it. A read is a published post
+drawn on `/blog`, however the reader got there, counted by the lists' rules: not
+your own, which the blog leaves out by `mine` and the server again by the
+session, once a day per reader through the same `ttb.opened` and `view_seen`,
+and nothing from the owner's browser. It is one running number in
+`press_counts` under `post`, so it is **all time** whatever the chips say, as
+the line under it says, and it has no countries under it: a post's reads are
+counted with no day and no place in them, which was enough for a first
+version and cost no table. A post taken back to draft keeps its row and the
+number it had, marked **Draft** the way `/write` marks it, and stops growing,
+since only a published post is counted; a post never published is not there.
+No posts is no card, and posts nobody has read yet are *Nobody has read your
+posts yet*. The house's own posts in `data/blog.json` are not counted here —
+they are the site's owner's, and **What was opened** under **Visitors** is
+where theirs are. Counted since 2026-10-06; every read before that is lost,
+since the member's posts were not counted at all until then.
 
 Where it parts from those hosts, on purpose. **Every range is there for
 everybody** — there is no ninety days behind an upgrade, because this site
@@ -11679,6 +11701,9 @@ and opens one in the editor at `/write?post=<id>` (`?post=new` for one that
 has never been saved). Every member has a blog of their own the moment they
 publish: `/blog?by=<name>`, everything they published under their name, which
 `/write` links as **Your blog** and their profile links under their posts.
+How often each of their published posts has been read is theirs to see and
+nobody else's, under **Your posts** on `/insights` — once a day per reader,
+never their own reads — and **Insights** under **Profiles** is the whole of it.
 
 ```
 /write                     your posts, a page at a time, and New post
@@ -17110,6 +17135,7 @@ How the page under your name is doing, `assets/insights.js`:
 | `insights_range` | `days` (`7`, `28`, `90`, or `0` for all time) — a range chip pressed |
 | `insights_view` | — the way to the page as everybody sees it, in the header |
 | `list_page` | `list_id` — a row on **Your lists**, as on the lists |
+| `blog_member` | `post` — a row on **Your posts**, as on the blog |
 | `account_open` | `view` — the two doors when signed out |
 | `home` | as on the map |
 

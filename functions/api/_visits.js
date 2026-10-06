@@ -24,6 +24,8 @@
  *   listCountries() the countries under a handful of lists, by id — what
  *                   listViews() and /api/admin/stats both draw the line
  *                   under a list out of
+ *   postViews()     how often each of the owner's published posts has been
+ *                   read, for the Your posts card on /insights
  *
  * VIEWS, NOT PEOPLE
  *
@@ -41,8 +43,9 @@
  * It is not any more, because the number is one somebody reads as "how many
  * people looked", and a page refreshed twenty times by one visitor — or by a
  * script, to make a list look popular — answered that wrongly. So an open of
- * a profile or of a list is counted the first time it happens in a UTC day
- * from one browser on one network, and not again until tomorrow.
+ * a profile, a list or a member's post is counted the first time it happens
+ * in a UTC day from one browser on one network, and not again until
+ * tomorrow.
  *
  * Two halves. The page remembers what it has already sent today in
  * localStorage and does not send it again, which stops the ordinary reload
@@ -266,9 +269,9 @@ export async function countView(context, name, from) {
 
 /* Whether this is the first time today that this visitor has opened this
  * thing — ONCE A DAY, WHOEVER IS REFRESHING above. `kind` and `id` name the
- * thing ('profile' and the owner's id, 'list' and the list's), and they go
- * into the key rather than beside it, so no two rows share anything a
- * reader could line up.
+ * thing ('profile' and the owner's id, 'list' and the list's, 'post' and
+ * the post's), and they go into the key rather than beside it, so no two
+ * rows share anything a reader could line up.
  *
  * One INSERT OR IGNORE, and the answer is whether it inserted: two opens in
  * the same instant cannot both be first. True — count it — wherever the
@@ -435,6 +438,69 @@ export async function listViews(env, owner) {
   const lists = (results || []).map((r) => ({ id: r.id, title: r.title, public: r.public === 1, n: r.n || 0 }));
   const where = await listCountries(env, lists.map((l) => l.id));
   return lists.map((l) => ({ ...l, country: where ? where.get(l.id) || [] : null }));
+}
+
+/* Every post the owner has published, with how often each has been read,
+ * most first — or null where the posts cannot be read.
+ *
+ *   [{ id, lang, status, titles, n }]
+ *
+ * `n` is all time, the running number in press_counts under kind 'post'
+ * that functions/api/stats.js counts once a day per reader, the way a
+ * list's is; there is no day in it to cut by and no country beside it, and
+ * the page says the first under the card. `titles` is { <lang>: title }
+ * for every language the post is written in, and `lang` the one it was
+ * first written in, so the page names it in the reading language where it
+ * has one, the way the blog does. A post is here once it has been
+ * published, and stays through a trip back to draft — `status` says which
+ * — keeping the number it had, since stats.js stops counting it the moment
+ * it is not published; a post never published has nobody to have read it
+ * and is not here at all.
+ *
+ * Two reads: the owner's posts joined to their counts on the primary key,
+ * then their titles. A database without press_counts answers the posts
+ * with noughts, the way listViews() above survives the same. */
+export async function postViews(env, owner) {
+  const read = (opens) => env.DB
+    .prepare(
+      'SELECT p.id, p.lang, p.status, ' + (opens ? 'COALESCE(c.n, 0)' : '0') + ' AS n FROM posts p ' +
+      (opens ? "LEFT JOIN press_counts c ON c.kind = 'post' AND c.id = p.id " : '') +
+      'WHERE p.owner = ? AND p.published_at IS NOT NULL ' +
+      'ORDER BY n DESC, p.published_at DESC, p.id ASC'
+    )
+    .bind(owner)
+    .all();
+  let results;
+  try {
+    ({ results } = await read(true));
+  } catch (e) {
+    try {
+      ({ results } = await read(false));
+    } catch (e2) {
+      return null;
+    }
+  }
+  const posts = (results || []).map((r) => ({ id: r.id, lang: r.lang, status: r.status, titles: {}, n: r.n || 0 }));
+  if (!posts.length) return posts;
+
+  /* MAX_POSTS in ./_posts.js is two hundred an account, so the titles are
+     asked for LIST_BATCH ids at a time rather than in one IN (...) that
+     could pass the hundred parameters D1 binds. */
+  const byId = new Map(posts.map((p) => [p.id, p]));
+  const ids = posts.map((p) => p.id);
+  try {
+    for (let at = 0; at < ids.length; at += LIST_BATCH) {
+      const batch = ids.slice(at, at + LIST_BATCH);
+      const rows = (await env.DB
+        .prepare('SELECT post, lang, title FROM post_texts WHERE post IN (' + batch.map(() => '?').join(',') + ')')
+        .bind(...batch)
+        .all()).results || [];
+      for (const r of rows) byId.get(r.post).titles[r.lang] = r.title;
+    }
+  } catch (e) {
+    return null;
+  }
+  return posts;
 }
 
 /* How many lists one statement asks about. D1 binds a hundred parameters at

@@ -33,11 +33,12 @@
  * returning one. No id is made or sent. The owner's pages under /admin/ send
  * nothing, and neither does any page in a browser carrying the `ttb_owner`
  * cookie — the owner's, signed in or not; THE OWNER'S BROWSER in
- * functions/api/_admin.js. `owner` on the object below says so, for the two
- * pages that post a press of their own.
+ * functions/api/_admin.js. `owner` on the object below says so, for the
+ * three pages that post a press of their own — the map, the lists and the
+ * blog.
  *
  * Every report says what it was made on — phone, tablet or desktop, device()
- * below — and those two pages put the same word on the presses they post
+ * below — and those three pages put the same word on the presses they post
  * through `device` on the object, so every number on the owner's pages can
  * be read for one kind of device. BY DEVICE in functions/api/_visitors.js.
  *

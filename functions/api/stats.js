@@ -25,7 +25,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Seven kinds, which is the whole of `kind` in db/schema.sql:
+ * Eight kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened on the map — selectPlace() in assets/app.js,
  *            which is the same moment TTBTrack.view() reports one — whether one of the map's own, by its slug, or one of
@@ -52,6 +52,16 @@
  *            came from, into list_counts through countListOpen() in
  *            ./_visits.js — the half with a day and a place in it, which
  *            both of those pages draw as a line under the list.
+ *   post     a member's post read on the blog, once a day per reader —
+ *            countRead() in assets/blog.js, called whenever the page
+ *            draws one, however the reader arrived at it. Published and not
+ *            the reader's own, which realPost() below checks against the
+ *            session, and once a day through firstToday() as a list is. It
+ *            is read by postViews() in ./_visits.js and drawn back to the
+ *            post's author on /insights and nowhere else. The house's own
+ *            posts in data/blog.json are not this kind: they are the
+ *            owner's, counted under `about` by ./_visitors.js and read on
+ *            /admin/visitors.
  *   rail     a pill on the rail down the left of the map pressed — the nine
  *            in RAIL_PILLS below, which is every button inside #rail and
  *            nothing else. The radio is not one of them: it left the rail for
@@ -112,12 +122,13 @@
  * counted either: it is one person's row on one list, not on the map or in
  * Google's export, so there is nothing for a ranking to compare it against.
  *
- * Every kind but the rail is counted once per page load — a list once a day,
- * above — and the rail every press, which is not an oversight. A place or a
- * chip is a question about where to eat, asked once however many times the
- * card is reopened while somebody makes their mind up — and it has to agree
- * with the one page view TTBTrack.view() reports beside it. A pill is a press, Clarity is sent an
- * event per press of one, and the question this table answers is the plain one:
+ * Every kind but the rail is counted once per page load — a list and a post
+ * once a day, above — and the rail every press, which is not an oversight. A
+ * place or a chip is a question about where to eat, asked once however many
+ * times the card is reopened while somebody makes their mind up — and it has
+ * to agree with the one page view TTBTrack.view() reports beside it. A pill
+ * is a press, Clarity is sent an event per press of one, and the question
+ * this table answers is the plain one:
  * which of the nine buttons do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.
@@ -148,6 +159,8 @@ import {
    guards the venue lookup. Imported rather than restated: _lists.js is a
    module and this is the fourth reader of that expression. */
 import { LIST_ID } from './_lists.js';
+/* And of a post's, for the same reason. */
+import { POST_ID } from './_posts.js';
 import { countView, countPress, countListOpen, firstToday } from './_visits.js';
 import { countArrive, countLeave, DEVICES } from './_visitors.js';
 import { countFlows } from './_flows.js';
@@ -157,12 +170,13 @@ import { adminUser } from './_admin.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
-/* The seven kinds of thing a press can be about. In one place because the POST
+/* The eight kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the ranking in ./admin/stats.js
    splits the rows on it. */
 export const PLACE = 'place';
 export const FILTER = 'filter';
 export const LIST = 'list';
+export const POST = 'post';
 export const RAIL = 'rail';
 export const LAYOUT = 'layout';
 export const LOOK = 'look';
@@ -253,7 +267,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, RAIL, LAYOUT, LOOK, STYLE, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, POST, RAIL, LAYOUT, LOOK, STYLE, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -308,6 +322,7 @@ export async function onRequestPost(context) {
 
   const real = kind === PLACE ? await realPlace(context, id)
              : kind === LIST ? await realList(context, id)
+             : kind === POST ? await realPost(context, id)
              : kind === RAIL ? realPill(id)
              : kind === LAYOUT ? LAYOUT_IDS.indexOf(id) !== -1
              : kind === LOOK ? LOOK_IDS.indexOf(id) !== -1
@@ -317,8 +332,9 @@ export async function onRequestPost(context) {
 
   /* A list opened a second time today by the same visitor is the same look,
      and one its owner opened is not a look at all — realList() has already
-     said no to that. The profile's rule, from the same file. */
-  if (kind === LIST && !(await firstToday(context, LIST, id))) return json({ ok: false }, 200);
+     said no to that. The profile's rule, from the same file, and a post
+     read keeps it too. */
+  if ((kind === LIST || kind === POST) && !(await firstToday(context, kind, id))) return json({ ok: false }, 200);
 
   /* One statement, and the row is made by the same one that increments it. The
      count is a running total rather than something recomputed from a log —
@@ -419,6 +435,29 @@ async function realList(context, id) {
   try {
     const row = await env.DB
       .prepare('SELECT owner FROM lists WHERE id = ? AND public = 1')
+      .bind(id)
+      .first();
+    if (!row) return false;
+    const me = await sessionUser(context.request, env);
+    return !(me && me.id === row.owner);
+  } catch (e) {
+    return false;
+  }
+}
+
+/* And whether that id is a member's post the blog will show anybody, and
+   not one the reader wrote: realList()'s rule above, for the same reason —
+   the number is the author's, read back on /insights, and an author
+   reading their own post is not a reader. Published, because a draft has
+   one reader and a post taken back to draft keeps the number it had and
+   stops growing. The shape is checked before the query, and the session
+   is read only for a post that exists. */
+async function realPost(context, id) {
+  const { env } = context;
+  if (!POST_ID.test(id)) return false;
+  try {
+    const row = await env.DB
+      .prepare("SELECT owner FROM posts WHERE id = ? AND status = 'published'")
       .bind(id)
       .first();
     if (!row) return false;

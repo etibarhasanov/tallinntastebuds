@@ -207,14 +207,14 @@ ref: functions/api/posts.js POST save, delete</bpmn:documentation>
     <bpmn:endEvent id="post-live" name="On /blog and their profile">
       <bpmn:incoming>member-e26</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="insights" name="Reads who opened it and their lists">
+    <bpmn:userTask id="insights" name="Reads who opened it, their lists and their posts">
       <bpmn:documentation>when: page:insights
 ref: insights.html
 ref: assets/insights.js</bpmn:documentation>
       <bpmn:incoming>member-e27</bpmn:incoming>
       <bpmn:outgoing>member-e28</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="views" name="Counts views of their own page and lists">
+    <bpmn:serviceTask id="views" name="Counts views of their own page, lists and posts">
       <bpmn:documentation>ref: functions/api/insights.js GET</bpmn:documentation>
       <bpmn:incoming>member-e28</bpmn:incoming>
       <bpmn:outgoing>member-e29</bpmn:outgoing>
