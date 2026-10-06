@@ -5,7 +5,7 @@ lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does and where to eat that members write in too, a page of which places get opened, a page of
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, and — each on a subdomain of its own — a way to split
 the bill afterwards and a deck of Estonian flashcards.
-Static files, thirty-seven Cloudflare Functions, two D1 databases (preview and
+Static files, thirty-eight Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and

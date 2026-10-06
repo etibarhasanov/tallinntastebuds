@@ -66,14 +66,31 @@
  *
  * `rank` is not recomputed here. It is every row's position among all of
  * them, so one row's new count cannot place it without re-reading the rest;
- * /admin/google sorts by its own copy of that arithmetic in the browser, so the
- * order on the page follows the new numbers at once and only the printed
- * position waits.
+ * _rank.js renumbers the whole table once a week, and between rankings
+ * /admin/google sorts by its own copy of that arithmetic in the browser, so
+ * the order on the page follows the new numbers at once and only the printed
+ * position waits for the Monday.
+ *
+ * THE TOP HUNDRED, ASKED ABOUT WHETHER OR NOT ANYBODY OPENS THEM
+ *
+ * An open is the right signal for eleven hundred places and the wrong one for
+ * the hundred at the top of the ranking: a position among them is a claim
+ * about this month's numbers, and a place nobody happened to open since
+ * August would be ranked on August's. So refreshTop() below asks after the
+ * top hundred's stale rows as well — the same call, the same seven columns,
+ * the same budget, logged under source 'top' rather than 'open' — and the
+ * route behind the Top 100 tab of /admin/google calls it after its answer
+ * has gone. TOP_A_LOAD of them a time, leaving the rest of the day's
+ * thirty-two to opens, so a hundred stale rows take a few openings of the
+ * tab; after the first month they fall due a few at a time and one opening
+ * covers them.
  *
  * Every step is quiet. A missing table, a missing column, a refused key and a
  * Google outage all end the same way: the row stays as it was and the page
  * never hears about it.
  */
+
+import { TOP } from './_rank.js';
 
 /* How old a row's numbers may get before an open asks Google again. A month,
    because that is the horizon Google's terms put on keeping its content, and
@@ -304,7 +321,7 @@ function changesBetween(before, after) {
 
    Quiet, like everything else here: without the table the refresh has already
    been written, and only the history misses a point. */
-async function keepScores(env, placeId, before, after, at, was) {
+async function keepScores(env, placeId, before, after, at, was, source) {
   try {
     await env.DB.batch([
       env.DB
@@ -317,7 +334,7 @@ async function keepScores(env, placeId, before, after, at, was) {
           before.reviews === undefined ? null : before.reviews, was === null ? 'export' : 'open'),
       env.DB
         .prepare('INSERT INTO google_scores (place_id, at, rating, reviews, source) VALUES (?, ?, ?, ?, ?)')
-        .bind(placeId, at, after.rating, after.reviews, 'open')
+        .bind(placeId, at, after.rating, after.reviews, source)
     ]);
   } catch (e) {
     /* google_scores not applied to this database yet. */
@@ -327,15 +344,15 @@ async function keepScores(env, placeId, before, after, at, was) {
 /* One line of the log, and the prune that keeps it to KEEP_LOG, in one round
    trip. `changes` is { column: [from, to] } or nothing; `note` is a sentence
    for the outcomes a column cannot explain — a refusal, a closure, a place
-   Google no longer knows. */
-async function log(env, now, id, outcome, changes, note) {
+   Google no longer knows. `source` is why it was asked: 'open' or 'top'. */
+async function log(env, now, id, source, outcome, changes, note) {
   await env.DB.batch([
     env.DB
       .prepare(
         'INSERT INTO google_refreshes (at, place_id, source, outcome, changes, note) ' +
         'VALUES (?, ?, ?, ?, ?, ?)'
       )
-      .bind(now, id, 'open', outcome, changes ? JSON.stringify(changes) : '', note || ''),
+      .bind(now, id, source, outcome, changes ? JSON.stringify(changes) : '', note || ''),
     env.DB
       .prepare('DELETE FROM google_refreshes WHERE at < ?')
       .bind(now - KEEP_LOG)
@@ -345,10 +362,12 @@ async function log(env, now, id, outcome, changes, note) {
 /* The whole of it, for one place somebody has just opened. Called from
  * functions/api/stats.js through waitUntil, with an id that route has already
  * checked is real — either kind of id, because both kinds of place now show
- * Google's numbers. Never throws. The word it answers with names the exit it
- * took; nothing on the site reads it, and it is what a console.log under
- * `wrangler pages dev` would want. */
-export async function refreshOnOpen(env, id) {
+ * Google's numbers — and from refreshTop() below with source 'top', which is
+ * the only other reason a place is asked about. Never throws. The word it
+ * answers with names the exit it took; refreshTop() reads it to know when the
+ * day is spent, and it is what a console.log under `wrangler pages dev` would
+ * want. */
+export async function refreshOnOpen(env, id, source = 'open') {
   const at = Date.now();
   const key = googleKey(env);
   if (!key || !env || !env.DB) return 'no-key';
@@ -422,7 +441,7 @@ export async function refreshOnOpen(env, id) {
       });
     } catch (e) {
       await unclaim();
-      await log(env, at, placeId, 'failed', null, 'no answer from Google');
+      await log(env, at, placeId, source, 'failed', null, 'no answer from Google');
       return 'failed';
     }
 
@@ -435,7 +454,7 @@ export async function refreshOnOpen(env, id) {
         .bind(at, placeId)
         .run();
       written = true;
-      await log(env, at, placeId, 'gone', null, 'Google does not know this place any more');
+      await log(env, at, placeId, source, 'gone', null, 'Google does not know this place any more');
       return 'gone';
     }
 
@@ -448,7 +467,7 @@ export async function refreshOnOpen(env, id) {
         if (body && body.error && body.error.message) why += ': ' + String(body.error.message).slice(0, 200);
       } catch (e) { /* not JSON, and the status says enough */ }
       await unclaim();
-      await log(env, at, placeId, 'failed', null, why);
+      await log(env, at, placeId, source, 'failed', null, why);
       return 'failed';
     }
 
@@ -467,11 +486,11 @@ export async function refreshOnOpen(env, id) {
         row.website, row.opening_hours, at, closedForGood ? 1 : 0, at, placeId)
       .run();
     written = true;
-    await keepScores(env, placeId, before, row, at, was);
+    await keepScores(env, placeId, before, row, at, was, source);
 
     const any = Object.keys(moved).length > 0;
     const outcome = closedForGood ? 'closed' : any ? 'changed' : 'same';
-    await log(env, at, placeId, outcome, any ? moved : null,
+    await log(env, at, placeId, source, outcome, any ? moved : null,
       closedForGood ? 'Google says it has closed for good' : '');
     return outcome;
   } catch (e) {
@@ -480,4 +499,46 @@ export async function refreshOnOpen(env, id) {
     }
     return 'error';
   }
+}
+
+/* How many of the top hundred one opening of the Top 100 tab may ask about.
+   Twenty-four of the day's thirty-two, so a tab opened on a day of busy opens
+   still leaves the opens something to spend. */
+const TOP_A_LOAD = 24;
+
+/* The top hundred's stale rows, asked about in rank order until TOP_A_LOAD
+ * are done or the day is spent. Called from functions/api/admin/top100.js
+ * through waitUntil, after _rank.js has made the week's ranking, so `rank`
+ * is this week's. Reads `rank` directly rather than google_ranks because the
+ * column is what the directory shows and is the thing to keep honest; on a
+ * database without the column the SELECT throws and this stops, quietly.
+ *
+ * refreshOnOpen() does the claiming, so a row another request is already
+ * asking about comes back 'taken' and is simply skipped; 'spent' ends the
+ * loop, since the next row would get the same answer. Returns how many were
+ * written, for a console.log under `wrangler pages dev`. */
+export async function refreshTop(env, now) {
+  if (!env || !env.DB || !googleKey(env)) return 0;
+
+  let due;
+  try {
+    due = await env.DB
+      .prepare(
+        'SELECT place_id FROM google_venues ' +
+        'WHERE rank IS NOT NULL AND rank <= ? AND COALESCE(refreshed_at, 0) <= ? ' +
+        'ORDER BY rank LIMIT ?'
+      )
+      .bind(TOP, now - REFRESH_AFTER, TOP_A_LOAD)
+      .all();
+  } catch (e) {
+    return 0;
+  }
+
+  let written = 0;
+  for (const row of (due && due.results) || []) {
+    const outcome = await refreshOnOpen(env, row.place_id, 'top');
+    if (outcome === 'spent' || outcome === 'no-key' || outcome === 'not-ready') break;
+    if (outcome === 'changed' || outcome === 'same' || outcome === 'closed' || outcome === 'gone') written++;
+  }
+  return written;
 }
