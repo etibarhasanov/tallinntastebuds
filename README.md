@@ -8677,8 +8677,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-two
-decks of Estonian, two thousand four hundred and eighty-two cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-three
+decks of Estonian, two thousand five hundred cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -8687,7 +8687,8 @@ answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, in a part of their own behind the menu at the top of that page — **The
 menu, and Start** below — five lessons of
 grammar about why the words on the cards come in threes, what grows out of them
-and how an adjective compares — **Grammar, which is
+and how an adjective compares, the last with a deck of comparatives after it —
+**Grammar, which is
 read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
@@ -8829,7 +8830,7 @@ assistants' fetchers most of all, since **AI assistants** under
 [Getting found](#getting-found) is a list of readers that run no script — that
 knows the language of every string on the page without sniffing it, which is
 exactly the question *что значит leib* turns on. It costs twenty-seven
-kilobytes on the shelf — fifty-two names and their lines, with the lessons
+kilobytes on the shelf — fifty-three names and their lines, with the lessons
 and the songs — and between seven and seventy-six on a deck, against the
 map's eighty-five at its worst: a card is four short strings where a
 restaurant is an address, a coordinate, a photograph and a write-up, but a
@@ -8859,8 +8860,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: fifty-two decks, two
-thousand four hundred and eighty-two cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: fifty-three decks, two
+thousand five hundred cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -9260,7 +9261,7 @@ ships is eighteen. The number is a reading of a week rather than a law: put
 and move it if that says to.
 
 **And five to a tab rather than five a deck.** Five free words in each of
-fifty-two decks is two hundred and sixty words, which is a product rather than a sample:
+fifty-three decks is two hundred and sixty-five words, which is a product rather than a sample:
 the tab holding five answers is what raises the gate, on that deck and on every
 other. A card answered twice is one word. That is also what stops the reload button being the way past — the run
 rebuilds itself from what the route answered, and the route has no idea who is
@@ -10054,7 +10055,7 @@ A stage rather than a deck, because a deck is already paced from inside — the
 sort under **And a finished deck sinks** puts the one you are in the middle of
 at the top — and a lock on each deck would have
 been Duolingo's path laid over that, with the two fighting over which deck is
-next. Two numbers rather than fifty-two, and the level a deck already carries
+next. Two numbers rather than fifty-three, and the level a deck already carries
 in `data/decks.json` is which of them it is held to, or neither.
 
 **A hundred and four hundred**, and why. A hundred is a quarter of the 397
@@ -10269,9 +10270,10 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **986 of the 2,482 cards** carry
+would be a stray clause with no translation. **1,003 of the 2,500 cards** carry
 one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
-bar the ones that are a whole sentence already, every card in the songs' decks —
+bar the ones that are a whole sentence already, every card but the question in
+the comparatives' deck, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
 decks where an example says something the gloss does not. The words the course
 glossary brought in have none, and that is the one thing left undone about
@@ -10517,6 +10519,17 @@ participles, which it has all four of, on *самый* for *kõige*, *-ейши�
 It is the last of the five, so the line that says there is more grammar to
 come, which closed the tenses lesson, closes this one now.
 
+**And it is followed by a deck, the way each case lesson is.** Eighteen
+cards under the tile, drawn there the way a case lesson's are and open behind
+no gate: ten comparatives from *suurem* to *magusam*, *parem* and *halvem*,
+three superlatives and two with *kõige*, and *Kas teil on väiksemat?* for the
+comparative standing in a case of its own. Each builds the way a case card
+does, under **The cases, one at a time** — *suure + m → suurem*, *suur + im →
+suurim* — and the pairing is the lesson's `deck`, the same field a case
+lesson carries; what keeps the lesson under Grammar rather than moving it
+under the cases' heading is the lesson's `heading`, which that section
+explains.
+
 **And every table is said aloud under it.** A paragraph can only quote the
 Estonian inside an English sentence about it, which is not how anybody will
 meet it. So after each paradigm, in all five lessons, comes a short run of
@@ -10578,15 +10591,27 @@ three questions English asks as one.
 stage: like a song's words, the page draws it under the lesson rather than under
 any of the four headings, and nothing holds it back, because the route has no
 gate for that level either. `tools/validate.mjs` fails a lesson whose deck is
-not in the file or is not a `case` deck, and a `case` deck no lesson names. The
+not in the file or is not a `case` deck, and a `case` deck no lesson names.
+The level is named for the five decks that had it first; the comparatives'
+deck after the adjectives lesson carries it too, since what the level means is
+*a lesson's deck*, drawn under the lesson and under no stage.
+
+**Which heading a lesson is under is a field of its own.** While only the
+case lessons had decks, naming a deck was what put a lesson under *The cases,
+one by one*, and giving the adjectives a deck would have moved them there. So
+a lesson carries `heading: "cases"` to be drawn under that heading, and
+nothing to stay under Grammar — the validator holds it to that one value —
+and `deck` says only what follows the lesson. `underCases()` and `followed()`
+in `assets/flashcard.js` are the two tests, and `deckList()` in
+`functions/flashcard.js` splits the crawler's lists the same way. Four of the
 five lessons under **Grammar** carry no `deck` and are drawn where they always
-were.
+were; the fifth has its deck drawn straight under it, still under Grammar.
 
 **Got it goes on into the cards.** On a lesson with a deck the button reads
 *Got it — on to the cards* (`flashToCards`), marks the lesson read exactly as
-before, and opens its deck rather than the shelf; the lesson's eyebrow says
-*The cases, one by one* (`flashCases`) rather than *Grammar*. Every other lesson
-still goes back to the shelf.
+before, and opens its deck rather than the shelf; a lesson under the cases'
+heading says *The cases, one by one* (`flashCases`) in its eyebrow rather than
+*Grammar*. Every other lesson still goes back to the shelf.
 
 **And each card says how its ending was built.** The cards in those five
 decks are phrases — *Ta töötab kokana*, *Kohv piimaga* — so they carry none of
@@ -10613,6 +10638,17 @@ from the lesson's own heading so the card says what the lesson called it. A
 card with no word in a case to build — *Kus sa oled?*, *Kuhu sa lähed?* and
 *Kust sa pärit oled?*, the second lesson's three questions — has no line at
 all rather than an invented one, so 67 of the 70 carry it.
+
+The comparatives' deck after the adjectives lesson builds the same way, with
+the degree where the case would be: *suure + m → suurem · keskvõrre · more*,
+*suur + im → suurim · ülivõrre · most*, and *väiksem · väiksema · **väiksemat***
+under *Kas teil on väiksemat?*, which is the comparative in a case of its own.
+Where the omastav's vowel has already turned, the sum starts from the turned
+stem and marks none of the three, as a plural does — *vane + m → vanem*,
+*pike + m → pikem* — because the line is there to show the ending and the
+lesson over it has said what happened to the vowel. *Parem*, *halvem* and
+*parim* are learnt whole and carry plain `forms`, since no sum reaches them.
+Fourteen of the eighteen carry a build.
 
 It is `build` on the card in `data/decks.json` — `forms`, the three; `on`,
 which of them is marked; `from` and `end`, the stem and the ending; `makes`,
@@ -15040,8 +15076,8 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            fifty-two decks of Estonian, 2,482 cards under four
-                           headings, the songs' and the cases', nine lessons of
+data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
+                           headings, the songs' and the cases', ten lessons of
                            grammar and four songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten

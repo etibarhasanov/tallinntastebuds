@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: fifty-two decks of Estonian, two
- * thousand four hundred and eighty-two cards, Estonian on the front and what it
+ * menu. This is the other half of that: fifty-three decks of Estonian, two
+ * thousand five hundred cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -15,7 +15,7 @@
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same two
- * thousand four hundred and eighty-two cards. Nothing about them is in the
+ * thousand five hundred cards. Nothing about them is in the
  * database and nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
@@ -295,7 +295,7 @@ const GATES = { more: 100, deep: 400 };
  *
  * Signed out is nought words, so a stranger gets First words and At a
  * restaurant, which has no gate, and the two shut headings under them. That
- * is the point of the stages — a page of fifty-two rows has nothing on it to
+ * is the point of the stages — a page of fifty-three rows has nothing on it to
  * say where to start — and it is the one thing about them that changed after
  * they shipped.
  *
@@ -409,9 +409,11 @@ async function shippedLessons(context) {
 /* A lesson as the page reads it: its name and line for the shelf, its body
    when it is the one open, and whether this person has pressed Got it on it —
    which is a known row under GRAMMAR_DECK, read the way a card's is. And the
-   deck that follows it, for a case lesson: the page draws that deck straight
-   under the lesson's tile, and Got it goes on into it rather than back to the
-   shelf. */
+   deck that follows it, where the lesson names one: the page draws that deck
+   straight under the lesson's tile, and Got it goes on into it rather than
+   back to the shelf. And which heading the lesson is drawn under — "cases"
+   for the five taught one at a time, nothing for the rest — which the page
+   reads to draw the shelf and the lesson's eyebrow. */
 function lessonAnswer(lesson, known, whole) {
   return {
     id: lesson.id,
@@ -420,6 +422,7 @@ function lessonAnswer(lesson, known, whole) {
     taste: lesson.taste || null,
     added: lesson.added || null,
     deck: lesson.deck || null,
+    heading: lesson.heading || null,
     ...(whole ? { body: lesson.body } : {}),
     read: stateOf(known, GRAMMAR_DECK, lesson.id).known
   };
@@ -915,7 +918,7 @@ export async function onRequestGet(context) {
 
   /* And the lessons, every one, with whether each has been read. They are in
      no stage and behind no gate: they are a file, prose, and the argument for
-     holding a deck back — fifty-two rows with nothing saying where to start —
+     holding a deck back — fifty-three rows with nothing saying where to start —
      does not reach five tiles under a heading of their own. */
   const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
 

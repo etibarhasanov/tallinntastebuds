@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: fifty-two decks of Estonian, two
- * thousand four hundred and eighty-two cards, Estonian on the front and what it
+ * menu. This is the other half of that: fifty-three decks of Estonian, two
+ * thousand five hundred cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who
@@ -60,10 +60,12 @@
  * Five lessons sit on the shelf under a heading of their own, after the first
  * stage: why a noun has three forms and the fourteen cases they open, why a
  * verb does and every tense it grows into, and how an adjective compares and
- * what it is made from. Under them, a second heading
- * teaches the cases one at a time — five short lessons, each followed by a
- * deck of cards that uses only what it taught, and Got it on one of those goes
- * on into its deck rather than back to the shelf. A lesson is a tile
+ * what it is made from — and the last of those is followed by a deck of
+ * comparatives, the way each case lesson is by its cards. Under them, a
+ * second heading teaches the cases one at a time — five short lessons, each
+ * followed by a deck of cards that uses only what it taught. Got it on a
+ * lesson with a deck goes on into the deck rather than back to the shelf,
+ * under either heading. A lesson is a tile
  * like a deck's and opens at the same kind of address, and what it opens to is
  * prose — paragraphs, small headings, a paradigm or two and the sentences that
  * use them, every form and every sentence a press that says it aloud — with
@@ -141,7 +143,7 @@
  *
  * Some words rather than none, because somebody shown nothing is being asked
  * to sign up for a description, and five to a tab rather than five a deck,
- * because five free words per deck across fifty-two decks is the product. It
+ * because five free words per deck across fifty-three decks is the product. It
  * was one word until October 2026, and one word was a card and then a form —
  * FREE_WORDS says what that cost. They are the tab's words: the run below is
  * sessionStorage, so tomorrow is somebody arriving again, and nothing here
@@ -188,7 +190,7 @@
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
  * ones the site ships that this person's stages have opened — nine of the
- * fifty-two before anybody has answered a card — and yours under them. With it, it is that deck,
+ * fifty-three before anybody has answered a card — and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
@@ -1307,7 +1309,7 @@
    *
    * Signed out is nought words and so the two gated stages are shut, headings
    * and all, which is the one thing about the stages that changed after they
-   * shipped: a stranger handed fifty-two rows has nothing on the page telling
+   * shipped: a stranger handed fifty-three rows has nothing on the page telling
    * them where to start, and nine is where to start — the five of First words
    * and the four of At a restaurant, which has no gate.
    * What signed out is not held to is a deck reached by its address — see
@@ -1719,15 +1721,20 @@
      since the route has no gate for it. */
   var SONG_LEVEL = 'song';
 
-  /* And the level of the deck a case lesson is followed by. Not a stage
-     either: it is drawn in the grammar's part under The cases, one by one,
-     straight after the lesson that names it, so it reads lesson, cards,
-     lesson, cards. */
+  /* And the level of the deck a lesson is followed by. Not a stage either:
+     it is drawn in the grammar's part straight after the lesson that names
+     it, under whichever heading that lesson is under, so it reads lesson,
+     cards, lesson, cards. */
   var CASE_LEVEL = 'case';
 
-  /* Whether a lesson is one of the cases taught one at a time — which is to
-     say, whether it names the deck that follows it. */
+  /* Whether a lesson names the deck that follows it — each of the cases
+     taught one at a time does, and so does the adjectives lesson under
+     Grammar — and, separately, whether it is drawn under The cases, one by
+     one. The two were one test while only the case lessons had decks, and
+     giving the adjectives a deck would have moved them under the cases'
+     heading. */
   function followed(lesson) { return !!lesson.deck; }
+  function underCases(lesson) { return lesson.heading === 'cases'; }
 
   /* The decks the site ships, the lessons and the songs: the shelf, drawn as
      whichever of its four parts is open, under the menu that picks one. The
@@ -1755,8 +1762,8 @@
   }
 
   /* The one number that is about the person rather than about the decks:
-     how many of the shipped words they know, over every deck. Fifty-two rows
-     each saying "9 / 22" is fifty-two facts and no score, and this is the one
+     how many of the shipped words they know, over every deck. Fifty-three rows
+     each saying "9 / 22" is fifty-three facts and no score, and this is the one
      that grows over a month — which is the thing that brings somebody back on
      a Tuesday. On Start and over the words, which are the two parts it is
      about.
@@ -1862,28 +1869,32 @@
     return kids;
   }
 
-  /* The grammar: the lessons that stand alone, then the cases, one at a time
-     — a lesson, then the deck of cards that uses only what it taught, then
-     the next lesson. The pairing is the lesson's own `deck` rather than
-     anything in the ids. See **The cases, one at a time** in README.md. */
+  /* The grammar: the lessons under Grammar, then the cases, one at a time,
+     each list a lesson, then the deck of cards that uses only what it taught
+     where the lesson names one, then the next lesson. The pairing is the
+     lesson's own `deck` and the split is its `heading`, neither anything in
+     the ids. See **The cases, one at a time** in README.md. */
   function grammarPart(ours) {
-    var grammar = state.lessons.filter(function (l) { return !followed(l); });
-    var cases = state.lessons.filter(followed);
+    var grammar = state.lessons.filter(function (l) { return !underCases(l); });
+    var cases = state.lessons.filter(underCases);
     var kids = [];
     if (!grammar.length && !cases.length) {
       kids.push(el('p', { className: 'lists-none', textContent: t('flashNoneShipped') }));
       return kids;
     }
-    if (grammar.length) kids.push(lessonList(grammar));
+    var steps = function (lessons) {
+      var ul = el('ul', { className: 'menu flash-shelf' });
+      lessons.forEach(function (lesson) {
+        ul.appendChild(lessonRow(lesson));
+        var cards = followed(lesson) && ours.filter(function (d) { return d.id === lesson.deck; })[0];
+        if (cards) ul.appendChild(deckRow(cards));
+      });
+      return ul;
+    };
+    if (grammar.length) kids.push(steps(grammar));
     if (cases.length) {
       kids.push(el('h2', { className: 'lists-section', textContent: t('flashCases') }));
-      var steps = el('ul', { className: 'menu flash-shelf' });
-      cases.forEach(function (lesson) {
-        steps.appendChild(lessonRow(lesson));
-        var cards = ours.filter(function (d) { return d.id === lesson.deck; })[0];
-        if (cards) steps.appendChild(deckRow(cards));
-      });
-      kids.push(steps);
+      kids.push(steps(cases));
     }
     return kids;
   }
@@ -3377,7 +3388,7 @@
    */
   function lessonHead() {
     return el('div', { className: 'flash-deck' }, [
-      el('span', { className: 'eyebrow', textContent: t(followed(state.lesson) ? 'flashCases' : 'flashGrammar') }),
+      el('span', { className: 'eyebrow', textContent: t(underCases(state.lesson) ? 'flashCases' : 'flashGrammar') }),
       backOut({ lesson_id: state.lesson.id })
     ]);
   }
