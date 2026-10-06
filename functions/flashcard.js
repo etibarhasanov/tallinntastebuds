@@ -165,7 +165,8 @@ async function shelfOf(context) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   forty-two under it rather than treating it as a leaf. */
+   fifty-two decks, nine lessons and four songs under it rather than treating
+   it as a leaf. */
 function deckList(decks, lessons, songs) {
   const row = (one) =>
     '<li><h2><a href="' + PATH + '?d=' + esc(one.id) + '">' + esc(inEnglish(one.name)) + '</a></h2>' +
@@ -318,12 +319,14 @@ function deckSays(deck, languages, lang) {
  * string on the page without sniffing it, and that is exactly the question
  * "что значит leib" turns on.
  *
- * It costs thirteen kilobytes on the shelf, which is forty-two names and their
- * lines, and between ten and thirty-four on a deck, which is one line per card
- * — a third of what the same block costs the map at its worst and a good deal
- * less on an ordinary deck, because a card is four short strings and a
- * restaurant is an address, a coordinate, a photograph and a write-up. See
- * **Getting found** in README.md for the map's half of that arithmetic.
+ * It costs twenty-seven kilobytes on the shelf, which is fifty-two names and
+ * their lines with the lessons and the songs, and between seven and
+ * seventy-six on a deck, which is one line per card and more where a card
+ * carries its three forms and a sentence in three languages — a quarter of
+ * what the same block costs the map at its worst on an ordinary deck of
+ * forty cards, and nearly all of it on the two-word verbs, which are a
+ * hundred and twenty-five. See **Getting found** in README.md for the map's
+ * half of that arithmetic.
  *
  * The English is what goes in the names and the descriptions of the page
  * itself, for the reason the <main> is English: this block is read by the

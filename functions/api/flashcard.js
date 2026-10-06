@@ -15,7 +15,7 @@
  * The decks this site ships are data/decks.json, deployed as a file and read
  * as one through dataFile() below. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same two
- * thousand and thirty cards. Nothing about them is in the
+ * thousand four hundred and eighty-two cards. Nothing about them is in the
  * database and nothing needs to be — a row per card per deployment would be a copy of a file
  * that only a deploy changes, and the first thing anybody would have to write
  * is the tool that keeps the two in step.
@@ -295,7 +295,7 @@ const GATES = { more: 100, deep: 400 };
  *
  * Signed out is nought words, so a stranger gets First words and At a
  * restaurant, which has no gate, and the two shut headings under them. That
- * is the point of the stages — a page of forty-two rows has nothing on it to
+ * is the point of the stages — a page of fifty-two rows has nothing on it to
  * say where to start — and it is the one thing about them that changed after
  * they shipped.
  *
@@ -915,7 +915,7 @@ export async function onRequestGet(context) {
 
   /* And the lessons, every one, with whether each has been read. They are in
      no stage and behind no gate: they are a file, prose, and the argument for
-     holding a deck back — forty-two rows with nothing saying where to start —
+     holding a deck back — fifty-two rows with nothing saying where to start —
      does not reach four tiles under a heading of their own. */
   const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
 
