@@ -1086,7 +1086,16 @@
   "routeGoogle": "Avaa Google Mapsissa",
   "routeNone": "Kävelyreittiä ei löytynyt.",
   "routeLocate": "Jaa sijaintisi nähdäksesi reitin.",
-  "routeFinding": "Etsitään reittiä…"
+  "routeFinding": "Etsitään reittiä…",
+  "routeModes": "Miten sinne pääsee",
+  "routeModeWalk": "Kävellen",
+  "routeModeBus": "Bussi",
+  "routeModeCar": "Auto",
+  "routeTrips": "Lähdöt",
+  "routeCar": "{min} min autolla · {dist}",
+  "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
+  "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",
+  "routeNoCar": "Ajoreittiä ei löytynyt."
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

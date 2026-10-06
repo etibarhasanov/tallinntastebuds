@@ -4278,11 +4278,13 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 }
 .toast[hidden] { display: none; }
 
-/* ---------- the walk ---------- */
+/* ---------- the way there ---------- */
 
 /* What stands on the map while a route is drawn: the sheet is gone, and this is
    the one thing left to read and press. Under the toast, over everything else.
-   Nothing here names a colour; the line itself takes the dot's, --here. */
+   Four rows: Walk · Bus · Car beside the cross, the line saying how long, the
+   bus journeys on offer, and Google as a small link last. Nothing here names a
+   colour; a walk or a drive takes the dot's, --here, and a ride its own. */
 .route-bar {
   position: fixed;
   z-index: 2400;
@@ -4302,9 +4304,28 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   box-shadow: var(--shadow);
 }
 .route-bar[hidden] { display: none; }
+.route-modes {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  gap: 6px;
+}
+.route-mode,
+.route-trip {
+  padding: 7px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.route-mode[aria-pressed="true"],
+.route-trip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .route-say {
   margin: 0;
-  grid-column: 1;
+  grid-column: 1 / -1;
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: .02em;
@@ -4329,7 +4350,25 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   stroke-width: 1.8;
   stroke-linecap: round;
 }
-.route-google { grid-column: 1 / -1; justify-content: center; text-align: center; }
+.route-trips {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.route-trips[hidden] { display: none; }
+.route-trip { flex: none; padding: 5px 11px; font-family: var(--mono); font-size: 11.5px; }
+/* Ours first, Google as a way out rather than the answer. */
+.route-google {
+  grid-column: 1 / -1;
+  justify-self: start;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.route-google:hover { color: var(--accent); }
 /* Out of the way, not closed: the panel keeps its place and its scroll, so the
    cross on the bar gives back the sheet exactly as it was left. */
 body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }

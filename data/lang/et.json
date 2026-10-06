@@ -1086,7 +1086,16 @@
   "routeGoogle": "Ava Google Mapsis",
   "routeNone": "Jalgsimarsruuti ei leitud.",
   "routeLocate": "Tee nägemiseks jaga oma asukohta.",
-  "routeFinding": "Otsin teed…"
+  "routeFinding": "Otsin teed…",
+  "routeModes": "Kuidas sinna jõuda",
+  "routeModeWalk": "Jala",
+  "routeModeBus": "Buss",
+  "routeModeCar": "Auto",
+  "routeTrips": "Väljumised",
+  "routeCar": "{min} min autoga · {dist}",
+  "routeBus": "{lines} kell {time} peatusest {stop} · kokku {min} min",
+  "routeNoBus": "Praegu bussi ega trammi ei leitud.",
+  "routeNoCar": "Autoteed ei leitud."
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

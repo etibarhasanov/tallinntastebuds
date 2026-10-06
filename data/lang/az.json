@@ -1086,7 +1086,16 @@
   "routeGoogle": "Google Maps-də aç",
   "routeNone": "Piyada marşrut tapılmadı.",
   "routeLocate": "Yolu görmək üçün məkanınızı paylaşın.",
-  "routeFinding": "Yol axtarılır…"
+  "routeFinding": "Yol axtarılır…",
+  "routeModes": "Ora necə getmək",
+  "routeModeWalk": "Piyada",
+  "routeModeBus": "Avtobus",
+  "routeModeCar": "Maşın",
+  "routeTrips": "Reyslər",
+  "routeCar": "{min} dəq maşınla · {dist}",
+  "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
+  "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
+  "routeNoCar": "Maşın marşrutu tapılmadı."
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",
