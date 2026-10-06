@@ -7,7 +7,7 @@
  *
  * WHAT IT IS MADE OF
  *
- * data/ui.json for every word, and /api/feedback for everything anybody
+ * data/lang/<code>.json for every word, and /api/feedback for everything anybody
  * wrote. One <main>, everything built into it, the state decided once when
  * both answers are in — which is how lists.html, account.html and blog.html
  * are put together, and for the reason all three say: there is one place that
@@ -65,7 +65,14 @@
      moment it is read. */
   var DRAFT_KEY = 'ttb.feedbackDraft';
 
-  var UI_URL = '/data/ui.json';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — data/lang/index.json and data/lang/<code>.json,
+     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     of every string the site has, 220 KB on the wire against the 25 or 30 of
+     the one anybody is reading in. **One language at a time** under
+     **Languages** in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   var API = '/api/feedback';
 
   /* The address this page is served at. Cloudflare Pages serves feedback.html
@@ -82,7 +89,7 @@
   var MAX_NAME = 24;
 
   var state = {
-    ui: {},
+    ui: {},            // one language's strings; see loadWords()
     lang: DEFAULT_LANG,
     ready: false,   // whether /api/feedback could read its tables at all
     me: null,       // the username signed in on this browser, or null
@@ -143,9 +150,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -159,6 +164,20 @@
     return fetch(url, { headers: { accept: 'application/json' } }).then(function (res) {
       if (!res.ok) throw new Error(url + ': ' + res.status);
       return res.json();
+    });
+  }
+
+  /* One language's strings and every language's own name for itself — see
+     LANGS_URL. The language is picked out of the index the way every page
+     picks it, pickLanguage(), and only then is its file asked for; t() holds
+     that one pack and falls back to nothing but the key, which is safe
+     because the validator holds every language to the same set of keys. */
+  function loadWords() {
+    return getJSON(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return getJSON(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui, names: names };
+      });
     });
   }
 
@@ -846,9 +865,9 @@
       storeDrop(DRAFT_KEY);
     }
 
-    Promise.all([getJSON(UI_URL), load(0)]).then(function (answers) {
-      state.ui = answers[0];
-      state.lang = pickLanguage(Object.keys(state.ui));
+    Promise.all([loadWords(), load(0)]).then(function (answers) {
+      state.ui = answers[0].ui;
+      state.lang = answers[0].lang;
       applyStaticStrings();
       take(answers[1], false);
 
@@ -867,14 +886,14 @@
     }).catch(function (err) {
       /* Whatever went wrong, the reader gets a sentence rather than an empty
          page. Reached through state.ui rather than t(), and with the English
-         written out behind it, because the thing that failed may well be
-         ui.json — and t() with no strings in it returns the key, which is a
-         visitor reading "loadError" off the page. Same last resort the map,
-         the lists and the blog all fall back on. */
+         written out behind it, because the thing that failed may well be the
+         strings themselves — and t() with no strings in it returns the key,
+         which is a visitor reading "loadError" off the page. Same last resort
+         the map, the lists and the blog all fall back on. */
       clear(main);
       main.appendChild(el('div', { className: 'lists-stack' }, [
         el('div', { className: 'card lists-card' }, [
-          el('p', { className: 'blog-lead', textContent: (state.ui.en && state.ui.en.loadError) ||
+          el('p', { className: 'blog-lead', textContent: state.ui.loadError ||
             'Something went wrong loading the data. Try refreshing the page.' })
         ])
       ]));

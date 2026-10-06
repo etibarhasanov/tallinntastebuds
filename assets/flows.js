@@ -62,7 +62,14 @@
   'use strict';
 
   var SOURCE = '/data/flows.json';
-  var UI_URL = '/data/ui.json';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — data/lang/index.json and data/lang/<code>.json,
+     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     of every string the site has, 220 KB on the wire against the 25 or 30 of
+     the one anybody is reading in. **One language at a time** under
+     **Languages** in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   var NUMBERS = '/api/admin/flows';
 
   /* The ranges, as the route answers them — SPANS in
@@ -119,7 +126,7 @@
 
   var state = {
     lang: DEFAULT_LANG,
-    ui: {},
+    ui: {},            // one language's strings; see loadWords()
     flows: [],
     current: null,   // the flow on screen
     width: 0,        // its drawing's natural width, in diagram units
@@ -168,9 +175,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -197,6 +202,20 @@
     return fetch(url).then(function (res) {
       if (!res.ok) throw new Error(url + ': ' + res.status);
       return as === 'text' ? res.text() : res.json();
+    });
+  }
+
+  /* One language's strings and every language's own name for itself — see
+     LANGS_URL. The language is picked out of the index the way every page
+     picks it, pickLanguage(), and only then is its file asked for; t() holds
+     that one pack and falls back to nothing but the key, which is safe
+     because the validator holds every language to the same set of keys. */
+  function loadWords() {
+    return get(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return get(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui, names: names };
+      });
     });
   }
 
@@ -1169,9 +1188,9 @@
   function boot() {
     applyStyle();
     var main = document.getElementById('main');
-    Promise.all([get(UI_URL), get(SOURCE)]).then(function (both) {
-      state.ui = both[0];
-      state.lang = pickLanguage(Object.keys(state.ui));
+    Promise.all([loadWords(), get(SOURCE)]).then(function (both) {
+      state.ui = both[0].ui;
+      state.lang = both[0].lang;
       state.flows = (both[1] && both[1].flows) || [];
       applyStaticStrings();
       if (!state.flows.length) {
@@ -1181,8 +1200,8 @@
       }
       build();
     }).catch(function () {
-      /* Without ui.json there are no words to say it in, so this is the line
-         the markup carries in English, shown rather than written. */
+      /* Without the strings there are no words to say it in, so this is the
+         line the markup carries in English, shown rather than written. */
       var failed = document.getElementById('flows-failed');
       if (failed) failed.hidden = false;
       var loading = document.getElementById('flows-loading');

@@ -84,7 +84,7 @@
  *
  * WHAT IT READS
  *
- *   /data/ui.json        the strings the whole site shares
+ *   /data/lang/          the strings the whole site shares, one language to a file
  *   /data/split.json     this page's own, in the same ten languages
  *   /api/account         posted to, to sign in or create an account
  *   /api/split           the groups they are in
@@ -94,7 +94,14 @@
 (function () {
   'use strict';
 
-  var UI_URL = '/data/ui.json';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — data/lang/index.json and data/lang/<code>.json,
+     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     of every string the site has, 220 KB on the wire against the 25 or 30 of
+     the one anybody is reading in. **One language at a time** under
+     **Languages** in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   /* This page's own strings, in a file of its own rather than in data/ui.json
      with every other page's. Six hundred and ten lines in the middle of the
      one file every page on this site reads is exactly the kind of thread that
@@ -123,7 +130,7 @@
   var MAX_CENTS = 1000000;
 
   var state = {
-    ui: {},
+    ui: {},            // one language's strings; see loadWords()
     lang: DEFAULT_LANG,
     reached: true,   // whether /api/split answered at all
     ready: false,    // whether the database is bound and this is its half
@@ -223,9 +230,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -235,16 +240,14 @@
     return s;
   }
 
-  /* The two packs read as one from here on, so t() below is the same three
-     lines every other page on this site has. Merged over the site's own rather
-     than under it, though nothing is in both: the language list is ui.json's,
-     because that is the file the switcher and the validator read. */
+  /* The two packs read as one from here on, so t() below is the same lines
+     every other page on this site has. The site's strings arrive one language
+     at a time; split.json still carries all ten, so the block for that same
+     language is taken out of it here and laid over the site's own — over
+     rather than under, though nothing is in both. The language is ui.json's
+     to pick, because that is the file the switcher and the validator read. */
   function merge(base, extra) {
-    Object.keys(base).forEach(function (lang) {
-      var add = extra[lang];
-      if (!add) return;
-      Object.keys(add).forEach(function (key) { base[lang][key] = add[key]; });
-    });
+    Object.keys(extra || {}).forEach(function (key) { base[key] = extra[key]; });
     return base;
   }
 
@@ -252,6 +255,20 @@
     return fetch(url, { headers: { accept: 'application/json' } }).then(function (res) {
       if (!res.ok) throw new Error(url + ': ' + res.status);
       return res.json();
+    });
+  }
+
+  /* One language's strings and every language's own name for itself — see
+     LANGS_URL. The language is picked out of the index the way every page
+     picks it, pickLanguage(), and only then is its file asked for; t() holds
+     that one pack and falls back to nothing but the key, which is safe
+     because the validator holds every language to the same set of keys. */
+  function loadWords() {
+    return getJSON(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return getJSON(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui, names: names };
+      });
     });
   }
 
@@ -1221,7 +1238,7 @@
     applyStyle();
 
     Promise.all([
-      getJSON(UI_URL),
+      loadWords(),
       /* Not caught, deliberately: without this file every word on this page
          would be a raw key, which is worse than the noscript card the catch
          below leaves standing. */
@@ -1233,8 +1250,8 @@
          now rather than offering one. */
       ask(SPLIT_API + (asked ? '?group=' + encodeURIComponent(asked) : ''))
     ]).then(function (loaded) {
-      state.ui = merge(loaded[0] || {}, loaded[1] || {});
-      state.lang = pickLanguage(Object.keys(state.ui).sort());
+      state.lang = loaded[0].lang;
+      state.ui = merge(loaded[0].ui, (loaded[1] || {})[state.lang]);
       applyStaticStrings();
       document.title = t('splitDocumentTitle');
 
