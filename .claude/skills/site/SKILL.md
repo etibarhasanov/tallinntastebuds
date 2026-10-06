@@ -169,7 +169,7 @@ file of its own by exactly the same argument. It did not get one: its
 hundred and one `flash*` keys are in `data/ui.json` with everything else, and taking
 the feature out means `grep -n '"flash' data/ui.json` and a hundred and one deletions
 from ten blocks. What it *does* keep to itself is `data/decks.json` — the words
-on the cards, the nine grammar lessons and the songs, which are content rather
+on the cards, the ten grammar lessons and the songs, which are content rather
 than interface and are written in three languages rather than the site's ten. A
 card's `back`, a deck's `name` and its `why`, every paragraph, heading and
 gloss of a lesson, and every line and word of a song are each an object keyed by language, English required and
