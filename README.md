@@ -10875,6 +10875,19 @@ bishop, knight — in the segmented control the language switch is. A move that
 lost a race draws the board as the route says it now is and says so: *Somebody
 got there first*.
 
+**The moves stand beside the board** on a desktop and under it on a phone:
+numbered pairs under a header naming the two sides, the mover's name under
+each of Everybody's, the score line at the foot. The list scrolls inside its
+card and opens at its foot, where the newest move is, the way the notes do:
+on a desktop the card is exactly the board's height, whatever the game's
+length, and the list takes what the header and the score line leave; on a
+phone it shows about six pairs. The first version listed every move at full
+height, and a sixty-move game made the column beside the board two screens
+tall with the page's next card under all of it. A redraw, which every poll
+and every press on a square is, puts the list back where it was scrolled to;
+at the foot it stays at the foot, so a move that arrives while nothing has
+been scrolled is in view.
+
 **The browser runs none of the rules.** The answer carries `legal`, every move
 the reader may make now, and only when it is their turn; a press on a piece that
 starts one picks it up, rings its square in the accent and dots where it may go
@@ -11010,8 +11023,9 @@ carries. `glideOn()` and `slide()` in `assets/chess.js`.
 
 ### Notes for the next player
 
-Under the public game's moves — beside the board on a desktop — a card where
-anybody on the page may leave a line for whoever plays Everybody's next move:
+Under the public game's moves on a phone, and on a desktop under its board,
+no wider than it, with the moves standing beside — a card where anybody on
+the page may leave a line for whoever plays Everybody's next move:
 *don't take the knight*, *castle, please*. Asked for by the owner after the
 five tasks and the takeback had landed, described before it was built, and
 agreed as written.
@@ -11028,8 +11042,9 @@ note of its with a name on it reads as the wordmark, as its moves do.
 **Each note says which position it was about**: who, how long ago, and *after
 14. Nf3* — or *before the first move* — so a note about the opening read in
 the endgame reads as old. The list is oldest first, the way a chat reads, and
-opens at its foot; past about six notes it scrolls inside the card, so the
-page stays a page. The author sees *Delete* under their own; **the house sees
+opens at its foot — a redraw puts it back where it was scrolled to, the way
+the moves' list is — and past about six notes it scrolls inside the card, so
+the page stays a page. The author sees *Delete* under their own; **the house sees
 *Hide* under everybody else's**, which takes a note off the page and keeps the
 row, so a hidden note still counts against the cap of whoever wrote it. There
 is no filter on the words: the house hiding what should not be there is the

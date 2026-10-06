@@ -62,11 +62,12 @@
  *
  * NOTES FOR THE NEXT PLAYER
  *
- * Beside the public game's moves, a card of short lines people leave for
- * whoever plays Everybody's next move, oldest at the top, the way a chat
- * reads. Anybody may write one while the game is on; a member chooses whether
- * their name goes on it, a visitor's reads *a visitor*. Each says which
- * position it was written about, so a note about move 3 read at move 20 reads
+ * Under the public game's moves — under its board on a desktop — a card of
+ * short lines people leave for whoever plays Everybody's next move, oldest at
+ * the top, the way a chat reads. Anybody may write one while the game is on;
+ * a member chooses whether their name goes on it, a visitor's reads *a
+ * visitor*. Each says which position it was written about, so a note about
+ * move 3 read at move 20 reads
  * as old. The author may delete their own and the house may hide any. The
  * notes ride in the same answer as the board and the same poll, so nothing
  * here asks for them; what the page keeps is the draft and the choice of name,
@@ -887,7 +888,7 @@
       return el('span', { className: 'chess-m' }, kids);
     }
 
-    var list = el('ol', { className: 'chess-list' });
+    var list = el('ol', { className: 'chess-list', 'data-game': game.id });
     for (var i = 0; i < g.moves.length; i += 2) {
       list.appendChild(el('li', null, [
         el('span', { className: 'chess-n', textContent: String(i / 2 + 1) }),
@@ -940,12 +941,15 @@
     return card;
   }
 
-  /* The board, and beside it — under it on a phone — the moves and, on the
-     public game once chess_notes is applied, the notes under those. */
+  /* The board, the moves beside it — under it on a phone — and, on the public
+     game once chess_notes is applied, the notes: under the moves on a phone,
+     under the board on a desktop. The column round the moves is what sizes
+     the card to the board there; assets/chess.css says how. */
   function gameGrid(g) {
     return el('div', { className: 'chess-grid' }, [
       boardCard(g),
-      el('div', { className: 'chess-side' }, [movesCard(g), g.notes ? notesCard(g) : null])
+      el('div', { className: 'chess-side' }, [movesCard(g)]),
+      g.notes ? notesCard(g) : null
     ]);
   }
 
@@ -1423,6 +1427,41 @@
     return [pub, playCard(), duels];
   }
 
+  /* The two lists that scroll inside their cards — the moves, the notes —
+     open at their foot, where the newest move and the newest note are. Every
+     draw rebuilds every card, and a draw comes with each poll and each press
+     on a square, so a reader twenty seconds into the opening would be snapped
+     to the endgame on every one of them: before the stack is cleared, where
+     each list was scrolled to is kept, by its kind and its game, and put back
+     afterwards. A list at its foot stays at its foot, so what arrives while
+     nothing has been scrolled is in view; a list the draw did not bring back,
+     or that was not there before, opens at its foot too. */
+  var SCROLLERS = '.chess-list, .chess-note-list';
+
+  function scrollKey(list) {
+    return list.className + ':' + (list.getAttribute('data-game') || '');
+  }
+
+  function keepScroll() {
+    var kept = {};
+    var lists = stack.querySelectorAll(SCROLLERS);
+    for (var i = 0; i < lists.length; i++) {
+      var list = lists[i];
+      var atFoot = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
+      kept[scrollKey(list)] = atFoot ? null : list.scrollTop;
+    }
+    return kept;
+  }
+
+  function putScroll(kept) {
+    var lists = stack.querySelectorAll(SCROLLERS);
+    for (var i = 0; i < lists.length; i++) {
+      var list = lists[i];
+      var top = kept[scrollKey(list)];
+      list.scrollTop = typeof top === 'number' ? top : list.scrollHeight;
+    }
+  }
+
   /* Pressing a square rebuilds the board, which would leave a keyboard
      standing in nothing: the square that had the focus gets it back, on the
      board it was on. */
@@ -1436,6 +1475,7 @@
     var typing = focus && focus.id && /^(INPUT|TEXTAREA)$/.test(focus.tagName)
       ? { id: focus.id, start: focus.selectionStart, end: focus.selectionEnd } : null;
 
+    var scrolled = keepScroll();
     clear(stack);
     var a = state.answer;
     if (!a || !a.ready) {
@@ -1456,10 +1496,7 @@
 
     cards().forEach(function (node) { if (node) stack.appendChild(node); });
 
-    /* The newest note is the one at the foot, so that is where the list
-       opens. */
-    var notes = stack.querySelector('.chess-note-list');
-    if (notes) notes.scrollTop = notes.scrollHeight;
+    putScroll(scrolled);
     var field = typing && document.getElementById(typing.id);
     if (field) {
       field.focus();
