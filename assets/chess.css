@@ -246,6 +246,12 @@
 .chess-signin a { color: var(--accent); }
 .chess-moves .alt { margin: 8px 0 0 -12px; }
 .chess-moves .alt + .alt { margin-left: 0; }
+/* What is standing on the game short of mate — who asks Everybody to give up
+   and how many agree, who offers a draw, who turned one down — as a sentence
+   over the presses it explains, with the reader's own name on it as the tag
+   a note wears. */
+.chess-ask { margin: 12px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-ask + .chess-ask { margin-top: 4px; }
 
 /* ---------- the notes ---------- */
 

@@ -474,6 +474,26 @@ the queue moves, and a member's page says their game started without a reload.
   the rows and the faces in `SKILL.md`. Task 6's flow gains a lane's worth
   of steps in the member's — find, challenge, accept, play, claim.
 
+- [x] **5¹⁵⁄₁₆. Giving up, and agreeing a draw** — asked for by the owner
+  after 5⅞, described before it was built; the owner answered the three
+  questions the shape asked — two of the city in total, the next public game
+  starting on its own, visitors counting — and it was built as described.
+  Under every game's moves, *Resign* and *Offer a draw* behind the browser's
+  confirm box; on the public game Everybody's *Give up this game* and *Offer
+  a draw* are asks that need two names, with *Agree* and *Take it back*, and
+  the house answers a complete offer with *Accept* or *Decline*. `chess_asks`
+  in `db/schema.sql`, applied by hand to production; `ask`, `unask` and
+  `refuse` in `functions/api/chess.js` in place of `resign`, `standing()`
+  working the rows out on every read, `asks`, `declined`, `mayAsk` and
+  `mayRefuse` on a game's answer, and `startPublic()` after a public game
+  ends this way; `asksNode()` in `assets/chess.js` and `.chess-ask` in
+  `assets/chess.css`; thirteen strings in ten languages; `chess_ask`,
+  `chess_unask` and `chess_refuse` in **Analytics** in place of
+  `chess_resign`; **Giving up, and agreeing a draw** in the README; the
+  shape, the state, the rows and the table in `SKILL.md`. Task 6's flow
+  gains the steps — resign, offer a draw, agree, accept or decline — in all
+  three lanes.
+
 ---
 
 - [ ] **6. The door, and the diagram**

@@ -74,6 +74,19 @@
  * which a redraw puts back, focus and caret included, so a poll that brought
  * somebody else's note does not eat the one being typed.
  *
+ * GIVING UP, AND AGREEING A DRAW
+ *
+ * Under every game's moves, the ways out short of mate: Resign, and Offer a
+ * draw, each behind the browser's own confirm box, which is what every
+ * are-you-sure on this site is. On the public game Everybody is a side, so
+ * its give-up and its draw are asks that need two people — the one who raised
+ * it and one who pressed Agree — and the line under the moves says who asked
+ * and how many agree. The route works all of that out and says what this
+ * reader may press now in `mayAsk`, each kind with what the press would be,
+ * so this page labels and confirms and never decides: asksNode() below. A
+ * public game given up or drawn this way starts the next one on its own, and
+ * the answer to the press carries the new board, so the press is told so.
+ *
  * THE PIECES
  *
  * The platform's own chess glyphs, U+2654 to U+265F, each followed by U+FE0E so
@@ -624,14 +637,14 @@
   }
 
   /* Every other write: the house's new public game, a member joining the line
-     or leaving it, the house starting the first in line, a resignation, a game
-     ended without a result, and a duel's challenge, answer and claim. Each is
-     reported by name and sent. */
-  function act(action, event, extra, said, landed) {
+     or leaving it, the house starting the first in line, an ask to end a
+     game and its answer, a game ended without a result, and a duel's
+     challenge, answer and claim. Each is reported by name and sent. */
+  function act(action, event, extra, said, landed, params) {
     if (state.busy) return;
     var body = { action: action };
     Object.keys(extra || {}).forEach(function (k) { body[k] = extra[k]; });
-    window.TTBTrack.event(event);
+    window.TTBTrack.event(event, params);
     write(body, said, landed);
   }
 
@@ -703,6 +716,7 @@
       who: t('chessDraw'),
       why: game.reason === 'repetition' ? t('chessDrawRepetition')
          : game.reason === 'fifty' ? t('chessDrawFifty')
+         : game.reason === 'agreed' ? t('chessDrawAgreed')
          : t('chessDrawMaterial')
     };
   }
@@ -906,6 +920,9 @@
         className: 'chess-foot',
         textContent: t('chessScore', { n: game.n, a: score.everybody, b: score.house, d: score.drawn })
       }));
+      /* The city's ways out — Give up this game, Offer a draw, and the asks
+         standing — asksNode() below. */
+      if (game.state === 'playing') asksNode(g).forEach(function (node) { card.appendChild(node); });
       /* Signed out: a name would go on the moves, and the map is where the
          account is made. */
       var you = state.answer.you;
@@ -920,13 +937,11 @@
       card.appendChild(el('p', { className: 'chess-foot', textContent: t('chessStarted', { when: span(game.startedAt) }) }));
     }
     /* The ways out of a private game or a duel being played: either side
-       may resign; the house may end a private game without a result, and a
-       duel's player claim it, once the route says the other side has been
-       quiet long enough. */
+       may resign or offer a draw — asksNode() — the house may end a private
+       game without a result, and a duel's player claim it, once the route
+       says the other side has been quiet long enough. */
     if (game.state === 'playing') {
-      card.appendChild(altButton(t('chessResign'), function () {
-        if (window.confirm(t('chessResignSure'))) act('resign', 'chess_resign', { game: game.id });
-      }));
+      asksNode(g).forEach(function (node) { card.appendChild(node); });
       if (g.abandon) {
         card.appendChild(altButton(t('chessAbandon'), function () {
           act('abandon', 'chess_abandon', { game: game.id });
@@ -939,6 +954,87 @@
       }
     }
     return card;
+  }
+
+  /* What a press on Resign, Give up, Offer a draw, Agree or Accept says
+     and asks first, by what the route said the press would be. The two
+     kinds are the body's; `as` is the label and the question. */
+  var ASK_WORDS = {
+    resign: { label: 'chessResign', sure: 'chessResignSure' },
+    giveup: { label: 'chessGiveUp', sure: 'chessGiveUpSure' },
+    offer: { label: 'chessOfferDraw', sure: 'chessDrawSure' },
+    accept: { label: 'chessAccept', sure: 'chessAgreeSure' },
+    agree: { label: 'chessAgree', sure: 'chessAgreeSure' }
+  };
+
+  /* Whoever raised an ask, by name even when it is the reader's own — the
+     tag beside the line says *you*, and "you asks" is not a sentence. */
+  function askerName(name) {
+    return name === 'visitor' ? t('chessVisitor') : sideName(name);
+  }
+
+  /* The asks standing on a game and what this reader may do about them,
+     under the moves: a line for each side's ask — who raised it and how many
+     agree while Everybody's is short of its two, who offers a draw once it
+     is complete — a line while a refusal stands, and then the presses the
+     route offered. Agreeing to Everybody's give-up asks the same question
+     giving up does. Nothing here knows what may be pressed: the answer says,
+     and this draws it. A public game that ends this way is replaced in the
+     same answer, and whoever pressed is told so. */
+  function asksNode(g) {
+    var game = g.game;
+    var kids = [];
+    var onIt = false;
+    (g.asks || []).forEach(function (a) {
+      var mine = a.names.some(function (n) { return n.you; });
+      if (mine) onIt = true;
+      var text = a.done
+        ? t('chessOffered', { who: sideName(a.side === 'w' ? game.white : game.black) })
+        : t(a.kind === 'draw' ? 'chessAskDraw' : 'chessAskGiveUp', { who: askerName(a.names[0].name), n: a.names.length, of: a.need });
+      kids.push(el('p', { className: 'chess-ask' }, [
+        text,
+        mine ? el('span', { className: 'chess-tag', textContent: t('chessYou') }) : null
+      ]));
+    });
+    if (g.declined) {
+      var refuser = g.declined.side === 'w' ? game.black : game.white;
+      kids.push(el('p', { className: 'chess-ask', textContent: t('chessDeclined', { who: sideName(refuser) }) }));
+    }
+
+    function told(out) {
+      var now = out.public;
+      if (game.kind === 'public' && now && now.game.id !== game.id) toast(t('chessNextStarted'));
+    }
+    (g.mayAsk || []).forEach(function (may) {
+      var words = ASK_WORDS[may.as];
+      if (!words) return;
+      var sure = may.as === 'agree' && may.kind === 'resign' ? 'chessGiveUpSure' : words.sure;
+      kids.push(altButton(t(words.label), function () {
+        if (!window.confirm(t(sure))) return;
+        act('ask', 'chess_ask', { game: game.id, kind: may.kind, client: visitorId() },
+          { 409: 'chessGotThereFirst' }, told, { kind: may.kind, as: may.as });
+      }));
+    });
+    if (g.mayRefuse) {
+      kids.push(altButton(t('chessDecline'), function () {
+        act('refuse', 'chess_refuse', { game: game.id, client: visitorId() }, { 409: 'chessGotThereFirst' });
+      }));
+    }
+    if (onIt) {
+      kids.push(altButton(t('chessTakeBack'), function () {
+        act('unask', 'chess_unask', { game: game.id, client: visitorId() });
+      }));
+    }
+    /* Without the table there is no `mayAsk` at all, and a private game or
+       a duel still has its Resign: one person's resignation needs no row. */
+    if (!g.mayAsk && game.kind !== 'public') {
+      kids.push(altButton(t('chessResign'), function () {
+        if (window.confirm(t('chessResignSure'))) {
+          act('ask', 'chess_ask', { game: game.id, kind: 'resign' }, null, null, { kind: 'resign', as: 'resign' });
+        }
+      }));
+    }
+    return kids;
   }
 
   /* The board, the moves beside it — under it on a phone — and, on the public
