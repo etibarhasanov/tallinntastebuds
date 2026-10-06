@@ -10804,10 +10804,20 @@ the rest of the sixth task in `.claude/skills/chess/TASKS.md`.
 five seconds and the map goes to `/chess` instead of rolling the die —
 `holdForChess()` in `assets/app.js`, asked for by the owner. Five seconds is
 past any press that meant the die and past the half-second a phone takes to
-call a press long, so nobody arrives by accident, and nothing on screen says
-it is there. The click the finger's lifting still makes is swallowed before it
-reaches the die or the rail's count, and the pill neither selects its label
-nor pops a phone's callout while it is held. Counted as `chess_open_hold`.
+call a press long, so nobody arrives by accident. While it is held a ring
+fills round the die, shown after a quarter of a second so an ordinary tap
+never flashes it, and the page goes when the ring closes. Let go before, or
+slide off the pill, and the ring goes and nothing happens but the die.
+
+The first version had no ring and ended the hold on `pointercancel` and
+`pointerleave`, and a phone sends one of those partway through a long press;
+the owner held it on a phone, nothing happened, and nothing said whether it
+was counting. Now only the finger coming up ends it — `pointerup`,
+`touchend` or `mouseup`, whichever the browser sends — or the finger drifting
+more than 14px, measured. The click the finger's lifting still makes after a
+hold that fired is swallowed before it reaches the die or the rail's count,
+and the pill neither selects its label nor pops a phone's callout while it is
+held. Counted as `chess_open_hold`.
 
 ### The public game
 

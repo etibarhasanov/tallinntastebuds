@@ -1519,11 +1519,43 @@ html:not([data-layout="b"]) #btn-more { display: none; }
 .rail-btn:hover svg { transform: rotate(-20deg); }
 /* Surprise me is held for five seconds to reach /chess — holdForChess() in
    assets/app.js — so a phone must not select its label or pop the callout
-   under a thumb that stays down. */
+   under a thumb that stays down. Relative, for the ring below. */
 #btn-random {
+  position: relative;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+/* The ring that fills round the die while it is held, and the page goes
+   when it closes. Placed on the die's centre by the script, which measures
+   where the die is in this layout. It is counting from the first touch but
+   shows itself only after a quarter of a second, so an ordinary tap never
+   flashes it — the fill starts that far round, which is the truth. The
+   accent on a hairline track: the swatch decides both, so it is the same
+   ring in every colour. Under #btn-random so the rail's own rules for the
+   icon — its size, its stroke, the turn under a pointer — do not reach it. */
+#btn-random .hold-ring {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+  transition: none;
+}
+#btn-random .hold-ring circle { fill: none; stroke-width: 2.4; }
+#btn-random .hold-track { stroke: var(--hairline); }
+#btn-random .hold-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+#btn-random.is-holding .hold-ring { opacity: 1; transition: opacity .15s linear .25s; }
+#btn-random.is-holding .hold-fill {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--hold-ms, 5s) linear;
 }
 
 /* The lists door draws an emoji where the others draw a line. It wore the
