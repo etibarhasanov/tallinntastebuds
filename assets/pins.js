@@ -39,7 +39,7 @@
  *
  * KEEP IT IN STEP WITH functions/api/_pins.js
  *
- * That file holds the same eight ids, because the server is what decides
+ * That file holds the same sixteen ids, because the server is what decides
  * whether the string a list wants to store is one of them. It cannot import this one and this one cannot import it — different
  * dialects, different runtimes — so they are written out twice, the way the
  * story clock in assets/app.js restates tools/clock.mjs. Change one, change
@@ -55,7 +55,7 @@ window.TTBPins = (function () {
    * croissant put a croissant on a sushi place, which reads as the map being
    * wrong about the sushi place rather than as the list being somebody's.
    *
-   *   MARKERS  what a LIST wears. Eight symbols, none of them food — a pin,
+   *   MARKERS  what a LIST wears. Sixteen symbols, none of them food — a pin,
    *            a flame, a flag — because a list is somebody's choice of
    *            places and not a claim about what any one of them cooks. They
    *            mark a spot, which is the only thing that is true of all ten
@@ -67,10 +67,19 @@ window.TTBPins = (function () {
    *            same thing, a butterfly and a clover say nothing at all. What
    *            is left is one of each, in the order they are written below —
    *            a place, a claim, a warning, a brightness, a love, a
-   *            prettiness, a treasure, a party. All eight draw in the
-   *            style's accent: a colour picker under them was a second
-   *            decision to make before you could name a list, for a
-   *            difference the marker was already making.
+   *            prettiness, a treasure, a party.
+   *
+   *            Then sixteen, because eight turned out to be too few to say
+   *            anything cute with, and that was asked for. The second row is
+   *            softer than the first and still not food — a laptop for the
+   *            places you can work from, a star, a rainbow, a cat, a bow,
+   *            sparkles, music, a moon for late. Sixteen is two rows of
+   *            eight, which is still one glance rather than a scroll; the
+   *            eighteen that went were a grid you had to read.
+   *
+   *            All sixteen draw in the style's accent: a colour picker under
+   *            them was a second decision to make before you could name a
+   *            list, for a difference the marker was already making.
    *
    *   PLACES   what a GOOGLE ROW is. Five kinds of place, not thirty-eight
    *            kitchens: the question a pin on a map answers is "what is
@@ -104,7 +113,15 @@ window.TTBPins = (function () {
     ['heart',   '\u2764\uFE0F'],
     ['blossom', '\uD83C\uDF38'],
     ['gem',     '\uD83D\uDC8E'],
-    ['balloon', '\uD83C\uDF88']
+    ['balloon', '\uD83C\uDF88'],
+    ['laptop',   '\uD83D\uDCBB'],
+    ['star',     '\u2B50\uFE0F'],
+    ['rainbow',  '\uD83C\uDF08'],
+    ['cat',      '\uD83D\uDC31'],
+    ['bow',      '\uD83C\uDF80'],
+    ['sparkles', '\u2728\uFE0F'],
+    ['music',    '\uD83C\uDFB5'],
+    ['moon',     '\uD83C\uDF19']
   ];
 
   /* Five kinds, three colours, and the third field is the only place a tone

@@ -298,7 +298,7 @@ browser cannot import from `tools/`; change one, change the other.
 - **Colour tokens**: every `[data-style="…"]` block must declare the union of
   the tokens any block declares. `:root` is not compared.
 - **The pins**: `assets/pins.js` and `functions/api/_pins.js` hold the same
-  eight marker ids, written out twice because neither dialect can import the
+  sixteen marker ids, written out twice because neither dialect can import the
   other, and the build fails when they drift. Every tone a kind of place is
   filed under needs a `--pin-<tone>` token and a `.pin-tone-<tone>` rule;
   every marker needs a `pinX` label in all ten languages, which the scanner
