@@ -36,11 +36,13 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 ├── /lists /list/<id> /u/<name>     lists.html, one document, three Functions write its head
 ├── /account.html /edit /insights   account.html, edit.html, insights.html
 ├── /blog  ?post=                   blog.html, in-document between index and post
+├── /write                          write.html, where a member writes a post for it
 ├── /flashcard  ?d=                 flashcard.html, in-document between decks and a deck
 ├── /chess                          chess.html
 ├── /feedback                       feedback.html
 ├── /deal /verify /staff            the three pass pages, no-store
-├── /privacy /404                   static
+├── /privacy                        privacy.html, its text written in by functions/privacy.js per language
+├── /404                            static, what Pages serves for an address nothing answers
 ├── /admin.html /admin/*            the owner's, never framed, 404 to anybody else
 │
 ├── /api/*       functions/api/     JSON; every answer leaves through _middleware.js

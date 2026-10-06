@@ -153,7 +153,7 @@ its pin can land on the wrong side of the street. What it does, in order:
 
    Moving them all is a sweep of its own, so fix the ones in any file you
    are already in and leave the rest; `node tools/validate.mjs` prints the
-   true total on its last line.
+   true total on its last line, closed places included.
 8. **Open the map** on a local server (`python3 -m http.server 8000`;
    `file://` shows an empty map) and look at the pin, the panel, the photos
    in the lightbox, and the chips the new types light up.
@@ -172,8 +172,9 @@ its pin can land on the wrong side of the street. What it does, in order:
 - **The name, address or coordinates** change the catalogue row too, so
   `node tools/places.mjs` again.
 - `db/google-venues.sql` never moves for a change to a place that is already
-  on the map: the 65 export rows matched to it carry `map_id`, and that
-  column survives every refresh. **Adding** a place the export already lists
+  on the map: the export rows matched to it carry `map_id` — `grep -c 'SET
+  map_id' db/google-venues.sql` says how many — and that column survives
+  every refresh. **Adding** a place the export already lists
   does move it — step 5 of **The hand road** says how.
 
 ## Closing one
@@ -219,7 +220,7 @@ entry land in one commit, so no commit lists a photo that is not there.
    catalogue was regenerated, which blurb languages are still to come, and, for
    a place the export already listed, the one `map_id` line in
    `db/google-venues.sql` that has still to be loaded.
-7. CI green — the validator, the QR check, the preview deploy — then **Rebase
+7. CI green — the validator and the four checks beside it — then **Rebase
    and merge**; the branch stays, `CLAUDE.md` says why. The place is on the
    live map within the minute.
 
