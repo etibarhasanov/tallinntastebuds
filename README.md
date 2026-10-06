@@ -5676,8 +5676,8 @@ to press Save finds it kept too, and only one of those is a story anybody
 minds.
 
 **The pin** is above that, and it is the one field on the card that is a grid
-of pictures rather than a box to type in: eight markers in two rows and six
-tones under them, and what you press is what this list's places wear on the
+of pictures rather than a box to type in: sixteen markers in two rows of eight,
+and what you press is what this list's places wear on the
 map. It is a field, so it sits with the fields. The mouth is not on the
 grid and cannot be asked for — a place on the map draws it whatever list it is
 on, and the line under the picker says so. **The pins** is the whole of it.
@@ -14504,7 +14504,7 @@ instead of a minute after the merge.
 - an `assets/links.js` whose three networks, their addresses or their caps
   have drifted from `functions/api/_profile.js`, which is what decides
   whether a handle may be stored at all
-- an `assets/pins.js` whose eight markers have drifted from the ids
+- an `assets/pins.js` whose sixteen markers have drifted from the ids
   `functions/api/_pins.js` will let a list store, a glyph called `mark` in
   either table, a kind of place a list could also pick, a kind filed under a
   tone that does not exist, a tone with no colour token or no `.pin-tone-`
@@ -14762,7 +14762,7 @@ functions/api/stats.js     POST /api/stats — one press in; a Google place
 assets/links.js            the three sites a profile can link to, the handles
                            they take and the addresses they build — said once
                            for the profile and the account page
-assets/pins.js             the eight markers, the five kinds of place, the six
+assets/pins.js             the sixteen markers, the five kinds of place, the six
                            tones, and which of them a place draws — said once
                            for every page that draws a pin
 functions/api/_pins.js     the same ids, on the side that decides whether a
@@ -14965,7 +14965,7 @@ the two tables behind them.
 
 ### The mouth is not a choice
 
-The picker has eight markers on it and the mark is not one of them. It is
+The picker has sixteen markers on it and the mark is not one of them. It is
 not in `TTBPins.GLYPHS`, `cleanPin()` in `functions/api/_pins.js` refuses it
 on the way in, and `node tools/validate.mjs` fails the build if `mark` ever
 turns up in either table — three answers to the same question, because this
@@ -15002,6 +15002,7 @@ one thing that is true of all ten places on a top ten.
 
 | 📍 pin | 🚩 flag | 🔥 flame | ☀️ sun | ❤️ heart | 🌸 blossom | 💎 gem | 🎈 balloon |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| 💻 laptop | ⭐ star | 🌈 rainbow | 🐱 cat | 🎀 bow | ✨ sparkles | 🎵 music | 🌙 moon |
 
 Eight, and it was eighteen for an afternoon. A grid of eighteen is a decision
 to make before you can name your list, and the ones that went were the ones
@@ -15010,6 +15011,12 @@ clover say nothing at all. What is left is one of each — a place, a claim, a
 warning, a brightness, a love, a prettiness, a treasure, a party. 📍 is what
 an undressed list draws.
 
+**Then sixteen**, because eight were too few to say anything cute with, and
+that was asked for. The second row is the softer one and is still not food: a
+laptop for somewhere you can work from, a star, a rainbow, a cat, a bow,
+sparkles, music, a moon for late. Sixteen is two even rows of eight — one
+glance, not a scroll — where the eighteen that went were a grid to read.
+
 **And no colour beside them.** There were six tone swatches under the grid,
 also for an afternoon, and they were a second decision to make before you
 could name a list — for a difference the marker was already making. Every
@@ -15017,8 +15024,8 @@ marker draws in the style's accent now, which is the colour of everything
 else on this site that is a link or a pin, and a list is one column and one
 press.
 
-All eight on one line at every width. The columns are fractions rather than a
-fixed 38px, because eight fixed ones come to 332px — eight more than a 390px
+Eight to a line at every width, so the sixteen are two even rows. The columns
+are fractions rather than a fixed 38px, because eight fixed ones come to 332px — eight more than a 390px
 phone leaves inside that card, and enough to make a 360px one scroll
 sideways. As fractions they are 38px on a desk and about 33px on the
 narrowest phone, which is still a picture and still a finger-sized target.
@@ -15064,7 +15071,7 @@ and neither of them is ours. That trade is the wrong one for the mark, which
 is why the mark is a photograph and is in neither table. It is the right one
 for a marker somebody picks out of a grid.
 
-The eight markers have names in all ten languages, because a swatch needs a
+The sixteen markers have names in all ten languages, because a swatch needs a
 label and a tooltip: `pinFlame`, `pinBlossom` and the rest. The picker builds
 those keys out of the id — `pinKey('flame')` — which means the validator's
 scanner for `t()` calls cannot see a single one of them, so it walks the same

@@ -2737,8 +2737,8 @@
       title,
       intro,
       /* A field, so it sits with the fields rather than down among the
-         buttons — see design rule 6. Its own row because the eight draw as
-         two rows of four and nothing should be wrapping beside them. */
+         buttons — see design rule 6. Its own row because the sixteen draw as
+         two rows of eight and nothing should be wrapping beside them. */
       pinPicker(list),
       el('div', { className: 'lists-row' }, [
         visibility(list),
@@ -2818,7 +2818,7 @@
       return box;
     }
 
-    /* The eight. Each one draws itself, so the grid is the answer to "what
+    /* The sixteen. Each one draws itself, so the grid is the answer to "what
        will my list look like" rather than a list of words for it. */
     var glyphs = el('div', {
       className: 'lists-pin-grid',
@@ -2849,10 +2849,10 @@
   }
 
   /* The ui.json key for one marker: pinKey('flame') is 'pinFlame'. Built
-     rather than written out eight times — which means the validator's
+     rather than written out sixteen times — which means the validator's
      scanner for t() calls cannot see a single one of them, because it only
      reads literals. So tools/validate.mjs walks PIN_GLYPHS itself and asks
-     ui.json for the same eight keys; see the check under "1b. The pin
+     ui.json for the same sixteen keys; see the check under "1b. The pin
      tables" there. A key nobody has translated reaches a visitor as the word
      "pinFlame" on a swatch, and this is what stops that.
 
