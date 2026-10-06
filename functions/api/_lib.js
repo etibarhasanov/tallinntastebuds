@@ -445,11 +445,15 @@ export async function catalogue(context) {
  * because each builds something beside the file — a Set of ids, a Map by id —
  * and this is for the files that are wanted as they are.
  *
- * functions/index.js reads two through it: data/ui.json, for the title, the
- * description and the tagline in the language its address names and for the
- * word a shut place's card opens with, and data/taxonomy.json, for what to
- * call a kind of place in that language. Everything else that prints a UI
- * string is a browser, and reads the file for itself.
+ * functions/index.js reads two through it: data/ui.json whole, for the title,
+ * the description and the tagline in the language its address names and for
+ * the word a shut place's card opens with, and data/taxonomy.json, for what
+ * to call a kind of place in that language. It is the one reader left of the
+ * whole strings file and may be: the map is rendered once per deployment per
+ * colo and kept, and that file is one of the four the render is keyed on.
+ * Every other Function that prints a string reads one language's file,
+ * through languageIndex() and wordsIn() below, and every page reads the
+ * same — One language at a time under Languages in README.md.
  */
 const files = new Map();
 
@@ -466,39 +470,53 @@ export async function dataFile(context, path) {
   return value;
 }
 
-/* The site's own words, whole, in all ten languages.
+/* ------------------------------------------------------- the languages
+ * Every language the site speaks, each with its own name for itself:
+ * data/lang/index.json, which tools/languages.mjs writes out of data/ui.json
+ * beside one file per language. Ten codes and ten names, two hundred bytes,
+ * read through the same five-minute cache every other data file is.
  *
- * wordsFor() below is what a route wants when it is answering a page: one
- * language's block, picked against what the reader asked for. This is the
- * other shape of the same file, and it has two readers. functions/flashcard.js
- * writes a deck's head in the language the link carried, which means asking
- * whether the file speaks that one at all, and that is a question about the
- * whole file rather than about a block of it; ./_visitors.js asks the same
- * question of every language a visitor's report names.
+ * Until October 2026 this was uiStrings(), data/ui.json whole — every string
+ * in all ten languages, 810 KB — read to answer which languages there are,
+ * and in wordsFor() below to pick one block out of it. The pages had gone
+ * over to the index and one file each by then (One language at a time under
+ * Languages in README.md); the Functions were the last readers of the whole
+ * file, and on the flashcards a fresh isolate parsed it beside
+ * data/decks.json, the two together most of the free plan's ten
+ * milliseconds of CPU: measured in Node on an ordinary machine, 4.8 ms for
+ * this file against 4.3 for the decks. The index and one language file are
+ * under half a millisecond together.
  *
- * It went out with the commit that wrote wordsFor(), which read the same file
- * for the other shape and looked like the whole of what anybody wanted from
- * it. Nothing failed: nothing in CI loaded the Functions then, and the import
- * left standing over there took the entire deployment down rather than that
- * one route — tools/functions-check.mjs imports every one of them now, and is
- * what would have said so. It is here rather than inlined over there because
- * the path is: one spelling of '/data/ui.json' on this side, read through the
- * same five-minute cache every other data file is. It throws the way
- * dataFile() throws, and its caller catches. */
-export function uiStrings(context) {
-  return dataFile(context, '/data/ui.json');
+ * Three readers. wordsFor() below; functions/flashcard.js, which writes a
+ * deck's head in the language the link carried and so has to ask whether the
+ * site speaks it at all; and ./_visitors.js, which asks the same of every
+ * language a visitor's report names.
+ *
+ * uiStrings() is also the record of how the site went down once, and the
+ * record stays with its successor. It went out with the commit that wrote
+ * wordsFor(), which read the same file for the other shape and looked like
+ * the whole of what anybody wanted from it. Nothing failed: nothing in CI
+ * loaded the Functions then, and the import a route still carried took the
+ * entire deployment down rather than that one route — Pages bundles every
+ * module under functions/ into one Worker, and an ES module resolves its
+ * imports before any of it runs. tools/functions-check.mjs imports every one
+ * of them now, in CI, and is what would have said so.
+ *
+ * Throws the way dataFile() throws, and every caller catches. */
+export function languageIndex(context) {
+  return dataFile(context, '/data/lang/index.json');
 }
 
 /* ------------------------------------------------------------- the words
  * The page's strings in one language, and which language that is.
  *
- * Two routes answer with the words the page will print rather than leaving it
- * to fetch data/ui.json for itself: /api/flashcard, where the decks and the
+ * Five routes answer with the words the page will print rather than leaving
+ * it to fetch them for itself: /api/flashcard, where the decks and the
  * strings arrive together — see THE WORDS ON THE PAGE COME WITH THE DECKS in
- * its header — and /api/stats, which is one request on the way in for the same
- * reason. The whole block goes rather than a list of keys, because a list here
- * would be a second copy of what the page asks for and the validator could not
- * see the two drift.
+ * its header — /api/chess, and the three under /api/admin/, each one request
+ * on the way in for the same reason. The whole block goes rather than a list
+ * of keys, because a list here would be a second copy of what the page asks
+ * for and the validator could not see the two drift.
  *
  * `asked` is what the page sends: a comma-separated list of what it would have
  * picked from, most wanted first, straight out of the address bar, the store
@@ -508,14 +526,14 @@ export function uiStrings(context) {
  * ten are read at all. It is the same rule pickLanguage() applies on every
  * other page, moved to where the list of languages is.
  *
- * The first the file speaks wins; English if none does; the file's first
- * language if it somehow has no English. The strings themselves are a file
- * read through the same five-minute cache every other data file is, so a
- * missing or malformed one is an empty block rather than a throw — the page
- * then prints its keys, which is the same thing it did when the file failed
- * to fetch.
+ * The first the index lists wins; English if none does; the index's first
+ * language if it somehow has no English. The strings themselves are that
+ * language's own file, data/lang/<code>.json, read through wordsIn() below
+ * and the same five-minute cache every other data file is, so a missing or
+ * malformed one is an empty block rather than a throw — the page then prints
+ * its keys, which is the same thing it did when the file failed to fetch.
  *
- * `langs` comes back beside them: every language the file speaks, each with
+ * `langs` comes back beside them: every language the index lists, each with
  * the name it has for itself, for a page that draws a switch. The flashcards
  * page does and reads it; /admin/stats does not and drops it on the way past. A
  * handful of short pairs either way, which is a couple of hundred bytes
@@ -557,33 +575,51 @@ function languageOf(asked, langs) {
     (langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0] || DEFAULT_LANG);
 }
 
-export async function wordsFor(context, asked, only) {
-  let ui = null;
+/* One language's strings: the `ui` block of data/lang/<code>.json, which is
+   that language's block of data/ui.json as it stands. The file also carries
+   every place's write-up in that language, for the map, and that part is
+   left where it is. Empty where the file cannot be read or is not the shape
+   the tool writes, so a page prints its keys rather than failing to draw.
+   The code is held to the shape of one before it goes into a path — the two
+   callers only ever pass one out of the index, and this is what makes that
+   true of the function rather than of its callers. */
+export async function wordsIn(context, lang) {
+  if (!LANG_TAG.test(String(lang || ''))) return {};
   try {
-    ui = await uiStrings(context);
+    const file = await dataFile(context, '/data/lang/' + lang + '.json');
+    return file && file.ui && typeof file.ui === 'object' ? file.ui : {};
   } catch (e) {
-    ui = null;
+    return {};
   }
-  const spoken = ui && typeof ui === 'object' ? Object.keys(ui) : [];
+}
+
+export async function wordsFor(context, asked, only) {
+  let index = null;
+  try {
+    index = await languageIndex(context);
+  } catch (e) {
+    index = null;
+  }
+  const spoken = index && typeof index === 'object' ? Object.keys(index) : [];
   /* `only` narrows both halves of the answer at once, and it has to be both:
      a caller that offered three languages in its switch and then honoured a
      fourth in ?lang= would be a page reading in a language it does not admit
-     to having. Anything in `only` the file does not speak is not a language
-     either, so the file stays the authority and this only ever subtracts. */
+     to having. Anything in `only` the index does not list is not a language
+     either, so the index stays the authority and this only ever subtracts. */
   const langs = only ? spoken.filter((code) => only.includes(code)) : spoken;
   const lang = languageOf(asked, langs);
-  const block = ui && ui[lang] && typeof ui[lang] === 'object' ? ui[lang] : {};
+  const block = await wordsIn(context, lang);
   /* The menu's own rows: the code, and the name that language has for itself.
      Sorted by code rather than by name, which is what the map's switch does
      and for its reason — the codes are Latin whatever the language writes
      itself in, so Հայերեն keeps the place `hy` gives it instead of trailing
-     the Latin names a collator would put it after. A language with no
-     langName falls back to its code, the way the map's switch does; a file
-     that could not be read is an empty list, and the page then draws no
-     switch at all rather than one with nothing in it. */
+     the Latin names a collator would put it after. A language with no name
+     falls back to its code, the way the map's switch does; an index that
+     could not be read is an empty list, and the page then draws no switch
+     at all rather than one with nothing in it. */
   const names = langs.slice().sort().map((code) => ({
     code: code,
-    name: (ui[code] && typeof ui[code].langName === 'string' && ui[code].langName) || code
+    name: (typeof index[code] === 'string' && index[code]) || code
   }));
   return { lang: lang, langs: names, ui: block };
 }

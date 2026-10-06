@@ -443,7 +443,7 @@
  */
 
 import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_visits.js';
-import { uiStrings, dataFile, hmacHex } from './_lib.js';
+import { languageIndex, dataFile, hmacHex } from './_lib.js';
 import { adminIds } from './_admin.js';
 
 /* The ranges the page offers, in days. 1 is today so far. */
@@ -1045,9 +1045,11 @@ function weekOf(day) {
 }
 
 /* The `lang` facts a report carries — THE LANGUAGE IT WAS READ IN — with
-   every code one data/ui.json speaks. The file is read only when there is
-   something to check, through the cache every data file is read through;
-   where it cannot be read, nothing about language is counted. */
+   every code data/lang/index.json lists, which is every language data/ui.json
+   speaks in a few hundred bytes rather than the whole of it. The file is read
+   only when there is something to check, through the cache every data file
+   is read through; where it cannot be read, nothing about language is
+   counted. */
 async function languageFacts(context, body, who) {
   const langs = body.langs && typeof body.langs === 'object' ? body.langs : {};
   const moved = body.moved && typeof body.moved === 'object' ? body.moved : {};
@@ -1056,7 +1058,7 @@ async function languageFacts(context, body, who) {
 
   let spoken;
   try {
-    spoken = new Set(Object.keys((await uiStrings(context)) || {}));
+    spoken = new Set(Object.keys((await languageIndex(context)) || {}));
   } catch (e) {
     return [];
   }
@@ -1160,7 +1162,7 @@ function paired(one, two, a, b) {
  *   switches   [{ id: 'from>to', n }] language switches, most first
  *   asked      [{ id, n, spoken }] visitors by the language their browser
  *              asks for, most first, `spoken` whether the site has it —
- *              `spoken` is the codes data/ui.json speaks
+ *              `spoken` is the codes data/lang/index.json lists
  *   hours      [24 numbers] page views by the hour of the day in Tallinn,
  *              midnight first
  *   devices    [{ id, n }] visitors by phone, tablet or desktop, most first

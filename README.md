@@ -2514,6 +2514,23 @@ their words ride in the same answer as their data — **One request on the way
 in** under **Flashcards**. `data/ui.json` is still served, because a browser
 holding yesterday's script still asks for it.
 
+**And the Functions read it the same way, since October 2026.** The routes
+that answer with a page's words — `/api/flashcard`, `/api/chess` and the
+three under `/api/admin/` — pick the language out of the index and read that
+one file, through `languageIndex()` and `wordsIn()` in
+`functions/api/_lib.js`; so do the route that writes the flashcards' head
+and the visitor count, which checks that a language is one the site speaks.
+They read `ui.json` whole until then, and on a fresh isolate that was most
+of the cost of answering: measured in Node on an ordinary machine, parsing
+the whole file took 4.8 ms and one language's file 0.4, and on the
+flashcards the whole file was parsed beside `data/decks.json`, at 4.3 ms
+itself, against the ten milliseconds of CPU a request gets on the Workers
+free plan — **Where the words are, and it is mostly not the database**
+under **Flashcards**. The one reader left of the whole file is
+`functions/index.js`, for the map's head, and it may be: the map is
+rendered once per deployment per colo and kept, and `ui.json` is one of the
+four files that render is keyed on, which the header of that file explains.
+
 ### Adding a language
 
 1. Add a block to `data/ui.json` with the same string ids as the others, plus
@@ -8807,6 +8824,23 @@ themselves, how far each person has got, and which of the shipped cards a
 reader has said is wrong. `functions/api/flashcard.js` is the only thing that
 writes any of them.
 
+**What reading it as one costs.** Three Functions read the whole file —
+`/api/flashcard`, the route that writes a deck's head, and `/api/say` — each
+through `dataFile()`, which parses it once and keeps it five minutes per
+isolate. Measured in Node on an ordinary machine in October 2026, when the
+file was 1.26 MB on disk and half of that indentation, the parse took 4.3 ms
+against the ten milliseconds of CPU a request gets on the Workers free plan,
+and it grows with the file, which was 935 KB the day before. A browser never
+pays it: the shelf is the decks' names and counts, and a deck comes one at a
+time. The strings beside it stopped costing anything to speak of when the
+Functions went over to one language file — **One language at a time** under
+**Languages**. If the file keeps growing, the change is one file per deck
+and an index of names, card ids and counts, written by a tool the way
+`data/lang/` is, so that a request parses the deck it asked for and the shelf
+parses the index. It touches those three Functions, `tools/validate.mjs`,
+`tools/sitemap.mjs` and `ABOUT` in `functions/api/_visitors.js`, and nothing
+anybody edits, since `data/decks.json` would stay the source.
+
 ### Where the second thousand came from
 
 The first thousand cards were written from this site outwards: what is on a
@@ -9096,8 +9130,9 @@ So the flashcards fetch it no more. The words ride in the same answer as the
 decks: `assets/flashcard.js` sends `/api/flashcard` what it would have picked
 a language from, in the order every page picks — `?lang=`, then `ttb.lang`,
 then the browser's own — and `wordsFor()` in `functions/api/_lib.js`
-takes the first the site speaks and answers with that language's block, eight
-to ten KB gzipped, beside the decks. One request before a card can be drawn
+takes the first `data/lang/index.json` lists and answers with that language's
+block out of its own file, eight to ten KB gzipped, beside the decks. One
+request before a card can be drawn
 rather than two, a tenth of the bytes, and the same rule `pickLanguage()`
 applies everywhere else, moved to where the list of languages is.
 
@@ -14670,7 +14705,7 @@ the deploy itself: `node tools/functions-check.mjs` imports every module under
 `functions/`. Pages bundles them into one Worker, so a route importing a name
 its module no longer exports, or a file with a syntax error in it, fails the
 whole deployment rather than its own route — which is how the site went down
-once; the comment above `uiStrings()` in `functions/api/_lib.js` is the
+once; the comment above `languageIndex()` in `functions/api/_lib.js` is the
 record. An ES module resolves its imports before any of it runs, so importing
 each file under Node fails on exactly what the bundle would, on the push
 instead of a minute after the merge.
