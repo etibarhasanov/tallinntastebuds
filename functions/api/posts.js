@@ -44,10 +44,10 @@
  * mid-edit, and a draft is one person's.
  */
 
-import { json, sessionUser, wrongDatabase, knownPlaces, dataFile } from './_lib.js';
+import { json, sessionUser, wrongDatabase, knownPlaces, venuesByIds, dataFile } from './_lib.js';
 import { asUsername } from './_account.js';
 import {
-  MAX_TITLE, MAX_LEAD, MAX_BODY, MAX_POSTS, MAX_NEW_A_DAY, LANGS, POST_ID,
+  MAX_TITLE, MAX_LEAD, MAX_BODY, MAX_BLOCKS, MAX_POSTS, MAX_NEW_A_DAY, LANGS, POST_ID,
   cleanBody, cleanLine, newId, readPage, readPost, postsReady
 } from './_posts.js';
 
@@ -137,8 +137,25 @@ async function save(context, viewer, body) {
      title is refused rather than dropped: the writer has a tab open for it
      and would find it gone. */
   /* The ids a place card may name: the map's own, open or closed — a post
-     about a place that has since closed still says which. */
-  const places = await knownPlaces(context).catch(() => new Set());
+     about a place that has since closed still says which — and every venue
+     in Google's export, which is the whole city rather than the seventy-odd
+     places I have filmed. A post about somebody's ten places is about their
+     ten, not about mine. The export is asked only for the ids the post
+     actually carries, fifty at a time, since that is all a card needs. */
+  const places = new Set(await knownPlaces(context).catch(() => new Set()));
+  const wanted = new Set();
+  for (const code of Object.keys(body.texts)) {
+    const given = body.texts[code];
+    for (const block of (given && Array.isArray(given.body) ? given.body : [])) {
+      const id = block && block.k === 'place' ? String(block.id || '') : '';
+      if (id && !places.has(id)) wanted.add(id);
+    }
+  }
+  const asked = [...wanted].slice(0, MAX_BLOCKS);
+  for (let i = 0; i < asked.length; i += 50) {
+    const found = await venuesByIds(env, asked.slice(i, i + 50)).catch(() => new Map());
+    for (const id of found.keys()) places.add(id);
+  }
   const texts = [];
   for (const code of Object.keys(body.texts)) {
     if (!LANGS.includes(code)) return json({ error: 'bad-lang' }, 400);

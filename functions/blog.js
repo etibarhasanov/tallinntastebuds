@@ -70,7 +70,7 @@
  */
 
 import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile, wrongDatabase } from './api/_lib.js';
+import { dataFile, wrongDatabase, venuesByIds } from './api/_lib.js';
 import { POST_ID, readPage, readPost, postsReady, pickText, bodyHtml, plainText } from './api/_posts.js';
 import { asUsername } from './api/_account.js';
 
@@ -241,14 +241,26 @@ function memberPosting(request, post) {
   };
 }
 
-/* The map's places by id, for the name on a place card. */
-async function placeNames(context) {
+/* The places a post's cards name, by id, for the name on each card: the
+   map's out of data/map.json, and whichever are Google's venues out of the
+   export, asked for by the ids this one body carries and nothing more. A
+   database that cannot answer costs those cards their line and nothing else. */
+async function placeNames(context, blocks) {
+  let names;
   try {
     const list = await dataFile(context, '/data/map.json');
-    return new Map((Array.isArray(list) ? list : []).map((p) => [p.id, p.name]));
+    names = new Map((Array.isArray(list) ? list : []).map((p) => [p.id, p.name]));
   } catch (e) {
-    return new Map();
+    names = new Map();
   }
+  const rest = [...new Set((blocks || [])
+    .filter((b) => b && b.k === 'place' && !names.has(b.id))
+    .map((b) => b.id))];
+  for (let i = 0; i < rest.length; i += 50) {
+    const found = await venuesByIds(context.env, rest.slice(i, i + 50)).catch(() => new Map());
+    for (const [id, venue] of found) names.set(id, venue.name);
+  }
+  return names;
 }
 
 async function memberPage(context, html, db, asked) {
@@ -267,7 +279,7 @@ async function memberPage(context, html, db, asked) {
     '\n<meta property="article:author" content="' + esc(SITE + '/u/' + encodeURIComponent(post.author)) + '">' +
     '\n<script type="application/ld+json">' + seed(memberPosting(request, post)) + '</script>';
 
-  const words = memberWords(post, await placeNames(context));
+  const words = memberWords(post, await placeNames(context, firstText(post).body));
   return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], words), 200, true);
 }
 

@@ -11694,10 +11694,18 @@ publish: `/blog?by=<name>`, everything they published under their name, which
 **The editor is the post.** It is a box set in the blog's own type, with a
 toolbar of exactly what a post may hold: text, a heading and a smaller one,
 bold, italic, a link, a list and a numbered list, a quote, a divider, and a
-place on the map. The last is this blog's own: a search over the map's places
-that drops the one picked into the post as a card, which a reader presses to
-open the place on the map. *My ten favourite places* is ten of those with a
-paragraph between each. Writing in Google Docs or Word and pasting works the
+place on the map. The last is this blog's own: a search over every place in
+the city — the map's own merged with Google's export, the same roll a list is
+built from — that drops the one picked into the post as a card, which a
+reader presses to open the place on the map. *My ten favourite places* is
+somebody's ten, not mine, so the bar I have never filmed is as pinnable as
+the one I have, and `/?spot=` with a Google key opens it as the find bar
+would. The roll is never downloaded for it: the picker asks
+`/api/places?q=` by name once three letters are typed, a quarter of a second
+after the last key, and the blog and the editor ask `/api/places?ids=` for
+just the Google venues a post's cards name — the map's they already have out
+of `data/map.json`. *My ten favourite places* is ten of those with a paragraph
+between each. Writing in Google Docs or Word and pasting works the
 way people expect: the headings, lists, bold, italic and links come across,
 and the fonts, colours and pictures do not.
 
@@ -11711,7 +11719,8 @@ from the blocks as text. There is no markup in the database to escape, so a
 post cannot put a script, a style or a frame on this site. A link goes to a
 path here or to an `http(s)` address elsewhere and nowhere else, and a link
 off the site is `nofollow ugc` — the writer chose it, the site did not. A
-place card names a place on the map or is dropped.
+place card names a place on the map or a venue in Google's export, or is
+dropped.
 
 **The caps** are `MAX_TITLE 120`, `MAX_LEAD 280` and `MAX_BODY 20000` —
 characters of words, which is what the counter under the box counts, not of

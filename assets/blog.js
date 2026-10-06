@@ -91,9 +91,11 @@
      database a page at a time — functions/api/posts.js. Nothing here waits
      on it: an answer that does not come is a blog of the house's notes, which
      is what it always was. The places a post's cards name are read out of
-     the map's own file the first time a post has one. */
+     the map's own file the first time a post has one, and the Google venues
+     the map does not have out of /api/places by id, only those. */
   var MEMBERS_API = '/api/posts';
   var MAP_URL = '/data/map.json';
+  var CITY_URL = '/api/places';
 
   /* Where the clips are, and what the four files for one post are called.
      The id is the whole of the name: a post and its pictures cannot drift
@@ -595,6 +597,7 @@
         if (!post) { state.missing = true; return; }
         state.member = post;
         state.readIn = post.texts[state.lang] ? state.lang : post.lang;
+        return loadCity(post);
       });
   }
 
@@ -625,6 +628,25 @@
       state.places = {};
       (list || []).forEach(function (p) { if (p && p.id) state.places[p.id] = p; });
       return state.places;
+    });
+  }
+
+  /* The cards a post names that the map does not have — Google's venues,
+     which a member may pin as freely as one of mine — asked for by id, in
+     every language the post is written in so a switch of pills needs nothing
+     more. Never the whole roll: that is a hundred kilobytes for ten names. */
+  function loadCity(post) {
+    var ids = [];
+    Object.keys(post.texts || {}).forEach(function (code) {
+      (post.texts[code].body || []).forEach(function (b) {
+        if (b && b.k === 'place' && !state.places[b.id] && ids.indexOf(b.id) === -1) ids.push(b.id);
+      });
+    });
+    if (!ids.length) return Promise.resolve();
+    return fetchJSON(CITY_URL + '?ids=' + ids.slice(0, 50).map(encodeURIComponent).join(',')).then(function (list) {
+      (Array.isArray(list) ? list : []).forEach(function (p) {
+        if (p && p.id && !state.places[p.id]) state.places[p.id] = p;
+      });
     });
   }
 
