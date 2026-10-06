@@ -1,0 +1,643 @@
+{
+ "id": "numbers",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Numbers",
+  "az": "Saylar",
+  "ru": "Числа"
+ },
+ "why": {
+  "en": "One to a hundred, which is most of what a price is",
+  "az": "Birdən yüzə qədər — qiymətin çox hissəsi budur",
+  "ru": "От одного до ста — а цена в основном из них и состоит"
+ },
+ "cards": [
+  {
+   "id": "uks",
+   "front": "Üks",
+   "back": {
+    "en": "One",
+    "az": "Bir",
+    "ru": "Один"
+   },
+   "forms": [
+    "ühe",
+    "ühte"
+   ],
+   "sentence": {
+    "et": "Üks kohv, palun.",
+    "en": "One coffee, please.",
+    "az": "Bir qəhvə, zəhmət olmasa.",
+    "ru": "Один кофе, пожалуйста."
+   }
+  },
+  {
+   "id": "kaks",
+   "front": "Kaks",
+   "back": {
+    "en": "Two",
+    "az": "İki",
+    "ru": "Два"
+   },
+   "forms": [
+    "kahe",
+    "kahte"
+   ],
+   "sentence": {
+    "et": "Meid on kaks.",
+    "en": "There are two of us.",
+    "az": "Biz ikiyik.",
+    "ru": "Нас двое."
+   }
+  },
+  {
+   "id": "kolm",
+   "front": "Kolm",
+   "back": {
+    "en": "Three",
+    "az": "Üç",
+    "ru": "Три"
+   },
+   "forms": [
+    "kolme",
+    "kolme"
+   ]
+  },
+  {
+   "id": "neli",
+   "front": "Neli",
+   "back": {
+    "en": "Four",
+    "az": "Dörd",
+    "ru": "Четыре"
+   },
+   "forms": [
+    "nelja",
+    "nelja"
+   ]
+  },
+  {
+   "id": "viis",
+   "front": "Viis",
+   "back": {
+    "en": "Five",
+    "az": "Beş",
+    "ru": "Пять"
+   },
+   "forms": [
+    "viie",
+    "viit"
+   ]
+  },
+  {
+   "id": "kuus",
+   "front": "Kuus",
+   "back": {
+    "en": "Six",
+    "az": "Altı",
+    "ru": "Шесть"
+   },
+   "forms": [
+    "kuue",
+    "kuut"
+   ]
+  },
+  {
+   "id": "seitse",
+   "front": "Seitse",
+   "back": {
+    "en": "Seven",
+    "az": "Yeddi",
+    "ru": "Семь"
+   },
+   "forms": [
+    "seitsme",
+    "seitset"
+   ]
+  },
+  {
+   "id": "kaheksa",
+   "front": "Kaheksa",
+   "back": {
+    "en": "Eight",
+    "az": "Səkkiz",
+    "ru": "Восемь"
+   },
+   "forms": [
+    "kaheksa",
+    "kaheksat"
+   ]
+  },
+  {
+   "id": "uheksa",
+   "front": "Üheksa",
+   "back": {
+    "en": "Nine",
+    "az": "Doqquz",
+    "ru": "Девять"
+   },
+   "forms": [
+    "üheksa",
+    "üheksat"
+   ]
+  },
+  {
+   "id": "kumme",
+   "front": "Kümme",
+   "back": {
+    "en": "Ten",
+    "az": "On",
+    "ru": "Десять"
+   },
+   "forms": [
+    "kümne",
+    "kümmet"
+   ]
+  },
+  {
+   "id": "uksteist",
+   "front": "Üksteist",
+   "back": {
+    "en": "Eleven",
+    "az": "On bir",
+    "ru": "Одиннадцать"
+   }
+  },
+  {
+   "id": "kaksteist",
+   "front": "Kaksteist",
+   "back": {
+    "en": "Twelve",
+    "az": "On iki",
+    "ru": "Двенадцать"
+   }
+  },
+  {
+   "id": "kolmteist",
+   "front": "Kolmteist",
+   "back": {
+    "en": "Thirteen",
+    "az": "On üç",
+    "ru": "Тринадцать"
+   }
+  },
+  {
+   "id": "neliteist",
+   "front": "Neliteist",
+   "back": {
+    "en": "Fourteen",
+    "az": "On dörd",
+    "ru": "Четырнадцать"
+   }
+  },
+  {
+   "id": "viisteist",
+   "front": "Viisteist",
+   "back": {
+    "en": "Fifteen",
+    "az": "On beş",
+    "ru": "Пятнадцать"
+   }
+  },
+  {
+   "id": "kakskummend",
+   "front": "Kakskümmend",
+   "back": {
+    "en": "Twenty",
+    "az": "İyirmi",
+    "ru": "Двадцать"
+   }
+  },
+  {
+   "id": "kolmkummend",
+   "front": "Kolmkümmend",
+   "back": {
+    "en": "Thirty",
+    "az": "Otuz",
+    "ru": "Тридцать"
+   }
+  },
+  {
+   "id": "viiskummend",
+   "front": "Viiskümmend",
+   "back": {
+    "en": "Fifty",
+    "az": "Əlli",
+    "ru": "Пятьдесят"
+   }
+  },
+  {
+   "id": "sada",
+   "front": "Sada",
+   "back": {
+    "en": "A hundred",
+    "az": "Yüz",
+    "ru": "Сто"
+   },
+   "forms": [
+    "saja",
+    "sada"
+   ]
+  },
+  {
+   "id": "tuhat",
+   "front": "Tuhat",
+   "back": {
+    "en": "A thousand",
+    "az": "Min",
+    "ru": "Тысяча"
+   },
+   "forms": [
+    "tuhande",
+    "tuhandet"
+   ]
+  },
+  {
+   "id": "pool",
+   "front": "Pool",
+   "back": {
+    "en": "Half",
+    "az": "Yarım",
+    "ru": "Половина"
+   },
+   "forms": [
+    "poole",
+    "poolt"
+   ]
+  },
+  {
+   "id": "esimene",
+   "front": "Esimene",
+   "back": {
+    "en": "First",
+    "az": "Birinci",
+    "ru": "Первый"
+   },
+   "forms": [
+    "esimese",
+    "esimest"
+   ]
+  },
+  {
+   "id": "teine",
+   "front": "Teine",
+   "back": {
+    "en": "Second",
+    "az": "İkinci",
+    "ru": "Второй"
+   },
+   "forms": [
+    "teise",
+    "teist"
+   ],
+   "sentence": {
+    "et": "Pood on teisel korrusel.",
+    "en": "The shop is on the second floor.",
+    "az": "Mağaza ikinci mərtəbədədir.",
+    "ru": "Магазин на втором этаже."
+   }
+  },
+  {
+   "id": "kolmas",
+   "front": "Kolmas",
+   "back": {
+    "en": "Third",
+    "az": "Üçüncü",
+    "ru": "Третий"
+   },
+   "forms": [
+    "kolmanda",
+    "kolmandat"
+   ],
+   "sentence": {
+    "et": "Ta on järjekorras kolmas.",
+    "en": "They are third in the queue.",
+    "az": "O, növbədə üçüncüdür.",
+    "ru": "Он третий в очереди."
+   }
+  },
+  {
+   "id": "null",
+   "front": "Null",
+   "back": {
+    "en": "Zero",
+    "az": "Sıfır",
+    "ru": "Ноль"
+   },
+   "forms": [
+    "nulli",
+    "nulli"
+   ]
+  },
+  {
+   "id": "miljon",
+   "front": "Miljon",
+   "back": {
+    "en": "Million",
+    "az": "Milyon",
+    "ru": "Миллион"
+   },
+   "forms": [
+    "miljoni",
+    "miljonit"
+   ]
+  },
+  {
+   "id": "nelikummend",
+   "front": "Nelikümmend",
+   "back": {
+    "en": "Forty",
+    "az": "Qırx",
+    "ru": "Сорок"
+   },
+   "forms": [
+    "neljakümne",
+    "neljakümmend"
+   ]
+  },
+  {
+   "id": "kuuskummend",
+   "front": "Kuuskümmend",
+   "back": {
+    "en": "Sixty",
+    "az": "Altmış",
+    "ru": "Шестьдесят"
+   },
+   "forms": [
+    "kuuekümne",
+    "kuutkümmend"
+   ]
+  },
+  {
+   "id": "seitsekummend",
+   "front": "Seitsekümmend",
+   "back": {
+    "en": "Seventy",
+    "az": "Yetmiş",
+    "ru": "Семьдесят"
+   },
+   "forms": [
+    "seitsmekümne",
+    "seitsetkümmend"
+   ]
+  },
+  {
+   "id": "kaheksakummend",
+   "front": "Kaheksakümmend",
+   "back": {
+    "en": "Eighty",
+    "az": "Səksən",
+    "ru": "Восемьдесят"
+   },
+   "forms": [
+    "kaheksakümne",
+    "kaheksatkümmend"
+   ]
+  },
+  {
+   "id": "uheksakummend",
+   "front": "Üheksakümmend",
+   "back": {
+    "en": "Ninety",
+    "az": "Doxsan",
+    "ru": "Девяносто"
+   },
+   "forms": [
+    "üheksakümne",
+    "üheksatkümmend"
+   ]
+  },
+  {
+   "id": "kuusteist",
+   "front": "Kuusteist",
+   "back": {
+    "en": "Sixteen",
+    "az": "On altı",
+    "ru": "Шестнадцать"
+   },
+   "forms": [
+    "kuueteistkümne",
+    "kuutteistkümmet"
+   ]
+  },
+  {
+   "id": "seitseteist",
+   "front": "Seitseteist",
+   "back": {
+    "en": "Seventeen",
+    "az": "On yeddi",
+    "ru": "Семнадцать"
+   },
+   "forms": [
+    "seitsmeteistkümne",
+    "seitsetteistkümmet"
+   ]
+  },
+  {
+   "id": "kaheksateist",
+   "front": "Kaheksateist",
+   "back": {
+    "en": "Eighteen",
+    "az": "On səkkiz",
+    "ru": "Восемнадцать"
+   },
+   "forms": [
+    "kaheksateistkümne",
+    "kaheksatteistkümmet"
+   ]
+  },
+  {
+   "id": "uheksateist",
+   "front": "Üheksateist",
+   "back": {
+    "en": "Nineteen",
+    "az": "On doqquz",
+    "ru": "Девятнадцать"
+   },
+   "forms": [
+    "üheksateistkümne",
+    "üheksatteistkümmet"
+   ]
+  },
+  {
+   "id": "kakssada",
+   "front": "Kakssada",
+   "back": {
+    "en": "Two hundred",
+    "az": "İki yüz",
+    "ru": "Двести"
+   },
+   "forms": [
+    "kahesaja",
+    "kahtsada"
+   ]
+  },
+  {
+   "id": "viissada",
+   "front": "Viissada",
+   "back": {
+    "en": "Five hundred",
+    "az": "Beş yüz",
+    "ru": "Пятьсот"
+   },
+   "forms": [
+    "viiesaja",
+    "viitsada"
+   ]
+  },
+  {
+   "id": "neljas",
+   "front": "Neljas",
+   "back": {
+    "en": "Fourth",
+    "az": "Dördüncü",
+    "ru": "Четвёртый"
+   },
+   "forms": [
+    "neljanda",
+    "neljandat"
+   ]
+  },
+  {
+   "id": "viies",
+   "front": "Viies",
+   "back": {
+    "en": "Fifth",
+    "az": "Beşinci",
+    "ru": "Пятый"
+   },
+   "forms": [
+    "viienda",
+    "viiendat"
+   ]
+  },
+  {
+   "id": "kuues",
+   "front": "Kuues",
+   "back": {
+    "en": "Sixth",
+    "az": "Altıncı",
+    "ru": "Шестой"
+   },
+   "forms": [
+    "kuuenda",
+    "kuuendat"
+   ]
+  },
+  {
+   "id": "seitsmes",
+   "front": "Seitsmes",
+   "back": {
+    "en": "Seventh",
+    "az": "Yeddinci",
+    "ru": "Седьмой"
+   },
+   "forms": [
+    "seitsmenda",
+    "seitsmendat"
+   ]
+  },
+  {
+   "id": "kaheksas",
+   "front": "Kaheksas",
+   "back": {
+    "en": "Eighth",
+    "az": "Səkkizinci",
+    "ru": "Восьмой"
+   },
+   "forms": [
+    "kaheksanda",
+    "kaheksandat"
+   ]
+  },
+  {
+   "id": "uheksas",
+   "front": "Üheksas",
+   "back": {
+    "en": "Ninth",
+    "az": "Doqquzuncu",
+    "ru": "Девятый"
+   },
+   "forms": [
+    "üheksanda",
+    "üheksandat"
+   ]
+  },
+  {
+   "id": "kumnes",
+   "front": "Kümnes",
+   "back": {
+    "en": "Tenth",
+    "az": "Onuncu",
+    "ru": "Десятый"
+   },
+   "forms": [
+    "kümnenda",
+    "kümnendat"
+   ]
+  },
+  {
+   "id": "kahekesi",
+   "front": "Kahekesi",
+   "back": {
+    "en": "The two of us together",
+    "az": "İkilikdə",
+    "ru": "Вдвоём"
+   }
+  },
+  {
+   "id": "kolmekesi",
+   "front": "Kolmekesi",
+   "back": {
+    "en": "The three of us together",
+    "az": "Üçlükdə",
+    "ru": "Втроём"
+   }
+  },
+  {
+   "id": "uksi",
+   "front": "Üksi",
+   "back": {
+    "en": "Alone",
+    "az": "Tək",
+    "ru": "Один"
+   }
+  },
+  {
+   "id": "poolteist",
+   "front": "Poolteist",
+   "back": {
+    "en": "One and a half",
+    "az": "Bir yarım",
+    "ru": "Полтора"
+   }
+  },
+  {
+   "id": "viiekumneeurone",
+   "front": "Viiekümneeurone",
+   "back": {
+    "en": "Fifty euro note",
+    "az": "Əlli avroluq",
+    "ru": "Пятьдесят евро"
+   },
+   "forms": [
+    "viiekümneeurose",
+    "viiekümneeurost"
+   ]
+  },
+  {
+   "id": "kumnesendine",
+   "front": "Kümnesendine",
+   "back": {
+    "en": "Ten cent coin",
+    "az": "On sentlik",
+    "ru": "Десять центов"
+   },
+   "forms": [
+    "kümnesendise",
+    "kümnesendist"
+   ]
+  }
+ ],
+ "level": "start"
+}

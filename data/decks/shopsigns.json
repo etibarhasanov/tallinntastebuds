@@ -1,0 +1,449 @@
+{
+ "id": "shopsigns",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Which shop is which",
+  "az": "Hansı mağaza hansıdır",
+  "ru": "Какой магазин какой"
+ },
+ "why": {
+  "en": "The word over the door, and what is sold behind it",
+  "az": "Qapının üstündəki söz və arxasında satılanlar",
+  "ru": "Слово над дверью и то, что продают за ней"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "kauplus",
+   "front": "Kauplus",
+   "back": {
+    "en": "Store",
+    "az": "Mağaza",
+    "ru": "Магазин"
+   },
+   "forms": [
+    "kaupluse",
+    "kauplust"
+   ],
+   "sentence": {
+    "et": "Kauplus on kell kümme lahti.",
+    "en": "The store is open at ten.",
+    "az": "Mağaza saat onda açılır.",
+    "ru": "Магазин открыт с десяти."
+   }
+  },
+  {
+   "id": "toidupood",
+   "front": "Toidupood",
+   "back": {
+    "en": "Grocery shop",
+    "az": "Ərzaq mağazası",
+    "ru": "Продуктовый магазин"
+   },
+   "forms": [
+    "toidupoe",
+    "toidupoodi"
+   ],
+   "sentence": {
+    "et": "Toidupood on nurga taga.",
+    "en": "The grocery shop is round the corner.",
+    "az": "Ərzaq mağazası küncün arxasındadır.",
+    "ru": "Продуктовый магазин за углом."
+   }
+  },
+  {
+   "id": "raamatupood",
+   "front": "Raamatupood",
+   "back": {
+    "en": "Bookshop",
+    "az": "Kitab mağazası",
+    "ru": "Книжный магазин"
+   },
+   "forms": [
+    "raamatupoe",
+    "raamatupoodi"
+   ],
+   "sentence": {
+    "et": "Raamatupood on kesklinnas.",
+    "en": "The bookshop is in the city centre.",
+    "az": "Kitab mağazası şəhərin mərkəzindədir.",
+    "ru": "Книжный магазин в центре города."
+   }
+  },
+  {
+   "id": "roivapood",
+   "front": "Rõivapood",
+   "back": {
+    "en": "Clothes shop",
+    "az": "Paltar mağazası",
+    "ru": "Магазин одежды"
+   },
+   "forms": [
+    "rõivapoe",
+    "rõivapoodi"
+   ],
+   "sentence": {
+    "et": "Rõivapood on teisel korrusel.",
+    "en": "The clothes shop is on the second floor.",
+    "az": "Paltar mağazası ikinci mərtəbədədir.",
+    "ru": "Магазин одежды на втором этаже."
+   }
+  },
+  {
+   "id": "naisteriiete-pood",
+   "front": "Naisteriiete pood",
+   "back": {
+    "en": "Women's clothes shop",
+    "az": "Qadın paltarı mağazası",
+    "ru": "Магазин женской одежды"
+   },
+   "sentence": {
+    "et": "Naisteriiete pood on siin kõrval.",
+    "en": "The women's clothes shop is right next door.",
+    "az": "Qadın paltarı mağazası elə yanımızdadır.",
+    "ru": "Магазин женской одежды прямо рядом."
+   }
+  },
+  {
+   "id": "meesteriiete-pood",
+   "front": "Meesteriiete pood",
+   "back": {
+    "en": "Men's clothes shop",
+    "az": "Kişi paltarı mağazası",
+    "ru": "Магазин мужской одежды"
+   },
+   "sentence": {
+    "et": "Meesteriiete pood on all.",
+    "en": "The men's clothes shop is downstairs.",
+    "az": "Kişi paltarı mağazası aşağıdadır.",
+    "ru": "Магазин мужской одежды внизу."
+   }
+  },
+  {
+   "id": "lasteriiete-pood",
+   "front": "Lasteriiete pood",
+   "back": {
+    "en": "Children's clothes shop",
+    "az": "Uşaq paltarı mağazası",
+    "ru": "Магазин детской одежды"
+   },
+   "sentence": {
+    "et": "Lasteriiete pood on sissepääsu juures.",
+    "en": "The children's clothes shop is by the entrance.",
+    "az": "Uşaq paltarı mağazası girişin yanındadır.",
+    "ru": "Магазин детской одежды у входа."
+   }
+  },
+  {
+   "id": "kingapood",
+   "front": "Kingapood",
+   "back": {
+    "en": "Shoe shop",
+    "az": "Ayaqqabı mağazası",
+    "ru": "Обувной магазин"
+   },
+   "forms": [
+    "kingapoe",
+    "kingapoodi"
+   ],
+   "sentence": {
+    "et": "Kingapood on väljapääsu kõrval.",
+    "en": "The shoe shop is next to the exit.",
+    "az": "Ayaqqabı mağazası çıxışın yanındadır.",
+    "ru": "Обувной магазин рядом с выходом."
+   }
+  },
+  {
+   "id": "lillepood",
+   "front": "Lillepood",
+   "back": {
+    "en": "Flower shop",
+    "az": "Gül mağazası",
+    "ru": "Цветочный магазин"
+   },
+   "forms": [
+    "lillepoe",
+    "lillepoodi"
+   ],
+   "sentence": {
+    "et": "Ma ostan lilled lillepoest.",
+    "en": "I buy the flowers at the flower shop.",
+    "az": "Gülləri gül mağazasından alıram.",
+    "ru": "Я покупаю цветы в цветочном магазине."
+   }
+  },
+  {
+   "id": "manguasjapood",
+   "front": "Mänguasjapood",
+   "back": {
+    "en": "Toy shop",
+    "az": "Oyuncaq mağazası",
+    "ru": "Магазин игрушек"
+   },
+   "forms": [
+    "mänguasjapoe",
+    "mänguasjapoodi"
+   ],
+   "sentence": {
+    "et": "Lapsed tahavad mänguasjapoodi minna.",
+    "en": "The children want to go to the toy shop.",
+    "az": "Uşaqlar oyuncaq mağazasına getmək istəyirlər.",
+    "ru": "Дети хотят пойти в магазин игрушек."
+   }
+  },
+  {
+   "id": "kosmeetikakauplus",
+   "front": "Kosmeetikakauplus",
+   "back": {
+    "en": "Cosmetics shop",
+    "az": "Kosmetika mağazası",
+    "ru": "Магазин косметики"
+   },
+   "forms": [
+    "kosmeetikakaupluse",
+    "kosmeetikakauplust"
+   ],
+   "sentence": {
+    "et": "Kosmeetikakauplus on keskuses.",
+    "en": "The cosmetics shop is in the centre.",
+    "az": "Kosmetika mağazası ticarət mərkəzindədir.",
+    "ru": "Магазин косметики в торговом центре."
+   }
+  },
+  {
+   "id": "juveelikauplus",
+   "front": "Juveelikauplus",
+   "back": {
+    "en": "Jeweller's",
+    "az": "Zərgərlik mağazası",
+    "ru": "Ювелирный магазин"
+   },
+   "forms": [
+    "juveelikaupluse",
+    "juveelikauplust"
+   ],
+   "sentence": {
+    "et": "Sõrmus on juveelikauplusest.",
+    "en": "The ring is from the jeweller's.",
+    "az": "Üzük zərgərlik mağazasındandır.",
+    "ru": "Кольцо из ювелирного магазина."
+   }
+  },
+  {
+   "id": "prillipood",
+   "front": "Prillipood",
+   "back": {
+    "en": "Optician's",
+    "az": "Optika mağazası",
+    "ru": "Оптика"
+   },
+   "forms": [
+    "prillipoe",
+    "prillipoodi"
+   ],
+   "sentence": {
+    "et": "Prillipood on siin lähedal.",
+    "en": "The optician's is near here.",
+    "az": "Optika mağazası buradan yaxındır.",
+    "ru": "Оптика здесь рядом."
+   }
+  },
+  {
+   "id": "elektroonikakauplus",
+   "front": "Elektroonikakauplus",
+   "back": {
+    "en": "Electronics shop",
+    "az": "Elektronika mağazası",
+    "ru": "Магазин электроники"
+   },
+   "forms": [
+    "elektroonikakaupluse",
+    "elektroonikakauplust"
+   ],
+   "sentence": {
+    "et": "Elektroonikakauplus müüb arvuteid.",
+    "en": "The electronics shop sells computers.",
+    "az": "Elektronika mağazası kompüter satır.",
+    "ru": "Магазин электроники продаёт компьютеры."
+   }
+  },
+  {
+   "id": "burootarvete-pood",
+   "front": "Bürootarvete pood",
+   "back": {
+    "en": "Stationery shop",
+    "az": "Dəftərxana mağazası",
+    "ru": "Магазин канцтоваров"
+   },
+   "sentence": {
+    "et": "Bürootarvete pood müüb paberit.",
+    "en": "The stationery shop sells paper.",
+    "az": "Dəftərxana mağazası kağız satır.",
+    "ru": "Магазин канцтоваров продаёт бумагу."
+   }
+  },
+  {
+   "id": "fotopood",
+   "front": "Fotopood",
+   "back": {
+    "en": "Camera shop",
+    "az": "Foto mağazası",
+    "ru": "Фотомагазин"
+   },
+   "forms": [
+    "fotopoe",
+    "fotopoodi"
+   ],
+   "sentence": {
+    "et": "Fotopood on kinni.",
+    "en": "The camera shop is closed.",
+    "az": "Foto mağazası bağlıdır.",
+    "ru": "Фотомагазин закрыт."
+   }
+  },
+  {
+   "id": "mooblipood",
+   "front": "Mööblipood",
+   "back": {
+    "en": "Furniture shop",
+    "az": "Mebel mağazası",
+    "ru": "Мебельный магазин"
+   },
+   "forms": [
+    "mööblipoe",
+    "mööblipoodi"
+   ],
+   "sentence": {
+    "et": "Mööblipood on linnast väljas.",
+    "en": "The furniture shop is out of town.",
+    "az": "Mebel mağazası şəhərdən kənardadır.",
+    "ru": "Мебельный магазин за городом."
+   }
+  },
+  {
+   "id": "majapidamistarvete-kauplus",
+   "front": "Majapidamistarvete kauplus",
+   "back": {
+    "en": "Household goods shop",
+    "az": "Məişət malları mağazası",
+    "ru": "Магазин хозтоваров"
+   },
+   "sentence": {
+    "et": "Majapidamistarvete kauplus on suur.",
+    "en": "The household goods shop is big.",
+    "az": "Məişət malları mağazası böyükdür.",
+    "ru": "Магазин хозтоваров большой."
+   }
+  },
+  {
+   "id": "muuja",
+   "front": "Müüja",
+   "back": {
+    "en": "Shop assistant",
+    "az": "Satıcı",
+    "ru": "Продавец"
+   },
+   "forms": [
+    "müüja",
+    "müüjat"
+   ],
+   "sentence": {
+    "et": "Müüja aitas mind.",
+    "en": "The shop assistant helped me.",
+    "az": "Satıcı mənə kömək etdi.",
+    "ru": "Продавец мне помог."
+   }
+  },
+  {
+   "id": "supermarket",
+   "front": "Supermarket",
+   "back": {
+    "en": "Supermarket",
+    "az": "Supermarket",
+    "ru": "Супермаркет"
+   },
+   "forms": [
+    "supermarketi",
+    "supermarketit"
+   ]
+  },
+  {
+   "id": "kaubanduskeskus",
+   "front": "Kaubanduskeskus",
+   "back": {
+    "en": "Shopping centre",
+    "az": "Ticarət mərkəzi",
+    "ru": "Торговый центр"
+   },
+   "forms": [
+    "kaubanduskeskuse",
+    "kaubanduskeskust"
+   ]
+  },
+  {
+   "id": "zoopood",
+   "front": "Zoopood",
+   "back": {
+    "en": "Pet shop",
+    "az": "Zoomağaza",
+    "ru": "Зоомагазин"
+   },
+   "forms": [
+    "zoopoe",
+    "zoopoodi"
+   ]
+  },
+  {
+   "id": "ilusalong",
+   "front": "Ilusalong",
+   "back": {
+    "en": "Beauty salon",
+    "az": "Gözəllik salonu",
+    "ru": "Салон красоты"
+   },
+   "forms": [
+    "ilusalongi",
+    "ilusalongi"
+   ]
+  },
+  {
+   "id": "pesupood",
+   "front": "Pesupood",
+   "back": {
+    "en": "Lingerie shop",
+    "az": "Alt paltarı mağazası",
+    "ru": "Магазин белья"
+   },
+   "forms": [
+    "pesupoe",
+    "pesupoodi"
+   ]
+  },
+  {
+   "id": "spordipood",
+   "front": "Spordipood",
+   "back": {
+    "en": "Sports shop",
+    "az": "İdman mağazası",
+    "ru": "Спортивный магазин"
+   },
+   "forms": [
+    "spordipoe",
+    "spordipoodi"
+   ]
+  },
+  {
+   "id": "polikliinik",
+   "front": "Polikliinik",
+   "back": {
+    "en": "Polyclinic",
+    "az": "Poliklinika",
+    "ru": "Поликлиника"
+   },
+   "forms": [
+    "polikliiniku",
+    "polikliinikut"
+   ]
+  }
+ ]
+}

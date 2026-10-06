@@ -1,0 +1,541 @@
+{
+ "id": "feelings",
+ "added": "2026-09-18",
+ "name": {
+  "en": "How it is going",
+  "az": "İşlər necə gedir",
+  "ru": "Как идут дела"
+ },
+ "why": {
+  "en": "Answering \"kuidas läheb?\" with something other than \"hästi\"",
+  "az": "«Kuidas läheb?» sualına «hästi»dən başqa cavab",
+  "ru": "Ответ на «kuidas läheb?» не только словом «hästi»"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "vasinud",
+   "front": "Väsinud",
+   "back": {
+    "en": "Tired",
+    "az": "Yorğun",
+    "ru": "Усталый"
+   },
+   "forms": [
+    "väsinud",
+    "väsinut"
+   ],
+   "sentence": {
+    "et": "Ma olen väga väsinud.",
+    "en": "I am very tired.",
+    "az": "Çox yorğunam.",
+    "ru": "Я очень устал."
+   }
+  },
+  {
+   "id": "onnelik",
+   "front": "Õnnelik",
+   "back": {
+    "en": "Happy",
+    "az": "Xoşbəxt",
+    "ru": "Счастливый"
+   },
+   "forms": [
+    "õnneliku",
+    "õnnelikku"
+   ],
+   "sentence": {
+    "et": "Ta on õnnelik.",
+    "en": "They are happy.",
+    "az": "O xoşbəxtdir.",
+    "ru": "Он счастлив."
+   }
+  },
+  {
+   "id": "kurb",
+   "front": "Kurb",
+   "back": {
+    "en": "Sad",
+    "az": "Kədərli",
+    "ru": "Печальный"
+   },
+   "forms": [
+    "kurva",
+    "kurba"
+   ],
+   "sentence": {
+    "et": "See on kurb lugu.",
+    "en": "That is a sad story.",
+    "az": "Bu kədərli hekayədir.",
+    "ru": "Это печальная история."
+   }
+  },
+  {
+   "id": "vihane",
+   "front": "Vihane",
+   "back": {
+    "en": "Angry",
+    "az": "Hirsli",
+    "ru": "Злой"
+   },
+   "forms": [
+    "vihase",
+    "vihast"
+   ],
+   "sentence": {
+    "et": "Ära ole vihane.",
+    "en": "Do not be angry.",
+    "az": "Hirslənmə.",
+    "ru": "Не злись."
+   }
+  },
+  {
+   "id": "igav",
+   "front": "Igav",
+   "back": {
+    "en": "Boring",
+    "az": "Darıxdırıcı",
+    "ru": "Скучный"
+   },
+   "forms": [
+    "igava",
+    "igavat"
+   ],
+   "sentence": {
+    "et": "Film oli igav.",
+    "en": "The film was boring.",
+    "az": "Film darıxdırıcı idi.",
+    "ru": "Фильм был скучный."
+   }
+  },
+  {
+   "id": "huvitav",
+   "front": "Huvitav",
+   "back": {
+    "en": "Interesting",
+    "az": "Maraqlı",
+    "ru": "Интересный"
+   },
+   "forms": [
+    "huvitava",
+    "huvitavat"
+   ],
+   "sentence": {
+    "et": "See on huvitav.",
+    "en": "That is interesting.",
+    "az": "Bu maraqlıdır.",
+    "ru": "Это интересно."
+   }
+  },
+  {
+   "id": "raske",
+   "front": "Raske",
+   "back": {
+    "en": "Hard, heavy",
+    "az": "Çətin, ağır",
+    "ru": "Трудный, тяжёлый"
+   },
+   "forms": [
+    "raske",
+    "rasket"
+   ],
+   "sentence": {
+    "et": "Eesti keel on raske.",
+    "en": "Estonian is hard.",
+    "az": "Eston dili çətindir.",
+    "ru": "Эстонский язык трудный."
+   }
+  },
+  {
+   "id": "lihtne",
+   "front": "Lihtne",
+   "back": {
+    "en": "Easy, simple",
+    "az": "Asan, sadə",
+    "ru": "Простой, лёгкий"
+   },
+   "forms": [
+    "lihtsa",
+    "lihtsat"
+   ],
+   "sentence": {
+    "et": "See on lihtne.",
+    "en": "That is easy.",
+    "az": "Bu asandır.",
+    "ru": "Это просто."
+   }
+  },
+  {
+   "id": "kiire",
+   "front": "Kiire",
+   "back": {
+    "en": "Fast, in a hurry",
+    "az": "Sürətli, tələsik",
+    "ru": "Быстрый, спешащий"
+   },
+   "forms": [
+    "kiire",
+    "kiiret"
+   ],
+   "sentence": {
+    "et": "Mul on kiire.",
+    "en": "I am in a hurry.",
+    "az": "Tələsirəm.",
+    "ru": "Я спешу."
+   }
+  },
+  {
+   "id": "aeglane",
+   "front": "Aeglane",
+   "back": {
+    "en": "Slow",
+    "az": "Yavaş",
+    "ru": "Медленный"
+   },
+   "forms": [
+    "aeglase",
+    "aeglast"
+   ],
+   "sentence": {
+    "et": "Buss on aeglane.",
+    "en": "The bus is slow.",
+    "az": "Avtobus yavaşdır.",
+    "ru": "Автобус медленный."
+   }
+  },
+  {
+   "id": "rahulik",
+   "front": "Rahulik",
+   "back": {
+    "en": "Calm",
+    "az": "Sakit",
+    "ru": "Спокойный"
+   },
+   "forms": [
+    "rahuliku",
+    "rahulikku"
+   ],
+   "sentence": {
+    "et": "Siin on rahulik.",
+    "en": "It is calm here.",
+    "az": "Burada sakitdir.",
+    "ru": "Здесь спокойно."
+   }
+  },
+  {
+   "id": "naljane",
+   "front": "Näljane",
+   "back": {
+    "en": "Hungry",
+    "az": "Ac",
+    "ru": "Голодный"
+   },
+   "forms": [
+    "näljase",
+    "näljast"
+   ],
+   "sentence": {
+    "et": "Ma olen näljane.",
+    "en": "I am hungry.",
+    "az": "Acam.",
+    "ru": "Я голоден."
+   }
+  },
+  {
+   "id": "janune",
+   "front": "Janune",
+   "back": {
+    "en": "Thirsty",
+    "az": "Susamış",
+    "ru": "Хочет пить"
+   },
+   "forms": [
+    "januse",
+    "janust"
+   ],
+   "sentence": {
+    "et": "Kas sa oled janune?",
+    "en": "Are you thirsty?",
+    "az": "Susamısan?",
+    "ru": "Ты хочешь пить?"
+   }
+  },
+  {
+   "id": "mures",
+   "front": "Mures",
+   "back": {
+    "en": "Worried",
+    "az": "Narahat",
+    "ru": "Встревоженный"
+   },
+   "forms": [
+    "mure",
+    "muret"
+   ],
+   "sentence": {
+    "et": "Ära ole mures.",
+    "en": "Do not worry.",
+    "az": "Narahat olma.",
+    "ru": "Не волнуйся."
+   }
+  },
+  {
+   "id": "pole-viga",
+   "front": "Pole viga",
+   "back": {
+    "en": "Not bad",
+    "az": "Pis deyil",
+    "ru": "Неплохо"
+   },
+   "sentence": {
+    "et": "Kuidas läheb? Pole viga.",
+    "en": "How is it going? Not bad.",
+    "az": "Necəsən? Pis deyil.",
+    "ru": "Как дела? Неплохо."
+   }
+  },
+  {
+   "id": "tuju",
+   "front": "Tuju",
+   "back": {
+    "en": "Mood",
+    "az": "Əhval",
+    "ru": "Настроение"
+   },
+   "forms": [
+    "tuju",
+    "tuju"
+   ],
+   "sentence": {
+    "et": "Mul on hea tuju.",
+    "en": "I am in a good mood.",
+    "az": "Əhvalım yaxşıdır.",
+    "ru": "У меня хорошее настроение."
+   }
+  },
+  {
+   "id": "onn",
+   "front": "Õnn",
+   "back": {
+    "en": "Happiness, luck",
+    "az": "Xoşbəxtlik, uğur",
+    "ru": "Счастье, удача"
+   },
+   "forms": [
+    "õnne",
+    "õnne"
+   ],
+   "sentence": {
+    "et": "Õnn kaasa!",
+    "en": "Good luck!",
+    "az": "Uğurlar!",
+    "ru": "Удачи!"
+   }
+  },
+  {
+   "id": "onneks",
+   "front": "Õnneks",
+   "back": {
+    "en": "Fortunately",
+    "az": "xoşbəxtlikdən",
+    "ru": "к счастью"
+   },
+   "sentence": {
+    "et": "Õnneks ma ei hilinenud.",
+    "en": "Fortunately I was not late.",
+    "az": "Xoşbəxtlikdən gecikmədim.",
+    "ru": "К счастью, я не опоздал."
+   }
+  },
+  {
+   "id": "naer",
+   "front": "Naer",
+   "back": {
+    "en": "Laughter",
+    "az": "Gülüş",
+    "ru": "Смех"
+   },
+   "forms": [
+    "naeru",
+    "naeru"
+   ],
+   "sentence": {
+    "et": "Köögist kostis naeru.",
+    "en": "Laughter came from the kitchen.",
+    "az": "Mətbəxdən gülüş səsi gəlirdi.",
+    "ru": "Из кухни доносился смех."
+   }
+  },
+  {
+   "id": "mul-on-kiire",
+   "front": "Mul on kiire",
+   "back": {
+    "en": "I am in a hurry",
+    "az": "Tələsirəm",
+    "ru": "Я спешу"
+   },
+   "sentence": {
+    "et": "Vabandust, mul on kiire.",
+    "en": "Sorry, I am in a hurry.",
+    "az": "Bağışlayın, tələsirəm.",
+    "ru": "Извините, я спешу."
+   }
+  },
+  {
+   "id": "lobus",
+   "front": "Lõbus",
+   "back": {
+    "en": "Jolly, amusing",
+    "az": "Şən, əyləncəli",
+    "ru": "Весёлый"
+   },
+   "forms": [
+    "lõbusa",
+    "lõbusat"
+   ],
+   "sentence": {
+    "et": "See oli lõbus õhtu.",
+    "en": "It was a jolly evening.",
+    "az": "Şən bir axşam idi.",
+    "ru": "Это был весёлый вечер."
+   }
+  },
+  {
+   "id": "naljamees",
+   "front": "Naljamees",
+   "back": {
+    "en": "Funny man, joker",
+    "az": "Zarafatcıl",
+    "ru": "Шутник"
+   },
+   "forms": [
+    "naljamehe",
+    "naljameest"
+   ],
+   "sentence": {
+    "et": "Sinu vend on naljamees.",
+    "en": "Your brother is a joker.",
+    "az": "Qardaşın zarafatcıldır.",
+    "ru": "Твой брат шутник."
+   }
+  },
+  {
+   "id": "tunne",
+   "front": "Tunne",
+   "back": {
+    "en": "Feeling",
+    "az": "Hiss",
+    "ru": "Чувство"
+   },
+   "forms": [
+    "tunde",
+    "tunnet"
+   ]
+  },
+  {
+   "id": "narvis-olema",
+   "front": "Närvis olema",
+   "back": {
+    "en": "To be nervous",
+    "az": "əsəbi olmaq",
+    "ru": "нервничать"
+   }
+  },
+  {
+   "id": "mure",
+   "front": "Mure",
+   "back": {
+    "en": "Worry, problem",
+    "az": "Dərd",
+    "ru": "Тревога"
+   },
+   "forms": [
+    "mure",
+    "muret"
+   ]
+  },
+  {
+   "id": "unine",
+   "front": "Unine",
+   "back": {
+    "en": "Sleepy",
+    "az": "Yuxulu",
+    "ru": "Сонный"
+   },
+   "forms": [
+    "unise",
+    "unist"
+   ]
+  },
+  {
+   "id": "kodune",
+   "front": "Kodune",
+   "back": {
+    "en": "Cosy, homely",
+    "az": "Ev kimi",
+    "ru": "Уютный"
+   },
+   "forms": [
+    "koduse",
+    "kodust"
+   ]
+  },
+  {
+   "id": "uhke",
+   "front": "Uhke",
+   "back": {
+    "en": "Plush, proud",
+    "az": "Təmtəraqlı",
+    "ru": "Шикарный"
+   },
+   "forms": [
+    "uhke",
+    "uhket"
+   ]
+  },
+  {
+   "id": "vinge",
+   "front": "Vinge",
+   "back": {
+    "en": "Cool, brilliant",
+    "az": "Möhtəşəm",
+    "ru": "Крутой"
+   },
+   "forms": [
+    "vinge",
+    "vinget"
+   ]
+  },
+  {
+   "id": "oudne",
+   "front": "Õudne!",
+   "back": {
+    "en": "How awful!",
+    "az": "Dəhşət!",
+    "ru": "Ужас!"
+   }
+  },
+  {
+   "id": "hulluks-minema",
+   "front": "Hulluks minema",
+   "back": {
+    "en": "To go mad",
+    "az": "dəli olmaq",
+    "ru": "сходить с ума"
+   }
+  },
+  {
+   "id": "nalg",
+   "front": "Nälg",
+   "back": {
+    "en": "Hunger",
+    "az": "Aclıq",
+    "ru": "Голод"
+   },
+   "forms": [
+    "nälja",
+    "nälga"
+   ]
+  }
+ ]
+}

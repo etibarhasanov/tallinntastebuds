@@ -1,0 +1,1474 @@
+{
+ "id": "around",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Getting around Tallinn",
+  "az": "Tallinndə yol tapmaq",
+  "ru": "Как передвигаться по Таллинну"
+ },
+ "why": {
+  "en": "Streets, stops and the way back to the old town",
+  "az": "Küçələr, dayanacaqlar və köhnə şəhərə qayıdan yol",
+  "ru": "Улицы, остановки и дорога обратно в Старый город"
+ },
+ "cards": [
+  {
+   "id": "kus-on",
+   "front": "Kus on...?",
+   "back": {
+    "en": "Where is...?",
+    "az": "... haradadır?",
+    "ru": "Где...?"
+   }
+  },
+  {
+   "id": "vanalinn",
+   "front": "Vanalinn",
+   "back": {
+    "en": "The old town",
+    "az": "Köhnə şəhər",
+    "ru": "Старый город"
+   },
+   "forms": [
+    "vanalinna",
+    "vanalinna"
+   ],
+   "sentence": {
+    "et": "Vanalinn on siin lähedal.",
+    "en": "The old town is near here.",
+    "az": "Köhnə şəhər buradan yaxındır.",
+    "ru": "Старый город здесь рядом."
+   }
+  },
+  {
+   "id": "kesklinn",
+   "front": "Kesklinn",
+   "back": {
+    "en": "The city centre",
+    "az": "Şəhərin mərkəzi",
+    "ru": "Центр города"
+   },
+   "forms": [
+    "kesklinna",
+    "kesklinna"
+   ]
+  },
+  {
+   "id": "raekoja-plats",
+   "front": "Raekoja plats",
+   "back": {
+    "en": "Town Hall Square",
+    "az": "Ratuşa meydanı",
+    "ru": "Ратушная площадь"
+   }
+  },
+  {
+   "id": "sadam",
+   "front": "Sadam",
+   "back": {
+    "en": "The harbour",
+    "az": "Liman",
+    "ru": "Порт"
+   },
+   "forms": [
+    "sadama",
+    "sadamat"
+   ]
+  },
+  {
+   "id": "lennujaam",
+   "front": "Lennujaam",
+   "back": {
+    "en": "The airport",
+    "az": "Hava limanı",
+    "ru": "Аэропорт"
+   },
+   "forms": [
+    "lennujaama",
+    "lennujaama"
+   ]
+  },
+  {
+   "id": "bussijaam",
+   "front": "Bussijaam",
+   "back": {
+    "en": "The bus station",
+    "az": "Avtovağzal",
+    "ru": "Автовокзал"
+   },
+   "forms": [
+    "bussijaama",
+    "bussijaama"
+   ]
+  },
+  {
+   "id": "rongijaam",
+   "front": "Rongijaam",
+   "back": {
+    "en": "The train station",
+    "az": "Dəmiryol vağzalı",
+    "ru": "Железнодорожный вокзал"
+   },
+   "forms": [
+    "rongijaama",
+    "rongijaama"
+   ]
+  },
+  {
+   "id": "buss",
+   "front": "Buss",
+   "back": {
+    "en": "Bus",
+    "az": "Avtobus",
+    "ru": "Автобус"
+   },
+   "forms": [
+    "bussi",
+    "bussi"
+   ],
+   "sentence": {
+    "et": "Buss sõidab kesklinna.",
+    "en": "The bus goes to the city centre.",
+    "az": "Avtobus şəhər mərkəzinə gedir.",
+    "ru": "Автобус едет в центр города."
+   }
+  },
+  {
+   "id": "tramm",
+   "front": "Tramm",
+   "back": {
+    "en": "Tram",
+    "az": "Tramvay",
+    "ru": "Трамвай"
+   },
+   "forms": [
+    "trammi",
+    "trammi"
+   ]
+  },
+  {
+   "id": "rong",
+   "front": "Rong",
+   "back": {
+    "en": "Train",
+    "az": "Qatar",
+    "ru": "Поезд"
+   },
+   "forms": [
+    "rongi",
+    "rongi"
+   ]
+  },
+  {
+   "id": "takso",
+   "front": "Takso",
+   "back": {
+    "en": "Taxi",
+    "az": "Taksi",
+    "ru": "Такси"
+   },
+   "forms": [
+    "takso",
+    "taksot"
+   ]
+  },
+  {
+   "id": "pilet",
+   "front": "Pilet",
+   "back": {
+    "en": "Ticket",
+    "az": "Bilet",
+    "ru": "Билет"
+   },
+   "forms": [
+    "pileti",
+    "piletit"
+   ],
+   "sentence": {
+    "et": "Üks pilet, palun.",
+    "en": "One ticket, please.",
+    "az": "Bir bilet, zəhmət olmasa.",
+    "ru": "Один билет, пожалуйста."
+   }
+  },
+  {
+   "id": "peatus",
+   "front": "Peatus",
+   "back": {
+    "en": "Stop",
+    "az": "Dayanacaq",
+    "ru": "Остановка"
+   },
+   "forms": [
+    "peatuse",
+    "peatust"
+   ]
+  },
+  {
+   "id": "tanav",
+   "front": "Tänav",
+   "back": {
+    "en": "Street",
+    "az": "Küçə",
+    "ru": "Улица"
+   },
+   "forms": [
+    "tänava",
+    "tänavat"
+   ],
+   "sentence": {
+    "et": "Mis tänav see on?",
+    "en": "What street is this?",
+    "az": "Bu hansı küçədir?",
+    "ru": "Что это за улица?"
+   }
+  },
+  {
+   "id": "valjak",
+   "front": "Väljak",
+   "back": {
+    "en": "Square",
+    "az": "Meydan",
+    "ru": "Площадь"
+   },
+   "forms": [
+    "väljaku",
+    "väljakut"
+   ]
+  },
+  {
+   "id": "vasakule",
+   "front": "Vasakule",
+   "back": {
+    "en": "To the left",
+    "az": "Sola",
+    "ru": "Налево"
+   }
+  },
+  {
+   "id": "paremale",
+   "front": "Paremale",
+   "back": {
+    "en": "To the right",
+    "az": "Sağa",
+    "ru": "Направо"
+   }
+  },
+  {
+   "id": "otse",
+   "front": "Otse",
+   "back": {
+    "en": "Straight on",
+    "az": "Düz",
+    "ru": "Прямо"
+   }
+  },
+  {
+   "id": "kaugel",
+   "front": "Kaugel",
+   "back": {
+    "en": "Far",
+    "az": "Uzaq",
+    "ru": "Далеко"
+   }
+  },
+  {
+   "id": "lahedal",
+   "front": "Lähedal",
+   "back": {
+    "en": "Near",
+    "az": "Yaxın",
+    "ru": "Близко"
+   }
+  },
+  {
+   "id": "kaart",
+   "front": "Kaart",
+   "back": {
+    "en": "Map",
+    "az": "Xəritə",
+    "ru": "Карта"
+   },
+   "forms": [
+    "kaardi",
+    "kaarti"
+   ]
+  },
+  {
+   "id": "korval",
+   "front": "Kõrval",
+   "back": {
+    "en": "Next to",
+    "az": "Yanında",
+    "ru": "Рядом с"
+   },
+   "sentence": {
+    "et": "Pood on jaama kõrval.",
+    "en": "The shop is next to the station.",
+    "az": "Mağaza vağzalın yanındadır.",
+    "ru": "Магазин рядом с вокзалом."
+   }
+  },
+  {
+   "id": "juures",
+   "front": "Juures",
+   "back": {
+    "en": "By, near",
+    "az": "Yanında, önündə",
+    "ru": "У, около"
+   },
+   "sentence": {
+    "et": "Ma ootan ukse juures.",
+    "en": "I am waiting by the door.",
+    "az": "Mən qapının yanında gözləyirəm.",
+    "ru": "Я жду у двери."
+   }
+  },
+  {
+   "id": "sissepaas",
+   "front": "Sissepääs",
+   "back": {
+    "en": "The entrance",
+    "az": "Giriş",
+    "ru": "Вход"
+   },
+   "forms": [
+    "sissepääsu",
+    "sissepääsu"
+   ],
+   "sentence": {
+    "et": "Sissepääs on teisel pool.",
+    "en": "The entrance is on the other side.",
+    "az": "Giriş digər tərəfdədir.",
+    "ru": "Вход с другой стороны."
+   }
+  },
+  {
+   "id": "valjapaas",
+   "front": "Väljapääs",
+   "back": {
+    "en": "The exit",
+    "az": "Çıxış",
+    "ru": "Выход"
+   },
+   "forms": [
+    "väljapääsu",
+    "väljapääsu"
+   ],
+   "sentence": {
+    "et": "Väljapääs on paremal.",
+    "en": "The exit is on the right.",
+    "az": "Çıxış sağdadır.",
+    "ru": "Выход справа."
+   }
+  },
+  {
+   "id": "linn",
+   "front": "Linn",
+   "back": {
+    "en": "Town, city",
+    "az": "Şəhər",
+    "ru": "Город"
+   },
+   "forms": [
+    "linna",
+    "linna"
+   ],
+   "sentence": {
+    "et": "Tallinn on ilus linn.",
+    "en": "Tallinn is a beautiful city.",
+    "az": "Tallinn gözəl şəhərdir.",
+    "ru": "Таллинн — красивый город."
+   }
+  },
+  {
+   "id": "linnaosa",
+   "front": "Linnaosa",
+   "back": {
+    "en": "District, part of town",
+    "az": "Şəhər rayonu",
+    "ru": "Район города"
+   },
+   "forms": [
+    "linnaosa",
+    "linnaosa"
+   ],
+   "sentence": {
+    "et": "Kalamaja on ilus linnaosa.",
+    "en": "Kalamaja is a lovely district.",
+    "az": "Kalamaja gözəl rayondur.",
+    "ru": "Каламая — красивый район."
+   }
+  },
+  {
+   "id": "aadress",
+   "front": "Aadress",
+   "back": {
+    "en": "Address",
+    "az": "Ünvan",
+    "ru": "Адрес"
+   },
+   "forms": [
+    "aadressi",
+    "aadressi"
+   ],
+   "sentence": {
+    "et": "Mis on kohviku aadress?",
+    "en": "What is the café's address?",
+    "az": "Kafenin ünvanı nədir?",
+    "ru": "Какой адрес у кафе?"
+   }
+  },
+  {
+   "id": "tee",
+   "front": "Tee",
+   "back": {
+    "en": "Road, way — and also tea",
+    "az": "Yol — həm də çay",
+    "ru": "Дорога, путь — и чай"
+   },
+   "forms": [
+    "tee",
+    "teed"
+   ],
+   "sentence": {
+    "et": "Tee vanalinna on lühike.",
+    "en": "The way to the old town is short.",
+    "az": "Köhnə şəhərə yol qısadır.",
+    "ru": "Дорога в старый город короткая."
+   }
+  },
+  {
+   "id": "maantee",
+   "front": "Maantee",
+   "back": {
+    "en": "Main road, highway",
+    "az": "Şose yolu",
+    "ru": "Шоссе"
+   },
+   "forms": [
+    "maantee",
+    "maanteed"
+   ],
+   "sentence": {
+    "et": "Maantee viib Tartusse.",
+    "en": "The highway goes to Tartu.",
+    "az": "Şose Tartuya aparır.",
+    "ru": "Шоссе ведёт в Тарту."
+   }
+  },
+  {
+   "id": "puiestee",
+   "front": "Puiestee",
+   "back": {
+    "en": "Avenue, boulevard",
+    "az": "Prospekt",
+    "ru": "Бульвар"
+   },
+   "forms": [
+    "puiestee",
+    "puiesteed"
+   ],
+   "sentence": {
+    "et": "Kohvik on puiestee ääres.",
+    "en": "The café is on the avenue.",
+    "az": "Kafe prospektin kənarındadır.",
+    "ru": "Кафе на бульваре."
+   }
+  },
+  {
+   "id": "auto",
+   "front": "Auto",
+   "back": {
+    "en": "Car",
+    "az": "Maşın",
+    "ru": "Машина"
+   },
+   "forms": [
+    "auto",
+    "autot"
+   ],
+   "sentence": {
+    "et": "Ma tulin autoga.",
+    "en": "I came by car.",
+    "az": "Maşınla gəldim.",
+    "ru": "Я приехал на машине."
+   }
+  },
+  {
+   "id": "jalgratas",
+   "front": "Jalgratas",
+   "back": {
+    "en": "Bicycle",
+    "az": "Velosiped",
+    "ru": "Велосипед"
+   },
+   "forms": [
+    "jalgratta",
+    "jalgratast"
+   ],
+   "sentence": {
+    "et": "Ma sõidan jalgrattaga tööle.",
+    "en": "I ride my bicycle to work.",
+    "az": "İşə velosipedlə gedirəm.",
+    "ru": "Я езжу на работу на велосипеде."
+   }
+  },
+  {
+   "id": "vasak",
+   "front": "Vasak",
+   "back": {
+    "en": "Left, the left one",
+    "az": "Sol",
+    "ru": "Левый"
+   },
+   "forms": [
+    "vasaku",
+    "vasakut"
+   ],
+   "sentence": {
+    "et": "Pood jääb vasakut kätt.",
+    "en": "The shop is on your left.",
+    "az": "Mağaza sol tərəfdə qalır.",
+    "ru": "Магазин останется слева."
+   }
+  },
+  {
+   "id": "parem",
+   "front": "Parem",
+   "back": {
+    "en": "Right — the right-hand side",
+    "az": "Sağ tərəf",
+    "ru": "Правый — правая сторона"
+   },
+   "forms": [
+    "parema",
+    "paremat"
+   ],
+   "sentence": {
+    "et": "Kohvik jääb paremat kätt.",
+    "en": "The café is on your right.",
+    "az": "Kafe sağ tərəfdə qalır.",
+    "ru": "Кафе останется справа."
+   }
+  },
+  {
+   "id": "laev",
+   "front": "Laev",
+   "back": {
+    "en": "Ship",
+    "az": "Gəmi",
+    "ru": "Корабль"
+   },
+   "forms": [
+    "laeva",
+    "laeva"
+   ],
+   "sentence": {
+    "et": "Laev läheb Helsingisse.",
+    "en": "The ship goes to Helsinki.",
+    "az": "Gəmi Helsinkiyə gedir.",
+    "ru": "Корабль идёт в Хельсинки."
+   }
+  },
+  {
+   "id": "praam",
+   "front": "Praam",
+   "back": {
+    "en": "Ferry",
+    "az": "Bərə",
+    "ru": "Паром"
+   },
+   "forms": [
+    "praami",
+    "praami"
+   ],
+   "sentence": {
+    "et": "Praam väljub kell kaksteist.",
+    "en": "The ferry leaves at twelve.",
+    "az": "Bərə saat on ikidə yola düşür.",
+    "ru": "Паром отходит в двенадцать."
+   }
+  },
+  {
+   "id": "lennuk",
+   "front": "Lennuk",
+   "back": {
+    "en": "Plane",
+    "az": "Təyyarə",
+    "ru": "Самолёт"
+   },
+   "forms": [
+    "lennuki",
+    "lennukit"
+   ],
+   "sentence": {
+    "et": "Lennuk maandub varsti.",
+    "en": "The plane lands soon.",
+    "az": "Təyyarə tezliklə enir.",
+    "ru": "Самолёт скоро приземлится."
+   }
+  },
+  {
+   "id": "raudteejaam",
+   "front": "Raudteejaam",
+   "back": {
+    "en": "Train station",
+    "az": "Dəmir yolu vağzalı",
+    "ru": "Железнодорожный вокзал"
+   },
+   "forms": [
+    "raudteejaama",
+    "raudteejaama"
+   ],
+   "sentence": {
+    "et": "Raudteejaam on kesklinnas.",
+    "en": "The train station is in the city centre.",
+    "az": "Dəmir yolu vağzalı şəhərin mərkəzindədir.",
+    "ru": "Вокзал в центре города."
+   }
+  },
+  {
+   "id": "soiduk",
+   "front": "Sõiduk",
+   "back": {
+    "en": "Vehicle",
+    "az": "Nəqliyyat vasitəsi",
+    "ru": "Транспортное средство"
+   },
+   "forms": [
+    "sõiduki",
+    "sõidukit"
+   ],
+   "sentence": {
+    "et": "Siin ei tohi sõidukiga sõita.",
+    "en": "You may not drive a vehicle here.",
+    "az": "Burada nəqliyyat vasitəsi ilə getmək olmaz.",
+    "ru": "Здесь нельзя ехать на транспорте."
+   }
+  },
+  {
+   "id": "soiduplaan",
+   "front": "Sõiduplaan",
+   "back": {
+    "en": "Timetable",
+    "az": "Hərəkət cədvəli",
+    "ru": "Расписание движения"
+   },
+   "forms": [
+    "sõiduplaani",
+    "sõiduplaani"
+   ],
+   "sentence": {
+    "et": "Vaata sõiduplaani.",
+    "en": "Look at the timetable.",
+    "az": "Hərəkət cədvəlinə bax.",
+    "ru": "Посмотри расписание."
+   }
+  },
+  {
+   "id": "sooduspilet",
+   "front": "Sooduspilet",
+   "back": {
+    "en": "Discount ticket",
+    "az": "Güzəştli bilet",
+    "ru": "Льготный билет"
+   },
+   "forms": [
+    "sooduspileti",
+    "sooduspiletit"
+   ],
+   "sentence": {
+    "et": "Kas õpilasel on sooduspilet?",
+    "en": "Does a student have a discount ticket?",
+    "az": "Şagirdin güzəştli bileti varmı?",
+    "ru": "У школьника есть льготный билет?"
+   }
+  },
+  {
+   "id": "tagasi",
+   "front": "Tagasi",
+   "back": {
+    "en": "Back",
+    "az": "Geri",
+    "ru": "Назад"
+   },
+   "sentence": {
+    "et": "Ma tulen kohe tagasi.",
+    "en": "I will be right back.",
+    "az": "İndi qayıdıram.",
+    "ru": "Я сейчас вернусь."
+   }
+  },
+  {
+   "id": "siia",
+   "front": "Siia",
+   "back": {
+    "en": "To here",
+    "az": "Buraya",
+    "ru": "Сюда"
+   },
+   "sentence": {
+    "et": "Tule siia!",
+    "en": "Come here!",
+    "az": "Bura gəl!",
+    "ru": "Иди сюда!"
+   }
+  },
+  {
+   "id": "siit",
+   "front": "Siit",
+   "back": {
+    "en": "From here",
+    "az": "Buradan",
+    "ru": "Отсюда"
+   },
+   "sentence": {
+    "et": "Kas see on siit kaugel?",
+    "en": "Is it far from here?",
+    "az": "Buradan uzaqdır?",
+    "ru": "Это далеко отсюда?"
+   }
+  },
+  {
+   "id": "seal",
+   "front": "Seal",
+   "back": {
+    "en": "There",
+    "az": "Orada",
+    "ru": "Там"
+   },
+   "sentence": {
+    "et": "Pood on seal.",
+    "en": "The shop is there.",
+    "az": "Mağaza oradadır.",
+    "ru": "Магазин там."
+   }
+  },
+  {
+   "id": "sealt",
+   "front": "Sealt",
+   "back": {
+    "en": "From there",
+    "az": "Oradan",
+    "ru": "Оттуда"
+   },
+   "sentence": {
+    "et": "Buss läheb sealt.",
+    "en": "The bus goes from there.",
+    "az": "Avtobus oradan gedir.",
+    "ru": "Автобус идёт оттуда."
+   }
+  },
+  {
+   "id": "sinna",
+   "front": "Sinna",
+   "back": {
+    "en": "To there",
+    "az": "Oraya",
+    "ru": "Туда"
+   },
+   "sentence": {
+    "et": "Kuidas ma sinna saan?",
+    "en": "How do I get there?",
+    "az": "Oraya necə çatım?",
+    "ru": "Как мне туда попасть?"
+   }
+  },
+  {
+   "id": "all",
+   "front": "All",
+   "back": {
+    "en": "Under",
+    "az": "Altında",
+    "ru": "Под"
+   },
+   "sentence": {
+    "et": "Kott on laua all.",
+    "en": "The bag is under the table.",
+    "az": "Çanta masanın altındadır.",
+    "ru": "Сумка под столом."
+   }
+  },
+  {
+   "id": "peal",
+   "front": "Peal",
+   "back": {
+    "en": "On, on top of",
+    "az": "Üstündə",
+    "ru": "На"
+   },
+   "sentence": {
+    "et": "Võtmed on laua peal.",
+    "en": "The keys are on the table.",
+    "az": "Açarlar masanın üstündədir.",
+    "ru": "Ключи на столе."
+   }
+  },
+  {
+   "id": "ees",
+   "front": "Ees",
+   "back": {
+    "en": "In front of",
+    "az": "Qarşısında",
+    "ru": "Перед"
+   },
+   "sentence": {
+    "et": "Ma ootan maja ees.",
+    "en": "I am waiting in front of the house.",
+    "az": "Evin qarşısında gözləyirəm.",
+    "ru": "Я жду перед домом."
+   }
+  },
+  {
+   "id": "taga",
+   "front": "Taga",
+   "back": {
+    "en": "Behind",
+    "az": "Arxasında",
+    "ru": "Позади"
+   },
+   "sentence": {
+    "et": "Park on maja taga.",
+    "en": "The park is behind the house.",
+    "az": "Park evin arxasındadır.",
+    "ru": "Парк за домом."
+   }
+  },
+  {
+   "id": "keskel",
+   "front": "Keskel",
+   "back": {
+    "en": "In the middle of",
+    "az": "Ortasında",
+    "ru": "Посередине"
+   },
+   "sentence": {
+    "et": "Puu on õue keskel.",
+    "en": "The tree is in the middle of the yard.",
+    "az": "Ağac həyətin ortasındadır.",
+    "ru": "Дерево посреди двора."
+   }
+  },
+  {
+   "id": "juurde",
+   "front": "Juurde",
+   "back": {
+    "en": "Over to",
+    "az": "Yanına",
+    "ru": "К"
+   },
+   "sentence": {
+    "et": "Tule minu juurde.",
+    "en": "Come over to me.",
+    "az": "Mənim yanıma gəl.",
+    "ru": "Иди ко мне."
+   }
+  },
+  {
+   "id": "valja",
+   "front": "Välja",
+   "back": {
+    "en": "Out, outside",
+    "az": "Çölə",
+    "ru": "Наружу"
+   },
+   "sentence": {
+    "et": "Lähme välja.",
+    "en": "Let us go outside.",
+    "az": "Çölə çıxaq.",
+    "ru": "Пойдём на улицу."
+   }
+  },
+  {
+   "id": "koht",
+   "front": "Koht",
+   "back": {
+    "en": "Place",
+    "az": "Yer",
+    "ru": "Место"
+   },
+   "forms": [
+    "koha",
+    "kohta"
+   ],
+   "sentence": {
+    "et": "See on hea koht.",
+    "en": "This is a good place.",
+    "az": "Bu yaxşı yerdir.",
+    "ru": "Это хорошее место."
+   }
+  },
+  {
+   "id": "park",
+   "front": "Park",
+   "back": {
+    "en": "Park",
+    "az": "Park",
+    "ru": "Парк"
+   },
+   "forms": [
+    "pargi",
+    "parki"
+   ],
+   "sentence": {
+    "et": "Kadrioru park on ilus.",
+    "en": "Kadriorg park is beautiful.",
+    "az": "Kadriorq parkı gözəldir.",
+    "ru": "Парк Кадриорг красивый."
+   }
+  },
+  {
+   "id": "troll",
+   "front": "Troll",
+   "back": {
+    "en": "Trolleybus",
+    "az": "Trolleybus",
+    "ru": "Троллейбус"
+   },
+   "forms": [
+    "trolli",
+    "trolli"
+   ]
+  },
+  {
+   "id": "jalgsi",
+   "front": "Jalgsi",
+   "back": {
+    "en": "On foot",
+    "az": "Piyada",
+    "ru": "Пешком"
+   }
+  },
+  {
+   "id": "ristmik",
+   "front": "Ristmik",
+   "back": {
+    "en": "Crossing",
+    "az": "Kəsişmə",
+    "ru": "Перекрёсток"
+   },
+   "forms": [
+    "ristmiku",
+    "ristmikku"
+   ]
+  },
+  {
+   "id": "valgusfoor",
+   "front": "Valgusfoor",
+   "back": {
+    "en": "Traffic lights",
+    "az": "Svetofor",
+    "ru": "Светофор"
+   },
+   "forms": [
+    "valgusfoori",
+    "valgusfoori"
+   ]
+  },
+  {
+   "id": "bussipeatus",
+   "front": "Bussipeatus",
+   "back": {
+    "en": "Bus stop",
+    "az": "Avtobus dayanacağı",
+    "ru": "Автобусная остановка"
+   },
+   "forms": [
+    "bussipeatuse",
+    "bussipeatust"
+   ]
+  },
+  {
+   "id": "suund",
+   "front": "Suund",
+   "back": {
+    "en": "Direction",
+    "az": "İstiqamət",
+    "ru": "Направление"
+   },
+   "forms": [
+    "suuna",
+    "suunda"
+   ]
+  },
+  {
+   "id": "valjuma",
+   "front": "Väljuma",
+   "back": {
+    "en": "To get off",
+    "az": "düşmək",
+    "ru": "выходить"
+   },
+   "forms": [
+    "väljuda",
+    "väljun"
+   ]
+  },
+  {
+   "id": "maha-minema",
+   "front": "Maha minema",
+   "back": {
+    "en": "To get off",
+    "az": "düşmək",
+    "ru": "сходить"
+   }
+  },
+  {
+   "id": "bussi-peale-istuma",
+   "front": "Bussi peale istuma",
+   "back": {
+    "en": "To get on a bus",
+    "az": "avtobusa minmək",
+    "ru": "садиться на автобус"
+   }
+  },
+  {
+   "id": "mooda-minema",
+   "front": "Mööda minema",
+   "back": {
+    "en": "To go past",
+    "az": "yanından keçmək",
+    "ru": "проходить мимо"
+   }
+  },
+  {
+   "id": "poorama",
+   "front": "Pöörama",
+   "back": {
+    "en": "To turn",
+    "az": "dönmək",
+    "ru": "поворачивать"
+   },
+   "forms": [
+    "pöörata",
+    "pööran"
+   ]
+  },
+  {
+   "id": "umber-poorama",
+   "front": "Ümber pöörama",
+   "back": {
+    "en": "To turn round",
+    "az": "geri dönmək",
+    "ru": "разворачиваться"
+   }
+  },
+  {
+   "id": "paremat-katt",
+   "front": "Paremat kätt",
+   "back": {
+    "en": "On the right hand side",
+    "az": "Sağ tərəfdə",
+    "ru": "По правую руку"
+   }
+  },
+  {
+   "id": "vasakut-katt",
+   "front": "Vasakut kätt",
+   "back": {
+    "en": "On the left hand side",
+    "az": "Sol tərəfdə",
+    "ru": "По левую руку"
+   }
+  },
+  {
+   "id": "paremal-pool",
+   "front": "Paremal pool",
+   "back": {
+    "en": "On the right",
+    "az": "Sağ tərəfdə",
+    "ru": "С правой стороны"
+   }
+  },
+  {
+   "id": "vasakul-pool",
+   "front": "Vasakul pool",
+   "back": {
+    "en": "On the left",
+    "az": "Sol tərəfdə",
+    "ru": "С левой стороны"
+   }
+  },
+  {
+   "id": "edasi",
+   "front": "Edasi",
+   "back": {
+    "en": "Further on",
+    "az": "İrəli",
+    "ru": "Дальше"
+   }
+  },
+  {
+   "id": "siinsamas",
+   "front": "Siinsamas",
+   "back": {
+    "en": "Right here",
+    "az": "Elə buradaca",
+    "ru": "Тут же"
+   }
+  },
+  {
+   "id": "kuskil",
+   "front": "Kuskil",
+   "back": {
+    "en": "Somewhere",
+    "az": "Haradasa",
+    "ru": "Где-нибудь"
+   }
+  },
+  {
+   "id": "kuskile",
+   "front": "Kuskile",
+   "back": {
+    "en": "To somewhere",
+    "az": "hara isə",
+    "ru": "Куда-нибудь"
+   }
+  },
+  {
+   "id": "asfalttee",
+   "front": "Asfalttee",
+   "back": {
+    "en": "Asphalt road",
+    "az": "Asfalt yol",
+    "ru": "Асфальтированная дорога"
+   },
+   "forms": [
+    "asfalttee",
+    "asfaltteed"
+   ]
+  },
+  {
+   "id": "kruusatee",
+   "front": "Kruusatee",
+   "back": {
+    "en": "Gravel road",
+    "az": "Çınqıl yol",
+    "ru": "Гравийная дорога"
+   },
+   "forms": [
+    "kruusatee",
+    "kruusateed"
+   ]
+  },
+  {
+   "id": "raudtee",
+   "front": "Raudtee",
+   "back": {
+    "en": "Railway",
+    "az": "Dəmir yol",
+    "ru": "Железная дорога"
+   },
+   "forms": [
+    "raudtee",
+    "raudteed"
+   ]
+  },
+  {
+   "id": "bensiinijaam",
+   "front": "Bensiinijaam",
+   "back": {
+    "en": "Petrol station",
+    "az": "Yanacaqdoldurma",
+    "ru": "Заправка"
+   },
+   "forms": [
+    "bensiinijaama",
+    "bensiinijaama"
+   ]
+  },
+  {
+   "id": "parkima",
+   "front": "Parkima",
+   "back": {
+    "en": "To park",
+    "az": "park etmək",
+    "ru": "парковаться"
+   },
+   "forms": [
+    "parkida",
+    "pargin"
+   ]
+  },
+  {
+   "id": "juhiluba",
+   "front": "Juhiluba",
+   "back": {
+    "en": "Driving licence",
+    "az": "Sürücülük vəsiqəsi",
+    "ru": "Водительские права"
+   },
+   "forms": [
+    "juhiloa",
+    "juhiluba"
+   ]
+  },
+  {
+   "id": "autot-juhtima",
+   "front": "Autot juhtima",
+   "back": {
+    "en": "To drive a car",
+    "az": "maşın sürmək",
+    "ru": "водить машину"
+   }
+  },
+  {
+   "id": "kuju",
+   "front": "Kuju",
+   "back": {
+    "en": "Statue",
+    "az": "Heykəl",
+    "ru": "Статуя"
+   },
+   "forms": [
+    "kuju",
+    "kuju"
+   ]
+  },
+  {
+   "id": "kirik",
+   "front": "Kirik",
+   "back": {
+    "en": "Church",
+    "az": "Kilsə",
+    "ru": "Церковь"
+   },
+   "forms": [
+    "kiriku",
+    "kirikut"
+   ]
+  },
+  {
+   "id": "plats",
+   "front": "Plats",
+   "back": {
+    "en": "Square, ground",
+    "az": "Meydan",
+    "ru": "Площадка"
+   },
+   "forms": [
+    "platsi",
+    "platsi"
+   ]
+  },
+  {
+   "id": "kohalik",
+   "front": "Kohalik",
+   "back": {
+    "en": "Local",
+    "az": "Yerli",
+    "ru": "Местный"
+   },
+   "forms": [
+    "kohaliku",
+    "kohalikku"
+   ]
+  },
+  {
+   "id": "hotell",
+   "front": "Hotell",
+   "back": {
+    "en": "Hotel",
+    "az": "Otel, mehmanxana",
+    "ru": "Отель, гостиница"
+   },
+   "forms": [
+    "hotelli",
+    "hotelli"
+   ]
+  },
+  {
+   "id": "restoran",
+   "front": "Restoran",
+   "back": {
+    "en": "Restaurant",
+    "az": "Restoran",
+    "ru": "Ресторан"
+   },
+   "forms": [
+    "restorani",
+    "restorani"
+   ]
+  },
+  {
+   "id": "keskus",
+   "front": "Keskus",
+   "back": {
+    "en": "Centre",
+    "az": "Mərkəz",
+    "ru": "Центр"
+   },
+   "forms": [
+    "keskuse",
+    "keskust"
+   ]
+  },
+  {
+   "id": "politsei",
+   "front": "Politsei",
+   "back": {
+    "en": "Police",
+    "az": "Polis",
+    "ru": "Полиция"
+   },
+   "forms": [
+    "politsei",
+    "politseid"
+   ]
+  },
+  {
+   "id": "jalakaija",
+   "front": "Jalakäija",
+   "back": {
+    "en": "Pedestrian",
+    "az": "Piyada",
+    "ru": "Пешеход"
+   },
+   "forms": [
+    "jalakäija",
+    "jalakäijat"
+   ]
+  },
+  {
+   "id": "kalmistu",
+   "front": "Kalmistu",
+   "back": {
+    "en": "Cemetery",
+    "az": "Qəbiristanlıq",
+    "ru": "Кладбище"
+   },
+   "forms": [
+    "kalmistu",
+    "kalmistut"
+   ]
+  },
+  {
+   "id": "kohale-joudma",
+   "front": "Kohale jõudma",
+   "back": {
+    "en": "To arrive, to get there",
+    "az": "gəlib çatmaq",
+    "ru": "прибыть"
+   }
+  },
+  {
+   "id": "konnitee",
+   "front": "Kõnnitee",
+   "back": {
+    "en": "Pavement, sidewalk",
+    "az": "Səki",
+    "ru": "Тротуар"
+   },
+   "forms": [
+    "kõnnitee",
+    "kõnniteed"
+   ]
+  },
+  {
+   "id": "liiklus",
+   "front": "Liiklus",
+   "back": {
+    "en": "Traffic",
+    "az": "Yol hərəkəti",
+    "ru": "Движение"
+   },
+   "forms": [
+    "liikluse",
+    "liiklust"
+   ]
+  },
+  {
+   "id": "mark",
+   "front": "Märk",
+   "back": {
+    "en": "Sign",
+    "az": "Nişan, işarə",
+    "ru": "Знак"
+   },
+   "forms": [
+    "märgi",
+    "märki"
+   ]
+  },
+  {
+   "id": "parkla",
+   "front": "Parkla",
+   "back": {
+    "en": "Car park",
+    "az": "Dayanacaq",
+    "ru": "Парковка"
+   },
+   "forms": [
+    "parkla",
+    "parklat"
+   ]
+  },
+  {
+   "id": "peatuma",
+   "front": "Peatuma",
+   "back": {
+    "en": "To stop",
+    "az": "dayanmaq",
+    "ru": "останавливаться"
+   },
+   "forms": [
+    "peatuda",
+    "peatun"
+   ]
+  },
+  {
+   "id": "tankla",
+   "front": "Tankla",
+   "back": {
+    "en": "Petrol station",
+    "az": "Yanacaqdoldurma məntəqəsi",
+    "ru": "Заправочная станция"
+   },
+   "forms": [
+    "tankla",
+    "tanklat"
+   ]
+  },
+  {
+   "id": "trahv",
+   "front": "Trahv",
+   "back": {
+    "en": "Fine",
+    "az": "Cərimə",
+    "ru": "Штраф"
+   },
+   "forms": [
+    "trahvi",
+    "trahvi"
+   ]
+  },
+  {
+   "id": "ummik",
+   "front": "Ummik",
+   "back": {
+    "en": "Traffic jam",
+    "az": "Tıxac",
+    "ru": "Пробка"
+   },
+   "forms": [
+    "ummiku",
+    "ummikut"
+   ]
+  },
+  {
+   "id": "veoauto",
+   "front": "Veoauto",
+   "back": {
+    "en": "Lorry, truck",
+    "az": "Yük maşını",
+    "ru": "Грузовик"
+   },
+   "forms": [
+    "veoauto",
+    "veoautot"
+   ]
+  }
+ ],
+ "level": "more"
+}

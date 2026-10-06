@@ -1,0 +1,1926 @@
+{
+ "id": "everyday",
+ "added": "2026-09-18",
+ "name": {
+  "en": "The words in between",
+  "az": "Aradakı sözlər",
+  "ru": "Слова между словами"
+ },
+ "why": {
+  "en": "The ones in every second sentence that belong to no lesson",
+  "az": "Hər ikinci cümlədə olan, heç bir dərsə aid olmayan sözlər",
+  "ru": "Те, что в каждой второй фразе и не относятся ни к одному уроку"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "parast",
+   "front": "Pärast",
+   "back": {
+    "en": "After",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "sentence": {
+    "et": "Ma tulen pärast tööd.",
+    "en": "I will come after work.",
+    "az": "İşdən sonra gələcəyəm.",
+    "ru": "Я приду после работы."
+   }
+  },
+  {
+   "id": "ule",
+   "front": "Üle",
+   "back": {
+    "en": "Over, across",
+    "az": "üzərindən, o tayda",
+    "ru": "через, на той стороне"
+   },
+   "sentence": {
+    "et": "Pood on üle tee.",
+    "en": "The shop is across the road.",
+    "az": "Mağaza yolun o tayındadır.",
+    "ru": "Магазин через дорогу."
+   }
+  },
+  {
+   "id": "labi",
+   "front": "Läbi",
+   "back": {
+    "en": "Through",
+    "az": "içindən",
+    "ru": "через, сквозь"
+   },
+   "sentence": {
+    "et": "Me läksime läbi pargi.",
+    "en": "We went through the park.",
+    "az": "Biz parkın içindən keçdik.",
+    "ru": "Мы прошли через парк."
+   }
+  },
+  {
+   "id": "tegelikult",
+   "front": "Tegelikult",
+   "back": {
+    "en": "Actually",
+    "az": "əslində",
+    "ru": "вообще-то"
+   },
+   "sentence": {
+    "et": "Tegelikult ma ei tea.",
+    "en": "Actually, I do not know.",
+    "az": "Əslində bilmirəm.",
+    "ru": "Вообще-то я не знаю."
+   }
+  },
+  {
+   "id": "juba",
+   "front": "Juba",
+   "back": {
+    "en": "Already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "sentence": {
+    "et": "Ma olen juba söönud.",
+    "en": "I have already eaten.",
+    "az": "Mən artıq yemişəm.",
+    "ru": "Я уже поел."
+   }
+  },
+  {
+   "id": "vist",
+   "front": "Vist",
+   "back": {
+    "en": "Probably",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "sentence": {
+    "et": "Ta on vist kodus.",
+    "en": "They are probably at home.",
+    "az": "Deyəsən, o evdədir.",
+    "ru": "Он, наверное, дома."
+   }
+  },
+  {
+   "id": "niisugune",
+   "front": "Niisugune",
+   "back": {
+    "en": "Such a, like that",
+    "az": "belə, o cür",
+    "ru": "такой"
+   },
+   "forms": [
+    "niisuguse",
+    "niisugust"
+   ],
+   "sentence": {
+    "et": "Ma tahan niisugust mütsi.",
+    "en": "I want a hat like that.",
+    "az": "Mən belə papaq istəyirəm.",
+    "ru": "Я хочу такую шапку."
+   }
+  },
+  {
+   "id": "liiga",
+   "front": "Liiga",
+   "back": {
+    "en": "Too",
+    "az": "çox, həddindən artıq",
+    "ru": "слишком"
+   },
+   "sentence": {
+    "et": "See on liiga kallis.",
+    "en": "This is too expensive.",
+    "az": "Bu çox bahadır.",
+    "ru": "Это слишком дорого."
+   }
+  },
+  {
+   "id": "vahet-ei-ole",
+   "front": "Vahet ei ole",
+   "back": {
+    "en": "It makes no difference",
+    "az": "Fərqi yoxdur",
+    "ru": "Без разницы"
+   }
+  },
+  {
+   "id": "pole-oluline",
+   "front": "Pole oluline",
+   "back": {
+    "en": "It does not matter",
+    "az": "Vacib deyil",
+    "ru": "Это не важно"
+   }
+  },
+  {
+   "id": "mul-pole",
+   "front": "Mul pole",
+   "back": {
+    "en": "I do not have",
+    "az": "Məndə yoxdur",
+    "ru": "У меня нет"
+   },
+   "sentence": {
+    "et": "Mul pole sularaha.",
+    "en": "I do not have any cash.",
+    "az": "Məndə nağd pul yoxdur.",
+    "ru": "У меня нет наличных."
+   }
+  },
+  {
+   "id": "veri",
+   "front": "Veri",
+   "back": {
+    "en": "Blood",
+    "az": "Qan",
+    "ru": "Кровь"
+   },
+   "forms": [
+    "vere",
+    "verd"
+   ],
+   "sentence": {
+    "et": "Sõrmel on veri.",
+    "en": "There is blood on my finger.",
+    "az": "Barmağımda qan var.",
+    "ru": "На пальце кровь."
+   }
+  },
+  {
+   "id": "pulm",
+   "front": "Pulm",
+   "back": {
+    "en": "Wedding",
+    "az": "Toy",
+    "ru": "Свадьба"
+   },
+   "forms": [
+    "pulma",
+    "pulma"
+   ],
+   "sentence": {
+    "et": "Meil on laupäeval pulm.",
+    "en": "We have a wedding on Saturday.",
+    "az": "Şənbə günü toyumuz var.",
+    "ru": "У нас в субботу свадьба."
+   }
+  },
+  {
+   "id": "kutsuma",
+   "front": "Kutsuma",
+   "back": {
+    "en": "To invite",
+    "az": "dəvət etmək",
+    "ru": "приглашать"
+   },
+   "forms": [
+    "kutsuda",
+    "kutsun"
+   ],
+   "sentence": {
+    "et": "Ma kutsun sind pulma.",
+    "en": "I am inviting you to the wedding.",
+    "az": "Səni toya dəvət edirəm.",
+    "ru": "Я приглашаю тебя на свадьбу."
+   }
+  },
+  {
+   "id": "utlema",
+   "front": "Ütlema",
+   "back": {
+    "en": "To say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "forms": [
+    "öelda",
+    "ütlen"
+   ],
+   "sentence": {
+    "et": "Ütle see veel kord.",
+    "en": "Say that once more.",
+    "az": "Bunu bir daha de.",
+    "ru": "Скажи это ещё раз."
+   }
+  },
+  {
+   "id": "ara",
+   "front": "Ära",
+   "back": {
+    "en": "Do not — to one person",
+    "az": "Etmə — bir nəfərə",
+    "ru": "Не — одному человеку"
+   },
+   "sentence": {
+    "et": "Ära unusta võtit!",
+    "en": "Do not forget the key!",
+    "az": "Açarı unutma!",
+    "ru": "Не забудь ключ!"
+   }
+  },
+  {
+   "id": "arge",
+   "front": "Ärge",
+   "back": {
+    "en": "Do not — to more than one",
+    "az": "Etməyin — bir neçə nəfərə",
+    "ru": "Не — нескольким"
+   },
+   "sentence": {
+    "et": "Ärge muretsege.",
+    "en": "Do not worry.",
+    "az": "Narahat olmayın.",
+    "ru": "Не волнуйтесь."
+   }
+  },
+  {
+   "id": "kogu",
+   "front": "Kogu",
+   "back": {
+    "en": "The whole of",
+    "az": "bütün",
+    "ru": "весь, целый"
+   },
+   "sentence": {
+    "et": "Kogu päev sadas vihma.",
+    "en": "It rained the whole day.",
+    "az": "Bütün gün yağış yağdı.",
+    "ru": "Весь день шёл дождь."
+   }
+  },
+  {
+   "id": "ikka",
+   "front": "Ikka",
+   "back": {
+    "en": "Still, all the same",
+    "az": "hələ də, yenə",
+    "ru": "всё ещё, всё равно"
+   },
+   "sentence": {
+    "et": "Ta on ikka kodus.",
+    "en": "They are still at home.",
+    "az": "O hələ də evdədir.",
+    "ru": "Он всё ещё дома."
+   }
+  },
+  {
+   "id": "moni",
+   "front": "Mõni",
+   "back": {
+    "en": "Some, one or two",
+    "az": "bəzi, bir-iki",
+    "ru": "некоторые, один-два"
+   },
+   "forms": [
+    "mõne",
+    "mõnd"
+   ],
+   "sentence": {
+    "et": "Mõni pood on pühapäeval kinni.",
+    "en": "Some shops are closed on Sunday.",
+    "az": "Bəzi mağazalar bazar günü bağlıdır.",
+    "ru": "Некоторые магазины в воскресенье закрыты."
+   }
+  },
+  {
+   "id": "mingi",
+   "front": "Mingi",
+   "back": {
+    "en": "Some kind of",
+    "az": "hansısa",
+    "ru": "какой-то"
+   },
+   "forms": [
+    "mingi",
+    "mingit"
+   ],
+   "sentence": {
+    "et": "See on mingi viga.",
+    "en": "This is some kind of mistake.",
+    "az": "Bu hansısa səhvdir.",
+    "ru": "Это какая-то ошибка."
+   }
+  },
+  {
+   "id": "ruttu",
+   "front": "Ruttu",
+   "back": {
+    "en": "Quickly",
+    "az": "tez",
+    "ru": "быстро"
+   },
+   "sentence": {
+    "et": "Tule ruttu!",
+    "en": "Come quickly!",
+    "az": "Tez gəl!",
+    "ru": "Иди быстрее!"
+   }
+  },
+  {
+   "id": "rahulikult",
+   "front": "Rahulikult",
+   "back": {
+    "en": "Calmly",
+    "az": "sakit",
+    "ru": "спокойно"
+   },
+   "sentence": {
+    "et": "Räägi rahulikult.",
+    "en": "Speak calmly.",
+    "az": "Sakit danış.",
+    "ru": "Говори спокойно."
+   }
+  },
+  {
+   "id": "julgelt",
+   "front": "Julgelt",
+   "back": {
+    "en": "Boldly, go ahead",
+    "az": "cəsarətlə, çəkinmədən",
+    "ru": "смело, не стесняйся"
+   },
+   "sentence": {
+    "et": "Küsi julgelt.",
+    "en": "Go ahead and ask.",
+    "az": "Çəkinmədən soruş.",
+    "ru": "Спрашивай смело."
+   }
+  },
+  {
+   "id": "ilusasti",
+   "front": "Ilusasti",
+   "back": {
+    "en": "Nicely, neatly",
+    "az": "gözəl, səliqəli",
+    "ru": "красиво, аккуратно"
+   },
+   "sentence": {
+    "et": "Kirjuta ilusasti.",
+    "en": "Write neatly.",
+    "az": "Səliqəli yaz.",
+    "ru": "Пиши аккуратно."
+   }
+  },
+  {
+   "id": "otsas",
+   "front": "Otsas",
+   "back": {
+    "en": "On the end of, run out",
+    "az": "qurtarıb, bitib",
+    "ru": "закончилось"
+   },
+   "sentence": {
+    "et": "Piim on otsas.",
+    "en": "The milk has run out.",
+    "az": "Süd qurtarıb.",
+    "ru": "Молоко закончилось."
+   }
+  },
+  {
+   "id": "issand",
+   "front": "Issand!",
+   "back": {
+    "en": "Good grief!",
+    "az": "Ay Allah!",
+    "ru": "Боже мой!"
+   },
+   "sentence": {
+    "et": "Issand, kui külm!",
+    "en": "Good grief, it is cold!",
+    "az": "Ay Allah, nə soyuqdur!",
+    "ru": "Боже, какой холод!"
+   }
+  },
+  {
+   "id": "mis-asja",
+   "front": "Mis asja?",
+   "back": {
+    "en": "Come again?",
+    "az": "Nə dedin?",
+    "ru": "Что-что?"
+   }
+  },
+  {
+   "id": "miks",
+   "front": "Miks?",
+   "back": {
+    "en": "Why?",
+    "az": "Niyə?",
+    "ru": "Почему?"
+   },
+   "sentence": {
+    "et": "Miks sa ei tulnud?",
+    "en": "Why did you not come?",
+    "az": "Niyə gəlmədin?",
+    "ru": "Почему ты не пришёл?"
+   }
+  },
+  {
+   "id": "ja",
+   "front": "Ja",
+   "back": {
+    "en": "And",
+    "az": "və",
+    "ru": "и"
+   },
+   "sentence": {
+    "et": "Kohv ja sai.",
+    "en": "A coffee and a bun.",
+    "az": "Qəhvə və çörək.",
+    "ru": "Кофе и булочка."
+   }
+  },
+  {
+   "id": "aga",
+   "front": "Aga",
+   "back": {
+    "en": "But",
+    "az": "amma",
+    "ru": "но, а"
+   },
+   "sentence": {
+    "et": "Ma tahan, aga ei saa.",
+    "en": "I want to, but I cannot.",
+    "az": "İstəyirəm, amma bacarmıram.",
+    "ru": "Я хочу, но не могу."
+   }
+  },
+  {
+   "id": "ka",
+   "front": "Ka",
+   "back": {
+    "en": "Also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "sentence": {
+    "et": "Mina ka.",
+    "en": "Me too.",
+    "az": "Mən də.",
+    "ru": "Я тоже."
+   }
+  },
+  {
+   "id": "et",
+   "front": "Et",
+   "back": {
+    "en": "That — the word that joins two halves",
+    "az": "ki",
+    "ru": "что, чтобы"
+   },
+   "sentence": {
+    "et": "Ta ütles, et kohvik on kinni.",
+    "en": "They said that the café is closed.",
+    "az": "O dedi ki, kafe bağlıdır.",
+    "ru": "Он сказал, что кафе закрыто."
+   }
+  },
+  {
+   "id": "nagu",
+   "front": "Nagu",
+   "back": {
+    "en": "Like, as",
+    "az": "kimi",
+    "ru": "как, будто"
+   },
+   "sentence": {
+    "et": "See maitseb nagu kodus.",
+    "en": "It tastes like it does at home.",
+    "az": "Dadı ev yeməyi kimidir.",
+    "ru": "На вкус как дома."
+   }
+  },
+  {
+   "id": "toesti",
+   "front": "Tõesti",
+   "back": {
+    "en": "Really, indeed",
+    "az": "doğrudan",
+    "ru": "действительно"
+   },
+   "sentence": {
+    "et": "See on tõesti hea.",
+    "en": "That is really good.",
+    "az": "Bu doğrudan yaxşıdır.",
+    "ru": "Это действительно хорошо."
+   }
+  },
+  {
+   "id": "kas-toesti",
+   "front": "Kas tõesti?",
+   "back": {
+    "en": "Really?",
+    "az": "Doğrudan?",
+    "ru": "Неужели?"
+   },
+   "sentence": {
+    "et": "Kas tõesti? Ma ei teadnud.",
+    "en": "Really? I did not know.",
+    "az": "Doğrudan? Bilmirdim.",
+    "ru": "Неужели? Я не знал."
+   }
+  },
+  {
+   "id": "siin",
+   "front": "Siin",
+   "back": {
+    "en": "Here",
+    "az": "burada",
+    "ru": "здесь, тут"
+   },
+   "sentence": {
+    "et": "Siin on vaba laud.",
+    "en": "There is a free table here.",
+    "az": "Burada boş masa var.",
+    "ru": "Здесь есть свободный стол."
+   }
+  },
+  {
+   "id": "siis",
+   "front": "Siis",
+   "back": {
+    "en": "Then, at that time",
+    "az": "onda, o zaman",
+    "ru": "тогда, потом"
+   },
+   "sentence": {
+    "et": "Siis lähme homme.",
+    "en": "Then let us go tomorrow.",
+    "az": "Onda sabah gedək.",
+    "ru": "Тогда пойдём завтра."
+   }
+  },
+  {
+   "id": "veel",
+   "front": "Veel",
+   "back": {
+    "en": "More, still, yet",
+    "az": "hələ, daha",
+    "ru": "ещё"
+   },
+   "sentence": {
+    "et": "Kas sa tahad veel kohvi?",
+    "en": "Would you like more coffee?",
+    "az": "Daha qəhvə istəyirsən?",
+    "ru": "Хочешь ещё кофе?"
+   }
+  },
+  {
+   "id": "ainult",
+   "front": "Ainult",
+   "back": {
+    "en": "Only",
+    "az": "yalnız, ancaq",
+    "ru": "только, лишь"
+   },
+   "sentence": {
+    "et": "Ainult sularaha.",
+    "en": "Cash only.",
+    "az": "Yalnız nağd.",
+    "ru": "Только наличные."
+   }
+  },
+  {
+   "id": "nii",
+   "front": "Nii",
+   "back": {
+    "en": "So, like this",
+    "az": "belə, elə",
+    "ru": "так"
+   },
+   "sentence": {
+    "et": "Nii on parem.",
+    "en": "It is better this way.",
+    "az": "Belə daha yaxşıdır.",
+    "ru": "Так лучше."
+   }
+  },
+  {
+   "id": "paris",
+   "front": "Päris",
+   "back": {
+    "en": "Quite, rather",
+    "az": "kifayət qədər",
+    "ru": "довольно"
+   },
+   "sentence": {
+    "et": "Siin on päris kallis.",
+    "en": "It is quite expensive here.",
+    "az": "Burada kifayət qədər bahadır.",
+    "ru": "Здесь довольно дорого."
+   }
+  },
+  {
+   "id": "vaga",
+   "front": "Väga",
+   "back": {
+    "en": "Very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "sentence": {
+    "et": "See on väga maitsev.",
+    "en": "This is very tasty.",
+    "az": "Bu çox dadlıdır.",
+    "ru": "Это очень вкусно."
+   }
+  },
+  {
+   "id": "hasti",
+   "front": "Hästi",
+   "back": {
+    "en": "Well, fine",
+    "az": "yaxşı",
+    "ru": "хорошо"
+   },
+   "sentence": {
+    "et": "Kõik läheb hästi.",
+    "en": "Everything is going well.",
+    "az": "Hər şey yaxşı gedir.",
+    "ru": "Всё идёт хорошо."
+   }
+  },
+  {
+   "id": "eriti",
+   "front": "Eriti",
+   "back": {
+    "en": "Especially",
+    "az": "xüsusilə",
+    "ru": "особенно"
+   },
+   "sentence": {
+    "et": "Eriti hea on siin kohv.",
+    "en": "The coffee here is especially good.",
+    "az": "Xüsusilə burada qəhvə yaxşıdır.",
+    "ru": "Особенно хорош здесь кофе."
+   }
+  },
+  {
+   "id": "mitte-eriti",
+   "front": "Mitte eriti",
+   "back": {
+    "en": "Not especially",
+    "az": "elə də yox",
+    "ru": "не особенно"
+   },
+   "sentence": {
+    "et": "Kas meeldib? Mitte eriti.",
+    "en": "Do you like it? Not especially.",
+    "az": "Xoşuna gəlir? Elə də yox.",
+    "ru": "Нравится? Не особенно."
+   }
+  },
+  {
+   "id": "jalle",
+   "front": "Jälle",
+   "back": {
+    "en": "Again",
+    "az": "yenə",
+    "ru": "опять, снова"
+   },
+   "sentence": {
+    "et": "Ta jäi jälle hiljaks.",
+    "en": "They were late again.",
+    "az": "O yenə gecikdi.",
+    "ru": "Он снова опоздал."
+   }
+  },
+  {
+   "id": "kull",
+   "front": "Küll",
+   "back": {
+    "en": "Indeed — the word that insists",
+    "az": "axı, hökmən",
+    "ru": "ведь, же"
+   },
+   "sentence": {
+    "et": "Küll ma tulen.",
+    "en": "I will come, do not worry.",
+    "az": "Gələcəyəm axı.",
+    "ru": "Я же приду."
+   }
+  },
+  {
+   "id": "olgu",
+   "front": "Olgu",
+   "back": {
+    "en": "All right, okay",
+    "az": "yaxşı, olsun",
+    "ru": "ладно"
+   },
+   "sentence": {
+    "et": "Olgu, teeme nii.",
+    "en": "All right, let us do it that way.",
+    "az": "Yaxşı, belə edək.",
+    "ru": "Ладно, так и сделаем."
+   }
+  },
+  {
+   "id": "sama",
+   "front": "Sama",
+   "back": {
+    "en": "The same",
+    "az": "eyni",
+    "ru": "тот же самый"
+   },
+   "sentence": {
+    "et": "Mulle sama, palun.",
+    "en": "The same for me, please.",
+    "az": "Mənə də eynisi, zəhmət olmasa.",
+    "ru": "Мне то же самое, пожалуйста."
+   }
+  },
+  {
+   "id": "selge",
+   "front": "Selge",
+   "back": {
+    "en": "Clear, plain",
+    "az": "aydın",
+    "ru": "ясный, понятный"
+   },
+   "forms": [
+    "selge",
+    "selget"
+   ],
+   "sentence": {
+    "et": "Kõik on selge.",
+    "en": "Everything is clear.",
+    "az": "Hər şey aydındır.",
+    "ru": "Всё ясно."
+   }
+  },
+  {
+   "id": "oige",
+   "front": "Õige",
+   "back": {
+    "en": "Right, correct",
+    "az": "düzgün",
+    "ru": "правильный, верный"
+   },
+   "forms": [
+    "õige",
+    "õiget"
+   ],
+   "sentence": {
+    "et": "See on õige vastus.",
+    "en": "That is the right answer.",
+    "az": "Bu düzgün cavabdır.",
+    "ru": "Это правильный ответ."
+   }
+  },
+  {
+   "id": "vale",
+   "front": "Vale",
+   "back": {
+    "en": "Wrong, untrue",
+    "az": "səhv, yalan",
+    "ru": "неправильный, ложь"
+   },
+   "forms": [
+    "vale",
+    "valet"
+   ],
+   "sentence": {
+    "et": "Ma läksin vale tänavale.",
+    "en": "I went down the wrong street.",
+    "az": "Səhv küçəyə getdim.",
+    "ru": "Я пошёл не на ту улицу."
+   }
+  },
+  {
+   "id": "iga",
+   "front": "Iga",
+   "back": {
+    "en": "Every, each",
+    "az": "hər",
+    "ru": "каждый"
+   },
+   "sentence": {
+    "et": "Kohvik on avatud iga päev.",
+    "en": "The café is open every day.",
+    "az": "Kafe hər gün açıqdır.",
+    "ru": "Кафе открыто каждый день."
+   }
+  },
+  {
+   "id": "oelge",
+   "front": "Öelge",
+   "back": {
+    "en": "Tell me, say — politely",
+    "az": "deyin",
+    "ru": "скажите"
+   },
+   "sentence": {
+    "et": "Öelge, kus on tualett?",
+    "en": "Tell me, where is the toilet?",
+    "az": "Deyin, tualet haradadır?",
+    "ru": "Скажите, где туалет?"
+   }
+  },
+  {
+   "id": "jalgade-peal",
+   "front": "Jalgade peal",
+   "back": {
+    "en": "On one's feet",
+    "az": "ayaq üstə",
+    "ru": "на ногах"
+   },
+   "sentence": {
+    "et": "Olen terve päeva jalgade peal.",
+    "en": "I have been on my feet all day.",
+    "az": "Bütün günü ayaq üstəyəm.",
+    "ru": "Я весь день на ногах."
+   }
+  },
+  {
+   "id": "pole",
+   "front": "Pole",
+   "back": {
+    "en": "Is not, there is no",
+    "az": "yoxdur, deyil",
+    "ru": "нет, не"
+   },
+   "sentence": {
+    "et": "Piima pole.",
+    "en": "There is no milk.",
+    "az": "Süd yoxdur.",
+    "ru": "Молока нет."
+   }
+  },
+  {
+   "id": "ning",
+   "front": "Ning",
+   "back": {
+    "en": "And",
+    "az": "və, həm də",
+    "ru": "и, а также"
+   },
+   "sentence": {
+    "et": "Ostsin leiba ning piima.",
+    "en": "I bought bread and milk.",
+    "az": "Çörək və süd aldım.",
+    "ru": "Я купил хлеб и молоко."
+   }
+  },
+  {
+   "id": "kuid",
+   "front": "Kuid",
+   "back": {
+    "en": "But",
+    "az": "amma, lakin",
+    "ru": "но, однако"
+   },
+   "sentence": {
+    "et": "Tahtsin tulla, kuid ei saanud.",
+    "en": "I wanted to come, but I could not.",
+    "az": "Gəlmək istədim, amma bacarmadım.",
+    "ru": "Я хотел прийти, но не смог."
+   }
+  },
+  {
+   "id": "sest",
+   "front": "Sest",
+   "back": {
+    "en": "Because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "sentence": {
+    "et": "Ma jään koju, sest sajab.",
+    "en": "I am staying home because it is raining.",
+    "az": "Evdə qalıram, çünki yağış yağır.",
+    "ru": "Я останусь дома, потому что идёт дождь."
+   }
+  },
+  {
+   "id": "ei-ega",
+   "front": "Ei... ega",
+   "back": {
+    "en": "Neither... nor",
+    "az": "nə... nə də",
+    "ru": "ни... ни"
+   },
+   "sentence": {
+    "et": "Ma ei söö liha ega kala.",
+    "en": "I eat neither meat nor fish.",
+    "az": "Nə ət, nə də balıq yeyirəm.",
+    "ru": "Я не ем ни мяса, ни рыбы."
+   }
+  },
+  {
+   "id": "enam",
+   "front": "Enam",
+   "back": {
+    "en": "Any more",
+    "az": "daha",
+    "ru": "больше"
+   },
+   "sentence": {
+    "et": "Ma ei taha enam.",
+    "en": "I do not want any more.",
+    "az": "Daha istəmirəm.",
+    "ru": "Я больше не хочу."
+   }
+  },
+  {
+   "id": "koik",
+   "front": "Kõik",
+   "back": {
+    "en": "All, everything",
+    "az": "hamısı, hər şey",
+    "ru": "все, всё"
+   },
+   "sentence": {
+    "et": "Kõik on valmis.",
+    "en": "Everything is ready.",
+    "az": "Hər şey hazırdır.",
+    "ru": "Всё готово."
+   }
+  },
+  {
+   "id": "kui",
+   "front": "Kui",
+   "back": {
+    "en": "If, when",
+    "az": "əgər, nə vaxt",
+    "ru": "если, когда"
+   },
+   "sentence": {
+    "et": "Kui sajab, jääme koju.",
+    "en": "If it rains, we will stay home.",
+    "az": "Əgər yağış yağsa, evdə qalarıq.",
+    "ru": "Если пойдёт дождь, останемся дома."
+   }
+  },
+  {
+   "id": "kiiresti",
+   "front": "Kiiresti",
+   "back": {
+    "en": "Fast, quickly",
+    "az": "sürətlə, tez",
+    "ru": "быстро, скоро"
+   },
+   "sentence": {
+    "et": "Söö kiiresti, buss tuleb.",
+    "en": "Eat quickly, the bus is coming.",
+    "az": "Tez ye, avtobus gəlir.",
+    "ru": "Ешь быстро, автобус идёт."
+   }
+  },
+  {
+   "id": "korras",
+   "front": "Korras",
+   "back": {
+    "en": "In order",
+    "az": "qaydasında",
+    "ru": "в порядке"
+   },
+   "sentence": {
+    "et": "Kõik on korras.",
+    "en": "Everything is in order.",
+    "az": "Hər şey qaydasındadır.",
+    "ru": "Всё в порядке."
+   }
+  },
+  {
+   "id": "asi",
+   "front": "Asi",
+   "back": {
+    "en": "Thing, matter",
+    "az": "Şey, iş",
+    "ru": "Вещь, дело"
+   },
+   "forms": [
+    "asja",
+    "asja"
+   ],
+   "sentence": {
+    "et": "Mul on üks asi rääkida.",
+    "en": "I have one thing to tell you.",
+    "az": "Danışmalı bir işim var.",
+    "ru": "У меня есть одно дело."
+   }
+  },
+  {
+   "id": "koos-minuga",
+   "front": "Koos minuga",
+   "back": {
+    "en": "Together with me",
+    "az": "mənimlə birlikdə",
+    "ru": "вместе со мной"
+   },
+   "sentence": {
+    "et": "Tule koos minuga.",
+    "en": "Come together with me.",
+    "az": "Mənimlə birlikdə gəl.",
+    "ru": "Пойдём вместе со мной."
+   }
+  },
+  {
+   "id": "oo-labi",
+   "front": "Öö läbi",
+   "back": {
+    "en": "All night long",
+    "az": "bütün gecə",
+    "ru": "всю ночь"
+   },
+   "sentence": {
+    "et": "Nad tantsisid öö läbi.",
+    "en": "They danced all night long.",
+    "az": "Bütün gecə rəqs etdilər.",
+    "ru": "Они танцевали всю ночь."
+   }
+  },
+  {
+   "id": "ehk",
+   "front": "Ehk",
+   "back": {
+    "en": "Maybe, perhaps",
+    "az": "bəlkə",
+    "ru": "может быть"
+   }
+  },
+  {
+   "id": "akki",
+   "front": "Äkki",
+   "back": {
+    "en": "Suddenly, maybe",
+    "az": "birdən",
+    "ru": "вдруг, может быть"
+   }
+  },
+  {
+   "id": "ju",
+   "front": "Ju",
+   "back": {
+    "en": "After all (softening word)",
+    "az": "axı",
+    "ru": "ведь"
+   }
+  },
+  {
+   "id": "vaevalt-kull",
+   "front": "Vaevalt küll",
+   "back": {
+    "en": "Hardly",
+    "az": "çətin",
+    "ru": "вряд ли"
+   }
+  },
+  {
+   "id": "sellegipoolest",
+   "front": "Sellegipoolest",
+   "back": {
+    "en": "All the same",
+    "az": "buna baxmayaraq",
+    "ru": "всё равно"
+   }
+  },
+  {
+   "id": "igatahes",
+   "front": "Igatahes",
+   "back": {
+    "en": "Anyhow",
+    "az": "hər halda",
+    "ru": "во всяком случае"
+   }
+  },
+  {
+   "id": "igaks-juhuks",
+   "front": "Igaks juhuks",
+   "back": {
+    "en": "Just in case",
+    "az": "hər ehtimala qarşı",
+    "ru": "на всякий случай"
+   }
+  },
+  {
+   "id": "jarelikult",
+   "front": "Järelikult",
+   "back": {
+    "en": "Therefore",
+    "az": "deməli",
+    "ru": "следовательно"
+   }
+  },
+  {
+   "id": "pohimotteliselt",
+   "front": "Põhimõtteliselt",
+   "back": {
+    "en": "In principle",
+    "az": "prinsipcə",
+    "ru": "в принципе"
+   }
+  },
+  {
+   "id": "muidu",
+   "front": "Muidu",
+   "back": {
+    "en": "Otherwise",
+    "az": "yoxsa",
+    "ru": "иначе"
+   }
+  },
+  {
+   "id": "isegi",
+   "front": "Isegi",
+   "back": {
+    "en": "Even",
+    "az": "hətta",
+    "ru": "даже"
+   }
+  },
+  {
+   "id": "uldiselt",
+   "front": "Üldiselt",
+   "back": {
+    "en": "In general",
+    "az": "ümumiyyətlə",
+    "ru": "вообще"
+   }
+  },
+  {
+   "id": "ilmselt",
+   "front": "Ilmselt",
+   "back": {
+    "en": "Apparently",
+    "az": "görünür",
+    "ru": "видимо"
+   }
+  },
+  {
+   "id": "toenaoliselt",
+   "front": "Tõenäoliselt",
+   "back": {
+    "en": "Most likely",
+    "az": "ehtimal ki",
+    "ru": "вероятнее всего"
+   }
+  },
+  {
+   "id": "arvatavasti",
+   "front": "Arvatavasti",
+   "back": {
+    "en": "Probably",
+    "az": "yəqin ki",
+    "ru": "наверное"
+   }
+  },
+  {
+   "id": "loodetavasti",
+   "front": "Loodetavasti",
+   "back": {
+    "en": "Hopefully",
+    "az": "ümid edirəm ki",
+    "ru": "надеюсь"
+   }
+  },
+  {
+   "id": "loomulikult",
+   "front": "Loomulikult",
+   "back": {
+    "en": "Naturally",
+    "az": "təbii ki",
+    "ru": "естественно"
+   }
+  },
+  {
+   "id": "lihtsalt",
+   "front": "Lihtsalt",
+   "back": {
+    "en": "Just, simply",
+    "az": "sadəcə",
+    "ru": "просто"
+   }
+  },
+  {
+   "id": "peaaegu",
+   "front": "Peaaegu",
+   "back": {
+    "en": "Almost",
+    "az": "demək olar ki",
+    "ru": "почти"
+   }
+  },
+  {
+   "id": "vahem",
+   "front": "Vähem",
+   "back": {
+    "en": "Less",
+    "az": "daha az",
+    "ru": "меньше"
+   }
+  },
+  {
+   "id": "rohkem",
+   "front": "Rohkem",
+   "back": {
+    "en": "More",
+    "az": "daha çox",
+    "ru": "больше"
+   }
+  },
+  {
+   "id": "kauem",
+   "front": "Kauem",
+   "back": {
+    "en": "Longer",
+    "az": "daha uzun",
+    "ru": "дольше"
+   }
+  },
+  {
+   "id": "varem",
+   "front": "Varem",
+   "back": {
+    "en": "Earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   }
+  },
+  {
+   "id": "koigepealt",
+   "front": "Kõigepealt",
+   "back": {
+    "en": "First of all",
+    "az": "ilk növbədə",
+    "ru": "прежде всего"
+   }
+  },
+  {
+   "id": "lopuks",
+   "front": "Lõpuks",
+   "back": {
+    "en": "Finally",
+    "az": "nəhayət",
+    "ru": "наконец"
+   }
+  },
+  {
+   "id": "seejarel",
+   "front": "Seejärel",
+   "back": {
+    "en": "After that",
+    "az": "sonra",
+    "ru": "затем"
+   }
+  },
+  {
+   "id": "parast-seda",
+   "front": "Pärast seda",
+   "back": {
+    "en": "After that",
+    "az": "ondan sonra",
+    "ru": "после этого"
+   }
+  },
+  {
+   "id": "enne-seda",
+   "front": "Enne seda",
+   "back": {
+    "en": "Before that",
+    "az": "ondan əvvəl",
+    "ru": "до этого"
+   }
+  },
+  {
+   "id": "nii-palju",
+   "front": "Nii palju",
+   "back": {
+    "en": "That many",
+    "az": "bu qədər",
+    "ru": "так много"
+   }
+  },
+  {
+   "id": "nii-kaua",
+   "front": "Nii kaua",
+   "back": {
+    "en": "For so long",
+    "az": "bu qədər uzun",
+    "ru": "так долго"
+   }
+  },
+  {
+   "id": "niikaua",
+   "front": "Niikaua",
+   "back": {
+    "en": "In the meantime",
+    "az": "bu müddətdə",
+    "ru": "пока"
+   }
+  },
+  {
+   "id": "kas-voi",
+   "front": "Kas või",
+   "back": {
+    "en": "Even, at least",
+    "az": "heç olmasa",
+    "ru": "хоть"
+   }
+  },
+  {
+   "id": "muudkui",
+   "front": "Muudkui",
+   "back": {
+    "en": "Nothing but",
+    "az": "ancaq",
+    "ru": "только и"
+   }
+  },
+  {
+   "id": "niimoodi",
+   "front": "Niimoodi",
+   "back": {
+    "en": "Like this",
+    "az": "belə",
+    "ru": "так"
+   }
+  },
+  {
+   "id": "taiesti",
+   "front": "Täiesti",
+   "back": {
+    "en": "Totally",
+    "az": "tamamilə",
+    "ru": "совершенно"
+   }
+  },
+  {
+   "id": "absoluutselt",
+   "front": "Absoluutselt",
+   "back": {
+    "en": "Absolutely",
+    "az": "mütləq",
+    "ru": "абсолютно"
+   }
+  },
+  {
+   "id": "hirmsasti",
+   "front": "Hirmsasti",
+   "back": {
+    "en": "Terribly",
+    "az": "dəhşətli dərəcədə",
+    "ru": "страшно"
+   }
+  },
+  {
+   "id": "kohutavalt",
+   "front": "Kohutavalt",
+   "back": {
+    "en": "Terribly",
+    "az": "dəhşətli şəkildə",
+    "ru": "ужасно"
+   }
+  },
+  {
+   "id": "vahelduseks",
+   "front": "Vahelduseks",
+   "back": {
+    "en": "For a change",
+    "az": "dəyişiklik üçün",
+    "ru": "для разнообразия"
+   }
+  },
+  {
+   "id": "igal-pool",
+   "front": "Igal pool",
+   "back": {
+    "en": "Everywhere",
+    "az": "hər yerdə",
+    "ru": "везде"
+   }
+  },
+  {
+   "id": "kuskilt",
+   "front": "Kuskilt",
+   "back": {
+    "en": "From somewhere",
+    "az": "haradansa",
+    "ru": "откуда-нибудь"
+   }
+  },
+  {
+   "id": "keegi",
+   "front": "Keegi",
+   "back": {
+    "en": "Someone",
+    "az": "kimsə",
+    "ru": "кто-то"
+   }
+  },
+  {
+   "id": "mitte-keegi",
+   "front": "Mitte keegi",
+   "back": {
+    "en": "No one",
+    "az": "heç kim",
+    "ru": "никто"
+   }
+  },
+  {
+   "id": "miski",
+   "front": "Miski",
+   "back": {
+    "en": "Something",
+    "az": "nəsə",
+    "ru": "что-то"
+   }
+  },
+  {
+   "id": "ega",
+   "front": "Ega",
+   "back": {
+    "en": "Nor",
+    "az": "nə də",
+    "ru": "ни"
+   }
+  },
+  {
+   "id": "alles",
+   "front": "Alles",
+   "back": {
+    "en": "Only, still, just",
+    "az": "hələ",
+    "ru": "ещё только"
+   }
+  },
+  {
+   "id": "kohta",
+   "front": "Kohta",
+   "back": {
+    "en": "About, concerning",
+    "az": "haqqında",
+    "ru": "о, про"
+   }
+  },
+  {
+   "id": "asemel",
+   "front": "Asemel",
+   "back": {
+    "en": "Instead of",
+    "az": "əvəzinə",
+    "ru": "вместо"
+   }
+  },
+  {
+   "id": "vastu",
+   "front": "Vastu",
+   "back": {
+    "en": "Against, opposite",
+    "az": "qarşı",
+    "ru": "напротив"
+   }
+  },
+  {
+   "id": "umber",
+   "front": "Ümber",
+   "back": {
+    "en": "Around",
+    "az": "ətrafında",
+    "ru": "вокруг"
+   }
+  },
+  {
+   "id": "aares",
+   "front": "Ääres",
+   "back": {
+    "en": "By, at the edge of",
+    "az": "kənarında",
+    "ru": "у, около"
+   }
+  },
+  {
+   "id": "taha",
+   "front": "Taha",
+   "back": {
+    "en": "To behind",
+    "az": "arxasına",
+    "ru": "за"
+   }
+  },
+  {
+   "id": "ette",
+   "front": "Ette",
+   "back": {
+    "en": "To the front of",
+    "az": "qabağına",
+    "ru": "перед"
+   }
+  },
+  {
+   "id": "alla",
+   "front": "Alla",
+   "back": {
+    "en": "Under, down",
+    "az": "altına",
+    "ru": "под"
+   }
+  },
+  {
+   "id": "peale",
+   "front": "Peale",
+   "back": {
+    "en": "Onto",
+    "az": "üstünə",
+    "ru": "на"
+   }
+  },
+  {
+   "id": "korvale",
+   "front": "Kõrvale",
+   "back": {
+    "en": "To the side of",
+    "az": "yanına",
+    "ru": "рядом"
+   }
+  },
+  {
+   "id": "keskele",
+   "front": "Keskele",
+   "back": {
+    "en": "To the middle",
+    "az": "ortasına",
+    "ru": "на середину"
+   }
+  },
+  {
+   "id": "oi",
+   "front": "Oi!",
+   "back": {
+    "en": "Oh!",
+    "az": "Oy!",
+    "ru": "Ой!"
+   }
+  },
+  {
+   "id": "ohhoo",
+   "front": "Ohhoo!",
+   "back": {
+    "en": "Oho!",
+    "az": "Oho!",
+    "ru": "Ого!"
+   }
+  },
+  {
+   "id": "ossa",
+   "front": "Ossa!",
+   "back": {
+    "en": "Wow!",
+    "az": "Vay!",
+    "ru": "Ух ты!"
+   }
+  },
+  {
+   "id": "kurat",
+   "front": "Kurat!",
+   "back": {
+    "en": "Damn!",
+    "az": "Lənət!",
+    "ru": "Чёрт!"
+   }
+  },
+  {
+   "id": "pagan",
+   "front": "Pagan!",
+   "back": {
+    "en": "Damn it!",
+    "az": "Cin vursun!",
+    "ru": "Чёрт возьми!"
+   }
+  },
+  {
+   "id": "heldeke",
+   "front": "Heldeke!",
+   "back": {
+    "en": "Oh dear!",
+    "az": "Aman Allah!",
+    "ru": "Боже мой!"
+   }
+  },
+  {
+   "id": "tohoh",
+   "front": "Tohoh!",
+   "back": {
+    "en": "Oho, fancy that!",
+    "az": "Vay-vay!",
+    "ru": "Ого!"
+   }
+  },
+  {
+   "id": "ahah",
+   "front": "Ahah",
+   "back": {
+    "en": "Aha, I see",
+    "az": "Aha",
+    "ru": "Ага"
+   }
+  },
+  {
+   "id": "ahsoo",
+   "front": "Ahsoo",
+   "back": {
+    "en": "Ah, so that is it",
+    "az": "Hə, belə",
+    "ru": "Ах так"
+   }
+  },
+  {
+   "id": "vaeseke",
+   "front": "Vaeseke!",
+   "back": {
+    "en": "Poor you!",
+    "az": "Yazıq!",
+    "ru": "Бедняжка!"
+   }
+  },
+  {
+   "id": "olge-kuss",
+   "front": "Olge kuss!",
+   "back": {
+    "en": "Be quiet!",
+    "az": "Sakit olun!",
+    "ru": "Тихо!"
+   }
+  },
+  {
+   "id": "tasa",
+   "front": "Tasa!",
+   "back": {
+    "en": "Quiet!",
+    "az": "Səssiz!",
+    "ru": "Тише!"
+   }
+  },
+  {
+   "id": "ai",
+   "front": "Ai!",
+   "back": {
+    "en": "Ouch!",
+    "az": "Ay!",
+    "ru": "Ай!"
+   }
+  },
+  {
+   "id": "hetkel",
+   "front": "Hetkel",
+   "back": {
+    "en": "At the moment",
+    "az": "hazırda",
+    "ru": "на данный момент"
+   }
+  },
+  {
+   "id": "midagi",
+   "front": "Midagi",
+   "back": {
+    "en": "Something",
+    "az": "nəsə, bir şey",
+    "ru": "что-нибудь"
+   }
+  },
+  {
+   "id": "seeparast",
+   "front": "Seepärast",
+   "back": {
+    "en": "Therefore, that is why",
+    "az": "ona görə",
+    "ru": "поэтому"
+   }
+  },
+  {
+   "id": "ilma",
+   "front": "Ilma",
+   "back": {
+    "en": "Without",
+    "az": "olmadan, -sız",
+    "ru": "без"
+   }
+  },
+  {
+   "id": "kuni",
+   "front": "Kuni",
+   "back": {
+    "en": "Till, until",
+    "az": "-a qədər",
+    "ru": "до"
+   }
+  },
+  {
+   "id": "kahku",
+   "front": "Kähku",
+   "back": {
+    "en": "Quickly",
+    "az": "tez, cəld",
+    "ru": "быстро, проворно"
+   }
+  },
+  {
+   "id": "just",
+   "front": "Just",
+   "back": {
+    "en": "Just, right now",
+    "az": "elə, indicə",
+    "ru": "как раз, только что"
+   }
+  },
+  {
+   "id": "kahju",
+   "front": "Kahju",
+   "back": {
+    "en": "A pity",
+    "az": "heyif",
+    "ru": "жаль"
+   }
+  },
+  {
+   "id": "moned",
+   "front": "Mõned",
+   "back": {
+    "en": "Some",
+    "az": "bəzi",
+    "ru": "некоторые"
+   },
+   "forms": [
+    "mõnede",
+    "mõnesid"
+   ]
+  },
+  {
+   "id": "veidi",
+   "front": "Veidi",
+   "back": {
+    "en": "A little",
+    "az": "bir az",
+    "ru": "немного"
+   }
+  },
+  {
+   "id": "paar",
+   "front": "Paar",
+   "back": {
+    "en": "Pair, a couple",
+    "az": "cüt, bir neçə",
+    "ru": "пара"
+   },
+   "forms": [
+    "paari",
+    "paari"
+   ]
+  },
+  {
+   "id": "mitmes",
+   "front": "Mitmes?",
+   "back": {
+    "en": "Which one (in order)?",
+    "az": "neçənci?",
+    "ru": "который по счёту?"
+   }
+  },
+  {
+   "id": "ammu",
+   "front": "Ammu",
+   "back": {
+    "en": "A long time ago",
+    "az": "Çoxdan",
+    "ru": "Давно"
+   }
+  },
+  {
+   "id": "seekord",
+   "front": "Seekord",
+   "back": {
+    "en": "This time",
+    "az": "Bu dəfə",
+    "ru": "На этот раз"
+   }
+  },
+  {
+   "id": "muu",
+   "front": "Muu",
+   "back": {
+    "en": "Other",
+    "az": "Başqa, digər",
+    "ru": "Иное, прочее"
+   },
+   "forms": [
+    "muu",
+    "muud"
+   ]
+  },
+  {
+   "id": "pooleli",
+   "front": "Pooleli",
+   "back": {
+    "en": "Unfinished, half done",
+    "az": "Yarımçıq",
+    "ru": "Наполовину"
+   }
+  },
+  {
+   "id": "puudus",
+   "front": "Puudus",
+   "back": {
+    "en": "Disadvantage, shortage",
+    "az": "Çatışmazlıq",
+    "ru": "Недостаток"
+   },
+   "forms": [
+    "puuduse",
+    "puudust"
+   ]
+  },
+  {
+   "id": "valjusti",
+   "front": "Valjusti",
+   "back": {
+    "en": "Loudly, aloud",
+    "az": "Ucadan",
+    "ru": "Громко, вслух"
+   }
+  },
+  {
+   "id": "viisakalt",
+   "front": "Viisakalt",
+   "back": {
+    "en": "Politely",
+    "az": "Nəzakətlə",
+    "ru": "Вежливо"
+   }
+  },
+  {
+   "id": "kara",
+   "front": "Kära",
+   "back": {
+    "en": "Noise, din",
+    "az": "Səs-küy",
+    "ru": "Шум"
+   },
+   "forms": [
+    "kära",
+    "kära"
+   ]
+  },
+  {
+   "id": "ometi",
+   "front": "Ometi",
+   "back": {
+    "en": "Yet, still, after all",
+    "az": "Axı, yenə də",
+    "ru": "Всё-таки"
+   }
+  },
+  {
+   "id": "parajasti",
+   "front": "Parajasti",
+   "back": {
+    "en": "At the moment, just now",
+    "az": "Elə indi",
+    "ru": "В этот момент, как раз"
+   }
+  }
+ ]
+}

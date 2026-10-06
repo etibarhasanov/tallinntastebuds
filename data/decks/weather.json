@@ -1,0 +1,860 @@
+{
+ "id": "weather",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Weather and the season",
+  "az": "Hava və fəsil",
+  "ru": "Погода и время года"
+ },
+ "why": {
+  "en": "Six months of it are worth a deck",
+  "az": "İlin altı ayı bir dəstəyə dəyər",
+  "ru": "Полгода такой погоды стоят целого набора"
+ },
+ "cards": [
+  {
+   "id": "ilm",
+   "front": "Ilm",
+   "back": {
+    "en": "Weather",
+    "az": "Hava",
+    "ru": "Погода"
+   },
+   "forms": [
+    "ilma",
+    "ilma"
+   ]
+  },
+  {
+   "id": "kulm",
+   "front": "Külm",
+   "back": {
+    "en": "Cold",
+    "az": "Soyuq",
+    "ru": "Холодный"
+   },
+   "forms": [
+    "külma",
+    "külma"
+   ]
+  },
+  {
+   "id": "soe",
+   "front": "Soe",
+   "back": {
+    "en": "Warm",
+    "az": "İsti, ilıq",
+    "ru": "Тёплый"
+   },
+   "forms": [
+    "sooja",
+    "sooja"
+   ]
+  },
+  {
+   "id": "kuum",
+   "front": "Kuum",
+   "back": {
+    "en": "Hot",
+    "az": "Çox isti",
+    "ru": "Жаркий"
+   },
+   "forms": [
+    "kuuma",
+    "kuuma"
+   ]
+  },
+  {
+   "id": "vihm",
+   "front": "Vihm",
+   "back": {
+    "en": "Rain",
+    "az": "Yağış",
+    "ru": "Дождь"
+   },
+   "forms": [
+    "vihma",
+    "vihma"
+   ],
+   "sentence": {
+    "et": "Täna sajab vihma.",
+    "en": "It is raining today.",
+    "az": "Bu gün yağış yağır.",
+    "ru": "Сегодня идёт дождь."
+   }
+  },
+  {
+   "id": "lumi",
+   "front": "Lumi",
+   "back": {
+    "en": "Snow",
+    "az": "Qar",
+    "ru": "Снег"
+   },
+   "forms": [
+    "lume",
+    "lund"
+   ],
+   "sentence": {
+    "et": "Väljas on palju lund.",
+    "en": "There is a lot of snow outside.",
+    "az": "Çöldə çoxlu qar var.",
+    "ru": "На улице много снега."
+   }
+  },
+  {
+   "id": "paike",
+   "front": "Päike",
+   "back": {
+    "en": "Sun",
+    "az": "Günəş",
+    "ru": "Солнце"
+   },
+   "forms": [
+    "päikese",
+    "päikest"
+   ]
+  },
+  {
+   "id": "tuul",
+   "front": "Tuul",
+   "back": {
+    "en": "Wind",
+    "az": "Külək",
+    "ru": "Ветер"
+   },
+   "forms": [
+    "tuule",
+    "tuult"
+   ]
+  },
+  {
+   "id": "pilves",
+   "front": "Pilves",
+   "back": {
+    "en": "Cloudy",
+    "az": "Buludlu",
+    "ru": "Облачно"
+   }
+  },
+  {
+   "id": "kevad",
+   "front": "Kevad",
+   "back": {
+    "en": "Spring",
+    "az": "Yaz",
+    "ru": "Весна"
+   },
+   "forms": [
+    "kevade",
+    "kevadet"
+   ]
+  },
+  {
+   "id": "suvi",
+   "front": "Suvi",
+   "back": {
+    "en": "Summer",
+    "az": "Yay",
+    "ru": "Лето"
+   },
+   "forms": [
+    "suve",
+    "suve"
+   ]
+  },
+  {
+   "id": "sugis",
+   "front": "Sügis",
+   "back": {
+    "en": "Autumn",
+    "az": "Payız",
+    "ru": "Осень"
+   },
+   "forms": [
+    "sügise",
+    "sügist"
+   ]
+  },
+  {
+   "id": "talv",
+   "front": "Talv",
+   "back": {
+    "en": "Winter",
+    "az": "Qış",
+    "ru": "Зима"
+   },
+   "forms": [
+    "talve",
+    "talve"
+   ],
+   "sentence": {
+    "et": "Talv on pikk.",
+    "en": "Winter is long.",
+    "az": "Qış uzundur.",
+    "ru": "Зима длинная."
+   }
+  },
+  {
+   "id": "tana-on-ilus-ilm",
+   "front": "Täna on ilus ilm",
+   "back": {
+    "en": "The weather is lovely today",
+    "az": "Bu gün hava gözəldir",
+    "ru": "Сегодня прекрасная погода"
+   }
+  },
+  {
+   "id": "valjas-on-kulm",
+   "front": "Väljas on külm",
+   "back": {
+    "en": "It is cold outside",
+    "az": "Çöldə soyuqdur",
+    "ru": "На улице холодно"
+   }
+  },
+  {
+   "id": "aastaaeg",
+   "front": "Aastaaeg",
+   "back": {
+    "en": "Season",
+    "az": "Fəsil",
+    "ru": "Время года"
+   },
+   "forms": [
+    "aastaaja",
+    "aastaaega"
+   ],
+   "sentence": {
+    "et": "Sügis on mu lemmik aastaaeg.",
+    "en": "Autumn is my favourite season.",
+    "az": "Payız mənim sevimli fəslimdir.",
+    "ru": "Осень — моё любимое время года."
+   }
+  },
+  {
+   "id": "pilv",
+   "front": "Pilv",
+   "back": {
+    "en": "Cloud",
+    "az": "Bulud",
+    "ru": "Облако"
+   },
+   "forms": [
+    "pilve",
+    "pilve"
+   ],
+   "sentence": {
+    "et": "Taevas on üks pilv.",
+    "en": "There is one cloud in the sky.",
+    "az": "Göydə bir bulud var.",
+    "ru": "На небе одно облако."
+   }
+  },
+  {
+   "id": "sadama",
+   "front": "Sadama",
+   "back": {
+    "en": "To rain",
+    "az": "yağmaq",
+    "ru": "идти (о дожде)"
+   },
+   "forms": [
+    "sadada",
+    "sajab"
+   ],
+   "sentence": {
+    "et": "Väljas sajab vihma.",
+    "en": "It is raining outside.",
+    "az": "Çöldə yağış yağır.",
+    "ru": "На улице идёт дождь."
+   }
+  },
+  {
+   "id": "lund-sajab",
+   "front": "Lund sajab",
+   "back": {
+    "en": "It is snowing",
+    "az": "Qar yağır",
+    "ru": "Идёт снег"
+   },
+   "sentence": {
+    "et": "Vaata, lund sajab!",
+    "en": "Look, it is snowing!",
+    "az": "Bax, qar yağır!",
+    "ru": "Смотри, идёт снег!"
+   }
+  },
+  {
+   "id": "paistma",
+   "front": "Paistma",
+   "back": {
+    "en": "To shine",
+    "az": "parlamaq",
+    "ru": "светить"
+   },
+   "forms": [
+    "paista",
+    "paistab"
+   ],
+   "sentence": {
+    "et": "Päike paistab.",
+    "en": "The sun is shining.",
+    "az": "Günəş parlayır.",
+    "ru": "Солнце светит."
+   }
+  },
+  {
+   "id": "sulama",
+   "front": "Sulama",
+   "back": {
+    "en": "To melt",
+    "az": "ərimək",
+    "ru": "таять"
+   },
+   "forms": [
+    "sulada",
+    "sulab"
+   ],
+   "sentence": {
+    "et": "Lumi sulab juba.",
+    "en": "The snow is already melting.",
+    "az": "Qar artıq əriyir.",
+    "ru": "Снег уже тает."
+   }
+  },
+  {
+   "id": "kraad",
+   "front": "Kraad",
+   "back": {
+    "en": "Degree",
+    "az": "Dərəcə",
+    "ru": "Градус"
+   },
+   "forms": [
+    "kraadi",
+    "kraadi"
+   ],
+   "sentence": {
+    "et": "Väljas on viis kraadi.",
+    "en": "It is five degrees outside.",
+    "az": "Çöldə beş dərəcədir.",
+    "ru": "На улице пять градусов."
+   }
+  },
+  {
+   "id": "vihmavari",
+   "front": "Vihmavari",
+   "back": {
+    "en": "Umbrella",
+    "az": "Çətir",
+    "ru": "Зонт"
+   },
+   "forms": [
+    "vihmavarju",
+    "vihmavarju"
+   ],
+   "sentence": {
+    "et": "Võta vihmavari kaasa.",
+    "en": "Take an umbrella with you.",
+    "az": "Özünlə çətir götür.",
+    "ru": "Возьми с собой зонт."
+   }
+  },
+  {
+   "id": "pime",
+   "front": "Pime",
+   "back": {
+    "en": "Dark",
+    "az": "Qaranlıq",
+    "ru": "Тёмный"
+   },
+   "forms": [
+    "pimeda",
+    "pimedat"
+   ],
+   "sentence": {
+    "et": "Talvel on vara pime.",
+    "en": "In winter it gets dark early.",
+    "az": "Qışda tez qaranlıq düşür.",
+    "ru": "Зимой рано темнеет."
+   }
+  },
+  {
+   "id": "vari",
+   "front": "Vari",
+   "back": {
+    "en": "Shadow, shade",
+    "az": "Kölgə",
+    "ru": "Тень"
+   },
+   "forms": [
+    "varju",
+    "varju"
+   ],
+   "sentence": {
+    "et": "Istume varjus.",
+    "en": "Let us sit in the shade.",
+    "az": "Kölgədə oturaq.",
+    "ru": "Сядем в тени."
+   }
+  },
+  {
+   "id": "ilmateadustaja",
+   "front": "Ilmateadustaja",
+   "back": {
+    "en": "Weather forecaster",
+    "az": "Hava təqdimçisi",
+    "ru": "Диктор погоды"
+   },
+   "forms": [
+    "ilmateadustaja",
+    "ilmateadustajat"
+   ]
+  },
+  {
+   "id": "ohutemperatuur",
+   "front": "Õhutemperatuur",
+   "back": {
+    "en": "Air temperature",
+    "az": "Hava temperaturu",
+    "ru": "Температура воздуха"
+   },
+   "forms": [
+    "õhutemperatuuri",
+    "õhutemperatuuri"
+   ]
+  },
+  {
+   "id": "kraadiklaas",
+   "front": "Kraadiklaas",
+   "back": {
+    "en": "Thermometer",
+    "az": "Termometr",
+    "ru": "Градусник"
+   },
+   "forms": [
+    "kraadiklaasi",
+    "kraadiklaasi"
+   ]
+  },
+  {
+   "id": "sadu",
+   "front": "Sadu",
+   "back": {
+    "en": "Rainfall",
+    "az": "Yağıntı",
+    "ru": "Осадки"
+   },
+   "forms": [
+    "saju",
+    "sadu"
+   ]
+  },
+  {
+   "id": "hoovihm",
+   "front": "Hoovihm",
+   "back": {
+    "en": "Shower of rain",
+    "az": "Leysan",
+    "ru": "Ливень"
+   },
+   "forms": [
+    "hoovihma",
+    "hoovihma"
+   ]
+  },
+  {
+   "id": "lorts",
+   "front": "Lörts",
+   "back": {
+    "en": "Sleet",
+    "az": "Sulu qar",
+    "ru": "Мокрый снег"
+   },
+   "forms": [
+    "lörtsi",
+    "lörtsi"
+   ]
+  },
+  {
+   "id": "rahe",
+   "front": "Rahe",
+   "back": {
+    "en": "Hail",
+    "az": "Dolu",
+    "ru": "Град"
+   },
+   "forms": [
+    "rahe",
+    "rahet"
+   ]
+  },
+  {
+   "id": "aike",
+   "front": "Äike",
+   "back": {
+    "en": "Thunderstorm",
+    "az": "İldırım",
+    "ru": "Гроза"
+   },
+   "forms": [
+    "äikse",
+    "äikest"
+   ]
+  },
+  {
+   "id": "valk",
+   "front": "Välk",
+   "back": {
+    "en": "Lightning",
+    "az": "Şimşək",
+    "ru": "Молния"
+   },
+   "forms": [
+    "välgu",
+    "välku"
+   ]
+  },
+  {
+   "id": "muristama",
+   "front": "Müristama",
+   "back": {
+    "en": "To thunder",
+    "az": "göy guruldamaq",
+    "ru": "греметь"
+   },
+   "forms": [
+    "müristada",
+    "müristab"
+   ]
+  },
+  {
+   "id": "torm",
+   "front": "Torm",
+   "back": {
+    "en": "Storm",
+    "az": "Fırtına",
+    "ru": "Шторм"
+   },
+   "forms": [
+    "tormi",
+    "tormi"
+   ]
+  },
+  {
+   "id": "tormine",
+   "front": "Tormine",
+   "back": {
+    "en": "Stormy",
+    "az": "Fırtınalı",
+    "ru": "Штормовой"
+   },
+   "forms": [
+    "tormise",
+    "tormist"
+   ]
+  },
+  {
+   "id": "udu",
+   "front": "Udu",
+   "back": {
+    "en": "Mist",
+    "az": "Duman",
+    "ru": "Туман"
+   },
+   "forms": [
+    "udu",
+    "udu"
+   ]
+  },
+  {
+   "id": "pakane",
+   "front": "Pakane",
+   "back": {
+    "en": "Frost",
+    "az": "Şaxta",
+    "ru": "Мороз"
+   },
+   "forms": [
+    "pakase",
+    "pakast"
+   ]
+  },
+  {
+   "id": "sula",
+   "front": "Sula",
+   "back": {
+    "en": "Thaw",
+    "az": "Ərimə",
+    "ru": "Оттепель"
+   },
+   "forms": [
+    "sula",
+    "sula"
+   ]
+  },
+  {
+   "id": "jahe",
+   "front": "Jahe",
+   "back": {
+    "en": "Cool",
+    "az": "Sərin",
+    "ru": "Прохладно"
+   },
+   "forms": [
+    "jaheda",
+    "jahedat"
+   ]
+  },
+  {
+   "id": "palav",
+   "front": "Palav",
+   "back": {
+    "en": "Very hot",
+    "az": "Çox isti",
+    "ru": "Жарко"
+   },
+   "forms": [
+    "palava",
+    "palavat"
+   ]
+  },
+  {
+   "id": "vihmane",
+   "front": "Vihmane",
+   "back": {
+    "en": "Rainy",
+    "az": "Yağışlı",
+    "ru": "Дождливый"
+   },
+   "forms": [
+    "vihmase",
+    "vihmast"
+   ]
+  },
+  {
+   "id": "pilvine",
+   "front": "Pilvine",
+   "back": {
+    "en": "Cloudy",
+    "az": "Buludlu",
+    "ru": "Облачный"
+   },
+   "forms": [
+    "pilvise",
+    "pilvist"
+   ]
+  },
+  {
+   "id": "paikesepaisteline",
+   "front": "Päikesepaisteline",
+   "back": {
+    "en": "Sunny",
+    "az": "Günəşli",
+    "ru": "Солнечный"
+   },
+   "forms": [
+    "päikesepaistelise",
+    "päikesepaistelist"
+   ]
+  },
+  {
+   "id": "libe",
+   "front": "Libe",
+   "back": {
+    "en": "Slippery",
+    "az": "Sürüşkən",
+    "ru": "Скользко"
+   },
+   "forms": [
+    "libeda",
+    "libedat"
+   ]
+  },
+  {
+   "id": "tuiskama",
+   "front": "Tuiskama",
+   "back": {
+    "en": "To have a blizzard",
+    "az": "çovğun olmaq",
+    "ru": "мести"
+   },
+   "forms": [
+    "tuisata",
+    "tuiskab"
+   ]
+  },
+  {
+   "id": "puhuma",
+   "front": "Puhuma",
+   "back": {
+    "en": "To blow",
+    "az": "əsmək",
+    "ru": "дуть"
+   },
+   "forms": [
+    "puhuda",
+    "puhub"
+   ]
+  },
+  {
+   "id": "norgenema",
+   "front": "Nõrgenema",
+   "back": {
+    "en": "To weaken",
+    "az": "zəifləmək",
+    "ru": "ослабевать"
+   },
+   "forms": [
+    "nõrgeneda",
+    "nõrgeneb"
+   ]
+  },
+  {
+   "id": "ookulm",
+   "front": "Öökülm",
+   "back": {
+    "en": "Night frost",
+    "az": "Gecə şaxtası",
+    "ru": "Заморозки"
+   },
+   "forms": [
+    "öökülma",
+    "öökülma"
+   ]
+  },
+  {
+   "id": "pohjatuul",
+   "front": "Põhjatuul",
+   "back": {
+    "en": "Northern wind",
+    "az": "Şimal küləyi",
+    "ru": "Северный ветер"
+   },
+   "forms": [
+    "põhjatuule",
+    "põhjatuult"
+   ]
+  },
+  {
+   "id": "lounatuul",
+   "front": "Lõunatuul",
+   "back": {
+    "en": "Southern wind",
+    "az": "Cənub küləyi",
+    "ru": "Южный ветер"
+   },
+   "forms": [
+    "lõunatuule",
+    "lõunatuult"
+   ]
+  },
+  {
+   "id": "laanetuul",
+   "front": "Läänetuul",
+   "back": {
+    "en": "Western wind",
+    "az": "Qərb küləyi",
+    "ru": "Западный ветер"
+   },
+   "forms": [
+    "läänetuule",
+    "läänetuult"
+   ]
+  },
+  {
+   "id": "idatuul",
+   "front": "Idatuul",
+   "back": {
+    "en": "Eastern wind",
+    "az": "Şərq küləyi",
+    "ru": "Восточный ветер"
+   },
+   "forms": [
+    "idatuule",
+    "idatuult"
+   ]
+  },
+  {
+   "id": "meetrit-sekundis",
+   "front": "Meetrit sekundis",
+   "back": {
+    "en": "Metres per second",
+    "az": "Saniyədə metr",
+    "ru": "Метров в секунду"
+   }
+  },
+  {
+   "id": "vahelduva-pilvisusega",
+   "front": "Vahelduva pilvisusega",
+   "back": {
+    "en": "Partly cloudy",
+    "az": "Dəyişkən buludlu",
+    "ru": "Переменная облачность"
+   }
+  },
+  {
+   "id": "kohati",
+   "front": "Kohati",
+   "back": {
+    "en": "In places",
+    "az": "Yer-yer",
+    "ru": "Местами"
+   }
+  },
+  {
+   "id": "tuleoht",
+   "front": "Tuleoht",
+   "back": {
+    "en": "Risk of fire",
+    "az": "Yanğın təhlükəsi",
+    "ru": "Пожароопасность"
+   },
+   "forms": [
+    "tuleohu",
+    "tuleohtu"
+   ]
+  },
+  {
+   "id": "vikerkaar",
+   "front": "Vikerkaar",
+   "back": {
+    "en": "Rainbow",
+    "az": "Göy qurşağı",
+    "ru": "Радуга"
+   },
+   "forms": [
+    "vikerkaare",
+    "vikerkaart"
+   ]
+  },
+  {
+   "id": "tuulekindel",
+   "front": "Tuulekindel",
+   "back": {
+    "en": "Windproof",
+    "az": "Küləkdən qoruyan",
+    "ru": "Ветронепроницаемый"
+   },
+   "forms": [
+    "tuulekindla",
+    "tuulekindlat"
+   ]
+  },
+  {
+   "id": "paikesekiir",
+   "front": "Päikesekiir",
+   "back": {
+    "en": "Sunbeam",
+    "az": "Günəş şüası",
+    "ru": "Луч солнца"
+   },
+   "forms": [
+    "päikesekiire",
+    "päikesekiirt"
+   ]
+  }
+ ],
+ "level": "more"
+}

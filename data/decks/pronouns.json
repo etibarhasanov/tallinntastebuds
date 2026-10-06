@@ -1,0 +1,295 @@
+{
+ "id": "pronouns",
+ "added": "2026-09-19",
+ "name": {
+  "en": "I am, you are, they are",
+  "az": "Mən, sən, o",
+  "ru": "Я, ты, он"
+ },
+ "why": {
+  "en": "The pronouns and the verb to be, which is most of a first sentence",
+  "az": "Əvəzliklər və olmaq feli — ilk cümlənin çox hissəsi",
+  "ru": "Местоимения и глагол «быть» — почти всё первое предложение"
+ },
+ "level": "start",
+ "cards": [
+  {
+   "id": "mina-olen",
+   "front": "Mina (ma) olen",
+   "back": {
+    "en": "I am",
+    "az": "Mən ...-am",
+    "ru": "Я (есть)"
+   },
+   "sentence": {
+    "et": "Mina olen Anna.",
+    "en": "I am Anna.",
+    "az": "Mən Annayam.",
+    "ru": "Я Анна."
+   }
+  },
+  {
+   "id": "sina-oled",
+   "front": "Sina (sa) oled",
+   "back": {
+    "en": "You are — to one person",
+    "az": "Sən ...-san",
+    "ru": "Ты (есть)"
+   },
+   "sentence": {
+    "et": "Sina oled eestlane.",
+    "en": "You are Estonian.",
+    "az": "Sən estonsan.",
+    "ru": "Ты эстонец."
+   }
+  },
+  {
+   "id": "tema-on",
+   "front": "Tema (ta) on",
+   "back": {
+    "en": "He is, she is",
+    "az": "O ...-dır",
+    "ru": "Он, она (есть)"
+   },
+   "sentence": {
+    "et": "Tema on minu sõber.",
+    "en": "They are my friend.",
+    "az": "O mənim dostumdur.",
+    "ru": "Он мой друг."
+   }
+  },
+  {
+   "id": "meie-oleme",
+   "front": "Meie (me) oleme",
+   "back": {
+    "en": "We are",
+    "az": "Biz ...-ıq",
+    "ru": "Мы (есть)"
+   },
+   "sentence": {
+    "et": "Meie oleme kahekesi.",
+    "en": "There are two of us.",
+    "az": "Biz iki nəfərik.",
+    "ru": "Нас двое."
+   }
+  },
+  {
+   "id": "teie-olete",
+   "front": "Teie (te) olete",
+   "back": {
+    "en": "You are — to several, or politely",
+    "az": "Siz ...-sınız",
+    "ru": "Вы (есть)"
+   },
+   "sentence": {
+    "et": "Teie olete meie külalised.",
+    "en": "You are our guests.",
+    "az": "Siz bizim qonaqlarımızsınız.",
+    "ru": "Вы наши гости."
+   }
+  },
+  {
+   "id": "nemad-on",
+   "front": "Nemad (nad) on",
+   "back": {
+    "en": "They are",
+    "az": "Onlar ...-dırlar",
+    "ru": "Они (есть)"
+   },
+   "sentence": {
+    "et": "Nemad on juba kohvikus.",
+    "en": "They are already at the café.",
+    "az": "Onlar artıq kafededirlər.",
+    "ru": "Они уже в кафе."
+   }
+  },
+  {
+   "id": "minu-nimi-ei-ole",
+   "front": "Minu nimi ei ole",
+   "back": {
+    "en": "My name is not",
+    "az": "Mənim adım ... deyil",
+    "ru": "Меня зовут не"
+   },
+   "sentence": {
+    "et": "Minu nimi ei ole Mari, vaid Anna.",
+    "en": "My name is not Mari, it is Anna.",
+    "az": "Mənim adım Mari deyil, Annadır.",
+    "ru": "Меня зовут не Мари, а Анна."
+   }
+  },
+  {
+   "id": "sinu-nimi",
+   "front": "Sinu (su) nimi",
+   "back": {
+    "en": "Your name — to one person",
+    "az": "Sənin adın",
+    "ru": "Твоё имя"
+   },
+   "sentence": {
+    "et": "Sinu nimi on ilus.",
+    "en": "Your name is beautiful.",
+    "az": "Sənin adın gözəldir.",
+    "ru": "У тебя красивое имя."
+   }
+  },
+  {
+   "id": "tema-nimi",
+   "front": "Tema (ta) nimi",
+   "back": {
+    "en": "His name, her name",
+    "az": "Onun adı",
+    "ru": "Его, её имя"
+   },
+   "sentence": {
+    "et": "Tema nimi on Mari.",
+    "en": "Her name is Mari.",
+    "az": "Onun adı Maridir.",
+    "ru": "Её зовут Мари."
+   }
+  },
+  {
+   "id": "nende-nimi",
+   "front": "Nende nimi",
+   "back": {
+    "en": "Their name",
+    "az": "Onların adı",
+    "ru": "Их имя"
+   },
+   "sentence": {
+    "et": "Nende nimi on uksel kirjas.",
+    "en": "Their name is written on the door.",
+    "az": "Onların adı qapıda yazılıb.",
+    "ru": "Их имя написано на двери."
+   }
+  },
+  {
+   "id": "mul-on",
+   "front": "Mul on",
+   "back": {
+    "en": "I have",
+    "az": "Məndə var",
+    "ru": "У меня есть"
+   },
+   "sentence": {
+    "et": "Mul on kaks piletit.",
+    "en": "I have two tickets.",
+    "az": "Məndə iki bilet var.",
+    "ru": "У меня два билета."
+   }
+  },
+  {
+   "id": "tal-on",
+   "front": "Tal on",
+   "back": {
+    "en": "He has, she has",
+    "az": "Onda var",
+    "ru": "У него, у неё есть"
+   },
+   "sentence": {
+    "et": "Tal on uus töö.",
+    "en": "They have a new job.",
+    "az": "Onun yeni işi var.",
+    "ru": "У него новая работа."
+   }
+  },
+  {
+   "id": "mulle",
+   "front": "Mulle",
+   "back": {
+    "en": "To me, for me",
+    "az": "Mənə",
+    "ru": "Мне"
+   },
+   "sentence": {
+    "et": "Mulle üks kohv, palun.",
+    "en": "A coffee for me, please.",
+    "az": "Mənə bir qəhvə, zəhmət olmasa.",
+    "ru": "Мне один кофе, пожалуйста."
+   }
+  },
+  {
+   "id": "talle",
+   "front": "Talle",
+   "back": {
+    "en": "To him, to her",
+    "az": "Ona",
+    "ru": "Ему, ей"
+   },
+   "sentence": {
+    "et": "Anna see talle.",
+    "en": "Give it to them.",
+    "az": "Bunu ona ver.",
+    "ru": "Отдай это ему."
+   }
+  },
+  {
+   "id": "see",
+   "front": "See",
+   "back": {
+    "en": "This, it",
+    "az": "Bu",
+    "ru": "Этот, это"
+   },
+   "forms": [
+    "selle",
+    "seda"
+   ],
+   "sentence": {
+    "et": "Mis see on?",
+    "en": "What is this?",
+    "az": "Bu nədir?",
+    "ru": "Что это?"
+   }
+  },
+  {
+   "id": "oma",
+   "front": "Oma",
+   "back": {
+    "en": "One's own",
+    "az": "öz",
+    "ru": "свой, своя"
+   },
+   "sentence": {
+    "et": "Ma võtan oma koti.",
+    "en": "I will take my own bag.",
+    "az": "Öz çantamı götürürəm.",
+    "ru": "Я возьму свою сумку."
+   }
+  },
+  {
+   "id": "need",
+   "front": "Need",
+   "back": {
+    "en": "These",
+    "az": "bunlar",
+    "ru": "эти"
+   },
+   "forms": [
+    "nende",
+    "neid"
+   ],
+   "sentence": {
+    "et": "Need on minu võtmed.",
+    "en": "These are my keys.",
+    "az": "Bunlar mənim açarlarımdır.",
+    "ru": "Это мои ключи."
+   }
+  },
+  {
+   "id": "ise",
+   "front": "Ise",
+   "back": {
+    "en": "Myself, yourself",
+    "az": "özüm, özün",
+    "ru": "сам, сама"
+   },
+   "sentence": {
+    "et": "Ma tegin selle ise.",
+    "en": "I made this myself.",
+    "az": "Bunu özüm etdim.",
+    "ru": "Я сделал это сам."
+   }
+  }
+ ]
+}

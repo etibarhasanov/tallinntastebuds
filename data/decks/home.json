@@ -1,0 +1,1365 @@
+{
+ "id": "home",
+ "added": "2026-09-18",
+ "name": {
+  "en": "A flat and a street",
+  "az": "Mənzil və küçə",
+  "ru": "Квартира и улица"
+ },
+ "why": {
+  "en": "The words on a rental advert and inside the door",
+  "az": "Kirayə elanındakı və qapının içindəki sözlər",
+  "ru": "Слова из объявления о съёме и из-за входной двери"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "korter",
+   "front": "Korter",
+   "back": {
+    "en": "Flat",
+    "az": "Mənzil",
+    "ru": "Квартира"
+   },
+   "forms": [
+    "korteri",
+    "korterit"
+   ],
+   "sentence": {
+    "et": "Ma otsin korterit.",
+    "en": "I am looking for a flat.",
+    "az": "Mənzil axtarıram.",
+    "ru": "Я ищу квартиру."
+   }
+  },
+  {
+   "id": "maja",
+   "front": "Maja",
+   "back": {
+    "en": "House",
+    "az": "Ev",
+    "ru": "Дом"
+   },
+   "forms": [
+    "maja",
+    "maja"
+   ],
+   "sentence": {
+    "et": "See maja on vana.",
+    "en": "This house is old.",
+    "az": "Bu ev köhnədir.",
+    "ru": "Этот дом старый."
+   }
+  },
+  {
+   "id": "uks",
+   "front": "Uks",
+   "back": {
+    "en": "Door",
+    "az": "Qapı",
+    "ru": "Дверь"
+   },
+   "forms": [
+    "ukse",
+    "ust"
+   ],
+   "sentence": {
+    "et": "Uks on lahti.",
+    "en": "The door is open.",
+    "az": "Qapı açıqdır.",
+    "ru": "Дверь открыта."
+   }
+  },
+  {
+   "id": "aken",
+   "front": "Aken",
+   "back": {
+    "en": "Window",
+    "az": "Pəncərə",
+    "ru": "Окно"
+   },
+   "forms": [
+    "akna",
+    "akent"
+   ],
+   "sentence": {
+    "et": "Palun tee aken kinni.",
+    "en": "Please close the window.",
+    "az": "Zəhmət olmasa, pəncərəni bağla.",
+    "ru": "Пожалуйста, закрой окно."
+   }
+  },
+  {
+   "id": "tuba",
+   "front": "Tuba",
+   "back": {
+    "en": "Room",
+    "az": "Otaq",
+    "ru": "Комната"
+   },
+   "forms": [
+    "toa",
+    "tuba"
+   ],
+   "sentence": {
+    "et": "Korteris on kaks tuba.",
+    "en": "The flat has two rooms.",
+    "az": "Mənzildə iki otaq var.",
+    "ru": "В квартире две комнаты."
+   }
+  },
+  {
+   "id": "kook",
+   "front": "Köök",
+   "back": {
+    "en": "Kitchen",
+    "az": "Mətbəx",
+    "ru": "Кухня"
+   },
+   "forms": [
+    "köögi",
+    "kööki"
+   ],
+   "sentence": {
+    "et": "Köök on väike.",
+    "en": "The kitchen is small.",
+    "az": "Mətbəx kiçikdir.",
+    "ru": "Кухня маленькая."
+   }
+  },
+  {
+   "id": "vannituba",
+   "front": "Vannituba",
+   "back": {
+    "en": "Bathroom",
+    "az": "Hamam",
+    "ru": "Ванная"
+   },
+   "forms": [
+    "vannitoa",
+    "vannituba"
+   ],
+   "sentence": {
+    "et": "Kus on vannituba?",
+    "en": "Where is the bathroom?",
+    "az": "Hamam haradadır?",
+    "ru": "Где ванная?"
+   }
+  },
+  {
+   "id": "voodi",
+   "front": "Voodi",
+   "back": {
+    "en": "Bed",
+    "az": "Çarpayı",
+    "ru": "Кровать"
+   },
+   "forms": [
+    "voodi",
+    "voodit"
+   ],
+   "sentence": {
+    "et": "Voodi on pehme.",
+    "en": "The bed is soft.",
+    "az": "Çarpayı yumşaqdır.",
+    "ru": "Кровать мягкая."
+   }
+  },
+  {
+   "id": "laud",
+   "front": "Laud",
+   "back": {
+    "en": "Table",
+    "az": "Masa",
+    "ru": "Стол"
+   },
+   "forms": [
+    "laua",
+    "lauda"
+   ],
+   "sentence": {
+    "et": "Pane see lauale.",
+    "en": "Put it on the table.",
+    "az": "Bunu masaya qoy.",
+    "ru": "Положи это на стол."
+   }
+  },
+  {
+   "id": "tool",
+   "front": "Tool",
+   "back": {
+    "en": "Chair",
+    "az": "Stul",
+    "ru": "Стул"
+   },
+   "forms": [
+    "tooli",
+    "tooli"
+   ],
+   "sentence": {
+    "et": "Võta tool.",
+    "en": "Take a chair.",
+    "az": "Bir stul götür.",
+    "ru": "Возьми стул."
+   }
+  },
+  {
+   "id": "voti",
+   "front": "Võti",
+   "back": {
+    "en": "Key",
+    "az": "Açar",
+    "ru": "Ключ"
+   },
+   "forms": [
+    "võtme",
+    "võtit"
+   ],
+   "sentence": {
+    "et": "Ma kaotasin võtme.",
+    "en": "I lost the key.",
+    "az": "Açarı itirdim.",
+    "ru": "Я потерял ключ."
+   }
+  },
+  {
+   "id": "uur",
+   "front": "Üür",
+   "back": {
+    "en": "Rent",
+    "az": "Kirayə haqqı",
+    "ru": "Арендная плата"
+   },
+   "forms": [
+    "üüri",
+    "üüri"
+   ],
+   "sentence": {
+    "et": "Üür on liiga kallis.",
+    "en": "The rent is too expensive.",
+    "az": "Kirayə çox bahadır.",
+    "ru": "Аренда слишком дорогая."
+   }
+  },
+  {
+   "id": "naaber",
+   "front": "Naaber",
+   "back": {
+    "en": "Neighbour",
+    "az": "Qonşu",
+    "ru": "Сосед"
+   },
+   "forms": [
+    "naabri",
+    "naabrit"
+   ],
+   "sentence": {
+    "et": "Mu naaber on tore.",
+    "en": "My neighbour is nice.",
+    "az": "Qonşum yaxşı adamdır.",
+    "ru": "Мой сосед хороший."
+   }
+  },
+  {
+   "id": "trepp",
+   "front": "Trepp",
+   "back": {
+    "en": "Stairs",
+    "az": "Pilləkən",
+    "ru": "Лестница"
+   },
+   "forms": [
+    "trepi",
+    "treppi"
+   ],
+   "sentence": {
+    "et": "Trepp on kolmandal korrusel.",
+    "en": "The stairs are on the third floor.",
+    "az": "Pilləkən üçüncü mərtəbədədir.",
+    "ru": "Лестница на третьем этаже."
+   }
+  },
+  {
+   "id": "katus",
+   "front": "Katus",
+   "back": {
+    "en": "Roof",
+    "az": "Dam",
+    "ru": "Крыша"
+   },
+   "forms": [
+    "katuse",
+    "katust"
+   ],
+   "sentence": {
+    "et": "Katusel on lund.",
+    "en": "There is snow on the roof.",
+    "az": "Damda qar var.",
+    "ru": "На крыше снег."
+   }
+  },
+  {
+   "id": "porand",
+   "front": "Põrand",
+   "back": {
+    "en": "Floor",
+    "az": "Döşəmə",
+    "ru": "Пол"
+   },
+   "forms": [
+    "põranda",
+    "põrandat"
+   ],
+   "sentence": {
+    "et": "Põrand on külm.",
+    "en": "The floor is cold.",
+    "az": "Döşəmə soyuqdur.",
+    "ru": "Пол холодный."
+   }
+  },
+  {
+   "id": "sein",
+   "front": "Sein",
+   "back": {
+    "en": "Wall",
+    "az": "Divar",
+    "ru": "Стена"
+   },
+   "forms": [
+    "seina",
+    "seina"
+   ],
+   "sentence": {
+    "et": "Pilt on seinal.",
+    "en": "The picture is on the wall.",
+    "az": "Şəkil divardadır.",
+    "ru": "Картина на стене."
+   }
+  },
+  {
+   "id": "valgus",
+   "front": "Valgus",
+   "back": {
+    "en": "Light",
+    "az": "İşıq",
+    "ru": "Свет"
+   },
+   "forms": [
+    "valguse",
+    "valgust"
+   ],
+   "sentence": {
+    "et": "Siin ei ole palju valgust.",
+    "en": "There is not much light here.",
+    "az": "Burada çox işıq yoxdur.",
+    "ru": "Здесь мало света."
+   }
+  },
+  {
+   "id": "kodu",
+   "front": "Kodu",
+   "back": {
+    "en": "Home",
+    "az": "Ev, yurd",
+    "ru": "Дом, родной дом"
+   },
+   "forms": [
+    "kodu",
+    "kodu"
+   ],
+   "sentence": {
+    "et": "Minu kodu on Kalamajas.",
+    "en": "My home is in Kalamaja.",
+    "az": "Mənim evim Kalamajadadır.",
+    "ru": "Мой дом в Каламая."
+   }
+  },
+  {
+   "id": "lill",
+   "front": "Lill",
+   "back": {
+    "en": "Flower",
+    "az": "Gül",
+    "ru": "Цветок"
+   },
+   "forms": [
+    "lille",
+    "lille"
+   ],
+   "sentence": {
+    "et": "Lilled on laual.",
+    "en": "The flowers are on the table.",
+    "az": "Güllər masanın üstündədir.",
+    "ru": "Цветы на столе."
+   }
+  },
+  {
+   "id": "eramaja",
+   "front": "Eramaja",
+   "back": {
+    "en": "Private house",
+    "az": "Fərdi ev",
+    "ru": "Частный дом"
+   },
+   "forms": [
+    "eramaja",
+    "eramaja"
+   ],
+   "sentence": {
+    "et": "Nad ostsid eramaja.",
+    "en": "They bought a private house.",
+    "az": "Onlar fərdi ev aldılar.",
+    "ru": "Они купили частный дом."
+   }
+  },
+  {
+   "id": "ou",
+   "front": "Õu",
+   "back": {
+    "en": "Yard",
+    "az": "Həyət",
+    "ru": "Двор"
+   },
+   "forms": [
+    "õue",
+    "õue"
+   ],
+   "sentence": {
+    "et": "Lapsed mängivad õues.",
+    "en": "The children are playing in the yard.",
+    "az": "Uşaqlar həyətdə oynayır.",
+    "ru": "Дети играют во дворе."
+   }
+  },
+  {
+   "id": "elutuba",
+   "front": "Elutuba",
+   "back": {
+    "en": "Living room",
+    "az": "Qonaq otağı",
+    "ru": "Гостиная"
+   },
+   "forms": [
+    "elutoa",
+    "elutuba"
+   ]
+  },
+  {
+   "id": "magamistuba",
+   "front": "Magamistuba",
+   "back": {
+    "en": "Bedroom",
+    "az": "Yataq otağı",
+    "ru": "Спальня"
+   },
+   "forms": [
+    "magamistoa",
+    "magamistuba"
+   ]
+  },
+  {
+   "id": "lastetuba",
+   "front": "Lastetuba",
+   "back": {
+    "en": "Nursery",
+    "az": "Uşaq otağı",
+    "ru": "Детская"
+   },
+   "forms": [
+    "lastetoa",
+    "lastetuba"
+   ]
+  },
+  {
+   "id": "kabinet",
+   "front": "Kabinet",
+   "back": {
+    "en": "Study, office",
+    "az": "Kabinet",
+    "ru": "Кабинет"
+   },
+   "forms": [
+    "kabineti",
+    "kabinetti"
+   ]
+  },
+  {
+   "id": "kelder",
+   "front": "Kelder",
+   "back": {
+    "en": "Basement",
+    "az": "Zirzəmi",
+    "ru": "Подвал"
+   },
+   "forms": [
+    "keldri",
+    "keldrit"
+   ]
+  },
+  {
+   "id": "garaaz",
+   "front": "Garaaž",
+   "back": {
+    "en": "Garage",
+    "az": "Qaraj",
+    "ru": "Гараж"
+   },
+   "forms": [
+    "garaaži",
+    "garaaži"
+   ]
+  },
+  {
+   "id": "rodu",
+   "front": "Rõdu",
+   "back": {
+    "en": "Balcony",
+    "az": "Balkon",
+    "ru": "Балкон"
+   },
+   "forms": [
+    "rõdu",
+    "rõdu"
+   ]
+  },
+  {
+   "id": "trepikoda",
+   "front": "Trepikoda",
+   "back": {
+    "en": "Stairway",
+    "az": "Pilləkən qəfəsi",
+    "ru": "Подъезд"
+   },
+   "forms": [
+    "trepikoja",
+    "trepikoda"
+   ]
+  },
+  {
+   "id": "korrus",
+   "front": "Korrus",
+   "back": {
+    "en": "Floor, storey",
+    "az": "Mərtəbə",
+    "ru": "Этаж"
+   },
+   "forms": [
+    "korruse",
+    "korrust"
+   ]
+  },
+  {
+   "id": "lift",
+   "front": "Lift",
+   "back": {
+    "en": "Lift",
+    "az": "Lift",
+    "ru": "Лифт"
+   },
+   "forms": [
+    "lifti",
+    "lifti"
+   ]
+  },
+  {
+   "id": "keskute",
+   "front": "Kesküte",
+   "back": {
+    "en": "Central heating",
+    "az": "Mərkəzi istilik",
+    "ru": "Центральное отопление"
+   },
+   "forms": [
+    "keskütte",
+    "keskütet"
+   ]
+  },
+  {
+   "id": "ahikute",
+   "front": "Ahiküte",
+   "back": {
+    "en": "Heating by stoves",
+    "az": "Soba istiliyi",
+    "ru": "Печное отопление"
+   },
+   "forms": [
+    "ahikütte",
+    "ahikütet"
+   ]
+  },
+  {
+   "id": "kamin",
+   "front": "Kamin",
+   "back": {
+    "en": "Fireplace",
+    "az": "Buxarı",
+    "ru": "Камин"
+   },
+   "forms": [
+    "kamina",
+    "kaminat"
+   ]
+  },
+  {
+   "id": "mobleeritud",
+   "front": "Möbleeritud",
+   "back": {
+    "en": "Furnished",
+    "az": "Mebelli",
+    "ru": "Меблированный"
+   }
+  },
+  {
+   "id": "remontimata",
+   "front": "Remontimata",
+   "back": {
+    "en": "In need of renovation",
+    "az": "Təmirsiz",
+    "ru": "Не отремонтирован"
+   }
+  },
+  {
+   "id": "renoveeritud",
+   "front": "Renoveeritud",
+   "back": {
+    "en": "Renovated",
+    "az": "Təmir olunmuş",
+    "ru": "Отремонтированный"
+   }
+  },
+  {
+   "id": "uldpind",
+   "front": "Üldpind",
+   "back": {
+    "en": "Overall area",
+    "az": "Ümumi sahə",
+    "ru": "Общая площадь"
+   },
+   "forms": [
+    "üldpinna",
+    "üldpinda"
+   ]
+  },
+  {
+   "id": "ruutmeeter",
+   "front": "Ruutmeeter",
+   "back": {
+    "en": "Square metre",
+    "az": "Kvadrat metr",
+    "ru": "Квадратный метр"
+   },
+   "forms": [
+    "ruutmeetri",
+    "ruutmeetrit"
+   ]
+  },
+  {
+   "id": "ehitusaasta",
+   "front": "Ehitusaasta",
+   "back": {
+    "en": "Year of building",
+    "az": "Tikinti ili",
+    "ru": "Год постройки"
+   },
+   "forms": [
+    "ehitusaasta",
+    "ehitusaastat"
+   ]
+  },
+  {
+   "id": "mugavus",
+   "front": "Mugavus",
+   "back": {
+    "en": "Comfort",
+    "az": "Rahatlıq",
+    "ru": "Удобство"
+   },
+   "forms": [
+    "mugavuse",
+    "mugavust"
+   ]
+  },
+  {
+   "id": "moobel",
+   "front": "Mööbel",
+   "back": {
+    "en": "Furniture",
+    "az": "Mebel",
+    "ru": "Мебель"
+   },
+   "forms": [
+    "mööbli",
+    "mööblit"
+   ]
+  },
+  {
+   "id": "diivan",
+   "front": "Diivan",
+   "back": {
+    "en": "Sofa",
+    "az": "Divan",
+    "ru": "Диван"
+   },
+   "forms": [
+    "diivani",
+    "diivanit"
+   ]
+  },
+  {
+   "id": "tugitool",
+   "front": "Tugitool",
+   "back": {
+    "en": "Armchair",
+    "az": "Kreslo",
+    "ru": "Кресло"
+   },
+   "forms": [
+    "tugitooli",
+    "tugitooli"
+   ]
+  },
+  {
+   "id": "taburet",
+   "front": "Taburet",
+   "back": {
+    "en": "Stool",
+    "az": "Taburet",
+    "ru": "Табуретка"
+   },
+   "forms": [
+    "tabureti",
+    "taburetti"
+   ]
+  },
+  {
+   "id": "peegel",
+   "front": "Peegel",
+   "back": {
+    "en": "Mirror",
+    "az": "Güzgü",
+    "ru": "Зеркало"
+   },
+   "forms": [
+    "peegli",
+    "peeglit"
+   ]
+  },
+  {
+   "id": "vaip",
+   "front": "Vaip",
+   "back": {
+    "en": "Carpet",
+    "az": "Xalça",
+    "ru": "Ковёр"
+   },
+   "forms": [
+    "vaiba",
+    "vaipa"
+   ]
+  },
+  {
+   "id": "kardin",
+   "front": "Kardin",
+   "back": {
+    "en": "Curtain",
+    "az": "Pərdə",
+    "ru": "Штора"
+   },
+   "forms": [
+    "kardina",
+    "kardinat"
+   ]
+  },
+  {
+   "id": "lamp",
+   "front": "Lamp",
+   "back": {
+    "en": "Lamp",
+    "az": "Lampa",
+    "ru": "Лампа"
+   },
+   "forms": [
+    "lambi",
+    "lampi"
+   ]
+  },
+  {
+   "id": "nagi",
+   "front": "Nagi",
+   "back": {
+    "en": "Clothes rack",
+    "az": "Asılqan",
+    "ru": "Вешалка"
+   },
+   "forms": [
+    "nagi",
+    "nagi"
+   ]
+  },
+  {
+   "id": "riidepuu",
+   "front": "Riidepuu",
+   "back": {
+    "en": "Coathanger",
+    "az": "Paltarasan",
+    "ru": "Плечики"
+   },
+   "forms": [
+    "riidepuu",
+    "riidepuud"
+   ]
+  },
+  {
+   "id": "padi",
+   "front": "Padi",
+   "back": {
+    "en": "Pillow",
+    "az": "Yastıq",
+    "ru": "Подушка"
+   },
+   "forms": [
+    "padja",
+    "patja"
+   ]
+  },
+  {
+   "id": "tekk",
+   "front": "Tekk",
+   "back": {
+    "en": "Blanket",
+    "az": "Yorğan",
+    "ru": "Одеяло"
+   },
+   "forms": [
+    "teki",
+    "tekki"
+   ]
+  },
+  {
+   "id": "voodipesu",
+   "front": "Voodipesu",
+   "back": {
+    "en": "Bedclothes",
+    "az": "Yataq dəsti",
+    "ru": "Постельное бельё"
+   },
+   "forms": [
+    "voodipesu",
+    "voodipesu"
+   ]
+  },
+  {
+   "id": "postkast",
+   "front": "Postkast",
+   "back": {
+    "en": "Mailbox",
+    "az": "Poçt qutusu",
+    "ru": "Почтовый ящик"
+   },
+   "forms": [
+    "postkasti",
+    "postkasti"
+   ]
+  },
+  {
+   "id": "varav",
+   "front": "Värav",
+   "back": {
+    "en": "Gate",
+    "az": "Darvaza",
+    "ru": "Ворота"
+   },
+   "forms": [
+    "värava",
+    "väravat"
+   ]
+  },
+  {
+   "id": "korsten",
+   "front": "Korsten",
+   "back": {
+    "en": "Chimney",
+    "az": "Baca",
+    "ru": "Труба"
+   },
+   "forms": [
+    "korstna",
+    "korstent"
+   ]
+  },
+  {
+   "id": "manguvaljak",
+   "front": "Mänguväljak",
+   "back": {
+    "en": "Playground",
+    "az": "Oyun meydançası",
+    "ru": "Игровая площадка"
+   },
+   "forms": [
+    "mänguväljaku",
+    "mänguväljakut"
+   ]
+  },
+  {
+   "id": "parkimiskoht",
+   "front": "Parkimiskoht",
+   "back": {
+    "en": "Parking spot",
+    "az": "Dayanacaq yeri",
+    "ru": "Парковочное место"
+   },
+   "forms": [
+    "parkimiskoha",
+    "parkimiskohta"
+   ]
+  },
+  {
+   "id": "kommunaalkulud",
+   "front": "Kommunaalkulud",
+   "back": {
+    "en": "Utilities",
+    "az": "Kommunal xərclər",
+    "ru": "Коммунальные расходы"
+   }
+  },
+  {
+   "id": "uurima",
+   "front": "Üürima",
+   "back": {
+    "en": "To rent",
+    "az": "kirayələmək",
+    "ru": "снимать"
+   },
+   "forms": [
+    "üürida",
+    "üürin"
+   ]
+  },
+  {
+   "id": "uurile-andma",
+   "front": "Üürile andma",
+   "back": {
+    "en": "To let, to rent out",
+    "az": "kirayə vermək",
+    "ru": "сдавать"
+   }
+  },
+  {
+   "id": "sisse-kolima",
+   "front": "Sisse kolima",
+   "back": {
+    "en": "To move in",
+    "az": "köçüb gəlmək",
+    "ru": "въезжать"
+   }
+  },
+  {
+   "id": "kolima",
+   "front": "Kolima",
+   "back": {
+    "en": "To move house",
+    "az": "köçmək",
+    "ru": "переезжать"
+   },
+   "forms": [
+    "kolida",
+    "kolin"
+   ]
+  },
+  {
+   "id": "kuulutus",
+   "front": "Kuulutus",
+   "back": {
+    "en": "Advertisement",
+    "az": "Elan",
+    "ru": "Объявление"
+   },
+   "forms": [
+    "kuulutuse",
+    "kuulutust"
+   ]
+  },
+  {
+   "id": "tingima",
+   "front": "Tingima",
+   "back": {
+    "en": "To haggle",
+    "az": "bazarlıq etmək",
+    "ru": "торговаться"
+   },
+   "forms": [
+    "tingida",
+    "tingin"
+   ]
+  },
+  {
+   "id": "lukustatud",
+   "front": "Lukustatud",
+   "back": {
+    "en": "Locked",
+    "az": "Bağlı",
+    "ru": "Закрыт на замок"
+   }
+  },
+  {
+   "id": "toanaaber",
+   "front": "Toanaaber",
+   "back": {
+    "en": "Room-mate",
+    "az": "Otaq yoldaşı",
+    "ru": "Сосед по комнате"
+   },
+   "forms": [
+    "toanaabri",
+    "toanaabrit"
+   ]
+  },
+  {
+   "id": "uhiselamu",
+   "front": "Ühiselamu",
+   "back": {
+    "en": "Dormitory",
+    "az": "Yataqxana",
+    "ru": "Общежитие"
+   },
+   "forms": [
+    "ühiselamu",
+    "ühiselamut"
+   ]
+  },
+  {
+   "id": "korrusmaja",
+   "front": "Korrusmaja",
+   "back": {
+    "en": "Block of flats",
+    "az": "Çoxmərtəbəli bina",
+    "ru": "Многоэтажный дом"
+   },
+   "forms": [
+    "korrusmaja",
+    "korrusmaja"
+   ]
+  },
+  {
+   "id": "nurk",
+   "front": "Nurk",
+   "back": {
+    "en": "Corner",
+    "az": "Künc",
+    "ru": "Угол"
+   },
+   "forms": [
+    "nurga",
+    "nurka"
+   ]
+  },
+  {
+   "id": "kasvuhoone",
+   "front": "Kasvuhoone",
+   "back": {
+    "en": "Greenhouse",
+    "az": "İstixana",
+    "ru": "Теплица"
+   },
+   "forms": [
+    "kasvuhoone",
+    "kasvuhoonet"
+   ]
+  },
+  {
+   "id": "sees",
+   "front": "Sees",
+   "back": {
+    "en": "Inside",
+    "az": "İçində",
+    "ru": "Внутри"
+   }
+  },
+  {
+   "id": "duss",
+   "front": "Dušš",
+   "back": {
+    "en": "Shower",
+    "az": "Duş",
+    "ru": "Душ"
+   },
+   "forms": [
+    "duši",
+    "dušši"
+   ]
+  },
+  {
+   "id": "esik",
+   "front": "Esik",
+   "back": {
+    "en": "Entrance hall",
+    "az": "Dəhliz",
+    "ru": "Прихожая"
+   },
+   "forms": [
+    "esiku",
+    "esikut"
+   ]
+  },
+  {
+   "id": "lina",
+   "front": "Lina",
+   "back": {
+    "en": "Sheet, linen",
+    "az": "Mələfə, kətan",
+    "ru": "Простыня, лён"
+   },
+   "forms": [
+    "lina",
+    "lina"
+   ]
+  },
+  {
+   "id": "elamu",
+   "front": "Elamu",
+   "back": {
+    "en": "Residential building",
+    "az": "Yaşayış binası",
+    "ru": "Жилой дом"
+   },
+   "forms": [
+    "elamu",
+    "elamut"
+   ]
+  },
+  {
+   "id": "hoone",
+   "front": "Hoone",
+   "back": {
+    "en": "Building",
+    "az": "Bina",
+    "ru": "Здание"
+   },
+   "forms": [
+    "hoone",
+    "hoonet"
+   ]
+  },
+  {
+   "id": "kinnisvara",
+   "front": "Kinnisvara",
+   "back": {
+    "en": "Real estate",
+    "az": "Daşınmaz əmlak",
+    "ru": "Недвижимость"
+   },
+   "forms": [
+    "kinnisvara",
+    "kinnisvara"
+   ]
+  },
+  {
+   "id": "klaver",
+   "front": "Klaver",
+   "back": {
+    "en": "Piano",
+    "az": "Pianino, royal",
+    "ru": "Рояль, пианино"
+   },
+   "forms": [
+    "klaveri",
+    "klaverit"
+   ]
+  },
+  {
+   "id": "kute",
+   "front": "Küte",
+   "back": {
+    "en": "Heating",
+    "az": "İstilik",
+    "ru": "Отопление"
+   },
+   "forms": [
+    "kütte",
+    "kütet"
+   ]
+  },
+  {
+   "id": "kutma",
+   "front": "Kütma",
+   "back": {
+    "en": "To heat",
+    "az": "qızdırmaq, odlamaq",
+    "ru": "топить"
+   },
+   "forms": [
+    "kütta",
+    "kütan"
+   ]
+  },
+  {
+   "id": "lagi",
+   "front": "Lagi",
+   "back": {
+    "en": "Ceiling",
+    "az": "Tavan",
+    "ru": "Потолок"
+   },
+   "forms": [
+    "lae",
+    "lage"
+   ]
+  },
+  {
+   "id": "omanik",
+   "front": "Omanik",
+   "back": {
+    "en": "Owner",
+    "az": "Sahib",
+    "ru": "Владелец"
+   },
+   "forms": [
+    "omaniku",
+    "omanikku"
+   ]
+  },
+  {
+   "id": "rajoon",
+   "front": "Rajoon",
+   "back": {
+    "en": "District",
+    "az": "Rayon",
+    "ru": "Район"
+   },
+   "forms": [
+    "rajooni",
+    "rajooni"
+   ]
+  },
+  {
+   "id": "saun",
+   "front": "Saun",
+   "back": {
+    "en": "Sauna",
+    "az": "Sauna",
+    "ru": "Сауна"
+   },
+   "forms": [
+    "sauna",
+    "sauna"
+   ]
+  },
+  {
+   "id": "suits",
+   "front": "Suits",
+   "back": {
+    "en": "Smoke",
+    "az": "Tüstü",
+    "ru": "Дым"
+   },
+   "forms": [
+    "suitsu",
+    "suitsu"
+   ]
+  },
+  {
+   "id": "vaade",
+   "front": "Vaade",
+   "back": {
+    "en": "View",
+    "az": "Mənzərə",
+    "ru": "Вид"
+   },
+   "forms": [
+    "vaate",
+    "vaadet"
+   ]
+  },
+  {
+   "id": "valisuks",
+   "front": "Välisuks",
+   "back": {
+    "en": "Front door",
+    "az": "Giriş qapısı",
+    "ru": "Парадная дверь"
+   },
+   "forms": [
+    "välisukse",
+    "välisust"
+   ]
+  },
+  {
+   "id": "uhendus",
+   "front": "Ühendus",
+   "back": {
+    "en": "Connection",
+    "az": "Əlaqə, bağlantı",
+    "ru": "Соединение, связь"
+   },
+   "forms": [
+    "ühenduse",
+    "ühendust"
+   ]
+  },
+  {
+   "id": "uurnik",
+   "front": "Üürnik",
+   "back": {
+    "en": "Tenant",
+    "az": "Kirayəçi",
+    "ru": "Квартиросъёмщик"
+   },
+   "forms": [
+    "üürniku",
+    "üürnikku"
+   ]
+  },
+  {
+   "id": "maal",
+   "front": "Maal",
+   "back": {
+    "en": "Painting",
+    "az": "Rəsm əsəri, tablo",
+    "ru": "Картина, живопись"
+   },
+   "forms": [
+    "maali",
+    "maali"
+   ]
+  },
+  {
+   "id": "nukk",
+   "front": "Nukk",
+   "back": {
+    "en": "Doll",
+    "az": "Kukla",
+    "ru": "Кукла"
+   },
+   "forms": [
+    "nuku",
+    "nukku"
+   ]
+  },
+  {
+   "id": "ruum",
+   "front": "Ruum",
+   "back": {
+    "en": "Room, space",
+    "az": "Otaq, yer",
+    "ru": "Помещение, место"
+   },
+   "forms": [
+    "ruumi",
+    "ruumi"
+   ]
+  },
+  {
+   "id": "tuli",
+   "front": "Tuli",
+   "back": {
+    "en": "Fire, light",
+    "az": "Od, işıq",
+    "ru": "Свет, огонь"
+   },
+   "forms": [
+    "tule",
+    "tuld"
+   ]
+  }
+ ]
+}

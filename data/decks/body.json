@@ -1,0 +1,252 @@
+{
+ "id": "body",
+ "added": "2026-09-20",
+ "level": "more",
+ "name": {
+  "en": "Head to toe",
+  "az": "Başdan ayağa",
+  "ru": "С головы до ног"
+ },
+ "why": {
+  "en": "The parts of you, for the doctor, the hairdresser and everybody in between",
+  "az": "Bədənin hissələri — həkim, bərbər və aralarındakı hər kəs üçün",
+  "ru": "Части тела — для врача, парикмахера и всех между ними"
+ },
+ "cards": [
+  {
+   "id": "kael",
+   "front": "Kael",
+   "back": {
+    "en": "Neck",
+    "az": "Boyun",
+    "ru": "Шея"
+   },
+   "forms": [
+    "kaela",
+    "kaela"
+   ]
+  },
+  {
+   "id": "olg",
+   "front": "Õlg",
+   "back": {
+    "en": "Shoulder",
+    "az": "Çiyin",
+    "ru": "Плечо"
+   },
+   "forms": [
+    "õla",
+    "õlga"
+   ]
+  },
+  {
+   "id": "polv",
+   "front": "Põlv",
+   "back": {
+    "en": "Knee",
+    "az": "Diz",
+    "ru": "Колено"
+   },
+   "forms": [
+    "põlve",
+    "põlve"
+   ]
+  },
+  {
+   "id": "kuunarnukk",
+   "front": "Küünarnukk",
+   "back": {
+    "en": "Elbow",
+    "az": "Dirsək",
+    "ru": "Локоть"
+   },
+   "forms": [
+    "küünarnuki",
+    "küünarnukki"
+   ]
+  },
+  {
+   "id": "sorm",
+   "front": "Sõrm",
+   "back": {
+    "en": "Finger",
+    "az": "Barmaq",
+    "ru": "Палец"
+   },
+   "forms": [
+    "sõrme",
+    "sõrme"
+   ]
+  },
+  {
+   "id": "varvas",
+   "front": "Varvas",
+   "back": {
+    "en": "Toe",
+    "az": "Ayaq barmağı",
+    "ru": "Палец ноги"
+   },
+   "forms": [
+    "varba",
+    "varvast"
+   ]
+  },
+  {
+   "id": "rind",
+   "front": "Rind",
+   "back": {
+    "en": "Chest",
+    "az": "Sinə",
+    "ru": "Грудь"
+   },
+   "forms": [
+    "rinna",
+    "rinda"
+   ]
+  },
+  {
+   "id": "puus",
+   "front": "Puus",
+   "back": {
+    "en": "Hip",
+    "az": "Bud",
+    "ru": "Бедро"
+   },
+   "forms": [
+    "puusa",
+    "puusa"
+   ]
+  },
+  {
+   "id": "laup",
+   "front": "Laup",
+   "back": {
+    "en": "Forehead",
+    "az": "Alın",
+    "ru": "Лоб"
+   },
+   "forms": [
+    "lauba",
+    "laupa"
+   ]
+  },
+  {
+   "id": "loug",
+   "front": "Lõug",
+   "back": {
+    "en": "Chin",
+    "az": "Çənə",
+    "ru": "Подбородок"
+   },
+   "forms": [
+    "lõua",
+    "lõuga"
+   ]
+  },
+  {
+   "id": "posk",
+   "front": "Põsk",
+   "back": {
+    "en": "Cheek",
+    "az": "Yanaq",
+    "ru": "Щека"
+   },
+   "forms": [
+    "põse",
+    "põske"
+   ]
+  },
+  {
+   "id": "juuksed",
+   "front": "Juuksed",
+   "back": {
+    "en": "Hair",
+    "az": "Saç",
+    "ru": "Волосы"
+   }
+  },
+  {
+   "id": "suda",
+   "front": "Süda",
+   "back": {
+    "en": "Heart",
+    "az": "Ürək",
+    "ru": "Сердце"
+   },
+   "forms": [
+    "südame",
+    "südant"
+   ]
+  },
+  {
+   "id": "kopsud",
+   "front": "Kopsud",
+   "back": {
+    "en": "Lungs",
+    "az": "Ağciyərlər",
+    "ru": "Лёгкие"
+   }
+  },
+  {
+   "id": "nahk",
+   "front": "Nahk",
+   "back": {
+    "en": "Skin",
+    "az": "Dəri",
+    "ru": "Кожа"
+   },
+   "forms": [
+    "naha",
+    "nahka"
+   ]
+  },
+  {
+   "id": "kaeluu",
+   "front": "Käeluu",
+   "back": {
+    "en": "Arm bone",
+    "az": "Qol sümüyü",
+    "ru": "Кость руки"
+   },
+   "forms": [
+    "käeluu",
+    "käeluud"
+   ]
+  },
+  {
+   "id": "tagumik",
+   "front": "Tagumik",
+   "back": {
+    "en": "Bottom",
+    "az": "Oturacaq",
+    "ru": "Ягодицы"
+   },
+   "forms": [
+    "tagumiku",
+    "tagumikku"
+   ]
+  },
+  {
+   "id": "jume",
+   "front": "Jume",
+   "back": {
+    "en": "Complexion",
+    "az": "Sifətin rəngi",
+    "ru": "Цвет лица"
+   },
+   "forms": [
+    "jume",
+    "jumet"
+   ]
+  },
+  {
+   "id": "koht-on-tais",
+   "front": "Kõht on täis",
+   "back": {
+    "en": "I am full",
+    "az": "Doymuşam",
+    "ru": "Я наелся"
+   }
+  }
+ ]
+}

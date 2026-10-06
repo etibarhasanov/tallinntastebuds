@@ -1,0 +1,912 @@
+{
+ "id": "health",
+ "added": "2026-09-18",
+ "name": {
+  "en": "When something is wrong",
+  "az": "Nəsə düz getməyəndə",
+  "ru": "Когда что-то не так"
+ },
+ "why": {
+  "en": "The pharmacy, the doctor, and the part of you that hurts",
+  "az": "Aptek, həkim və ağrıyan yer",
+  "ru": "Аптека, врач и то место, которое болит"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "arst",
+   "front": "Arst",
+   "back": {
+    "en": "Doctor",
+    "az": "Həkim",
+    "ru": "Врач"
+   },
+   "forms": [
+    "arsti",
+    "arsti"
+   ],
+   "sentence": {
+    "et": "Ma pean arsti juurde minema.",
+    "en": "I have to go to the doctor.",
+    "az": "Həkimə getməliyəm.",
+    "ru": "Мне нужно к врачу."
+   }
+  },
+  {
+   "id": "hambaarst",
+   "front": "Hambaarst",
+   "back": {
+    "en": "Dentist",
+    "az": "Diş həkimi",
+    "ru": "Стоматолог"
+   },
+   "forms": [
+    "hambaarsti",
+    "hambaarsti"
+   ],
+   "sentence": {
+    "et": "Hambaarst on kallis.",
+    "en": "The dentist is expensive.",
+    "az": "Diş həkimi bahadır.",
+    "ru": "Стоматолог дорогой."
+   }
+  },
+  {
+   "id": "haigla",
+   "front": "Haigla",
+   "back": {
+    "en": "Hospital",
+    "az": "Xəstəxana",
+    "ru": "Больница"
+   },
+   "forms": [
+    "haigla",
+    "haiglat"
+   ],
+   "sentence": {
+    "et": "Haigla on kesklinnas.",
+    "en": "The hospital is in the city centre.",
+    "az": "Xəstəxana şəhərin mərkəzindədir.",
+    "ru": "Больница в центре города."
+   }
+  },
+  {
+   "id": "kiirabi",
+   "front": "Kiirabi",
+   "back": {
+    "en": "Ambulance",
+    "az": "Təcili yardım",
+    "ru": "Скорая помощь"
+   },
+   "forms": [
+    "kiirabi",
+    "kiirabi"
+   ],
+   "sentence": {
+    "et": "Kutsuge kiirabi!",
+    "en": "Call an ambulance!",
+    "az": "Təcili yardım çağırın!",
+    "ru": "Вызовите скорую!"
+   }
+  },
+  {
+   "id": "valu",
+   "front": "Valu",
+   "back": {
+    "en": "Pain",
+    "az": "Ağrı",
+    "ru": "Боль"
+   },
+   "forms": [
+    "valu",
+    "valu"
+   ],
+   "sentence": {
+    "et": "Mul on valu.",
+    "en": "I am in pain.",
+    "az": "Ağrım var.",
+    "ru": "У меня болит."
+   }
+  },
+  {
+   "id": "palavik",
+   "front": "Palavik",
+   "back": {
+    "en": "Fever",
+    "az": "Qızdırma",
+    "ru": "Жар"
+   },
+   "forms": [
+    "palaviku",
+    "palavikku"
+   ],
+   "sentence": {
+    "et": "Mul on palavik.",
+    "en": "I have a fever.",
+    "az": "Qızdırmam var.",
+    "ru": "У меня жар."
+   }
+  },
+  {
+   "id": "ravim",
+   "front": "Ravim",
+   "back": {
+    "en": "Medicine",
+    "az": "Dərman",
+    "ru": "Лекарство"
+   },
+   "forms": [
+    "ravimi",
+    "ravimit"
+   ],
+   "sentence": {
+    "et": "Kas see ravim on retseptiga?",
+    "en": "Is this medicine on prescription?",
+    "az": "Bu dərman reseptlədir?",
+    "ru": "Это лекарство по рецепту?"
+   }
+  },
+  {
+   "id": "haige",
+   "front": "Haige",
+   "back": {
+    "en": "Ill",
+    "az": "Xəstə",
+    "ru": "Больной"
+   },
+   "forms": [
+    "haige",
+    "haiget"
+   ],
+   "sentence": {
+    "et": "Ma olen haige.",
+    "en": "I am ill.",
+    "az": "Mən xəstəyəm.",
+    "ru": "Я болен."
+   }
+  },
+  {
+   "id": "terve",
+   "front": "Terve",
+   "back": {
+    "en": "Healthy, whole",
+    "az": "Sağlam, bütöv",
+    "ru": "Здоровый, целый"
+   },
+   "forms": [
+    "terve",
+    "tervet"
+   ],
+   "sentence": {
+    "et": "Ma olen jälle terve.",
+    "en": "I am well again.",
+    "az": "Yenə sağlamam.",
+    "ru": "Я снова здоров."
+   }
+  },
+  {
+   "id": "kulmetus",
+   "front": "Külmetus",
+   "back": {
+    "en": "A cold",
+    "az": "Soyuqlama",
+    "ru": "Простуда"
+   },
+   "forms": [
+    "külmetuse",
+    "külmetust"
+   ],
+   "sentence": {
+    "et": "Mul on külmetus.",
+    "en": "I have a cold.",
+    "az": "Soyuqlamışam.",
+    "ru": "У меня простуда."
+   }
+  },
+  {
+   "id": "koha",
+   "front": "Köha",
+   "back": {
+    "en": "Cough",
+    "az": "Öskürək",
+    "ru": "Кашель"
+   },
+   "forms": [
+    "köha",
+    "köha"
+   ],
+   "sentence": {
+    "et": "Mul on köha.",
+    "en": "I have a cough.",
+    "az": "Öskürəyim var.",
+    "ru": "У меня кашель."
+   }
+  },
+  {
+   "id": "pea",
+   "front": "Pea",
+   "back": {
+    "en": "Head",
+    "az": "Baş",
+    "ru": "Голова"
+   },
+   "forms": [
+    "pea",
+    "pead"
+   ],
+   "sentence": {
+    "et": "Mul on peavalu.",
+    "en": "I have a headache.",
+    "az": "Başım ağrıyır.",
+    "ru": "У меня болит голова."
+   }
+  },
+  {
+   "id": "koht",
+   "front": "Kõht",
+   "back": {
+    "en": "Stomach",
+    "az": "Qarın",
+    "ru": "Живот"
+   },
+   "forms": [
+    "kõhu",
+    "kõhtu"
+   ],
+   "sentence": {
+    "et": "Mul on kõht valus.",
+    "en": "My stomach hurts.",
+    "az": "Qarnım ağrıyır.",
+    "ru": "У меня болит живот."
+   }
+  },
+  {
+   "id": "selg",
+   "front": "Selg",
+   "back": {
+    "en": "Back",
+    "az": "Bel, kürək",
+    "ru": "Спина"
+   },
+   "forms": [
+    "selja",
+    "selga"
+   ],
+   "sentence": {
+    "et": "Selg on valus.",
+    "en": "My back hurts.",
+    "az": "Belim ağrıyır.",
+    "ru": "У меня болит спина."
+   }
+  },
+  {
+   "id": "kasi",
+   "front": "Käsi",
+   "back": {
+    "en": "Hand, arm",
+    "az": "Əl, qol",
+    "ru": "Рука"
+   },
+   "forms": [
+    "käe",
+    "kätt"
+   ],
+   "sentence": {
+    "et": "Mul on käsi katki.",
+    "en": "My hand is hurt.",
+    "az": "Əlim zədələnib.",
+    "ru": "У меня повреждена рука."
+   }
+  },
+  {
+   "id": "jalg",
+   "front": "Jalg",
+   "back": {
+    "en": "Leg, foot",
+    "az": "Ayaq",
+    "ru": "Нога"
+   },
+   "forms": [
+    "jala",
+    "jalga"
+   ],
+   "sentence": {
+    "et": "Jalg valutab.",
+    "en": "My leg hurts.",
+    "az": "Ayağım ağrıyır.",
+    "ru": "Нога болит."
+   }
+  },
+  {
+   "id": "silm",
+   "front": "Silm",
+   "back": {
+    "en": "Eye",
+    "az": "Göz",
+    "ru": "Глаз"
+   },
+   "forms": [
+    "silma",
+    "silma"
+   ],
+   "sentence": {
+    "et": "Mul on midagi silmas.",
+    "en": "I have something in my eye.",
+    "az": "Gözümə nəsə düşüb.",
+    "ru": "Мне что-то попало в глаз."
+   }
+  },
+  {
+   "id": "hammas",
+   "front": "Hammas",
+   "back": {
+    "en": "Tooth",
+    "az": "Diş",
+    "ru": "Зуб"
+   },
+   "forms": [
+    "hamba",
+    "hammast"
+   ],
+   "sentence": {
+    "et": "Hammas valutab.",
+    "en": "My tooth hurts.",
+    "az": "Dişim ağrıyır.",
+    "ru": "Зуб болит."
+   }
+  },
+  {
+   "id": "nagu",
+   "front": "Nägu",
+   "back": {
+    "en": "Face",
+    "az": "Üz",
+    "ru": "Лицо"
+   },
+   "forms": [
+    "näo",
+    "nägu"
+   ],
+   "sentence": {
+    "et": "Tal on sõbralik nägu.",
+    "en": "They have a friendly face.",
+    "az": "Onun mehriban üzü var.",
+    "ru": "У него доброе лицо."
+   }
+  },
+  {
+   "id": "suu",
+   "front": "Suu",
+   "back": {
+    "en": "Mouth",
+    "az": "Ağız",
+    "ru": "Рот"
+   },
+   "forms": [
+    "suu",
+    "suud"
+   ],
+   "sentence": {
+    "et": "Tee on kuum, ära põleta suud.",
+    "en": "The tea is hot, do not burn your mouth.",
+    "az": "Çay istidir, ağzını yandırma.",
+    "ru": "Чай горячий, не обожги рот."
+   }
+  },
+  {
+   "id": "nina",
+   "front": "Nina",
+   "back": {
+    "en": "Nose",
+    "az": "Burun",
+    "ru": "Нос"
+   },
+   "forms": [
+    "nina",
+    "nina"
+   ],
+   "sentence": {
+    "et": "Mul on nina kinni.",
+    "en": "My nose is blocked.",
+    "az": "Burnum tutulub.",
+    "ru": "У меня заложен нос."
+   }
+  },
+  {
+   "id": "korv",
+   "front": "Kõrv",
+   "back": {
+    "en": "Ear",
+    "az": "Qulaq",
+    "ru": "Ухо"
+   },
+   "forms": [
+    "kõrva",
+    "kõrva"
+   ],
+   "sentence": {
+    "et": "Kõrv valutab.",
+    "en": "My ear hurts.",
+    "az": "Qulağım ağrıyır.",
+    "ru": "Болит ухо."
+   }
+  },
+  {
+   "id": "tervis",
+   "front": "Tervis",
+   "back": {
+    "en": "Health",
+    "az": "Sağlamlıq",
+    "ru": "Здоровье"
+   },
+   "forms": [
+    "tervise",
+    "tervist"
+   ],
+   "sentence": {
+    "et": "Tervis on kõige tähtsam.",
+    "en": "Health is the most important thing.",
+    "az": "Sağlamlıq ən vacibdir.",
+    "ru": "Здоровье важнее всего."
+   }
+  },
+  {
+   "id": "tablett",
+   "front": "Tablett",
+   "back": {
+    "en": "Tablet, pill",
+    "az": "Həb",
+    "ru": "Таблетка"
+   },
+   "forms": [
+    "tableti",
+    "tabletti"
+   ]
+  },
+  {
+   "id": "sust",
+   "front": "Süst",
+   "back": {
+    "en": "Injection",
+    "az": "İynə",
+    "ru": "Укол"
+   },
+   "forms": [
+    "süsti",
+    "süsti"
+   ]
+  },
+  {
+   "id": "rontgen",
+   "front": "Röntgen",
+   "back": {
+    "en": "X-ray",
+    "az": "Rentgen",
+    "ru": "Рентген"
+   },
+   "forms": [
+    "röntgeni",
+    "röntgenit"
+   ]
+  },
+  {
+   "id": "kips",
+   "front": "Kips",
+   "back": {
+    "en": "Cast",
+    "az": "Gips",
+    "ru": "Гипс"
+   },
+   "forms": [
+    "kipsi",
+    "kipsi"
+   ]
+  },
+  {
+   "id": "kark",
+   "front": "Kark",
+   "back": {
+    "en": "Crutch",
+    "az": "Qoltuq ağacı",
+    "ru": "Костыль"
+   },
+   "forms": [
+    "kargu",
+    "karku"
+   ]
+  },
+  {
+   "id": "kepp",
+   "front": "Kepp",
+   "back": {
+    "en": "Walking stick",
+    "az": "Əsa",
+    "ru": "Трость"
+   },
+   "forms": [
+    "kepi",
+    "keppi"
+   ]
+  },
+  {
+   "id": "plaaster",
+   "front": "Plaaster",
+   "back": {
+    "en": "Plaster",
+    "az": "Plastır",
+    "ru": "Пластырь"
+   },
+   "forms": [
+    "plaastri",
+    "plaastrit"
+   ]
+  },
+  {
+   "id": "side",
+   "front": "Side",
+   "back": {
+    "en": "Bandage",
+    "az": "Sarğı",
+    "ru": "Повязка"
+   },
+   "forms": [
+    "sideme",
+    "sidet"
+   ]
+  },
+  {
+   "id": "salv",
+   "front": "Salv",
+   "back": {
+    "en": "Ointment",
+    "az": "Məlhəm",
+    "ru": "Мазь"
+   },
+   "forms": [
+    "salvi",
+    "salvi"
+   ]
+  },
+  {
+   "id": "silmatilgad",
+   "front": "Silmatilgad",
+   "back": {
+    "en": "Eye drops",
+    "az": "Göz damcısı",
+    "ru": "Глазные капли"
+   }
+  },
+  {
+   "id": "valuvaigisti",
+   "front": "Valuvaigisti",
+   "back": {
+    "en": "Painkiller",
+    "az": "Ağrıkəsici",
+    "ru": "Обезболивающее"
+   },
+   "forms": [
+    "valuvaigisti",
+    "valuvaigistit"
+   ]
+  },
+  {
+   "id": "vitamiin",
+   "front": "Vitamiin",
+   "back": {
+    "en": "Vitamin",
+    "az": "Vitamin",
+    "ru": "Витамин"
+   },
+   "forms": [
+    "vitamiini",
+    "vitamiini"
+   ]
+  },
+  {
+   "id": "viirus",
+   "front": "Viirus",
+   "back": {
+    "en": "Virus",
+    "az": "Virus",
+    "ru": "Вирус"
+   },
+   "forms": [
+    "viiruse",
+    "viirust"
+   ]
+  },
+  {
+   "id": "poletik",
+   "front": "Põletik",
+   "back": {
+    "en": "Infection",
+    "az": "İltihab",
+    "ru": "Воспаление"
+   },
+   "forms": [
+    "põletiku",
+    "põletikku"
+   ]
+  },
+  {
+   "id": "allergia",
+   "front": "Allergia",
+   "back": {
+    "en": "Allergy",
+    "az": "Allergiya",
+    "ru": "Аллергия"
+   },
+   "forms": [
+    "allergia",
+    "allergiat"
+   ]
+  },
+  {
+   "id": "nohu",
+   "front": "Nohu",
+   "back": {
+    "en": "Runny nose",
+    "az": "Zökəm",
+    "ru": "Насморк"
+   },
+   "forms": [
+    "nohu",
+    "nohu"
+   ]
+  },
+  {
+   "id": "haigusleht",
+   "front": "Haigusleht",
+   "back": {
+    "en": "Sick note",
+    "az": "Xəstəlik vərəqi",
+    "ru": "Больничный"
+   },
+   "forms": [
+    "haiguslehe",
+    "haiguslehte"
+   ]
+  },
+  {
+   "id": "perearst",
+   "front": "Perearst",
+   "back": {
+    "en": "General practitioner",
+    "az": "Ailə həkimi",
+    "ru": "Семейный врач"
+   },
+   "forms": [
+    "perearsti",
+    "perearsti"
+   ]
+  },
+  {
+   "id": "silmaarst",
+   "front": "Silmaarst",
+   "back": {
+    "en": "Eye doctor",
+    "az": "Göz həkimi",
+    "ru": "Глазной врач"
+   },
+   "forms": [
+    "silmaarsti",
+    "silmaarsti"
+   ]
+  },
+  {
+   "id": "lastearst",
+   "front": "Lastearst",
+   "back": {
+    "en": "Paediatrician",
+    "az": "Uşaq həkimi",
+    "ru": "Детский врач"
+   },
+   "forms": [
+    "lastearsti",
+    "lastearsti"
+   ]
+  },
+  {
+   "id": "kirurg",
+   "front": "Kirurg",
+   "back": {
+    "en": "Surgeon",
+    "az": "Cərrah",
+    "ru": "Хирург"
+   },
+   "forms": [
+    "kirurgi",
+    "kirurgi"
+   ]
+  },
+  {
+   "id": "apteeker",
+   "front": "Apteeker",
+   "back": {
+    "en": "Pharmacist",
+    "az": "Əczaçı",
+    "ru": "Аптекарь"
+   },
+   "forms": [
+    "apteekri",
+    "apteekrit"
+   ]
+  },
+  {
+   "id": "medode",
+   "front": "Medõde",
+   "back": {
+    "en": "Nurse",
+    "az": "Tibb bacısı",
+    "ru": "Медсестра"
+   },
+   "forms": [
+    "medõe",
+    "medõde"
+   ]
+  },
+  {
+   "id": "vastuvott",
+   "front": "Vastuvõtt",
+   "back": {
+    "en": "Reception, surgery hours",
+    "az": "Qəbul",
+    "ru": "Приём"
+   },
+   "forms": [
+    "vastuvõtu",
+    "vastuvõttu"
+   ]
+  },
+  {
+   "id": "analuusid",
+   "front": "Analüüsid",
+   "back": {
+    "en": "Tests",
+    "az": "Analizlər",
+    "ru": "Анализы"
+   }
+  },
+  {
+   "id": "isikukood",
+   "front": "Isikukood",
+   "back": {
+    "en": "ID code",
+    "az": "Şəxsi kod",
+    "ru": "Личный код"
+   },
+   "forms": [
+    "isikukoodi",
+    "isikukoodi"
+   ]
+  },
+  {
+   "id": "terveks-saama",
+   "front": "Terveks saama",
+   "back": {
+    "en": "To get well",
+    "az": "sağalmaq",
+    "ru": "выздоравливать"
+   }
+  },
+  {
+   "id": "haigeks-jaama",
+   "front": "Haigeks jääma",
+   "back": {
+    "en": "To fall ill",
+    "az": "xəstələnmək",
+    "ru": "заболеть"
+   }
+  },
+  {
+   "id": "haiget-saama",
+   "front": "Haiget saama",
+   "back": {
+    "en": "To get hurt",
+    "az": "zədə almaq",
+    "ru": "ушибиться"
+   }
+  },
+  {
+   "id": "kraadima",
+   "front": "Kraadima",
+   "back": {
+    "en": "To take the temperature",
+    "az": "hərarəti ölçmək",
+    "ru": "мерить температуру"
+   },
+   "forms": [
+    "kraadida",
+    "kraadin"
+   ]
+  },
+  {
+   "id": "valutama",
+   "front": "Valutama",
+   "back": {
+    "en": "To ache, to hurt",
+    "az": "ağrımaq",
+    "ru": "болеть"
+   },
+   "forms": [
+    "valutada",
+    "valutab"
+   ]
+  },
+  {
+   "id": "kulmetama",
+   "front": "Külmetama",
+   "back": {
+    "en": "To catch a cold",
+    "az": "soyuqlamaq",
+    "ru": "простужаться"
+   },
+   "forms": [
+    "külmetada",
+    "külmetan"
+   ]
+  },
+  {
+   "id": "luumurd",
+   "front": "Luumurd",
+   "back": {
+    "en": "Bone fracture",
+    "az": "Sümük sınığı",
+    "ru": "Перелом кости"
+   },
+   "forms": [
+    "luumurru",
+    "luumurdu"
+   ]
+  },
+  {
+   "id": "peaporutus",
+   "front": "Peapõrutus",
+   "back": {
+    "en": "Concussion",
+    "az": "Beyin silkələnməsi",
+    "ru": "Сотрясение мозга"
+   },
+   "forms": [
+    "peapõrutuse",
+    "peapõrutust"
+   ]
+  },
+  {
+   "id": "mul-on-suda-paha",
+   "front": "Mul on süda paha",
+   "back": {
+    "en": "I feel nauseous",
+    "az": "Ürəyim bulanır",
+    "ru": "Меня тошнит"
+   }
+  },
+  {
+   "id": "mul-on-paha-olla",
+   "front": "Mul on paha olla",
+   "back": {
+    "en": "I feel bad",
+    "az": "Özümü pis hiss edirəm",
+    "ru": "Мне плохо"
+   }
+  },
+  {
+   "id": "kust-teil-valutab",
+   "front": "Kust teil valutab?",
+   "back": {
+    "en": "Where does it hurt?",
+    "az": "Haranız ağrıyır?",
+    "ru": "Где у вас болит?"
+   }
+  },
+  {
+   "id": "hingake-rahulikult",
+   "front": "Hingake rahulikult",
+   "back": {
+    "en": "Breathe slowly",
+    "az": "Sakit nəfəs alın",
+    "ru": "Дышите спокойно"
+   }
+  }
+ ]
+}

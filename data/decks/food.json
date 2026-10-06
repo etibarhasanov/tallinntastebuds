@@ -1,0 +1,1449 @@
+{
+ "id": "food",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Food and drink",
+  "az": "Yemək və içki",
+  "ru": "Еда и напитки"
+ },
+ "why": {
+  "en": "What is written on the menu before anybody translates it",
+  "az": "Menyuda yazılanlar — hələ kimsə tərcümə etməmiş",
+  "ru": "То, что написано в меню, прежде чем кто-то это переведёт"
+ },
+ "cards": [
+  {
+   "id": "leib",
+   "front": "Leib",
+   "back": {
+    "en": "Black bread",
+    "az": "Qara çörək",
+    "ru": "Чёрный хлеб"
+   },
+   "forms": [
+    "leiva",
+    "leiba"
+   ],
+   "sentence": {
+    "et": "Ma tahan musta leiba.",
+    "en": "I want some black bread.",
+    "az": "Qara çörək istəyirəm.",
+    "ru": "Я хочу чёрного хлеба."
+   }
+  },
+  {
+   "id": "sai",
+   "front": "Sai",
+   "back": {
+    "en": "White bread",
+    "az": "Ağ çörək",
+    "ru": "Белый хлеб"
+   },
+   "forms": [
+    "saia",
+    "saia"
+   ]
+  },
+  {
+   "id": "voi",
+   "front": "Või",
+   "back": {
+    "en": "Butter",
+    "az": "Kərə yağı",
+    "ru": "Масло"
+   },
+   "forms": [
+    "või",
+    "võid"
+   ]
+  },
+  {
+   "id": "juust",
+   "front": "Juust",
+   "back": {
+    "en": "Cheese",
+    "az": "Pendir",
+    "ru": "Сыр"
+   },
+   "forms": [
+    "juustu",
+    "juustu"
+   ]
+  },
+  {
+   "id": "piim",
+   "front": "Piim",
+   "back": {
+    "en": "Milk",
+    "az": "Süd",
+    "ru": "Молоко"
+   },
+   "forms": [
+    "piima",
+    "piima"
+   ]
+  },
+  {
+   "id": "vesi",
+   "front": "Vesi",
+   "back": {
+    "en": "Water",
+    "az": "Su",
+    "ru": "Вода"
+   },
+   "forms": [
+    "vee",
+    "vett"
+   ],
+   "sentence": {
+    "et": "Klaas vett, palun.",
+    "en": "A glass of water, please.",
+    "az": "Bir stəkan su, zəhmət olmasa.",
+    "ru": "Стакан воды, пожалуйста."
+   }
+  },
+  {
+   "id": "kohv",
+   "front": "Kohv",
+   "back": {
+    "en": "Coffee",
+    "az": "Qəhvə",
+    "ru": "Кофе"
+   },
+   "forms": [
+    "kohvi",
+    "kohvi"
+   ],
+   "sentence": {
+    "et": "Kaks kohvi, palun.",
+    "en": "Two coffees, please.",
+    "az": "İki qəhvə, zəhmət olmasa.",
+    "ru": "Два кофе, пожалуйста."
+   }
+  },
+  {
+   "id": "tee",
+   "front": "Tee",
+   "back": {
+    "en": "Tea",
+    "az": "Çay",
+    "ru": "Чай"
+   },
+   "forms": [
+    "tee",
+    "teed"
+   ]
+  },
+  {
+   "id": "olu",
+   "front": "Õlu",
+   "back": {
+    "en": "Beer",
+    "az": "Pivə",
+    "ru": "Пиво"
+   },
+   "forms": [
+    "õlle",
+    "õlut"
+   ],
+   "sentence": {
+    "et": "Üks õlu, palun.",
+    "en": "One beer, please.",
+    "az": "Bir pivə, zəhmət olmasa.",
+    "ru": "Одно пиво, пожалуйста."
+   }
+  },
+  {
+   "id": "vein",
+   "front": "Vein",
+   "back": {
+    "en": "Wine",
+    "az": "Şərab",
+    "ru": "Вино"
+   },
+   "forms": [
+    "veini",
+    "veini"
+   ]
+  },
+  {
+   "id": "mahl",
+   "front": "Mahl",
+   "back": {
+    "en": "Juice",
+    "az": "Şirə",
+    "ru": "Сок"
+   },
+   "forms": [
+    "mahla",
+    "mahla"
+   ]
+  },
+  {
+   "id": "liha",
+   "front": "Liha",
+   "back": {
+    "en": "Meat",
+    "az": "Ət",
+    "ru": "Мясо"
+   },
+   "forms": [
+    "liha",
+    "liha"
+   ]
+  },
+  {
+   "id": "sealiha",
+   "front": "Sealiha",
+   "back": {
+    "en": "Pork",
+    "az": "Donuz əti",
+    "ru": "Свинина"
+   },
+   "forms": [
+    "sealiha",
+    "sealiha"
+   ]
+  },
+  {
+   "id": "kanaliha",
+   "front": "Kanaliha",
+   "back": {
+    "en": "Chicken",
+    "az": "Toyuq əti",
+    "ru": "Курица"
+   },
+   "forms": [
+    "kanaliha",
+    "kanaliha"
+   ]
+  },
+  {
+   "id": "kala",
+   "front": "Kala",
+   "back": {
+    "en": "Fish",
+    "az": "Balıq",
+    "ru": "Рыба"
+   },
+   "forms": [
+    "kala",
+    "kala"
+   ],
+   "sentence": {
+    "et": "Ma ei söö kala.",
+    "en": "I do not eat fish.",
+    "az": "Mən balıq yemirəm.",
+    "ru": "Я не ем рыбу."
+   }
+  },
+  {
+   "id": "supp",
+   "front": "Supp",
+   "back": {
+    "en": "Soup",
+    "az": "Şorba",
+    "ru": "Суп"
+   },
+   "forms": [
+    "supi",
+    "suppi"
+   ],
+   "sentence": {
+    "et": "Supp on soe.",
+    "en": "The soup is warm.",
+    "az": "Şorba ilıqdır.",
+    "ru": "Суп тёплый."
+   }
+  },
+  {
+   "id": "salat",
+   "front": "Salat",
+   "back": {
+    "en": "Salad",
+    "az": "Salat",
+    "ru": "Салат"
+   },
+   "forms": [
+    "salati",
+    "salatit"
+   ]
+  },
+  {
+   "id": "kartul",
+   "front": "Kartul",
+   "back": {
+    "en": "Potato",
+    "az": "Kartof",
+    "ru": "Картофель"
+   },
+   "forms": [
+    "kartuli",
+    "kartulit"
+   ]
+  },
+  {
+   "id": "riis",
+   "front": "Riis",
+   "back": {
+    "en": "Rice",
+    "az": "Düyü",
+    "ru": "Рис"
+   },
+   "forms": [
+    "riisi",
+    "riisi"
+   ]
+  },
+  {
+   "id": "koogivili",
+   "front": "Köögivili",
+   "back": {
+    "en": "Vegetable",
+    "az": "Tərəvəz",
+    "ru": "Овощ"
+   },
+   "forms": [
+    "köögivilja",
+    "köögivilja"
+   ]
+  },
+  {
+   "id": "puuvili",
+   "front": "Puuvili",
+   "back": {
+    "en": "Fruit",
+    "az": "Meyvə",
+    "ru": "Фрукт"
+   },
+   "forms": [
+    "puuvilja",
+    "puuvilja"
+   ]
+  },
+  {
+   "id": "magustoit",
+   "front": "Magustoit",
+   "back": {
+    "en": "Dessert",
+    "az": "Şirniyyat",
+    "ru": "Десерт"
+   },
+   "forms": [
+    "magustoidu",
+    "magustoitu"
+   ]
+  },
+  {
+   "id": "jaatis",
+   "front": "Jäätis",
+   "back": {
+    "en": "Ice cream",
+    "az": "Dondurma",
+    "ru": "Мороженое"
+   },
+   "forms": [
+    "jäätise",
+    "jäätist"
+   ]
+  },
+  {
+   "id": "sool",
+   "front": "Sool",
+   "back": {
+    "en": "Salt",
+    "az": "Duz",
+    "ru": "Соль"
+   },
+   "forms": [
+    "soola",
+    "soola"
+   ]
+  },
+  {
+   "id": "suhkur",
+   "front": "Suhkur",
+   "back": {
+    "en": "Sugar",
+    "az": "Şəkər",
+    "ru": "Сахар"
+   },
+   "forms": [
+    "suhkru",
+    "suhkrut"
+   ],
+   "sentence": {
+    "et": "Ilma suhkruta, palun.",
+    "en": "Without sugar, please.",
+    "az": "Şəkərsiz, zəhmət olmasa.",
+    "ru": "Без сахара, пожалуйста."
+   }
+  },
+  {
+   "id": "pipar",
+   "front": "Pipar",
+   "back": {
+    "en": "Pepper",
+    "az": "Bibər",
+    "ru": "Перец"
+   },
+   "forms": [
+    "pipra",
+    "pipart"
+   ]
+  },
+  {
+   "id": "hommikusook",
+   "front": "Hommikusöök",
+   "back": {
+    "en": "Breakfast",
+    "az": "Səhər yeməyi",
+    "ru": "Завтрак"
+   },
+   "forms": [
+    "hommikusöögi",
+    "hommikusööki"
+   ],
+   "sentence": {
+    "et": "Hommikusöök on kell kaheksa.",
+    "en": "Breakfast is at eight.",
+    "az": "Səhər yeməyi saat səkkizdədir.",
+    "ru": "Завтрак в восемь."
+   }
+  },
+  {
+   "id": "lounasook",
+   "front": "Lõunasöök",
+   "back": {
+    "en": "Lunch",
+    "az": "Nahar",
+    "ru": "Обед"
+   },
+   "forms": [
+    "lõunasöögi",
+    "lõunasööki"
+   ]
+  },
+  {
+   "id": "ohtusook",
+   "front": "Õhtusöök",
+   "back": {
+    "en": "Dinner",
+    "az": "Şam yeməyi",
+    "ru": "Ужин"
+   },
+   "forms": [
+    "õhtusöögi",
+    "õhtusööki"
+   ]
+  },
+  {
+   "id": "muna",
+   "front": "Muna",
+   "back": {
+    "en": "Egg",
+    "az": "Yumurta",
+    "ru": "Яйцо"
+   },
+   "forms": [
+    "muna",
+    "muna"
+   ],
+   "sentence": {
+    "et": "Ma söön hommikul muna.",
+    "en": "I eat an egg in the morning.",
+    "az": "Səhər yumurta yeyirəm.",
+    "ru": "Утром я ем яйцо."
+   }
+  },
+  {
+   "id": "oun",
+   "front": "Õun",
+   "back": {
+    "en": "Apple",
+    "az": "Alma",
+    "ru": "Яблоко"
+   },
+   "forms": [
+    "õuna",
+    "õuna"
+   ],
+   "sentence": {
+    "et": "Üks õun, palun.",
+    "en": "One apple, please.",
+    "az": "Bir alma, zəhmət olmasa.",
+    "ru": "Одно яблоко, пожалуйста."
+   }
+  },
+  {
+   "id": "ploom",
+   "front": "Ploom",
+   "back": {
+    "en": "Plum",
+    "az": "Gavalı",
+    "ru": "Слива"
+   },
+   "forms": [
+    "ploomi",
+    "ploomi"
+   ],
+   "sentence": {
+    "et": "Ploomid on magusad.",
+    "en": "The plums are sweet.",
+    "az": "Gavalılar şirindir.",
+    "ru": "Сливы сладкие."
+   }
+  },
+  {
+   "id": "pirn",
+   "front": "Pirn",
+   "back": {
+    "en": "Pear",
+    "az": "Armud",
+    "ru": "Груша"
+   },
+   "forms": [
+    "pirni",
+    "pirni"
+   ],
+   "sentence": {
+    "et": "Ma võtan ühe pirni.",
+    "en": "I will take one pear.",
+    "az": "Bir armud götürürəm.",
+    "ru": "Я возьму одну грушу."
+   }
+  },
+  {
+   "id": "kirss",
+   "front": "Kirss",
+   "back": {
+    "en": "Cherry",
+    "az": "Albalı, gilas",
+    "ru": "Вишня"
+   },
+   "forms": [
+    "kirsi",
+    "kirssi"
+   ],
+   "sentence": {
+    "et": "Kirsid on punased.",
+    "en": "The cherries are red.",
+    "az": "Gilaslar qırmızıdır.",
+    "ru": "Вишни красные."
+   }
+  },
+  {
+   "id": "mesi",
+   "front": "Mesi",
+   "back": {
+    "en": "Honey",
+    "az": "Bal",
+    "ru": "Мёд"
+   },
+   "forms": [
+    "mee",
+    "mett"
+   ],
+   "sentence": {
+    "et": "Pane teesse mett.",
+    "en": "Put honey in the tea.",
+    "az": "Çaya bal qat.",
+    "ru": "Положи в чай мёд."
+   }
+  },
+  {
+   "id": "kapsas",
+   "front": "Kapsas",
+   "back": {
+    "en": "Cabbage",
+    "az": "Kələm",
+    "ru": "Капуста"
+   },
+   "forms": [
+    "kapsa",
+    "kapsast"
+   ]
+  },
+  {
+   "id": "porgand",
+   "front": "Porgand",
+   "back": {
+    "en": "Carrot",
+    "az": "Yerkökü",
+    "ru": "Морковь"
+   },
+   "forms": [
+    "porgandi",
+    "porgandit"
+   ]
+  },
+  {
+   "id": "sibul",
+   "front": "Sibul",
+   "back": {
+    "en": "Onion",
+    "az": "Soğan",
+    "ru": "Лук"
+   },
+   "forms": [
+    "sibula",
+    "sibulat"
+   ]
+  },
+  {
+   "id": "kuuslauk",
+   "front": "Küüslauk",
+   "back": {
+    "en": "Garlic",
+    "az": "Sarımsaq",
+    "ru": "Чеснок"
+   },
+   "forms": [
+    "küüslaugu",
+    "küüslauku"
+   ]
+  },
+  {
+   "id": "kurk",
+   "front": "Kurk",
+   "back": {
+    "en": "Cucumber",
+    "az": "Xiyar",
+    "ru": "Огурец"
+   },
+   "forms": [
+    "kurgi",
+    "kurki"
+   ]
+  },
+  {
+   "id": "hapukurk",
+   "front": "Hapukurk",
+   "back": {
+    "en": "Pickled cucumber",
+    "az": "Duza qoyulmuş xiyar",
+    "ru": "Солёный огурец"
+   },
+   "forms": [
+    "hapukurgi",
+    "hapukurki"
+   ]
+  },
+  {
+   "id": "tomat",
+   "front": "Tomat",
+   "back": {
+    "en": "Tomato",
+    "az": "Pomidor",
+    "ru": "Помидор"
+   },
+   "forms": [
+    "tomati",
+    "tomatit"
+   ]
+  },
+  {
+   "id": "peet",
+   "front": "Peet",
+   "back": {
+    "en": "Beetroot",
+    "az": "Çuğundur",
+    "ru": "Свёкла"
+   },
+   "forms": [
+    "peedi",
+    "peeti"
+   ]
+  },
+  {
+   "id": "kaalikas",
+   "front": "Kaalikas",
+   "back": {
+    "en": "Turnip",
+    "az": "Şalğam",
+    "ru": "Брюква"
+   },
+   "forms": [
+    "kaalika",
+    "kaalikat"
+   ]
+  },
+  {
+   "id": "korvits",
+   "front": "Kõrvits",
+   "back": {
+    "en": "Pumpkin",
+    "az": "Balqabaq",
+    "ru": "Тыква"
+   },
+   "forms": [
+    "kõrvitsa",
+    "kõrvitsat"
+   ]
+  },
+  {
+   "id": "redis",
+   "front": "Redis",
+   "back": {
+    "en": "Radish",
+    "az": "Turp",
+    "ru": "Редис"
+   },
+   "forms": [
+    "redise",
+    "redist"
+   ]
+  },
+  {
+   "id": "hernes",
+   "front": "Hernes",
+   "back": {
+    "en": "Pea",
+    "az": "Noxud",
+    "ru": "Горох"
+   },
+   "forms": [
+    "herne",
+    "hernest"
+   ]
+  },
+  {
+   "id": "uba",
+   "front": "Uba",
+   "back": {
+    "en": "Bean",
+    "az": "Paxla",
+    "ru": "Фасоль"
+   },
+   "forms": [
+    "oa",
+    "uba"
+   ]
+  },
+  {
+   "id": "mais",
+   "front": "Mais",
+   "back": {
+    "en": "Corn",
+    "az": "Qarğıdalı",
+    "ru": "Кукуруза"
+   },
+   "forms": [
+    "maisi",
+    "maisi"
+   ]
+  },
+  {
+   "id": "lillkapsas",
+   "front": "Lillkapsas",
+   "back": {
+    "en": "Cauliflower",
+    "az": "Gül kələm",
+    "ru": "Цветная капуста"
+   },
+   "forms": [
+    "lillkapsa",
+    "lillkapsast"
+   ]
+  },
+  {
+   "id": "seen",
+   "front": "Seen",
+   "back": {
+    "en": "Mushroom",
+    "az": "Göbələk",
+    "ru": "Гриб"
+   },
+   "forms": [
+    "seene",
+    "seent"
+   ]
+  },
+  {
+   "id": "kukeseen",
+   "front": "Kukeseen",
+   "back": {
+    "en": "Chanterelle",
+    "az": "Sarı göbələk",
+    "ru": "Лисичка"
+   },
+   "forms": [
+    "kukeseene",
+    "kukeseent"
+   ]
+  },
+  {
+   "id": "till",
+   "front": "Till",
+   "back": {
+    "en": "Dill",
+    "az": "Şüyüd",
+    "ru": "Укроп"
+   },
+   "forms": [
+    "tilli",
+    "tilli"
+   ]
+  },
+  {
+   "id": "banaan",
+   "front": "Banaan",
+   "back": {
+    "en": "Banana",
+    "az": "Banan",
+    "ru": "Банан"
+   },
+   "forms": [
+    "banaani",
+    "banaani"
+   ]
+  },
+  {
+   "id": "apelsin",
+   "front": "Apelsin",
+   "back": {
+    "en": "Orange",
+    "az": "Portağal",
+    "ru": "Апельсин"
+   },
+   "forms": [
+    "apelsini",
+    "apelsini"
+   ]
+  },
+  {
+   "id": "mandariin",
+   "front": "Mandariin",
+   "back": {
+    "en": "Tangerine",
+    "az": "Mandarin",
+    "ru": "Мандарин"
+   },
+   "forms": [
+    "mandariini",
+    "mandariini"
+   ]
+  },
+  {
+   "id": "sidrun",
+   "front": "Sidrun",
+   "back": {
+    "en": "Lemon",
+    "az": "Limon",
+    "ru": "Лимон"
+   },
+   "forms": [
+    "sidruni",
+    "sidrunit"
+   ]
+  },
+  {
+   "id": "arbuus",
+   "front": "Arbuus",
+   "back": {
+    "en": "Watermelon",
+    "az": "Qarpız",
+    "ru": "Арбуз"
+   },
+   "forms": [
+    "arbuusi",
+    "arbuusi"
+   ]
+  },
+  {
+   "id": "kiivi",
+   "front": "Kiivi",
+   "back": {
+    "en": "Kiwi",
+    "az": "Kivi",
+    "ru": "Киви"
+   },
+   "forms": [
+    "kiivi",
+    "kiivit"
+   ]
+  },
+  {
+   "id": "vaarikas",
+   "front": "Vaarikas",
+   "back": {
+    "en": "Raspberry",
+    "az": "Moruq",
+    "ru": "Малина"
+   },
+   "forms": [
+    "vaarika",
+    "vaarikat"
+   ]
+  },
+  {
+   "id": "maasikas",
+   "front": "Maasikas",
+   "back": {
+    "en": "Strawberry",
+    "az": "Çiyələk",
+    "ru": "Клубника"
+   },
+   "forms": [
+    "maasika",
+    "maasikat"
+   ]
+  },
+  {
+   "id": "johvikas",
+   "front": "Jõhvikas",
+   "back": {
+    "en": "Cranberry",
+    "az": "Quşüzümü",
+    "ru": "Клюква"
+   },
+   "forms": [
+    "jõhvika",
+    "jõhvikat"
+   ]
+  },
+  {
+   "id": "sostar",
+   "front": "Sõstar",
+   "back": {
+    "en": "Currant",
+    "az": "Qarağat",
+    "ru": "Смородина"
+   },
+   "forms": [
+    "sõstra",
+    "sõstart"
+   ]
+  },
+  {
+   "id": "mari",
+   "front": "Mari",
+   "back": {
+    "en": "Berry",
+    "az": "Giləmeyvə",
+    "ru": "Ягода"
+   },
+   "forms": [
+    "marja",
+    "marja"
+   ]
+  },
+  {
+   "id": "pahkel",
+   "front": "Pähkel",
+   "back": {
+    "en": "Nut",
+    "az": "Qoz-fındıq",
+    "ru": "Орех"
+   },
+   "forms": [
+    "pähkli",
+    "pähklit"
+   ]
+  },
+  {
+   "id": "rosin",
+   "front": "Rosin",
+   "back": {
+    "en": "Raisin",
+    "az": "Kişmiş",
+    "ru": "Изюм"
+   },
+   "forms": [
+    "rosina",
+    "rosinat"
+   ]
+  },
+  {
+   "id": "hapukoor",
+   "front": "Hapukoor",
+   "back": {
+    "en": "Sour cream",
+    "az": "Xama",
+    "ru": "Сметана"
+   },
+   "forms": [
+    "hapukoore",
+    "hapukoort"
+   ]
+  },
+  {
+   "id": "kohupiim",
+   "front": "Kohupiim",
+   "back": {
+    "en": "Curd cheese",
+    "az": "Süzmə",
+    "ru": "Творог"
+   },
+   "forms": [
+    "kohupiima",
+    "kohupiima"
+   ]
+  },
+  {
+   "id": "keefir",
+   "front": "Keefir",
+   "back": {
+    "en": "Kefir",
+    "az": "Kefir",
+    "ru": "Кефир"
+   },
+   "forms": [
+    "keefiri",
+    "keefirit"
+   ]
+  },
+  {
+   "id": "jogurt",
+   "front": "Jogurt",
+   "back": {
+    "en": "Yoghurt",
+    "az": "Yoğurt",
+    "ru": "Йогурт"
+   },
+   "forms": [
+    "jogurti",
+    "jogurtit"
+   ]
+  },
+  {
+   "id": "koor",
+   "front": "Koor",
+   "back": {
+    "en": "Cream",
+    "az": "Qaymaq",
+    "ru": "Сливки"
+   },
+   "forms": [
+    "koore",
+    "koort"
+   ]
+  },
+  {
+   "id": "sink",
+   "front": "Sink",
+   "back": {
+    "en": "Ham",
+    "az": "Vetçina",
+    "ru": "Ветчина"
+   },
+   "forms": [
+    "singi",
+    "sinki"
+   ]
+  },
+  {
+   "id": "vorst",
+   "front": "Vorst",
+   "back": {
+    "en": "Sausage",
+    "az": "Kolbasa",
+    "ru": "Колбаса"
+   },
+   "forms": [
+    "vorsti",
+    "vorsti"
+   ]
+  },
+  {
+   "id": "viiner",
+   "front": "Viiner",
+   "back": {
+    "en": "Frankfurter",
+    "az": "Sosiska",
+    "ru": "Сосиска"
+   },
+   "forms": [
+    "viineri",
+    "viinerit"
+   ]
+  },
+  {
+   "id": "kilu",
+   "front": "Kilu",
+   "back": {
+    "en": "Baltic sprat",
+    "az": "Kilkə",
+    "ru": "Килька"
+   },
+   "forms": [
+    "kilu",
+    "kilu"
+   ]
+  },
+  {
+   "id": "kalamari",
+   "front": "Kalamari",
+   "back": {
+    "en": "Caviar",
+    "az": "Kürü",
+    "ru": "Икра"
+   },
+   "forms": [
+    "kalamarja",
+    "kalamarja"
+   ]
+  },
+  {
+   "id": "sult",
+   "front": "Sült",
+   "back": {
+    "en": "Jellied meat",
+    "az": "Ət jelesi",
+    "ru": "Холодец"
+   },
+   "forms": [
+    "süldi",
+    "sülti"
+   ]
+  },
+  {
+   "id": "jahu",
+   "front": "Jahu",
+   "back": {
+    "en": "Flour",
+    "az": "Un",
+    "ru": "Мука"
+   },
+   "forms": [
+    "jahu",
+    "jahu"
+   ]
+  },
+  {
+   "id": "parm",
+   "front": "Pärm",
+   "back": {
+    "en": "Yeast",
+    "az": "Maya",
+    "ru": "Дрожжи"
+   },
+   "forms": [
+    "pärmi",
+    "pärmi"
+   ]
+  },
+  {
+   "id": "oli",
+   "front": "Õli",
+   "back": {
+    "en": "Oil",
+    "az": "Yağ",
+    "ru": "Растительное масло"
+   },
+   "forms": [
+    "õli",
+    "õli"
+   ]
+  },
+  {
+   "id": "ketsup",
+   "front": "Ketšup",
+   "back": {
+    "en": "Ketchup",
+    "az": "Ketçup",
+    "ru": "Кетчуп"
+   },
+   "forms": [
+    "ketšupi",
+    "ketšupit"
+   ]
+  },
+  {
+   "id": "sinep",
+   "front": "Sinep",
+   "back": {
+    "en": "Mustard",
+    "az": "Xardal",
+    "ru": "Горчица"
+   },
+   "forms": [
+    "sinepi",
+    "sinepit"
+   ]
+  },
+  {
+   "id": "sokolaad",
+   "front": "Šokolaad",
+   "back": {
+    "en": "Chocolate",
+    "az": "Şokolad",
+    "ru": "Шоколад"
+   },
+   "forms": [
+    "šokolaadi",
+    "šokolaadi"
+   ]
+  },
+  {
+   "id": "komm",
+   "front": "Komm",
+   "back": {
+    "en": "Sweet, candy",
+    "az": "Konfet",
+    "ru": "Конфета"
+   },
+   "forms": [
+    "kommi",
+    "kommi"
+   ]
+  },
+  {
+   "id": "moos",
+   "front": "Moos",
+   "back": {
+    "en": "Jam",
+    "az": "Mürəbbə",
+    "ru": "Варенье"
+   },
+   "forms": [
+    "moosi",
+    "moosi"
+   ]
+  },
+  {
+   "id": "kringel",
+   "front": "Kringel",
+   "back": {
+    "en": "Sweet bread ring",
+    "az": "Şirin çörək halqası",
+    "ru": "Крендель"
+   },
+   "forms": [
+    "kringli",
+    "kringlit"
+   ]
+  },
+  {
+   "id": "pirukas",
+   "front": "Pirukas",
+   "back": {
+    "en": "Pie, pasty",
+    "az": "Piroq",
+    "ru": "Пирожок"
+   },
+   "forms": [
+    "piruka",
+    "pirukat"
+   ]
+  },
+  {
+   "id": "pannkook",
+   "front": "Pannkook",
+   "back": {
+    "en": "Pancake",
+    "az": "Blin",
+    "ru": "Блин"
+   },
+   "forms": [
+    "pannkoogi",
+    "pannkooki"
+   ]
+  },
+  {
+   "id": "puder",
+   "front": "Puder",
+   "back": {
+    "en": "Porridge",
+    "az": "Sıyıq",
+    "ru": "Каша"
+   },
+   "forms": [
+    "pudru",
+    "putru"
+   ]
+  },
+  {
+   "id": "kuivik",
+   "front": "Kuivik",
+   "back": {
+    "en": "Crouton, rusk",
+    "az": "Qurudulmuş çörək",
+    "ru": "Сухарь"
+   },
+   "forms": [
+    "kuiviku",
+    "kuivikut"
+   ]
+  },
+  {
+   "id": "halvaa",
+   "front": "Halvaa",
+   "back": {
+    "en": "Halva",
+    "az": "Halva",
+    "ru": "Халва"
+   },
+   "forms": [
+    "halvaa",
+    "halvaad"
+   ]
+  },
+  {
+   "id": "konserv",
+   "front": "Konserv",
+   "back": {
+    "en": "Tinned food",
+    "az": "Konserv",
+    "ru": "Консервы"
+   },
+   "forms": [
+    "konservi",
+    "konservi"
+   ]
+  },
+  {
+   "id": "limonaad",
+   "front": "Limonaad",
+   "back": {
+    "en": "Lemonade",
+    "az": "Limonad",
+    "ru": "Лимонад"
+   },
+   "forms": [
+    "limonaadi",
+    "limonaadi"
+   ]
+  },
+  {
+   "id": "mineraalvesi",
+   "front": "Mineraalvesi",
+   "back": {
+    "en": "Mineral water",
+    "az": "Mineral su",
+    "ru": "Минеральная вода"
+   },
+   "forms": [
+    "mineraalvee",
+    "mineraalvett"
+   ]
+  },
+  {
+   "id": "sampus",
+   "front": "Šampus",
+   "back": {
+    "en": "Champagne",
+    "az": "Şampan",
+    "ru": "Шампанское"
+   },
+   "forms": [
+    "šampuse",
+    "šampust"
+   ]
+  },
+  {
+   "id": "viski",
+   "front": "Viski",
+   "back": {
+    "en": "Whisky",
+    "az": "Viski",
+    "ru": "Виски"
+   },
+   "forms": [
+    "viski",
+    "viskit"
+   ]
+  },
+  {
+   "id": "pits",
+   "front": "Pits",
+   "back": {
+    "en": "A shot",
+    "az": "Qədəh",
+    "ru": "Рюмка"
+   },
+   "forms": [
+    "pitsi",
+    "pitsi"
+   ]
+  },
+  {
+   "id": "pitsa",
+   "front": "Pitsa",
+   "back": {
+    "en": "Pizza",
+    "az": "Pizza",
+    "ru": "Пицца"
+   },
+   "forms": [
+    "pitsa",
+    "pitsat"
+   ]
+  },
+  {
+   "id": "jook",
+   "front": "Jook",
+   "back": {
+    "en": "A drink",
+    "az": "İçki",
+    "ru": "Напиток"
+   },
+   "forms": [
+    "joogi",
+    "jooki"
+   ]
+  },
+  {
+   "id": "sook",
+   "front": "Söök",
+   "back": {
+    "en": "Food, a meal",
+    "az": "Yemək",
+    "ru": "Еда"
+   },
+   "forms": [
+    "söögi",
+    "sööki"
+   ]
+  },
+  {
+   "id": "ounamahl",
+   "front": "Õunamahl",
+   "back": {
+    "en": "Apple juice",
+    "az": "Alma suyu",
+    "ru": "Яблочный сок"
+   },
+   "forms": [
+    "õunamahla",
+    "õunamahla"
+   ]
+  },
+  {
+   "id": "apelsinimahl",
+   "front": "Apelsinimahl",
+   "back": {
+    "en": "Orange juice",
+    "az": "Portağal suyu",
+    "ru": "Апельсиновый сок"
+   },
+   "forms": [
+    "apelsinimahla",
+    "apelsinimahla"
+   ]
+  },
+  {
+   "id": "hele-olu",
+   "front": "Hele õlu",
+   "back": {
+    "en": "Light beer",
+    "az": "Açıq pivə",
+    "ru": "Светлое пиво"
+   }
+  },
+  {
+   "id": "okotoode",
+   "front": "Ökotoode",
+   "back": {
+    "en": "Organic product",
+    "az": "Eko məhsul",
+    "ru": "Экопродукт"
+   },
+   "forms": [
+    "ökotoote",
+    "ökotoodet"
+   ]
+  }
+ ],
+ "level": "eat"
+}

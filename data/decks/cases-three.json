@@ -1,0 +1,275 @@
+{
+ "id": "cases-three",
+ "added": "2026-10-06",
+ "deck": "cases-three-cards",
+ "heading": "cases",
+ "name": {
+  "en": "The first three cases",
+  "az": "İlk üç hal",
+  "ru": "Первые три падежа"
+ },
+ "why": {
+  "en": "Nimetav, omastav, osastav — the three forms on the back of every card, and what each one is for",
+  "az": "Nimetav, omastav, osastav — hər kartın arxasındakı üç forma və hər birinin işi",
+  "ru": "Nimetav, omastav, osastav — три формы на обороте каждой карточки и зачем нужна каждая"
+ },
+ "body": [
+  {
+   "say": {
+    "en": "Estonian has fourteen cases, and here you meet them a few at a time: a short lesson, then a deck of cards that uses only what the lesson taught, then the next lesson. The first three you already have. Every noun card shows them under its meaning — *leib · leiva · leiba* — and this lesson says what each one does. English has almost no cases left, so most of what follows is English word order and small words like *of* and *some*, turned into endings.",
+    "az": "Eston dilində on dörd hal var, və burada onları bir neçə-bir neçə öyrənirsiniz: qısa dərs, sonra yalnız həmin dərsdəkini işlədən kart dəsti, sonra növbəti dərs. İlk üçü artıq sizdədir — hər ismin kartında mənanın altında durur: *leib · leiva · leiba*. Bu sistem sizə tanış gələcək: Azərbaycan dili kimi eston dili də halı sözün sonuna şəkilçi ilə qoşur. Sadəcə bəzən sözün kökü də bir az dəyişir — *leib*, amma *leiva* — və hal adları, sualları başqadır.",
+    "ru": "В эстонском четырнадцать падежей, и здесь они идут по нескольку за раз: короткий урок, потом колода карточек только на то, что было в уроке, потом следующий урок. Первые три у вас уже есть — на каждой карточке с существительным они стоят под значением: *leib · leiva · leiba*. Сами падежи для вас не новость: русский тоже меняет окончание, чтобы показать роль слова. Новое другое — в эстонском нет предлогов «в», «на», «из», «с», «без». Всё, что русский делает предлогом и падежом вместе, эстонский делает одним окончанием."
+   }
+  },
+  {
+   "head": {
+    "en": "Nimetav — kes? mis? — who? what?",
+    "az": "Nimetav — kes? mis? — adlıq hal",
+    "ru": "Nimetav — kes? mis? — именительный"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kes? mis?",
+       "laps",
+       "lapsed"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     },
+     {
+      "et": [
+       "mis?",
+       "leib",
+       "leivad"
+      ],
+      "means": {
+       "en": "black bread",
+       "az": "qara çörək",
+       "ru": "чёрный хлеб"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Laps sööb leiba.",
+     "en": "The child is eating bread.",
+     "az": "Uşaq çörək yeyir.",
+     "ru": "Ребёнок ест хлеб."
+    },
+    {
+     "et": "Leib on laual.",
+     "en": "The bread is on the table.",
+     "az": "Çörək stolun üstündədir.",
+     "ru": "Хлеб на столе."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "The word as the dictionary gives it, and the one doing the thing: *Laps sööb* — the child is eating. *Leib on laual* — the bread is on the table. It asks *kes?* for a person and *mis?* for a thing, just as English asks *who?* and *what?*. The front of every card is this form.",
+    "az": "Adlıq hal: sözün lüğətdəki forması, işi görən. *Laps sööb* — uşaq yeyir. *Leib on laual* — çörək stolun üstündədir. Sualları da bizimki kimidir: *kes?* — kim?, *mis?* — nə?. Kartların ön üzündəki söz həmişə bu formadadır.",
+    "ru": "Именительный: слово как в словаре, тот, кто действует. *Laps sööb* — ребёнок ест. *Leib on laual* — хлеб на столе. Вопросы те же: *kes?* — кто?, *mis?* — что?. На лицевой стороне карточки слово всегда в этой форме."
+   }
+  },
+  {
+   "head": {
+    "en": "Omastav — kelle? mille? — whose? of what?",
+    "az": "Omastav — kelle? mille? — yiyəlik hal",
+    "ru": "Omastav — kelle? mille? — родительный"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kelle? mille?",
+       "lapse",
+       "laste"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     },
+     {
+      "et": [
+       "mille?",
+       "leiva",
+       "leibade"
+      ],
+      "means": {
+       "en": "black bread",
+       "az": "qara çörək",
+       "ru": "чёрный хлеб"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "See on lapse tuba.",
+     "en": "This is the child's room.",
+     "az": "Bu, uşağın otağıdır.",
+     "ru": "Это комната ребёнка."
+    },
+    {
+     "et": "Kass on laua all.",
+     "en": "The cat is under the table.",
+     "az": "Pişik stolun altındadır.",
+     "ru": "Кошка под столом."
+    },
+    {
+     "et": "Ma ostan ühe leiva.",
+     "en": "I'll buy one loaf.",
+     "az": "Bir çörək alıram.",
+     "ru": "Я куплю одну буханку."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "The owner, and it goes first, like the English *'s*: *ema leib* — Mum's bread, *Tallinna vanalinn* — Tallinn's old town. The thing owned does not change at all. It also stands in front of the small words English puts first: *laua all* — under the table, *maja ees* — in front of the house. And it marks a whole object, a thing done to the end: *Ma ostan leiva* — I'll buy the loaf. English says that with *the* and with the verb; Estonian says it with the case. Last, and most useful: eleven of the fourteen cases are built on this form. Learn the omastav and the rest is an ending.",
+    "az": "Yiyəlik hal, və bizdə olduğu kimi sahib qabaqda gəlir: *ema leib* — ananın çörəyi, *Tallinna vanalinn* — Tallinnin köhnə şəhəri. Bir fərqə diqqət edin: bizdə sahib olunan şey də şəkilçi alır — çörək-i — eston dilində isə heç dəyişmir, *leib* elə *leib* qalır. Bizim *altında*, *qabağında* kimi qoşmalar da bu halı istəyir: *laua all* — stolun altında, *maja ees* — evin qabağında. Bir də bu forma bütöv, sona qədər görülən obyekti göstərir: *Ma ostan leiva* — çörəyi alıram, bütöv bir çörəyi. Bu, bizim müəyyən təsirlik halımızdır — çörəy-i — sadəcə eston dili onu yiyəlik formasında deyir. Və ən vacibi: on dörd haldan on biri bu formanın üstündə qurulur. Omastavı bilən qalanını şəkilçi ilə düzəldir.",
+    "ru": "Родительный принадлежности, но порядок другой: хозяин всегда впереди — *ema leib* — мамин хлеб, *Tallinna vanalinn* — старый город Таллинна. Само принадлежащее не меняется. Вместо предлогов здесь послелоги, и они тоже требуют этой формы: *laua all* — под столом, *maja ees* — перед домом. И ещё одно, чего в русском нет: этой формой отмечают целый, законченный объект — *Ma ostan leiva* — я куплю хлеб, буханку целиком. Русский говорит это совершенным видом глагола, эстонский — падежом. И главное: одиннадцать из четырнадцати падежей строятся на этой форме. Кто знает omastav, тому остаётся только окончание."
+   }
+  },
+  {
+   "head": {
+    "en": "Osastav — keda? mida? — some of",
+    "az": "Osastav — keda? mida? — qeyri-müəyyən təsirlik",
+    "ru": "Osastav — keda? mida? — «немного», «часть»"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "keda? mida?",
+       "last",
+       "lapsi"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     },
+     {
+      "et": [
+       "mida?",
+       "leiba",
+       "leibu"
+      ],
+      "means": {
+       "en": "black bread",
+       "az": "qara çörək",
+       "ru": "чёрный хлеб"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma ootan last.",
+     "en": "I'm waiting for the child.",
+     "az": "Uşağı gözləyirəm.",
+     "ru": "Я жду ребёнка."
+    },
+    {
+     "et": "Palun kaks leiba.",
+     "en": "Two loaves, please.",
+     "az": "İki çörək, zəhmət olmasa.",
+     "ru": "Две буханки, пожалуйста."
+    },
+    {
+     "et": "Mul ei ole leiba.",
+     "en": "I have no bread.",
+     "az": "Çörəyim yoxdur.",
+     "ru": "У меня нет хлеба."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Some of a thing, or an action that is not finished: *Ma söön leiba* — I'm eating bread. Against *Ma ostan leiva* above, it is the difference between *some bread* and *the loaf*. It comes after every number from two up, and the noun stays singular: *kaks kohvi* — two coffees, *viis eurot* — five euros. It comes after *no*: *Mul ei ole aega* — I have no time. And some verbs always take it, whatever the sense: *Ma armastan sind* — I love you, *Ma ootan sind* — I'm waiting for you.",
+    "az": "Bunu bizim qeyri-müəyyən təsirliklə tutuşdurun: çörək yeyirəm — *Ma söön leiba*; çörəyi aldım — *Ma ostsin leiva*. Bizdə fərqi bir -i verir, eston dilində iki ayrı hal. Saylardan sonra isim təkdə qalır, eynilə bizdəki kimi: iki qəhvə — *kaks kohvi*, beş avro — *viis eurot*. Bu, Azərbaycan dilinin sizə verdiyi ən böyük üstünlükdür — ingilis və rus dilində danışanlar məhz burada çaşır. İnkarda da bu forma gəlir: *Mul ei ole aega* — vaxtım yoxdur. Və bəzi fellər həmişə onu istəyir: *Ma armastan sind* — səni sevirəm, *Ma ootan sind* — səni gözləyirəm.",
+    "ru": "Частичный падеж, и русский родительный уже умеет почти всё, что он делает: «выпить чаю», «нет хлеба». *Ma söön leiba* — я ем хлеб, сколько-то, не весь; *Mul ei ole aega* — у меня нет времени. После чисел разница: русский говорит «два кофе», «пять евро», «две чашки» — то так, то эдак, а эстонский после любого числа от двух ставит osastav единственного числа: *kaks kohvi*, *viis eurot*, *sada eurot*. И глаголы чувства и ожидания всегда требуют его, хотя в русском там винительный: *Ma armastan sind* — я люблю тебя, *Ma ootan sind* — я жду тебя."
+   }
+  },
+  {
+   "say": {
+    "en": "The deck under this lesson is short phrases that use only these three. Turn them over, and when they feel easy, come back for the next three: into, in and out of.",
+    "az": "Bu dərsin altındakı dəst yalnız bu üç halı işlədən qısa ifadələrdir. Onları çevirin, rahat olanda isə növbəti üç hala keçin: içinə, içində, içindən.",
+    "ru": "В колоде под этим уроком короткие фразы только на эти три падежа. Переверните их, а когда станет легко, переходите к следующим трём: куда, где, откуда."
+   }
+  }
+ ]
+}

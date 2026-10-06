@@ -1,0 +1,366 @@
+{
+ "id": "tana-words",
+ "added": "2026-10-05",
+ "name": {
+  "en": "The words of Täna ma ei skoori",
+  "az": "Täna ma ei skoori mahnısının sözləri",
+  "ru": "Слова из песни Täna ma ei skoori"
+ },
+ "why": {
+  "en": "The words from the song the other decks do not have yet, each with its line",
+  "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+  "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+ },
+ "level": "song",
+ "cards": [
+  {
+   "id": "skoorima",
+   "front": "Skoorima",
+   "back": {
+    "en": "To score",
+    "az": "Qazanmaq, tora salmaq",
+    "ru": "Забить, закадрить"
+   },
+   "forms": [
+    "skoorida",
+    "skoorin"
+   ],
+   "sentence": {
+    "et": "Mulle tundub, et täna ma ei skoori,",
+    "en": "I have a feeling that today I won't score,",
+    "az": "Mənə elə gəlir ki, bu gün heç kimi tora salmayacağam,",
+    "ru": "Мне кажется, что сегодня мне не светит,"
+   }
+  },
+  {
+   "id": "kuigi",
+   "front": "Kuigi",
+   "back": {
+    "en": "Although",
+    "az": "Baxmayaraq ki",
+    "ru": "Хотя"
+   },
+   "sentence": {
+    "et": "Kuigi siin on nii vanemaid kui noori,",
+    "en": "Although there are older ones and young ones here alike,",
+    "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+    "ru": "Хотя здесь есть и постарше, и помоложе,"
+   }
+  },
+  {
+   "id": "vanem",
+   "front": "Vanem",
+   "back": {
+    "en": "Older; a parent",
+    "az": "Daha yaşlı; valideyn",
+    "ru": "Старше; родитель"
+   },
+   "forms": [
+    "vanema",
+    "vanemat"
+   ],
+   "sentence": {
+    "et": "Kuigi siin on nii vanemaid kui noori,",
+    "en": "Although there are older ones and young ones here alike,",
+    "az": "Baxmayaraq ki, burada həm yaşlılar, həm də cavanlar var,",
+    "ru": "Хотя здесь есть и постарше, и помоложе,"
+   }
+  },
+  {
+   "id": "valdama",
+   "front": "Valdama",
+   "back": {
+    "en": "To master, to have a command of",
+    "az": "Bilmək, sahib olmaq",
+    "ru": "Владеть"
+   },
+   "forms": [
+    "vallata",
+    "valdan"
+   ],
+   "sentence": {
+    "et": "Uskumatu, kuidas valdab mõni kehakeeli —",
+    "en": "Unbelievable, how well some people speak with their bodies —",
+    "az": "İnanılmazdır, bəziləri bədən dilini necə də yaxşı bilir —",
+    "ru": "Невероятно, как некоторые владеют языком тела —"
+   }
+  },
+  {
+   "id": "kehakeel",
+   "front": "Kehakeel",
+   "back": {
+    "en": "Body language",
+    "az": "Bədən dili",
+    "ru": "Язык тела"
+   },
+   "forms": [
+    "kehakeele",
+    "kehakeelt"
+   ],
+   "sentence": {
+    "et": "Uskumatu, kuidas valdab mõni kehakeeli —",
+    "en": "Unbelievable, how well some people speak with their bodies —",
+    "az": "İnanılmazdır, bəziləri bədən dilini necə də yaxşı bilir —",
+    "ru": "Невероятно, как некоторые владеют языком тела —"
+   }
+  },
+  {
+   "id": "tombama",
+   "front": "Tõmbama",
+   "back": {
+    "en": "To pull, to draw",
+    "az": "Çəkmək",
+    "ru": "Тянуть, притягивать"
+   },
+   "forms": [
+    "tõmmata",
+    "tõmban"
+   ],
+   "sentence": {
+    "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+    "en": "They get themselves going and shake in the party's shared current,",
+    "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+    "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+   }
+  },
+  {
+   "id": "rappuma",
+   "front": "Rappuma",
+   "back": {
+    "en": "To shake, to jolt",
+    "az": "Silkələnmək",
+    "ru": "Трястись"
+   },
+   "forms": [
+    "rappuda",
+    "rappun"
+   ],
+   "sentence": {
+    "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+    "en": "They get themselves going and shake in the party's shared current,",
+    "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+    "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+   }
+  },
+  {
+   "id": "uhine",
+   "front": "Ühine",
+   "back": {
+    "en": "Shared, common",
+    "az": "Ümumi, birgə",
+    "ru": "Общий"
+   },
+   "forms": [
+    "ühise",
+    "ühist"
+   ],
+   "sentence": {
+    "et": "Tõmbab ennast käima, rappub ühises peovoolus,",
+    "en": "They get themselves going and shake in the party's shared current,",
+    "az": "Özünü işə salır, məclisin ümumi axınında silkələnir,",
+    "ru": "Заводит себя и трясётся в общем потоке вечеринки,"
+   }
+  },
+  {
+   "id": "kupsus",
+   "front": "Küpsus",
+   "back": {
+    "en": "Ripeness, maturity",
+    "az": "Yetkinlik",
+    "ru": "Зрелость"
+   },
+   "forms": [
+    "küpsuse",
+    "küpsust"
+   ],
+   "sentence": {
+    "et": "kui biit on hea ja piiri pead ei küpsus ega toorus loe.",
+    "en": "when the beat is good and you keep in bounds, neither ripe nor green counts.",
+    "az": "biit yaxşı olanda və həddi gözləyəndə nə yetkinlik, nə də xamlıq sayılır.",
+    "ru": "когда бит хороший и держишь меру, ни зрелость, ни зелёность не в счёт."
+   }
+  },
+  {
+   "id": "toorus",
+   "front": "Toorus",
+   "back": {
+    "en": "Rawness",
+    "az": "Xamlıq",
+    "ru": "Незрелость, сырость"
+   },
+   "forms": [
+    "tooruse",
+    "toorust"
+   ],
+   "sentence": {
+    "et": "kui biit on hea ja piiri pead ei küpsus ega toorus loe.",
+    "en": "when the beat is good and you keep in bounds, neither ripe nor green counts.",
+    "az": "biit yaxşı olanda və həddi gözləyəndə nə yetkinlik, nə də xamlıq sayılır.",
+    "ru": "когда бит хороший и держишь меру, ни зрелость, ни зелёность не в счёт."
+   }
+  },
+  {
+   "id": "proovima",
+   "front": "Proovima",
+   "back": {
+    "en": "To try",
+    "az": "Cəhd etmək, sınamaq",
+    "ru": "Пробовать"
+   },
+   "forms": [
+    "proovida",
+    "proovin"
+   ],
+   "sentence": {
+    "et": "Täna ma ei proovi,",
+    "en": "Today I don't try,",
+    "az": "Bu gün cəhd etmirəm,",
+    "ru": "Сегодня я не пробую,"
+   }
+  },
+  {
+   "id": "tants",
+   "front": "Tants",
+   "back": {
+    "en": "Dance",
+    "az": "Rəqs",
+    "ru": "Танец"
+   },
+   "forms": [
+    "tantsu",
+    "tantsu"
+   ],
+   "sentence": {
+    "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+    "en": "It seems my dance just can't manage to be that charming,",
+    "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+    "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+   }
+  },
+  {
+   "id": "suutma",
+   "front": "Suutma",
+   "back": {
+    "en": "To manage, to be able",
+    "az": "Bacarmaq",
+    "ru": "Суметь, быть в силах"
+   },
+   "forms": [
+    "suuta",
+    "suudan"
+   ],
+   "sentence": {
+    "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+    "en": "It seems my dance just can't manage to be that charming,",
+    "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+    "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+   }
+  },
+  {
+   "id": "nonda",
+   "front": "Nõnda",
+   "back": {
+    "en": "So, thus",
+    "az": "Belə, o qədər",
+    "ru": "Так, настолько"
+   },
+   "sentence": {
+    "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+    "en": "It seems my dance just can't manage to be that charming,",
+    "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+    "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+   }
+  },
+  {
+   "id": "veetlev",
+   "front": "Veetlev",
+   "back": {
+    "en": "Charming, alluring",
+    "az": "Cazibəli",
+    "ru": "Обаятельный"
+   },
+   "forms": [
+    "veetleva",
+    "veetlevat"
+   ],
+   "sentence": {
+    "et": "Tundub, et mu tants ei suuda olla nõnda veetlev,",
+    "en": "It seems my dance just can't manage to be that charming,",
+    "az": "Deyəsən, rəqsim o qədər də cazibəli ola bilmir,",
+    "ru": "Кажется, мой танец никак не может быть таким уж обаятельным,"
+   }
+  },
+  {
+   "id": "loks",
+   "front": "Lõks",
+   "back": {
+    "en": "Trap",
+    "az": "Tələ",
+    "ru": "Ловушка"
+   },
+   "forms": [
+    "lõksu",
+    "lõksu"
+   ],
+   "sentence": {
+    "et": "mu puusanõks ei ole lõks, see polegi nii lihtne.",
+    "en": "my hip move is no trap — it isn't that simple after all.",
+    "az": "omba hərəkətim tələ deyil — bu, heç də o qədər asan deyil.",
+    "ru": "моё движение бёдрами — не ловушка, всё не так уж просто."
+   }
+  },
+  {
+   "id": "tantsima",
+   "front": "Tantsima",
+   "back": {
+    "en": "To dance",
+    "az": "Rəqs etmək",
+    "ru": "Танцевать"
+   },
+   "forms": [
+    "tantsida",
+    "tantsin"
+   ],
+   "sentence": {
+    "et": "Tantsin küll, kuid ligi kedagi see siin ei tõmba,",
+    "en": "I do dance, but it draws nobody close in here,",
+    "az": "Rəqs edirəm, amma bu, burada heç kimi yaxına çəkmir,",
+    "ru": "Танцевать-то я танцую, но никого здесь это не притягивает,"
+   }
+  },
+  {
+   "id": "ligi",
+   "front": "Ligi",
+   "back": {
+    "en": "Close, near",
+    "az": "Yaxın, yaxına",
+    "ru": "Близко"
+   },
+   "sentence": {
+    "et": "Tantsin küll, kuid ligi kedagi see siin ei tõmba,",
+    "en": "I do dance, but it draws nobody close in here,",
+    "az": "Rəqs edirəm, amma bu, burada heç kimi yaxına çəkmir,",
+    "ru": "Танцевать-то я танцую, но никого здесь это не притягивает,"
+   }
+  },
+  {
+   "id": "leekima",
+   "front": "Leekima",
+   "back": {
+    "en": "To blaze",
+    "az": "Alovlanmaq",
+    "ru": "Пылать"
+   },
+   "forms": [
+    "leekida",
+    "leegin"
+   ],
+   "sentence": {
+    "et": "ei lõika siin mu lihtne stiil, kuid eile kõik ju leekis veel.",
+    "en": "my simple style doesn't cut it here — and yet yesterday it was all still ablaze.",
+    "az": "sadə üslubum burada keçmir — halbuki dünən hər şey hələ alov içində idi.",
+    "ru": "мой простой стиль тут не катит — а ведь вчера всё ещё пылало."
+   }
+  }
+ ]
+}

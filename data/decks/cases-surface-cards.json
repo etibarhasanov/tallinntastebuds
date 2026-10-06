@@ -1,0 +1,437 @@
+{
+ "id": "cases-surface-cards",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Onto, on, off — the cards",
+  "az": "Üstünə, üstündə, üstündən — kartlar",
+  "ru": "На, на чём, с чего — карточки"
+ },
+ "why": {
+  "en": "On the table, to a friend, and who has what",
+  "az": "Stolun üstündə, dosta, və kimdə nə var",
+  "ru": "На столе, другу, и у кого что есть"
+ },
+ "level": "case",
+ "cards": [
+  {
+   "id": "lauale",
+   "front": "Lauale",
+   "back": {
+    "en": "Onto the table",
+    "az": "Stolun üstünə",
+    "ru": "На стол"
+   },
+   "build": {
+    "forms": [
+     "laud",
+     "laua",
+     "lauda"
+    ],
+    "on": 1,
+    "from": "laua",
+    "end": "le",
+    "makes": "lauale",
+    "case": {
+     "et": "alaleütlev",
+     "en": "onto, to",
+     "az": "kimə? nəyin üstünə?",
+     "ru": "на что? кому?"
+    }
+   }
+  },
+  {
+   "id": "laual",
+   "front": "Laual",
+   "back": {
+    "en": "On the table",
+    "az": "Stolun üstündə",
+    "ru": "На столе"
+   },
+   "build": {
+    "forms": [
+     "laud",
+     "laua",
+     "lauda"
+    ],
+    "on": 1,
+    "from": "laua",
+    "end": "l",
+    "makes": "laual",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "laualt",
+   "front": "Laualt",
+   "back": {
+    "en": "Off the table",
+    "az": "Stolun üstündən",
+    "ru": "Со стола"
+   },
+   "build": {
+    "forms": [
+     "laud",
+     "laua",
+     "lauda"
+    ],
+    "on": 1,
+    "from": "laua",
+    "end": "lt",
+    "makes": "laualt",
+    "case": {
+     "et": "alaltütlev",
+     "en": "off, from",
+     "az": "kimdən? nəyin üstündən?",
+     "ru": "с чего? от кого?"
+    }
+   }
+  },
+  {
+   "id": "sobrale",
+   "front": "Sõbrale",
+   "back": {
+    "en": "To a friend",
+    "az": "Dosta",
+    "ru": "Другу"
+   },
+   "build": {
+    "forms": [
+     "sõber",
+     "sõbra",
+     "sõpra"
+    ],
+    "on": 1,
+    "from": "sõbra",
+    "end": "le",
+    "makes": "sõbrale",
+    "case": {
+     "et": "alaleütlev",
+     "en": "onto, to",
+     "az": "kimə? nəyin üstünə?",
+     "ru": "на что? кому?"
+    }
+   }
+  },
+  {
+   "id": "sobralt",
+   "front": "Sõbralt",
+   "back": {
+    "en": "From a friend",
+    "az": "Dostdan",
+    "ru": "От друга"
+   },
+   "build": {
+    "forms": [
+     "sõber",
+     "sõbra",
+     "sõpra"
+    ],
+    "on": 1,
+    "from": "sõbra",
+    "end": "lt",
+    "makes": "sõbralt",
+    "case": {
+     "et": "alaltütlev",
+     "en": "off, from",
+     "az": "kimdən? nəyin üstündən?",
+     "ru": "с чего? от кого?"
+    }
+   }
+  },
+  {
+   "id": "helista-mulle",
+   "front": "Helista mulle!",
+   "back": {
+    "en": "Call me!",
+    "az": "Mənə zəng et!",
+    "ru": "Позвони мне!"
+   },
+   "build": {
+    "forms": [
+     "mina",
+     "minu",
+     "mind"
+    ],
+    "on": 1,
+    "from": "minu",
+    "end": "le",
+    "makes": "minule",
+    "short": "mulle",
+    "case": {
+     "et": "alaleütlev",
+     "en": "onto, to",
+     "az": "kimə? nəyin üstünə?",
+     "ru": "на что? кому?"
+    }
+   }
+  },
+  {
+   "id": "mul-on",
+   "front": "Mul on",
+   "back": {
+    "en": "I have",
+    "az": "Məndə var",
+    "ru": "У меня есть"
+   },
+   "build": {
+    "forms": [
+     "mina",
+     "minu",
+     "mind"
+    ],
+    "on": 1,
+    "from": "minu",
+    "end": "l",
+    "makes": "minul",
+    "short": "mul",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "sul-on",
+   "front": "Sul on",
+   "back": {
+    "en": "You have",
+    "az": "Səndə var",
+    "ru": "У тебя есть"
+   },
+   "build": {
+    "forms": [
+     "sina",
+     "sinu",
+     "sind"
+    ],
+    "on": 1,
+    "from": "sinu",
+    "end": "l",
+    "makes": "sinul",
+    "short": "sul",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "sobral-on-koer",
+   "front": "Sõbral on koer",
+   "back": {
+    "en": "My friend has a dog",
+    "az": "Dostumun iti var",
+    "ru": "У друга есть собака"
+   },
+   "build": {
+    "forms": [
+     "sõber",
+     "sõbra",
+     "sõpra"
+    ],
+    "on": 1,
+    "from": "sõbra",
+    "end": "l",
+    "makes": "sõbral",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "kusi-temalt",
+   "front": "Küsi temalt",
+   "back": {
+    "en": "Ask him",
+    "az": "Ondan soruş",
+    "ru": "Спроси у него"
+   },
+   "build": {
+    "forms": [
+     "tema",
+     "tema",
+     "teda"
+    ],
+    "on": 1,
+    "from": "tema",
+    "end": "lt",
+    "makes": "temalt",
+    "case": {
+     "et": "alaltütlev",
+     "en": "off, from",
+     "az": "kimdən? nəyin üstündən?",
+     "ru": "с чего? от кого?"
+    }
+   }
+  },
+  {
+   "id": "tool",
+   "front": "Tööl",
+   "back": {
+    "en": "At work",
+    "az": "İşdə",
+    "ru": "На работе"
+   },
+   "build": {
+    "forms": [
+     "töö",
+     "töö",
+     "tööd"
+    ],
+    "on": 1,
+    "from": "töö",
+    "end": "l",
+    "makes": "tööl",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "toole",
+   "front": "Tööle",
+   "back": {
+    "en": "To work",
+    "az": "İşə",
+    "ru": "На работу"
+   },
+   "build": {
+    "forms": [
+     "töö",
+     "töö",
+     "tööd"
+    ],
+    "on": 1,
+    "from": "töö",
+    "end": "le",
+    "makes": "tööle",
+    "case": {
+     "et": "alaleütlev",
+     "en": "onto, to",
+     "az": "kimə? nəyin üstünə?",
+     "ru": "на что? кому?"
+    }
+   }
+  },
+  {
+   "id": "turul",
+   "front": "Turul",
+   "back": {
+    "en": "At the market",
+    "az": "Bazarda",
+    "ru": "На рынке"
+   },
+   "build": {
+    "forms": [
+     "turg",
+     "turu",
+     "turgu"
+    ],
+    "on": 1,
+    "from": "turu",
+    "end": "l",
+    "makes": "turul",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "esmaspaeval",
+   "front": "Esmaspäeval",
+   "back": {
+    "en": "On Monday",
+    "az": "Bazar ertəsi",
+    "ru": "В понедельник"
+   },
+   "build": {
+    "forms": [
+     "esmaspäev",
+     "esmaspäeva",
+     "esmaspäeva"
+    ],
+    "on": 1,
+    "from": "esmaspäeva",
+    "end": "l",
+    "makes": "esmaspäeval",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "hommikul",
+   "front": "Hommikul",
+   "back": {
+    "en": "In the morning",
+    "az": "Səhər",
+    "ru": "Утром"
+   },
+   "build": {
+    "forms": [
+     "hommik",
+     "hommiku",
+     "hommikut"
+    ],
+    "on": 1,
+    "from": "hommiku",
+    "end": "l",
+    "makes": "hommikul",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  },
+  {
+   "id": "mul-on-kulm",
+   "front": "Mul on külm",
+   "back": {
+    "en": "I'm cold",
+    "az": "Mən üşüyürəm",
+    "ru": "Мне холодно"
+   },
+   "build": {
+    "forms": [
+     "mina",
+     "minu",
+     "mind"
+    ],
+    "on": 1,
+    "from": "minu",
+    "end": "l",
+    "makes": "minul",
+    "short": "mul",
+    "case": {
+     "et": "alalütlev",
+     "en": "on, at, and having",
+     "az": "kimdə? nəyin üstündə?",
+     "ru": "на чём? у кого?"
+    }
+   }
+  }
+ ]
+}

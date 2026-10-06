@@ -1,0 +1,322 @@
+{
+ "id": "basics",
+ "added": "2026-09-18",
+ "name": {
+  "en": "The first words",
+  "az": "İlk sözlər",
+  "ru": "Первые слова"
+ },
+ "why": {
+  "en": "Yes, no, please, sorry, and the ones you say before you know any others",
+  "az": "Bəli, xeyr, zəhmət olmasa, bağışla — və başqa heç nə bilməyəndə dediklərin",
+  "ru": "Да, нет, пожалуйста, простите — и те, что говорят, пока не знают других"
+ },
+ "taste": "Ma ei saa aru",
+ "cards": [
+  {
+   "id": "jah",
+   "front": "Jah",
+   "back": {
+    "en": "Yes",
+    "az": "Bəli",
+    "ru": "Да"
+   }
+  },
+  {
+   "id": "ei",
+   "front": "Ei",
+   "back": {
+    "en": "No",
+    "az": "Xeyr",
+    "ru": "Нет"
+   }
+  },
+  {
+   "id": "palun",
+   "front": "Palun",
+   "back": {
+    "en": "Please",
+    "az": "Zəhmət olmasa",
+    "ru": "Пожалуйста"
+   }
+  },
+  {
+   "id": "aitah",
+   "front": "Aitäh",
+   "back": {
+    "en": "Thank you",
+    "az": "Sağ ol",
+    "ru": "Спасибо"
+   }
+  },
+  {
+   "id": "tanan",
+   "front": "Tänan",
+   "back": {
+    "en": "Thank you",
+    "az": "Təşəkkür edirəm",
+    "ru": "Благодарю"
+   }
+  },
+  {
+   "id": "vabandust",
+   "front": "Vabandust",
+   "back": {
+    "en": "Excuse me",
+    "az": "Bağışlayın",
+    "ru": "Извините"
+   }
+  },
+  {
+   "id": "vabandage",
+   "front": "Vabandage",
+   "back": {
+    "en": "Sorry",
+    "az": "Üzr istəyirəm",
+    "ru": "Простите"
+   }
+  },
+  {
+   "id": "muidugi",
+   "front": "Muidugi",
+   "back": {
+    "en": "Of course",
+    "az": "Əlbəttə",
+    "ru": "Конечно"
+   }
+  },
+  {
+   "id": "voib-olla",
+   "front": "Võib-olla",
+   "back": {
+    "en": "Maybe",
+    "az": "Bəlkə",
+    "ru": "Может быть"
+   }
+  },
+  {
+   "id": "ma-ei-tea",
+   "front": "Ma ei tea",
+   "back": {
+    "en": "I do not know",
+    "az": "Bilmirəm",
+    "ru": "Я не знаю"
+   }
+  },
+  {
+   "id": "ma-ei-saa-aru",
+   "front": "Ma ei saa aru",
+   "back": {
+    "en": "I do not understand",
+    "az": "Başa düşmürəm",
+    "ru": "Я не понимаю"
+   }
+  },
+  {
+   "id": "kas-sa-raagid-inglise-keelt",
+   "front": "Kas sa räägid inglise keelt?",
+   "back": {
+    "en": "Do you speak English?",
+    "az": "İngilis dilində danışırsan?",
+    "ru": "Вы говорите по-английски?"
+   }
+  },
+  {
+   "id": "ma-ei-raagi-eesti-keelt",
+   "front": "Ma ei räägi eesti keelt",
+   "back": {
+    "en": "I do not speak Estonian",
+    "az": "Eston dilində danışmıram",
+    "ru": "Я не говорю по-эстонски"
+   }
+  },
+  {
+   "id": "natuke",
+   "front": "Natuke",
+   "back": {
+    "en": "A little",
+    "az": "Bir az",
+    "ru": "Немного"
+   }
+  },
+  {
+   "id": "palun-aeglasemalt",
+   "front": "Palun aeglasemalt",
+   "back": {
+    "en": "Slower, please",
+    "az": "Zəhmət olmasa, daha yavaş",
+    "ru": "Медленнее, пожалуйста"
+   }
+  },
+  {
+   "id": "appi",
+   "front": "Appi!",
+   "back": {
+    "en": "Help!",
+    "az": "Kömək edin!",
+    "ru": "Помогите!"
+   }
+  },
+  {
+   "id": "hea",
+   "front": "Hea",
+   "back": {
+    "en": "Good",
+    "az": "Yaxşı",
+    "ru": "Хороший"
+   },
+   "forms": [
+    "hea",
+    "head"
+   ]
+  },
+  {
+   "id": "halb",
+   "front": "Halb",
+   "back": {
+    "en": "Bad",
+    "az": "Pis",
+    "ru": "Плохой"
+   },
+   "forms": [
+    "halva",
+    "halba"
+   ]
+  },
+  {
+   "id": "suur",
+   "front": "Suur",
+   "back": {
+    "en": "Big",
+    "az": "Böyük",
+    "ru": "Большой"
+   },
+   "forms": [
+    "suure",
+    "suurt"
+   ]
+  },
+  {
+   "id": "vaike",
+   "front": "Väike",
+   "back": {
+    "en": "Small",
+    "az": "Kiçik",
+    "ru": "Маленький"
+   },
+   "forms": [
+    "väikese",
+    "väikest"
+   ]
+  },
+  {
+   "id": "tanan-vaga",
+   "front": "Tänan väga",
+   "back": {
+    "en": "Thank you very much",
+    "az": "Çox sağ olun",
+    "ru": "Большое спасибо"
+   }
+  },
+  {
+   "id": "suur-tanu",
+   "front": "Suur tänu",
+   "back": {
+    "en": "Many thanks",
+    "az": "Çox təşəkkür",
+    "ru": "Огромное спасибо"
+   }
+  },
+  {
+   "id": "kuidas-palun",
+   "front": "Kuidas palun?",
+   "back": {
+    "en": "Excuse me, what?",
+    "az": "Bağışlayın, nə dediniz?",
+    "ru": "Что, простите?"
+   }
+  },
+  {
+   "id": "korda-palun",
+   "front": "Korda palun!",
+   "back": {
+    "en": "Say that again, please!",
+    "az": "Təkrar edin, zəhmət olmasa!",
+    "ru": "Повторите, пожалуйста!"
+   }
+  },
+  {
+   "id": "utle-uuesti",
+   "front": "Ütle uuesti!",
+   "back": {
+    "en": "Say it again!",
+    "az": "Bir də de!",
+    "ru": "Скажи ещё раз!"
+   }
+  },
+  {
+   "id": "anna-andeks",
+   "front": "Anna andeks!",
+   "back": {
+    "en": "I am sorry!",
+    "az": "Bağışla!",
+    "ru": "Извини!"
+   }
+  },
+  {
+   "id": "pole-tanu-vaart",
+   "front": "Pole tänu väärt!",
+   "back": {
+    "en": "Do not mention it!",
+    "az": "Dəyməz!",
+    "ru": "Не за что!"
+   }
+  },
+  {
+   "id": "ei-ole-hullu",
+   "front": "Ei ole hullu",
+   "back": {
+    "en": "It is all right",
+    "az": "Eybi yoxdur",
+    "ru": "Ничего страшного"
+   }
+  },
+  {
+   "id": "ma-tegin-nalja",
+   "front": "Ma tegin nalja",
+   "back": {
+    "en": "I was joking",
+    "az": "Zarafat elədim",
+    "ru": "Я пошутил"
+   }
+  },
+  {
+   "id": "kas-te-saaksite",
+   "front": "Kas te saaksite?",
+   "back": {
+    "en": "Could you?",
+    "az": "Siz edə bilərsinizmi?",
+    "ru": "Вы могли бы?"
+   }
+  },
+  {
+   "id": "vabandage-et-ma-hilinesin",
+   "front": "Vabandage, et ma hilinesin",
+   "back": {
+    "en": "Sorry I am late",
+    "az": "Gecikdiyim üçün üzr istəyirəm",
+    "ru": "Извините, что опоздал"
+   }
+  },
+  {
+   "id": "uks-hetk",
+   "front": "Üks hetk",
+   "back": {
+    "en": "Just a moment",
+    "az": "Bir dəqiqə",
+    "ru": "Одну минуту"
+   }
+  }
+ ],
+ "level": "start"
+}

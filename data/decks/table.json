@@ -1,0 +1,228 @@
+{
+ "id": "table",
+ "added": "2026-09-18",
+ "name": {
+  "en": "At the table",
+  "az": "Masada",
+  "ru": "За столом"
+ },
+ "why": {
+  "en": "Between the door and the bill",
+  "az": "Qapı ilə hesab arasında",
+  "ru": "Между дверью и счётом"
+ },
+ "taste": "Kas see laud on vaba?",
+ "cards": [
+  {
+   "id": "kas-see-laud-on-vaba",
+   "front": "Kas see laud on vaba?",
+   "back": {
+    "en": "Is this table free?",
+    "az": "Bu masa boşdur?",
+    "ru": "Этот столик свободен?"
+   },
+   "sentence": {
+    "et": "Kas see laud on vaba?",
+    "en": "Is this table free?",
+    "az": "Bu masa boşdur?",
+    "ru": "Этот столик свободен?"
+   }
+  },
+  {
+   "id": "kaks-inimest-palun",
+   "front": "Kaks inimest, palun",
+   "back": {
+    "en": "Two people, please",
+    "az": "İki nəfər, zəhmət olmasa",
+    "ru": "Двое, пожалуйста"
+   }
+  },
+  {
+   "id": "menuu-palun",
+   "front": "Menüü, palun",
+   "back": {
+    "en": "The menu, please",
+    "az": "Menyu, zəhmət olmasa",
+    "ru": "Меню, пожалуйста"
+   }
+  },
+  {
+   "id": "ma-sooviksin",
+   "front": "Ma sooviksin...",
+   "back": {
+    "en": "I would like...",
+    "az": "Mən istərdim...",
+    "ru": "Я хотел бы..."
+   }
+  },
+  {
+   "id": "mis-te-soovitate",
+   "front": "Mis te soovitate?",
+   "back": {
+    "en": "What do you recommend?",
+    "az": "Nə məsləhət verirsiniz?",
+    "ru": "Что вы посоветуете?"
+   }
+  },
+  {
+   "id": "uks-kohv-palun",
+   "front": "Üks kohv, palun",
+   "back": {
+    "en": "One coffee, please",
+    "az": "Bir qəhvə, zəhmət olmasa",
+    "ru": "Один кофе, пожалуйста"
+   },
+   "sentence": {
+    "et": "Üks kohv, palun.",
+    "en": "One coffee, please.",
+    "az": "Bir qəhvə, zəhmət olmasa.",
+    "ru": "Один кофе, пожалуйста."
+   }
+  },
+  {
+   "id": "vett-palun",
+   "front": "Vett, palun",
+   "back": {
+    "en": "Water, please",
+    "az": "Su, zəhmət olmasa",
+    "ru": "Воды, пожалуйста"
+   }
+  },
+  {
+   "id": "ilma-suhkruta",
+   "front": "Ilma suhkruta",
+   "back": {
+    "en": "Without sugar",
+    "az": "Şəkərsiz",
+    "ru": "Без сахара"
+   }
+  },
+  {
+   "id": "veel-uks-palun",
+   "front": "Veel üks, palun",
+   "back": {
+    "en": "One more, please",
+    "az": "Bir də, zəhmət olmasa",
+    "ru": "Ещё один, пожалуйста"
+   }
+  },
+  {
+   "id": "head-isu",
+   "front": "Head isu!",
+   "back": {
+    "en": "Enjoy your meal!",
+    "az": "Nuş olsun!",
+    "ru": "Приятного аппетита!"
+   },
+   "sentence": {
+    "et": "Head isu!",
+    "en": "Enjoy your meal!",
+    "az": "Nuş olsun!",
+    "ru": "Приятного аппетита!"
+   }
+  },
+  {
+   "id": "terviseks",
+   "front": "Terviseks!",
+   "back": {
+    "en": "Cheers!",
+    "az": "Sağlığınıza!",
+    "ru": "За здоровье!"
+   }
+  },
+  {
+   "id": "vaga-maitsev",
+   "front": "Väga maitsev",
+   "back": {
+    "en": "Very tasty",
+    "az": "Çox dadlıdır",
+    "ru": "Очень вкусно"
+   },
+   "sentence": {
+    "et": "See supp on väga maitsev.",
+    "en": "This soup is very tasty.",
+    "az": "Bu şorba çox dadlıdır.",
+    "ru": "Этот суп очень вкусный."
+   }
+  },
+  {
+   "id": "arve-palun",
+   "front": "Arve, palun",
+   "back": {
+    "en": "The bill, please",
+    "az": "Hesab, zəhmət olmasa",
+    "ru": "Счёт, пожалуйста"
+   },
+   "sentence": {
+    "et": "Arve, palun.",
+    "en": "The bill, please.",
+    "az": "Hesab, zəhmət olmasa.",
+    "ru": "Счёт, пожалуйста."
+   }
+  },
+  {
+   "id": "kas-ma-saan-maksta-kaardiga",
+   "front": "Kas ma saan maksta kaardiga?",
+   "back": {
+    "en": "Can I pay by card?",
+    "az": "Kartla ödəyə bilərəm?",
+    "ru": "Можно заплатить картой?"
+   }
+  },
+  {
+   "id": "kas-teenindustasu-on-sees",
+   "front": "Kas teenindustasu on sees?",
+   "back": {
+    "en": "Is service included?",
+    "az": "Servis haqqı daxildir?",
+    "ru": "Обслуживание включено?"
+   }
+  },
+  {
+   "id": "see-on-minu-jaoks",
+   "front": "See on minu jaoks",
+   "back": {
+    "en": "This one is mine",
+    "az": "Bu mənim üçündür",
+    "ru": "Это для меня"
+   }
+  },
+  {
+   "id": "kus-on-tualett",
+   "front": "Kus on tualett?",
+   "back": {
+    "en": "Where is the toilet?",
+    "az": "Tualet haradadır?",
+    "ru": "Где туалет?"
+   }
+  },
+  {
+   "id": "ma-olen-taimetoitlane",
+   "front": "Ma olen taimetoitlane",
+   "back": {
+    "en": "I am a vegetarian",
+    "az": "Mən vegetarianam",
+    "ru": "Я вегетарианец"
+   }
+  },
+  {
+   "id": "mul-on-allergia",
+   "front": "Mul on allergia",
+   "back": {
+    "en": "I have an allergy",
+    "az": "Mənim allergiyam var",
+    "ru": "У меня аллергия"
+   }
+  },
+  {
+   "id": "kas-te-olete-avatud",
+   "front": "Kas te olete avatud?",
+   "back": {
+    "en": "Are you open?",
+    "az": "Açıqsınız?",
+    "ru": "Вы открыты?"
+   }
+  }
+ ],
+ "level": "eat"
+}

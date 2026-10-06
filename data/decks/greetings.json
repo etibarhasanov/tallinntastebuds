@@ -1,0 +1,260 @@
+{
+ "id": "greetings",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Hello and goodbye",
+  "az": "Salam və sağ ol",
+  "ru": "Здравствуйте и до свидания"
+ },
+ "why": {
+  "en": "The words a day in Tallinn opens and closes with",
+  "az": "Tallinndə günün açıldığı və qapandığı sözlər",
+  "ru": "Слова, которыми день в Таллинне начинается и заканчивается"
+ },
+ "cards": [
+  {
+   "id": "tere",
+   "front": "Tere",
+   "back": {
+    "en": "Hello",
+    "az": "Salam",
+    "ru": "Здравствуйте"
+   }
+  },
+  {
+   "id": "tere-hommikust",
+   "front": "Tere hommikust",
+   "back": {
+    "en": "Good morning",
+    "az": "Sabahın xeyir",
+    "ru": "Доброе утро"
+   }
+  },
+  {
+   "id": "tere-paevast",
+   "front": "Tere päevast",
+   "back": {
+    "en": "Good afternoon",
+    "az": "Günortan xeyir",
+    "ru": "Добрый день"
+   }
+  },
+  {
+   "id": "tere-ohtust",
+   "front": "Tere õhtust",
+   "back": {
+    "en": "Good evening",
+    "az": "Axşamın xeyir",
+    "ru": "Добрый вечер"
+   }
+  },
+  {
+   "id": "head-ood",
+   "front": "Head ööd",
+   "back": {
+    "en": "Good night",
+    "az": "Gecən xeyrə qalsın",
+    "ru": "Доброй ночи"
+   }
+  },
+  {
+   "id": "head-aega",
+   "front": "Head aega",
+   "back": {
+    "en": "Goodbye",
+    "az": "Sağ ol",
+    "ru": "До свидания"
+   }
+  },
+  {
+   "id": "nagemist",
+   "front": "Nägemist",
+   "back": {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   }
+  },
+  {
+   "id": "tere-tulemast",
+   "front": "Tere tulemast",
+   "back": {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   }
+  },
+  {
+   "id": "kuidas-laheb",
+   "front": "Kuidas läheb?",
+   "back": {
+    "en": "How are you?",
+    "az": "Necəsən?",
+    "ru": "Как дела?"
+   }
+  },
+  {
+   "id": "hasti-aitah",
+   "front": "Hästi, aitäh",
+   "back": {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   }
+  },
+  {
+   "id": "meeldiv-tutvuda",
+   "front": "Meeldiv tutvuda",
+   "back": {
+    "en": "Nice to meet you",
+    "az": "Tanış olmaqdan məmnunam",
+    "ru": "Приятно познакомиться"
+   }
+  },
+  {
+   "id": "head-paeva",
+   "front": "Head päeva",
+   "back": {
+    "en": "Have a good day",
+    "az": "Gününüz xoş",
+    "ru": "Хорошего дня"
+   }
+  },
+  {
+   "id": "head-nadalavahetust",
+   "front": "Head nädalavahetust",
+   "back": {
+    "en": "Have a good weekend",
+    "az": "Həftəsonunuz xoş olsun",
+    "ru": "Хороших выходных"
+   }
+  },
+  {
+   "id": "kena-ohtut",
+   "front": "Kena õhtut",
+   "back": {
+    "en": "Have a nice evening",
+    "az": "Axşamınız xoş",
+    "ru": "Приятного вечера"
+   }
+  },
+  {
+   "id": "head-reisi",
+   "front": "Head reisi",
+   "back": {
+    "en": "Have a good trip",
+    "az": "Yaxşı yol",
+    "ru": "Хорошей поездки"
+   }
+  },
+  {
+   "id": "tervist",
+   "front": "Tervist",
+   "back": {
+    "en": "Hello, hi",
+    "az": "Salam",
+    "ru": "Привет, здравствуйте"
+   }
+  },
+  {
+   "id": "head-ohtut",
+   "front": "Head õhtut",
+   "back": {
+    "en": "Have a good evening",
+    "az": "Axşamınız xeyirli olsun",
+    "ru": "Доброго вечера"
+   }
+  },
+  {
+   "id": "nagemiseni",
+   "front": "Nägemiseni",
+   "back": {
+    "en": "Until we meet again",
+    "az": "Yenidən görüşənədək",
+    "ru": "До скорой встречи"
+   }
+  },
+  {
+   "id": "homseni",
+   "front": "Homseni",
+   "back": {
+    "en": "Till tomorrow",
+    "az": "Sabaha qədər",
+    "ru": "До завтра"
+   }
+  },
+  {
+   "id": "vaga-meeldiv",
+   "front": "Väga meeldiv",
+   "back": {
+    "en": "Very nice to meet you",
+    "az": "Çox məmnunam",
+    "ru": "Очень приятно"
+   }
+  },
+  {
+   "id": "tere-tere",
+   "front": "Tere-tere!",
+   "back": {
+    "en": "Hello there!",
+    "az": "Salam-salam!",
+    "ru": "Привет-привет!"
+   }
+  },
+  {
+   "id": "kohtumiseni",
+   "front": "Kohtumiseni!",
+   "back": {
+    "en": "See you!",
+    "az": "Görüşənədək!",
+    "ru": "До встречи!"
+   }
+  },
+  {
+   "id": "kuulmiseni",
+   "front": "Kuulmiseni!",
+   "back": {
+    "en": "Speak to you soon!",
+    "az": "Eşidənədək!",
+    "ru": "До связи!"
+   }
+  },
+  {
+   "id": "naeme-hiljem",
+   "front": "Näeme hiljem!",
+   "back": {
+    "en": "See you later!",
+    "az": "Sonra görüşərik!",
+    "ru": "Увидимся позже!"
+   }
+  },
+  {
+   "id": "hommikust",
+   "front": "Hommikust!",
+   "back": {
+    "en": "Morning!",
+    "az": "Sabahın xeyir!",
+    "ru": "Доброе утро!"
+   }
+  },
+  {
+   "id": "saage-tuttavaks",
+   "front": "Saage tuttavaks!",
+   "back": {
+    "en": "Please get acquainted!",
+    "az": "Tanış olun!",
+    "ru": "Познакомьтесь!"
+   }
+  },
+  {
+   "id": "samad-sonad",
+   "front": "Samad sõnad!",
+   "back": {
+    "en": "Likewise!",
+    "az": "Qarşılıqlı!",
+    "ru": "Взаимно!"
+   }
+  }
+ ],
+ "level": "start"
+}

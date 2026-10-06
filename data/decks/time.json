@@ -1,0 +1,964 @@
+{
+ "id": "time",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Days and time",
+  "az": "Günlər və vaxt",
+  "ru": "Дни и время"
+ },
+ "why": {
+  "en": "What day it is, and when the kitchen closes",
+  "az": "Bu gün hansı gündür və mətbəx nə vaxt bağlanır",
+  "ru": "Какой сегодня день и когда закрывается кухня"
+ },
+ "cards": [
+  {
+   "id": "tana",
+   "front": "Täna",
+   "back": {
+    "en": "Today",
+    "az": "Bu gün",
+    "ru": "Сегодня"
+   }
+  },
+  {
+   "id": "homme",
+   "front": "Homme",
+   "back": {
+    "en": "Tomorrow",
+    "az": "Sabah",
+    "ru": "Завтра"
+   },
+   "sentence": {
+    "et": "Homme on pühapäev.",
+    "en": "Tomorrow is Sunday.",
+    "az": "Sabah bazar günüdür.",
+    "ru": "Завтра воскресенье."
+   }
+  },
+  {
+   "id": "eile",
+   "front": "Eile",
+   "back": {
+    "en": "Yesterday",
+    "az": "Dünən",
+    "ru": "Вчера"
+   }
+  },
+  {
+   "id": "hommik",
+   "front": "Hommik",
+   "back": {
+    "en": "Morning",
+    "az": "Səhər",
+    "ru": "Утро"
+   },
+   "forms": [
+    "hommiku",
+    "hommikut"
+   ]
+  },
+  {
+   "id": "paev",
+   "front": "Päev",
+   "back": {
+    "en": "Day",
+    "az": "Gün",
+    "ru": "День"
+   },
+   "forms": [
+    "päeva",
+    "päeva"
+   ]
+  },
+  {
+   "id": "ohtu",
+   "front": "Õhtu",
+   "back": {
+    "en": "Evening",
+    "az": "Axşam",
+    "ru": "Вечер"
+   },
+   "forms": [
+    "õhtu",
+    "õhtut"
+   ]
+  },
+  {
+   "id": "oo",
+   "front": "Öö",
+   "back": {
+    "en": "Night",
+    "az": "Gecə",
+    "ru": "Ночь"
+   },
+   "forms": [
+    "öö",
+    "ööd"
+   ]
+  },
+  {
+   "id": "nadal",
+   "front": "Nädal",
+   "back": {
+    "en": "Week",
+    "az": "Həftə",
+    "ru": "Неделя"
+   },
+   "forms": [
+    "nädala",
+    "nädalat"
+   ]
+  },
+  {
+   "id": "kuu",
+   "front": "Kuu",
+   "back": {
+    "en": "Month",
+    "az": "Ay",
+    "ru": "Месяц"
+   },
+   "forms": [
+    "kuu",
+    "kuud"
+   ]
+  },
+  {
+   "id": "aasta",
+   "front": "Aasta",
+   "back": {
+    "en": "Year",
+    "az": "İl",
+    "ru": "Год"
+   },
+   "forms": [
+    "aasta",
+    "aastat"
+   ]
+  },
+  {
+   "id": "esmaspaev",
+   "front": "Esmaspäev",
+   "back": {
+    "en": "Monday",
+    "az": "Bazar ertəsi",
+    "ru": "Понедельник"
+   },
+   "forms": [
+    "esmaspäeva",
+    "esmaspäeva"
+   ]
+  },
+  {
+   "id": "teisipaev",
+   "front": "Teisipäev",
+   "back": {
+    "en": "Tuesday",
+    "az": "Çərşənbə axşamı",
+    "ru": "Вторник"
+   },
+   "forms": [
+    "teisipäeva",
+    "teisipäeva"
+   ]
+  },
+  {
+   "id": "kolmapaev",
+   "front": "Kolmapäev",
+   "back": {
+    "en": "Wednesday",
+    "az": "Çərşənbə",
+    "ru": "Среда"
+   },
+   "forms": [
+    "kolmapäeva",
+    "kolmapäeva"
+   ]
+  },
+  {
+   "id": "neljapaev",
+   "front": "Neljapäev",
+   "back": {
+    "en": "Thursday",
+    "az": "Cümə axşamı",
+    "ru": "Четверг"
+   },
+   "forms": [
+    "neljapäeva",
+    "neljapäeva"
+   ]
+  },
+  {
+   "id": "reede",
+   "front": "Reede",
+   "back": {
+    "en": "Friday",
+    "az": "Cümə",
+    "ru": "Пятница"
+   },
+   "forms": [
+    "reede",
+    "reedet"
+   ],
+   "sentence": {
+    "et": "Reedel on kinni.",
+    "en": "It is closed on Friday.",
+    "az": "Cümə günü bağlıdır.",
+    "ru": "В пятницу закрыто."
+   }
+  },
+  {
+   "id": "laupaev",
+   "front": "Laupäev",
+   "back": {
+    "en": "Saturday",
+    "az": "Şənbə",
+    "ru": "Суббота"
+   },
+   "forms": [
+    "laupäeva",
+    "laupäeva"
+   ]
+  },
+  {
+   "id": "puhapaev",
+   "front": "Pühapäev",
+   "back": {
+    "en": "Sunday",
+    "az": "Bazar günü",
+    "ru": "Воскресенье"
+   },
+   "forms": [
+    "pühapäeva",
+    "pühapäeva"
+   ]
+  },
+  {
+   "id": "mis-kell-on",
+   "front": "Mis kell on?",
+   "back": {
+    "en": "What time is it?",
+    "az": "Saat neçədir?",
+    "ru": "Который час?"
+   }
+  },
+  {
+   "id": "praegu",
+   "front": "Praegu",
+   "back": {
+    "en": "Now",
+    "az": "İndi",
+    "ru": "Сейчас"
+   }
+  },
+  {
+   "id": "hiljem",
+   "front": "Hiljem",
+   "back": {
+    "en": "Later",
+    "az": "Sonra",
+    "ru": "Позже"
+   }
+  },
+  {
+   "id": "varsti",
+   "front": "Varsti",
+   "back": {
+    "en": "Soon",
+    "az": "Tezliklə",
+    "ru": "Скоро"
+   }
+  },
+  {
+   "id": "millal",
+   "front": "Millal?",
+   "back": {
+    "en": "When?",
+    "az": "Nə vaxt?",
+    "ru": "Когда?"
+   }
+  },
+  {
+   "id": "tund",
+   "front": "Tund",
+   "back": {
+    "en": "Hour",
+    "az": "Saat",
+    "ru": "Час"
+   },
+   "forms": [
+    "tunni",
+    "tundi"
+   ],
+   "sentence": {
+    "et": "Ma ootasin ühe tunni.",
+    "en": "I waited for an hour.",
+    "az": "Bir saat gözlədim.",
+    "ru": "Я ждал час."
+   }
+  },
+  {
+   "id": "nadalavahetus",
+   "front": "Nädalavahetus",
+   "back": {
+    "en": "Weekend",
+    "az": "Həftəsonu",
+    "ru": "Выходные"
+   },
+   "forms": [
+    "nädalavahetuse",
+    "nädalavahetust"
+   ],
+   "sentence": {
+    "et": "Nädalavahetusel ma puhkan.",
+    "en": "At the weekend I rest.",
+    "az": "Həftəsonu dincəlirəm.",
+    "ru": "На выходных я отдыхаю."
+   }
+  },
+  {
+   "id": "nuud",
+   "front": "Nüüd",
+   "back": {
+    "en": "Now, by now",
+    "az": "İndi",
+    "ru": "Теперь, сейчас"
+   },
+   "sentence": {
+    "et": "Nüüd on juba hilja.",
+    "en": "It is late by now.",
+    "az": "İndi artıq gecdir.",
+    "ru": "Сейчас уже поздно."
+   }
+  },
+  {
+   "id": "kell",
+   "front": "Kell",
+   "back": {
+    "en": "Clock, hour",
+    "az": "Saat",
+    "ru": "Часы, час"
+   },
+   "forms": [
+    "kella",
+    "kella"
+   ],
+   "sentence": {
+    "et": "Kell on viis.",
+    "en": "It is five o'clock.",
+    "az": "Saat beşdir.",
+    "ru": "Сейчас пять часов."
+   }
+  },
+  {
+   "id": "minut",
+   "front": "Minut",
+   "back": {
+    "en": "Minute",
+    "az": "Dəqiqə",
+    "ru": "Минута"
+   },
+   "forms": [
+    "minuti",
+    "minutit"
+   ],
+   "sentence": {
+    "et": "Oota üks minut.",
+    "en": "Wait one minute.",
+    "az": "Bir dəqiqə gözlə.",
+    "ru": "Подожди одну минуту."
+   }
+  },
+  {
+   "id": "sekund",
+   "front": "Sekund",
+   "back": {
+    "en": "Second",
+    "az": "Saniyə",
+    "ru": "Секунда"
+   },
+   "forms": [
+    "sekundi",
+    "sekundit"
+   ],
+   "sentence": {
+    "et": "See võtab paar sekundit.",
+    "en": "It takes a couple of seconds.",
+    "az": "Bu bir neçə saniyə çəkir.",
+    "ru": "Это займёт пару секунд."
+   }
+  },
+  {
+   "id": "hetk",
+   "front": "Hetk",
+   "back": {
+    "en": "Moment",
+    "az": "An",
+    "ru": "Момент"
+   },
+   "forms": [
+    "hetke",
+    "hetke"
+   ],
+   "sentence": {
+    "et": "Üks hetk, palun.",
+    "en": "One moment, please.",
+    "az": "Bir an, zəhmət olmasa.",
+    "ru": "Один момент, пожалуйста."
+   }
+  },
+  {
+   "id": "kaua",
+   "front": "Kaua",
+   "back": {
+    "en": "A long time",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "sentence": {
+    "et": "Kas see võtab kaua?",
+    "en": "Does it take long?",
+    "az": "Bu uzun çəkir?",
+    "ru": "Это долго?"
+   }
+  },
+  {
+   "id": "vara",
+   "front": "Vara",
+   "back": {
+    "en": "Early",
+    "az": "tezdən",
+    "ru": "рано"
+   },
+   "sentence": {
+    "et": "Ma tõusin täna vara.",
+    "en": "I got up early today.",
+    "az": "Bu gün tez durdum.",
+    "ru": "Сегодня я встал рано."
+   }
+  },
+  {
+   "id": "tapselt",
+   "front": "Täpselt",
+   "back": {
+    "en": "Exactly",
+    "az": "dəqiq",
+    "ru": "точно"
+   },
+   "sentence": {
+    "et": "Rong väljub täpselt kell kaheksa.",
+    "en": "The train leaves at exactly eight.",
+    "az": "Qatar dəqiq saat səkkizdə yola düşür.",
+    "ru": "Поезд отходит ровно в восемь."
+   }
+  },
+  {
+   "id": "uleeile",
+   "front": "Üleeile",
+   "back": {
+    "en": "The day before yesterday",
+    "az": "srağagün",
+    "ru": "позавчера"
+   },
+   "sentence": {
+    "et": "Üleeile sadas vihma.",
+    "en": "It rained the day before yesterday.",
+    "az": "Srağagün yağış yağdı.",
+    "ru": "Позавчера шёл дождь."
+   }
+  },
+  {
+   "id": "ulehomme",
+   "front": "Ülehomme",
+   "back": {
+    "en": "The day after tomorrow",
+    "az": "birisi gün",
+    "ru": "послезавтра"
+   },
+   "sentence": {
+    "et": "Ülehomme on pühapäev.",
+    "en": "The day after tomorrow is Sunday.",
+    "az": "Birisi gün bazardır.",
+    "ru": "Послезавтра воскресенье."
+   }
+  },
+  {
+   "id": "algus",
+   "front": "Algus",
+   "back": {
+    "en": "Beginning",
+    "az": "Başlanğıc",
+    "ru": "Начало"
+   },
+   "forms": [
+    "alguse",
+    "algust"
+   ],
+   "sentence": {
+    "et": "Filmi algus oli igav.",
+    "en": "The beginning of the film was boring.",
+    "az": "Filmin əvvəli darıxdırıcı idi.",
+    "ru": "Начало фильма было скучным."
+   }
+  },
+  {
+   "id": "lopp",
+   "front": "Lõpp",
+   "back": {
+    "en": "End",
+    "az": "Son",
+    "ru": "Конец"
+   },
+   "forms": [
+    "lõpu",
+    "lõppu"
+   ],
+   "sentence": {
+    "et": "Kuu lõpus tuleb palk.",
+    "en": "The wages come at the end of the month.",
+    "az": "Ayın sonunda maaş gəlir.",
+    "ru": "В конце месяца приходит зарплата."
+   }
+  },
+  {
+   "id": "veerand-viis",
+   "front": "Veerand viis",
+   "back": {
+    "en": "A quarter past four",
+    "az": "Dördü on beş dəqiqə keçir",
+    "ru": "Четверть пятого"
+   },
+   "sentence": {
+    "et": "Kohtume veerand viis.",
+    "en": "Let us meet at a quarter past four.",
+    "az": "Dördü on beş dəqiqə keçəndə görüşək.",
+    "ru": "Встретимся в четверть пятого."
+   }
+  },
+  {
+   "id": "kolmveerand-uks",
+   "front": "Kolmveerand üks",
+   "back": {
+    "en": "A quarter to one",
+    "az": "Birə on beş dəqiqə qalır",
+    "ru": "Без четверти час"
+   },
+   "sentence": {
+    "et": "Loeng algab kolmveerand üks.",
+    "en": "The lecture starts at a quarter to one.",
+    "az": "Mühazirə birə on beş qalmış başlayır.",
+    "ru": "Лекция начинается без четверти час."
+   }
+  },
+  {
+   "id": "jargmine",
+   "front": "Järgmine",
+   "back": {
+    "en": "Next",
+    "az": "Növbəti",
+    "ru": "Следующий"
+   },
+   "forms": [
+    "järgmise",
+    "järgmist"
+   ],
+   "sentence": {
+    "et": "Järgmine peatus on minu oma.",
+    "en": "The next stop is mine.",
+    "az": "Növbəti dayanacaq mənimdir.",
+    "ru": "Следующая остановка моя."
+   }
+  },
+  {
+   "id": "viimane",
+   "front": "Viimane",
+   "back": {
+    "en": "Last",
+    "az": "Sonuncu",
+    "ru": "Последний"
+   },
+   "forms": [
+    "viimase",
+    "viimast"
+   ],
+   "sentence": {
+    "et": "See oli viimane buss.",
+    "en": "That was the last bus.",
+    "az": "Bu sonuncu avtobus idi.",
+    "ru": "Это был последний автобус."
+   }
+  },
+  {
+   "id": "enne",
+   "front": "Enne",
+   "back": {
+    "en": "Before",
+    "az": "əvvəl",
+    "ru": "до, перед"
+   },
+   "sentence": {
+    "et": "Tule enne kella kuut.",
+    "en": "Come before six o'clock.",
+    "az": "Saat altıdan əvvəl gəl.",
+    "ru": "Приходи до шести."
+   }
+  },
+  {
+   "id": "jaanuar",
+   "front": "Jaanuar",
+   "back": {
+    "en": "January",
+    "az": "Yanvar",
+    "ru": "Январь"
+   },
+   "forms": [
+    "jaanuari",
+    "jaanuari"
+   ]
+  },
+  {
+   "id": "veebruar",
+   "front": "Veebruar",
+   "back": {
+    "en": "February",
+    "az": "Fevral",
+    "ru": "Февраль"
+   },
+   "forms": [
+    "veebruari",
+    "veebruari"
+   ]
+  },
+  {
+   "id": "marts",
+   "front": "Märts",
+   "back": {
+    "en": "March",
+    "az": "Mart",
+    "ru": "Март"
+   },
+   "forms": [
+    "märtsi",
+    "märtsi"
+   ]
+  },
+  {
+   "id": "aprill",
+   "front": "Aprill",
+   "back": {
+    "en": "April",
+    "az": "Aprel",
+    "ru": "Апрель"
+   },
+   "forms": [
+    "aprilli",
+    "aprilli"
+   ]
+  },
+  {
+   "id": "mai",
+   "front": "Mai",
+   "back": {
+    "en": "May",
+    "az": "May",
+    "ru": "Май"
+   },
+   "forms": [
+    "mai",
+    "maid"
+   ]
+  },
+  {
+   "id": "juuni",
+   "front": "Juuni",
+   "back": {
+    "en": "June",
+    "az": "İyun",
+    "ru": "Июнь"
+   },
+   "forms": [
+    "juuni",
+    "juunit"
+   ]
+  },
+  {
+   "id": "juuli",
+   "front": "Juuli",
+   "back": {
+    "en": "July",
+    "az": "İyul",
+    "ru": "Июль"
+   },
+   "forms": [
+    "juuli",
+    "juulit"
+   ]
+  },
+  {
+   "id": "august",
+   "front": "August",
+   "back": {
+    "en": "August",
+    "az": "Avqust",
+    "ru": "Август"
+   },
+   "forms": [
+    "augusti",
+    "augustit"
+   ]
+  },
+  {
+   "id": "september",
+   "front": "September",
+   "back": {
+    "en": "September",
+    "az": "Sentyabr",
+    "ru": "Сентябрь"
+   },
+   "forms": [
+    "septembri",
+    "septembrit"
+   ]
+  },
+  {
+   "id": "oktoober",
+   "front": "Oktoober",
+   "back": {
+    "en": "October",
+    "az": "Oktyabr",
+    "ru": "Октябрь"
+   },
+   "forms": [
+    "oktoobri",
+    "oktoobrit"
+   ]
+  },
+  {
+   "id": "november",
+   "front": "November",
+   "back": {
+    "en": "November",
+    "az": "Noyabr",
+    "ru": "Ноябрь"
+   },
+   "forms": [
+    "novembri",
+    "novembrit"
+   ]
+  },
+  {
+   "id": "detsember",
+   "front": "Detsember",
+   "back": {
+    "en": "December",
+    "az": "Dekabr",
+    "ru": "Декабрь"
+   },
+   "forms": [
+    "detsembri",
+    "detsembrit"
+   ]
+  },
+  {
+   "id": "hommikul",
+   "front": "Hommikul",
+   "back": {
+    "en": "In the morning",
+    "az": "Səhər",
+    "ru": "Утром"
+   }
+  },
+  {
+   "id": "ohtul",
+   "front": "Õhtul",
+   "back": {
+    "en": "In the evening",
+    "az": "Axşam",
+    "ru": "Вечером"
+   }
+  },
+  {
+   "id": "paeval",
+   "front": "Päeval",
+   "back": {
+    "en": "During the day",
+    "az": "Gündüz",
+    "ru": "Днём"
+   }
+  },
+  {
+   "id": "oosel",
+   "front": "Öösel",
+   "back": {
+    "en": "At night",
+    "az": "Gecə",
+    "ru": "Ночью"
+   }
+  },
+  {
+   "id": "hommikupoole",
+   "front": "Hommikupoole",
+   "back": {
+    "en": "In the morning, a.m.",
+    "az": "Günün birinci yarısı",
+    "ru": "В первой половине дня"
+   }
+  },
+  {
+   "id": "ohtupoole",
+   "front": "Õhtupoole",
+   "back": {
+    "en": "In the afternoon, p.m.",
+    "az": "Günün ikinci yarısı",
+    "ru": "Во второй половине дня"
+   }
+  },
+  {
+   "id": "parastlouna",
+   "front": "Pärastlõuna",
+   "back": {
+    "en": "Afternoon",
+    "az": "Günortadan sonra",
+    "ru": "После обеда"
+   },
+   "forms": [
+    "pärastlõuna",
+    "pärastlõunat"
+   ]
+  },
+  {
+   "id": "sel-nadalal",
+   "front": "Sel nädalal",
+   "back": {
+    "en": "This week",
+    "az": "Bu həftə",
+    "ru": "На этой неделе"
+   }
+  },
+  {
+   "id": "aasta-tagasi",
+   "front": "Aasta tagasi",
+   "back": {
+    "en": "A year ago",
+    "az": "Bir il əvvəl",
+    "ru": "Год назад"
+   }
+  },
+  {
+   "id": "kolme-paeva-parast",
+   "front": "Kolme päeva pärast",
+   "back": {
+    "en": "In three days",
+    "az": "Üç gündən sonra",
+    "ru": "Через три дня"
+   }
+  },
+  {
+   "id": "poole-tunni-parast",
+   "front": "Poole tunni pärast",
+   "back": {
+    "en": "In half an hour",
+    "az": "Yarım saatdan sonra",
+    "ru": "Через полчаса"
+   }
+  },
+  {
+   "id": "pool-seitse",
+   "front": "Pool seitse",
+   "back": {
+    "en": "Half past six",
+    "az": "Altı yarım",
+    "ru": "Полседьмого"
+   }
+  },
+  {
+   "id": "veerand-kolm",
+   "front": "Veerand kolm",
+   "back": {
+    "en": "Quarter past two",
+    "az": "İki tamam on beş dəqiqə",
+    "ru": "Четверть третьего"
+   }
+  },
+  {
+   "id": "homseks",
+   "front": "Homseks",
+   "back": {
+    "en": "By tomorrow",
+    "az": "Sabaha qədər",
+    "ru": "К завтрашнему дню"
+   }
+  },
+  {
+   "id": "hommikune",
+   "front": "Hommikune",
+   "back": {
+    "en": "Morning, of the morning",
+    "az": "Səhərki",
+    "ru": "Утренний"
+   },
+   "forms": [
+    "hommikuse",
+    "hommikust"
+   ]
+  },
+  {
+   "id": "ohtune",
+   "front": "Õhtune",
+   "back": {
+    "en": "Evening, of the evening",
+    "az": "Axşamkı",
+    "ru": "Вечерний"
+   },
+   "forms": [
+    "õhtuse",
+    "õhtust"
+   ]
+  },
+  {
+   "id": "oine",
+   "front": "Öine",
+   "back": {
+    "en": "Nighttime",
+    "az": "Gecəki",
+    "ru": "Ночной"
+   },
+   "forms": [
+    "öise",
+    "öist"
+   ]
+  },
+  {
+   "id": "esmaspaevani",
+   "front": "Esmaspäevani!",
+   "back": {
+    "en": "Till Monday!",
+    "az": "Bazar ertəsinədək!",
+    "ru": "До понедельника!"
+   }
+  },
+  {
+   "id": "kuupaev",
+   "front": "Kuupäev",
+   "back": {
+    "en": "Date",
+    "az": "Tarix",
+    "ru": "Дата"
+   },
+   "forms": [
+    "kuupäeva",
+    "kuupäeva"
+   ]
+  },
+  {
+   "id": "alates",
+   "front": "Alates",
+   "back": {
+    "en": "Since, starting from",
+    "az": "…dan başlayaraq",
+    "ru": "Начиная с"
+   }
+  }
+ ],
+ "level": "more"
+}

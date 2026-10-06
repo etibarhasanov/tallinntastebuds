@@ -1,0 +1,798 @@
+{
+ "id": "cases",
+ "added": "2026-10-06",
+ "name": {
+  "en": "The fourteen cases",
+  "az": "On dörd hal",
+  "ru": "Четырнадцать падежей"
+ },
+ "why": {
+  "en": "Every ending an Estonian noun can take, the question each one answers, and the one form nearly all of them are built on.",
+  "az": "Eston isminin ala biləcəyi hər şəkilçi, hər birinin cavab verdiyi sual və demək olar hamısının qurulduğu bir forma.",
+  "ru": "Все окончания, которые может принять эстонское существительное, вопрос, на который отвечает каждое, и одна форма, на которой строятся почти все."
+ },
+ "body": [
+  {
+   "say": {
+    "en": "Estonian has fourteen cases, and that sounds worse than it is. The first three are the three forms on the back of every card — *laps · lapse · last*, child — and you have met them already. The other eleven are endings, and they are the same endings on every noun in the language: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Where English puts a little word in front — into, on, from, with, without — Estonian puts an ending at the back.",
+    "az": "Eston dilində on dörd hal var, və bu, eşidildiyi qədər qorxulu deyil. İlk üçü hər kartın arxasındakı üç formadır — *laps · lapse · last*, uşaq — və onlarla artıq tanışsınız. Qalan on biri şəkilçidir, və dildəki hər isimdə eyni şəkilçilərdir: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Bu sizə tanışdır: evə, evdə, evdən — şəkilçi sözün sonuna gəlir. Eston dilində sadəcə belə hallar daha çoxdur.",
+    "ru": "В эстонском четырнадцать падежей, и это звучит страшнее, чем есть. Первые три — это три формы на обороте каждой карточки: *laps · lapse · last*, ребёнок, — и вы с ними уже знакомы. Остальные одиннадцать — окончания, и они одинаковы у каждого существительного в языке: *-sse, -s, -st, -le, -l, -lt, -ks, -ni, -na, -ta, -ga*. Там, где русский ставит предлог — в, на, из, с, без, — эстонский ставит окончание."
+   }
+  },
+  {
+   "say": {
+    "en": "The table asks with *mis*, what, and its forms — *millesse? milles?* For a person it is *kes* and the same endings: *kellesse? kellel?*",
+    "az": "Cədvəl *mis* — nə — sözü və onun formaları ilə soruşur: *millesse? milles?* İnsan üçün *kes* və eyni şəkilçilərdir: *kellesse? kellel?*",
+    "ru": "Таблица спрашивает через *mis*, что, и его формы — *millesse? milles?* О человеке — *kes* и те же окончания: *kellesse? kellel?*"
+   }
+  },
+  {
+   "head": {
+    "en": "The three you know",
+    "az": "Bildiyiniz üç hal",
+    "ru": "Три, которые вы знаете"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kes? mis?",
+       "laps",
+       "lapsed"
+      ],
+      "means": {
+       "en": "1 · nimetav — who, what: the name",
+       "az": "1 · nimetav — kim, nə: adlıq",
+       "ru": "1 · nimetav — кто, что: именительный"
+      }
+     },
+     {
+      "et": [
+       "kelle? mille?",
+       "lapse",
+       "laste"
+      ],
+      "means": {
+       "en": "2 · omastav — whose, of",
+       "az": "2 · omastav — kimin, nəyin: yiyəlik",
+       "ru": "2 · omastav — чей, чего: родительный"
+      }
+     },
+     {
+      "et": [
+       "keda? mida?",
+       "last",
+       "lapsi"
+      ],
+      "means": {
+       "en": "3 · osastav — some, part of",
+       "az": "3 · osastav — kimi, nəyi: hissə",
+       "ru": "3 · osastav — кого, что: частичный"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Laps mängib õues.",
+     "en": "The child is playing outside.",
+     "az": "Uşaq çöldə oynayır.",
+     "ru": "Ребёнок играет на улице."
+    },
+    {
+     "et": "See on lapse tuba.",
+     "en": "This is the child's room.",
+     "az": "Bu, uşağın otağıdır.",
+     "ru": "Это комната ребёнка."
+    },
+    {
+     "et": "Ma näen last.",
+     "en": "I can see the child.",
+     "az": "Uşağı görürəm.",
+     "ru": "Я вижу ребёнка."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Into, in, out of",
+    "az": "İçinə, içində, içindən",
+    "ru": "Внутрь, внутри, изнутри"
+   }
+  },
+  {
+   "say": {
+    "en": "The next three are the inside of a thing: where to, where, and where from. *Ma sõidan Tartusse* — I am driving to Tartu. *Raamat on kotis* — the book is in the bag. *Ma olen Tallinnast* — I am from Tallinn. Many everyday words also have a short form of the first: *kooli, poodi, linna* — to school, to the shop, into town. The *-sse* is never wrong, and the short one is what you will hear.",
+    "az": "Növbəti üçü bir şeyin içidir: hara, harada, haradan. *Ma sõidan Tartusse* — Tartuya gedirəm. *Raamat on kotis* — kitab çantadadır. *Ma olen Tallinnast* — mən Tallinndənəm. Gündəlik sözlərin çoxunda birincinin qısa forması da var: *kooli, poodi, linna* — məktəbə, mağazaya, şəhərə. *-sse* heç vaxt səhv deyil, amma eşidəcəyiniz qısa formadır.",
+    "ru": "Следующие три — внутренность предмета: куда, где и откуда. *Ma sõidan Tartusse* — я еду в Тарту. *Raamat on kotis* — книга в сумке. *Ma olen Tallinnast* — я из Таллинна. У многих обиходных слов есть и короткая форма первого: *kooli, poodi, linna* — в школу, в магазин, в город. *-sse* никогда не ошибка, но слышать вы будете короткую."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "millesse?",
+       "lapsesse",
+       "lastesse"
+      ],
+      "means": {
+       "en": "4 · sisseütlev — into",
+       "az": "4 · sisseütlev — içinə",
+       "ru": "4 · sisseütlev — в (куда)"
+      }
+     },
+     {
+      "et": [
+       "milles?",
+       "lapses",
+       "lastes"
+      ],
+      "means": {
+       "en": "5 · seesütlev — in, inside",
+       "az": "5 · seesütlev — içində",
+       "ru": "5 · seesütlev — в (где)"
+      }
+     },
+     {
+      "et": [
+       "millest?",
+       "lapsest",
+       "lastest"
+      ],
+      "means": {
+       "en": "6 · seestütlev — out of; about",
+       "az": "6 · seestütlev — içindən; haqqında",
+       "ru": "6 · seestütlev — из; о"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma kolin Tallinnasse.",
+     "en": "I am moving to Tallinn.",
+     "az": "Tallinnə köçürəm.",
+     "ru": "Я переезжаю в Таллинн."
+    },
+    {
+     "et": "Võtmed on kotis.",
+     "en": "The keys are in the bag.",
+     "az": "Açarlar çantadadır.",
+     "ru": "Ключи в сумке."
+    },
+    {
+     "et": "Ta tuli just poest.",
+     "en": "She has just come from the shop.",
+     "az": "O, indicə mağazadan gəldi.",
+     "ru": "Она только что пришла из магазина."
+    },
+    {
+     "et": "Räägi mulle oma linnast.",
+     "en": "Tell me about your town.",
+     "az": "Mənə öz şəhərindən danış.",
+     "ru": "Расскажи мне о своём городе."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Onto, on, off",
+    "az": "Üstünə, üstündə, üstündən",
+    "ru": "На, у, с"
+   }
+  },
+  {
+   "say": {
+    "en": "The next three are the surface of a thing, and people. *Pane see lauale* — put it on the table. *Raamat on laual* — the book is on the table. *Ma sain kirja sõbralt* — I got a letter from a friend. The middle one also says who has something, because Estonian has no verb for to have: *Mul on auto* — I have a car, word for word on me is a car.",
+    "az": "Növbəti üçü bir şeyin üstü və insanlardır. *Pane see lauale* — bunu masanın üstünə qoy. *Raamat on laual* — kitab masanın üstündədir. *Ma sain kirja sõbralt* — dostdan məktub aldım. Ortadakı həm də kimdə nə olduğunu deyir, çünki eston dilində «sahib olmaq» feli yoxdur: *Mul on auto* — mənim maşınım var, hərfən «məndə maşın var».",
+    "ru": "Следующие три — поверхность предмета и люди. *Pane see lauale* — положи это на стол. *Raamat on laual* — книга на столе. *Ma sain kirja sõbralt* — я получил письмо от друга. Средний падеж ещё и говорит, у кого что есть, потому что глагола «иметь» в эстонском нет: *Mul on auto* — у меня есть машина, совсем как по-русски: у меня."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "millele?",
+       "lapsele",
+       "lastele"
+      ],
+      "means": {
+       "en": "7 · alaleütlev — onto; to somebody",
+       "az": "7 · alaleütlev — üstünə; kiməsə",
+       "ru": "7 · alaleütlev — на (куда); кому"
+      }
+     },
+     {
+      "et": [
+       "millel?",
+       "lapsel",
+       "lastel"
+      ],
+      "means": {
+       "en": "8 · alalütlev — on, at; who has",
+       "az": "8 · alalütlev — üstündə; kimdə var",
+       "ru": "8 · alalütlev — на (где); у кого"
+      }
+     },
+     {
+      "et": [
+       "millelt?",
+       "lapselt",
+       "lastelt"
+      ],
+      "means": {
+       "en": "9 · alaltütlev — off; from somebody",
+       "az": "9 · alaltütlev — üstündən; kimdən",
+       "ru": "9 · alaltütlev — с; от кого"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Helista emale!",
+     "en": "Call your mum!",
+     "az": "Anana zəng et!",
+     "ru": "Позвони маме!"
+    },
+    {
+     "et": "Tass on laual.",
+     "en": "The cup is on the table.",
+     "az": "Fincan masanın üstündədir.",
+     "ru": "Чашка на столе."
+    },
+    {
+     "et": "Mul on kaks last.",
+     "en": "I have two children.",
+     "az": "Mənim iki uşağım var.",
+     "ru": "У меня двое детей."
+    },
+    {
+     "et": "Küsi müüjalt.",
+     "en": "Ask the shop assistant.",
+     "az": "Satıcıdan soruş.",
+     "ru": "Спроси у продавца."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "And the last five",
+    "az": "Və son beşi",
+    "ru": "И последние пять"
+   }
+  },
+  {
+   "say": {
+    "en": "*Ta sai arstiks* — she became a doctor. *Ma olen tööl viieni* — I am at work until five. *Ta töötab kokana* — he works as a cook. *Kohv suhkruta* — coffee without sugar. *Ma tulen sõbraga* — I am coming with a friend. The last two are the ones you will say at a counter tomorrow.",
+    "az": "*Ta sai arstiks* — o, həkim oldu. *Ma olen tööl viieni* — beşədək işdəyəm. *Ta töötab kokana* — o, aşpaz işləyir. *Kohv suhkruta* — şəkərsiz qəhvə. *Ma tulen sõbraga* — dostumla gəlirəm. Son ikisini sabah piştaxtanın qarşısında deyəcəksiniz.",
+    "ru": "*Ta sai arstiks* — она стала врачом. *Ma olen tööl viieni* — я на работе до пяти. *Ta töötab kokana* — он работает поваром. *Kohv suhkruta* — кофе без сахара. *Ma tulen sõbraga* — я приду с другом. Последние два вы скажете у стойки уже завтра."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "milleks?",
+       "lapseks",
+       "lasteks"
+      ],
+      "means": {
+       "en": "10 · saav — becoming, as, for",
+       "az": "10 · saav — olmaq; üçün",
+       "ru": "10 · saav — кем стать; для"
+      }
+     },
+     {
+      "et": [
+       "milleni?",
+       "lapseni",
+       "lasteni"
+      ],
+      "means": {
+       "en": "11 · rajav — up to, until",
+       "az": "11 · rajav — -dək, qədər",
+       "ru": "11 · rajav — до"
+      }
+     },
+     {
+      "et": [
+       "millena?",
+       "lapsena",
+       "lastena"
+      ],
+      "means": {
+       "en": "12 · olev — as, in the role of",
+       "az": "12 · olev — kimi, sifətində",
+       "ru": "12 · olev — в качестве, кем"
+      }
+     },
+     {
+      "et": [
+       "milleta?",
+       "lapseta",
+       "lasteta"
+      ],
+      "means": {
+       "en": "13 · ilmaütlev — without",
+       "az": "13 · ilmaütlev — -sız, olmadan",
+       "ru": "13 · ilmaütlev — без"
+      }
+     },
+     {
+      "et": [
+       "millega?",
+       "lapsega",
+       "lastega"
+      ],
+      "means": {
+       "en": "14 · kaasaütlev — with",
+       "az": "14 · kaasaütlev — ilə",
+       "ru": "14 · kaasaütlev — с"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ta tahab saada arstiks.",
+     "en": "He wants to become a doctor.",
+     "az": "O, həkim olmaq istəyir.",
+     "ru": "Он хочет стать врачом."
+    },
+    {
+     "et": "Pood on lahti kella kümneni.",
+     "en": "The shop is open until ten.",
+     "az": "Mağaza saat onadək açıqdır.",
+     "ru": "Магазин открыт до десяти."
+    },
+    {
+     "et": "Ma töötan ettekandjana.",
+     "en": "I work as a waiter.",
+     "az": "Ofisiant işləyirəm.",
+     "ru": "Я работаю официантом."
+    },
+    {
+     "et": "Ma joon kohvi piimata.",
+     "en": "I drink my coffee without milk.",
+     "az": "Qəhvəni südsüz içirəm.",
+     "ru": "Я пью кофе без молока."
+    },
+    {
+     "et": "Kas maksate kaardiga?",
+     "en": "Are you paying by card?",
+     "az": "Kartla ödəyirsiniz?",
+     "ru": "Вы платите картой?"
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Built on the omastav",
+    "az": "Omastav üstündə",
+    "ru": "На основе omastav"
+   }
+  },
+  {
+   "say": {
+    "en": "Here is the part that makes it easy. All eleven endings go on the omastav, the second form on the card — never on the first. *Sõber* is a friend and its omastav is *sõbra*, so: *sõbrale, sõbralt, sõbraga, sõbrata*. That is why the card shows you the omastav: once you have it, you have eleven cases more. The plural works the same way on the plural omastav — *sõprade*, so *sõpradele, sõpradega* — and the plural itself is the singular omastav with a *-d*: *sõbrad, lapsed, veed*.",
+    "az": "İşi asanlaşdıran hissə budur. On bir şəkilçinin hamısı omastav-a — kartdakı ikinci formaya — gəlir, heç vaxt birinciyə yox. *Sõber* — dost, omastav-ı *sõbra*, deməli: *sõbrale, sõbralt, sõbraga, sõbrata*. Kart omastav-ı buna görə göstərir: onu bildinizsə, daha on bir hal da sizindir. Cəm də eyni cür, cəmin omastav-ı üstündə qurulur — *sõprade*, deməli *sõpradele, sõpradega* — cəmin özü isə təkin omastav-ı üstəgəl *-d*-dir: *sõbrad, lapsed, veed*.",
+    "ru": "Вот что делает всё это простым. Все одиннадцать окончаний ставятся на omastav, вторую форму на карточке, — и никогда на первую. *Sõber* — друг, его omastav — *sõbra*, значит: *sõbrale, sõbralt, sõbraga, sõbrata*. Поэтому карточка и показывает omastav: зная его, вы знаете ещё одиннадцать падежей. Множественное число устроено так же, на omastav множественного — *sõprade*, значит *sõpradele, sõpradega*, — а само множественное число — это omastav единственного плюс *-d*: *sõbrad, lapsed, veed*."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "the name",
+      "az": "ad",
+      "ru": "имя"
+     },
+     {
+      "en": "omastav",
+      "az": "omastav",
+      "ru": "omastav"
+     },
+     {
+      "en": "+ an ending",
+      "az": "+ şəkilçi",
+      "ru": "+ окончание"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "sõber",
+       "sõbra",
+       "sõbraga"
+      ],
+      "means": {
+       "en": "friend — with a friend",
+       "az": "dost — dostla",
+       "ru": "друг — с другом"
+      }
+     },
+     {
+      "et": [
+       "sõbrad",
+       "sõprade",
+       "sõpradega"
+      ],
+      "means": {
+       "en": "friends — with friends",
+       "az": "dostlar — dostlarla",
+       "ru": "друзья — с друзьями"
+      }
+     },
+     {
+      "et": [
+       "laps",
+       "lapse",
+       "lapsele"
+      ],
+      "means": {
+       "en": "child — to a child",
+       "az": "uşaq — uşağa",
+       "ru": "ребёнок — ребёнку"
+      }
+     },
+     {
+      "et": [
+       "lapsed",
+       "laste",
+       "lastele"
+      ],
+      "means": {
+       "en": "children — to children",
+       "az": "uşaqlar — uşaqlara",
+       "ru": "дети — детям"
+      }
+     },
+     {
+      "et": [
+       "vesi",
+       "vee",
+       "veeta"
+      ],
+      "means": {
+       "en": "water — without water",
+       "az": "su — susuz",
+       "ru": "вода — без воды"
+      }
+     },
+     {
+      "et": [
+       "leib",
+       "leiva",
+       "leivaga"
+      ],
+      "means": {
+       "en": "bread — with bread",
+       "az": "çörək — çörəklə",
+       "ru": "хлеб — с хлебом"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma sõidan sõbraga Tartusse.",
+     "en": "I am going to Tartu with a friend.",
+     "az": "Dostumla Tartuya gedirəm.",
+     "ru": "Я еду в Тарту с другом."
+    },
+    {
+     "et": "Me käisime sõpradega kinos.",
+     "en": "We went to the cinema with friends.",
+     "az": "Dostlarla kinoya getdik.",
+     "ru": "Мы ходили в кино с друзьями."
+    },
+    {
+     "et": "Ma annan lastele kommi.",
+     "en": "I give the children sweets.",
+     "az": "Uşaqlara konfet verirəm.",
+     "ru": "Я даю детям конфеты."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Two, and many",
+    "az": "İki və çox",
+    "ru": "Два и много"
+   }
+  },
+  {
+   "say": {
+    "en": "After a number the noun stands in the singular osastav: *kaks kohvi*, two coffees. After *palju*, a lot of, it takes the plural osastav, and that one swaps its last vowel by a rule worth knowing: *e* becomes *i*; *i* and *u* become *e*; and *a* becomes *u*, *i* or *e*. A word that will not swap takes *-sid* or *-id* instead.",
+    "az": "Saydan sonra isim təkin osastav-ında durur: *kaks kohvi*, iki qəhvə. *Palju* — çox — sözündən sonra cəmin osastav-ı gəlir, və onun son saiti bilməyə dəyən bir qaydaya görə dəyişir: *e* olur *i*; *i* və *u* olur *e*; *a* isə *u*, *i* və ya *e* olur. Saiti dəyişməyən söz əvəzinə *-sid* və ya *-id* alır.",
+    "ru": "После числа существительное стоит в osastav единственного числа: *kaks kohvi*, два кофе. После *palju*, много, — в osastav множественного, и там последняя гласная меняется по правилу, которое стоит знать: *e* становится *i*; *i* и *u* становятся *e*; а *a* становится *u*, *i* или *e*. Слово, которое гласную не меняет, берёт вместо этого *-sid* или *-id*."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "one",
+      "az": "bir",
+      "ru": "один"
+     },
+     {
+      "en": "kaks — two",
+      "az": "kaks — iki",
+      "ru": "kaks — два"
+     },
+     {
+      "en": "palju — many",
+      "az": "palju — çox",
+      "ru": "palju — много"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "täht",
+       "tähte",
+       "tähti"
+      ],
+      "means": {
+       "en": "letter, star — e → i",
+       "az": "hərf, ulduz — e → i",
+       "ru": "буква, звезда — e → i"
+      }
+     },
+     {
+      "et": [
+       "pilt",
+       "pilti",
+       "pilte"
+      ],
+      "means": {
+       "en": "picture — i → e",
+       "az": "şəkil — i → e",
+       "ru": "картинка — i → e"
+      }
+     },
+     {
+      "et": [
+       "lind",
+       "lindu",
+       "linde"
+      ],
+      "means": {
+       "en": "bird — u → e",
+       "az": "quş — u → e",
+       "ru": "птица — u → e"
+      }
+     },
+     {
+      "et": [
+       "sõber",
+       "sõpra",
+       "sõpru"
+      ],
+      "means": {
+       "en": "friend — a → u",
+       "az": "dost — a → u",
+       "ru": "друг — a → u"
+      }
+     },
+     {
+      "et": [
+       "loom",
+       "looma",
+       "loomi"
+      ],
+      "means": {
+       "en": "animal — a → i",
+       "az": "heyvan — a → i",
+       "ru": "животное — a → i"
+      }
+     },
+     {
+      "et": [
+       "tuba",
+       "tuba",
+       "tube"
+      ],
+      "means": {
+       "en": "room — a → e",
+       "az": "otaq — a → e",
+       "ru": "комната — a → e"
+      }
+     },
+     {
+      "et": [
+       "auto",
+       "autot",
+       "autosid"
+      ],
+      "means": {
+       "en": "car — -sid",
+       "az": "maşın — -sid",
+       "ru": "машина — -sid"
+      }
+     },
+     {
+      "et": [
+       "kuu",
+       "kuud",
+       "kuid"
+      ],
+      "means": {
+       "en": "moon, month — -id",
+       "az": "ay — -id",
+       "ru": "луна, месяц — -id"
+      }
+     },
+     {
+      "et": [
+       "aasta",
+       "aastat",
+       "aastaid"
+      ],
+      "means": {
+       "en": "year — -id",
+       "az": "il — -id",
+       "ru": "год — -id"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Mul on kaks venda.",
+     "en": "I have two brothers.",
+     "az": "Mənim iki qardaşım var.",
+     "ru": "У меня два брата."
+    },
+    {
+     "et": "Pargis on palju linde.",
+     "en": "There are lots of birds in the park.",
+     "az": "Parkda çoxlu quş var.",
+     "ru": "В парке много птиц."
+    },
+    {
+     "et": "Ta elas Eestis kolm aastat.",
+     "en": "She lived in Estonia for three years.",
+     "az": "O, Estoniyada üç il yaşadı.",
+     "ru": "Она прожила в Эстонии три года."
+    },
+    {
+     "et": "Meil on palju sõpru.",
+     "en": "We have lots of friends.",
+     "az": "Bizim çoxlu dostumuz var.",
+     "ru": "У нас много друзей."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "This good child",
+    "az": "Bu yaxşı uşaq",
+    "ru": "Этот хороший ребёнок"
+   }
+  },
+  {
+   "say": {
+    "en": "A word that goes with a noun — *see*, this, and *hea*, good — stands in the same case, and through the first ten it takes the same ending: *selles heas lapses*, in this good child; *nendele headele lastele*, to these good children. The last four are the exception. With *-ni, -na, -ta* and *-ga* only the last word takes the ending, and the ones in front of it stay in the omastav: *selle hea lapsega*, with this good child; *nende heade lasteta*, without these good children.",
+    "az": "İsimlə gələn söz — *see*, bu, və *hea*, yaxşı — eyni halda durur, və ilk onunda eyni şəkilçini alır: *selles heas lapses*, bu yaxşı uşaqda; *nendele headele lastele*, bu yaxşı uşaqlara. Son dördü istisnadır. *-ni, -na, -ta* və *-ga* ilə şəkilçini yalnız sonuncu söz alır, qabaqdakılar isə omastav-da qalır: *selle hea lapsega*, bu yaxşı uşaqla; *nende heade lasteta*, bu yaxşı uşaqlar olmadan.",
+    "ru": "Слово при существительном — *see*, этот, и *hea*, хороший, — стоит в том же падеже, и в первых десяти берёт то же окончание: *selles heas lapses*, в этом хорошем ребёнке; *nendele headele lastele*, этим хорошим детям. Последние четыре — исключение. С *-ni, -na, -ta* и *-ga* окончание берёт только последнее слово, а стоящие перед ним остаются в omastav: *selle hea lapsega*, с этим хорошим ребёнком; *nende heade lasteta*, без этих хороших детей."
+   }
+  },
+  {
+   "say": {
+    "en": "And in the plural *see* has a short form beside the long one: *nendesse* or *neisse*, *nendel* or *neil*. Both are right, and the short one is the one you will hear.",
+    "az": "Cəmdə *see*-nin uzun formanın yanında qısa forması da var: *nendesse* və ya *neisse*, *nendel* və ya *neil*. İkisi də düzdür, eşidəcəyiniz isə qısasıdır.",
+    "ru": "А во множественном числе у *see* есть рядом с длинной и короткая форма: *nendesse* или *neisse*, *nendel* или *neil*. Обе верны, а слышать вы будете короткую."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma elan selles suures majas.",
+     "en": "I live in this big house.",
+     "az": "Bu böyük evdə yaşayıram.",
+     "ru": "Я живу в этом большом доме."
+    },
+    {
+     "et": "Ma räägin selle uue õpetajaga.",
+     "en": "I am talking to this new teacher.",
+     "az": "Bu yeni müəllimlə danışıram.",
+     "ru": "Я говорю с этим новым учителем."
+    },
+    {
+     "et": "Neil on uus auto.",
+     "en": "They have a new car.",
+     "az": "Onların yeni maşını var.",
+     "ru": "У них новая машина."
+    }
+   ]
+  }
+ ]
+}

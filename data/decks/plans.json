@@ -1,0 +1,851 @@
+{
+ "id": "plans",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Making a plan",
+  "az": "Plan qurmaq",
+  "ru": "Строить план"
+ },
+ "why": {
+  "en": "Deciding what to do with a free day, in the words the deciding takes",
+  "az": "Boş günü nə ilə keçirməyi qərara almaq — qərarın tələb etdiyi sözlərlə",
+  "ru": "Решить, чем занять свободный день, — словами, которые для этого нужны"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "naiteks",
+   "front": "Näiteks",
+   "back": {
+    "en": "For example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "sentence": {
+    "et": "Lähme kuhugi, näiteks randa.",
+    "en": "Let us go somewhere, the beach for example.",
+    "az": "Gedək bir yerə, məsələn çimərliyə.",
+    "ru": "Пойдём куда-нибудь, например на пляж."
+   }
+  },
+  {
+   "id": "hoopis",
+   "front": "Hoopis",
+   "back": {
+    "en": "Instead, rather",
+    "az": "əvəzinə, elə",
+    "ru": "вместо этого, лучше"
+   },
+   "sentence": {
+    "et": "Lähme hoopis muuseumisse.",
+    "en": "Let us go to the museum instead.",
+    "az": "Gəl əvəzinə muzeyə gedək.",
+    "ru": "Давай лучше пойдём в музей."
+   }
+  },
+  {
+   "id": "uldse",
+   "front": "Üldse",
+   "back": {
+    "en": "At all",
+    "az": "heç",
+    "ru": "вообще"
+   },
+   "sentence": {
+    "et": "Ma ei taha üldse süüa.",
+    "en": "I do not want to eat at all.",
+    "az": "Heç yemək istəmirəm.",
+    "ru": "Я вообще не хочу есть."
+   }
+  },
+  {
+   "id": "usna",
+   "front": "Üsna",
+   "back": {
+    "en": "Quite",
+    "az": "olduqca",
+    "ru": "довольно"
+   },
+   "sentence": {
+    "et": "Täna on üsna soe.",
+    "en": "It is quite warm today.",
+    "az": "Bu gün olduqca istidir.",
+    "ru": "Сегодня довольно тепло."
+   }
+  },
+  {
+   "id": "ukskoik",
+   "front": "Ükskõik",
+   "back": {
+    "en": "Either way, whichever",
+    "az": "fərq etməz",
+    "ru": "всё равно"
+   },
+   "sentence": {
+    "et": "Mulle on ükskõik.",
+    "en": "It is all the same to me.",
+    "az": "Mənə fərqi yoxdur.",
+    "ru": "Мне всё равно."
+   }
+  },
+  {
+   "id": "niikuinii",
+   "front": "Niikuinii",
+   "back": {
+    "en": "Anyway",
+    "az": "hər halda",
+    "ru": "так или иначе"
+   },
+   "sentence": {
+    "et": "Ma lähen niikuinii linna.",
+    "en": "I am going into town anyway.",
+    "az": "Mən hər halda şəhərə gedirəm.",
+    "ru": "Я всё равно иду в город."
+   }
+  },
+  {
+   "id": "samal-ajal",
+   "front": "Samal ajal",
+   "back": {
+    "en": "Meanwhile",
+    "az": "bu arada",
+    "ru": "тем временем"
+   },
+   "sentence": {
+    "et": "Samal ajal koristan kööki.",
+    "en": "Meanwhile I will tidy the kitchen.",
+    "az": "Bu arada mətbəxi yığışdıracağam.",
+    "ru": "Тем временем я уберу на кухне."
+   }
+  },
+  {
+   "id": "motleme-siis-veel",
+   "front": "Mõtleme siis veel",
+   "back": {
+    "en": "Let us think about it some more",
+    "az": "Gəl bir az daha fikirləşək",
+    "ru": "Давай ещё подумаем"
+   }
+  },
+  {
+   "id": "jalgrattaga-soita",
+   "front": "Jalgrattaga sõita",
+   "back": {
+    "en": "To go by bicycle",
+    "az": "velosipedlə getmək",
+    "ru": "поехать на велосипеде"
+   },
+   "sentence": {
+    "et": "Kas tahad jalgrattaga sõita?",
+    "en": "Do you want to go cycling?",
+    "az": "Velosiped sürmək istəyirsən?",
+    "ru": "Хочешь покататься на велосипеде?"
+   }
+  },
+  {
+   "id": "muuseumis-kaia",
+   "front": "Muuseumis käia",
+   "back": {
+    "en": "To go round a museum",
+    "az": "muzeyə getmək",
+    "ru": "сходить в музей"
+   },
+   "sentence": {
+    "et": "Võiksime muuseumis käia.",
+    "en": "We could go round a museum.",
+    "az": "Muzeyə gedə bilərdik.",
+    "ru": "Мы могли бы сходить в музей."
+   }
+  },
+  {
+   "id": "paevitada",
+   "front": "Päevitada",
+   "back": {
+    "en": "To sunbathe",
+    "az": "günəş altında qızınmaq",
+    "ru": "загорать"
+   },
+   "sentence": {
+    "et": "Rannas saab päevitada.",
+    "en": "You can sunbathe at the beach.",
+    "az": "Çimərlikdə günəş altında qızınmaq olar.",
+    "ru": "На пляже можно загорать."
+   }
+  },
+  {
+   "id": "ujuda",
+   "front": "Ujuda",
+   "back": {
+    "en": "To swim",
+    "az": "üzmək",
+    "ru": "плавать"
+   },
+   "sentence": {
+    "et": "Meres on külm ujuda.",
+    "en": "The sea is cold for swimming.",
+    "az": "Dənizdə üzmək üçün soyuqdur.",
+    "ru": "В море холодно плавать."
+   }
+  },
+  {
+   "id": "matkata",
+   "front": "Matkata",
+   "back": {
+    "en": "To hike",
+    "az": "yürüşə çıxmaq",
+    "ru": "ходить в поход"
+   },
+   "sentence": {
+    "et": "Nädalavahetusel lähme matkama.",
+    "en": "We are going hiking at the weekend.",
+    "az": "Həftəsonu yürüşə çıxırıq.",
+    "ru": "На выходных идём в поход."
+   }
+  },
+  {
+   "id": "maalida",
+   "front": "Maalida",
+   "back": {
+    "en": "To paint",
+    "az": "rəsm çəkmək",
+    "ru": "писать красками"
+   },
+   "sentence": {
+    "et": "Ma tahan täna maalida.",
+    "en": "I want to paint today.",
+    "az": "Bu gün rəsm çəkmək istəyirəm.",
+    "ru": "Я хочу сегодня порисовать."
+   }
+  },
+  {
+   "id": "puhata",
+   "front": "Puhata",
+   "back": {
+    "en": "To rest",
+    "az": "dincəlmək",
+    "ru": "отдыхать"
+   },
+   "sentence": {
+    "et": "Ma pean natuke puhkama.",
+    "en": "I need to rest a little.",
+    "az": "Bir az dincəlməliyəm.",
+    "ru": "Мне нужно немного отдохнуть."
+   }
+  },
+  {
+   "id": "reisida",
+   "front": "Reisida",
+   "back": {
+    "en": "To travel",
+    "az": "səyahət etmək",
+    "ru": "путешествовать"
+   },
+   "sentence": {
+    "et": "Me tahame suvel reisida.",
+    "en": "We want to travel in the summer.",
+    "az": "Yayda səyahət etmək istəyirik.",
+    "ru": "Мы хотим летом путешествовать."
+   }
+  },
+  {
+   "id": "rannas",
+   "front": "Rannas",
+   "back": {
+    "en": "At the beach",
+    "az": "çimərlikdə",
+    "ru": "на пляже"
+   },
+   "sentence": {
+    "et": "Rannas on palju rahvast.",
+    "en": "There are a lot of people at the beach.",
+    "az": "Çimərlikdə çox adam var.",
+    "ru": "На пляже много людей."
+   }
+  },
+  {
+   "id": "suusatada",
+   "front": "Suusatada",
+   "back": {
+    "en": "To ski",
+    "az": "xizək sürmək",
+    "ru": "кататься на лыжах"
+   },
+   "sentence": {
+    "et": "Talvel käime suusatamas.",
+    "en": "In winter we go skiing.",
+    "az": "Qışda xizək sürməyə gedirik.",
+    "ru": "Зимой мы катаемся на лыжах."
+   }
+  },
+  {
+   "id": "pildistada",
+   "front": "Pildistada",
+   "back": {
+    "en": "To take photographs",
+    "az": "şəkil çəkmək",
+    "ru": "фотографировать"
+   },
+   "sentence": {
+    "et": "Ta pildistab vanalinna.",
+    "en": "They are photographing the old town.",
+    "az": "O, köhnə şəhərin şəkillərini çəkir.",
+    "ru": "Он фотографирует Старый город."
+   }
+  },
+  {
+   "id": "koeraga-jalutada",
+   "front": "Koeraga jalutada",
+   "back": {
+    "en": "To walk the dog",
+    "az": "itlə gəzmək",
+    "ru": "гулять с собакой"
+   },
+   "sentence": {
+    "et": "Ma käin koeraga jalutamas.",
+    "en": "I take the dog out for a walk.",
+    "az": "Mən itlə gəzməyə gedirəm.",
+    "ru": "Я выхожу гулять с собакой."
+   }
+  },
+  {
+   "id": "jousaal",
+   "front": "Jõusaal",
+   "back": {
+    "en": "Gym",
+    "az": "İdman zalı",
+    "ru": "Спортзал"
+   },
+   "forms": [
+    "jõusaali",
+    "jõusaali"
+   ],
+   "sentence": {
+    "et": "Jõusaal on kohe kõrval.",
+    "en": "The gym is right next door.",
+    "az": "İdman zalı elə yanımızdadır.",
+    "ru": "Спортзал совсем рядом."
+   }
+  },
+  {
+   "id": "jalgpall",
+   "front": "Jalgpall",
+   "back": {
+    "en": "Football",
+    "az": "Futbol",
+    "ru": "Футбол"
+   },
+   "forms": [
+    "jalgpalli",
+    "jalgpalli"
+   ],
+   "sentence": {
+    "et": "Lähme jalgpalli vaatama.",
+    "en": "Let us go and watch the football.",
+    "az": "Gedək futbola baxaq.",
+    "ru": "Пойдём смотреть футбол."
+   }
+  },
+  {
+   "id": "reis",
+   "front": "Reis",
+   "back": {
+    "en": "Trip, journey",
+    "az": "Səyahət",
+    "ru": "Поездка"
+   },
+   "forms": [
+    "reisi",
+    "reisi"
+   ],
+   "sentence": {
+    "et": "Reis kestab kolm päeva.",
+    "en": "The trip lasts three days.",
+    "az": "Səyahət üç gün çəkir.",
+    "ru": "Поездка длится три дня."
+   }
+  },
+  {
+   "id": "puhkus",
+   "front": "Puhkus",
+   "back": {
+    "en": "Holiday, time off",
+    "az": "Məzuniyyət",
+    "ru": "Отпуск"
+   },
+   "forms": [
+    "puhkuse",
+    "puhkust"
+   ],
+   "sentence": {
+    "et": "Mul on juulis puhkus.",
+    "en": "I have a holiday in July.",
+    "az": "İyulda məzuniyyətim var.",
+    "ru": "У меня отпуск в июле."
+   }
+  },
+  {
+   "id": "puha",
+   "front": "Püha",
+   "back": {
+    "en": "Public holiday",
+    "az": "Bayram",
+    "ru": "Праздник"
+   },
+   "forms": [
+    "püha",
+    "püha"
+   ],
+   "sentence": {
+    "et": "Homme on püha, pood on kinni.",
+    "en": "Tomorrow is a public holiday, the shop is closed.",
+    "az": "Sabah bayramdır, mağaza bağlıdır.",
+    "ru": "Завтра праздник, магазин закрыт."
+   }
+  },
+  {
+   "id": "joulud",
+   "front": "Jõulud",
+   "back": {
+    "en": "Christmas",
+    "az": "Milad bayramı",
+    "ru": "Рождество"
+   },
+   "forms": [
+    "jõulude",
+    "jõule"
+   ],
+   "sentence": {
+    "et": "Jõulud on detsembris.",
+    "en": "Christmas is in December.",
+    "az": "Milad bayramı dekabrdadır.",
+    "ru": "Рождество в декабре."
+   }
+  },
+  {
+   "id": "vaheaeg",
+   "front": "Vaheaeg",
+   "back": {
+    "en": "School holiday",
+    "az": "Tətil",
+    "ru": "Каникулы"
+   },
+   "forms": [
+    "vaheaja",
+    "vaheaega"
+   ],
+   "sentence": {
+    "et": "Lastel on kevadel vaheaeg.",
+    "en": "The children have a holiday in spring.",
+    "az": "Uşaqların yazda tətili var.",
+    "ru": "У детей весной каникулы."
+   }
+  },
+  {
+   "id": "film",
+   "front": "Film",
+   "back": {
+    "en": "Film",
+    "az": "Film",
+    "ru": "Фильм"
+   },
+   "forms": [
+    "filmi",
+    "filmi"
+   ],
+   "sentence": {
+    "et": "Lähme filmi vaatama.",
+    "en": "Let us go and watch a film.",
+    "az": "Gedək film baxaq.",
+    "ru": "Пойдём смотреть фильм."
+   }
+  },
+  {
+   "id": "mang",
+   "front": "Mäng",
+   "back": {
+    "en": "Game",
+    "az": "Oyun",
+    "ru": "Игра"
+   },
+   "forms": [
+    "mängu",
+    "mängu"
+   ],
+   "sentence": {
+    "et": "Mäng algab kell seitse.",
+    "en": "The game starts at seven.",
+    "az": "Oyun saat yeddidə başlayır.",
+    "ru": "Игра начинается в семь."
+   }
+  },
+  {
+   "id": "laul",
+   "front": "Laul",
+   "back": {
+    "en": "Song",
+    "az": "Mahnı",
+    "ru": "Песня"
+   },
+   "forms": [
+    "laulu",
+    "laulu"
+   ],
+   "sentence": {
+    "et": "See laul on eestikeelne.",
+    "en": "This song is in Estonian.",
+    "az": "Bu mahnı estoncadır.",
+    "ru": "Эта песня на эстонском."
+   }
+  },
+  {
+   "id": "huvi",
+   "front": "Huvi",
+   "back": {
+    "en": "Interest",
+    "az": "Maraq",
+    "ru": "Интерес"
+   },
+   "forms": [
+    "huvi",
+    "huvi"
+   ],
+   "sentence": {
+    "et": "Mul on huvi keelte vastu.",
+    "en": "I have an interest in languages.",
+    "az": "Dillərə marağım var.",
+    "ru": "У меня интерес к языкам."
+   }
+  },
+  {
+   "id": "ekskursioon",
+   "front": "Ekskursioon",
+   "back": {
+    "en": "Excursion",
+    "az": "Ekskursiya",
+    "ru": "Экскурсия"
+   },
+   "forms": [
+    "ekskursiooni",
+    "ekskursiooni"
+   ]
+  },
+  {
+   "id": "kontsert",
+   "front": "Kontsert",
+   "back": {
+    "en": "Concert",
+    "az": "Konsert",
+    "ru": "Концерт"
+   },
+   "forms": [
+    "kontserdi",
+    "kontserti"
+   ]
+  },
+  {
+   "id": "naitus",
+   "front": "Näitus",
+   "back": {
+    "en": "Exhibition",
+    "az": "Sərgi",
+    "ru": "Выставка"
+   },
+   "forms": [
+    "näituse",
+    "näitust"
+   ]
+  },
+  {
+   "id": "teater",
+   "front": "Teater",
+   "back": {
+    "en": "Theatre",
+    "az": "Teatr",
+    "ru": "Театр"
+   },
+   "forms": [
+    "teatri",
+    "teatrit"
+   ]
+  },
+  {
+   "id": "seanss",
+   "front": "Seanss",
+   "back": {
+    "en": "Screening, show",
+    "az": "Seans",
+    "ru": "Сеанс"
+   },
+   "forms": [
+    "seansi",
+    "seanssi"
+   ]
+  },
+  {
+   "id": "ooklubi",
+   "front": "Ööklubi",
+   "back": {
+    "en": "Night club",
+    "az": "Gecə klubu",
+    "ru": "Ночной клуб"
+   },
+   "forms": [
+    "ööklubi",
+    "ööklubi"
+   ]
+  },
+  {
+   "id": "band",
+   "front": "Bänd",
+   "back": {
+    "en": "Band",
+    "az": "Qrup",
+    "ru": "Группа"
+   },
+   "forms": [
+    "bändi",
+    "bändi"
+   ]
+  },
+  {
+   "id": "nadalavahetusel",
+   "front": "Nädalavahetusel",
+   "back": {
+    "en": "At the weekend",
+    "az": "Həftəsonu",
+    "ru": "На выходных"
+   }
+  },
+  {
+   "id": "rida",
+   "front": "Rida",
+   "back": {
+    "en": "Row",
+    "az": "Sıra",
+    "ru": "Ряд"
+   },
+   "forms": [
+    "rea",
+    "rida"
+   ]
+  },
+  {
+   "id": "valja-minema",
+   "front": "Välja minema",
+   "back": {
+    "en": "To go out",
+    "az": "çölə çıxmaq",
+    "ru": "идти гулять"
+   }
+  },
+  {
+   "id": "soppama",
+   "front": "Šoppama",
+   "back": {
+    "en": "To go shopping",
+    "az": "alış-verişə getmək",
+    "ru": "ходить по магазинам"
+   },
+   "forms": [
+    "šopata",
+    "šoppan"
+   ]
+  },
+  {
+   "id": "malet-mangima",
+   "front": "Malet mängima",
+   "back": {
+    "en": "To play chess",
+    "az": "şahmat oynamaq",
+    "ru": "играть в шахматы"
+   }
+  },
+  {
+   "id": "arvutiga-mangima",
+   "front": "Arvutiga mängima",
+   "back": {
+    "en": "To play on the computer",
+    "az": "kompüterdə oynamaq",
+    "ru": "играть на компьютере"
+   }
+  },
+  {
+   "id": "kino",
+   "front": "Kino",
+   "back": {
+    "en": "Cinema",
+    "az": "Kino",
+    "ru": "Кино, кинотеатр"
+   },
+   "forms": [
+    "kino",
+    "kino"
+   ]
+  },
+  {
+   "id": "korvpall",
+   "front": "Korvpall",
+   "back": {
+    "en": "Basketball",
+    "az": "Basketbol",
+    "ru": "Баскетбол"
+   },
+   "forms": [
+    "korvpalli",
+    "korvpalli"
+   ]
+  },
+  {
+   "id": "vorkpall",
+   "front": "Võrkpall",
+   "back": {
+    "en": "Volleyball",
+    "az": "Voleybol",
+    "ru": "Волейбол"
+   },
+   "forms": [
+    "võrkpalli",
+    "võrkpalli"
+   ]
+  },
+  {
+   "id": "muusika",
+   "front": "Muusika",
+   "back": {
+    "en": "Music",
+    "az": "Musiqi",
+    "ru": "Музыка"
+   },
+   "forms": [
+    "muusika",
+    "muusikat"
+   ]
+  },
+  {
+   "id": "puhkepaev",
+   "front": "Puhkepäev",
+   "back": {
+    "en": "Day off",
+    "az": "İstirahət günü",
+    "ru": "Выходной день"
+   },
+   "forms": [
+    "puhkepäeva",
+    "puhkepäeva"
+   ]
+  },
+  {
+   "id": "saal",
+   "front": "Saal",
+   "back": {
+    "en": "Hall",
+    "az": "Zal",
+    "ru": "Зал"
+   },
+   "forms": [
+    "saali",
+    "saali"
+   ]
+  },
+  {
+   "id": "trenn",
+   "front": "Trenn",
+   "back": {
+    "en": "Training, a workout",
+    "az": "Məşq",
+    "ru": "Тренировка"
+   },
+   "forms": [
+    "trenni",
+    "trenni"
+   ]
+  },
+  {
+   "id": "uisutama",
+   "front": "Uisutama",
+   "back": {
+    "en": "To skate",
+    "az": "Konki sürmək",
+    "ru": "Кататься на коньках"
+   },
+   "forms": [
+    "uisutada",
+    "uisutan"
+   ]
+  },
+  {
+   "id": "terve-paev",
+   "front": "Terve päev",
+   "back": {
+    "en": "The whole day",
+    "az": "Bütün gün",
+    "ru": "Целый день"
+   }
+  },
+  {
+   "id": "koor",
+   "front": "Koor",
+   "back": {
+    "en": "Choir",
+    "az": "Xor",
+    "ru": "Хор"
+   },
+   "forms": [
+    "koori",
+    "koori"
+   ]
+  },
+  {
+   "id": "tegevus",
+   "front": "Tegevus",
+   "back": {
+    "en": "Activity",
+    "az": "Fəaliyyət, məşğuliyyət",
+    "ru": "Деятельность, занятие"
+   },
+   "forms": [
+    "tegevuse",
+    "tegevust"
+   ]
+  },
+  {
+   "id": "kuurort",
+   "front": "Kuurort",
+   "back": {
+    "en": "Resort",
+    "az": "Kurort",
+    "ru": "Курорт"
+   },
+   "forms": [
+    "kuurordi",
+    "kuurorti"
+   ]
+  },
+  {
+   "id": "kuningas",
+   "front": "Kuningas",
+   "back": {
+    "en": "King",
+    "az": "Kral",
+    "ru": "Король"
+   },
+   "forms": [
+    "kuninga",
+    "kuningat"
+   ]
+  },
+  {
+   "id": "male",
+   "front": "Male",
+   "back": {
+    "en": "Chess",
+    "az": "Şahmat",
+    "ru": "Шахматы"
+   },
+   "forms": [
+    "male",
+    "malet"
+   ]
+  }
+ ]
+}

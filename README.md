@@ -8890,7 +8890,8 @@ the one people are given; this only settles which of them a crawler keeps.
 ### Where the words are, and it is mostly not the database
 
 `data/decks.json` is the Estonian the site ships: fifty-three decks, two
-thousand five hundred cards, deployed as a file and read as one. It
+thousand five hundred cards, deployed as a file and read as the files
+`tools/decks.mjs` writes from it, below. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -8902,22 +8903,34 @@ themselves, how far each person has got, and which of the shipped cards a
 reader has said is wrong. `functions/api/flashcard.js` is the only thing that
 writes any of them.
 
-**What reading it as one costs.** Three Functions read the whole file —
-`/api/flashcard`, the route that writes a deck's head, and `/api/say` — each
-through `dataFile()`, which parses it once and keeps it five minutes per
-isolate. Measured in Node on an ordinary machine in October 2026, when the
-file was 1.26 MB on disk and half of that indentation, the parse took 4.3 ms
-against the ten milliseconds of CPU a request gets on the Workers free plan,
-and it grows with the file, which was 935 KB the day before. A browser never
-pays it: the shelf is the decks' names and counts, and a deck comes one at a
-time. The strings beside it stopped costing anything to speak of when the
-Functions went over to one language file — **One language at a time** under
-**Languages**. If the file keeps growing, the change is one file per deck
-and an index of names, card ids and counts, written by a tool the way
-`data/lang/` is, so that a request parses the deck it asked for and the shelf
-parses the index. It touches those three Functions, `tools/validate.mjs`,
-`tools/sitemap.mjs` and `ABOUT` in `functions/api/_visitors.js`, and nothing
-anybody edits, since `data/decks.json` would stay the source.
+**And it is read one deck at a time.** Three Functions used to read the whole
+file — `/api/flashcard`, the route that writes a deck's head, and `/api/say`
+— each through `dataFile()`, which parses it once and keeps it five minutes
+per isolate. Measured in Node on an ordinary machine in October 2026, when
+the file was 1.30 MB on disk and half of that indentation, the parse took
+4.4 ms against the ten milliseconds of CPU a request gets on the Workers free
+plan, and it grew with every deck. So `node tools/decks.mjs` writes the source
+out into `data/decks/`, the way `tools/languages.mjs` writes `data/lang/`:
+`index.json`, every deck with the ids of its cards and every lesson and song
+without its body, which is all the shelf draws — 77 KB, a fifth of a
+millisecond to parse; one file per deck, lesson and song, named by its id,
+whole, the largest of them the two-word verbs at 57 KB; and `spoken.json`,
+every string the voice may say, sorted. The two routes read the index and one file through
+`functions/api/_decks.js`, the voice reads its list and nothing else, and the
+visitor count reads the index for the ids a report may name. The one reader
+of the source left at run time is the pair of decks gathered out of
+somebody's rows — what they got wrong and what they know — which read the
+files of the decks those rows name when they are eight or fewer and the
+source once when they are more: each file is a subrequest, the free plan
+caps those, and someone with words in every deck would otherwise make fifty.
+Nothing in a browser reads any of it — the shelf comes from `/api/flashcard`
+as it always did. The validator fails the build
+on a file there that is not what the tool would write, and reserves the two
+ids the folder's own files take, `index` and `spoken`. `data/decks.json`
+stays the only file anybody edits, and editing it is followed by the tool,
+the way `ui.json` is followed by `tools/languages.mjs`. The strings beside
+the decks went the same way a day earlier — **One language at a time** under
+**Languages**.
 
 ### Where the second thousand came from
 
@@ -11073,10 +11086,15 @@ functions/flashcard.js         the route that serves it, with the deck's head
 assets/flashcard.js            the browser half, and the third sign-in form
 assets/flashcard.css           its rules
 functions/api/flashcard.js     the API route, and the three tables' only writer
-functions/api/say.js           the voice, which reads data/decks.json and nothing
-                               else
+functions/api/say.js           the voice, which reads data/decks/spoken.json and
+                               nothing else
+functions/api/_decks.js        the ways of reading data/decks/, for the two
+                               routes
+tools/decks.mjs                writes data/decks/ out of data/decks.json
 data/decks.json                the decks the site ships, the grammar lessons and
-                               the songs
+                               the songs — the file anybody edits
+data/decks/                    the index, one file per deck, lesson and song,
+                               and the voice's list, as the tool writes them
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -11085,7 +11103,7 @@ and each is fenced or prefixed so it can be found by looking:
 | File | What is the flashcards' |
 |---|---|
 | `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
-| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one, and `'flashcard.html'` in the PAGE-HEAD marker list |
+| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one, `'flashcard.html'` in the PAGE-HEAD marker list, and the `data/decks/` staleness check with its import of `tools/decks.mjs` |
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `shelfIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
@@ -11095,8 +11113,8 @@ and each is fenced or prefixed so it can be found by looking:
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
 | `data/ui.json` | the hundred and one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
-| `README.md` | this section, its line in **Contents**, its seven lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
-| `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
+| `README.md` | this section, its line in **Contents**, its ten lines in **Files**, the `data/decks.json` and `data/decks/` lines under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
+| `CLAUDE.md` | the row in the process table, the `data/decks.json` row in the generated-files table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
 | `.claude/skills/site/SKILL.md` | the `flashcard.html` in the stamped-pages list |
 
@@ -14870,6 +14888,11 @@ instead of a minute after the merge.
   missing one it does, or is missing a string in one of them, or carries a key
   `data/ui.json` also carries — one string, one home. See
   **[Splitwise](#splitwise)**
+- a file in `data/decks/` that is not what `tools/decks.mjs` would write from
+  `data/decks.json`, or one left there for a deck the source no longer has —
+  the index, the one file per deck, lesson and song, and the voice's list, which
+  are what the Functions read instead of the whole — or a deck, lesson or song
+  whose id is `index` or `spoken`, the folder's own two files
 - a `data/decks.json` whose decks or cards are malformed: a duplicate id, a
   missing side, a side longer than the sixty characters the card draws, a name,
   a line or a back that is a bare string rather than an object keyed by
@@ -15048,6 +15071,9 @@ functions/api/say.js       flashcards: a card's, a lesson's or a song's
                            voice, kept in Cloudflare's cache and nowhere else
 functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
+functions/api/_decks.js    flashcards: the shelf's index and one deck's file,
+                           as both of those routes read them (not a route:
+                           leading _)
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most opened first
@@ -15110,6 +15136,9 @@ data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            grammar and four songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten
+data/decks/                what the Functions read instead: the index, one file
+                           per deck, lesson and song, and the voice's list,
+                           written by tools/decks.mjs
 blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
@@ -15221,6 +15250,8 @@ photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
 tools/places.mjs           builds data/places.json from the CSV and the map
+tools/decks.mjs            writes data/decks/ from data/decks.json: the index,
+                           one file per deck, and what the voice may say
 tools/city.mjs             turns the same export into data/city.json, the city
                            under every list's panel
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql

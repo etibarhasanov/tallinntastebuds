@@ -1,0 +1,990 @@
+{
+ "id": "cooking",
+ "added": "2026-09-20",
+ "level": "deep",
+ "name": {
+  "en": "Cooking it yourself",
+  "az": "Özün bişirəndə",
+  "ru": "Когда готовишь сам"
+ },
+ "why": {
+  "en": "A recipe in Estonian: chop, fry, whisk, and a spoonful of something",
+  "az": "Eston dilində resept: doğra, qızart, çal və bir qaşıq nəsə",
+  "ru": "Рецепт по-эстонски: порубить, пожарить, взбить и ложка чего-нибудь"
+ },
+ "cards": [
+  {
+   "id": "kupsetama",
+   "front": "Küpsetama",
+   "back": {
+    "en": "To bake, to roast",
+    "az": "bişirmək",
+    "ru": "печь"
+   },
+   "forms": [
+    "küpsetada",
+    "küpsetan"
+   ]
+  },
+  {
+   "id": "segama",
+   "front": "Segama",
+   "back": {
+    "en": "To mix, to stir",
+    "az": "qarışdırmaq",
+    "ru": "мешать"
+   },
+   "forms": [
+    "segada",
+    "segan"
+   ]
+  },
+  {
+   "id": "loikama",
+   "front": "Lõikama",
+   "back": {
+    "en": "To cut",
+    "az": "kəsmək",
+    "ru": "резать"
+   },
+   "forms": [
+    "lõigata",
+    "lõikan"
+   ]
+  },
+  {
+   "id": "hakkima",
+   "front": "Hakkima",
+   "back": {
+    "en": "To chop",
+    "az": "doğramaq",
+    "ru": "рубить"
+   },
+   "forms": [
+    "hakkida",
+    "hakin"
+   ]
+  },
+  {
+   "id": "koorima",
+   "front": "Koorima",
+   "back": {
+    "en": "To peel",
+    "az": "soymaq",
+    "ru": "чистить"
+   },
+   "forms": [
+    "koorida",
+    "koorin"
+   ]
+  },
+  {
+   "id": "kuumutama",
+   "front": "Kuumutama",
+   "back": {
+    "en": "To heat",
+    "az": "qızdırmaq",
+    "ru": "нагревать"
+   },
+   "forms": [
+    "kuumutada",
+    "kuumutan"
+   ]
+  },
+  {
+   "id": "lisama",
+   "front": "Lisama",
+   "back": {
+    "en": "To add",
+    "az": "əlavə etmək",
+    "ru": "добавлять"
+   },
+   "forms": [
+    "lisada",
+    "lisan"
+   ]
+  },
+  {
+   "id": "sotkuma",
+   "front": "Sõtkuma",
+   "back": {
+    "en": "To knead",
+    "az": "yoğurmaq",
+    "ru": "замешивать"
+   },
+   "forms": [
+    "sõtkuda",
+    "sõtkun"
+   ]
+  },
+  {
+   "id": "rullima",
+   "front": "Rullima",
+   "back": {
+    "en": "To roll out",
+    "az": "yaymaq",
+    "ru": "раскатывать"
+   },
+   "forms": [
+    "rullida",
+    "rullin"
+   ]
+  },
+  {
+   "id": "kloppima",
+   "front": "Kloppima",
+   "back": {
+    "en": "To whisk",
+    "az": "çalmaq",
+    "ru": "взбивать"
+   },
+   "forms": [
+    "kloppida",
+    "klopin"
+   ]
+  },
+  {
+   "id": "maarima",
+   "front": "Määrima",
+   "back": {
+    "en": "To spread",
+    "az": "sürtmək",
+    "ru": "намазывать"
+   },
+   "forms": [
+    "määrida",
+    "määrin"
+   ]
+  },
+  {
+   "id": "serveerima",
+   "front": "Serveerima",
+   "back": {
+    "en": "To serve",
+    "az": "süfrəyə vermək",
+    "ru": "подавать"
+   },
+   "forms": [
+    "serveerida",
+    "serveerin"
+   ]
+  },
+  {
+   "id": "valama",
+   "front": "Valama",
+   "back": {
+    "en": "To pour",
+    "az": "tökmək",
+    "ru": "наливать"
+   },
+   "forms": [
+    "valada",
+    "valan"
+   ]
+  },
+  {
+   "id": "keema-ajama",
+   "front": "Keema ajama",
+   "back": {
+    "en": "To bring to the boil",
+    "az": "qaynatmaq",
+    "ru": "доводить до кипения"
+   }
+  },
+  {
+   "id": "pehmeks-keetma",
+   "front": "Pehmeks keetma",
+   "back": {
+    "en": "To boil until tender",
+    "az": "yumşalana qədər bişirmək",
+    "ru": "варить до мягкости"
+   }
+  },
+  {
+   "id": "tukkideks-loikama",
+   "front": "Tükkideks lõikama",
+   "back": {
+    "en": "To cut into pieces",
+    "az": "hissələrə kəsmək",
+    "ru": "резать на куски"
+   }
+  },
+  {
+   "id": "ohukeseks-rullima",
+   "front": "Õhukeseks rullima",
+   "back": {
+    "en": "To roll out thin",
+    "az": "nazik yaymaq",
+    "ru": "тонко раскатывать"
+   }
+  },
+  {
+   "id": "puhtaks-pesema",
+   "front": "Puhtaks pesema",
+   "back": {
+    "en": "To wash clean",
+    "az": "təmizcə yumaq",
+    "ru": "вымывать"
+   }
+  },
+  {
+   "id": "tainas",
+   "front": "Tainas",
+   "back": {
+    "en": "Dough",
+    "az": "Xəmir",
+    "ru": "Тесто"
+   },
+   "forms": [
+    "taina",
+    "tainast"
+   ]
+  },
+  {
+   "id": "retsept",
+   "front": "Retsept",
+   "back": {
+    "en": "Recipe",
+    "az": "Resept",
+    "ru": "Рецепт"
+   },
+   "forms": [
+    "retsepti",
+    "retsepti"
+   ]
+  },
+  {
+   "id": "riivitud",
+   "front": "Riivitud",
+   "back": {
+    "en": "Grated",
+    "az": "Sürtülmüş",
+    "ru": "Тёртый"
+   }
+  },
+  {
+   "id": "sulatatud",
+   "front": "Sulatatud",
+   "back": {
+    "en": "Melted",
+    "az": "Əridilmiş",
+    "ru": "Расплавленный"
+   }
+  },
+  {
+   "id": "supilusikatais",
+   "front": "Supilusikatäis",
+   "back": {
+    "en": "A tablespoonful",
+    "az": "Bir xörək qaşığı",
+    "ru": "Столовая ложка"
+   },
+   "forms": [
+    "supilusikatäie",
+    "supilusikatäit"
+   ]
+  },
+  {
+   "id": "teelusikatais",
+   "front": "Teelusikatäis",
+   "back": {
+    "en": "A teaspoonful",
+    "az": "Bir çay qaşığı",
+    "ru": "Чайная ложка"
+   },
+   "forms": [
+    "teelusikatäie",
+    "teelusikatäit"
+   ]
+  },
+  {
+   "id": "gramm",
+   "front": "Gramm",
+   "back": {
+    "en": "Gram",
+    "az": "Qram",
+    "ru": "Грамм"
+   },
+   "forms": [
+    "grammi",
+    "grammi"
+   ]
+  },
+  {
+   "id": "kilo",
+   "front": "Kilo",
+   "back": {
+    "en": "Kilo",
+    "az": "Kilo",
+    "ru": "Кило"
+   },
+   "forms": [
+    "kilo",
+    "kilo"
+   ]
+  },
+  {
+   "id": "detsiliiter",
+   "front": "Detsiliiter",
+   "back": {
+    "en": "Decilitre",
+    "az": "Desilitr",
+    "ru": "Децилитр"
+   },
+   "forms": [
+    "detsiliitri",
+    "detsiliitrit"
+   ]
+  },
+  {
+   "id": "milliliiter",
+   "front": "Milliliiter",
+   "back": {
+    "en": "Millilitre",
+    "az": "Millilitr",
+    "ru": "Миллилитр"
+   },
+   "forms": [
+    "milliliitri",
+    "milliliitrit"
+   ]
+  },
+  {
+   "id": "viil",
+   "front": "Viil",
+   "back": {
+    "en": "Slice",
+    "az": "Dilim",
+    "ru": "Ломтик"
+   },
+   "forms": [
+    "viilu",
+    "viilu"
+   ]
+  },
+  {
+   "id": "pakk",
+   "front": "Pakk",
+   "back": {
+    "en": "Packet",
+    "az": "Bağlama",
+    "ru": "Пачка"
+   },
+   "forms": [
+    "paki",
+    "pakki"
+   ]
+  },
+  {
+   "id": "purk",
+   "front": "Purk",
+   "back": {
+    "en": "Jar",
+    "az": "Banka",
+    "ru": "Банка"
+   },
+   "forms": [
+    "purgi",
+    "purki"
+   ]
+  },
+  {
+   "id": "pudel",
+   "front": "Pudel",
+   "back": {
+    "en": "Bottle",
+    "az": "Şüşə",
+    "ru": "Бутылка"
+   },
+   "forms": [
+    "pudeli",
+    "pudelit"
+   ]
+  },
+  {
+   "id": "kilekott",
+   "front": "Kilekott",
+   "back": {
+    "en": "Plastic bag",
+    "az": "Plastik torba",
+    "ru": "Пластиковый пакет"
+   },
+   "forms": [
+    "kilekoti",
+    "kilekotti"
+   ]
+  },
+  {
+   "id": "karp",
+   "front": "Karp",
+   "back": {
+    "en": "Box",
+    "az": "Qutu",
+    "ru": "Коробка"
+   },
+   "forms": [
+    "karbi",
+    "karpi"
+   ]
+  },
+  {
+   "id": "kast",
+   "front": "Kast",
+   "back": {
+    "en": "Crate, box",
+    "az": "Yeşik",
+    "ru": "Ящик"
+   },
+   "forms": [
+    "kasti",
+    "kasti"
+   ]
+  },
+  {
+   "id": "varske",
+   "front": "Värske",
+   "back": {
+    "en": "Fresh",
+    "az": "Təzə",
+    "ru": "Свежий"
+   },
+   "forms": [
+    "värske",
+    "värsket"
+   ]
+  },
+  {
+   "id": "maitse",
+   "front": "Maitse",
+   "back": {
+    "en": "Taste",
+    "az": "Dad",
+    "ru": "Вкус"
+   },
+   "forms": [
+    "maitse",
+    "maitset"
+   ]
+  },
+  {
+   "id": "maitsev",
+   "front": "Maitsev",
+   "back": {
+    "en": "Tasty",
+    "az": "Dadlı",
+    "ru": "Вкусный"
+   },
+   "forms": [
+    "maitsva",
+    "maitsvat"
+   ]
+  },
+  {
+   "id": "sort",
+   "front": "Sort",
+   "back": {
+    "en": "Sort, variety",
+    "az": "Növ",
+    "ru": "Сорт"
+   },
+   "forms": [
+    "sordi",
+    "sorti"
+   ]
+  },
+  {
+   "id": "korjama",
+   "front": "Korjama",
+   "back": {
+    "en": "To pick",
+    "az": "yığmaq",
+    "ru": "собирать"
+   },
+   "forms": [
+    "korjata",
+    "korjan"
+   ]
+  },
+  {
+   "id": "grillima",
+   "front": "Grillima",
+   "back": {
+    "en": "To barbecue",
+    "az": "manqalda bişirmək",
+    "ru": "жарить на гриле"
+   },
+   "forms": [
+    "grillida",
+    "grillin"
+   ]
+  },
+  {
+   "id": "toit",
+   "front": "Toit",
+   "back": {
+    "en": "Food",
+    "az": "Yemək, qida",
+    "ru": "Пища, еда"
+   },
+   "forms": [
+    "toidu",
+    "toitu"
+   ]
+  },
+  {
+   "id": "toitumine",
+   "front": "Toitumine",
+   "back": {
+    "en": "Nutrition, diet",
+    "az": "Qidalanma",
+    "ru": "Питание"
+   },
+   "forms": [
+    "toitumise",
+    "toitumist"
+   ]
+  },
+  {
+   "id": "omlett",
+   "front": "Omlett",
+   "back": {
+    "en": "Omelette",
+    "az": "Omlet",
+    "ru": "Омлет"
+   },
+   "forms": [
+    "omleti",
+    "omletti"
+   ]
+  },
+  {
+   "id": "kana",
+   "front": "Kana",
+   "back": {
+    "en": "Chicken",
+    "az": "Toyuq",
+    "ru": "Курица"
+   },
+   "forms": [
+    "kana",
+    "kana"
+   ]
+  },
+  {
+   "id": "juurvili",
+   "front": "Juurvili",
+   "back": {
+    "en": "Root vegetable",
+    "az": "Kökümeyvəli tərəvəz",
+    "ru": "Корнеплод, овощ"
+   },
+   "forms": [
+    "juurvilja",
+    "juurvilja"
+   ]
+  },
+  {
+   "id": "ananass",
+   "front": "Ananass",
+   "back": {
+    "en": "Pineapple",
+    "az": "Ananas",
+    "ru": "Ананас"
+   },
+   "forms": [
+    "ananassi",
+    "ananassi"
+   ]
+  },
+  {
+   "id": "kaer",
+   "front": "Kaer",
+   "back": {
+    "en": "Oats",
+    "az": "Yulaf",
+    "ru": "Овёс"
+   },
+   "forms": [
+    "kaera",
+    "kaera"
+   ]
+  },
+  {
+   "id": "kodujuust",
+   "front": "Kodujuust",
+   "back": {
+    "en": "Cottage cheese",
+    "az": "Kəsmik",
+    "ru": "Домашний творог"
+   },
+   "forms": [
+    "kodujuustu",
+    "kodujuustu"
+   ]
+  },
+  {
+   "id": "kupsis",
+   "front": "Küpsis",
+   "back": {
+    "en": "Biscuit, cookie",
+    "az": "Peçenye",
+    "ru": "Печенье"
+   },
+   "forms": [
+    "küpsise",
+    "küpsist"
+   ]
+  },
+  {
+   "id": "makaron",
+   "front": "Makaron",
+   "back": {
+    "en": "Pasta, macaroni",
+    "az": "Makaron",
+    "ru": "Макароны"
+   },
+   "forms": [
+    "makaroni",
+    "makaroni"
+   ]
+  },
+  {
+   "id": "sepik",
+   "front": "Sepik",
+   "back": {
+    "en": "Wholemeal bread",
+    "az": "Kəpəkli çörək",
+    "ru": "Пшеничный хлеб"
+   },
+   "forms": [
+    "sepiku",
+    "sepikut"
+   ]
+  },
+  {
+   "id": "viinamari",
+   "front": "Viinamari",
+   "back": {
+    "en": "Grape",
+    "az": "Üzüm",
+    "ru": "Виноград"
+   },
+   "forms": [
+    "viinamarja",
+    "viinamarja"
+   ]
+  },
+  {
+   "id": "aadikas",
+   "front": "Äädikas",
+   "back": {
+    "en": "Vinegar",
+    "az": "Sirkə",
+    "ru": "Уксус"
+   },
+   "forms": [
+    "äädika",
+    "äädikat"
+   ]
+  },
+  {
+   "id": "aine",
+   "front": "Aine",
+   "back": {
+    "en": "Ingredient",
+    "az": "Tərkib, inqrediyent",
+    "ru": "Продукт"
+   },
+   "forms": [
+    "aine",
+    "ainet"
+   ]
+  },
+  {
+   "id": "forell",
+   "front": "Forell",
+   "back": {
+    "en": "Trout",
+    "az": "Alabalıq",
+    "ru": "Форель"
+   },
+   "forms": [
+    "forelli",
+    "forelli"
+   ]
+  },
+  {
+   "id": "hamburger",
+   "front": "Hamburger",
+   "back": {
+    "en": "Hamburger",
+    "az": "Hamburger",
+    "ru": "Гамбургер"
+   },
+   "forms": [
+    "hamburgeri",
+    "hamburgerit"
+   ]
+  },
+  {
+   "id": "heeringas",
+   "front": "Heeringas",
+   "back": {
+    "en": "Herring",
+    "az": "Siyənək",
+    "ru": "Селёдка"
+   },
+   "forms": [
+    "heeringa",
+    "heeringat"
+   ]
+  },
+  {
+   "id": "kaneel",
+   "front": "Kaneel",
+   "back": {
+    "en": "Cinnamon",
+    "az": "Darçın",
+    "ru": "Корица"
+   },
+   "forms": [
+    "kaneeli",
+    "kaneeli"
+   ]
+  },
+  {
+   "id": "keema",
+   "front": "Keema",
+   "back": {
+    "en": "To boil",
+    "az": "qaynamaq",
+    "ru": "кипеть, вариться"
+   },
+   "forms": [
+    "keeda",
+    "keen"
+   ]
+  },
+  {
+   "id": "lohe",
+   "front": "Lõhe",
+   "back": {
+    "en": "Salmon",
+    "az": "Qızılbalıq",
+    "ru": "Лосось"
+   },
+   "forms": [
+    "lõhe",
+    "lõhet"
+   ]
+  },
+  {
+   "id": "mustikas",
+   "front": "Mustikas",
+   "back": {
+    "en": "Blueberry",
+    "az": "Qaragilə",
+    "ru": "Черника"
+   },
+   "forms": [
+    "mustika",
+    "mustikat"
+   ]
+  },
+  {
+   "id": "praad",
+   "front": "Praad",
+   "back": {
+    "en": "Main course",
+    "az": "Əsas yemək",
+    "ru": "Жаркое"
+   },
+   "forms": [
+    "prae",
+    "praadi"
+   ]
+  },
+  {
+   "id": "taimetoit",
+   "front": "Taimetoit",
+   "back": {
+    "en": "Vegetarian food",
+    "az": "Vegetarian yemək",
+    "ru": "Вегетарианская пища"
+   },
+   "forms": [
+    "taimetoidu",
+    "taimetoitu"
+   ]
+  },
+  {
+   "id": "tikker",
+   "front": "Tikker",
+   "back": {
+    "en": "Gooseberry",
+    "az": "Motmotu",
+    "ru": "Крыжовник"
+   },
+   "forms": [
+    "tikri",
+    "tikrit"
+   ]
+  },
+  {
+   "id": "hakkliha",
+   "front": "Hakkliha",
+   "back": {
+    "en": "Minced meat",
+    "az": "Qiymə",
+    "ru": "Фарш"
+   },
+   "forms": [
+    "hakkliha",
+    "hakkliha"
+   ]
+  },
+  {
+   "id": "isu",
+   "front": "Isu",
+   "back": {
+    "en": "Appetite",
+    "az": "İştah",
+    "ru": "Аппетит"
+   },
+   "forms": [
+    "isu",
+    "isu"
+   ]
+  },
+  {
+   "id": "maitsema",
+   "front": "Maitsema",
+   "back": {
+    "en": "To taste, to taste good",
+    "az": "dadmaq, xoşa gəlmək",
+    "ru": "нравиться на вкус"
+   },
+   "forms": [
+    "maitseda",
+    "maitsen"
+   ]
+  },
+  {
+   "id": "maks",
+   "front": "Maks",
+   "back": {
+    "en": "Liver",
+    "az": "Qaraciyər",
+    "ru": "Печень"
+   },
+   "forms": [
+    "maksa",
+    "maksa"
+   ]
+  },
+  {
+   "id": "manna",
+   "front": "Manna",
+   "back": {
+    "en": "Semolina",
+    "az": "Manna yarması",
+    "ru": "Манная крупа"
+   },
+   "forms": [
+    "manna",
+    "mannat"
+   ]
+  },
+  {
+   "id": "morss",
+   "front": "Morss",
+   "back": {
+    "en": "Berry drink",
+    "az": "Mors",
+    "ru": "Морс"
+   },
+   "forms": [
+    "morsi",
+    "morssi"
+   ]
+  },
+  {
+   "id": "pohl",
+   "front": "Pohl",
+   "back": {
+    "en": "Lingonberry",
+    "az": "Qırmızı mərsin",
+    "ru": "Брусника"
+   },
+   "forms": [
+    "pohla",
+    "pohla"
+   ]
+  },
+  {
+   "id": "pulber",
+   "front": "Pulber",
+   "back": {
+    "en": "Powder",
+    "az": "Toz",
+    "ru": "Порошок"
+   },
+   "forms": [
+    "pulbri",
+    "pulbrit"
+   ]
+  },
+  {
+   "id": "rosolje",
+   "front": "Rosolje",
+   "back": {
+    "en": "Beetroot salad",
+    "az": "Çuğundur salatı",
+    "ru": "Винегрет"
+   },
+   "forms": [
+    "rosolje",
+    "rosoljet"
+   ]
+  },
+  {
+   "id": "raim",
+   "front": "Räim",
+   "back": {
+    "en": "Baltic herring",
+    "az": "Baltik siyənəyi",
+    "ru": "Салака, сельдь"
+   },
+   "forms": [
+    "räime",
+    "räime"
+   ]
+  },
+  {
+   "id": "tangud",
+   "front": "Tangud",
+   "back": {
+    "en": "Groats",
+    "az": "Yarma",
+    "ru": "Крупа"
+   },
+   "forms": [
+    "tangude",
+    "tange"
+   ]
+  },
+  {
+   "id": "uhepajatoit",
+   "front": "Ühepajatoit",
+   "back": {
+    "en": "Stew, hotpot",
+    "az": "Qazan yeməyi",
+    "ru": "Рагу"
+   },
+   "forms": [
+    "ühepajatoidu",
+    "ühepajatoitu"
+   ]
+  }
+ ]
+}

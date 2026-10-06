@@ -1,0 +1,186 @@
+{
+ "id": "cases-becoming",
+ "added": "2026-10-06",
+ "deck": "cases-becoming-cards",
+ "heading": "cases",
+ "name": {
+  "en": "Becoming, and until",
+  "az": "Olmaq və -dək",
+  "ru": "Стать и «до»"
+ },
+ "why": {
+  "en": "Saav and rajav — cases ten and eleven: what something turns into, and how far it goes",
+  "az": "Saav və rajav — onuncu və on birinci hallar: nəyə çevrilir və haraya qədər gedir",
+  "ru": "Saav и rajav — десятый и одиннадцатый падежи: кем или чем стать и до какого места"
+ },
+ "body": [
+  {
+   "say": {
+    "en": "Two cases with one ending each, both on the omastav: one says what something becomes, the other where it stops. One thing changes from here to the end. A word in front of the noun — *see*, this, *hea*, good — no longer takes the ending itself; it stays in the omastav: *selle linnani* — as far as this town, *hea sõbraga* — with a good friend.",
+    "az": "Hər birinin bir şəkilçisi olan iki hal, ikisi də omastav formasına qoşulur: biri nəyə çevrildiyini, o biri harada dayandığını deyir. Buradan sona qədər bir şey dəyişir. İsmin qabağındakı söz — *see*, bu, *hea*, yaxşı — şəkilçini özü almır, omastav formasında qalır: *selle linnani* — bu şəhərə qədər, *hea sõbraga* — yaxşı dostla. Bizdə də sifət şəkilçi almır, ona görə bu sizə rahat gələcək.",
+    "ru": "Два падежа по одному окончанию, оба на omastav: один говорит, чем что-то становится, другой — где оно кончается. С этого места до конца одно правило меняется: слово перед существительным — *see*, этот, *hea*, хороший — само окончание больше не берёт и остаётся в omastav: *selle linnani* — до этого города, *hea sõbraga* — с хорошим другом."
+   }
+  },
+  {
+   "head": {
+    "en": "Saav — kelleks? milleks? — becoming, for",
+    "az": "Saav — kelleks? milleks? — kim olmaq? nə üçün?",
+    "ru": "Saav — kelleks? milleks? — кем стать? для чего?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kelleks? milleks?",
+       "arstiks",
+       "arstideks"
+      ],
+      "means": {
+       "en": "doctor",
+       "az": "həkim",
+       "ru": "врач"
+      }
+     },
+     {
+      "et": [
+       "kelleks?",
+       "sõbraks",
+       "sõpradeks"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma tahan saada arstiks.",
+     "en": "I want to become a doctor.",
+     "az": "Həkim olmaq istəyirəm.",
+     "ru": "Я хочу стать врачом."
+    },
+    {
+     "et": "Nad jäid sõpradeks.",
+     "en": "They stayed friends.",
+     "az": "Onlar dost qaldılar.",
+     "ru": "Они остались друзьями."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "What somebody or something becomes: *Ta sai arstiks* — she became a doctor. *Me saime sõpradeks* — we became friends. *Ilm läheb külmaks* — it's turning cold. And what a thing is for, or by when: *milleks?* — what for?, *homseks* — for tomorrow, *õhtuks* — by evening.",
+    "az": "Biz həkim oldu deyirik və həkim sözü heç dəyişmir. Eston dili isə çevrilən şeyə şəkilçi qoyur: *Ta sai arstiks* — o, həkim oldu. *Me saime sõpradeks* — biz dost olduq. *Ilm läheb külmaks* — hava soyuyur. Bir də nə üçün və nə vaxta: *milleks?* — nə üçün?, *homseks* — sabah üçün, *õhtuks* — axşama.",
+    "ru": "Это одна треть русского творительного: стать врачом — *Ta sai arstiks*. Мы стали друзьями — *Me saime sõpradeks*. Становится холодно — *Ilm läheb külmaks*. И «для чего», и «к какому сроку»: *milleks?* — зачем?, *homseks* — на завтра, *õhtuks* — к вечеру."
+   }
+  },
+  {
+   "head": {
+    "en": "Rajav — kelleni? milleni? — until, as far as",
+    "az": "Rajav — kelleni? milleni? — nəyədək? haraya qədər?",
+    "ru": "Rajav — kelleni? milleni? — до кого? до чего?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "milleni?",
+       "linnani",
+       "linnadeni"
+      ],
+      "means": {
+       "en": "town",
+       "az": "şəhər",
+       "ru": "город"
+      }
+     },
+     {
+      "et": [
+       "mis ajani?",
+       "õhtuni",
+       "õhtuteni"
+      ],
+      "means": {
+       "en": "evening",
+       "az": "axşam",
+       "ru": "вечер"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Pood on lahti kella kümneni.",
+     "en": "The shop is open until ten o'clock.",
+     "az": "Mağaza saat onadək açıqdır.",
+     "ru": "Магазин открыт до десяти."
+    },
+    {
+     "et": "Ma töötan õhtuni.",
+     "en": "I work until the evening.",
+     "az": "Axşamadək işləyirəm.",
+     "ru": "Я работаю до вечера."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Until, and as far as: *Ma olen tööl viieni* — I'm at work until five. *Buss läheb Tartuni* — the bus goes as far as Tartu. *Hommikust õhtuni* — from morning till night. And the goodbye you already know is this case: *Nägemiseni* — until seeing.",
+    "az": "Bu, bizim -dək və qədər sözümüzdür: *Ma olen tööl viieni* — beşədək işdəyəm. *Buss läheb Tartuni* — avtobus Tartuya qədər gedir. *Hommikust õhtuni* — səhərdən axşamadək. Və bildiyiniz vidalaşma da bu haldadır: *Nägemiseni* — eynilə bizim görüşənədək.",
+    "ru": "Это русское «до»: *Ma olen tööl viieni* — я на работе до пяти. *Buss läheb Tartuni* — автобус идёт до Тарту. *Hommikust õhtuni* — с утра до вечера. И прощание, которое вы уже знаете, — тоже этот падеж: *Nägemiseni* — до свидания, слово в слово «до видения»."
+   }
+  },
+  {
+   "say": {
+    "en": "The deck under this lesson is what people become and when things end. One lesson is left: as, without and with.",
+    "az": "Bu dərsin dəsti adamların nə olduğu və işlərin nə vaxt bitdiyi haqqındadır. Bir dərs qalır: kimi, -sız və -la.",
+    "ru": "Колода под этим уроком — кем становятся и когда всё кончается. Остался один урок: «как», «без» и «с»."
+   }
+  }
+ ]
+}

@@ -1,0 +1,329 @@
+{
+ "id": "cases-three-cards",
+ "added": "2026-10-06",
+ "name": {
+  "en": "The first three cases — the cards",
+  "az": "İlk üç hal — kartlar",
+  "ru": "Первые три падежа — карточки"
+ },
+ "why": {
+  "en": "Short phrases in the first three cases, for after the lesson",
+  "az": "İlk üç halda qısa ifadələr, dərsdən sonra üçün",
+  "ru": "Короткие фразы на первые три падежа, после урока"
+ },
+ "level": "case",
+ "cards": [
+  {
+   "id": "ema-leib",
+   "front": "Ema leib",
+   "back": {
+    "en": "Mum's bread",
+    "az": "Ananın çörəyi",
+    "ru": "Мамин хлеб"
+   },
+   "build": {
+    "forms": [
+     "ema",
+     "ema",
+     "ema"
+    ],
+    "on": 1,
+    "makes": "ema",
+    "case": {
+     "et": "omastav",
+     "en": "whose? of what?",
+     "az": "yiyəlik hal",
+     "ru": "родительный"
+    }
+   }
+  },
+  {
+   "id": "tallinna-vanalinn",
+   "front": "Tallinna vanalinn",
+   "back": {
+    "en": "Tallinn's old town",
+    "az": "Tallinnin köhnə şəhəri",
+    "ru": "Старый город Таллинна"
+   },
+   "build": {
+    "forms": [
+     "Tallinn",
+     "Tallinna",
+     "Tallinna"
+    ],
+    "on": 1,
+    "makes": "Tallinna",
+    "case": {
+     "et": "omastav",
+     "en": "whose? of what?",
+     "az": "yiyəlik hal",
+     "ru": "родительный"
+    }
+   }
+  },
+  {
+   "id": "laua-all",
+   "front": "Laua all",
+   "back": {
+    "en": "Under the table",
+    "az": "Stolun altında",
+    "ru": "Под столом"
+   },
+   "build": {
+    "forms": [
+     "laud",
+     "laua",
+     "lauda"
+    ],
+    "on": 1,
+    "makes": "laua",
+    "case": {
+     "et": "omastav",
+     "en": "whose? of what?",
+     "az": "yiyəlik hal",
+     "ru": "родительный"
+    }
+   }
+  },
+  {
+   "id": "maja-ees",
+   "front": "Maja ees",
+   "back": {
+    "en": "In front of the house",
+    "az": "Evin qabağında",
+    "ru": "Перед домом"
+   },
+   "build": {
+    "forms": [
+     "maja",
+     "maja",
+     "maja"
+    ],
+    "on": 1,
+    "makes": "maja",
+    "case": {
+     "et": "omastav",
+     "en": "whose? of what?",
+     "az": "yiyəlik hal",
+     "ru": "родительный"
+    }
+   }
+  },
+  {
+   "id": "ma-ostan-leiva",
+   "front": "Ma ostan leiva",
+   "back": {
+    "en": "I'll buy the loaf",
+    "az": "Çörəyi alıram",
+    "ru": "Я куплю хлеб"
+   },
+   "build": {
+    "forms": [
+     "leib",
+     "leiva",
+     "leiba"
+    ],
+    "on": 1,
+    "makes": "leiva",
+    "case": {
+     "et": "omastav",
+     "en": "whose? of what?",
+     "az": "yiyəlik hal",
+     "ru": "родительный"
+    }
+   }
+  },
+  {
+   "id": "ma-soon-leiba",
+   "front": "Ma söön leiba",
+   "back": {
+    "en": "I'm eating bread",
+    "az": "Çörək yeyirəm",
+    "ru": "Я ем хлеб"
+   },
+   "build": {
+    "forms": [
+     "leib",
+     "leiva",
+     "leiba"
+    ],
+    "on": 2,
+    "makes": "leiba",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "kaks-kohvi",
+   "front": "Kaks kohvi",
+   "back": {
+    "en": "Two coffees",
+    "az": "İki qəhvə",
+    "ru": "Два кофе"
+   },
+   "build": {
+    "forms": [
+     "kohv",
+     "kohvi",
+     "kohvi"
+    ],
+    "on": 2,
+    "makes": "kohvi",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "viis-eurot",
+   "front": "Viis eurot",
+   "back": {
+    "en": "Five euros",
+    "az": "Beş avro",
+    "ru": "Пять евро"
+   },
+   "build": {
+    "forms": [
+     "euro",
+     "euro",
+     "eurot"
+    ],
+    "on": 2,
+    "makes": "eurot",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "klaas-vett",
+   "front": "Klaas vett",
+   "back": {
+    "en": "A glass of water",
+    "az": "Bir stəkan su",
+    "ru": "Стакан воды"
+   },
+   "build": {
+    "forms": [
+     "vesi",
+     "vee",
+     "vett"
+    ],
+    "on": 2,
+    "makes": "vett",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "natuke-piima",
+   "front": "Natuke piima",
+   "back": {
+    "en": "A little milk",
+    "az": "Bir az süd",
+    "ru": "Немного молока"
+   },
+   "build": {
+    "forms": [
+     "piim",
+     "piima",
+     "piima"
+    ],
+    "on": 2,
+    "makes": "piima",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "mul-ei-ole-aega",
+   "front": "Mul ei ole aega",
+   "back": {
+    "en": "I have no time",
+    "az": "Vaxtım yoxdur",
+    "ru": "У меня нет времени"
+   },
+   "build": {
+    "forms": [
+     "aeg",
+     "aja",
+     "aega"
+    ],
+    "on": 2,
+    "makes": "aega",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "ma-ootan-sind",
+   "front": "Ma ootan sind",
+   "back": {
+    "en": "I'm waiting for you",
+    "az": "Səni gözləyirəm",
+    "ru": "Я жду тебя"
+   },
+   "build": {
+    "forms": [
+     "sina",
+     "sinu",
+     "sind"
+    ],
+    "on": 2,
+    "makes": "sind",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  },
+  {
+   "id": "ma-armastan-sind",
+   "front": "Ma armastan sind",
+   "back": {
+    "en": "I love you",
+    "az": "Səni sevirəm",
+    "ru": "Я тебя люблю"
+   },
+   "build": {
+    "forms": [
+     "sina",
+     "sinu",
+     "sind"
+    ],
+    "on": 2,
+    "makes": "sind",
+    "case": {
+     "et": "osastav",
+     "en": "some of",
+     "az": "qeyri-müəyyən təsirlik",
+     "ru": "«немного», «часть»"
+    }
+   }
+  }
+ ]
+}

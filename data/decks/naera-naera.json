@@ -1,0 +1,629 @@
+{
+ "id": "naera-naera",
+ "added": "2026-09-29",
+ "name": {
+  "en": "Naera, naera",
+  "az": "Naera, naera",
+  "ru": "Naera, naera"
+ },
+ "why": {
+  "en": "An Estonian song, line by line, with every word in it",
+  "az": "Estonca mahnı, misra-misra, hər sözü ilə",
+  "ru": "Эстонская песня, строка за строкой, со всеми её словами"
+ },
+ "taste": "Naera, naera, naerame võidu",
+ "video": "91YqQb61dZc",
+ "credit": {
+  "words": "Viivi Luik",
+  "music": "Rein Rannap"
+ },
+ "deck": "naera-words",
+ "verses": [
+  [
+   {
+    "et": "Naera, naera, naerame võidu,",
+    "en": "Laugh, laugh, let's race to laugh —",
+    "az": "Gül, gül, gəl yarışaraq gülək —",
+    "ru": "Смейся, смейся, посмеёмся наперегонки —"
+   },
+   {
+    "et": "kes naerab paremini…",
+    "en": "who laughs the better…",
+    "az": "kim daha yaxşı gülür…",
+    "ru": "кто посмеётся лучше…"
+   },
+   {
+    "et": "Läbi tuliste suvede",
+    "en": "Through the fiery summers",
+    "az": "Alovlu yayların içindən",
+    "ru": "Сквозь огненные лета"
+   },
+   {
+    "et": "ja talviti aremini.",
+    "en": "and, in winter, more shyly.",
+    "az": "qışlar isə daha çəkingən.",
+    "ru": "а зимами — робче."
+   }
+  ],
+  [
+   {
+    "et": "Kui sa julged, saad elust läbi",
+    "en": "If you dare, you get through life",
+    "az": "Cürət etsən, həyatdan keçərsən",
+    "ru": "Если осмелишься, пройдёшь по жизни"
+   },
+   {
+    "et": "otse ja pugemata.",
+    "en": "straight, and without grovelling.",
+    "az": "düz və yaltaqlanmadan.",
+    "ru": "прямо и не пресмыкаясь."
+   },
+   {
+    "et": "Päevad kõik on kalendris kinni.",
+    "en": "The days are all shut in the calendar.",
+    "az": "Günlərin hamısı təqvimdə bağlıdır.",
+    "ru": "Все дни заперты в календаре."
+   },
+   {
+    "et": "Kinni ja lugemata.",
+    "en": "Shut, and uncounted.",
+    "az": "Bağlı və sayılmamış.",
+    "ru": "Заперты и не сосчитаны."
+   }
+  ],
+  [
+   {
+    "et": "Sinu sinistes veresoontes",
+    "en": "In your blue veins",
+    "az": "Sənin mavi damarlarında",
+    "ru": "В твоих синих жилах"
+   },
+   {
+    "et": "pesitseb põliskevad.",
+    "en": "an age-old spring is nesting.",
+    "az": "əzəli bir bahar yuva qurub.",
+    "ru": "гнездится извечная весна."
+   },
+   {
+    "et": "Minu kondid on kuusepuised,",
+    "en": "My bones are made of spruce,",
+    "az": "Mənim sümüklərim küknar ağacındandır,",
+    "ru": "Мои кости — еловые,"
+   },
+   {
+    "et": "valged ja kõlisevad.",
+    "en": "white, and they ring.",
+    "az": "ağdır və cingildəyir.",
+    "ru": "белые и звенящие."
+   }
+  ],
+  [
+   {
+    "et": "Suvi tuleb ja suvi läheb,",
+    "en": "Summer comes and summer goes,",
+    "az": "Yay gəlir, yay gedir,",
+    "ru": "Лето приходит и лето уходит,"
+   },
+   {
+    "et": "suislepp see veretabki.",
+    "en": "and the suislepp apple even turns blood-red.",
+    "az": "suislepp alması isə qan kimi qızarır.",
+    "ru": "а суйслепп даже наливается алым."
+   },
+   {
+    "et": "Armastus hulgub ilma mööda.",
+    "en": "Love wanders about the world.",
+    "az": "Məhəbbət dünyanı dolaşır.",
+    "ru": "Любовь бродит по свету."
+   },
+   {
+    "et": "Kättpidi teretabki.",
+    "en": "It even greets you by the hand.",
+    "az": "Hətta əlindən tutub salamlaşır.",
+    "ru": "И даже здоровается за руку."
+   }
+  ]
+ ],
+ "words": {
+  "naera": {
+   "base": "naerma",
+   "means": {
+    "en": "laugh!",
+    "az": "gül!",
+    "ru": "смейся!"
+   },
+   "deck": "naera-words"
+  },
+  "naerame": {
+   "base": "naerma",
+   "means": {
+    "en": "we laugh, let's laugh",
+    "az": "gülürük, gəl gülək",
+    "ru": "смеёмся, посмеёмся"
+   },
+   "deck": "naera-words"
+  },
+  "võidu": {
+   "base": "võidu",
+   "means": {
+    "en": "in a race, to see who wins",
+    "az": "yarışaraq, kim qalib gələcək deyə",
+    "ru": "наперегонки, кто кого"
+   },
+   "deck": "naera-words"
+  },
+  "kes": {
+   "base": "kes",
+   "means": {
+    "en": "who",
+    "az": "kim",
+    "ru": "кто"
+   },
+   "deck": "naera-words"
+  },
+  "naerab": {
+   "base": "naerma",
+   "means": {
+    "en": "laughs",
+    "az": "gülür",
+    "ru": "смеётся"
+   },
+   "deck": "naera-words"
+  },
+  "paremini": {
+   "base": "paremini",
+   "means": {
+    "en": "better — how something is done",
+    "az": "daha yaxşı — necə edildiyi",
+    "ru": "лучше — о том, как что-то делается"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Parem is better as a thing is; paremini is better as it is done.",
+    "az": "Parem şeyin özünün daha yaxşı olmasıdır; paremini isə işin daha yaxşı görülməsi.",
+    "ru": "Parem — лучше о самой вещи; paremini — лучше о том, как делается."
+   }
+  },
+  "läbi": {
+   "base": "läbi",
+   "means": {
+    "en": "through",
+    "az": "içindən, boyunca",
+    "ru": "сквозь, через"
+   },
+   "deck": "everyday"
+  },
+  "tuliste": {
+   "base": "tuline",
+   "means": {
+    "en": "of the fiery, burning",
+    "az": "alovlu, odlu",
+    "ru": "огненных, жарких"
+   },
+   "deck": "naera-words"
+  },
+  "suvede": {
+   "base": "suvi",
+   "means": {
+    "en": "of the summers",
+    "az": "yayların",
+    "ru": "летних, лет"
+   },
+   "deck": "weather"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "talviti": {
+   "base": "talviti",
+   "means": {
+    "en": "in wintertime, in the winters",
+    "az": "qışlar, qış vaxtı",
+    "ru": "зимами, по зимам"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "-ti on a season is \"in that season, every year\": suviti, talviti.",
+    "az": "Fəslin sonundakı -ti \"hər il o fəsildə\" deməkdir: suviti, talviti.",
+    "ru": "-ti у времени года — «в это время каждый год»: suviti, talviti."
+   }
+  },
+  "aremini": {
+   "base": "aremini",
+   "means": {
+    "en": "more timidly",
+    "az": "daha çəkingən",
+    "ru": "робче"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "From arg, timid — the same one the Character deck has.",
+    "az": "Arg — qorxaq sözündəndir, Xarakter dəstindəki kimi.",
+    "ru": "От arg — робкий, тот же, что в колоде о характере."
+   }
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if",
+    "az": "əgər",
+    "ru": "если"
+   },
+   "deck": "everyday"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you — one person",
+    "az": "sən",
+    "ru": "ты"
+   },
+   "note": {
+    "en": "Sa is the short sina, the way song and speech both say it.",
+    "az": "Sa — sina sözünün qısasıdır, həm mahnıda, həm danışıqda.",
+    "ru": "Sa — краткое sina, так и поют, и говорят."
+   }
+  },
+  "julged": {
+   "base": "julgema",
+   "means": {
+    "en": "you dare",
+    "az": "cürət edirsən",
+    "ru": "ты осмеливаешься"
+   },
+   "deck": "naera-words"
+  },
+  "saad": {
+   "base": "saama",
+   "means": {
+    "en": "you get, you manage",
+    "az": "bacarırsan, əldə edirsən",
+    "ru": "ты сможешь, получишь"
+   },
+   "deck": "verbs"
+  },
+  "elust": {
+   "base": "elu",
+   "means": {
+    "en": "out of life, through life",
+    "az": "həyatdan",
+    "ru": "из жизни, по жизни"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Elust läbi saama is to get through life.",
+    "az": "Elust läbi saama — həyatdan keçib getmək deməkdir.",
+    "ru": "Elust läbi saama — пройти через жизнь, прожить её."
+   }
+  },
+  "otse": {
+   "base": "otse",
+   "means": {
+    "en": "straight, directly",
+    "az": "düz, birbaşa",
+    "ru": "прямо"
+   },
+   "deck": "around"
+  },
+  "pugemata": {
+   "base": "pugemata",
+   "means": {
+    "en": "without grovelling",
+    "az": "yaltaqlanmadan",
+    "ru": "не пресмыкаясь"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Pugema is to crawl in — and to suck up to somebody. -mata is \"without\".",
+    "az": "Pugema — içəri soxulmaq, həm də yaltaqlanmaq. -mata \"-madan\" deməkdir.",
+    "ru": "Pugema — пролезать, а ещё подлизываться. -mata значит «не делая»."
+   }
+  },
+  "päevad": {
+   "base": "päev",
+   "means": {
+    "en": "days",
+    "az": "günlər",
+    "ru": "дни"
+   },
+   "deck": "time"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all",
+    "az": "hamısı",
+    "ru": "все"
+   },
+   "deck": "everyday"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "are",
+    "az": "dır, var",
+    "ru": "есть"
+   },
+   "deck": "verbs"
+  },
+  "kalendris": {
+   "base": "kalender",
+   "means": {
+    "en": "in the calendar",
+    "az": "təqvimdə",
+    "ru": "в календаре"
+   },
+   "deck": "naera-words"
+  },
+  "kinni": {
+   "base": "kinni",
+   "means": {
+    "en": "shut, fastened",
+    "az": "bağlı",
+    "ru": "закрыты, заперты"
+   },
+   "deck": "shops"
+  },
+  "lugemata": {
+   "base": "lugemata",
+   "means": {
+    "en": "uncounted, unread",
+    "az": "sayılmamış, oxunmamış",
+    "ru": "не сосчитаны, не прочтены"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Lugema is both to read and to count. -mata is \"without\".",
+    "az": "Lugema həm oxumaq, həm saymaq deməkdir. -mata \"-madan\" deməkdir.",
+    "ru": "Lugema — и читать, и считать. -mata значит «не делая»."
+   }
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your — one person",
+    "az": "sənin",
+    "ru": "твой, твоих"
+   }
+  },
+  "sinistes": {
+   "base": "sinine",
+   "means": {
+    "en": "in the blue",
+    "az": "mavi",
+    "ru": "в синих"
+   },
+   "deck": "describing"
+  },
+  "veresoontes": {
+   "base": "veresoon",
+   "means": {
+    "en": "in the veins",
+    "az": "damarlarda",
+    "ru": "в жилах, в сосудах"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Veri, blood, and soon, a vein: a blood vessel.",
+    "az": "Veri — qan, soon — damar: qan damarı.",
+    "ru": "Veri — кровь, soon — жила: кровеносный сосуд."
+   }
+  },
+  "pesitseb": {
+   "base": "pesitsema",
+   "means": {
+    "en": "nests, dwells",
+    "az": "yuva qurur, məskən salır",
+    "ru": "гнездится, живёт"
+   },
+   "deck": "naera-words"
+  },
+  "põliskevad": {
+   "base": "põline",
+   "means": {
+    "en": "an age-old spring",
+    "az": "əzəli bahar",
+    "ru": "извечная весна"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Põline, age-old, and kevad, spring, made into one word.",
+    "az": "Põline — əzəli, kevad — bahar, bir sözdə.",
+    "ru": "Põline — исконный, kevad — весна, слитые в одно слово."
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мои"
+   }
+  },
+  "kondid": {
+   "base": "kont",
+   "means": {
+    "en": "bones",
+    "az": "sümüklər",
+    "ru": "кости"
+   },
+   "deck": "naera-words"
+  },
+  "kuusepuised": {
+   "base": "kuusepuine",
+   "means": {
+    "en": "made of spruce",
+    "az": "küknar ağacından",
+    "ru": "еловые"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Kuusk is a spruce; kuusepuu, spruce wood.",
+    "az": "Kuusk — küknar, kuusepuu — küknar ağacı.",
+    "ru": "Kuusk — ель, kuusepuu — еловая древесина."
+   }
+  },
+  "valged": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белые"
+   },
+   "deck": "describing"
+  },
+  "kõlisevad": {
+   "base": "kõlisema",
+   "means": {
+    "en": "ring, clink",
+    "az": "cingildəyir",
+    "ru": "звенят"
+   },
+   "deck": "naera-words"
+  },
+  "suvi": {
+   "base": "suvi",
+   "means": {
+    "en": "summer",
+    "az": "yay",
+    "ru": "лето"
+   },
+   "deck": "weather"
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes",
+    "az": "gəlir",
+    "ru": "приходит"
+   },
+   "deck": "verbs"
+  },
+  "läheb": {
+   "base": "minema",
+   "means": {
+    "en": "goes",
+    "az": "gedir",
+    "ru": "уходит"
+   },
+   "deck": "verbs",
+   "note": {
+    "en": "Minema is one of the few verbs that changes its whole stem: ma lähen, ta läheb.",
+    "az": "Minema kökünü tam dəyişən azsaylı fellərdəndir: ma lähen, ta läheb.",
+    "ru": "Minema — из немногих глаголов, что меняют основу целиком: ma lähen, ta läheb."
+   }
+  },
+  "suislepp": {
+   "base": "suislepp",
+   "means": {
+    "en": "the suislepp, an Estonian summer apple",
+    "az": "suislepp, Estoniya yay alması",
+    "ru": "суйслепп, эстонское летнее яблоко"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "An old apple of these parts that ripens red in late summer. The name is the word.",
+    "az": "Bu yerlərin köhnə alma sortudur, yayın sonunda qızarır. Adı elə sözün özüdür.",
+    "ru": "Старый здешний сорт яблок, краснеющий в конце лета. Название и есть слово."
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "этот, он"
+   },
+   "deck": "pronouns"
+  },
+  "veretabki": {
+   "base": "veretama",
+   "means": {
+    "en": "even turns blood-red",
+    "az": "hətta qan kimi qızarır",
+    "ru": "даже наливается алым"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "The -ki on the end means \"even\" or \"indeed\".",
+    "az": "Sondakı -ki \"hətta\", \"elə\" deməkdir.",
+    "ru": "Частица -ki на конце значит «даже», «и»."
+   }
+  },
+  "armastus": {
+   "base": "armastus",
+   "means": {
+    "en": "love",
+    "az": "məhəbbət",
+    "ru": "любовь"
+   },
+   "deck": "talk"
+  },
+  "hulgub": {
+   "base": "hulkuma",
+   "means": {
+    "en": "wanders, roams",
+    "az": "dolaşır, sərgərdan gəzir",
+    "ru": "бродит, скитается"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Hulkuma loses its k in the middle: ta hulgub.",
+    "az": "Hulkuma ortadakı k-nı itirir: ta hulgub.",
+    "ru": "Hulkuma теряет k в середине: ta hulgub."
+   }
+  },
+  "ilma": {
+   "base": "ilm",
+   "means": {
+    "en": "the world",
+    "az": "dünya",
+    "ru": "свет, мир"
+   },
+   "deck": "weather",
+   "note": {
+    "en": "Ilm is weather on a card, and the world in a song: ilma mööda, all over the world.",
+    "az": "Kartda ilm hava deməkdir, mahnıda isə dünya: ilma mööda — dünyanı dolaşaraq.",
+    "ru": "На карточке ilm — погода, в песне — мир: ilma mööda — по белу свету."
+   }
+  },
+  "mööda": {
+   "base": "mööda",
+   "means": {
+    "en": "along, about",
+    "az": "boyunca",
+    "ru": "по, вдоль"
+   },
+   "deck": "naera-words"
+  },
+  "kättpidi": {
+   "base": "kättpidi",
+   "means": {
+    "en": "by the hand",
+    "az": "əlindən tutaraq",
+    "ru": "за руку"
+   },
+   "deck": "naera-words"
+  },
+  "teretabki": {
+   "base": "teretama",
+   "means": {
+    "en": "even greets",
+    "az": "hətta salamlaşır",
+    "ru": "даже здоровается"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Tere is hello, and teretama is to say it. The -ki on the end means \"even\".",
+    "az": "Tere — salam, teretama — salam vermək. Sondakı -ki \"hətta\" deməkdir.",
+    "ru": "Tere — привет, teretama — здороваться. -ki на конце значит «даже»."
+   }
+  }
+ }
+}

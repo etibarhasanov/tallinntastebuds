@@ -1,0 +1,562 @@
+{
+ "id": "shops",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Shops and money",
+  "az": "Mağazalar və pul",
+  "ru": "Магазины и деньги"
+ },
+ "why": {
+  "en": "Asking the price, and understanding the answer",
+  "az": "Qiyməti soruşmaq və cavabı anlamaq",
+  "ru": "Спросить цену и понять ответ"
+ },
+ "cards": [
+  {
+   "id": "pood",
+   "front": "Pood",
+   "back": {
+    "en": "Shop",
+    "az": "Mağaza",
+    "ru": "Магазин"
+   },
+   "forms": [
+    "poe",
+    "poodi"
+   ],
+   "sentence": {
+    "et": "Pood on nurga peal.",
+    "en": "The shop is round the corner.",
+    "az": "Mağaza küncdədir.",
+    "ru": "Магазин за углом."
+   }
+  },
+  {
+   "id": "turg",
+   "front": "Turg",
+   "back": {
+    "en": "Market",
+    "az": "Bazar",
+    "ru": "Рынок"
+   },
+   "forms": [
+    "turu",
+    "turgu"
+   ],
+   "sentence": {
+    "et": "Ma käin turul.",
+    "en": "I go to the market.",
+    "az": "Mən bazara gedirəm.",
+    "ru": "Я хожу на рынок."
+   }
+  },
+  {
+   "id": "apteek",
+   "front": "Apteek",
+   "back": {
+    "en": "Pharmacy",
+    "az": "Aptek",
+    "ru": "Аптека"
+   },
+   "forms": [
+    "apteegi",
+    "apteeki"
+   ],
+   "sentence": {
+    "et": "Kus on lähim apteek?",
+    "en": "Where is the nearest pharmacy?",
+    "az": "Ən yaxın aptek haradadır?",
+    "ru": "Где ближайшая аптека?"
+   }
+  },
+  {
+   "id": "raha",
+   "front": "Raha",
+   "back": {
+    "en": "Money",
+    "az": "Pul",
+    "ru": "Деньги"
+   },
+   "forms": [
+    "raha",
+    "raha"
+   ]
+  },
+  {
+   "id": "hind",
+   "front": "Hind",
+   "back": {
+    "en": "Price",
+    "az": "Qiymət",
+    "ru": "Цена"
+   },
+   "forms": [
+    "hinna",
+    "hinda"
+   ],
+   "sentence": {
+    "et": "Hind on liiga kõrge.",
+    "en": "The price is too high.",
+    "az": "Qiymət çox yüksəkdir.",
+    "ru": "Цена слишком высокая."
+   }
+  },
+  {
+   "id": "kui-palju-see-maksab",
+   "front": "Kui palju see maksab?",
+   "back": {
+    "en": "How much does this cost?",
+    "az": "Bu neçəyədir?",
+    "ru": "Сколько это стоит?"
+   }
+  },
+  {
+   "id": "odav",
+   "front": "Odav",
+   "back": {
+    "en": "Cheap",
+    "az": "Ucuz",
+    "ru": "Дешёвый"
+   },
+   "forms": [
+    "odava",
+    "odavat"
+   ]
+  },
+  {
+   "id": "kallis",
+   "front": "Kallis",
+   "back": {
+    "en": "Expensive",
+    "az": "Baha",
+    "ru": "Дорогой"
+   },
+   "forms": [
+    "kalli",
+    "kallist"
+   ]
+  },
+  {
+   "id": "sularaha",
+   "front": "Sularaha",
+   "back": {
+    "en": "Cash",
+    "az": "Nağd pul",
+    "ru": "Наличные"
+   },
+   "forms": [
+    "sularaha",
+    "sularaha"
+   ]
+  },
+  {
+   "id": "pangakaart",
+   "front": "Pangakaart",
+   "back": {
+    "en": "Bank card",
+    "az": "Bank kartı",
+    "ru": "Банковская карта"
+   },
+   "forms": [
+    "pangakaardi",
+    "pangakaarti"
+   ]
+  },
+  {
+   "id": "kviitung",
+   "front": "Kviitung",
+   "back": {
+    "en": "Receipt",
+    "az": "Qəbz",
+    "ru": "Чек"
+   },
+   "forms": [
+    "kviitungi",
+    "kviitungit"
+   ]
+  },
+  {
+   "id": "kott",
+   "front": "Kott",
+   "back": {
+    "en": "Bag",
+    "az": "Torba",
+    "ru": "Сумка"
+   },
+   "forms": [
+    "koti",
+    "kotti"
+   ]
+  },
+  {
+   "id": "lahti",
+   "front": "Lahti",
+   "back": {
+    "en": "Open",
+    "az": "Açıq",
+    "ru": "Открыто"
+   }
+  },
+  {
+   "id": "kinni",
+   "front": "Kinni",
+   "back": {
+    "en": "Closed",
+    "az": "Bağlı",
+    "ru": "Закрыто"
+   }
+  },
+  {
+   "id": "allahindlus",
+   "front": "Allahindlus",
+   "back": {
+    "en": "Discount",
+    "az": "Endirim",
+    "ru": "Скидка"
+   },
+   "forms": [
+    "allahindluse",
+    "allahindlust"
+   ]
+  },
+  {
+   "id": "tasuta",
+   "front": "Tasuta",
+   "back": {
+    "en": "Free",
+    "az": "Pulsuz",
+    "ru": "Бесплатно"
+   }
+  },
+  {
+   "id": "kas-teil-on",
+   "front": "Kas teil on...?",
+   "back": {
+    "en": "Do you have...?",
+    "az": "Sizdə ... var?",
+    "ru": "У вас есть...?"
+   }
+  },
+  {
+   "id": "ma-votan-selle",
+   "front": "Ma võtan selle",
+   "back": {
+    "en": "I will take this one",
+    "az": "Bunu götürürəm",
+    "ru": "Я возьму это"
+   }
+  },
+  {
+   "id": "ainult-vaatan",
+   "front": "Ainult vaatan",
+   "back": {
+    "en": "Just looking",
+    "az": "Sadəcə baxıram",
+    "ru": "Я просто смотрю"
+   }
+  },
+  {
+   "id": "sent",
+   "front": "Sent",
+   "back": {
+    "en": "Cent",
+    "az": "Sent",
+    "ru": "Цент"
+   },
+   "forms": [
+    "sendi",
+    "senti"
+   ],
+   "sentence": {
+    "et": "See maksab viiskümmend senti.",
+    "en": "It costs fifty cents.",
+    "az": "Bu əlli sentdir.",
+    "ru": "Это стоит пятьдесят центов."
+   }
+  },
+  {
+   "id": "muuma",
+   "front": "Müüma",
+   "back": {
+    "en": "To sell",
+    "az": "satmaq",
+    "ru": "продавать"
+   },
+   "forms": [
+    "müüa",
+    "müün"
+   ]
+  },
+  {
+   "id": "maha-muuma",
+   "front": "Maha müüma",
+   "back": {
+    "en": "To sell off",
+    "az": "satıb qurtarmaq",
+    "ru": "распродать"
+   }
+  },
+  {
+   "id": "soodne",
+   "front": "Soodne",
+   "back": {
+    "en": "Favourable, good value",
+    "az": "Sərfəli",
+    "ru": "Выгодный"
+   },
+   "forms": [
+    "soodsa",
+    "soodsat"
+   ]
+  },
+  {
+   "id": "soodustus",
+   "front": "Soodustus",
+   "back": {
+    "en": "Perk, discount",
+    "az": "Güzəşt",
+    "ru": "Льгота"
+   },
+   "forms": [
+    "soodustuse",
+    "soodustust"
+   ]
+  },
+  {
+   "id": "paras-raha",
+   "front": "Paras raha",
+   "back": {
+    "en": "The exact change",
+    "az": "Dəqiq pul",
+    "ru": "Точные деньги"
+   }
+  },
+  {
+   "id": "tagasi-andma",
+   "front": "Tagasi andma",
+   "back": {
+    "en": "To give change",
+    "az": "qaytarmaq",
+    "ru": "давать сдачу"
+   }
+  },
+  {
+   "id": "tsekk",
+   "front": "Tšekk",
+   "back": {
+    "en": "Receipt",
+    "az": "Çek",
+    "ru": "Чек"
+   },
+   "forms": [
+    "tšeki",
+    "tšekki"
+   ]
+  },
+  {
+   "id": "maksmine",
+   "front": "Maksmine",
+   "back": {
+    "en": "Paying",
+    "az": "Ödəniş",
+    "ru": "Оплата"
+   },
+   "forms": [
+    "maksmise",
+    "maksmist"
+   ]
+  },
+  {
+   "id": "kaup",
+   "front": "Kaup",
+   "back": {
+    "en": "Goods",
+    "az": "Mal",
+    "ru": "Товар"
+   },
+   "forms": [
+    "kauba",
+    "kaupa"
+   ]
+  },
+  {
+   "id": "muuk",
+   "front": "Müük",
+   "back": {
+    "en": "Sale",
+    "az": "Satış",
+    "ru": "Продажа"
+   },
+   "forms": [
+    "müügi",
+    "müüki"
+   ]
+  },
+  {
+   "id": "ost",
+   "front": "Ost",
+   "back": {
+    "en": "Purchase",
+    "az": "Alış, alınan şey",
+    "ru": "Покупка"
+   },
+   "forms": [
+    "ostu",
+    "ostu"
+   ]
+  },
+  {
+   "id": "pakend",
+   "front": "Pakend",
+   "back": {
+    "en": "Packaging",
+    "az": "Qablaşdırma",
+    "ru": "Упаковка"
+   },
+   "forms": [
+    "pakendi",
+    "pakendit"
+   ]
+  },
+  {
+   "id": "silt",
+   "front": "Silt",
+   "back": {
+    "en": "Label, sign",
+    "az": "Etiket, lövhə",
+    "ru": "Табличка, этикетка"
+   },
+   "forms": [
+    "sildi",
+    "silti"
+   ]
+  },
+  {
+   "id": "soodus",
+   "front": "Soodus",
+   "back": {
+    "en": "Discount",
+    "az": "Güzəşt",
+    "ru": "Льгота, скидка"
+   },
+   "forms": [
+    "sooduse",
+    "soodust"
+   ]
+  },
+  {
+   "id": "tasu",
+   "front": "Tasu",
+   "back": {
+    "en": "Fee, payment",
+    "az": "Haqq, ödəniş",
+    "ru": "Плата, оплата"
+   },
+   "forms": [
+    "tasu",
+    "tasu"
+   ]
+  },
+  {
+   "id": "nimekiri",
+   "front": "Nimekiri",
+   "back": {
+    "en": "List",
+    "az": "Siyahı",
+    "ru": "Список"
+   },
+   "forms": [
+    "nimekirja",
+    "nimekirja"
+   ]
+  },
+  {
+   "id": "otsas-olema",
+   "front": "Otsas olema",
+   "back": {
+    "en": "To be sold out, all gone",
+    "az": "Qurtarmaq, bitmək",
+    "ru": "Закончиться"
+   }
+  },
+  {
+   "id": "kasu",
+   "front": "Kasu",
+   "back": {
+    "en": "Benefit, profit",
+    "az": "Fayda, qazanc",
+    "ru": "Польза, выгода"
+   },
+   "forms": [
+    "kasu",
+    "kasu"
+   ]
+  },
+  {
+   "id": "kaaluma",
+   "front": "Kaaluma",
+   "back": {
+    "en": "To weigh",
+    "az": "Çəkmək",
+    "ru": "Взвешивать"
+   },
+   "forms": [
+    "kaaluda",
+    "kaalun"
+   ]
+  },
+  {
+   "id": "saastma",
+   "front": "Säästma",
+   "back": {
+    "en": "To save (money)",
+    "az": "Qənaət etmək",
+    "ru": "Экономить, копить"
+   },
+   "forms": [
+    "säästa",
+    "säästan"
+   ]
+  },
+  {
+   "id": "valik",
+   "front": "Valik",
+   "back": {
+    "en": "Choice",
+    "az": "Seçim",
+    "ru": "Выбор"
+   },
+   "forms": [
+    "valiku",
+    "valikut"
+   ]
+  },
+  {
+   "id": "tasuline",
+   "front": "Tasuline",
+   "back": {
+    "en": "Paid, not free",
+    "az": "Ödənişli",
+    "ru": "Платный"
+   },
+   "forms": [
+    "tasulise",
+    "tasulist"
+   ]
+  },
+  {
+   "id": "tasuma",
+   "front": "Tasuma",
+   "back": {
+    "en": "To pay",
+    "az": "ödəmək",
+    "ru": "платить"
+   },
+   "forms": [
+    "tasuda",
+    "tasun"
+   ]
+  }
+ ],
+ "level": "more"
+}

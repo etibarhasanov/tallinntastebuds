@@ -1,0 +1,832 @@
+{
+ "id": "talk",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Small talk",
+  "az": "Yüngül söhbət",
+  "ru": "Разговор о простом"
+ },
+ "why": {
+  "en": "The conversation after the second sentence",
+  "az": "İkinci cümlədən sonra gələn söhbət",
+  "ru": "Разговор, который начинается после второй фразы"
+ },
+ "cards": [
+  {
+   "id": "mis-su-nimi-on",
+   "front": "Mis su nimi on?",
+   "back": {
+    "en": "What is your name?",
+    "az": "Adın nədir?",
+    "ru": "Как вас зовут?"
+   }
+  },
+  {
+   "id": "minu-nimi-on",
+   "front": "Minu nimi on...",
+   "back": {
+    "en": "My name is...",
+    "az": "Mənim adım...",
+    "ru": "Меня зовут..."
+   }
+  },
+  {
+   "id": "kust-sa-parit-oled",
+   "front": "Kust sa pärit oled?",
+   "back": {
+    "en": "Where are you from?",
+    "az": "Sən haradansan?",
+    "ru": "Откуда вы?"
+   }
+  },
+  {
+   "id": "ma-olen-eestist",
+   "front": "Ma olen Eestist",
+   "back": {
+    "en": "I am from Estonia",
+    "az": "Mən Estoniyadanam",
+    "ru": "Я из Эстонии"
+   }
+  },
+  {
+   "id": "ma-elan-tallinnas",
+   "front": "Ma elan Tallinnas",
+   "back": {
+    "en": "I live in Tallinn",
+    "az": "Mən Tallinndə yaşayıram",
+    "ru": "Я живу в Таллинне"
+   }
+  },
+  {
+   "id": "kui-vana-sa-oled",
+   "front": "Kui vana sa oled?",
+   "back": {
+    "en": "How old are you?",
+    "az": "Neçə yaşın var?",
+    "ru": "Сколько тебе лет?"
+   }
+  },
+  {
+   "id": "mulle-meeldib",
+   "front": "Mulle meeldib",
+   "back": {
+    "en": "I like it",
+    "az": "Xoşuma gəlir",
+    "ru": "Мне нравится"
+   }
+  },
+  {
+   "id": "mulle-ei-meeldi",
+   "front": "Mulle ei meeldi",
+   "back": {
+    "en": "I do not like it",
+    "az": "Xoşuma gəlmir",
+    "ru": "Мне не нравится"
+   }
+  },
+  {
+   "id": "tore",
+   "front": "Tore!",
+   "back": {
+    "en": "Great!",
+    "az": "Çox gözəl!",
+    "ru": "Здорово!"
+   }
+  },
+  {
+   "id": "koik-on-hasti",
+   "front": "Kõik on hästi",
+   "back": {
+    "en": "Everything is fine",
+    "az": "Hər şey yaxşıdır",
+    "ru": "Всё хорошо"
+   }
+  },
+  {
+   "id": "palju-onne",
+   "front": "Palju õnne!",
+   "back": {
+    "en": "Congratulations!",
+    "az": "Təbrik edirəm!",
+    "ru": "Поздравляю!"
+   }
+  },
+  {
+   "id": "sober",
+   "front": "Sõber",
+   "back": {
+    "en": "Friend",
+    "az": "Dost",
+    "ru": "Друг"
+   },
+   "forms": [
+    "sõbra",
+    "sõpra"
+   ]
+  },
+  {
+   "id": "perekond",
+   "front": "Perekond",
+   "back": {
+    "en": "Family",
+    "az": "Ailə",
+    "ru": "Семья"
+   },
+   "forms": [
+    "perekonna",
+    "perekonda"
+   ]
+  },
+  {
+   "id": "naine",
+   "front": "Naine",
+   "back": {
+    "en": "Woman",
+    "az": "Qadın",
+    "ru": "Женщина"
+   },
+   "forms": [
+    "naise",
+    "naist"
+   ]
+  },
+  {
+   "id": "mees",
+   "front": "Mees",
+   "back": {
+    "en": "Man",
+    "az": "Kişi",
+    "ru": "Мужчина"
+   },
+   "forms": [
+    "mehe",
+    "meest"
+   ]
+  },
+  {
+   "id": "laps",
+   "front": "Laps",
+   "back": {
+    "en": "Child",
+    "az": "Uşaq",
+    "ru": "Ребёнок"
+   },
+   "forms": [
+    "lapse",
+    "last"
+   ]
+  },
+  {
+   "id": "too",
+   "front": "Töö",
+   "back": {
+    "en": "Work",
+    "az": "İş",
+    "ru": "Работа"
+   },
+   "forms": [
+    "töö",
+    "tööd"
+   ]
+  },
+  {
+   "id": "keel",
+   "front": "Keel",
+   "back": {
+    "en": "Language",
+    "az": "Dil",
+    "ru": "Язык"
+   },
+   "forms": [
+    "keele",
+    "keelt"
+   ]
+  },
+  {
+   "id": "ilus",
+   "front": "Ilus",
+   "back": {
+    "en": "Beautiful",
+    "az": "Gözəl",
+    "ru": "Красивый"
+   },
+   "forms": [
+    "ilusa",
+    "ilusat"
+   ]
+  },
+  {
+   "id": "kuidas-kaib-teie-kasi",
+   "front": "Kuidas käib teie käsi?",
+   "back": {
+    "en": "How are things with you?",
+    "az": "İşləriniz necədir?",
+    "ru": "Как ваши дела?"
+   }
+  },
+  {
+   "id": "tule-mulle-kulla",
+   "front": "Tule mulle külla",
+   "back": {
+    "en": "Come and visit me",
+    "az": "Mənə qonaq gəl",
+    "ru": "Приходи ко мне в гости"
+   }
+  },
+  {
+   "id": "ma-tulen-tagasi",
+   "front": "Ma tulen tagasi",
+   "back": {
+    "en": "I will be back",
+    "az": "Qayıdacağam",
+    "ru": "Я вернусь"
+   }
+  },
+  {
+   "id": "ode",
+   "front": "Õde",
+   "back": {
+    "en": "Sister",
+    "az": "Bacı",
+    "ru": "Сестра"
+   },
+   "forms": [
+    "õe",
+    "õde"
+   ],
+   "sentence": {
+    "et": "Mul on üks õde.",
+    "en": "I have one sister.",
+    "az": "Mənim bir bacım var.",
+    "ru": "У меня одна сестра."
+   }
+  },
+  {
+   "id": "vend",
+   "front": "Vend",
+   "back": {
+    "en": "Brother",
+    "az": "Qardaş",
+    "ru": "Брат"
+   },
+   "forms": [
+    "venna",
+    "venda"
+   ],
+   "sentence": {
+    "et": "Mu vend elab Tartus.",
+    "en": "My brother lives in Tartu.",
+    "az": "Qardaşım Tartuda yaşayır.",
+    "ru": "Мой брат живёт в Тарту."
+   }
+  },
+  {
+   "id": "pere",
+   "front": "Pere",
+   "back": {
+    "en": "Family, the everyday word",
+    "az": "Ailə, gündəlik söz",
+    "ru": "Семья, обиходное слово"
+   },
+   "forms": [
+    "pere",
+    "peret"
+   ],
+   "sentence": {
+    "et": "Kogu pere on kodus.",
+    "en": "The whole family is at home.",
+    "az": "Bütün ailə evdədir.",
+    "ru": "Вся семья дома."
+   }
+  },
+  {
+   "id": "nimi",
+   "front": "Nimi",
+   "back": {
+    "en": "Name",
+    "az": "Ad",
+    "ru": "Имя"
+   },
+   "forms": [
+    "nime",
+    "nime"
+   ],
+   "sentence": {
+    "et": "Mis on selle koha nimi?",
+    "en": "What is this place called?",
+    "az": "Bu yerin adı nədir?",
+    "ru": "Как называется это место?"
+   }
+  },
+  {
+   "id": "inimene",
+   "front": "Inimene",
+   "back": {
+    "en": "Person, human being",
+    "az": "İnsan",
+    "ru": "Человек"
+   },
+   "forms": [
+    "inimese",
+    "inimest"
+   ],
+   "sentence": {
+    "et": "Ta on hea inimene.",
+    "en": "They are a good person.",
+    "az": "O yaxşı insandır.",
+    "ru": "Он хороший человек."
+   }
+  },
+  {
+   "id": "ema",
+   "front": "Ema",
+   "back": {
+    "en": "Mother",
+    "az": "Ana",
+    "ru": "Мама, мать"
+   },
+   "forms": [
+    "ema",
+    "ema"
+   ],
+   "sentence": {
+    "et": "Minu ema elab Tartus.",
+    "en": "My mother lives in Tartu.",
+    "az": "Anam Tartuda yaşayır.",
+    "ru": "Моя мама живёт в Тарту."
+   }
+  },
+  {
+   "id": "isa",
+   "front": "Isa",
+   "back": {
+    "en": "Father",
+    "az": "Ata",
+    "ru": "Папа, отец"
+   },
+   "forms": [
+    "isa",
+    "isa"
+   ],
+   "sentence": {
+    "et": "Isa tuleb homme külla.",
+    "en": "Father is coming to visit tomorrow.",
+    "az": "Atam sabah qonaq gəlir.",
+    "ru": "Папа приедет в гости завтра."
+   }
+  },
+  {
+   "id": "vanaema",
+   "front": "Vanaema",
+   "back": {
+    "en": "Grandmother",
+    "az": "Nənə",
+    "ru": "Бабушка"
+   },
+   "forms": [
+    "vanaema",
+    "vanaema"
+   ],
+   "sentence": {
+    "et": "Vanaema teeb head sööki.",
+    "en": "Grandmother cooks well.",
+    "az": "Nənə yaxşı yemək bişirir.",
+    "ru": "Бабушка вкусно готовит."
+   }
+  },
+  {
+   "id": "poiss",
+   "front": "Poiss",
+   "back": {
+    "en": "Boy",
+    "az": "Oğlan",
+    "ru": "Мальчик"
+   },
+   "forms": [
+    "poisi",
+    "poissi"
+   ],
+   "sentence": {
+    "et": "Poiss mängib õues.",
+    "en": "The boy is playing outside.",
+    "az": "Oğlan bayırda oynayır.",
+    "ru": "Мальчик играет на улице."
+   }
+  },
+  {
+   "id": "tudruk",
+   "front": "Tüdruk",
+   "back": {
+    "en": "Girl",
+    "az": "Qız",
+    "ru": "Девочка"
+   },
+   "forms": [
+    "tüdruku",
+    "tüdrukut"
+   ],
+   "sentence": {
+    "et": "Tüdruk loeb raamatut.",
+    "en": "The girl is reading a book.",
+    "az": "Qız kitab oxuyur.",
+    "ru": "Девочка читает книгу."
+   }
+  },
+  {
+   "id": "harra",
+   "front": "Härra",
+   "back": {
+    "en": "Mr., sir",
+    "az": "Cənab",
+    "ru": "Господин"
+   },
+   "forms": [
+    "härra",
+    "härrat"
+   ],
+   "sentence": {
+    "et": "Härra Tamm ootab teid.",
+    "en": "Mr Tamm is waiting for you.",
+    "az": "Cənab Tamm sizi gözləyir.",
+    "ru": "Господин Тамм вас ждёт."
+   }
+  },
+  {
+   "id": "proua",
+   "front": "Proua",
+   "back": {
+    "en": "Mrs., madam",
+    "az": "Xanım",
+    "ru": "Госпожа"
+   },
+   "forms": [
+    "proua",
+    "prouat"
+   ],
+   "sentence": {
+    "et": "Proua Mets on kodus.",
+    "en": "Mrs Mets is at home.",
+    "az": "Xanım Mets evdədir.",
+    "ru": "Госпожа Метс дома."
+   }
+  },
+  {
+   "id": "kass",
+   "front": "Kass",
+   "back": {
+    "en": "Cat",
+    "az": "Pişik",
+    "ru": "Кот, кошка"
+   },
+   "forms": [
+    "kassi",
+    "kassi"
+   ],
+   "sentence": {
+    "et": "Kass magab toolil.",
+    "en": "The cat is asleep on the chair.",
+    "az": "Pişik stulda yatır.",
+    "ru": "Кот спит на стуле."
+   }
+  },
+  {
+   "id": "koer",
+   "front": "Koer",
+   "back": {
+    "en": "Dog",
+    "az": "İt",
+    "ru": "Собака"
+   },
+   "forms": [
+    "koera",
+    "koera"
+   ],
+   "sentence": {
+    "et": "Kas koeraga võib sisse tulla?",
+    "en": "May I come in with a dog?",
+    "az": "İtlə içəri girmək olar?",
+    "ru": "С собакой можно войти?"
+   }
+  },
+  {
+   "id": "abielus",
+   "front": "Abielus",
+   "back": {
+    "en": "Married",
+    "az": "Evli",
+    "ru": "Женат, замужем"
+   },
+   "sentence": {
+    "et": "Ma olen abielus.",
+    "en": "I am married.",
+    "az": "Mən evliyəm.",
+    "ru": "Я женат."
+   }
+  },
+  {
+   "id": "armastus",
+   "front": "Armastus",
+   "back": {
+    "en": "Love",
+    "az": "Sevgi",
+    "ru": "Любовь"
+   },
+   "forms": [
+    "armastuse",
+    "armastust"
+   ],
+   "sentence": {
+    "et": "See oli armastus esimesest silmapilgust.",
+    "en": "It was love at first sight.",
+    "az": "Bu, ilk baxışdan sevgi idi.",
+    "ru": "Это была любовь с первого взгляда."
+   }
+  },
+  {
+   "id": "tark",
+   "front": "Tark",
+   "back": {
+    "en": "Smart, clever",
+    "az": "Ağıllı",
+    "ru": "Умный"
+   },
+   "forms": [
+    "targa",
+    "tarka"
+   ],
+   "sentence": {
+    "et": "Ta on väga tark.",
+    "en": "They are very clever.",
+    "az": "O çox ağıllıdır.",
+    "ru": "Он очень умный."
+   }
+  },
+  {
+   "id": "tubli",
+   "front": "Tubli",
+   "back": {
+    "en": "Good at it, well done",
+    "az": "Bacarıqlı, afərin",
+    "ru": "Молодец, хороший"
+   },
+   "forms": [
+    "tubli",
+    "tublit"
+   ],
+   "sentence": {
+    "et": "Sa oled tubli!",
+    "en": "Well done!",
+    "az": "Afərin!",
+    "ru": "Молодец!"
+   }
+  },
+  {
+   "id": "tuttavaks-saama",
+   "front": "Tuttavaks saama",
+   "back": {
+    "en": "To get acquainted",
+    "az": "tanış olmaq",
+    "ru": "познакомиться"
+   },
+   "forms": [
+    "tuttavaks saada",
+    "saan tuttavaks"
+   ],
+   "sentence": {
+    "et": "Meeldiv tuttavaks saada!",
+    "en": "Pleased to make your acquaintance!",
+    "az": "Tanış olmağımıza şadam!",
+    "ru": "Приятно познакомиться!"
+   }
+  },
+  {
+   "id": "parit-olema",
+   "front": "Pärit olema",
+   "back": {
+    "en": "To be from",
+    "az": "əsli olmaq",
+    "ru": "быть родом"
+   },
+   "forms": [
+    "pärit olla",
+    "olen pärit"
+   ],
+   "sentence": {
+    "et": "Ma olen pärit Bakuust.",
+    "en": "I am from Baku.",
+    "az": "Mən Bakıdanam.",
+    "ru": "Я родом из Баку."
+   }
+  },
+  {
+   "id": "kuidas-elate",
+   "front": "Kuidas elate?",
+   "back": {
+    "en": "How are you? (formal)",
+    "az": "Necəsiniz?",
+    "ru": "Как поживаете?"
+   }
+  },
+  {
+   "id": "mul-on-hea-meel",
+   "front": "Mul on hea meel",
+   "back": {
+    "en": "I am glad",
+    "az": "Sevindim",
+    "ru": "Я рад"
+   }
+  },
+  {
+   "id": "mul-on-kahju",
+   "front": "Mul on kahju",
+   "back": {
+    "en": "I am sorry to hear it",
+    "az": "Təəssüf edirəm",
+    "ru": "Мне жаль"
+   }
+  },
+  {
+   "id": "vaga-kahju",
+   "front": "Väga kahju!",
+   "back": {
+    "en": "What a pity!",
+    "az": "Çox təəssüf!",
+    "ru": "Очень жаль!"
+   }
+  },
+  {
+   "id": "mis-teha",
+   "front": "Mis teha!",
+   "back": {
+    "en": "What can you do!",
+    "az": "Nə edəsən!",
+    "ru": "Что поделаешь!"
+   }
+  },
+  {
+   "id": "vaata-siis",
+   "front": "Vaata siis!",
+   "back": {
+    "en": "Well, look at that!",
+    "az": "Bax ha!",
+    "ru": "Смотри-ка!"
+   }
+  },
+  {
+   "id": "ongi-koik",
+   "front": "Ongi kõik",
+   "back": {
+    "en": "That is it",
+    "az": "Vəssalam",
+    "ru": "Вот и всё"
+   }
+  },
+  {
+   "id": "saa-terveks",
+   "front": "Saa terveks!",
+   "back": {
+    "en": "Get well soon!",
+    "az": "Tez sağal!",
+    "ru": "Выздоравливай!"
+   }
+  },
+  {
+   "id": "sinu-terviseks",
+   "front": "Sinu terviseks!",
+   "back": {
+    "en": "Cheers, to your health!",
+    "az": "Sənin sağlığına!",
+    "ru": "За твоё здоровье!"
+   }
+  },
+  {
+   "id": "palju-onne-sunnipaevaks",
+   "front": "Palju õnne sünnipäevaks!",
+   "back": {
+    "en": "Happy birthday!",
+    "az": "Ad günün mübarək!",
+    "ru": "С днём рождения!"
+   }
+  },
+  {
+   "id": "ma-ei-saa-praegu-raakida",
+   "front": "Ma ei saa praegu rääkida",
+   "back": {
+    "en": "I cannot talk right now",
+    "az": "İndi danışa bilmirəm",
+    "ru": "Я сейчас не могу говорить"
+   }
+  },
+  {
+   "id": "hallo",
+   "front": "Hallo!",
+   "back": {
+    "en": "Hello! (on the phone)",
+    "az": "Alo!",
+    "ru": "Алло!"
+   }
+  },
+  {
+   "id": "kes-seal-on",
+   "front": "Kes seal on?",
+   "back": {
+    "en": "Who is it?",
+    "az": "Kimdir orada?",
+    "ru": "Кто там?"
+   }
+  },
+  {
+   "id": "tule-sisse",
+   "front": "Tule sisse!",
+   "back": {
+    "en": "Come in!",
+    "az": "İçəri gəl!",
+    "ru": "Входи!"
+   }
+  },
+  {
+   "id": "astu-sisse",
+   "front": "Astu sisse!",
+   "back": {
+    "en": "Step in!",
+    "az": "Keç içəri!",
+    "ru": "Проходи!"
+   }
+  },
+  {
+   "id": "vota-jope-ara",
+   "front": "Võta jope ära!",
+   "back": {
+    "en": "Take your jacket off!",
+    "az": "Gödəkçəni çıxart!",
+    "ru": "Сними куртку!"
+   }
+  },
+  {
+   "id": "elukaaslane",
+   "front": "Elukaaslane",
+   "back": {
+    "en": "Partner",
+    "az": "Həyat yoldaşı",
+    "ru": "Спутник жизни"
+   },
+   "forms": [
+    "elukaaslase",
+    "elukaaslast"
+   ]
+  },
+  {
+   "id": "tuttav",
+   "front": "Tuttav",
+   "back": {
+    "en": "Acquainted, familiar",
+    "az": "Tanış",
+    "ru": "Знакомый"
+   },
+   "forms": [
+    "tuttava",
+    "tuttavat"
+   ]
+  },
+  {
+   "id": "sobranna",
+   "front": "Sõbranna",
+   "back": {
+    "en": "Friend (a woman)",
+    "az": "Rəfiqə",
+    "ru": "Подруга"
+   },
+   "forms": [
+    "sõbranna",
+    "sõbrannat"
+   ]
+  },
+  {
+   "id": "nali",
+   "front": "Nali",
+   "back": {
+    "en": "Joke",
+    "az": "Zarafat",
+    "ru": "Шутка"
+   },
+   "forms": [
+    "nalja",
+    "nalja"
+   ]
+  },
+  {
+   "id": "jama",
+   "front": "Jama",
+   "back": {
+    "en": "Nonsense",
+    "az": "Cəfəngiyat",
+    "ru": "Ерунда"
+   },
+   "forms": [
+    "jama",
+    "jama"
+   ]
+  }
+ ],
+ "level": "more"
+}

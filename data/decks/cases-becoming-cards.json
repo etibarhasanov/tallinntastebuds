@@ -1,0 +1,328 @@
+{
+ "id": "cases-becoming-cards",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Becoming, and until — the cards",
+  "az": "Olmaq və -dək — kartlar",
+  "ru": "Стать и «до» — карточки"
+ },
+ "why": {
+  "en": "What somebody becomes, and until when",
+  "az": "Kim olur, və nə vaxtadək",
+  "ru": "Кем становятся и до каких пор"
+ },
+ "level": "case",
+ "cards": [
+  {
+   "id": "ta-sai-arstiks",
+   "front": "Ta sai arstiks",
+   "back": {
+    "en": "She became a doctor",
+    "az": "O, həkim oldu",
+    "ru": "Она стала врачом"
+   },
+   "build": {
+    "forms": [
+     "arst",
+     "arsti",
+     "arsti"
+    ],
+    "on": 1,
+    "from": "arsti",
+    "end": "ks",
+    "makes": "arstiks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "me-saime-sopradeks",
+   "front": "Me saime sõpradeks",
+   "back": {
+    "en": "We became friends",
+    "az": "Biz dost olduq",
+    "ru": "Мы стали друзьями"
+   },
+   "build": {
+    "forms": [
+     "sõber",
+     "sõbra",
+     "sõpra"
+    ],
+    "from": "sõprade",
+    "end": "ks",
+    "makes": "sõpradeks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "ilm-laheb-kulmaks",
+   "front": "Ilm läheb külmaks",
+   "back": {
+    "en": "It's turning cold",
+    "az": "Hava soyuyur",
+    "ru": "Становится холодно"
+   },
+   "build": {
+    "forms": [
+     "külm",
+     "külma",
+     "külma"
+    ],
+    "on": 1,
+    "from": "külma",
+    "end": "ks",
+    "makes": "külmaks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "milleks",
+   "front": "Milleks?",
+   "back": {
+    "en": "What for?",
+    "az": "Nə üçün?",
+    "ru": "Зачем?"
+   },
+   "build": {
+    "forms": [
+     "mis",
+     "mille",
+     "mida"
+    ],
+    "on": 1,
+    "from": "mille",
+    "end": "ks",
+    "makes": "milleks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "homseks",
+   "front": "Homseks",
+   "back": {
+    "en": "For tomorrow",
+    "az": "Sabah üçün",
+    "ru": "На завтра"
+   },
+   "build": {
+    "forms": [
+     "homne",
+     "homse",
+     "homset"
+    ],
+    "on": 1,
+    "from": "homse",
+    "end": "ks",
+    "makes": "homseks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "ohtuks",
+   "front": "Õhtuks",
+   "back": {
+    "en": "By evening",
+    "az": "Axşama",
+    "ru": "К вечеру"
+   },
+   "build": {
+    "forms": [
+     "õhtu",
+     "õhtu",
+     "õhtut"
+    ],
+    "on": 1,
+    "from": "õhtu",
+    "end": "ks",
+    "makes": "õhtuks",
+    "case": {
+     "et": "saav",
+     "en": "becoming, for",
+     "az": "kim olmaq? nə üçün?",
+     "ru": "кем стать? для чего?"
+    }
+   }
+  },
+  {
+   "id": "viieni",
+   "front": "Viieni",
+   "back": {
+    "en": "Until five",
+    "az": "Beşədək",
+    "ru": "До пяти"
+   },
+   "build": {
+    "forms": [
+     "viis",
+     "viie",
+     "viit"
+    ],
+    "on": 1,
+    "from": "viie",
+    "end": "ni",
+    "makes": "viieni",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  },
+  {
+   "id": "homseni",
+   "front": "Homseni",
+   "back": {
+    "en": "Until tomorrow",
+    "az": "Sabahadək",
+    "ru": "До завтра"
+   },
+   "build": {
+    "forms": [
+     "homne",
+     "homse",
+     "homset"
+    ],
+    "on": 1,
+    "from": "homse",
+    "end": "ni",
+    "makes": "homseni",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  },
+  {
+   "id": "mis-ajani",
+   "front": "Mis ajani?",
+   "back": {
+    "en": "Until when?",
+    "az": "Nə vaxtadək?",
+    "ru": "До каких пор?"
+   },
+   "build": {
+    "forms": [
+     "aeg",
+     "aja",
+     "aega"
+    ],
+    "on": 1,
+    "from": "aja",
+    "end": "ni",
+    "makes": "ajani",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  },
+  {
+   "id": "kella-kaheni",
+   "front": "Kella kaheni",
+   "back": {
+    "en": "Until two o'clock",
+    "az": "Saat ikiyədək",
+    "ru": "До двух часов"
+   },
+   "build": {
+    "forms": [
+     "kaks",
+     "kahe",
+     "kahte"
+    ],
+    "on": 1,
+    "from": "kahe",
+    "end": "ni",
+    "makes": "kaheni",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  },
+  {
+   "id": "tartuni",
+   "front": "Tartuni",
+   "back": {
+    "en": "As far as Tartu",
+    "az": "Tartuya qədər",
+    "ru": "До Тарту"
+   },
+   "build": {
+    "forms": [
+     "Tartu",
+     "Tartu",
+     "Tartut"
+    ],
+    "on": 1,
+    "from": "Tartu",
+    "end": "ni",
+    "makes": "Tartuni",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  },
+  {
+   "id": "hommikust-ohtuni",
+   "front": "Hommikust õhtuni",
+   "back": {
+    "en": "From morning till night",
+    "az": "Səhərdən axşamadək",
+    "ru": "С утра до вечера"
+   },
+   "build": {
+    "forms": [
+     "õhtu",
+     "õhtu",
+     "õhtut"
+    ],
+    "on": 1,
+    "from": "õhtu",
+    "end": "ni",
+    "makes": "õhtuni",
+    "case": {
+     "et": "rajav",
+     "en": "until, as far as",
+     "az": "nəyədək? haraya qədər?",
+     "ru": "до кого? до чего?"
+    }
+   }
+  }
+ ]
+}

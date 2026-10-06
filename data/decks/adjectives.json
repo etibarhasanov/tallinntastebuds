@@ -1,0 +1,563 @@
+{
+ "id": "adjectives",
+ "added": "2026-10-06",
+ "deck": "adjectives-cards",
+ "name": {
+  "en": "Bigger, biggest, and the opposite",
+  "az": "Daha böyük, ən böyük, və əksi",
+  "ru": "Больше, самый большой, и наоборот"
+ },
+ "why": {
+  "en": "Suur, suurem, suurim — how an adjective compares, what it is made from, and how it is turned round.",
+  "az": "Suur, suurem, suurim — sifət necə müqayisə olunur, nədən düzəlir, və necə əksinə çevrilir.",
+  "ru": "Suur, suurem, suurim — как прилагательное сравнивает, из чего оно сделано и как его перевернуть."
+ },
+ "taste": "suur · suurem · suurim",
+ "body": [
+  {
+   "say": {
+    "en": "An adjective is the word in front of a noun — *suur maja*, a big house — and it comes on the card in the same three forms the noun does: *suur, suure, suurt*. It follows its noun through the cases, ending for ending, through the first ten: *suures majas*, in a big house. In the last four it stays in the omastav and lets the noun carry the ending — *suure majaga*, with a big house — which is what the fourteen cases said of *see* and *hea*. What is new here is what grows out of the second form: more, most, and the words an adjective is made from.",
+    "az": "Sifət ismin qabağındakı sözdür — *suur maja*, böyük ev — və kartda ismin gəldiyi kimi üç formada gəlir: *suur, suure, suurt*. Biz *böyük evdə* deyirik və sifətə toxunmuruq; eston dili onu ismin ardınca ilk on halda hal-hal aparır: *suures majas*, böyük evdə. Son dörddə sifət omastav-da qalır və şəkilçini ismə verir — *suure majaga*, böyük evlə — on dörd hal dərsinin *see* və *hea* haqqında dediyi budur. Burada yeni olan ikinci formadan nəyin çıxmasıdır: daha, ən, və sifətin nədən düzəldiyi.",
+    "ru": "Прилагательное — слово перед существительным, *suur maja*, большой дом, и на карточке оно приходит в тех же трёх формах, что существительное: *suur, suure, suurt*. Как и по-русски, оно идёт за существительным по падежам, окончание за окончанием, через первые десять: *suures majas*, в большом доме. В последних четырёх оно остаётся в omastav и отдаёт окончание существительному — *suure majaga*, с большим домом, — о чём урок о четырнадцати падежах говорил про *see* и *hea*. Новое здесь — то, что растёт из второй формы: больше, самый, и слова, из которых прилагательное сделано."
+   }
+  },
+  {
+   "head": {
+    "en": "More — keskvõrre",
+    "az": "Daha — keskvõrre",
+    "ru": "Больше — keskvõrre"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "as it is",
+      "az": "olduğu kimi",
+      "ru": "как есть"
+     },
+     {
+      "en": "more",
+      "az": "daha",
+      "ru": "больше"
+     },
+     {
+      "en": "most",
+      "az": "ən",
+      "ru": "самый"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "suur",
+       "suurem",
+       "suurim"
+      ],
+      "means": {
+       "en": "big",
+       "az": "böyük",
+       "ru": "большой"
+      }
+     },
+     {
+      "et": [
+       "vana",
+       "vanem",
+       "vanim"
+      ],
+      "means": {
+       "en": "old",
+       "az": "köhnə, qoca",
+       "ru": "старый"
+      }
+     },
+     {
+      "et": [
+       "pikk",
+       "pikem",
+       "pikim"
+      ],
+      "means": {
+       "en": "long, tall",
+       "az": "uzun",
+       "ru": "длинный, высокий"
+      }
+     },
+     {
+      "et": [
+       "külm",
+       "külmem",
+       "külmim"
+      ],
+      "means": {
+       "en": "cold",
+       "az": "soyuq",
+       "ru": "холодный"
+      }
+     },
+     {
+      "et": [
+       "ilus",
+       "ilusam",
+       "ilusaim"
+      ],
+      "means": {
+       "en": "beautiful",
+       "az": "gözəl",
+       "ru": "красивый"
+      }
+     },
+     {
+      "et": [
+       "väike",
+       "väiksem",
+       "väikseim"
+      ],
+      "means": {
+       "en": "small",
+       "az": "kiçik",
+       "ru": "маленький"
+      }
+     },
+     {
+      "et": [
+       "hea",
+       "parem",
+       "parim"
+      ],
+      "means": {
+       "en": "good",
+       "az": "yaxşı",
+       "ru": "хороший"
+      }
+     },
+     {
+      "et": [
+       "halb",
+       "halvem",
+       "halvim"
+      ],
+      "means": {
+       "en": "bad",
+       "az": "pis",
+       "ru": "плохой"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "The second form is the stem, and the comparative is *-m* on it: *suure* → *suurem*, *ilusa* → *ilusam*. When that form has only two syllables, its last vowel turns into *e* first — *vana* → *vanem*, *pika* → *pikem*, *külma* → *külmem* — and *väike* drops its *-ke-*: *väiksem*. *Hea* and *halb* are the two to learn by heart: *parem*, *halvem*. *Than* is *kui*, and the comparative is a word like any other, with an omastav in *-a* and an osastav in *-at*: *suurema, suuremat*.",
+    "az": "İkinci forma kökdür, müqayisə dərəcəsi isə onun üstündə *-m*-dir: *suure* → *suurem*, *ilusa* → *ilusam*. Biz *daha* sözünü qabağa qoyuruq, eston dili şəkilçini sona. O formada cəmi iki heca varsa, əvvəlcə son saiti *e*-yə çevrilir — *vana* → *vanem*, *pika* → *pikem*, *külma* → *külmem* — *väike* isə *-ke-* hecasını atır: *väiksem*. *Hea* və *halb* əzbər öyrəniləsi ikisidir: *parem*, *halvem*. *Kui* bizim *-dan, -dən*-imizdir — *suurem kui Tartu*, Tartudan böyük — və müqayisə dərəcəsi adi bir sözdür: omastav-ı *-a*, osastav-ı *-at*: *suurema, suuremat*.",
+    "ru": "Вторая форма — основа, а сравнительная степень — *-m* на ней: *suure* → *suurem*, *ilusa* → *ilusam*. Когда в этой форме всего два слога, её последний гласный сначала становится *e* — *vana* → *vanem*, *pika* → *pikem*, *külma* → *külmem*, — а *väike* теряет *-ke-*: *väiksem*. *Hea* и *halb* — те два, что учат наизусть, как «лучше» и «хуже»: *parem*, *halvem*. «Чем» — это *kui*, а сравнительная степень, в отличие от русской, склоняется, как любое слово: omastav на *-a*, osastav на *-at*: *suurema, suuremat*."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Tallinn on suurem kui Tartu.",
+     "en": "Tallinn is bigger than Tartu.",
+     "az": "Tallinn Tartudan böyükdür.",
+     "ru": "Таллинн больше Тарту."
+    },
+    {
+     "et": "Mul on vanem vend.",
+     "en": "I have an older brother.",
+     "az": "Mənim böyük qardaşım var.",
+     "ru": "У меня есть старший брат."
+    },
+    {
+     "et": "See supp on külmem kui minu oma.",
+     "en": "This soup is colder than mine.",
+     "az": "Bu şorba mənimkindən soyuqdur.",
+     "ru": "Этот суп холоднее моего."
+    },
+    {
+     "et": "Kas teil on väiksemat suurust?",
+     "en": "Do you have a smaller size?",
+     "az": "Daha kiçik ölçü var?",
+     "ru": "У вас есть размер поменьше?"
+    },
+    {
+     "et": "Täna on ilm parem.",
+     "en": "The weather is better today.",
+     "az": "Bu gün hava daha yaxşıdır.",
+     "ru": "Сегодня погода лучше."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Most — ülivõrre",
+    "az": "Ən — ülivõrre",
+    "ru": "Самый — ülivõrre"
+   }
+  },
+  {
+   "say": {
+    "en": "Most is said two ways, and the first one always works: *kõige* in front of the comparative — *kõige suurem*, the biggest, *kõige parem*, the best. The second is a short form, *-im* on the same stem — *suurim, vanim, parim* — and it is the one a sign or a headline uses: *Eesti vanim kohvik*, Estonia's oldest café. When you are not sure the short form exists, say *kõige*.",
+    "az": "Ən iki cür deyilir, və birincisi həmişə işləyir: müqayisə dərəcəsinin qabağında *kõige* — *kõige suurem*, ən böyük, *kõige parem*, ən yaxşı — düz bizim *ən* kimi, yalnız söz özü də şəkilçi daşıyır. İkincisi qısa formadır, eyni kökə *-im* — *suurim, vanim, parim* — və lövhədə, başlıqda görəcəyiniz odur: *Eesti vanim kohvik*, Estoniyanın ən qədim kafesi. Qısa formanın olub-olmadığına əmin deyilsinizsə, *kõige* deyin.",
+    "ru": "«Самый» говорится двумя способами, и первый работает всегда: *kõige* перед сравнительной степенью — *kõige suurem*, самый большой, *kõige parem*, самый лучший. Второй — короткая форма, *-im* на той же основе, *suurim, vanim, parim*, как русское «старейший»: её вы увидите на вывеске и в заголовке — *Eesti vanim kohvik*, старейшее кафе Эстонии. Когда не уверены, что короткая форма есть, говорите *kõige*."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "See on kõige parem kohvik Tallinnas.",
+     "en": "This is the best café in Tallinn.",
+     "az": "Bu, Tallinndə ən yaxşı kafedir.",
+     "ru": "Это лучшее кафе в Таллинне."
+    },
+    {
+     "et": "Vanalinn on linna vanim osa.",
+     "en": "The Old Town is the oldest part of the city.",
+     "az": "Köhnə şəhər şəhərin ən qədim hissəsidir.",
+     "ru": "Старый город — старейшая часть города."
+    },
+    {
+     "et": "Milline on kõige odavam?",
+     "en": "Which is the cheapest?",
+     "az": "Hansı ən ucuzdur?",
+     "ru": "Какой самый дешёвый?"
+    },
+    {
+     "et": "Tema kook oli kõige magusam.",
+     "en": "Her cake was the sweetest.",
+     "az": "Onun tortu ən şirin idi.",
+     "ru": "Её торт был самым сладким."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Where an adjective comes from",
+    "az": "Sifət nədən düzəlir",
+    "ru": "Откуда берётся прилагательное"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "from",
+      "az": "nədən",
+      "ru": "из чего"
+     },
+     {
+      "en": "ending",
+      "az": "şəkilçi",
+      "ru": "окончание"
+     },
+     {
+      "en": "adjective",
+      "az": "sifət",
+      "ru": "прилагательное"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "lugema",
+       "-v",
+       "lugev"
+      ],
+      "means": {
+       "en": "reading, who reads",
+       "az": "oxuyan",
+       "ru": "читающий"
+      }
+     },
+     {
+      "et": [
+       "väsima",
+       "-nud",
+       "väsinud"
+      ],
+      "means": {
+       "en": "tired",
+       "az": "yorğun",
+       "ru": "уставший"
+      }
+     },
+     {
+      "et": [
+       "sööma",
+       "-tav",
+       "söödav"
+      ],
+      "means": {
+       "en": "edible",
+       "az": "yeməli",
+       "ru": "съедобный"
+      }
+     },
+     {
+      "et": [
+       "keetma",
+       "-tud",
+       "keedetud"
+      ],
+      "means": {
+       "en": "boiled",
+       "az": "bişmiş",
+       "ru": "варёный"
+      }
+     },
+     {
+      "et": [
+       "sõber",
+       "-lik",
+       "sõbralik"
+      ],
+      "means": {
+       "en": "friendly",
+       "az": "mehriban",
+       "ru": "дружелюбный"
+      }
+     },
+     {
+      "et": [
+       "ajalugu",
+       "-line",
+       "ajalooline"
+      ],
+      "means": {
+       "en": "historical",
+       "az": "tarixi",
+       "ru": "исторический"
+      }
+     },
+     {
+      "et": [
+       "vihm",
+       "-ne",
+       "vihmane"
+      ],
+      "means": {
+       "en": "rainy",
+       "az": "yağışlı",
+       "ru": "дождливый"
+      }
+     },
+     {
+      "et": [
+       "anne",
+       "-kas",
+       "andekas"
+      ],
+      "means": {
+       "en": "talented",
+       "az": "istedadlı",
+       "ru": "талантливый"
+      }
+     },
+     {
+      "et": [
+       "õnn",
+       "-tu",
+       "õnnetu"
+      ],
+      "means": {
+       "en": "unhappy",
+       "az": "bədbəxt",
+       "ru": "несчастный"
+      }
+     },
+     {
+      "et": [
+       "lõppema",
+       "-matu",
+       "lõpmatu"
+      ],
+      "means": {
+       "en": "endless",
+       "az": "sonsuz",
+       "ru": "бесконечный"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "The first four are a verb's: *-v* and *-nud* from the *-ma* and *-da* forms, *-tav* and *-tud* from the *-takse* form — the same four forms the tenses lesson ended on. *Väsinud* is the *-nud* that *ei elanud* uses; *keedetud* is the *-tud* of *on õpitud*. The rest are made from nouns, and a handful of endings make most of them: *-lik* and *-line* for being like, *-ne* for being full of, *-kas* for having, and *-tu* and *-matu* for being without. A word in *-tu* is the opposite of one in *-lik* more often than not: *õnnelik, õnnetu*.",
+    "az": "İlk dördü felindir: *-v* və *-nud* *-ma* və *-da* formalarından, *-tav* və *-tud* *-takse* formasından — zamanlar dərsinin bitdiyi həmin dörd forma. *Väsinud* *ei elanud*-dakı *-nud*-dur; *keedetud* *on õpitud*-dakı *-tud*. Bunlar bizim *-an, -mış, -malı* feli sifətlərimizdir: *oxuyan, yorulmuş, yeməli*. Qalanları isimdən düzəlir, və bir ovuc şəkilçi onların çoxunu verir: *-lik* və *-line* — kimi olmaq, *-ne* — bizim *-lı, -li* (*vihmane* — yağışlı), *-kas* — olan (*andekas* — istedadlı), *-tu* və *-matu* — bizim *-sız, -siz* (*õnnetu* — bədbəxt, *lõpmatu* — sonsuz). *-tu*-lu söz çox vaxt *-lik*-li sözün əksidir: *õnnelik, õnnetu*.",
+    "ru": "Первые четыре — глагольные, и русский знает их все: *-v* и *-nud* из форм на *-ma* и *-da*, *-tav* и *-tud* из формы на *-takse* — те же четыре формы, на которых закончился урок о временах. *Lugev* — читающий, *väsinud* — уставший, *söödav* — съедобный, *keedetud* — варёный; *väsinud* — то самое *-nud* из *ei elanud*, *keedetud* — то самое *-tud* из *on õpitud*. Остальные делаются из существительных, и горстка окончаний даёт большинство: *-lik* и *-line* — похожий на, *-ne* — полный чего-то (*vihmane* — дождливый), *-kas* — имеющий (*andekas* — талантливый), *-tu* и *-matu* — русское «без-» (*õnnetu* — несчастный, *lõpmatu* — бесконечный). Слово на *-tu* чаще всего противоположно слову на *-lik*: *õnnelik, õnnetu*."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma olen täna väga väsinud.",
+     "en": "I am very tired today.",
+     "az": "Bu gün çox yorğunam.",
+     "ru": "Я сегодня очень устал."
+    },
+    {
+     "et": "Kas see seen on söödav?",
+     "en": "Is this mushroom edible?",
+     "az": "Bu göbələk yeməlidir?",
+     "ru": "Этот гриб съедобный?"
+    },
+    {
+     "et": "Kelner oli väga sõbralik.",
+     "en": "The waiter was very friendly.",
+     "az": "Ofisiant çox mehriban idi.",
+     "ru": "Официант был очень приветливый."
+    },
+    {
+     "et": "Sügis on Tallinnas vihmane.",
+     "en": "Autumn in Tallinn is rainy.",
+     "az": "Tallinndə payız yağışlıdır.",
+     "ru": "Осень в Таллинне дождливая."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "The opposite",
+    "az": "Əksi",
+    "ru": "Наоборот"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "yes",
+      "az": "hə",
+      "ru": "да"
+     },
+     {
+      "en": "no",
+      "az": "yox",
+      "ru": "нет"
+     },
+     {
+      "en": "how",
+      "az": "necə",
+      "ru": "как"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "mugav",
+       "ebamugav",
+       "eba-"
+      ],
+      "means": {
+       "en": "comfortable · uncomfortable",
+       "az": "rahat · narahat",
+       "ru": "удобный · неудобный"
+      }
+     },
+     {
+      "et": [
+       "viisakas",
+       "ebaviisakas",
+       "eba-"
+      ],
+      "means": {
+       "en": "polite · rude",
+       "az": "nəzakətli · nəzakətsiz",
+       "ru": "вежливый · невежливый"
+      }
+     },
+     {
+      "et": [
+       "ametlik",
+       "mitteametlik",
+       "mitte-"
+      ],
+      "means": {
+       "en": "official · unofficial",
+       "az": "rəsmi · qeyri-rəsmi",
+       "ru": "официальный · неофициальный"
+      }
+     },
+     {
+      "et": [
+       "õnnelik",
+       "õnnetu",
+       "-tu"
+      ],
+      "means": {
+       "en": "happy · unhappy",
+       "az": "xoşbəxt · bədbəxt",
+       "ru": "счастливый · несчастный"
+      }
+     },
+     {
+      "et": [
+       "maitsev",
+       "maitsetu",
+       "-tu"
+      ],
+      "means": {
+       "en": "tasty · tasteless",
+       "az": "dadlı · dadsız",
+       "ru": "вкусный · безвкусный"
+      }
+     },
+     {
+      "et": [
+       "võimalik",
+       "võimatu",
+       "-matu"
+      ],
+      "means": {
+       "en": "possible · impossible",
+       "az": "mümkün · qeyri-mümkün",
+       "ru": "возможный · невозможный"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "*Eba-* goes on the front of an adjective and turns it round, and it is the only prefix Estonian has: *mugav, ebamugav*. *Mitte-* does the same and is also a word of its own, *not*, so *mitteametlik* is really two words written as one. And an adjective made from a noun or a verb can be turned round from the other end instead: *-tu* and *-matu* in place of whatever it had — *õnnelik* becomes *õnnetu*, *võimalik* becomes *võimatu*. *Maitsev* is tasty; *maitsetu* is what you say when it is not.",
+    "az": "*Eba-* sifətin qabağına qoyulur və onu əksinə çevirir, və eston dilində ön şəkilçi təkcə odur: *mugav, ebamugav* — bizim *rahat, narahat* kimi. *Mitte-* də eynisini edir və ayrıca söz kimi də var, *yox*, deməli *mitteametlik* əslində bir yazılan iki sözdür — bizim *qeyri-rəsmi*. İsimdən və ya feldən düzələn sifəti o biri ucdan da çevirmək olar: nəyi vardısa onun yerinə *-tu* və *-matu* — *õnnelik* *õnnetu* olur, *võimalik* *võimatu*; bu bizim *-sız, -siz*-dir. *Maitsev* dadlıdır; *maitsetu* dadsız.",
+    "ru": "*Eba-* ставится перед прилагательным и переворачивает его — это русское «не-», и это единственная приставка в эстонском: *mugav, ebamugav*. *Mitte-* делает то же и живёт ещё и отдельным словом, «не», так что *mitteametlik* — на самом деле два слова, записанные в одно. А прилагательное из существительного или глагола можно перевернуть и с другого конца: *-tu* и *-matu* вместо того, что у него было, — *õnnelik* становится *õnnetu*, *võimalik* — *võimatu*; это русское «без-». *Maitsev* — вкусный; *maitsetu* — то, что вы скажете, когда это не так."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "See tool on ebamugav.",
+     "en": "This chair is uncomfortable.",
+     "az": "Bu stul narahatdır.",
+     "ru": "Этот стул неудобный."
+    },
+    {
+     "et": "Supp oli täiesti maitsetu.",
+     "en": "The soup was completely tasteless.",
+     "az": "Şorba tamam dadsız idi.",
+     "ru": "Суп был совершенно безвкусный."
+    },
+    {
+     "et": "See on võimatu!",
+     "en": "That's impossible!",
+     "az": "Bu mümkün deyil!",
+     "ru": "Это невозможно!"
+    },
+    {
+     "et": "Ta oli meiega ebaviisakas.",
+     "en": "He was rude to us.",
+     "az": "O, bizimlə nəzakətsiz idi.",
+     "ru": "Он был с нами невежлив."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "There is more grammar to come here, as the decks grow.",
+    "az": "Dəstələr böyüdükcə burada daha çox qrammatika olacaq.",
+    "ru": "Здесь будет ещё грамматика — по мере того, как растут наборы."
+   }
+  }
+ ]
+}

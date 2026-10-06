@@ -1,0 +1,1264 @@
+{
+ "id": "country",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Out of the city",
+  "az": "Şəhərdən kənarda",
+  "ru": "За городом"
+ },
+ "why": {
+  "en": "Estonia past the old town: the sea, the forest and the road there",
+  "az": "Köhnə şəhərdən kənarda Estoniya: dəniz, meşə və ora aparan yol",
+  "ru": "Эстония за пределами Старого города: море, лес и дорога туда"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "riik",
+   "front": "Riik",
+   "back": {
+    "en": "Country, state",
+    "az": "Ölkə, dövlət",
+    "ru": "Страна, государство"
+   },
+   "forms": [
+    "riigi",
+    "riiki"
+   ],
+   "sentence": {
+    "et": "Eesti on väike riik.",
+    "en": "Estonia is a small country.",
+    "az": "Estoniya kiçik ölkədir.",
+    "ru": "Эстония — небольшая страна."
+   }
+  },
+  {
+   "id": "pealinn",
+   "front": "Pealinn",
+   "back": {
+    "en": "Capital",
+    "az": "Paytaxt",
+    "ru": "Столица"
+   },
+   "forms": [
+    "pealinna",
+    "pealinna"
+   ],
+   "sentence": {
+    "et": "Tallinn on Eesti pealinn.",
+    "en": "Tallinn is the capital of Estonia.",
+    "az": "Tallinn Estoniyanın paytaxtıdır.",
+    "ru": "Таллинн — столица Эстонии."
+   }
+  },
+  {
+   "id": "saar",
+   "front": "Saar",
+   "back": {
+    "en": "Island",
+    "az": "Ada",
+    "ru": "Остров"
+   },
+   "forms": [
+    "saare",
+    "saart"
+   ],
+   "sentence": {
+    "et": "Saaremaa on suur saar.",
+    "en": "Saaremaa is a big island.",
+    "az": "Saaremaa böyük adadır.",
+    "ru": "Сааремаа — большой остров."
+   }
+  },
+  {
+   "id": "meri",
+   "front": "Meri",
+   "back": {
+    "en": "Sea",
+    "az": "Dəniz",
+    "ru": "Море"
+   },
+   "forms": [
+    "mere",
+    "merd"
+   ],
+   "sentence": {
+    "et": "Meri on külm.",
+    "en": "The sea is cold.",
+    "az": "Dəniz soyuqdur.",
+    "ru": "Море холодное."
+   }
+  },
+  {
+   "id": "jarv",
+   "front": "Järv",
+   "back": {
+    "en": "Lake",
+    "az": "Göl",
+    "ru": "Озеро"
+   },
+   "forms": [
+    "järve",
+    "järve"
+   ],
+   "sentence": {
+    "et": "Järv on jäätunud.",
+    "en": "The lake is frozen.",
+    "az": "Göl donmuşdur.",
+    "ru": "Озеро замёрзло."
+   }
+  },
+  {
+   "id": "mets",
+   "front": "Mets",
+   "back": {
+    "en": "Forest",
+    "az": "Meşə",
+    "ru": "Лес"
+   },
+   "forms": [
+    "metsa",
+    "metsa"
+   ],
+   "sentence": {
+    "et": "Me käisime metsas.",
+    "en": "We went to the forest.",
+    "az": "Biz meşədə olduq.",
+    "ru": "Мы были в лесу."
+   }
+  },
+  {
+   "id": "rand",
+   "front": "Rand",
+   "back": {
+    "en": "Beach",
+    "az": "Çimərlik",
+    "ru": "Пляж"
+   },
+   "forms": [
+    "ranna",
+    "randa"
+   ],
+   "sentence": {
+    "et": "Rand on tühi.",
+    "en": "The beach is empty.",
+    "az": "Çimərlik boşdur.",
+    "ru": "Пляж пустой."
+   }
+  },
+  {
+   "id": "piir",
+   "front": "Piir",
+   "back": {
+    "en": "Border",
+    "az": "Sərhəd",
+    "ru": "Граница"
+   },
+   "forms": [
+    "piiri",
+    "piiri"
+   ],
+   "sentence": {
+    "et": "Piir on lähedal.",
+    "en": "The border is near.",
+    "az": "Sərhəd yaxındır.",
+    "ru": "Граница близко."
+   }
+  },
+  {
+   "id": "sild",
+   "front": "Sild",
+   "back": {
+    "en": "Bridge",
+    "az": "Körpü",
+    "ru": "Мост"
+   },
+   "forms": [
+    "silla",
+    "silda"
+   ],
+   "sentence": {
+    "et": "Sild on kitsas.",
+    "en": "The bridge is narrow.",
+    "az": "Körpü dardır.",
+    "ru": "Мост узкий."
+   }
+  },
+  {
+   "id": "kula",
+   "front": "Küla",
+   "back": {
+    "en": "Village",
+    "az": "Kənd",
+    "ru": "Деревня"
+   },
+   "forms": [
+    "küla",
+    "küla"
+   ],
+   "sentence": {
+    "et": "Ta elab väikeses külas.",
+    "en": "They live in a small village.",
+    "az": "O kiçik bir kənddə yaşayır.",
+    "ru": "Он живёт в маленькой деревне."
+   }
+  },
+  {
+   "id": "pold",
+   "front": "Põld",
+   "back": {
+    "en": "Field",
+    "az": "Tarla",
+    "ru": "Поле"
+   },
+   "forms": [
+    "põllu",
+    "põldu"
+   ],
+   "sentence": {
+    "et": "Põld on lumine.",
+    "en": "The field is snowy.",
+    "az": "Tarla qarlıdır.",
+    "ru": "Поле в снегу."
+   }
+  },
+  {
+   "id": "jogi",
+   "front": "Jõgi",
+   "back": {
+    "en": "River",
+    "az": "Çay",
+    "ru": "Река"
+   },
+   "forms": [
+    "jõe",
+    "jõge"
+   ],
+   "sentence": {
+    "et": "Jõgi voolab läbi linna.",
+    "en": "The river runs through the town.",
+    "az": "Çay şəhərin içindən axır.",
+    "ru": "Река течёт через город."
+   }
+  },
+  {
+   "id": "taevas",
+   "front": "Taevas",
+   "back": {
+    "en": "Sky",
+    "az": "Göy",
+    "ru": "Небо"
+   },
+   "forms": [
+    "taeva",
+    "taevast"
+   ],
+   "sentence": {
+    "et": "Taevas on pilves.",
+    "en": "The sky is cloudy.",
+    "az": "Göy buludludur.",
+    "ru": "Небо облачное."
+   }
+  },
+  {
+   "id": "loodus",
+   "front": "Loodus",
+   "back": {
+    "en": "Nature",
+    "az": "Təbiət",
+    "ru": "Природа"
+   },
+   "forms": [
+    "looduse",
+    "loodust"
+   ],
+   "sentence": {
+    "et": "Eesti loodus on ilus.",
+    "en": "Estonian nature is beautiful.",
+    "az": "Estoniya təbiəti gözəldir.",
+    "ru": "Природа Эстонии красивая."
+   }
+  },
+  {
+   "id": "maa",
+   "front": "Maa",
+   "back": {
+    "en": "Country, land",
+    "az": "Ölkə, torpaq",
+    "ru": "Страна, земля"
+   },
+   "forms": [
+    "maa",
+    "maad"
+   ],
+   "sentence": {
+    "et": "Eesti on väike maa.",
+    "en": "Estonia is a small country.",
+    "az": "Estoniya kiçik ölkədir.",
+    "ru": "Эстония — маленькая страна."
+   }
+  },
+  {
+   "id": "maakond",
+   "front": "Maakond",
+   "back": {
+    "en": "County",
+    "az": "Mahal",
+    "ru": "Уезд"
+   },
+   "forms": [
+    "maakonna",
+    "maakonda"
+   ],
+   "sentence": {
+    "et": "Harju maakond on kõige suurem.",
+    "en": "Harju county is the largest.",
+    "az": "Haryu mahalı ən böyüyüdür.",
+    "ru": "Уезд Харьюмаа самый большой."
+   }
+  },
+  {
+   "id": "vald",
+   "front": "Vald",
+   "back": {
+    "en": "Rural municipality",
+    "az": "Kənd bələdiyyəsi",
+    "ru": "Волость"
+   },
+   "forms": [
+    "valla",
+    "valda"
+   ],
+   "sentence": {
+    "et": "Küla on Viimsi vallas.",
+    "en": "The village is in Viimsi municipality.",
+    "az": "Kənd Viimsi bələdiyyəsindədir.",
+    "ru": "Деревня в волости Виймси."
+   }
+  },
+  {
+   "id": "magi",
+   "front": "Mägi",
+   "back": {
+    "en": "Mountain, hill",
+    "az": "Dağ",
+    "ru": "Гора"
+   },
+   "forms": [
+    "mäe",
+    "mäge"
+   ],
+   "sentence": {
+    "et": "Toompea on väike mägi.",
+    "en": "Toompea is a small hill.",
+    "az": "Toompea kiçik təpədir.",
+    "ru": "Тоомпеа — небольшая гора."
+   }
+  },
+  {
+   "id": "kivi",
+   "front": "Kivi",
+   "back": {
+    "en": "Stone, rock",
+    "az": "Daş",
+    "ru": "Камень"
+   },
+   "forms": [
+    "kivi",
+    "kivi"
+   ],
+   "sentence": {
+    "et": "Vanalinn on kivist ehitatud.",
+    "en": "The old town is built of stone.",
+    "az": "Köhnə şəhər daşdan tikilib.",
+    "ru": "Старый город построен из камня."
+   }
+  },
+  {
+   "id": "loom",
+   "front": "Loom",
+   "back": {
+    "en": "Animal",
+    "az": "Heyvan",
+    "ru": "Животное, зверь"
+   },
+   "forms": [
+    "looma",
+    "looma"
+   ],
+   "sentence": {
+    "et": "Metsas elavad loomad.",
+    "en": "Animals live in the forest.",
+    "az": "Meşədə heyvanlar yaşayır.",
+    "ru": "В лесу живут звери."
+   }
+  },
+  {
+   "id": "konn",
+   "front": "Konn",
+   "back": {
+    "en": "Frog",
+    "az": "Qurbağa",
+    "ru": "Лягушка"
+   },
+   "forms": [
+    "konna",
+    "konna"
+   ],
+   "sentence": {
+    "et": "Järve ääres laulavad konnad.",
+    "en": "Frogs are singing by the lake.",
+    "az": "Gölün kənarında qurbağalar oxuyur.",
+    "ru": "У озера поют лягушки."
+   }
+  },
+  {
+   "id": "laanemeri",
+   "front": "Läänemeri",
+   "back": {
+    "en": "The Baltic Sea",
+    "az": "Baltik dənizi",
+    "ru": "Балтийское море"
+   },
+   "forms": [
+    "Läänemere",
+    "Läänemerd"
+   ],
+   "sentence": {
+    "et": "Tallinn on Läänemere ääres.",
+    "en": "Tallinn is on the Baltic Sea.",
+    "az": "Tallinn Baltik dənizinin sahilindədir.",
+    "ru": "Таллинн стоит на Балтийском море."
+   }
+  },
+  {
+   "id": "pohja-eesti",
+   "front": "Põhja-Eesti",
+   "back": {
+    "en": "Northern Estonia",
+    "az": "Şimali Estoniya",
+    "ru": "Северная Эстония"
+   },
+   "forms": [
+    "Põhja-Eesti",
+    "Põhja-Eestit"
+   ],
+   "sentence": {
+    "et": "Tallinn on Põhja-Eestis.",
+    "en": "Tallinn is in Northern Estonia.",
+    "az": "Tallinn Şimali Estoniyadadır.",
+    "ru": "Таллинн в Северной Эстонии."
+   }
+  },
+  {
+   "id": "louna-eesti",
+   "front": "Lõuna-Eesti",
+   "back": {
+    "en": "Southern Estonia",
+    "az": "Cənubi Estoniya",
+    "ru": "Южная Эстония"
+   },
+   "forms": [
+    "Lõuna-Eesti",
+    "Lõuna-Eestit"
+   ],
+   "sentence": {
+    "et": "Tartu on Lõuna-Eestis.",
+    "en": "Tartu is in Southern Estonia.",
+    "az": "Tartu Cənubi Estoniyadadır.",
+    "ru": "Тарту в Южной Эстонии."
+   }
+  },
+  {
+   "id": "ida-eesti",
+   "front": "Ida-Eesti",
+   "back": {
+    "en": "Eastern Estonia",
+    "az": "Şərqi Estoniya",
+    "ru": "Восточная Эстония"
+   },
+   "forms": [
+    "Ida-Eesti",
+    "Ida-Eestit"
+   ],
+   "sentence": {
+    "et": "Narva on Ida-Eestis.",
+    "en": "Narva is in Eastern Estonia.",
+    "az": "Narva Şərqi Estoniyadadır.",
+    "ru": "Нарва в Восточной Эстонии."
+   }
+  },
+  {
+   "id": "laane-eesti",
+   "front": "Lääne-Eesti",
+   "back": {
+    "en": "Western Estonia",
+    "az": "Qərbi Estoniya",
+    "ru": "Западная Эстония"
+   },
+   "forms": [
+    "Lääne-Eesti",
+    "Lääne-Eestit"
+   ],
+   "sentence": {
+    "et": "Haapsalu on Lääne-Eestis.",
+    "en": "Haapsalu is in Western Estonia.",
+    "az": "Haapsalu Qərbi Estoniyadadır.",
+    "ru": "Хаапсалу в Западной Эстонии."
+   }
+  },
+  {
+   "id": "aed",
+   "front": "Aed",
+   "back": {
+    "en": "Garden",
+    "az": "Bağ",
+    "ru": "Сад, огород"
+   },
+   "forms": [
+    "aia",
+    "aeda"
+   ],
+   "sentence": {
+    "et": "Maja taga on aed.",
+    "en": "There is a garden behind the house.",
+    "az": "Evin arxasında bağ var.",
+    "ru": "За домом сад."
+   }
+  },
+  {
+   "id": "puu",
+   "front": "Puu",
+   "back": {
+    "en": "Tree",
+    "az": "Ağac",
+    "ru": "Дерево"
+   },
+   "forms": [
+    "puu",
+    "puud"
+   ],
+   "sentence": {
+    "et": "Selle puu all on vari.",
+    "en": "There is shade under this tree.",
+    "az": "Bu ağacın altında kölgə var.",
+    "ru": "Под этим деревом тень."
+   }
+  },
+  {
+   "id": "leht",
+   "front": "Leht",
+   "back": {
+    "en": "Leaf",
+    "az": "Yarpaq",
+    "ru": "Лист"
+   },
+   "forms": [
+    "lehe",
+    "lehte"
+   ],
+   "sentence": {
+    "et": "Sügisel langevad lehed.",
+    "en": "In autumn the leaves fall.",
+    "az": "Payızda yarpaqlar tökülür.",
+    "ru": "Осенью падают листья."
+   }
+  },
+  {
+   "id": "oks",
+   "front": "Oks",
+   "back": {
+    "en": "Branch",
+    "az": "Budaq",
+    "ru": "Ветка"
+   },
+   "forms": [
+    "oksa",
+    "oksa"
+   ],
+   "sentence": {
+    "et": "Lind istub oksal.",
+    "en": "A bird is sitting on the branch.",
+    "az": "Quş budaqda oturub.",
+    "ru": "Птица сидит на ветке."
+   }
+  },
+  {
+   "id": "lind",
+   "front": "Lind",
+   "back": {
+    "en": "Bird",
+    "az": "Quş",
+    "ru": "Птица"
+   },
+   "forms": [
+    "linnu",
+    "lindu"
+   ],
+   "sentence": {
+    "et": "Lind laulab aias.",
+    "en": "A bird is singing in the garden.",
+    "az": "Quş bağda oxuyur.",
+    "ru": "Птица поёт в саду."
+   }
+  },
+  {
+   "id": "pesa",
+   "front": "Pesa",
+   "back": {
+    "en": "Nest",
+    "az": "Yuva",
+    "ru": "Гнездо"
+   },
+   "forms": [
+    "pesa",
+    "pesa"
+   ],
+   "sentence": {
+    "et": "Puu otsas on pesa.",
+    "en": "There is a nest up in the tree.",
+    "az": "Ağacın başında yuva var.",
+    "ru": "На дереве гнездо."
+   }
+  },
+  {
+   "id": "janes",
+   "front": "Jänes",
+   "back": {
+    "en": "Rabbit, hare",
+    "az": "Dovşan",
+    "ru": "Заяц"
+   },
+   "forms": [
+    "jänese",
+    "jänest"
+   ],
+   "sentence": {
+    "et": "Metsas jooksis jänes.",
+    "en": "A rabbit ran in the forest.",
+    "az": "Meşədə dovşan qaçdı.",
+    "ru": "В лесу пробежал заяц."
+   }
+  },
+  {
+   "id": "lehm",
+   "front": "Lehm",
+   "back": {
+    "en": "Cow",
+    "az": "İnək",
+    "ru": "Корова"
+   },
+   "forms": [
+    "lehma",
+    "lehma"
+   ],
+   "sentence": {
+    "et": "Lehmad on põllul.",
+    "en": "The cows are in the field.",
+    "az": "İnəklər çöldədir.",
+    "ru": "Коровы в поле."
+   }
+  },
+  {
+   "id": "hiir",
+   "front": "Hiir",
+   "back": {
+    "en": "Mouse",
+    "az": "Siçan",
+    "ru": "Мышь"
+   },
+   "forms": [
+    "hiire",
+    "hiirt"
+   ],
+   "sentence": {
+    "et": "Hiir jooksis kassi eest ära.",
+    "en": "The mouse ran away from the cat.",
+    "az": "Siçan pişikdən qaçdı.",
+    "ru": "Мышь убежала от кошки."
+   }
+  },
+  {
+   "id": "saba",
+   "front": "Saba",
+   "back": {
+    "en": "Tail",
+    "az": "Quyruq",
+    "ru": "Хвост"
+   },
+   "forms": [
+    "saba",
+    "saba"
+   ],
+   "sentence": {
+    "et": "Koeral on pikk saba.",
+    "en": "The dog has a long tail.",
+    "az": "İtin uzun quyruğu var.",
+    "ru": "У собаки длинный хвост."
+   }
+  },
+  {
+   "id": "loss",
+   "front": "Loss",
+   "back": {
+    "en": "Castle",
+    "az": "Qəsr",
+    "ru": "Замок"
+   },
+   "forms": [
+    "lossi",
+    "lossi"
+   ],
+   "sentence": {
+    "et": "Loss on mäe otsas.",
+    "en": "The castle is on top of the hill.",
+    "az": "Qəsr təpənin başındadır.",
+    "ru": "Замок на вершине холма."
+   }
+  },
+  {
+   "id": "tuletorn",
+   "front": "Tuletorn",
+   "back": {
+    "en": "Lighthouse",
+    "az": "Mayak",
+    "ru": "Маяк"
+   },
+   "forms": [
+    "tuletorni",
+    "tuletorni"
+   ],
+   "sentence": {
+    "et": "Tuletorn on valge ja punane.",
+    "en": "The lighthouse is white and red.",
+    "az": "Mayak ağ və qırmızıdır.",
+    "ru": "Маяк белый и красный."
+   }
+  },
+  {
+   "id": "suvila",
+   "front": "Suvila",
+   "back": {
+    "en": "Summer house",
+    "az": "Bağ evi",
+    "ru": "Дача"
+   },
+   "forms": [
+    "suvila",
+    "suvilat"
+   ],
+   "sentence": {
+    "et": "Nad sõidavad suvilasse.",
+    "en": "They are driving to the summer house.",
+    "az": "Onlar bağ evinə gedirlər.",
+    "ru": "Они едут на дачу."
+   }
+  },
+  {
+   "id": "lumemees",
+   "front": "Lumemees",
+   "back": {
+    "en": "Snowman",
+    "az": "Qardan baba",
+    "ru": "Снеговик"
+   },
+   "forms": [
+    "lumemehe",
+    "lumemeest"
+   ],
+   "sentence": {
+    "et": "Lapsed tegid lumemehe.",
+    "en": "The children made a snowman.",
+    "az": "Uşaqlar qardan baba düzəltdilər.",
+    "ru": "Дети слепили снеговика."
+   }
+  },
+  {
+   "id": "lumememm",
+   "front": "Lumememm",
+   "back": {
+    "en": "Snow woman",
+    "az": "Qardan qadın",
+    "ru": "Снежная баба"
+   },
+   "forms": [
+    "lumememme",
+    "lumememme"
+   ],
+   "sentence": {
+    "et": "Õues seisab lumememm.",
+    "en": "A snow woman stands in the yard.",
+    "az": "Həyətdə qardan qadın durur.",
+    "ru": "Во дворе стоит снежная баба."
+   }
+  },
+  {
+   "id": "mesilane",
+   "front": "Mesilane",
+   "back": {
+    "en": "Bee",
+    "az": "Arı",
+    "ru": "Пчела"
+   },
+   "forms": [
+    "mesilase",
+    "mesilast"
+   ],
+   "sentence": {
+    "et": "Mesilane lendab lille juurde.",
+    "en": "A bee flies to the flower.",
+    "az": "Arı gülün yanına uçur.",
+    "ru": "Пчела летит к цветку."
+   }
+  },
+  {
+   "id": "mesipuu",
+   "front": "Mesipuu",
+   "back": {
+    "en": "Beehive",
+    "az": "Pətək",
+    "ru": "Улей"
+   },
+   "forms": [
+    "mesipuu",
+    "mesipuud"
+   ],
+   "sentence": {
+    "et": "Mesipuu on aia nurgas.",
+    "en": "The beehive is in the corner of the garden.",
+    "az": "Pətək bağın küncündədir.",
+    "ru": "Улей в углу сада."
+   }
+  },
+  {
+   "id": "pohi",
+   "front": "Põhi",
+   "back": {
+    "en": "North",
+    "az": "Şimal",
+    "ru": "Север"
+   },
+   "forms": [
+    "põhja",
+    "põhja"
+   ]
+  },
+  {
+   "id": "louna",
+   "front": "Lõuna",
+   "back": {
+    "en": "South",
+    "az": "Cənub",
+    "ru": "Юг"
+   },
+   "forms": [
+    "lõuna",
+    "lõunat"
+   ]
+  },
+  {
+   "id": "ida",
+   "front": "Ida",
+   "back": {
+    "en": "East",
+    "az": "Şərq",
+    "ru": "Восток"
+   },
+   "forms": [
+    "ida",
+    "ida"
+   ]
+  },
+  {
+   "id": "laas",
+   "front": "Lääs",
+   "back": {
+    "en": "West",
+    "az": "Qərb",
+    "ru": "Запад"
+   },
+   "forms": [
+    "lääne",
+    "läänt"
+   ]
+  },
+  {
+   "id": "kirre",
+   "front": "Kirre",
+   "back": {
+    "en": "Northeast",
+    "az": "Şimal-şərq",
+    "ru": "Северо-восток"
+   },
+   "forms": [
+    "kirde",
+    "kirret"
+   ]
+  },
+  {
+   "id": "kagu",
+   "front": "Kagu",
+   "back": {
+    "en": "Southeast",
+    "az": "Cənub-şərq",
+    "ru": "Юго-восток"
+   },
+   "forms": [
+    "kagu",
+    "kagu"
+   ]
+  },
+  {
+   "id": "edel",
+   "front": "Edel",
+   "back": {
+    "en": "Southwest",
+    "az": "Cənub-qərb",
+    "ru": "Юго-запад"
+   },
+   "forms": [
+    "edela",
+    "edelat"
+   ]
+  },
+  {
+   "id": "loe",
+   "front": "Loe",
+   "back": {
+    "en": "Northwest",
+    "az": "Şimal-qərb",
+    "ru": "Северо-запад"
+   },
+   "forms": [
+    "loode",
+    "loet"
+   ]
+  },
+  {
+   "id": "hobune",
+   "front": "Hobune",
+   "back": {
+    "en": "Horse",
+    "az": "At",
+    "ru": "Лошадь"
+   },
+   "forms": [
+    "hobuse",
+    "hobust"
+   ]
+  },
+  {
+   "id": "karu",
+   "front": "Karu",
+   "back": {
+    "en": "Bear",
+    "az": "Ayı",
+    "ru": "Медведь"
+   },
+   "forms": [
+    "karu",
+    "karu"
+   ]
+  },
+  {
+   "id": "rebane",
+   "front": "Rebane",
+   "back": {
+    "en": "Fox",
+    "az": "Tülkü",
+    "ru": "Лиса"
+   },
+   "forms": [
+    "rebase",
+    "rebast"
+   ]
+  },
+  {
+   "id": "elevant",
+   "front": "Elevant",
+   "back": {
+    "en": "Elephant",
+    "az": "Fil",
+    "ru": "Слон"
+   },
+   "forms": [
+    "elevandi",
+    "elevanti"
+   ]
+  },
+  {
+   "id": "amblik",
+   "front": "Ämblik",
+   "back": {
+    "en": "Spider",
+    "az": "Hörümçək",
+    "ru": "Паук"
+   },
+   "forms": [
+    "ämbliku",
+    "ämblikku"
+   ]
+  },
+  {
+   "id": "liblikas",
+   "front": "Liblikas",
+   "back": {
+    "en": "Butterfly",
+    "az": "Kəpənək",
+    "ru": "Бабочка"
+   },
+   "forms": [
+    "liblika",
+    "liblikat"
+   ]
+  },
+  {
+   "id": "koduloom",
+   "front": "Koduloom",
+   "back": {
+    "en": "Pet, domestic animal",
+    "az": "Ev heyvanı",
+    "ru": "Домашнее животное"
+   },
+   "forms": [
+    "kodulooma",
+    "kodulooma"
+   ]
+  },
+  {
+   "id": "rada",
+   "front": "Rada",
+   "back": {
+    "en": "Track, path",
+    "az": "Cığır",
+    "ru": "Тропа"
+   },
+   "forms": [
+    "raja",
+    "rada"
+   ]
+  },
+  {
+   "id": "riigimets",
+   "front": "Riigimets",
+   "back": {
+    "en": "State forest",
+    "az": "Dövlət meşəsi",
+    "ru": "Государственный лес"
+   },
+   "forms": [
+    "riigimetsa",
+    "riigimetsa"
+   ]
+  },
+  {
+   "id": "eramaa",
+   "front": "Eramaa",
+   "back": {
+    "en": "Private land",
+    "az": "Şəxsi torpaq",
+    "ru": "Частная земля"
+   },
+   "forms": [
+    "eramaa",
+    "eramaad"
+   ]
+  },
+  {
+   "id": "paat",
+   "front": "Paat",
+   "back": {
+    "en": "Boat",
+    "az": "Qayıq",
+    "ru": "Лодка"
+   },
+   "forms": [
+    "paadi",
+    "paati"
+   ]
+  },
+  {
+   "id": "kalale-minema",
+   "front": "Kalale minema",
+   "back": {
+    "en": "To go fishing",
+    "az": "balıq tutmağa getmək",
+    "ru": "идти на рыбалку"
+   }
+  },
+  {
+   "id": "marjule-minema",
+   "front": "Marjule minema",
+   "back": {
+    "en": "To go picking berries",
+    "az": "giləmeyvə yığmağa getmək",
+    "ru": "идти за ягодами"
+   }
+  },
+  {
+   "id": "seenele-minema",
+   "front": "Seenele minema",
+   "back": {
+    "en": "To go picking mushrooms",
+    "az": "göbələk yığmağa getmək",
+    "ru": "идти за грибами"
+   }
+  },
+  {
+   "id": "kelgumagi",
+   "front": "Kelgumägi",
+   "back": {
+    "en": "Sledging slope",
+    "az": "Xizək təpəsi",
+    "ru": "Горка для санок"
+   },
+   "forms": [
+    "kelgumäe",
+    "kelgumäge"
+   ]
+  },
+  {
+   "id": "suusatama",
+   "front": "Suusatama",
+   "back": {
+    "en": "To ski",
+    "az": "xizək sürmək",
+    "ru": "кататься на лыжах"
+   },
+   "forms": [
+    "suusatada",
+    "suusatan"
+   ]
+  },
+  {
+   "id": "suusk",
+   "front": "Suusk",
+   "back": {
+    "en": "Ski",
+    "az": "Xizək",
+    "ru": "Лыжа"
+   },
+   "forms": [
+    "suusa",
+    "suuska"
+   ]
+  },
+  {
+   "id": "majakas",
+   "front": "Majakas",
+   "back": {
+    "en": "Lighthouse",
+    "az": "Mayak",
+    "ru": "Маяк"
+   },
+   "forms": [
+    "majaka",
+    "majakat"
+   ]
+  },
+  {
+   "id": "papagoi",
+   "front": "Papagoi",
+   "back": {
+    "en": "Parrot",
+    "az": "Tutuquşu",
+    "ru": "Попугай"
+   },
+   "forms": [
+    "papagoi",
+    "papagoid"
+   ]
+  },
+  {
+   "id": "taim",
+   "front": "Taim",
+   "back": {
+    "en": "Plant, herb",
+    "az": "Bitki, ot",
+    "ru": "Растение"
+   },
+   "forms": [
+    "taime",
+    "taime"
+   ]
+  },
+  {
+   "id": "talu",
+   "front": "Talu",
+   "back": {
+    "en": "Farm",
+    "az": "Ferma, kənd evi",
+    "ru": "Хутор"
+   },
+   "forms": [
+    "talu",
+    "talu"
+   ]
+  },
+  {
+   "id": "poosas",
+   "front": "Põõsas",
+   "back": {
+    "en": "Bush, shrub",
+    "az": "Kol",
+    "ru": "Куст"
+   },
+   "forms": [
+    "põõsa",
+    "põõsast"
+   ]
+  },
+  {
+   "id": "kasvatama",
+   "front": "Kasvatama",
+   "back": {
+    "en": "To grow, to raise",
+    "az": "yetişdirmək, böyütmək",
+    "ru": "выращивать, воспитывать"
+   },
+   "forms": [
+    "kasvatada",
+    "kasvatan"
+   ]
+  },
+  {
+   "id": "muld",
+   "front": "Muld",
+   "back": {
+    "en": "Soil",
+    "az": "Torpaq",
+    "ru": "Земля, почва"
+   },
+   "forms": [
+    "mulla",
+    "mulda"
+   ]
+  },
+  {
+   "id": "seeme",
+   "front": "Seeme",
+   "back": {
+    "en": "Seed",
+    "az": "Toxum",
+    "ru": "Семя"
+   },
+   "forms": [
+    "seemne",
+    "seemet"
+   ]
+  },
+  {
+   "id": "teravili",
+   "front": "Teravili",
+   "back": {
+    "en": "Grain, cereal",
+    "az": "Taxıl",
+    "ru": "Зерно"
+   },
+   "forms": [
+    "teravilja",
+    "teravilja"
+   ]
+  }
+ ]
+}

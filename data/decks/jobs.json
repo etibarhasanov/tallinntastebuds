@@ -1,0 +1,715 @@
+{
+ "id": "jobs",
+ "added": "2026-09-20",
+ "level": "more",
+ "name": {
+  "en": "Who does what",
+  "az": "Kim nə işlə məşğuldur",
+  "ru": "Кто чем занимается"
+ },
+ "why": {
+  "en": "The professions, which is the answer to half the questions anybody asks a stranger",
+  "az": "Peşələr — yad adama verilən sualların yarısının cavabı",
+  "ru": "Профессии — ответ на половину вопросов, которые задают незнакомцу"
+ },
+ "cards": [
+  {
+   "id": "amet",
+   "front": "Amet",
+   "back": {
+    "en": "Profession",
+    "az": "Peşə",
+    "ru": "Профессия"
+   },
+   "forms": [
+    "ameti",
+    "ametit"
+   ]
+  },
+  {
+   "id": "eriala",
+   "front": "Eriala",
+   "back": {
+    "en": "Speciality",
+    "az": "İxtisas",
+    "ru": "Специальность"
+   },
+   "forms": [
+    "eriala",
+    "eriala"
+   ]
+  },
+  {
+   "id": "ehitaja",
+   "front": "Ehitaja",
+   "back": {
+    "en": "Construction worker",
+    "az": "İnşaatçı",
+    "ru": "Строитель"
+   },
+   "forms": [
+    "ehitaja",
+    "ehitajat"
+   ]
+  },
+  {
+   "id": "kaevur",
+   "front": "Kaevur",
+   "back": {
+    "en": "Coal miner",
+    "az": "Mədənçi",
+    "ru": "Шахтёр"
+   },
+   "forms": [
+    "kaevuri",
+    "kaevurit"
+   ]
+  },
+  {
+   "id": "raamatupidaja",
+   "front": "Raamatupidaja",
+   "back": {
+    "en": "Book-keeper",
+    "az": "Mühasib",
+    "ru": "Бухгалтер"
+   },
+   "forms": [
+    "raamatupidaja",
+    "raamatupidajat"
+   ]
+  },
+  {
+   "id": "juuksur",
+   "front": "Juuksur",
+   "back": {
+    "en": "Hairdresser",
+    "az": "Bərbər",
+    "ru": "Парикмахер"
+   },
+   "forms": [
+    "juuksuri",
+    "juuksurit"
+   ]
+  },
+  {
+   "id": "politseinik",
+   "front": "Politseinik",
+   "back": {
+    "en": "Policeman",
+    "az": "Polis",
+    "ru": "Полицейский"
+   },
+   "forms": [
+    "politseiniku",
+    "politseinikku"
+   ]
+  },
+  {
+   "id": "elektrik",
+   "front": "Elektrik",
+   "back": {
+    "en": "Electrician",
+    "az": "Elektrik",
+    "ru": "Электрик"
+   },
+   "forms": [
+    "elektriku",
+    "elektrikku"
+   ]
+  },
+  {
+   "id": "maaler",
+   "front": "Maaler",
+   "back": {
+    "en": "House painter",
+    "az": "Rəngsaz",
+    "ru": "Маляр"
+   },
+   "forms": [
+    "maalri",
+    "maalrit"
+   ]
+  },
+  {
+   "id": "pagar",
+   "front": "Pagar",
+   "back": {
+    "en": "Baker",
+    "az": "Çörəkçi",
+    "ru": "Пекарь"
+   },
+   "forms": [
+    "pagari",
+    "pagarit"
+   ]
+  },
+  {
+   "id": "kalur",
+   "front": "Kalur",
+   "back": {
+    "en": "Fisherman",
+    "az": "Balıqçı",
+    "ru": "Рыбак"
+   },
+   "forms": [
+    "kaluri",
+    "kalurit"
+   ]
+  },
+  {
+   "id": "insener",
+   "front": "Insener",
+   "back": {
+    "en": "Engineer",
+    "az": "Mühəndis",
+    "ru": "Инженер"
+   },
+   "forms": [
+    "inseneri",
+    "inseneri"
+   ]
+  },
+  {
+   "id": "fotograaf",
+   "front": "Fotograaf",
+   "back": {
+    "en": "Photographer",
+    "az": "Fotoqraf",
+    "ru": "Фотограф"
+   },
+   "forms": [
+    "fotograafi",
+    "fotograafi"
+   ]
+  },
+  {
+   "id": "naitleja",
+   "front": "Näitleja",
+   "back": {
+    "en": "Actor",
+    "az": "Aktyor",
+    "ru": "Актёр"
+   },
+   "forms": [
+    "näitleja",
+    "näitlejat"
+   ]
+  },
+  {
+   "id": "teadlane",
+   "front": "Teadlane",
+   "back": {
+    "en": "Scientist",
+    "az": "Alim",
+    "ru": "Учёный"
+   },
+   "forms": [
+    "teadlase",
+    "teadlast"
+   ]
+  },
+  {
+   "id": "muusik",
+   "front": "Muusik",
+   "back": {
+    "en": "Musician",
+    "az": "Musiqiçi",
+    "ru": "Музыкант"
+   },
+   "forms": [
+    "muusiku",
+    "muusikut"
+   ]
+  },
+  {
+   "id": "bussijuht",
+   "front": "Bussijuht",
+   "back": {
+    "en": "Bus driver",
+    "az": "Avtobus sürücüsü",
+    "ru": "Водитель автобуса"
+   },
+   "forms": [
+    "bussijuhi",
+    "bussijuhti"
+   ]
+  },
+  {
+   "id": "taksojuht",
+   "front": "Taksojuht",
+   "back": {
+    "en": "Taxi driver",
+    "az": "Taksi sürücüsü",
+    "ru": "Таксист"
+   },
+   "forms": [
+    "taksojuhi",
+    "taksojuhti"
+   ]
+  },
+  {
+   "id": "vedurijuht",
+   "front": "Vedurijuht",
+   "back": {
+    "en": "Locomotive engineer",
+    "az": "Qatar maşinisti",
+    "ru": "Машинист"
+   },
+   "forms": [
+    "vedurijuhi",
+    "vedurijuhti"
+   ]
+  },
+  {
+   "id": "sekretar",
+   "front": "Sekretär",
+   "back": {
+    "en": "Secretary",
+    "az": "Katibə",
+    "ru": "Секретарь"
+   },
+   "forms": [
+    "sekretäri",
+    "sekretäri"
+   ]
+  },
+  {
+   "id": "direktor",
+   "front": "Direktor",
+   "back": {
+    "en": "Director, headmaster",
+    "az": "Direktor",
+    "ru": "Директор"
+   },
+   "forms": [
+    "direktori",
+    "direktorit"
+   ]
+  },
+  {
+   "id": "ulemus",
+   "front": "Ülemus",
+   "back": {
+    "en": "Boss",
+    "az": "Rəis",
+    "ru": "Начальник"
+   },
+   "forms": [
+    "ülemuse",
+    "ülemust"
+   ]
+  },
+  {
+   "id": "meister",
+   "front": "Meister",
+   "back": {
+    "en": "Supervisor",
+    "az": "Usta",
+    "ru": "Мастер"
+   },
+   "forms": [
+    "meistri",
+    "meistrit"
+   ]
+  },
+  {
+   "id": "koristaja",
+   "front": "Koristaja",
+   "back": {
+    "en": "Cleaner",
+    "az": "Təmizlikçi",
+    "ru": "Уборщик"
+   },
+   "forms": [
+    "koristaja",
+    "koristajat"
+   ]
+  },
+  {
+   "id": "turvamees",
+   "front": "Turvamees",
+   "back": {
+    "en": "Security guard",
+    "az": "Mühafizəçi",
+    "ru": "Охранник"
+   },
+   "forms": [
+    "turvamehe",
+    "turvameest"
+   ]
+  },
+  {
+   "id": "tuletorjuja",
+   "front": "Tuletõrjuja",
+   "back": {
+    "en": "Firefighter",
+    "az": "Yanğınsöndürən",
+    "ru": "Пожарный"
+   },
+   "forms": [
+    "tuletõrjuja",
+    "tuletõrjujat"
+   ]
+  },
+  {
+   "id": "vetelpaastja",
+   "front": "Vetelpäästja",
+   "back": {
+    "en": "Lifeguard",
+    "az": "Xilasedici",
+    "ru": "Спасатель на воде"
+   },
+   "forms": [
+    "vetelpäästja",
+    "vetelpäästjat"
+   ]
+  },
+  {
+   "id": "massoor",
+   "front": "Massöör",
+   "back": {
+    "en": "Masseur",
+    "az": "Masajçı",
+    "ru": "Массажист"
+   },
+   "forms": [
+    "massööri",
+    "massööri"
+   ]
+  },
+  {
+   "id": "kosmeetik",
+   "front": "Kosmeetik",
+   "back": {
+    "en": "Beautician",
+    "az": "Kosmetoloq",
+    "ru": "Косметолог"
+   },
+   "forms": [
+    "kosmeetiku",
+    "kosmeetikut"
+   ]
+  },
+  {
+   "id": "talunik",
+   "front": "Talunik",
+   "back": {
+    "en": "Farmer",
+    "az": "Fermer",
+    "ru": "Фермер"
+   },
+   "forms": [
+    "taluniku",
+    "talunikku"
+   ]
+  },
+  {
+   "id": "meremees",
+   "front": "Meremees",
+   "back": {
+    "en": "Sailor",
+    "az": "Dənizçi",
+    "ru": "Моряк"
+   },
+   "forms": [
+    "meremehe",
+    "meremeest"
+   ]
+  },
+  {
+   "id": "piirivalvur",
+   "front": "Piirivalvur",
+   "back": {
+    "en": "Border guard",
+    "az": "Sərhədçi",
+    "ru": "Пограничник"
+   },
+   "forms": [
+    "piirivalvuri",
+    "piirivalvurit"
+   ]
+  },
+  {
+   "id": "giid",
+   "front": "Giid",
+   "back": {
+    "en": "Tourist guide",
+    "az": "Bələdçi",
+    "ru": "Гид"
+   },
+   "forms": [
+    "giidi",
+    "giidi"
+   ]
+  },
+  {
+   "id": "ombleja",
+   "front": "Õmbleja",
+   "back": {
+    "en": "Seamstress",
+    "az": "Dərzi",
+    "ru": "Швея"
+   },
+   "forms": [
+    "õmbleja",
+    "õmblejat"
+   ]
+  },
+  {
+   "id": "ettevotja",
+   "front": "Ettevõtja",
+   "back": {
+    "en": "Entrepreneur",
+    "az": "Sahibkar",
+    "ru": "Предприниматель"
+   },
+   "forms": [
+    "ettevõtja",
+    "ettevõtjat"
+   ]
+  },
+  {
+   "id": "tootu",
+   "front": "Töötu",
+   "back": {
+    "en": "Unemployed",
+    "az": "İşsiz",
+    "ru": "Безработный"
+   },
+   "forms": [
+    "töötu",
+    "töötut"
+   ]
+  },
+  {
+   "id": "it-spetsialist",
+   "front": "IT-spetsialist",
+   "back": {
+    "en": "IT specialist",
+    "az": "İT mütəxəssisi",
+    "ru": "ИТ-специалист"
+   },
+   "forms": [
+    "IT-spetsialisti",
+    "IT-spetsialisti"
+   ]
+  },
+  {
+   "id": "lasteaiakasvataja",
+   "front": "Lasteaiakasvataja",
+   "back": {
+    "en": "Kindergarten teacher",
+    "az": "Uşaq bağçası tərbiyəçisi",
+    "ru": "Воспитатель"
+   },
+   "forms": [
+    "lasteaiakasvataja",
+    "lasteaiakasvatajat"
+   ]
+  },
+  {
+   "id": "professor",
+   "front": "Professor",
+   "back": {
+    "en": "Professor",
+    "az": "Professor",
+    "ru": "Профессор"
+   },
+   "forms": [
+    "professori",
+    "professorit"
+   ]
+  },
+  {
+   "id": "poliitik",
+   "front": "Poliitik",
+   "back": {
+    "en": "Politician",
+    "az": "Siyasətçi",
+    "ru": "Политик"
+   },
+   "forms": [
+    "poliitiku",
+    "poliitikut"
+   ]
+  },
+  {
+   "id": "president",
+   "front": "President",
+   "back": {
+    "en": "President",
+    "az": "Prezident",
+    "ru": "Президент"
+   },
+   "forms": [
+    "presidendi",
+    "presidenti"
+   ]
+  },
+  {
+   "id": "kellena",
+   "front": "Kellena?",
+   "back": {
+    "en": "As what? (in what job)",
+    "az": "Kim kimi?",
+    "ru": "Кем?"
+   }
+  },
+  {
+   "id": "hobi",
+   "front": "Hobi",
+   "back": {
+    "en": "Hobby",
+    "az": "Hobbi",
+    "ru": "Хобби"
+   },
+   "forms": [
+    "hobi",
+    "hobi"
+   ]
+  },
+  {
+   "id": "elukutse",
+   "front": "Elukutse",
+   "back": {
+    "en": "Profession",
+    "az": "Peşə",
+    "ru": "Профессия"
+   },
+   "forms": [
+    "elukutse",
+    "elukutset"
+   ]
+  },
+  {
+   "id": "firma",
+   "front": "Firma",
+   "back": {
+    "en": "Company, firm",
+    "az": "Şirkət, firma",
+    "ru": "Фирма"
+   },
+   "forms": [
+    "firma",
+    "firmat"
+   ]
+  },
+  {
+   "id": "ajakirjanik",
+   "front": "Ajakirjanik",
+   "back": {
+    "en": "Journalist",
+    "az": "Jurnalist",
+    "ru": "Журналист"
+   },
+   "forms": [
+    "ajakirjaniku",
+    "ajakirjanikku"
+   ]
+  },
+  {
+   "id": "automehaanik",
+   "front": "Automehaanik",
+   "back": {
+    "en": "Car mechanic",
+    "az": "Avtomexanik",
+    "ru": "Автомеханик"
+   },
+   "forms": [
+    "automehaaniku",
+    "automehaanikut"
+   ]
+  },
+  {
+   "id": "ettekandja",
+   "front": "Ettekandja",
+   "back": {
+    "en": "Waitress, server",
+    "az": "Ofisiant (qadın)",
+    "ru": "Официантка"
+   },
+   "forms": [
+    "ettekandja",
+    "ettekandjat"
+   ]
+  },
+  {
+   "id": "infotehnoloog",
+   "front": "Infotehnoloog",
+   "back": {
+    "en": "IT specialist",
+    "az": "İT mütəxəssisi",
+    "ru": "IT-специалист"
+   },
+   "forms": [
+    "infotehnoloogi",
+    "infotehnoloogi"
+   ]
+  },
+  {
+   "id": "lapsehoidja",
+   "front": "Lapsehoidja",
+   "back": {
+    "en": "Babysitter",
+    "az": "Dayə",
+    "ru": "Няня"
+   },
+   "forms": [
+    "lapsehoidja",
+    "lapsehoidjat"
+   ]
+  },
+  {
+   "id": "postiljon",
+   "front": "Postiljon",
+   "back": {
+    "en": "Mail carrier",
+    "az": "Poçtalyon",
+    "ru": "Почтальон"
+   },
+   "forms": [
+    "postiljoni",
+    "postiljoni"
+   ]
+  },
+  {
+   "id": "pollumees",
+   "front": "Põllumees",
+   "back": {
+    "en": "Farmer",
+    "az": "Əkinçi",
+    "ru": "Земледелец"
+   },
+   "forms": [
+    "põllumehe",
+    "põllumeest"
+   ]
+  },
+  {
+   "id": "tolk",
+   "front": "Tõlk",
+   "back": {
+    "en": "Interpreter",
+    "az": "Tərcüməçi",
+    "ru": "Переводчик"
+   },
+   "forms": [
+    "tõlgi",
+    "tõlki"
+   ]
+  },
+  {
+   "id": "arimees",
+   "front": "Ärimees",
+   "back": {
+    "en": "Businessman",
+    "az": "İş adamı",
+    "ru": "Бизнесмен"
+   },
+   "forms": [
+    "ärimehe",
+    "ärimeest"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,377 @@
+{
+ "id": "character",
+ "added": "2026-09-20",
+ "level": "deep",
+ "name": {
+  "en": "What somebody is like",
+  "az": "Kimin xasiyyəti necədir",
+  "ru": "Какой кто-то человек"
+ },
+ "why": {
+  "en": "Friendly, lazy, brave and careful — the words a profile and a reference are written in",
+  "az": "Mehriban, tənbəl, cəsur və ehtiyatlı — anketin və zəmanətin yazıldığı sözlər",
+  "ru": "Дружелюбный, ленивый, смелый и осторожный — слова анкеты и характеристики"
+ },
+ "cards": [
+  {
+   "id": "iseloom",
+   "front": "Iseloom",
+   "back": {
+    "en": "Character",
+    "az": "Xasiyyət",
+    "ru": "Характер"
+   },
+   "forms": [
+    "iseloomu",
+    "iseloomu"
+   ]
+  },
+  {
+   "id": "energiline",
+   "front": "Energiline",
+   "back": {
+    "en": "Energetic",
+    "az": "Enerjili",
+    "ru": "Энергичный"
+   },
+   "forms": [
+    "energilise",
+    "energilist"
+   ]
+  },
+  {
+   "id": "laisk",
+   "front": "Laisk",
+   "back": {
+    "en": "Lazy",
+    "az": "Tənbəl",
+    "ru": "Ленивый"
+   },
+   "forms": [
+    "laisa",
+    "laiska"
+   ]
+  },
+  {
+   "id": "tookas",
+   "front": "Töökas",
+   "back": {
+    "en": "Hard-working",
+    "az": "Zəhmətkeş",
+    "ru": "Трудолюбивый"
+   },
+   "forms": [
+    "tööka",
+    "töökat"
+   ]
+  },
+  {
+   "id": "julge",
+   "front": "Julge",
+   "back": {
+    "en": "Brave",
+    "az": "Cəsur",
+    "ru": "Смелый"
+   },
+   "forms": [
+    "julge",
+    "julget"
+   ]
+  },
+  {
+   "id": "arg",
+   "front": "Arg",
+   "back": {
+    "en": "Cowardly",
+    "az": "Qorxaq",
+    "ru": "Трусливый"
+   },
+   "forms": [
+    "ara",
+    "arga"
+   ]
+  },
+  {
+   "id": "rahutu",
+   "front": "Rahutu",
+   "back": {
+    "en": "Restless",
+    "az": "Narahat",
+    "ru": "Беспокойный"
+   },
+   "forms": [
+    "rahutu",
+    "rahutut"
+   ]
+  },
+  {
+   "id": "viisakas",
+   "front": "Viisakas",
+   "back": {
+    "en": "Polite",
+    "az": "Nəzakətli",
+    "ru": "Вежливый"
+   },
+   "forms": [
+    "viisaka",
+    "viisakat"
+   ]
+  },
+  {
+   "id": "ebaviisakas",
+   "front": "Ebaviisakas",
+   "back": {
+    "en": "Impolite",
+    "az": "Nəzakətsiz",
+    "ru": "Невежливый"
+   },
+   "forms": [
+    "ebaviisaka",
+    "ebaviisakat"
+   ]
+  },
+  {
+   "id": "naljakas",
+   "front": "Naljakas",
+   "back": {
+    "en": "Funny",
+    "az": "Gülməli",
+    "ru": "Смешной"
+   },
+   "forms": [
+    "naljaka",
+    "naljakat"
+   ]
+  },
+  {
+   "id": "korralik",
+   "front": "Korralik",
+   "back": {
+    "en": "Decent, respectable",
+    "az": "Qaydalı",
+    "ru": "Порядочный"
+   },
+   "forms": [
+    "korraliku",
+    "korralikku"
+   ]
+  },
+  {
+   "id": "hooliv",
+   "front": "Hooliv",
+   "back": {
+    "en": "Caring",
+    "az": "Qayğıkeş",
+    "ru": "Заботливый"
+   },
+   "forms": [
+    "hooliva",
+    "hoolivat"
+   ]
+  },
+  {
+   "id": "optimistlik",
+   "front": "Optimistlik",
+   "back": {
+    "en": "Optimistic",
+    "az": "Nikbin",
+    "ru": "Оптимистичный"
+   },
+   "forms": [
+    "optimistliku",
+    "optimistlikku"
+   ]
+  },
+  {
+   "id": "valiv",
+   "front": "Valiv",
+   "back": {
+    "en": "Picky",
+    "az": "Seçici",
+    "ru": "Привередливый"
+   },
+   "forms": [
+    "valiva",
+    "valivat"
+   ]
+  },
+  {
+   "id": "uudishimulik",
+   "front": "Uudishimulik",
+   "back": {
+    "en": "Curious",
+    "az": "Maraqlı təbiətli",
+    "ru": "Любопытный"
+   },
+   "forms": [
+    "uudishimuliku",
+    "uudishimulikku"
+   ]
+  },
+  {
+   "id": "narviline",
+   "front": "Närviline",
+   "back": {
+    "en": "Nervous",
+    "az": "Əsəbi",
+    "ru": "Нервный"
+   },
+   "forms": [
+    "närvilise",
+    "närvilist"
+   ]
+  },
+  {
+   "id": "ettevaatlik",
+   "front": "Ettevaatlik",
+   "back": {
+    "en": "Careful",
+    "az": "Ehtiyatlı",
+    "ru": "Осторожный"
+   },
+   "forms": [
+    "ettevaatliku",
+    "ettevaatlikku"
+   ]
+  },
+  {
+   "id": "roomus",
+   "front": "Rõõmus",
+   "back": {
+    "en": "Cheerful",
+    "az": "Şən",
+    "ru": "Весёлый"
+   },
+   "forms": [
+    "rõõmsa",
+    "rõõmsat"
+   ]
+  },
+  {
+   "id": "sportlik",
+   "front": "Sportlik",
+   "back": {
+    "en": "Sporty",
+    "az": "İdmançı kimi",
+    "ru": "Спортивный"
+   },
+   "forms": [
+    "sportliku",
+    "sportlikku"
+   ]
+  },
+  {
+   "id": "ebasportlik",
+   "front": "Ebasportlik",
+   "back": {
+    "en": "Not sporty",
+    "az": "İdmandan uzaq",
+    "ru": "Неспортивный"
+   },
+   "forms": [
+    "ebasportliku",
+    "ebasportlikku"
+   ]
+  },
+  {
+   "id": "loll",
+   "front": "Loll",
+   "back": {
+    "en": "Stupid",
+    "az": "Axmaq",
+    "ru": "Глупый"
+   },
+   "forms": [
+    "lolli",
+    "lolli"
+   ]
+  },
+  {
+   "id": "rumal",
+   "front": "Rumal",
+   "back": {
+    "en": "Foolish",
+    "az": "Ağılsız",
+    "ru": "Неумный"
+   },
+   "forms": [
+    "rumala",
+    "rumalat"
+   ]
+  },
+  {
+   "id": "kuri",
+   "front": "Kuri",
+   "back": {
+    "en": "Evil, cross",
+    "az": "Qəzəbli",
+    "ru": "Злой"
+   },
+   "forms": [
+    "kurja",
+    "kurja"
+   ]
+  },
+  {
+   "id": "onnetu",
+   "front": "Õnnetu",
+   "back": {
+    "en": "Unhappy",
+    "az": "Bədbəxt",
+    "ru": "Несчастный"
+   },
+   "forms": [
+    "õnnetu",
+    "õnnetut"
+   ]
+  },
+  {
+   "id": "ebatavaline",
+   "front": "Ebatavaline",
+   "back": {
+    "en": "Unusual",
+    "az": "Qeyri-adi",
+    "ru": "Необычный"
+   },
+   "forms": [
+    "ebatavalise",
+    "ebatavalist"
+   ]
+  },
+  {
+   "id": "kova",
+   "front": "Kõva",
+   "back": {
+    "en": "Loud, hard",
+    "az": "Bərk",
+    "ru": "Крепкий"
+   },
+   "forms": [
+    "kõva",
+    "kõva"
+   ]
+  },
+  {
+   "id": "kannatlik",
+   "front": "Kannatlik",
+   "back": {
+    "en": "Patient",
+    "az": "Səbirli",
+    "ru": "Терпеливый"
+   },
+   "forms": [
+    "kannatliku",
+    "kannatlikku"
+   ]
+  },
+  {
+   "id": "paanikas-olema",
+   "front": "Paanikas olema",
+   "back": {
+    "en": "To be in a panic",
+    "az": "təlaş içində olmaq",
+    "ru": "быть в панике"
+   }
+  }
+ ]
+}

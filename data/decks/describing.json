@@ -1,0 +1,1351 @@
+{
+ "id": "describing",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Describing a thing",
+  "az": "Bir şeyi təsvir etmək",
+  "ru": "Описать вещь"
+ },
+ "why": {
+  "en": "Long, short, and the word that asks for one a size down",
+  "az": "Uzun, qısa və bir ölçü kiçiyini istəyən söz",
+  "ru": "Длинный, короткий — и слово, которым просят на размер меньше"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "parem",
+   "front": "Parem",
+   "back": {
+    "en": "Better",
+    "az": "Daha yaxşı",
+    "ru": "Лучше"
+   },
+   "forms": [
+    "parema",
+    "paremat"
+   ],
+   "sentence": {
+    "et": "See on parem kui eile.",
+    "en": "This is better than yesterday.",
+    "az": "Bu dünənkindən yaxşıdır.",
+    "ru": "Это лучше, чем вчера."
+   }
+  },
+  {
+   "id": "luhike",
+   "front": "Lühike",
+   "back": {
+    "en": "Short",
+    "az": "Qısa",
+    "ru": "Короткий"
+   },
+   "forms": [
+    "lühikese",
+    "lühikest"
+   ],
+   "sentence": {
+    "et": "Kleit on lühike.",
+    "en": "The dress is short.",
+    "az": "Don qısadır.",
+    "ru": "Платье короткое."
+   }
+  },
+  {
+   "id": "luhem",
+   "front": "Lühem",
+   "back": {
+    "en": "Shorter",
+    "az": "Daha qısa",
+    "ru": "Короче"
+   },
+   "forms": [
+    "lühema",
+    "lühemat"
+   ],
+   "sentence": {
+    "et": "See seelik on lühem.",
+    "en": "This skirt is shorter.",
+    "az": "Bu yubka daha qısadır.",
+    "ru": "Эта юбка короче."
+   }
+  },
+  {
+   "id": "pikk",
+   "front": "Pikk",
+   "back": {
+    "en": "Long",
+    "az": "Uzun",
+    "ru": "Длинный"
+   },
+   "forms": [
+    "pika",
+    "pikka"
+   ],
+   "sentence": {
+    "et": "Mantel on liiga pikk.",
+    "en": "The coat is too long.",
+    "az": "Palto çox uzundur.",
+    "ru": "Пальто слишком длинное."
+   }
+  },
+  {
+   "id": "liiga-pikk",
+   "front": "Liiga pikk",
+   "back": {
+    "en": "Too long",
+    "az": "Çox uzun",
+    "ru": "Слишком длинный"
+   },
+   "sentence": {
+    "et": "Need püksid on liiga pikad.",
+    "en": "These trousers are too long.",
+    "az": "Bu şalvar çox uzundur.",
+    "ru": "Эти брюки слишком длинные."
+   }
+  },
+  {
+   "id": "pisike",
+   "front": "Pisike",
+   "back": {
+    "en": "Tiny",
+    "az": "Balaca",
+    "ru": "Крошечный"
+   },
+   "forms": [
+    "pisikese",
+    "pisikest"
+   ],
+   "sentence": {
+    "et": "Tal on pisike tuba.",
+    "en": "They have a tiny room.",
+    "az": "Onun balaca otağı var.",
+    "ru": "У него крошечная комната."
+   }
+  },
+  {
+   "id": "pisem",
+   "front": "Pisem",
+   "back": {
+    "en": "Tinier",
+    "az": "Daha balaca",
+    "ru": "Меньше"
+   },
+   "forms": [
+    "pisema",
+    "pisemat"
+   ],
+   "sentence": {
+    "et": "See number on pisem.",
+    "en": "This size is smaller.",
+    "az": "Bu ölçü daha kiçikdir.",
+    "ru": "Этот размер меньше."
+   }
+  },
+  {
+   "id": "ohuke",
+   "front": "Õhuke",
+   "back": {
+    "en": "Thin",
+    "az": "Nazik",
+    "ru": "Тонкий"
+   },
+   "forms": [
+    "õhukese",
+    "õhukest"
+   ],
+   "sentence": {
+    "et": "Jope on õhuke.",
+    "en": "The jacket is thin.",
+    "az": "Gödəkçə nazikdir.",
+    "ru": "Куртка тонкая."
+   }
+  },
+  {
+   "id": "paks",
+   "front": "Paks",
+   "back": {
+    "en": "Thick",
+    "az": "Qalın",
+    "ru": "Толстый"
+   },
+   "forms": [
+    "paksu",
+    "paksu"
+   ],
+   "sentence": {
+    "et": "Talvel on vaja paksu jopet.",
+    "en": "In winter you need a thick jacket.",
+    "az": "Qışda qalın gödəkçə lazımdır.",
+    "ru": "Зимой нужна толстая куртка."
+   }
+  },
+  {
+   "id": "kitsas",
+   "front": "Kitsas",
+   "back": {
+    "en": "Narrow",
+    "az": "Dar",
+    "ru": "Узкий"
+   },
+   "forms": [
+    "kitsa",
+    "kitsast"
+   ],
+   "sentence": {
+    "et": "Kingad on kitsad.",
+    "en": "The shoes are narrow.",
+    "az": "Ayaqqabılar dardır.",
+    "ru": "Туфли узкие."
+   }
+  },
+  {
+   "id": "lai",
+   "front": "Lai",
+   "back": {
+    "en": "Wide",
+    "az": "Geniş",
+    "ru": "Широкий"
+   },
+   "forms": [
+    "laia",
+    "laia"
+   ],
+   "sentence": {
+    "et": "Tänav on lai.",
+    "en": "The street is wide.",
+    "az": "Küçə genişdir.",
+    "ru": "Улица широкая."
+   }
+  },
+  {
+   "id": "laiem",
+   "front": "Laiem",
+   "back": {
+    "en": "Wider",
+    "az": "Daha geniş",
+    "ru": "Шире"
+   },
+   "forms": [
+    "laiema",
+    "laiemat"
+   ],
+   "sentence": {
+    "et": "Kas teil on laiemat?",
+    "en": "Do you have a wider one?",
+    "az": "Daha genişi var?",
+    "ru": "У вас есть пошире?"
+   }
+  },
+  {
+   "id": "kiirem",
+   "front": "Kiirem",
+   "back": {
+    "en": "Faster",
+    "az": "Daha sürətli",
+    "ru": "Быстрее"
+   },
+   "forms": [
+    "kiirema",
+    "kiiremat"
+   ],
+   "sentence": {
+    "et": "Buss on kiirem kui tramm.",
+    "en": "The bus is faster than the tram.",
+    "az": "Avtobus tramvaydan sürətlidir.",
+    "ru": "Автобус быстрее трамвая."
+   }
+  },
+  {
+   "id": "tume",
+   "front": "Tume",
+   "back": {
+    "en": "Dark",
+    "az": "Tünd",
+    "ru": "Тёмный"
+   },
+   "forms": [
+    "tumeda",
+    "tumedat"
+   ],
+   "sentence": {
+    "et": "Ma tahan tumedat värvi.",
+    "en": "I want a dark colour.",
+    "az": "Tünd rəng istəyirəm.",
+    "ru": "Я хочу тёмный цвет."
+   }
+  },
+  {
+   "id": "hele",
+   "front": "Hele",
+   "back": {
+    "en": "Light, bright",
+    "az": "Açıq, işıqlı",
+    "ru": "Светлый"
+   },
+   "forms": [
+    "heleda",
+    "heledat"
+   ],
+   "sentence": {
+    "et": "Hele särk sobib paremini.",
+    "en": "A light shirt suits better.",
+    "az": "Açıq rəngli köynək daha yaxşı yaraşır.",
+    "ru": "Светлая рубашка идёт лучше."
+   }
+  },
+  {
+   "id": "vana",
+   "front": "Vana",
+   "back": {
+    "en": "Old",
+    "az": "Köhnə",
+    "ru": "Старый"
+   },
+   "forms": [
+    "vana",
+    "vana"
+   ],
+   "sentence": {
+    "et": "Mantel on vana.",
+    "en": "The coat is old.",
+    "az": "Palto köhnədir.",
+    "ru": "Пальто старое."
+   }
+  },
+  {
+   "id": "uus",
+   "front": "Uus",
+   "back": {
+    "en": "New",
+    "az": "Yeni",
+    "ru": "Новый"
+   },
+   "forms": [
+    "uue",
+    "uut"
+   ],
+   "sentence": {
+    "et": "Mul on uued kingad.",
+    "en": "I have new shoes.",
+    "az": "Yeni ayaqqabılarım var.",
+    "ru": "У меня новые туфли."
+   }
+  },
+  {
+   "id": "varviline",
+   "front": "Värviline",
+   "back": {
+    "en": "Colourful",
+    "az": "Rəngli",
+    "ru": "Цветной"
+   },
+   "forms": [
+    "värvilise",
+    "värvilist"
+   ],
+   "sentence": {
+    "et": "Suvel kannan värvilisi riideid.",
+    "en": "In summer I wear colourful clothes.",
+    "az": "Yayda rəngli paltar geyinirəm.",
+    "ru": "Летом я ношу цветную одежду."
+   }
+  },
+  {
+   "id": "tagasihoidlik",
+   "front": "Tagasihoidlik",
+   "back": {
+    "en": "Understated",
+    "az": "Sadə, təmkinli",
+    "ru": "Неброский"
+   },
+   "forms": [
+    "tagasihoidliku",
+    "tagasihoidlikku"
+   ],
+   "sentence": {
+    "et": "Ma eelistan tagasihoidlikku värvi.",
+    "en": "I prefer an understated colour.",
+    "az": "Təmkinli rəngə üstünlük verirəm.",
+    "ru": "Я предпочитаю неброский цвет."
+   }
+  },
+  {
+   "id": "inetu",
+   "front": "Inetu",
+   "back": {
+    "en": "Ugly, plain",
+    "az": "Çirkin",
+    "ru": "Некрасивый"
+   },
+   "forms": [
+    "inetu",
+    "inetut"
+   ],
+   "sentence": {
+    "et": "See muster on inetu.",
+    "en": "This pattern is ugly.",
+    "az": "Bu naxış çirkindir.",
+    "ru": "Этот узор некрасивый."
+   }
+  },
+  {
+   "id": "kole",
+   "front": "Kole",
+   "back": {
+    "en": "Hideous",
+    "az": "Eybəcər",
+    "ru": "Ужасный"
+   },
+   "forms": [
+    "koleda",
+    "koledat"
+   ],
+   "sentence": {
+    "et": "Ilm on täna kole.",
+    "en": "The weather is hideous today.",
+    "az": "Bu gün hava eybəcərdir.",
+    "ru": "Погода сегодня ужасная."
+   }
+  },
+  {
+   "id": "kas-teil-on-luhemat",
+   "front": "Kas teil on lühemat?",
+   "back": {
+    "en": "Do you have a shorter one?",
+    "az": "Daha qısası var?",
+    "ru": "У вас есть покороче?"
+   }
+  },
+  {
+   "id": "umar",
+   "front": "Ümar",
+   "back": {
+    "en": "Round",
+    "az": "Dairəvi",
+    "ru": "Круглый"
+   },
+   "forms": [
+    "ümara",
+    "ümarat"
+   ],
+   "sentence": {
+    "et": "Laud on ümar.",
+    "en": "The table is round.",
+    "az": "Masa dairəvidir.",
+    "ru": "Стол круглый."
+   }
+  },
+  {
+   "id": "kerge",
+   "front": "Kerge",
+   "back": {
+    "en": "Easy, light",
+    "az": "Asan, yüngül",
+    "ru": "Лёгкий"
+   },
+   "forms": [
+    "kerge",
+    "kerget"
+   ],
+   "sentence": {
+    "et": "Kott on kerge.",
+    "en": "The bag is light.",
+    "az": "Çanta yüngüldür.",
+    "ru": "Сумка лёгкая."
+   }
+  },
+  {
+   "id": "tavaline",
+   "front": "Tavaline",
+   "back": {
+    "en": "Ordinary, usual",
+    "az": "Adi",
+    "ru": "Обычный"
+   },
+   "forms": [
+    "tavalise",
+    "tavalist"
+   ],
+   "sentence": {
+    "et": "Üks tavaline kohv, palun.",
+    "en": "One ordinary coffee, please.",
+    "az": "Bir adi qəhvə, zəhmət olmasa.",
+    "ru": "Один обычный кофе, пожалуйста."
+   }
+  },
+  {
+   "id": "hall",
+   "front": "Hall",
+   "back": {
+    "en": "Grey",
+    "az": "Boz",
+    "ru": "Серый"
+   },
+   "forms": [
+    "halli",
+    "halli"
+   ],
+   "sentence": {
+    "et": "Taevas on hall.",
+    "en": "The sky is grey.",
+    "az": "Göy bozdur.",
+    "ru": "Небо серое."
+   }
+  },
+  {
+   "id": "kollane",
+   "front": "Kollane",
+   "back": {
+    "en": "Yellow",
+    "az": "Sarı",
+    "ru": "Жёлтый"
+   },
+   "forms": [
+    "kollase",
+    "kollast"
+   ],
+   "sentence": {
+    "et": "Kollane maja on nurga peal.",
+    "en": "The yellow house is on the corner.",
+    "az": "Sarı ev küncdədir.",
+    "ru": "Жёлтый дом на углу."
+   }
+  },
+  {
+   "id": "must",
+   "front": "Must",
+   "back": {
+    "en": "Black, dirty",
+    "az": "Qara, çirkli",
+    "ru": "Чёрный, грязный"
+   },
+   "forms": [
+    "musta",
+    "musta"
+   ],
+   "sentence": {
+    "et": "Ma otsin musta mantlit.",
+    "en": "I am looking for a black coat.",
+    "az": "Qara palto axtarıram.",
+    "ru": "Я ищу чёрное пальто."
+   }
+  },
+  {
+   "id": "varv",
+   "front": "Värv",
+   "back": {
+    "en": "Colour",
+    "az": "Rəng",
+    "ru": "Цвет"
+   },
+   "forms": [
+    "värvi",
+    "värvi"
+   ],
+   "sentence": {
+    "et": "Mis värvi see on?",
+    "en": "What colour is this?",
+    "az": "Bu nə rəngdədir?",
+    "ru": "Какого это цвета?"
+   }
+  },
+  {
+   "id": "punane",
+   "front": "Punane",
+   "back": {
+    "en": "Red",
+    "az": "Qırmızı",
+    "ru": "Красный"
+   },
+   "forms": [
+    "punase",
+    "punast"
+   ],
+   "sentence": {
+    "et": "Ma tahan punast kleiti.",
+    "en": "I want a red dress.",
+    "az": "Qırmızı don istəyirəm.",
+    "ru": "Я хочу красное платье."
+   }
+  },
+  {
+   "id": "sinine",
+   "front": "Sinine",
+   "back": {
+    "en": "Blue",
+    "az": "Mavi",
+    "ru": "Синий"
+   },
+   "forms": [
+    "sinise",
+    "sinist"
+   ],
+   "sentence": {
+    "et": "Sinine särk sobib sulle.",
+    "en": "The blue shirt suits you.",
+    "az": "Mavi köynək sənə yaraşır.",
+    "ru": "Синяя рубашка тебе идёт."
+   }
+  },
+  {
+   "id": "roheline",
+   "front": "Roheline",
+   "back": {
+    "en": "Green",
+    "az": "Yaşıl",
+    "ru": "Зелёный"
+   },
+   "forms": [
+    "rohelise",
+    "rohelist"
+   ],
+   "sentence": {
+    "et": "Kas teil on rohelist?",
+    "en": "Do you have it in green?",
+    "az": "Yaşılı varmı?",
+    "ru": "У вас есть зелёный?"
+   }
+  },
+  {
+   "id": "pruun",
+   "front": "Pruun",
+   "back": {
+    "en": "Brown",
+    "az": "Qəhvəyi",
+    "ru": "Коричневый"
+   },
+   "forms": [
+    "pruuni",
+    "pruuni"
+   ],
+   "sentence": {
+    "et": "Ma otsin pruune kingi.",
+    "en": "I am looking for brown shoes.",
+    "az": "Qəhvəyi ayaqqabı axtarıram.",
+    "ru": "Я ищу коричневые туфли."
+   }
+  },
+  {
+   "id": "valge",
+   "front": "Valge",
+   "back": {
+    "en": "White",
+    "az": "Ağ",
+    "ru": "Белый"
+   },
+   "forms": [
+    "valge",
+    "valget"
+   ],
+   "sentence": {
+    "et": "Valge sall on ilus.",
+    "en": "The white scarf is beautiful.",
+    "az": "Ağ şərf gözəldir.",
+    "ru": "Белый шарф красивый."
+   }
+  },
+  {
+   "id": "sobralik",
+   "front": "Sõbralik",
+   "back": {
+    "en": "Friendly",
+    "az": "Mehriban",
+    "ru": "Дружелюбный"
+   },
+   "forms": [
+    "sõbraliku",
+    "sõbralikku"
+   ],
+   "sentence": {
+    "et": "Müüja oli väga sõbralik.",
+    "en": "The shop assistant was very friendly.",
+    "az": "Satıcı çox mehriban idi.",
+    "ru": "Продавец был очень дружелюбен."
+   }
+  },
+  {
+   "id": "tahtis",
+   "front": "Tähtis",
+   "back": {
+    "en": "Important",
+    "az": "Vacib",
+    "ru": "Важный"
+   },
+   "forms": [
+    "tähtsa",
+    "tähtsat"
+   ],
+   "sentence": {
+    "et": "See on tähtis kiri.",
+    "en": "This is an important letter.",
+    "az": "Bu vacib məktubdur.",
+    "ru": "Это важное письмо."
+   }
+  },
+  {
+   "id": "imelik",
+   "front": "Imelik",
+   "back": {
+    "en": "Strange",
+    "az": "Qəribə",
+    "ru": "Странный"
+   },
+   "forms": [
+    "imeliku",
+    "imelikku"
+   ],
+   "sentence": {
+    "et": "See maitse on imelik.",
+    "en": "This taste is strange.",
+    "az": "Bu dad qəribədir.",
+    "ru": "Этот вкус странный."
+   }
+  },
+  {
+   "id": "tugev",
+   "front": "Tugev",
+   "back": {
+    "en": "Strong",
+    "az": "Güclü",
+    "ru": "Сильный"
+   },
+   "forms": [
+    "tugeva",
+    "tugevat"
+   ],
+   "sentence": {
+    "et": "Kohv on liiga tugev.",
+    "en": "The coffee is too strong.",
+    "az": "Qəhvə çox güclüdür.",
+    "ru": "Кофе слишком крепкий."
+   }
+  },
+  {
+   "id": "meeter",
+   "front": "Meeter",
+   "back": {
+    "en": "Metre",
+    "az": "Metr",
+    "ru": "Метр"
+   },
+   "forms": [
+    "meetri",
+    "meetrit"
+   ],
+   "sentence": {
+    "et": "Kangast on kaks meetrit.",
+    "en": "There are two metres of fabric.",
+    "az": "Parçadan iki metr var.",
+    "ru": "Ткани два метра."
+   }
+  },
+  {
+   "id": "klaasist",
+   "front": "Klaasist",
+   "back": {
+    "en": "Made of glass",
+    "az": "Şüşədən",
+    "ru": "Из стекла"
+   }
+  },
+  {
+   "id": "puust",
+   "front": "Puust",
+   "back": {
+    "en": "Made of wood",
+    "az": "Taxtadan",
+    "ru": "Из дерева"
+   }
+  },
+  {
+   "id": "nahast",
+   "front": "Nahast",
+   "back": {
+    "en": "Made of leather",
+    "az": "Dəridən",
+    "ru": "Из кожи"
+   }
+  },
+  {
+   "id": "metallist",
+   "front": "Metallist",
+   "back": {
+    "en": "Made of metal",
+    "az": "Metaldan",
+    "ru": "Из металла"
+   }
+  },
+  {
+   "id": "paberist",
+   "front": "Paberist",
+   "back": {
+    "en": "Made of paper",
+    "az": "Kağızdan",
+    "ru": "Из бумаги"
+   }
+  },
+  {
+   "id": "riidest",
+   "front": "Riidest",
+   "back": {
+    "en": "Made of fabric",
+    "az": "Parçadan",
+    "ru": "Из ткани"
+   }
+  },
+  {
+   "id": "plastmassist",
+   "front": "Plastmassist",
+   "back": {
+    "en": "Made of plastic",
+    "az": "Plastikdən",
+    "ru": "Из пластмассы"
+   }
+  },
+  {
+   "id": "kristallist",
+   "front": "Kristallist",
+   "back": {
+    "en": "Made of crystal",
+    "az": "Büllurdan",
+    "ru": "Из хрусталя"
+   }
+  },
+  {
+   "id": "riie",
+   "front": "Riie",
+   "back": {
+    "en": "Fabric, cloth",
+    "az": "Parça",
+    "ru": "Ткань"
+   },
+   "forms": [
+    "riide",
+    "riiet"
+   ]
+  },
+  {
+   "id": "suurevoitu",
+   "front": "Suurevõitu",
+   "back": {
+    "en": "A little too big",
+    "az": "Bir az böyük",
+    "ru": "Великоватый"
+   }
+  },
+  {
+   "id": "vaiksevoitu",
+   "front": "Väiksevõitu",
+   "back": {
+    "en": "A little too small",
+    "az": "Bir az kiçik",
+    "ru": "Маловатый"
+   }
+  },
+  {
+   "id": "kallivoitu",
+   "front": "Kallivõitu",
+   "back": {
+    "en": "A little too expensive",
+    "az": "Bir az baha",
+    "ru": "Дороговатый"
+   }
+  },
+  {
+   "id": "arusaadav",
+   "front": "Arusaadav",
+   "back": {
+    "en": "Understandable",
+    "az": "Anlaşıqlı",
+    "ru": "Понятный"
+   },
+   "forms": [
+    "arusaadava",
+    "arusaadavat"
+   ]
+  },
+  {
+   "id": "keeruline",
+   "front": "Keeruline",
+   "back": {
+    "en": "Complicated",
+    "az": "Mürəkkəb",
+    "ru": "Сложный"
+   },
+   "forms": [
+    "keerulise",
+    "keerulist"
+   ]
+  },
+  {
+   "id": "uskumatu",
+   "front": "Uskumatu",
+   "back": {
+    "en": "Unbelievable",
+    "az": "İnanılmaz",
+    "ru": "Невероятный"
+   },
+   "forms": [
+    "uskumatu",
+    "uskumatut"
+   ]
+  },
+  {
+   "id": "ponev",
+   "front": "Põnev",
+   "back": {
+    "en": "Exciting",
+    "az": "Maraqlı",
+    "ru": "Увлекательный"
+   },
+   "forms": [
+    "põneva",
+    "põnevat"
+   ]
+  },
+  {
+   "id": "vahva",
+   "front": "Vahva",
+   "back": {
+    "en": "Great, splendid",
+    "az": "Möhtəşəm",
+    "ru": "Классный"
+   },
+   "forms": [
+    "vahva",
+    "vahvat"
+   ]
+  },
+  {
+   "id": "lahe",
+   "front": "Lahe",
+   "back": {
+    "en": "Cool, nice",
+    "az": "Gözəl",
+    "ru": "Клёвый"
+   },
+   "forms": [
+    "laheda",
+    "lahedat"
+   ]
+  },
+  {
+   "id": "jube",
+   "front": "Jube",
+   "back": {
+    "en": "Terrible, awful",
+    "az": "Dəhşətli",
+    "ru": "Ужасный"
+   },
+   "forms": [
+    "jubeda",
+    "jubedat"
+   ]
+  },
+  {
+   "id": "kohutav",
+   "front": "Kohutav",
+   "back": {
+    "en": "Terrible",
+    "az": "Qorxunc",
+    "ru": "Ужасный"
+   },
+   "forms": [
+    "kohutava",
+    "kohutavat"
+   ]
+  },
+  {
+   "id": "suureparane",
+   "front": "Suurepärane",
+   "back": {
+    "en": "Wonderful",
+    "az": "Əla",
+    "ru": "Отличный"
+   },
+   "forms": [
+    "suurepärase",
+    "suurepärast"
+   ]
+  },
+  {
+   "id": "normaalne",
+   "front": "Normaalne",
+   "back": {
+    "en": "Normal",
+    "az": "Normal",
+    "ru": "Нормальный"
+   },
+   "forms": [
+    "normaalse",
+    "normaalset"
+   ]
+  },
+  {
+   "id": "taielik",
+   "front": "Täielik",
+   "back": {
+    "en": "Total, complete",
+    "az": "Tam",
+    "ru": "Полный"
+   },
+   "forms": [
+    "täieliku",
+    "täielikku"
+   ]
+  },
+  {
+   "id": "oluline",
+   "front": "Oluline",
+   "back": {
+    "en": "Important",
+    "az": "Vacib",
+    "ru": "Важный"
+   },
+   "forms": [
+    "olulise",
+    "olulist"
+   ]
+  },
+  {
+   "id": "tuupiline",
+   "front": "Tüüpiline",
+   "back": {
+    "en": "Typical",
+    "az": "Tipik",
+    "ru": "Типичный"
+   },
+   "forms": [
+    "tüüpilise",
+    "tüüpilist"
+   ]
+  },
+  {
+   "id": "eriline",
+   "front": "Eriline",
+   "back": {
+    "en": "Special",
+    "az": "Xüsusi",
+    "ru": "Особенный"
+   },
+   "forms": [
+    "erilise",
+    "erilist"
+   ]
+  },
+  {
+   "id": "soodav",
+   "front": "Söödav",
+   "back": {
+    "en": "Edible",
+    "az": "Yeməli",
+    "ru": "Съедобный"
+   },
+   "forms": [
+    "söödava",
+    "söödavat"
+   ]
+  },
+  {
+   "id": "vastupidav",
+   "front": "Vastupidav",
+   "back": {
+    "en": "Durable",
+    "az": "Davamlı",
+    "ru": "Выносливый"
+   },
+   "forms": [
+    "vastupidava",
+    "vastupidavat"
+   ]
+  },
+  {
+   "id": "vaba",
+   "front": "Vaba",
+   "back": {
+    "en": "Free",
+    "az": "Boş, azad",
+    "ru": "Свободный"
+   },
+   "forms": [
+    "vaba",
+    "vaba"
+   ]
+  },
+  {
+   "id": "eelmine",
+   "front": "Eelmine",
+   "back": {
+    "en": "Previous, last",
+    "az": "Əvvəlki, keçən",
+    "ru": "Прошлый, предыдущий"
+   },
+   "forms": [
+    "eelmise",
+    "eelmist"
+   ]
+  },
+  {
+   "id": "moodunud",
+   "front": "Möödunud",
+   "back": {
+    "en": "Last, past",
+    "az": "Keçmiş, ötən",
+    "ru": "Прошедший, прошлый"
+   }
+  },
+  {
+   "id": "valmis",
+   "front": "Valmis",
+   "back": {
+    "en": "Ready",
+    "az": "Hazır",
+    "ru": "Готовый"
+   }
+  },
+  {
+   "id": "keskmine",
+   "front": "Keskmine",
+   "back": {
+    "en": "Middle, average",
+    "az": "Orta",
+    "ru": "Средний"
+   },
+   "forms": [
+    "keskmise",
+    "keskmist"
+   ]
+  },
+  {
+   "id": "kasulik",
+   "front": "Kasulik",
+   "back": {
+    "en": "Useful",
+    "az": "Faydalı",
+    "ru": "Полезный"
+   },
+   "forms": [
+    "kasuliku",
+    "kasulikku"
+   ]
+  },
+  {
+   "id": "rahvusvaheline",
+   "front": "Rahvusvaheline",
+   "back": {
+    "en": "International",
+    "az": "Beynəlxalq",
+    "ru": "Международный"
+   },
+   "forms": [
+    "rahvusvahelise",
+    "rahvusvahelist"
+   ]
+  },
+  {
+   "id": "tervislik",
+   "front": "Tervislik",
+   "back": {
+    "en": "Healthy",
+    "az": "Sağlam",
+    "ru": "Здоровый, полезный"
+   },
+   "forms": [
+    "tervisliku",
+    "tervislikku"
+   ]
+  },
+  {
+   "id": "kuulus",
+   "front": "Kuulus",
+   "back": {
+    "en": "Famous",
+    "az": "Məşhur",
+    "ru": "Известный"
+   },
+   "forms": [
+    "kuulsa",
+    "kuulsat"
+   ]
+  },
+  {
+   "id": "monus",
+   "front": "Mõnus",
+   "back": {
+    "en": "Pleasant, cosy",
+    "az": "Xoş, rahat",
+    "ru": "Приятный"
+   },
+   "forms": [
+    "mõnusa",
+    "mõnusat"
+   ]
+  },
+  {
+   "id": "tuhi",
+   "front": "Tühi",
+   "back": {
+    "en": "Empty",
+    "az": "Boş",
+    "ru": "Пустой"
+   },
+   "forms": [
+    "tühja",
+    "tühja"
+   ]
+  },
+  {
+   "id": "mugav",
+   "front": "Mugav",
+   "back": {
+    "en": "Comfortable",
+    "az": "Rahat",
+    "ru": "Удобный"
+   },
+   "forms": [
+    "mugava",
+    "mugavat"
+   ]
+  },
+  {
+   "id": "ohtlik",
+   "front": "Ohtlik",
+   "back": {
+    "en": "Dangerous",
+    "az": "Təhlükəli",
+    "ru": "Опасный"
+   },
+   "forms": [
+    "ohtliku",
+    "ohtlikku"
+   ]
+  },
+  {
+   "id": "vaikne",
+   "front": "Vaikne",
+   "back": {
+    "en": "Quiet",
+    "az": "Sakit",
+    "ru": "Тихий"
+   },
+   "forms": [
+    "vaikse",
+    "vaikset"
+   ]
+  },
+  {
+   "id": "alumine",
+   "front": "Alumine",
+   "back": {
+    "en": "Lower",
+    "az": "Aşağı, alt",
+    "ru": "Нижний"
+   },
+   "forms": [
+    "alumise",
+    "alumist"
+   ]
+  },
+  {
+   "id": "erinev",
+   "front": "Erinev",
+   "back": {
+    "en": "Different",
+    "az": "Fərqli",
+    "ru": "Различный"
+   },
+   "forms": [
+    "erineva",
+    "erinevat"
+   ]
+  },
+  {
+   "id": "mitmesugune",
+   "front": "Mitmesugune",
+   "back": {
+    "en": "Various",
+    "az": "Müxtəlif",
+    "ru": "Различный"
+   },
+   "forms": [
+    "mitmesuguse",
+    "mitmesugust"
+   ]
+  },
+  {
+   "id": "ring",
+   "front": "Ring",
+   "back": {
+    "en": "Circle",
+    "az": "Dairə",
+    "ru": "Круг"
+   },
+   "forms": [
+    "ringi",
+    "ringi"
+   ]
+  },
+  {
+   "id": "segi",
+   "front": "Segi",
+   "back": {
+    "en": "In a mess",
+    "az": "Qarışıq, dağınıq",
+    "ru": "В беспорядке"
+   }
+  },
+  {
+   "id": "ulemine",
+   "front": "Ülemine",
+   "back": {
+    "en": "Upper",
+    "az": "Yuxarı, üst",
+    "ru": "Верхний"
+   },
+   "forms": [
+    "ülemise",
+    "ülemist"
+   ]
+  },
+  {
+   "id": "ummargune",
+   "front": "Ümmargune",
+   "back": {
+    "en": "Round",
+    "az": "Dəyirmi",
+    "ru": "Круглый"
+   },
+   "forms": [
+    "ümmarguse",
+    "ümmargust"
+   ]
+  },
+  {
+   "id": "sarnane",
+   "front": "Sarnane",
+   "back": {
+    "en": "Similar",
+    "az": "Oxşar",
+    "ru": "Похожий, подобный"
+   },
+   "forms": [
+    "sarnase",
+    "sarnast"
+   ]
+  },
+  {
+   "id": "uhesugune",
+   "front": "Ühesugune",
+   "back": {
+    "en": "Alike, the same",
+    "az": "Eyni cür",
+    "ru": "Одинаковый"
+   },
+   "forms": [
+    "ühesuguse",
+    "ühesugust"
+   ]
+  }
+ ]
+}

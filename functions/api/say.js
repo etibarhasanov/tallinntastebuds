@@ -56,11 +56,14 @@
  * An open text-to-speech proxy on a university's goodwill is a thing that
  * gets found and used, so the text has to be the front of a card in
  * data/decks.json, the Estonian of a card's sentence, a sentence or a form out
- * of a grammar lesson, or a line of a song in the same file, exactly. Nothing
- * a person typed is ever spoken: a deck somebody wrote is not in that file,
- * and speaking it would mean saying anything anybody chose. That is a decision
- * for a description rather than for this file — **What it does not do** under
- * **Flashcards**.
+ * of a grammar lesson, or a line of a song in the same file, exactly. The list
+ * of those is data/decks/spoken.json, which tools/decks.mjs writes out of the
+ * source — this route used to read the whole file and gather them itself, a
+ * megabyte parsed to answer whether one line was on a card — and it is the
+ * only thing this route reads. Nothing a person typed is ever spoken: a deck
+ * somebody wrote is not in that file, and speaking it would mean saying
+ * anything anybody chose. That is a decision for a description rather than
+ * for this file — **What it does not do** under **Flashcards**.
  */
 
 import { json, dataFile } from './_lib.js';
@@ -102,53 +105,23 @@ const HEADERS = {
   'accept-ranges': 'bytes'
 };
 
-/* Every string a card may ask to hear, built once per copy of the file.
-   dataFile() hands back the same object for five minutes, so a WeakMap keyed
-   on it rebuilds the set exactly when a new deploy's decks arrive. */
+/* Every string a card may ask to hear, as the list tools/decks.mjs writes —
+   the front of every card, the Estonian of its sentence, a lesson's sentences
+   and its forms as the page asks for them, a song's lines — and as the Set it
+   is asked against, built once per copy of the file. dataFile() hands back
+   the same array for five minutes, so a WeakMap keyed on it rebuilds the set
+   exactly when a new deploy's words arrive. A file that is not a list is an
+   empty set, and every text is then not a card. */
+const SPOKEN_FILE = '/data/decks/spoken.json';
 const spoken = new WeakMap();
 
-function sayable(file) {
-  let set = spoken.get(file);
+function sayable(list) {
+  if (!Array.isArray(list)) return new Set();
+  let set = spoken.get(list);
   if (set) return set;
-  set = new Set();
-  for (const deck of (file && file.decks) || []) {
-    for (const card of deck.cards || []) {
-      if (card.front) set.add(card.front);
-      if (card.sentence && card.sentence.et) set.add(card.sentence.et);
-    }
-  }
-  /* And a line of a song, which the page offers to say slowly beside the
-     singing. It is in the same file for the same reason, and just as exact. */
-  for (const song of (file && file.songs) || []) {
-    for (const verse of song.verses || []) {
-      for (const line of verse || []) if (line && line.et) set.add(line.et);
-    }
-  }
-  /* And a grammar lesson's Estonian: each sentence under a paradigm, and each
-     form in the paradigm itself, which is where leib, leiva and leiba stand
-     side by side and the whole point is hearing them differ. A form is asked
-     for as asForm() writes it, so the page's copy of that line and this one
-     have to agree. */
-  for (const lesson of (file && file.lessons) || []) {
-    for (const block of lesson.body || []) {
-      for (const one of block.examples || []) if (one && one.et) set.add(one.et);
-      for (const row of (block.table && block.table.rows) || []) {
-        for (const form of row.et || []) if (form) set.add(asForm(form));
-      }
-    }
-  }
-  spoken.set(file, set);
+  set = new Set(list.filter((text) => typeof text === 'string'));
+  spoken.set(list, set);
   return set;
-}
-
-/* A paradigm cell that holds two forms writes them either side of a middle
-   dot — `köögisse · kööki` — which is a mark for the eye and not a word for
-   the voice, so it is spoken as a short pause. The page sends a form through
-   the same line, asForm() in assets/flashcard.js, and the two are kept the
-   same by hand the way the pin tables are: neither dialect can import the
-   other. */
-function asForm(form) {
-  return form.replace(/ · /g, ', ');
 }
 
 /* The recording, whole, or the slice of it a Range header asks for.
@@ -194,7 +167,7 @@ export async function onRequestGet(context) {
 
   let file;
   try {
-    file = await dataFile(context, '/data/decks.json');
+    file = await dataFile(context, SPOKEN_FILE);
   } catch (e) {
     return json({ error: 'no-voice' }, 502);
   }

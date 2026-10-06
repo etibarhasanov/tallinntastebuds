@@ -1,0 +1,359 @@
+{
+ "id": "cases-inside-cards",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Into, in, out of — the cards",
+  "az": "İçinə, içində, içindən — kartlar",
+  "ru": "Куда, где, откуда: внутри — карточки"
+ },
+ "why": {
+  "en": "Into, in and out of the kitchen, the town and the shop",
+  "az": "Mətbəxə, şəhərə, mağazaya — içinə, içində, içindən",
+  "ru": "Кухня, город и магазин: куда, где, откуда"
+ },
+ "level": "case",
+ "cards": [
+  {
+   "id": "kus-sa-oled",
+   "front": "Kus sa oled?",
+   "back": {
+    "en": "Where are you?",
+    "az": "Haradasan?",
+    "ru": "Где ты?"
+   }
+  },
+  {
+   "id": "kuhu-sa-lahed",
+   "front": "Kuhu sa lähed?",
+   "back": {
+    "en": "Where are you going?",
+    "az": "Hara gedirsən?",
+    "ru": "Куда ты идёшь?"
+   }
+  },
+  {
+   "id": "kust-sa-parit-oled",
+   "front": "Kust sa pärit oled?",
+   "back": {
+    "en": "Where are you from?",
+    "az": "Haralısan?",
+    "ru": "Откуда ты родом?"
+   }
+  },
+  {
+   "id": "kooki",
+   "front": "Kööki",
+   "back": {
+    "en": "Into the kitchen",
+    "az": "Mətbəxə",
+    "ru": "На кухню"
+   },
+   "build": {
+    "forms": [
+     "köök",
+     "köögi",
+     "kööki"
+    ],
+    "on": 1,
+    "from": "köögi",
+    "end": "sse",
+    "makes": "köögisse",
+    "short": "kööki",
+    "case": {
+     "et": "sisseütlev",
+     "en": "into",
+     "az": "hara? (yönlük hal)",
+     "ru": "куда? (в + винительный)"
+    }
+   }
+  },
+  {
+   "id": "koogis",
+   "front": "Köögis",
+   "back": {
+    "en": "In the kitchen",
+    "az": "Mətbəxdə",
+    "ru": "На кухне"
+   },
+   "build": {
+    "forms": [
+     "köök",
+     "köögi",
+     "kööki"
+    ],
+    "on": 1,
+    "from": "köögi",
+    "end": "s",
+    "makes": "köögis",
+    "case": {
+     "et": "seesütlev",
+     "en": "in",
+     "az": "harada? (yerlik hal)",
+     "ru": "где? (в + предложный)"
+    }
+   }
+  },
+  {
+   "id": "koogist",
+   "front": "Köögist",
+   "back": {
+    "en": "Out of the kitchen",
+    "az": "Mətbəxdən",
+    "ru": "Из кухни"
+   },
+   "build": {
+    "forms": [
+     "köök",
+     "köögi",
+     "kööki"
+    ],
+    "on": 1,
+    "from": "köögi",
+    "end": "st",
+    "makes": "köögist",
+    "case": {
+     "et": "seestütlev",
+     "en": "out of",
+     "az": "haradan? (çıxışlıq hal)",
+     "ru": "откуда? (из + родительный)"
+    }
+   }
+  },
+  {
+   "id": "linna",
+   "front": "Linna",
+   "back": {
+    "en": "Into town",
+    "az": "Şəhərə",
+    "ru": "В город"
+   },
+   "build": {
+    "forms": [
+     "linn",
+     "linna",
+     "linna"
+    ],
+    "on": 1,
+    "from": "linna",
+    "end": "sse",
+    "makes": "linnasse",
+    "short": "linna",
+    "case": {
+     "et": "sisseütlev",
+     "en": "into",
+     "az": "hara? (yönlük hal)",
+     "ru": "куда? (в + винительный)"
+    }
+   }
+  },
+  {
+   "id": "linnas",
+   "front": "Linnas",
+   "back": {
+    "en": "In town",
+    "az": "Şəhərdə",
+    "ru": "В городе"
+   },
+   "build": {
+    "forms": [
+     "linn",
+     "linna",
+     "linna"
+    ],
+    "on": 1,
+    "from": "linna",
+    "end": "s",
+    "makes": "linnas",
+    "case": {
+     "et": "seesütlev",
+     "en": "in",
+     "az": "harada? (yerlik hal)",
+     "ru": "где? (в + предложный)"
+    }
+   }
+  },
+  {
+   "id": "poodi",
+   "front": "Poodi",
+   "back": {
+    "en": "To the shop",
+    "az": "Mağazaya",
+    "ru": "В магазин"
+   },
+   "build": {
+    "forms": [
+     "pood",
+     "poe",
+     "poodi"
+    ],
+    "on": 1,
+    "from": "poe",
+    "end": "sse",
+    "makes": "poesse",
+    "short": "poodi",
+    "case": {
+     "et": "sisseütlev",
+     "en": "into",
+     "az": "hara? (yönlük hal)",
+     "ru": "куда? (в + винительный)"
+    }
+   }
+  },
+  {
+   "id": "poes",
+   "front": "Poes",
+   "back": {
+    "en": "In the shop",
+    "az": "Mağazada",
+    "ru": "В магазине"
+   },
+   "build": {
+    "forms": [
+     "pood",
+     "poe",
+     "poodi"
+    ],
+    "on": 1,
+    "from": "poe",
+    "end": "s",
+    "makes": "poes",
+    "case": {
+     "et": "seesütlev",
+     "en": "in",
+     "az": "harada? (yerlik hal)",
+     "ru": "где? (в + предложный)"
+    }
+   }
+  },
+  {
+   "id": "poest",
+   "front": "Poest",
+   "back": {
+    "en": "From the shop",
+    "az": "Mağazadan",
+    "ru": "Из магазина"
+   },
+   "build": {
+    "forms": [
+     "pood",
+     "poe",
+     "poodi"
+    ],
+    "on": 1,
+    "from": "poe",
+    "end": "st",
+    "makes": "poest",
+    "case": {
+     "et": "seestütlev",
+     "en": "out of",
+     "az": "haradan? (çıxışlıq hal)",
+     "ru": "откуда? (из + родительный)"
+    }
+   }
+  },
+  {
+   "id": "eestis",
+   "front": "Eestis",
+   "back": {
+    "en": "In Estonia",
+    "az": "Estoniyada",
+    "ru": "В Эстонии"
+   },
+   "build": {
+    "forms": [
+     "Eesti",
+     "Eesti",
+     "Eestit"
+    ],
+    "on": 1,
+    "from": "Eesti",
+    "end": "s",
+    "makes": "Eestis",
+    "case": {
+     "et": "seesütlev",
+     "en": "in",
+     "az": "harada? (yerlik hal)",
+     "ru": "где? (в + предложный)"
+    }
+   }
+  },
+  {
+   "id": "eesti-keeles",
+   "front": "Eesti keeles",
+   "back": {
+    "en": "In Estonian",
+    "az": "Eston dilində",
+    "ru": "По-эстонски"
+   },
+   "build": {
+    "forms": [
+     "keel",
+     "keele",
+     "keelt"
+    ],
+    "on": 1,
+    "from": "keele",
+    "end": "s",
+    "makes": "keeles",
+    "case": {
+     "et": "seesütlev",
+     "en": "in",
+     "az": "harada? (yerlik hal)",
+     "ru": "где? (в + предложный)"
+    }
+   }
+  },
+  {
+   "id": "puust",
+   "front": "Puust",
+   "back": {
+    "en": "Made of wood",
+    "az": "Taxtadan",
+    "ru": "Из дерева"
+   },
+   "build": {
+    "forms": [
+     "puu",
+     "puu",
+     "puud"
+    ],
+    "on": 1,
+    "from": "puu",
+    "end": "st",
+    "makes": "puust",
+    "case": {
+     "et": "seestütlev",
+     "en": "out of",
+     "az": "haradan? (çıxışlıq hal)",
+     "ru": "откуда? (из + родительный)"
+    }
+   }
+  },
+  {
+   "id": "me-raagime-filmist",
+   "front": "Me räägime filmist",
+   "back": {
+    "en": "We're talking about the film",
+    "az": "Film haqqında danışırıq",
+    "ru": "Мы говорим о фильме"
+   },
+   "build": {
+    "forms": [
+     "film",
+     "filmi",
+     "filmi"
+    ],
+    "on": 1,
+    "from": "filmi",
+    "end": "st",
+    "makes": "filmist",
+    "case": {
+     "et": "seestütlev",
+     "en": "out of",
+     "az": "haradan? (çıxışlıq hal)",
+     "ru": "откуда? (из + родительный)"
+    }
+   }
+  }
+ ]
+}

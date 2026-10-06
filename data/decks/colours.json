@@ -1,0 +1,243 @@
+{
+ "id": "colours",
+ "added": "2026-09-20",
+ "level": "more",
+ "name": {
+  "en": "Colours and patterns",
+  "az": "Rənglər və naxışlar",
+  "ru": "Цвета и узоры"
+ },
+ "why": {
+  "en": "Light blue, dark blue, striped and spotted — the half of a shop word that is not the garment",
+  "az": "Açıq mavi, tünd mavi, zolaqlı və xallı — mağaza sözünün paltar olmayan yarısı",
+  "ru": "Светло-синий, тёмно-синий, в полоску и в горошек — половина магазинного слова, которая не одежда"
+ },
+ "cards": [
+  {
+   "id": "lilla",
+   "front": "Lilla",
+   "back": {
+    "en": "Purple",
+    "az": "Bənövşəyi",
+    "ru": "Фиолетовый"
+   },
+   "forms": [
+    "lilla",
+    "lillat"
+   ]
+  },
+  {
+   "id": "roosa",
+   "front": "Roosa",
+   "back": {
+    "en": "Pink",
+    "az": "Çəhrayı",
+    "ru": "Розовый"
+   },
+   "forms": [
+    "roosa",
+    "roosat"
+   ]
+  },
+  {
+   "id": "oranz",
+   "front": "Oranž",
+   "back": {
+    "en": "Orange",
+    "az": "Narıncı",
+    "ru": "Оранжевый"
+   },
+   "forms": [
+    "oranži",
+    "oranži"
+   ]
+  },
+  {
+   "id": "helesinine",
+   "front": "Helesinine",
+   "back": {
+    "en": "Light blue",
+    "az": "Açıq mavi",
+    "ru": "Светло-синий"
+   },
+   "forms": [
+    "helesinise",
+    "helesinist"
+   ]
+  },
+  {
+   "id": "tumesinine",
+   "front": "Tumesinine",
+   "back": {
+    "en": "Dark blue",
+    "az": "Tünd mavi",
+    "ru": "Тёмно-синий"
+   },
+   "forms": [
+    "tumesinise",
+    "tumesinist"
+   ]
+  },
+  {
+   "id": "helepunane",
+   "front": "Helepunane",
+   "back": {
+    "en": "Light red",
+    "az": "Açıq qırmızı",
+    "ru": "Светло-красный"
+   },
+   "forms": [
+    "helepunase",
+    "helepunast"
+   ]
+  },
+  {
+   "id": "tumepunane",
+   "front": "Tumepunane",
+   "back": {
+    "en": "Dark red",
+    "az": "Tünd qırmızı",
+    "ru": "Тёмно-красный"
+   },
+   "forms": [
+    "tumepunase",
+    "tumepunast"
+   ]
+  },
+  {
+   "id": "helekollane",
+   "front": "Helekollane",
+   "back": {
+    "en": "Light yellow",
+    "az": "Açıq sarı",
+    "ru": "Светло-жёлтый"
+   },
+   "forms": [
+    "helekollase",
+    "helekollast"
+   ]
+  },
+  {
+   "id": "tumekollane",
+   "front": "Tumekollane",
+   "back": {
+    "en": "Dark yellow",
+    "az": "Tünd sarı",
+    "ru": "Тёмно-жёлтый"
+   },
+   "forms": [
+    "tumekollase",
+    "tumekollast"
+   ]
+  },
+  {
+   "id": "kirju",
+   "front": "Kirju",
+   "back": {
+    "en": "Multicoloured",
+    "az": "Rəngbərəng",
+    "ru": "Пёстрый"
+   },
+   "forms": [
+    "kirju",
+    "kirjut"
+   ]
+  },
+  {
+   "id": "lilleline",
+   "front": "Lilleline",
+   "back": {
+    "en": "Flowery",
+    "az": "Güllü",
+    "ru": "В цветочек"
+   },
+   "forms": [
+    "lillelise",
+    "lillelist"
+   ]
+  },
+  {
+   "id": "uhevarviline",
+   "front": "Ühevärviline",
+   "back": {
+    "en": "Monochrome",
+    "az": "Bir rəngli",
+    "ru": "Одноцветный"
+   },
+   "forms": [
+    "ühevärvilise",
+    "ühevärvilist"
+   ]
+  },
+  {
+   "id": "toon",
+   "front": "Toon",
+   "back": {
+    "en": "Shade",
+    "az": "Çalar",
+    "ru": "Тон"
+   },
+   "forms": [
+    "tooni",
+    "tooni"
+   ]
+  },
+  {
+   "id": "samas-toonis",
+   "front": "Samas toonis",
+   "back": {
+    "en": "Of the same shade",
+    "az": "Eyni çalarda",
+    "ru": "В том же тоне"
+   }
+  },
+  {
+   "id": "mis-varvi",
+   "front": "Mis värvi?",
+   "back": {
+    "en": "What colour?",
+    "az": "Nə rəngdə?",
+    "ru": "Какого цвета?"
+   }
+  },
+  {
+   "id": "varvima",
+   "front": "Värvima",
+   "back": {
+    "en": "To paint, to dye",
+    "az": "rəngləmək",
+    "ru": "красить"
+   },
+   "forms": [
+    "värvida",
+    "värvin"
+   ]
+  },
+  {
+   "id": "tumedam",
+   "front": "Tumedam",
+   "back": {
+    "en": "Darker",
+    "az": "Daha tünd",
+    "ru": "Темнее"
+   },
+   "forms": [
+    "tumedama",
+    "tumedamat"
+   ]
+  },
+  {
+   "id": "heledam",
+   "front": "Heledam",
+   "back": {
+    "en": "Lighter",
+    "az": "Daha açıq",
+    "ru": "Светлее"
+   },
+   "forms": [
+    "heledama",
+    "heledamat"
+   ]
+  }
+ ]
+}

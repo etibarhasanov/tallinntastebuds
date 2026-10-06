@@ -1,0 +1,263 @@
+{
+ "id": "cases-surface",
+ "added": "2026-10-06",
+ "deck": "cases-surface-cards",
+ "heading": "cases",
+ "name": {
+  "en": "Onto, on, off",
+  "az": "Üstünə, üstündə, üstündən",
+  "ru": "На, на чём, с чего"
+ },
+ "why": {
+  "en": "Alaleütlev, alalütlev, alaltütlev — cases seven to nine: the top of a thing, people, and having",
+  "az": "Alaleütlev, alalütlev, alaltütlev — yeddincidən doqquzuncuya qədər hallar: bir şeyin üstü, insanlar və sahib olmaq",
+  "ru": "Alaleütlev, alalütlev, alaltütlev — падежи с седьмого по девятый: поверхность, люди и «у меня есть»"
+ },
+ "body": [
+  {
+   "say": {
+    "en": "The same three questions as before — where to, where, where from — answered for the outside of a thing instead of the inside: *lauale*, *laual*, *laualt*. The endings are *-le*, *-l* and *-lt*, on the omastav again. They ask *kellele? kellel? kellelt?* for a person and *millele? millel? millelt?* for a thing.",
+    "az": "Bizdə bir dəst yer halı var və onu hər şey üçün işlədirik: stola, stolda, stoldan. Eston dili isə ikiyə bölür. İçi üçün əvvəlki üç hal, üstü və açıq yer üçün bu üçü: *lauale*, *laual*, *laualt* — stolun üstünə, üstündə, üstündən. Şəkilçilər *-le*, *-l*, *-lt*-dir və yenə omastav formasına qoşulur. Sualları: *kellele? kellel? kellelt?* — kimə? kimdə? kimdən?",
+    "ru": "Это русское «на», только снова без предлога: на стол — *lauale*, на столе — *laual*, со стола — *laualt*. Окончания *-le*, *-l*, *-lt*, опять на omastav. И у этих трёх падежей есть вторая работа, которую русский делает дательным и предлогами «у» и «от»: кому, у кого, от кого."
+   }
+  },
+  {
+   "head": {
+    "en": "Alaleütlev — kellele? millele? — onto, to",
+    "az": "Alaleütlev — kellele? millele? — kimə? nəyin üstünə?",
+    "ru": "Alaleütlev — kellele? millele? — на что? кому?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kellele? millele?",
+       "lauale",
+       "laudadele"
+      ],
+      "means": {
+       "en": "table",
+       "az": "stol",
+       "ru": "стол"
+      }
+     },
+     {
+      "et": [
+       "kellele?",
+       "sõbrale",
+       "sõpradele"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Pane leib lauale.",
+     "en": "Put the bread on the table.",
+     "az": "Çörəyi stolun üstünə qoy.",
+     "ru": "Положи хлеб на стол."
+    },
+    {
+     "et": "Ma kirjutan sõbrale.",
+     "en": "I'm writing to a friend.",
+     "az": "Dosta yazıram.",
+     "ru": "Я пишу другу."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Onto: *Pane tass lauale* — put the cup on the table. And to a person, where English says *to*: *Ma annan raha sõbrale* — I give the money to my friend. *Helista mulle!* — call me!",
+    "az": "Üstünə: *Pane tass lauale* — fincanı stolun üstünə qoy. Və adama, bizim yönlük hal kimi: *Ma annan raha sõbrale* — pulu dosta verirəm. *Helista mulle!* — mənə zəng et! Bizdə şəhərə də, dosta da eyni şəkilçidir; eston dilində adama həmişə *-le* gedir.",
+    "ru": "На что: *Pane tass lauale* — поставь чашку на стол. И кому — это русский дательный: *Ma annan raha sõbrale* — я даю деньги другу. *Helista mulle!* — позвони мне!"
+   }
+  },
+  {
+   "head": {
+    "en": "Alalütlev — kellel? millel? — on, at, and having",
+    "az": "Alalütlev — kellel? millel? — kimdə? nəyin üstündə?",
+    "ru": "Alalütlev — kellel? millel? — на чём? у кого?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kellel? millel?",
+       "laual",
+       "laudadel"
+      ],
+      "means": {
+       "en": "table",
+       "az": "stol",
+       "ru": "стол"
+      }
+     },
+     {
+      "et": [
+       "kellel?",
+       "sõbral",
+       "sõpradel"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Laual on kaks tassi.",
+     "en": "There are two cups on the table.",
+     "az": "Stolun üstündə iki fincan var.",
+     "ru": "На столе две чашки."
+    },
+    {
+     "et": "Sõbral on uus auto.",
+     "en": "My friend has a new car.",
+     "az": "Dostumun yeni maşını var.",
+     "ru": "У друга новая машина."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "On: *Tass on laual* — the cup is on the table. At open places, and at work: *turul* — at the market, *tööl* — at work. On a day: *esmaspäeval* — on Monday, *hommikul* — in the morning. And this is how Estonian says *have*, because in everyday speech it does without the verb: *Mul on auto* — at me is a car, I have a car. *Sõbral on koer* — my friend has a dog.",
+    "az": "Üstündə: *Tass on laual* — fincan stolun üstündədir. Açıq yerdə və işdə: *turul* — bazarda, *tööl* — işdə. Gündə: *esmaspäeval* — bazar ertəsi, *hommikul* — səhər. Və ən maraqlısı: danışıqda eston dili də sahib olmaq felini işlətmir, bizim kimi. Biz məndə var deyirik, onlar *mul on* — söz-söz, məndə var. *Sõbral on koer* — dostun iti var.",
+    "ru": "На чём: *Tass on laual* — чашка на столе. На открытом месте и на работе: *turul* — на рынке, *tööl* — на работе. Во времени: *esmaspäeval* — в понедельник, *hommikul* — утром. И то, что русскому знакомо лучше всех: глагол «иметь» в речи почти не нужен, говорят как по-русски — *Mul on auto*, у меня есть машина, слово в слово «у меня — есть». *Sõbral on koer* — у друга есть собака."
+   }
+  },
+  {
+   "head": {
+    "en": "Alaltütlev — kellelt? millelt? — off, from",
+    "az": "Alaltütlev — kellelt? millelt? — kimdən? nəyin üstündən?",
+    "ru": "Alaltütlev — kellelt? millelt? — с чего? от кого?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kellelt? millelt?",
+       "laualt",
+       "laudadelt"
+      ],
+      "means": {
+       "en": "table",
+       "az": "stol",
+       "ru": "стол"
+      }
+     },
+     {
+      "et": [
+       "kellelt?",
+       "sõbralt",
+       "sõpradelt"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Võta oma tass laualt.",
+     "en": "Take your cup off the table.",
+     "az": "Fincanını stolun üstündən götür.",
+     "ru": "Возьми свою чашку со стола."
+    },
+    {
+     "et": "Ma laenasin raha sõbralt.",
+     "en": "I borrowed money from a friend.",
+     "az": "Dostdan borc pul aldım.",
+     "ru": "Я занял деньги у друга."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Off: *Võta tass laualt* — take the cup off the table. And from a person: *Ma sain kirja sõbralt* — I got a letter from a friend. *Küsi temalt* — ask him, which Estonian thinks of as taking the answer from him. Countries ending in *-maa* go here too: *Ma olen Inglismaalt* — I am from England, *Venemaalt* — from Russia.",
+    "az": "Üstündən: *Võta tass laualt* — fincanı stolun üstündən götür. Və adamdan: *Ma sain kirja sõbralt* — dostdan məktub aldım. *Küsi temalt* — ondan soruş; bizdə də soruşmaq -dan istəyir, eyni məntiq. Adı *-maa* ilə bitən ölkələr də bu halı alır: *Venemaalt* — Rusiyadan, *Inglismaalt* — İngiltərədən.",
+    "ru": "С чего: *Võta tass laualt* — возьми чашку со стола. И от кого: *Ma sain kirja sõbralt* — я получил письмо от друга. *Küsi temalt* — спроси у него: по-эстонски ответ берут «от» человека, как письмо. И страны на *-maa*: *Ma olen Venemaalt* — я из России."
+   }
+  },
+  {
+   "say": {
+    "en": "The deck under this lesson puts things on the table, hands them to people and says who has what. After it come the last five cases, in two short lessons.",
+    "az": "Bu dərsin dəsti əşyaları stola qoyur, adamlara verir və kimdə nə olduğunu deyir. Ondan sonra son beş hal gəlir, iki qısa dərsdə.",
+    "ru": "Колода под этим уроком ставит вещи на стол, отдаёт их людям и говорит, у кого что есть. Дальше последние пять падежей, в двух коротких уроках."
+   }
+  }
+ ]
+}

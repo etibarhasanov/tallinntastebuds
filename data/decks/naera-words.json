@@ -1,0 +1,441 @@
+{
+ "id": "naera-words",
+ "added": "2026-09-29",
+ "name": {
+  "en": "The words of Naera, naera",
+  "az": "Naera, naera mahnısının sözləri",
+  "ru": "Слова из песни Naera, naera"
+ },
+ "why": {
+  "en": "The words from the song the other decks do not have yet, each with its line",
+  "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+  "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+ },
+ "level": "song",
+ "cards": [
+  {
+   "id": "naerma",
+   "front": "Naerma",
+   "back": {
+    "en": "To laugh",
+    "az": "Gülmək",
+    "ru": "Смеяться"
+   },
+   "forms": [
+    "naerda",
+    "naeran"
+   ],
+   "sentence": {
+    "et": "Naera, naera, naerame võidu,",
+    "en": "Laugh, laugh, let's race to laugh —",
+    "az": "Gül, gül, gəl yarışaraq gülək —",
+    "ru": "Смейся, смейся, посмеёмся наперегонки —"
+   }
+  },
+  {
+   "id": "kes",
+   "front": "Kes",
+   "back": {
+    "en": "Who",
+    "az": "Kim",
+    "ru": "Кто"
+   },
+   "forms": [
+    "kelle",
+    "keda"
+   ],
+   "sentence": {
+    "et": "kes naerab paremini…",
+    "en": "who laughs the better…",
+    "az": "kim daha yaxşı gülür…",
+    "ru": "кто посмеётся лучше…"
+   }
+  },
+  {
+   "id": "voidu",
+   "front": "Võidu",
+   "back": {
+    "en": "In a race, competing",
+    "az": "Yarışaraq",
+    "ru": "Наперегонки"
+   },
+   "sentence": {
+    "et": "Naera, naera, naerame võidu,",
+    "en": "Laugh, laugh, let's race to laugh —",
+    "az": "Gül, gül, gəl yarışaraq gülək —",
+    "ru": "Смейся, смейся, посмеёмся наперегонки —"
+   }
+  },
+  {
+   "id": "paremini",
+   "front": "Paremini",
+   "back": {
+    "en": "Better — how it is done",
+    "az": "Daha yaxşı (necə)",
+    "ru": "Лучше (как)"
+   },
+   "sentence": {
+    "et": "kes naerab paremini…",
+    "en": "who laughs the better…",
+    "az": "kim daha yaxşı gülür…",
+    "ru": "кто посмеётся лучше…"
+   }
+  },
+  {
+   "id": "tuline",
+   "front": "Tuline",
+   "back": {
+    "en": "Fiery, burning hot",
+    "az": "Alovlu, odlu",
+    "ru": "Огненный, жаркий"
+   },
+   "forms": [
+    "tulise",
+    "tulist"
+   ],
+   "sentence": {
+    "et": "Läbi tuliste suvede",
+    "en": "Through the fiery summers",
+    "az": "Alovlu yayların içindən",
+    "ru": "Сквозь огненные лета"
+   }
+  },
+  {
+   "id": "talviti",
+   "front": "Talviti",
+   "back": {
+    "en": "In wintertime",
+    "az": "Qışlar, qış vaxtı",
+    "ru": "Зимами"
+   },
+   "sentence": {
+    "et": "ja talviti aremini.",
+    "en": "and, in winter, more shyly.",
+    "az": "qışlar isə daha çəkingən.",
+    "ru": "а зимами — робче."
+   }
+  },
+  {
+   "id": "aremini",
+   "front": "Aremini",
+   "back": {
+    "en": "More timidly",
+    "az": "Daha çəkingən",
+    "ru": "Робче"
+   },
+   "sentence": {
+    "et": "ja talviti aremini.",
+    "en": "and, in winter, more shyly.",
+    "az": "qışlar isə daha çəkingən.",
+    "ru": "а зимами — робче."
+   }
+  },
+  {
+   "id": "julgema",
+   "front": "Julgema",
+   "back": {
+    "en": "To dare",
+    "az": "Cürət etmək",
+    "ru": "Осмеливаться"
+   },
+   "forms": [
+    "julgeda",
+    "julgen"
+   ],
+   "sentence": {
+    "et": "Kui sa julged, saad elust läbi",
+    "en": "If you dare, you get through life",
+    "az": "Cürət etsən, həyatdan keçərsən",
+    "ru": "Если осмелишься, пройдёшь по жизни"
+   }
+  },
+  {
+   "id": "elu",
+   "front": "Elu",
+   "back": {
+    "en": "Life",
+    "az": "Həyat",
+    "ru": "Жизнь"
+   },
+   "forms": [
+    "elu",
+    "elu"
+   ],
+   "sentence": {
+    "et": "Kui sa julged, saad elust läbi",
+    "en": "If you dare, you get through life",
+    "az": "Cürət etsən, həyatdan keçərsən",
+    "ru": "Если осмелишься, пройдёшь по жизни"
+   }
+  },
+  {
+   "id": "pugemata",
+   "front": "Pugemata",
+   "back": {
+    "en": "Without grovelling",
+    "az": "Yaltaqlanmadan",
+    "ru": "Не пресмыкаясь"
+   },
+   "sentence": {
+    "et": "otse ja pugemata.",
+    "en": "straight, and without grovelling.",
+    "az": "düz və yaltaqlanmadan.",
+    "ru": "прямо и не пресмыкаясь."
+   }
+  },
+  {
+   "id": "kalender",
+   "front": "Kalender",
+   "back": {
+    "en": "Calendar",
+    "az": "Təqvim",
+    "ru": "Календарь"
+   },
+   "forms": [
+    "kalendri",
+    "kalendrit"
+   ],
+   "sentence": {
+    "et": "Päevad kõik on kalendris kinni.",
+    "en": "The days are all shut in the calendar.",
+    "az": "Günlərin hamısı təqvimdə bağlıdır.",
+    "ru": "Все дни заперты в календаре."
+   }
+  },
+  {
+   "id": "lugemata",
+   "front": "Lugemata",
+   "back": {
+    "en": "Uncounted, unread",
+    "az": "Sayılmamış, oxunmamış",
+    "ru": "Несчитанный, непрочитанный"
+   },
+   "sentence": {
+    "et": "Kinni ja lugemata.",
+    "en": "Shut, and uncounted.",
+    "az": "Bağlı və sayılmamış.",
+    "ru": "Заперты и не сосчитаны."
+   }
+  },
+  {
+   "id": "veresoon",
+   "front": "Veresoon",
+   "back": {
+    "en": "Blood vessel, vein",
+    "az": "Qan damarı",
+    "ru": "Кровеносный сосуд, жила"
+   },
+   "forms": [
+    "veresoone",
+    "veresoont"
+   ],
+   "sentence": {
+    "et": "Sinu sinistes veresoontes",
+    "en": "In your blue veins",
+    "az": "Sənin mavi damarlarında",
+    "ru": "В твоих синих жилах"
+   }
+  },
+  {
+   "id": "pesitsema",
+   "front": "Pesitsema",
+   "back": {
+    "en": "To nest, to dwell",
+    "az": "Yuva qurmaq, məskən salmaq",
+    "ru": "Гнездиться, обитать"
+   },
+   "forms": [
+    "pesitseda",
+    "pesitsen"
+   ],
+   "sentence": {
+    "et": "pesitseb põliskevad.",
+    "en": "an age-old spring is nesting.",
+    "az": "əzəli bir bahar yuva qurub.",
+    "ru": "гнездится извечная весна."
+   }
+  },
+  {
+   "id": "poline",
+   "front": "Põline",
+   "back": {
+    "en": "Age-old, native",
+    "az": "Əzəli, qədim",
+    "ru": "Исконный, извечный"
+   },
+   "forms": [
+    "põlise",
+    "põlist"
+   ],
+   "sentence": {
+    "et": "pesitseb põliskevad.",
+    "en": "an age-old spring is nesting.",
+    "az": "əzəli bir bahar yuva qurub.",
+    "ru": "гнездится извечная весна."
+   }
+  },
+  {
+   "id": "kont",
+   "front": "Kont",
+   "back": {
+    "en": "Bone",
+    "az": "Sümük",
+    "ru": "Кость"
+   },
+   "forms": [
+    "kondi",
+    "konti"
+   ],
+   "sentence": {
+    "et": "Minu kondid on kuusepuised,",
+    "en": "My bones are made of spruce,",
+    "az": "Mənim sümüklərim küknar ağacındandır,",
+    "ru": "Мои кости — еловые,"
+   }
+  },
+  {
+   "id": "kuusepuine",
+   "front": "Kuusepuine",
+   "back": {
+    "en": "Made of spruce",
+    "az": "Küknar ağacından",
+    "ru": "Еловый"
+   },
+   "forms": [
+    "kuusepuise",
+    "kuusepuist"
+   ],
+   "sentence": {
+    "et": "Minu kondid on kuusepuised,",
+    "en": "My bones are made of spruce,",
+    "az": "Mənim sümüklərim küknar ağacındandır,",
+    "ru": "Мои кости — еловые,"
+   }
+  },
+  {
+   "id": "kolisema",
+   "front": "Kõlisema",
+   "back": {
+    "en": "To ring, to clink",
+    "az": "Cingildəmək",
+    "ru": "Звенеть"
+   },
+   "forms": [
+    "kõliseda",
+    "kõlisen"
+   ],
+   "sentence": {
+    "et": "valged ja kõlisevad.",
+    "en": "white, and they ring.",
+    "az": "ağdır və cingildəyir.",
+    "ru": "белые и звенящие."
+   }
+  },
+  {
+   "id": "suislepp",
+   "front": "Suislepp",
+   "back": {
+    "en": "Suislepp, an Estonian summer apple",
+    "az": "Suislepp, Estoniya yay alması",
+    "ru": "Суйслепп, эстонское летнее яблоко"
+   },
+   "forms": [
+    "suislepa",
+    "suisleppa"
+   ],
+   "sentence": {
+    "et": "suislepp see veretabki.",
+    "en": "and the suislepp apple even turns blood-red.",
+    "az": "suislepp alması isə qan kimi qızarır.",
+    "ru": "а суйслепп даже наливается алым."
+   }
+  },
+  {
+   "id": "veretama",
+   "front": "Veretama",
+   "back": {
+    "en": "To turn blood-red",
+    "az": "Qan kimi qızarmaq",
+    "ru": "Наливаться алым"
+   },
+   "forms": [
+    "veretada",
+    "veretan"
+   ],
+   "sentence": {
+    "et": "suislepp see veretabki.",
+    "en": "and the suislepp apple even turns blood-red.",
+    "az": "suislepp alması isə qan kimi qızarır.",
+    "ru": "а суйслепп даже наливается алым."
+   }
+  },
+  {
+   "id": "hulkuma",
+   "front": "Hulkuma",
+   "back": {
+    "en": "To wander, to roam",
+    "az": "Dolaşmaq, sərgərdan gəzmək",
+    "ru": "Бродить, скитаться"
+   },
+   "forms": [
+    "hulkuda",
+    "hulgun"
+   ],
+   "sentence": {
+    "et": "Armastus hulgub ilma mööda.",
+    "en": "Love wanders about the world.",
+    "az": "Məhəbbət dünyanı dolaşır.",
+    "ru": "Любовь бродит по свету."
+   }
+  },
+  {
+   "id": "mooda",
+   "front": "Mööda",
+   "back": {
+    "en": "Along, about",
+    "az": "Boyunca",
+    "ru": "По, вдоль"
+   },
+   "sentence": {
+    "et": "Armastus hulgub ilma mööda.",
+    "en": "Love wanders about the world.",
+    "az": "Məhəbbət dünyanı dolaşır.",
+    "ru": "Любовь бродит по свету."
+   }
+  },
+  {
+   "id": "kattpidi",
+   "front": "Kättpidi",
+   "back": {
+    "en": "By the hand",
+    "az": "Əlindən tutaraq",
+    "ru": "За руку"
+   },
+   "sentence": {
+    "et": "Kättpidi teretabki.",
+    "en": "It even greets you by the hand.",
+    "az": "Hətta əlindən tutub salamlaşır.",
+    "ru": "И даже здоровается за руку."
+   }
+  },
+  {
+   "id": "teretama",
+   "front": "Teretama",
+   "back": {
+    "en": "To greet",
+    "az": "Salamlaşmaq",
+    "ru": "Здороваться"
+   },
+   "forms": [
+    "teretada",
+    "teretan"
+   ],
+   "sentence": {
+    "et": "Kättpidi teretabki.",
+    "en": "It even greets you by the hand.",
+    "az": "Hətta əlindən tutub salamlaşır.",
+    "ru": "И даже здоровается за руку."
+   }
+  }
+ ]
+}

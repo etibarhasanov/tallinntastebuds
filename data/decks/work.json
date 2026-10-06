@@ -1,0 +1,722 @@
+{
+ "id": "work",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Work and paperwork",
+  "az": "İş və sənədlər",
+  "ru": "Работа и бумаги"
+ },
+ "why": {
+  "en": "The words on a contract, at a counter, and in an email",
+  "az": "Müqavilədəki, pəncərə arxasındakı və e-məktubdakı sözlər",
+  "ru": "Слова из договора, из окошка в учреждении и из письма"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "palk",
+   "front": "Palk",
+   "back": {
+    "en": "Salary",
+    "az": "Əmək haqqı",
+    "ru": "Зарплата"
+   },
+   "forms": [
+    "palga",
+    "palka"
+   ],
+   "sentence": {
+    "et": "Palk on iga kuu.",
+    "en": "The salary comes every month.",
+    "az": "Əmək haqqı hər ay gəlir.",
+    "ru": "Зарплата приходит каждый месяц."
+   }
+  },
+  {
+   "id": "leping",
+   "front": "Leping",
+   "back": {
+    "en": "Contract",
+    "az": "Müqavilə",
+    "ru": "Договор"
+   },
+   "forms": [
+    "lepingu",
+    "lepingut"
+   ],
+   "sentence": {
+    "et": "Ma allkirjastasin lepingu.",
+    "en": "I signed the contract.",
+    "az": "Müqaviləni imzaladım.",
+    "ru": "Я подписал договор."
+   }
+  },
+  {
+   "id": "dokument",
+   "front": "Dokument",
+   "back": {
+    "en": "Document",
+    "az": "Sənəd",
+    "ru": "Документ"
+   },
+   "forms": [
+    "dokumendi",
+    "dokumenti"
+   ],
+   "sentence": {
+    "et": "Võtke dokument kaasa.",
+    "en": "Bring the document with you.",
+    "az": "Sənədi özünüzlə götürün.",
+    "ru": "Возьмите документ с собой."
+   }
+  },
+  {
+   "id": "allkiri",
+   "front": "Allkiri",
+   "back": {
+    "en": "Signature",
+    "az": "İmza",
+    "ru": "Подпись"
+   },
+   "forms": [
+    "allkirja",
+    "allkirja"
+   ],
+   "sentence": {
+    "et": "Siia on vaja allkirja.",
+    "en": "A signature is needed here.",
+    "az": "Buraya imza lazımdır.",
+    "ru": "Здесь нужна подпись."
+   }
+  },
+  {
+   "id": "koosolek",
+   "front": "Koosolek",
+   "back": {
+    "en": "Meeting",
+    "az": "İclas",
+    "ru": "Совещание"
+   },
+   "forms": [
+    "koosoleku",
+    "koosolekut"
+   ],
+   "sentence": {
+    "et": "Koosolek algab kell üks.",
+    "en": "The meeting starts at one.",
+    "az": "İclas saat birdə başlayır.",
+    "ru": "Совещание начинается в час."
+   }
+  },
+  {
+   "id": "tahtaeg",
+   "front": "Tähtaeg",
+   "back": {
+    "en": "Deadline",
+    "az": "Son tarix",
+    "ru": "Срок"
+   },
+   "forms": [
+    "tähtaja",
+    "tähtaega"
+   ],
+   "sentence": {
+    "et": "Tähtaeg on homme.",
+    "en": "The deadline is tomorrow.",
+    "az": "Son tarix sabahdır.",
+    "ru": "Срок — завтра."
+   }
+  },
+  {
+   "id": "maks",
+   "front": "Maks",
+   "back": {
+    "en": "Tax",
+    "az": "Vergi",
+    "ru": "Налог"
+   },
+   "forms": [
+    "maksu",
+    "maksu"
+   ],
+   "sentence": {
+    "et": "Maksud on juba makstud.",
+    "en": "The taxes are already paid.",
+    "az": "Vergilər artıq ödənib.",
+    "ru": "Налоги уже уплачены."
+   }
+  },
+  {
+   "id": "pank",
+   "front": "Pank",
+   "back": {
+    "en": "Bank",
+    "az": "Bank",
+    "ru": "Банк"
+   },
+   "forms": [
+    "panga",
+    "panka"
+   ],
+   "sentence": {
+    "et": "Pank on suletud.",
+    "en": "The bank is closed.",
+    "az": "Bank bağlıdır.",
+    "ru": "Банк закрыт."
+   }
+  },
+  {
+   "id": "konto",
+   "front": "Konto",
+   "back": {
+    "en": "Account",
+    "az": "Hesab",
+    "ru": "Счёт"
+   },
+   "forms": [
+    "konto",
+    "kontot"
+   ],
+   "sentence": {
+    "et": "Mul on Eesti pangakonto.",
+    "en": "I have an Estonian bank account.",
+    "az": "Estoniyada bank hesabım var.",
+    "ru": "У меня есть эстонский банковский счёт."
+   }
+  },
+  {
+   "id": "elamisluba",
+   "front": "Elamisluba",
+   "back": {
+    "en": "Residence permit",
+    "az": "Yaşayış icazəsi",
+    "ru": "Разрешение на жительство"
+   },
+   "forms": [
+    "elamisloa",
+    "elamisluba"
+   ],
+   "sentence": {
+    "et": "Ma ootan elamisluba.",
+    "en": "I am waiting for a residence permit.",
+    "az": "Yaşayış icazəsini gözləyirəm.",
+    "ru": "Я жду разрешение на жительство."
+   }
+  },
+  {
+   "id": "ulekanne",
+   "front": "Ülekanne",
+   "back": {
+    "en": "Bank transfer",
+    "az": "Bank köçürməsi",
+    "ru": "Банковский перевод"
+   },
+   "forms": [
+    "ülekande",
+    "ülekannet"
+   ],
+   "sentence": {
+    "et": "Ülekanne jõuab homme.",
+    "en": "The transfer arrives tomorrow.",
+    "az": "Köçürmə sabah çatır.",
+    "ru": "Перевод придёт завтра."
+   }
+  },
+  {
+   "id": "tooandja",
+   "front": "Tööandja",
+   "back": {
+    "en": "Employer",
+    "az": "İşəgötürən",
+    "ru": "Работодатель"
+   },
+   "forms": [
+    "tööandja",
+    "tööandjat"
+   ],
+   "sentence": {
+    "et": "Minu tööandja on väike firma.",
+    "en": "My employer is a small company.",
+    "az": "İşəgötürənim kiçik şirkətdir.",
+    "ru": "Мой работодатель — небольшая фирма."
+   }
+  },
+  {
+   "id": "ametnik",
+   "front": "Ametnik",
+   "back": {
+    "en": "Official, clerk",
+    "az": "Məmur",
+    "ru": "Чиновник"
+   },
+   "forms": [
+    "ametniku",
+    "ametnikku"
+   ],
+   "sentence": {
+    "et": "Ametnik küsis passi.",
+    "en": "The clerk asked for a passport.",
+    "az": "Məmur pasport istədi.",
+    "ru": "Чиновник попросил паспорт."
+   }
+  },
+  {
+   "id": "avaldus",
+   "front": "Avaldus",
+   "back": {
+    "en": "Application",
+    "az": "Müraciət",
+    "ru": "Заявление"
+   },
+   "forms": [
+    "avalduse",
+    "avaldust"
+   ],
+   "sentence": {
+    "et": "Ma esitasin avalduse.",
+    "en": "I submitted the application.",
+    "az": "Müraciət təqdim etdim.",
+    "ru": "Я подал заявление."
+   }
+  },
+  {
+   "id": "toend",
+   "front": "Tõend",
+   "back": {
+    "en": "Certificate",
+    "az": "Arayış",
+    "ru": "Справка"
+   },
+   "forms": [
+    "tõendi",
+    "tõendit"
+   ],
+   "sentence": {
+    "et": "Mul on vaja tõendit.",
+    "en": "I need a certificate.",
+    "az": "Mənə arayış lazımdır.",
+    "ru": "Мне нужна справка."
+   }
+  },
+  {
+   "id": "number",
+   "front": "Number",
+   "back": {
+    "en": "Number",
+    "az": "Nömrə",
+    "ru": "Номер"
+   },
+   "forms": [
+    "numbri",
+    "numbrit"
+   ],
+   "sentence": {
+    "et": "Mis on sinu number?",
+    "en": "What is your number?",
+    "az": "Nömrən nədir?",
+    "ru": "Какой у тебя номер?"
+   }
+  },
+  {
+   "id": "telefon",
+   "front": "Telefon",
+   "back": {
+    "en": "Telephone",
+    "az": "Telefon",
+    "ru": "Телефон"
+   },
+   "forms": [
+    "telefoni",
+    "telefoni"
+   ],
+   "sentence": {
+    "et": "Mis on teie telefoni number?",
+    "en": "What is your telephone number?",
+    "az": "Telefon nömrəniz nədir?",
+    "ru": "Какой у вас номер телефона?"
+   }
+  },
+  {
+   "id": "cv",
+   "front": "CV",
+   "back": {
+    "en": "CV",
+    "az": "CV",
+    "ru": "Резюме"
+   },
+   "forms": [
+    "CV",
+    "CV-d"
+   ]
+  },
+  {
+   "id": "motivatsioonikiri",
+   "front": "Motivatsioonikiri",
+   "back": {
+    "en": "Cover letter",
+    "az": "Motivasiya məktubu",
+    "ru": "Мотивационное письмо"
+   },
+   "forms": [
+    "motivatsioonikirja",
+    "motivatsioonikirja"
+   ]
+  },
+  {
+   "id": "tookuulutus",
+   "front": "Töökuulutus",
+   "back": {
+    "en": "Job advertisement",
+    "az": "İş elanı",
+    "ru": "Объявление о работе"
+   },
+   "forms": [
+    "töökuulutuse",
+    "töökuulutust"
+   ]
+  },
+  {
+   "id": "tookoht",
+   "front": "Töökoht",
+   "back": {
+    "en": "Position, workplace",
+    "az": "İş yeri",
+    "ru": "Рабочее место"
+   },
+   "forms": [
+    "töökoha",
+    "töökohta"
+   ]
+  },
+  {
+   "id": "tookogemus",
+   "front": "Töökogemus",
+   "back": {
+    "en": "Work experience",
+    "az": "İş təcrübəsi",
+    "ru": "Опыт работы"
+   },
+   "forms": [
+    "töökogemuse",
+    "töökogemust"
+   ]
+  },
+  {
+   "id": "toointervjuu",
+   "front": "Tööintervjuu",
+   "back": {
+    "en": "Job interview",
+    "az": "İş müsahibəsi",
+    "ru": "Собеседование"
+   },
+   "forms": [
+    "tööintervjuu",
+    "tööintervjuud"
+   ]
+  },
+  {
+   "id": "koolitus",
+   "front": "Koolitus",
+   "back": {
+    "en": "Training",
+    "az": "Təlim",
+    "ru": "Обучение"
+   },
+   "forms": [
+    "koolituse",
+    "koolitust"
+   ]
+  },
+  {
+   "id": "katseaeg",
+   "front": "Katseaeg",
+   "back": {
+    "en": "Probationary period",
+    "az": "Sınaq müddəti",
+    "ru": "Испытательный срок"
+   },
+   "forms": [
+    "katseaja",
+    "katseaega"
+   ]
+  },
+  {
+   "id": "palgapaev",
+   "front": "Palgapäev",
+   "back": {
+    "en": "Payday",
+    "az": "Maaş günü",
+    "ru": "День зарплаты"
+   },
+   "forms": [
+    "palgapäeva",
+    "palgapäeva"
+   ]
+  },
+  {
+   "id": "toopaev",
+   "front": "Tööpäev",
+   "back": {
+    "en": "Working day",
+    "az": "İş günü",
+    "ru": "Рабочий день"
+   },
+   "forms": [
+    "tööpäeva",
+    "tööpäeva"
+   ]
+  },
+  {
+   "id": "tooreis",
+   "front": "Tööreis",
+   "back": {
+    "en": "Business trip",
+    "az": "Ezamiyyət",
+    "ru": "Командировка"
+   },
+   "forms": [
+    "tööreisi",
+    "tööreisi"
+   ]
+  },
+  {
+   "id": "graafik",
+   "front": "Graafik",
+   "back": {
+    "en": "Rota, schedule",
+    "az": "Qrafik",
+    "ru": "График"
+   },
+   "forms": [
+    "graafiku",
+    "graafikut"
+   ]
+  },
+  {
+   "id": "tingimus",
+   "front": "Tingimus",
+   "back": {
+    "en": "Condition",
+    "az": "Şərt",
+    "ru": "Условие"
+   },
+   "forms": [
+    "tingimuse",
+    "tingimust"
+   ]
+  },
+  {
+   "id": "vahetustega",
+   "front": "Vahetustega",
+   "back": {
+    "en": "In shifts",
+    "az": "Növbə ilə",
+    "ru": "По сменам"
+   }
+  },
+  {
+   "id": "aktsiaselts",
+   "front": "Aktsiaselts",
+   "back": {
+    "en": "Public limited company",
+    "az": "Səhmdar cəmiyyəti",
+    "ru": "Акционерное общество"
+   },
+   "forms": [
+    "aktsiaseltsi",
+    "aktsiaseltsi"
+   ]
+  },
+  {
+   "id": "osauhing",
+   "front": "Osaühing",
+   "back": {
+    "en": "Private limited company",
+    "az": "MMC",
+    "ru": "ООО"
+   },
+   "forms": [
+    "osaühingu",
+    "osaühingut"
+   ]
+  },
+  {
+   "id": "suitsetamine-keelatud",
+   "front": "Suitsetamine keelatud",
+   "back": {
+    "en": "No smoking",
+    "az": "Siqaret çəkmək qadağandır",
+    "ru": "Курение запрещено"
+   }
+  },
+  {
+   "id": "visiitkaart",
+   "front": "Visiitkaart",
+   "back": {
+    "en": "Business card",
+    "az": "Vizit kartı",
+    "ru": "Визитка"
+   },
+   "forms": [
+    "visiitkaardi",
+    "visiitkaarti"
+   ]
+  },
+  {
+   "id": "lisainfo",
+   "front": "Lisainfo",
+   "back": {
+    "en": "Additional information",
+    "az": "Əlavə məlumat",
+    "ru": "Дополнительная информация"
+   },
+   "forms": [
+    "lisainfo",
+    "lisainfot"
+   ]
+  },
+  {
+   "id": "kasutajanimi",
+   "front": "Kasutajanimi",
+   "back": {
+    "en": "User name",
+    "az": "İstifadəçi adı",
+    "ru": "Имя пользователя"
+   },
+   "forms": [
+    "kasutajanime",
+    "kasutajanime"
+   ]
+  },
+  {
+   "id": "profiil",
+   "front": "Profiil",
+   "back": {
+    "en": "Profile",
+    "az": "Profil",
+    "ru": "Профиль"
+   },
+   "forms": [
+    "profiili",
+    "profiili"
+   ]
+  },
+  {
+   "id": "programm",
+   "front": "Programm",
+   "back": {
+    "en": "Programme",
+    "az": "Proqram",
+    "ru": "Программа"
+   },
+   "forms": [
+    "programmi",
+    "programmi"
+   ]
+  },
+  {
+   "id": "masin",
+   "front": "Masin",
+   "back": {
+    "en": "Machine",
+    "az": "Maşın",
+    "ru": "Машина"
+   },
+   "forms": [
+    "masina",
+    "masinat"
+   ]
+  },
+  {
+   "id": "vabrik",
+   "front": "Vabrik",
+   "back": {
+    "en": "Factory",
+    "az": "Fabrik",
+    "ru": "Фабрика"
+   },
+   "forms": [
+    "vabriku",
+    "vabrikut"
+   ]
+  },
+  {
+   "id": "kontor",
+   "front": "Kontor",
+   "back": {
+    "en": "Office",
+    "az": "Ofis",
+    "ru": "Офис"
+   },
+   "forms": [
+    "kontori",
+    "kontorit"
+   ]
+  },
+  {
+   "id": "ankeet",
+   "front": "Ankeet",
+   "back": {
+    "en": "Form, questionnaire",
+    "az": "Anket",
+    "ru": "Анкета"
+   },
+   "forms": [
+    "ankeedi",
+    "ankeeti"
+   ]
+  },
+  {
+   "id": "intervjuu",
+   "front": "Intervjuu",
+   "back": {
+    "en": "Interview",
+    "az": "Müsahibə",
+    "ru": "Интервью"
+   },
+   "forms": [
+    "intervjuu",
+    "intervjuud"
+   ]
+  },
+  {
+   "id": "kodakondsus",
+   "front": "Kodakondsus",
+   "back": {
+    "en": "Citizenship",
+    "az": "Vətəndaşlıq",
+    "ru": "Гражданство"
+   },
+   "forms": [
+    "kodakondsuse",
+    "kodakondsust"
+   ]
+  },
+  {
+   "id": "ehitus",
+   "front": "Ehitus",
+   "back": {
+    "en": "Construction, building site",
+    "az": "Tikinti",
+    "ru": "Строительство"
+   },
+   "forms": [
+    "ehituse",
+    "ehitust"
+   ]
+  },
+  {
+   "id": "kone",
+   "front": "Kõne",
+   "back": {
+    "en": "Call, speech",
+    "az": "Zəng, nitq",
+    "ru": "Разговор, речь"
+   },
+   "forms": [
+    "kõne",
+    "kõnet"
+   ]
+  }
+ ]
+}
