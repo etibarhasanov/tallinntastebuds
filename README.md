@@ -8338,8 +8338,10 @@ The page also answers at **`/split`** on every host, and that is not a
 fallback — it is where the page actually lives. A preview deployment is
 `<branch>.tallinntastebuds.pages.dev`, and no subdomain of the live domain can
 exist under it, so a feature that only answered on the subdomain could never be
-looked at on a pull request. The rewrite on the subdomain's root is one line of
-convenience over the real route.
+looked at on a pull request. The subdomain's root is one call to that route —
+not a rewrite, which hands the request to the static file and never to the
+route, and unfurled every group's link as the site's name for as long as it
+was one.
 
 ### The name
 
@@ -9261,11 +9263,14 @@ left is the markup's own English and whatever `functions/flashcard.js` wrote
 into the page as text — the decks as a list of links, or a deck's words — which
 reads and works, and the map is one press away in the header.
 
-**The other pages still fetch the file.** This is the pattern for them, not a
-change to them: the map, the lists, the account page and splitwise each boot
-the same way this page did, and each would drop 75 KB from its first load the
-same way. That is a change to `assets/app.js` and three others, and it was
-deliberately not made in the change that made this page fast.
+**The other pages went the other way.** This was offered as the pattern for
+them, and was deliberately not made in the change that made this page fast.
+They were cut down later by a different road: the map, the lists, the account
+page and splitwise each fetch one language's file out of `data/lang/` —
+splitwise its own `data/split.json` beside it — which sheds most of the same
+weight without a route of their own. **One language at a time** under
+**Languages** is that change; this page still asks for nothing but its route,
+and `wordsFor()` reads the same file for it.
 
 ### Signed out, five words to a tab
 
@@ -12873,8 +12878,9 @@ changed it, and this is the opposite — the ranking is read on a page of its
 own by somebody who is not the person whose press moved it. So the page is at
 most five minutes stale, which is the honest reading of "lately", and each
 colo asks D1 twelve times an hour per language however many people open it.
-The cache is keyed on the route and the chosen language alone, so the ten
-candidate lists a browser might send collapse to at most ten keys.
+The cache is keyed on the route, the chosen language and the device alone, so
+whatever candidate lists browsers send collapse to forty keys at most — one
+per language and device, the whole site's included.
 
 ### The bottom of the ranking is not a verdict
 

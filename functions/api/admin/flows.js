@@ -18,12 +18,14 @@
  * It is ./visitors.js's shape: the colo holds each answer for five minutes,
  * keyed on the diagram, the range and the device alone, and the browser is told
  * `private, no-store` whatever the colo's copy says. It carries no words —
- * the page already has data/ui.json and data/flows.json open to draw the
- * diagram — so the language is not in the key.
+ * the page already has its language's file out of data/lang/ and
+ * data/flows.json open to draw the diagram — so the language is not in the
+ * key.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
- * A diagram that does not exist is a 404. Everything else is `ready: false`
+ * A diagram that does not exist is a 404, and a data/flows.json that cannot
+ * be read at all is a 503, `no-diagrams`. Everything else is `ready: false`
  * and no numbers, 200 — no database, the other environment's, or
  * flow_counts not applied yet — and the page says the numbers are not in
  * yet under the diagram it has already drawn.

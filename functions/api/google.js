@@ -31,6 +31,15 @@
  * is a navigation, so what a browser gets is a page, and the page is the one
  * they were standing on.
  *
+ * AND WHEN IT IS OFF
+ *
+ * Without a usable GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET — googleReady()
+ * in ./_google.js, both halves or neither — /api/account answers
+ * `google: false` and every sheet draws the username and password alone, so
+ * nothing sends anybody here. A request that arrives anyway, hand-typed or
+ * from a page that loaded before the bindings went, is sent home with nothing
+ * said; so is one with no database behind it.
+ *
  * WHY A SIGN-IN CANNOT QUIETLY BECOME A LINK
  *
  * The intent is decided on the way *out*, from whether the request carried a

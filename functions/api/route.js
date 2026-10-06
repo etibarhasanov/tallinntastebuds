@@ -3,6 +3,8 @@
  *
  * GET /api/route?from=59.4370,24.7536&to=59.4389,24.7291[&mode=foot|car|bus]
  *
+ *   mode is foot when it is left out.
+ *
  *   foot, car → { "meters": 1830, "seconds": 1320,
  *                 "line": [ [59.4370, 24.7536], … ] }
  *
@@ -42,7 +44,8 @@
  * street are one upstream request and a route that starts on the wrong side of
  * the road by a metre is not a different one. A walk or a drive is cached a
  * day, since streets do not move; a bus journey a minute, since it leaves at
- * a time and the time goes.
+ * a time and the time goes. The browser is told to keep a walk or a drive for
+ * an hour and a bus journey for the same minute.
  *
  * NO SESSION, AND WHY THAT IS FINE
  *
@@ -54,6 +57,12 @@
  * never stored and never counted.
  *
  * WHEN IT FAILS
+ *
+ * Every refusal is one word: 400 `bad-points` for an end that is not two
+ * numbers inside the box, 400 `bad-mode`, 404 `no-route` where the upstream
+ * found none — for a bus, none with a ride in it — 422 `too-far` for a walk
+ * past MAX_WALK, 429 `busy` when an upstream says it is, and 502 `upstream`
+ * for anything else it answered, or failed to.
  *
  * Nothing waits on it. The page keeps the panel it had, says there is no
  * route for that mode, and the other two tabs and the Google link in the same
