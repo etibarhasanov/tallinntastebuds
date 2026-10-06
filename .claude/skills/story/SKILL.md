@@ -153,7 +153,9 @@ story whose window has ended:
 
 - a **photo with a `spot`** is renamed into `photos/<spot>/NN.<ext>`, numbered
   past the highest already there, listed on the place in
-  `data/restaurants.json`, and its entry is **removed**;
+  `data/restaurants.json` and in `data/map.json` — the tick rewrites the
+  map's copy through `tools/languages.mjs`, since the validator it runs
+  before pushing holds the two together — and its entry is **removed**;
 - a **video with a `spot`** sends its poster the same way, drops the `poster`
   key, and is switched to `live: false` — the video stays in `stories/`,
   because deleting somebody's film is a person's decision;
@@ -230,3 +232,10 @@ device a direct edit of `data/stories.json` on the default branch.
 - A replaced file under the same name: `/stories/*` is cached for a week, so
   anyone who saw the old one keeps seeing it. New content is a new name.
 - The cron silently stopped after two quiet months.
+- A file generated from `data/restaurants.json` that the tick did not
+  rewrite. The day after the map started reading `data/map.json`, the tick
+  filed a photograph on its place, left the map's copy behind, and the
+  validator it runs before pushing refused its own commit three hours
+  running — the picture filed, nothing pushed, and the story still live in
+  OVER. The tick calls `tools/languages.mjs` itself now; anything else that
+  comes to be generated from the places file joins it in `tick()`.

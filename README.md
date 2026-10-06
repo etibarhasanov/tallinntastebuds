@@ -11592,9 +11592,12 @@ what happens **once the 36 hours are over**, which is the part a person
 forgets:
 
 - A **photograph with a `spot`** moves into `photos/<spot>/`, numbered like
-  every other photo there, and is listed on the place. The entry and the file
-  in `stories/` go with it. The story expires; the picture becomes one of that
-  restaurant's photos, and is in the lightbox from then on.
+  every other photo there, and is listed on the place — in
+  `data/restaurants.json`, and in `data/map.json`, the copy of it the map
+  reads, which the tick rewrites through `tools/languages.mjs` so that the
+  validator it runs before pushing finds the two agreeing. The entry and the
+  file in `stories/` go with it. The story expires; the picture becomes one of
+  that restaurant's photos, and is in the lightbox from then on.
 - A **video with a `spot`** sends its **poster frame** the same way. The still
   is a photograph of that place too — the frame the story opened on — and it
   is the part of a video a lightbox can keep. The entry is then switched to
