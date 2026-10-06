@@ -384,28 +384,24 @@ say, and what the owner applies by hand on landing.
 
 ## The pull request
 
-The `/site` and `/api` sequences, which agree, with this area's particulars:
+**The pull request** in `CLAUDE.md` is the sequence, the `/site` and `/api`
+particulars apply, and this area adds:
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/stamp.mjs` if anything in `assets/` moved; `node
-   tools/flows.mjs` if `data/flows.json` did.
-3. `node tools/validate.mjs` — it holds every `track.js` page to `PAGES`
-   and every flow signal to a page or a press — and `node
-   tools/functions-check.mjs`, because the admin routes import constants
-   from `stats.js` and `_visitors.js` and a renamed export takes every
-   route down.
-4. Driven as above: a count made as a visitor, the row read back, the
-   figure found on the owner's page, at 390 px as well.
-5. The README `###`, the file header, the schema comment, the **Analytics**
-   row, the `/api` route-table row: whichever the change made wrong.
-6. One commit; `git push -u origin <branch>`.
-7. The PR body says what is counted now, what was driven and how, and
-   **the exact statement the owner runs against production** if a table
-   or column arrived — and says that until it is run the page shows
-   `ready: false`, which is the designed state and not a failure.
-8. CI green, **Rebase and merge**, leave the branch. Then the message
-   opens with where it stands, and a schema to apply is the second state
-   in **Say where it stands** in `CLAUDE.md`, not the first.
+- `node tools/flows.mjs` if `data/flows.json` moved, beside the stamper.
+- The validator holds every `track.js` page to `PAGES` and every flow signal
+  to a page or a press; `node tools/functions-check.mjs` matters here because
+  the admin routes import constants from `stats.js` and `_visitors.js`, and a
+  renamed export takes every route down.
+- Driven as **Driving it** above says: a count made as a visitor, the row
+  read back, the figure found on the owner's page, at 390 px as well.
+- The README `###`, the file header, the schema comment, the **Analytics**
+  row and the `/api` route-table row: whichever the change made wrong.
+- The body says what is counted now, what was driven and how, and **the exact
+  statement the owner runs against production** if a table or column arrived
+  — and that until it is run the page shows `ready: false`, which is the
+  designed state and not a failure. A schema to apply makes the closing
+  message the second state in **Say where it stands** in `CLAUDE.md`, not
+  the first.
 
 ## Where it goes wrong
 

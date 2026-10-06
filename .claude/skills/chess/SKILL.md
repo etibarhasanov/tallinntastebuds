@@ -356,38 +356,34 @@ the page draws the legal moves the answer carries.
 
 ## How a task is done
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase
-   origin/claude/tallinn-tastebuds-map-nzoqx0`, and read `CLAUDE.md`, the
-   `/site` skill and the `/api` skill — every task here touches both.
-2. Read `TASKS.md` and take the first task whose box is `- [ ]`. Read its
+**The pull request** in `CLAUDE.md` is the landing sequence, and the `/site`
+and `/api` skills' particulars apply, since every task here touches both.
+What this process adds:
+
+1. Read `TASKS.md` and take the first task whose box is `- [ ]`. Read its
    whole entry, then the README sections and the files it names. Look at
    `mockup.html` for the states it builds: `python3 -m http.server 8000` from
    the repo root and open `/.claude/skills/chess/mockup.html?state=…&style=…`,
    or draw it with `shoot.mjs` beside it, which drives headless Chromium over
    its own protocol with nothing to install.
-3. Do that task and only that task. If doing it shows the task was cut wrong —
+2. Do that task and only that task. If doing it shows the task was cut wrong —
    a step missing, a decision this file got wrong — change `TASKS.md` and this
    file in the same pull request and say so in its body. Do not start the next
    task in the same PR, even when it is small.
-4. Every string in all ten languages before the validator will pass it. The
-   generators the task names, then `node tools/validate.mjs`, `node
-   tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
-   tools/chessperf.mjs --check`, `node .claude/hooks/d1-write-gate.mjs
-   --check`.
-5. Drive it under `npx wrangler pages dev .` against the preview database, in
-   both styles, at 390px and on a desktop, in the states the task lists. The
-   house's side needs a signed-in account `ADMINS` names, and locally that is
-   one made under `pages dev` and named with `--binding` — **The house, and
-   driving without a token** below. Say in the PR exactly what was driven.
-6. The README section the task names, the flow where the task says, the
-   `leave-it-better.md` pass over every file in the diff, and **tick the task's
-   box in `TASKS.md`** — that tick is how the next session knows where to start.
-7. Commit in the repo's voice, push once, open the PR against the default
-   branch, CI green, **Rebase and merge**, and do by hand whatever the task's
-   *By hand after* says, immediately — a route expecting a table production
-   does not have fails quietly.
-8. Say where it stands in the first line of the closing message, and name the
-   next task.
+3. Every string in all ten languages before the validator will pass it, and
+   the generators the task names before the five checks.
+4. Drive it under `npx wrangler pages dev .`, in both styles, at 390px and on
+   a desktop, in the states the task lists. The house's side needs a
+   signed-in account `ADMINS` names, and locally that is one made under
+   `pages dev` and named with `--binding` — **The house, and driving without
+   a token** below. Say in the PR exactly what was driven.
+5. The README section the task names, the flow where the task says, and
+   **tick the task's box in `TASKS.md`** — that tick is how the next session
+   knows where to start.
+6. After landing, do by hand whatever the task's *By hand after* says,
+   immediately — a route expecting a table production does not have fails
+   quietly — then say where it stands in the first line of the closing
+   message, and name the next task.
 
 ## Where it goes wrong
 

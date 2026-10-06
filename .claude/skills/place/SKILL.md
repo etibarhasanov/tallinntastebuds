@@ -205,24 +205,20 @@ entry land in one commit, so no commit lists a photo that is not there.
 
 ## The pull request
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/places.mjs` and `node tools/languages.mjs` — and `node
-   tools/googlevenues.mjs` for a place the export already lists — then
-   `node tools/validate.mjs`. The catalogue is the check this process fails
-   most.
-3. The map on a local server: the pin where the door is, the panel, the
-   photos, the chips.
-4. One commit with the photos and the entry together, subject a sentence
-   about the place.
-5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
-6. Open the PR against the default branch. The body says why the place is on
-   the map, what it was tagged and why, what the counts did, that the
-   catalogue was regenerated, which blurb languages are still to come, and, for
-   a place the export already listed, the one `map_id` line in
-   `db/google-venues.sql` that has still to be loaded.
-7. CI green — the validator and the four checks beside it — then **Rebase
-   and merge**; the branch stays, `CLAUDE.md` says why. The place is on the
-   live map within the minute.
+**The pull request** in `CLAUDE.md` is the sequence, and this process adds:
+
+- The generators here are `node tools/places.mjs` and `node
+  tools/languages.mjs` — and `node tools/googlevenues.mjs` for a place the
+  export already lists. The catalogue is the check this process fails most.
+- The map on a local server: the pin where the door is, the panel, the
+  photos, the chips.
+- One commit with the photos and the entry together, subject a sentence
+  about the place.
+- The body says why the place is on the map, what it was tagged and why, what
+  the counts did, that the catalogue was regenerated, which blurb languages
+  are still to come, and, for a place the export already listed, the one
+  `map_id` line in `db/google-venues.sql` that has still to be loaded.
+- Landed, the place is on the live map within the minute.
 
 **A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`) is
 red until the catalogue is regenerated, so it is landed like this:

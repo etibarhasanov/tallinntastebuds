@@ -392,33 +392,26 @@ what it costs per request, and what has to be applied by hand and where.
 
 ## The pull request
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/validate.mjs` and `node tools/functions-check.mjs`. If
-   `db/schema.sql` changed, apply it to the **local** database now —
-   `wrangler d1 execute tallinntastebuds-preview --local
-   --file=db/schema.sql` — so `pages dev` has the table the code expects.
-   The remote preview gets nothing: **Production only, for now** in
-   `CLAUDE.md`.
-3. `npx wrangler pages dev .` against that local copy, and the page half
-   driven in a browser through it.
-4. Commits that stand alone, subjects about what the rows or the answer now
-   are.
-5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
-6. Open the PR against the default branch. The body says what the rows
-   looked like before and after, what it costs per request, and **what has
-   to be applied by hand on landing and to which database** — the schema
-   statement, the meta stamp, a load. A `wrangler.toml` change to the
-   preview block only takes effect once a preview has deployed with it, and
-   `wrangler pages dev` reads the top level rather than `[env.preview]`, so
-   this is the one case nothing local can check. Pushing the branch deploys
-   nothing — there are no preview deployments, and `CLAUDE.md` says why — so
-   say plainly in the body that the binding wants a preview and what you would
-   look at on it. `npx wrangler pages deploy . --branch=<name>` from a terminal
-   is the one command that makes one.
-7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
-   why — and **apply to production** whatever the body said, immediately:
-   the code is live the moment the push lands, and a route that expects a
-   column production does not have fails quietly, which is the worst way.
+**The pull request** in `CLAUDE.md` is the sequence, and this process adds:
+
+- `node tools/functions-check.mjs` beside the validator, every time.
+- If `db/schema.sql` changed, apply it to the **local** database before
+  driving — `wrangler d1 execute tallinntastebuds-preview --local
+  --file=db/schema.sql` — so `pages dev` has the table the code expects. The
+  remote preview gets nothing: **Production only, for now** in `CLAUDE.md`.
+- The page half driven in a browser through `npx wrangler pages dev .`.
+- The body says what the rows looked like before and after, what it costs per
+  request, and **what has to be applied by hand on landing and to which
+  database** — the schema statement, the meta stamp, a load. A
+  `wrangler.toml` change to the preview block is the one case nothing local
+  can check: `pages dev` reads the top level rather than `[env.preview]`, and
+  there are no preview deployments. Say plainly that the binding wants a
+  preview and what you would look at on it; `CLAUDE.md` says what the owner
+  runs to make one.
+- After **Rebase and merge**, **apply to production** whatever the body said,
+  immediately: the code is live the moment the push lands, and a route that
+  expects a column production does not have fails quietly, which is the
+  worst way.
 
 ## Where it goes wrong
 

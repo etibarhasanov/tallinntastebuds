@@ -455,29 +455,27 @@ it, and what was driven in a browser to check it.
 
 ## The pull request
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`.
-   When `index.html` or `lists.html` conflicts on a `?v=` line, take the
-   structure from both sides, `node tools/stamp.mjs`, `git add`,
-   `git rebase --continue`; never type a hash.
-2. `node tools/lean.mjs` if a source in its `LEAN` list moved, then
-   `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
-   `node tools/qrperf.mjs --check` if `assets/qr.js` moved.
-3. The page in a browser, a light and a dark style, 390 px, and the README paragraph
-   rewritten. The `leave-it-better.md` pass over every file in the diff.
-4. Commits that stand alone, subjects about what a visitor can now do.
-5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
-6. Open the PR against the default branch. The body says what was wrong,
-   what it is now, the trade-off, which README section moved, and exactly
-   what was driven in a browser and how — and that account matters more than
-   it used to, because the push deploys no preview and there is no URL for a
-   reviewer to open instead. `npx wrangler pages dev .` is where a visible
-   change gets driven, on the same bindings against a local copy of the
-   database.
-   `CLAUDE.md` says why previews are off and what to do on the rare change
-   that truly needs one.
-7. CI green, then **Rebase and merge**; the branch stays, `CLAUDE.md` says
-   why. The stamps mean every visitor gets the new files on their next
-   load, no cache to wait out.
+**The pull request** in `CLAUDE.md` is the sequence — rebase, generators,
+validator, the `leave-it-better.md` pass, a browser, one push, **Rebase and
+merge** — and this process adds:
+
+- On the rebase, `index.html` and `lists.html` conflict on their `?v=` lines
+  whenever two branches touched `assets/`: take the structure from both
+  sides, `node tools/stamp.mjs`, `git add`, `git rebase --continue`, and
+  never type a hash.
+- The generators here are `node tools/lean.mjs` if a source in its `LEAN`
+  list moved, then `node tools/stamp.mjs`; and `node tools/qrperf.mjs
+  --check` if `assets/qr.js` moved.
+- The page in a browser, a light and a dark style, 390 px — `npx wrangler
+  pages dev .` for anything that asks the API — and the README paragraph
+  rewritten.
+- The body says what was wrong, what it is now, the trade-off, which README
+  section moved, and exactly what was driven in a browser and how. That
+  account matters more than it used to: the push deploys no preview and there
+  is no URL for a reviewer to open instead, and `CLAUDE.md` says what to do
+  on the rare change that truly needs one.
+- Landed, the stamps mean every visitor gets the new files on their next
+  load, no cache to wait out.
 
 ## Where it goes wrong
 

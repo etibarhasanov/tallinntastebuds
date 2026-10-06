@@ -442,9 +442,12 @@ hash of nothing.
 
 ## The pull request
 
-Every change lands the same way, and each skill restates this with its own
-particulars. Do it in this order, and do not skip a step because the change
-is small — the small ones are the ones that ship broken.
+Every change lands the same way, and the sequence is written here and nowhere
+else: each skill's **The pull request** adds only its own particulars — the
+generators it runs, what it drives and how, what its body has to say, what
+happens by hand after landing — and points back here for the rest. Do it in
+this order, and do not skip a step because the change is small — the small
+ones are the ones that ship broken.
 
 1. **Rebase** onto the default branch (above), then the generators, then
    `node tools/validate.mjs`, then the `leave-it-better.md` pass over every

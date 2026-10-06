@@ -208,20 +208,18 @@ driven in a browser, and the staff link.
 
 ## The pull request
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/validate.mjs` — no generator, one file. The summary line's
-   live-deal count is the number to read.
-3. `deal.html`, `staff.html` and the verify page on a local server, dormant
-   and then live, and the pill and chip on the map.
-4. One commit, subject "<Place> takes <rate> off <what>".
-5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
-6. Open the PR against the default branch. The body says the rate, which
-   deals share its line, that the key is fresh, what was driven, and the
-   staff link in full — `https://tallinntastebuds.ee/staff.html?r=<id>`.
-7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
-   why — and **send the staff link** to the restaurant. That is the one
-   thing that happens by hand after landing, and the PR body is where it
-   was written down.
+**The pull request** in `CLAUDE.md` is the sequence, and this process adds:
+
+- No generator, one file. The validator's summary line ends with the
+  live-deal count, which is the number to read.
+- `deal.html`, `staff.html` and the verify page on a local server, dormant
+  and then live, and the pill and chip on the map.
+- One commit, subject "<Place> takes <rate> off <what>".
+- The body says the rate, which deals share its line, that the key is fresh,
+  what was driven, and the staff link in full —
+  `https://tallinntastebuds.ee/staff.html?r=<id>`.
+- After landing, **send the staff link** to the restaurant. That is the one
+  thing that happens by hand, and the PR body is where it was written down.
 
 ## Where it goes wrong
 
