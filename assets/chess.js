@@ -791,7 +791,7 @@
   function turnNode(g) {
     var game = g.game;
     var said = sayTurn(g);
-    var kids = [el('p', { className: 'eyebrow', textContent: gameTitle(game) })];
+    var kids = [el('p', { className: 'eyebrow chess-kind', textContent: gameTitle(game) })];
     var p = state.promoting;
 
     if (p && p.game === game.id && p.ply === game.ply) {
@@ -941,17 +941,18 @@
        game without a result, and a duel's player claim it, once the route
        says the other side has been quiet long enough. */
     if (game.state === 'playing') {
-      asksNode(g).forEach(function (node) { card.appendChild(node); });
+      var more = [];
       if (g.abandon) {
-        card.appendChild(altButton(t('chessAbandon'), function () {
+        more.push(altButton(t('chessAbandon'), function () {
           act('abandon', 'chess_abandon', { game: game.id });
         }));
       }
       if (g.claim) {
-        card.appendChild(altButton(t('chessClaim'), function () {
+        more.push(altButton(t('chessClaim'), function () {
           act('claim', 'chess_claim', { game: game.id });
         }));
       }
+      asksNode(g, more).forEach(function (node) { card.appendChild(node); });
     }
     return card;
   }
@@ -980,10 +981,15 @@
      route offered. Agreeing to Everybody's give-up asks the same question
      giving up does. Nothing here knows what may be pressed: the answer says,
      and this draws it. A public game that ends this way is replaced in the
-     same answer, and whoever pressed is told so. */
-  function asksNode(g) {
+     same answer, and whoever pressed is told so. The presses themselves,
+     and `more` — the house's Abandon, a duel's Claim — stand in one row of
+     outlined buttons under a rule, so they read as the game's own controls
+     rather than a loose link or two under the score; they began as bare
+     .alt links stacked one under the other, and read as a mistake. */
+  function asksNode(g, more) {
     var game = g.game;
     var kids = [];
+    var presses = [];
     var onIt = false;
     (g.asks || []).forEach(function (a) {
       var mine = a.names.some(function (n) { return n.you; });
@@ -1009,31 +1015,34 @@
       var words = ASK_WORDS[may.as];
       if (!words) return;
       var sure = may.as === 'agree' && may.kind === 'resign' ? 'chessGiveUpSure' : words.sure;
-      kids.push(altButton(t(words.label), function () {
+      presses.push(altButton(t(words.label), function () {
         if (!window.confirm(t(sure))) return;
         act('ask', 'chess_ask', { game: game.id, kind: may.kind, client: visitorId() },
           { 409: 'chessGotThereFirst' }, told, { kind: may.kind, as: may.as });
       }));
     });
     if (g.mayRefuse) {
-      kids.push(altButton(t('chessDecline'), function () {
+      presses.push(altButton(t('chessDecline'), function () {
         act('refuse', 'chess_refuse', { game: game.id, client: visitorId() }, { 409: 'chessGotThereFirst' });
       }));
     }
     if (onIt) {
-      kids.push(altButton(t('chessTakeBack'), function () {
+      presses.push(altButton(t('chessTakeBack'), function () {
         act('unask', 'chess_unask', { game: game.id, client: visitorId() });
       }));
     }
     /* Without the table there is no `mayAsk` at all, and a private game or
        a duel still has its Resign: one person's resignation needs no row. */
     if (!g.mayAsk && game.kind !== 'public') {
-      kids.push(altButton(t('chessResign'), function () {
+      presses.push(altButton(t('chessResign'), function () {
         if (window.confirm(t('chessResignSure'))) {
           act('ask', 'chess_ask', { game: game.id, kind: 'resign' }, null, null, { kind: 'resign', as: 'resign' });
         }
       }));
     }
+    presses = presses.concat(more || []);
+    presses.forEach(function (b) { b.className += ' chess-act'; });
+    if (presses.length) kids.push(el('div', { className: 'chess-acts' }, presses));
     return kids;
   }
 
@@ -1160,7 +1169,7 @@
      else is told the board is being set up. */
   function emptyCard() {
     var kids = [
-      el('p', { className: 'eyebrow', textContent: t('chessGameOf', { a: t('chessEverybody'), b: t('wordmark') }) }),
+      el('p', { className: 'eyebrow chess-kind', textContent: t('chessGameOf', { a: t('chessEverybody'), b: t('wordmark') }) }),
       el('p', { className: 'chess-turn-who', textContent: t('chessNoGame') })
     ];
     if (isHouse()) kids.push(goButton(t('chessFirstGame'), newGame));
@@ -1297,7 +1306,7 @@
     var head = lineOnly ? null
       : el('p', { className: 'eyebrow chess-queue-head', textContent: t('chessWaitingNow') });
     return el('section', { className: 'card chess-play', 'aria-label': t('chessOneOnOne') }, [
-      el('p', { className: 'eyebrow', textContent: t('chessOneOnOne') }),
+      el('p', { className: 'eyebrow chess-kind', textContent: t('chessOneOnOne') }),
       el('h2', { className: 'lists-title', textContent: title }),
       why ? el('p', { className: 'chess-play-why', textContent: why }) : null,
       go,
@@ -1446,7 +1455,7 @@
     }
 
     var kids = [
-      el('p', { className: 'eyebrow', textContent: t('chessDuels') }),
+      el('p', { className: 'eyebrow chess-kind', textContent: t('chessDuels') }),
       el('h2', { className: 'lists-title', textContent: t('chessDuelsTitle') })
     ];
     if (you.role === 'visitor') {

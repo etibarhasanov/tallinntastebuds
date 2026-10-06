@@ -56,12 +56,27 @@
      to the foot of an empty card. */
   .chess-side .chess-list { flex: 0 1 auto; min-height: 0; max-height: none; }
   /* The column stretches its children, and a stretched .alt is a centred
-     one: the ways out keep to the left edge, where they are on a phone. */
-  .chess-side .chess-moves .alt { align-self: flex-start; }
+     one: the sign-in link keeps to the left edge, where it is on a phone. */
+  .chess-side .chess-moves > .alt { align-self: flex-start; }
   .chess-play { max-width: 560px; }
 }
 
 .chess-head { margin: 4px 0 18px; }
+
+/* Which game a card is — the public board, one on one, member against
+   member — as an outlined tag in the accent rather than the grey eyebrow
+   every other heading on the site wears: three cards on one page looked
+   like one long form until each said plainly what it was. Still the
+   eyebrow's mono capitals, so it is a label and not a button. */
+.eyebrow.chess-kind {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  color: var(--accent);
+  letter-spacing: .12em;
+}
 /* The board's own answer when the route is not there: a card in the place a
    board would be, the words from the markup so it reads with no answer at all. */
 .chess-offline { margin: 0; padding: 14px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
@@ -244,14 +259,29 @@
 .chess-foot { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
 .chess-signin { margin: 10px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .chess-signin a { color: var(--accent); }
-.chess-moves .alt { margin: 8px 0 0 -12px; }
-.chess-moves .alt + .alt { margin-left: 0; }
+.chess-moves > .alt { margin: 8px 0 0 -12px; }
 /* What is standing on the game short of mate — who asks Everybody to give up
    and how many agree, who offers a draw, who turned one down — as a sentence
    over the presses it explains, with the reader's own name on it as the tag
    a note wears. */
 .chess-ask { margin: 12px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .chess-ask + .chess-ask { margin-top: 4px; }
+/* The ways out of a game — Resign or Give up, Offer a draw, Agree, Accept,
+   Decline, Take it back, the house's Abandon, a duel's Claim — side by side
+   under a rule, each an outlined pill: the .go's shape without its fill,
+   since none of them is the page's one action and the ones that end a
+   game ask first. They wrap on a phone rather than shrink. */
+.chess-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--hairline); }
+.chess-acts .alt.chess-act {
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.chess-acts .alt.chess-act:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ---------- the notes ---------- */
 
