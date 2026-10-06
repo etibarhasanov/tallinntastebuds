@@ -446,7 +446,9 @@ import { sourceOf, siteOf, countryOf, networkName, today, dayBack } from './_vis
 import { languageIndex, dataFile, hmacHex } from './_lib.js';
 import { adminIds } from './_admin.js';
 
-/* The ranges the page offers, in days. 1 is today so far. */
+/* The ranges the page offers, in days. 1 is today so far. The three routes
+   that read a range — /api/admin/visitors, /found and /flows — answer any
+   other as 7. */
 export const SPANS = [1, 7, 28, 90];
 
 /* The pages worth telling apart, each with the string data/ui.json already

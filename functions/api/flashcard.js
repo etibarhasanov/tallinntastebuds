@@ -62,13 +62,16 @@
  *
  * THE WORDS ON THE PAGE COME WITH THE DECKS
  *
- * Every other page on this site fetches data/ui.json whole on the way in: ten
+ * Every page on this site used to fetch data/ui.json whole on the way in: ten
  * languages of every string the site has, 85 KB gzipped, to print eighty of
  * them in one language. That was the biggest thing between opening this page
  * and seeing a card, and the least of it was used. So the GET below carries
  * the page's words in its answer — the one language block the page will print
  * from, eight to ten KB gzipped, in the same request that brings the decks —
- * and the page fetches nothing else.
+ * and the page fetches nothing else. The other pages were cut down later the
+ * other way, each fetching one language's file out of data/lang/; this one
+ * still asks for nothing but this route, and wordsFor() reads the same file
+ * for it.
  *
  * Which language is decided here rather than on the page, because the list
  * of languages this feature has is on this side: the page sends what it would
@@ -76,7 +79,8 @@
  * the browser's own languages), and wordsFor() in ./_lib.js takes the first
  * that list speaks. It is the same rule pickLanguage() applies on every other
  * page, moved to where the list is, and it lives in _lib.js rather than here
- * because /api/stats answers the same way for the same reason. The whole block
+ * because /api/chess and the owner's routes under /api/admin/ answer the same
+ * way for the same reason. The whole block
  * goes rather than the eighty keys, because a list of keys here would be a
  * second copy of what assets/flashcard.js asks for, and the validator could
  * not see them drift.
@@ -130,7 +134,7 @@
  * WHAT THIS FILE IS ALLOWED TO DO
  *
  * The rules ./lists.js is written to, because the argument is the same: D1
- * has no public endpoint, so the attack surface of these three tables is
+ * has no public endpoint, so the attack surface of these four tables is
  * exactly this file.
  *
  *   - Every query is a prepared statement with bound parameters. Nothing from

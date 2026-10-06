@@ -21,6 +21,11 @@
  * the caller decides what a successful sign-in looks like on its own page,
  * because the map's sheet and the feedback composer say different things
  * afterwards.
+ *
+ * enterAccount() and nameGoogleAccount() below are the only places an account
+ * is made. ./account.js and ./feedback.js call them; ./google.js makes none —
+ * a Google account new here goes home holding a sealed note, and one of those
+ * two names it.
  */
 
 import {

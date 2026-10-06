@@ -64,6 +64,10 @@
  * somebody wrote is not in that file, and speaking it would mean saying
  * anything anybody chose. That is a decision for a description rather than
  * for this file — **What it does not do** under **Flashcards**.
+ *
+ * spoken() in tools/decks.mjs is what gathers that list, so a new kind of
+ * Estonian for the page to say — a new block in a lesson, say — is a line
+ * there and a run of the tool, or the speaker beside it answers not-a-card.
  */
 
 import { json, dataFile } from './_lib.js';

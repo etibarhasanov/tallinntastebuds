@@ -16,7 +16,8 @@
  * the bare address in another language to theirs, the way the map is read at
  * ?lang= — so the server writes exactly one language and the browser never
  * draws the text a second time. A ?lang= the file does not have is the
- * English.
+ * English. The head — the title, the description, the canonical — and the
+ * page's own <html lang> follow the language too.
  *
  * LINKS INSIDE IT
  *

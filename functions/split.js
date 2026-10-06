@@ -25,6 +25,13 @@
  * back with a different head rather than a second copy of the markup that
  * would go stale the first time the other one changed.
  *
+ * functions/_middleware.js calls this route for the root of
+ * splitwise.tallinntastebuds.ee as well, with the request untouched, so the
+ * short address somebody was given unfurls the same way. Called and not
+ * rewritten: a rewritten request goes to the static file and never reaches a
+ * route, which is how a group's link once unfurled as the site's name — the
+ * SPLITWISE block there tells it.
+ *
  * It is the same argument functions/list/[id].js makes for a shared list, and
  * it borrows what it can from that route's furniture: shell(), esc(),
  * rehead(), page() and canonical() out of functions/_shell.js. It imports them

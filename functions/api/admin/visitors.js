@@ -6,7 +6,8 @@
  *                      it, and five minutes of edge cache on the three. What
  *                      /admin/visitors draws. `device` is phone, tablet or
  *                      desktop for that device's half of the counts — BY
- *                      DEVICE in ../_visitors.js — and every device without.
+ *                      DEVICE in ../_visitors.js — and every device without;
+ *                      the answer says which in `device`.
  *
  * And `dealt`, the four rows of press_counts ./stats.js counts the two rails'
  * strangers in: for each of `a` and `b`, `given`, how many browsers that had
@@ -39,8 +40,8 @@
  *
  * It is ./stats.js's shape on purpose — the words come back with the numbers,
  * so the page makes one request on the way in; the colo holds each answer
- * for five minutes, keyed on the range and the language alone; and the
- * browser is told `private, no-store` whatever the colo's copy says.
+ * for five minutes, keyed on the range, the language and the device alone;
+ * and the browser is told `private, no-store` whatever the colo's copy says.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
