@@ -112,7 +112,7 @@ command does the same by hand, and is the way to be sure.
 | Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language, a post on the blog | `/site` |
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
 | Change splitwise — the group page, what a group can do, or the subdomain itself | `/site` **and** `/api`, and **Splitwise** in `README.md` |
-| Change the flashcards — the page, the decks in `data/decks.json`, what a deck can do, or the subdomain itself | `/site` **and** `/api`, and **Flashcards** in `README.md` |
+| Change the flashcards — a deck, a lesson or a song in `data/decks.json`, the page, what a deck can do, or the subdomain itself | `/flashcards`, with `/site` **and** `/api` |
 | Refresh the Google Places export | `/google-venues` |
 | Build the chess page — the next unticked task in `.claude/skills/chess/TASKS.md`, one per session | `/chess` |
 | Change what the site counts about its visitors, or one of the owner's five pages under `/admin/` that read it — `assets/track.js`, `functions/api/stats.js`, `_visitors.js`, `_visits.js`, `_flows.js`, `functions/api/admin/` — or read the numbers to decide what to build next | `/stats`, with `/site` **and** `/api` |
@@ -135,15 +135,14 @@ skill to load. Two roads, then: the prompt loads the skill by its
 description, and failing that, the first file opened does. Either way the
 checklist arrives before the change is made.
 
-Three rules point at no skill of their own. The main one is
+Two rules point at no skill of their own. The main one is
 `.claude/rules/leave-it-better.md`, which loads by itself the moment a session
 reads or edits anything under `assets/`, `functions/`, `tools/`, `db/` or an
 HTML page; it outranks "keep the diff small", and its last section is the
-process for a session with nothing else to do. The other two are
-`flashcards.md` and `splitwise.md`: the two products on subdomains have no
-skill, so their files load a rule that sends a session to the `/site` and
-`/api` skills and to the README section the table above names, with the few
-facts about each that sessions kept rediscovering.
+process for a session with nothing else to do. The other is `splitwise.md`:
+splitwise has no skill, so its files load a rule that sends a session to the
+`/site` and `/api` skills and to **Splitwise** in `README.md`, with the few
+facts about it that sessions kept rediscovering.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
