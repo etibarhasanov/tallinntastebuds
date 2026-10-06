@@ -35197,6 +35197,21 @@
             "en": "Mum's bread",
             "az": "Ananın çörəyi",
             "ru": "Мамин хлеб"
+          },
+          "build": {
+            "forms": [
+              "ema",
+              "ema",
+              "ema"
+            ],
+            "on": 1,
+            "makes": "ema",
+            "case": {
+              "et": "omastav",
+              "en": "whose? of what?",
+              "az": "yiyəlik hal",
+              "ru": "родительный"
+            }
           }
         },
         {
@@ -35206,6 +35221,21 @@
             "en": "Tallinn's old town",
             "az": "Tallinnin köhnə şəhəri",
             "ru": "Старый город Таллинна"
+          },
+          "build": {
+            "forms": [
+              "Tallinn",
+              "Tallinna",
+              "Tallinna"
+            ],
+            "on": 1,
+            "makes": "Tallinna",
+            "case": {
+              "et": "omastav",
+              "en": "whose? of what?",
+              "az": "yiyəlik hal",
+              "ru": "родительный"
+            }
           }
         },
         {
@@ -35215,6 +35245,21 @@
             "en": "Under the table",
             "az": "Stolun altında",
             "ru": "Под столом"
+          },
+          "build": {
+            "forms": [
+              "laud",
+              "laua",
+              "lauda"
+            ],
+            "on": 1,
+            "makes": "laua",
+            "case": {
+              "et": "omastav",
+              "en": "whose? of what?",
+              "az": "yiyəlik hal",
+              "ru": "родительный"
+            }
           }
         },
         {
@@ -35224,6 +35269,21 @@
             "en": "In front of the house",
             "az": "Evin qabağında",
             "ru": "Перед домом"
+          },
+          "build": {
+            "forms": [
+              "maja",
+              "maja",
+              "maja"
+            ],
+            "on": 1,
+            "makes": "maja",
+            "case": {
+              "et": "omastav",
+              "en": "whose? of what?",
+              "az": "yiyəlik hal",
+              "ru": "родительный"
+            }
           }
         },
         {
@@ -35233,6 +35293,21 @@
             "en": "I'll buy the loaf",
             "az": "Çörəyi alıram",
             "ru": "Я куплю хлеб"
+          },
+          "build": {
+            "forms": [
+              "leib",
+              "leiva",
+              "leiba"
+            ],
+            "on": 1,
+            "makes": "leiva",
+            "case": {
+              "et": "omastav",
+              "en": "whose? of what?",
+              "az": "yiyəlik hal",
+              "ru": "родительный"
+            }
           }
         },
         {
@@ -35242,6 +35317,21 @@
             "en": "I'm eating bread",
             "az": "Çörək yeyirəm",
             "ru": "Я ем хлеб"
+          },
+          "build": {
+            "forms": [
+              "leib",
+              "leiva",
+              "leiba"
+            ],
+            "on": 2,
+            "makes": "leiba",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35251,6 +35341,21 @@
             "en": "Two coffees",
             "az": "İki qəhvə",
             "ru": "Два кофе"
+          },
+          "build": {
+            "forms": [
+              "kohv",
+              "kohvi",
+              "kohvi"
+            ],
+            "on": 2,
+            "makes": "kohvi",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35260,6 +35365,21 @@
             "en": "Five euros",
             "az": "Beş avro",
             "ru": "Пять евро"
+          },
+          "build": {
+            "forms": [
+              "euro",
+              "euro",
+              "eurot"
+            ],
+            "on": 2,
+            "makes": "eurot",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35269,6 +35389,21 @@
             "en": "A glass of water",
             "az": "Bir stəkan su",
             "ru": "Стакан воды"
+          },
+          "build": {
+            "forms": [
+              "vesi",
+              "vee",
+              "vett"
+            ],
+            "on": 2,
+            "makes": "vett",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35278,6 +35413,21 @@
             "en": "A little milk",
             "az": "Bir az süd",
             "ru": "Немного молока"
+          },
+          "build": {
+            "forms": [
+              "piim",
+              "piima",
+              "piima"
+            ],
+            "on": 2,
+            "makes": "piima",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35287,6 +35437,21 @@
             "en": "I have no time",
             "az": "Vaxtım yoxdur",
             "ru": "У меня нет времени"
+          },
+          "build": {
+            "forms": [
+              "aeg",
+              "aja",
+              "aega"
+            ],
+            "on": 2,
+            "makes": "aega",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35296,6 +35461,21 @@
             "en": "I'm waiting for you",
             "az": "Səni gözləyirəm",
             "ru": "Я жду тебя"
+          },
+          "build": {
+            "forms": [
+              "sina",
+              "sinu",
+              "sind"
+            ],
+            "on": 2,
+            "makes": "sind",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         },
         {
@@ -35305,6 +35485,21 @@
             "en": "I love you",
             "az": "Səni sevirəm",
             "ru": "Я тебя люблю"
+          },
+          "build": {
+            "forms": [
+              "sina",
+              "sinu",
+              "sind"
+            ],
+            "on": 2,
+            "makes": "sind",
+            "case": {
+              "et": "osastav",
+              "en": "some of",
+              "az": "qeyri-müəyyən təsirlik",
+              "ru": "«немного», «часть»"
+            }
           }
         }
       ]
@@ -35358,6 +35553,24 @@
             "en": "Into the kitchen",
             "az": "Mətbəxə",
             "ru": "На кухню"
+          },
+          "build": {
+            "forms": [
+              "köök",
+              "köögi",
+              "kööki"
+            ],
+            "on": 1,
+            "from": "köögi",
+            "end": "sse",
+            "makes": "köögisse",
+            "short": "kööki",
+            "case": {
+              "et": "sisseütlev",
+              "en": "into",
+              "az": "hara? (yönlük hal)",
+              "ru": "куда? (в + винительный)"
+            }
           }
         },
         {
@@ -35367,6 +35580,23 @@
             "en": "In the kitchen",
             "az": "Mətbəxdə",
             "ru": "На кухне"
+          },
+          "build": {
+            "forms": [
+              "köök",
+              "köögi",
+              "kööki"
+            ],
+            "on": 1,
+            "from": "köögi",
+            "end": "s",
+            "makes": "köögis",
+            "case": {
+              "et": "seesütlev",
+              "en": "in",
+              "az": "harada? (yerlik hal)",
+              "ru": "где? (в + предложный)"
+            }
           }
         },
         {
@@ -35376,6 +35606,23 @@
             "en": "Out of the kitchen",
             "az": "Mətbəxdən",
             "ru": "Из кухни"
+          },
+          "build": {
+            "forms": [
+              "köök",
+              "köögi",
+              "kööki"
+            ],
+            "on": 1,
+            "from": "köögi",
+            "end": "st",
+            "makes": "köögist",
+            "case": {
+              "et": "seestütlev",
+              "en": "out of",
+              "az": "haradan? (çıxışlıq hal)",
+              "ru": "откуда? (из + родительный)"
+            }
           }
         },
         {
@@ -35385,6 +35632,24 @@
             "en": "Into town",
             "az": "Şəhərə",
             "ru": "В город"
+          },
+          "build": {
+            "forms": [
+              "linn",
+              "linna",
+              "linna"
+            ],
+            "on": 1,
+            "from": "linna",
+            "end": "sse",
+            "makes": "linnasse",
+            "short": "linna",
+            "case": {
+              "et": "sisseütlev",
+              "en": "into",
+              "az": "hara? (yönlük hal)",
+              "ru": "куда? (в + винительный)"
+            }
           }
         },
         {
@@ -35394,6 +35659,23 @@
             "en": "In town",
             "az": "Şəhərdə",
             "ru": "В городе"
+          },
+          "build": {
+            "forms": [
+              "linn",
+              "linna",
+              "linna"
+            ],
+            "on": 1,
+            "from": "linna",
+            "end": "s",
+            "makes": "linnas",
+            "case": {
+              "et": "seesütlev",
+              "en": "in",
+              "az": "harada? (yerlik hal)",
+              "ru": "где? (в + предложный)"
+            }
           }
         },
         {
@@ -35403,6 +35685,24 @@
             "en": "To the shop",
             "az": "Mağazaya",
             "ru": "В магазин"
+          },
+          "build": {
+            "forms": [
+              "pood",
+              "poe",
+              "poodi"
+            ],
+            "on": 1,
+            "from": "poe",
+            "end": "sse",
+            "makes": "poesse",
+            "short": "poodi",
+            "case": {
+              "et": "sisseütlev",
+              "en": "into",
+              "az": "hara? (yönlük hal)",
+              "ru": "куда? (в + винительный)"
+            }
           }
         },
         {
@@ -35412,6 +35712,23 @@
             "en": "In the shop",
             "az": "Mağazada",
             "ru": "В магазине"
+          },
+          "build": {
+            "forms": [
+              "pood",
+              "poe",
+              "poodi"
+            ],
+            "on": 1,
+            "from": "poe",
+            "end": "s",
+            "makes": "poes",
+            "case": {
+              "et": "seesütlev",
+              "en": "in",
+              "az": "harada? (yerlik hal)",
+              "ru": "где? (в + предложный)"
+            }
           }
         },
         {
@@ -35421,6 +35738,23 @@
             "en": "From the shop",
             "az": "Mağazadan",
             "ru": "Из магазина"
+          },
+          "build": {
+            "forms": [
+              "pood",
+              "poe",
+              "poodi"
+            ],
+            "on": 1,
+            "from": "poe",
+            "end": "st",
+            "makes": "poest",
+            "case": {
+              "et": "seestütlev",
+              "en": "out of",
+              "az": "haradan? (çıxışlıq hal)",
+              "ru": "откуда? (из + родительный)"
+            }
           }
         },
         {
@@ -35430,6 +35764,23 @@
             "en": "In Estonia",
             "az": "Estoniyada",
             "ru": "В Эстонии"
+          },
+          "build": {
+            "forms": [
+              "Eesti",
+              "Eesti",
+              "Eestit"
+            ],
+            "on": 1,
+            "from": "Eesti",
+            "end": "s",
+            "makes": "Eestis",
+            "case": {
+              "et": "seesütlev",
+              "en": "in",
+              "az": "harada? (yerlik hal)",
+              "ru": "где? (в + предложный)"
+            }
           }
         },
         {
@@ -35439,6 +35790,23 @@
             "en": "In Estonian",
             "az": "Eston dilində",
             "ru": "По-эстонски"
+          },
+          "build": {
+            "forms": [
+              "keel",
+              "keele",
+              "keelt"
+            ],
+            "on": 1,
+            "from": "keele",
+            "end": "s",
+            "makes": "keeles",
+            "case": {
+              "et": "seesütlev",
+              "en": "in",
+              "az": "harada? (yerlik hal)",
+              "ru": "где? (в + предложный)"
+            }
           }
         },
         {
@@ -35448,6 +35816,23 @@
             "en": "Made of wood",
             "az": "Taxtadan",
             "ru": "Из дерева"
+          },
+          "build": {
+            "forms": [
+              "puu",
+              "puu",
+              "puud"
+            ],
+            "on": 1,
+            "from": "puu",
+            "end": "st",
+            "makes": "puust",
+            "case": {
+              "et": "seestütlev",
+              "en": "out of",
+              "az": "haradan? (çıxışlıq hal)",
+              "ru": "откуда? (из + родительный)"
+            }
           }
         },
         {
@@ -35457,6 +35842,23 @@
             "en": "We're talking about the film",
             "az": "Film haqqında danışırıq",
             "ru": "Мы говорим о фильме"
+          },
+          "build": {
+            "forms": [
+              "film",
+              "filmi",
+              "filmi"
+            ],
+            "on": 1,
+            "from": "filmi",
+            "end": "st",
+            "makes": "filmist",
+            "case": {
+              "et": "seestütlev",
+              "en": "out of",
+              "az": "haradan? (çıxışlıq hal)",
+              "ru": "откуда? (из + родительный)"
+            }
           }
         }
       ]
@@ -35483,6 +35885,23 @@
             "en": "Onto the table",
             "az": "Stolun üstünə",
             "ru": "На стол"
+          },
+          "build": {
+            "forms": [
+              "laud",
+              "laua",
+              "lauda"
+            ],
+            "on": 1,
+            "from": "laua",
+            "end": "le",
+            "makes": "lauale",
+            "case": {
+              "et": "alaleütlev",
+              "en": "onto, to",
+              "az": "kimə? nəyin üstünə?",
+              "ru": "на что? кому?"
+            }
           }
         },
         {
@@ -35492,6 +35911,23 @@
             "en": "On the table",
             "az": "Stolun üstündə",
             "ru": "На столе"
+          },
+          "build": {
+            "forms": [
+              "laud",
+              "laua",
+              "lauda"
+            ],
+            "on": 1,
+            "from": "laua",
+            "end": "l",
+            "makes": "laual",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35501,6 +35937,23 @@
             "en": "Off the table",
             "az": "Stolun üstündən",
             "ru": "Со стола"
+          },
+          "build": {
+            "forms": [
+              "laud",
+              "laua",
+              "lauda"
+            ],
+            "on": 1,
+            "from": "laua",
+            "end": "lt",
+            "makes": "laualt",
+            "case": {
+              "et": "alaltütlev",
+              "en": "off, from",
+              "az": "kimdən? nəyin üstündən?",
+              "ru": "с чего? от кого?"
+            }
           }
         },
         {
@@ -35510,6 +35963,23 @@
             "en": "To a friend",
             "az": "Dosta",
             "ru": "Другу"
+          },
+          "build": {
+            "forms": [
+              "sõber",
+              "sõbra",
+              "sõpra"
+            ],
+            "on": 1,
+            "from": "sõbra",
+            "end": "le",
+            "makes": "sõbrale",
+            "case": {
+              "et": "alaleütlev",
+              "en": "onto, to",
+              "az": "kimə? nəyin üstünə?",
+              "ru": "на что? кому?"
+            }
           }
         },
         {
@@ -35519,6 +35989,23 @@
             "en": "From a friend",
             "az": "Dostdan",
             "ru": "От друга"
+          },
+          "build": {
+            "forms": [
+              "sõber",
+              "sõbra",
+              "sõpra"
+            ],
+            "on": 1,
+            "from": "sõbra",
+            "end": "lt",
+            "makes": "sõbralt",
+            "case": {
+              "et": "alaltütlev",
+              "en": "off, from",
+              "az": "kimdən? nəyin üstündən?",
+              "ru": "с чего? от кого?"
+            }
           }
         },
         {
@@ -35528,6 +36015,24 @@
             "en": "Call me!",
             "az": "Mənə zəng et!",
             "ru": "Позвони мне!"
+          },
+          "build": {
+            "forms": [
+              "mina",
+              "minu",
+              "mind"
+            ],
+            "on": 1,
+            "from": "minu",
+            "end": "le",
+            "makes": "minule",
+            "short": "mulle",
+            "case": {
+              "et": "alaleütlev",
+              "en": "onto, to",
+              "az": "kimə? nəyin üstünə?",
+              "ru": "на что? кому?"
+            }
           }
         },
         {
@@ -35537,6 +36042,24 @@
             "en": "I have",
             "az": "Məndə var",
             "ru": "У меня есть"
+          },
+          "build": {
+            "forms": [
+              "mina",
+              "minu",
+              "mind"
+            ],
+            "on": 1,
+            "from": "minu",
+            "end": "l",
+            "makes": "minul",
+            "short": "mul",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35546,6 +36069,24 @@
             "en": "You have",
             "az": "Səndə var",
             "ru": "У тебя есть"
+          },
+          "build": {
+            "forms": [
+              "sina",
+              "sinu",
+              "sind"
+            ],
+            "on": 1,
+            "from": "sinu",
+            "end": "l",
+            "makes": "sinul",
+            "short": "sul",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35555,6 +36096,23 @@
             "en": "My friend has a dog",
             "az": "Dostumun iti var",
             "ru": "У друга есть собака"
+          },
+          "build": {
+            "forms": [
+              "sõber",
+              "sõbra",
+              "sõpra"
+            ],
+            "on": 1,
+            "from": "sõbra",
+            "end": "l",
+            "makes": "sõbral",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35564,6 +36122,23 @@
             "en": "Ask him",
             "az": "Ondan soruş",
             "ru": "Спроси у него"
+          },
+          "build": {
+            "forms": [
+              "tema",
+              "tema",
+              "teda"
+            ],
+            "on": 1,
+            "from": "tema",
+            "end": "lt",
+            "makes": "temalt",
+            "case": {
+              "et": "alaltütlev",
+              "en": "off, from",
+              "az": "kimdən? nəyin üstündən?",
+              "ru": "с чего? от кого?"
+            }
           }
         },
         {
@@ -35573,6 +36148,23 @@
             "en": "At work",
             "az": "İşdə",
             "ru": "На работе"
+          },
+          "build": {
+            "forms": [
+              "töö",
+              "töö",
+              "tööd"
+            ],
+            "on": 1,
+            "from": "töö",
+            "end": "l",
+            "makes": "tööl",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35582,6 +36174,23 @@
             "en": "To work",
             "az": "İşə",
             "ru": "На работу"
+          },
+          "build": {
+            "forms": [
+              "töö",
+              "töö",
+              "tööd"
+            ],
+            "on": 1,
+            "from": "töö",
+            "end": "le",
+            "makes": "tööle",
+            "case": {
+              "et": "alaleütlev",
+              "en": "onto, to",
+              "az": "kimə? nəyin üstünə?",
+              "ru": "на что? кому?"
+            }
           }
         },
         {
@@ -35591,6 +36200,23 @@
             "en": "At the market",
             "az": "Bazarda",
             "ru": "На рынке"
+          },
+          "build": {
+            "forms": [
+              "turg",
+              "turu",
+              "turgu"
+            ],
+            "on": 1,
+            "from": "turu",
+            "end": "l",
+            "makes": "turul",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35600,6 +36226,23 @@
             "en": "On Monday",
             "az": "Bazar ertəsi",
             "ru": "В понедельник"
+          },
+          "build": {
+            "forms": [
+              "esmaspäev",
+              "esmaspäeva",
+              "esmaspäeva"
+            ],
+            "on": 1,
+            "from": "esmaspäeva",
+            "end": "l",
+            "makes": "esmaspäeval",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35609,6 +36252,23 @@
             "en": "In the morning",
             "az": "Səhər",
             "ru": "Утром"
+          },
+          "build": {
+            "forms": [
+              "hommik",
+              "hommiku",
+              "hommikut"
+            ],
+            "on": 1,
+            "from": "hommiku",
+            "end": "l",
+            "makes": "hommikul",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         },
         {
@@ -35618,6 +36278,24 @@
             "en": "I'm cold",
             "az": "Mən üşüyürəm",
             "ru": "Мне холодно"
+          },
+          "build": {
+            "forms": [
+              "mina",
+              "minu",
+              "mind"
+            ],
+            "on": 1,
+            "from": "minu",
+            "end": "l",
+            "makes": "minul",
+            "short": "mul",
+            "case": {
+              "et": "alalütlev",
+              "en": "on, at, and having",
+              "az": "kimdə? nəyin üstündə?",
+              "ru": "на чём? у кого?"
+            }
           }
         }
       ]
@@ -35644,6 +36322,23 @@
             "en": "She became a doctor",
             "az": "O, həkim oldu",
             "ru": "Она стала врачом"
+          },
+          "build": {
+            "forms": [
+              "arst",
+              "arsti",
+              "arsti"
+            ],
+            "on": 1,
+            "from": "arsti",
+            "end": "ks",
+            "makes": "arstiks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35653,6 +36348,22 @@
             "en": "We became friends",
             "az": "Biz dost olduq",
             "ru": "Мы стали друзьями"
+          },
+          "build": {
+            "forms": [
+              "sõber",
+              "sõbra",
+              "sõpra"
+            ],
+            "from": "sõprade",
+            "end": "ks",
+            "makes": "sõpradeks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35662,6 +36373,23 @@
             "en": "It's turning cold",
             "az": "Hava soyuyur",
             "ru": "Становится холодно"
+          },
+          "build": {
+            "forms": [
+              "külm",
+              "külma",
+              "külma"
+            ],
+            "on": 1,
+            "from": "külma",
+            "end": "ks",
+            "makes": "külmaks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35671,6 +36399,23 @@
             "en": "What for?",
             "az": "Nə üçün?",
             "ru": "Зачем?"
+          },
+          "build": {
+            "forms": [
+              "mis",
+              "mille",
+              "mida"
+            ],
+            "on": 1,
+            "from": "mille",
+            "end": "ks",
+            "makes": "milleks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35680,6 +36425,23 @@
             "en": "For tomorrow",
             "az": "Sabah üçün",
             "ru": "На завтра"
+          },
+          "build": {
+            "forms": [
+              "homne",
+              "homse",
+              "homset"
+            ],
+            "on": 1,
+            "from": "homse",
+            "end": "ks",
+            "makes": "homseks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35689,6 +36451,23 @@
             "en": "By evening",
             "az": "Axşama",
             "ru": "К вечеру"
+          },
+          "build": {
+            "forms": [
+              "õhtu",
+              "õhtu",
+              "õhtut"
+            ],
+            "on": 1,
+            "from": "õhtu",
+            "end": "ks",
+            "makes": "õhtuks",
+            "case": {
+              "et": "saav",
+              "en": "becoming, for",
+              "az": "kim olmaq? nə üçün?",
+              "ru": "кем стать? для чего?"
+            }
           }
         },
         {
@@ -35698,6 +36477,23 @@
             "en": "Until five",
             "az": "Beşədək",
             "ru": "До пяти"
+          },
+          "build": {
+            "forms": [
+              "viis",
+              "viie",
+              "viit"
+            ],
+            "on": 1,
+            "from": "viie",
+            "end": "ni",
+            "makes": "viieni",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         },
         {
@@ -35707,6 +36503,23 @@
             "en": "Until tomorrow",
             "az": "Sabahadək",
             "ru": "До завтра"
+          },
+          "build": {
+            "forms": [
+              "homne",
+              "homse",
+              "homset"
+            ],
+            "on": 1,
+            "from": "homse",
+            "end": "ni",
+            "makes": "homseni",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         },
         {
@@ -35716,6 +36529,23 @@
             "en": "Until when?",
             "az": "Nə vaxtadək?",
             "ru": "До каких пор?"
+          },
+          "build": {
+            "forms": [
+              "aeg",
+              "aja",
+              "aega"
+            ],
+            "on": 1,
+            "from": "aja",
+            "end": "ni",
+            "makes": "ajani",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         },
         {
@@ -35725,6 +36555,23 @@
             "en": "Until two o'clock",
             "az": "Saat ikiyədək",
             "ru": "До двух часов"
+          },
+          "build": {
+            "forms": [
+              "kaks",
+              "kahe",
+              "kahte"
+            ],
+            "on": 1,
+            "from": "kahe",
+            "end": "ni",
+            "makes": "kaheni",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         },
         {
@@ -35734,6 +36581,23 @@
             "en": "As far as Tartu",
             "az": "Tartuya qədər",
             "ru": "До Тарту"
+          },
+          "build": {
+            "forms": [
+              "Tartu",
+              "Tartu",
+              "Tartut"
+            ],
+            "on": 1,
+            "from": "Tartu",
+            "end": "ni",
+            "makes": "Tartuni",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         },
         {
@@ -35743,6 +36607,23 @@
             "en": "From morning till night",
             "az": "Səhərdən axşamadək",
             "ru": "С утра до вечера"
+          },
+          "build": {
+            "forms": [
+              "õhtu",
+              "õhtu",
+              "õhtut"
+            ],
+            "on": 1,
+            "from": "õhtu",
+            "end": "ni",
+            "makes": "õhtuni",
+            "case": {
+              "et": "rajav",
+              "en": "until, as far as",
+              "az": "nəyədək? haraya qədər?",
+              "ru": "до кого? до чего?"
+            }
           }
         }
       ]
@@ -35769,6 +36650,23 @@
             "en": "He works as a cook",
             "az": "O, aşpaz işləyir",
             "ru": "Он работает поваром"
+          },
+          "build": {
+            "forms": [
+              "kokk",
+              "koka",
+              "kokka"
+            ],
+            "on": 1,
+            "from": "koka",
+            "end": "na",
+            "makes": "kokana",
+            "case": {
+              "et": "olev",
+              "en": "as",
+              "az": "kim kimi?",
+              "ru": "кем? в качестве кого?"
+            }
           }
         },
         {
@@ -35778,6 +36676,23 @@
             "en": "As a child",
             "az": "Uşaq ikən",
             "ru": "Ребёнком"
+          },
+          "build": {
+            "forms": [
+              "laps",
+              "lapse",
+              "last"
+            ],
+            "on": 1,
+            "from": "lapse",
+            "end": "na",
+            "makes": "lapsena",
+            "case": {
+              "et": "olev",
+              "en": "as",
+              "az": "kim kimi?",
+              "ru": "кем? в качестве кого?"
+            }
           }
         },
         {
@@ -35787,6 +36702,23 @@
             "en": "As a teacher",
             "az": "Müəllim kimi",
             "ru": "Учителем"
+          },
+          "build": {
+            "forms": [
+              "õpetaja",
+              "õpetaja",
+              "õpetajat"
+            ],
+            "on": 1,
+            "from": "õpetaja",
+            "end": "na",
+            "makes": "õpetajana",
+            "case": {
+              "et": "olev",
+              "en": "as",
+              "az": "kim kimi?",
+              "ru": "кем? в качестве кого?"
+            }
           }
         },
         {
@@ -35796,6 +36728,23 @@
             "en": "Coffee without sugar",
             "az": "Şəkərsiz qəhvə",
             "ru": "Кофе без сахара"
+          },
+          "build": {
+            "forms": [
+              "suhkur",
+              "suhkru",
+              "suhkrut"
+            ],
+            "on": 1,
+            "from": "suhkru",
+            "end": "ta",
+            "makes": "suhkruta",
+            "case": {
+              "et": "ilmaütlev",
+              "en": "without",
+              "az": "-sız, -siz",
+              "ru": "без кого? без чего?"
+            }
           }
         },
         {
@@ -35805,6 +36754,23 @@
             "en": "Without milk",
             "az": "Südsüz",
             "ru": "Без молока"
+          },
+          "build": {
+            "forms": [
+              "piim",
+              "piima",
+              "piima"
+            ],
+            "on": 1,
+            "from": "piima",
+            "end": "ta",
+            "makes": "piimata",
+            "case": {
+              "et": "ilmaütlev",
+              "en": "without",
+              "az": "-sız, -siz",
+              "ru": "без кого? без чего?"
+            }
           }
         },
         {
@@ -35814,6 +36780,23 @@
             "en": "Without an umbrella",
             "az": "Çətirsiz",
             "ru": "Без зонта"
+          },
+          "build": {
+            "forms": [
+              "vihmavari",
+              "vihmavarju",
+              "vihmavarju"
+            ],
+            "on": 1,
+            "from": "vihmavarju",
+            "end": "ta",
+            "makes": "vihmavarjuta",
+            "case": {
+              "et": "ilmaütlev",
+              "en": "without",
+              "az": "-sız, -siz",
+              "ru": "без кого? без чего?"
+            }
           }
         },
         {
@@ -35823,6 +36806,23 @@
             "en": "Without you",
             "az": "Sənsiz",
             "ru": "Без тебя"
+          },
+          "build": {
+            "forms": [
+              "sina",
+              "sinu",
+              "sind"
+            ],
+            "on": 1,
+            "from": "sinu",
+            "end": "ta",
+            "makes": "sinuta",
+            "case": {
+              "et": "ilmaütlev",
+              "en": "without",
+              "az": "-sız, -siz",
+              "ru": "без кого? без чего?"
+            }
           }
         },
         {
@@ -35832,6 +36832,23 @@
             "en": "Coffee with milk",
             "az": "Südlü qəhvə",
             "ru": "Кофе с молоком"
+          },
+          "build": {
+            "forms": [
+              "piim",
+              "piima",
+              "piima"
+            ],
+            "on": 1,
+            "from": "piima",
+            "end": "ga",
+            "makes": "piimaga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35841,6 +36858,23 @@
             "en": "With a friend",
             "az": "Dostla",
             "ru": "С другом"
+          },
+          "build": {
+            "forms": [
+              "sõber",
+              "sõbra",
+              "sõpra"
+            ],
+            "on": 1,
+            "from": "sõbra",
+            "end": "ga",
+            "makes": "sõbraga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35850,6 +36884,23 @@
             "en": "With me",
             "az": "Mənimlə",
             "ru": "Со мной"
+          },
+          "build": {
+            "forms": [
+              "mina",
+              "minu",
+              "mind"
+            ],
+            "on": 1,
+            "from": "minu",
+            "end": "ga",
+            "makes": "minuga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35859,6 +36910,23 @@
             "en": "With whom?",
             "az": "Kimlə?",
             "ru": "С кем?"
+          },
+          "build": {
+            "forms": [
+              "kes",
+              "kelle",
+              "keda"
+            ],
+            "on": 1,
+            "from": "kelle",
+            "end": "ga",
+            "makes": "kellega",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35868,6 +36936,23 @@
             "en": "By bus",
             "az": "Avtobusla",
             "ru": "На автобусе"
+          },
+          "build": {
+            "forms": [
+              "buss",
+              "bussi",
+              "bussi"
+            ],
+            "on": 1,
+            "from": "bussi",
+            "end": "ga",
+            "makes": "bussiga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35877,6 +36962,23 @@
             "en": "By train",
             "az": "Qatarla",
             "ru": "На поезде"
+          },
+          "build": {
+            "forms": [
+              "rong",
+              "rongi",
+              "rongi"
+            ],
+            "on": 1,
+            "from": "rongi",
+            "end": "ga",
+            "makes": "rongiga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         },
         {
@@ -35886,6 +36988,23 @@
             "en": "With a knife",
             "az": "Bıçaqla",
             "ru": "Ножом"
+          },
+          "build": {
+            "forms": [
+              "nuga",
+              "noa",
+              "nuga"
+            ],
+            "on": 1,
+            "from": "noa",
+            "end": "ga",
+            "makes": "noaga",
+            "case": {
+              "et": "kaasaütlev",
+              "en": "with",
+              "az": "-la, -lə",
+              "ru": "с кем? чем?"
+            }
           }
         }
       ]

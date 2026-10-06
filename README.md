@@ -10326,6 +10326,41 @@ before, and opens its deck rather than the shelf; the lesson's eyebrow says
 *The cases, one by one* (`flashCases`) rather than *Grammar*. Every other lesson
 still goes back to the shelf.
 
+**And each card says how its ending was built.** The cards in those five
+decks are phrases — *Ta töötab kokana*, *Kohv piimaga* — so they carry none of
+the three forms every other card prints, and a learner turning *kokana* over
+was told it means *as a cook* and not where it came from. So on the back,
+under what it means, the word in the case gets its three forms with the one
+the ending goes on picked out in the accent, and under them the sum:
+
+```
+kokk · koka · kokka
+koka + na → kokana   olev · as
+```
+
+That is the whole lesson in one line — *kokana* is not a new word but the
+genitive with *-na* on it — and it needs no interface copy: a plus, an arrow,
+and an equals sign for the short forms a sum does not reach, *köögi + sse →
+köögisse = kööki*, *minu + l → minul = mul*. A plural builds on the plural
+genitive, *sõprade + ks → sõpradeks*, and marks none of the three, since none of
+them is what it came from. The first lesson's deck has no ending to add, since
+that lesson is the three forms themselves, and draws the row alone with the
+one on the card marked: *leib · leiva · **leiba*** under *Ma söön leiba*. The
+case's name and what it does close the line, in the reading language, taken
+from the lesson's own heading so the card says what the lesson called it. A
+card with no word in a case to build — *Kus sa oled?*, *Kuhu sa lähed?* and
+*Kust sa pärit oled?*, the second lesson's three questions — has no line at
+all rather than an invented one, so 67 of the 70 carry it.
+
+It is `build` on the card in `data/decks.json` — `forms`, the three; `on`,
+which of them is marked; `from` and `end`, the stem and the ending; `makes`,
+what they make; `short`, where the card is a shorter form of that; and `case`,
+`{ et, en, az, ru }`. `tools/validate.mjs` does the arithmetic rather than
+trusting it — `from + end` has to be `makes`, the marked form has to be the
+`from`, and what the line ends at has to be on the front — and refuses a
+`build` on a deck that is not a `case` deck, because everywhere else the three
+forms are `forms`. Like every form here they are mine, not a native speaker's.
+
 **Nothing is locked, on purpose.** A deck stays open whether its lesson has been
 read or not, and a later lesson is open before an earlier one is finished. The
 order on the shelf is the suggestion. It is grammar to study, not a path to walk,

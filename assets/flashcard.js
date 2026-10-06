@@ -2243,6 +2243,33 @@
     }, FLIGHT_MS);
   }
 
+  /* How the case on a card in a lesson's deck is built, under what it means:
+     the word's three forms, with the one the ending goes on picked out, and
+     then the sum — koka + na → kokana — with the case's name and what it
+     does at the end of the line. The point is that kokana is not a new word
+     to learn but koka with -na on it, and the line says so without a word of
+     interface: a plus, an arrow, and an equals sign for the short forms a
+     sum does not reach (köögi + sse → köögisse = kööki). A card in the first
+     lesson's deck has no ending, since that lesson is the three forms
+     themselves, and is the row of three with the one on the card marked. */
+  function buildLines(b) {
+    var forms = el('p', { className: 'flash-forms', lang: 'et' }, b.forms.map(function (form, i) {
+      return el('span', { className: 'flash-form' + (i === b.on ? ' is-stem' : ''), textContent: form });
+    }));
+    var sum = b.from ? el('span', { lang: 'et' }, [
+      b.from + ' + ',
+      el('span', { className: 'flash-end', textContent: b.end }),
+      ' → ' + b.makes + (b.short ? ' = ' + b.short : '')
+    ]) : null;
+    /* The case's name is Estonian and what it does is in the language the
+       page is read in, so only the name is marked lang="et". */
+    var named = el('span', { className: 'flash-case' }, [
+      el('span', { lang: 'et', textContent: b.case.et }),
+      ' · ' + means(b.case)
+    ]);
+    return el('div', { className: 'flash-build' }, [forms, el('p', { className: 'flash-sum' }, [sum, named])]);
+  }
+
   /* The card itself. A <button>, so the thumb, the keyboard and the screen
      reader all get the same thing — see .flash-card in assets/flashcard.css
      for why the whole card is the target and not a word on it. */
@@ -2267,6 +2294,7 @@
             el('span', { className: 'flash-form', textContent: word.forms[0] }),
             el('span', { className: 'flash-form', textContent: word.forms[1] })
           ]) : null,
+          word.build ? buildLines(word.build) : null,
           /* And the word in a sentence, at the foot of the card. A word on its
              own is a thing to recognise; a word in a sentence is a thing to
              say, and the case it is standing in there is half of what the
