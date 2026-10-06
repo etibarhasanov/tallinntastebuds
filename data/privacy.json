@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-05",
+  "updated": "2026-10-06",
   "title": {
     "en": "Privacy",
     "et": "Privaatsus",
@@ -176,57 +176,57 @@
     {
       "id": "analytics",
       "title": {
-        "en": "Google Analytics and Microsoft Clarity",
-        "et": "Google Analytics ja Microsoft Clarity",
-        "ru": "Google Analytics и Microsoft Clarity",
-        "uk": "Google Analytics і Microsoft Clarity",
-        "fi": "Google Analytics ja Microsoft Clarity",
-        "pt": "Google Analytics e Microsoft Clarity",
-        "es": "Google Analytics y Microsoft Clarity",
-        "tr": "Google Analytics ve Microsoft Clarity",
-        "az": "Google Analytics və Microsoft Clarity",
-        "hy": "Google Analytics և Microsoft Clarity"
+        "en": "Microsoft Clarity",
+        "et": "Microsoft Clarity",
+        "ru": "Microsoft Clarity",
+        "uk": "Microsoft Clarity",
+        "fi": "Microsoft Clarity",
+        "pt": "Microsoft Clarity",
+        "es": "Microsoft Clarity",
+        "tr": "Microsoft Clarity",
+        "az": "Microsoft Clarity",
+        "hy": "Microsoft Clarity"
       },
       "body": {
         "en": [
-          "The pages load Google Analytics, which counts visits and what is pressed, and Microsoft Clarity, which records how a visit moves through a page — scrolls, taps and the page as it changed — so the site can be made easier to use. Clarity hides whatever you type into a box.",
-          "Both set their own cookies on your device, and both may send what they collect to servers in the United States. They load without asking first. Blocking them in your browser or with an ad blocker leaves the site working exactly as before."
+          "The pages load Microsoft Clarity, which records how a visit moves through a page — scrolls, taps and the page as it changed — so the site can be made easier to use. Clarity hides whatever you type into a box.",
+          "It sets its own cookies on your device and may send what it collects to servers in the United States. It loads without asking first. Blocking it in your browser or with an ad blocker leaves the site working exactly as before."
         ],
         "et": [
-          "Lehed laadivad Google Analyticsi, mis loendab külastusi ja vajutusi, ning Microsoft Clarity, mis salvestab, kuidas külastus lehel liigub — kerimised, puudutused ja lehe muutumise —, et saiti saaks lihtsamaks teha. Clarity peidab kõik, mida kasti kirjutad.",
-          "Mõlemad panevad sinu seadmesse oma küpsised ja mõlemad võivad saata kogutu serveritesse Ameerika Ühendriikides. Need laaditakse enne küsimata. Kui blokeerid need brauseris või reklaamiblokeerijaga, töötab sait täpselt nagu varem."
+          "Lehed laadivad Microsoft Clarity, mis salvestab, kuidas külastus lehel liigub — kerimised, puudutused ja lehe muutumise —, et saiti saaks lihtsamaks teha. Clarity peidab kõik, mida kasti kirjutad.",
+          "See paneb sinu seadmesse oma küpsised ja võib saata kogutu serveritesse Ameerika Ühendriikides. See laaditakse enne küsimata. Kui blokeerid selle brauseris või reklaamiblokeerijaga, töötab sait täpselt nagu varem."
         ],
         "ru": [
-          "Страницы загружают Google Analytics, который считает посещения и нажатия, и Microsoft Clarity, который записывает, как визит движется по странице — прокрутки, касания и изменения страницы, — чтобы сайт можно было сделать удобнее. Clarity скрывает всё, что вы вводите в поля.",
-          "Оба ставят на ваше устройство свои куки, и оба могут отправлять собранное на серверы в США. Они загружаются без предварительного вопроса. Если заблокировать их в браузере или блокировщиком рекламы, сайт будет работать так же, как раньше."
+          "Страницы загружают Microsoft Clarity, который записывает, как визит движется по странице — прокрутки, касания и изменения страницы, — чтобы сайт можно было сделать удобнее. Clarity скрывает всё, что вы вводите в поля.",
+          "Он ставит на ваше устройство свои куки и может отправлять собранное на серверы в США. Он загружается без предварительного вопроса. Если заблокировать его в браузере или блокировщиком рекламы, сайт будет работать так же, как раньше."
         ],
         "uk": [
-          "Сторінки завантажують Google Analytics, який рахує відвідування і натискання, і Microsoft Clarity, який записує, як візит рухається сторінкою — прокручування, дотики і зміни сторінки, — щоб сайт можна було зробити зручнішим. Clarity приховує все, що ви вводите в поля.",
-          "Обидва ставлять на ваш пристрій власні кукі, і обидва можуть надсилати зібране на сервери в США. Вони завантажуються без попереднього запитання. Якщо заблокувати їх у браузері чи блокувальником реклами, сайт працюватиме так само, як раніше."
+          "Сторінки завантажують Microsoft Clarity, який записує, як візит рухається сторінкою — прокручування, дотики і зміни сторінки, — щоб сайт можна було зробити зручнішим. Clarity приховує все, що ви вводите в поля.",
+          "Він ставить на ваш пристрій власні кукі й може надсилати зібране на сервери в США. Він завантажується без попереднього запитання. Якщо заблокувати його в браузері чи блокувальником реклами, сайт працюватиме так само, як раніше."
         ],
         "fi": [
-          "Sivut lataavat Google Analyticsin, joka laskee käynnit ja painallukset, sekä Microsoft Clarityn, joka tallentaa, miten käynti etenee sivulla — vieritykset, napautukset ja sivun muuttumisen — jotta sivustosta voidaan tehdä helpompi käyttää. Clarity piilottaa kaiken, mitä kirjoitat kenttiin.",
-          "Molemmat asettavat laitteellesi omat evästeensä, ja molemmat voivat lähettää keräämänsä tiedot palvelimille Yhdysvaltoihin. Ne latautuvat kysymättä. Jos estät ne selaimessa tai mainosten estäjällä, sivusto toimii täsmälleen kuten ennenkin."
+          "Sivut lataavat Microsoft Clarityn, joka tallentaa, miten käynti etenee sivulla — vieritykset, napautukset ja sivun muuttumisen — jotta sivustosta voidaan tehdä helpompi käyttää. Clarity piilottaa kaiken, mitä kirjoitat kenttiin.",
+          "Se asettaa laitteellesi omat evästeensä ja voi lähettää keräämänsä tiedot palvelimille Yhdysvaltoihin. Se latautuu kysymättä. Jos estät sen selaimessa tai mainosten estäjällä, sivusto toimii täsmälleen kuten ennenkin."
         ],
         "pt": [
-          "As páginas carregam o Google Analytics, que conta visitas e o que é premido, e o Microsoft Clarity, que regista como uma visita percorre a página — deslizes, toques e as mudanças na página — para que o site possa ficar mais fácil de usar. O Clarity esconde tudo o que escreve numa caixa.",
-          "Ambos colocam os seus próprios cookies no seu dispositivo e ambos podem enviar o que recolhem para servidores nos Estados Unidos. Carregam sem perguntar primeiro. Bloqueá-los no navegador ou com um bloqueador de anúncios deixa o site a funcionar exatamente como antes."
+          "As páginas carregam o Microsoft Clarity, que regista como uma visita percorre a página — deslizes, toques e as mudanças na página — para que o site possa ficar mais fácil de usar. O Clarity esconde tudo o que escreve numa caixa.",
+          "Coloca os seus próprios cookies no seu dispositivo e pode enviar o que recolhe para servidores nos Estados Unidos. Carrega sem perguntar primeiro. Bloqueá-lo no navegador ou com um bloqueador de anúncios deixa o site a funcionar exatamente como antes."
         ],
         "es": [
-          "Las páginas cargan Google Analytics, que cuenta las visitas y lo que se pulsa, y Microsoft Clarity, que graba cómo avanza una visita por la página — desplazamientos, toques y cambios en la página — para poder hacer el sitio más fácil de usar. Clarity oculta todo lo que escribes en una casilla.",
-          "Ambos ponen sus propias cookies en tu dispositivo y ambos pueden enviar lo que recogen a servidores en Estados Unidos. Se cargan sin preguntar antes. Bloquearlos en el navegador o con un bloqueador de anuncios deja el sitio funcionando exactamente igual."
+          "Las páginas cargan Microsoft Clarity, que graba cómo avanza una visita por la página — desplazamientos, toques y cambios en la página — para poder hacer el sitio más fácil de usar. Clarity oculta todo lo que escribes en una casilla.",
+          "Pone sus propias cookies en tu dispositivo y puede enviar lo que recoge a servidores en Estados Unidos. Se carga sin preguntar antes. Bloquearlo en el navegador o con un bloqueador de anuncios deja el sitio funcionando exactamente igual."
         ],
         "tr": [
-          "Sayfalar, ziyaretleri ve basılanları sayan Google Analytics'i ve sitenin daha kolay kullanılabilmesi için bir ziyaretin sayfada nasıl ilerlediğini — kaydırmaları, dokunuşları ve sayfanın değişimini — kaydeden Microsoft Clarity'yi yükler. Clarity bir kutuya yazdığın her şeyi gizler.",
-          "Her ikisi de cihazına kendi çerezlerini yerleştirir ve topladıklarını Amerika Birleşik Devletleri'ndeki sunuculara gönderebilir. Önceden sormadan yüklenirler. Onları tarayıcında veya bir reklam engelleyiciyle engellemek siteyi tam olarak eskisi gibi çalışır halde bırakır."
+          "Sayfalar, sitenin daha kolay kullanılabilmesi için bir ziyaretin sayfada nasıl ilerlediğini — kaydırmaları, dokunuşları ve sayfanın değişimini — kaydeden Microsoft Clarity'yi yükler. Clarity bir kutuya yazdığın her şeyi gizler.",
+          "Cihazına kendi çerezlerini yerleştirir ve topladıklarını Amerika Birleşik Devletleri'ndeki sunuculara gönderebilir. Önceden sormadan yüklenir. Onu tarayıcında veya bir reklam engelleyiciyle engellemek siteyi tam olarak eskisi gibi çalışır halde bırakır."
         ],
         "az": [
-          "Səhifələr ziyarətləri və basılanları sayan Google Analytics-i və saytı istifadəsi daha asan etmək üçün ziyarətin səhifədə necə irəlilədiyini — sürüşdürmələri, toxunuşları və səhifənin dəyişməsini — qeydə alan Microsoft Clarity-ni yükləyir. Clarity xanaya yazdığın hər şeyi gizlədir.",
-          "Hər ikisi cihazına öz kukilərini yerləşdirir və hər ikisi topladığını ABŞ-dakı serverlərə göndərə bilər. Onlar əvvəlcədən soruşmadan yüklənir. Onları brauzerdə və ya reklam bloklayıcısı ilə bloklamaq saytın tam əvvəlki kimi işləməsinə mane olmur."
+          "Səhifələr saytı istifadəsi daha asan etmək üçün ziyarətin səhifədə necə irəlilədiyini — sürüşdürmələri, toxunuşları və səhifənin dəyişməsini — qeydə alan Microsoft Clarity-ni yükləyir. Clarity xanaya yazdığın hər şeyi gizlədir.",
+          "O, cihazına öz kukilərini yerləşdirir və topladığını ABŞ-dakı serverlərə göndərə bilər. O, əvvəlcədən soruşmadan yüklənir. Onu brauzerdə və ya reklam bloklayıcısı ilə bloklamaq saytın tam əvvəlki kimi işləməsinə mane olmur."
         ],
         "hy": [
-          "Էջերը բեռնում են Google Analytics-ը, որը հաշվում է այցերը և սեղմումները, և Microsoft Clarity-ն, որը գրանցում է, թե ինչպես է այցը շարժվում էջով՝ ոլորումները, հպումները և էջի փոփոխությունները, որպեսզի կայքը հնարավոր լինի ավելի հարմար դարձնել։ Clarity-ն թաքցնում է այն ամենը, ինչ գրում ես դաշտում։",
-          "Երկուսն էլ քո սարքում տեղադրում են իրենց թխուկները, և երկուսն էլ կարող են հավաքածն ուղարկել ԱՄՆ-ում գտնվող սերվերներ։ Դրանք բեռնվում են առանց նախապես հարցնելու։ Եթե դրանք արգելափակես դիտարկիչում կամ գովազդի արգելափակիչով, կայքը կաշխատի ճիշտ ինչպես նախկինում։"
+          "Էջերը բեռնում են Microsoft Clarity-ն, որը գրանցում է, թե ինչպես է այցը շարժվում էջով՝ ոլորումները, հպումները և էջի փոփոխությունները, որպեսզի կայքը հնարավոր լինի ավելի հարմար դարձնել։ Clarity-ն թաքցնում է այն ամենը, ինչ գրում ես դաշտում։",
+          "Այն քո սարքում տեղադրում է իր թխուկները և կարող է հավաքածն ուղարկել ԱՄՆ-ում գտնվող սերվերներ։ Այն բեռնվում է առանց նախապես հարցնելու։ Եթե այն արգելափակես դիտարկիչում կամ գովազդի արգելափակիչով, կայքը կաշխատի ճիշտ ինչպես նախկինում։"
         ]
       }
     },
@@ -313,43 +313,43 @@
       },
       "body": {
         "en": [
-          "Cloudflare hosts the site, its database and the chat, and its AI answers the chat's questions without keeping them. Google provides sign-in with Google, the fonts and Analytics; Microsoft provides Clarity. CARTO draws the map, so it receives your device's internet address in order to send the map tiles.",
+          "Cloudflare hosts the site, its database and the chat, and its AI answers the chat's questions without keeping them. Google provides sign-in with Google and the fonts; Microsoft provides Clarity. CARTO draws the map, so it receives your device's internet address in order to send the map tiles.",
           "If you press play on an Instagram, TikTok or YouTube video, that service's player loads and may set its own cookies. The flashcards' voice comes from the University of Tartu, which only ever receives the Estonian words on a card. If you ask the chat for somewhere near you, your location is sent with that one question and is not kept."
         ],
         "et": [
-          "Cloudflare majutab saiti, selle andmebaasi ja vestlust ning tema tehisintellekt vastab vestluse küsimustele neid hoidmata. Google pakub Google'iga sisselogimist, fonte ja Analyticsi; Microsoft pakub Clarityt. CARTO joonistab kaardi, seega saab ta sinu seadme internetiaadressi, et kaardiplaadid saata.",
+          "Cloudflare majutab saiti, selle andmebaasi ja vestlust ning tema tehisintellekt vastab vestluse küsimustele neid hoidmata. Google pakub Google'iga sisselogimist ja fonte; Microsoft pakub Clarityt. CARTO joonistab kaardi, seega saab ta sinu seadme internetiaadressi, et kaardiplaadid saata.",
           "Kui vajutad Instagrami, TikToki või YouTube'i video esitusnuppu, laaditakse selle teenuse mängija, mis võib panna oma küpsised. Mälukaartide hääl tuleb Tartu Ülikoolist, mis saab alati ainult kaardi eestikeelsed sõnad. Kui küsid vestluselt kohta enda lähedal, saadetakse sinu asukoht selle ühe küsimusega ja seda ei hoita."
         ],
         "ru": [
-          "Cloudflare размещает сайт, его базу данных и чат, а его ИИ отвечает на вопросы чата, не сохраняя их. Google обеспечивает вход через Google, шрифты и Analytics; Microsoft — Clarity. CARTO рисует карту и поэтому получает интернет-адрес вашего устройства, чтобы отправить фрагменты карты.",
+          "Cloudflare размещает сайт, его базу данных и чат, а его ИИ отвечает на вопросы чата, не сохраняя их. Google обеспечивает вход через Google и шрифты; Microsoft — Clarity. CARTO рисует карту и поэтому получает интернет-адрес вашего устройства, чтобы отправить фрагменты карты.",
           "Если вы нажмёте воспроизведение видео Instagram, TikTok или YouTube, загрузится плеер этого сервиса, который может поставить свои куки. Голос карточек — от Тартуского университета, который получает только эстонские слова с карточки. Если вы спрашиваете чат о месте рядом с вами, ваше местоположение отправляется вместе с этим одним вопросом и не хранится."
         ],
         "uk": [
-          "Cloudflare розміщує сайт, його базу даних і чат, а його ШІ відповідає на запитання чату, не зберігаючи їх. Google забезпечує вхід через Google, шрифти й Analytics; Microsoft — Clarity. CARTO малює мапу і тому отримує інтернет-адресу вашого пристрою, щоб надіслати фрагменти мапи.",
+          "Cloudflare розміщує сайт, його базу даних і чат, а його ШІ відповідає на запитання чату, не зберігаючи їх. Google забезпечує вхід через Google і шрифти; Microsoft — Clarity. CARTO малює мапу і тому отримує інтернет-адресу вашого пристрою, щоб надіслати фрагменти мапи.",
           "Якщо ви натиснете відтворення відео Instagram, TikTok чи YouTube, завантажиться плеєр цього сервісу, який може поставити власні кукі. Голос карток — від Тартуського університету, який отримує лише естонські слова з картки. Якщо ви питаєте чат про місце поруч із вами, ваше місцезнаходження надсилається разом із цим одним запитанням і не зберігається."
         ],
         "fi": [
-          "Cloudflare ylläpitää sivustoa, sen tietokantaa ja chattia, ja sen tekoäly vastaa chatin kysymyksiin säilyttämättä niitä. Google tarjoaa Google-kirjautumisen, fontit ja Analyticsin; Microsoft tarjoaa Clarityn. CARTO piirtää kartan, joten se saa laitteesi internetosoitteen lähettääkseen karttaruudut.",
+          "Cloudflare ylläpitää sivustoa, sen tietokantaa ja chattia, ja sen tekoäly vastaa chatin kysymyksiin säilyttämättä niitä. Google tarjoaa Google-kirjautumisen ja fontit; Microsoft tarjoaa Clarityn. CARTO piirtää kartan, joten se saa laitteesi internetosoitteen lähettääkseen karttaruudut.",
           "Jos painat Instagram-, TikTok- tai YouTube-videon toistopainiketta, palvelun soitin latautuu ja voi asettaa omia evästeitään. Sanakorttien ääni tulee Tarton yliopistolta, joka saa aina vain kortin virolaiset sanat. Jos kysyt chatilta paikkaa lähelläsi, sijaintisi lähetetään tuon yhden kysymyksen mukana eikä sitä säilytetä."
         ],
         "pt": [
-          "A Cloudflare aloja o site, a sua base de dados e o chat, e a sua IA responde às perguntas do chat sem as guardar. O Google fornece a entrada com o Google, os tipos de letra e o Analytics; a Microsoft fornece o Clarity. A CARTO desenha o mapa e, por isso, recebe o endereço de internet do seu dispositivo para enviar os mosaicos do mapa.",
+          "A Cloudflare aloja o site, a sua base de dados e o chat, e a sua IA responde às perguntas do chat sem as guardar. O Google fornece a entrada com o Google e os tipos de letra; a Microsoft fornece o Clarity. A CARTO desenha o mapa e, por isso, recebe o endereço de internet do seu dispositivo para enviar os mosaicos do mapa.",
           "Se carregar em reproduzir num vídeo do Instagram, TikTok ou YouTube, o leitor desse serviço é carregado e pode colocar os seus próprios cookies. A voz dos cartões vem da Universidade de Tartu, que só recebe as palavras em estónio de um cartão. Se pedir ao chat um sítio perto de si, a sua localização é enviada com essa pergunta e não é guardada."
         ],
         "es": [
-          "Cloudflare aloja el sitio, su base de datos y el chat, y su IA responde a las preguntas del chat sin guardarlas. Google ofrece el acceso con Google, las tipografías y Analytics; Microsoft ofrece Clarity. CARTO dibuja el mapa, así que recibe la dirección de internet de tu dispositivo para enviar las teselas del mapa.",
+          "Cloudflare aloja el sitio, su base de datos y el chat, y su IA responde a las preguntas del chat sin guardarlas. Google ofrece el acceso con Google y las tipografías; Microsoft ofrece Clarity. CARTO dibuja el mapa, así que recibe la dirección de internet de tu dispositivo para enviar las teselas del mapa.",
           "Si pulsas reproducir en un vídeo de Instagram, TikTok o YouTube, se carga el reproductor de ese servicio, que puede poner sus propias cookies. La voz de las tarjetas viene de la Universidad de Tartu, que solo recibe las palabras en estonio de una tarjeta. Si pides al chat un sitio cerca de ti, tu ubicación se envía con esa única pregunta y no se guarda."
         ],
         "tr": [
-          "Cloudflare siteyi, veritabanını ve sohbeti barındırır; yapay zekâsı sohbetteki soruları saklamadan yanıtlar. Google, Google ile girişi, yazı tiplerini ve Analytics'i; Microsoft ise Clarity'yi sağlar. CARTO haritayı çizer, bu yüzden harita parçalarını göndermek için cihazının internet adresini alır.",
+          "Cloudflare siteyi, veritabanını ve sohbeti barındırır; yapay zekâsı sohbetteki soruları saklamadan yanıtlar. Google, Google ile girişi ve yazı tiplerini; Microsoft ise Clarity'yi sağlar. CARTO haritayı çizer, bu yüzden harita parçalarını göndermek için cihazının internet adresini alır.",
           "Bir Instagram, TikTok veya YouTube videosunda oynat'a basarsan, o hizmetin oynatıcısı yüklenir ve kendi çerezlerini yerleştirebilir. Kartların sesi Tartu Üniversitesi'nden gelir ve bu üniversite yalnızca bir karttaki Estonca kelimeleri alır. Sohbete yakınında bir yer sorarsan, konumun yalnızca o soruyla birlikte gönderilir ve saklanmaz."
         ],
         "az": [
-          "Cloudflare saytı, onun verilənlər bazasını və söhbəti yerləşdirir, onun süni intellekti isə söhbətin suallarını saxlamadan cavablandırır. Google Google ilə girişi, şriftləri və Analytics-i, Microsoft isə Clarity-ni təmin edir. CARTO xəritəni çəkir, ona görə də xəritə parçalarını göndərmək üçün cihazının internet ünvanını alır.",
+          "Cloudflare saytı, onun verilənlər bazasını və söhbəti yerləşdirir, onun süni intellekti isə söhbətin suallarını saxlamadan cavablandırır. Google Google ilə girişi və şriftləri, Microsoft isə Clarity-ni təmin edir. CARTO xəritəni çəkir, ona görə də xəritə parçalarını göndərmək üçün cihazının internet ünvanını alır.",
           "Instagram, TikTok və ya YouTube videosunda oynat düyməsini bassan, həmin xidmətin oyunçusu yüklənir və öz kukilərini yerləşdirə bilər. Kartların səsi Tartu Universitetindən gəlir və o, yalnız kartdakı eston sözlərini alır. Söhbətdən yaxınlığında bir yer soruşsan, məkanın yalnız həmin sualla göndərilir və saxlanmır."
         ],
         "hy": [
-          "Cloudflare-ը հյուրընկալում է կայքը, նրա տվյալների բազան և զրուցարանը, իսկ նրա արհեստական բանականությունը պատասխանում է զրուցարանի հարցերին՝ առանց դրանք պահելու։ Google-ը տրամադրում է Google-ով մուտքը, տառատեսակները և Analytics-ը, Microsoft-ը՝ Clarity-ն։ CARTO-ն գծում է քարտեզը, ուստի ստանում է քո սարքի ինտերնետ հասցեն՝ քարտեզի սալիկներն ուղարկելու համար։",
+          "Cloudflare-ը հյուրընկալում է կայքը, նրա տվյալների բազան և զրուցարանը, իսկ նրա արհեստական բանականությունը պատասխանում է զրուցարանի հարցերին՝ առանց դրանք պահելու։ Google-ը տրամադրում է Google-ով մուտքը և տառատեսակները, Microsoft-ը՝ Clarity-ն։ CARTO-ն գծում է քարտեզը, ուստի ստանում է քո սարքի ինտերնետ հասցեն՝ քարտեզի սալիկներն ուղարկելու համար։",
           "Եթե սեղմես Instagram-ի, TikTok-ի կամ YouTube-ի տեսանյութի նվագարկումը, բեռնվում է այդ ծառայության նվագարկիչը, որը կարող է տեղադրել իր թխուկները։ Քարտերի ձայնը Տարտուի համալսարանից է, որը միշտ ստանում է միայն քարտի էստոներեն բառերը։ Եթե զրուցարանին հարցնում ես քո մոտակայքում գտնվող վայրի մասին, քո գտնվելու վայրն ուղարկվում է միայն այդ հարցի հետ և չի պահվում։"
         ]
       }

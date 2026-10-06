@@ -83,8 +83,8 @@ One write route, five read routes, five pages, nine tables.
 | a profile's own numbers — not the owner's page, but the same machinery | `insights.html` | `GET /api/insights` (`readInsights()` in `_visits.js`) | `countView()` and `countPress()` in `_visits.js`, handed `profile` and `profile-press` by `stats.js` | `profile_counts`; `view_seen` for the once-a-day rule |
 
 The browser's half is `assets/track.js`, loaded on every page but
-`/admin/`: `TTBTrack.event(name, params)` tallies a press and sends it to
-Google and Clarity; `TTBTrack.view(title)` reports a place, post or deck
+`/admin/`: `TTBTrack.event(name, params)` tallies a press and sends its name
+to Clarity; `TTBTrack.view(title)` reports a place, post or deck
 opened; `TTBTrack.about(what, id)` says which story, post, deck or deal the
 page showed; `arrive()` sends one report as the page opens and `putAway()`
 one each time it is hidden, carrying the seconds on screen, the tally, the
@@ -121,7 +121,7 @@ validator passes and the page draws.
    `{ok:false}` to any report but `venue` that carries the owner's session
    before anything is counted — `press_counts` and `profile_counts`
    included, since 2026-10-04 — and the browser it signs in on carries
-   `ttb_owner`, which keeps Google, Clarity and every beacon out of the
+   `ttb_owner`, which keeps Clarity and every beacon out of the
    count even signed out (`ownerCookie()` in `_admin.js`); `countUse()` checks `adminIds()` itself;
    `ask.js` leaves the owner out the same way; `realList()` and `_visits.js`
    refuse the owner of a list or a profile. A new counter leaves the owner

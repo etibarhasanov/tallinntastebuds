@@ -1,29 +1,27 @@
-/* Tallinn Tastebuds — the two analytics tags, said once.
+/* Tallinn Tastebuds — the analytics tag, said once.
  *
- * Google Analytics counts, and takes the events assets/track.js sends beside
- * it. Microsoft Clarity records the page instead of counting it: heatmaps of
+ * Microsoft Clarity records the page rather than counting it: heatmaps of
  * where presses and scrolls land, and a replay of the DOM as it changed
- * through a visit. Both load on every page but admin.html — the list at the
- * top of tools/stamp.mjs — and both load from here rather than from a snippet
- * pasted into each head, which would have been Google's block in every one of
- * them and Microsoft's in every one again, and two ids to change in twice as
- * many places as there are pages. Same reason assets/track.js exists rather
- * than seven copies of three functions.
+ * through a visit. It loads on every page but admin.html — the list at the
+ * top of tools/stamp.mjs — and from here rather than from a snippet pasted
+ * into each head, which would have been Microsoft's block in every one of
+ * them and an id to change in as many places as there are pages. Same reason
+ * assets/track.js exists rather than seven copies of three functions.
  *
  * THERE WAS A CONSENT BAR HERE, AND IT WAS TAKEN OUT ON PURPOSE
  *
- * For a day this file was assets/consent.js and it asked before either tag
- * loaded — first as a bar with one sentence, then as a dialog listing what
- * was used regardless and what agreeing added on top. Neither is here now.
- * That was the owner's decision, made after the case for keeping it, and it
- * is written down so the next session does not spend an afternoon deciding it
- * was an oversight:
+ * For a day this file was assets/consent.js and it asked before the tag
+ * loaded — first as a bar with one sentence, then
+ * as a dialog listing what was used regardless and what agreeing added on
+ * top. Neither is here now. That was the owner's decision, made after the
+ * case for keeping it, and it is written down so the next session does not
+ * spend an afternoon deciding it was an oversight:
  *
  * ePrivacy, which Estonia applies, asks whether you wrote to somebody's
  * device — not whether what you wrote was personal data — and analytics
- * cookies are not "strictly necessary". This file writes `_ga`, `_ga_*`,
- * `_clck` and `_clsk` with nobody asked, and a session replay is a recording
- * of somebody's visit. Putting the question back is a revert, not a
+ * cookies are not "strictly necessary". This file writes `_clck` and
+ * `_clsk` with nobody asked, and a session replay is a recording of
+ * somebody's visit. Putting the question back is a revert, not a
  * discussion: `git log` has both versions of it, and the reasoning with them.
  *
  * WHY consentv2 GOES OUT WITH NOTHING IN FRONT OF IT
@@ -39,11 +37,11 @@
  * TO REMOVE TRACKING
  *
  * Delete this file's script tag from every page that carries it, or the
- * file. Everything in assets/track.js checks for window.gtag and returns
- * quietly when it is missing — written for visitors running an ad blocker,
- * and it covers this too — so every call site becomes a harmless no-op and
- * none of them has to change. To drop one tag and keep the other, delete its
- * half below.
+ * file. assets/track.js checks for window.clarity and goes quietly without
+ * it — written for visitors running an ad blocker, and it covers this too —
+ * so every call site becomes a harmless no-op and none of them has to
+ * change. The site's own count does not ride on this file and keeps
+ * running.
  *
  * NOT ON admin.html
  *
@@ -56,36 +54,26 @@
  *
  * NOT IN THE OWNER'S BROWSER EITHER
  *
- * The owner asked to be out of every statistic, these two included. The
- * server cannot keep them out — both count from here, before anything has
- * asked who is signed in — so it tells the browser instead: a `ttb_owner`
- * cookie, set when the account route or a page under /admin/ sees the
- * owner's session, and kept a year so that signing out does not put the
- * owner's own devices back in. Where it is, neither tag loads and
- * window.gtag is never defined, which assets/track.js already reads as "no
- * Google here". THE OWNER'S BROWSER in functions/api/_admin.js is the rest.
+ * The owner asked to be out of every statistic, this one included. The
+ * server cannot keep them out — Clarity records from here, before anything
+ * has asked who is signed in — so it tells the browser instead: a
+ * `ttb_owner` cookie, set when the account route or a page under /admin/
+ * sees the owner's session, and kept a year so that signing out does not
+ * put the owner's own devices back in. Where it is, the tag does not load
+ * and window.clarity is never defined, which assets/track.js already reads
+ * as "no Clarity here". THE OWNER'S BROWSER in functions/api/_admin.js is
+ * the rest.
  */
 (function () {
   'use strict';
 
   if (/(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie)) return;
 
-  var GA = 'G-2XNTC15F28';
   var CLARITY = 'yay3pxtg4w';
 
-  /* Google's snippet, as its console emits it. gtag is defined synchronously
-     — only the script it fetches is async — so a TTBTrack call in the same
-     tick queues rather than falling on the floor. */
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  window.gtag('js', new Date());
-  window.gtag('config', GA);
-  var g = document.createElement('script');
-  g.async = true;
-  g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA;
-  document.head.appendChild(g);
-
-  /* Microsoft's, likewise. window.clarity is a queue until its script lands. */
+  /* Microsoft's snippet, as its console emits it. window.clarity is defined
+     synchronously as a queue — only the script it fetches is async — so a
+     TTBTrack call in the same tick queues rather than falling on the floor. */
   (function (c, l, a, r, i, t, y) {
     c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
     t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;

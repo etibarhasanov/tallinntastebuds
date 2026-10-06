@@ -2,12 +2,11 @@
  * Tallinn Tastebuds — who came to the site, roughly, and what they did.
  *
  * /admin/visitors is drawn out of this file and nothing else. It answers the
- * questions Google Analytics is open in a tab to answer — how many people
- * came each day, how many had been before, from which country and from
- * where, which pages they read and for how long, and what they pressed — out
- * of the site's own database, so the day Google's tag comes out the numbers
- * do not go with it. Not to be confused with ./_visits.js, which is the same
- * idea for one person's /u/<name> and is read by that person on /insights;
+ * questions — how many people came each day, how many had been before, from
+ * which country and from where, which pages they read and for how long, and
+ * what they pressed — out of the site's own database. Not to be confused
+ * with ./_visits.js, which is the same idea for one person's /u/<name> and
+ * is read by that person on /insights;
  * this is the whole site, and it is the owner's.
  *
  *   countArrive()   a page opened — called from POST /api/stats
@@ -27,9 +26,7 @@
  * this browser opened a page here. A page opened on a day that is not that
  * one is the browser's first today, and it says so with `first`; `back` is
  * whether there was an earlier day at all — by `ttb.since`, the first day it
- * came, which the page takes from Google's `_ga` cookie where that remembers
- * an earlier one, since this count is younger than the site (arrive() in
- * assets/track.js). That is the whole of it. No id is
+ * came (arrive() in assets/track.js). That is the whole of it. No id is
  * sent, no address is read, no fingerprint is made, and nothing here could
  * tell one visitor from another if it tried: the table hears "a new visitor
  * today" or "a returning one" and adds one.
@@ -38,10 +35,9 @@
  * off is never a visitor, only views — undercounted rather than counted on
  * every page. Two browsers are two visitors, a phone and a laptop of the same
  * person included, and clearing site data makes a returning visitor new
- * again. GA has every one of the same limits with a cookie in place of the
- * date, which is to say this and GA should agree to within a few percent,
- * and when they do not, bots are the usual reason: a crawler that runs no
- * script never reaches this at all, and GA filters only the ones it knows.
+ * again. A cookie in place of the date would have every one of the same
+ * limits. Bots mostly never reach it: a crawler that runs no script never
+ * reaches this at all.
  *
  * The date is written on to the visitor's device, and whether that needs
  * asking first is a question about the law rather than about this file.
@@ -87,7 +83,7 @@
  *            the address once sent, so it is not shared onwards
  *   search   `<words>`: what was typed into one of the site's own search
  *            fields, once the typing settled — the `search` events the
- *            pages already report to Google, caught by assets/track.js and
+ *            pages already report, caught by assets/track.js and
  *            carried on the report a page sends when it is put away
  *   nothing  the same words, where the field said it found nothing
  *
@@ -179,7 +175,7 @@
  * the owner's among them, were most of the returning visitors' minutes
  * and presses, and a page about who comes to the site should not be read
  * through the person who built it. Signed out, the owner is a visitor
- * like anybody, as in GA.
+ * like anybody.
  *
  * NEW AGAINST RETURNING
  *
@@ -297,8 +293,7 @@
  * WHAT IT WAS ABOUT
  *
  * A press name says what was done and never to what: `story_view` is a
- * story come up, and which one is a parameter Google hears and this table
- * does not. So for the four things the owner makes and wants to know the
+ * story come up, and which one is a parameter this table does not keep. So for the four things the owner makes and wants to know the
  * reach of, a page also says which, through TTBTrack.about() in
  * assets/track.js, once per thing per load, on the report it next sends —
  * and it is counted under the `about` kind as `<what>:<id>`:
@@ -417,8 +412,8 @@
  * first MAX_NAMES, along with the sign-ins and accounts made that NEW
  * AGAINST RETURNING counts. Nothing typed is in any of it: the error is one
  * of the words ./account.js answers, and a word not on the list is not
- * counted here. A name also rides on the press kind as every press does, and
- * GA hears it with the view and the reason as parameters. Pages, not people,
+ * counted here. A name also rides on the press kind as every press does,
+ * and Clarity hears it as a custom event. Pages, not people,
  * as everything here is: a funnel of counts, never one person's way through.
  *
  * THE LAST HALF HOUR
@@ -609,7 +604,7 @@ const PRESS = /^[a-z][a-z0-9_]{1,39}$/;
 
 /* The `?from=` tag on a link, the longest page elsewhere kept as one
    that linked here, and the search fields whose words are counted — the
-   `scope` each already reports to Google under. HOW THEY FOUND IT. */
+   `scope` each already reports under. HOW THEY FOUND IT. */
 export const TAG = /^[a-z0-9][a-z0-9_-]{0,39}$/;
 const MAX_REF = 120;
 const SCOPES = ['map', 'find', 'google', 'lists', 'list'];

@@ -192,8 +192,9 @@ visitor to open a place is a third, and it belongs there in the same commit — 
 **Statistics** in `README.md`, which is also where the reasoning for what is
 deliberately *not* counted lives.
 
-**Every button reports.** A press that matters is reported to Google
-Analytics through the global `assets/track.js` sets, on every page:
+**Every button reports.** A press that matters is reported — to the
+site's own count and to Clarity — through the global `assets/track.js` sets,
+on every page:
 `TTBTrack.event(name, params)` in a handler, `TTBTrack.click(node, name,
 params)` around a link or button built inline, and `data-track="name"` on
 one written straight into the markup. The name says what the person meant
@@ -231,13 +232,13 @@ page itself — heatmaps, and a replay of the DOM as it changed. Nothing calls
 into it, so a new button needs nothing here. Two things do:
 
 - **A new page carries `assets/analytics.js`**, in its head, deferred, before
-  every other script on the page. That one file is the whole of analytics: both
-  snippets and the consentv2 signal Clarity needs. Copy the tag from the page
+  every other script on the page. That one file is the whole of analytics: Clarity's
+  snippet and the consentv2 signal it needs. Copy the tag from the page
   whose asset spelling yours shares — `lists.html` writes `/assets/...` from
   the root, `index.html` writes `assets/...` relative, and the head of
   `tools/stamp.mjs` says why they disagree. A page that ships without it is
-  invisible in both GA and Clarity, and fails nothing while nobody notices.
-  `admin.html` is the one page that deliberately has neither; the head of
+  invisible to Clarity, and fails nothing while nobody notices.
+  `admin.html` is the one page that deliberately does without; the head of
   `analytics.js` says why, and it is not an oversight to correct.
 - **Anything a replay should not hold gets `data-clarity-mask="true"`.**
   Clarity masks every input box and dropdown in all three of its masking
@@ -253,11 +254,10 @@ clarity.microsoft.com, Balanced by default, which masks numbers and email
 addresses on top of the input boxes. A change that leans on it says so in the
 PR, because nobody reviewing the diff can see it.
 
-**Nothing asks first.** Both tags load on sight, and the banner that stood in
-front of them for a day was taken out on purpose — **No consent banner** in
+**Nothing asks first.** Clarity loads on sight, and the banner that stood in
+front of it for a day was taken out on purpose — **No consent banner** in
 `README.md` is the reasoning, and it is not an oversight to correct. Driving
-any page in a browser therefore reports into the live GA property and the live
-Clarity project, including a preview; there is no longer a button to press to
+any page in a browser therefore records into the live Clarity project, including a preview; there is no longer a button to press to
 stay out of the numbers.
 
 **A clip on a blog post is a scene, and a scene is a function of time.**
@@ -470,9 +470,8 @@ it, and what was driven in a browser to check it.
 - A new page that renders light for somebody who chose the dark style,
   because the boot block was not copied.
 - A new page shipped without `assets/analytics.js` in its head, so nothing it
-  does reaches either GA or Clarity. It fails nothing and nobody notices for
-  months; that is how the map came to be the only page GA had heard of, and
-  how `blog.html` arrived carrying a script tag for a file that no longer
+  does reaches Clarity. It fails nothing and nobody notices for months; that
+  is how `blog.html` arrived carrying a script tag for a file that no longer
   existed — the validator caught that one, because it checks every `assets/`
   reference against the repo.
 - A rewritten card that loses its `data-clarity-mask`, putting whatever it

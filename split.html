@@ -6,11 +6,11 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
-     two snippets pasted into every head. assets/analytics.js holds the ids and
-     the consentv2 signal Clarity needs, and its head carries the reasoning of
-     the consent bar that stood in front of both of them for a day. -->
-<script src="/assets/analytics.js?v=ff6f3c33" defer></script>
+<!-- Analytics: Microsoft Clarity, from one file rather than a snippet
+     pasted into every head. assets/analytics.js holds the id and the
+     consentv2 signal Clarity needs, and its head carries the reasoning of the
+     consent bar that stood in front of it for a day. -->
+<script src="/assets/analytics.js?v=43d1c258" defer></script>
 
 <!-- Everything between the markers is swapped by functions/split.js for the
      tags of whichever group ?g= names, so a link pasted into a message arrives
@@ -85,10 +85,11 @@
   </div>
 </noscript>
 
-<!-- What every press reports to Google Analytics, shared by every page.
+<!-- What every press reports, to Clarity and to the site's own count,
+     shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=c063dc65" defer></script>
+<script src="/assets/track.js?v=2ebd2c3f" defer></script>
 <script src="/assets/split.js?v=8886a9ff" defer></script>
 </body>
 </html>

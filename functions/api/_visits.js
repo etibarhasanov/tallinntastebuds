@@ -6,7 +6,7 @@
  * list on /admin/stats. It answers three questions
  * about /u/<you>, for its owner and nobody else: how often it was opened,
  * where the people opening it came from, and what on it they pressed.
- * Google Analytics already knows all three for the whole site; what it
+ * The site's own count knows all three for the whole site; what it
  * cannot do is hand one person the slice that is about their own page.
  *
  *   countView()     one open of a profile — called from POST /api/stats
@@ -37,7 +37,7 @@
  *
  * ONCE A DAY, WHOEVER IS REFRESHING
  *
- * A reload used to be another view, the way it is another page view in GA.
+ * A reload used to be another view, the way it is another page load.
  * It is not any more, because the number is one somebody reads as "how many
  * people looked", and a page refreshed twenty times by one visitor — or by a
  * script, to make a list look popular — answered that wrongly. So an open of
@@ -75,7 +75,7 @@
  * says nothing. Instagram, TikTok and Facebook open a link from a bio in a
  * browser of their own, and those browsers frequently send no referrer at
  * all — which is why a view from Instagram usually reads as "direct" in any
- * counter that only reads the referrer, and why GA only "sometimes" says
+ * counter that only reads the referrer, and only "sometimes" says
  * Instagram. Each of those in-app browsers names itself in its user agent,
  * though: "Instagram 312.0…", "BytedanceWebview" or "musical_ly", "FBAN" or
  * "FBAV". That is read first, because it is the more certain of the two,
