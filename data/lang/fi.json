@@ -1195,7 +1195,8 @@
   "writeErrMany": "Tili ei voi juuri nyt aloittaa enempää kirjoituksia.",
   "writeErrGeneric": "Tallennus ei onnistunut. Yritä hetken päästä uudelleen.",
   "writeBack": "Kaikki kirjoituksesi",
-  "blogHouse": "Muistiinpanot kartalta"
+  "blogHouse": "Muistiinpanot kartalta",
+  "writeYourBlog": "Blogisi"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

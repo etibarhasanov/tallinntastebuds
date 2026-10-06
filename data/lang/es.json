@@ -1195,7 +1195,8 @@
   "writeErrMany": "Es el máximo de entradas que una cuenta puede empezar por ahora.",
   "writeErrGeneric": "No se guardó. Inténtalo de nuevo en un momento.",
   "writeBack": "Todas tus entradas",
-  "blogHouse": "Notas del mapa"
+  "blogHouse": "Notas del mapa",
+  "writeYourBlog": "Tu blog"
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",

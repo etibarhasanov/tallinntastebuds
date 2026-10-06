@@ -518,6 +518,10 @@
         el('p', { className: 'lists-say', textContent: t('writeLead') }),
         el('p', { className: 'lists-row lists-foot' }, [
           start,
+          /* Your blog as everybody reads it — every post you published, under
+             your name, ten at a time — and your profile, where they are listed
+             under your lists. */
+          TTBTrack.click(el('a', { className: 'alt', href: '/blog?by=' + encodeURIComponent(state.user), textContent: t('writeYourBlog') }), 'write_blog_mine'),
           TTBTrack.click(el('a', { className: 'alt', href: '/u/' + encodeURIComponent(state.user), textContent: t('profileYours') }), 'profile_open', { name: state.user })
         ])
       ]),

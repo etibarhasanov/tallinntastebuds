@@ -11659,7 +11659,9 @@ Anybody with an account can write for the blog. The account page has a row,
 **Your posts**, and a person's own profile has **Write a post** under their
 posts; both go to `/write`, which lists their posts — drafts and published —
 and opens one in the editor at `/write?post=<id>` (`?post=new` for one that
-has never been saved).
+has never been saved). Every member has a blog of their own the moment they
+publish: `/blog?by=<name>`, everything they published under their name, which
+`/write` links as **Your blog** and their profile links under their posts.
 
 ```
 /write                     your posts, a page at a time, and New post
@@ -11669,6 +11671,7 @@ has never been saved).
 /blog?post=<id>            one post — the house's or a member's
 /blog?by=<name>            one person's posts, ten at a time
 /u/<name>                  their profile, with their posts under their lists
+                           and the way to their blog, ?by=, under those
 /blog/sitemap              every published member's post, for a crawler
 ```
 
@@ -17099,6 +17102,7 @@ Writing a post, `assets/write.js`, and the doors to it:
 | --- | --- |
 | `write_open` | — the row on the account page |
 | `write_blog` | — the blog, in the header |
+| `write_blog_mine` | — Your blog, on your posts: `/blog?by=` your own name |
 | `write_new` | — New post, on your posts |
 | `write_language` | `lang` — a language added to a post |
 | `write_place` | `place` — a place from the map put into a post |
