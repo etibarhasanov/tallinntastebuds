@@ -759,9 +759,13 @@
   /* Asked so that "the site did not answer" and "the site answered no" stay
      apart: the first is a network this page cannot fix and the second is a
      fact about the deployment or about the deck. Copied from
-     assets/account.js, which says the same thing at more length. */
-  function ask(url) {
-    return fetch(url, { headers: { accept: 'application/json' } })
+     assets/account.js, which says the same thing at more length.
+
+     `started` is a fetch for the same address that is already under way —
+     the one assets/flashcard-first.js sends before this file has arrived, and
+     boot() is the only caller that passes one. */
+  function ask(url, started) {
+    return (started || fetch(url, { headers: { accept: 'application/json' } }))
       .then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (out) {
           return { status: res.status, ok: res.ok, out: out || {} };
@@ -3817,7 +3821,17 @@
     query.set('lang', wanted().join(','));
     if (asked) query.set('deck', asked);
 
-    ask(FLASH_API + '?' + query.toString()).then(function (answer) {
+    /* Usually already asked: assets/flashcard-first.js works out the same
+       address in the head and sends it while this file is still downloading.
+       Taken only when the two addresses are the same, so a drift between the
+       two files costs a request and never the wrong answer; and taken over
+       either way, so a copy of that script arriving after this one asks
+       nothing. */
+    var url = FLASH_API + '?' + query.toString();
+    var first = window.TTBFlashFirst;
+    window.TTBFlashFirst = { url: '', response: null };
+
+    ask(url, first && first.url === url ? first.response : null).then(function (answer) {
       /* Nothing arrived, not even the words to say so. What is left is the
          markup's own English and whatever functions/flashcard.js wrote into
          the page as text — the decks as a list of links, or one deck's words —
