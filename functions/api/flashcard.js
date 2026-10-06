@@ -3,7 +3,7 @@
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
  * menu. This is the other half of that: forty-seven decks of Estonian, two
- * thousand one hundred and seventy-four cards, Estonian on the front and what it
+ * two thousand two hundred and eighty-one cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,

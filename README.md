@@ -8451,7 +8451,7 @@ this feature exists.
 
 A site about eating in Tallinn is read mostly by people who cannot read the
 menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-seven
-decks of Estonian, two thousand one hundred and seventy-four cards, the
+decks of Estonian, two thousand two hundred and eighty-one cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -8625,7 +8625,7 @@ the one people are given; this only settles which of them a crawler keeps.
 ### Where the words are, and it is mostly not the database
 
 `data/decks.json` is the Estonian the site ships: forty-seven decks, two
-thousand one hundred and seventy-four cards, deployed as a file and read as one. It
+thousand two hundred and eighty-one cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -9852,7 +9852,7 @@ that is the genitive and the partitive; for a verb it is the *da*-infinitive
 and the first person singular, so **minema, minna, lähen**, which is the same
 three a dictionary gives and the same job they do. It is optional
 because most of two decks are phrases: *Kas see laud on vaba?* has no principal
-parts, and a row of three under it would be nonsense. **1,481 of the 2,174
+parts, and a row of three under it would be nonsense. **1,570 of the 2,281
 cards carry them** today; the ones that do not are the phrases, the adverbs, the
 garments that are plural in Estonian — *teksad* has no singular anybody wears —
 and a handful of words left alone rather than guessed at. `tools/validate.mjs`
@@ -9869,14 +9869,17 @@ got.
 here. They are the forms of common words and I am confident in them; they have
 not been checked by anybody who grew up with the language.
 
-**One batch of words is a course book's, and that is worth saying.** Three
-hundred and sixty-seven of the cards — the pronouns and *olema*, the question
+**One batch of words is a course book's, and that is worth saying.** Four
+hundred and seventy-four of the cards — the pronouns and *olema*, the question
 words, the countries and what you call somebody from one, the language course,
 and the everyday adverbs and nouns the first lessons of a beginner's course
 teach alongside them, and then the next four lessons' worth: the clock and the
 timetable, the seasons and the garden, the colours, a family down to its
-in-laws, and forty more verbs — came off the word lists printed at the back of
-one, headword, principal parts and gloss together. So for those the Estonian
+in-laws, and forty more verbs, and after them lessons eight to eleven: a free
+day and the sport in it, breakfast and what it is eaten off, who does what for
+a living and the schooling it took, and the market with its prices — came off
+the word lists printed at the back of one, headword, principal parts and gloss
+together. So for those the Estonian
 and the Russian are a published book's rather than mine, which is the one part
 of this deck that has been through an editor. The sentences under them and the
 Azerbaijani beside them are still mine, and those are where the mistakes will
@@ -9909,6 +9912,20 @@ shop, the counter — and like the rest they are mine, not a native speaker's.
 *Vastu ajama* — to do, to be good enough, *Vana jope ajab veel vastu* — is the
 one I am least sure of.
 
+**Lessons eight to eleven were mostly here already.** Their four pages of the
+list hold 282 headwords and 176 of them were on a card before those pages were
+read — *leib*, *kohv*, *arst* and *pood* had come in with the menu and the
+glossary long before — so the 107 that came in are the ones that were not,
+filed into the deck each one belongs in rather than into a deck of their own,
+and only into decks under *Getting by* and *Going deeper*. Nothing went into
+*First words* or *At a restaurant*, because those two are the 397 cards the
+four-hundred gate is counted against, and a card added there moves the gate.
+*Koor* came in a second time, as a choir, beside the cream it already was. That
+book's list prints German and Finnish beside the English and the Russian, and
+those two columns were left where they are: **Three languages, not ten** is why.
+Its verbs printed bare — *kohtuma*, *koristama*, *lubama*, with no parts after
+them — have parts here anyway, and those two are mine rather than the book's.
+
 ### And the word in a sentence
 
 Under the forms, where a card has one: the Estonian and what it means, as two
@@ -9923,7 +9940,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **986 of the 2,174 cards** carry
+would be a stray clause with no translation. **986 of the 2,281 cards** carry
 one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
 bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
@@ -10289,7 +10306,7 @@ quiet press: **Something is wrong here**. It reports the card and says
 and the next card is up.
 
 It is here because of the two paragraphs above it. The Estonian on this site is
-mine, the one thousand three hundred and thirteen headwords out of a course
+mine, the one thousand four hundred and twenty headwords out of a course
 book aside: the forms are the forms of common words and I am confident in
 them, the sentences are sentences I would say, and none of it has been read by
 anybody who grew up with the language. One thousand nine hundred and sixty
@@ -14067,7 +14084,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-seven decks of Estonian, 2,174 cards under four
+data/decks.json            forty-seven decks of Estonian, 2,281 cards under four
                            headings and the songs', four lessons of grammar and
                            four songs; content rather
                            than interface, and written in three languages

@@ -279,7 +279,7 @@ if (splitUi !== null) {
 
 /* -------------------------------------------------------------- FLASHCARDS
    data/decks.json — the Estonian the flashcards page ships: forty-seven decks
-   and two thousand one hundred and seventy-four cards, deployed as a file and read
+   and two thousand two hundred and eighty-one cards, deployed as a file and read
    as one.
    It is content rather than interface, so the ten languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
