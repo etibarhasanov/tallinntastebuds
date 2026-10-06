@@ -2411,9 +2411,12 @@ for (const [page, empty] of Object.entries(EMPTY)) {
 
 /* And the sitemap, which names the map at each of its ten addresses with a
    link to all ten on every one: a language added to ui.json without it is a
-   page a search engine is never told about. */
+   page a search engine is never told about, and so is a place, a deck, a
+   lesson, a song, a post, a Google list or a face. The message names every
+   file the tool reads, because the one that moved is rarely the one a
+   session would guess. */
 if (staleSitemap()) {
-  fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json and data/taxonomy.json — run `node tools/sitemap.mjs` and commit the result');
+  fail('sitemap.xml', 'is not what tools/sitemap.mjs would write from data/ui.json, data/restaurants.json, data/decks.json, data/blog.json, tools/googlelists.mjs and assets/faces/ — run `node tools/sitemap.mjs` and commit the result');
 }
 
 /* And the diagrams on /admin/flows — one BPMN file per kind of person, laid out
