@@ -87,10 +87,20 @@
  * **Songs, which are listened to** under **Flashcards** in README.md is the
  * reasoning.
  *
+ * AND THE CONVERSATIONS, WHICH ARE READ
+ *
+ * After the songs, a heading of conversations: ten sheets from Keeletee's B1
+ * course, each a question put to four people, or a scene at a restaurant
+ * table, every turn the Estonian with what it means under it in the language
+ * the page is being read in and a speaker beside it that says the turn aloud.
+ * Read it at the foot is Got it again, under the deck id TALKS. talkCard() is
+ * the drawing, and **Conversations, which are read** under **Flashcards** in
+ * README.md is the reasoning.
+ *
  * WHERE YOU LEFT OFF
  *
  * The front door reopens what this device had open — the deck a run was going
- * in, or the lesson being read, or the song — rather than the shelf, for somebody signed
+ * in, or the lesson being read, or the song, or the conversation — rather than the shelf, for somebody signed
  * in. rememberHere() below writes it and boot() reads it; **Where you left
  * off** under **Flashcards** in README.md says why it is the device's and not
  * the account's.
@@ -274,6 +284,8 @@
     lesson: null,    // the one being read, whole, with its body
     songs: [],       // the songs on the shelf: id, name, why, heard
     song: null,      // the one being listened to, whole, with its words
+    talks: [],       // the conversations on the shelf: id, name, why, read
+    talk: null,      // the one being read, whole, with its scenes
     run: null,       // the cards left to turn over, and where in them we are
     gated: false,    // whether the gate stands in place of the next card
     words: 0,        // how many shipped cards this person knows, all decks
@@ -290,13 +302,13 @@
      now rather than taking the page with it. */
   var asked = new URLSearchParams(window.location.search).get('d') || '';
 
-  /* And which part of the shelf is open: Start, the words, the grammar or the
-     songs — the menu across the top of it, partsMenu() below. The address
-     carries it as ?part=, so a link can open straight into the songs and the
-     back button walks between them; anything it does not name is Start,
-     which is where the front door opens. Kept while a deck is open, so the way
-     out of one is back to the part it was opened from. */
-  var PARTS = ['start', 'words', 'grammar', 'songs'];
+  /* And which part of the shelf is open: Start, the words, the grammar, the
+     songs or the conversations — the menu across the top of it, partsMenu()
+     below. The address carries it as ?part=, so a link can open straight into
+     the songs and the back button walks between them; anything it does not
+     name is Start, which is where the front door opens. Kept while a deck is
+     open, so the way out of one is back to the part it was opened from. */
+  var PARTS = ['start', 'words', 'grammar', 'songs', 'talks'];
 
   function partFrom(search) {
     var said = new URLSearchParams(search).get('part') || '';
@@ -455,6 +467,8 @@
     state.lesson = out.lesson || null;
     state.songs = out.songs || [];
     state.song = out.song || null;
+    state.talks = out.talks || [];
+    state.talk = out.talk || null;
     state.words = state.wordsIn = out.words || 0;
     state.gates = out.gates || {};
     state.run = null;
@@ -505,13 +519,16 @@
       state.locked = !!(state.user && gateFor(state.deck.level));
     }
 
-    /* And a lesson read or a song heard in this tab before there was an
-       account: the same store, under the deck id the route files each under,
-       read back on to its tile and on to the page itself. */
+    /* And a lesson read, a song heard or a conversation read in this tab
+       before there was an account: the same store, under the deck id the
+       route files each under, read back on to its tile and on to the page
+       itself. */
     state.lessons.forEach(function (l) { if (sent[GRAMMAR + '/' + l.id]) l.read = true; });
     if (state.lesson && sent[GRAMMAR + '/' + state.lesson.id]) state.lesson.read = true;
     state.songs.forEach(function (s) { if (sent[SONGS + '/' + s.id]) s.heard = true; });
     if (state.song && sent[SONGS + '/' + state.song.id]) state.song.heard = true;
+    state.talks.forEach(function (c) { if (sent[TALKS + '/' + c.id]) c.read = true; });
+    if (state.talk && sent[TALKS + '/' + state.talk.id]) state.talk.read = true;
 
     /* A deck of your own with nothing in it yet opens as the editor rather
        than as a deck. There is nothing to turn over, and anything else would
@@ -519,12 +536,12 @@
        way to fill it. */
     if (state.deck && state.deck.own && !state.deck.cards.length) state.editing = true;
 
-    /* Which deck, lesson or song is open, for the site's own count — WHAT IT
-       WAS ABOUT in functions/api/_visitors.js. Once a load, however many
-       answers come back for it. A deck of somebody's own is theirs alone and
-       is left out, and so is anything data/decks.json does not ship, which
-       the route checks. */
-    var open = state.deck || state.lesson || state.song;
+    /* Which deck, lesson, song or conversation is open, for the site's own
+       count — WHAT IT WAS ABOUT in functions/api/_visitors.js. Once a load,
+       however many answers come back for it. A deck of somebody's own is
+       theirs alone and is left out, and so is anything data/decks.json does
+       not ship, which the route checks. */
+    var open = state.deck || state.lesson || state.song || state.talk;
     if (open && !open.own) TTBTrack.about('deck', open.id);
 
     /* And whether the gate is already up. Two cases, and mark() has the
@@ -647,6 +664,9 @@
   /* And the one a song heard is filed under: SONG_DECK in the same route. */
   var SONGS = 'songs';
 
+  /* And the one a conversation read is filed under: TALK_DECK there. */
+  var TALKS = 'talks';
+
   /* How many words a tab may answer signed out before the gate goes up —
      see gateCard(). Five words to a tab, not five a deck.
 
@@ -661,13 +681,14 @@
      copy promises the words come along, not the word. */
   var FREE_WORDS = 5;
 
-  /* How many cards the tab has answered, as opposed to lessons read or songs
-     heard. The free words are spent by answers — see gateCard() — and reading
-     or listening is not an answer, so neither done signed out brings the
-     gate nearer. A card answered twice is one word. */
+  /* How many cards the tab has answered, as opposed to lessons read, songs
+     heard or conversations read. The free words are spent by answers — see
+     gateCard() — and reading or listening is not an answer, so none of those
+     done signed out brings the gate nearer. A card answered twice is one
+     word. */
   function answered(sent) {
     return Object.keys(sent).filter(function (k) {
-      return k.indexOf(GRAMMAR + '/') !== 0 && k.indexOf(SONGS + '/') !== 0;
+      return k.indexOf(GRAMMAR + '/') !== 0 && k.indexOf(SONGS + '/') !== 0 && k.indexOf(TALKS + '/') !== 0;
     }).length;
   }
 
@@ -1493,27 +1514,46 @@
     return ul;
   }
 
-  /* A lesson's tile: the same tile a deck gets, with one word at its foot
-     saying whether it has been read. No rule and no count — there is nothing
-     to be part-way through — and it never sinks: standing() sorts by what a
-     deck is asking for, and a lesson asks for nothing but a read. */
-  function lessonRow(lesson) {
-    var said = el('span', { className: 'lists-count mono' + (lesson.read ? ' is-read' : ''),
-                            textContent: t(lesson.read ? 'flashRead' : 'flashUnread') });
+  /* A tile for something that is read or heard rather than turned over — a
+     lesson, a song, a conversation: the same tile a deck gets, with one word
+     at its foot saying whether it has been done. No rule and no count — there
+     is nothing to be part-way through — and it never sinks: standing() sorts
+     by what a deck is asking for, and these ask for nothing but a read. `done`
+     is whether it has been, `word` is the word that says so either way, and
+     `press` is the event the tap reports with the id under `key`. It was
+     three copies of one function, one a kind, until the third arrived. */
+  function readTile(thing, done, word, press, key) {
+    var said = el('span', { className: 'lists-count mono' + (done ? ' is-read' : ''), textContent: word });
+    var params = {};
+    params[key] = thing.id;
     return el('li', { className: 'menu-item' }, [
       TTBTrack.click(
-        inPage(el('a', { className: 'menu-row', href: deckHref(lesson.id) }, [
+        inPage(el('a', { className: 'menu-row', href: deckHref(thing.id) }, [
           el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: means(lesson.name) }),
-            lesson.why ? el('span', { className: 'flash-why', textContent: means(lesson.why) }) : null
+            el('span', { className: 'menu-name', textContent: means(thing.name) }),
+            thing.why ? el('span', { className: 'flash-why', textContent: means(thing.why) }) : null
           ]),
           el('span', { className: 'menu-go', 'aria-hidden': 'true',
                        html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' }),
           el('span', { className: 'flash-meter' }, [said])
-        ]), lesson.id),
-        'flash_lesson_open', { lesson_id: lesson.id }
+        ]), thing.id),
+        press, params
       )
     ]);
+  }
+
+  /* The words are looked up here, one kind at a time, so that tools/validate.mjs
+     sees every key as the literal it scans for. */
+  function lessonRow(lesson) {
+    return readTile(lesson, lesson.read, t(lesson.read ? 'flashRead' : 'flashUnread'), 'flash_lesson_open', 'lesson_id');
+  }
+
+  function songRow(song) {
+    return readTile(song, song.heard, t(song.heard ? 'flashHeard' : 'flashUnheard'), 'flash_song_open', 'song_id');
+  }
+
+  function talkRow(talk) {
+    return readTile(talk, talk.read, t(talk.read ? 'flashRead' : 'flashUnread'), 'flash_talk_open', 'talk_id');
   }
 
   function lessonList(lessons) {
@@ -1522,29 +1562,9 @@
     return ul;
   }
 
-  /* A song's tile is a lesson's, saying Heard or Not heard yet at its foot. */
-  function songRow(song) {
-    var said = el('span', { className: 'lists-count mono' + (song.heard ? ' is-read' : ''),
-                            textContent: t(song.heard ? 'flashHeard' : 'flashUnheard') });
-    return el('li', { className: 'menu-item' }, [
-      TTBTrack.click(
-        inPage(el('a', { className: 'menu-row', href: deckHref(song.id) }, [
-          el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: means(song.name) }),
-            song.why ? el('span', { className: 'flash-why', textContent: means(song.why) }) : null
-          ]),
-          el('span', { className: 'menu-go', 'aria-hidden': 'true',
-                       html: '<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>' }),
-          el('span', { className: 'flash-meter' }, [said])
-        ]), song.id),
-        'flash_song_open', { song_id: song.id }
-      )
-    ]);
-  }
-
   /* ----------------------------------------------------------------- parts
-   * The shelf in four parts, with a menu across the top of it: Start, the
-   * words, the grammar and the songs.
+   * The shelf in five parts, with a menu across the top of it: Start, the
+   * words, the grammar, the songs and the conversations.
    *
    * Because it was one column, and the column had become fifty-two decks with
    * four grammar lessons, the fourteen cases and four songs filed between its
@@ -1553,7 +1573,7 @@
    * scrolled past the cases. Each is a different thing to do — turn a card
    * over, read, listen — and the menu says so before anything is scrolled.
    *
-   * Start is where the front door opens: one card for each of the other three,
+   * Start is where the front door opens: one card for each of the other four,
    * saying what is in it and how much, and showing one thing out of it — the
    * newest, with a New tag, while it is a fortnight old or less, and otherwise
    * the first that has a line of Estonian to show. That line is the job the
@@ -1574,11 +1594,12 @@
      file gives it, which tools/validate.mjs holds to being a real day. */
   var NEW_DAYS = 14;
 
-  /* Written out rather than looked up, so tools/validate.mjs sees all four. */
+  /* Written out rather than looked up, so tools/validate.mjs sees all five. */
   function partName(which) {
     return which === 'words' ? t('flashPartWords')
          : which === 'grammar' ? t('flashGrammar')
          : which === 'songs' ? t('flashSongs')
+         : which === 'talks' ? t('flashTalks')
          : t('flashPartStart');
   }
 
@@ -1612,7 +1633,8 @@
 
   /* The menu: links rather than radios, because each part is an address of
      its own and a link is what says so. The lists page's segment is the look,
-     stretched across the card so the four share it evenly at 390 px. */
+     stretched across the card, each pill as wide as its word, and scrolling
+     sideways where the five do not fit. */
   function partsMenu() {
     var row = el('div', { className: 'lists-seg' });
     PARTS.forEach(function (which) {
@@ -1644,13 +1666,16 @@
   }
 
   /* A card on Start: what the part is, how much is in it, one thing out of
-     it, and the way in. `what` is deck, lesson or song, which is how the
-     thing is named and what the tap reports. */
+     it, and the way in. `what` is deck, lesson, song or talk, which is how
+     the thing is named and what the tap reports. */
   function partCard(which, things, what, count, say, lead) {
     var pick = newest(things);
     var thing = pick && pick.thing;
     var name = thing ? (what === 'deck' ? deckName(thing) : means(thing.name)) : '';
-    var go = what === 'song' ? t('flashTasteSong') : what === 'lesson' ? t('flashTasteLesson') : t('flashTasteDeck');
+    var go = what === 'song' ? t('flashTasteSong')
+           : what === 'lesson' ? t('flashTasteLesson')
+           : what === 'talk' ? t('flashTasteTalk')
+           : t('flashTasteDeck');
     return el('li', { className: 'flash-part' }, [
       el('p', { className: 'flash-part-head' }, [
         el('span', { className: 'flash-part-name', textContent: partName(which) }),
@@ -1736,10 +1761,11 @@
   function followed(lesson) { return !!lesson.deck; }
   function underCases(lesson) { return lesson.heading === 'cases'; }
 
-  /* The decks the site ships, the lessons and the songs: the shelf, drawn as
-     whichever of its four parts is open, under the menu that picks one. The
-     eyebrow, the title and the menu are the same on all four, so moving
-     between them changes what is under the menu and nothing above it. */
+  /* The decks the site ships, the lessons, the songs and the conversations:
+     the shelf, drawn as whichever of its five parts is open, under the menu
+     that picks one. The eyebrow, the title and the menu are the same on all
+     five, so moving between them changes what is under the menu and nothing
+     above it. */
   function shippedCard() {
     var ours = state.decks.filter(function (d) { return !d.own && !gathered(d); });
 
@@ -1756,6 +1782,7 @@
 
     var drawn = part === 'grammar' ? grammarPart(ours)
               : part === 'songs' ? songsPart(ours)
+              : part === 'talks' ? talksPart()
               : part === 'words' ? wordsPart(ours)
               : startPart(ours);
     return card(kids.concat(drawn));
@@ -1789,7 +1816,7 @@
     return ours.filter(function (d) { return d.level !== SONG_LEVEL && d.level !== CASE_LEVEL; });
   }
 
-  /* Start: one card for each of the other three parts. See partCard(). */
+  /* Start: one card for each of the other four parts. See partCard(). */
   function startPart(ours) {
     var words = wordDecks(ours);
     var list = el('ul', { className: 'flash-parts-home' }, [
@@ -1798,7 +1825,9 @@
       state.lessons.length ? partCard('grammar', state.lessons, 'lesson',
                t('flashLessonCount', { n: state.lessons.length }), t('flashGrammarSay'), t('flashGoGrammar')) : null,
       state.songs.length ? partCard('songs', state.songs, 'song',
-               t('flashSongCount', { n: state.songs.length }), t('flashSongsSay'), t('flashGoSongs')) : null
+               t('flashSongCount', { n: state.songs.length }), t('flashSongsSay'), t('flashGoSongs')) : null,
+      state.talks.length ? partCard('talks', state.talks, 'talk',
+               t('flashTalkCount', { n: state.talks.length }), t('flashTalksSay'), t('flashGoTalks')) : null
     ]);
     return [
       el('p', { className: 'lists-say', textContent: t('flashStartSay') }),
@@ -1923,6 +1952,19 @@
     });
     left.forEach(function (deck) { songs.appendChild(deckRow(deck)); });
     return [el('p', { className: 'lists-say', textContent: t('flashSongHow') }), songs];
+  }
+
+  /* The conversations: a tile each, in the order of the file, which is the
+     order of the course they came from. No deck beside any of them — a
+     conversation teaches by being read, and the words in it that are worth a
+     card are on the shelf already. */
+  function talksPart() {
+    if (!state.talks.length) {
+      return [el('p', { className: 'lists-none', textContent: t('flashNoneShipped') })];
+    }
+    var list = el('ul', { className: 'menu flash-shelf' });
+    state.talks.forEach(function (talk) { list.appendChild(talkRow(talk)); });
+    return [el('p', { className: 'lists-say', textContent: t('flashTalkHow') }), list];
   }
 
   /* And the ones somebody wrote. Signed out this card is not drawn at all —
@@ -2911,15 +2953,16 @@
     paintSay();
 
     TTBTrack.event('flash_say', {
-      deck_id: state.deck ? state.deck.id : state.song ? state.song.id : state.lesson ? state.lesson.id : '',
+      deck_id: state.deck ? state.deck.id : state.song ? state.song.id : state.lesson ? state.lesson.id : state.talk ? state.talk.id : '',
       what: what
     });
   }
 
   /* The speaker on its own, with no word beside it: what sits at the end of
-     a song's line and of a lesson's sentence, where the line itself is the
-     word. The row under a card spells out what each of its presses would
-     say, sayLine() below, because there two stand together. */
+     a song's line, of a lesson's sentence and of a conversation's turn, where
+     the line itself is the word. The row under a card spells out what each
+     of its presses would say, sayLine() below, because there two stand
+     together. */
   function speaker(text, what, className) {
     var b = el('button', {
       type: 'button',
@@ -3500,17 +3543,26 @@
      the place it was left. A case lesson goes on into its own deck instead,
      because that deck is the other half of it: the lesson says why *köögis*,
      the cards ask for it. Pressed on a lesson already read it is only the
-     way on; the row it writes is the row that is there. The write is waited
-     for before the next page is asked for, so the tile does not say Not read
-     yet over a row that landed a moment later. */
+     way on; the row it writes is the row that is there. markRead() below is
+     the write, shared with Heard it and Read it. */
   function readLesson(lesson) {
     lesson.read = true;
     TTBTrack.event('flash_lesson_read', { lesson_id: lesson.id });
-    var back = function () { go(lesson.deck || '', true); };
+    markRead(GRAMMAR, lesson.id, lesson.deck || '');
+  }
+
+  /* The write behind Got it, Heard it and Read it: a `knew` under the deck id
+     the route files that kind of thing under, on the account where there is
+     one and kept in this tab where there is not, and then on to `next` — the
+     shelf, or a case lesson's own deck. The write is waited for before the
+     next page is asked for, so the tile does not say Not read yet over a row
+     that landed a moment later. */
+  function markRead(deck, id, next) {
+    var back = function () { go(next, true); };
     if (state.user && state.ready) {
-      post(FLASH_API, { action: 'knew', deck: GRAMMAR, card: lesson.id }).then(back);
+      post(FLASH_API, { action: 'knew', deck: deck, card: id }).then(back);
     } else {
-      keep(GRAMMAR, lesson.id, true);
+      keep(deck, id, true);
       back();
     }
   }
@@ -3684,18 +3736,92 @@
   function hearSong(song) {
     song.heard = true;
     TTBTrack.event('flash_song_heard', { song_id: song.id });
-    var back = function () { go('', true); };
-    if (state.user && state.ready) {
-      post(FLASH_API, { action: 'knew', deck: SONGS, card: song.id }).then(back);
-    } else {
-      keep(SONGS, song.id, true);
-      back();
+    markRead(SONGS, song.id, '');
+  }
+
+  /* --------------------------------------------------------- a conversation
+   * Read rather than turned over, and read rather than listened to: a sheet
+   * from a language course, written out turn by turn. A scene is a question
+   * put to several people, or a stretch of talk at a restaurant table with no
+   * question over it; a turn is who is speaking, the Estonian, and what it
+   * means under it in the language the page is being read in, with the
+   * speaker at the end of the Estonian that says the whole turn in Mari's
+   * voice — a sentence is the thing somebody will have to say across a
+   * counter, and here is where it is a sentence rather than a word.
+   *
+   * The name over the turn is on a line of its own rather than in a column
+   * beside it, which is how the sheets print it: a column for a name is a
+   * third of 390 px, and the Estonian is what the width is for. No word is a
+   * press — the songs gloss every word because a song is sung too fast to
+   * look one up; a conversation is read at the reader's own pace, and the
+   * turn's translation is one line down. See **Conversations, which are
+   * read** under **Flashcards** in README.md.
+   */
+
+  function talkHead() {
+    return el('div', { className: 'flash-deck' }, [
+      el('span', { className: 'eyebrow', textContent: t('flashTalks') }),
+      backOut({ talk_id: state.talk.id })
+    ]);
+  }
+
+  /* One turn: who, the Estonian with its speaker, and what it means. */
+  function talkTurn(turn) {
+    return el('div', { className: 'flash-talk-turn' }, [
+      el('p', { className: 'flash-talk-who mono', textContent: turn.who }),
+      el('p', { className: 'flash-talk-et', lang: 'et', textContent: turn.et }),
+      speaker(turn.et, 'turn', 'flash-talk-say'),
+      el('p', { className: 'flash-talk-means', textContent: means(turn) })
+    ]);
+  }
+
+  /* A scene: the question over it where there is one, in Estonian with what
+     it means under, and then its turns. */
+  function talkScene(scene) {
+    var box = el('section', { className: 'flash-talk-scene' });
+    if (scene.ask) {
+      box.appendChild(el('h2', { className: 'flash-talk-ask', lang: 'et', textContent: scene.ask.et }));
+      box.appendChild(el('p', { className: 'flash-talk-ask-means', textContent: means(scene.ask) }));
     }
+    scene.turns.forEach(function (turn) { box.appendChild(talkTurn(turn)); });
+    return box;
+  }
+
+  function talkCard() {
+    var talk = state.talk;
+    var kids = [
+      heading(means(talk.name)),
+      el('p', { className: 'lists-say', textContent: t('flashTalkHow') }),
+      /* Whose sheet it is. A name, so never translated; the words around it
+         are. */
+      talk.source ? el('p', { className: 'flash-talk-source mono', textContent: t('flashTalkFrom', { who: talk.source }) }) : null
+    ];
+    talk.scenes.forEach(function (scene) { kids.push(talkScene(scene)); });
+
+    var read = el('button', { type: 'button', className: 'go', textContent: t('flashReadIt') });
+    read.addEventListener('click', function () {
+      if (read.disabled) return;
+      read.disabled = true;
+      readTalk(talk);
+    });
+    kids.push(foot([read]));
+
+    var node = card(kids);
+    node.classList.add('flash-talk');
+    return node;
+  }
+
+  /* Read it: readLesson() again, under the conversations' own deck id. */
+  function readTalk(talk) {
+    talk.read = true;
+    TTBTrack.event('flash_talk_read', { talk_id: talk.id });
+    markRead(TALKS, talk.id, '');
   }
 
   /* ------------------------------------------------- where you left off
    * What this device had open, so the front door can reopen it: the deck a
-   * run is going in, or the lesson being read, or the song being heard. Written on every draw and
+   * run is going in, or the lesson being read, or the song being heard, or
+   * the conversation being read. Written on every draw and
    * cleared by the shelf, the end of a run, the gate, a shut stage and the
    * editor, so what is ever reopened is a card in hand or a page being read,
    * never a screen somebody had finished with. localStorage rather than the
@@ -3711,6 +3837,7 @@
     if (!state.user || !state.ready) return;
     var here = state.lesson ? state.lesson.id
              : state.song ? state.song.id
+             : state.talk ? state.talk.id
              : state.deck && current() && !state.gated && !state.locked && !state.editing ? state.deck.id
              : '';
     if (here) storeSet(LAST_KEY, here);
@@ -3724,7 +3851,8 @@
   /* -------------------------------------------------------------- the deck is
    * gone, or was never there. A deck id in the address that answers with
    * nothing: somebody's own deck deleted in another tab, a shipped deck, a
-   * lesson or a song that has been taken out of the file, or a link that was mistyped.
+   * lesson, a song or a conversation that has been taken out of the file, or
+   * a link that was mistyped.
    * All of them are the same sentence and the way back to the decks.
    */
   function goneCard() {
@@ -3757,12 +3885,13 @@
     if (state.deck) document.title = deckName(state.deck);
     else if (state.lesson) document.title = means(state.lesson.name);
     else if (state.song) document.title = means(state.song.name);
+    else if (state.talk) document.title = means(state.talk.name);
     else document.title = t('flashDocumentTitle');
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
 
-    if (asked && !state.deck && !state.lesson && !state.song) {
+    if (asked && !state.deck && !state.lesson && !state.song && !state.talk) {
       add(goneCard());
     } else if (state.lesson) {
       add(lessonHead());
@@ -3770,6 +3899,9 @@
     } else if (state.song) {
       add(songHead());
       add(songCard());
+    } else if (state.talk) {
+      add(talkHead());
+      add(talkCard());
     } else if (state.deck && state.editing) {
       add(editView());
     } else if (state.deck) {
@@ -3803,7 +3935,8 @@
          remembered.
          Both under Start and the words only. The decks somebody wrote are
          words, and the offer is about keeping what you know of them; under
-         the grammar or the songs either is a card about something else. */
+         the grammar, the songs or the conversations either is a card about
+         something else. */
       if (part === 'start' || part === 'words') {
         if (state.user) add(yoursCard());
         else if (state.ready) add(authCard());
@@ -3811,6 +3944,7 @@
     }
 
     main.appendChild(wrap);
+    showPart();
     rememberHere();
 
     /* A word still sounding whose button is no longer on screen — the card
@@ -3825,6 +3959,21 @@
       if (still) paintSay();
       else hush();
     }
+  }
+
+  /* The open part, scrolled into view in a menu too narrow for all five —
+     the Conversations pill sits off the right edge in Azerbaijani, and a
+     page opened at ?part=talks would otherwise open with its own pill out of
+     sight. Only the row moves, never the page. */
+  function showPart() {
+    var on = main.querySelector('.flash-parts .is-on');
+    if (!on) return;
+    var row = on.parentNode;
+    if (row.scrollWidth <= row.clientWidth) return;
+    var edge = row.getBoundingClientRect();
+    var pill = on.getBoundingClientRect();
+    if (pill.left < edge.left) row.scrollLeft -= edge.left - pill.left + 6;
+    else if (pill.right > edge.right) row.scrollLeft += pill.right - edge.right + 6;
   }
 
   /* What came of a round trip to Google, said once the page has drawn and
@@ -3867,9 +4016,9 @@
        answer. /api/account is not read on the way in at all: the only thing
        this page ever wanted from it was a name to put in the sign-up field,
        and the form asks for that now rather than offering one. */
-    /* Where this device left off, if the address does not say: the deck or
-       the lesson or the song the front door reopens instead of the shelf — see
-       rememberHere(). Asked for in the same one request. */
+    /* Where this device left off, if the address does not say: the deck, the
+       lesson, the song or the conversation the front door reopens instead of
+       the shelf — see rememberHere(). Asked for in the same one request. */
     var resumed = asked ? '' : (storeGet(LAST_KEY) || '');
     if (resumed) asked = resumed;
 

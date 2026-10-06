@@ -50,11 +50,12 @@ ref: assets/shell.js</bpmn:documentation>
       <bpmn:outgoing>flashcards-e14</bpmn:outgoing>
       <bpmn:outgoing>flashcards-e17</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="deck" name="Opens a deck, a lesson or a song">
-      <bpmn:documentation>Deeper stages open as the count of known words grows. A case lesson's Got it goes straight on into the deck that follows it. A song is listened to, and every word in it pressed for what it means. A lesson's every sentence and every form in its tables is heard by pressing it.
+    <bpmn:userTask id="deck" name="Opens a deck, a lesson, a song or a conversation">
+      <bpmn:documentation>Deeper stages open as the count of known words grows. A case lesson's Got it goes straight on into the deck that follows it. A song is listened to, and every word in it pressed for what it means. A conversation is read turn by turn, each turn heard by pressing its speaker. A lesson's every sentence and every form in its tables is heard by pressing it.
 when: flash_open
 when: flash_lesson_open
 when: flash_song_open
+when: flash_talk_open
 when: flash_resume
 when: flash_taste
 ref: assets/flashcard.js

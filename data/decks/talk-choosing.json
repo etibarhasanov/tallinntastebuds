@@ -1,0 +1,190 @@
+{
+ "id": "talk-choosing",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Choosing what to eat",
+  "az": "Yeməyi seçmək",
+  "ru": "Выбор блюд"
+ },
+ "why": {
+  "en": "Illimar and Johanna ask for a menu in Estonian, then pick their drinks and their dishes",
+  "az": "Illimar və Johanna eston dilində menyu istəyir, sonra içki və yemək seçirlər",
+  "ru": "Illimar и Johanna просят меню на эстонском, потом выбирают напитки и блюда"
+ },
+ "taste": "Tere, Johanna!",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Illimar",
+     "et": "Tere, Johanna! Kui kena sa välja näed!",
+     "en": "Hello, Johanna! How nice you look!",
+     "az": "Salam, Johanna! Nə gözəl görünürsən!",
+     "ru": "Привет, Johanna! Как ты хорошо выглядишь!"
+    },
+    {
+     "who": "Johanna",
+     "et": "Tere, Illimar! Samad sõnad.",
+     "en": "Hello, Illimar! Same to you.",
+     "az": "Salam, Illimar! Sən də.",
+     "ru": "Привет, Illimar! И ты тоже."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Tere! Siin on teile menüüd. Kas soovite kohe midagi juua tellida?",
+     "en": "Hello! Here are your menus. Would you like to order something to drink right away?",
+     "az": "Salam! Buyurun, menyular. Dərhal içməyə nəsə sifariş etmək istəyirsiniz?",
+     "ru": "Здравствуйте! Вот ваши меню. Хотите сразу заказать что-нибудь выпить?"
+    },
+    {
+     "who": "Illimar",
+     "et": "Johanna, mida sa juua sooviksid?",
+     "en": "Johanna, what would you like to drink?",
+     "az": "Johanna, nə içmək istərdin?",
+     "ru": "Johanna, что бы ты хотела выпить?"
+    },
+    {
+     "who": "Johanna",
+     "et": "See menüü on venekeelne. Kas te saaksite palun tuua eestikeelse menüü?",
+     "en": "This menu is in Russian. Could you please bring a menu in Estonian?",
+     "az": "Bu menyu rus dilindədir. Zəhmət olmasa, eston dilində menyu gətirə bilərsiniz?",
+     "ru": "Это меню на русском. Не могли бы вы принести меню на эстонском?"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Oih, vabandust-vabandust! Ma kohe toon teile uued menüüd.",
+     "en": "Oops, sorry, sorry! I'll bring you new menus right away.",
+     "az": "Oy, bağışlayın, bağışlayın! İndicə sizə yeni menyular gətirirəm.",
+     "ru": "Ой, извините, извините! Сейчас принесу вам новые меню."
+    },
+    {
+     "who": "Illimar",
+     "et": "Mis me siis joome? Veini? Õlut? Viina? Kokteili?",
+     "en": "So what shall we drink? Wine? Beer? Vodka? A cocktail?",
+     "az": "Bəs nə içək? Şərab? Pivə? Araq? Kokteyl?",
+     "ru": "Так что будем пить? Вино? Пиво? Водку? Коктейль?"
+    },
+    {
+     "who": "Johanna",
+     "et": "Ma võtan ühe heleda õlle.",
+     "en": "I'll have a pale beer.",
+     "az": "Mən bir açıq pivə götürərəm.",
+     "ru": "Я возьму светлое пиво."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Vabandust veel kord.",
+     "en": "Sorry once again.",
+     "az": "Bir daha bağışlayın.",
+     "ru": "Ещё раз извините."
+    },
+    {
+     "who": "Illimar",
+     "et": "Pole midagi.",
+     "en": "It's nothing.",
+     "az": "Eybi yox.",
+     "ru": "Ничего страшного."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Kas toon teile midagi juua?",
+     "en": "Shall I bring you something to drink?",
+     "az": "Sizə içməyə nəsə gətirim?",
+     "ru": "Принести вам что-нибудь выпить?"
+    },
+    {
+     "who": "Illimar",
+     "et": "Jah. Öelge palun, missugust heledat õlut teil on?",
+     "en": "Yes. Tell me, please, what kind of pale beer do you have?",
+     "az": "Bəli. Deyin, zəhmət olmasa, hansı açıq pivələriniz var?",
+     "ru": "Да. Скажите, пожалуйста, какое у вас есть светлое пиво?"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Õllede valik on siin.",
+     "en": "The beer selection is here.",
+     "az": "Pivə seçimi buradadır.",
+     "ru": "Выбор пива вот здесь."
+    },
+    {
+     "who": "Johanna",
+     "et": "See käsitööõlu tundub huvitav, ma võtan selle.",
+     "en": "This craft beer seems interesting, I'll take this one.",
+     "az": "Bu kraft pivə maraqlı görünür, mən bunu götürürəm.",
+     "ru": "Это крафтовое пиво выглядит интересно, я возьму его."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Väga hea valik. Ja teile?",
+     "en": "A very good choice. And for you?",
+     "az": "Çox yaxşı seçimdir. Bəs sizə?",
+     "ru": "Очень хороший выбор. А вам?"
+    },
+    {
+     "who": "Illimar",
+     "et": "Mina eelistan õllele veini. Klaas punast majaveini, palun.",
+     "en": "I prefer wine to beer. A glass of the red house wine, please.",
+     "az": "Mən pivədən çox şərabı üstün tuturam. Bir qədəh qırmızı ev şərabı, zəhmət olmasa.",
+     "ru": "Я предпочитаю пиву вино. Бокал красного домашнего вина, пожалуйста."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Selge. Kohe toon teie joogid.",
+     "en": "Right. I'll bring your drinks straight away.",
+     "az": "Aydındır. İndicə içkilərinizi gətirirəm.",
+     "ru": "Понятно. Сейчас принесу ваши напитки."
+    },
+    {
+     "who": "Johanna",
+     "et": "Mis sa võtad? Mul on kõht jube tühi.",
+     "en": "What are you having? I'm terribly hungry.",
+     "az": "Sən nə götürürsən? Mən dəhşətli acam.",
+     "ru": "Что ты будешь? Я ужасно голодная."
+    },
+    {
+     "who": "Illimar",
+     "et": "Ma ei tea, äkki mingi supi… Oo, kalasupp. Ma võtan selle.",
+     "en": "I don't know, maybe some soup… Oh, fish soup. I'll have that.",
+     "az": "Bilmirəm, bəlkə bir şorba… Oo, balıq şorbası. Mən bunu götürürəm.",
+     "ru": "Не знаю, может, какой-нибудь суп… О, рыбный суп. Возьму его."
+    },
+    {
+     "who": "Johanna",
+     "et": "Ma vist suppi ei jaksa süüa, kui ma prae ka võtan.",
+     "en": "I don't think I can manage soup if I'm having a main course too.",
+     "az": "Deyəsən, əsas yemək də götürsəm, şorbanı yeyə bilməyəcəyəm.",
+     "ru": "Я, наверное, не осилю суп, если возьму ещё и второе."
+    },
+    {
+     "who": "Illimar",
+     "et": "Näe, siin on praed: röstitud pardifilee jõhvikakastmega, küpsetatud sealiha hapukapsaga, burger grillitud veiselihaga…",
+     "en": "Look, here are the main courses: roast duck fillet with cranberry sauce, baked pork with sauerkraut, a burger with grilled beef…",
+     "az": "Bax, əsas yeməklər burada: mərcangilə sousu ilə qızardılmış ördək filesi, turşu kələmlə bişmiş donuz əti, qril mal əti ilə burger…",
+     "ru": "Смотри, вот вторые блюда: жареное филе утки с клюквенным соусом, запечённая свинина с квашеной капустой, бургер с говядиной на гриле…"
+    },
+    {
+     "who": "Johanna",
+     "et": "Kus sa neid näed? Aa, ja-jah. Ma võtan šašlõki, nii ammu pole šašlõkki söönud.",
+     "en": "Where do you see those? Ah, yes. I'll have the shashlik; I haven't had shashlik for so long.",
+     "az": "Sən onları harada görürsən? Aa, hə. Mən şaşlık götürürəm, nə vaxtdır şaşlık yemirəm.",
+     "ru": "Где ты их видишь? А, да-да. Я возьму шашлык, так давно не ела шашлык."
+    },
+    {
+     "who": "Illimar",
+     "et": "Ma mõtlesin, et sa oled taimetoitlane.",
+     "en": "I thought you were a vegetarian.",
+     "az": "Elə bilirdim, sən vegetariansan.",
+     "ru": "Я думал, ты вегетарианка."
+    },
+    {
+     "who": "Johanna",
+     "et": "Sa ajad mind kellegagi segamini. Mina olen alati liha söönud. Põhimõtteliselt ma olen alati kõike söönud. Välja arvatud muidugi küüslauk. Kõik muu sobib.",
+     "en": "You're mixing me up with someone. I have always eaten meat. In fact I've always eaten everything. Except garlic, of course. Everything else is fine.",
+     "az": "Sən məni kiminləsə qarışdırırsan. Mən həmişə ət yemişəm. Əslində həmişə hər şey yemişəm. Əlbəttə, sarımsaqdan başqa. Qalan hər şey olar.",
+     "ru": "Ты меня с кем-то путаешь. Я всегда ела мясо. В принципе, я всегда ела всё. Кроме чеснока, конечно. Всё остальное подходит."
+    }
+   ]
+  }
+ ]
+}

@@ -70,12 +70,12 @@ no longer holds.
 
 ## The file
 
-`{ decks, lessons, songs }`. Three rules hold across all of it:
+`{ decks, lessons, songs, talks }`. Three rules hold across all of it:
 
-- **One namespace.** A deck, a lesson and a song all open at
-  `/flashcard?d=<id>`, so an id is unique across the three; a lowercase slug;
+- **One namespace.** A deck, a lesson, a song and a conversation all open at
+  `/flashcard?d=<id>`, so an id is unique across the four; a lowercase slug;
   never sixteen hex characters, which is the shape of a deck somebody wrote
-  (`MINTED`); never `missed`, `review`, `grammar` or `songs`, which the route
+  (`MINTED`); never `missed`, `review`, `grammar`, `songs` or `talks`, which the route
   keeps for decks it assembles and rows it files (`RESERVED`); and never
   `index` or `spoken`, the generated folder's own two files
   (`RESERVED_FILES` in `tools/decks.mjs`).
@@ -146,6 +146,14 @@ and nothing no line sings may be, each `{ base, means, note?, deck? }`, its
 `deck` holding a card whose `front` is the `base`. `WORD` is the split, written
 in `tools/validate.mjs` and `assets/flashcard.js`, so a clipped form like
 *sidun'd* is written whole.
+
+### A conversation
+
+`talks`: a sheet from a language course, turn by turn — who said it, the
+Estonian, and what it means. Nothing in one is a card and nothing is a press.
+It has a process of its own, because it starts from a PDF that will not
+extract and ends in two translations: **the `/conversation` skill**, which
+this file's generators, driving and pull request apply to as well.
 
 ## What the content is held to besides the validator
 

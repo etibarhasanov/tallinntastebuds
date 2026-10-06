@@ -1,0 +1,204 @@
+{
+ "id": "talk-booking",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Booking a table and paying the bill",
+  "az": "Masa sifarişi və hesabın ödənməsi",
+  "ru": "Бронь столика и оплата счёта"
+ },
+ "why": {
+  "en": "A customer settles up, then books a table by the window for Tuesday at seven",
+  "az": "Müştəri hesabı ödəyir, sonra çərşənbə axşamı saat yeddiyə pəncərə yanında masa sifariş edir",
+  "ru": "Гость расплачивается, а потом бронирует столик у окна на вторник, на семь"
+ },
+ "taste": "Vabandust! Hei! Halloo!",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Klient",
+     "et": "Vabandust! Hei! Halloo!",
+     "en": "Excuse me! Hey! Hello!",
+     "az": "Bağışlayın! Ey! Alo!",
+     "ru": "Извините! Эй! Алло!"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Jah. Kuidas ma saan kasulik olla?",
+     "en": "Yes. How can I help you?",
+     "az": "Bəli. Sizə necə kömək edə bilərəm?",
+     "ru": "Да. Чем могу помочь?"
+    },
+    {
+     "who": "Klient",
+     "et": "Ma tahaksin oma arve ära maksta.",
+     "en": "I would like to pay my bill.",
+     "az": "Hesabımı ödəmək istərdim.",
+     "ru": "Я хотел бы оплатить счёт."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Nii, kuulan. Mis teil oli?",
+     "en": "Right, I'm listening. What did you have?",
+     "az": "Yaxşı, eşidirəm. Nə götürmüşdünüz?",
+     "ru": "Так, слушаю. Что у вас было?"
+    },
+    {
+     "who": "Klient",
+     "et": "Päevapraad ja keefir.",
+     "en": "The dish of the day and a kefir.",
+     "az": "Günün yeməyi və kefir.",
+     "ru": "Блюдо дня и кефир."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Ahah, viis eurot, palun. Ja sulas maksate, jah?",
+     "en": "I see — five euros, please. And you're paying in cash, yes?",
+     "az": "Aha, beş avro, zəhmət olmasa. Nağd ödəyirsiniz, eləmi?",
+     "ru": "Ага, пять евро, пожалуйста. Платите наличными, да?"
+    },
+    {
+     "who": "Klient",
+     "et": "Mhm.",
+     "en": "Mm-hm.",
+     "az": "Mhm.",
+     "ru": "Угу."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Jah, aitäh, kohe annan 45 eurot tagasi ka. Tšekki on vaja?",
+     "en": "Yes, thank you, I'll give you your 45 euros change in a moment. Do you need the receipt?",
+     "az": "Bəli, sağ olun, indicə 45 avro qalığınızı da verirəm. Çek lazımdır?",
+     "ru": "Да, спасибо, сейчас дам вам сдачу — 45 евро. Чек нужен?"
+    },
+    {
+     "who": "Klient",
+     "et": "Ei ole. Aga ma tahaksin veel lauda broneerida.",
+     "en": "No. But I would also like to book a table.",
+     "az": "Yox. Amma bir də masa sifariş etmək istərdim.",
+     "ru": "Нет. Но я хотел бы ещё забронировать столик."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Täna kahjuks küll ei saa. Näete, meil on siin hullumaja.",
+     "en": "Today, unfortunately, you can't. You see, it's a madhouse here.",
+     "az": "Bu gün, təəssüf ki, mümkün deyil. Görürsünüz, burada dəlixanadır.",
+     "ru": "Сегодня, к сожалению, не получится. Видите, у нас тут сумасшедший дом."
+    },
+    {
+     "who": "Klient",
+     "et": "Ei, ma ei tahagi tänaseks.",
+     "en": "No, I don't want it for today.",
+     "az": "Yox, bu günə istəmirəm.",
+     "ru": "Нет, мне и не на сегодня."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Mis ajaks te siis broneerida soovite?",
+     "en": "For when would you like to book, then?",
+     "az": "Bəs nə vaxta sifariş etmək istəyirsiniz?",
+     "ru": "На какое время вы тогда хотите забронировать?"
+    },
+    {
+     "who": "Klient",
+     "et": "Mul oleks vaja lauda teisipäeval.",
+     "en": "I would need a table on Tuesday.",
+     "az": "Mənə çərşənbə axşamı masa lazımdır.",
+     "ru": "Мне нужен столик во вторник."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Teisipäev… teisipäev… see on siis kahekümne viies märts. Jah, saab broneerida küll. Millal teil vaja on, kas päeval või õhtul?",
+     "en": "Tuesday… Tuesday… that's the twenty-fifth of March. Yes, that can be booked. When do you need it — during the day or in the evening?",
+     "az": "Çərşənbə axşamı… çərşənbə axşamı… bu, martın iyirmi beşidir. Bəli, sifariş etmək olar. Nə vaxt lazımdır — gündüz, yoxsa axşam?",
+     "ru": "Вторник… вторник… это двадцать пятое марта. Да, забронировать можно. Когда вам нужно — днём или вечером?"
+    },
+    {
+     "who": "Klient",
+     "et": "Õhtul kell seitse.",
+     "en": "At seven in the evening.",
+     "az": "Axşam saat yeddidə.",
+     "ru": "Вечером, в семь."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Nii. Ja mitmele inimesele ma laua kinni panen?",
+     "en": "Right. And for how many people shall I reserve the table?",
+     "az": "Yaxşı. Masanı neçə nəfər üçün saxlayım?",
+     "ru": "Так. И на сколько человек мне забронировать столик?"
+    },
+    {
+     "who": "Klient",
+     "et": "Kahele.",
+     "en": "For two.",
+     "az": "İki nəfərə.",
+     "ru": "На двоих."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Jah, ja kelle nimele?",
+     "en": "Yes, and in whose name?",
+     "az": "Bəli, kimin adına?",
+     "ru": "Да, и на чьё имя?"
+    },
+    {
+     "who": "Klient",
+     "et": "Pange Illimari nimele.",
+     "en": "Put it in Illimar's name.",
+     "az": "Illimarın adına yazın.",
+     "ru": "Запишите на имя Illimar."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Väga hea. Panin teile kinni selle uksepoolse laua.",
+     "en": "Very good. I've reserved that table by the door for you.",
+     "az": "Çox gözəl. Sizin üçün qapı tərəfdəki o masanı saxladım.",
+     "ru": "Очень хорошо. Я забронировал для вас вот тот столик у двери."
+    },
+    {
+     "who": "Klient",
+     "et": "Las ma vaatan. Kas see aknapoolne laud on ka vaba? Mulle meeldiks see rohkem.",
+     "en": "Let me see. Is that table by the window free too? I would like that one better.",
+     "az": "Qoyun baxım. Pəncərə tərəfdəki o masa da boşdur? O, mənim daha çox xoşuma gələrdi.",
+     "ru": "Дайте взглянуть. А тот столик у окна тоже свободен? Он мне нравится больше."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Jah. Paneme siis selle kinni.",
+     "en": "Yes. Let's reserve that one, then.",
+     "az": "Bəli. Onda onu saxlayaq.",
+     "ru": "Да. Тогда забронируем его."
+    },
+    {
+     "who": "Klient",
+     "et": "Väga hea.",
+     "en": "Very good.",
+     "az": "Çox gözəl.",
+     "ru": "Очень хорошо."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Teisipäeval kell seitse aknapoolne laud kahele inimesele.",
+     "en": "Tuesday at seven, a table by the window for two.",
+     "az": "Çərşənbə axşamı saat yeddidə pəncərə yanında iki nəfərlik masa.",
+     "ru": "Во вторник в семь столик у окна на двоих."
+    },
+    {
+     "who": "Klient",
+     "et": "Just. Tänan väga! Nägemiseni!",
+     "en": "Exactly. Thank you very much! Goodbye!",
+     "az": "Düzdür. Çox sağ olun! Görüşənədək!",
+     "ru": "Именно. Большое спасибо! До свидания!"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Ilusat päeva!",
+     "en": "Have a nice day!",
+     "az": "Gününüz xoş keçsin!",
+     "ru": "Хорошего дня!"
+    }
+   ]
+  }
+ ]
+}

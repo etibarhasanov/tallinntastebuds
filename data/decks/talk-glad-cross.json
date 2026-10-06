@@ -1,0 +1,80 @@
+{
+ "id": "talk-glad-cross",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Happy and angry yesterday",
+  "az": "Dünən sevindirən və əsəbləşdirən",
+  "ru": "Чему радовались и на что сердились вчера"
+ },
+ "why": {
+  "en": "What made four people happy yesterday, and what made them angry",
+  "az": "Dünən dörd nəfəri nə sevindirdi və nə əsəbləşdirdi",
+  "ru": "Что вчера порадовало четверых и что их рассердило"
+ },
+ "taste": "Selle üle, et kool sai läbi.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mille üle sa eile rõõmustasid?",
+    "en": "What were you happy about yesterday?",
+    "az": "Dünən nəyə sevindin?",
+    "ru": "Чему ты вчера радовался(ась)?"
+   },
+   "turns": [
+    {
+     "who": "Kiur",
+     "et": "Selle üle, et kool sai läbi. Selle üle rõõmustasin eile.",
+     "en": "That school was over. That is what I was happy about yesterday.",
+     "az": "Ona ki, məktəb qurtardı. Dünən buna sevindim.",
+     "ru": "Тому, что школа кончилась. Вот чему я вчера радовался."
+    },
+    {
+     "who": "Mihkel",
+     "et": "Ma olin kolm päeva kodust eemal. Ja siis tulin koju ja rõõmustasin, et ma nägin oma elukaaslast, see rõõmustab mind alati. Sellised lihtsad asjad. Midagi keerulist ei ole. Sellised lihtsad asjad rõõmustavad mind.",
+     "en": "I was away from home for three days. And then I came home and was glad to see my partner; that always makes me happy. Simple things like that. Nothing complicated. Simple things like that make me happy.",
+     "az": "Üç gün evdən uzaqda idim. Sonra evə gəldim və həyat yoldaşımı görməyimə sevindim — bu məni həmişə sevindirir. Belə sadə şeylər. Mürəkkəb heç nə yoxdur. Belə sadə şeylər məni sevindirir.",
+     "ru": "Я три дня не был дома. А потом вернулся и обрадовался, что увидел свою девушку, — это меня всегда радует. Такие простые вещи. Ничего сложного. Такие простые вещи меня радуют."
+    },
+    {
+     "who": "Krista",
+     "et": "Ma rõõmustasin eile selle üle, et mu väike poeg tuli minu juurde ja tahtis mulle teha suure kalli. See on alati nii tore.",
+     "en": "Yesterday I was happy that my little son came up to me and wanted to give me a big hug. That is always so nice.",
+     "az": "Dünən ona sevindim ki, balaca oğlum yanıma gəldi və məni bərk qucaqlamaq istədi. Bu həmişə çox xoşdur.",
+     "ru": "Вчера я обрадовалась тому, что мой маленький сын подошёл ко мне и захотел крепко меня обнять. Это всегда так приятно."
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mille peale sa eile vihastasid?",
+    "en": "What made you angry yesterday?",
+    "az": "Dünən nəyə əsəbləşdin?",
+    "ru": "На что ты вчера рассердился(ась)?"
+   },
+   "turns": [
+    {
+     "who": "Kiur",
+     "et": "Vihastasin selle peale, et matemaatikas oli kontrolltöö.",
+     "en": "I got angry because there was a test in maths.",
+     "az": "Ona əsəbləşdim ki, riyaziyyatdan yoxlama işi var idi.",
+     "ru": "Я рассердился на то, что по математике была контрольная."
+    },
+    {
+     "who": "Krista",
+     "et": "Eile ma tõepoolest natukene vihastasin, sest ma käisin koolis lastevanemate koosolekul ja seal esitasid vanemad nii imelikke küsimusi ja ma ei saanud aru, miks nad neid esitavad.",
+     "en": "Yesterday I really did get a little angry, because I went to a parents' meeting at school, and there the parents asked such strange questions and I couldn't understand why they were asking them.",
+     "az": "Dünən doğrudan da bir az əsəbləşdim, çünki məktəbdə valideyn iclasında idim və orada valideynlər elə qəribə suallar verirdilər ki, mən başa düşmürdüm, niyə verirlər.",
+     "ru": "Вчера я действительно немного рассердилась, потому что ходила в школу на родительское собрание, а там родители задавали такие странные вопросы, и я не понимала, зачем они их задают."
+    },
+    {
+     "who": "Mihkel",
+     "et": "Ma vihastasin oma ema peale korraks, sest tal on isaga mingisugune konflikt. Ma ei viitsi sinna vahele jääda. Ja siis ma vihastan. „Mine, tegele ise oma asjadega,“ ütlen ma emale oma peas. Aga talle ma ütlen lihtsalt, et „Räägime ükspäev!“. See oli selline viha. Korraks, ajutine, mitte pikalt.",
+     "en": "I got angry with my mother for a moment, because she has some sort of conflict with my father. I can't be bothered to get caught in the middle of it. And then I get angry. “Go and mind your own business,” I say to my mother in my head. But to her I simply say, “Let's talk some day!” It was that kind of anger. For a moment, temporary, not for long.",
+     "az": "Bir anlıq anama əsəbləşdim, çünki atamla arasında nəsə bir münaqişə var. Onların arasına düşmək istəmirəm. Onda əsəbləşirəm. „Get öz işinlə məşğul ol,“ deyirəm anama ürəyimdə. Amma ona sadəcə deyirəm: „Bir gün danışarıq!“ Belə bir hirs idi. Bir anlıq, müvəqqəti, uzun yox.",
+     "ru": "Я на минуту рассердился на маму, потому что у неё какой-то конфликт с отцом. Мне неохота оказываться между ними. И тогда я сержусь. «Иди займись своими делами», — говорю я маме про себя. А ей просто говорю: «Поговорим как-нибудь!» Вот такая это была злость. На минуту, временная, ненадолго."
+    }
+   ]
+  }
+ ]
+}

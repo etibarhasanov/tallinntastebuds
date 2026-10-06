@@ -1,0 +1,49 @@
+{
+ "id": "talk-monday",
+ "added": "2026-10-06",
+ "name": {
+  "en": "A usual Monday",
+  "az": "Adi bir bazar ertəsi",
+  "ru": "Обычный понедельник"
+ },
+ "why": {
+  "en": "Aleksandr, Krista and Kiur, from waking up to going to bed",
+  "az": "Aleksandr, Krista və Kiur — oyanmaqdan yatmağa qədər",
+  "ru": "Aleksandr, Krista и Kiur — от подъёма до сна"
+ },
+ "taste": "Pool kaheksa ärkan üles.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Missugune on sinu tavaline esmaspäev?",
+    "en": "What is your usual Monday like?",
+    "az": "Sənin adi bazar ertən necə keçir?",
+    "ru": "Как проходит твой обычный понедельник?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "et": "Pool kaheksa ärkan üles. Siis teen süüa, pesen hambaid ja nii edasi. Siis lähen tööle. Kell üheksa ma olen siin tööl. Poole kuueni või kuueni ma olen tööl. Ja siis ma lähen koju. Seitsme paiku me sööme naisega õhtusööki. Kell üksteist me lähme magama.",
+     "en": "At half past seven I wake up. Then I make something to eat, brush my teeth and so on. Then I go to work; at nine o'clock I'm at work here. Until half past five or until six I am at work. And then I go home. Around seven we eat dinner, my wife and I. At eleven o'clock we go to sleep.",
+     "az": "Səkkizin yarısında oyanıram. Sonra yemək hazırlayıram, dişlərimi yuyuram və sair. Sonra işə gedirəm. Saat doqquzda artıq burada, işdəyəm. Altının yarısına və ya altıya qədər işdəyəm. Sonra evə gedirəm. Yeddi radələrində arvadımla şam edirik. Saat on birdə yatırıq.",
+     "ru": "В половине восьмого я просыпаюсь. Потом готовлю поесть, чищу зубы и так далее. Потом иду на работу. В девять я уже здесь, на работе. До половины шестого или до шести я на работе. А потом иду домой. Около семи мы с женой ужинаем. В одиннадцать ложимся спать."
+    },
+    {
+     "who": "Krista",
+     "et": "Minu esmaspäev näeb välja selline: ärkan üles, teen süüa lastele, iseendale. Me sööme, ma saadan lapsed kooli. Ja mehe saadan saksa keele tundi. Siis ma teen arvuti taga tööd. Võib-olla lähen päeval jooksma. Ja õhtul on mul keelekursus, kus ma õpetan norra keelt.",
+     "en": "My Monday looks like this: I wake up, cook food for the children and for myself. We eat, I send the kids to school. And my husband I send to his German class. Then I do some work at the computer. Maybe I go jogging during the day. And in the evening I have a language course, where I teach Norwegian.",
+     "az": "Mənim bazar ertəm belə keçir: oyanıram, uşaqlara və özümə yemək hazırlayıram. Yeyirik, uşaqları məktəbə yola salıram. Ərimi də alman dili dərsinə yola salıram. Sonra kompüter arxasında işləyirəm. Bəlkə gündüz qaçmağa gedirəm. Axşam isə dil kursum var — orada norveç dili öyrədirəm.",
+     "ru": "Мой понедельник выглядит так: просыпаюсь, готовлю еду детям и себе. Мы едим, я отправляю детей в школу. А мужа отправляю на урок немецкого. Потом работаю за компьютером. Может быть, днём иду на пробежку. А вечером у меня языковой курс, где я преподаю норвежский."
+    },
+    {
+     "who": "Kiur",
+     "et": "Ma ärkan pool seitse. Hommikul ma panen riidesse, siis ma söön, siis ma pesen hambad ära, siis ma lähen bussi peale. Lähen kooli, koolist lähen maleringi. Mingi hetk jõuan koju. Kodus õpin. Siis teen midagi, mis pähe tuleb, ja siis lähen magama.",
+     "en": "I wake up at half past six. In the morning I get dressed, then I eat, then I brush my teeth, then I take the bus. I go to school, and from school I go to the chess club. At some point I get home. At home I study. Then I do whatever comes to mind, and then I go to sleep.",
+     "az": "Yeddinin yarısında oyanıram. Səhər geyinirəm, sonra yeyirəm, sonra dişlərimi yuyuram, sonra avtobusa minirəm. Məktəbə gedirəm, məktəbdən şahmat dərnəyinə. Bir vaxt evə çatıram. Evdə dərs oxuyuram. Sonra ağlıma nə gəlirsə, onu edirəm, sonra da yatıram.",
+     "ru": "Я просыпаюсь в половине седьмого. Утром одеваюсь, потом ем, потом чищу зубы, потом сажусь на автобус. Еду в школу, из школы — в шахматный кружок. В какой-то момент добираюсь домой. Дома учу уроки. Потом делаю что в голову придёт, а потом иду спать."
+    }
+   ]
+  }
+ ]
+}
