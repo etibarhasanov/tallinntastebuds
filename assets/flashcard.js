@@ -140,7 +140,7 @@
  *
  * Some words rather than none, because somebody shown nothing is being asked
  * to sign up for a description, and five to a tab rather than five a deck,
- * because five free words per deck across forty-two decks is the product. It
+ * because five free words per deck across fifty-two decks is the product. It
  * was one word until October 2026, and one word was a card and then a form —
  * FREE_WORDS says what that cost. They are the tab's words: the run below is
  * sessionStorage, so tomorrow is somebody arriving again, and nothing here
@@ -187,7 +187,7 @@
  *
  * ?d=<id> is the whole of the routing. Without it the page is the decks: the
  * ones the site ships that this person's stages have opened — nine of the
- * forty-two before anybody has answered a card — and yours under them. With it, it is that deck,
+ * fifty-two before anybody has answered a card — and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
  * one place this feature deliberately differs from lists and from splitwise.
@@ -1306,7 +1306,7 @@
    *
    * Signed out is nought words and so the two gated stages are shut, headings
    * and all, which is the one thing about the stages that changed after they
-   * shipped: a stranger handed forty-two rows has nothing on the page telling
+   * shipped: a stranger handed fifty-two rows has nothing on the page telling
    * them where to start, and nine is where to start — the five of First words
    * and the four of At a restaurant, which has no gate.
    * What signed out is not held to is a deck reached by its address — see
@@ -1754,8 +1754,8 @@
   }
 
   /* The one number that is about the person rather than about the decks:
-     how many of the shipped words they know, over every deck. Forty-two rows
-     each saying "9 / 22" is forty-two facts and no score, and this is the one
+     how many of the shipped words they know, over every deck. Fifty-two rows
+     each saying "9 / 22" is fifty-two facts and no score, and this is the one
      that grows over a month — which is the thing that brings somebody back on
      a Tuesday. On Start and over the words, which are the two parts it is
      about.

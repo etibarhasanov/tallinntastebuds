@@ -8763,11 +8763,15 @@ not quite true. What it buys is a crawler — Google's, Bing's, and the
 assistants' fetchers most of all, since **AI assistants** under
 [Getting found](#getting-found) is a list of readers that run no script — that
 knows the language of every string on the page without sniffing it, which is
-exactly the question *что значит leib* turns on. It costs thirteen kilobytes on
-the shelf and between ten and thirty-four on a deck, against the map's eighty-five
-at its worst, because a card is four short strings and a restaurant is an
-address, a coordinate, a photograph and a write-up. A deck out of the database
-gets none of it, for the reason it gets a `noindex`.
+exactly the question *что значит leib* turns on. It costs twenty-seven
+kilobytes on the shelf — fifty-two names and their lines, with the lessons
+and the songs — and between seven and seventy-six on a deck, against the
+map's eighty-five at its worst: a card is four short strings where a
+restaurant is an address, a coordinate, a photograph and a write-up, but a
+card that carries its three forms and a sentence in three languages is not,
+and the two-word verbs, a hundred and twenty-five of them, come close to the
+map. A deck out of the database gets none of it, for the reason it gets a
+`noindex`.
 
 So the arrangement is **the blog's** — see **[The blog](#the-blog)** — rather
 than the split page's: unlinked-to-a-deck and indexed. `robots.txt`
@@ -9173,7 +9177,7 @@ ships is eighteen. The number is a reading of a week rather than a law: put
 and move it if that says to.
 
 **And five to a tab rather than five a deck.** Five free words in each of
-forty-two decks is two hundred words, which is a product rather than a sample:
+fifty-two decks is two hundred and sixty words, which is a product rather than a sample:
 the tab holding five answers is what raises the gate, on that deck and on every
 other. A card answered twice is one word. That is also what stops the reload button being the way past — the run
 rebuilds itself from what the route answered, and the route has no idea who is
@@ -9967,7 +9971,7 @@ A stage rather than a deck, because a deck is already paced from inside — the
 sort under **And a finished deck sinks** puts the one you are in the middle of
 at the top — and a lock on each deck would have
 been Duolingo's path laid over that, with the two fighting over which deck is
-next. Two numbers rather than forty-two, and the level a deck already carries
+next. Two numbers rather than fifty-two, and the level a deck already carries
 in `data/decks.json` is which of them it is held to, or neither.
 
 **A hundred and four hundred**, and why. A hundred is a quarter of the 397
