@@ -99,6 +99,7 @@ when: directions
 when: route_mode
 when: route_trip
 when: route_google
+when: route_waze
 when: website
 when: call_place
 when: google_listing

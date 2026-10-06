@@ -1117,6 +1117,7 @@
   "foundLink": "Ինչպես են գտել կայքը →",
   "routeWalk": "{min} րոպե ոտքով · {dist}",
   "routeGoogle": "Բացել Google Maps-ում",
+  "routeWaze": "Բացել Waze-ում",
   "routeNone": "Հնարավոր չեղավ գտնել ոտքով երթուղի։",
   "routeLocate": "Ճանապարհը տեսնելու համար կիսվեք ձեր գտնվելու վայրով։",
   "routeFinding": "Փնտրում ենք ճանապարհը…",

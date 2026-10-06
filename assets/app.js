@@ -2323,7 +2323,14 @@
      place too. Where the visitor is comes from the dot if the map already has
      one and from one reading otherwise, taken quietly — a reading asked for
      here must not fly the map to the visitor and off the place they are
-     looking at. The route is /api/route; peatus.ee answers for the bus. */
+     looking at. The route is /api/route; peatus.ee answers for the bus.
+
+     The small link under it is the way out, and which app it leaves for
+     follows the tab: Google for a walk or a bus, which knows the footpaths
+     and the timetables, and Waze for the car, which is what people in Tallinn
+     drive with. Waze is given the pin rather than the name — its link has no
+     place id to match, and a name it guesses at can land on the wrong
+     street. */
   var ROUTE_TRAVEL = { foot: 'walking', bus: 'transit', car: 'driving' };
   var ROUTE_NONE = { foot: 'routeNone', bus: 'routeNoBus', car: 'routeNoCar' };
 
@@ -2333,7 +2340,10 @@
     routeFor = place.id;
     clearRouteLine();
     paintRouteModes();
-    dom.routeGoogle.href = dom.panelDirections.href + '&travelmode=' + ROUTE_TRAVEL[mode];
+    dom.routeOut.href = mode === 'car'
+      ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
+      : dom.panelDirections.href + '&travelmode=' + ROUTE_TRAVEL[mode];
+    dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
     dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
@@ -11853,7 +11863,9 @@
       TTBTrack.event('route_mode', { mode: routeMode, place: place.name });
       showRoute(place);
     });
-    TTBTrack.click(dom.routeGoogle, 'route_google');
+    dom.routeOut.addEventListener('click', function () {
+      TTBTrack.event(routeMode === 'car' ? 'route_waze' : 'route_google');
+    });
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
@@ -12361,7 +12373,7 @@
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
       routeSay: $('route-say'),
-      routeGoogle: $('route-google'),
+      routeOut: $('route-out'),
       routeClose: $('route-close'),
       routeModes: $('route-modes'),
       routeTrips: $('route-trips'),

@@ -1117,6 +1117,7 @@
   "foundLink": "Siteyi nasıl buldular →",
   "routeWalk": "{min} dk yürüyerek · {dist}",
   "routeGoogle": "Google Haritalar'da aç",
+  "routeWaze": "Waze'de aç",
   "routeNone": "Yürüyüş rotası bulunamadı.",
   "routeLocate": "Yolu görmek için konumunu paylaş.",
   "routeFinding": "Yol aranıyor…",

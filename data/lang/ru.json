@@ -1117,6 +1117,7 @@
   "foundLink": "Как нашли сайт →",
   "routeWalk": "{min} мин пешком · {dist}",
   "routeGoogle": "Открыть в Google Картах",
+  "routeWaze": "Открыть в Waze",
   "routeNone": "Не удалось найти пешеходный маршрут.",
   "routeLocate": "Поделитесь местоположением, чтобы увидеть путь.",
   "routeFinding": "Ищем путь…",

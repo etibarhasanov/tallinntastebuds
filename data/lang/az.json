@@ -1117,6 +1117,7 @@
   "foundLink": "Saytı necə tapıblar →",
   "routeWalk": "{min} dəq piyada · {dist}",
   "routeGoogle": "Google Maps-də aç",
+  "routeWaze": "Waze-də aç",
   "routeNone": "Piyada marşrut tapılmadı.",
   "routeLocate": "Yolu görmək üçün məkanınızı paylaşın.",
   "routeFinding": "Yol axtarılır…",
