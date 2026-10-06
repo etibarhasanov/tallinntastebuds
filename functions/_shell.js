@@ -32,7 +32,8 @@
  *
  * What is in here is the part they cannot each have their own copy of: the two
  * escaping rules, the page out of the deployment, the head, the head swap, the
- * seeding, the filling of an element the page ships empty, and the response.
+ * seeding, the filling of an element the page ships empty, the response, and
+ * the copy of it a colo keeps — KEPT IN THE COLO at the bottom.
  * The escaping is the reason this file exists — the
  * rules below are the difference between a title somebody typed and a title
  * somebody typed being executed, and two copies of one is two places for one
@@ -50,8 +51,11 @@
  *
  * What each route decides for itself: what it calls itself and says about
  * itself, what is seeded, what status it answers with, whether the page is
- * worth indexing, and — for the map alone — how long a browser may keep it.
+ * worth indexing, which files its copy in the colo is stamped with and how
+ * long that copy lives, and — for the map alone — what the browser is told.
  */
+
+import { hex, weakTag, withNotModified, sessionTokens } from './api/_lib.js';
 
 /* Text on its way into an attribute or an element. The quotes matter most —
    every use is inside a content="…" — and the ampersand has to go first or it
@@ -253,12 +257,16 @@ export function rehead(html, tags) {
   return html.slice(0, open) + tags + html.slice(close + HEAD_CLOSE.length);
 }
 
-/* Never cached, whether or not it is indexed. A list is edited by its owner
-   while they are looking at it, and — because a private list is served only to
-   the session that owns it — a shared copy of one of these responses would be
-   a copy of somebody's page handed to the next person to ask for it. The
-   directory is under the same rule for the smaller version of the same reason:
-   it is seeded with rows that change as people keep things.
+/* The answer as it leaves the route: no-store, whether or not it is indexed.
+   A list is edited by its owner while they are looking at it, and — because a
+   private list is served only to the session that owns it — a shared copy of
+   one of these responses would be a copy of somebody's page handed to the
+   next person to ask for it. The directory is under the same rule for the
+   smaller version of the same reason: it is seeded with rows that change as
+   people keep things. The routes that do keep a copy hand this answer to
+   keepInColo() below, which keeps it only where nobody was signed in and
+   tells the browser something gentler; what is written here is what a
+   signed-in person's own page always says.
  *
  * A crawler is not harmed by this: it fetches a page once and keeps what it
  * finds. no-store is about the caches in between.
@@ -274,4 +282,156 @@ export function page(html, status, indexable) {
       'x-robots-tag': indexable ? 'index, follow' : 'noindex, follow'
     }
   });
+}
+
+/* ------------------------------------------------------ KEPT IN THE COLO
+ *
+ * A page rendered here is put in the Cache API — caches.default, the same
+ * per-colo cache /api/saves keeps its counts in — so the next visit to the
+ * same address in the same colo is a cache read rather than a fetch out of
+ * the deployment, a database read and a render. The map did this first, and
+ * the header of functions/index.js is the long version; this is the part the
+ * five routes that keep a copy cannot each have their own of.
+ *
+ * THREE THINGS ARE ON EVERY KEY, AND A FOURTH IS NEVER
+ *
+ * The page's own address, with only what the render depends on left on it:
+ * the map's language and place, a list's id, the directory's search and its
+ * order, a post's id. ?from= and the rest of what a shared link carries are
+ * not in the render and so not in the key, and one copy answers every tracked
+ * link. Then the deployment, as ?v= — deployStamp() below — so a deploy that
+ * changed the page or the files it is rendered from misses on its first visit
+ * and the copies the old deployment left are never asked for again. And the
+ * session is never on it: a page that varies by who is asking is kept only
+ * where nobody is — signedIn() below is the test — because a copy of
+ * somebody's own page handed to the next person to ask would be exactly the
+ * thing page() above was written to prevent. A signed-in visit is answered
+ * the way it always was, no-store, and never kept.
+ *
+ * HOW LONG, AND WHAT THE BROWSER IS TOLD
+ *
+ * The life of a copy is the route's to say, because it is the life of what
+ * the page is rendered from. The map is rendered from files that change only
+ * on a deploy, so its copy lives as long as the deployment and it says a day.
+ * The lists pages and the blog are rendered from the database as well, which
+ * changes without a deploy whenever somebody saves, so their copies live
+ * PAGE_TTL, a minute: long enough that a crawler walking the directory and a
+ * link opened by a hundred people in an hour cost one render each, short
+ * enough that a list edited by its owner is what strangers see within the
+ * minute. Nothing purges on a write — a purge reaches one colo, and the
+ * minute is what the other colos would have had anyway — and that is a
+ * boundary rather than an oversight.
+ *
+ * The browser is told REVALIDATE for the map, which _headers says too and
+ * tools/validate.mjs holds the two to, and PRIVATELY for the pages: the same
+ * revalidation, so a browser that holds the page sends If-None-Match and gets
+ * a 304 off the weak ETag the copy carries, but private, so nothing between
+ * the colo and the browser keeps a page that a signed-in visit gets a
+ * different version of. The Cache API stores nothing told max-age=0, so the
+ * copy in the colo is written `public, max-age=<ttl>` and the rule above is
+ * set on the way out — the move privately() in ./api/_lib.js makes for the
+ * owner's routes.
+ */
+
+/* What the browser is told about the map — the same words `_headers` gives
+   the static file at / and /index.html, which tools/validate.mjs holds the two
+   to — and about the pages, whose rule is in no `_headers` line because no
+   static file answers at their addresses. */
+export const REVALIDATE = 'public, max-age=0, must-revalidate';
+export const PRIVATELY = 'private, max-age=0, must-revalidate';
+
+/* How long a colo keeps a page rendered from the database, in seconds — see
+   HOW LONG above. */
+export const PAGE_TTL = 60;
+
+/* One short string per list of files that changes when and only when a
+   deployment changed one of them. Read once per isolate and held for its
+   life: an isolate belongs to one deployment and the files cannot change
+   under it. The promise rather than the value, so two visits arriving on a
+   cold isolate together read the files once between them, and dropped on
+   failure so the next visit asks again rather than inheriting a broken
+   stamp. Throws the way dataFile() throws, and the routes catch it in the
+   same place they catch that.
+
+   Pages hands a Function no deployment id at runtime that the docs will
+   stand behind — the CF_PAGES_* variables are documented for the build —
+   but `wrangler pages dev` hands them to a Function as bindings, so the
+   commit is folded in when it is there. Either way the asset server's own
+   ETag on each file, a hash of its bytes, is what carries the stamp; a file
+   served without one is hashed here instead, so the stamp does not depend
+   on a header one host might not send. */
+const stamps = new Map();
+
+export function deployStamp(context, files) {
+  const name = files.join(' ');
+  if (!stamps.has(name)) {
+    stamps.set(name, readStamp(context, files).catch((e) => { stamps.delete(name); throw e; }));
+  }
+  return stamps.get(name);
+}
+
+async function readStamp(context, files) {
+  const marks = await Promise.all(files.map(async (path) => {
+    const url = new URL(path, context.request.url);
+    const res = context.env.ASSETS
+      ? await context.env.ASSETS.fetch(new Request(url.toString()))
+      : await fetch(url.toString());
+    if (!res.ok) throw new Error(path + ' unreadable: ' + res.status);
+    /* The body is read either way, so the subrequest is not left open. */
+    const tag = res.headers.get('etag');
+    const body = await res.arrayBuffer();
+    return tag || hex(await crypto.subtle.digest('SHA-1', body));
+  }));
+  const commit = (context.env && context.env.CF_PAGES_COMMIT_SHA) || '';
+  const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(commit + ' ' + marks.join(' ')));
+  return hex(digest).slice(0, 16);
+}
+
+/* Whether this visit carries a session at all — the cookie, not whether it
+   names a live one, which is a database read the routes make for themselves.
+   A dead cookie counts as signed in here, which costs that visit the cache
+   and nothing else. */
+export function signedIn(request) {
+  return sessionTokens(request).length > 0;
+}
+
+/* Where a page is kept: its own address with the deployment on it as ?v=,
+   the same spelling tools/stamp.mjs gives a script. The query is only a key —
+   nothing is ever served at it. */
+export function coloKey(address, stamp) {
+  const url = new URL(address);
+  url.searchParams.set('v', stamp);
+  return new Request(url.toString());
+}
+
+/* The copy this colo holds under the key, ready for the browser, or null. */
+export async function fromColo(request, key, rule) {
+  const hit = await caches.default.match(key);
+  return hit ? toBrowser(request, hit, rule) : null;
+}
+
+/* The route's answer, kept in the colo for ttl seconds — a 200 only; a page
+   the route could not make is not a page to keep — and handed to the browser.
+   The ETag is a hash of the answer, made once here rather than once per
+   visit, and a Last-Modified off a static file goes rather than being
+   rewritten: nothing here knows when the data changed, and a date that is
+   not known is not claimed. */
+export async function keepInColo(context, key, res, ttl, rule) {
+  const html = await res.text();
+  const headers = new Headers(res.headers);
+  headers.delete('content-length');
+  headers.delete('last-modified');
+  headers.set('etag', await weakTag(html));
+  headers.set('cache-control', 'public, max-age=' + ttl);
+  const kept = new Response(html, { status: res.status, headers });
+  if (res.ok) context.waitUntil(caches.default.put(key, kept.clone()));
+  return toBrowser(context.request, kept, rule);
+}
+
+/* The copy, told the browser's rule rather than the colo's — or a 304 when
+   the browser already holds it. */
+function toBrowser(request, kept, rule) {
+  const out = new Response(kept.body, kept);
+  out.headers.set('cache-control', rule);
+  return withNotModified(request, out);
 }

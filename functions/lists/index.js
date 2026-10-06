@@ -49,6 +49,16 @@
  * losing it would hide this page from every crawler, and _headers keeps its
  * noindex on that spelling alone.
  *
+ * KEPT IN THE COLO, FOR WHOEVER IS NOT SIGNED IN
+ *
+ * The rows are seeded per session — whose you are, which of them you kept —
+ * so a copy of this page is kept only where nobody was signed in, under the
+ * address with the search and the order on it, stamped with the deployment,
+ * for PAGE_TTL, a minute. A signed-in visit is rendered and answered
+ * no-store, as it always was. KEPT IN THE COLO in functions/_shell.js is the
+ * mechanism and the argument; what is this file's is the key and the one
+ * file the copy is stamped with, which is the page.
+ *
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * The same as its neighbour: the untouched page, and assets/lists.js asks
@@ -59,7 +69,10 @@
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
+import {
+  canonical, esc, head, shell, sow, rehead, fill, EMPTY, page,
+  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
+} from '../_shell.js';
 import { mostKept, query, sortOf } from '../api/_mostkept.js';
 
 const PATH = '/lists';
@@ -87,8 +100,44 @@ function prose(first) {
     '<ol>' + first.all.map(row).join('') + '</ol>';
 }
 
+/* The copy's address: the directory, with the search and the order the
+   render was made with — tidied, so that two spellings of one question are
+   one copy — and nothing else off the query. */
+function directoryKey(request, q, sort, stamp) {
+  const url = new URL(canonical(request, PATH));
+  if (q) url.searchParams.set('q', q);
+  url.searchParams.set('sort', sort);
+  return coloKey(url.toString(), stamp);
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
+
+  /* What somebody searched for, when they arrived on a link that carried one.
+     Seeded rather than left to the script, so a search anybody sent is a page
+     that draws its answer rather than a page that draws everything and then
+     replaces it. The field is filled from the same value — see wantedQuery()
+     in assets/lists.js — tidied the way the query tidies it, so the field and
+     the rows under it are about the same question. */
+  const q = query(new URL(request.url).searchParams.get('q'));
+  /* And the order, the same way: a link to the newest lists draws the newest
+     lists, with the chip for that order already pressed. An unknown order is
+     the default, as it is for the API. */
+  const sort = sortOf(new URL(request.url).searchParams.get('sort'));
+
+  /* The copy this colo holds for whoever is not signed in — KEPT IN THE COLO
+     in the header. A stamp that cannot be read is the page served the way it
+     was before any copy was kept. */
+  let key = null;
+  if (!signedIn(request)) {
+    try {
+      key = directoryKey(request, q, sort, await deployStamp(context, ['/lists.html']));
+      const hit = await fromColo(request, key, PRIVATELY);
+      if (hit) return hit;
+    } catch (e) {
+      key = null;
+    }
+  }
 
   let html;
   try {
@@ -113,18 +162,6 @@ export async function onRequest(context) {
      fetches its rows a moment later. */
   if (!env.DB || (await wrongDatabase(env))) return page(html, 200, true);
 
-  /* What somebody searched for, when they arrived on a link that carried one.
-     Seeded rather than left to the script, so a search anybody sent is a page
-     that draws its answer rather than a page that draws everything and then
-     replaces it. The field is filled from the same value — see wantedQuery()
-     in assets/lists.js — tidied the way the query tidies it, so the field and
-     the rows under it are about the same question. */
-  const q = query(new URL(request.url).searchParams.get('q'));
-  /* And the order, the same way: a link to the newest lists draws the newest
-     lists, with the chip for that order already pressed. An unknown order is
-     the default, as it is for the API. */
-  const sort = sortOf(new URL(request.url).searchParams.get('sort'));
-
   let first;
   let user;
   try {
@@ -141,8 +178,8 @@ export async function onRequest(context) {
      same small reason: the header wears whoever you are, and a page that drew
      without asking would be the one page on this site where your own name is
      missing from it. The rows carry a bookmark each, so what is seeded here is
-     per-session twice over — which is why it is no-store, which it was going
-     to be anyway. */
+     per-session twice over — which is why it is no-store to anybody signed
+     in, and why the copy kept below is only ever of the page nobody was. */
   html = sow(html, '__TTB_ALL', {
     user: user ? user.username : null,
     q: q,
@@ -152,5 +189,6 @@ export async function onRequest(context) {
   });
   html = fill(html, EMPTY['lists.html'], prose(first));
 
-  return page(html, 200, true);
+  const res = page(html, 200, true);
+  return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;
 }

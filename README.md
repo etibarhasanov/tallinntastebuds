@@ -6890,7 +6890,9 @@ catalogue already carries, so the sheet never shows one restaurant twice.
 Rows Google says are shut, and rows marked `hidden`, are not offered at all.
 The answer is cached five minutes: it changes when a deploy or a sync changes
 it, and it is the same for everybody — unlike a list, which is read by its
-owner in the middle of writing it and is never cached.
+owner in the middle of writing it and is never cached for them; the copy a
+colo keeps of a public list is of the page a stranger gets, for a minute, and
+**Kept in the colo** under **Getting found** says how.
 
 A Google row also carries `kitchens` — what Google says it cooks, in the
 directory's cuisine ids — and `category`, Google's own word for what the
@@ -12002,6 +12004,15 @@ paragraph with its links, and every other post as a link under it — written
 into the `<main>` the page ships empty. `render()` empties that before it
 draws, so nobody sees it. A `?post=` that names nothing gets the page's own
 head and a `noindex`.
+
+One copy of each address is kept in the colo for a minute, for everybody —
+nothing on this page is anybody's in particular, since the route reads no
+session and a draft is nobody's to read here — and stamped with the
+deployment, so a deploy that changed the page, the house's posts or
+`data/map.json` misses on its first visit. **Kept in the colo** under
+**Getting found** has the mechanism; what a minute of staleness can reach is
+the head and the text a crawler reads, since `assets/blog.js` draws the page
+over the text either way.
 
 It used to be a decision that this was not worth a route: all it bought was a
 post pasted into a chat unfurling as itself, and nothing on the page is
@@ -17690,6 +17701,34 @@ Caucasian kitchens, Google's top tens — are written for the questions under
 **The words** that a map cannot answer in a title: *bakeries in Tallinn*,
 *craft beer Tallinn*, *cheap eats Tallinn*, *Georgian food Tallinn*. **Found
 as text** under [The blog](#the-blog).
+
+**Kept in the colo.** Each of these pages is put in the Cache API —
+`caches.default`, the same per-location cache `/api/saves` keeps its counts
+in — once it is rendered, so the next visit to the same address in the same
+colo is a cache read rather than a fetch out of the deployment, a database
+read and a render; `KEPT IN THE COLO` in `functions/_shell.js` is the
+mechanism the five routes share. Three things are on every key and a fourth
+never is: the address with only what the render depends on left on it (the
+map's language and place, a list's id, the directory's search and order, a
+post's id), so one copy answers every tracked link; the deployment, as a
+stamp folded out of the asset server's own ETags of the files the page is
+rendered from, read once per isolate, so a deploy misses on its first visit
+and the old copies are never asked for again; and never the session. The
+three pages served from `lists.html` seed whose you are and what you kept,
+so a copy of one is kept only where nobody was signed in, and a signed-in
+visit is rendered and answered `no-store` as it always was; the blog reads no
+session and keeps one copy for everybody. The map's copy lives a day, since
+only a deploy changes it; the pages read the database too, so theirs live a
+minute, which is what a crawler walking the directory or a link opened by a
+hundred people in an hour costs one render each, and short enough that a
+list edited by its owner is what strangers see within the minute. Nothing
+purges on a write — a purge reaches one colo, and the minute is what the
+others would have had anyway. Every copy carries a weak ETag, so a browser
+that holds the page gets a 304; the map is told `public, max-age=0,
+must-revalidate`, the same words `_headers` gives the static file and the
+validator holds the two to, and the pages `private` with the same
+revalidation, so nothing between the colo and the browser keeps a page a
+signed-in visit gets a different version of.
 
 It costs no extra Functions invocation, since `_routes.json` was already
 sending every request for `/` through `functions/_middleware.js`. It costs
