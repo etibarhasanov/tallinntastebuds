@@ -272,28 +272,26 @@ categories renamed, patterns dropped — and that production was loaded.
 
 ## The pull request
 
-1. `git fetch origin claude/tallinn-tastebuds-map-nzoqx0 && git rebase origin/claude/tallinn-tastebuds-map-nzoqx0`
-2. `node tools/googlevenues.mjs`, `node tools/googlelists.mjs`,
-   `node tools/city.mjs`, then `node tools/validate.mjs`, and read both SQL
-   diffs before going on.
-3. Preview is not loaded — **Production only, for now** in `CLAUDE.md`. Work
-   out the delta against production as in step 5 above, so it is ready to
-   ask with on landing.
-4. One commit for the export and its SQL; a second for any `KITCHENS`
-   pattern and cuisine label that had to go with it, and a third for the
-   counts, if they moved.
-5. `git push -u origin <branch>`, or `--force-with-lease` after a rebase.
-6. Open the PR against the default branch. The body says how many rows came
-   and went, which categories renamed, which patterns were dropped, and that
-   **production needs the load on landing**.
-7. CI green, then **Rebase and merge** — the branch stays, `CLAUDE.md` says
-   why — and then ask, again and separately, to load production:
-   `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
-   then the same with `db/google-lists.sql`, so the live directory, the six
-   lists and the files say the same thing. Approval to merge is not approval
-   to load, and a merge that lands while production goes unloaded is a fine
-   place to stop: the PR already says production needs it, the file is in the
-   repository, and anybody can run those two lines in a minute.
+**The pull request** in `CLAUDE.md` is the sequence, and this process adds:
+
+- The generators here are `node tools/googlevenues.mjs`, `node
+  tools/googlelists.mjs` and `node tools/city.mjs`; read both SQL diffs
+  before going on.
+- Preview is not loaded — **Production only, for now** in `CLAUDE.md`. Work
+  out the delta against production as in step 5 above, so it is ready to ask
+  with on landing.
+- One commit for the export and its SQL; a second for any `KITCHENS` pattern
+  and cuisine label that had to go with it; a third for the counts, if they
+  moved.
+- The body says how many rows came and went, which categories renamed, which
+  patterns were dropped, and that **production needs the load on landing**.
+- After **Rebase and merge**, ask, again and separately, to load production:
+  `wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql`
+  then the same with `db/google-lists.sql`, so the live directory, the six
+  lists and the files say the same thing. Approval to merge is not approval
+  to load, and a merge that lands while production goes unloaded is a fine
+  place to stop: the PR already says production needs it, the file is in the
+  repository, and anybody can run those two lines in a minute.
 
 ## Where it goes wrong
 
