@@ -459,7 +459,8 @@ if (decksFile !== null) {
 
     /* The grammar lessons, which are read rather than turned over: an id, a
        name, the line under it, and a body of blocks — a paragraph, a small
-       heading, or a table of three Estonian forms with what the word means.
+       heading, a table of three Estonian forms with what the word means, or a
+       run of sentences shaped like a card's.
        Every text on one is held to the three languages a card's back is, through
        said() above, and a lesson's id is held to the decks' namespace: a lesson
        opens at ?d=<id> the way a deck does, so the two lists cannot share a
@@ -489,8 +490,27 @@ if (decksFile !== null) {
       lesson.body.forEach((block, j) => {
         const at = `${where} → body[${j}]`;
         if (!isPlainObject(block)) { fail(at, 'must be an object'); return; }
-        const kinds = ['say', 'head', 'table'].filter((kind) => kind in block);
-        if (kinds.length !== 1) { fail(at, 'must be exactly one of "say", "head" or "table"'); return; }
+        const kinds = ['say', 'head', 'table', 'examples'].filter((kind) => kind in block);
+        if (kinds.length !== 1) { fail(at, 'must be exactly one of "say", "head", "table" or "examples"'); return; }
+
+        /* Sentences: each the Estonian and what it means, the shape a card's
+           sentence has, held to the same rule — both halves or neither. */
+        if (block.examples !== undefined) {
+          if (!Array.isArray(block.examples) || block.examples.length === 0) {
+            fail(at, '"examples" must be a list of at least one sentence');
+            return;
+          }
+          block.examples.forEach((one, k) => {
+            const row = `${at} → examples[${k}]`;
+            if (!isPlainObject(one) || !isNonEmptyString(one.et)) {
+              fail(row, 'a sentence with no Estonian in it');
+              return;
+            }
+            const { et, ...means } = one;
+            said(means, row, 'what the sentence means');
+          });
+          return;
+        }
 
         if (block.say !== undefined) {
           said(block.say, at, 'paragraph');

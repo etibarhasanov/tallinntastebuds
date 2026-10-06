@@ -891,6 +891,22 @@
   letter-spacing: 0;
 }
 
+/* Sentences in a lesson: the card's own two lines, the Estonian over what it
+   means, one under another with the paradigm's hairline between them, so a
+   run of them under a table reads as the table said aloud. */
+.flash-examples {
+  list-style: none;
+  margin: 2px 0 18px;
+  padding: 0;
+}
+.flash-examples li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--hairline);
+}
+
 /* The one action at the foot of a lesson, with a little more air over it than
    a card's foot gets: the paragraph above it is the end of a page of reading
    rather than a field. */

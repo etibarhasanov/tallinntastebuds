@@ -10080,7 +10080,8 @@ has three forms** and **Every tense of a verb** — each pair the forms first
 and then what grows out of them.
 Each is a page of a few hundred words in the language the cards are being read
 in — the three the decks speak, not the ten the site does — with a paradigm or
-two set in the mono the card prints its forms in, and one filled action at the
+two set in the mono the card prints its forms in, a few sentences under each
+saying it the way it will be said, and one filled action at the
 foot, **Got it**, which marks it read and goes back to the shelf. The tile's
 foot says *Not read yet* or *Read*, in words, and nothing else: there is no
 rule to fill and no count to keep, because there is nothing to be part-way
@@ -10110,8 +10111,12 @@ in is two languages' work.
 **Where it lives, and what shape it is.** `lessons` in `data/decks.json`,
 beside the decks — one file, one route, one validator block, and one thing to
 delete under **Taking it out**. A lesson is an `id`, a `name`, a `why` and a
-`body` of blocks: a paragraph (`say`), a small heading (`head`), or a table of
-three heads and rows of three Estonian forms with what the word means. Every
+`body` of blocks: a paragraph (`say`), a small heading (`head`), a table of
+three heads and rows of three Estonian forms with what the word means, or a
+run of sentences (`examples`), each the Estonian in `et` and what it means
+beside it — exactly the shape a card's `sentence` has, drawn in the card's
+own two classes, so a sentence reads the same in a lesson as on the back of a
+card. Every
 text is an object keyed by language, English required and the other two warned
 about, exactly as a card's back is, and the ids share the decks' namespace
 because a lesson opens at `?d=<id>` the way a deck does — the validator fails a
@@ -10164,8 +10169,16 @@ name in the gloss; the tenses one to a table, three people a row, with the no
 in the third column because it is the same for all of them. What the book
 draws as arrows — the eleven cases built on the omastav, the plural osastav's
 vowel swaps, which form each tense grows from — is a paradigm with a paragraph
-over it saying what the arrow said. No new block and no new style: the lesson
-format held, and a fourth column would have been the thing that did not.
+over it saying what the arrow said. The lesson format held, and a fourth
+column would have been the thing that did not.
+
+**And every table is said aloud under it.** A paragraph can only quote the
+Estonian inside an English sentence about it, which is not how anybody will
+meet it. So after each paradigm, in all four lessons, comes a short run of
+sentences — *Võtmed on kotis*, *Kas maksate kaardiga?*, *Ma elasin varem
+Bakuus* — each with the form the table just showed standing in it, set where
+the rest of the site is set: the bus, the shop, the counter. Sixty-two of
+them, and they are mine like the rest.
 
 **The Estonian in them is mine**, like the rest of it: the forms in the tables
 are the cards' own, copied rather than retyped, and the sentences in the prose
@@ -13884,8 +13897,9 @@ instead of a minute after the merge.
   meet. A back missing its Azerbaijani or its Russian only warns. And its
   `lessons`, held to the same three languages: a lesson whose id a deck already
   has or the reserved `grammar`, a block that is not exactly one paragraph,
-  heading or table, a table row that is not three Estonian forms with what they
-  mean, or a paragraph with an unmatched `*`.
+  heading, table or run of sentences, a table row that is not three Estonian
+  forms with what they mean, a sentence without both its Estonian and what it
+  means, or a paragraph with an unmatched `*`.
   See **[Flashcards](#flashcards)**
 - a colour token one style declares and another leaves out, which is a style
   quietly wearing the other one's value out of `:root`. See **The design

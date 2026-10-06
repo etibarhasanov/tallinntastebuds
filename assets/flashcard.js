@@ -61,8 +61,8 @@
  * stage: why a noun has three forms and the fourteen cases they open, and why
  * a verb does and every tense it grows into. A lesson is a tile
  * like a deck's and opens at the same kind of address, and what it opens to is
- * prose — paragraphs, small headings and a paradigm or two — with one filled
- * action at its foot, Got it, which marks it read and goes back to the shelf.
+ * prose — paragraphs, small headings, a paradigm or two and the sentences that
+ * use them — with one filled action at its foot, Got it, which marks it read and goes back to the shelf.
  * The mark is a known row under the deck id GRAMMAR below, written by the
  * same action a card is and kept in this tab the same way when there is no
  * account to write it to. lessonCard() is the whole of the drawing, and
@@ -3116,6 +3116,20 @@
     ]);
   }
 
+  /* Sentences, each the Estonian over what it means — the card's own sentence
+     drawn as a list, in the same two classes, so a sentence reads the same in
+     a lesson as on the back of a card. A paragraph can only quote the
+     Estonian inside an English sentence about it; this is the Estonian
+     standing on its own line, the way it will be said. */
+  function examples(list) {
+    return el('ul', { className: 'flash-examples' }, list.map(function (one) {
+      return el('li', null, [
+        el('span', { className: 'flash-said', lang: 'et', textContent: one.et }),
+        el('span', { className: 'flash-means', textContent: means(one) })
+      ]);
+    }));
+  }
+
   function lessonCard() {
     var lesson = state.lesson;
     var kids = [
@@ -3126,6 +3140,7 @@
       if (block.say) kids.push(prose(means(block.say)));
       else if (block.head) kids.push(el('h2', { className: 'flash-lesson-head', textContent: means(block.head) }));
       else if (block.table) kids.push(paradigm(block.table));
+      else if (block.examples) kids.push(examples(block.examples));
     });
 
     var got = el('button', { type: 'button', className: 'go', textContent: t('flashGotIt') });
