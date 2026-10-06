@@ -4,8 +4,8 @@
  * WHAT THIS PAGE IS
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-seven decks of Estonian, two
- * thousand four hundred and twelve cards, Estonian on the front and what it
+ * menu. This is the other half of that: fifty-two decks of Estonian, two
+ * thousand four hundred and eighty-two cards, Estonian on the front and what it
  * means on the back, and one card at a time with two words under it — Knew
  * it, and Show me again. Over the card, how the sitting is going; under it,
  * on the face that asks, the first letters of the answer for anybody who
@@ -59,7 +59,10 @@
  *
  * Four lessons sit on the shelf under a heading of their own, after the first
  * stage: why a noun has three forms and the fourteen cases they open, and why
- * a verb does and every tense it grows into. A lesson is a tile
+ * a verb does and every tense it grows into. Under them, a second heading
+ * teaches the cases one at a time — five short lessons, each followed by a
+ * deck of cards that uses only what it taught, and Got it on one of those goes
+ * on into its deck rather than back to the shelf. A lesson is a tile
  * like a deck's and opens at the same kind of address, and what it opens to is
  * prose — paragraphs, small headings, a paradigm or two and the sentences that
  * use them — with one filled action at its foot, Got it, which marks it read and goes back to the shelf.
@@ -1546,6 +1549,15 @@
      back, since the route has no gate for it. */
   var SONG_LEVEL = 'song';
 
+  /* And the level of the deck a case lesson is followed by. Not a stage
+     either: it is drawn under The cases, one by one, straight after the
+     lesson that names it, so the shelf reads lesson, cards, lesson, cards. */
+  var CASE_LEVEL = 'case';
+
+  /* Whether a lesson is one of the cases taught one at a time — which is to
+     say, whether it names the deck that follows it. */
+  function followed(lesson) { return !!lesson.deck; }
+
   /* The decks the site ships, and the sentence saying what this page is for.
      The two gathered ones go at the top, above the headings, in the order the
      route sends them and not the order standing() would put them in: what
@@ -1629,9 +1641,26 @@
       /* The grammar, under a heading of its own — LESSONS_AFTER says where.
          Every lesson, whatever the count: they are prose, and a file has
          nobody to hold back. */
-      if (level.id === LESSONS_AFTER && state.lessons.length) {
+      var grammar = state.lessons.filter(function (l) { return !followed(l); });
+      if (level.id === LESSONS_AFTER && grammar.length) {
         kids.push(el('h2', { className: 'lists-section', textContent: t('flashGrammar') }));
-        kids.push(lessonList(state.lessons));
+        kids.push(lessonList(grammar));
+      }
+      /* And the cases, one at a time: a lesson, then the deck of cards that
+         uses only what it taught, then the next lesson. The pairing is the
+         lesson's own `deck` rather than anything in the ids, and nothing in
+         it is held back — the decks have no stage, so the route always sends
+         them. See **The cases, one at a time** in README.md. */
+      var cases = state.lessons.filter(followed);
+      if (level.id === LESSONS_AFTER && cases.length) {
+        kids.push(el('h2', { className: 'lists-section', textContent: t('flashCases') }));
+        var steps = el('ul', { className: 'menu flash-shelf' });
+        cases.forEach(function (lesson) {
+          steps.appendChild(lessonRow(lesson));
+          var cards = ours.filter(function (d) { return d.id === lesson.deck; })[0];
+          if (cards) steps.appendChild(deckRow(cards));
+        });
+        kids.push(steps);
       }
       /* And the songs under theirs, straight after: each song's tile, and
          the decks of their words as ordinary rows in the same list. */
@@ -1660,7 +1689,7 @@
     });
 
     var loose = ours.filter(function (d) {
-      return d.level !== SONG_LEVEL && !LEVELS.some(function (l) { return l.id === d.level; });
+      return d.level !== SONG_LEVEL && d.level !== CASE_LEVEL && !LEVELS.some(function (l) { return l.id === d.level; });
     });
     if (loose.length) kids.push(deckList(loose));
 
@@ -3082,7 +3111,7 @@
    */
   function lessonHead() {
     return el('div', { className: 'flash-deck' }, [
-      el('span', { className: 'eyebrow', textContent: t('flashGrammar') }),
+      el('span', { className: 'eyebrow', textContent: t(followed(state.lesson) ? 'flashCases' : 'flashGrammar') }),
       backOut({ lesson_id: state.lesson.id })
     ]);
   }
@@ -3143,7 +3172,8 @@
       else if (block.examples) kids.push(examples(block.examples));
     });
 
-    var got = el('button', { type: 'button', className: 'go', textContent: t('flashGotIt') });
+    var got = el('button', { type: 'button', className: 'go',
+                             textContent: t(followed(lesson) ? 'flashToCards' : 'flashGotIt') });
     got.addEventListener('click', function () {
       if (got.disabled) return;
       got.disabled = true;
@@ -3159,14 +3189,16 @@
   /* Got it: the lesson is read — on the account where there is one, and in
      this tab where there is not, through keep(), the same store an answer
      with nobody to tell goes into — and the shelf is where you go next, at
-     the place it was left. Pressed on a lesson already read it is only the
-     way out; the row it writes is the row that is there. The write is waited
-     for before the shelf is asked for, so the tile does not say Not read yet
-     over a row that landed a moment later. */
+     the place it was left. A case lesson goes on into its own deck instead,
+     because that deck is the other half of it: the lesson says why *köögis*,
+     the cards ask for it. Pressed on a lesson already read it is only the
+     way on; the row it writes is the row that is there. The write is waited
+     for before the next page is asked for, so the tile does not say Not read
+     yet over a row that landed a moment later. */
   function readLesson(lesson) {
     lesson.read = true;
     TTBTrack.event('flash_lesson_read', { lesson_id: lesson.id });
-    var back = function () { go('', true); };
+    var back = function () { go(lesson.deck || '', true); };
     if (state.user && state.ready) {
       post(FLASH_API, { action: 'knew', deck: GRAMMAR, card: lesson.id }).then(back);
     } else {

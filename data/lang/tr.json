@@ -618,6 +618,8 @@
   "flashErrGeneric": "Bu olmadı. Birazdan yeniden dene.",
   "flashErrOff": "Sitenin bu kopyasında hiçbir şey hatırlanmıyor, bu yüzden aşağıdaki desteler kaldığın yeri tutmaz.",
   "flashGrammar": "Dil bilgisi",
+  "flashCases": "Haller, tek tek",
+  "flashToCards": "Anladım — kartlara",
   "flashUnread": "Henüz okunmadı",
   "flashRead": "Okundu",
   "flashGotIt": "Anladım",

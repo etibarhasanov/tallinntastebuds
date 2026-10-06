@@ -8471,8 +8471,8 @@ this feature exists.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: forty-seven
-decks of Estonian, two thousand four hundred and twelve cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-two
+decks of Estonian, two thousand four hundred and eighty-two cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -8480,7 +8480,9 @@ sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, under a heading of their own on that page, four lessons of
 grammar about why the words on the cards come in threes and what grows out of them — **Grammar, which is
-read rather than turned over** below — and after them songs, with what every
+read rather than turned over** below — then the fourteen cases taught one at a
+time, each lesson followed by a deck of its own — **The cases, one at a time** —
+and after them songs, with what every
 line and every word in them means — **Songs, which are listened to**.
 
 It is the second thing on this site that is not about restaurants, and it is
@@ -8645,8 +8647,8 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: forty-seven decks, two
-thousand four hundred and twelve cards, deployed as a file and read as one. It
+`data/decks.json` is the Estonian the site ships: fifty-two decks, two
+thousand four hundred and eighty-two cards, deployed as a file and read as one. It
 is **content** — somebody edits the repository, the deploy carries it, every
 reader gets the same cards — and content that changes when the repository
 changes belongs in the repository. A row per card would be a copy of a file
@@ -8749,8 +8751,8 @@ for Russian. So there is a switch, and the next section is it.
 the old argument stands: it is deliberately *not* the arrangement splitwise has,
 where the strings live in a file of their own. The `/site` skill says in so many
 words that there is one such exception and a second would be two files to keep
-in step. So the ninety-nine `flash*` keys are in `ui.json`, and taking this
-feature out means taking ninety-nine keys out of ten blocks rather than deleting
+in step. So the hundred and one `flash*` keys are in `ui.json`, and taking this
+feature out means taking a hundred and one keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
 
@@ -9981,7 +9983,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **986 of the 2,412 cards** carry
+would be a stray clause with no translation. **986 of the 2,482 cards** carry
 one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
 bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
@@ -10172,8 +10174,8 @@ answers, and until this section existed the answer was a card that showed the
 forms and said nothing.
 
 **What it does not do.** No quiz at the end; four hundred words known is the
-test, as it is for the stages. No fifth lesson yet — the last ends by saying
-more will come as the decks grow, which is true and promises no number. No
+test, as it is for the stages. No fifth lesson under this heading — the cases
+are taken one at a time under one of their own, the next section. No
 lessons in the other seven languages: they get English, as the cards do. No
 scroll position remembered inside a lesson. And no lessons for a deck somebody
 wrote, for the reason there are no forms on one.
@@ -10207,6 +10209,73 @@ are the cards' own, copied rather than retyped, and the sentences in the prose
 say and no native speaker has read. The people reading them are the
 proofreaders, and **This card is wrong** below is where a card is reported; a
 lesson has no such line yet, and a wrong sentence in one is a pull request.
+
+### The cases, one at a time
+
+**The fourteen cases** is the whole table on one page, and that is the right
+thing to come back to and the wrong thing to learn from: fourteen endings read
+in one sitting are fourteen endings forgotten in one. So under it the shelf
+carries a second heading, **The cases, one by one**, and under that the same
+fourteen in five short lessons, each followed by a deck that uses only what it
+taught. Read a lesson, turn its cards over, read the next:
+
+| Lesson | Cases | Its deck |
+|---|---|---|
+| **The first three cases** | nimetav, omastav, osastav — the three on the back of every card | *Ema leib*, *Kaks kohvi*, *Mul ei ole aega* |
+| **Into, in, out of** | sisseütlev, seesütlev, seestütlev | *Kööki*, *Köögis*, *Poest* |
+| **Onto, on, off** | alaleütlev, alalütlev, alaltütlev | *Lauale*, *Sõbrale*, *Mul on* |
+| **Becoming, and until** | saav, rajav | *Ta sai arstiks*, *Viieni* |
+| **As, without, with** | olev, ilmaütlev, kaasaütlev | *Kohv suhkruta*, *Bussiga* |
+
+The first lesson is the forms the cards already carry, said case by case; the
+other eleven are the forms that grow out of the second of them. Each case gets
+its question (*kuhu? millesse?*), a three-row table — the question, one, many —
+the sentences under it that every table in a lesson is followed by, and a
+paragraph saying what it does.
+
+**And that paragraph is written three times, from three grammars.** The
+argument **Grammar, which is read rather than turned over** makes for its own
+lessons, pressed harder, because here it is the whole of the lesson. Azerbaijani
+is the closest of the three to Estonian and the lessons lean on it: *kuhu? kus?
+kust?* are *hara? harada? haradan?*, *köögisse, köögis, köögist* are *mətbəxə,
+mətbəxdə, mətbəxdən*, *suhkruta* is *şəkərsiz*, *sõbraga* is *dostla*, *Mul on*
+is *məndə var*, *Nägemiseni* is *görüşənədək*, and *kaks kohvi* keeps the noun
+singular after a number exactly as *iki qəhvə* does. What it has to be told is
+where the two part: one set of place endings in Azerbaijani against two in
+Estonian, inside and on top. Russian has the cases and is told where its
+prepositions went — *в кухню* and *на кухню* are both *kööki*, *у меня есть* is
+*mul on* word for word — and where the творительный splits three ways, into
+*arstiks*, *arstina* and *sõbraga*. English has almost no cases, so its version
+is the small words turned into endings, and *where, whither, whence* for the
+three questions English asks as one.
+
+**A lesson that names its deck.** It is `deck` on the lesson in
+`data/decks.json`, and the deck it names has the level `case`, which is not a
+stage: like a song's words, the page draws it under the lesson rather than under
+any of the four headings, and nothing holds it back, because the route has no
+gate for that level either. `tools/validate.mjs` fails a lesson whose deck is
+not in the file or is not a `case` deck, and a `case` deck no lesson names. The
+four lessons under **Grammar** carry no `deck` and are drawn where they always
+were.
+
+**Got it goes on into the cards.** On a lesson with a deck the button reads
+*Got it — on to the cards* (`flashToCards`), marks the lesson read exactly as
+before, and opens its deck rather than the shelf; the lesson's eyebrow says
+*The cases, one by one* (`flashCases`) rather than *Grammar*. Every other lesson
+still goes back to the shelf.
+
+**Nothing is locked, on purpose.** A deck stays open whether its lesson has been
+read or not, and a later lesson is open before an earlier one is finished. The
+order on the shelf is the suggestion. It is grammar to study, not a path to walk,
+and somebody who already knows the first three should not be made to say so.
+The cards do count towards **How many words you know**, as a song's do: *köögis*
+is a word you know.
+
+**What it does not do.** No quiz and no drill that makes you type the ending;
+the cards are turned over like any other. No case lessons for verbs. Not in the
+other seven languages, for the reason nothing on this page is. And the Estonian
+is mine, as in the four lessons above it: a wrong ending in one of them is a
+pull request.
 
 ### Songs, which are listened to
 
@@ -10601,7 +10670,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the ninety-nine `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the hundred and one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its seven lines in **Files**, the `data/decks.json` line under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
@@ -14139,9 +14208,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            forty-seven decks of Estonian, 2,412 cards under four
-                           headings and the songs', four lessons of grammar and
-                           four songs; content rather
+data/decks.json            fifty-two decks of Estonian, 2,482 cards under four
+                           headings, the songs' and the cases', nine lessons of
+                           grammar and four songs; content rather
                            than interface, and written in three languages
                            rather than the site's ten
 blog.html                  a post per thing this site does   } unlinked, and

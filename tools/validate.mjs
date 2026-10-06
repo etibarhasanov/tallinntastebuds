@@ -278,8 +278,8 @@ if (splitUi !== null) {
 /* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: forty-seven decks
-   and two thousand four hundred and twelve cards, deployed as a file and read
+   data/decks.json — the Estonian the flashcards page ships: fifty-two decks
+   and two thousand four hundred and eighty-two cards, deployed as a file and read
    as one.
    It is content rather than interface, so the ten languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
@@ -325,6 +325,17 @@ if (decksFile !== null) {
     const songDecks = new Set(
       (Array.isArray(decksFile.songs) ? decksFile.songs : [])
         .map((song) => isPlainObject(song) ? song.deck : null)
+        .filter(isNonEmptyString)
+    );
+    /* And a sixth, on the songs' footing: the deck of cards a case lesson is
+       followed by, which the page draws under The cases, one by one, straight
+       after the lesson that names it. Only a deck a lesson names may have it,
+       for the same reason. See **The cases, one at a time** under
+       **Flashcards** in README.md. */
+    const CASE_LEVEL = 'case';
+    const caseDecks = new Set(
+      (Array.isArray(decksFile.lessons) ? decksFile.lessons : [])
+        .map((lesson) => isPlainObject(lesson) ? lesson.deck : null)
         .filter(isNonEmptyString)
     );
     /* The two ids a shipped deck may not have: functions/api/flashcard.js
@@ -394,6 +405,8 @@ if (decksFile !== null) {
       said(deck.why, where, `deck "${deck.id}" why`);
       if (deck.level === SONG_LEVEL) {
         if (!songDecks.has(deck.id)) fail(where, `deck "${deck.id}" has the level "${SONG_LEVEL}" and no song names it`);
+      } else if (deck.level === CASE_LEVEL) {
+        if (!caseDecks.has(deck.id)) fail(where, `deck "${deck.id}" has the level "${CASE_LEVEL}" and no lesson names it`);
       } else if (!LEVELS.has(deck.level)) {
         fail(where, `deck "${deck.id}" has a level of "${deck.level}", which is not one of: ${[...LEVELS].join(', ')}`);
       }
@@ -482,6 +495,13 @@ if (decksFile !== null) {
 
       said(lesson.name, where, `lesson "${lesson.id}" name`);
       said(lesson.why, where, `lesson "${lesson.id}" why`);
+      /* A lesson may name the deck that follows it on the shelf, and that
+         deck has to be in the file with the level only such a deck has. */
+      if (lesson.deck !== undefined) {
+        const own = decksFile.decks.find((deck) => isPlainObject(deck) && deck.id === lesson.deck);
+        if (!own) fail(where, `lesson "${lesson.id}" names a deck "${lesson.deck}" that is not in the file`);
+        else if (own.level !== CASE_LEVEL) fail(where, `lesson "${lesson.id}" names deck "${lesson.deck}", whose level is not "${CASE_LEVEL}"`);
+      }
 
       if (!Array.isArray(lesson.body) || lesson.body.length === 0) {
         fail(where, `lesson "${lesson.id}" has no body`);
