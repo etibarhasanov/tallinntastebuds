@@ -95,6 +95,7 @@ import {
 } from './_profile.js';
 import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
+import { postsReady } from './_posts.js';
 
 /* The line somebody writes about themselves is capped by MAX_ABOUT in
    ./_profile.js now, beside cleanLine(), because the same line in the site's
@@ -949,6 +950,17 @@ export async function onRequestPost(context) {
       'DELETE FROM sessions WHERE user_id = ?',
       'DELETE FROM users WHERE id = ?'
     ].map((sql) => env.DB.prepare(sql).bind(id));
+
+    /* The posts it wrote, every language of each — but only where the two
+       tables are there: they reach a database by hand, and the batch below
+       is all or nothing, so naming a table that is not there yet would keep
+       somebody from deleting their account at all. */
+    if (await postsReady(env)) {
+      statements.unshift(
+        env.DB.prepare('DELETE FROM post_texts WHERE post IN (SELECT id FROM posts WHERE owner = ?)').bind(id),
+        env.DB.prepare('DELETE FROM posts WHERE owner = ?').bind(id)
+      );
+    }
 
     statements.push(
       env.DB

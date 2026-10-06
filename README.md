@@ -11626,26 +11626,131 @@ lists people made of them — **Found as text** and **Links inside a post**
 below.
 
 ```
-blog.html              the page, served at /blog as well
-functions/blog.js      the head and the text for the address that was opened
-assets/blog.js         ES5, one IIFE, like every other file in assets/
-assets/blog.css        only what a page of prose has and the other pages do not
-data/blog.json         the posts
-clips/<id>.png         the clip on a post — GENERATED, four files per post
-clips/scenes/<id>.html what it is drawn from
-tools/blogclips.mjs    draws every clip out of every scene
+blog.html                the page, served at /blog as well
+functions/blog.js        the head and the text for the address that was opened
+functions/blog/sitemap.js every member's published post, for a crawler
+assets/blog.js           ES5, one IIFE, like every other file in assets/
+assets/blog.css          only what a page of prose has and the other pages do not
+data/blog.json           the house's posts
+clips/<id>.png           the clip on a post — GENERATED, four files per post
+clips/scenes/<id>.html   what it is drawn from
+tools/blogclips.mjs      draws every clip out of every scene
+
+write.html               /write, where a member writes one
+assets/write.js          the editor
+assets/write.css         the desk around it: tabs, toolbar, place picker
+functions/api/posts.js   GET and POST /api/posts
+functions/api/_posts.js  what a post may hold, and how one is read
+db/schema.sql            posts and post_texts
 ```
 
-Nothing else. There is no endpoint, no database and no build step: the page
-fetches `data/ui.json` and `data/blog.json` and draws from them, the same way
-the map draws from `data/restaurants.json`. The Function in front of it only
-writes the head and a plain copy of the words for the readers that run no
-script; nothing the page draws waits on it.
+There are two kinds of post and one page. **The house's** are in
+`data/blog.json`, written in the repository, with no endpoint, no database
+and no build step: the page fetches them and draws, the way the map draws
+from `data/restaurants.json`. **Everybody else's** are written by members on
+`/write` and live in the database — **Everybody's posts** below. The
+Function in front of the page writes the head and a plain copy of the words
+for the readers that run no script; nothing the page draws waits on it, and
+a database that cannot be read is a blog of the house's notes alone.
+
+### Everybody's posts
+
+Anybody with an account can write for the blog. The account page has a row,
+**Your posts**, and a person's own profile has **Write a post** under their
+posts; both go to `/write`, which lists their posts — drafts and published —
+and opens one in the editor at `/write?post=<id>` (`?post=new` for one that
+has never been saved).
+
+```
+/write                     your posts, a page at a time, and New post
+/write?post=<id>           the editor
+/blog                      everybody's posts, newest first, ten at a time,
+                           with Show more; the house's notes under them
+/blog?post=<id>            one post — the house's or a member's
+/blog?by=<name>            one person's posts, ten at a time
+/u/<name>                  their profile, with their posts under their lists
+/blog/sitemap              every published member's post, for a crawler
+```
+
+**The editor is the post.** It is a box set in the blog's own type, with a
+toolbar of exactly what a post may hold: text, a heading and a smaller one,
+bold, italic, a link, a list and a numbered list, a quote, a divider, and a
+place on the map. The last is this blog's own: a search over the map's places
+that drops the one picked into the post as a card, which a reader presses to
+open the place on the map. *My ten favourite places* is ten of those with a
+paragraph between each. Writing in Google Docs or Word and pasting works the
+way people expect: the headings, lists, bold, italic and links come across,
+and the fonts, colours and pictures do not.
+
+**What is stored is blocks, never HTML.** A contenteditable holds whatever
+markup the browser and the clipboard put in it. `readBox()` in
+`assets/write.js` reads the box into a short list of block kinds — paragraph,
+`h2`, `h3`, quote, two lists, divider, place — each made of runs of text that
+may be bold, italic or a link; `cleanBody()` in `functions/api/_posts.js`
+keeps only those again; and both the page and the Function build the post
+from the blocks as text. There is no markup in the database to escape, so a
+post cannot put a script, a style or a frame on this site. A link goes to a
+path here or to an `http(s)` address elsewhere and nowhere else, and a link
+off the site is `nofollow ugc` — the writer chose it, the site did not. A
+place card names a place on the map or is dropped.
+
+**The caps** are `MAX_TITLE 120`, `MAX_LEAD 280` and `MAX_BODY 20000` —
+characters of words, which is what the counter under the box counts, not of
+JSON — in `functions/api/_posts.js`, restated in `assets/write.js` for the
+counters. Twenty thousand characters is a long magazine piece. An account may
+keep two hundred posts and start ten in a day, `MAX_POSTS` and
+`MAX_NEW_A_DAY`: a blog, not a feed, and a script holding somebody's session
+cannot fill the index in an afternoon.
+
+**Drafts.** Save draft keeps a post to its owner: to anybody else it does
+not exist, the way a private list does not. Publish puts it on the blog and
+the profile; Back to draft takes it off again, and keeps the date it was first
+published, so taking a post down to mend a typo does not move it to the top.
+Delete is for good.
+
+**Languages.** A post is written in one language first — the one it is
+filed under, `posts.lang` — and may be written again in any of the site's
+other nine, each a tab in the editor. A reader gets their own where it is
+written in it and the first one where it is not, with the blog's one
+admission of a fallback above the first paragraph, and a post written in more
+than one shows its languages as pills to switch between. There is no machine
+translation, for the reason **A post is not held to the ten languages** gives.
+
+**Pages, not everything.** Every list — the blog's, a person's, your own on
+`/write` — is ten rows at a time with a cursor for the next, `PAGE_SIZE` in
+`functions/api/_posts.js`, and a row carries every language's title and
+standfirst and never a body. A post's body is read only when the post is.
+
+**Found as text, too.** `/blog?post=<id>` for a member's post is written by
+`functions/blog.js` the way a house post is: its own title, description,
+canonical and card, a `BlogPosting` whose author is a `Person` at their
+profile, and the post as text in the language it was first written in. The
+index carries the newest page of members' posts as text after the house's,
+`/blog?by=<name>` is indexed where the person has published anything, and
+`/blog/sitemap` — named in `robots.txt` beside `sitemap.xml` — lists every
+published post with the day it was last saved, since no file in the
+repository can name a post written this morning. `/write` itself is
+`noindex`.
+
+**On the database.** `posts`, one row a post, and `post_texts`, one row a
+language of one, in `db/schema.sql`. Every reader survives their absence —
+`postsReady()` in `functions/api/_posts.js` asks once per isolate — so the
+deploy can go out before the schema is applied, and until it is, the blog is
+the house's notes, the profile has no Posts and `/write` cannot save. Deleting
+an account deletes its posts, where the tables are there.
+
+**What it does not do yet.** No pictures in a post: a photograph needs
+somewhere to live that is not a D1 row, and that is a decision of its own. No
+comments, no likes and no follow; no scheduling, which is a story's job; and
+nothing a post says is moderated before it is up — the owner can delete a row,
+and a report button is the obvious next thing if it is ever needed.
 
 ### The two states
 
-The index is every post, newest first, as rows — the date in mono, the title,
-the line under it saying what it is about, and the chevron. It is `.menu`, the
+The index is every post as rows — members' first, newest first and ten at a
+time, then the house's notes under a heading of their own — each the date in
+mono, the title, the line under it saying what it is about, and the chevron;
+a member's row says who wrote it. It is `.menu`, the
 same shape the account sheet draws a way-on in, because a list of posts is a
 list of places to go and [the design rules](#the-design-rules) say those are
 rows rather than a column of links.
@@ -11843,9 +11948,12 @@ English asks for `en-GB` and not `en`. This site's English is the English the
 write-ups are in, where `2026-08-09` is *9 August 2026*; `en` on its own
 resolves to `en-US` in every engine that has both and draws *August 9, 2026*.
 
-### Nothing on the site links to it
+### Nothing on the map links to it
 
-Not the map, not the lists, not the account page. The map is a map: what it
+Not the map and not the lists. Since members can write, the account page has
+**Your posts**, which goes to `/write`, and a profile lists the posts its
+owner wrote — those are doors to somebody's own writing rather than to the
+blog as such. The map is a map: what it
 has to say in its own chrome is where to eat, and a pill on the rail offering
 an essay about the rail would be the site clearing its throat at somebody who
 came here to find dinner. **Show me around** on the welcome card is already
@@ -16974,8 +17082,31 @@ The blog, `assets/blog.js`:
 | `blog_post` | `post` — a row on the index |
 | `blog_all` | — the way back to the index |
 | `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
-| `blog_link` | `post`, `to` — a link inside a post's paragraphs, `to` the path it goes to |
+| `blog_link` | `post`, `to` — a link inside a post's paragraphs, `to` the path it goes to; in a member's post an address off the site too |
+| `blog_member` | `post` — a row of a member's post on the index or on somebody's page of posts |
+| `blog_more` | — Show more, under a page of members' posts |
+| `blog_write` | — Write a post, on the index, under the members' posts, and on your own profile |
+| `blog_author` | `name` — the byline on a member's post, to their profile |
+| `blog_place` | `place` — a place card inside a member's post, to the place on the map |
+| `blog_read_in` | `lang` — one of the languages a member's post is written in, picked on its pills |
+| `blog_more_by` | `name` — More by, under a member's post and on a profile, to `?by=` |
+| `blog_edit` | — Edit this post, under your own post |
 | `radio_play`, `radio_stop`, `home` | as on the map |
+
+Writing a post, `assets/write.js`, and the doors to it:
+
+| event | parameters |
+| --- | --- |
+| `write_open` | — the row on the account page |
+| `write_blog` | — the blog, in the header |
+| `write_new` | — New post, on your posts |
+| `write_language` | `lang` — a language added to a post |
+| `write_place` | `place` — a place from the map put into a post |
+| `write_save` | `post` — Save draft, or Back to draft, once it has saved |
+| `write_publish` | `post` — Publish or Update, once it has saved |
+| `write_view` | — the post on the blog, from the editor |
+| `write_delete` | — a post deleted |
+| `profile_post` | `post` — a post under somebody's lists on their profile, `assets/lists.js` |
 
 Feedback, `assets/feedback.js`:
 

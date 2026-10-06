@@ -1064,8 +1064,53 @@
       wrap.appendChild(ul);
     }
 
+    wrap.appendChild(profilePosts(who));
     wrap.appendChild(backLink());
     return wrap;
+  }
+
+  /* What they have written on the blog — the posts members write on /write,
+   * functions/api/posts.js — newest first, and the way to the rest.
+   *
+   * Asked for after the page has drawn rather than seeded into it: the
+   * profile is a page about somebody's lists that has grown a blog, and it
+   * must not wait on, or fail with, a table that reaches a database by hand.
+   * Nothing at all where there are no posts — the rule every empty thing on a
+   * profile follows — except for the person themselves, who gets the door
+   * to write their first, because their own profile is where they will look
+   * for it. */
+  function profilePosts(who) {
+    var slot = el('div', { className: 'lists-posts', hidden: true });
+    var mine = !!state.me && state.me.toLowerCase() === who.name.toLowerCase();
+    fetch('/api/posts?by=' + encodeURIComponent(who.name), { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .catch(function () { return null; })
+      .then(function (out) {
+        var posts = (out && out.posts) || [];
+        if (!posts.length && !mine) return;
+        var rows = posts.map(function (post) {
+          var text = post.texts[state.lang] || post.texts[post.lang] || {};
+          return el('li', { className: 'menu-item' }, [
+            TTBTrack.click(el('a', { className: 'menu-row', href: '/blog?post=' + encodeURIComponent(post.id) }, [
+              el('span', { className: 'menu-say' }, [
+                el('span', { className: 'menu-name', textContent: text.title || '' }),
+                text.standfirst ? el('span', { className: 'menu-why', textContent: text.standfirst }) : null
+              ])
+            ]), 'profile_post', { post: post.id })
+          ]);
+        });
+        slot.appendChild(el('h2', { className: 'lists-section' }, [t('profilePosts')]));
+        slot.appendChild(card([
+          rows.length ? el('ul', { className: 'menu' }, rows) : el('p', { className: 'lists-say', textContent: t('blogMembersNone') }),
+          el('p', { className: 'lists-row lists-foot' }, [
+            out && out.next ? TTBTrack.click(el('a', { className: 'alt', href: '/blog?by=' + encodeURIComponent(who.name),
+              textContent: t('blogMoreBy', { name: who.name }) }), 'blog_more_by', { name: who.name }) : null,
+            mine ? TTBTrack.click(el('a', { className: 'go', href: '/write?post=new', textContent: t('blogWriteYours') }), 'blog_write') : null
+          ])
+        ]));
+        slot.hidden = false;
+      });
+    return slot;
   }
 
 
@@ -1145,6 +1190,7 @@
         },
         onNote: sheet.open
       }),
+      profilePosts(who),
       sheet.node
     ]);
     /* After render() has put this in the document: a dialog opens only from

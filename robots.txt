@@ -133,3 +133,7 @@ Disallow: /admin.html
 Disallow: /admin/
 
 Sitemap: https://tallinntastebuds.ee/sitemap.xml
+# The posts members write on /write live in the database rather than in the
+# repository, so tools/sitemap.mjs cannot name them; functions/blog/sitemap.js
+# does, on every request.
+Sitemap: https://tallinntastebuds.ee/blog/sitemap

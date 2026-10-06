@@ -45,16 +45,34 @@
  * cannot send anybody to the bakery, or to the list somebody made of them, is
  * a paragraph with nowhere to go.
  *
+ * AND EVERYBODY ELSE'S
+ *
+ * /blog?post=<id> is also the address of a post a member wrote on /write,
+ * which lives in the database rather than in data/blog.json — see
+ * functions/api/posts.js. Such a post gets the same treatment: its title,
+ * standfirst, canonical and card in the head, a BlogPosting whose author is
+ * the person and whose page is their profile, and the post as text, in the
+ * language it was first written in, since that is the one it is whole in.
+ * A draft is nobody's to index and is not read here at all. /blog?by=<name>
+ * is one person's posts, a page of them as text under their name. And the
+ * index lists the newest page of members' posts after the house's, so a
+ * crawler that reads only the index finds those too; /blog/sitemap is the
+ * rest of them, every published post's address — functions/blog/sitemap.js.
+ *
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * The untouched page, and assets/blog.js draws it as it always has. A missing
  * or malformed data/blog.json and a ?post= that names nothing both get the
  * page's own head; the second gets a noindex as well, since what a crawler
  * would file there is the index under an address that is not the index's.
+ * A database that cannot be read is a blog of the house's notes, as it was
+ * before anybody else could write in it.
  */
 
 import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile } from './api/_lib.js';
+import { dataFile, wrongDatabase } from './api/_lib.js';
+import { POST_ID, readPage, readPost, postsReady, pickText, bodyHtml, plainText } from './api/_posts.js';
+import { asUsername } from './api/_account.js';
 
 const PATH = '/blog';
 const FILE = '/blog.html';
@@ -130,10 +148,145 @@ function row(post) {
     esc(inEnglish(post.standfirst)) + '</p></li>';
 }
 
-function indexWords(posts) {
+function indexWords(posts, members) {
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
     '<ol>' + posts.map(row).join('') + '</ol>' +
+    (members.length ? '<h2>Written by members</h2><ol>' + members.map(memberRow).join('') + '</ol>' : '') +
     '<p><a href="/">The map of Tallinn</a> · <a href="/lists">Lists</a></p>';
+}
+
+/* ------------------------------------------------------- members' posts */
+
+/* The database, or null where it cannot be read or the two tables are not
+   there yet — and then the blog is the house's notes alone. */
+async function members(env) {
+  try {
+    if (!env.DB || (await wrongDatabase(env)) || !(await postsReady(env))) return null;
+    return env;
+  } catch (e) {
+    return null;
+  }
+}
+
+function memberDate(post) {
+  return new Date(post.at).toISOString().slice(0, 10);
+}
+
+/* A member's post in the language it was first written in. */
+function firstText(post) {
+  return pickText(post.texts, post.lang, post.lang) || { title: '', standfirst: '' };
+}
+
+function memberRow(post) {
+  const text = firstText(post);
+  return '<li><h2><a href="' + esc(postPath(post)) + '">' + esc(text.title) + '</a></h2>' +
+    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> — by ' +
+    '<a href="/u/' + esc(encodeURIComponent(post.author)) + '">' + esc(post.author) + '</a>' +
+    (text.standfirst ? ' — ' + esc(text.standfirst) : '') + '</p></li>';
+}
+
+function memberWords(post, names) {
+  const text = firstText(post);
+  return '<article lang="' + esc(post.lang) + '">' +
+    '<h1>' + esc(text.title) + '</h1>' +
+    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> — by ' +
+    '<a href="/u/' + esc(encodeURIComponent(post.author)) + '">' + esc(post.author) + '</a></p>' +
+    (text.standfirst ? '<p>' + esc(text.standfirst) + '</p>' : '') +
+    bodyHtml(text.body, esc, (id) => names.get(id) || '') +
+    '</article>' +
+    '<p><a href="' + esc(PATH + '?by=' + encodeURIComponent(post.author)) + '">More by ' + esc(post.author) + '</a> · ' +
+    '<a href="' + PATH + '">' + esc(TITLE) + '</a> · <a href="/">The map of Tallinn</a></p>';
+}
+
+function authorWords(name, list) {
+  return '<h1>Posts by ' + esc(name) + '</h1>' +
+    '<p><a href="/u/' + esc(encodeURIComponent(name)) + '">' + esc(name) + '</a></p>' +
+    '<ol>' + list.map(memberRow).join('') + '</ol>' +
+    '<p><a href="' + PATH + '">' + esc(TITLE) + '</a> · <a href="/">The map of Tallinn</a></p>';
+}
+
+function memberPosting(request, post) {
+  const self = canonical(request, postPath(post));
+  const text = firstText(post);
+  const person = SITE + '/u/' + encodeURIComponent(post.author);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      PUBLISHER,
+      {
+        '@type': 'BlogPosting',
+        '@id': self + '#post',
+        url: self,
+        mainEntityOfPage: self,
+        headline: text.title,
+        description: text.standfirst || undefined,
+        datePublished: new Date(post.published || post.at).toISOString(),
+        dateModified: new Date(post.updated || post.at).toISOString(),
+        inLanguage: post.lang,
+        image: SITE + '/assets/logo/og.jpg',
+        author: { '@type': 'Person', name: post.author, url: person },
+        publisher: { '@id': SITE + '#org' },
+        isPartOf: { '@id': canonical(request, PATH) + '#blog' },
+        wordCount: plainText(text.body).split(/\s+/).filter(Boolean).length
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Tallinn Tastebuds', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: TITLE, item: canonical(request, PATH) },
+          { '@type': 'ListItem', position: 3, name: text.title }
+        ]
+      }
+    ]
+  };
+}
+
+/* The map's places by id, for the name on a place card. */
+async function placeNames(context) {
+  try {
+    const list = await dataFile(context, '/data/map.json');
+    return new Map((Array.isArray(list) ? list : []).map((p) => [p.id, p.name]));
+  } catch (e) {
+    return new Map();
+  }
+}
+
+async function memberPage(context, html, db, asked) {
+  const { request } = context;
+  const post = await readPost(db, asked, null).catch(() => null);
+  if (!post) return page(html, 200, false);
+
+  const text = firstText(post);
+  const tags = head({
+    title: text.title,
+    description: text.standfirst || plainText(text.body).slice(0, 200),
+    url: canonical(request, postPath(post)),
+    type: 'article'
+  }) +
+    '\n<meta property="article:published_time" content="' + esc(new Date(post.published || post.at).toISOString()) + '">' +
+    '\n<meta property="article:author" content="' + esc(SITE + '/u/' + encodeURIComponent(post.author)) + '">' +
+    '\n<script type="application/ld+json">' + seed(memberPosting(request, post)) + '</script>';
+
+  const words = memberWords(post, await placeNames(context));
+  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], words), 200, true);
+}
+
+async function authorPage(context, html, db, by) {
+  const { request } = context;
+  const name = asUsername(by);
+  if (!name) return page(html, 200, false);
+  const list = await readPage(db, "p.status = 'published' AND u.username = ? COLLATE NOCASE", [name], null)
+    .catch(() => ({ posts: [] }));
+  /* The name as the person spelled it, off their first post where there is
+     one; nobody's posts is a page not worth filing. */
+  const shown = list.posts.length ? list.posts[0].author : name;
+  const tags = head({
+    title: 'Posts by ' + shown,
+    description: 'What ' + shown + ' has written about eating in Tallinn.',
+    url: canonical(request, PATH + '?by=' + encodeURIComponent(shown)),
+    type: 'website'
+  });
+  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], authorWords(shown, list.posts)), 200, list.posts.length > 0);
 }
 
 /* One post as text, and then every other post as a link — so a crawler that
@@ -242,10 +395,15 @@ export async function onRequest(context) {
   }
 
   const posts = await postsOf(context);
-  if (!posts.length) return page(html, 200, true);
-
-  const asked = new URL(request.url).searchParams.get('post');
+  const query = new URL(request.url).searchParams;
+  const asked = query.get('post');
   const post = asked && WRITTEN.test(asked) ? posts.find((p) => p.id === asked) || null : null;
+
+  const db = await members(context.env);
+  if (db && !post && asked && POST_ID.test(asked)) return memberPage(context, html, db, asked);
+  if (db && !asked && query.get('by')) return authorPage(context, html, db, query.get('by'));
+
+  if (!posts.length) return page(html, 200, true);
 
   /* A ?post= that names nothing: the page draws the index with a sentence
      over it saying the post is not here any more, and that is not a page
@@ -273,5 +431,6 @@ export async function onRequest(context) {
   const said = tags + '\n<script type="application/ld+json">' +
     seed(structuredData(request, posts, post)) + '</script>';
 
-  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], post ? postWords(post, posts) : indexWords(posts)), 200, true);
+  const newest = !post && db ? (await readPage(db, "p.status = 'published'", [], null).catch(() => ({ posts: [] }))).posts : [];
+  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], post ? postWords(post, posts) : indexWords(posts, newest)), 200, true);
 }
