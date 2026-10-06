@@ -6644,6 +6644,158 @@
             "maksmise",
             "maksmist"
           ]
+        },
+        {
+          "id": "kaup",
+          "front": "Kaup",
+          "back": {
+            "en": "Goods",
+            "az": "Mal",
+            "ru": "Товар"
+          },
+          "forms": [
+            "kauba",
+            "kaupa"
+          ]
+        },
+        {
+          "id": "muuk",
+          "front": "Müük",
+          "back": {
+            "en": "Sale",
+            "az": "Satış",
+            "ru": "Продажа"
+          },
+          "forms": [
+            "müügi",
+            "müüki"
+          ]
+        },
+        {
+          "id": "ost",
+          "front": "Ost",
+          "back": {
+            "en": "Purchase",
+            "az": "Alış, alınan şey",
+            "ru": "Покупка"
+          },
+          "forms": [
+            "ostu",
+            "ostu"
+          ]
+        },
+        {
+          "id": "pakend",
+          "front": "Pakend",
+          "back": {
+            "en": "Packaging",
+            "az": "Qablaşdırma",
+            "ru": "Упаковка"
+          },
+          "forms": [
+            "pakendi",
+            "pakendit"
+          ]
+        },
+        {
+          "id": "silt",
+          "front": "Silt",
+          "back": {
+            "en": "Label, sign",
+            "az": "Etiket, lövhə",
+            "ru": "Табличка, этикетка"
+          },
+          "forms": [
+            "sildi",
+            "silti"
+          ]
+        },
+        {
+          "id": "soodus",
+          "front": "Soodus",
+          "back": {
+            "en": "Discount",
+            "az": "Güzəşt",
+            "ru": "Льгота, скидка"
+          },
+          "forms": [
+            "sooduse",
+            "soodust"
+          ]
+        },
+        {
+          "id": "tasu",
+          "front": "Tasu",
+          "back": {
+            "en": "Fee, payment",
+            "az": "Haqq, ödəniş",
+            "ru": "Плата, оплата"
+          },
+          "forms": [
+            "tasu",
+            "tasu"
+          ]
+        },
+        {
+          "id": "nimekiri",
+          "front": "Nimekiri",
+          "back": {
+            "en": "List",
+            "az": "Siyahı",
+            "ru": "Список"
+          },
+          "forms": [
+            "nimekirja",
+            "nimekirja"
+          ]
+        },
+        {
+          "id": "otsas-olema",
+          "front": "Otsas olema",
+          "back": {
+            "en": "To be sold out, all gone",
+            "az": "Qurtarmaq, bitmək",
+            "ru": "Закончиться"
+          }
+        },
+        {
+          "id": "kasu",
+          "front": "Kasu",
+          "back": {
+            "en": "Benefit, profit",
+            "az": "Fayda, qazanc",
+            "ru": "Польза, выгода"
+          },
+          "forms": [
+            "kasu",
+            "kasu"
+          ]
+        },
+        {
+          "id": "kaaluma",
+          "front": "Kaaluma",
+          "back": {
+            "en": "To weigh",
+            "az": "Çəkmək",
+            "ru": "Взвешивать"
+          },
+          "forms": [
+            "kaaluda",
+            "kaalun"
+          ]
+        },
+        {
+          "id": "saastma",
+          "front": "Säästma",
+          "back": {
+            "en": "To save (money)",
+            "az": "Qənaət etmək",
+            "ru": "Экономить, копить"
+          },
+          "forms": [
+            "säästa",
+            "säästan"
+          ]
         }
       ],
       "level": "more"
@@ -7104,6 +7256,19 @@
           "forms": [
             "ninarõnga",
             "ninarõngast"
+          ]
+        },
+        {
+          "id": "king",
+          "front": "King",
+          "back": {
+            "en": "Shoe",
+            "az": "Ayaqqabı",
+            "ru": "Туфля, ботинок"
+          },
+          "forms": [
+            "kinga",
+            "kinga"
           ]
         }
       ]
@@ -8168,6 +8333,19 @@
           "forms": [
             "laudlina",
             "laudlina"
+          ]
+        },
+        {
+          "id": "veekann",
+          "front": "Veekann",
+          "back": {
+            "en": "Water jug",
+            "az": "Su qabı, səhəng",
+            "ru": "Кувшин для воды"
+          },
+          "forms": [
+            "veekannu",
+            "veekannu"
           ]
         }
       ]
@@ -9602,6 +9780,19 @@
           "forms": [
             "tuulekindla",
             "tuulekindlat"
+          ]
+        },
+        {
+          "id": "paikesekiir",
+          "front": "Päikesekiir",
+          "back": {
+            "en": "Sunbeam",
+            "az": "Günəş şüası",
+            "ru": "Луч солнца"
+          },
+          "forms": [
+            "päikesekiire",
+            "päikesekiirt"
           ]
         }
       ],
@@ -11529,6 +11720,97 @@
             "teksti",
             "teksti"
           ]
+        },
+        {
+          "id": "keskkool",
+          "front": "Keskkool",
+          "back": {
+            "en": "Secondary school",
+            "az": "Orta məktəb",
+            "ru": "Средняя школа"
+          },
+          "forms": [
+            "keskkooli",
+            "keskkooli"
+          ]
+        },
+        {
+          "id": "gumnaasium",
+          "front": "Gümnaasium",
+          "back": {
+            "en": "Upper secondary school",
+            "az": "Gimnaziya, lisey",
+            "ru": "Гимназия"
+          },
+          "forms": [
+            "gümnaasiumi",
+            "gümnaasiumi"
+          ]
+        },
+        {
+          "id": "magistriope",
+          "front": "Magistriõpe",
+          "back": {
+            "en": "Master's studies",
+            "az": "Magistratura",
+            "ru": "Магистратура"
+          },
+          "forms": [
+            "magistriõppe",
+            "magistriõpet"
+          ]
+        },
+        {
+          "id": "doktoriope",
+          "front": "Doktoriõpe",
+          "back": {
+            "en": "PhD studies",
+            "az": "Doktorantura",
+            "ru": "Докторантура"
+          },
+          "forms": [
+            "doktoriõppe",
+            "doktoriõpet"
+          ]
+        },
+        {
+          "id": "keskharidus",
+          "front": "Keskharidus",
+          "back": {
+            "en": "Secondary education",
+            "az": "Orta təhsil",
+            "ru": "Среднее образование"
+          },
+          "forms": [
+            "keskhariduse",
+            "keskharidust"
+          ]
+        },
+        {
+          "id": "kordama",
+          "front": "Kordama",
+          "back": {
+            "en": "To repeat, to revise",
+            "az": "Təkrarlamaq",
+            "ru": "Повторять"
+          },
+          "forms": [
+            "korrata",
+            "kordan"
+          ]
+        },
+        {
+          "id": "minevik",
+          "front": "Minevik",
+          "back": {
+            "en": "The past, the past tense",
+            "az": "Keçmiş, keçmiş zaman",
+            "ru": "Прошлое, прошедшее время"
+          },
+          "forms": [
+            "mineviku",
+            "minevikku"
+          ]
         }
       ]
     },
@@ -12607,6 +12889,45 @@
             "az": "İçində",
             "ru": "Внутри"
           }
+        },
+        {
+          "id": "duss",
+          "front": "Dušš",
+          "back": {
+            "en": "Shower",
+            "az": "Duş",
+            "ru": "Душ"
+          },
+          "forms": [
+            "duši",
+            "dušši"
+          ]
+        },
+        {
+          "id": "esik",
+          "front": "Esik",
+          "back": {
+            "en": "Entrance hall",
+            "az": "Dəhliz",
+            "ru": "Прихожая"
+          },
+          "forms": [
+            "esiku",
+            "esikut"
+          ]
+        },
+        {
+          "id": "lina",
+          "front": "Lina",
+          "back": {
+            "en": "Sheet, linen",
+            "az": "Mələfə, kətan",
+            "ru": "Простыня, лён"
+          },
+          "forms": [
+            "lina",
+            "lina"
+          ]
         }
       ]
     },
@@ -14132,6 +14453,149 @@
             "hobi",
             "hobi"
           ]
+        },
+        {
+          "id": "elukutse",
+          "front": "Elukutse",
+          "back": {
+            "en": "Profession",
+            "az": "Peşə",
+            "ru": "Профессия"
+          },
+          "forms": [
+            "elukutse",
+            "elukutset"
+          ]
+        },
+        {
+          "id": "firma",
+          "front": "Firma",
+          "back": {
+            "en": "Company, firm",
+            "az": "Şirkət, firma",
+            "ru": "Фирма"
+          },
+          "forms": [
+            "firma",
+            "firmat"
+          ]
+        },
+        {
+          "id": "ajakirjanik",
+          "front": "Ajakirjanik",
+          "back": {
+            "en": "Journalist",
+            "az": "Jurnalist",
+            "ru": "Журналист"
+          },
+          "forms": [
+            "ajakirjaniku",
+            "ajakirjanikku"
+          ]
+        },
+        {
+          "id": "automehaanik",
+          "front": "Automehaanik",
+          "back": {
+            "en": "Car mechanic",
+            "az": "Avtomexanik",
+            "ru": "Автомеханик"
+          },
+          "forms": [
+            "automehaaniku",
+            "automehaanikut"
+          ]
+        },
+        {
+          "id": "ettekandja",
+          "front": "Ettekandja",
+          "back": {
+            "en": "Waitress, server",
+            "az": "Ofisiant",
+            "ru": "Официантка"
+          },
+          "forms": [
+            "ettekandja",
+            "ettekandjat"
+          ]
+        },
+        {
+          "id": "infotehnoloog",
+          "front": "Infotehnoloog",
+          "back": {
+            "en": "IT specialist",
+            "az": "İT mütəxəssisi",
+            "ru": "IT-специалист"
+          },
+          "forms": [
+            "infotehnoloogi",
+            "infotehnoloogi"
+          ]
+        },
+        {
+          "id": "lapsehoidja",
+          "front": "Lapsehoidja",
+          "back": {
+            "en": "Babysitter",
+            "az": "Dayə",
+            "ru": "Няня"
+          },
+          "forms": [
+            "lapsehoidja",
+            "lapsehoidjat"
+          ]
+        },
+        {
+          "id": "postiljon",
+          "front": "Postiljon",
+          "back": {
+            "en": "Mail carrier",
+            "az": "Poçtalyon",
+            "ru": "Почтальон"
+          },
+          "forms": [
+            "postiljoni",
+            "postiljoni"
+          ]
+        },
+        {
+          "id": "pollumees",
+          "front": "Põllumees",
+          "back": {
+            "en": "Farmer",
+            "az": "Əkinçi",
+            "ru": "Земледелец"
+          },
+          "forms": [
+            "põllumehe",
+            "põllumeest"
+          ]
+        },
+        {
+          "id": "tolk",
+          "front": "Tõlk",
+          "back": {
+            "en": "Interpreter",
+            "az": "Tərcüməçi",
+            "ru": "Переводчик"
+          },
+          "forms": [
+            "tõlgi",
+            "tõlki"
+          ]
+        },
+        {
+          "id": "arimees",
+          "front": "Ärimees",
+          "back": {
+            "en": "Businessman",
+            "az": "İş adamı",
+            "ru": "Бизнесмен"
+          },
+          "forms": [
+            "ärimehe",
+            "ärimeest"
+          ]
         }
       ]
     },
@@ -15399,6 +15863,58 @@
           "forms": [
             "kohaliku",
             "kohalikku"
+          ]
+        },
+        {
+          "id": "hotell",
+          "front": "Hotell",
+          "back": {
+            "en": "Hotel",
+            "az": "Otel, mehmanxana",
+            "ru": "Отель, гостиница"
+          },
+          "forms": [
+            "hotelli",
+            "hotelli"
+          ]
+        },
+        {
+          "id": "restoran",
+          "front": "Restoran",
+          "back": {
+            "en": "Restaurant",
+            "az": "Restoran",
+            "ru": "Ресторан"
+          },
+          "forms": [
+            "restorani",
+            "restorani"
+          ]
+        },
+        {
+          "id": "keskus",
+          "front": "Keskus",
+          "back": {
+            "en": "Centre",
+            "az": "Mərkəz",
+            "ru": "Центр"
+          },
+          "forms": [
+            "keskuse",
+            "keskust"
+          ]
+        },
+        {
+          "id": "politsei",
+          "front": "Politsei",
+          "back": {
+            "en": "Police",
+            "az": "Polis",
+            "ru": "Полиция"
+          },
+          "forms": [
+            "politsei",
+            "politseid"
           ]
         }
       ],
@@ -16991,6 +17507,102 @@
             "vastupidava",
             "vastupidavat"
           ]
+        },
+        {
+          "id": "vaba",
+          "front": "Vaba",
+          "back": {
+            "en": "Free",
+            "az": "Boş, azad",
+            "ru": "Свободный"
+          },
+          "forms": [
+            "vaba",
+            "vaba"
+          ]
+        },
+        {
+          "id": "eelmine",
+          "front": "Eelmine",
+          "back": {
+            "en": "Previous, last",
+            "az": "Əvvəlki, keçən",
+            "ru": "Прошлый, предыдущий"
+          },
+          "forms": [
+            "eelmise",
+            "eelmist"
+          ]
+        },
+        {
+          "id": "moodunud",
+          "front": "Möödunud",
+          "back": {
+            "en": "Last, past",
+            "az": "Keçmiş, ötən",
+            "ru": "Прошедший, прошлый"
+          }
+        },
+        {
+          "id": "valmis",
+          "front": "Valmis",
+          "back": {
+            "en": "Ready",
+            "az": "Hazır",
+            "ru": "Готовый"
+          }
+        },
+        {
+          "id": "keskmine",
+          "front": "Keskmine",
+          "back": {
+            "en": "Middle, average",
+            "az": "Orta",
+            "ru": "Средний"
+          },
+          "forms": [
+            "keskmise",
+            "keskmist"
+          ]
+        },
+        {
+          "id": "kasulik",
+          "front": "Kasulik",
+          "back": {
+            "en": "Useful",
+            "az": "Faydalı",
+            "ru": "Полезный"
+          },
+          "forms": [
+            "kasuliku",
+            "kasulikku"
+          ]
+        },
+        {
+          "id": "rahvusvaheline",
+          "front": "Rahvusvaheline",
+          "back": {
+            "en": "International",
+            "az": "Beynəlxalq",
+            "ru": "Международный"
+          },
+          "forms": [
+            "rahvusvahelise",
+            "rahvusvahelist"
+          ]
+        },
+        {
+          "id": "tervislik",
+          "front": "Tervislik",
+          "back": {
+            "en": "Healthy",
+            "az": "Sağlam",
+            "ru": "Здоровый, полезный"
+          },
+          "forms": [
+            "tervisliku",
+            "tervislikku"
+          ]
         }
       ]
     },
@@ -17782,6 +18394,32 @@
             "tuttava",
             "tuttavat"
           ]
+        },
+        {
+          "id": "sobranna",
+          "front": "Sõbranna",
+          "back": {
+            "en": "Friend (a woman)",
+            "az": "Rəfiqə",
+            "ru": "Подруга"
+          },
+          "forms": [
+            "sõbranna",
+            "sõbrannat"
+          ]
+        },
+        {
+          "id": "nali",
+          "front": "Nali",
+          "back": {
+            "en": "Joke",
+            "az": "Zarafat",
+            "ru": "Шутка"
+          },
+          "forms": [
+            "nalja",
+            "nalja"
+          ]
         }
       ],
       "level": "more"
@@ -18193,6 +18831,24 @@
             "en": "All the time",
             "az": "Həmişə",
             "ru": "Всё время"
+          }
+        },
+        {
+          "id": "mitu-korda",
+          "front": "Mitu korda?",
+          "back": {
+            "en": "How many times?",
+            "az": "Neçə dəfə?",
+            "ru": "Сколько раз?"
+          }
+        },
+        {
+          "id": "iialgi",
+          "front": "Iialgi",
+          "back": {
+            "en": "Never, not ever",
+            "az": "Heç vaxt",
+            "ru": "Никогда"
           }
         }
       ]
@@ -18866,6 +19522,158 @@
             "az": "kompüterdə oynamaq",
             "ru": "играть на компьютере"
           }
+        },
+        {
+          "id": "kino",
+          "front": "Kino",
+          "back": {
+            "en": "Cinema",
+            "az": "Kino",
+            "ru": "Кино, кинотеатр"
+          },
+          "forms": [
+            "kino",
+            "kino"
+          ]
+        },
+        {
+          "id": "korvpall",
+          "front": "Korvpall",
+          "back": {
+            "en": "Basketball",
+            "az": "Basketbol",
+            "ru": "Баскетбол"
+          },
+          "forms": [
+            "korvpalli",
+            "korvpalli"
+          ]
+        },
+        {
+          "id": "vorkpall",
+          "front": "Võrkpall",
+          "back": {
+            "en": "Volleyball",
+            "az": "Voleybol",
+            "ru": "Волейбол"
+          },
+          "forms": [
+            "võrkpalli",
+            "võrkpalli"
+          ]
+        },
+        {
+          "id": "muusika",
+          "front": "Muusika",
+          "back": {
+            "en": "Music",
+            "az": "Musiqi",
+            "ru": "Музыка"
+          },
+          "forms": [
+            "muusika",
+            "muusikat"
+          ]
+        },
+        {
+          "id": "puhkepaev",
+          "front": "Puhkepäev",
+          "back": {
+            "en": "Day off",
+            "az": "İstirahət günü",
+            "ru": "Выходной день"
+          },
+          "forms": [
+            "puhkepäeva",
+            "puhkepäeva"
+          ]
+        },
+        {
+          "id": "saal",
+          "front": "Saal",
+          "back": {
+            "en": "Hall",
+            "az": "Zal",
+            "ru": "Зал"
+          },
+          "forms": [
+            "saali",
+            "saali"
+          ]
+        },
+        {
+          "id": "trenn",
+          "front": "Trenn",
+          "back": {
+            "en": "Training, a workout",
+            "az": "Məşq",
+            "ru": "Тренировка"
+          },
+          "forms": [
+            "trenni",
+            "trenni"
+          ]
+        },
+        {
+          "id": "uisutama",
+          "front": "Uisutama",
+          "back": {
+            "en": "To skate",
+            "az": "Konki sürmək",
+            "ru": "Кататься на коньках"
+          },
+          "forms": [
+            "uisutada",
+            "uisutan"
+          ]
+        },
+        {
+          "id": "terve-paev",
+          "front": "Terve päev",
+          "back": {
+            "en": "The whole day",
+            "az": "Bütün gün",
+            "ru": "Целый день"
+          }
+        },
+        {
+          "id": "koor",
+          "front": "Koor",
+          "back": {
+            "en": "Choir",
+            "az": "Xor",
+            "ru": "Хор"
+          },
+          "forms": [
+            "koori",
+            "koori"
+          ]
+        },
+        {
+          "id": "tegevus",
+          "front": "Tegevus",
+          "back": {
+            "en": "Activity",
+            "az": "Fəaliyyət, məşğuliyyət",
+            "ru": "Деятельность, занятие"
+          },
+          "forms": [
+            "tegevuse",
+            "tegevust"
+          ]
+        },
+        {
+          "id": "kuurort",
+          "front": "Kuurort",
+          "back": {
+            "en": "Resort",
+            "az": "Kurort",
+            "ru": "Курорт"
+          },
+          "forms": [
+            "kuurordi",
+            "kuurorti"
+          ]
         }
       ]
     },
@@ -19968,6 +20776,58 @@
             "vennalapse",
             "vennalast"
           ]
+        },
+        {
+          "id": "tahtpaev",
+          "front": "Tähtpäev",
+          "back": {
+            "en": "Special day, anniversary",
+            "az": "Əlamətdar gün",
+            "ru": "Знаменательная дата"
+          },
+          "forms": [
+            "tähtpäeva",
+            "tähtpäeva"
+          ]
+        },
+        {
+          "id": "iseseisvus",
+          "front": "Iseseisvus",
+          "back": {
+            "en": "Independence",
+            "az": "Müstəqillik",
+            "ru": "Независимость"
+          },
+          "forms": [
+            "iseseisvuse",
+            "iseseisvust"
+          ]
+        },
+        {
+          "id": "voidupuha",
+          "front": "Võidupüha",
+          "back": {
+            "en": "Victory Day",
+            "az": "Qələbə günü",
+            "ru": "День победы"
+          },
+          "forms": [
+            "võidupüha",
+            "võidupüha"
+          ]
+        },
+        {
+          "id": "ulestousmispuha",
+          "front": "Ülestõusmispüha",
+          "back": {
+            "en": "Easter",
+            "az": "Pasxa",
+            "ru": "Пасха"
+          },
+          "forms": [
+            "ülestõusmispüha",
+            "ülestõusmispüha"
+          ]
         }
       ]
     },
@@ -20488,6 +21348,149 @@
           "forms": [
             "grillida",
             "grillin"
+          ]
+        },
+        {
+          "id": "toit",
+          "front": "Toit",
+          "back": {
+            "en": "Food",
+            "az": "Yemək, qida",
+            "ru": "Пища, еда"
+          },
+          "forms": [
+            "toidu",
+            "toitu"
+          ]
+        },
+        {
+          "id": "toitumine",
+          "front": "Toitumine",
+          "back": {
+            "en": "Nutrition, diet",
+            "az": "Qidalanma",
+            "ru": "Питание"
+          },
+          "forms": [
+            "toitumise",
+            "toitumist"
+          ]
+        },
+        {
+          "id": "omlett",
+          "front": "Omlett",
+          "back": {
+            "en": "Omelette",
+            "az": "Omlet",
+            "ru": "Омлет"
+          },
+          "forms": [
+            "omleti",
+            "omletti"
+          ]
+        },
+        {
+          "id": "kana",
+          "front": "Kana",
+          "back": {
+            "en": "Chicken",
+            "az": "Toyuq",
+            "ru": "Курица"
+          },
+          "forms": [
+            "kana",
+            "kana"
+          ]
+        },
+        {
+          "id": "juurvili",
+          "front": "Juurvili",
+          "back": {
+            "en": "Root vegetable",
+            "az": "Kökümeyvəli tərəvəz",
+            "ru": "Корнеплод, овощ"
+          },
+          "forms": [
+            "juurvilja",
+            "juurvilja"
+          ]
+        },
+        {
+          "id": "ananass",
+          "front": "Ananass",
+          "back": {
+            "en": "Pineapple",
+            "az": "Ananas",
+            "ru": "Ананас"
+          },
+          "forms": [
+            "ananassi",
+            "ananassi"
+          ]
+        },
+        {
+          "id": "kaer",
+          "front": "Kaer",
+          "back": {
+            "en": "Oats",
+            "az": "Yulaf",
+            "ru": "Овёс"
+          },
+          "forms": [
+            "kaera",
+            "kaera"
+          ]
+        },
+        {
+          "id": "kodujuust",
+          "front": "Kodujuust",
+          "back": {
+            "en": "Cottage cheese",
+            "az": "Kəsmik",
+            "ru": "Домашний творог"
+          },
+          "forms": [
+            "kodujuustu",
+            "kodujuustu"
+          ]
+        },
+        {
+          "id": "kupsis",
+          "front": "Küpsis",
+          "back": {
+            "en": "Biscuit, cookie",
+            "az": "Peçenye",
+            "ru": "Печенье"
+          },
+          "forms": [
+            "küpsise",
+            "küpsist"
+          ]
+        },
+        {
+          "id": "makaron",
+          "front": "Makaron",
+          "back": {
+            "en": "Pasta, macaroni",
+            "az": "Makaron",
+            "ru": "Макароны"
+          },
+          "forms": [
+            "makaroni",
+            "makaroni"
+          ]
+        },
+        {
+          "id": "sepik",
+          "front": "Sepik",
+          "back": {
+            "en": "Wholemeal bread",
+            "az": "Kəpəkli çörək",
+            "ru": "Пшеничный хлеб"
+          },
+          "forms": [
+            "sepiku",
+            "sepikut"
           ]
         }
       ]
@@ -22257,6 +23260,32 @@
             "suusa",
             "suuska"
           ]
+        },
+        {
+          "id": "majakas",
+          "front": "Majakas",
+          "back": {
+            "en": "Lighthouse",
+            "az": "Mayak",
+            "ru": "Маяк"
+          },
+          "forms": [
+            "majaka",
+            "majakat"
+          ]
+        },
+        {
+          "id": "papagoi",
+          "front": "Papagoi",
+          "back": {
+            "en": "Parrot",
+            "az": "Tutuquşu",
+            "ru": "Попугай"
+          },
+          "forms": [
+            "papagoi",
+            "papagoid"
+          ]
         }
       ]
     },
@@ -23823,6 +24852,71 @@
           "forms": [
             "kontori",
             "kontorit"
+          ]
+        },
+        {
+          "id": "ankeet",
+          "front": "Ankeet",
+          "back": {
+            "en": "Form, questionnaire",
+            "az": "Anket",
+            "ru": "Анкета"
+          },
+          "forms": [
+            "ankeedi",
+            "ankeeti"
+          ]
+        },
+        {
+          "id": "intervjuu",
+          "front": "Intervjuu",
+          "back": {
+            "en": "Interview",
+            "az": "Müsahibə",
+            "ru": "Интервью"
+          },
+          "forms": [
+            "intervjuu",
+            "intervjuud"
+          ]
+        },
+        {
+          "id": "kodakondsus",
+          "front": "Kodakondsus",
+          "back": {
+            "en": "Citizenship",
+            "az": "Vətəndaşlıq",
+            "ru": "Гражданство"
+          },
+          "forms": [
+            "kodakondsuse",
+            "kodakondsust"
+          ]
+        },
+        {
+          "id": "ehitus",
+          "front": "Ehitus",
+          "back": {
+            "en": "Construction, building site",
+            "az": "Tikinti",
+            "ru": "Строительство"
+          },
+          "forms": [
+            "ehituse",
+            "ehitust"
+          ]
+        },
+        {
+          "id": "kone",
+          "front": "Kõne",
+          "back": {
+            "en": "Call, speech",
+            "az": "Zəng, nitq",
+            "ru": "Разговор, речь"
+          },
+          "forms": [
+            "kõne",
+            "kõnet"
           ]
         }
       ]
@@ -26385,6 +27479,124 @@
             "az": "ətrafa baxmaq",
             "ru": "осматриваться"
           }
+        },
+        {
+          "id": "sobima",
+          "front": "Sobima",
+          "back": {
+            "en": "To fit, to suit",
+            "az": "uyğun gəlmək",
+            "ru": "подходить, годиться"
+          },
+          "forms": [
+            "sobida",
+            "sobin"
+          ]
+        },
+        {
+          "id": "lopetama",
+          "front": "Lõpetama",
+          "back": {
+            "en": "To finish",
+            "az": "bitirmək",
+            "ru": "заканчивать"
+          },
+          "forms": [
+            "lõpetada",
+            "lõpetan"
+          ]
+        },
+        {
+          "id": "lubama",
+          "front": "Lubama",
+          "back": {
+            "en": "To allow, to promise",
+            "az": "icazə vermək, söz vermək",
+            "ru": "разрешать, обещать"
+          },
+          "forms": [
+            "lubada",
+            "luban"
+          ]
+        },
+        {
+          "id": "mahtuma",
+          "front": "Mahtuma",
+          "back": {
+            "en": "To fit in",
+            "az": "sığmaq",
+            "ru": "вмещаться, помещаться"
+          },
+          "forms": [
+            "mahtuda",
+            "mahun"
+          ]
+        },
+        {
+          "id": "motlema",
+          "front": "Mõtlema",
+          "back": {
+            "en": "To think",
+            "az": "fikirləşmək",
+            "ru": "думать"
+          },
+          "forms": [
+            "mõelda",
+            "mõtlen"
+          ]
+        },
+        {
+          "id": "paastma",
+          "front": "Päästma",
+          "back": {
+            "en": "To save, to rescue",
+            "az": "xilas etmək",
+            "ru": "спасать"
+          },
+          "forms": [
+            "päästa",
+            "päästan"
+          ]
+        },
+        {
+          "id": "pommitama",
+          "front": "Pommitama",
+          "back": {
+            "en": "To bomb",
+            "az": "bombalamaq",
+            "ru": "бомбить"
+          },
+          "forms": [
+            "pommitada",
+            "pommitan"
+          ]
+        },
+        {
+          "id": "vaja-olema",
+          "front": "Vaja olema",
+          "back": {
+            "en": "To be needed",
+            "az": "lazım olmaq",
+            "ru": "быть нужным"
+          }
+        },
+        {
+          "id": "hambaid-pesema",
+          "front": "Hambaid pesema",
+          "back": {
+            "en": "To brush your teeth",
+            "az": "dişlərini fırçalamaq",
+            "ru": "чистить зубы"
+          }
+        },
+        {
+          "id": "hommikust-sooma",
+          "front": "Hommikust sööma",
+          "back": {
+            "en": "To have breakfast",
+            "az": "səhər yeməyi yemək",
+            "ru": "завтракать"
+          }
         }
       ]
     },
@@ -28100,6 +29312,113 @@
             "en": "At the moment",
             "az": "hazırda",
             "ru": "на данный момент"
+          }
+        },
+        {
+          "id": "midagi",
+          "front": "Midagi",
+          "back": {
+            "en": "Something",
+            "az": "Nəsə, bir şey",
+            "ru": "Что-нибудь"
+          }
+        },
+        {
+          "id": "seeparast",
+          "front": "Seepärast",
+          "back": {
+            "en": "Therefore, that is why",
+            "az": "Ona görə",
+            "ru": "Поэтому"
+          }
+        },
+        {
+          "id": "ilma",
+          "front": "Ilma",
+          "back": {
+            "en": "Without",
+            "az": "Olmadan, -sız",
+            "ru": "Без"
+          }
+        },
+        {
+          "id": "kuni",
+          "front": "Kuni",
+          "back": {
+            "en": "Till, until",
+            "az": "-a qədər",
+            "ru": "До"
+          }
+        },
+        {
+          "id": "kahku",
+          "front": "Kähku",
+          "back": {
+            "en": "Quickly",
+            "az": "Tez, cəld",
+            "ru": "Быстро, проворно"
+          }
+        },
+        {
+          "id": "just",
+          "front": "Just",
+          "back": {
+            "en": "Just, right now",
+            "az": "Elə, indicə",
+            "ru": "Как раз, только что"
+          }
+        },
+        {
+          "id": "kahju",
+          "front": "Kahju",
+          "back": {
+            "en": "A pity",
+            "az": "Heyif",
+            "ru": "Жаль"
+          }
+        },
+        {
+          "id": "moned",
+          "front": "Mõned",
+          "back": {
+            "en": "Some",
+            "az": "Bəzi",
+            "ru": "Некоторые"
+          },
+          "forms": [
+            "mõnede",
+            "mõnesid"
+          ]
+        },
+        {
+          "id": "veidi",
+          "front": "Veidi",
+          "back": {
+            "en": "A little",
+            "az": "Bir az",
+            "ru": "Немного"
+          }
+        },
+        {
+          "id": "paar",
+          "front": "Paar",
+          "back": {
+            "en": "Pair, a couple",
+            "az": "Cüt, bir neçə",
+            "ru": "Пара"
+          },
+          "forms": [
+            "paari",
+            "paari"
+          ]
+        },
+        {
+          "id": "mitmes",
+          "front": "Mitmes?",
+          "back": {
+            "en": "Which one (in order)?",
+            "az": "Neçənci?",
+            "ru": "Который по счёту?"
           }
         }
       ]
