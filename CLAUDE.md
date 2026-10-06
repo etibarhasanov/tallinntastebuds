@@ -398,7 +398,7 @@ re-running its generator is the single most common way to fail CI:
 | a scene in `clips/scenes/` | `node tools/blogclips.mjs` | the four files in `clips/` that scene is drawn into — it needs a Chromium, and `--check` says which are missing |
 | `assets/logo/og-flashcard.html`, or a token or rule it draws itself with | `node tools/ogcard.mjs` | `assets/logo/og-flashcard.png`, the card a link to the flashcards unfurls as — it needs a Chromium, and nothing in CI can see that it went stale |
 | `data/flows.json` | `node tools/flows.mjs` | `flows/<id>.bpmn`, the diagrams on `/admin/flows` of who uses the site and what each can do |
-| a language in `data/ui.json`, a place in `data/restaurants.json`, a Google list in `tools/googlelists.mjs` or a face in `assets/faces/` | `node tools/sitemap.mjs` | `sitemap.xml` |
+| a language in `data/ui.json`, a place in `data/restaurants.json`, a deck, lesson or song in `data/decks.json`, a post in `data/blog.json`, a Google list in `tools/googlelists.mjs` or a face in `assets/faces/` | `node tools/sitemap.mjs` | `sitemap.xml` |
 
 (The catalogue is the map plus an optional `data/places.csv` import. That CSV
 is not in the repo — without one, `places.mjs` builds the catalogue from
