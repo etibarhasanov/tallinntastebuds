@@ -206,8 +206,9 @@ function songWords(song) {
 /* And one lesson, as the prose it is. A paragraph is a <p> with the Estonian
    in it set apart — *…* in the file is an <i lang="et"> here, the one piece of
    markup the content carries and the same one assets/flashcard.js draws — a
-   heading is an <h2>, and a paradigm is a <table> of three Estonian forms and
-   what the word means. In English, for the reason the <main> always is. */
+   heading is an <h2>, a paradigm is a <table> of three Estonian forms and
+   what the word means, and a run of sentences is a <ul> of the Estonian and
+   what it means. In English, for the reason the <main> always is. */
 function lessonWords(lesson) {
   const prose = (text) => String(text).split('*')
     .map((part, i) => (i % 2 ? '<i lang="et">' + esc(part) + '</i>' : esc(part)))
@@ -218,10 +219,15 @@ function lessonWords(lesson) {
       '<tr>' + row.et.map((form) => '<td lang="et">' + esc(form) + '</td>').join('') +
       '<td>' + esc(inEnglish(row.means)) + '</td></tr>').join('') +
     '</table>';
+  const examples = (list) =>
+    '<ul>' + list.map((one) =>
+      '<li><span lang="et">' + esc(one.et) + '</span> — ' + esc(inEnglish(one)) + '</li>').join('') +
+    '</ul>';
   const block = (one) =>
     one.say ? '<p>' + prose(inEnglish(one.say)) + '</p>'
     : one.head ? '<h2>' + esc(inEnglish(one.head)) + '</h2>'
     : one.table ? table(one.table)
+    : one.examples ? examples(one.examples)
     : '';
   return '<h1>' + esc(inEnglish(lesson.name)) + '</h1>' +
     (lesson.why ? '<p>' + esc(inEnglish(lesson.why)) + '</p>' : '') +

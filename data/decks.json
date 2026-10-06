@@ -35270,6 +35270,46 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Leib on laual.",
+              "en": "The bread is on the table.",
+              "az": "Çörək masanın üstündədir.",
+              "ru": "Хлеб на столе."
+            },
+            {
+              "et": "Ma ostan leiva.",
+              "en": "I am buying the loaf.",
+              "az": "Çörəyi alıram.",
+              "ru": "Я покупаю буханку хлеба."
+            },
+            {
+              "et": "Ma söön leiba.",
+              "en": "I am eating bread.",
+              "az": "Çörək yeyirəm.",
+              "ru": "Я ем хлеб."
+            },
+            {
+              "et": "Venna auto on punane.",
+              "en": "My brother's car is red.",
+              "az": "Qardaşımın maşını qırmızıdır.",
+              "ru": "Машина брата красная."
+            },
+            {
+              "et": "Üks vesi ja kaks kohvi, palun.",
+              "en": "One water and two coffees, please.",
+              "az": "Bir su və iki qəhvə, zəhmət olmasa.",
+              "ru": "Одну воду и два кофе, пожалуйста."
+            },
+            {
+              "et": "Mul ei ole vett.",
+              "en": "I have no water.",
+              "az": "Məndə su yoxdur.",
+              "ru": "У меня нет воды."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Why these three, and not the other eleven",
             "az": "Niyə məhz bu üçü, qalan on biri yox",
@@ -35414,6 +35454,28 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Laps mängib õues.",
+              "en": "The child is playing outside.",
+              "az": "Uşaq çöldə oynayır.",
+              "ru": "Ребёнок играет на улице."
+            },
+            {
+              "et": "See on lapse tuba.",
+              "en": "This is the child's room.",
+              "az": "Bu, uşağın otağıdır.",
+              "ru": "Это комната ребёнка."
+            },
+            {
+              "et": "Ma näen last.",
+              "en": "I can see the child.",
+              "az": "Uşağı görürəm.",
+              "ru": "Я вижу ребёнка."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Into, in, out of",
             "az": "İçinə, içində, içindən",
@@ -35487,6 +35549,34 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Ma kolin Tallinnasse.",
+              "en": "I am moving to Tallinn.",
+              "az": "Tallinnə köçürəm.",
+              "ru": "Я переезжаю в Таллинн."
+            },
+            {
+              "et": "Võtmed on kotis.",
+              "en": "The keys are in the bag.",
+              "az": "Açarlar çantadadır.",
+              "ru": "Ключи в сумке."
+            },
+            {
+              "et": "Ta tuli just poest.",
+              "en": "She has just come from the shop.",
+              "az": "O, indicə mağazadan gəldi.",
+              "ru": "Она только что пришла из магазина."
+            },
+            {
+              "et": "Räägi mulle oma linnast.",
+              "en": "Tell me about your town.",
+              "az": "Mənə öz şəhərindən danış.",
+              "ru": "Расскажи мне о своём городе."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Onto, on, off",
             "az": "Üstünə, üstündə, üstündən",
@@ -35558,6 +35648,34 @@
               }
             ]
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Helista emale!",
+              "en": "Call your mum!",
+              "az": "Anana zəng et!",
+              "ru": "Позвони маме!"
+            },
+            {
+              "et": "Tass on laual.",
+              "en": "The cup is on the table.",
+              "az": "Fincan masanın üstündədir.",
+              "ru": "Чашка на столе."
+            },
+            {
+              "et": "Mul on kaks last.",
+              "en": "I have two children.",
+              "az": "Mənim iki uşağım var.",
+              "ru": "У меня двое детей."
+            },
+            {
+              "et": "Küsi müüjalt.",
+              "en": "Ask the shop assistant.",
+              "az": "Satıcıdan soruş.",
+              "ru": "Спроси у продавца."
+            }
+          ]
         },
         {
           "head": {
@@ -35655,6 +35773,40 @@
               }
             ]
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ta tahab saada arstiks.",
+              "en": "He wants to become a doctor.",
+              "az": "O, həkim olmaq istəyir.",
+              "ru": "Он хочет стать врачом."
+            },
+            {
+              "et": "Pood on lahti kella kümneni.",
+              "en": "The shop is open until ten.",
+              "az": "Mağaza saat onadək açıqdır.",
+              "ru": "Магазин открыт до десяти."
+            },
+            {
+              "et": "Ma töötan ettekandjana.",
+              "en": "I work as a waiter.",
+              "az": "Ofisiant işləyirəm.",
+              "ru": "Я работаю официантом."
+            },
+            {
+              "et": "Ma joon kohvi piimata.",
+              "en": "I drink my coffee without milk.",
+              "az": "Qəhvəni südsüz içirəm.",
+              "ru": "Я пью кофе без молока."
+            },
+            {
+              "et": "Kas maksate kaardiga?",
+              "en": "Are you paying by card?",
+              "az": "Kartla ödəyirsiniz?",
+              "ru": "Вы платите картой?"
+            }
+          ]
         },
         {
           "head": {
@@ -35764,6 +35916,28 @@
               }
             ]
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma sõidan sõbraga Tartusse.",
+              "en": "I am going to Tartu with a friend.",
+              "az": "Dostumla Tartuya gedirəm.",
+              "ru": "Я еду в Тарту с другом."
+            },
+            {
+              "et": "Me käisime sõpradega kinos.",
+              "en": "We went to the cinema with friends.",
+              "az": "Dostlarla kinoya getdik.",
+              "ru": "Мы ходили в кино с друзьями."
+            },
+            {
+              "et": "Ma annan lastele kommi.",
+              "en": "I give the children sweets.",
+              "az": "Uşaqlara konfet verirəm.",
+              "ru": "Я даю детям конфеты."
+            }
+          ]
         },
         {
           "head": {
@@ -35911,6 +36085,34 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Mul on kaks venda.",
+              "en": "I have two brothers.",
+              "az": "Mənim iki qardaşım var.",
+              "ru": "У меня два брата."
+            },
+            {
+              "et": "Pargis on palju linde.",
+              "en": "There are lots of birds in the park.",
+              "az": "Parkda çoxlu quş var.",
+              "ru": "В парке много птиц."
+            },
+            {
+              "et": "Ta elas Eestis kolm aastat.",
+              "en": "She lived in Estonia for three years.",
+              "az": "O, Estoniyada üç il yaşadı.",
+              "ru": "Она прожила в Эстонии три года."
+            },
+            {
+              "et": "Meil on palju sõpru.",
+              "en": "We have lots of friends.",
+              "az": "Bizim çoxlu dostumuz var.",
+              "ru": "У нас много друзей."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "This good child",
             "az": "Bu yaxşı uşaq",
@@ -35930,6 +36132,28 @@
             "az": "Cəmdə *see*-nin uzun formanın yanında qısa forması da var: *nendesse* və ya *neisse*, *nendel* və ya *neil*. İkisi də düzdür, eşidəcəyiniz isə qısasıdır.",
             "ru": "А во множественном числе у *see* есть рядом с длинной и короткая форма: *nendesse* или *neisse*, *nendel* или *neil*. Обе верны, а слышать вы будете короткую."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma elan selles suures majas.",
+              "en": "I live in this big house.",
+              "az": "Bu böyük evdə yaşayıram.",
+              "ru": "Я живу в этом большом доме."
+            },
+            {
+              "et": "Ma räägin selle uue õpetajaga.",
+              "en": "I am talking to this new teacher.",
+              "az": "Bu yeni müəllimlə danışıram.",
+              "ru": "Я говорю с этим новым учителем."
+            },
+            {
+              "et": "Neil on uus auto.",
+              "en": "They have a new car.",
+              "az": "Onların yeni maşını var.",
+              "ru": "У них новая машина."
+            }
+          ]
         }
       ]
     },
@@ -36077,6 +36301,40 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Ma pean tööle minema.",
+              "en": "I have to go to work.",
+              "az": "İşə getməliyəm.",
+              "ru": "Мне надо идти на работу."
+            },
+            {
+              "et": "Ma tahan koju minna.",
+              "en": "I want to go home.",
+              "az": "Evə getmək istəyirəm.",
+              "ru": "Я хочу пойти домой."
+            },
+            {
+              "et": "Ma lähen homme Tartusse.",
+              "en": "I am going to Tartu tomorrow.",
+              "az": "Sabah Tartuya gedirəm.",
+              "ru": "Завтра я еду в Тарту."
+            },
+            {
+              "et": "Mida sa teha tahad?",
+              "en": "What do you want to do?",
+              "az": "Nə etmək istəyirsən?",
+              "ru": "Что ты хочешь делать?"
+            },
+            {
+              "et": "Ma teen süüa.",
+              "en": "I am cooking.",
+              "az": "Yemək bişirirəm.",
+              "ru": "Я готовлю еду."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Why by heart",
             "az": "Niyə əzbər",
@@ -36096,6 +36354,22 @@
             "az": "Və isimlərdə olduğu kimi, fellərin çoxu asandır. *Elama, elada, elan* — yaşamaq; *töötama, töötada, töötan* — işləmək; *õppima, õppida, õpin* — öyrənmək. Bir neçə yüz feli üç forması ilə bildikdən sonra qəlibi deməzdən əvvəl eşidəcəksiniz, və yeni fel öz ailəsinə özü düşəcək. Üç forma felin özüdür; hər zaman və hər şəxs onlardan birinin üstündə bir şəkilçidir.",
             "ru": "И, как у существительных, большинство глаголов простые. *Elama, elada, elan* — жить; *töötama, töötada, töötan* — работать; *õppima, õppida, õpin* — учить. Когда вы будете знать несколько сотен глаголов по трём формам, вы начнёте слышать образец раньше, чем сможете его назвать, и новый глагол сам встанет в свою семью. Три формы — это весь глагол; каждое время и каждое лицо — окончание на одной из них."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma elan Kalamajas.",
+              "en": "I live in Kalamaja.",
+              "az": "Kalamajada yaşayıram.",
+              "ru": "Я живу в Каламая."
+            },
+            {
+              "et": "Ma õpin eesti keelt.",
+              "en": "I am learning Estonian.",
+              "az": "Eston dilini öyrənirəm.",
+              "ru": "Я учу эстонский язык."
+            }
+          ]
         },
         {
           "say": {
@@ -36200,6 +36474,28 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Me elame Tallinnas.",
+              "en": "We live in Tallinn.",
+              "az": "Biz Tallinndə yaşayırıq.",
+              "ru": "Мы живём в Таллинне."
+            },
+            {
+              "et": "Kus sa elad?",
+              "en": "Where do you live?",
+              "az": "Harada yaşayırsan?",
+              "ru": "Где ты живёшь?"
+            },
+            {
+              "et": "Ta ei ela enam siin.",
+              "en": "He does not live here any more.",
+              "az": "O, artıq burada yaşamır.",
+              "ru": "Он здесь больше не живёт."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Before — lihtminevik",
             "az": "Keçmiş — lihtminevik",
@@ -36271,6 +36567,28 @@
             "az": "Keçmiş *-si-* və eyni şəkilçilərdir, *ta* isə şəkilçisizdir: *elas*. İnkar *ei* və *-nud* formasıdır, və o da şəxsə görə dəyişmir.",
             "ru": "Прошедшее — это *-si-* и те же окончания, а у *ta* окончания нет: *elas*. Отрицание — *ei* и форма на *-nud*, и она тоже не меняется по лицам."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma elasin varem Bakuus.",
+              "en": "I used to live in Baku.",
+              "az": "Əvvəllər Bakıda yaşayırdım.",
+              "ru": "Раньше я жил в Баку."
+            },
+            {
+              "et": "Eile me sõime vanalinnas.",
+              "en": "Yesterday we ate in the Old Town.",
+              "az": "Dünən köhnə şəhərdə yemək yedik.",
+              "ru": "Вчера мы ели в Старом городе."
+            },
+            {
+              "et": "Ma ei teadnud seda.",
+              "en": "I did not know that.",
+              "az": "Bunu bilmirdim.",
+              "ru": "Я этого не знал."
+            }
+          ]
         },
         {
           "head": {
@@ -36346,6 +36664,22 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Kas sa oled Tartus käinud?",
+              "en": "Have you been to Tartu?",
+              "az": "Tartuda olmusan?",
+              "ru": "Ты бывал в Тарту?"
+            },
+            {
+              "et": "Ma ei ole veel söönud.",
+              "en": "I have not eaten yet.",
+              "az": "Hələ yemək yeməmişəm.",
+              "ru": "Я ещё не ел."
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Would — tingiv kõneviis",
             "az": "Şərt — tingiv kõneviis",
@@ -36417,6 +36751,28 @@
             "az": "Keçmişdəki *-si-* yerinə *-ks-*. Danışıqda *elaks* hər şəxs üçün işlənir — *ma elaks siin*, burada yaşayardım — *Ma tahaksin kohvi*, qəhvə istərdim, isə hər səhər deyəcəyiniz cümlədir.",
             "ru": "*-ks-* там, где в прошедшем было *-si-*. В речи *elaks* годится для всех лиц — *ma elaks siin*, я бы жил здесь, — а *Ma tahaksin kohvi*, я бы хотел кофе, вы будете говорить каждое утро."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma tahaksin ühe kohvi.",
+              "en": "I would like a coffee.",
+              "az": "Bir qəhvə istərdim.",
+              "ru": "Я бы хотел кофе."
+            },
+            {
+              "et": "Kas te saaksite mind aidata?",
+              "en": "Could you help me?",
+              "az": "Mənə kömək edə bilərdinizmi?",
+              "ru": "Не могли бы вы мне помочь?"
+            },
+            {
+              "et": "Ma elaksin hea meelega mere ääres.",
+              "en": "I would love to live by the sea.",
+              "az": "Məmnuniyyətlə dəniz kənarında yaşayardım.",
+              "ru": "Я бы с удовольствием жил у моря."
+            }
+          ]
         },
         {
           "head": {
@@ -36504,6 +36860,34 @@
           }
         },
         {
+          "examples": [
+            {
+              "et": "Tule siia!",
+              "en": "Come here!",
+              "az": "Bura gəl!",
+              "ru": "Иди сюда!"
+            },
+            {
+              "et": "Palun istuge!",
+              "en": "Please sit down!",
+              "az": "Zəhmət olmasa, oturun!",
+              "ru": "Садитесь, пожалуйста!"
+            },
+            {
+              "et": "Ära muretse!",
+              "en": "Don't worry!",
+              "az": "Narahat olma!",
+              "ru": "Не волнуйся!"
+            },
+            {
+              "et": "Ärge suitsetage siin!",
+              "en": "Don't smoke here!",
+              "az": "Burada siqaret çəkməyin!",
+              "ru": "Не курите здесь!"
+            }
+          ]
+        },
+        {
           "head": {
             "en": "Nobody in particular — umbisikuline",
             "az": "Şəxssiz — umbisikuline",
@@ -36563,6 +36947,28 @@
             "az": "Kimin etdiyi önəmli olmayanda. *Eestis räägitakse eesti keelt* — Estoniyada eston dilində danışılır. *Siin ei suitsetata* — burada siqaret çəkilmir. Bunu deməzdən çox əvvəl qapıların üstündə oxuyacaqsınız.",
             "ru": "Когда неважно, кто. *Eestis räägitakse eesti keelt* — в Эстонии говорят по-эстонски. *Siin ei suitsetata* — здесь не курят. Вы прочтёте это на дверях задолго до того, как скажете сами."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Pood avatakse kell kümme.",
+              "en": "The shop opens at ten.",
+              "az": "Mağaza saat onda açılır.",
+              "ru": "Магазин открывается в десять."
+            },
+            {
+              "et": "Maja ehitati 1920. aastal.",
+              "en": "The house was built in 1920.",
+              "az": "Ev 1920-ci ildə tikilib.",
+              "ru": "Дом построили в 1920 году."
+            },
+            {
+              "et": "Siin ei suitsetata.",
+              "en": "No smoking here.",
+              "az": "Burada siqaret çəkilmir.",
+              "ru": "Здесь не курят."
+            }
+          ]
         },
         {
           "head": {
@@ -36679,6 +37085,40 @@
             "az": "Dördüncüsü *-takse* formasıdır, o da öz inkarını, keçmişini və bitmiş keçmişini verir: *õpitakse, ei õpita, õpiti, on õpitud*. *õppi-* ilə *õpi-*, *luge-* ilə *loe-* fərqinə baxın: kök bəzi formalarda güclü, bəzilərində zəifdir, və kartın sizə bir yox, üç forma öyrətməsinin bütün səbəbi budur.",
             "ru": "А четвёртая — форма на *-takse*, которая даёт своё отрицание, прошедшее и перфект: *õpitakse, ei õpita, õpiti, on õpitud*. Сравните *õppi-* и *õpi-*, *luge-* и *loe-*: основа в одних формах сильная, в других слабая, и именно поэтому карточка заставляет учить три формы, а не одну."
           }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma õppisin eile kolm tundi.",
+              "en": "I studied for three hours yesterday.",
+              "az": "Dünən üç saat dərs oxudum.",
+              "ru": "Вчера я занимался три часа."
+            },
+            {
+              "et": "Ta on raamatukogus õppimas.",
+              "en": "She is at the library, studying.",
+              "az": "O, kitabxanada dərs oxuyur.",
+              "ru": "Она в библиотеке, занимается."
+            },
+            {
+              "et": "Lugege tekst läbi!",
+              "en": "Read the text through!",
+              "az": "Mətni axıra qədər oxuyun!",
+              "ru": "Прочитайте текст!"
+            },
+            {
+              "et": "Ma loeksin, aga mul pole aega.",
+              "en": "I would read, but I have no time.",
+              "az": "Oxuyardım, amma vaxtım yoxdur.",
+              "ru": "Я бы почитал, но у меня нет времени."
+            },
+            {
+              "et": "Seda raamatut loetakse palju.",
+              "en": "This book is read a lot.",
+              "az": "Bu kitab çox oxunur.",
+              "ru": "Эту книгу много читают."
+            }
+          ]
         },
         {
           "say": {
