@@ -11603,6 +11603,16 @@
      shows itself only after a moment, so an ordinary tap never flashes it,
      but it is counting from the first touch.
 
+     And the pill itself swells from the first touch — .is-holding in
+     assets/styles.css, set here on the way down and taken off on the way
+     up — because the ring's quarter-second of nothing was a quarter-second
+     in which a tap felt ignored: the owner pressed the die on a phone and
+     could not feel that the page had noticed. The swell is quick at first
+     and slow after, timed by the same --hold-ms as the ring, so a hold is
+     felt before the ring says what it is for, and a tap is answered before
+     the die has rolled. The variable is set on the pill rather than on the
+     ring so both read one number.
+
      That first version also let go on pointercancel and pointerleave, and a
      phone sends one of those partway through a long press — the browser
      deciding the touch is now a gesture of its own — so on a phone the hold
@@ -11627,6 +11637,7 @@
     var from = null;
     var ring = null;
     var ns = 'http://www.w3.org/2000/svg';
+    btn.style.setProperty('--hold-ms', CHESS_HOLD_MS + 'ms');
 
     /* The ring, centred on the die rather than on the pill: on a phone the
        pill is a disc round the die, and on a wide screen it is a pill with
@@ -11652,7 +11663,6 @@
       });
       ring.style.left = (at.left - box.left + at.width / 2 - btn.clientLeft) + 'px';
       ring.style.top = (at.top - box.top + at.height / 2 - btn.clientTop) + 'px';
-      ring.style.setProperty('--hold-ms', CHESS_HOLD_MS + 'ms');
       btn.appendChild(ring);
       void ring.getBoundingClientRect();
       btn.classList.add('is-holding');

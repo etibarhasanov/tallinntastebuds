@@ -1504,7 +1504,11 @@ html:not([data-layout="b"]) #btn-more { display: none; }
      accent everywhere else on this site; on the rail it is one of the pills
      and nothing about it says otherwise. */
   text-decoration: none;
-  transition: border-color .15s var(--ease), color .15s var(--ease);
+  /* transform is in the list for the one pill that moves under a finger —
+     the die, swelling while it is held, below — so that letting go eases it
+     back instead of dropping it. Nothing else here transforms the pill. */
+  transition: border-color .15s var(--ease), color .15s var(--ease),
+              transform .2s var(--ease);
 }
 .rail-btn:hover { border-color: var(--accent); color: var(--accent); }
 .rail-btn svg {
@@ -1525,6 +1529,41 @@ html:not([data-layout="b"]) #btn-more { display: none; }
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+/* And it swells under the finger from the first touch. The ring below waits
+   a quarter of a second before it shows, which is right for the ring — an
+   ordinary tap must never flash the way to /chess — but it left a tap with
+   nothing at all: the owner pressed the die on a phone and could not feel
+   that the page had noticed. So the pill grows the moment it is pressed, and
+   keeps growing for as long as it is held, so a hold is felt before the ring
+   says what it is for.
+
+   One transition, the whole five seconds long, with a curve that spends most
+   of itself in the first half-second: about a twenty-fifth bigger within a
+   tenth of a second, which is what a thumb reads as "pressed", near a tenth
+   bigger by the time the ring shows, an eighth by the first second, and the
+   last few per cent spread over the rest of the hold so it is still visibly
+   swelling as the ring closes. .is-holding
+   is set on the first touch and taken off when the finger comes up, so the
+   release is the pill's own .2s back to size, from wherever the swell had
+   got to. --hold-ms is the script's number, the same one the ring's fill is
+   timed by, so the two never disagree about how long a hold is.
+
+   The shorthand is restated rather than appended to, because a property
+   cannot be added to a transition list from a second rule, and on a phone
+   the pill's list is the longer one further down; while it is held, nothing
+   else about the pill is meant to move — the label opens and folds after
+   the finger has come up — so the one property is the whole list for that
+   moment. The ring is inside the pill and grows with it, centred on the die
+   where the eye already is. */
+#btn-random.is-holding {
+  transform: scale(1.16);
+  transition: transform var(--hold-ms, 5s) cubic-bezier(.05, .95, .25, 1);
+}
+/* Somebody who asked for less motion still gets told their finger landed:
+   one small step up, at once, and no five-second swell. */
+@media (prefers-reduced-motion: reduce) {
+  #btn-random.is-holding { transform: scale(1.06); transition: none; }
 }
 /* The ring that fills round the die while it is held, and the page goes
    when it closes. Placed on the die's centre by the script, which measures
@@ -5236,7 +5275,8 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     gap: 0;
     transition: border-color .15s var(--ease), color .15s var(--ease),
                 grid-template-columns .34s var(--ease),
-                padding .34s var(--ease), gap .34s var(--ease);
+                padding .34s var(--ease), gap .34s var(--ease),
+                transform .2s var(--ease);
   }
   .rail-btn.hint-open {
     grid-template-columns: auto 1fr;
