@@ -362,6 +362,15 @@
        first press is early enough. */
     try { window.history.scrollRestoration = 'manual'; } catch (e) { /* old browser */ }
 
+    /* The answer Undo was holding goes now, before the walk, and not from
+       render() once the next answer is in: settle() drops the run that holds
+       it, so by then there was nothing left to send. Every walk out of a
+       deck within a breath of answering — All the decks, the back button —
+       lost the last card, a write never sent signed in and a word never kept
+       signed out. Sent before the request, too, so the shelf it asks for has
+       the answer in it as often as the two arrive in order. */
+    flush();
+
     var query = new URLSearchParams();
     query.set('lang', state.lang);
     if (id) query.set('deck', id);
