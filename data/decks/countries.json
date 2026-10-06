@@ -1,0 +1,884 @@
+{
+ "id": "countries",
+ "added": "2026-09-19",
+ "name": {
+  "en": "Countries and nationalities",
+  "az": "Ölkələr və millətlər",
+  "ru": "Страны и национальности"
+ },
+ "why": {
+  "en": "Where you are from, and what that makes you in Estonian",
+  "az": "Haradan olduğun və bunun estonca necə səsləndiyi",
+  "ru": "Откуда вы — и как это звучит по-эстонски"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "eesti",
+   "front": "Eesti",
+   "back": {
+    "en": "Estonia",
+    "az": "Estoniya",
+    "ru": "Эстония"
+   },
+   "forms": [
+    "Eesti",
+    "Eestit"
+   ],
+   "sentence": {
+    "et": "Ma elan Eestis.",
+    "en": "I live in Estonia.",
+    "az": "Estoniyada yaşayıram.",
+    "ru": "Я живу в Эстонии."
+   }
+  },
+  {
+   "id": "eestlane",
+   "front": "Eestlane",
+   "back": {
+    "en": "An Estonian",
+    "az": "Eston",
+    "ru": "Эстонец, эстонка"
+   },
+   "forms": [
+    "eestlase",
+    "eestlast"
+   ],
+   "sentence": {
+    "et": "Ta on eestlane.",
+    "en": "They are Estonian.",
+    "az": "O estondur.",
+    "ru": "Он эстонец."
+   }
+  },
+  {
+   "id": "rahvus",
+   "front": "Rahvus",
+   "back": {
+    "en": "Nationality",
+    "az": "Milliyyət",
+    "ru": "Национальность"
+   },
+   "forms": [
+    "rahvuse",
+    "rahvust"
+   ],
+   "sentence": {
+    "et": "Mis rahvusest te olete?",
+    "en": "What nationality are you?",
+    "az": "Milliyyətiniz nədir?",
+    "ru": "Какой вы национальности?"
+   }
+  },
+  {
+   "id": "emakeel",
+   "front": "Emakeel",
+   "back": {
+    "en": "Mother tongue",
+    "az": "Ana dili",
+    "ru": "Родной язык"
+   },
+   "forms": [
+    "emakeele",
+    "emakeelt"
+   ],
+   "sentence": {
+    "et": "Minu emakeel ei ole eesti keel.",
+    "en": "My mother tongue is not Estonian.",
+    "az": "Mənim ana dilim eston dili deyil.",
+    "ru": "Мой родной язык не эстонский."
+   }
+  },
+  {
+   "id": "venemaa",
+   "front": "Venemaa",
+   "back": {
+    "en": "Russia",
+    "az": "Rusiya",
+    "ru": "Россия"
+   },
+   "forms": [
+    "Venemaa",
+    "Venemaad"
+   ],
+   "sentence": {
+    "et": "Venemaa on suur maa.",
+    "en": "Russia is a big country.",
+    "az": "Rusiya böyük ölkədir.",
+    "ru": "Россия — большая страна."
+   }
+  },
+  {
+   "id": "venelane",
+   "front": "Venelane",
+   "back": {
+    "en": "A Russian",
+    "az": "Rus",
+    "ru": "Русский, русская"
+   },
+   "forms": [
+    "venelase",
+    "venelast"
+   ],
+   "sentence": {
+    "et": "Ta on venelane Narvast.",
+    "en": "They are a Russian from Narva.",
+    "az": "O, Narvadan olan rusdur.",
+    "ru": "Он русский из Нарвы."
+   }
+  },
+  {
+   "id": "soome",
+   "front": "Soome",
+   "back": {
+    "en": "Finland",
+    "az": "Finlandiya",
+    "ru": "Финляндия"
+   },
+   "forms": [
+    "Soome",
+    "Soomet"
+   ],
+   "sentence": {
+    "et": "Soome on üle lahe.",
+    "en": "Finland is across the gulf.",
+    "az": "Finlandiya körfəzin o tayındadır.",
+    "ru": "Финляндия за заливом."
+   }
+  },
+  {
+   "id": "soomlane",
+   "front": "Soomlane",
+   "back": {
+    "en": "A Finn",
+    "az": "Fin",
+    "ru": "Финн, финка"
+   },
+   "forms": [
+    "soomlase",
+    "soomlast"
+   ],
+   "sentence": {
+    "et": "Kohvikus on palju soomlasi.",
+    "en": "There are many Finns in the café.",
+    "az": "Kafedə çox fin var.",
+    "ru": "В кафе много финнов."
+   }
+  },
+  {
+   "id": "lati",
+   "front": "Läti",
+   "back": {
+    "en": "Latvia",
+    "az": "Latviya",
+    "ru": "Латвия"
+   },
+   "forms": [
+    "Läti",
+    "Lätit"
+   ],
+   "sentence": {
+    "et": "Läti jääb lõuna poole.",
+    "en": "Latvia is to the south.",
+    "az": "Latviya cənubda qalır.",
+    "ru": "Латвия южнее."
+   }
+  },
+  {
+   "id": "latlane",
+   "front": "Lätlane",
+   "back": {
+    "en": "A Latvian",
+    "az": "Latviyalı",
+    "ru": "Латыш, латышка"
+   },
+   "forms": [
+    "lätlase",
+    "lätlast"
+   ],
+   "sentence": {
+    "et": "Lätlane räägib läti keelt.",
+    "en": "A Latvian speaks Latvian.",
+    "az": "Latviyalı latış dilində danışır.",
+    "ru": "Латыш говорит по-латышски."
+   }
+  },
+  {
+   "id": "leedu",
+   "front": "Leedu",
+   "back": {
+    "en": "Lithuania",
+    "az": "Litva",
+    "ru": "Литва"
+   },
+   "forms": [
+    "Leedu",
+    "Leedut"
+   ],
+   "sentence": {
+    "et": "Leedu on Lätist lõuna pool.",
+    "en": "Lithuania is south of Latvia.",
+    "az": "Litva Latviyanın cənubundadır.",
+    "ru": "Литва южнее Латвии."
+   }
+  },
+  {
+   "id": "leedulane",
+   "front": "Leedulane",
+   "back": {
+    "en": "A Lithuanian",
+    "az": "Litvalı",
+    "ru": "Литовец, литовка"
+   },
+   "forms": [
+    "leedulase",
+    "leedulast"
+   ],
+   "sentence": {
+    "et": "Meie naaber on leedulane.",
+    "en": "Our neighbour is Lithuanian.",
+    "az": "Qonşumuz litvalıdır.",
+    "ru": "Наш сосед литовец."
+   }
+  },
+  {
+   "id": "rootsi",
+   "front": "Rootsi",
+   "back": {
+    "en": "Sweden",
+    "az": "İsveç",
+    "ru": "Швеция"
+   },
+   "forms": [
+    "Rootsi",
+    "Rootsit"
+   ],
+   "sentence": {
+    "et": "Rootsi on üle mere.",
+    "en": "Sweden is across the sea.",
+    "az": "İsveç dənizin o tayındadır.",
+    "ru": "Швеция за морем."
+   }
+  },
+  {
+   "id": "rootslane",
+   "front": "Rootslane",
+   "back": {
+    "en": "A Swede",
+    "az": "İsveçli",
+    "ru": "Швед, шведка"
+   },
+   "forms": [
+    "rootslase",
+    "rootslast"
+   ],
+   "sentence": {
+    "et": "Rootslane tuli laevaga.",
+    "en": "The Swede came by ship.",
+    "az": "İsveçli gəmi ilə gəldi.",
+    "ru": "Швед приехал на корабле."
+   }
+  },
+  {
+   "id": "norra",
+   "front": "Norra",
+   "back": {
+    "en": "Norway",
+    "az": "Norveç",
+    "ru": "Норвегия"
+   },
+   "forms": [
+    "Norra",
+    "Norrat"
+   ],
+   "sentence": {
+    "et": "Norra on kaugel põhjas.",
+    "en": "Norway is far to the north.",
+    "az": "Norveç uzaq şimaldadır.",
+    "ru": "Норвегия далеко на севере."
+   }
+  },
+  {
+   "id": "norralane",
+   "front": "Norralane",
+   "back": {
+    "en": "A Norwegian",
+    "az": "Norveçli",
+    "ru": "Норвежец, норвежка"
+   },
+   "forms": [
+    "norralase",
+    "norralast"
+   ],
+   "sentence": {
+    "et": "Norralane õpib eesti keelt.",
+    "en": "The Norwegian is learning Estonian.",
+    "az": "Norveçli eston dili öyrənir.",
+    "ru": "Норвежец учит эстонский."
+   }
+  },
+  {
+   "id": "taani",
+   "front": "Taani",
+   "back": {
+    "en": "Denmark",
+    "az": "Danimarka",
+    "ru": "Дания"
+   },
+   "forms": [
+    "Taani",
+    "Taanit"
+   ],
+   "sentence": {
+    "et": "Taani kuningas rajas Tallinna.",
+    "en": "The Danish king founded Tallinn.",
+    "az": "Danimarka kralı Tallinni saldı.",
+    "ru": "Датский король основал Таллинн."
+   }
+  },
+  {
+   "id": "taanlane",
+   "front": "Taanlane",
+   "back": {
+    "en": "A Dane",
+    "az": "Danimarkalı",
+    "ru": "Датчанин, датчанка"
+   },
+   "forms": [
+    "taanlase",
+    "taanlast"
+   ],
+   "sentence": {
+    "et": "Taanlane tellis kohvi.",
+    "en": "The Dane ordered a coffee.",
+    "az": "Danimarkalı qəhvə sifariş etdi.",
+    "ru": "Датчанин заказал кофе."
+   }
+  },
+  {
+   "id": "saksamaa",
+   "front": "Saksamaa",
+   "back": {
+    "en": "Germany",
+    "az": "Almaniya",
+    "ru": "Германия"
+   },
+   "forms": [
+    "Saksamaa",
+    "Saksamaad"
+   ],
+   "sentence": {
+    "et": "Ta töötab Saksamaal.",
+    "en": "They work in Germany.",
+    "az": "O Almaniyada işləyir.",
+    "ru": "Он работает в Германии."
+   }
+  },
+  {
+   "id": "sakslane",
+   "front": "Sakslane",
+   "back": {
+    "en": "A German",
+    "az": "Alman",
+    "ru": "Немец, немка"
+   },
+   "forms": [
+    "sakslase",
+    "sakslast"
+   ],
+   "sentence": {
+    "et": "Sakslane küsis arvet.",
+    "en": "The German asked for the bill.",
+    "az": "Alman hesabı istədi.",
+    "ru": "Немец попросил счёт."
+   }
+  },
+  {
+   "id": "inglismaa",
+   "front": "Inglismaa",
+   "back": {
+    "en": "England",
+    "az": "İngiltərə",
+    "ru": "Англия"
+   },
+   "forms": [
+    "Inglismaa",
+    "Inglismaad"
+   ],
+   "sentence": {
+    "et": "Ta sõitis Inglismaale.",
+    "en": "They went to England.",
+    "az": "O İngiltərəyə getdi.",
+    "ru": "Он уехал в Англию."
+   }
+  },
+  {
+   "id": "inglane",
+   "front": "Inglane",
+   "back": {
+    "en": "An Englishman, an Englishwoman",
+    "az": "İngilis",
+    "ru": "Англичанин, англичанка"
+   },
+   "forms": [
+    "inglase",
+    "inglast"
+   ],
+   "sentence": {
+    "et": "Inglane räägib ainult inglise keelt.",
+    "en": "The Englishman speaks only English.",
+    "az": "İngilis yalnız ingiliscə danışır.",
+    "ru": "Англичанин говорит только по-английски."
+   }
+  },
+  {
+   "id": "prantsusmaa",
+   "front": "Prantsusmaa",
+   "back": {
+    "en": "France",
+    "az": "Fransa",
+    "ru": "Франция"
+   },
+   "forms": [
+    "Prantsusmaa",
+    "Prantsusmaad"
+   ],
+   "sentence": {
+    "et": "Prantsusmaal on hea leib.",
+    "en": "There is good bread in France.",
+    "az": "Fransada yaxşı çörək var.",
+    "ru": "Во Франции хороший хлеб."
+   }
+  },
+  {
+   "id": "prantslane",
+   "front": "Prantslane",
+   "back": {
+    "en": "A Frenchman, a Frenchwoman",
+    "az": "Fransız",
+    "ru": "Француз, француженка"
+   },
+   "forms": [
+    "prantslase",
+    "prantslast"
+   ],
+   "sentence": {
+    "et": "Prantslane joob veini.",
+    "en": "The Frenchman is drinking wine.",
+    "az": "Fransız şərab içir.",
+    "ru": "Француз пьёт вино."
+   }
+  },
+  {
+   "id": "hispaania",
+   "front": "Hispaania",
+   "back": {
+    "en": "Spain",
+    "az": "İspaniya",
+    "ru": "Испания"
+   },
+   "forms": [
+    "Hispaania",
+    "Hispaaniat"
+   ],
+   "sentence": {
+    "et": "Hispaanias on soe.",
+    "en": "It is warm in Spain.",
+    "az": "İspaniyada istidir.",
+    "ru": "В Испании тепло."
+   }
+  },
+  {
+   "id": "hispaanlane",
+   "front": "Hispaanlane",
+   "back": {
+    "en": "A Spaniard",
+    "az": "İspan",
+    "ru": "Испанец, испанка"
+   },
+   "forms": [
+    "hispaanlase",
+    "hispaanlast"
+   ],
+   "sentence": {
+    "et": "Hispaanlane sööb hilja õhtul.",
+    "en": "The Spaniard eats late in the evening.",
+    "az": "İspan axşam gec yemək yeyir.",
+    "ru": "Испанец ужинает поздно вечером."
+   }
+  },
+  {
+   "id": "itaalia",
+   "front": "Itaalia",
+   "back": {
+    "en": "Italy",
+    "az": "İtaliya",
+    "ru": "Италия"
+   },
+   "forms": [
+    "Itaalia",
+    "Itaaliat"
+   ],
+   "sentence": {
+    "et": "Itaalia pitsa on kuulus.",
+    "en": "Italian pizza is famous.",
+    "az": "İtalyan pizzası məşhurdur.",
+    "ru": "Итальянская пицца знаменита."
+   }
+  },
+  {
+   "id": "itaallane",
+   "front": "Itaallane",
+   "back": {
+    "en": "An Italian",
+    "az": "İtalyan",
+    "ru": "Итальянец, итальянка"
+   },
+   "forms": [
+    "itaallase",
+    "itaallast"
+   ],
+   "sentence": {
+    "et": "Itaallane teeb head kohvi.",
+    "en": "The Italian makes good coffee.",
+    "az": "İtalyan yaxşı qəhvə bişirir.",
+    "ru": "Итальянец варит хороший кофе."
+   }
+  },
+  {
+   "id": "poola",
+   "front": "Poola",
+   "back": {
+    "en": "Poland",
+    "az": "Polşa",
+    "ru": "Польша"
+   },
+   "forms": [
+    "Poola",
+    "Poolat"
+   ],
+   "sentence": {
+    "et": "Poola on Leedust lõunas.",
+    "en": "Poland is south of Lithuania.",
+    "az": "Polşa Litvanın cənubundadır.",
+    "ru": "Польша южнее Литвы."
+   }
+  },
+  {
+   "id": "poolakas",
+   "front": "Poolakas",
+   "back": {
+    "en": "A Pole",
+    "az": "Polyak",
+    "ru": "Поляк, полька"
+   },
+   "forms": [
+    "poolaka",
+    "poolakat"
+   ],
+   "sentence": {
+    "et": "Poolakas töötab kohvikus.",
+    "en": "The Pole works in a café.",
+    "az": "Polyak kafedə işləyir.",
+    "ru": "Поляк работает в кафе."
+   }
+  },
+  {
+   "id": "ungari",
+   "front": "Ungari",
+   "back": {
+    "en": "Hungary",
+    "az": "Macarıstan",
+    "ru": "Венгрия"
+   },
+   "forms": [
+    "Ungari",
+    "Ungarit"
+   ],
+   "sentence": {
+    "et": "Ungari on kaugel lõunas.",
+    "en": "Hungary is far to the south.",
+    "az": "Macarıstan uzaq cənubdadır.",
+    "ru": "Венгрия далеко на юге."
+   }
+  },
+  {
+   "id": "ungarlane",
+   "front": "Ungarlane",
+   "back": {
+    "en": "A Hungarian",
+    "az": "Macar",
+    "ru": "Венгр, венгерка"
+   },
+   "forms": [
+    "ungarlase",
+    "ungarlast"
+   ],
+   "sentence": {
+    "et": "Ungarlane räägib ungari keelt.",
+    "en": "The Hungarian speaks Hungarian.",
+    "az": "Macar macar dilində danışır.",
+    "ru": "Венгр говорит по-венгерски."
+   }
+  },
+  {
+   "id": "hiina",
+   "front": "Hiina",
+   "back": {
+    "en": "China",
+    "az": "Çin",
+    "ru": "Китай"
+   },
+   "forms": [
+    "Hiina",
+    "Hiinat"
+   ],
+   "sentence": {
+    "et": "Hiina restoran on siinsamas.",
+    "en": "The Chinese restaurant is right here.",
+    "az": "Çin restoranı elə buradadır.",
+    "ru": "Китайский ресторан прямо здесь."
+   }
+  },
+  {
+   "id": "hiinlane",
+   "front": "Hiinlane",
+   "back": {
+    "en": "A Chinese person",
+    "az": "Çinli",
+    "ru": "Китаец, китаянка"
+   },
+   "forms": [
+    "hiinlase",
+    "hiinlast"
+   ],
+   "sentence": {
+    "et": "Hiinlane räägib hiina keelt.",
+    "en": "The Chinese person speaks Chinese.",
+    "az": "Çinli çin dilində danışır.",
+    "ru": "Китаец говорит по-китайски."
+   }
+  },
+  {
+   "id": "eesti-keel",
+   "front": "Eesti keel",
+   "back": {
+    "en": "The Estonian language",
+    "az": "Eston dili",
+    "ru": "Эстонский язык"
+   },
+   "forms": [
+    "eesti keele",
+    "eesti keelt"
+   ]
+  },
+  {
+   "id": "vene-keel",
+   "front": "Vene keel",
+   "back": {
+    "en": "The Russian language",
+    "az": "Rus dili",
+    "ru": "Русский язык"
+   },
+   "forms": [
+    "vene keele",
+    "vene keelt"
+   ]
+  },
+  {
+   "id": "inglise-keel",
+   "front": "Inglise keel",
+   "back": {
+    "en": "The English language",
+    "az": "İngilis dili",
+    "ru": "Английский язык"
+   },
+   "forms": [
+    "inglise keele",
+    "inglise keelt"
+   ]
+  },
+  {
+   "id": "soome-keel",
+   "front": "Soome keel",
+   "back": {
+    "en": "The Finnish language",
+    "az": "Fin dili",
+    "ru": "Финский язык"
+   },
+   "forms": [
+    "soome keele",
+    "soome keelt"
+   ]
+  },
+  {
+   "id": "saksa-keel",
+   "front": "Saksa keel",
+   "back": {
+    "en": "The German language",
+    "az": "Alman dili",
+    "ru": "Немецкий язык"
+   },
+   "forms": [
+    "saksa keele",
+    "saksa keelt"
+   ]
+  },
+  {
+   "id": "prantsuse-keel",
+   "front": "Prantsuse keel",
+   "back": {
+    "en": "The French language",
+    "az": "Fransız dili",
+    "ru": "Французский язык"
+   },
+   "forms": [
+    "prantsuse keele",
+    "prantsuse keelt"
+   ]
+  },
+  {
+   "id": "hispaania-keel",
+   "front": "Hispaania keel",
+   "back": {
+    "en": "The Spanish language",
+    "az": "İspan dili",
+    "ru": "Испанский язык"
+   },
+   "forms": [
+    "hispaania keele",
+    "hispaania keelt"
+   ]
+  },
+  {
+   "id": "ukraina",
+   "front": "Ukraina",
+   "back": {
+    "en": "Ukraine",
+    "az": "Ukrayna",
+    "ru": "Украина"
+   },
+   "forms": [
+    "Ukraina",
+    "Ukrainat"
+   ]
+  },
+  {
+   "id": "ukrainlane",
+   "front": "Ukrainlane",
+   "back": {
+    "en": "Ukrainian",
+    "az": "Ukraynalı",
+    "ru": "Украинец"
+   },
+   "forms": [
+    "ukrainlase",
+    "ukrainlast"
+   ]
+  },
+  {
+   "id": "jaapan",
+   "front": "Jaapan",
+   "back": {
+    "en": "Japan",
+    "az": "Yaponiya",
+    "ru": "Япония"
+   },
+   "forms": [
+    "Jaapani",
+    "Jaapanit"
+   ]
+  },
+  {
+   "id": "jaapanlane",
+   "front": "Jaapanlane",
+   "back": {
+    "en": "Japanese",
+    "az": "Yaponiyalı",
+    "ru": "Японец"
+   },
+   "forms": [
+    "jaapanlase",
+    "jaapanlast"
+   ]
+  },
+  {
+   "id": "ameeriklane",
+   "front": "Ameeriklane",
+   "back": {
+    "en": "American",
+    "az": "Amerikalı",
+    "ru": "Американец"
+   },
+   "forms": [
+    "ameeriklase",
+    "ameeriklast"
+   ]
+  },
+  {
+   "id": "valismaa",
+   "front": "Välismaa",
+   "back": {
+    "en": "Abroad",
+    "az": "Xaricdə",
+    "ru": "Заграница"
+   },
+   "forms": [
+    "välismaa",
+    "välismaad"
+   ]
+  },
+  {
+   "id": "valismaalane",
+   "front": "Välismaalane",
+   "back": {
+    "en": "Foreigner",
+    "az": "Əcnəbi",
+    "ru": "Иностранец"
+   },
+   "forms": [
+    "välismaalase",
+    "välismaalast"
+   ]
+  },
+  {
+   "id": "tallinlane",
+   "front": "Tallinlane",
+   "back": {
+    "en": "Someone from Tallinn",
+    "az": "Tallinnli",
+    "ru": "Таллинец"
+   },
+   "forms": [
+    "tallinlase",
+    "tallinlast"
+   ]
+  },
+  {
+   "id": "tartlane",
+   "front": "Tartlane",
+   "back": {
+    "en": "Someone from Tartu",
+    "az": "Tartulu",
+    "ru": "Тартусец"
+   },
+   "forms": [
+    "tartlase",
+    "tartlast"
+   ]
+  },
+  {
+   "id": "saarlane",
+   "front": "Saarlane",
+   "back": {
+    "en": "Someone from Saaremaa",
+    "az": "Saaremaalı",
+    "ru": "Житель Сааремаа"
+   },
+   "forms": [
+    "saarlase",
+    "saarlast"
+   ]
+  }
+ ]
+}

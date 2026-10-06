@@ -1,0 +1,559 @@
+{
+ "id": "kitchen",
+ "added": "2026-09-20",
+ "level": "more",
+ "name": {
+  "en": "What is in the kitchen",
+  "az": "Mətbəxdə nə var",
+  "ru": "Что есть на кухне"
+ },
+ "why": {
+  "en": "The fridge, the stove and the eleven other things a furnished flat lists",
+  "az": "Soyuducu, qaz sobası və mebelli mənzilin sadaladığı on bir şey",
+  "ru": "Холодильник, плита и ещё одиннадцать вещей из объявления о мебелированной квартире"
+ },
+ "cards": [
+  {
+   "id": "kulmkapp",
+   "front": "Külmkapp",
+   "back": {
+    "en": "Fridge",
+    "az": "Soyuducu",
+    "ru": "Холодильник"
+   },
+   "forms": [
+    "külmkapi",
+    "külmkappi"
+   ]
+  },
+  {
+   "id": "pliit",
+   "front": "Pliit",
+   "back": {
+    "en": "Cooking stove",
+    "az": "Plitə",
+    "ru": "Плита"
+   },
+   "forms": [
+    "pliidi",
+    "pliiti"
+   ]
+  },
+  {
+   "id": "ahi",
+   "front": "Ahi",
+   "back": {
+    "en": "Oven",
+    "az": "Soba",
+    "ru": "Печь"
+   },
+   "forms": [
+    "ahju",
+    "ahju"
+   ]
+  },
+  {
+   "id": "mikrolaineahi",
+   "front": "Mikrolaineahi",
+   "back": {
+    "en": "Microwave",
+    "az": "Mikrodalğalı soba",
+    "ru": "Микроволновка"
+   },
+   "forms": [
+    "mikrolaineahju",
+    "mikrolaineahju"
+   ]
+  },
+  {
+   "id": "pann",
+   "front": "Pann",
+   "back": {
+    "en": "Frying pan",
+    "az": "Tava",
+    "ru": "Сковорода"
+   },
+   "forms": [
+    "panni",
+    "panni"
+   ]
+  },
+  {
+   "id": "pott",
+   "front": "Pott",
+   "back": {
+    "en": "Saucepan",
+    "az": "Qazan",
+    "ru": "Кастрюля"
+   },
+   "forms": [
+    "poti",
+    "potti"
+   ]
+  },
+  {
+   "id": "kauss",
+   "front": "Kauss",
+   "back": {
+    "en": "Bowl",
+    "az": "Kasa",
+    "ru": "Миска"
+   },
+   "forms": [
+    "kausi",
+    "kaussi"
+   ]
+  },
+  {
+   "id": "kann",
+   "front": "Kann",
+   "back": {
+    "en": "Jug",
+    "az": "Parç",
+    "ru": "Кувшин"
+   },
+   "forms": [
+    "kannu",
+    "kannu"
+   ]
+  },
+  {
+   "id": "kruus",
+   "front": "Kruus",
+   "back": {
+    "en": "Mug",
+    "az": "Krujka",
+    "ru": "Кружка"
+   },
+   "forms": [
+    "kruusi",
+    "kruusi"
+   ]
+  },
+  {
+   "id": "klaas",
+   "front": "Klaas",
+   "back": {
+    "en": "Glass",
+    "az": "Stəkan",
+    "ru": "Стакан"
+   },
+   "forms": [
+    "klaasi",
+    "klaasi"
+   ]
+  },
+  {
+   "id": "tass",
+   "front": "Tass",
+   "back": {
+    "en": "Cup",
+    "az": "Fincan",
+    "ru": "Чашка"
+   },
+   "forms": [
+    "tassi",
+    "tassi"
+   ]
+  },
+  {
+   "id": "veekeetja",
+   "front": "Veekeetja",
+   "back": {
+    "en": "Kettle",
+    "az": "Çaydan",
+    "ru": "Чайник"
+   },
+   "forms": [
+    "veekeetja",
+    "veekeetjat"
+   ]
+  },
+  {
+   "id": "kohvimasin",
+   "front": "Kohvimasin",
+   "back": {
+    "en": "Coffee machine",
+    "az": "Qəhvə maşını",
+    "ru": "Кофеварка"
+   },
+   "forms": [
+    "kohvimasina",
+    "kohvimasinat"
+   ]
+  },
+  {
+   "id": "roster",
+   "front": "Röster",
+   "back": {
+    "en": "Toaster",
+    "az": "Toster",
+    "ru": "Тостер"
+   },
+   "forms": [
+    "rösteri",
+    "rösterit"
+   ]
+  },
+  {
+   "id": "mikser",
+   "front": "Mikser",
+   "back": {
+    "en": "Mixer",
+    "az": "Mikser",
+    "ru": "Миксер"
+   },
+   "forms": [
+    "mikseri",
+    "mikserit"
+   ]
+  },
+  {
+   "id": "noudepesumasin",
+   "front": "Nõudepesumasin",
+   "back": {
+    "en": "Dishwasher",
+    "az": "Qabyuyan maşın",
+    "ru": "Посудомоечная машина"
+   },
+   "forms": [
+    "nõudepesumasina",
+    "nõudepesumasinat"
+   ]
+  },
+  {
+   "id": "pesumasin",
+   "front": "Pesumasin",
+   "back": {
+    "en": "Washing machine",
+    "az": "Paltaryuyan maşın",
+    "ru": "Стиральная машина"
+   },
+   "forms": [
+    "pesumasina",
+    "pesumasinat"
+   ]
+  },
+  {
+   "id": "triikraud",
+   "front": "Triikraud",
+   "back": {
+    "en": "Iron",
+    "az": "Ütü",
+    "ru": "Утюг"
+   },
+   "forms": [
+    "triikraua",
+    "triikrauda"
+   ]
+  },
+  {
+   "id": "tolmuimeja",
+   "front": "Tolmuimeja",
+   "back": {
+    "en": "Vacuum cleaner",
+    "az": "Tozsoran",
+    "ru": "Пылесос"
+   },
+   "forms": [
+    "tolmuimeja",
+    "tolmuimejat"
+   ]
+  },
+  {
+   "id": "foon",
+   "front": "Föön",
+   "back": {
+    "en": "Hair dryer",
+    "az": "Saç quruducusu",
+    "ru": "Фен"
+   },
+   "forms": [
+    "fööni",
+    "fööni"
+   ]
+  },
+  {
+   "id": "kodumasin",
+   "front": "Kodumasin",
+   "back": {
+    "en": "Kitchen appliance",
+    "az": "Məişət texnikası",
+    "ru": "Бытовая техника"
+   },
+   "forms": [
+    "kodumasina",
+    "kodumasinat"
+   ]
+  },
+  {
+   "id": "kapp",
+   "front": "Kapp",
+   "back": {
+    "en": "Cupboard",
+    "az": "Şkaf",
+    "ru": "Шкаф"
+   },
+   "forms": [
+    "kapi",
+    "kappi"
+   ]
+  },
+  {
+   "id": "sahtel",
+   "front": "Sahtel",
+   "back": {
+    "en": "Drawer",
+    "az": "Siyirmə",
+    "ru": "Ящик стола"
+   },
+   "forms": [
+    "sahtli",
+    "sahtlit"
+   ]
+  },
+  {
+   "id": "riiul",
+   "front": "Riiul",
+   "back": {
+    "en": "Shelf",
+    "az": "Rəf",
+    "ru": "Полка"
+   },
+   "forms": [
+    "riiuli",
+    "riiulit"
+   ]
+  },
+  {
+   "id": "kraan",
+   "front": "Kraan",
+   "back": {
+    "en": "Tap",
+    "az": "Kran",
+    "ru": "Кран"
+   },
+   "forms": [
+    "kraani",
+    "kraani"
+   ]
+  },
+  {
+   "id": "kraanikauss",
+   "front": "Kraanikauss",
+   "back": {
+    "en": "Sink",
+    "az": "Əlüzyuyan",
+    "ru": "Раковина"
+   },
+   "forms": [
+    "kraanikausi",
+    "kraanikaussi"
+   ]
+  },
+  {
+   "id": "kateratik",
+   "front": "Käterätik",
+   "back": {
+    "en": "Towel",
+    "az": "Dəsmal",
+    "ru": "Полотенце"
+   },
+   "forms": [
+    "käterätiku",
+    "käterätikut"
+   ]
+  },
+  {
+   "id": "seep",
+   "front": "Seep",
+   "back": {
+    "en": "Soap",
+    "az": "Sabun",
+    "ru": "Мыло"
+   },
+   "forms": [
+    "seebi",
+    "seepi"
+   ]
+  },
+  {
+   "id": "kaarid",
+   "front": "Käärid",
+   "back": {
+    "en": "Scissors",
+    "az": "Qayçı",
+    "ru": "Ножницы"
+   }
+  },
+  {
+   "id": "soel",
+   "front": "Sõel",
+   "back": {
+    "en": "Sieve",
+    "az": "Ələk",
+    "ru": "Сито"
+   },
+   "forms": [
+    "sõela",
+    "sõela"
+   ]
+  },
+  {
+   "id": "teelusikas",
+   "front": "Teelusikas",
+   "back": {
+    "en": "Teaspoon",
+    "az": "Çay qaşığı",
+    "ru": "Чайная ложка"
+   },
+   "forms": [
+    "teelusika",
+    "teelusikat"
+   ]
+  },
+  {
+   "id": "laudlina",
+   "front": "Laudlina",
+   "back": {
+    "en": "Tablecloth",
+    "az": "Süfrə",
+    "ru": "Скатерть"
+   },
+   "forms": [
+    "laudlina",
+    "laudlina"
+   ]
+  },
+  {
+   "id": "veekann",
+   "front": "Veekann",
+   "back": {
+    "en": "Water jug",
+    "az": "Su kuzəsi, su qabı",
+    "ru": "Кувшин для воды, чайник"
+   },
+   "forms": [
+    "veekannu",
+    "veekannu"
+   ]
+  },
+  {
+   "id": "noud",
+   "front": "Nõud",
+   "back": {
+    "en": "Dishes",
+    "az": "Qab-qacaq",
+    "ru": "Посуда"
+   },
+   "forms": [
+    "nõude",
+    "nõusid"
+   ]
+  },
+  {
+   "id": "akulaadija",
+   "front": "Akulaadija",
+   "back": {
+    "en": "Charger",
+    "az": "Şarj cihazı",
+    "ru": "Зарядное устройство"
+   },
+   "forms": [
+    "akulaadija",
+    "akulaadijat"
+   ]
+  },
+  {
+   "id": "hambahari",
+   "front": "Hambahari",
+   "back": {
+    "en": "Toothbrush",
+    "az": "Diş fırçası",
+    "ru": "Зубная щётка"
+   },
+   "forms": [
+    "hambaharja",
+    "hambaharja"
+   ]
+  },
+  {
+   "id": "kulmik",
+   "front": "Külmik",
+   "back": {
+    "en": "Fridge",
+    "az": "Soyuducu",
+    "ru": "Холодильник"
+   },
+   "forms": [
+    "külmiku",
+    "külmikut"
+   ]
+  },
+  {
+   "id": "kuunal",
+   "front": "Küünal",
+   "back": {
+    "en": "Candle",
+    "az": "Şam",
+    "ru": "Свеча"
+   },
+   "forms": [
+    "küünla",
+    "küünalt"
+   ]
+  },
+  {
+   "id": "pikendusjuhe",
+   "front": "Pikendusjuhe",
+   "back": {
+    "en": "Extension cord",
+    "az": "Uzadıcı",
+    "ru": "Удлинитель"
+   },
+   "forms": [
+    "pikendusjuhtme",
+    "pikendusjuhet"
+   ]
+  },
+  {
+   "id": "prugi",
+   "front": "Prügi",
+   "back": {
+    "en": "Rubbish, trash",
+    "az": "Zibil",
+    "ru": "Мусор"
+   },
+   "forms": [
+    "prügi",
+    "prügi"
+   ]
+  },
+  {
+   "id": "taskulamp",
+   "front": "Taskulamp",
+   "back": {
+    "en": "Torch, flashlight",
+    "az": "Fənər",
+    "ru": "Фонарик"
+   },
+   "forms": [
+    "taskulambi",
+    "taskulampi"
+   ]
+  },
+  {
+   "id": "tikk",
+   "front": "Tikk",
+   "back": {
+    "en": "Match",
+    "az": "Kibrit",
+    "ru": "Спичка"
+   },
+   "forms": [
+    "tiku",
+    "tikku"
+   ]
+  }
+ ]
+}

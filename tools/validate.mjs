@@ -20,6 +20,10 @@
  *   - a file in data/lang/, or data/map.json, that is not what
  *     tools/languages.mjs would write from data/ui.json and
  *     data/restaurants.json — the one language at a time the map reads
+ *   - a file in data/decks/ that is not what tools/decks.mjs would write from
+ *     data/decks.json — the index and the one file per deck the Functions
+ *     read instead of the whole — or a deck, lesson or song whose id is one
+ *     of the folder's own two files
  *   - a db/google-venues.sql that is out of step with the Google Places export
  *   - a db/city-venues.sql that is out of step with the other cities' exports
  *     it is generated from, or a db/google-lists.sql — the five top tens and
@@ -87,6 +91,7 @@ import { stale as staleStamps, PAGES as STAMPED } from './stamp.mjs';
 import { stale as staleLean, LEAN } from './lean.mjs';
 import { stale as staleCatalogue } from './places.mjs';
 import { stale as staleLanguages } from './languages.mjs';
+import { stale as staleDecks, RESERVED_FILES } from './decks.mjs';
 import { stale as staleGoogleVenues, parseCsv } from './googlevenues.mjs';
 import { stale as staleGoogleLists, LISTS as GOOGLE_LISTS, build as buildGoogleLists } from './googlelists.mjs';
 import { stale as staleCity } from './city.mjs';
@@ -358,6 +363,11 @@ if (decksFile !== null) {
     /* And the fourth, for the same reason: the deck id a song heard is filed
        under — SONG_DECK in the route. */
     RESERVED.add('songs');
+    /* And the two names tools/decks.mjs keeps for the files in data/decks/
+       that are not a deck: the index the shelf is drawn from, and the list of
+       everything the voice may say. A deck, lesson or song of either name
+       would be written over one of them. */
+    for (const name of RESERVED_FILES) RESERVED.add(name);
     const deckIds = new Set();
 
     /* A deck's name, the line under it, the back of a card, or what a card's
@@ -432,7 +442,7 @@ if (decksFile !== null) {
       }
       if (deckIds.has(deck.id)) fail(where, `id "${deck.id}" is used twice`);
       if (RESERVED.has(deck.id)) {
-        fail(where, `id "${deck.id}" is reserved for the deck of cards somebody got wrong — see functions/api/flashcard.js`);
+        fail(where, `id "${deck.id}" is reserved — see functions/api/flashcard.js and tools/decks.mjs`);
       }
       deckIds.add(deck.id);
 
@@ -582,7 +592,7 @@ if (decksFile !== null) {
       if (!isNonEmptyString(lesson.id)) { fail(where, 'has no "id"'); return; }
       if (!SLUG.test(lesson.id)) fail(where, `id "${lesson.id}" is not a lowercase slug`);
       if (deckIds.has(lesson.id)) fail(where, `id "${lesson.id}" is already a deck's or a lesson's`);
-      if (RESERVED.has(lesson.id)) fail(where, `id "${lesson.id}" is reserved — see functions/api/flashcard.js`);
+      if (RESERVED.has(lesson.id)) fail(where, `id "${lesson.id}" is reserved — see functions/api/flashcard.js and tools/decks.mjs`);
       deckIds.add(lesson.id);
 
       said(lesson.name, where, `lesson "${lesson.id}" name`);
@@ -694,7 +704,7 @@ if (decksFile !== null) {
       if (!isNonEmptyString(song.id)) { fail(where, 'has no "id"'); return; }
       if (!SLUG.test(song.id)) fail(where, `id "${song.id}" is not a lowercase slug`);
       if (deckIds.has(song.id)) fail(where, `id "${song.id}" is already a deck's, a lesson's or a song's`);
-      if (RESERVED.has(song.id)) fail(where, `id "${song.id}" is reserved — see functions/api/flashcard.js`);
+      if (RESERVED.has(song.id)) fail(where, `id "${song.id}" is reserved — see functions/api/flashcard.js and tools/decks.mjs`);
       deckIds.add(song.id);
 
       said(song.name, where, `song "${song.id}" name`);
@@ -1885,6 +1895,15 @@ if (staleCatalogue()) {
    of the checks above, so this is what notices. */
 for (const path of staleLanguages()) {
   fail(path, 'is not what tools/languages.mjs would write from data/ui.json and data/restaurants.json — run `node tools/languages.mjs` and commit the result');
+}
+
+/* And the flashcards' decks, one file each: the index the shelf is drawn
+   from, a file per deck, lesson and song, and the list of what the voice may
+   say, which is what the Functions read instead of data/decks.json whole. A
+   deck added to the source and not written out is a deck the shelf never
+   shows, in none of the checks above, so this is what notices. */
+for (const path of staleDecks()) {
+  fail(path, 'is not what tools/decks.mjs would write from data/decks.json — run `node tools/decks.mjs` and commit the result');
 }
 
 /* -------------------------------------------------- taxonomy / photo sweeps */

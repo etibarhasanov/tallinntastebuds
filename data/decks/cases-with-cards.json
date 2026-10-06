@@ -1,0 +1,381 @@
+{
+ "id": "cases-with-cards",
+ "added": "2026-10-06",
+ "name": {
+  "en": "As, without, with — the cards",
+  "az": "Kimi, -sız, -la — kartlar",
+  "ru": "Кем, без, с — карточки"
+ },
+ "why": {
+  "en": "Coffee with and without, and who comes along",
+  "az": "Südlü və şəkərsiz qəhvə, və kimlə gəlirsən",
+  "ru": "Кофе с молоком и без сахара, и с кем вы"
+ },
+ "level": "case",
+ "cards": [
+  {
+   "id": "ta-tootab-kokana",
+   "front": "Ta töötab kokana",
+   "back": {
+    "en": "He works as a cook",
+    "az": "O, aşpaz işləyir",
+    "ru": "Он работает поваром"
+   },
+   "build": {
+    "forms": [
+     "kokk",
+     "koka",
+     "kokka"
+    ],
+    "on": 1,
+    "from": "koka",
+    "end": "na",
+    "makes": "kokana",
+    "case": {
+     "et": "olev",
+     "en": "as",
+     "az": "kim kimi?",
+     "ru": "кем? в качестве кого?"
+    }
+   }
+  },
+  {
+   "id": "lapsena",
+   "front": "Lapsena",
+   "back": {
+    "en": "As a child",
+    "az": "Uşaq ikən",
+    "ru": "Ребёнком"
+   },
+   "build": {
+    "forms": [
+     "laps",
+     "lapse",
+     "last"
+    ],
+    "on": 1,
+    "from": "lapse",
+    "end": "na",
+    "makes": "lapsena",
+    "case": {
+     "et": "olev",
+     "en": "as",
+     "az": "kim kimi?",
+     "ru": "кем? в качестве кого?"
+    }
+   }
+  },
+  {
+   "id": "opetajana",
+   "front": "Õpetajana",
+   "back": {
+    "en": "As a teacher",
+    "az": "Müəllim kimi",
+    "ru": "Учителем"
+   },
+   "build": {
+    "forms": [
+     "õpetaja",
+     "õpetaja",
+     "õpetajat"
+    ],
+    "on": 1,
+    "from": "õpetaja",
+    "end": "na",
+    "makes": "õpetajana",
+    "case": {
+     "et": "olev",
+     "en": "as",
+     "az": "kim kimi?",
+     "ru": "кем? в качестве кого?"
+    }
+   }
+  },
+  {
+   "id": "kohv-suhkruta",
+   "front": "Kohv suhkruta",
+   "back": {
+    "en": "Coffee without sugar",
+    "az": "Şəkərsiz qəhvə",
+    "ru": "Кофе без сахара"
+   },
+   "build": {
+    "forms": [
+     "suhkur",
+     "suhkru",
+     "suhkrut"
+    ],
+    "on": 1,
+    "from": "suhkru",
+    "end": "ta",
+    "makes": "suhkruta",
+    "case": {
+     "et": "ilmaütlev",
+     "en": "without",
+     "az": "-sız, -siz",
+     "ru": "без кого? без чего?"
+    }
+   }
+  },
+  {
+   "id": "piimata",
+   "front": "Piimata",
+   "back": {
+    "en": "Without milk",
+    "az": "Südsüz",
+    "ru": "Без молока"
+   },
+   "build": {
+    "forms": [
+     "piim",
+     "piima",
+     "piima"
+    ],
+    "on": 1,
+    "from": "piima",
+    "end": "ta",
+    "makes": "piimata",
+    "case": {
+     "et": "ilmaütlev",
+     "en": "without",
+     "az": "-sız, -siz",
+     "ru": "без кого? без чего?"
+    }
+   }
+  },
+  {
+   "id": "vihmavarjuta",
+   "front": "Vihmavarjuta",
+   "back": {
+    "en": "Without an umbrella",
+    "az": "Çətirsiz",
+    "ru": "Без зонта"
+   },
+   "build": {
+    "forms": [
+     "vihmavari",
+     "vihmavarju",
+     "vihmavarju"
+    ],
+    "on": 1,
+    "from": "vihmavarju",
+    "end": "ta",
+    "makes": "vihmavarjuta",
+    "case": {
+     "et": "ilmaütlev",
+     "en": "without",
+     "az": "-sız, -siz",
+     "ru": "без кого? без чего?"
+    }
+   }
+  },
+  {
+   "id": "ilma-sinuta",
+   "front": "Ilma sinuta",
+   "back": {
+    "en": "Without you",
+    "az": "Sənsiz",
+    "ru": "Без тебя"
+   },
+   "build": {
+    "forms": [
+     "sina",
+     "sinu",
+     "sind"
+    ],
+    "on": 1,
+    "from": "sinu",
+    "end": "ta",
+    "makes": "sinuta",
+    "case": {
+     "et": "ilmaütlev",
+     "en": "without",
+     "az": "-sız, -siz",
+     "ru": "без кого? без чего?"
+    }
+   }
+  },
+  {
+   "id": "kohv-piimaga",
+   "front": "Kohv piimaga",
+   "back": {
+    "en": "Coffee with milk",
+    "az": "Südlü qəhvə",
+    "ru": "Кофе с молоком"
+   },
+   "build": {
+    "forms": [
+     "piim",
+     "piima",
+     "piima"
+    ],
+    "on": 1,
+    "from": "piima",
+    "end": "ga",
+    "makes": "piimaga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "sobraga",
+   "front": "Sõbraga",
+   "back": {
+    "en": "With a friend",
+    "az": "Dostla",
+    "ru": "С другом"
+   },
+   "build": {
+    "forms": [
+     "sõber",
+     "sõbra",
+     "sõpra"
+    ],
+    "on": 1,
+    "from": "sõbra",
+    "end": "ga",
+    "makes": "sõbraga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "minuga",
+   "front": "Minuga",
+   "back": {
+    "en": "With me",
+    "az": "Mənimlə",
+    "ru": "Со мной"
+   },
+   "build": {
+    "forms": [
+     "mina",
+     "minu",
+     "mind"
+    ],
+    "on": 1,
+    "from": "minu",
+    "end": "ga",
+    "makes": "minuga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "kellega",
+   "front": "Kellega?",
+   "back": {
+    "en": "With whom?",
+    "az": "Kimlə?",
+    "ru": "С кем?"
+   },
+   "build": {
+    "forms": [
+     "kes",
+     "kelle",
+     "keda"
+    ],
+    "on": 1,
+    "from": "kelle",
+    "end": "ga",
+    "makes": "kellega",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "bussiga",
+   "front": "Bussiga",
+   "back": {
+    "en": "By bus",
+    "az": "Avtobusla",
+    "ru": "На автобусе"
+   },
+   "build": {
+    "forms": [
+     "buss",
+     "bussi",
+     "bussi"
+    ],
+    "on": 1,
+    "from": "bussi",
+    "end": "ga",
+    "makes": "bussiga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "rongiga",
+   "front": "Rongiga",
+   "back": {
+    "en": "By train",
+    "az": "Qatarla",
+    "ru": "На поезде"
+   },
+   "build": {
+    "forms": [
+     "rong",
+     "rongi",
+     "rongi"
+    ],
+    "on": 1,
+    "from": "rongi",
+    "end": "ga",
+    "makes": "rongiga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  },
+  {
+   "id": "noaga",
+   "front": "Noaga",
+   "back": {
+    "en": "With a knife",
+    "az": "Bıçaqla",
+    "ru": "Ножом"
+   },
+   "build": {
+    "forms": [
+     "nuga",
+     "noa",
+     "nuga"
+    ],
+    "on": 1,
+    "from": "noa",
+    "end": "ga",
+    "makes": "noaga",
+    "case": {
+     "et": "kaasaütlev",
+     "en": "with",
+     "az": "-la, -lə",
+     "ru": "с кем? чем?"
+    }
+   }
+  }
+ ]
+}

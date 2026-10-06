@@ -36,10 +36,17 @@ What sessions here kept rediscovering:
   answer, and the first ask leaves from `assets/flashcard-first.js` in the
   head before the page's own scripts arrive, so a change to what `boot()`
   asks is a change there too.
+- The Functions read what `node tools/decks.mjs` writes out of
+  `data/decks.json` into `data/decks/` — `index.json` for the shelf, one file
+  per deck, lesson and song, and `spoken.json` for the voice — through
+  `functions/api/_decks.js`, and the source only for a gathered deck that
+  spans more than eight decks. Edit the source, run the tool, commit the
+  folder; the validator fails a file there that is stale.
 - `/api/say` speaks only what is in `data/decks.json`, exactly — a card's
   front, a card's sentence, a lesson's sentences and forms, a song's lines —
-  and `sayable()` in that route is the list. A new kind of thing to hear is a
-  line there, or the speaker answers `404 not-a-card`.
+  and `spoken()` in `tools/decks.mjs` is the list, written to
+  `data/decks/spoken.json`. A new kind of thing to hear is a line there and
+  a run of the tool, or the speaker answers `404 not-a-card`.
 - `assets/logo/og-flashcard.png` is drawn from `assets/flashcard.css` and the
   colour tokens: `node tools/ogcard.mjs` after either moves, and nothing in
   CI sees it stale.

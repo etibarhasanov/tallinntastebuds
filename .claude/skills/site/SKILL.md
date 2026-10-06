@@ -371,8 +371,9 @@ no step 1 until the owner has answered it.
    leaves a picture of last month's site on every link anybody sends. It needs
    a Chromium, it takes a second, and nothing in CI can see that it went
    stale. **When somebody sends the link** under **Flashcards** in `README.md`.
-5. `node tools/languages.mjs`, if `data/ui.json` moved, then
-   `node tools/validate.mjs`.
+5. `node tools/languages.mjs`, if `data/ui.json` moved, and
+   `node tools/decks.mjs`, if `data/decks.json` did — the Functions read the
+   files it writes, never the source — then `node tools/validate.mjs`.
 6. **Drive it in a browser.** There is no test suite and no Playwright
    harness in the repo; reading the diff is not the same as watching it.
    `python3 -m http.server 8000` over the repo root is enough for the map,

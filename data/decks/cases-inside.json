@@ -1,0 +1,263 @@
+{
+ "id": "cases-inside",
+ "added": "2026-10-06",
+ "deck": "cases-inside-cards",
+ "heading": "cases",
+ "name": {
+  "en": "Into, in, out of",
+  "az": "İçinə, içində, içindən",
+  "ru": "Куда, где, откуда: внутри"
+ },
+ "why": {
+  "en": "Sisseütlev, seesütlev, seestütlev — cases four to six, the inside of a thing",
+  "az": "Sisseütlev, seesütlev, seestütlev — dördüncüdən altıncıya qədər hallar, bir şeyin içi",
+  "ru": "Sisseütlev, seesütlev, seestütlev — падежи с четвёртого по шестой, внутри чего-то"
+ },
+ "body": [
+  {
+   "say": {
+    "en": "English has one question here and Estonian has three. English asks *where?* both for where you are and for where you are going; Estonian asks *kus?* — where? — *kuhu?* — where to? — and *kust?* — where from? — the old English *where*, *whither* and *whence*. Each answer is an ending, and each ending goes on the omastav, the second form on the card: *köök*, kitchen, has the omastav *köögi*, and so *köögisse*, *köögis*, *köögist*.",
+    "az": "Bu üç hal sizə ən tanış olanlardır, çünki onlar bizim yönlük, yerlik və çıxışlıq hallarımızdır. Suallar da eynidir: *kuhu?* — hara?, *kus?* — harada?, *kust?* — haradan?. Mətbəxə, mətbəxdə, mətbəxdən — *köögisse, köögis, köögist*. Şəkilçi omastav formasına, kartdakı ikinci formaya qoşulur: *köök* → *köögi* → *köögisse*. Bircə fərq var, onu aşağıda görəcəksiniz: eston dilində bu üçü bir şeyin içi üçündür, üstü üçün ayrıca üç hal var.",
+    "ru": "Русский здесь говорит предлогом и падежом сразу: в кухню, в кухне, из кухни. Эстонский — одним окончанием, и вопросов тоже три: *kuhu?* — куда?, *kus?* — где?, *kust?* — откуда?. Окончание ставится на omastav, вторую форму на карточке: *köök* — кухня, *köögi* — и дальше *köögisse*, *köögis*, *köögist*. Как и в русском, важно, внутрь чего-то или на поверхность, но выбирает это смысл, а не привычка слова — об этом ниже."
+   }
+  },
+  {
+   "head": {
+    "en": "Sisseütlev — kuhu? — into",
+    "az": "Sisseütlev — kuhu? — hara? (yönlük hal)",
+    "ru": "Sisseütlev — kuhu? — куда? (в + винительный)"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kuhu? millesse?",
+       "köögisse · kööki",
+       "köökidesse"
+      ],
+      "means": {
+       "en": "kitchen",
+       "az": "mətbəx",
+       "ru": "кухня"
+      }
+     },
+     {
+      "et": [
+       "kuhu?",
+       "linnasse · linna",
+       "linnadesse"
+      ],
+      "means": {
+       "en": "town",
+       "az": "şəhər",
+       "ru": "город"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Lähme kööki!",
+     "en": "Let's go into the kitchen!",
+     "az": "Gəl mətbəxə gedək!",
+     "ru": "Пойдём на кухню!"
+    },
+    {
+     "et": "Ma sõidan homme linna.",
+     "en": "I'm going into town tomorrow.",
+     "az": "Sabah şəhərə gedirəm.",
+     "ru": "Завтра я еду в город."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Into: *Ma lähen kööki* — I'm going into the kitchen. *Tule linna!* — come into town. Many everyday words have a short form beside the long one — *kööki* and *köögisse*, *linna* and *linnasse*, *poodi* for the shop — and the short one is what you will hear. Both are right.",
+    "az": "Yönlük hal, -a/-ə: *Ma lähen kööki* — mətbəxə gedirəm. *Tule linna!* — şəhərə gəl! Çox işlənən sözlərin uzun formasının yanında qısası da var — *kööki* və *köögisse*, *linna* və *linnasse*, mağazaya *poodi* — və danışıqda qısasını eşidəcəksiniz. İkisi də düzdür.",
+    "ru": "Куда, внутрь: *Ma lähen kööki* — я иду на кухню. *Tule linna!* — приезжай в город. У частых слов рядом с длинной формой есть краткая — *kööki* и *köögisse*, *linna* и *linnasse*, *poodi* — в магазин — и в речи слышна чаще краткая. Правильны обе."
+   }
+  },
+  {
+   "head": {
+    "en": "Seesütlev — kus? — in",
+    "az": "Seesütlev — kus? — harada? (yerlik hal)",
+    "ru": "Seesütlev — kus? — где? (в + предложный)"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kus? milles?",
+       "köögis",
+       "köökides"
+      ],
+      "means": {
+       "en": "kitchen",
+       "az": "mətbəx",
+       "ru": "кухня"
+      }
+     },
+     {
+      "et": [
+       "kus?",
+       "linnas",
+       "linnades"
+      ],
+      "means": {
+       "en": "town",
+       "az": "şəhər",
+       "ru": "город"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Kohv on köögis.",
+     "en": "The coffee is in the kitchen.",
+     "az": "Qəhvə mətbəxdədir.",
+     "ru": "Кофе на кухне."
+    },
+    {
+     "et": "Linnas on palju kohvikuid.",
+     "en": "There are a lot of cafés in town.",
+     "az": "Şəhərdə çoxlu kafe var.",
+     "ru": "В городе много кафе."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "In: *Ema on köögis* — Mum is in the kitchen. *Ma elan Tallinnas* — I live in Tallinn. It is also how Estonian says which language a thing is in: *eesti keeles* — in Estonian.",
+    "az": "Yerlik hal, -da/-də: *Ema on köögis* — anam mətbəxdədir. *Ma elan Tallinnas* — Tallinndə yaşayıram. Diqqət: eston dilində bu, yalnız içində deməkdir. Biz stolda da deyirik, mətbəxdə də — eston dili isə stol üçün başqa hal işlədir, *laual*. O, növbəti dərsdədir.",
+    "ru": "Где, внутри: *Ema on köögis* — мама на кухне. *Ma elan Tallinnas* — я живу в Таллинне. Вот где русская привычка подводит: по-русски «на кухне», а по-эстонски кухня — комната, внутри которой находишься, поэтому *köögis*. Эстонский решает по смыслу: внутри — эти три падежа, на поверхности — следующие три."
+   }
+  },
+  {
+   "head": {
+    "en": "Seestütlev — kust? — out of",
+    "az": "Seestütlev — kust? — haradan? (çıxışlıq hal)",
+    "ru": "Seestütlev — kust? — откуда? (из + родительный)"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kust? millest?",
+       "köögist",
+       "köökidest"
+      ],
+      "means": {
+       "en": "kitchen",
+       "az": "mətbəx",
+       "ru": "кухня"
+      }
+     },
+     {
+      "et": [
+       "kust?",
+       "linnast",
+       "linnadest"
+      ],
+      "means": {
+       "en": "town",
+       "az": "şəhər",
+       "ru": "город"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Too piim köögist.",
+     "en": "Bring the milk from the kitchen.",
+     "az": "Südü mətbəxdən gətir.",
+     "ru": "Принеси молоко из кухни."
+    },
+    {
+     "et": "Ma tulen linnast kell kuus.",
+     "en": "I'm coming back from town at six.",
+     "az": "Saat altıda şəhərdən qayıdıram.",
+     "ru": "Я вернусь из города в шесть."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Out of, from: *Ta tuleb köögist* — she's coming out of the kitchen. *Kust sa pärit oled?* — where are you from? — *Ma olen Kanadast*, from Canada. A country ending in *-maa* takes the next lesson's ending instead: *Inglismaalt*, from England. And two uses English does with other words: what a thing is made of, *puust* — out of wood; and what you are talking about, *Me räägime filmist* — we're talking about the film.",
+    "az": "Çıxışlıq hal, -dan/-dən: *Ta tuleb köögist* — o, mətbəxdən çıxır. *Kust sa pärit oled?* — haralısan? — *Ma olen Aserbaidžaanist* — Azərbaycandanam. Bizdəki kimi, nədən düzəldiyini də deyir: *puust* — taxtadan. Bir yerdə isə fərqlidir: nədən danışırıq. Biz film haqqında deyirik, eston dili *filmist*: *Me räägime filmist* — film haqqında danışırıq.",
+    "ru": "Откуда, изнутри: *Ta tuleb köögist* — она выходит из кухни. *Kust sa pärit oled?* — откуда ты? — *Ma olen Ukrainast* — я из Украины. Осторожно: страны на -maa берут окончания поверхности из следующего урока — *Venemaalt*, из России. И ещё два случая, где русский берёт другой предлог: из чего сделано — *puust*, из дерева, это как в русском; а о чём говорят — *Me räägime filmist*, мы говорим о фильме: русский говорит «о», эстонский — «из»."
+   }
+  },
+  {
+   "say": {
+    "en": "The deck under this lesson is the kitchen, the town and the shop: into, in and out of. Next come the same three questions for the top of a thing, and for people.",
+    "az": "Bu dərsin dəsti mətbəx, şəhər və mağazadır: içinə, içində, içindən. Sonra eyni üç sual gəlir, amma bir şeyin üstü və insanlar üçün.",
+    "ru": "Колода под этим уроком — кухня, город и магазин: куда, где, откуда. Дальше те же три вопроса — для поверхности и для людей."
+   }
+  }
+ ]
+}

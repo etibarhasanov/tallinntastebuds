@@ -1,0 +1,590 @@
+{
+ "id": "family",
+ "added": "2026-09-19",
+ "name": {
+  "en": "Family and relatives",
+  "az": "Ailə və qohumlar",
+  "ru": "Семья и родственники"
+ },
+ "why": {
+  "en": "Who is at the table on a Sunday, from the in-laws down to the grandchild",
+  "az": "Bazar günü süfrədə kim oturur — qayınatadan nəvəyə qədər",
+  "ru": "Кто сидит за столом в воскресенье — от свёкра до внука"
+ },
+ "cards": [
+  {
+   "id": "abikaasa",
+   "front": "Abikaasa",
+   "back": {
+    "en": "Spouse",
+    "az": "Həyat yoldaşı",
+    "ru": "Супруг, супруга"
+   },
+   "forms": [
+    "abikaasa",
+    "abikaasat"
+   ],
+   "sentence": {
+    "et": "Minu abikaasa on eestlane.",
+    "en": "My spouse is Estonian.",
+    "az": "Həyat yoldaşım estondur.",
+    "ru": "Мой супруг эстонец."
+   }
+  },
+  {
+   "id": "abielu",
+   "front": "Abielu",
+   "back": {
+    "en": "Marriage",
+    "az": "Nikah",
+    "ru": "Брак"
+   },
+   "forms": [
+    "abielu",
+    "abielu"
+   ],
+   "sentence": {
+    "et": "See on tema teine abielu.",
+    "en": "This is their second marriage.",
+    "az": "Bu onun ikinci nikahıdır.",
+    "ru": "Это его второй брак."
+   }
+  },
+  {
+   "id": "abielluma",
+   "front": "Abielluma",
+   "back": {
+    "en": "To get married",
+    "az": "evlənmək",
+    "ru": "жениться, выходить замуж"
+   },
+   "forms": [
+    "abielluda",
+    "abiellun"
+   ],
+   "sentence": {
+    "et": "Nad abielluvad suvel.",
+    "en": "They are getting married in the summer.",
+    "az": "Onlar yayda evlənirlər.",
+    "ru": "Они женятся летом."
+   }
+  },
+  {
+   "id": "vallaline",
+   "front": "Vallaline",
+   "back": {
+    "en": "Single",
+    "az": "Subay",
+    "ru": "Холостой, незамужняя"
+   },
+   "forms": [
+    "vallalise",
+    "vallalist"
+   ],
+   "sentence": {
+    "et": "Ma olen vallaline.",
+    "en": "I am single.",
+    "az": "Mən subayam.",
+    "ru": "Я холост."
+   }
+  },
+  {
+   "id": "lahutatud",
+   "front": "Lahutatud",
+   "back": {
+    "en": "Divorced",
+    "az": "Boşanmış",
+    "ru": "Разведён"
+   },
+   "sentence": {
+    "et": "Ta on lahutatud.",
+    "en": "They are divorced.",
+    "az": "O boşanıb.",
+    "ru": "Он разведён."
+   }
+  },
+  {
+   "id": "vanemad",
+   "front": "Vanemad",
+   "back": {
+    "en": "Parents",
+    "az": "Valideynlər",
+    "ru": "Родители"
+   },
+   "sentence": {
+    "et": "Mu vanemad elavad Tartus.",
+    "en": "My parents live in Tartu.",
+    "az": "Valideynlərim Tartuda yaşayır.",
+    "ru": "Мои родители живут в Тарту."
+   }
+  },
+  {
+   "id": "poeg",
+   "front": "Poeg",
+   "back": {
+    "en": "Son",
+    "az": "Oğul",
+    "ru": "Сын"
+   },
+   "forms": [
+    "poja",
+    "poega"
+   ],
+   "sentence": {
+    "et": "Meil on üks poeg.",
+    "en": "We have one son.",
+    "az": "Bir oğlumuz var.",
+    "ru": "У нас один сын."
+   }
+  },
+  {
+   "id": "tutar",
+   "front": "Tütar",
+   "back": {
+    "en": "Daughter",
+    "az": "Qız övlad",
+    "ru": "Дочь"
+   },
+   "forms": [
+    "tütre",
+    "tütart"
+   ],
+   "sentence": {
+    "et": "Tütar käib koolis.",
+    "en": "The daughter goes to school.",
+    "az": "Qızı məktəbə gedir.",
+    "ru": "Дочь ходит в школу."
+   }
+  },
+  {
+   "id": "lapselaps",
+   "front": "Lapselaps",
+   "back": {
+    "en": "Grandchild",
+    "az": "Nəvə",
+    "ru": "Внук, внучка"
+   },
+   "forms": [
+    "lapselapse",
+    "lapselast"
+   ],
+   "sentence": {
+    "et": "Vanaemal on neli lapselast.",
+    "en": "Grandmother has four grandchildren.",
+    "az": "Nənənin dörd nəvəsi var.",
+    "ru": "У бабушки четверо внуков."
+   }
+  },
+  {
+   "id": "onu",
+   "front": "Onu",
+   "back": {
+    "en": "Uncle",
+    "az": "Dayı, əmi",
+    "ru": "Дядя"
+   },
+   "forms": [
+    "onu",
+    "onu"
+   ],
+   "sentence": {
+    "et": "Onu tuli külla.",
+    "en": "Uncle came to visit.",
+    "az": "Dayı qonaq gəldi.",
+    "ru": "Дядя пришёл в гости."
+   }
+  },
+  {
+   "id": "tadi",
+   "front": "Tädi",
+   "back": {
+    "en": "Aunt",
+    "az": "Xala, bibi",
+    "ru": "Тётя"
+   },
+   "forms": [
+    "tädi",
+    "tädi"
+   ],
+   "sentence": {
+    "et": "Tädi teeb kooki.",
+    "en": "Aunt is making a cake.",
+    "az": "Xala tort bişirir.",
+    "ru": "Тётя печёт пирог."
+   }
+  },
+  {
+   "id": "ai",
+   "front": "Äi",
+   "back": {
+    "en": "Father-in-law",
+    "az": "Qayınata",
+    "ru": "Свёкор, тесть"
+   },
+   "forms": [
+    "äia",
+    "äia"
+   ],
+   "sentence": {
+    "et": "Äi elab maal.",
+    "en": "My father-in-law lives in the countryside.",
+    "az": "Qayınata kənddə yaşayır.",
+    "ru": "Свёкор живёт в деревне."
+   }
+  },
+  {
+   "id": "amm",
+   "front": "Ämm",
+   "back": {
+    "en": "Mother-in-law",
+    "az": "Qayınana",
+    "ru": "Свекровь, тёща"
+   },
+   "forms": [
+    "ämma",
+    "ämma"
+   ],
+   "sentence": {
+    "et": "Ämm helistab igal pühapäeval.",
+    "en": "My mother-in-law rings every Sunday.",
+    "az": "Qayınana hər bazar zəng edir.",
+    "ru": "Свекровь звонит каждое воскресенье."
+   }
+  },
+  {
+   "id": "sugulane",
+   "front": "Sugulane",
+   "back": {
+    "en": "Relative",
+    "az": "Qohum",
+    "ru": "Родственник"
+   },
+   "forms": [
+    "sugulase",
+    "sugulast"
+   ],
+   "sentence": {
+    "et": "Ta on minu kauge sugulane.",
+    "en": "They are a distant relative of mine.",
+    "az": "O mənim uzaq qohumumdur.",
+    "ru": "Он мой дальний родственник."
+   }
+  },
+  {
+   "id": "vanus",
+   "front": "Vanus",
+   "back": {
+    "en": "Age",
+    "az": "Yaş",
+    "ru": "Возраст"
+   },
+   "forms": [
+    "vanuse",
+    "vanust"
+   ],
+   "sentence": {
+    "et": "Kirjuta siia oma vanus.",
+    "en": "Write your age here.",
+    "az": "Yaşını bura yaz.",
+    "ru": "Напиши здесь свой возраст."
+   }
+  },
+  {
+   "id": "noor",
+   "front": "Noor",
+   "back": {
+    "en": "Young",
+    "az": "Gənc",
+    "ru": "Молодой"
+   },
+   "forms": [
+    "noore",
+    "noort"
+   ],
+   "sentence": {
+    "et": "Ta on veel noor.",
+    "en": "They are still young.",
+    "az": "O hələ gəncdir.",
+    "ru": "Он ещё молодой."
+   }
+  },
+  {
+   "id": "sunnipaev",
+   "front": "Sünnipäev",
+   "back": {
+    "en": "Birthday",
+    "az": "Ad günü",
+    "ru": "День рождения"
+   },
+   "forms": [
+    "sünnipäeva",
+    "sünnipäeva"
+   ],
+   "sentence": {
+    "et": "Homme on mu sünnipäev.",
+    "en": "Tomorrow is my birthday.",
+    "az": "Sabah mənim ad günümdür.",
+    "ru": "Завтра мой день рождения."
+   }
+  },
+  {
+   "id": "kingitus",
+   "front": "Kingitus",
+   "back": {
+    "en": "Gift, present",
+    "az": "Hədiyyə",
+    "ru": "Подарок"
+   },
+   "forms": [
+    "kingituse",
+    "kingitust"
+   ],
+   "sentence": {
+    "et": "See kingitus on sulle.",
+    "en": "This gift is for you.",
+    "az": "Bu hədiyyə sənin üçündür.",
+    "ru": "Этот подарок для тебя."
+   }
+  },
+  {
+   "id": "kinkima",
+   "front": "Kinkima",
+   "back": {
+    "en": "To give a present",
+    "az": "hədiyyə etmək",
+    "ru": "дарить"
+   },
+   "forms": [
+    "kinkida",
+    "kingin"
+   ],
+   "sentence": {
+    "et": "Ma kingin talle raamatu.",
+    "en": "I am giving them a book.",
+    "az": "Ona kitab hədiyyə edirəm.",
+    "ru": "Я дарю ему книгу."
+   }
+  },
+  {
+   "id": "pidu",
+   "front": "Pidu",
+   "back": {
+    "en": "Party",
+    "az": "Şənlik, məclis",
+    "ru": "Праздник, вечеринка"
+   },
+   "forms": [
+    "peo",
+    "pidu"
+   ],
+   "sentence": {
+    "et": "Pidu algab kell seitse.",
+    "en": "The party starts at seven.",
+    "az": "Şənlik saat yeddidə başlayır.",
+    "ru": "Вечеринка начинается в семь."
+   }
+  },
+  {
+   "id": "lasteaed",
+   "front": "Lasteaed",
+   "back": {
+    "en": "Kindergarten",
+    "az": "Uşaq bağçası",
+    "ru": "Детский сад"
+   },
+   "forms": [
+    "lasteaia",
+    "lasteaeda"
+   ],
+   "sentence": {
+    "et": "Laps käib lasteaias.",
+    "en": "The child goes to kindergarten.",
+    "az": "Uşaq bağçaya gedir.",
+    "ru": "Ребёнок ходит в детский сад."
+   }
+  },
+  {
+   "id": "surema",
+   "front": "Surema",
+   "back": {
+    "en": "To die",
+    "az": "ölmək",
+    "ru": "умирать"
+   },
+   "forms": [
+    "surra",
+    "suren"
+   ],
+   "sentence": {
+    "et": "Vanaisa suri eelmisel aastal.",
+    "en": "Grandfather died last year.",
+    "az": "Baba keçən il vəfat etdi.",
+    "ru": "Дедушка умер в прошлом году."
+   }
+  },
+  {
+   "id": "surnud",
+   "front": "Surnud",
+   "back": {
+    "en": "Dead",
+    "az": "ölmüş",
+    "ru": "умерший"
+   },
+   "sentence": {
+    "et": "Tema vanaema on surnud.",
+    "en": "Their grandmother has died.",
+    "az": "Onun nənəsi rəhmətə gedib.",
+    "ru": "Его бабушка умерла."
+   }
+  },
+  {
+   "id": "minia",
+   "front": "Minia",
+   "back": {
+    "en": "Daughter-in-law",
+    "az": "Gəlin",
+    "ru": "Невестка"
+   },
+   "forms": [
+    "minia",
+    "miniat"
+   ]
+  },
+  {
+   "id": "vaimees",
+   "front": "Väimees",
+   "back": {
+    "en": "Son-in-law",
+    "az": "Kürəkən",
+    "ru": "Зять"
+   },
+   "forms": [
+    "väimehe",
+    "väimeest"
+   ]
+  },
+  {
+   "id": "vanavanemad",
+   "front": "Vanavanemad",
+   "back": {
+    "en": "Grandparents",
+    "az": "Baba-nənə",
+    "ru": "Дедушка и бабушка"
+   }
+  },
+  {
+   "id": "vanaisa",
+   "front": "Vanaisa",
+   "back": {
+    "en": "Grandfather",
+    "az": "Baba",
+    "ru": "Дедушка"
+   },
+   "forms": [
+    "vanaisa",
+    "vanaisa"
+   ]
+  },
+  {
+   "id": "poolvend",
+   "front": "Poolvend",
+   "back": {
+    "en": "Half-brother",
+    "az": "Ögey qardaş",
+    "ru": "Сводный брат"
+   },
+   "forms": [
+    "poolvenna",
+    "poolvenda"
+   ]
+  },
+  {
+   "id": "lesk",
+   "front": "Lesk",
+   "back": {
+    "en": "Widow",
+    "az": "Dul",
+    "ru": "Вдова"
+   },
+   "forms": [
+    "lese",
+    "leske"
+   ]
+  },
+  {
+   "id": "kaksikud",
+   "front": "Kaksikud",
+   "back": {
+    "en": "Twins",
+    "az": "Əkizlər",
+    "ru": "Близнецы"
+   }
+  },
+  {
+   "id": "tita",
+   "front": "Tita",
+   "back": {
+    "en": "Baby",
+    "az": "Körpə",
+    "ru": "Малыш"
+   },
+   "forms": [
+    "tita",
+    "titat"
+   ]
+  },
+  {
+   "id": "perekonnaseis",
+   "front": "Perekonnaseis",
+   "back": {
+    "en": "Marital status",
+    "az": "Ailə vəziyyəti",
+    "ru": "Семейное положение"
+   },
+   "forms": [
+    "perekonnaseisu",
+    "perekonnaseisu"
+   ]
+  },
+  {
+   "id": "eesnimi",
+   "front": "Eesnimi",
+   "back": {
+    "en": "First name",
+    "az": "Ad",
+    "ru": "Имя"
+   },
+   "forms": [
+    "eesnime",
+    "eesnime"
+   ]
+  },
+  {
+   "id": "sugu",
+   "front": "Sugu",
+   "back": {
+    "en": "Gender",
+    "az": "Cins",
+    "ru": "Пол"
+   },
+   "forms": [
+    "soo",
+    "sugu"
+   ]
+  },
+  {
+   "id": "elukoht",
+   "front": "Elukoht",
+   "back": {
+    "en": "Place of residence",
+    "az": "Yaşayış yeri",
+    "ru": "Местожительство"
+   },
+   "forms": [
+    "elukoha",
+    "elukohta"
+   ]
+  }
+ ],
+ "level": "more"
+}

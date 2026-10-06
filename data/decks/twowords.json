@@ -1,0 +1,2392 @@
+{
+ "id": "twowords",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Verbs of two words",
+  "az": "İki sözlü fellər",
+  "ru": "Глаголы из двух слов"
+ },
+ "why": {
+  "en": "Ma annan alla — the little word goes after the verb, and it changes what the verb means",
+  "az": "Ma annan alla — kiçik söz feldən sonra gəlir və felin mənasını dəyişir",
+  "ru": "Ma annan alla — маленькое слово идёт после глагола и меняет его смысл"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "alla-andma",
+   "front": "Alla andma",
+   "back": {
+    "en": "To give up, surrender",
+    "az": "təslim olmaq",
+    "ru": "сдаваться"
+   },
+   "forms": [
+    "alla anda",
+    "annan alla"
+   ],
+   "sentence": {
+    "et": "Ära anna alla!",
+    "en": "Don't give up!",
+    "az": "Təslim olma!",
+    "ru": "Не сдавайся!"
+   }
+  },
+  {
+   "id": "alla-kirjutama",
+   "front": "Alla kirjutama",
+   "back": {
+    "en": "To sign",
+    "az": "imzalamaq",
+    "ru": "подписывать"
+   },
+   "forms": [
+    "alla kirjutada",
+    "kirjutan alla"
+   ],
+   "sentence": {
+    "et": "Palun kirjutage siia alla.",
+    "en": "Please sign here.",
+    "az": "Zəhmət olmasa, burada imza atın.",
+    "ru": "Пожалуйста, подпишите здесь."
+   }
+  },
+  {
+   "id": "alla-laadima",
+   "front": "Alla laadima",
+   "back": {
+    "en": "To download",
+    "az": "endirmək, yükləmək",
+    "ru": "скачивать"
+   },
+   "forms": [
+    "alla laadida",
+    "laadin alla"
+   ],
+   "sentence": {
+    "et": "Laadi äpp telefoni alla.",
+    "en": "Download the app to your phone.",
+    "az": "Tətbiqi telefona endir.",
+    "ru": "Скачай приложение на телефон."
+   }
+  },
+  {
+   "id": "alla-tombama",
+   "front": "Alla tõmbama",
+   "back": {
+    "en": "To download — said casually",
+    "az": "endirmək — danışıqda",
+    "ru": "скачивать — разговорное"
+   },
+   "forms": [
+    "alla tõmmata",
+    "tõmban alla"
+   ],
+   "sentence": {
+    "et": "Ma tõmbasin filmi alla.",
+    "en": "I downloaded the film.",
+    "az": "Filmi endirdim.",
+    "ru": "Я скачал фильм."
+   }
+  },
+  {
+   "id": "ette-kandma",
+   "front": "Ette kandma",
+   "back": {
+    "en": "To present, perform, report",
+    "az": "təqdim etmək, ifa etmək",
+    "ru": "докладывать, исполнять"
+   },
+   "forms": [
+    "ette kanda",
+    "kannan ette"
+   ],
+   "sentence": {
+    "et": "Ta kandis koosolekul aruande ette.",
+    "en": "She presented the report at the meeting.",
+    "az": "O, iclasda hesabatı təqdim etdi.",
+    "ru": "Она представила отчёт на собрании."
+   }
+  },
+  {
+   "id": "ette-kujutama",
+   "front": "Ette kujutama",
+   "back": {
+    "en": "To imagine",
+    "az": "təsəvvür etmək",
+    "ru": "представлять себе"
+   },
+   "forms": [
+    "ette kujutada",
+    "kujutan ette"
+   ],
+   "sentence": {
+    "et": "Ma ei kujuta seda ette.",
+    "en": "I can't imagine it.",
+    "az": "Bunu təsəvvür edə bilmirəm.",
+    "ru": "Я не могу себе этого представить."
+   }
+  },
+  {
+   "id": "ette-nagema",
+   "front": "Ette nägema",
+   "back": {
+    "en": "To foresee",
+    "az": "qabaqcadan görmək",
+    "ru": "предвидеть"
+   },
+   "forms": [
+    "ette näha",
+    "näen ette"
+   ],
+   "sentence": {
+    "et": "Seda ei osanud keegi ette näha.",
+    "en": "Nobody could have foreseen it.",
+    "az": "Bunu heç kim qabaqcadan görə bilməzdi.",
+    "ru": "Этого никто не мог предвидеть."
+   }
+  },
+  {
+   "id": "ette-tulema",
+   "front": "Ette tulema",
+   "back": {
+    "en": "To happen, come up",
+    "az": "baş vermək, rast gəlmək",
+    "ru": "случаться, встречаться"
+   },
+   "forms": [
+    "ette tulla",
+    "tuleb ette"
+   ],
+   "sentence": {
+    "et": "Ikka tuleb ette.",
+    "en": "It happens.",
+    "az": "Olur belə şeylər.",
+    "ru": "Всякое бывает."
+   }
+  },
+  {
+   "id": "ette-vaatama",
+   "front": "Ette vaatama",
+   "back": {
+    "en": "To look out, be careful",
+    "az": "ehtiyatlı olmaq",
+    "ru": "быть осторожным"
+   },
+   "forms": [
+    "ette vaadata",
+    "vaatan ette"
+   ],
+   "sentence": {
+    "et": "Vaata ette, trepp on libe!",
+    "en": "Watch out, the stairs are slippery!",
+    "az": "Ehtiyatlı ol, pilləkən sürüşkəndir!",
+    "ru": "Осторожно, лестница скользкая!"
+   }
+  },
+  {
+   "id": "ette-votma",
+   "front": "Ette võtma",
+   "back": {
+    "en": "To take on, undertake",
+    "az": "girişmək, üzərinə götürmək",
+    "ru": "предпринимать, браться"
+   },
+   "forms": [
+    "ette võtta",
+    "võtan ette"
+   ],
+   "sentence": {
+    "et": "Mida sa täna ette võtad?",
+    "en": "What are you up to today?",
+    "az": "Bu gün nə etmək fikrindəsən?",
+    "ru": "Чем займёшься сегодня?"
+   }
+  },
+  {
+   "id": "jalga-laskma",
+   "front": "Jalga laskma",
+   "back": {
+    "en": "To run off, bolt",
+    "az": "aradan çıxmaq, qaçmaq",
+    "ru": "удрать, смыться"
+   },
+   "forms": [
+    "jalga lasta",
+    "lasen jalga"
+   ],
+   "sentence": {
+    "et": "Varas laskis jalga.",
+    "en": "The thief ran off.",
+    "az": "Oğru qaçıb aradan çıxdı.",
+    "ru": "Вор удрал."
+   }
+  },
+  {
+   "id": "jalga-panema",
+   "front": "Jalga panema",
+   "back": {
+    "en": "To put on — shoes, trousers",
+    "az": "geyinmək — ayaqqabı, şalvar",
+    "ru": "надевать — обувь, брюки"
+   },
+   "forms": [
+    "jalga panna",
+    "panen jalga"
+   ],
+   "sentence": {
+    "et": "Pane soojad saapad jalga.",
+    "en": "Put on warm boots.",
+    "az": "İsti çəkmələrini geyin.",
+    "ru": "Надень тёплые сапоги."
+   }
+  },
+  {
+   "id": "jarele-andma",
+   "front": "Järele andma",
+   "back": {
+    "en": "To give in",
+    "az": "güzəştə getmək",
+    "ru": "уступать"
+   },
+   "forms": [
+    "järele anda",
+    "annan järele"
+   ],
+   "sentence": {
+    "et": "Lõpuks ta andis järele.",
+    "en": "In the end he gave in.",
+    "az": "Axırda o, güzəştə getdi.",
+    "ru": "В конце концов он уступил."
+   }
+  },
+  {
+   "id": "jarele-joudma",
+   "front": "Järele jõudma",
+   "back": {
+    "en": "To catch up",
+    "az": "çatmaq, yetişmək",
+    "ru": "догонять"
+   },
+   "forms": [
+    "järele jõuda",
+    "jõuan järele"
+   ],
+   "sentence": {
+    "et": "Mine ees, ma jõuan järele.",
+    "en": "Go ahead, I'll catch up.",
+    "az": "Sən get, mən çatıram.",
+    "ru": "Иди вперёд, я догоню."
+   }
+  },
+  {
+   "id": "jarele-tulema",
+   "front": "Järele tulema",
+   "back": {
+    "en": "To come for, pick up",
+    "az": "dalınca gəlmək",
+    "ru": "заходить за, забирать"
+   },
+   "forms": [
+    "järele tulla",
+    "tulen järele"
+   ],
+   "sentence": {
+    "et": "Ma tulen sulle kell viis järele.",
+    "en": "I'll pick you up at five.",
+    "az": "Saat beşdə dalınca gələcəyəm.",
+    "ru": "Я заеду за тобой в пять."
+   }
+  },
+  {
+   "id": "jarele-vaatama",
+   "front": "Järele vaatama",
+   "back": {
+    "en": "To look up, check",
+    "az": "yoxlamaq, baxmaq",
+    "ru": "проверять, посмотреть"
+   },
+   "forms": [
+    "järele vaadata",
+    "vaatan järele"
+   ],
+   "sentence": {
+    "et": "Ma vaatan sõnastikust järele.",
+    "en": "I'll look it up in the dictionary.",
+    "az": "Lüğətdə baxaram.",
+    "ru": "Я посмотрю в словаре."
+   }
+  },
+  {
+   "id": "kaasa-elama",
+   "front": "Kaasa elama",
+   "back": {
+    "en": "To root for, feel with",
+    "az": "azarkeş olmaq, ürəkdən izləmək",
+    "ru": "болеть за, сопереживать"
+   },
+   "forms": [
+    "kaasa elada",
+    "elan kaasa"
+   ],
+   "sentence": {
+    "et": "Me elame Eesti korvpalluritele kaasa.",
+    "en": "We are rooting for the Estonian basketball team.",
+    "az": "Biz Estoniya basketbolçularına azarkeşlik edirik.",
+    "ru": "Мы болеем за эстонских баскетболистов."
+   }
+  },
+  {
+   "id": "kaasa-tooma",
+   "front": "Kaasa tooma",
+   "back": {
+    "en": "To bring along; to bring about",
+    "az": "özü ilə gətirmək; səbəb olmaq",
+    "ru": "приносить с собой; влечь за собой"
+   },
+   "forms": [
+    "kaasa tuua",
+    "toon kaasa"
+   ],
+   "sentence": {
+    "et": "Too vihmavari kaasa.",
+    "en": "Bring an umbrella.",
+    "az": "Çətirini özünlə gətir.",
+    "ru": "Возьми с собой зонтик."
+   }
+  },
+  {
+   "id": "kaasa-tundma",
+   "front": "Kaasa tundma",
+   "back": {
+    "en": "To sympathise",
+    "az": "həmdərd olmaq",
+    "ru": "сочувствовать"
+   },
+   "forms": [
+    "kaasa tunda",
+    "tunnen kaasa"
+   ],
+   "sentence": {
+    "et": "Ma tunnen sulle kaasa.",
+    "en": "I'm sorry for you.",
+    "az": "Sənə həmdərdəm.",
+    "ru": "Я тебе сочувствую."
+   }
+  },
+  {
+   "id": "kaasa-votma",
+   "front": "Kaasa võtma",
+   "back": {
+    "en": "To take along",
+    "az": "özü ilə götürmək",
+    "ru": "брать с собой"
+   },
+   "forms": [
+    "kaasa võtta",
+    "võtan kaasa"
+   ],
+   "sentence": {
+    "et": "Kas ma võin selle kaasa võtta?",
+    "en": "Can I take this with me?",
+    "az": "Bunu özümlə götürə bilərəm?",
+    "ru": "Можно взять это с собой?"
+   }
+  },
+  {
+   "id": "kaasas-kandma",
+   "front": "Kaasas kandma",
+   "back": {
+    "en": "To carry about with you",
+    "az": "üstündə gəzdirmək",
+    "ru": "носить с собой"
+   },
+   "forms": [
+    "kaasas kanda",
+    "kannan kaasas"
+   ],
+   "sentence": {
+    "et": "Ma kannan passi alati kaasas.",
+    "en": "I always carry my passport.",
+    "az": "Pasportu həmişə yanımda gəzdirirəm.",
+    "ru": "Я всегда ношу паспорт с собой."
+   }
+  },
+  {
+   "id": "kaasas-olema",
+   "front": "Kaasas olema",
+   "back": {
+    "en": "To be on you — mul on pass kaasas",
+    "az": "yanında olmaq",
+    "ru": "быть при себе"
+   },
+   "forms": [
+    "kaasas olla",
+    "on kaasas"
+   ],
+   "sentence": {
+    "et": "Kas sul on ID-kaart kaasas?",
+    "en": "Do you have your ID card on you?",
+    "az": "Şəxsiyyət vəsiqən yanındadır?",
+    "ru": "У тебя ID-карта с собой?"
+   }
+  },
+  {
+   "id": "kinni-hoidma",
+   "front": "Kinni hoidma",
+   "back": {
+    "en": "To hold on to",
+    "az": "bərk tutmaq",
+    "ru": "держаться за"
+   },
+   "forms": [
+    "kinni hoida",
+    "hoian kinni"
+   ],
+   "sentence": {
+    "et": "Hoia käsipuust kinni!",
+    "en": "Hold on to the handrail!",
+    "az": "Məhəccərdən bərk tut!",
+    "ru": "Держись за поручень!"
+   }
+  },
+  {
+   "id": "kinni-jaama",
+   "front": "Kinni jääma",
+   "back": {
+    "en": "To get stuck",
+    "az": "ilişib qalmaq",
+    "ru": "застревать"
+   },
+   "forms": [
+    "kinni jääda",
+    "jään kinni"
+   ],
+   "sentence": {
+    "et": "Auto jäi lumme kinni.",
+    "en": "The car got stuck in the snow.",
+    "az": "Maşın qarda ilişib qaldı.",
+    "ru": "Машина застряла в снегу."
+   }
+  },
+  {
+   "id": "kinni-pidama",
+   "front": "Kinni pidama",
+   "back": {
+    "en": "To keep to; to stop, detain",
+    "az": "əməl etmək; saxlamaq",
+    "ru": "соблюдать; задерживать"
+   },
+   "forms": [
+    "kinni pidada",
+    "pean kinni"
+   ],
+   "sentence": {
+    "et": "Palun pidage reeglitest kinni.",
+    "en": "Please keep to the rules.",
+    "az": "Zəhmət olmasa, qaydalara əməl edin.",
+    "ru": "Пожалуйста, соблюдайте правила."
+   }
+  },
+  {
+   "id": "kinni-puudma",
+   "front": "Kinni püüdma",
+   "back": {
+    "en": "To catch",
+    "az": "tutmaq",
+    "ru": "ловить, поймать"
+   },
+   "forms": [
+    "kinni püüda",
+    "püüan kinni"
+   ],
+   "sentence": {
+    "et": "Kass püüdis hiire kinni.",
+    "en": "The cat caught a mouse.",
+    "az": "Pişik siçanı tutdu.",
+    "ru": "Кошка поймала мышь."
+   }
+  },
+  {
+   "id": "kinni-votma",
+   "front": "Kinni võtma",
+   "back": {
+    "en": "To arrest",
+    "az": "həbs etmək",
+    "ru": "задерживать, арестовывать"
+   },
+   "forms": [
+    "kinni võtta",
+    "võtan kinni"
+   ],
+   "sentence": {
+    "et": "Politsei võttis varga kinni.",
+    "en": "The police arrested the thief.",
+    "az": "Polis oğrunu həbs etdi.",
+    "ru": "Полиция задержала вора."
+   }
+  },
+  {
+   "id": "kokku-hoidma",
+   "front": "Kokku hoidma",
+   "back": {
+    "en": "To save money; to stick together",
+    "az": "qənaət etmək; bir-birinə dayaq olmaq",
+    "ru": "экономить; держаться вместе"
+   },
+   "forms": [
+    "kokku hoida",
+    "hoian kokku"
+   ],
+   "sentence": {
+    "et": "Me hoiame raha kokku.",
+    "en": "We are saving money.",
+    "az": "Pula qənaət edirik.",
+    "ru": "Мы экономим деньги."
+   }
+  },
+  {
+   "id": "kokku-keerama",
+   "front": "Kokku keerama",
+   "back": {
+    "en": "To mess up; to roll up",
+    "az": "korlamaq; bükmək",
+    "ru": "напортачить; свернуть"
+   },
+   "forms": [
+    "kokku keerata",
+    "keeran kokku"
+   ],
+   "sentence": {
+    "et": "Ma keerasin kõik kokku.",
+    "en": "I messed everything up.",
+    "az": "Hər şeyi korladım.",
+    "ru": "Я всё испортил."
+   }
+  },
+  {
+   "id": "kokku-leppima",
+   "front": "Kokku leppima",
+   "back": {
+    "en": "To agree, arrange",
+    "az": "razılaşmaq",
+    "ru": "договариваться"
+   },
+   "forms": [
+    "kokku leppida",
+    "lepin kokku"
+   ],
+   "sentence": {
+    "et": "Lepime kokku kella kuueks.",
+    "en": "Let's say six o'clock.",
+    "az": "Saat altıya razılaşaq.",
+    "ru": "Договоримся на шесть часов."
+   }
+  },
+  {
+   "id": "kokku-panema",
+   "front": "Kokku panema",
+   "back": {
+    "en": "To put together",
+    "az": "yığmaq, quraşdırmaq",
+    "ru": "собирать, составлять"
+   },
+   "forms": [
+    "kokku panna",
+    "panen kokku"
+   ],
+   "sentence": {
+    "et": "Ma panin kapi ise kokku.",
+    "en": "I put the wardrobe together myself.",
+    "az": "Şkafı özüm yığdım.",
+    "ru": "Я сам собрал шкаф."
+   }
+  },
+  {
+   "id": "kokku-saama",
+   "front": "Kokku saama",
+   "back": {
+    "en": "To meet up",
+    "az": "görüşmək",
+    "ru": "встречаться"
+   },
+   "forms": [
+    "kokku saada",
+    "saan kokku"
+   ],
+   "sentence": {
+    "et": "Saame homme kokku?",
+    "en": "Shall we meet up tomorrow?",
+    "az": "Sabah görüşək?",
+    "ru": "Встретимся завтра?"
+   }
+  },
+  {
+   "id": "korda-ajama",
+   "front": "Korda ajama",
+   "back": {
+    "en": "To sort out",
+    "az": "qaydaya salmaq, həll etmək",
+    "ru": "улаживать"
+   },
+   "forms": [
+    "korda ajada",
+    "ajan korda"
+   ],
+   "sentence": {
+    "et": "Ma pean pangas asjad korda ajama.",
+    "en": "I have to sort things out at the bank.",
+    "az": "Bankda işlərimi həll etməliyəm.",
+    "ru": "Мне надо уладить дела в банке."
+   }
+  },
+  {
+   "id": "korda-pidama",
+   "front": "Korda pidama",
+   "back": {
+    "en": "To keep order",
+    "az": "qaydanı qorumaq",
+    "ru": "поддерживать порядок"
+   },
+   "forms": [
+    "korda pidada",
+    "pean korda"
+   ],
+   "sentence": {
+    "et": "Õpetaja peab klassis korda.",
+    "en": "The teacher keeps order in the class.",
+    "az": "Müəllim sinifdə qaydanı qoruyur.",
+    "ru": "Учитель поддерживает порядок в классе."
+   }
+  },
+  {
+   "id": "korda-tegema",
+   "front": "Korda tegema",
+   "back": {
+    "en": "To tidy up, fix",
+    "az": "səliqəyə salmaq, düzəltmək",
+    "ru": "приводить в порядок, чинить"
+   },
+   "forms": [
+    "korda teha",
+    "teen korda"
+   ],
+   "sentence": {
+    "et": "Laupäeval teeme kodu korda.",
+    "en": "On Saturday we tidy up the flat.",
+    "az": "Şənbə günü evi səliqəyə salırıq.",
+    "ru": "В субботу мы наводим порядок дома."
+   }
+  },
+  {
+   "id": "korvale-hoidma",
+   "front": "Kõrvale hoidma",
+   "back": {
+    "en": "To avoid, dodge",
+    "az": "yayınmaq",
+    "ru": "уклоняться, избегать"
+   },
+   "forms": [
+    "kõrvale hoida",
+    "hoian kõrvale"
+   ],
+   "sentence": {
+    "et": "Ta hoiab tööst kõrvale.",
+    "en": "He keeps away from work.",
+    "az": "O, işdən yayınır.",
+    "ru": "Он уклоняется от работы."
+   }
+  },
+  {
+   "id": "korvale-jaama",
+   "front": "Kõrvale jääma",
+   "back": {
+    "en": "To be left out",
+    "az": "kənarda qalmaq",
+    "ru": "оставаться в стороне"
+   },
+   "forms": [
+    "kõrvale jääda",
+    "jään kõrvale"
+   ],
+   "sentence": {
+    "et": "Ma ei taha kõrvale jääda.",
+    "en": "I don't want to be left out.",
+    "az": "Kənarda qalmaq istəmirəm.",
+    "ru": "Я не хочу оставаться в стороне."
+   }
+  },
+  {
+   "id": "katte-joudma",
+   "front": "Kätte jõudma",
+   "back": {
+    "en": "To come — of a time",
+    "az": "gəlib çatmaq — vaxt",
+    "ru": "наступать — о времени"
+   },
+   "forms": [
+    "kätte jõuda",
+    "jõuab kätte"
+   ],
+   "sentence": {
+    "et": "Kevad on kätte jõudnud.",
+    "en": "Spring has come.",
+    "az": "Bahar gəlib çatıb.",
+    "ru": "Весна наступила."
+   }
+  },
+  {
+   "id": "katte-maksma",
+   "front": "Kätte maksma",
+   "back": {
+    "en": "To take revenge",
+    "az": "qisas almaq",
+    "ru": "мстить"
+   },
+   "forms": [
+    "kätte maksta",
+    "maksan kätte"
+   ],
+   "sentence": {
+    "et": "Ta tahtis kätte maksta.",
+    "en": "He wanted revenge.",
+    "az": "O, qisas almaq istəyirdi.",
+    "ru": "Он хотел отомстить."
+   }
+  },
+  {
+   "id": "katte-saama",
+   "front": "Kätte saama",
+   "back": {
+    "en": "To get, receive; to catch",
+    "az": "almaq, əldə etmək; tutmaq",
+    "ru": "получать; поймать"
+   },
+   "forms": [
+    "kätte saada",
+    "saan kätte"
+   ],
+   "sentence": {
+    "et": "Kas sa said mu kirja kätte?",
+    "en": "Did you get my letter?",
+    "az": "Məktubumu aldın?",
+    "ru": "Ты получил моё письмо?"
+   }
+  },
+  {
+   "id": "katte-votma",
+   "front": "Kätte võtma",
+   "back": {
+    "en": "To pull yourself together",
+    "az": "özünü ələ almaq",
+    "ru": "взять себя в руки"
+   },
+   "forms": [
+    "kätte võtta",
+    "võtan kätte"
+   ],
+   "sentence": {
+    "et": "Võta end kätte!",
+    "en": "Pull yourself together!",
+    "az": "Özünü ələ al!",
+    "ru": "Возьми себя в руки!"
+   }
+  },
+  {
+   "id": "lahti-laskma",
+   "front": "Lahti laskma",
+   "back": {
+    "en": "To let go; to fire",
+    "az": "buraxmaq; işdən çıxarmaq",
+    "ru": "отпускать; увольнять"
+   },
+   "forms": [
+    "lahti lasta",
+    "lasen lahti"
+   ],
+   "sentence": {
+    "et": "Ära lase mu kätt lahti.",
+    "en": "Don't let go of my hand.",
+    "az": "Əlimi buraxma.",
+    "ru": "Не отпускай мою руку."
+   }
+  },
+  {
+   "id": "lahti-saama",
+   "front": "Lahti saama",
+   "back": {
+    "en": "To get rid of",
+    "az": "qurtulmaq",
+    "ru": "избавляться"
+   },
+   "forms": [
+    "lahti saada",
+    "saan lahti"
+   ],
+   "sentence": {
+    "et": "Ma ei saa sellest köhast lahti.",
+    "en": "I can't get rid of this cough.",
+    "az": "Bu öskürəkdən qurtula bilmirəm.",
+    "ru": "Я не могу избавиться от этого кашля."
+   }
+  },
+  {
+   "id": "labi-ajama",
+   "front": "Läbi ajama",
+   "back": {
+    "en": "To make do, get by",
+    "az": "keçinmək",
+    "ru": "обходиться"
+   },
+   "forms": [
+    "läbi ajada",
+    "ajan läbi"
+   ],
+   "sentence": {
+    "et": "Me ajame ilma autota läbi.",
+    "en": "We get by without a car.",
+    "az": "Maşınsız keçinirik.",
+    "ru": "Мы обходимся без машины."
+   }
+  },
+  {
+   "id": "labi-kukkuma",
+   "front": "Läbi kukkuma",
+   "back": {
+    "en": "To fail — an exam",
+    "az": "kəsilmək — imtahandan",
+    "ru": "провалиться — на экзамене"
+   },
+   "forms": [
+    "läbi kukkuda",
+    "kukun läbi"
+   ],
+   "sentence": {
+    "et": "Ta kukkus eksamil läbi.",
+    "en": "She failed the exam.",
+    "az": "O, imtahandan kəsildi.",
+    "ru": "Она провалилась на экзамене."
+   }
+  },
+  {
+   "id": "labi-laskma",
+   "front": "Läbi laskma",
+   "back": {
+    "en": "To let through",
+    "az": "buraxmaq, keçirmək",
+    "ru": "пропускать"
+   },
+   "forms": [
+    "läbi lasta",
+    "lasen läbi"
+   ],
+   "sentence": {
+    "et": "Palun laske mind läbi.",
+    "en": "Please let me through.",
+    "az": "Zəhmət olmasa, məni buraxın.",
+    "ru": "Пропустите меня, пожалуйста."
+   }
+  },
+  {
+   "id": "labi-raakima",
+   "front": "Läbi rääkima",
+   "back": {
+    "en": "To talk over, negotiate",
+    "az": "danışıb razılaşmaq",
+    "ru": "обсуждать, вести переговоры"
+   },
+   "forms": [
+    "läbi rääkida",
+    "räägin läbi"
+   ],
+   "sentence": {
+    "et": "Räägime selle homme läbi.",
+    "en": "Let's talk it over tomorrow.",
+    "az": "Bunu sabah danışaq.",
+    "ru": "Давай обсудим это завтра."
+   }
+  },
+  {
+   "id": "labi-saama",
+   "front": "Läbi saama",
+   "back": {
+    "en": "To get on with; to be over",
+    "az": "yola getmək; bitmək",
+    "ru": "ладить; заканчиваться"
+   },
+   "forms": [
+    "läbi saada",
+    "saan läbi"
+   ],
+   "sentence": {
+    "et": "Ma saan naabritega hästi läbi.",
+    "en": "I get on well with the neighbours.",
+    "az": "Qonşularla yaxşı yola gedirəm.",
+    "ru": "Я хорошо лажу с соседями."
+   }
+  },
+  {
+   "id": "maha-minema",
+   "front": "Maha minema",
+   "back": {
+    "en": "To get off — a bus",
+    "az": "düşmək — avtobusdan",
+    "ru": "выходить — из автобуса"
+   },
+   "forms": [
+    "maha minna",
+    "lähen maha"
+   ],
+   "sentence": {
+    "et": "Ma lähen järgmises peatuses maha.",
+    "en": "I'm getting off at the next stop.",
+    "az": "Növbəti dayanacaqda düşürəm.",
+    "ru": "Я выхожу на следующей остановке."
+   }
+  },
+  {
+   "id": "maha-jatma",
+   "front": "Maha jätma",
+   "back": {
+    "en": "To leave behind; to dump",
+    "az": "tərk etmək, atmaq",
+    "ru": "бросать, оставлять"
+   },
+   "forms": [
+    "maha jätta",
+    "jätan maha"
+   ],
+   "sentence": {
+    "et": "Ta jättis töö maha.",
+    "en": "She quit her job.",
+    "az": "O, işini atdı.",
+    "ru": "Она бросила работу."
+   }
+  },
+  {
+   "id": "maha-jaama",
+   "front": "Maha jääma",
+   "back": {
+    "en": "To fall behind; to miss — a bus",
+    "az": "geri qalmaq; çatmamaq",
+    "ru": "отставать; опаздывать на"
+   },
+   "forms": [
+    "maha jääda",
+    "jään maha"
+   ],
+   "sentence": {
+    "et": "Ma jäin bussist maha.",
+    "en": "I missed the bus.",
+    "az": "Avtobusa çatmadım.",
+    "ru": "Я опоздал на автобус."
+   }
+  },
+  {
+   "id": "maha-magama",
+   "front": "Maha magama",
+   "back": {
+    "en": "To oversleep, sleep through",
+    "az": "yatıb qalmaq",
+    "ru": "проспать"
+   },
+   "forms": [
+    "maha magada",
+    "magan maha"
+   ],
+   "sentence": {
+    "et": "Ma magasin hommikul maha.",
+    "en": "I overslept this morning.",
+    "az": "Səhər yatıb qaldım.",
+    "ru": "Я утром проспал."
+   }
+  },
+  {
+   "id": "maha-mangima",
+   "front": "Maha mängima",
+   "back": {
+    "en": "To lose, throw away",
+    "az": "uduzmaq, əldən vermək",
+    "ru": "проиграть, упустить"
+   },
+   "forms": [
+    "maha mängida",
+    "mängin maha"
+   ],
+   "sentence": {
+    "et": "Me mängisime mängu maha.",
+    "en": "We lost the game.",
+    "az": "Oyunu uduzduq.",
+    "ru": "Мы проиграли игру."
+   }
+  },
+  {
+   "id": "maha-tombama",
+   "front": "Maha tõmbama",
+   "back": {
+    "en": "To cross out",
+    "az": "üstündən xətt çəkmək",
+    "ru": "зачёркивать"
+   },
+   "forms": [
+    "maha tõmmata",
+    "tõmban maha"
+   ],
+   "sentence": {
+    "et": "Tõmba vale sõna maha.",
+    "en": "Cross out the wrong word.",
+    "az": "Səhv sözün üstündən xətt çək.",
+    "ru": "Зачеркни неправильное слово."
+   }
+  },
+  {
+   "id": "maha-votma",
+   "front": "Maha võtma",
+   "back": {
+    "en": "To take down; to lose weight",
+    "az": "endirmək; arıqlamaq",
+    "ru": "снимать; худеть"
+   },
+   "forms": [
+    "maha võtta",
+    "võtan maha"
+   ],
+   "sentence": {
+    "et": "Ta võttis viis kilo maha.",
+    "en": "He lost five kilos.",
+    "az": "O, beş kilo arıqladı.",
+    "ru": "Он похудел на пять килограммов."
+   }
+  },
+  {
+   "id": "meelde-jaama",
+   "front": "Meelde jääma",
+   "back": {
+    "en": "To stick in your mind",
+    "az": "yadda qalmaq",
+    "ru": "запоминаться"
+   },
+   "forms": [
+    "meelde jääda",
+    "jääb meelde"
+   ],
+   "sentence": {
+    "et": "Uued sõnad jäävad hästi meelde.",
+    "en": "New words stick well.",
+    "az": "Yeni sözlər yaxşı yadda qalır.",
+    "ru": "Новые слова хорошо запоминаются."
+   }
+  },
+  {
+   "id": "meelde-tulema",
+   "front": "Meelde tulema",
+   "back": {
+    "en": "To come back to you",
+    "az": "yada düşmək",
+    "ru": "вспоминаться"
+   },
+   "forms": [
+    "meelde tulla",
+    "tuleb meelde"
+   ],
+   "sentence": {
+    "et": "Mulle ei tule ta nimi meelde.",
+    "en": "I can't remember his name.",
+    "az": "Onun adı yadıma düşmür.",
+    "ru": "Не могу вспомнить, как его зовут."
+   }
+  },
+  {
+   "id": "meelde-tuletama",
+   "front": "Meelde tuletama",
+   "back": {
+    "en": "To remind",
+    "az": "xatırlatmaq",
+    "ru": "напоминать"
+   },
+   "forms": [
+    "meelde tuletada",
+    "tuletan meelde"
+   ],
+   "sentence": {
+    "et": "Tuleta mulle homme meelde.",
+    "en": "Remind me tomorrow.",
+    "az": "Sabah mənə xatırlat.",
+    "ru": "Напомни мне завтра."
+   }
+  },
+  {
+   "id": "meeles-olema",
+   "front": "Meeles olema",
+   "back": {
+    "en": "To be remembered — mul on meeles",
+    "az": "yadda olmaq",
+    "ru": "помниться"
+   },
+   "forms": [
+    "meeles olla",
+    "on meeles"
+   ],
+   "sentence": {
+    "et": "Mul on see meeles.",
+    "en": "I remember it.",
+    "az": "Bu yadımdadır.",
+    "ru": "Я это помню."
+   }
+  },
+  {
+   "id": "meeles-pidama",
+   "front": "Meeles pidama",
+   "back": {
+    "en": "To keep in mind",
+    "az": "yadda saxlamaq",
+    "ru": "помнить, иметь в виду"
+   },
+   "forms": [
+    "meeles pidada",
+    "pean meeles"
+   ],
+   "sentence": {
+    "et": "Pea meeles, et pood on pühapäeval kinni.",
+    "en": "Bear in mind the shop is closed on Sunday.",
+    "az": "Yadda saxla ki, mağaza bazar günü bağlıdır.",
+    "ru": "Имей в виду, что в воскресенье магазин закрыт."
+   }
+  },
+  {
+   "id": "mooda-minema",
+   "front": "Mööda minema",
+   "back": {
+    "en": "To go past; to pass",
+    "az": "yanından keçmək; keçib getmək",
+    "ru": "проходить мимо; проходить"
+   },
+   "forms": [
+    "mööda minna",
+    "lähen mööda"
+   ],
+   "sentence": {
+    "et": "Valu läheb mööda.",
+    "en": "The pain will pass.",
+    "az": "Ağrı keçib gedəcək.",
+    "ru": "Боль пройдёт."
+   }
+  },
+  {
+   "id": "mooda-soitma",
+   "front": "Mööda sõitma",
+   "back": {
+    "en": "To drive past",
+    "az": "yanından ötüb keçmək",
+    "ru": "проезжать мимо"
+   },
+   "forms": [
+    "mööda sõita",
+    "sõidan mööda"
+   ],
+   "sentence": {
+    "et": "Buss sõitis minust mööda.",
+    "en": "The bus drove past me.",
+    "az": "Avtobus yanımdan ötüb keçdi.",
+    "ru": "Автобус проехал мимо меня."
+   }
+  },
+  {
+   "id": "otsa-saama",
+   "front": "Otsa saama",
+   "back": {
+    "en": "To run out",
+    "az": "qurtarmaq, tükənmək",
+    "ru": "заканчиваться"
+   },
+   "forms": [
+    "otsa saada",
+    "saab otsa"
+   ],
+   "sentence": {
+    "et": "Piim sai otsa.",
+    "en": "We're out of milk.",
+    "az": "Süd qurtardı.",
+    "ru": "Молоко закончилось."
+   }
+  },
+  {
+   "id": "otsa-vaatama",
+   "front": "Otsa vaatama",
+   "back": {
+    "en": "To look in the face",
+    "az": "üzünə baxmaq",
+    "ru": "смотреть в лицо"
+   },
+   "forms": [
+    "otsa vaadata",
+    "vaatan otsa"
+   ],
+   "sentence": {
+    "et": "Vaata mulle otsa!",
+    "en": "Look at me!",
+    "az": "Üzümə bax!",
+    "ru": "Посмотри на меня!"
+   }
+  },
+  {
+   "id": "peale-minema",
+   "front": "Peale minema",
+   "back": {
+    "en": "To get on — a bus",
+    "az": "minmək — avtobusa",
+    "ru": "садиться — в автобус"
+   },
+   "forms": [
+    "peale minna",
+    "lähen peale"
+   ],
+   "sentence": {
+    "et": "Ma lähen Vabaduse väljakul peale.",
+    "en": "I get on at Freedom Square.",
+    "az": "Azadlıq meydanında minirəm.",
+    "ru": "Я сажусь на площади Свободы."
+   }
+  },
+  {
+   "id": "peale-hakkama",
+   "front": "Peale hakkama",
+   "back": {
+    "en": "To do with — mis ma sellega peale hakkan?",
+    "az": "nə etmək — bununla nə edim?",
+    "ru": "делать с — что мне с этим делать?"
+   },
+   "forms": [
+    "peale hakata",
+    "hakkan peale"
+   ],
+   "sentence": {
+    "et": "Mis ma selle kõigega peale hakkan?",
+    "en": "What am I going to do with all this?",
+    "az": "Bütün bunlarla nə edim?",
+    "ru": "Что мне со всем этим делать?"
+   }
+  },
+  {
+   "id": "peale-votma",
+   "front": "Peale võtma",
+   "back": {
+    "en": "To pick up — a passenger",
+    "az": "götürmək — sərnişin",
+    "ru": "подбирать — пассажира"
+   },
+   "forms": [
+    "peale võtta",
+    "võtan peale"
+   ],
+   "sentence": {
+    "et": "Taksojuht võttis meid jaamas peale.",
+    "en": "The taxi driver picked us up at the station.",
+    "az": "Taksi sürücüsü bizi vağzalda götürdü.",
+    "ru": "Таксист подобрал нас на вокзале."
+   }
+  },
+  {
+   "id": "pahe-tulema",
+   "front": "Pähe tulema",
+   "back": {
+    "en": "To occur to you",
+    "az": "ağlına gəlmək",
+    "ru": "приходить в голову"
+   },
+   "forms": [
+    "pähe tulla",
+    "tuleb pähe"
+   ],
+   "sentence": {
+    "et": "Mulle tuli hea mõte pähe.",
+    "en": "A good idea occurred to me.",
+    "az": "Ağlıma yaxşı bir fikir gəldi.",
+    "ru": "Мне в голову пришла хорошая мысль."
+   }
+  },
+  {
+   "id": "pahe-saama",
+   "front": "Pähe saama",
+   "back": {
+    "en": "To get a beating — said casually",
+    "az": "döyülmək — danışıqda",
+    "ru": "получить по голове — разговорное"
+   },
+   "forms": [
+    "pähe saada",
+    "saan pähe"
+   ],
+   "sentence": {
+    "et": "Meie meeskond sai jälle pähe.",
+    "en": "Our team got a beating again.",
+    "az": "Komandamız yenə uduzdu.",
+    "ru": "Наша команда опять получила по голове."
+   }
+  },
+  {
+   "id": "pahe-oppima",
+   "front": "Pähe õppima",
+   "back": {
+    "en": "To learn by heart",
+    "az": "əzbərləmək",
+    "ru": "учить наизусть"
+   },
+   "forms": [
+    "pähe õppida",
+    "õpin pähe"
+   ],
+   "sentence": {
+    "et": "Ma õppisin luuletuse pähe.",
+    "en": "I learnt the poem by heart.",
+    "az": "Şeiri əzbərlədim.",
+    "ru": "Я выучил стихотворение наизусть."
+   }
+  },
+  {
+   "id": "ringi-jooksma",
+   "front": "Ringi jooksma",
+   "back": {
+    "en": "To run around",
+    "az": "o yan-bu yana qaçmaq",
+    "ru": "бегать туда-сюда"
+   },
+   "forms": [
+    "ringi joosta",
+    "jooksen ringi"
+   ],
+   "sentence": {
+    "et": "Lapsed jooksevad pargis ringi.",
+    "en": "The children are running around in the park.",
+    "az": "Uşaqlar parkda qaçışırlar.",
+    "ru": "Дети бегают по парку."
+   }
+  },
+  {
+   "id": "ringi-kaima",
+   "front": "Ringi käima",
+   "back": {
+    "en": "To walk around",
+    "az": "gəzib-dolaşmaq",
+    "ru": "ходить, бродить"
+   },
+   "forms": [
+    "ringi käia",
+    "käin ringi"
+   ],
+   "sentence": {
+    "et": "Me käisime vanalinnas ringi.",
+    "en": "We walked around the Old Town.",
+    "az": "Köhnə şəhərdə gəzib-dolaşdıq.",
+    "ru": "Мы гуляли по Старому городу."
+   }
+  },
+  {
+   "id": "segi-ajama",
+   "front": "Segi ajama",
+   "back": {
+    "en": "To mix up",
+    "az": "qarışdırmaq",
+    "ru": "путать"
+   },
+   "forms": [
+    "segi ajada",
+    "ajan segi"
+   ],
+   "sentence": {
+    "et": "Ma ajan need kaks sõna alati segi.",
+    "en": "I always mix up these two words.",
+    "az": "Bu iki sözü həmişə qarışdırıram.",
+    "ru": "Я всегда путаю эти два слова."
+   }
+  },
+  {
+   "id": "segi-minema",
+   "front": "Segi minema",
+   "back": {
+    "en": "To get mixed up; to go mad",
+    "az": "qarışmaq; ağlını itirmək",
+    "ru": "перепутаться; сойти с ума"
+   },
+   "forms": [
+    "segi minna",
+    "läheb segi"
+   ],
+   "sentence": {
+    "et": "Mul läks kõik segi.",
+    "en": "I got everything mixed up.",
+    "az": "Mənim hər şeyim qarışdı.",
+    "ru": "У меня всё перепуталось."
+   }
+  },
+  {
+   "id": "sisse-kukkuma",
+   "front": "Sisse kukkuma",
+   "back": {
+    "en": "To fall in; to flop",
+    "az": "içinə düşmək; uğursuz olmaq",
+    "ru": "проваливаться"
+   },
+   "forms": [
+    "sisse kukkuda",
+    "kukun sisse"
+   ],
+   "sentence": {
+    "et": "Uus kohvik kukkus sisse.",
+    "en": "The new café flopped.",
+    "az": "Yeni kafe uğursuz oldu.",
+    "ru": "Новое кафе провалилось."
+   }
+  },
+  {
+   "id": "sisse-saama",
+   "front": "Sisse saama",
+   "back": {
+    "en": "To get in",
+    "az": "içəri girə bilmək",
+    "ru": "попасть внутрь, поступить"
+   },
+   "forms": [
+    "sisse saada",
+    "saan sisse"
+   ],
+   "sentence": {
+    "et": "Ma ei saa sisse, uks on lukus.",
+    "en": "I can't get in, the door is locked.",
+    "az": "İçəri girə bilmirəm, qapı kilidlidir.",
+    "ru": "Я не могу войти, дверь заперта."
+   }
+  },
+  {
+   "id": "sisse-soitma",
+   "front": "Sisse sõitma",
+   "back": {
+    "en": "To drive in; to land in trouble",
+    "az": "içəri sürmək; başı bəlaya düşmək",
+    "ru": "въезжать; влипнуть"
+   },
+   "forms": [
+    "sisse sõita",
+    "sõidan sisse"
+   ],
+   "sentence": {
+    "et": "Seekord sõitsin ma küll sisse.",
+    "en": "This time I really landed in trouble.",
+    "az": "Bu dəfə başım yaman bəlaya düşdü.",
+    "ru": "На этот раз я по-настоящему влип."
+   }
+  },
+  {
+   "id": "taga-ajama",
+   "front": "Taga ajama",
+   "back": {
+    "en": "To chase, pursue",
+    "az": "təqib etmək, dalınca düşmək",
+    "ru": "преследовать, гнаться за"
+   },
+   "forms": [
+    "taga ajada",
+    "ajan taga"
+   ],
+   "sentence": {
+    "et": "Koer ajab kassi taga.",
+    "en": "The dog is chasing the cat.",
+    "az": "İt pişiyi qovur.",
+    "ru": "Собака гонится за кошкой."
+   }
+  },
+  {
+   "id": "taga-raakima",
+   "front": "Taga rääkima",
+   "back": {
+    "en": "To talk behind a back",
+    "az": "arxasınca danışmaq",
+    "ru": "говорить за спиной"
+   },
+   "forms": [
+    "taga rääkida",
+    "räägin taga"
+   ],
+   "sentence": {
+    "et": "Ära räägi teisi taga.",
+    "en": "Don't talk about people behind their backs.",
+    "az": "Başqalarının arxasınca danışma.",
+    "ru": "Не говори о других за спиной."
+   }
+  },
+  {
+   "id": "vahele-jaama",
+   "front": "Vahele jääma",
+   "back": {
+    "en": "To get caught",
+    "az": "yaxalanmaq",
+    "ru": "попадаться"
+   },
+   "forms": [
+    "vahele jääda",
+    "jään vahele"
+   ],
+   "sentence": {
+    "et": "Ta jäi piletita vahele.",
+    "en": "He got caught without a ticket.",
+    "az": "O, biletsiz yaxalandı.",
+    "ru": "Он попался без билета."
+   }
+  },
+  {
+   "id": "vahele-segama",
+   "front": "Vahele segama",
+   "back": {
+    "en": "To butt in, interrupt",
+    "az": "sözə qarışmaq, sözünü kəsmək",
+    "ru": "вмешиваться, перебивать"
+   },
+   "forms": [
+    "vahele segada",
+    "segan vahele"
+   ],
+   "sentence": {
+    "et": "Vabandust, et vahele segan.",
+    "en": "Sorry to butt in.",
+    "az": "Bağışlayın ki, sözünüzü kəsirəm.",
+    "ru": "Простите, что вмешиваюсь."
+   }
+  },
+  {
+   "id": "vastu-ajama",
+   "front": "Vastu ajama",
+   "back": {
+    "en": "To do, be good enough — said casually",
+    "az": "yaramaq, bəs etmək — danışıqda",
+    "ru": "сгодиться — разговорное"
+   },
+   "forms": [
+    "vastu ajada",
+    "ajab vastu"
+   ],
+   "sentence": {
+    "et": "Vana jope ajab veel vastu.",
+    "en": "The old jacket will still do.",
+    "az": "Köhnə gödəkçə hələ yarayar.",
+    "ru": "Старая куртка ещё сгодится."
+   }
+  },
+  {
+   "id": "vastu-hakkama",
+   "front": "Vastu hakkama",
+   "back": {
+    "en": "To resist, talk back",
+    "az": "müqavimət göstərmək, ağız-ağıza vermək",
+    "ru": "сопротивляться, перечить"
+   },
+   "forms": [
+    "vastu hakata",
+    "hakkan vastu"
+   ],
+   "sentence": {
+    "et": "Laps hakkab emale vastu.",
+    "en": "The child talks back to his mother.",
+    "az": "Uşaq anasına ağız-ağıza verir.",
+    "ru": "Ребёнок перечит маме."
+   }
+  },
+  {
+   "id": "vastu-olema",
+   "front": "Vastu olema",
+   "back": {
+    "en": "To be against",
+    "az": "əleyhinə olmaq",
+    "ru": "быть против"
+   },
+   "forms": [
+    "vastu olla",
+    "olen vastu"
+   ],
+   "sentence": {
+    "et": "Kas sa oled vastu?",
+    "en": "Are you against it?",
+    "az": "Sən əleyhinəsən?",
+    "ru": "Ты против?"
+   }
+  },
+  {
+   "id": "vastu-pidama",
+   "front": "Vastu pidama",
+   "back": {
+    "en": "To hold out, last",
+    "az": "dözmək, tab gətirmək",
+    "ru": "выдерживать"
+   },
+   "forms": [
+    "vastu pidada",
+    "pean vastu"
+   ],
+   "sentence": {
+    "et": "Need saapad peavad kaua vastu.",
+    "en": "These boots will last a long time.",
+    "az": "Bu çəkmələr uzun müddət dözür.",
+    "ru": "Эти сапоги долго прослужат."
+   }
+  },
+  {
+   "id": "vastu-tulema",
+   "front": "Vastu tulema",
+   "back": {
+    "en": "To come to meet; to meet halfway",
+    "az": "qarşılamağa çıxmaq; güzəştə getmək",
+    "ru": "встречать; идти навстречу"
+   },
+   "forms": [
+    "vastu tulla",
+    "tulen vastu"
+   ],
+   "sentence": {
+    "et": "Ma tulen sulle lennujaama vastu.",
+    "en": "I'll come and meet you at the airport.",
+    "az": "Səni hava limanında qarşılayacağam.",
+    "ru": "Я встречу тебя в аэропорту."
+   }
+  },
+  {
+   "id": "vastu-votma",
+   "front": "Vastu võtma",
+   "back": {
+    "en": "To receive, accept",
+    "az": "qəbul etmək",
+    "ru": "принимать"
+   },
+   "forms": [
+    "vastu võtta",
+    "võtan vastu"
+   ],
+   "sentence": {
+    "et": "Kas te võtate kaarti vastu?",
+    "en": "Do you take cards?",
+    "az": "Kartla ödəniş qəbul edirsiniz?",
+    "ru": "Вы принимаете карты?"
+   }
+  },
+  {
+   "id": "valja-andma",
+   "front": "Välja andma",
+   "back": {
+    "en": "To publish, issue",
+    "az": "nəşr etmək, vermək",
+    "ru": "издавать, выдавать"
+   },
+   "forms": [
+    "välja anda",
+    "annan välja"
+   ],
+   "sentence": {
+    "et": "Raamatu andis välja väike kirjastus.",
+    "en": "A small publisher brought out the book.",
+    "az": "Kitabı kiçik bir nəşriyyat nəşr etdi.",
+    "ru": "Книгу выпустило небольшое издательство."
+   }
+  },
+  {
+   "id": "valja-arvestama",
+   "front": "Välja arvestama",
+   "back": {
+    "en": "To work out",
+    "az": "hesablamaq",
+    "ru": "рассчитывать"
+   },
+   "forms": [
+    "välja arvestada",
+    "arvestan välja"
+   ],
+   "sentence": {
+    "et": "Arvesta välja, kui palju see maksab.",
+    "en": "Work out how much it costs.",
+    "az": "Bunun neçəyə başa gəldiyini hesabla.",
+    "ru": "Рассчитай, сколько это стоит."
+   }
+  },
+  {
+   "id": "valja-arvutama",
+   "front": "Välja arvutama",
+   "back": {
+    "en": "To calculate",
+    "az": "hesablamaq",
+    "ru": "вычислять"
+   },
+   "forms": [
+    "välja arvutada",
+    "arvutan välja"
+   ],
+   "sentence": {
+    "et": "Ma arvutasin hinna välja.",
+    "en": "I calculated the price.",
+    "az": "Qiyməti hesabladım.",
+    "ru": "Я вычислил цену."
+   }
+  },
+  {
+   "id": "valja-nagema",
+   "front": "Välja nägema",
+   "back": {
+    "en": "To look — ta näeb hea välja",
+    "az": "görünmək",
+    "ru": "выглядеть"
+   },
+   "forms": [
+    "välja näha",
+    "näen välja"
+   ],
+   "sentence": {
+    "et": "Sa näed täna hea välja.",
+    "en": "You look good today.",
+    "az": "Bu gün yaxşı görünürsən.",
+    "ru": "Ты сегодня хорошо выглядишь."
+   }
+  },
+  {
+   "id": "valja-paistma",
+   "front": "Välja paistma",
+   "back": {
+    "en": "To show, stand out",
+    "az": "görünmək, seçilmək",
+    "ru": "виднеться, выделяться"
+   },
+   "forms": [
+    "välja paista",
+    "paistab välja"
+   ],
+   "sentence": {
+    "et": "Ta paistab teiste seast välja.",
+    "en": "She stands out from the others.",
+    "az": "O, başqalarından seçilir.",
+    "ru": "Она выделяется среди других."
+   }
+  },
+  {
+   "id": "valja-tegema",
+   "front": "Välja tegema",
+   "back": {
+    "en": "To treat — pay for somebody",
+    "az": "qonaq etmək — pulunu vermək",
+    "ru": "угощать"
+   },
+   "forms": [
+    "välja teha",
+    "teen välja"
+   ],
+   "sentence": {
+    "et": "Täna teen mina välja.",
+    "en": "Today it's on me.",
+    "az": "Bu gün mən qonaq edirəm.",
+    "ru": "Сегодня я угощаю."
+   }
+  },
+  {
+   "id": "valja-tulema",
+   "front": "Välja tulema",
+   "back": {
+    "en": "To come out; to work out",
+    "az": "çıxmaq; alınmaq",
+    "ru": "выходить; получаться"
+   },
+   "forms": [
+    "välja tulla",
+    "tulen välja"
+   ],
+   "sentence": {
+    "et": "Kas pilt tuli hästi välja?",
+    "en": "Did the photo come out well?",
+    "az": "Şəkil yaxşı alındı?",
+    "ru": "Фото хорошо получилось?"
+   }
+  },
+  {
+   "id": "valja-tombama",
+   "front": "Välja tõmbama",
+   "back": {
+    "en": "To pull out",
+    "az": "çəkib çıxarmaq",
+    "ru": "вытаскивать"
+   },
+   "forms": [
+    "välja tõmmata",
+    "tõmban välja"
+   ],
+   "sentence": {
+    "et": "Tõmba juhe seinast välja.",
+    "en": "Pull the plug out of the wall.",
+    "az": "Kabeli divardan çıxar.",
+    "ru": "Выдерни шнур из розетки."
+   }
+  },
+  {
+   "id": "ara-arvama",
+   "front": "Ära arvama",
+   "back": {
+    "en": "To guess",
+    "az": "tapmaq, düz təxmin etmək",
+    "ru": "угадывать"
+   },
+   "forms": [
+    "ära arvata",
+    "arvan ära"
+   ],
+   "sentence": {
+    "et": "Arva ära, kes helistas!",
+    "en": "Guess who called!",
+    "az": "Tap görüm, kim zəng etdi!",
+    "ru": "Угадай, кто звонил!"
+   }
+  },
+  {
+   "id": "ara-elama",
+   "front": "Ära elama",
+   "back": {
+    "en": "To get by",
+    "az": "dolanmaq",
+    "ru": "сводить концы с концами"
+   },
+   "forms": [
+    "ära elada",
+    "elan ära"
+   ],
+   "sentence": {
+    "et": "Selle palgaga on raske ära elada.",
+    "en": "It's hard to get by on this salary.",
+    "az": "Bu maaşla dolanmaq çətindir.",
+    "ru": "На эту зарплату трудно прожить."
+   }
+  },
+  {
+   "id": "ara-hoidma",
+   "front": "Ära hoidma",
+   "back": {
+    "en": "To prevent",
+    "az": "qarşısını almaq",
+    "ru": "предотвращать"
+   },
+   "forms": [
+    "ära hoida",
+    "hoian ära"
+   ],
+   "sentence": {
+    "et": "Õnnetust oleks saanud ära hoida.",
+    "en": "The accident could have been prevented.",
+    "az": "Qəzanın qarşısını almaq olardı.",
+    "ru": "Аварию можно было предотвратить."
+   }
+  },
+  {
+   "id": "ara-jaama",
+   "front": "Ära jääma",
+   "back": {
+    "en": "To be cancelled",
+    "az": "ləğv olunmaq",
+    "ru": "отменяться"
+   },
+   "forms": [
+    "ära jääda",
+    "jääb ära"
+   ],
+   "sentence": {
+    "et": "Kontsert jääb ära.",
+    "en": "The concert is cancelled.",
+    "az": "Konsert ləğv olunur.",
+    "ru": "Концерт отменяется."
+   }
+  },
+  {
+   "id": "ara-utlema",
+   "front": "Ära ütlema",
+   "back": {
+    "en": "To say no, turn down",
+    "az": "imtina etmək",
+    "ru": "отказываться, отказывать"
+   },
+   "forms": [
+    "ära öelda",
+    "ütlen ära"
+   ],
+   "sentence": {
+    "et": "Ma pidin kutsest ära ütlema.",
+    "en": "I had to turn down the invitation.",
+    "az": "Dəvətdən imtina etməli oldum.",
+    "ru": "Мне пришлось отказаться от приглашения."
+   }
+  },
+  {
+   "id": "ule-andma",
+   "front": "Üle andma",
+   "back": {
+    "en": "To hand over",
+    "az": "təhvil vermək",
+    "ru": "передавать"
+   },
+   "forms": [
+    "üle anda",
+    "annan üle"
+   ],
+   "sentence": {
+    "et": "Andke see palun juhatajale üle.",
+    "en": "Please hand this to the manager.",
+    "az": "Zəhmət olmasa, bunu müdirə təhvil verin.",
+    "ru": "Передайте это, пожалуйста, заведующему."
+   }
+  },
+  {
+   "id": "ule-elama",
+   "front": "Üle elama",
+   "back": {
+    "en": "To live through",
+    "az": "yaşayıb keçirmək, sağ çıxmaq",
+    "ru": "переживать"
+   },
+   "forms": [
+    "üle elada",
+    "elan üle"
+   ],
+   "sentence": {
+    "et": "Me elasime talve üle.",
+    "en": "We got through the winter.",
+    "az": "Qışı başa vurduq.",
+    "ru": "Мы пережили зиму."
+   }
+  },
+  {
+   "id": "ule-hindama",
+   "front": "Üle hindama",
+   "back": {
+    "en": "To overrate",
+    "az": "artıq qiymətləndirmək",
+    "ru": "переоценивать"
+   },
+   "forms": [
+    "üle hinnata",
+    "hindan üle"
+   ],
+   "sentence": {
+    "et": "Ära hinda end üle.",
+    "en": "Don't overrate yourself.",
+    "az": "Özünü artıq qiymətləndirmə.",
+    "ru": "Не переоценивай себя."
+   }
+  },
+  {
+   "id": "ule-jaama",
+   "front": "Üle jääma",
+   "back": {
+    "en": "To be left over",
+    "az": "artıq qalmaq",
+    "ru": "оставаться лишним"
+   },
+   "forms": [
+    "üle jääda",
+    "jääb üle"
+   ],
+   "sentence": {
+    "et": "Kooki jäi üle.",
+    "en": "There is cake left over.",
+    "az": "Tortdan artıq qaldı.",
+    "ru": "Торт остался."
+   }
+  },
+  {
+   "id": "ule-kandma",
+   "front": "Üle kandma",
+   "back": {
+    "en": "To transfer; to broadcast",
+    "az": "köçürmək; yayımlamaq",
+    "ru": "переводить; транслировать"
+   },
+   "forms": [
+    "üle kanda",
+    "kannan üle"
+   ],
+   "sentence": {
+    "et": "Ma kandsin raha üle.",
+    "en": "I transferred the money.",
+    "az": "Pulu köçürdüm.",
+    "ru": "Я перевёл деньги."
+   }
+  },
+  {
+   "id": "ule-minema",
+   "front": "Üle minema",
+   "back": {
+    "en": "To cross; to wear off",
+    "az": "keçmək; keçib getmək",
+    "ru": "переходить; проходить"
+   },
+   "forms": [
+    "üle minna",
+    "lähen üle"
+   ],
+   "sentence": {
+    "et": "Mine rohelise tulega üle tee.",
+    "en": "Cross the road on green.",
+    "az": "Yolu yaşıl işıqda keç.",
+    "ru": "Переходи дорогу на зелёный."
+   }
+  },
+  {
+   "id": "ule-saama",
+   "front": "Üle saama",
+   "back": {
+    "en": "To get over",
+    "az": "öhdəsindən gəlmək, unudub keçmək",
+    "ru": "преодолевать, пережить"
+   },
+   "forms": [
+    "üle saada",
+    "saan üle"
+   ],
+   "sentence": {
+    "et": "Ta ei saa sellest üle.",
+    "en": "She can't get over it.",
+    "az": "O, bunu unuda bilmir.",
+    "ru": "Она не может это пережить."
+   }
+  },
+  {
+   "id": "ule-vaatama",
+   "front": "Üle vaatama",
+   "back": {
+    "en": "To look over, check",
+    "az": "nəzərdən keçirmək",
+    "ru": "просматривать, проверять"
+   },
+   "forms": [
+    "üle vaadata",
+    "vaatan üle"
+   ],
+   "sentence": {
+    "et": "Vaata palun mu tekst üle.",
+    "en": "Please look over my text.",
+    "az": "Zəhmət olmasa, mətnimi nəzərdən keçir.",
+    "ru": "Пожалуйста, просмотри мой текст."
+   }
+  },
+  {
+   "id": "ules-kaaluma",
+   "front": "Üles kaaluma",
+   "back": {
+    "en": "To outweigh",
+    "az": "üstün gəlmək",
+    "ru": "перевешивать"
+   },
+   "forms": [
+    "üles kaaluda",
+    "kaalub üles"
+   ],
+   "sentence": {
+    "et": "Plussid kaaluvad miinused üles.",
+    "en": "The pros outweigh the cons.",
+    "az": "Üstünlüklər çatışmazlıqlardan üstün gəlir.",
+    "ru": "Плюсы перевешивают минусы."
+   }
+  },
+  {
+   "id": "ules-kirjutama",
+   "front": "Üles kirjutama",
+   "back": {
+    "en": "To write down",
+    "az": "yazıb götürmək",
+    "ru": "записывать"
+   },
+   "forms": [
+    "üles kirjutada",
+    "kirjutan üles"
+   ],
+   "sentence": {
+    "et": "Kirjuta mu number üles.",
+    "en": "Write down my number.",
+    "az": "Nömrəmi yaz.",
+    "ru": "Запиши мой номер."
+   }
+  },
+  {
+   "id": "ules-kutsuma",
+   "front": "Üles kutsuma",
+   "back": {
+    "en": "To call on, urge",
+    "az": "çağırmaq, çağırış etmək",
+    "ru": "призывать"
+   },
+   "forms": [
+    "üles kutsuda",
+    "kutsun üles"
+   ],
+   "sentence": {
+    "et": "Linn kutsub kõiki üles prügi sorteerima.",
+    "en": "The city is urging everyone to sort their rubbish.",
+    "az": "Şəhər hamını zibili çeşidləməyə çağırır.",
+    "ru": "Город призывает всех сортировать мусор."
+   }
+  },
+  {
+   "id": "ules-laadima",
+   "front": "Üles laadima",
+   "back": {
+    "en": "To upload",
+    "az": "yükləmək",
+    "ru": "загружать"
+   },
+   "forms": [
+    "üles laadida",
+    "laadin üles"
+   ],
+   "sentence": {
+    "et": "Ma laadisin pildid üles.",
+    "en": "I uploaded the photos.",
+    "az": "Şəkilləri yüklədim.",
+    "ru": "Я загрузил фотографии."
+   }
+  },
+  {
+   "id": "ules-markima",
+   "front": "Üles märkima",
+   "back": {
+    "en": "To note down",
+    "az": "qeyd etmək",
+    "ru": "отмечать, записывать"
+   },
+   "forms": [
+    "üles märkida",
+    "märgin üles"
+   ],
+   "sentence": {
+    "et": "Ma märkisin kuupäeva üles.",
+    "en": "I noted down the date.",
+    "az": "Tarixi qeyd etdim.",
+    "ru": "Я записал дату."
+   }
+  },
+  {
+   "id": "ules-panema",
+   "front": "Üles panema",
+   "back": {
+    "en": "To put up",
+    "az": "asmaq, qurmaq",
+    "ru": "вешать, устанавливать"
+   },
+   "forms": [
+    "üles panna",
+    "panen üles"
+   ],
+   "sentence": {
+    "et": "Me panime riiuli üles.",
+    "en": "We put up the shelf.",
+    "az": "Rəfi divara vurduq.",
+    "ru": "Мы повесили полку."
+   }
+  },
+  {
+   "id": "ules-tunnistama",
+   "front": "Üles tunnistama",
+   "back": {
+    "en": "To confess",
+    "az": "etiraf etmək",
+    "ru": "признаваться"
+   },
+   "forms": [
+    "üles tunnistada",
+    "tunnistan üles"
+   ],
+   "sentence": {
+    "et": "Ta tunnistas kõik üles.",
+    "en": "He confessed everything.",
+    "az": "O, hər şeyi etiraf etdi.",
+    "ru": "Он во всём признался."
+   }
+  },
+  {
+   "id": "ules-aratama",
+   "front": "Üles äratama",
+   "back": {
+    "en": "To wake somebody up",
+    "az": "oyatmaq",
+    "ru": "будить"
+   },
+   "forms": [
+    "üles äratada",
+    "äratan üles"
+   ],
+   "sentence": {
+    "et": "Ära mind enne kaheksat üles ärata.",
+    "en": "Don't wake me before eight.",
+    "az": "Səkkizdən əvvəl məni oyatma.",
+    "ru": "Не буди меня до восьми."
+   }
+  },
+  {
+   "id": "umber-ajama",
+   "front": "Ümber ajama",
+   "back": {
+    "en": "To knock over",
+    "az": "aşırmaq",
+    "ru": "опрокидывать"
+   },
+   "forms": [
+    "ümber ajada",
+    "ajan ümber"
+   ],
+   "sentence": {
+    "et": "Ma ajasin klaasi ümber.",
+    "en": "I knocked over the glass.",
+    "az": "Stəkanı aşırdım.",
+    "ru": "Я опрокинул стакан."
+   }
+  },
+  {
+   "id": "umber-istuma",
+   "front": "Ümber istuma",
+   "back": {
+    "en": "To change — trains, buses",
+    "az": "minik dəyişmək",
+    "ru": "пересаживаться"
+   },
+   "forms": [
+    "ümber istuda",
+    "istun ümber"
+   ],
+   "sentence": {
+    "et": "Tartus peab ümber istuma.",
+    "en": "You have to change in Tartu.",
+    "az": "Tartuda minik dəyişmək lazımdır.",
+    "ru": "В Тарту нужно пересесть."
+   }
+  },
+  {
+   "id": "umber-jutustama",
+   "front": "Ümber jutustama",
+   "back": {
+    "en": "To retell",
+    "az": "nəql etmək",
+    "ru": "пересказывать"
+   },
+   "forms": [
+    "ümber jutustada",
+    "jutustan ümber"
+   ],
+   "sentence": {
+    "et": "Jutusta tekst oma sõnadega ümber.",
+    "en": "Retell the text in your own words.",
+    "az": "Mətni öz sözlərinlə nəql et.",
+    "ru": "Перескажи текст своими словами."
+   }
+  },
+  {
+   "id": "umber-poorama",
+   "front": "Ümber pöörama",
+   "back": {
+    "en": "To turn round, turn over",
+    "az": "çevirmək",
+    "ru": "поворачивать, переворачивать"
+   },
+   "forms": [
+    "ümber pöörata",
+    "pööran ümber"
+   ],
+   "sentence": {
+    "et": "Pööra leht ümber.",
+    "en": "Turn the page over.",
+    "az": "Vərəqi çevir.",
+    "ru": "Переверни страницу."
+   }
+  },
+  {
+   "id": "umber-tegema",
+   "front": "Ümber tegema",
+   "back": {
+    "en": "To redo",
+    "az": "yenidən etmək",
+    "ru": "переделывать"
+   },
+   "forms": [
+    "ümber teha",
+    "teen ümber"
+   ],
+   "sentence": {
+    "et": "Ma pean töö ümber tegema.",
+    "en": "I have to redo the work.",
+    "az": "İşi yenidən etməliyəm.",
+    "ru": "Мне надо переделать работу."
+   }
+  },
+  {
+   "id": "hakkama-saama",
+   "front": "Hakkama saama",
+   "back": {
+    "en": "To cope, manage",
+    "az": "öhdəsindən gəlmək",
+    "ru": "справляться"
+   },
+   "forms": [
+    "hakkama saada",
+    "saan hakkama"
+   ],
+   "sentence": {
+    "et": "Ma saan ise hakkama.",
+    "en": "I can manage on my own.",
+    "az": "Özüm öhdəsindən gələrəm.",
+    "ru": "Я сам справлюсь."
+   }
+  },
+  {
+   "id": "pihta-hakkama",
+   "front": "Pihta hakkama",
+   "back": {
+    "en": "To get started",
+    "az": "işə başlamaq",
+    "ru": "приниматься"
+   },
+   "forms": [
+    "pihta hakata",
+    "hakkan pihta"
+   ],
+   "sentence": {
+    "et": "Hakkame pihta!",
+    "en": "Let's get started!",
+    "az": "Başlayaq!",
+    "ru": "Приступим!"
+   }
+  },
+  {
+   "id": "meelest-minema",
+   "front": "Meelest minema",
+   "back": {
+    "en": "To slip your mind",
+    "az": "yaddan çıxmaq",
+    "ru": "вылетать из головы"
+   },
+   "forms": [
+    "meelest minna",
+    "läheb meelest"
+   ],
+   "sentence": {
+    "et": "Mul läks see täiesti meelest.",
+    "en": "It completely slipped my mind.",
+    "az": "Bu tamamilə yadımdan çıxdı.",
+    "ru": "Это совсем вылетело у меня из головы."
+   }
+  },
+  {
+   "id": "toime-tulema",
+   "front": "Toime tulema",
+   "back": {
+    "en": "To cope, manage",
+    "az": "öhdəsindən gəlmək",
+    "ru": "справляться"
+   },
+   "forms": [
+    "toime tulla",
+    "tulen toime"
+   ],
+   "sentence": {
+    "et": "Kuidas sa uue tööga toime tuled?",
+    "en": "How are you coping with the new job?",
+    "az": "Yeni işin öhdəsindən necə gəlirsən?",
+    "ru": "Как ты справляешься с новой работой?"
+   }
+  }
+ ]
+}

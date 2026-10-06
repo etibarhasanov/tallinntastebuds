@@ -1,0 +1,343 @@
+{
+ "id": "repairs",
+ "added": "2026-09-18",
+ "name": {
+  "en": "At the cleaner's",
+  "az": "Təmizləyicidə",
+  "ru": "В химчистке"
+ },
+ "why": {
+  "en": "A jacket with a broken zip, and the words that get it back",
+  "az": "Zəncirbəndi qırılmış gödəkçə və onu geri alan sözlər",
+  "ru": "Куртка со сломанной молнией и слова, которыми её возвращают"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "roivaste-parandus",
+   "front": "Rõivaste parandus",
+   "back": {
+    "en": "Clothing repairs",
+    "az": "Paltar təmiri",
+    "ru": "Ремонт одежды"
+   },
+   "sentence": {
+    "et": "Rõivaste parandus on esimesel korrusel.",
+    "en": "Clothing repairs are on the first floor.",
+    "az": "Paltar təmiri birinci mərtəbədədir.",
+    "ru": "Ремонт одежды на первом этаже."
+   }
+  },
+  {
+   "id": "keemiline-puhastus",
+   "front": "Keemiline puhastus",
+   "back": {
+    "en": "Dry cleaning",
+    "az": "Kimyəvi təmizləmə",
+    "ru": "Химчистка"
+   },
+   "sentence": {
+    "et": "Ma viisin mantli keemilisse puhastusse.",
+    "en": "I took the coat to the dry cleaner's.",
+    "az": "Paltonu kimyəvi təmizləməyə verdim.",
+    "ru": "Я отнёс пальто в химчистку."
+   }
+  },
+  {
+   "id": "lukk",
+   "front": "Lukk",
+   "back": {
+    "en": "Zip, lock",
+    "az": "Zəncirbənd, kilid",
+    "ru": "Молния, замок"
+   },
+   "forms": [
+    "luku",
+    "lukku"
+   ],
+   "sentence": {
+    "et": "Lukk on katki.",
+    "en": "The zip is broken.",
+    "az": "Zəncirbənd qırılıb.",
+    "ru": "Молния сломана."
+   }
+  },
+  {
+   "id": "katki",
+   "front": "Katki",
+   "back": {
+    "en": "Broken",
+    "az": "Qırıq, xarab",
+    "ru": "Сломанный, порванный"
+   },
+   "sentence": {
+    "et": "Mu jope on katki.",
+    "en": "My jacket is broken.",
+    "az": "Gödəkçəm xarabdır.",
+    "ru": "Моя куртка порвана."
+   }
+  },
+  {
+   "id": "panema",
+   "front": "Panema",
+   "back": {
+    "en": "To put in, to fit",
+    "az": "qoymaq, salmaq",
+    "ru": "вставить, поставить"
+   },
+   "forms": [
+    "panna",
+    "panen"
+   ],
+   "sentence": {
+    "et": "Kas te saate uue luku panna?",
+    "en": "Can you fit a new zip?",
+    "az": "Yeni zəncirbənd sala bilərsiniz?",
+    "ru": "Вы можете вставить новую молнию?"
+   }
+  },
+  {
+   "id": "saab",
+   "front": "Saab",
+   "back": {
+    "en": "It will be ready",
+    "az": "Hazır olacaq",
+    "ru": "Будет готово"
+   },
+   "sentence": {
+    "et": "Millal see valmis saab?",
+    "en": "When will it be ready?",
+    "az": "Bu nə vaxt hazır olacaq?",
+    "ru": "Когда это будет готово?"
+   }
+  },
+  {
+   "id": "hinnakiri",
+   "front": "Hinnakiri",
+   "back": {
+    "en": "Price list",
+    "az": "Qiymət cədvəli",
+    "ru": "Прейскурант"
+   },
+   "forms": [
+    "hinnakirja",
+    "hinnakirja"
+   ],
+   "sentence": {
+    "et": "Hinnakiri on seinal.",
+    "en": "The price list is on the wall.",
+    "az": "Qiymət cədvəli divardadır.",
+    "ru": "Прейскурант на стене."
+   }
+  },
+  {
+   "id": "puhastusse",
+   "front": "Puhastusse",
+   "back": {
+    "en": "In for cleaning",
+    "az": "təmizləməyə",
+    "ru": "в чистку"
+   },
+   "sentence": {
+    "et": "Ma andsin ülikonna puhastusse.",
+    "en": "I put the suit in for cleaning.",
+    "az": "Kostyumu təmizləməyə verdim.",
+    "ru": "Я сдал костюм в чистку."
+   }
+  },
+  {
+   "id": "puhas",
+   "front": "Puhas",
+   "back": {
+    "en": "Clean",
+    "az": "Təmiz",
+    "ru": "Чистый"
+   },
+   "forms": [
+    "puhta",
+    "puhast"
+   ],
+   "sentence": {
+    "et": "Särk on nüüd puhas.",
+    "en": "The shirt is clean now.",
+    "az": "Köynək artıq təmizdir.",
+    "ru": "Рубашка теперь чистая."
+   }
+  },
+  {
+   "id": "eelmisel-nadalal",
+   "front": "Eelmisel nädalal",
+   "back": {
+    "en": "Last week",
+    "az": "Keçən həftə",
+    "ru": "На прошлой неделе"
+   },
+   "sentence": {
+    "et": "Ma tõin selle eelmisel nädalal.",
+    "en": "I brought it in last week.",
+    "az": "Bunu keçən həftə gətirmişdim.",
+    "ru": "Я принёс это на прошлой неделе."
+   }
+  },
+  {
+   "id": "kindlasti",
+   "front": "Kindlasti",
+   "back": {
+    "en": "Certainly",
+    "az": "Mütləq",
+    "ru": "Обязательно"
+   },
+   "sentence": {
+    "et": "Kindlasti, homme on valmis.",
+    "en": "Certainly, it will be ready tomorrow.",
+    "az": "Mütləq, sabah hazır olacaq.",
+    "ru": "Обязательно, завтра будет готово."
+   }
+  },
+  {
+   "id": "parandus",
+   "front": "Parandus",
+   "back": {
+    "en": "Repair, amendment",
+    "az": "Təmir",
+    "ru": "Починка"
+   },
+   "forms": [
+    "paranduse",
+    "parandust"
+   ]
+  },
+  {
+   "id": "remont",
+   "front": "Remont",
+   "back": {
+    "en": "Repair work",
+    "az": "Təmir",
+    "ru": "Ремонт"
+   },
+   "forms": [
+    "remondi",
+    "remonti"
+   ]
+  },
+  {
+   "id": "ara-parandama",
+   "front": "Ära parandama",
+   "back": {
+    "en": "To fix, to repair",
+    "az": "təmir etmək",
+    "ru": "починить"
+   }
+  },
+  {
+   "id": "korda-tegema",
+   "front": "Korda tegema",
+   "back": {
+    "en": "To put right",
+    "az": "qaydasına salmaq",
+    "ru": "чинить"
+   }
+  },
+  {
+   "id": "katki-minema",
+   "front": "Katki minema",
+   "back": {
+    "en": "To break down",
+    "az": "sınmaq",
+    "ru": "ломаться"
+   }
+  },
+  {
+   "id": "rikkis",
+   "front": "Rikkis",
+   "back": {
+    "en": "Out of order",
+    "az": "Xarab",
+    "ru": "Сломан"
+   }
+  },
+  {
+   "id": "plekk",
+   "front": "Plekk",
+   "back": {
+    "en": "Stain",
+    "az": "Ləkə",
+    "ru": "Пятно"
+   },
+   "forms": [
+    "pleki",
+    "plekki"
+   ]
+  },
+  {
+   "id": "veiniplekk",
+   "front": "Veiniplekk",
+   "back": {
+    "en": "Wine stain",
+    "az": "Şərab ləkəsi",
+    "ru": "Пятно от вина"
+   },
+   "forms": [
+    "veinipleki",
+    "veiniplekki"
+   ]
+  },
+  {
+   "id": "puhastama",
+   "front": "Puhastama",
+   "back": {
+    "en": "To clean",
+    "az": "təmizləmək",
+    "ru": "чистить"
+   },
+   "forms": [
+    "puhastada",
+    "puhastan"
+   ]
+  },
+  {
+   "id": "valmis-saama",
+   "front": "Valmis saama",
+   "back": {
+    "en": "To be finished",
+    "az": "hazır olmaq",
+    "ru": "быть готовым"
+   }
+  },
+  {
+   "id": "mis-paevaks",
+   "front": "Mis päevaks?",
+   "back": {
+    "en": "By what day?",
+    "az": "Hansı günə?",
+    "ru": "К какому дню?"
+   }
+  },
+  {
+   "id": "parandama",
+   "front": "Parandama",
+   "back": {
+    "en": "To repair",
+    "az": "təmir etmək",
+    "ru": "ремонтировать"
+   },
+   "forms": [
+    "parandada",
+    "parandan"
+   ]
+  },
+  {
+   "id": "tookoda",
+   "front": "Töökoda",
+   "back": {
+    "en": "Workshop",
+    "az": "Emalatxana",
+    "ru": "Мастерская"
+   },
+   "forms": [
+    "töökoja",
+    "töökoda"
+   ]
+  }
+ ]
+}

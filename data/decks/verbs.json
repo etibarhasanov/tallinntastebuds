@@ -1,0 +1,530 @@
+{
+ "id": "verbs",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Verbs you will need",
+  "az": "Lazım olacaq fellər",
+  "ru": "Глаголы, которые понадобятся"
+ },
+ "why": {
+  "en": "The twenty-odd verbs the rest of the language hangs off",
+  "az": "Dilin qalanının dayandığı iyirmi neçə fel",
+  "ru": "Два десятка глаголов, на которых держится остальной язык"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "olema",
+   "front": "Olema",
+   "back": {
+    "en": "To be",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "forms": [
+    "olla",
+    "olen"
+   ],
+   "sentence": {
+    "et": "Ma olen eestlane.",
+    "en": "I am Estonian.",
+    "az": "Mən estonam.",
+    "ru": "Я эстонец."
+   }
+  },
+  {
+   "id": "minema",
+   "front": "Minema",
+   "back": {
+    "en": "To go",
+    "az": "getmək",
+    "ru": "идти"
+   },
+   "forms": [
+    "minna",
+    "lähen"
+   ],
+   "sentence": {
+    "et": "Ma lähen koju.",
+    "en": "I am going home.",
+    "az": "Evə gedirəm.",
+    "ru": "Я иду домой."
+   }
+  },
+  {
+   "id": "tulema",
+   "front": "Tulema",
+   "back": {
+    "en": "To come",
+    "az": "gəlmək",
+    "ru": "приходить"
+   },
+   "forms": [
+    "tulla",
+    "tulen"
+   ],
+   "sentence": {
+    "et": "Kas sa tuled ka?",
+    "en": "Are you coming too?",
+    "az": "Sən də gəlirsən?",
+    "ru": "Ты тоже придёшь?"
+   }
+  },
+  {
+   "id": "tegema",
+   "front": "Tegema",
+   "back": {
+    "en": "To do, to make",
+    "az": "etmək, qurmaq",
+    "ru": "делать"
+   },
+   "forms": [
+    "teha",
+    "teen"
+   ],
+   "sentence": {
+    "et": "Mida sa teed?",
+    "en": "What are you doing?",
+    "az": "Nə edirsən?",
+    "ru": "Что ты делаешь?"
+   }
+  },
+  {
+   "id": "sooma",
+   "front": "Sööma",
+   "back": {
+    "en": "To eat",
+    "az": "yemək",
+    "ru": "есть"
+   },
+   "forms": [
+    "süüa",
+    "söön"
+   ],
+   "sentence": {
+    "et": "Me sööme kell kaheksa.",
+    "en": "We eat at eight.",
+    "az": "Saat səkkizdə yeyirik.",
+    "ru": "Мы едим в восемь."
+   }
+  },
+  {
+   "id": "jooma",
+   "front": "Jooma",
+   "back": {
+    "en": "To drink",
+    "az": "içmək",
+    "ru": "пить"
+   },
+   "forms": [
+    "juua",
+    "joon"
+   ],
+   "sentence": {
+    "et": "Ma joon ainult vett.",
+    "en": "I only drink water.",
+    "az": "Yalnız su içirəm.",
+    "ru": "Я пью только воду."
+   }
+  },
+  {
+   "id": "raakima",
+   "front": "Rääkima",
+   "back": {
+    "en": "To speak",
+    "az": "danışmaq",
+    "ru": "говорить"
+   },
+   "forms": [
+    "rääkida",
+    "räägin"
+   ],
+   "sentence": {
+    "et": "Ma räägin natuke eesti keelt.",
+    "en": "I speak a little Estonian.",
+    "az": "Bir az eston dilində danışıram.",
+    "ru": "Я немного говорю по-эстонски."
+   }
+  },
+  {
+   "id": "ostma",
+   "front": "Ostma",
+   "back": {
+    "en": "To buy",
+    "az": "almaq",
+    "ru": "покупать"
+   },
+   "forms": [
+    "osta",
+    "ostan"
+   ],
+   "sentence": {
+    "et": "Ma ostan leiba.",
+    "en": "I am buying bread.",
+    "az": "Çörək alıram.",
+    "ru": "Я покупаю хлеб."
+   }
+  },
+  {
+   "id": "maksma",
+   "front": "Maksma",
+   "back": {
+    "en": "To pay, to cost",
+    "az": "ödəmək, dəyəri olmaq",
+    "ru": "платить, стоить"
+   },
+   "forms": [
+    "maksta",
+    "maksan"
+   ],
+   "sentence": {
+    "et": "Kui palju see maksab?",
+    "en": "How much does this cost?",
+    "az": "Bu neçəyədir?",
+    "ru": "Сколько это стоит?"
+   }
+  },
+  {
+   "id": "teadma",
+   "front": "Teadma",
+   "back": {
+    "en": "To know",
+    "az": "bilmək",
+    "ru": "знать"
+   },
+   "forms": [
+    "teada",
+    "tean"
+   ],
+   "sentence": {
+    "et": "Ma ei tea.",
+    "en": "I do not know.",
+    "az": "Bilmirəm.",
+    "ru": "Я не знаю."
+   }
+  },
+  {
+   "id": "tahtma",
+   "front": "Tahtma",
+   "back": {
+    "en": "To want",
+    "az": "istəmək",
+    "ru": "хотеть"
+   },
+   "forms": [
+    "tahta",
+    "tahan"
+   ],
+   "sentence": {
+    "et": "Ma tahan kohvi.",
+    "en": "I want coffee.",
+    "az": "Qəhvə istəyirəm.",
+    "ru": "Я хочу кофе."
+   }
+  },
+  {
+   "id": "saama",
+   "front": "Saama",
+   "back": {
+    "en": "To get, to be able",
+    "az": "almaq, bacarmaq",
+    "ru": "получать, мочь"
+   },
+   "forms": [
+    "saada",
+    "saan"
+   ],
+   "sentence": {
+    "et": "Kas ma saan arve?",
+    "en": "Can I have the bill?",
+    "az": "Hesabı ala bilərəm?",
+    "ru": "Можно счёт?"
+   }
+  },
+  {
+   "id": "andma",
+   "front": "Andma",
+   "back": {
+    "en": "To give",
+    "az": "vermək",
+    "ru": "давать"
+   },
+   "forms": [
+    "anda",
+    "annan"
+   ],
+   "sentence": {
+    "et": "Anna mulle üks minut.",
+    "en": "Give me a minute.",
+    "az": "Mənə bir dəqiqə ver.",
+    "ru": "Дай мне минуту."
+   }
+  },
+  {
+   "id": "votma",
+   "front": "Võtma",
+   "back": {
+    "en": "To take",
+    "az": "götürmək",
+    "ru": "брать"
+   },
+   "forms": [
+    "võtta",
+    "võtan"
+   ],
+   "sentence": {
+    "et": "Ma võtan selle.",
+    "en": "I will take this one.",
+    "az": "Bunu götürürəm.",
+    "ru": "Я возьму это."
+   }
+  },
+  {
+   "id": "nagema",
+   "front": "Nägema",
+   "back": {
+    "en": "To see",
+    "az": "görmək",
+    "ru": "видеть"
+   },
+   "forms": [
+    "näha",
+    "näen"
+   ],
+   "sentence": {
+    "et": "Ma ei näe midagi.",
+    "en": "I cannot see anything.",
+    "az": "Heç nə görmürəm.",
+    "ru": "Я ничего не вижу."
+   }
+  },
+  {
+   "id": "kuulma",
+   "front": "Kuulma",
+   "back": {
+    "en": "To hear",
+    "az": "eşitmək",
+    "ru": "слышать"
+   },
+   "forms": [
+    "kuulda",
+    "kuulen"
+   ],
+   "sentence": {
+    "et": "Ma ei kuule sind.",
+    "en": "I cannot hear you.",
+    "az": "Səni eşitmirəm.",
+    "ru": "Я тебя не слышу."
+   }
+  },
+  {
+   "id": "ootama",
+   "front": "Ootama",
+   "back": {
+    "en": "To wait",
+    "az": "gözləmək",
+    "ru": "ждать"
+   },
+   "forms": [
+    "oodata",
+    "ootan"
+   ],
+   "sentence": {
+    "et": "Palun oota siin.",
+    "en": "Please wait here.",
+    "az": "Zəhmət olmasa, burada gözlə.",
+    "ru": "Пожалуйста, подожди здесь."
+   }
+  },
+  {
+   "id": "kusima",
+   "front": "Küsima",
+   "back": {
+    "en": "To ask",
+    "az": "soruşmaq",
+    "ru": "спрашивать"
+   },
+   "forms": [
+    "küsida",
+    "küsin"
+   ],
+   "sentence": {
+    "et": "Ma küsin ühe asja.",
+    "en": "Let me ask one thing.",
+    "az": "Bir şey soruşum.",
+    "ru": "Спрошу одну вещь."
+   }
+  },
+  {
+   "id": "aitama",
+   "front": "Aitama",
+   "back": {
+    "en": "To help",
+    "az": "kömək etmək",
+    "ru": "помогать"
+   },
+   "forms": [
+    "aidata",
+    "aitan"
+   ],
+   "sentence": {
+    "et": "Kas sa saad aidata?",
+    "en": "Can you help?",
+    "az": "Kömək edə bilərsən?",
+    "ru": "Можешь помочь?"
+   }
+  },
+  {
+   "id": "elama",
+   "front": "Elama",
+   "back": {
+    "en": "To live",
+    "az": "yaşamaq",
+    "ru": "жить"
+   },
+   "forms": [
+    "elada",
+    "elan"
+   ],
+   "sentence": {
+    "et": "Ma elan Tallinnas.",
+    "en": "I live in Tallinn.",
+    "az": "Mən Tallinndə yaşayıram.",
+    "ru": "Я живу в Таллинне."
+   }
+  },
+  {
+   "id": "tootama",
+   "front": "Töötama",
+   "back": {
+    "en": "To work",
+    "az": "işləmək",
+    "ru": "работать"
+   },
+   "forms": [
+    "töötada",
+    "töötan"
+   ],
+   "sentence": {
+    "et": "Ma töötan kodus.",
+    "en": "I work from home.",
+    "az": "Mən evdən işləyirəm.",
+    "ru": "Я работаю из дома."
+   }
+  },
+  {
+   "id": "magama",
+   "front": "Magama",
+   "back": {
+    "en": "To sleep",
+    "az": "yatmaq",
+    "ru": "спать"
+   },
+   "forms": [
+    "magada",
+    "magan"
+   ],
+   "sentence": {
+    "et": "Ma magasin hästi.",
+    "en": "I slept well.",
+    "az": "Yaxşı yatdım.",
+    "ru": "Я хорошо поспал."
+   }
+  },
+  {
+   "id": "aru-saama",
+   "front": "Aru saama",
+   "back": {
+    "en": "To understand",
+    "az": "başa düşmək",
+    "ru": "понимать"
+   },
+   "forms": [
+    "aru saada",
+    "saan aru"
+   ],
+   "sentence": {
+    "et": "Kas sa saad aru?",
+    "en": "Do you understand?",
+    "az": "Başa düşürsən?",
+    "ru": "Ты понимаешь?"
+   }
+  },
+  {
+   "id": "oskama",
+   "front": "Oskama",
+   "back": {
+    "en": "To know how, to be able to",
+    "az": "bacarmaq",
+    "ru": "уметь, владеть"
+   },
+   "forms": [
+    "osata",
+    "oskan"
+   ],
+   "sentence": {
+    "et": "Ma oskan natuke eesti keelt.",
+    "en": "I know a little Estonian.",
+    "az": "Bir az eston dili bilirəm.",
+    "ru": "Я немного знаю эстонский."
+   }
+  },
+  {
+   "id": "meeldima",
+   "front": "Meeldima",
+   "back": {
+    "en": "To like, to please",
+    "az": "xoşa gəlmək",
+    "ru": "нравиться"
+   },
+   "forms": [
+    "meeldida",
+    "meeldib"
+   ],
+   "sentence": {
+    "et": "Mulle meeldib see koht.",
+    "en": "I like this place.",
+    "az": "Bu yer xoşuma gəlir.",
+    "ru": "Мне нравится это место."
+   }
+  },
+  {
+   "id": "armastama",
+   "front": "Armastama",
+   "back": {
+    "en": "To love",
+    "az": "sevmək",
+    "ru": "любить"
+   },
+   "forms": [
+    "armastada",
+    "armastan"
+   ],
+   "sentence": {
+    "et": "Ma armastan seda linna.",
+    "en": "I love this city.",
+    "az": "Bu şəhəri sevirəm.",
+    "ru": "Я люблю этот город."
+   }
+  },
+  {
+   "id": "asuma",
+   "front": "Asuma",
+   "back": {
+    "en": "To be situated",
+    "az": "yerləşmək",
+    "ru": "находиться"
+   },
+   "forms": [
+    "asuda",
+    "asub"
+   ],
+   "sentence": {
+    "et": "Kohvik asub vanalinnas.",
+    "en": "The café is in the old town.",
+    "az": "Kafe köhnə şəhərdə yerləşir.",
+    "ru": "Кафе находится в старом городе."
+   }
+  }
+ ]
+}

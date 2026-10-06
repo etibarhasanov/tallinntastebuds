@@ -1,0 +1,637 @@
+{
+ "id": "clothes",
+ "added": "2026-09-18",
+ "name": {
+  "en": "What you wear",
+  "az": "Geyindiklərin",
+  "ru": "Что вы носите"
+ },
+ "why": {
+  "en": "The rail in a Tallinn shop, from the coat down",
+  "az": "Tallinn mağazasındakı asqı — paltodan aşağı",
+  "ru": "Вешалка в таллиннском магазине, от пальто и ниже"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "riided",
+   "front": "Riided",
+   "back": {
+    "en": "Clothes",
+    "az": "Paltar",
+    "ru": "Одежда"
+   },
+   "sentence": {
+    "et": "Riided on kotis.",
+    "en": "The clothes are in the bag.",
+    "az": "Paltar torbadadır.",
+    "ru": "Одежда в сумке."
+   }
+  },
+  {
+   "id": "kleit",
+   "front": "Kleit",
+   "back": {
+    "en": "Dress",
+    "az": "Don",
+    "ru": "Платье"
+   },
+   "forms": [
+    "kleidi",
+    "kleiti"
+   ],
+   "sentence": {
+    "et": "See kleit on liiga pikk.",
+    "en": "This dress is too long.",
+    "az": "Bu don çox uzundur.",
+    "ru": "Это платье слишком длинное."
+   }
+  },
+  {
+   "id": "seelik",
+   "front": "Seelik",
+   "back": {
+    "en": "Skirt",
+    "az": "Yubka",
+    "ru": "Юбка"
+   },
+   "forms": [
+    "seeliku",
+    "seelikut"
+   ],
+   "sentence": {
+    "et": "Ma otsin musta seelikut.",
+    "en": "I am looking for a black skirt.",
+    "az": "Qara yubka axtarıram.",
+    "ru": "Я ищу чёрную юбку."
+   }
+  },
+  {
+   "id": "pluus",
+   "front": "Pluus",
+   "back": {
+    "en": "Blouse",
+    "az": "Bluzka",
+    "ru": "Блузка"
+   },
+   "forms": [
+    "pluusi",
+    "pluusi"
+   ],
+   "sentence": {
+    "et": "Pluus on valge.",
+    "en": "The blouse is white.",
+    "az": "Bluzka ağdır.",
+    "ru": "Блузка белая."
+   }
+  },
+  {
+   "id": "sark",
+   "front": "Särk",
+   "back": {
+    "en": "Shirt",
+    "az": "Köynək",
+    "ru": "Рубашка"
+   },
+   "forms": [
+    "särgi",
+    "särki"
+   ],
+   "sentence": {
+    "et": "Särk on liiga kitsas.",
+    "en": "The shirt is too narrow.",
+    "az": "Köynək çox dardır.",
+    "ru": "Рубашка слишком узкая."
+   }
+  },
+  {
+   "id": "t-sark",
+   "front": "T-särk",
+   "back": {
+    "en": "T-shirt",
+    "az": "Futbolka",
+    "ru": "Футболка"
+   },
+   "forms": [
+    "t-särgi",
+    "t-särki"
+   ],
+   "sentence": {
+    "et": "Ma kannan T-särki.",
+    "en": "I am wearing a T-shirt.",
+    "az": "Mən futbolka geyinirəm.",
+    "ru": "Я ношу футболку."
+   }
+  },
+  {
+   "id": "kampsun",
+   "front": "Kampsun",
+   "back": {
+    "en": "Jumper",
+    "az": "Sviter",
+    "ru": "Свитер"
+   },
+   "forms": [
+    "kampsuni",
+    "kampsunit"
+   ],
+   "sentence": {
+    "et": "Võta kampsun kaasa.",
+    "en": "Take a jumper with you.",
+    "az": "Sviteri özünlə götür.",
+    "ru": "Возьми свитер с собой."
+   }
+  },
+  {
+   "id": "jakk",
+   "front": "Jakk",
+   "back": {
+    "en": "Jacket",
+    "az": "Gödəkçə",
+    "ru": "Куртка"
+   },
+   "forms": [
+    "jaki",
+    "jakki"
+   ],
+   "sentence": {
+    "et": "Jakk on toolil.",
+    "en": "The jacket is on the chair.",
+    "az": "Gödəkçə stuldadır.",
+    "ru": "Куртка на стуле."
+   }
+  },
+  {
+   "id": "pintsak",
+   "front": "Pintsak",
+   "back": {
+    "en": "Suit jacket",
+    "az": "Pencək",
+    "ru": "Пиджак"
+   },
+   "forms": [
+    "pintsaku",
+    "pintsakut"
+   ],
+   "sentence": {
+    "et": "Ta kannab pintsakut.",
+    "en": "They are wearing a suit jacket.",
+    "az": "O pencək geyinir.",
+    "ru": "Он носит пиджак."
+   }
+  },
+  {
+   "id": "ulikond",
+   "front": "Ülikond",
+   "back": {
+    "en": "Suit",
+    "az": "Kostyum",
+    "ru": "Костюм"
+   },
+   "forms": [
+    "ülikonna",
+    "ülikonda"
+   ],
+   "sentence": {
+    "et": "Ülikond on liiga kallis.",
+    "en": "The suit is too expensive.",
+    "az": "Kostyum çox bahadır.",
+    "ru": "Костюм слишком дорогой."
+   }
+  },
+  {
+   "id": "kostuum",
+   "front": "Kostüüm",
+   "back": {
+    "en": "A woman's suit",
+    "az": "Qadın kostyumu",
+    "ru": "Женский костюм"
+   },
+   "forms": [
+    "kostüümi",
+    "kostüümi"
+   ],
+   "sentence": {
+    "et": "See kostüüm sobib hästi.",
+    "en": "This suit fits well.",
+    "az": "Bu kostyum yaxşı oturur.",
+    "ru": "Этот костюм хорошо сидит."
+   }
+  },
+  {
+   "id": "dressid",
+   "front": "Dressid",
+   "back": {
+    "en": "Tracksuit",
+    "az": "İdman kostyumu",
+    "ru": "Спортивный костюм"
+   },
+   "sentence": {
+    "et": "Dressid on mugavad.",
+    "en": "A tracksuit is comfortable.",
+    "az": "İdman kostyumu rahatdır.",
+    "ru": "Спортивный костюм удобный."
+   }
+  },
+  {
+   "id": "jope",
+   "front": "Jope",
+   "back": {
+    "en": "Padded jacket",
+    "az": "Qalın gödəkçə",
+    "ru": "Стёганая куртка"
+   },
+   "forms": [
+    "jope",
+    "jopet"
+   ],
+   "sentence": {
+    "et": "Jope on soe.",
+    "en": "The jacket is warm.",
+    "az": "Gödəkçə istidir.",
+    "ru": "Куртка тёплая."
+   }
+  },
+  {
+   "id": "kevadjope",
+   "front": "Kevadjope",
+   "back": {
+    "en": "Spring jacket",
+    "az": "Yaz gödəkçəsi",
+    "ru": "Весенняя куртка"
+   },
+   "forms": [
+    "kevadjope",
+    "kevadjopet"
+   ],
+   "sentence": {
+    "et": "Kevadjope on õhuke.",
+    "en": "A spring jacket is thin.",
+    "az": "Yaz gödəkçəsi nazikdir.",
+    "ru": "Весенняя куртка тонкая."
+   }
+  },
+  {
+   "id": "talvejope",
+   "front": "Talvejope",
+   "back": {
+    "en": "Winter jacket",
+    "az": "Qış gödəkçəsi",
+    "ru": "Зимняя куртка"
+   },
+   "forms": [
+    "talvejope",
+    "talvejopet"
+   ],
+   "sentence": {
+    "et": "Talvejope on paks ja soe.",
+    "en": "A winter jacket is thick and warm.",
+    "az": "Qış gödəkçəsi qalın və istidir.",
+    "ru": "Зимняя куртка толстая и тёплая."
+   }
+  },
+  {
+   "id": "kasukas",
+   "front": "Kasukas",
+   "back": {
+    "en": "Fur coat",
+    "az": "Xəz palto",
+    "ru": "Шуба"
+   },
+   "forms": [
+    "kasuka",
+    "kasukat"
+   ],
+   "sentence": {
+    "et": "Kasukas on kallis.",
+    "en": "A fur coat is expensive.",
+    "az": "Xəz palto bahadır.",
+    "ru": "Шуба дорогая."
+   }
+  },
+  {
+   "id": "mantel",
+   "front": "Mantel",
+   "back": {
+    "en": "Coat",
+    "az": "Palto",
+    "ru": "Пальто"
+   },
+   "forms": [
+    "mantli",
+    "mantlit"
+   ],
+   "sentence": {
+    "et": "Mantel on nagis.",
+    "en": "The coat is on the hook.",
+    "az": "Palto asqıdadır.",
+    "ru": "Пальто на вешалке."
+   }
+  },
+  {
+   "id": "puksid",
+   "front": "Püksid",
+   "back": {
+    "en": "Trousers",
+    "az": "Şalvar",
+    "ru": "Брюки"
+   },
+   "sentence": {
+    "et": "Need püksid on liiga laiad.",
+    "en": "These trousers are too wide.",
+    "az": "Bu şalvar çox genişdir.",
+    "ru": "Эти брюки слишком широкие."
+   }
+  },
+  {
+   "id": "teksad",
+   "front": "Teksad",
+   "back": {
+    "en": "Jeans",
+    "az": "Cins",
+    "ru": "Джинсы"
+   },
+   "sentence": {
+    "et": "Ma ostsin uued teksad.",
+    "en": "I bought new jeans.",
+    "az": "Yeni cins aldım.",
+    "ru": "Я купил новые джинсы."
+   }
+  },
+  {
+   "id": "ujumisriided",
+   "front": "Ujumisriided",
+   "back": {
+    "en": "Swimwear",
+    "az": "Çimərlik paltarı",
+    "ru": "Купальные вещи"
+   },
+   "sentence": {
+    "et": "Võta ujumisriided kaasa.",
+    "en": "Take your swimwear with you.",
+    "az": "Çimərlik paltarını özünlə götür.",
+    "ru": "Возьми купальные вещи с собой."
+   }
+  },
+  {
+   "id": "retuusid",
+   "front": "Retuusid",
+   "back": {
+    "en": "Leggings",
+    "az": "Legginqlər",
+    "ru": "Рейтузы"
+   }
+  },
+  {
+   "id": "oosark",
+   "front": "Öösärk",
+   "back": {
+    "en": "Nightgown",
+    "az": "Gecə köynəyi",
+    "ru": "Ночная рубашка"
+   },
+   "forms": [
+    "öösärgi",
+    "öösärki"
+   ]
+  },
+  {
+   "id": "suveriided",
+   "front": "Suveriided",
+   "back": {
+    "en": "Summer clothes",
+    "az": "Yay paltarı",
+    "ru": "Летняя одежда"
+   }
+  },
+  {
+   "id": "dressipuksid",
+   "front": "Dressipüksid",
+   "back": {
+    "en": "Sweatpants",
+    "az": "İdman şalvarı",
+    "ru": "Спортивные штаны"
+   }
+  },
+  {
+   "id": "pesu",
+   "front": "Pesu",
+   "back": {
+    "en": "Underwear, laundry",
+    "az": "Alt paltarı",
+    "ru": "Бельё"
+   },
+   "forms": [
+    "pesu",
+    "pesu"
+   ]
+  },
+  {
+   "id": "naistepesu",
+   "front": "Naistepesu",
+   "back": {
+    "en": "Women's lingerie",
+    "az": "Qadın alt paltarı",
+    "ru": "Женское бельё"
+   },
+   "forms": [
+    "naistepesu",
+    "naistepesu"
+   ]
+  },
+  {
+   "id": "ehted",
+   "front": "Ehted",
+   "back": {
+    "en": "Jewellery",
+    "az": "Bəzək əşyaları",
+    "ru": "Украшения"
+   }
+  },
+  {
+   "id": "mood",
+   "front": "Mood",
+   "back": {
+    "en": "Fashion",
+    "az": "Moda",
+    "ru": "Мода"
+   },
+   "forms": [
+    "moe",
+    "moodi"
+   ]
+  },
+  {
+   "id": "moes",
+   "front": "Moes",
+   "back": {
+    "en": "In fashion",
+    "az": "Dəbdə",
+    "ru": "В моде"
+   }
+  },
+  {
+   "id": "pidulik",
+   "front": "Pidulik",
+   "back": {
+    "en": "Formal, festive",
+    "az": "Təntənəli",
+    "ru": "Праздничный"
+   },
+   "forms": [
+    "piduliku",
+    "pidulikku"
+   ]
+  },
+  {
+   "id": "materjal",
+   "front": "Materjal",
+   "back": {
+    "en": "Material",
+    "az": "Material",
+    "ru": "Материал"
+   },
+   "forms": [
+    "materjali",
+    "materjali"
+   ]
+  },
+  {
+   "id": "mudel",
+   "front": "Mudel",
+   "back": {
+    "en": "Model, version",
+    "az": "Model",
+    "ru": "Модель"
+   },
+   "forms": [
+    "mudeli",
+    "mudelit"
+   ]
+  },
+  {
+   "id": "kandma",
+   "front": "Kandma",
+   "back": {
+    "en": "To wear",
+    "az": "geyinmək",
+    "ru": "носить"
+   },
+   "forms": [
+    "kanda",
+    "kannan"
+   ]
+  },
+  {
+   "id": "selga-panema",
+   "front": "Selga panema",
+   "back": {
+    "en": "To put on",
+    "az": "əyninə geymək",
+    "ru": "надевать"
+   }
+  },
+  {
+   "id": "jalga-panema",
+   "front": "Jalga panema",
+   "back": {
+    "en": "To put on (on the foot)",
+    "az": "ayağına geymək",
+    "ru": "надевать (на ноги)"
+   }
+  },
+  {
+   "id": "katte-panema",
+   "front": "Kätte panema",
+   "back": {
+    "en": "To put on (on the hand)",
+    "az": "əlinə geymək",
+    "ru": "надевать (на руки)"
+   }
+  },
+  {
+   "id": "pahe-panema",
+   "front": "Pähe panema",
+   "back": {
+    "en": "To put on (on the head)",
+    "az": "başına qoymaq",
+    "ru": "надевать (на голову)"
+   }
+  },
+  {
+   "id": "kaela-panema",
+   "front": "Kaela panema",
+   "back": {
+    "en": "To put on (on the neck)",
+    "az": "boynuna taxmaq",
+    "ru": "надевать (на шею)"
+   }
+  },
+  {
+   "id": "riidesse-panema",
+   "front": "Riidesse panema",
+   "back": {
+    "en": "To get dressed",
+    "az": "geyinmək",
+    "ru": "одеваться"
+   }
+  },
+  {
+   "id": "riidest-lahti-votma",
+   "front": "Riidest lahti võtma",
+   "back": {
+    "en": "To get undressed",
+    "az": "soyunmaq",
+    "ru": "раздеваться"
+   }
+  },
+  {
+   "id": "kortsuma",
+   "front": "Kortsuma",
+   "back": {
+    "en": "To crease",
+    "az": "qırışmaq",
+    "ru": "мяться"
+   },
+   "forms": [
+    "kortsuda",
+    "kortsub"
+   ]
+  },
+  {
+   "id": "kortsus",
+   "front": "Kortsus",
+   "back": {
+    "en": "Creased",
+    "az": "Qırışmış",
+    "ru": "Помятый"
+   }
+  },
+  {
+   "id": "villane",
+   "front": "Villane",
+   "back": {
+    "en": "Woollen",
+    "az": "Yundan",
+    "ru": "Шерстяной"
+   },
+   "forms": [
+    "villase",
+    "villast"
+   ]
+  },
+  {
+   "id": "paras",
+   "front": "Paras",
+   "back": {
+    "en": "The right size",
+    "az": "Uyğun",
+    "ru": "Как раз"
+   },
+   "forms": [
+    "paraja",
+    "parajat"
+   ]
+  }
+ ]
+}

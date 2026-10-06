@@ -1,0 +1,631 @@
+{
+ "id": "school",
+ "added": "2026-09-19",
+ "name": {
+  "en": "School and the course",
+  "az": "Məktəb və kurs",
+  "ru": "Школа и курсы"
+ },
+ "why": {
+  "en": "The words a language course is run in, from the textbook to the dictation",
+  "az": "Dil kursunun sözləri — dərslikdən diktəyə qədər",
+  "ru": "Слова языковых курсов — от учебника до диктанта"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "kool",
+   "front": "Kool",
+   "back": {
+    "en": "School",
+    "az": "Məktəb",
+    "ru": "Школа"
+   },
+   "forms": [
+    "kooli",
+    "kooli"
+   ],
+   "sentence": {
+    "et": "Lapsed on koolis.",
+    "en": "The children are at school.",
+    "az": "Uşaqlar məktəbdədir.",
+    "ru": "Дети в школе."
+   }
+  },
+  {
+   "id": "koolis",
+   "front": "Koolis",
+   "back": {
+    "en": "At school, in school",
+    "az": "Məktəbdə",
+    "ru": "В школе"
+   },
+   "sentence": {
+    "et": "Ma õpin koolis eesti keelt.",
+    "en": "I study Estonian at school.",
+    "az": "Məktəbdə eston dili öyrənirəm.",
+    "ru": "Я учу эстонский в школе."
+   }
+  },
+  {
+   "id": "keeltekool",
+   "front": "Keeltekool",
+   "back": {
+    "en": "Language school",
+    "az": "Dil məktəbi",
+    "ru": "Языковая школа"
+   },
+   "forms": [
+    "keeltekooli",
+    "keeltekooli"
+   ],
+   "sentence": {
+    "et": "Keeltekool on kesklinnas.",
+    "en": "The language school is in the centre.",
+    "az": "Dil məktəbi mərkəzdədir.",
+    "ru": "Языковая школа в центре."
+   }
+  },
+  {
+   "id": "kursusel",
+   "front": "Kursusel",
+   "back": {
+    "en": "On the course",
+    "az": "Kursda",
+    "ru": "На курсах"
+   },
+   "sentence": {
+    "et": "Ma käin eesti keele kursusel.",
+    "en": "I go to an Estonian course.",
+    "az": "Eston dili kursuna gedirəm.",
+    "ru": "Я хожу на курсы эстонского."
+   }
+  },
+  {
+   "id": "ulikool",
+   "front": "Ülikool",
+   "back": {
+    "en": "University",
+    "az": "Universitet",
+    "ru": "Университет"
+   },
+   "forms": [
+    "ülikooli",
+    "ülikooli"
+   ],
+   "sentence": {
+    "et": "Tartu ülikool on vana.",
+    "en": "The University of Tartu is old.",
+    "az": "Tartu universiteti qədimdir.",
+    "ru": "Тартуский университет старый."
+   }
+  },
+  {
+   "id": "opetaja",
+   "front": "Õpetaja",
+   "back": {
+    "en": "Teacher",
+    "az": "Müəllim",
+    "ru": "Учитель, учительница"
+   },
+   "forms": [
+    "õpetaja",
+    "õpetajat"
+   ],
+   "sentence": {
+    "et": "Õpetaja räägib aeglaselt.",
+    "en": "The teacher speaks slowly.",
+    "az": "Müəllim yavaş danışır.",
+    "ru": "Учитель говорит медленно."
+   }
+  },
+  {
+   "id": "opetama",
+   "front": "Õpetama",
+   "back": {
+    "en": "To teach",
+    "az": "öyrətmək",
+    "ru": "преподавать, обучать"
+   },
+   "forms": [
+    "õpetada",
+    "õpetan"
+   ],
+   "sentence": {
+    "et": "Ta õpetab eesti keelt.",
+    "en": "They teach Estonian.",
+    "az": "O eston dili öyrədir.",
+    "ru": "Он преподаёт эстонский."
+   }
+  },
+  {
+   "id": "opik",
+   "front": "Õpik",
+   "back": {
+    "en": "Textbook",
+    "az": "Dərslik",
+    "ru": "Учебник"
+   },
+   "forms": [
+    "õpiku",
+    "õpikut"
+   ],
+   "sentence": {
+    "et": "Õpik on kotis.",
+    "en": "The textbook is in my bag.",
+    "az": "Dərslik çantadadır.",
+    "ru": "Учебник в сумке."
+   }
+  },
+  {
+   "id": "opilane",
+   "front": "Õpilane",
+   "back": {
+    "en": "A pupil",
+    "az": "Şagird",
+    "ru": "Ученик, ученица"
+   },
+   "forms": [
+    "õpilase",
+    "õpilast"
+   ],
+   "sentence": {
+    "et": "Õpilane loeb valjusti.",
+    "en": "The pupil reads aloud.",
+    "az": "Şagird ucadan oxuyur.",
+    "ru": "Ученик читает вслух."
+   }
+  },
+  {
+   "id": "uliopilane",
+   "front": "Üliõpilane",
+   "back": {
+    "en": "A university student",
+    "az": "Tələbə",
+    "ru": "Студент, студентка"
+   },
+   "forms": [
+    "üliõpilase",
+    "üliõpilast"
+   ],
+   "sentence": {
+    "et": "Üliõpilastele on soodustus.",
+    "en": "There is a discount for students.",
+    "az": "Tələbələr üçün endirim var.",
+    "ru": "Для студентов есть скидка."
+   }
+  },
+  {
+   "id": "etteutlus",
+   "front": "Etteütlus",
+   "back": {
+    "en": "Dictation",
+    "az": "Diktə",
+    "ru": "Диктант"
+   },
+   "forms": [
+    "etteütluse",
+    "etteütlust"
+   ],
+   "sentence": {
+    "et": "Homme on etteütlus.",
+    "en": "There is a dictation tomorrow.",
+    "az": "Sabah diktə var.",
+    "ru": "Завтра диктант."
+   }
+  },
+  {
+   "id": "olen-oppinud",
+   "front": "Olen õppinud",
+   "back": {
+    "en": "I have studied",
+    "az": "Mən oxumuşam",
+    "ru": "Я учился"
+   },
+   "sentence": {
+    "et": "Ma olen õppinud kaks aastat.",
+    "en": "I have studied for two years.",
+    "az": "İki ildir oxuyuram.",
+    "ru": "Я учился два года."
+   }
+  },
+  {
+   "id": "ainsus",
+   "front": "Ainsus",
+   "back": {
+    "en": "Singular",
+    "az": "Tək",
+    "ru": "Единственное число"
+   },
+   "forms": [
+    "ainsuse",
+    "ainsust"
+   ],
+   "sentence": {
+    "et": "Ainsuses on üks, mitmuses mitu.",
+    "en": "Singular is one, plural is several.",
+    "az": "Təkdə bir, cəmdə bir neçə olur.",
+    "ru": "В единственном числе один, во множественном — несколько."
+   }
+  },
+  {
+   "id": "mitmus",
+   "front": "Mitmus",
+   "back": {
+    "en": "Plural",
+    "az": "Cəm",
+    "ru": "Множественное число"
+   },
+   "forms": [
+    "mitmuse",
+    "mitmust"
+   ],
+   "sentence": {
+    "et": "Selle sõna mitmus on raske.",
+    "en": "The plural of this word is hard.",
+    "az": "Bu sözün cəmi çətindir.",
+    "ru": "Множественное число этого слова трудное."
+   }
+  },
+  {
+   "id": "loeng",
+   "front": "Loeng",
+   "back": {
+    "en": "Lecture",
+    "az": "Mühazirə",
+    "ru": "Лекция"
+   },
+   "forms": [
+    "loengu",
+    "loengut"
+   ],
+   "sentence": {
+    "et": "Loeng algab kell kümme.",
+    "en": "The lecture starts at ten.",
+    "az": "Mühazirə saat onda başlayır.",
+    "ru": "Лекция начинается в десять."
+   }
+  },
+  {
+   "id": "eksam",
+   "front": "Eksam",
+   "back": {
+    "en": "Exam",
+    "az": "İmtahan",
+    "ru": "Экзамен"
+   },
+   "forms": [
+    "eksami",
+    "eksamit"
+   ],
+   "sentence": {
+    "et": "Eksam on reedel.",
+    "en": "The exam is on Friday.",
+    "az": "İmtahan cümə günüdür.",
+    "ru": "Экзамен в пятницу."
+   }
+  },
+  {
+   "id": "nimetav",
+   "front": "Nimetav",
+   "back": {
+    "en": "Nominative",
+    "az": "Adlıq hal",
+    "ru": "Именительный падеж"
+   },
+   "forms": [
+    "nimetava",
+    "nimetavat"
+   ],
+   "sentence": {
+    "et": "Nimetav vastab küsimusele kes?",
+    "en": "The nominative answers the question who?",
+    "az": "Adlıq hal kim? sualına cavab verir.",
+    "ru": "Именительный падеж отвечает на вопрос кто?"
+   }
+  },
+  {
+   "id": "omastav",
+   "front": "Omastav",
+   "back": {
+    "en": "Genitive",
+    "az": "Yiyəlik hal",
+    "ru": "Родительный падеж"
+   },
+   "forms": [
+    "omastava",
+    "omastavat"
+   ],
+   "sentence": {
+    "et": "Omastav vastab küsimusele kelle?",
+    "en": "The genitive answers the question whose?",
+    "az": "Yiyəlik hal kimin? sualına cavab verir.",
+    "ru": "Родительный падеж отвечает на вопрос чей?"
+   }
+  },
+  {
+   "id": "osastav",
+   "front": "Osastav",
+   "back": {
+    "en": "Partitive",
+    "az": "Bölmə halı",
+    "ru": "Частичный падеж"
+   },
+   "forms": [
+    "osastava",
+    "osastavat"
+   ],
+   "sentence": {
+    "et": "Osastav vastab küsimusele keda?",
+    "en": "The partitive answers the question whom?",
+    "az": "Bölmə halı kimi? sualına cavab verir.",
+    "ru": "Частичный падеж отвечает на вопрос кого?"
+   }
+  },
+  {
+   "id": "haridus",
+   "front": "Haridus",
+   "back": {
+    "en": "Education",
+    "az": "Təhsil",
+    "ru": "Образование"
+   },
+   "forms": [
+    "hariduse",
+    "haridust"
+   ]
+  },
+  {
+   "id": "korgharidus",
+   "front": "Kõrgharidus",
+   "back": {
+    "en": "University education",
+    "az": "Ali təhsil",
+    "ru": "Высшее образование"
+   },
+   "forms": [
+    "kõrghariduse",
+    "kõrgharidust"
+   ]
+  },
+  {
+   "id": "keskeriharidus",
+   "front": "Keskeriharidus",
+   "back": {
+    "en": "Vocational secondary education",
+    "az": "Orta ixtisas təhsili",
+    "ru": "Среднее специальное"
+   },
+   "forms": [
+    "keskerihariduse",
+    "keskeriharidust"
+   ]
+  },
+  {
+   "id": "kutsekool",
+   "front": "Kutsekool",
+   "back": {
+    "en": "Vocational school",
+    "az": "Peşə məktəbi",
+    "ru": "Профтехучилище"
+   },
+   "forms": [
+    "kutsekooli",
+    "kutsekooli"
+   ]
+  },
+  {
+   "id": "diplom",
+   "front": "Diplom",
+   "back": {
+    "en": "Diploma",
+    "az": "Diplom",
+    "ru": "Диплом"
+   },
+   "forms": [
+    "diplomi",
+    "diplomit"
+   ]
+  },
+  {
+   "id": "kursus",
+   "front": "Kursus",
+   "back": {
+    "en": "Course",
+    "az": "Kurs",
+    "ru": "Курс"
+   },
+   "forms": [
+    "kursuse",
+    "kursust"
+   ]
+  },
+  {
+   "id": "koolimaja",
+   "front": "Koolimaja",
+   "back": {
+    "en": "School building",
+    "az": "Məktəb binası",
+    "ru": "Здание школы"
+   },
+   "forms": [
+    "koolimaja",
+    "koolimaja"
+   ]
+  },
+  {
+   "id": "kooli-lopetama",
+   "front": "Kooli lõpetama",
+   "back": {
+    "en": "To finish school",
+    "az": "məktəbi bitirmək",
+    "ru": "заканчивать школу"
+   }
+  },
+  {
+   "id": "selgeks-opetama",
+   "front": "Selgeks õpetama",
+   "back": {
+    "en": "To teach properly",
+    "az": "öyrətmək",
+    "ru": "научить"
+   }
+  },
+  {
+   "id": "soovitus",
+   "front": "Soovitus",
+   "back": {
+    "en": "Suggestion",
+    "az": "Tövsiyə",
+    "ru": "Рекомендация"
+   },
+   "forms": [
+    "soovituse",
+    "soovitust"
+   ]
+  },
+  {
+   "id": "kusimus",
+   "front": "Küsimus",
+   "back": {
+    "en": "Question",
+    "az": "Sual",
+    "ru": "Вопрос"
+   },
+   "forms": [
+    "küsimuse",
+    "küsimust"
+   ]
+  },
+  {
+   "id": "tekst",
+   "front": "Tekst",
+   "back": {
+    "en": "Text",
+    "az": "Mətn",
+    "ru": "Текст"
+   },
+   "forms": [
+    "teksti",
+    "teksti"
+   ]
+  },
+  {
+   "id": "keskkool",
+   "front": "Keskkool",
+   "back": {
+    "en": "Secondary school",
+    "az": "Orta məktəb",
+    "ru": "Средняя школа"
+   },
+   "forms": [
+    "keskkooli",
+    "keskkooli"
+   ]
+  },
+  {
+   "id": "gumnaasium",
+   "front": "Gümnaasium",
+   "back": {
+    "en": "Upper secondary school",
+    "az": "Gimnaziya, lisey",
+    "ru": "Гимназия"
+   },
+   "forms": [
+    "gümnaasiumi",
+    "gümnaasiumi"
+   ]
+  },
+  {
+   "id": "magistriope",
+   "front": "Magistriõpe",
+   "back": {
+    "en": "Master's studies",
+    "az": "Magistratura",
+    "ru": "Магистратура"
+   },
+   "forms": [
+    "magistriõppe",
+    "magistriõpet"
+   ]
+  },
+  {
+   "id": "doktoriope",
+   "front": "Doktoriõpe",
+   "back": {
+    "en": "PhD studies",
+    "az": "Doktorantura",
+    "ru": "Докторантура"
+   },
+   "forms": [
+    "doktoriõppe",
+    "doktoriõpet"
+   ]
+  },
+  {
+   "id": "keskharidus",
+   "front": "Keskharidus",
+   "back": {
+    "en": "Secondary education",
+    "az": "Orta təhsil",
+    "ru": "Среднее образование"
+   },
+   "forms": [
+    "keskhariduse",
+    "keskharidust"
+   ]
+  },
+  {
+   "id": "kordama",
+   "front": "Kordama",
+   "back": {
+    "en": "To repeat, to revise",
+    "az": "Təkrarlamaq",
+    "ru": "Повторять"
+   },
+   "forms": [
+    "korrata",
+    "kordan"
+   ]
+  },
+  {
+   "id": "minevik",
+   "front": "Minevik",
+   "back": {
+    "en": "The past, the past tense",
+    "az": "Keçmiş, keçmiş zaman",
+    "ru": "Прошлое, прошедшее время"
+   },
+   "forms": [
+    "mineviku",
+    "minevikku"
+   ]
+  },
+  {
+   "id": "kasklause",
+   "front": "Käsklause",
+   "back": {
+    "en": "Imperative sentence",
+    "az": "Əmr cümləsi",
+    "ru": "Повелительное предложение"
+   },
+   "forms": [
+    "käsklause",
+    "käsklauset"
+   ]
+  },
+  {
+   "id": "tudeng",
+   "front": "Tudeng",
+   "back": {
+    "en": "University student",
+    "az": "Tələbə",
+    "ru": "Студент"
+   },
+   "forms": [
+    "tudengi",
+    "tudengit"
+   ]
+  }
+ ]
+}

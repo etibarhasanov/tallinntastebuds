@@ -1,0 +1,457 @@
+{
+ "id": "stopp-words",
+ "added": "2026-09-29",
+ "name": {
+  "en": "The words of Stopp, seisku aeg!",
+  "az": "Stopp, seisku aeg! mahnısının sözləri",
+  "ru": "Слова из песни Stopp, seisku aeg!"
+ },
+ "why": {
+  "en": "The words from the song the other decks do not have yet, each with its line",
+  "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+  "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+ },
+ "cards": [
+  {
+   "id": "saatja",
+   "front": "Saatja",
+   "back": {
+    "en": "Companion — who goes along; a sender",
+    "az": "Yol yoldaşı; göndərən",
+    "ru": "Спутник; отправитель"
+   },
+   "forms": [
+    "saatja",
+    "saatjat"
+   ],
+   "sentence": {
+    "et": "Siin saatjaks on kõrbes valge-valge-valge liiv",
+    "en": "Here in the desert the only company is white, white, white sand",
+    "az": "Burada, səhrada yol yoldaşı ağ-ağ-ağ qumdur",
+    "ru": "Здесь, в пустыне, спутник — белый-белый-белый песок"
+   }
+  },
+  {
+   "id": "korb",
+   "front": "Kõrb",
+   "back": {
+    "en": "Desert",
+    "az": "Səhra",
+    "ru": "Пустыня"
+   },
+   "forms": [
+    "kõrbe",
+    "kõrbe"
+   ],
+   "sentence": {
+    "et": "Siin saatjaks on kõrbes valge-valge-valge liiv",
+    "en": "Here in the desert the only company is white, white, white sand",
+    "az": "Burada, səhrada yol yoldaşı ağ-ağ-ağ qumdur",
+    "ru": "Здесь, в пустыне, спутник — белый-белый-белый песок"
+   }
+  },
+  {
+   "id": "liiv",
+   "front": "Liiv",
+   "back": {
+    "en": "Sand",
+    "az": "Qum",
+    "ru": "Песок"
+   },
+   "forms": [
+    "liiva",
+    "liiva"
+   ],
+   "sentence": {
+    "et": "Siin saatjaks on kõrbes valge-valge-valge liiv",
+    "en": "Here in the desert the only company is white, white, white sand",
+    "az": "Burada, səhrada yol yoldaşı ağ-ağ-ağ qumdur",
+    "ru": "Здесь, в пустыне, спутник — белый-белый-белый песок"
+   }
+  },
+  {
+   "id": "kaamel",
+   "front": "Kaamel",
+   "back": {
+    "en": "Camel",
+    "az": "Dəvə",
+    "ru": "Верблюд"
+   },
+   "forms": [
+    "kaameli",
+    "kaamelit"
+   ],
+   "sentence": {
+    "et": "See kaamel siin ju taeva meid viib.",
+    "en": "This camel here is carrying us to the sky, after all.",
+    "az": "Bu dəvə axı bizi göyə aparır.",
+    "ru": "Этот верблюд ведь несёт нас в небо."
+   }
+  },
+  {
+   "id": "karavan",
+   "front": "Karavan",
+   "back": {
+    "en": "Caravan",
+    "az": "Karvan",
+    "ru": "Караван"
+   },
+   "forms": [
+    "karavani",
+    "karavani"
+   ],
+   "sentence": {
+    "et": "ja üks mees, kes viib kaamelite karavani nii pikka.",
+    "en": "and one man, leading a caravan of camels so long.",
+    "az": "və dəvələrin elə uzun karvanını aparan bir kişi.",
+    "ru": "и один человек, что ведёт такой длинный караван верблюдов."
+   }
+  },
+  {
+   "id": "ainus",
+   "front": "Ainus",
+   "back": {
+    "en": "The only one",
+    "az": "Yeganə",
+    "ru": "Единственный"
+   },
+   "forms": [
+    "ainsa",
+    "ainsat"
+   ],
+   "sentence": {
+    "et": "Hommik, päev, öö on ainsad ajamärgid.",
+    "en": "Morning, day and night are the only marks of time.",
+    "az": "Səhər, gündüz, gecə — zamanın yeganə nişanələridir.",
+    "ru": "Утро, день, ночь — единственные приметы времени."
+   }
+  },
+  {
+   "id": "siduma",
+   "front": "Siduma",
+   "back": {
+    "en": "To tie, to bind",
+    "az": "Bağlamaq",
+    "ru": "Связывать"
+   },
+   "forms": [
+    "siduda",
+    "seon"
+   ],
+   "sentence": {
+    "et": "Need on sidunud meest, kes siin.",
+    "en": "They have bound the man who is here.",
+    "az": "Onlar buradakı kişini bağlayıb.",
+    "ru": "Они связали человека, что здесь."
+   }
+  },
+  {
+   "id": "uksik",
+   "front": "Üksik",
+   "back": {
+    "en": "Lone, lonely",
+    "az": "Tək, tənha",
+    "ru": "Одинокий"
+   },
+   "forms": [
+    "üksiku",
+    "üksikut"
+   ],
+   "sentence": {
+    "et": "Ja üksik kauneim on haaremis neid.",
+    "en": "And the fairest of them sits alone in the harem.",
+    "az": "Onların ən gözəli isə hərəmdə tək-tənhadır.",
+    "ru": "А прекраснейшая из них одна в гареме."
+   }
+  },
+  {
+   "id": "kaunis",
+   "front": "Kaunis",
+   "back": {
+    "en": "Beautiful, fair",
+    "az": "Gözəl",
+    "ru": "Красивый, прекрасный"
+   },
+   "forms": [
+    "kauni",
+    "kaunist"
+   ],
+   "sentence": {
+    "et": "Ja üksik kauneim on haaremis neid.",
+    "en": "And the fairest of them sits alone in the harem.",
+    "az": "Onların ən gözəli isə hərəmdə tək-tənhadır.",
+    "ru": "А прекраснейшая из них одна в гареме."
+   }
+  },
+  {
+   "id": "vaid",
+   "front": "Vaid",
+   "back": {
+    "en": "Only, merely",
+    "az": "Sadəcə, yalnız",
+    "ru": "Лишь, только"
+   },
+   "sentence": {
+    "et": "Päike tundub kuu vaid.",
+    "en": "The sun seems only a moon.",
+    "az": "Günəş sanki sadəcə aydır.",
+    "ru": "Солнце кажется всего лишь луной."
+   }
+  },
+  {
+   "id": "kaeblema",
+   "front": "Kaeblema",
+   "back": {
+    "en": "To lament, to keep complaining",
+    "az": "Nalə çəkmək, şikayətlənmək",
+    "ru": "Причитать, жаловаться"
+   },
+   "sentence": {
+    "et": "Stopp, seisku aeg! — nii kaebleb neid",
+    "en": "“Stop, let time stand still!” — so goes the lament",
+    "az": "“Dayan, qoy zaman dayansın!” — belə nalə çəkilir",
+    "ru": "«Стоп, пусть остановится время!» — так звучит плач"
+   }
+  },
+  {
+   "id": "kiirus",
+   "front": "Kiirus",
+   "back": {
+    "en": "Speed",
+    "az": "Sürət",
+    "ru": "Скорость"
+   },
+   "forms": [
+    "kiiruse",
+    "kiirust"
+   ],
+   "sentence": {
+    "et": "On mul lai limusiin, kiirus on tohutu.",
+    "en": "I have a wide limousine, the speed is tremendous.",
+    "az": "Mənim geniş limuzinim var, sürət dəhşətlidir.",
+    "ru": "У меня широкий лимузин, скорость огромная."
+   }
+  },
+  {
+   "id": "tohutu",
+   "front": "Tohutu",
+   "back": {
+    "en": "Tremendous, enormous",
+    "az": "Nəhəng, dəhşətli",
+    "ru": "Огромный"
+   },
+   "forms": [
+    "tohutu",
+    "tohutut"
+   ],
+   "sentence": {
+    "et": "On mul lai limusiin, kiirus on tohutu.",
+    "en": "I have a wide limousine, the speed is tremendous.",
+    "az": "Mənim geniş limuzinim var, sürət dəhşətlidir.",
+    "ru": "У меня широкий лимузин, скорость огромная."
+   }
+  },
+  {
+   "id": "ohk",
+   "front": "Õhk",
+   "back": {
+    "en": "Air",
+    "az": "Hava",
+    "ru": "Воздух"
+   },
+   "forms": [
+    "õhu",
+    "õhku"
+   ],
+   "sentence": {
+    "et": "Õhus kuid on surmav gaas.",
+    "en": "But in the air there is a deadly gas.",
+    "az": "Amma havada öldürücü qaz var.",
+    "ru": "Но в воздухе — смертельный газ."
+   }
+  },
+  {
+   "id": "surmav",
+   "front": "Surmav",
+   "back": {
+    "en": "Deadly",
+    "az": "Öldürücü",
+    "ru": "Смертельный"
+   },
+   "forms": [
+    "surmava",
+    "surmavat"
+   ],
+   "sentence": {
+    "et": "Õhus kuid on surmav gaas.",
+    "en": "But in the air there is a deadly gas.",
+    "az": "Amma havada öldürücü qaz var.",
+    "ru": "Но в воздухе — смертельный газ."
+   }
+  },
+  {
+   "id": "rool",
+   "front": "Rool",
+   "back": {
+    "en": "Steering wheel",
+    "az": "Sükan",
+    "ru": "Руль"
+   },
+   "forms": [
+    "rooli",
+    "rooli"
+   ],
+   "sentence": {
+    "et": "Ja mu mees, kes istub kõrval, hoiab rooli.",
+    "en": "And my husband, sitting beside me, holds the wheel.",
+    "az": "Yanımda oturan ərim isə sükanı tutur.",
+    "ru": "А мой муж, что сидит рядом, держит руль."
+   }
+  },
+  {
+   "id": "eales",
+   "front": "Eales",
+   "back": {
+    "en": "Ever",
+    "az": "Nə vaxtsa",
+    "ru": "Когда-либо"
+   },
+   "sentence": {
+    "et": "Kõik ma olen saanud, mis eales olen ihkanud —",
+    "en": "I have got everything I have ever longed for —",
+    "az": "Nə vaxtsa arzuladığım hər şeyi əldə etmişəm —",
+    "ru": "Я получила всё, чего когда-либо желала, —"
+   }
+  },
+  {
+   "id": "ihkama",
+   "front": "Ihkama",
+   "back": {
+    "en": "To long for, to crave",
+    "az": "Arzulamaq",
+    "ru": "Жаждать, желать"
+   },
+   "forms": [
+    "ihata",
+    "ihkan"
+   ],
+   "sentence": {
+    "et": "Kõik ma olen saanud, mis eales olen ihkanud —",
+    "en": "I have got everything I have ever longed for —",
+    "az": "Nə vaxtsa arzuladığım hər şeyi əldə etmişəm —",
+    "ru": "Я получила всё, чего когда-либо желала, —"
+   }
+  },
+  {
+   "id": "luks",
+   "front": "Luks",
+   "back": {
+    "en": "Luxury — and, said of anything, great",
+    "az": "Dəbdəbə; danışıqda — əla",
+    "ru": "Роскошь; в речи — отлично"
+   },
+   "forms": [
+    "luksi",
+    "luksi"
+   ],
+   "sentence": {
+    "et": "kodu, luksi, aga hingel on külm.",
+    "en": "a home, luxury — but my soul is cold.",
+    "az": "ev, dəbdəbə — amma ruhum üşüyür.",
+    "ru": "дом, роскошь — но на душе холодно."
+   }
+  },
+  {
+   "id": "hing",
+   "front": "Hing",
+   "back": {
+    "en": "Soul",
+    "az": "Ruh, can",
+    "ru": "Душа"
+   },
+   "forms": [
+    "hinge",
+    "hinge"
+   ],
+   "sentence": {
+    "et": "kodu, luksi, aga hingel on külm.",
+    "en": "a home, luxury — but my soul is cold.",
+    "az": "ev, dəbdəbə — amma ruhum üşüyür.",
+    "ru": "дом, роскошь — но на душе холодно."
+   }
+  },
+  {
+   "id": "uurima",
+   "front": "Uurima",
+   "back": {
+    "en": "To study, to look closely at",
+    "az": "Araşdırmaq, diqqətlə baxmaq",
+    "ru": "Изучать, разглядывать"
+   },
+   "forms": [
+    "uurida",
+    "uurin"
+   ],
+   "sentence": {
+    "et": "Ma uurin silmanurgast meest, kes vaatab ainult teele.",
+    "en": "Out of the corner of my eye I study the man who looks only at the road.",
+    "az": "Göz ucu ilə yalnız yola baxan kişini süzürəm.",
+    "ru": "Краем глаза я разглядываю мужчину, который смотрит только на дорогу."
+   }
+  },
+  {
+   "id": "silmanurk",
+   "front": "Silmanurk",
+   "back": {
+    "en": "The corner of the eye",
+    "az": "Göz ucu",
+    "ru": "Уголок глаза"
+   },
+   "forms": [
+    "silmanurga",
+    "silmanurka"
+   ],
+   "sentence": {
+    "et": "Ma uurin silmanurgast meest, kes vaatab ainult teele.",
+    "en": "Out of the corner of my eye I study the man who looks only at the road.",
+    "az": "Göz ucu ilə yalnız yola baxan kişini süzürəm.",
+    "ru": "Краем глаза я разглядываю мужчину, который смотрит только на дорогу."
+   }
+  },
+  {
+   "id": "koikjal",
+   "front": "Kõikjal",
+   "back": {
+    "en": "Everywhere",
+    "az": "Hər yerdə",
+    "ru": "Повсюду"
+   },
+   "sentence": {
+    "et": "Siin kuhu viib meid tee, kui kõikjal katastroofid,",
+    "en": "Here, where does the road take us, with disasters everywhere,",
+    "az": "Burada, hər yan fəlakət olanda, yol bizi hara aparır,",
+    "ru": "Куда здесь ведёт нас дорога, когда повсюду катастрофы,"
+   }
+  },
+  {
+   "id": "jaama",
+   "front": "Jääma",
+   "back": {
+    "en": "To stay; to end up",
+    "az": "Qalmaq",
+    "ru": "Оставаться; оказаться"
+   },
+   "forms": [
+    "jääda",
+    "jään"
+   ],
+   "sentence": {
+    "et": "Üksik karavan teele ette jäi, ongi aega.",
+    "en": "A lone caravan got in our way on the road — so there is time after all.",
+    "az": "Tək bir karvan yolumuzu kəsdi — deməli, vaxt var.",
+    "ru": "Одинокий караван встал поперёк дороги — вот и есть время."
+   }
+  }
+ ],
+ "level": "song"
+}

@@ -583,7 +583,7 @@ const ABOUT = {
   story: '/data/stories.json',
   watched: '/data/stories.json',
   post: '/data/blog.json',
-  deck: '/data/decks.json',
+  deck: '/data/decks/index.json',
   pass: '/data/deals.json',
   verified: '/data/deals.json'
 };
@@ -869,7 +869,8 @@ async function aboutFacts(context, body) {
 }
 
 /* The ids a data file ships: the stories, the posts and the deals are an
-   array each, and the flashcards' file holds its decks, lessons and songs
+   array each, and the flashcards' index — what tools/decks.mjs writes out
+   of data/decks.json, a fraction of it — holds its decks, lessons and songs
    under three keys. None, where the file cannot be read. */
 async function idsIn(context, file) {
   try {

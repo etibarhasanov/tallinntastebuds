@@ -12,8 +12,9 @@
  *
  * WHERE THE WORDS ACTUALLY ARE, WHICH IS MOSTLY NOT HERE
  *
- * The decks this site ships are data/decks.json, deployed as a file and read
- * as one through dataFile() below. They are content: somebody edits the
+ * The decks this site ships are data/decks.json, deployed as the files
+ * tools/decks.mjs writes from it — an index for the shelf and one file per
+ * deck — and read through ./_decks.js. They are content: somebody edits the
  * repository, the deploy carries them, and every reader gets the same two
  * thousand five hundred cards. Nothing about them is in the
  * database and nothing needs to be — a row per card per deployment would be a copy of a file
@@ -33,10 +34,10 @@
  * with its body, and a lesson somebody has read is one row in flashcard_known
  * under GRAMMAR_DECK below, written by the same `knew` action a card is.
  * Nothing else about a lesson is in the database, and nothing that counts or
- * gathers known cards can see that row: wordsKnown() sums over the decks in
- * the file and gathered() looks every row up in it, so a deck id that is in
- * neither is dropped rather than counted. See **Grammar, which is read rather
- * than turned over** under **Flashcards** in README.md.
+ * gathers known cards can see that row: wordsKnown() sums over the decks on
+ * the shelf and gathered() reads only the decks the rows name, so a deck id
+ * that is in neither is dropped rather than counted. See **Grammar, which is
+ * read rather than turned over** under **Flashcards** in README.md.
  *
  * AND THE SONGS, WHICH ARE LISTENED TO
  *
@@ -148,9 +149,9 @@
  *     under a person — see flashcard_reports in db/schema.sql — which is what
  *     makes it the one write here that needs SAVE_SALT.
  *   - A card marked known is checked against the deck it claims to be in —
- *     the file for a built-in deck, the table for somebody's own, and the
- *     file again for a lesson under GRAMMAR_DECK — so the progress table
- *     cannot be filled with rows about cards that do not exist.
+ *     the shelf's index for a built-in deck, the table for somebody's own,
+ *     and the index again for a lesson under GRAMMAR_DECK — so the progress
+ *     table cannot be filled with rows about cards that do not exist.
  *   - Everything anybody types is capped in length before it is stored, and
  *     the counts below cap how much of it there can be.
  *
@@ -160,15 +161,15 @@
  */
 
 import {
-  json, sessionUser, wrongDatabase, randomHex, dataFile, wordsFor, fingerprint, clientIp,
+  json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp,
   DECK_LANGS
 } from './_lib.js';
 import { googleReady } from './_google.js';
+/* The decks the site ships, as deployed: the shelf's index and one file per
+   deck, lesson and song, and the id shape every one of them has. */
+import { shelf, shippedOne, shippedDecks, WRITTEN } from './_decks.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
-
-/* The decks the site ships, as deployed. */
-const DECKS_FILE = '/data/decks.json';
 
 /* Caps, and all of them are about somebody with a script rather than somebody
    learning a language.
@@ -339,11 +340,6 @@ const readRow = (key) => key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SO
    flashcard_decks in db/schema.sql. */
 const MINTED = /^[0-9a-f]{16}$/;
 
-/* A built-in deck's id and a built-in card's, as data/decks.json spells them:
-   lowercase words. tools/validate.mjs holds the file to this and to not
-   looking like a minted id, so the two namespaces cannot meet. */
-const WRITTEN = /^[a-z0-9][a-z0-9-]{0,31}$/;
-
 function mintedId() {
   return randomHex(8);
 }
@@ -361,11 +357,14 @@ function words(value, max) {
 }
 
 /* ------------------------------------------------------------ the shipped
- * data/decks.json, read through the five-minute per-isolate cache every other
- * data file on this site is read through. A malformed or missing file is an
- * empty list rather than a throw: the page then draws whatever the person's
- * own decks are and says nothing is shipped, which is a worse site but not a
- * broken one.
+ * The index tools/decks.mjs writes from data/decks.json, and one file per
+ * deck, lesson and song, read through ./_decks.js and the five-minute
+ * per-isolate cache every other data file on this site is read through. The
+ * shelf is drawn from the index — every deck with the ids of its cards, every
+ * lesson and song without its body — and a thing asked for by its id comes
+ * out of its own file — the source is read only by the two gathered decks
+ * below, when their rows span more than a few decks. tools/validate.mjs
+ * holds every deck, lesson and song to its shape, so nothing here has to.
  */
 /* An example, where a card has one: the Estonian, and what it means in each
    language the deck is written in. Held to the shape here rather than trusted,
@@ -378,32 +377,10 @@ function isSentence(value) {
     typeof value.en === 'string' && value.en !== '';
 }
 
-async function shipped(context) {
-  try {
-    const file = await dataFile(context, DECKS_FILE);
-    const decks = file && Array.isArray(file.decks) ? file.decks : [];
-    return decks.filter((d) => d && WRITTEN.test(String(d.id || '')) && Array.isArray(d.cards));
-  } catch (e) {
-    return [];
-  }
-}
-
+/* A deck on the shelf, by its id: a row of the index, with the ids of its
+   cards and never the cards. */
 function shippedDeck(decks, id) {
   return decks.find((d) => d.id === id) || null;
-}
-
-/* The lessons the site ships, out of the same file and held to the same id
-   shape. A lesson has no cards; what it has is a body of blocks the page draws
-   as prose, and tools/validate.mjs holds the blocks to their shape so nothing
-   here has to. */
-async function shippedLessons(context) {
-  try {
-    const file = await dataFile(context, DECKS_FILE);
-    const lessons = file && Array.isArray(file.lessons) ? file.lessons : [];
-    return lessons.filter((l) => l && WRITTEN.test(String(l.id || '')) && Array.isArray(l.body));
-  } catch (e) {
-    return [];
-  }
 }
 
 /* A lesson as the page reads it: its name and line for the shelf, its body
@@ -426,19 +403,6 @@ function lessonAnswer(lesson, known, whole) {
     ...(whole ? { body: lesson.body } : {}),
     read: stateOf(known, GRAMMAR_DECK, lesson.id).known
   };
-}
-
-/* The songs, out of the same file and held to the same id shape. What a song
-   is made of is held to its shape by tools/validate.mjs, so nothing here has
-   to be. */
-async function shippedSongs(context) {
-  try {
-    const file = await dataFile(context, DECKS_FILE);
-    const songs = file && Array.isArray(file.songs) ? file.songs : [];
-    return songs.filter((s) => s && WRITTEN.test(String(s.id || '')) && Array.isArray(s.verses));
-  } catch (e) {
-    return [];
-  }
 }
 
 /* A song as the page reads it: its name and line for the shelf, and — when it
@@ -578,13 +542,14 @@ async function knownOf(env, user) {
 }
 
 /* How many of the shipped cards this person knows, across every deck: the
-   number the stages open on. Summed over the decks in the file rather than
+   number the stages open on. Summed over the decks on the shelf — each with
+   the ids of its cards, which is all the index carries of them — rather than
    over the Map, so that a card in a deck somebody wrote — which has its own
    minted id and is in the same table — is never in it. */
 function wordsKnown(decks, known) {
   let words = 0;
   for (const deck of decks) {
-    for (const card of deck.cards) if (stateOf(known, deck.id, card.id).known) words += 1;
+    for (const id of deck.cards) if (stateOf(known, deck.id, id).known) words += 1;
   }
   return words;
 }
@@ -655,10 +620,16 @@ function deckAnswer(deck, cards, own, known) {
  * same cards under a different name is two places for a card to be.
  *
  * The cards come back from two places, because the rows do. A shipped deck's
- * card is in data/decks.json, already in hand. One of somebody's own is a row
- * in flashcard_cards, and is fetched by id — capped, like everything here, so
- * an account that has pressed Show me again five hundred times gets the first
- * two hundred rather than a query that grows without a ceiling. The review
+ * card is in that deck's own file under data/decks/, read through
+ * shippedDecks() in ./_decks.js: the files of the decks the rows name, side
+ * by side, when they are a few, and data/decks.json once when they are more
+ * than that, which is what this read every time before the decks were cut up
+ * — the subrequests a request may make are capped, and a person who knows
+ * words in every deck would otherwise make fifty. One of
+ * somebody's own is a row in flashcard_cards, and is fetched by id — capped,
+ * like everything here, so an account that has pressed Show me again five
+ * hundred times gets the first two hundred rather than a query that grows
+ * without a ceiling. The review
  * deck is the one where the cap can bite for an ordinary reader — eight
  * hundred known cards is somebody who has been through everything the site
  * ships — and what it costs them is the tail of a deck they are going
@@ -667,14 +638,17 @@ function deckAnswer(deck, cards, own, known) {
  * Each card keeps the id of the deck it is really from, so that answering it
  * here writes to that row. Nothing is ever written under either id.
  */
-async function gathered(context, user, decks, id, want) {
+async function gathered(context, user, index, id, want) {
   const { env } = context;
   if (!want.length) return null;
 
+  const asked = want.slice(0, MAX_CARDS);
+  const files = await shippedDecks(context, index, [...new Set(asked.map((one) => one.deck))]);
+
   const cards = [];
   const mine = [];
-  for (const one of want.slice(0, MAX_CARDS)) {
-    const deck = shippedDeck(decks, one.deck);
+  for (const one of asked) {
+    const deck = files.get(one.deck) || null;
     const card = deck && deck.cards.find((c) => c.id === one.card);
     if (card) cards.push({ ...card, deck: one.deck });
     else if (MINTED.test(one.deck) && MINTED.test(one.card)) mine.push(one);
@@ -711,19 +685,19 @@ function keyed(key) {
   return { deck: key.slice(0, cut), card: key.slice(cut + 1) };
 }
 
-function missedDeck(context, user, decks, known) {
+function missedDeck(context, user, index, known) {
   const want = [];
   known.forEach((was, key) => { if (was.missed) want.push(keyed(key)); });
-  return gathered(context, user, decks, MISSED_DECK, want);
+  return gathered(context, user, index, MISSED_DECK, want);
 }
 
 /* Every known card, in the order the rows came. None of them is due — a card
    known stays known — so the page opens this on its rested card and Go
    through it anyway has the whole of what somebody knows to go through. */
-function reviewDeck(context, user, decks, known) {
+function reviewDeck(context, user, index, known) {
   const want = [];
   known.forEach((was, key) => { if (was.known && !readRow(key)) want.push(keyed(key)); });
-  return gathered(context, user, decks, REVIEW_DECK, want);
+  return gathered(context, user, index, REVIEW_DECK, want);
 }
 
 /* ---------------------------------------------------------------- reading */
@@ -739,12 +713,14 @@ export async function onRequestGet(context) {
      has nothing to show at all without a database. */
   const ready = !!env.DB && !(await wrongDatabase(env));
   const google = googleReady(env);
-  /* The file and the session at once: on a fresh isolate the first is a read
-     of the whole of data/decks.json, and neither needs the other. */
-  const [decks, user] = await Promise.all([
-    shipped(context),
+  /* The shelf and the session at once: on a fresh isolate the first is a read
+     of the index tools/decks.mjs writes — the decks with their card ids, the
+     lessons and the songs — and neither needs the other. */
+  const [index, user] = await Promise.all([
+    shelf(context),
     ready ? sessionUser(request, env) : null
   ]);
+  const decks = index.decks;
   const who = user ? user.username : null;
   const params = new URL(request.url).searchParams;
   const asked = params.get('deck') || '';
@@ -780,7 +756,7 @@ export async function onRequestGet(context) {
        session — and nothing to answer without one. */
     if (asked === MISSED_DECK || asked === REVIEW_DECK) {
       const which = asked === MISSED_DECK ? missedDeck : reviewDeck;
-      const got = user ? await which(context, user, decks, known) : null;
+      const got = user ? await which(context, user, index, known) : null;
       if (!got) return json({ ...base, error: 'not-found' }, 404);
       const answer = deckAnswer(got, got.cards, false, known);
       answer[asked] = true;
@@ -792,17 +768,13 @@ export async function onRequestGet(context) {
       return json({ ...base, deck: deckAnswer(mine, cards, true, known) }, 200);
     }
 
-    const deck = shippedDeck(decks, asked);
-    if (deck) return json({ ...base, deck: deckAnswer(deck, deck.cards, false, known) }, 200);
-
-    /* Or a lesson, which opens at the same kind of address and is answered
-       whole the way a deck is: its name, its line and its body. */
-    const lesson = (await shippedLessons(context)).find((l) => l.id === asked) || null;
-    if (lesson) return json({ ...base, lesson: lessonAnswer(lesson, known, true) }, 200);
-
-    /* Or a song, the same way. */
-    const song = (await shippedSongs(context)).find((s) => s.id === asked) || null;
-    if (song) return json({ ...base, song: songAnswer(song, decks, known, true) }, 200);
+    /* The deck, the lesson or the song the address names, out of its own
+       file: a deck with its cards, and a lesson or a song — which open at the
+       same kind of address — whole, its name, its line and its body. */
+    const found = await shippedOne(context, index, asked);
+    if (found && found.kind === 'deck') return json({ ...base, deck: deckAnswer(found.one, found.one.cards, false, known) }, 200);
+    if (found && found.kind === 'lesson') return json({ ...base, lesson: lessonAnswer(found.one, known, true) }, 200);
+    if (found && found.kind === 'song') return json({ ...base, song: songAnswer(found.one, decks, known, true) }, 200);
 
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
@@ -831,8 +803,8 @@ export async function onRequestGet(context) {
     const deck = key.slice(0, key.indexOf('/'));
     counts[deck] = (counts[deck] || 0) + 1;
   });
-  const dueIn = (deck, cards) =>
-    cards.filter((c) => stateOf(known, deck, c.id).due).length;
+  const dueIn = (deck, ids) =>
+    ids.filter((id) => stateOf(known, deck, id).due).length;
 
   /* And only the decks on the shelf this person has. A stage that has not
      opened sends none of its rows — shutAt() above says why, and the page
@@ -899,7 +871,7 @@ export async function onRequestGet(context) {
   if (own) {
     const byDeck = {};
     for (const row of own.cards) {
-      (byDeck[row.deck_id] = byDeck[row.deck_id] || []).push({ id: row.id });
+      (byDeck[row.deck_id] = byDeck[row.deck_id] || []).push(row.id);
     }
 
     own.decks.forEach((row) => {
@@ -920,11 +892,11 @@ export async function onRequestGet(context) {
      no stage and behind no gate: they are a file, prose, and the argument for
      holding a deck back — fifty-three rows with nothing saying where to start —
      does not reach five tiles under a heading of their own. */
-  const lessons = (await shippedLessons(context)).map((l) => lessonAnswer(l, known, false));
+  const lessons = index.lessons.map((l) => lessonAnswer(l, known, false));
 
   /* And the songs, on the same footing: a file, behind no gate, each with
      whether it has been heard. */
-  const songs = (await shippedSongs(context)).map((s) => songAnswer(s, decks, known, false));
+  const songs = index.songs.map((s) => songAnswer(s, decks, known, false));
 
   return json({ ...base, decks: list, lessons: lessons, songs: songs }, 200);
 }
@@ -1160,13 +1132,15 @@ async function mark(context, body, user, knew) {
        the lesson has to be one the file ships for the same reason a card
        does. It climbs the boxes like a card and nothing reads which box it
        is in: known is the whole of the fact. */
-    real = (await shippedLessons(context)).some((l) => l.id === cardId);
+    real = (await shelf(context)).lessons.some((l) => l.id === cardId);
   } else if (deckId === SONG_DECK && WRITTEN.test(cardId)) {
     /* And a song heard, under its own. */
-    real = (await shippedSongs(context)).some((s) => s.id === cardId);
+    real = (await shelf(context)).songs.some((s) => s.id === cardId);
   } else if (WRITTEN.test(deckId) && WRITTEN.test(cardId)) {
-    const deck = shippedDeck(await shipped(context), deckId);
-    real = !!deck && deck.cards.some((c) => c.id === cardId);
+    /* On the shelf and in that deck, by the card ids the index carries: no
+       deck's file is read to say a card was known. */
+    const deck = shippedDeck((await shelf(context)).decks, deckId);
+    real = !!deck && deck.cards.includes(cardId);
   }
   if (!real) return json({ error: 'not-found' }, 404);
 
@@ -1287,8 +1261,8 @@ async function report(context, body) {
      every row, so a report about one would be a loop; a pair of strings that
      is in no deck at all is what this check exists to keep out of the table. */
   if (!WRITTEN.test(deckId) || !WRITTEN.test(cardId)) return json({ error: 'not-found' }, 404);
-  const deck = shippedDeck(await shipped(context), deckId);
-  if (!deck || !deck.cards.some((c) => c.id === cardId)) return json({ error: 'not-found' }, 404);
+  const deck = shippedDeck((await shelf(context)).decks, deckId);
+  if (!deck || !deck.cards.includes(cardId)) return json({ error: 'not-found' }, 404);
 
   /* Settled the same way the page's words are, against the same three, so
      what is stored is a language a card actually has a back in rather than

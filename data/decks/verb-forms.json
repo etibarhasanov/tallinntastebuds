@@ -1,0 +1,225 @@
+{
+ "id": "verb-forms",
+ "added": "2026-09-27",
+ "name": {
+  "en": "Why a verb has three forms",
+  "az": "Niyə felin üç forması var",
+  "ru": "Почему у глагола три формы"
+ },
+ "why": {
+  "en": "Why minema is minna after tahan and lähen when it is you going — and why a verb card shows all three.",
+  "az": "Niyə minema tahan-dan sonra minna olur, gedən siz olanda isə lähen — və niyə fel kartında üçü də var.",
+  "ru": "Почему minema после tahan становится minna, а когда идёте вы — lähen, и зачем на карточке глагола все три."
+ },
+ "taste": "minema · minna · lähen",
+ "body": [
+  {
+   "say": {
+    "en": "Every verb on these cards comes as three forms too: *minema · minna · lähen*. A dictionary gives an Estonian verb this way for the same reason it gives a noun three: from these three every other form is made, and nothing on the first tells you what the other two will be.",
+    "az": "Bu kartlarda hər fel də üç forma ilə verilir: *minema · minna · lähen*. Lüğət eston felini isimlə eyni səbəbdən belə verir: qalan hər şey bu üçündən düzəlir, və birincisinə baxıb o biri ikisini bilmək olmur.",
+    "ru": "Каждый глагол на этих карточках тоже дан тремя формами: *minema · minna · lähen*. Словарь даёт эстонский глагол так по той же причине, по которой существительное — тремя: из этих трёх строится всё остальное, а по первой не угадать две другие."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "ma-form",
+      "az": "ma-forma",
+      "ru": "ma-форма"
+     },
+     {
+      "en": "da-form",
+      "az": "da-forma",
+      "ru": "da-форма"
+     },
+     {
+      "en": "I …",
+      "az": "mən …",
+      "ru": "я …"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "olema",
+       "olla",
+       "olen"
+      ],
+      "means": {
+       "en": "to be",
+       "az": "olmaq",
+       "ru": "быть"
+      }
+     },
+     {
+      "et": [
+       "minema",
+       "minna",
+       "lähen"
+      ],
+      "means": {
+       "en": "to go",
+       "az": "getmək",
+       "ru": "идти"
+      }
+     },
+     {
+      "et": [
+       "tegema",
+       "teha",
+       "teen"
+      ],
+      "means": {
+       "en": "to do",
+       "az": "etmək",
+       "ru": "делать"
+      }
+     },
+     {
+      "et": [
+       "sööma",
+       "süüa",
+       "söön"
+      ],
+      "means": {
+       "en": "to eat",
+       "az": "yemək",
+       "ru": "есть"
+      }
+     },
+     {
+      "et": [
+       "ostma",
+       "osta",
+       "ostan"
+      ],
+      "means": {
+       "en": "to buy",
+       "az": "almaq",
+       "ru": "покупать"
+      }
+     },
+     {
+      "et": [
+       "õppima",
+       "õppida",
+       "õpin"
+      ],
+      "means": {
+       "en": "to learn",
+       "az": "öyrənmək",
+       "ru": "учить"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "head": {
+    "en": "What each one is for",
+    "az": "Hərəsi nə üçündür",
+    "ru": "Для чего каждая"
+   }
+  },
+  {
+   "say": {
+    "en": "The first, the *ma*-form, is the verb's name — the one you look up. It is also what comes after going somewhere to do something, and after having to: *Ma lähen sööma*, I am going to eat. *Ma pean minema*, I have to go.",
+    "az": "Birincisi, *ma*-forma, felin adıdır — lüğətdə axtardığınız şəkil, bizim məsdər: getmək. O həm də «bir şey etməyə getmək»dən və «-malı»dan sonra gəlir: *Ma lähen sööma* — yeməyə gedirəm. *Ma pean minema* — getməliyəm.",
+    "ru": "Первая, *ma*-форма, — имя глагола, то, что вы ищете в словаре: наш инфинитив. Она же стоит после «идти что-то делать» и после «должен»: *Ma lähen sööma* — я иду есть. *Ma pean minema* — мне надо идти."
+   }
+  },
+  {
+   "say": {
+    "en": "The second, the *da*-form, is a second to-form that English has not got: it is what comes after wanting, being able and being allowed. *Ma tahan süüa* — I want to eat. *Kas ma võin minna?* — may I go? *Ma oskan lugeda* — I can read. The past tense is usually built on it — *ostma, osta* gives *ma ostsin*, I bought; *õppima, õppida* gives *ma õppisin* — and so is telling more than one person to do something: *Tulge! Minge!* — come, go.",
+    "az": "İkincisi, *da*-forma, ikinci bir məsdərdir, və azərbaycancada belə ikinci məsdər yoxdur: o «istəyirəm», «bilirəm» və «olar»dan sonra gəlir. *Ma tahan süüa* — yemək istəyirəm. *Kas ma võin minna?* — gedə bilərəm? *Ma oskan lugeda* — oxuya bilirəm. Keçmiş zaman da adətən onun üstündə qurulur — *ostma, osta*-dan *ma ostsin*, aldım; *õppima, õppida*-dan *ma õppisin*, öyrəndim — və bir neçə adama əmr də: *Tulge! Minge!* — gəlin, gedin.",
+    "ru": "Вторая, *da*-форма, — тоже инфинитив, и в русском такого второго нет: она стоит после «хочу», «могу» и «можно». *Ma tahan süüa* — я хочу есть. *Kas ma võin minna?* — можно мне идти? *Ma oskan lugeda* — я умею читать. На ней же обычно строится прошедшее время — *ostma, osta* даёт *ma ostsin*, я купил; *õppima, õppida* даёт *ma õppisin* — и повелительное к нескольким людям: *Tulge! Minge!* — приходите, идите."
+   }
+  },
+  {
+   "say": {
+    "en": "The third is you doing it now — the I form. From it, every person of the present tense follows with the same endings on every verb: *lähen, lähed, läheb, läheme, lähete, lähevad* — I go, you go, he goes, we go, you go, they go. And it is what not is said with: *ei lähe, ei tee, ei söö* — the same for every person, *ma ei lähe, sa ei lähe, ta ei lähe*.",
+    "az": "Üçüncüsü, indi edən sizsiniz — «mən» forması. Ondan eyni şəkilçilərlə indiki zamanın bütün şəxsləri çıxır: *lähen, lähed, läheb, läheme, lähete, lähevad* — gedirəm, gedirsən, gedir, gedirik, gedirsiniz, gedirlər. İnkar da onunla deyilir: *ei lähe, ei tee, ei söö* — və azərbaycancadan fərqli olaraq bütün şəxslər üçün eyni: *ma ei lähe, sa ei lähe, ta ei lähe*.",
+    "ru": "Третья — вы делаете это сейчас, форма «я». Из неё по одним и тем же окончаниям выходят все лица настоящего времени: *lähen, lähed, läheb, läheme, lähete, lähevad* — иду, идёшь, идёт, идём, идёте, идут. И с ней говорится «не»: *ei lähe, ei tee, ei söö* — и, в отличие от русского, одинаково для всех лиц: *ma ei lähe, sa ei lähe, ta ei lähe*."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma pean tööle minema.",
+     "en": "I have to go to work.",
+     "az": "İşə getməliyəm.",
+     "ru": "Мне надо идти на работу."
+    },
+    {
+     "et": "Ma tahan koju minna.",
+     "en": "I want to go home.",
+     "az": "Evə getmək istəyirəm.",
+     "ru": "Я хочу пойти домой."
+    },
+    {
+     "et": "Ma lähen homme Tartusse.",
+     "en": "I am going to Tartu tomorrow.",
+     "az": "Sabah Tartuya gedirəm.",
+     "ru": "Завтра я еду в Тарту."
+    },
+    {
+     "et": "Mida sa teha tahad?",
+     "en": "What do you want to do?",
+     "az": "Nə etmək istəyirsən?",
+     "ru": "Что ты хочешь делать?"
+    },
+    {
+     "et": "Ma teen süüa.",
+     "en": "I am cooking.",
+     "az": "Yemək bişirirəm.",
+     "ru": "Я готовлю еду."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Why by heart",
+    "az": "Niyə əzbər",
+    "ru": "Почему наизусть"
+   }
+  },
+  {
+   "say": {
+    "en": "Because the three do not follow from each other. *Minema, minna, lähen* — to go — changes so much that the I form looks like a different verb, and it is one of the most used verbs in the language. *Tegema* becomes *teha* and *teen*; *nägema*, to see, becomes *näha* and *näen*; *sööma* becomes *süüa* and *söön*. As with the nouns, the most common verbs are the least regular ones.",
+    "az": "Çünki üç forma bir-birindən çıxmır. *Minema, minna, lähen* — getmək — elə dəyişir ki, «mən» forması başqa bir felə oxşayır, halbuki bu, dilin ən çox işlənən fellərindən biridir. *Tegema* — *teha* və *teen*; *nägema*, görmək — *näha* və *näen*; *sööma* — *süüa* və *söön*. İsimlərdə olduğu kimi, ən çox işlənən fellər ən qaydasızlarıdır.",
+    "ru": "Потому что три формы не следуют одна из другой. *Minema, minna, lähen* — идти — меняется так, что форма «я» выглядит другим глаголом, а это один из самых частых глаголов в языке. *Tegema* — *teha* и *teen*; *nägema*, видеть, — *näha* и *näen*; *sööma* — *süüa* и *söön*. Как и у существительных, самые частые глаголы — самые неправильные."
+   }
+  },
+  {
+   "say": {
+    "en": "And as with the nouns, most verbs are easy. *Elama, elada, elan* — to live; *töötama, töötada, töötan* — to work; *õppima, õppida, õpin* — to learn. Once you know a few hundred verbs by their three forms you will hear the pattern before you can say it, and a new verb will fall into its family on its own. The three forms are the whole verb; every tense and every person is an ending on one of them.",
+    "az": "Və isimlərdə olduğu kimi, fellərin çoxu asandır. *Elama, elada, elan* — yaşamaq; *töötama, töötada, töötan* — işləmək; *õppima, õppida, õpin* — öyrənmək. Bir neçə yüz feli üç forması ilə bildikdən sonra qəlibi deməzdən əvvəl eşidəcəksiniz, və yeni fel öz ailəsinə özü düşəcək. Üç forma felin özüdür; hər zaman və hər şəxs onlardan birinin üstündə bir şəkilçidir.",
+    "ru": "И, как у существительных, большинство глаголов простые. *Elama, elada, elan* — жить; *töötama, töötada, töötan* — работать; *õppima, õppida, õpin* — учить. Когда вы будете знать несколько сотен глаголов по трём формам, вы начнёте слышать образец раньше, чем сможете его назвать, и новый глагол сам встанет в свою семью. Три формы — это весь глагол; каждое время и каждое лицо — окончание на одной из них."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma elan Kalamajas.",
+     "en": "I live in Kalamaja.",
+     "az": "Kalamajada yaşayıram.",
+     "ru": "Я живу в Каламая."
+    },
+    {
+     "et": "Ma õpin eesti keelt.",
+     "en": "I am learning Estonian.",
+     "az": "Eston dilini öyrənirəm.",
+     "ru": "Я учу эстонский язык."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "The next lesson takes one verb through every tense, and shows which of the three each tense is built on.",
+    "az": "Növbəti dərs bir feli bütün zamanlardan keçirir və hər zamanın üç formadan hansının üstündə qurulduğunu göstərir.",
+    "ru": "Следующий урок проводит один глагол через все времена и показывает, на какой из трёх форм строится каждое."
+   }
+  }
+ ]
+}

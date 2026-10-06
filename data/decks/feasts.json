@@ -1,0 +1,470 @@
+{
+ "id": "feasts",
+ "added": "2026-09-20",
+ "level": "deep",
+ "name": {
+  "en": "Holidays and celebrations",
+  "az": "Bayramlar və qeyd olunan günlər",
+  "ru": "Праздники и торжества"
+ },
+ "why": {
+  "en": "Midsummer, Christmas, a birthday and the republic's day, with the presents that go with them",
+  "az": "Yay günü, Milad, ad günü və respublika günü — hədiyyələri ilə birlikdə",
+  "ru": "Иванов день, Рождество, день рождения и день республики — вместе с подарками"
+ },
+ "cards": [
+  {
+   "id": "jaanipaev",
+   "front": "Jaanipäev",
+   "back": {
+    "en": "Midsummer's day",
+    "az": "Yay günü bayramı",
+    "ru": "Иванов день"
+   },
+   "forms": [
+    "jaanipäeva",
+    "jaanipäeva"
+   ]
+  },
+  {
+   "id": "kadripaev",
+   "front": "Kadripäev",
+   "back": {
+    "en": "St Catherine's day",
+    "az": "Müqəddəs Katerina günü",
+    "ru": "Катеринин день"
+   },
+   "forms": [
+    "kadripäeva",
+    "kadripäeva"
+   ]
+  },
+  {
+   "id": "jouluvana",
+   "front": "Jõuluvana",
+   "back": {
+    "en": "Santa Claus",
+    "az": "Şaxta baba",
+    "ru": "Дед Мороз"
+   },
+   "forms": [
+    "jõuluvana",
+    "jõuluvana"
+   ]
+  },
+  {
+   "id": "pakapikk",
+   "front": "Päkapikk",
+   "back": {
+    "en": "Santa's helper, elf",
+    "az": "Cırtdan köməkçi",
+    "ru": "Гном"
+   },
+   "forms": [
+    "päkapiku",
+    "päkapikku"
+   ]
+  },
+  {
+   "id": "laulupidu",
+   "front": "Laulupidu",
+   "back": {
+    "en": "Song festival",
+    "az": "Mahnı bayramı",
+    "ru": "Праздник песни"
+   },
+   "forms": [
+    "laulupeo",
+    "laulupidu"
+   ]
+  },
+  {
+   "id": "paraad",
+   "front": "Paraad",
+   "back": {
+    "en": "Parade",
+    "az": "Parad",
+    "ru": "Парад"
+   },
+   "forms": [
+    "paraadi",
+    "paraadi"
+   ]
+  },
+  {
+   "id": "vabariik",
+   "front": "Vabariik",
+   "back": {
+    "en": "Republic",
+    "az": "Respublika",
+    "ru": "Республика"
+   },
+   "forms": [
+    "vabariigi",
+    "vabariiki"
+   ]
+  },
+  {
+   "id": "aastapaev",
+   "front": "Aastapäev",
+   "back": {
+    "en": "Anniversary",
+    "az": "İldönümü",
+    "ru": "Годовщина"
+   },
+   "forms": [
+    "aastapäeva",
+    "aastapäeva"
+   ]
+  },
+  {
+   "id": "juubel",
+   "front": "Juubel",
+   "back": {
+    "en": "Jubilee",
+    "az": "Yubiley",
+    "ru": "Юбилей"
+   },
+   "forms": [
+    "juubeli",
+    "juubelit"
+   ]
+  },
+  {
+   "id": "pulmad",
+   "front": "Pulmad",
+   "back": {
+    "en": "Wedding",
+    "az": "Toy",
+    "ru": "Свадьба"
+   }
+  },
+  {
+   "id": "tort",
+   "front": "Tort",
+   "back": {
+    "en": "Festive cake",
+    "az": "Tort",
+    "ru": "Торт"
+   },
+   "forms": [
+    "tordi",
+    "torti"
+   ]
+  },
+  {
+   "id": "sunnipaevatort",
+   "front": "Sünnipäevatort",
+   "back": {
+    "en": "Birthday cake",
+    "az": "Ad günü tortu",
+    "ru": "Торт на день рождения"
+   },
+   "forms": [
+    "sünnipäevatordi",
+    "sünnipäevatorti"
+   ]
+  },
+  {
+   "id": "kinkekaart",
+   "front": "Kinkekaart",
+   "back": {
+    "en": "Gift voucher",
+    "az": "Hədiyyə kartı",
+    "ru": "Подарочная карта"
+   },
+   "forms": [
+    "kinkekaardi",
+    "kinkekaarti"
+   ]
+  },
+  {
+   "id": "head-uut-aastat",
+   "front": "Head uut aastat!",
+   "back": {
+    "en": "Happy New Year!",
+    "az": "Yeni iliniz mübarək!",
+    "ru": "С Новым годом!"
+   }
+  },
+  {
+   "id": "haid-puhi",
+   "front": "Häid pühi!",
+   "back": {
+    "en": "Happy holidays!",
+    "az": "Bayramınız mübarək!",
+    "ru": "Хороших праздников!"
+   }
+  },
+  {
+   "id": "riiklik-puha",
+   "front": "Riiklik püha",
+   "back": {
+    "en": "Bank holiday",
+    "az": "Dövlət bayramı",
+    "ru": "Государственный праздник"
+   }
+  },
+  {
+   "id": "joulupidu",
+   "front": "Jõulupidu",
+   "back": {
+    "en": "Christmas party",
+    "az": "Milad şənliyi",
+    "ru": "Рождественский вечер"
+   },
+   "forms": [
+    "jõulupeo",
+    "jõulupidu"
+   ]
+  },
+  {
+   "id": "rahvas",
+   "front": "Rahvas",
+   "back": {
+    "en": "People, nation",
+    "az": "Xalq",
+    "ru": "Народ"
+   },
+   "forms": [
+    "rahva",
+    "rahvast"
+   ]
+  },
+  {
+   "id": "traditsioon",
+   "front": "Traditsioon",
+   "back": {
+    "en": "Tradition",
+    "az": "Ənənə",
+    "ru": "Традиция"
+   },
+   "forms": [
+    "traditsiooni",
+    "traditsiooni"
+   ]
+  },
+  {
+   "id": "loke",
+   "front": "Lõke",
+   "back": {
+    "en": "Bonfire",
+    "az": "Tonqal",
+    "ru": "Костёр"
+   },
+   "forms": [
+    "lõkke",
+    "lõket"
+   ]
+  },
+  {
+   "id": "loket-tegema",
+   "front": "Lõket tegema",
+   "back": {
+    "en": "To make a bonfire",
+    "az": "tonqal qalamaq",
+    "ru": "разводить костёр"
+   }
+  },
+  {
+   "id": "saunas-kaima",
+   "front": "Saunas käima",
+   "back": {
+    "en": "To go to the sauna",
+    "az": "hamama getmək",
+    "ru": "ходить в баню"
+   }
+  },
+  {
+   "id": "maale-minema",
+   "front": "Maale minema",
+   "back": {
+    "en": "To go to the countryside",
+    "az": "kəndə getmək",
+    "ru": "ехать в деревню"
+   }
+  },
+  {
+   "id": "kohtuma",
+   "front": "Kohtuma",
+   "back": {
+    "en": "To meet",
+    "az": "görüşmək",
+    "ru": "встречаться"
+   },
+   "forms": [
+    "kohtuda",
+    "kohtun"
+   ]
+  },
+  {
+   "id": "tutvustama",
+   "front": "Tutvustama",
+   "back": {
+    "en": "To introduce",
+    "az": "tanış etmək",
+    "ru": "представлять"
+   },
+   "forms": [
+    "tutvustada",
+    "tutvustan"
+   ]
+  },
+  {
+   "id": "kulaline",
+   "front": "Külaline",
+   "back": {
+    "en": "Guest",
+    "az": "Qonaq",
+    "ru": "Гость"
+   },
+   "forms": [
+    "külalise",
+    "külalist"
+   ]
+  },
+  {
+   "id": "vennalaps",
+   "front": "Vennalaps",
+   "back": {
+    "en": "Nephew, niece",
+    "az": "Qardaş uşağı",
+    "ru": "Племянник"
+   },
+   "forms": [
+    "vennalapse",
+    "vennalast"
+   ]
+  },
+  {
+   "id": "tahtpaev",
+   "front": "Tähtpäev",
+   "back": {
+    "en": "Special day, anniversary",
+    "az": "Əlamətdar gün",
+    "ru": "Знаменательная дата"
+   },
+   "forms": [
+    "tähtpäeva",
+    "tähtpäeva"
+   ]
+  },
+  {
+   "id": "iseseisvus",
+   "front": "Iseseisvus",
+   "back": {
+    "en": "Independence",
+    "az": "Müstəqillik",
+    "ru": "Независимость"
+   },
+   "forms": [
+    "iseseisvuse",
+    "iseseisvust"
+   ]
+  },
+  {
+   "id": "voidupuha",
+   "front": "Võidupüha",
+   "back": {
+    "en": "Victory Day",
+    "az": "Qələbə günü",
+    "ru": "День победы"
+   },
+   "forms": [
+    "võidupüha",
+    "võidupüha"
+   ]
+  },
+  {
+   "id": "ulestousmispuha",
+   "front": "Ülestõusmispüha",
+   "back": {
+    "en": "Easter",
+    "az": "Pasxa",
+    "ru": "Пасха"
+   },
+   "forms": [
+    "ülestõusmispüha",
+    "ülestõusmispüha"
+   ]
+  },
+  {
+   "id": "kulastaja",
+   "front": "Külastaja",
+   "back": {
+    "en": "Visitor",
+    "az": "Ziyarətçi, qonaq",
+    "ru": "Посетитель"
+   },
+   "forms": [
+    "külastaja",
+    "külastajat"
+   ]
+  },
+  {
+   "id": "seltskond",
+   "front": "Seltskond",
+   "back": {
+    "en": "Company, party",
+    "az": "Məclis, yoldaşlar",
+    "ru": "Компания"
+   },
+   "forms": [
+    "seltskonna",
+    "seltskonda"
+   ]
+  },
+  {
+   "id": "tahistama",
+   "front": "Tähistama",
+   "back": {
+    "en": "To celebrate",
+    "az": "qeyd etmək",
+    "ru": "праздновать"
+   },
+   "forms": [
+    "tähistada",
+    "tähistan"
+   ]
+  },
+  {
+   "id": "ullatus",
+   "front": "Üllatus",
+   "back": {
+    "en": "Surprise",
+    "az": "Sürpriz",
+    "ru": "Сюрприз"
+   },
+   "forms": [
+    "üllatuse",
+    "üllatust"
+   ]
+  },
+  {
+   "id": "kutse",
+   "front": "Kutse",
+   "back": {
+    "en": "Invitation",
+    "az": "Dəvət",
+    "ru": "Приглашение"
+   },
+   "forms": [
+    "kutse",
+    "kutset"
+   ]
+  },
+  {
+   "id": "pererahvas",
+   "front": "Pererahvas",
+   "back": {
+    "en": "Hosts, the household",
+    "az": "Ev sahibləri",
+    "ru": "Хозяева"
+   },
+   "forms": [
+    "pererahva",
+    "pererahvast"
+   ]
+  }
+ ]
+}

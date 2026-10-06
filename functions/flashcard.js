@@ -67,11 +67,11 @@
  */
 
 import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
-import { dataFile, languageIndex, wordsIn, DECK_LANGS } from './api/_lib.js';
+import { languageIndex, wordsIn, DECK_LANGS } from './api/_lib.js';
+import { shelf, shippedOne } from './api/_decks.js';
 
 const PATH = '/flashcard';
 const FILE = '/flashcard.html';
-const DECKS_FILE = '/data/decks.json';
 
 /* The first of the three DECK_LANGS names and the site's own, which makes it
    what everything here falls back to: a language nobody asked for, a language
@@ -124,11 +124,6 @@ const DESCRIPTION =
  * pictures to redraw every time a token moves. */
 const CARD = '/assets/logo/og-flashcard.png';
 
-/* A deck id as data/decks.json spells one. Anything else is either somebody's
-   own deck, whose sixteen hex characters mean nothing without their session,
-   or nothing at all; both get the page's own head and a noindex. */
-const WRITTEN = /^[a-z0-9][a-z0-9-]{0,31}$/;
-
 /* Which address a deck says it is, and it is never the subdomain's own.
  *
  * This page answers at three: /flashcard on the live domain, the bare root of
@@ -147,20 +142,6 @@ const FLASH_HOST = 'flashcard.' + new URL(SITE).hostname;
 
 function where(request, path) {
   return new URL(request.url).hostname === FLASH_HOST ? SITE + path : canonical(request, path);
-}
-
-/* All three lists out of the one file: the decks, and the grammar lessons and
-   the songs that sit under headings of their own on the shelf. A missing or
-   malformed file is three empty lists rather than a throw — this route
-   improves a load and is never a requirement for one. */
-async function shelfOf(context) {
-  try {
-    const file = await dataFile(context, DECKS_FILE);
-    const list = (key) => (file && Array.isArray(file[key]) ? file[key] : []);
-    return { decks: list('decks'), lessons: list('lessons'), songs: list('songs') };
-  } catch (e) {
-    return { decks: [], lessons: [], songs: [] };
-  }
 }
 
 /* The decks, as text: what each one is called and the line saying what is in
@@ -519,18 +500,20 @@ export async function onRequest(context) {
   }
 
   const asked = new URL(request.url).searchParams.get('d') || '';
-  const { decks, lessons, songs } = await shelfOf(context);
-  const deck = WRITTEN.test(asked)
-    ? decks.find((d) => d && d.id === asked && Array.isArray(d.cards)) || null
-    : null;
-  /* Or a lesson, at the same kind of address; the validator keeps the two
-     lists from sharing a name. */
-  const lesson = !deck && WRITTEN.test(asked)
-    ? lessons.find((l) => l && l.id === asked && Array.isArray(l.body)) || null
-    : null;
-  const song = !deck && !lesson && WRITTEN.test(asked)
-    ? songs.find((one) => one && one.id === asked && Array.isArray(one.verses)) || null
-    : null;
+  /* The shelf out of the index tools/decks.mjs writes, and the deck, the
+     lesson or the song the address names out of its own file — the three
+     open at the same kind of address, and the validator keeps their lists
+     from sharing a name. A missing or malformed index is three empty lists
+     rather than a throw: this route improves a load and is never a
+     requirement for one. An id on no list is somebody's own deck, whose
+     sixteen hex characters mean nothing without their session, or nothing at
+     all; both get the page's own head and a noindex, below. */
+  const index = await shelf(context);
+  const { decks, lessons, songs } = index;
+  const found = await shippedOne(context, index, asked);
+  const deck = found && found.kind === 'deck' ? found.one : null;
+  const lesson = found && found.kind === 'lesson' ? found.one : null;
+  const song = found && found.kind === 'song' ? found.one : null;
 
   /* The site's own words, for the head: which languages there are, out of
      data/lang/index.json, and then the one file of the language the link

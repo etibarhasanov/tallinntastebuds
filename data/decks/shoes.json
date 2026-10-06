@@ -1,0 +1,487 @@
+{
+ "id": "shoes",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Shoes, socks and rings",
+  "az": "Ayaqqabı, corab və üzük",
+  "ru": "Обувь, носки и кольца"
+ },
+ "why": {
+  "en": "Everything on the rail that is not a garment, and how to say you have it on",
+  "az": "Asqıda paltar olmayan hər şey və onu geyindiyini demək",
+  "ru": "Всё на вешалке, что не одежда, и как сказать, что это на вас"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "tossud",
+   "front": "Tossud",
+   "back": {
+    "en": "Trainers",
+    "az": "Krossovka",
+    "ru": "Кроссовки"
+   },
+   "sentence": {
+    "et": "Tossud on mugavad.",
+    "en": "Trainers are comfortable.",
+    "az": "Krossovkalar rahatdır.",
+    "ru": "Кроссовки удобные."
+   }
+  },
+  {
+   "id": "kingad",
+   "front": "Kingad",
+   "back": {
+    "en": "Shoes",
+    "az": "Ayaqqabı",
+    "ru": "Туфли"
+   },
+   "sentence": {
+    "et": "Need kingad on liiga kitsad.",
+    "en": "These shoes are too narrow.",
+    "az": "Bu ayaqqabılar çox dardır.",
+    "ru": "Эти туфли слишком узкие."
+   }
+  },
+  {
+   "id": "saapad",
+   "front": "Saapad",
+   "back": {
+    "en": "Boots",
+    "az": "Çəkmə",
+    "ru": "Сапоги"
+   },
+   "sentence": {
+    "et": "Talvel kannan saapaid.",
+    "en": "In winter I wear boots.",
+    "az": "Qışda çəkmə geyinirəm.",
+    "ru": "Зимой я ношу сапоги."
+   }
+  },
+  {
+   "id": "kummikud",
+   "front": "Kummikud",
+   "back": {
+    "en": "Wellington boots",
+    "az": "Rezin çəkmə",
+    "ru": "Резиновые сапоги"
+   },
+   "sentence": {
+    "et": "Kummikud on vihma jaoks.",
+    "en": "Wellingtons are for the rain.",
+    "az": "Rezin çəkmələr yağış üçündür.",
+    "ru": "Резиновые сапоги — для дождя."
+   }
+  },
+  {
+   "id": "sussid",
+   "front": "Sussid",
+   "back": {
+    "en": "Slippers",
+    "az": "Ev başmağı",
+    "ru": "Тапочки"
+   },
+   "sentence": {
+    "et": "Sussid on ukse juures.",
+    "en": "The slippers are by the door.",
+    "az": "Ev başmaqları qapının yanındadır.",
+    "ru": "Тапочки у двери."
+   }
+  },
+  {
+   "id": "sokid",
+   "front": "Sokid",
+   "back": {
+    "en": "Socks",
+    "az": "Corab",
+    "ru": "Носки"
+   },
+   "sentence": {
+    "et": "Puhtad sokid on kapis.",
+    "en": "The clean socks are in the cupboard.",
+    "az": "Təmiz corablar şkafdadır.",
+    "ru": "Чистые носки в шкафу."
+   }
+  },
+  {
+   "id": "sukkpuksid",
+   "front": "Sukkpüksid",
+   "back": {
+    "en": "Tights",
+    "az": "Kolqotka",
+    "ru": "Колготки"
+   },
+   "sentence": {
+    "et": "Ma ostan mustad sukkpüksid.",
+    "en": "I am buying black tights.",
+    "az": "Qara kolqotka alıram.",
+    "ru": "Я покупаю чёрные колготки."
+   }
+  },
+  {
+   "id": "kindad",
+   "front": "Kindad",
+   "back": {
+    "en": "Gloves",
+    "az": "Əlcək",
+    "ru": "Перчатки"
+   },
+   "sentence": {
+    "et": "Väljas on külm, võta kindad.",
+    "en": "It is cold outside, take gloves.",
+    "az": "Çöldə soyuqdur, əlcək götür.",
+    "ru": "На улице холодно, возьми перчатки."
+   }
+  },
+  {
+   "id": "muts",
+   "front": "Müts",
+   "back": {
+    "en": "Hat",
+    "az": "Papaq",
+    "ru": "Шапка"
+   },
+   "forms": [
+    "mütsi",
+    "mütsi"
+   ],
+   "sentence": {
+    "et": "Pane müts pähe.",
+    "en": "Put your hat on.",
+    "az": "Papağı başına qoy.",
+    "ru": "Надень шапку."
+   }
+  },
+  {
+   "id": "ratik",
+   "front": "Rätik",
+   "back": {
+    "en": "Headscarf",
+    "az": "Baş yaylığı",
+    "ru": "Платок"
+   },
+   "forms": [
+    "rätiku",
+    "rätikut"
+   ],
+   "sentence": {
+    "et": "Ta kannab rätikut.",
+    "en": "They are wearing a headscarf.",
+    "az": "O baş yaylığı bağlayır.",
+    "ru": "Она носит платок."
+   }
+  },
+  {
+   "id": "sall",
+   "front": "Sall",
+   "back": {
+    "en": "Scarf",
+    "az": "Şərf",
+    "ru": "Шарф"
+   },
+   "forms": [
+    "salli",
+    "salli"
+   ],
+   "sentence": {
+    "et": "Sall on villane.",
+    "en": "The scarf is woollen.",
+    "az": "Şərf yundandır.",
+    "ru": "Шарф шерстяной."
+   }
+  },
+  {
+   "id": "lips",
+   "front": "Lips",
+   "back": {
+    "en": "Tie",
+    "az": "Qalstuk",
+    "ru": "Галстук"
+   },
+   "forms": [
+    "lipsu",
+    "lipsu"
+   ],
+   "sentence": {
+    "et": "Lips on sinine.",
+    "en": "The tie is blue.",
+    "az": "Qalstuk mavidir.",
+    "ru": "Галстук синий."
+   }
+  },
+  {
+   "id": "voo",
+   "front": "Vöö",
+   "back": {
+    "en": "Belt",
+    "az": "Kəmər",
+    "ru": "Ремень"
+   },
+   "forms": [
+    "vöö",
+    "vööd"
+   ],
+   "sentence": {
+    "et": "Vöö on liiga pikk.",
+    "en": "The belt is too long.",
+    "az": "Kəmər çox uzundur.",
+    "ru": "Ремень слишком длинный."
+   }
+  },
+  {
+   "id": "korvarongad",
+   "front": "Kõrvarõngad",
+   "back": {
+    "en": "Earrings",
+    "az": "Sırğa",
+    "ru": "Серёжки"
+   },
+   "sentence": {
+    "et": "Kõrvarõngad on hõbedast.",
+    "en": "The earrings are silver.",
+    "az": "Sırğalar gümüşdəndir.",
+    "ru": "Серёжки серебряные."
+   }
+  },
+  {
+   "id": "sormus",
+   "front": "Sõrmus",
+   "back": {
+    "en": "Ring",
+    "az": "Üzük",
+    "ru": "Кольцо"
+   },
+   "forms": [
+    "sõrmuse",
+    "sõrmust"
+   ],
+   "sentence": {
+    "et": "Sõrmus on väike.",
+    "en": "The ring is small.",
+    "az": "Üzük kiçikdir.",
+    "ru": "Кольцо маленькое."
+   }
+  },
+  {
+   "id": "kaelakee",
+   "front": "Kaelakee",
+   "back": {
+    "en": "Necklace",
+    "az": "Boyunbağı",
+    "ru": "Ожерелье"
+   },
+   "forms": [
+    "kaelakee",
+    "kaelakeed"
+   ],
+   "sentence": {
+    "et": "Kaelakee on kingitus.",
+    "en": "The necklace is a present.",
+    "az": "Boyunbağı hədiyyədir.",
+    "ru": "Ожерелье — подарок."
+   }
+  },
+  {
+   "id": "triibuline",
+   "front": "Triibuline",
+   "back": {
+    "en": "Striped",
+    "az": "Zolaqlı",
+    "ru": "В полоску"
+   },
+   "forms": [
+    "triibulise",
+    "triibulist"
+   ],
+   "sentence": {
+    "et": "Ma tahan triibulist särki.",
+    "en": "I want a striped shirt.",
+    "az": "Zolaqlı köynək istəyirəm.",
+    "ru": "Я хочу рубашку в полоску."
+   }
+  },
+  {
+   "id": "tapiline",
+   "front": "Täpiline",
+   "back": {
+    "en": "Spotted",
+    "az": "Xallı",
+    "ru": "В горошек"
+   },
+   "forms": [
+    "täpilise",
+    "täpilist"
+   ],
+   "sentence": {
+    "et": "See kleit on täpiline.",
+    "en": "This dress is spotted.",
+    "az": "Bu don xallıdır.",
+    "ru": "Это платье в горошек."
+   }
+  },
+  {
+   "id": "ruuduline",
+   "front": "Ruuduline",
+   "back": {
+    "en": "Checked",
+    "az": "Damalı",
+    "ru": "В клетку"
+   },
+   "forms": [
+    "ruudulise",
+    "ruudulist"
+   ],
+   "sentence": {
+    "et": "Ruuduline särk on moes.",
+    "en": "A checked shirt is in fashion.",
+    "az": "Damalı köynək dəbdədir.",
+    "ru": "Рубашка в клетку в моде."
+   }
+  },
+  {
+   "id": "selga-panna",
+   "front": "Selga panna",
+   "back": {
+    "en": "To put on",
+    "az": "geyinmək",
+    "ru": "надеть"
+   },
+   "sentence": {
+    "et": "Pane jope selga.",
+    "en": "Put your jacket on.",
+    "az": "Gödəkçəni geyin.",
+    "ru": "Надень куртку."
+   }
+  },
+  {
+   "id": "seljas-olema",
+   "front": "Seljas olema",
+   "back": {
+    "en": "To be wearing",
+    "az": "əynində olmaq",
+    "ru": "быть надетым"
+   },
+   "sentence": {
+    "et": "Tal on punane kleit seljas.",
+    "en": "They have a red dress on.",
+    "az": "Onun əynində qırmızı don var.",
+    "ru": "На ней красное платье."
+   }
+  },
+  {
+   "id": "seljast-ara-votma",
+   "front": "Seljast ära võtma",
+   "back": {
+    "en": "To take off",
+    "az": "soyunmaq, çıxarmaq",
+    "ru": "снять"
+   },
+   "sentence": {
+    "et": "Võta mantel seljast ära.",
+    "en": "Take your coat off.",
+    "az": "Paltonu çıxar.",
+    "ru": "Сними пальто."
+   }
+  },
+  {
+   "id": "saabas",
+   "front": "Saabas",
+   "back": {
+    "en": "Boot",
+    "az": "Çəkmə",
+    "ru": "Сапог"
+   },
+   "forms": [
+    "saapa",
+    "saabast"
+   ]
+  },
+  {
+   "id": "kinnas",
+   "front": "Kinnas",
+   "back": {
+    "en": "Glove",
+    "az": "Əlcək",
+    "ru": "Перчатка"
+   },
+   "forms": [
+    "kinda",
+    "kinnast"
+   ]
+  },
+  {
+   "id": "sokk",
+   "front": "Sokk",
+   "back": {
+    "en": "Sock",
+    "az": "Corab",
+    "ru": "Носок"
+   },
+   "forms": [
+    "soki",
+    "sokki"
+   ]
+  },
+  {
+   "id": "kummik",
+   "front": "Kummik",
+   "back": {
+    "en": "Wellington",
+    "az": "Rezin çəkmə",
+    "ru": "Резиновый сапог"
+   },
+   "forms": [
+    "kummiku",
+    "kummikut"
+   ]
+  },
+  {
+   "id": "paikeseprillid",
+   "front": "Päikeseprillid",
+   "back": {
+    "en": "Sunglasses",
+    "az": "Günəş eynəyi",
+    "ru": "Солнечные очки"
+   }
+  },
+  {
+   "id": "ninarongas",
+   "front": "Ninarõngas",
+   "back": {
+    "en": "Nose piercing",
+    "az": "Burun halqası",
+    "ru": "Пирсинг в носу"
+   },
+   "forms": [
+    "ninarõnga",
+    "ninarõngast"
+   ]
+  },
+  {
+   "id": "king",
+   "front": "King",
+   "back": {
+    "en": "Shoe",
+    "az": "Ayaqqabı",
+    "ru": "Туфля, ботинок"
+   },
+   "forms": [
+    "kinga",
+    "kinga"
+   ]
+  },
+  {
+   "id": "suss",
+   "front": "Suss",
+   "back": {
+    "en": "Slipper",
+    "az": "Ev başmağı",
+    "ru": "Тапок, тапочка"
+   },
+   "forms": [
+    "sussi",
+    "sussi"
+   ]
+  }
+ ]
+}

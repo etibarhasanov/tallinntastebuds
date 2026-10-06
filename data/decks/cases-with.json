@@ -1,0 +1,263 @@
+{
+ "id": "cases-with",
+ "added": "2026-10-06",
+ "deck": "cases-with-cards",
+ "heading": "cases",
+ "name": {
+  "en": "As, without, with",
+  "az": "Kimi, -sız, -la",
+  "ru": "Кем, без, с"
+ },
+ "why": {
+  "en": "Olev, ilmaütlev, kaasaütlev — cases twelve to fourteen, and the last of them",
+  "az": "Olev, ilmaütlev, kaasaütlev — on ikincidən on dördüncüyə qədər hallar, sonuncular",
+  "ru": "Olev, ilmaütlev, kaasaütlev — падежи с двенадцатого по четырнадцатый, последние"
+ },
+ "body": [
+  {
+   "say": {
+    "en": "The last three, and the ones that feel least like grammar: each is one small English word turned into an ending — *as*, *without*, *with*.",
+    "az": "Son üç hal, və Azərbaycan dilində danışana ən doğma gələnlər: ikisi bizim şəkilçilərimizin, demək olar, eynisidir.",
+    "ru": "Последние три. Два из них — русские «без» и «с», ставшие окончаниями, а третий забирает у творительного ещё одну работу."
+   }
+  },
+  {
+   "head": {
+    "en": "Olev — kellena? millena? — as",
+    "az": "Olev — kellena? millena? — kim kimi?",
+    "ru": "Olev — kellena? millena? — кем? в качестве кого?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kellena?",
+       "kokana",
+       "kokkadena"
+      ],
+      "means": {
+       "en": "cook",
+       "az": "aşpaz",
+       "ru": "повар"
+      }
+     },
+     {
+      "et": [
+       "kellena?",
+       "lapsena",
+       "lastena"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma töötan restoranis kokana.",
+     "en": "I work in a restaurant as a cook.",
+     "az": "Restoranda aşpaz işləyirəm.",
+     "ru": "Я работаю поваром в ресторане."
+    },
+    {
+     "et": "Lapsena armastasin jäätist.",
+     "en": "As a child I loved ice cream.",
+     "az": "Uşaq ikən dondurmanı sevirdim.",
+     "ru": "В детстве я любил мороженое."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "As, in a role: *Ta töötab kokana* — he works as a cook. *Lapsena elasin ma Tartus* — as a child I lived in Tartu. Keep it apart from the saav of the last lesson: *arstiks* is turning into a doctor, *arstina* is being one.",
+    "az": "Bizim kimi və ikən: *Ta töötab kokana* — o, aşpaz işləyir, aşpaz kimi. *Lapsena elasin ma Tartus* — uşaq ikən Tartuda yaşayırdım. Keçən dərsdəki saav ilə qarışdırmayın: *arstiks* — həkim olmaq, *arstina* — həkim kimi, artıq həkim olaraq.",
+    "ru": "Вторая треть творительного: *Ta töötab kokana* — он работает поваром. *Lapsena elasin ma Tartus* — ребёнком я жил в Тарту. Запомните пару: стать врачом — *arstiks*, работать врачом — *arstina*. По-русски одно окончание, по-эстонски два: тот, кто становится, и тот, кто уже есть."
+   }
+  },
+  {
+   "head": {
+    "en": "Ilmaütlev — kelleta? milleta? — without",
+    "az": "Ilmaütlev — kelleta? milleta? — -sız, -siz",
+    "ru": "Ilmaütlev — kelleta? milleta? — без кого? без чего?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kelleta?",
+       "sõbrata",
+       "sõpradeta"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     },
+     {
+      "et": [
+       "kelleta?",
+       "lapseta",
+       "lasteta"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma ei lähe sõbrata.",
+     "en": "I'm not going without my friend.",
+     "az": "Dostsuz getmirəm.",
+     "ru": "Я не пойду без друга."
+    },
+    {
+     "et": "Palun üks tee suhkruta.",
+     "en": "One tea without sugar, please.",
+     "az": "Bir şəkərsiz çay, zəhmət olmasa.",
+     "ru": "Один чай без сахара, пожалуйста."
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "Without, and close to the English *-less*: *kohv suhkruta* — coffee without sugar, *vihmavarjuta* — without an umbrella. You will also hear *ilma* in front of it, which says the same thing twice: *ilma suhkruta*.",
+    "az": "Bu, bizim -sız/-siz/-suz/-süz şəkilçimizdir: *suhkruta* — şəkərsiz, *vihmavarjuta* — çətirsiz, *sinuta* — sənsiz. Tək fərq söz sırasıdır: biz şəkərsiz qəhvə deyirik, eston dili *kohv suhkruta* — qəhvə qabaqda. Bəzən qabağına *ilma* da qoyurlar, eyni mənada: *ilma suhkruta*.",
+    "ru": "Это «без» с родительным в одном окончании: *kohv suhkruta* — кофе без сахара, *vihmavarjuta* — без зонта, *sinuta* — без тебя. Можно поставить и *ilma* впереди — *ilma suhkruta* — смысл тот же."
+   }
+  },
+  {
+   "head": {
+    "en": "Kaasaütlev — kellega? millega? — with",
+    "az": "Kaasaütlev — kellega? millega? — -la, -lə",
+    "ru": "Kaasaütlev — kellega? millega? — с кем? чем?"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "question",
+      "az": "sual",
+      "ru": "вопрос"
+     },
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "kellega?",
+       "sõbraga",
+       "sõpradega"
+      ],
+      "means": {
+       "en": "friend",
+       "az": "dost",
+       "ru": "друг"
+      }
+     },
+     {
+      "et": [
+       "kellega?",
+       "lapsega",
+       "lastega"
+      ],
+      "means": {
+       "en": "child",
+       "az": "uşaq",
+       "ru": "ребёнок"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma lähen sõbraga kinno.",
+     "en": "I'm going to the cinema with a friend.",
+     "az": "Dostla kinoya gedirəm.",
+     "ru": "Я иду в кино с другом."
+    },
+    {
+     "et": "Kas saab kaardiga maksta?",
+     "en": "Can I pay by card?",
+     "az": "Kartla ödəmək olar?",
+     "ru": "Можно заплатить картой?"
+    }
+   ]
+  },
+  {
+   "say": {
+    "en": "With, in both its senses: together — *Ma tulen sõbraga*, I'm coming with a friend; *kohv piimaga*, coffee with milk — and as a tool or a way to travel — *noaga*, with a knife; *bussiga*, by bus.",
+    "az": "Bizim -la/-lə, ilə: *Ma tulen sõbraga* — dostla gəlirəm. *Bussiga* — avtobusla, *noaga* — bıçaqla. Bir yerdə fərqlidir: biz südlü qəhvə deyirik, eston dili *kohv piimaga* — qəhvə südlə.",
+    "ru": "«С» и творительный в одном окончании: *Ma tulen sõbraga* — я приду с другом, *kohv piimaga* — кофе с молоком. И последняя треть творительного — орудие: *noaga* — ножом. И транспорт, где русский говорит «на»: *bussiga* — на автобусе."
+   }
+  },
+  {
+   "say": {
+    "en": "That is all fourteen. The fourteen cases, under Grammar, puts them on one page for when you want the whole table at once; the deck under this lesson is coffee with and without, and who comes along.",
+    "az": "Bu da on dördü. Qrammatika başlığı altındakı On dörd hal dərsi hamısını bir səhifədə göstərir — bütöv cədvəl lazım olanda. Bu dərsin dəsti isə südlü və şəkərsiz qəhvə, və kimlə gəldiyiniz haqqındadır.",
+    "ru": "Вот и все четырнадцать. Урок «Четырнадцать падежей» в разделе «Грамматика» собирает их на одной странице, когда нужна вся таблица сразу; а колода под этим уроком — кофе с молоком и без сахара, и с кем вы пришли."
+   }
+  }
+ ]
+}

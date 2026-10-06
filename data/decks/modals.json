@@ -1,0 +1,287 @@
+{
+ "id": "modals",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Must, want, may",
+  "az": "Gərək, istəyirəm, olar",
+  "ru": "Надо, хочу, можно"
+ },
+ "why": {
+  "en": "After pean the verb ends in -ma and after tahan in -da, which is the whole lesson",
+  "az": "pean-dan sonra fel -ma, tahan-dan sonra -da ilə bitir — dərs budur",
+  "ru": "После pean глагол на -ma, после tahan — на -da, в этом весь урок"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "ma-pean",
+   "front": "Ma pean",
+   "back": {
+    "en": "I must",
+    "az": "Etməliyəm",
+    "ru": "Я должен"
+   },
+   "sentence": {
+    "et": "Ma pean täna töötama.",
+    "en": "I have to work today.",
+    "az": "Bu gün işləməliyəm.",
+    "ru": "Мне сегодня надо работать."
+   }
+  },
+  {
+   "id": "te-peate",
+   "front": "Te peate",
+   "back": {
+    "en": "You must — to more than one",
+    "az": "Siz etməlisiniz",
+    "ru": "Вы должны — нескольким"
+   },
+   "sentence": {
+    "et": "Te peate siin ootama.",
+    "en": "You have to wait here.",
+    "az": "Siz burada gözləməlisiniz.",
+    "ru": "Вам нужно подождать здесь."
+   }
+  },
+  {
+   "id": "ma-tahan",
+   "front": "Ma tahan",
+   "back": {
+    "en": "I want",
+    "az": "İstəyirəm",
+    "ru": "Я хочу"
+   },
+   "sentence": {
+    "et": "Ma tahan kohvi.",
+    "en": "I want a coffee.",
+    "az": "Qəhvə istəyirəm.",
+    "ru": "Я хочу кофе."
+   }
+  },
+  {
+   "id": "ma-saan",
+   "front": "Ma saan",
+   "back": {
+    "en": "I can, I am able to",
+    "az": "Bacarıram, edə bilərəm",
+    "ru": "Я могу, я в состоянии"
+   },
+   "sentence": {
+    "et": "Ma saan homme tulla.",
+    "en": "I can come tomorrow.",
+    "az": "Sabah gələ bilərəm.",
+    "ru": "Я могу прийти завтра."
+   }
+  },
+  {
+   "id": "ma-voin",
+   "front": "Ma võin",
+   "back": {
+    "en": "I may",
+    "az": "İcazəm var",
+    "ru": "Мне можно"
+   },
+   "sentence": {
+    "et": "Ma võin sind aidata.",
+    "en": "I can help you.",
+    "az": "Sənə kömək edə bilərəm.",
+    "ru": "Я могу тебе помочь."
+   }
+  },
+  {
+   "id": "ma-hakkan",
+   "front": "Ma hakkan",
+   "back": {
+    "en": "I am about to",
+    "az": "Başlayıram",
+    "ru": "Я сейчас начну"
+   },
+   "sentence": {
+    "et": "Ma hakkan sööma.",
+    "en": "I am about to eat.",
+    "az": "Yeməyə başlayıram.",
+    "ru": "Я сейчас буду есть."
+   }
+  },
+  {
+   "id": "ma-hakkan-minema",
+   "front": "Ma hakkan minema",
+   "back": {
+    "en": "I am off",
+    "az": "Mən getdim",
+    "ru": "Я пошёл"
+   }
+  },
+  {
+   "id": "ma-pean-koristama",
+   "front": "Ma pean koristama",
+   "back": {
+    "en": "I must tidy up",
+    "az": "Yığışdırmalıyam",
+    "ru": "Мне надо убрать"
+   }
+  },
+  {
+   "id": "ma-tahan-koristada",
+   "front": "Ma tahan koristada",
+   "back": {
+    "en": "I want to tidy up",
+    "az": "Yığışdırmaq istəyirəm",
+    "ru": "Я хочу убрать"
+   }
+  },
+  {
+   "id": "ma-pean-kohvi-keetma",
+   "front": "Ma pean kohvi keetma",
+   "back": {
+    "en": "I must make the coffee",
+    "az": "Qəhvə hazırlamalıyam",
+    "ru": "Мне надо сварить кофе"
+   }
+  },
+  {
+   "id": "ma-tahan-kohvi-keeta",
+   "front": "Ma tahan kohvi keeta",
+   "back": {
+    "en": "I want to make coffee",
+    "az": "Qəhvə hazırlamaq istəyirəm",
+    "ru": "Я хочу сварить кофе"
+   }
+  },
+  {
+   "id": "ma-pean-nousid-pesema",
+   "front": "Ma pean nõusid pesema",
+   "back": {
+    "en": "I must wash the dishes",
+    "az": "Qabları yumalıyam",
+    "ru": "Мне надо помыть посуду"
+   }
+  },
+  {
+   "id": "ma-tahan-nousid-pesta",
+   "front": "Ma tahan nõusid pesta",
+   "back": {
+    "en": "I want to wash the dishes",
+    "az": "Qabları yumaq istəyirəm",
+    "ru": "Я хочу помыть посуду"
+   }
+  },
+  {
+   "id": "ma-pean-inimestega-suhtlema",
+   "front": "Ma pean inimestega suhtlema",
+   "back": {
+    "en": "I must talk to people",
+    "az": "İnsanlarla ünsiyyət qurmalıyam",
+    "ru": "Мне надо общаться с людьми"
+   }
+  },
+  {
+   "id": "ma-tahan-inimestega-suhelda",
+   "front": "Ma tahan inimestega suhelda",
+   "back": {
+    "en": "I want to talk to people",
+    "az": "İnsanlarla ünsiyyət qurmaq istəyirəm",
+    "ru": "Я хочу общаться с людьми"
+   }
+  },
+  {
+   "id": "ma-pean-oppima",
+   "front": "Ma pean õppima",
+   "back": {
+    "en": "I must study",
+    "az": "Öyrənməliyəm",
+    "ru": "Мне надо учиться"
+   }
+  },
+  {
+   "id": "ma-tahan-oppida",
+   "front": "Ma tahan õppida",
+   "back": {
+    "en": "I want to study",
+    "az": "Öyrənmək istəyirəm",
+    "ru": "Я хочу учиться"
+   }
+  },
+  {
+   "id": "ma-pean-autot-remontima",
+   "front": "Ma pean autot remontima",
+   "back": {
+    "en": "I must fix the car",
+    "az": "Maşını təmir etməliyəm",
+    "ru": "Мне надо отремонтировать машину"
+   }
+  },
+  {
+   "id": "ma-tahan-autot-remontida",
+   "front": "Ma tahan autot remontida",
+   "back": {
+    "en": "I want to fix the car",
+    "az": "Maşını təmir etmək istəyirəm",
+    "ru": "Я хочу отремонтировать машину"
+   }
+  },
+  {
+   "id": "ma-tahan-maja-ehitada",
+   "front": "Ma tahan maja ehitada",
+   "back": {
+    "en": "I want to build a house",
+    "az": "Ev tikmək istəyirəm",
+    "ru": "Я хочу построить дом"
+   }
+  },
+  {
+   "id": "ma-tohin",
+   "front": "Ma tohin",
+   "back": {
+    "en": "I may, I am allowed to",
+    "az": "İcazəm var",
+    "ru": "Мне можно"
+   }
+  },
+  {
+   "id": "ma-ei-tohi",
+   "front": "Ma ei tohi",
+   "back": {
+    "en": "I may not",
+    "az": "İcazəm yoxdur",
+    "ru": "Мне нельзя"
+   }
+  },
+  {
+   "id": "sa-ei-pea-midagi-tegema",
+   "front": "Sa ei pea midagi tegema",
+   "back": {
+    "en": "You do not have to do anything",
+    "az": "Heç nə etməyə borclu deyilsən",
+    "ru": "Ты ничего не должен делать"
+   }
+  },
+  {
+   "id": "koristada-void-homme",
+   "front": "Koristada võid homme",
+   "back": {
+    "en": "You can tidy up tomorrow",
+    "az": "Sabah yığışdıra bilərsən",
+    "ru": "Убрать можешь завтра"
+   }
+  },
+  {
+   "id": "ma-pean-tootama",
+   "front": "Ma pean töötama",
+   "back": {
+    "en": "I have to work",
+    "az": "İşləməliyəm",
+    "ru": "Я должен работать"
+   }
+  },
+  {
+   "id": "ma-tahan-puhata",
+   "front": "Ma tahan puhata",
+   "back": {
+    "en": "I want to rest",
+    "az": "Dincəlmək istəyirəm",
+    "ru": "Я хочу отдохнуть"
+   }
+  }
+ ]
+}

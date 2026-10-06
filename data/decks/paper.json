@@ -1,0 +1,636 @@
+{
+ "id": "paper",
+ "added": "2026-09-18",
+ "name": {
+  "en": "Reading and writing",
+  "az": "Oxumaq və yazmaq",
+  "ru": "Чтение и письмо"
+ },
+ "why": {
+  "en": "A newspaper, an exercise book, and the word for a mistake",
+  "az": "Qəzet, dəftər və «səhv» sözü",
+  "ru": "Газета, тетрадь и слово «ошибка»"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "ajaleht",
+   "front": "Ajaleht",
+   "back": {
+    "en": "Newspaper",
+    "az": "Qəzet",
+    "ru": "Газета"
+   },
+   "forms": [
+    "ajalehe",
+    "ajalehte"
+   ],
+   "sentence": {
+    "et": "Ma loen ajalehte.",
+    "en": "I am reading the newspaper.",
+    "az": "Qəzet oxuyuram.",
+    "ru": "Я читаю газету."
+   }
+  },
+  {
+   "id": "ajakiri",
+   "front": "Ajakiri",
+   "back": {
+    "en": "Magazine",
+    "az": "Jurnal",
+    "ru": "Журнал"
+   },
+   "forms": [
+    "ajakirja",
+    "ajakirja"
+   ],
+   "sentence": {
+    "et": "See ajakiri on inglise keeles.",
+    "en": "This magazine is in English.",
+    "az": "Bu jurnal ingiliscədir.",
+    "ru": "Этот журнал на английском."
+   }
+  },
+  {
+   "id": "vihik",
+   "front": "Vihik",
+   "back": {
+    "en": "Exercise book",
+    "az": "Dəftər",
+    "ru": "Тетрадь"
+   },
+   "forms": [
+    "vihiku",
+    "vihikut"
+   ],
+   "sentence": {
+    "et": "Sõnad on vihikus.",
+    "en": "The words are in the exercise book.",
+    "az": "Sözlər dəftərdədir.",
+    "ru": "Слова в тетради."
+   }
+  },
+  {
+   "id": "sedel",
+   "front": "Sedel",
+   "back": {
+    "en": "Note, slip of paper",
+    "az": "Qeyd, kağız parçası",
+    "ru": "Записка"
+   },
+   "forms": [
+    "sedeli",
+    "sedelit"
+   ],
+   "sentence": {
+    "et": "Ma jätsin sulle sedeli.",
+    "en": "I left you a note.",
+    "az": "Sənə qeyd qoydum.",
+    "ru": "Я оставил тебе записку."
+   }
+  },
+  {
+   "id": "kiri",
+   "front": "Kiri",
+   "back": {
+    "en": "Letter",
+    "az": "Məktub",
+    "ru": "Письмо"
+   },
+   "forms": [
+    "kirja",
+    "kirja"
+   ],
+   "sentence": {
+    "et": "Ma kirjutan kirja.",
+    "en": "I am writing a letter.",
+    "az": "Məktub yazıram.",
+    "ru": "Я пишу письмо."
+   }
+  },
+  {
+   "id": "taht",
+   "front": "Täht",
+   "back": {
+    "en": "Letter, star",
+    "az": "Hərf, ulduz",
+    "ru": "Буква, звезда"
+   },
+   "forms": [
+    "tähe",
+    "tähte"
+   ],
+   "sentence": {
+    "et": "See sõna algab tähega A.",
+    "en": "This word begins with the letter A.",
+    "az": "Bu söz A hərfi ilə başlayır.",
+    "ru": "Это слово начинается с буквы А."
+   }
+  },
+  {
+   "id": "harjutus",
+   "front": "Harjutus",
+   "back": {
+    "en": "Exercise",
+    "az": "Çalışma",
+    "ru": "Упражнение"
+   },
+   "forms": [
+    "harjutuse",
+    "harjutust"
+   ],
+   "sentence": {
+    "et": "Tee see harjutus ära.",
+    "en": "Do this exercise.",
+    "az": "Bu çalışmanı et.",
+    "ru": "Сделай это упражнение."
+   }
+  },
+  {
+   "id": "haal",
+   "front": "Hääl",
+   "back": {
+    "en": "Voice",
+    "az": "Səs",
+    "ru": "Голос"
+   },
+   "forms": [
+    "hääle",
+    "häält"
+   ],
+   "sentence": {
+    "et": "Loe valju häälega.",
+    "en": "Read it out loud.",
+    "az": "Ucadan oxu.",
+    "ru": "Читай вслух."
+   }
+  },
+  {
+   "id": "idee",
+   "front": "Idee",
+   "back": {
+    "en": "Idea",
+    "az": "Fikir",
+    "ru": "Идея"
+   },
+   "forms": [
+    "idee",
+    "ideed"
+   ],
+   "sentence": {
+    "et": "See on hea idee.",
+    "en": "That is a good idea.",
+    "az": "Bu yaxşı fikirdir.",
+    "ru": "Это хорошая идея."
+   }
+  },
+  {
+   "id": "viga",
+   "front": "Viga",
+   "back": {
+    "en": "Mistake",
+    "az": "Səhv",
+    "ru": "Ошибка"
+   },
+   "forms": [
+    "vea",
+    "viga"
+   ],
+   "sentence": {
+    "et": "Ma tegin vea.",
+    "en": "I made a mistake.",
+    "az": "Səhv etdim.",
+    "ru": "Я сделал ошибку."
+   }
+  },
+  {
+   "id": "aeg",
+   "front": "Aeg",
+   "back": {
+    "en": "Time",
+    "az": "Vaxt",
+    "ru": "Время"
+   },
+   "forms": [
+    "aja",
+    "aega"
+   ],
+   "sentence": {
+    "et": "Mul ei ole aega.",
+    "en": "I have no time.",
+    "az": "Vaxtım yoxdur.",
+    "ru": "У меня нет времени."
+   }
+  },
+  {
+   "id": "raamat",
+   "front": "Raamat",
+   "back": {
+    "en": "Book",
+    "az": "Kitab",
+    "ru": "Книга"
+   },
+   "forms": [
+    "raamatu",
+    "raamatut"
+   ],
+   "sentence": {
+    "et": "Ma loen head raamatut.",
+    "en": "I am reading a good book.",
+    "az": "Yaxşı kitab oxuyuram.",
+    "ru": "Я читаю хорошую книгу."
+   }
+  },
+  {
+   "id": "sona",
+   "front": "Sõna",
+   "back": {
+    "en": "Word",
+    "az": "Söz",
+    "ru": "Слово"
+   },
+   "forms": [
+    "sõna",
+    "sõna"
+   ],
+   "sentence": {
+    "et": "Ma tean ainult mõnda sõna.",
+    "en": "I only know a few words.",
+    "az": "Yalnız bir neçə söz bilirəm.",
+    "ru": "Я знаю только несколько слов."
+   }
+  },
+  {
+   "id": "lause",
+   "front": "Lause",
+   "back": {
+    "en": "Sentence",
+    "az": "Cümlə",
+    "ru": "Предложение"
+   },
+   "forms": [
+    "lause",
+    "lauset"
+   ],
+   "sentence": {
+    "et": "Kirjuta üks lause eesti keeles.",
+    "en": "Write one sentence in Estonian.",
+    "az": "Eston dilində bir cümlə yaz.",
+    "ru": "Напиши одно предложение по-эстонски."
+   }
+  },
+  {
+   "id": "lehekulg",
+   "front": "Lehekülg",
+   "back": {
+    "en": "Page",
+    "az": "Səhifə",
+    "ru": "Страница"
+   },
+   "forms": [
+    "lehekülje",
+    "lehekülge"
+   ],
+   "sentence": {
+    "et": "Harjutus on kümnendal leheküljel.",
+    "en": "The exercise is on page ten.",
+    "az": "Məşq onuncu səhifədədir.",
+    "ru": "Упражнение на десятой странице."
+   }
+  },
+  {
+   "id": "luuletus",
+   "front": "Luuletus",
+   "back": {
+    "en": "Poem",
+    "az": "Şeir",
+    "ru": "Стихотворение"
+   },
+   "forms": [
+    "luuletuse",
+    "luuletust"
+   ],
+   "sentence": {
+    "et": "See luuletus on lühike.",
+    "en": "This poem is short.",
+    "az": "Bu şeir qısadır.",
+    "ru": "Это стихотворение короткое."
+   }
+  },
+  {
+   "id": "vastus",
+   "front": "Vastus",
+   "back": {
+    "en": "Answer",
+    "az": "Cavab",
+    "ru": "Ответ"
+   },
+   "forms": [
+    "vastuse",
+    "vastust"
+   ],
+   "sentence": {
+    "et": "Vastus on õige.",
+    "en": "The answer is right.",
+    "az": "Cavab düzgündür.",
+    "ru": "Ответ правильный."
+   }
+  },
+  {
+   "id": "umbrik",
+   "front": "Ümbrik",
+   "back": {
+    "en": "Envelope",
+    "az": "Zərf",
+    "ru": "Конверт"
+   },
+   "forms": [
+    "ümbriku",
+    "ümbrikut"
+   ],
+   "sentence": {
+    "et": "Kiri on ümbrikus.",
+    "en": "The letter is in the envelope.",
+    "az": "Məktub zərfdədir.",
+    "ru": "Письмо в конверте."
+   }
+  },
+  {
+   "id": "mark",
+   "front": "Mark",
+   "back": {
+    "en": "Stamp",
+    "az": "Marka",
+    "ru": "Марка"
+   },
+   "forms": [
+    "margi",
+    "marki"
+   ],
+   "sentence": {
+    "et": "Ümbrikul on mark.",
+    "en": "There is a stamp on the envelope.",
+    "az": "Zərfin üstündə marka var.",
+    "ru": "На конверте марка."
+   }
+  },
+  {
+   "id": "meil",
+   "front": "Meil",
+   "back": {
+    "en": "E-mail",
+    "az": "E-poçt",
+    "ru": "Электронная почта"
+   },
+   "forms": [
+    "meili",
+    "meili"
+   ],
+   "sentence": {
+    "et": "Ma saadan sulle meili.",
+    "en": "I will send you an e-mail.",
+    "az": "Sənə e-poçt göndərəcəyəm.",
+    "ru": "Я пошлю тебе письмо по почте."
+   }
+  },
+  {
+   "id": "lugupeetud",
+   "front": "Lugupeetud",
+   "back": {
+    "en": "Dear — at the top of a letter",
+    "az": "Hörmətli",
+    "ru": "Уважаемый"
+   },
+   "sentence": {
+    "et": "Lugupeetud härra Tamm!",
+    "en": "Dear Mr Tamm,",
+    "az": "Hörmətli cənab Tamm!",
+    "ru": "Уважаемый господин Тамм!"
+   }
+  },
+  {
+   "id": "pastakas",
+   "front": "Pastakas",
+   "back": {
+    "en": "Pen",
+    "az": "Diyircəkli qələm",
+    "ru": "Шариковая ручка"
+   },
+   "forms": [
+    "pastaka",
+    "pastakat"
+   ],
+   "sentence": {
+    "et": "Kas sul on pastakat?",
+    "en": "Do you have a pen?",
+    "az": "Qələmin var?",
+    "ru": "У тебя есть ручка?"
+   }
+  },
+  {
+   "id": "pliiats",
+   "front": "Pliiats",
+   "back": {
+    "en": "Pencil",
+    "az": "Karandaş",
+    "ru": "Карандаш"
+   },
+   "forms": [
+    "pliiatsi",
+    "pliiatsit"
+   ],
+   "sentence": {
+    "et": "Kirjuta pliiatsiga.",
+    "en": "Write with a pencil.",
+    "az": "Karandaşla yaz.",
+    "ru": "Пиши карандашом."
+   }
+  },
+  {
+   "id": "mote",
+   "front": "Mõte",
+   "back": {
+    "en": "Thought, idea",
+    "az": "Fikir",
+    "ru": "Мысль, идея"
+   },
+   "forms": [
+    "mõtte",
+    "mõtet"
+   ],
+   "sentence": {
+    "et": "Mul on üks mõte.",
+    "en": "I have an idea.",
+    "az": "Bir fikrim var.",
+    "ru": "У меня есть одна мысль."
+   }
+  },
+  {
+   "id": "arvuti",
+   "front": "Arvuti",
+   "back": {
+    "en": "Computer",
+    "az": "Kompüter",
+    "ru": "Компьютер"
+   },
+   "forms": [
+    "arvuti",
+    "arvutit"
+   ],
+   "sentence": {
+    "et": "Arvuti on laual.",
+    "en": "The computer is on the table.",
+    "az": "Kompüter masanın üstündədir.",
+    "ru": "Компьютер на столе."
+   }
+  },
+  {
+   "id": "infoleht",
+   "front": "Infoleht",
+   "back": {
+    "en": "Information sheet",
+    "az": "Məlumat vərəqi",
+    "ru": "Информационный листок"
+   },
+   "forms": [
+    "infolehe",
+    "infolehte"
+   ]
+  },
+  {
+   "id": "pealkiri",
+   "front": "Pealkiri",
+   "back": {
+    "en": "Title, headline",
+    "az": "Başlıq",
+    "ru": "Заголовок"
+   },
+   "forms": [
+    "pealkirja",
+    "pealkirja"
+   ]
+  },
+  {
+   "id": "peatukk",
+   "front": "Peatükk",
+   "back": {
+    "en": "Chapter",
+    "az": "Fəsil",
+    "ru": "Глава"
+   },
+   "forms": [
+    "peatüki",
+    "peatükki"
+   ]
+  },
+  {
+   "id": "sonaraamat",
+   "front": "Sõnaraamat",
+   "back": {
+    "en": "Dictionary",
+    "az": "Lüğət",
+    "ru": "Словарь"
+   },
+   "forms": [
+    "sõnaraamatu",
+    "sõnaraamatut"
+   ]
+  },
+  {
+   "id": "multifilm",
+   "front": "Multifilm",
+   "back": {
+    "en": "Cartoon",
+    "az": "Cizgi filmi",
+    "ru": "Мультфильм"
+   },
+   "forms": [
+    "multifilmi",
+    "multifilmi"
+   ]
+  },
+  {
+   "id": "seriaal",
+   "front": "Seriaal",
+   "back": {
+    "en": "Serial, TV show",
+    "az": "Serial",
+    "ru": "Сериал"
+   },
+   "forms": [
+    "seriaali",
+    "seriaali"
+   ]
+  },
+  {
+   "id": "uudis",
+   "front": "Uudis",
+   "back": {
+    "en": "News",
+    "az": "Xəbər",
+    "ru": "Новость"
+   },
+   "forms": [
+    "uudise",
+    "uudist"
+   ]
+  },
+  {
+   "id": "internet",
+   "front": "Internet",
+   "back": {
+    "en": "Internet",
+    "az": "İnternet",
+    "ru": "Интернет"
+   },
+   "forms": [
+    "interneti",
+    "internetti"
+   ]
+  },
+  {
+   "id": "e-kiri",
+   "front": "E-kiri",
+   "back": {
+    "en": "Email",
+    "az": "E-məktub",
+    "ru": "Электронное письмо"
+   },
+   "forms": [
+    "e-kirja",
+    "e-kirja"
+   ]
+  },
+  {
+   "id": "vigu-tegema",
+   "front": "Vigu tegema",
+   "back": {
+    "en": "To make mistakes",
+    "az": "səhv etmək",
+    "ru": "делать ошибки"
+   }
+  },
+  {
+   "id": "valju-haalega",
+   "front": "Valju häälega",
+   "back": {
+    "en": "Aloud",
+    "az": "Uca səslə",
+    "ru": "Вслух"
+   }
+  },
+  {
+   "id": "lugu",
+   "front": "Lugu",
+   "back": {
+    "en": "Story",
+    "az": "Hekayə",
+    "ru": "Рассказ"
+   },
+   "forms": [
+    "loo",
+    "lugu"
+   ]
+  }
+ ]
+}

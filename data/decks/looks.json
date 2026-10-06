@@ -1,0 +1,388 @@
+{
+ "id": "looks",
+ "added": "2026-09-20",
+ "level": "deep",
+ "name": {
+  "en": "What somebody looks like",
+  "az": "Kimin görkəmi necədir",
+  "ru": "Как кто-то выглядит"
+ },
+ "why": {
+  "en": "Tall, slim, curly, bald — describing the person rather than the thing",
+  "az": "Ucaboy, arıq, qıvrımsaç, keçəl — əşyanı yox, adamı təsvir etmək",
+  "ru": "Высокий, худой, кудрявый, лысый — описание человека, а не вещи"
+ },
+ "cards": [
+  {
+   "id": "valimus",
+   "front": "Välimus",
+   "back": {
+    "en": "Appearance",
+    "az": "Görkəm",
+    "ru": "Внешность"
+   },
+   "forms": [
+    "välimuse",
+    "välimust"
+   ]
+  },
+  {
+   "id": "kasv",
+   "front": "Kasv",
+   "back": {
+    "en": "Height",
+    "az": "Boy",
+    "ru": "Рост"
+   },
+   "forms": [
+    "kasvu",
+    "kasvu"
+   ]
+  },
+  {
+   "id": "pikka-kasvu",
+   "front": "Pikka kasvu",
+   "back": {
+    "en": "Of tall height",
+    "az": "Ucaboy",
+    "ru": "Высокого роста"
+   }
+  },
+  {
+   "id": "sale",
+   "front": "Sale",
+   "back": {
+    "en": "Slim",
+    "az": "Arıq",
+    "ru": "Стройный"
+   },
+   "forms": [
+    "saleda",
+    "saledat"
+   ]
+  },
+  {
+   "id": "kohn",
+   "front": "Kõhn",
+   "back": {
+    "en": "Thin, skinny",
+    "az": "Cılız",
+    "ru": "Худой"
+   },
+   "forms": [
+    "kõhna",
+    "kõhna"
+   ]
+  },
+  {
+   "id": "lokkis",
+   "front": "Lokkis",
+   "back": {
+    "en": "Curly",
+    "az": "Qıvrım",
+    "ru": "Кудрявый"
+   }
+  },
+  {
+   "id": "sirge",
+   "front": "Sirge",
+   "back": {
+    "en": "Straight",
+    "az": "Düz",
+    "ru": "Прямой"
+   },
+   "forms": [
+    "sirge",
+    "sirget"
+   ]
+  },
+  {
+   "id": "blondiin",
+   "front": "Blondiin",
+   "back": {
+    "en": "Blonde",
+    "az": "Sarışın",
+    "ru": "Блондинка"
+   },
+   "forms": [
+    "blondiini",
+    "blondiini"
+   ]
+  },
+  {
+   "id": "punapea",
+   "front": "Punapea",
+   "back": {
+    "en": "Redhead",
+    "az": "Kürən",
+    "ru": "Рыжий"
+   },
+   "forms": [
+    "punapea",
+    "punapead"
+   ]
+  },
+  {
+   "id": "kiilakas",
+   "front": "Kiilakas",
+   "back": {
+    "en": "Bald",
+    "az": "Keçəl",
+    "ru": "Лысый"
+   },
+   "forms": [
+    "kiilaka",
+    "kiilakat"
+   ]
+  },
+  {
+   "id": "soeng",
+   "front": "Soeng",
+   "back": {
+    "en": "Hairstyle",
+    "az": "Saç düzümü",
+    "ru": "Причёска"
+   },
+   "forms": [
+    "soengu",
+    "soengut"
+   ]
+  },
+  {
+   "id": "pats",
+   "front": "Pats",
+   "back": {
+    "en": "Braid",
+    "az": "Hörük",
+    "ru": "Коса"
+   },
+   "forms": [
+    "patsi",
+    "patsi"
+   ]
+  },
+  {
+   "id": "hobusesaba",
+   "front": "Hobusesaba",
+   "back": {
+    "en": "Ponytail",
+    "az": "At quyruğu",
+    "ru": "Конский хвост"
+   },
+   "forms": [
+    "hobusesaba",
+    "hobusesaba"
+   ]
+  },
+  {
+   "id": "habe",
+   "front": "Habe",
+   "back": {
+    "en": "Beard",
+    "az": "Saqqal",
+    "ru": "Борода"
+   },
+   "forms": [
+    "habeme",
+    "habet"
+   ]
+  },
+  {
+   "id": "vuntsid",
+   "front": "Vuntsid",
+   "back": {
+    "en": "Moustache",
+    "az": "Bığ",
+    "ru": "Усы"
+   }
+  },
+  {
+   "id": "prillid",
+   "front": "Prillid",
+   "back": {
+    "en": "Glasses",
+    "az": "Eynək",
+    "ru": "Очки"
+   }
+  },
+  {
+   "id": "prillidega",
+   "front": "Prillidega",
+   "back": {
+    "en": "With glasses",
+    "az": "Eynəkli",
+    "ru": "В очках"
+   }
+  },
+  {
+   "id": "tatoveering",
+   "front": "Tätoveering",
+   "back": {
+    "en": "Tattoo",
+    "az": "Döymə",
+    "ru": "Татуировка"
+   },
+   "forms": [
+    "tätoveeringu",
+    "tätoveeringut"
+   ]
+  },
+  {
+   "id": "sunnimark",
+   "front": "Sünnimärk",
+   "back": {
+    "en": "Birth mark",
+    "az": "Xal",
+    "ru": "Родинка"
+   },
+   "forms": [
+    "sünnimärgi",
+    "sünnimärki"
+   ]
+  },
+  {
+   "id": "tedretahn",
+   "front": "Tedretähn",
+   "back": {
+    "en": "Freckle",
+    "az": "Çil",
+    "ru": "Веснушка"
+   },
+   "forms": [
+    "tedretähni",
+    "tedretähni"
+   ]
+  },
+  {
+   "id": "arm",
+   "front": "Arm",
+   "back": {
+    "en": "Scar",
+    "az": "Çapıq",
+    "ru": "Шрам"
+   },
+   "forms": [
+    "armi",
+    "armi"
+   ]
+  },
+  {
+   "id": "naeratus",
+   "front": "Naeratus",
+   "back": {
+    "en": "Smile",
+    "az": "Təbəssüm",
+    "ru": "Улыбка"
+   },
+   "forms": [
+    "naeratuse",
+    "naeratust"
+   ]
+  },
+  {
+   "id": "sumpaatne",
+   "front": "Sümpaatne",
+   "back": {
+    "en": "Attractive, nice",
+    "az": "Simpatik",
+    "ru": "Симпатичный"
+   },
+   "forms": [
+    "sümpaatse",
+    "sümpaatset"
+   ]
+  },
+  {
+   "id": "armas",
+   "front": "Armas",
+   "back": {
+    "en": "Lovely, sweet",
+    "az": "Şirin",
+    "ru": "Милый"
+   },
+   "forms": [
+    "armsa",
+    "armsat"
+   ]
+  },
+  {
+   "id": "nunnu",
+   "front": "Nunnu",
+   "back": {
+    "en": "Cute",
+    "az": "Sevimli",
+    "ru": "Милашка"
+   },
+   "forms": [
+    "nunnu",
+    "nunnut"
+   ]
+  },
+  {
+   "id": "tuse",
+   "front": "Tüse",
+   "back": {
+    "en": "Corpulent",
+    "az": "Dolu bədənli",
+    "ru": "Полный"
+   },
+   "forms": [
+    "tüseda",
+    "tüsedat"
+   ]
+  },
+  {
+   "id": "paljas",
+   "front": "Paljas",
+   "back": {
+    "en": "Bald, bare",
+    "az": "Çılpaq",
+    "ru": "Голый"
+   },
+   "forms": [
+    "palja",
+    "paljast"
+   ]
+  },
+  {
+   "id": "habet-ajama",
+   "front": "Habet ajama",
+   "back": {
+    "en": "To shave",
+    "az": "üz qırxmaq",
+    "ru": "брить бороду"
+   }
+  },
+  {
+   "id": "lokkis-juustega",
+   "front": "Lokkis juustega",
+   "back": {
+    "en": "With curly hair",
+    "az": "Qıvrım saçlı",
+    "ru": "С кудрявыми волосами"
+   }
+  },
+  {
+   "id": "roheliste-silmadega",
+   "front": "Roheliste silmadega",
+   "back": {
+    "en": "With green eyes",
+    "az": "Yaşıl gözlü",
+    "ru": "С зелёными глазами"
+   }
+  },
+  {
+   "id": "tukk",
+   "front": "Tukk",
+   "back": {
+    "en": "Fringe",
+    "az": "Kəkil",
+    "ru": "Чёлка"
+   },
+   "forms": [
+    "tuka",
+    "tukka"
+   ]
+  }
+ ]
+}

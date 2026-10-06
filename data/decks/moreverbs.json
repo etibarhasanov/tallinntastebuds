@@ -1,0 +1,2244 @@
+{
+ "id": "moreverbs",
+ "added": "2026-09-18",
+ "name": {
+  "en": "The next verbs",
+  "az": "Sonrakı fellər",
+  "ru": "Следующие глаголы"
+ },
+ "why": {
+  "en": "The second handful, after the twenty the language hangs off",
+  "az": "Dilin dayandığı iyirmidən sonra gələn ikinci dəstə",
+  "ru": "Вторая горсть — после тех двадцати, на которых держится язык"
+ },
+ "level": "deep",
+ "cards": [
+  {
+   "id": "arvama",
+   "front": "Arvama",
+   "back": {
+    "en": "To think",
+    "az": "düşünmək",
+    "ru": "думать, считать"
+   },
+   "forms": [
+    "arvata",
+    "arvan"
+   ],
+   "sentence": {
+    "et": "Ma arvan, et see on hea.",
+    "en": "I think it is good.",
+    "az": "Düşünürəm ki, bu yaxşıdır.",
+    "ru": "Я думаю, что это хорошо."
+   }
+  },
+  {
+   "id": "kartma",
+   "front": "Kartma",
+   "back": {
+    "en": "To be afraid",
+    "az": "qorxmaq",
+    "ru": "бояться"
+   },
+   "forms": [
+    "karta",
+    "kardan"
+   ],
+   "sentence": {
+    "et": "Ära karda!",
+    "en": "Do not be afraid!",
+    "az": "Qorxma!",
+    "ru": "Не бойся!"
+   }
+  },
+  {
+   "id": "voima",
+   "front": "Võima",
+   "back": {
+    "en": "To be allowed to",
+    "az": "icazəli olmaq",
+    "ru": "иметь право, можно"
+   },
+   "forms": [
+    "võida",
+    "võin"
+   ],
+   "sentence": {
+    "et": "Kas ma võin sisse tulla?",
+    "en": "May I come in?",
+    "az": "İçəri girə bilərəm?",
+    "ru": "Можно мне войти?"
+   }
+  },
+  {
+   "id": "alustama",
+   "front": "Alustama",
+   "back": {
+    "en": "To begin",
+    "az": "başlamaq",
+    "ru": "начинать"
+   },
+   "forms": [
+    "alustada",
+    "alustan"
+   ],
+   "sentence": {
+    "et": "Alustame kohe.",
+    "en": "Let us begin right away.",
+    "az": "Dərhal başlayaq.",
+    "ru": "Начнём сразу."
+   }
+  },
+  {
+   "id": "hingama",
+   "front": "Hingama",
+   "back": {
+    "en": "To breathe",
+    "az": "nəfəs almaq",
+    "ru": "дышать"
+   },
+   "forms": [
+    "hingata",
+    "hingan"
+   ],
+   "sentence": {
+    "et": "Hinga rahulikult.",
+    "en": "Breathe calmly.",
+    "az": "Sakit nəfəs al.",
+    "ru": "Дыши спокойно."
+   }
+  },
+  {
+   "id": "hilinema",
+   "front": "Hilinema",
+   "back": {
+    "en": "To be late",
+    "az": "gecikmək",
+    "ru": "опаздывать"
+   },
+   "forms": [
+    "hilineda",
+    "hilinen"
+   ],
+   "sentence": {
+    "et": "Buss hilineb viis minutit.",
+    "en": "The bus is five minutes late.",
+    "az": "Avtobus beş dəqiqə gecikir.",
+    "ru": "Автобус опаздывает на пять минут."
+   }
+  },
+  {
+   "id": "unustama",
+   "front": "Unustama",
+   "back": {
+    "en": "To forget",
+    "az": "unutmaq",
+    "ru": "забывать"
+   },
+   "forms": [
+    "unustada",
+    "unustan"
+   ],
+   "sentence": {
+    "et": "Ma unustasin võtme koju.",
+    "en": "I left the key at home.",
+    "az": "Açarı evdə unutdum.",
+    "ru": "Я забыл ключ дома."
+   }
+  },
+  {
+   "id": "naeratama",
+   "front": "Naeratama",
+   "back": {
+    "en": "To smile",
+    "az": "gülümsəmək",
+    "ru": "улыбаться"
+   },
+   "forms": [
+    "naeratada",
+    "naeratan"
+   ],
+   "sentence": {
+    "et": "Naerata, palun!",
+    "en": "Smile, please!",
+    "az": "Gülümsə, zəhmət olmasa!",
+    "ru": "Улыбнитесь, пожалуйста!"
+   }
+  },
+  {
+   "id": "praadima",
+   "front": "Praadima",
+   "back": {
+    "en": "To fry",
+    "az": "qızartmaq",
+    "ru": "жарить"
+   },
+   "forms": [
+    "praadida",
+    "praen"
+   ],
+   "sentence": {
+    "et": "Ma praen kala.",
+    "en": "I am frying fish.",
+    "az": "Balıq qızardıram.",
+    "ru": "Я жарю рыбу."
+   }
+  },
+  {
+   "id": "keetma",
+   "front": "Keetma",
+   "back": {
+    "en": "To boil, to brew",
+    "az": "qaynatmaq, dəmləmək",
+    "ru": "варить, заваривать"
+   },
+   "forms": [
+    "keeta",
+    "keedan"
+   ],
+   "sentence": {
+    "et": "Ma keedan kohvi.",
+    "en": "I am making the coffee.",
+    "az": "Qəhvə hazırlayıram.",
+    "ru": "Я варю кофе."
+   }
+  },
+  {
+   "id": "pesema",
+   "front": "Pesema",
+   "back": {
+    "en": "To wash",
+    "az": "yumaq",
+    "ru": "мыть"
+   },
+   "forms": [
+    "pesta",
+    "pesen"
+   ],
+   "sentence": {
+    "et": "Ma pesen nõusid.",
+    "en": "I am washing the dishes.",
+    "az": "Qabları yuyuram.",
+    "ru": "Я мою посуду."
+   }
+  },
+  {
+   "id": "suhtlema",
+   "front": "Suhtlema",
+   "back": {
+    "en": "To talk with people",
+    "az": "insanlarla ünsiyyət qurmaq",
+    "ru": "общаться"
+   },
+   "forms": [
+    "suhelda",
+    "suhtlen"
+   ],
+   "sentence": {
+    "et": "Ma suhtlen nendega iga päev.",
+    "en": "I talk to them every day.",
+    "az": "Onlarla hər gün ünsiyyət qururam.",
+    "ru": "Я общаюсь с ними каждый день."
+   }
+  },
+  {
+   "id": "seisma",
+   "front": "Seisma",
+   "back": {
+    "en": "To stand",
+    "az": "dayanmaq",
+    "ru": "стоять"
+   },
+   "forms": [
+    "seista",
+    "seisan"
+   ],
+   "sentence": {
+    "et": "Ma seisan järjekorras.",
+    "en": "I am standing in the queue.",
+    "az": "Növbədə dayanmışam.",
+    "ru": "Я стою в очереди."
+   }
+  },
+  {
+   "id": "istuma",
+   "front": "Istuma",
+   "back": {
+    "en": "To sit",
+    "az": "oturmaq",
+    "ru": "сидеть"
+   },
+   "forms": [
+    "istuda",
+    "istun"
+   ],
+   "sentence": {
+    "et": "Istu siia.",
+    "en": "Sit here.",
+    "az": "Bura otur.",
+    "ru": "Сядь здесь."
+   }
+  },
+  {
+   "id": "keerama",
+   "front": "Keerama",
+   "back": {
+    "en": "To turn",
+    "az": "dönmək, çevirmək",
+    "ru": "поворачивать"
+   },
+   "forms": [
+    "keerata",
+    "keeran"
+   ],
+   "sentence": {
+    "et": "Keerake paremale.",
+    "en": "Turn right.",
+    "az": "Sağa dönün.",
+    "ru": "Поверните направо."
+   }
+  },
+  {
+   "id": "vaatama",
+   "front": "Vaatama",
+   "back": {
+    "en": "To look, to watch",
+    "az": "baxmaq",
+    "ru": "смотреть"
+   },
+   "forms": [
+    "vaadata",
+    "vaatan"
+   ],
+   "sentence": {
+    "et": "Vaadake siia.",
+    "en": "Look over here.",
+    "az": "Buraya baxın.",
+    "ru": "Посмотрите сюда."
+   }
+  },
+  {
+   "id": "koristama",
+   "front": "Koristama",
+   "back": {
+    "en": "To tidy up",
+    "az": "yığışdırmaq",
+    "ru": "убирать"
+   },
+   "forms": [
+    "koristada",
+    "koristan"
+   ],
+   "sentence": {
+    "et": "Ma koristan laupäeval.",
+    "en": "I tidy up on Saturday.",
+    "az": "Şənbə günü yığışdırıram.",
+    "ru": "Я убираю в субботу."
+   }
+  },
+  {
+   "id": "oppima",
+   "front": "Õppima",
+   "back": {
+    "en": "To learn, to study",
+    "az": "öyrənmək",
+    "ru": "учиться, изучать"
+   },
+   "forms": [
+    "õppida",
+    "õpin"
+   ],
+   "sentence": {
+    "et": "Ma õpin eesti keelt.",
+    "en": "I am learning Estonian.",
+    "az": "Eston dilini öyrənirəm.",
+    "ru": "Я учу эстонский язык."
+   }
+  },
+  {
+   "id": "mangima",
+   "front": "Mängima",
+   "back": {
+    "en": "To play",
+    "az": "oynamaq",
+    "ru": "играть"
+   },
+   "forms": [
+    "mängida",
+    "mängin"
+   ],
+   "sentence": {
+    "et": "Lapsed mängivad õues.",
+    "en": "The children are playing outside.",
+    "az": "Uşaqlar həyətdə oynayır.",
+    "ru": "Дети играют на улице."
+   }
+  },
+  {
+   "id": "ehitama",
+   "front": "Ehitama",
+   "back": {
+    "en": "To build",
+    "az": "tikmək, inşa etmək",
+    "ru": "строить"
+   },
+   "forms": [
+    "ehitada",
+    "ehitan"
+   ],
+   "sentence": {
+    "et": "Nad ehitavad uut maja.",
+    "en": "They are building a new house.",
+    "az": "Onlar yeni ev tikirlər.",
+    "ru": "Они строят новый дом."
+   }
+  },
+  {
+   "id": "remontima",
+   "front": "Remontima",
+   "back": {
+    "en": "To repair",
+    "az": "təmir etmək",
+    "ru": "ремонтировать"
+   },
+   "forms": [
+    "remontida",
+    "remondin"
+   ],
+   "sentence": {
+    "et": "Ma remondin autot.",
+    "en": "I am repairing the car.",
+    "az": "Maşını təmir edirəm.",
+    "ru": "Я ремонтирую машину."
+   }
+  },
+  {
+   "id": "joonistama",
+   "front": "Joonistama",
+   "back": {
+    "en": "To draw",
+    "az": "rəsm çəkmək",
+    "ru": "рисовать"
+   },
+   "forms": [
+    "joonistada",
+    "joonistan"
+   ],
+   "sentence": {
+    "et": "Tütar joonistab ilusasti.",
+    "en": "My daughter draws beautifully.",
+    "az": "Qızım gözəl rəsm çəkir.",
+    "ru": "Моя дочь красиво рисует."
+   }
+  },
+  {
+   "id": "viitsima",
+   "front": "Viitsima",
+   "back": {
+    "en": "To feel like bothering",
+    "az": "həvəsi olmaq",
+    "ru": "иметь охоту"
+   },
+   "forms": [
+    "viitsida",
+    "viitsin"
+   ],
+   "sentence": {
+    "et": "Ma ei viitsi täna kuhugi minna.",
+    "en": "I do not feel like going anywhere today.",
+    "az": "Bu gün heç yerə getmək həvəsim yoxdur.",
+    "ru": "Мне сегодня лень куда-то идти."
+   }
+  },
+  {
+   "id": "kuulama",
+   "front": "Kuulama",
+   "back": {
+    "en": "To listen to",
+    "az": "dinləmək",
+    "ru": "слушать"
+   },
+   "forms": [
+    "kuulata",
+    "kuulan"
+   ],
+   "sentence": {
+    "et": "Ma kuulan muusikat.",
+    "en": "I am listening to music.",
+    "az": "Musiqi dinləyirəm.",
+    "ru": "Я слушаю музыку."
+   }
+  },
+  {
+   "id": "lugema",
+   "front": "Lugema",
+   "back": {
+    "en": "To read",
+    "az": "oxumaq",
+    "ru": "читать"
+   },
+   "forms": [
+    "lugeda",
+    "loen"
+   ],
+   "sentence": {
+    "et": "Ma loen igal õhtul.",
+    "en": "I read every evening.",
+    "az": "Hər axşam oxuyuram.",
+    "ru": "Я читаю каждый вечер."
+   }
+  },
+  {
+   "id": "kirjutama",
+   "front": "Kirjutama",
+   "back": {
+    "en": "To write",
+    "az": "yazmaq",
+    "ru": "писать"
+   },
+   "forms": [
+    "kirjutada",
+    "kirjutan"
+   ],
+   "sentence": {
+    "et": "Ma kirjutan sõbrale.",
+    "en": "I am writing to a friend.",
+    "az": "Dostuma yazıram.",
+    "ru": "Я пишу другу."
+   }
+  },
+  {
+   "id": "kaima",
+   "front": "Käima",
+   "back": {
+    "en": "To go regularly, to attend",
+    "az": "getmək (müntəzəm)",
+    "ru": "ходить (регулярно)"
+   },
+   "forms": [
+    "käia",
+    "käin"
+   ],
+   "sentence": {
+    "et": "Ma käin tööl bussiga.",
+    "en": "I go to work by bus.",
+    "az": "İşə avtobusla gedirəm.",
+    "ru": "Я езжу на работу на автобусе."
+   }
+  },
+  {
+   "id": "soitma",
+   "front": "Sõitma",
+   "back": {
+    "en": "To ride, to drive",
+    "az": "sürmək, getmək",
+    "ru": "ехать, вести"
+   },
+   "forms": [
+    "sõita",
+    "sõidan"
+   ],
+   "sentence": {
+    "et": "Me sõidame rongiga.",
+    "en": "We are going by train.",
+    "az": "Biz qatarla gedirik.",
+    "ru": "Мы едем поездом."
+   }
+  },
+  {
+   "id": "ules-tousma",
+   "front": "Üles tõusma",
+   "back": {
+    "en": "To get up",
+    "az": "ayağa qalxmaq, durmaq",
+    "ru": "вставать"
+   },
+   "sentence": {
+    "et": "Ma tõusen üles kell seitse.",
+    "en": "I get up at seven.",
+    "az": "Saat yeddidə qalxıram.",
+    "ru": "Я встаю в семь."
+   }
+  },
+  {
+   "id": "loppema",
+   "front": "Lõppema",
+   "back": {
+    "en": "To end, to be over",
+    "az": "bitmək",
+    "ru": "заканчиваться"
+   },
+   "forms": [
+    "lõppeda",
+    "lõpeb"
+   ],
+   "sentence": {
+    "et": "Film lõpeb kell üheksa.",
+    "en": "The film ends at nine.",
+    "az": "Film saat doqquzda bitir.",
+    "ru": "Фильм заканчивается в девять."
+   }
+  },
+  {
+   "id": "helistama",
+   "front": "Helistama",
+   "back": {
+    "en": "To call, to phone",
+    "az": "zəng etmək",
+    "ru": "звонить"
+   },
+   "forms": [
+    "helistada",
+    "helistan"
+   ],
+   "sentence": {
+    "et": "Ma helistan homme.",
+    "en": "I will call tomorrow.",
+    "az": "Sabah zəng edəcəyəm.",
+    "ru": "Я позвоню завтра."
+   }
+  },
+  {
+   "id": "saatma",
+   "front": "Saatma",
+   "back": {
+    "en": "To send",
+    "az": "göndərmək",
+    "ru": "посылать, отправлять"
+   },
+   "forms": [
+    "saata",
+    "saadan"
+   ],
+   "sentence": {
+    "et": "Ma saadan sulle kirja.",
+    "en": "I will send you a letter.",
+    "az": "Sənə məktub göndərəcəyəm.",
+    "ru": "Я пошлю тебе письмо."
+   }
+  },
+  {
+   "id": "vastama",
+   "front": "Vastama",
+   "back": {
+    "en": "To answer",
+    "az": "cavab vermək",
+    "ru": "отвечать"
+   },
+   "forms": [
+    "vastata",
+    "vastan"
+   ],
+   "sentence": {
+    "et": "Ta ei vasta telefonile.",
+    "en": "They are not answering the phone.",
+    "az": "O telefona cavab vermir.",
+    "ru": "Он не отвечает на телефон."
+   }
+  },
+  {
+   "id": "kondima",
+   "front": "Kõndima",
+   "back": {
+    "en": "To walk",
+    "az": "piyada getmək",
+    "ru": "ходить, шагать"
+   },
+   "forms": [
+    "kõndida",
+    "kõnnin"
+   ],
+   "sentence": {
+    "et": "Ma kõnnin iga päev tööle.",
+    "en": "I walk to work every day.",
+    "az": "Hər gün işə piyada gedirəm.",
+    "ru": "Я каждый день хожу на работу пешком."
+   }
+  },
+  {
+   "id": "sundima",
+   "front": "Sündima",
+   "back": {
+    "en": "To be born",
+    "az": "doğulmaq",
+    "ru": "родиться"
+   },
+   "forms": [
+    "sündida",
+    "sünnin"
+   ],
+   "sentence": {
+    "et": "Ma sündisin Bakuus.",
+    "en": "I was born in Baku.",
+    "az": "Mən Bakıda doğulmuşam.",
+    "ru": "Я родился в Баку."
+   }
+  },
+  {
+   "id": "muretsema",
+   "front": "Muretsema",
+   "back": {
+    "en": "To worry",
+    "az": "narahat olmaq",
+    "ru": "волноваться"
+   },
+   "forms": [
+    "muretseda",
+    "muretsen"
+   ],
+   "sentence": {
+    "et": "Ära muretse!",
+    "en": "Do not worry!",
+    "az": "Narahat olma!",
+    "ru": "Не волнуйся!"
+   }
+  },
+  {
+   "id": "vabandama",
+   "front": "Vabandama",
+   "back": {
+    "en": "To apologise, to excuse",
+    "az": "üzr istəmək",
+    "ru": "извиняться"
+   },
+   "forms": [
+    "vabandada",
+    "vabandan"
+   ],
+   "sentence": {
+    "et": "Ma vabandan hilinemise pärast.",
+    "en": "I apologise for being late.",
+    "az": "Gecikdiyim üçün üzr istəyirəm.",
+    "ru": "Извиняюсь за опоздание."
+   }
+  },
+  {
+   "id": "algama",
+   "front": "Algama",
+   "back": {
+    "en": "To begin, to start",
+    "az": "başlamaq",
+    "ru": "начинаться"
+   },
+   "forms": [
+    "alata",
+    "algab"
+   ],
+   "sentence": {
+    "et": "Film algab kell kaheksa.",
+    "en": "The film begins at eight.",
+    "az": "Film saat səkkizdə başlayır.",
+    "ru": "Фильм начинается в восемь."
+   }
+  },
+  {
+   "id": "asendama",
+   "front": "Asendama",
+   "back": {
+    "en": "To substitute, to stand in",
+    "az": "əvəz etmək",
+    "ru": "заменять"
+   },
+   "forms": [
+    "asendada",
+    "asendan"
+   ],
+   "sentence": {
+    "et": "Ma asendan täna kolleegi.",
+    "en": "I am standing in for a colleague today.",
+    "az": "Bu gün həmkarımı əvəz edirəm.",
+    "ru": "Сегодня я заменяю коллегу."
+   }
+  },
+  {
+   "id": "hiljaks-jaama",
+   "front": "Hiljaks jääma",
+   "back": {
+    "en": "To be late",
+    "az": "gecikmək",
+    "ru": "опаздывать"
+   },
+   "forms": [
+    "hiljaks jääda",
+    "jään hiljaks"
+   ],
+   "sentence": {
+    "et": "Ära jää hiljaks!",
+    "en": "Do not be late!",
+    "az": "Gecikmə!",
+    "ru": "Не опаздывай!"
+   }
+  },
+  {
+   "id": "viima",
+   "front": "Viima",
+   "back": {
+    "en": "To take somewhere",
+    "az": "aparmaq",
+    "ru": "относить, отвозить"
+   },
+   "forms": [
+    "viia",
+    "viin"
+   ],
+   "sentence": {
+    "et": "Ma viin lapse kooli.",
+    "en": "I am taking the child to school.",
+    "az": "Uşağı məktəbə aparıram.",
+    "ru": "Я отвожу ребёнка в школу."
+   }
+  },
+  {
+   "id": "tanama",
+   "front": "Tänama",
+   "back": {
+    "en": "To thank",
+    "az": "təşəkkür etmək",
+    "ru": "благодарить"
+   },
+   "forms": [
+    "tänada",
+    "tänan"
+   ],
+   "sentence": {
+    "et": "Ma tänan teid abi eest.",
+    "en": "I thank you for the help.",
+    "az": "Kömək üçün sizə təşəkkür edirəm.",
+    "ru": "Благодарю вас за помощь."
+   }
+  },
+  {
+   "id": "jalutama",
+   "front": "Jalutama",
+   "back": {
+    "en": "To stroll, to go for a walk",
+    "az": "gəzintiyə çıxmaq",
+    "ru": "гулять"
+   },
+   "forms": [
+    "jalutada",
+    "jalutan"
+   ],
+   "sentence": {
+    "et": "Me jalutame vanalinnas.",
+    "en": "We are walking in the old town.",
+    "az": "Köhnə şəhərdə gəzirik.",
+    "ru": "Мы гуляем по старому городу."
+   }
+  },
+  {
+   "id": "jooksma",
+   "front": "Jooksma",
+   "back": {
+    "en": "To run",
+    "az": "qaçmaq",
+    "ru": "бегать"
+   },
+   "forms": [
+    "joosta",
+    "jooksen"
+   ],
+   "sentence": {
+    "et": "Ma jooksen hommikuti.",
+    "en": "I run in the mornings.",
+    "az": "Səhərlər qaçıram.",
+    "ru": "Я бегаю по утрам."
+   }
+  },
+  {
+   "id": "laulma",
+   "front": "Laulma",
+   "back": {
+    "en": "To sing",
+    "az": "oxumaq",
+    "ru": "петь"
+   },
+   "forms": [
+    "laulda",
+    "laulan"
+   ],
+   "sentence": {
+    "et": "Laps laulab ilusti.",
+    "en": "The child sings beautifully.",
+    "az": "Uşaq gözəl oxuyur.",
+    "ru": "Ребёнок красиво поёт."
+   }
+  },
+  {
+   "id": "lendama",
+   "front": "Lendama",
+   "back": {
+    "en": "To fly",
+    "az": "uçmaq",
+    "ru": "летать"
+   },
+   "forms": [
+    "lennata",
+    "lendan"
+   ],
+   "sentence": {
+    "et": "Me lendame homme Tallinnast.",
+    "en": "We fly from Tallinn tomorrow.",
+    "az": "Sabah Tallinndən uçuruq.",
+    "ru": "Завтра мы вылетаем из Таллинна."
+   }
+  },
+  {
+   "id": "puhkama",
+   "front": "Puhkama",
+   "back": {
+    "en": "To rest",
+    "az": "dincəlmək",
+    "ru": "отдыхать"
+   },
+   "forms": [
+    "puhata",
+    "puhkan"
+   ],
+   "sentence": {
+    "et": "Ma puhkan natuke.",
+    "en": "I will rest a little.",
+    "az": "Bir az dincələcəyəm.",
+    "ru": "Я немного отдохну."
+   }
+  },
+  {
+   "id": "reisima",
+   "front": "Reisima",
+   "back": {
+    "en": "To travel",
+    "az": "səyahət etmək",
+    "ru": "путешествовать"
+   },
+   "forms": [
+    "reisida",
+    "reisin"
+   ],
+   "sentence": {
+    "et": "Ta reisib palju.",
+    "en": "They travel a lot.",
+    "az": "O çox səyahət edir.",
+    "ru": "Он много путешествует."
+   }
+  },
+  {
+   "id": "soovima",
+   "front": "Soovima",
+   "back": {
+    "en": "To wish",
+    "az": "arzulamaq",
+    "ru": "желать"
+   },
+   "forms": [
+    "soovida",
+    "soovin"
+   ],
+   "sentence": {
+    "et": "Soovin teile head päeva.",
+    "en": "I wish you a good day.",
+    "az": "Sizə xoş gün arzulayıram.",
+    "ru": "Желаю вам хорошего дня."
+   }
+  },
+  {
+   "id": "ujuma",
+   "front": "Ujuma",
+   "back": {
+    "en": "To swim",
+    "az": "üzmək",
+    "ru": "плавать"
+   },
+   "forms": [
+    "ujuda",
+    "ujun"
+   ],
+   "sentence": {
+    "et": "Suvel me ujume meres.",
+    "en": "In summer we swim in the sea.",
+    "az": "Yayda dənizdə üzürük.",
+    "ru": "Летом мы плаваем в море."
+   }
+  },
+  {
+   "id": "hakkama",
+   "front": "Hakkama",
+   "back": {
+    "en": "To start doing",
+    "az": "başlamaq",
+    "ru": "начинать"
+   },
+   "forms": [
+    "hakata",
+    "hakkan"
+   ],
+   "sentence": {
+    "et": "Ma hakkan eesti keelt õppima.",
+    "en": "I am starting to learn Estonian.",
+    "az": "Eston dilini öyrənməyə başlayıram.",
+    "ru": "Я начинаю учить эстонский."
+   }
+  },
+  {
+   "id": "kasvama",
+   "front": "Kasvama",
+   "back": {
+    "en": "To grow",
+    "az": "böyümək",
+    "ru": "расти"
+   },
+   "forms": [
+    "kasvada",
+    "kasvan"
+   ],
+   "sentence": {
+    "et": "Lapsed kasvavad kiiresti.",
+    "en": "Children grow quickly.",
+    "az": "Uşaqlar tez böyüyür.",
+    "ru": "Дети растут быстро."
+   }
+  },
+  {
+   "id": "narima",
+   "front": "Närima",
+   "back": {
+    "en": "To gnaw, to chew",
+    "az": "gəmirmək",
+    "ru": "грызть"
+   },
+   "forms": [
+    "närida",
+    "närin"
+   ],
+   "sentence": {
+    "et": "Koer närib konti.",
+    "en": "The dog is gnawing a bone.",
+    "az": "İt sümük gəmirir.",
+    "ru": "Собака грызёт кость."
+   }
+  },
+  {
+   "id": "pidama",
+   "front": "Pidama",
+   "back": {
+    "en": "To have to, must",
+    "az": "məcbur olmaq",
+    "ru": "быть должным"
+   },
+   "forms": [
+    "pidada",
+    "pean"
+   ],
+   "sentence": {
+    "et": "Ta peab täna töötama.",
+    "en": "They have to work today.",
+    "az": "O bu gün işləməlidir.",
+    "ru": "Он должен сегодня работать."
+   }
+  },
+  {
+   "id": "parima",
+   "front": "Pärima",
+   "back": {
+    "en": "To ask, to enquire",
+    "az": "soruşmaq",
+    "ru": "расспрашивать"
+   },
+   "forms": [
+    "pärida",
+    "pärin"
+   ],
+   "sentence": {
+    "et": "Ta päris minu käest teed.",
+    "en": "They asked me the way.",
+    "az": "O məndən yolu soruşdu.",
+    "ru": "Он расспросил меня о дороге."
+   }
+  },
+  {
+   "id": "tahendama",
+   "front": "Tähendama",
+   "back": {
+    "en": "To mean",
+    "az": "mənasını vermək",
+    "ru": "означать"
+   },
+   "forms": [
+    "tähendada",
+    "tähendan"
+   ],
+   "sentence": {
+    "et": "Mida see sõna tähendab?",
+    "en": "What does this word mean?",
+    "az": "Bu söz nə deməkdir?",
+    "ru": "Что значит это слово?"
+   }
+  },
+  {
+   "id": "huppama",
+   "front": "Hüppama",
+   "back": {
+    "en": "To jump",
+    "az": "tullanmaq",
+    "ru": "прыгать"
+   },
+   "forms": [
+    "hüpata",
+    "hüppan"
+   ],
+   "sentence": {
+    "et": "Laps hüppas üle lombi.",
+    "en": "The child jumped over the puddle.",
+    "az": "Uşaq gölməçənin üstündən tullandı.",
+    "ru": "Ребёнок перепрыгнул через лужу."
+   }
+  },
+  {
+   "id": "vedama",
+   "front": "Vedama",
+   "back": {
+    "en": "To carry, to transport",
+    "az": "daşımaq",
+    "ru": "возить"
+   },
+   "forms": [
+    "vedada",
+    "vean"
+   ],
+   "sentence": {
+    "et": "Rong veab kaupa.",
+    "en": "The train carries goods.",
+    "az": "Qatar yük daşıyır.",
+    "ru": "Поезд возит груз."
+   }
+  },
+  {
+   "id": "avama",
+   "front": "Avama",
+   "back": {
+    "en": "To open",
+    "az": "açmaq",
+    "ru": "открывать"
+   },
+   "forms": [
+    "avada",
+    "avan"
+   ]
+  },
+  {
+   "id": "tooma",
+   "front": "Tooma",
+   "back": {
+    "en": "To bring",
+    "az": "gətirmək",
+    "ru": "приносить"
+   },
+   "forms": [
+    "tuua",
+    "toon"
+   ]
+  },
+  {
+   "id": "jatma",
+   "front": "Jätma",
+   "back": {
+    "en": "To leave",
+    "az": "qoyub getmək",
+    "ru": "оставлять"
+   },
+   "forms": [
+    "jätta",
+    "jätan"
+   ]
+  },
+  {
+   "id": "leidma",
+   "front": "Leidma",
+   "back": {
+    "en": "To find",
+    "az": "tapmaq",
+    "ru": "находить"
+   },
+   "forms": [
+    "leida",
+    "leian"
+   ]
+  },
+  {
+   "id": "otsima",
+   "front": "Otsima",
+   "back": {
+    "en": "To look for",
+    "az": "axtarmaq",
+    "ru": "искать"
+   },
+   "forms": [
+    "otsida",
+    "otsin"
+   ]
+  },
+  {
+   "id": "otsustama",
+   "front": "Otsustama",
+   "back": {
+    "en": "To decide",
+    "az": "qərar vermək",
+    "ru": "решать"
+   },
+   "forms": [
+    "otsustada",
+    "otsustan"
+   ]
+  },
+  {
+   "id": "tostma",
+   "front": "Tõstma",
+   "back": {
+    "en": "To lift, to move",
+    "az": "qaldırmaq",
+    "ru": "поднимать"
+   },
+   "forms": [
+    "tõsta",
+    "tõstan"
+   ]
+  },
+  {
+   "id": "kukkuma",
+   "front": "Kukkuma",
+   "back": {
+    "en": "To fall",
+    "az": "yıxılmaq",
+    "ru": "падать"
+   },
+   "forms": [
+    "kukkuda",
+    "kukun"
+   ]
+  },
+  {
+   "id": "joudma",
+   "front": "Jõudma",
+   "back": {
+    "en": "To manage, to make it",
+    "az": "çatmaq",
+    "ru": "успевать"
+   },
+   "forms": [
+    "jõuda",
+    "jõuan"
+   ]
+  },
+  {
+   "id": "jaksama",
+   "front": "Jaksama",
+   "back": {
+    "en": "To be up to",
+    "az": "gücü çatmaq",
+    "ru": "осиливать"
+   },
+   "forms": [
+    "jaksata",
+    "jaksan"
+   ]
+  },
+  {
+   "id": "laskma",
+   "front": "Laskma",
+   "back": {
+    "en": "To let",
+    "az": "icazə vermək",
+    "ru": "позволять"
+   },
+   "forms": [
+    "lasta",
+    "lasen"
+   ]
+  },
+  {
+   "id": "hoidma",
+   "front": "Hoidma",
+   "back": {
+    "en": "To keep, to hold",
+    "az": "saxlamaq",
+    "ru": "держать"
+   },
+   "forms": [
+    "hoida",
+    "hoian"
+   ]
+  },
+  {
+   "id": "naitama",
+   "front": "Näitama",
+   "back": {
+    "en": "To show",
+    "az": "göstərmək",
+    "ru": "показывать"
+   },
+   "forms": [
+    "näidata",
+    "näitan"
+   ]
+  },
+  {
+   "id": "seletama",
+   "front": "Seletama",
+   "back": {
+    "en": "To explain",
+    "az": "izah etmək",
+    "ru": "объяснять"
+   },
+   "forms": [
+    "seletada",
+    "seletan"
+   ]
+  },
+  {
+   "id": "kaebama",
+   "front": "Kaebama",
+   "back": {
+    "en": "To complain",
+    "az": "şikayət etmək",
+    "ru": "жаловаться"
+   },
+   "forms": [
+    "kaevata",
+    "kaeban"
+   ]
+  },
+  {
+   "id": "paluma",
+   "front": "Paluma",
+   "back": {
+    "en": "To ask for, to beg",
+    "az": "xahiş etmək",
+    "ru": "просить"
+   },
+   "forms": [
+    "paluda",
+    "palun"
+   ]
+  },
+  {
+   "id": "teatama",
+   "front": "Teatama",
+   "back": {
+    "en": "To inform",
+    "az": "xəbər vermək",
+    "ru": "сообщать"
+   },
+   "forms": [
+    "teatada",
+    "teatan"
+   ]
+  },
+  {
+   "id": "koguma",
+   "front": "Koguma",
+   "back": {
+    "en": "To collect",
+    "az": "yığmaq",
+    "ru": "собирать"
+   },
+   "forms": [
+    "koguda",
+    "kogun"
+   ]
+  },
+  {
+   "id": "kuduma",
+   "front": "Kuduma",
+   "back": {
+    "en": "To knit",
+    "az": "toxumaq",
+    "ru": "вязать"
+   },
+   "forms": [
+    "kududa",
+    "koon"
+   ]
+  },
+  {
+   "id": "omblema",
+   "front": "Õmblema",
+   "back": {
+    "en": "To sew",
+    "az": "tikmək",
+    "ru": "шить"
+   },
+   "forms": [
+    "õmmelda",
+    "õmblen"
+   ]
+  },
+  {
+   "id": "valima",
+   "front": "Valima",
+   "back": {
+    "en": "To choose",
+    "az": "seçmək",
+    "ru": "выбирать"
+   },
+   "forms": [
+    "valida",
+    "valin"
+   ]
+  },
+  {
+   "id": "vajama",
+   "front": "Vajama",
+   "back": {
+    "en": "To need",
+    "az": "ehtiyacı olmaq",
+    "ru": "нуждаться"
+   },
+   "forms": [
+    "vajada",
+    "vajan"
+   ]
+  },
+  {
+   "id": "vajutama",
+   "front": "Vajutama",
+   "back": {
+    "en": "To press",
+    "az": "basmaq",
+    "ru": "нажимать"
+   },
+   "forms": [
+    "vajutada",
+    "vajutan"
+   ]
+  },
+  {
+   "id": "tegelema",
+   "front": "Tegelema",
+   "back": {
+    "en": "To deal with",
+    "az": "məşğul olmaq",
+    "ru": "заниматься"
+   },
+   "forms": [
+    "tegeleda",
+    "tegelen"
+   ]
+  },
+  {
+   "id": "toimuma",
+   "front": "Toimuma",
+   "back": {
+    "en": "To take place",
+    "az": "baş tutmaq",
+    "ru": "проходить"
+   },
+   "forms": [
+    "toimuda",
+    "toimub"
+   ]
+  },
+  {
+   "id": "selguma",
+   "front": "Selguma",
+   "back": {
+    "en": "To turn out",
+    "az": "aydın olmaq",
+    "ru": "выясняться"
+   },
+   "forms": [
+    "selguda",
+    "selgub"
+   ]
+  },
+  {
+   "id": "juhtuma",
+   "front": "Juhtuma",
+   "back": {
+    "en": "To happen",
+    "az": "baş vermək",
+    "ru": "случаться"
+   },
+   "forms": [
+    "juhtuda",
+    "juhtub"
+   ]
+  },
+  {
+   "id": "esinema",
+   "front": "Esinema",
+   "back": {
+    "en": "To occur, to perform",
+    "az": "rast gəlmək",
+    "ru": "наблюдаться"
+   },
+   "forms": [
+    "esineda",
+    "esinen"
+   ]
+  },
+  {
+   "id": "soltuma",
+   "front": "Sõltuma",
+   "back": {
+    "en": "To depend",
+    "az": "asılı olmaq",
+    "ru": "зависеть"
+   },
+   "forms": [
+    "sõltuda",
+    "sõltun"
+   ]
+  },
+  {
+   "id": "kasutama",
+   "front": "Kasutama",
+   "back": {
+    "en": "To use",
+    "az": "istifadə etmək",
+    "ru": "использовать"
+   },
+   "forms": [
+    "kasutada",
+    "kasutan"
+   ]
+  },
+  {
+   "id": "armuma",
+   "front": "Armuma",
+   "back": {
+    "en": "To fall in love",
+    "az": "aşiq olmaq",
+    "ru": "влюбляться"
+   },
+   "forms": [
+    "armuda",
+    "armun"
+   ]
+  },
+  {
+   "id": "kallistama",
+   "front": "Kallistama",
+   "back": {
+    "en": "To hug",
+    "az": "qucaqlamaq",
+    "ru": "обнимать"
+   },
+   "forms": [
+    "kallistada",
+    "kallistan"
+   ]
+  },
+  {
+   "id": "maletama",
+   "front": "Mäletama",
+   "back": {
+    "en": "To remember",
+    "az": "yadda saxlamaq",
+    "ru": "помнить"
+   },
+   "forms": [
+    "mäletada",
+    "mäletan"
+   ]
+  },
+  {
+   "id": "tundma",
+   "front": "Tundma",
+   "back": {
+    "en": "To feel, to know",
+    "az": "hiss etmək",
+    "ru": "чувствовать"
+   },
+   "forms": [
+    "tunda",
+    "tunnen"
+   ]
+  },
+  {
+   "id": "tunduma",
+   "front": "Tunduma",
+   "back": {
+    "en": "To seem",
+    "az": "görünmək",
+    "ru": "казаться"
+   },
+   "forms": [
+    "tunduda",
+    "tundub"
+   ]
+  },
+  {
+   "id": "tohtima",
+   "front": "Tohtima",
+   "back": {
+    "en": "To be allowed to",
+    "az": "icazəsi olmaq",
+    "ru": "сметь"
+   },
+   "forms": [
+    "tohtida",
+    "tohin"
+   ]
+  },
+  {
+   "id": "osalema",
+   "front": "Osalema",
+   "back": {
+    "en": "To take part",
+    "az": "iştirak etmək",
+    "ru": "участвовать"
+   },
+   "forms": [
+    "osaleda",
+    "osalen"
+   ]
+  },
+  {
+   "id": "arutama",
+   "front": "Arutama",
+   "back": {
+    "en": "To discuss",
+    "az": "müzakirə etmək",
+    "ru": "обсуждать"
+   },
+   "forms": [
+    "arutada",
+    "arutan"
+   ]
+  },
+  {
+   "id": "ravima",
+   "front": "Ravima",
+   "back": {
+    "en": "To cure",
+    "az": "müalicə etmək",
+    "ru": "лечить"
+   },
+   "forms": [
+    "ravida",
+    "ravin"
+   ]
+  },
+  {
+   "id": "lamama",
+   "front": "Lamama",
+   "back": {
+    "en": "To lie down",
+    "az": "uzanmaq",
+    "ru": "лежать"
+   },
+   "forms": [
+    "lamada",
+    "laman"
+   ]
+  },
+  {
+   "id": "keelama",
+   "front": "Keelama",
+   "back": {
+    "en": "To forbid",
+    "az": "qadağan etmək",
+    "ru": "запрещать"
+   },
+   "forms": [
+    "keelata",
+    "keelan"
+   ]
+  },
+  {
+   "id": "murdma",
+   "front": "Murdma",
+   "back": {
+    "en": "To break, to fracture",
+    "az": "sındırmaq",
+    "ru": "ломать"
+   },
+   "forms": [
+    "murda",
+    "murran"
+   ]
+  },
+  {
+   "id": "pusima",
+   "front": "Püsima",
+   "back": {
+    "en": "To stay, to hold",
+    "az": "davam etmək",
+    "ru": "сохраняться"
+   },
+   "forms": [
+    "püsida",
+    "püsin"
+   ]
+  },
+  {
+   "id": "tousma",
+   "front": "Tõusma",
+   "back": {
+    "en": "To rise",
+    "az": "qalxmaq",
+    "ru": "подниматься"
+   },
+   "forms": [
+    "tõusta",
+    "tõusen"
+   ]
+  },
+  {
+   "id": "langema",
+   "front": "Langema",
+   "back": {
+    "en": "To fall, to drop",
+    "az": "enmək",
+    "ru": "понижаться"
+   },
+   "forms": [
+    "langeda",
+    "langeb"
+   ]
+  },
+  {
+   "id": "katkema",
+   "front": "Katkema",
+   "back": {
+    "en": "To be cut off",
+    "az": "kəsilmək",
+    "ru": "прерываться"
+   },
+   "forms": [
+    "katkeda",
+    "katkeb"
+   ]
+  },
+  {
+   "id": "suitsetama",
+   "front": "Suitsetama",
+   "back": {
+    "en": "To smoke",
+    "az": "siqaret çəkmək",
+    "ru": "курить"
+   },
+   "forms": [
+    "suitsetada",
+    "suitsetan"
+   ]
+  },
+  {
+   "id": "nimeks-panema",
+   "front": "Nimeks panema",
+   "back": {
+    "en": "To name somebody",
+    "az": "ad qoymaq",
+    "ru": "называть"
+   }
+  },
+  {
+   "id": "lahti-tegema",
+   "front": "Lahti tegema",
+   "back": {
+    "en": "To open",
+    "az": "açmaq",
+    "ru": "открывать"
+   }
+  },
+  {
+   "id": "kinni-panema",
+   "front": "Kinni panema",
+   "back": {
+    "en": "To close",
+    "az": "bağlamaq",
+    "ru": "закрывать"
+   }
+  },
+  {
+   "id": "sisse-lulitama",
+   "front": "Sisse lülitama",
+   "back": {
+    "en": "To switch on",
+    "az": "yandırmaq",
+    "ru": "включать"
+   }
+  },
+  {
+   "id": "valja-lulitama",
+   "front": "Välja lülitama",
+   "back": {
+    "en": "To switch off",
+    "az": "söndürmək",
+    "ru": "выключать"
+   }
+  },
+  {
+   "id": "polema-panema",
+   "front": "Põlema panema",
+   "back": {
+    "en": "To turn the light on",
+    "az": "işığı yandırmaq",
+    "ru": "включать свет"
+   }
+  },
+  {
+   "id": "ara-kustutama",
+   "front": "Ära kustutama",
+   "back": {
+    "en": "To turn the light off",
+    "az": "işığı söndürmək",
+    "ru": "гасить свет"
+   }
+  },
+  {
+   "id": "ara-minema",
+   "front": "Ära minema",
+   "back": {
+    "en": "To go off, to leave",
+    "az": "getmək",
+    "ru": "уходить"
+   }
+  },
+  {
+   "id": "kaasa-votma",
+   "front": "Kaasa võtma",
+   "back": {
+    "en": "To take along",
+    "az": "özü ilə götürmək",
+    "ru": "брать с собой"
+   }
+  },
+  {
+   "id": "kaasa-tulema",
+   "front": "Kaasa tulema",
+   "back": {
+    "en": "To come along",
+    "az": "birgə gəlmək",
+    "ru": "идти вместе"
+   }
+  },
+  {
+   "id": "ette-kujutama",
+   "front": "Ette kujutama",
+   "back": {
+    "en": "To imagine",
+    "az": "təsəvvür etmək",
+    "ru": "представлять"
+   }
+  },
+  {
+   "id": "hakkama-saama",
+   "front": "Hakkama saama",
+   "back": {
+    "en": "To manage",
+    "az": "öhdəsindən gəlmək",
+    "ru": "справляться"
+   }
+  },
+  {
+   "id": "katte-saama",
+   "front": "Kätte saama",
+   "back": {
+    "en": "To get hold of",
+    "az": "əldə etmək",
+    "ru": "получать"
+   }
+  },
+  {
+   "id": "ara-harjuma",
+   "front": "Ära harjuma",
+   "back": {
+    "en": "To get used to",
+    "az": "öyrəşmək",
+    "ru": "привыкать"
+   }
+  },
+  {
+   "id": "ara-eksima",
+   "front": "Ära eksima",
+   "back": {
+    "en": "To get lost",
+    "az": "azmaq",
+    "ru": "заблудиться"
+   }
+  },
+  {
+   "id": "ara-unustama",
+   "front": "Ära unustama",
+   "back": {
+    "en": "To forget",
+    "az": "unutmaq",
+    "ru": "забывать"
+   }
+  },
+  {
+   "id": "ara-kuluma",
+   "front": "Ära kuluma",
+   "back": {
+    "en": "To come in handy",
+    "az": "lazım olmaq",
+    "ru": "пригодиться"
+   }
+  },
+  {
+   "id": "kokku-leppima",
+   "front": "Kokku leppima",
+   "back": {
+    "en": "To make an appointment",
+    "az": "razılaşmaq",
+    "ru": "договариваться"
+   }
+  },
+  {
+   "id": "nous-olema",
+   "front": "Nõus olema",
+   "back": {
+    "en": "To agree",
+    "az": "razı olmaq",
+    "ru": "быть согласным"
+   }
+  },
+  {
+   "id": "kohal-olema",
+   "front": "Kohal olema",
+   "back": {
+    "en": "To be there",
+    "az": "yerində olmaq",
+    "ru": "быть на месте"
+   }
+  },
+  {
+   "id": "toole-votma",
+   "front": "Tööle võtma",
+   "back": {
+    "en": "To hire",
+    "az": "işə götürmək",
+    "ru": "брать на работу"
+   }
+  },
+  {
+   "id": "kirja-panema",
+   "front": "Kirja panema",
+   "back": {
+    "en": "To note down",
+    "az": "qeyd etmək",
+    "ru": "записывать"
+   }
+  },
+  {
+   "id": "pahe-oppima",
+   "front": "Pähe õppima",
+   "back": {
+    "en": "To learn by heart",
+    "az": "əzbərləmək",
+    "ru": "учить наизусть"
+   }
+  },
+  {
+   "id": "nalja-tegema",
+   "front": "Nalja tegema",
+   "back": {
+    "en": "To joke",
+    "az": "zarafat etmək",
+    "ru": "шутить"
+   }
+  },
+  {
+   "id": "juttu-ajama",
+   "front": "Juttu ajama",
+   "back": {
+    "en": "To chat",
+    "az": "söhbət etmək",
+    "ru": "болтать"
+   }
+  },
+  {
+   "id": "ringi-vaatama",
+   "front": "Ringi vaatama",
+   "back": {
+    "en": "To look around",
+    "az": "ətrafa baxmaq",
+    "ru": "осматриваться"
+   }
+  },
+  {
+   "id": "sobima",
+   "front": "Sobima",
+   "back": {
+    "en": "To fit, to suit",
+    "az": "uyğun gəlmək",
+    "ru": "подходить, годиться"
+   },
+   "forms": [
+    "sobida",
+    "sobin"
+   ]
+  },
+  {
+   "id": "lopetama",
+   "front": "Lõpetama",
+   "back": {
+    "en": "To finish",
+    "az": "bitirmək",
+    "ru": "заканчивать"
+   },
+   "forms": [
+    "lõpetada",
+    "lõpetan"
+   ]
+  },
+  {
+   "id": "lubama",
+   "front": "Lubama",
+   "back": {
+    "en": "To allow, to promise",
+    "az": "icazə vermək, söz vermək",
+    "ru": "разрешать, обещать"
+   },
+   "forms": [
+    "lubada",
+    "luban"
+   ]
+  },
+  {
+   "id": "mahtuma",
+   "front": "Mahtuma",
+   "back": {
+    "en": "To fit in",
+    "az": "sığmaq",
+    "ru": "вмещаться, помещаться"
+   },
+   "forms": [
+    "mahtuda",
+    "mahun"
+   ]
+  },
+  {
+   "id": "motlema",
+   "front": "Mõtlema",
+   "back": {
+    "en": "To think",
+    "az": "fikirləşmək",
+    "ru": "думать"
+   },
+   "forms": [
+    "mõelda",
+    "mõtlen"
+   ]
+  },
+  {
+   "id": "paastma",
+   "front": "Päästma",
+   "back": {
+    "en": "To save, to rescue",
+    "az": "xilas etmək",
+    "ru": "спасать"
+   },
+   "forms": [
+    "päästa",
+    "päästan"
+   ]
+  },
+  {
+   "id": "pommitama",
+   "front": "Pommitama",
+   "back": {
+    "en": "To bomb",
+    "az": "bombalamaq",
+    "ru": "бомбить"
+   },
+   "forms": [
+    "pommitada",
+    "pommitan"
+   ]
+  },
+  {
+   "id": "vaja-olema",
+   "front": "Vaja olema",
+   "back": {
+    "en": "To be needed",
+    "az": "lazım olmaq",
+    "ru": "быть нужным"
+   }
+  },
+  {
+   "id": "hambaid-pesema",
+   "front": "Hambaid pesema",
+   "back": {
+    "en": "To brush your teeth",
+    "az": "dişlərini fırçalamaq",
+    "ru": "чистить зубы"
+   }
+  },
+  {
+   "id": "hommikust-sooma",
+   "front": "Hommikust sööma",
+   "back": {
+    "en": "To have breakfast",
+    "az": "səhər yeməyi yemək",
+    "ru": "завтракать"
+   }
+  },
+  {
+   "id": "vordlema",
+   "front": "Võrdlema",
+   "back": {
+    "en": "To compare",
+    "az": "müqayisə etmək",
+    "ru": "сравнивать"
+   },
+   "forms": [
+    "võrrelda",
+    "võrdlen"
+   ]
+  },
+  {
+   "id": "huvitama",
+   "front": "Huvitama",
+   "back": {
+    "en": "To interest",
+    "az": "maraqlandırmaq",
+    "ru": "интересовать"
+   },
+   "forms": [
+    "huvitada",
+    "huvitan"
+   ]
+  },
+  {
+   "id": "kiitma",
+   "front": "Kiitma",
+   "back": {
+    "en": "To praise",
+    "az": "tərifləmək",
+    "ru": "хвалить"
+   },
+   "forms": [
+    "kiita",
+    "kiidan"
+   ]
+  },
+  {
+   "id": "huudma",
+   "front": "Hüüdma",
+   "back": {
+    "en": "To call, to shout",
+    "az": "çağırmaq, qışqırmaq",
+    "ru": "звать"
+   },
+   "forms": [
+    "hüüda",
+    "hüüan"
+   ]
+  },
+  {
+   "id": "jutustama",
+   "front": "Jutustama",
+   "back": {
+    "en": "To tell, to retell",
+    "az": "danışmaq, nəql etmək",
+    "ru": "рассказывать"
+   },
+   "forms": [
+    "jutustada",
+    "jutustan"
+   ]
+  },
+  {
+   "id": "kaduma",
+   "front": "Kaduma",
+   "back": {
+    "en": "To get lost, to disappear",
+    "az": "itmək, yox olmaq",
+    "ru": "теряться, исчезать"
+   },
+   "forms": [
+    "kaduda",
+    "kaon"
+   ]
+  },
+  {
+   "id": "sorteerima",
+   "front": "Sorteerima",
+   "back": {
+    "en": "To sort",
+    "az": "çeşidləmək",
+    "ru": "сортировать"
+   },
+   "forms": [
+    "sorteerida",
+    "sorteerin"
+   ]
+  },
+  {
+   "id": "edasi-astuma",
+   "front": "Edasi astuma",
+   "back": {
+    "en": "To step forward",
+    "az": "irəli keçmək",
+    "ru": "проходить вперёд"
+   }
+  },
+  {
+   "id": "kulastama",
+   "front": "Külastama",
+   "back": {
+    "en": "To visit",
+    "az": "ziyarət etmək",
+    "ru": "навещать, посещать"
+   },
+   "forms": [
+    "külastada",
+    "külastan"
+   ]
+  },
+  {
+   "id": "lootma",
+   "front": "Lootma",
+   "back": {
+    "en": "To hope",
+    "az": "ümid etmək",
+    "ru": "надеяться"
+   },
+   "forms": [
+    "loota",
+    "loodan"
+   ]
+  },
+  {
+   "id": "sisse-tulema",
+   "front": "Sisse tulema",
+   "back": {
+    "en": "To come in",
+    "az": "içəri gəlmək",
+    "ru": "входить"
+   }
+  },
+  {
+   "id": "vahetama",
+   "front": "Vahetama",
+   "back": {
+    "en": "To change, to exchange",
+    "az": "dəyişmək",
+    "ru": "менять, разменивать"
+   },
+   "forms": [
+    "vahetada",
+    "vahetan"
+   ]
+  },
+  {
+   "id": "ara-votma",
+   "front": "Ära võtma",
+   "back": {
+    "en": "To take away, to take off",
+    "az": "götürmək, çıxarmaq",
+    "ru": "забирать, отбирать"
+   }
+  },
+  {
+   "id": "tahele-panema",
+   "front": "Tähele panema",
+   "back": {
+    "en": "To notice, to pay attention",
+    "az": "diqqət yetirmək",
+    "ru": "обращать внимание"
+   }
+  }
+ ]
+}

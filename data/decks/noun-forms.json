@@ -1,0 +1,236 @@
+{
+ "id": "noun-forms",
+ "added": "2026-09-27",
+ "name": {
+  "en": "Why a noun has three forms",
+  "az": "Niyə ismin üç forması var",
+  "ru": "Почему у существительного три формы"
+ },
+ "why": {
+  "en": "Why the card says leib, the bill says leiva and the menu says leiba — and why the back of a card shows all three.",
+  "az": "Niyə kartda leib, hesabda leiva, menyuda isə leiba yazılır — və niyə kartın arxasında üçü də var.",
+  "ru": "Почему на карточке leib, в счёте leiva, а в меню leiba — и зачем на обороте карточки все три."
+ },
+ "taste": "leib · leiva · leiba",
+ "body": [
+  {
+   "say": {
+    "en": "Every noun on these cards comes with three forms under its meaning: *leib · leiva · leiba*. They are not three words. They are the same word in three cases, and a dictionary lists every Estonian noun this way, because those three are the ones everything else is built from.",
+    "az": "Bu kartlarda hər ismin mənasının altında üç forma dayanır: *leib · leiva · leiba*. Bunlar üç ayrı söz deyil. Eyni sözün üç haldakı şəklidir, və lüğət hər eston ismini məhz belə verir — çünki qalan hər şey bu üçündən düzəlir.",
+    "ru": "Под значением каждого существительного на этих карточках стоят три формы: *leib · leiva · leiba*. Это не три слова. Это одно слово в трёх падежах, и словарь даёт каждое эстонское существительное именно так, потому что из этих трёх строится всё остальное."
+   }
+  },
+  {
+   "head": {
+    "en": "The three",
+    "az": "Üç forma",
+    "ru": "Три формы"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "nimetav",
+      "az": "nimetav",
+      "ru": "nimetav"
+     },
+     {
+      "en": "omastav",
+      "az": "omastav",
+      "ru": "omastav"
+     },
+     {
+      "en": "osastav",
+      "az": "osastav",
+      "ru": "osastav"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "leib",
+       "leiva",
+       "leiba"
+      ],
+      "means": {
+       "en": "black bread",
+       "az": "qara çörək",
+       "ru": "чёрный хлеб"
+      }
+     },
+     {
+      "et": [
+       "vesi",
+       "vee",
+       "vett"
+      ],
+      "means": {
+       "en": "water",
+       "az": "su",
+       "ru": "вода"
+      }
+     },
+     {
+      "et": [
+       "kohv",
+       "kohvi",
+       "kohvi"
+      ],
+      "means": {
+       "en": "coffee",
+       "az": "qəhvə",
+       "ru": "кофе"
+      }
+     },
+     {
+      "et": [
+       "vend",
+       "venna",
+       "venda"
+      ],
+      "means": {
+       "en": "brother",
+       "az": "qardaş",
+       "ru": "брат"
+      }
+     },
+     {
+      "et": [
+       "see",
+       "selle",
+       "seda"
+      ],
+      "means": {
+       "en": "this, it",
+       "az": "bu",
+       "ru": "это, этот"
+      }
+     },
+     {
+      "et": [
+       "ema",
+       "ema",
+       "ema"
+      ],
+      "means": {
+       "en": "mother",
+       "az": "ana",
+       "ru": "мать"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "The first, the *nimetav*, is the word as it names a thing: the subject of a sentence, and what you see on the front of the card. *Leib on laual* — the bread is on the table.",
+    "az": "Birincisi, *nimetav*, sözün bir şeyi adlandıran şəklidir: cümlənin mübtədası və kartın üzündə gördüyünüz söz. *Leib on laual* — çörək masanın üstündədir. Bu, bizim adlıq haldır: ev.",
+    "ru": "Первая, *nimetav*, — это слово как имя вещи: подлежащее, и то, что написано на лицевой стороне карточки. *Leib on laual* — хлеб на столе. Это ваш именительный."
+   }
+  },
+  {
+   "say": {
+    "en": "The second, the *omastav*, is the owner's form — the 's and the of: *venna raamat*, the brother's book; *leiva hind*, the price of the bread. It has a second job English gives to nothing: it is also the form a whole thing takes when it is the object of what you do. *Ma ostan leiva* — I buy the bread, the whole loaf, done.",
+    "az": "İkincisi, *omastav*, sahiblik formasıdır — bizim yiyəlik hal: *venna raamat* — qardaşın kitabı, *leiva hind* — çörəyin qiyməti. Ev — evin. Bir fərq var: azərbaycanca şəkilçi hər iki sözə gəlir (qardaşın kitabı), estonca isə yalnız sahibə. Omastav-ın ikinci bir işi də var: hərəkətin bütöv obyekti bu formada olur. *Ma ostan leiva* — çörəyi alıram, bütövlükdə, tamamını.",
+    "ru": "Вторая, *omastav*, — форма владельца, наш родительный: *venna raamat* — книга брата, *leiva hind* — цена хлеба. Но у неё есть вторая работа, которой у родительного нет: это форма целого предмета, когда он — объект действия. *Ma ostan leiva* — я покупаю хлеб, весь, целиком. Там, где вы сказали бы винительным «хлеб», эстонец говорит omastav."
+   }
+  },
+  {
+   "say": {
+    "en": "The third, the *osastav*, is the form for part of a thing, or a thing you are not finished with — the some. *Ma söön leiba* — I am eating bread, some of it, still at it. It comes after numbers — *kaks kohvi*, two coffees — and after no: *Mul ei ole leiba*, I have no bread.",
+    "az": "Üçüncüsü, *osastav*, bir şeyin bir hissəsinin, ya da hələ bitməmiş bir işin formasıdır. *Ma söön leiba* — çörək yeyirəm, bir qədər, hələ yeyirəm. Bu fərqi siz hər gün edirsiniz: çörək yedim və çörəyi yedim ayrı şeylərdir. Eston dili də eyni fərqi edir, sadəcə şəkilçi o biri tərəfə düşür: bütöv obyekt omastav (*leiva*), qeyri-müəyyən obyekt osastav (*leiba*). Osastav saylardan sonra gəlir — *kaks kohvi*, iki qəhvə — və inkardan sonra: *Mul ei ole leiba* — çörəyim yoxdur.",
+    "ru": "Третья, *osastav*, — форма части или незаконченного. *Ma söön leiba* — я ем хлеб, какую-то его часть, ещё не доел. Русский делает то же самое родительным: «выпить чаю», «поесть хлеба». Она стоит после числительных — *kaks kohvi*, два кофе — и после отрицания: *Mul ei ole leiba* — у меня нет хлеба. Заметьте: «нет хлеба» — вы уже так говорите."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Leib on laual.",
+     "en": "The bread is on the table.",
+     "az": "Çörək masanın üstündədir.",
+     "ru": "Хлеб на столе."
+    },
+    {
+     "et": "Ma ostan leiva.",
+     "en": "I am buying the loaf.",
+     "az": "Çörəyi alıram.",
+     "ru": "Я покупаю буханку хлеба."
+    },
+    {
+     "et": "Ma söön leiba.",
+     "en": "I am eating bread.",
+     "az": "Çörək yeyirəm.",
+     "ru": "Я ем хлеб."
+    },
+    {
+     "et": "Venna auto on punane.",
+     "en": "My brother's car is red.",
+     "az": "Qardaşımın maşını qırmızıdır.",
+     "ru": "Машина брата красная."
+    },
+    {
+     "et": "Üks vesi ja kaks kohvi, palun.",
+     "en": "One water and two coffees, please.",
+     "az": "Bir su və iki qəhvə, zəhmət olmasa.",
+     "ru": "Одну воду и два кофе, пожалуйста."
+    },
+    {
+     "et": "Mul ei ole vett.",
+     "en": "I have no water.",
+     "az": "Məndə su yoxdur.",
+     "ru": "У меня нет воды."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Why these three, and not the other eleven",
+    "az": "Niyə məhz bu üçü, qalan on biri yox",
+    "ru": "Почему именно эти три, а не остальные одиннадцать"
+   }
+  },
+  {
+   "say": {
+    "en": "Estonian has fourteen cases, and that is the number that frightens people off. But eleven of them are made from the omastav by putting an ending on it, and the ending never changes: *leiva* + *-ga* is *leivaga*, with bread; *leiva* + *-ta* is *leivata*, without bread; *leiva* + *-s* is *leivas*, in the bread. Know the omastav and the other eleven are one ending each, the same for every noun in the language.",
+    "az": "Eston dilində on dörd hal var, və adamları qorxudan da bu rəqəmdir. Amma on biri omastav-a bir şəkilçi artırmaqla düzəlir, və şəkilçi heç vaxt dəyişmir: *leiva* + *-ga* — *leivaga*, çörəklə; *leiva* + *-ta* — *leivata*, çörəksiz; *leiva* + *-s* — *leivas*, çörəyin içində. Omastav-ı bilirsinizsə, qalan on bir hal hərəsi bir şəkilçidir — dildəki hər isim üçün eyni. Elə azərbaycancadakı kimi: evdə, evdən, evlə.",
+    "ru": "В эстонском четырнадцать падежей, и это число отпугивает. Но одиннадцать из них делаются из omastav одним окончанием, и окончание никогда не меняется: *leiva* + *-ga* — *leivaga*, с хлебом; *leiva* + *-ta* — *leivata*, без хлеба; *leiva* + *-s* — *leivas*, в хлебе. Знаете omastav — остальные одиннадцать это по одному окончанию, одинаковому для любого существительного в языке."
+   }
+  },
+  {
+   "say": {
+    "en": "The osastav does the same job for the plural: the plural is built from it — *leiba* becomes *leibade*, of the breads — and from there every plural case follows the rule. So the three forms on a card are the whole word. Everything else about it is a rule.",
+    "az": "Osastav eyni işi cəm üçün görür: cəm ondan düzəlir — *leiba*-dan *leibade*, çörəklərin — və oradan cəmin hər halı qaydayla gəlir. Deməli kartdakı üç forma sözün özüdür. Onun haqqında qalan hər şey qaydadır.",
+    "ru": "Osastav делает ту же работу для множественного числа: из него строится множественное — *leiba* даёт *leibade*, хлебов, — а дальше каждый падеж множественного идёт по правилу. Так что три формы на карточке — это всё слово. Всё остальное о нём — правило."
+   }
+  },
+  {
+   "head": {
+    "en": "Why you have to learn them by heart",
+    "az": "Niyə əzbər bilmək lazımdır",
+    "ru": "Почему их нужно учить наизусть"
+   }
+  },
+  {
+   "say": {
+    "en": "Because nothing on the nimetav tells you what the other two will be. *Vesi* becomes *vee* and *vett*. *Käsi*, the hand, becomes *käe* and *kätt*. *Tuba*, a room, becomes *toa*. *Mees*, a man, becomes *mehe*. *Uus*, new, becomes *uue* and *uut*. They are the most common words in the language and they are the least regular, which is why a dictionary never prints one form on its own.",
+    "az": "Çünki nimetav-a baxıb o biri ikisinin nə olacağını bilmək olmur. *Vesi* — *vee* və *vett* olur. *Käsi*, əl — *käe* və *kätt*. *Tuba*, otaq — *toa*. *Mees*, kişi — *mehe*. *Uus*, yeni — *uue* və *uut*. Bunlar dilin ən çox işlənən sözləridir və ən qaydasızları da elə bunlardır — ona görə lüğət heç vaxt bir formanı tək çap etmir.",
+    "ru": "Потому что по nimetav не угадать, какими будут две другие. *Vesi* становится *vee* и *vett*. *Käsi*, рука, — *käe* и *kätt*. *Tuba*, комната, — *toa*. *Mees*, мужчина, — *mehe*. *Uus*, новый, — *uue* и *uut*. Это самые частые слова в языке, и они же самые неправильные — поэтому словарь никогда не печатает одну форму без двух других."
+   }
+  },
+  {
+   "say": {
+    "en": "The good news is how often the three are the same. *Ema, isa, maja, kala, liha* — mother, father, house, fish, meat: three forms, one word. For most nouns the change is one letter or none, and the few hundred that change more are exactly the ones you meet every day. Learn a word as its three forms — *leib, leiva, leiba*, said together, like a name — and the cases stop being fourteen things to learn and become one.",
+    "az": "Yaxşı xəbər odur ki, üç forma çox vaxt eynidir. *Ema, isa, maja, kala, liha* — ana, ata, ev, balıq, ət: üç forma, bir söz. İsimlərin çoxunda bir hərf dəyişir, ya heç dəyişmir; daha çox dəyişən bir neçə yüz söz isə məhz hər gün rastlaşdıqlarınızdır. Sözü üç forması ilə birlikdə öyrənin — *leib, leiva, leiba*, bir ad kimi, bir nəfəsə — onda hallar öyrənməli on dörd şey olmaqdan çıxıb bir şey olur.",
+    "ru": "Хорошая новость — как часто все три совпадают. *Ema, isa, maja, kala, liha* — мать, отец, дом, рыба, мясо: три формы, одно слово. У большинства существительных меняется одна буква или ничего, а те несколько сотен, что меняются сильнее, — как раз те, что встречаются каждый день. Учите слово сразу как три формы — *leib, leiva, leiba*, вместе, как имя, — и падежи перестанут быть четырнадцатью вещами, которые надо выучить, и станут одной."
+   }
+  },
+  {
+   "say": {
+    "en": "That is what the line under the meaning is for. Read it every time. The next lesson is the eleven cases the omastav opens; verbs, which come in threes as well, are after it.",
+    "az": "Mənanın altındakı sətir bunun üçündür. Hər dəfə oxuyun. Növbəti dərs omastav-ın açdığı on bir hal haqqındadır; üç formalı fellər ondan sonradır.",
+    "ru": "Для этого и стоит строка под значением. Читайте её каждый раз. Следующий урок — об одиннадцати падежах, которые открывает omastav; глаголы, у которых тоже три формы, — после него."
+   }
+  }
+ ]
+}

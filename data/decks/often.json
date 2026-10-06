@@ -1,0 +1,430 @@
+{
+ "id": "often",
+ "added": "2026-09-18",
+ "name": {
+  "en": "How often",
+  "az": "Nə qədər tez-tez",
+  "ru": "Как часто"
+ },
+ "why": {
+  "en": "Always, sometimes, never — and once a week, which is how a plan is made",
+  "az": "Həmişə, bəzən, heç vaxt — və həftədə bir dəfə, plan belə qurulur",
+  "ru": "Всегда, иногда, никогда — и раз в неделю, из чего и складывается план"
+ },
+ "level": "more",
+ "cards": [
+  {
+   "id": "alati",
+   "front": "Alati",
+   "back": {
+    "en": "Always",
+    "az": "həmişə",
+    "ru": "всегда"
+   },
+   "sentence": {
+    "et": "Ma käin alati jalgsi.",
+    "en": "I always walk.",
+    "az": "Mən həmişə piyada gedirəm.",
+    "ru": "Я всегда хожу пешком."
+   }
+  },
+  {
+   "id": "sageli",
+   "front": "Sageli",
+   "back": {
+    "en": "Often",
+    "az": "tez-tez",
+    "ru": "часто"
+   },
+   "sentence": {
+    "et": "Ma käin sageli kinos.",
+    "en": "I often go to the cinema.",
+    "az": "Mən tez-tez kinoya gedirəm.",
+    "ru": "Я часто хожу в кино."
+   }
+  },
+  {
+   "id": "tihti",
+   "front": "Tihti",
+   "back": {
+    "en": "Often, frequently",
+    "az": "tez-tez, sıx-sıx",
+    "ru": "часто, нередко"
+   },
+   "sentence": {
+    "et": "Ta helistab tihti.",
+    "en": "They ring often.",
+    "az": "O tez-tez zəng edir.",
+    "ru": "Он часто звонит."
+   }
+  },
+  {
+   "id": "vaga-tihti",
+   "front": "Väga tihti",
+   "back": {
+    "en": "Very often",
+    "az": "çox tez-tez",
+    "ru": "очень часто"
+   },
+   "sentence": {
+    "et": "Ma käin siin väga tihti.",
+    "en": "I come here very often.",
+    "az": "Mən buraya çox tez-tez gəlirəm.",
+    "ru": "Я бываю здесь очень часто."
+   }
+  },
+  {
+   "id": "monikord",
+   "front": "Mõnikord",
+   "back": {
+    "en": "Sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   },
+   "sentence": {
+    "et": "Mõnikord ma unustan.",
+    "en": "Sometimes I forget.",
+    "az": "Bəzən unuduram.",
+    "ru": "Иногда я забываю."
+   }
+  },
+  {
+   "id": "harva",
+   "front": "Harva",
+   "back": {
+    "en": "Rarely",
+    "az": "nadir hallarda",
+    "ru": "редко"
+   },
+   "sentence": {
+    "et": "Ma söön harva väljas.",
+    "en": "I rarely eat out.",
+    "az": "Nadir hallarda çöldə yeyirəm.",
+    "ru": "Я редко ем не дома."
+   }
+  },
+  {
+   "id": "mitte-kunagi",
+   "front": "Mitte kunagi",
+   "back": {
+    "en": "Never",
+    "az": "heç vaxt",
+    "ru": "никогда"
+   },
+   "sentence": {
+    "et": "Ma ei ole seal mitte kunagi käinud.",
+    "en": "I have never been there.",
+    "az": "Mən heç vaxt orada olmamışam.",
+    "ru": "Я никогда там не был."
+   }
+  },
+  {
+   "id": "mitte-midagi",
+   "front": "Mitte midagi",
+   "back": {
+    "en": "Nothing",
+    "az": "heç nə",
+    "ru": "ничего"
+   },
+   "sentence": {
+    "et": "Ma ei tea sellest mitte midagi.",
+    "en": "I know nothing about it.",
+    "az": "Bu barədə heç nə bilmirəm.",
+    "ru": "Я об этом ничего не знаю."
+   }
+  },
+  {
+   "id": "kord-nadalas",
+   "front": "Kord nädalas",
+   "back": {
+    "en": "Once a week",
+    "az": "həftədə bir dəfə",
+    "ru": "раз в неделю"
+   },
+   "sentence": {
+    "et": "Ma käin jõusaalis kord nädalas.",
+    "en": "I go to the gym once a week.",
+    "az": "İdman zalına həftədə bir dəfə gedirəm.",
+    "ru": "Я хожу в спортзал раз в неделю."
+   }
+  },
+  {
+   "id": "kord-kuus",
+   "front": "Kord kuus",
+   "back": {
+    "en": "Once a month",
+    "az": "ayda bir dəfə",
+    "ru": "раз в месяц"
+   },
+   "sentence": {
+    "et": "Me kohtume kord kuus.",
+    "en": "We meet once a month.",
+    "az": "Ayda bir dəfə görüşürük.",
+    "ru": "Мы встречаемся раз в месяц."
+   }
+  },
+  {
+   "id": "suvel",
+   "front": "Suvel",
+   "back": {
+    "en": "In the summer",
+    "az": "yayda",
+    "ru": "летом"
+   },
+   "sentence": {
+    "et": "Suvel on väljas soe.",
+    "en": "In the summer it is warm out.",
+    "az": "Yayda çöldə istidir.",
+    "ru": "Летом на улице тепло."
+   }
+  },
+  {
+   "id": "talvel",
+   "front": "Talvel",
+   "back": {
+    "en": "In the winter",
+    "az": "qışda",
+    "ru": "зимой"
+   },
+   "sentence": {
+    "et": "Talvel läheb vara pimedaks.",
+    "en": "In winter it gets dark early.",
+    "az": "Qışda tez qaralır.",
+    "ru": "Зимой рано темнеет."
+   }
+  },
+  {
+   "id": "sel-suvel",
+   "front": "Sel suvel",
+   "back": {
+    "en": "This summer",
+    "az": "bu yay",
+    "ru": "этим летом"
+   },
+   "sentence": {
+    "et": "Sel suvel jäime linna.",
+    "en": "This summer we stayed in town.",
+    "az": "Bu yay şəhərdə qaldıq.",
+    "ru": "Этим летом мы остались в городе."
+   }
+  },
+  {
+   "id": "igal-talvel",
+   "front": "Igal talvel",
+   "back": {
+    "en": "Every winter",
+    "az": "hər qış",
+    "ru": "каждую зиму"
+   },
+   "sentence": {
+    "et": "Igal talvel käime suusatamas.",
+    "en": "Every winter we go skiing.",
+    "az": "Hər qış xizək sürməyə gedirik.",
+    "ru": "Каждую зиму мы катаемся на лыжах."
+   }
+  },
+  {
+   "id": "alati-jannis",
+   "front": "Alati jännis",
+   "back": {
+    "en": "Always in a fix",
+    "az": "Həmişə çətinlikdə",
+    "ru": "Вечно в переделке"
+   },
+   "sentence": {
+    "et": "Ta on alati jännis.",
+    "en": "They are always in some fix or other.",
+    "az": "O həmişə çətinlikdədir.",
+    "ru": "Он вечно в какой-нибудь переделке."
+   }
+  },
+  {
+   "id": "kord",
+   "front": "Kord",
+   "back": {
+    "en": "A time, an occasion",
+    "az": "Dəfə",
+    "ru": "Раз"
+   },
+   "forms": [
+    "korra",
+    "korda"
+   ],
+   "sentence": {
+    "et": "Ma käin seal üks kord nädalas.",
+    "en": "I go there once a week.",
+    "az": "Ora həftədə bir dəfə gedirəm.",
+    "ru": "Я хожу туда раз в неделю."
+   }
+  },
+  {
+   "id": "tavaliselt",
+   "front": "Tavaliselt",
+   "back": {
+    "en": "Usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "sentence": {
+    "et": "Tavaliselt söön ma kodus.",
+    "en": "I usually eat at home.",
+    "az": "Adətən evdə yeyirəm.",
+    "ru": "Обычно я ем дома."
+   }
+  },
+  {
+   "id": "kunagi",
+   "front": "Kunagi",
+   "back": {
+    "en": "Ever, some time",
+    "az": "nə vaxtsa",
+    "ru": "когда-нибудь"
+   },
+   "sentence": {
+    "et": "Kas sa oled kunagi Tartus käinud?",
+    "en": "Have you ever been to Tartu?",
+    "az": "Heç Tartuda olmusan?",
+    "ru": "Ты когда-нибудь был в Тарту?"
+   }
+  },
+  {
+   "id": "iga-paev",
+   "front": "Iga päev",
+   "back": {
+    "en": "Every day",
+    "az": "Hər gün",
+    "ru": "Каждый день"
+   }
+  },
+  {
+   "id": "iga-nadal",
+   "front": "Iga nädal",
+   "back": {
+    "en": "Every week",
+    "az": "Hər həftə",
+    "ru": "Каждую неделю"
+   }
+  },
+  {
+   "id": "igapaevane",
+   "front": "Igapäevane",
+   "back": {
+    "en": "For everyday use",
+    "az": "Gündəlik",
+    "ru": "Повседневный"
+   },
+   "forms": [
+    "igapäevase",
+    "igapäevast"
+   ]
+  },
+  {
+   "id": "ule-paeviti",
+   "front": "Üle päeviti",
+   "back": {
+    "en": "Every other day",
+    "az": "Gündən-günə",
+    "ru": "Через день"
+   }
+  },
+  {
+   "id": "esmaspaeviti",
+   "front": "Esmaspäeviti",
+   "back": {
+    "en": "On Mondays",
+    "az": "Bazar ertəsi günləri",
+    "ru": "По понедельникам"
+   }
+  },
+  {
+   "id": "reedeti",
+   "front": "Reedeti",
+   "back": {
+    "en": "On Fridays",
+    "az": "Cümə günləri",
+    "ru": "По пятницам"
+   }
+  },
+  {
+   "id": "laupaeviti",
+   "front": "Laupäeviti",
+   "back": {
+    "en": "On Saturdays",
+    "az": "Şənbə günləri",
+    "ru": "По субботам"
+   }
+  },
+  {
+   "id": "ohtuti",
+   "front": "Õhtuti",
+   "back": {
+    "en": "In the evenings",
+    "az": "Axşamlar",
+    "ru": "По вечерам"
+   }
+  },
+  {
+   "id": "oositi",
+   "front": "Öösiti",
+   "back": {
+    "en": "At nights",
+    "az": "Gecələr",
+    "ru": "По ночам"
+   }
+  },
+  {
+   "id": "esimest-korda",
+   "front": "Esimest korda",
+   "back": {
+    "en": "For the first time",
+    "az": "İlk dəfə",
+    "ru": "Первый раз"
+   }
+  },
+  {
+   "id": "korraga",
+   "front": "Korraga",
+   "back": {
+    "en": "At once, at a time",
+    "az": "Bir dəfəyə",
+    "ru": "За один раз"
+   }
+  },
+  {
+   "id": "moni-teine-kord",
+   "front": "Mõni teine kord",
+   "back": {
+    "en": "Some other time",
+    "az": "Başqa vaxt",
+    "ru": "Как-нибудь в другой раз"
+   }
+  },
+  {
+   "id": "kogu-aeg",
+   "front": "Kogu aeg",
+   "back": {
+    "en": "All the time",
+    "az": "Həmişə",
+    "ru": "Всё время"
+   }
+  },
+  {
+   "id": "mitu-korda",
+   "front": "Mitu korda?",
+   "back": {
+    "en": "How many times?",
+    "az": "Neçə dəfə?",
+    "ru": "Сколько раз?"
+   }
+  },
+  {
+   "id": "iialgi",
+   "front": "Iialgi",
+   "back": {
+    "en": "Never, not ever",
+    "az": "Heç vaxt",
+    "ru": "Никогда"
+   }
+  }
+ ]
+}

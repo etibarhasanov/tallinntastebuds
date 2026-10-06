@@ -1,0 +1,743 @@
+{
+ "id": "verb-tenses",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Every tense of a verb",
+  "az": "Felin bütün zamanları",
+  "ru": "Все времена глагола"
+ },
+ "why": {
+  "en": "Elama, to live, in the present, the past, would and do it! — and which of its three forms each one grows out of.",
+  "az": "Elama — yaşamaq — indiki, keçmiş, şərt və əmr formalarında, və hər birinin üç formadan hansından çıxdığı.",
+  "ru": "Elama, жить, в настоящем, прошедшем, условном и повелительном — и из какой из трёх форм вырастает каждое."
+ },
+ "body": [
+  {
+   "say": {
+    "en": "The last lesson said a verb is three forms — *elama, elada, elan* — and that every tense is an ending on one of them. Here is every tense, on *elama*, to live, which is as regular as a verb gets: six people, a yes and a no. And one rule makes the no easy before you start: it never changes with the person. *Ma ei ela, sa ei ela, nad ei ela.*",
+    "az": "Əvvəlki dərs dedi ki, fel üç formadır — *elama, elada, elan* — və hər zaman onlardan birinin üstündə bir şəkilçidir. Burada *elama* — yaşamaq — felinin bütün zamanları var; bu, ən qaydalı fellərdən biridir: altı şəxs, təsdiq və inkar. Başlamazdan əvvəl bir qayda inkarı asanlaşdırır: o, şəxsə görə heç vaxt dəyişmir. *Ma ei ela, sa ei ela, nad ei ela.*",
+    "ru": "Прошлый урок сказал, что глагол — это три формы, *elama, elada, elan*, и что каждое время — окончание на одной из них. Вот все времена на *elama*, жить, — глаголе настолько правильном, насколько это бывает: шесть лиц, да и нет. И одно правило делает «нет» лёгким с самого начала: оно никогда не меняется по лицам. *Ma ei ela, sa ei ela, nad ei ela.*"
+   }
+  },
+  {
+   "head": {
+    "en": "Now — olevik",
+    "az": "İndi — olevik",
+    "ru": "Сейчас — olevik"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     },
+     {
+      "en": "not",
+      "az": "inkar",
+      "ru": "нет"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "elan",
+       "elame",
+       "ei ela"
+      ],
+      "means": {
+       "en": "ma · me — I · we",
+       "az": "ma · me — mən · biz",
+       "ru": "ma · me — я · мы"
+      }
+     },
+     {
+      "et": [
+       "elad",
+       "elate",
+       "ei ela"
+      ],
+      "means": {
+       "en": "sa · te — you · you all",
+       "az": "sa · te — sən · siz",
+       "ru": "sa · te — ты · вы"
+      }
+     },
+     {
+      "et": [
+       "elab",
+       "elavad",
+       "ei ela"
+      ],
+      "means": {
+       "en": "ta · nad — he, she · they",
+       "az": "ta · nad — o · onlar",
+       "ru": "ta · nad — он, она · они"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "The endings are the same on every verb in the present — *-n, -d, -b, -me, -te, -vad* — so they are learnt once. The no is *ei* and the present without its ending.",
+    "az": "İndiki zamanda şəkilçilər hər feldə eynidir — *-n, -d, -b, -me, -te, -vad* — deməli, bir dəfə öyrənilir. İnkar *ei* və şəkilçisiz indiki formadır.",
+    "ru": "В настоящем времени окончания одинаковы у всех глаголов — *-n, -d, -b, -me, -te, -vad*, — так что учатся они один раз. Отрицание — *ei* и настоящее без окончания."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Me elame Tallinnas.",
+     "en": "We live in Tallinn.",
+     "az": "Biz Tallinndə yaşayırıq.",
+     "ru": "Мы живём в Таллинне."
+    },
+    {
+     "et": "Kus sa elad?",
+     "en": "Where do you live?",
+     "az": "Harada yaşayırsan?",
+     "ru": "Где ты живёшь?"
+    },
+    {
+     "et": "Ta ei ela enam siin.",
+     "en": "He does not live here any more.",
+     "az": "O, artıq burada yaşamır.",
+     "ru": "Он здесь больше не живёт."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Before — lihtminevik",
+    "az": "Keçmiş — lihtminevik",
+    "ru": "Прошедшее — lihtminevik"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     },
+     {
+      "en": "not",
+      "az": "inkar",
+      "ru": "нет"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "elasin",
+       "elasime",
+       "ei elanud"
+      ],
+      "means": {
+       "en": "ma · me — I · we",
+       "az": "ma · me — mən · biz",
+       "ru": "ma · me — я · мы"
+      }
+     },
+     {
+      "et": [
+       "elasid",
+       "elasite",
+       "ei elanud"
+      ],
+      "means": {
+       "en": "sa · te — you · you all",
+       "az": "sa · te — sən · siz",
+       "ru": "sa · te — ты · вы"
+      }
+     },
+     {
+      "et": [
+       "elas",
+       "elasid",
+       "ei elanud"
+      ],
+      "means": {
+       "en": "ta · nad — he, she · they",
+       "az": "ta · nad — o · onlar",
+       "ru": "ta · nad — он, она · они"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "The past is *-si-* and the same endings, and *ta* has none: *elas*. The no is *ei* and the *-nud* form, and that does not change with the person either.",
+    "az": "Keçmiş *-si-* və eyni şəkilçilərdir, *ta* isə şəkilçisizdir: *elas*. İnkar *ei* və *-nud* formasıdır, və o da şəxsə görə dəyişmir.",
+    "ru": "Прошедшее — это *-si-* и те же окончания, а у *ta* окончания нет: *elas*. Отрицание — *ei* и форма на *-nud*, и она тоже не меняется по лицам."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma elasin varem Bakuus.",
+     "en": "I used to live in Baku.",
+     "az": "Əvvəllər Bakıda yaşayırdım.",
+     "ru": "Раньше я жил в Баку."
+    },
+    {
+     "et": "Eile me sõime vanalinnas.",
+     "en": "Yesterday we ate in the Old Town.",
+     "az": "Dünən köhnə şəhərdə yemək yedik.",
+     "ru": "Вчера мы ели в Старом городе."
+    },
+    {
+     "et": "Ma ei teadnud seda.",
+     "en": "I did not know that.",
+     "az": "Bunu bilmirdim.",
+     "ru": "Я этого не знал."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Have done — täisminevik",
+    "az": "Bitmiş keçmiş — täisminevik",
+    "ru": "Перфект — täisminevik"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     },
+     {
+      "en": "not",
+      "az": "inkar",
+      "ru": "нет"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "olen elanud",
+       "oleme elanud",
+       "ei ole elanud"
+      ],
+      "means": {
+       "en": "ma · me — I · we",
+       "az": "ma · me — mən · biz",
+       "ru": "ma · me — я · мы"
+      }
+     },
+     {
+      "et": [
+       "oled elanud",
+       "olete elanud",
+       "ei ole elanud"
+      ],
+      "means": {
+       "en": "sa · te — you · you all",
+       "az": "sa · te — sən · siz",
+       "ru": "sa · te — ты · вы"
+      }
+     },
+     {
+      "et": [
+       "on elanud",
+       "on elanud",
+       "ei ole elanud"
+      ],
+      "means": {
+       "en": "ta · nad — he, she · they",
+       "az": "ta · nad — o · onlar",
+       "ru": "ta · nad — он, она · они"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "*Olema*, to be, in the present, and the same *-nud* form the past said no with. *Ma olen kaks aastat Tallinnas elanud* — I have lived in Tallinn for two years.",
+    "az": "İndiki zamanda *olema* — olmaq — və keçmişin inkarındakı eyni *-nud* forması. *Ma olen kaks aastat Tallinnas elanud* — iki ildir Tallinndə yaşayıram.",
+    "ru": "*Olema*, быть, в настоящем и та же форма на *-nud*, что и в отрицании прошедшего. *Ma olen kaks aastat Tallinnas elanud* — я прожил в Таллинне два года."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Kas sa oled Tartus käinud?",
+     "en": "Have you been to Tartu?",
+     "az": "Tartuda olmusan?",
+     "ru": "Ты бывал в Тарту?"
+    },
+    {
+     "et": "Ma ei ole veel söönud.",
+     "en": "I have not eaten yet.",
+     "az": "Hələ yemək yeməmişəm.",
+     "ru": "Я ещё не ел."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Would — tingiv kõneviis",
+    "az": "Şərt — tingiv kõneviis",
+    "ru": "Бы — tingiv kõneviis"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "one",
+      "az": "tək",
+      "ru": "ед. ч."
+     },
+     {
+      "en": "many",
+      "az": "cəm",
+      "ru": "мн. ч."
+     },
+     {
+      "en": "not",
+      "az": "inkar",
+      "ru": "нет"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "elaksin",
+       "elaksime",
+       "ei elaks"
+      ],
+      "means": {
+       "en": "ma · me — I · we",
+       "az": "ma · me — mən · biz",
+       "ru": "ma · me — я · мы"
+      }
+     },
+     {
+      "et": [
+       "elaksid",
+       "elaksite",
+       "ei elaks"
+      ],
+      "means": {
+       "en": "sa · te — you · you all",
+       "az": "sa · te — sən · siz",
+       "ru": "sa · te — ты · вы"
+      }
+     },
+     {
+      "et": [
+       "elaks",
+       "elaksid",
+       "ei elaks"
+      ],
+      "means": {
+       "en": "ta · nad — he, she · they",
+       "az": "ta · nad — o · onlar",
+       "ru": "ta · nad — он, она · они"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "*-ks-* where the past had *-si-*. In speech *elaks* does for every person — *ma elaks siin*, I would live here — and *Ma tahaksin kohvi*, I would like a coffee, is the one you will say every morning.",
+    "az": "Keçmişdəki *-si-* yerinə *-ks-*. Danışıqda *elaks* hər şəxs üçün işlənir — *ma elaks siin*, burada yaşayardım — *Ma tahaksin kohvi*, qəhvə istərdim, isə hər səhər deyəcəyiniz cümlədir.",
+    "ru": "*-ks-* там, где в прошедшем было *-si-*. В речи *elaks* годится для всех лиц — *ma elaks siin*, я бы жил здесь, — а *Ma tahaksin kohvi*, я бы хотел кофе, вы будете говорить каждое утро."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma tahaksin ühe kohvi.",
+     "en": "I would like a coffee.",
+     "az": "Bir qəhvə istərdim.",
+     "ru": "Я бы хотел кофе."
+    },
+    {
+     "et": "Kas te saaksite mind aidata?",
+     "en": "Could you help me?",
+     "az": "Mənə kömək edə bilərdinizmi?",
+     "ru": "Не могли бы вы мне помочь?"
+    },
+    {
+     "et": "Ma elaksin hea meelega mere ääres.",
+     "en": "I would love to live by the sea.",
+     "az": "Məmnuniyyətlə dəniz kənarında yaşayardım.",
+     "ru": "Я бы с удовольствием жил у моря."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Do it! — käskiv kõneviis",
+    "az": "Əmr — käskiv kõneviis",
+    "ru": "Сделай! — käskiv kõneviis"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "to one",
+      "az": "birinə",
+      "ru": "одному"
+     },
+     {
+      "en": "to more",
+      "az": "bir neçəsinə",
+      "ru": "нескольким"
+     },
+     {
+      "en": "let them",
+      "az": "qoy",
+      "ru": "пусть"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "ela!",
+       "elage!",
+       "elagu!"
+      ],
+      "means": {
+       "en": "live!",
+       "az": "yaşa!",
+       "ru": "живи!"
+      }
+     },
+     {
+      "et": [
+       "ära ela!",
+       "ärge elage!",
+       "ärgu elagu!"
+      ],
+      "means": {
+       "en": "do not live!",
+       "az": "yaşama!",
+       "ru": "не живи!"
+      }
+     },
+     {
+      "et": [
+       "tule!",
+       "tulge!",
+       "tulgu!"
+      ],
+      "means": {
+       "en": "come!",
+       "az": "gəl!",
+       "ru": "иди сюда!"
+      }
+     },
+     {
+      "et": [
+       "ära tule!",
+       "ärge tulge!",
+       "ärgu tulgu!"
+      ],
+      "means": {
+       "en": "do not come!",
+       "az": "gəlmə!",
+       "ru": "не приходи!"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "To one person the command is the present without its *-n*: *elan* → *ela!*, *tulen* → *tule!* To more than one, or politely, it is *-ge* on the *-da* form's stem: *elage! tulge!* The no is *ära* to one and *ärge* to more — *Ära karda!*, don't be afraid. And *-gu* is for somebody else: *Elagu Eesti!* — long live Estonia.",
+    "az": "Bir nəfərə əmr *-n*-siz indiki formadır: *elan* → *ela!*, *tulen* → *tule!* Bir neçə nəfərə, ya da nəzakətlə, *-da* formasının kökünə *-ge* gəlir: *elage! tulge!* İnkar birinə *ära*, bir neçəsinə *ärge*-dir — *Ära karda!*, qorxma. *-gu* isə başqası üçündür: *Elagu Eesti!* — yaşasın Estoniya.",
+    "ru": "Одному человеку повеление — это настоящее без *-n*: *elan* → *ela!*, *tulen* → *tule!* Нескольким, или вежливо, — *-ge* на основе формы на *-da*: *elage! tulge!* Отрицание — *ära* одному и *ärge* нескольким: *Ära karda!*, не бойся. А *-gu* — о третьем лице: *Elagu Eesti!* — да здравствует Эстония."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Tule siia!",
+     "en": "Come here!",
+     "az": "Bura gəl!",
+     "ru": "Иди сюда!"
+    },
+    {
+     "et": "Palun istuge!",
+     "en": "Please sit down!",
+     "az": "Zəhmət olmasa, oturun!",
+     "ru": "Садитесь, пожалуйста!"
+    },
+    {
+     "et": "Ära muretse!",
+     "en": "Don't worry!",
+     "az": "Narahat olma!",
+     "ru": "Не волнуйся!"
+    },
+    {
+     "et": "Ärge suitsetage siin!",
+     "en": "Don't smoke here!",
+     "az": "Burada siqaret çəkməyin!",
+     "ru": "Не курите здесь!"
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Nobody in particular — umbisikuline",
+    "az": "Şəxssiz — umbisikuline",
+    "ru": "Безлично — umbisikuline"
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "now",
+      "az": "indi",
+      "ru": "сейчас"
+     },
+     {
+      "en": "before",
+      "az": "keçmiş",
+      "ru": "прошедшее"
+     },
+     {
+      "en": "have done",
+      "az": "bitmiş",
+      "ru": "перфект"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "elatakse",
+       "elati",
+       "on elatud"
+      ],
+      "means": {
+       "en": "people live, it is lived",
+       "az": "yaşanılır",
+       "ru": "живут (безлично)"
+      }
+     },
+     {
+      "et": [
+       "ei elata",
+       "ei elatud",
+       "ei ole elatud"
+      ],
+      "means": {
+       "en": "not",
+       "az": "inkar",
+       "ru": "нет"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "For when it does not matter who. *Eestis räägitakse eesti keelt* — Estonian is spoken in Estonia. *Siin ei suitsetata* — no smoking here, word for word here is not smoked. You will read it on doors long before you say it.",
+    "az": "Kimin etdiyi önəmli olmayanda. *Eestis räägitakse eesti keelt* — Estoniyada eston dilində danışılır. *Siin ei suitsetata* — burada siqaret çəkilmir. Bunu deməzdən çox əvvəl qapıların üstündə oxuyacaqsınız.",
+    "ru": "Когда неважно, кто. *Eestis räägitakse eesti keelt* — в Эстонии говорят по-эстонски. *Siin ei suitsetata* — здесь не курят. Вы прочтёте это на дверях задолго до того, как скажете сами."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Pood avatakse kell kümme.",
+     "en": "The shop opens at ten.",
+     "az": "Mağaza saat onda açılır.",
+     "ru": "Магазин открывается в десять."
+    },
+    {
+     "et": "Maja ehitati 1920. aastal.",
+     "en": "The house was built in 1920.",
+     "az": "Ev 1920-ci ildə tikilib.",
+     "ru": "Дом построили в 1920 году."
+    },
+    {
+     "et": "Siin ei suitsetata.",
+     "en": "No smoking here.",
+     "az": "Burada siqaret çəkilmir.",
+     "ru": "Здесь не курят."
+    }
+   ]
+  },
+  {
+   "head": {
+    "en": "Where each one comes from",
+    "az": "Hər biri haradan çıxır",
+    "ru": "Откуда что берётся"
+   }
+  },
+  {
+   "say": {
+    "en": "Every form above grows out of one of four starting points, and once you know which, a new verb hands you the whole table. From the *-ma* form: the past, *õppisin*, and *-mas*, in the middle of doing it — *ma olen lugemas*, I am busy reading. From the *-da* form: the *-nud* form, for have done and did not, and the command to more than one. From the present without its *-n*: the no, the would, and the command to one.",
+    "az": "Yuxarıdakı hər forma dörd başlanğıc nöqtəsindən birindən çıxır, və hansı olduğunu bildikdə yeni fel sizə bütün cədvəli verir. *-ma* formasından: keçmiş, *õppisin*, və *-mas*, işin ortasında — *ma olen lugemas*, oxumaqla məşğulam. *-da* formasından: *-nud* forması — «etmişəm» və «etmədim» üçün — və bir neçə nəfərə əmr. *-n*-siz indiki formadan: inkar, şərt və bir nəfərə əmr.",
+    "ru": "Каждая форма выше вырастает из одной из четырёх точек, и, зная, из какой, новый глагол отдаёт вам всю таблицу. Из формы на *-ma*: прошедшее, *õppisin*, и *-mas*, в процессе — *ma olen lugemas*, я занят чтением. Из формы на *-da*: форма на *-nud* — для перфекта и для «не сделал» — и повеление нескольким. Из настоящего без *-n*: отрицание, условное и повеление одному."
+   }
+  },
+  {
+   "table": {
+    "heads": [
+     {
+      "en": "-ma",
+      "az": "-ma",
+      "ru": "-ma"
+     },
+     {
+      "en": "-da",
+      "az": "-da",
+      "ru": "-da"
+     },
+     {
+      "en": "ma …n",
+      "az": "ma …n",
+      "ru": "ma …n"
+     }
+    ],
+    "rows": [
+     {
+      "et": [
+       "õppima",
+       "õppida",
+       "õpin"
+      ],
+      "means": {
+       "en": "to learn: the three",
+       "az": "öyrənmək: üç forma",
+       "ru": "учить: три формы"
+      }
+     },
+     {
+      "et": [
+       "õppisin",
+       "õppinud",
+       "ei õpi"
+      ],
+      "means": {
+       "en": "learnt · have learnt · not",
+       "az": "öyrəndim · öyrənmişəm · inkar",
+       "ru": "учил · выучил · нет"
+      }
+     },
+     {
+      "et": [
+       "õppimas",
+       "õppige!",
+       "õpi! õpiks"
+      ],
+      "means": {
+       "en": "at it · learn! · would",
+       "az": "öyrənməkdə · öyrənin! · şərt",
+       "ru": "в процессе · учите! · бы"
+      }
+     },
+     {
+      "et": [
+       "lugema",
+       "lugeda",
+       "loen"
+      ],
+      "means": {
+       "en": "to read: the three",
+       "az": "oxumaq: üç forma",
+       "ru": "читать: три формы"
+      }
+     },
+     {
+      "et": [
+       "lugesin",
+       "lugenud",
+       "ei loe"
+      ],
+      "means": {
+       "en": "read · have read · not",
+       "az": "oxudum · oxumuşam · inkar",
+       "ru": "читал · прочёл · нет"
+      }
+     },
+     {
+      "et": [
+       "lugemas",
+       "lugege!",
+       "loe! loeks"
+      ],
+      "means": {
+       "en": "at it · read! · would",
+       "az": "oxumaqda · oxuyun! · şərt",
+       "ru": "в процессе · читайте! · бы"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "say": {
+    "en": "And the fourth is the *-takse* form, which hands on its own no, past and perfect: *õpitakse, ei õpita, õpiti, on õpitud*. Look at *õppi-* against *õpi-*, and *luge-* against *loe-*: the stem is strong in some forms and weak in others, which is the whole reason the card makes you learn three forms rather than one.",
+    "az": "Dördüncüsü *-takse* formasıdır, o da öz inkarını, keçmişini və bitmiş keçmişini verir: *õpitakse, ei õpita, õpiti, on õpitud*. *õppi-* ilə *õpi-*, *luge-* ilə *loe-* fərqinə baxın: kök bəzi formalarda güclü, bəzilərində zəifdir, və kartın sizə bir yox, üç forma öyrətməsinin bütün səbəbi budur.",
+    "ru": "А четвёртая — форма на *-takse*, которая даёт своё отрицание, прошедшее и перфект: *õpitakse, ei õpita, õpiti, on õpitud*. Сравните *õppi-* и *õpi-*, *luge-* и *loe-*: основа в одних формах сильная, в других слабая, и именно поэтому карточка заставляет учить три формы, а не одну."
+   }
+  },
+  {
+   "examples": [
+    {
+     "et": "Ma õppisin eile kolm tundi.",
+     "en": "I studied for three hours yesterday.",
+     "az": "Dünən üç saat dərs oxudum.",
+     "ru": "Вчера я занимался три часа."
+    },
+    {
+     "et": "Ta on raamatukogus õppimas.",
+     "en": "She is at the library, studying.",
+     "az": "O, kitabxanada dərs oxuyur.",
+     "ru": "Она в библиотеке, занимается."
+    },
+    {
+     "et": "Lugege tekst läbi!",
+     "en": "Read the text through!",
+     "az": "Mətni axıra qədər oxuyun!",
+     "ru": "Прочитайте текст!"
+    },
+    {
+     "et": "Ma loeksin, aga mul pole aega.",
+     "en": "I would read, but I have no time.",
+     "az": "Oxuyardım, amma vaxtım yoxdur.",
+     "ru": "Я бы почитал, но у меня нет времени."
+    },
+    {
+     "et": "Seda raamatut loetakse palju.",
+     "en": "This book is read a lot.",
+     "az": "Bu kitab çox oxunur.",
+     "ru": "Эту книгу много читают."
+    }
+   ]
+  }
+ ]
+}

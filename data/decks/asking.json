@@ -1,0 +1,351 @@
+{
+ "id": "asking",
+ "added": "2026-09-19",
+ "name": {
+  "en": "The question words",
+  "az": "Sual sözləri",
+  "ru": "Вопросительные слова"
+ },
+ "why": {
+  "en": "Who, what, where — and the little word that makes a yes-or-no question",
+  "az": "Kim, nə, harada — və bəli-xeyr sualını düzəldən söz",
+  "ru": "Кто, что, где — и словечко, которое делает вопрос «да или нет»"
+ },
+ "taste": "Kui palju?",
+ "level": "start",
+ "cards": [
+  {
+   "id": "kas",
+   "front": "Kas?",
+   "back": {
+    "en": "The word that opens a yes-or-no question",
+    "az": "Bəli-xeyr sualının sözü",
+    "ru": "Ли, разве — слово вопроса «да или нет»"
+   },
+   "sentence": {
+    "et": "Kas siin on vaba?",
+    "en": "Is this seat free?",
+    "az": "Burada boşdur?",
+    "ru": "Здесь свободно?"
+   }
+  },
+  {
+   "id": "kes",
+   "front": "Kes?",
+   "back": {
+    "en": "Who?",
+    "az": "Kim?",
+    "ru": "Кто?"
+   },
+   "sentence": {
+    "et": "Kes seal on?",
+    "en": "Who is there?",
+    "az": "Orada kimdir?",
+    "ru": "Кто там?"
+   }
+  },
+  {
+   "id": "mis",
+   "front": "Mis?",
+   "back": {
+    "en": "What?",
+    "az": "Nə?",
+    "ru": "Что?"
+   },
+   "sentence": {
+    "et": "Mis see on?",
+    "en": "What is that?",
+    "az": "Bu nədir?",
+    "ru": "Что это?"
+   }
+  },
+  {
+   "id": "mida",
+   "front": "Mida?",
+   "back": {
+    "en": "What? — as the object of a verb",
+    "az": "Nəyi?",
+    "ru": "Что? (кого, чего)"
+   },
+   "sentence": {
+    "et": "Mida sa jood?",
+    "en": "What are you drinking?",
+    "az": "Nə içirsən?",
+    "ru": "Что ты пьёшь?"
+   }
+  },
+  {
+   "id": "keda",
+   "front": "Keda?",
+   "back": {
+    "en": "Whom?",
+    "az": "Kimi?",
+    "ru": "Кого?"
+   },
+   "sentence": {
+    "et": "Keda sa ootad?",
+    "en": "Who are you waiting for?",
+    "az": "Kimi gözləyirsən?",
+    "ru": "Кого ты ждёшь?"
+   }
+  },
+  {
+   "id": "kelle",
+   "front": "Kelle?",
+   "back": {
+    "en": "Whose?",
+    "az": "Kimin?",
+    "ru": "Чей?"
+   },
+   "sentence": {
+    "et": "Kelle kott see on?",
+    "en": "Whose bag is this?",
+    "az": "Bu kimin çantasıdır?",
+    "ru": "Чья это сумка?"
+   }
+  },
+  {
+   "id": "kellel-on",
+   "front": "Kellel on?",
+   "back": {
+    "en": "Who has?",
+    "az": "Kimdə var?",
+    "ru": "У кого есть?"
+   },
+   "sentence": {
+    "et": "Kellel on võti?",
+    "en": "Who has the key?",
+    "az": "Açar kimdədir?",
+    "ru": "У кого ключ?"
+   }
+  },
+  {
+   "id": "kellele-meeldib",
+   "front": "Kellele meeldib?",
+   "back": {
+    "en": "Who likes it?",
+    "az": "Kimin xoşuna gəlir?",
+    "ru": "Кому нравится?"
+   },
+   "sentence": {
+    "et": "Kellele meeldib kohv?",
+    "en": "Who likes coffee?",
+    "az": "Qəhvə kimin xoşuna gəlir?",
+    "ru": "Кому нравится кофе?"
+   }
+  },
+  {
+   "id": "mille",
+   "front": "Mille?",
+   "back": {
+    "en": "Of what?",
+    "az": "Nəyin?",
+    "ru": "Чего?"
+   },
+   "sentence": {
+    "et": "Mille hind see on?",
+    "en": "This is the price of what?",
+    "az": "Bu nəyin qiymətidir?",
+    "ru": "Это цена чего?"
+   }
+  },
+  {
+   "id": "kus",
+   "front": "Kus?",
+   "back": {
+    "en": "Where?",
+    "az": "Harada?",
+    "ru": "Где?"
+   },
+   "sentence": {
+    "et": "Kus on peatus?",
+    "en": "Where is the stop?",
+    "az": "Dayanacaq haradadır?",
+    "ru": "Где остановка?"
+   }
+  },
+  {
+   "id": "kust",
+   "front": "Kust?",
+   "back": {
+    "en": "From where?",
+    "az": "Haradan?",
+    "ru": "Откуда?"
+   },
+   "sentence": {
+    "et": "Kust sa tuled?",
+    "en": "Where are you coming from?",
+    "az": "Haradan gəlirsən?",
+    "ru": "Откуда ты идёшь?"
+   }
+  },
+  {
+   "id": "mitu",
+   "front": "Mitu?",
+   "back": {
+    "en": "How many?",
+    "az": "Neçə?",
+    "ru": "Сколько?"
+   },
+   "sentence": {
+    "et": "Mitu inimest te olete?",
+    "en": "How many of you are there?",
+    "az": "Neçə nəfərsiniz?",
+    "ru": "Сколько вас человек?"
+   }
+  },
+  {
+   "id": "kuhu",
+   "front": "Kuhu?",
+   "back": {
+    "en": "To where?",
+    "az": "Hara?",
+    "ru": "Куда?"
+   },
+   "sentence": {
+    "et": "Kuhu see buss läheb?",
+    "en": "Where does this bus go?",
+    "az": "Bu avtobus hara gedir?",
+    "ru": "Куда идёт этот автобус?"
+   }
+  },
+  {
+   "id": "kuidas",
+   "front": "Kuidas?",
+   "back": {
+    "en": "How?",
+    "az": "necə?",
+    "ru": "как?"
+   },
+   "sentence": {
+    "et": "Kuidas seda öelda?",
+    "en": "How do you say this?",
+    "az": "Bunu necə demək olar?",
+    "ru": "Как это сказать?"
+   }
+  },
+  {
+   "id": "milline",
+   "front": "Milline?",
+   "back": {
+    "en": "Which? What kind of?",
+    "az": "hansı?",
+    "ru": "какой?"
+   },
+   "sentence": {
+    "et": "Milline film see on?",
+    "en": "What kind of film is this?",
+    "az": "Bu hansı filmdir?",
+    "ru": "Что это за фильм?"
+   }
+  },
+  {
+   "id": "kui-palju",
+   "front": "Kui palju?",
+   "back": {
+    "en": "How much?",
+    "az": "nə qədər?",
+    "ru": "сколько?"
+   },
+   "sentence": {
+    "et": "Kui palju me võlgneme?",
+    "en": "How much do we owe?",
+    "az": "Nə qədər borcumuz var?",
+    "ru": "Сколько мы должны?"
+   }
+  },
+  {
+   "id": "millega",
+   "front": "Millega?",
+   "back": {
+    "en": "With what? By what?",
+    "az": "nə ilə?",
+    "ru": "чем? на чём?"
+   },
+   "sentence": {
+    "et": "Millega sa tuled?",
+    "en": "What are you coming by?",
+    "az": "Nə ilə gəlirsən?",
+    "ru": "На чём ты приедешь?"
+   }
+  },
+  {
+   "id": "kellega",
+   "front": "Kellega?",
+   "back": {
+    "en": "With whom?",
+    "az": "kiminlə?",
+    "ru": "с кем?"
+   },
+   "sentence": {
+    "et": "Kellega sa räägid?",
+    "en": "Who are you talking to?",
+    "az": "Kiminlə danışırsan?",
+    "ru": "С кем ты разговариваешь?"
+   }
+  },
+  {
+   "id": "mitmendal",
+   "front": "Mitmendal?",
+   "back": {
+    "en": "On which one? (floor, date)",
+    "az": "Neçəncidə?",
+    "ru": "На каком?"
+   }
+  },
+  {
+   "id": "kumba",
+   "front": "Kumba?",
+   "back": {
+    "en": "Which of the two?",
+    "az": "Hansını?",
+    "ru": "Который из двух?"
+   }
+  },
+  {
+   "id": "kui-kaua",
+   "front": "Kui kaua?",
+   "back": {
+    "en": "For how long?",
+    "az": "Nə qədər müddətə?",
+    "ru": "Как долго?"
+   }
+  },
+  {
+   "id": "kui-suur",
+   "front": "Kui suur?",
+   "back": {
+    "en": "How big?",
+    "az": "Nə boyda?",
+    "ru": "Какой величины?"
+   }
+  },
+  {
+   "id": "mis-aastal",
+   "front": "Mis aastal?",
+   "back": {
+    "en": "In what year?",
+    "az": "Hansı ildə?",
+    "ru": "В каком году?"
+   }
+  },
+  {
+   "id": "mis-kellani",
+   "front": "Mis kellani?",
+   "back": {
+    "en": "Until what time?",
+    "az": "Saat neçəyə qədər?",
+    "ru": "До скольки?"
+   }
+  },
+  {
+   "id": "mis-juhtus",
+   "front": "Mis juhtus?",
+   "back": {
+    "en": "What happened?",
+    "az": "Nə oldu?",
+    "ru": "Что случилось?"
+   }
+  }
+ ]
+}
