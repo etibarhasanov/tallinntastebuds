@@ -53,8 +53,14 @@
  * `/lists.html` stays noindex — it is your own lists, and signed out there is
  * nothing on it. That header is in `_headers`.
  *
- * And nothing here is cached, indexable or not. See page() in
- * functions/_shell.js, which is where the response itself is built.
+ * And nothing here is cached for anybody signed in, indexable or not. See
+ * page() in functions/_shell.js, which is where the response itself is
+ * built. For everybody else — a crawler, a stranger opening a link — a copy
+ * of a public list is kept in the colo under its address for PAGE_TTL, a
+ * minute, stamped with the deployment: KEPT IN THE COLO in the same file is
+ * the mechanism and the argument. A private list is served only to its
+ * owner's session, which is never the visit a copy is kept from, so the
+ * copy can only ever be of a page anybody could have opened.
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
@@ -64,7 +70,10 @@ import { readList, LIST_ID } from '../api/_lists.js';
    functions/lists/index.js with everybody's lists in it, functions/u/[name].js
    with one person's. See functions/_shell.js for why they are not written out
    three times. */
-import { canonical, esc, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
+import {
+  canonical, esc, head, shell, sow, rehead, fill, EMPTY, page,
+  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
+} from '../_shell.js';
 
 /* The line under the title in a preview card. Their own if they wrote one,
    and otherwise a plain statement of what the link holds.
@@ -107,6 +116,23 @@ function prose(list) {
 export async function onRequest(context) {
   const { request, env, params } = context;
 
+  const id = String(params.id || '');
+
+  /* The copy this colo holds for whoever is not signed in — see the header.
+     Asked only for an id shaped like a list, so a stranger's typo is not a
+     key; a stamp that cannot be read is the page served the way it was
+     before any copy was kept. */
+  let key = null;
+  if (LIST_ID.test(id) && !signedIn(request)) {
+    try {
+      key = coloKey(canonical(request, '/list/' + id), await deployStamp(context, ['/lists.html']));
+      const hit = await fromColo(request, key, PRIVATELY);
+      if (hit) return hit;
+    } catch (e) {
+      key = null;
+    }
+  }
+
   let html;
   try {
     html = await shell(context, '/lists.html');
@@ -116,8 +142,6 @@ export async function onRequest(context) {
        answer for it. */
     return new Response('Not found', { status: 404 });
   }
-
-  const id = String(params.id || '');
 
   if (!LIST_ID.test(id)) return page(html, 404);
   if (!env.DB || (await wrongDatabase(env))) return page(html, 200);
@@ -162,6 +186,8 @@ export async function onRequest(context) {
 
   /* Indexable only if it is public. A private list reaches this line only
      when its own owner asked for it, and their session is not a crawler —
-     but the header says the true thing rather than relying on that. */
-  return page(html, 200, list.public);
+     but the header says the true thing rather than relying on that. Kept in
+     the colo only where nobody was signed in, which is the same line. */
+  const res = page(html, 200, list.public);
+  return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;
 }

@@ -123,7 +123,7 @@ import { DECK_LANGS } from '../functions/api/_lib.js';
 import { EMPTY } from '../functions/_shell.js';
 /* What the map's route tells a browser about caching, which `_headers` has to
    say for the static file at / too. */
-import { REVALIDATE } from '../functions/index.js';
+import { REVALIDATE } from '../functions/_shell.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1993,10 +1993,11 @@ if (wrangler) {
   }
 
   /* And the map's cache rule, which the same file spells for the static page
-     and functions/index.js spells again for the copy it keeps in the colo:
-     the route hands the browser REVALIDATE whatever `_headers` says, so the
-     two had better say the same, or the page would cache one way when the
-     route answers and another when it hands the request back. */
+     and functions/_shell.js spells again for the copy functions/index.js
+     keeps in the colo: the route hands the browser REVALIDATE whatever
+     `_headers` says, so the two had better say the same, or the page would
+     cache one way when the route answers and another when it hands the
+     request back. */
   const rules = {};
   let at = '';
   for (const line of text.split('\n')) {
@@ -2006,7 +2007,7 @@ if (wrangler) {
   }
   for (const path of ['/', '/index.html']) {
     if (rules[path] === undefined) fail(where, `${path} has no Cache-Control — functions/index.js tells the browser ${REVALIDATE}, and the static page would say nothing`);
-    else if (rules[path] !== REVALIDATE) fail(where, `${path} says Cache-Control: ${rules[path]}, where REVALIDATE in functions/index.js says ${REVALIDATE}`);
+    else if (rules[path] !== REVALIDATE) fail(where, `${path} says Cache-Control: ${rules[path]}, where REVALIDATE in functions/_shell.js says ${REVALIDATE}`);
   }
 }
 

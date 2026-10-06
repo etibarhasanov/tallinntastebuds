@@ -59,6 +59,21 @@
  * crawler that reads only the index finds those too; /blog/sitemap is the
  * rest of them, every published post's address — functions/blog/sitemap.js.
  *
+ * KEPT IN THE COLO
+ *
+ * Nothing on this page is anybody's in particular — the route reads no
+ * session, a draft is nobody's to read here and a member's post is read in
+ * the language it was written in whoever is asking — so one copy of each
+ * address answers everybody, signed in or not, for PAGE_TTL, a minute, and
+ * is stamped with the deployment. The key is the address with ?post= or ?by=
+ * on it and nothing else. KEPT IN THE COLO in functions/_shell.js is the
+ * mechanism; what is this file's is the files the copy is stamped with —
+ * the page, the house's posts, and data/map.json, which names the places a
+ * member's cards point at — and that a copy is kept for everybody. The
+ * script draws the page over the text either way, so what a minute of
+ * staleness can reach is the head and the text a crawler reads, never what
+ * a person sees.
+ *
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * The untouched page, and assets/blog.js draws it as it always has. A missing
@@ -69,7 +84,10 @@
  * before anybody else could write in it.
  */
 
-import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
+import {
+  canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE,
+  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo
+} from './_shell.js';
 import { dataFile, wrongDatabase, venuesByIds } from './api/_lib.js';
 import { POST_ID, readPage, readPost, postsReady, pickText, bodyHtml, plainText } from './api/_posts.js';
 import { asUsername } from './api/_account.js';
@@ -78,6 +96,9 @@ const PATH = '/blog';
 const FILE = '/blog.html';
 const POSTS_FILE = '/data/blog.json';
 const DEFAULT_LANG = 'en';
+
+/* What a copy in the colo is stamped with — KEPT IN THE COLO in the header. */
+const RENDERED_FROM = [FILE, POSTS_FILE, '/data/map.json'];
 
 /* What the index calls itself and says about itself, which is also what the
    static head of blog.html says: this route writes the same words over them,
@@ -294,10 +315,13 @@ async function listsOf(env, blocks) {
   return out;
 }
 
+/* One member's post, or null where the id names none that is published —
+   which is not a page worth filing, and the caller answers it the way it
+   answers a house post that is not there. */
 async function memberPage(context, html, db, asked) {
   const { request } = context;
   const post = await readPost(db, asked, null).catch(() => null);
-  if (!post) return page(html, 200, false);
+  if (!post) return null;
 
   const text = firstText(post);
   const tags = head({
@@ -428,8 +452,31 @@ function structuredData(request, posts, post) {
   };
 }
 
+/* The copy's address: the blog, or one post, or one person's posts — the
+   three things this route answers with — and nothing else off the query. */
+function blogKey(request, query, stamp) {
+  const url = new URL(canonical(request, PATH));
+  if (query.get('post')) url.searchParams.set('post', query.get('post'));
+  else if (query.get('by')) url.searchParams.set('by', query.get('by'));
+  return coloKey(url.toString(), stamp);
+}
+
 export async function onRequest(context) {
   const { request } = context;
+  const query = new URL(request.url).searchParams;
+
+  /* The copy this colo holds, if it does — KEPT IN THE COLO in the header. A
+     stamp that cannot be read is a page served the way it was before any
+     copy was kept, the same as the shell below being unreadable. */
+  let key = null;
+  try {
+    key = blogKey(request, query, await deployStamp(context, RENDERED_FROM));
+    const hit = await fromColo(request, key, PRIVATELY);
+    if (hit) return hit;
+  } catch (e) {
+    key = null;
+  }
+  const keep = (res) => (key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res);
 
   let html;
   try {
@@ -439,19 +486,21 @@ export async function onRequest(context) {
   }
 
   const posts = await postsOf(context);
-  const query = new URL(request.url).searchParams;
   const asked = query.get('post');
   const post = asked && WRITTEN.test(asked) ? posts.find((p) => p.id === asked) || null : null;
 
   const db = await members(context.env);
-  if (db && !post && asked && POST_ID.test(asked)) return memberPage(context, html, db, asked);
-  if (db && !asked && query.get('by')) return authorPage(context, html, db, query.get('by'));
+  if (db && !post && asked && POST_ID.test(asked)) {
+    const made = await memberPage(context, html, db, asked);
+    return made ? keep(made) : page(html, 200, false);
+  }
+  if (db && !asked && query.get('by')) return keep(await authorPage(context, html, db, query.get('by')));
 
   if (!posts.length) return page(html, 200, true);
 
   /* A ?post= that names nothing: the page draws the index with a sentence
      over it saying the post is not here any more, and that is not a page
-     worth filing under this address. */
+     worth filing under this address — nor one worth keeping a copy of. */
   if (asked && !post) return page(html, 200, false);
 
   const tags = post
@@ -476,5 +525,5 @@ export async function onRequest(context) {
     seed(structuredData(request, posts, post)) + '</script>';
 
   const newest = !post && db ? (await readPage(db, "p.status = 'published'", [], null).catch(() => ({ posts: [] }))).posts : [];
-  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], post ? postWords(post, posts) : indexWords(posts, newest)), 200, true);
+  return keep(page(fill(rehead(html, said), EMPTY[FILE.slice(1)], post ? postWords(post, posts) : indexWords(posts, newest)), 200, true));
 }

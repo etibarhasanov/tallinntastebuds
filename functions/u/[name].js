@@ -79,6 +79,14 @@
  * in sitemap.xml — tools/sitemap.mjs says why that is the one kind of profile
  * the repository can know about.
  *
+ * KEPT IN THE COLO, FOR WHOEVER IS NOT SIGNED IN
+ *
+ * The one thing seeded here that is the visitor's own is their username in
+ * the header, so a copy is kept only where nobody was signed in — under the
+ * address with the name lowercased, since /u/KATE and /u/kate are one page —
+ * for PAGE_TTL, a minute, stamped with the deployment. KEPT IN THE COLO in
+ * functions/_shell.js is the mechanism and the argument.
+ *
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * Every failure ends the same way as it does for a list: the untouched page,
@@ -89,7 +97,10 @@
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, NETWORKS, linkUrl } from '../api/_profile.js';
 import { asUsername } from '../api/_account.js';
-import { canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page } from '../_shell.js';
+import {
+  canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page,
+  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
+} from '../_shell.js';
 
 /* The words of a line, without the pictures. Surrogate pairs are every
    character above the basic plane, which is where the emoji, the flags and
@@ -261,6 +272,33 @@ function rowsAsText(rows) {
 export async function onRequest(context) {
   const { request, env, params } = context;
 
+  /* Decoded here, because the router hands the segment over as it stood in
+     the address: a name may carry a letter outside ASCII now, and on the
+     wire that is %C3%BC until something turns it back into the ü. A segment
+     that will not decode was never a name. */
+  let name = null;
+  try {
+    name = decodeURIComponent(String(params.name || ''));
+  } catch (e) {
+    name = null;
+  }
+
+  /* The copy this colo holds for whoever is not signed in — see the header.
+     Asked only for something shaped like a name, so a typo is not a key; a
+     stamp that cannot be read is the page served the way it was before any
+     copy was kept. */
+  let key = null;
+  if (name && asUsername(name) && !signedIn(request)) {
+    try {
+      key = coloKey(canonical(request, '/u/' + encodeURIComponent(name.toLowerCase())),
+        await deployStamp(context, ['/lists.html']));
+      const hit = await fromColo(request, key, PRIVATELY);
+      if (hit) return hit;
+    } catch (e) {
+      key = null;
+    }
+  }
+
   let html;
   try {
     html = await shell(context, '/lists.html');
@@ -271,18 +309,7 @@ export async function onRequest(context) {
     return new Response('Not found', { status: 404 });
   }
 
-  /* Decoded here, because the router hands the segment over as it stood in
-     the address: a name may carry a letter outside ASCII now, and on the
-     wire that is %C3%BC until something turns it back into the ü. A segment
-     that will not decode was never a name. */
-  let name;
-  try {
-    name = decodeURIComponent(String(params.name || ''));
-  } catch (e) {
-    return page(html, 404);
-  }
-
-  if (!asUsername(name)) return page(html, 404);
+  if (name === null || !asUsername(name)) return page(html, 404);
   if (!env.DB || (await wrongDatabase(env))) return page(html, 200);
 
   let profile;
@@ -364,5 +391,7 @@ export async function onRequest(context) {
     profile: profile
   });
 
-  return page(html, 200, indexable);
+  /* Kept in the colo only where nobody was signed in — see the header. */
+  const res = page(html, 200, indexable);
+  return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;
 }
