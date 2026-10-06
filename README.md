@@ -9900,9 +9900,14 @@ form with the little word in front, *alla anda*, and the present with it
 behind, *annan alla*, because the word moving to the end is the whole thing a
 learner has to be shown and the card is the place to show it. The ones that
 nobody does in the first person keep the third, for the reason *sadama* does:
-*tuleb ette*, *jääb ära*, *saab otsa*. No sentences under them yet, and
-*vastu ajama* — to do, to be good enough — is the one gloss I am least sure
-of.
+*tuleb ette*, *jääb ära*, *saab otsa*. Every one carries a sentence, and
+here a sentence is worth more than anywhere else on the shelf: the gloss says
+what *otsa saama* means, and only *Piim sai otsa* shows the little word
+standing at the far end of a clause from its verb, which is where a learner
+will actually meet it. They are short and they are the city's — the bus, the
+shop, the counter — and like the rest they are mine, not a native speaker's.
+*Vastu ajama* — to do, to be good enough, *Vana jope ajab veel vastu* — is the
+one I am least sure of.
 
 ### And the word in a sentence
 
@@ -9918,8 +9923,8 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **861 of the 2,174 cards** carry
-one: every card in the twenty-three newer decks and in **Family and relatives**
+would be a stray clause with no translation. **986 of the 2,174 cards** carry
+one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
 bar the ones that are a whole sentence already, every card in the songs' decks —
 where the sentence is the line the word is sung in — and the ones in the older
 decks where an example says something the gloss does not. The words the course
