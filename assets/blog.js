@@ -564,8 +564,9 @@
   }
 
   /* A member's post read, for its author: one row in press_counts under
-     `post`, drawn back to them under Your posts on /insights and nowhere
-     else — functions/api/stats.js holds the kind and postViews() in
+     `post`, drawn back to them under Your posts on /insights and to the
+     site's owner on /admin/stats, and to nobody else —
+     functions/api/stats.js holds the kind and postViews() in
      functions/api/_visits.js reads it. Once a day per reader, the rule a
      list keeps, and under the same key in localStorage as assets/lists.js
      keeps its own, `post:<id>` beside `list:<id>`; view_seen on the server

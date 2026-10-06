@@ -124,8 +124,9 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --   'post'     a member's post read on the blog, once a day per reader and
 --              never by its author. The id is a posts.id. Read by postViews()
 --              in functions/api/_visits.js and drawn back to the author on
---              /insights and nowhere else; a post taken back to draft keeps
---              its count and stops growing, the way a private list does.
+--              /insights, and drawn to the site's owner on /admin/stats; a
+--              post taken back to draft keeps its count and stops growing,
+--              the way a private list does.
 --   'rail'     a pill on the rail down the left of the map pressed, every
 --              press rather than once a load. The id is one of the nine in
 --              RAIL_PILLS in functions/api/stats.js — account, lists, flash,

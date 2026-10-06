@@ -1,6 +1,6 @@
 /* Tallinn Tastebuds — /admin/stats, what gets pressed on this site.
  *
- * Five tables, and the first one is the page. The map's own places, every one
+ * Six tables, and the first one is the page. The map's own places, every one
  * of them, most opened at the top and least opened at the bottom — both ends
  * are the answer, which is why it is the whole ranking rather than a top ten
  * — each saying under its name how many people saved it, where anybody has.
@@ -11,7 +11,9 @@
  * argues about what earns a slot on it. Then every list anybody has opened,
  * whose it is beside the title and the countries it was opened from on a
  * line under it — the number /lists orders by and never prints, drawn here
- * for the owner alone. Under all five, what the site holds — nine counts of
+ * for the owner alone. Then every member's post anybody has read on the
+ * blog, its author beside the title — the number its author reads on
+ * /insights. Under all six, what the site holds — nine counts of
  * its tables, accounts to decks, which are not presses at all — and a
  * footnote of how many opens have been counted. How many strangers got each
  * of the map's two rails, and how many of them opened a place with it, is on
@@ -19,11 +21,12 @@
  *
  * WHERE THE NUMBERS COME FROM
  *
- * Pressing something posts to /api/stats, from four places: selectPlace() in
+ * Pressing something posts to /api/stats, from five places: selectPlace() in
  * assets/app.js opens a place on the map — one of its own, or one of Google's
  * the find bar put there — applyFilters() in the same file turns a chip on,
  * countRailPress() in the same file again presses a pill on the rail, and
- * countOpen() in assets/lists.js opens a list. A card pressed on the
+ * countOpen() in assets/lists.js opens a list, and countRead() in
+ * assets/blog.js reads a member's post. A card pressed on the
  * directory is not among them: only the owner can open that page, and
  * functions/api/stats.js says what it asks for instead. The first two
  * are counted once per page load, the way TTBTrack.view() reports one page
@@ -33,7 +36,8 @@
  * is there to answer. A list is counted once a day per visitor and never for
  * its owner — the rules /insights keeps, in functions/api/_visits.js — and
  * the same open is filed under the country it came from, which is what the
- * line under a list is made of. This page only reads. See **Statistics** in
+ * line under a list is made of. A post read keeps the list's rules, without
+ * the countries. This page only reads. See **Statistics** in
  * README.md for what the numbers do and do not mean.
  *
  * assets/country.js names a country and draws the line of them under a
@@ -85,7 +89,8 @@
     venues: [],
     filters: [],
     rail: [],
-    lists: []   // [{ id, name, by, public, n, country }], most opened first
+    lists: [],  // [{ id, name, by, public, n, country }], most opened first
+    posts: []   // [{ id, name, by, draft, n }], members' posts, most read first
   };
 
   var main = null;
@@ -237,6 +242,9 @@
         place.public === false
           ? el('span', { className: 'stats-shut', textContent: t('listsWhoPrivate') })
           : null,
+        place.draft
+          ? el('span', { className: 'stats-shut', textContent: t('writeDraft') })
+          : null,
         place.country && place.country.length
           ? el('span', { className: 'stats-where', textContent: countryLine(place.country) })
           : null,
@@ -325,6 +333,10 @@
 
   function page(list) {
     return '/list/' + encodeURIComponent(list.id);
+  }
+
+  function post(p) {
+    return '/blog?post=' + encodeURIComponent(p.id);
   }
 
   /* What the site holds — WHAT THE SITE HOLDS in
@@ -425,6 +437,13 @@
       stack.appendChild(lists);
     }
 
+    /* And the posts members wrote, under the lists: the other table about
+       something a member made, the same row with the author after the
+       title. Absent rather than empty, like the lists. */
+    if (state.posts.length) {
+      stack.appendChild(table('profilePosts', 'statsPostsLead', state.posts, post));
+    }
+
     /* What the site holds, and then the page's footnote about itself: both
        under the tables rather than over them, because nobody opens a ranking
        to read a total first. The footnote is every open counted — places
@@ -500,6 +519,7 @@
         state.filters = out.filters || [];
         state.rail = out.rail || [];
         state.lists = out.lists || [];
+        state.posts = out.posts || [];
         state.device = out.device || '';
 
         var url = new URL(window.location.href);

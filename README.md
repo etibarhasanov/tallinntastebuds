@@ -7819,8 +7819,9 @@ they pressed — over the last 7, 28 or 90 days or all of it — and under that,
 how often each of your lists has been opened, and from which countries, and
 how often each of your posts on the blog has been read. It is read by
 the owner of the page and by nobody else; nothing about it is printed on the
-profile, on `/admin/stats` or anywhere a stranger can see, and the route has no way
-to ask about anybody but yourself. The door to it is a row on the account
+profile or anywhere a stranger can see — only the lists' and the posts'
+numbers are on `/admin/stats` as well, for the site's owner — and the route
+has no way to ask about anybody but yourself. The door to it is a row on the account
 page's first card, beside **Your public profile** and **Build your page**,
 and that row's second line is the one number worth having without opening
 it: *46 views in the last 7 days*.
@@ -11721,9 +11722,10 @@ and opens one in the editor at `/write?post=<id>` (`?post=new` for one that
 has never been saved). Every member has a blog of their own the moment they
 publish: `/blog?by=<name>`, everything they published under their name, which
 `/write` links as **Your blog** and their profile links under their posts.
-How often each of their published posts has been read is theirs to see and
-nobody else's, under **Your posts** on `/insights` — once a day per reader,
-never their own reads — and **Insights** under **Profiles** is the whole of it.
+How often each of their published posts has been read is theirs to see,
+under **Your posts** on `/insights` — once a day per reader, never their own
+reads — and the site's owner's on `/admin/stats`, and nobody else's;
+**Insights** under **Profiles** is the whole of it.
 
 ```
 /write                     your posts, a page at a time, and New post
@@ -12372,13 +12374,14 @@ The map says where to eat, the blog says why the site works the way it does,
 the feedback page listens; this is the one that counts.
 
 One page, the frame every page that is not the map wears — the brand header,
-the 640px column, the cards — and five tables. Two facts at the top, **Most
+the 640px column, the cards — and six tables. Two facts at the top, **Most
 opened** and **Least opened**, then every place on the map ranked with the
 zeros in it and how many people saved each, then the Google venues somebody
 has opened on the map, then all fourteen
 filter chips, then the nine pills across the rail's two shapes, then every
 list anybody has opened with where they opened it from — see **Which lists,
-and from where** below — then what the site holds, nine counts of its
+and from where** below — then every member's post anybody has read — see
+**Which posts** below — then what the site holds, nine counts of its
 tables from the accounts to the decks people made, and a footnote under all
 of it, every open counted — see **What the site holds** below. How many strangers got each of the
 map's two rails and how many of them opened a place with it used to be two
@@ -12698,6 +12701,23 @@ reads for both pages. It arrived after the count did, so a list opened
 before it has a line that adds up to less than its number, or none, and the
 sentence under the table says so where it is true. A database without the
 table draws the lists with their numbers and no lines.
+
+### Which posts
+
+The sixth table is the lists' again for the blog: every post a member wrote
+that somebody has read, most read first, capped at fifty, the title in the
+reading language where the post is written in it and the one it was first
+written in where it is not, the author's name after it leading to their
+page. The number is the one its author reads under **Your posts** on
+`/insights` — **Insights** under **Profiles** says what counts as a read: a
+published post drawn on `/blog`, once a day per reader, never by its author
+— and the same table holds it, `press_counts` under `post`, so there is no
+line of countries under a post the way there is under a list. A post taken
+back to draft since keeps the number it had, stops growing, and is marked
+**Draft**; one deleted since is dropped, its count staying in the table. The
+house's own posts are not in it: they are counted by the day under `about`
+and read under **What was opened** on `/admin/visitors`, and the sentence
+over the table says where they are.
 
 ### What it does not do yet
 

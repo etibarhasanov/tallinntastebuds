@@ -34,7 +34,7 @@ must keep, and where this area has gone wrong.
 - `README.md` → the section for the page you are changing, and only that
   one. `grep -n '^## ' README.md` finds them:
   - **Statistics** — `/admin/stats`: which places, chips, pills and lists
-    get opened, and the nine counts of what the site holds. **It counts
+    get opened, which members' posts get read, and the nine counts of what the site holds. **It counts
     opens, and an open is a gesture** and **A count and not a log** are the
     two arguments every change here is held to.
   - **Visitors** — `/admin/visitors`: who came, from where, on what, for
@@ -76,7 +76,7 @@ One write route, five read routes, five pages, nine tables.
 
 | The owner reads | at | from | written by | into |
 |---|---|---|---|---|
-| which places, chips, pills and lists get opened; what the site holds | `admin/stats.html` + `assets/stats.js` | `GET /api/admin/stats` (`functions/api/admin/stats.js`) | `POST /api/stats` (`functions/api/stats.js`), one upsert per press | `press_counts` (kind, id, n) — no day in it; `list_counts` by day and country through `countListOpen()` in `_visits.js`; `save_counts` for the saves column; nine `COUNT(*)`s in `HELD` |
+| which places, chips, pills and lists get opened and which members' posts get read; what the site holds | `admin/stats.html` + `assets/stats.js` | `GET /api/admin/stats` (`functions/api/admin/stats.js`) | `POST /api/stats` (`functions/api/stats.js`), one upsert per press | `press_counts` (kind, id, n) — no day in it; `list_counts` by day and country through `countListOpen()` in `_visits.js`; `save_counts` for the saves column; nine `COUNT(*)`s in `HELD` |
 | who came and what they did | `admin/visitors.html` + `assets/visitors.js` | `GET /api/admin/visitors` (`readVisitors()` in `_visitors.js`) and `GET /api/admin/live` (`readLive()`) | `countArrive()` and `countLeave()` in `_visitors.js`, handed `arrive` and `leave` by `stats.js`; `countAsk()` from `ask.js`; `countSignup()` from `google.js`; `countUse()` from the write routes of saves, lists, flashcards, splitwise and chess | `visitor_counts` (day, kind, id, n); `visitor_live` (a ring of sixty minutes); `usage_people` (week, product, key) |
 | how they found it | `admin/found.html` + `assets/found.js` | `GET /api/admin/found` (`readFound()`) | the same `countArrive()` and `countLeave()`, the kinds `FOUND` lists | `visitor_counts`, the kinds `from`, `found`, `ref`, `tag`, `search`, `nothing` |
 | who uses the site, drawn | `admin/flows.html` + `assets/flows.js` | `GET /api/admin/flows` (`readFlows()` in `_flows.js`) | `countFlows()` in `_flows.js`, called beside `countLeave()` for every `leave` | `flow_counts` (flow, day, who, id, n) |
@@ -104,7 +104,7 @@ counted in one place:
 | `look` | `LOOK_IDS` | `stats.js` | `press_counts` |
 | `style` | `STYLE_IDS` | `stats.js` | `press_counts` |
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
-| `post` | a published member's post not the caller's own, then `firstToday()` | `stats.js` | `press_counts`, read back by `postViews()` in `_visits.js` on `/insights` |
+| `post` | a published member's post not the caller's own, then `firstToday()` | `stats.js` | `press_counts`, read back by `postViews()` in `_visits.js` on `/insights` and by `read()` in `api/admin/stats.js` on `/admin/stats` |
 | `profile`, `profile-press` | the owner's own page | `countView()`, `countPress()` in `_visits.js` | `profile_counts` |
 | `arrive`, `leave` | every field, in `_visitors.js` | `countArrive()`, `countLeave()` + `countFlows()` | `visitor_counts`, `visitor_live`, `flow_counts` |
 | `venue` | nothing | nobody — it only asks `refreshOnOpen()`; sent by the directory, and by the map for a place the owner's browser opens | — |

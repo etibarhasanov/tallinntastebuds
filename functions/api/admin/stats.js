@@ -27,7 +27,7 @@
  * next person to ask. See privately() in ../_lib.js, which the three cached
  * routes under /api/admin/ share.
  *
- * THE MAP IS THE RANKING AND THE OTHER FOUR ARE FOOTNOTES
+ * THE MAP IS THE RANKING AND THE OTHER FIVE ARE FOOTNOTES
  *
  * The answer carries the map's own places in full, zeros included, because
  * those are the places this site is about and the bottom of that list is as
@@ -44,7 +44,12 @@
  * only the ones somebody has opened, capped at LISTS, each with the
  * countries it was opened from: the number a stranger never sees — the one
  * that orders /lists, **Public lists** in README.md — drawn here for the
- * owner alone, beside where the readers were.
+ * owner alone, beside where the readers were. And the posts members wrote
+ * are the sixth, the same way: only the ones somebody has read, capped at
+ * POSTS, each with its author — the number its author reads on /insights,
+ * set beside everybody else's. The house's own posts are not among them;
+ * they are counted by the day under `about`, and /admin/visitors is where
+ * they are read.
  *
  * A place on the map or of Google's also carries `saves`, how many people
  * have saved it, out of save_counts — the number the map already keeps per
@@ -81,7 +86,7 @@ import {
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
-import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST } from '../stats.js';
+import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST, POST } from '../stats.js';
 /* The countries under a list, read the way /insights reads them. */
 import { listCountries } from '../_visits.js';
 import { askedDevice } from '../_visitors.js';
@@ -112,6 +117,10 @@ const VENUES = 25;
    every list anybody has opened for a long while yet, and it is also what
    listCountries() in ../_visits.js reads in one statement. */
 const LISTS = 50;
+
+/* And how many posts the sixth, for the same reason, and because three
+   statements of fifty ids each is what the lookup below binds. */
+const POSTS = 50;
 
 /* What the site holds — see the header — as the statement that counts each.
    Feedback taken down is not held any more; a list made private still is. */
@@ -151,7 +160,7 @@ export async function onRequestGet(context) {
 
   const empty = {
     ready: false, opens: 0, held: null,
-    map: [], venues: [], filters: [], rail: [], lists: [], ...words
+    map: [], venues: [], filters: [], rail: [], lists: [], posts: [], ...words
   };
   if (!env.DB) return json(empty, 200);
   /* A deployment holding the other environment's database answers as though it
@@ -263,6 +272,7 @@ export async function onRequestGet(context) {
   const filters = await ranked(context, words, countOf);
   const rail = railed(words, countOf);
   const lists = await opened(env, rows);
+  const posts = await read(env, rows, words.lang);
 
   /* What the site holds — see the header. Each count on its own, so a table
      not applied yet answers 0 and never fails the others or the ranking. */
@@ -274,7 +284,7 @@ export async function onRequestGet(context) {
   const res = json(
     {
       ready: true, opens: opens, held: held,
-      map: map, venues: venues, filters: filters, rail: rail, lists: lists,
+      map: map, venues: venues, filters: filters, rail: rail, lists: lists, posts: posts,
       ...words
     },
     200, TTL
@@ -407,6 +417,70 @@ async function opened(env, rows) {
       country: where ? where.get(row.id) || [] : null
     };
   });
+}
+
+/* Every member's post somebody has read, most read first, capped at POSTS,
+ * each with who wrote it:
+ *
+ *   [{ id, name, by, draft, n }]
+ *
+ * `n` is the running count press_counts keeps under kind 'post' — the rows
+ * are already in hand — and `name` the title in the language the page is
+ * read in where the post is written in it, the one it was first written in
+ * where it is not, the way the blog picks. `draft` is whether it has been
+ * taken back to draft since: it keeps the number it had and stops growing,
+ * and the page marks it, the way /insights does. A post deleted since is
+ * dropped, its count staying in the table because it happened. The posts
+ * not there, or their names not back: an empty table rather than a failed
+ * page, the way the lists answer. */
+async function read(env, rows, lang) {
+  const most = rows
+    .filter((row) => row.kind === POST)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, POSTS);
+  if (!most.length) return [];
+
+  const ids = most.map((row) => row.id);
+  const marks = ids.map(() => '?').join(',');
+  let heads;
+  let texts;
+  try {
+    [heads, texts] = await Promise.all([
+      env.DB
+        .prepare(
+          'SELECT p.id, p.lang, p.status, u.username FROM posts p ' +
+          'LEFT JOIN users u ON u.id = p.owner WHERE p.id IN (' + marks + ')'
+        )
+        .bind(...ids)
+        .all(),
+      env.DB
+        .prepare('SELECT post, lang, title FROM post_texts WHERE post IN (' + marks + ')')
+        .bind(...ids)
+        .all()
+    ]);
+  } catch (e) {
+    return [];
+  }
+
+  const titles = new Map();
+  for (const t of texts.results || []) {
+    if (!titles.has(t.post)) titles.set(t.post, {});
+    titles.get(t.post)[t.lang] = t.title;
+  }
+  const named = new Map((heads.results || []).map((p) => [p.id, p]));
+  return most
+    .filter((row) => named.has(row.id) && titles.has(row.id))
+    .map((row) => {
+      const p = named.get(row.id);
+      const by = titles.get(row.id);
+      return {
+        id: row.id,
+        name: by[lang] || by[p.lang] || by[Object.keys(by)[0]],
+        by: p.username || '',
+        draft: p.status !== 'published',
+        n: row.n
+      };
+    });
 }
 
 /* What the colo files the answer under: the route, the language and the

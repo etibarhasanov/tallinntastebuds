@@ -753,6 +753,7 @@
   "statsRailLead": "Haritanın solundaki şeritte her düğmeye ne sıklıkla basıldığı. Her basış sayılır: iki kez basılan bir düğme ikidir.",
   "statsListsHead": "Listeler",
   "statsListsLead": "Birinin açtığı her herkese açık liste, en çok açılan önde, ve nereden açıldığı. Her ziyaretçiden günde bir açılış sayılır, listenin sahibininki hiç sayılmaz.",
+  "statsPostsLead": "Üyelerin yazdığı ve birinin blogda okuduğu her yazı, en çok okunan önde. Her okurdan günde bir okuma sayılır, yazının sahibininki hiç sayılmaz. Sitenin kendi yazıları ziyaretçiler sayfasında.",
   "statsNone": "Henüz hiçbir şey açılmadı.",
   "statsOff": "Sayılar henüz yok.",
   "statsTotal": "şimdiye kadar {n} açılma sayıldı.",
