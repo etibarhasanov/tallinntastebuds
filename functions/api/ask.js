@@ -36,7 +36,7 @@
  * TWO ROLLS, ONE ASK
  *
  * This site has two lists of places and the difference is the point — see the
- * header of /api/venues. The seventy-five in data/restaurants.json are places
+ * header of /api/venues. The seventy-eight in data/restaurants.json are places
  * I have been to and written up; the eleven hundred in `google_venues` are
  * Google's description of the city. Every question is asked of both at once,
  * and the model is told how the two stand to each other: mine first, because
@@ -62,8 +62,8 @@
  * pick to the question now is the other way round — see THE RULES below.
  *
  * Google's roll is read a second way, joined on `google_venues.map_id` — the
- * column that says which Google row is which of my places. Sixty of my
- * seventy-five have one, and it lends each of them two things the map does
+ * column that says which Google row is which of my places. Sixty-six of my
+ * seventy-eight have one, and it lends each of them two things the map does
  * not record: the opening hours, and what Google files the place as cooking,
  * in the directory's cuisine ids, so that "thai" scores my Thai place the
  * way it scores Google's and the line the model reads says so. The other
@@ -326,8 +326,8 @@ const MIN_CATALOGUE = 20;
 /* The blurb is the only long field in the catalogue the model sees, and the
    first clause of one is enough to choose on. Sending all of them whole
    would be a hundred and eighty kilobytes of prompt for an answer that names
-   three places, and every character here is read seventy-four times a
-   question. */
+   three places, and every character here is read seventy-one times a
+   question — once for each place that is open. */
 const BLURB_CHARS = 60;
 
 const SCHEMA = {
@@ -868,7 +868,7 @@ function shortlist(places, wish, open, lang, named, at, cooks) {
  *
  * The blurb is the reading language's rather than English, and that is not
  * politeness — it is what makes the answer come back in the right language
- * without being asked twice. A model shown seventy-four Estonian sentences and
+ * without being asked twice. A model shown seventy-one Estonian sentences and
  * an Estonian question writes Estonian back; one shown English and asked in
  * Estonian tends to drift into English halfway down.
  */

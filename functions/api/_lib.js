@@ -686,7 +686,7 @@ const VENUE_TYPES = [
  * else on the line.
  *
  * The score travels here and nowhere near the map's own places. There are no
- * scores on this site — none of the seventy-five places I have eaten at is
+ * scores on this site — none of the seventy-eight places I have eaten at is
  * ranked, and none ever will be — and this is not one: it is Google's number,
  * on Google's place, with Google's name on it, which is the only shape in
  * which a number like that can be honest here. The one exception is the find

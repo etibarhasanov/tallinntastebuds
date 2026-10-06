@@ -2,7 +2,7 @@
 /**
  * Tallinn Tastebuds — the catalogue behind the lists.
  *
- * The map is seventy-four places I have been to. A list is somebody else's
+ * The map is seventy-eight places I have been to. A list is somebody else's
  * top ten, and it needs a much longer roll to choose from than that — every
  * burger place in the city, not the four of them I have filmed. So there are
  * two files, and they are different things:
