@@ -2918,7 +2918,9 @@
            one to answer, and whichever runs last is the one on screen. */
         openAskedAccount();
         answerGoogle();
-        if (accountDeleted) toast(t('accountDeleteDone'));
+        /* Said once. This runs again every time a page closes over the map —
+           see mountShell — and the word was about the load, not the visit. */
+        if (accountDeleted) { accountDeleted = false; toast(t('accountDeleteDone')); }
       })
       .catch(function () { /* signed out is a fine place to be */ accountSettled(); });
   }
@@ -5609,6 +5611,33 @@
            a stream is playing but never says whose. */
         openHint('radio', 0);
       }
+    });
+  }
+
+  /* ---------------------------------------------------------------- shell
+   * Every page a visitor walks to from here — the lists, a list, a profile,
+   * the account, the blog, the flashcards, chess, feedback — opens in a frame
+   * over the map rather than in place of it, so this document and the radio
+   * in it stay. All of that is assets/shell.js. What is left here is what the
+   * map does around it.
+   *
+   * On open, the two sheets shut. A link in the More sheet or the account
+   * sheet used to leave by navigation, which took the sheet with it; now the
+   * page opens over the map and the map is what comes back, so it should
+   * come back as a map rather than as a sheet still standing open under
+   * where the page was. closeAccount() counts a sign-in sheet left from a
+   * sign view, and a link pressed out of one is exactly that.
+   *
+   * On close, ask again who is signed in and what they saved, because the
+   * page may have changed both — a sign-in, a sign-out, a save, a list made
+   * — and the map was drawn before it did. loadAccount() is already the
+   * whole of that answer; it is asked a second time.
+   */
+  function mountShell() {
+    window.TTBShell.mount({
+      surface: document.getElementById('shell'),
+      onopen: function () { closeMore(); closeAccount(); },
+      onclose: function () { loadAccount(); }
     });
   }
 
@@ -11512,6 +11541,13 @@
      browser lands on, match it, and write nothing back while doing so. */
   function wireHistory() {
     window.addEventListener('popstate', function () {
+      /* An entry with a page open over the map is the page's, not the map's:
+         the address on it is /lists or /flashcard, which this would read as
+         no list and no place and close whatever was open underneath. The
+         shell's own listener runs first — its script is loaded first — so
+         by now it has opened the page for that entry or closed it for this
+         one, and only a map entry gets this far. See mountShell. */
+      if (window.TTBShell.up()) return;
       var params = new URLSearchParams(window.location.search);
 
       /* The list first, because it decides which places exist: byId() below
@@ -12504,6 +12540,7 @@
       paintAccountButton();
       renderPanel();
       mountRadio();
+      mountShell();
       renderStoryRing();
       wireControls();
       wireStories();

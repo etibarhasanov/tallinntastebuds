@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=14d03c84">
+<link rel="stylesheet" href="assets/styles.css?v=70ca6212">
 </head>
 <body>
 
@@ -795,6 +795,18 @@
   </div>
 </noscript>
 
+<!-- A page opened from the map, on the map. The lists, a list, a profile,
+     the account, the blog, the flashcards, the chess page and the feedback
+     page are each a document of their own, and a walk to one used to be a
+     navigation that took this document down with it — the radio most
+     audibly. Now assets/shell.js opens the page in a frame inside this
+     surface, over the map, and the map goes on underneath, playing. Empty
+     here: the frame is made on each open and taken down on each close, so a
+     page opened twice starts twice. A dialog to a screen reader, named after
+     the page inside it, with the rest of the map inert while it is up.
+     "The map is the shell" in README.md. -->
+<div class="shell" id="shell" role="dialog" aria-modal="true" hidden></div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
@@ -821,7 +833,11 @@
 <!-- The radio, shared with the lists page, which is what keeps a station
      playing when somebody walks from the map to a list. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
-<script src="assets/radio.js?v=8a31dfd7" defer></script>
+<script src="assets/radio.js?v=720d1496" defer></script>
+<!-- The surface above: every page a visitor walks to from here opens in a
+     frame over the map, so this document, and the radio in it, stay. Before
+     app.js, which mounts it, and deferred like it. -->
+<script src="assets/shell.js?v=9f1dc5db" defer></script>
 <!-- Reading a typed sentence as the wish /api/ask narrows on — which kinds
      of place, cheap or fancy, open now, near what — before the model sees a
      line of either list. It names no place itself. Before app.js and
@@ -840,6 +856,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=4a792cd1" defer></script>
+<script src="assets/app.js?v=022d8df5" defer></script>
 </body>
 </html>

@@ -24,9 +24,9 @@
         {"id": "save-device", "type": "service", "lane": "visitor", "name": "Files the save under this device", "note": "The owner is the device's random id. 403 challenge when Turnstile fails, 429 capped past five saves from one fingerprint.", "ref": ["functions/api/saves.js POST"]},
         {"id": "offer", "type": "gateway", "lane": "visitor", "name": "Takes the account offer?", "note": "Offered once a visit, and not again for 14 days after a no."},
         {"id": "saved-here", "type": "end", "lane": "visitor", "name": "Saved on this device"},
-        {"id": "read", "type": "user", "lane": "visitor", "name": "Watches a story, reads the blog, plays the radio", "when": ["story_open", "page:blog", "radio_play"], "ref": ["data/stories.json", "blog.html", "assets/radio.js"]},
+        {"id": "read", "type": "user", "lane": "visitor", "name": "Watches a story, reads the blog, plays the radio", "when": ["story_open", "page:blog", "radio_play"], "note": "The blog, like every page, opens in a frame over the map; the radio plays on underneath.", "ref": ["data/stories.json", "blog.html", "assets/radio.js", "assets/shell.js"]},
         {"id": "read-done", "type": "end", "lane": "visitor", "name": "Read and listened"},
-        {"id": "lists", "type": "user", "lane": "visitor", "name": "Opens a list, a profile or /lists", "when": ["page:lists", "page:list", "page:profile"], "ref": ["functions/list/[id].js", "functions/u/[name].js", "functions/lists/index.js"]},
+        {"id": "lists", "type": "user", "lane": "visitor", "name": "Opens a list, a profile or /lists", "when": ["page:lists", "page:list", "page:profile"], "note": "From the map, in a frame over it — the map and its radio stay. A shared link loads the page whole.", "ref": ["functions/list/[id].js", "functions/u/[name].js", "functions/lists/index.js", "assets/shell.js"]},
         {"id": "public-only", "type": "service", "lane": "visitor", "name": "Answers public lists only", "note": "A private list is its owner's alone; anybody else gets a 404.", "ref": ["functions/api/lists.js GET", "functions/api/profile.js GET"]},
         {"id": "keep-it", "type": "gateway", "lane": "visitor", "name": "Wants to keep the list?"},
         {"id": "list-read", "type": "end", "lane": "visitor", "name": "List read"},
@@ -264,7 +264,7 @@
         { "id": "learner", "name": "Learner" }
       ],
       "nodes": [
-        {"id": "open", "type": "start", "lane": "learner", "name": "Opens flashcards", "when": ["page:flashcard"], "ref": ["functions/flashcard.js"]},
+        {"id": "open", "type": "start", "lane": "learner", "name": "Opens flashcards", "when": ["page:flashcard"], "note": "From the map's rail, in a frame over the map, with the map's radio still playing; on the subdomain, whole.", "ref": ["functions/flashcard.js", "assets/shell.js"]},
         {"id": "shelf", "type": "service", "lane": "learner", "name": "Answers the shelf and the words, in one request", "ref": ["functions/api/flashcard.js GET"]},
         {"id": "what-now", "type": "gateway", "lane": "learner", "name": "What now?"},
         {"id": "deck", "type": "user", "lane": "learner", "name": "Opens a deck, a lesson or a song", "when": ["flash_open", "flash_lesson_open", "flash_song_open", "flash_resume", "flash_taste"], "note": "Deeper stages open as the count of known words grows. A case lesson's Got it goes straight on into the deck that follows it. A song is listened to, and every word in it pressed for what it means.", "ref": ["assets/flashcard.js"]},

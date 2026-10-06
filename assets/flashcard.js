@@ -962,7 +962,14 @@
    * that one request rather than a second, and a load the route cannot answer
    * at all leaves the button hidden along with everything else here.
    *
-   * IT STARTS FROM SILENCE HERE, AND THAT IS THE HOSTNAME
+   * ON THE MAP IT IS THE MAP'S, AND ON THE SUBDOMAIN IT STARTS FROM SILENCE
+   *
+   * Opened from the map's rail this page is in a frame over the map, and the
+   * TTBRadio this mounts on is the map's: assets/radio.js, in a frame on its
+   * own site, lends the button to the parent's radio instead of building one
+   * — A PAGE INSIDE THE MAP there — so the music that was playing goes on
+   * playing, and this page's language is a station the way the map's is.
+   * Nothing here knows the difference, which is the point.
    *
    * The radio walks from the map to a list because both are one origin and
    * sessionStorage is where it writes down what was playing. This page is that

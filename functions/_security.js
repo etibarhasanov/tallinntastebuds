@@ -28,10 +28,17 @@
  *   X-Frame-Options    the account, the editor, the staff code and the owner's
  *                      pages were all frameable. The CSP line is the standard,
  *                      the X-Frame-Options line the one older browsers read.
- *                      Nothing here frames itself. This is a whole CSP header
- *                      with one directive in it and not a content policy: the
- *                      scripts, fonts, tiles and players the pages load are
- *                      untouched by it.
+ *                      'self' and SAMEORIGIN rather than 'none' and DENY,
+ *                      because this site does frame itself: the map opens
+ *                      every page a visitor walks to in a frame over itself
+ *                      — assets/shell.js, and "The map is the shell" in
+ *                      README.md — and under 'none' that frame was blank.
+ *                      Same origin only, so the two subdomains cannot frame
+ *                      the map and the map does not frame them; every walk
+ *                      from the map is to an address on its own host. This is
+ *                      a whole CSP header with one directive in it and not a
+ *                      content policy: the scripts, fonts, tiles and players
+ *                      the pages load are untouched by it.
  *   COOP same-origin   a page opened from another site gets no handle on this
  *                      one's window. Nothing here opens a window it needs to
  *                      talk back to — Google's sign-in is a redirect, not a
@@ -48,8 +55,8 @@ export const SECURITY = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-  'Content-Security-Policy': "frame-ancestors 'none'",
-  'X-Frame-Options': 'DENY',
+  'Content-Security-Policy': "frame-ancestors 'self'",
+  'X-Frame-Options': 'SAMEORIGIN',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Permissions-Policy':
     'camera=(), microphone=(), payment=(), usb=(), serial=(), hid=(), browsing-topics=(), geolocation=(self)'
