@@ -2301,6 +2301,62 @@ body.has-scrim { overflow: hidden; }
    otherwise. */
 .picker-note.is-warn { color: var(--accent); }
 
+/* ---------- the same header as the map's, above 860px ---------- */
+
+/* On a desktop this row stands where the map's corners do: the mark and the
+   name at the top left, a --gap in from the edge and at the map's own size,
+   and the username, the radio and the language at the top right, a --gap in
+   — the same things in the same places, so that a walk from the map to a
+   list and back moves the page under the header and not the header. It used
+   to be a 640px row centred over the column, which on a 1400px window put
+   the mark 380px from the left edge against the map's 16, the radio 918px
+   in against the map's 1288, and the mark itself at the phone's 40px against
+   the map's 66: every walk between the two had the whole top of the window
+   jump, and the radio button — the one thing that is meant to look untouched
+   across that walk — jumped furthest.
+
+   The column below keeps its 640, and the chess page's 960 and the editor's
+   1180 keep theirs: the column is the page's and the header is the window's,
+   which is how the map is drawn too. The three wider selectors are named
+   here so that this wins the width over theirs, which stand later in this
+   file and in assets/chess.css.
+
+   No padding of its own at the sides: .lists-body already keeps every page
+   a --gap in from the edge, or the safe area where that is wider, which is
+   the map's own measure for its corners. Top-aligned rather than centred,
+   the way the map's .controls are, and with their 8px between pills, so the
+   pills at the right sit at the map's height and the map's spacing and not
+   centred on a 66px mark. The name breaks after Tallinn as it does on the map and by
+   the same measure — --brand-w less the mark and the gap — rather than a
+   <br>, which the textContent that sets it from ui.json would eat.
+
+   Below 861px the map folds its brand into a 40px mark and a one-line name,
+   which is what this row already is, so the phone keeps it. */
+@media (min-width: 861px) {
+  .lists-brand,
+  .chess-body .lists-brand,
+  .lists-body.is-editor .lists-brand,
+  [data-look="b"] .lists-body.is-all .lists-brand {
+    max-width: none;
+    align-items: flex-start;
+    gap: 8px;
+    padding: calc(var(--gap) + var(--safe-t)) 0 18px;
+  }
+  .lists-home { width: var(--brand-w); gap: 13px; }
+  .lists-mark {
+    width: 66px;
+    height: 66px;
+    box-shadow: 0 0 0 2px var(--paper), var(--lift);
+  }
+  .lists-wordmark {
+    font-size: 25px;
+    letter-spacing: -.025em;
+    line-height: 1.1;
+    white-space: normal;
+    overflow: visible;
+  }
+}
+
 /* ---------- the language switch, on a page that carries its own ---------- */
 
 /* The surface under the trigger drawn by assets/language.js, on a

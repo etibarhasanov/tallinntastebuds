@@ -5577,6 +5577,25 @@ now, where the same invitation stands over the door to every public list,
 which they can open without an account — and which is what [Public
 lists](#public-lists) is about at more length.
 
+### The header is the map's
+
+Above 860px the row at the top of a list — the mark and the name, then the
+username, the radio and the language — stands where the map's corners do: the
+mark at the top left, a gap in from the edge and at the map's 66px, the name
+breaking after Tallinn by the same measure, and the pills at the top right at
+the map's height and spacing. It used to be a 640px row centred over the
+column, which on a 1400px window put the mark 380px in against the map's 16
+and the radio 918px in against the map's 1288, so every walk from the map to
+a list and back had the whole top of the window jump — and the radio button,
+the one thing meant to look untouched across that walk, jumped furthest. The
+column keeps its 640, the chess page its 960 and the editor its 1180: the
+column is the page's and the header is the window's, which is how the map is
+drawn too. Below 861px the map folds its brand into a 40px mark and a
+one-line name, which is what this row already was, so the phone keeps it.
+The rules are under **the same header as the map's** in `assets/lists.css`,
+and every page on a `.lists-brand` — the account, the blog, feedback, the
+flashcards, the chess page — takes them.
+
 ### Making one
 
 Sign in and open your account. The box is on it, between your lists and the
