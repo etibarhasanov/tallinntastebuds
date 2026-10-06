@@ -455,7 +455,7 @@
 
 /* ---------- the pin picker ----------
 
-   What this list's places wear on the map: one of sixteen markers. See "The
+   What this list's places wear on the map: one of thirty-six markers. See "The
    pins" in README.md, and assets/pins.js for the table. The mark is not
    among them and cannot be — a place on the map draws the mouth whatever
    list it is on. There is no colour beside the grid: every marker draws in
@@ -470,9 +470,8 @@
 
 .lists-pin-grid {
   display: grid;
-  /* Eight to a line, at every width, so the sixteen are two even rows. The
-     columns are fractions rather
-     than 38px because eight fixed ones come to 332px — eight more than a
+  /* Eight to a line, at every width, so the thirty-six are four full rows
+     and four over. The columns are fractions rather than 38px because eight fixed ones come to 332px — eight more than a
      390px phone leaves inside this card, and enough to make a 360px one
      scroll sideways. As fractions they are 38px on a desk and shrink to
      about 33px on the narrowest phone, which is still a picture and still a
