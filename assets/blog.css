@@ -134,11 +134,13 @@
 
 /* ---------- what a member's post may hold ----------
 
-   The house's posts are paragraphs and nothing else. A post somebody writes
-   on /write may hold two sizes of heading, a quote, a list, a divider and a
-   place on the map — the blocks functions/api/_posts.js describes — and the
-   rules for them are here rather than in assets/write.css because the editor
-   loads this file too: what the writer types into is the post. */
+   The house's posts are paragraphs, and a list of places where a paragraph
+   is a link to one and nothing else. A post somebody writes on /write may
+   hold two sizes of heading, a quote, a list, a divider, a place on the map
+   and somebody's list of places — the blocks functions/api/_posts.js
+   describes — and the rules for them are here rather than in
+   assets/write.css because the editor loads this file too: what the writer
+   types into is the post. */
 .blog-body h2,
 .blog-body h3 {
   margin: 30px 0 10px;
@@ -199,6 +201,123 @@
 }
 .blog-place .menu-row { padding: 12px 14px; border: 0; }
 .blog-place .menu-name { font-size: 16px; }
+
+/* A list in a post: its title and whose it is, then its places side by
+   side, to swipe through — the one row on this site that scrolls sideways in
+   the middle of the words, and the one exception to the eighth design rule,
+   because it is not a list of choices but a list to browse. Each card is a
+   little less than the column, so the edge of the next one says there is
+   more; the row snaps a card at a time and moves only under a finger or an
+   arrow. Written as .blog-body descendants where the body's own rules for an
+   <ol>, a <li> and a link would otherwise reach in. */
+.blog-list { margin: 4px 0 20px; }
+
+.blog-list-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+.blog-list-about { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.blog-body .blog-list-title {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+  color: var(--ink);
+  text-decoration: none;
+}
+.blog-body .blog-list-title:hover { color: var(--accent); }
+.blog-list-by { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+
+/* The two arrows, for a screen with a pointer; a thumb needs neither. */
+.blog-list-step { flex: 0 0 auto; display: flex; gap: 2px; }
+.blog-list-step .alt { min-width: 36px; font-size: 20px; line-height: 1; }
+@media (hover: none) { .blog-list-step { display: none; } }
+
+.blog-body .blog-list-strip {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0 0 6px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.blog-list-strip::-webkit-scrollbar { display: none; }
+
+.blog-body .blog-list-card {
+  flex: 0 0 min(220px, 78%);
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.blog-body .blog-list-go {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--wash);
+  color: var(--ink);
+  text-decoration: none;
+}
+.blog-body a.blog-list-go:hover .blog-list-name { color: var(--accent); }
+
+/* The picture, or the place's name where it has none, in the same box so
+   every card in the row is the same height. */
+.blog-list-box {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+}
+.blog-list-blank {
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: var(--muted);
+}
+
+.blog-list-say { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px; }
+.blog-list-name { font-family: var(--display); font-size: 16px; font-weight: 600; line-height: 1.25; }
+.blog-list-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-family: var(--body);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* The last card: the whole list, a press away. */
+.blog-body .blog-list-end .blog-list-go {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+  min-height: 120px;
+  background: transparent;
+}
+
+/* While it is being read: the cards' boxes, standing still. */
+.blog-list.is-waiting .blog-list-box { border: 1px solid var(--hairline); border-radius: var(--radius); }
 
 /* Who wrote it, under the date: a member's post is theirs, and says so
    where a byline goes. Their name is the way to their profile. */

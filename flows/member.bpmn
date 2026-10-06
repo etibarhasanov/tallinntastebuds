@@ -191,7 +191,7 @@ ref: functions/api/account.js POST display, about, lines, links, speaks, rows</b
       <bpmn:incoming>member-e23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="write" name="Writes a post for the blog">
-      <bpmn:documentation>Headings, bold, links, lists, quotes and places from the map, in as many of the site's languages as they write it in. A draft until they publish it; 20,000 characters, 10 new a day, 200 in all.
+      <bpmn:documentation>Headings, bold, links, lists, quotes, places from the map and public lists a reader swipes through, ten at the most, in as many of the site's languages as they write it in. A draft until they publish it; 20,000 characters, 10 new a day, 200 in all.
 when: page:write
 ref: write.html
 ref: assets/write.js</bpmn:documentation>

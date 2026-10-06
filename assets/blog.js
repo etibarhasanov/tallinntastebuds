@@ -17,10 +17,18 @@
  * head and its text for a crawler; nothing here waits on it.
  *
  * A member's post is blocks rather than paragraphs — headings, quotes,
- * lists, a divider, links off the site and places on the map as cards — and
- * blocks() below draws them as text, never as HTML: what a post may hold is
- * functions/api/_posts.js, and **Everybody's posts** under **The blog** in
- * README.md.
+ * lists, a divider, links off the site, places on the map as cards and
+ * somebody's public list as a row of them — and blocks() below draws them as
+ * text, never as HTML: what a post may hold is functions/api/_posts.js, and
+ * **Everybody's posts** under **The blog** in README.md.
+ *
+ * A LIST IN A POST
+ *
+ * A public list goes into a post as its places, side by side, to swipe
+ * through: a member's post carries it as a block of its own, and one of the
+ * house's as a paragraph that is nothing but a link to it. Each is read from
+ * /api/lists when the post is, and drawn by listBlock() — **A list inside a
+ * post** under **The blog** in README.md.
  * Two states, the index and one post, decided by ?post=<id> and built into
  * the one <main> in blog.html, which is how lists.html and account.html are
  * put together too. Walking between them is pushState rather than a fresh
@@ -96,6 +104,7 @@
   var MEMBERS_API = '/api/posts';
   var MAP_URL = '/data/map.json';
   var CITY_URL = '/api/places';
+  var LISTS_API = '/api/lists?id=';
 
   /* Where the clips are, and what the four files for one post are called.
      The id is the whole of the name: a post and its pictures cannot drift
@@ -119,7 +128,10 @@
     readIn: null,   // which of its languages it is being read in
     names: {},      // every language the site has, code → its own name
     author: null,   // ?by=: { name, posts, next }
-    places: null    // the map's places by id, once a post has needed them
+    places: null,   // the map's places by id, once a post has needed them
+    lists: {}       // a list a post carries, by id: the answer, false for one
+                    // that is gone or private, null for one that did not
+                    // answer — and a promise while it is being asked
   };
 
   var toastTimer = null;
@@ -347,6 +359,12 @@
      anybody to a bakery. */
   var LINK = /\[([^\]]+)\]\((\/(?!\/)[^)\s]*)\)/g;
 
+  /* A paragraph of the house's that is a link to a list and nothing else is
+     the list itself, drawn as its places — the way a member's post carries
+     one as a block. A link to a list inside a sentence stays a link. The id
+     is LIST_ID in functions/api/_lists.js. */
+  var LIST_ALONE = /^\[([^\]]+)\]\(\/list\/([a-z0-9][a-z0-9-]{2,47})\)$/;
+
   function prose(text, post) {
     var kids = [];
     var at = 0;
@@ -493,6 +511,8 @@
           : el('p', { className: 'blog-note', textContent: t('blogEnglishOnly') }),
         clip(post),
         el('div', { className: 'blog-body' }, body.map(function (para) {
+          var alone = LIST_ALONE.exec(para.trim());
+          if (alone) return listBlock(alone[2], post, alone[1]);
           return el('p', {}, prose(para, post));
         })),
         post.link ? el('p', { className: 'blog-foot' }, [
@@ -744,6 +764,152 @@
     ]);
   }
 
+  /* ----------------------------------------------------------- a list */
+
+  /* A list a post carries, asked once a page load however often the post is
+     drawn: an answer, false for a list that is gone or private — it leaves
+     the post, the way a card for a place that is gone does — and null for a
+     list that did not answer, which draws as a row going to it. The map's
+     places come with it, since a card wears a place's first photograph. */
+  function loadList(id) {
+    if (state.lists[id] !== undefined) return Promise.resolve(state.lists[id]);
+    var asked = fetch(LISTS_API + encodeURIComponent(id), { headers: { accept: 'application/json' }, credentials: 'same-origin' })
+      .then(function (res) {
+        if (res.status === 404) return false;
+        return res.ok ? res.json().then(function (out) { return (out && out.list) || null; }) : null;
+      })
+      .catch(function () { return null; });
+    state.lists[id] = Promise.all([asked, loadPlaces()]).then(function (got) {
+      state.lists[id] = got[0];
+      return got[0];
+    });
+    return state.lists[id];
+  }
+
+  /* The list as it stands: drawn now when it has been read, and otherwise a
+     row of empty cards the height of the real ones, swapped for the list
+     when it arrives — so the words under it do not jump — as long as the
+     post is still the one on screen. */
+  function listBlock(id, post, title) {
+    var got = state.lists[id];
+    if (got === false) return null;
+    if (got === null) return listRow(id, title);
+    if (got && typeof got.then !== 'function') return listStrip(got, post);
+
+    var waiting = el('section', { className: 'blog-list is-waiting', 'aria-busy': 'true' }, [
+      el('div', { className: 'blog-list-head' }, [
+        el('span', { className: 'blog-list-title', textContent: title || '\u00a0' })
+      ]),
+      el('ol', { className: 'blog-list-strip' }, [0, 1, 2].map(function () {
+        return el('li', { className: 'blog-list-card' }, [el('span', { className: 'blog-list-box' })]);
+      }))
+    ]);
+    loadList(id).then(function () {
+      if (!waiting.parentNode) return;
+      var now = listBlock(id, post, title);
+      if (now) waiting.parentNode.replaceChild(now, waiting);
+      else waiting.parentNode.removeChild(waiting);
+    });
+    return waiting;
+  }
+
+  /* A list that would not answer: the way to it, in the shape a place card
+     is, rather than nothing — the post said there was a list here. */
+  function listRow(id, title) {
+    return el('div', { className: 'blog-place' }, [
+      el('a', { className: 'menu-row', href: '/list/' + encodeURIComponent(id) }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', textContent: title || t('blogListAll') })
+        ]),
+        chevron()
+      ])
+    ]);
+  }
+
+  /* Where a card goes: the list on the map with that place open on it, which
+     is where a row on the list's own page goes — placeHref() in
+     assets/lists.js, whose rule this restates, including that a place with
+     nowhere to draw goes nowhere. */
+  function listPlaceHref(list, item) {
+    if (!item.map && (typeof item.lat !== 'number' || typeof item.lng !== 'number')) return '';
+    return '/?list=' + encodeURIComponent(list.id) + '&at=' + encodeURIComponent(item.mapId || item.place);
+  }
+
+  /* The list's places side by side, to swipe through: its title and whose it
+     is over them, a card a place — the first photograph where the place is
+     one of mine and has one, its name set large where not, then where it
+     stands on the list, its name and the line the list's owner wrote — and a
+     last card going to the whole list. The row scrolls sideways and snaps,
+     which is also what keeps assets/back.js from reading a swipe across it
+     as Back. On a screen with a pointer, two .alt arrows over the row do
+     what a thumb does; nothing moves unless one of them is pressed. */
+  function listStrip(list, post) {
+    var items = list.items || [];
+    var listHref = '/list/' + encodeURIComponent(list.id);
+
+    var cards = items.map(function (item, i) {
+      var mine = state.places && state.places[item.mapId || item.place];
+      var photo = mine && mine.photos && mine.photos.length
+        ? '/photos/' + encodeURIComponent(mine.id) + '/' + encodeURIComponent(mine.photos[0]) : '';
+      var href = listPlaceHref(list, item);
+      var inside = [
+        photo
+          ? el('img', { className: 'blog-list-box', src: photo, alt: '', loading: 'lazy', decoding: 'async' })
+          : el('span', { className: 'blog-list-box blog-list-blank', 'aria-hidden': 'true', textContent: item.name }),
+        el('span', { className: 'blog-list-say' }, [
+          el('span', { className: 'eyebrow', textContent: t('blogListOf', { n: i + 1, total: items.length }) }),
+          el('span', { className: 'blog-list-name', textContent: item.name }),
+          item.say || item.address
+            ? el('span', { className: 'blog-list-line', textContent: item.say || item.address }) : null
+        ])
+      ];
+      var card = href
+        ? TTBTrack.click(el('a', { className: 'blog-list-go', href: href }, inside),
+            'blog_list_place', { post: post.id, list: list.id, place: item.mapId || item.place })
+        : el('div', { className: 'blog-list-go' }, inside);
+      return el('li', { className: 'blog-list-card' }, [card]);
+    });
+    cards.push(el('li', { className: 'blog-list-card blog-list-end' }, [
+      TTBTrack.click(el('a', { className: 'blog-list-go', href: listHref }, [
+        el('span', { className: 'menu-name', textContent: t('blogListAll') }),
+        chevron()
+      ]), 'blog_list_open', { post: post.id, list: list.id })
+    ]));
+
+    var strip = el('ol', { className: 'blog-list-strip', 'aria-label': list.title }, cards);
+    var back = el('button', { type: 'button', className: 'alt', 'aria-label': t('blogListPrev'), textContent: '\u2039' });
+    var on = el('button', { type: 'button', className: 'alt', 'aria-label': t('blogListNext'), textContent: '\u203a' });
+
+    /* One card's width and the gap after it, either way; smoothly unless
+       the reader's machine asked for less motion. */
+    var step = function (way) {
+      var first = strip.firstChild;
+      var width = first ? first.getBoundingClientRect().width + 12 : strip.clientWidth;
+      var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      strip.scrollBy({ left: way * width, behavior: still ? 'auto' : 'smooth' });
+    };
+    var ends = function () {
+      back.disabled = strip.scrollLeft <= 1;
+      on.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1;
+    };
+    back.addEventListener('click', function () { step(-1); });
+    on.addEventListener('click', function () { step(1); });
+    strip.addEventListener('scroll', ends, { passive: true });
+    window.setTimeout(ends, 0);
+
+    return el('section', { className: 'blog-list' }, [
+      el('div', { className: 'blog-list-head' }, [
+        el('span', { className: 'blog-list-about' }, [
+          TTBTrack.click(el('a', { className: 'blog-list-title', href: listHref, textContent: list.title }),
+            'blog_list_open', { post: post.id, list: list.id }),
+          list.by ? el('span', { className: 'blog-list-by', textContent: t('blogBy', { name: list.by }) }) : null
+        ]),
+        el('span', { className: 'blog-list-step' }, [back, on])
+      ]),
+      strip
+    ]);
+  }
+
   function blocks(list, post) {
     return (list || []).map(function (b) {
       if (b.k === 'p') return el('p', {}, runs(b.r, post));
@@ -755,6 +921,7 @@
       }
       if (b.k === 'hr') return el('hr');
       if (b.k === 'place') return placeBlock(b.id);
+      if (b.k === 'list') return listBlock(b.id, post, '');
       return null;
     });
   }

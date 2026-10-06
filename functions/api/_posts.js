@@ -27,12 +27,21 @@
  *   { k: 'place', id: '<id>' }                         a place, drawn as a card:
  *                                                       the map's id, or a
  *                                                       Google venue's key
+ *   { k: 'list', id: '<id>' }                          somebody's public list,
+ *                                                       drawn as a row of its
+ *                                                       places to swipe through
  *   { k: 'hr' }                                         a divider
  *
  *   run: { t: 'words', b: 1?, i: 1?, a: '<href>'? }
  *
  * A link goes to a path on this site or to an http(s) address anywhere else,
  * and to nothing else: no javascript:, no data:, no //host dressed as a path.
+ *
+ * A list is kept by the shape of its id and nothing more. Whether it is
+ * public is a question for the moment somebody reads the post, not the
+ * moment it was written: a list made private next week has to leave the post
+ * then, and the page and ../blog.js both ask when they draw it, and draw
+ * nothing for a list that does not answer.
  *
  * THE CAPS
  *
@@ -44,6 +53,7 @@
  */
 
 import { LINE_LANGS } from './_profile.js';
+import { LIST_ID } from './_lists.js';
 
 export const MAX_TITLE = 120;
 export const MAX_LEAD = 280;
@@ -52,6 +62,10 @@ export const MAX_BLOCKS = 400;
 export const MAX_RUNS = 200;
 export const MAX_ITEMS = 100;
 export const MAX_HREF = 2048;
+/* Lists in one language of a post. Each is a request when the post is read,
+   and ten rows of cards to swipe through is a guide; more than that is a
+   page of lists, which /lists already is. */
+export const MAX_LISTS = 10;
 /* How many posts one account may keep, drafts included, and how many it may
    start in a day. A blog, not a feed: the second is there so that a script
    with somebody's session cannot fill the index in an afternoon. */
@@ -138,6 +152,7 @@ export function cleanBody(raw, places) {
   if (!Array.isArray(raw)) return null;
   const tally = { chars: 0 };
   const blocks = [];
+  let lists = 0;
   for (const block of raw.slice(0, MAX_BLOCKS)) {
     if (!block || typeof block !== 'object') continue;
     const k = block.k;
@@ -152,6 +167,9 @@ export function cleanBody(raw, places) {
     } else if (k === 'place') {
       const id = String(block.id || '');
       if (places && places.has(id)) blocks.push({ k, id });
+    } else if (k === 'list') {
+      const id = String(block.id || '');
+      if (LIST_ID.test(id) && lists < MAX_LISTS) { blocks.push({ k, id }); lists += 1; }
     } else if (k === 'hr') {
       /* Two dividers in a row, or one at the top, say nothing. */
       if (blocks.length && blocks[blocks.length - 1].k !== 'hr') blocks.push({ k });
@@ -221,8 +239,10 @@ export function newId(title) {
  * word goes through `esc`, which that file passes in from ../_shell.js so
  * there is one escaping rule on the site; the tags are this file's own. A
  * link off the site is nofollow and ugc — the writer chose it, not the site.
+ * A list is its title as a link and its places as a numbered list, where
+ * `listOf` knows it — { title, by, names } — and nothing where it does not.
  */
-export function bodyHtml(blocks, esc, placeName) {
+export function bodyHtml(blocks, esc, placeName, listOf = () => null) {
   const runs = (rs) => rs.map((r) => {
     let s = esc(r.t).replace(/\n/g, '<br>');
     if (r.b) s = '<strong>' + s + '</strong>';
@@ -245,6 +265,13 @@ export function bodyHtml(blocks, esc, placeName) {
     if (b.k === 'place') {
       const name = placeName(b.id);
       return name ? '<p><a href="/?spot=' + esc(b.id) + '">' + esc(name) + '</a></p>' : '';
+    }
+    if (b.k === 'list') {
+      const list = listOf(b.id);
+      if (!list) return '';
+      return '<h3><a href="/list/' + esc(b.id) + '">' + esc(list.title) + '</a>' +
+        (list.by ? ' — by ' + esc(list.by) : '') + '</h3>' +
+        (list.names.length ? '<ol>' + list.names.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ol>' : '');
     }
     if (b.k === 'hr') return '<hr>';
     return '';

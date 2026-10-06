@@ -11693,8 +11693,9 @@ publish: `/blog?by=<name>`, everything they published under their name, which
 
 **The editor is the post.** It is a box set in the blog's own type, with a
 toolbar of exactly what a post may hold: text, a heading and a smaller one,
-bold, italic, a link, a list and a numbered list, a quote, a divider, and a
-place on the map. The last is this blog's own: a search over every place in
+bold, italic, a link, a list and a numbered list, a quote, a divider, a
+place on the map, and a list of places — the last a list somebody made,
+**A list inside a post** below. The place is this blog's own too: a search over every place in
 the city — the map's own merged with Google's export, the same roll a list is
 built from — that drops the one picked into the post as a card, which a
 reader presses to open the place on the map. *My ten favourite places* is
@@ -11705,7 +11706,7 @@ would. The roll is never downloaded for it: the picker asks
 after the last key, and the blog and the editor ask `/api/places?ids=` for
 just the Google venues a post's cards name — the map's they already have out
 of `data/map.json`. *My ten favourite places* is ten of those with a paragraph
-between each. Writing in Google Docs or Word and pasting works the
+between each, or one list of them. Writing in Google Docs or Word and pasting works the
 way people expect: the headings, lists, bold, italic and links come across,
 and the fonts, colours and pictures do not.
 
@@ -11772,6 +11773,59 @@ somewhere to live that is not a D1 row, and that is a decision of its own. No
 comments, no likes and no follow; no scheduling, which is a story's job; and
 nothing a post says is moderated before it is up — the owner can delete a row,
 and a report button is the obvious next thing if it is ever needed.
+
+### A list inside a post
+
+A public list goes into a post as its places, side by side, to swipe
+through: the list's title and whose it is, then a card a place — its first
+photograph where it is one of mine and has one, its name set large where it
+has none — saying where it stands on the list (*3 of 8*), its name, and the
+line the list's owner wrote about it, cut at two lines. The edge of the next
+card shows at the right, which is what says there is more. Pressing a card
+opens that list on the map with the place open, which is where a row on the
+list's own page goes — `placeHref()` in `assets/lists.js`, restated as
+`listPlaceHref()` in `assets/blog.js` — and the last card is **See the whole
+list**. On a screen with a pointer two `.alt` arrows over the row step a card
+at a time; a thumb needs neither and does not get them.
+
+It is the one row on the site that scrolls sideways in the middle of the
+words, and the one exception to the eighth design rule: it is not a list of
+choices but a list to browse, and the alternative — the list's places as
+rows — is a second copy of the list's own page inside the post. Nothing in
+it moves unless a finger or an arrow moves it. Because the row scrolls
+sideways, `assets/back.js` leaves a swipe across it alone, and a swipe to
+the right anywhere else is still Back.
+
+**Two ways in.** On `/write` it is the toolbar's last button: a search over
+the public lists `/lists` draws — the most opened with nothing typed, the
+same search that page runs with something — and the one picked goes in as a
+block of its own, `{ k: 'list', id }`, shown in the box as a card with the
+list's title and owner. A post holds ten at the most, `MAX_LISTS` in
+`functions/api/_posts.js`, restated in `assets/write.js` so the picker says
+so rather than the route dropping the eleventh. In one of the house's posts
+in `data/blog.json` it is a paragraph that is a link to a list and nothing
+else — `[Best beer bars](/list/top-bars-hxzz7m)` on its own — which
+`LIST_ALONE` in `assets/blog.js` draws as the list; a link to a list inside a
+sentence stays a link, so no post written before this changed.
+
+**Asked when it is read, not when it was written.** The post stores the id
+and nothing else, and the page asks `GET /api/lists?id=` for each list when
+the post opens, once a page load. So a list that grows grows in every post
+that carries it, and one made private or deleted since leaves the post, the
+way a card for a place that is gone does. While it is being read the row is
+three empty cards the height of the real ones, so the words under it do not
+jump; a list that does not answer at all is a row going to it, in the shape a
+place card is. Signed out it is the same, since a public list is read by
+anybody. For the readers that run no script, `functions/blog.js` writes each
+public list a member's post carries as its title, whose it is, and its places
+by the names the list stored — two reads, however many lists. A house post's
+list is its link there, as it always was.
+
+**What it does not do.** No keeping the list or saving a place from inside
+the post — the list's own page does both. No private list, even the
+writer's own. Nothing slides by itself. No map in the post. And the picker
+offers what `/lists` offers, which leaves out a list of fewer than four
+places; a link to one still draws in a house post.
 
 ### The two states
 
@@ -11843,7 +11897,9 @@ to the bakery, or to the list somebody made of them, has nowhere to go. The
 validator fails a link that is not a path on this site and a `?spot=` that is
 not an open place on the map; a `/list/<id>` it cannot check, since lists
 live in the database, so a post that links one is read once in a browser
-before it lands.
+before it lands. A paragraph that is such a link and nothing else is drawn
+as the list itself, its places to swipe through — **A list inside a post**
+above.
 
 Every link pressed reports `blog_link` with the post and where it went, and a
 visitor a search engine sent straight to a post is counted by address under
@@ -17116,6 +17172,8 @@ The blog, `assets/blog.js`:
 | `blog_write` | — Write a post, on the index, under the members' posts, and on your own profile |
 | `blog_author` | `name` — the byline on a member's post, to their profile |
 | `blog_place` | `place` — a place card inside a member's post, to the place on the map |
+| `blog_list_place` | `post`, `list`, `place` — a card in a list inside a post, to that list on the map with the place open |
+| `blog_list_open` | `post`, `list` — a list's title over its cards in a post, or the last card, to the list's own page |
 | `blog_read_in` | `lang` — one of the languages a member's post is written in, picked on its pills |
 | `blog_more_by` | `name` — More by, under a member's post and on a profile, to `?by=` |
 | `blog_edit` | — Edit this post, under your own post |
@@ -17131,6 +17189,7 @@ Writing a post, `assets/write.js`, and the doors to it:
 | `write_new` | — New post, on your posts |
 | `write_language` | `lang` — a language added to a post |
 | `write_place` | `place` — a place from the map put into a post |
+| `write_list` | `list` — a public list put into a post |
 | `write_save` | `post` — Save draft, or Back to draft, once it has saved |
 | `write_publish` | `post` — Publish or Update, once it has saved |
 | `write_view` | — the post on the blog, from the editor |

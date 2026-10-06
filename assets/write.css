@@ -154,6 +154,13 @@
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 22s-7-6.6-7-12a7 7 0 0 1 14 0c0 5.4-7 12-7 12z'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 22s-7-6.6-7-12a7 7 0 0 1 14 0c0 5.4-7 12-7 12z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
+/* A list in the box wears two cards side by side for its mark, which is
+   what the reader will get: its places in a row to swipe through. */
+.write-list::before {
+  width: 18px;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='5' width='9' height='14' rx='1.5'/%3E%3Crect x='13' y='5' width='9' height='14' rx='1.5'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='5' width='9' height='14' rx='1.5'/%3E%3Crect x='13' y='5' width='9' height='14' rx='1.5'/%3E%3C/svg%3E");
+}
 .write-place-name { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--ink); }
 .write-place-where { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
