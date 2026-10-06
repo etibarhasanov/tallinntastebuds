@@ -26,6 +26,14 @@
  * off and left in `stories/` for somebody to decide about. The story expires;
  * the photograph does not.
  *
+ * Listing it on the place changes `data/restaurants.json`, and the map does
+ * not read that file: it reads `data/map.json`, which `tools/languages.mjs`
+ * writes from it and `tools/validate.mjs` holds to it. So the tick rewrites
+ * the copy too, through the same tool. For a day it did not: the morning
+ * after the map started reading its own copy, the tick filed a photograph,
+ * left the copy behind, and the validator it runs before pushing refused its
+ * own commit three hours running — the picture filed and nothing pushed.
+ *
  * Zero dependencies, on purpose. Same rule as the validator.
  */
 
@@ -34,6 +42,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve, extname, basename } from 'node:path';
 
 import { STORY_HOURS, isStamp, nowStamp, storyWindow, storyPhase } from './clock.mjs';
+import { write as writeLanguages } from './languages.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = join(ROOT, 'data');
@@ -272,7 +281,13 @@ function tick(stories, { dry }) {
   }
 
   if (storiesChanged && !dry) writeJSON(STORIES_JSON, kept);
-  if (placesChanged && !dry) writeJSON(RESTAURANTS_JSON, places);
+  if (placesChanged && !dry) {
+    writeJSON(RESTAURANTS_JSON, places);
+    /* And the map's copy of it, or the validator refuses the commit — the
+       header says when it did. After the source is on disk, because the tool
+       reads it from there. */
+    writeLanguages();
+  }
 
   /* Said whether anything changed or not: this is the log somebody reads at
      nine in the morning to find out why the ring is or is not there. */
@@ -347,8 +362,9 @@ if (args.help || args.h) {
   node tools/stories.mjs --tick [--dry-run]
       What the clock says is due: a story that has run out is switched off,
       and the picture in it — the photograph, or the video's poster frame — is
-      filed into photos/<spot>/ and listed on the place. A photo story's entry
-      goes with its file. Run hourly by .github/workflows/stories.yml.
+      filed into photos/<spot>/ and listed on the place, in data/restaurants.json
+      and in the data/map.json the map reads. A photo story's entry goes with
+      its file. Run hourly by .github/workflows/stories.yml.
 `);
   process.exit(0);
 }

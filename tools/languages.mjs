@@ -48,6 +48,10 @@
  *   node tools/languages.mjs           rewrite the files above
  *   node tools/languages.mjs --check   report that they are out of date, exit 1
  *
+ * tools/stories.mjs calls write() for the same rewrite when its tick files a
+ * story's photograph onto a place: that changes data/restaurants.json on a
+ * runner where nobody is there to run this by hand.
+ *
  * Zero dependencies, like every other tool in here.
  */
 
@@ -134,6 +138,25 @@ export function stale() {
   return wrong.concat(leftovers(files)).map((path) => path.slice(ROOT.length + 1));
 }
 
+/* Write every file build() names that is not already what it would be, and
+   take out what leftovers() names. The command line below is one caller; the
+   other is the tick in tools/stories.mjs, which lists a filed photograph on
+   its place in data/restaurants.json and has to leave data/map.json true to
+   it, or the validator the workflow runs before it pushes refuses the
+   commit. */
+export function write() {
+  const files = build();
+  mkdirSync(DIR, { recursive: true });
+  for (const path of leftovers(files)) unlinkSync(path);
+  let changed = 0;
+  for (const path of Object.keys(files)) {
+    if (existsSync(path) && readFileSync(path, 'utf8') === files[path]) continue;
+    writeFileSync(path, files[path]);
+    changed++;
+  }
+  return { changed, languages: Object.keys(files).length - 2 };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (process.argv.includes('--check')) {
     const wrong = stale();
@@ -146,15 +169,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1);
   }
 
-  const files = build();
-  mkdirSync(DIR, { recursive: true });
-  for (const path of leftovers(files)) unlinkSync(path);
-  let changed = 0;
-  for (const path of Object.keys(files)) {
-    if (existsSync(path) && readFileSync(path, 'utf8') === files[path]) continue;
-    writeFileSync(path, files[path]);
-    changed++;
-  }
-  const langs = Object.keys(files).length - 2;
-  console.log(`data/lang/ — ${langs} languages and the index; data/map.json — ${changed} file(s) rewritten.`);
+  const { changed, languages } = write();
+  console.log(`data/lang/ — ${languages} languages and the index; data/map.json — ${changed} file(s) rewritten.`);
 }

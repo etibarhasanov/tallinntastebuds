@@ -65,8 +65,8 @@ jobs:
         run: node tools/stories.mjs --tick
 
       # The same gate every other path to the live site goes through: this
-      # writes data/restaurants.json, so it is held to the same standard as a
-      # person writing it.
+      # writes data/restaurants.json and the data/map.json the map reads out
+      # of it, so it is held to the same standard as a person writing them.
       - name: Validate data
         if: steps.tick.outputs.changed == 'true'
         run: node tools/validate.mjs
