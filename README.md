@@ -12408,6 +12408,14 @@ first report with an empty trail — no press, no place opened — is a view on
 which somebody looked and left, and **Pressed nothing** is that share of the
 views that reported.
 
+That first report goes the first time the page is hidden, though, not the
+last — a glance at a message is enough — and the flashcards, which people use
+in bursts with the phone put down between cards, read six views in ten as
+pressed nothing when some of those visitors came back and studied. Since
+2026-10-06 a page whose first report pressed nothing and whose later one does
+says so once, and that view comes off **Pressed nothing** again. The days
+before it read high, the flashcards most of all.
+
 **Journeys** is where a visit begins and where it goes. **Where they land**
 is the page a browser's first view of the day was on, one per visitor, which
 the pages table cannot say: the map is the most viewed page whether or not

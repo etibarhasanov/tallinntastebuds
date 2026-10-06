@@ -321,6 +321,7 @@ window.TTBTrack = (function () {
   var walked = {};     // name -> true, once it is in a trail — THE ORDER THEY CAME IN
   var earlier = '';    // the last name reported, this page or the one before it in this tab
   var fresh = true;    // no report has left this page yet, so the first says the page opened
+  var quiet = false;   // the first report went with nothing pressed, and nothing has been since
   var who = '';        // 'new' or 'back', once arrive() has read the dates
   var shown = 0;       // milliseconds on screen, since the last report
   var since = null;    // when the page last came on screen, null while hidden
@@ -650,6 +651,18 @@ window.TTBTrack = (function () {
       places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(), phone: phoneArm(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (via) body.via = via;
+    /* Whether this view pressed nothing is decided on its first report, and
+       a first report is sent the first time the page is hidden — a glance at
+       a message, a phone locked between two cards — so a visitor who came
+       back and used the page had already been counted as one who looked and
+       left. The first report still says so, since it may be the only one;
+       the first later report that carries a trail takes it back, once.
+       countLeave() in functions/api/_visitors.js is the other half. */
+    if (fresh) quiet = !trail.length;
+    else if (quiet && trail.length) {
+      body.woke = true;
+      quiet = false;
+    }
     if (first) {
       body.first = true;
       body.lang = arrivedIn || lang;

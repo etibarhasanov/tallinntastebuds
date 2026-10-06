@@ -109,6 +109,14 @@
  * pressed and no place opened: the views where somebody looked and left.
  * Both come off the report the flows read, so they cost the page nothing.
  *
+ * The first put-away report is sent the first time the page is hidden, not
+ * the last, and on the flashcards — studied in short bursts, the phone put
+ * down between two cards — that read six views in ten as idle that were not
+ * all idle. So a page whose first report pressed nothing and whose later one
+ * does says `woke`, once, and that takes the `idle` back: a count of -1
+ * under the same kind, which the range sums like any other. Before
+ * 2026-10-06 nobody took anything back, and idle reads high on those days.
+ *
  * WHERE A VISIT BEGINS, AND WHERE IT GOES
  *
  * The page a browser's first view of the day was — `entry`, one per
@@ -867,6 +875,12 @@ export async function countLeave(context, body) {
     if (!Array.isArray(body.trail) || !body.trail.length) facts.push(['idle', page, 1]);
     const before = stepBefore(request, body.earlier);
     if (before && before.page !== page) facts.push(['nav', before.page + '>' + page, 1]);
+  } else if (body.woke === true && Array.isArray(body.trail) && body.trail.length) {
+    /* A view counted idle on its first report that was used after all —
+       THE VIEWS THAT REPORTED. Filed under today, which is the view's own day
+       but for one that crossed midnight UTC; readVisitors() sums the range
+       and holds a page's idle between nought and its left. */
+    facts.push(['idle', page, -1]);
   }
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
   if (secs > 0) facts.push(['time', page, secs]);
@@ -1236,6 +1250,10 @@ export async function readVisitors(env, span, ui, spoken) {
     pages: PAGES
       .filter((p) => pages.has(p.id))
       .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))
+      /* A `woke` takes back what its first report counted, so the sum cannot
+         honestly pass either end; one forged, or a range that begins between
+         the two reports, could — THE VIEWS THAT REPORTED. */
+      .map((p) => ({ ...p, idle: Math.min(Math.max(0, p.idle), p.left) }))
       .sort((a, b) => b.views - a.views),
     entries: most(entries).map((e) => ({ ...e, name: pageName(ui, e.id) })),
     found: most(found),
