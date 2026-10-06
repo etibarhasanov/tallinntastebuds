@@ -608,6 +608,10 @@ function deckAnswer(deck, cards, own, known) {
         back: c.back,
         forms: Array.isArray(c.forms) && c.forms.length ? c.forms : null,
         sentence: isSentence(c.sentence) ? c.sentence : null,
+        /* How the case on a card in a lesson's deck is built, out of the
+           word's three forms. Only the case decks carry it, and the validator
+           holds its arithmetic; a card of somebody's own never has one. */
+        build: c.build || null,
         known: was.known,
         due: was.due
       };

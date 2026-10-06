@@ -246,6 +246,32 @@
 }
 .flash-form.is-first { color: var(--ink); }
 
+/* How the case on a card in a lesson's deck is built: the same row of three,
+   with the form the ending goes on in the accent rather than the ink — it is
+   not what was asked, it is what the next line is made of — and under it the
+   sum, koka + na → kokana, in the same mono, the ending in the accent so the
+   eye goes from the one picked out above to the one picked out below. The
+   case's name and what it does close the line, and wrap under it rather than
+   squeezing the sum at 390px. */
+.flash-form.is-stem,
+.flash-end {
+  color: var(--accent);
+  font-weight: 600;
+}
+.flash-build .flash-forms { margin-bottom: 2px; }
+.flash-sum {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 12px;
+  margin: 0 0 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+.flash-case { color: var(--muted); }
+
 /* The word in a sentence, at the foot of the card. Two lines: the Estonian in
    the body face, because it is a sentence and this site sets sentences in
    Literata, and what it means under it in the muted tone. A word on its own is

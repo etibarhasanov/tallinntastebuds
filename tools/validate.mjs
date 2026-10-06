@@ -501,6 +501,60 @@ if (decksFile !== null) {
             });
           }
         }
+
+        /* How the case on a card in a lesson's deck is built: the word's three
+           forms, which of them the ending goes on, the ending, and what that
+           makes — "kokk koka kokka", "koka + na → kokana" — and the case's
+           name and sense. Optional, because "Kus sa oled?" has no word in a
+           case to build, and only on a case deck, because everywhere else the
+           three forms are `forms` above. The arithmetic is checked rather than
+           trusted: a line on a card saying koka + na makes something other
+           than koka + na would be teaching the one thing the line is there to
+           teach wrong. And the form it ends at has to be on the front, or the
+           card is explaining a word it does not show. See **The cases, one at
+           a time** under **Flashcards** in README.md. */
+        if (card.build !== undefined) {
+          const b = card.build;
+          const name = `card "${card.id}" build`;
+          if (deck.level !== CASE_LEVEL) {
+            fail(at, `${name} is on a deck that is not a "${CASE_LEVEL}" deck — elsewhere the three forms are "forms"`);
+          } else if (!isPlainObject(b) || !Array.isArray(b.forms) || b.forms.length !== 3 || !b.forms.every(isNonEmptyString)) {
+            fail(at, `${name} needs "forms": the three a dictionary gives, nominative, genitive and partitive`);
+          } else {
+            const on = b.on;
+            if (on !== undefined && !(Number.isInteger(on) && on >= 0 && on <= 2)) {
+              fail(at, `${name} has an "on" that is not 0, 1 or 2`);
+            }
+            if ((b.from === undefined) !== (b.end === undefined)) {
+              fail(at, `${name} needs both "from" and "end", or neither`);
+            } else if (b.from !== undefined) {
+              if (!isNonEmptyString(b.from) || !isNonEmptyString(b.end)) {
+                fail(at, `${name} has an empty "from" or "end"`);
+              } else if (b.makes !== b.from + b.end) {
+                fail(at, `${name} says ${b.from} + ${b.end} makes "${b.makes}"`);
+              } else if (on !== undefined && b.forms[on] !== b.from) {
+                fail(at, `${name} builds on "${b.from}" but marks "${b.forms[on]}" as the form it comes from`);
+              }
+            } else if (on === undefined) {
+              fail(at, `${name} has no ending and no "on", so nothing on it says which form the card is in`);
+            } else if (b.makes !== b.forms[on]) {
+              fail(at, `${name} marks "${b.forms[on]}" but says the card is "${b.makes}"`);
+            }
+            if (b.short !== undefined && (!isNonEmptyString(b.short) || b.from === undefined)) {
+              fail(at, `${name} has a "short" with no ending it is short for`);
+            }
+            const shown = b.short !== undefined ? b.short : b.makes;
+            if (!isNonEmptyString(shown) || !card.front.toLowerCase().includes(shown.toLowerCase())) {
+              fail(at, `${name} ends at "${shown}", which is not on the front "${card.front}"`);
+            }
+            if (!isPlainObject(b.case) || !isNonEmptyString(b.case.et)) {
+              fail(at, `${name} has no case named`);
+            } else {
+              const { et, ...means } = b.case;
+              said(means, at, `${name} case`);
+            }
+          }
+        }
       });
     });
 
