@@ -618,6 +618,8 @@
   "flashErrGeneric": "Tämä ei onnistunut. Yritä hetken päästä uudelleen.",
   "flashErrOff": "Tässä sivuston kopiossa ei muisteta mitään, joten alla olevat pakat eivät säilytä kohtaasi.",
   "flashGrammar": "Kielioppi",
+  "flashCases": "Sijamuodot yksi kerrallaan",
+  "flashToCards": "Selvä — kortteihin",
   "flashUnread": "Ei vielä luettu",
   "flashRead": "Luettu",
   "flashGotIt": "Selvä",

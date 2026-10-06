@@ -618,6 +618,8 @@
   "flashErrGeneric": "See ei õnnestunud. Proovi hetke pärast uuesti.",
   "flashErrOff": "Selles saidi koopias ei jäeta midagi meelde, nii et allolevad pakid ei hoia sinu kohta.",
   "flashGrammar": "Grammatika",
+  "flashCases": "Käänded ükshaaval",
+  "flashToCards": "Selge — kaartide juurde",
   "flashUnread": "Veel lugemata",
   "flashRead": "Loetud",
   "flashGotIt": "Selge",

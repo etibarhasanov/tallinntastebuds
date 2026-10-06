@@ -106,7 +106,7 @@ function inEnglish(pack) {
  * case entirely and follow the link; the block above onRequest() says why. */
 const TITLE = 'Estonian flashcards';
 const DESCRIPTION =
-  'Forty-seven decks of Estonian, from the first twenty words to a jacket with a ' +
+  'Fifty-two decks of Estonian, from the first twenty words to a jacket with a ' +
   'broken zip — the word, its three forms and a sentence to say it in.';
 
 /* The card an unfurler draws, which is this page's own and not the site's.
@@ -173,10 +173,17 @@ function deckList(decks, lessons, songs) {
     '</li>';
   /* And the lessons as a second list under their own heading, the way the
      page draws them — a lesson is a name and a line the same as a deck is,
-     so the same row draws it. */
+     so the same row draws it. The cases taught one at a time are a third,
+     each lesson followed by the deck it names, and those decks are left out
+     of the first list so that each is linked once, where it belongs. */
+  const grammar = lessons.filter((l) => !l.deck);
+  const cases = lessons.filter((l) => l.deck);
+  const after = new Set(cases.map((l) => l.deck));
+  const steps = cases.flatMap((l) => [l, ...decks.filter((d) => d.id === l.deck)]);
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
-    '<ol>' + decks.map(row).join('') + '</ol>' +
-    (lessons.length ? '<h2>Grammar</h2><ol>' + lessons.map(row).join('') + '</ol>' : '') +
+    '<ol>' + decks.filter((d) => !after.has(d.id)).map(row).join('') + '</ol>' +
+    (grammar.length ? '<h2>Grammar</h2><ol>' + grammar.map(row).join('') + '</ol>' : '') +
+    (steps.length ? '<h2>The cases, one by one</h2><ol>' + steps.map(row).join('') + '</ol>' : '') +
     (songs.length ? '<h2>Songs</h2><ol>' + songs.map(row).join('') + '</ol>' : '');
 }
 

@@ -2,8 +2,8 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: forty-seven decks of Estonian, two
- * thousand four hundred and twelve cards, Estonian on the front and what it
+ * menu. This is the other half of that: fifty-two decks of Estonian, two
+ * thousand four hundred and eighty-two cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
  * functions/_middleware.js — for the reason splitwise does: it is not the map,
@@ -408,12 +408,16 @@ async function shippedLessons(context) {
 
 /* A lesson as the page reads it: its name and line for the shelf, its body
    when it is the one open, and whether this person has pressed Got it on it —
-   which is a known row under GRAMMAR_DECK, read the way a card's is. */
+   which is a known row under GRAMMAR_DECK, read the way a card's is. And the
+   deck that follows it, for a case lesson: the page draws that deck straight
+   under the lesson's tile, and Got it goes on into it rather than back to the
+   shelf. */
 function lessonAnswer(lesson, known, whole) {
   return {
     id: lesson.id,
     name: lesson.name,
     why: lesson.why || null,
+    deck: lesson.deck || null,
     ...(whole ? { body: lesson.body } : {}),
     read: stateOf(known, GRAMMAR_DECK, lesson.id).known
   };

@@ -35123,6 +35123,716 @@
           }
         }
       ]
+    },
+    {
+      "id": "cases-three-cards",
+      "name": {
+        "en": "The first three cases — the cards",
+        "az": "İlk üç hal — kartlar",
+        "ru": "Первые три падежа — карточки"
+      },
+      "why": {
+        "en": "Short phrases in the first three cases, for after the lesson",
+        "az": "İlk üç halda qısa ifadələr, dərsdən sonra üçün",
+        "ru": "Короткие фразы на первые три падежа, после урока"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "ema-leib",
+          "front": "Ema leib",
+          "back": {
+            "en": "Mum's bread",
+            "az": "Ananın çörəyi",
+            "ru": "Мамин хлеб"
+          }
+        },
+        {
+          "id": "tallinna-vanalinn",
+          "front": "Tallinna vanalinn",
+          "back": {
+            "en": "Tallinn's old town",
+            "az": "Tallinnin köhnə şəhəri",
+            "ru": "Старый город Таллинна"
+          }
+        },
+        {
+          "id": "laua-all",
+          "front": "Laua all",
+          "back": {
+            "en": "Under the table",
+            "az": "Stolun altında",
+            "ru": "Под столом"
+          }
+        },
+        {
+          "id": "maja-ees",
+          "front": "Maja ees",
+          "back": {
+            "en": "In front of the house",
+            "az": "Evin qabağında",
+            "ru": "Перед домом"
+          }
+        },
+        {
+          "id": "ma-ostan-leiva",
+          "front": "Ma ostan leiva",
+          "back": {
+            "en": "I'll buy the loaf",
+            "az": "Çörəyi alıram",
+            "ru": "Я куплю хлеб"
+          }
+        },
+        {
+          "id": "ma-soon-leiba",
+          "front": "Ma söön leiba",
+          "back": {
+            "en": "I'm eating bread",
+            "az": "Çörək yeyirəm",
+            "ru": "Я ем хлеб"
+          }
+        },
+        {
+          "id": "kaks-kohvi",
+          "front": "Kaks kohvi",
+          "back": {
+            "en": "Two coffees",
+            "az": "İki qəhvə",
+            "ru": "Два кофе"
+          }
+        },
+        {
+          "id": "viis-eurot",
+          "front": "Viis eurot",
+          "back": {
+            "en": "Five euros",
+            "az": "Beş avro",
+            "ru": "Пять евро"
+          }
+        },
+        {
+          "id": "klaas-vett",
+          "front": "Klaas vett",
+          "back": {
+            "en": "A glass of water",
+            "az": "Bir stəkan su",
+            "ru": "Стакан воды"
+          }
+        },
+        {
+          "id": "natuke-piima",
+          "front": "Natuke piima",
+          "back": {
+            "en": "A little milk",
+            "az": "Bir az süd",
+            "ru": "Немного молока"
+          }
+        },
+        {
+          "id": "mul-ei-ole-aega",
+          "front": "Mul ei ole aega",
+          "back": {
+            "en": "I have no time",
+            "az": "Vaxtım yoxdur",
+            "ru": "У меня нет времени"
+          }
+        },
+        {
+          "id": "ma-ootan-sind",
+          "front": "Ma ootan sind",
+          "back": {
+            "en": "I'm waiting for you",
+            "az": "Səni gözləyirəm",
+            "ru": "Я жду тебя"
+          }
+        },
+        {
+          "id": "ma-armastan-sind",
+          "front": "Ma armastan sind",
+          "back": {
+            "en": "I love you",
+            "az": "Səni sevirəm",
+            "ru": "Я тебя люблю"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-inside-cards",
+      "name": {
+        "en": "Into, in, out of — the cards",
+        "az": "İçinə, içində, içindən — kartlar",
+        "ru": "Куда, где, откуда: внутри — карточки"
+      },
+      "why": {
+        "en": "Into, in and out of the kitchen, the town and the shop",
+        "az": "Mətbəxə, şəhərə, mağazaya — içinə, içində, içindən",
+        "ru": "Кухня, город и магазин: куда, где, откуда"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "kus-sa-oled",
+          "front": "Kus sa oled?",
+          "back": {
+            "en": "Where are you?",
+            "az": "Haradasan?",
+            "ru": "Где ты?"
+          }
+        },
+        {
+          "id": "kuhu-sa-lahed",
+          "front": "Kuhu sa lähed?",
+          "back": {
+            "en": "Where are you going?",
+            "az": "Hara gedirsən?",
+            "ru": "Куда ты идёшь?"
+          }
+        },
+        {
+          "id": "kust-sa-parit-oled",
+          "front": "Kust sa pärit oled?",
+          "back": {
+            "en": "Where are you from?",
+            "az": "Haralısan?",
+            "ru": "Откуда ты родом?"
+          }
+        },
+        {
+          "id": "kooki",
+          "front": "Kööki",
+          "back": {
+            "en": "Into the kitchen",
+            "az": "Mətbəxə",
+            "ru": "На кухню"
+          }
+        },
+        {
+          "id": "koogis",
+          "front": "Köögis",
+          "back": {
+            "en": "In the kitchen",
+            "az": "Mətbəxdə",
+            "ru": "На кухне"
+          }
+        },
+        {
+          "id": "koogist",
+          "front": "Köögist",
+          "back": {
+            "en": "Out of the kitchen",
+            "az": "Mətbəxdən",
+            "ru": "Из кухни"
+          }
+        },
+        {
+          "id": "linna",
+          "front": "Linna",
+          "back": {
+            "en": "Into town",
+            "az": "Şəhərə",
+            "ru": "В город"
+          }
+        },
+        {
+          "id": "linnas",
+          "front": "Linnas",
+          "back": {
+            "en": "In town",
+            "az": "Şəhərdə",
+            "ru": "В городе"
+          }
+        },
+        {
+          "id": "poodi",
+          "front": "Poodi",
+          "back": {
+            "en": "To the shop",
+            "az": "Mağazaya",
+            "ru": "В магазин"
+          }
+        },
+        {
+          "id": "poes",
+          "front": "Poes",
+          "back": {
+            "en": "In the shop",
+            "az": "Mağazada",
+            "ru": "В магазине"
+          }
+        },
+        {
+          "id": "poest",
+          "front": "Poest",
+          "back": {
+            "en": "From the shop",
+            "az": "Mağazadan",
+            "ru": "Из магазина"
+          }
+        },
+        {
+          "id": "eestis",
+          "front": "Eestis",
+          "back": {
+            "en": "In Estonia",
+            "az": "Estoniyada",
+            "ru": "В Эстонии"
+          }
+        },
+        {
+          "id": "eesti-keeles",
+          "front": "Eesti keeles",
+          "back": {
+            "en": "In Estonian",
+            "az": "Eston dilində",
+            "ru": "По-эстонски"
+          }
+        },
+        {
+          "id": "puust",
+          "front": "Puust",
+          "back": {
+            "en": "Made of wood",
+            "az": "Taxtadan",
+            "ru": "Из дерева"
+          }
+        },
+        {
+          "id": "me-raagime-filmist",
+          "front": "Me räägime filmist",
+          "back": {
+            "en": "We're talking about the film",
+            "az": "Film haqqında danışırıq",
+            "ru": "Мы говорим о фильме"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-surface-cards",
+      "name": {
+        "en": "Onto, on, off — the cards",
+        "az": "Üstünə, üstündə, üstündən — kartlar",
+        "ru": "На, на чём, с чего — карточки"
+      },
+      "why": {
+        "en": "On the table, to a friend, and who has what",
+        "az": "Stolun üstündə, dosta, və kimdə nə var",
+        "ru": "На столе, другу, и у кого что есть"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "lauale",
+          "front": "Lauale",
+          "back": {
+            "en": "Onto the table",
+            "az": "Stolun üstünə",
+            "ru": "На стол"
+          }
+        },
+        {
+          "id": "laual",
+          "front": "Laual",
+          "back": {
+            "en": "On the table",
+            "az": "Stolun üstündə",
+            "ru": "На столе"
+          }
+        },
+        {
+          "id": "laualt",
+          "front": "Laualt",
+          "back": {
+            "en": "Off the table",
+            "az": "Stolun üstündən",
+            "ru": "Со стола"
+          }
+        },
+        {
+          "id": "sobrale",
+          "front": "Sõbrale",
+          "back": {
+            "en": "To a friend",
+            "az": "Dosta",
+            "ru": "Другу"
+          }
+        },
+        {
+          "id": "sobralt",
+          "front": "Sõbralt",
+          "back": {
+            "en": "From a friend",
+            "az": "Dostdan",
+            "ru": "От друга"
+          }
+        },
+        {
+          "id": "helista-mulle",
+          "front": "Helista mulle!",
+          "back": {
+            "en": "Call me!",
+            "az": "Mənə zəng et!",
+            "ru": "Позвони мне!"
+          }
+        },
+        {
+          "id": "mul-on",
+          "front": "Mul on",
+          "back": {
+            "en": "I have",
+            "az": "Məndə var",
+            "ru": "У меня есть"
+          }
+        },
+        {
+          "id": "sul-on",
+          "front": "Sul on",
+          "back": {
+            "en": "You have",
+            "az": "Səndə var",
+            "ru": "У тебя есть"
+          }
+        },
+        {
+          "id": "sobral-on-koer",
+          "front": "Sõbral on koer",
+          "back": {
+            "en": "My friend has a dog",
+            "az": "Dostumun iti var",
+            "ru": "У друга есть собака"
+          }
+        },
+        {
+          "id": "kusi-temalt",
+          "front": "Küsi temalt",
+          "back": {
+            "en": "Ask him",
+            "az": "Ondan soruş",
+            "ru": "Спроси у него"
+          }
+        },
+        {
+          "id": "tool",
+          "front": "Tööl",
+          "back": {
+            "en": "At work",
+            "az": "İşdə",
+            "ru": "На работе"
+          }
+        },
+        {
+          "id": "toole",
+          "front": "Tööle",
+          "back": {
+            "en": "To work",
+            "az": "İşə",
+            "ru": "На работу"
+          }
+        },
+        {
+          "id": "turul",
+          "front": "Turul",
+          "back": {
+            "en": "At the market",
+            "az": "Bazarda",
+            "ru": "На рынке"
+          }
+        },
+        {
+          "id": "esmaspaeval",
+          "front": "Esmaspäeval",
+          "back": {
+            "en": "On Monday",
+            "az": "Bazar ertəsi",
+            "ru": "В понедельник"
+          }
+        },
+        {
+          "id": "hommikul",
+          "front": "Hommikul",
+          "back": {
+            "en": "In the morning",
+            "az": "Səhər",
+            "ru": "Утром"
+          }
+        },
+        {
+          "id": "mul-on-kulm",
+          "front": "Mul on külm",
+          "back": {
+            "en": "I'm cold",
+            "az": "Mən üşüyürəm",
+            "ru": "Мне холодно"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-becoming-cards",
+      "name": {
+        "en": "Becoming, and until — the cards",
+        "az": "Olmaq və -dək — kartlar",
+        "ru": "Стать и «до» — карточки"
+      },
+      "why": {
+        "en": "What somebody becomes, and until when",
+        "az": "Kim olur, və nə vaxtadək",
+        "ru": "Кем становятся и до каких пор"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "ta-sai-arstiks",
+          "front": "Ta sai arstiks",
+          "back": {
+            "en": "She became a doctor",
+            "az": "O, həkim oldu",
+            "ru": "Она стала врачом"
+          }
+        },
+        {
+          "id": "me-saime-sopradeks",
+          "front": "Me saime sõpradeks",
+          "back": {
+            "en": "We became friends",
+            "az": "Biz dost olduq",
+            "ru": "Мы стали друзьями"
+          }
+        },
+        {
+          "id": "ilm-laheb-kulmaks",
+          "front": "Ilm läheb külmaks",
+          "back": {
+            "en": "It's turning cold",
+            "az": "Hava soyuyur",
+            "ru": "Становится холодно"
+          }
+        },
+        {
+          "id": "milleks",
+          "front": "Milleks?",
+          "back": {
+            "en": "What for?",
+            "az": "Nə üçün?",
+            "ru": "Зачем?"
+          }
+        },
+        {
+          "id": "homseks",
+          "front": "Homseks",
+          "back": {
+            "en": "For tomorrow",
+            "az": "Sabah üçün",
+            "ru": "На завтра"
+          }
+        },
+        {
+          "id": "ohtuks",
+          "front": "Õhtuks",
+          "back": {
+            "en": "By evening",
+            "az": "Axşama",
+            "ru": "К вечеру"
+          }
+        },
+        {
+          "id": "viieni",
+          "front": "Viieni",
+          "back": {
+            "en": "Until five",
+            "az": "Beşədək",
+            "ru": "До пяти"
+          }
+        },
+        {
+          "id": "homseni",
+          "front": "Homseni",
+          "back": {
+            "en": "Until tomorrow",
+            "az": "Sabahadək",
+            "ru": "До завтра"
+          }
+        },
+        {
+          "id": "mis-ajani",
+          "front": "Mis ajani?",
+          "back": {
+            "en": "Until when?",
+            "az": "Nə vaxtadək?",
+            "ru": "До каких пор?"
+          }
+        },
+        {
+          "id": "kella-kaheni",
+          "front": "Kella kaheni",
+          "back": {
+            "en": "Until two o'clock",
+            "az": "Saat ikiyədək",
+            "ru": "До двух часов"
+          }
+        },
+        {
+          "id": "tartuni",
+          "front": "Tartuni",
+          "back": {
+            "en": "As far as Tartu",
+            "az": "Tartuya qədər",
+            "ru": "До Тарту"
+          }
+        },
+        {
+          "id": "hommikust-ohtuni",
+          "front": "Hommikust õhtuni",
+          "back": {
+            "en": "From morning till night",
+            "az": "Səhərdən axşamadək",
+            "ru": "С утра до вечера"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-with-cards",
+      "name": {
+        "en": "As, without, with — the cards",
+        "az": "Kimi, -sız, -la — kartlar",
+        "ru": "Кем, без, с — карточки"
+      },
+      "why": {
+        "en": "Coffee with and without, and who comes along",
+        "az": "Südlü və şəkərsiz qəhvə, və kimlə gəlirsən",
+        "ru": "Кофе с молоком и без сахара, и с кем вы"
+      },
+      "level": "case",
+      "cards": [
+        {
+          "id": "ta-tootab-kokana",
+          "front": "Ta töötab kokana",
+          "back": {
+            "en": "He works as a cook",
+            "az": "O, aşpaz işləyir",
+            "ru": "Он работает поваром"
+          }
+        },
+        {
+          "id": "lapsena",
+          "front": "Lapsena",
+          "back": {
+            "en": "As a child",
+            "az": "Uşaq ikən",
+            "ru": "Ребёнком"
+          }
+        },
+        {
+          "id": "opetajana",
+          "front": "Õpetajana",
+          "back": {
+            "en": "As a teacher",
+            "az": "Müəllim kimi",
+            "ru": "Учителем"
+          }
+        },
+        {
+          "id": "kohv-suhkruta",
+          "front": "Kohv suhkruta",
+          "back": {
+            "en": "Coffee without sugar",
+            "az": "Şəkərsiz qəhvə",
+            "ru": "Кофе без сахара"
+          }
+        },
+        {
+          "id": "piimata",
+          "front": "Piimata",
+          "back": {
+            "en": "Without milk",
+            "az": "Südsüz",
+            "ru": "Без молока"
+          }
+        },
+        {
+          "id": "vihmavarjuta",
+          "front": "Vihmavarjuta",
+          "back": {
+            "en": "Without an umbrella",
+            "az": "Çətirsiz",
+            "ru": "Без зонта"
+          }
+        },
+        {
+          "id": "ilma-sinuta",
+          "front": "Ilma sinuta",
+          "back": {
+            "en": "Without you",
+            "az": "Sənsiz",
+            "ru": "Без тебя"
+          }
+        },
+        {
+          "id": "kohv-piimaga",
+          "front": "Kohv piimaga",
+          "back": {
+            "en": "Coffee with milk",
+            "az": "Südlü qəhvə",
+            "ru": "Кофе с молоком"
+          }
+        },
+        {
+          "id": "sobraga",
+          "front": "Sõbraga",
+          "back": {
+            "en": "With a friend",
+            "az": "Dostla",
+            "ru": "С другом"
+          }
+        },
+        {
+          "id": "minuga",
+          "front": "Minuga",
+          "back": {
+            "en": "With me",
+            "az": "Mənimlə",
+            "ru": "Со мной"
+          }
+        },
+        {
+          "id": "kellega",
+          "front": "Kellega?",
+          "back": {
+            "en": "With whom?",
+            "az": "Kimlə?",
+            "ru": "С кем?"
+          }
+        },
+        {
+          "id": "bussiga",
+          "front": "Bussiga",
+          "back": {
+            "en": "By bus",
+            "az": "Avtobusla",
+            "ru": "На автобусе"
+          }
+        },
+        {
+          "id": "rongiga",
+          "front": "Rongiga",
+          "back": {
+            "en": "By train",
+            "az": "Qatarla",
+            "ru": "На поезде"
+          }
+        },
+        {
+          "id": "noaga",
+          "front": "Noaga",
+          "back": {
+            "en": "With a knife",
+            "az": "Bıçaqla",
+            "ru": "Ножом"
+          }
+        }
+      ]
     }
   ],
   "lessons": [
@@ -37125,6 +37835,1246 @@
             "en": "There is more grammar to come here, as the decks grow.",
             "az": "Dəstələr böyüdükcə burada daha çox qrammatika olacaq.",
             "ru": "Здесь будет ещё грамматика — по мере того, как растут наборы."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-three",
+      "deck": "cases-three-cards",
+      "name": {
+        "en": "The first three cases",
+        "az": "İlk üç hal",
+        "ru": "Первые три падежа"
+      },
+      "why": {
+        "en": "Nimetav, omastav, osastav — the three forms on the back of every card, and what each one is for",
+        "az": "Nimetav, omastav, osastav — hər kartın arxasındakı üç forma və hər birinin işi",
+        "ru": "Nimetav, omastav, osastav — три формы на обороте каждой карточки и зачем нужна каждая"
+      },
+      "body": [
+        {
+          "say": {
+            "en": "Estonian has fourteen cases, and here you meet them a few at a time: a short lesson, then a deck of cards that uses only what the lesson taught, then the next lesson. The first three you already have. Every noun card shows them under its meaning — *leib · leiva · leiba* — and this lesson says what each one does. English has almost no cases left, so most of what follows is English word order and small words like *of* and *some*, turned into endings.",
+            "az": "Eston dilində on dörd hal var, və burada onları bir neçə-bir neçə öyrənirsiniz: qısa dərs, sonra yalnız həmin dərsdəkini işlədən kart dəsti, sonra növbəti dərs. İlk üçü artıq sizdədir — hər ismin kartında mənanın altında durur: *leib · leiva · leiba*. Bu sistem sizə tanış gələcək: Azərbaycan dili kimi eston dili də halı sözün sonuna şəkilçi ilə qoşur. Sadəcə bəzən sözün kökü də bir az dəyişir — *leib*, amma *leiva* — və hal adları, sualları başqadır.",
+            "ru": "В эстонском четырнадцать падежей, и здесь они идут по нескольку за раз: короткий урок, потом колода карточек только на то, что было в уроке, потом следующий урок. Первые три у вас уже есть — на каждой карточке с существительным они стоят под значением: *leib · leiva · leiba*. Сами падежи для вас не новость: русский тоже меняет окончание, чтобы показать роль слова. Новое другое — в эстонском нет предлогов «в», «на», «из», «с», «без». Всё, что русский делает предлогом и падежом вместе, эстонский делает одним окончанием."
+          }
+        },
+        {
+          "head": {
+            "en": "Nimetav — kes? mis? — who? what?",
+            "az": "Nimetav — kes? mis? — adlıq hal",
+            "ru": "Nimetav — kes? mis? — именительный"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kes? mis?",
+                  "laps",
+                  "lapsed"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              },
+              {
+                "et": [
+                  "mis?",
+                  "leib",
+                  "leivad"
+                ],
+                "means": {
+                  "en": "black bread",
+                  "az": "qara çörək",
+                  "ru": "чёрный хлеб"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Laps sööb leiba.",
+              "en": "The child is eating bread.",
+              "az": "Uşaq çörək yeyir.",
+              "ru": "Ребёнок ест хлеб."
+            },
+            {
+              "et": "Leib on laual.",
+              "en": "The bread is on the table.",
+              "az": "Çörək stolun üstündədir.",
+              "ru": "Хлеб на столе."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "The word as the dictionary gives it, and the one doing the thing: *Laps sööb* — the child is eating. *Leib on laual* — the bread is on the table. It asks *kes?* for a person and *mis?* for a thing, just as English asks *who?* and *what?*. The front of every card is this form.",
+            "az": "Adlıq hal: sözün lüğətdəki forması, işi görən. *Laps sööb* — uşaq yeyir. *Leib on laual* — çörək stolun üstündədir. Sualları da bizimki kimidir: *kes?* — kim?, *mis?* — nə?. Kartların ön üzündəki söz həmişə bu formadadır.",
+            "ru": "Именительный: слово как в словаре, тот, кто действует. *Laps sööb* — ребёнок ест. *Leib on laual* — хлеб на столе. Вопросы те же: *kes?* — кто?, *mis?* — что?. На лицевой стороне карточки слово всегда в этой форме."
+          }
+        },
+        {
+          "head": {
+            "en": "Omastav — kelle? mille? — whose? of what?",
+            "az": "Omastav — kelle? mille? — yiyəlik hal",
+            "ru": "Omastav — kelle? mille? — родительный"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kelle? mille?",
+                  "lapse",
+                  "laste"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              },
+              {
+                "et": [
+                  "mille?",
+                  "leiva",
+                  "leibade"
+                ],
+                "means": {
+                  "en": "black bread",
+                  "az": "qara çörək",
+                  "ru": "чёрный хлеб"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "See on lapse tuba.",
+              "en": "This is the child's room.",
+              "az": "Bu, uşağın otağıdır.",
+              "ru": "Это комната ребёнка."
+            },
+            {
+              "et": "Kass on laua all.",
+              "en": "The cat is under the table.",
+              "az": "Pişik stolun altındadır.",
+              "ru": "Кошка под столом."
+            },
+            {
+              "et": "Ma ostan ühe leiva.",
+              "en": "I'll buy one loaf.",
+              "az": "Bir çörək alıram.",
+              "ru": "Я куплю одну буханку."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "The owner, and it goes first, like the English *'s*: *ema leib* — Mum's bread, *Tallinna vanalinn* — Tallinn's old town. The thing owned does not change at all. It also stands in front of the small words English puts first: *laua all* — under the table, *maja ees* — in front of the house. And it marks a whole object, a thing done to the end: *Ma ostan leiva* — I'll buy the loaf. English says that with *the* and with the verb; Estonian says it with the case. Last, and most useful: eleven of the fourteen cases are built on this form. Learn the omastav and the rest is an ending.",
+            "az": "Yiyəlik hal, və bizdə olduğu kimi sahib qabaqda gəlir: *ema leib* — ananın çörəyi, *Tallinna vanalinn* — Tallinnin köhnə şəhəri. Bir fərqə diqqət edin: bizdə sahib olunan şey də şəkilçi alır — çörək-i — eston dilində isə heç dəyişmir, *leib* elə *leib* qalır. Bizim *altında*, *qabağında* kimi qoşmalar da bu halı istəyir: *laua all* — stolun altında, *maja ees* — evin qabağında. Bir də bu forma bütöv, sona qədər görülən obyekti göstərir: *Ma ostan leiva* — çörəyi alıram, bütöv bir çörəyi. Bu, bizim müəyyən təsirlik halımızdır — çörəy-i — sadəcə eston dili onu yiyəlik formasında deyir. Və ən vacibi: on dörd haldan on biri bu formanın üstündə qurulur. Omastavı bilən qalanını şəkilçi ilə düzəldir.",
+            "ru": "Родительный принадлежности, но порядок другой: хозяин всегда впереди — *ema leib* — мамин хлеб, *Tallinna vanalinn* — старый город Таллинна. Само принадлежащее не меняется. Вместо предлогов здесь послелоги, и они тоже требуют этой формы: *laua all* — под столом, *maja ees* — перед домом. И ещё одно, чего в русском нет: этой формой отмечают целый, законченный объект — *Ma ostan leiva* — я куплю хлеб, буханку целиком. Русский говорит это совершенным видом глагола, эстонский — падежом. И главное: одиннадцать из четырнадцати падежей строятся на этой форме. Кто знает omastav, тому остаётся только окончание."
+          }
+        },
+        {
+          "head": {
+            "en": "Osastav — keda? mida? — some of",
+            "az": "Osastav — keda? mida? — qeyri-müəyyən təsirlik",
+            "ru": "Osastav — keda? mida? — «немного», «часть»"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "keda? mida?",
+                  "last",
+                  "lapsi"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              },
+              {
+                "et": [
+                  "mida?",
+                  "leiba",
+                  "leibu"
+                ],
+                "means": {
+                  "en": "black bread",
+                  "az": "qara çörək",
+                  "ru": "чёрный хлеб"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma ootan last.",
+              "en": "I'm waiting for the child.",
+              "az": "Uşağı gözləyirəm.",
+              "ru": "Я жду ребёнка."
+            },
+            {
+              "et": "Palun kaks leiba.",
+              "en": "Two loaves, please.",
+              "az": "İki çörək, zəhmət olmasa.",
+              "ru": "Две буханки, пожалуйста."
+            },
+            {
+              "et": "Mul ei ole leiba.",
+              "en": "I have no bread.",
+              "az": "Çörəyim yoxdur.",
+              "ru": "У меня нет хлеба."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Some of a thing, or an action that is not finished: *Ma söön leiba* — I'm eating bread. Against *Ma ostan leiva* above, it is the difference between *some bread* and *the loaf*. It comes after every number from two up, and the noun stays singular: *kaks kohvi* — two coffees, *viis eurot* — five euros. It comes after *no*: *Mul ei ole aega* — I have no time. And some verbs always take it, whatever the sense: *Ma armastan sind* — I love you, *Ma ootan sind* — I'm waiting for you.",
+            "az": "Bunu bizim qeyri-müəyyən təsirliklə tutuşdurun: çörək yeyirəm — *Ma söön leiba*; çörəyi aldım — *Ma ostsin leiva*. Bizdə fərqi bir -i verir, eston dilində iki ayrı hal. Saylardan sonra isim təkdə qalır, eynilə bizdəki kimi: iki qəhvə — *kaks kohvi*, beş avro — *viis eurot*. Bu, Azərbaycan dilinin sizə verdiyi ən böyük üstünlükdür — ingilis və rus dilində danışanlar məhz burada çaşır. İnkarda da bu forma gəlir: *Mul ei ole aega* — vaxtım yoxdur. Və bəzi fellər həmişə onu istəyir: *Ma armastan sind* — səni sevirəm, *Ma ootan sind* — səni gözləyirəm.",
+            "ru": "Частичный падеж, и русский родительный уже умеет почти всё, что он делает: «выпить чаю», «нет хлеба». *Ma söön leiba* — я ем хлеб, сколько-то, не весь; *Mul ei ole aega* — у меня нет времени. После чисел разница: русский говорит «два кофе», «пять евро», «две чашки» — то так, то эдак, а эстонский после любого числа от двух ставит osastav единственного числа: *kaks kohvi*, *viis eurot*, *sada eurot*. И глаголы чувства и ожидания всегда требуют его, хотя в русском там винительный: *Ma armastan sind* — я люблю тебя, *Ma ootan sind* — я жду тебя."
+          }
+        },
+        {
+          "say": {
+            "en": "The deck under this lesson is short phrases that use only these three. Turn them over, and when they feel easy, come back for the next three: into, in and out of.",
+            "az": "Bu dərsin altındakı dəst yalnız bu üç halı işlədən qısa ifadələrdir. Onları çevirin, rahat olanda isə növbəti üç hala keçin: içinə, içində, içindən.",
+            "ru": "В колоде под этим уроком короткие фразы только на эти три падежа. Переверните их, а когда станет легко, переходите к следующим трём: куда, где, откуда."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-inside",
+      "deck": "cases-inside-cards",
+      "name": {
+        "en": "Into, in, out of",
+        "az": "İçinə, içində, içindən",
+        "ru": "Куда, где, откуда: внутри"
+      },
+      "why": {
+        "en": "Sisseütlev, seesütlev, seestütlev — cases four to six, the inside of a thing",
+        "az": "Sisseütlev, seesütlev, seestütlev — dördüncüdən altıncıya qədər hallar, bir şeyin içi",
+        "ru": "Sisseütlev, seesütlev, seestütlev — падежи с четвёртого по шестой, внутри чего-то"
+      },
+      "body": [
+        {
+          "say": {
+            "en": "English has one question here and Estonian has three. English asks *where?* both for where you are and for where you are going; Estonian asks *kus?* — where? — *kuhu?* — where to? — and *kust?* — where from? — the old English *where*, *whither* and *whence*. Each answer is an ending, and each ending goes on the omastav, the second form on the card: *köök*, kitchen, has the omastav *köögi*, and so *köögisse*, *köögis*, *köögist*.",
+            "az": "Bu üç hal sizə ən tanış olanlardır, çünki onlar bizim yönlük, yerlik və çıxışlıq hallarımızdır. Suallar da eynidir: *kuhu?* — hara?, *kus?* — harada?, *kust?* — haradan?. Mətbəxə, mətbəxdə, mətbəxdən — *köögisse, köögis, köögist*. Şəkilçi omastav formasına, kartdakı ikinci formaya qoşulur: *köök* → *köögi* → *köögisse*. Bircə fərq var, onu aşağıda görəcəksiniz: eston dilində bu üçü bir şeyin içi üçündür, üstü üçün ayrıca üç hal var.",
+            "ru": "Русский здесь говорит предлогом и падежом сразу: в кухню, в кухне, из кухни. Эстонский — одним окончанием, и вопросов тоже три: *kuhu?* — куда?, *kus?* — где?, *kust?* — откуда?. Окончание ставится на omastav, вторую форму на карточке: *köök* — кухня, *köögi* — и дальше *köögisse*, *köögis*, *köögist*. Как и в русском, важно, внутрь чего-то или на поверхность, но выбирает это смысл, а не привычка слова — об этом ниже."
+          }
+        },
+        {
+          "head": {
+            "en": "Sisseütlev — kuhu? — into",
+            "az": "Sisseütlev — kuhu? — hara? (yönlük hal)",
+            "ru": "Sisseütlev — kuhu? — куда? (в + винительный)"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kuhu? millesse?",
+                  "köögisse · kööki",
+                  "köökidesse"
+                ],
+                "means": {
+                  "en": "kitchen",
+                  "az": "mətbəx",
+                  "ru": "кухня"
+                }
+              },
+              {
+                "et": [
+                  "kuhu?",
+                  "linnasse · linna",
+                  "linnadesse"
+                ],
+                "means": {
+                  "en": "town",
+                  "az": "şəhər",
+                  "ru": "город"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Lähme kööki!",
+              "en": "Let's go into the kitchen!",
+              "az": "Gəl mətbəxə gedək!",
+              "ru": "Пойдём на кухню!"
+            },
+            {
+              "et": "Ma sõidan homme linna.",
+              "en": "I'm going into town tomorrow.",
+              "az": "Sabah şəhərə gedirəm.",
+              "ru": "Завтра я еду в город."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Into: *Ma lähen kööki* — I'm going into the kitchen. *Tule linna!* — come into town. Many everyday words have a short form beside the long one — *kööki* and *köögisse*, *linna* and *linnasse*, *poodi* for the shop — and the short one is what you will hear. Both are right.",
+            "az": "Yönlük hal, -a/-ə: *Ma lähen kööki* — mətbəxə gedirəm. *Tule linna!* — şəhərə gəl! Çox işlənən sözlərin uzun formasının yanında qısası da var — *kööki* və *köögisse*, *linna* və *linnasse*, mağazaya *poodi* — və danışıqda qısasını eşidəcəksiniz. İkisi də düzdür.",
+            "ru": "Куда, внутрь: *Ma lähen kööki* — я иду на кухню. *Tule linna!* — приезжай в город. У частых слов рядом с длинной формой есть краткая — *kööki* и *köögisse*, *linna* и *linnasse*, *poodi* — в магазин — и в речи слышна чаще краткая. Правильны обе."
+          }
+        },
+        {
+          "head": {
+            "en": "Seesütlev — kus? — in",
+            "az": "Seesütlev — kus? — harada? (yerlik hal)",
+            "ru": "Seesütlev — kus? — где? (в + предложный)"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kus? milles?",
+                  "köögis",
+                  "köökides"
+                ],
+                "means": {
+                  "en": "kitchen",
+                  "az": "mətbəx",
+                  "ru": "кухня"
+                }
+              },
+              {
+                "et": [
+                  "kus?",
+                  "linnas",
+                  "linnades"
+                ],
+                "means": {
+                  "en": "town",
+                  "az": "şəhər",
+                  "ru": "город"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Kohv on köögis.",
+              "en": "The coffee is in the kitchen.",
+              "az": "Qəhvə mətbəxdədir.",
+              "ru": "Кофе на кухне."
+            },
+            {
+              "et": "Linnas on palju kohvikuid.",
+              "en": "There are a lot of cafés in town.",
+              "az": "Şəhərdə çoxlu kafe var.",
+              "ru": "В городе много кафе."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "In: *Ema on köögis* — Mum is in the kitchen. *Ma elan Tallinnas* — I live in Tallinn. It is also how Estonian says which language a thing is in: *eesti keeles* — in Estonian.",
+            "az": "Yerlik hal, -da/-də: *Ema on köögis* — anam mətbəxdədir. *Ma elan Tallinnas* — Tallinndə yaşayıram. Diqqət: eston dilində bu, yalnız içində deməkdir. Biz stolda da deyirik, mətbəxdə də — eston dili isə stol üçün başqa hal işlədir, *laual*. O, növbəti dərsdədir.",
+            "ru": "Где, внутри: *Ema on köögis* — мама на кухне. *Ma elan Tallinnas* — я живу в Таллинне. Вот где русская привычка подводит: по-русски «на кухне», а по-эстонски кухня — комната, внутри которой находишься, поэтому *köögis*. Эстонский решает по смыслу: внутри — эти три падежа, на поверхности — следующие три."
+          }
+        },
+        {
+          "head": {
+            "en": "Seestütlev — kust? — out of",
+            "az": "Seestütlev — kust? — haradan? (çıxışlıq hal)",
+            "ru": "Seestütlev — kust? — откуда? (из + родительный)"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kust? millest?",
+                  "köögist",
+                  "köökidest"
+                ],
+                "means": {
+                  "en": "kitchen",
+                  "az": "mətbəx",
+                  "ru": "кухня"
+                }
+              },
+              {
+                "et": [
+                  "kust?",
+                  "linnast",
+                  "linnadest"
+                ],
+                "means": {
+                  "en": "town",
+                  "az": "şəhər",
+                  "ru": "город"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Too piim köögist.",
+              "en": "Bring the milk from the kitchen.",
+              "az": "Südü mətbəxdən gətir.",
+              "ru": "Принеси молоко из кухни."
+            },
+            {
+              "et": "Ma tulen linnast kell kuus.",
+              "en": "I'm coming back from town at six.",
+              "az": "Saat altıda şəhərdən qayıdıram.",
+              "ru": "Я вернусь из города в шесть."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Out of, from: *Ta tuleb köögist* — she's coming out of the kitchen. *Kust sa pärit oled?* — where are you from? — *Ma olen Kanadast*, from Canada. A country ending in *-maa* takes the next lesson's ending instead: *Inglismaalt*, from England. And two uses English does with other words: what a thing is made of, *puust* — out of wood; and what you are talking about, *Me räägime filmist* — we're talking about the film.",
+            "az": "Çıxışlıq hal, -dan/-dən: *Ta tuleb köögist* — o, mətbəxdən çıxır. *Kust sa pärit oled?* — haralısan? — *Ma olen Aserbaidžaanist* — Azərbaycandanam. Bizdəki kimi, nədən düzəldiyini də deyir: *puust* — taxtadan. Bir yerdə isə fərqlidir: nədən danışırıq. Biz film haqqında deyirik, eston dili *filmist*: *Me räägime filmist* — film haqqında danışırıq.",
+            "ru": "Откуда, изнутри: *Ta tuleb köögist* — она выходит из кухни. *Kust sa pärit oled?* — откуда ты? — *Ma olen Ukrainast* — я из Украины. Осторожно: страны на -maa берут окончания поверхности из следующего урока — *Venemaalt*, из России. И ещё два случая, где русский берёт другой предлог: из чего сделано — *puust*, из дерева, это как в русском; а о чём говорят — *Me räägime filmist*, мы говорим о фильме: русский говорит «о», эстонский — «из»."
+          }
+        },
+        {
+          "say": {
+            "en": "The deck under this lesson is the kitchen, the town and the shop: into, in and out of. Next come the same three questions for the top of a thing, and for people.",
+            "az": "Bu dərsin dəsti mətbəx, şəhər və mağazadır: içinə, içində, içindən. Sonra eyni üç sual gəlir, amma bir şeyin üstü və insanlar üçün.",
+            "ru": "Колода под этим уроком — кухня, город и магазин: куда, где, откуда. Дальше те же три вопроса — для поверхности и для людей."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-surface",
+      "deck": "cases-surface-cards",
+      "name": {
+        "en": "Onto, on, off",
+        "az": "Üstünə, üstündə, üstündən",
+        "ru": "На, на чём, с чего"
+      },
+      "why": {
+        "en": "Alaleütlev, alalütlev, alaltütlev — cases seven to nine: the top of a thing, people, and having",
+        "az": "Alaleütlev, alalütlev, alaltütlev — yeddincidən doqquzuncuya qədər hallar: bir şeyin üstü, insanlar və sahib olmaq",
+        "ru": "Alaleütlev, alalütlev, alaltütlev — падежи с седьмого по девятый: поверхность, люди и «у меня есть»"
+      },
+      "body": [
+        {
+          "say": {
+            "en": "The same three questions as before — where to, where, where from — answered for the outside of a thing instead of the inside: *lauale*, *laual*, *laualt*. The endings are *-le*, *-l* and *-lt*, on the omastav again. They ask *kellele? kellel? kellelt?* for a person and *millele? millel? millelt?* for a thing.",
+            "az": "Bizdə bir dəst yer halı var və onu hər şey üçün işlədirik: stola, stolda, stoldan. Eston dili isə ikiyə bölür. İçi üçün əvvəlki üç hal, üstü və açıq yer üçün bu üçü: *lauale*, *laual*, *laualt* — stolun üstünə, üstündə, üstündən. Şəkilçilər *-le*, *-l*, *-lt*-dir və yenə omastav formasına qoşulur. Sualları: *kellele? kellel? kellelt?* — kimə? kimdə? kimdən?",
+            "ru": "Это русское «на», только снова без предлога: на стол — *lauale*, на столе — *laual*, со стола — *laualt*. Окончания *-le*, *-l*, *-lt*, опять на omastav. И у этих трёх падежей есть вторая работа, которую русский делает дательным и предлогами «у» и «от»: кому, у кого, от кого."
+          }
+        },
+        {
+          "head": {
+            "en": "Alaleütlev — kellele? millele? — onto, to",
+            "az": "Alaleütlev — kellele? millele? — kimə? nəyin üstünə?",
+            "ru": "Alaleütlev — kellele? millele? — на что? кому?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kellele? millele?",
+                  "lauale",
+                  "laudadele"
+                ],
+                "means": {
+                  "en": "table",
+                  "az": "stol",
+                  "ru": "стол"
+                }
+              },
+              {
+                "et": [
+                  "kellele?",
+                  "sõbrale",
+                  "sõpradele"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Pane leib lauale.",
+              "en": "Put the bread on the table.",
+              "az": "Çörəyi stolun üstünə qoy.",
+              "ru": "Положи хлеб на стол."
+            },
+            {
+              "et": "Ma kirjutan sõbrale.",
+              "en": "I'm writing to a friend.",
+              "az": "Dosta yazıram.",
+              "ru": "Я пишу другу."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Onto: *Pane tass lauale* — put the cup on the table. And to a person, where English says *to*: *Ma annan raha sõbrale* — I give the money to my friend. *Helista mulle!* — call me!",
+            "az": "Üstünə: *Pane tass lauale* — fincanı stolun üstünə qoy. Və adama, bizim yönlük hal kimi: *Ma annan raha sõbrale* — pulu dosta verirəm. *Helista mulle!* — mənə zəng et! Bizdə şəhərə də, dosta da eyni şəkilçidir; eston dilində adama həmişə *-le* gedir.",
+            "ru": "На что: *Pane tass lauale* — поставь чашку на стол. И кому — это русский дательный: *Ma annan raha sõbrale* — я даю деньги другу. *Helista mulle!* — позвони мне!"
+          }
+        },
+        {
+          "head": {
+            "en": "Alalütlev — kellel? millel? — on, at, and having",
+            "az": "Alalütlev — kellel? millel? — kimdə? nəyin üstündə?",
+            "ru": "Alalütlev — kellel? millel? — на чём? у кого?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kellel? millel?",
+                  "laual",
+                  "laudadel"
+                ],
+                "means": {
+                  "en": "table",
+                  "az": "stol",
+                  "ru": "стол"
+                }
+              },
+              {
+                "et": [
+                  "kellel?",
+                  "sõbral",
+                  "sõpradel"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Laual on kaks tassi.",
+              "en": "There are two cups on the table.",
+              "az": "Stolun üstündə iki fincan var.",
+              "ru": "На столе две чашки."
+            },
+            {
+              "et": "Sõbral on uus auto.",
+              "en": "My friend has a new car.",
+              "az": "Dostumun yeni maşını var.",
+              "ru": "У друга новая машина."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "On: *Tass on laual* — the cup is on the table. At open places, and at work: *turul* — at the market, *tööl* — at work. On a day: *esmaspäeval* — on Monday, *hommikul* — in the morning. And this is how Estonian says *have*, because in everyday speech it does without the verb: *Mul on auto* — at me is a car, I have a car. *Sõbral on koer* — my friend has a dog.",
+            "az": "Üstündə: *Tass on laual* — fincan stolun üstündədir. Açıq yerdə və işdə: *turul* — bazarda, *tööl* — işdə. Gündə: *esmaspäeval* — bazar ertəsi, *hommikul* — səhər. Və ən maraqlısı: danışıqda eston dili də sahib olmaq felini işlətmir, bizim kimi. Biz məndə var deyirik, onlar *mul on* — söz-söz, məndə var. *Sõbral on koer* — dostun iti var.",
+            "ru": "На чём: *Tass on laual* — чашка на столе. На открытом месте и на работе: *turul* — на рынке, *tööl* — на работе. Во времени: *esmaspäeval* — в понедельник, *hommikul* — утром. И то, что русскому знакомо лучше всех: глагол «иметь» в речи почти не нужен, говорят как по-русски — *Mul on auto*, у меня есть машина, слово в слово «у меня — есть». *Sõbral on koer* — у друга есть собака."
+          }
+        },
+        {
+          "head": {
+            "en": "Alaltütlev — kellelt? millelt? — off, from",
+            "az": "Alaltütlev — kellelt? millelt? — kimdən? nəyin üstündən?",
+            "ru": "Alaltütlev — kellelt? millelt? — с чего? от кого?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kellelt? millelt?",
+                  "laualt",
+                  "laudadelt"
+                ],
+                "means": {
+                  "en": "table",
+                  "az": "stol",
+                  "ru": "стол"
+                }
+              },
+              {
+                "et": [
+                  "kellelt?",
+                  "sõbralt",
+                  "sõpradelt"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Võta oma tass laualt.",
+              "en": "Take your cup off the table.",
+              "az": "Fincanını stolun üstündən götür.",
+              "ru": "Возьми свою чашку со стола."
+            },
+            {
+              "et": "Ma laenasin raha sõbralt.",
+              "en": "I borrowed money from a friend.",
+              "az": "Dostdan borc pul aldım.",
+              "ru": "Я занял деньги у друга."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Off: *Võta tass laualt* — take the cup off the table. And from a person: *Ma sain kirja sõbralt* — I got a letter from a friend. *Küsi temalt* — ask him, which Estonian thinks of as taking the answer from him. Countries ending in *-maa* go here too: *Ma olen Inglismaalt* — I am from England, *Venemaalt* — from Russia.",
+            "az": "Üstündən: *Võta tass laualt* — fincanı stolun üstündən götür. Və adamdan: *Ma sain kirja sõbralt* — dostdan məktub aldım. *Küsi temalt* — ondan soruş; bizdə də soruşmaq -dan istəyir, eyni məntiq. Adı *-maa* ilə bitən ölkələr də bu halı alır: *Venemaalt* — Rusiyadan, *Inglismaalt* — İngiltərədən.",
+            "ru": "С чего: *Võta tass laualt* — возьми чашку со стола. И от кого: *Ma sain kirja sõbralt* — я получил письмо от друга. *Küsi temalt* — спроси у него: по-эстонски ответ берут «от» человека, как письмо. И страны на *-maa*: *Ma olen Venemaalt* — я из России."
+          }
+        },
+        {
+          "say": {
+            "en": "The deck under this lesson puts things on the table, hands them to people and says who has what. After it come the last five cases, in two short lessons.",
+            "az": "Bu dərsin dəsti əşyaları stola qoyur, adamlara verir və kimdə nə olduğunu deyir. Ondan sonra son beş hal gəlir, iki qısa dərsdə.",
+            "ru": "Колода под этим уроком ставит вещи на стол, отдаёт их людям и говорит, у кого что есть. Дальше последние пять падежей, в двух коротких уроках."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-becoming",
+      "deck": "cases-becoming-cards",
+      "name": {
+        "en": "Becoming, and until",
+        "az": "Olmaq və -dək",
+        "ru": "Стать и «до»"
+      },
+      "why": {
+        "en": "Saav and rajav — cases ten and eleven: what something turns into, and how far it goes",
+        "az": "Saav və rajav — onuncu və on birinci hallar: nəyə çevrilir və haraya qədər gedir",
+        "ru": "Saav и rajav — десятый и одиннадцатый падежи: кем или чем стать и до какого места"
+      },
+      "body": [
+        {
+          "say": {
+            "en": "Two cases with one ending each, both on the omastav: one says what something becomes, the other where it stops. One thing changes from here to the end. A word in front of the noun — *see*, this, *hea*, good — no longer takes the ending itself; it stays in the omastav: *selle linnani* — as far as this town, *hea sõbraga* — with a good friend.",
+            "az": "Hər birinin bir şəkilçisi olan iki hal, ikisi də omastav formasına qoşulur: biri nəyə çevrildiyini, o biri harada dayandığını deyir. Buradan sona qədər bir şey dəyişir. İsmin qabağındakı söz — *see*, bu, *hea*, yaxşı — şəkilçini özü almır, omastav formasında qalır: *selle linnani* — bu şəhərə qədər, *hea sõbraga* — yaxşı dostla. Bizdə də sifət şəkilçi almır, ona görə bu sizə rahat gələcək.",
+            "ru": "Два падежа по одному окончанию, оба на omastav: один говорит, чем что-то становится, другой — где оно кончается. С этого места до конца одно правило меняется: слово перед существительным — *see*, этот, *hea*, хороший — само окончание больше не берёт и остаётся в omastav: *selle linnani* — до этого города, *hea sõbraga* — с хорошим другом."
+          }
+        },
+        {
+          "head": {
+            "en": "Saav — kelleks? milleks? — becoming, for",
+            "az": "Saav — kelleks? milleks? — kim olmaq? nə üçün?",
+            "ru": "Saav — kelleks? milleks? — кем стать? для чего?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kelleks? milleks?",
+                  "arstiks",
+                  "arstideks"
+                ],
+                "means": {
+                  "en": "doctor",
+                  "az": "həkim",
+                  "ru": "врач"
+                }
+              },
+              {
+                "et": [
+                  "kelleks?",
+                  "sõbraks",
+                  "sõpradeks"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma tahan saada arstiks.",
+              "en": "I want to become a doctor.",
+              "az": "Həkim olmaq istəyirəm.",
+              "ru": "Я хочу стать врачом."
+            },
+            {
+              "et": "Nad jäid sõpradeks.",
+              "en": "They stayed friends.",
+              "az": "Onlar dost qaldılar.",
+              "ru": "Они остались друзьями."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "What somebody or something becomes: *Ta sai arstiks* — she became a doctor. *Me saime sõpradeks* — we became friends. *Ilm läheb külmaks* — it's turning cold. And what a thing is for, or by when: *milleks?* — what for?, *homseks* — for tomorrow, *õhtuks* — by evening.",
+            "az": "Biz həkim oldu deyirik və həkim sözü heç dəyişmir. Eston dili isə çevrilən şeyə şəkilçi qoyur: *Ta sai arstiks* — o, həkim oldu. *Me saime sõpradeks* — biz dost olduq. *Ilm läheb külmaks* — hava soyuyur. Bir də nə üçün və nə vaxta: *milleks?* — nə üçün?, *homseks* — sabah üçün, *õhtuks* — axşama.",
+            "ru": "Это одна треть русского творительного: стать врачом — *Ta sai arstiks*. Мы стали друзьями — *Me saime sõpradeks*. Становится холодно — *Ilm läheb külmaks*. И «для чего», и «к какому сроку»: *milleks?* — зачем?, *homseks* — на завтра, *õhtuks* — к вечеру."
+          }
+        },
+        {
+          "head": {
+            "en": "Rajav — kelleni? milleni? — until, as far as",
+            "az": "Rajav — kelleni? milleni? — nəyədək? haraya qədər?",
+            "ru": "Rajav — kelleni? milleni? — до кого? до чего?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "milleni?",
+                  "linnani",
+                  "linnadeni"
+                ],
+                "means": {
+                  "en": "town",
+                  "az": "şəhər",
+                  "ru": "город"
+                }
+              },
+              {
+                "et": [
+                  "mis ajani?",
+                  "õhtuni",
+                  "õhtuteni"
+                ],
+                "means": {
+                  "en": "evening",
+                  "az": "axşam",
+                  "ru": "вечер"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Pood on lahti kella kümneni.",
+              "en": "The shop is open until ten o'clock.",
+              "az": "Mağaza saat onadək açıqdır.",
+              "ru": "Магазин открыт до десяти."
+            },
+            {
+              "et": "Ma töötan õhtuni.",
+              "en": "I work until the evening.",
+              "az": "Axşamadək işləyirəm.",
+              "ru": "Я работаю до вечера."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Until, and as far as: *Ma olen tööl viieni* — I'm at work until five. *Buss läheb Tartuni* — the bus goes as far as Tartu. *Hommikust õhtuni* — from morning till night. And the goodbye you already know is this case: *Nägemiseni* — until seeing.",
+            "az": "Bu, bizim -dək və qədər sözümüzdür: *Ma olen tööl viieni* — beşədək işdəyəm. *Buss läheb Tartuni* — avtobus Tartuya qədər gedir. *Hommikust õhtuni* — səhərdən axşamadək. Və bildiyiniz vidalaşma da bu haldadır: *Nägemiseni* — eynilə bizim görüşənədək.",
+            "ru": "Это русское «до»: *Ma olen tööl viieni* — я на работе до пяти. *Buss läheb Tartuni* — автобус идёт до Тарту. *Hommikust õhtuni* — с утра до вечера. И прощание, которое вы уже знаете, — тоже этот падеж: *Nägemiseni* — до свидания, слово в слово «до видения»."
+          }
+        },
+        {
+          "say": {
+            "en": "The deck under this lesson is what people become and when things end. One lesson is left: as, without and with.",
+            "az": "Bu dərsin dəsti adamların nə olduğu və işlərin nə vaxt bitdiyi haqqındadır. Bir dərs qalır: kimi, -sız və -la.",
+            "ru": "Колода под этим уроком — кем становятся и когда всё кончается. Остался один урок: «как», «без» и «с»."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cases-with",
+      "deck": "cases-with-cards",
+      "name": {
+        "en": "As, without, with",
+        "az": "Kimi, -sız, -la",
+        "ru": "Кем, без, с"
+      },
+      "why": {
+        "en": "Olev, ilmaütlev, kaasaütlev — cases twelve to fourteen, and the last of them",
+        "az": "Olev, ilmaütlev, kaasaütlev — on ikincidən on dördüncüyə qədər hallar, sonuncular",
+        "ru": "Olev, ilmaütlev, kaasaütlev — падежи с двенадцатого по четырнадцатый, последние"
+      },
+      "body": [
+        {
+          "say": {
+            "en": "The last three, and the ones that feel least like grammar: each is one small English word turned into an ending — *as*, *without*, *with*.",
+            "az": "Son üç hal, və Azərbaycan dilində danışana ən doğma gələnlər: ikisi bizim şəkilçilərimizin, demək olar, eynisidir.",
+            "ru": "Последние три. Два из них — русские «без» и «с», ставшие окончаниями, а третий забирает у творительного ещё одну работу."
+          }
+        },
+        {
+          "head": {
+            "en": "Olev — kellena? millena? — as",
+            "az": "Olev — kellena? millena? — kim kimi?",
+            "ru": "Olev — kellena? millena? — кем? в качестве кого?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kellena?",
+                  "kokana",
+                  "kokkadena"
+                ],
+                "means": {
+                  "en": "cook",
+                  "az": "aşpaz",
+                  "ru": "повар"
+                }
+              },
+              {
+                "et": [
+                  "kellena?",
+                  "lapsena",
+                  "lastena"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma töötan restoranis kokana.",
+              "en": "I work in a restaurant as a cook.",
+              "az": "Restoranda aşpaz işləyirəm.",
+              "ru": "Я работаю поваром в ресторане."
+            },
+            {
+              "et": "Lapsena armastasin jäätist.",
+              "en": "As a child I loved ice cream.",
+              "az": "Uşaq ikən dondurmanı sevirdim.",
+              "ru": "В детстве я любил мороженое."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "As, in a role: *Ta töötab kokana* — he works as a cook. *Lapsena elasin ma Tartus* — as a child I lived in Tartu. Keep it apart from the saav of the last lesson: *arstiks* is turning into a doctor, *arstina* is being one.",
+            "az": "Bizim kimi və ikən: *Ta töötab kokana* — o, aşpaz işləyir, aşpaz kimi. *Lapsena elasin ma Tartus* — uşaq ikən Tartuda yaşayırdım. Keçən dərsdəki saav ilə qarışdırmayın: *arstiks* — həkim olmaq, *arstina* — həkim kimi, artıq həkim olaraq.",
+            "ru": "Вторая треть творительного: *Ta töötab kokana* — он работает поваром. *Lapsena elasin ma Tartus* — ребёнком я жил в Тарту. Запомните пару: стать врачом — *arstiks*, работать врачом — *arstina*. По-русски одно окончание, по-эстонски два: тот, кто становится, и тот, кто уже есть."
+          }
+        },
+        {
+          "head": {
+            "en": "Ilmaütlev — kelleta? milleta? — without",
+            "az": "Ilmaütlev — kelleta? milleta? — -sız, -siz",
+            "ru": "Ilmaütlev — kelleta? milleta? — без кого? без чего?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kelleta?",
+                  "sõbrata",
+                  "sõpradeta"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              },
+              {
+                "et": [
+                  "kelleta?",
+                  "lapseta",
+                  "lasteta"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma ei lähe sõbrata.",
+              "en": "I'm not going without my friend.",
+              "az": "Dostsuz getmirəm.",
+              "ru": "Я не пойду без друга."
+            },
+            {
+              "et": "Palun üks tee suhkruta.",
+              "en": "One tea without sugar, please.",
+              "az": "Bir şəkərsiz çay, zəhmət olmasa.",
+              "ru": "Один чай без сахара, пожалуйста."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Without, and close to the English *-less*: *kohv suhkruta* — coffee without sugar, *vihmavarjuta* — without an umbrella. You will also hear *ilma* in front of it, which says the same thing twice: *ilma suhkruta*.",
+            "az": "Bu, bizim -sız/-siz/-suz/-süz şəkilçimizdir: *suhkruta* — şəkərsiz, *vihmavarjuta* — çətirsiz, *sinuta* — sənsiz. Tək fərq söz sırasıdır: biz şəkərsiz qəhvə deyirik, eston dili *kohv suhkruta* — qəhvə qabaqda. Bəzən qabağına *ilma* da qoyurlar, eyni mənada: *ilma suhkruta*.",
+            "ru": "Это «без» с родительным в одном окончании: *kohv suhkruta* — кофе без сахара, *vihmavarjuta* — без зонта, *sinuta* — без тебя. Можно поставить и *ilma* впереди — *ilma suhkruta* — смысл тот же."
+          }
+        },
+        {
+          "head": {
+            "en": "Kaasaütlev — kellega? millega? — with",
+            "az": "Kaasaütlev — kellega? millega? — -la, -lə",
+            "ru": "Kaasaütlev — kellega? millega? — с кем? чем?"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "question",
+                "az": "sual",
+                "ru": "вопрос"
+              },
+              {
+                "en": "one",
+                "az": "tək",
+                "ru": "ед. ч."
+              },
+              {
+                "en": "many",
+                "az": "cəm",
+                "ru": "мн. ч."
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "kellega?",
+                  "sõbraga",
+                  "sõpradega"
+                ],
+                "means": {
+                  "en": "friend",
+                  "az": "dost",
+                  "ru": "друг"
+                }
+              },
+              {
+                "et": [
+                  "kellega?",
+                  "lapsega",
+                  "lastega"
+                ],
+                "means": {
+                  "en": "child",
+                  "az": "uşaq",
+                  "ru": "ребёнок"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma lähen sõbraga kinno.",
+              "en": "I'm going to the cinema with a friend.",
+              "az": "Dostla kinoya gedirəm.",
+              "ru": "Я иду в кино с другом."
+            },
+            {
+              "et": "Kas saab kaardiga maksta?",
+              "en": "Can I pay by card?",
+              "az": "Kartla ödəmək olar?",
+              "ru": "Можно заплатить картой?"
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "With, in both its senses: together — *Ma tulen sõbraga*, I'm coming with a friend; *kohv piimaga*, coffee with milk — and as a tool or a way to travel — *noaga*, with a knife; *bussiga*, by bus.",
+            "az": "Bizim -la/-lə, ilə: *Ma tulen sõbraga* — dostla gəlirəm. *Bussiga* — avtobusla, *noaga* — bıçaqla. Bir yerdə fərqlidir: biz südlü qəhvə deyirik, eston dili *kohv piimaga* — qəhvə südlə.",
+            "ru": "«С» и творительный в одном окончании: *Ma tulen sõbraga* — я приду с другом, *kohv piimaga* — кофе с молоком. И последняя треть творительного — орудие: *noaga* — ножом. И транспорт, где русский говорит «на»: *bussiga* — на автобусе."
+          }
+        },
+        {
+          "say": {
+            "en": "That is all fourteen. The fourteen cases, under Grammar, puts them on one page for when you want the whole table at once; the deck under this lesson is coffee with and without, and who comes along.",
+            "az": "Bu da on dördü. Qrammatika başlığı altındakı On dörd hal dərsi hamısını bir səhifədə göstərir — bütöv cədvəl lazım olanda. Bu dərsin dəsti isə südlü və şəkərsiz qəhvə, və kimlə gəldiyiniz haqqındadır.",
+            "ru": "Вот и все четырнадцать. Урок «Четырнадцать падежей» в разделе «Грамматика» собирает их на одной странице, когда нужна вся таблица сразу; а колода под этим уроком — кофе с молоком и без сахара, и с кем вы пришли."
           }
         }
       ]
