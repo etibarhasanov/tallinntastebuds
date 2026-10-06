@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.css?v=ad6f451a">
+<link rel="stylesheet" href="assets/styles.css?v=5177f930">
 </head>
 <body>
 
@@ -749,16 +749,23 @@
   </button>
 </div>
 
-<!-- The walk, drawn on the map, and the way out of it. Shown by showRoute() in
-     assets/app.js when the arrow in a place's top strip is pressed: the sheet
-     steps out of the way so the line has the whole map, and this is what is
-     left standing — how long, how far, Google's own directions as a button, and
-     the cross that brings the sheet back. The Google link is also what stands
-     in for the route when there is none to draw (no location, no walk), so the
-     arrow never ends on nothing. -->
-<div class="route-bar" id="route-bar" role="status" aria-live="polite" hidden>
-  <p class="route-say" id="route-say"></p>
-  <a class="link-btn is-primary route-google" id="route-google" target="_blank" rel="noopener"
+<!-- The way there, drawn on the map, and the way out of it. Shown by showRoute()
+     in assets/app.js when the arrow in a place's top strip is pressed: the
+     sheet steps out of the way so the line has the whole map, and this is what
+     is left standing — Walk, Bus or Car, how long and how far, the next few
+     journeys when it is the bus, and the cross that brings the sheet back.
+     Google's own directions stay as a small link under it for whoever wants
+     them; it is also what is left when there is nothing to draw (no location,
+     no route), so the arrow never ends on nothing. -->
+<div class="route-bar" id="route-bar" hidden>
+  <div class="route-modes" id="route-modes" role="group" data-i18n-aria-label="routeModes" aria-label="How to get there">
+    <button type="button" class="route-mode" data-mode="foot" aria-pressed="true" data-i18n="routeModeWalk">Walk</button>
+    <button type="button" class="route-mode" data-mode="bus" aria-pressed="false" data-i18n="routeModeBus">Bus</button>
+    <button type="button" class="route-mode" data-mode="car" aria-pressed="false" data-i18n="routeModeCar">Car</button>
+  </div>
+  <p class="route-say" id="route-say" role="status" aria-live="polite"></p>
+  <div class="route-trips" id="route-trips" role="group" data-i18n-aria-label="routeTrips" aria-label="Departures" hidden></div>
+  <a class="route-google" id="route-google" target="_blank" rel="noopener"
      data-i18n="routeGoogle">Open in Google Maps</a>
   <button type="button" class="route-close" id="route-close" data-i18n-aria-label="close" aria-label="Close">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -833,6 +840,6 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=b9f9a480" defer></script>
-<script src="assets/app.js?v=5aeb4a65" defer></script>
+<script src="assets/app.js?v=14d60536" defer></script>
 </body>
 </html>

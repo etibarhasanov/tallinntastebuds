@@ -2260,27 +2260,48 @@ third copy and they are kept in step by hand.
 
 The way there has a button of its own in the same strip, between the share and
 the save mark: an arrow, kept up top so it does not scroll away with the
-write-up. **It shows the walk on our own map before it hands anybody to
+write-up. **It shows the way on our own map before it hands anybody to
 Google.** A press takes the visitor's dot — or one quiet reading, which must not
-fly the map off the place — asks `GET /api/route` for the way on foot, and
-`showRoute()` in `assets/app.js` draws it as a line in the dot's colour, fits the
-map to it and steps the sheet out of the way (`body.route-on`) so the line has
-the whole screen. What is left is a bar: *22 min on foot · 1.8 km*, **Open in
-Google Maps**, and a cross that brings the sheet back as it was left. Under all
-of it the arrow is still a plain link to Google's route, built by
-`directionsUrl()` and painted by `paintDirections()` with Google's key once the
-block at the foot of the panel has fetched it — the same address the Directions
-button under the name sends — so a modified click or a long press reaches it, and
-so does the bar's button. A press the map cannot answer for does not end on
-nothing: no location shared says *Share your location to see the way.*, no walk
-or a service that is down says *Couldn't find a walking route.*, and the bar's
-Google button is there in both. Walking only, and no turn-by-turn; the route is
-`functions/api/route.js`, which calls the OpenStreetMap Germany foot router, rounds
-both ends and caches the answer a day. The location is read, answered and
-forgotten — never stored or counted. Opening another place, the chat or a list
-puts the line away (`renderPanel()`); a language switch while the bar is up does
-not retranslate it. The arrow reports `directions` and the bar's button
-`route_google`.
+fly the map off the place — asks `GET /api/route` for the way, and
+`showRoute()` in `assets/app.js` draws it on the map, fits the map to it and
+steps the sheet out of the way (`body.route-on`) so the line has the whole
+screen. What is left is a bar, and the bar has three tabs: **Walk · Bus ·
+Car**.
+
+- **Walk** is the line in the dot's colour and *22 min on foot · 1.8 km*, out
+  of the OpenStreetMap Germany foot router.
+- **Car** is the same line from the same service's car profile, *8 min by car
+  · 3.1 km*. No traffic and no parking, so it is the length of the drive and
+  not a promise about it.
+- **Bus** is peatus.ee, the national journey planner the Transport
+  Administration runs over every operator's timetable — Tallinn's buses, trams
+  and trolleybuses, and the trains and ferries besides. It is asked "from here,
+  leaving now" and the bar says which to take, when and from where: *17 at
+  14:05 from Vabaduse väljak · 22 min in all*. The walks to and from the stops
+  are drawn dashed in the dot's colour and each ride solid in its line's own
+  colour, and under the sentence the next journeys sit as small buttons —
+  *14:05 · 17*, *14:12 · 3 → 17* — pressing one draws that one instead. A
+  journey that is all walking is left out, because Walk says that better.
+
+The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
+the bus to one place takes it to the next. Google is a small link at the foot
+of the bar rather than the bar's button — ours is the answer, Google the way
+out — and it asks Google for the same mode with `travelmode=`. Under all of it
+the arrow is still a plain link to Google's route, built by `directionsUrl()`
+and painted by `paintDirections()` with Google's key once the block at the foot
+of the panel has fetched it — the same address the Directions button under the
+name sends — so a modified click or a long press reaches it. A press the map
+cannot answer for does not end on nothing: no location shared says *Share your
+location to see the way.*, no route or a service that is down says so for that
+mode (*Couldn't find a walking route.*, *No bus or tram found right now.*,
+*Couldn't find a driving route.*), and the other tabs and the Google link are
+there in every case. No turn-by-turn and no live countdown; the route is
+`functions/api/route.js`, which rounds both ends, caches a walk or a drive a day
+and a bus journey a minute. The location is read, answered and forgotten —
+never stored or counted. Opening another place, the chat or a list puts the
+line away (`renderPanel()`); a language switch while the bar is up does not
+retranslate it. The arrow reports `directions`, a tab `route_mode`, a journey
+`route_trip` and the Google link `route_google`.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
@@ -16282,7 +16303,9 @@ The map, `assets/app.js`:
 | `language_select` | `language` |
 | `style_select` | `style` |
 | `directions`, `website`, `google_listing` | `place` — `directions` is the button under the name and the arrow in the top strip alike |
-| `route_google` | — the Open in Google Maps button on the walk's bar |
+| `route_google` | — the Open in Google Maps link on the route's bar |
+| `route_mode` | `mode` (`foot`, `bus`, `car`), `place` — Walk, Bus or Car pressed on the route's bar |
+| `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |

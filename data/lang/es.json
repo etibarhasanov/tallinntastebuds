@@ -1086,7 +1086,16 @@
   "routeGoogle": "Abrir en Google Maps",
   "routeNone": "No se encontró una ruta a pie.",
   "routeLocate": "Comparte tu ubicación para ver el camino.",
-  "routeFinding": "Buscando el camino…"
+  "routeFinding": "Buscando el camino…",
+  "routeModes": "Cómo llegar",
+  "routeModeWalk": "A pie",
+  "routeModeBus": "Autobús",
+  "routeModeCar": "Coche",
+  "routeTrips": "Salidas",
+  "routeCar": "{min} min en coche · {dist}",
+  "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
+  "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",
+  "routeNoCar": "No se encontró una ruta en coche."
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",

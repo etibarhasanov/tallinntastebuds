@@ -257,8 +257,10 @@
   var clusterPins = [];
   var hereMarker = null;
   var hereAccuracy = null;
-  var routeLine = null;   // the walk drawn on the map, while the bar is up
-  var routeFor = null;    // the place it is a walk to
+  var routeLine = null;   // the way drawn on the map, while the bar is up: a feature group
+  var routeFor = null;    // the place it is the way to
+  var routeMode = /^(foot|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
+  var routeTrips = null;  // the bus journeys last answered, while Bus is up
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var tileLayer = null;
   var haloMarker = null;
@@ -1975,7 +1977,11 @@
     if (hereAccuracy) {
       hereAccuracy.setStyle({ color: c.here, fillColor: c.here });
     }
-    if (routeLine) routeLine.setStyle({ color: c.here });
+    if (routeLine) {
+      routeLine.eachLayer(function (stretch) {
+        if (stretch.options.tone) stretch.setStyle({ color: c[stretch.options.tone] });
+      });
+    }
   }
 
   /* Centre the chosen place in the part of the map you can actually see. The
@@ -2303,24 +2309,31 @@
     dom.panelDirections.setAttribute('title', t('directions'));
   }
 
-  /* The walk to the open place, drawn on our own map before anything is
+  /* The way to the open place, drawn on our own map before anything is
      handed to Google. Pressed from the arrow in the panel's top strip, which is
-     still a real link to Google's route — so a press this cannot answer for
-     (no location shared, no walk found, the service down) ends in the bar's
-     own Google button rather than in nothing, and a middle-click or a long
-     press still goes to Google as it always did.
+     still a real link to Google's route — so a middle-click or a long press
+     still goes to Google as it always did, and a press this cannot answer for
+     (no location shared, no route found, the service down) leaves the bar's
+     small Google link as the way on.
 
      The sheet steps out of the way while the line is up (body.route-on) so it
-     has the whole map, and the bar is the one thing left: how long, how far,
-     Google, and the cross. Where the visitor is comes from the dot if the map
-     already has one and from one reading otherwise, taken quietly — a reading
-     asked for here must not fly the map to the visitor and off the place they
-     are looking at. The route is /api/route, on foot only. */
+     has the whole map, and the bar is the one thing left: Walk, Bus or Car, how
+     long, how far, and the cross. The mode pressed last is kept under
+     ttb.routeMode, because somebody who takes the bus takes it to the next
+     place too. Where the visitor is comes from the dot if the map already has
+     one and from one reading otherwise, taken quietly — a reading asked for
+     here must not fly the map to the visitor and off the place they are
+     looking at. The route is /api/route; peatus.ee answers for the bus. */
+  var ROUTE_TRAVEL = { foot: 'walking', bus: 'transit', car: 'driving' };
+  var ROUTE_NONE = { foot: 'routeNone', bus: 'routeNoBus', car: 'routeNoCar' };
+
   function showRoute(place) {
     var token = ++routeToken;
+    var mode = routeMode;
     routeFor = place.id;
     clearRouteLine();
-    dom.routeGoogle.href = dom.panelDirections.href;
+    paintRouteModes();
+    dom.routeGoogle.href = dom.panelDirections.href + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
@@ -2330,44 +2343,129 @@
     got.then(function (from) {
       if (token !== routeToken) return null;
       if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
-      return fetch('/api/route?from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
+      return fetch('/api/route?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
         .then(function (res) { return res.ok ? res.json() : null; })
-        .then(function (walk) {
+        .then(function (way) {
           if (token !== routeToken) return;
-          if (!walk || !walk.line || walk.line.length < 2) { dom.routeSay.textContent = t('routeNone'); return; }
-          drawRoute(walk);
+          if (mode === 'bus') {
+            if (!way || !way.trips || !way.trips.length) { dom.routeSay.textContent = t('routeNoBus'); return; }
+            routeTrips = way.trips;
+            drawTrip(0);
+            return;
+          }
+          if (!way || !way.line || way.line.length < 2) { dom.routeSay.textContent = t(ROUTE_NONE[mode]); return; }
+          drawRoute(way, mode);
         });
     }).catch(function () {
-      if (token === routeToken) dom.routeSay.textContent = t('routeNone');
+      if (token === routeToken) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
     });
   }
 
-  function drawRoute(walk) {
-    routeLine = L.polyline(walk.line, {
-      color: markerColours().here,
-      weight: 5,
+  function paintRouteModes() {
+    var tabs = dom.routeModes.querySelectorAll('.route-mode');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].setAttribute('aria-pressed', String(tabs[i].getAttribute('data-mode') === routeMode));
+    }
+  }
+
+  /* One stretch of the way. `tone` says which of the style's colours it wears,
+     so applyMarkerColours() can repaint it when the style changes: the walk and
+     the drive are the dot's colour, a ride with no colour of its own the lit
+     pin's, and a ride the timetable gives a colour keeps it. */
+  function routeStretch(line, colour, tone, dashed) {
+    return L.polyline(line, {
+      color: colour,
+      tone: tone,
+      weight: dashed ? 4 : 5,
       opacity: .85,
+      dashArray: dashed ? '2 8' : null,
       lineCap: 'round',
       lineJoin: 'round',
       className: 'route-line',
       interactive: false
-    }).addTo(map);
-    var m = walk.meters;
-    dom.routeSay.textContent = t('routeWalk', {
-      min: Math.max(1, Math.round(walk.seconds / 60)),
-      dist: m < 1000 ? t('askMetres', { n: Math.max(10, Math.round(m / 10) * 10) })
-        : t('askKm', { n: formatDecimal(m / 1000, 1) })
-    });
+    }).addTo(routeLine);
+  }
+
+  function fitRoute() {
     /* Room for the search field and the chips above, and for the bar below. */
     map.fitBounds(routeLine.getBounds(), {
       paddingTopLeft: [40, isNarrow() ? 220 : 90],
-      paddingBottomRight: [40, 120],
+      paddingBottomRight: [40, dom.routeBar.offsetHeight + 40],
       maxZoom: 17
     });
   }
 
+  function routeDistance(m) {
+    return m < 1000 ? t('askMetres', { n: Math.max(10, Math.round(m / 10) * 10) })
+      : t('askKm', { n: formatDecimal(m / 1000, 1) });
+  }
+
+  function drawRoute(way, mode) {
+    routeLine = L.featureGroup().addTo(map);
+    routeStretch(way.line, markerColours().here, 'here', false);
+    dom.routeSay.textContent = t(mode === 'car' ? 'routeCar' : 'routeWalk', {
+      min: Math.max(1, Math.round(way.seconds / 60)),
+      dist: routeDistance(way.meters)
+    });
+    fitRoute();
+  }
+
+  /* A bus journey: the walks dashed in the dot's colour, each ride solid in
+     its line's colour, and the line in the bar saying which to take, when and
+     from where. Under it, the journeys on offer as small buttons, the one
+     drawn pressed — pressing another draws that one instead. */
+  function drawTrip(n) {
+    var trip = routeTrips[n];
+    var c = markerColours();
+    clearRouteLine();
+    routeLine = L.featureGroup().addTo(map);
+    trip.legs.forEach(function (leg) {
+      if (leg.line.length < 2) return;
+      if (leg.name === undefined) routeStretch(leg.line, c.here, 'here', true);
+      else if (leg.color) routeStretch(leg.line, '#' + leg.color, null, false);
+      else routeStretch(leg.line, c.lit, 'lit', false);
+    });
+    var rides = tripRides(trip);
+    var first = rides[0];
+    dom.routeSay.textContent = t('routeBus', {
+      lines: tripLines(rides),
+      time: first.at,
+      stop: first.from,
+      min: Math.max(1, Math.round(trip.seconds / 60))
+    });
+
+    dom.routeTrips.textContent = '';
+    routeTrips.forEach(function (other, i) {
+      var press = el('button', {
+        type: 'button',
+        className: 'route-trip',
+        'aria-pressed': String(i === n),
+        textContent: tripRides(other)[0].at + ' · ' + tripLines(tripRides(other))
+      });
+      press.addEventListener('click', function () {
+        TTBTrack.event('route_trip', { n: i });
+        drawTrip(i);
+      });
+      dom.routeTrips.appendChild(press);
+    });
+    dom.routeTrips.hidden = routeTrips.length < 2;
+    if (routeLine.getLayers().length) fitRoute();
+  }
+
+  /* The legs that are rides: /api/route names a ride's line and leaves a
+     walk's name off. */
+  function tripRides(trip) {
+    return trip.legs.filter(function (leg) { return leg.name !== undefined; });
+  }
+
+  function tripLines(rides) {
+    return rides.map(function (leg) { return leg.name || '?'; }).join(' → ');
+  }
+
   function clearRouteLine() {
     if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+    dom.routeTrips.hidden = true;
+    dom.routeTrips.textContent = '';
   }
 
   /* Gone: the line, the bar, and the sheet comes back as it was left. Also what
@@ -2375,6 +2473,7 @@
   function clearRoute() {
     routeToken++;
     routeFor = null;
+    routeTrips = null;
     clearRouteLine();
     dom.routeBar.hidden = true;
     document.body.classList.remove('route-on');
@@ -11571,6 +11670,15 @@
       showRoute(place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
+    dom.routeModes.addEventListener('click', function (ev) {
+      var tab = ev.target.closest ? ev.target.closest('.route-mode') : null;
+      var place = routeFor ? byId(routeFor) : null;
+      if (!tab || !place) return;
+      routeMode = tab.getAttribute('data-mode');
+      storeSet('ttb.routeMode', routeMode);
+      TTBTrack.event('route_mode', { mode: routeMode, place: place.name });
+      showRoute(place);
+    });
     TTBTrack.click(dom.routeGoogle, 'route_google');
 
     /* Same as Surprise me: pressing it answers the question the label was
@@ -12081,6 +12189,8 @@
       routeSay: $('route-say'),
       routeGoogle: $('route-google'),
       routeClose: $('route-close'),
+      routeModes: $('route-modes'),
+      routeTrips: $('route-trips'),
       btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       btnMore: $('btn-more'),

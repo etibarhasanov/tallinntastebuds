@@ -1086,7 +1086,16 @@
     "routeGoogle": "Google Maps-də aç",
     "routeNone": "Piyada marşrut tapılmadı.",
     "routeLocate": "Yolu görmək üçün məkanınızı paylaşın.",
-    "routeFinding": "Yol axtarılır…"
+    "routeFinding": "Yol axtarılır…",
+    "routeModes": "Ora necə getmək",
+    "routeModeWalk": "Piyada",
+    "routeModeBus": "Avtobus",
+    "routeModeCar": "Maşın",
+    "routeTrips": "Reyslər",
+    "routeCar": "{min} dəq maşınla · {dist}",
+    "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
+    "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
+    "routeNoCar": "Maşın marşrutu tapılmadı."
   },
   "hy": {
     "langName": "Հայերեն",
@@ -2175,7 +2184,16 @@
     "routeGoogle": "Բացել Google Maps-ում",
     "routeNone": "Հնարավոր չեղավ գտնել ոտքով երթուղի։",
     "routeLocate": "Ճանապարհը տեսնելու համար կիսվեք ձեր գտնվելու վայրով։",
-    "routeFinding": "Փնտրում ենք ճանապարհը…"
+    "routeFinding": "Փնտրում ենք ճանապարհը…",
+    "routeModes": "Ինչպես հասնել",
+    "routeModeWalk": "Ոտքով",
+    "routeModeBus": "Ավտոբուս",
+    "routeModeCar": "Մեքենա",
+    "routeTrips": "Մեկնումներ",
+    "routeCar": "{min} րոպե մեքենայով · {dist}",
+    "routeBus": "{lines}՝ {time}, {stop} կանգառից · ընդամենը {min} րոպե",
+    "routeNoBus": "Այս պահին ավտոբուս կամ տրամվայ չգտնվեց։",
+    "routeNoCar": "Հնարավոր չեղավ գտնել մեքենայի երթուղի։"
   },
   "en": {
     "langName": "English",
@@ -3264,7 +3282,16 @@
     "routeGoogle": "Open in Google Maps",
     "routeNone": "Couldn't find a walking route.",
     "routeLocate": "Share your location to see the way.",
-    "routeFinding": "Finding the way…"
+    "routeFinding": "Finding the way…",
+    "routeModes": "How to get there",
+    "routeModeWalk": "Walk",
+    "routeModeBus": "Bus",
+    "routeModeCar": "Car",
+    "routeTrips": "Departures",
+    "routeCar": "{min} min by car · {dist}",
+    "routeBus": "{lines} at {time} from {stop} · {min} min in all",
+    "routeNoBus": "No bus or tram found right now.",
+    "routeNoCar": "Couldn't find a driving route."
   },
   "et": {
     "langName": "Eesti",
@@ -4353,7 +4380,16 @@
     "routeGoogle": "Ava Google Mapsis",
     "routeNone": "Jalgsimarsruuti ei leitud.",
     "routeLocate": "Tee nägemiseks jaga oma asukohta.",
-    "routeFinding": "Otsin teed…"
+    "routeFinding": "Otsin teed…",
+    "routeModes": "Kuidas sinna jõuda",
+    "routeModeWalk": "Jala",
+    "routeModeBus": "Buss",
+    "routeModeCar": "Auto",
+    "routeTrips": "Väljumised",
+    "routeCar": "{min} min autoga · {dist}",
+    "routeBus": "{lines} kell {time} peatusest {stop} · kokku {min} min",
+    "routeNoBus": "Praegu bussi ega trammi ei leitud.",
+    "routeNoCar": "Autoteed ei leitud."
   },
   "fi": {
     "langName": "Suomi",
@@ -5442,7 +5478,16 @@
     "routeGoogle": "Avaa Google Mapsissa",
     "routeNone": "Kävelyreittiä ei löytynyt.",
     "routeLocate": "Jaa sijaintisi nähdäksesi reitin.",
-    "routeFinding": "Etsitään reittiä…"
+    "routeFinding": "Etsitään reittiä…",
+    "routeModes": "Miten sinne pääsee",
+    "routeModeWalk": "Kävellen",
+    "routeModeBus": "Bussi",
+    "routeModeCar": "Auto",
+    "routeTrips": "Lähdöt",
+    "routeCar": "{min} min autolla · {dist}",
+    "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
+    "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",
+    "routeNoCar": "Ajoreittiä ei löytynyt."
   },
   "pt": {
     "langName": "Português",
@@ -6531,7 +6576,16 @@
     "routeGoogle": "Abrir no Google Maps",
     "routeNone": "Não foi possível encontrar um percurso a pé.",
     "routeLocate": "Partilhe a sua localização para ver o caminho.",
-    "routeFinding": "A procurar o caminho…"
+    "routeFinding": "A procurar o caminho…",
+    "routeModes": "Como chegar",
+    "routeModeWalk": "A pé",
+    "routeModeBus": "Autocarro",
+    "routeModeCar": "Carro",
+    "routeTrips": "Partidas",
+    "routeCar": "{min} min de carro · {dist}",
+    "routeBus": "{lines} às {time} de {stop} · {min} min no total",
+    "routeNoBus": "Nenhum autocarro ou elétrico encontrado agora.",
+    "routeNoCar": "Não foi possível encontrar um percurso de carro."
   },
   "ru": {
     "langName": "Русский",
@@ -7620,7 +7674,16 @@
     "routeGoogle": "Открыть в Google Картах",
     "routeNone": "Не удалось найти пешеходный маршрут.",
     "routeLocate": "Поделитесь местоположением, чтобы увидеть путь.",
-    "routeFinding": "Ищем путь…"
+    "routeFinding": "Ищем путь…",
+    "routeModes": "Как добраться",
+    "routeModeWalk": "Пешком",
+    "routeModeBus": "Автобус",
+    "routeModeCar": "Машина",
+    "routeTrips": "Отправления",
+    "routeCar": "{min} мин на машине · {dist}",
+    "routeBus": "{lines} в {time} от остановки {stop} · всего {min} мин",
+    "routeNoBus": "Сейчас не найдено ни автобуса, ни трамвая.",
+    "routeNoCar": "Не удалось найти маршрут на машине."
   },
   "es": {
     "langName": "Español",
@@ -8709,7 +8772,16 @@
     "routeGoogle": "Abrir en Google Maps",
     "routeNone": "No se encontró una ruta a pie.",
     "routeLocate": "Comparte tu ubicación para ver el camino.",
-    "routeFinding": "Buscando el camino…"
+    "routeFinding": "Buscando el camino…",
+    "routeModes": "Cómo llegar",
+    "routeModeWalk": "A pie",
+    "routeModeBus": "Autobús",
+    "routeModeCar": "Coche",
+    "routeTrips": "Salidas",
+    "routeCar": "{min} min en coche · {dist}",
+    "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
+    "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",
+    "routeNoCar": "No se encontró una ruta en coche."
   },
   "tr": {
     "langName": "Türkçe",
@@ -9798,7 +9870,16 @@
     "routeGoogle": "Google Haritalar'da aç",
     "routeNone": "Yürüyüş rotası bulunamadı.",
     "routeLocate": "Yolu görmek için konumunu paylaş.",
-    "routeFinding": "Yol aranıyor…"
+    "routeFinding": "Yol aranıyor…",
+    "routeModes": "Nasıl gidilir",
+    "routeModeWalk": "Yürüyerek",
+    "routeModeBus": "Otobüs",
+    "routeModeCar": "Araba",
+    "routeTrips": "Kalkışlar",
+    "routeCar": "{min} dk arabayla · {dist}",
+    "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
+    "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",
+    "routeNoCar": "Araç rotası bulunamadı."
   },
   "uk": {
     "langName": "Українська",
@@ -10887,6 +10968,15 @@
     "routeGoogle": "Відкрити в Google Картах",
     "routeNone": "Не вдалося знайти пішохідний маршрут.",
     "routeLocate": "Поділіться місцем, щоб побачити шлях.",
-    "routeFinding": "Шукаємо шлях…"
+    "routeFinding": "Шукаємо шлях…",
+    "routeModes": "Як дістатися",
+    "routeModeWalk": "Пішки",
+    "routeModeBus": "Автобус",
+    "routeModeCar": "Авто",
+    "routeTrips": "Відправлення",
+    "routeCar": "{min} хв автом · {dist}",
+    "routeBus": "{lines} о {time} від зупинки {stop} · загалом {min} хв",
+    "routeNoBus": "Зараз не знайдено ні автобуса, ні трамвая.",
+    "routeNoCar": "Не вдалося знайти маршрут для авто."
   }
 }

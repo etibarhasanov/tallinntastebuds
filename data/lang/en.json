@@ -1086,7 +1086,16 @@
   "routeGoogle": "Open in Google Maps",
   "routeNone": "Couldn't find a walking route.",
   "routeLocate": "Share your location to see the way.",
-  "routeFinding": "Finding the way…"
+  "routeFinding": "Finding the way…",
+  "routeModes": "How to get there",
+  "routeModeWalk": "Walk",
+  "routeModeBus": "Bus",
+  "routeModeCar": "Car",
+  "routeTrips": "Departures",
+  "routeCar": "{min} min by car · {dist}",
+  "routeBus": "{lines} at {time} from {stop} · {min} min in all",
+  "routeNoBus": "No bus or tram found right now.",
+  "routeNoCar": "Couldn't find a driving route."
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

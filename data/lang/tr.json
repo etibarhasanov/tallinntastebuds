@@ -1086,7 +1086,16 @@
   "routeGoogle": "Google Haritalar'da aç",
   "routeNone": "Yürüyüş rotası bulunamadı.",
   "routeLocate": "Yolu görmek için konumunu paylaş.",
-  "routeFinding": "Yol aranıyor…"
+  "routeFinding": "Yol aranıyor…",
+  "routeModes": "Nasıl gidilir",
+  "routeModeWalk": "Yürüyerek",
+  "routeModeBus": "Otobüs",
+  "routeModeCar": "Araba",
+  "routeTrips": "Kalkışlar",
+  "routeCar": "{min} dk arabayla · {dist}",
+  "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
+  "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",
+  "routeNoCar": "Araç rotası bulunamadı."
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",
