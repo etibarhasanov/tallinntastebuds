@@ -121,6 +121,9 @@ import { DECK_LANGS } from '../functions/api/_lib.js';
 /* The elements two pages ship empty for a Function to fill with text, from
    the module that fills them, so the spelling held here is the one matched. */
 import { EMPTY } from '../functions/_shell.js';
+/* What the map's route tells a browser about caching, which `_headers` has to
+   say for the static file at / too. */
+import { REVALIDATE } from '../functions/index.js';
 import { STORY_HOURS, HOUR_MS, storyWindow, storyPhase } from './clock.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1987,6 +1990,23 @@ if (wrangler) {
     const said = block[name.toLowerCase()];
     if (said === undefined) fail(where, `the /* block has no ${name} — functions/_security.js puts it on every Function's answer, so the files the asset server gives would go without it`);
     else if (said !== value) fail(where, `the /* block says ${name}: ${said}, where functions/_security.js says ${value}`);
+  }
+
+  /* And the map's cache rule, which the same file spells for the static page
+     and functions/index.js spells again for the copy it keeps in the colo:
+     the route hands the browser REVALIDATE whatever `_headers` says, so the
+     two had better say the same, or the page would cache one way when the
+     route answers and another when it hands the request back. */
+  const rules = {};
+  let at = '';
+  for (const line of text.split('\n')) {
+    if (/^\S/.test(line) && !line.startsWith('#')) { at = line.trim(); continue; }
+    const hit = at && /^\s+Cache-Control:\s*(.*)$/i.exec(line);
+    if (hit) rules[at] = hit[1].trim();
+  }
+  for (const path of ['/', '/index.html']) {
+    if (rules[path] === undefined) fail(where, `${path} has no Cache-Control — functions/index.js tells the browser ${REVALIDATE}, and the static page would say nothing`);
+    else if (rules[path] !== REVALIDATE) fail(where, `${path} says Cache-Control: ${rules[path]}, where REVALIDATE in functions/index.js says ${REVALIDATE}`);
   }
 }
 

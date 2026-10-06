@@ -40,6 +40,30 @@ export function privately(res) {
   return out;
 }
 
+/* A hash of the answer itself, so the tag changes when and only when the
+   answer does. No version column to keep in step with anything. Weak,
+   because what leaves the colo is compressed on the way out and a strong tag
+   would be claiming the bytes are the bytes. /api/saves tags its counts with
+   it and functions/index.js the map; it lived in saves.js until the second. */
+export async function weakTag(body) {
+  const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(body));
+  return 'W/"' + hex(digest).slice(0, 16) + '"';
+}
+
+/* The answer, or a 304 with nothing in it when the browser already holds the
+   copy its If-None-Match names. Only the tag and the cache rule ride on the
+   304: they are what a browser updates on one, and the rest it already has. */
+export function withNotModified(request, res) {
+  const tag = res.headers.get('etag');
+  if (tag && request.headers.get('if-none-match') === tag) {
+    return new Response(null, {
+      status: 304,
+      headers: { etag: tag, 'cache-control': res.headers.get('cache-control') }
+    });
+  }
+  return res;
+}
+
 export function clientIp(request) {
   return request.headers.get('CF-Connecting-IP') || '';
 }

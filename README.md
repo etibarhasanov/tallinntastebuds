@@ -14440,7 +14440,8 @@ Two things worth knowing about this arrangement:
   `no-store` with and without the middleware. The map is the one page that
   no longer comes back that way: `functions/index.js` answers `/` with its
   own Response, so it restates the revalidating rule `_headers` gives the
-  static file. The security headers are not restated anywhere: the
+  static file — `REVALIDATE` there, and the validator holds the two to each
+  other. The security headers are not restated anywhere: the
   middleware puts them on every answer a Function gives — see **The
   security headers** below.
 - A 301 is cached hard by browsers, which is the point of using one — it is
@@ -17611,11 +17612,22 @@ as text** under [The blog](#the-blog).
 It costs no extra Functions invocation, since `_routes.json` was already
 sending every request for `/` through `functions/_middleware.js`. It costs
 the JSON-LD and the list on the wire — some eighty-five kilobytes together,
-twenty or so compressed, on a page that was ten — and a page fetched again
-on every visit rather than a 304, since the asset server put an ETag on the
-static file and the route puts none. When the route cannot
-read the page or the data it hands the request back to the asset server,
-and the map is served exactly as it was before the route existed.
+twenty or so compressed, on a page that was ten — once per browser: the
+rendered page is kept in the colo under its own address, the language and
+the place and nothing else, so a tracked link or a filter in the query
+finds the same copy, and the copy carries an ETag of its own, so a browser
+that already holds the map sends `If-None-Match` and gets a 304 back. For a
+year it got the whole page again on every visit, since the asset server's
+ETag described the static file and the route put none in its place. The
+copy lives as long as the deployment that rendered it: the route folds the
+asset server's own ETags of the page and the three data files into a stamp,
+read once per isolate, and the stamp is in the key, so a deploy that changed
+any of the four misses on its first visit and renders fresh, and the copies
+the old deployment left are never asked for again. A deploy that changed
+none of them changes nothing, which is right. The header of
+`functions/index.js` has the whole of it. When the route cannot read the
+page or the data it hands the request back to the asset server, and the map
+is served exactly as it was before the route existed.
 
 **AI assistants.** ChatGPT and Claude do not run scripts either, and they
 find a site two ways. One is an index: OpenAI's `OAI-SearchBot` and
