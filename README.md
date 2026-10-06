@@ -2466,9 +2466,9 @@ stand-in at all — the validator fails a key one language has and another does
 not — so `t()` holds one language and falls back to nothing but the key.
 
 **The sources do not move.** `data/ui.json` and `data/restaurants.json` are
-still the only files anybody edits, the account page, feedback, insights,
-the editor, splitwise and the owner's pages still fetch `ui.json` whole, and `functions/index.js`, `functions/api/ask.js` and the rest still
-read the places with their write-ups. Both stay deployed, which is also what
+still the only files anybody edits, and `functions/index.js`,
+`functions/api/ask.js` and the rest still read the places with their
+write-ups. Both stay deployed, which is also what
 keeps a browser holding yesterday's `app.js` working: it asks for the two old
 files and gets them. The generated files are committed, like the stamps, and
 `node tools/validate.mjs` fails on any of them that is not what the tool would
@@ -2482,18 +2482,35 @@ toast — `languageFail` — in the language still showing. And booting is one
 request longer: the index first, then the language, both small and both
 alongside the places rather than in front of them.
 
-**Three more pages read it the same way**, for their strings only: the
+**Every other page reads it the same way**, for their strings only: the
 discount pass — `deal.html`, `verify.html` and `staff.html`, all through
-`TTBPass.load()` — the blog, and the lists page with every list and profile
-on it. Each still picks its language exactly as it did, out of the same ten
-codes in the same order, and then fetches that one file rather than all ten:
-25 to 30 KB on the wire where `ui.json` is 190, which on the pass was most of
-what a guest's phone waited for before it could draw the code. Nothing a
+`TTBPass.load()` — the blog, the lists page with every list and profile on
+it, and, since a week after the map, the account page, the editor, feedback,
+insights, splitwise and the owner's directory and flows pages, each through
+a `loadWords()` of its own. Each still picks its language exactly as it did,
+out of the same ten codes in the same order, and then fetches that one file
+rather than all ten: 25 to 30 KB on the wire where `ui.json` is 220, which
+on the pass was most of what a guest's phone waited for before it could draw
+the code, and on the account page was the largest download on it — larger
+than the stylesheet, and `lists.html` loads that script too. Nothing a
 visitor sees moved. The one difference is in a page that could not load at
 all: the line saying so is the English written into the script rather than
 `ui.json`'s English copy of it, which are the same sentence. The language
 switch on the lists page lists `data/lang/index.json` and still reloads the
 page in the language picked, so one file is all it needs.
+
+Two pages had a second use for the whole file and keep it another way. The
+editor read the ten language codes off `ui.json`'s keys to know which
+languages a profile's line can be written in; it reads them off
+`data/lang/index.json` now, the same ten in the same order. Splitwise lays
+its own strings, `data/split.json`, over the site's, and that file still
+carries all ten languages — it is 37 KB, and it is the file that makes
+removing the feature a matter of deleting files — so `merge()` in
+`assets/split.js` takes the one block for the language the index picked and
+lays that over the pack. The flashcards and `/admin/stats` never read either:
+their words ride in the same answer as their data — **One request on the way
+in** under **Flashcards**. `data/ui.json` is still served, because a browser
+holding yesterday's script still asks for it.
 
 ### Adding a language
 
@@ -8984,11 +9001,14 @@ out any more.
 
 ### One request on the way in
 
-Every other page on this site fetches `data/ui.json` whole before it draws:
-ten languages of every string the site has, 307 KB, 85 KB gzipped, to print
-its few dozen keys in one of them. On this page that was the largest thing
-between opening it and seeing a card, and the least of it was used — the map's
-stylesheet is the only heavier file, and that one is at least mostly drawn.
+Every other page on this site used to fetch `data/ui.json` whole before it
+drew: ten languages of every string the site has, 307 KB, 85 KB gzipped, to
+print its few dozen keys in one of them. On this page that was the largest
+thing between opening it and seeing a card, and the least of it was used —
+the map's stylesheet is the only heavier file, and that one is at least
+mostly drawn. (The rest of the site has since gone over to one language to a
+file, **One language at a time** under **Languages**; this page took the
+other road first.)
 
 So the flashcards fetch it no more. The words ride in the same answer as the
 decks: `assets/flashcard.js` sends `/api/flashcard` what it would have picked

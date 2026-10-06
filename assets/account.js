@@ -138,7 +138,7 @@
  *
  * WHAT IT READS
  *
- *   /data/ui.json       the strings, in the language the map wrote down
+ *   /data/lang/         the strings, one file for the language the map wrote down
  *   /data/places.json   id -> name and address, for the saves
  *   /api/account        who is signed in, and what they have saved
  *   /api/lists          the lists they wrote, and the ones they kept
@@ -159,7 +159,14 @@
 (function () {
   'use strict';
 
-  var UI_URL = '/data/ui.json';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — data/lang/index.json and data/lang/<code>.json,
+     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     of every string the site has, 220 KB on the wire against the 25 or 30 of
+     the one anybody is reading in. **One language at a time** under
+     **Languages** in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   var PLACES_URL = '/data/places.json';
   var ACCOUNT_API = '/api/account';
   var VENUES_API = '/api/venues?ids=';
@@ -200,7 +207,7 @@
   var BACK = '&then=%2Faccount.html';
 
   var state = {
-    ui: {},
+    ui: {},            // one language's strings; see loadWords()
     lang: DEFAULT_LANG,
     reached: true,   // whether /api/account answered at all
     ready: false,    // whether accounts work on this deployment
@@ -259,9 +266,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -275,6 +280,20 @@
     return fetch(url, { headers: { accept: 'application/json' } }).then(function (res) {
       if (!res.ok) throw new Error(url + ': ' + res.status);
       return res.json();
+    });
+  }
+
+  /* One language's strings and every language's own name for itself — see
+     LANGS_URL. The language is picked out of the index the way every page
+     picks it, pickLanguage(), and only then is its file asked for; t() holds
+     that one pack and falls back to nothing but the key, which is safe
+     because the validator holds every language to the same set of keys. */
+  function loadWords() {
+    return getJSON(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return getJSON(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui, names: names };
+      });
     });
   }
 
@@ -1163,13 +1182,13 @@
     applyStyle();
 
     Promise.all([
-      getJSON(UI_URL),
+      loadWords(),
       getJSON(PLACES_URL).catch(function () { return []; }),
       ask(ACCOUNT_API),
       ask(LISTS_API)
     ]).then(function (loaded) {
-      state.ui = loaded[0] || {};
-      state.lang = pickLanguage(Object.keys(state.ui).sort());
+      state.ui = loaded[0].ui;
+      state.lang = loaded[0].lang;
       applyStaticStrings();
       document.title = t('accountDocumentTitle');
 

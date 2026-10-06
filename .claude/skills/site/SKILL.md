@@ -99,8 +99,8 @@ three pass pages keep light browser chrome under the dark style.
 `flashcard.js` carries the style half and a language half of its own shape: it
 does not fetch `data/ui.json` at all, but sends its candidates to
 `/api/flashcard` and prints from the one block that comes back — **One request
-on the way in** under **Flashcards** in `README.md` says why, and it is the
-pattern the other pages would follow to shed 75 KB from a first load. It is
+on the way in** under **Flashcards** in `README.md` says why; the other
+pages shed the same weight the other way, one language to a file. It is
 also the one page besides the map with a **language switch** on it, because on
 its own subdomain `ttb.lang` belongs to another origin: it is drawn from the
 `langs` that same answer carries, and picking one asks the route again for the
@@ -145,11 +145,16 @@ falls back to nothing but the key, which is safe only because the validator
 holds every language to the same set of keys. A language switch on the map
 is a request, and `setLanguage()` keeps the old language on screen until the
 new file has arrived. **One language at a time** under **Languages** in
-`README.md`. The pass pages (through `TTBPass.load()` in `assets/pass.js`),
-the blog and the lists page read the same files for their strings, each
-picking the language with its own `pickLanguage()` out of
-`data/lang/index.json` and then fetching that one; every other page still
-fetches `ui.json` whole, and a page moved over is moved the same way.
+`README.md`. Every other page reads the same files for its strings — the
+pass pages through `TTBPass.load()` in `assets/pass.js`, the rest through a
+`loadWords()` of their own — each picking the language with its own
+`pickLanguage()` out of `data/lang/index.json` and then fetching that one.
+**No page fetches `ui.json` whole any more**, and a new page copies
+`loadWords()` rather than reaching for the file: it is 220 KB on the wire
+against the 25 to 30 of one language. Two things to know when copying it:
+`t()` holds one pack and falls back to nothing but the key, and a page that
+needs the list of languages — the editor does, for the line on a profile —
+takes it off the `names` the same call returns, not off the pack's keys.
 
 One exception, and it is a deliberate one: the splitwise page's strings are in
 `data/split.json`, same shape and same ten languages, so that removing that

@@ -37,6 +37,14 @@
   'use strict';
 
   var DEFAULT_LANG = 'en';
+  /* The words, one language at a time: the list of languages, then the one
+     this reader is in — data/lang/index.json and data/lang/<code>.json,
+     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     of every string the site has, 220 KB on the wire against the 25 or 30 of
+     the one anybody is reading in. **One language at a time** under
+     **Languages** in README.md. */
+  var LANGS_URL = '/data/lang/index.json';
+  var LANG_URL = '/data/lang/';
   var LANG_KEY = 'ttb.lang';
 
   /* The two styles the site has, the key they are stored under and the one it
@@ -87,7 +95,7 @@
   var ZOOM = 12;
 
   var state = {
-    ui: {},
+    ui: {},            // one language's strings; see loadWords()
     lang: DEFAULT_LANG,
     /* id -> the label object for one cuisine, in every language. Two files
        feed it and they are deliberately disjoint: data/taxonomy.json already
@@ -149,9 +157,7 @@
   }
 
   function t(key, vars) {
-    var pack = state.ui[state.lang] || {};
-    var s = pack[key];
-    if (s === undefined) s = (state.ui[DEFAULT_LANG] || {})[key];
+    var s = state.ui[key];
     if (s === undefined) return key;
     if (vars) {
       Object.keys(vars).forEach(function (v) {
@@ -174,6 +180,20 @@
     return fetch(url, { headers: { accept: 'application/json' } }).then(function (res) {
       if (!res.ok) throw new Error(url + ': ' + res.status);
       return res.json();
+    });
+  }
+
+  /* One language's strings and every language's own name for itself — see
+     LANGS_URL. The language is picked out of the index the way every page
+     picks it, pickLanguage(), and only then is its file asked for; t() holds
+     that one pack and falls back to nothing but the key, which is safe
+     because the validator holds every language to the same set of keys. */
+  function loadWords() {
+    return getJSON(LANGS_URL).then(function (names) {
+      var lang = pickLanguage(Object.keys(names).sort());
+      return getJSON(LANG_URL + lang + '.json').then(function (pack) {
+        return { lang: lang, ui: pack.ui, names: names };
+      });
     });
   }
 
@@ -1100,15 +1120,15 @@
 
     /* The two label files and the strings are the page; the roll is what goes
        in it. Asked for together rather than in turn, because the roll is the
-       slow one and waiting for ui.json first would add a round trip to it. */
+       slow one and waiting for the strings first would add a round trip to it. */
     Promise.all([
-      getJSON('/data/ui.json'),
+      loadWords(),
       getJSON('/data/taxonomy.json'),
       getJSON('/data/cuisines.json'),
       getJSON(API).catch(function () { return null; })
     ]).then(function (loaded) {
-      state.ui = loaded[0] || {};
-      state.lang = pickLanguage(Object.keys(state.ui).sort());
+      state.ui = loaded[0].ui;
+      state.lang = loaded[0].lang;
       try { collator = new Intl.Collator(state.lang, { sensitivity: 'base' }); } catch (e) { /* folded instead */ }
       applyStaticStrings();
       /* After the strings, not before: the bar is as tall as the words in it. */
@@ -1126,13 +1146,13 @@
       fillControls();
       refresh();
     }).catch(function (err) {
-      /* ui.json itself did not arrive, so there is no language to say so in.
-         Same last resort as the lists page: English out of the pack if any of
-         it landed, and the sentence written out if none of it did. It is the
-         one place on this site an untranslated string is the better of two
-         bad answers — the other is printing the key. */
+      /* The strings themselves may not have arrived, so there may be no
+         language to say so in. Same last resort as the lists page: the pack's
+         own line if it landed, and the sentence written out in English if it
+         did not. It is the one place on this site an untranslated string is
+         the better of two bad answers — the other is printing the key. */
       if (window.console && console.error) console.error(err);
-      dom.count.textContent = (state.ui.en && state.ui.en.loadError) ||
+      dom.count.textContent = state.ui.loadError ||
         'Something went wrong loading the data. Try refreshing the page.';
     });
   }
