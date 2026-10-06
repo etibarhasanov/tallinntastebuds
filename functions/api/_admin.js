@@ -29,10 +29,12 @@
  * cookie sessionUser() in ./_lib.js reads. Written in wrangler.toml, it is in
  * the review of whoever changes it.
  *
- * /admin.html is not this. That page holds a GitHub token sealed under a
- * passphrase and never talks to the server at all — see **The admin page** in
- * README.md — so there was no admin identity here to reuse, and the site's own
- * accounts are the one the server can already check.
+ * /admin.html is not this, or not only. Changing the site from it takes a
+ * GitHub token sealed under a passphrase on the device, which the server
+ * never sees — see **The admin page** in README.md. What it reads without one
+ * — the five pages and the Google report — is behind this check, so an
+ * account named here and signed in on the site opens that half of the page on
+ * any device, and nothing else.
  *
  * FAILS CLOSED
  *

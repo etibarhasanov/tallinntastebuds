@@ -7,10 +7,11 @@
     <bpmn:participant id="owner-pool" name="The owner" processRef="owner-process" />
   </bpmn:collaboration>
   <bpmn:process id="owner-process" name="The owner" isExecutable="false">
-    <bpmn:documentation>The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.</bpmn:documentation>
+    <bpmn:documentation>The person whose site this is, and any account ADMINS names. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.</bpmn:documentation>
     <bpmn:laneSet id="owner-lanes">
       <bpmn:lane id="owner-lane-owner" name="Owner">
         <bpmn:flowNodeRef>open</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>site-in</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>set-up</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>token</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>unlock</bpmn:flowNodeRef>
@@ -43,99 +44,106 @@
 ref: admin.html</bpmn:documentation>
       <bpmn:outgoing>owner-e1</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="set-up" name="This device set up?">
+    <bpmn:exclusiveGateway id="site-in" name="Signed in on the site as an admin?">
+      <bpmn:documentation>An account ADMINS names, with its password or Google. It reads without a token and changes nothing.
+ref: admin.html siteDoor()</bpmn:documentation>
       <bpmn:incoming>owner-e1</bpmn:incoming>
       <bpmn:outgoing>owner-e2</bpmn:outgoing>
       <bpmn:outgoing>owner-e3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="set-up" name="This device set up?">
+      <bpmn:incoming>owner-e3</bpmn:incoming>
+      <bpmn:outgoing>owner-e4</bpmn:outgoing>
+      <bpmn:outgoing>owner-e5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
     <bpmn:userTask id="token" name="Pastes a GitHub token, picks a passphrase">
       <bpmn:documentation>A fine-grained token, this repository only, 90 days. Kept encrypted in the browser.
 ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e2</bpmn:incoming>
-      <bpmn:outgoing>owner-e4</bpmn:outgoing>
+      <bpmn:incoming>owner-e4</bpmn:incoming>
+      <bpmn:outgoing>owner-e6</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="unlock" name="Unlocks with the passphrase">
       <bpmn:documentation>ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e3</bpmn:incoming>
-      <bpmn:incoming>owner-e4</bpmn:incoming>
-      <bpmn:outgoing>owner-e5</bpmn:outgoing>
+      <bpmn:incoming>owner-e5</bpmn:incoming>
+      <bpmn:incoming>owner-e6</bpmn:incoming>
+      <bpmn:outgoing>owner-e7</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="what-now" name="What now?">
-      <bpmn:incoming>owner-e5</bpmn:incoming>
-      <bpmn:outgoing>owner-e6</bpmn:outgoing>
-      <bpmn:outgoing>owner-e11</bpmn:outgoing>
-      <bpmn:outgoing>owner-e16</bpmn:outgoing>
-      <bpmn:outgoing>owner-e20</bpmn:outgoing>
+      <bpmn:incoming>owner-e7</bpmn:incoming>
+      <bpmn:outgoing>owner-e8</bpmn:outgoing>
+      <bpmn:outgoing>owner-e13</bpmn:outgoing>
+      <bpmn:outgoing>owner-e18</bpmn:outgoing>
+      <bpmn:outgoing>owner-e22</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="story" name="Posts a story">
       <bpmn:documentation>The photo or video is squeezed on the device first.
 ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e6</bpmn:incoming>
-      <bpmn:outgoing>owner-e7</bpmn:outgoing>
+      <bpmn:incoming>owner-e8</bpmn:incoming>
+      <bpmn:outgoing>owner-e9</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="story-commit" name="Commits it to the live branch">
       <bpmn:documentation>ref: data/stories.json
 ref: stories</bpmn:documentation>
-      <bpmn:incoming>owner-e7</bpmn:incoming>
-      <bpmn:outgoing>owner-e8</bpmn:outgoing>
+      <bpmn:incoming>owner-e9</bpmn:incoming>
+      <bpmn:outgoing>owner-e10</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="story-deploy" name="Deploys within the minute">
-      <bpmn:incoming>owner-e8</bpmn:incoming>
-      <bpmn:outgoing>owner-e9</bpmn:outgoing>
+      <bpmn:incoming>owner-e10</bpmn:incoming>
+      <bpmn:outgoing>owner-e11</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="story-from" name="Its from comes round">
       <bpmn:documentation>Up for 36 hours; an hourly job files it away after.
 ref: .github/workflows/stories.yml
 ref: tools/stories.mjs --tick</bpmn:documentation>
-      <bpmn:incoming>owner-e9</bpmn:incoming>
-      <bpmn:outgoing>owner-e10</bpmn:outgoing>
+      <bpmn:incoming>owner-e11</bpmn:incoming>
+      <bpmn:outgoing>owner-e12</bpmn:outgoing>
       <bpmn:timerEventDefinition id="story-from-def" />
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="story-live" name="Story on the map">
-      <bpmn:incoming>owner-e10</bpmn:incoming>
+      <bpmn:incoming>owner-e12</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="place" name="Adds or edits a place">
       <bpmn:documentation>ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e11</bpmn:incoming>
-      <bpmn:outgoing>owner-e12</bpmn:outgoing>
+      <bpmn:incoming>owner-e13</bpmn:incoming>
+      <bpmn:outgoing>owner-e14</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="place-pr" name="Opens a pull request">
       <bpmn:documentation>On a branch admin/add-&lt;id&gt; or admin/edit-&lt;id&gt;.
 ref: data/restaurants.json</bpmn:documentation>
-      <bpmn:incoming>owner-e12</bpmn:incoming>
-      <bpmn:outgoing>owner-e13</bpmn:outgoing>
+      <bpmn:incoming>owner-e14</bpmn:incoming>
+      <bpmn:outgoing>owner-e15</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="place-land" name="Runs places.mjs, lands it">
       <bpmn:documentation>The page never writes data/places.json, so the pull request is red until this runs.
 ref: tools/places.mjs
 ref: .claude/skills/place/SKILL.md</bpmn:documentation>
-      <bpmn:incoming>owner-e13</bpmn:incoming>
-      <bpmn:outgoing>owner-e14</bpmn:outgoing>
+      <bpmn:incoming>owner-e15</bpmn:incoming>
+      <bpmn:outgoing>owner-e16</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="place-deploy" name="Deploys within the minute">
-      <bpmn:incoming>owner-e14</bpmn:incoming>
-      <bpmn:outgoing>owner-e15</bpmn:outgoing>
+      <bpmn:incoming>owner-e16</bpmn:incoming>
+      <bpmn:outgoing>owner-e17</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="place-live" name="Place on the map">
-      <bpmn:incoming>owner-e15</bpmn:incoming>
+      <bpmn:incoming>owner-e17</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="discount" name="Switches a discount">
       <bpmn:documentation>ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e16</bpmn:incoming>
-      <bpmn:outgoing>owner-e17</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="discount-commit" name="Commits deals.json to the live branch">
-      <bpmn:documentation>ref: data/deals.json</bpmn:documentation>
-      <bpmn:incoming>owner-e17</bpmn:incoming>
-      <bpmn:outgoing>owner-e18</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:userTask id="staff-link" name="Sends the restaurant its staff link, once">
-      <bpmn:documentation>ref: staff.html</bpmn:documentation>
       <bpmn:incoming>owner-e18</bpmn:incoming>
       <bpmn:outgoing>owner-e19</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="discount-live" name="Offer live">
+    <bpmn:serviceTask id="discount-commit" name="Commits deals.json to the live branch">
+      <bpmn:documentation>ref: data/deals.json</bpmn:documentation>
       <bpmn:incoming>owner-e19</bpmn:incoming>
+      <bpmn:outgoing>owner-e20</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="staff-link" name="Sends the restaurant its staff link, once">
+      <bpmn:documentation>ref: staff.html</bpmn:documentation>
+      <bpmn:incoming>owner-e20</bpmn:incoming>
+      <bpmn:outgoing>owner-e21</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="discount-live" name="Offer live">
+      <bpmn:incoming>owner-e21</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="stats" name="Reads the stats, the visitors, how they found the site, the diagrams and their numbers, Google's directory and budget">
       <bpmn:documentation>ref: admin/stats.html
@@ -144,8 +152,9 @@ ref: admin/found.html
 ref: admin/flows.html
 ref: admin/google.html
 ref: admin.html</bpmn:documentation>
-      <bpmn:incoming>owner-e20</bpmn:incoming>
-      <bpmn:outgoing>owner-e21</bpmn:outgoing>
+      <bpmn:incoming>owner-e2</bpmn:incoming>
+      <bpmn:incoming>owner-e22</bpmn:incoming>
+      <bpmn:outgoing>owner-e23</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="owner-only" name="Answers the owner only">
       <bpmn:documentation>Anybody else gets a 404 for the pages and a 403 for the data.
@@ -158,122 +167,128 @@ ref: functions/api/admin/live.js GET
 ref: functions/api/admin/flows.js GET
 ref: functions/api/admin/venues.js GET
 ref: functions/api/admin/refreshes.js GET</bpmn:documentation>
-      <bpmn:incoming>owner-e21</bpmn:incoming>
-      <bpmn:outgoing>owner-e22</bpmn:outgoing>
+      <bpmn:incoming>owner-e23</bpmn:incoming>
+      <bpmn:outgoing>owner-e24</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="knows" name="Knows what gets opened">
-      <bpmn:incoming>owner-e22</bpmn:incoming>
+      <bpmn:incoming>owner-e24</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="owner-e1" sourceRef="open" targetRef="set-up" />
-    <bpmn:sequenceFlow id="owner-e2" name="no" sourceRef="set-up" targetRef="token" />
-    <bpmn:sequenceFlow id="owner-e3" name="yes" sourceRef="set-up" targetRef="unlock" />
-    <bpmn:sequenceFlow id="owner-e4" sourceRef="token" targetRef="unlock" />
-    <bpmn:sequenceFlow id="owner-e5" sourceRef="unlock" targetRef="what-now" />
-    <bpmn:sequenceFlow id="owner-e6" name="story" sourceRef="what-now" targetRef="story" />
-    <bpmn:sequenceFlow id="owner-e7" sourceRef="story" targetRef="story-commit" />
-    <bpmn:sequenceFlow id="owner-e8" sourceRef="story-commit" targetRef="story-deploy" />
-    <bpmn:sequenceFlow id="owner-e9" sourceRef="story-deploy" targetRef="story-from" />
-    <bpmn:sequenceFlow id="owner-e10" sourceRef="story-from" targetRef="story-live" />
-    <bpmn:sequenceFlow id="owner-e11" name="place" sourceRef="what-now" targetRef="place" />
-    <bpmn:sequenceFlow id="owner-e12" sourceRef="place" targetRef="place-pr" />
-    <bpmn:sequenceFlow id="owner-e13" sourceRef="place-pr" targetRef="place-land" />
-    <bpmn:sequenceFlow id="owner-e14" sourceRef="place-land" targetRef="place-deploy" />
-    <bpmn:sequenceFlow id="owner-e15" sourceRef="place-deploy" targetRef="place-live" />
-    <bpmn:sequenceFlow id="owner-e16" name="discount" sourceRef="what-now" targetRef="discount" />
-    <bpmn:sequenceFlow id="owner-e17" sourceRef="discount" targetRef="discount-commit" />
-    <bpmn:sequenceFlow id="owner-e18" sourceRef="discount-commit" targetRef="staff-link" />
-    <bpmn:sequenceFlow id="owner-e19" sourceRef="staff-link" targetRef="discount-live" />
-    <bpmn:sequenceFlow id="owner-e20" name="numbers" sourceRef="what-now" targetRef="stats" />
-    <bpmn:sequenceFlow id="owner-e21" sourceRef="stats" targetRef="owner-only" />
-    <bpmn:sequenceFlow id="owner-e22" sourceRef="owner-only" targetRef="knows" />
+    <bpmn:sequenceFlow id="owner-e1" sourceRef="open" targetRef="site-in" />
+    <bpmn:sequenceFlow id="owner-e2" name="yes, to read" sourceRef="site-in" targetRef="stats" />
+    <bpmn:sequenceFlow id="owner-e3" name="no, or to change something" sourceRef="site-in" targetRef="set-up" />
+    <bpmn:sequenceFlow id="owner-e4" name="no" sourceRef="set-up" targetRef="token" />
+    <bpmn:sequenceFlow id="owner-e5" name="yes" sourceRef="set-up" targetRef="unlock" />
+    <bpmn:sequenceFlow id="owner-e6" sourceRef="token" targetRef="unlock" />
+    <bpmn:sequenceFlow id="owner-e7" sourceRef="unlock" targetRef="what-now" />
+    <bpmn:sequenceFlow id="owner-e8" name="story" sourceRef="what-now" targetRef="story" />
+    <bpmn:sequenceFlow id="owner-e9" sourceRef="story" targetRef="story-commit" />
+    <bpmn:sequenceFlow id="owner-e10" sourceRef="story-commit" targetRef="story-deploy" />
+    <bpmn:sequenceFlow id="owner-e11" sourceRef="story-deploy" targetRef="story-from" />
+    <bpmn:sequenceFlow id="owner-e12" sourceRef="story-from" targetRef="story-live" />
+    <bpmn:sequenceFlow id="owner-e13" name="place" sourceRef="what-now" targetRef="place" />
+    <bpmn:sequenceFlow id="owner-e14" sourceRef="place" targetRef="place-pr" />
+    <bpmn:sequenceFlow id="owner-e15" sourceRef="place-pr" targetRef="place-land" />
+    <bpmn:sequenceFlow id="owner-e16" sourceRef="place-land" targetRef="place-deploy" />
+    <bpmn:sequenceFlow id="owner-e17" sourceRef="place-deploy" targetRef="place-live" />
+    <bpmn:sequenceFlow id="owner-e18" name="discount" sourceRef="what-now" targetRef="discount" />
+    <bpmn:sequenceFlow id="owner-e19" sourceRef="discount" targetRef="discount-commit" />
+    <bpmn:sequenceFlow id="owner-e20" sourceRef="discount-commit" targetRef="staff-link" />
+    <bpmn:sequenceFlow id="owner-e21" sourceRef="staff-link" targetRef="discount-live" />
+    <bpmn:sequenceFlow id="owner-e22" name="numbers" sourceRef="what-now" targetRef="stats" />
+    <bpmn:sequenceFlow id="owner-e23" sourceRef="stats" targetRef="owner-only" />
+    <bpmn:sequenceFlow id="owner-e24" sourceRef="owner-only" targetRef="knows" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="owner-diagram">
     <bpmndi:BPMNPlane id="owner-plane" bpmnElement="owner-collaboration">
       <bpmndi:BPMNShape id="owner-pool-di" bpmnElement="owner-pool" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1980" height="1210" />
+        <dc:Bounds x="0" y="0" width="2170" height="1210" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="owner-lane-owner-di" bpmnElement="owner-lane-owner" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="1950" height="550" />
+        <dc:Bounds x="30" y="0" width="2140" height="550" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="owner-lane-github-di" bpmnElement="owner-lane-github" isHorizontal="true">
-        <dc:Bounds x="30" y="550" width="1950" height="330" />
+        <dc:Bounds x="30" y="550" width="2140" height="330" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="owner-lane-site-di" bpmnElement="owner-lane-site" isHorizontal="true">
-        <dc:Bounds x="30" y="880" width="1950" height="330" />
+        <dc:Bounds x="30" y="880" width="2140" height="330" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="open-di" bpmnElement="open">
         <dc:Bounds x="137" y="45" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="100" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="set-up-di" bpmnElement="set-up">
+      <bpmndi:BPMNShape id="site-in-di" bpmnElement="site-in">
         <dc:Bounds x="320" y="38" width="50" height="50" />
         <bpmndi:BPMNLabel><dc:Bounds x="290" y="92" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="token-di" bpmnElement="token">
-        <dc:Bounds x="475" y="28" width="120" height="70" />
+      <bpmndi:BPMNShape id="set-up-di" bpmnElement="set-up">
+        <dc:Bounds x="510" y="148" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="480" y="202" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="unlock-di" bpmnElement="unlock">
+      <bpmndi:BPMNShape id="token-di" bpmnElement="token">
         <dc:Bounds x="665" y="138" width="120" height="70" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="unlock-di" bpmnElement="unlock">
+        <dc:Bounds x="855" y="248" width="120" height="70" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="what-now-di" bpmnElement="what-now">
-        <dc:Bounds x="890" y="148" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="202" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1080" y="258" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="312" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="story-di" bpmnElement="story">
-        <dc:Bounds x="1045" y="138" width="120" height="70" />
+        <dc:Bounds x="1235" y="248" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="story-commit-di" bpmnElement="story-commit">
-        <dc:Bounds x="1235" y="578" width="120" height="70" />
+        <dc:Bounds x="1425" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="story-deploy-di" bpmnElement="story-deploy">
-        <dc:Bounds x="1425" y="908" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="story-from-di" bpmnElement="story-from">
-        <dc:Bounds x="1657" y="925" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="965" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="story-live-di" bpmnElement="story-live">
-        <dc:Bounds x="1847" y="155" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="195" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="place-di" bpmnElement="place">
-        <dc:Bounds x="1045" y="248" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="place-pr-di" bpmnElement="place-pr">
-        <dc:Bounds x="1235" y="688" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="place-land-di" bpmnElement="place-land">
-        <dc:Bounds x="1425" y="248" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="place-deploy-di" bpmnElement="place-deploy">
         <dc:Bounds x="1615" y="1018" width="120" height="70" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="story-from-di" bpmnElement="story-from">
+        <dc:Bounds x="1847" y="1035" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="1075" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="story-live-di" bpmnElement="story-live">
+        <dc:Bounds x="2037" y="265" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2000" y="305" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="place-di" bpmnElement="place">
+        <dc:Bounds x="1235" y="358" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="place-pr-di" bpmnElement="place-pr">
+        <dc:Bounds x="1425" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="place-land-di" bpmnElement="place-land">
+        <dc:Bounds x="1615" y="358" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="place-deploy-di" bpmnElement="place-deploy">
+        <dc:Bounds x="1805" y="1128" width="120" height="70" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="place-live-di" bpmnElement="place-live">
-        <dc:Bounds x="1847" y="265" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="305" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2037" y="375" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2000" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="discount-di" bpmnElement="discount">
-        <dc:Bounds x="1045" y="358" width="120" height="70" />
+        <dc:Bounds x="1235" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="discount-commit-di" bpmnElement="discount-commit">
-        <dc:Bounds x="1235" y="798" width="120" height="70" />
+        <dc:Bounds x="1425" y="798" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="staff-link-di" bpmnElement="staff-link">
-        <dc:Bounds x="1425" y="358" width="120" height="70" />
+        <dc:Bounds x="1615" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="discount-live-di" bpmnElement="discount-live">
-        <dc:Bounds x="1657" y="375" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1847" y="485" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stats-di" bpmnElement="stats">
-        <dc:Bounds x="1045" y="468" width="120" height="70" />
+        <dc:Bounds x="1235" y="28" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="owner-only-di" bpmnElement="owner-only">
-        <dc:Bounds x="1235" y="1128" width="120" height="70" />
+        <dc:Bounds x="1425" y="908" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="knows-di" bpmnElement="knows">
-        <dc:Bounds x="1467" y="485" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1430" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1657" y="45" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="owner-e1-di" bpmnElement="owner-e1">
         <di:waypoint x="173" y="63" />
@@ -281,125 +296,137 @@ ref: functions/api/admin/refreshes.js GET</bpmn:documentation>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e2-di" bpmnElement="owner-e2">
         <di:waypoint x="370" y="63" />
-        <di:waypoint x="475" y="63" />
-        <bpmndi:BPMNLabel><dc:Bounds x="374" y="33" width="97" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1235" y="63" />
+        <bpmndi:BPMNLabel><dc:Bounds x="374" y="33" width="857" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e3-di" bpmnElement="owner-e3">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="173" />
-        <di:waypoint x="665" y="173" />
-        <bpmndi:BPMNLabel><dc:Bounds x="390" y="143" width="271" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="510" y="173" />
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="143" width="116" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e4-di" bpmnElement="owner-e4">
-        <di:waypoint x="595" y="63" />
-        <di:waypoint x="611" y="63" />
-        <di:waypoint x="611" y="173" />
+        <di:waypoint x="560" y="173" />
         <di:waypoint x="665" y="173" />
+        <bpmndi:BPMNLabel><dc:Bounds x="564" y="143" width="97" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e5-di" bpmnElement="owner-e5">
-        <di:waypoint x="785" y="173" />
-        <di:waypoint x="890" y="173" />
+        <di:waypoint x="560" y="173" />
+        <di:waypoint x="576" y="173" />
+        <di:waypoint x="576" y="283" />
+        <di:waypoint x="855" y="283" />
+        <bpmndi:BPMNLabel><dc:Bounds x="580" y="253" width="271" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e6-di" bpmnElement="owner-e6">
-        <di:waypoint x="940" y="173" />
-        <di:waypoint x="1045" y="173" />
-        <bpmndi:BPMNLabel><dc:Bounds x="944" y="143" width="97" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="785" y="173" />
+        <di:waypoint x="801" y="173" />
+        <di:waypoint x="801" y="283" />
+        <di:waypoint x="855" y="283" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e7-di" bpmnElement="owner-e7">
-        <di:waypoint x="1165" y="173" />
-        <di:waypoint x="1181" y="173" />
-        <di:waypoint x="1181" y="613" />
-        <di:waypoint x="1235" y="613" />
+        <di:waypoint x="975" y="283" />
+        <di:waypoint x="1080" y="283" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e8-di" bpmnElement="owner-e8">
-        <di:waypoint x="1355" y="613" />
-        <di:waypoint x="1371" y="613" />
-        <di:waypoint x="1371" y="943" />
-        <di:waypoint x="1425" y="943" />
+        <di:waypoint x="1130" y="283" />
+        <di:waypoint x="1235" y="283" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1134" y="253" width="97" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e9-di" bpmnElement="owner-e9">
-        <di:waypoint x="1545" y="943" />
-        <di:waypoint x="1657" y="943" />
+        <di:waypoint x="1355" y="283" />
+        <di:waypoint x="1371" y="283" />
+        <di:waypoint x="1371" y="613" />
+        <di:waypoint x="1425" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e10-di" bpmnElement="owner-e10">
-        <di:waypoint x="1693" y="943" />
-        <di:waypoint x="1709" y="943" />
-        <di:waypoint x="1709" y="173" />
-        <di:waypoint x="1847" y="173" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="owner-e11-di" bpmnElement="owner-e11">
-        <di:waypoint x="940" y="173" />
-        <di:waypoint x="956" y="173" />
-        <di:waypoint x="956" y="283" />
-        <di:waypoint x="1045" y="283" />
-        <bpmndi:BPMNLabel><dc:Bounds x="960" y="253" width="81" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="owner-e12-di" bpmnElement="owner-e12">
-        <di:waypoint x="1165" y="283" />
-        <di:waypoint x="1181" y="283" />
-        <di:waypoint x="1181" y="723" />
-        <di:waypoint x="1235" y="723" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="owner-e13-di" bpmnElement="owner-e13">
-        <di:waypoint x="1355" y="723" />
-        <di:waypoint x="1371" y="723" />
-        <di:waypoint x="1371" y="283" />
-        <di:waypoint x="1425" y="283" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="owner-e14-di" bpmnElement="owner-e14">
-        <di:waypoint x="1545" y="283" />
-        <di:waypoint x="1561" y="283" />
+        <di:waypoint x="1545" y="613" />
+        <di:waypoint x="1561" y="613" />
         <di:waypoint x="1561" y="1053" />
         <di:waypoint x="1615" y="1053" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="owner-e15-di" bpmnElement="owner-e15">
+      <bpmndi:BPMNEdge id="owner-e11-di" bpmnElement="owner-e11">
         <di:waypoint x="1735" y="1053" />
-        <di:waypoint x="1751" y="1053" />
-        <di:waypoint x="1751" y="283" />
-        <di:waypoint x="1847" y="283" />
+        <di:waypoint x="1847" y="1053" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e12-di" bpmnElement="owner-e12">
+        <di:waypoint x="1883" y="1053" />
+        <di:waypoint x="1899" y="1053" />
+        <di:waypoint x="1899" y="283" />
+        <di:waypoint x="2037" y="283" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e13-di" bpmnElement="owner-e13">
+        <di:waypoint x="1130" y="283" />
+        <di:waypoint x="1146" y="283" />
+        <di:waypoint x="1146" y="393" />
+        <di:waypoint x="1235" y="393" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1150" y="363" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e14-di" bpmnElement="owner-e14">
+        <di:waypoint x="1355" y="393" />
+        <di:waypoint x="1371" y="393" />
+        <di:waypoint x="1371" y="723" />
+        <di:waypoint x="1425" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e15-di" bpmnElement="owner-e15">
+        <di:waypoint x="1545" y="723" />
+        <di:waypoint x="1561" y="723" />
+        <di:waypoint x="1561" y="393" />
+        <di:waypoint x="1615" y="393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e16-di" bpmnElement="owner-e16">
-        <di:waypoint x="940" y="173" />
-        <di:waypoint x="956" y="173" />
-        <di:waypoint x="956" y="393" />
-        <di:waypoint x="1045" y="393" />
-        <bpmndi:BPMNLabel><dc:Bounds x="960" y="363" width="81" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1735" y="393" />
+        <di:waypoint x="1751" y="393" />
+        <di:waypoint x="1751" y="1163" />
+        <di:waypoint x="1805" y="1163" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e17-di" bpmnElement="owner-e17">
-        <di:waypoint x="1165" y="393" />
-        <di:waypoint x="1181" y="393" />
-        <di:waypoint x="1181" y="833" />
-        <di:waypoint x="1235" y="833" />
+        <di:waypoint x="1925" y="1163" />
+        <di:waypoint x="1941" y="1163" />
+        <di:waypoint x="1941" y="393" />
+        <di:waypoint x="2037" y="393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e18-di" bpmnElement="owner-e18">
-        <di:waypoint x="1355" y="833" />
-        <di:waypoint x="1371" y="833" />
-        <di:waypoint x="1371" y="393" />
-        <di:waypoint x="1425" y="393" />
+        <di:waypoint x="1130" y="283" />
+        <di:waypoint x="1146" y="283" />
+        <di:waypoint x="1146" y="503" />
+        <di:waypoint x="1235" y="503" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1150" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e19-di" bpmnElement="owner-e19">
-        <di:waypoint x="1545" y="393" />
-        <di:waypoint x="1657" y="393" />
+        <di:waypoint x="1355" y="503" />
+        <di:waypoint x="1371" y="503" />
+        <di:waypoint x="1371" y="833" />
+        <di:waypoint x="1425" y="833" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e20-di" bpmnElement="owner-e20">
-        <di:waypoint x="940" y="173" />
-        <di:waypoint x="956" y="173" />
-        <di:waypoint x="956" y="503" />
-        <di:waypoint x="1045" y="503" />
-        <bpmndi:BPMNLabel><dc:Bounds x="960" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1545" y="833" />
+        <di:waypoint x="1561" y="833" />
+        <di:waypoint x="1561" y="503" />
+        <di:waypoint x="1615" y="503" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e21-di" bpmnElement="owner-e21">
-        <di:waypoint x="1165" y="503" />
-        <di:waypoint x="1181" y="503" />
-        <di:waypoint x="1181" y="1163" />
-        <di:waypoint x="1235" y="1163" />
+        <di:waypoint x="1735" y="503" />
+        <di:waypoint x="1847" y="503" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="owner-e22-di" bpmnElement="owner-e22">
-        <di:waypoint x="1355" y="1163" />
-        <di:waypoint x="1371" y="1163" />
-        <di:waypoint x="1371" y="503" />
-        <di:waypoint x="1467" y="503" />
+        <di:waypoint x="1130" y="283" />
+        <di:waypoint x="1146" y="283" />
+        <di:waypoint x="1146" y="63" />
+        <di:waypoint x="1235" y="63" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1150" y="287" width="70" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e23-di" bpmnElement="owner-e23">
+        <di:waypoint x="1355" y="63" />
+        <di:waypoint x="1371" y="63" />
+        <di:waypoint x="1371" y="943" />
+        <di:waypoint x="1425" y="943" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="owner-e24-di" bpmnElement="owner-e24">
+        <di:waypoint x="1545" y="943" />
+        <di:waypoint x="1561" y="943" />
+        <di:waypoint x="1561" y="63" />
+        <di:waypoint x="1657" y="63" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
