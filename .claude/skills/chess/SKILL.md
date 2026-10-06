@@ -74,7 +74,7 @@ way in below, after the six tasks were cut.
 **The way in, for whoever knows it**: *Surprise me* on the map held for five
 seconds goes to `/chess` — `holdForChess()` in `assets/app.js`, the
 `chess_open_hold` event, with a ring that fills round the die while it is
-held. It is not the door task 6 describes, which stays held; nothing on
+held. It is not the door task 6b describes, which stays held; nothing on
 screen says it is there until somebody holds it.
 
 **Member against member**, added at the owner's asking after the notes and

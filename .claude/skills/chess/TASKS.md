@@ -496,7 +496,20 @@ the queue moves, and a member's page says their game started without a reload.
 
 ---
 
-- [ ] **6. The door, and the diagram**
+- [x] **6a. The diagram** — cut out of task 6 once the door was held, since
+  `/admin/flows` is the owner's and shows nobody where the page is. The
+  `chess` flow in `data/flows.json` and `flows/chess.bpmn`: one start counted
+  by `page:chess` — the address, or *Surprise me* held — the site's answer,
+  then a gateway for each of anybody, a member and the house, and every step
+  of the six parts so far counted by its press. Drawn first with the four
+  lanes the session that shaped this drew, a site lane among them, and
+  redrawn with a lane per person and none for the site, for the reason the
+  visitor's and the member's have none — **Why three of them have one lane**
+  in the README says so. The seventh row in **Who uses the site, drawn**, and
+  the two file headers that list the diagrams. `mockup-flow.json`, the draft
+  it was pasted from, went with it.
+
+- [ ] **6b. The door**
 
 **Held, on the owner's instruction.** The door went up for a day — a knight
 pill on the rail for anybody signed in and a *Play chess* row behind More on
@@ -505,19 +518,17 @@ stays at `/chess`, linked from nowhere, until they say otherwise. Nothing of
 that door is left in the code. Since then the owner asked for a hidden way
 in — *Surprise me* held for five seconds, `holdForChess()` in `assets/app.js`
 — which is not this task and does not tick it. The brief below is still what a door would
-be, and the diagram and the `CLAUDE.md` lines are still owed whenever it
-comes back.
+be, and the `CLAUDE.md` lines are still owed whenever it comes back.
 
 **Lands:** `#btn-chess` on the rail in `index.html` under `#btn-flash`, a row
 behind More, `chess` in `RAIL_PRESS` in `assets/app.js` and in `RAIL_PILLS` in
 `functions/api/stats.js`, the short rail's stylesheet rule hiding the new pill
 with the others it hides, `chessDoor` and `chessDoorWhy`, the `chess_open_rail`
-event and its row in **Analytics**, the chess flow in `data/flows.json` with
-its `ref`s and the re-run `flows/chess.bpmn`, the seventh row in the README's
-**Who uses the site, drawn** table, the door in the README's **Chess** and the
-five-doors count under **The short rail**, the opening sentence of `CLAUDE.md`
-and its process table, the `/api` skill's `/*` row if the page gained a route
-(it did not), the stamps.
+event and its row in **Analytics**, the rail in the first step of the `chess`
+flow in `data/flows.json` and the re-run `flows/chess.bpmn`, the door in the
+README's **Chess** and the five-doors count under **The short rail**, the
+opening sentence of `CLAUDE.md` and its process table, the `/api` skill's `/*`
+row if the page gained a route (it did not), the stamps.
 
 **Do:**
 
@@ -528,17 +539,18 @@ and its process table, the `/api` skill's `/*` row if the page gained a route
    The More sheet's row after Learn Estonian, counted under the pill's id.
 2. The strings: `chessDoor` *Play chess*, `chessDoorWhy` *One board for the
    whole city, against Tallinn Tastebuds.*, all ten languages.
-3. The flow: the `chess` flow drawn in the session that shaped this — four
-   lanes, visitor, member, the house, the site; `mockup-flow.json` beside this
-   file is the source to paste in, with a `ref` added to every step naming
-   the files that now exist. `node tools/flows.mjs`, commit the `.bpmn`.
+3. The flow: the rail and the More row in the `open` step's note and `ref`,
+   and nothing in its `when` — `page:chess` already counts the arrival, and a
+   press sent on the map as it leaves would count the same walk twice. The
+   press belongs on the visitor's and the member's diagrams, where the map
+   is. Then `node tools/flows.mjs`, commit the `.bpmn`.
 4. The README and `CLAUDE.md` lines above; then `node tools/stamp.mjs`.
 5. Drive the map on both rails — `?layout=a` and `?layout=b` — and both styles:
    the pill, the row, the count arriving on `/admin/stats` under `chess`.
 
 **Done when:** the page is reachable from the rail on both layouts, counted,
-drawn on `/admin/flows`, and every document that lists the site's parts lists
-it.
+its door is on `/admin/flows`, and every document that lists the site's parts
+lists it.
 
 **The PR says:** that the feature is now live and linked, and what the first
 week should be watched for on `/admin/stats` and `/admin/visitors`.
