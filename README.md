@@ -8638,8 +8638,9 @@ two words under it — *Knew it*, and *Show me again*. Over the card, how the
 sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, in a part of their own behind the menu at the top of that page — **The
-menu, and Start** below — four lessons of
-grammar about why the words on the cards come in threes and what grows out of them — **Grammar, which is
+menu, and Start** below — five lessons of
+grammar about why the words on the cards come in threes, what grows out of them
+and how an adjective compares — **Grammar, which is
 read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
@@ -9775,7 +9776,7 @@ a song scrolled past *Hello and goodbye* to find it. Turning a card over,
 reading a lesson and listening to a song are three different things to do,
 and the menu says so before anything is scrolled. Words is the decks by stage,
 with the two gathered decks on top and your own under them; Grammar is the
-four lessons and then the cases, each followed by its deck; Songs is each song
+five lessons and then the cases, each followed by its deck; Songs is each song
 with the deck of its words under it.
 
 Start is a card for each of the other three: what is in it, how many, and one
@@ -10346,10 +10347,11 @@ the whole case system hangs off those two forms and the words that change most
 are the commonest.
 
 So the shelf carries a heading of its own, **Grammar**, between *First words*
-and *At a restaurant*, and under it four tiles that open to prose rather than
+and *At a restaurant*, and under it five tiles that open to prose rather than
 to a run: **Why a noun has three forms**, **The fourteen cases**, **Why a verb
-has three forms** and **Every tense of a verb** — each pair the forms first
-and then what grows out of them.
+has three forms**, **Every tense of a verb** and **Bigger, biggest, and the
+opposite** — each pair the forms first and then what grows out of them, and
+the fifth the word that stands in front of a noun.
 Each is a page of a few hundred words in the language the cards are being read
 in — the three the decks speak, not the ten the site does — with a paradigm or
 two set in the mono the card prints its forms in, a few sentences under each
@@ -10366,7 +10368,7 @@ card wears the forms it explains. And it holds nothing back: the lessons are a
 file, prose, open signed out and behind no gate — a lesson never stands between
 anybody and a deck, and reading one does not spend the free word. It could not
 be the other way round: **Which decks are open** holds a *deck* back so that a
-beginner has somewhere to start, and four tiles under a heading called Grammar
+beginner has somewhere to start, and five tiles under a heading called Grammar
 are not that problem.
 
 **Each language argues from its own grammar.** The three texts are not
@@ -10423,8 +10425,8 @@ answers, and until this section existed the answer was a card that showed the
 forms and said nothing.
 
 **What it does not do.** No quiz at the end; four hundred words known is the
-test, as it is for the stages. No fifth lesson under this heading — the cases
-are taken one at a time under one of their own, the next section. No
+test, as it is for the stages. The cases are not taken one at a time under
+this heading but under one of their own, the next section. No
 lessons in the other seven languages: they get English, as the cards do. No
 scroll position remembered inside a lesson. And no lessons for a deck somebody
 wrote, for the reason there are no forms on one.
@@ -10444,12 +10446,36 @@ vowel swaps, which form each tense grows from — is a paradigm with a paragraph
 over it saying what the arrow said. The lesson format held, and a fourth
 column would have been the thing that did not.
 
+**The fifth is the adjective, and it is the same three forms again.** The
+cards' *Describing a thing* deck carries *parem*, *lühem*, *laiem* and *kiirem*
+as cards of their own, each with its *-a* and *-at* under it and nothing said
+about how it was made from *hea*, *lühike*, *lai* and *kiire* — which is the
+one rule: *-m* on the omastav for more, *-im* on it for most, and *kõige* in
+front of the comparative when the short form is in doubt. So **Bigger,
+biggest, and the opposite** is three tables in the format the others hold:
+eight adjectives through the three degrees, with the rule under them — a two-syllable omastav swaps its last vowel for *e*, *väike*
+drops its *-ke-*, *hea* and *halb* are learnt by heart; the ten endings an
+adjective is made with, from *lugev* and *väsinud* (the four participle forms
+the tenses lesson ended on, pointed back at) to *sõbralik*, *vihmane*,
+*andekas* and *õnnetu*; and the three ways to turn one round, *eba-*,
+*mitte-* and *-tu*/*-matu*, as a table of pairs with the device in the third
+column. The first paragraph says what the fourteen cases already said of *see*
+and *hea* — an adjective takes the noun's ending through the first ten cases
+and stays in the omastav for the last four — so that the two lessons point at
+each other rather than each saying half. The Azerbaijani leans on *daha* and
+*ən* standing in front where Estonian puts an ending behind, on *-lı* for
+*-ne* and *-sız* for *-tu*, and on *qeyri-* for *eba-*; the Russian on its own
+participles, which it has all four of, on *самый* for *kõige*, *-ейший* for
+*-im*, and *не-* and *без-* for the two ends an adjective is turned round from.
+It is the last of the five, so the line that says there is more grammar to
+come, which closed the tenses lesson, closes this one now.
+
 **And every table is said aloud under it.** A paragraph can only quote the
 Estonian inside an English sentence about it, which is not how anybody will
-meet it. So after each paradigm, in all four lessons, comes a short run of
+meet it. So after each paradigm, in all five lessons, comes a short run of
 sentences — *Võtmed on kotis*, *Kas maksate kaardiga?*, *Ma elasin varem
 Bakuus* — each with the form the table just showed standing in it, set where
-the rest of the site is set: the bus, the shop, the counter. Sixty-two of
+the rest of the site is set: the bus, the shop, the counter. Seventy-nine of
 them, and they are mine like the rest. And said aloud in the plain sense too:
 every sentence has a speaker at the end of its line and every form in the
 table is a press that says it — **Hearing it** below.
@@ -10506,7 +10532,7 @@ stage: like a song's words, the page draws it under the lesson rather than under
 any of the four headings, and nothing holds it back, because the route has no
 gate for that level either. `tools/validate.mjs` fails a lesson whose deck is
 not in the file or is not a `case` deck, and a `case` deck no lesson names. The
-four lessons under **Grammar** carry no `deck` and are drawn where they always
+five lessons under **Grammar** carry no `deck` and are drawn where they always
 were.
 
 **Got it goes on into the cards.** On a lesson with a deck the button reads
@@ -10560,7 +10586,7 @@ is a word you know.
 **What it does not do.** No quiz and no drill that makes you type the ending;
 the cards are turned over like any other. No case lessons for verbs. Not in the
 other seven languages, for the reason nothing on this page is. And the Estonian
-is mine, as in the four lessons above it: a wrong ending in one of them is a
+is mine, as in the five lessons above it: a wrong ending in one of them is a
 pull request.
 
 ### Songs, which are listened to

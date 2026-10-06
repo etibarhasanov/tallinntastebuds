@@ -57,9 +57,10 @@
  *
  * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
  *
- * Four lessons sit on the shelf under a heading of their own, after the first
- * stage: why a noun has three forms and the fourteen cases they open, and why
- * a verb does and every tense it grows into. Under them, a second heading
+ * Five lessons sit on the shelf under a heading of their own, after the first
+ * stage: why a noun has three forms and the fourteen cases they open, why a
+ * verb does and every tense it grows into, and how an adjective compares and
+ * what it is made from. Under them, a second heading
  * teaches the cases one at a time — five short lessons, each followed by a
  * deck of cards that uses only what it taught, and Got it on one of those goes
  * on into its deck rather than back to the shelf. A lesson is a tile
