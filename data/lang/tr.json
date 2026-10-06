@@ -992,6 +992,7 @@
   "chessAheadNone": "Sıradaki sensin. Ev tahtaya geldiğinde oyununu başlatır, bu sayfa da bunu söyler.",
   "chessLeave": "Listeden çık",
   "chessWaitingNow": "Şu an bekleyenler",
+  "chessQueueDuel": "Sıradaki herkese kendi oyununuz için meydan okuyun — beklerken birbirinizle oynayın.",
   "chessNobodyWaiting": "Şu an kimse beklemiyor.",
   "chessSince": "bekliyor: {when}",
   "chessPlayingYou": "şu an seninle oynuyor",

@@ -11590,6 +11590,46 @@
 
   /* -------------------------------------------------------------- controls */
 
+  /* The way to /chess, which has no door on the map on the owner's
+     instruction — **No door, on purpose** under **Chess** in README.md. Hold
+     Surprise me for five seconds and the page goes there instead of rolling
+     the die. Five seconds is past any press that meant the die and past the
+     half-second a phone takes to call a press long, so nobody arrives by
+     accident; nothing on screen says it is there, which is the point of a
+     door the owner did not want on the rail.
+     The press that started it still ends in a click when the finger comes
+     up, so the click after a hold that fired is swallowed before it reaches
+     the die or the rail's count, and a phone's long-press menu is kept off
+     the pill while it is held. */
+  var CHESS_HOLD_MS = 5000;
+
+  function holdForChess(btn) {
+    var timer = null;
+    var fired = false;
+    var stop = function () { if (timer) clearTimeout(timer); timer = null; };
+    btn.addEventListener('pointerdown', function (ev) {
+      if (ev.button) return;
+      fired = false;
+      stop();
+      timer = setTimeout(function () {
+        timer = null;
+        fired = true;
+        TTBTrack.event('chess_open_hold');
+        window.location.href = '/chess';
+      }, CHESS_HOLD_MS);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (type) {
+      btn.addEventListener(type, stop);
+    });
+    btn.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
+    document.addEventListener('click', function (ev) {
+      if (!fired || !btn.contains(ev.target)) return;
+      fired = false;
+      ev.preventDefault();
+      ev.stopPropagation();
+    }, true);
+  }
+
   function wireControls() {
     /* The panel is inert while closed, so the skip link opens it rather than
        trying to move focus into something that cannot take focus. */
@@ -11626,6 +11666,7 @@
       closeHint('random');
       randomPick();
     });
+    holdForChess(dom.btnRandom);
 
     /* And the one beside it, for the same reason — its own label rather than
        the die's, because pressing one of the two is not an answer to the

@@ -9,7 +9,9 @@
  * board, from this same page, which shows it a different face. Beside it, a
  * waiting list: a member joins it, the house starts a game with the first in
  * line, one at a time, and that game is drawn on the same board component
- * with the member's name where Everybody's was. Under those, a card for
+ * with the member's name where Everybody's was. Everybody sees who is in the
+ * line, and a member may challenge anybody else in it to a game of their own
+ * rather than only wait for the house — playCard() below. Under those, a card for
  * playing another member: find them by username, challenge them, and the game
  * they accept opens on the same board in the card's place — duelsCard() below.
  * **Chess** in README.md is the
@@ -1085,15 +1087,30 @@
 
   /* One person in line, as a row that goes to their page. A member whose
      account has gone keeps their place and has no page, so their row is the
-     row's shape with nothing to press. */
-  function queueRow(name, why, tag, playing) {
+     row's shape with nothing to press. With `end` — Challenge, for another
+     member reading the line — the row cannot be a link as well, so the name
+     is the link and the press sits at the row's end, the way a name the
+     search found does. */
+  function queueRow(name, why, tag, playing, end) {
     var cls = 'menu-row' + (playing ? ' is-playing' : '');
+    var named = [
+      sideName(name),
+      tag ? el('span', { className: 'chess-tag', textContent: tag }) : null
+    ];
+    if (end && name) {
+      return el('li', { className: 'menu-item' }, [
+        el('div', { className: cls + ' chess-duel-row' }, [
+          el('span', { className: 'menu-say' }, [
+            el('a', { className: 'menu-name', href: '/u/' + encodeURIComponent(name) }, named),
+            el('span', { className: 'menu-why', textContent: why })
+          ]),
+          el('span', { className: 'chess-duel-end' }, end)
+        ])
+      ]);
+    }
     var kids = [
       el('span', { className: 'menu-say' }, [
-        el('span', { className: 'menu-name' }, [
-          sideName(name),
-          tag ? el('span', { className: 'chess-tag', textContent: tag }) : null
-        ]),
+        el('span', { className: 'menu-name' }, named),
         el('span', { className: 'menu-why', textContent: why })
       ])
     ];
@@ -1109,7 +1126,12 @@
 
   /* The one-on-one card, in whichever shape the reader's face needs: for a
      visitor the invitation, for a member the door or their place in line, for
-     the house the line and the one action. Under each, who is waiting now. */
+     the house the line and the one action, and for a member whose game with
+     the house is on or over, the line alone. Under each, who is waiting now —
+     on every face, because a line nobody else can see is a line nobody can
+     do anything about. A member reading it may challenge anybody else in it
+     to a game of their own while both wait: Challenge at the row's end, the
+     same challenge the search in duelsCard() sends. */
   function playCard() {
     var a = state.answer;
     var you = a.you || { role: 'visitor' };
@@ -1120,6 +1142,12 @@
     var go = null;
     var alt = null;
     var rows = [];
+    /* Challenge needs the duels: a database without the column answers
+       `duels: null`, and the line is then only names. */
+    var duels = you.role === 'member' && a.duels ? a.duels : null;
+    /* The card is the line and nothing else, so the line's own heading is
+       its title rather than an eyebrow under one. */
+    var lineOnly = false;
 
     if (you.role === 'house') {
       title = t('chessWaitingToPlayYou');
@@ -1141,6 +1169,11 @@
       title = t('chessInLine');
       why = ahead.length ? t('chessAhead', { n: ahead.length, names: ahead.join(', ') }) : t('chessAheadNone');
       alt = altButton(t('chessLeave'), function () { act('leave', 'chess_leave'); });
+    } else if (you.role === 'member' && mine) {
+      /* Their game is on, or over with Join again under its result: nothing
+         here for them to do with the house, only the people still waiting. */
+      title = t('chessWaitingNow');
+      lineOnly = true;
     } else if (you.role === 'member') {
       title = t('chessPlayTitle');
       why = t('chessPlayWhy');
@@ -1150,17 +1183,26 @@
       why = t('chessPlayWhySignedOut');
     }
 
+    var others = 0;
     queue.forEach(function (q) {
       var isYou = you.role === 'member' && q.name && q.name === you.name;
-      rows.push(queueRow(q.name, t('chessSince', { when: span(q.since) }), isYou ? t('chessYou') : null, false));
+      var end = duels && q.name && !isYou ? challengeEnd(q.name, duels) : null;
+      if (end) others++;
+      rows.push(queueRow(q.name, t('chessSince', { when: span(q.since) }), isYou ? t('chessYou') : null, false, end));
     });
 
+    /* Nobody waiting is not worth a card to somebody whose game is on. */
+    if (lineOnly && !rows.length) return null;
+
+    var head = lineOnly ? null
+      : el('p', { className: 'eyebrow chess-queue-head', textContent: t('chessWaitingNow') });
     return el('section', { className: 'card chess-play', 'aria-label': t('chessOneOnOne') }, [
       el('p', { className: 'eyebrow', textContent: t('chessOneOnOne') }),
       el('h2', { className: 'lists-title', textContent: title }),
-      el('p', { className: 'chess-play-why', textContent: why }),
+      why ? el('p', { className: 'chess-play-why', textContent: why }) : null,
       go,
-      el('p', { className: 'eyebrow chess-queue-head', textContent: t('chessWaitingNow') }),
+      head,
+      others ? el('p', { className: 'chess-queue-duel', textContent: t('chessQueueDuel') }) : null,
       rows.length
         ? el('ul', { className: 'menu' }, rows)
         : el('p', { className: 'chess-queue-none', textContent: t('chessNobodyWaiting') }),
@@ -1266,20 +1308,26 @@
       found = el('p', { className: 'chess-queue-none', textContent: t('chessFindNone') });
     } else if (players) {
       found = el('ul', { className: 'menu chess-found' }, players.map(function (name) {
-        var had = null;
-        duels.forEach(function (d) {
-          if (d.state !== 'over' && otherSide(d) === name) had = d;
-        });
-        var end = !had ? [altButton(t('chessChallenge'), function () { challenge(name, false); })]
-                : [el('span', {
-                    className: 'chess-tag',
-                    textContent: had.state === 'playing' ? t('chessPlayingTag')
-                               : had.yours ? t('chessChallengedYouTag') : t('chessChallengedTag')
-                  })];
-        return duelRow(name, '', end, null, false);
+        return duelRow(name, '', challengeEnd(name, duels), null, false);
       }));
     }
     return el('div', { className: 'chess-find' }, [input, found]);
+  }
+
+  /* What goes at the end of another member's row, wherever the reader came
+     across them — the search, or the waiting list: Challenge, or a word for
+     what the two already have going. */
+  function challengeEnd(name, duels) {
+    var had = null;
+    duels.forEach(function (d) {
+      if (d.state !== 'over' && otherSide(d) === name) had = d;
+    });
+    if (!had) return [altButton(t('chessChallenge'), function () { challenge(name, false); })];
+    return [el('span', {
+      className: 'chess-tag',
+      textContent: had.state === 'playing' ? t('chessPlayingTag')
+                 : had.yours ? t('chessChallengedYouTag') : t('chessChallengedTag')
+    })];
   }
 
   /* Member against member. A visitor is told where the account is made; a
@@ -1355,7 +1403,8 @@
   /* What the page holds, top to bottom, for whoever is reading — the faces
      table in .claude/skills/chess/SKILL.md. A visitor: the public game, then
      the invitation. A member: their own game while it is on or once it is
-     over, else the card with the line in it; then the public game. The house:
+     over, then the line; else the card with the line in it; then the public
+     game. The house:
      the line, the private game while one is on, the public game. And last,
      for all three, member against member — no card at all where the route
      says `duels: null`, a database without the column it needs. */
@@ -1368,7 +1417,7 @@
 
     if (role === 'house') return [playCard(), mine ? gameGrid(mine) : null, pub, duels];
     if (role === 'member') {
-      if (mine && mine.game.state !== 'waiting') return [gameGrid(mine), pub, duels];
+      if (mine && mine.game.state !== 'waiting') return [gameGrid(mine), playCard(), pub, duels];
       return [playCard(), pub, duels];
     }
     return [pub, playCard(), duels];

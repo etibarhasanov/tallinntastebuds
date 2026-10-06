@@ -65,6 +65,12 @@
    beside the name rather than a colour alone. */
 .chess-tag { margin-left: 6px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .chess-play .is-playing .menu-why { color: var(--accent); }
+/* A member reading the line can challenge the others in it: the sentence that
+   says so, and in each row the name as the way to the page, since the row's
+   end is the press now. */
+.chess-queue-duel { margin: 0 0 6px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chess-play a.menu-name { color: inherit; text-decoration: none; }
+.chess-play a.menu-name:hover { text-decoration: underline; }
 
 /* ---------- member against member ---------- */
 

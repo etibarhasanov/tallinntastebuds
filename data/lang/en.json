@@ -992,6 +992,7 @@
   "chessAheadNone": "You’re next. The house starts your game when it gets to the board, and this page will say so.",
   "chessLeave": "Leave the list",
   "chessWaitingNow": "Waiting now",
+  "chessQueueDuel": "Challenge anybody in the line to a game of your own — play each other while you wait.",
   "chessNobodyWaiting": "Nobody is waiting right now.",
   "chessSince": "since {when}",
   "chessPlayingYou": "playing you now",

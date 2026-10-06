@@ -482,7 +482,9 @@ the queue moves, and a member's page says their game started without a reload.
 pill on the rail for anybody signed in and a *Play chess* row behind More on
 the short rail, then the row alone — and the owner took it down: the page
 stays at `/chess`, linked from nowhere, until they say otherwise. Nothing of
-that door is left in the code; the brief below is still what a door would
+that door is left in the code. Since then the owner asked for a hidden way
+in — *Surprise me* held for five seconds, `holdForChess()` in `assets/app.js`
+— which is not this task and does not tick it. The brief below is still what a door would
 be, and the diagram and the `CLAUDE.md` lines are still owed whenever it
 comes back.
 

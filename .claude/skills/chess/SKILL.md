@@ -58,11 +58,23 @@ for anybody.
 | then | — | — | the public game |
 | last | *Member against member*: sign in on the map | *Member against member*, or the duel they have open | the same as a member |
 
-A member whose game is on, or over, sees their board and then the public game,
-and no one-on-one card: there is nothing in it for them to do while they play,
-and the *Join the waiting list* a finished game needs is under that game's
-result. The table first gave the card a third row for them; the mockup drew it
-without one, and the page follows the mockup.
+A member whose game is on, or over, sees their board, then the line alone —
+*Waiting now*, nothing about the house in it, and no card at all with nobody
+waiting — then the public game: the *Join the waiting list* a finished game
+needs is under that game's result. The mockup drew them no card; the owner
+asked afterwards that everybody see who is waiting, so the line came back.
+
+**The line is where members find each other.** On every face but the house's,
+a member reading the line has *Challenge* at the end of every other member's
+row — the duels' own challenge, `challengeEnd()` in `assets/chess.js`, shared
+with the search — under `chessQueueDuel`, so people waiting can play each
+other rather than only wait for the house. Asked for by the owner, with the
+way in below, after the six tasks were cut.
+
+**The way in, for whoever knows it**: *Surprise me* on the map held for five
+seconds goes to `/chess` — `holdForChess()` in `assets/app.js`, the
+`chess_open_hold` event. It is not the door task 6 describes, which stays
+held; nothing on screen says it is there.
 
 **Member against member**, added at the owner's asking after the notes and
 never in the mockup: a card at the foot of every face. A member finds another
