@@ -185,14 +185,14 @@ function memberRow(post) {
     (text.standfirst ? ' — ' + esc(text.standfirst) : '') + '</p></li>';
 }
 
-function memberWords(post, names) {
+function memberWords(post, names, lists) {
   const text = firstText(post);
   return '<article lang="' + esc(post.lang) + '">' +
     '<h1>' + esc(text.title) + '</h1>' +
     '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> — by ' +
     '<a href="/u/' + esc(encodeURIComponent(post.author)) + '">' + esc(post.author) + '</a></p>' +
     (text.standfirst ? '<p>' + esc(text.standfirst) + '</p>' : '') +
-    bodyHtml(text.body, esc, (id) => names.get(id) || '') +
+    bodyHtml(text.body, esc, (id) => names.get(id) || '', (id) => lists.get(id) || null) +
     '</article>' +
     '<p><a href="' + esc(PATH + '?by=' + encodeURIComponent(post.author)) + '">More by ' + esc(post.author) + '</a> · ' +
     '<a href="' + PATH + '">' + esc(TITLE) + '</a> · <a href="/">The map of Tallinn</a></p>';
@@ -263,6 +263,37 @@ async function placeNames(context, blocks) {
   return names;
 }
 
+/* The lists a post carries, for the readers that run no script: the title,
+   whose it is, and the places on it by the names the list stored — which is
+   all a crawler needs to know the post is about them, and is two reads
+   however many lists there are. Public ones only, asked now rather than
+   trusted from when the post was written: a list made private since leaves
+   the post's text the way it leaves the page. A database that cannot answer
+   costs the post its lists and nothing else. */
+async function listsOf(env, blocks) {
+  const ids = [...new Set((blocks || []).filter((b) => b && b.k === 'list').map((b) => b.id))];
+  const out = new Map();
+  if (!ids.length || !env.DB) return out;
+  try {
+    const marks = ids.map(() => '?').join(',');
+    const heads = await env.DB
+      .prepare('SELECT l.id AS id, l.title AS title, u.username AS by FROM lists l ' +
+        'LEFT JOIN users u ON u.id = l.owner WHERE l.public = 1 AND l.id IN (' + marks + ')')
+      .bind(...ids)
+      .all();
+    for (const r of heads.results || []) out.set(r.id, { title: r.title, by: r.by || '', names: [] });
+    if (!out.size) return out;
+    const items = await env.DB
+      .prepare('SELECT list_id, name FROM list_items WHERE list_id IN (' + marks + ') ORDER BY list_id, pos')
+      .bind(...ids)
+      .all();
+    for (const r of items.results || []) if (out.has(r.list_id)) out.get(r.list_id).names.push(r.name);
+  } catch (e) {
+    out.clear();
+  }
+  return out;
+}
+
 async function memberPage(context, html, db, asked) {
   const { request } = context;
   const post = await readPost(db, asked, null).catch(() => null);
@@ -279,7 +310,8 @@ async function memberPage(context, html, db, asked) {
     '\n<meta property="article:author" content="' + esc(SITE + '/u/' + encodeURIComponent(post.author)) + '">' +
     '\n<script type="application/ld+json">' + seed(memberPosting(request, post)) + '</script>';
 
-  const words = memberWords(post, await placeNames(context, firstText(post).body));
+  const body = firstText(post).body;
+  const words = memberWords(post, await placeNames(context, body), await listsOf(db, body));
   return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], words), 200, true);
 }
 

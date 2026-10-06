@@ -13,9 +13,10 @@
  * what a reader will look at: the heading is the post's heading, a quote is
  * the post's quote. The toolbar over it is the handful of things a post may
  * hold and nothing else: text, two sizes of heading, bold, italic, a link,
- * two kinds of list, a quote, a divider, and a place on the map, which draws
- * as a card a reader can press. That last one is what this blog has that
- * another does not, and it is what "my ten places" is made of.
+ * two kinds of list, a quote, a divider, a place on the map, which draws as
+ * a card a reader can press, and somebody's public list, which draws as its
+ * places side by side to swipe through. Those last two are what this blog
+ * has that another does not, and they are what "my ten places" is made of.
  *
  * WHAT IS SENT IS BLOCKS, NEVER THE BOX'S HTML
  *
@@ -38,8 +39,9 @@
  *
  * THE CAPS
  *
- * MAX_TITLE, MAX_LEAD and MAX_BODY are functions/api/_posts.js's, restated so
- * the counters can count; the server's are the ones that bind.
+ * MAX_TITLE, MAX_LEAD, MAX_BODY and MAX_LISTS are functions/api/_posts.js's,
+ * restated so the counters can count and the list picker can say no before
+ * the route quietly drops the eleventh; the server's are the ones that bind.
  *
  * Plain browser JavaScript, ES5, one IIFE, like every file in assets/.
  */
@@ -49,12 +51,14 @@
   var MAX_TITLE = 120;
   var MAX_LEAD = 280;
   var MAX_BODY = 20000;
+  var MAX_LISTS = 10;
 
   var API = '/api/posts';
   var ACCOUNT_API = '/api/account';
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var PLACES_URL = '/api/places';
+  var LISTS_API = '/api/lists';
   var PAGE = '/write';
 
   var DEFAULT_LANG = 'en';
@@ -79,7 +83,8 @@
     missing: false,  // ?post= named nothing of yours
     dirty: false,
     busy: false,
-    places: {}       // the places this page has met, by id: a card's name and street
+    places: {},      // the places this page has met, by id: a card's name and street
+    lists: {}        // the lists likewise: { title, by }
   };
 
   var main = null;
@@ -352,6 +357,8 @@
 
         var place = c.getAttribute('data-place');
         if (place) { flush(); blocks.push({ k: 'place', id: place }); continue; }
+        var listed = c.getAttribute('data-list');
+        if (listed) { flush(); blocks.push({ k: 'list', id: listed }); continue; }
 
         if (!isBlock(c)) {
           if (c.nodeName === 'BR') { flush(); continue; }
@@ -420,9 +427,20 @@
     ]);
   }
 
+  /* A list as it sits in the box: its title and whose it is, in the shape a
+     place does, with a mark of its own — see .write-list in write.css. */
+  function listCard(id) {
+    var l = state.lists[id];
+    return el('div', { className: 'write-place write-list', contenteditable: 'false', 'data-list': id }, [
+      el('span', { className: 'write-place-name', textContent: l ? l.title : id }),
+      l && l.by ? el('span', { className: 'write-place-where', textContent: t('blogBy', { name: l.by }) }) : null
+    ]);
+  }
+
   function blockNode(b) {
     if (b.k === 'hr') return el('hr');
     if (b.k === 'place') return placeCard(b.id);
+    if (b.k === 'list') return listCard(b.id);
     if (b.k === 'ul' || b.k === 'ol') {
       return el(b.k, {}, b.li.map(function (item) { return el('li', {}, runNodes(item)); }));
     }
@@ -433,7 +451,8 @@
   function fillBox(node, blocks) {
     clear(node);
     blocks.forEach(function (b) { node.appendChild(blockNode(b)); });
-    if (!blocks.length || blocks[blocks.length - 1].k === 'place' || blocks[blocks.length - 1].k === 'hr') {
+    var last = blocks.length ? blocks[blocks.length - 1].k : '';
+    if (!last || last === 'place' || last === 'list' || last === 'hr') {
       node.appendChild(el('p', {}, [el('br')]));
     }
   }
@@ -464,17 +483,45 @@
     return getJSON(PLACES_URL + '?q=' + encodeURIComponent(typed)).then(keepPlaces);
   }
 
+  /* The lists the picker can offer are the public ones /lists draws, most
+     opened first with nothing typed and by the words in the field with
+     something — the same search that page runs. */
+  function keepLists(list) {
+    (Array.isArray(list) ? list : []).forEach(function (l) {
+      if (l && l.id) state.lists[l.id] = { title: l.title, by: l.by || '' };
+    });
+    return Array.isArray(list) ? list : [];
+  }
+
+  function findLists(typed) {
+    return getJSON(LISTS_API + '?all=1' + (typed ? '&q=' + encodeURIComponent(typed) : ''))
+      .then(function (out) { return keepLists(out && out.all); });
+  }
+
+  /* The names a post already carries, before its box is drawn: its places by
+     id in one request, and its lists one request each — there are ten at the
+     most. A list that is gone or private keeps its card, under its id, and
+     the blog leaves it out. */
   function loadNames(post) {
     var ids = [];
+    var lists = [];
     Object.keys(post.texts || {}).forEach(function (code) {
       (post.texts[code].body || []).forEach(function (b) {
         if (b && b.k === 'place' && ids.indexOf(b.id) === -1 && !state.places[b.id]) ids.push(b.id);
+        if (b && b.k === 'list' && lists.indexOf(b.id) === -1 && !state.lists[b.id]) lists.push(b.id);
       });
     });
-    if (!ids.length) return Promise.resolve();
-    return getJSON(PLACES_URL + '?ids=' + ids.slice(0, 50).map(encodeURIComponent).join(','))
-      .then(keepPlaces)
-      .catch(function () { return []; });
+    var asked = lists.map(function (id) {
+      return getJSON(LISTS_API + '?id=' + encodeURIComponent(id))
+        .then(function (out) { if (out && out.list) keepLists([out.list]); })
+        .catch(function () {});
+    });
+    if (ids.length) {
+      asked.push(getJSON(PLACES_URL + '?ids=' + ids.slice(0, 50).map(encodeURIComponent).join(','))
+        .then(keepPlaces)
+        .catch(function () { return []; }));
+    }
+    return Promise.all(asked);
   }
 
   /* Folded the way the map's find bar folds: Põhjala is found by pohjala. */
@@ -652,7 +699,9 @@
     { id: 'hr', key: 'writeToolLine', label: '', cmd: 'insertHorizontalRule',
       svg: '<path d="M3 12h18"/>' },
     { id: 'place', key: 'writeToolPlace', label: '', panel: 'place',
-      svg: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>' }
+      svg: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>' },
+    { id: 'publist', key: 'writeToolPublicList', label: '', panel: 'list',
+      svg: '<rect x="2.5" y="6" width="8" height="12" rx="1.5"/><rect x="13.5" y="6" width="8" height="12" rx="1.5"/>' }
   ];
 
   function holdSelection() {
@@ -697,10 +746,10 @@
     return bar;
   }
 
-  /* The one panel under the toolbar, holding either the link field or the
-     place picker. A panel rather than window.prompt(): the prompt cannot be
-     styled, cannot be translated past its message, and on a phone it is a
-     second keyboard over the first. */
+  /* The one panel under the toolbar, holding the link field or one of the
+     two pickers, a place's or a list's. A panel rather than window.prompt():
+     the prompt cannot be styled, cannot be translated past its message, and
+     on a phone it is a second keyboard over the first. */
   function openPanel(panel, kind) {
     clear(panel);
     panel.hidden = false;
@@ -748,8 +797,17 @@
       return;
     }
 
-    var find = el('input', { type: 'search', className: 'lists-input', placeholder: t('writePlaceSearch'),
-      'aria-label': t('writePlaceSearch') });
+    /* Ten lists is the most a post holds, and the picker says so rather
+       than letting the route drop the eleventh without a word. */
+    if (kind === 'list' && box.querySelectorAll('[data-list]').length >= MAX_LISTS) {
+      panel.appendChild(el('p', { className: 'lists-say', textContent: t('writeListMax') }));
+      panel.appendChild(el('p', { className: 'lists-row' }, [close]));
+      return;
+    }
+
+    var pick = PICKERS[kind];
+    var find = el('input', { type: 'search', className: 'lists-input', placeholder: t(pick.ask),
+      'aria-label': t(pick.ask) });
     var list = el('ul', { className: 'menu write-found' });
     var asked = '';
     var wait = null;
@@ -759,53 +817,78 @@
     };
     var draw = function (hits) {
       clear(list);
-      if (!hits.length) { say('writePlaceNone'); return; }
-      hits.slice(0, 8).forEach(function (p) {
+      if (!hits.length) { say(pick.none); return; }
+      hits.slice(0, 8).forEach(function (hit) {
         var b = el('button', { type: 'button', className: 'menu-row' }, [
           el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: p.name }),
-            el('span', { className: 'menu-why', textContent: p.address || '' })
+            el('span', { className: 'menu-name', textContent: pick.name(hit) }),
+            el('span', { className: 'menu-why', textContent: pick.why(hit) })
           ])
         ]);
         b.addEventListener('click', function () {
           panel.hidden = true;
-          insertPlace(p.id);
+          pick.put(hit);
         });
         list.appendChild(el('li', { className: 'menu-item' }, [b]));
       });
     };
-    /* Under three letters there is nothing to ask and nothing is drawn. Past
-       that, a quarter of a second after the last key, and only the answer to
-       what is in the field now is drawn: a slow reply to "pho" does not
-       overwrite the one to "pohj". */
-    find.addEventListener('input', function () {
+    /* Under the picker's least there is nothing to ask and nothing is drawn —
+       three letters for a place, none for a list, which with nothing typed
+       offers the lists most opened. Past that, a quarter of a second after
+       the last key, and only the answer to what is in the field now is
+       drawn: a slow reply to "pho" does not overwrite the one to "pohj". */
+    var search = function () {
       var typed = find.value.trim();
       if (wait) window.clearTimeout(wait);
-      if (fold(typed).length < PICK_MIN) { asked = ''; clear(list); return; }
+      if (fold(typed).length < pick.min) { asked = ''; clear(list); return; }
       say('findLooking');
       wait = window.setTimeout(function () {
         asked = typed;
-        findPlaces(typed).then(function (hits) {
+        pick.find(typed).then(function (hits) {
           if (asked === typed) draw(hits);
         }).catch(function () {
-          if (asked === typed) say('writePlaceNone');
+          if (asked === typed) say(pick.none);
         });
       }, 250);
-    });
+    };
+    find.addEventListener('input', search);
     panel.appendChild(find);
     panel.appendChild(list);
     panel.appendChild(el('p', { className: 'lists-row' }, [close]));
     find.focus();
+    if (!pick.min) search();
   }
 
-  /* A place goes in as a block of its own after the paragraph the caret is
+  /* The two pickers the toolbar opens: what each asks, how it finds, how a
+     row reads, and what goes into the box when one is pressed. */
+  var PICKERS = {
+    place: {
+      ask: 'writePlaceSearch', none: 'writePlaceNone', min: PICK_MIN, find: findPlaces,
+      name: function (p) { return p.name; },
+      why: function (p) { return p.address || ''; },
+      put: function (p) {
+        insertCard(placeCard(p.id));
+        TTBTrack.event('write_place', { place: p.id });
+      }
+    },
+    list: {
+      ask: 'writeListSearch', none: 'writeListNone', min: 0, find: findLists,
+      name: function (l) { return l.title; },
+      why: function (l) { return l.by ? t('blogBy', { name: l.by }) : ''; },
+      put: function (l) {
+        insertCard(listCard(l.id));
+        TTBTrack.event('write_list', { list: l.id });
+      }
+    }
+  };
+
+  /* A card goes in as a block of its own after the paragraph the caret is
      in, never inside it: a card in the middle of a sentence is not a thing a
      post can hold, and readBox() would split the sentence round it. */
-  function insertPlace(id) {
+  function insertCard(card) {
     restoreSelection();
     var at = kept ? kept.startContainer : null;
     while (at && at.parentNode !== box) at = at.parentNode;
-    var card = placeCard(id);
     var after = el('p', {}, [el('br')]);
     if (at && at.parentNode === box) {
       box.insertBefore(card, at.nextSibling);
@@ -819,7 +902,6 @@
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-    TTBTrack.event('write_place', { place: id });
     touched();
   }
 
@@ -876,7 +958,7 @@
     });
     fillBox(box, text.body);
     box.addEventListener('input', function () {
-      box.classList.toggle('is-empty', !box.textContent.trim() && !box.querySelector('[data-place], hr'));
+      box.classList.toggle('is-empty', !box.textContent.trim() && !box.querySelector('[data-place], [data-list], hr'));
       touched();
     });
     box.addEventListener('paste', onPaste);
