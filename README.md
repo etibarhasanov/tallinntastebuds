@@ -8988,6 +8988,22 @@ can be drawn. **A language of your own to learn it in** above is the switch,
 and **Three languages, not ten** under it is why there are three of them and
 not ten.
 
+**And it is asked before the page has arrived.** For a long time the one
+request went out from the bottom of `assets/flashcard.js`, which is the largest
+script on the site and is deferred behind the tag, the radio and the language
+switch — so the route did not hear a thing until all four had downloaded and
+run, and only then started on the file and the database. On a phone those were
+two waits end to end. `assets/flashcard-first.js` is a dozen lines, `async` in
+the head, and it works out the same address `boot()` would — `?d=` or where
+this device left off, and the languages in the same order — and sends it at
+once, so the answer is on its way while the scripts are still arriving.
+`boot()` takes that answer only when the address it built is the same one
+character for character; if the two files ever drift, the cost is one wasted
+request and never the wrong deck. On the server, the reads about the person —
+what they know, and the deck of their own the address names or the decks they
+wrote — go to D1 together rather than one after another: a signed-in shelf
+was four round trips in a row and is two.
+
 And when the site does not answer at all, the page draws nothing: it has no
 words to say so in, and what it would print instead are its keys. What is
 left is the markup's own English and whatever `functions/flashcard.js` wrote

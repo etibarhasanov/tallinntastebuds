@@ -12,6 +12,12 @@
      the consent bar that stood in front of both of them for a day. -->
 <script src="/assets/analytics.js?v=ff6f3c33" defer></script>
 
+<!-- The page's one request, sent from here rather than from the bottom of
+     assets/flashcard.js, so the decks are on their way while the scripts are
+     still arriving. Async, not deferred: it waits for nothing, and boot()
+     checks the address it asked before taking the answer. -->
+<script src="/assets/flashcard-first.js?v=ae13597f" async></script>
+
 <!-- Everything between the markers is swapped by functions/flashcard.js for
      the tags of whichever deck ?d= names, so a search for what an Estonian
      word means finds the deck it is on rather than a page called "Flashcards".
@@ -130,6 +136,6 @@
      the two listeners that shut it. Before the page's own script and deferred
      like it, so document order puts the global in place first. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/flashcard.js?v=0842dfef" defer></script>
+<script src="/assets/flashcard.js?v=2e728234" defer></script>
 </body>
 </html>

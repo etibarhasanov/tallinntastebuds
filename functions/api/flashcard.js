@@ -492,6 +492,30 @@ async function cardsOf(env, deckId) {
   return results || [];
 }
 
+/* The decks this person wrote, for the shelf, and the id of every card in
+   them. A deck of your own needs its cards counted for the shelf's two
+   numbers, and they are not in the first read — the count there is a
+   subquery. The second is one read of this person's own cards, capped at
+   MAX_DECKS × MAX_CARDS, and the only query on this page that grows with what
+   somebody has written. Sent as one batch: one round trip to D1 rather than
+   two. */
+async function ownDecks(env, user) {
+  const [decks, cards] = await env.DB.batch([
+    env.DB
+      .prepare(
+        'SELECT d.id AS id, d.name AS name, ' +
+        '(SELECT COUNT(*) FROM flashcard_cards WHERE deck_id = d.id) AS cards ' +
+        'FROM flashcard_decks d WHERE d.owner = ? ORDER BY d.updated_at DESC LIMIT ?'
+      )
+      .bind(user.id, MAX_DECKS),
+    env.DB
+      .prepare('SELECT c.id AS id, c.deck_id AS deck_id FROM flashcard_cards c ' +
+               'JOIN flashcard_decks d ON d.id = c.deck_id WHERE d.owner = ?')
+      .bind(user.id)
+  ]);
+  return { decks: decks.results || [], cards: cards.results || [] };
+}
+
 /* --------------------------------------------- the two columns, or without
  * `box` and `due_at` were added to flashcard_known after it had been deployed
  * and filled, and nothing in CI applies a schema — so there is always an
@@ -712,14 +736,26 @@ export async function onRequestGet(context) {
      has nothing to show at all without a database. */
   const ready = !!env.DB && !(await wrongDatabase(env));
   const google = googleReady(env);
-  const decks = await shipped(context);
-
-  const user = ready ? await sessionUser(request, env) : null;
+  /* The file and the session at once: on a fresh isolate the first is a read
+     of the whole of data/decks.json, and neither needs the other. */
+  const [decks, user] = await Promise.all([
+    shipped(context),
+    ready ? sessionUser(request, env) : null
+  ]);
   const who = user ? user.username : null;
   const params = new URL(request.url).searchParams;
   const asked = params.get('deck') || '';
 
-  const known = await knownOf(env, user);
+  /* Everything this answer reads about the person, side by side rather than
+     one after another: what they know, and either the deck of their own the
+     address names or — on the shelf — the decks they wrote and the cards in
+     them. Each is a round trip to D1, and in a row they were most of the time
+     a signed-in page spent waiting before it could draw a card. */
+  const [known, mine, own] = await Promise.all([
+    knownOf(env, user),
+    asked ? deckOf(env, asked, user) : null,
+    !asked && user ? ownDecks(env, user) : null
+  ]);
 
   /* What every answer below carries, whichever deck it is about: the three
      facts about this deployment and this session, the words the page will
@@ -748,7 +784,6 @@ export async function onRequestGet(context) {
       return json({ ...base, deck: answer }, 200);
     }
 
-    const mine = await deckOf(env, asked, user);
     if (mine) {
       const cards = await cardsOf(env, mine.id);
       return json({ ...base, deck: deckAnswer(mine, cards, true, known) }, 200);
@@ -858,31 +893,13 @@ export async function onRequestGet(context) {
     });
   }
 
-  if (user) {
-    const { results } = await env.DB
-      .prepare(
-        'SELECT d.id AS id, d.name AS name, ' +
-        '(SELECT COUNT(*) FROM flashcard_cards WHERE deck_id = d.id) AS cards ' +
-        'FROM flashcard_decks d WHERE d.owner = ? ORDER BY d.updated_at DESC LIMIT ?'
-      )
-      .bind(user.id, MAX_DECKS)
-      .all();
-    /* A deck of your own needs its cards counted for the same two numbers,
-       and they are not in the row above — the count there is a subquery. One
-       read of this person's own cards, which is capped at MAX_DECKS ×
-       MAX_CARDS and is the only query on this page that grows with what
-       somebody has written. */
-    const { results: ownCards } = await env.DB
-      .prepare('SELECT c.id AS id, c.deck_id AS deck_id FROM flashcard_cards c ' +
-               'JOIN flashcard_decks d ON d.id = c.deck_id WHERE d.owner = ?')
-      .bind(user.id)
-      .all();
+  if (own) {
     const byDeck = {};
-    for (const row of ownCards || []) {
+    for (const row of own.cards) {
       (byDeck[row.deck_id] = byDeck[row.deck_id] || []).push({ id: row.id });
     }
 
-    (results || []).forEach((row) => {
+    own.decks.forEach((row) => {
       list.push({
         id: row.id,
         name: row.name,
