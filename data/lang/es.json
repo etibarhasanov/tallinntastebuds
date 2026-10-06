@@ -1020,8 +1020,6 @@
   "chessStarted": "Empezó hace {when}",
   "chessStartWith": "Empezar una partida con {name}",
   "chessWaitingToPlayYou": "Esperando para jugar contigo",
-  "chessQueueFree": "Una partida cada vez, por orden de la cola.",
-  "chessQueueBusy": "{name} está jugando contigo ahora. La siguiente partida empieza cuando termine esta.",
   "chessRecord": "Eres la casa · partidas: {games} · ganadas: {won} · perdidas: {lost} · tablas: {drawn}",
   "chessAlready": "Ya estás en la cola.",
   "chessFull": "La cola está llena ahora mismo. Inténtalo mañana.",

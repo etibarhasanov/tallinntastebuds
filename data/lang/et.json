@@ -1020,8 +1020,6 @@
   "chessStarted": "Algas {when} tagasi",
   "chessStartWith": "Alusta mängu: {name}",
   "chessWaitingToPlayYou": "Ootavad sinuga mängimist",
-  "chessQueueFree": "Üks mäng korraga, järjekorras esimene enne.",
-  "chessQueueBusy": "{name} mängib praegu sinuga. Järgmine mäng algab, kui see lõpeb.",
   "chessRecord": "Sina oled maja · mänge {games} · võite {won} · kaotusi {lost} · viike {drawn}",
   "chessAlready": "Oled juba järjekorras.",
   "chessFull": "Järjekord on praegu täis. Proovi homme uuesti.",

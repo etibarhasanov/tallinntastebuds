@@ -1020,8 +1020,6 @@
   "chessStarted": "Alkoi {when} sitten",
   "chessStartWith": "Aloita peli: {name}",
   "chessWaitingToPlayYou": "Odottavat peliä kanssasi",
-  "chessQueueFree": "Yksi peli kerrallaan, jonon järjestyksessä.",
-  "chessQueueBusy": "{name} pelaa nyt kanssasi. Seuraava peli alkaa, kun tämä päättyy.",
   "chessRecord": "Olet talo · pelejä {games} · voittoja {won} · tappioita {lost} · tasapelejä {drawn}",
   "chessAlready": "Olet jo jonossa.",
   "chessFull": "Jono on nyt täynnä. Yritä huomenna uudelleen.",

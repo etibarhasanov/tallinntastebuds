@@ -1020,8 +1020,6 @@
   "chessStarted": "Սկսվել է {when} առաջ",
   "chessStartWith": "Սկսել խաղ {name}-ի հետ",
   "chessWaitingToPlayYou": "Սպասում են քեզ հետ խաղալու",
-  "chessQueueFree": "Միաժամանակ մեկ խաղ, հերթով։",
-  "chessQueueBusy": "{name}-ը հիմա խաղում է քեզ հետ։ Հաջորդ խաղը կսկսվի, երբ այս մեկն ավարտվի։",
   "chessRecord": "Դու տունն ես · խաղեր՝ {games} · հաղթանակ՝ {won} · պարտություն՝ {lost} · ոչ-ոքի՝ {drawn}",
   "chessAlready": "Դու արդեն հերթում ես։",
   "chessFull": "Ցուցակը հիմա լիքն է։ Փորձիր վաղը։",
