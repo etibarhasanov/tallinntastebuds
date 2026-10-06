@@ -32,8 +32,10 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="open" name="Opens flashcards">
-      <bpmn:documentation>when: page:flashcard
-ref: functions/flashcard.js</bpmn:documentation>
+      <bpmn:documentation>From the map's rail, in a frame over the map, with the map's radio still playing; on the subdomain, whole.
+when: page:flashcard
+ref: functions/flashcard.js
+ref: assets/shell.js</bpmn:documentation>
       <bpmn:outgoing>flashcards-e1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="shelf" name="Answers the shelf and the words, in one request">

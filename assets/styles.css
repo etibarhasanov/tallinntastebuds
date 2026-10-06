@@ -3899,6 +3899,30 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 .lb-close { position: absolute; top: max(var(--gap), var(--safe-t)); right: var(--gap); }
 .lb-btn:focus-visible { outline-color: #fff; }
 
+/* ---------- the shell: a page open on the map ----------
+   A whole page in a frame, over everything the map draws, so that the map
+   underneath it — and the radio playing in it — stay. Above the stories,
+   because a page is where somebody went and a story is what they were
+   watching; under the skip link only because that one is first in the
+   document and inert while this is up. --wash behind the frame for the
+   beat before the page inside has painted, so a page in the dark style does
+   not arrive on a white flash. No transition: a page does not slide in, it
+   is there, the way the document it replaces would have been. */
+
+.shell {
+  position: fixed;
+  inset: 0;
+  z-index: 2800;
+  background: var(--wash);
+}
+.shell[hidden] { display: none; }
+.shell-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* ---------- stories ----------
    One video, full height, with the chrome laid over it: a bar per story along
    the top, who it is from and how long it has left under that, the caption and

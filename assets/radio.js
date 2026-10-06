@@ -32,6 +32,13 @@
  * now is. A live stream has no position to resume from, so there is nothing
  * else to carry.
  *
+ * That is the walk that starts on a page. A walk that starts on the map no
+ * longer leaves the map's document at all: assets/shell.js opens the page in
+ * a frame over the map, and this file, running in that frame, does nothing
+ * of its own — see A PAGE INSIDE THE MAP below. The carry across documents
+ * is what is left for the other direction, a fresh load of a page, and the
+ * back button.
+ *
  * It rejoins the moment this file runs, not when the page gets round to
  * mounting the button. Every page mounts it after its own data is in — the
  * account page after ui.json, the catalogue and two answers from the
@@ -101,9 +108,52 @@
  * again, and the switch follows it both ways: off on the pause, on again if
  * the browser or the lock screen brings it back, and otherwise one press,
  * which rejoins the stream live. See interrupted() and resumed().
+ *
+ * A PAGE INSIDE THE MAP
+ *
+ * assets/shell.js opens every page a visitor walks to from the map in a
+ * frame over the map, and the map goes on playing underneath. A page in that
+ * frame loads this file like any other, and for a while that was two radios:
+ * the frame's own read 'on' from sessionStorage — the same origin, the same
+ * store — and rejoined the stream beside the one already playing. So this
+ * file looks up first, and in a frame whose parent is this site it keeps no
+ * station list, no element and no switch: mount() hands the page's button to
+ * the parent's radio through adopt(), language() and stop() are the parent's,
+ * and what the page gets is its own button on its own header, painted by the
+ * one radio that is playing. The parent paints it from the first frame, as
+ * preshow() does on a page of its own, and lets go of it when the page's
+ * document goes. A page's language is a station like the map's, and the
+ * map's own comes back when the page closes.
+ *
+ * One thing the frame keeps to itself: a tap on the page inside it is the
+ * page's document's and never reaches the listeners waitForGesture() puts
+ * on this one, so a rejoin the map's browser refused is not started by
+ * tapping around a page open over it. The page's button is, through
+ * toggle(), which is the press that wait was written to hand over anyway.
  */
 window.TTBRadio = (function () {
   'use strict';
+
+  /* In a frame on this site: the parent's radio, and nothing of this file's
+     own. A parent on another origin cannot be read and throws, which is the
+     catch; that page is then a page of its own, as every page is in a tab. */
+  var host = null;
+  try {
+    if (window.parent !== window && window.parent.TTBRadio && window.parent.TTBRadio.adopt) host = window.parent.TTBRadio;
+  } catch (e) { host = null; }
+  if (host) {
+    var lend = function () {
+      var el = document.getElementById('btn-radio');
+      if (el) host.adopt({ button: el, name: document.getElementById('radio-name'), lang: '', t: null, onchange: null }, window);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lend);
+    else lend();
+    return {
+      mount: function (opts) { host.adopt(opts, window); },
+      language: function (code) { host.language(code); },
+      stop: function () { host.stop(); }
+    };
+  }
 
   /* From the root: lists.html is also served at /list/<id>, where a relative
      "data/radio.json" would ask for /list/data/radio.json and 404. */
@@ -134,14 +184,19 @@ window.TTBRadio = (function () {
      pressing it again would turn off. */
   var wanted = false;
 
-  /* What the page mounted: its button, the span the station's name goes in,
-     the language it is reading in, its translator and its ear. mount() fills
-     all five in and none of them is optional — see the note above it. */
-  var btn = null;
-  var nameEl = null;
+  /* What the pages mounted: for each, its button, the span the station's
+     name goes in, its translator, its ear and its window. The first is this
+     page's own, from mount(); the rest are pages open in a frame over it,
+     from adopt(), each let go of when its document goes. A translator or an
+     ear can be null on a button lent before its page has its words — see
+     A PAGE INSIDE THE MAP at the head of this file. */
+  var mounted = [];
+
+  /* The language the radio plays for: this page's own from mount(), or the
+     last one a framed page spoke. ownLang is this page's, to come back to
+     when that page closes. */
   var lang = '';
-  var say = null;
-  var told = null;
+  var ownLang = '';
 
   function readWanted() {
     try { return window.sessionStorage.getItem(KEY) === 'on'; } catch (e) { return false; }
@@ -178,7 +233,6 @@ window.TTBRadio = (function () {
   }
 
   function paint() {
-    if (!btn) return;
     /* Until data/radio.json has arrived the button is drawn from the station
        the last page wrote down, so it is on screen, named and in the right
        state from the first frame of a new page instead of appearing a beat
@@ -186,13 +240,42 @@ window.TTBRadio = (function () {
        radio that is on has one to draw; a visitor who never pressed it sees
        the button arrive with the file, as before. */
     var station = stations ? stationFor(lang) : (wanted ? readStation() : null);
-    if (!station || !station.url) { btn.hidden = true; return; }
-    btn.hidden = false;
-    nameEl.textContent = station.name || '';
-    btn.setAttribute('aria-pressed', String(wanted));
-    var label = say(wanted ? 'radioStop' : 'radioPlay');
-    btn.setAttribute('aria-label', label);
-    btn.setAttribute('title', label);
+    for (var i = 0; i < mounted.length; i++) {
+      var m = mounted[i];
+      /* A frame taken down says pagehide and release() hears it; a window
+         that is closed all the same is let go of here, so that nothing is
+         painted on a button in a document that has gone. */
+      if (m.win !== window && m.win.closed) { mounted.splice(i, 1); i--; continue; }
+      if (!station || !station.url) { m.button.hidden = true; continue; }
+      m.button.hidden = false;
+      if (m.name) m.name.textContent = station.name || '';
+      m.button.setAttribute('aria-pressed', String(wanted));
+      /* A button lent before its page has its words keeps the label the
+         markup gave it; the page's mount() brings the right one. */
+      if (!m.say) continue;
+      var label = m.say(wanted ? 'radioStop' : 'radioPlay');
+      m.button.setAttribute('aria-label', label);
+      m.button.setAttribute('title', label);
+    }
+  }
+
+  /* The news: a press, to the page whose button was pressed, and a stream
+     that failed, to every page that mounted an ear — each toasts on its own
+     screen, and whichever is on top is the one that is read. */
+  function tell(what, station, button) {
+    for (var i = 0; i < mounted.length; i++) {
+      if (button && mounted[i].button !== button) continue;
+      if (mounted[i].told) mounted[i].told(what, station);
+    }
+  }
+
+  /* Whether a press landed on one of the buttons, which is toggle()'s and
+     not gesture()'s — see waitForGesture(). */
+  function onButton(node) {
+    for (var i = 0; i < mounted.length; i++) {
+      if (mounted[i].button.contains(node)) return true;
+    }
+    return false;
   }
 
   function halt() {
@@ -266,7 +349,7 @@ window.TTBRadio = (function () {
      So the station is asked for first, and a tap with no answer yet leaves
      the listeners where they are for the next one. */
   function gesture(ev) {
-    if (btn && ev.target && btn.contains(ev.target)) return;
+    if (ev.target && onButton(ev.target)) return;
     if (!wanted) { stopWaiting(); return; }
     var station = stationNow();
     if (!station || !station.url) return;
@@ -298,7 +381,7 @@ window.TTBRadio = (function () {
     wanted = false;
     writeWanted();
     paint();
-    if (told) told('fail');
+    tell('fail');
   }
 
   /* Paused by something that is not a press: a phone call, the lock screen,
@@ -469,7 +552,10 @@ window.TTBRadio = (function () {
     writeWanted();
     if (wanted) start(); else halt();
     paint();
-    told(wanted ? 'play' : 'stop', station);
+    /* Told to the page whose button this was: a press on a page open over
+       the map is that page's news, and a hint opening on the map under it
+       would be a hint opening under a sheet. */
+    tell(wanted ? 'play' : 'stop', station, this);
     /* Reported from here rather than by each page's onchange, so every page
        that mounts the button counts the press the same way. */
     TTBTrack.event(wanted ? 'radio_play' : 'radio_stop', { station: station.name || 'radio' });
@@ -547,7 +633,7 @@ window.TTBRadio = (function () {
   function preshow() {
     var el = document.getElementById('btn-radio');
     var last = wanted ? readStation() : null;
-    if (!el || btn || !last) return;
+    if (!el || mounted.length || !last) return;
     el.hidden = false;
     el.setAttribute('aria-pressed', 'true');
     var label = document.getElementById('radio-name');
@@ -565,14 +651,9 @@ window.TTBRadio = (function () {
      navigation, because nothing changed: the radio was on when the last page
      was left and it is on now. Only a press, or a stream failing, is news. */
   function mount(opts) {
-    btn = opts.button;
-    nameEl = opts.name;
+    ownLang = opts.lang;
     lang = opts.lang;
-    say = opts.t;
-    told = opts.onchange;
-
-    btn.addEventListener('click', toggle);
-    paint();
+    hold(opts, window);
 
     loading.then(function () {
       paint();
@@ -582,6 +663,46 @@ window.TTBRadio = (function () {
          its own, this is where the right one starts. */
       if (wanted) start();
     });
+  }
+
+  /* A button taken on: this page's own, or a framed page's. One entry per
+     window — a page lends its button bare as it loads and mounts it again
+     with its words, and the second replaces the first. */
+  function hold(opts, win) {
+    var entry = { button: opts.button, name: opts.name, say: opts.t, told: opts.onchange, win: win };
+    var at = mounted.length;
+    for (var i = 0; i < mounted.length; i++) {
+      if (mounted[i].win !== win) continue;
+      mounted[i].button.removeEventListener('click', toggle);
+      at = i;
+    }
+    mounted[at] = entry;
+    entry.button.addEventListener('click', toggle);
+    paint();
+  }
+
+  /* A page open in a frame over this one hands its button over — see A PAGE
+     INSIDE THE MAP at the head of this file. Its language is a station the
+     way a switch is, and this page's comes back when the page's document
+     goes: pagehide is what a frame's document says on its way out, whether
+     the page walked on or the frame was taken down. One listener per
+     document: the bare lend adds it, the page's own mount() finds the entry
+     already there. release() takes the entry out, so the next document in
+     the same frame is new again. */
+  function adopt(opts, win) {
+    var known = false;
+    for (var i = 0; i < mounted.length; i++) if (mounted[i].win === win) known = true;
+    hold(opts, win);
+    if (opts.lang) language(opts.lang);
+    if (!known) win.addEventListener('pagehide', function () { release(win); });
+  }
+
+  function release(win) {
+    for (var i = mounted.length - 1; i >= 0; i--) {
+      if (mounted[i].win === win) mounted.splice(i, 1);
+    }
+    language(ownLang);
+    paint();
   }
 
   /* Changing language mid-song changes the station under it, rather than
@@ -606,5 +727,5 @@ window.TTBRadio = (function () {
     paint();
   }
 
-  return { mount: mount, language: language, stop: stop };
+  return { mount: mount, adopt: adopt, language: language, stop: stop };
 })();

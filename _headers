@@ -13,8 +13,8 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: frame-ancestors 'none'
-  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Frame-Options: SAMEORIGIN
   Cross-Origin-Opener-Policy: same-origin
   Permissions-Policy: camera=(), microphone=(), payment=(), usb=(), serial=(), hid=(), browsing-topics=(), geolocation=(self)
 

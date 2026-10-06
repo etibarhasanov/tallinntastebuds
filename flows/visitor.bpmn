@@ -149,12 +149,14 @@ ref: functions/api/saves.js POST</bpmn:documentation>
       <bpmn:incoming>visitor-e15</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="read" name="Watches a story, reads the blog, plays the radio">
-      <bpmn:documentation>when: story_open
+      <bpmn:documentation>The blog, like every page, opens in a frame over the map; the radio plays on underneath.
+when: story_open
 when: page:blog
 when: radio_play
 ref: data/stories.json
 ref: blog.html
-ref: assets/radio.js</bpmn:documentation>
+ref: assets/radio.js
+ref: assets/shell.js</bpmn:documentation>
       <bpmn:incoming>visitor-e17</bpmn:incoming>
       <bpmn:outgoing>visitor-e18</bpmn:outgoing>
     </bpmn:userTask>
@@ -162,12 +164,14 @@ ref: assets/radio.js</bpmn:documentation>
       <bpmn:incoming>visitor-e18</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="lists" name="Opens a list, a profile or /lists">
-      <bpmn:documentation>when: page:lists
+      <bpmn:documentation>From the map, in a frame over it — the map and its radio stay. A shared link loads the page whole.
+when: page:lists
 when: page:list
 when: page:profile
 ref: functions/list/[id].js
 ref: functions/u/[name].js
-ref: functions/lists/index.js</bpmn:documentation>
+ref: functions/lists/index.js
+ref: assets/shell.js</bpmn:documentation>
       <bpmn:incoming>visitor-e19</bpmn:incoming>
       <bpmn:outgoing>visitor-e20</bpmn:outgoing>
     </bpmn:userTask>

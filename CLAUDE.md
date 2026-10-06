@@ -102,6 +102,7 @@ command does the same by hand, and is the way to be sure.
 | Refresh the Google Places export | `/google-venues` |
 | Build the chess page — the next unticked task in `.claude/skills/chess/TASKS.md`, one per session | `/chess` |
 | Change what the site counts about its visitors, or one of the owner's five pages under `/admin/` that read it — `assets/track.js`, `functions/api/stats.js`, `_visitors.js`, `_visits.js`, `_flows.js`, `functions/api/admin/` — or read the numbers to decide what to build next | `/stats`, with `/site` **and** `/api` |
+| Change how the pages fit together — the shell the map opens every page on (`assets/shell.js`), the radio one page lends another, the security headers, a subdomain, a shared global — or propose a new page, route or host | `/architecture`, with `/site` or `/api` for the files it touches |
 
 Each skill is written from the code, not from memory: which files a change
 touches, in what order, the exact commands and flags, every check the

@@ -70,6 +70,7 @@ completely with the database switched off.
 - [Feedback](#feedback)
 - [Statistics](#statistics)
 - [Who uses the site, drawn](#who-uses-the-site-drawn)
+- [The map is the shell](#the-map-is-the-shell)
 - [The short rail](#the-short-rail)
 - [The admin page](#the-admin-page)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
@@ -8936,12 +8937,14 @@ everything else here. And it plays across a whole sitting rather than across one
 deck, which is **Opening a deck does not load the page** above and is the one
 place on this site where the radio has no seam in it at all.
 
-What it does not do is arrive playing. The radio walks from the map to a list
-because both are one origin, and on flashcard.tallinntastebuds.ee it is not —
-the same line that empties `ttb.lang` and gives this page a language switch at
-all. At `/flashcard` on the map's own hostname it carries across as it does
-everywhere else. So there is one press to make here, at the start, and after
-that the decks go by underneath it.
+Opened from the map's rail, the page is in a frame over the map and the
+button is the map's own radio wearing this header — **The map is the
+shell** — so a station that was playing on the map is still playing, with no
+press to make and no seam at all. On flashcard.tallinntastebuds.ee it does
+not arrive playing: the radio walks from the map to a list because both are
+one origin, and the subdomain is not — the same line that empties `ttb.lang`
+and gives this page a language switch at all. There, there is one press to
+make at the start, and after that the decks go by underneath it.
 
 ### It is the same account as the map
 
@@ -14048,7 +14051,8 @@ Every answer this site gives carries the same seven headers, the ones
 [specification.website](https://specification.website/) marks required or
 recommended and an audit against it in September 2026 found missing or
 partial: `nosniff`, a referrer policy, a year of HSTS with the subdomains,
-`frame-ancestors 'none'` with `X-Frame-Options: DENY` beside it, COOP
+`frame-ancestors 'self'` with `X-Frame-Options: SAMEORIGIN` beside it — the
+site frames itself, see **The map is the shell**, and nobody else may — COOP
 `same-origin`, and a `Permissions-Policy` that turns off what the site never
 uses and keeps location for the locate pill. Every `/api/` answer carries
 `Cross-Origin-Resource-Policy: same-site` besides, so another site cannot
@@ -15170,8 +15174,16 @@ somebody who changed language on the way, by `?lang=` — the station changes
 under it then, as a language switch does. What is left of the seam is the
 navigation and the stream connecting, and neither is the script's to
 shorten: a page is a document, and a document that goes takes its `<audio>`
-with it. A radio with no seam at all would mean one document for the whole
-site, which is not the shape this site is.
+with it.
+
+Which is why a walk that starts on the map no longer goes through a
+navigation at all. The map opens every page in a frame over itself and
+keeps playing underneath — **The map is the shell** below — and
+`radio.js`, running inside that frame, builds nothing of its own: it lends
+the page's button to the map's radio, so there is one `<audio>` and no
+seam. The carry across documents described here is what is left for the
+other direction: a page loaded whole, a shared link, and the back button
+into one.
 
 `sessionStorage` and not `localStorage`, deliberately. The tab that was playing
 keeps playing, and a visit tomorrow opens silent — the same judgement as the
@@ -15346,6 +15358,99 @@ the source being swapped under a language switch — are told apart from the
 phone's by the state of the element when the event arrives, not by a flag:
 the switch is already off for the first two, and for the third the element is
 already playing again. Only a pause from outside leaves it paused.
+
+## The map is the shell
+
+Every page on this site is a document of its own: the lists, a list, a
+profile, the account, the blog, the flashcards, the chess page, the feedback
+page. A walk from the map to any of them used to be a navigation, and a
+navigation tears the map's document down — the pins, the panel, and the
+radio's `<audio>`, which is the part anybody could hear. **It keeps playing
+when you walk to a list** under **The radio** carried the station across so
+the next page could rejoin it, and what that left was the walk itself: the
+page loading again, and a second of silence while the stream reconnected,
+on every single walk. The flashcards had already shown what no seam sounds
+like, by opening a deck without leaving their document — **Opening a deck
+does not load the page**. The whole site does that now, without becoming
+one document.
+
+`assets/shell.js` is the whole of it, mounted by the map's script. A press
+on a link from the map to a page of this site opens that page in an
+`<iframe>` inside a full-screen surface over the map — `#shell` in
+`index.html` — and the map stays underneath, playing. The frame is the
+browser's own container for a whole page inside another: the page keeps its
+window, its ids, its stylesheets, its listeners, its scroll, and does not
+know it is anywhere but a tab. Nothing in `assets/lists.js`, `account.js`,
+`blog.js`, `flashcard.js`, `chess.js` or `feedback.js` changed for this, and
+that was the argument for a frame over the other way of doing it, which is
+teaching six page scripts and the map's own twelve thousand lines to mount
+and unmount into one document. That would have been six chances to break a
+page that was not the one being changed.
+
+**Two things a framed page cannot do for itself.** The radio, because the
+map's is the one that is playing: `assets/radio.js` looks up first, and in a
+frame on this site it builds no station list, no element and no switch, but
+lends the page's own button to the map's radio — the page's language is a
+station the way the map's is, and the map's comes back when the page closes.
+And the address bar and the tab's title, which belong to the map's document:
+the shell writes both to say what the page inside is showing.
+
+**The address stays true.** Opening a page pushes its address, so the bar
+reads `/flashcard` and a copied link is a link to the flashcards, loaded
+whole, as ever. Each walk the page then makes on its own — a deck, a list,
+the account — is a step in the tab's history that the frame owns, and the
+map's own entry is one and the same across all of them, so the shell never
+pushes a second time: it rewrites what that one entry says, every time the
+page inside moves — each document that arrives, each push the page makes
+inside its own document (its history's two writes are wrapped), and each
+`popstate` Back or Forward hands the page. Rewriting is right because the
+entry is shared: one address bar, saying where the page is now. The step
+before the first page is the map, a different entry, and landing on it is
+where the surface closes. Every page keeps its own address and its own whole
+document for a link sent to somebody, a middle click, a crawler, or a fresh
+load; only a walk that starts on the map takes this road, and a press with a
+modifier key held, a link with a target of its own, or a file rather than a
+page is left to the browser.
+
+**Three links go through the top of the tab.** The name in a page's header
+is the way home, and home is the map the surface is standing on, so that
+link closes the surface rather than loading a second map inside it — a page
+that walks home by itself, the account page after Sign out, is noticed on
+arrival and closed the same way. Continue with Google is a redirect to
+Google, which refuses to be framed by anybody, so that link leaves through
+the top: the whole tab goes to Google and comes back to the page it left
+from, as it always did. A link to another site leaves the same way.
+
+**What the map is told** is only that the surface closed. A page can sign
+somebody in or out, save a place, make a list, and the map underneath was
+drawn before any of that, so on close the map asks `/api/account` again.
+While a page is open the rest of the map is `inert`: not focusable, not
+pressable, not read by a screen reader. The surface is a dialog named after
+the page inside it.
+
+**The headers had to allow it.** Every answer carried `frame-ancestors
+'none'` and `X-Frame-Options: DENY`, under which a page framed by its own
+site is a blank rectangle. Both now say the site may frame itself and nobody
+else may — `'self'` and `SAMEORIGIN`, in `functions/_security.js` and in
+`_headers`, which the validator holds to each other. Same origin and not
+same site, deliberately: the two subdomains cannot frame the map and the
+map does not frame them, and every walk from the map is to an address on
+its own host.
+
+**What it deliberately does not do.** A walk that starts on a page loaded
+whole — a shared list, say — and goes on to the account is still two
+documents, with the carry across them that **The radio** describes. The
+owner's pages under `/admin` and `admin.html` stay whole-tab; they are
+tools rather than a walk. Splitwise is its own site on its own subdomain and
+is not framed. And a page that was closed and opened again starts again: the
+frame is made on each open and taken down on each close, so nothing from the
+last visit to it can be left standing.
+
+Microsoft Clarity records a framed page as a frame, which it does when both
+the page and the map carry the tag, and GA counts a page view for the page
+inside as it did for the document it replaced — `assets/track.js` runs in
+the frame and reports the frame's own address. The site's own count in
+`/admin/visitors` is the same count it was.
 
 ## Surprise me
 
