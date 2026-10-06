@@ -8340,8 +8340,8 @@
           "front": "Veekann",
           "back": {
             "en": "Water jug",
-            "az": "Su qabı, səhəng",
-            "ru": "Кувшин для воды"
+            "az": "Su kuzəsi, su qabı",
+            "ru": "Кувшин для воды, чайник"
           },
           "forms": [
             "veekannu",
@@ -14511,7 +14511,7 @@
           "front": "Ettekandja",
           "back": {
             "en": "Waitress, server",
-            "az": "Ofisiant",
+            "az": "Ofisiant (qadın)",
             "ru": "Официантка"
           },
           "forms": [
@@ -29319,8 +29319,8 @@
           "front": "Midagi",
           "back": {
             "en": "Something",
-            "az": "Nəsə, bir şey",
-            "ru": "Что-нибудь"
+            "az": "nəsə, bir şey",
+            "ru": "что-нибудь"
           }
         },
         {
@@ -29328,8 +29328,8 @@
           "front": "Seepärast",
           "back": {
             "en": "Therefore, that is why",
-            "az": "Ona görə",
-            "ru": "Поэтому"
+            "az": "ona görə",
+            "ru": "поэтому"
           }
         },
         {
@@ -29337,8 +29337,8 @@
           "front": "Ilma",
           "back": {
             "en": "Without",
-            "az": "Olmadan, -sız",
-            "ru": "Без"
+            "az": "olmadan, -sız",
+            "ru": "без"
           }
         },
         {
@@ -29347,7 +29347,7 @@
           "back": {
             "en": "Till, until",
             "az": "-a qədər",
-            "ru": "До"
+            "ru": "до"
           }
         },
         {
@@ -29355,8 +29355,8 @@
           "front": "Kähku",
           "back": {
             "en": "Quickly",
-            "az": "Tez, cəld",
-            "ru": "Быстро, проворно"
+            "az": "tez, cəld",
+            "ru": "быстро, проворно"
           }
         },
         {
@@ -29364,8 +29364,8 @@
           "front": "Just",
           "back": {
             "en": "Just, right now",
-            "az": "Elə, indicə",
-            "ru": "Как раз, только что"
+            "az": "elə, indicə",
+            "ru": "как раз, только что"
           }
         },
         {
@@ -29373,8 +29373,8 @@
           "front": "Kahju",
           "back": {
             "en": "A pity",
-            "az": "Heyif",
-            "ru": "Жаль"
+            "az": "heyif",
+            "ru": "жаль"
           }
         },
         {
@@ -29382,8 +29382,8 @@
           "front": "Mõned",
           "back": {
             "en": "Some",
-            "az": "Bəzi",
-            "ru": "Некоторые"
+            "az": "bəzi",
+            "ru": "некоторые"
           },
           "forms": [
             "mõnede",
@@ -29395,8 +29395,8 @@
           "front": "Veidi",
           "back": {
             "en": "A little",
-            "az": "Bir az",
-            "ru": "Немного"
+            "az": "bir az",
+            "ru": "немного"
           }
         },
         {
@@ -29404,8 +29404,8 @@
           "front": "Paar",
           "back": {
             "en": "Pair, a couple",
-            "az": "Cüt, bir neçə",
-            "ru": "Пара"
+            "az": "cüt, bir neçə",
+            "ru": "пара"
           },
           "forms": [
             "paari",
@@ -29417,8 +29417,8 @@
           "front": "Mitmes?",
           "back": {
             "en": "Which one (in order)?",
-            "az": "Neçənci?",
-            "ru": "Который по счёту?"
+            "az": "neçənci?",
+            "ru": "который по счёту?"
           }
         }
       ]
