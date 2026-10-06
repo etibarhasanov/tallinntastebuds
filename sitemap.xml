@@ -359,6 +359,9 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=everyday</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=twowords</loc>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=naera-words</loc>
   </url>
   <url>
@@ -374,7 +377,13 @@
     <loc>https://tallinntastebuds.ee/flashcard?d=noun-forms</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=cases</loc>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=verb-forms</loc>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/flashcard?d=verb-tenses</loc>
   </url>
   <url>
     <loc>https://tallinntastebuds.ee/flashcard?d=naera-naera</loc>
