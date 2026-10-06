@@ -2,6 +2,7 @@
   "decks": [
     {
       "id": "greetings",
+      "added": "2026-09-18",
       "name": {
         "en": "Hello and goodbye",
         "az": "Salam və sağ ol",
@@ -261,6 +262,7 @@
     },
     {
       "id": "basics",
+      "added": "2026-09-18",
       "name": {
         "en": "The first words",
         "az": "İlk sözlər",
@@ -582,6 +584,7 @@
     },
     {
       "id": "pronouns",
+      "added": "2026-09-19",
       "name": {
         "en": "I am, you are, they are",
         "az": "Mən, sən, o",
@@ -876,6 +879,7 @@
     },
     {
       "id": "asking",
+      "added": "2026-09-19",
       "name": {
         "en": "The question words",
         "az": "Sual sözləri",
@@ -1226,6 +1230,7 @@
     },
     {
       "id": "numbers",
+      "added": "2026-09-18",
       "name": {
         "en": "Numbers",
         "az": "Saylar",
@@ -1868,6 +1873,7 @@
     },
     {
       "id": "table",
+      "added": "2026-09-18",
       "name": {
         "en": "At the table",
         "az": "Masada",
@@ -2095,6 +2101,7 @@
     },
     {
       "id": "food",
+      "added": "2026-09-18",
       "name": {
         "en": "Food and drink",
         "az": "Yemək və içki",
@@ -3543,6 +3550,7 @@
     },
     {
       "id": "cafe",
+      "added": "2026-09-18",
       "name": {
         "en": "At the coffee shop",
         "az": "Qəhvəxanada",
@@ -4598,6 +4606,7 @@
     },
     {
       "id": "service",
+      "added": "2026-09-19",
       "name": {
         "en": "Behind the counter",
         "az": "Piştaxtanın arxasında",
@@ -5343,6 +5352,7 @@
     },
     {
       "id": "colours",
+      "added": "2026-09-20",
       "level": "more",
       "name": {
         "en": "Colours and patterns",
@@ -5585,6 +5595,7 @@
     },
     {
       "id": "body",
+      "added": "2026-09-20",
       "level": "more",
       "name": {
         "en": "Head to toe",
@@ -5836,6 +5847,7 @@
     },
     {
       "id": "shopsigns",
+      "added": "2026-09-18",
       "name": {
         "en": "Which shop is which",
         "az": "Hansı mağaza hansıdır",
@@ -6284,6 +6296,7 @@
     },
     {
       "id": "shops",
+      "added": "2026-09-18",
       "name": {
         "en": "Shops and money",
         "az": "Mağazalar və pul",
@@ -6845,6 +6858,7 @@
     },
     {
       "id": "shoes",
+      "added": "2026-09-18",
       "name": {
         "en": "Shoes, socks and rings",
         "az": "Ayaqqabı, corab və üzük",
@@ -7331,6 +7345,7 @@
     },
     {
       "id": "clothes",
+      "added": "2026-09-18",
       "name": {
         "en": "What you wear",
         "az": "Geyindiklərin",
@@ -7967,6 +7982,7 @@
     },
     {
       "id": "kitchen",
+      "added": "2026-09-20",
       "level": "more",
       "name": {
         "en": "What is in the kitchen",
@@ -8525,6 +8541,7 @@
     },
     {
       "id": "family",
+      "added": "2026-09-19",
       "name": {
         "en": "Family and relatives",
         "az": "Ailə və qohumlar",
@@ -9114,6 +9131,7 @@
     },
     {
       "id": "weather",
+      "added": "2026-09-18",
       "name": {
         "en": "Weather and the season",
         "az": "Hava və fəsil",
@@ -9973,6 +9991,7 @@
     },
     {
       "id": "verbs",
+      "added": "2026-09-18",
       "name": {
         "en": "Verbs you will need",
         "az": "Lazım olacaq fellər",
@@ -10502,6 +10521,7 @@
     },
     {
       "id": "countries",
+      "added": "2026-09-19",
       "name": {
         "en": "Countries and nationalities",
         "az": "Ölkələr və millətlər",
@@ -11385,6 +11405,7 @@
     },
     {
       "id": "school",
+      "added": "2026-09-19",
       "name": {
         "en": "School and the course",
         "az": "Məktəb və kurs",
@@ -12015,6 +12036,7 @@
     },
     {
       "id": "home",
+      "added": "2026-09-18",
       "name": {
         "en": "A flat and a street",
         "az": "Mənzil və küçə",
@@ -13379,6 +13401,7 @@
     },
     {
       "id": "time",
+      "added": "2026-09-18",
       "name": {
         "en": "Days and time",
         "az": "Günlər və vaxt",
@@ -14342,6 +14365,7 @@
     },
     {
       "id": "jobs",
+      "added": "2026-09-20",
       "level": "more",
       "name": {
         "en": "Who does what",
@@ -15056,6 +15080,7 @@
     },
     {
       "id": "around",
+      "added": "2026-09-18",
       "name": {
         "en": "Getting around Tallinn",
         "az": "Tallinndə yol tapmaq",
@@ -16529,6 +16554,7 @@
     },
     {
       "id": "feelings",
+      "added": "2026-09-18",
       "name": {
         "en": "How it is going",
         "az": "İşlər necə gedir",
@@ -17069,6 +17095,7 @@
     },
     {
       "id": "describing",
+      "added": "2026-09-18",
       "name": {
         "en": "Describing a thing",
         "az": "Bir şeyi təsvir etmək",
@@ -18419,6 +18446,7 @@
     },
     {
       "id": "talk",
+      "added": "2026-09-18",
       "name": {
         "en": "Small talk",
         "az": "Yüngül söhbət",
@@ -19250,6 +19278,7 @@
     },
     {
       "id": "often",
+      "added": "2026-09-18",
       "name": {
         "en": "How often",
         "az": "Nə qədər tez-tez",
@@ -19679,6 +19708,7 @@
     },
     {
       "id": "plans",
+      "added": "2026-09-18",
       "name": {
         "en": "Making a plan",
         "az": "Plan qurmaq",
@@ -20529,6 +20559,7 @@
     },
     {
       "id": "looks",
+      "added": "2026-09-20",
       "level": "deep",
       "name": {
         "en": "What somebody looks like",
@@ -20916,6 +20947,7 @@
     },
     {
       "id": "character",
+      "added": "2026-09-20",
       "level": "deep",
       "name": {
         "en": "What somebody is like",
@@ -21292,6 +21324,7 @@
     },
     {
       "id": "feasts",
+      "added": "2026-09-20",
       "level": "deep",
       "name": {
         "en": "Holidays and celebrations",
@@ -21761,6 +21794,7 @@
     },
     {
       "id": "cooking",
+      "added": "2026-09-20",
       "level": "deep",
       "name": {
         "en": "Cooking it yourself",
@@ -22750,6 +22784,7 @@
     },
     {
       "id": "paper",
+      "added": "2026-09-18",
       "name": {
         "en": "Reading and writing",
         "az": "Oxumaq və yazmaq",
@@ -23385,6 +23420,7 @@
     },
     {
       "id": "country",
+      "added": "2026-09-18",
       "name": {
         "en": "Out of the city",
         "az": "Şəhərdən kənarda",
@@ -24648,6 +24684,7 @@
     },
     {
       "id": "health",
+      "added": "2026-09-18",
       "name": {
         "en": "When something is wrong",
         "az": "Nəsə düz getməyəndə",
@@ -25559,6 +25596,7 @@
     },
     {
       "id": "work",
+      "added": "2026-09-18",
       "name": {
         "en": "Work and paperwork",
         "az": "İş və sənədlər",
@@ -26280,6 +26318,7 @@
     },
     {
       "id": "repairs",
+      "added": "2026-09-18",
       "name": {
         "en": "At the cleaner's",
         "az": "Təmizləyicidə",
@@ -26622,6 +26661,7 @@
     },
     {
       "id": "modals",
+      "added": "2026-09-18",
       "name": {
         "en": "Must, want, may",
         "az": "Gərək, istəyirəm, olar",
@@ -26908,6 +26948,7 @@
     },
     {
       "id": "moreverbs",
+      "added": "2026-09-18",
       "name": {
         "en": "The next verbs",
         "az": "Sonrakı fellər",
@@ -29151,6 +29192,7 @@
     },
     {
       "id": "everyday",
+      "added": "2026-09-18",
       "name": {
         "en": "The words in between",
         "az": "Aradakı sözlər",
@@ -31076,6 +31118,7 @@
     },
     {
       "id": "twowords",
+      "added": "2026-10-06",
       "name": {
         "en": "Verbs of two words",
         "az": "İki sözlü fellər",
@@ -33467,6 +33510,7 @@
     },
     {
       "id": "naera-words",
+      "added": "2026-09-29",
       "name": {
         "en": "The words of Naera, naera",
         "az": "Naera, naera mahnısının sözləri",
@@ -33907,6 +33951,7 @@
     },
     {
       "id": "stopp-words",
+      "added": "2026-09-29",
       "name": {
         "en": "The words of Stopp, seisku aeg!",
         "az": "Stopp, seisku aeg! mahnısının sözləri",
@@ -34363,6 +34408,7 @@
     },
     {
       "id": "randaja-words",
+      "added": "2026-09-29",
       "name": {
         "en": "The words of Rändaja õhtulaul",
         "az": "Rändaja õhtulaul mahnısının sözləri",
@@ -34765,6 +34811,7 @@
     },
     {
       "id": "tana-words",
+      "added": "2026-10-05",
       "name": {
         "en": "The words of Täna ma ei skoori",
         "az": "Täna ma ei skoori mahnısının sözləri",
@@ -35130,6 +35177,7 @@
     },
     {
       "id": "cases-three-cards",
+      "added": "2026-10-06",
       "name": {
         "en": "The first three cases — the cards",
         "az": "İlk üç hal — kartlar",
@@ -35263,6 +35311,7 @@
     },
     {
       "id": "cases-inside-cards",
+      "added": "2026-10-06",
       "name": {
         "en": "Into, in, out of — the cards",
         "az": "İçinə, içində, içindən — kartlar",
@@ -35414,6 +35463,7 @@
     },
     {
       "id": "cases-surface-cards",
+      "added": "2026-10-06",
       "name": {
         "en": "Onto, on, off — the cards",
         "az": "Üstünə, üstündə, üstündən — kartlar",
@@ -35574,6 +35624,7 @@
     },
     {
       "id": "cases-becoming-cards",
+      "added": "2026-10-06",
       "name": {
         "en": "Becoming, and until — the cards",
         "az": "Olmaq və -dək — kartlar",
@@ -35698,6 +35749,7 @@
     },
     {
       "id": "cases-with-cards",
+      "added": "2026-10-06",
       "name": {
         "en": "As, without, with — the cards",
         "az": "Kimi, -sız, -la — kartlar",
@@ -35842,6 +35894,7 @@
   "lessons": [
     {
       "id": "noun-forms",
+      "added": "2026-09-27",
       "name": {
         "en": "Why a noun has three forms",
         "az": "Niyə ismin üç forması var",
@@ -36077,6 +36130,7 @@
     },
     {
       "id": "cases",
+      "added": "2026-10-06",
       "name": {
         "en": "The fourteen cases",
         "az": "On dörd hal",
@@ -36874,6 +36928,7 @@
     },
     {
       "id": "verb-forms",
+      "added": "2026-09-27",
       "name": {
         "en": "Why a verb has three forms",
         "az": "Niyə felin üç forması var",
@@ -37098,6 +37153,7 @@
     },
     {
       "id": "verb-tenses",
+      "added": "2026-10-06",
       "name": {
         "en": "Every tense of a verb",
         "az": "Felin bütün zamanları",
@@ -37847,6 +37903,7 @@
     },
     {
       "id": "cases-three",
+      "added": "2026-10-06",
       "deck": "cases-three-cards",
       "name": {
         "en": "The first three cases",
@@ -38120,6 +38177,7 @@
     },
     {
       "id": "cases-inside",
+      "added": "2026-10-06",
       "deck": "cases-inside-cards",
       "name": {
         "en": "Into, in, out of",
@@ -38381,6 +38439,7 @@
     },
     {
       "id": "cases-surface",
+      "added": "2026-10-06",
       "deck": "cases-surface-cards",
       "name": {
         "en": "Onto, on, off",
@@ -38642,6 +38701,7 @@
     },
     {
       "id": "cases-becoming",
+      "added": "2026-10-06",
       "deck": "cases-becoming-cards",
       "name": {
         "en": "Becoming, and until",
@@ -38826,6 +38886,7 @@
     },
     {
       "id": "cases-with",
+      "added": "2026-10-06",
       "deck": "cases-with-cards",
       "name": {
         "en": "As, without, with",
@@ -39089,6 +39150,7 @@
   "songs": [
     {
       "id": "naera-naera",
+      "added": "2026-09-29",
       "name": {
         "en": "Naera, naera",
         "az": "Naera, naera",
@@ -39717,6 +39779,7 @@
     },
     {
       "id": "stopp-seisku-aeg",
+      "added": "2026-09-29",
       "name": {
         "en": "Stopp, seisku aeg!",
         "az": "Stopp, seisku aeg!",
@@ -40802,6 +40865,7 @@
     },
     {
       "id": "randaja-ohtulaul",
+      "added": "2026-09-29",
       "name": {
         "en": "Rändaja õhtulaul — the wanderer's evening song",
         "az": "Rändaja õhtulaul — sərgərdanın axşam mahnısı",
@@ -41676,6 +41740,7 @@
     },
     {
       "id": "tana-ma-ei-skoori",
+      "added": "2026-10-05",
       "name": {
         "en": "Täna ma ei skoori — today I won't score",
         "az": "Täna ma ei skoori — bu gün qismətim yoxdur",
