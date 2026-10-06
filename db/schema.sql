@@ -1149,9 +1149,13 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- It sits with `missing_since` rather than up with `rating` because it
   -- arrived after the table was deployed, and ALTER TABLE ADD COLUMN appends:
   -- this file lists the columns in the order the live table actually has them.
-  -- It belongs to Google's half all the same, and every refresh overwrites it,
-  -- because a position worked out from last month's numbers is worse than no
-  -- position at all.
+  -- It belongs to Google's half all the same, and every export load
+  -- overwrites it, because a position worked out from last month's numbers
+  -- is worse than no position at all. Between loads it is renumbered once a
+  -- week from the numbers the table holds, by rerankIfDue() in
+  -- functions/api/_rank.js, the first time the Top 100 tab of /admin/google
+  -- is opened in a new week — google_reranks and google_ranks below are
+  -- what that keeps.
   --
   -- The same arithmetic and the same prior as "Best overall" in
   -- assets/venues.js, so the number printed on a card and the order the cards
@@ -1281,7 +1285,11 @@ CREATE TABLE IF NOT EXISTS google_calls (
 --             'closed'   Google says it has closed for good; missing_since set
 --             'gone'     Google does not know the id any more; missing_since set
 --             'failed'   no answer, or a refusal; `note` says which
---   source    'open'     somebody opened the place. The only one there is.
+--   source    'open'     somebody opened the place
+--             'top'      it stands in the top hundred of the week's ranking and
+--                        its numbers were a month old — refreshTop() in
+--                        functions/api/_refresh.js, asked for by
+--                        /api/admin/top100 after its answer has gone
 --   changes   {"reviews":[148,170],"rating":[4.9,5]} — from, to — or ''
 CREATE TABLE IF NOT EXISTS google_refreshes (
   id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1293,6 +1301,45 @@ CREATE TABLE IF NOT EXISTS google_refreshes (
   note     TEXT    NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS idx_google_refreshes_at ON google_refreshes (at DESC);
+
+-- ------------------------------------------------------- the week's ranking
+-- `rank` on google_venues is renumbered once a week — rerankIfDue() in
+-- functions/api/_rank.js, whose header is the argument — and these two
+-- tables are what a week leaves behind: that it was done, and where every
+-- place stood. Without them the column is only ever written by the export
+-- load, and the Top 100 tab of /admin/google says the ranking is not
+-- available yet. Both arrive by hand:
+--
+--   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
+--
+-- One row per week a ranking was made, keyed on the Monday of that UTC week
+-- as 'YYYY-MM-DD'. The row is written first, as the claim — INSERT OR IGNORE,
+-- and only the request whose insert landed renumbers — and the counts are
+-- filled in after: `ranked`, how many rows got a position; `moved`, how many
+-- of the top hundred stand somewhere other than they did in the newest
+-- earlier week; `entered`, how many of the top hundred were not in it then.
+-- All three NULL on a claim whose work has not finished, which is a moment
+-- long, or a week that is still being made.
+CREATE TABLE IF NOT EXISTS google_reranks (
+  week    TEXT    PRIMARY KEY,
+  at      INTEGER NOT NULL,              -- ms, when the ranking was made
+  ranked  INTEGER,
+  moved   INTEGER,
+  entered INTEGER
+);
+
+-- Every ranked place's position in every week a ranking was made — eleven
+-- hundred rows a week, nothing prunes them. What this week's movement is
+-- read against, and what a chart of one place's position would read later.
+-- A place with no row in a week had no rank that week: Google had no numbers
+-- for it, or it was hidden or missing.
+CREATE TABLE IF NOT EXISTS google_ranks (
+  week     TEXT    NOT NULL,
+  place_id TEXT    NOT NULL,
+  rank     INTEGER NOT NULL,
+  PRIMARY KEY (week, place_id)
+);
+CREATE INDEX IF NOT EXISTS idx_google_ranks_place ON google_ranks (place_id, week);
 
 -- ------------------------------------------------- what the numbers used to be
 -- Every rating and review count Google has ever given a place, one row per
@@ -1311,6 +1358,8 @@ CREATE INDEX IF NOT EXISTS idx_google_refreshes_at ON google_refreshes (at DESC)
 --                      because the export is one sweep with no time on the
 --                      row. Which sweep is in git, against the CSV.
 --            'open'    a refresh when somebody opened the place; `at` is when
+--            'top'     a refresh because the place stands in the week's top
+--                      hundred and its numbers were stale; `at` is when
 --
 -- Nothing is lost between the two: a row with a line here has refreshed_at
 -- set, and the export never overwrites the numbers on such a row. At most

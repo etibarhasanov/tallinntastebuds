@@ -190,8 +190,14 @@ What that means for this process:
   kept their refreshed numbers.
 - **Loading it needs the column.** On a database without `refreshed_at` the
   first statement stops. The `ALTER` is in `db/schema.sql` above the column.
-- **`rank` and the six lists still come from the export alone**, so a refresh
-  is still how they move.
+- **The six lists still come from the export alone**, so a refresh is still
+  how they move. `rank` no longer does: a load writes it, and between loads
+  `rerankIfDue()` in `functions/api/_rank.js` renumbers it once a week from
+  the numbers the table holds, the first time the Top 100 tab of
+  `/admin/google` is asked for in a new week — **The week's ranking, and the
+  top hundred** under **Google venues** in `README.md`. So the delta in step
+  5 may find `rank` already moved on rows the export did not touch; that is
+  the week's ranking, not a drift to report.
 
 ## The other cities
 
@@ -223,9 +229,11 @@ any other, production only.
   among all of them once Google's rating is weighed by its review count, and
   the SQL carries the answer per row. A refresh overwrites it, because a
   position off last month's counts is worse than none. Its `RANK_PRIOR` is
-  **100, and must stay equal to `PRIOR` in `weigh()` in `assets/venues.js`**:
-  `/admin/google` sorts by its own copy of that arithmetic and prints this column
-  beside it, so two priors make the first screen count 1, 2, 4, 3. It is
+  **100, and must stay equal to `PRIOR` in `weigh()` in `assets/venues.js`
+  and to `RANK_PRIOR` in `functions/api/_rank.js`**, the weekly renumbering
+  of the same column in SQL: `/admin/google` sorts by its own copy of that
+  arithmetic and prints this column beside it, so two priors make the first
+  screen count 1, 2, 4, 3. It is
   deliberately not the 300 `tools/googlelists.mjs` uses — that one singles out
   ten names for the city and wants a heavier thumb on a small count.
   **Where a place stands** under **The directory** in `README.md` is the

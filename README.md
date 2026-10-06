@@ -4751,8 +4751,9 @@ What it leaves alone, and why:
   cannot wipe a good phone number.
 - **`rank`.** It is every row's position among all of them, so one row's new
   count cannot place it. `/admin/google` sorts by its own copy of the arithmetic in
-  the browser, so the order follows the new numbers at once; only the printed
-  position waits for the next export load.
+  the browser, so the order follows the new numbers at once; the printed
+  position waits for the week's ranking — **The week's ranking, and the top
+  hundred** below.
 - **The six lists under `google-statistics`.** They are still written from the
   export by `tools/googlelists.mjs`, and move only when that is loaded.
 
@@ -4775,7 +4776,9 @@ again tomorrow. Two visitors opening one place in the same second make one call:
 the row is stamped first, and only one stamp finds it still due.
 
 **Where it says what it did.** `google_refreshes` logs every call — which place,
-whether it moved, what from and to, or why it failed — and keeps ninety days.
+why it was asked (`open`, somebody opened it; `top`, it stands in the week's
+top hundred and its numbers were a month old), whether it moved, what from and
+to, or why it failed — and keeps ninety days.
 The **Google** tab on `/admin.html` reads it through `/api/admin/refreshes`,
 with the day's and the month's calls against their limits, how much of the
 directory has been refreshed, and how much is due. That route answers the
@@ -4827,6 +4830,76 @@ point.
 Without the key nothing here runs and the site is exactly what it was. Without
 the column the refresh finds nothing to stamp and stops; without the tables it
 gives its claim back and stops. The Google tab says which.
+
+### The week's ranking, and the top hundred
+
+`rank` is the one column the refresh leaves alone, because it is every row's
+position among all of them and one row's new count cannot place it. For the
+column's first weeks it was written only when the export was loaded, so the
+cards on `/admin/google` were sorted by this month's numbers and printed last
+month's positions. Now it is renumbered once a week, and the week's top hundred
+is a tab of its own on that page, with how far each place moved since the
+ranking before.
+
+**Once a week, on the owner's request.** Pages Functions have no scheduler, so
+nothing here runs on Monday morning by itself; what happens instead is what
+happens everywhere else on this site — the work rides on a request that already
+happens. `/api/admin/top100`, which the page asks for as it opens, is that
+request: the first time it is asked in a new week, `rerankIfDue()` in
+`functions/api/_rank.js` renumbers every rated row in one statement before the
+answer is read, and every later ask that week reads what it made. Weeks are UTC
+and start on Monday, like the budget's days. A week the page is not opened is a
+week with no ranking, and the next one compares against the last that was made;
+the tab says which day that was. Two tabs opened in the same second make one
+ranking: a row in `google_reranks` is the claim, written `INSERT OR IGNORE` on
+the week, and only the request whose insert landed does the work.
+
+**The same arithmetic, written a third time.** The `ORDER BY` is `overallOrder()`
+in `tools/googlevenues.mjs` and `weigh()` in `assets/venues.js` in SQL — the
+Bayesian average with a prior of a hundred reviews around the roll's own
+review-weighted mean, places Google calls temporarily closed below every open
+one, ties to the bigger review count and then to the key — because the printed
+position and the order the cards are in have to agree or the first screen counts
+1, 2, 4, 3. Two things differ from the export's weighing on purpose: a row
+marked hidden or missing gets no rank, where the export ranks every row in the
+CSV, because the directory shows neither and "of 1,111" on a card counts what
+it shows; and the mean is taken over the rows it ranks. A row Google gave no
+numbers for stays `NULL`, as it always has.
+
+**What a week leaves behind.** `google_reranks` has one row per week a ranking
+was made — when, how many rows got a position, how many of the top hundred
+moved and how many were not in it the week before — and `google_ranks` has
+every ranked place's position that week, eleven hundred rows a week that
+nothing prunes. The second is what the movement is read against, and what a
+chart of one place's position would read later. Both arrive by hand, with the
+rest of the schema; until they do the route answers `ready: false`, the tab
+says the ranking is not available yet, and the directory is exactly what it
+was. Loading `db/google-venues.sql` still writes `rank` — a load is a new
+sweep, and its positions are right for that sweep — and the next week's
+ranking simply starts from there.
+
+**The tab.** *Top 100* beside *Directory* at the top of `/admin/google`, at
+every width. A line saying when the ranking was made, how many of the hundred
+moved, how many are new to it and when the next is due; then a hundred rows,
+each with its position, an arrow and how far — ▲3, ▼12, — for no change, *New*
+for a place that was outside the hundred — its name, and Google's two numbers.
+The first ranking has nothing to be compared against, so its rows carry no
+arrows and the line says when they start. Pressing a name opens the place in
+the directory with the filters cleared and its dot lit, the way a card press
+does. The tab is the owner's like the page is: `/api/admin/` answers anybody
+else 403 before the route is reached.
+
+**The hundred are kept fresh whether or not anybody opens them.** A position in
+the top hundred is a claim about this month's numbers, and under the refresh
+alone a place nobody happened to open since August would be ranked on
+August's. So after the route's answer has gone, `refreshTop()` in
+`functions/api/_refresh.js` asks Google about the top hundred's rows whose
+numbers are more than thirty days old — the same call, the same seven columns,
+the same budget, logged under source `top` — twenty-four of them at a time, so
+a day of busy opens still has something to spend. A hundred stale rows take a
+few openings of the page; after the first month they fall due a few at a time
+and one opening covers them. Without `GOOGLE_MAPS_API_KEY` it does nothing,
+like every refresh, and the ranking is made from whatever the table holds.
 
 ### The 62 that are already on the map
 
@@ -17261,7 +17334,8 @@ The directory, `assets/venues.js`:
 | `venues_clear` | — |
 | `venues_more` | `page` |
 | `venues_view` | `view` (`map`/`list`) |
-| `venue_select` | `venue`, `from` (`list`/`map`) |
+| `venues_tab` | `tab` (`all`/`top`) — the directory or the week's top hundred |
+| `venue_select` | `venue`, `from` (`list`/`map`/`top`) |
 | `venue_call`, `venue_website`, `venue_directions`, `venue_google` | `venue` |
 | `place_link` | `place`, `map` — the door to the write-up for the ones on the map |
 | `home` | — |

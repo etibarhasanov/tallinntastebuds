@@ -38,7 +38,7 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
 <link rel="stylesheet" href="/assets/styles.lean.css?v=8fbf7673">
-<link rel="stylesheet" href="/assets/venues.css?v=c9b4cc4c">
+<link rel="stylesheet" href="/assets/venues.css?v=c2549a25">
 <!-- The row of the owner's pages under the header, which the other four
      draw from the same sheet. -->
 <link rel="stylesheet" href="/assets/stats.css?v=3d74b5b7">
@@ -81,6 +81,18 @@
      decides how tall the map beside it can be, and a translation that wraps a
      control onto a second line changes that. -->
 <div class="venues-bar" id="venues-bar">
+
+<!-- The two things this page is: the whole directory, searched and filtered,
+     and the week's top hundred of it with how each place moved since the
+     ranking before. One pair of buttons, the same .seg the phone's list/map
+     switch below is, drawn at every width because the choice exists at every
+     width. The class it puts on the body — venues-on-top — is what hides the
+     filters and the split and shows the hundred; the stylesheet decides what
+     it means. -->
+<div class="seg venues-tabs" id="venues-tabs">
+  <button type="button" class="btn btn-wide" id="venues-tab-all" aria-pressed="true" data-i18n="venuesTabAll">Directory</button>
+  <button type="button" class="btn btn-wide" id="venues-tab-top" aria-pressed="false" data-i18n="venuesTabTop">Top 100</button>
+</div>
 
 <!-- A form so that a phone keyboard offers Search and Enter does nothing
      surprising; every control inside it acts the moment it changes, so there
@@ -152,6 +164,20 @@
 
 </div>
 
+<!-- The week's top hundred. Filled by renderTop() in assets/venues.js out of
+     /api/admin/top100 — which also makes the week's ranking the first time it
+     is asked in a new week, see functions/api/_rank.js — and hidden until the
+     tab above is pressed. The line under the heading says when the ranking
+     was made, how many of the hundred moved, how many are new to it and when
+     the next is due; each row says where the place stands and how far it
+     came. A live region for the same reason the count above the list is. -->
+<section class="venues-top" id="venues-top" hidden aria-labelledby="venues-top-title">
+  <h2 class="venues-top-title" id="venues-top-title" data-i18n="venuesTabTop">Top 100</h2>
+  <p class="venues-top-lead" id="venues-top-lead"></p>
+  <p class="venues-count" id="venues-top-line" role="status" aria-live="polite"></p>
+  <ol class="venues-top-list" id="venues-top-list"></ol>
+</section>
+
 <div class="venues-split" id="venues-split">
   <section class="venues-results" id="venues-results" tabindex="-1" aria-labelledby="venues-count">
     <!-- How many matched, and the one place on the page that says a filter did
@@ -196,6 +222,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="/assets/pins.js?v=f323850b" defer></script>
-<script src="/assets/venues.js?v=6b07e1c8" defer></script>
+<script src="/assets/venues.js?v=b05001b8" defer></script>
 </body>
 </html>

@@ -18,6 +18,13 @@
  * pin whatever the filter says, and "open now" is a question about a week of
  * opening hours rather than something SQL can answer.
  *
+ * And a second tab, the week's Top 100: one request to /api/admin/top100 for
+ * the hundred highest in the week's ranking with where each stood the week
+ * before, drawn as a numbered list with an arrow per row. Asking for it is
+ * what makes the week's ranking — functions/api/_rank.js — so the tab is
+ * current whenever the page is open, and the directory's printed positions
+ * are a week old at most.
+ *
  * Plain browser JavaScript, no modules, no build step, same as every other
  * file in assets/. It shares the tokens, the card, the eyebrow, the search
  * field and the price gauge with assets/styles.css and adds only what a
@@ -55,6 +62,14 @@
   var STYLE_KEY = 'ttb.style';
 
   var API = '/api/admin/venues';
+  /* The week's top hundred and how each place moved — functions/api/admin/
+     top100.js, which also makes the week's ranking the first time it is asked
+     in a new week. Asked for beside the roll, so a week's ranking is made
+     because the owner opened the page rather than because they pressed the
+     tab; the roll goes out in the same instant, so on that one load its cards
+     carry last week's printed positions and the next load's carry this
+     week's. The order of the cards is this file's own arithmetic either way. */
+  var TOP_API = '/api/admin/top100';
 
   /* How many cards are built at once. Seven hundred articles is a second of
      layout on a phone and a scrollbar nobody can aim with, so the list grows a
@@ -108,6 +123,8 @@
     shown: [],      // the ones matching the filters, in the chosen order
     pages: 1,       // how many screenfuls of cards are built
     selected: '',   // the venue whose card and dot are lit
+    tab: 'all',     // 'all', the directory, or 'top', the week's hundred
+    top: null,      // what TOP_API answered, or null when it did not
 
     q: '',
     open: false,
@@ -398,6 +415,7 @@
     state.price = PRICES.indexOf(price) !== -1 ? price : 0;
     var sort = p.get('sort');
     state.sort = SORTS.indexOf(sort) !== -1 ? sort : 'best';
+    state.tab = p.get('tab') === 'top' ? 'top' : 'all';
   }
 
   function writeUrl() {
@@ -412,6 +430,7 @@
     set('rating', state.rating || '');
     set('price', state.price || '');
     set('sort', state.sort === 'best' ? '' : state.sort);
+    set('tab', state.tab === 'top' ? 'top' : '');
 
     var query = p.toString();
     try {
@@ -614,8 +633,10 @@
     /* Where Google's two numbers put this place among all of them. Not worked
        out here: ranked() in tools/googlevenues.mjs writes it into a column and
        /api/venues sends it, on the same arithmetic and the same PRIOR as
-       weigh() above — so under "Best overall" the cards count 1, 2, 3 down the
-       screen, and under "Highest rated" they deliberately do not.
+       weigh() above — and functions/api/_rank.js renumbers it once a week
+       from the numbers the table holds — so under "Best overall" the cards
+       count 1, 2, 3 down the screen, and under "Highest rated" they
+       deliberately do not.
 
        First on the row, because it is the only number on a card that is about
        the whole city rather than about this place. The total is the roll that
@@ -922,6 +943,127 @@
     else refitMap();
   }
 
+  /* ------------------------------------------------------ the top hundred */
+
+  /* A day the route named — 'YYYY-MM-DD', or the ms a ranking was made at —
+     in the reading language, without a year: the line it goes in is about
+     this week and the one before, and a year on it would be the longest word
+     in the sentence. UTC, because the route's weeks are. */
+  function dayOf(when) {
+    var d = typeof when === 'number' ? new Date(when) : new Date(when + 'T00:00:00Z');
+    try {
+      return d.toLocaleDateString(state.lang, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+    } catch (e) { return String(when); }
+  }
+
+  /* One row of the hundred: where it stands, how far it came, its name — a
+     button, like a card's, because pressing it opens the place in the
+     directory with its dot lit — and Google's two numbers. The arrow is a
+     glyph and the words are in the label, because an arrow needs no language
+     and a screen reader needs no arrow. */
+  function topRow(place) {
+    var row = el('li', {
+      className: 'top-row' + (place.closed ? ' is-closed' : ''),
+      'data-id': place.id
+    });
+    row.appendChild(el('span', { className: 'top-pos', textContent: t('venuesRank', { n: number(place.rank) }) }));
+
+    var move;
+    if (!state.top.previous) {
+      /* Nothing to compare against yet; the column stays so the names line up. */
+      move = el('span', { className: 'top-move' });
+    } else if (place.was === null) {
+      move = el('span', { className: 'top-move is-new', textContent: t('venuesTopNew') });
+    } else if (place.was === place.rank) {
+      move = el('span', { className: 'top-move is-same', 'aria-label': t('venuesTopSame'), textContent: '—' });
+    } else {
+      var up = place.was > place.rank;
+      var by = Math.abs(place.was - place.rank);
+      move = el('span', {
+        className: 'top-move ' + (up ? 'is-up' : 'is-down'),
+        'aria-label': t(up ? 'venuesTopUp' : 'venuesTopDown', { n: number(by) }),
+        textContent: (up ? '▲' : '▼') + number(by)
+      });
+    }
+    row.appendChild(move);
+
+    row.appendChild(el('button', {
+      type: 'button',
+      className: 'venue-pick top-name',
+      'aria-label': t('openPlace', { name: place.name })
+    }, [el('span', { textContent: place.name })]));
+
+    var facts = el('span', { className: 'top-facts' });
+    if (typeof place.rating === 'number') {
+      facts.appendChild(el('span', { className: 'venue-score', textContent: score(place.rating) }));
+      facts.appendChild(el('span', { className: 'venue-star', 'aria-hidden': 'true', textContent: '★' }));
+    }
+    if (typeof place.reviews === 'number') {
+      facts.appendChild(el('span', {
+        className: 'venue-reviews',
+        textContent: place.reviews === 1 ? t('venuesReviewsOne') : t('venuesReviews', { n: number(place.reviews) })
+      }));
+    }
+    row.appendChild(facts);
+    return row;
+  }
+
+  /* The whole tab, from what TOP_API answered. Three things it can say: the
+     tables are not applied, so there is no ranking to show and the line says
+     so; the first ranking, which has nothing to be compared against, so the
+     rows carry no arrows and the line says when the arrows start; and a week
+     against the one before. */
+  function renderTop() {
+    clear(dom.topList);
+    var top = state.top;
+    if (!top || !top.ready || !top.top) {
+      dom.topLead.textContent = '';
+      dom.topLine.textContent = t('venuesTopNone');
+      return;
+    }
+    dom.topLead.textContent = t('venuesTopLead', { total: number(top.ranked) });
+    dom.topLine.textContent = top.previous
+      ? t('venuesTopLine', {
+        date: dayOf(top.at), moved: number(top.moved), entered: number(top.entered), next: dayOf(top.next)
+      })
+      : t('venuesTopFirst', { date: dayOf(top.at), next: dayOf(top.next) });
+    top.top.forEach(function (place) { dom.topList.appendChild(topRow(place)); });
+  }
+
+  /* Which of the page's two halves is on screen. The class goes on the body
+     and the stylesheet decides what it means, the way venues-on-map does;
+     the bar is measured again because the filters leave it under one tab
+     and the map's height reads off the bar. */
+  function showTab(tab) {
+    state.tab = tab;
+    var top = tab === 'top';
+    document.body.classList.toggle('venues-on-top', top);
+    dom.tabTop.setAttribute('aria-pressed', top ? 'true' : 'false');
+    dom.tabAll.setAttribute('aria-pressed', top ? 'false' : 'true');
+    dom.top.hidden = !top;
+    measureBar();
+    writeUrl();
+    if (!top && map) map.invalidateSize();
+  }
+
+  /* A row of the hundred pressed: the directory, with nothing narrowing it
+     — a filter that happened to hide the place would make the press open
+     nothing — and the place lit in both halves, the way a card press lights
+     it. */
+  function openFromTop(id) {
+    showTab('all');
+    state.q = '';
+    state.open = false;
+    state.cuisine = '';
+    state.rating = 0;
+    state.price = 0;
+    fillControls();
+    refresh();
+    select(id, true);
+    var node = dom.list.querySelector('[data-id="' + id + '"]');
+    if (node && node.scrollIntoView) node.scrollIntoView({ block: 'center' });
+  }
+
   /* ------------------------------------------------------------- controls */
 
   function option(value, text) {
@@ -1081,6 +1223,19 @@
 
     dom.seeMap.addEventListener('click', function () { showMap(true); TTBTrack.event('venues_view', { view: 'map' }); });
     dom.seeList.addEventListener('click', function () { showMap(false); TTBTrack.event('venues_view', { view: 'list' }); });
+
+    dom.tabTop.addEventListener('click', function () { showTab('top'); TTBTrack.event('venues_tab', { tab: 'top' }); });
+    dom.tabAll.addEventListener('click', function () { showTab('all'); TTBTrack.event('venues_tab', { tab: 'all' }); });
+
+    /* One listener for the hundred, on the list that outlives them, as above. */
+    dom.topList.addEventListener('click', function (e) {
+      var button = e.target.closest ? e.target.closest('.top-name') : null;
+      if (!button) return;
+      var row = button.closest('.top-row');
+      if (!row) return;
+      TTBTrack.event('venue_select', { venue: button.textContent, from: 'top' });
+      openFromTop(row.getAttribute('data-id'));
+    });
   }
 
   /* ----------------------------------------------------------------- boot */
@@ -1109,13 +1264,19 @@
       mapWrap: document.querySelector('.venues-map-wrap'),
       more: $('venues-more'),
       seeList: $('venues-see-list'),
-      seeMap: $('venues-see-map')
+      seeMap: $('venues-see-map'),
+      tabAll: $('venues-tab-all'),
+      tabTop: $('venues-tab-top'),
+      top: $('venues-top'),
+      topLead: $('venues-top-lead'),
+      topLine: $('venues-top-line'),
+      topList: $('venues-top-list')
     };
 
     applyStyle();
     readUrl();
     wire();
-    measureBar();
+    showTab(state.tab);
     window.addEventListener('resize', measureBar);
 
     /* The two label files and the strings are the page; the roll is what goes
@@ -1125,7 +1286,8 @@
       loadWords(),
       getJSON('/data/taxonomy.json'),
       getJSON('/data/cuisines.json'),
-      getJSON(API).catch(function () { return null; })
+      getJSON(API).catch(function () { return null; }),
+      getJSON(TOP_API).catch(function () { return null; })
     ]).then(function (loaded) {
       state.ui = loaded[0].ui;
       state.lang = loaded[0].lang;
@@ -1138,6 +1300,8 @@
       ((loaded[2] && loaded[2].cuisines) || []).forEach(function (row) { state.labels[row.id] = row; });
 
       drawMap();
+      state.top = loaded[4];
+      renderTop();
 
       if (!loaded[3] || !Array.isArray(loaded[3])) { failed(); return; }
       state.all = loaded[3];
