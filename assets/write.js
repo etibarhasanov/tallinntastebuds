@@ -54,7 +54,7 @@
   var ACCOUNT_API = '/api/account';
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
-  var MAP_URL = '/data/map.json';
+  var PLACES_URL = '/api/places';
   var PAGE = '/write';
 
   var DEFAULT_LANG = 'en';
@@ -79,7 +79,7 @@
     missing: false,  // ?post= named nothing of yours
     dirty: false,
     busy: false,
-    places: null     // the map's places, fetched the first time the picker opens
+    places: {}       // the places this page has met, by id: a card's name and street
   };
 
   var main = null;
@@ -441,17 +441,40 @@
   /* ------------------------------------------------------------ the places */
 
   function placeById(id) {
-    var list = state.places || [];
-    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
-    return null;
+    return state.places[id] || null;
   }
 
-  function loadPlaces() {
-    if (state.places) return Promise.resolve(state.places);
-    return getJSON(MAP_URL).then(function (list) {
-      state.places = (list || []).filter(function (p) { return p && p.id && !p.closed; });
-      return state.places;
-    }).catch(function () { return []; });
+  /* The places the picker can offer are every place in the city — the map's
+     own and Google's export, the roll a list is built from — so a member
+     writing about their ten places can pin the bar I have never been to. That
+     roll is a hundred kilobytes, and a post needs ten of it, so it is never
+     fetched here: the picker asks /api/places by name once three letters are
+     typed, and a post opened to edit asks for the cards it already names by
+     id. Whatever either answers is kept by id for placeCard(). */
+  var PICK_MIN = 3;
+
+  function keepPlaces(list) {
+    (Array.isArray(list) ? list : []).forEach(function (p) {
+      if (p && p.id) state.places[p.id] = p;
+    });
+    return Array.isArray(list) ? list : [];
+  }
+
+  function findPlaces(typed) {
+    return getJSON(PLACES_URL + '?q=' + encodeURIComponent(typed)).then(keepPlaces);
+  }
+
+  function loadNames(post) {
+    var ids = [];
+    Object.keys(post.texts || {}).forEach(function (code) {
+      (post.texts[code].body || []).forEach(function (b) {
+        if (b && b.k === 'place' && ids.indexOf(b.id) === -1 && !state.places[b.id]) ids.push(b.id);
+      });
+    });
+    if (!ids.length) return Promise.resolve();
+    return getJSON(PLACES_URL + '?ids=' + ids.slice(0, 50).map(encodeURIComponent).join(','))
+      .then(keepPlaces)
+      .catch(function () { return []; });
   }
 
   /* Folded the way the map's find bar folds: Põhjala is found by pohjala. */
@@ -728,17 +751,16 @@
     var find = el('input', { type: 'search', className: 'lists-input', placeholder: t('writePlaceSearch'),
       'aria-label': t('writePlaceSearch') });
     var list = el('ul', { className: 'menu write-found' });
-    var draw = function () {
+    var asked = '';
+    var wait = null;
+    var say = function (key) {
       clear(list);
-      var q = fold(find.value.trim());
-      var hits = (state.places || []).filter(function (p) {
-        return !q || fold(p.name).indexOf(q) !== -1 || fold(p.address).indexOf(q) !== -1;
-      }).slice(0, 8);
-      if (!hits.length) {
-        list.appendChild(el('li', { className: 'lists-none', textContent: t('writePlaceNone') }));
-        return;
-      }
-      hits.forEach(function (p) {
+      list.appendChild(el('li', { className: 'lists-none', textContent: t(key) }));
+    };
+    var draw = function (hits) {
+      clear(list);
+      if (!hits.length) { say('writePlaceNone'); return; }
+      hits.slice(0, 8).forEach(function (p) {
         var b = el('button', { type: 'button', className: 'menu-row' }, [
           el('span', { className: 'menu-say' }, [
             el('span', { className: 'menu-name', textContent: p.name }),
@@ -752,11 +774,27 @@
         list.appendChild(el('li', { className: 'menu-item' }, [b]));
       });
     };
-    find.addEventListener('input', draw);
+    /* Under three letters there is nothing to ask and nothing is drawn. Past
+       that, a quarter of a second after the last key, and only the answer to
+       what is in the field now is drawn: a slow reply to "pho" does not
+       overwrite the one to "pohj". */
+    find.addEventListener('input', function () {
+      var typed = find.value.trim();
+      if (wait) window.clearTimeout(wait);
+      if (fold(typed).length < PICK_MIN) { asked = ''; clear(list); return; }
+      say('findLooking');
+      wait = window.setTimeout(function () {
+        asked = typed;
+        findPlaces(typed).then(function (hits) {
+          if (asked === typed) draw(hits);
+        }).catch(function () {
+          if (asked === typed) say('writePlaceNone');
+        });
+      }, 250);
+    });
     panel.appendChild(find);
     panel.appendChild(list);
     panel.appendChild(el('p', { className: 'lists-row' }, [close]));
-    loadPlaces().then(draw);
     find.focus();
   }
 
@@ -1094,16 +1132,18 @@
         return;
       }
       if (id) {
-        /* The places first, so a card in the body is drawn with its name
-           rather than its id. */
-        Promise.all([ask(API + '?id=' + encodeURIComponent(id)), loadPlaces()]).then(function (got) {
-          var answer = got[0];
+        /* The cards' places before the box is drawn, so each is drawn with
+           its name rather than its id. */
+        ask(API + '?id=' + encodeURIComponent(id)).then(function (answer) {
           if (answer.status !== 200 || !answer.out.post || !answer.out.post.mine) {
             state.missing = true;
-          } else {
-            state.post = fromServer(answer.out.post, state.lang);
+            render();
+            return;
           }
-          render();
+          loadNames(answer.out.post).then(function () {
+            state.post = fromServer(answer.out.post, state.lang);
+            render();
+          });
         });
         return;
       }

@@ -12628,6 +12628,21 @@
         });
       } else {
         seatSaved();
+        /* And any other Google venue a link names — a card in a member's
+           post on the blog, which may pin any place in the city — is looked
+           up in the find bar's roll and opened the way a row of the bar
+           opens it. A key the roll does not carry is the bare map. */
+        if (spot && !byId(spot) && !/^[a-z0-9-]+$/.test(spot)) {
+          findLoad().then(function (roll) {
+            if (state.selected || byId(spot)) return;
+            for (var i = 0; i < roll.length; i++) {
+              if (roll[i].id === spot) {
+                selectPlace(seatFound(roll[i]).id, { fly: true, arrived: true });
+                return;
+              }
+            }
+          });
+        }
       }
 
       /* `arrived` says this open was the link's and not a press, which the

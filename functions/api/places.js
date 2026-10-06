@@ -1,10 +1,13 @@
 /**
  * Tallinn Tastebuds — the roll a list is built from.
  *
- * GET /api/places
+ * GET /api/places            the whole roll
+ * GET /api/places?q=<name>     at most twenty of it by name, three letters
+ *                              or more — the blog editor's picker
+ * GET /api/places?ids=a,b,…    just those places — the cards in a post
  *
- * One answer, two sources, and two things ask for it — the picker on the
- * lists page, and the find bar across the top of the map:
+ * One answer, two sources, and two things ask for it whole — the picker on
+ * the lists page, and the find bar across the top of the map:
  *
  *   data/places.json   the map and the hand-kept CSV beside it. Seventy-six
  *                      places I have been to, and the only ones that link
@@ -68,7 +71,7 @@
  * under **The find bar's order** in README.md. The picker reads none of them.
  */
 
-import { json, catalogue, venueEntry, wrongDatabase } from './_lib.js';
+import { json, catalogue, venueEntry, venuesByIds, wrongDatabase } from './_lib.js';
 import { kitchensOf } from './venues.js';
 
 /* How a name is compared when deciding whether two rows are one place. The
@@ -115,7 +118,9 @@ async function googleRows(env) {
   }
 }
 
-export async function onRequestGet(context) {
+/* The whole roll, merged and sorted: what a bare GET answers, and what ?q=
+   searches. Null when the map's half cannot be read. */
+async function cityRoll(context) {
   const { env } = context;
 
   /* The map's places first: they carry ids that are already written into
@@ -127,7 +132,7 @@ export async function onRequestGet(context) {
   try {
     roll = await catalogue(context);
   } catch (e) {
-    return json({ error: 'places' }, 503);
+    return null;
   }
 
   const out = [...roll.values()].map((p) => ({
@@ -195,5 +200,69 @@ export async function onRequestGet(context) {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 
-  return json(out, 200, 300);
+  return out;
+}
+
+/* ?q= — the blog editor's picker, which asks by name once three letters are
+   typed rather than holding eleven hundred rows to search one post's worth
+   of places in. Folded the way the merge folds, so "pohjala" finds Põhjala;
+   a name that starts with what was typed comes before one that only holds
+   it, and the street is searched after the name. At most SEARCH_MAX. */
+const SEARCH_MIN = 3;
+const SEARCH_MAX = 20;
+
+function search(roll, typed) {
+  const q = fold(typed);
+  if (q.length < SEARCH_MIN) return [];
+  const starts = [];
+  const holds = [];
+  const street = [];
+  for (const p of roll) {
+    const name = fold(p.name);
+    if (name.startsWith(q)) starts.push(p);
+    else if (name.includes(q)) holds.push(p);
+    else if (fold(p.address).includes(q)) street.push(p);
+    if (starts.length >= SEARCH_MAX) break;
+  }
+  return starts.concat(holds, street).slice(0, SEARCH_MAX);
+}
+
+/* ?ids=a,b,… — the places a post's cards name, for the name and the street
+   on each card, without the roll. The map's out of the catalogue, open or
+   closed; the rest out of the export by key, hidden or shut included, since a
+   card written last spring still says which place it was. Fifty at most. */
+async function byIds(context, ids) {
+  let roll;
+  try {
+    roll = await catalogue(context);
+  } catch (e) {
+    return null;
+  }
+  const out = [];
+  const rest = [];
+  for (const id of ids) {
+    const p = roll.get(id);
+    if (p) out.push({ id: p.id, name: p.name, address: p.address || '', map: !!p.map });
+    else rest.push(id);
+  }
+  if (rest.length && context.env.DB && !(await wrongDatabase(context.env))) {
+    const found = await venuesByIds(context.env, rest).catch(() => new Map());
+    for (const v of found.values()) out.push({ id: v.id, name: v.name, address: v.address || '', map: false });
+  }
+  return out;
+}
+
+export async function onRequestGet(context) {
+  const query = new URL(context.request.url).searchParams;
+
+  if (query.has('ids')) {
+    const ids = [...new Set(String(query.get('ids')).split(',').filter((id) => id && id.length <= 128))].slice(0, 50);
+    const out = await byIds(context, ids);
+    return out ? json(out, 200, 300) : json({ error: 'places' }, 503);
+  }
+
+  const roll = await cityRoll(context);
+  if (!roll) return json({ error: 'places' }, 503);
+  if (query.has('q')) return json(search(roll, query.get('q') || ''), 200, 300);
+  return json(roll, 200, 300);
 }

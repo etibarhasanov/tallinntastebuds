@@ -24,8 +24,9 @@
  *   { k: 'p' | 'h2' | 'h3' | 'quote', r: [run, …] }   a paragraph, a heading,
  *                                                       a quote
  *   { k: 'ul' | 'ol', li: [[run, …], …] }              a list
- *   { k: 'place', id: '<map id>' }                     a place on the map, drawn
- *                                                       as a card
+ *   { k: 'place', id: '<id>' }                         a place, drawn as a card:
+ *                                                       the map's id, or a
+ *                                                       Google venue's key
  *   { k: 'hr' }                                         a divider
  *
  *   run: { t: 'words', b: 1?, i: 1?, a: '<href>'? }
@@ -130,8 +131,9 @@ function cleanRuns(raw, tally) {
 /* The body as the editor sent it, kept to what a post may be. Answers
    { blocks, chars, words } — chars to hold against MAX_BODY, words for the
    read time — or null for something that is not a body at all. `places` is
-   the set of map ids a place card may name; one that is not on the map is
-   dropped rather than refused, since the map changes under a post. */
+   the set of ids a place card may name, the map's and the export's; one that
+   is in neither is dropped rather than refused, since both change under a
+   post. */
 export function cleanBody(raw, places) {
   if (!Array.isArray(raw)) return null;
   const tally = { chars: 0 };
