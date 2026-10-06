@@ -10805,8 +10805,9 @@ house — the owner's account, the one `ADMINS` names — where a member can
 queue to play the house one on one, and where any member can challenge any
 other. It is being built a task at a time, from
 `.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
-far is **the public game**, **one on one**, **notes for the next player** and
-**member against member**: `chess.html`, `assets/chess.js`
+far is **the public game**, **one on one**, **notes for the next player**,
+**member against member** and **giving up, and agreeing a draw**:
+`chess.html`, `assets/chess.js`
 and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
 `functions/api/_chess.js` holds the rules. It is listed in `sitemap.xml` and
 not disallowed in `robots.txt`.
@@ -10919,6 +10920,11 @@ SAN without running the rules, and the answer carries `score` — the public
 games' own tally, `everybody`, `house` and `drawn` — because `record` counts
 private games too and the line under the moves is about the city's game.
 
+**The city can give a game up, or ask for a draw**, when a position is lost
+and the evening wants a fresh board: two of Everybody have to agree, the
+house answers a draw, and a public game that ends this way starts the next
+one by itself — **Giving up, and agreeing a draw** below.
+
 **What it deliberately does not do yet**: captured pieces beside the board, a
 clock, a drawn set of pieces, a download of a finished game.
 
@@ -10930,9 +10936,9 @@ time before their game starts. The names in the line are usernames, and each
 row goes to that member's page under `/u/`. The house starts a game with the
 first in line, one private game at a time; the next starts when that one ends.
 The member opens as white. Either side may resign, after a *Resign this game?*
-the browser asks; the house may also end a game with no result once the member
-has left their move for seven days, and a game ended that way counts for
-nobody.
+the browser asks, or offer a draw — **Giving up, and agreeing a draw** below;
+the house may also end a game with no result once the member has left their
+move for seven days, and a game ended that way counts for nobody.
 
 **The page is in a different order for each reader**, the faces table in
 `SKILL.md`. A visitor sees the public game and, under it, *Play Tallinn
@@ -11116,7 +11122,8 @@ answer carries that one game whole because the page sends its id with every
 read and write (`duel=`, and `duel` in a write's body). The reader's side is
 at the bottom — black is turned round for whoever plays it — and the turn
 line says *Your move* or *Waiting for anna*. Undo, the 409 redraw, check and
-the ends of a game are the public game's own; *Resign* is either player's.
+the ends of a game are the public game's own; *Resign* and *Offer a draw* are
+either player's — **Giving up, and agreeing a draw** below.
 Where the house abandons a private game, a duel has **Claim the game**: once
 the other player has left their move for seven days, the one still there may
 take the win, which reads *anna stopped playing · boris won.* A duel that is
@@ -11141,9 +11148,68 @@ Not done: a notice anywhere but this page, choosing colours, a clock, more
 than five, watching somebody else's duel, notes on a duel, search by
 anything but the start of a username.
 
+### Giving up, and agreeing a draw
+
+Two ways out of a game short of mate, under every game's moves, asked for by
+the owner after the duels: a side that cannot win should be able to say so,
+and a position both sides are tired of should be able to end level. Both are
+behind the browser's own confirm box — *Resign this game?*, *Offer a draw?*,
+*Agree to a draw?* — which is what every are-you-sure on this site is.
+
+**One person resigns, and offers.** On a private game or a duel, *Resign*
+is what it was and *Offer a draw* sits beside it. The offer stands under the
+other player's moves as *anna offers a draw.* with *Accept* and *Decline*,
+and it goes the way it does over the board: an acceptance ends the game
+level, with *Draw · Both sides agreed.* on the turn line and `agreed` as the
+reason; *Decline* takes it down and leaves *anna declined the draw.* on the
+offerer's side until the one who declined has moved, which is how long
+before they may be asked again; and a move by the other player is a decline
+too, quietly. Whoever offered may take it back while it stands.
+
+**The city gives up by agreeing with itself.** Everybody is a side, so on
+the public game *Give up this game* and *Offer a draw* raise an ask rather
+than settle one: *a visitor asks Everybody to give up. 1 of 2 agree.*, and
+anybody else who could move for Everybody — signed in or not, counted once
+by account or by device, the way a move is filed — has *Agree* under it,
+behind the same question. The second name is the city's answer. Giving up
+ends the game there and then, Everybody resigned, nothing from the house
+needed; a draw becomes *Everybody offers a draw.* with *Accept* and *Decline*
+on the house's face. The house offers the city a draw the other way round,
+and the city accepts it the same way, two of it agreeing. Everybody never
+declines: two agreeing is the yes and playing on is the no. An ask short of
+its two lapses once the game has moved two plies on; the house's offer to
+the city lapses the same way rather than with one person's move, so that no
+one of Everybody can decline for the rest; a complete offer to one person
+dies with that person's move. Whoever raised an ask, or agreed to one, has
+*Take it back* while it stands, tagged *you*.
+
+**A public game that ends this way starts the next one at once**, colours
+swapped, on the owner's decision: the asking was for a fresh start, and
+if the house is not there to press *Start the next game*, giving up would
+have changed nothing. The answer to the press carries the new board and the
+page says *That game is over — the next one has started.*; the score line
+under the moves counts the one that ended. A game ended by mate still
+waits for the house. Two devices in one pair of hands are two people here,
+as they are for a note: the move list already shows who played what, and the
+house sees who agreed.
+
+**Worked out, not kept.** The asks are rows in `chess_asks`, one a person,
+and which of them stand is `standing()` in the route, read off the rows and
+the moves on every answer rather than updated by anything: the page draws
+`asks`, `declined` and `mayAsk` — what this reader may press now, each kind
+with what the press would be, since *Offer a draw*, *Agree* and *Accept*
+are one action with three labels — and decides nothing. The writes delete
+what has lapsed before they add. The table arrives by hand after the other
+three; without it the answer carries no asks, the page draws no offer, and a
+one-person resignation still works, since it needs no row.
+
+Not done: a draw claimed by hand for repetition or the fifty moves, which
+the rules already call; a vote to undo or to start over; a notice anywhere
+but this page; a sheet of the site's own in place of the confirm box.
+
 ### The tables
 
-Three, in `db/schema.sql`, applied by hand like every table here:
+Four, in `db/schema.sql`, applied by hand like every table here:
 
 - **`chess_games`** — one row a game: public, private or a duel. A private
   game is a row from the moment its member joins the waiting list, in state
@@ -11168,6 +11234,12 @@ Three, in `db/schema.sql`, applied by hand like every table here:
   taken it off the page. Applied after the other two, and read on its own: a
   database without it draws the page with no notes card and nothing else
   missing.
+- **`chess_asks`** — one row a person on a side's ask to give a game up or
+  to draw it, keyed on the game, the kind and who, so one person counts
+  once; and the `declined` marker a player leaves on a draw they turned
+  down. Nothing in it is state: which rows stand is worked out from the
+  moves on every read — **Giving up, and agreeing a draw** above. Applied
+  after the other three and read on its own the same way.
 
 Without the tables the route answers `ready: false` with no games and every
 POST `503 no-database`, and the page draws the board as not answering.
@@ -16732,7 +16804,7 @@ Flashcards, `assets/flashcard.js`:
 | `radio_play`, `radio_stop` | as on the map |
 
 The chess page, `assets/chess.js` — a move, the house starting the next game,
-the waiting list and what can end a private game, and the switch the
+the waiting list, what can end a game short of mate, and the switch the
 flashcards' header has:
 
 | Event | Parameters |
@@ -16741,7 +16813,9 @@ flashcards' header has:
 | `chess_new_game` | — the house's *Start the next game* or *Start the first game* |
 | `chess_join`, `chess_leave` | — a member's *Join the waiting list*, from the card or under a game of theirs that is over, and *Leave the list*. Sent on the press, so a join the full line refused is still one |
 | `chess_start` | — the house's *Start a game with …* |
-| `chess_resign`, `chess_abandon` | — *Resign*, pressed by either side and confirmed, and the house's *End without a result* |
+| `chess_ask` | `kind` (`draw`/`resign`), `as` (`resign`, `giveup`, `offer`, `agree` or `accept`) — *Resign*, *Give up this game*, *Offer a draw*, *Agree* and *Accept*, each pressed and confirmed; what the press was is `as`, which the route said and the page only labelled — see **Giving up, and agreeing a draw** |
+| `chess_unask`, `chess_refuse` | — *Take it back* on an ask of the reader's own, and a single player's *Decline* of the draw the other side offered |
+| `chess_abandon` | — the house's *End without a result* |
 | `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
 | `chess_note` | `named` — whether a member's name was left on it; *Post* under the notes, sent on the press, so a note the cap refused is still one |
 | `chess_note_delete`, `chess_note_hide` | — *Delete* under the reader's own note, and the house's *Hide* under anybody else's |

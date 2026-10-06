@@ -43,8 +43,8 @@ public queue — the names are the usernames, which already have pages under
 `/u/` — one place per account, oldest first, and they may leave it any time
 before their game starts. The house starts a game with the first in line, one
 private game at a time; the next starts when that one ends. The challenger opens
-as white. Either side may resign; the house may also end a game without a result
-once the member has not moved for seven days. The member's page says when their
+as white. Either side may resign or offer a draw; the house may also end a game
+without a result once the member has not moved for seven days. The member's page says when their
 game has started, on its next ask. Nothing else does: the site has no address
 for anybody.
 
@@ -91,6 +91,22 @@ anywhere but this page. The first draft asked for both players to be in
 Tallinn with location on; the owner dropped it. **Member against member** in
 `README.md`.
 
+**Giving up, and agreeing a draw**, asked for by the owner after the duels:
+under every game's moves, *Resign* and *Offer a draw*, each behind the
+browser's confirm box. One person's resignation ends the game; one person's
+offer stands for the other player to accept, decline, or decline by moving,
+and a decline holds until the decliner has moved. On the public game
+Everybody is a side, so *Give up this game* and *Offer a draw* raise an ask
+that needs two of the city — the one who raised it and one who pressed
+*Agree*, by account or by device, a visitor counting — before it is the
+city's resignation or the city's offer to the house; the house offers the
+city a draw the same way round, accepted by two agreeing, and the city never
+declines, it plays on. An ask short of two lapses two plies on, and so does
+an offer to the city; an offer to one person dies with their move. A public
+game ended this way starts the next one on its own, colours swapped — the
+owner's three answers: two in total, start on its own, visitors count.
+**Giving up, and agreeing a draw** in `README.md`.
+
 Every board is the same component: an eyebrow naming the two sides, a mono line
 saying whose move it is, a sentence saying what that means for whoever is
 reading, the board, and under it the last move, who played it and when. Beside
@@ -127,6 +143,16 @@ for four choices in the segmented control the language switch is.
 - Check on the line; Checkmate, Stalemate or Draw with its reason when it ends,
   then *Tallinn Tastebuds starts the next game.* for readers and the button for
   the house.
+- Under the moves while a game is on: *Resign* — *Give up this game* on
+  Everybody's side — and *Offer a draw*, each behind a confirm; an ask
+  standing, *a visitor asks Everybody to give up. 1 of 2 agree.* with *Agree*
+  for the rest and *Take it back*, tagged *you*, for whoever is on it; an
+  offer complete, *anna offers a draw.* with *Accept* and *Decline* for one
+  player and *Agree* for the city; *anna declined the draw.* until she has
+  moved; an ask that lapsed simply gone on the poll; a press on an ask that
+  closed, 409 and the board redrawn; a public game given up or drawn, the next
+  one on the board at once and *That game is over — the next one has
+  started.* for whoever pressed.
 - No game yet: *No game yet* and *Tallinn Tastebuds sets up the board.* The
   house sees *Start the first game*.
 - The route not answering: the head and the cards draw with *The board is not
@@ -218,6 +244,21 @@ abandon: true                        only for the house, only while it may end
                                      the game without a result — the page
                                      offers the button off this, so the seven
                                      days live in the route alone
+asks: [ { kind: 'draw'|'resign', side: 'w'|'b', need, done,
+          names: [ { name, you } ] } ]   what stands on a game being played,
+                                     a side at most each, worked out from
+                                     chess_asks and the moves on every read;
+                                     `done` once it has `need` names, and a
+                                     done draw is the offer
+declined: { side } | null            a draw of that side's turned down, until
+                                     the one who turned it down has moved
+mayAsk: [ { kind, as } ]             what this reader may press now: `as` is
+                                     'resign', 'giveup', 'offer', 'agree' or
+                                     'accept', the label and the question —
+                                     the page decides nothing
+mayRefuse: true                      a single player the other side has
+                                     offered a draw to; all four absent where
+                                     chess_asks is not applied
 claim: true                          only for a player in a duel, only while
                                      the other has left their move seven days
 ```
@@ -232,7 +273,9 @@ without the words, or an error:
 | `join` | a member | a place in line | `409 already` (in line or playing), `429 full` past 50, `401 signed-out`, `403 not-yours` for the house |
 | `leave` | a member | out of the line | `404 not-in-line` |
 | `start` `{ game }` | the house | the first waiting game becomes live | `409 busy` (one at a time), `409 not-first`, `404 no-game`, `403 not-yours` |
-| `resign` `{ game }` | the challenger, or the house on the private game; either player in a duel | the other side wins | `404 no-game` |
+| `ask` `{ game, kind, client }` — `kind` 'resign' or 'draw' | anybody on a side of a game being played: the house or the member, either player in a duel, anyone but the house on Everybody's | from one person a resignation ends the game, a draw ask is the offer; from Everybody, one of the two names its give-up or draw needs, raising it or agreeing to it; a draw ask against a standing offer is the acceptance, and the game is drawn when both sides' are complete; a public game ended here starts the next | `409 standing` (the side has an ask of the other kind), `409 already` (this person is on it), `409 declined` (a draw, until the refuser has moved), `404 no-game`, `403 not-yours`, `400 client`, `503 no-database` (two of Everybody, or a draw, without `chess_asks`) |
+| `unask` `{ game, client }` | whoever is on an ask | their name off it — a single player's offer with it | `404 no-ask`, `400 client` |
+| `refuse` `{ game, client }` | a single player the other side has offered a draw to — never Everybody, which plays on instead | the offer goes, and a `declined` marker stands until the refuser has moved | `409 no-ask`, `404 no-game`, `403 not-yours` |
 | `abandon` `{ game }` | the house | over with no result, only on the member's turn after seven quiet days | `409 not-yet`, `404 no-game`, `403 not-yours` |
 | `undo` `{ game, ply }` — `ply` the move's own, the game's ply as the page read it | whoever the last move was filed under: the house, the member, or the one device that played it for Everybody | deletes the move and steps the game back to the position before it, within ten seconds of it being filed (three more of grace), while the game is still playing — a move that ended it is final | `409 too-late` (answered, over, or past the time), `403 not-yours`, `400 client`, `404 no-game` |
 
@@ -280,6 +323,15 @@ without it the answer carries `duels: null` and the page draws no card:
 
 ```sql
 chess_games  … opponent TEXT       the one a duel challenged, on black
+```
+
+And a fourth table, added with the asks, applied after the others and read
+on its own — without it a game's answer carries no `asks` and no `mayAsk`,
+the page draws no offer, and a one-person resignation still works:
+
+```sql
+chess_asks   game TEXT, kind TEXT, side TEXT, ply INTEGER, by_kind TEXT,
+             by_id TEXT, at INTEGER, PRIMARY KEY (game, kind, by_kind, by_id)
 ```
 
 The queue is `chess_games WHERE kind = 'private' AND state = 'waiting' ORDER BY

@@ -1794,8 +1794,9 @@ CREATE TABLE IF NOT EXISTS chess_games (
   -- '1-0', '0-1', '1/2-1/2' or 'abandoned' once it is over, and null before.
   -- 'abandoned' counts for nobody.
   result       TEXT,
-  -- Why: mate, stalemate, material, fifty, repetition, resign, abandoned, or
-  -- claimed — a duel one player left for seven days and the other took.
+  -- Why: mate, stalemate, material, fifty, repetition, resign, abandoned,
+  -- claimed — a duel one player left for seven days and the other took — or
+  -- agreed, a draw both sides asked for through chess_asks below.
   reason       TEXT,
   -- Milliseconds, all four. created_at is when a private game joined the
   -- queue, and so its place in it, or when a duel's challenge was sent, which
@@ -1887,3 +1888,31 @@ CREATE TABLE IF NOT EXISTS chess_notes (
 CREATE INDEX IF NOT EXISTS idx_chess_notes_game ON chess_notes (game, hidden, at);
 -- The cap's lookup: how many notes this fingerprint has left in the last hour.
 CREATE INDEX IF NOT EXISTS idx_chess_notes_ip ON chess_notes (ip_hash, at);
+
+-- One row is one person's name on a side's ask to end a game short of mate:
+-- a draw, or giving the game up. A side that is one person — the house, the
+-- member, a duel's player — needs one row, and resigns with none at all; the
+-- city's side of the public game needs NEED_CITY of them (two, in
+-- functions/api/chess.js), each filed under what a move is filed under, so
+-- one person counts once. Which rows still stand is worked out on every read
+-- from the rows and the moves — standing() in the route — rather than kept:
+-- an ask lapses as the game moves on, and a write deletes what has lapsed
+-- before it adds. A third kind, 'declined', is one row left by a player who
+-- turned a draw down, standing until they move. **Giving up, and agreeing a
+-- draw** under **Chess** in README.md.
+CREATE TABLE IF NOT EXISTS chess_asks (
+  -- chess_games.id.
+  game    TEXT    NOT NULL,
+  -- 'draw', 'resign' or 'declined'.
+  kind    TEXT    NOT NULL,
+  -- 'w' or 'b': the side asking — for 'declined', the side whose draw it was.
+  side    TEXT    NOT NULL,
+  -- The game's ply when the row was filed, which is what it lapses from.
+  ply     INTEGER NOT NULL,
+  -- 'house', 'user' or 'device', and the id that goes with it, as on a move.
+  by_kind TEXT    NOT NULL,
+  by_id   TEXT    NOT NULL,
+  at      INTEGER NOT NULL,
+  -- One row a person a kind: a second press on Agree is refused by the key.
+  PRIMARY KEY (game, kind, by_kind, by_id)
+);

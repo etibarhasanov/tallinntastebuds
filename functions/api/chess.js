@@ -100,6 +100,31 @@
  * arrives by hand after the other two, so its absence answers `notes: null`
  * and the page draws no card, and never takes the board down with it.
  *
+ * GIVING UP, AND AGREEING A DRAW
+ *
+ * Two ways a game ends short of mate, and both are asks filed in chess_asks.
+ * A side that is one person — the house, the member, either player in a
+ * duel — resigns with one press, which needs no row at all: askFor() ends the
+ * game on the spot. A side that is the whole city needs NEED_CITY of it to
+ * agree, so Everybody's "give up" and Everybody's draw are rows, one a person,
+ * filed under what a move is filed under, and the side has spoken when the
+ * second row lands. A draw offer is a draw ask that is complete: one row from
+ * a single player, NEED_CITY from Everybody. It stands until the other side
+ * answers — with a draw ask of its own, which is the agreement, or with
+ * refuseDraw(), which leaves a 'declined' marker so the side refused cannot
+ * ask again until the refuser has moved — or until a move declines it the
+ * way one does over the board: the other side's move, or, where the other
+ * side is Everybody and no one person's move should speak for the city, the
+ * game moving two plies on. An ask short of its count lapses the same two
+ * plies after it was raised. None of that is kept as state: standing() works
+ * it out from the rows and the moves on every read, and the writes delete
+ * what it says is dead before they add to the table. A public game that ends
+ * this way starts the next one at once, on the owner's instruction — the
+ * asking was for a fresh start, and nobody should wait on the house for it.
+ * The table arrives by hand after the others, so without it the answer
+ * carries no asks and the page draws no offer; a one-person resignation
+ * needs no table and keeps working.
+ *
  * Both rule functions throw on a FEN they cannot read. The route only ever
  * hands them START and what play() gave back, so a throw is a bug and is left
  * to be a 500 rather than dressed up as a refusal.
@@ -154,6 +179,11 @@ const NOTES_PER_HOUR = 5;
 const NOTES_SHOWN = 50;
 const HOUR = 3600000;
 
+/* How many of Everybody have to agree before the city has given a game up or
+   asked for a draw — the owner's number, two in total, the one who raised it
+   counted. The page prints it out of each ask's `need`, never out of a copy. */
+const NEED_CITY = 2;
+
 const DAY = 86400000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const UCI = /^[a-h][1-8][a-h][1-8][qrbn]?$/;
@@ -205,6 +235,21 @@ async function duelsReady(env) {
   try {
     await env.DB.prepare('SELECT opponent FROM chess_games LIMIT 1').all();
     duelsSeen = true;
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+/* Whether chess_asks is there — the fourth table, applied after the other
+   three, and asked after the same way. */
+let asksSeen = false;
+
+async function asksReady(env) {
+  if (asksSeen) return true;
+  try {
+    await env.DB.prepare('SELECT 1 FROM chess_asks LIMIT 1').all();
+    asksSeen = true;
   } catch (e) {
     return false;
   }
@@ -292,6 +337,139 @@ function mayClaim(row, who) {
     Date.now() - row.last_at >= QUIET_DAYS * DAY;
 }
 
+/* ------------------------------------------------------------------- asks */
+
+/* Which side this reader plays in this game, or null for somebody who is
+   not in it. The house is its colour in its own games and a member in a
+   duel; anybody at all is Everybody's side on the public game, a visitor
+   included — whether they sent a device id is actorOf()'s question, asked
+   when something is about to be filed. */
+function sideOf(row, who) {
+  if (row.kind === 'duel') {
+    if (!who.user) return null;
+    return who.user.id === row.challenger ? 'w' : who.user.id === row.opponent ? 'b' : null;
+  }
+  if (who.role === 'house') return row.house_colour;
+  const theirs = other(row.house_colour);
+  if (row.kind === 'public') return theirs;
+  return who.user && who.user.id === row.challenger ? theirs : null;
+}
+
+function other(side) {
+  return side === 'w' ? 'b' : 'w';
+}
+
+/* How many people a side's ask needs: NEED_CITY for Everybody, one for
+   anybody who is one person. */
+function need(row, side) {
+  return row.kind === 'public' && side !== row.house_colour ? NEED_CITY : 1;
+}
+
+/* Whether `side` has moved since the game was at `ply`. The side that
+   played a half-move is in its number: white's are the odd ones. */
+function movedSince(moves, ply, side) {
+  return moves.some((m) => m.ply > ply && (m.ply % 2 ? 'w' : 'b') === side);
+}
+
+/* What the rows say is standing on a game now, worked out rather than
+   kept: for each side its ask — the kind, the rows on it in the order they
+   came, and whether it has the count it needs — and the 'declined' marker
+   while the side that refused has not moved since. Everything else in the
+   rows is dead and is listed apart, for a write to delete. An ask short of
+   its count lapses once the game has moved two plies past its raising; a
+   complete one dies with the other side's move, or — where the other side is
+   Everybody — two plies on, so that no one person's move declines a draw for
+   the whole city. */
+function standing(row, rows, moves) {
+  const asks = {};
+  const live = [];
+  for (const side of ['w', 'b']) {
+    const own = rows.filter((r) => r.kind !== 'declined' && r.side === side);
+    if (!own.length) continue;
+    const n = need(row, side);
+    const done = own.length >= n;
+    if (!done) {
+      if (row.ply >= own[0].ply + 2) continue;
+    } else {
+      const at = own[n - 1].ply;
+      const dead = need(row, other(side)) > 1 ? row.ply >= at + 2 : movedSince(moves, at, other(side));
+      if (dead) continue;
+    }
+    asks[side] = { kind: own[0].kind, need: n, done: done, names: own };
+    live.push(...own);
+  }
+  const marker = rows.find((r) => r.kind === 'declined');
+  let declined = null;
+  if (marker && !movedSince(moves, marker.ply, other(marker.side))) {
+    declined = marker;
+    live.push(marker);
+  }
+  return { asks, declined, dead: rows.filter((r) => !live.includes(r)) };
+}
+
+async function askRows(env, id) {
+  const { results } = await env.DB
+    .prepare(
+      'SELECT a.*, u.username FROM chess_asks a ' +
+      "LEFT JOIN users u ON a.by_kind = 'user' AND u.id = a.by_id " +
+      'WHERE a.game = ? ORDER BY a.at'
+    )
+    .bind(id)
+    .all();
+  return results || [];
+}
+
+/* The asks on a game as the page draws them, for a game being played where
+   the table is applied, and nothing at all otherwise: each side's ask with
+   who is on it, `declined` while a refusal still stands, and `mayAsk`, what
+   this reader may press now — each kind with what the press would be, since
+   the page labels Offer a draw, Agree and Accept differently and only the
+   route knows which this is — and `mayRefuse` for a single player the other
+   side has offered a draw to. Everybody never refuses: the city answers an
+   offer by agreeing to it or by playing on. */
+async function asksOf(env, row, who, moves) {
+  if (row.state !== 'playing' || !(await asksReady(env))) return {};
+  const { asks, declined } = standing(row, await askRows(env, row.id), moves);
+  const me = actorOf(who, row);
+  const isMe = (r) => !!me && r.by_kind === me.kind && r.by_id === me.id;
+  const side = sideOf(row, who);
+  const own = side ? asks[side] : null;
+  const theirs = side ? asks[other(side)] : null;
+  const offered = !!theirs && theirs.kind === 'draw' && theirs.done;
+
+  /* One person may always resign, their own draw offer standing or not,
+     since that needs no row; the city gives up or asks for a draw, one at a
+     time, and whoever is on the ask has only Take it back. */
+  const mayAsk = [];
+  if (side) {
+    const n = need(row, side);
+    if (n === 1) mayAsk.push({ kind: 'resign', as: 'resign' });
+    if (own && !own.names.some(isMe)) {
+      mayAsk.push({ kind: own.kind, as: 'agree' });
+    } else if (!own) {
+      if (n > 1) mayAsk.push({ kind: 'resign', as: 'giveup' });
+      if (!(declined && declined.side === side)) {
+        mayAsk.push({ kind: 'draw', as: !offered ? 'offer' : n > 1 ? 'agree' : 'accept' });
+      }
+    }
+  }
+  return {
+    asks: ['w', 'b'].filter((s) => asks[s]).map((s) => ({
+      kind: asks[s].kind,
+      side: s,
+      need: asks[s].need,
+      done: asks[s].done,
+      names: asks[s].names.map((r) => ({
+        name: r.by_kind === 'house' ? 'house' : r.by_kind === 'user' && r.username ? r.username : 'visitor',
+        you: isMe(r)
+      }))
+    })),
+    declined: declined ? { side: declined.side } : null,
+    mayAsk: mayAsk,
+    ...(offered && side && need(row, side) === 1 ? { mayRefuse: true } : {})
+  };
+}
+
 async function movesOf(env, id) {
   const { results } = await env.DB
     .prepare(
@@ -308,7 +486,7 @@ async function movesOf(env, id) {
    moves when it is their turn. `check` is the last move's, which its SAN
    already says with + or #. `abandon` is there only for the house, only when
    it may end the game; `claim` only for a player in a duel, only when they
-   may claim it. */
+   may claim it; the asks — asksOf() above — only while it is being played. */
 async function gameAnswer(env, row, who) {
   if (!row) return null;
   const moves = await movesOf(env, row.id);
@@ -340,7 +518,8 @@ async function gameAnswer(env, row, who) {
     })),
     ...(mayMove(row, who) ? { legal: legalMoves(row.fen) } : {}),
     ...(who.role === 'house' && mayAbandon(row) ? { abandon: true } : {}),
-    ...(mayClaim(row, who) ? { claim: true } : {})
+    ...(mayClaim(row, who) ? { claim: true } : {}),
+    ...(await asksOf(env, row, who, moves))
   };
 }
 
@@ -586,8 +765,8 @@ async function gameById(env, id) {
 }
 
 const ACTIONS = {
-  move, undo, new: newGame, join, leave, start, resign, abandon, note, unnote, hide,
-  challenge, accept, decline: drop, cancel: drop, claim
+  move, undo, new: newGame, join, leave, start, ask: askFor, unask, refuse: refuseDraw, abandon,
+  note, unnote, hide, challenge, accept, decline: drop, cancel: drop, claim
 };
 
 /* move { game, ply, move, client } — `ply` is the game's ply as the page read
@@ -643,6 +822,7 @@ async function move(env, who, body) {
     throw e;
   }
   if (!results[0].meta.changes) return refuse(env, who, 'moved', 409);
+  if (over) await clearAsks(env, row.id);
   return done(env, who);
 }
 
@@ -721,13 +901,19 @@ async function undo(env, who, body) {
   return done(env, who);
 }
 
-/* new — the house starts the next public game, once the last is over. Game n
-   has the house on black when n is odd, so Everybody opens the first game as
-   white and the colours swap every game after. */
+/* new — the house starts the next public game, once the last is over. */
 async function newGame(env, who) {
   if (who.role !== 'house') return json({ error: 'not-yours' }, 403);
+  if (!(await startPublic(env))) return refuse(env, who, 'playing', 409);
+  return done(env, who);
+}
+
+/* The next public game, while none is being played. Game n has the house on
+   black when n is odd, so Everybody opens the first game as white and the
+   colours swap every game after. The house presses for it after a mate; a
+   game given up or drawn by agreement starts the next one itself. */
+async function startPublic(env) {
   const now = Date.now();
-  const id = randomHex(8);
   const res = await env.DB
     .prepare(
       'INSERT INTO chess_games (id, kind, state, n, challenger, house_colour, fen, ply, created_at, started_at, last_at) ' +
@@ -735,10 +921,9 @@ async function newGame(env, who) {
       "FROM (SELECT COALESCE(MAX(n), 0) + 1 AS n FROM chess_games WHERE kind = 'public') " +
       "WHERE NOT EXISTS (SELECT 1 FROM chess_games WHERE kind = 'public' AND state = 'playing')"
     )
-    .bind(id, START, now, now, now)
+    .bind(randomHex(8), START, now, now, now)
     .run();
-  if (!res.meta.changes) return refuse(env, who, 'playing', 409);
-  return done(env, who);
+  return !!res.meta.changes;
 }
 
 /* join — a member takes a place in line: a private game, waiting. One per
@@ -815,7 +1000,8 @@ async function start(env, who, body) {
   return done(env, who);
 }
 
-/* Ends a playing game, and answers whether this call was the one that did. */
+/* Ends a playing game, and answers whether this call was the one that did.
+   A game that is over has nothing standing on it, so its asks go with it. */
 async function finish(env, id, result, reason) {
   const now = Date.now();
   const res = await env.DB
@@ -825,26 +1011,135 @@ async function finish(env, id, result, reason) {
     )
     .bind(result, reason, now, now, id)
     .run();
+  if (res.meta.changes) await clearAsks(env, id);
   return !!res.meta.changes;
 }
 
-/* resign { game } — the challenger, or the house, on a private game being
-   played; either player on a duel. Whoever resigned lost. A public game has
-   nobody who could resign for the city, so it cannot be. */
-async function resign(env, who, body) {
+async function clearAsks(env, id) {
+  if (!(await asksReady(env))) return;
+  await env.DB.prepare('DELETE FROM chess_asks WHERE game = ?').bind(id).run();
+}
+
+/* ------------------------------------------------------------------- asks */
+
+/* ask { game, kind, client } — kind 'resign' or 'draw': this reader's side
+   gives the game up, or asks for a draw. From one person a resignation is
+   the end of the game there and then, and a draw ask is an offer. From
+   Everybody — the house's side of the public game is one person, the other
+   is the city — it is one row of the NEED_CITY the side needs, raising the
+   ask when it is the first or agreeing to it when it is not; the side has
+   given up when the count is reached, and offered a draw. A draw ask from
+   the side the other has offered a draw to is the acceptance, and the game
+   is drawn the moment both sides' asks are complete. One kind at a time a
+   side — the insert refuses a draw while a give-up stands, and the other
+   way round — and one row a person, which the primary key refuses a second
+   of. A side whose draw was refused asks again only once the refuser has
+   moved. */
+async function askFor(env, who, body) {
+  const kind = body.kind === 'draw' || body.kind === 'resign' ? body.kind : '';
+  if (!kind) return json({ error: 'malformed' }, 400);
   const row = await gameById(env, body.game);
   if (!row || row.state !== 'playing') return json({ error: 'no-game' }, 404);
+  const side = sideOf(row, who);
+  if (!side) return json({ error: 'not-yours' }, 403);
+  const by = actorOf(who, row);
+  if (!by) return json({ error: 'client' }, 400);
 
-  let loser = null;
-  if (row.kind === 'duel') {
-    if (inDuel(row, who)) loser = who.user.id === row.challenger ? 'w' : 'b';
-  } else if (row.kind === 'private') {
-    if (who.role === 'house') loser = row.house_colour;
-    else if (who.user && who.user.id === row.challenger) loser = row.house_colour === 'w' ? 'b' : 'w';
+  const n = need(row, side);
+  if (kind === 'resign' && n === 1) return endBy(env, who, row, side === 'w' ? '0-1' : '1-0', 'resign');
+  if (!(await asksReady(env))) return json({ error: 'no-database' }, 503);
+
+  const moves = await movesOf(env, row.id);
+  const was = await tidyAsks(env, row, moves);
+  if (kind === 'draw' && was.declined && was.declined.side === side) return refuse(env, who, 'declined', 409);
+
+  try {
+    const res = await env.DB
+      .prepare(
+        'INSERT INTO chess_asks (game, kind, side, ply, by_kind, by_id, at) SELECT ?, ?, ?, ?, ?, ?, ? ' +
+        "WHERE NOT EXISTS (SELECT 1 FROM chess_asks WHERE game = ? AND side = ? AND kind NOT IN (?, 'declined'))"
+      )
+      .bind(row.id, kind, side, row.ply, by.kind, by.id, Date.now(), row.id, side, kind)
+      .run();
+    if (!res.meta.changes) return refuse(env, who, 'standing', 409);
+  } catch (e) {
+    /* The primary key: this person is on the ask already. */
+    if (/UNIQUE|PRIMARY KEY|constraint/i.test(String(e && e.message))) return refuse(env, who, 'already', 409);
+    throw e;
   }
-  if (!loser || !(await finish(env, row.id, loser === 'w' ? '0-1' : '1-0', 'resign'))) {
-    return json({ error: 'no-game' }, 404);
+
+  const now = standing(row, await askRows(env, row.id), moves);
+  const own = now.asks[side];
+  const theirs = now.asks[other(side)];
+  if (own && own.done) {
+    if (kind === 'resign') return endBy(env, who, row, side === 'w' ? '0-1' : '1-0', 'resign');
+    if (theirs && theirs.kind === 'draw' && theirs.done) return endBy(env, who, row, '1/2-1/2', 'agreed');
   }
+  return done(env, who);
+}
+
+/* Deletes what standing() says is dead on a game, and answers what is
+   standing. Every write to the table starts here, so a person whose ask
+   lapsed last week is not refused by the key when they raise another. */
+async function tidyAsks(env, row, moves) {
+  const was = standing(row, await askRows(env, row.id), moves);
+  if (was.dead.length) {
+    await env.DB.batch(was.dead.map((r) => env.DB
+      .prepare('DELETE FROM chess_asks WHERE game = ? AND kind = ? AND by_kind = ? AND by_id = ?')
+      .bind(row.id, r.kind, r.by_kind, r.by_id)));
+  }
+  return was;
+}
+
+/* The end of a game somebody asked for. A public game that ends this way
+   starts the next one at once — the asking was for a fresh start. */
+async function endBy(env, who, row, result, reason) {
+  if (!(await finish(env, row.id, result, reason))) return refuse(env, who, 'no-game', 404);
+  if (row.kind === 'public') await startPublic(env);
+  return done(env, who);
+}
+
+/* unask { game, client } — a person takes their own name off their side's
+   ask, whichever kind it is. A single player's offer goes with it; one of
+   Everybody's two leaves the ask one short. */
+async function unask(env, who, body) {
+  if (!(await asksReady(env))) return json({ error: 'no-database' }, 503);
+  const row = await gameById(env, body.game);
+  if (!row) return json({ error: 'no-game' }, 404);
+  const by = actorOf(who, row);
+  if (!by) return json({ error: 'client' }, 400);
+  const res = await env.DB
+    .prepare("DELETE FROM chess_asks WHERE game = ? AND kind != 'declined' AND by_kind = ? AND by_id = ?")
+    .bind(row.id, by.kind, by.id)
+    .run();
+  if (!res.meta.changes) return refuse(env, who, 'no-ask', 404);
+  return done(env, who);
+}
+
+/* refuse { game, client } — a single player turns down the draw the other
+   side has offered: the offer goes, and a 'declined' marker stands until
+   the refuser has moved, which is how long the other side waits before it
+   may ask again. Everybody has no refuse: two of the city agreeing is the
+   yes, and playing on is the no. */
+async function refuseDraw(env, who, body) {
+  if (!(await asksReady(env))) return json({ error: 'no-database' }, 503);
+  const row = await gameById(env, body.game);
+  if (!row || row.state !== 'playing') return json({ error: 'no-game' }, 404);
+  const side = sideOf(row, who);
+  if (!side || need(row, side) > 1) return json({ error: 'not-yours' }, 403);
+  const by = actorOf(who, row);
+  if (!by) return json({ error: 'client' }, 400);
+
+  const moves = await movesOf(env, row.id);
+  const theirs = (await tidyAsks(env, row, moves)).asks[other(side)];
+  if (!theirs || theirs.kind !== 'draw' || !theirs.done) return refuse(env, who, 'no-ask', 409);
+
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM chess_asks WHERE game = ?').bind(row.id),
+    env.DB
+      .prepare("INSERT INTO chess_asks (game, kind, side, ply, by_kind, by_id, at) VALUES (?, 'declined', ?, ?, ?, ?, ?)")
+      .bind(row.id, other(side), row.ply, by.kind, by.id, Date.now())
+  ]);
   return done(env, who);
 }
 
