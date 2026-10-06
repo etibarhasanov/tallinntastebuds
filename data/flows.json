@@ -397,7 +397,7 @@
     {
       "id": "owner",
       "name": "The owner",
-      "who": "The person whose site this is. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
+      "who": "The person whose site this is, and any account ADMINS names. /admin.html posts stories and discounts straight to the live branch and opens a pull request for a place; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
       "lanes": [
         { "id": "owner", "name": "Owner" },
         { "id": "github", "name": "GitHub" },
@@ -405,6 +405,7 @@
       ],
       "nodes": [
         {"id": "open", "type": "start", "lane": "owner", "name": "Opens /admin.html", "note": "Linked from nowhere, noindex, served no-store.", "ref": ["admin.html"]},
+        {"id": "site-in", "type": "gateway", "lane": "owner", "name": "Signed in on the site as an admin?", "note": "An account ADMINS names, with its password or Google. It reads without a token and changes nothing.", "ref": ["admin.html siteDoor()"]},
         {"id": "set-up", "type": "gateway", "lane": "owner", "name": "This device set up?"},
         {"id": "token", "type": "user", "lane": "owner", "name": "Pastes a GitHub token, picks a passphrase", "note": "A fine-grained token, this repository only, 90 days. Kept encrypted in the browser.", "ref": ["admin.html"]},
         {"id": "unlock", "type": "user", "lane": "owner", "name": "Unlocks with the passphrase", "ref": ["admin.html"]},
@@ -428,7 +429,9 @@
         {"id": "knows", "type": "end", "lane": "owner", "name": "Knows what gets opened"}
       ],
       "edges": [
-        ["open", "set-up"],
+        ["open", "site-in"],
+        ["site-in", "stats", "yes, to read"],
+        ["site-in", "set-up", "no, or to change something"],
         ["set-up", "token", "no"],
         ["set-up", "unlock", "yes"],
         ["token", "unlock"],

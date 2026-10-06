@@ -13568,6 +13568,30 @@ survives the fold being shut again, since a `<details>` only hides what it
 holds. Last, **This device**, the token's facts with Lock and Forget under
 them. Nothing any of the tools does has changed.
 
+### Signing in with an account instead
+
+The token is the only thing that can change the site, and it lives on the
+device. But most days the door is opened to read, and reading needs no
+token: the five pages under `/admin/` and the Google report are the site's
+own, locked to the accounts `ADMINS` in `wrangler.toml` names — `etibar` and
+`tallinntastebuds` in production. So the door asks the site first, through
+`siteDoor()`: one request to `/api/admin/live`, whose status is the check.
+
+- **Signed in as one of them**, on any phone, with the password or Google:
+  The numbers and the Google report open above the device's own door, which
+  stays underneath for the day something has to change. The report's
+  *Mark temporarily closed* and *Reopen it* buttons are left out, because
+  they open a pull request and there is no token to open it with.
+- **Signed out, or as anybody else**: a card under the device's door offers
+  **Sign in**, which is the map's own sheet and comes back here.
+- **No answer at all**: nothing is drawn, and the device's door works as it
+  always has.
+
+There is no second password and no extra step. Making somebody an admin is
+their `users.id` added to `ADMINS` in the production block of
+`wrangler.toml` — the id and not the name, for the reason the header of
+`functions/api/_admin.js` gives.
+
 ### Setting up a device
 
 Once per device, per browser. Do the laptop first — Chrome will sync the

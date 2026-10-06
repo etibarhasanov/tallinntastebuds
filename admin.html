@@ -27,6 +27,11 @@
   encrypted with a passphrase, and proves the token can still reach the
   repository.
 
+  There is a second, narrower way in: an account ADMINS in wrangler.toml
+  names, signed in on the site with its password, sees the numbers and the
+  Google report without a token, and can change nothing — see siteDoor()
+  below.
+
   WHERE THE SECRET LIVES
 
   In this browser's localStorage, on this device, as ciphertext:
@@ -1133,6 +1138,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   function ready(repo) {
     sub.textContent = 'Unlocked on this device.';
     clear(body);
+    while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
+    while (body.nextSibling) stack.removeChild(body.nextSibling);
     touch();
 
     var tabs = el('div', { className: 'tabs' });
@@ -1210,40 +1217,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       })
       .catch(function () { /* the tab says so */ });
 
-    /* The five pages that are the owner's and live under /admin/. They are
-       not tabs because they are whole pages with their own scripts, and they
-       are not behind this door: the server locks them — an account ADMINS
-       names in wrangler.toml, see functions/api/_admin.js — so they open for
-       the owner signed in on the site and are a 404 to everybody else,
-       passphrase or not. Drawn as the account sheet's rows, a name and what
-       is behind it, because that is what they are: places to go. First on
-       the page, over the tools, because they are what the door is opened
-       for most days. */
-    var pages = el('ul', { className: 'menu' });
-    [
-      ['/admin/visitors', 'Visitors', 'Today, who came, new against returning, the two rails'],
-      ['/admin/found', 'How they found it', 'Search engines, where they landed, links, what was searched'],
-      ['/admin/stats', 'Statistics', 'Which places and chips get opened most'],
-      ['/admin/google', 'Google directory', 'Every place in Tallinn, off Google’s list'],
-      ['/admin/flows', 'Who uses the site', 'What each kind of person can do, drawn']
-    ].forEach(function (page) {
-      pages.appendChild(el('li', { className: 'menu-item' }, [
-        el('a', { className: 'menu-row', href: page[0] }, [
-          el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: page[1] }),
-            el('span', { className: 'menu-why', textContent: page[2] })
-          ]),
-          el('span', { className: 'menu-go', 'aria-hidden': 'true',
-            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
-        ])
-      ]));
-    });
-    stack.insertBefore(el('section', { className: 'card admin-card' }, [
-      el('h2', { className: 'lists-title', textContent: 'The numbers' }),
-      el('p', { className: 'stats-lead', textContent:
-        'They open when you are signed in on the site as the owner.' }),
-      pages
-    ]), body);
+    stack.insertBefore(numbersCard(), body);
 
     var facts = el('dl', { className: 'admin-facts' });
     function fact(term, value) {
@@ -1272,6 +1246,45 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       el('h2', { className: 'lists-title', textContent: 'This device' }),
       facts, lock, forget
     ]));
+  }
+
+  /* The five pages that are the owner's and live under /admin/, as a card.
+     Drawn by the unlocked page and by the site door below, which is the
+     page an admin signed in on the site sees without a token. */
+  function numbersCard() {
+    /* Not tabs, because they are whole pages with their own scripts, and they
+       are not behind this door: the server locks them — an account ADMINS
+       names in wrangler.toml, see functions/api/_admin.js — so they open for
+       the owner signed in on the site and are a 404 to everybody else,
+       passphrase or not. Drawn as the account sheet's rows, a name and what
+       is behind it, because that is what they are: places to go. First on
+       the page, over the tools, because they are what the door is opened
+       for most days. */
+    var pages = el('ul', { className: 'menu' });
+    [
+      ['/admin/visitors', 'Visitors', 'Today, who came, new against returning, the two rails'],
+      ['/admin/found', 'How they found it', 'Search engines, where they landed, links, what was searched'],
+      ['/admin/stats', 'Statistics', 'Which places and chips get opened most'],
+      ['/admin/google', 'Google directory', 'Every place in Tallinn, off Google’s list'],
+      ['/admin/flows', 'Who uses the site', 'What each kind of person can do, drawn']
+    ].forEach(function (page) {
+      pages.appendChild(el('li', { className: 'menu-item' }, [
+        el('a', { className: 'menu-row', href: page[0] }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: page[1] }),
+            el('span', { className: 'menu-why', textContent: page[2] })
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true',
+            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
+        ])
+      ]));
+    });
+    return el('section', { className: 'card admin-card' }, [
+      el('h2', { className: 'lists-title', textContent: 'The numbers' }),
+      el('p', { className: 'stats-lead', textContent:
+        'They open when you are signed in on the site as the owner.' }),
+      pages
+    ]);
   }
 
   /* ------------------------------------------------------ the Google refresh
@@ -1448,7 +1461,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     /* One row per disagreement, and a button where there is a move. The
        button opens the pull request through openPlacePR() with no
        photographs either way, so what lands is the entry as it stands with
-       `closed` moved — the same commit Edit a place would make. */
+       `closed` moved — the same commit Edit a place would make. Drawn by the
+       site door there is no repository to open it on, so the rows are there
+       to read and the button is not. */
     function drawAgainst(into, rows) {
       clear(into);
       if (!rows.length) {
@@ -1469,7 +1484,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
           el('div', { className: 'what', textContent: row.why }),
           status
         ]);
-        if (row.to !== null) {
+        if (row.to !== null && repo) {
           var go = el('button', { type: 'button', className: 'quiet', textContent:
             row.to === 'temporary' ? 'Mark temporarily closed' : 'Reopen it' });
           go.addEventListener('click', function () {
@@ -2951,12 +2966,63 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     if (meta && wash) meta.setAttribute('content', wash);
   }
 
-  /* Back to the door: the one card, emptied, and the two the unlocked page
-     adds around it taken away. */
+  /* ------------------------------------------------------- the site door
+   * The other way in, beside this device's token, and a narrower one: an
+   * account ADMINS in wrangler.toml names, signed in on the site with its
+   * password or Google, sees what the site itself can show — the five pages
+   * under /admin/ and the Google report — and nothing that writes to the
+   * repository, because only a token can do that and the site holds none.
+   * The device's door stays underneath it for that.
+   *
+   * Whether this browser is signed in as one of them is asked of the
+   * smallest route the owner has, /api/admin/live — sixty rows. Everything
+   * under /api/admin/ is a 403 to anybody else, the lock in
+   * functions/_middleware.js, so its status is the whole check: 403 offers
+   * the sign-in, a yes opens the reading, and anything else (offline, a
+   * deploy going wrong) draws nothing and leaves the device's door alone.
+   *
+   * `asked` is which boot() the answer belongs to. A slow answer arriving
+   * after the passphrase has already opened the page, or after another
+   * boot(), draws nothing.
+   */
+  var asked = 0;
+
+  function siteDoor() {
+    var mine = ++asked;
+    fetch('/api/admin/live', { cache: 'no-store' })
+      .then(function (res) { return res.status; }, function () { return 0; })
+      .then(function (status) {
+        if (mine !== asked || token) return;
+        if (status === 403) {
+          var signIn = el('button', { type: 'button', textContent: 'Sign in' });
+          signIn.addEventListener('click', function () {
+            window.location.href = '/?account=in&then=' + encodeURIComponent('/admin.html');
+          });
+          stack.appendChild(el('section', { className: 'card admin-card' }, [
+            el('h2', { className: 'lists-title', textContent: 'Or sign in with your account' }),
+            el('p', { className: 'stats-lead', textContent:
+              'An admin account sees the numbers and the Google report here without a ' +
+              'token. Changing the site still needs this device unlocked.' }),
+            signIn
+          ]));
+          return;
+        }
+        if (status !== 200) return;
+        sub.textContent = 'Signed in on the site — reading only. Unlock to change anything.';
+        var google = el('section', { className: 'card admin-card' });
+        stack.insertBefore(numbersCard(), body);
+        stack.insertBefore(google, body);
+        googleReport(null, google);
+      });
+  }
+
+  /* Back to the door: the one card, emptied, and the ones the unlocked page
+     or the site door add around it taken away. */
   function boot() {
     clear(body);
     while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
     while (body.nextSibling) stack.removeChild(body.nextSibling);
+    siteDoor();
     if (!window.crypto || !window.crypto.subtle) return insecure();
     return vault() ? locked() : setup();
   }
