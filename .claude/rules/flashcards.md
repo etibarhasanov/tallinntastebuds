@@ -1,6 +1,7 @@
 ---
 paths:
   - "data/decks.json"
+  - "data/decks/**"
   - "flashcard.html"
   - "assets/flashcard.js"
   - "assets/flashcard-first.js"
@@ -9,47 +10,19 @@ paths:
   - "assets/logo/og-flashcard.png"
   - "functions/flashcard.js"
   - "functions/api/flashcard.js"
+  - "functions/api/_decks.js"
   - "functions/api/say.js"
+  - "tools/decks.mjs"
   - "tools/ogcard.mjs"
 ---
 
-You are in the **flashcards**: the deck of Estonian on its own subdomain,
-which has no skill of its own. Load `/site` for the page and `/api` for the
-route if they are not loaded already, and read **Flashcards** in `README.md`
-by its `###`s rather than whole — it is two thousand lines. The ones most
-changes want: **Where the words are, and it is mostly not the database**,
-**The back of the card is in three languages**, **One request on the way in**,
-**The menu, and Start**, **Grammar, which is read rather than turned over**,
-**The cases, one at a time**, **Songs, which are listened to**, **Hearing
-it**, **When somebody sends the link**.
-
-What sessions here kept rediscovering:
-
-- `data/decks.json` is content, not interface. A card's back, a deck's `name`
-  and `why`, every paragraph and gloss of a lesson and every line and word of
-  a song are objects keyed by language — English required, Azerbaijani and
-  Russian written, three languages and not the site's ten (`DECK_LANGS` in
-  `functions/api/_lib.js`) — and `node tools/validate.mjs` holds the file to
-  its shape. The page's own strings are the `flash*` keys in `data/ui.json`,
-  in all ten, like every other page's.
-- The page fetches nothing but `/api/flashcard`: its words ride in the
-  answer, and the first ask leaves from `assets/flashcard-first.js` in the
-  head before the page's own scripts arrive, so a change to what `boot()`
-  asks is a change there too.
-- The Functions read what `node tools/decks.mjs` writes out of
-  `data/decks.json` into `data/decks/` — `index.json` for the shelf, one file
-  per deck, lesson and song, and `spoken.json` for the voice — through
-  `functions/api/_decks.js`, and the source only for a gathered deck that
-  spans more than eight decks. Edit the source, run the tool, commit the
-  folder; the validator fails a file there that is stale.
-- `/api/say` speaks only what is in `data/decks.json`, exactly — a card's
-  front, a card's sentence, a lesson's sentences and forms, a song's lines —
-  and `spoken()` in `tools/decks.mjs` is the list, written to
-  `data/decks/spoken.json`. A new kind of thing to hear is a line there and
-  a run of the tool, or the speaker answers `404 not-a-card`.
-- `assets/logo/og-flashcard.png` is drawn from `assets/flashcard.css` and the
-  colour tokens: `node tools/ogcard.mjs` after either moves, and nothing in
-  CI sees it stale.
-- The same page answers at `/flashcard` on the map's host, framed over the
-  map, and at the root of `flashcard.tallinntastebuds.ee` as a site of its
-  own, with no `ttb.lang` and no radio carried over. Drive it both ways.
+You are in the **flashcards** process: a deck, a lesson or a song in
+`data/decks.json`, the page that turns them over, or the routes that answer
+and speak them. If the `flashcards` skill is not already loaded, load it now
+(`/flashcards`, or `.claude/skills/flashcards/SKILL.md`) and follow it end to
+end, including its pull-request section. The `/site` and `/api` skills apply
+as well, since the page is a page and the routes are Functions. The data file
+is content in three languages, not interface in ten; `node tools/validate.mjs`
+holds every deck, card, lesson and song in it to a shape the skill spells
+out, and `data/decks/` is generated from it by `node tools/decks.mjs` — never
+edited by hand.
