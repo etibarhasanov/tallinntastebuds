@@ -1505,6 +1505,76 @@
     ]);
   }
 
+  /* ------------------------------------------------------------ start here
+   * A row of cards across the top of the shelf for somebody who has not
+   * started, each a deck, a song or a lesson showing one line of its
+   * Estonian with what it means left for the tap — "Kas see laud on vaba?",
+   * and the deck it is in a press away.
+   *
+   * Because the front door was a heading, a paragraph and a column of tiles,
+   * and from 30 September to 6 October two opens in three ended without a
+   * deck opened: the tiles say what each deck is about, and none of them shows
+   * what this page actually does, which is put a word in front of you and
+   * ask. A line you cannot read yet is that question on the shelf itself.
+   * And it is a row and not a stack, with the next card cut off at the edge,
+   * so that what is here looks like more than Hello and goodbye before
+   * anybody has scrolled — the songs and the grammar are in it, not three
+   * screens down.
+   *
+   * The lines are the file's: `taste` on a deck, a lesson or a song in
+   * data/decks.json, which tools/validate.mjs holds to the deck's own cards
+   * or the song's own lines, and the order is the shelf's own, a deck and
+   * then a song or a lesson in turn, so the row reads as a mix. Only what the
+   * route sent is in it, so a deck whose stage has not opened has no card.
+   * The row goes as soon as there is anything to come back to — a word known,
+   * a word answered in this tab, a gathered deck — because by then the shelf
+   * under it is the better way in, and a row of teasers over somebody's own
+   * progress is the page not noticing them. */
+  function unstarted() {
+    return !(state.words > 0) && !answered(kept()) && !state.decks.some(gathered);
+  }
+
+  function tasteCard(thing, what) {
+    /* Written out rather than looked up, so tools/validate.mjs sees all three. */
+    var lead = what === 'song' ? t('flashTasteSong') : what === 'lesson' ? t('flashTasteLesson') : t('flashTasteDeck');
+    return el('li', { className: 'flash-taste-item' }, [
+      TTBTrack.click(
+        inPage(el('a', { className: 'flash-taste-card', href: deckHref(thing.id) }, [
+          el('span', { className: 'flash-taste-kind mono',
+                       textContent: what === 'deck' ? deckName(thing) : means(thing.name) }),
+          el('span', { className: 'flash-taste-word', lang: 'et', textContent: thing.taste }),
+          el('span', { className: 'flash-taste-go mono', textContent: lead })
+        ]), thing.id),
+        'flash_taste', { deck_id: thing.id, what: what }
+      )
+    ]);
+  }
+
+  function tasteRow() {
+    var tasted = function (x) { return !!x.taste && !x.own; };
+    var decks = state.decks.filter(tasted);
+    var songs = state.songs.filter(tasted);
+    var lessons = state.lessons.filter(tasted);
+    /* Deck, song, deck, lesson, and round again, so the songs and the grammar
+       are within the first three cards rather than at the far end. */
+    var others = [];
+    for (var j = 0; j < Math.max(songs.length, lessons.length); j++) {
+      if (songs[j]) others.push(tasteCard(songs[j], 'song'));
+      if (lessons[j]) others.push(tasteCard(lessons[j], 'lesson'));
+    }
+    var ul = el('ul', { className: 'flash-taste-row' });
+    for (var i = 0; i < Math.max(decks.length, others.length); i++) {
+      if (decks[i]) ul.appendChild(tasteCard(decks[i], 'deck'));
+      if (others[i]) ul.appendChild(others[i]);
+    }
+    if (!ul.firstChild) return null;
+    return el('div', { className: 'flash-taste' }, [
+      el('h2', { className: 'lists-section', textContent: t('flashTasteHead') }),
+      el('p', { className: 'flash-taste-say', textContent: t('flashTasteSay') }),
+      ul
+    ]);
+  }
+
   /* The count itself, with the number set apart from the words around it: it
      is the thing the eye is meant to land on, and a figure in the middle of a
      sentence at the sentence's own size is a figure nobody sees.
@@ -1608,6 +1678,7 @@
       state.ready ? null : el('p', { className: 'lists-say', textContent: t('flashErrOff') })
     ];
 
+    if (unstarted()) kids.push(tasteRow());
     if (lifted.length) kids.push(deckList(lifted, true, 'flash-lifted'));
 
     if (!ours.length) {

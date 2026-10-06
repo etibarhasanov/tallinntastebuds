@@ -651,6 +651,101 @@
 .flash-shelf .menu-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .flash-shelf .menu-go { margin-left: 0; }
 
+/* ---------- Start here ----------
+
+   The row of tastes across the top of the shelf for somebody who has not
+   started — tasteRow() in assets/flashcard.js says why it is there. Each is a
+   card in the flashcard's own paper and display face, so it reads as the thing
+   the page does rather than another tile about it. No shadow: the row clips
+   what it scrolls, and a shadow cut off at its edge drew a pale box round it.
+
+   A row that scrolls sideways and snaps a card at a time, run out to the
+   section's edges so the cards slide in from beyond it, and each narrower
+   than the screen, so the next one is cut off at the right: what says "there
+   is more this way" without an arrow to say it. `pan-x` is also what tells
+   assets/back.js that a sideways finger here is the row's and not Back. */
+.flash-taste { display: flex; flex-direction: column; gap: 10px; }
+.flash-taste .lists-section { margin: 6px 0 0; }
+.flash-taste-say {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.flash-taste-row {
+  --taste-bleed: 22px;
+  display: flex;
+  gap: 10px;
+  margin: 0 calc(-1 * var(--taste-bleed));
+  padding: 4px var(--taste-bleed) 14px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--taste-bleed);
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+.flash-taste-row::-webkit-scrollbar { display: none; }
+.flash-taste-item {
+  flex: 0 0 auto;
+  width: min(72%, 240px);
+  scroll-snap-align: start;
+}
+.flash-taste-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 168px;
+  box-sizing: border-box;
+  padding: 14px 16px 15px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color .15s var(--ease), transform .15s var(--ease);
+}
+.flash-taste-card:hover { border-color: var(--accent); }
+.flash-taste-card:active { transform: scale(.98); }
+.flash-taste-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.flash-taste-kind {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* The Estonian, which is the card: the front's face at a size three lines of
+   it fit in, and pushed to the middle of whatever height the row settles on. */
+.flash-taste-word {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-family: var(--display);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.flash-taste-go {
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--accent);
+}
+.flash-taste-go::after { content: ' \2192'; }
+
+@media (max-width: 560px) {
+  .flash-taste-row { --taste-bleed: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-taste-card { transition: none; }
+  .flash-taste-card:active { transform: none; }
+}
+
 /* The line under a deck's name, which on this page is a sentence of prose:
    "The words a day in Tallinn opens and closes with". .menu-why holds the same
    position in the account sheet and is mono at 11px, which is right for
