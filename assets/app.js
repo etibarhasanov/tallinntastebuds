@@ -2160,7 +2160,7 @@
         paintSave();
         /* The list is built with the counts in it, so a list already on screen
            when they land is a list without them. Rebuilt rather than patched:
-           it is seventy-four rows once, on a request that has already been
+           it is seventy-eight rows once, on a request that has already been
            made, and patching would mean threading the number back through
            every row that might be showing it. */
         if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();

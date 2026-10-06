@@ -3983,7 +3983,7 @@
   /* ------------------------------------------------- adding a place
    * The place neither roll has.
    *
-   * The picker searches about eleven hundred places — my seventy-five and the
+   * The picker searches about eleven hundred places — my seventy-eight and the
    * Google export behind /api/places — and between them they still miss
    * things: somewhere that opened last month, somewhere Google files as not a
    * restaurant. Before this, the answer to "it is not in the list" was nothing

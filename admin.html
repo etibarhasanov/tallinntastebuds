@@ -1619,7 +1619,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       state.places = places;
       clear(placeIn);
       placeIn.appendChild(el('option', { value: '', textContent: 'Choose a place…' }));
-      /* Second, above seventy-five names, because it is the choice somebody
+      /* Second, above the seventy-one open places, because it is the choice somebody
          scrolling for a place they are not going to find wants first. */
       placeIn.appendChild(el('option', { value: NO_PLACE, textContent: 'Nowhere in particular' }));
       places.forEach(function (pl) {

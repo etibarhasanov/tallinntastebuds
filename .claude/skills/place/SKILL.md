@@ -137,16 +137,18 @@ its pin can land on the wrong side of the street. What it does, in order:
 6. `node tools/validate.mjs`. Read the warnings on the new place; most are
    honest, and `TODO` in a blurb reaches visitors.
 7. **The counts.** The README says in prose how many places carry
-   `restaurant` and `laptop` — "29 of the 75", "8 of the 75" — and names the
+   `restaurant` and `laptop` — "31 of the 78", "8 of the 78" — and names the
    closed places by name in **Close a place instead of deleting it**. `grep
    -n 'of the 7' README.md` and move each one. The total is also spelled out
-   in words — "seventy-four" in the files written before the last place,
-   "seventy-five" in the ones written since — across the README, the
-   scripts, the Functions and the header of `tools/places.mjs`. This finds
+   in words — "seventy-eight" today; a "seventy-four" or "seventy-five" is a
+   file written before the last sweep — across the README, the scripts, the
+   Functions and the header of `tools/places.mjs`. A comment in an `assets/`
+   file that is not one of the lean pair costs every page a new `?v=` stamp,
+   so those move only with a change that was going there anyway. This finds
    every copy:
 
    ```
-   grep -rn 'seventy-f' --include=*.md --include=*.js --include=*.mjs .
+   grep -rn 'seventy-' --include=*.md --include=*.js --include=*.mjs --include=*.html .
    ```
 
    Moving them all is a sweep of its own, so fix the ones in any file you
