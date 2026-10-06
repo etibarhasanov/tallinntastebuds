@@ -882,6 +882,9 @@
            Save of its own and none of them showing the page; see "Your page"
            in README.md. */
         door('editDoor', t('editDoorWhy'), '/edit', 'edit_open'),
+        /* What you have written for the blog, and the way to write more —
+           /write. See "Everybody's posts" under "The blog" in README.md. */
+        door('writeTitle', t('writeDoorWhy'), '/write', 'write_open'),
         /* How that page is doing, on /insights — and the one number worth
            having without opening it, as the row's own second line. */
         door('insightsTitle', insightsWhy(), '/insights', 'insights_open', { views: state.views || 0 })

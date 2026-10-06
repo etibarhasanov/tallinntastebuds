@@ -8,9 +8,19 @@
  *
  * WHAT IT IS MADE OF
  *
- * data/blog.json and nothing else — no endpoint, no database, no build step.
- * functions/blog.js serves the page, but only to write its head and its text
- * for a crawler; nothing here waits on it.
+ * The house's posts are data/blog.json — no endpoint, no database, no build
+ * step. Everybody else's are the posts members write on /write, read from
+ * /api/posts a page at a time (functions/api/posts.js); the index draws them
+ * first with Show more under them, ?post= opens one of either kind, and
+ * ?by=<name> is one person's. A route that does not answer is a blog of the
+ * house's notes. functions/blog.js serves the page, but only to write its
+ * head and its text for a crawler; nothing here waits on it.
+ *
+ * A member's post is blocks rather than paragraphs — headings, quotes,
+ * lists, a divider, links off the site and places on the map as cards — and
+ * blocks() below draws them as text, never as HTML: what a post may hold is
+ * functions/api/_posts.js, and **Everybody's posts** under **The blog** in
+ * README.md.
  * Two states, the index and one post, decided by ?post=<id> and built into
  * the one <main> in blog.html, which is how lists.html and account.html are
  * put together too. Walking between them is pushState rather than a fresh
@@ -77,6 +87,14 @@
   var LANG_URL = '/data/lang/';
   var POSTS_URL = '/data/blog.json';
 
+  /* Everybody else's: the posts members write on /write, out of the
+     database a page at a time — functions/api/posts.js. Nothing here waits
+     on it: an answer that does not come is a blog of the house's notes, which
+     is what it always was. The places a post's cards name are read out of
+     the map's own file the first time a post has one. */
+  var MEMBERS_API = '/api/posts';
+  var MAP_URL = '/data/map.json';
+
   /* Where the clips are, and what the four files for one post are called.
      The id is the whole of the name: a post and its pictures cannot drift
      apart if there is nothing to keep in step. */
@@ -92,8 +110,14 @@
     ui: {},
     lang: DEFAULT_LANG,
     posts: [],      // newest first
-    open: null,     // the post being read, or null on the index
-    missing: false  // ?post= named one that is not here any more
+    open: null,     // the house's post being read, or null
+    missing: false, // ?post= named one that is not here any more
+    members: { posts: [], next: null },  // everybody's, newest first, paged
+    member: null,   // a member's post being read, whole, or null
+    readIn: null,   // which of its languages it is being read in
+    names: {},      // every language the site has, code → its own name
+    author: null,   // ?by=: { name, posts, next }
+    places: null    // the map's places by id, once a post has needed them
   };
 
   var toastTimer = null;
@@ -396,6 +420,12 @@
     ]);
   }
 
+  /* The index: everybody's posts, newest first, a page at a time — or the
+     line inviting the first one — and under them the house's notes. The
+     members' come first because they are what changes: the house's notes are
+     two dozen rows that are the same on every visit, and a post written this
+     morning under them is a post nobody scrolls far enough to find. A
+     member's post is a row like the house's, with a byline. */
   function renderIndex() {
     return [
       el('header', { className: 'blog-head' }, [
@@ -404,10 +434,45 @@
         el('p', { className: 'blog-lead', textContent: t('blogLead') })
       ]),
       state.missing ? el('p', { className: 'blog-note', textContent: t('blogMissing') }) : null,
+      el('h2', { className: 'lists-section blog-section' }, [t('blogMembers')]),
+      memberCard(state.members, function () {
+        return loadMembers(state.members, '').then(render);
+      }),
+      el('h2', { className: 'lists-section blog-section' }, [t('blogHouse')]),
       el('div', { className: 'card lists-card' }, [
         el('ul', { className: 'menu blog-posts' }, state.posts.map(row))
       ])
     ];
+  }
+
+  /* A card of members' posts with Show more under it, or the line that
+     says there are none yet with the way to write one. */
+  function memberCard(page, more) {
+    if (!page.posts.length) {
+      return el('div', { className: 'card lists-card' }, [
+        el('p', { className: 'lists-say', textContent: t('blogMembersNone') }),
+        el('p', { className: 'lists-row lists-foot' }, [writeLink('go')])
+      ]);
+    }
+    var button = null;
+    if (page.next) {
+      button = el('button', { type: 'button', className: 'alt', textContent: t('blogMore') });
+      button.addEventListener('click', function () {
+        button.disabled = true;
+        TTBTrack.event('blog_more');
+        more();
+      });
+    }
+    return el('div', { className: 'card lists-card' }, [
+      el('ul', { className: 'menu blog-posts' }, page.posts.map(memberRow)),
+      button ? el('p', { className: 'blog-more' }, [button]) : null,
+      el('p', { className: 'lists-row lists-foot' }, [writeLink('alt')])
+    ]);
+  }
+
+  /* The way to /write, from the index and from under a post. */
+  function writeLink(className) {
+    return TTBTrack.click(el('a', { className: className, href: '/write', textContent: t('blogWriteYours') }), 'blog_write');
   }
 
   function renderPost(post) {
@@ -443,18 +508,29 @@
      before. */
   function render() {
     var post = state.open;
+    var member = state.member;
+    var author = state.author;
 
     clear(main);
     main.appendChild(el('div', { className: 'lists-stack' },
-      post ? renderPost(post) : renderIndex()));
+      member ? renderMember(member)
+        : post ? renderPost(post)
+        : author ? renderAuthor(author)
+        : renderIndex()));
 
-    document.title = post ? say(post.title) + ' | Tallinn Tastebuds' : t('blogDocumentTitle');
+    document.title = member ? memberText(member).title + ' | Tallinn Tastebuds'
+      : post ? say(post.title) + ' | Tallinn Tastebuds'
+      : author ? t('blogByTitle', { name: author.name }) + ' | Tallinn Tastebuds'
+      : t('blogDocumentTitle');
 
     /* The address this page currently is, said to a crawler as well as shown
        in the bar. Written on every draw rather than only on a post, or coming
        back to the index would leave the last post's canonical standing. */
     var canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', window.location.origin + (post ? postHref(post) : PAGE));
+    if (canonical) {
+      canonical.setAttribute('href', window.location.origin +
+        (member ? memberHref(member) : post ? postHref(post) : author ? byHref(author.name) : PAGE));
+    }
 
     /* And which post is being read, for the site's own count — on arrival,
        on a walk and on Back alike, which are the three ways here, and once a
@@ -469,28 +545,265 @@
      changes with them, and the radio goes on playing because the document
      was never torn down. */
   function go(post) {
-    state.open = post;
-    state.missing = false;
-    window.history.pushState({ post: post ? post.id : '' }, '', post ? postHref(post) : PAGE);
-    render();
-    window.scrollTo(0, 0);
-    main.focus();
-    TTBTrack.view(document.title);
-    if (post) TTBTrack.event('blog_post', { post: post.id });
+    walk(post ? postHref(post) : PAGE).then(function () {
+      if (post) TTBTrack.event('blog_post', { post: post.id });
+    });
   }
 
+  /* Walking to an address on this page: the address first, then whatever it
+     names read — out of memory for the house's, from the route for a
+     member's — then drawn. */
+  function walk(href) {
+    window.history.pushState({}, '', href);
+    return readUrl().then(function () {
+      render();
+      window.scrollTo(0, 0);
+      main.focus();
+      TTBTrack.view(document.title);
+    });
+  }
+
+  /* What the address names, read into state. A promise, because a member's
+     post and a member's page of posts are a request away. */
   function readUrl() {
-    var id = new URLSearchParams(window.location.search).get('post');
-    if (!id) {
-      state.open = null;
-      state.missing = false;
-      return;
+    var q = new URLSearchParams(window.location.search);
+    var id = q.get('post');
+    var by = q.get('by');
+    state.open = null;
+    state.member = null;
+    state.author = null;
+    state.missing = false;
+
+    if (by) {
+      var author = { name: by, posts: [], next: null };
+      return loadMembers(author, '&by=' + encodeURIComponent(by)).then(function () {
+        state.author = author;
+      });
     }
-    /* A post that is not here any more: the index, with the sentence saying
-       so over it, rather than an empty page or a 404 from a static host that
-       would never have been asked for this address in the first place. */
+    if (!id) return Promise.resolve();
+
     state.open = findPost(id);
-    state.missing = !state.open;
+    if (state.open) return Promise.resolve();
+
+    /* Not the house's: perhaps a member's. A post that is neither is the
+       index, with the sentence saying so over it, rather than an empty page
+       or a 404 from a static host that would never have been asked for this
+       address in the first place. */
+    return Promise.all([fetchJSON(MEMBERS_API + '?id=' + encodeURIComponent(id)), loadPlaces()])
+      .then(function (got) {
+        var post = got[0] && got[0].post;
+        if (!post) { state.missing = true; return; }
+        state.member = post;
+        state.readIn = post.texts[state.lang] ? state.lang : post.lang;
+      });
+  }
+
+  /* ------------------------------------------------------- members' posts */
+
+  /* JSON or null: every answer from the route is optional. */
+  function fetchJSON(url) {
+    return fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  /* The next page of a list of members' posts — everybody's, or one
+     person's with `query` — appended to `page`. */
+  function loadMembers(page, query) {
+    var url = MEMBERS_API + '?' + (query ? query.slice(1) : '') +
+      (page.next ? (query ? '&' : '') + 'before=' + encodeURIComponent(page.next) : '');
+    return fetchJSON(url).then(function (out) {
+      if (!out) return;
+      page.posts = page.posts.concat(out.posts || []);
+      page.next = out.next || null;
+    });
+  }
+
+  function loadPlaces() {
+    if (state.places) return Promise.resolve(state.places);
+    return fetchJSON(MAP_URL).then(function (list) {
+      state.places = {};
+      (list || []).forEach(function (p) { if (p && p.id) state.places[p.id] = p; });
+      return state.places;
+    });
+  }
+
+  function memberHref(post) { return PAGE + '?post=' + encodeURIComponent(post.id); }
+  function byHref(name) { return PAGE + '?by=' + encodeURIComponent(name); }
+
+  /* The language of a member's post being read: the one picked on its
+     pills, else the reader's own where it was written in it, else the one it
+     was first written in. A row on the index has no pills and takes the
+     second. */
+  function memberText(post) {
+    return post.texts[state.member === post && state.readIn] ||
+      post.texts[state.lang] || post.texts[post.lang] || { title: '', standfirst: '' };
+  }
+
+  /* "by etibar", with the name a link to their profile — wherever the
+     language puts the name in the sentence. */
+  function byline(post) {
+    var around = t('blogBy', { name: '\u0000' }).split('\u0000');
+    return el('p', { className: 'blog-by' }, [
+      around[0],
+      TTBTrack.click(el('a', { href: '/u/' + encodeURIComponent(post.author), textContent: post.author }),
+        'blog_author', { name: post.author }),
+      around[1] || ''
+    ]);
+  }
+
+  function minutes(post) {
+    var words = (memberText(post).words) || 0;
+    return t('blogMinutes', { n: Math.max(1, Math.round(words / 220)) });
+  }
+
+  function memberWhen(post) {
+    return el('time', { className: 'eyebrow blog-when', datetime: new Date(post.at).toISOString().slice(0, 10) },
+      [formatDate(new Date(post.at).toISOString().slice(0, 10)) + ' · ' + minutes(post)]);
+  }
+
+  /* A member's post as a row: the house's row, with who wrote it under the
+     title. */
+  function memberRow(post) {
+    var text = memberText(post);
+    var link = el('a', { className: 'menu-row blog-row', href: memberHref(post) }, [
+      el('span', { className: 'menu-say' }, [
+        memberWhen(post),
+        el('span', { className: 'menu-name', textContent: text.title }),
+        text.standfirst ? el('span', { className: 'blog-say', textContent: text.standfirst }) : null,
+        el('span', { className: 'menu-why', textContent: t('blogBy', { name: post.author }) })
+      ]),
+      chevron()
+    ]);
+    link.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      walk(memberHref(post)).then(function () {
+        TTBTrack.event('blog_member', { post: post.id });
+      });
+    });
+    return el('li', { className: 'menu-item' }, [link]);
+  }
+
+  /* A run of a member's words, bold, italic and linked as they wrote it. A
+     link off the site opens beside this one and carries no weight from it:
+     the writer chose it, the site did not. */
+  function runs(list, post) {
+    return list.map(function (r) {
+      var parts = String(r.t).split('\n');
+      var node = document.createDocumentFragment();
+      parts.forEach(function (part, i) {
+        if (i) node.appendChild(el('br'));
+        if (part) node.appendChild(document.createTextNode(part));
+      });
+      if (r.b) node = el('strong', {}, [node]);
+      if (r.i) node = el('em', {}, [node]);
+      if (r.a) {
+        var away = r.a.charAt(0) !== '/';
+        node = TTBTrack.click(el('a', away
+          ? { href: r.a, target: '_blank', rel: 'nofollow ugc noopener' }
+          : { href: r.a }, [node]), 'blog_link', { post: post.id, to: r.a });
+      }
+      return node;
+    });
+  }
+
+  function placeBlock(id) {
+    var p = state.places && state.places[id];
+    if (!p) return null;
+    return el('div', { className: 'blog-place' }, [
+      TTBTrack.click(el('a', { className: 'menu-row', href: '/?spot=' + encodeURIComponent(id) }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', textContent: p.name }),
+          el('span', { className: 'menu-why', textContent: p.address || t('blogOnMap') })
+        ]),
+        chevron()
+      ]), 'blog_place', { place: id })
+    ]);
+  }
+
+  function blocks(list, post) {
+    return (list || []).map(function (b) {
+      if (b.k === 'p') return el('p', {}, runs(b.r, post));
+      if (b.k === 'h2') return el('h2', {}, runs(b.r, post));
+      if (b.k === 'h3') return el('h3', {}, runs(b.r, post));
+      if (b.k === 'quote') return el('blockquote', {}, [el('p', {}, runs(b.r, post))]);
+      if (b.k === 'ul' || b.k === 'ol') {
+        return el(b.k, {}, b.li.map(function (item) { return el('li', {}, runs(item, post)); }));
+      }
+      if (b.k === 'hr') return el('hr');
+      if (b.k === 'place') return placeBlock(b.id);
+      return null;
+    });
+  }
+
+  /* The languages it is written in, as a segment, when it is more than one. */
+  function readPills(post) {
+    var codes = Object.keys(post.texts);
+    if (codes.length < 2) return null;
+    var seg = el('div', { className: 'lists-seg blog-langs', role: 'group', 'aria-label': t('blogReadIn') });
+    codes.forEach(function (code) {
+      var on = code === state.readIn;
+      var b = el('button', { type: 'button', className: 'lists-seg-opt' + (on ? ' is-on' : ''),
+        'aria-pressed': on ? 'true' : 'false', lang: code, textContent: state.names[code] || code });
+      b.addEventListener('click', function () {
+        state.readIn = code;
+        TTBTrack.event('blog_read_in', { lang: code });
+        render();
+      });
+      seg.appendChild(b);
+    });
+    return seg;
+  }
+
+  function renderMember(post) {
+    var text = memberText(post);
+    var own = !!post.texts[state.lang];
+    return [
+      el('p', { className: 'blog-crumb' }, [TTBTrack.click(
+        walks(el('a', { className: 'alt', href: PAGE, textContent: t('blogAll') }), null),
+        'blog_all'
+      )]),
+      el('article', { className: 'card lists-card blog-post', lang: state.readIn }, [
+        memberWhen(post),
+        byline(post),
+        el('h1', { className: 'blog-title', textContent: text.title }),
+        text.standfirst ? el('p', { className: 'blog-lead', textContent: text.standfirst }) : null,
+        post.status !== 'published' ? el('p', { className: 'blog-note', textContent: t('blogDraft') }) : null,
+        own ? null : el('p', { className: 'blog-note', textContent: t('blogNotYours') }),
+        readPills(post),
+        el('div', { className: 'blog-body' }, blocks(text.body, post)),
+        el('p', { className: 'lists-row blog-after' }, [
+          TTBTrack.click(el('a', { className: 'go', href: byHref(post.author),
+            textContent: t('blogMoreBy', { name: post.author }) }), 'blog_more_by', { name: post.author }),
+          post.mine ? TTBTrack.click(el('a', { className: 'alt', href: '/write?post=' + encodeURIComponent(post.id),
+            textContent: t('blogEdit') }), 'blog_edit') : null
+        ])
+      ])
+    ];
+  }
+
+  /* ?by=<name>: one person's posts, a page at a time, under their name. */
+  function renderAuthor(author) {
+    return [
+      el('p', { className: 'blog-crumb' }, [TTBTrack.click(
+        walks(el('a', { className: 'alt', href: PAGE, textContent: t('blogAll') }), null),
+        'blog_all'
+      )]),
+      el('header', { className: 'blog-head' }, [
+        el('p', { className: 'eyebrow', textContent: t('blogTitle') }),
+        el('h1', { className: 'blog-title', textContent: t('blogByTitle', { name: author.name }) }),
+        el('p', { className: 'blog-lead' }, [
+          TTBTrack.click(el('a', { className: 'alt', href: '/u/' + encodeURIComponent(author.name),
+            textContent: t('profileEyebrow') }), 'blog_author', { name: author.name })
+        ])
+      ]),
+      author.posts.length
+        ? memberCard(author, function () {
+            return loadMembers(author, '&by=' + encodeURIComponent(author.name)).then(render);
+          })
+        : el('p', { className: 'lists-none', textContent: t('blogByNone', { name: author.name }) })
+    ];
   }
 
   /* ------------------------------------------------------------------ radio
@@ -520,13 +833,14 @@
     var words = getJSON(LANGS_URL).then(function (names) {
       var lang = pickLanguage(Object.keys(names));
       return getJSON(LANG_URL + lang + '.json').then(function (pack) {
-        return { lang: lang, ui: pack.ui };
+        return { lang: lang, ui: pack.ui, names: names };
       });
     });
 
-    Promise.all([words, getJSON(POSTS_URL)]).then(function (answers) {
+    Promise.all([words, getJSON(POSTS_URL), loadMembers(state.members, '')]).then(function (answers) {
       state.ui = answers[0].ui;
       state.lang = answers[0].lang;
+      state.names = answers[0].names;
       applyStaticStrings();
 
       /* Newest first, and sorted here rather than trusted from the file: the
@@ -536,12 +850,13 @@
         return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
       });
 
-      readUrl();
-      render();
-      /* The tag counted this address as the document loaded, post and all, so
-         only the walks from here are ours to report. */
-      TTBTrack.seen();
-      mountRadio();
+      return readUrl().then(function () {
+        render();
+        /* The tag counted this address as the document loaded, post and all, so
+           only the walks from here are ours to report. */
+        TTBTrack.seen();
+        mountRadio();
+      });
     }).catch(function (err) {
       /* Whatever went wrong, the reader gets a sentence rather than an empty
          page. In English and written out rather than through t(), because the
@@ -559,9 +874,10 @@
     });
 
     window.addEventListener('popstate', function () {
-      readUrl();
-      render();
-      TTBTrack.view(document.title);
+      readUrl().then(function () {
+        render();
+        TTBTrack.view(document.title);
+      });
     });
   }
 

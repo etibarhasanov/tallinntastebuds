@@ -1925,3 +1925,51 @@ CREATE TABLE IF NOT EXISTS chess_asks (
   -- One row a person a kind: a second press on Agree is refused by the key.
   PRIMARY KEY (game, kind, by_kind, by_id)
 );
+
+-- ---------------------------------------------------------------- posts
+-- The blog members write. One row a post, and one row a language it is
+-- written in: a post is somebody's, in the language they first wrote it in
+-- (`lang`), and any of the site's other nine they add beside it. The page
+-- reads the reader's own where there is one and the first one where there is
+-- not. **Everybody's posts** under **The blog** in README.md; the route is
+-- functions/api/posts.js and the caps are at the top of functions/api/_posts.js.
+CREATE TABLE IF NOT EXISTS posts (
+  -- A slug out of the first title and four hex characters after it, so two
+  -- posts called "My ten places" are two addresses. Never changes once made:
+  -- it is what /blog?post= names and what a search engine filed.
+  id           TEXT    PRIMARY KEY,
+  -- users.id.
+  owner        INTEGER NOT NULL,
+  -- The language it was first written in, one of the site's ten.
+  lang         TEXT    NOT NULL,
+  -- 'draft' or 'published'. A draft is read by its owner and nobody else.
+  status       TEXT    NOT NULL DEFAULT 'draft',
+  created_at   INTEGER NOT NULL,
+  updated_at   INTEGER NOT NULL,
+  -- When it was first published, and kept through a trip back to draft, so
+  -- taking a post down to fix a typo does not move it to the top of the blog.
+  published_at INTEGER
+);
+-- The blog's index, newest first, a page at a time.
+CREATE INDEX IF NOT EXISTS idx_posts_published ON posts (status, published_at DESC, id DESC);
+-- One person's posts: their profile, and their own list on /write.
+CREATE INDEX IF NOT EXISTS idx_posts_owner ON posts (owner, status, published_at DESC);
+
+CREATE TABLE IF NOT EXISTS post_texts (
+  -- posts.id.
+  post       TEXT    NOT NULL,
+  lang       TEXT    NOT NULL,
+  -- Up to MAX_TITLE and MAX_LEAD in functions/api/_posts.js.
+  title      TEXT    NOT NULL,
+  standfirst TEXT    NOT NULL DEFAULT '',
+  -- The body as JSON: an array of blocks — paragraphs, two sizes of heading,
+  -- quotes, lists, a divider and a place on the map — each paragraph a run of
+  -- text that may be bold, italic or a link. Never HTML: cleanBody() in
+  -- functions/api/_posts.js builds it from what the editor sends and keeps
+  -- nothing it does not know, and both the page and the route draw it as
+  -- text. Up to MAX_BODY characters of words.
+  body       TEXT    NOT NULL,
+  -- Words in it, for "4 min read" without parsing the body on every list.
+  words      INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (post, lang)
+);

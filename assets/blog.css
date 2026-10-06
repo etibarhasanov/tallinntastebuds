@@ -132,6 +132,99 @@
 
 .blog-body p:last-child { margin-bottom: 0; }
 
+/* ---------- what a member's post may hold ----------
+
+   The house's posts are paragraphs and nothing else. A post somebody writes
+   on /write may hold two sizes of heading, a quote, a list, a divider and a
+   place on the map — the blocks functions/api/_posts.js describes — and the
+   rules for them are here rather than in assets/write.css because the editor
+   loads this file too: what the writer types into is the post. */
+.blog-body h2,
+.blog-body h3 {
+  margin: 30px 0 10px;
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.blog-body h2 { font-size: 23px; }
+.blog-body h3 { font-size: 19px; }
+.blog-body > :first-child { margin-top: 0; }
+
+.blog-body blockquote {
+  margin: 0 0 16px;
+  padding: 2px 0 2px 18px;
+  border-left: 3px solid var(--accent);
+  font-family: var(--body);
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.blog-body blockquote p { margin: 0; font-size: inherit; }
+
+.blog-body ul,
+.blog-body ol {
+  list-style: disc;
+  margin: 0 0 16px;
+  padding-left: 24px;
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.68;
+  color: var(--ink);
+}
+.blog-body ol { list-style: decimal; }
+.blog-body li { margin: 0 0 6px; }
+.blog-body li::marker { color: var(--muted); }
+
+.blog-body hr {
+  margin: 28px auto;
+  width: 64px;
+  border: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.blog-body a { color: var(--accent); text-underline-offset: 3px; }
+.blog-body a:hover { color: var(--accent-lit); }
+
+/* A place on the map, as a card in the middle of the words: the row the
+   account sheet draws a way-on in, framed, with the name, where it is, and
+   the chevron that says it goes somewhere. */
+.blog-place {
+  margin: 0 0 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--wash);
+}
+.blog-place .menu-row { padding: 12px 14px; border: 0; }
+.blog-place .menu-name { font-size: 16px; }
+
+/* Who wrote it, under the date: a member's post is theirs, and says so
+   where a byline goes. Their name is the way to their profile. */
+.blog-by {
+  margin: 0 0 4px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+.blog-by a { color: var(--ink); text-underline-offset: 3px; }
+
+/* The languages a member's post is written in, when it is more than one: a
+   segment of pills under the standfirst, the reading one filled. */
+.blog-langs { margin: 14px 0 0; }
+
+/* Under a member's post: more by the same person, and, for the person
+   themselves, the way back to the editor. */
+.blog-after { margin: 22px 0 0; }
+
+/* The house's notes and everybody else's, each under a quiet heading of its
+   own on the index, and the button under the rows that brings the next
+   page. */
+.blog-section { margin: 10px 2px -6px; }
+.blog-more { margin: 10px 0 0; text-align: center; }
+
 /* The two things this page has to say for itself, drawn the same way because
    they are the same kind of sentence: on a post, that it was written in
    English and the reader asked for another language; on the index, that the

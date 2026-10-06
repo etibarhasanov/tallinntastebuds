@@ -75,7 +75,7 @@
     {
       "id": "member",
       "name": "A member, signed in",
-      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, and splitwise and flashcards (each drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
+      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and splitwise and flashcards (each drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
       "lanes": [
         { "id": "member", "name": "Member" }
       ],
@@ -104,6 +104,9 @@
         {"id": "edit-page", "type": "user", "lane": "member", "name": "Edits the page under their name", "when": ["page:edit"], "note": "A line about themselves, three handles, the languages they speak, a page of links with their public lists among it in the order they drag them — the line and the links in as many of the site's languages as they write them in.", "ref": ["edit.html", "assets/edit.js"]},
         {"id": "page-saved", "type": "service", "lane": "member", "name": "Stores the page", "when": ["edit_save"], "ref": ["functions/api/account.js POST display, about, lines, links, speaks, rows"]},
         {"id": "page-done", "type": "end", "lane": "member", "name": "Profile up to date"},
+        {"id": "write", "type": "user", "lane": "member", "name": "Writes a post for the blog", "when": ["page:write"], "note": "Headings, bold, links, lists, quotes and places from the map, in as many of the site's languages as they write it in. A draft until they publish it; 20,000 characters, 10 new a day, 200 in all.", "ref": ["write.html", "assets/write.js"]},
+        {"id": "post-saved", "type": "service", "lane": "member", "name": "Stores it, a draft or published", "when": ["write_publish"], "ref": ["functions/api/posts.js POST save, delete"]},
+        {"id": "post-live", "type": "end", "lane": "member", "name": "On /blog and their profile"},
         {"id": "insights", "type": "user", "lane": "member", "name": "Reads who opened it and their lists", "when": ["page:insights"], "ref": ["insights.html", "assets/insights.js"]},
         {"id": "views", "type": "service", "lane": "member", "name": "Counts views of their own page and lists", "ref": ["functions/api/insights.js GET"]},
         {"id": "insights-done", "type": "end", "lane": "member", "name": "Knows who looked"},
@@ -141,6 +144,9 @@
         ["account-what", "edit-page", "their page"],
         ["edit-page", "page-saved"],
         ["page-saved", "page-done"],
+        ["account-what", "write", "write a post"],
+        ["write", "post-saved"],
+        ["post-saved", "post-live"],
         ["account-what", "insights", "insights"],
         ["insights", "views"],
         ["views", "insights-done"],

@@ -2379,3 +2379,13 @@ body.has-scrim { overflow: hidden; }
   border: 1px solid var(--hairline);
   box-shadow: var(--lift);
 }
+
+/* ---------- a profile's posts ----------
+
+   The posts somebody wrote for the blog, under their lists — profilePosts()
+   in assets/lists.js. Rows out of the map's stylesheet in a card of this
+   one's; the only thing to add is room above the heading, and on the page
+   of links, a width and alignment that match the rows over it. */
+.lists-posts { display: flex; flex-direction: column; gap: 14px; }
+.lists-posts[hidden] { display: none; }
+.is-page .lists-posts { text-align: left; }

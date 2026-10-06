@@ -475,6 +475,7 @@ export const PAGES = [
   { id: 'split', label: 'visitorsPageSplit', paths: ['/split', '/split.html'], host: 'splitwise.' },
   { id: 'account', label: 'accountOpen', paths: ['/account', '/account.html'] },
   { id: 'edit', label: 'visitorsPageEdit', paths: ['/edit', '/edit.html'] },
+  { id: 'write', label: 'writeTitle', paths: ['/write', '/write.html'] },
   { id: 'insights', label: 'insightsTitle', paths: ['/insights', '/insights.html'] },
   { id: 'feedback', label: 'feedbackTitle', paths: ['/feedback', '/feedback.html'] },
   { id: 'deal', label: 'passTitle', paths: ['/deal', '/deal.html'] },

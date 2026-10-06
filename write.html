@@ -3,17 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your page | Tallinn Tastebuds</title>
-<meta name="description" content="Build the page of links under your name, with the page itself beside you as you type.">
+<title>Your posts | Tallinn Tastebuds</title>
+<meta name="description" content="Write a post for the blog: about the places you love in Tallinn, in any of the site's languages.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
 <!-- Analytics: Google and Microsoft Clarity, both from one file. The same tag
-     account.html carries, written from the root for the same reason. -->
+     account.html carries, written from the root for the same reason. A draft
+     is somebody's writing before they chose to show it, so the editor box is
+     masked from the replays — see data-clarity-mask in assets/write.js. -->
 <script src="/assets/analytics.js?v=ff6f3c33" defer></script>
 
-<!-- One person's own page, behind a session cookie, the same as the account
-     page it is a door off: nothing to unfurl, nothing to index. _headers
+<!-- One person's own desk, behind a session cookie, the same as the account
+     page it is a door off: nothing to unfurl, nothing to index. What gets
+     indexed is the post once it is published, at /blog?post=<id>. _headers
      carries the noindex to match, and it is not in sitemap.xml. -->
 <meta name="robots" content="noindex, nofollow">
 
@@ -27,38 +30,40 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..600&amp;display=swap">
 
-<!-- The map's tokens and controls, and the lists page's furniture — the
-     header, the card, the field, and the page of links itself, which the
-     preview is drawn in so that it cannot look like anything but the page.
-     The editor's own few rules are at the foot of the lists stylesheet, under
-     "the editor", beside the page they are a picture of. -->
+<!-- The map's tokens and controls, the lists page's furniture — the header,
+     the card, the field — and the blog's prose, because the box a post is
+     written in is set in the type it will be read in: what the writer sees
+     is the post. The fourth file is the desk itself: the toolbar, the
+     language tabs and the place picker. -->
 <link rel="stylesheet" href="/assets/styles.css?v=4f6fd081">
 <link rel="stylesheet" href="/assets/lists.css?v=3b296f00">
+<link rel="stylesheet" href="/assets/blog.css?v=c34cf1e3">
+<link rel="stylesheet" href="/assets/write.css?v=e16737fc">
 </head>
-<body class="lists-body is-editor">
+<body class="lists-body">
 
-<a class="skip-link" href="#main" data-i18n="editSkip">Skip to your page</a>
+<a class="skip-link" href="#main" data-i18n="writeSkip">Skip to the editor</a>
 
 <header class="lists-brand">
   <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
     <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
-  <!-- The way to the page as everybody else sees it, once it is known whose
-       page this is. assets/edit.js fills in the address. -->
-  <a class="lists-who" id="edit-view" href="/account.html" data-track="edit_view" data-i18n="editView" hidden>View your page</a>
+  <!-- The blog as everybody reads it. -->
+  <a class="lists-who" href="/blog" data-track="write_blog" data-i18n="blogTitle">Notes on the map</a>
 </header>
 
-<!-- Signed in, signed out, and accounts switched off are all built by
-     assets/edit.js into this one element, once every answer is in. -->
-<main class="lists-main is-wide" id="main" tabindex="-1"></main>
+<!-- Your posts, one post open in the editor, signed out, and accounts
+     switched off are all built by assets/write.js into this one element,
+     once every answer is in. -->
+<main class="lists-main" id="main" tabindex="-1"></main>
 
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <noscript>
   <div class="noscript card">
-    <p class="eyebrow">Your page</p>
-    <h2>Your page</h2>
+    <p class="eyebrow">Your posts</p>
+    <h2>Your posts</h2>
     <p>This page is an editor, and an editor takes JavaScript. The map works
       rather better than this page does without it — <a href="/">it is over
       here</a>.</p>
@@ -73,11 +78,6 @@
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
 <script src="/assets/back.js?v=bd40e788" defer></script>
-<!-- The three sites a profile links to, and the page of links under them:
-     the same two files the profile draws itself with, so the preview is the
-     profile's own drawing rather than a copy of it. -->
-<script src="/assets/links.js?v=12ac3050" defer></script>
-<script src="/assets/rows.js?v=6f61d40e" defer></script>
-<script src="/assets/edit.js?v=17793372" defer></script>
+<script src="/assets/write.js?v=27a1fd90" defer></script>
 </body>
 </html>
