@@ -10131,6 +10131,16 @@ and — on the 772 cards that have one — **The sentence**. The S key says the
 same thing the last of them would. A second press on the one that is sounding
 stops it, and the speaker turns into the square that says so.
 
+**And in a grammar lesson, everything Estonian.** Each sentence under a
+paradigm has the same speaker at the end of its line that a song's line has,
+and each form in the paradigm itself is a press — underlined dotted the way a
+word in a song is, solid in the accent while it sounds — that says that form.
+A paradigm is where *leib*, *leiva* and *leiba* stand side by side, and hearing
+the three differ is the lesson. A cell that holds two forms either side of a
+middle dot is asked for with a pause between them. The lessons were read in
+silence for the first weeks, until the owner asked for the sentences and then,
+in the same breath, the tables.
+
 A word read is half a word. *Leib* and *leiba* are one thing on the page and
 two in the mouth, *õ* is a vowel nobody reading this has heard before, and a
 sentence is the thing somebody will actually have to say out loud in a café.
@@ -10173,8 +10183,9 @@ characters a month where the whole shelf is 33,997, but it wants an Azure
 account and a key in the Pages settings, and it was left for later.
 
 **Only what is on a card.** The route speaks a string only if it is the front
-of a card in `data/decks.json` or the Estonian of a card's sentence, exactly,
-and answers anything else 404. An open text-to-speech proxy on a university's
+of a card in `data/decks.json`, the Estonian of a card's sentence, a sentence
+or a form out of a grammar lesson, or a line of a song, exactly, and answers
+anything else 404. An open text-to-speech proxy on a university's
 goodwill is the kind of thing that gets found and used, and this is how it is
 not one. It also means a deck somebody wrote has no voice: see **What it does
 not do**.
@@ -10323,7 +10334,9 @@ meet it. So after each paradigm, in all four lessons, comes a short run of
 sentences — *Võtmed on kotis*, *Kas maksate kaardiga?*, *Ma elasin varem
 Bakuus* — each with the form the table just showed standing in it, set where
 the rest of the site is set: the bus, the shop, the counter. Sixty-two of
-them, and they are mine like the rest.
+them, and they are mine like the rest. And said aloud in the plain sense too:
+every sentence has a speaker at the end of its line and every form in the
+table is a press that says it — **Hearing it** below.
 
 **The Estonian in them is mine**, like the rest of it: the forms in the tables
 are the cards' own, copied rather than retyped, and the sentences in the prose
@@ -10877,11 +10890,10 @@ built: **Undo** above.
 **And no voice for a deck you wrote, and one voice for the rest.** The
 route that speaks a card speaks only what `data/decks.json` says, so a deck
 somebody typed is read in silence: speaking it would mean saying whatever
-anybody chose, on a university's goodwill. The grammar lessons are read in
-silence too, for now — their Estonian is in prose and tables rather than on a
-card, and the route says only what is on one, or a line of a song. And it is Mari's voice alone —
+anybody chose, on a university's goodwill. And it is Mari's voice alone —
 **Hearing it** above says why a man's voice is a small change and not yet
-made.
+made. The Estonian quoted in italics inside a lesson's paragraphs is not
+spoken either: the forms and the sentences are, and a paragraph is read.
 
 **And no forms on a deck you wrote.** The three principal parts above are a
 field in `data/decks.json`, which is content the repository carries; a deck
@@ -14710,9 +14722,9 @@ functions/api/split.js     splitwise: a group, who is in it, what everybody
 functions/api/flashcard.js flashcards: the decks somebody wrote, which cards
                            each account knows, and which of the shipped ones
                            a reader has said is wrong
-functions/api/say.js       flashcards: a card's Estonian said aloud, by the
-                           University of Tartu's voice, kept in Cloudflare's
-                           cache and nowhere else
+functions/api/say.js       flashcards: a card's, a lesson's or a song's
+                           Estonian said aloud, by the University of Tartu's
+                           voice, kept in Cloudflare's cache and nowhere else
 functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
 functions/api/_lib.js      what those routes share (not a route: leading _)
@@ -17304,7 +17316,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_turn` | `deck_id` — the first card turned over in a load, and only the first: every turn after it is said by the answer that follows. Before it, a visitor who turned cards and answered none counted as a view with nothing pressed |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
-| `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
+| `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`/`lesson`/`form`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's, or a sentence or a paradigm form of a grammar lesson, when it is the lesson's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |

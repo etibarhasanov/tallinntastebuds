@@ -65,7 +65,9 @@
  * on into its deck rather than back to the shelf. A lesson is a tile
  * like a deck's and opens at the same kind of address, and what it opens to is
  * prose — paragraphs, small headings, a paradigm or two and the sentences that
- * use them — with one filled action at its foot, Got it, which marks it read and goes back to the shelf.
+ * use them, every form and every sentence a press that says it aloud — with
+ * one filled action at its foot, Got it, which marks it read and goes back to
+ * the shelf.
  * The mark is a known row under the deck id GRAMMAR below, written by the
  * same action a card is and kept in this tab the same way when there is no
  * account to write it to. lessonCard() is the whole of the drawing, and
@@ -2795,10 +2797,11 @@
 
   /* ------------------------------------------------------------ hearing it
    * The Estonian, said aloud: the word on the front, and on the back the word
-   * again and the sentence under it where the card has one. A word read is
-   * half a word — leib and leiba are one thing on the page and two in the
-   * mouth — and the people turning these over have mostly never heard any of
-   * them.
+   * again and the sentence under it where the card has one; in a grammar
+   * lesson, each sentence under a paradigm by the speaker beside it, and each
+   * form in the paradigm by pressing the form itself. A word read is half a
+   * word — leib and leiba are one thing on the page and two in the mouth —
+   * and the people turning these over have mostly never heard any of them.
    *
    * The sound is nobody's file. /api/say asks the University of Tartu's
    * Estonian voice for the words when the button is pressed, and Cloudflare
@@ -2895,7 +2898,26 @@
     }
     paintSay();
 
-    TTBTrack.event('flash_say', { deck_id: state.deck ? state.deck.id : state.song ? state.song.id : '', what: what });
+    TTBTrack.event('flash_say', {
+      deck_id: state.deck ? state.deck.id : state.song ? state.song.id : state.lesson ? state.lesson.id : '',
+      what: what
+    });
+  }
+
+  /* The speaker on its own, with no word beside it: what sits at the end of
+     a song's line and of a lesson's sentence, where the line itself is the
+     word. The row under a card spells out what each of its presses would
+     say, sayLine() below, because there two stand together. */
+  function speaker(text, what, className) {
+    var b = el('button', {
+      type: 'button',
+      className: 'alt flash-say ' + className,
+      'data-say': text,
+      'aria-pressed': 'false',
+      'aria-label': t('flashSayAria', { text: text })
+    }, [el('span', { className: 'flash-say-icon', 'aria-hidden': 'true' })]);
+    b.addEventListener('click', function () { sayIt(text, what); });
+    return b;
   }
 
   /* What the S key says: the sentence where the back is up and there is one,
@@ -3369,16 +3391,45 @@
     }));
   }
 
+  /* A cell of a paradigm that holds two forms writes them either side of a
+     middle dot — köögisse · kööki — which is a mark for the eye and not a
+     word for the voice, so the voice is asked for them with a pause between.
+     functions/api/say.js speaks a form only as its own asForm() writes it, so
+     the two lines are kept the same by hand, the way the pin tables are. */
+  function asForm(form) {
+    return form.replace(/ · /g, ', ');
+  }
+
   /* A paradigm: three heads, and rows of three Estonian forms with what the
      word means at the end of each. The forms are lang="et" for the same
-     reason the paragraph's are. */
+     reason the paragraph's are, and each is a press that says it: the table
+     is where leib, leiva and leiba stand side by side, and hearing the three
+     differ is what the lesson is for. A press and not a speaker beside each,
+     because three speakers a row would be the table; it says it is a press
+     the way a word in a song does, with a dotted line under it, and the one
+     sounding is underlined solid in the accent — paintSay() above puts
+     is-playing on it like any other .flash-say, and a cell with no icon has
+     only its underline to show it. */
   function paradigm(table) {
     var heads = table.heads.map(function (head) {
       return el('th', { scope: 'col', textContent: means(head) });
     });
     heads.push(el('th', { scope: 'col' }));
     var rows = table.rows.map(function (row) {
-      var cells = row.et.map(function (form) { return el('td', { lang: 'et', textContent: form }); });
+      var cells = row.et.map(function (form) {
+        var said = asForm(form);
+        var b = el('button', {
+          type: 'button',
+          className: 'flash-say flash-form',
+          lang: 'et',
+          'data-say': said,
+          'aria-pressed': 'false',
+          'aria-label': t('flashSayAria', { text: said }),
+          textContent: form
+        });
+        b.addEventListener('click', function () { sayIt(said, 'form'); });
+        return el('td', null, [b]);
+      });
       cells.push(el('td', { textContent: means(row.means) }));
       return el('tr', null, cells);
     });
@@ -3392,11 +3443,13 @@
      drawn as a list, in the same two classes, so a sentence reads the same in
      a lesson as on the back of a card. A paragraph can only quote the
      Estonian inside an English sentence about it; this is the Estonian
-     standing on its own line, the way it will be said. */
+     standing on its own line, the way it will be said — and beside each, the
+     speaker that says it, where a song's line has its own. */
   function examples(list) {
     return el('ul', { className: 'flash-examples' }, list.map(function (one) {
       return el('li', null, [
         el('span', { className: 'flash-said', lang: 'et', textContent: one.et }),
+        speaker(one.et, 'lesson', 'flash-example-say'),
         el('span', { className: 'flash-means', textContent: means(one) })
       ]);
     }));
@@ -3531,17 +3584,8 @@
     }
     if (at < line.et.length) said.appendChild(document.createTextNode(line.et.slice(at)));
 
-    var speak = el('button', {
-      type: 'button',
-      className: 'alt flash-say flash-song-say',
-      'data-say': line.et,
-      'aria-pressed': 'false',
-      'aria-label': t('flashSayAria', { text: line.et })
-    }, [el('span', { className: 'flash-say-icon', 'aria-hidden': 'true' })]);
-    speak.addEventListener('click', function () { sayIt(line.et, 'line'); });
-
     row.appendChild(said);
-    row.appendChild(speak);
+    row.appendChild(speaker(line.et, 'line', 'flash-song-say'));
     row.appendChild(el('p', { className: 'flash-song-means', textContent: means(line) }));
     return row;
   }

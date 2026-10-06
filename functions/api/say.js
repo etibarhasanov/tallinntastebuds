@@ -13,8 +13,11 @@
  * The flashcards put Estonian in front of people who have never heard it, and
  * a word read is half a word: *leib* and *leiba* are one thing on the page and
  * two in the mouth. The button under the card asks this route for the front,
- * and for the sentence on the back where a card has one — see sayLine() in
- * assets/flashcard.js and **Hearing it** under **Flashcards** in README.md.
+ * and for the sentence on the back where a card has one; the speaker beside
+ * each sentence of a grammar lesson asks for that sentence, and a form in a
+ * lesson's paradigm, pressed, asks for itself — see sayLine(), examples() and
+ * paradigm() in assets/flashcard.js and **Hearing it** under **Flashcards**
+ * in README.md.
  *
  * WHOSE VOICE, AND WHY NOT OURS
  *
@@ -52,11 +55,11 @@
  *
  * An open text-to-speech proxy on a university's goodwill is a thing that
  * gets found and used, so the text has to be the front of a card in
- * data/decks.json, the Estonian of a card's sentence, or a line of a song in
- * the same file, exactly. Nothing a
- * person typed is ever spoken: a deck somebody wrote is not in that file, and
- * speaking it would mean saying anything anybody chose. That is a decision for
- * a description rather than for this file — **What it does not do** under
+ * data/decks.json, the Estonian of a card's sentence, a sentence or a form out
+ * of a grammar lesson, or a line of a song in the same file, exactly. Nothing
+ * a person typed is ever spoken: a deck somebody wrote is not in that file,
+ * and speaking it would mean saying anything anybody chose. That is a decision
+ * for a description rather than for this file — **What it does not do** under
  * **Flashcards**.
  */
 
@@ -121,8 +124,31 @@ function sayable(file) {
       for (const line of verse || []) if (line && line.et) set.add(line.et);
     }
   }
+  /* And a grammar lesson's Estonian: each sentence under a paradigm, and each
+     form in the paradigm itself, which is where leib, leiva and leiba stand
+     side by side and the whole point is hearing them differ. A form is asked
+     for as asForm() writes it, so the page's copy of that line and this one
+     have to agree. */
+  for (const lesson of (file && file.lessons) || []) {
+    for (const block of lesson.body || []) {
+      for (const one of block.examples || []) if (one && one.et) set.add(one.et);
+      for (const row of (block.table && block.table.rows) || []) {
+        for (const form of row.et || []) if (form) set.add(asForm(form));
+      }
+    }
+  }
   spoken.set(file, set);
   return set;
+}
+
+/* A paradigm cell that holds two forms writes them either side of a middle
+   dot — `köögisse · kööki` — which is a mark for the eye and not a word for
+   the voice, so it is spoken as a short pause. The page sends a form through
+   the same line, asForm() in assets/flashcard.js, and the two are kept the
+   same by hand the way the pin tables are: neither dialect can import the
+   other. */
+function asForm(form) {
+  return form.replace(/ · /g, ', ');
 }
 
 /* The recording, whole, or the slice of it a Range header asks for.
