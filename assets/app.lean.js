@@ -1980,6 +1980,137 @@
     ]));
   }
 
+  var WHERE_PAUSE = 300;
+  var WHERE_MIN_Q = 3;
+
+  var whereNote = '';
+  var whereTimer = null;
+  var whereInflight = 0;
+
+  function openWhere(why) {
+    TTBTrack.event('where_open', { why: why || 'dot' });
+    state.lastFocus = document.activeElement;
+    whereNote = why ? t(why) : '';
+    dom.whereScrim.hidden = false;
+    document.body.classList.add('has-scrim');
+    renderWhere();
+    var field = dom.whereCard.querySelector('input');
+    if (field) field.focus();
+  }
+
+  function closeWhere() {
+    clearTimeout(whereTimer);
+    whereTimer = null;
+    whereInflight++;
+    dom.whereScrim.hidden = true;
+    document.body.classList.remove('has-scrim');
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && back.focus) back.focus();
+  }
+
+  function renderWhere() {
+    clear(dom.whereCard);
+    var close = el('button', {
+      type: 'button',
+      className: 'panel-close ac-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', function () {
+      TTBTrack.event('where_close');
+      closeWhere();
+    });
+    dom.whereCard.appendChild(close);
+
+    var form = el('form', { className: 'ac-form' });
+    form.appendChild(el('p', { className: 'eyebrow ac-eyebrow', textContent: t('wordmark') }));
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('whereTitle') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('whereLine') }));
+    if (whereNote) form.appendChild(el('p', { className: 'ac-note', role: 'status', textContent: whereNote }));
+
+    var field = accountField('where-q', 'whereLabel', 'text', { autocomplete: 'off' });
+    var input = field.querySelector('input');
+    var hint = el('p', { className: 'ac-hint', role: 'status', hidden: true });
+    var rows = el('ul', { className: 'menu', hidden: true });
+    form.appendChild(field);
+    form.appendChild(hint);
+    form.appendChild(rows);
+
+    var hits = [];
+
+    function say(key) {
+      hint.textContent = key ? t(key) : '';
+      hint.hidden = !key;
+    }
+
+    function draw(list) {
+      clear(rows);
+      hits = list;
+      rows.hidden = !list.length;
+      list.forEach(function (hit) {
+        var node = el('button', { type: 'button', className: 'menu-row' }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: hit.label }),
+            hit.where ? el('span', { className: 'menu-why', textContent: hit.where }) : null
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
+        ]);
+        node.addEventListener('click', function () { takeWhere(hit); });
+        rows.appendChild(el('li', { className: 'menu-item' }, [node]));
+      });
+    }
+
+    function lookUp(q) {
+      var mine = ++whereInflight;
+      getJSON('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+        return a && Array.isArray(a.results) ? a.results : [];
+      }, function (err) {
+        return /HTTP 429/.test(err && err.message) ? null : [];
+      }).then(function (list) {
+        if (mine !== whereInflight) return;
+        if (list === null) { draw([]); say('whereBusy'); return; }
+        draw(list);
+        say(list.length ? '' : 'whereNone');
+      });
+    }
+
+    input.addEventListener('input', function () {
+      clearTimeout(whereTimer);
+      var q = input.value.replace(/\s+/g, ' ').trim();
+      if (q.length < WHERE_MIN_Q) {
+        whereInflight++;
+        draw([]);
+        say('');
+        return;
+      }
+      whereTimer = setTimeout(function () { lookUp(q); }, WHERE_PAUSE);
+    });
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (hits.length) takeWhere(hits[0]);
+    });
+
+    if (navigator.geolocation) {
+      var device = el('button', { type: 'button', className: 'alt', textContent: t('whereDevice') });
+      device.addEventListener('click', function () {
+        TTBTrack.event('where_device');
+        closeWhere();
+        askDevice();
+      });
+      form.appendChild(device);
+    }
+
+    dom.whereCard.appendChild(form);
+  }
+
+  function takeWhere(hit) {
+    TTBTrack.event('where_pick');
+    closeWhere();
+    drawHere(L.latLng(hit.lat, hit.lng), 0, false, false);
+  }
+
   function closeAccount() {
     if (!dom.accountScrim.hidden && !state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) {
       TTBTrack.event('account_leave_' + accountView);
@@ -6885,6 +7016,11 @@
       TTBTrack.event('more_close');
       closeMore();
     });
+    dom.whereScrim.addEventListener('click', function (ev) {
+      if (ev.target !== dom.whereScrim) return;
+      TTBTrack.event('where_close');
+      closeWhere();
+    });
     if (dom.welcome) {
       $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
       $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
@@ -6907,9 +7043,9 @@
 
     dom.btnLocate.addEventListener('click', function () {
       TTBTrack.event('locate');
-      if (!navigator.geolocation) { toast(t('locateFail')); return; }
-      hereQuiet = false;
-      map.locate({ setView: false });
+      if (!navigator.geolocation) { openWhere('locateFail'); return; }
+      if (hereMarker) { openWhere(''); return; }
+      askDevice();
     });
 
     dom.lbClose.addEventListener('click', function () {
@@ -6940,6 +7076,7 @@
       if (ev.key === 'Escape') {
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.moreScrim.hidden) { closeMore(); return; }
+        if (!dom.whereScrim.hidden) { closeWhere(); return; }
         if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
@@ -7053,57 +7190,74 @@
     map.createPane(HERE_PANE).style.zIndex = 620;
 
     map.on('locationfound', function (ev) {
-      var c = markerColours();
       var quiet = hereQuiet;
+      var pressed = herePressed;
       hereQuiet = false;
-
-      storeSet(HERE_KEY, '1');
-
-      if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
-      if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
-
-      if (ev.accuracy && ev.accuracy <= 1000) {
-        hereAccuracy = L.circle(ev.latlng, {
-          radius: Math.max(ev.accuracy, 12),
-          weight: 1,
-          color: c.here,
-          opacity: .45,
-          fillColor: c.here,
-          fillOpacity: .14,
-          className: 'here-accuracy',
-          interactive: false
-        }).addTo(map);
-        if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
-      }
-
-      hereMarker = L.circleMarker(ev.latlng, {
-        radius: 8,
-        weight: 3,
-        color: c.paper,
-        fillColor: c.here,
-        fillOpacity: 1,
-        className: 'pin-here',
-        pane: HERE_PANE,
-        interactive: false
-      }).addTo(map);
-
-      renderList();
-
-      if (quiet && state.selected) return;
-      frameHere(ev.latlng, quiet);
+      herePressed = false;
+      drawHere(ev.latlng, ev.accuracy, quiet, pressed);
     });
 
     map.on('locationerror', function (ev) {
       var quiet = hereQuiet;
+      var pressed = herePressed;
       hereQuiet = false;
+      herePressed = false;
       if (ev && ev.code === 1) storeDel(HERE_KEY);
-      if (!quiet) toast(t('locateFail'));
+      if (pressed) openWhere('locateFail');
+      else if (!quiet) toast(t('locateFail'));
     });
+  }
+
+  function askDevice() {
+    hereQuiet = false;
+    herePressed = true;
+    map.locate({ setView: false });
+  }
+
+  function drawHere(latlng, accuracy, quiet, pressed) {
+    var c = markerColours();
+
+    if (accuracy) storeSet(HERE_KEY, '1');
+
+    if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
+    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+
+    if (accuracy && accuracy <= 1000) {
+      hereAccuracy = L.circle(latlng, {
+        radius: Math.max(accuracy, 12),
+        weight: 1,
+        color: c.here,
+        opacity: .45,
+        fillColor: c.here,
+        fillOpacity: .14,
+        className: 'here-accuracy',
+        interactive: false
+      }).addTo(map);
+      if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
+    }
+
+    hereMarker = L.circleMarker(latlng, {
+      radius: 8,
+      weight: 3,
+      color: c.paper,
+      fillColor: c.here,
+      fillOpacity: 1,
+      className: 'pin-here',
+      pane: HERE_PANE,
+      interactive: false
+    }).addTo(map);
+
+    renderList();
+
+    if (quiet && state.selected) return;
+    frameHere(latlng, quiet, pressed);
   }
 
   var HERE_KEY = 'ttb.located';
 
   var hereQuiet = false;
+
+  var herePressed = false;
 
   function resumeHere() {
     if (!storeGet(HERE_KEY) || !navigator.geolocation) return;
@@ -7122,7 +7276,7 @@
 
   var HERE_ZOOM = 17;
 
-  function frameHere(latlng, quiet) {
+  function frameHere(latlng, quiet, pressed) {
     var pool = visiblePlaces().filter(function (p) { return !p.closed; });
     if (!pool.length) pool = visiblePlaces();
     if (!pool.length) pool = state.places;
@@ -7137,7 +7291,8 @@
 
     if (best > HERE_MAX_M) {
       if (quiet) return;
-      toast(t('locateAway'));
+      if (pressed) openWhere('locateAway');
+      else toast(t('locateAway'));
       fitToPins({ animate: true });
       return;
     }
@@ -7189,6 +7344,8 @@
       btnMore: $('btn-more'),
       moreScrim: $('more-scrim'),
       moreCard: $('more-card'),
+      whereScrim: $('where-scrim'),
+      whereCard: $('where-card'),
       btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),

@@ -3345,6 +3345,186 @@
     ]));
   }
 
+  /* -------------------------------------------------------- the Where sheet
+   * "Where are you?", asked in words when the device will not answer it.
+   *
+   * Every distance on this map is measured from one dot — the one the locate
+   * button draws, which the list orders itself by, the find bar prints
+   * against and the chat measures "near me" from. For a year the device was
+   * the only way to put it there, so a phone that had refused the site, a
+   * laptop with no fix, or somebody planning tomorrow from a hotel room got
+   * "Couldn't get your location." and nothing to do about it. This is the
+   * thing to do about it: a street, a district or a landmark, typed, picked
+   * off the suggestions /api/geocode draws — the same five rows the
+   * add-a-place form offers — and the dot goes there, through the same
+   * drawHere() a reading from the device goes through, so everything that
+   * reads the dot reads this one without knowing the difference.
+   *
+   * It opens three ways, all from the locate button: a press on a browser
+   * with no geolocation at all; a press the device answered with a refusal,
+   * no fix, or a reading from out of town — the note at the top says which;
+   * and a press when there is a dot already, so the dot can be moved by hand
+   * from wherever it is. "Use my device instead" at the foot asks the device
+   * the way the button does, for whoever opened it by mistake or has since
+   * said yes. The find bar's and the chat's own asks of the device never
+   * open it: those are not presses, and a sheet over a question half typed
+   * would be the page talking over somebody.
+   *
+   * A typed dot is a device reading in every respect but two. It draws no
+   * accuracy ring, because there is no accuracy to draw, and it does not
+   * set HERE_KEY: the next visit opens on the device only where the device
+   * has actually answered once, and a point typed yesterday is a point
+   * about yesterday.
+   *
+   * The lookup is the add-a-place form's, in short: a pause in the typing
+   * rather than every keystroke, three letters before anything is asked,
+   * and an answer to a prefix already typed past is thrown away. The rows
+   * are the More sheet's rows, because a list of choices is rows — the name
+   * Photon found over the street and the district that tell two of them
+   * apart — and picking one is the whole action; there is no filled button
+   * on this sheet. */
+  var WHERE_PAUSE = 300;
+  var WHERE_MIN_Q = 3;
+
+  var whereNote = '';
+  var whereTimer = null;
+  var whereInflight = 0;
+
+  /* `why` is the note at the top, as a key — locateFail, locateAway — or
+     nothing when the sheet was opened to move a dot that is already there.
+     It is also the one word the press reports, so the count can say how
+     often the sheet is reached because the device said no against how often
+     it is opened on purpose. */
+  function openWhere(why) {
+    TTBTrack.event('where_open', { why: why || 'dot' });
+    state.lastFocus = document.activeElement;
+    whereNote = why ? t(why) : '';
+    dom.whereScrim.hidden = false;
+    document.body.classList.add('has-scrim');
+    renderWhere();
+    var field = dom.whereCard.querySelector('input');
+    if (field) field.focus();
+  }
+
+  function closeWhere() {
+    clearTimeout(whereTimer);
+    whereTimer = null;
+    /* An answer still on its way is to a sheet that has gone. */
+    whereInflight++;
+    dom.whereScrim.hidden = true;
+    document.body.classList.remove('has-scrim');
+    var back = state.lastFocus;
+    state.lastFocus = null;
+    if (back && back.focus) back.focus();
+  }
+
+  function renderWhere() {
+    clear(dom.whereCard);
+    var close = el('button', {
+      type: 'button',
+      className: 'panel-close ac-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', function () {
+      TTBTrack.event('where_close');
+      closeWhere();
+    });
+    dom.whereCard.appendChild(close);
+
+    var form = el('form', { className: 'ac-form' });
+    form.appendChild(el('p', { className: 'eyebrow ac-eyebrow', textContent: t('wordmark') }));
+    form.appendChild(el('h2', { className: 'ac-title', textContent: t('whereTitle') }));
+    form.appendChild(el('p', { className: 'ac-why', textContent: t('whereLine') }));
+    /* Above the field, where the sheet order puts what just happened. */
+    if (whereNote) form.appendChild(el('p', { className: 'ac-note', role: 'status', textContent: whereNote }));
+
+    var field = accountField('where-q', 'whereLabel', 'text', { autocomplete: 'off' });
+    var input = field.querySelector('input');
+    var hint = el('p', { className: 'ac-hint', role: 'status', hidden: true });
+    var rows = el('ul', { className: 'menu', hidden: true });
+    form.appendChild(field);
+    form.appendChild(hint);
+    form.appendChild(rows);
+
+    var hits = [];
+
+    function say(key) {
+      hint.textContent = key ? t(key) : '';
+      hint.hidden = !key;
+    }
+
+    function draw(list) {
+      clear(rows);
+      hits = list;
+      rows.hidden = !list.length;
+      list.forEach(function (hit) {
+        var node = el('button', { type: 'button', className: 'menu-row' }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', textContent: hit.label }),
+            hit.where ? el('span', { className: 'menu-why', textContent: hit.where }) : null
+          ]),
+          el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
+        ]);
+        node.addEventListener('click', function () { takeWhere(hit); });
+        rows.appendChild(el('li', { className: 'menu-item' }, [node]));
+      });
+    }
+
+    function lookUp(q) {
+      var mine = ++whereInflight;
+      getJSON('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+        return a && Array.isArray(a.results) ? a.results : [];
+      }, function (err) {
+        /* A 429 is Photon asking for a moment, and says so; anything else
+           reads as nothing found, which is what the field will show. */
+        return /HTTP 429/.test(err && err.message) ? null : [];
+      }).then(function (list) {
+        if (mine !== whereInflight) return;
+        if (list === null) { draw([]); say('whereBusy'); return; }
+        draw(list);
+        say(list.length ? '' : 'whereNone');
+      });
+    }
+
+    input.addEventListener('input', function () {
+      clearTimeout(whereTimer);
+      var q = input.value.replace(/\s+/g, ' ').trim();
+      if (q.length < WHERE_MIN_Q) {
+        whereInflight++;
+        draw([]);
+        say('');
+        return;
+      }
+      whereTimer = setTimeout(function () { lookUp(q); }, WHERE_PAUSE);
+    });
+
+    /* Enter takes the first row, the way the add-a-place form's Find does:
+       on a phone it is the key under the thumb once the street is typed. */
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (hits.length) takeWhere(hits[0]);
+    });
+
+    if (navigator.geolocation) {
+      var device = el('button', { type: 'button', className: 'alt', textContent: t('whereDevice') });
+      device.addEventListener('click', function () {
+        TTBTrack.event('where_device');
+        closeWhere();
+        askDevice();
+      });
+      form.appendChild(device);
+    }
+
+    dom.whereCard.appendChild(form);
+  }
+
+  function takeWhere(hit) {
+    TTBTrack.event('where_pick');
+    closeWhere();
+    drawHere(L.latLng(hit.lat, hit.lng), 0, false, false);
+  }
+
   function closeAccount() {
     /* Shut without an account — the cross, the scrim, Escape — which is the
        one ending of the sheet nothing else reports. Every way it shuts on a
@@ -11935,6 +12115,11 @@
       TTBTrack.event('more_close');
       closeMore();
     });
+    dom.whereScrim.addEventListener('click', function (ev) {
+      if (ev.target !== dom.whereScrim) return;
+      TTBTrack.event('where_close');
+      closeWhere();
+    });
     if (dom.welcome) {
       $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
       $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
@@ -11961,17 +12146,14 @@
     wireKeyboard();
 
 
+    /* With no device to ask, or a dot already drawn, the press opens the
+       sheet that takes a typed place — the Where sheet, above renderWhere()
+       — and the device is asked otherwise. */
     dom.btnLocate.addEventListener('click', function () {
       TTBTrack.event('locate');
-      if (!navigator.geolocation) { toast(t('locateFail')); return; }
-      /* A press is a press even with the arrival's reading still in flight:
-         its answer, or its failure, is now owed out loud. */
-      hereQuiet = false;
-      /* setView is off: the framing is done in locationfound, which knows
-         where the places are and Leaflet does not. Nothing here says how close
-         to go, because Leaflet reads its own maxZoom only when it is the one
-         moving the map — frameHere() is, and HERE_ZOOM is where. */
-      map.locate({ setView: false });
+      if (!navigator.geolocation) { openWhere('locateFail'); return; }
+      if (hereMarker) { openWhere(''); return; }
+      askDevice();
     });
 
     dom.lbClose.addEventListener('click', function () {
@@ -12007,6 +12189,7 @@
            it is the thing Escape means when it is open. */
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.moreScrim.hidden) { closeMore(); return; }
+        if (!dom.whereScrim.hidden) { closeWhere(); return; }
         if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
@@ -12191,76 +12374,110 @@
     map.createPane(HERE_PANE).style.zIndex = 620;
 
     map.on('locationfound', function (ev) {
-      var c = markerColours();
       var quiet = hereQuiet;
+      var pressed = herePressed;
       hereQuiet = false;
-
-      /* A reading arrived, so this browser has said yes at least once, and
-         the next visit opens on it — see resumeHere(). */
-      storeSet(HERE_KEY, '1');
-
-      if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
-      if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
-
-      if (ev.accuracy && ev.accuracy <= 1000) {
-        hereAccuracy = L.circle(ev.latlng, {
-          radius: Math.max(ev.accuracy, 12),
-          weight: 1,
-          color: c.here,
-          opacity: .45,
-          fillColor: c.here,
-          fillOpacity: .14,
-          className: 'here-accuracy',
-          interactive: false
-        }).addTo(map);
-        if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
-      }
-
-      /* Google's size rather than a pin's: 8px of --here inside a 3px ring
-         of paper, which is what a thumb that has used a map on a phone is
-         looking for. It was 6, and the pins are 18px of painting at phone
-         scale, so the dot arrived as the smallest thing on the screen at the
-         one moment it was the only thing anybody wanted to see. */
-      hereMarker = L.circleMarker(ev.latlng, {
-        radius: 8,
-        weight: 3,
-        color: c.paper,
-        fillColor: c.here,
-        fillOpacity: 1,
-        className: 'pin-here',
-        pane: HERE_PANE,
-        interactive: false
-      }).addTo(map);
-
-      /* The list is ordered from the dot, so it is redrawn the moment there
-         is one rather than waiting for the panel to be opened again — the
-         heading changes to say it is measuring from you, and the rows start
-         carrying their distances.
-
-         renderList() rather than renderPanel(): the chat asks for a reading
-         of its own through whereabouts(), so this fires under a question in
-         flight, and redrawing the whole panel there would rebuild the very
-         thread the question was asked from. renderList() touches nothing but
-         the list body, which is hidden while the chat is up and correct by
-         the time it is not. */
-      renderList();
-
-      /* Opened on its own at arrival, the map leaves alone a place somebody
-         has opened in the seconds the fix took: flying them off it to frame
-         where they are standing answers a question they stopped asking. */
-      if (quiet && state.selected) return;
-      frameHere(ev.latlng, quiet);
+      herePressed = false;
+      drawHere(ev.latlng, ev.accuracy, quiet, pressed);
     });
 
     /* Code 1 is a refusal: the browser has been told no since the yes, so
        the map stops asking on arrival. A slow or missing fix leaves the
-       yes standing — the next visit may well have one. */
+       yes standing — the next visit may well have one.
+
+       A press that ends here opens the Where sheet with the failure as its
+       note, since a typed place is now the answer to a device that will not
+       give one. The find bar's and the chat's asks are not presses, and keep
+       the toast they always had. */
     map.on('locationerror', function (ev) {
       var quiet = hereQuiet;
+      var pressed = herePressed;
       hereQuiet = false;
+      herePressed = false;
       if (ev && ev.code === 1) storeDel(HERE_KEY);
-      if (!quiet) toast(t('locateFail'));
+      if (pressed) openWhere('locateFail');
+      else if (!quiet) toast(t('locateFail'));
     });
+  }
+
+  /* The device, asked for a press — the button's, or the Where sheet's "Use
+     my device instead". setView is off: the framing is done in drawHere(),
+     which knows where the places are and Leaflet does not. Nothing here says
+     how close to go, because Leaflet reads its own maxZoom only when it is
+     the one moving the map — frameHere() is, and HERE_ZOOM is where. */
+  function askDevice() {
+    /* A press is a press even with the arrival's reading still in flight:
+       its answer, or its failure, is now owed out loud. */
+    hereQuiet = false;
+    herePressed = true;
+    map.locate({ setView: false });
+  }
+
+  /* The dot, drawn. Every reading goes through here, whether it came from
+     the device — `accuracy` in metres, and the yes remembered — or was typed
+     into the Where sheet, which has no accuracy to draw and remembers
+     nothing. `quiet` is the arrival's own locate, which frames nothing
+     somebody has already opened; `pressed` is a press of the button, whose
+     out-of-town ending is the sheet rather than a toast. */
+  function drawHere(latlng, accuracy, quiet, pressed) {
+    var c = markerColours();
+
+    /* A reading arrived, so this browser has said yes at least once, and
+       the next visit opens on it — see resumeHere(). A typed point is not
+       a yes: it says nothing about what the device would answer. */
+    if (accuracy) storeSet(HERE_KEY, '1');
+
+    if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
+    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+
+    if (accuracy && accuracy <= 1000) {
+      hereAccuracy = L.circle(latlng, {
+        radius: Math.max(accuracy, 12),
+        weight: 1,
+        color: c.here,
+        opacity: .45,
+        fillColor: c.here,
+        fillOpacity: .14,
+        className: 'here-accuracy',
+        interactive: false
+      }).addTo(map);
+      if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
+    }
+
+    /* Google's size rather than a pin's: 8px of --here inside a 3px ring
+       of paper, which is what a thumb that has used a map on a phone is
+       looking for. It was 6, and the pins are 18px of painting at phone
+       scale, so the dot arrived as the smallest thing on the screen at the
+       one moment it was the only thing anybody wanted to see. */
+    hereMarker = L.circleMarker(latlng, {
+      radius: 8,
+      weight: 3,
+      color: c.paper,
+      fillColor: c.here,
+      fillOpacity: 1,
+      className: 'pin-here',
+      pane: HERE_PANE,
+      interactive: false
+    }).addTo(map);
+
+    /* The list is ordered from the dot, so it is redrawn the moment there
+       is one rather than waiting for the panel to be opened again — the
+       heading changes to say it is measuring from you, and the rows start
+       carrying their distances.
+
+       renderList() rather than renderPanel(): the chat asks for a reading
+       of its own through whereabouts(), so this fires under a question in
+       flight, and redrawing the whole panel there would rebuild the very
+       thread the question was asked from. renderList() touches nothing but
+       the list body, which is hidden while the chat is up and correct by
+       the time it is not. */
+    renderList();
+
+    /* Opened on its own at arrival, the map leaves alone a place somebody
+       has opened in the seconds the fix took: flying them off it to frame
+       where they are standing answers a question they stopped asking. */
+    if (quiet && state.selected) return;
+    frameHere(latlng, quiet, pressed);
   }
 
   /* Whether this browser has handed the map a location before. Set on the
@@ -12275,6 +12492,11 @@
      when it fails or when the reading is out of town: nobody pressed
      anything, so a toast about it would be the page talking to itself. */
   var hereQuiet = false;
+
+  /* A press of the locate button, or of the Where sheet's "Use my device
+     instead", while it is in flight: the one kind of ask whose failure opens
+     that sheet rather than a toast. */
+  var herePressed = false;
 
   /* Somebody who gave the map their location once opens it on themselves
      every time after, the way a map app does. Never the first time — that is
@@ -12320,7 +12542,7 @@
      pin on it, and no amount of pressing filter chips fills it in. So the view
      is framed on you *and* the nearest place the chips allow — you always land
      looking at somewhere you could walk to. */
-  function frameHere(latlng, quiet) {
+  function frameHere(latlng, quiet, pressed) {
     /* A closed place is a grey pin kept for the links pointing at it, not
        somewhere to send you, so it is only the nearest thing if nothing open
        is left to be. */
@@ -12337,10 +12559,14 @@
     });
 
     /* Out of town on arrival, the map keeps the city it opened on and says
-       nothing: the toast and the refit are the answer to a press. */
+       nothing. A press gets the refit and the Where sheet, with the reading
+       from the ferry as its note: a typed place is the answer to one the
+       device gave twenty kilometres from everything. The find bar's and the
+       chat's own asks get the refit and a toast, as they always have. */
     if (best > HERE_MAX_M) {
       if (quiet) return;
-      toast(t('locateAway'));
+      if (pressed) openWhere('locateAway');
+      else toast(t('locateAway'));
       fitToPins({ animate: true });
       return;
     }
@@ -12400,6 +12626,8 @@
       btnMore: $('btn-more'),
       moreScrim: $('more-scrim'),
       moreCard: $('more-card'),
+      whereScrim: $('where-scrim'),
+      whereCard: $('where-card'),
       btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
