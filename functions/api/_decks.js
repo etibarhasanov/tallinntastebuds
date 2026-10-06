@@ -8,8 +8,9 @@
  * about four milliseconds to parse it, out of the ten the Workers free plan
  * gives a request, before the database was asked anything. tools/decks.mjs
  * writes the source out into data/decks/: an index for the shelf — every deck
- * with the ids of its cards, every lesson and song without its body — and one
- * file per deck, lesson and song, named by its id. The index is a fraction of
+ * with the ids of its cards, every lesson, song and conversation without its
+ * body — and one file per deck, lesson, song and conversation, named by its
+ * id. The index is a fraction of
  * the source and a deck's file is one deck; the header of the tool says
  * exactly what each holds, and **Where the words are, and it is mostly not
  * the database** under **Flashcards** in README.md says why.
@@ -17,7 +18,7 @@
  * This is the ways of reading that folder, shared by the two routes so that
  * neither carries a copy of the other's filtering: shelf(), the index with
  * each list held to the id shape the routes accept; shippedOne(), one deck,
- * lesson or song out of its file, asked for only when the index says it
+ * lesson, song or conversation out of its file, asked for only when the index says it
  * exists, so an id somebody guessed is never a fetch; and shippedDecks(),
  * several decks at once for the two decks gathered out of somebody's rows,
  * which is the one reader that may still read the source whole. All three go
@@ -57,8 +58,8 @@ const FEW_DECKS = 8;
    passed it. */
 export const WRITTEN = /^[a-z0-9][a-z0-9-]{0,31}$/;
 
-/* The shelf: the three lists out of the index, each row held to the id shape
-   and a deck to having its card ids. A missing or malformed index is three
+/* The shelf: the four lists out of the index, each row held to the id shape
+   and a deck to having its card ids. A missing or malformed index is four
    empty lists rather than a throw — the page then draws whatever the person's
    own decks are and says nothing is shipped, which is a worse site but not a
    broken one. */
@@ -67,27 +68,29 @@ export async function shelf(context) {
   try {
     file = await dataFile(context, DIR + 'index.json');
   } catch (e) {
-    return { decks: [], lessons: [], songs: [] };
+    return { decks: [], lessons: [], songs: [], talks: [] };
   }
   const list = (key, shaped) => (file && Array.isArray(file[key]) ? file[key] : [])
     .filter((one) => one && WRITTEN.test(String(one.id || '')) && shaped(one));
   return {
     decks: list('decks', (deck) => Array.isArray(deck.cards)),
     lessons: list('lessons', () => true),
-    songs: list('songs', () => true)
+    songs: list('songs', () => true),
+    talks: list('talks', () => true)
   };
 }
 
-/* One of the three, whole, out of its own file — a deck with its cards, a
-   lesson with its body, a song with its verses and words — as { kind, one },
-   or null: for an id that is not on the shelf, which is never asked for, and
-   for a file that cannot be read or is not the shape the page draws. The
-   validator keeps the three lists from sharing an id, so the first list that
-   has it is the only one that does. */
+/* One of the four, whole, out of its own file — a deck with its cards, a
+   lesson with its body, a song with its verses and words, a conversation with
+   its scenes — as { kind, one }, or null: for an id that is not on the shelf,
+   which is never asked for, and for a file that cannot be read or is not the
+   shape the page draws. The validator keeps the four lists from sharing an
+   id, so the first list that has it is the only one that does. */
 export async function shippedOne(context, index, id) {
   const kind = index.decks.some((d) => d.id === id) ? 'deck'
     : index.lessons.some((l) => l.id === id) ? 'lesson'
     : index.songs.some((s) => s.id === id) ? 'song'
+    : (index.talks || []).some((c) => c.id === id) ? 'talk'
     : null;
   if (!kind) return null;
   let one;
@@ -99,6 +102,7 @@ export async function shippedOne(context, index, id) {
   const whole = !!one && one.id === id && (
     kind === 'deck' ? Array.isArray(one.cards)
     : kind === 'lesson' ? Array.isArray(one.body)
+    : kind === 'talk' ? Array.isArray(one.scenes)
     : Array.isArray(one.verses));
   return whole ? { kind, one } : null;
 }

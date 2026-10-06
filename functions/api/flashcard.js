@@ -50,6 +50,15 @@
  * its own, and are counted like any other. See **Songs, which are listened
  * to** under **Flashcards** in README.md.
  *
+ * AND THE CONVERSATIONS, WHICH ARE READ
+ *
+ * A fourth time: `talks` in the file, each a sheet from a language course —
+ * scenes of turns, every turn who said it, the Estonian and what it means.
+ * The shelf answer names them, ?deck=<talk id> answers one whole, and Read it
+ * is the `knew` action under TALK_DECK. Nothing in a conversation is a card,
+ * and nothing in the database is a conversation but that one row. See
+ * **Conversations, which are read** under **Flashcards** in README.md.
+ *
  * **Nothing here chooses which language a card is turned over into.** A deck
  * the site ships carries its name, the line under it and the back of every
  * card as an object keyed by language — English, Azerbaijani and Russian — and
@@ -333,11 +342,16 @@ const GRAMMAR_DECK = 'grammar';
 /* And a song heard, the same way: card_id is the song's id. */
 const SONG_DECK = 'songs';
 
-/* Whether a known row is a lesson's or a song's rather than a card's, by the
-   key knownOf() files it under. The two gathered decks are built out of every
-   known row there is, and a lesson read or a song heard must not be a card in
-   either — not counted on the shelf, not a slot in the run. */
-const readRow = (key) => key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/');
+/* And a conversation read: card_id is the conversation's id. */
+const TALK_DECK = 'talks';
+
+/* Whether a known row is a lesson's, a song's or a conversation's rather than
+   a card's, by the key knownOf() files it under. The two gathered decks are
+   built out of every known row there is, and a lesson read, a song heard or
+   a conversation read must not be a card in either — not counted on the
+   shelf, not a slot in the run. */
+const readRow = (key) =>
+  key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/') || key.startsWith(TALK_DECK + '/');
 
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
@@ -439,6 +453,22 @@ function songAnswer(song, decks, known, whole) {
     deck: named(song.deck),
     verses: song.verses,
     words
+  };
+}
+
+/* A conversation as the page reads it: its name and line for the shelf, and
+   — when it is the one open — whose sheet it is and the scenes, each turn as
+   the file has it. Read is a known row under TALK_DECK, read the way a
+   lesson's is. */
+function talkAnswer(talk, known, whole) {
+  return {
+    id: talk.id,
+    name: talk.name,
+    why: talk.why || null,
+    taste: talk.taste || null,
+    added: talk.added || null,
+    ...(whole ? { source: talk.source || null, scenes: talk.scenes } : {}),
+    read: stateOf(known, TALK_DECK, talk.id).known
   };
 }
 
@@ -772,13 +802,14 @@ export async function onRequestGet(context) {
       return json({ ...base, deck: deckAnswer(mine, cards, true, known) }, 200);
     }
 
-    /* The deck, the lesson or the song the address names, out of its own
-       file: a deck with its cards, and a lesson or a song — which open at the
-       same kind of address — whole, its name, its line and its body. */
+    /* The deck, the lesson, the song or the conversation the address names,
+       out of its own file: a deck with its cards, and the other three —
+       which open at the same kind of address — whole. */
     const found = await shippedOne(context, index, asked);
     if (found && found.kind === 'deck') return json({ ...base, deck: deckAnswer(found.one, found.one.cards, false, known) }, 200);
     if (found && found.kind === 'lesson') return json({ ...base, lesson: lessonAnswer(found.one, known, true) }, 200);
     if (found && found.kind === 'song') return json({ ...base, song: songAnswer(found.one, decks, known, true) }, 200);
+    if (found && found.kind === 'talk') return json({ ...base, talk: talkAnswer(found.one, known, true) }, 200);
 
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
@@ -902,7 +933,10 @@ export async function onRequestGet(context) {
      whether it has been heard. */
   const songs = index.songs.map((s) => songAnswer(s, decks, known, false));
 
-  return json({ ...base, decks: list, lessons: lessons, songs: songs }, 200);
+  /* And the conversations, each with whether it has been read. */
+  const talks = index.talks.map((c) => talkAnswer(c, known, false));
+
+  return json({ ...base, decks: list, lessons: lessons, songs: songs, talks: talks }, 200);
 }
 
 /* ---------------------------------------------------------------- writing */
@@ -1140,6 +1174,9 @@ async function mark(context, body, user, knew) {
   } else if (deckId === SONG_DECK && WRITTEN.test(cardId)) {
     /* And a song heard, under its own. */
     real = (await shelf(context)).songs.some((s) => s.id === cardId);
+  } else if (deckId === TALK_DECK && WRITTEN.test(cardId)) {
+    /* And a conversation read, under its own. */
+    real = (await shelf(context)).talks.some((c) => c.id === cardId);
   } else if (WRITTEN.test(deckId) && WRITTEN.test(cardId)) {
     /* On the shelf and in that deck, by the card ids the index carries: no
        deck's file is read to say a card was known. */

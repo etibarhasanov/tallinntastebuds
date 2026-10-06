@@ -1,0 +1,80 @@
+{
+ "id": "talk-morning-evening",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Morning or evening person?",
+  "az": "Səhər adamı, yoxsa axşam adamı?",
+  "ru": "Утренний человек или вечерний?"
+ },
+ "why": {
+  "en": "Two people on when they like to work, and four on what an evening holds",
+  "az": "İki nəfər nə vaxt işləməyi sevdiyi, dörd nəfər axşamı necə keçirdiyi haqqında",
+  "ru": "Двое — о том, когда им работается, и четверо — о том, как проходит вечер"
+ },
+ "taste": "Ma olen tegelikult hommikuinimene.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kas sa oled hommiku- või õhtuinimene?",
+    "en": "Are you a morning or an evening person?",
+    "az": "Sən səhər adamısan, yoxsa axşam adamı?",
+    "ru": "Ты утренний человек или вечерний?"
+   },
+   "turns": [
+    {
+     "who": "Mihkel",
+     "et": "Ma olen tegelikult hommikuinimene. See tähendab, et mulle ei meeldi õhtul hilja tööd teha. Mulle meeldib tööd teha kas hommikul või pärastlõunal. Reeglina ma töötan alati hommikul.",
+     "en": "I'm actually a morning person. That means I don't like to work late in the evening. I like to work either in the morning or in the afternoon. As a rule, I always work in the morning.",
+     "az": "Mən əslində səhər adamıyam. Yəni axşam gec işləməyi sevmirəm. Ya səhər, ya da günortadan sonra işləməyi xoşlayıram. Bir qayda olaraq həmişə səhər işləyirəm.",
+     "ru": "Я на самом деле утренний человек. То есть мне не нравится работать поздно вечером. Я люблю работать или утром, или после обеда. Как правило, я всегда работаю утром."
+    },
+    {
+     "who": "Krista",
+     "et": "Mina olen hommikuinimene. Ma ärkan tavaliselt kell seitse. Mulle sobib hommikuti ärgata. Õhtul ma väsin ära. Õhtul ma lähen varem magama.",
+     "en": "I am a morning person. I usually wake up at seven. Waking up in the morning suits me. In the evening I get tired. In the evening I go to bed earlier.",
+     "az": "Mən səhər adamıyam. Adətən saat yeddidə oyanıram. Səhərlər oyanmaq mənə uyğundur. Axşam yoruluram. Axşam tez yatıram.",
+     "ru": "Я утренний человек. Обычно я просыпаюсь в семь. Мне подходит вставать по утрам. Вечером я устаю. Вечером я ложусь спать пораньше."
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mida sa õhtul tavaliselt teed?",
+    "en": "What do you usually do in the evening?",
+    "az": "Axşamlar adətən nə edirsən?",
+    "ru": "Что ты обычно делаешь вечером?"
+   },
+   "turns": [
+    {
+     "who": "Krista",
+     "et": "Õhtuti tulevad lapsed koolidest, trennidest. Ja siis nad hakkavad õppima ja vahel on neil midagi küsida, siis ma aitan neid. Näiteks tahavad nad inglise keele sõnu küsida või siis nad jutustavad mulle midagi, siis ma kuulan. Ja ma vaatan natuke telekat. Ja siis tuleb köök ära koristada.",
+     "en": "In the evenings the kids come home from school and from their clubs. Then they start to study, and sometimes they have something to ask, so I help them. For instance they want to ask about some English words, or they tell me something and I listen. And I watch a little TV. And then the kitchen needs tidying up.",
+     "az": "Axşamlar uşaqlar məktəbdən, məşqdən gəlirlər. Sonra dərs oxumağa başlayırlar, bəzən sualları olur, onda kömək edirəm. Məsələn, ingilis sözləri soruşmaq istəyirlər, ya da mənə nəsə danışırlar, mən də qulaq asıram. Bir az da televizora baxıram. Sonra mətbəxi yığışdırmaq lazım gəlir.",
+     "ru": "По вечерам дети приходят из школы, с тренировок. Потом они садятся за уроки, и иногда им нужно что-то спросить — тогда я им помогаю. Например, они спрашивают английские слова или рассказывают мне что-нибудь, а я слушаю. Ещё я немного смотрю телевизор. А потом надо убрать кухню."
+    },
+    {
+     "who": "Mihkel",
+     "et": "Täna õhtul ma lähen jalgpalli mängima. See on mu hobi olnud kümme aastat. Ei, rohkem, viisteist aastat.",
+     "en": "Tonight I'm going to play football. It has been my hobby for ten years. No, more — fifteen years.",
+     "az": "Bu axşam futbol oynamağa gedirəm. Bu, on ildir mənim hobbimdir. Yox, daha çox — on beş il.",
+     "ru": "Сегодня вечером я иду играть в футбол. Это моё хобби уже десять лет. Нет, больше — пятнадцать лет."
+    },
+    {
+     "who": "Kiur",
+     "et": "Tavaliselt õhtuti ma õpin või olen arvutis.",
+     "en": "Usually in the evenings I study or I'm at the computer.",
+     "az": "Adətən axşamlar dərs oxuyuram və ya kompüterdə oluram.",
+     "ru": "Обычно по вечерам я учу уроки или сижу за компьютером."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "No õhtu sõltub sellest, kas mul on proov või ei ole. Võib-olla paar korda nädalas teeme oma bändikaaslastega proovi. Ma mängin kitarri ja laulan. Mul on oma bänd.",
+     "en": "Well, the evening depends on whether I have a rehearsal or not. Maybe a couple of times a week we rehearse with my bandmates. I play the guitar and sing. I have my own band.",
+     "az": "Axşam ondan asılıdır ki, məşqim var, ya yox. Həftədə bir-iki dəfə qrup yoldaşlarımla məşq edirik. Mən gitara çalıram və oxuyuram. Öz qrupum var.",
+     "ru": "Ну, вечер зависит от того, есть ли у меня репетиция. Пару раз в неделю мы репетируем с ребятами из группы. Я играю на гитаре и пою. У меня своя группа."
+    }
+   ]
+  }
+ ]
+}

@@ -3,7 +3,7 @@
  * Tallinn Tastebuds — the decks, one file each.
  *
  * data/decks.json is the Estonian the flashcards ship — the decks of cards,
- * the grammar lessons and the songs — in one file, because one file is what
+ * the grammar lessons, the songs and the conversations — in one file, because one file is what
  * a person edits: a word is found with grep, a deck is read top to bottom,
  * and a change is one diff. It is also over a megabyte, and a Function that
  * wanted one deck out of it had to parse all of it: on a fresh isolate about
@@ -19,20 +19,22 @@
  *                            its level, the day it went in and the ids of its
  *                            cards — ids rather than cards, because the shelf
  *                            counts what somebody knows and what is due and
- *                            never shows a card — and every lesson and song
- *                            the same, without its body or its verses. The
- *                            three lists under the three keys the source has,
- *                            in the source's order.
+ *                            never shows a card — and every lesson, song and
+ *                            conversation the same, without its body, its
+ *                            verses or its scenes. The four lists under the
+ *                            four keys the source has, in the source's order.
  *
- *   data/decks/<id>.json     one deck, lesson or song, whole, exactly as it is
- *                            in the source. The three share one folder because
- *                            they share one address — ?d=<id> — and
- *                            tools/validate.mjs keeps their ids apart.
+ *   data/decks/<id>.json     one deck, lesson, song or conversation, whole,
+ *                            exactly as it is in the source. The four share
+ *                            one folder because they share one address —
+ *                            ?d=<id> — and tools/validate.mjs keeps their ids
+ *                            apart.
  *
  *   data/decks/spoken.json   every string the voice may say, sorted: the front
  *                            of every card and the Estonian of its sentence,
  *                            every sentence and every form in a grammar
- *                            lesson, and every line of a song. What /api/say
+ *                            lesson, every line of a song and every turn of a
+ *                            conversation. What /api/say
  *                            holds a request to, so that it never needs the
  *                            cards to answer whether a text is on one.
  *
@@ -95,7 +97,7 @@ function asForm(form) {
   return form.replace(/ · /g, ', ');
 }
 
-/* Every string the voice may say, out of all three lists — the rule /api/say
+/* Every string the voice may say, out of all four lists — the rule /api/say
    applied to the whole file before this tool existed, and exact: nothing a
    person typed is ever in it. Sorted, so that the file changes only when the
    words do. */
@@ -120,12 +122,20 @@ function spoken(file) {
       }
     }
   }
+  /* A turn of a conversation, whole: the speaker beside it says what
+     somebody said, a sentence or three rather than a word. */
+  for (const talk of file.talks || []) {
+    for (const scene of talk.scenes || []) {
+      for (const turn of (scene && scene.turns) || []) if (turn && turn.et) set.add(turn.et);
+    }
+  }
   return [...set].sort();
 }
 
-/* A deck, lesson or song as the index carries it: the source's row without
-   the one part of it the shelf never draws — a deck's cards become their
-   ids, a lesson loses its body, a song its verses and its words. */
+/* A deck, lesson, song or conversation as the index carries it: the
+   source's row without the one part of it the shelf never draws — a deck's
+   cards become their ids, a lesson loses its body, a song its verses and its
+   words, a conversation its scenes. */
 function onShelf(one, kind) {
   const row = { ...one };
   if (kind === 'decks') row.cards = (Array.isArray(one.cards) ? one.cards : []).map((card) => card && card.id);
@@ -134,6 +144,7 @@ function onShelf(one, kind) {
     delete row.verses;
     delete row.words;
   }
+  if (kind === 'talks') delete row.scenes;
   return row;
 }
 
@@ -142,7 +153,7 @@ export function build() {
   const file = JSON.parse(readFileSync(SOURCE, 'utf8'));
   const out = {};
   const index = {};
-  for (const kind of ['decks', 'lessons', 'songs']) {
+  for (const kind of ['decks', 'lessons', 'songs', 'talks']) {
     const list = Array.isArray(file[kind]) ? file[kind].filter((one) => one && typeof one === 'object') : [];
     index[kind] = list.map((one) => onShelf(one, kind));
     for (const one of list) {
@@ -208,5 +219,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
 
   const { changed, files } = write();
-  console.log(`data/decks/ — ${files - 2} decks, lessons and songs, the index and the voice's list; ${changed} file(s) rewritten.`);
+  console.log(`data/decks/ — ${files - 2} decks, lessons, songs and conversations, the index and the voice's list; ${changed} file(s) rewritten.`);
 }

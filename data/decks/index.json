@@ -3640,5 +3640,167 @@
    "video": "llwKncMXrc0",
    "deck": "tana-words"
   }
+ ],
+ "talks": [
+  {
+   "id": "talk-monday",
+   "added": "2026-10-06",
+   "name": {
+    "en": "A usual Monday",
+    "az": "Adi bir bazar ertəsi",
+    "ru": "Обычный понедельник"
+   },
+   "why": {
+    "en": "Aleksandr, Krista and Kiur, from waking up to going to bed",
+    "az": "Aleksandr, Krista və Kiur — oyanmaqdan yatmağa qədər",
+    "ru": "Aleksandr, Krista и Kiur — от подъёма до сна"
+   },
+   "taste": "Pool kaheksa ärkan üles.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-morning-evening",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Morning or evening person?",
+    "az": "Səhər adamı, yoxsa axşam adamı?",
+    "ru": "Утренний человек или вечерний?"
+   },
+   "why": {
+    "en": "Two people on when they like to work, and four on what an evening holds",
+    "az": "İki nəfər nə vaxt işləməyi sevdiyi, dörd nəfər axşamı necə keçirdiyi haqqında",
+    "ru": "Двое — о том, когда им работается, и четверо — о том, как проходит вечер"
+   },
+   "taste": "Ma olen tegelikult hommikuinimene.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-chores",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Household chores",
+    "az": "Ev işləri",
+    "ru": "Домашние дела"
+   },
+   "why": {
+    "en": "Who washes what, the chore nobody likes, and whether ironing is women's work",
+    "az": "Kim nəyi yuyur, heç kimin sevmədiyi iş və ütüləmək qadın işidirmi",
+    "ru": "Кто что моет, какая работа никому не нравится и женское ли дело глажка"
+   },
+   "taste": "Ma viin prügi välja.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-first-last",
+   "added": "2026-10-06",
+   "name": {
+    "en": "The first and the last word of the day",
+    "az": "Günün ilk və son sözü",
+    "ru": "Первое и последнее слово за день"
+   },
+   "why": {
+    "en": "Who they speak to first in the morning and last at night, and what they say",
+    "az": "Səhər ilk, gecə isə son kiminlə danışırlar və nə deyirlər",
+    "ru": "С кем они говорят первым делом утром и последним вечером, и что говорят"
+   },
+   "taste": "Rääkisin oma emaga. Head ööd!",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-glad-cross",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Happy and angry yesterday",
+    "az": "Dünən sevindirən və əsəbləşdirən",
+    "ru": "Чему радовались и на что сердились вчера"
+   },
+   "why": {
+    "en": "What made four people happy yesterday, and what made them angry",
+    "az": "Dünən dörd nəfəri nə sevindirdi və nə əsəbləşdirdi",
+    "ru": "Что вчера порадовало четверых и что их рассердило"
+   },
+   "taste": "Selle üle, et kool sai läbi.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-dreams",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Do you dream?",
+    "az": "Yuxu görürsən?",
+    "ru": "Ты видишь сны?"
+   },
+   "why": {
+    "en": "Whether they dream, and what they saw last",
+    "az": "Yuxu görüb-görmədikləri və sonuncu dəfə nə gördükləri",
+    "ru": "Снятся ли им сны и что приснилось в последний раз"
+   },
+   "taste": "Jaa, vahel näen unenägusid.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-booking",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Booking a table and paying the bill",
+    "az": "Masa sifarişi və hesabın ödənməsi",
+    "ru": "Бронь столика и оплата счёта"
+   },
+   "why": {
+    "en": "A customer settles up, then books a table by the window for Tuesday at seven",
+    "az": "Müştəri hesabı ödəyir, sonra çərşənbə axşamı saat yeddiyə pəncərə yanında masa sifariş edir",
+    "ru": "Гость расплачивается, а потом бронирует столик у окна на вторник, на семь"
+   },
+   "taste": "Vabandust! Hei! Halloo!",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-choosing",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Choosing what to eat",
+    "az": "Yeməyi seçmək",
+    "ru": "Выбор блюд"
+   },
+   "why": {
+    "en": "Illimar and Johanna ask for a menu in Estonian, then pick their drinks and their dishes",
+    "az": "Illimar və Johanna eston dilində menyu istəyir, sonra içki və yemək seçirlər",
+    "ru": "Illimar и Johanna просят меню на эстонском, потом выбирают напитки и блюда"
+   },
+   "taste": "Tere, Johanna!",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-ordering",
+   "added": "2026-10-06",
+   "name": {
+    "en": "Ordering the meal",
+    "az": "Yeməyi sifariş etmək",
+    "ru": "Заказ"
+   },
+   "why": {
+    "en": "Fish soup without the coconut milk, shashlik, and what comes on the side",
+    "az": "Kokos südü olmadan balıq şorbası, şaşlık və yanında nə verilir",
+    "ru": "Рыбный суп без кокосового молока, шашлык и что взять на гарнир"
+   },
+   "taste": "Nii, kas olete valmis?",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-eating",
+   "added": "2026-10-06",
+   "name": {
+    "en": "The food arrives",
+    "az": "Yemək gəlir",
+    "ru": "Еду принесли"
+   },
+   "why": {
+    "en": "Head isu, jätku leiba, a portion too big to finish, and the bill by card",
+    "az": "Head isu, jätku leiba, bitirilməyəcək qədər böyük porsiya və kartla ödəniş",
+    "ru": "Head isu, jätku leiba, порция, которую не осилить, и счёт по карте"
+   },
+   "taste": "Ja siin on teie söögid. Head isu!",
+   "source": "Keeletee"
+  }
  ]
 }

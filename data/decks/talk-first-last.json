@@ -1,0 +1,80 @@
+{
+ "id": "talk-first-last",
+ "added": "2026-10-06",
+ "name": {
+  "en": "The first and the last word of the day",
+  "az": "Günün ilk və son sözü",
+  "ru": "Первое и последнее слово за день"
+ },
+ "why": {
+  "en": "Who they speak to first in the morning and last at night, and what they say",
+  "az": "Səhər ilk, gecə isə son kiminlə danışırlar və nə deyirlər",
+  "ru": "С кем они говорят первым делом утром и последним вечером, и что говорят"
+ },
+ "taste": "Rääkisin oma emaga. Head ööd!",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kellega sa hommikul kõige esimesena räägid?",
+    "en": "Who is the first person you talk to in the morning?",
+    "az": "Səhər ilk olaraq kiminlə danışırsan?",
+    "ru": "С кем ты разговариваешь утром первым делом?"
+   },
+   "turns": [
+    {
+     "who": "Krista",
+     "et": "Esimesena räägin ma tavaliselt oma kõige väiksema lapsega, kes on kaheksa-aastane. Tema ärkab kõige varem üles, kuigi ta kooli ei lähe kõige varem.",
+     "en": "The first one I usually talk to is my youngest child, who is eight years old. He wakes up the earliest, although he isn't the one who goes to school the earliest.",
+     "az": "İlk olaraq adətən ən kiçik uşağımla danışıram, səkkiz yaşı var. O hamıdan tez oyanır, baxmayaraq ki, məktəbə hamıdan tez getmir.",
+     "ru": "Первым делом я обычно разговариваю со своим младшим ребёнком, ему восемь лет. Он просыпается раньше всех, хотя в школу раньше всех не идёт."
+    },
+    {
+     "who": "Mihkel",
+     "et": "Ma räägin oma elukaaslasega. Esimese asjana ma ütlen talle tavaliselt, mis kell on. Ja siis ma küsin, kas ta tahab, et ma teen talle kohvi.",
+     "en": "I talk to my partner. The first thing I usually tell her is what time it is. And then I ask whether she wants me to make her a coffee.",
+     "az": "Həyat yoldaşımla danışıram. İlk olaraq adətən ona saatın neçə olduğunu deyirəm. Sonra soruşuram ki, ona kofe hazırlamağımı istəyir, ya yox.",
+     "ru": "Я разговариваю со своей девушкой. Первым делом я обычно говорю ей, который час. А потом спрашиваю, хочет ли она, чтобы я сварил ей кофе."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "No sel ajal, kui mina tõusen, naine magab, sest ta töötab kodus. Ta tõuseb natuke hiljem kui mina. Kui mina lähen tööle, siis tema just ärkab. Ma ei räägigi hommikul kellegagi, mulle meeldib selline vaikus.",
+     "en": "Well, when I get up my wife is asleep, because she works from home. She gets up a little later than I do. When I leave for work, she is just waking up. So I don't really talk to anyone in the morning; I like that kind of quiet.",
+     "az": "Mən duranda arvadım yatır, çünki o evdə işləyir. O məndən bir az gec durur. Mən işə gedəndə o təzəcə oyanır. Səhər heç kimlə danışmıram da — mənə belə sakitlik xoşdur.",
+     "ru": "Ну, когда я встаю, жена спит, потому что она работает дома. Она встаёт немного позже меня. Когда я ухожу на работу, она как раз просыпается. Так что утром я ни с кем и не разговариваю — мне нравится такая тишина."
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kellega sa eile õhtul kõige viimasena rääkisid? Mida sa ütlesid?",
+    "en": "Who did you talk to last yesterday evening? What did you say?",
+    "az": "Dünən axşam ən son kiminlə danışdın? Nə dedin?",
+    "ru": "С кем ты разговаривал(а) вчера вечером последним? Что ты сказал(а)?"
+   },
+   "turns": [
+    {
+     "who": "Kiur",
+     "et": "Rääkisin oma emaga. Head ööd!",
+     "en": "With my mother. Good night!",
+     "az": "Anamla danışdım. Gecən xeyrə!",
+     "ru": "Говорил с мамой. Спокойной ночи!"
+    },
+    {
+     "who": "Krista",
+     "et": "Ma arvan, et ma rääkisin eile viimati oma abikaasaga. Ma arvan, et ma ütlesin talle „Head ööd!“.",
+     "en": "I think the last one I talked to yesterday was my husband. I think I told him “Good night!”",
+     "az": "Məncə, dünən ən son ərimlə danışdım. Məncə, ona „Gecən xeyrə!“ dedim.",
+     "ru": "Думаю, последним вчера я разговаривала с мужем. Думаю, я сказала ему: «Спокойной ночи!»"
+    },
+    {
+     "who": "Aleksandr",
+     "et": "Ikka oma naisega rääkisin. Ma rääkisin sellest, et ma olen natuke väsinud ja et mul on palju tööd. Ja siis lõpus ütlesin talle: „Musi-musi, kalli-kalli!“, nagu ikka.",
+     "en": "With my wife, as always. I said that I was a little tired and that I had a lot of work. And then at the end I told her, “Kiss-kiss, hug-hug!”, like always.",
+     "az": "Yenə arvadımla danışdım. Dedim ki, bir az yorğunam və işim çoxdur. Axırda da həmişəki kimi dedim: „Öpürəm, qucaqlayıram!“",
+     "ru": "Как всегда, с женой. Я говорил о том, что немного устал и что у меня много работы. А в конце сказал ей, как всегда: «Чмок-чмок, обнимаю!»"
+    }
+   ]
+  }
+ ]
+}

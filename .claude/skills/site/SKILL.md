@@ -174,10 +174,10 @@ file of its own by exactly the same argument. It did not get one: its
 hundred and eighteen `flash*` keys are in `data/ui.json` with everything else, and taking
 the feature out means `grep -n '"flash' data/ui.json` and a hundred and eighteen deletions
 from ten blocks. What it *does* keep to itself is `data/decks.json` — the words
-on the cards, the ten grammar lessons and the songs, which are content rather
+on the cards, the ten grammar lessons, the songs and the conversations, which are content rather
 than interface and are written in three languages rather than the site's ten. A
 card's `back`, a deck's `name` and its `why`, every paragraph, heading and
-gloss of a lesson, and every line and word of a song are each an object keyed by language, English required and
+gloss of a lesson, every line and word of a song, and every question and turn of a conversation are each an object keyed by language, English required and
 Azerbaijani and Russian written; `means()` in `assets/flashcard.js` picks the
 one the page is being read in and falls back to the English. A key there is not
 a `ui.json` key and the parity rule does not reach it. See **Flashcards** in

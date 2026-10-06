@@ -56,8 +56,8 @@
  * An open text-to-speech proxy on a university's goodwill is a thing that
  * gets found and used, so the text has to be the front of a card in
  * data/decks.json, the Estonian of a card's sentence, a sentence or a form out
- * of a grammar lesson, or a line of a song in the same file, exactly. The list
- * of those is data/decks/spoken.json, which tools/decks.mjs writes out of the
+ * of a grammar lesson, a line of a song or a turn of a conversation in the
+ * same file, exactly. The list of those is data/decks/spoken.json, which tools/decks.mjs writes out of the
  * source — this route used to read the whole file and gather them itself, a
  * megabyte parsed to answer whether one line was on a card — and it is the
  * only thing this route reads. Nothing a person typed is ever spoken: a deck

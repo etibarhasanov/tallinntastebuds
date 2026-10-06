@@ -301,7 +301,7 @@
  *   story     a story came up on the map
  *   watched   ... and was watched to the end, as story_watch judges it
  *   post      a post on the blog was read, however the reader arrived at it
- *   deck      a deck, a grammar lesson or a song opened on the flashcards —
+ *   deck      a deck, a grammar lesson, a song or a conversation opened on the flashcards —
  *             never a deck of somebody's own, which is theirs alone
  *   pass      a discount's pass was put in front of somebody on deal.html,
  *             a deal switched on only
@@ -872,12 +872,13 @@ async function aboutFacts(context, body) {
 
 /* The ids a data file ships: the stories, the posts and the deals are an
    array each, and the flashcards' index — what tools/decks.mjs writes out
-   of data/decks.json, a fraction of it — holds its decks, lessons and songs
-   under three keys. None, where the file cannot be read. */
+   of data/decks.json, a fraction of it — holds its decks, lessons, songs and
+   conversations under four keys. None, where the file cannot be read. */
 async function idsIn(context, file) {
   try {
     const doc = await dataFile(context, file);
-    const rows = Array.isArray(doc) ? doc : [].concat(doc.decks || [], doc.lessons || [], doc.songs || []);
+    const rows = Array.isArray(doc) ? doc
+      : [].concat(doc.decks || [], doc.lessons || [], doc.songs || [], doc.talks || []);
     return new Set(rows.filter((r) => r && typeof r.id === 'string').map((r) => r.id));
   } catch (e) {
     return new Set();

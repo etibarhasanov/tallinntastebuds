@@ -368,6 +368,9 @@ if (decksFile !== null) {
        everything the voice may say. A deck, lesson or song of either name
        would be written over one of them. */
     for (const name of RESERVED_FILES) RESERVED.add(name);
+    /* And the deck id a conversation read is filed under — TALK_DECK in the
+       route. */
+    RESERVED.add('talks');
     const deckIds = new Set();
 
     /* A deck's name, the line under it, the back of a card, or what a card's
@@ -766,6 +769,63 @@ if (decksFile !== null) {
           }
         }
       }
+    });
+
+    /* The conversations, which are read: an id in the decks' namespace, for
+       the reason a lesson's is; a name and a line; `source`, whose sheet it
+       is, a name and so never translated; and `scenes`, each an optional
+       `ask` — the question put, the Estonian in `et` and what it means — over
+       a list of `turns`, each `who` said it, the Estonian in `et` and what it
+       means. A turn's `who` is a name or an Estonian role word and is never
+       translated either. Nothing in one is a card and nothing in one is a
+       press, so there is no `words` to hold the lines to. See
+       **Conversations, which are read** under **Flashcards** in README.md. */
+    if (decksFile.talks !== undefined && !Array.isArray(decksFile.talks)) {
+      fail('data/decks.json', '"talks" must be an array');
+    }
+    (Array.isArray(decksFile.talks) ? decksFile.talks : []).forEach((talk, i) => {
+      const where = `data/decks.json → talks[${i}]`;
+      if (!isPlainObject(talk)) { fail(where, 'must be an object'); return; }
+      if (!isNonEmptyString(talk.id)) { fail(where, 'has no "id"'); return; }
+      if (!SLUG.test(talk.id)) fail(where, `id "${talk.id}" is not a lowercase slug`);
+      if (deckIds.has(talk.id)) fail(where, `id "${talk.id}" is already a deck's, a lesson's, a song's or a conversation's`);
+      if (RESERVED.has(talk.id)) fail(where, `id "${talk.id}" is reserved — see functions/api/flashcard.js`);
+      deckIds.add(talk.id);
+
+      said(talk.name, where, `conversation "${talk.id}" name`);
+      said(talk.why, where, `conversation "${talk.id}" why`);
+      dated(talk.added, where, `conversation "${talk.id}"`);
+      if (talk.source !== undefined && !isNonEmptyString(talk.source)) {
+        fail(where, `conversation "${talk.id}" has a "source" that is not a name`);
+      }
+      if (!Array.isArray(talk.scenes) || talk.scenes.length === 0) {
+        fail(where, `conversation "${talk.id}" has no scenes`);
+        return;
+      }
+      tasted(talk.taste, where, `conversation "${talk.id}"`, (taste) =>
+        talk.scenes.some((scene) => isPlainObject(scene) && Array.isArray(scene.turns) &&
+          scene.turns.some((turn) => turn && String(turn.et || '').indexOf(taste) === 0)));
+      talk.scenes.forEach((scene, j) => {
+        const at = `${where} → scenes[${j}]`;
+        if (!isPlainObject(scene)) { fail(at, 'a scene is an object'); return; }
+        if (scene.ask !== undefined) {
+          if (!isPlainObject(scene.ask) || !isNonEmptyString(scene.ask.et)) {
+            fail(at, 'an "ask" has no Estonian in "et"');
+          } else {
+            const { et, ...means } = scene.ask;
+            said(means, at, 'what the question means');
+          }
+        }
+        if (!Array.isArray(scene.turns) || scene.turns.length === 0) { fail(at, 'a scene is a list of turns'); return; }
+        scene.turns.forEach((turn, k) => {
+          const row = `${at} → turns[${k}]`;
+          if (!isPlainObject(turn)) { fail(row, 'a turn is an object'); return; }
+          if (!isNonEmptyString(turn.who)) fail(row, 'a turn has no "who"');
+          if (!isNonEmptyString(turn.et)) { fail(row, 'a turn has no Estonian in "et"'); return; }
+          const { who, et, ...means } = turn;
+          said(means, row, 'what the turn means');
+        });
+      });
     });
   }
 }

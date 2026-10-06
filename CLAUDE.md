@@ -113,6 +113,7 @@ command does the same by hand, and is the way to be sure.
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
 | Change splitwise — the group page, what a group can do, or the subdomain itself | `/site` **and** `/api`, and **Splitwise** in `README.md` |
 | Change the flashcards — a deck, a lesson or a song in `data/decks.json`, the page, what a deck can do, or the subdomain itself | `/flashcards`, with `/site` **and** `/api` |
+| Add a conversation to the flashcards from a sheet of a language course, or change one | `/conversation` |
 | Refresh the Google Places export | `/google-venues` |
 | Build the chess page — the next unticked task in `.claude/skills/chess/TASKS.md`, one per session | `/chess` |
 | Change what the site counts about its visitors, or one of the owner's five pages under `/admin/` that read it — `assets/track.js`, `functions/api/stats.js`, `_visitors.js`, `_visits.js`, `_flows.js`, `functions/api/admin/` — or read the numbers to decide what to build next | `/stats`, with `/site` **and** `/api` |

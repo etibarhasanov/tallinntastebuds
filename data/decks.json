@@ -44952,5 +44952,1198 @@
         }
       }
     }
+  ],
+  "talks": [
+    {
+      "id": "talk-monday",
+      "added": "2026-10-06",
+      "name": {
+        "en": "A usual Monday",
+        "az": "Adi bir bazar ertəsi",
+        "ru": "Обычный понедельник"
+      },
+      "why": {
+        "en": "Aleksandr, Krista and Kiur, from waking up to going to bed",
+        "az": "Aleksandr, Krista və Kiur — oyanmaqdan yatmağa qədər",
+        "ru": "Aleksandr, Krista и Kiur — от подъёма до сна"
+      },
+      "taste": "Pool kaheksa ärkan üles.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Missugune on sinu tavaline esmaspäev?",
+            "en": "What is your usual Monday like?",
+            "az": "Sənin adi bazar ertən necə keçir?",
+            "ru": "Как проходит твой обычный понедельник?"
+          },
+          "turns": [
+            {
+              "who": "Aleksandr",
+              "et": "Pool kaheksa ärkan üles. Siis teen süüa, pesen hambaid ja nii edasi. Siis lähen tööle. Kell üheksa ma olen siin tööl. Poole kuueni või kuueni ma olen tööl. Ja siis ma lähen koju. Seitsme paiku me sööme naisega õhtusööki. Kell üksteist me lähme magama.",
+              "en": "At half past seven I wake up. Then I make something to eat, brush my teeth and so on. Then I go to work; at nine o'clock I'm at work here. Until half past five or until six I am at work. And then I go home. Around seven we eat dinner, my wife and I. At eleven o'clock we go to sleep.",
+              "az": "Səkkizin yarısında oyanıram. Sonra yemək hazırlayıram, dişlərimi yuyuram və sair. Sonra işə gedirəm. Saat doqquzda artıq burada, işdəyəm. Altının yarısına və ya altıya qədər işdəyəm. Sonra evə gedirəm. Yeddi radələrində arvadımla şam edirik. Saat on birdə yatırıq.",
+              "ru": "В половине восьмого я просыпаюсь. Потом готовлю поесть, чищу зубы и так далее. Потом иду на работу. В девять я уже здесь, на работе. До половины шестого или до шести я на работе. А потом иду домой. Около семи мы с женой ужинаем. В одиннадцать ложимся спать."
+            },
+            {
+              "who": "Krista",
+              "et": "Minu esmaspäev näeb välja selline: ärkan üles, teen süüa lastele, iseendale. Me sööme, ma saadan lapsed kooli. Ja mehe saadan saksa keele tundi. Siis ma teen arvuti taga tööd. Võib-olla lähen päeval jooksma. Ja õhtul on mul keelekursus, kus ma õpetan norra keelt.",
+              "en": "My Monday looks like this: I wake up, cook food for the children and for myself. We eat, I send the kids to school. And my husband I send to his German class. Then I do some work at the computer. Maybe I go jogging during the day. And in the evening I have a language course, where I teach Norwegian.",
+              "az": "Mənim bazar ertəm belə keçir: oyanıram, uşaqlara və özümə yemək hazırlayıram. Yeyirik, uşaqları məktəbə yola salıram. Ərimi də alman dili dərsinə yola salıram. Sonra kompüter arxasında işləyirəm. Bəlkə gündüz qaçmağa gedirəm. Axşam isə dil kursum var — orada norveç dili öyrədirəm.",
+              "ru": "Мой понедельник выглядит так: просыпаюсь, готовлю еду детям и себе. Мы едим, я отправляю детей в школу. А мужа отправляю на урок немецкого. Потом работаю за компьютером. Может быть, днём иду на пробежку. А вечером у меня языковой курс, где я преподаю норвежский."
+            },
+            {
+              "who": "Kiur",
+              "et": "Ma ärkan pool seitse. Hommikul ma panen riidesse, siis ma söön, siis ma pesen hambad ära, siis ma lähen bussi peale. Lähen kooli, koolist lähen maleringi. Mingi hetk jõuan koju. Kodus õpin. Siis teen midagi, mis pähe tuleb, ja siis lähen magama.",
+              "en": "I wake up at half past six. In the morning I get dressed, then I eat, then I brush my teeth, then I take the bus. I go to school, and from school I go to the chess club. At some point I get home. At home I study. Then I do whatever comes to mind, and then I go to sleep.",
+              "az": "Yeddinin yarısında oyanıram. Səhər geyinirəm, sonra yeyirəm, sonra dişlərimi yuyuram, sonra avtobusa minirəm. Məktəbə gedirəm, məktəbdən şahmat dərnəyinə. Bir vaxt evə çatıram. Evdə dərs oxuyuram. Sonra ağlıma nə gəlirsə, onu edirəm, sonra da yatıram.",
+              "ru": "Я просыпаюсь в половине седьмого. Утром одеваюсь, потом ем, потом чищу зубы, потом сажусь на автобус. Еду в школу, из школы — в шахматный кружок. В какой-то момент добираюсь домой. Дома учу уроки. Потом делаю что в голову придёт, а потом иду спать."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-morning-evening",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Morning or evening person?",
+        "az": "Səhər adamı, yoxsa axşam adamı?",
+        "ru": "Утренний человек или вечерний?"
+      },
+      "why": {
+        "en": "Two people on when they like to work, and four on what an evening holds",
+        "az": "İki nəfər nə vaxt işləməyi sevdiyi, dörd nəfər axşamı necə keçirdiyi haqqında",
+        "ru": "Двое — о том, когда им работается, и четверо — о том, как проходит вечер"
+      },
+      "taste": "Ma olen tegelikult hommikuinimene.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Kas sa oled hommiku- või õhtuinimene?",
+            "en": "Are you a morning or an evening person?",
+            "az": "Sən səhər adamısan, yoxsa axşam adamı?",
+            "ru": "Ты утренний человек или вечерний?"
+          },
+          "turns": [
+            {
+              "who": "Mihkel",
+              "et": "Ma olen tegelikult hommikuinimene. See tähendab, et mulle ei meeldi õhtul hilja tööd teha. Mulle meeldib tööd teha kas hommikul või pärastlõunal. Reeglina ma töötan alati hommikul.",
+              "en": "I'm actually a morning person. That means I don't like to work late in the evening. I like to work either in the morning or in the afternoon. As a rule, I always work in the morning.",
+              "az": "Mən əslində səhər adamıyam. Yəni axşam gec işləməyi sevmirəm. Ya səhər, ya da günortadan sonra işləməyi xoşlayıram. Bir qayda olaraq həmişə səhər işləyirəm.",
+              "ru": "Я на самом деле утренний человек. То есть мне не нравится работать поздно вечером. Я люблю работать или утром, или после обеда. Как правило, я всегда работаю утром."
+            },
+            {
+              "who": "Krista",
+              "et": "Mina olen hommikuinimene. Ma ärkan tavaliselt kell seitse. Mulle sobib hommikuti ärgata. Õhtul ma väsin ära. Õhtul ma lähen varem magama.",
+              "en": "I am a morning person. I usually wake up at seven. Waking up in the morning suits me. In the evening I get tired. In the evening I go to bed earlier.",
+              "az": "Mən səhər adamıyam. Adətən saat yeddidə oyanıram. Səhərlər oyanmaq mənə uyğundur. Axşam yoruluram. Axşam tez yatıram.",
+              "ru": "Я утренний человек. Обычно я просыпаюсь в семь. Мне подходит вставать по утрам. Вечером я устаю. Вечером я ложусь спать пораньше."
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Mida sa õhtul tavaliselt teed?",
+            "en": "What do you usually do in the evening?",
+            "az": "Axşamlar adətən nə edirsən?",
+            "ru": "Что ты обычно делаешь вечером?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Õhtuti tulevad lapsed koolidest, trennidest. Ja siis nad hakkavad õppima ja vahel on neil midagi küsida, siis ma aitan neid. Näiteks tahavad nad inglise keele sõnu küsida või siis nad jutustavad mulle midagi, siis ma kuulan. Ja ma vaatan natuke telekat. Ja siis tuleb köök ära koristada.",
+              "en": "In the evenings the kids come home from school and from their clubs. Then they start to study, and sometimes they have something to ask, so I help them. For instance they want to ask about some English words, or they tell me something and I listen. And I watch a little TV. And then the kitchen needs tidying up.",
+              "az": "Axşamlar uşaqlar məktəbdən, məşqdən gəlirlər. Sonra dərs oxumağa başlayırlar, bəzən sualları olur, onda kömək edirəm. Məsələn, ingilis sözləri soruşmaq istəyirlər, ya da mənə nəsə danışırlar, mən də qulaq asıram. Bir az da televizora baxıram. Sonra mətbəxi yığışdırmaq lazım gəlir.",
+              "ru": "По вечерам дети приходят из школы, с тренировок. Потом они садятся за уроки, и иногда им нужно что-то спросить — тогда я им помогаю. Например, они спрашивают английские слова или рассказывают мне что-нибудь, а я слушаю. Ещё я немного смотрю телевизор. А потом надо убрать кухню."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Täna õhtul ma lähen jalgpalli mängima. See on mu hobi olnud kümme aastat. Ei, rohkem, viisteist aastat.",
+              "en": "Tonight I'm going to play football. It has been my hobby for ten years. No, more — fifteen years.",
+              "az": "Bu axşam futbol oynamağa gedirəm. Bu, on ildir mənim hobbimdir. Yox, daha çox — on beş il.",
+              "ru": "Сегодня вечером я иду играть в футбол. Это моё хобби уже десять лет. Нет, больше — пятнадцать лет."
+            },
+            {
+              "who": "Kiur",
+              "et": "Tavaliselt õhtuti ma õpin või olen arvutis.",
+              "en": "Usually in the evenings I study or I'm at the computer.",
+              "az": "Adətən axşamlar dərs oxuyuram və ya kompüterdə oluram.",
+              "ru": "Обычно по вечерам я учу уроки или сижу за компьютером."
+            },
+            {
+              "who": "Aleksandr",
+              "et": "No õhtu sõltub sellest, kas mul on proov või ei ole. Võib-olla paar korda nädalas teeme oma bändikaaslastega proovi. Ma mängin kitarri ja laulan. Mul on oma bänd.",
+              "en": "Well, the evening depends on whether I have a rehearsal or not. Maybe a couple of times a week we rehearse with my bandmates. I play the guitar and sing. I have my own band.",
+              "az": "Axşam ondan asılıdır ki, məşqim var, ya yox. Həftədə bir-iki dəfə qrup yoldaşlarımla məşq edirik. Mən gitara çalıram və oxuyuram. Öz qrupum var.",
+              "ru": "Ну, вечер зависит от того, есть ли у меня репетиция. Пару раз в неделю мы репетируем с ребятами из группы. Я играю на гитаре и пою. У меня своя группа."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-chores",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Household chores",
+        "az": "Ev işləri",
+        "ru": "Домашние дела"
+      },
+      "why": {
+        "en": "Who washes what, the chore nobody likes, and whether ironing is women's work",
+        "az": "Kim nəyi yuyur, heç kimin sevmədiyi iş və ütüləmək qadın işidirmi",
+        "ru": "Кто что моет, какая работа никому не нравится и женское ли дело глажка"
+      },
+      "taste": "Ma viin prügi välja.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Missuguseid koduseid töid sa teed?",
+            "en": "What household chores do you do?",
+            "az": "Hansı ev işlərini görürsən?",
+            "ru": "Какие домашние дела ты делаешь?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Ma teen igasuguseid koduseid töid. Pesen pesu, panen pesu kuivama. Pesen nõusid, kuigi ma kasutan selleks nõudepesumasinat, mis minu eest selle töö ära teeb. Teen süüa, nädalavahetuseti koristan. Klopin vaipu, lapsed aitavad.",
+              "en": "I do all sorts of household chores. I wash the laundry and hang it up to dry. I wash the dishes, although I use the dishwasher for that, which does the work for me. I cook, and at the weekend I clean. I beat the carpets; the kids help.",
+              "az": "Hər cür ev işi görürəm. Paltar yuyuram, qurumağa sərirəm. Qab yuyuram, baxmayaraq ki, bunun üçün qabyuyan maşından istifadə edirəm — işi mənim əvəzimə o görür. Yemək bişirirəm, həftə sonları yığışdırıram. Xalçaları çırpıram, uşaqlar kömək edir.",
+              "ru": "Я делаю всякую домашнюю работу. Стираю, развешиваю бельё сушиться. Мою посуду, хотя для этого у меня посудомоечная машина, которая делает эту работу за меня. Готовлю, по выходным убираю. Выбиваю ковры, дети помогают."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma pesen nõusid nõudepesumasinaga. Ma pesen pesu pesumasinaga. Ma imen tolmu ja kui on aega, siis ma pesen pärast seda põranda ära, kui me oleme niimoodi kokku leppinud. Mulle meeldib asju parandada, aga need paraku lähevad kõik tavaliselt rohkem katki.",
+              "en": "I wash the dishes with the dishwasher. I wash the laundry with the washing machine. I vacuum, and if there is time I wash the floor afterwards — if that is what we have agreed. I like fixing things, but unfortunately they usually all end up more broken.",
+              "az": "Qabları qabyuyan maşınla yuyuram. Paltarı paltaryuyan maşınla yuyuram. Tozsoranla təmizləyirəm və vaxt olsa, ondan sonra döşəməni də yuyuram — əgər belə razılaşmışıqsa. Əşyaları təmir etməyi xoşlayıram, amma təəssüf ki, adətən hamısı daha çox xarab olur.",
+              "ru": "Я мою посуду в посудомоечной машине. Стираю в стиральной машине. Пылесошу, и если есть время, потом мою пол — если мы так договорились. Я люблю чинить вещи, но они, к сожалению, обычно ломаются ещё сильнее."
+            },
+            {
+              "who": "Aleksandr",
+              "et": "Pesen põrandaid eelkõige. Otseselt ma nõusid ei pese, aga panen nõud nõudepesumasinasse.",
+              "en": "I wash the floors, above all. I don't exactly wash the dishes, but I put them in the dishwasher.",
+              "az": "Ən çox döşəmələri yuyuram. Qabları, düzü, yumuram, amma qabyuyan maşına yığıram.",
+              "ru": "Прежде всего мою полы. Посуду я, собственно, не мою, но складываю её в посудомоечную машину."
+            },
+            {
+              "who": "Kiur",
+              "et": "Ma viin prügi välja.",
+              "en": "I take the rubbish out.",
+              "az": "Zibili atıram.",
+              "ru": "Я выношу мусор."
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Missugused kodused tööd sulle ei meeldi?",
+            "en": "Which household chores don't you like?",
+            "az": "Hansı ev işləri xoşuna gəlmir?",
+            "ru": "Какие домашние дела тебе не нравятся?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Kuna meil on kaks korrust, siis mulle ei meeldi vedada tolmuimejat alumiselt korruselt ülemisele korrusele ja ülemiselt korruselt alumisele korrusele. Aga muidu tolmu mulle meeldib tõmmata. Mulle meeldib ka aknaid pesta, sest meil ei ole palju aknaid ja aknapesu läheb kiiresti.",
+              "en": "Since we have two floors, I don't like dragging the vacuum cleaner from the lower floor to the upper one and from the upper floor back down. But otherwise I like vacuuming. I also like washing the windows, because we don't have many windows and the window washing goes quickly.",
+              "az": "Bizim iki mərtəbəmiz olduğundan tozsoranı aşağı mərtəbədən yuxarı mərtəbəyə, yuxarıdan da aşağıya daşımağı sevmirəm. Amma tozsoranla təmizləməyin özünü xoşlayıram. Pəncərə yumağı da xoşlayıram, çünki pəncərəmiz çox deyil və tez yuyulub qurtarır.",
+              "ru": "Поскольку у нас два этажа, мне не нравится таскать пылесос с нижнего этажа на верхний и с верхнего на нижний. А так пылесосить я люблю. Люблю и мыть окна, потому что окон у нас немного и мытьё идёт быстро."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Vanni pesemine. Mulle ei meeldi vanni pesta, sest see on suur ja ma ei saa aru: vann on niikuinii kogu aeg valge, miks ma pean seda pesema?",
+              "en": "Cleaning the bath. I don't like cleaning the bath, because it is big and I don't understand it: the bath is white all the time anyway, so why do I have to wash it?",
+              "az": "Vannanı yumaq. Vannanı yumağı sevmirəm, çünki böyükdür və başa düşmürəm: vanna onsuz da həmişə ağdır, niyə onu yumalıyam?",
+              "ru": "Мытьё ванны. Я не люблю мыть ванну, потому что она большая и я не понимаю: ванна и так всё время белая, зачем мне её мыть?"
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Kas triikimine on naiste töö?",
+            "en": "Is ironing women's work?",
+            "az": "Ütüləmək qadın işidir?",
+            "ru": "Глажка — женское дело?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Oo jaa, triikimine on minu meelest naiste töö. Kui minu mees hakkab vahel pesu triikima, siis ma tunnen ennast imelikult. Aga üldiselt mulle meeldib triikida.",
+              "en": "Oh yes, ironing is women's work, to my mind. When my husband sometimes starts ironing the laundry, I feel strange. But in general I like ironing.",
+              "az": "Hə, məncə ütüləmək qadın işidir. Ərim bəzən paltar ütüləməyə başlayanda özümü qəribə hiss edirəm. Amma ümumiyyətlə ütüləməyi xoşlayıram.",
+              "ru": "О да, по-моему, глажка — женское дело. Когда мой муж иногда берётся гладить бельё, мне становится как-то странно. Но вообще я люблю гладить."
+            },
+            {
+              "who": "Kiur",
+              "et": "Kõik võivad kõike teha. Mina ei triigi.",
+              "en": "Everybody can do everything. I don't iron.",
+              "az": "Hamı hər şeyi edə bilər. Mən ütüləmirəm.",
+              "ru": "Все могут делать всё. Я не глажу."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma ei tea, ei ole, sest kõik oma töösärgid triigin ma ise. Ma ei saa öelda, et triikimine on naiste töö. Ei ole.",
+              "en": "I don't know — no, because I iron all my work shirts myself. I can't say that ironing is women's work. It isn't.",
+              "az": "Bilmirəm, yox, çünki bütün iş köynəklərimi özüm ütüləyirəm. Deyə bilmərəm ki, ütüləmək qadın işidir. Deyil.",
+              "ru": "Не знаю, нет, потому что все свои рабочие рубашки я глажу сам. Я не могу сказать, что глажка — женское дело. Это не так."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-first-last",
+      "added": "2026-10-06",
+      "name": {
+        "en": "The first and the last word of the day",
+        "az": "Günün ilk və son sözü",
+        "ru": "Первое и последнее слово за день"
+      },
+      "why": {
+        "en": "Who they speak to first in the morning and last at night, and what they say",
+        "az": "Səhər ilk, gecə isə son kiminlə danışırlar və nə deyirlər",
+        "ru": "С кем они говорят первым делом утром и последним вечером, и что говорят"
+      },
+      "taste": "Rääkisin oma emaga. Head ööd!",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Kellega sa hommikul kõige esimesena räägid?",
+            "en": "Who is the first person you talk to in the morning?",
+            "az": "Səhər ilk olaraq kiminlə danışırsan?",
+            "ru": "С кем ты разговариваешь утром первым делом?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Esimesena räägin ma tavaliselt oma kõige väiksema lapsega, kes on kaheksa-aastane. Tema ärkab kõige varem üles, kuigi ta kooli ei lähe kõige varem.",
+              "en": "The first one I usually talk to is my youngest child, who is eight years old. He wakes up the earliest, although he isn't the one who goes to school the earliest.",
+              "az": "İlk olaraq adətən ən kiçik uşağımla danışıram, səkkiz yaşı var. O hamıdan tez oyanır, baxmayaraq ki, məktəbə hamıdan tez getmir.",
+              "ru": "Первым делом я обычно разговариваю со своим младшим ребёнком, ему восемь лет. Он просыпается раньше всех, хотя в школу раньше всех не идёт."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma räägin oma elukaaslasega. Esimese asjana ma ütlen talle tavaliselt, mis kell on. Ja siis ma küsin, kas ta tahab, et ma teen talle kohvi.",
+              "en": "I talk to my partner. The first thing I usually tell her is what time it is. And then I ask whether she wants me to make her a coffee.",
+              "az": "Həyat yoldaşımla danışıram. İlk olaraq adətən ona saatın neçə olduğunu deyirəm. Sonra soruşuram ki, ona kofe hazırlamağımı istəyir, ya yox.",
+              "ru": "Я разговариваю со своей девушкой. Первым делом я обычно говорю ей, который час. А потом спрашиваю, хочет ли она, чтобы я сварил ей кофе."
+            },
+            {
+              "who": "Aleksandr",
+              "et": "No sel ajal, kui mina tõusen, naine magab, sest ta töötab kodus. Ta tõuseb natuke hiljem kui mina. Kui mina lähen tööle, siis tema just ärkab. Ma ei räägigi hommikul kellegagi, mulle meeldib selline vaikus.",
+              "en": "Well, when I get up my wife is asleep, because she works from home. She gets up a little later than I do. When I leave for work, she is just waking up. So I don't really talk to anyone in the morning; I like that kind of quiet.",
+              "az": "Mən duranda arvadım yatır, çünki o evdə işləyir. O məndən bir az gec durur. Mən işə gedəndə o təzəcə oyanır. Səhər heç kimlə danışmıram da — mənə belə sakitlik xoşdur.",
+              "ru": "Ну, когда я встаю, жена спит, потому что она работает дома. Она встаёт немного позже меня. Когда я ухожу на работу, она как раз просыпается. Так что утром я ни с кем и не разговариваю — мне нравится такая тишина."
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Kellega sa eile õhtul kõige viimasena rääkisid? Mida sa ütlesid?",
+            "en": "Who did you talk to last yesterday evening? What did you say?",
+            "az": "Dünən axşam ən son kiminlə danışdın? Nə dedin?",
+            "ru": "С кем ты разговаривал(а) вчера вечером последним? Что ты сказал(а)?"
+          },
+          "turns": [
+            {
+              "who": "Kiur",
+              "et": "Rääkisin oma emaga. Head ööd!",
+              "en": "With my mother. Good night!",
+              "az": "Anamla danışdım. Gecən xeyrə!",
+              "ru": "Говорил с мамой. Спокойной ночи!"
+            },
+            {
+              "who": "Krista",
+              "et": "Ma arvan, et ma rääkisin eile viimati oma abikaasaga. Ma arvan, et ma ütlesin talle „Head ööd!“.",
+              "en": "I think the last one I talked to yesterday was my husband. I think I told him “Good night!”",
+              "az": "Məncə, dünən ən son ərimlə danışdım. Məncə, ona „Gecən xeyrə!“ dedim.",
+              "ru": "Думаю, последним вчера я разговаривала с мужем. Думаю, я сказала ему: «Спокойной ночи!»"
+            },
+            {
+              "who": "Aleksandr",
+              "et": "Ikka oma naisega rääkisin. Ma rääkisin sellest, et ma olen natuke väsinud ja et mul on palju tööd. Ja siis lõpus ütlesin talle: „Musi-musi, kalli-kalli!“, nagu ikka.",
+              "en": "With my wife, as always. I said that I was a little tired and that I had a lot of work. And then at the end I told her, “Kiss-kiss, hug-hug!”, like always.",
+              "az": "Yenə arvadımla danışdım. Dedim ki, bir az yorğunam və işim çoxdur. Axırda da həmişəki kimi dedim: „Öpürəm, qucaqlayıram!“",
+              "ru": "Как всегда, с женой. Я говорил о том, что немного устал и что у меня много работы. А в конце сказал ей, как всегда: «Чмок-чмок, обнимаю!»"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-glad-cross",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Happy and angry yesterday",
+        "az": "Dünən sevindirən və əsəbləşdirən",
+        "ru": "Чему радовались и на что сердились вчера"
+      },
+      "why": {
+        "en": "What made four people happy yesterday, and what made them angry",
+        "az": "Dünən dörd nəfəri nə sevindirdi və nə əsəbləşdirdi",
+        "ru": "Что вчера порадовало четверых и что их рассердило"
+      },
+      "taste": "Selle üle, et kool sai läbi.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Mille üle sa eile rõõmustasid?",
+            "en": "What were you happy about yesterday?",
+            "az": "Dünən nəyə sevindin?",
+            "ru": "Чему ты вчера радовался(ась)?"
+          },
+          "turns": [
+            {
+              "who": "Kiur",
+              "et": "Selle üle, et kool sai läbi. Selle üle rõõmustasin eile.",
+              "en": "That school was over. That is what I was happy about yesterday.",
+              "az": "Ona ki, məktəb qurtardı. Dünən buna sevindim.",
+              "ru": "Тому, что школа кончилась. Вот чему я вчера радовался."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma olin kolm päeva kodust eemal. Ja siis tulin koju ja rõõmustasin, et ma nägin oma elukaaslast, see rõõmustab mind alati. Sellised lihtsad asjad. Midagi keerulist ei ole. Sellised lihtsad asjad rõõmustavad mind.",
+              "en": "I was away from home for three days. And then I came home and was glad to see my partner; that always makes me happy. Simple things like that. Nothing complicated. Simple things like that make me happy.",
+              "az": "Üç gün evdən uzaqda idim. Sonra evə gəldim və həyat yoldaşımı görməyimə sevindim — bu məni həmişə sevindirir. Belə sadə şeylər. Mürəkkəb heç nə yoxdur. Belə sadə şeylər məni sevindirir.",
+              "ru": "Я три дня не был дома. А потом вернулся и обрадовался, что увидел свою девушку, — это меня всегда радует. Такие простые вещи. Ничего сложного. Такие простые вещи меня радуют."
+            },
+            {
+              "who": "Krista",
+              "et": "Ma rõõmustasin eile selle üle, et mu väike poeg tuli minu juurde ja tahtis mulle teha suure kalli. See on alati nii tore.",
+              "en": "Yesterday I was happy that my little son came up to me and wanted to give me a big hug. That is always so nice.",
+              "az": "Dünən ona sevindim ki, balaca oğlum yanıma gəldi və məni bərk qucaqlamaq istədi. Bu həmişə çox xoşdur.",
+              "ru": "Вчера я обрадовалась тому, что мой маленький сын подошёл ко мне и захотел крепко меня обнять. Это всегда так приятно."
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Mille peale sa eile vihastasid?",
+            "en": "What made you angry yesterday?",
+            "az": "Dünən nəyə əsəbləşdin?",
+            "ru": "На что ты вчера рассердился(ась)?"
+          },
+          "turns": [
+            {
+              "who": "Kiur",
+              "et": "Vihastasin selle peale, et matemaatikas oli kontrolltöö.",
+              "en": "I got angry because there was a test in maths.",
+              "az": "Ona əsəbləşdim ki, riyaziyyatdan yoxlama işi var idi.",
+              "ru": "Я рассердился на то, что по математике была контрольная."
+            },
+            {
+              "who": "Krista",
+              "et": "Eile ma tõepoolest natukene vihastasin, sest ma käisin koolis lastevanemate koosolekul ja seal esitasid vanemad nii imelikke küsimusi ja ma ei saanud aru, miks nad neid esitavad.",
+              "en": "Yesterday I really did get a little angry, because I went to a parents' meeting at school, and there the parents asked such strange questions and I couldn't understand why they were asking them.",
+              "az": "Dünən doğrudan da bir az əsəbləşdim, çünki məktəbdə valideyn iclasında idim və orada valideynlər elə qəribə suallar verirdilər ki, mən başa düşmürdüm, niyə verirlər.",
+              "ru": "Вчера я действительно немного рассердилась, потому что ходила в школу на родительское собрание, а там родители задавали такие странные вопросы, и я не понимала, зачем они их задают."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma vihastasin oma ema peale korraks, sest tal on isaga mingisugune konflikt. Ma ei viitsi sinna vahele jääda. Ja siis ma vihastan. „Mine, tegele ise oma asjadega,“ ütlen ma emale oma peas. Aga talle ma ütlen lihtsalt, et „Räägime ükspäev!“. See oli selline viha. Korraks, ajutine, mitte pikalt.",
+              "en": "I got angry with my mother for a moment, because she has some sort of conflict with my father. I can't be bothered to get caught in the middle of it. And then I get angry. “Go and mind your own business,” I say to my mother in my head. But to her I simply say, “Let's talk some day!” It was that kind of anger. For a moment, temporary, not for long.",
+              "az": "Bir anlıq anama əsəbləşdim, çünki atamla arasında nəsə bir münaqişə var. Onların arasına düşmək istəmirəm. Onda əsəbləşirəm. „Get öz işinlə məşğul ol,“ deyirəm anama ürəyimdə. Amma ona sadəcə deyirəm: „Bir gün danışarıq!“ Belə bir hirs idi. Bir anlıq, müvəqqəti, uzun yox.",
+              "ru": "Я на минуту рассердился на маму, потому что у неё какой-то конфликт с отцом. Мне неохота оказываться между ними. И тогда я сержусь. «Иди займись своими делами», — говорю я маме про себя. А ей просто говорю: «Поговорим как-нибудь!» Вот такая это была злость. На минуту, временная, ненадолго."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-dreams",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Do you dream?",
+        "az": "Yuxu görürsən?",
+        "ru": "Ты видишь сны?"
+      },
+      "why": {
+        "en": "Whether they dream, and what they saw last",
+        "az": "Yuxu görüb-görmədikləri və sonuncu dəfə nə gördükləri",
+        "ru": "Снятся ли им сны и что приснилось в последний раз"
+      },
+      "taste": "Jaa, vahel näen unenägusid.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Kas sa näed unenägusid?",
+            "en": "Do you dream?",
+            "az": "Yuxu görürsən?",
+            "ru": "Ты видишь сны?"
+          },
+          "turns": [
+            {
+              "who": "Krista",
+              "et": "Jaa, vahel näen unenägusid. Vahel ma mäletan neid hommikul, teinekord jälle ei mäleta.",
+              "en": "Yes, sometimes I dream. Sometimes I remember them in the morning, and other times I don't.",
+              "az": "Hə, bəzən yuxu görürəm. Bəzən səhər yadımda qalır, bəzən də yox.",
+              "ru": "Да, иногда вижу сны. Иногда помню их утром, а иногда не помню."
+            },
+            {
+              "who": "Kiur",
+              "et": "Ei näe. Nüüd juba paar aastat ei ole näinud.",
+              "en": "I don't. I haven't for a couple of years now.",
+              "az": "Görmürəm. Artıq bir-iki ildir görmürəm.",
+              "ru": "Нет. Уже пару лет не вижу."
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Mida sa viimati unes nägid?",
+            "en": "What did you dream about last?",
+            "az": "Sonuncu dəfə yuxuda nə gördün?",
+            "ru": "Что тебе приснилось в последний раз?"
+          },
+          "turns": [
+            {
+              "who": "Kiur",
+              "et": "Ei mäleta.",
+              "en": "I don't remember.",
+              "az": "Yadımda deyil.",
+              "ru": "Не помню."
+            },
+            {
+              "who": "Krista",
+              "et": "Viimati ma nägin unes sellist asja, et mul ei tulnud mitte midagi välja. Mul läks kõik nässu. Ma jäin bussidest maha ja unustasin kõik asjad ära.",
+              "en": "Last time I dreamt that I couldn't get anything right. Everything went wrong. I missed buses and forgot everything.",
+              "az": "Sonuncu dəfə yuxuda gördüm ki, heç nə alınmır. Hər şey korlandı. Avtobuslara gecikdim və hər şeyi unutdum.",
+              "ru": "В последний раз мне снилось, что у меня ничего не получается. Всё пошло наперекосяк. Я опаздывала на автобусы и всё забывала."
+            },
+            {
+              "who": "Mihkel",
+              "et": "Ma ei mäleta oma viimaseid unenägusid. Aga mul on üks hirmuunenägu, mida ma näen kogu aeg. See on hästi tavaline. Ma näen keskkooli ja et mul ei ole ühtegi bioloogia kontrolltööd tehtud ja ma jään selle pärast kaheteistkümnendasse klassi istuma. See on mu hirmuunenägu, ma olen seda näinud hästi palju kordi.",
+              "en": "I don't remember my last dreams. But I have one nightmare that I have all the time. It is very ordinary. I see my secondary school, and that I haven't done a single biology test, and because of that I have to repeat the twelfth grade. That is my nightmare; I have had it a great many times.",
+              "az": "Son yuxularım yadımda deyil. Amma bir qorxulu yuxum var ki, onu həmişə görürəm. Çox adi bir yuxudur. Orta məktəbi görürəm və ki, biologiyadan heç bir yoxlama işi yazmamışam, ona görə də on ikinci sinifdə qalıram. Bu mənim qorxulu yuxumdur, onu çox dəfə görmüşəm.",
+              "ru": "Я не помню своих последних снов. Но есть один кошмар, который мне снится всё время. Он совсем обычный. Я вижу школу и то, что у меня не написана ни одна контрольная по биологии, и из-за этого я остаюсь на второй год в двенадцатом классе. Это мой кошмар, я видел его очень много раз."
+            },
+            {
+              "who": "Aleksandr",
+              "et": "Ikka näen unenägusid. Aga kas ma neid mäletan või ei mäleta… Tavaliselt mäletan neid unenägusid, kui näiteks minu esivanemad tulevad ja räägivad minuga, neid ma mäletan väga hästi. Aga jaburaid unenägusid ma ei mäleta, sest nad ei tähenda minu jaoks midagi.",
+              "en": "I do dream. But whether I remember them or not… Usually I remember the dreams where, for instance, my ancestors come and talk to me; those I remember very well. But the nonsense dreams I don't remember, because they don't mean anything to me.",
+              "az": "Yuxu görürəm. Amma yadımda qalır, ya yox… Adətən o yuxular yadımda qalır ki, məsələn, əcdadlarım gəlib mənimlə danışırlar — onları çox yaxşı xatırlayıram. Amma mənasız yuxular yadımda qalmır, çünki mənim üçün heç nə ifadə etmirlər.",
+              "ru": "Сны я вижу. А вот помню их или нет… Обычно я помню те сны, где, например, приходят мои предки и разговаривают со мной, — их я помню очень хорошо. А бессмысленные сны я не помню, потому что для меня они ничего не значат."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-booking",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Booking a table and paying the bill",
+        "az": "Masa sifarişi və hesabın ödənməsi",
+        "ru": "Бронь столика и оплата счёта"
+      },
+      "why": {
+        "en": "A customer settles up, then books a table by the window for Tuesday at seven",
+        "az": "Müştəri hesabı ödəyir, sonra çərşənbə axşamı saat yeddiyə pəncərə yanında masa sifariş edir",
+        "ru": "Гость расплачивается, а потом бронирует столик у окна на вторник, на семь"
+      },
+      "taste": "Vabandust! Hei! Halloo!",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Klient",
+              "et": "Vabandust! Hei! Halloo!",
+              "en": "Excuse me! Hey! Hello!",
+              "az": "Bağışlayın! Ey! Alo!",
+              "ru": "Извините! Эй! Алло!"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah. Kuidas ma saan kasulik olla?",
+              "en": "Yes. How can I help you?",
+              "az": "Bəli. Sizə necə kömək edə bilərəm?",
+              "ru": "Да. Чем могу помочь?"
+            },
+            {
+              "who": "Klient",
+              "et": "Ma tahaksin oma arve ära maksta.",
+              "en": "I would like to pay my bill.",
+              "az": "Hesabımı ödəmək istərdim.",
+              "ru": "Я хотел бы оплатить счёт."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Nii, kuulan. Mis teil oli?",
+              "en": "Right, I'm listening. What did you have?",
+              "az": "Yaxşı, eşidirəm. Nə götürmüşdünüz?",
+              "ru": "Так, слушаю. Что у вас было?"
+            },
+            {
+              "who": "Klient",
+              "et": "Päevapraad ja keefir.",
+              "en": "The dish of the day and a kefir.",
+              "az": "Günün yeməyi və kefir.",
+              "ru": "Блюдо дня и кефир."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Ahah, viis eurot, palun. Ja sulas maksate, jah?",
+              "en": "I see — five euros, please. And you're paying in cash, yes?",
+              "az": "Aha, beş avro, zəhmət olmasa. Nağd ödəyirsiniz, eləmi?",
+              "ru": "Ага, пять евро, пожалуйста. Платите наличными, да?"
+            },
+            {
+              "who": "Klient",
+              "et": "Mhm.",
+              "en": "Mm-hm.",
+              "az": "Mhm.",
+              "ru": "Угу."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah, aitäh, kohe annan 45 eurot tagasi ka. Tšekki on vaja?",
+              "en": "Yes, thank you, I'll give you your 45 euros change in a moment. Do you need the receipt?",
+              "az": "Bəli, sağ olun, indicə 45 avro qalığınızı da verirəm. Çek lazımdır?",
+              "ru": "Да, спасибо, сейчас дам вам сдачу — 45 евро. Чек нужен?"
+            },
+            {
+              "who": "Klient",
+              "et": "Ei ole. Aga ma tahaksin veel lauda broneerida.",
+              "en": "No. But I would also like to book a table.",
+              "az": "Yox. Amma bir də masa sifariş etmək istərdim.",
+              "ru": "Нет. Но я хотел бы ещё забронировать столик."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Täna kahjuks küll ei saa. Näete, meil on siin hullumaja.",
+              "en": "Today, unfortunately, you can't. You see, it's a madhouse here.",
+              "az": "Bu gün, təəssüf ki, mümkün deyil. Görürsünüz, burada dəlixanadır.",
+              "ru": "Сегодня, к сожалению, не получится. Видите, у нас тут сумасшедший дом."
+            },
+            {
+              "who": "Klient",
+              "et": "Ei, ma ei tahagi tänaseks.",
+              "en": "No, I don't want it for today.",
+              "az": "Yox, bu günə istəmirəm.",
+              "ru": "Нет, мне и не на сегодня."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Mis ajaks te siis broneerida soovite?",
+              "en": "For when would you like to book, then?",
+              "az": "Bəs nə vaxta sifariş etmək istəyirsiniz?",
+              "ru": "На какое время вы тогда хотите забронировать?"
+            },
+            {
+              "who": "Klient",
+              "et": "Mul oleks vaja lauda teisipäeval.",
+              "en": "I would need a table on Tuesday.",
+              "az": "Mənə çərşənbə axşamı masa lazımdır.",
+              "ru": "Мне нужен столик во вторник."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Teisipäev… teisipäev… see on siis kahekümne viies märts. Jah, saab broneerida küll. Millal teil vaja on, kas päeval või õhtul?",
+              "en": "Tuesday… Tuesday… that's the twenty-fifth of March. Yes, that can be booked. When do you need it — during the day or in the evening?",
+              "az": "Çərşənbə axşamı… çərşənbə axşamı… bu, martın iyirmi beşidir. Bəli, sifariş etmək olar. Nə vaxt lazımdır — gündüz, yoxsa axşam?",
+              "ru": "Вторник… вторник… это двадцать пятое марта. Да, забронировать можно. Когда вам нужно — днём или вечером?"
+            },
+            {
+              "who": "Klient",
+              "et": "Õhtul kell seitse.",
+              "en": "At seven in the evening.",
+              "az": "Axşam saat yeddidə.",
+              "ru": "Вечером, в семь."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Nii. Ja mitmele inimesele ma laua kinni panen?",
+              "en": "Right. And for how many people shall I reserve the table?",
+              "az": "Yaxşı. Masanı neçə nəfər üçün saxlayım?",
+              "ru": "Так. И на сколько человек мне забронировать столик?"
+            },
+            {
+              "who": "Klient",
+              "et": "Kahele.",
+              "en": "For two.",
+              "az": "İki nəfərə.",
+              "ru": "На двоих."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah, ja kelle nimele?",
+              "en": "Yes, and in whose name?",
+              "az": "Bəli, kimin adına?",
+              "ru": "Да, и на чьё имя?"
+            },
+            {
+              "who": "Klient",
+              "et": "Pange Illimari nimele.",
+              "en": "Put it in Illimar's name.",
+              "az": "Illimarın adına yazın.",
+              "ru": "Запишите на имя Illimar."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Väga hea. Panin teile kinni selle uksepoolse laua.",
+              "en": "Very good. I've reserved that table by the door for you.",
+              "az": "Çox gözəl. Sizin üçün qapı tərəfdəki o masanı saxladım.",
+              "ru": "Очень хорошо. Я забронировал для вас вот тот столик у двери."
+            },
+            {
+              "who": "Klient",
+              "et": "Las ma vaatan. Kas see aknapoolne laud on ka vaba? Mulle meeldiks see rohkem.",
+              "en": "Let me see. Is that table by the window free too? I would like that one better.",
+              "az": "Qoyun baxım. Pəncərə tərəfdəki o masa da boşdur? O, mənim daha çox xoşuma gələrdi.",
+              "ru": "Дайте взглянуть. А тот столик у окна тоже свободен? Он мне нравится больше."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah. Paneme siis selle kinni.",
+              "en": "Yes. Let's reserve that one, then.",
+              "az": "Bəli. Onda onu saxlayaq.",
+              "ru": "Да. Тогда забронируем его."
+            },
+            {
+              "who": "Klient",
+              "et": "Väga hea.",
+              "en": "Very good.",
+              "az": "Çox gözəl.",
+              "ru": "Очень хорошо."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Teisipäeval kell seitse aknapoolne laud kahele inimesele.",
+              "en": "Tuesday at seven, a table by the window for two.",
+              "az": "Çərşənbə axşamı saat yeddidə pəncərə yanında iki nəfərlik masa.",
+              "ru": "Во вторник в семь столик у окна на двоих."
+            },
+            {
+              "who": "Klient",
+              "et": "Just. Tänan väga! Nägemiseni!",
+              "en": "Exactly. Thank you very much! Goodbye!",
+              "az": "Düzdür. Çox sağ olun! Görüşənədək!",
+              "ru": "Именно. Большое спасибо! До свидания!"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Ilusat päeva!",
+              "en": "Have a nice day!",
+              "az": "Gününüz xoş keçsin!",
+              "ru": "Хорошего дня!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-choosing",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Choosing what to eat",
+        "az": "Yeməyi seçmək",
+        "ru": "Выбор блюд"
+      },
+      "why": {
+        "en": "Illimar and Johanna ask for a menu in Estonian, then pick their drinks and their dishes",
+        "az": "Illimar və Johanna eston dilində menyu istəyir, sonra içki və yemək seçirlər",
+        "ru": "Illimar и Johanna просят меню на эстонском, потом выбирают напитки и блюда"
+      },
+      "taste": "Tere, Johanna!",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Illimar",
+              "et": "Tere, Johanna! Kui kena sa välja näed!",
+              "en": "Hello, Johanna! How nice you look!",
+              "az": "Salam, Johanna! Nə gözəl görünürsən!",
+              "ru": "Привет, Johanna! Как ты хорошо выглядишь!"
+            },
+            {
+              "who": "Johanna",
+              "et": "Tere, Illimar! Samad sõnad.",
+              "en": "Hello, Illimar! Same to you.",
+              "az": "Salam, Illimar! Sən də.",
+              "ru": "Привет, Illimar! И ты тоже."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Tere! Siin on teile menüüd. Kas soovite kohe midagi juua tellida?",
+              "en": "Hello! Here are your menus. Would you like to order something to drink right away?",
+              "az": "Salam! Buyurun, menyular. Dərhal içməyə nəsə sifariş etmək istəyirsiniz?",
+              "ru": "Здравствуйте! Вот ваши меню. Хотите сразу заказать что-нибудь выпить?"
+            },
+            {
+              "who": "Illimar",
+              "et": "Johanna, mida sa juua sooviksid?",
+              "en": "Johanna, what would you like to drink?",
+              "az": "Johanna, nə içmək istərdin?",
+              "ru": "Johanna, что бы ты хотела выпить?"
+            },
+            {
+              "who": "Johanna",
+              "et": "See menüü on venekeelne. Kas te saaksite palun tuua eestikeelse menüü?",
+              "en": "This menu is in Russian. Could you please bring a menu in Estonian?",
+              "az": "Bu menyu rus dilindədir. Zəhmət olmasa, eston dilində menyu gətirə bilərsiniz?",
+              "ru": "Это меню на русском. Не могли бы вы принести меню на эстонском?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Oih, vabandust-vabandust! Ma kohe toon teile uued menüüd.",
+              "en": "Oops, sorry, sorry! I'll bring you new menus right away.",
+              "az": "Oy, bağışlayın, bağışlayın! İndicə sizə yeni menyular gətirirəm.",
+              "ru": "Ой, извините, извините! Сейчас принесу вам новые меню."
+            },
+            {
+              "who": "Illimar",
+              "et": "Mis me siis joome? Veini? Õlut? Viina? Kokteili?",
+              "en": "So what shall we drink? Wine? Beer? Vodka? A cocktail?",
+              "az": "Bəs nə içək? Şərab? Pivə? Araq? Kokteyl?",
+              "ru": "Так что будем пить? Вино? Пиво? Водку? Коктейль?"
+            },
+            {
+              "who": "Johanna",
+              "et": "Ma võtan ühe heleda õlle.",
+              "en": "I'll have a pale beer.",
+              "az": "Mən bir açıq pivə götürərəm.",
+              "ru": "Я возьму светлое пиво."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Vabandust veel kord.",
+              "en": "Sorry once again.",
+              "az": "Bir daha bağışlayın.",
+              "ru": "Ещё раз извините."
+            },
+            {
+              "who": "Illimar",
+              "et": "Pole midagi.",
+              "en": "It's nothing.",
+              "az": "Eybi yox.",
+              "ru": "Ничего страшного."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Kas toon teile midagi juua?",
+              "en": "Shall I bring you something to drink?",
+              "az": "Sizə içməyə nəsə gətirim?",
+              "ru": "Принести вам что-нибудь выпить?"
+            },
+            {
+              "who": "Illimar",
+              "et": "Jah. Öelge palun, missugust heledat õlut teil on?",
+              "en": "Yes. Tell me, please, what kind of pale beer do you have?",
+              "az": "Bəli. Deyin, zəhmət olmasa, hansı açıq pivələriniz var?",
+              "ru": "Да. Скажите, пожалуйста, какое у вас есть светлое пиво?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Õllede valik on siin.",
+              "en": "The beer selection is here.",
+              "az": "Pivə seçimi buradadır.",
+              "ru": "Выбор пива вот здесь."
+            },
+            {
+              "who": "Johanna",
+              "et": "See käsitööõlu tundub huvitav, ma võtan selle.",
+              "en": "This craft beer seems interesting, I'll take this one.",
+              "az": "Bu kraft pivə maraqlı görünür, mən bunu götürürəm.",
+              "ru": "Это крафтовое пиво выглядит интересно, я возьму его."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Väga hea valik. Ja teile?",
+              "en": "A very good choice. And for you?",
+              "az": "Çox yaxşı seçimdir. Bəs sizə?",
+              "ru": "Очень хороший выбор. А вам?"
+            },
+            {
+              "who": "Illimar",
+              "et": "Mina eelistan õllele veini. Klaas punast majaveini, palun.",
+              "en": "I prefer wine to beer. A glass of the red house wine, please.",
+              "az": "Mən pivədən çox şərabı üstün tuturam. Bir qədəh qırmızı ev şərabı, zəhmət olmasa.",
+              "ru": "Я предпочитаю пиву вино. Бокал красного домашнего вина, пожалуйста."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Selge. Kohe toon teie joogid.",
+              "en": "Right. I'll bring your drinks straight away.",
+              "az": "Aydındır. İndicə içkilərinizi gətirirəm.",
+              "ru": "Понятно. Сейчас принесу ваши напитки."
+            },
+            {
+              "who": "Johanna",
+              "et": "Mis sa võtad? Mul on kõht jube tühi.",
+              "en": "What are you having? I'm terribly hungry.",
+              "az": "Sən nə götürürsən? Mən dəhşətli acam.",
+              "ru": "Что ты будешь? Я ужасно голодная."
+            },
+            {
+              "who": "Illimar",
+              "et": "Ma ei tea, äkki mingi supi… Oo, kalasupp. Ma võtan selle.",
+              "en": "I don't know, maybe some soup… Oh, fish soup. I'll have that.",
+              "az": "Bilmirəm, bəlkə bir şorba… Oo, balıq şorbası. Mən bunu götürürəm.",
+              "ru": "Не знаю, может, какой-нибудь суп… О, рыбный суп. Возьму его."
+            },
+            {
+              "who": "Johanna",
+              "et": "Ma vist suppi ei jaksa süüa, kui ma prae ka võtan.",
+              "en": "I don't think I can manage soup if I'm having a main course too.",
+              "az": "Deyəsən, əsas yemək də götürsəm, şorbanı yeyə bilməyəcəyəm.",
+              "ru": "Я, наверное, не осилю суп, если возьму ещё и второе."
+            },
+            {
+              "who": "Illimar",
+              "et": "Näe, siin on praed: röstitud pardifilee jõhvikakastmega, küpsetatud sealiha hapukapsaga, burger grillitud veiselihaga…",
+              "en": "Look, here are the main courses: roast duck fillet with cranberry sauce, baked pork with sauerkraut, a burger with grilled beef…",
+              "az": "Bax, əsas yeməklər burada: mərcangilə sousu ilə qızardılmış ördək filesi, turşu kələmlə bişmiş donuz əti, qril mal əti ilə burger…",
+              "ru": "Смотри, вот вторые блюда: жареное филе утки с клюквенным соусом, запечённая свинина с квашеной капустой, бургер с говядиной на гриле…"
+            },
+            {
+              "who": "Johanna",
+              "et": "Kus sa neid näed? Aa, ja-jah. Ma võtan šašlõki, nii ammu pole šašlõkki söönud.",
+              "en": "Where do you see those? Ah, yes. I'll have the shashlik; I haven't had shashlik for so long.",
+              "az": "Sən onları harada görürsən? Aa, hə. Mən şaşlık götürürəm, nə vaxtdır şaşlık yemirəm.",
+              "ru": "Где ты их видишь? А, да-да. Я возьму шашлык, так давно не ела шашлык."
+            },
+            {
+              "who": "Illimar",
+              "et": "Ma mõtlesin, et sa oled taimetoitlane.",
+              "en": "I thought you were a vegetarian.",
+              "az": "Elə bilirdim, sən vegetariansan.",
+              "ru": "Я думал, ты вегетарианка."
+            },
+            {
+              "who": "Johanna",
+              "et": "Sa ajad mind kellegagi segamini. Mina olen alati liha söönud. Põhimõtteliselt ma olen alati kõike söönud. Välja arvatud muidugi küüslauk. Kõik muu sobib.",
+              "en": "You're mixing me up with someone. I have always eaten meat. In fact I've always eaten everything. Except garlic, of course. Everything else is fine.",
+              "az": "Sən məni kiminləsə qarışdırırsan. Mən həmişə ət yemişəm. Əslində həmişə hər şey yemişəm. Əlbəttə, sarımsaqdan başqa. Qalan hər şey olar.",
+              "ru": "Ты меня с кем-то путаешь. Я всегда ела мясо. В принципе, я всегда ела всё. Кроме чеснока, конечно. Всё остальное подходит."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-ordering",
+      "added": "2026-10-06",
+      "name": {
+        "en": "Ordering the meal",
+        "az": "Yeməyi sifariş etmək",
+        "ru": "Заказ"
+      },
+      "why": {
+        "en": "Fish soup without the coconut milk, shashlik, and what comes on the side",
+        "az": "Kokos südü olmadan balıq şorbası, şaşlık və yanında nə verilir",
+        "ru": "Рыбный суп без кокосового молока, шашлык и что взять на гарнир"
+      },
+      "taste": "Nii, kas olete valmis?",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Ettekandja",
+              "et": "Nii, kas olete valmis?",
+              "en": "So, are you ready?",
+              "az": "Hə, hazırsınız?",
+              "ru": "Так, вы готовы?"
+            },
+            {
+              "who": "Johanna",
+              "et": "Tegelikult õlu oli mulle.",
+              "en": "Actually, the beer was for me.",
+              "az": "Əslində pivə mənim idi.",
+              "ru": "Вообще-то пиво было мне."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Oi, muidugi. Vabandust! Nii, kas olete otsustanud?",
+              "en": "Oh, of course. Sorry! So, have you decided?",
+              "az": "Oy, əlbəttə. Bağışlayın! Hə, qərar vermisiniz?",
+              "ru": "Ой, конечно. Извините! Так, вы решили?"
+            },
+            {
+              "who": "Illimar",
+              "et": "Mina võtaksin kalasupi. Ega see terav ei ole?",
+              "en": "I would like the fish soup. It isn't spicy, is it?",
+              "az": "Mən balıq şorbası götürərdim. O acı deyil ki?",
+              "ru": "Я бы взял рыбный суп. Он не острый?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Seal on natukene tšillit küll, aga kuna seal on kookospiim ka sees, siis see supp väga terav ei ole, pigem on ta selline mahe.",
+              "en": "There is a little chilli in it, but since there is coconut milk in it too, the soup isn't very spicy — it's rather mild.",
+              "az": "İçində bir az çili var, amma kokos südü də olduğundan şorba çox acı deyil, daha çox mülayimdir.",
+              "ru": "Чили в нём немного есть, но поскольку там ещё и кокосовое молоко, суп не очень острый — скорее мягкий."
+            },
+            {
+              "who": "Illimar",
+              "et": "Kas ilma kookospiimata ei saaks? Ma kookospiima väga ei armasta.",
+              "en": "Couldn't I have it without the coconut milk? I'm not very fond of coconut milk.",
+              "az": "Kokos südü olmadan olmaz? Mən kokos südünü o qədər də sevmirəm.",
+              "ru": "А без кокосового молока нельзя? Я не очень люблю кокосовое молоко."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Saab ikka, ma räägin kokaga.",
+              "en": "Of course you can, I'll talk to the chef.",
+              "az": "Olar, əlbəttə, aşpazla danışaram.",
+              "ru": "Конечно, можно, я поговорю с поваром."
+            },
+            {
+              "who": "Johanna",
+              "et": "Mulle palun šašlõkk.",
+              "en": "Shashlik for me, please.",
+              "az": "Mənə şaşlık, zəhmət olmasa.",
+              "ru": "Мне, пожалуйста, шашлык."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Mis lisandit te šašlõki kõrvale soovite? Meil saab valida friikartulid, praekartulid, ahjukartulid, keedukartulid, hautatud aedviljad. Tatar ja riis on ka valikus.",
+              "en": "What side would you like with the shashlik? You can choose from fries, fried potatoes, baked potatoes, boiled potatoes or stewed vegetables. Buckwheat and rice are on offer too.",
+              "az": "Şaşlığın yanına hansı qarnir istəyirsiniz? Fri kartofu, qızardılmış kartof, sobada bişmiş kartof, qaynadılmış kartof, buğlanmış tərəvəz seçmək olar. Qarabaşaq və düyü də var.",
+              "ru": "Какой гарнир вы хотите к шашлыку? На выбор картофель фри, жареный картофель, запечённый картофель, отварной картофель, тушёные овощи. Есть также гречка и рис."
+            },
+            {
+              "who": "Johanna",
+              "et": "Ma võtaksin ainult mingi värske salati, näiteks tomati-kurgisalati. Millest see salat koosneb? Ega selle sees küüslauku pole? Ma olen küüslaugu vastu allergiline.",
+              "en": "I would just have some fresh salad, the tomato and cucumber salad for instance. What is in that salad? There's no garlic in it, is there? I'm allergic to garlic.",
+              "az": "Mən ancaq bir təzə salat götürərdim, məsələn, pomidor-xiyar salatı. Bu salatın tərkibində nə var? İçində sarımsaq yoxdur ki? Mənim sarımsağa allergiyam var.",
+              "ru": "Я бы взяла только какой-нибудь свежий салат, например салат из помидоров и огурцов. Из чего он состоит? В нём нет чеснока? У меня аллергия на чеснок."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Selles salatis ongi ainult tomat ja kurk, küüslauku ei ole. Kas veel midagi?",
+              "en": "That salad is just tomato and cucumber, no garlic. Anything else?",
+              "az": "Bu salatda ancaq pomidor və xiyar var, sarımsaq yoxdur. Daha nəsə?",
+              "ru": "В этом салате только помидоры и огурцы, чеснока нет. Что-нибудь ещё?"
+            },
+            {
+              "who": "Johanna",
+              "et": "See on hetkel vist kõik.",
+              "en": "That's probably all for now.",
+              "az": "Hələlik, deyəsən, hamısı budur.",
+              "ru": "Пока, наверное, всё."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Hüva. Ma jätan ühe menüü lauda, äkki soovite pärast magustoitu või midagi.",
+              "en": "Fine. I'll leave one menu on the table, in case you want a dessert or something later.",
+              "az": "Yaxşı. Bir menyunu masada qoyuram, bəlkə sonra desert və ya nəsə istədiniz.",
+              "ru": "Хорошо. Я оставлю одно меню на столе — вдруг потом захотите десерт или ещё что-нибудь."
+            },
+            {
+              "who": "Illimar",
+              "et": "Jah, võib-olla. Kui kaua söökidega läheb?",
+              "en": "Yes, maybe. How long will the food take?",
+              "az": "Hə, bəlkə. Yeməklər nə qədər çəkəcək?",
+              "ru": "Да, может быть. Сколько ждать еду?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Ei lähe kaua. Supi saab kohe ja šašlõkiga läheb kõige rohkem 15 minutit.",
+              "en": "Not long. The soup comes right away, and the shashlik takes fifteen minutes at the most.",
+              "az": "Çox çəkməz. Şorba dərhal gəlir, şaşlık isə ən çoxu 15 dəqiqə çəkər.",
+              "ru": "Недолго. Суп будет сразу, а шашлык займёт самое большее 15 минут."
+            },
+            {
+              "who": "Illimar",
+              "et": "Sinu terviseks, mu lill! Kõks!",
+              "en": "Your health, my flower! Cheers!",
+              "az": "Sənin sağlığına, çiçəyim! Çin-çin!",
+              "ru": "За твоё здоровье, мой цветочек! Чин-чин!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-eating",
+      "added": "2026-10-06",
+      "name": {
+        "en": "The food arrives",
+        "az": "Yemək gəlir",
+        "ru": "Еду принесли"
+      },
+      "why": {
+        "en": "Head isu, jätku leiba, a portion too big to finish, and the bill by card",
+        "az": "Head isu, jätku leiba, bitirilməyəcək qədər böyük porsiya və kartla ödəniş",
+        "ru": "Head isu, jätku leiba, порция, которую не осилить, и счёт по карте"
+      },
+      "taste": "Ja siin on teie söögid. Head isu!",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Ettekandja",
+              "et": "Ja siin on teie söögid. Head isu!",
+              "en": "And here is your food. Enjoy your meal!",
+              "az": "Buyurun, yeməkləriniz. Nuş olsun!",
+              "ru": "А вот и ваша еда. Приятного аппетита!"
+            },
+            {
+              "who": "Illimar",
+              "et": "Tegelikult supp oli mulle.",
+              "en": "Actually, the soup was for me.",
+              "az": "Əslində şorba mənim idi.",
+              "ru": "Вообще-то суп был мне."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Oi, palun vabandust!",
+              "en": "Oh, I'm sorry!",
+              "az": "Oy, bağışlayın!",
+              "ru": "Ой, простите!"
+            },
+            {
+              "who": "Johanna",
+              "et": "Appi, kui suur ports! Ma vist kõike küll ei jaksa ära süüa.",
+              "en": "Goodness, what a big portion! I don't think I can eat all of it.",
+              "az": "Vay, nə böyük porsiyadır! Deyəsən, hamısını yeyə bilməyəcəyəm.",
+              "ru": "Батюшки, какая порция! Я, наверное, всё не осилю."
+            },
+            {
+              "who": "Illimar",
+              "et": "Kas ma leiba ja hapukoort ka saaksin?",
+              "en": "Could I have some bread and sour cream as well?",
+              "az": "Çörək və xama da ala bilərəm?",
+              "ru": "Можно мне ещё хлеба и сметаны?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah, ma kohe toon leiba. Hapukoort meil paraku ei ole.",
+              "en": "Yes, I'll bring bread right away. Sour cream, unfortunately, we don't have.",
+              "az": "Bəli, indicə çörək gətirirəm. Xama, təəssüf ki, yoxdur.",
+              "ru": "Да, сейчас принесу хлеб. Сметаны у нас, к сожалению, нет."
+            },
+            {
+              "who": "Johanna",
+              "et": "Tooge mulle veel üks õlu ka, palun.",
+              "en": "Bring me another beer too, please.",
+              "az": "Mənə bir pivə də gətirin, zəhmət olmasa.",
+              "ru": "Принесите мне, пожалуйста, ещё одно пиво."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Selge. Palun!",
+              "en": "Right. Here you are!",
+              "az": "Aydındır. Buyurun!",
+              "ru": "Хорошо. Пожалуйста!"
+            },
+            {
+              "who": "Johanna",
+              "et": "Tänan. Vaata, kui uhke. Teeme pilti ka!",
+              "en": "Thank you. Look how grand. Let's take a picture too!",
+              "az": "Sağ olun. Bax, nə təmtəraqlı. Gəl şəkil də çəkək!",
+              "ru": "Спасибо. Смотри, как шикарно. Давай ещё сфотографируемся!"
+            },
+            {
+              "who": "Illimar",
+              "et": "Aa, muidugi.",
+              "en": "Ah, of course.",
+              "az": "Aa, əlbəttə.",
+              "ru": "А, конечно."
+            },
+            {
+              "who": "Johanna",
+              "et": "Ma mõtlesin, et toidust võiks pilti teha.",
+              "en": "I meant we could take a picture of the food.",
+              "az": "Mən yeməyin şəklini çəkməyi nəzərdə tuturdum.",
+              "ru": "Я имела в виду, что можно сфотографировать еду."
+            },
+            {
+              "who": "Illimar",
+              "et": "Teeme siis toidust ka.",
+              "en": "Let's take one of the food too, then.",
+              "az": "Onda yeməyin də şəklini çəkək.",
+              "ru": "Тогда сфотографируем и еду."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Palun. Teie leib.",
+              "en": "Here you are. Your bread.",
+              "az": "Buyurun. Çörəyiniz.",
+              "ru": "Пожалуйста. Ваш хлеб."
+            },
+            {
+              "who": "Illimar",
+              "et": "Tänud.",
+              "en": "Thanks.",
+              "az": "Təşəkkürlər.",
+              "ru": "Спасибо."
+            },
+            {
+              "who": "Johanna",
+              "et": "Jätku leiba siis, Illimar! Hakkame sööma.",
+              "en": "Jätku leiba, then, Illimar! Let's start eating.",
+              "az": "Onda nuş olsun, Illimar! Başlayaq yeməyə.",
+              "ru": "Ну, jätku leiba, Illimar! Давай есть."
+            },
+            {
+              "who": "Illimar",
+              "et": "Jätku tarvis.",
+              "en": "Jätku tarvis — thanks, and the same to you.",
+              "az": "Jätku tarvis — sağ ol, sənə də.",
+              "ru": "Jätku tarvis — спасибо, и тебе."
+            },
+            {
+              "who": "Johanna",
+              "et": "Kuidas sulle supp maitseb? Šašlõkk on küll suurepärane.",
+              "en": "How is the soup? The shashlik is excellent.",
+              "az": "Şorba necədir? Şaşlık əladır.",
+              "ru": "Как тебе суп? Шашлык просто отличный."
+            },
+            {
+              "who": "Illimar",
+              "et": "Täitsa söödav supp. Minu ema teeb muidugi veel paremat kalasuppi.",
+              "en": "Quite an edible soup. My mother makes an even better fish soup, of course.",
+              "az": "Yeməli şorbadır. Anam, əlbəttə, daha yaxşı balıq şorbası bişirir.",
+              "ru": "Вполне съедобный суп. Моя мама, конечно, варит рыбный суп ещё лучше."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Oi, kas šašlõkk ei maitsenud teile?",
+              "en": "Oh, didn't you like the shashlik?",
+              "az": "Oy, şaşlık xoşunuza gəlmədi?",
+              "ru": "Ой, вам не понравился шашлык?"
+            },
+            {
+              "who": "Johanna",
+              "et": "Vastupidi, väga maitses. Lihtsalt see portsjon oli hirmus suur. Palun, kas te saaksite selle mulle kaasa pakkida?",
+              "en": "On the contrary, I liked it a lot. It's just that the portion was terribly big. Could you please pack it for me to take away?",
+              "az": "Əksinə, çox xoşuma gəldi. Sadəcə porsiya dəhşətli böyük idi. Zəhmət olmasa, onu mənim üçün qablaşdıra bilərsiniz?",
+              "ru": "Наоборот, очень понравился. Просто порция была ужасно большая. Не могли бы вы завернуть мне его с собой?"
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Jah, loomulikult. Kas kohvi või magustoitu ka soovite?",
+              "en": "Yes, of course. Would you like coffee or a dessert as well?",
+              "az": "Bəli, əlbəttə. Kofe və ya desert də istəyirsiniz?",
+              "ru": "Да, разумеется. Кофе или десерт желаете?"
+            },
+            {
+              "who": "Johanna",
+              "et": "Kahjuks ei jaksa, kõht on tõesti väga täis. Palun tooge arve.",
+              "en": "Unfortunately I can't, I'm really very full. Please bring the bill.",
+              "az": "Təəssüf ki, yox, doğrudan da çox toxam. Zəhmət olmasa, hesabı gətirin.",
+              "ru": "К сожалению, не осилю, я правда очень сыта. Принесите, пожалуйста, счёт."
+            },
+            {
+              "who": "Ettekandja",
+              "et": "Kaardiga maksate, jah? Sel juhul tulge palun minuga kaasa, kaardiga saab meil ainult leti ääres maksta.",
+              "en": "You're paying by card, yes? In that case please come with me — card payments are only at the counter here.",
+              "az": "Kartla ödəyirsiniz, eləmi? Onda, zəhmət olmasa, mənimlə gəlin — bizdə kartla ancaq piştaxtanın yanında ödəmək olar.",
+              "ru": "Платите картой, да? Тогда пройдёмте, пожалуйста, со мной — картой у нас можно заплатить только у стойки."
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

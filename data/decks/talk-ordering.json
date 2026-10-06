@@ -1,0 +1,134 @@
+{
+ "id": "talk-ordering",
+ "added": "2026-10-06",
+ "name": {
+  "en": "Ordering the meal",
+  "az": "Yeməyi sifariş etmək",
+  "ru": "Заказ"
+ },
+ "why": {
+  "en": "Fish soup without the coconut milk, shashlik, and what comes on the side",
+  "az": "Kokos südü olmadan balıq şorbası, şaşlık və yanında nə verilir",
+  "ru": "Рыбный суп без кокосового молока, шашлык и что взять на гарнир"
+ },
+ "taste": "Nii, kas olete valmis?",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Ettekandja",
+     "et": "Nii, kas olete valmis?",
+     "en": "So, are you ready?",
+     "az": "Hə, hazırsınız?",
+     "ru": "Так, вы готовы?"
+    },
+    {
+     "who": "Johanna",
+     "et": "Tegelikult õlu oli mulle.",
+     "en": "Actually, the beer was for me.",
+     "az": "Əslində pivə mənim idi.",
+     "ru": "Вообще-то пиво было мне."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Oi, muidugi. Vabandust! Nii, kas olete otsustanud?",
+     "en": "Oh, of course. Sorry! So, have you decided?",
+     "az": "Oy, əlbəttə. Bağışlayın! Hə, qərar vermisiniz?",
+     "ru": "Ой, конечно. Извините! Так, вы решили?"
+    },
+    {
+     "who": "Illimar",
+     "et": "Mina võtaksin kalasupi. Ega see terav ei ole?",
+     "en": "I would like the fish soup. It isn't spicy, is it?",
+     "az": "Mən balıq şorbası götürərdim. O acı deyil ki?",
+     "ru": "Я бы взял рыбный суп. Он не острый?"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Seal on natukene tšillit küll, aga kuna seal on kookospiim ka sees, siis see supp väga terav ei ole, pigem on ta selline mahe.",
+     "en": "There is a little chilli in it, but since there is coconut milk in it too, the soup isn't very spicy — it's rather mild.",
+     "az": "İçində bir az çili var, amma kokos südü də olduğundan şorba çox acı deyil, daha çox mülayimdir.",
+     "ru": "Чили в нём немного есть, но поскольку там ещё и кокосовое молоко, суп не очень острый — скорее мягкий."
+    },
+    {
+     "who": "Illimar",
+     "et": "Kas ilma kookospiimata ei saaks? Ma kookospiima väga ei armasta.",
+     "en": "Couldn't I have it without the coconut milk? I'm not very fond of coconut milk.",
+     "az": "Kokos südü olmadan olmaz? Mən kokos südünü o qədər də sevmirəm.",
+     "ru": "А без кокосового молока нельзя? Я не очень люблю кокосовое молоко."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Saab ikka, ma räägin kokaga.",
+     "en": "Of course you can, I'll talk to the chef.",
+     "az": "Olar, əlbəttə, aşpazla danışaram.",
+     "ru": "Конечно, можно, я поговорю с поваром."
+    },
+    {
+     "who": "Johanna",
+     "et": "Mulle palun šašlõkk.",
+     "en": "Shashlik for me, please.",
+     "az": "Mənə şaşlık, zəhmət olmasa.",
+     "ru": "Мне, пожалуйста, шашлык."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Mis lisandit te šašlõki kõrvale soovite? Meil saab valida friikartulid, praekartulid, ahjukartulid, keedukartulid, hautatud aedviljad. Tatar ja riis on ka valikus.",
+     "en": "What side would you like with the shashlik? You can choose from fries, fried potatoes, baked potatoes, boiled potatoes or stewed vegetables. Buckwheat and rice are on offer too.",
+     "az": "Şaşlığın yanına hansı qarnir istəyirsiniz? Fri kartofu, qızardılmış kartof, sobada bişmiş kartof, qaynadılmış kartof, buğlanmış tərəvəz seçmək olar. Qarabaşaq və düyü də var.",
+     "ru": "Какой гарнир вы хотите к шашлыку? На выбор картофель фри, жареный картофель, запечённый картофель, отварной картофель, тушёные овощи. Есть также гречка и рис."
+    },
+    {
+     "who": "Johanna",
+     "et": "Ma võtaksin ainult mingi värske salati, näiteks tomati-kurgisalati. Millest see salat koosneb? Ega selle sees küüslauku pole? Ma olen küüslaugu vastu allergiline.",
+     "en": "I would just have some fresh salad, the tomato and cucumber salad for instance. What is in that salad? There's no garlic in it, is there? I'm allergic to garlic.",
+     "az": "Mən ancaq bir təzə salat götürərdim, məsələn, pomidor-xiyar salatı. Bu salatın tərkibində nə var? İçində sarımsaq yoxdur ki? Mənim sarımsağa allergiyam var.",
+     "ru": "Я бы взяла только какой-нибудь свежий салат, например салат из помидоров и огурцов. Из чего он состоит? В нём нет чеснока? У меня аллергия на чеснок."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Selles salatis ongi ainult tomat ja kurk, küüslauku ei ole. Kas veel midagi?",
+     "en": "That salad is just tomato and cucumber, no garlic. Anything else?",
+     "az": "Bu salatda ancaq pomidor və xiyar var, sarımsaq yoxdur. Daha nəsə?",
+     "ru": "В этом салате только помидоры и огурцы, чеснока нет. Что-нибудь ещё?"
+    },
+    {
+     "who": "Johanna",
+     "et": "See on hetkel vist kõik.",
+     "en": "That's probably all for now.",
+     "az": "Hələlik, deyəsən, hamısı budur.",
+     "ru": "Пока, наверное, всё."
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Hüva. Ma jätan ühe menüü lauda, äkki soovite pärast magustoitu või midagi.",
+     "en": "Fine. I'll leave one menu on the table, in case you want a dessert or something later.",
+     "az": "Yaxşı. Bir menyunu masada qoyuram, bəlkə sonra desert və ya nəsə istədiniz.",
+     "ru": "Хорошо. Я оставлю одно меню на столе — вдруг потом захотите десерт или ещё что-нибудь."
+    },
+    {
+     "who": "Illimar",
+     "et": "Jah, võib-olla. Kui kaua söökidega läheb?",
+     "en": "Yes, maybe. How long will the food take?",
+     "az": "Hə, bəlkə. Yeməklər nə qədər çəkəcək?",
+     "ru": "Да, может быть. Сколько ждать еду?"
+    },
+    {
+     "who": "Ettekandja",
+     "et": "Ei lähe kaua. Supi saab kohe ja šašlõkiga läheb kõige rohkem 15 minutit.",
+     "en": "Not long. The soup comes right away, and the shashlik takes fifteen minutes at the most.",
+     "az": "Çox çəkməz. Şorba dərhal gəlir, şaşlık isə ən çoxu 15 dəqiqə çəkər.",
+     "ru": "Недолго. Суп будет сразу, а шашлык займёт самое большее 15 минут."
+    },
+    {
+     "who": "Illimar",
+     "et": "Sinu terviseks, mu lill! Kõks!",
+     "en": "Your health, my flower! Cheers!",
+     "az": "Sənin sağlığına, çiçəyim! Çin-çin!",
+     "ru": "За твоё здоровье, мой цветочек! Чин-чин!"
+    }
+   ]
+  }
+ ]
+}
