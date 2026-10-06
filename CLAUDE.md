@@ -364,7 +364,7 @@ re-running its generator is the single most common way to fail CI:
 
 | After changing | Run | It rewrites |
 |---|---|---|
-| `assets/app.js` or `assets/styles.css` | `node tools/lean.mjs` | `assets/app.lean.js` and `assets/styles.lean.css`, the same two without the comments, which are what the pages load — run it before the stamper, since the stamper hashes the copies |
+| `assets/app.js`, `assets/styles.css`, `assets/lists.js` or `assets/lists.css` | `node tools/lean.mjs` | `assets/<name>.lean.js` or `.lean.css` beside each — the same file without the comments, which is what the pages load; `LEAN` at the top of the tool is the list. Run it before the stamper, since the stamper hashes the copies |
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every page named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/ui.json` or `data/restaurants.json` | `node tools/languages.mjs` | `data/lang/<code>.json` and `data/lang/index.json`, one language's strings and write-ups to a file, and `data/map.json`, the places without their write-ups — what the map reads instead of the two whole files |

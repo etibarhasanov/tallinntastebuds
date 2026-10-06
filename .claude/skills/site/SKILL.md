@@ -331,9 +331,9 @@ browser cannot import from `tools/`; change one, change the other.
 - **Labels**: every taxonomy type and every cuisine needs a label in every
   language; a blurb missing a language only warns. The **English** label of a
   type is the chip's name on every rail; the other nine sit beside it.
-- **The lean copies**: `assets/app.lean.js` and `assets/styles.lean.css`
-  must be what `node tools/lean.mjs` writes from `assets/app.js` and
-  `assets/styles.css`, and no stamped page may load either source directly.
+- **The lean copies**: every copy `LEAN` in `tools/lean.mjs` names —
+  `app`, `styles`, `lists` and `lists.css` today — must be what the tool
+  writes from its source, and no stamped page may load a source directly.
 - **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-one pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
@@ -350,10 +350,11 @@ If the change is something new, **Is it new?** above comes first and there is
 no step 1 until the owner has answered it.
 
 1. Make the change, in the dialect above, with the README section open.
-2. `node tools/lean.mjs`, if `assets/app.js` or `assets/styles.css` moved.
-   The pages load `assets/app.lean.js` and `assets/styles.lean.css`, the
-   same two files with the comments taken out, and CI refuses a copy that is
-   not what the tool would write. Never edit a copy — **The lean copies**
+2. `node tools/lean.mjs`, if `assets/app.js`, `assets/styles.css`,
+   `assets/lists.js` or `assets/lists.css` moved. The pages load the
+   `.lean.js` and `.lean.css` copy beside each — the same file with the
+   comments taken out; `LEAN` at the top of the tool is the list — and CI
+   refuses a copy that is not what the tool would write. Never edit a copy — **The lean copies**
    under **Cache stamps** in `README.md`.
 3. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
    and CI refuses a stale one. Never type a hash by hand.
@@ -451,7 +452,7 @@ it, and what was driven in a browser to check it.
    When `index.html` or `lists.html` conflicts on a `?v=` line, take the
    structure from both sides, `node tools/stamp.mjs`, `git add`,
    `git rebase --continue`; never type a hash.
-2. `node tools/lean.mjs` if `app.js` or `styles.css` moved, then
+2. `node tools/lean.mjs` if a source in its `LEAN` list moved, then
    `node tools/stamp.mjs`, then `node tools/validate.mjs`, then
    `node tools/qrperf.mjs --check` if `assets/qr.js` moved.
 3. The page in a browser, a light and a dark style, 390 px, and the README paragraph
@@ -472,7 +473,7 @@ it, and what was driven in a browser to check it.
 
 ## Where it goes wrong
 
-- The lean copies: `app.js` or `styles.css` edited and `node tools/lean.mjs`
+- The lean copies: a source in `LEAN` edited and `node tools/lean.mjs`
   not run, so the page keeps loading last week's code — the validator
   catches it, but only after the push. Or a fix typed into
   `assets/app.lean.js` directly, which the next run of the tool erases.
