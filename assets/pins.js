@@ -39,7 +39,7 @@
  *
  * KEEP IT IN STEP WITH functions/api/_pins.js
  *
- * That file holds the same thirty-six ids, because the server is what decides
+ * That file holds the same forty ids, because the server is what decides
  * whether the string a list wants to store is one of them. It cannot import this one and this one cannot import it — different
  * dialects, different runtimes — so they are written out twice, the way the
  * story clock in assets/app.js restates tools/clock.mjs. Change one, change
@@ -55,7 +55,7 @@ window.TTBPins = (function () {
    * croissant put a croissant on a sushi place, which reads as the map being
    * wrong about the sushi place rather than as the list being somebody's.
    *
-   *   MARKERS  what a LIST wears. Thirty-six symbols, none of them food —
+   *   MARKERS  what a LIST wears. Forty symbols, none of them food —
    *            a pin, a flame, a flag — because a list is somebody's choice of
    *            places and not a claim about what any one of them cooks. They
    *            mark a spot, which is the only thing that is true of all ten
@@ -75,17 +75,18 @@ window.TTBPins = (function () {
    *            places you can work from, a star, a rainbow, a cat, a bow,
    *            sparkles, music, a moon for late.
    *
-   *            Then thirty-six, because more of the cute ones were asked
-   *            for: animals — a dog, a unicorn, a bunny, a bear, a panda,
-   *            a fox, a frog, a chick, a penguin, an octopus, a whale, a
-   *            ladybird — then a sunflower, a tulip, a cactus, a snowflake,
-   *            a cloud, a gift, a camera and books. Still none of them food. Eight to a row still, so it
-   *            is four full rows and four over; a grid this size is a thing
-   *            to browse rather than a decision to make, which is the trade
-   *            the owner chose once eight had been tried.
+   *            Then forty, because more of the cute ones were asked for:
+   *            animals — a dog, a unicorn, a bunny, a bear, a panda, a fox,
+   *            a frog, a chick, a penguin, an octopus, a whale, a ladybird
+   *            — then a sunflower, a tulip, a cactus, a snowflake, a cloud,
+   *            a gift, a camera, books, and a teddy, a ghost, a turtle and a
+   *            hedgehog to make the last row whole. Still none of them food.
+   *            Five even rows of eight; a grid this size is a thing to
+   *            browse rather than a decision to make, which is the trade the
+   *            owner chose once eight had been tried.
    *
-   *            All thirty-six draw in the style's accent: a colour picker
-   *            under them was a second decision to make before you could name a
+   *            All forty draw in the style's accent: a colour picker under
+   *            them was a second decision to make before you could name a
    *            list, for a difference the marker was already making.
    *
    *   PLACES   what a GOOGLE ROW is. Five kinds of place, not thirty-eight
@@ -148,7 +149,11 @@ window.TTBPins = (function () {
     ['cloud',     '\u2601\uFE0F'],
     ['gift',      '\uD83C\uDF81'],
     ['camera',    '\uD83D\uDCF7'],
-    ['books',     '\uD83D\uDCDA']
+    ['books',     '\uD83D\uDCDA'],
+    ['teddy',     '\uD83E\uDDF8'],
+    ['ghost',     '\uD83D\uDC7B'],
+    ['turtle',    '\uD83D\uDC22'],
+    ['hedgehog',  '\uD83E\uDD94']
   ];
 
   /* Five kinds, three colours, and the third field is the only place a tone
