@@ -992,6 +992,7 @@
   "chessAheadNone": "Sina oled järgmine. Maja alustab sinu mängu, kui ta laua juurde jõuab, ja see leht ütleb seda.",
   "chessLeave": "Lahku järjekorrast",
   "chessWaitingNow": "Praegu ootavad",
+  "chessQueueDuel": "Kutsu ükskõik kes järjekorrast omavahelisele mängule — mängige ootamise ajal teineteisega.",
   "chessNobodyWaiting": "Praegu ei oota keegi.",
   "chessSince": "ootab {when}",
   "chessPlayingYou": "mängib praegu sinuga",

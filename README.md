@@ -10800,6 +10800,15 @@ rail for anybody signed in and a *Play chess* row behind More on the short
 rail, then as the row alone, and the owner took both away. Putting one back is
 the rest of the sixth task in `.claude/skills/chess/TASKS.md`.
 
+**There is a way in for whoever knows it**: hold *Surprise me* on the map for
+five seconds and the map goes to `/chess` instead of rolling the die —
+`holdForChess()` in `assets/app.js`, asked for by the owner. Five seconds is
+past any press that meant the die and past the half-second a phone takes to
+call a press long, so nobody arrives by accident, and nothing on screen says
+it is there. The click the finger's lifting still makes is swallowed before it
+reaches the die or the rail's count, and the pill neither selects its label
+nor pops a phone's callout while it is held. Counted as `chess_open_hold`.
+
 ### The public game
 
 One board, always on the page: Everybody against Tallinn Tastebuds. Whoever is
@@ -10878,9 +10887,11 @@ Tastebuds yourself*: sign in on the map and join, and who is waiting now. A
 member not in line sees that card first, with the one filled button; in line,
 *You're in line*, how many are ahead of them and who, their own row marked
 *you*, and *Leave the list*. Once the house has started their game, their
-board comes first and the card goes, since there is nothing in it for them to
-do; once it is over, the board stays first with how it ended and *Join the
-waiting list* again, until they do. The house sees its own record in a mono
+board comes first and the card under it is the line alone, *Waiting now*, with
+nothing about the house in it, since there is nothing there for them to do;
+once it is over, the board stays first with how it ended and *Join the
+waiting list* again, until they do. With nobody waiting, a member whose game
+is on gets no card at all. The house sees its own record in a mono
 line under the lead — games, won, lost and drawn, both kinds of game, a game
 ended without a result left out — then the line, *Waiting to play you*, with
 *Start a game with …* while no private game is on and the member it is playing
@@ -10898,6 +10909,18 @@ private game carries `abandon: true` for the house only while the route would
 take it, which is what keeps the seven days in one place. The line hands the
 house each waiting game's id for the same reason — its *Start* button sends
 one, and nobody else has anything to send one for.
+
+**The line is where members find each other, too.** Everybody sees who is
+waiting, on every face, and a member reading it — waiting, playing the house,
+or neither — has *Challenge* at the end of every other member's row, under
+*Challenge anybody in the line to a game of your own — play each other while
+you wait.* It is the same challenge the search under **Member against member**
+sends, so it plays out the same way, and a row whose member already has a
+challenge or a game going with the reader carries the word for that instead.
+The name is then the way to their page, since the row's end is the press.
+Asked for by the owner: a line that only the house could act on left everybody
+in it waiting on one person. The house's own rows carry no *Challenge* — its
+press there is *Start*.
 
 A join the line has no room for says *The line is full right now*; a second
 press on a page that was behind says *You're already in line* and draws the
@@ -15191,6 +15214,9 @@ It picks from **whatever the chips currently allow**, so selecting "Korean" and
 asking. Closed places are never suggested, and the same place is never returned
 twice in a row.
 
+**Held for five seconds it is the way to `/chess`** instead, which has no door
+on the map — **No door, on purpose** under **Chess** says why and how.
+
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
@@ -16410,6 +16436,7 @@ The map, `assets/app.js`:
 | `place_close` | `place` |
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
+| `chess_open_hold` | — *Surprise me* held for five seconds, the way in to `/chess`; sent as the map leaves for it |
 | `locate` | — |
 | `language_open` | — |
 | `language_select` | `language` |
@@ -16645,7 +16672,7 @@ flashcards' header has:
 | `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
 | `chess_note` | `named` — whether a member's name was left on it; *Post* under the notes, sent on the press, so a note the cap refused is still one |
 | `chess_note_delete`, `chess_note_hide` | — *Delete* under the reader's own note, and the house's *Hide* under anybody else's |
-| `chess_challenge`, `chess_rematch` | — *Challenge* beside a name the search found, and *Rematch* under a duel that is over; sent on the press, so a challenge the route refused is still one |
+| `chess_challenge`, `chess_rematch` | — *Challenge* beside a name the search found or a member in the waiting list, and *Rematch* under a duel that is over; sent on the press, so a challenge the route refused is still one |
 | `chess_accept`, `chess_decline`, `chess_cancel` | — a challenge's *Accept* and *Decline*, for the one it was sent to, and *Cancel*, for the one who sent it |
 | `chess_claim` | — *Claim the game*, in a duel the other player has left for seven days |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |

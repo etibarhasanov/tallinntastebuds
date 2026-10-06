@@ -1517,6 +1517,14 @@ html:not([data-layout="b"]) #btn-more { display: none; }
 }
 .rail-btn svg .pip { fill: var(--accent); stroke: none; }
 .rail-btn:hover svg { transform: rotate(-20deg); }
+/* Surprise me is held for five seconds to reach /chess — holdForChess() in
+   assets/app.js — so a phone must not select its label or pop the callout
+   under a thumb that stays down. */
+#btn-random {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
 /* The lists door draws an emoji where the others draw a line. It wore the
    map pin for a day — the marker an undressed list carries, on the reasoning

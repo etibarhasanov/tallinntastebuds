@@ -992,6 +992,7 @@
   "chessAheadNone": "Növbəti sənsən. Ev taxtaya gələndə oyununu başladacaq və bu səhifə bunu deyəcək.",
   "chessLeave": "Siyahıdan çıx",
   "chessWaitingNow": "İndi gözləyənlər",
+  "chessQueueDuel": "Növbədəki istənilən adamı öz oyununuza çağırın — gözləyərkən bir-birinizlə oynayın.",
   "chessNobodyWaiting": "Hazırda heç kim gözləmir.",
   "chessSince": "gözləyir: {when}",
   "chessPlayingYou": "indi səninlə oynayır",

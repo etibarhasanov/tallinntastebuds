@@ -992,6 +992,7 @@
   "chessAheadNone": "És o próximo. A casa começa o teu jogo quando chegar ao tabuleiro, e esta página diz-te.",
   "chessLeave": "Sair da lista",
   "chessWaitingNow": "À espera agora",
+  "chessQueueDuel": "Desafia qualquer pessoa da fila para um jogo vosso — joguem um contra o outro enquanto esperam.",
   "chessNobodyWaiting": "Ninguém está à espera agora.",
   "chessSince": "à espera há {when}",
   "chessPlayingYou": "a jogar contigo agora",

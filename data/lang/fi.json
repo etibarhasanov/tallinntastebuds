@@ -992,6 +992,7 @@
   "chessAheadNone": "Olet seuraavana. Talo aloittaa pelisi, kun se ehtii laudan ääreen, ja tämä sivu kertoo sen.",
   "chessLeave": "Poistu listalta",
   "chessWaitingNow": "Nyt odottavat",
+  "chessQueueDuel": "Haasta kuka tahansa jonossa omaan peliin — pelatkaa keskenänne odottaessanne.",
   "chessNobodyWaiting": "Kukaan ei odota juuri nyt.",
   "chessSince": "odottanut {when}",
   "chessPlayingYou": "pelaa nyt kanssasi",
