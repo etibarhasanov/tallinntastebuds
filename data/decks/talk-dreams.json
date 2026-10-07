@@ -661,13 +661,12 @@
    "deck": "school"
   },
   "ühtegi": {
-   "base": "üksi",
+   "base": "ükski",
    "means": {
     "en": "not a single (with ei)",
     "az": "heç bir",
     "ru": "ни одной"
-   },
-   "deck": "numbers"
+   }
   },
   "bioloogia": {
    "base": "bioloogia",

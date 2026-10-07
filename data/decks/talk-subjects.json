@@ -1043,9 +1043,9 @@
   "ette": {
    "base": "ette",
    "means": {
-    "en": "forward (ette lugema: to read out)",
-    "az": "qabağa (ette lugema: ucadan oxumaq)",
-    "ru": "вперёд (ette lugema: зачитать)"
+    "en": "forward (ette lugema: to read out; ette heitma: to reproach)",
+    "az": "qabağa (ette lugema: ucadan oxumaq; ette heitma: irad tutmaq)",
+    "ru": "вперёд (ette lugema: зачитать; ette heitma: упрекать)"
    },
    "deck": "everyday"
   },
@@ -1602,9 +1602,9 @@
   "poolest": {
    "base": "pool",
    "means": {
-    "en": "half, from the half (teisest poolest: from the second half)",
-    "az": "yarısından",
-    "ru": "половины"
+    "en": "half, from the half (teisest poolest: from the second half); for (kuulsad kreemide poolest: famous for their creams)",
+    "az": "yarısından; ilə (kremləri ilə məşhur)",
+    "ru": "половины; своими (славятся кремами)"
    },
    "deck": "numbers"
   },

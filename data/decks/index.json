@@ -4041,6 +4041,86 @@
    },
    "taste": "Üks pilet Tallinna palun.",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-hotel",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Booking a hotel room",
+    "az": "Oteldə otaq sifarişi",
+    "ru": "Бронирование номера в гостинице"
+   },
+   "why": {
+    "en": "A double room for two nights, an extra bed for a twelve-year-old, and the spa included in the price",
+    "az": "İki gecəlik ikinəfərlik otaq, on iki yaşlı uşaq üçün əlavə çarpayı və qiymətə daxil olan spa",
+    "ru": "Двухместный номер на две ночи, дополнительная кровать для двенадцатилетнего и спа, включённое в цену"
+   },
+   "taste": "Mitmeks ööks ma broneerin?",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-trip",
+   "added": "2026-10-07",
+   "name": {
+    "en": "A trip, and what came home from it",
+    "az": "Bir səfər və ondan gətirilənlər",
+    "ru": "Одна поездка и что из неё привезли"
+   },
+   "why": {
+    "en": "Backpacking in Cuba, a plane that seems to land in the sea at Istanbul, the desert in Morocco, and the souvenirs",
+    "az": "Kubada bel çantası ilə səyahət, İstanbulda sanki dənizə enən təyyarə, Mərakeşdə səhra və suvenirlər",
+    "ru": "С рюкзаком по Кубе, самолёт, который будто садится в воду в Стамбуле, пустыня в Марокко и сувениры"
+   },
+   "taste": "Oli selline mõnus olemine!",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-adventure",
+   "added": "2026-10-07",
+   "name": {
+    "en": "An especially exciting trip",
+    "az": "Xüsusilə maraqlı bir səfər",
+    "ru": "Особенно захватывающая поездка"
+   },
+   "why": {
+    "en": "Floating like a crocodile in a salt-mine lake in the Carpathians, and climbing through a hole into a dripping cave of bats",
+    "az": "Karpatlarda duz mədəni gölündə timsah kimi üzmək və deşikdən damcılayan, yarasalarla dolu mağaraya girmək",
+    "ru": "Лежать на воде, как крокодил, в соляном озере в Карпатах и пролезть через дыру в мокрую пещеру с летучими мышами"
+   },
+   "taste": "Ja seal olid soolakaevandused.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-health",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Looking after your health",
+    "az": "Sağlamlığını necə qoruyursan",
+    "ru": "Как ты бережёшь здоровье"
+   },
+   "why": {
+    "en": "Jüri quit smoking seventeen years ago, Mirja eats a bit of everything, and both sleep well",
+    "az": "Yüri on yeddi il əvvəl siqareti atıb, Mirya hər şeydən bir az yeyir, ikisi də yaxşı yatır",
+    "ru": "Юри семнадцать лет назад бросил курить, Мирья ест всего понемногу, и оба хорошо спят"
+   },
+   "taste": "Tasakaal on põhiline.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-doctor",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Making a doctor’s appointment",
+    "az": "Həkim qəbuluna yazılmaq",
+    "ru": "Запись на приём к врачу"
+   },
+   "why": {
+    "en": "A referral, a driving licence for ID, and the first free time with a neurologist two months away",
+    "az": "Göndəriş, şəxsiyyət vəsiqəsi əvəzinə sürücülük vəsiqəsi və nevroloqda ilk boş vaxt iki ay sonra",
+    "ru": "Направление, водительские права вместо паспорта и первое свободное время у невролога через два месяца"
+   },
+   "taste": "Kas juhiluba sobib?",
+   "source": "Keeletee"
   }
  ]
 }

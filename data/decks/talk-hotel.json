@@ -1,0 +1,1631 @@
+{
+ "id": "talk-hotel",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Booking a hotel room",
+  "az": "Oteldə otaq sifarişi",
+  "ru": "Бронирование номера в гостинице"
+ },
+ "why": {
+  "en": "A double room for two nights, an extra bed for a twelve-year-old, and the spa included in the price",
+  "az": "İki gecəlik ikinəfərlik otaq, on iki yaşlı uşaq üçün əlavə çarpayı və qiymətə daxil olan spa",
+  "ru": "Двухместный номер на две ночи, дополнительная кровать для двенадцатилетнего и спа, включённое в цену"
+ },
+ "taste": "Mitmeks ööks ma broneerin?",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Tere!",
+       "en": "Hello!",
+       "az": "Salam!",
+       "ru": "Здравствуйте!"
+      },
+      {
+       "et": "Hotell “Vaikus ja Rahu”.",
+       "en": "Hotel “Peace and Quiet”.",
+       "az": "“Vaikus ja Rahu” oteli.",
+       "ru": "Гостиница «Vaikus ja Rahu»."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Tere!",
+       "en": "Hello!",
+       "az": "Salam!",
+       "ru": "Здравствуйте!"
+      },
+      {
+       "et": "Ma proovisin täna netis tuba broneerida, aga millegipärast see ei õnnestunud.",
+       "en": "I tried booking a room on the internet today, but for some reason it didn’t go through.",
+       "az": "Bu gün internetdə otaq sifariş etməyə çalışdım, amma nədənsə alınmadı.",
+       "ru": "Я сегодня пыталась забронировать номер в интернете, но почему-то не получилось."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Imelik.",
+       "en": "Strange.",
+       "az": "Qəribədir.",
+       "ru": "Странно."
+      },
+      {
+       "et": "Minu teada täna kodulehega probleeme ei ole olnud.",
+       "en": "As far as I know we haven’t had any problems with our website today.",
+       "az": "Bildiyimə görə, bu gün saytla heç bir problem olmayıb.",
+       "ru": "Насколько я знаю, сегодня с сайтом проблем не было."
+      },
+      {
+       "et": "Missugust tuba te broneerida soovisite?",
+       "en": "What kind of room did you want to book?",
+       "az": "Hansı otağı sifariş etmək istəyirdiniz?",
+       "ru": "Какой номер вы хотели забронировать?"
+      },
+      {
+       "et": "Ma teen teile broneeringu kohe ära.",
+       "en": "I’ll make your reservation right away.",
+       "az": "Sifarişinizi indi edərəm.",
+       "ru": "Я сейчас же оформлю вам бронь."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Ma tahtsin üht suuremat kahekohalist tuba.",
+       "en": "I wanted a larger double room.",
+       "az": "Bir az böyük ikiyerlik otaq istəyirdim.",
+       "ru": "Я хотела номер побольше, двухместный."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Ahah.",
+       "en": "I see.",
+       "az": "Aha.",
+       "ru": "Ага."
+      },
+      {
+       "et": "Ja mis ajaks te broneerida soovisite?",
+       "en": "And for when did you wish to make the reservation?",
+       "az": "Bəs hansı vaxta sifariş etmək istəyirdiniz?",
+       "ru": "А на какое время вы хотели бы забронировать?"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Mul oleks tuba vaja järgmisel neljapäeval, kuueteistkümnendal augustil.",
+       "en": "I would need the room next Thursday, on the sixteenth of August.",
+       "az": "Otaq mənə gələn cümə axşamı, avqustun on altısında lazım olardı.",
+       "ru": "Номер мне нужен в следующий четверг, шестнадцатого августа."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Nii.",
+       "en": "So.",
+       "az": "Belə.",
+       "ru": "Так."
+      },
+      {
+       "et": "Mitmekesi te siis olete?",
+       "en": "And how many of you are there?",
+       "az": "Bəs neçə nəfərsiniz?",
+       "ru": "А сколько вас будет?"
+      },
+      {
+       "et": "Kahekesi, jah?",
+       "en": "Two, right?",
+       "az": "İki nəfər, hə?",
+       "ru": "Двое, да?"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Kaks täiskasvanut ja meil on laps ka kaasas.",
+       "en": "Two adults, and we have a child with us too.",
+       "az": "İki böyük, bir də yanımızda uşaq var.",
+       "ru": "Двое взрослых, и с нами ещё ребёнок."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Kui vana laps on?",
+       "en": "How old is the child?",
+       "az": "Uşaq neçə yaşındadır?",
+       "ru": "Сколько лет ребёнку?"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Kaksteist.",
+       "en": "Twelve.",
+       "az": "On iki.",
+       "ru": "Двенадцать."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Mmh, kuni kaheteistaastastele lastele saame vanemate toas pakkuda lisavoodit kümne euroga.",
+       "en": "Mm, for children up to twelve years old we can offer an extra bed in the parents’ room for ten euros.",
+       "az": "Mm, on iki yaşa qədər uşaqlar üçün valideynlərin otağında on avroya əlavə çarpayı təklif edə bilərik.",
+       "ru": "Мм, детям до двенадцати лет мы можем предложить дополнительную кровать в номере родителей за десять евро."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "See sobib hästi.",
+       "en": "That suits me fine.",
+       "az": "Bu, yaxşıdır.",
+       "ru": "Это хорошо подходит."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Nii, kas teile sobib kaheinimesevoodiga tuba või soovite eraldi voodeid?",
+       "en": "So, would a room with a double bed suit you, or would you like separate beds?",
+       "az": "Belə, sizə ikinəfərlik çarpayılı otaq uyğundur, yoxsa ayrı çarpayılar istəyirsiniz?",
+       "ru": "Так, вам подойдёт номер с двуспальной кроватью или вы хотите отдельные кровати?"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Kaheinimesevoodi sobib.",
+       "en": "The double bed is fine.",
+       "az": "İkinəfərlik çarpayı uyğundur.",
+       "ru": "Двуспальная кровать подойдёт."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Väga hea.",
+       "en": "Very good.",
+       "az": "Çox yaxşı.",
+       "ru": "Очень хорошо."
+      },
+      {
+       "et": "Kahesed toad on meil praegu kampaaniahinnaga 80 eurot tuba ja lisandub siis see kümme eurot lapse voodi eest.",
+       "en": "Our double rooms are on a special offer just now at 80 euros a room, and then there are the ten euros for the child’s bed on top.",
+       "az": "İkinəfərlik otaqlarımız indi aksiya qiymətinə otağı 80 avrodur, üstünə də uşaq çarpayısı üçün o on avro gəlir.",
+       "ru": "Двухместные номера у нас сейчас по акционной цене, 80 евро за номер, и к этому добавляются десять евро за кровать для ребёнка."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Hm, ma lootsin saada veel odavamalt.",
+       "en": "Hm, I was hoping to get it cheaper still.",
+       "az": "Hm, daha ucuz alacağımı ümid edirdim.",
+       "ru": "Хм, я надеялась получить ещё дешевле."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Teate, tegelikult see on päris hea hind, sest hinna sees on ka hommikusöök ja spaa ning saunade kasutus kogu perele.",
+       "en": "You know, it’s actually quite a good price, because breakfast is included, and the use of the spa and the saunas for the whole family.",
+       "az": "Bilirsiniz, əslində bu, olduqca yaxşı qiymətdir, çünki qiymətə səhər yeməyi, bütün ailə üçün spa və saunalardan istifadə də daxildir.",
+       "ru": "Знаете, на самом деле это очень хорошая цена, ведь в неё входят завтрак, спа и сауны для всей семьи."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Nii et eraldi spaapiletit ei ole vaja osta?",
+       "en": "So I don’t have to buy a separate spa ticket?",
+       "az": "Yəni ayrıca spa bileti almaq lazım deyil?",
+       "ru": "То есть отдельный билет в спа покупать не нужно?"
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Ei ole.",
+       "en": "No, you don’t.",
+       "az": "Lazım deyil.",
+       "ru": "Не нужно."
+      },
+      {
+       "et": "Ja parkimine on ka tasuta.",
+       "en": "And the parking is free, too.",
+       "az": "Parklanma da pulsuzdur.",
+       "ru": "И парковка тоже бесплатная."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Olgu, broneerige siis ära.",
+       "en": "All right, make the reservation, then.",
+       "az": "Yaxşı, onda sifariş edin.",
+       "ru": "Хорошо, тогда бронируйте."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Mitmeks ööks ma broneerin?",
+       "en": "For how many nights shall I book?",
+       "az": "Neçə gecəlik sifariş edim?",
+       "ru": "На сколько ночей мне бронировать?"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Broneerige kaheks ööks Minni Mustika nimele.",
+       "en": "Book it for two nights, in the name of Minni Mustikas.",
+       "az": "İki gecəlik, Minni Mustikasın adına sifariş edin.",
+       "ru": "Забронируйте на две ночи на имя Минни Мустикас."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Teie telefoninumber ka palun.",
+       "en": "Your phone number too, please.",
+       "az": "Telefon nömrənizi də, zəhmət olmasa.",
+       "ru": "И ваш номер телефона, пожалуйста."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "55 88 921.",
+       "en": "55 88 921.",
+       "az": "55 88 921.",
+       "ru": "55 88 921."
+      },
+      {
+       "et": "Kas ma tasuma pean kohe või hiljem?",
+       "en": "Do I have to pay right away or later?",
+       "az": "Pulu dərhal ödəməliyəm, yoxsa sonra?",
+       "ru": "Мне нужно заплатить сразу или потом?"
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Maksta saate kohapeal.",
+       "en": "You can pay on arrival.",
+       "az": "Yerində ödəyə bilərsiniz.",
+       "ru": "Оплатить можно на месте."
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Hästi, siis vist on kõik.",
+       "en": "Good, then that’s probably everything.",
+       "az": "Yaxşı, onda deyəsən, hamısı budur.",
+       "ru": "Хорошо, тогда, кажется, всё."
+      }
+     ]
+    },
+    {
+     "who": "Administraator",
+     "lines": [
+      {
+       "et": "Jah, minu poolt küll.",
+       "en": "Yes, from my side it is.",
+       "az": "Bəli, mənim tərəfimdən, hə.",
+       "ru": "Да, с моей стороны всё."
+      },
+      {
+       "et": "Ilusat päeva!",
+       "en": "Have a nice day!",
+       "az": "Gözəl gün arzulayıram!",
+       "ru": "Хорошего дня!"
+      }
+     ]
+    },
+    {
+     "who": "Naine",
+     "lines": [
+      {
+       "et": "Teile ka!",
+       "en": "You too!",
+       "az": "Sizə də!",
+       "ru": "И вам тоже!"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "tere": {
+   "base": "tere",
+   "means": {
+    "en": "hello",
+    "az": "salam",
+    "ru": "привет, здравствуйте"
+   },
+   "deck": "greetings"
+  },
+  "hotell": {
+   "base": "hotell",
+   "means": {
+    "en": "hotel",
+    "az": "otel",
+    "ru": "гостиница"
+   },
+   "deck": "around"
+  },
+  "vaikus": {
+   "base": "vaikus",
+   "means": {
+    "en": "silence, quiet",
+    "az": "sakitlik",
+    "ru": "тишина"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "rahu": {
+   "base": "rahu",
+   "means": {
+    "en": "peace",
+    "az": "dinclik",
+    "ru": "покой"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "proovisin": {
+   "base": "proovima",
+   "means": {
+    "en": "I tried",
+    "az": "çalışdım",
+    "ru": "я пыталась"
+   },
+   "deck": "tana-words"
+  },
+  "täna": {
+   "base": "täna",
+   "means": {
+    "en": "today (täna õhtul: tonight)",
+    "az": "bu gün",
+    "ru": "сегодня"
+   },
+   "deck": "time"
+  },
+  "netis": {
+   "base": "net",
+   "means": {
+    "en": "online, on the net",
+    "az": "internetdə",
+    "ru": "в сети"
+   }
+  },
+  "tuba": {
+   "base": "tuba",
+   "means": {
+    "en": "room",
+    "az": "otaq",
+    "ru": "комната"
+   },
+   "deck": "home"
+  },
+  "broneerida": {
+   "base": "broneerima",
+   "means": {
+    "en": "to book, to reserve",
+    "az": "bron etmək",
+    "ru": "забронировать"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "millegipärast": {
+   "base": "millegipärast",
+   "means": {
+    "en": "for some reason",
+    "az": "nədənsə",
+    "ru": "почему-то"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "õnnestunud": {
+   "base": "õnnestuma",
+   "means": {
+    "en": "succeeded (ei õnnestunud: did not work out)",
+    "az": "alındı (ei õnnestunud: alınmadı)",
+    "ru": "удалось (ei õnnestunud: не удалось)"
+   }
+  },
+  "imelik": {
+   "base": "imelik",
+   "means": {
+    "en": "strange",
+    "az": "qəribə",
+    "ru": "странно, странный"
+   },
+   "deck": "describing"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "teada": {
+   "base": "teadma",
+   "means": {
+    "en": "known (minu teada: as far as I know)",
+    "az": "bilmək",
+    "ru": "знать"
+   },
+   "deck": "verbs"
+  },
+  "kodulehega": {
+   "base": "koduleht",
+   "means": {
+    "en": "with the website",
+    "az": "saytla",
+    "ru": "с сайтом"
+   }
+  },
+  "probleeme": {
+   "base": "probleem",
+   "means": {
+    "en": "problems",
+    "az": "problemlər",
+    "ru": "проблем"
+   }
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "missugust": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of",
+    "az": "hansı",
+    "ru": "какое"
+   }
+  },
+  "te": {
+   "base": "teie",
+   "means": {
+    "en": "you (polite or plural)",
+    "az": "siz",
+    "ru": "вы"
+   }
+  },
+  "soovisite": {
+   "base": "soovima",
+   "means": {
+    "en": "you wished, you wanted",
+    "az": "istəyirdiniz",
+    "ru": "вы хотели"
+   },
+   "deck": "moreverbs"
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "teile": {
+   "base": "teie",
+   "means": {
+    "en": "to you, for you (polite or plural)",
+    "az": "sizə",
+    "ru": "вам"
+   }
+  },
+  "broneeringu": {
+   "base": "broneering",
+   "means": {
+    "en": "the reservation, a booking",
+    "az": "sifariş, bron",
+    "ru": "бронь, бронирование"
+   },
+   "deck": "service"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
+   },
+   "deck": "everyday"
+  },
+  "tahtsin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I wanted",
+    "az": "istəyirdim",
+    "ru": "я хотел"
+   },
+   "deck": "verbs"
+  },
+  "üht": {
+   "base": "üks",
+   "means": {
+    "en": "one, a",
+    "az": "bir",
+    "ru": "один, одну"
+   },
+   "deck": "numbers"
+  },
+  "suuremat": {
+   "base": "suurem",
+   "means": {
+    "en": "larger",
+    "az": "daha böyük",
+    "ru": "побольше, больший"
+   },
+   "deck": "adjectives-cards"
+  },
+  "kahekohalist": {
+   "base": "kahekohaline",
+   "means": {
+    "en": "double, for two",
+    "az": "ikiyerlik",
+    "ru": "двухместный"
+   }
+  },
+  "ahah": {
+   "base": "ahah",
+   "means": {
+    "en": "aha, I see",
+    "az": "aha",
+    "ru": "ага"
+   },
+   "deck": "everyday"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "ajaks": {
+   "base": "aeg",
+   "means": {
+    "en": "for a time (mis ajaks: for when)",
+    "az": "vaxta",
+    "ru": "на время"
+   },
+   "deck": "paper"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "oleks": {
+   "base": "olema",
+   "means": {
+    "en": "would be (mul oleks vaja: I would need)",
+    "az": "olardı",
+    "ru": "было бы"
+   },
+   "deck": "verbs"
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "järgmisel": {
+   "base": "järgmine",
+   "means": {
+    "en": "next (järgmisel neljapäeval: next Thursday)",
+    "az": "gələn, növbəti",
+    "ru": "в следующий"
+   },
+   "deck": "time"
+  },
+  "neljapäeval": {
+   "base": "neljapäev",
+   "means": {
+    "en": "on Thursday",
+    "az": "cümə axşamı",
+    "ru": "в четверг"
+   },
+   "deck": "time"
+  },
+  "kuueteistkümnendal": {
+   "base": "kuueteistkümnes",
+   "means": {
+    "en": "on the sixteenth",
+    "az": "on altısında",
+    "ru": "шестнадцатого"
+   }
+  },
+  "augustil": {
+   "base": "august",
+   "means": {
+    "en": "in August (kuueteistkümnendal augustil: on 16 August)",
+    "az": "avqustda",
+    "ru": "в августе"
+   },
+   "deck": "time"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "mitmekesi": {
+   "base": "mitmekesi",
+   "means": {
+    "en": "how many of you, in a group of how many",
+    "az": "neçə nəfər",
+    "ru": "сколько вас, вскольких"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "olete": {
+   "base": "olema",
+   "means": {
+    "en": "you are (polite or plural)",
+    "az": "siz -sınız",
+    "ru": "вы"
+   },
+   "deck": "verbs"
+  },
+  "kahekesi": {
+   "base": "kahekesi",
+   "means": {
+    "en": "the two of us, as a pair",
+    "az": "ikilikdə, iki nəfər",
+    "ru": "вдвоём"
+   },
+   "deck": "numbers"
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "täiskasvanut": {
+   "base": "täiskasvanu",
+   "means": {
+    "en": "adults (after a number)",
+    "az": "böyük, yetkin",
+    "ru": "взрослых"
+   }
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "laps": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнок"
+   },
+   "deck": "talk"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "kaasas": {
+   "base": "kaasas",
+   "means": {
+    "en": "along, with (laps on kaasas: a child is with us)",
+    "az": "yanında, özü ilə",
+    "ru": "с собой"
+   }
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "vana": {
+   "base": "vana",
+   "means": {
+    "en": "old",
+    "az": "qoca, köhnə",
+    "ru": "старый"
+   },
+   "deck": "describing"
+  },
+  "kaksteist": {
+   "base": "kaksteist",
+   "means": {
+    "en": "twelve",
+    "az": "on iki",
+    "ru": "двенадцать"
+   },
+   "deck": "numbers"
+  },
+  "mmh": {
+   "base": "mmh",
+   "means": {
+    "en": "mm",
+    "az": "mm",
+    "ru": "мм"
+   }
+  },
+  "kuni": {
+   "base": "kuni",
+   "means": {
+    "en": "until, up to",
+    "az": "qədər",
+    "ru": "до"
+   },
+   "deck": "everyday"
+  },
+  "kaheteistaastastele": {
+   "base": "kaheteistaastane",
+   "means": {
+    "en": "to twelve-year-olds",
+    "az": "on iki yaşlılara",
+    "ru": "двенадцатилетним"
+   }
+  },
+  "lastele": {
+   "base": "laps",
+   "means": {
+    "en": "for the children",
+    "az": "uşaqlara",
+    "ru": "детям"
+   },
+   "deck": "talk"
+  },
+  "saame": {
+   "base": "saama",
+   "means": {
+    "en": "we can",
+    "az": "bilərik",
+    "ru": "мы можем"
+   },
+   "deck": "verbs"
+  },
+  "vanemate": {
+   "base": "vanem",
+   "means": {
+    "en": "the parents' (vanemate toas: in the parents' room; vanemate juurde: to the parents)",
+    "az": "valideynlərin",
+    "ru": "родителей"
+   },
+   "deck": "adjectives-cards"
+  },
+  "toas": {
+   "base": "tuba",
+   "means": {
+    "en": "in the room",
+    "az": "otaqda",
+    "ru": "в номере, в комнате"
+   },
+   "deck": "home"
+  },
+  "pakkuda": {
+   "base": "pakkuma",
+   "means": {
+    "en": "to offer",
+    "az": "təklif etmək",
+    "ru": "предложить"
+   },
+   "deck": "service"
+  },
+  "lisavoodit": {
+   "base": "lisavoodi",
+   "means": {
+    "en": "an extra bed",
+    "az": "əlavə çarpayı",
+    "ru": "дополнительную кровать"
+   }
+  },
+  "kümne": {
+   "base": "kümme",
+   "means": {
+    "en": "ten (kümne euroga: for ten euros)",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "euroga": {
+   "base": "euro",
+   "means": {
+    "en": "for a euro, with a euro (kümne euroga: for ten euros)",
+    "az": "avroya",
+    "ru": "за евро"
+   },
+   "deck": "cafe"
+  },
+  "sobib": {
+   "base": "sobima",
+   "means": {
+    "en": "suits",
+    "az": "uyğundur",
+    "ru": "подходит"
+   },
+   "deck": "moreverbs"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "kaheinimesevoodiga": {
+   "base": "kaheinimesevoodi",
+   "means": {
+    "en": "with a double bed",
+    "az": "ikinəfərlik çarpayılı",
+    "ru": "с двуспальной кроватью"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "soovite": {
+   "base": "soovima",
+   "means": {
+    "en": "you wish, you would like (polite)",
+    "az": "istəyirsiniz",
+    "ru": "желаете"
+   },
+   "deck": "moreverbs"
+  },
+  "eraldi": {
+   "base": "eraldi",
+   "means": {
+    "en": "separate, separately",
+    "az": "ayrı, ayrıca",
+    "ru": "отдельный, отдельно"
+   },
+   "deck": "service"
+  },
+  "voodeid": {
+   "base": "voodi",
+   "means": {
+    "en": "beds",
+    "az": "çarpayılar",
+    "ru": "кровати"
+   },
+   "deck": "home"
+  },
+  "kaheinimesevoodi": {
+   "base": "kaheinimesevoodi",
+   "means": {
+    "en": "double bed",
+    "az": "ikinəfərlik çarpayı",
+    "ru": "двуспальная кровать"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hea": {
+   "base": "hea",
+   "means": {
+    "en": "good",
+    "az": "yaxşı",
+    "ru": "хороший"
+   },
+   "deck": "basics"
+  },
+  "kahesed": {
+   "base": "kahene",
+   "means": {
+    "en": "double (kahesed toad: double rooms)",
+    "az": "ikinəfərlik",
+    "ru": "двухместные"
+   }
+  },
+  "toad": {
+   "base": "tuba",
+   "means": {
+    "en": "rooms",
+    "az": "otaqlar",
+    "ru": "номера, комнаты"
+   },
+   "deck": "home"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "kampaaniahinnaga": {
+   "base": "kampaaniahind",
+   "means": {
+    "en": "at a sale price",
+    "az": "kampaniya qiymətinə",
+    "ru": "по акционной цене"
+   }
+  },
+  "eurot": {
+   "base": "euro",
+   "means": {
+    "en": "euros",
+    "az": "avro",
+    "ru": "евро"
+   },
+   "deck": "cafe"
+  },
+  "lisandub": {
+   "base": "lisanduma",
+   "means": {
+    "en": "is added, comes on top",
+    "az": "üstünə gəlir, əlavə olunur",
+    "ru": "добавляется"
+   }
+  },
+  "kümme": {
+   "base": "kümme",
+   "means": {
+    "en": "ten",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "lapse": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнка"
+   },
+   "deck": "talk"
+  },
+  "voodi": {
+   "base": "voodi",
+   "means": {
+    "en": "bed (lapse voodi eest: for the child's bed)",
+    "az": "çarpayı",
+    "ru": "кровать"
+   },
+   "deck": "home"
+  },
+  "eest": {
+   "base": "eest",
+   "means": {
+    "en": "for, instead of (minu eest: for me)",
+    "az": "əvəzinə, üçün",
+    "ru": "за"
+   }
+  },
+  "hm": {
+   "base": "hm",
+   "means": {
+    "en": "hm",
+    "az": "hm",
+    "ru": "хм"
+   }
+  },
+  "lootsin": {
+   "base": "lootma",
+   "means": {
+    "en": "I hoped",
+    "az": "ümid edirdim",
+    "ru": "я надеялась"
+   },
+   "deck": "moreverbs"
+  },
+  "saada": {
+   "base": "saama",
+   "means": {
+    "en": "to become; to get",
+    "az": "olmaq; almaq",
+    "ru": "стать; получить"
+   },
+   "deck": "verbs"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "odavamalt": {
+   "base": "odavalt",
+   "means": {
+    "en": "cheaper",
+    "az": "daha ucuz",
+    "ru": "дешевле"
+   }
+  },
+  "teate": {
+   "base": "teadma",
+   "means": {
+    "en": "you know (polite or plural)",
+    "az": "bilirsiniz",
+    "ru": "знаете"
+   },
+   "deck": "verbs"
+  },
+  "tegelikult": {
+   "base": "tegelikult",
+   "means": {
+    "en": "actually",
+    "az": "əslində",
+    "ru": "на самом деле"
+   },
+   "deck": "everyday"
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "hind": {
+   "base": "hind",
+   "means": {
+    "en": "price",
+    "az": "qiymət",
+    "ru": "цена"
+   },
+   "deck": "shops"
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "hinna": {
+   "base": "hind",
+   "means": {
+    "en": "the price (hinna sees: in the price)",
+    "az": "qiymət",
+    "ru": "цены, в цене"
+   },
+   "deck": "shops"
+  },
+  "sees": {
+   "base": "sees",
+   "means": {
+    "en": "inside, in it; within (garantiiaja sees: within the warranty)",
+    "az": "içində; ərzində",
+    "ru": "внутри; в течение"
+   },
+   "deck": "home"
+  },
+  "hommikusöök": {
+   "base": "hommikusöök",
+   "means": {
+    "en": "breakfast",
+    "az": "səhər yeməyi",
+    "ru": "завтрак"
+   },
+   "deck": "food"
+  },
+  "spaa": {
+   "base": "spaa",
+   "means": {
+    "en": "spa",
+    "az": "spa",
+    "ru": "спа"
+   }
+  },
+  "ning": {
+   "base": "ning",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "saunade": {
+   "base": "saun",
+   "means": {
+    "en": "of the saunas",
+    "az": "saunaların",
+    "ru": "саун"
+   },
+   "deck": "home"
+  },
+  "kasutus": {
+   "base": "kasutus",
+   "means": {
+    "en": "use",
+    "az": "istifadə",
+    "ru": "пользование"
+   }
+  },
+  "kogu": {
+   "base": "kogu",
+   "means": {
+    "en": "whole, all (kogu aeg: all the time)",
+    "az": "bütün",
+    "ru": "весь"
+   },
+   "deck": "everyday"
+  },
+  "perele": {
+   "base": "pere",
+   "means": {
+    "en": "for the family",
+    "az": "ailə üçün",
+    "ru": "для семьи"
+   },
+   "deck": "talk"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "spaapiletit": {
+   "base": "spaapilet",
+   "means": {
+    "en": "a spa ticket",
+    "az": "spa bileti",
+    "ru": "билет в спа"
+   }
+  },
+  "osta": {
+   "base": "ostma",
+   "means": {
+    "en": "to buy",
+    "az": "almaq",
+    "ru": "купить"
+   },
+   "deck": "verbs"
+  },
+  "parkimine": {
+   "base": "parkimine",
+   "means": {
+    "en": "parking",
+    "az": "parklanma",
+    "ru": "парковка"
+   }
+  },
+  "tasuta": {
+   "base": "tasuta",
+   "means": {
+    "en": "free of charge",
+    "az": "pulsuz",
+    "ru": "бесплатно"
+   },
+   "deck": "shops"
+  },
+  "olgu": {
+   "base": "olgu",
+   "means": {
+    "en": "all right, OK",
+    "az": "yaxşı, olsun",
+    "ru": "хорошо, ладно"
+   },
+   "deck": "everyday"
+  },
+  "broneerige": {
+   "base": "broneerima",
+   "means": {
+    "en": "book (to you, politely)",
+    "az": "sifariş edin",
+    "ru": "забронируйте"
+   }
+  },
+  "mitmeks": {
+   "base": "mitu",
+   "means": {
+    "en": "for how many (mitmeks ööks: for how many nights)",
+    "az": "neçə",
+    "ru": "на сколько"
+   },
+   "deck": "asking"
+  },
+  "ööks": {
+   "base": "öö",
+   "means": {
+    "en": "for nights, for a night",
+    "az": "gecəlik",
+    "ru": "на ночь, на ночи"
+   },
+   "deck": "time"
+  },
+  "broneerin": {
+   "base": "broneerima",
+   "means": {
+    "en": "I book, shall I book",
+    "az": "sifariş edim",
+    "ru": "я бронирую, мне бронировать"
+   }
+  },
+  "kaheks": {
+   "base": "kaks",
+   "means": {
+    "en": "for two",
+    "az": "iki",
+    "ru": "на две"
+   },
+   "deck": "numbers"
+  },
+  "minni": {
+   "base": "Minni",
+   "means": {
+    "en": "Minni, a name",
+    "az": "Minni, ad",
+    "ru": "Минни, имя"
+   }
+  },
+  "mustika": {
+   "base": "Mustikas",
+   "means": {
+    "en": "Mustikas's, a surname (Minni Mustika nimele: in the name of Minni Mustikas)",
+    "az": "Mustikasın, soyad",
+    "ru": "Мустикас, фамилия"
+   },
+   "deck": "cooking"
+  },
+  "nimele": {
+   "base": "nimi",
+   "means": {
+    "en": "in the name of",
+    "az": "adına",
+    "ru": "на имя"
+   },
+   "deck": "talk"
+  },
+  "teie": {
+   "base": "teie",
+   "means": {
+    "en": "your; you (polite or plural)",
+    "az": "sizin",
+    "ru": "ваш"
+   }
+  },
+  "telefoninumber": {
+   "base": "telefoninumber",
+   "means": {
+    "en": "phone number",
+    "az": "telefon nömrəsi",
+    "ru": "номер телефона"
+   }
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "tasuma": {
+   "base": "tasuma",
+   "means": {
+    "en": "to pay (pean tasuma: have to pay)",
+    "az": "ödəmək",
+    "ru": "платить"
+   },
+   "deck": "shops"
+  },
+  "pean": {
+   "base": "pidama",
+   "means": {
+    "en": "I must, I have to",
+    "az": "məcburam",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "hiljem": {
+   "base": "hiljem",
+   "means": {
+    "en": "later",
+    "az": "daha gec",
+    "ru": "позже"
+   },
+   "deck": "time"
+  },
+  "maksta": {
+   "base": "maksma",
+   "means": {
+    "en": "to pay",
+    "az": "ödəmək",
+    "ru": "заплатить"
+   },
+   "deck": "verbs"
+  },
+  "saate": {
+   "base": "saama",
+   "means": {
+    "en": "you get, you can",
+    "az": "alırsınız, bilərsiniz",
+    "ru": "вы получите, можете"
+   },
+   "deck": "verbs"
+  },
+  "kohapeal": {
+   "base": "kohapeal",
+   "means": {
+    "en": "on the spot, on site",
+    "az": "yerində",
+    "ru": "на месте"
+   }
+  },
+  "vist": {
+   "base": "vist",
+   "means": {
+    "en": "probably, I suppose",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "poolt": {
+   "base": "pool",
+   "means": {
+    "en": "from the side (minu poolt: from me; nende poolest: for them)",
+    "az": "tərəfindən",
+    "ru": "с моей стороны"
+   },
+   "deck": "numbers"
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "ilusat": {
+   "base": "ilus",
+   "means": {
+    "en": "nice, beautiful (ilusat päeva: have a nice day)",
+    "az": "gözəl",
+    "ru": "хорошего"
+   },
+   "deck": "talk"
+  },
+  "päeva": {
+   "base": "päev",
+   "means": {
+    "en": "days",
+    "az": "gün",
+    "ru": "дня"
+   },
+   "deck": "time"
+  }
+ }
+}

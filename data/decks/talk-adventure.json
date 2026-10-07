@@ -1,0 +1,1408 @@
+{
+ "id": "talk-adventure",
+ "added": "2026-10-07",
+ "name": {
+  "en": "An especially exciting trip",
+  "az": "Xüsusilə maraqlı bir səfər",
+  "ru": "Особенно захватывающая поездка"
+ },
+ "why": {
+  "en": "Floating like a crocodile in a salt-mine lake in the Carpathians, and climbing through a hole into a dripping cave of bats",
+  "az": "Karpatlarda duz mədəni gölündə timsah kimi üzmək və deşikdən damcılayan, yarasalarla dolu mağaraya girmək",
+  "ru": "Лежать на воде, как крокодил, в соляном озере в Карпатах и пролезть через дыру в мокрую пещеру с летучими мышами"
+ },
+ "taste": "Ja seal olid soolakaevandused.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Räägi ühest eriti põnevast reisielamusest!",
+    "en": "Tell us about an especially exciting travel experience!",
+    "az": "Xüsusilə maraqlı bir səfər təəssüratından danış!",
+    "ru": "Расскажи об одном особенно захватывающем впечатлении от поездки!"
+   },
+   "turns": [
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "See oli 1981. aastal, kui ma käisin ühe sõbraga Taga-Karpaatides.",
+       "en": "It was in 1981, when I went to Transcarpathia with a friend.",
+       "az": "Bu, 1981-ci ildə idi, bir dostla Zakarpatyeyə getmişdim.",
+       "ru": "Это было в 1981 году, когда я ездил с одним другом в Закарпатье."
+      },
+      {
+       "et": "Selle sõbra naine oli sealt pärit ungarlanna, kelle vanemate juurde me külla läksime.",
+       "en": "This friend’s wife was a Hungarian woman from there, and it was her parents we were visiting.",
+       "az": "Bu dostun arvadı oralı bir macar qadını idi, biz onun valideynlərinin yanına qonaq getdik.",
+       "ru": "Жена этого друга была венгерка родом оттуда, и мы поехали в гости к её родителям."
+      },
+      {
+       "et": "See koht oli ungari keeles Zlatina ja ukraina keeles ja vene keeles Solotvino.",
+       "en": "The place was Zlatina in Hungarian, and Solotvino in Ukrainian and in Russian.",
+       "az": "O yer macarca Zlatina, ukraynaca və rusca isə Solotvino idi.",
+       "ru": "Это место по-венгерски называлось Златина, а по-украински и по-русски — Солотвино."
+      },
+      {
+       "et": "Ja seal olid soolakaevandused.",
+       "en": "And there were salt mines there.",
+       "az": "Orada duz mədənləri var idi.",
+       "ru": "И там были соляные шахты."
+      },
+      {
+       "et": "Tänu sellele, et seal olid soolakaevandused, oli sinna rajatud ka sanatoorium.",
+       "en": "Thanks to the salt mines, a sanatorium had been built there too.",
+       "az": "Orada duz mədənləri olduğu üçün ora sanatoriya da tikilmişdi.",
+       "ru": "Благодаря тому, что там были соляные шахты, там построили и санаторий."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Ja see on koht, mida võiks kindlasti võrrelda Surnumerega.",
+       "en": "And this is a place that could surely be compared to the Dead Sea.",
+       "az": "Bu, mütləq Ölü dənizlə müqayisə oluna biləcək bir yerdir.",
+       "ru": "И это место, которое точно можно сравнить с Мёртвым морем."
+      },
+      {
+       "et": "Sest kui sa sinna vette läksid, siis jalad tõusid üles ja sa olid vee peal ja seal ei olnud võimalik vee alla vajuda.",
+       "en": "Because when you went into the water, your legs came up, and you were on top of the water, and there it was impossible to sink under it.",
+       "az": "Çünki suya girəndə ayaqların yuxarı qalxırdı, suyun üstündə olurdun və orada suyun altına batmaq mümkün deyildi.",
+       "ru": "Потому что, когда ты заходил в воду, ноги поднимались, ты лежал на воде, и уйти под воду там было невозможно."
+      },
+      {
+       "et": "Seal tuli lihtsalt olla hoolas, et vesi ei läheks suhu ega silma.",
+       "en": "You just had to be careful that the water didn’t get into your mouth or your eyes.",
+       "az": "Sadəcə diqqətli olmaq lazım idi ki, su ağzına və gözünə getməsin.",
+       "ru": "Там просто нужно было быть осторожным, чтобы вода не попала в рот или в глаза."
+      },
+      {
+       "et": "Ja kui me seal ringi ujusime, siis märkasime selliseid suuremaid tädisid seal vee peal, kes tulid nagu krokodillid - see oli ka omaette vaatamisväärsus!",
+       "en": "And when we swam around there, we noticed these larger ladies on the water who came along like crocodiles - that was quite a sight in itself!",
+       "az": "Orada üzüb gəzəndə suyun üstündə timsah kimi gələn iri bədənli xalaları gördük - bu da ayrıca bir tamaşa idi!",
+       "ru": "А когда мы там плавали, то заметили на воде таких крупных тётушек, которые плыли, как крокодилы, — это было отдельное зрелище!"
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Ma olin siis palju noorem ja see oli elus esimest korda, kui ma nägin koobastes nahkhiiri.",
+       "en": "I was a good deal younger then, and it was the first time in my life that I saw bats in caves.",
+       "az": "Mən onda çox cavan idim və həyatımda ilk dəfə idi ki, mağaralarda yarasa gördüm.",
+       "ru": "Я тогда была гораздо моложе, и это был первый раз в жизни, когда я видела летучих мышей в пещерах."
+      },
+      {
+       "et": "Siis ma ei teadnud veel, kuidas nad elavad.",
+       "en": "At that time I didn’t know yet how they live.",
+       "az": "Onda hələ bilmirdim ki, onlar necə yaşayırlar.",
+       "ru": "Тогда я ещё не знала, как они живут."
+      },
+      {
+       "et": "Ma sain istuda koopas, tilkuvas koopas ja vaadata, kuidas nahkhiired seal elavad.",
+       "en": "I got to sit in the cave, a dripping cave, and watch how the bats live there.",
+       "az": "Mağarada, damcılayan mağarada oturub yarasaların orada necə yaşadığına baxa bildim.",
+       "ru": "Мне довелось посидеть в пещере, в пещере, где капает, и посмотреть, как там живут летучие мыши."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Väga lahedad koopad!",
+       "en": "Really cool caves!",
+       "az": "Çox maraqlı mağaralar!",
+       "ru": "Очень классные пещеры!"
+      },
+      {
+       "et": "Maa peal oli selline pisikene auk.",
+       "en": "There was this tiny hole in the ground.",
+       "az": "Yerdə belə balaca bir deşik var idi.",
+       "ru": "В земле была такая крошечная дырка."
+      },
+      {
+       "et": "Ma mõtlesin, et kas mina mahun sealt sisse.",
+       "en": "I wondered whether I would fit through it.",
+       "az": "Fikirləşdim ki, görəsən, mən oradan sığışaram.",
+       "ru": "Я подумала: пролезу ли я туда?"
+      },
+      {
+       "et": "Aga kõik turistid - me olime neljakesi - ronisid sealt august sisse ja siis me olime küll müstilises maailmas!",
+       "en": "But all the tourists - there were four of us - climbed in through that hole, and then we really were in a mystical world!",
+       "az": "Amma bütün turistlər - biz dörd nəfər idik - o deşikdən içəri girdilər və onda, doğrudan da, sirli bir dünyada idik!",
+       "ru": "Но все туристы — нас было четверо — пролезли через эту дыру, и тогда мы оказались в самом настоящем мистическом мире!"
+      },
+      {
+       "et": "See koobas oli selline hästi madal, hästi märg, niiske, tilkus, pime.",
+       "en": "This cave was very low, very wet, damp, dripping, dark.",
+       "az": "Bu mağara çox alçaq, çox yaş, rütubətli, damcılayan, qaranlıq idi.",
+       "ru": "Эта пещера была очень низкая, очень мокрая, сырая, капала, тёмная."
+      },
+      {
+       "et": "Aga meil olid muidugi lambid.",
+       "en": "But of course we had lamps.",
+       "az": "Amma əlbəttə ki, lampalarımız var idi.",
+       "ru": "Но у нас, конечно, были фонари."
+      },
+      {
+       "et": "Eestis ei ole selliseid koopaid, midagi meil on, aga see ei ole võrreldav!",
+       "en": "There are no caves like that in Estonia; we do have something, but it isn’t comparable!",
+       "az": "Estoniyada belə mağaralar yoxdur, nəsə var, amma müqayisə olunmaz!",
+       "ru": "В Эстонии таких пещер нет, что-то у нас есть, но это несравнимо!"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "räägi": {
+   "base": "rääkima",
+   "means": {
+    "en": "tell, talk (to you)",
+    "az": "danış",
+    "ru": "расскажи"
+   },
+   "deck": "verbs"
+  },
+  "ühest": {
+   "base": "üks",
+   "means": {
+    "en": "from one",
+    "az": "birindən",
+    "ru": "из одного"
+   },
+   "deck": "numbers"
+  },
+  "eriti": {
+   "base": "eriti",
+   "means": {
+    "en": "particularly (eriti ei, not really)",
+    "az": "xüsusilə (eriti ei, o qədər də yox)",
+    "ru": "особенно (eriti ei, не особо)"
+   },
+   "deck": "everyday"
+  },
+  "põnevast": {
+   "base": "põnev",
+   "means": {
+    "en": "about an exciting",
+    "az": "maraqlı",
+    "ru": "о захватывающем"
+   },
+   "deck": "describing"
+  },
+  "reisielamusest": {
+   "base": "reisielamus",
+   "means": {
+    "en": "about a travel experience",
+    "az": "səfər təəssüratından",
+    "ru": "о впечатлении от поездки"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "aastal": {
+   "base": "aasta",
+   "means": {
+    "en": "in the year",
+    "az": "ildə",
+    "ru": "в году"
+   },
+   "deck": "time"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "käisin": {
+   "base": "käima",
+   "means": {
+    "en": "I went, I visited",
+    "az": "getdim, oldum",
+    "ru": "ходил, был"
+   },
+   "deck": "moreverbs"
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "sõbraga": {
+   "base": "sõber",
+   "means": {
+    "en": "with a friend",
+    "az": "dostla",
+    "ru": "с другом"
+   },
+   "deck": "talk"
+  },
+  "taga": {
+   "base": "taga",
+   "means": {
+    "en": "behind (arvuti taga: at the computer)",
+    "az": "arxasında",
+    "ru": "за"
+   },
+   "deck": "around"
+  },
+  "karpaatides": {
+   "base": "Karpaadid",
+   "means": {
+    "en": "in the Carpathians (Taga-Karpaatides: in Transcarpathia)",
+    "az": "Karpatlarda",
+    "ru": "в Карпатах"
+   }
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "sõbra": {
+   "base": "sõber",
+   "means": {
+    "en": "of a friend",
+    "az": "dostun",
+    "ru": "друга"
+   },
+   "deck": "talk"
+  },
+  "naine": {
+   "base": "naine",
+   "means": {
+    "en": "wife; woman",
+    "az": "arvad; qadın",
+    "ru": "жена; женщина"
+   },
+   "deck": "talk"
+  },
+  "sealt": {
+   "base": "sealt",
+   "means": {
+    "en": "from there",
+    "az": "oradan",
+    "ru": "оттуда"
+   },
+   "deck": "around"
+  },
+  "pärit": {
+   "base": "pärit",
+   "means": {
+    "en": "from, originally from",
+    "az": "oralı, -dan olan",
+    "ru": "родом"
+   }
+  },
+  "ungarlanna": {
+   "base": "ungarlanna",
+   "means": {
+    "en": "a Hungarian woman",
+    "az": "macar qadını",
+    "ru": "венгерка"
+   }
+  },
+  "kelle": {
+   "base": "kes",
+   "means": {
+    "en": "whose",
+    "az": "kimin",
+    "ru": "чьё"
+   },
+   "deck": "asking"
+  },
+  "vanemate": {
+   "base": "vanem",
+   "means": {
+    "en": "the parents' (vanemate toas: in the parents' room; vanemate juurde: to the parents)",
+    "az": "valideynlərin",
+    "ru": "родителей"
+   },
+   "deck": "adjectives-cards"
+  },
+  "juurde": {
+   "base": "juurde",
+   "means": {
+    "en": "to (somebody), up to (minu juurde: to me)",
+    "az": "yanına",
+    "ru": "к"
+   },
+   "deck": "around"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "külla": {
+   "base": "külla",
+   "means": {
+    "en": "visiting, on a visit",
+    "az": "qonaq",
+    "ru": "в гости"
+   }
+  },
+  "läksime": {
+   "base": "minema",
+   "means": {
+    "en": "we went",
+    "az": "getdik",
+    "ru": "мы поехали"
+   },
+   "deck": "verbs"
+  },
+  "koht": {
+   "base": "koht",
+   "means": {
+    "en": "place",
+    "az": "yer",
+    "ru": "место"
+   },
+   "deck": "around"
+  },
+  "ungari": {
+   "base": "ungari",
+   "means": {
+    "en": "Hungarian",
+    "az": "macar",
+    "ru": "венгерский"
+   },
+   "deck": "countries"
+  },
+  "keeles": {
+   "base": "keel",
+   "means": {
+    "en": "in the language",
+    "az": "dilində",
+    "ru": "на языке"
+   },
+   "deck": "talk"
+  },
+  "zlatina": {
+   "base": "Zlatina",
+   "means": {
+    "en": "Zlatina, a place",
+    "az": "Zlatina, yer adı",
+    "ru": "Златина"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "ukraina": {
+   "base": "ukraina",
+   "means": {
+    "en": "Ukrainian",
+    "az": "ukrayna",
+    "ru": "украинский"
+   },
+   "deck": "countries"
+  },
+  "vene": {
+   "base": "vene",
+   "means": {
+    "en": "Russian",
+    "az": "rus",
+    "ru": "русский"
+   }
+  },
+  "solotvino": {
+   "base": "Solotvino",
+   "means": {
+    "en": "Solotvino, a place",
+    "az": "Solotvino, yer adı",
+    "ru": "Солотвино"
+   }
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "olid": {
+   "base": "olema",
+   "means": {
+    "en": "were",
+    "az": "idilər",
+    "ru": "были"
+   },
+   "deck": "verbs"
+  },
+  "soolakaevandused": {
+   "base": "soolakaevandus",
+   "means": {
+    "en": "salt mines",
+    "az": "duz mədənləri",
+    "ru": "соляные шахты"
+   }
+  },
+  "tänu": {
+   "base": "tänu",
+   "means": {
+    "en": "thanks to",
+    "az": "sayəsində",
+    "ru": "благодаря"
+   }
+  },
+  "sellele": {
+   "base": "see",
+   "means": {
+    "en": "on this, for this",
+    "az": "buna",
+    "ru": "на это"
+   },
+   "deck": "pronouns"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "sinna": {
+   "base": "sinna",
+   "means": {
+    "en": "there (to there)",
+    "az": "ora",
+    "ru": "туда"
+   },
+   "deck": "around"
+  },
+  "rajatud": {
+   "base": "rajama",
+   "means": {
+    "en": "built, established",
+    "az": "tikilmiş",
+    "ru": "построен"
+   }
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "sanatoorium": {
+   "base": "sanatoorium",
+   "means": {
+    "en": "sanatorium",
+    "az": "sanatoriya",
+    "ru": "санаторий"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "võiks": {
+   "base": "võima",
+   "means": {
+    "en": "could, might",
+    "az": "olar",
+    "ru": "можно было бы"
+   },
+   "deck": "moreverbs"
+  },
+  "kindlasti": {
+   "base": "kindlasti",
+   "means": {
+    "en": "certainly",
+    "az": "mütləq",
+    "ru": "обязательно, точно"
+   },
+   "deck": "repairs"
+  },
+  "võrrelda": {
+   "base": "võrdlema",
+   "means": {
+    "en": "to compare",
+    "az": "müqayisə etmək",
+    "ru": "сравнить"
+   },
+   "deck": "moreverbs"
+  },
+  "surnumerega": {
+   "base": "Surnumeri",
+   "means": {
+    "en": "with the Dead Sea",
+    "az": "Ölü dənizlə",
+    "ru": "с Мёртвым морем"
+   }
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "vette": {
+   "base": "vesi",
+   "means": {
+    "en": "into the water",
+    "az": "suya",
+    "ru": "в воду"
+   },
+   "deck": "food"
+  },
+  "läksid": {
+   "base": "minema",
+   "means": {
+    "en": "you went",
+    "az": "getdin",
+    "ru": "ты шёл, заходил"
+   },
+   "deck": "verbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "jalad": {
+   "base": "jalg",
+   "means": {
+    "en": "legs, feet",
+    "az": "ayaqlar",
+    "ru": "ноги"
+   },
+   "deck": "health"
+  },
+  "tõusid": {
+   "base": "tõusma",
+   "means": {
+    "en": "rose, came up",
+    "az": "qalxırdı",
+    "ru": "поднимались"
+   },
+   "deck": "moreverbs"
+  },
+  "üles": {
+   "base": "üles",
+   "means": {
+    "en": "up",
+    "az": "yuxarı",
+    "ru": "вверх"
+   }
+  },
+  "vee": {
+   "base": "vesi",
+   "means": {
+    "en": "of the water (vee peal: on the water; vee alla: under the water)",
+    "az": "suyun",
+    "ru": "воды"
+   },
+   "deck": "food"
+  },
+  "peal": {
+   "base": "peal",
+   "means": {
+    "en": "on, on top of",
+    "az": "üstündə",
+    "ru": "на"
+   },
+   "deck": "around"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "võimalik": {
+   "base": "võimalik",
+   "means": {
+    "en": "possible",
+    "az": "mümkün",
+    "ru": "возможно"
+   }
+  },
+  "alla": {
+   "base": "alla",
+   "means": {
+    "en": "down, under",
+    "az": "altına",
+    "ru": "под"
+   },
+   "deck": "everyday"
+  },
+  "vajuda": {
+   "base": "vajuma",
+   "means": {
+    "en": "to sink",
+    "az": "batmaq",
+    "ru": "погрузиться, утонуть"
+   }
+  },
+  "tuli": {
+   "base": "tulema",
+   "means": {
+    "en": "had to (seal tuli olla hoolas: you had to be careful there)",
+    "az": "lazım gəlirdi",
+    "ru": "приходилось"
+   },
+   "deck": "verbs"
+  },
+  "lihtsalt": {
+   "base": "lihtsalt",
+   "means": {
+    "en": "simply, just",
+    "az": "sadəcə",
+    "ru": "просто"
+   },
+   "deck": "everyday"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "hoolas": {
+   "base": "hoolas",
+   "means": {
+    "en": "careful",
+    "az": "diqqətli",
+    "ru": "осторожный"
+   }
+  },
+  "vesi": {
+   "base": "vesi",
+   "means": {
+    "en": "water",
+    "az": "su",
+    "ru": "вода"
+   },
+   "deck": "food"
+  },
+  "läheks": {
+   "base": "minema",
+   "means": {
+    "en": "would go",
+    "az": "getməsin",
+    "ru": "попала бы"
+   },
+   "deck": "verbs"
+  },
+  "suhu": {
+   "base": "suu",
+   "means": {
+    "en": "into the mouth",
+    "az": "ağza",
+    "ru": "в рот"
+   },
+   "deck": "health"
+  },
+  "ega": {
+   "base": "ega",
+   "means": {
+    "en": "nor; ega … ei ole?: it isn't …, is it?",
+    "az": "nə də; … deyil ki?",
+    "ru": "и не; ведь не … ?"
+   },
+   "deck": "everyday"
+  },
+  "silma": {
+   "base": "silm",
+   "means": {
+    "en": "into the eye",
+    "az": "gözə",
+    "ru": "в глаза"
+   },
+   "deck": "health"
+  },
+  "ringi": {
+   "base": "ringi",
+   "means": {
+    "en": "around",
+    "az": "ətrafa, o yan-bu yana",
+    "ru": "кругом, туда-сюда"
+   }
+  },
+  "ujusime": {
+   "base": "ujuma",
+   "means": {
+    "en": "we swam",
+    "az": "üzdük",
+    "ru": "мы плавали"
+   },
+   "deck": "moreverbs"
+  },
+  "märkasime": {
+   "base": "märkama",
+   "means": {
+    "en": "we noticed",
+    "az": "gördük, fərq etdik",
+    "ru": "мы заметили"
+   }
+  },
+  "selliseid": {
+   "base": "selline",
+   "means": {
+    "en": "such, these",
+    "az": "belə",
+    "ru": "таких"
+   }
+  },
+  "suuremaid": {
+   "base": "suurem",
+   "means": {
+    "en": "larger",
+    "az": "iri",
+    "ru": "крупных"
+   },
+   "deck": "adjectives-cards"
+  },
+  "tädisid": {
+   "base": "tädi",
+   "means": {
+    "en": "aunties, ladies",
+    "az": "xalalar",
+    "ru": "тётушек"
+   },
+   "deck": "family"
+  },
+  "kes": {
+   "base": "kes",
+   "means": {
+    "en": "who",
+    "az": "kim",
+    "ru": "кто, который"
+   },
+   "deck": "asking"
+  },
+  "tulid": {
+   "base": "tulema",
+   "means": {
+    "en": "came",
+    "az": "gəlirdilər",
+    "ru": "шли, плыли"
+   },
+   "deck": "verbs"
+  },
+  "nagu": {
+   "base": "nagu",
+   "means": {
+    "en": "like, as",
+    "az": "kimi",
+    "ru": "как"
+   },
+   "deck": "everyday"
+  },
+  "krokodillid": {
+   "base": "krokodill",
+   "means": {
+    "en": "crocodiles",
+    "az": "timsahlar",
+    "ru": "крокодилы"
+   }
+  },
+  "omaette": {
+   "base": "omaette",
+   "means": {
+    "en": "in itself, of its own",
+    "az": "ayrıca",
+    "ru": "отдельный, сам по себе"
+   }
+  },
+  "vaatamisväärsus": {
+   "base": "vaatamisväärsus",
+   "means": {
+    "en": "a sight, an attraction",
+    "az": "tamaşa, görməli yer",
+    "ru": "зрелище, достопримечательность"
+   }
+  },
+  "olin": {
+   "base": "olema",
+   "means": {
+    "en": "I was",
+    "az": "idim",
+    "ru": "я был"
+   },
+   "deck": "verbs"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "noorem": {
+   "base": "noorem",
+   "means": {
+    "en": "younger (kõige noorem: the youngest)",
+    "az": "kiçik",
+    "ru": "младший"
+   },
+   "deck": "adjectives-cards"
+  },
+  "elus": {
+   "base": "elu",
+   "means": {
+    "en": "in life",
+    "az": "həyatda",
+    "ru": "в жизни"
+   },
+   "deck": "naera-words"
+  },
+  "esimest": {
+   "base": "esimene",
+   "means": {
+    "en": "first (esimest korda: for the first time)",
+    "az": "ilk",
+    "ru": "первый"
+   },
+   "deck": "numbers"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nägin": {
+   "base": "nägema",
+   "means": {
+    "en": "I saw",
+    "az": "gördüm",
+    "ru": "видел"
+   },
+   "deck": "verbs"
+  },
+  "koobastes": {
+   "base": "koobas",
+   "means": {
+    "en": "in caves",
+    "az": "mağaralarda",
+    "ru": "в пещерах"
+   }
+  },
+  "nahkhiiri": {
+   "base": "nahkhiir",
+   "means": {
+    "en": "bats",
+    "az": "yarasalar",
+    "ru": "летучих мышей"
+   }
+  },
+  "teadnud": {
+   "base": "teadma",
+   "means": {
+    "en": "known (ei teadnud: did not know)",
+    "az": "bilmirdim",
+    "ru": "знала"
+   },
+   "deck": "verbs"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "elavad": {
+   "base": "elama",
+   "means": {
+    "en": "they live",
+    "az": "yaşayırlar",
+    "ru": "живут"
+   },
+   "deck": "verbs"
+  },
+  "sain": {
+   "base": "saama",
+   "means": {
+    "en": "I got",
+    "az": "aldım",
+    "ru": "я получил"
+   },
+   "deck": "verbs"
+  },
+  "istuda": {
+   "base": "istuma",
+   "means": {
+    "en": "to sit",
+    "az": "oturmaq",
+    "ru": "сидеть"
+   },
+   "deck": "moreverbs"
+  },
+  "koopas": {
+   "base": "koobas",
+   "means": {
+    "en": "in a cave",
+    "az": "mağarada",
+    "ru": "в пещере"
+   }
+  },
+  "tilkuvas": {
+   "base": "tilkuv",
+   "means": {
+    "en": "in a dripping",
+    "az": "damcılayan",
+    "ru": "капающей"
+   }
+  },
+  "vaadata": {
+   "base": "vaatama",
+   "means": {
+    "en": "to watch, to look",
+    "az": "baxmaq",
+    "ru": "смотреть"
+   },
+   "deck": "moreverbs"
+  },
+  "nahkhiired": {
+   "base": "nahkhiir",
+   "means": {
+    "en": "bats",
+    "az": "yarasalar",
+    "ru": "летучие мыши"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "lahedad": {
+   "base": "lahe",
+   "means": {
+    "en": "cool",
+    "az": "maraqlı, əla",
+    "ru": "классные"
+   },
+   "deck": "describing"
+  },
+  "koopad": {
+   "base": "koobas",
+   "means": {
+    "en": "caves",
+    "az": "mağaralar",
+    "ru": "пещеры"
+   }
+  },
+  "maa": {
+   "base": "maa",
+   "means": {
+    "en": "ground, earth (maa peal: on the ground)",
+    "az": "yer",
+    "ru": "земля"
+   },
+   "deck": "country"
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "pisikene": {
+   "base": "pisike",
+   "means": {
+    "en": "tiny",
+    "az": "balaca",
+    "ru": "крошечный"
+   },
+   "deck": "describing"
+  },
+  "auk": {
+   "base": "auk",
+   "means": {
+    "en": "hole",
+    "az": "deşik",
+    "ru": "дыра"
+   }
+  },
+  "mõtlesin": {
+   "base": "mõtlema",
+   "means": {
+    "en": "I thought",
+    "az": "düşündüm",
+    "ru": "думал"
+   },
+   "deck": "moreverbs"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "mahun": {
+   "base": "mahtuma",
+   "means": {
+    "en": "I fit",
+    "az": "sığışıram",
+    "ru": "я помещусь, пролезу"
+   },
+   "deck": "moreverbs"
+  },
+  "sisse": {
+   "base": "sisse",
+   "means": {
+    "en": "in, into (sain sisse: I got in)",
+    "az": "içəri (sain sisse: qəbul oldum)",
+    "ru": "внутрь (sain sisse: я поступил)"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "turistid": {
+   "base": "turist",
+   "means": {
+    "en": "tourists",
+    "az": "turistlər",
+    "ru": "туристы"
+   }
+  },
+  "olime": {
+   "base": "olema",
+   "means": {
+    "en": "we were",
+    "az": "idik",
+    "ru": "мы были"
+   },
+   "deck": "verbs"
+  },
+  "neljakesi": {
+   "base": "neljakesi",
+   "means": {
+    "en": "the four of us, in a group of four",
+    "az": "dörd nəfər",
+    "ru": "вчетвером"
+   }
+  },
+  "ronisid": {
+   "base": "ronima",
+   "means": {
+    "en": "climbed",
+    "az": "girdilər, dırmaşdılar",
+    "ru": "пролезли"
+   }
+  },
+  "august": {
+   "base": "auk",
+   "means": {
+    "en": "out of the hole, through the hole",
+    "az": "deşikdən",
+    "ru": "через дыру"
+   }
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "müstilises": {
+   "base": "müstiline",
+   "means": {
+    "en": "in a mystical",
+    "az": "sirli",
+    "ru": "в мистическом"
+   }
+  },
+  "maailmas": {
+   "base": "maailm",
+   "means": {
+    "en": "in the world",
+    "az": "dünyada",
+    "ru": "в мире"
+   }
+  },
+  "koobas": {
+   "base": "koobas",
+   "means": {
+    "en": "cave",
+    "az": "mağara",
+    "ru": "пещера"
+   }
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "madal": {
+   "base": "madal",
+   "means": {
+    "en": "low",
+    "az": "alçaq",
+    "ru": "низкая"
+   }
+  },
+  "märg": {
+   "base": "märg",
+   "means": {
+    "en": "wet",
+    "az": "yaş",
+    "ru": "мокрая"
+   }
+  },
+  "niiske": {
+   "base": "niiske",
+   "means": {
+    "en": "damp",
+    "az": "rütubətli",
+    "ru": "сырая"
+   }
+  },
+  "tilkus": {
+   "base": "tilkuma",
+   "means": {
+    "en": "dripped, was dripping",
+    "az": "damcılayırdı",
+    "ru": "капала"
+   }
+  },
+  "pime": {
+   "base": "pime",
+   "means": {
+    "en": "dark",
+    "az": "qaranlıq",
+    "ru": "тёмная"
+   },
+   "deck": "weather"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "muidugi": {
+   "base": "muidugi",
+   "means": {
+    "en": "of course",
+    "az": "əlbəttə",
+    "ru": "конечно"
+   },
+   "deck": "basics"
+  },
+  "lambid": {
+   "base": "lamp",
+   "means": {
+    "en": "lamps",
+    "az": "lampalar",
+    "ru": "фонари, лампы"
+   },
+   "deck": "home"
+  },
+  "eestis": {
+   "base": "Eesti",
+   "means": {
+    "en": "in Estonia",
+    "az": "Estoniyada",
+    "ru": "в Эстонии"
+   },
+   "deck": "countries"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "koopaid": {
+   "base": "koobas",
+   "means": {
+    "en": "caves",
+    "az": "mağaralar",
+    "ru": "пещер"
+   }
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "võrreldav": {
+   "base": "võrreldav",
+   "means": {
+    "en": "comparable",
+    "az": "müqayisə olunan",
+    "ru": "сравнимый"
+   }
+  }
+ }
+}

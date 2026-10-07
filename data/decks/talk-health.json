@@ -1,0 +1,2119 @@
+{
+ "id": "talk-health",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Looking after your health",
+  "az": "Sağlamlığını necə qoruyursan",
+  "ru": "Как ты бережёшь здоровье"
+ },
+ "why": {
+  "en": "Jüri quit smoking seventeen years ago, Mirja eats a bit of everything, and both sleep well",
+  "az": "Yüri on yeddi il əvvəl siqareti atıb, Mirya hər şeydən bir az yeyir, ikisi də yaxşı yatır",
+  "ru": "Юри семнадцать лет назад бросил курить, Мирья ест всего понемногу, и оба хорошо спят"
+ },
+ "taste": "Tasakaal on põhiline.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kuidas hoiad oma tervist?",
+    "en": "How do you look after your health?",
+    "az": "Sağlamlığını necə qoruyursan?",
+    "ru": "Как ты бережёшь своё здоровье?"
+   },
+   "turns": [
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Minu tervisega on nüüd küll nii, et mul ei ole oma tervisele midagi ette heita.",
+       "en": "As for my health now, I have nothing to reproach it with.",
+       "az": "İndi sağlamlığıma gəlincə, ona heç bir iradım yoxdur.",
+       "ru": "Со здоровьем у меня сейчас так, что мне не в чем его упрекнуть."
+      },
+      {
+       "et": "Ma olen niimoodi elanud, et ma olen siiamaani veel elus.",
+       "en": "I have lived in such a way that I am still alive to this day.",
+       "az": "Elə yaşamışam ki, indiyə qədər hələ sağam.",
+       "ru": "Я жил так, что до сих пор ещё жив."
+      },
+      {
+       "et": "Mul pole midagi väga kurta.",
+       "en": "I have nothing much to complain about.",
+       "az": "Elə bir şikayətim yoxdur.",
+       "ru": "Жаловаться мне особенно не на что."
+      },
+      {
+       "et": "Aga ega ma selleks vist väga palju midagi teinud ei ole.",
+       "en": "But I probably haven’t done very much for it, either.",
+       "az": "Amma bunun üçün, deyəsən, elə çox şey də etməmişəm.",
+       "ru": "Но я для этого, наверное, не так уж много и сделал."
+      },
+      {
+       "et": "Välja arvatud see, et 17 aastat tagasi ütles minu keha, et rohkem ta tubakat ei taha, ja ma jätsin suitsetamise maha.",
+       "en": "Except that seventeen years ago my body said it wanted no more tobacco, and I gave up smoking.",
+       "az": "Bundan başqa ki, 17 il əvvəl bədənim dedi ki, daha tütün istəmir və mən siqareti atdım.",
+       "ru": "Разве что 17 лет назад моё тело сказало, что больше не хочет табака, и я бросил курить."
+      },
+      {
+       "et": "Olin kaua aega selline kõva suitsumees ja jõin liitreid kohvi ja see vist ei olnud väga tervislik eluviis.",
+       "en": "For a long time I was a heavy smoker and drank litres of coffee, and that probably wasn’t a very healthy way of life.",
+       "az": "Uzun müddət çox siqaret çəkən adam idim, litrlərlə qəhvə içirdim və bu, deyəsən, elə də sağlam həyat tərzi deyildi.",
+       "ru": "Я долгое время был заядлым курильщиком и пил кофе литрами, и это, наверное, был не очень здоровый образ жизни."
+      },
+      {
+       "et": "Aga see on vist olnud ka ainus oma tervise põletamine, nii-öelda läbipõletamine või elupõletamine.",
+       "en": "But that has probably been the only way I’ve burned up my health - burning out or burning through life, so to speak.",
+       "az": "Amma, deyəsən, sağlamlığımı yandırmağım da yalnız bu olub, necə deyərlər, tükənmək və ya ömrü yandırmaq.",
+       "ru": "Но это, наверное, и было единственное прожигание своего здоровья, так сказать, выгорание или прожигание жизни."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Mis on minu hea tervise põhjus, ma ei tea.",
+       "en": "What the reason for my good health is, I don’t know.",
+       "az": "Sağlamlığımın səbəbi nədir, bilmirəm.",
+       "ru": "В чём причина моего хорошего здоровья, я не знаю."
+      },
+      {
+       "et": "Võib-olla see, et minu põlvkonna inimesed on elanud oludes, kus on tulnud juba lapsest saati tööd teha: majapidamistöid või ka talutöid.",
+       "en": "Maybe it’s that the people of my generation lived in conditions where they had to work from childhood on: housework, or farm work too.",
+       "az": "Bəlkə də ondandır ki, mənim nəslimin insanları elə şəraitdə yaşayıblar ki, uşaqlıqdan işləmək lazım gəlib: ev işləri və ya təsərrüfat işləri.",
+       "ru": "Может быть, дело в том, что люди моего поколения жили в условиях, когда работать приходилось с самого детства: по хозяйству или на хуторе."
+      },
+      {
+       "et": "Töö tegemine, füüsiline töö on kindlasti see, mis võiks tervisele hästi mõjuda.",
+       "en": "Working, physical work, is surely something that can do your health good.",
+       "az": "İşləmək, fiziki iş, mütləq sağlamlığa yaxşı təsir edə biləcək şeydir.",
+       "ru": "Работа, физический труд — это точно то, что может хорошо влиять на здоровье."
+      },
+      {
+       "et": "Ma olen teinud ka sporti.",
+       "en": "I have done some sport, too.",
+       "az": "İdmanla da məşğul olmuşam.",
+       "ru": "Я и спортом занимался."
+      },
+      {
+       "et": "Raplas olid kõik loomulikult suured korvpallurid, hiljem tulid orienteerumine ja suusatamine.",
+       "en": "In Rapla everybody was naturally a keen basketball player; later came orienteering and skiing.",
+       "az": "Raplada hamı, təbii ki, böyük basketbolçu idi, sonra oriyentirləmə və xizək sürmə gəldi.",
+       "ru": "В Рапла все, естественно, были заядлыми баскетболистами, позже пришли ориентирование и лыжи."
+      },
+      {
+       "et": "Ja see on ka kõik.",
+       "en": "And that’s all there is.",
+       "az": "Vəssalam.",
+       "ru": "Вот и всё."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Mulle meeldib sporti teha!",
+       "en": "I like doing sport!",
+       "az": "İdmanla məşğul olmağı xoşlayıram!",
+       "ru": "Я люблю заниматься спортом!"
+      },
+      {
+       "et": "Kui ma kooliajal vihkasin trenne ja kehalist kasvatust, siis nüüd mulle tõesti meeldib sporti teha.",
+       "en": "At school I hated training and PE, but now I really do like doing sport.",
+       "az": "Məktəb vaxtı məşqlərə və bədən tərbiyəsinə nifrət edirdimsə, indi idmanla məşğul olmağı həqiqətən xoşlayıram.",
+       "ru": "Если в школьные годы я ненавидела тренировки и физкультуру, то теперь мне правда нравится заниматься спортом."
+      },
+      {
+       "et": "Ma käin vähemalt kolm korda nädalas trennis.",
+       "en": "I go to training at least three times a week.",
+       "az": "Həftədə ən azı üç dəfə məşqə gedirəm.",
+       "ru": "Я хожу на тренировки как минимум три раза в неделю."
+      },
+      {
+       "et": "Ja kui ma ei käi trennis, siis mulle meeldib ikka liikuda.",
+       "en": "And when I don’t go to training, I still like to move.",
+       "az": "Məşqə getməyəndə də hərəkət etməyi yenə xoşlayıram.",
+       "ru": "А когда я не хожу на тренировки, мне всё равно нравится двигаться."
+      },
+      {
+       "et": "Näiteks peale tööd, peale õhtusööki me lähme jalutama või ma käin rattaga tööl, kui on ilus ilm.",
+       "en": "For instance, after work, after dinner, we go for a walk, or I cycle to work when the weather is nice.",
+       "az": "Məsələn, işdən sonra, şam yeməyindən sonra gəzməyə gedirik, ya da hava gözəl olanda işə velosipedlə gedirəm.",
+       "ru": "Например, после работы, после ужина мы идём гулять, или я езжу на работу на велосипеде, когда хорошая погода."
+      },
+      {
+       "et": "Alati võib ka mingit tööd teha, tööd leiab alati.",
+       "en": "You can always do some work too; there’s always work to be found.",
+       "az": "Həmişə hansısa iş də görmək olar, iş həmişə tapılır.",
+       "ru": "Всегда можно и поработать, работа всегда найдётся."
+      },
+      {
+       "et": "Näiteks täna ma lähen aitan sõbral remonti teha.",
+       "en": "Today, for example, I’m going to help a friend with some renovating.",
+       "az": "Məsələn, bu gün gedib dostuma təmirdə kömək edirəm.",
+       "ru": "Например, сегодня я иду помогать другу с ремонтом."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Ma pean ennast iga päev liigutama, muidu tuleb kohe paha tunne.",
+       "en": "I have to move every day, otherwise I get a bad feeling straight away.",
+       "az": "Hər gün hərəkət etməliyəm, yoxsa dərhal pis hiss edirəm.",
+       "ru": "Мне нужно двигаться каждый день, иначе сразу становится нехорошо."
+      },
+      {
+       "et": "Siis ma kohe tunnen, et keha ei ole rahul.",
+       "en": "Then I feel straight away that my body isn’t happy.",
+       "az": "Onda dərhal hiss edirəm ki, bədənim narazıdır.",
+       "ru": "Тогда я сразу чувствую, что тело недовольно."
+      },
+      {
+       "et": "Ma ei jälgi mingit dieeti, ma söön enam-vähem kõike.",
+       "en": "I don’t follow any diet; I eat more or less everything.",
+       "az": "Heç bir pəhrizə əməl etmirəm, az-çox hər şey yeyirəm.",
+       "ru": "Я не соблюдаю никакой диеты, я ем более-менее всё."
+      },
+      {
+       "et": "Põhimõtteliselt ma sööngi kõike.",
+       "en": "Basically I do eat everything.",
+       "az": "Əslində hər şeyi yeyirəm.",
+       "ru": "В принципе, я ем всё."
+      },
+      {
+       "et": "Ma isegi vist armastan absoluutselt kõike toidu sees.",
+       "en": "I think I even love absolutely everything there is in food.",
+       "az": "Deyəsən, yeməkdə olan hər şeyi tamamilə sevirəm.",
+       "ru": "Я, наверное, даже люблю в еде абсолютно всё."
+      },
+      {
+       "et": "Ma lihtsalt vaatan, et söök oleks tasakaalus: vaatan, et ma ainult liha ei sööks, vaid et oleks ikka aedvilja ja natuke puuvilja ka ja midagi magusat ja kõike natukene.",
+       "en": "I just see that the food is balanced: I see that I don’t only eat meat, but that there are vegetables too, and a little fruit, and something sweet, and a little of everything.",
+       "az": "Sadəcə baxıram ki, yemək balanslı olsun: baxıram ki, təkcə ət yeməyim, tərəvəz də olsun, bir az meyvə də, nəsə şirin də, hər şeydən bir az.",
+       "ru": "Я просто слежу, чтобы еда была сбалансированной: слежу, чтобы есть не только мясо, а чтобы были и овощи, и немного фруктов, и что-нибудь сладкое, и всего понемножку."
+      },
+      {
+       "et": "Tasakaal on põhiline.",
+       "en": "Balance is the main thing.",
+       "az": "Əsas şey balansdır.",
+       "ru": "Баланс — это главное."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Ma ei ole kunagi suitsetanud.",
+       "en": "I have never smoked.",
+       "az": "Heç vaxt siqaret çəkməmişəm.",
+       "ru": "Я никогда не курила."
+      },
+      {
+       "et": "Ja mida vanemaks ma saan, seda vähem ma tarbin alkoholi, nüüd juba üsna-üsna-üsna harva.",
+       "en": "And the older I get, the less alcohol I drink; by now very, very, very rarely.",
+       "az": "Və nə qədər yaşlanıram, bir o qədər az spirtli içki içirəm, indi artıq çox-çox-çox nadir hallarda.",
+       "ru": "И чем старше я становлюсь, тем меньше пью алкоголь, теперь уже очень-очень-очень редко."
+      },
+      {
+       "et": "Ja mida ma veel ei tee?",
+       "en": "And what else don’t I do?",
+       "az": "Bəs daha nə etmirəm?",
+       "ru": "А чего я ещё не делаю?"
+      },
+      {
+       "et": "Ma ei laiskle.",
+       "en": "I don’t laze about.",
+       "az": "Tənbəllik etmirəm.",
+       "ru": "Я не ленюсь."
+      },
+      {
+       "et": "Ma ei lebota niisama, ma tegutsen.",
+       "en": "I don’t just lie around; I keep busy.",
+       "az": "Elə-belə uzanıb qalmıram, nəsə edirəm.",
+       "ru": "Я не валяюсь просто так, я действую."
+      },
+      {
+       "et": "Ja siis ongi hea olla.",
+       "en": "And then I feel good.",
+       "az": "Onda da özümü yaxşı hiss edirəm.",
+       "ru": "И тогда мне и хорошо."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Ja ma ei varasta uneajast, absoluutselt mitte.",
+       "en": "And I don’t steal from my sleeping time, absolutely not.",
+       "az": "Yuxu vaxtımdan da oğurlamıram, qətiyyən.",
+       "ru": "И я не ворую время у сна, абсолютно нет."
+      },
+      {
+       "et": "Mul on kindel kellaaeg, ma lähen siis ilusti magama ja ma magan seitse ja pool tundi, nii et minu unetsükkel on ilusti täis.",
+       "en": "I have a set time, I go to bed nicely then, and I sleep seven and a half hours, so my sleep cycle is properly complete.",
+       "az": "Müəyyən bir saatım var, o vaxt qaydasınca yatıram və yeddi yarım saat yatıram, belə ki, yuxu dövrüm tam olur.",
+       "ru": "У меня определённое время, я тогда как положено ложусь спать и сплю семь с половиной часов, так что мой цикл сна полностью завершается."
+      },
+      {
+       "et": "Magan ka hästi, väga hästi.",
+       "en": "And I sleep well, very well.",
+       "az": "Yaxşı da yatıram, çox yaxşı.",
+       "ru": "И сплю я хорошо, очень хорошо."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "hoiad": {
+   "base": "hoidma",
+   "means": {
+    "en": "you keep, you look after",
+    "az": "qoruyursan",
+    "ru": "ты бережёшь"
+   },
+   "deck": "moreverbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "tervist": {
+   "base": "tervis",
+   "means": {
+    "en": "health",
+    "az": "sağlamlıq",
+    "ru": "здоровье"
+   },
+   "deck": "health"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "tervisega": {
+   "base": "tervis",
+   "means": {
+    "en": "with health (minu tervisega on nii: as for my health)",
+    "az": "sağlamlıqla",
+    "ru": "со здоровьем"
+   },
+   "deck": "health"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "nüüd": {
+   "base": "nüüd",
+   "means": {
+    "en": "now",
+    "az": "indi",
+    "ru": "теперь"
+   },
+   "deck": "time"
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "tervisele": {
+   "base": "tervis",
+   "means": {
+    "en": "to health",
+    "az": "sağlamlığa",
+    "ru": "здоровью"
+   },
+   "deck": "health"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "ette": {
+   "base": "ette",
+   "means": {
+    "en": "forward (ette lugema: to read out; ette heitma: to reproach)",
+    "az": "qabağa (ette lugema: ucadan oxumaq; ette heitma: irad tutmaq)",
+    "ru": "вперёд (ette lugema: зачитать; ette heitma: упрекать)"
+   },
+   "deck": "everyday"
+  },
+  "heita": {
+   "base": "heitma",
+   "means": {
+    "en": "to throw (ette heita: to reproach)",
+    "az": "atmaq (ette heita: irad tutmaq)",
+    "ru": "бросить (ette heita: упрекнуть)"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "niimoodi": {
+   "base": "niimoodi",
+   "means": {
+    "en": "like this, this way",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "elanud": {
+   "base": "elama",
+   "means": {
+    "en": "lived",
+    "az": "yaşamışam",
+    "ru": "жил"
+   },
+   "deck": "verbs"
+  },
+  "siiamaani": {
+   "base": "siiamaani",
+   "means": {
+    "en": "up to now, so far",
+    "az": "indiyədək",
+    "ru": "до сих пор"
+   }
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "elus": {
+   "base": "elu",
+   "means": {
+    "en": "in life",
+    "az": "həyatda",
+    "ru": "в жизни"
+   },
+   "deck": "naera-words"
+  },
+  "pole": {
+   "base": "olema",
+   "means": {
+    "en": "isn't, there isn't (short of ei ole; pole midagi: it's nothing)",
+    "az": "yoxdur (ei ole-nin qısası)",
+    "ru": "нет (кратко от ei ole)"
+   },
+   "deck": "verbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "kurta": {
+   "base": "kurtma",
+   "means": {
+    "en": "to complain",
+    "az": "şikayət etmək",
+    "ru": "жаловаться"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "ega": {
+   "base": "ega",
+   "means": {
+    "en": "nor; ega … ei ole?: it isn't …, is it?",
+    "az": "nə də; … deyil ki?",
+    "ru": "и не; ведь не … ?"
+   },
+   "deck": "everyday"
+  },
+  "selleks": {
+   "base": "see",
+   "means": {
+    "en": "for that",
+    "az": "bunun üçün",
+    "ru": "для этого"
+   },
+   "deck": "pronouns"
+  },
+  "vist": {
+   "base": "vist",
+   "means": {
+    "en": "probably, I suppose",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "teinud": {
+   "base": "tegema",
+   "means": {
+    "en": "done",
+    "az": "etmişəm",
+    "ru": "сделал"
+   },
+   "deck": "verbs"
+  },
+  "välja": {
+   "base": "välja",
+   "means": {
+    "en": "out (näeb välja: looks like; ostate välja: buy outright; välja müüdud: sold out; välja arvatud: except)",
+    "az": "çölə (välja müüdud: satılıb; välja arvatud: -dan başqa)",
+    "ru": "наружу (välja müüdud: распродано; välja arvatud: кроме)"
+   },
+   "deck": "around"
+  },
+  "arvatud": {
+   "base": "arvama",
+   "means": {
+    "en": "counted (välja arvatud: except)",
+    "az": "sayılmış (välja arvatud: istisna olmaqla)",
+    "ru": "(välja arvatud: за исключением)"
+   },
+   "deck": "moreverbs"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  },
+  "ütles": {
+   "base": "ütlema",
+   "means": {
+    "en": "said",
+    "az": "dedi",
+    "ru": "сказала"
+   },
+   "deck": "everyday"
+  },
+  "keha": {
+   "base": "keha",
+   "means": {
+    "en": "body",
+    "az": "bədən",
+    "ru": "тело"
+   }
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "tubakat": {
+   "base": "tubakas",
+   "means": {
+    "en": "tobacco",
+    "az": "tütün",
+    "ru": "табака"
+   }
+  },
+  "taha": {
+   "base": "tahtma",
+   "means": {
+    "en": "want (after ei: ei taha, doesn't want)",
+    "az": "istəmir (ei taha)",
+    "ru": "не хочет (ei taha)"
+   },
+   "deck": "verbs"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "jätsin": {
+   "base": "jätma",
+   "means": {
+    "en": "I left (maha jätma: give up)",
+    "az": "atdım",
+    "ru": "я бросил"
+   },
+   "deck": "moreverbs"
+  },
+  "suitsetamise": {
+   "base": "suitsetamine",
+   "means": {
+    "en": "smoking",
+    "az": "siqaret çəkmə",
+    "ru": "курение"
+   }
+  },
+  "maha": {
+   "base": "maha",
+   "means": {
+    "en": "down; behind (maha jääma: to miss, be left behind)",
+    "az": "aşağı; geri",
+    "ru": "вниз; позади (maha jääma: опоздать)"
+   }
+  },
+  "olin": {
+   "base": "olema",
+   "means": {
+    "en": "I was",
+    "az": "idim",
+    "ru": "я был"
+   },
+   "deck": "verbs"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "aega": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "kõva": {
+   "base": "kõva",
+   "means": {
+    "en": "hard, heavy",
+    "az": "bərk, ağır",
+    "ru": "заядлый, крепкий"
+   },
+   "deck": "character"
+  },
+  "suitsumees": {
+   "base": "suitsumees",
+   "means": {
+    "en": "smoker",
+    "az": "siqaret çəkən",
+    "ru": "курильщик"
+   }
+  },
+  "jõin": {
+   "base": "jooma",
+   "means": {
+    "en": "I drank",
+    "az": "içirdim",
+    "ru": "я пил"
+   },
+   "deck": "verbs"
+  },
+  "liitreid": {
+   "base": "liiter",
+   "means": {
+    "en": "litres",
+    "az": "litrlərlə",
+    "ru": "литрами"
+   }
+  },
+  "kohvi": {
+   "base": "kohv",
+   "means": {
+    "en": "coffee",
+    "az": "qəhvə",
+    "ru": "кофе"
+   },
+   "deck": "food"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "tervislik": {
+   "base": "tervislik",
+   "means": {
+    "en": "healthy",
+    "az": "sağlam",
+    "ru": "здоровый"
+   },
+   "deck": "describing"
+  },
+  "eluviis": {
+   "base": "eluviis",
+   "means": {
+    "en": "way of life",
+    "az": "həyat tərzi",
+    "ru": "образ жизни"
+   }
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "ainus": {
+   "base": "ainus",
+   "means": {
+    "en": "only, sole",
+    "az": "yeganə",
+    "ru": "единственный"
+   },
+   "deck": "stopp-words"
+  },
+  "tervise": {
+   "base": "tervis",
+   "means": {
+    "en": "of health",
+    "az": "sağlamlığın",
+    "ru": "здоровья"
+   },
+   "deck": "health"
+  },
+  "põletamine": {
+   "base": "põletamine",
+   "means": {
+    "en": "burning",
+    "az": "yandırma",
+    "ru": "прожигание"
+   }
+  },
+  "öelda": {
+   "base": "ütlema",
+   "means": {
+    "en": "to say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "deck": "everyday"
+  },
+  "läbipõletamine": {
+   "base": "läbipõletamine",
+   "means": {
+    "en": "burning out",
+    "az": "tükənmə",
+    "ru": "выгорание"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "elupõletamine": {
+   "base": "elupõletamine",
+   "means": {
+    "en": "burning up one's life",
+    "az": "ömrü yandırmaq",
+    "ru": "прожигание жизни"
+   }
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "hea": {
+   "base": "hea",
+   "means": {
+    "en": "good",
+    "az": "yaxşı",
+    "ru": "хороший"
+   },
+   "deck": "basics"
+  },
+  "põhjus": {
+   "base": "põhjus",
+   "means": {
+    "en": "reason",
+    "az": "səbəb",
+    "ru": "причина"
+   }
+  },
+  "tea": {
+   "base": "teadma",
+   "means": {
+    "en": "know (after ei: ei tea, don't know)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не знаю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "põlvkonna": {
+   "base": "põlvkond",
+   "means": {
+    "en": "of a generation",
+    "az": "nəslin",
+    "ru": "поколения"
+   }
+  },
+  "inimesed": {
+   "base": "inimene",
+   "means": {
+    "en": "people",
+    "az": "insanlar",
+    "ru": "люди"
+   },
+   "deck": "talk"
+  },
+  "oludes": {
+   "base": "olud",
+   "means": {
+    "en": "in conditions",
+    "az": "şəraitdə",
+    "ru": "в условиях"
+   }
+  },
+  "kus": {
+   "base": "kus",
+   "means": {
+    "en": "where",
+    "az": "harada",
+    "ru": "где"
+   },
+   "deck": "asking"
+  },
+  "tulnud": {
+   "base": "tulema",
+   "means": {
+    "en": "had to (on tulnud tööd teha: have had to work)",
+    "az": "lazım gəlib",
+    "ru": "приходилось"
+   },
+   "deck": "verbs"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "lapsest": {
+   "base": "laps",
+   "means": {
+    "en": "from a child (lapsest saati: since childhood)",
+    "az": "uşaqlıqdan",
+    "ru": "с детства"
+   },
+   "deck": "talk"
+  },
+  "saati": {
+   "base": "saati",
+   "means": {
+    "en": "since",
+    "az": "bəri",
+    "ru": "с"
+   }
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "majapidamistöid": {
+   "base": "majapidamistöö",
+   "means": {
+    "en": "housework",
+    "az": "ev işləri",
+    "ru": "работу по хозяйству"
+   }
+  },
+  "talutöid": {
+   "base": "talutöö",
+   "means": {
+    "en": "farm work",
+    "az": "təsərrüfat işləri",
+    "ru": "работу на хуторе"
+   }
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "tegemine": {
+   "base": "tegemine",
+   "means": {
+    "en": "doing",
+    "az": "etmə",
+    "ru": "делание"
+   }
+  },
+  "füüsiline": {
+   "base": "füüsiline",
+   "means": {
+    "en": "physical",
+    "az": "fiziki",
+    "ru": "физический"
+   }
+  },
+  "kindlasti": {
+   "base": "kindlasti",
+   "means": {
+    "en": "certainly",
+    "az": "mütləq",
+    "ru": "обязательно, точно"
+   },
+   "deck": "repairs"
+  },
+  "võiks": {
+   "base": "võima",
+   "means": {
+    "en": "could, might",
+    "az": "olar",
+    "ru": "можно было бы"
+   },
+   "deck": "moreverbs"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "mõjuda": {
+   "base": "mõjuma",
+   "means": {
+    "en": "to affect, to have an effect",
+    "az": "təsir etmək",
+    "ru": "влиять"
+   }
+  },
+  "sporti": {
+   "base": "sport",
+   "means": {
+    "en": "sport",
+    "az": "idman",
+    "ru": "спорт"
+   }
+  },
+  "raplas": {
+   "base": "Rapla",
+   "means": {
+    "en": "in Rapla",
+    "az": "Raplada",
+    "ru": "в Рапла"
+   }
+  },
+  "olid": {
+   "base": "olema",
+   "means": {
+    "en": "were",
+    "az": "idilər",
+    "ru": "были"
+   },
+   "deck": "verbs"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "loomulikult": {
+   "base": "loomulikult",
+   "means": {
+    "en": "naturally, of course",
+    "az": "təbii ki",
+    "ru": "естественно"
+   },
+   "deck": "everyday"
+  },
+  "suured": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большие"
+   },
+   "deck": "basics"
+  },
+  "korvpallurid": {
+   "base": "korvpallur",
+   "means": {
+    "en": "basketball players",
+    "az": "basketbolçular",
+    "ru": "баскетболисты"
+   }
+  },
+  "hiljem": {
+   "base": "hiljem",
+   "means": {
+    "en": "later",
+    "az": "daha gec",
+    "ru": "позже"
+   },
+   "deck": "time"
+  },
+  "tulid": {
+   "base": "tulema",
+   "means": {
+    "en": "came",
+    "az": "gəlirdilər",
+    "ru": "шли, плыли"
+   },
+   "deck": "verbs"
+  },
+  "orienteerumine": {
+   "base": "orienteerumine",
+   "means": {
+    "en": "orienteering",
+    "az": "oriyentirləmə",
+    "ru": "ориентирование"
+   }
+  },
+  "suusatamine": {
+   "base": "suusatamine",
+   "means": {
+    "en": "skiing",
+    "az": "xizək sürmə",
+    "ru": "катание на лыжах"
+   }
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "kooliajal": {
+   "base": "kooliaeg",
+   "means": {
+    "en": "at school, in schooldays",
+    "az": "məktəb vaxtı",
+    "ru": "в школьные годы"
+   }
+  },
+  "vihkasin": {
+   "base": "vihkama",
+   "means": {
+    "en": "I hated",
+    "az": "nifrət edirdim",
+    "ru": "я ненавидела"
+   }
+  },
+  "trenne": {
+   "base": "trenn",
+   "means": {
+    "en": "training sessions",
+    "az": "məşqlər",
+    "ru": "тренировки"
+   },
+   "deck": "plans"
+  },
+  "kehalist": {
+   "base": "kehaline",
+   "means": {
+    "en": "physical (kehaline kasvatus: PE)",
+    "az": "bədən",
+    "ru": "физическое"
+   }
+  },
+  "kasvatust": {
+   "base": "kasvatus",
+   "means": {
+    "en": "education, upbringing (kehaline kasvatus: PE)",
+    "az": "tərbiyə",
+    "ru": "воспитание"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "tõesti": {
+   "base": "tõesti",
+   "means": {
+    "en": "really",
+    "az": "həqiqətən",
+    "ru": "правда"
+   },
+   "deck": "everyday"
+  },
+  "käin": {
+   "base": "käima",
+   "means": {
+    "en": "I go, I visit",
+    "az": "gedirəm",
+    "ru": "я хожу, бываю"
+   },
+   "deck": "moreverbs"
+  },
+  "vähemalt": {
+   "base": "vähemalt",
+   "means": {
+    "en": "at least",
+    "az": "ən azı",
+    "ru": "как минимум"
+   }
+  },
+  "kolm": {
+   "base": "kolm",
+   "means": {
+    "en": "three",
+    "az": "üç",
+    "ru": "три"
+   },
+   "deck": "numbers"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nädalas": {
+   "base": "nädal",
+   "means": {
+    "en": "a week, per week",
+    "az": "həftədə",
+    "ru": "в неделю"
+   },
+   "deck": "time"
+  },
+  "trennis": {
+   "base": "trenn",
+   "means": {
+    "en": "at training (käisin trennis: I went to training)",
+    "az": "məşqdə",
+    "ru": "на тренировке"
+   },
+   "deck": "plans"
+  },
+  "käi": {
+   "base": "käima",
+   "means": {
+    "en": "go (ei käi: don't go)",
+    "az": "getmirəm",
+    "ru": "хожу"
+   },
+   "deck": "moreverbs"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "liikuda": {
+   "base": "liikuma",
+   "means": {
+    "en": "to move",
+    "az": "hərəkət etmək",
+    "ru": "двигаться"
+   }
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "peale": {
+   "base": "peale",
+   "means": {
+    "en": "onto; after",
+    "az": "üstünə; sonra",
+    "ru": "на; после"
+   },
+   "deck": "everyday"
+  },
+  "õhtusööki": {
+   "base": "õhtusöök",
+   "means": {
+    "en": "dinner",
+    "az": "şam yeməyi",
+    "ru": "ужин"
+   },
+   "deck": "food"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "lähme": {
+   "base": "minema",
+   "means": {
+    "en": "we go",
+    "az": "gedirik",
+    "ru": "идём"
+   },
+   "deck": "verbs"
+  },
+  "jalutama": {
+   "base": "jalutama",
+   "means": {
+    "en": "walking (jalutama minema: go for a walk)",
+    "az": "gəzməyə",
+    "ru": "гулять"
+   },
+   "deck": "moreverbs"
+  },
+  "rattaga": {
+   "base": "ratas",
+   "means": {
+    "en": "by bike",
+    "az": "velosipedlə",
+    "ru": "на велосипеде"
+   }
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "ilus": {
+   "base": "ilus",
+   "means": {
+    "en": "beautiful",
+    "az": "gözəl",
+    "ru": "красивый"
+   },
+   "deck": "talk"
+  },
+  "ilm": {
+   "base": "ilm",
+   "means": {
+    "en": "weather",
+    "az": "hava",
+    "ru": "погода"
+   },
+   "deck": "weather"
+  },
+  "alati": {
+   "base": "alati",
+   "means": {
+    "en": "always",
+    "az": "həmişə",
+    "ru": "всегда"
+   },
+   "deck": "often"
+  },
+  "mingit": {
+   "base": "mingi",
+   "means": {
+    "en": "some, some sort of",
+    "az": "hər hansı",
+    "ru": "какой-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "leiab": {
+   "base": "leidma",
+   "means": {
+    "en": "finds, can be found",
+    "az": "tapılır",
+    "ru": "найдётся"
+   },
+   "deck": "moreverbs"
+  },
+  "täna": {
+   "base": "täna",
+   "means": {
+    "en": "today (täna õhtul: tonight)",
+    "az": "bu gün",
+    "ru": "сегодня"
+   },
+   "deck": "time"
+  },
+  "lähen": {
+   "base": "minema",
+   "means": {
+    "en": "I go",
+    "az": "gedirəm",
+    "ru": "иду"
+   },
+   "deck": "verbs"
+  },
+  "aitan": {
+   "base": "aitama",
+   "means": {
+    "en": "I help",
+    "az": "kömək edirəm",
+    "ru": "помогаю"
+   },
+   "deck": "verbs"
+  },
+  "sõbral": {
+   "base": "sõber",
+   "means": {
+    "en": "a friend (aitan sõbral: I help a friend)",
+    "az": "dosta",
+    "ru": "другу"
+   },
+   "deck": "talk"
+  },
+  "remonti": {
+   "base": "remont",
+   "means": {
+    "en": "renovation, repairs",
+    "az": "təmir",
+    "ru": "ремонт"
+   },
+   "deck": "repairs"
+  },
+  "pean": {
+   "base": "pidama",
+   "means": {
+    "en": "I must, I have to",
+    "az": "məcburam",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "ennast": {
+   "base": "ise",
+   "means": {
+    "en": "myself (oneself)",
+    "az": "özümü",
+    "ru": "себя"
+   },
+   "deck": "pronouns"
+  },
+  "iga": {
+   "base": "iga",
+   "means": {
+    "en": "every",
+    "az": "hər",
+    "ru": "каждый"
+   },
+   "deck": "everyday"
+  },
+  "päev": {
+   "base": "päev",
+   "means": {
+    "en": "day",
+    "az": "gün",
+    "ru": "день"
+   },
+   "deck": "time"
+  },
+  "liigutama": {
+   "base": "liigutama",
+   "means": {
+    "en": "to move (ennast liigutama: get moving)",
+    "az": "hərəkət etdirmək",
+    "ru": "двигать"
+   }
+  },
+  "muidu": {
+   "base": "muidu",
+   "means": {
+    "en": "otherwise",
+    "az": "əks halda, yoxsa",
+    "ru": "иначе, в остальном"
+   },
+   "deck": "everyday"
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes; has to (tuleb vahetada: has to be changed)",
+    "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+    "ru": "приходит; надо (tuleb vahetada: надо сменить)"
+   },
+   "deck": "verbs"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "paha": {
+   "base": "paha",
+   "means": {
+    "en": "bad",
+    "az": "pis",
+    "ru": "плохой"
+   }
+  },
+  "tunne": {
+   "base": "tunne",
+   "means": {
+    "en": "feeling",
+    "az": "hiss",
+    "ru": "чувство"
+   },
+   "deck": "feelings"
+  },
+  "tunnen": {
+   "base": "tundma",
+   "means": {
+    "en": "I feel",
+    "az": "hiss edirəm",
+    "ru": "чувствую"
+   },
+   "deck": "moreverbs"
+  },
+  "rahul": {
+   "base": "rahul",
+   "means": {
+    "en": "satisfied, happy",
+    "az": "razı",
+    "ru": "доволен"
+   }
+  },
+  "jälgi": {
+   "base": "jälgima",
+   "means": {
+    "en": "follow (ei jälgi: don't follow)",
+    "az": "əməl etmirəm",
+    "ru": "соблюдаю"
+   }
+  },
+  "dieeti": {
+   "base": "dieet",
+   "means": {
+    "en": "a diet",
+    "az": "pəhriz",
+    "ru": "диету"
+   }
+  },
+  "söön": {
+   "base": "sööma",
+   "means": {
+    "en": "I eat",
+    "az": "yeyirəm",
+    "ru": "ем"
+   },
+   "deck": "verbs"
+  },
+  "enam": {
+   "base": "enam",
+   "means": {
+    "en": "more; any more (ei … enam: no longer)",
+    "az": "daha",
+    "ru": "больше (ei … enam: уже не)"
+   },
+   "deck": "everyday"
+  },
+  "vähem": {
+   "base": "vähem",
+   "means": {
+    "en": "less (enam-vähem: more or less)",
+    "az": "az",
+    "ru": "меньше"
+   },
+   "deck": "everyday"
+  },
+  "kõike": {
+   "base": "kõik",
+   "means": {
+    "en": "everything",
+    "az": "hər şeyi",
+    "ru": "всё"
+   },
+   "deck": "everyday"
+  },
+  "põhimõtteliselt": {
+   "base": "põhimõtteliselt",
+   "means": {
+    "en": "basically, in principle",
+    "az": "prinsipcə",
+    "ru": "в принципе"
+   },
+   "deck": "everyday"
+  },
+  "sööngi": {
+   "base": "sööma",
+   "means": {
+    "en": "I do eat",
+    "az": "elə yeyirəm",
+    "ru": "я и ем"
+   },
+   "deck": "verbs"
+  },
+  "isegi": {
+   "base": "isegi",
+   "means": {
+    "en": "even",
+    "az": "hətta",
+    "ru": "даже"
+   },
+   "deck": "everyday"
+  },
+  "armastan": {
+   "base": "armastama",
+   "means": {
+    "en": "I love",
+    "az": "sevirəm",
+    "ru": "я люблю"
+   },
+   "deck": "verbs"
+  },
+  "absoluutselt": {
+   "base": "absoluutselt",
+   "means": {
+    "en": "absolutely",
+    "az": "tamamilə",
+    "ru": "абсолютно"
+   },
+   "deck": "everyday"
+  },
+  "toidu": {
+   "base": "toit",
+   "means": {
+    "en": "of food (toidu sees: in food)",
+    "az": "yeməyin",
+    "ru": "еды"
+   },
+   "deck": "cooking"
+  },
+  "sees": {
+   "base": "sees",
+   "means": {
+    "en": "inside, in it; within (garantiiaja sees: within the warranty)",
+    "az": "içində; ərzində",
+    "ru": "внутри; в течение"
+   },
+   "deck": "home"
+  },
+  "lihtsalt": {
+   "base": "lihtsalt",
+   "means": {
+    "en": "simply, just",
+    "az": "sadəcə",
+    "ru": "просто"
+   },
+   "deck": "everyday"
+  },
+  "vaatan": {
+   "base": "vaatama",
+   "means": {
+    "en": "I watch, I look",
+    "az": "baxıram",
+    "ru": "смотрю"
+   },
+   "deck": "moreverbs"
+  },
+  "söök": {
+   "base": "söök",
+   "means": {
+    "en": "food, a meal",
+    "az": "yemək",
+    "ru": "еда"
+   },
+   "deck": "food"
+  },
+  "oleks": {
+   "base": "olema",
+   "means": {
+    "en": "would be (mul oleks vaja: I would need)",
+    "az": "olardı",
+    "ru": "было бы"
+   },
+   "deck": "verbs"
+  },
+  "tasakaalus": {
+   "base": "tasakaal",
+   "means": {
+    "en": "in balance",
+    "az": "balanslı",
+    "ru": "сбалансирован"
+   }
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "liha": {
+   "base": "liha",
+   "means": {
+    "en": "meat",
+    "az": "ət",
+    "ru": "мясо"
+   },
+   "deck": "food"
+  },
+  "sööks": {
+   "base": "sööma",
+   "means": {
+    "en": "would eat",
+    "az": "yeyim",
+    "ru": "ела бы"
+   },
+   "deck": "verbs"
+  },
+  "vaid": {
+   "base": "vaid",
+   "means": {
+    "en": "but rather; only",
+    "az": "əksinə, ancaq",
+    "ru": "а, но"
+   },
+   "deck": "stopp-words"
+  },
+  "aedvilja": {
+   "base": "aedvili",
+   "means": {
+    "en": "vegetables",
+    "az": "tərəvəz",
+    "ru": "овощи"
+   }
+  },
+  "natuke": {
+   "base": "natuke",
+   "means": {
+    "en": "a little",
+    "az": "bir az",
+    "ru": "немного"
+   },
+   "deck": "basics"
+  },
+  "puuvilja": {
+   "base": "puuvili",
+   "means": {
+    "en": "fruit",
+    "az": "meyvə",
+    "ru": "фрукты"
+   },
+   "deck": "food"
+  },
+  "magusat": {
+   "base": "magus",
+   "means": {
+    "en": "something sweet",
+    "az": "şirin",
+    "ru": "сладкое"
+   },
+   "deck": "cafe"
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "tasakaal": {
+   "base": "tasakaal",
+   "means": {
+    "en": "balance",
+    "az": "balans",
+    "ru": "баланс"
+   }
+  },
+  "põhiline": {
+   "base": "põhiline",
+   "means": {
+    "en": "main, basic",
+    "az": "əsas",
+    "ru": "главное"
+   }
+  },
+  "kunagi": {
+   "base": "kunagi",
+   "means": {
+    "en": "once, ever",
+    "az": "bir vaxtlar",
+    "ru": "когда-то"
+   },
+   "deck": "often"
+  },
+  "suitsetanud": {
+   "base": "suitsetama",
+   "means": {
+    "en": "smoked",
+    "az": "siqaret çəkmişəm",
+    "ru": "курила"
+   },
+   "deck": "moreverbs"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "vanemaks": {
+   "base": "vanem",
+   "means": {
+    "en": "older (vanemaks saama: get older)",
+    "az": "yaşlı",
+    "ru": "старше"
+   },
+   "deck": "adjectives-cards"
+  },
+  "saan": {
+   "base": "saama",
+   "means": {
+    "en": "I can; I get, I will have",
+    "az": "bilərəm; alıram",
+    "ru": "могу; получаю"
+   },
+   "deck": "verbs"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "tarbin": {
+   "base": "tarbima",
+   "means": {
+    "en": "I consume",
+    "az": "istifadə edirəm",
+    "ru": "я потребляю"
+   }
+  },
+  "alkoholi": {
+   "base": "alkohol",
+   "means": {
+    "en": "alcohol",
+    "az": "spirtli içki",
+    "ru": "алкоголь"
+   }
+  },
+  "üsna": {
+   "base": "üsna",
+   "means": {
+    "en": "quite, fairly",
+    "az": "xeyli",
+    "ru": "довольно"
+   },
+   "deck": "plans"
+  },
+  "harva": {
+   "base": "harva",
+   "means": {
+    "en": "rarely",
+    "az": "nadir hallarda",
+    "ru": "редко"
+   },
+   "deck": "often"
+  },
+  "tee": {
+   "base": "tegema",
+   "means": {
+    "en": "do (ei tee: don't do)",
+    "az": "etmirəm",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "laiskle": {
+   "base": "laisklema",
+   "means": {
+    "en": "laze about (ei laiskle: don't laze about)",
+    "az": "tənbəllik etmirəm",
+    "ru": "ленюсь"
+   }
+  },
+  "lebota": {
+   "base": "lebotama",
+   "means": {
+    "en": "lie about (ei lebota: don't lie about)",
+    "az": "uzanıb qalmıram",
+    "ru": "валяюсь"
+   }
+  },
+  "niisama": {
+   "base": "niisama",
+   "means": {
+    "en": "just like that, for nothing",
+    "az": "elə-belə",
+    "ru": "просто так"
+   }
+  },
+  "tegutsen": {
+   "base": "tegutsema",
+   "means": {
+    "en": "I keep busy, I act",
+    "az": "nəsə edirəm",
+    "ru": "я действую"
+   }
+  },
+  "ongi": {
+   "base": "olema",
+   "means": {
+    "en": "is indeed, is just",
+    "az": "elə var",
+    "ru": "как раз есть"
+   },
+   "deck": "verbs"
+  },
+  "varasta": {
+   "base": "varastama",
+   "means": {
+    "en": "steal (ei varasta: don't steal)",
+    "az": "oğurlamıram",
+    "ru": "ворую"
+   }
+  },
+  "uneajast": {
+   "base": "uneaeg",
+   "means": {
+    "en": "from sleeping time",
+    "az": "yuxu vaxtından",
+    "ru": "у времени сна"
+   }
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "kindel": {
+   "base": "kindel",
+   "means": {
+    "en": "set, fixed",
+    "az": "müəyyən",
+    "ru": "определённый"
+   }
+  },
+  "kellaaeg": {
+   "base": "kellaaeg",
+   "means": {
+    "en": "time of day",
+    "az": "saat",
+    "ru": "время"
+   }
+  },
+  "ilusti": {
+   "base": "ilusti",
+   "means": {
+    "en": "nicely, properly",
+    "az": "qaydasınca, yaxşıca",
+    "ru": "как положено, хорошо"
+   }
+  },
+  "magama": {
+   "base": "magama",
+   "means": {
+    "en": "to sleep (lähme magama: we go to bed)",
+    "az": "yatmağa",
+    "ru": "спать"
+   },
+   "deck": "verbs"
+  },
+  "magan": {
+   "base": "magama",
+   "means": {
+    "en": "I sleep",
+    "az": "yatıram",
+    "ru": "я сплю"
+   },
+   "deck": "verbs"
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "pool": {
+   "base": "pool",
+   "means": {
+    "en": "half (pool kaheksa: half past seven)",
+    "az": "yarım (pool kaheksa: yeddinin yarısı)",
+    "ru": "половина (pool kaheksa: половина восьмого)"
+   },
+   "deck": "numbers"
+  },
+  "tundi": {
+   "base": "tund",
+   "means": {
+    "en": "to a lesson, class; hour",
+    "az": "dərsə",
+    "ru": "на урок"
+   },
+   "deck": "time"
+  },
+  "unetsükkel": {
+   "base": "unetsükkel",
+   "means": {
+    "en": "sleep cycle",
+    "az": "yuxu dövrü",
+    "ru": "цикл сна"
+   }
+  },
+  "täis": {
+   "base": "täis",
+   "means": {
+    "en": "full",
+    "az": "dolu",
+    "ru": "полный"
+   },
+   "deck": "randaja-words"
+  }
+ }
+}
