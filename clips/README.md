@@ -5,11 +5,11 @@ scenes they are drawn from. Four files per post, all named after the post's
 `id` in `data/blog.json`:
 
 ```
-clips/a-save-is-free-and-the-number-is-other-people.png              the clip
-clips/a-save-is-free-and-the-number-is-other-people-still.png        its first frame
-clips/a-save-is-free-and-the-number-is-other-people-green.png        the same, in the dark style
-clips/a-save-is-free-and-the-number-is-other-people-green-still.png
-clips/scenes/a-save-is-free-and-the-number-is-other-people.html      what all four are drawn from
+clips/no-scores-on-this-map.png                the clip
+clips/no-scores-on-this-map-still.png          its first frame
+clips/no-scores-on-this-map-green.png          the same, in the dark style
+clips/no-scores-on-this-map-green-still.png
+clips/scenes/no-scores-on-this-map.html        what all four are drawn from
 ```
 
 Nothing here is edited by hand. `node tools/blogclips.mjs` draws every file

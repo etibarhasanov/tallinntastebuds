@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} at {time} from {stop} · {min} min in all",
   "routeNoBus": "No bus or tram found right now.",
   "routeNoCar": "Couldn't find a driving route.",
-  "blogMembers": "Written by members",
   "blogMembersNone": "Nobody has written one yet. Be the first.",
   "blogMore": "Show more",
   "blogWriteYours": "Write a post",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "That is as many posts as one account can start for now.",
   "writeErrGeneric": "That did not save. Try again in a moment.",
   "writeBack": "All your posts",
-  "blogHouse": "Notes from the map",
   "writeYourBlog": "Your blog"
  },
  "blurbs": {

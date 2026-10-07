@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} às {time} de {stop} · {min} min no total",
   "routeNoBus": "Nenhum autocarro ou elétrico encontrado agora.",
   "routeNoCar": "Não foi possível encontrar um percurso de carro.",
-  "blogMembers": "Escrito por membros",
   "blogMembersNone": "Ninguém escreveu ainda. Seja o primeiro.",
   "blogMore": "Mostrar mais",
   "blogWriteYours": "Escrever um post",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "É o máximo de posts que uma conta pode começar por agora.",
   "writeErrGeneric": "Não foi salvo. Tente de novo em instantes.",
   "writeBack": "Todos os seus posts",
-  "blogHouse": "Notas do mapa",
   "writeYourBlog": "Seu blog"
  },
  "blurbs": {

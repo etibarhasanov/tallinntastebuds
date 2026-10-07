@@ -1190,7 +1190,6 @@
     "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
     "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
     "routeNoCar": "Maşın marşrutu tapılmadı.",
-    "blogMembers": "Üzvlərin yazıları",
     "blogMembersNone": "Hələ heç kim yazmayıb. Birinci sən ol.",
     "blogMore": "Daha çox göstər",
     "blogWriteYours": "Yazı yaz",
@@ -1262,7 +1261,6 @@
     "writeErrMany": "Bu gün üçün və ya bir hesab üçün yazı limiti dolub.",
     "writeErrGeneric": "Saxlanılmadı. Bir azdan yenidən cəhd et.",
     "writeBack": "Bütün yazıların",
-    "blogHouse": "Saytın qeydləri",
     "writeYourBlog": "Sənin bloqun"
   },
   "hy": {
@@ -2456,7 +2454,6 @@
     "routeBus": "{lines}՝ {time}, {stop} կանգառից · ընդամենը {min} րոպե",
     "routeNoBus": "Այս պահին ավտոբուս կամ տրամվայ չգտնվեց։",
     "routeNoCar": "Հնարավոր չեղավ գտնել մեքենայի երթուղի։",
-    "blogMembers": "Անդամների գրառումները",
     "blogMembersNone": "Դեռ ոչ ոք չի գրել։ Եղիր առաջինը։",
     "blogMore": "Ցույց տալ ավելին",
     "blogWriteYours": "Գրել գրառում",
@@ -2528,7 +2525,6 @@
     "writeErrMany": "Այսօրվա կամ մեկ հաշվի գրառումների սահմանը լրացել է։",
     "writeErrGeneric": "Չպահպանվեց։ Փորձիր մի փոքր ուշ։",
     "writeBack": "Քո բոլոր գրառումները",
-    "blogHouse": "Կայքի նշումները",
     "writeYourBlog": "Քո բլոգը"
   },
   "en": {
@@ -3722,7 +3718,6 @@
     "routeBus": "{lines} at {time} from {stop} · {min} min in all",
     "routeNoBus": "No bus or tram found right now.",
     "routeNoCar": "Couldn't find a driving route.",
-    "blogMembers": "Written by members",
     "blogMembersNone": "Nobody has written one yet. Be the first.",
     "blogMore": "Show more",
     "blogWriteYours": "Write a post",
@@ -3794,7 +3789,6 @@
     "writeErrMany": "That is as many posts as one account can start for now.",
     "writeErrGeneric": "That did not save. Try again in a moment.",
     "writeBack": "All your posts",
-    "blogHouse": "Notes from the map",
     "writeYourBlog": "Your blog"
   },
   "et": {
@@ -4988,7 +4982,6 @@
     "routeBus": "{lines} kell {time} peatusest {stop} · kokku {min} min",
     "routeNoBus": "Praegu bussi ega trammi ei leitud.",
     "routeNoCar": "Autoteed ei leitud.",
-    "blogMembers": "Liikmete kirjutatud",
     "blogMembersNone": "Keegi pole veel kirjutanud. Ole esimene.",
     "blogMore": "Näita veel",
     "blogWriteYours": "Kirjuta postitus",
@@ -5060,7 +5053,6 @@
     "writeErrMany": "Ühe konto postituste piir on praeguseks täis.",
     "writeErrGeneric": "Ei salvestunud. Proovi hetke pärast uuesti.",
     "writeBack": "Kõik sinu postitused",
-    "blogHouse": "Märkmed kaardilt",
     "writeYourBlog": "Sinu blogi"
   },
   "fi": {
@@ -6254,7 +6246,6 @@
     "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
     "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",
     "routeNoCar": "Ajoreittiä ei löytynyt.",
-    "blogMembers": "Jäsenten kirjoittamat",
     "blogMembersNone": "Kukaan ei ole vielä kirjoittanut. Ole ensimmäinen.",
     "blogMore": "Näytä lisää",
     "blogWriteYours": "Kirjoita kirjoitus",
@@ -6326,7 +6317,6 @@
     "writeErrMany": "Tili ei voi juuri nyt aloittaa enempää kirjoituksia.",
     "writeErrGeneric": "Tallennus ei onnistunut. Yritä hetken päästä uudelleen.",
     "writeBack": "Kaikki kirjoituksesi",
-    "blogHouse": "Muistiinpanot kartalta",
     "writeYourBlog": "Blogisi"
   },
   "pt": {
@@ -7520,7 +7510,6 @@
     "routeBus": "{lines} às {time} de {stop} · {min} min no total",
     "routeNoBus": "Nenhum autocarro ou elétrico encontrado agora.",
     "routeNoCar": "Não foi possível encontrar um percurso de carro.",
-    "blogMembers": "Escrito por membros",
     "blogMembersNone": "Ninguém escreveu ainda. Seja o primeiro.",
     "blogMore": "Mostrar mais",
     "blogWriteYours": "Escrever um post",
@@ -7592,7 +7581,6 @@
     "writeErrMany": "É o máximo de posts que uma conta pode começar por agora.",
     "writeErrGeneric": "Não foi salvo. Tente de novo em instantes.",
     "writeBack": "Todos os seus posts",
-    "blogHouse": "Notas do mapa",
     "writeYourBlog": "Seu blog"
   },
   "ru": {
@@ -8786,7 +8774,6 @@
     "routeBus": "{lines} в {time} от остановки {stop} · всего {min} мин",
     "routeNoBus": "Сейчас не найдено ни автобуса, ни трамвая.",
     "routeNoCar": "Не удалось найти маршрут на машине.",
-    "blogMembers": "Пишут участники",
     "blogMembersNone": "Пока никто не написал. Будьте первым.",
     "blogMore": "Показать ещё",
     "blogWriteYours": "Написать пост",
@@ -8858,7 +8845,6 @@
     "writeErrMany": "Это предел постов для одного аккаунта на сейчас.",
     "writeErrGeneric": "Не сохранилось. Попробуйте чуть позже.",
     "writeBack": "Все ваши посты",
-    "blogHouse": "Заметки с карты",
     "writeYourBlog": "Ваш блог"
   },
   "es": {
@@ -10052,7 +10038,6 @@
     "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
     "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",
     "routeNoCar": "No se encontró una ruta en coche.",
-    "blogMembers": "Escrito por miembros",
     "blogMembersNone": "Nadie ha escrito aún. Sé el primero.",
     "blogMore": "Mostrar más",
     "blogWriteYours": "Escribir una entrada",
@@ -10124,7 +10109,6 @@
     "writeErrMany": "Es el máximo de entradas que una cuenta puede empezar por ahora.",
     "writeErrGeneric": "No se guardó. Inténtalo de nuevo en un momento.",
     "writeBack": "Todas tus entradas",
-    "blogHouse": "Notas del mapa",
     "writeYourBlog": "Tu blog"
   },
   "tr": {
@@ -11318,7 +11302,6 @@
     "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
     "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",
     "routeNoCar": "Araç rotası bulunamadı.",
-    "blogMembers": "Üyelerin yazıları",
     "blogMembersNone": "Henüz kimse yazmadı. İlk sen ol.",
     "blogMore": "Daha fazla göster",
     "blogWriteYours": "Yazı yaz",
@@ -11390,7 +11373,6 @@
     "writeErrMany": "Bir hesabın şimdilik başlatabileceği yazı sınırı bu.",
     "writeErrGeneric": "Kaydedilmedi. Birazdan tekrar dene.",
     "writeBack": "Tüm yazıların",
-    "blogHouse": "Haritadan notlar",
     "writeYourBlog": "Blogun"
   },
   "uk": {
@@ -12584,7 +12566,6 @@
     "routeBus": "{lines} о {time} від зупинки {stop} · загалом {min} хв",
     "routeNoBus": "Зараз не знайдено ні автобуса, ні трамвая.",
     "routeNoCar": "Не вдалося знайти маршрут для авто.",
-    "blogMembers": "Пишуть учасники",
     "blogMembersNone": "Поки ніхто не написав. Будьте першим.",
     "blogMore": "Показати ще",
     "blogWriteYours": "Написати допис",
@@ -12656,7 +12637,6 @@
     "writeErrMany": "Це межа дописів для одного облікового запису наразі.",
     "writeErrGeneric": "Не збереглося. Спробуйте трохи згодом.",
     "writeBack": "Усі ваші дописи",
-    "blogHouse": "Нотатки з мапи",
     "writeYourBlog": "Ваш блог"
   }
 }

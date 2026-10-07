@@ -62,6 +62,18 @@
    the same way. */
 .blog-posts { list-style: none; margin: 0; padding: 0; }
 
+/* The card of posts starts where the posts do. .lists-card > .menu gives a
+   run of rows the air a ruled row needs under a card title, and this card has
+   no title, so that air was an empty band across the top of it; and each row
+   is ruled under rather than over, so the first one does not open on a line
+   with nothing above it. */
+.lists-card.blog-index > .blog-posts { margin-top: 0; }
+.blog-index .menu-row {
+  border-top: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.blog-index .menu-item:first-child .menu-row { padding-top: 2px; }
+
 /* The date over a title, on a row and on a post alike. It is .eyebrow out of
    the map's stylesheet and nothing else: a date is a fact rather than a
    sentence, so it wears the site's one mono label, in the position an eyebrow
@@ -338,10 +350,7 @@
    themselves, the way back to the editor. */
 .blog-after { margin: 22px 0 0; }
 
-/* The house's notes and everybody else's, each under a quiet heading of its
-   own on the index, and the button under the rows that brings the next
-   page. */
-.blog-section { margin: 10px 2px -6px; }
+/* The button under the rows that brings the next page. */
 .blog-more { margin: 10px 0 0; text-align: center; }
 
 /* The two things this page has to say for itself, drawn the same way because
@@ -366,6 +375,34 @@
 /* The one filled action on the page, and there is never a second: the way to
    the thing the post is about. */
 .blog-foot { margin: 22px 0 0; }
+
+/* ---------- the desk ---------- */
+
+/* On a monitor the 640px column the lists pages read at left the index as the
+   phone page in the middle of the screen, a long single file of rows with
+   two-thirds of the glass empty. A list of posts is the one view here that
+   wants the room: it widens the way the directory does — .lists-main.is-wide
+   in assets/lists.css — and the rows go two to a line. A post itself stays at
+   its column, because a paragraph is read at a measure and not at the width
+   of the window; the type comes up a size instead. */
+@media (min-width: 960px) {
+  .lists-main.blog-wide { max-width: 1080px; }
+  .blog-wide .blog-lead { max-width: 62ch; }
+  .blog-wide .blog-title { font-size: 34px; }
+
+  .blog-index .blog-posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 36px;
+  }
+  .blog-index .blog-row { height: 100%; align-items: flex-start; padding-top: 16px; padding-bottom: 16px; }
+  .blog-index .blog-row .menu-go { align-self: center; }
+  .blog-index .menu-item:first-child .blog-row,
+  .blog-index .menu-item:nth-child(2) .blog-row { padding-top: 4px; }
+
+  .blog-post .blog-title { font-size: 34px; }
+  .blog-post .blog-lead { font-size: 19px; }
+}
 
 /* ---------- the phone ---------- */
 

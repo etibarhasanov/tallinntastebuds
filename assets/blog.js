@@ -10,8 +10,9 @@
  *
  * The house's posts are data/blog.json — no endpoint, no database, no build
  * step. Everybody else's are the posts members write on /write, read from
- * /api/posts a page at a time (functions/api/posts.js); the index draws them
- * first with Show more under them, ?post= opens one of either kind, and
+ * /api/posts a page at a time (functions/api/posts.js); the index draws both
+ * kinds in one list by date, each with its byline and Show more under them,
+ * ?post= opens one of either kind, and
  * ?by=<name> is one person's. A route that does not answer is a blog of the
  * house's notes. functions/blog.js serves the page, but only to write its
  * head and its text for a crawler; nothing here waits on it.
@@ -136,6 +137,12 @@
 
   var toastTimer = null;
   var main = null;   // the one element both states are built into
+
+  /* Whose the house's posts are. They are written by whoever keeps the map,
+     and the site's own account is the name they go under, so a row and a
+     post say who wrote them the way a member's do. HOUSE in
+     functions/blog.js is the same name. */
+  var HOUSE = 'tallinntastebuds';
 
   /* ---------------------------------------------------------- the small bits */
 
@@ -423,30 +430,48 @@
   }
 
   /* One post as a row: the date, the title, the line saying what it is about,
-     and the chevron. It is .menu-row out of assets/styles.css — the shape the
-     account sheet draws a way-on in — because that is what this is, and
-     because the eighth design rule says a list of places to go is rows with a
-     target the width of the card rather than a column of links. */
+     who wrote it, and the chevron. It is .menu-row out of assets/styles.css —
+     the shape the account sheet draws a way-on in — because that is what this
+     is, and because the eighth design rule says a list of places to go is rows
+     with a target the width of the card rather than a column of links. */
   function row(post) {
     return el('li', { className: 'menu-item' }, [
       walks(el('a', { className: 'menu-row blog-row', href: postHref(post) }, [
         el('span', { className: 'menu-say' }, [
           when(post),
           el('span', { className: 'menu-name', textContent: say(post.title) }),
-          el('span', { className: 'blog-say', textContent: say(post.standfirst) })
+          el('span', { className: 'blog-say', textContent: say(post.standfirst) }),
+          el('span', { className: 'menu-why', textContent: t('blogBy', { name: HOUSE }) })
         ]),
         chevron()
       ]), post)
     ]);
   }
 
-  /* The index: everybody's posts, newest first, a page at a time — or the
-     line inviting the first one — and under them the house's notes. The
-     members' come first because they are what changes: the house's notes are
-     two dozen rows that are the same on every visit, and a post written this
-     morning under them is a post nobody scrolls far enough to find. A
-     member's post is a row like the house's, with a byline. */
+  /* The index: every post, the house's and everybody else's, in one list,
+     newest first, each row saying who wrote it. It used to be two cards under
+     two headings, members' over the house's, and the line between them did
+     not hold: the site's own account writes on /write like anybody, so a post
+     by tallinntastebuds stood under "Written by members" over a card of
+     posts by tallinntastebuds under another name. A post is a post; the
+     byline says the rest.
+
+     Members' posts come a page at a time and the house's are all here, so a
+     house post is shown only once the members' pages have reached its day —
+     otherwise Show more would bring in a member's post from August above one
+     of the house's from September. With every page in, every house post is. */
   function renderIndex() {
+    var page = state.members;
+    var oldest = page.next && page.posts.length ? memberDay(page.posts[page.posts.length - 1]) : '';
+    var rows = page.posts.map(function (post) {
+      return { day: memberDay(post), node: memberRow(post) };
+    }).concat(state.posts.filter(function (post) {
+      return !oldest || post.date >= oldest;
+    }).map(function (post) {
+      return { day: post.date, node: row(post) };
+    }));
+    rows.sort(function (a, b) { return a.day < b.day ? 1 : a.day > b.day ? -1 : 0; });
+
     return [
       el('header', { className: 'blog-head' }, [
         el('p', { className: 'eyebrow', textContent: t('eyebrow') }),
@@ -454,40 +479,37 @@
         el('p', { className: 'blog-lead', textContent: t('blogLead') })
       ]),
       state.missing ? el('p', { className: 'blog-note', textContent: t('blogMissing') }) : null,
-      el('h2', { className: 'lists-section blog-section' }, [t('blogMembers')]),
-      memberCard(state.members, function () {
-        return loadMembers(state.members, '').then(render);
-      }),
-      el('h2', { className: 'lists-section blog-section' }, [t('blogHouse')]),
-      el('div', { className: 'card lists-card' }, [
-        el('ul', { className: 'menu blog-posts' }, state.posts.map(row))
+      el('div', { className: 'card lists-card blog-index' }, [
+        el('ul', { className: 'menu blog-posts' }, rows.map(function (r) { return r.node; })),
+        moreButton(page, function () {
+          return loadMembers(page, '').then(render);
+        }),
+        el('p', { className: 'lists-row lists-foot' }, [writeLink('alt')])
       ])
     ];
   }
 
-  /* A card of members' posts with Show more under it, or the line that
-     says there are none yet with the way to write one. */
+  /* A card of one person's posts, ?by=, with Show more under it and the way
+     to write one. */
   function memberCard(page, more) {
-    if (!page.posts.length) {
-      return el('div', { className: 'card lists-card' }, [
-        el('p', { className: 'lists-say', textContent: t('blogMembersNone') }),
-        el('p', { className: 'lists-row lists-foot' }, [writeLink('go')])
-      ]);
-    }
-    var button = null;
-    if (page.next) {
-      button = el('button', { type: 'button', className: 'alt', textContent: t('blogMore') });
-      button.addEventListener('click', function () {
-        button.disabled = true;
-        TTBTrack.event('blog_more');
-        more();
-      });
-    }
-    return el('div', { className: 'card lists-card' }, [
+    return el('div', { className: 'card lists-card blog-index' }, [
       el('ul', { className: 'menu blog-posts' }, page.posts.map(memberRow)),
-      button ? el('p', { className: 'blog-more' }, [button]) : null,
+      moreButton(page, more),
       el('p', { className: 'lists-row lists-foot' }, [writeLink('alt')])
     ]);
+  }
+
+  /* Show more, under a list that has another page, and nothing under one
+     that has not. */
+  function moreButton(page, more) {
+    if (!page.next) return null;
+    var button = el('button', { type: 'button', className: 'alt', textContent: t('blogMore') });
+    button.addEventListener('click', function () {
+      button.disabled = true;
+      TTBTrack.event('blog_more');
+      more();
+    });
+    return el('p', { className: 'blog-more' }, [button]);
   }
 
   /* The way to /write, from the index and from under a post. */
@@ -505,6 +527,7 @@
       )]),
       el('article', { className: 'card lists-card blog-post' }, [
         when(post),
+        byline({ author: HOUSE }),
         el('h1', { className: 'blog-title', textContent: say(post.title) }),
         el('p', { className: 'blog-lead', textContent: say(post.standfirst) }),
         translated(post) ? null
@@ -534,6 +557,10 @@
     var author = state.author;
 
     clear(main);
+    /* A list of posts is laid out for a desk as well as a phone — two columns
+       of rows once the screen has the room, see assets/blog.css — and a post
+       is a column of prose, which reads at a measure whatever the screen. */
+    main.classList.toggle('blog-wide', !member && !post);
     main.appendChild(el('div', { className: 'lists-stack' },
       member ? renderMember(member)
         : post ? renderPost(post)
@@ -733,9 +760,15 @@
     return t('blogMinutes', { n: Math.max(1, Math.round(words / 220)) });
   }
 
+  /* The day a member's post was published, the shape a house post's date
+     is written in, so the two sort together on the index. */
+  function memberDay(post) {
+    return new Date(post.at).toISOString().slice(0, 10);
+  }
+
   function memberWhen(post) {
-    return el('time', { className: 'eyebrow blog-when', datetime: new Date(post.at).toISOString().slice(0, 10) },
-      [formatDate(new Date(post.at).toISOString().slice(0, 10)) + ' · ' + minutes(post)]);
+    return el('time', { className: 'eyebrow blog-when', datetime: memberDay(post) },
+      [formatDate(memberDay(post)) + ' · ' + minutes(post)]);
   }
 
   /* A member's post as a row: the house's row, with who wrote it under the

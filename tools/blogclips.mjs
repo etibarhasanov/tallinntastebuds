@@ -60,7 +60,7 @@
  * is a Chromium to take the shots:
  *
  *     CHROME=/path/to/chrome node tools/blogclips.mjs
- *     node tools/blogclips.mjs --only a-save-is-free-and-the-number-is-other-people
+ *     node tools/blogclips.mjs --only no-scores-on-this-map
  *     node tools/blogclips.mjs --check     what is stale, without writing
  *
  * It looks for a browser in CHROME, then CHROMIUM, then the usual names on

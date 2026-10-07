@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
   "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",
   "routeNoCar": "Ajoreittiä ei löytynyt.",
-  "blogMembers": "Jäsenten kirjoittamat",
   "blogMembersNone": "Kukaan ei ole vielä kirjoittanut. Ole ensimmäinen.",
   "blogMore": "Näytä lisää",
   "blogWriteYours": "Kirjoita kirjoitus",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "Tili ei voi juuri nyt aloittaa enempää kirjoituksia.",
   "writeErrGeneric": "Tallennus ei onnistunut. Yritä hetken päästä uudelleen.",
   "writeBack": "Kaikki kirjoituksesi",
-  "blogHouse": "Muistiinpanot kartalta",
   "writeYourBlog": "Blogisi"
  },
  "blurbs": {

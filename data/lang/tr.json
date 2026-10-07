@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
   "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",
   "routeNoCar": "Araç rotası bulunamadı.",
-  "blogMembers": "Üyelerin yazıları",
   "blogMembersNone": "Henüz kimse yazmadı. İlk sen ol.",
   "blogMore": "Daha fazla göster",
   "blogWriteYours": "Yazı yaz",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "Bir hesabın şimdilik başlatabileceği yazı sınırı bu.",
   "writeErrGeneric": "Kaydedilmedi. Birazdan tekrar dene.",
   "writeBack": "Tüm yazıların",
-  "blogHouse": "Haritadan notlar",
   "writeYourBlog": "Blogun"
  },
  "blurbs": {

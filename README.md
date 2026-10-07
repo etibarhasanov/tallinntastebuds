@@ -12167,7 +12167,7 @@ changing it.
 ## The blog
 
 `/blog` — one post per thing this site does. Why there are no scores on the
-map, what a save costs, why a story is gone in a day and a half, what an
+map, why a story is gone in a day and a half, what an
 account is and is not, why Google's directory is kept apart from mine. The
 reasoning already existed; it was in this file, which is written for whoever
 maintains the site and is five thousand lines long, and a visitor who wondered
@@ -12227,7 +12227,7 @@ reads — and the site's owner's on `/admin/stats`, and nobody else's;
 /write                     your posts, a page at a time, and New post
 /write?post=<id>           the editor
 /blog                      everybody's posts, newest first, ten at a time,
-                           with Show more; the house's notes under them
+                           with Show more, the house's notes among them
 /blog?post=<id>            one post — the house's or a member's
 /blog?by=<name>            one person's posts, ten at a time
 /u/<name>                  their profile, with their posts under their lists
@@ -12373,10 +12373,24 @@ places; a link to one still draws in a house post.
 
 ### The two states
 
-The index is every post as rows — members' first, newest first and ten at a
-time, then the house's notes under a heading of their own — each the date in
-mono, the title, the line under it saying what it is about, and the chevron;
-a member's row says who wrote it. It is `.menu`, the
+The index is every post as rows in one list, newest first, the house's and
+members' together — each the date in mono, the title, the line under it
+saying what it is about, who wrote it, and the chevron. The house's posts go
+under the site's own account, `tallinntastebuds`, `HOUSE` in
+`assets/blog.js` and in `functions/blog.js`, and say so on the row and over
+the post the way a member's do. There used to be two cards under two
+headings, *Written by members* over *Notes from the map*, and the line did
+not hold: the site's own account writes on `/write` like anybody, so a post
+by tallinntastebuds stood under one heading over a card of the same author's
+posts under the other. Members' posts still come ten at a time, so a house
+post is shown only once the pages read have reached its day, and Show more
+brings in both.
+
+On a screen 960px wide or more the index widens to 1080px and the rows go two
+to a line, the way the directory widens with `.lists-main.is-wide`; at the
+640px column it was the phone page in the middle of a monitor. A post stays
+at its column, since a paragraph is read at a measure rather than at the
+width of the window, and only its type comes up a size. It is `.menu`, the
 same shape the account sheet draws a way-on in, because a list of posts is a
 list of places to go and [the design rules](#the-design-rules) say those are
 rows rather than a column of links.
@@ -12508,12 +12522,12 @@ bite you when you write one.
 
 ```json
 {
-  "id": "a-save-is-free-and-the-number-is-other-people",
-  "date": "2025-12-19",
+  "id": "no-scores-on-this-map",
+  "date": "2026-08-15",
   "link": "/",
-  "title": { "en": "A save is free, and the number beside it is other people" },
-  "standfirst": { "en": "The bookmark takes no account at all." },
-  "clip": { "en": "The bookmark pressed: the outline fills and the count goes from 23 to 24." },
+  "title": { "en": "There are no scores on this map" },
+  "standfirst": { "en": "Being on it is the verdict." },
+  "clip": { "en": "Three pins settling onto the map, with no number on any of them." },
   "body": { "en": ["First paragraph.", "Second paragraph."] }
 }
 ```
@@ -17813,7 +17827,7 @@ The blog, `assets/blog.js`:
 | `blog_visit` | `post` — the button at the foot of a post, to whatever it is about |
 | `blog_link` | `post`, `to` — a link inside a post's paragraphs, `to` the path it goes to; in a member's post an address off the site too |
 | `blog_member` | `post` — a row of a member's post on the index or on somebody's page of posts |
-| `blog_more` | — Show more, under a page of members' posts |
+| `blog_more` | — Show more, under a page of posts on the index or one person's |
 | `blog_write` | — Write a post, on the index, under the members' posts, and on your own profile |
 | `blog_author` | `name` — the byline on a member's post, to their profile |
 | `blog_place` | `place` — a place card inside a member's post, to the place on the map |

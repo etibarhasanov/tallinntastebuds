@@ -161,18 +161,30 @@ function postPath(post) {
   return PATH + '?post=' + post.id;
 }
 
-/* One row of the index as text: the title as a link, the date, and the line
-   under it. */
+/* Whose the house's posts are. They are written by whoever keeps the map,
+   and the site's own account is the name they go under, so a row says who
+   wrote it the way a member's does — HOUSE in assets/blog.js is the same
+   name. */
+const HOUSE = 'tallinntastebuds';
+
+function byWhom(name) {
+  return 'by <a href="/u/' + esc(encodeURIComponent(name)) + '">' + esc(name) + '</a>';
+}
+
+/* One row of the index as text: the title as a link, the date, who wrote it,
+   and the line under it. */
 function row(post) {
   return '<li><h2><a href="' + esc(postPath(post)) + '">' + esc(inEnglish(post.title)) + '</a></h2>' +
-    '<p><time datetime="' + esc(post.date) + '">' + esc(post.date) + '</time> — ' +
+    '<p><time datetime="' + esc(post.date) + '">' + esc(post.date) + '</time> · ' + byWhom(HOUSE) + ' · ' +
     esc(inEnglish(post.standfirst)) + '</p></li>';
 }
 
+/* One list, members' newest page first and the house's after it, as the page
+   draws them: a post is a post whoever wrote it, and the byline on each row
+   says the rest. */
 function indexWords(posts, members) {
   return '<h1>' + esc(TITLE) + '</h1><p>' + esc(DESCRIPTION) + '</p>' +
-    '<ol>' + posts.map(row).join('') + '</ol>' +
-    (members.length ? '<h2>Written by members</h2><ol>' + members.map(memberRow).join('') + '</ol>' : '') +
+    '<ol>' + members.map(memberRow).join('') + posts.map(row).join('') + '</ol>' +
     '<p><a href="/">The map of Tallinn</a> · <a href="/lists">Lists</a></p>';
 }
 
@@ -201,17 +213,15 @@ function firstText(post) {
 function memberRow(post) {
   const text = firstText(post);
   return '<li><h2><a href="' + esc(postPath(post)) + '">' + esc(text.title) + '</a></h2>' +
-    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> — by ' +
-    '<a href="/u/' + esc(encodeURIComponent(post.author)) + '">' + esc(post.author) + '</a>' +
-    (text.standfirst ? ' — ' + esc(text.standfirst) : '') + '</p></li>';
+    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> · ' + byWhom(post.author) +
+    (text.standfirst ? ' · ' + esc(text.standfirst) : '') + '</p></li>';
 }
 
 function memberWords(post, names, lists) {
   const text = firstText(post);
   return '<article lang="' + esc(post.lang) + '">' +
     '<h1>' + esc(text.title) + '</h1>' +
-    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> — by ' +
-    '<a href="/u/' + esc(encodeURIComponent(post.author)) + '">' + esc(post.author) + '</a></p>' +
+    '<p><time datetime="' + esc(memberDate(post)) + '">' + esc(memberDate(post)) + '</time> · ' + byWhom(post.author) + '</p>' +
     (text.standfirst ? '<p>' + esc(text.standfirst) + '</p>' : '') +
     bodyHtml(text.body, esc, (id) => names.get(id) || '', (id) => lists.get(id) || null) +
     '</article>' +
@@ -365,7 +375,7 @@ function postWords(post, posts) {
   const others = posts.filter((p) => p !== post);
   return '<article>' +
     '<h1>' + esc(inEnglish(post.title)) + '</h1>' +
-    '<p><time datetime="' + esc(post.date) + '">' + esc(post.date) + '</time></p>' +
+    '<p><time datetime="' + esc(post.date) + '">' + esc(post.date) + '</time> · ' + byWhom(HOUSE) + '</p>' +
     '<p>' + esc(inEnglish(post.standfirst)) + '</p>' +
     body.map((para) => '<p>' + prose(para) + '</p>').join('') +
     (post.link ? '<p><a href="' + esc(post.link) + '">Go and see it on the site</a></p>' : '') +
