@@ -76,5 +76,910 @@
     }
    ]
   }
- ]
+ ],
+ "words": {
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты есть"
+   },
+   "deck": "verbs"
+  },
+  "hommiku": {
+   "base": "hommik",
+   "means": {
+    "en": "morning (hommiku- või õhtuinimene: a morning or an evening person)",
+    "az": "səhər",
+    "ru": "утро"
+   },
+   "deck": "time"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "õhtuinimene": {
+   "base": "õhtuinimene",
+   "means": {
+    "en": "evening person, night owl",
+    "az": "axşam adamı, bayquş",
+    "ru": "сова, вечерний человек"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "tegelikult": {
+   "base": "tegelikult",
+   "means": {
+    "en": "actually",
+    "az": "əslində",
+    "ru": "на самом деле"
+   },
+   "deck": "everyday"
+  },
+  "hommikuinimene": {
+   "base": "hommikuinimene",
+   "means": {
+    "en": "morning person, early bird",
+    "az": "səhər adamı",
+    "ru": "жаворонок, утренний человек"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "tähendab": {
+   "base": "tähendama",
+   "means": {
+    "en": "means",
+    "az": "deməkdir",
+    "ru": "означает"
+   },
+   "deck": "moreverbs"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "meeldi": {
+   "base": "meeldima",
+   "means": {
+    "en": "like (after ei: mulle ei meeldi, I don't like)",
+    "az": "xoşuma gəlmir (ei ilə)",
+    "ru": "нравится (с ei: не нравится)"
+   },
+   "deck": "verbs"
+  },
+  "õhtul": {
+   "base": "õhtu",
+   "means": {
+    "en": "in the evening",
+    "az": "axşam",
+    "ru": "вечером"
+   },
+   "deck": "time"
+  },
+  "hilja": {
+   "base": "hilja",
+   "means": {
+    "en": "late",
+    "az": "gec",
+    "ru": "поздно"
+   },
+   "deck": "randaja-words"
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "hommikul": {
+   "base": "hommik",
+   "means": {
+    "en": "in the morning",
+    "az": "səhər",
+    "ru": "утром"
+   },
+   "deck": "time"
+  },
+  "pärastlõunal": {
+   "base": "pärastlõuna",
+   "means": {
+    "en": "in the afternoon",
+    "az": "günortadan sonra",
+    "ru": "после обеда"
+   },
+   "deck": "time"
+  },
+  "reeglina": {
+   "base": "reegel",
+   "means": {
+    "en": "as a rule",
+    "az": "bir qayda olaraq",
+    "ru": "как правило"
+   }
+  },
+  "töötan": {
+   "base": "töötama",
+   "means": {
+    "en": "I work",
+    "az": "işləyirəm",
+    "ru": "работаю"
+   },
+   "deck": "verbs"
+  },
+  "alati": {
+   "base": "alati",
+   "means": {
+    "en": "always",
+    "az": "həmişə",
+    "ru": "всегда"
+   },
+   "deck": "often"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "ärkan": {
+   "base": "ärkama",
+   "means": {
+    "en": "I wake",
+    "az": "oyanıram",
+    "ru": "просыпаюсь"
+   }
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "kell": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock; clock",
+    "az": "saat",
+    "ru": "час, часы"
+   },
+   "deck": "time"
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "sobib": {
+   "base": "sobima",
+   "means": {
+    "en": "suits",
+    "az": "uyğundur",
+    "ru": "подходит"
+   },
+   "deck": "moreverbs"
+  },
+  "hommikuti": {
+   "base": "hommikuti",
+   "means": {
+    "en": "in the mornings",
+    "az": "səhərlər",
+    "ru": "по утрам"
+   }
+  },
+  "ärgata": {
+   "base": "ärkama",
+   "means": {
+    "en": "to wake up",
+    "az": "oyanmaq",
+    "ru": "просыпаться"
+   }
+  },
+  "väsin": {
+   "base": "väsima",
+   "means": {
+    "en": "I get tired (väsin ära: I tire out)",
+    "az": "yoruluram",
+    "ru": "устаю"
+   }
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing)",
+    "az": "tamamilə (fel ilə)",
+    "ru": "до конца (с глаголом)"
+   },
+   "deck": "everyday"
+  },
+  "lähen": {
+   "base": "minema",
+   "means": {
+    "en": "I go",
+    "az": "gedirəm",
+    "ru": "иду"
+   },
+   "deck": "verbs"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "magama": {
+   "base": "magama",
+   "means": {
+    "en": "to sleep (lähme magama: we go to bed)",
+    "az": "yatmağa",
+    "ru": "спать"
+   },
+   "deck": "verbs"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "teed": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsən",
+    "ru": "делаешь"
+   },
+   "deck": "verbs"
+  },
+  "õhtuti": {
+   "base": "õhtuti",
+   "means": {
+    "en": "in the evenings",
+    "az": "axşamlar",
+    "ru": "по вечерам"
+   },
+   "deck": "often"
+  },
+  "tulevad": {
+   "base": "tulema",
+   "means": {
+    "en": "they come",
+    "az": "gəlirlər",
+    "ru": "приходят"
+   },
+   "deck": "verbs"
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "koolidest": {
+   "base": "kool",
+   "means": {
+    "en": "from the schools",
+    "az": "məktəblərdən",
+    "ru": "из школ"
+   },
+   "deck": "school"
+  },
+  "trennidest": {
+   "base": "trenn",
+   "means": {
+    "en": "from training, from sports clubs",
+    "az": "məşqlərdən",
+    "ru": "с тренировок"
+   },
+   "deck": "plans"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "hakkavad": {
+   "base": "hakkama",
+   "means": {
+    "en": "they begin",
+    "az": "başlayırlar",
+    "ru": "начинают"
+   },
+   "deck": "moreverbs"
+  },
+  "õppima": {
+   "base": "õppima",
+   "means": {
+    "en": "to study",
+    "az": "oxumağa",
+    "ru": "учиться"
+   },
+   "deck": "moreverbs"
+  },
+  "vahel": {
+   "base": "vahel",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "neil": {
+   "base": "tema",
+   "means": {
+    "en": "they have (neil on); at them",
+    "az": "onlarda",
+    "ru": "у них"
+   }
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "küsida": {
+   "base": "küsima",
+   "means": {
+    "en": "to ask",
+    "az": "soruşmaq",
+    "ru": "спросить"
+   },
+   "deck": "verbs"
+  },
+  "aitan": {
+   "base": "aitama",
+   "means": {
+    "en": "I help",
+    "az": "kömək edirəm",
+    "ru": "помогаю"
+   },
+   "deck": "verbs"
+  },
+  "neid": {
+   "base": "tema",
+   "means": {
+    "en": "them",
+    "az": "onları",
+    "ru": "их"
+   }
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "tahavad": {
+   "base": "tahtma",
+   "means": {
+    "en": "they want",
+    "az": "istəyirlər",
+    "ru": "хотят"
+   },
+   "deck": "verbs"
+  },
+  "inglise": {
+   "base": "inglise",
+   "means": {
+    "en": "English",
+    "az": "ingilis",
+    "ru": "английский"
+   }
+  },
+  "keele": {
+   "base": "keel",
+   "means": {
+    "en": "language (keele tundi: language class)",
+    "az": "dil",
+    "ru": "языка"
+   },
+   "deck": "talk"
+  },
+  "sõnu": {
+   "base": "sõna",
+   "means": {
+    "en": "words",
+    "az": "sözlər",
+    "ru": "слова"
+   },
+   "deck": "paper"
+  },
+  "jutustavad": {
+   "base": "jutustama",
+   "means": {
+    "en": "they tell",
+    "az": "danışırlar",
+    "ru": "рассказывают"
+   },
+   "deck": "moreverbs"
+  },
+  "kuulan": {
+   "base": "kuulama",
+   "means": {
+    "en": "I listen",
+    "az": "qulaq asıram",
+    "ru": "слушаю"
+   },
+   "deck": "moreverbs"
+  },
+  "vaatan": {
+   "base": "vaatama",
+   "means": {
+    "en": "I watch, I look",
+    "az": "baxıram",
+    "ru": "смотрю"
+   },
+   "deck": "moreverbs"
+  },
+  "natuke": {
+   "base": "natuke",
+   "means": {
+    "en": "a little",
+    "az": "bir az",
+    "ru": "немного"
+   },
+   "deck": "basics"
+  },
+  "telekat": {
+   "base": "telekas",
+   "means": {
+    "en": "telly, TV",
+    "az": "televizor",
+    "ru": "телик"
+   }
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes",
+    "az": "gəlir",
+    "ru": "приходит"
+   },
+   "deck": "verbs"
+  },
+  "köök": {
+   "base": "köök",
+   "means": {
+    "en": "kitchen",
+    "az": "mətbəx",
+    "ru": "кухня"
+   },
+   "deck": "home"
+  },
+  "koristada": {
+   "base": "koristama",
+   "means": {
+    "en": "to tidy, to clean",
+    "az": "yığışdırmaq",
+    "ru": "убирать"
+   },
+   "deck": "moreverbs"
+  },
+  "täna": {
+   "base": "täna",
+   "means": {
+    "en": "today (täna õhtul: tonight)",
+    "az": "bu gün",
+    "ru": "сегодня"
+   },
+   "deck": "time"
+  },
+  "jalgpalli": {
+   "base": "jalgpall",
+   "means": {
+    "en": "football",
+    "az": "futbol",
+    "ru": "футбол"
+   },
+   "deck": "plans"
+  },
+  "mängima": {
+   "base": "mängima",
+   "means": {
+    "en": "to play",
+    "az": "oynamağa",
+    "ru": "играть"
+   },
+   "deck": "moreverbs"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "hobi": {
+   "base": "hobi",
+   "means": {
+    "en": "hobby",
+    "az": "hobbi",
+    "ru": "хобби"
+   },
+   "deck": "jobs"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "kümme": {
+   "base": "kümme",
+   "means": {
+    "en": "ten",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "viisteist": {
+   "base": "viisteist",
+   "means": {
+    "en": "fifteen",
+    "az": "on beş",
+    "ru": "пятнадцать"
+   },
+   "deck": "numbers"
+  },
+  "õpin": {
+   "base": "õppima",
+   "means": {
+    "en": "I study",
+    "az": "oxuyuram",
+    "ru": "учусь"
+   },
+   "deck": "moreverbs"
+  },
+  "arvutis": {
+   "base": "arvuti",
+   "means": {
+    "en": "on the computer",
+    "az": "kompüterdə",
+    "ru": "за компьютером"
+   },
+   "deck": "paper"
+  },
+  "no": {
+   "base": "no",
+   "means": {
+    "en": "well (to start a sentence)",
+    "az": "yaxşı, nə isə",
+    "ru": "ну"
+   }
+  },
+  "õhtu": {
+   "base": "õhtu",
+   "means": {
+    "en": "evening",
+    "az": "axşam",
+    "ru": "вечер"
+   },
+   "deck": "time"
+  },
+  "sõltub": {
+   "base": "sõltuma",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   },
+   "deck": "moreverbs"
+  },
+  "sellest": {
+   "base": "see",
+   "means": {
+    "en": "on that, from that",
+    "az": "bundan",
+    "ru": "от того"
+   },
+   "deck": "pronouns"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "proov": {
+   "base": "proov",
+   "means": {
+    "en": "rehearsal",
+    "az": "məşq",
+    "ru": "репетиция"
+   }
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "paar": {
+   "base": "paar",
+   "means": {
+    "en": "a couple",
+    "az": "bir-iki",
+    "ru": "пара"
+   },
+   "deck": "everyday"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nädalas": {
+   "base": "nädal",
+   "means": {
+    "en": "a week, per week",
+    "az": "həftədə",
+    "ru": "в неделю"
+   },
+   "deck": "time"
+  },
+  "teeme": {
+   "base": "tegema",
+   "means": {
+    "en": "we do, we make",
+    "az": "edirik",
+    "ru": "делаем"
+   },
+   "deck": "verbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "bändikaaslastega": {
+   "base": "bändikaaslane",
+   "means": {
+    "en": "with my bandmates",
+    "az": "qrup yoldaşlarımla",
+    "ru": "с товарищами по группе"
+   }
+  },
+  "proovi": {
+   "base": "proov",
+   "means": {
+    "en": "rehearsal (teeme proovi: we rehearse)",
+    "az": "məşq",
+    "ru": "репетицию"
+   }
+  },
+  "mängin": {
+   "base": "mängima",
+   "means": {
+    "en": "I play",
+    "az": "çalıram",
+    "ru": "играю"
+   },
+   "deck": "moreverbs"
+  },
+  "kitarri": {
+   "base": "kitarr",
+   "means": {
+    "en": "guitar",
+    "az": "gitara",
+    "ru": "на гитаре"
+   }
+  },
+  "laulan": {
+   "base": "laulma",
+   "means": {
+    "en": "I sing",
+    "az": "oxuyuram",
+    "ru": "пою"
+   },
+   "deck": "moreverbs"
+  },
+  "bänd": {
+   "base": "bänd",
+   "means": {
+    "en": "band",
+    "az": "musiqi qrupu",
+    "ru": "группа"
+   },
+   "deck": "plans"
+  }
+ }
 }

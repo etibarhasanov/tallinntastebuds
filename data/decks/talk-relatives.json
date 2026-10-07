@@ -1,0 +1,802 @@
+{
+ "id": "talk-relatives",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Your extended family",
+  "az": "Sənin qohum-əqraban",
+  "ru": "Твоя родня"
+ },
+ "why": {
+  "en": "Krista's family of twins, and Ingrid's great-grandchildren, twins and triplets at once",
+  "az": "Kristanın əkizlər nəsli və Ingridin nəticələri — həm əkizlər, həm üçəmlər",
+  "ru": "Семья близнецов у Krista и правнуки Ingrid — сразу двойня и тройня"
+ },
+ "taste": "Lapselapsi on mul ka.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Milline on sinu suguvõsa?",
+    "en": "What's your extended family like?",
+    "az": "Sənin qohum-əqraban necədir?",
+    "ru": "Какая у тебя родня?"
+   },
+   "turns": [
+    {
+     "who": "Krista",
+     "et": "Minu suguvõsaga on selline huvitav lugu, et minu emal on kaksikõde. Nad on hästi sarnased. Ja minu isal oli kaksikvend, nad olid hästi sarnased. Ja siis ma arvasin terve elu, et mina saan ka kaksikud. Aga mul ei ole kaksikuid. Võib-olla mu lapselapsed tulevad kaksikud. Ja minu tädil, minu ema kaksikõel, on poeg, kelle naine on kaksik, ja nendel on ka kaksikud lapsed, poiss ja tüdruk. Nii et selline kaksikute suguvõsa on meil.",
+     "en": "There's an interesting thing about my family: my mother has a twin sister. They are very alike. And my father had a twin brother; they were very alike. So all my life I thought I would have twins too. But I don't have twins. Maybe my grandchildren will be twins. And my aunt, my mother's twin sister, has a son whose wife is a twin herself, and they have twins too, a boy and a girl. So that's the family of twins we are.",
+     "az": "Qohumlarımla bağlı belə maraqlı bir əhvalat var: anamın əkiz bacısı var. Onlar bir-birinə çox oxşayırlar. Atamın da əkiz qardaşı var idi, onlar da çox oxşayırdılar. Ona görə də bütün ömrüm boyu düşünürdüm ki, mənim də əkizlərim olacaq. Amma əkizlərim yoxdur. Bəlkə nəvələrim əkiz olacaq. Xalamın, anamın əkiz bacısının, bir oğlu var, onun arvadı da əkizdir, onların da əkiz uşaqları var, bir oğlan, bir qız. Belə ki, bizim əkizlər nəslimiz var.",
+     "ru": "С моей роднёй такая интересная история: у моей мамы есть сестра-близнец. Они очень похожи. А у моего папы был брат-близнец, они были очень похожи. И я всю жизнь думала, что у меня тоже будут близнецы. Но близнецов у меня нет. Может быть, у меня внуки родятся близнецами. А у моей тёти, маминой сестры-близнеца, есть сын, у которого жена — близнец, и у них тоже дети-близнецы, мальчик и девочка. Так что вот такая у нас родня близнецов."
+    },
+    {
+     "who": "Ingrid",
+     "et": "Lapselapsi on mul ka. Mu tütrel on kolm last, mu vanemal pojal on kaks last ja mu nooremal pojal on kolm tütart. Ja minu lastelastel on ka juba lapsed. Tütretütar sai kohe kaksikud! Tütrepoeg sai kohe kolmikud! Ja siis mu kolmas tütretütar ütles, et tema ei julgegi lapsi saada, et äkki temal tuleb neli last. Aga ei, ta sai siiski alguses ühe lapse ja pärast sai veel teise.",
+     "en": "I have grandchildren too. My daughter has three children, my older son has two, and my younger son has three daughters. And my grandchildren already have children of their own. My daughter's daughter had twins straight away! My daughter's son had triplets straight away! And then my third granddaughter said she didn't even dare to have children, in case she had four at once. But no, she had one child first and later another.",
+     "az": "Nəvələrim də var. Qızımın üç uşağı var, böyük oğlumun iki uşağı, kiçik oğlumun isə üç qızı var. Nəvələrimin də artıq uşaqları var. Qızımın qızı birdən əkiz doğdu! Qızımın oğlunun birdən üçəmləri oldu! Sonra qızımın üçüncü qızı dedi ki, uşaq doğmağa heç cəsarət etmir, birdən dörd uşağı olar. Amma yox, əvvəlcə bir uşağı oldu, sonra da biri.",
+     "ru": "Внуки у меня тоже есть. У моей дочери трое детей, у старшего сына двое детей, а у младшего сына три дочери. И у моих внуков уже тоже есть дети. Дочкина дочка сразу родила двойню! У дочкиного сына сразу родилась тройня! А потом моя третья внучка от дочери сказала, что она даже не решается рожать: вдруг у неё будет четверо. Но нет, она всё-таки сначала родила одного ребёнка, а потом ещё второго."
+    }
+   ]
+  }
+ ],
+ "words": {
+  "milline": {
+   "base": "milline",
+   "means": {
+    "en": "what kind of, what … like",
+    "az": "necə, hansı",
+    "ru": "какой"
+   },
+   "deck": "asking"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "suguvõsa": {
+   "base": "suguvõsa",
+   "means": {
+    "en": "extended family, kin",
+    "az": "qohum-əqraba, nəsil",
+    "ru": "родня, род"
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "suguvõsaga": {
+   "base": "suguvõsa",
+   "means": {
+    "en": "with the extended family",
+    "az": "qohumlarla",
+    "ru": "с роднёй"
+   }
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "huvitav": {
+   "base": "huvitav",
+   "means": {
+    "en": "interesting",
+    "az": "maraqlı",
+    "ru": "интересный"
+   },
+   "deck": "feelings"
+  },
+  "lugu": {
+   "base": "lugu",
+   "means": {
+    "en": "story",
+    "az": "əhvalat",
+    "ru": "история"
+   },
+   "deck": "paper"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "emal": {
+   "base": "ema",
+   "means": {
+    "en": "mother has (emal on)",
+    "az": "anamın",
+    "ru": "у мамы"
+   },
+   "deck": "talk"
+  },
+  "kaksikõde": {
+   "base": "kaksikõde",
+   "means": {
+    "en": "twin sister",
+    "az": "əkiz bacı",
+    "ru": "сестра-близнец"
+   }
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "sarnased": {
+   "base": "sarnane",
+   "means": {
+    "en": "alike, similar",
+    "az": "oxşar",
+    "ru": "похожие"
+   },
+   "deck": "describing"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "isal": {
+   "base": "isa",
+   "means": {
+    "en": "father has (isal oli: father had)",
+    "az": "atamın",
+    "ru": "у папы"
+   },
+   "deck": "talk"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "kaksikvend": {
+   "base": "kaksikvend",
+   "means": {
+    "en": "twin brother",
+    "az": "əkiz qardaş",
+    "ru": "брат-близнец"
+   }
+  },
+  "olid": {
+   "base": "olema",
+   "means": {
+    "en": "were",
+    "az": "idilər",
+    "ru": "были"
+   },
+   "deck": "verbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "arvasin": {
+   "base": "arvama",
+   "means": {
+    "en": "I thought",
+    "az": "düşünürdüm",
+    "ru": "думала"
+   },
+   "deck": "moreverbs"
+  },
+  "terve": {
+   "base": "terve",
+   "means": {
+    "en": "whole; healthy",
+    "az": "bütün; sağlam",
+    "ru": "целый; здоровый"
+   },
+   "deck": "health"
+  },
+  "elu": {
+   "base": "elu",
+   "means": {
+    "en": "life",
+    "az": "həyat",
+    "ru": "жизнь"
+   },
+   "deck": "naera-words"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "saan": {
+   "base": "saama",
+   "means": {
+    "en": "I will have (saan kaksikud: I will have twins)",
+    "az": "olacaq (mənim)",
+    "ru": "у меня будут"
+   },
+   "deck": "verbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "kaksikud": {
+   "base": "kaksik",
+   "means": {
+    "en": "twins",
+    "az": "əkizlər",
+    "ru": "близнецы"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kaksikuid": {
+   "base": "kaksik",
+   "means": {
+    "en": "twins",
+    "az": "əkizlər",
+    "ru": "близнецов"
+   }
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lapselapsed": {
+   "base": "lapselaps",
+   "means": {
+    "en": "grandchildren",
+    "az": "nəvələr",
+    "ru": "внуки"
+   },
+   "deck": "family"
+  },
+  "tulevad": {
+   "base": "tulema",
+   "means": {
+    "en": "will turn out (tulevad kaksikud: will be twins); come",
+    "az": "olacaqlar",
+    "ru": "окажутся, будут"
+   },
+   "deck": "verbs"
+  },
+  "tädil": {
+   "base": "tädi",
+   "means": {
+    "en": "aunt has (tädil on)",
+    "az": "xalamın",
+    "ru": "у тёти"
+   },
+   "deck": "family"
+  },
+  "ema": {
+   "base": "ema",
+   "means": {
+    "en": "mother",
+    "az": "ana",
+    "ru": "мама"
+   },
+   "deck": "talk"
+  },
+  "kaksikõel": {
+   "base": "kaksikõde",
+   "means": {
+    "en": "twin sister (has)",
+    "az": "əkiz bacısının",
+    "ru": "у сестры-близнеца"
+   }
+  },
+  "poeg": {
+   "base": "poeg",
+   "means": {
+    "en": "son",
+    "az": "oğul",
+    "ru": "сын"
+   },
+   "deck": "family"
+  },
+  "kelle": {
+   "base": "kes",
+   "means": {
+    "en": "whose",
+    "az": "kimin",
+    "ru": "чьё"
+   },
+   "deck": "asking"
+  },
+  "naine": {
+   "base": "naine",
+   "means": {
+    "en": "wife; woman",
+    "az": "arvad; qadın",
+    "ru": "жена; женщина"
+   },
+   "deck": "talk"
+  },
+  "kaksik": {
+   "base": "kaksik",
+   "means": {
+    "en": "twin",
+    "az": "əkiz",
+    "ru": "близнец"
+   }
+  },
+  "nendel": {
+   "base": "tema",
+   "means": {
+    "en": "they have (nendel on)",
+    "az": "onların",
+    "ru": "у них"
+   }
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "poiss": {
+   "base": "poiss",
+   "means": {
+    "en": "boy",
+    "az": "oğlan",
+    "ru": "мальчик"
+   },
+   "deck": "talk"
+  },
+  "tüdruk": {
+   "base": "tüdruk",
+   "means": {
+    "en": "girl",
+    "az": "qız",
+    "ru": "девочка"
+   },
+   "deck": "talk"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "kaksikute": {
+   "base": "kaksik",
+   "means": {
+    "en": "of twins",
+    "az": "əkizlərin",
+    "ru": "близнецов"
+   }
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "lapselapsi": {
+   "base": "lapselaps",
+   "means": {
+    "en": "grandchildren",
+    "az": "nəvələr",
+    "ru": "внуков"
+   },
+   "deck": "family"
+  },
+  "tütrel": {
+   "base": "tütar",
+   "means": {
+    "en": "daughter has (tütrel on)",
+    "az": "qızımın",
+    "ru": "у дочери"
+   },
+   "deck": "family"
+  },
+  "kolm": {
+   "base": "kolm",
+   "means": {
+    "en": "three",
+    "az": "üç",
+    "ru": "три"
+   },
+   "deck": "numbers"
+  },
+  "last": {
+   "base": "laps",
+   "means": {
+    "en": "children (kolm last: three children)",
+    "az": "uşaq",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "vanemal": {
+   "base": "vanem",
+   "means": {
+    "en": "older (has)",
+    "az": "böyük",
+    "ru": "у старшего"
+   },
+   "deck": "adjectives-cards"
+  },
+  "pojal": {
+   "base": "poeg",
+   "means": {
+    "en": "son has (pojal on)",
+    "az": "oğlumun",
+    "ru": "у сына"
+   },
+   "deck": "family"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "nooremal": {
+   "base": "noorem",
+   "means": {
+    "en": "younger (has)",
+    "az": "kiçik",
+    "ru": "у младшего"
+   },
+   "deck": "adjectives-cards"
+  },
+  "tütart": {
+   "base": "tütar",
+   "means": {
+    "en": "daughters (kolm tütart: three daughters)",
+    "az": "qız",
+    "ru": "дочери"
+   },
+   "deck": "family"
+  },
+  "lastelastel": {
+   "base": "lapselaps",
+   "means": {
+    "en": "grandchildren have",
+    "az": "nəvələrimin",
+    "ru": "у внуков"
+   },
+   "deck": "family"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "tütretütar": {
+   "base": "tütretütar",
+   "means": {
+    "en": "granddaughter (a daughter's daughter)",
+    "az": "qızımın qızı, nəvə",
+    "ru": "внучка (дочь дочери)"
+   }
+  },
+  "sai": {
+   "base": "saama",
+   "means": {
+    "en": "got, became (sai läbi: was over; sai kaksikud: had twins)",
+    "az": "aldı, oldu (sai läbi: bitdi)",
+    "ru": "получил, стал (sai läbi: закончилась)"
+   },
+   "deck": "verbs"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "tütrepoeg": {
+   "base": "tütrepoeg",
+   "means": {
+    "en": "grandson (a daughter's son)",
+    "az": "qızımın oğlu, nəvə",
+    "ru": "внук (сын дочери)"
+   }
+  },
+  "kolmikud": {
+   "base": "kolmik",
+   "means": {
+    "en": "triplets",
+    "az": "üçəmlər",
+    "ru": "тройня"
+   }
+  },
+  "kolmas": {
+   "base": "kolmas",
+   "means": {
+    "en": "third",
+    "az": "üçüncü",
+    "ru": "третий"
+   },
+   "deck": "numbers"
+  },
+  "ütles": {
+   "base": "ütlema",
+   "means": {
+    "en": "said",
+    "az": "dedi",
+    "ru": "сказала"
+   },
+   "deck": "everyday"
+  },
+  "tema": {
+   "base": "tema",
+   "means": {
+    "en": "he, she (stressed)",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "julgegi": {
+   "base": "julgema",
+   "means": {
+    "en": "dare at all (after ei: ei julgegi, doesn't even dare)",
+    "az": "heç cəsarət etmir (ei ilə)",
+    "ru": "даже не решается (с ei)"
+   },
+   "deck": "naera-words"
+  },
+  "lapsi": {
+   "base": "laps",
+   "means": {
+    "en": "children",
+    "az": "uşaqlar",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "saada": {
+   "base": "saama",
+   "means": {
+    "en": "to become; to get",
+    "az": "olmaq; almaq",
+    "ru": "стать; получить"
+   },
+   "deck": "verbs"
+  },
+  "äkki": {
+   "base": "äkki",
+   "means": {
+    "en": "maybe; suddenly",
+    "az": "bəlkə; birdən",
+    "ru": "может; вдруг"
+   },
+   "deck": "everyday"
+  },
+  "temal": {
+   "base": "tema",
+   "means": {
+    "en": "she has, he has (temal tuleb: she will have)",
+    "az": "onun",
+    "ru": "у неё, у него"
+   }
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "will come, will have (temal tuleb neli last: she will have four)",
+    "az": "olacaq",
+    "ru": "будет"
+   },
+   "deck": "verbs"
+  },
+  "neli": {
+   "base": "neli",
+   "means": {
+    "en": "four",
+    "az": "dörd",
+    "ru": "четыре"
+   },
+   "deck": "numbers"
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "siiski": {
+   "base": "siiski",
+   "means": {
+    "en": "still, after all",
+    "az": "yenə də",
+    "ru": "всё-таки"
+   },
+   "deck": "randaja-words"
+  },
+  "alguses": {
+   "base": "algus",
+   "means": {
+    "en": "at first, in the beginning",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   },
+   "deck": "time"
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "lapse": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнка"
+   },
+   "deck": "talk"
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "teise": {
+   "base": "teine",
+   "means": {
+    "en": "another, a second",
+    "az": "ikincisini",
+    "ru": "второго"
+   },
+   "deck": "numbers"
+  }
+ }
+}

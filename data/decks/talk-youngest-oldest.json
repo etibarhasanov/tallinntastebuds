@@ -1,0 +1,1120 @@
+{
+ "id": "talk-youngest-oldest",
+ "added": "2026-10-07",
+ "name": {
+  "en": "The youngest and the oldest relative",
+  "az": "Ən kiçik və ən yaşlı qohum",
+  "ru": "Самый младший и самый старший родственник"
+ },
+ "why": {
+  "en": "A cousin's son of six months, a great-grandmother of 85, and a family where nobody dies",
+  "az": "Altı aylıq xalaoğlunun oğlu, 85 yaşlı ulu nənə və heç kimin ölmədiyi bir nəsil",
+  "ru": "Сын двоюродного брата полугода от роду, прабабушка восьмидесяти пяти лет и родня, где никто не умирает"
+ },
+ "taste": "Minu kõige noorem sugulane",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kes on sinu kõige noorem sugulane? Kes on sinu kõige vanem sugulane?",
+    "en": "Who is your youngest relative? Who is your oldest relative?",
+    "az": "Sənin ən kiçik qohumun kimdir? Ən yaşlı qohumun kimdir?",
+    "ru": "Кто твой самый младший родственник? Кто твой самый старший родственник?"
+   },
+   "turns": [
+    {
+     "who": "Krista",
+     "et": "Minu kõige noorem sugulane on minu tädipoja poeg Ludvig. Tema on kuuekuune. Ja minu kõige vanem sugulane on minu mehe vanaema, minu laste vanavanaema. Tema on 85-aastane.",
+     "en": "My youngest relative is my cousin's son, Ludvig. He is six months old. And my oldest relative is my husband's grandmother, my children's great-grandmother. She is 85.",
+     "az": "Mənim ən kiçik qohumum xalaoğlunun oğlu Ludvigdir. Onun altı aylığı var. Ən yaşlı qohumum isə ərimin nənəsi, uşaqlarımın ulu nənəsidir. Onun 85 yaşı var.",
+     "ru": "Мой самый младший родственник — сын моего двоюродного брата, Ludvig. Ему шесть месяцев. А мой самый старший родственник — бабушка моего мужа, прабабушка моих детей. Ей 85 лет."
+    },
+    {
+     "who": "Krista",
+     "et": "Oma kõige väiksemat sugulast nägin ma eelmisel nädalal, kui ma neil külas käisin. Ja oma mehe vanaema nägin ma jõulude ajal. Me käisime tal külas ja me käisime kõik koos Rakveres seda uhket jõulupuud vaatamas.",
+     "en": "My youngest relative I saw last week, when I visited them. And my husband's grandmother I saw at Christmas. We visited her, and we all went together to Rakvere to see that grand Christmas tree.",
+     "az": "Ən kiçik qohumumu keçən həftə onlara qonaq gedəndə gördüm. Ərimin nənəsini isə Milad bayramında gördüm. Ona qonaq getdik və hamımız birlikdə Rakverəyə o möhtəşəm Milad ağacına baxmağa getdik.",
+     "ru": "Своего самого маленького родственника я видела на прошлой неделе, когда была у них в гостях. А бабушку мужа я видела на Рождество. Мы были у неё в гостях и все вместе ездили в Раквере посмотреть на ту роскошную ёлку."
+    },
+    {
+     "who": "Kiur",
+     "et": "Väga palju väikseid lapsi meie suguvõsas ei ole. Olengi vist ainult mina ja üks teine, kaheteistkuune, jah, ta on juba üheaastane. Ja rohkem ei ole. Aga vanu inimesi on meil suguvõsas küll palju, kuna keegi ära ei sure.",
+     "en": "There aren't many small children in our family. I think it's just me and one other, twelve months old — yes, he's one already. And there are no more. But there are plenty of old people in our family, since nobody ever dies.",
+     "az": "Bizim nəsildə o qədər də çox balaca uşaq yoxdur. Deyəsən, yalnız mən və bir başqası var, on iki aylıq, hə, onun artıq bir yaşı var. Daha yoxdur. Amma bizim nəsildə yaşlı adamlar çoxdur, çünki heç kim ölmür.",
+     "ru": "Очень много маленьких детей в нашей родне нет. Наверное, только я и ещё один, двенадцати месяцев, да, ему уже год. И больше нет. Зато стариков у нас в родне много, потому что никто не умирает."
+    },
+    {
+     "who": "Mihkel",
+     "et": "Minu kõige vanem sugulane oli üle üheksakümne, aga ma arvan, et ta enam ei ela. Kõlab halvasti, aga ma ei ole päris kursis. Kõige noorem meie suguvõsas on minu onu äsjasündinud tütar. Ta sündis minu teada eelmisel kuul või umbes poolteist kuud tagasi.",
+     "en": "My oldest relative was over ninety, but I don't think he is alive anymore. It sounds bad, but I'm not really up to date. The youngest in our family is my uncle's newborn daughter. As far as I know she was born last month, or about a month and a half ago.",
+     "az": "Mənim ən yaşlı qohumum doxsandan yuxarı idi, amma məncə, o artıq sağ deyil. Pis səslənir, amma mən tam xəbərdar deyiləm. Bizim nəsildə ən kiçiyi əmimin təzə doğulmuş qızıdır. Bildiyimə görə, o keçən ay, ya da təxminən bir ay yarım əvvəl doğulub.",
+     "ru": "Моему самому старшему родственнику было за девяносто, но я думаю, что его уже нет в живых. Звучит плохо, но я не совсем в курсе. Самая младшая в нашей родне — новорождённая дочь моего дяди. Насколько я знаю, она родилась в прошлом месяце или примерно полтора месяца назад."
+    },
+    {
+     "who": "Ingrid",
+     "et": "Kõige noorem sugulane on mul tütretütre väike pojake Johannes. Tema on pooleteiseaastane, jah, tema on kõige noorem.",
+     "en": "My youngest relative is my granddaughter's little son, Johannes. He is a year and a half old — yes, he is the youngest.",
+     "az": "Mənim ən kiçik qohumum qızımın qızının balaca oğlu Johannesdir. Onun bir yaş yarımı var, hə, ən kiçik odur.",
+     "ru": "Самый младший мой родственник — маленький сынок моей внучки, Johannes. Ему полтора года, да, он самый младший."
+    },
+    {
+     "who": "Ingrid",
+     "et": "Kõige vanem on mul tütretütar Kati, kes on nüüd 39. Kõik mu lapselapsed on hakkajad ja tublid ja vahvad lapsed. Ausalt! Küll see on ikka tore! Teate, kui suur rõõm on, kui sünnib terve laps, eks ole? Midagi paremat ei ole! Ausalt! Ja kõik on väga tublid.",
+     "en": "The oldest is my granddaughter Kati, who is 39 now. All my grandchildren are go-getting, capable, lovely kids. Honestly! It really is wonderful! You know what a joy it is when a healthy child is born, don't you? There's nothing better! Honestly! And they are all doing very well.",
+     "az": "Ən böyüyü qızımın qızı Katidir, onun indi 39 yaşı var. Bütün nəvələrim təşəbbüskar, bacarıqlı və qəşəng uşaqlardır. Düzünü deyirəm! Bu, doğrudan da gözəldir! Bilirsiniz də, sağlam uşaq doğulanda nə böyük sevincdir, elə deyilmi? Bundan yaxşı şey yoxdur! Düzünü deyirəm! Hamısı da çox bacarıqlıdır.",
+     "ru": "Самая старшая — моя внучка Kati, ей сейчас 39. Все мои внуки — бойкие, молодцы и замечательные дети. Честно! Как же это всё-таки здорово! Знаете, какая это большая радость, когда рождается здоровый ребёнок, правда? Ничего лучше нет! Честно! И все они большие молодцы."
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kes": {
+   "base": "kes",
+   "means": {
+    "en": "who",
+    "az": "kim",
+    "ru": "кто, который"
+   },
+   "deck": "asking"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "kõige": {
+   "base": "kõige",
+   "means": {
+    "en": "most (kõige esimesena: the very first; kõige vanem: the oldest)",
+    "az": "ən",
+    "ru": "самый, больше всего"
+   }
+  },
+  "noorem": {
+   "base": "noorem",
+   "means": {
+    "en": "younger (kõige noorem: the youngest)",
+    "az": "kiçik",
+    "ru": "младший"
+   },
+   "deck": "adjectives-cards"
+  },
+  "sugulane": {
+   "base": "sugulane",
+   "means": {
+    "en": "relative",
+    "az": "qohum",
+    "ru": "родственник"
+   },
+   "deck": "family"
+  },
+  "vanem": {
+   "base": "vanem",
+   "means": {
+    "en": "older (kõige vanem: the oldest)",
+    "az": "böyük",
+    "ru": "старший"
+   },
+   "deck": "adjectives-cards"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "tädipoja": {
+   "base": "tädipoeg",
+   "means": {
+    "en": "cousin's (an aunt's son)",
+    "az": "xalaoğlunun",
+    "ru": "двоюродного брата"
+   }
+  },
+  "poeg": {
+   "base": "poeg",
+   "means": {
+    "en": "son",
+    "az": "oğul",
+    "ru": "сын"
+   },
+   "deck": "family"
+  },
+  "ludvig": {
+   "base": "Ludvig",
+   "means": {
+    "en": "Ludvig (a name)",
+    "az": "Ludvig (ad)",
+    "ru": "Ludvig (имя)"
+   }
+  },
+  "tema": {
+   "base": "tema",
+   "means": {
+    "en": "he, she (stressed)",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "kuuekuune": {
+   "base": "kuuekuune",
+   "means": {
+    "en": "six months old",
+    "az": "altı aylıq",
+    "ru": "шестимесячный"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "mehe": {
+   "base": "mees",
+   "means": {
+    "en": "husband, man (mehe saadan: my husband I send)",
+    "az": "əri, kişini",
+    "ru": "мужа"
+   },
+   "deck": "talk"
+  },
+  "vanaema": {
+   "base": "vanaema",
+   "means": {
+    "en": "grandmother",
+    "az": "nənə",
+    "ru": "бабушка"
+   },
+   "deck": "talk"
+  },
+  "laste": {
+   "base": "laps",
+   "means": {
+    "en": "children's",
+    "az": "uşaqların",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "vanavanaema": {
+   "base": "vanavanaema",
+   "means": {
+    "en": "great-grandmother",
+    "az": "ulu nənə",
+    "ru": "прабабушка"
+   }
+  },
+  "aastane": {
+   "base": "aastane",
+   "means": {
+    "en": "-year-old (kaheksa-aastane: eight years old)",
+    "az": "yaşlı (kaheksa-aastane: səkkiz yaşlı)",
+    "ru": "-летний (kaheksa-aastane: восьмилетний)"
+   }
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "väiksemat": {
+   "base": "väike",
+   "means": {
+    "en": "smallest, youngest (kõige väiksemat)",
+    "az": "ən kiçik",
+    "ru": "самого маленького"
+   },
+   "deck": "basics"
+  },
+  "sugulast": {
+   "base": "sugulane",
+   "means": {
+    "en": "relative",
+    "az": "qohum",
+    "ru": "родственника"
+   },
+   "deck": "family"
+  },
+  "nägin": {
+   "base": "nägema",
+   "means": {
+    "en": "I saw",
+    "az": "gördüm",
+    "ru": "видел"
+   },
+   "deck": "verbs"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "eelmisel": {
+   "base": "eelmine",
+   "means": {
+    "en": "last, previous",
+    "az": "keçən",
+    "ru": "прошлой"
+   },
+   "deck": "describing"
+  },
+  "nädalal": {
+   "base": "nädal",
+   "means": {
+    "en": "week (eelmisel nädalal: last week)",
+    "az": "həftə",
+    "ru": "неделе"
+   },
+   "deck": "time"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "neil": {
+   "base": "tema",
+   "means": {
+    "en": "they have (neil on); at them",
+    "az": "onlarda",
+    "ru": "у них"
+   }
+  },
+  "külas": {
+   "base": "külas",
+   "means": {
+    "en": "visiting (külas käima: to visit)",
+    "az": "qonaq",
+    "ru": "в гостях"
+   }
+  },
+  "käisin": {
+   "base": "käima",
+   "means": {
+    "en": "I went, I visited",
+    "az": "getdim, oldum",
+    "ru": "ходил, был"
+   },
+   "deck": "moreverbs"
+  },
+  "jõulude": {
+   "base": "jõulud",
+   "means": {
+    "en": "Christmas (jõulude ajal: at Christmas)",
+    "az": "Milad",
+    "ru": "Рождества"
+   },
+   "deck": "plans"
+  },
+  "ajal": {
+   "base": "aeg",
+   "means": {
+    "en": "time (sel ajal, kui: while, when)",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "käisime": {
+   "base": "käima",
+   "means": {
+    "en": "we went, we visited",
+    "az": "getdik",
+    "ru": "ходили, ездили"
+   },
+   "deck": "moreverbs"
+  },
+  "tal": {
+   "base": "tema",
+   "means": {
+    "en": "he has, she has (tal on); at him, her",
+    "az": "onda, onun",
+    "ru": "у него, у неё"
+   }
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "koos": {
+   "base": "koos",
+   "means": {
+    "en": "together",
+    "az": "birlikdə",
+    "ru": "вместе"
+   },
+   "deck": "service"
+  },
+  "rakveres": {
+   "base": "Rakvere",
+   "means": {
+    "en": "in Rakvere (a town in the north-east)",
+    "az": "Rakverədə",
+    "ru": "в Раквере"
+   }
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "uhket": {
+   "base": "uhke",
+   "means": {
+    "en": "grand, splendid",
+    "az": "möhtəşəm",
+    "ru": "роскошную"
+   },
+   "deck": "feelings"
+  },
+  "jõulupuud": {
+   "base": "jõulupuu",
+   "means": {
+    "en": "Christmas tree",
+    "az": "Milad ağacı",
+    "ru": "ёлку"
+   }
+  },
+  "vaatamas": {
+   "base": "vaatama",
+   "means": {
+    "en": "looking at (käisime vaatamas: went to see)",
+    "az": "baxmağa",
+    "ru": "смотреть"
+   },
+   "deck": "moreverbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "väikseid": {
+   "base": "väike",
+   "means": {
+    "en": "small",
+    "az": "kiçik",
+    "ru": "маленьких"
+   },
+   "deck": "basics"
+  },
+  "lapsi": {
+   "base": "laps",
+   "means": {
+    "en": "children",
+    "az": "uşaqlar",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "meie": {
+   "base": "meie",
+   "means": {
+    "en": "our; we",
+    "az": "bizim",
+    "ru": "наш"
+   }
+  },
+  "suguvõsas": {
+   "base": "suguvõsa",
+   "means": {
+    "en": "in the extended family",
+    "az": "nəsildə",
+    "ru": "в родне"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "olengi": {
+   "base": "olema",
+   "means": {
+    "en": "I am, indeed",
+    "az": "elə mənəm",
+    "ru": "я и есть"
+   },
+   "deck": "verbs"
+  },
+  "vist": {
+   "base": "vist",
+   "means": {
+    "en": "probably, I suppose",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "teine": {
+   "base": "teine",
+   "means": {
+    "en": "other, another; second",
+    "az": "digər; ikinci",
+    "ru": "другой; второй"
+   },
+   "deck": "numbers"
+  },
+  "kaheteistkuune": {
+   "base": "kaheteistkuune",
+   "means": {
+    "en": "twelve months old",
+    "az": "on iki aylıq",
+    "ru": "двенадцатимесячный"
+   }
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "üheaastane": {
+   "base": "üheaastane",
+   "means": {
+    "en": "one year old",
+    "az": "bir yaşlı",
+    "ru": "годовалый"
+   }
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "vanu": {
+   "base": "vana",
+   "means": {
+    "en": "old",
+    "az": "yaşlı",
+    "ru": "старых"
+   },
+   "deck": "describing"
+  },
+  "inimesi": {
+   "base": "inimene",
+   "means": {
+    "en": "people",
+    "az": "adamlar",
+    "ru": "людей"
+   },
+   "deck": "talk"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "keegi": {
+   "base": "keegi",
+   "means": {
+    "en": "somebody (with ei: nobody)",
+    "az": "kimsə (ei ilə: heç kim)",
+    "ru": "кто-то (с ei: никто)"
+   },
+   "deck": "everyday"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing)",
+    "az": "tamamilə (fel ilə)",
+    "ru": "до конца (с глаголом)"
+   },
+   "deck": "everyday"
+  },
+  "sure": {
+   "base": "surema",
+   "means": {
+    "en": "die (after ei: ära ei sure, doesn't die)",
+    "az": "ölmür (ei ilə)",
+    "ru": "не умирает (с ei)"
+   },
+   "deck": "family"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "üle": {
+   "base": "üle",
+   "means": {
+    "en": "over (mille üle rõõmustama: to be glad about)",
+    "az": "üstündən",
+    "ru": "над, о"
+   },
+   "deck": "everyday"
+  },
+  "üheksakümne": {
+   "base": "üheksakümmend",
+   "means": {
+    "en": "ninety",
+    "az": "doxsan",
+    "ru": "девяноста"
+   },
+   "deck": "numbers"
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "enam": {
+   "base": "enam",
+   "means": {
+    "en": "more; any more (ei … enam: no longer)",
+    "az": "daha",
+    "ru": "больше (ei … enam: уже не)"
+   },
+   "deck": "everyday"
+  },
+  "ela": {
+   "base": "elama",
+   "means": {
+    "en": "live (after ei: ei ela, isn't alive)",
+    "az": "yaşamır (ei ilə)",
+    "ru": "не живёт (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kõlab": {
+   "base": "kõlama",
+   "means": {
+    "en": "sounds",
+    "az": "səslənir",
+    "ru": "звучит"
+   }
+  },
+  "halvasti": {
+   "base": "halvasti",
+   "means": {
+    "en": "badly",
+    "az": "pis",
+    "ru": "плохо"
+   }
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "kursis": {
+   "base": "kursis",
+   "means": {
+    "en": "up to date, informed",
+    "az": "xəbərdar",
+    "ru": "в курсе"
+   }
+  },
+  "onu": {
+   "base": "onu",
+   "means": {
+    "en": "uncle",
+    "az": "əmi, dayı",
+    "ru": "дядя"
+   },
+   "deck": "family"
+  },
+  "äsjasündinud": {
+   "base": "äsjasündinud",
+   "means": {
+    "en": "newborn",
+    "az": "təzə doğulmuş",
+    "ru": "новорождённая"
+   }
+  },
+  "tütar": {
+   "base": "tütar",
+   "means": {
+    "en": "daughter",
+    "az": "qız (övlad)",
+    "ru": "дочь"
+   },
+   "deck": "family"
+  },
+  "sündis": {
+   "base": "sündima",
+   "means": {
+    "en": "was born",
+    "az": "doğuldu",
+    "ru": "родился"
+   },
+   "deck": "moreverbs"
+  },
+  "teada": {
+   "base": "teadma",
+   "means": {
+    "en": "known (minu teada: as far as I know)",
+    "az": "bilmək",
+    "ru": "знать"
+   },
+   "deck": "verbs"
+  },
+  "kuul": {
+   "base": "kuu",
+   "means": {
+    "en": "month (eelmisel kuul: last month)",
+    "az": "ay",
+    "ru": "месяце"
+   },
+   "deck": "time"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "umbes": {
+   "base": "umbes",
+   "means": {
+    "en": "about, roughly",
+    "az": "təxminən",
+    "ru": "примерно"
+   },
+   "deck": "service"
+  },
+  "poolteist": {
+   "base": "poolteist",
+   "means": {
+    "en": "one and a half",
+    "az": "bir yarım",
+    "ru": "полтора"
+   },
+   "deck": "numbers"
+  },
+  "kuud": {
+   "base": "kuu",
+   "means": {
+    "en": "months",
+    "az": "ay",
+    "ru": "месяца"
+   },
+   "deck": "time"
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "tütretütre": {
+   "base": "tütretütar",
+   "means": {
+    "en": "granddaughter's (a daughter's daughter's)",
+    "az": "qızımın qızının",
+    "ru": "внучки"
+   }
+  },
+  "väike": {
+   "base": "väike",
+   "means": {
+    "en": "little, small",
+    "az": "kiçik",
+    "ru": "маленький"
+   },
+   "deck": "basics"
+  },
+  "pojake": {
+   "base": "pojake",
+   "means": {
+    "en": "little son",
+    "az": "oğulcuq",
+    "ru": "сынок"
+   }
+  },
+  "johannes": {
+   "base": "Johannes",
+   "means": {
+    "en": "Johannes (a name)",
+    "az": "Johannes (ad)",
+    "ru": "Johannes (имя)"
+   }
+  },
+  "pooleteiseaastane": {
+   "base": "pooleteiseaastane",
+   "means": {
+    "en": "a year and a half old",
+    "az": "bir yaş yarımlıq",
+    "ru": "полуторагодовалый"
+   }
+  },
+  "tütretütar": {
+   "base": "tütretütar",
+   "means": {
+    "en": "granddaughter (a daughter's daughter)",
+    "az": "qızımın qızı, nəvə",
+    "ru": "внучка (дочь дочери)"
+   }
+  },
+  "kati": {
+   "base": "Kati",
+   "means": {
+    "en": "Kati (a name)",
+    "az": "Kati (ad)",
+    "ru": "Kati (имя)"
+   }
+  },
+  "nüüd": {
+   "base": "nüüd",
+   "means": {
+    "en": "now",
+    "az": "indi",
+    "ru": "теперь"
+   },
+   "deck": "time"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lapselapsed": {
+   "base": "lapselaps",
+   "means": {
+    "en": "grandchildren",
+    "az": "nəvələr",
+    "ru": "внуки"
+   },
+   "deck": "family"
+  },
+  "hakkajad": {
+   "base": "hakkaja",
+   "means": {
+    "en": "go-getting, enterprising",
+    "az": "təşəbbüskar",
+    "ru": "бойкие"
+   }
+  },
+  "tublid": {
+   "base": "tubli",
+   "means": {
+    "en": "capable, good, doing well",
+    "az": "bacarıqlı, afərin",
+    "ru": "молодцы"
+   },
+   "deck": "talk"
+  },
+  "vahvad": {
+   "base": "vahva",
+   "means": {
+    "en": "great, lovely",
+    "az": "qəşəng",
+    "ru": "классные"
+   },
+   "deck": "describing"
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "ausalt": {
+   "base": "ausalt",
+   "means": {
+    "en": "honestly",
+    "az": "düzünü desəm",
+    "ru": "честно"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "tore": {
+   "base": "tore",
+   "means": {
+    "en": "nice, lovely",
+    "az": "gözəl",
+    "ru": "хороший, замечательный"
+   },
+   "deck": "talk"
+  },
+  "teate": {
+   "base": "teadma",
+   "means": {
+    "en": "you know (polite or plural)",
+    "az": "bilirsiniz",
+    "ru": "знаете"
+   },
+   "deck": "verbs"
+  },
+  "suur": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большой"
+   },
+   "deck": "basics"
+  },
+  "rõõm": {
+   "base": "rõõm",
+   "means": {
+    "en": "joy",
+    "az": "sevinc",
+    "ru": "радость"
+   }
+  },
+  "sünnib": {
+   "base": "sündima",
+   "means": {
+    "en": "is born",
+    "az": "doğulur",
+    "ru": "рождается"
+   },
+   "deck": "moreverbs"
+  },
+  "terve": {
+   "base": "terve",
+   "means": {
+    "en": "whole; healthy",
+    "az": "bütün; sağlam",
+    "ru": "целый; здоровый"
+   },
+   "deck": "health"
+  },
+  "laps": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнок"
+   },
+   "deck": "talk"
+  },
+  "eks": {
+   "base": "eks",
+   "means": {
+    "en": "isn't it (eks ole?: isn't it so?)",
+    "az": "elə deyilmi",
+    "ru": "ведь"
+   }
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "paremat": {
+   "base": "parem",
+   "means": {
+    "en": "better",
+    "az": "daha yaxşı",
+    "ru": "лучше"
+   },
+   "deck": "around"
+  }
+ }
+}

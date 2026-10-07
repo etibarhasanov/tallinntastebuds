@@ -70,7 +70,8 @@ no longer holds.
 
 ## The file
 
-`{ decks, lessons, songs, talks }`. Three rules hold across all of it:
+`{ decks, lessons, songs, talks, talkWords }` — the last the glossary the
+conversations' words share. Three rules hold across all of it:
 
 - **One namespace.** A deck, a lesson, a song and a conversation all open at
   `/flashcard?d=<id>`, so an id is unique across the four; a lowercase slug;
@@ -150,7 +151,8 @@ in `tools/validate.mjs` and `assets/flashcard.js`, so a clipped form like
 ### A conversation
 
 `talks`: a sheet from a language course, turn by turn — who said it, the
-Estonian, and what it means. Nothing in one is a card and nothing is a press.
+Estonian, and what it means. Nothing in one is a card, and every word in one
+is a press out of `talkWords`, the glossary they share.
 It has a process of its own, because it starts from a PDF that will not
 extract and ends in two translations: **the `/conversation` skill**, which
 this file's generators, driving and pull request apply to as well.

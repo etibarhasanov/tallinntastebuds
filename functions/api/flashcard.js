@@ -457,19 +457,28 @@ function songAnswer(song, decks, known, whole) {
 }
 
 /* A conversation as the page reads it: its name and line for the shelf, and
-   — when it is the one open — whose sheet it is and the scenes, each turn as
-   the file has it. Read is a known row under TALK_DECK, read the way a
-   lesson's is. */
-function talkAnswer(talk, known, whole) {
-  return {
+   — when it is the one open — whose sheet it is, the scenes, each turn as
+   the file has it, and what every word in them means, with the deck a word
+   is taught in named rather than only pointed at, for the reason a song's
+   is. tools/decks.mjs wrote the words into the conversation's file out of
+   the glossary they share. Read is a known row under TALK_DECK, read the
+   way a lesson's is. */
+function talkAnswer(talk, decks, known, whole) {
+  const answer = {
     id: talk.id,
     name: talk.name,
     why: talk.why || null,
     taste: talk.taste || null,
     added: talk.added || null,
-    ...(whole ? { source: talk.source || null, scenes: talk.scenes } : {}),
     read: stateOf(known, TALK_DECK, talk.id).known
   };
+  if (!whole) return answer;
+  const words = {};
+  for (const [key, word] of Object.entries(talk.words || {})) {
+    const deck = word.deck ? shippedDeck(decks, word.deck) : null;
+    words[key] = { ...word, deck: deck ? { id: deck.id, name: deck.name } : null };
+  }
+  return { ...answer, source: talk.source || null, scenes: talk.scenes, words };
 }
 
 /* ------------------------------------------------------------- somebody's
@@ -809,7 +818,7 @@ export async function onRequestGet(context) {
     if (found && found.kind === 'deck') return json({ ...base, deck: deckAnswer(found.one, found.one.cards, false, known) }, 200);
     if (found && found.kind === 'lesson') return json({ ...base, lesson: lessonAnswer(found.one, known, true) }, 200);
     if (found && found.kind === 'song') return json({ ...base, song: songAnswer(found.one, decks, known, true) }, 200);
-    if (found && found.kind === 'talk') return json({ ...base, talk: talkAnswer(found.one, known, true) }, 200);
+    if (found && found.kind === 'talk') return json({ ...base, talk: talkAnswer(found.one, decks, known, true) }, 200);
 
     /* A deck id that is somebody else's, one that was deleted, and one that
        was never anything are the same answer. */
@@ -934,7 +943,7 @@ export async function onRequestGet(context) {
   const songs = index.songs.map((s) => songAnswer(s, decks, known, false));
 
   /* And the conversations, each with whether it has been read. */
-  const talks = index.talks.map((c) => talkAnswer(c, known, false));
+  const talks = index.talks.map((c) => talkAnswer(c, decks, known, false));
 
   return json({ ...base, decks: list, lessons: lessons, songs: songs, talks: talks }, 200);
 }

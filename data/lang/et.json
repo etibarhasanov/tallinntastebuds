@@ -707,7 +707,7 @@
   "flashTalkCount": "{n} vestlust",
   "flashGoTalks": "Loe vestlust",
   "flashTasteTalk": "Loe repliikhaaval",
-  "flashTalkHow": "Loe eesti keeles, iga repliigi tähendus on selle all. Vajuta kõlarit, et repliiki kuulda.",
+  "flashTalkHow": "Loe eesti keeles, iga repliigi tähendus on selle all. Vajuta kõlarit, et repliiki kuulda. Puuduta sõna, et näha, mida see tähendab.",
   "flashTalkFrom": "{who} B1-kursusest",
   "flashReadIt": "Lugesin",
   "statsSkip": "Hüppa edetabeli juurde",

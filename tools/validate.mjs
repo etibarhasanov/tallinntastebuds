@@ -777,12 +777,31 @@ if (decksFile !== null) {
        `ask` — the question put, the Estonian in `et` and what it means — over
        a list of `turns`, each `who` said it, the Estonian in `et` and what it
        means. A turn's `who` is a name or an Estonian role word and is never
-       translated either. Nothing in one is a card and nothing in one is a
-       press, so there is no `words` to hold the lines to. See
-       **Conversations, which are read** under **Flashcards** in README.md. */
+       translated either. Nothing in one is a card, but every word in one is
+       a press, as a song's is: `talkWords`, one glossary for every
+       conversation keyed by the word as it is written, lowercased, says what
+       each means, and a conversation's own `words` says it differently for a
+       word that means something else there. So a question or a turn with a
+       word neither knows fails, and so does a glossary entry no conversation
+       says and an own entry its conversation does not. Where a word is
+       taught on the shelf is not written here — tools/decks.mjs finds it.
+       See **Conversations, which are read** under **Flashcards** in
+       README.md. */
     if (decksFile.talks !== undefined && !Array.isArray(decksFile.talks)) {
       fail('data/decks.json', '"talks" must be an array');
     }
+    const glossary = isPlainObject(decksFile.talkWords) ? decksFile.talkWords : null;
+    if (decksFile.talks !== undefined && !glossary) fail('data/decks.json', '"talkWords" must be an object, the glossary the conversations share');
+    const talked = new Set();
+    /* One entry of either: the form a dictionary files it under, and what it
+       means here; a note where one is owed. */
+    const glossed = (word, at, key) => {
+      if (!isPlainObject(word)) { fail(at, 'must be an object'); return; }
+      if (!isNonEmptyString(word.base)) fail(at, `"${key}" has no "base"`);
+      said(word.means, at, `"${key}" means`);
+      if (word.note !== undefined) said(word.note, at, `"${key}" note`);
+      if (word.deck !== undefined) fail(at, `"${key}" names a deck — tools/decks.mjs finds where a conversation's word is taught`);
+    };
     (Array.isArray(decksFile.talks) ? decksFile.talks : []).forEach((talk, i) => {
       const where = `data/decks.json → talks[${i}]`;
       if (!isPlainObject(talk)) { fail(where, 'must be an object'); return; }
@@ -826,7 +845,37 @@ if (decksFile !== null) {
           said(means, row, 'what the turn means');
         });
       });
+      /* Every word in a question or a turn is a press, so each has to say
+         what it means. */
+      const own = talk.words === undefined ? {} : isPlainObject(talk.words) ? talk.words : null;
+      if (!own) { fail(where, `conversation "${talk.id}" has "words" that is not an object`); return; }
+      const inIt = new Set();
+      talk.scenes.forEach((scene, j) => {
+        if (!isPlainObject(scene)) return;
+        const lines = [['ask', scene.ask]].concat((Array.isArray(scene.turns) ? scene.turns : []).map((turn, k) => [`turns[${k}]`, turn]));
+        for (const [name, line] of lines) {
+          if (!isPlainObject(line) || typeof line.et !== 'string') continue;
+          for (const word of line.et.match(WORD) || []) {
+            const key = word.toLowerCase();
+            inIt.add(key);
+            talked.add(key);
+            if (!isPlainObject(own[key]) && !(glossary && isPlainObject(glossary[key]))) {
+              fail(`${where} → scenes[${j}] → ${name}`, `"${word}" is said and neither "talkWords" nor the conversation's "words" says what it means`);
+            }
+          }
+        }
+      });
+      for (const [key, word] of Object.entries(own)) {
+        const at = `${where} → words.${key}`;
+        if (!inIt.has(key)) fail(at, `"${key}" is in the conversation's "words" and nobody in it says it`);
+        glossed(word, at, key);
+      }
     });
+    for (const [key, word] of Object.entries(glossary || {})) {
+      const at = `data/decks.json → talkWords.${key}`;
+      if (!talked.has(key)) fail(at, `"${key}" is in "talkWords" and no conversation says it`);
+      glossed(word, at, key);
+    }
   }
 }
 /* ---------------------------------------------------------- end FLASHCARDS */

@@ -3801,6 +3801,86 @@
    },
    "taste": "Ja siin on teie söögid. Head isu!",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-family",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Your family",
+    "az": "Sənin ailən",
+    "ru": "Твоя семья"
+   },
+   "why": {
+    "en": "Krista, Kiur, Mihkel and Ingrid on who is at home — a husband, children, grandparents",
+    "az": "Krista, Kiur, Mihkel və Ingrid evdə kimin olduğundan danışır — ər, uşaqlar, nənə-babalar",
+    "ru": "Krista, Kiur, Mihkel и Ingrid о том, кто у них дома, — муж, дети, бабушки и дедушки"
+   },
+   "taste": "Mul on väga tore pere.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-relatives",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Your extended family",
+    "az": "Sənin qohum-əqraban",
+    "ru": "Твоя родня"
+   },
+   "why": {
+    "en": "Krista's family of twins, and Ingrid's great-grandchildren, twins and triplets at once",
+    "az": "Kristanın əkizlər nəsli və Ingridin nəticələri — həm əkizlər, həm üçəmlər",
+    "ru": "Семья близнецов у Krista и правнуки Ingrid — сразу двойня и тройня"
+   },
+   "taste": "Lapselapsi on mul ka.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-youngest-oldest",
+   "added": "2026-10-07",
+   "name": {
+    "en": "The youngest and the oldest relative",
+    "az": "Ən kiçik və ən yaşlı qohum",
+    "ru": "Самый младший и самый старший родственник"
+   },
+   "why": {
+    "en": "A cousin's son of six months, a great-grandmother of 85, and a family where nobody dies",
+    "az": "Altı aylıq xalaoğlunun oğlu, 85 yaşlı ulu nənə və heç kimin ölmədiyi bir nəsil",
+    "ru": "Сын двоюродного брата полугода от роду, прабабушка восьмидесяти пяти лет и родня, где никто не умирает"
+   },
+   "taste": "Minu kõige noorem sugulane",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-home",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Where you live, and where you grew up",
+    "az": "Harada yaşayırsan, harada böyümüsən",
+    "ru": "Где ты живёшь и где ты вырос"
+   },
+   "why": {
+    "en": "A top-floor flat in Maarjamäe, and a grandmother's farm with one horse, called Liisi",
+    "az": "Maarjamäedə ən üst mərtəbədə mənzil və nənənin Liisi adlı tək atı olan təsərrüfatı",
+    "ru": "Квартира на последнем этаже в Маарьямяэ и бабушкин хутор с одной лошадью по кличке Liisi"
+   },
+   "taste": "Ma elan kolmandal korrusel.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-moving",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Moving house",
+    "az": "Köçmək",
+    "ru": "Переезды"
+   },
+   "why": {
+    "en": "Seven or eight moves, and a student's dozen from Kohtla-Järve to Tartu and back",
+    "az": "Yeddi-səkkiz köç və bir tələbənin Kohtla-Järvedən Tartuya və geri on iki köçü",
+    "ru": "Семь или восемь переездов и студенческая дюжина из Кохтла-Ярве в Тарту и обратно"
+   },
+   "taste": "Üks, kaks, kolm, neli, viis, kuus",
+   "source": "Keeletee"
   }
  ]
 }

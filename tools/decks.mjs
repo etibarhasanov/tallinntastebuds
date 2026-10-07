@@ -25,7 +25,12 @@
  *                            four keys the source has, in the source's order.
  *
  *   data/decks/<id>.json     one deck, lesson, song or conversation, whole,
- *                            exactly as it is in the source. The four share
+ *                            exactly as it is in the source — except that a
+ *                            conversation carries what each of its words
+ *                            means, out of the glossary every conversation
+ *                            shares, `talkWords`, and where on the shelf the
+ *                            word is taught, which the source never says:
+ *                            talkFile() below. The four share
  *                            one folder because they share one address —
  *                            ?d=<id> — and tools/validate.mjs keeps their ids
  *                            apart.
@@ -132,6 +137,57 @@ function spoken(file) {
   return [...set].sort();
 }
 
+/* What a word is, for splitting a turn into words: WORD in
+   assets/flashcard.js and tools/validate.mjs, a third time, since none of
+   the three can import another. */
+const WORD = /[A-Za-z\u00C0-\u024F]+/g;
+
+/* A card's front as a word the glossary can name: lowercased, with the
+   punctuation a front is written with — `Kas?`, `Tere!` — taken off. */
+function bare(front) {
+  return String(front || '').toLowerCase().replace(/^[^a-z\u00C0-\u024F]+|[^a-z\u00C0-\u024F]+$/g, '');
+}
+
+/* Where on the shelf each word is taught, by its base form: the first deck
+   in the file with a card of that front, a deck of the shelf's own before a
+   song's. A conversation's word names no deck in the source — there are nine
+   hundred of them, and the shelf moves under them — so this finds it on
+   every run, the way the song's tap box is told it by hand. */
+function taught(file) {
+  const where = new Map();
+  const decks = (file.decks || []).filter((deck) => deck && Array.isArray(deck.cards));
+  for (const deck of decks.filter((d) => d.level !== 'song').concat(decks.filter((d) => d.level === 'song'))) {
+    for (const card of deck.cards) {
+      const key = bare(card && card.front);
+      if (key && !where.has(key)) where.set(key, deck.id);
+    }
+  }
+  return where;
+}
+
+/* A conversation as its own file carries it: the source's, with `words`
+   being what every word it uses means — out of the shared glossary,
+   `talkWords`, unless the conversation says something else about a word in
+   its own `words` — and the deck the word's base is taught in, where one
+   is. */
+function talkFile(talk, file, where) {
+  const glossary = file.talkWords && typeof file.talkWords === 'object' ? file.talkWords : {};
+  const own = talk.words && typeof talk.words === 'object' ? talk.words : {};
+  const words = {};
+  for (const scene of talk.scenes || []) {
+    for (const line of [scene && scene.ask].concat((scene && scene.turns) || [])) {
+      for (const found of String((line && line.et) || '').match(WORD) || []) {
+        const key = found.toLowerCase();
+        const word = own[key] || glossary[key];
+        if (!word || words[key]) continue;
+        const deck = where.get(bare(word.base));
+        words[key] = deck ? { ...word, deck } : { ...word };
+      }
+    }
+  }
+  return { ...talk, words };
+}
+
 /* A deck, lesson, song or conversation as the index carries it: the
    source's row without the one part of it the shelf never draws — a deck's
    cards become their ids, a lesson loses its body, a song its verses and its
@@ -144,7 +200,10 @@ function onShelf(one, kind) {
     delete row.verses;
     delete row.words;
   }
-  if (kind === 'talks') delete row.scenes;
+  if (kind === 'talks') {
+    delete row.scenes;
+    delete row.words;
+  }
   return row;
 }
 
@@ -153,13 +212,14 @@ export function build() {
   const file = JSON.parse(readFileSync(SOURCE, 'utf8'));
   const out = {};
   const index = {};
+  const where = taught(file);
   for (const kind of ['decks', 'lessons', 'songs', 'talks']) {
     const list = Array.isArray(file[kind]) ? file[kind].filter((one) => one && typeof one === 'object') : [];
     index[kind] = list.map((one) => onShelf(one, kind));
     for (const one of list) {
       const id = String(one.id || '');
       if (!WRITTEN.test(id) || RESERVED_FILES.includes(id)) continue;
-      out[join(DIR, id + '.json')] = serialise(one);
+      out[join(DIR, id + '.json')] = serialise(kind === 'talks' ? talkFile(one, file, where) : one);
     }
   }
   out[join(DIR, 'index.json')] = serialise(index);
