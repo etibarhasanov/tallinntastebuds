@@ -38,8 +38,8 @@
  *   data/decks/spoken.json   every string the voice may say, sorted: the front
  *                            of every card and the Estonian of its sentence,
  *                            every sentence and every form in a grammar
- *                            lesson, every line of a song and every turn of a
- *                            conversation. What /api/say
+ *                            lesson, every line of a song and every sentence
+ *                            of a conversation. What /api/say
  *                            holds a request to, so that it never needs the
  *                            cards to answer whether a text is on one.
  *
@@ -127,17 +127,20 @@ function spoken(file) {
       }
     }
   }
-  /* A turn of a conversation, whole: the speaker beside it says what
-     somebody said, a sentence or three rather than a word. */
+  /* A sentence of a conversation: a turn is written out sentence by
+     sentence, the way a song is line by line, and the speaker beside each
+     says that one sentence. */
   for (const talk of file.talks || []) {
     for (const scene of talk.scenes || []) {
-      for (const turn of (scene && scene.turns) || []) if (turn && turn.et) set.add(turn.et);
+      for (const turn of (scene && scene.turns) || []) {
+        for (const line of (turn && turn.lines) || []) if (line && line.et) set.add(line.et);
+      }
     }
   }
   return [...set].sort();
 }
 
-/* What a word is, for splitting a turn into words: WORD in
+/* What a word is, for splitting a sentence into words: WORD in
    assets/flashcard.js and tools/validate.mjs, a third time, since none of
    the three can import another. */
 const WORD = /[A-Za-z\u00C0-\u024F]+/g;
@@ -175,7 +178,8 @@ function talkFile(talk, file, where) {
   const own = talk.words && typeof talk.words === 'object' ? talk.words : {};
   const words = {};
   for (const scene of talk.scenes || []) {
-    for (const line of [scene && scene.ask].concat((scene && scene.turns) || [])) {
+    const turns = (scene && scene.turns) || [];
+    for (const line of [scene && scene.ask].concat(...turns.map((turn) => (turn && turn.lines) || []))) {
       for (const found of String((line && line.et) || '').match(WORD) || []) {
         const key = found.toLowerCase();
         const word = own[key] || glossary[key];

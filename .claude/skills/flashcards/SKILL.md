@@ -150,9 +150,10 @@ in `tools/validate.mjs` and `assets/flashcard.js`, so a clipped form like
 
 ### A conversation
 
-`talks`: a sheet from a language course, turn by turn — who said it, the
-Estonian, and what it means. Nothing in one is a card, and every word in one
-is a press out of `talkWords`, the glossary they share.
+`talks`: a sheet from a language course, turn by turn and sentence by
+sentence — who said it, the Estonian, and what it means. Nothing in one is a
+card, and every word in one is a press out of `talkWords`, the glossary they
+share.
 It has a process of its own, because it starts from a PDF that will not
 extract and ends in two translations: **the `/conversation` skill**, which
 this file's generators, driving and pull request apply to as well.

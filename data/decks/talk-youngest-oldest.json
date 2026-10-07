@@ -24,45 +24,183 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Minu kõige noorem sugulane on minu tädipoja poeg Ludvig. Tema on kuuekuune. Ja minu kõige vanem sugulane on minu mehe vanaema, minu laste vanavanaema. Tema on 85-aastane.",
-     "en": "My youngest relative is my cousin's son, Ludvig. He is six months old. And my oldest relative is my husband's grandmother, my children's great-grandmother. She is 85.",
-     "az": "Mənim ən kiçik qohumum xalaoğlunun oğlu Ludvigdir. Onun altı aylığı var. Ən yaşlı qohumum isə ərimin nənəsi, uşaqlarımın ulu nənəsidir. Onun 85 yaşı var.",
-     "ru": "Мой самый младший родственник — сын моего двоюродного брата, Ludvig. Ему шесть месяцев. А мой самый старший родственник — бабушка моего мужа, прабабушка моих детей. Ей 85 лет."
+     "lines": [
+      {
+       "et": "Minu kõige noorem sugulane on minu tädipoja poeg Ludvig.",
+       "en": "My youngest relative is my cousin's son, Ludvig.",
+       "az": "Mənim ən kiçik qohumum xalaoğlunun oğlu Ludvigdir.",
+       "ru": "Мой самый младший родственник — сын моего двоюродного брата, Ludvig."
+      },
+      {
+       "et": "Tema on kuuekuune.",
+       "en": "He is six months old.",
+       "az": "Onun altı aylığı var.",
+       "ru": "Ему шесть месяцев."
+      },
+      {
+       "et": "Ja minu kõige vanem sugulane on minu mehe vanaema, minu laste vanavanaema.",
+       "en": "And my oldest relative is my husband's grandmother, my children's great-grandmother.",
+       "az": "Ən yaşlı qohumum isə ərimin nənəsi, uşaqlarımın ulu nənəsidir.",
+       "ru": "А мой самый старший родственник — бабушка моего мужа, прабабушка моих детей."
+      },
+      {
+       "et": "Tema on 85-aastane.",
+       "en": "She is 85.",
+       "az": "Onun 85 yaşı var.",
+       "ru": "Ей 85 лет."
+      }
+     ]
     },
     {
      "who": "Krista",
-     "et": "Oma kõige väiksemat sugulast nägin ma eelmisel nädalal, kui ma neil külas käisin. Ja oma mehe vanaema nägin ma jõulude ajal. Me käisime tal külas ja me käisime kõik koos Rakveres seda uhket jõulupuud vaatamas.",
-     "en": "My youngest relative I saw last week, when I visited them. And my husband's grandmother I saw at Christmas. We visited her, and we all went together to Rakvere to see that grand Christmas tree.",
-     "az": "Ən kiçik qohumumu keçən həftə onlara qonaq gedəndə gördüm. Ərimin nənəsini isə Milad bayramında gördüm. Ona qonaq getdik və hamımız birlikdə Rakverəyə o möhtəşəm Milad ağacına baxmağa getdik.",
-     "ru": "Своего самого маленького родственника я видела на прошлой неделе, когда была у них в гостях. А бабушку мужа я видела на Рождество. Мы были у неё в гостях и все вместе ездили в Раквере посмотреть на ту роскошную ёлку."
+     "lines": [
+      {
+       "et": "Oma kõige väiksemat sugulast nägin ma eelmisel nädalal, kui ma neil külas käisin.",
+       "en": "My youngest relative I saw last week, when I visited them.",
+       "az": "Ən kiçik qohumumu keçən həftə onlara qonaq gedəndə gördüm.",
+       "ru": "Своего самого маленького родственника я видела на прошлой неделе, когда была у них в гостях."
+      },
+      {
+       "et": "Ja oma mehe vanaema nägin ma jõulude ajal.",
+       "en": "And my husband's grandmother I saw at Christmas.",
+       "az": "Ərimin nənəsini isə Milad bayramında gördüm.",
+       "ru": "А бабушку мужа я видела на Рождество."
+      },
+      {
+       "et": "Me käisime tal külas ja me käisime kõik koos Rakveres seda uhket jõulupuud vaatamas.",
+       "en": "We visited her, and we all went together to Rakvere to see that grand Christmas tree.",
+       "az": "Ona qonaq getdik və hamımız birlikdə Rakverəyə o möhtəşəm Milad ağacına baxmağa getdik.",
+       "ru": "Мы были у неё в гостях и все вместе ездили в Раквере посмотреть на ту роскошную ёлку."
+      }
+     ]
     },
     {
      "who": "Kiur",
-     "et": "Väga palju väikseid lapsi meie suguvõsas ei ole. Olengi vist ainult mina ja üks teine, kaheteistkuune, jah, ta on juba üheaastane. Ja rohkem ei ole. Aga vanu inimesi on meil suguvõsas küll palju, kuna keegi ära ei sure.",
-     "en": "There aren't many small children in our family. I think it's just me and one other, twelve months old — yes, he's one already. And there are no more. But there are plenty of old people in our family, since nobody ever dies.",
-     "az": "Bizim nəsildə o qədər də çox balaca uşaq yoxdur. Deyəsən, yalnız mən və bir başqası var, on iki aylıq, hə, onun artıq bir yaşı var. Daha yoxdur. Amma bizim nəsildə yaşlı adamlar çoxdur, çünki heç kim ölmür.",
-     "ru": "Очень много маленьких детей в нашей родне нет. Наверное, только я и ещё один, двенадцати месяцев, да, ему уже год. И больше нет. Зато стариков у нас в родне много, потому что никто не умирает."
+     "lines": [
+      {
+       "et": "Väga palju väikseid lapsi meie suguvõsas ei ole.",
+       "en": "There aren't many small children in our family.",
+       "az": "Bizim nəsildə o qədər də çox balaca uşaq yoxdur.",
+       "ru": "Очень много маленьких детей в нашей родне нет."
+      },
+      {
+       "et": "Olengi vist ainult mina ja üks teine, kaheteistkuune, jah, ta on juba üheaastane.",
+       "en": "I think it's just me and one other, twelve months old — yes, he's one already.",
+       "az": "Deyəsən, yalnız mən və bir başqası var, on iki aylıq, hə, onun artıq bir yaşı var.",
+       "ru": "Наверное, только я и ещё один, двенадцати месяцев, да, ему уже год."
+      },
+      {
+       "et": "Ja rohkem ei ole.",
+       "en": "And there are no more.",
+       "az": "Daha yoxdur.",
+       "ru": "И больше нет."
+      },
+      {
+       "et": "Aga vanu inimesi on meil suguvõsas küll palju, kuna keegi ära ei sure.",
+       "en": "But there are plenty of old people in our family, since nobody ever dies.",
+       "az": "Amma bizim nəsildə yaşlı adamlar çoxdur, çünki heç kim ölmür.",
+       "ru": "Зато стариков у нас в родне много, потому что никто не умирает."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Minu kõige vanem sugulane oli üle üheksakümne, aga ma arvan, et ta enam ei ela. Kõlab halvasti, aga ma ei ole päris kursis. Kõige noorem meie suguvõsas on minu onu äsjasündinud tütar. Ta sündis minu teada eelmisel kuul või umbes poolteist kuud tagasi.",
-     "en": "My oldest relative was over ninety, but I don't think he is alive anymore. It sounds bad, but I'm not really up to date. The youngest in our family is my uncle's newborn daughter. As far as I know she was born last month, or about a month and a half ago.",
-     "az": "Mənim ən yaşlı qohumum doxsandan yuxarı idi, amma məncə, o artıq sağ deyil. Pis səslənir, amma mən tam xəbərdar deyiləm. Bizim nəsildə ən kiçiyi əmimin təzə doğulmuş qızıdır. Bildiyimə görə, o keçən ay, ya da təxminən bir ay yarım əvvəl doğulub.",
-     "ru": "Моему самому старшему родственнику было за девяносто, но я думаю, что его уже нет в живых. Звучит плохо, но я не совсем в курсе. Самая младшая в нашей родне — новорождённая дочь моего дяди. Насколько я знаю, она родилась в прошлом месяце или примерно полтора месяца назад."
+     "lines": [
+      {
+       "et": "Minu kõige vanem sugulane oli üle üheksakümne, aga ma arvan, et ta enam ei ela.",
+       "en": "My oldest relative was over ninety, but I don't think he is alive anymore.",
+       "az": "Mənim ən yaşlı qohumum doxsandan yuxarı idi, amma məncə, o artıq sağ deyil.",
+       "ru": "Моему самому старшему родственнику было за девяносто, но я думаю, что его уже нет в живых."
+      },
+      {
+       "et": "Kõlab halvasti, aga ma ei ole päris kursis.",
+       "en": "It sounds bad, but I'm not really up to date.",
+       "az": "Pis səslənir, amma mən tam xəbərdar deyiləm.",
+       "ru": "Звучит плохо, но я не совсем в курсе."
+      },
+      {
+       "et": "Kõige noorem meie suguvõsas on minu onu äsjasündinud tütar.",
+       "en": "The youngest in our family is my uncle's newborn daughter.",
+       "az": "Bizim nəsildə ən kiçiyi əmimin təzə doğulmuş qızıdır.",
+       "ru": "Самая младшая в нашей родне — новорождённая дочь моего дяди."
+      },
+      {
+       "et": "Ta sündis minu teada eelmisel kuul või umbes poolteist kuud tagasi.",
+       "en": "As far as I know she was born last month, or about a month and a half ago.",
+       "az": "Bildiyimə görə, o keçən ay, ya da təxminən bir ay yarım əvvəl doğulub.",
+       "ru": "Насколько я знаю, она родилась в прошлом месяце или примерно полтора месяца назад."
+      }
+     ]
     },
     {
      "who": "Ingrid",
-     "et": "Kõige noorem sugulane on mul tütretütre väike pojake Johannes. Tema on pooleteiseaastane, jah, tema on kõige noorem.",
-     "en": "My youngest relative is my granddaughter's little son, Johannes. He is a year and a half old — yes, he is the youngest.",
-     "az": "Mənim ən kiçik qohumum qızımın qızının balaca oğlu Johannesdir. Onun bir yaş yarımı var, hə, ən kiçik odur.",
-     "ru": "Самый младший мой родственник — маленький сынок моей внучки, Johannes. Ему полтора года, да, он самый младший."
+     "lines": [
+      {
+       "et": "Kõige noorem sugulane on mul tütretütre väike pojake Johannes.",
+       "en": "My youngest relative is my granddaughter's little son, Johannes.",
+       "az": "Mənim ən kiçik qohumum qızımın qızının balaca oğlu Johannesdir.",
+       "ru": "Самый младший мой родственник — маленький сынок моей внучки, Johannes."
+      },
+      {
+       "et": "Tema on pooleteiseaastane, jah, tema on kõige noorem.",
+       "en": "He is a year and a half old — yes, he is the youngest.",
+       "az": "Onun bir yaş yarımı var, hə, ən kiçik odur.",
+       "ru": "Ему полтора года, да, он самый младший."
+      }
+     ]
     },
     {
      "who": "Ingrid",
-     "et": "Kõige vanem on mul tütretütar Kati, kes on nüüd 39. Kõik mu lapselapsed on hakkajad ja tublid ja vahvad lapsed. Ausalt! Küll see on ikka tore! Teate, kui suur rõõm on, kui sünnib terve laps, eks ole? Midagi paremat ei ole! Ausalt! Ja kõik on väga tublid.",
-     "en": "The oldest is my granddaughter Kati, who is 39 now. All my grandchildren are go-getting, capable, lovely kids. Honestly! It really is wonderful! You know what a joy it is when a healthy child is born, don't you? There's nothing better! Honestly! And they are all doing very well.",
-     "az": "Ən böyüyü qızımın qızı Katidir, onun indi 39 yaşı var. Bütün nəvələrim təşəbbüskar, bacarıqlı və qəşəng uşaqlardır. Düzünü deyirəm! Bu, doğrudan da gözəldir! Bilirsiniz də, sağlam uşaq doğulanda nə böyük sevincdir, elə deyilmi? Bundan yaxşı şey yoxdur! Düzünü deyirəm! Hamısı da çox bacarıqlıdır.",
-     "ru": "Самая старшая — моя внучка Kati, ей сейчас 39. Все мои внуки — бойкие, молодцы и замечательные дети. Честно! Как же это всё-таки здорово! Знаете, какая это большая радость, когда рождается здоровый ребёнок, правда? Ничего лучше нет! Честно! И все они большие молодцы."
+     "lines": [
+      {
+       "et": "Kõige vanem on mul tütretütar Kati, kes on nüüd 39.",
+       "en": "The oldest is my granddaughter Kati, who is 39 now.",
+       "az": "Ən böyüyü qızımın qızı Katidir, onun indi 39 yaşı var.",
+       "ru": "Самая старшая — моя внучка Kati, ей сейчас 39."
+      },
+      {
+       "et": "Kõik mu lapselapsed on hakkajad ja tublid ja vahvad lapsed.",
+       "en": "All my grandchildren are go-getting, capable, lovely kids.",
+       "az": "Bütün nəvələrim təşəbbüskar, bacarıqlı və qəşəng uşaqlardır.",
+       "ru": "Все мои внуки — бойкие, молодцы и замечательные дети."
+      },
+      {
+       "et": "Ausalt!",
+       "en": "Honestly!",
+       "az": "Düzünü deyirəm!",
+       "ru": "Честно!"
+      },
+      {
+       "et": "Küll see on ikka tore!",
+       "en": "It really is wonderful!",
+       "az": "Bu, doğrudan da gözəldir!",
+       "ru": "Как же это всё-таки здорово!"
+      },
+      {
+       "et": "Teate, kui suur rõõm on, kui sünnib terve laps, eks ole?",
+       "en": "You know what a joy it is when a healthy child is born, don't you?",
+       "az": "Bilirsiniz də, sağlam uşaq doğulanda nə böyük sevincdir, elə deyilmi?",
+       "ru": "Знаете, какая это большая радость, когда рождается здоровый ребёнок, правда?"
+      },
+      {
+       "et": "Midagi paremat ei ole!",
+       "en": "There's nothing better!",
+       "az": "Bundan yaxşı şey yoxdur!",
+       "ru": "Ничего лучше нет!"
+      },
+      {
+       "et": "Ausalt!",
+       "en": "Honestly!",
+       "az": "Düzünü deyirəm!",
+       "ru": "Честно!"
+      },
+      {
+       "et": "Ja kõik on väga tublid.",
+       "en": "And they are all doing very well.",
+       "az": "Hamısı da çox bacarıqlıdır.",
+       "ru": "И все они большие молодцы."
+      }
+     ]
     }
    ]
   }

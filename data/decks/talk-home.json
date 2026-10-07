@@ -24,24 +24,96 @@
    "turns": [
     {
      "who": "Aleksandr",
-     "et": "Praegu ma elan Tallinnas Maarjamäel. Ma kolisin Tallinna juba kümme aastat tagasi. Maja ei ole suur. Majas on kolm korrust. Ja meil, ma arvan, on üsna suur korter. Kokku on 75 ruutmeetrit elamispinda ja lisaks on suur rõdu, umbes 10 ruutmeetrit.",
-     "en": "At the moment I live in Tallinn, in Maarjamäe. I moved to Tallinn ten years ago already. The building isn't big. It has three floors. And we have, I think, quite a big flat. Altogether there are 75 square metres of living space, and on top of that a big balcony, about 10 square metres.",
-     "az": "İndi Tallinndə, Maarjamäedə yaşayıram. Tallinnə artıq on il əvvəl köçmüşəm. Bina böyük deyil. Binada üç mərtəbə var. Məncə, bizim kifayət qədər böyük mənzilimiz var. Cəmi 75 kvadratmetr yaşayış sahəsi var, üstəlik təxminən 10 kvadratmetrlik böyük eyvan da var.",
-     "ru": "Сейчас я живу в Таллинне, в Маарьямяэ. Я переехал в Таллинн уже десять лет назад. Дом небольшой. В доме три этажа. И у нас, я думаю, довольно большая квартира. Всего 75 квадратных метров жилой площади, и ещё большой балкон, примерно 10 квадратных метров."
+     "lines": [
+      {
+       "et": "Praegu ma elan Tallinnas Maarjamäel.",
+       "en": "At the moment I live in Tallinn, in Maarjamäe.",
+       "az": "İndi Tallinndə, Maarjamäedə yaşayıram.",
+       "ru": "Сейчас я живу в Таллинне, в Маарьямяэ."
+      },
+      {
+       "et": "Ma kolisin Tallinna juba kümme aastat tagasi.",
+       "en": "I moved to Tallinn ten years ago already.",
+       "az": "Tallinnə artıq on il əvvəl köçmüşəm.",
+       "ru": "Я переехал в Таллинн уже десять лет назад."
+      },
+      {
+       "et": "Maja ei ole suur.",
+       "en": "The building isn't big.",
+       "az": "Bina böyük deyil.",
+       "ru": "Дом небольшой."
+      },
+      {
+       "et": "Majas on kolm korrust.",
+       "en": "It has three floors.",
+       "az": "Binada üç mərtəbə var.",
+       "ru": "В доме три этажа."
+      },
+      {
+       "et": "Ja meil, ma arvan, on üsna suur korter.",
+       "en": "And we have, I think, quite a big flat.",
+       "az": "Məncə, bizim kifayət qədər böyük mənzilimiz var.",
+       "ru": "И у нас, я думаю, довольно большая квартира."
+      },
+      {
+       "et": "Kokku on 75 ruutmeetrit elamispinda ja lisaks on suur rõdu, umbes 10 ruutmeetrit.",
+       "en": "Altogether there are 75 square metres of living space, and on top of that a big balcony, about 10 square metres.",
+       "az": "Cəmi 75 kvadratmetr yaşayış sahəsi var, üstəlik təxminən 10 kvadratmetrlik böyük eyvan da var.",
+       "ru": "Всего 75 квадратных метров жилой площади, и ещё большой балкон, примерно 10 квадратных метров."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Ma elan kolmandal korrusel. See ongi viimane korrus, rohkem korruseid ei ole. Maja number on 12 ja korteri number on seitse. Ei, vastupidi: majanumber on seitse ja korterinumber on 12.",
-     "en": "I live on the third floor. That's the top floor; there are no more floors. The building's number is 12 and the flat's number is seven. No, the other way round: the building's number is seven and the flat's is 12.",
-     "az": "Üçüncü mərtəbədə yaşayıram. Bu, elə sonuncu mərtəbədir, başqa mərtəbə yoxdur. Binanın nömrəsi 12-dir, mənzilin nömrəsi isə yeddi. Yox, əksinə: binanın nömrəsi yeddidir, mənzilin nömrəsi isə 12.",
-     "ru": "Я живу на третьем этаже. Это как раз последний этаж, больше этажей нет. Номер дома 12, а номер квартиры семь. Нет, наоборот: номер дома семь, а номер квартиры 12."
+     "lines": [
+      {
+       "et": "Ma elan kolmandal korrusel.",
+       "en": "I live on the third floor.",
+       "az": "Üçüncü mərtəbədə yaşayıram.",
+       "ru": "Я живу на третьем этаже."
+      },
+      {
+       "et": "See ongi viimane korrus, rohkem korruseid ei ole.",
+       "en": "That's the top floor; there are no more floors.",
+       "az": "Bu, elə sonuncu mərtəbədir, başqa mərtəbə yoxdur.",
+       "ru": "Это как раз последний этаж, больше этажей нет."
+      },
+      {
+       "et": "Maja number on 12 ja korteri number on seitse.",
+       "en": "The building's number is 12 and the flat's number is seven.",
+       "az": "Binanın nömrəsi 12-dir, mənzilin nömrəsi isə yeddi.",
+       "ru": "Номер дома 12, а номер квартиры семь."
+      },
+      {
+       "et": "Ei, vastupidi: majanumber on seitse ja korterinumber on 12.",
+       "en": "No, the other way round: the building's number is seven and the flat's is 12.",
+       "az": "Yox, əksinə: binanın nömrəsi yeddidir, mənzilin nömrəsi isə 12.",
+       "ru": "Нет, наоборот: номер дома семь, а номер квартиры 12."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Ma arvan, et seda peetakse uueks majaks. See ehitati aastal 2004. See on küllaltki uus hoone.",
-     "en": "I think it counts as a new building. It was built in 2004. It's quite a new building.",
-     "az": "Məncə, bu, yeni bina sayılır. O, 2004-cü ildə tikilib. Kifayət qədər yeni binadır.",
-     "ru": "Я думаю, он считается новым домом. Его построили в 2004 году. Это довольно новое здание."
+     "lines": [
+      {
+       "et": "Ma arvan, et seda peetakse uueks majaks.",
+       "en": "I think it counts as a new building.",
+       "az": "Məncə, bu, yeni bina sayılır.",
+       "ru": "Я думаю, он считается новым домом."
+      },
+      {
+       "et": "See ehitati aastal 2004.",
+       "en": "It was built in 2004.",
+       "az": "O, 2004-cü ildə tikilib.",
+       "ru": "Его построили в 2004 году."
+      },
+      {
+       "et": "See on küllaltki uus hoone.",
+       "en": "It's quite a new building.",
+       "az": "Kifayət qədər yeni binadır.",
+       "ru": "Это довольно новое здание."
+      }
+     ]
     }
    ]
   },
@@ -55,17 +127,73 @@
    "turns": [
     {
      "who": "Ingrid",
-     "et": "Minu lapsepõlvekodu oli lihtne maja. Vanaemal oli väga palju loomi. Vanaemal oli kuus lehma, tal olid lehmad ja vasikad. Aga vanaemal oli ainult üks hobune, kelle nimi oli Liisi. Ja siis olid veel lambad ja sead, mitu siga oli. Ja siis olid loomulikult ka kanad.",
-     "en": "My childhood home was a simple house. My grandmother had a great many animals. She had six cows; she had cows and calves. But she had only one horse, whose name was Liisi. And then there were sheep and pigs too, several pigs. And then of course there were chickens as well.",
-     "az": "Uşaqlıq evim sadə bir ev idi. Nənəmin çoxlu heyvanı var idi. Nənəmin altı inəyi var idi, inəkləri də, buzovları da var idi. Amma nənəmin cəmi bir atı var idi, adı Liisi idi. Bir də qoyunlar və donuzlar var idi, bir neçə donuz. Əlbəttə, toyuqlar da var idi.",
-     "ru": "Дом моего детства был простым домом. У бабушки было очень много животных. У бабушки было шесть коров, у неё были коровы и телята. Но лошадь у бабушки была только одна, по кличке Liisi. А ещё были овцы и свиньи, свиней было несколько. И, конечно, были и куры."
+     "lines": [
+      {
+       "et": "Minu lapsepõlvekodu oli lihtne maja.",
+       "en": "My childhood home was a simple house.",
+       "az": "Uşaqlıq evim sadə bir ev idi.",
+       "ru": "Дом моего детства был простым домом."
+      },
+      {
+       "et": "Vanaemal oli väga palju loomi.",
+       "en": "My grandmother had a great many animals.",
+       "az": "Nənəmin çoxlu heyvanı var idi.",
+       "ru": "У бабушки было очень много животных."
+      },
+      {
+       "et": "Vanaemal oli kuus lehma, tal olid lehmad ja vasikad.",
+       "en": "She had six cows; she had cows and calves.",
+       "az": "Nənəmin altı inəyi var idi, inəkləri də, buzovları da var idi.",
+       "ru": "У бабушки было шесть коров, у неё были коровы и телята."
+      },
+      {
+       "et": "Aga vanaemal oli ainult üks hobune, kelle nimi oli Liisi.",
+       "en": "But she had only one horse, whose name was Liisi.",
+       "az": "Amma nənəmin cəmi bir atı var idi, adı Liisi idi.",
+       "ru": "Но лошадь у бабушки была только одна, по кличке Liisi."
+      },
+      {
+       "et": "Ja siis olid veel lambad ja sead, mitu siga oli.",
+       "en": "And then there were sheep and pigs too, several pigs.",
+       "az": "Bir də qoyunlar və donuzlar var idi, bir neçə donuz.",
+       "ru": "А ещё были овцы и свиньи, свиней было несколько."
+      },
+      {
+       "et": "Ja siis olid loomulikult ka kanad.",
+       "en": "And then of course there were chickens as well.",
+       "az": "Əlbəttə, toyuqlar da var idi.",
+       "ru": "И, конечно, были и куры."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Minu lapsepõlvekodu oli tavaline, kaheksakümnendate aastate alguses ehitatud maja. Me elasime kolmandal korrusel, ema, isa ja meie, kolm last, kõik poisid. Meil oli kolm tuba. Midagi erilist ei olnud.",
-     "en": "My childhood home was an ordinary building, built in the early eighties. We lived on the third floor: mum, dad and us, three children, all boys. We had three rooms. There was nothing special about it.",
-     "az": "Uşaqlıq evim səksəninci illərin əvvəlində tikilmiş adi bir bina idi. Biz üçüncü mərtəbədə yaşayırdıq: anam, atam və biz, üç uşaq, hamımız oğlan. Üç otağımız var idi. Xüsusi bir şey yox idi.",
-     "ru": "Дом моего детства был обычным домом, построенным в начале восьмидесятых. Мы жили на третьем этаже: мама, папа и мы, трое детей, все мальчики. У нас было три комнаты. Ничего особенного."
+     "lines": [
+      {
+       "et": "Minu lapsepõlvekodu oli tavaline, kaheksakümnendate aastate alguses ehitatud maja.",
+       "en": "My childhood home was an ordinary building, built in the early eighties.",
+       "az": "Uşaqlıq evim səksəninci illərin əvvəlində tikilmiş adi bir bina idi.",
+       "ru": "Дом моего детства был обычным домом, построенным в начале восьмидесятых."
+      },
+      {
+       "et": "Me elasime kolmandal korrusel, ema, isa ja meie, kolm last, kõik poisid.",
+       "en": "We lived on the third floor: mum, dad and us, three children, all boys.",
+       "az": "Biz üçüncü mərtəbədə yaşayırdıq: anam, atam və biz, üç uşaq, hamımız oğlan.",
+       "ru": "Мы жили на третьем этаже: мама, папа и мы, трое детей, все мальчики."
+      },
+      {
+       "et": "Meil oli kolm tuba.",
+       "en": "We had three rooms.",
+       "az": "Üç otağımız var idi.",
+       "ru": "У нас было три комнаты."
+      },
+      {
+       "et": "Midagi erilist ei olnud.",
+       "en": "There was nothing special about it.",
+       "az": "Xüsusi bir şey yox idi.",
+       "ru": "Ничего особенного."
+      }
+     ]
     }
    ]
   }

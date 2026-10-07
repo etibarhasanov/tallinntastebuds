@@ -18,164 +18,346 @@
    "turns": [
     {
      "who": "Ettekandja",
-     "et": "Ja siin on teie söögid. Head isu!",
-     "en": "And here is your food. Enjoy your meal!",
-     "az": "Buyurun, yeməkləriniz. Nuş olsun!",
-     "ru": "А вот и ваша еда. Приятного аппетита!"
+     "lines": [
+      {
+       "et": "Ja siin on teie söögid.",
+       "en": "And here is your food.",
+       "az": "Buyurun, yeməkləriniz.",
+       "ru": "А вот и ваша еда."
+      },
+      {
+       "et": "Head isu!",
+       "en": "Enjoy your meal!",
+       "az": "Nuş olsun!",
+       "ru": "Приятного аппетита!"
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Tegelikult supp oli mulle.",
-     "en": "Actually, the soup was for me.",
-     "az": "Əslində şorba mənim idi.",
-     "ru": "Вообще-то суп был мне."
+     "lines": [
+      {
+       "et": "Tegelikult supp oli mulle.",
+       "en": "Actually, the soup was for me.",
+       "az": "Əslində şorba mənim idi.",
+       "ru": "Вообще-то суп был мне."
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Oi, palun vabandust!",
-     "en": "Oh, I'm sorry!",
-     "az": "Oy, bağışlayın!",
-     "ru": "Ой, простите!"
+     "lines": [
+      {
+       "et": "Oi, palun vabandust!",
+       "en": "Oh, I'm sorry!",
+       "az": "Oy, bağışlayın!",
+       "ru": "Ой, простите!"
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Appi, kui suur ports! Ma vist kõike küll ei jaksa ära süüa.",
-     "en": "Goodness, what a big portion! I don't think I can eat all of it.",
-     "az": "Vay, nə böyük porsiyadır! Deyəsən, hamısını yeyə bilməyəcəyəm.",
-     "ru": "Батюшки, какая порция! Я, наверное, всё не осилю."
+     "lines": [
+      {
+       "et": "Appi, kui suur ports!",
+       "en": "Goodness, what a big portion!",
+       "az": "Vay, nə böyük porsiyadır!",
+       "ru": "Батюшки, какая порция!"
+      },
+      {
+       "et": "Ma vist kõike küll ei jaksa ära süüa.",
+       "en": "I don't think I can eat all of it.",
+       "az": "Deyəsən, hamısını yeyə bilməyəcəyəm.",
+       "ru": "Я, наверное, всё не осилю."
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Kas ma leiba ja hapukoort ka saaksin?",
-     "en": "Could I have some bread and sour cream as well?",
-     "az": "Çörək və xama da ala bilərəm?",
-     "ru": "Можно мне ещё хлеба и сметаны?"
+     "lines": [
+      {
+       "et": "Kas ma leiba ja hapukoort ka saaksin?",
+       "en": "Could I have some bread and sour cream as well?",
+       "az": "Çörək və xama da ala bilərəm?",
+       "ru": "Можно мне ещё хлеба и сметаны?"
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Jah, ma kohe toon leiba. Hapukoort meil paraku ei ole.",
-     "en": "Yes, I'll bring bread right away. Sour cream, unfortunately, we don't have.",
-     "az": "Bəli, indicə çörək gətirirəm. Xama, təəssüf ki, yoxdur.",
-     "ru": "Да, сейчас принесу хлеб. Сметаны у нас, к сожалению, нет."
+     "lines": [
+      {
+       "et": "Jah, ma kohe toon leiba.",
+       "en": "Yes, I'll bring bread right away.",
+       "az": "Bəli, indicə çörək gətirirəm.",
+       "ru": "Да, сейчас принесу хлеб."
+      },
+      {
+       "et": "Hapukoort meil paraku ei ole.",
+       "en": "Sour cream, unfortunately, we don't have.",
+       "az": "Xama, təəssüf ki, yoxdur.",
+       "ru": "Сметаны у нас, к сожалению, нет."
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Tooge mulle veel üks õlu ka, palun.",
-     "en": "Bring me another beer too, please.",
-     "az": "Mənə bir pivə də gətirin, zəhmət olmasa.",
-     "ru": "Принесите мне, пожалуйста, ещё одно пиво."
+     "lines": [
+      {
+       "et": "Tooge mulle veel üks õlu ka, palun.",
+       "en": "Bring me another beer too, please.",
+       "az": "Mənə bir pivə də gətirin, zəhmət olmasa.",
+       "ru": "Принесите мне, пожалуйста, ещё одно пиво."
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Selge. Palun!",
-     "en": "Right. Here you are!",
-     "az": "Aydındır. Buyurun!",
-     "ru": "Хорошо. Пожалуйста!"
+     "lines": [
+      {
+       "et": "Selge.",
+       "en": "Right.",
+       "az": "Aydındır.",
+       "ru": "Хорошо."
+      },
+      {
+       "et": "Palun!",
+       "en": "Here you are!",
+       "az": "Buyurun!",
+       "ru": "Пожалуйста!"
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Tänan. Vaata, kui uhke. Teeme pilti ka!",
-     "en": "Thank you. Look how grand. Let's take a picture too!",
-     "az": "Sağ olun. Bax, nə təmtəraqlı. Gəl şəkil də çəkək!",
-     "ru": "Спасибо. Смотри, как шикарно. Давай ещё сфотографируемся!"
+     "lines": [
+      {
+       "et": "Tänan.",
+       "en": "Thank you.",
+       "az": "Sağ olun.",
+       "ru": "Спасибо."
+      },
+      {
+       "et": "Vaata, kui uhke.",
+       "en": "Look how grand.",
+       "az": "Bax, nə təmtəraqlı.",
+       "ru": "Смотри, как шикарно."
+      },
+      {
+       "et": "Teeme pilti ka!",
+       "en": "Let's take a picture too!",
+       "az": "Gəl şəkil də çəkək!",
+       "ru": "Давай ещё сфотографируемся!"
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Aa, muidugi.",
-     "en": "Ah, of course.",
-     "az": "Aa, əlbəttə.",
-     "ru": "А, конечно."
+     "lines": [
+      {
+       "et": "Aa, muidugi.",
+       "en": "Ah, of course.",
+       "az": "Aa, əlbəttə.",
+       "ru": "А, конечно."
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Ma mõtlesin, et toidust võiks pilti teha.",
-     "en": "I meant we could take a picture of the food.",
-     "az": "Mən yeməyin şəklini çəkməyi nəzərdə tuturdum.",
-     "ru": "Я имела в виду, что можно сфотографировать еду."
+     "lines": [
+      {
+       "et": "Ma mõtlesin, et toidust võiks pilti teha.",
+       "en": "I meant we could take a picture of the food.",
+       "az": "Mən yeməyin şəklini çəkməyi nəzərdə tuturdum.",
+       "ru": "Я имела в виду, что можно сфотографировать еду."
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Teeme siis toidust ka.",
-     "en": "Let's take one of the food too, then.",
-     "az": "Onda yeməyin də şəklini çəkək.",
-     "ru": "Тогда сфотографируем и еду."
+     "lines": [
+      {
+       "et": "Teeme siis toidust ka.",
+       "en": "Let's take one of the food too, then.",
+       "az": "Onda yeməyin də şəklini çəkək.",
+       "ru": "Тогда сфотографируем и еду."
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Palun. Teie leib.",
-     "en": "Here you are. Your bread.",
-     "az": "Buyurun. Çörəyiniz.",
-     "ru": "Пожалуйста. Ваш хлеб."
+     "lines": [
+      {
+       "et": "Palun.",
+       "en": "Here you are.",
+       "az": "Buyurun.",
+       "ru": "Пожалуйста."
+      },
+      {
+       "et": "Teie leib.",
+       "en": "Your bread.",
+       "az": "Çörəyiniz.",
+       "ru": "Ваш хлеб."
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Tänud.",
-     "en": "Thanks.",
-     "az": "Təşəkkürlər.",
-     "ru": "Спасибо."
+     "lines": [
+      {
+       "et": "Tänud.",
+       "en": "Thanks.",
+       "az": "Təşəkkürlər.",
+       "ru": "Спасибо."
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Jätku leiba siis, Illimar! Hakkame sööma.",
-     "en": "Jätku leiba, then, Illimar! Let's start eating.",
-     "az": "Onda nuş olsun, Illimar! Başlayaq yeməyə.",
-     "ru": "Ну, jätku leiba, Illimar! Давай есть."
+     "lines": [
+      {
+       "et": "Jätku leiba siis, Illimar!",
+       "en": "Jätku leiba, then, Illimar!",
+       "az": "Onda nuş olsun, Illimar!",
+       "ru": "Ну, jätku leiba, Illimar!"
+      },
+      {
+       "et": "Hakkame sööma.",
+       "en": "Let's start eating.",
+       "az": "Başlayaq yeməyə.",
+       "ru": "Давай есть."
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Jätku tarvis.",
-     "en": "Jätku tarvis — thanks, and the same to you.",
-     "az": "Jätku tarvis — sağ ol, sənə də.",
-     "ru": "Jätku tarvis — спасибо, и тебе."
+     "lines": [
+      {
+       "et": "Jätku tarvis.",
+       "en": "Jätku tarvis — thanks, and the same to you.",
+       "az": "Jätku tarvis — sağ ol, sənə də.",
+       "ru": "Jätku tarvis — спасибо, и тебе."
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Kuidas sulle supp maitseb? Šašlõkk on küll suurepärane.",
-     "en": "How is the soup? The shashlik is excellent.",
-     "az": "Şorba necədir? Şaşlık əladır.",
-     "ru": "Как тебе суп? Шашлык просто отличный."
+     "lines": [
+      {
+       "et": "Kuidas sulle supp maitseb?",
+       "en": "How is the soup?",
+       "az": "Şorba necədir?",
+       "ru": "Как тебе суп?"
+      },
+      {
+       "et": "Šašlõkk on küll suurepärane.",
+       "en": "The shashlik is excellent.",
+       "az": "Şaşlık əladır.",
+       "ru": "Шашлык просто отличный."
+      }
+     ]
     },
     {
      "who": "Illimar",
-     "et": "Täitsa söödav supp. Minu ema teeb muidugi veel paremat kalasuppi.",
-     "en": "Quite an edible soup. My mother makes an even better fish soup, of course.",
-     "az": "Yeməli şorbadır. Anam, əlbəttə, daha yaxşı balıq şorbası bişirir.",
-     "ru": "Вполне съедобный суп. Моя мама, конечно, варит рыбный суп ещё лучше."
+     "lines": [
+      {
+       "et": "Täitsa söödav supp.",
+       "en": "Quite an edible soup.",
+       "az": "Yeməli şorbadır.",
+       "ru": "Вполне съедобный суп."
+      },
+      {
+       "et": "Minu ema teeb muidugi veel paremat kalasuppi.",
+       "en": "My mother makes an even better fish soup, of course.",
+       "az": "Anam, əlbəttə, daha yaxşı balıq şorbası bişirir.",
+       "ru": "Моя мама, конечно, варит рыбный суп ещё лучше."
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Oi, kas šašlõkk ei maitsenud teile?",
-     "en": "Oh, didn't you like the shashlik?",
-     "az": "Oy, şaşlık xoşunuza gəlmədi?",
-     "ru": "Ой, вам не понравился шашлык?"
+     "lines": [
+      {
+       "et": "Oi, kas šašlõkk ei maitsenud teile?",
+       "en": "Oh, didn't you like the shashlik?",
+       "az": "Oy, şaşlık xoşunuza gəlmədi?",
+       "ru": "Ой, вам не понравился шашлык?"
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Vastupidi, väga maitses. Lihtsalt see portsjon oli hirmus suur. Palun, kas te saaksite selle mulle kaasa pakkida?",
-     "en": "On the contrary, I liked it a lot. It's just that the portion was terribly big. Could you please pack it for me to take away?",
-     "az": "Əksinə, çox xoşuma gəldi. Sadəcə porsiya dəhşətli böyük idi. Zəhmət olmasa, onu mənim üçün qablaşdıra bilərsiniz?",
-     "ru": "Наоборот, очень понравился. Просто порция была ужасно большая. Не могли бы вы завернуть мне его с собой?"
+     "lines": [
+      {
+       "et": "Vastupidi, väga maitses.",
+       "en": "On the contrary, I liked it a lot.",
+       "az": "Əksinə, çox xoşuma gəldi.",
+       "ru": "Наоборот, очень понравился."
+      },
+      {
+       "et": "Lihtsalt see portsjon oli hirmus suur.",
+       "en": "It's just that the portion was terribly big.",
+       "az": "Sadəcə porsiya dəhşətli böyük idi.",
+       "ru": "Просто порция была ужасно большая."
+      },
+      {
+       "et": "Palun, kas te saaksite selle mulle kaasa pakkida?",
+       "en": "Could you please pack it for me to take away?",
+       "az": "Zəhmət olmasa, onu mənim üçün qablaşdıra bilərsiniz?",
+       "ru": "Не могли бы вы завернуть мне его с собой?"
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Jah, loomulikult. Kas kohvi või magustoitu ka soovite?",
-     "en": "Yes, of course. Would you like coffee or a dessert as well?",
-     "az": "Bəli, əlbəttə. Kofe və ya desert də istəyirsiniz?",
-     "ru": "Да, разумеется. Кофе или десерт желаете?"
+     "lines": [
+      {
+       "et": "Jah, loomulikult.",
+       "en": "Yes, of course.",
+       "az": "Bəli, əlbəttə.",
+       "ru": "Да, разумеется."
+      },
+      {
+       "et": "Kas kohvi või magustoitu ka soovite?",
+       "en": "Would you like coffee or a dessert as well?",
+       "az": "Kofe və ya desert də istəyirsiniz?",
+       "ru": "Кофе или десерт желаете?"
+      }
+     ]
     },
     {
      "who": "Johanna",
-     "et": "Kahjuks ei jaksa, kõht on tõesti väga täis. Palun tooge arve.",
-     "en": "Unfortunately I can't, I'm really very full. Please bring the bill.",
-     "az": "Təəssüf ki, yox, doğrudan da çox toxam. Zəhmət olmasa, hesabı gətirin.",
-     "ru": "К сожалению, не осилю, я правда очень сыта. Принесите, пожалуйста, счёт."
+     "lines": [
+      {
+       "et": "Kahjuks ei jaksa, kõht on tõesti väga täis.",
+       "en": "Unfortunately I can't, I'm really very full.",
+       "az": "Təəssüf ki, yox, doğrudan da çox toxam.",
+       "ru": "К сожалению, не осилю, я правда очень сыта."
+      },
+      {
+       "et": "Palun tooge arve.",
+       "en": "Please bring the bill.",
+       "az": "Zəhmət olmasa, hesabı gətirin.",
+       "ru": "Принесите, пожалуйста, счёт."
+      }
+     ]
     },
     {
      "who": "Ettekandja",
-     "et": "Kaardiga maksate, jah? Sel juhul tulge palun minuga kaasa, kaardiga saab meil ainult leti ääres maksta.",
-     "en": "You're paying by card, yes? In that case please come with me — card payments are only at the counter here.",
-     "az": "Kartla ödəyirsiniz, eləmi? Onda, zəhmət olmasa, mənimlə gəlin — bizdə kartla ancaq piştaxtanın yanında ödəmək olar.",
-     "ru": "Платите картой, да? Тогда пройдёмте, пожалуйста, со мной — картой у нас можно заплатить только у стойки."
+     "lines": [
+      {
+       "et": "Kaardiga maksate, jah?",
+       "en": "You're paying by card, yes?",
+       "az": "Kartla ödəyirsiniz, eləmi?",
+       "ru": "Платите картой, да?"
+      },
+      {
+       "et": "Sel juhul tulge palun minuga kaasa, kaardiga saab meil ainult leti ääres maksta.",
+       "en": "In that case please come with me — card payments are only at the counter here.",
+       "az": "Onda, zəhmət olmasa, mənimlə gəlin — bizdə kartla ancaq piştaxtanın yanında ödəmək olar.",
+       "ru": "Тогда пройдёмте, пожалуйста, со мной — картой у нас можно заплатить только у стойки."
+      }
+     ]
     }
    ]
   }

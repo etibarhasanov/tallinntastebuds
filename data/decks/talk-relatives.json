@@ -24,17 +24,103 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Minu suguvõsaga on selline huvitav lugu, et minu emal on kaksikõde. Nad on hästi sarnased. Ja minu isal oli kaksikvend, nad olid hästi sarnased. Ja siis ma arvasin terve elu, et mina saan ka kaksikud. Aga mul ei ole kaksikuid. Võib-olla mu lapselapsed tulevad kaksikud. Ja minu tädil, minu ema kaksikõel, on poeg, kelle naine on kaksik, ja nendel on ka kaksikud lapsed, poiss ja tüdruk. Nii et selline kaksikute suguvõsa on meil.",
-     "en": "There's an interesting thing about my family: my mother has a twin sister. They are very alike. And my father had a twin brother; they were very alike. So all my life I thought I would have twins too. But I don't have twins. Maybe my grandchildren will be twins. And my aunt, my mother's twin sister, has a son whose wife is a twin herself, and they have twins too, a boy and a girl. So that's the family of twins we are.",
-     "az": "Qohumlarımla bağlı belə maraqlı bir əhvalat var: anamın əkiz bacısı var. Onlar bir-birinə çox oxşayırlar. Atamın da əkiz qardaşı var idi, onlar da çox oxşayırdılar. Ona görə də bütün ömrüm boyu düşünürdüm ki, mənim də əkizlərim olacaq. Amma əkizlərim yoxdur. Bəlkə nəvələrim əkiz olacaq. Xalamın, anamın əkiz bacısının, bir oğlu var, onun arvadı da əkizdir, onların da əkiz uşaqları var, bir oğlan, bir qız. Belə ki, bizim əkizlər nəslimiz var.",
-     "ru": "С моей роднёй такая интересная история: у моей мамы есть сестра-близнец. Они очень похожи. А у моего папы был брат-близнец, они были очень похожи. И я всю жизнь думала, что у меня тоже будут близнецы. Но близнецов у меня нет. Может быть, у меня внуки родятся близнецами. А у моей тёти, маминой сестры-близнеца, есть сын, у которого жена — близнец, и у них тоже дети-близнецы, мальчик и девочка. Так что вот такая у нас родня близнецов."
+     "lines": [
+      {
+       "et": "Minu suguvõsaga on selline huvitav lugu, et minu emal on kaksikõde.",
+       "en": "There's an interesting thing about my family: my mother has a twin sister.",
+       "az": "Qohumlarımla bağlı belə maraqlı bir əhvalat var: anamın əkiz bacısı var.",
+       "ru": "С моей роднёй такая интересная история: у моей мамы есть сестра-близнец."
+      },
+      {
+       "et": "Nad on hästi sarnased.",
+       "en": "They are very alike.",
+       "az": "Onlar bir-birinə çox oxşayırlar.",
+       "ru": "Они очень похожи."
+      },
+      {
+       "et": "Ja minu isal oli kaksikvend, nad olid hästi sarnased.",
+       "en": "And my father had a twin brother; they were very alike.",
+       "az": "Atamın da əkiz qardaşı var idi, onlar da çox oxşayırdılar.",
+       "ru": "А у моего папы был брат-близнец, они были очень похожи."
+      },
+      {
+       "et": "Ja siis ma arvasin terve elu, et mina saan ka kaksikud.",
+       "en": "So all my life I thought I would have twins too.",
+       "az": "Ona görə də bütün ömrüm boyu düşünürdüm ki, mənim də əkizlərim olacaq.",
+       "ru": "И я всю жизнь думала, что у меня тоже будут близнецы."
+      },
+      {
+       "et": "Aga mul ei ole kaksikuid.",
+       "en": "But I don't have twins.",
+       "az": "Amma əkizlərim yoxdur.",
+       "ru": "Но близнецов у меня нет."
+      },
+      {
+       "et": "Võib-olla mu lapselapsed tulevad kaksikud.",
+       "en": "Maybe my grandchildren will be twins.",
+       "az": "Bəlkə nəvələrim əkiz olacaq.",
+       "ru": "Может быть, у меня внуки родятся близнецами."
+      },
+      {
+       "et": "Ja minu tädil, minu ema kaksikõel, on poeg, kelle naine on kaksik, ja nendel on ka kaksikud lapsed, poiss ja tüdruk.",
+       "en": "And my aunt, my mother's twin sister, has a son whose wife is a twin herself, and they have twins too, a boy and a girl.",
+       "az": "Xalamın, anamın əkiz bacısının, bir oğlu var, onun arvadı da əkizdir, onların da əkiz uşaqları var, bir oğlan, bir qız.",
+       "ru": "А у моей тёти, маминой сестры-близнеца, есть сын, у которого жена — близнец, и у них тоже дети-близнецы, мальчик и девочка."
+      },
+      {
+       "et": "Nii et selline kaksikute suguvõsa on meil.",
+       "en": "So that's the family of twins we are.",
+       "az": "Belə ki, bizim əkizlər nəslimiz var.",
+       "ru": "Так что вот такая у нас родня близнецов."
+      }
+     ]
     },
     {
      "who": "Ingrid",
-     "et": "Lapselapsi on mul ka. Mu tütrel on kolm last, mu vanemal pojal on kaks last ja mu nooremal pojal on kolm tütart. Ja minu lastelastel on ka juba lapsed. Tütretütar sai kohe kaksikud! Tütrepoeg sai kohe kolmikud! Ja siis mu kolmas tütretütar ütles, et tema ei julgegi lapsi saada, et äkki temal tuleb neli last. Aga ei, ta sai siiski alguses ühe lapse ja pärast sai veel teise.",
-     "en": "I have grandchildren too. My daughter has three children, my older son has two, and my younger son has three daughters. And my grandchildren already have children of their own. My daughter's daughter had twins straight away! My daughter's son had triplets straight away! And then my third granddaughter said she didn't even dare to have children, in case she had four at once. But no, she had one child first and later another.",
-     "az": "Nəvələrim də var. Qızımın üç uşağı var, böyük oğlumun iki uşağı, kiçik oğlumun isə üç qızı var. Nəvələrimin də artıq uşaqları var. Qızımın qızı birdən əkiz doğdu! Qızımın oğlunun birdən üçəmləri oldu! Sonra qızımın üçüncü qızı dedi ki, uşaq doğmağa heç cəsarət etmir, birdən dörd uşağı olar. Amma yox, əvvəlcə bir uşağı oldu, sonra da biri.",
-     "ru": "Внуки у меня тоже есть. У моей дочери трое детей, у старшего сына двое детей, а у младшего сына три дочери. И у моих внуков уже тоже есть дети. Дочкина дочка сразу родила двойню! У дочкиного сына сразу родилась тройня! А потом моя третья внучка от дочери сказала, что она даже не решается рожать: вдруг у неё будет четверо. Но нет, она всё-таки сначала родила одного ребёнка, а потом ещё второго."
+     "lines": [
+      {
+       "et": "Lapselapsi on mul ka.",
+       "en": "I have grandchildren too.",
+       "az": "Nəvələrim də var.",
+       "ru": "Внуки у меня тоже есть."
+      },
+      {
+       "et": "Mu tütrel on kolm last, mu vanemal pojal on kaks last ja mu nooremal pojal on kolm tütart.",
+       "en": "My daughter has three children, my older son has two, and my younger son has three daughters.",
+       "az": "Qızımın üç uşağı var, böyük oğlumun iki uşağı, kiçik oğlumun isə üç qızı var.",
+       "ru": "У моей дочери трое детей, у старшего сына двое детей, а у младшего сына три дочери."
+      },
+      {
+       "et": "Ja minu lastelastel on ka juba lapsed.",
+       "en": "And my grandchildren already have children of their own.",
+       "az": "Nəvələrimin də artıq uşaqları var.",
+       "ru": "И у моих внуков уже тоже есть дети."
+      },
+      {
+       "et": "Tütretütar sai kohe kaksikud!",
+       "en": "My daughter's daughter had twins straight away!",
+       "az": "Qızımın qızı birdən əkiz doğdu!",
+       "ru": "Дочкина дочка сразу родила двойню!"
+      },
+      {
+       "et": "Tütrepoeg sai kohe kolmikud!",
+       "en": "My daughter's son had triplets straight away!",
+       "az": "Qızımın oğlunun birdən üçəmləri oldu!",
+       "ru": "У дочкиного сына сразу родилась тройня!"
+      },
+      {
+       "et": "Ja siis mu kolmas tütretütar ütles, et tema ei julgegi lapsi saada, et äkki temal tuleb neli last.",
+       "en": "And then my third granddaughter said she didn't even dare to have children, in case she had four at once.",
+       "az": "Sonra qızımın üçüncü qızı dedi ki, uşaq doğmağa heç cəsarət etmir, birdən dörd uşağı olar.",
+       "ru": "А потом моя третья внучка от дочери сказала, что она даже не решается рожать: вдруг у неё будет четверо."
+      },
+      {
+       "et": "Aga ei, ta sai siiski alguses ühe lapse ja pärast sai veel teise.",
+       "en": "But no, she had one child first and later another.",
+       "az": "Amma yox, əvvəlcə bir uşağı oldu, sonra da biri.",
+       "ru": "Но нет, она всё-таки сначала родила одного ребёнка, а потом ещё второго."
+      }
+     ]
     }
    ]
   }

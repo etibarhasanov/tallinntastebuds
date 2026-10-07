@@ -24,10 +24,14 @@
    "turns": [
     {
      "who": "Arvo",
-     "et": "Üks, kaks, kolm, neli, viis, kuus, ma arvan, et seitse või kaheksa korda.",
-     "en": "One, two, three, four, five, six — I think seven or eight times.",
-     "az": "Bir, iki, üç, dörd, beş, altı — məncə, yeddi, ya da səkkiz dəfə.",
-     "ru": "Раз, два, три, четыре, пять, шесть — я думаю, семь или восемь раз."
+     "lines": [
+      {
+       "et": "Üks, kaks, kolm, neli, viis, kuus, ma arvan, et seitse või kaheksa korda.",
+       "en": "One, two, three, four, five, six — I think seven or eight times.",
+       "az": "Bir, iki, üç, dörd, beş, altı — məncə, yeddi, ya da səkkiz dəfə.",
+       "ru": "Раз, два, три, четыре, пять, шесть — я думаю, семь или восемь раз."
+      }
+     ]
     }
    ]
   },
@@ -41,17 +45,31 @@
    "turns": [
     {
      "who": "Aleksandr",
-     "et": "Päris tihti, kuna ma õppisin ja õpingute ajal oli vaja kolida ühest ühiselamust teise ja ühest linnast teise. Ma ei tea, kas kümme või kaksteist korda.",
-     "en": "Quite often, since I was studying, and while I studied I had to move from one dormitory to another and from one town to another. I don't know if it was ten or twelve times.",
-     "az": "Kifayət qədər tez-tez, çünki oxuyurdum və təhsil illərində bir yataqxanadan digərinə, bir şəhərdən digərinə köçmək lazım gəlirdi. Bilmirəm, on dəfə, ya on iki dəfə.",
-     "ru": "Довольно часто, потому что я учился, и во время учёбы нужно было переезжать из одного общежития в другое и из одного города в другой. Не знаю, десять или двенадцать раз."
+     "lines": [
+      {
+       "et": "Päris tihti, kuna ma õppisin ja õpingute ajal oli vaja kolida ühest ühiselamust teise ja ühest linnast teise.",
+       "en": "Quite often, since I was studying, and while I studied I had to move from one dormitory to another and from one town to another.",
+       "az": "Kifayət qədər tez-tez, çünki oxuyurdum və təhsil illərində bir yataqxanadan digərinə, bir şəhərdən digərinə köçmək lazım gəlirdi.",
+       "ru": "Довольно часто, потому что я учился, и во время учёбы нужно было переезжать из одного общежития в другое и из одного города в другой."
+      },
+      {
+       "et": "Ma ei tea, kas kümme või kaksteist korda.",
+       "en": "I don't know if it was ten or twelve times.",
+       "az": "Bilmirəm, on dəfə, ya on iki dəfə.",
+       "ru": "Не знаю, десять или двенадцать раз."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Esialgu kolisin Kohtla-Järvelt Tallinna, siis Tallinnast Tartusse ja siis Tartust tagasi Tallinna.",
-     "en": "First I moved from Kohtla-Järve to Tallinn, then from Tallinn to Tartu, and then from Tartu back to Tallinn.",
-     "az": "Əvvəlcə Kohtla-Järvedən Tallinnə köçdüm, sonra Tallinndən Tartuya, sonra da Tartudan yenidən Tallinnə.",
-     "ru": "Сначала я переехал из Кохтла-Ярве в Таллинн, потом из Таллинна в Тарту, а потом из Тарту обратно в Таллинн."
+     "lines": [
+      {
+       "et": "Esialgu kolisin Kohtla-Järvelt Tallinna, siis Tallinnast Tartusse ja siis Tartust tagasi Tallinna.",
+       "en": "First I moved from Kohtla-Järve to Tallinn, then from Tallinn to Tartu, and then from Tartu back to Tallinn.",
+       "az": "Əvvəlcə Kohtla-Järvedən Tallinnə köçdüm, sonra Tallinndən Tartuya, sonra da Tartudan yenidən Tallinnə.",
+       "ru": "Сначала я переехал из Кохтла-Ярве в Таллинн, потом из Таллинна в Тарту, а потом из Тарту обратно в Таллинн."
+      }
+     ]
     }
    ]
   }
