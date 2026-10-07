@@ -505,9 +505,9 @@
   "ära": {
    "base": "ära",
    "means": {
-    "en": "off, away (pesen ära: wash through, finish washing)",
-    "az": "tamamilə (fel ilə)",
-    "ru": "до конца (с глаголом)"
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
    },
    "deck": "everyday"
   },
@@ -796,9 +796,9 @@
   "tuleb": {
    "base": "tulema",
    "means": {
-    "en": "comes",
-    "az": "gəlir",
-    "ru": "приходит"
+    "en": "comes; has to (tuleb vahetada: has to be changed)",
+    "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+    "ru": "приходит; надо (tuleb vahetada: надо сменить)"
    },
    "deck": "verbs"
   },

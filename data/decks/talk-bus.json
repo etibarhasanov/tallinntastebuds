@@ -1,0 +1,779 @@
+{
+ "id": "talk-bus",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Buying a bus ticket",
+  "az": "Avtobus bileti almaq",
+  "ru": "Покупка билета на автобус"
+ },
+ "why": {
+  "en": "The three and the four o'clock are sold out, so a discount ticket to Tallinn on the half past three",
+  "az": "Saat üçün və dördün avtobusları satılıb, ona görə Tallinnə saat üç yarımın avtobusuna güzəştli bilet",
+  "ru": "На три и на четыре всё продано, так что льготный билет до Таллинна на половину четвёртого"
+ },
+ "taste": "Üks pilet Tallinna palun.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Tere!",
+       "en": "Hello!",
+       "az": "Salam!",
+       "ru": "Здравствуйте!"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Üks pilet Tallinna palun.",
+       "en": "One ticket to Tallinn, please.",
+       "az": "Tallinnə bir bilet, xahiş edirəm.",
+       "ru": "Один билет до Таллинна, пожалуйста."
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Mis kellasele bussile?",
+       "en": "For the bus at what time?",
+       "az": "Saat neçənin avtobusuna?",
+       "ru": "На автобус во сколько?"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kella kolmesele.",
+       "en": "The three o'clock one.",
+       "az": "Saat üçün avtobusuna.",
+       "ru": "На трёхчасовой."
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Kella kolmene on juba välja müüdud.",
+       "en": "The three o'clock one is already sold out.",
+       "az": "Saat üçün avtobusu artıq satılıb.",
+       "ru": "На трёхчасовой уже всё продано."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Palun siis kella neljasele.",
+       "en": "Then the four o'clock one, please.",
+       "az": "Onda saat dördün avtobusuna, xahiş edirəm.",
+       "ru": "Тогда, пожалуйста, на четырёхчасовой."
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Kohe vaatan.",
+       "en": "Let me have a look.",
+       "az": "İndi baxıram.",
+       "ru": "Сейчас посмотрю."
+      },
+      {
+       "et": "See on ka välja müüdud.",
+       "en": "That one is sold out too.",
+       "az": "O da satılıb.",
+       "ru": "На него тоже всё продано."
+      },
+      {
+       "et": "Praegu on pileteid veel kella poole neljasele bussile.",
+       "en": "At the moment there are still tickets for the half past three bus.",
+       "az": "Hazırda hələ saat üç yarımın avtobusuna bilet var.",
+       "ru": "Сейчас ещё есть билеты на автобус в половине четвёртого."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kas see on ekspressbuss?",
+       "en": "Is that an express bus?",
+       "az": "Bu, ekspress avtobusdur?",
+       "ru": "Это экспресс?"
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Ei ole.",
+       "en": "No, it isn't.",
+       "az": "Xeyr.",
+       "ru": "Нет."
+      },
+      {
+       "et": "See on kiirliin.",
+       "en": "It's a fast line.",
+       "az": "Bu, sürətli xətdir.",
+       "ru": "Это скорая линия."
+      },
+      {
+       "et": "Peatub ka Põltsamaal ja Mäos ja Kosel ka.",
+       "en": "It also stops at Põltsamaa and at Mäo and at Kose.",
+       "az": "Põltsamaada, Mäoda və Kosedə də dayanır.",
+       "ru": "Останавливается ещё в Пыльтсамаа, в Мяо и в Козе."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Hm.",
+       "en": "Hm.",
+       "az": "Hm.",
+       "ru": "Хм."
+      },
+      {
+       "et": "Mis kell see buss Tallinna jõuab?",
+       "en": "What time does the bus get to Tallinn?",
+       "az": "Bu avtobus Tallinnə saat neçədə çatır?",
+       "ru": "Во сколько этот автобус приходит в Таллинн?"
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Kolmveerand seitse.",
+       "en": "Quarter to seven.",
+       "az": "Yeddiyə on beş dəqiqə qalmış.",
+       "ru": "Без четверти семь."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kas selles bussis tasuta internet on?",
+       "en": "Is there free internet on this bus?",
+       "az": "Bu avtobusda pulsuz internet var?",
+       "ru": "В этом автобусе есть бесплатный интернет?"
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Peaks olema.",
+       "en": "There should be.",
+       "az": "Olmalıdır.",
+       "ru": "Должен быть."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Mis seal siis ikka.",
+       "en": "Oh well, never mind.",
+       "az": "Nə edək, eybi yox.",
+       "ru": "Ну что ж поделаешь."
+      },
+      {
+       "et": "Üks sooduspilet siis palun.",
+       "en": "One discount ticket, then, please.",
+       "az": "Onda bir güzəştli bilet, xahiş edirəm.",
+       "ru": "Тогда один льготный билет, пожалуйста."
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Näidake palun dokumenti ka.",
+       "en": "Please show me your document too.",
+       "az": "Zəhmət olmasa, sənədinizi də göstərin.",
+       "ru": "Покажите, пожалуйста, и документ."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kohe.",
+       "en": "Just a moment.",
+       "az": "Bu dəqiqə.",
+       "ru": "Сейчас."
+      },
+      {
+       "et": "Palun.",
+       "en": "Here you are.",
+       "az": "Buyurun.",
+       "ru": "Пожалуйста."
+      }
+     ]
+    },
+    {
+     "who": "Kassiir",
+     "lines": [
+      {
+       "et": "Nii, siin on teie pilet.",
+       "en": "Right, here is your ticket.",
+       "az": "Belə, bu da biletiniz.",
+       "ru": "Так, вот ваш билет."
+      },
+      {
+       "et": "Head reisi!",
+       "en": "Have a good trip!",
+       "az": "Yaxşı yol!",
+       "ru": "Счастливого пути!"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Aitäh.",
+       "en": "Thank you.",
+       "az": "Sağ olun.",
+       "ru": "Спасибо."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "tere": {
+   "base": "tere",
+   "means": {
+    "en": "hello",
+    "az": "salam",
+    "ru": "привет, здравствуйте"
+   },
+   "deck": "greetings"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "pilet": {
+   "base": "pilet",
+   "means": {
+    "en": "ticket",
+    "az": "bilet",
+    "ru": "билет"
+   },
+   "deck": "around"
+  },
+  "tallinna": {
+   "base": "Tallinn",
+   "means": {
+    "en": "to Tallinn",
+    "az": "Tallinnə",
+    "ru": "в Таллинн"
+   }
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "kellasele": {
+   "base": "kellane",
+   "means": {
+    "en": "for the … o'clock (mis kellasele: for what time)",
+    "az": "saat neçənin",
+    "ru": "на … час (mis kellasele: на который час)"
+   }
+  },
+  "bussile": {
+   "base": "buss",
+   "means": {
+    "en": "for the bus, onto the bus",
+    "az": "avtobusa",
+    "ru": "на автобус"
+   },
+   "deck": "around"
+  },
+  "kella": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock (kella kolm: three o'clock)",
+    "az": "saat",
+    "ru": "часов"
+   },
+   "deck": "time"
+  },
+  "kolmesele": {
+   "base": "kolmene",
+   "means": {
+    "en": "for the three o'clock",
+    "az": "saat üçün",
+    "ru": "на трёхчасовой"
+   }
+  },
+  "kolmene": {
+   "base": "kolmene",
+   "means": {
+    "en": "the three o'clock (one)",
+    "az": "saat üçün",
+    "ru": "трёхчасовой"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "välja": {
+   "base": "välja",
+   "means": {
+    "en": "out (näeb välja: looks like; ostate välja: buy outright; välja müüdud: sold out; välja arvatud: except)",
+    "az": "çölə (välja müüdud: satılıb; välja arvatud: -dan başqa)",
+    "ru": "наружу (välja müüdud: распродано; välja arvatud: кроме)"
+   },
+   "deck": "around"
+  },
+  "müüdud": {
+   "base": "müüma",
+   "means": {
+    "en": "sold (välja müüdud: sold out)",
+    "az": "satılmış",
+    "ru": "продан"
+   },
+   "deck": "shops"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "neljasele": {
+   "base": "neljane",
+   "means": {
+    "en": "for the four o'clock (poole neljasele: for half past three)",
+    "az": "saat dördün",
+    "ru": "на четырёхчасовой"
+   }
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "vaatan": {
+   "base": "vaatama",
+   "means": {
+    "en": "I watch, I look",
+    "az": "baxıram",
+    "ru": "смотрю"
+   },
+   "deck": "moreverbs"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "pileteid": {
+   "base": "pilet",
+   "means": {
+    "en": "tickets",
+    "az": "bilet",
+    "ru": "билеты"
+   },
+   "deck": "around"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "poole": {
+   "base": "pool",
+   "means": {
+    "en": "half (poole kuueni: till half past five; kella poole neljasele: for half past three)",
+    "az": "yarım (kella poole neljasele: saat üç yarıma)",
+    "ru": "половина (kella poole neljasele: на половину четвёртого)"
+   },
+   "deck": "numbers"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "ekspressbuss": {
+   "base": "ekspressbuss",
+   "means": {
+    "en": "express bus",
+    "az": "ekspress avtobus",
+    "ru": "экспресс-автобус"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kiirliin": {
+   "base": "kiirliin",
+   "means": {
+    "en": "fast line (a bus with fewer stops)",
+    "az": "sürətli xətt",
+    "ru": "скорая линия"
+   }
+  },
+  "peatub": {
+   "base": "peatuma",
+   "means": {
+    "en": "stops",
+    "az": "dayanır",
+    "ru": "останавливается"
+   },
+   "deck": "around"
+  },
+  "põltsamaal": {
+   "base": "Põltsamaa",
+   "means": {
+    "en": "at Põltsamaa, a town in central Estonia",
+    "az": "Põltsamaada",
+    "ru": "в Пыльтсамаа"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "mäos": {
+   "base": "Mäo",
+   "means": {
+    "en": "at Mäo, a crossroads village in central Estonia",
+    "az": "Mäoda",
+    "ru": "в Мяо"
+   }
+  },
+  "kosel": {
+   "base": "Kose",
+   "means": {
+    "en": "at Kose, a small town south of Tallinn",
+    "az": "Kosedə",
+    "ru": "в Козе"
+   }
+  },
+  "hm": {
+   "base": "hm",
+   "means": {
+    "en": "hm",
+    "az": "hm",
+    "ru": "хм"
+   }
+  },
+  "kell": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock; clock",
+    "az": "saat",
+    "ru": "час, часы"
+   },
+   "deck": "time"
+  },
+  "buss": {
+   "base": "buss",
+   "means": {
+    "en": "bus",
+    "az": "avtobus",
+    "ru": "автобус"
+   },
+   "deck": "around"
+  },
+  "jõuab": {
+   "base": "jõudma",
+   "means": {
+    "en": "arrives, gets to",
+    "az": "çatır",
+    "ru": "приезжает"
+   },
+   "deck": "moreverbs"
+  },
+  "kolmveerand": {
+   "base": "kolmveerand",
+   "means": {
+    "en": "three quarters (kolmveerand seitse: quarter to seven)",
+    "az": "dörddə üç (kolmveerand seitse: yeddiyə on beş qalmış)",
+    "ru": "три четверти (kolmveerand seitse: без четверти семь)"
+   }
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "selles": {
+   "base": "see",
+   "means": {
+    "en": "in this",
+    "az": "bunda",
+    "ru": "в этом"
+   },
+   "deck": "pronouns"
+  },
+  "bussis": {
+   "base": "buss",
+   "means": {
+    "en": "on the bus, in the bus",
+    "az": "avtobusda",
+    "ru": "в автобусе"
+   },
+   "deck": "around"
+  },
+  "tasuta": {
+   "base": "tasuta",
+   "means": {
+    "en": "free of charge",
+    "az": "pulsuz",
+    "ru": "бесплатно"
+   },
+   "deck": "shops"
+  },
+  "internet": {
+   "base": "internet",
+   "means": {
+    "en": "internet",
+    "az": "internet",
+    "ru": "интернет"
+   },
+   "deck": "paper"
+  },
+  "peaks": {
+   "base": "pidama",
+   "means": {
+    "en": "should (peaks olema: there should be)",
+    "az": "olmalıdır",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "olema": {
+   "base": "olema",
+   "means": {
+    "en": "to be",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "sooduspilet": {
+   "base": "sooduspilet",
+   "means": {
+    "en": "discount ticket",
+    "az": "güzəştli bilet",
+    "ru": "льготный билет"
+   },
+   "deck": "around"
+  },
+  "näidake": {
+   "base": "näitama",
+   "means": {
+    "en": "show (polite)",
+    "az": "göstərin",
+    "ru": "покажите"
+   },
+   "deck": "moreverbs"
+  },
+  "dokumenti": {
+   "base": "dokument",
+   "means": {
+    "en": "document",
+    "az": "sənəd",
+    "ru": "документ"
+   },
+   "deck": "work"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "siin": {
+   "base": "siin",
+   "means": {
+    "en": "here",
+    "az": "burada",
+    "ru": "здесь"
+   },
+   "deck": "everyday"
+  },
+  "teie": {
+   "base": "teie",
+   "means": {
+    "en": "your; you (polite or plural)",
+    "az": "sizin",
+    "ru": "ваш"
+   }
+  },
+  "head": {
+   "base": "hea",
+   "means": {
+    "en": "good (head ööd: good night)",
+    "az": "xeyirli (head ööd: gecən xeyrə)",
+    "ru": "доброй, хорошей"
+   },
+   "deck": "basics"
+  },
+  "reisi": {
+   "base": "reis",
+   "means": {
+    "en": "trip, journey (head reisi: have a good trip)",
+    "az": "səfər (head reisi: yaxşı yol)",
+    "ru": "поездка (head reisi: счастливого пути)"
+   },
+   "deck": "plans"
+  },
+  "aitäh": {
+   "base": "aitäh",
+   "means": {
+    "en": "thank you",
+    "az": "sağ olun",
+    "ru": "спасибо"
+   },
+   "deck": "basics"
+  }
+ }
+}

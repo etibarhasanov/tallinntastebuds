@@ -1,0 +1,1723 @@
+{
+ "id": "talk-school",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Where did you go to school?",
+  "az": "Harada məktəbə getmisən?",
+  "ru": "Где ты учился в школе?"
+ },
+ "why": {
+  "en": "Mirja changes schools for the third grade, Mai Riin moves to a new building, and Jüri starts in October",
+  "az": "Mirja üçüncü sinifdə məktəbini dəyişir, Mai Riin yeni binaya keçir, Jüri isə məktəbə oktyabrda başlayır",
+  "ru": "Mirja меняет школу в третьем классе, Mai Riin переходит в новое здание, а Jüri идёт в школу в октябре"
+ },
+ "taste": "Mina läksin kooli 1960. aastal.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kus sa koolis oled käinud?",
+    "en": "Where did you go to school?",
+    "az": "Harada məktəbə getmisən?",
+    "ru": "Где ты учился в школе?"
+   },
+   "turns": [
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Läksin kooli üheksakümne neljandal aastal, olin siis kuueaastane.",
+       "en": "I went to school in ninety-four; I was six then.",
+       "az": "Doxsan dördüncü ildə məktəbə getdim, onda altı yaşım vardı.",
+       "ru": "Я пошла в школу в девяносто четвёртом году, мне тогда было шесть лет."
+      },
+      {
+       "et": "Kaks aastat hiljem läksin järgmisse kooli, sest meie perekond kolis teise linna otsa ja siis me otsustasime, et selleks, et lastel oleks kergem koolis käia, tuleb kooli vahetada.",
+       "en": "Two years later I went to another school, because our family moved to the other end of town, and we decided that to make it easier for the children to get to school, we had to change schools.",
+       "az": "İki il sonra başqa məktəbə keçdim, çünki ailəmiz şəhərin o biri başına köçdü və biz qərara gəldik ki, uşaqlar üçün məktəbə getmək asan olsun deyə məktəbi dəyişmək lazımdır.",
+       "ru": "Через два года я перешла в другую школу, потому что наша семья переехала на другой конец города, и мы решили, что, чтобы детям было легче ходить в школу, надо сменить школу."
+      },
+      {
+       "et": "Kolmandasse klassi läksin siis Descartes'i lütseumi.",
+       "en": "So for the third grade I went to the Descartes Lyceum.",
+       "az": "Üçüncü sinfə artıq Dekart liseyinə getdim.",
+       "ru": "В третий класс я пошла уже в Декартовский лицей."
+      },
+      {
+       "et": "Seal ma olin keskkooli lõpuni.",
+       "en": "I stayed there until the end of secondary school.",
+       "az": "Orada orta məktəbi bitirənə qədər oxudum.",
+       "ru": "Там я и училась до конца средней школы."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Siis ma läksin ülikooli, see oli aastal 2006.",
+       "en": "Then I went to university; that was in 2006.",
+       "az": "Sonra universitetə getdim, bu 2006-cı ildə idi.",
+       "ru": "Потом я поступила в университет, это было в 2006 году."
+      },
+      {
+       "et": "Ja ma käisin natuke kauem ülikoolis kui mõned teised inimesed.",
+       "en": "And I was at university a little longer than some other people.",
+       "az": "Universitetdə bəzi başqa adamlardan bir az uzun oxudum.",
+       "ru": "И я проучилась в университете немного дольше, чем некоторые другие."
+      },
+      {
+       "et": "Lõpetasin aastal 2010 bakalaureuse- ja hiljem aastal 2013 magistriõppe.",
+       "en": "I finished my bachelor's in 2010 and later, in 2013, my master's.",
+       "az": "2010-cu ildə bakalavrı, sonra 2013-cü ildə magistraturanı bitirdim.",
+       "ru": "В 2010 году я окончила бакалавриат, а позже, в 2013 году, магистратуру."
+      },
+      {
+       "et": "Ja siis läksin tööle.",
+       "en": "And then I went to work.",
+       "ru": "А потом пошла работать.",
+       "az": "Sonra da işə getdim."
+      }
+     ]
+    },
+    {
+     "who": "Mai Riin",
+     "lines": [
+      {
+       "et": "Ma alustasin oma kooliteed Püünsi Põhikoolist ja lõpetasin selle 2016. aastal.",
+       "en": "I started my schooling at Püünsi Basic School and finished it in 2016.",
+       "az": "Məktəb yolumu Püünsi əsas məktəbində başladım və onu 2016-cı ildə bitirdim.",
+       "ru": "Я начала учиться в Пююнсиской основной школе и окончила её в 2016 году."
+      },
+      {
+       "et": "Peale seda ma läksin Viimsi Keskkooli.",
+       "en": "After that I went to Viimsi Secondary School.",
+       "az": "Ondan sonra Viimsi orta məktəbinə getdim.",
+       "ru": "После этого я пошла в Виймсискую среднюю школу."
+      },
+      {
+       "et": "Aga järgmisest aastast ma õpin Viimsi Riigigümnaasiumis, sest nad ehitasid uue koolimaja.",
+       "en": "But from next year I'll be studying at Viimsi State Gymnasium, because they built a new school building.",
+       "az": "Amma gələn ildən Viimsi Dövlət Gimnaziyasında oxuyacağam, çünki onlar yeni məktəb binası tikdilər.",
+       "ru": "Но со следующего года я учусь в Виймсиской государственной гимназии, потому что они построили новое здание школы."
+      },
+      {
+       "et": "Ja siis loodetavasti 2019. aastal ma lõpetan Viimsi Riigigümnaasiumi.",
+       "en": "And then, hopefully, in 2019 I'll graduate from Viimsi State Gymnasium.",
+       "az": "Sonra da, ümid edirəm, 2019-cu ildə Viimsi Dövlət Gimnaziyasını bitirəcəyəm.",
+       "ru": "И потом, надеюсь, в 2019 году я окончу Виймсискую государственную гимназию."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Mina läksin kooli 1960. aastal.",
+       "en": "I went to school in 1960.",
+       "az": "Mən 1960-cı ildə məktəbə getdim.",
+       "ru": "Я пошёл в школу в 1960 году."
+      },
+      {
+       "et": "Ja hiljem kui teised, sest kui kool algas esimesel septembril, siis ma ei olnud veel seitsmeaastane ja vanemad arvasid, et las poiss olla ühe aasta veel kodus.",
+       "en": "And later than the others, because when school started on the first of September I wasn't seven yet, and my parents thought: let the boy stay at home one more year.",
+       "az": "Özü də başqalarından gec, çünki məktəb sentyabrın birində başlayanda mənim hələ yeddi yaşım yox idi və valideynlərim düşündülər ki, qoy oğlan bir il də evdə qalsın.",
+       "ru": "И позже, чем другие, потому что, когда первого сентября начались занятия, мне ещё не было семи лет, и родители решили: пусть мальчик ещё годик побудет дома."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Mul oli hoidja, vana kokamamma, kunagi Peterburis teeninud väga väärikas daam.",
+       "en": "I had a nanny, an old cook, a very dignified lady who had once been in service in St Petersburg.",
+       "az": "Mənim dayəm vardı, qoca aşpaz qadın, vaxtilə Peterburqda xidmət etmiş çox ləyaqətli bir xanım.",
+       "ru": "У меня была няня, старая кухарка, очень достойная дама, когда-то служившая в Петербурге."
+      },
+      {
+       "et": "Kahjuks tema septembris suri ära.",
+       "en": "Sadly she died in September.",
+       "az": "Təəssüf ki, o, sentyabrda öldü.",
+       "ru": "К сожалению, в сентябре она умерла."
+      },
+      {
+       "et": "Ja siis selgus, et poiss ei taha üksi kodus olla, et poiss tahab kooli minna.",
+       "en": "And then it turned out that the boy didn't want to be at home alone, that the boy wanted to go to school.",
+       "az": "Sonra məlum oldu ki, oğlan evdə tək qalmaq istəmir, oğlan məktəbə getmək istəyir.",
+       "ru": "И тогда выяснилось, что мальчик не хочет оставаться дома один, что мальчик хочет в школу."
+      },
+      {
+       "et": "Ema käis siis direktoriga rääkimas ja nii mind võeti oktoobri teisel poolel kooli.",
+       "en": "So my mother went to talk to the head teacher, and that's how I was taken into school in the second half of October.",
+       "az": "Anam direktorla danışmağa getdi və beləcə məni oktyabrın ikinci yarısında məktəbə götürdülər.",
+       "ru": "Мама сходила поговорить с директором, и так меня во второй половине октября взяли в школу."
+      },
+      {
+       "et": "Ja seal ma käisin 11. klassi lõpuni.",
+       "en": "And I went there until the end of the 11th grade.",
+       "az": "Orada 11-ci sinfin sonuna qədər oxudum.",
+       "ru": "И там я учился до конца 11-го класса."
+      },
+      {
+       "et": "Nii et keskkooli olen ma lõpetanud traktoristi-mehhanisaatorina, traktoristi paberitega, hiljem sain veel mootorrattaload ja ülikoolis loomulikult autojuhiload.",
+       "en": "So I finished secondary school as a tractor driver-mechanic, with tractor driver's papers; later I also got a motorbike licence and, at university, of course, a driving licence.",
+       "az": "Yəni orta məktəbi traktorçu-mexanizator kimi, traktorçu sənədləri ilə bitirmişəm, sonra motosiklet vəsiqəsi, universitetdə isə, əlbəttə, sürücülük vəsiqəsi də aldım.",
+       "ru": "Так что среднюю школу я окончил трактористом-механизатором, с правами тракториста, позже получил ещё права на мотоцикл, а в университете, конечно, водительские права."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Siis ma läksin õppima Tartu Ülikooli ja selle mõttega ausalt öelda oli mind harjutatud juba ma ei tea kui kaua, sest meie suguvõsas oli kõrgema haridusega inimesi väga vähe.",
+       "en": "Then I went to study at the University of Tartu, and, to be honest, I had been made used to that idea for I don't know how long, because in our extended family there were very few people with higher education.",
+       "az": "Sonra Tartu Universitetinə oxumağa getdim və düzünü desəm, məni bu fikrə bilmirəm nə vaxtdan öyrəşdirmişdilər, çünki bizim nəsildə ali təhsilli adam çox az idi.",
+       "ru": "Потом я поехал учиться в Тартуский университет, и, честно говоря, к этой мысли меня приучали уже не знаю сколько времени, потому что в нашей родне людей с высшим образованием было очень мало."
+      },
+      {
+       "et": "Nii et ma teadsin kindlalt, et kui keskkool on läbi, lähen loomulikult ülikooli.",
+       "en": "So I knew for certain that when secondary school was over, I would of course go to university.",
+       "az": "Ona görə də dəqiq bilirdim ki, orta məktəb bitən kimi, təbii ki, universitetə gedəcəyəm.",
+       "ru": "Так что я твёрдо знал, что, когда школа закончится, я, конечно, пойду в университет."
+      },
+      {
+       "et": "Ja ainus küsimus oli: mida õppida?",
+       "en": "And the only question was: what to study?",
+       "az": "Yeganə sual bu idi: nə oxumalı?",
+       "ru": "И единственный вопрос был: что изучать?"
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Minu valik langes filoloogia kasuks.",
+       "en": "My choice fell on philology.",
+       "az": "Seçimim filologiyanın xeyrinə oldu.",
+       "ru": "Мой выбор пал на филологию."
+      },
+      {
+       "et": "Konkurss oli päris suur, aga ma sain sisse.",
+       "en": "The competition was quite stiff, but I got in.",
+       "az": "Müsabiqə xeyli böyük idi, amma qəbul oldum.",
+       "ru": "Конкурс был довольно большой, но я поступил."
+      },
+      {
+       "et": "Ma lõpetasin ülikooli 1976. aastal ja siis sai see tore aeg läbi.",
+       "en": "I graduated from university in 1976, and then that wonderful time was over.",
+       "az": "Universiteti 1976-cı ildə bitirdim və o gözəl vaxt da bununla bitdi.",
+       "ru": "Я окончил университет в 1976 году, и на этом то прекрасное время закончилось."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kus": {
+   "base": "kus",
+   "means": {
+    "en": "where",
+    "az": "harada",
+    "ru": "где"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "koolis": {
+   "base": "kool",
+   "means": {
+    "en": "at school",
+    "az": "məktəbdə",
+    "ru": "в школе"
+   },
+   "deck": "school"
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты есть"
+   },
+   "deck": "verbs"
+  },
+  "käinud": {
+   "base": "käima",
+   "means": {
+    "en": "been (to)",
+    "az": "olmuşam",
+    "ru": "бывал"
+   },
+   "deck": "moreverbs"
+  },
+  "läksin": {
+   "base": "minema",
+   "means": {
+    "en": "I went",
+    "az": "getdim",
+    "ru": "я пошёл"
+   },
+   "deck": "verbs"
+  },
+  "kooli": {
+   "base": "kool",
+   "means": {
+    "en": "to school",
+    "az": "məktəbə",
+    "ru": "в школу"
+   },
+   "deck": "school"
+  },
+  "üheksakümne": {
+   "base": "üheksakümmend",
+   "means": {
+    "en": "ninety",
+    "az": "doxsan",
+    "ru": "девяноста"
+   },
+   "deck": "numbers"
+  },
+  "neljandal": {
+   "base": "neljas",
+   "means": {
+    "en": "fourth (üheksakümne neljandal aastal: in ninety-four)",
+    "az": "dördüncü",
+    "ru": "четвёртом"
+   },
+   "deck": "numbers"
+  },
+  "aastal": {
+   "base": "aasta",
+   "means": {
+    "en": "in the year",
+    "az": "ildə",
+    "ru": "в году"
+   },
+   "deck": "time"
+  },
+  "olin": {
+   "base": "olema",
+   "means": {
+    "en": "I was",
+    "az": "idim",
+    "ru": "я был"
+   },
+   "deck": "verbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "kuueaastane": {
+   "base": "kuueaastane",
+   "means": {
+    "en": "six years old",
+    "az": "altı yaşlı",
+    "ru": "шестилетний"
+   }
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "hiljem": {
+   "base": "hiljem",
+   "means": {
+    "en": "later",
+    "az": "daha gec",
+    "ru": "позже"
+   },
+   "deck": "time"
+  },
+  "järgmisse": {
+   "base": "järgmine",
+   "means": {
+    "en": "next, to the next",
+    "az": "növbətiyə",
+    "ru": "в следующий"
+   },
+   "deck": "time"
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "meie": {
+   "base": "meie",
+   "means": {
+    "en": "our; we",
+    "az": "bizim",
+    "ru": "наш"
+   }
+  },
+  "perekond": {
+   "base": "perekond",
+   "means": {
+    "en": "family",
+    "az": "ailə",
+    "ru": "семья"
+   },
+   "deck": "talk"
+  },
+  "kolis": {
+   "base": "kolima",
+   "means": {
+    "en": "moved (house)",
+    "az": "köçdü",
+    "ru": "переехал"
+   },
+   "deck": "home"
+  },
+  "teise": {
+   "base": "teine",
+   "means": {
+    "en": "another, a second; the other (teise linna otsa: to the other end of town)",
+    "az": "başqa, ikinci; o biri",
+    "ru": "другой, второй"
+   },
+   "deck": "numbers"
+  },
+  "linna": {
+   "base": "linn",
+   "means": {
+    "en": "of the city",
+    "az": "şəhərin",
+    "ru": "города"
+   },
+   "deck": "around"
+  },
+  "otsa": {
+   "base": "ots",
+   "means": {
+    "en": "end (teise linna otsa: to the other end of town)",
+    "az": "son, uc",
+    "ru": "конец"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "otsustasime": {
+   "base": "otsustama",
+   "means": {
+    "en": "we decided",
+    "az": "qərara gəldik",
+    "ru": "мы решили"
+   },
+   "deck": "moreverbs"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "selleks": {
+   "base": "see",
+   "means": {
+    "en": "for that",
+    "az": "bunun üçün",
+    "ru": "для этого"
+   },
+   "deck": "pronouns"
+  },
+  "lastel": {
+   "base": "laps",
+   "means": {
+    "en": "for the children (lastel oleks: the children would have)",
+    "az": "uşaqlar üçün",
+    "ru": "у детей, детям"
+   },
+   "deck": "talk"
+  },
+  "oleks": {
+   "base": "olema",
+   "means": {
+    "en": "would be (mul oleks vaja: I would need)",
+    "az": "olardı",
+    "ru": "было бы"
+   },
+   "deck": "verbs"
+  },
+  "kergem": {
+   "base": "kerge",
+   "means": {
+    "en": "easier, lighter",
+    "az": "asan, yüngül",
+    "ru": "легче"
+   },
+   "deck": "describing"
+  },
+  "käia": {
+   "base": "käima",
+   "means": {
+    "en": "to go (regularly), to attend",
+    "az": "getmək",
+    "ru": "ходить"
+   },
+   "deck": "moreverbs"
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes; has to (tuleb vahetada: has to be changed)",
+    "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+    "ru": "приходит; надо (tuleb vahetada: надо сменить)"
+   },
+   "deck": "verbs"
+  },
+  "vahetada": {
+   "base": "vahetama",
+   "means": {
+    "en": "to change, to exchange",
+    "az": "dəyişmək",
+    "ru": "сменить"
+   },
+   "deck": "moreverbs"
+  },
+  "kolmandasse": {
+   "base": "kolmas",
+   "means": {
+    "en": "to the third",
+    "az": "üçüncüyə",
+    "ru": "в третий"
+   },
+   "deck": "numbers"
+  },
+  "klassi": {
+   "base": "klass",
+   "means": {
+    "en": "class, grade (at school)",
+    "az": "sinif",
+    "ru": "класс"
+   }
+  },
+  "descartes": {
+   "base": "Descartes",
+   "means": {
+    "en": "Descartes (the Descartes Lyceum, a school in Tallinn)",
+    "az": "Dekart",
+    "ru": "Декарт"
+   }
+  },
+  "i": {
+   "base": "-i",
+   "means": {
+    "en": "the ending after an apostrophe (Descartes'i: Descartes's)",
+    "az": "şəkilçi (Descartes'i: Dekartın)",
+    "ru": "окончание после апострофа (Descartes'i: Декарта)"
+   }
+  },
+  "lütseumi": {
+   "base": "lütseum",
+   "means": {
+    "en": "lyceum, to the lyceum",
+    "az": "liseyə",
+    "ru": "в лицей"
+   }
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "keskkooli": {
+   "base": "keskkool",
+   "means": {
+    "en": "secondary school",
+    "az": "orta məktəb",
+    "ru": "среднюю школу"
+   },
+   "deck": "school"
+  },
+  "lõpuni": {
+   "base": "lõpp",
+   "means": {
+    "en": "until the end",
+    "az": "sonuna qədər",
+    "ru": "до конца"
+   },
+   "deck": "time"
+  },
+  "ülikooli": {
+   "base": "ülikool",
+   "means": {
+    "en": "university, to university",
+    "az": "universitetə",
+    "ru": "в университет"
+   },
+   "deck": "school"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "käisin": {
+   "base": "käima",
+   "means": {
+    "en": "I went, I visited",
+    "az": "getdim, oldum",
+    "ru": "ходил, был"
+   },
+   "deck": "moreverbs"
+  },
+  "natuke": {
+   "base": "natuke",
+   "means": {
+    "en": "a little",
+    "az": "bir az",
+    "ru": "немного"
+   },
+   "deck": "basics"
+  },
+  "kauem": {
+   "base": "kaua",
+   "means": {
+    "en": "longer",
+    "az": "daha uzun",
+    "ru": "дольше"
+   },
+   "deck": "time"
+  },
+  "ülikoolis": {
+   "base": "ülikool",
+   "means": {
+    "en": "at university",
+    "az": "universitetdə",
+    "ru": "в университете"
+   },
+   "deck": "school"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "mõned": {
+   "base": "mõni",
+   "means": {
+    "en": "some",
+    "az": "bəzi",
+    "ru": "некоторые"
+   },
+   "deck": "everyday"
+  },
+  "teised": {
+   "base": "teine",
+   "means": {
+    "en": "others",
+    "az": "digərləri",
+    "ru": "другие"
+   },
+   "deck": "numbers"
+  },
+  "inimesed": {
+   "base": "inimene",
+   "means": {
+    "en": "people",
+    "az": "insanlar",
+    "ru": "люди"
+   },
+   "deck": "talk"
+  },
+  "lõpetasin": {
+   "base": "lõpetama",
+   "means": {
+    "en": "I finished, I graduated",
+    "az": "bitirdim",
+    "ru": "я окончил"
+   },
+   "deck": "moreverbs"
+  },
+  "bakalaureuse": {
+   "base": "bakalaureus",
+   "means": {
+    "en": "bachelor's (bakalaureuseõpe: bachelor's studies)",
+    "az": "bakalavr",
+    "ru": "бакалавриат"
+   }
+  },
+  "magistriõppe": {
+   "base": "magistriõpe",
+   "means": {
+    "en": "master's studies",
+    "az": "magistratura",
+    "ru": "магистратура"
+   },
+   "deck": "school"
+  },
+  "tööle": {
+   "base": "töö",
+   "means": {
+    "en": "to work",
+    "az": "işə",
+    "ru": "на работу"
+   },
+   "deck": "talk"
+  },
+  "alustasin": {
+   "base": "alustama",
+   "means": {
+    "en": "I started",
+    "az": "başladım",
+    "ru": "я начал"
+   },
+   "deck": "moreverbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "kooliteed": {
+   "base": "koolitee",
+   "means": {
+    "en": "schooling, school career (literally: school road)",
+    "az": "məktəb yolu",
+    "ru": "школьный путь"
+   }
+  },
+  "püünsi": {
+   "base": "Püünsi",
+   "means": {
+    "en": "Püünsi, a village near Tallinn",
+    "az": "Püünsi",
+    "ru": "Пююнси"
+   }
+  },
+  "põhikoolist": {
+   "base": "põhikool",
+   "means": {
+    "en": "from basic school (grades 1–9)",
+    "az": "əsas məktəbdən",
+    "ru": "из основной школы"
+   }
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "peale": {
+   "base": "peale",
+   "means": {
+    "en": "onto; after",
+    "az": "üstünə; sonra",
+    "ru": "на; после"
+   },
+   "deck": "everyday"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "viimsi": {
+   "base": "Viimsi",
+   "means": {
+    "en": "Viimsi, a parish just outside Tallinn",
+    "az": "Viimsi",
+    "ru": "Виймси"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "järgmisest": {
+   "base": "järgmine",
+   "means": {
+    "en": "from next",
+    "az": "növbətidən",
+    "ru": "со следующего"
+   },
+   "deck": "time"
+  },
+  "aastast": {
+   "base": "aasta",
+   "means": {
+    "en": "from the year (järgmisest aastast: from next year)",
+    "az": "ildən",
+    "ru": "с года"
+   },
+   "deck": "time"
+  },
+  "õpin": {
+   "base": "õppima",
+   "means": {
+    "en": "I study",
+    "az": "oxuyuram",
+    "ru": "учусь"
+   },
+   "deck": "moreverbs"
+  },
+  "riigigümnaasiumis": {
+   "base": "riigigümnaasium",
+   "means": {
+    "en": "at the state gymnasium",
+    "az": "dövlət gimnaziyasında",
+    "ru": "в государственной гимназии"
+   }
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "ehitasid": {
+   "base": "ehitama",
+   "means": {
+    "en": "they built",
+    "az": "tikdilər",
+    "ru": "построили"
+   },
+   "deck": "moreverbs"
+  },
+  "uue": {
+   "base": "uus",
+   "means": {
+    "en": "new",
+    "az": "yeni",
+    "ru": "новый"
+   },
+   "deck": "describing"
+  },
+  "koolimaja": {
+   "base": "koolimaja",
+   "means": {
+    "en": "school building",
+    "az": "məktəb binası",
+    "ru": "здание школы"
+   },
+   "deck": "school"
+  },
+  "loodetavasti": {
+   "base": "loodetavasti",
+   "means": {
+    "en": "hopefully",
+    "az": "ümid edirəm ki",
+    "ru": "надеюсь, предположительно"
+   },
+   "deck": "everyday"
+  },
+  "lõpetan": {
+   "base": "lõpetama",
+   "means": {
+    "en": "I finish, I graduate",
+    "az": "bitirirəm",
+    "ru": "я заканчиваю"
+   },
+   "deck": "moreverbs"
+  },
+  "riigigümnaasiumi": {
+   "base": "riigigümnaasium",
+   "means": {
+    "en": "the state gymnasium (as the object)",
+    "az": "dövlət gimnaziyasını",
+    "ru": "государственную гимназию"
+   }
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "kool": {
+   "base": "kool",
+   "means": {
+    "en": "school",
+    "az": "məktəb",
+    "ru": "школа"
+   },
+   "deck": "school"
+  },
+  "algas": {
+   "base": "algama",
+   "means": {
+    "en": "began, started",
+    "az": "başladı",
+    "ru": "началась"
+   },
+   "deck": "moreverbs"
+  },
+  "esimesel": {
+   "base": "esimene",
+   "means": {
+    "en": "on the first",
+    "az": "birində",
+    "ru": "первого"
+   },
+   "deck": "numbers"
+  },
+  "septembril": {
+   "base": "september",
+   "means": {
+    "en": "in September (esimesel septembril: on the first of September)",
+    "az": "sentyabrda",
+    "ru": "сентября"
+   },
+   "deck": "time"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "seitsmeaastane": {
+   "base": "seitsmeaastane",
+   "means": {
+    "en": "seven years old",
+    "az": "yeddi yaşlı",
+    "ru": "семилетний"
+   }
+  },
+  "vanemad": {
+   "base": "vanem",
+   "means": {
+    "en": "parents; older",
+    "az": "valideynlər; böyük",
+    "ru": "родители; старшие"
+   },
+   "deck": "adjectives-cards"
+  },
+  "arvasid": {
+   "base": "arvama",
+   "means": {
+    "en": "they thought",
+    "az": "düşündülər",
+    "ru": "они думали"
+   },
+   "deck": "moreverbs"
+  },
+  "las": {
+   "base": "las",
+   "means": {
+    "en": "let (las ma vaatan: let me see)",
+    "az": "qoy",
+    "ru": "пусть, дай"
+   }
+  },
+  "poiss": {
+   "base": "poiss",
+   "means": {
+    "en": "boy",
+    "az": "oğlan",
+    "ru": "мальчик"
+   },
+   "deck": "talk"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "aasta": {
+   "base": "aasta",
+   "means": {
+    "en": "year",
+    "az": "il",
+    "ru": "год"
+   },
+   "deck": "time"
+  },
+  "kodus": {
+   "base": "kodu",
+   "means": {
+    "en": "at home",
+    "az": "evdə",
+    "ru": "дома"
+   },
+   "deck": "home"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "hoidja": {
+   "base": "hoidja",
+   "means": {
+    "en": "nanny, childminder",
+    "az": "dayə",
+    "ru": "няня"
+   }
+  },
+  "vana": {
+   "base": "vana",
+   "means": {
+    "en": "old",
+    "az": "qoca, köhnə",
+    "ru": "старый"
+   },
+   "deck": "describing"
+  },
+  "kokamamma": {
+   "base": "kokamamma",
+   "means": {
+    "en": "old cook (a woman cook in a household)",
+    "az": "aşpaz qadın",
+    "ru": "кухарка"
+   }
+  },
+  "kunagi": {
+   "base": "kunagi",
+   "means": {
+    "en": "once, ever",
+    "az": "bir vaxtlar",
+    "ru": "когда-то"
+   },
+   "deck": "often"
+  },
+  "peterburis": {
+   "base": "Peterburi",
+   "means": {
+    "en": "in St Petersburg",
+    "az": "Peterburqda",
+    "ru": "в Петербурге"
+   }
+  },
+  "teeninud": {
+   "base": "teenima",
+   "means": {
+    "en": "having served, been in service",
+    "az": "xidmət etmiş",
+    "ru": "служивший"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "väärikas": {
+   "base": "väärikas",
+   "means": {
+    "en": "dignified",
+    "az": "ləyaqətli",
+    "ru": "достойный"
+   }
+  },
+  "daam": {
+   "base": "daam",
+   "means": {
+    "en": "lady",
+    "az": "xanım",
+    "ru": "дама"
+   }
+  },
+  "kahjuks": {
+   "base": "kahjuks",
+   "means": {
+    "en": "unfortunately",
+    "az": "təəssüf ki",
+    "ru": "к сожалению"
+   },
+   "deck": "service"
+  },
+  "tema": {
+   "base": "tema",
+   "means": {
+    "en": "he, she (stressed)",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "septembris": {
+   "base": "september",
+   "means": {
+    "en": "in September",
+    "az": "sentyabrda",
+    "ru": "в сентябре"
+   },
+   "deck": "time"
+  },
+  "suri": {
+   "base": "surema",
+   "means": {
+    "en": "died (suri ära: passed away)",
+    "az": "öldü",
+    "ru": "умер"
+   },
+   "deck": "family"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
+   },
+   "deck": "everyday"
+  },
+  "selgus": {
+   "base": "selguma",
+   "means": {
+    "en": "it turned out",
+    "az": "məlum oldu",
+    "ru": "выяснилось"
+   },
+   "deck": "moreverbs"
+  },
+  "taha": {
+   "base": "tahtma",
+   "means": {
+    "en": "want (after ei: ei taha, doesn't want)",
+    "az": "istəmir (ei taha)",
+    "ru": "не хочет (ei taha)"
+   },
+   "deck": "verbs"
+  },
+  "üksi": {
+   "base": "üksi",
+   "means": {
+    "en": "alone",
+    "az": "tək",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "tahab": {
+   "base": "tahtma",
+   "means": {
+    "en": "wants",
+    "az": "istəyir",
+    "ru": "хочет"
+   },
+   "deck": "verbs"
+  },
+  "minna": {
+   "base": "minema",
+   "means": {
+    "en": "to go",
+    "az": "getmək",
+    "ru": "пойти"
+   },
+   "deck": "verbs"
+  },
+  "ema": {
+   "base": "ema",
+   "means": {
+    "en": "mother",
+    "az": "ana",
+    "ru": "мама"
+   },
+   "deck": "talk"
+  },
+  "käis": {
+   "base": "käima",
+   "means": {
+    "en": "went, visited (käis rääkimas: went to talk)",
+    "az": "getdi",
+    "ru": "ходил"
+   },
+   "deck": "moreverbs"
+  },
+  "direktoriga": {
+   "base": "direktor",
+   "means": {
+    "en": "with the head teacher",
+    "az": "direktorla",
+    "ru": "с директором"
+   },
+   "deck": "jobs"
+  },
+  "rääkimas": {
+   "base": "rääkima",
+   "means": {
+    "en": "talking (käima rääkimas, go to talk)",
+    "az": "danışmağa (getmək)",
+    "ru": "поговорить (ходить)"
+   },
+   "deck": "verbs"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "mind": {
+   "base": "mina",
+   "means": {
+    "en": "me",
+    "az": "məni",
+    "ru": "меня"
+   }
+  },
+  "võeti": {
+   "base": "võtma",
+   "means": {
+    "en": "was taken (mind võeti kooli: I was taken into school)",
+    "az": "götürüldü",
+    "ru": "взяли"
+   },
+   "deck": "verbs"
+  },
+  "oktoobri": {
+   "base": "oktoober",
+   "means": {
+    "en": "October's, of October",
+    "az": "oktyabrın",
+    "ru": "октября"
+   },
+   "deck": "time"
+  },
+  "teisel": {
+   "base": "teine",
+   "means": {
+    "en": "on the second",
+    "az": "ikinci",
+    "ru": "на втором"
+   },
+   "deck": "numbers"
+  },
+  "poolel": {
+   "base": "pool",
+   "means": {
+    "en": "half, side (teisel poolel: in the second half)",
+    "az": "yarısında",
+    "ru": "половине"
+   },
+   "deck": "numbers"
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "lõpetanud": {
+   "base": "lõpetama",
+   "means": {
+    "en": "finished, graduated",
+    "az": "bitirmiş",
+    "ru": "окончил"
+   },
+   "deck": "moreverbs"
+  },
+  "traktoristi": {
+   "base": "traktorist",
+   "means": {
+    "en": "tractor driver's; tractor driver",
+    "az": "traktorçu",
+    "ru": "тракториста"
+   }
+  },
+  "mehhanisaatorina": {
+   "base": "mehhanisaator",
+   "means": {
+    "en": "as a mechanic (a farm machine operator)",
+    "az": "mexanizator kimi",
+    "ru": "механизатором"
+   }
+  },
+  "paberitega": {
+   "base": "paber",
+   "means": {
+    "en": "with papers (traktoristi paberitega: with a tractor licence)",
+    "az": "sənədlərlə",
+    "ru": "с документами"
+   }
+  },
+  "sain": {
+   "base": "saama",
+   "means": {
+    "en": "I got",
+    "az": "aldım",
+    "ru": "я получил"
+   },
+   "deck": "verbs"
+  },
+  "mootorrattaload": {
+   "base": "mootorrattaluba",
+   "means": {
+    "en": "motorbike licence",
+    "az": "motosiklet vəsiqəsi",
+    "ru": "права на мотоцикл"
+   }
+  },
+  "loomulikult": {
+   "base": "loomulikult",
+   "means": {
+    "en": "naturally, of course",
+    "az": "təbii ki",
+    "ru": "естественно"
+   },
+   "deck": "everyday"
+  },
+  "autojuhiload": {
+   "base": "autojuhiluba",
+   "means": {
+    "en": "driving licence",
+    "az": "sürücülük vəsiqəsi",
+    "ru": "водительские права"
+   }
+  },
+  "õppima": {
+   "base": "õppima",
+   "means": {
+    "en": "to study",
+    "az": "oxumağa",
+    "ru": "учиться"
+   },
+   "deck": "moreverbs"
+  },
+  "tartu": {
+   "base": "Tartu",
+   "means": {
+    "en": "Tartu (Tartu Ülikool: the University of Tartu)",
+    "az": "Tartu",
+    "ru": "Тарту"
+   }
+  },
+  "mõttega": {
+   "base": "mõte",
+   "means": {
+    "en": "with the thought, to the idea",
+    "az": "fikrə",
+    "ru": "к мысли"
+   },
+   "deck": "paper"
+  },
+  "ausalt": {
+   "base": "ausalt",
+   "means": {
+    "en": "honestly",
+    "az": "düzünü desəm",
+    "ru": "честно"
+   }
+  },
+  "öelda": {
+   "base": "ütlema",
+   "means": {
+    "en": "to say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "deck": "everyday"
+  },
+  "harjutatud": {
+   "base": "harjutama",
+   "means": {
+    "en": "made used to, trained",
+    "az": "öyrəşdirilmiş",
+    "ru": "приучен"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "tea": {
+   "base": "teadma",
+   "means": {
+    "en": "know (after ei: ei tea, don't know)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не знаю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "suguvõsas": {
+   "base": "suguvõsa",
+   "means": {
+    "en": "in the extended family",
+    "az": "nəsildə",
+    "ru": "в родне"
+   }
+  },
+  "kõrgema": {
+   "base": "kõrgem",
+   "means": {
+    "en": "higher (kõrgem haridus: higher education)",
+    "az": "ali",
+    "ru": "высшим"
+   }
+  },
+  "haridusega": {
+   "base": "haridus",
+   "means": {
+    "en": "with education",
+    "az": "təhsilli",
+    "ru": "с образованием"
+   },
+   "deck": "school"
+  },
+  "inimesi": {
+   "base": "inimene",
+   "means": {
+    "en": "people",
+    "az": "adamlar",
+    "ru": "людей"
+   },
+   "deck": "talk"
+  },
+  "vähe": {
+   "base": "vähe",
+   "means": {
+    "en": "few, little",
+    "az": "az",
+    "ru": "мало"
+   }
+  },
+  "teadsin": {
+   "base": "teadma",
+   "means": {
+    "en": "I knew",
+    "az": "bilirdim",
+    "ru": "я знал"
+   },
+   "deck": "verbs"
+  },
+  "kindlalt": {
+   "base": "kindlalt",
+   "means": {
+    "en": "for certain, firmly",
+    "az": "dəqiq",
+    "ru": "твёрдо, наверняка"
+   }
+  },
+  "keskkool": {
+   "base": "keskkool",
+   "means": {
+    "en": "secondary school",
+    "az": "orta məktəb",
+    "ru": "средняя школа"
+   },
+   "deck": "school"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "läbi": {
+   "base": "läbi",
+   "means": {
+    "en": "through, over (läbi saama: to end)",
+    "az": "başa (läbi saama: bitmək)",
+    "ru": "через, конец (läbi saama: кончиться)"
+   },
+   "deck": "everyday"
+  },
+  "lähen": {
+   "base": "minema",
+   "means": {
+    "en": "I go",
+    "az": "gedirəm",
+    "ru": "иду"
+   },
+   "deck": "verbs"
+  },
+  "ainus": {
+   "base": "ainus",
+   "means": {
+    "en": "only, sole",
+    "az": "yeganə",
+    "ru": "единственный"
+   },
+   "deck": "stopp-words"
+  },
+  "küsimus": {
+   "base": "küsimus",
+   "means": {
+    "en": "question",
+    "az": "sual",
+    "ru": "вопрос"
+   },
+   "deck": "school"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "õppida": {
+   "base": "õppima",
+   "means": {
+    "en": "to study, to learn",
+    "az": "oxumaq, öyrənmək",
+    "ru": "учиться, изучать"
+   },
+   "deck": "moreverbs"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "valik": {
+   "base": "valik",
+   "means": {
+    "en": "choice, selection",
+    "az": "seçim",
+    "ru": "выбор"
+   },
+   "deck": "shops"
+  },
+  "langes": {
+   "base": "langema",
+   "means": {
+    "en": "fell (valik langes … kasuks: the choice fell on)",
+    "az": "düşdü",
+    "ru": "пал"
+   },
+   "deck": "moreverbs"
+  },
+  "filoloogia": {
+   "base": "filoloogia",
+   "means": {
+    "en": "philology",
+    "az": "filologiya",
+    "ru": "филология"
+   }
+  },
+  "kasuks": {
+   "base": "kasu",
+   "means": {
+    "en": "in favour of (filoloogia kasuks: on philology)",
+    "az": "xeyrinə",
+    "ru": "в пользу"
+   },
+   "deck": "shops"
+  },
+  "konkurss": {
+   "base": "konkurss",
+   "means": {
+    "en": "competition (for places)",
+    "az": "müsabiqə",
+    "ru": "конкурс"
+   }
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "suur": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большой"
+   },
+   "deck": "basics"
+  },
+  "sisse": {
+   "base": "sisse",
+   "means": {
+    "en": "in, into (sain sisse: I got in)",
+    "az": "içəri (sain sisse: qəbul oldum)",
+    "ru": "внутрь (sain sisse: я поступил)"
+   }
+  },
+  "sai": {
+   "base": "saama",
+   "means": {
+    "en": "got, became (sai läbi: was over; sai kaksikud: had twins)",
+    "az": "aldı, oldu (sai läbi: bitdi)",
+    "ru": "получил, стал (sai läbi: закончилась)"
+   },
+   "deck": "verbs"
+  },
+  "tore": {
+   "base": "tore",
+   "means": {
+    "en": "nice, lovely",
+    "az": "gözəl",
+    "ru": "хороший, замечательный"
+   },
+   "deck": "talk"
+  },
+  "aeg": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  }
+ }
+}

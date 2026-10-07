@@ -361,9 +361,9 @@
   "teise": {
    "base": "teine",
    "means": {
-    "en": "another, a second",
-    "az": "ikincisini",
-    "ru": "второго"
+    "en": "another, a second; the other (teise linna otsa: to the other end of town)",
+    "az": "başqa, ikinci; o biri",
+    "ru": "другой, второй"
    },
    "deck": "numbers"
   },
