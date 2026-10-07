@@ -515,9 +515,9 @@
   "ära": {
    "base": "ära",
    "means": {
-    "en": "off, away (pesen ära: wash through, finish washing)",
-    "az": "tamamilə (fel ilə)",
-    "ru": "до конца (с глаголом)"
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
    },
    "deck": "everyday"
   },
@@ -983,9 +983,9 @@
   "saab": {
    "base": "saama",
    "means": {
-    "en": "can (saab broneerida: it can be booked); gets",
-    "az": "olar; alır",
-    "ru": "можно; получает"
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
    },
    "deck": "verbs"
   },

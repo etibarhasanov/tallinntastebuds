@@ -49420,6 +49420,1310 @@
           ]
         }
       ]
+    },
+    {
+      "id": "talk-instalments",
+      "added": "2026-10-07",
+      "name": {
+        "en": "Buying on instalments",
+        "az": "Hissə-hissə ödənişlə almaq",
+        "ru": "Покупка в рассрочку"
+      },
+      "why": {
+        "en": "A washing machine on instalments, a library card for an ID, and no to the insurance",
+        "az": "Hissə-hissə ödənişlə paltaryuyan maşın, şəxsiyyət vəsiqəsi yerinə kitabxana kartı və sığortaya \"yox\"",
+        "ru": "Стиральная машина в рассрочку, читательский билет вместо удостоверения и отказ от страховки"
+      },
+      "taste": "70 eurot on päris suur raha.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Kas ostate siis kohe välja või soovite järelmaksuga osta?",
+                  "en": "Will you pay for it in full now, or would you like to pay in instalments?",
+                  "az": "Onu indi tam ödəyib alırsınız, yoxsa hissə-hissə ödənişlə almaq istəyirsiniz?",
+                  "ru": "Вы сразу выкупите полностью или хотите купить в рассрочку?"
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Kui saab, siis järelmaksuga.",
+                  "en": "If it's possible, then in instalments.",
+                  "az": "Mümkündürsə, hissə-hissə ödənişlə.",
+                  "ru": "Если можно, то в рассрочку."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Saab-saab.",
+                  "en": "Of course it's possible.",
+                  "az": "Olar, əlbəttə.",
+                  "ru": "Можно, можно."
+                },
+                {
+                  "et": "Siis ma palun mingit isikut tõendavat dokumenti.",
+                  "en": "In that case, can I have some sort of ID, please?",
+                  "az": "Onda sizdən hər hansı şəxsiyyəti təsdiq edən sənəd xahiş edirəm.",
+                  "ru": "Тогда попрошу какой-нибудь документ, удостоверяющий личность."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Palun.",
+                  "en": "Here you are.",
+                  "az": "Buyurun.",
+                  "ru": "Пожалуйста."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "See on raamatukogukaart.",
+                  "en": "This is a library card.",
+                  "az": "Bu, kitabxana kartıdır.",
+                  "ru": "Это читательский билет."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Vabandust.",
+                  "en": "I'm sorry.",
+                  "az": "Bağışlayın.",
+                  "ru": "Извините."
+                },
+                {
+                  "et": "Palun.",
+                  "en": "Here you are.",
+                  "az": "Buyurun.",
+                  "ru": "Пожалуйста."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Nii.",
+                  "en": "Right.",
+                  "az": "Belə.",
+                  "ru": "Так."
+                },
+                {
+                  "et": "Lepingu vormistamine võtab veidi aega.",
+                  "en": "Drawing up the contract takes a little time.",
+                  "az": "Müqavilənin rəsmiləşdirilməsi bir az vaxt aparır.",
+                  "ru": "Оформление договора займёт немного времени."
+                },
+                {
+                  "et": "Istuge palun.",
+                  "en": "Please take a seat.",
+                  "az": "Əyləşin, xahiş edirəm.",
+                  "ru": "Присаживайтесь, пожалуйста."
+                },
+                {
+                  "et": "Ma teen dokumentidest koopiad ja võtan pangaga ühendust.",
+                  "en": "I'll make copies of the documents and get in touch with the bank.",
+                  "az": "Mən sənədlərin surətini çıxarıram və bankla əlaqə saxlayıram.",
+                  "ru": "Я сделаю копии документов и свяжусь с банком."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Sobib.",
+                  "en": "That's fine.",
+                  "az": "Uyğundur.",
+                  "ru": "Хорошо."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Kas soovite kindlustust ka?",
+                  "en": "Would you like insurance as well?",
+                  "az": "Sığorta da istəyirsiniz?",
+                  "ru": "Страховку тоже хотите?"
+                },
+                {
+                  "et": "See maksab ainult 70 eurot.",
+                  "en": "It costs only 70 euros.",
+                  "az": "Cəmi 70 avro tutur.",
+                  "ru": "Она стоит всего 70 евро."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "70 eurot on päris suur raha.",
+                  "en": "70 euros is quite a lot of money.",
+                  "az": "70 avro xeyli puldur.",
+                  "ru": "70 евро — это довольно большие деньги."
+                },
+                {
+                  "et": "Mis ma selle eest saan?",
+                  "en": "What do I get for it?",
+                  "az": "Bunun əvəzində nə alıram?",
+                  "ru": "Что я за это получу?"
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "No kui näiteks pesumasin katki läheb, siis garantiiaja sees vahetame teil kohe katkise masina uue masina vastu välja.",
+                  "en": "Well, if the washing machine breaks down, for instance, then within the warranty period we exchange the broken machine for a new one straight away.",
+                  "az": "Yaxşı, məsələn, paltaryuyan maşın xarab olsa, zəmanət müddəti ərzində xarab maşını dərhal yenisi ilə dəyişirik.",
+                  "ru": "Ну, если, например, стиральная машина сломается, то в течение гарантийного срока мы вам сразу заменим сломанную машину на новую."
+                },
+                {
+                  "et": "Ja garantiiaeg on kaks aastat.",
+                  "en": "And the warranty period is two years.",
+                  "az": "Zəmanət müddəti də iki ildir.",
+                  "ru": "А гарантийный срок — два года."
+                },
+                {
+                  "et": "Nii et kaks aastat võite täiesti muretu olla.",
+                  "en": "So for two years you can be completely free of worry.",
+                  "az": "Yəni iki il tamamilə narahatçılıqsız ola bilərsiniz.",
+                  "ru": "Так что два года вы можете ни о чём не беспокоиться."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Ei, kindlustust ma ei soovi.",
+                  "en": "No, I don't want the insurance.",
+                  "az": "Yox, sığorta istəmirəm.",
+                  "ru": "Нет, страховку я не хочу."
+                },
+                {
+                  "et": "Ma eeldan, et see pesumasin ei lähe katki.",
+                  "en": "I'm assuming this washing machine won't break.",
+                  "az": "Güman edirəm ki, bu paltaryuyan maşın xarab olmayacaq.",
+                  "ru": "Я исхожу из того, что эта стиральная машина не сломается."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Selge.",
+                  "en": "Understood.",
+                  "az": "Aydındır.",
+                  "ru": "Понятно."
+                },
+                {
+                  "et": "Kuidas arvate.",
+                  "en": "As you wish.",
+                  "az": "Necə istəyirsiniz.",
+                  "ru": "Как хотите."
+                },
+                {
+                  "et": "Kirjutage palun siia tänane kuupäev.",
+                  "en": "Please write today's date here.",
+                  "az": "Zəhmət olmasa, bura bugünkü tarixi yazın.",
+                  "ru": "Напишите, пожалуйста, здесь сегодняшнее число."
+                },
+                {
+                  "et": "Ja siia kirjutage allkiri.",
+                  "en": "And write your signature here.",
+                  "az": "Bura da imzanızı atın.",
+                  "ru": "А здесь распишитесь."
+                }
+              ]
+            },
+            {
+              "who": "Müüja",
+              "lines": [
+                {
+                  "et": "Oma uue pesumasina saate siis homse päeva jooksul kätte.",
+                  "en": "You'll get your new washing machine sometime tomorrow, then.",
+                  "az": "Yeni paltaryuyan maşınınızı sabah gün ərzində alacaqsınız.",
+                  "ru": "Свою новую стиральную машину вы тогда получите в течение завтрашнего дня."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Fantastiline!",
+                  "en": "Fantastic!",
+                  "az": "Fantastik!",
+                  "ru": "Фантастика!"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-school",
+      "added": "2026-10-07",
+      "name": {
+        "en": "Where did you go to school?",
+        "az": "Harada məktəbə getmisən?",
+        "ru": "Где ты учился в школе?"
+      },
+      "why": {
+        "en": "Mirja changes schools for the third grade, Mai Riin moves to a new building, and Jüri starts in October",
+        "az": "Mirja üçüncü sinifdə məktəbini dəyişir, Mai Riin yeni binaya keçir, Jüri isə məktəbə oktyabrda başlayır",
+        "ru": "Mirja меняет школу в третьем классе, Mai Riin переходит в новое здание, а Jüri идёт в школу в октябре"
+      },
+      "taste": "Mina läksin kooli 1960. aastal.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Kus sa koolis oled käinud?",
+            "en": "Where did you go to school?",
+            "az": "Harada məktəbə getmisən?",
+            "ru": "Где ты учился в школе?"
+          },
+          "turns": [
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Läksin kooli üheksakümne neljandal aastal, olin siis kuueaastane.",
+                  "en": "I went to school in ninety-four; I was six then.",
+                  "az": "Doxsan dördüncü ildə məktəbə getdim, onda altı yaşım vardı.",
+                  "ru": "Я пошла в школу в девяносто четвёртом году, мне тогда было шесть лет."
+                },
+                {
+                  "et": "Kaks aastat hiljem läksin järgmisse kooli, sest meie perekond kolis teise linna otsa ja siis me otsustasime, et selleks, et lastel oleks kergem koolis käia, tuleb kooli vahetada.",
+                  "en": "Two years later I went to another school, because our family moved to the other end of town, and we decided that to make it easier for the children to get to school, we had to change schools.",
+                  "az": "İki il sonra başqa məktəbə keçdim, çünki ailəmiz şəhərin o biri başına köçdü və biz qərara gəldik ki, uşaqlar üçün məktəbə getmək asan olsun deyə məktəbi dəyişmək lazımdır.",
+                  "ru": "Через два года я перешла в другую школу, потому что наша семья переехала на другой конец города, и мы решили, что, чтобы детям было легче ходить в школу, надо сменить школу."
+                },
+                {
+                  "et": "Kolmandasse klassi läksin siis Descartes'i lütseumi.",
+                  "en": "So for the third grade I went to the Descartes Lyceum.",
+                  "az": "Üçüncü sinfə artıq Dekart liseyinə getdim.",
+                  "ru": "В третий класс я пошла уже в Декартовский лицей."
+                },
+                {
+                  "et": "Seal ma olin keskkooli lõpuni.",
+                  "en": "I stayed there until the end of secondary school.",
+                  "az": "Orada orta məktəbi bitirənə qədər oxudum.",
+                  "ru": "Там я и училась до конца средней школы."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Siis ma läksin ülikooli, see oli aastal 2006.",
+                  "en": "Then I went to university; that was in 2006.",
+                  "az": "Sonra universitetə getdim, bu 2006-cı ildə idi.",
+                  "ru": "Потом я поступила в университет, это было в 2006 году."
+                },
+                {
+                  "et": "Ja ma käisin natuke kauem ülikoolis kui mõned teised inimesed.",
+                  "en": "And I was at university a little longer than some other people.",
+                  "az": "Universitetdə bəzi başqa adamlardan bir az uzun oxudum.",
+                  "ru": "И я проучилась в университете немного дольше, чем некоторые другие."
+                },
+                {
+                  "et": "Lõpetasin aastal 2010 bakalaureuse- ja hiljem aastal 2013 magistriõppe.",
+                  "en": "I finished my bachelor's in 2010 and later, in 2013, my master's.",
+                  "az": "2010-cu ildə bakalavrı, sonra 2013-cü ildə magistraturanı bitirdim.",
+                  "ru": "В 2010 году я окончила бакалавриат, а позже, в 2013 году, магистратуру."
+                },
+                {
+                  "et": "Ja siis läksin tööle.",
+                  "en": "And then I went to work.",
+                  "ru": "А потом пошла работать.",
+                  "az": "Sonra da işə getdim."
+                }
+              ]
+            },
+            {
+              "who": "Mai Riin",
+              "lines": [
+                {
+                  "et": "Ma alustasin oma kooliteed Püünsi Põhikoolist ja lõpetasin selle 2016. aastal.",
+                  "en": "I started my schooling at Püünsi Basic School and finished it in 2016.",
+                  "az": "Məktəb yolumu Püünsi əsas məktəbində başladım və onu 2016-cı ildə bitirdim.",
+                  "ru": "Я начала учиться в Пююнсиской основной школе и окончила её в 2016 году."
+                },
+                {
+                  "et": "Peale seda ma läksin Viimsi Keskkooli.",
+                  "en": "After that I went to Viimsi Secondary School.",
+                  "az": "Ondan sonra Viimsi orta məktəbinə getdim.",
+                  "ru": "После этого я пошла в Виймсискую среднюю школу."
+                },
+                {
+                  "et": "Aga järgmisest aastast ma õpin Viimsi Riigigümnaasiumis, sest nad ehitasid uue koolimaja.",
+                  "en": "But from next year I'll be studying at Viimsi State Gymnasium, because they built a new school building.",
+                  "az": "Amma gələn ildən Viimsi Dövlət Gimnaziyasında oxuyacağam, çünki onlar yeni məktəb binası tikdilər.",
+                  "ru": "Но со следующего года я учусь в Виймсиской государственной гимназии, потому что они построили новое здание школы."
+                },
+                {
+                  "et": "Ja siis loodetavasti 2019. aastal ma lõpetan Viimsi Riigigümnaasiumi.",
+                  "en": "And then, hopefully, in 2019 I'll graduate from Viimsi State Gymnasium.",
+                  "az": "Sonra da, ümid edirəm, 2019-cu ildə Viimsi Dövlət Gimnaziyasını bitirəcəyəm.",
+                  "ru": "И потом, надеюсь, в 2019 году я окончу Виймсискую государственную гимназию."
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Mina läksin kooli 1960. aastal.",
+                  "en": "I went to school in 1960.",
+                  "az": "Mən 1960-cı ildə məktəbə getdim.",
+                  "ru": "Я пошёл в школу в 1960 году."
+                },
+                {
+                  "et": "Ja hiljem kui teised, sest kui kool algas esimesel septembril, siis ma ei olnud veel seitsmeaastane ja vanemad arvasid, et las poiss olla ühe aasta veel kodus.",
+                  "en": "And later than the others, because when school started on the first of September I wasn't seven yet, and my parents thought: let the boy stay at home one more year.",
+                  "az": "Özü də başqalarından gec, çünki məktəb sentyabrın birində başlayanda mənim hələ yeddi yaşım yox idi və valideynlərim düşündülər ki, qoy oğlan bir il də evdə qalsın.",
+                  "ru": "И позже, чем другие, потому что, когда первого сентября начались занятия, мне ещё не было семи лет, и родители решили: пусть мальчик ещё годик побудет дома."
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Mul oli hoidja, vana kokamamma, kunagi Peterburis teeninud väga väärikas daam.",
+                  "en": "I had a nanny, an old cook, a very dignified lady who had once been in service in St Petersburg.",
+                  "az": "Mənim dayəm vardı, qoca aşpaz qadın, vaxtilə Peterburqda xidmət etmiş çox ləyaqətli bir xanım.",
+                  "ru": "У меня была няня, старая кухарка, очень достойная дама, когда-то служившая в Петербурге."
+                },
+                {
+                  "et": "Kahjuks tema septembris suri ära.",
+                  "en": "Sadly she died in September.",
+                  "az": "Təəssüf ki, o, sentyabrda öldü.",
+                  "ru": "К сожалению, в сентябре она умерла."
+                },
+                {
+                  "et": "Ja siis selgus, et poiss ei taha üksi kodus olla, et poiss tahab kooli minna.",
+                  "en": "And then it turned out that the boy didn't want to be at home alone, that the boy wanted to go to school.",
+                  "az": "Sonra məlum oldu ki, oğlan evdə tək qalmaq istəmir, oğlan məktəbə getmək istəyir.",
+                  "ru": "И тогда выяснилось, что мальчик не хочет оставаться дома один, что мальчик хочет в школу."
+                },
+                {
+                  "et": "Ema käis siis direktoriga rääkimas ja nii mind võeti oktoobri teisel poolel kooli.",
+                  "en": "So my mother went to talk to the head teacher, and that's how I was taken into school in the second half of October.",
+                  "az": "Anam direktorla danışmağa getdi və beləcə məni oktyabrın ikinci yarısında məktəbə götürdülər.",
+                  "ru": "Мама сходила поговорить с директором, и так меня во второй половине октября взяли в школу."
+                },
+                {
+                  "et": "Ja seal ma käisin 11. klassi lõpuni.",
+                  "en": "And I went there until the end of the 11th grade.",
+                  "az": "Orada 11-ci sinfin sonuna qədər oxudum.",
+                  "ru": "И там я учился до конца 11-го класса."
+                },
+                {
+                  "et": "Nii et keskkooli olen ma lõpetanud traktoristi-mehhanisaatorina, traktoristi paberitega, hiljem sain veel mootorrattaload ja ülikoolis loomulikult autojuhiload.",
+                  "en": "So I finished secondary school as a tractor driver-mechanic, with tractor driver's papers; later I also got a motorbike licence and, at university, of course, a driving licence.",
+                  "az": "Yəni orta məktəbi traktorçu-mexanizator kimi, traktorçu sənədləri ilə bitirmişəm, sonra motosiklet vəsiqəsi, universitetdə isə, əlbəttə, sürücülük vəsiqəsi də aldım.",
+                  "ru": "Так что среднюю школу я окончил трактористом-механизатором, с правами тракториста, позже получил ещё права на мотоцикл, а в университете, конечно, водительские права."
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Siis ma läksin õppima Tartu Ülikooli ja selle mõttega ausalt öelda oli mind harjutatud juba ma ei tea kui kaua, sest meie suguvõsas oli kõrgema haridusega inimesi väga vähe.",
+                  "en": "Then I went to study at the University of Tartu, and, to be honest, I had been made used to that idea for I don't know how long, because in our extended family there were very few people with higher education.",
+                  "az": "Sonra Tartu Universitetinə oxumağa getdim və düzünü desəm, məni bu fikrə bilmirəm nə vaxtdan öyrəşdirmişdilər, çünki bizim nəsildə ali təhsilli adam çox az idi.",
+                  "ru": "Потом я поехал учиться в Тартуский университет, и, честно говоря, к этой мысли меня приучали уже не знаю сколько времени, потому что в нашей родне людей с высшим образованием было очень мало."
+                },
+                {
+                  "et": "Nii et ma teadsin kindlalt, et kui keskkool on läbi, lähen loomulikult ülikooli.",
+                  "en": "So I knew for certain that when secondary school was over, I would of course go to university.",
+                  "az": "Ona görə də dəqiq bilirdim ki, orta məktəb bitən kimi, təbii ki, universitetə gedəcəyəm.",
+                  "ru": "Так что я твёрдо знал, что, когда школа закончится, я, конечно, пойду в университет."
+                },
+                {
+                  "et": "Ja ainus küsimus oli: mida õppida?",
+                  "en": "And the only question was: what to study?",
+                  "az": "Yeganə sual bu idi: nə oxumalı?",
+                  "ru": "И единственный вопрос был: что изучать?"
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Minu valik langes filoloogia kasuks.",
+                  "en": "My choice fell on philology.",
+                  "az": "Seçimim filologiyanın xeyrinə oldu.",
+                  "ru": "Мой выбор пал на филологию."
+                },
+                {
+                  "et": "Konkurss oli päris suur, aga ma sain sisse.",
+                  "en": "The competition was quite stiff, but I got in.",
+                  "az": "Müsabiqə xeyli böyük idi, amma qəbul oldum.",
+                  "ru": "Конкурс был довольно большой, но я поступил."
+                },
+                {
+                  "et": "Ma lõpetasin ülikooli 1976. aastal ja siis sai see tore aeg läbi.",
+                  "en": "I graduated from university in 1976, and then that wonderful time was over.",
+                  "az": "Universiteti 1976-cı ildə bitirdim və o gözəl vaxt da bununla bitdi.",
+                  "ru": "Я окончил университет в 1976 году, и на этом то прекрасное время закончилось."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-subjects",
+      "added": "2026-10-07",
+      "name": {
+        "en": "The subjects you liked, and the ones you didn't",
+        "az": "Sevdiyin və sevmədiyin fənlər",
+        "ru": "Любимые и нелюбимые предметы"
+      },
+      "why": {
+        "en": "Languages and skiing, physics and PE, and what Jüri, Mai Riin and Mirja did after lessons",
+        "az": "Dillər və xizək, fizika və bədən tərbiyəsi, Jüri, Mai Riin və Mirja dərsdən sonra nə edirdilər",
+        "ru": "Языки и лыжи, физика и физкультура, и чем Jüri, Mai Riin и Mirja занимались после уроков"
+      },
+      "taste": "Mulle meeldisid väga keeled",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Missugune õppeaine sulle meeldis?",
+            "en": "Which subject did you like?",
+            "az": "Hansı fənni sevirdin?",
+            "ru": "Какой предмет тебе нравился?"
+          },
+          "turns": [
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Mulle meeldisid peaaegu kõik õppeained.",
+                  "en": "I liked almost all subjects.",
+                  "az": "Demək olar ki, bütün fənləri sevirdim.",
+                  "ru": "Мне нравились почти все предметы."
+                },
+                {
+                  "et": "Reaalained olid natuke raskemad, aga mulle meeldis koolis käia.",
+                  "en": "The sciences were a little harder, but I liked going to school.",
+                  "az": "Dəqiq elmlər bir az çətin idi, amma məktəbə getməyi sevirdim.",
+                  "ru": "Точные науки были чуть труднее, но мне нравилось ходить в школу."
+                },
+                {
+                  "et": "Mulle tõesti meeldis koolis käia!",
+                  "en": "I really liked going to school!",
+                  "az": "Həqiqətən məktəbə getməyi sevirdim!",
+                  "ru": "Мне правда нравилось ходить в школу!"
+                },
+                {
+                  "et": "Ja eriti toredad olid keeletunnid: eesti keel, inglise keel.",
+                  "en": "And the language lessons were especially lovely: Estonian, English.",
+                  "az": "Dil dərsləri isə xüsusilə gözəl idi: eston dili, ingilis dili.",
+                  "ru": "А особенно хороши были уроки языков: эстонский, английский."
+                },
+                {
+                  "et": "Mulle meeldisid veel ka ajalugu ja bioloogia.",
+                  "en": "I also liked history and biology.",
+                  "az": "Tarixi və biologiyanı da sevirdim.",
+                  "ru": "Ещё мне нравились история и биология."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Aga ma ei olnud milleski klassi parim.",
+                  "en": "But I wasn't the best in the class at anything.",
+                  "az": "Amma heç nədə sinfin ən yaxşısı deyildim.",
+                  "ru": "Но я ни в чём не была лучшей в классе."
+                },
+                {
+                  "et": "Ma olin lihtsalt selline keskmine.",
+                  "en": "I was just sort of average.",
+                  "az": "Sadəcə orta səviyyəli idim.",
+                  "ru": "Я была просто такой средней."
+                },
+                {
+                  "et": "Terve põhikooli olin ma kõiges selline keskmine.",
+                  "en": "All through basic school I was sort of average at everything.",
+                  "az": "Bütün əsas məktəb boyu hər şeydə orta idim.",
+                  "ru": "Всю основную школу я во всём была такой средней."
+                },
+                {
+                  "et": "Sain kolmesid, neljasid, mõned viied.",
+                  "en": "I got threes, fours, some fives.",
+                  "az": "Üçlər, dördlər, bir neçə beş alırdım.",
+                  "ru": "Получала тройки, четвёрки, несколько пятёрок."
+                },
+                {
+                  "et": "Aga ma olin kõige pikem kogu aeg.",
+                  "en": "But I was the tallest the whole time.",
+                  "az": "Amma həmişə ən hündür idim.",
+                  "ru": "Зато я всё время была самой высокой."
+                },
+                {
+                  "et": "Keskkooli lõpus vist enam mitte, aga terve põhikooli ma olin kõige pikem, see loeb ka.",
+                  "en": "Probably not any more by the end of secondary school, but all through basic school I was the tallest, and that counts too.",
+                  "az": "Orta məktəbin sonunda, deyəsən, artıq yox, amma bütün əsas məktəb boyu ən hündür mən idim, bu da sayılır.",
+                  "ru": "К концу средней школы, наверное, уже нет, но всю основную школу я была самой высокой, это тоже считается."
+                }
+              ]
+            },
+            {
+              "who": "Timo",
+              "lines": [
+                {
+                  "et": "Mulle meeldisid väga keeled: soome, rootsi, inglise keel.",
+                  "en": "I really liked languages: Finnish, Swedish, English.",
+                  "az": "Dilləri çox sevirdim: fin, isveç, ingilis dili.",
+                  "ru": "Мне очень нравились языки: финский, шведский, английский."
+                },
+                {
+                  "et": "Soomes on natuke teine süsteem, seal on kümnepallisüsteem.",
+                  "en": "In Finland the system is a bit different; there it's a ten-point system.",
+                  "az": "Finlandiyada sistem bir az başqadır, orada on ballıq sistemdir.",
+                  "ru": "В Финляндии немного другая система, там десятибалльная система."
+                },
+                {
+                  "et": "Mul olid kõik õppeained kümned, välja arvatud kehaline kasvatus, mis oli üheksa.",
+                  "en": "I had tens in all my subjects except physical education, which was a nine.",
+                  "az": "Bütün fənlərdən onluğum vardı, bədən tərbiyəsindən başqa, o, doqquz idi.",
+                  "ru": "У меня по всем предметам были десятки, кроме физкультуры, по ней было девять."
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Ma olin kindlasti kõige parem suusatamises.",
+                  "en": "I was certainly the best at skiing.",
+                  "az": "Xizək sürməkdə, şübhəsiz, ən yaxşısı mən idim.",
+                  "ru": "Лучше всех я, конечно, был в лыжах."
+                },
+                {
+                  "et": "Aga siis vahel juhtus ka seda, et mõni mu kirjand loeti klassis ette.",
+                  "en": "But sometimes it also happened that one of my essays was read out in class.",
+                  "az": "Amma bəzən elə də olurdu ki, inşalarımdan biri sinifdə oxunurdu.",
+                  "ru": "Но иногда бывало и так, что какое-нибудь моё сочинение зачитывали в классе."
+                },
+                {
+                  "et": "Ja ükskord kui ma korraldasin klassi malevõistluse, siis selgus, et mina korraldasin, mina võitsin!",
+                  "en": "And once, when I organised the class chess competition, it turned out that I organised it and I won it!",
+                  "az": "Bir dəfə isə sinfin şahmat yarışını mən təşkil edəndə məlum oldu ki, təşkil edən də mənəm, qalib gələn də!",
+                  "ru": "А однажды, когда я организовал шахматное соревнование в классе, оказалось, что я организовал, я и выиграл!"
+                },
+                {
+                  "et": "Ja see sobis mulle hästi!",
+                  "en": "And that suited me very well!",
+                  "az": "Bu da mənə çox xoş gəldi!",
+                  "ru": "И это меня вполне устроило!"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Missugune õppeaine sulle ei meeldinud?",
+            "en": "Which subject didn't you like?",
+            "az": "Hansı fənni sevmirdin?",
+            "ru": "Какой предмет тебе не нравился?"
+          },
+          "turns": [
+            {
+              "who": "Timo",
+              "lines": [
+                {
+                  "et": "Füüsika ja keemia ja ajalugu olid sellised teoreetilised ained, mis mulle ei meeldinud.",
+                  "en": "Physics and chemistry and history were such theoretical subjects, which I didn't like.",
+                  "az": "Fizika, kimya və tarix elə nəzəri fənlər idi ki, onları sevmirdim.",
+                  "ru": "Физика, химия и история были такими теоретическими предметами, которые мне не нравились."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Mulle ei meeldinud üldse kehaline kasvatus.",
+                  "en": "I didn't like physical education at all.",
+                  "az": "Bədən tərbiyəsini heç sevmirdim.",
+                  "ru": "Мне совсем не нравилась физкультура."
+                },
+                {
+                  "et": "Ilmselt see oli sellepärast, et ma olin klassis kõige halvem, sest ma olin kõige pikem.",
+                  "en": "Probably that was because I was the worst in the class, because I was the tallest.",
+                  "az": "Yəqin ona görə ki, sinifdə ən pisi mən idim, çünki ən hündür idim.",
+                  "ru": "Наверное, это было потому, что я была в классе хуже всех, потому что я была самой высокой."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Mida sa tegid pärast tunde?",
+            "en": "What did you do after lessons?",
+            "az": "Dərslərdən sonra nə edirdin?",
+            "ru": "Что ты делал после уроков?"
+          },
+          "turns": [
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Talvel käisime uisutamas ja jäähokit mängimas ja suvel oli igasuguseid muid asju.",
+                  "en": "In winter we went skating and played ice hockey, and in summer there were all sorts of other things.",
+                  "az": "Qışda konki sürməyə və xokkey oynamağa gedirdik, yayda isə cürbəcür başqa işlər olurdu.",
+                  "ru": "Зимой мы ходили кататься на коньках и играть в хоккей, а летом были всякие другие дела."
+                },
+                {
+                  "et": "Aga kuna kodus oli majapidamine, siis oli ka kodus palju tegemist.",
+                  "en": "But since there was a farm at home, there was a lot to do at home as well.",
+                  "az": "Amma evdə təsərrüfat olduğuna görə evdə də görüləsi iş çox idi.",
+                  "ru": "Но поскольку дома было хозяйство, то и дома было много дел."
+                },
+                {
+                  "et": "Ja noh, õppimine võttis ka aega.",
+                  "en": "And, well, studying took time too.",
+                  "az": "Bir də ki, oxumaq da vaxt aparırdı.",
+                  "ru": "Ну и учёба тоже отнимала время."
+                }
+              ]
+            },
+            {
+              "who": "Mai Riin",
+              "lines": [
+                {
+                  "et": "Kui ma olin väiksem, siis ma oli pikapäevarühmas peale kooli.",
+                  "en": "When I was smaller, I was in the after-school group after school.",
+                  "az": "Kiçik olanda dərsdən sonra uzadılmış gün qrupunda qalırdım.",
+                  "ru": "Когда я была поменьше, после школы я была в группе продлённого дня."
+                },
+                {
+                  "et": "Aga nüüd mul on hästi kiire elutempo ja siis peale kooli ma lähen kohe trenni tavaliselt.",
+                  "en": "But now my life is really busy, so after school I usually go straight to training.",
+                  "az": "Amma indi həyatımın tempi çox sürətlidir, ona görə də dərsdən sonra adətən dərhal məşqə gedirəm.",
+                  "ru": "А сейчас у меня очень быстрый темп жизни, и после школы я обычно сразу иду на тренировку."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Põhikooli ajal ma ikka käisin trennis.",
+                  "en": "During basic school I did go to training.",
+                  "az": "Əsas məktəb illərində, əlbəttə, məşqlərə gedirdim.",
+                  "ru": "В основной школе я, конечно, ходила на тренировки."
+                },
+                {
+                  "et": "Ma käisin balletis, iluvõimlemises, kergejõustikus, aeroobikas, ratsutamas natuke.",
+                  "en": "I went to ballet, rhythmic gymnastics, athletics, aerobics, and a little horse riding.",
+                  "az": "Baletə, bədii gimnastikaya, yüngül atletikaya, aerobikaya, bir az da at sürməyə gedirdim.",
+                  "ru": "Я ходила на балет, художественную гимнастику, лёгкую атлетику, аэробику, немного на верховую езду."
+                },
+                {
+                  "et": "Põhikooli teisest poolest hakkasin ma käima näiteringis ja siis viiendast klassist alates kuni peaaegu tänaseni tegelen ma näitlemisega.",
+                  "en": "In the second half of basic school I started going to a drama club, and since the fifth grade, almost up to today, I've been doing acting.",
+                  "az": "Əsas məktəbin ikinci yarısından dram dərnəyinə getməyə başladım və beşinci sinifdən demək olar ki, bu günə qədər aktyorluqla məşğulam.",
+                  "ru": "Со второй половины основной школы я начала ходить в театральный кружок, и с пятого класса почти до сегодняшнего дня я занимаюсь актёрским мастерством."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "words": {
+        "oli": {
+          "base": "olema",
+          "means": {
+            "en": "was (ma oli: said quickly for ma olin, I was)",
+            "az": "idi (ma oli: ma olin, yəni mən idim, tələsik deyilib)",
+            "ru": "был (ma oli: так быстро говорят вместо ma olin, я был)"
+          }
+        }
+      }
+    },
+    {
+      "id": "talk-learning",
+      "added": "2026-10-07",
+      "name": {
+        "en": "What you learnt last, and what you'd learn next",
+        "az": "Ən son nə öyrəndin, növbəti nəyi öyrənərdin",
+        "ru": "Чему ты учился недавно и чему учился бы дальше"
+      },
+      "why": {
+        "en": "A driving school, a plastering course, a dancer at three, and learning to manage the last part of life",
+        "az": "Sürücülük məktəbi, suvaq kursu, üç yaşından rəqqasə və həyatın son hissəsinin öhdəsindən gəlməyi öyrənmək",
+        "ru": "Автошкола, курсы штукатурки, танцовщица с трёх лет и умение справиться с последней частью жизни"
+      },
+      "taste": "Hetkel ma lõpetan autokooli.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Mida sa viimati õppisid?",
+            "en": "What did you learn most recently?",
+            "az": "Ən son nə öyrəndin?",
+            "ru": "Чему ты учился в последний раз?"
+          },
+          "turns": [
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Programmeerimist.",
+                  "en": "Programming.",
+                  "az": "Proqramlaşdırma.",
+                  "ru": "Программирование."
+                },
+                {
+                  "et": "Ma tegin ka netis programmeerimise kursuse.",
+                  "en": "I also did an online course in programming.",
+                  "az": "İnternetdə proqramlaşdırma kursu da keçdim.",
+                  "ru": "Я прошла ещё и онлайн-курс по программированию."
+                },
+                {
+                  "et": "See oli selline lihtne Tartu Ülikooli põhikursus “Maalähedane programmeerimine” ja see oli päris huvitav.",
+                  "en": "It was a simple introductory course from the University of Tartu, “Down-to-Earth Programming”, and it was quite interesting.",
+                  "az": "Bu, Tartu Universitetinin “Sadə proqramlaşdırma” adlı sadə əsas kursu idi və kifayət qədər maraqlı idi.",
+                  "ru": "Это был такой простой базовый курс Тартуского университета «Приземлённое программирование», и он был довольно интересным."
+                }
+              ]
+            },
+            {
+              "who": "Mai Riin",
+              "lines": [
+                {
+                  "et": "Hetkel ma lõpetan autokooli.",
+                  "en": "At the moment I'm finishing driving school.",
+                  "az": "Hazırda sürücülük məktəbini bitirirəm.",
+                  "ru": "Сейчас я заканчиваю автошколу."
+                },
+                {
+                  "et": "Nii et ma õppisin autoga sõitma.",
+                  "en": "So I've learnt to drive a car.",
+                  "az": "Yəni maşın sürməyi öyrəndim.",
+                  "ru": "Так что я научилась водить машину."
+                }
+              ]
+            },
+            {
+              "who": "Timo",
+              "lines": [
+                {
+                  "et": "Sellel kevadel osalesin ma ühel Tallinna Kutsehariduskeskuse korraldatud siseviimistlustööde kursusel, õppisime koduste remonditööde jaoks pahteldamist, tapetseerimist, värvimist, põhjatöid.",
+                  "en": "This spring I took part in an interior finishing course run by the Tallinn Vocational Education Centre; we learnt filling, wallpapering, painting and preparation work for home renovation.",
+                  "az": "Bu yaz Tallinn Peşə Təhsili Mərkəzinin təşkil etdiyi daxili bəzək işləri kursunda iştirak etdim; ev təmiri üçün şpaklyovka, divar kağızı yapışdırmaq, rəngləmək və hazırlıq işlərini öyrəndik.",
+                  "ru": "Этой весной я участвовал в курсе по внутренней отделке, который организовал Таллиннский центр профессионального образования; мы учились для домашнего ремонта шпаклевать, клеить обои, красить и делать подготовительные работы."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Kelleks sa saada tahad?",
+            "en": "What do you want to become?",
+            "az": "Kim olmaq istəyirsən?",
+            "ru": "Кем ты хочешь стать?"
+          },
+          "turns": [
+            {
+              "who": "Mai Riin",
+              "lines": [
+                {
+                  "et": "Kui ma olin väike, siis ma tahtsin saada hambaarstiks nagu mu ema.",
+                  "en": "When I was little, I wanted to become a dentist like my mother.",
+                  "az": "Kiçik olanda anam kimi diş həkimi olmaq istəyirdim.",
+                  "ru": "Когда я была маленькой, я хотела стать зубным врачом, как моя мама."
+                },
+                {
+                  "et": "Siis ma olen mõelnud ka saada näitlejaks, lauljaks, kuigi ma laulda ei oska.",
+                  "en": "Then I've also thought about becoming an actor or a singer, although I can't sing.",
+                  "az": "Sonra aktrisa, müğənni olmağı da düşünmüşəm, baxmayaraq ki, oxumağı bacarmıram.",
+                  "ru": "Потом я думала стать актрисой, певицей, хотя петь я не умею."
+                },
+                {
+                  "et": "Siis ma olen mõelnud saada disaineriks, kas siis rõiva- või sisekujundusdisaineriks.",
+                  "en": "Then I've thought about becoming a designer, either a clothes designer or an interior designer.",
+                  "az": "Sonra dizayner olmağı düşünmüşəm, ya geyim, ya da interyer dizayneri.",
+                  "ru": "Потом я думала стать дизайнером — то ли одежды, то ли интерьера."
+                },
+                {
+                  "et": "Nii et ma olen üsna mitmekülgne.",
+                  "en": "So I'm quite versatile.",
+                  "az": "Yəni mən kifayət qədər çoxşaxəliyəm.",
+                  "ru": "Так что я довольно разносторонняя."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Kui sa saaksid uuesti valida, kas õpiksid midagi muud?",
+            "en": "If you could choose again, would you study something else?",
+            "az": "Yenidən seçə bilsəydin, başqa bir şey oxuyardınmı?",
+            "ru": "Если бы ты мог выбрать заново, учился бы ты чему-то другому?"
+          },
+          "turns": [
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "Ei õpiks.",
+                  "en": "No, I wouldn't.",
+                  "az": "Oxumazdım.",
+                  "ru": "Не стал бы."
+                },
+                {
+                  "et": "Sest eriala on natukene laiem mõiste kui töökoht.",
+                  "en": "Because a speciality is a somewhat broader idea than a job.",
+                  "az": "Çünki ixtisas iş yerindən bir az daha geniş anlayışdır.",
+                  "ru": "Потому что специальность — понятие немного более широкое, чем место работы."
+                },
+                {
+                  "et": "Ja kui ma oleksin kasvanud normaalses riigis või kui ma oleksin sündinud normaalsesse riiki - Eesti Vabariiki - , siis ma oleksin arvatavasti rohkem õppinud ajalugu.",
+                  "en": "And if I had grown up in a normal state, or if I had been born into a normal state — the Republic of Estonia — then I would probably have studied more history.",
+                  "az": "Əgər mən normal dövlətdə böyüsəydim və ya normal dövlətdə — Estoniya Respublikasında — doğulsaydım, onda yəqin ki, tarixi daha çox oxuyardım.",
+                  "ru": "И если бы я вырос в нормальном государстве или если бы я родился в нормальном государстве — в Эстонской Республике, — то я, вероятно, больше изучал бы историю."
+                }
+              ]
+            },
+            {
+              "who": "Timo",
+              "lines": [
+                {
+                  "et": "Ma olen töötanud ajakirjanikuna, aga lõpetasin selle töö 2000ndate alguses.",
+                  "en": "I've worked as a journalist, but I gave that job up at the beginning of the 2000s.",
+                  "az": "Jurnalist kimi işləmişəm, amma bu işi 2000-ci illərin əvvəlində buraxdım.",
+                  "ru": "Я работал журналистом, но бросил эту работу в начале 2000-х."
+                },
+                {
+                  "et": "Nüüd olen mõelnud, et see võibolla oli viga.",
+                  "en": "Now I've been thinking that maybe that was a mistake.",
+                  "az": "İndi düşünürəm ki, bəlkə də bu, səhv idi.",
+                  "ru": "Теперь я думаю, что это, может быть, было ошибкой."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Kui ma saaksin uuesti sündida ja uuesti valida, siis ma läheksin kolmeaastaselt tantsutrenni ja siis ma hakkaksin tantsijaks.",
+                  "en": "If I could be born again and choose again, I would go to dance classes at three, and then I would become a dancer.",
+                  "az": "Yenidən doğula və yenidən seçə bilsəydim, üç yaşında rəqs məşqinə gedərdim və sonra rəqqasə olardım.",
+                  "ru": "Если бы я могла родиться заново и выбрать заново, то я бы в три года пошла на танцы и потом стала бы танцовщицей."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Mida sa veel õppida tahaksid?",
+            "en": "What else would you like to learn?",
+            "az": "Daha nə öyrənmək istərdin?",
+            "ru": "Чему ещё ты хотел бы научиться?"
+          },
+          "turns": [
+            {
+              "who": "Timo",
+              "lines": [
+                {
+                  "et": "Tahaksin õppida veel vene keelt.",
+                  "en": "I'd like to learn Russian as well.",
+                  "az": "Rus dilini də öyrənmək istərdim.",
+                  "ru": "Я бы хотел ещё выучить русский язык."
+                },
+                {
+                  "et": "Sest Eestis elades on venekeelse elanikkonnaga suhtlemine minu arvates ikka väga oluline.",
+                  "en": "Because living in Estonia, communicating with the Russian-speaking population is, in my opinion, really very important.",
+                  "az": "Çünki Estoniyada yaşayarkən rusdilli əhali ilə ünsiyyət, məncə, çox vacibdir.",
+                  "ru": "Потому что, живя в Эстонии, общение с русскоязычным населением, по-моему, всё-таки очень важно."
+                }
+              ]
+            },
+            {
+              "who": "Mai Riin",
+              "lines": [
+                {
+                  "et": "Minu soov on kindlasti minna ülikooli.",
+                  "en": "My wish is definitely to go to university.",
+                  "az": "Arzum mütləq universitetə getməkdir.",
+                  "ru": "Моё желание — обязательно поступить в университет."
+                },
+                {
+                  "et": "Ma olen mõelnud õppida meditsiini või võibolla juurat, aga ma ei ole veel kindlale otsusele jõudnud.",
+                  "en": "I've thought about studying medicine or maybe law, but I haven't come to a firm decision yet.",
+                  "az": "Tibb, ya da bəlkə hüquq oxumağı düşünmüşəm, amma hələ qəti qərara gəlməmişəm.",
+                  "ru": "Я думала изучать медицину или, может быть, право, но ещё не пришла к твёрдому решению."
+                }
+              ]
+            },
+            {
+              "who": "Mirja",
+              "lines": [
+                {
+                  "et": "Ma olen hakanud mõtlema IT-le.",
+                  "en": "I've started thinking about IT.",
+                  "az": "İT haqqında düşünməyə başlamışam.",
+                  "ru": "Я начала думать об IT."
+                },
+                {
+                  "et": "Tahaks vahepeal arvutitega suhelda.",
+                  "en": "I'd like to communicate with computers for a change.",
+                  "az": "Arada bir kompüterlərlə ünsiyyət qurmaq istərdim.",
+                  "ru": "Хотелось бы для разнообразия пообщаться с компьютерами."
+                },
+                {
+                  "et": "Ma arvan, et ma õpin järgmisena IT-d.",
+                  "en": "I think IT is what I'll study next.",
+                  "az": "Məncə, növbəti olaraq İT oxuyacağam.",
+                  "ru": "Я думаю, что следующим я буду изучать IT."
+                }
+              ]
+            },
+            {
+              "who": "Jüri",
+              "lines": [
+                {
+                  "et": "See on raske küsimus.",
+                  "en": "That's a difficult question.",
+                  "az": "Bu, çətin sualdır.",
+                  "ru": "Это трудный вопрос."
+                },
+                {
+                  "et": "Minu aastate juures on küsimus juba võibolla selles, mida sa veel tahaksid ära teha.",
+                  "en": "At my age the question is perhaps already what you would still like to get done.",
+                  "az": "Mənim yaşımda sual, bəlkə də, artıq ondadır ki, daha nəyi etmək istərdin.",
+                  "ru": "В мои годы вопрос, может быть, уже в том, что ты ещё хотел бы успеть сделать."
+                },
+                {
+                  "et": "Ja mul on tunne, et siiamaani on need põhiasjad kõik tegemata.",
+                  "en": "And I have a feeling that, up to now, the main things are all still undone.",
+                  "az": "Mənə elə gəlir ki, indiyədək əsas işlərin hamısı görülməmiş qalıb.",
+                  "ru": "И у меня такое чувство, что до сих пор все эти главные дела не сделаны."
+                },
+                {
+                  "et": "Siis võibolla ma võiksin öelda nii, et ma tahaksin õppida oma elu viimase osaga toime tulema.",
+                  "en": "So maybe I could put it like this: I would like to learn to cope with the last part of my life.",
+                  "az": "Onda bəlkə belə deyə bilərəm ki, həyatımın son hissəsinin öhdəsindən gəlməyi öyrənmək istərdim.",
+                  "ru": "Тогда, может быть, я мог бы сказать так: я хотел бы научиться справляться с последней частью своей жизни."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-bus",
+      "added": "2026-10-07",
+      "name": {
+        "en": "Buying a bus ticket",
+        "az": "Avtobus bileti almaq",
+        "ru": "Покупка билета на автобус"
+      },
+      "why": {
+        "en": "The three and the four o'clock are sold out, so a discount ticket to Tallinn on the half past three",
+        "az": "Saat üçün və dördün avtobusları satılıb, ona görə Tallinnə saat üç yarımın avtobusuna güzəştli bilet",
+        "ru": "На три и на четыре всё продано, так что льготный билет до Таллинна на половину четвёртого"
+      },
+      "taste": "Üks pilet Tallinna palun.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Tere!",
+                  "en": "Hello!",
+                  "az": "Salam!",
+                  "ru": "Здравствуйте!"
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Üks pilet Tallinna palun.",
+                  "en": "One ticket to Tallinn, please.",
+                  "az": "Tallinnə bir bilet, xahiş edirəm.",
+                  "ru": "Один билет до Таллинна, пожалуйста."
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Mis kellasele bussile?",
+                  "en": "For the bus at what time?",
+                  "az": "Saat neçənin avtobusuna?",
+                  "ru": "На автобус во сколько?"
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Kella kolmesele.",
+                  "en": "The three o'clock one.",
+                  "az": "Saat üçün avtobusuna.",
+                  "ru": "На трёхчасовой."
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Kella kolmene on juba välja müüdud.",
+                  "en": "The three o'clock one is already sold out.",
+                  "az": "Saat üçün avtobusu artıq satılıb.",
+                  "ru": "На трёхчасовой уже всё продано."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Palun siis kella neljasele.",
+                  "en": "Then the four o'clock one, please.",
+                  "az": "Onda saat dördün avtobusuna, xahiş edirəm.",
+                  "ru": "Тогда, пожалуйста, на четырёхчасовой."
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Kohe vaatan.",
+                  "en": "Let me have a look.",
+                  "az": "İndi baxıram.",
+                  "ru": "Сейчас посмотрю."
+                },
+                {
+                  "et": "See on ka välja müüdud.",
+                  "en": "That one is sold out too.",
+                  "az": "O da satılıb.",
+                  "ru": "На него тоже всё продано."
+                },
+                {
+                  "et": "Praegu on pileteid veel kella poole neljasele bussile.",
+                  "en": "At the moment there are still tickets for the half past three bus.",
+                  "az": "Hazırda hələ saat üç yarımın avtobusuna bilet var.",
+                  "ru": "Сейчас ещё есть билеты на автобус в половине четвёртого."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Kas see on ekspressbuss?",
+                  "en": "Is that an express bus?",
+                  "az": "Bu, ekspress avtobusdur?",
+                  "ru": "Это экспресс?"
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Ei ole.",
+                  "en": "No, it isn't.",
+                  "az": "Xeyr.",
+                  "ru": "Нет."
+                },
+                {
+                  "et": "See on kiirliin.",
+                  "en": "It's a fast line.",
+                  "az": "Bu, sürətli xətdir.",
+                  "ru": "Это скорая линия."
+                },
+                {
+                  "et": "Peatub ka Põltsamaal ja Mäos ja Kosel ka.",
+                  "en": "It also stops at Põltsamaa and at Mäo and at Kose.",
+                  "az": "Põltsamaada, Mäoda və Kosedə də dayanır.",
+                  "ru": "Останавливается ещё в Пыльтсамаа, в Мяо и в Козе."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Hm.",
+                  "en": "Hm.",
+                  "az": "Hm.",
+                  "ru": "Хм."
+                },
+                {
+                  "et": "Mis kell see buss Tallinna jõuab?",
+                  "en": "What time does the bus get to Tallinn?",
+                  "az": "Bu avtobus Tallinnə saat neçədə çatır?",
+                  "ru": "Во сколько этот автобус приходит в Таллинн?"
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Kolmveerand seitse.",
+                  "en": "Quarter to seven.",
+                  "az": "Yeddiyə on beş dəqiqə qalmış.",
+                  "ru": "Без четверти семь."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Kas selles bussis tasuta internet on?",
+                  "en": "Is there free internet on this bus?",
+                  "az": "Bu avtobusda pulsuz internet var?",
+                  "ru": "В этом автобусе есть бесплатный интернет?"
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Peaks olema.",
+                  "en": "There should be.",
+                  "az": "Olmalıdır.",
+                  "ru": "Должен быть."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Mis seal siis ikka.",
+                  "en": "Oh well, never mind.",
+                  "az": "Nə edək, eybi yox.",
+                  "ru": "Ну что ж поделаешь."
+                },
+                {
+                  "et": "Üks sooduspilet siis palun.",
+                  "en": "One discount ticket, then, please.",
+                  "az": "Onda bir güzəştli bilet, xahiş edirəm.",
+                  "ru": "Тогда один льготный билет, пожалуйста."
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Näidake palun dokumenti ka.",
+                  "en": "Please show me your document too.",
+                  "az": "Zəhmət olmasa, sənədinizi də göstərin.",
+                  "ru": "Покажите, пожалуйста, и документ."
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Kohe.",
+                  "en": "Just a moment.",
+                  "az": "Bu dəqiqə.",
+                  "ru": "Сейчас."
+                },
+                {
+                  "et": "Palun.",
+                  "en": "Here you are.",
+                  "az": "Buyurun.",
+                  "ru": "Пожалуйста."
+                }
+              ]
+            },
+            {
+              "who": "Kassiir",
+              "lines": [
+                {
+                  "et": "Nii, siin on teie pilet.",
+                  "en": "Right, here is your ticket.",
+                  "az": "Belə, bu da biletiniz.",
+                  "ru": "Так, вот ваш билет."
+                },
+                {
+                  "et": "Head reisi!",
+                  "en": "Have a good trip!",
+                  "az": "Yaxşı yol!",
+                  "ru": "Счастливого пути!"
+                }
+              ]
+            },
+            {
+              "who": "Klient",
+              "lines": [
+                {
+                  "et": "Aitäh.",
+                  "en": "Thank you.",
+                  "az": "Sağ olun.",
+                  "ru": "Спасибо."
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "talkWords": {
@@ -49439,6 +50743,14 @@
         "ru": "адрес"
       }
     },
+    "aasta": {
+      "base": "aasta",
+      "means": {
+        "en": "year",
+        "az": "il",
+        "ru": "год"
+      }
+    },
     "aastal": {
       "base": "aasta",
       "means": {
@@ -49453,6 +50765,14 @@
         "en": "-year-old (kaheksa-aastane: eight years old)",
         "az": "yaşlı (kaheksa-aastane: səkkiz yaşlı)",
         "ru": "-летний (kaheksa-aastane: восьмилетний)"
+      }
+    },
+    "aastast": {
+      "base": "aasta",
+      "means": {
+        "en": "from the year (järgmisest aastast: from next year)",
+        "az": "ildən",
+        "ru": "с года"
       }
     },
     "aastat": {
@@ -49527,6 +50847,14 @@
         "ru": "время"
       }
     },
+    "aeroobikas": {
+      "base": "aeroobika",
+      "means": {
+        "en": "at aerobics",
+        "az": "aerobikada",
+        "ru": "на аэробике"
+      }
+    },
     "aga": {
       "base": "aga",
       "means": {
@@ -49559,12 +50887,28 @@
         "ru": "печёный картофель"
       }
     },
+    "ained": {
+      "base": "aine",
+      "means": {
+        "en": "subjects; substances",
+        "az": "fənlər",
+        "ru": "предметы"
+      }
+    },
     "ainult": {
       "base": "ainult",
       "means": {
         "en": "only",
         "az": "yalnız",
         "ru": "только"
+      }
+    },
+    "ainus": {
+      "base": "ainus",
+      "means": {
+        "en": "only, sole",
+        "az": "yeganə",
+        "ru": "единственный"
       }
     },
     "aitan": {
@@ -49599,6 +50943,14 @@
         "ru": "путаешь"
       }
     },
+    "ajakirjanikuna": {
+      "base": "ajakirjanik",
+      "means": {
+        "en": "as a journalist",
+        "az": "jurnalist kimi",
+        "ru": "журналистом"
+      }
+    },
     "ajaks": {
       "base": "aeg",
       "means": {
@@ -49613,6 +50965,14 @@
         "en": "time (sel ajal, kui: while, when)",
         "az": "vaxt",
         "ru": "время"
+      }
+    },
+    "ajalugu": {
+      "base": "ajalugu",
+      "means": {
+        "en": "history",
+        "az": "tarix",
+        "ru": "история"
       }
     },
     "ajutine": {
@@ -49655,12 +51015,28 @@
         "ru": "активный"
       }
     },
+    "alates": {
+      "base": "alates",
+      "means": {
+        "en": "since, starting from",
+        "az": "-dan bəri",
+        "ru": "начиная с"
+      }
+    },
     "alati": {
       "base": "alati",
       "means": {
         "en": "always",
         "az": "həmişə",
         "ru": "всегда"
+      }
+    },
+    "algas": {
+      "base": "algama",
+      "means": {
+        "en": "began, started",
+        "az": "başladı",
+        "ru": "началась"
       }
     },
     "alguses": {
@@ -49695,6 +51071,14 @@
         "ru": "аллергик"
       }
     },
+    "allkiri": {
+      "base": "allkiri",
+      "means": {
+        "en": "signature",
+        "az": "imza",
+        "ru": "подпись"
+      }
+    },
     "alumisele": {
       "base": "alumine",
       "means": {
@@ -49709,6 +51093,14 @@
         "en": "from the lower",
         "az": "aşağıdakı",
         "ru": "с нижнего"
+      }
+    },
+    "alustasin": {
+      "base": "alustama",
+      "means": {
+        "en": "I started",
+        "az": "başladım",
+        "ru": "я начал"
       }
     },
     "ammu": {
@@ -49775,12 +51167,44 @@
         "ru": "думаю"
       }
     },
+    "arvasid": {
+      "base": "arvama",
+      "means": {
+        "en": "they thought",
+        "az": "düşündülər",
+        "ru": "они думали"
+      }
+    },
     "arvasin": {
       "base": "arvama",
       "means": {
         "en": "I thought",
         "az": "düşünürdüm",
         "ru": "думала"
+      }
+    },
+    "arvatavasti": {
+      "base": "arvatavasti",
+      "means": {
+        "en": "probably",
+        "az": "yəqin ki",
+        "ru": "вероятно"
+      }
+    },
+    "arvate": {
+      "base": "arvama",
+      "means": {
+        "en": "you think (polite; kuidas arvate: as you wish)",
+        "az": "düşünürsünüz",
+        "ru": "вы думаете"
+      }
+    },
+    "arvates": {
+      "base": "arvama",
+      "means": {
+        "en": "in the opinion (minu arvates: in my opinion)",
+        "az": "fikrincə (minu arvates: məncə)",
+        "ru": "по мнению (minu arvates: по-моему)"
       }
     },
     "arvatud": {
@@ -49813,6 +51237,14 @@
         "en": "on the computer",
         "az": "kompüterdə",
         "ru": "за компьютером"
+      }
+    },
+    "arvutitega": {
+      "base": "arvuti",
+      "means": {
+        "en": "with computers",
+        "az": "kompüterlərlə",
+        "ru": "с компьютерами"
       }
     },
     "asja": {
@@ -49871,6 +51303,46 @@
         "ru": "честно"
       }
     },
+    "autoga": {
+      "base": "auto",
+      "means": {
+        "en": "with a car (autoga sõitma: to drive)",
+        "az": "maşınla",
+        "ru": "на машине"
+      }
+    },
+    "autojuhiload": {
+      "base": "autojuhiluba",
+      "means": {
+        "en": "driving licence",
+        "az": "sürücülük vəsiqəsi",
+        "ru": "водительские права"
+      }
+    },
+    "autokooli": {
+      "base": "autokool",
+      "means": {
+        "en": "driving school (as the object)",
+        "az": "sürücülük məktəbini",
+        "ru": "автошколу"
+      }
+    },
+    "bakalaureuse": {
+      "base": "bakalaureus",
+      "means": {
+        "en": "bachelor's (bakalaureuseõpe: bachelor's studies)",
+        "az": "bakalavr",
+        "ru": "бакалавриат"
+      }
+    },
+    "balletis": {
+      "base": "ballett",
+      "means": {
+        "en": "at ballet",
+        "az": "baletdə",
+        "ru": "на балете"
+      }
+    },
     "beež": {
       "base": "beež",
       "means": {
@@ -49903,6 +51375,14 @@
         "ru": "бургер"
       }
     },
+    "buss": {
+      "base": "buss",
+      "means": {
+        "en": "bus",
+        "az": "avtobus",
+        "ru": "автобус"
+      }
+    },
     "bussi": {
       "base": "buss",
       "means": {
@@ -49917,6 +51397,22 @@
         "en": "from the buses (jäin bussidest maha: I missed the buses)",
         "az": "avtobuslardan",
         "ru": "от автобусов"
+      }
+    },
+    "bussile": {
+      "base": "buss",
+      "means": {
+        "en": "for the bus, onto the bus",
+        "az": "avtobusa",
+        "ru": "на автобус"
+      }
+    },
+    "bussis": {
+      "base": "buss",
+      "means": {
+        "en": "on the bus, in the bus",
+        "az": "avtobusda",
+        "ru": "в автобусе"
       }
     },
     "bänd": {
@@ -49943,12 +51439,52 @@
         "ru": "Кейп(таун)"
       }
     },
+    "d": {
+      "base": "-d",
+      "means": {
+        "en": "the ending of the object (IT-d: IT)",
+        "az": "obyekt şəkilçisi (IT-d: İT-ni)",
+        "ru": "окончание дополнения (IT-d: IT)"
+      }
+    },
+    "daam": {
+      "base": "daam",
+      "means": {
+        "en": "lady",
+        "az": "xanım",
+        "ru": "дама"
+      }
+    },
     "de": {
       "base": "Rio de Janeiro",
       "means": {
         "en": "de (Rio de Janeiro)",
         "az": "de (Rio-de-Janeyro)",
         "ru": "де (Рио-де-Жанейро)"
+      }
+    },
+    "descartes": {
+      "base": "Descartes",
+      "means": {
+        "en": "Descartes (the Descartes Lyceum, a school in Tallinn)",
+        "az": "Dekart",
+        "ru": "Декарт"
+      }
+    },
+    "direktoriga": {
+      "base": "direktor",
+      "means": {
+        "en": "with the head teacher",
+        "az": "direktorla",
+        "ru": "с директором"
+      }
+    },
+    "disaineriks": {
+      "base": "disainer",
+      "means": {
+        "en": "a designer (saada disaineriks: to become a designer)",
+        "az": "dizayner",
+        "ru": "дизайнером"
       }
     },
     "disainiks": {
@@ -49959,12 +51495,36 @@
         "ru": "дизайном"
       }
     },
+    "dokumenti": {
+      "base": "dokument",
+      "means": {
+        "en": "document",
+        "az": "sənəd",
+        "ru": "документ"
+      }
+    },
+    "dokumentidest": {
+      "base": "dokument",
+      "means": {
+        "en": "of the documents, from the documents",
+        "az": "sənədlərdən",
+        "ru": "с документов"
+      }
+    },
     "edasi": {
       "base": "edasi",
       "means": {
         "en": "on, further (ja nii edasi: and so on)",
         "az": "irəli (ja nii edasi: və sair)",
         "ru": "дальше (ja nii edasi: и так далее)"
+      }
+    },
+    "eeldan": {
+      "base": "eeldama",
+      "means": {
+        "en": "I assume",
+        "az": "güman edirəm",
+        "ru": "я предполагаю"
       }
     },
     "eelistan": {
@@ -50007,6 +51567,14 @@
         "ru": "за"
       }
     },
+    "eesti": {
+      "base": "eesti",
+      "means": {
+        "en": "Estonian",
+        "az": "eston",
+        "ru": "эстонский"
+      }
+    },
     "eestikeelse": {
       "base": "eestikeelne",
       "means": {
@@ -50015,12 +51583,28 @@
         "ru": "на эстонском языке"
       }
     },
+    "eestis": {
+      "base": "Eesti",
+      "means": {
+        "en": "in Estonia",
+        "az": "Estoniyada",
+        "ru": "в Эстонии"
+      }
+    },
     "ega": {
       "base": "ega",
       "means": {
         "en": "nor; ega … ei ole?: it isn't …, is it?",
         "az": "nə də; … deyil ki?",
         "ru": "и не; ведь не … ?"
+      }
+    },
+    "ehitasid": {
+      "base": "ehitama",
+      "means": {
+        "en": "they built",
+        "az": "tikdilər",
+        "ru": "построили"
       }
     },
     "ehitati": {
@@ -50071,6 +51655,14 @@
         "ru": "экземпляр"
       }
     },
+    "ekspressbuss": {
+      "base": "ekspressbuss",
+      "means": {
+        "en": "express bus",
+        "az": "ekspress avtobus",
+        "ru": "экспресс-автобус"
+      }
+    },
     "ela": {
       "base": "elama",
       "means": {
@@ -50095,6 +51687,14 @@
         "ru": "жить"
       }
     },
+    "elades": {
+      "base": "elama",
+      "means": {
+        "en": "living, while living",
+        "az": "yaşayarkən",
+        "ru": "живя"
+      }
+    },
     "elamispinda": {
       "base": "elamispind",
       "means": {
@@ -50109,6 +51709,14 @@
         "en": "I live",
         "az": "yaşayıram",
         "ru": "живу"
+      }
+    },
+    "elanikkonnaga": {
+      "base": "elanikkond",
+      "means": {
+        "en": "with the population",
+        "az": "əhali ilə",
+        "ru": "с населением"
       }
     },
     "elas": {
@@ -50183,6 +51791,14 @@
         "ru": "в жизни"
       }
     },
+    "elutempo": {
+      "base": "elutempo",
+      "means": {
+        "en": "pace of life",
+        "az": "həyat tempi",
+        "ru": "темп жизни"
+      }
+    },
     "ema": {
       "base": "ema",
       "means": {
@@ -50239,6 +51855,14 @@
         "ru": "яркие"
       }
     },
+    "eriala": {
+      "base": "eriala",
+      "means": {
+        "en": "speciality, field of study",
+        "az": "ixtisas",
+        "ru": "специальность"
+      }
+    },
     "erilist": {
       "base": "eriline",
       "means": {
@@ -50269,6 +51893,14 @@
         "en": "first",
         "az": "birinci",
         "ru": "первой"
+      }
+    },
+    "esimesel": {
+      "base": "esimene",
+      "means": {
+        "en": "on the first",
+        "az": "birində",
+        "ru": "первого"
       }
     },
     "esimesena": {
@@ -50319,6 +51951,14 @@
         "ru": "что (союз)"
       }
     },
+    "ette": {
+      "base": "ette",
+      "means": {
+        "en": "forward (ette lugema: to read out)",
+        "az": "qabağa (ette lugema: ucadan oxumaq)",
+        "ru": "вперёд (ette lugema: зачитать)"
+      }
+    },
     "euro": {
       "base": "euro",
       "means": {
@@ -50335,6 +51975,22 @@
         "ru": "евро"
       }
     },
+    "fantastiline": {
+      "base": "fantastiline",
+      "means": {
+        "en": "fantastic",
+        "az": "fantastik",
+        "ru": "фантастический"
+      }
+    },
+    "filoloogia": {
+      "base": "filoloogia",
+      "means": {
+        "en": "philology",
+        "az": "filologiya",
+        "ru": "филология"
+      }
+    },
     "friikartulid": {
       "base": "friikartulid",
       "means": {
@@ -50343,12 +51999,44 @@
         "ru": "картофель фри"
       }
     },
+    "füüsika": {
+      "base": "füüsika",
+      "means": {
+        "en": "physics",
+        "az": "fizika",
+        "ru": "физика"
+      }
+    },
+    "garantiiaeg": {
+      "base": "garantiiaeg",
+      "means": {
+        "en": "warranty period",
+        "az": "zəmanət müddəti",
+        "ru": "гарантийный срок"
+      }
+    },
+    "garantiiaja": {
+      "base": "garantiiaeg",
+      "means": {
+        "en": "of the warranty period (garantiiaja sees: within the warranty)",
+        "az": "zəmanət müddəti",
+        "ru": "гарантийный срок"
+      }
+    },
     "grillitud": {
       "base": "grillima",
       "means": {
         "en": "grilled",
         "az": "qril edilmiş",
         "ru": "на гриле"
+      }
+    },
+    "hakanud": {
+      "base": "hakkama",
+      "means": {
+        "en": "started (olen hakanud: I have started)",
+        "az": "başlamışam",
+        "ru": "начал"
       }
     },
     "hakkab": {
@@ -50367,12 +52055,28 @@
         "ru": "бойкие"
       }
     },
+    "hakkaksin": {
+      "base": "hakkama",
+      "means": {
+        "en": "I would start (hakkaksin tantsijaks: I would become a dancer)",
+        "az": "olardım, başlayardım",
+        "ru": "я бы стал"
+      }
+    },
     "hakkame": {
       "base": "hakkama",
       "means": {
         "en": "let's begin; we begin",
         "az": "başlayaq",
         "ru": "начнём"
+      }
+    },
+    "hakkasin": {
+      "base": "hakkama",
+      "means": {
+        "en": "I started",
+        "az": "başladım",
+        "ru": "я начал"
       }
     },
     "hakkavad": {
@@ -50415,6 +52119,22 @@
         "ru": "плохо"
       }
     },
+    "halvem": {
+      "base": "halb",
+      "means": {
+        "en": "worse (kõige halvem: the worst)",
+        "az": "daha pis",
+        "ru": "хуже"
+      }
+    },
+    "hambaarstiks": {
+      "base": "hambaarst",
+      "means": {
+        "en": "a dentist (saada hambaarstiks: to become a dentist)",
+        "az": "diş həkimi",
+        "ru": "зубным врачом"
+      }
+    },
     "hambad": {
       "base": "hammas",
       "means": {
@@ -50445,6 +52165,22 @@
         "en": "sour cream",
         "az": "xama",
         "ru": "сметану"
+      }
+    },
+    "haridusega": {
+      "base": "haridus",
+      "means": {
+        "en": "with education",
+        "az": "təhsilli",
+        "ru": "с образованием"
+      }
+    },
+    "harjutatud": {
+      "base": "harjutama",
+      "means": {
+        "en": "made used to, trained",
+        "az": "öyrəşdirilmiş",
+        "ru": "приучен"
       }
     },
     "hautatud": {
@@ -50567,6 +52303,14 @@
         "ru": "кошмарный сон"
       }
     },
+    "hm": {
+      "base": "hm",
+      "means": {
+        "en": "hm",
+        "az": "hm",
+        "ru": "хм"
+      }
+    },
     "hobi": {
       "base": "hobi",
       "means": {
@@ -50581,6 +52325,14 @@
         "en": "horse",
         "az": "at",
         "ru": "лошадь"
+      }
+    },
+    "hoidja": {
+      "base": "hoidja",
+      "means": {
+        "en": "nanny, childminder",
+        "az": "dayə",
+        "ru": "няня"
       }
     },
     "hommiku": {
@@ -50703,6 +52455,14 @@
         "ru": "хорошо"
       }
     },
+    "i": {
+      "base": "-i",
+      "means": {
+        "en": "the ending after an apostrophe (Descartes'i: Descartes's)",
+        "az": "şəkilçi (Descartes'i: Dekartın)",
+        "ru": "окончание после апострофа (Descartes'i: Декарта)"
+      }
+    },
     "igasugused": {
       "base": "igasugune",
       "means": {
@@ -50773,6 +52533,14 @@
         "en": "nice, beautiful (ilusat päeva: have a nice day)",
         "az": "gözəl",
         "ru": "хорошего"
+      }
+    },
+    "iluvõimlemises": {
+      "base": "iluvõimlemine",
+      "means": {
+        "en": "at rhythmic gymnastics",
+        "az": "bədii gimnastikada",
+        "ru": "на художественной гимнастике"
       }
     },
     "imelikke": {
@@ -50855,6 +52623,14 @@
         "ru": "с интерьером"
       }
     },
+    "internet": {
+      "base": "internet",
+      "means": {
+        "en": "internet",
+        "az": "internet",
+        "ru": "интернет"
+      }
+    },
     "isa": {
       "base": "isa",
       "means": {
@@ -50911,6 +52687,22 @@
         "ru": "по характеру"
       }
     },
+    "isikut": {
+      "base": "isik",
+      "means": {
+        "en": "person (isikut tõendav dokument: an ID)",
+        "az": "şəxs (isikut tõendav dokument: şəxsiyyət vəsiqəsi)",
+        "ru": "личность (isikut tõendav dokument: удостоверение личности)"
+      }
+    },
+    "istuge": {
+      "base": "istuma",
+      "means": {
+        "en": "sit down (polite)",
+        "az": "əyləşin",
+        "ru": "садитесь"
+      }
+    },
     "istuma": {
       "base": "istuma",
       "means": {
@@ -50925,6 +52717,14 @@
         "en": "appetite (head isu: enjoy your meal)",
         "az": "iştah",
         "ru": "аппетит"
+      }
+    },
+    "it": {
+      "base": "IT",
+      "means": {
+        "en": "IT (information technology)",
+        "az": "İT",
+        "ru": "IT"
       }
     },
     "ja": {
@@ -51079,6 +52879,14 @@
         "ru": "ужасно"
       }
     },
+    "juhtus": {
+      "base": "juhtuma",
+      "means": {
+        "en": "happened",
+        "az": "baş verirdi",
+        "ru": "случалось"
+      }
+    },
     "juhul": {
       "base": "juhus",
       "means": {
@@ -51127,6 +52935,14 @@
         "ru": "пить"
       }
     },
+    "juurat": {
+      "base": "juura",
+      "means": {
+        "en": "law (as a subject)",
+        "az": "hüquq",
+        "ru": "право"
+      }
+    },
     "juurde": {
       "base": "juurde",
       "means": {
@@ -51151,12 +52967,28 @@
         "ru": "с клюквенным соусом"
       }
     },
+    "jõuab": {
+      "base": "jõudma",
+      "means": {
+        "en": "arrives, gets to",
+        "az": "çatır",
+        "ru": "приезжает"
+      }
+    },
     "jõuan": {
       "base": "jõudma",
       "means": {
         "en": "I get to, I arrive",
         "az": "çatıram",
         "ru": "добираюсь"
+      }
+    },
+    "jõudnud": {
+      "base": "jõudma",
+      "means": {
+        "en": "reached, come to (ei ole jõudnud: haven't come to)",
+        "az": "gəlməmişəm",
+        "ru": "пришёл"
       }
     },
     "jõulude": {
@@ -51191,12 +53023,44 @@
         "ru": "опять"
       }
     },
+    "järelmaksuga": {
+      "base": "järelmaks",
+      "means": {
+        "en": "in instalments",
+        "az": "hissə-hissə ödənişlə",
+        "ru": "в рассрочку"
+      }
+    },
     "järgmine": {
       "base": "järgmine",
       "means": {
         "en": "next",
         "az": "növbəti",
         "ru": "следующий"
+      }
+    },
+    "järgmisena": {
+      "base": "järgmine",
+      "means": {
+        "en": "next, as the next thing",
+        "az": "növbəti olaraq",
+        "ru": "следующим"
+      }
+    },
+    "järgmisest": {
+      "base": "järgmine",
+      "means": {
+        "en": "from next",
+        "az": "növbətidən",
+        "ru": "со следующего"
+      }
+    },
+    "järgmisse": {
+      "base": "järgmine",
+      "means": {
+        "en": "next, to the next",
+        "az": "növbətiyə",
+        "ru": "в следующий"
       }
     },
     "järvelt": {
@@ -51229,6 +53093,14 @@
         "en": "to stay, to get (caught)",
         "az": "qalmaq",
         "ru": "оставаться, попасть"
+      }
+    },
+    "jäähokit": {
+      "base": "jäähoki",
+      "means": {
+        "en": "ice hockey",
+        "az": "xokkey",
+        "ru": "хоккей"
       }
     },
     "jääksin": {
@@ -51503,6 +53375,14 @@
         "ru": "на кассу"
       }
     },
+    "kasuks": {
+      "base": "kasu",
+      "means": {
+        "en": "in favour of (filoloogia kasuks: on philology)",
+        "az": "xeyrinə",
+        "ru": "в пользу"
+      }
+    },
     "kasulik": {
       "base": "kasulik",
       "means": {
@@ -51517,6 +53397,22 @@
         "en": "I use",
         "az": "istifadə edirəm",
         "ru": "использую"
+      }
+    },
+    "kasvanud": {
+      "base": "kasvama",
+      "means": {
+        "en": "grown, grown up",
+        "az": "böyümüş",
+        "ru": "вырос"
+      }
+    },
+    "kasvatus": {
+      "base": "kasvatus",
+      "means": {
+        "en": "upbringing, education (kehaline kasvatus: PE)",
+        "az": "tərbiyə",
+        "ru": "воспитание"
       }
     },
     "kasvavad": {
@@ -51543,12 +53439,28 @@
         "ru": "сломанный"
       }
     },
+    "katkise": {
+      "base": "katkine",
+      "means": {
+        "en": "broken",
+        "az": "xarab",
+        "ru": "сломанный"
+      }
+    },
     "kaua": {
       "base": "kaua",
       "means": {
         "en": "long (time)",
         "az": "uzun müddət",
         "ru": "долго"
+      }
+    },
+    "kauem": {
+      "base": "kaua",
+      "means": {
+        "en": "longer",
+        "az": "daha uzun",
+        "ru": "дольше"
       }
     },
     "keedukartulid": {
@@ -51575,12 +53487,28 @@
         "ru": "кто-то (с ei: никто)"
       }
     },
+    "keel": {
+      "base": "keel",
+      "means": {
+        "en": "language, tongue",
+        "az": "dil",
+        "ru": "язык"
+      }
+    },
     "keele": {
       "base": "keel",
       "means": {
         "en": "language (keele tundi: language class)",
         "az": "dil",
         "ru": "языка"
+      }
+    },
+    "keeled": {
+      "base": "keel",
+      "means": {
+        "en": "languages",
+        "az": "dillər",
+        "ru": "языки"
       }
     },
     "keelekursus": {
@@ -51591,12 +53519,28 @@
         "ru": "языковой курс"
       }
     },
+    "keeletunnid": {
+      "base": "keeletund",
+      "means": {
+        "en": "language lessons",
+        "az": "dil dərsləri",
+        "ru": "уроки языков"
+      }
+    },
     "keelt": {
       "base": "keel",
       "means": {
         "en": "language",
         "az": "dili",
         "ru": "язык"
+      }
+    },
+    "keemia": {
+      "base": "keemia",
+      "means": {
+        "en": "chemistry",
+        "az": "kimya",
+        "ru": "химия"
       }
     },
     "keerulist": {
@@ -51607,12 +53551,36 @@
         "ru": "сложного"
       }
     },
+    "kehaline": {
+      "base": "kehaline",
+      "means": {
+        "en": "physical (kehaline kasvatus: physical education)",
+        "az": "bədən",
+        "ru": "физический"
+      }
+    },
     "kell": {
       "base": "kell",
       "means": {
         "en": "o'clock; clock",
         "az": "saat",
         "ru": "час, часы"
+      }
+    },
+    "kella": {
+      "base": "kell",
+      "means": {
+        "en": "o'clock (kella kolm: three o'clock)",
+        "az": "saat",
+        "ru": "часов"
+      }
+    },
+    "kellasele": {
+      "base": "kellane",
+      "means": {
+        "en": "for the … o'clock (mis kellasele: for what time)",
+        "az": "saat neçənin",
+        "ru": "на … час (mis kellasele: на который час)"
       }
     },
     "kelle": {
@@ -51639,6 +53607,14 @@
         "ru": "ни с кем"
       }
     },
+    "kelleks": {
+      "base": "kes",
+      "means": {
+        "en": "who, into whom (kelleks saada: what to become)",
+        "az": "kim (kelleks saada: kim olmaq)",
+        "ru": "кем"
+      }
+    },
     "kena": {
       "base": "kena",
       "means": {
@@ -51647,12 +53623,36 @@
         "ru": "милый, красивый"
       }
     },
+    "kergejõustikus": {
+      "base": "kergejõustik",
+      "means": {
+        "en": "at athletics, track and field",
+        "az": "yüngül atletikada",
+        "ru": "на лёгкой атлетике"
+      }
+    },
+    "kergem": {
+      "base": "kerge",
+      "means": {
+        "en": "easier, lighter",
+        "az": "asan, yüngül",
+        "ru": "легче"
+      }
+    },
     "kes": {
       "base": "kes",
       "means": {
         "en": "who",
         "az": "kim",
         "ru": "кто, который"
+      }
+    },
+    "keskkool": {
+      "base": "keskkool",
+      "means": {
+        "en": "secondary school",
+        "az": "orta məktəb",
+        "ru": "средняя школа"
       }
     },
     "keskkooli": {
@@ -51671,6 +53671,30 @@
         "ru": "в центр города"
       }
     },
+    "keskmine": {
+      "base": "keskmine",
+      "means": {
+        "en": "average, middle",
+        "az": "orta",
+        "ru": "средний"
+      }
+    },
+    "kevadel": {
+      "base": "kevad",
+      "means": {
+        "en": "in spring",
+        "az": "yazda",
+        "ru": "весной"
+      }
+    },
+    "kiire": {
+      "base": "kiire",
+      "means": {
+        "en": "fast; busy",
+        "az": "sürətli",
+        "ru": "быстрый"
+      }
+    },
     "kiiresti": {
       "base": "kiiresti",
       "means": {
@@ -51679,12 +53703,44 @@
         "ru": "быстро"
       }
     },
+    "kiirliin": {
+      "base": "kiirliin",
+      "means": {
+        "en": "fast line (a bus with fewer stops)",
+        "az": "sürətli xətt",
+        "ru": "скорая линия"
+      }
+    },
+    "kindlale": {
+      "base": "kindel",
+      "means": {
+        "en": "to a firm (kindlale otsusele: to a firm decision)",
+        "az": "qəti",
+        "ru": "к твёрдому"
+      }
+    },
+    "kindlalt": {
+      "base": "kindlalt",
+      "means": {
+        "en": "for certain, firmly",
+        "az": "dəqiq",
+        "ru": "твёрдо, наверняка"
+      }
+    },
     "kindlasti": {
       "base": "kindlasti",
       "means": {
         "en": "certainly",
         "az": "mütləq",
         "ru": "обязательно, точно"
+      }
+    },
+    "kindlustust": {
+      "base": "kindlustus",
+      "means": {
+        "en": "insurance",
+        "az": "sığorta",
+        "ru": "страховка"
       }
     },
     "kinni": {
@@ -51701,6 +53757,14 @@
         "en": "passion",
         "az": "ehtiras",
         "ru": "страсть"
+      }
+    },
+    "kirjand": {
+      "base": "kirjand",
+      "means": {
+        "en": "essay, composition",
+        "az": "inşa",
+        "ru": "сочинение"
       }
     },
     "kirjutage": {
@@ -51741,6 +53805,22 @@
         "en": "class, grade (at school)",
         "az": "sinif",
         "ru": "класс"
+      }
+    },
+    "klassis": {
+      "base": "klass",
+      "means": {
+        "en": "in class, in the classroom",
+        "az": "sinifdə",
+        "ru": "в классе"
+      }
+    },
+    "klassist": {
+      "base": "klass",
+      "means": {
+        "en": "from the class, from the grade",
+        "az": "sinifdən",
+        "ru": "с класса"
       }
     },
     "kliendikaardi": {
@@ -51815,6 +53895,14 @@
         "ru": "из дома"
       }
     },
+    "koduste": {
+      "base": "kodune",
+      "means": {
+        "en": "home, domestic",
+        "az": "ev",
+        "ru": "домашних"
+      }
+    },
     "kogu": {
       "base": "kogu",
       "means": {
@@ -51871,6 +53959,14 @@
         "ru": "с поваром"
       }
     },
+    "kokamamma": {
+      "base": "kokamamma",
+      "means": {
+        "en": "old cook (a woman cook in a household)",
+        "az": "aşpaz qadın",
+        "ru": "кухарка"
+      }
+    },
     "kokku": {
       "base": "kokku",
       "means": {
@@ -51911,6 +54007,14 @@
         "ru": "переезжал"
       }
     },
+    "kolis": {
+      "base": "kolima",
+      "means": {
+        "en": "moved (house)",
+        "az": "köçdü",
+        "ru": "переехал"
+      }
+    },
     "kolisin": {
       "base": "kolima",
       "means": {
@@ -51943,6 +54047,14 @@
         "ru": "на третьем"
       }
     },
+    "kolmandasse": {
+      "base": "kolmas",
+      "means": {
+        "en": "to the third",
+        "az": "üçüncüyə",
+        "ru": "в третий"
+      }
+    },
     "kolmas": {
       "base": "kolmas",
       "means": {
@@ -51951,12 +54063,52 @@
         "ru": "третий"
       }
     },
+    "kolmeaastaselt": {
+      "base": "kolmeaastane",
+      "means": {
+        "en": "at three years old",
+        "az": "üç yaşında",
+        "ru": "в три года"
+      }
+    },
+    "kolmene": {
+      "base": "kolmene",
+      "means": {
+        "en": "the three o'clock (one)",
+        "az": "saat üçün",
+        "ru": "трёхчасовой"
+      }
+    },
+    "kolmesele": {
+      "base": "kolmene",
+      "means": {
+        "en": "for the three o'clock",
+        "az": "saat üçün",
+        "ru": "на трёхчасовой"
+      }
+    },
+    "kolmesid": {
+      "base": "kolm",
+      "means": {
+        "en": "threes (marks)",
+        "az": "üçlər",
+        "ru": "тройки"
+      }
+    },
     "kolmikud": {
       "base": "kolmik",
       "means": {
         "en": "triplets",
         "az": "üçəmlər",
         "ru": "тройня"
+      }
+    },
+    "kolmveerand": {
+      "base": "kolmveerand",
+      "means": {
+        "en": "three quarters (kolmveerand seitse: quarter to seven)",
+        "az": "dörddə üç (kolmveerand seitse: yeddiyə on beş qalmış)",
+        "ru": "три четверти (kolmveerand seitse: без четверти семь)"
       }
     },
     "kombinatsioon": {
@@ -51973,6 +54125,14 @@
         "en": "conflict",
         "az": "münaqişə",
         "ru": "конфликт"
+      }
+    },
+    "konkurss": {
+      "base": "konkurss",
+      "means": {
+        "en": "competition (for places)",
+        "az": "müsabiqə",
+        "ru": "конкурс"
       }
     },
     "kontrollin": {
@@ -52047,6 +54207,14 @@
         "ru": "из школ"
       }
     },
+    "koolimaja": {
+      "base": "koolimaja",
+      "means": {
+        "en": "school building",
+        "az": "məktəb binası",
+        "ru": "здание школы"
+      }
+    },
     "koolis": {
       "base": "kool",
       "means": {
@@ -52061,6 +54229,22 @@
         "en": "from school",
         "az": "məktəbdən",
         "ru": "из школы"
+      }
+    },
+    "kooliteed": {
+      "base": "koolitee",
+      "means": {
+        "en": "schooling, school career (literally: school road)",
+        "az": "məktəb yolu",
+        "ru": "школьный путь"
+      }
+    },
+    "koopiad": {
+      "base": "koopia",
+      "means": {
+        "en": "copies",
+        "az": "surətlər",
+        "ru": "копии"
       }
     },
     "koos": {
@@ -52143,6 +54327,22 @@
         "ru": "на мгновение"
       }
     },
+    "korraldasin": {
+      "base": "korraldama",
+      "means": {
+        "en": "I organised",
+        "az": "təşkil etdim",
+        "ru": "я организовал"
+      }
+    },
+    "korraldatud": {
+      "base": "korraldama",
+      "means": {
+        "en": "organised, run",
+        "az": "təşkil edilmiş",
+        "ru": "организованный"
+      }
+    },
     "korrus": {
       "base": "korrus",
       "means": {
@@ -52221,6 +54421,14 @@
         "en": "in the flat",
         "az": "mənzildə",
         "ru": "в квартире"
+      }
+    },
+    "kosel": {
+      "base": "Kose",
+      "means": {
+        "en": "at Kose, a small town south of Tallinn",
+        "az": "Kosedə",
+        "ru": "в Козе"
       }
     },
     "kostab": {
@@ -52319,6 +54527,14 @@
         "ru": "когда-то"
       }
     },
+    "kuni": {
+      "base": "kuni",
+      "means": {
+        "en": "until, up to",
+        "az": "qədər",
+        "ru": "до"
+      }
+    },
     "kurgisalati": {
       "base": "kurgisalat",
       "means": {
@@ -52343,6 +54559,22 @@
         "ru": "в курсе"
       }
     },
+    "kursuse": {
+      "base": "kursus",
+      "means": {
+        "en": "course",
+        "az": "kurs",
+        "ru": "курс"
+      }
+    },
+    "kursusel": {
+      "base": "kursus",
+      "means": {
+        "en": "on a course",
+        "az": "kursda",
+        "ru": "на курсе"
+      }
+    },
     "kus": {
       "base": "kus",
       "means": {
@@ -52359,12 +54591,28 @@
         "ru": "откуда"
       }
     },
+    "kutsehariduskeskuse": {
+      "base": "kutsehariduskeskus",
+      "means": {
+        "en": "vocational education centre's",
+        "az": "peşə təhsili mərkəzinin",
+        "ru": "центра профессионального образования"
+      }
+    },
     "kuud": {
       "base": "kuu",
       "means": {
         "en": "months",
         "az": "ay",
         "ru": "месяца"
+      }
+    },
+    "kuueaastane": {
+      "base": "kuueaastane",
+      "means": {
+        "en": "six years old",
+        "az": "altı yaşlı",
+        "ru": "шестилетний"
       }
     },
     "kuuekuune": {
@@ -52423,6 +54671,14 @@
         "ru": "знаменитым"
       }
     },
+    "kuupäev": {
+      "base": "kuupäev",
+      "means": {
+        "en": "date",
+        "az": "tarix",
+        "ru": "число, дата"
+      }
+    },
     "kuus": {
       "base": "kuus",
       "means": {
@@ -52453,6 +54709,14 @@
         "en": "most (kõige esimesena: the very first; kõige vanem: the oldest)",
         "az": "ən",
         "ru": "самый, больше всего"
+      }
+    },
+    "kõiges": {
+      "base": "kõik",
+      "means": {
+        "en": "in everything",
+        "az": "hər şeydə",
+        "ru": "во всём"
       }
     },
     "kõik": {
@@ -52503,6 +54767,14 @@
         "ru": "высокие"
       }
     },
+    "kõrgema": {
+      "base": "kõrgem",
+      "means": {
+        "en": "higher (kõrgem haridus: higher education)",
+        "az": "ali",
+        "ru": "высшим"
+      }
+    },
     "kõrval": {
       "base": "kõrval",
       "means": {
@@ -52519,6 +54791,14 @@
         "ru": "к, рядом"
       }
     },
+    "käia": {
+      "base": "käima",
+      "means": {
+        "en": "to go (regularly), to attend",
+        "az": "getmək",
+        "ru": "ходить"
+      }
+    },
     "käib": {
       "base": "käima",
       "means": {
@@ -52527,12 +54807,28 @@
         "ru": "ходит (külas käima, ходить в гости)"
       }
     },
+    "käima": {
+      "base": "käima",
+      "means": {
+        "en": "to go (regularly), to attend",
+        "az": "getməyə",
+        "ru": "ходить"
+      }
+    },
     "käinud": {
       "base": "käima",
       "means": {
         "en": "been (to)",
         "az": "olmuşam",
         "ru": "бывал"
+      }
+    },
+    "käis": {
+      "base": "käima",
+      "means": {
+        "en": "went, visited (käis rääkimas: went to talk)",
+        "az": "getdi",
+        "ru": "ходил"
       }
     },
     "käisime": {
@@ -52615,6 +54911,22 @@
         "ru": "десять"
       }
     },
+    "kümned": {
+      "base": "kümme",
+      "means": {
+        "en": "tens (marks)",
+        "az": "onluqlar",
+        "ru": "десятки"
+      }
+    },
+    "kümnepallisüsteem": {
+      "base": "kümnepallisüsteem",
+      "means": {
+        "en": "ten-point system",
+        "az": "on ballıq sistem",
+        "ru": "десятибалльная система"
+      }
+    },
     "küpsetatud": {
       "base": "küpsetama",
       "means": {
@@ -52629,6 +54941,14 @@
         "en": "to ask",
         "az": "soruşmaq",
         "ru": "спросить"
+      }
+    },
+    "küsimus": {
+      "base": "küsimus",
+      "means": {
+        "en": "question",
+        "az": "sual",
+        "ru": "вопрос"
       }
     },
     "küsimusi": {
@@ -52679,12 +54999,28 @@
         "ru": "буянят (после ei)"
       }
     },
+    "laiem": {
+      "base": "lai",
+      "means": {
+        "en": "broader, wider",
+        "az": "daha geniş",
+        "ru": "шире"
+      }
+    },
     "lambad": {
       "base": "lammas",
       "means": {
         "en": "sheep",
         "az": "qoyunlar",
         "ru": "овцы"
+      }
+    },
+    "langes": {
+      "base": "langema",
+      "means": {
+        "en": "fell (valik langes … kasuks: the choice fell on)",
+        "az": "düşdü",
+        "ru": "пал"
       }
     },
     "laos": {
@@ -52791,6 +55127,14 @@
         "ru": "детей"
       }
     },
+    "lastel": {
+      "base": "laps",
+      "means": {
+        "en": "for the children (lastel oleks: the children would have)",
+        "az": "uşaqlar üçün",
+        "ru": "у детей, детям"
+      }
+    },
     "lastelastel": {
       "base": "lapselaps",
       "means": {
@@ -52847,6 +55191,30 @@
         "ru": "пою"
       }
     },
+    "laulda": {
+      "base": "laulma",
+      "means": {
+        "en": "to sing",
+        "az": "oxumağı (mahnı)",
+        "ru": "петь"
+      }
+    },
+    "lauljaks": {
+      "base": "laulja",
+      "means": {
+        "en": "a singer (saada lauljaks: to become a singer)",
+        "az": "müğənni",
+        "ru": "певцом"
+      }
+    },
+    "le": {
+      "base": "-le",
+      "means": {
+        "en": "to, onto (IT-le: about IT, towards IT)",
+        "az": "-yə (IT-le: İT-yə)",
+        "ru": "к (IT-le: об IT)"
+      }
+    },
     "lehma": {
       "base": "lehm",
       "means": {
@@ -52877,6 +55245,14 @@
         "en": "bread (rye bread)",
         "az": "çörək",
         "ru": "хлеб"
+      }
+    },
+    "lepingu": {
+      "base": "leping",
+      "means": {
+        "en": "contract (lepingu vormistamine: drawing up the contract)",
+        "az": "müqavilə",
+        "ru": "договор"
       }
     },
     "leppinud": {
@@ -52999,6 +55375,30 @@
         "ru": "гарнир"
       }
     },
+    "loeb": {
+      "base": "lugema",
+      "means": {
+        "en": "counts (see loeb ka: that counts too); reads",
+        "az": "sayılır",
+        "ru": "считается"
+      }
+    },
+    "loeti": {
+      "base": "lugema",
+      "means": {
+        "en": "was read (loeti ette: was read out)",
+        "az": "oxunurdu",
+        "ru": "читали"
+      }
+    },
+    "loodetavasti": {
+      "base": "loodetavasti",
+      "means": {
+        "en": "hopefully",
+        "az": "ümid edirəm ki",
+        "ru": "надеюсь, предположительно"
+      }
+    },
     "loomi": {
       "base": "loom",
       "means": {
@@ -53047,12 +55447,44 @@
         "ru": "удовольствие"
       }
     },
+    "lõpetan": {
+      "base": "lõpetama",
+      "means": {
+        "en": "I finish, I graduate",
+        "az": "bitirirəm",
+        "ru": "я заканчиваю"
+      }
+    },
+    "lõpetanud": {
+      "base": "lõpetama",
+      "means": {
+        "en": "finished, graduated",
+        "az": "bitirmiş",
+        "ru": "окончил"
+      }
+    },
+    "lõpetasin": {
+      "base": "lõpetama",
+      "means": {
+        "en": "I finished, I graduated",
+        "az": "bitirdim",
+        "ru": "я окончил"
+      }
+    },
     "lõplik": {
       "base": "lõplik",
       "means": {
         "en": "final",
         "az": "son",
         "ru": "окончательный"
+      }
+    },
+    "lõpuni": {
+      "base": "lõpp",
+      "means": {
+        "en": "until the end",
+        "az": "sonuna qədər",
+        "ru": "до конца"
       }
     },
     "lõpus": {
@@ -53087,6 +55519,14 @@
         "ru": "идёт"
       }
     },
+    "läheksin": {
+      "base": "minema",
+      "means": {
+        "en": "I would go",
+        "az": "gedərdim",
+        "ru": "я бы пошёл"
+      }
+    },
     "lähen": {
       "base": "minema",
       "means": {
@@ -53119,6 +55559,22 @@
         "ru": "пошло"
       }
     },
+    "läksin": {
+      "base": "minema",
+      "means": {
+        "en": "I went",
+        "az": "getdim",
+        "ru": "я пошёл"
+      }
+    },
+    "lütseumi": {
+      "base": "lütseum",
+      "means": {
+        "en": "lyceum, to the lyceum",
+        "az": "liseyə",
+        "ru": "в лицей"
+      }
+    },
     "ma": {
       "base": "mina",
       "means": {
@@ -53133,6 +55589,14 @@
         "en": "in the world",
         "az": "dünyada",
         "ru": "в мире"
+      }
+    },
+    "maalähedane": {
+      "base": "maalähedane",
+      "means": {
+        "en": "down-to-earth (literally: close to the land)",
+        "az": "sadə, torpağa yaxın",
+        "ru": "приземлённый"
       }
     },
     "maarjamäel": {
@@ -53157,6 +55621,14 @@
         "en": "to sleep (lähme magama: we go to bed)",
         "az": "yatmağa",
         "ru": "спать"
+      }
+    },
+    "magistriõppe": {
+      "base": "magistriõpe",
+      "means": {
+        "en": "master's studies",
+        "az": "magistratura",
+        "ru": "магистратура"
       }
     },
     "magustoitu": {
@@ -53231,6 +55703,14 @@
         "ru": "номер дома"
       }
     },
+    "majapidamine": {
+      "base": "majapidamine",
+      "means": {
+        "en": "household, farm",
+        "az": "təsərrüfat",
+        "ru": "хозяйство"
+      }
+    },
     "majas": {
       "base": "maja",
       "means": {
@@ -53287,6 +55767,14 @@
         "ru": "в шахматный кружок"
       }
     },
+    "malevõistluse": {
+      "base": "malevõistlus",
+      "means": {
+        "en": "chess competition",
+        "az": "şahmat yarışı",
+        "ru": "шахматное соревнование"
+      }
+    },
     "masin": {
       "base": "masin",
       "means": {
@@ -53319,6 +55807,14 @@
         "ru": "мы"
       }
     },
+    "meditsiini": {
+      "base": "meditsiin",
+      "means": {
+        "en": "medicine",
+        "az": "tibb",
+        "ru": "медицину"
+      }
+    },
     "meeldi": {
       "base": "meeldima",
       "means": {
@@ -53341,6 +55837,30 @@
         "en": "would be liked (mulle meeldiks: I would like)",
         "az": "xoşuma gələrdi",
         "ru": "понравился бы"
+      }
+    },
+    "meeldinud": {
+      "base": "meeldima",
+      "means": {
+        "en": "liked (ei meeldinud: didn't like)",
+        "az": "xoşuma gəlmirdi (ei meeldinud)",
+        "ru": "не нравился (ei meeldinud)"
+      }
+    },
+    "meeldis": {
+      "base": "meeldima",
+      "means": {
+        "en": "liked (mulle meeldis: I liked)",
+        "az": "xoşuma gəlirdi",
+        "ru": "нравился"
+      }
+    },
+    "meeldisid": {
+      "base": "meeldima",
+      "means": {
+        "en": "liked (of several: mulle meeldisid: I liked them)",
+        "az": "xoşuma gəlirdi",
+        "ru": "нравились"
       }
     },
     "meeldivad": {
@@ -53373,6 +55893,14 @@
         "en": "husband, man (mehe saadan: my husband I send)",
         "az": "əri, kişini",
         "ru": "мужа"
+      }
+    },
+    "mehhanisaatorina": {
+      "base": "mehhanisaator",
+      "means": {
+        "en": "as a mechanic (a farm machine operator)",
+        "az": "mexanizator kimi",
+        "ru": "механизатором"
       }
     },
     "meie": {
@@ -53479,6 +56007,14 @@
         "ru": "чему, чем"
       }
     },
+    "milleski": {
+      "base": "miski",
+      "means": {
+        "en": "in anything (ei … milleski: not in anything)",
+        "az": "heç nədə",
+        "ru": "ни в чём"
+      }
+    },
     "millest": {
       "base": "mis",
       "means": {
@@ -53533,6 +56069,14 @@
         "en": "some sort of",
         "az": "hansısa",
         "ru": "какой-то"
+      }
+    },
+    "mingit": {
+      "base": "mingi",
+      "means": {
+        "en": "some, some sort of",
+        "az": "hər hansı",
+        "ru": "какой-нибудь"
       }
     },
     "minna": {
@@ -53615,6 +56159,14 @@
         "ru": "какое"
       }
     },
+    "mitmekülgne": {
+      "base": "mitmekülgne",
+      "means": {
+        "en": "versatile, many-sided",
+        "az": "çoxşaxəli",
+        "ru": "разносторонний"
+      }
+    },
     "mitmele": {
       "base": "mitu",
       "means": {
@@ -53647,6 +56199,14 @@
         "ru": "как, наподобие"
       }
     },
+    "mootorrattaload": {
+      "base": "mootorrattaluba",
+      "means": {
+        "en": "motorbike licence",
+        "az": "motosiklet vəsiqəsi",
+        "ru": "права на мотоцикл"
+      }
+    },
     "mu": {
       "base": "mina",
       "means": {
@@ -53661,6 +56221,14 @@
         "en": "model",
         "az": "model",
         "ru": "модель"
+      }
+    },
+    "muid": {
+      "base": "muu",
+      "means": {
+        "en": "other",
+        "az": "başqa",
+        "ru": "другие"
       }
     },
     "muidu": {
@@ -53711,6 +56279,14 @@
         "ru": "волнуйтесь"
       }
     },
+    "muretu": {
+      "base": "muretu",
+      "means": {
+        "en": "free of worry, carefree",
+        "az": "qayğısız",
+        "ru": "беззаботный"
+      }
+    },
     "musi": {
       "base": "musi",
       "means": {
@@ -53743,6 +56319,22 @@
         "ru": "другой"
       }
     },
+    "mõelnud": {
+      "base": "mõtlema",
+      "means": {
+        "en": "thought (olen mõelnud: I have thought)",
+        "az": "düşünmüşəm",
+        "ru": "думал"
+      }
+    },
+    "mõiste": {
+      "base": "mõiste",
+      "means": {
+        "en": "concept, notion",
+        "az": "anlayış",
+        "ru": "понятие"
+      }
+    },
     "mõned": {
       "base": "mõni",
       "means": {
@@ -53751,12 +56343,28 @@
         "ru": "некоторые"
       }
     },
+    "mõni": {
+      "base": "mõni",
+      "means": {
+        "en": "some, one or other",
+        "az": "hansısa",
+        "ru": "какой-нибудь"
+      }
+    },
     "mõnikord": {
       "base": "mõnikord",
       "means": {
         "en": "sometimes",
         "az": "bəzən",
         "ru": "иногда"
+      }
+    },
+    "mõtlema": {
+      "base": "mõtlema",
+      "means": {
+        "en": "to think (mõtlema hakkama: to start thinking)",
+        "az": "düşünməyə",
+        "ru": "думать"
       }
     },
     "mõtlen": {
@@ -53773,6 +56381,14 @@
         "en": "I thought",
         "az": "düşündüm",
         "ru": "думал"
+      }
+    },
+    "mõttega": {
+      "base": "mõte",
+      "means": {
+        "en": "with the thought, to the idea",
+        "az": "fikrə",
+        "ru": "к мысли"
       }
     },
     "mäed": {
@@ -53807,6 +56423,14 @@
         "ru": "играть"
       }
     },
+    "mängimas": {
+      "base": "mängima",
+      "means": {
+        "en": "playing (käisime mängimas: we went to play)",
+        "az": "oynamağa",
+        "ru": "играть"
+      }
+    },
     "mängin": {
       "base": "mängima",
       "means": {
@@ -53815,12 +56439,28 @@
         "ru": "играю"
       }
     },
+    "mäos": {
+      "base": "Mäo",
+      "means": {
+        "en": "at Mäo, a crossroads village in central Estonia",
+        "az": "Mäoda",
+        "ru": "в Мяо"
+      }
+    },
     "märts": {
       "base": "märts",
       "means": {
         "en": "March",
         "az": "mart",
         "ru": "март"
+      }
+    },
+    "müüdud": {
+      "base": "müüma",
+      "means": {
+        "en": "sold (välja müüdud: sold out)",
+        "az": "satılmış",
+        "ru": "продан"
       }
     },
     "naaber": {
@@ -53919,6 +56559,14 @@
         "ru": "немножко"
       }
     },
+    "ndate": {
+      "base": "-ndad",
+      "means": {
+        "en": "of the …s (2000ndate: of the 2000s)",
+        "az": "-ci illərin (2000ndate: 2000-ci illərin)",
+        "ru": "-х годов (2000ndate: 2000-х)"
+      }
+    },
     "need": {
       "base": "see",
       "means": {
@@ -53951,6 +56599,30 @@
         "ru": "четыре"
       }
     },
+    "neljandal": {
+      "base": "neljas",
+      "means": {
+        "en": "fourth (üheksakümne neljandal aastal: in ninety-four)",
+        "az": "dördüncü",
+        "ru": "четвёртом"
+      }
+    },
+    "neljasele": {
+      "base": "neljane",
+      "means": {
+        "en": "for the four o'clock (poole neljasele: for half past three)",
+        "az": "saat dördün",
+        "ru": "на четырёхчасовой"
+      }
+    },
+    "neljasid": {
+      "base": "neli",
+      "means": {
+        "en": "fours (marks)",
+        "az": "dördlər",
+        "ru": "четвёрки"
+      }
+    },
     "nendega": {
       "base": "nemad",
       "means": {
@@ -53965,6 +56637,14 @@
         "en": "they have (nendel on)",
         "az": "onların",
         "ru": "у них"
+      }
+    },
+    "netis": {
+      "base": "net",
+      "means": {
+        "en": "online, on the net",
+        "az": "internetdə",
+        "ru": "в сети"
       }
     },
     "nii": {
@@ -54039,6 +56719,14 @@
         "ru": "ну"
       }
     },
+    "noh": {
+      "base": "noh",
+      "means": {
+        "en": "well (a filler)",
+        "az": "yaxşı, nə isə",
+        "ru": "ну"
+      }
+    },
     "noorem": {
       "base": "noorem",
       "means": {
@@ -54053,6 +56741,22 @@
         "en": "younger (has)",
         "az": "kiçik",
         "ru": "у младшего"
+      }
+    },
+    "normaalses": {
+      "base": "normaalne",
+      "means": {
+        "en": "in a normal",
+        "az": "normal",
+        "ru": "в нормальном"
+      }
+    },
+    "normaalsesse": {
+      "base": "normaalne",
+      "means": {
+        "en": "into a normal",
+        "az": "normala",
+        "ru": "в нормальное"
       }
     },
     "norra": {
@@ -54199,6 +56903,14 @@
         "ru": "видел"
       }
     },
+    "näidake": {
+      "base": "näitama",
+      "means": {
+        "en": "show (polite)",
+        "az": "göstərin",
+        "ru": "покажите"
+      }
+    },
     "näidis": {
       "base": "näidis",
       "means": {
@@ -54221,6 +56933,30 @@
         "en": "for example",
         "az": "məsələn",
         "ru": "например"
+      }
+    },
+    "näiteringis": {
+      "base": "näitering",
+      "means": {
+        "en": "at a drama club",
+        "az": "dram dərnəyində",
+        "ru": "в театральном кружке"
+      }
+    },
+    "näitlejaks": {
+      "base": "näitleja",
+      "means": {
+        "en": "an actor (saada näitlejaks: to become an actor)",
+        "az": "aktyor",
+        "ru": "актёром"
+      }
+    },
+    "näitlemisega": {
+      "base": "näitlemine",
+      "means": {
+        "en": "with acting",
+        "az": "aktyorluqla",
+        "ru": "актёрским мастерством"
       }
     },
     "nässu": {
@@ -54263,6 +56999,14 @@
         "ru": "ой"
       }
     },
+    "oktoobri": {
+      "base": "oktoober",
+      "means": {
+        "en": "October's, of October",
+        "az": "oktyabrın",
+        "ru": "октября"
+      }
+    },
     "ole": {
       "base": "olema",
       "means": {
@@ -54285,6 +57029,22 @@
         "en": "would be (mul oleks vaja: I would need)",
         "az": "olardı",
         "ru": "было бы"
+      }
+    },
+    "oleksin": {
+      "base": "olema",
+      "means": {
+        "en": "I would (have) (oleksin kasvanud: I would have grown up)",
+        "az": "olsaydım",
+        "ru": "я был бы"
+      }
+    },
+    "olema": {
+      "base": "olema",
+      "means": {
+        "en": "to be",
+        "az": "olmaq",
+        "ru": "быть"
       }
     },
     "olemas": {
@@ -54367,6 +57127,14 @@
         "ru": "был"
       }
     },
+    "oluline": {
+      "base": "oluline",
+      "means": {
+        "en": "important",
+        "az": "vacib",
+        "ru": "важный"
+      }
+    },
     "oma": {
       "base": "oma",
       "means": {
@@ -54415,6 +57183,30 @@
         "ru": "белка"
       }
     },
+    "osaga": {
+      "base": "osa",
+      "means": {
+        "en": "with the part (toime tulema … osaga: to cope with the part)",
+        "az": "hissəsi ilə",
+        "ru": "с частью"
+      }
+    },
+    "osalesin": {
+      "base": "osalema",
+      "means": {
+        "en": "I took part",
+        "az": "iştirak etdim",
+        "ru": "я участвовал"
+      }
+    },
+    "oska": {
+      "base": "oskama",
+      "means": {
+        "en": "can, know how (after ei: ei oska, can't)",
+        "az": "bacarmıram (ei oska)",
+        "ru": "не умею (ei oska)"
+      }
+    },
     "osta": {
       "base": "ostma",
       "means": {
@@ -54431,12 +57223,28 @@
         "ru": "я куплю"
       }
     },
+    "ostate": {
+      "base": "ostma",
+      "means": {
+        "en": "you buy (polite; ostate välja: buy outright)",
+        "az": "alırsınız",
+        "ru": "вы покупаете"
+      }
+    },
     "ostetakse": {
       "base": "ostma",
       "means": {
         "en": "are bought",
         "az": "alınır",
         "ru": "покупают"
+      }
+    },
+    "otsa": {
+      "base": "ots",
+      "means": {
+        "en": "end (teise linna otsa: to the other end of town)",
+        "az": "son, uc",
+        "ru": "конец"
       }
     },
     "otseselt": {
@@ -54455,6 +57263,14 @@
         "ru": "ищет"
       }
     },
+    "otsusele": {
+      "base": "otsus",
+      "means": {
+        "en": "to a decision",
+        "az": "qərara",
+        "ru": "к решению"
+      }
+    },
     "otsustanud": {
       "base": "otsustama",
       "means": {
@@ -54463,12 +57279,36 @@
         "ru": "решили"
       }
     },
+    "otsustasime": {
+      "base": "otsustama",
+      "means": {
+        "en": "we decided",
+        "az": "qərara gəldik",
+        "ru": "мы решили"
+      }
+    },
     "paar": {
       "base": "paar",
       "means": {
         "en": "a couple",
         "az": "bir-iki",
         "ru": "пара"
+      }
+    },
+    "paberitega": {
+      "base": "paber",
+      "means": {
+        "en": "with papers (traktoristi paberitega: with a tractor licence)",
+        "az": "sənədlərlə",
+        "ru": "с документами"
+      }
+    },
+    "pahteldamist": {
+      "base": "pahteldamine",
+      "means": {
+        "en": "filling (with putty), plastering",
+        "az": "şpaklyovka",
+        "ru": "шпаклёвку"
       }
     },
     "paigaldust": {
@@ -54535,6 +57375,14 @@
         "ru": "кладу (panen riidesse: одеваюсь)"
       }
     },
+    "pangaga": {
+      "base": "pank",
+      "means": {
+        "en": "with the bank",
+        "az": "bankla",
+        "ru": "с банком"
+      }
+    },
     "pange": {
       "base": "panema",
       "means": {
@@ -54583,12 +57431,28 @@
         "ru": "утиное филе"
       }
     },
+    "parem": {
+      "base": "parem",
+      "means": {
+        "en": "better (kõige parem: the best)",
+        "az": "daha yaxşı",
+        "ru": "лучше"
+      }
+    },
     "paremat": {
       "base": "parem",
       "means": {
         "en": "better",
         "az": "daha yaxşı",
         "ru": "лучше"
+      }
+    },
+    "parim": {
+      "base": "parim",
+      "means": {
+        "en": "best",
+        "az": "ən yaxşı",
+        "ru": "лучший"
       }
     },
     "park": {
@@ -54605,6 +57469,22 @@
         "en": "pastel colours",
         "az": "pastel rənglər",
         "ru": "пастельные цвета"
+      }
+    },
+    "peaaegu": {
+      "base": "peaaegu",
+      "means": {
+        "en": "almost",
+        "az": "demək olar ki",
+        "ru": "почти"
+      }
+    },
+    "peaks": {
+      "base": "pidama",
+      "means": {
+        "en": "should (peaks olema: there should be)",
+        "az": "olmalıdır",
+        "ru": "должен"
       }
     },
     "peale": {
@@ -54631,6 +57511,14 @@
         "ru": "в голове"
       }
     },
+    "peatub": {
+      "base": "peatuma",
+      "means": {
+        "en": "stops",
+        "az": "dayanır",
+        "ru": "останавливается"
+      }
+    },
     "peetakse": {
       "base": "pidama",
       "means": {
@@ -54641,6 +57529,14 @@
     },
     "pere": {
       "base": "pere",
+      "means": {
+        "en": "family",
+        "az": "ailə",
+        "ru": "семья"
+      }
+    },
+    "perekond": {
+      "base": "perekond",
       "means": {
         "en": "family",
         "az": "ailə",
@@ -54703,6 +57599,22 @@
         "ru": "бельё"
       }
     },
+    "pesumasin": {
+      "base": "pesumasin",
+      "means": {
+        "en": "washing machine",
+        "az": "paltaryuyan maşın",
+        "ru": "стиральная машина"
+      }
+    },
+    "pesumasina": {
+      "base": "pesumasin",
+      "means": {
+        "en": "washing machine (as the object)",
+        "az": "paltaryuyan maşını",
+        "ru": "стиральную машину"
+      }
+    },
     "pesumasinad": {
       "base": "pesumasin",
       "means": {
@@ -54735,6 +57647,14 @@
         "ru": "стиральную машину"
       }
     },
+    "peterburis": {
+      "base": "Peterburi",
+      "means": {
+        "en": "in St Petersburg",
+        "az": "Peterburqda",
+        "ru": "в Петербурге"
+      }
+    },
     "pigem": {
       "base": "pigem",
       "means": {
@@ -54757,6 +57677,38 @@
         "en": "for long",
         "az": "uzun müddət",
         "ru": "долго"
+      }
+    },
+    "pikapäevarühmas": {
+      "base": "pikapäevarühm",
+      "means": {
+        "en": "in the after-school group",
+        "az": "uzadılmış gün qrupunda",
+        "ru": "в группе продлённого дня"
+      }
+    },
+    "pikem": {
+      "base": "pikk",
+      "means": {
+        "en": "taller, longer (kõige pikem: the tallest)",
+        "az": "daha hündür",
+        "ru": "выше"
+      }
+    },
+    "pilet": {
+      "base": "pilet",
+      "means": {
+        "en": "ticket",
+        "az": "bilet",
+        "ru": "билет"
+      }
+    },
+    "pileteid": {
+      "base": "pilet",
+      "means": {
+        "en": "tickets",
+        "az": "bilet",
+        "ru": "билеты"
       }
     },
     "pilti": {
@@ -54826,9 +57778,25 @@
     "poole": {
       "base": "pool",
       "means": {
-        "en": "half (poole kuueni: till half past five)",
-        "az": "yarım",
-        "ru": "половина"
+        "en": "half (poole kuueni: till half past five; kella poole neljasele: for half past three)",
+        "az": "yarım (kella poole neljasele: saat üç yarıma)",
+        "ru": "половина (kella poole neljasele: на половину четвёртого)"
+      }
+    },
+    "poolel": {
+      "base": "pool",
+      "means": {
+        "en": "half, side (teisel poolel: in the second half)",
+        "az": "yarısında",
+        "ru": "половине"
+      }
+    },
+    "poolest": {
+      "base": "pool",
+      "means": {
+        "en": "half, from the half (teisest poolest: from the second half)",
+        "az": "yarısından",
+        "ru": "половины"
       }
     },
     "pooleteiseaastane": {
@@ -54903,6 +57871,30 @@
         "ru": "проблема"
       }
     },
+    "programmeerimine": {
+      "base": "programmeerimine",
+      "means": {
+        "en": "programming",
+        "az": "proqramlaşdırma",
+        "ru": "программирование"
+      }
+    },
+    "programmeerimise": {
+      "base": "programmeerimine",
+      "means": {
+        "en": "programming's, in programming",
+        "az": "proqramlaşdırma",
+        "ru": "по программированию"
+      }
+    },
+    "programmeerimist": {
+      "base": "programmeerimine",
+      "means": {
+        "en": "programming",
+        "az": "proqramlaşdırma",
+        "ru": "программирование"
+      }
+    },
     "proov": {
       "base": "proov",
       "means": {
@@ -54967,6 +57959,38 @@
         "ru": "красного"
       }
     },
+    "põhiasjad": {
+      "base": "põhiasi",
+      "means": {
+        "en": "main things",
+        "az": "əsas işlər",
+        "ru": "главные дела"
+      }
+    },
+    "põhikooli": {
+      "base": "põhikool",
+      "means": {
+        "en": "basic school (terve põhikooli: all through basic school)",
+        "az": "əsas məktəb",
+        "ru": "основная школа"
+      }
+    },
+    "põhikoolist": {
+      "base": "põhikool",
+      "means": {
+        "en": "from basic school (grades 1–9)",
+        "az": "əsas məktəbdən",
+        "ru": "из основной школы"
+      }
+    },
+    "põhikursus": {
+      "base": "põhikursus",
+      "means": {
+        "en": "introductory course",
+        "az": "əsas kurs",
+        "ru": "базовый курс"
+      }
+    },
     "põhimõtteliselt": {
       "base": "põhimõtteliselt",
       "means": {
@@ -54981,6 +58005,22 @@
         "en": "Nordic",
         "az": "Şimal ölkələrinin",
         "ru": "северный, скандинавский"
+      }
+    },
+    "põhjatöid": {
+      "base": "põhjatöö",
+      "means": {
+        "en": "preparation work",
+        "az": "hazırlıq işləri",
+        "ru": "подготовительные работы"
+      }
+    },
+    "põltsamaal": {
+      "base": "Põltsamaa",
+      "means": {
+        "en": "at Põltsamaa, a town in central Estonia",
+        "az": "Põltsamaada",
+        "ru": "в Пыльтсамаа"
       }
     },
     "põranda": {
@@ -55055,6 +58095,22 @@
         "ru": "вполне; настоящий"
       }
     },
+    "püünsi": {
+      "base": "Püünsi",
+      "means": {
+        "en": "Püünsi, a village near Tallinn",
+        "az": "Püünsi",
+        "ru": "Пююнси"
+      }
+    },
+    "raamatukogukaart": {
+      "base": "raamatukogukaart",
+      "means": {
+        "en": "library card",
+        "az": "kitabxana kartı",
+        "ru": "читательский билет"
+      }
+    },
     "raha": {
       "base": "raha",
       "means": {
@@ -55103,6 +58159,38 @@
         "ru": "пляжи"
       }
     },
+    "raske": {
+      "base": "raske",
+      "means": {
+        "en": "difficult, hard",
+        "az": "çətin",
+        "ru": "трудный"
+      }
+    },
+    "raskemad": {
+      "base": "raske",
+      "means": {
+        "en": "harder",
+        "az": "daha çətin",
+        "ru": "труднее"
+      }
+    },
+    "ratsutamas": {
+      "base": "ratsutama",
+      "means": {
+        "en": "riding (a horse)",
+        "az": "at sürməyə",
+        "ru": "кататься верхом"
+      }
+    },
+    "reaalained": {
+      "base": "reaalaine",
+      "means": {
+        "en": "the sciences (maths, physics, chemistry)",
+        "az": "dəqiq elmlər",
+        "ru": "точные науки"
+      }
+    },
     "reeglina": {
       "base": "reegel",
       "means": {
@@ -55111,12 +58199,60 @@
         "ru": "как правило"
       }
     },
+    "reisi": {
+      "base": "reis",
+      "means": {
+        "en": "trip, journey (head reisi: have a good trip)",
+        "az": "səfər (head reisi: yaxşı yol)",
+        "ru": "поездка (head reisi: счастливого пути)"
+      }
+    },
+    "remonditööde": {
+      "base": "remonditöö",
+      "means": {
+        "en": "of repair work, renovation",
+        "az": "təmir işləri",
+        "ru": "ремонтных работ"
+      }
+    },
     "riidesse": {
       "base": "riided",
       "means": {
         "en": "into clothes (panen riidesse: get dressed)",
         "az": "paltara",
         "ru": "в одежду"
+      }
+    },
+    "riigigümnaasiumi": {
+      "base": "riigigümnaasium",
+      "means": {
+        "en": "the state gymnasium (as the object)",
+        "az": "dövlət gimnaziyasını",
+        "ru": "государственную гимназию"
+      }
+    },
+    "riigigümnaasiumis": {
+      "base": "riigigümnaasium",
+      "means": {
+        "en": "at the state gymnasium",
+        "az": "dövlət gimnaziyasında",
+        "ru": "в государственной гимназии"
+      }
+    },
+    "riigis": {
+      "base": "riik",
+      "means": {
+        "en": "in a state, in a country",
+        "az": "dövlətdə",
+        "ru": "в государстве"
+      }
+    },
+    "riiki": {
+      "base": "riik",
+      "means": {
+        "en": "into a state, into a country",
+        "az": "dövlətə",
+        "ru": "в государство"
       }
     },
     "riis": {
@@ -55183,6 +58319,14 @@
         "ru": "больше"
       }
     },
+    "rootsi": {
+      "base": "rootsi",
+      "means": {
+        "en": "Swedish",
+        "az": "isveç",
+        "ru": "шведский"
+      }
+    },
     "ruutmeetrit": {
       "base": "ruutmeeter",
       "means": {
@@ -55197,6 +58341,14 @@
         "en": "balcony",
         "az": "eyvan",
         "ru": "балкон"
+      }
+    },
+    "rõiva": {
+      "base": "rõivas",
+      "means": {
+        "en": "clothing (rõiva- või: clothes or)",
+        "az": "geyim",
+        "ru": "одежды"
       }
     },
     "rõõm": {
@@ -55346,9 +58498,9 @@
     "saab": {
       "base": "saama",
       "means": {
-        "en": "can (saab broneerida: it can be booked); gets",
-        "az": "olar; alır",
-        "ru": "можно; получает"
+        "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+        "az": "olar (kui saab: mümkünsə); alır",
+        "ru": "можно (kui saab: если можно); получает"
       }
     },
     "saada": {
@@ -55375,12 +58527,20 @@
         "ru": "можно было бы"
       }
     },
+    "saaksid": {
+      "base": "saama",
+      "means": {
+        "en": "you could",
+        "az": "bilsəydin",
+        "ru": "ты мог бы"
+      }
+    },
     "saaksin": {
       "base": "saama",
       "means": {
-        "en": "could I get",
-        "az": "ala bilərəmmi",
-        "ru": "мог бы я получить"
+        "en": "could I get; I could (kui ma saaksin: if I could)",
+        "az": "ala bilərdimmi; bilsəydim",
+        "ru": "мог бы я получить; если бы я мог"
       }
     },
     "saaksite": {
@@ -55429,6 +58589,14 @@
         "en": "we got (läbi saama, to get along)",
         "az": "yola gedirdik (läbi saama)",
         "ru": "ладили (läbi saama)"
+      }
+    },
+    "sain": {
+      "base": "saama",
+      "means": {
+        "en": "I got",
+        "az": "aldım",
+        "ru": "я получил"
       }
     },
     "saksa": {
@@ -55530,9 +58698,9 @@
     "sees": {
       "base": "sees",
       "means": {
-        "en": "inside, in it",
-        "az": "içində",
-        "ru": "внутри"
+        "en": "inside, in it; within (garantiiaja sees: within the warranty)",
+        "az": "içində; ərzində",
+        "ru": "внутри; в течение"
       }
     },
     "segamini": {
@@ -55575,6 +58743,14 @@
         "ru": "семь"
       }
     },
+    "seitsmeaastane": {
+      "base": "seitsmeaastane",
+      "means": {
+        "en": "seven years old",
+        "az": "yeddi yaşlı",
+        "ru": "семилетний"
+      }
+    },
     "sel": {
       "base": "see",
       "means": {
@@ -55589,6 +58765,14 @@
         "en": "clear; right, understood",
         "az": "aydın",
         "ru": "ясно"
+      }
+    },
+    "selgus": {
+      "base": "selguma",
+      "means": {
+        "en": "it turned out",
+        "az": "məlum oldu",
+        "ru": "выяснилось"
       }
     },
     "selle": {
@@ -55607,12 +58791,28 @@
         "ru": "для этого"
       }
     },
+    "sellel": {
+      "base": "see",
+      "means": {
+        "en": "on this, this (sellel kevadel: this spring)",
+        "az": "bu",
+        "ru": "этой"
+      }
+    },
     "sellele": {
       "base": "see",
       "means": {
         "en": "on this, for this",
         "az": "buna",
         "ru": "на это"
+      }
+    },
+    "sellepärast": {
+      "base": "sellepärast",
+      "means": {
+        "en": "because of that (sellepärast, et: because)",
+        "az": "ona görə",
+        "ru": "потому"
       }
     },
     "selles": {
@@ -55671,6 +58871,22 @@
         "ru": "общительный"
       }
     },
+    "septembril": {
+      "base": "september",
+      "means": {
+        "en": "in September (esimesel septembril: on the first of September)",
+        "az": "sentyabrda",
+        "ru": "сентября"
+      }
+    },
+    "septembris": {
+      "base": "september",
+      "means": {
+        "en": "in September",
+        "az": "sentyabrda",
+        "ru": "в сентябре"
+      }
+    },
     "sest": {
       "base": "sest",
       "means": {
@@ -55709,6 +58925,14 @@
         "en": "here (to)",
         "az": "bura",
         "ru": "сюда"
+      }
+    },
+    "siiamaani": {
+      "base": "siiamaani",
+      "means": {
+        "en": "up to now, so far",
+        "az": "indiyədək",
+        "ru": "до сих пор"
       }
     },
     "siin": {
@@ -55767,6 +58991,30 @@
         "ru": "твой"
       }
     },
+    "sisekujundusdisaineriks": {
+      "base": "sisekujundusdisainer",
+      "means": {
+        "en": "an interior designer",
+        "az": "interyer dizayneri",
+        "ru": "дизайнером интерьера"
+      }
+    },
+    "siseviimistlustööde": {
+      "base": "siseviimistlustöö",
+      "means": {
+        "en": "of interior finishing work",
+        "az": "daxili bəzək işləri",
+        "ru": "внутренних отделочных работ"
+      }
+    },
+    "sisse": {
+      "base": "sisse",
+      "means": {
+        "en": "in, into (sain sisse: I got in)",
+        "az": "içəri (sain sisse: qəbul oldum)",
+        "ru": "внутрь (sain sisse: я поступил)"
+      }
+    },
     "sixten": {
       "base": "Sixten",
       "means": {
@@ -55783,12 +59031,60 @@
         "ru": "подходит"
       }
     },
+    "sobis": {
+      "base": "sobima",
+      "means": {
+        "en": "suited",
+        "az": "xoş gəldi, uyğun gəldi",
+        "ru": "подошло"
+      }
+    },
     "soodsa": {
       "base": "soodne",
       "means": {
         "en": "favourable, good (price)",
         "az": "sərfəli",
         "ru": "выгодной"
+      }
+    },
+    "sooduspilet": {
+      "base": "sooduspilet",
+      "means": {
+        "en": "discount ticket",
+        "az": "güzəştli bilet",
+        "ru": "льготный билет"
+      }
+    },
+    "soome": {
+      "base": "soome",
+      "means": {
+        "en": "Finnish",
+        "az": "fin",
+        "ru": "финский"
+      }
+    },
+    "soomes": {
+      "base": "Soome",
+      "means": {
+        "en": "in Finland",
+        "az": "Finlandiyada",
+        "ru": "в Финляндии"
+      }
+    },
+    "soov": {
+      "base": "soov",
+      "means": {
+        "en": "wish",
+        "az": "arzu",
+        "ru": "желание"
+      }
+    },
+    "soovi": {
+      "base": "soovima",
+      "means": {
+        "en": "want (after ei: ei soovi, don't want)",
+        "az": "istəmirəm (ei soovi)",
+        "ru": "не хочу (ei soovi)"
       }
     },
     "soovidest": {
@@ -55871,12 +59167,28 @@
         "ru": "в родне"
       }
     },
+    "suhelda": {
+      "base": "suhtlema",
+      "means": {
+        "en": "to communicate",
+        "az": "ünsiyyət qurmaq",
+        "ru": "общаться"
+      }
+    },
     "suhtled": {
       "base": "suhtlema",
       "means": {
         "en": "you talk, are in touch",
         "az": "ünsiyyət qurursan",
         "ru": "ты общаешься"
+      }
+    },
+    "suhtlemine": {
+      "base": "suhtlemine",
+      "means": {
+        "en": "communicating, communication",
+        "az": "ünsiyyət",
+        "ru": "общение"
       }
     },
     "suhtlen": {
@@ -55959,6 +59271,14 @@
         "ru": "не умирает (с ei)"
       }
     },
+    "suri": {
+      "base": "surema",
+      "means": {
+        "en": "died (suri ära: passed away)",
+        "az": "öldü",
+        "ru": "умер"
+      }
+    },
     "suur": {
       "base": "suur",
       "means": {
@@ -55991,12 +59311,36 @@
         "ru": "отличный"
       }
     },
+    "suusatamises": {
+      "base": "suusatamine",
+      "means": {
+        "en": "at skiing",
+        "az": "xizək sürməkdə",
+        "ru": "в лыжах"
+      }
+    },
+    "suvel": {
+      "base": "suvi",
+      "means": {
+        "en": "in summer",
+        "az": "yayda",
+        "ru": "летом"
+      }
+    },
     "sõidab": {
       "base": "sõitma",
       "means": {
         "en": "rides, drives (sõidab lumelauaga: snowboards)",
         "az": "sürür",
         "ru": "катается, ездит"
+      }
+    },
+    "sõitma": {
+      "base": "sõitma",
+      "means": {
+        "en": "to drive, to ride",
+        "az": "sürməyi",
+        "ru": "ездить, водить"
       }
     },
     "sõltub": {
@@ -56079,6 +59423,22 @@
         "ru": "ел"
       }
     },
+    "sündida": {
+      "base": "sündima",
+      "means": {
+        "en": "to be born",
+        "az": "doğulmaq",
+        "ru": "родиться"
+      }
+    },
+    "sündinud": {
+      "base": "sündima",
+      "means": {
+        "en": "born",
+        "az": "doğulmuş",
+        "ru": "родился"
+      }
+    },
     "sündis": {
       "base": "sündima",
       "means": {
@@ -56093,6 +59453,14 @@
         "en": "is born",
         "az": "doğulur",
         "ru": "рождается"
+      }
+    },
+    "süsteem": {
+      "base": "süsteem",
+      "means": {
+        "en": "system",
+        "az": "sistem",
+        "ru": "система"
       }
     },
     "süüa": {
@@ -56191,12 +59559,28 @@
         "ru": "сдержанные"
       }
     },
+    "taha": {
+      "base": "tahtma",
+      "means": {
+        "en": "want (after ei: ei taha, doesn't want)",
+        "az": "istəmir (ei taha)",
+        "ru": "не хочет (ei taha)"
+      }
+    },
     "tahab": {
       "base": "tahtma",
       "means": {
         "en": "wants",
         "az": "istəyir",
         "ru": "хочет"
+      }
+    },
+    "tahad": {
+      "base": "tahtma",
+      "means": {
+        "en": "you want",
+        "az": "istəyirsən",
+        "ru": "ты хочешь"
       }
     },
     "tahagi": {
@@ -56213,6 +59597,14 @@
         "en": "would like",
         "az": "istərdi",
         "ru": "хотел бы"
+      }
+    },
+    "tahaksid": {
+      "base": "tahtma",
+      "means": {
+        "en": "you would like",
+        "az": "istərdin",
+        "ru": "ты хотел бы"
       }
     },
     "tahaksin": {
@@ -56237,6 +59629,14 @@
         "en": "wanted",
         "az": "istədi",
         "ru": "хотел"
+      }
+    },
+    "tahtsin": {
+      "base": "tahtma",
+      "means": {
+        "en": "I wanted",
+        "az": "istəyirdim",
+        "ru": "я хотел"
       }
     },
     "taimed": {
@@ -56295,6 +59695,14 @@
         "ru": "из Таллинна"
       }
     },
+    "talvel": {
+      "base": "talv",
+      "means": {
+        "en": "in winter",
+        "az": "qışda",
+        "ru": "зимой"
+      }
+    },
     "tantsib": {
       "base": "tantsima",
       "means": {
@@ -56303,12 +59711,44 @@
         "ru": "танцует"
       }
     },
+    "tantsijaks": {
+      "base": "tantsija",
+      "means": {
+        "en": "a dancer (hakkama tantsijaks: to become a dancer)",
+        "az": "rəqqas",
+        "ru": "танцором, танцовщицей"
+      }
+    },
+    "tantsutrenni": {
+      "base": "tantsutrenn",
+      "means": {
+        "en": "to dance class",
+        "az": "rəqs məşqinə",
+        "ru": "на танцы"
+      }
+    },
     "tapeet": {
       "base": "tapeet",
       "means": {
         "en": "wallpaper",
         "az": "divar kağızı",
         "ru": "обои"
+      }
+    },
+    "tapetseerimist": {
+      "base": "tapetseerimine",
+      "means": {
+        "en": "wallpapering",
+        "az": "divar kağızı yapışdırmaq",
+        "ru": "поклейку обоев"
+      }
+    },
+    "tartu": {
+      "base": "Tartu",
+      "means": {
+        "en": "Tartu (Tartu Ülikool: the University of Tartu)",
+        "az": "Tartu",
+        "ru": "Тарту"
       }
     },
     "tartusse": {
@@ -56391,6 +59831,14 @@
         "ru": "знать"
       }
     },
+    "teadsin": {
+      "base": "teadma",
+      "means": {
+        "en": "I knew",
+        "az": "bilirdim",
+        "ru": "я знал"
+      }
+    },
     "teate": {
       "base": "teadma",
       "means": {
@@ -56439,6 +59887,14 @@
         "ru": "делаю"
       }
     },
+    "teeninud": {
+      "base": "teenima",
+      "means": {
+        "en": "having served, been in service",
+        "az": "xidmət etmiş",
+        "ru": "служивший"
+      }
+    },
     "tegele": {
       "base": "tegelema",
       "means": {
@@ -56447,12 +59903,52 @@
         "ru": "займись!"
       }
     },
+    "tegelen": {
+      "base": "tegelema",
+      "means": {
+        "en": "I am busy with, I do (tegelen näitlemisega: I act)",
+        "az": "məşğulam",
+        "ru": "я занимаюсь"
+      }
+    },
     "tegelikult": {
       "base": "tegelikult",
       "means": {
         "en": "actually",
         "az": "əslində",
         "ru": "на самом деле"
+      }
+    },
+    "tegemata": {
+      "base": "tegema",
+      "means": {
+        "en": "not done, undone",
+        "az": "edilməmiş",
+        "ru": "не сделаны"
+      }
+    },
+    "tegemist": {
+      "base": "tegemine",
+      "means": {
+        "en": "doing, things to do (palju tegemist: a lot to do)",
+        "az": "iş",
+        "ru": "дел"
+      }
+    },
+    "tegid": {
+      "base": "tegema",
+      "means": {
+        "en": "you did",
+        "az": "edirdin",
+        "ru": "ты делал"
+      }
+    },
+    "tegin": {
+      "base": "tegema",
+      "means": {
+        "en": "I did, I made",
+        "az": "etdim",
+        "ru": "я сделал"
       }
     },
     "teha": {
@@ -56514,9 +60010,9 @@
     "teise": {
       "base": "teine",
       "means": {
-        "en": "another, a second",
-        "az": "ikincisini",
-        "ru": "второго"
+        "en": "another, a second; the other (teise linna otsa: to the other end of town)",
+        "az": "başqa, ikinci; o biri",
+        "ru": "другой, второй"
       }
     },
     "teised": {
@@ -56533,6 +60029,14 @@
         "en": "on the second",
         "az": "ikinci",
         "ru": "на втором"
+      }
+    },
+    "teisest": {
+      "base": "teine",
+      "means": {
+        "en": "from the second",
+        "az": "ikincidən",
+        "ru": "со второй"
       }
     },
     "teisi": {
@@ -56631,6 +60135,14 @@
         "ru": "ему, ей"
       }
     },
+    "teoreetilised": {
+      "base": "teoreetiline",
+      "means": {
+        "en": "theoretical",
+        "az": "nəzəri",
+        "ru": "теоретические"
+      }
+    },
     "terav": {
       "base": "terav",
       "means": {
@@ -56703,6 +60215,14 @@
         "ru": "еды"
       }
     },
+    "toime": {
+      "base": "toime",
+      "means": {
+        "en": "(toime tulema: to cope, to manage)",
+        "az": "(toime tulema: öhdəsindən gəlmək)",
+        "ru": "(toime tulema: справляться)"
+      }
+    },
     "tolmu": {
       "base": "tolm",
       "means": {
@@ -56759,6 +60279,14 @@
         "ru": "хороший, замечательный"
       }
     },
+    "toredad": {
+      "base": "tore",
+      "means": {
+        "en": "nice, lovely",
+        "az": "gözəl",
+        "ru": "хорошие, славные"
+      }
+    },
     "tormab": {
       "base": "tormama",
       "means": {
@@ -56775,12 +60303,36 @@
         "ru": "с Кейптауном"
       }
     },
+    "traktoristi": {
+      "base": "traktorist",
+      "means": {
+        "en": "tractor driver's; tractor driver",
+        "az": "traktorçu",
+        "ru": "тракториста"
+      }
+    },
+    "trenni": {
+      "base": "trenn",
+      "means": {
+        "en": "to training, to practice",
+        "az": "məşqə",
+        "ru": "на тренировку"
+      }
+    },
     "trennidest": {
       "base": "trenn",
       "means": {
         "en": "from training, from sports clubs",
         "az": "məşqlərdən",
         "ru": "с тренировок"
+      }
+    },
+    "trennis": {
+      "base": "trenn",
+      "means": {
+        "en": "at training (käisin trennis: I went to training)",
+        "az": "məşqdə",
+        "ru": "на тренировке"
       }
     },
     "triigi": {
@@ -56858,9 +60410,17 @@
     "tuleb": {
       "base": "tulema",
       "means": {
-        "en": "comes",
-        "az": "gəlir",
-        "ru": "приходит"
+        "en": "comes; has to (tuleb vahetada: has to be changed)",
+        "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+        "ru": "приходит; надо (tuleb vahetada: надо сменить)"
+      }
+    },
+    "tulema": {
+      "base": "tulema",
+      "means": {
+        "en": "to come (toime tulema: to cope)",
+        "az": "gəlmək",
+        "ru": "приходить"
       }
     },
     "tulevad": {
@@ -56911,6 +60471,14 @@
         "ru": "тёмный"
       }
     },
+    "tunde": {
+      "base": "tund",
+      "means": {
+        "en": "lessons; hours (pärast tunde: after lessons)",
+        "az": "dərslər",
+        "ru": "уроки"
+      }
+    },
     "tundi": {
       "base": "tund",
       "means": {
@@ -56927,6 +60495,14 @@
         "ru": "кажется"
       }
     },
+    "tunne": {
+      "base": "tunne",
+      "means": {
+        "en": "feeling",
+        "az": "hiss",
+        "ru": "чувство"
+      }
+    },
     "tunnen": {
       "base": "tundma",
       "means": {
@@ -56941,6 +60517,14 @@
         "en": "to bring",
         "az": "gətirmək",
         "ru": "принести"
+      }
+    },
+    "tõendavat": {
+      "base": "tõendav",
+      "means": {
+        "en": "proving, certifying (isikut tõendav: identity)",
+        "az": "təsdiq edən",
+        "ru": "удостоверяющий"
       }
     },
     "tõepoolest": {
@@ -57071,12 +60655,28 @@
         "ru": "благодарю"
       }
     },
+    "tänane": {
+      "base": "tänane",
+      "means": {
+        "en": "today's",
+        "az": "bugünkü",
+        "ru": "сегодняшний"
+      }
+    },
     "tänaseks": {
       "base": "tänane",
       "means": {
         "en": "for today",
         "az": "bu gün üçün",
         "ru": "на сегодня"
+      }
+    },
+    "tänaseni": {
+      "base": "tänane",
+      "means": {
+        "en": "until today",
+        "az": "bu günə qədər",
+        "ru": "до сегодняшнего дня"
       }
     },
     "tänud": {
@@ -57117,6 +60717,14 @@
         "en": "hard-working",
         "az": "çalışqan",
         "ru": "трудолюбивый"
+      }
+    },
+    "töökoht": {
+      "base": "töökoht",
+      "means": {
+        "en": "job, workplace",
+        "az": "iş yeri",
+        "ru": "место работы"
       }
     },
     "tööl": {
@@ -57165,6 +60773,14 @@
         "en": "I work",
         "az": "işləyirəm",
         "ru": "работаю"
+      }
+    },
+    "töötanud": {
+      "base": "töötama",
+      "means": {
+        "en": "worked",
+        "az": "işləmiş",
+        "ru": "работал"
       }
     },
     "tüdruk": {
@@ -57247,6 +60863,14 @@
         "ru": "роскошную"
       }
     },
+    "uisutamas": {
+      "base": "uisutama",
+      "means": {
+        "en": "skating (käisime uisutamas: we went skating)",
+        "az": "konki sürməyə",
+        "ru": "кататься на коньках"
+      }
+    },
     "uksepoolse": {
       "base": "uksepoolne",
       "means": {
@@ -57295,6 +60919,14 @@
         "ru": "невероятно"
       }
     },
+    "uue": {
+      "base": "uus",
+      "means": {
+        "en": "new",
+        "az": "yeni",
+        "ru": "новый"
+      }
+    },
     "uued": {
       "base": "uus",
       "means": {
@@ -57309,6 +60941,14 @@
         "en": "new (to count as new)",
         "az": "yeni",
         "ru": "новым"
+      }
+    },
+    "uuesti": {
+      "base": "uuesti",
+      "means": {
+        "en": "again, anew",
+        "az": "yenidən",
+        "ru": "заново"
       }
     },
     "uus": {
@@ -57367,6 +61007,14 @@
         "ru": "извините"
       }
     },
+    "vabariiki": {
+      "base": "vabariik",
+      "means": {
+        "en": "into the republic (Eesti Vabariik: the Republic of Estonia)",
+        "az": "respublikaya",
+        "ru": "в республику"
+      }
+    },
     "vahel": {
       "base": "vahel",
       "means": {
@@ -57383,12 +61031,36 @@
         "ru": "между"
       }
     },
+    "vahepeal": {
+      "base": "vahepeal",
+      "means": {
+        "en": "for a change, in between",
+        "az": "arada",
+        "ru": "в промежутке, для разнообразия"
+      }
+    },
     "vahet": {
       "base": "vahe",
       "means": {
         "en": "difference (pole vahet, it doesn't matter)",
         "az": "fərq (pole vahet, fərqi yoxdur)",
         "ru": "разница (pole vahet, неважно)"
+      }
+    },
+    "vahetada": {
+      "base": "vahetama",
+      "means": {
+        "en": "to change, to exchange",
+        "az": "dəyişmək",
+        "ru": "сменить"
+      }
+    },
+    "vahetame": {
+      "base": "vahetama",
+      "means": {
+        "en": "we exchange (vahetame välja: we replace)",
+        "az": "dəyişirik",
+        "ru": "мы меняем"
       }
     },
     "vahvad": {
@@ -57493,6 +61165,14 @@
         "en": "ready",
         "az": "hazır",
         "ru": "готов"
+      }
+    },
+    "vana": {
+      "base": "vana",
+      "means": {
+        "en": "old",
+        "az": "qoca, köhnə",
+        "ru": "старый"
       }
     },
     "vanaema": {
@@ -57618,9 +61298,9 @@
     "vastu": {
       "base": "vastu",
       "means": {
-        "en": "against, to",
-        "az": "qarşı",
-        "ru": "против, на"
+        "en": "against, to; for (uue vastu: for a new one)",
+        "az": "qarşı; əvəzinə (uue vastu: yenisinə)",
+        "ru": "против; на (uue vastu: на новую)"
       }
     },
     "vastupidi": {
@@ -57645,6 +61325,14 @@
         "en": "still, more, also; yet",
         "az": "daha, hələ",
         "ru": "ещё"
+      }
+    },
+    "veidi": {
+      "base": "veidi",
+      "means": {
+        "en": "a little, a bit",
+        "az": "bir az",
+        "ru": "немного"
       }
     },
     "veini": {
@@ -57679,12 +61367,28 @@
         "ru": "братьев"
       }
     },
+    "vene": {
+      "base": "vene",
+      "means": {
+        "en": "Russian",
+        "az": "rus",
+        "ru": "русский"
+      }
+    },
     "venekeelne": {
       "base": "venekeelne",
       "means": {
         "en": "in Russian",
         "az": "rusca",
         "ru": "на русском языке"
+      }
+    },
+    "venekeelse": {
+      "base": "venekeelne",
+      "means": {
+        "en": "Russian-speaking",
+        "az": "rusdilli",
+        "ru": "русскоязычным"
       }
     },
     "venelasega": {
@@ -57709,6 +61413,14 @@
         "en": "into the ventilation shaft",
         "az": "ventilyasiya borusuna",
         "ru": "в вентиляцию"
+      }
+    },
+    "viga": {
+      "base": "viga",
+      "means": {
+        "en": "mistake, error",
+        "az": "səhv",
+        "ru": "ошибка"
       }
     },
     "viha": {
@@ -57751,6 +61463,22 @@
         "ru": "дождевой лес"
       }
     },
+    "viied": {
+      "base": "viis",
+      "means": {
+        "en": "fives (the top mark)",
+        "az": "beşlər",
+        "ru": "пятёрки"
+      }
+    },
+    "viiendast": {
+      "base": "viies",
+      "means": {
+        "en": "from the fifth",
+        "az": "beşincidən",
+        "ru": "с пятого"
+      }
+    },
     "viies": {
       "base": "viies",
       "means": {
@@ -57765,6 +61493,14 @@
         "en": "last",
         "az": "sonuncu",
         "ru": "последний"
+      }
+    },
+    "viimase": {
+      "base": "viimane",
+      "means": {
+        "en": "last",
+        "az": "son",
+        "ru": "последней"
       }
     },
     "viimaseid": {
@@ -57789,6 +61525,14 @@
         "en": "last, the last time",
         "az": "axırıncı dəfə",
         "ru": "в последний раз"
+      }
+    },
+    "viimsi": {
+      "base": "Viimsi",
+      "means": {
+        "en": "Viimsi, a parish just outside Tallinn",
+        "az": "Viimsi",
+        "ru": "Виймси"
       }
     },
     "viimsis": {
@@ -57879,6 +61623,14 @@
         "ru": "шныряет"
       }
     },
+    "võeti": {
+      "base": "võtma",
+      "means": {
+        "en": "was taken (mind võeti kooli: I was taken into school)",
+        "az": "götürüldü",
+        "ru": "взяли"
+      }
+    },
     "või": {
       "base": "või",
       "means": {
@@ -57893,6 +61645,14 @@
         "en": "may (võib-olla: maybe)",
         "az": "bilər (võib-olla: bəlkə)",
         "ru": "может (võib-olla: может быть)"
+      }
+    },
+    "võibolla": {
+      "base": "võib-olla",
+      "means": {
+        "en": "maybe (also written võib-olla)",
+        "az": "bəlkə də",
+        "ru": "может быть"
       }
     },
     "võid": {
@@ -57911,12 +61671,44 @@
         "ru": "можно было бы"
       }
     },
+    "võiksin": {
+      "base": "võima",
+      "means": {
+        "en": "I could",
+        "az": "bilərdim",
+        "ru": "я мог бы"
+      }
+    },
+    "võite": {
+      "base": "võima",
+      "means": {
+        "en": "you can, you may (polite)",
+        "az": "bilərsiniz",
+        "ru": "вы можете"
+      }
+    },
+    "võitsin": {
+      "base": "võitma",
+      "means": {
+        "en": "I won",
+        "az": "qalib gəldim",
+        "ru": "я выиграл"
+      }
+    },
     "võivad": {
       "base": "võima",
       "means": {
         "en": "they can, may",
         "az": "bilərlər",
         "ru": "могут"
+      }
+    },
+    "võtab": {
+      "base": "võtma",
+      "means": {
+        "en": "takes",
+        "az": "aparır, götürür",
+        "ru": "берёт, занимает"
       }
     },
     "võtad": {
@@ -57943,12 +61735,28 @@
         "ru": "беру"
       }
     },
+    "võttis": {
+      "base": "võtma",
+      "means": {
+        "en": "took",
+        "az": "aparırdı",
+        "ru": "отнимала"
+      }
+    },
     "väga": {
       "base": "väga",
       "means": {
         "en": "very",
         "az": "çox",
         "ru": "очень"
+      }
+    },
+    "vähe": {
+      "base": "vähe",
+      "means": {
+        "en": "few, little",
+        "az": "az",
+        "ru": "мало"
       }
     },
     "väike": {
@@ -57965,6 +61773,14 @@
         "en": "small",
         "az": "kiçik",
         "ru": "маленьких"
+      }
+    },
+    "väiksem": {
+      "base": "väike",
+      "means": {
+        "en": "smaller",
+        "az": "daha kiçik",
+        "ru": "меньше"
       }
     },
     "väiksema": {
@@ -57986,9 +61802,9 @@
     "välja": {
       "base": "välja",
       "means": {
-        "en": "out (näeb välja: looks like)",
-        "az": "çölə",
-        "ru": "наружу"
+        "en": "out (näeb välja: looks like; ostate välja: buy outright; välja müüdud: sold out; välja arvatud: except)",
+        "az": "çölə (välja müüdud: satılıb; välja arvatud: -dan başqa)",
+        "ru": "наружу (välja müüdud: распродано; välja arvatud: кроме)"
       }
     },
     "värske": {
@@ -58023,6 +61839,14 @@
         "ru": "цвета"
       }
     },
+    "värvimist": {
+      "base": "värvimine",
+      "means": {
+        "en": "painting",
+        "az": "rəngləmə",
+        "ru": "покраску"
+      }
+    },
     "väsin": {
       "base": "väsima",
       "means": {
@@ -58037,6 +61861,14 @@
         "en": "tired",
         "az": "yorğun",
         "ru": "усталый"
+      }
+    },
+    "väärikas": {
+      "base": "väärikas",
+      "means": {
+        "en": "dignified",
+        "az": "ləyaqətli",
+        "ru": "достойный"
       }
     },
     "õde": {
@@ -58159,6 +61991,22 @@
         "ru": "преподаю"
       }
     },
+    "õpiks": {
+      "base": "õppima",
+      "means": {
+        "en": "would study (ei õpiks: wouldn't)",
+        "az": "oxumazdım (ei õpiks)",
+        "ru": "не учился бы (ei õpiks)"
+      }
+    },
+    "õpiksid": {
+      "base": "õppima",
+      "means": {
+        "en": "you would study",
+        "az": "oxuyardın",
+        "ru": "ты бы учился"
+      }
+    },
     "õpin": {
       "base": "õppima",
       "means": {
@@ -58175,12 +62023,68 @@
         "ru": "учёбы"
       }
     },
+    "õppeaine": {
+      "base": "õppeaine",
+      "means": {
+        "en": "school subject",
+        "az": "fənn",
+        "ru": "учебный предмет"
+      }
+    },
+    "õppeained": {
+      "base": "õppeaine",
+      "means": {
+        "en": "school subjects",
+        "az": "fənlər",
+        "ru": "учебные предметы"
+      }
+    },
+    "õppida": {
+      "base": "õppima",
+      "means": {
+        "en": "to study, to learn",
+        "az": "oxumaq, öyrənmək",
+        "ru": "учиться, изучать"
+      }
+    },
     "õppima": {
       "base": "õppima",
       "means": {
         "en": "to study",
         "az": "oxumağa",
         "ru": "учиться"
+      }
+    },
+    "õppimine": {
+      "base": "õppimine",
+      "means": {
+        "en": "studying, learning",
+        "az": "oxumaq",
+        "ru": "учёба"
+      }
+    },
+    "õppinud": {
+      "base": "õppima",
+      "means": {
+        "en": "studied, learnt",
+        "az": "oxumuş",
+        "ru": "изучал"
+      }
+    },
+    "õppisid": {
+      "base": "õppima",
+      "means": {
+        "en": "you studied, you learnt",
+        "az": "öyrəndin",
+        "ru": "ты учился"
+      }
+    },
+    "õppisime": {
+      "base": "õppima",
+      "means": {
+        "en": "we learnt, we studied",
+        "az": "öyrəndik",
+        "ru": "мы учились"
       }
     },
     "õppisin": {
@@ -58202,9 +62106,9 @@
     "ära": {
       "base": "ära",
       "means": {
-        "en": "off, away (pesen ära: wash through, finish washing)",
-        "az": "tamamilə (fel ilə)",
-        "ru": "до конца (с глаголом)"
+        "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+        "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+        "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
       }
     },
     "ärgata": {
@@ -58327,6 +62231,22 @@
         "ru": "на девятом"
       }
     },
+    "ühel": {
+      "base": "üks",
+      "means": {
+        "en": "in one, at a",
+        "az": "bir",
+        "ru": "в одном"
+      }
+    },
+    "ühendust": {
+      "base": "ühendus",
+      "means": {
+        "en": "contact (ühendust võtma: to get in touch)",
+        "az": "əlaqə",
+        "ru": "связь"
+      }
+    },
     "ühest": {
       "base": "üks",
       "means": {
@@ -58357,6 +62277,22 @@
         "en": "one",
         "az": "bir",
         "ru": "один"
+      }
+    },
+    "üksi": {
+      "base": "üksi",
+      "means": {
+        "en": "alone",
+        "az": "tək",
+        "ru": "один"
+      }
+    },
+    "ükskord": {
+      "base": "ükskord",
+      "means": {
+        "en": "once, one time",
+        "az": "bir dəfə",
+        "ru": "однажды"
       }
     },
     "ükspäev": {
@@ -58429,6 +62365,22 @@
         "en": "up",
         "az": "yuxarı",
         "ru": "вверх"
+      }
+    },
+    "ülikooli": {
+      "base": "ülikool",
+      "means": {
+        "en": "university, to university",
+        "az": "universitetə",
+        "ru": "в университет"
+      }
+    },
+    "ülikoolis": {
+      "base": "ülikool",
+      "means": {
+        "en": "at university",
+        "az": "universitetdə",
+        "ru": "в университете"
       }
     },
     "üsna": {

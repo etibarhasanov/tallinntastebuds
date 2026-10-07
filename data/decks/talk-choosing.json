@@ -461,9 +461,9 @@
   "välja": {
    "base": "välja",
    "means": {
-    "en": "out (näeb välja: looks like)",
-    "az": "çölə",
-    "ru": "наружу"
+    "en": "out (näeb välja: looks like; ostate välja: buy outright; välja müüdud: sold out; välja arvatud: except)",
+    "az": "çölə (välja müüdud: satılıb; välja arvatud: -dan başqa)",
+    "ru": "наружу (välja müüdud: распродано; välja arvatud: кроме)"
    },
    "deck": "around"
   },

@@ -3961,6 +3961,86 @@
    },
    "taste": "Ma elan üheksandal korrusel.",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-instalments",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Buying on instalments",
+    "az": "Hissə-hissə ödənişlə almaq",
+    "ru": "Покупка в рассрочку"
+   },
+   "why": {
+    "en": "A washing machine on instalments, a library card for an ID, and no to the insurance",
+    "az": "Hissə-hissə ödənişlə paltaryuyan maşın, şəxsiyyət vəsiqəsi yerinə kitabxana kartı və sığortaya \"yox\"",
+    "ru": "Стиральная машина в рассрочку, читательский билет вместо удостоверения и отказ от страховки"
+   },
+   "taste": "70 eurot on päris suur raha.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-school",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Where did you go to school?",
+    "az": "Harada məktəbə getmisən?",
+    "ru": "Где ты учился в школе?"
+   },
+   "why": {
+    "en": "Mirja changes schools for the third grade, Mai Riin moves to a new building, and Jüri starts in October",
+    "az": "Mirja üçüncü sinifdə məktəbini dəyişir, Mai Riin yeni binaya keçir, Jüri isə məktəbə oktyabrda başlayır",
+    "ru": "Mirja меняет школу в третьем классе, Mai Riin переходит в новое здание, а Jüri идёт в школу в октябре"
+   },
+   "taste": "Mina läksin kooli 1960. aastal.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-subjects",
+   "added": "2026-10-07",
+   "name": {
+    "en": "The subjects you liked, and the ones you didn't",
+    "az": "Sevdiyin və sevmədiyin fənlər",
+    "ru": "Любимые и нелюбимые предметы"
+   },
+   "why": {
+    "en": "Languages and skiing, physics and PE, and what Jüri, Mai Riin and Mirja did after lessons",
+    "az": "Dillər və xizək, fizika və bədən tərbiyəsi, Jüri, Mai Riin və Mirja dərsdən sonra nə edirdilər",
+    "ru": "Языки и лыжи, физика и физкультура, и чем Jüri, Mai Riin и Mirja занимались после уроков"
+   },
+   "taste": "Mulle meeldisid väga keeled",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-learning",
+   "added": "2026-10-07",
+   "name": {
+    "en": "What you learnt last, and what you'd learn next",
+    "az": "Ən son nə öyrəndin, növbəti nəyi öyrənərdin",
+    "ru": "Чему ты учился недавно и чему учился бы дальше"
+   },
+   "why": {
+    "en": "A driving school, a plastering course, a dancer at three, and learning to manage the last part of life",
+    "az": "Sürücülük məktəbi, suvaq kursu, üç yaşından rəqqasə və həyatın son hissəsinin öhdəsindən gəlməyi öyrənmək",
+    "ru": "Автошкола, курсы штукатурки, танцовщица с трёх лет и умение справиться с последней частью жизни"
+   },
+   "taste": "Hetkel ma lõpetan autokooli.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-bus",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Buying a bus ticket",
+    "az": "Avtobus bileti almaq",
+    "ru": "Покупка билета на автобус"
+   },
+   "why": {
+    "en": "The three and the four o'clock are sold out, so a discount ticket to Tallinn on the half past three",
+    "az": "Saat üçün və dördün avtobusları satılıb, ona görə Tallinnə saat üç yarımın avtobusuna güzəştli bilet",
+    "ru": "На три и на четыре всё продано, так что льготный билет до Таллинна на половину четвёртого"
+   },
+   "taste": "Üks pilet Tallinna palun.",
+   "source": "Keeletee"
   }
  ]
 }

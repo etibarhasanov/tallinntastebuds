@@ -8724,8 +8724,9 @@ read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
 line and every word in them means — **Songs, which are listened to** — and
-after the songs twenty conversations off a language course's sheets, sentence
-by sentence with what each means under it and every word in it a press —
+after the songs twenty-five conversations off a language course's sheets,
+sentence by sentence with what each means under it and every word in it a
+press —
 **Conversations, which are read**.
 
 It is the second thing on this site that is not about restaurants, and it is
@@ -10891,7 +10892,7 @@ owner's call, which has been put to them.
 A card teaches a word, a lesson says why it changes shape, and a song is how
 anybody comes to like the language. None of them is how it is said across a
 table. So the shelf carries a fifth part, **Conversations**, after **Songs**,
-and under it a tile for each of twenty sheets from **Keeletee** — *Eesti keele
+and under it a tile for each of twenty-five sheets from **Keeletee** — *Eesti keele
 B1-taseme e-õppekursus*, the free B1 course — which the owner handed over as
 PDFs, each a page or three of Estonian with its English under every turn.
 
@@ -10920,7 +10921,13 @@ the neighbours and what comes through the wall, and on which colours they
 like and what colour the kitchen is; then a washing machine bought for under
 six hundred euros, with a client card made out on the spot and a discount
 that will not go further, and its delivery to the ninth floor, free within
-the city.
+the city. The fourth, five more from the seventh, eighth and ninth modules,
+pays for the machine and goes back to school: the same washing machine signed
+for on instalments, with a library card handed over for an ID and the
+insurance turned down; Mirja, Mai Riin, Jüri and Timo on where they went to
+school, which subjects they liked and which they did not, what they did after
+lessons, and what they learnt last and would learn next; and a bus ticket to
+Tallinn with the three and the four o'clock sold out.
 
 **A conversation is one page.** Its name, the line that says how to read it,
 and under that in the mono whose sheet it is — *From Keeletee, a B1 course*,
@@ -10966,10 +10973,11 @@ word in it does what, and that is the half a learner is missing. So the
 translation stays, a sentence at a time, and the words are pressed for the
 rest.
 
-**One glossary for all of them.** The twenty sheets carry some eleven hundred
-different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
+**One glossary for all of them.** The twenty-five sheets carry some fourteen
+hundred and sixty different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
 up in nearly every sheet. A song's `words` is its own, because a song is one
-text; twenty copies of what *ma* means would be twenty to keep in step. So
+text; twenty-five copies of what *ma* means would be twenty-five to keep in
+step. So
 the words are `talkWords` in `data/decks.json`, one entry per word as it is
 written, lowercased — its `base`, what it `means` in the three languages, an
 optional `note` — and a conversation's own `words` says something different
@@ -11004,8 +11012,21 @@ sheets' headings, *Ostmine, kauba uurimine, allahindlus* and *Paigalduse ja
 kojuveo tellimine*, are their names rather than a question over them, the way
 the restaurant's are; *Müüja* and *Klient*, seller and customer, stay as the
 two people's names. Its sheet on the home has Arvo's own *Vancouver*,
-Ingrid's *Liia* and the rest as names, never translated. Every word's gloss
-in all twenty, in all three languages, is mine too.
+Ingrid's *Liia* and the rest as names, never translated. The fourth batch
+had the English saying more than the Estonian, and less, and both were put
+right the same way: Mirja's English on the subjects she liked adds *I liked
+biology an awful lot!* where she says only that she liked history and
+biology, and opens a sentence with a *Well….* she never says, so both go;
+Timo's list of subjects he did not like names history in the Estonian and not
+in the English, and the spring he took a course in is *this year* in the
+English, so history goes in and the spring comes back. One paragraph of the
+seller's on the instalments sheet carries no speaker at all — *Oma uue
+pesumasina saate siis homse päeva jooksul kätte* — and is the seller's by its
+sense, so it is a turn of hers. And Mai Riin says *ma oli pikapäevarühmas*,
+where the grammar wants *olin*; that is how she said it and how the sheet
+prints it, so it stays, and the conversation's own `words` says beside *oli*
+that *ma oli* is *ma olin* said quickly. Every word's gloss in all twenty-five,
+in all three languages, is mine too.
 *Klient* and *Ettekandja* stay as the names of the two people in the first
 restaurant scene: they are the Estonian for customer and waiter, which is the
 point.
@@ -11061,7 +11082,7 @@ of the real speakers: the voice is Mari's, the same one the cards use, and a
 turn in a man's voice wants the second voice **Hearing it** has already set
 aside a parameter for. No conversation in the other seven languages; they get
 English, as the cards do. No conversation of your own written through the
-site. There are twenty. And the text is Keeletee's: it is credited under every
+site. There are twenty-five. And the text is Keeletee's: it is credited under every
 title, and printing every line of it is the owner's call, which has been put
 to them, as the songs' was.
 
@@ -15359,7 +15380,7 @@ assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            headings, the songs' and the cases', ten lessons of
-                           grammar, four songs, twenty conversations and the
+                           grammar, four songs, twenty-five conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
                            languages rather than the site's ten

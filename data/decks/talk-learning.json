@@ -1,0 +1,1842 @@
+{
+ "id": "talk-learning",
+ "added": "2026-10-07",
+ "name": {
+  "en": "What you learnt last, and what you'd learn next",
+  "az": "Ən son nə öyrəndin, növbəti nəyi öyrənərdin",
+  "ru": "Чему ты учился недавно и чему учился бы дальше"
+ },
+ "why": {
+  "en": "A driving school, a plastering course, a dancer at three, and learning to manage the last part of life",
+  "az": "Sürücülük məktəbi, suvaq kursu, üç yaşından rəqqasə və həyatın son hissəsinin öhdəsindən gəlməyi öyrənmək",
+  "ru": "Автошкола, курсы штукатурки, танцовщица с трёх лет и умение справиться с последней частью жизни"
+ },
+ "taste": "Hetkel ma lõpetan autokooli.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mida sa viimati õppisid?",
+    "en": "What did you learn most recently?",
+    "az": "Ən son nə öyrəndin?",
+    "ru": "Чему ты учился в последний раз?"
+   },
+   "turns": [
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Programmeerimist.",
+       "en": "Programming.",
+       "az": "Proqramlaşdırma.",
+       "ru": "Программирование."
+      },
+      {
+       "et": "Ma tegin ka netis programmeerimise kursuse.",
+       "en": "I also did an online course in programming.",
+       "az": "İnternetdə proqramlaşdırma kursu da keçdim.",
+       "ru": "Я прошла ещё и онлайн-курс по программированию."
+      },
+      {
+       "et": "See oli selline lihtne Tartu Ülikooli põhikursus “Maalähedane programmeerimine” ja see oli päris huvitav.",
+       "en": "It was a simple introductory course from the University of Tartu, “Down-to-Earth Programming”, and it was quite interesting.",
+       "az": "Bu, Tartu Universitetinin “Sadə proqramlaşdırma” adlı sadə əsas kursu idi və kifayət qədər maraqlı idi.",
+       "ru": "Это был такой простой базовый курс Тартуского университета «Приземлённое программирование», и он был довольно интересным."
+      }
+     ]
+    },
+    {
+     "who": "Mai Riin",
+     "lines": [
+      {
+       "et": "Hetkel ma lõpetan autokooli.",
+       "en": "At the moment I'm finishing driving school.",
+       "az": "Hazırda sürücülük məktəbini bitirirəm.",
+       "ru": "Сейчас я заканчиваю автошколу."
+      },
+      {
+       "et": "Nii et ma õppisin autoga sõitma.",
+       "en": "So I've learnt to drive a car.",
+       "az": "Yəni maşın sürməyi öyrəndim.",
+       "ru": "Так что я научилась водить машину."
+      }
+     ]
+    },
+    {
+     "who": "Timo",
+     "lines": [
+      {
+       "et": "Sellel kevadel osalesin ma ühel Tallinna Kutsehariduskeskuse korraldatud siseviimistlustööde kursusel, õppisime koduste remonditööde jaoks pahteldamist, tapetseerimist, värvimist, põhjatöid.",
+       "en": "This spring I took part in an interior finishing course run by the Tallinn Vocational Education Centre; we learnt filling, wallpapering, painting and preparation work for home renovation.",
+       "az": "Bu yaz Tallinn Peşə Təhsili Mərkəzinin təşkil etdiyi daxili bəzək işləri kursunda iştirak etdim; ev təmiri üçün şpaklyovka, divar kağızı yapışdırmaq, rəngləmək və hazırlıq işlərini öyrəndik.",
+       "ru": "Этой весной я участвовал в курсе по внутренней отделке, который организовал Таллиннский центр профессионального образования; мы учились для домашнего ремонта шпаклевать, клеить обои, красить и делать подготовительные работы."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kelleks sa saada tahad?",
+    "en": "What do you want to become?",
+    "az": "Kim olmaq istəyirsən?",
+    "ru": "Кем ты хочешь стать?"
+   },
+   "turns": [
+    {
+     "who": "Mai Riin",
+     "lines": [
+      {
+       "et": "Kui ma olin väike, siis ma tahtsin saada hambaarstiks nagu mu ema.",
+       "en": "When I was little, I wanted to become a dentist like my mother.",
+       "az": "Kiçik olanda anam kimi diş həkimi olmaq istəyirdim.",
+       "ru": "Когда я была маленькой, я хотела стать зубным врачом, как моя мама."
+      },
+      {
+       "et": "Siis ma olen mõelnud ka saada näitlejaks, lauljaks, kuigi ma laulda ei oska.",
+       "en": "Then I've also thought about becoming an actor or a singer, although I can't sing.",
+       "az": "Sonra aktrisa, müğənni olmağı da düşünmüşəm, baxmayaraq ki, oxumağı bacarmıram.",
+       "ru": "Потом я думала стать актрисой, певицей, хотя петь я не умею."
+      },
+      {
+       "et": "Siis ma olen mõelnud saada disaineriks, kas siis rõiva- või sisekujundusdisaineriks.",
+       "en": "Then I've thought about becoming a designer, either a clothes designer or an interior designer.",
+       "az": "Sonra dizayner olmağı düşünmüşəm, ya geyim, ya da interyer dizayneri.",
+       "ru": "Потом я думала стать дизайнером — то ли одежды, то ли интерьера."
+      },
+      {
+       "et": "Nii et ma olen üsna mitmekülgne.",
+       "en": "So I'm quite versatile.",
+       "az": "Yəni mən kifayət qədər çoxşaxəliyəm.",
+       "ru": "Так что я довольно разносторонняя."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kui sa saaksid uuesti valida, kas õpiksid midagi muud?",
+    "en": "If you could choose again, would you study something else?",
+    "az": "Yenidən seçə bilsəydin, başqa bir şey oxuyardınmı?",
+    "ru": "Если бы ты мог выбрать заново, учился бы ты чему-то другому?"
+   },
+   "turns": [
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "Ei õpiks.",
+       "en": "No, I wouldn't.",
+       "az": "Oxumazdım.",
+       "ru": "Не стал бы."
+      },
+      {
+       "et": "Sest eriala on natukene laiem mõiste kui töökoht.",
+       "en": "Because a speciality is a somewhat broader idea than a job.",
+       "az": "Çünki ixtisas iş yerindən bir az daha geniş anlayışdır.",
+       "ru": "Потому что специальность — понятие немного более широкое, чем место работы."
+      },
+      {
+       "et": "Ja kui ma oleksin kasvanud normaalses riigis või kui ma oleksin sündinud normaalsesse riiki - Eesti Vabariiki - , siis ma oleksin arvatavasti rohkem õppinud ajalugu.",
+       "en": "And if I had grown up in a normal state, or if I had been born into a normal state — the Republic of Estonia — then I would probably have studied more history.",
+       "az": "Əgər mən normal dövlətdə böyüsəydim və ya normal dövlətdə — Estoniya Respublikasında — doğulsaydım, onda yəqin ki, tarixi daha çox oxuyardım.",
+       "ru": "И если бы я вырос в нормальном государстве или если бы я родился в нормальном государстве — в Эстонской Республике, — то я, вероятно, больше изучал бы историю."
+      }
+     ]
+    },
+    {
+     "who": "Timo",
+     "lines": [
+      {
+       "et": "Ma olen töötanud ajakirjanikuna, aga lõpetasin selle töö 2000ndate alguses.",
+       "en": "I've worked as a journalist, but I gave that job up at the beginning of the 2000s.",
+       "az": "Jurnalist kimi işləmişəm, amma bu işi 2000-ci illərin əvvəlində buraxdım.",
+       "ru": "Я работал журналистом, но бросил эту работу в начале 2000-х."
+      },
+      {
+       "et": "Nüüd olen mõelnud, et see võibolla oli viga.",
+       "en": "Now I've been thinking that maybe that was a mistake.",
+       "az": "İndi düşünürəm ki, bəlkə də bu, səhv idi.",
+       "ru": "Теперь я думаю, что это, может быть, было ошибкой."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Kui ma saaksin uuesti sündida ja uuesti valida, siis ma läheksin kolmeaastaselt tantsutrenni ja siis ma hakkaksin tantsijaks.",
+       "en": "If I could be born again and choose again, I would go to dance classes at three, and then I would become a dancer.",
+       "az": "Yenidən doğula və yenidən seçə bilsəydim, üç yaşında rəqs məşqinə gedərdim və sonra rəqqasə olardım.",
+       "ru": "Если бы я могла родиться заново и выбрать заново, то я бы в три года пошла на танцы и потом стала бы танцовщицей."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mida sa veel õppida tahaksid?",
+    "en": "What else would you like to learn?",
+    "az": "Daha nə öyrənmək istərdin?",
+    "ru": "Чему ещё ты хотел бы научиться?"
+   },
+   "turns": [
+    {
+     "who": "Timo",
+     "lines": [
+      {
+       "et": "Tahaksin õppida veel vene keelt.",
+       "en": "I'd like to learn Russian as well.",
+       "az": "Rus dilini də öyrənmək istərdim.",
+       "ru": "Я бы хотел ещё выучить русский язык."
+      },
+      {
+       "et": "Sest Eestis elades on venekeelse elanikkonnaga suhtlemine minu arvates ikka väga oluline.",
+       "en": "Because living in Estonia, communicating with the Russian-speaking population is, in my opinion, really very important.",
+       "az": "Çünki Estoniyada yaşayarkən rusdilli əhali ilə ünsiyyət, məncə, çox vacibdir.",
+       "ru": "Потому что, живя в Эстонии, общение с русскоязычным населением, по-моему, всё-таки очень важно."
+      }
+     ]
+    },
+    {
+     "who": "Mai Riin",
+     "lines": [
+      {
+       "et": "Minu soov on kindlasti minna ülikooli.",
+       "en": "My wish is definitely to go to university.",
+       "az": "Arzum mütləq universitetə getməkdir.",
+       "ru": "Моё желание — обязательно поступить в университет."
+      },
+      {
+       "et": "Ma olen mõelnud õppida meditsiini või võibolla juurat, aga ma ei ole veel kindlale otsusele jõudnud.",
+       "en": "I've thought about studying medicine or maybe law, but I haven't come to a firm decision yet.",
+       "az": "Tibb, ya da bəlkə hüquq oxumağı düşünmüşəm, amma hələ qəti qərara gəlməmişəm.",
+       "ru": "Я думала изучать медицину или, может быть, право, но ещё не пришла к твёрдому решению."
+      }
+     ]
+    },
+    {
+     "who": "Mirja",
+     "lines": [
+      {
+       "et": "Ma olen hakanud mõtlema IT-le.",
+       "en": "I've started thinking about IT.",
+       "az": "İT haqqında düşünməyə başlamışam.",
+       "ru": "Я начала думать об IT."
+      },
+      {
+       "et": "Tahaks vahepeal arvutitega suhelda.",
+       "en": "I'd like to communicate with computers for a change.",
+       "az": "Arada bir kompüterlərlə ünsiyyət qurmaq istərdim.",
+       "ru": "Хотелось бы для разнообразия пообщаться с компьютерами."
+      },
+      {
+       "et": "Ma arvan, et ma õpin järgmisena IT-d.",
+       "en": "I think IT is what I'll study next.",
+       "az": "Məncə, növbəti olaraq İT oxuyacağam.",
+       "ru": "Я думаю, что следующим я буду изучать IT."
+      }
+     ]
+    },
+    {
+     "who": "Jüri",
+     "lines": [
+      {
+       "et": "See on raske küsimus.",
+       "en": "That's a difficult question.",
+       "az": "Bu, çətin sualdır.",
+       "ru": "Это трудный вопрос."
+      },
+      {
+       "et": "Minu aastate juures on küsimus juba võibolla selles, mida sa veel tahaksid ära teha.",
+       "en": "At my age the question is perhaps already what you would still like to get done.",
+       "az": "Mənim yaşımda sual, bəlkə də, artıq ondadır ki, daha nəyi etmək istərdin.",
+       "ru": "В мои годы вопрос, может быть, уже в том, что ты ещё хотел бы успеть сделать."
+      },
+      {
+       "et": "Ja mul on tunne, et siiamaani on need põhiasjad kõik tegemata.",
+       "en": "And I have a feeling that, up to now, the main things are all still undone.",
+       "az": "Mənə elə gəlir ki, indiyədək əsas işlərin hamısı görülməmiş qalıb.",
+       "ru": "И у меня такое чувство, что до сих пор все эти главные дела не сделаны."
+      },
+      {
+       "et": "Siis võibolla ma võiksin öelda nii, et ma tahaksin õppida oma elu viimase osaga toime tulema.",
+       "en": "So maybe I could put it like this: I would like to learn to cope with the last part of my life.",
+       "az": "Onda bəlkə belə deyə bilərəm ki, həyatımın son hissəsinin öhdəsindən gəlməyi öyrənmək istərdim.",
+       "ru": "Тогда, может быть, я мог бы сказать так: я хотел бы научиться справляться с последней частью своей жизни."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "viimati": {
+   "base": "viimati",
+   "means": {
+    "en": "last, the last time",
+    "az": "axırıncı dəfə",
+    "ru": "в последний раз"
+   }
+  },
+  "õppisid": {
+   "base": "õppima",
+   "means": {
+    "en": "you studied, you learnt",
+    "az": "öyrəndin",
+    "ru": "ты учился"
+   },
+   "deck": "moreverbs"
+  },
+  "programmeerimist": {
+   "base": "programmeerimine",
+   "means": {
+    "en": "programming",
+    "az": "proqramlaşdırma",
+    "ru": "программирование"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "tegin": {
+   "base": "tegema",
+   "means": {
+    "en": "I did, I made",
+    "az": "etdim",
+    "ru": "я сделал"
+   },
+   "deck": "verbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "netis": {
+   "base": "net",
+   "means": {
+    "en": "online, on the net",
+    "az": "internetdə",
+    "ru": "в сети"
+   }
+  },
+  "programmeerimise": {
+   "base": "programmeerimine",
+   "means": {
+    "en": "programming's, in programming",
+    "az": "proqramlaşdırma",
+    "ru": "по программированию"
+   }
+  },
+  "kursuse": {
+   "base": "kursus",
+   "means": {
+    "en": "course",
+    "az": "kurs",
+    "ru": "курс"
+   },
+   "deck": "school"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "lihtne": {
+   "base": "lihtne",
+   "means": {
+    "en": "simple",
+    "az": "sadə",
+    "ru": "простой"
+   },
+   "deck": "feelings"
+  },
+  "tartu": {
+   "base": "Tartu",
+   "means": {
+    "en": "Tartu (Tartu Ülikool: the University of Tartu)",
+    "az": "Tartu",
+    "ru": "Тарту"
+   }
+  },
+  "ülikooli": {
+   "base": "ülikool",
+   "means": {
+    "en": "university, to university",
+    "az": "universitetə",
+    "ru": "в университет"
+   },
+   "deck": "school"
+  },
+  "põhikursus": {
+   "base": "põhikursus",
+   "means": {
+    "en": "introductory course",
+    "az": "əsas kurs",
+    "ru": "базовый курс"
+   }
+  },
+  "maalähedane": {
+   "base": "maalähedane",
+   "means": {
+    "en": "down-to-earth (literally: close to the land)",
+    "az": "sadə, torpağa yaxın",
+    "ru": "приземлённый"
+   }
+  },
+  "programmeerimine": {
+   "base": "programmeerimine",
+   "means": {
+    "en": "programming",
+    "az": "proqramlaşdırma",
+    "ru": "программирование"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "huvitav": {
+   "base": "huvitav",
+   "means": {
+    "en": "interesting",
+    "az": "maraqlı",
+    "ru": "интересный"
+   },
+   "deck": "feelings"
+  },
+  "hetkel": {
+   "base": "hetk",
+   "means": {
+    "en": "at the moment",
+    "az": "hələlik",
+    "ru": "на данный момент"
+   },
+   "deck": "time"
+  },
+  "lõpetan": {
+   "base": "lõpetama",
+   "means": {
+    "en": "I finish, I graduate",
+    "az": "bitirirəm",
+    "ru": "я заканчиваю"
+   },
+   "deck": "moreverbs"
+  },
+  "autokooli": {
+   "base": "autokool",
+   "means": {
+    "en": "driving school (as the object)",
+    "az": "sürücülük məktəbini",
+    "ru": "автошколу"
+   }
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "õppisin": {
+   "base": "õppima",
+   "means": {
+    "en": "I studied",
+    "az": "oxuyurdum",
+    "ru": "учился"
+   },
+   "deck": "moreverbs"
+  },
+  "autoga": {
+   "base": "auto",
+   "means": {
+    "en": "with a car (autoga sõitma: to drive)",
+    "az": "maşınla",
+    "ru": "на машине"
+   },
+   "deck": "around"
+  },
+  "sõitma": {
+   "base": "sõitma",
+   "means": {
+    "en": "to drive, to ride",
+    "az": "sürməyi",
+    "ru": "ездить, водить"
+   },
+   "deck": "moreverbs"
+  },
+  "sellel": {
+   "base": "see",
+   "means": {
+    "en": "on this, this (sellel kevadel: this spring)",
+    "az": "bu",
+    "ru": "этой"
+   },
+   "deck": "pronouns"
+  },
+  "kevadel": {
+   "base": "kevad",
+   "means": {
+    "en": "in spring",
+    "az": "yazda",
+    "ru": "весной"
+   },
+   "deck": "weather"
+  },
+  "osalesin": {
+   "base": "osalema",
+   "means": {
+    "en": "I took part",
+    "az": "iştirak etdim",
+    "ru": "я участвовал"
+   },
+   "deck": "moreverbs"
+  },
+  "ühel": {
+   "base": "üks",
+   "means": {
+    "en": "in one, at a",
+    "az": "bir",
+    "ru": "в одном"
+   },
+   "deck": "numbers"
+  },
+  "tallinna": {
+   "base": "Tallinn",
+   "means": {
+    "en": "to Tallinn",
+    "az": "Tallinnə",
+    "ru": "в Таллинн"
+   }
+  },
+  "kutsehariduskeskuse": {
+   "base": "kutsehariduskeskus",
+   "means": {
+    "en": "vocational education centre's",
+    "az": "peşə təhsili mərkəzinin",
+    "ru": "центра профессионального образования"
+   }
+  },
+  "korraldatud": {
+   "base": "korraldama",
+   "means": {
+    "en": "organised, run",
+    "az": "təşkil edilmiş",
+    "ru": "организованный"
+   }
+  },
+  "siseviimistlustööde": {
+   "base": "siseviimistlustöö",
+   "means": {
+    "en": "of interior finishing work",
+    "az": "daxili bəzək işləri",
+    "ru": "внутренних отделочных работ"
+   }
+  },
+  "kursusel": {
+   "base": "kursus",
+   "means": {
+    "en": "on a course",
+    "az": "kursda",
+    "ru": "на курсе"
+   },
+   "deck": "school"
+  },
+  "õppisime": {
+   "base": "õppima",
+   "means": {
+    "en": "we learnt, we studied",
+    "az": "öyrəndik",
+    "ru": "мы учились"
+   },
+   "deck": "moreverbs"
+  },
+  "koduste": {
+   "base": "kodune",
+   "means": {
+    "en": "home, domestic",
+    "az": "ev",
+    "ru": "домашних"
+   },
+   "deck": "feelings"
+  },
+  "remonditööde": {
+   "base": "remonditöö",
+   "means": {
+    "en": "of repair work, renovation",
+    "az": "təmir işləri",
+    "ru": "ремонтных работ"
+   }
+  },
+  "jaoks": {
+   "base": "jaoks",
+   "means": {
+    "en": "for (minu jaoks: for me)",
+    "az": "üçün",
+    "ru": "для"
+   }
+  },
+  "pahteldamist": {
+   "base": "pahteldamine",
+   "means": {
+    "en": "filling (with putty), plastering",
+    "az": "şpaklyovka",
+    "ru": "шпаклёвку"
+   }
+  },
+  "tapetseerimist": {
+   "base": "tapetseerimine",
+   "means": {
+    "en": "wallpapering",
+    "az": "divar kağızı yapışdırmaq",
+    "ru": "поклейку обоев"
+   }
+  },
+  "värvimist": {
+   "base": "värvimine",
+   "means": {
+    "en": "painting",
+    "az": "rəngləmə",
+    "ru": "покраску"
+   }
+  },
+  "põhjatöid": {
+   "base": "põhjatöö",
+   "means": {
+    "en": "preparation work",
+    "az": "hazırlıq işləri",
+    "ru": "подготовительные работы"
+   }
+  },
+  "kelleks": {
+   "base": "kes",
+   "means": {
+    "en": "who, into whom (kelleks saada: what to become)",
+    "az": "kim (kelleks saada: kim olmaq)",
+    "ru": "кем"
+   },
+   "deck": "asking"
+  },
+  "saada": {
+   "base": "saama",
+   "means": {
+    "en": "to become; to get",
+    "az": "olmaq; almaq",
+    "ru": "стать; получить"
+   },
+   "deck": "verbs"
+  },
+  "tahad": {
+   "base": "tahtma",
+   "means": {
+    "en": "you want",
+    "az": "istəyirsən",
+    "ru": "ты хочешь"
+   },
+   "deck": "verbs"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "olin": {
+   "base": "olema",
+   "means": {
+    "en": "I was",
+    "az": "idim",
+    "ru": "я был"
+   },
+   "deck": "verbs"
+  },
+  "väike": {
+   "base": "väike",
+   "means": {
+    "en": "little, small",
+    "az": "kiçik",
+    "ru": "маленький"
+   },
+   "deck": "basics"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "tahtsin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I wanted",
+    "az": "istəyirdim",
+    "ru": "я хотел"
+   },
+   "deck": "verbs"
+  },
+  "hambaarstiks": {
+   "base": "hambaarst",
+   "means": {
+    "en": "a dentist (saada hambaarstiks: to become a dentist)",
+    "az": "diş həkimi",
+    "ru": "зубным врачом"
+   },
+   "deck": "health"
+  },
+  "nagu": {
+   "base": "nagu",
+   "means": {
+    "en": "like, as",
+    "az": "kimi",
+    "ru": "как"
+   },
+   "deck": "everyday"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "ema": {
+   "base": "ema",
+   "means": {
+    "en": "mother",
+    "az": "ana",
+    "ru": "мама"
+   },
+   "deck": "talk"
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "mõelnud": {
+   "base": "mõtlema",
+   "means": {
+    "en": "thought (olen mõelnud: I have thought)",
+    "az": "düşünmüşəm",
+    "ru": "думал"
+   },
+   "deck": "moreverbs"
+  },
+  "näitlejaks": {
+   "base": "näitleja",
+   "means": {
+    "en": "an actor (saada näitlejaks: to become an actor)",
+    "az": "aktyor",
+    "ru": "актёром"
+   },
+   "deck": "jobs"
+  },
+  "lauljaks": {
+   "base": "laulja",
+   "means": {
+    "en": "a singer (saada lauljaks: to become a singer)",
+    "az": "müğənni",
+    "ru": "певцом"
+   }
+  },
+  "kuigi": {
+   "base": "kuigi",
+   "means": {
+    "en": "although",
+    "az": "baxmayaraq ki",
+    "ru": "хотя"
+   },
+   "deck": "tana-words"
+  },
+  "laulda": {
+   "base": "laulma",
+   "means": {
+    "en": "to sing",
+    "az": "oxumağı (mahnı)",
+    "ru": "петь"
+   },
+   "deck": "moreverbs"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "oska": {
+   "base": "oskama",
+   "means": {
+    "en": "can, know how (after ei: ei oska, can't)",
+    "az": "bacarmıram (ei oska)",
+    "ru": "не умею (ei oska)"
+   },
+   "deck": "verbs"
+  },
+  "disaineriks": {
+   "base": "disainer",
+   "means": {
+    "en": "a designer (saada disaineriks: to become a designer)",
+    "az": "dizayner",
+    "ru": "дизайнером"
+   }
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "rõiva": {
+   "base": "rõivas",
+   "means": {
+    "en": "clothing (rõiva- või: clothes or)",
+    "az": "geyim",
+    "ru": "одежды"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "sisekujundusdisaineriks": {
+   "base": "sisekujundusdisainer",
+   "means": {
+    "en": "an interior designer",
+    "az": "interyer dizayneri",
+    "ru": "дизайнером интерьера"
+   }
+  },
+  "üsna": {
+   "base": "üsna",
+   "means": {
+    "en": "quite, fairly",
+    "az": "xeyli",
+    "ru": "довольно"
+   },
+   "deck": "plans"
+  },
+  "mitmekülgne": {
+   "base": "mitmekülgne",
+   "means": {
+    "en": "versatile, many-sided",
+    "az": "çoxşaxəli",
+    "ru": "разносторонний"
+   }
+  },
+  "saaksid": {
+   "base": "saama",
+   "means": {
+    "en": "you could",
+    "az": "bilsəydin",
+    "ru": "ты мог бы"
+   },
+   "deck": "verbs"
+  },
+  "uuesti": {
+   "base": "uuesti",
+   "means": {
+    "en": "again, anew",
+    "az": "yenidən",
+    "ru": "заново"
+   }
+  },
+  "valida": {
+   "base": "valima",
+   "means": {
+    "en": "to choose",
+    "az": "seçmək",
+    "ru": "выбирать"
+   },
+   "deck": "moreverbs"
+  },
+  "õpiksid": {
+   "base": "õppima",
+   "means": {
+    "en": "you would study",
+    "az": "oxuyardın",
+    "ru": "ты бы учился"
+   },
+   "deck": "moreverbs"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "muud": {
+   "base": "muu",
+   "means": {
+    "en": "other",
+    "az": "başqa",
+    "ru": "другой"
+   },
+   "deck": "everyday"
+  },
+  "õpiks": {
+   "base": "õppima",
+   "means": {
+    "en": "would study (ei õpiks: wouldn't)",
+    "az": "oxumazdım (ei õpiks)",
+    "ru": "не учился бы (ei õpiks)"
+   },
+   "deck": "moreverbs"
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "eriala": {
+   "base": "eriala",
+   "means": {
+    "en": "speciality, field of study",
+    "az": "ixtisas",
+    "ru": "специальность"
+   },
+   "deck": "jobs"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "laiem": {
+   "base": "lai",
+   "means": {
+    "en": "broader, wider",
+    "az": "daha geniş",
+    "ru": "шире"
+   },
+   "deck": "describing"
+  },
+  "mõiste": {
+   "base": "mõiste",
+   "means": {
+    "en": "concept, notion",
+    "az": "anlayış",
+    "ru": "понятие"
+   }
+  },
+  "töökoht": {
+   "base": "töökoht",
+   "means": {
+    "en": "job, workplace",
+    "az": "iş yeri",
+    "ru": "место работы"
+   },
+   "deck": "work"
+  },
+  "oleksin": {
+   "base": "olema",
+   "means": {
+    "en": "I would (have) (oleksin kasvanud: I would have grown up)",
+    "az": "olsaydım",
+    "ru": "я был бы"
+   },
+   "deck": "verbs"
+  },
+  "kasvanud": {
+   "base": "kasvama",
+   "means": {
+    "en": "grown, grown up",
+    "az": "böyümüş",
+    "ru": "вырос"
+   },
+   "deck": "moreverbs"
+  },
+  "normaalses": {
+   "base": "normaalne",
+   "means": {
+    "en": "in a normal",
+    "az": "normal",
+    "ru": "в нормальном"
+   },
+   "deck": "describing"
+  },
+  "riigis": {
+   "base": "riik",
+   "means": {
+    "en": "in a state, in a country",
+    "az": "dövlətdə",
+    "ru": "в государстве"
+   },
+   "deck": "country"
+  },
+  "sündinud": {
+   "base": "sündima",
+   "means": {
+    "en": "born",
+    "az": "doğulmuş",
+    "ru": "родился"
+   },
+   "deck": "moreverbs"
+  },
+  "normaalsesse": {
+   "base": "normaalne",
+   "means": {
+    "en": "into a normal",
+    "az": "normala",
+    "ru": "в нормальное"
+   },
+   "deck": "describing"
+  },
+  "riiki": {
+   "base": "riik",
+   "means": {
+    "en": "into a state, into a country",
+    "az": "dövlətə",
+    "ru": "в государство"
+   },
+   "deck": "country"
+  },
+  "eesti": {
+   "base": "eesti",
+   "means": {
+    "en": "Estonian",
+    "az": "eston",
+    "ru": "эстонский"
+   },
+   "deck": "countries"
+  },
+  "vabariiki": {
+   "base": "vabariik",
+   "means": {
+    "en": "into the republic (Eesti Vabariik: the Republic of Estonia)",
+    "az": "respublikaya",
+    "ru": "в республику"
+   },
+   "deck": "feasts"
+  },
+  "arvatavasti": {
+   "base": "arvatavasti",
+   "means": {
+    "en": "probably",
+    "az": "yəqin ki",
+    "ru": "вероятно"
+   },
+   "deck": "everyday"
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "õppinud": {
+   "base": "õppima",
+   "means": {
+    "en": "studied, learnt",
+    "az": "oxumuş",
+    "ru": "изучал"
+   },
+   "deck": "moreverbs"
+  },
+  "ajalugu": {
+   "base": "ajalugu",
+   "means": {
+    "en": "history",
+    "az": "tarix",
+    "ru": "история"
+   }
+  },
+  "töötanud": {
+   "base": "töötama",
+   "means": {
+    "en": "worked",
+    "az": "işləmiş",
+    "ru": "работал"
+   },
+   "deck": "verbs"
+  },
+  "ajakirjanikuna": {
+   "base": "ajakirjanik",
+   "means": {
+    "en": "as a journalist",
+    "az": "jurnalist kimi",
+    "ru": "журналистом"
+   },
+   "deck": "jobs"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "lõpetasin": {
+   "base": "lõpetama",
+   "means": {
+    "en": "I finished, I graduated",
+    "az": "bitirdim",
+    "ru": "я окончил"
+   },
+   "deck": "moreverbs"
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "ndate": {
+   "base": "-ndad",
+   "means": {
+    "en": "of the …s (2000ndate: of the 2000s)",
+    "az": "-ci illərin (2000ndate: 2000-ci illərin)",
+    "ru": "-х годов (2000ndate: 2000-х)"
+   }
+  },
+  "alguses": {
+   "base": "algus",
+   "means": {
+    "en": "at first, in the beginning",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   },
+   "deck": "time"
+  },
+  "nüüd": {
+   "base": "nüüd",
+   "means": {
+    "en": "now",
+    "az": "indi",
+    "ru": "теперь"
+   },
+   "deck": "time"
+  },
+  "võibolla": {
+   "base": "võib-olla",
+   "means": {
+    "en": "maybe (also written võib-olla)",
+    "az": "bəlkə də",
+    "ru": "может быть"
+   },
+   "deck": "basics"
+  },
+  "viga": {
+   "base": "viga",
+   "means": {
+    "en": "mistake, error",
+    "az": "səhv",
+    "ru": "ошибка"
+   },
+   "deck": "paper"
+  },
+  "saaksin": {
+   "base": "saama",
+   "means": {
+    "en": "could I get; I could (kui ma saaksin: if I could)",
+    "az": "ala bilərdimmi; bilsəydim",
+    "ru": "мог бы я получить; если бы я мог"
+   },
+   "deck": "verbs"
+  },
+  "sündida": {
+   "base": "sündima",
+   "means": {
+    "en": "to be born",
+    "az": "doğulmaq",
+    "ru": "родиться"
+   },
+   "deck": "moreverbs"
+  },
+  "läheksin": {
+   "base": "minema",
+   "means": {
+    "en": "I would go",
+    "az": "gedərdim",
+    "ru": "я бы пошёл"
+   },
+   "deck": "verbs"
+  },
+  "kolmeaastaselt": {
+   "base": "kolmeaastane",
+   "means": {
+    "en": "at three years old",
+    "az": "üç yaşında",
+    "ru": "в три года"
+   }
+  },
+  "tantsutrenni": {
+   "base": "tantsutrenn",
+   "means": {
+    "en": "to dance class",
+    "az": "rəqs məşqinə",
+    "ru": "на танцы"
+   }
+  },
+  "hakkaksin": {
+   "base": "hakkama",
+   "means": {
+    "en": "I would start (hakkaksin tantsijaks: I would become a dancer)",
+    "az": "olardım, başlayardım",
+    "ru": "я бы стал"
+   },
+   "deck": "moreverbs"
+  },
+  "tantsijaks": {
+   "base": "tantsija",
+   "means": {
+    "en": "a dancer (hakkama tantsijaks: to become a dancer)",
+    "az": "rəqqas",
+    "ru": "танцором, танцовщицей"
+   }
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "õppida": {
+   "base": "õppima",
+   "means": {
+    "en": "to study, to learn",
+    "az": "oxumaq, öyrənmək",
+    "ru": "учиться, изучать"
+   },
+   "deck": "moreverbs"
+  },
+  "tahaksid": {
+   "base": "tahtma",
+   "means": {
+    "en": "you would like",
+    "az": "istərdin",
+    "ru": "ты хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "tahaksin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "vene": {
+   "base": "vene",
+   "means": {
+    "en": "Russian",
+    "az": "rus",
+    "ru": "русский"
+   }
+  },
+  "keelt": {
+   "base": "keel",
+   "means": {
+    "en": "language",
+    "az": "dili",
+    "ru": "язык"
+   },
+   "deck": "talk"
+  },
+  "eestis": {
+   "base": "Eesti",
+   "means": {
+    "en": "in Estonia",
+    "az": "Estoniyada",
+    "ru": "в Эстонии"
+   },
+   "deck": "countries"
+  },
+  "elades": {
+   "base": "elama",
+   "means": {
+    "en": "living, while living",
+    "az": "yaşayarkən",
+    "ru": "живя"
+   },
+   "deck": "verbs"
+  },
+  "venekeelse": {
+   "base": "venekeelne",
+   "means": {
+    "en": "Russian-speaking",
+    "az": "rusdilli",
+    "ru": "русскоязычным"
+   }
+  },
+  "elanikkonnaga": {
+   "base": "elanikkond",
+   "means": {
+    "en": "with the population",
+    "az": "əhali ilə",
+    "ru": "с населением"
+   }
+  },
+  "suhtlemine": {
+   "base": "suhtlemine",
+   "means": {
+    "en": "communicating, communication",
+    "az": "ünsiyyət",
+    "ru": "общение"
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "arvates": {
+   "base": "arvama",
+   "means": {
+    "en": "in the opinion (minu arvates: in my opinion)",
+    "az": "fikrincə (minu arvates: məncə)",
+    "ru": "по мнению (minu arvates: по-моему)"
+   },
+   "deck": "moreverbs"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "oluline": {
+   "base": "oluline",
+   "means": {
+    "en": "important",
+    "az": "vacib",
+    "ru": "важный"
+   },
+   "deck": "describing"
+  },
+  "soov": {
+   "base": "soov",
+   "means": {
+    "en": "wish",
+    "az": "arzu",
+    "ru": "желание"
+   }
+  },
+  "kindlasti": {
+   "base": "kindlasti",
+   "means": {
+    "en": "certainly",
+    "az": "mütləq",
+    "ru": "обязательно, точно"
+   },
+   "deck": "repairs"
+  },
+  "minna": {
+   "base": "minema",
+   "means": {
+    "en": "to go",
+    "az": "getmək",
+    "ru": "пойти"
+   },
+   "deck": "verbs"
+  },
+  "meditsiini": {
+   "base": "meditsiin",
+   "means": {
+    "en": "medicine",
+    "az": "tibb",
+    "ru": "медицину"
+   }
+  },
+  "juurat": {
+   "base": "juura",
+   "means": {
+    "en": "law (as a subject)",
+    "az": "hüquq",
+    "ru": "право"
+   }
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kindlale": {
+   "base": "kindel",
+   "means": {
+    "en": "to a firm (kindlale otsusele: to a firm decision)",
+    "az": "qəti",
+    "ru": "к твёрдому"
+   }
+  },
+  "otsusele": {
+   "base": "otsus",
+   "means": {
+    "en": "to a decision",
+    "az": "qərara",
+    "ru": "к решению"
+   }
+  },
+  "jõudnud": {
+   "base": "jõudma",
+   "means": {
+    "en": "reached, come to (ei ole jõudnud: haven't come to)",
+    "az": "gəlməmişəm",
+    "ru": "пришёл"
+   },
+   "deck": "moreverbs"
+  },
+  "hakanud": {
+   "base": "hakkama",
+   "means": {
+    "en": "started (olen hakanud: I have started)",
+    "az": "başlamışam",
+    "ru": "начал"
+   },
+   "deck": "moreverbs"
+  },
+  "mõtlema": {
+   "base": "mõtlema",
+   "means": {
+    "en": "to think (mõtlema hakkama: to start thinking)",
+    "az": "düşünməyə",
+    "ru": "думать"
+   },
+   "deck": "moreverbs"
+  },
+  "it": {
+   "base": "IT",
+   "means": {
+    "en": "IT (information technology)",
+    "az": "İT",
+    "ru": "IT"
+   }
+  },
+  "le": {
+   "base": "-le",
+   "means": {
+    "en": "to, onto (IT-le: about IT, towards IT)",
+    "az": "-yə (IT-le: İT-yə)",
+    "ru": "к (IT-le: об IT)"
+   }
+  },
+  "tahaks": {
+   "base": "tahtma",
+   "means": {
+    "en": "would like",
+    "az": "istərdi",
+    "ru": "хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "vahepeal": {
+   "base": "vahepeal",
+   "means": {
+    "en": "for a change, in between",
+    "az": "arada",
+    "ru": "в промежутке, для разнообразия"
+   }
+  },
+  "arvutitega": {
+   "base": "arvuti",
+   "means": {
+    "en": "with computers",
+    "az": "kompüterlərlə",
+    "ru": "с компьютерами"
+   },
+   "deck": "paper"
+  },
+  "suhelda": {
+   "base": "suhtlema",
+   "means": {
+    "en": "to communicate",
+    "az": "ünsiyyət qurmaq",
+    "ru": "общаться"
+   },
+   "deck": "moreverbs"
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "õpin": {
+   "base": "õppima",
+   "means": {
+    "en": "I study",
+    "az": "oxuyuram",
+    "ru": "учусь"
+   },
+   "deck": "moreverbs"
+  },
+  "järgmisena": {
+   "base": "järgmine",
+   "means": {
+    "en": "next, as the next thing",
+    "az": "növbəti olaraq",
+    "ru": "следующим"
+   },
+   "deck": "time"
+  },
+  "d": {
+   "base": "-d",
+   "means": {
+    "en": "the ending of the object (IT-d: IT)",
+    "az": "obyekt şəkilçisi (IT-d: İT-ni)",
+    "ru": "окончание дополнения (IT-d: IT)"
+   }
+  },
+  "raske": {
+   "base": "raske",
+   "means": {
+    "en": "difficult, hard",
+    "az": "çətin",
+    "ru": "трудный"
+   },
+   "deck": "feelings"
+  },
+  "küsimus": {
+   "base": "küsimus",
+   "means": {
+    "en": "question",
+    "az": "sual",
+    "ru": "вопрос"
+   },
+   "deck": "school"
+  },
+  "aastate": {
+   "base": "aasta",
+   "means": {
+    "en": "years'",
+    "az": "illərin",
+    "ru": "годов"
+   },
+   "deck": "time"
+  },
+  "juures": {
+   "base": "juures",
+   "means": {
+    "en": "at, with (ema juures: at my mother's)",
+    "az": "yanında",
+    "ru": "у"
+   },
+   "deck": "around"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "selles": {
+   "base": "see",
+   "means": {
+    "en": "in this",
+    "az": "bunda",
+    "ru": "в этом"
+   },
+   "deck": "pronouns"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
+   },
+   "deck": "everyday"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "tunne": {
+   "base": "tunne",
+   "means": {
+    "en": "feeling",
+    "az": "hiss",
+    "ru": "чувство"
+   },
+   "deck": "feelings"
+  },
+  "siiamaani": {
+   "base": "siiamaani",
+   "means": {
+    "en": "up to now, so far",
+    "az": "indiyədək",
+    "ru": "до сих пор"
+   }
+  },
+  "need": {
+   "base": "see",
+   "means": {
+    "en": "these, they",
+    "az": "bunlar",
+    "ru": "эти"
+   },
+   "deck": "pronouns"
+  },
+  "põhiasjad": {
+   "base": "põhiasi",
+   "means": {
+    "en": "main things",
+    "az": "əsas işlər",
+    "ru": "главные дела"
+   }
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "tegemata": {
+   "base": "tegema",
+   "means": {
+    "en": "not done, undone",
+    "az": "edilməmiş",
+    "ru": "не сделаны"
+   },
+   "deck": "verbs"
+  },
+  "võiksin": {
+   "base": "võima",
+   "means": {
+    "en": "I could",
+    "az": "bilərdim",
+    "ru": "я мог бы"
+   },
+   "deck": "moreverbs"
+  },
+  "öelda": {
+   "base": "ütlema",
+   "means": {
+    "en": "to say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "deck": "everyday"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "elu": {
+   "base": "elu",
+   "means": {
+    "en": "life",
+    "az": "həyat",
+    "ru": "жизнь"
+   },
+   "deck": "naera-words"
+  },
+  "viimase": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "son",
+    "ru": "последней"
+   },
+   "deck": "time"
+  },
+  "osaga": {
+   "base": "osa",
+   "means": {
+    "en": "with the part (toime tulema … osaga: to cope with the part)",
+    "az": "hissəsi ilə",
+    "ru": "с частью"
+   }
+  },
+  "toime": {
+   "base": "toime",
+   "means": {
+    "en": "(toime tulema: to cope, to manage)",
+    "az": "(toime tulema: öhdəsindən gəlmək)",
+    "ru": "(toime tulema: справляться)"
+   }
+  },
+  "tulema": {
+   "base": "tulema",
+   "means": {
+    "en": "to come (toime tulema: to cope)",
+    "az": "gəlmək",
+    "ru": "приходить"
+   },
+   "deck": "verbs"
+  }
+ }
+}

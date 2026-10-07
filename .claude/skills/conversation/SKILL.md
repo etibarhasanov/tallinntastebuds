@@ -54,8 +54,9 @@ sentences — **A turn is its sentences** below.
 Four things were done to the first ten and are done again:
 
 - **Speaker labels are checked against the sense.** One sheet marked a line
-  of the waiter's *Klient*; a sheet of four names spelt one of them two ways.
-  Fix it and say so in the README section.
+  of the waiter's *Klient*; a sheet of four names spelt one of them two ways;
+  another left a paragraph with no speaker at all, which is a further turn
+  of whoever spoke above it. Fix it and say so in the README section.
 - **The English is tidied, not rewritten.** Typos go; a literalism that is
   not English becomes English (*Do you see dreams?* → *Do you dream?*); the
   sense and the register stay the sheet's.
@@ -128,7 +129,7 @@ make; but every word is a press, so every word needs a gloss.
 
 After the entry, `node tools/validate.mjs` names every word in the new sheet
 that `talkWords` does not know yet — on a sheet from the same course that is
-a quarter to a half of them, since the twenty so far share most of their
+a quarter to a half of them, since the twenty-five so far share most of their
 words. Write each one into `talkWords`, keyed by the word as written and
 lowercased (`Järvelt` is `järvelt`; a hyphen splits a word, so
 *Kohtla-Järve* is two and *39-aastane* is `aastane`): its `base`, the form a
@@ -174,7 +175,7 @@ tile at 390 px: what happens, not what the sheet is called.
 6. Press a few words of the new tile — one in a question, one at the foot of
    a long turn — and see the box open under its sentence and shut on a second
    press.
-7. The README section's count — *there are twenty* — and the line in **Files**
+7. The README section's count — *there are twenty-five* — and the line in **Files**
    move with it, and so does this file if the sheet taught a step nobody had
    written down.
 
@@ -212,6 +213,11 @@ translations are the session's.
 - An id another batch already took. The second and third batches were
   written at once, and both reached for `talk-home`; the third's is
   `talk-like-home`. `git fetch` and look at `talks` before naming one.
+  The fourth was written as whole turns while the third was making every
+  turn its sentences, and had to be split again after the rebase: fetch
+  before writing the entry, not only before the pull request. A script that
+  splits at a full stop before a capital misses a sentence that opens with a
+  number — *2010-cu ildə…* — so count the sentences per language after it.
 - Text read off a rendered page with an õ read as an o. Read the Estonian
   twice, and where the page is blurry, render it at a higher `-r`.
 - A new press name — a new `TTBTrack.event` — without its row in the README's

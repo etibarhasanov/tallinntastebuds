@@ -535,9 +535,9 @@
   "sees": {
    "base": "sees",
    "means": {
-    "en": "inside, in it",
-    "az": "içində",
-    "ru": "внутри"
+    "en": "inside, in it; within (garantiiaja sees: within the warranty)",
+    "az": "içində; ərzində",
+    "ru": "внутри; в течение"
    },
    "deck": "home"
   },
@@ -654,9 +654,9 @@
   "saab": {
    "base": "saama",
    "means": {
-    "en": "can (saab broneerida: it can be booked); gets",
-    "az": "olar; alır",
-    "ru": "можно; получает"
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
    },
    "deck": "verbs"
   },
@@ -991,9 +991,9 @@
   "vastu": {
    "base": "vastu",
    "means": {
-    "en": "against, to",
-    "az": "qarşı",
-    "ru": "против, на"
+    "en": "against, to; for (uue vastu: for a new one)",
+    "az": "qarşı; əvəzinə (uue vastu: yenisinə)",
+    "ru": "против; на (uue vastu: на новую)"
    },
    "deck": "everyday"
   },
