@@ -9508,6 +9508,16 @@ the tap that would otherwise follow it**, so a scroll that began on the card
 does not turn it over on the way past — the rule the map's sheet has had since
 it could be dragged.
 
+The first of those has a converse, which Safari taught: **a gesture that
+starts across the card belongs to the card until the finger comes up.**
+Chrome settles `pan-y` once, at the start; Safari on an iPhone goes on asking,
+and a thumb arcing across a phone always drifts a little downwards, so a throw
+carried well past a quarter of the card would start the page scrolling
+halfway, the browser would take the gesture back with a `pointercancel`, and
+the card sprang home with the answer lost. On a phone that looked like a card
+hanging and refusing to go. So once a drag is a throw, the card refuses the
+scroll one `touchmove` at a time, the way the map's sheet does.
+
 **Or the arrow keys, which are the throw on a machine with no thumb on it.**
 Right for *Knew it*, left for *Show me again* — the same two answers in the
 same two directions the card would have gone under a finger, so somebody who

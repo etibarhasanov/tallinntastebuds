@@ -2598,6 +2598,24 @@
       rest();
     };
 
+    /* Once the throw is ours, the page may not have it back. `pan-y` is
+       settled at the start of a gesture in Chrome, but Safari on an iPhone
+       goes on asking: a thumb that drifts a little downwards halfway through
+       a throw — which a thumb arcing across a phone always does — starts the
+       page scrolling there and then, and the browser takes the gesture with a
+       pointercancel. The card sprang back from wherever it had been carried,
+       a long way past `far` included, and the answer was lost; on a phone it
+       read as the card hanging and refusing to go. So while it is live the
+       scroll is refused one touchmove at a time, which is how the sheet and
+       the result card in assets/app.js keep theirs. Non-passive, because the
+       preventDefault is the whole of it; and only while live, so a drag that
+       began as a scroll is still one. Pointer events come before the touch
+       events of the same move, so the move that makes it live is already
+       refused. */
+    node.addEventListener('touchmove', function (ev) {
+      if (live && ev.cancelable) ev.preventDefault();
+    }, { passive: false });
+
     node.addEventListener('pointerup', release);
     node.addEventListener('pointercancel', function () {
       down = false;
