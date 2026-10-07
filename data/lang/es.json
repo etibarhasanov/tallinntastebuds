@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
   "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",
   "routeNoCar": "No se encontró una ruta en coche.",
-  "blogMembers": "Escrito por miembros",
   "blogMembersNone": "Nadie ha escrito aún. Sé el primero.",
   "blogMore": "Mostrar más",
   "blogWriteYours": "Escribir una entrada",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "Es el máximo de entradas que una cuenta puede empezar por ahora.",
   "writeErrGeneric": "No se guardó. Inténtalo de nuevo en un momento.",
   "writeBack": "Todas tus entradas",
-  "blogHouse": "Notas del mapa",
   "writeYourBlog": "Tu blog"
  },
  "blurbs": {

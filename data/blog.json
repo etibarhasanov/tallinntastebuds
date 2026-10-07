@@ -10,36 +10,14 @@
       "en": "Being on it is the verdict. Everything else here follows from that one decision."
     },
     "clip": {
-      "en": "Three pins settling onto the map — filmed, photographed and written up — with no number on any of them."
+      "en": "Three pins settling onto the map, filmed, photographed and written up, with no number on any of them."
     },
     "body": {
       "en": [
         "The map opens on the places in Tallinn I have eaten at and would send a friend to. There is no rating on any of them, no stars, no mark out of ten, and there never will be. A place is either on the map or it is not, and that is the whole of the judgement this site makes.",
-        "A score sounds like more information and is usually less. Four point two against four point four tells you nothing about whether you will like the room, and a number invites the one question a recommendation should never have to answer: why is this one lower than that one? Leaving it out means the write-up has to do the work instead — what to order, what the place is like, who it is for.",
+        "A score sounds like more information and is usually less. Four point two against four point four tells you nothing about whether you will like the room, and a number invites the one question a recommendation should never have to answer: why is this one lower than that one? Leaving it out means the write-up has to do the work instead: what to order, what the place is like, who it is for.",
         "One number does appear, and it is never mine. Google’s rating turns up on the places that are Google’s, and every time it does it says whose it is: according to Google, 4.8 from 3,041 reviews. Two kinds of claim about a restaurant, kept visibly apart.",
-        "What a pin says instead is what has been done about the place — filmed, photographed, or written up — and it says it by silhouette as well as by tone. Nothing on this site says something in colour alone."
-      ]
-    }
-  },
-  {
-    "id": "ten-languages-and-nothing-left-in-english",
-    "date": "2026-08-16",
-    "link": "/",
-    "title": {
-      "en": "Ten languages, and nothing left behind in English"
-    },
-    "standfirst": {
-      "en": "Every word a visitor reads lives in one file. A string that exists in one language and not another fails the build."
-    },
-    "clip": {
-      "en": "The language switch pressed from EN to ET, and the tagline, the Surprise me pill and the filter chips all turning into Estonian."
-    },
-    "body": {
-      "en": [
-        "The site speaks Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian, Spanish, Turkish and Ukrainian. The switcher lists them by their two-letter code, so nobody’s language is at the bottom because of where it happens to sit in a file.",
-        "Every interface string lives in one place, keyed by language and then by name, so a translator never has to open a page of markup to find a word. Nothing user-facing is written into a script at all: the English in the HTML is only what the page is served with before the strings arrive, and each of those words sits under a key that replaces it.",
-        "The rule that makes it hold is the build: a string present in one language and missing from another fails, and so does a word the site asks for that no language has. That is what stops the usual slow drift — a feature shipped in English with a note to translate it later, and a fallback in the code that quietly makes later never come.",
-        "Which language you land in is decided in one order: the address bar, then a choice you made before, then what your browser asks for, then English. Switching redraws the page where it stands, with no reload, and the choice is remembered — unless the browser refuses to remember anything, which some private modes do, and then the site simply forgets between visits rather than breaking."
+        "What a pin says instead is what has been done about the place (filmed, photographed, or written up), and it says it by silhouette as well as by tone. Nothing on this site says something in colour alone."
       ]
     }
   },
@@ -59,30 +37,9 @@
     "body": {
       "en": [
         "The die on the left rail picks a place at random and opens it. It picks from whatever the filter chips currently allow, so choosing Korean and Cheap eats and then pressing it answers the question you were actually asking rather than a question about the whole city. Closed places are never offered, and the same place never comes back twice in a row.",
-        "On a phone it opens the sheet at its low stop rather than its full one, and that is the whole trick. A place you tapped by name opens at full height — you asked for that write-up, so the write-up is what you get. A surprise is the opposite errand. The name means nothing to you yet, and the first thing you want to know is whether it is round the corner or out in Lasnamäe, which is a question only the map can answer, and the sheet at full height was standing on it.",
+        "On a phone it opens the sheet at its low stop rather than its full one, and that is the whole trick. A place you tapped by name opens at full height: you asked for that write-up, so the write-up is what you get. A surprise is the opposite errand. The name means nothing to you yet, and the first thing you want to know is whether it is round the corner or out in Lasnamäe, which is a question only the map can answer, and the sheet at full height was standing on it.",
         "It sits on the rail rather than in the row of chips because that row scrolls sideways once the vocabulary gets wide, and a button that scrolls out of reach is no button at all.",
         "Next to it is the speech bubble, which is the same button with the question turned round: one of them says anywhere, you choose, and the other says somewhere like this."
-      ]
-    }
-  },
-  {
-    "id": "a-save-is-free-and-the-number-is-other-people",
-    "date": "2026-08-21",
-    "link": "/",
-    "title": {
-      "en": "A save is free, and the number beside it is other people"
-    },
-    "standfirst": {
-      "en": "The bookmark takes no account at all. One control keeps the place and says how many others kept it too."
-    },
-    "clip": {
-      "en": "The bookmark in the corner of Pudel’s panel pressed: the outline fills in and the count beside it goes from 23 to 24."
-    },
-    "body": {
-      "en": [
-        "Press the bookmark in the corner of an open place and the place is kept — on this device, in this browser, with nothing in the way. The number next to it is how many other people have pressed the same one, which is one control doing two jobs. That is only honest because a save here is anonymous: nobody can see whose it was, so the reason every other site keeps a public like apart from a private bookmark does not apply.",
-        "The count hides at zero. A 0 under a bookmark reads as a verdict on the restaurant rather than as nobody having got there yet — and the same number rides on the rows of the list, so a scroll down the whole map shows what other people kept without opening anything.",
-        "For a while the bookmark was a wall: pressing it opened the sign-up sheet, so that the number underneath would count people rather than browsers. That is undone. The press is free again, and the offer of an account comes after it — once, at the moment somebody actually has something to lose. Signing in then claims whatever this browser already saved rather than starting anybody over."
       ]
     }
   },
@@ -101,32 +58,10 @@
     },
     "body": {
       "en": [
-        "Everything else here is a place that will still be there next year. A story is a video, or a photograph, that stands for a day and a half and then is not there any more — which is the entire reason anybody opens one now instead of later.",
+        "Everything else here is a place that will still be there next year. A story is a video, or a photograph, that stands for a day and a half and then is not there any more, which is the entire reason anybody opens one now instead of later.",
         "When something is up, the mark in the top left grows a turning ring, in this site’s own brick and ember rather than anybody else’s gradient. Press it and the story fills the screen: a bar along the top for each one, who it is from, how long it has left, the caption and a link. The left third of the screen goes back, the rest goes on, holding stops it, swiping down leaves.",
         "The screen it fills is the one you can actually see and not the one the browser claims to have. Safari’s toolbar stands over the foot of an iPhone, and the caption and the link are precisely what ends up underneath it.",
         "The video goes. The picture does not: the photograph a photo story was, or the still a video was watched from, moves onto the place it was shot at and joins that place’s photos. So the story is the moment, and the picture stays."
-      ]
-    }
-  },
-  {
-    "id": "a-filter-never-answers-with-an-empty-screen",
-    "date": "2026-08-26",
-    "link": "/",
-    "title": {
-      "en": "A filter never answers with an empty screen"
-    },
-    "standfirst": {
-      "en": "A chip is a question about places, so the map is not allowed to answer it with a square of blank tiles."
-    },
-    "clip": {
-      "en": "The Bakery chip pressed: the places it drops fade away and the two it leaves come in from the edge until both are on screen."
-    },
-    "body": {
-      "en": [
-        "Press a chip — bakeries, cheap eats, somewhere for a date — and if none of the places it leaves are actually in view, the map pulls back until some of them are: the filtered set framed at city level, or the whole city if the chips match nothing anywhere.",
-        "In view means the strip of map you can see, not the map’s full bounds. The sheet covers the bottom of a phone and the right of a desk, and a pin behind it is not on screen in any sense a visitor would accept. With the sheet dragged to full height there is no strip left to judge, so nothing moves — there is no point re-framing a map nobody is looking at.",
-        "This is felt hardest after Show my location. That used to drop you at street level wherever you were standing, which on the edge of town is a screen with nothing on it, and from there every chip you pressed answered with the same nothing: the filter had worked, the list behind it had changed, and the map said not a word. Now the button frames you together with the nearest place the chips allow, so you land looking at somewhere you could walk to.",
-        "The order of the chips is the other half of the same idea. They run commonest first, so the ones most people want are the ones nobody has to scroll for — with two set by hand against the counts, both about what a chip is for rather than how big it is."
       ]
     }
   },
@@ -141,12 +76,12 @@
       "en": "No email, no phone, no real name, no sign in with anything. The smallest thing that does the job."
     },
     "clip": {
-      "en": "A username and a password typed into the sign-up sheet, over the line saying a forgotten password cannot be recovered — and nothing else to fill in."
+      "en": "A username and a password typed into the sign-up sheet, over the line saying a forgotten password cannot be recovered, and nothing else to fill in."
     },
     "body": {
       "en": [
-        "An account here holds a username, a password hash and — if you write one — a couple of hundred characters about yourself. There is no address field and no third party involved. That is not an oversight waiting to be fixed: it is the least of you that will make a list follow you to another phone, and anything past it would be a record of where somebody eats, kept for no reason anybody asked for.",
-        "It costs something, and the cost is said out loud rather than discovered. With no address on the account there is nowhere to send a reset, so a forgotten password cannot be recovered by anybody, including whoever runs this site. The sign-up sheet says that above the button, and the fields carry the hints that let a password manager keep the details — which is what actually rescues people.",
+        "An account here holds a username, a password hash and, if you write one, a couple of hundred characters about yourself. There is no address field and no third party involved. That is not an oversight waiting to be fixed: it is the least of you that will make a list follow you to another phone, and anything past it would be a record of where somebody eats, kept for no reason anybody asked for.",
+        "It costs something, and the cost is said out loud rather than discovered. With no address on the account there is nowhere to send a reset, so a forgotten password cannot be recovered by anybody, including whoever runs this site. The sign-up sheet says that above the button, and the fields carry the hints that let a password manager keep the details, which is what actually rescues people.",
         "There was a reset once: an optional address, a six-digit code, the lot. It was written, documented, and switched off in every deployment this site has ever had, because the mail it needed is not on the free plan. What it bought in practice was a paragraph promising something the site did not do. So it is gone, and the sentence about a lost password is now true in every configuration rather than in most of them.",
         "Almost nothing is behind the account in any case. Saving works signed out. The one thing that genuinely needs it is a discount, because a restaurant giving something away is owed a person to count rather than a browser."
       ]
@@ -166,9 +101,9 @@
     },
     "body": {
       "en": [
-        "Behind this site sits Google’s own export of everywhere in Tallinn you can eat or drink: names, ratings, review counts, price bands and opening hours, more than a thousand of them. It has a page of its own — searchable, filterable, with a map of the matches beside the list — and it is the single most useful thing here that is not a recommendation.",
+        "Behind this site sits Google’s own export of everywhere in Tallinn you can eat or drink: names, ratings, review counts, price bands and opening hours, more than a thousand of them. It has a page of its own (searchable, filterable, with a map of the matches beside the list), and it is the single most useful thing here that is not a recommendation.",
         "That is exactly why nothing points at it. Not the map, not the lists, not the sitemap; it asks search engines not to index it and the first paragraph on the page says, in every language the site speaks, that nothing on it has been visited and the ratings are Google’s. This site is one person’s description of a city and that page is a company’s, and a reader arriving from a search result would have no way to tell which one they had landed on.",
-        "The export is not left as Google wrote it. The category becomes cuisines this site can say in ten languages, the week becomes seven days with the day names taken off, and what survives untranslated is the times, the name of the restaurant and its street — which is what you would say to a taxi driver.",
+        "The export is not left as Google wrote it. The category becomes cuisines this site can say in ten languages, the week becomes seven days with the day names taken off, and what survives untranslated is the times, the name of the restaurant and its street, which is what you would say to a taxi driver.",
         "The most interesting thing a row on that page can say is On the map. That is the handful of places which are also in the catalogue here: a rating from one world and a write-up from the other, standing in the same card and clearly labelled."
       ]
     }
@@ -189,9 +124,9 @@
     "body": {
       "en": [
         "Everything else on this site is one person’s opinion. A list is the other thing: top ten burgers, where to take your parents, the bakeries worth the walk. It carries the username of whoever wrote it, and it has an address they can paste into a message.",
-        "A list starts with three empty places, numbered, each a row you press to open the search. Three is where it starts because two places is a pair of opinions rather than a recommendation, and the search is over a much longer catalogue than the map — if the place you mean is not in it, you can add it yourself.",
+        "A list starts with three empty places, numbered, each a row you press to open the search. Three is where it starts because two places is a pair of opinions rather than a recommendation, and the search is over a much longer catalogue than the map: if the place you mean is not in it, you can add it yourself.",
         "The address is the title plus six random characters, so the link says what it is before anybody opens it and cannot be guessed at from the one next to it. That random half is also what makes a private list private.",
-        "None of this touches the map. The pins, the write-ups and the filters are exactly what they were; lists live on their own pages, and the door to them is your own account page, filed under whoever you are. A list can be kept the way a place can be, and opened on the map as pins — which is the one place the two worlds meet."
+        "None of this touches the map. The pins, the write-ups and the filters are exactly what they were; lists live on their own pages, and the door to them is your own account page, filed under whoever you are. A list can be kept the way a place can be, and opened on the map as pins, which is the one place the two worlds meet."
       ]
     }
   },
@@ -210,10 +145,10 @@
     },
     "body": {
       "en": [
-        "A few places on the map give readers of it something off the bill. Which ones, and whether the offer is switched on at all, is one file — a place with nothing in that file is exactly the place it was before any of this existed.",
-        "The offer itself is not hidden from anybody: the pill on the row, the number in the panel, the words under the write-up and the Discount chip are drawn for everybody, because that is what somebody is deciding on. What takes an account is the code you hold up. This is the one thing on the site an account is genuinely for — saving works signed out, lists work signed out, a discount does not — and what it buys the restaurant is a person they can count rather than a browser.",
+        "A few places on the map give readers of it something off the bill. Which ones, and whether the offer is switched on at all, is one file. A place with nothing in that file is exactly the place it was before any of this existed.",
+        "The offer itself is not hidden from anybody: the pill on the row, the number in the panel, the words under the write-up and the Discount chip are drawn for everybody, because that is what somebody is deciding on. What takes an account is the code you hold up. This is the one thing on the site an account is genuinely for: saving works signed out, lists work signed out, a discount does not. And what it buys the restaurant is a person they can count rather than a browser.",
         "The guest gets a QR code that is good for the hour. The waiter scans it and lands on a page that says yes or no, and the counter has a third page, bookmarked once, showing the code the guest’s screen is showing right now and the previous hour’s as well. That last one is the evening when the camera will not focus, the guest’s screen is cracked, or the cellar has no signal: comparing five characters by eye is slower than scanning and a great deal faster than turning somebody away.",
-        "A deal can also offer a rate it does not name. Give it a run — five to twenty-five percent, say — and every member who opens the pass is dealt one of them for the hour. The number runs through the whole range for a second and lands on theirs; reloading lands on the same one, and when the hour turns it is drawn again in front of them."
+        "A deal can also offer a rate it does not name. Give it a run (five to twenty-five percent, say) and every member who opens the pass is dealt one of them for the hour. The number runs through the whole range for a second and lands on theirs; reloading lands on the same one, and when the hour turns it is drawn again in front of them."
       ]
     }
   },
@@ -232,10 +167,10 @@
     },
     "body": {
       "en": [
-        "Press a name on a list now and you get that person: the public lists they have made, newest first, how many places are on each and how many people kept it, the year they turned up, one number over the lot saying how often in all their lists have been kept — and the line they wrote about themselves, if they wrote one.",
+        "Press a name on a list now and you get that person: the public lists they have made, newest first, how many places are on each and how many people kept it, the year they turned up, one number over the lot saying how often in all their lists have been kept, and the line they wrote about themselves, if they wrote one.",
         "That is the whole of it, and the omissions are the design. Not their saves: those are anonymous by intent and filed under a device as often as under an account, and a page that turned them into a public record of where somebody eats would be a different site altogether. Not a follower count, because there is nothing here to follow.",
         "The page is not a second page. It is the same file the lists are served from, handed back at another address with that person’s own title and preview card written into it, so a link somebody pastes into a chat arrives as who it is rather than as a bare blue URL. There is no second stylesheet and no second boot.",
-        "Everybody’s lists are gathered in one place too, most-kept first, with a field to search them — which is what makes a list something a stranger can find, rather than something that travels only by the link its author remembers to send."
+        "Everybody’s lists are gathered in one place too, most-kept first, with a field to search them, which is what makes a list something a stranger can find, rather than something that travels only by the link its author remembers to send."
       ]
     }
   },
@@ -250,13 +185,13 @@
       "en": "Cheap asian food. Somewhere for a date. Khachapuri, still open. The panel answers with places, and it remembers what you asked a minute ago."
     },
     "clip": {
-      "en": "A sentence typed into the chat — cheap asian food, still open — becoming a turn in the thread, with two places under the answer."
+      "en": "A sentence typed into the chat (cheap asian food, still open) becoming a turn in the thread, with two places under the answer."
     },
     "body": {
       "en": [
-        "The speech bubble opens the panel on a chat, and the site speaks first: what do you feel like? Type a sentence and it sits on the right the way your own words do in any chat, with the answer under it — a line or two, then one to three places as rows, best first, each with a reason it is there and, when the map knows where you are, how far it is.",
+        "The speech bubble opens the panel on a chat, and the site speaks first: what do you feel like? Type a sentence and it sits on the right the way your own words do in any chat, with the answer under it: a line or two, then one to three places as rows, best first, each with a reason it is there and, when the map knows where you are, how far it is.",
         "It is a conversation and the model is told the whole of it. Every question goes with the exchanges before it, so somewhere cheaper, or is the second one open late, mean what they would mean to a person. One place is a whole answer when one is what fits: a model asked for three will always find three.",
-        "It answers off my map first — the places I have eaten at and written up — and reaches for Google’s Tallinn only where the map has nothing that fits: a cuisine I have not got to yet, a part of town I have not eaten in. A place off Google’s list arrives wearing Google’s name and rating and none of my words, and says so. There used to be a choice to make before typing, this map or all of Tallinn; nobody opening a chat wants to be asked which of two maps they mean, so there is one Ask now.",
+        "It answers off my map first, the places I have eaten at and written up, and reaches for Google’s Tallinn only where the map has nothing that fits: a cuisine I have not got to yet, a part of town I have not eaten in. A place off Google’s list arrives wearing Google’s name and rating and none of my words, and says so. There used to be a choice to make before typing, this map or all of Tallinn; nobody opening a chat wants to be asked which of two maps they mean, so there is one Ask now.",
         "It runs on a free daily allowance, and some evenings that allowance is gone. When it is, the chat says so and asks you back tomorrow rather than guessing: three places matched on letters under a sentence about your evening would be the site pretending, and a shrug is honest where that is not."
       ]
     }
@@ -276,93 +211,9 @@
     },
     "body": {
       "en": [
-        "There is a radio on the rail. It plays one station for everybody and, where there is one, a station per language — so the site can be read in Ukrainian with Ukrainian rock behind it, and a language with no station of its own falls back to the shared one rather than to silence.",
-        "Switching language while it is playing switches the station under it, instead of leaving the old one running behind a button that now names a different one. Doing that a second after pressing play — while the stream is still connecting — is the same switch, and getting that right took more care than the feature deserved: the interrupted connection reports a failure that is the site’s own doing, and for a while it was read as the stream refusing to start. The radio would turn itself off, with a message saying so, over a station that had in fact started.",
+        "There is a radio on the rail. It plays one station for everybody and, where there is one, a station per language, so the site can be read in Ukrainian with Ukrainian rock behind it, and a language with no station of its own falls back to the shared one rather than to silence.",
+        "Switching language while it is playing switches the station under it, instead of leaving the old one running behind a button that now names a different one. Doing that a second after pressing play, while the stream is still connecting, is the same switch, and getting that right took more care than the feature deserved: the interrupted connection reports a failure that is the site’s own doing, and for a while it was read as the stream refusing to start. The radio would turn itself off, with a message saying so, over a station that had in fact started.",
         "It is the same button on every page that has one, so the music does not stop because you walked from the map to somebody’s list. And it is one file: empty it and the button never appears at all."
-      ]
-    }
-  },
-  {
-    "id": "two-styles-and-no-third",
-    "date": "2026-09-13",
-    "link": "/?style=green",
-    "title": {
-      "en": "Two styles, and there used to be seven"
-    },
-    "standfirst": {
-      "en": "Brick and forest, day and night. One swatch changes the entire colour world, not an accent."
-    },
-    "clip": {
-      "en": "The swatch pressed, and the card, the pin, the price gauge and the ground all changing to the other style at once."
-    },
-    "body": {
-      "en": [
-        "There is one swatch on the rail. Press it and every colour on the site changes — the card, the ground, the ink, the pins and the map tiles underneath them — because no component anywhere names a colour of its own. They all read the same handful of tokens, and each style restates every one of them. A component that named its own colour would be exactly the thing left behind wearing the style you came from.",
-        "There were seven once, one per colour of the spectrum, and that was a settings screen rather than a choice. The rail was asking a question nobody opens a restaurant map to answer, and the strip of swatches was the loudest thing on the page while being the only control on it that changed nothing about what you were looking at.",
-        "The two that survive are the two that are actually a choice: the light one and the dark one. And the card is what carries the colour. An earlier set kept every light style’s paper within a point of white, which measures out as less difference than a JPEG artefact — four styles that were one style with four pin colours, which is exactly what it looked like.",
-        "The choice is remembered, and it is a choice rather than a setting borrowed from your phone: this site does not follow the system switch. It also travels in the address bar, which is how a link can hand somebody the dark one."
-      ]
-    }
-  },
-  {
-    "id": "the-arithmetic-after-dinner",
-    "date": "2026-09-14",
-    "link": "/split",
-    "title": {
-      "en": "The arithmetic after dinner"
-    },
-    "standfirst": {
-      "en": "Five people eat, one card pays, and the rest of the evening is sums done badly in a group chat. This is those sums done once."
-    },
-    "clip": {
-      "en": "Three lines of a group’s bill landing one at a time, and the sentence at the foot working out who hands what to whom."
-    },
-    "body": {
-      "en": [
-        "Name a group, send the link to the other four, put in a line for each thing anybody paid for, and read one sentence at the bottom saying who hands what to whom. It is the only thing on this site that is not about restaurants, and it is here because it is what happens immediately after one.",
-        "It has an address of its own — a subdomain — and the address is the only thing that is its own. There is no second project, no second database and no second account system behind it. Everything else here is a view of the map: a list is places off it, a profile is the person who wrote the lists. This is not, nothing in it points at a restaurant, and a fifth card on the account page reading Groups would have been a second product filed under somebody’s saved places.",
-        "Holding the link is the whole of the permission to read, and it buys the whole group: the members, every line anybody put in, and who owes whom, with nothing to press first. For a day it bought the name and the headcount only and the rest was behind an account, which put a wall in front of the one thing that would make somebody want to climb it. Nobody should have to make an account to find out what they are being asked to join.",
-        "Reading is all it buys. Every write goes through a session and a membership, so a stranger holding the link can read every row and change none of them. What is in there is usernames, what somebody called a bill and what it came to — no address, no card number, no telephone. This site holds none of those about anybody."
-      ]
-    }
-  },
-  {
-    "id": "the-menu-is-in-estonian",
-    "date": "2026-09-21",
-    "link": "/flashcard",
-    "title": {
-      "en": "The menu is in Estonian, so here are the words",
-      "az": "Menyu eston dilindədir — sözlər burada",
-      "ru": "Меню на эстонском — вот слова"
-    },
-    "standfirst": {
-      "en": "A map of where to eat grew a shelf of decks of the language the menu is written in.",
-      "az": "Harada yeməli olduğunu göstərən xəritə, menyunun yazıldığı dilin kart dəstələrini də yanına aldı.",
-      "ru": "Карта того, где поесть, обзавелась колодами того языка, на котором написано меню."
-    },
-    "clip": {
-      "en": "A card with Leib on it, tapped and turned over: what it means, its three forms, and a sentence to say it in.",
-      "az": "Üstündə Leib yazılan karta toxunulur və çevrilir: nə demək olduğu, üç forması və içində işləndiyi bir cümlə.",
-      "ru": "Карточку со словом Leib нажимают и переворачивают: что оно значит, три его формы и предложение, в котором его говорят."
-    },
-    "body": {
-      "en": [
-        "This site is read mostly by people who cannot read the menu. That is not a complaint about anybody, it is the honest description of who opens it. A map can point at a door and say the bread there is worth the walk. It cannot say leib at the counter for you, and the moment somebody is standing at that counter is the moment a map has run out of things to offer.",
-        "So there is a shelf of decks, and they were written from this site outwards — what is printed on a menu, what the person behind the counter says, how to ask what something costs and understand the answer — and then from the other direction, out of the glossary a beginners’ course hands round, which is the half of the language somebody living here needs rather than somebody visiting. The Estonian is on the front of a card and it is never translated. The back is what it means, and where a word has its principal parts they are there too, because the form printed on a menu is rarely the one a dictionary files it under.",
-        "A card is tapped to turn it over, and under it there are two words: Knew it, and Show me again. That is the whole of the machinery. A word you knew goes quiet for a day, then three, then a week, and on up until there is most of a season between askings; a word you did not comes back at the end of the same sitting and starts again from the beginning. Nothing here grades you out of five — the page asks one question, and a schedule cannot be cleverer than what it is told.",
-        "The back of a card is written in English, Azerbaijani and Russian, and the site around it speaks more languages than that. The difference is deliberate: a line of interface can be translated, and what a word means has to be written by somebody holding both sides of it at once. Что значит leib is the same question as what does leib mean, and for a while this site could answer only one of them — in a language whoever asked the other may not read either. An account is what remembers which words you know; without one, the first card of any deck is still yours to turn over."
-      ],
-      "az": [
-        "Bu saytı əsasən menyunu oxuya bilməyənlər açır. Bu, kiməsə irad deyil — sadəcə saytı açanın dürüst təsviridir. Xəritə bir qapını göstərib deyə bilər ki, oradakı çörək yolu dəyər. Amma piştaxtanın qarşısında sənin yerinə leib deyə bilməz, və kimsə məhz o piştaxtanın qarşısında dayananda xəritənin təklif edəcəyi bir şey qalmır.",
-        "Ona görə bir rəf dolusu kart dəstəsi var. Onlar əvvəlcə bu saytdan çölə doğru yazıldı — menyuda nə yazılır, piştaxta arxasındakı adam nə deyir, qiyməti necə soruşub cavabı necə başa düşməli — sonra isə əks istiqamətdən, başlanğıc kursunun payladığı lüğətdən: bu, dilin qonağa yox, burada yaşayana lazım olan yarısıdır. Kartın üzündə eston dili var və o heç vaxt tərcümə olunmur. Arxasında isə sözün mənası, əsas formaları varsa, onlar da — çünki menyuda çap olunan forma lüğətin sözü sırayla saxladığı forma deyil.",
-        "Kartı çevirmək üçün ona toxunulur, altında isə iki söz olur: Bilirdim və Yenidən göstər. Bütün mexanizm budur. Bildiyin söz bir gün, sonra üç gün, sonra bir həftə susur və iki soruşma arasında az qala bir fəsil qalana qədər belə davam edir; bilmədiyin söz elə həmin oturumun sonunda qayıdır və yenidən əvvəldən başlayır. Burada heç kim sənə beşlik sistemi ilə qiymət vermir — səhifə bir sual verir, cədvəl isə ona deyiləndən ağıllı ola bilməz.",
-        "Kartın arxası ingilis, azərbaycan və rus dillərində yazılıb, ətrafdakı sayt isə daha çox dil danışır. Fərq qəsdəndir: interfeysin bir sətrini tərcümə etmək olar, sözün mənasını isə hər iki tərəfi eyni anda bilən adam yazmalıdır. Что значит leib ilə what does leib mean eyni sualdır, və bir müddət bu sayt onlardan yalnız birinə cavab verə bilirdi — həm də o birini soruşanın oxuya bilməyəcəyi bir dildə. Hansı sözləri bildiyini yadda saxlayan şey hesabdır; hesabsız da istənilən dəstənin ilk kartı sənindir, çevir."
-      ],
-      "ru": [
-        "Этот сайт открывают в основном те, кто не может прочитать меню. Это не упрёк — это честное описание того, кто сюда заходит. Карта может показать дверь и сказать, что хлеб там стоит дороги. Но сказать leib у прилавка за вас она не может, и ровно в ту минуту, когда человек стоит у этого прилавка, предлагать ей больше нечего.",
-        "Поэтому здесь лежит полка колод. Сначала их писали изнутри этого сайта наружу — что напечатано в меню, что говорит человек за прилавком, как спросить цену и понять ответ, — а потом с другой стороны, из словника начального курса: это та половина языка, которая нужна живущему здесь, а не гостю. На лицевой стороне карточки эстонский, и он никогда не переводится. На обороте — что слово значит, а если у него есть основные формы, то и они, потому что форма из меню редко совпадает с той, по которой слово стоит в словаре.",
-        "Карточку переворачивают нажатием, и под ней два слова: Знал и Показать снова. В этом вся механика. Слово, которое вы знали, замолкает на день, потом на три, потом на неделю и дальше — пока между двумя вопросами не окажется почти целый сезон; слово, которое не знали, вернётся в конце этого же захода и начнёт заново. Никто не ставит вам оценку по пятибалльной шкале: страница задаёт один вопрос, а расписание не может быть умнее того, что ему сказали.",
-        "Оборот карточки написан по-английски, по-азербайджански и по-русски, а сайт вокруг говорит на большем числе языков. Разница сделана нарочно: строку интерфейса можно перевести, а что слово значит — должен написать тот, кто держит обе стороны сразу. Что значит leib — это тот же вопрос, что и what does leib mean, и какое-то время этот сайт умел отвечать только на один из них, причём на языке, которого спросивший другой может и не знать. Запоминает, какие слова вы знаете, аккаунт; но и без него первая карточка любой колоды — ваша, переверните её."
       ]
     }
   },
@@ -383,7 +234,7 @@
         "Telliskivi and Kalamaja are where most of an ordinary week happens. [F-Hoone](/?spot=f-hoone) for breakfast or pelmeni, [Põhja Konn](/?spot=pohja-konn) for Põhjala's beer on a balcony, [The Brick Coffee Roastery](/?spot=the-brick-coffee) for a date, [Kartul](/?spot=kartul) for a fully vegan stuffed potato by the tram stop, and [Xinhai 1911](/?spot=xinhai-1911) by Balti jaam for biang biang noodles, one noodle metres long in chili oil.",
         "In Kadriorg, [Radio](/?spot=radio-restoran) is for sharing whatever is on the menu, [Faehlmanni kohvik](/?spot=faehlmanni-kohvik) is brunch on one of the nicest corners in the neighbourhood, and [Magussoolane](/?spot=magussoolane) is a bakery I only found because of the smell. On the Noblessner waterfront, [180° by Matthias Diether](/?spot=180-degrees) is the only two Michelin star restaurant in the Baltics, and [KotKot](/?spot=kotkot) is the chicken burger for every other night.",
         "Some of the best cooking in the city is fifteen minutes from any postcard. [Annön](/?spot=annon) does Soviet Korean comfort food in Lasnamäe, [Varkizana](/?spot=varkizana) is a Greek tavern out there too, [DVIN](/?spot=dvin) makes khinkali in Kopli at prices you will not believe, and [Crustum Bakery](/?spot=crustum-bakery) has been feeding Mustamäe for years.",
-        "The chips along the top of the map narrow it down — [bakeries](/?type=bakery), [beer](/?type=pub), [cheap eats](/?type=cheap-eats), [hidden gems](/?type=hidden-gem), [somewhere to bring a laptop](/?type=laptop) — and every place opens on what to order, which is the question you actually have once you are through the door.",
+        "The chips along the top of the map narrow it down: [bakeries](/?type=bakery), [beer](/?type=pub), [cheap eats](/?type=cheap-eats), [hidden gems](/?type=hidden-gem), [somewhere to bring a laptop](/?type=laptop). Every place opens on what to order, which is the question you actually have once you are through the door.",
         "The map is one person's. For everybody else's there are [lists](/lists): [Google's top ten restaurants in Tallinn](/list/top-ten-restaurants-by-google-pt7mwk), worked out from its reviews, and lists people wrote under their own names, like [the tallinneats top thirty](/list/top-30-places-in-tallinn-zdmz94). The posts after this one go through them kind by kind: [Google's top tens](/blog?post=top-restaurants-in-tallinn-by-google), [bakeries and coffee](/blog?post=bakeries-and-coffee-in-tallinn), [craft beer](/blog?post=craft-beer-in-tallinn), [cheap eats](/blog?post=cheap-eats-in-tallinn) and [Georgian and Azerbaijani food](/blog?post=georgian-and-azerbaijani-food-in-tallinn)."
       ]
     }
@@ -405,7 +256,7 @@
         "At the top of the restaurants, as this is written, is Restaurant Rataskaevu 16, which the tallinneats list sums up as a medieval room and a kitchen that takes elk seriously. Then [Vegan Restoran V](/?spot=vegan-restoran-v), [Saffron](/?spot=saffron), Väike-Rataskaevu, Restoran Mimosa, The Kurze, [Ramen Taro](/?spot=ramen-taro), Pizzeria Santa Lucia, Osteria Moderna and [MIX](/?spot=mix-resto).",
         "Several of those are on my map as well, which is about the overlap you would expect between a city's average and one person's week. Where the two agree, go. Where they do not, it is usually because Google's list is full of places a lot of people visit once, and mine is full of places I go back to.",
         "The bakeries list is the one I argue with least. [Pulla Bakery](/?spot=pulla-bakery) is at the top, then [Crustum](/?spot=crustum-bakery), RØST, [Bruto Bakehouse](/?spot=bruto-bakehouse) and [Buxhöwden](/?spot=buxhowden-pagar), with [Magussoolane](/?spot=magussoolane) and [La Boulangerie](/?spot=la-boulangerie) further down. [The post about bakeries](/blog?post=bakeries-and-coffee-in-tallinn) goes through them.",
-        "The bars list leans towards cocktails and wine — Toro, Whisper Sister, Botaanik, Vixen Vinoteek — with [Koht](/?spot=koht) the one beer bar in its top five. For beer on its own terms, [the post about craft beer](/blog?post=craft-beer-in-tallinn) is the other half.",
+        "The bars list leans towards cocktails and wine (Toro, Whisper Sister, Botaanik, Vixen Vinoteek), with [Koht](/?spot=koht) the one beer bar in its top five. For beer on its own terms, [the post about craft beer](/blog?post=craft-beer-in-tallinn) is the other half.",
         "The lists are worked out again whenever the site's copy of Google's places is refreshed, so the order moves. The address does not: every one of them is a page you can send somebody, with a line under each place saying what Google's rating was and how many people gave it."
       ]
     }
@@ -466,7 +317,7 @@
     "body": {
       "en": [
         "Eating out in Tallinn is not cheap any more, which is why the map has a [Cheap eats](/?type=cheap-eats) chip. Everything under it is somewhere I would go even if it cost more.",
-        "[DVIN](/?spot=dvin) in Kopli is honest Georgian food at prices you would not believe: khinkali, shashlik, and a napoleon cake to finish. [Annön](/?spot=annon) in Lasnamäe cooks Soviet Korean comfort food — beef heart salad, lamb soup — on the principle that food should be useful to the body.",
+        "[DVIN](/?spot=dvin) in Kopli is honest Georgian food at prices you would not believe: khinkali, shashlik, and a napoleon cake to finish. [Annön](/?spot=annon) in Lasnamäe cooks Soviet Korean comfort food (beef heart salad, lamb soup) on the principle that food should be useful to the body.",
         "[Kartul](/?spot=kartul) by the Telliskivi tram stop is fully vegan and built entirely around the potato: stuffed baked potatoes and homemade dumplings. [Burger Box](/?spot=burger-box) on Kopli started as a small burger window and kept its street-food soul, with kimchi fries, cheese balls and laksa. [KotKot](/?spot=kotkot) at Noblessner is the chicken burger.",
         "[MIX Resto](/?spot=mix-resto) is the one that sounds wrong: fine dining in the Old Town, at a three-course lunch menu for twenty euro that changes with the seasons. [Pulla Bakery](/?spot=pulla-bakery) is a cinnamon bun and a coffee for very little.",
         "[Shaurma Kebab Linnamäe](/?spot=shaurma-kebab-linnamae) is a Turkish kebab counter out in Linnamäe, and worth every penny. For drinks, [Uba ja Humal](/?spot=uba-ja-humal) has the cheapest beer in the centre, [Vana Villem](/?spot=vana-villem) big portions and cheap beer until late, and [Vabrik](/?spot=vabrik) the cheapest wine in town, with a bottle shop to take one home from."
@@ -486,7 +337,7 @@
     "body": {
       "en": [
         "I am from Azerbaijan, so this is the part of the map I am hardest to please about. Press [Caucasian](/?type=caucasian) and these are the ones that passed.",
-        "[Badam](/?spot=badam), next to the bus station, is the most authentic Azerbaijani cooking in Tallinn: küftə, dolma, xangal, piti and plov, lamb plov included. [Faeton](/?spot=faeton) on Köleri serves proper Azerbaijani cuisine beyond the shashlik, and its qutab has a twist that works — filled with greens and mozzarella — with ayran to drink.",
+        "[Badam](/?spot=badam), next to the bus station, is the most authentic Azerbaijani cooking in Tallinn: küftə, dolma, xangal, piti and plov, lamb plov included. [Faeton](/?spot=faeton) on Köleri serves proper Azerbaijani cuisine beyond the shashlik, and its qutab has a twist that works, filled with greens and mozzarella, with ayran to drink.",
         "For Georgian, [Gobi](/?spot=gobi) in Rotermann is the modern version, and the adjaruli khachapuri and the khinkali are why you go back. [Pirosmani](/?spot=pirosmani) on Tartu maantee is big on flavour and generous in size, made for sharing: chashushuli, adjarian khachapuri, khinkali. [DVIN](/?spot=dvin) in Kopli is the honest, cheap one, with a napoleon cake to finish.",
         "Two more for the grill: [Baklažaan](/?spot=baklazaan), out on the way to the Nõmme bike route, for shashlik, and [Telliskivi Šašlõkk](/?spot=telliskivi-saslokk), which is really Turkish, bakes its own bread, and does a lahmajun worth ordering.",
         "And if the menu in front of you is in Estonian rather than Georgian, [the flashcards](/flashcard) have a deck for [at the table](/flashcard?d=table)."

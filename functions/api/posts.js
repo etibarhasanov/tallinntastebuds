@@ -5,7 +5,7 @@
  * — and this is the half anybody with an account can write in: a post about
  * their ten places, a street worth walking down hungry, whatever they like,
  * in any of the site's ten languages and as many of them as they care to.
- * It lands on /blog under the house's notes and on their profile, and
+ * It lands on /blog among the house's notes and on their profile, and
  * /blog?post=<id> is its address, the same address the house's posts have.
  * **Everybody's posts** under **The blog** in README.md.
  *

@@ -1190,7 +1190,6 @@
   "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
   "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
   "routeNoCar": "Maşın marşrutu tapılmadı.",
-  "blogMembers": "Üzvlərin yazıları",
   "blogMembersNone": "Hələ heç kim yazmayıb. Birinci sən ol.",
   "blogMore": "Daha çox göstər",
   "blogWriteYours": "Yazı yaz",
@@ -1262,7 +1261,6 @@
   "writeErrMany": "Bu gün üçün və ya bir hesab üçün yazı limiti dolub.",
   "writeErrGeneric": "Saxlanılmadı. Bir azdan yenidən cəhd et.",
   "writeBack": "Bütün yazıların",
-  "blogHouse": "Saytın qeydləri",
   "writeYourBlog": "Sənin bloqun"
  },
  "blurbs": {
