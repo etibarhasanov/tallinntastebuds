@@ -3612,12 +3612,16 @@
     ]);
   }
 
-  /* What one word says in its box. */
-  function wordBox(song, key) {
-    var word = song.words[key];
+  /* What one word says in its box. `one` is the song or the conversation
+     the word is in, and either carries `words`, keyed by the word as it is
+     written, lowercased; a song's own deck is the one a box calls "the
+     song's deck", and a conversation has none, so its boxes only ever say
+     where else the word is taught. */
+  function wordBox(one, key) {
+    var word = one.words[key];
     var where = null;
     if (word.deck) {
-      where = word.deck.id === (song.deck && song.deck.id)
+      where = word.deck.id === (one.deck && one.deck.id)
         ? t('flashInSongDeck')
         : t('flashAlsoIn', { deck: means(word.deck.name) });
     }
@@ -3633,28 +3637,35 @@
     ]);
   }
 
-  /* One line: the Estonian as a row of presses with the punctuation between
-     them left as it is, the speaker beside it, and what it means under it. */
-  function songLine(song, line) {
-    var row = el('div', { className: 'flash-song-line' });
-    var said = el('p', { className: 'flash-song-et', lang: 'et' });
+  /* The Estonian of a line as a row of presses, written into `said`, with
+     the punctuation between them left as it is. A pressed word's box opens
+     at the end of `row`; `track` is what the press is counted as — the
+     event, and the song or conversation it was in — and gets the word. */
+  function pressLine(one, row, said, et, track) {
     var at = 0;
     var found;
     WORD.lastIndex = 0;
-    while ((found = WORD.exec(line.et))) {
-      if (found.index > at) said.appendChild(document.createTextNode(line.et.slice(at, found.index)));
-      said.appendChild(wordPress(song, row, found[0]));
+    while ((found = WORD.exec(et))) {
+      if (found.index > at) said.appendChild(document.createTextNode(et.slice(at, found.index)));
+      said.appendChild(wordPress(one, row, found[0], track));
       at = found.index + found[0].length;
     }
-    if (at < line.et.length) said.appendChild(document.createTextNode(line.et.slice(at)));
+    if (at < et.length) said.appendChild(document.createTextNode(et.slice(at)));
+    return said;
+  }
 
-    row.appendChild(said);
+  /* One line: the Estonian as a row of presses, the speaker beside it, and
+     what it means under it. */
+  function songLine(song, line) {
+    var row = el('div', { className: 'flash-song-line' });
+    row.appendChild(pressLine(song, row, el('p', { className: 'flash-song-et', lang: 'et' }), line.et,
+      { event: 'flash_song_word', props: { song_id: song.id } }));
     row.appendChild(speaker(line.et, 'line', 'flash-song-say'));
     row.appendChild(el('p', { className: 'flash-song-means', textContent: means(line) }));
     return row;
   }
 
-  function wordPress(song, row, text) {
+  function wordPress(one, row, text, track) {
     var key = text.toLowerCase();
     var b = el('button', {
       type: 'button',
@@ -3665,11 +3676,13 @@
     b.addEventListener('click', function () {
       var open = b.getAttribute('aria-expanded') === 'true';
       shutWord();
-      if (open || !song.words[key]) return;
+      if (open || !one.words || !one.words[key]) return;
       b.setAttribute('aria-expanded', 'true');
       b.classList.add('is-open');
-      row.appendChild(wordBox(song, key));
-      TTBTrack.event('flash_song_word', { song_id: song.id, word: key });
+      row.appendChild(wordBox(one, key));
+      var props = { word: key };
+      for (var name in track.props) props[name] = track.props[name];
+      TTBTrack.event(track.event, props);
     });
     return b;
   }
@@ -3751,11 +3764,17 @@
    *
    * The name over the turn is on a line of its own rather than in a column
    * beside it, which is how the sheets print it: a column for a name is a
-   * third of 390 px, and the Estonian is what the width is for. No word is a
-   * press — the songs gloss every word because a song is sung too fast to
-   * look one up; a conversation is read at the reader's own pace, and the
-   * turn's translation is one line down. See **Conversations, which are
-   * read** under **Flashcards** in README.md.
+   * third of 390 px, and the Estonian is what the width is for.
+   *
+   * Every word is a press, the way a song's is, and opens the same box under
+   * its turn — pressLine() and wordBox() above, with the turn as the row.
+   * The turn's translation one line down says what the sentence means; the
+   * box says what the one word in it does, which is the thing a sentence
+   * translated whole hides. The words come from one glossary for every
+   * conversation, `talkWords` in data/decks.json, which tools/decks.mjs
+   * writes into each conversation's file as the words that conversation
+   * uses. See **Conversations, which are read** under **Flashcards** in
+   * README.md.
    */
 
   function talkHead() {
@@ -3765,25 +3784,35 @@
     ]);
   }
 
-  /* One turn: who, the Estonian with its speaker, and what it means. */
-  function talkTurn(turn) {
-    return el('div', { className: 'flash-talk-turn' }, [
-      el('p', { className: 'flash-talk-who mono', textContent: turn.who }),
-      el('p', { className: 'flash-talk-et', lang: 'et', textContent: turn.et }),
-      speaker(turn.et, 'turn', 'flash-talk-say'),
-      el('p', { className: 'flash-talk-means', textContent: means(turn) })
+  /* What a press in a conversation is counted as. */
+  function talkTrack(talk) {
+    return { event: 'flash_talk_word', props: { talk_id: talk.id } };
+  }
+
+  /* One turn: who, the Estonian as a row of presses with its speaker, and
+     what it means. A word's box opens at the foot of the turn. */
+  function talkTurn(talk, turn) {
+    var row = el('div', { className: 'flash-talk-turn' }, [
+      el('p', { className: 'flash-talk-who mono', textContent: turn.who })
     ]);
+    row.appendChild(pressLine(talk, row, el('p', { className: 'flash-talk-et', lang: 'et' }), turn.et, talkTrack(talk)));
+    row.appendChild(speaker(turn.et, 'turn', 'flash-talk-say'));
+    row.appendChild(el('p', { className: 'flash-talk-means', textContent: means(turn) }));
+    return row;
   }
 
   /* A scene: the question over it where there is one, in Estonian with what
-     it means under, and then its turns. */
-  function talkScene(scene) {
+     it means under — its words presses too, their box under the question —
+     and then its turns. */
+  function talkScene(talk, scene) {
     var box = el('section', { className: 'flash-talk-scene' });
     if (scene.ask) {
-      box.appendChild(el('h2', { className: 'flash-talk-ask', lang: 'et', textContent: scene.ask.et }));
-      box.appendChild(el('p', { className: 'flash-talk-ask-means', textContent: means(scene.ask) }));
+      var ask = el('div', { className: 'flash-talk-q' });
+      ask.appendChild(pressLine(talk, ask, el('h2', { className: 'flash-talk-ask', lang: 'et' }), scene.ask.et, talkTrack(talk)));
+      ask.appendChild(el('p', { className: 'flash-talk-ask-means', textContent: means(scene.ask) }));
+      box.appendChild(ask);
     }
-    scene.turns.forEach(function (turn) { box.appendChild(talkTurn(turn)); });
+    scene.turns.forEach(function (turn) { box.appendChild(talkTurn(talk, turn)); });
     return box;
   }
 
@@ -3796,7 +3825,7 @@
          are. */
       talk.source ? el('p', { className: 'flash-talk-source mono', textContent: t('flashTalkFrom', { who: talk.source }) }) : null
     ];
-    talk.scenes.forEach(function (scene) { kids.push(talkScene(scene)); });
+    talk.scenes.forEach(function (scene) { kids.push(talkScene(talk, scene)); });
 
     var read = el('button', { type: 'button', className: 'go', textContent: t('flashReadIt') });
     read.addEventListener('click', function () {

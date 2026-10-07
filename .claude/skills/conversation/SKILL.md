@@ -23,7 +23,8 @@ costs less than the first.
 - The `/flashcards` skill, **The file** and **What else moves when the file
   moves**.
 - `README.md` → **Conversations, which are read**, under **Flashcards**: why
-  the name is on its own line, why no word is a press, and what was done to
+  the name is on its own line, why every word is a press and the glossary
+  they share, and what was done to
   the sheets' text. Then **The back of the card is in three languages** and
   **Three languages, not ten**, which are why a turn carries `en`, `az` and
   `ru` and no more.
@@ -98,12 +99,32 @@ What `tools/validate.mjs` holds it to:
 | `source` | a name, optional; drawn as *From {who}, a B1 course* | error if not a string |
 | `scenes` | a non-empty list. Each has `turns`, a non-empty list, and an optional `ask` with `et` and the three meanings | error |
 | a turn | `who` and `et` non-empty; `en` required, `az` and `ru` warned about; never `et` among the meanings | error / warning |
+| every word | each word of every `ask` and turn, lowercased, has an entry in `talkWords` or in the conversation's own `words` | error |
+| `talkWords` | the glossary every conversation shares: per word, `base` and `means` (`en` required), an optional `note`, never a `deck`; an entry no conversation says fails | error |
+| `words` | optional, on the conversation: the same shape, for a word that means something else in this sheet; an entry nobody in it says fails | error |
 
 An interview sheet is one scene per question. A dialogue sheet is one scene
-with no `ask`. Nothing in a conversation is a card and nothing is a press, so
-there is no `words` to write and no deck to make: that is the decision
-**Conversations, which are read** records, and it is not this skill's to
-reverse.
+with no `ask`. Nothing in a conversation is a card, so there is no deck to
+make; but every word is a press, so every word needs a gloss.
+
+## The words
+
+After the entry, `node tools/validate.mjs` names every word in the new sheet
+that `talkWords` does not know yet — on a sheet from the same course that is
+a third to a half of them, since the fifteen so far share most of their
+words. Write each one into `talkWords`, keyed by the word as written and
+lowercased (`Järvelt` is `järvelt`; a hyphen splits a word, so
+*Kohtla-Järve* is two and *39-aastane* is `aastane`): its `base`, the form a
+dictionary files it under, and what it `means` in English, Azerbaijani and
+Russian **as it is used** — *pesen* is *I wash*, not *to wash*. Where it is
+used two ways across sheets, say both with the phrase each is in (*kui*:
+*if; when; than; how*), and where one sheet uses it a way the entry does not
+cover, give that sheet its own `words` entry rather than bending the
+glossary. Glosses written by hand in a scratch file, `form|base|en|az|ru` a
+line, and a short script that merges them sorted is how the first nine
+hundred went in. Never write a `deck`: `tools/decks.mjs` finds where a word
+is taught from its `base`, so the base has to be the bare dictionary form a
+card's front would be.
 
 ## The translations
 
@@ -132,7 +153,9 @@ tile at 390 px: what happens, not what the sheet is called.
    *New* tag — the Conversations part, and the new tile, at 390 px and in a
    light and a dark style. Press a speaker: the button should go quiet with
    the voice's own line when the route is stubbed, and the page go on.
-6. The README section's count — *there are ten* — and the line in **Files**
+6. Press a few words of the new tile — one in a question, one at the foot of
+   a long turn — and see the box open under it and shut on a second press.
+7. The README section's count — *there are fifteen* — and the line in **Files**
    move with it, and so does this file if the sheet taught a step nobody had
    written down.
 
@@ -169,8 +192,12 @@ translations are the session's.
   twice, and where the page is blurry, render it at a higher `-r`.
 - A new press name — a new `TTBTrack.event` — without its row in the README's
   **Analytics** table and in `data/flows.json`; the validator fails the flow.
-  A conversation needs none: `flash_talk_open` and `flash_talk_read` are the
-  two, and they are there.
+  A conversation needs none: `flash_talk_open`, `flash_talk_read` and
+  `flash_talk_word` are the three, and they are there.
+- A sheet's English that says more than its Estonian: the sheet on the wider
+  family has two sentences of English Ingrid never says. The English is
+  there to say what the Estonian means, so the extra goes, and the README
+  section says so.
 - A sheet whose licence nobody has asked about. The text is the course's;
   credit it in `source` and say in the PR that printing it is the owner's
   call.

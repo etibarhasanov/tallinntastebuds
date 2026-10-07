@@ -1,0 +1,490 @@
+{
+ "id": "talk-moving",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Moving house",
+  "az": "Köçmək",
+  "ru": "Переезды"
+ },
+ "why": {
+  "en": "Seven or eight moves, and a student's dozen from Kohtla-Järve to Tartu and back",
+  "az": "Yeddi-səkkiz köç və bir tələbənin Kohtla-Järvedən Tartuya və geri on iki köçü",
+  "ru": "Семь или восемь переездов и студенческая дюжина из Кохтла-Ярве в Тарту и обратно"
+ },
+ "taste": "Üks, kaks, kolm, neli, viis, kuus",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mitu korda sa elus kolinud oled?",
+    "en": "How many times have you moved in your life?",
+    "az": "Həyatında neçə dəfə köçmüsən?",
+    "ru": "Сколько раз в жизни ты переезжал?"
+   },
+   "turns": [
+    {
+     "who": "Arvo",
+     "et": "Üks, kaks, kolm, neli, viis, kuus, ma arvan, et seitse või kaheksa korda.",
+     "en": "One, two, three, four, five, six — I think seven or eight times.",
+     "az": "Bir, iki, üç, dörd, beş, altı — məncə, yeddi, ya da səkkiz dəfə.",
+     "ru": "Раз, два, три, четыре, пять, шесть — я думаю, семь или восемь раз."
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mitu korda sa elus kolinud oled? Kust kuhu sa kolinud oled?",
+    "en": "How many times have you moved in your life? Where have you moved from and to?",
+    "az": "Həyatında neçə dəfə köçmüsən? Haradan haraya köçmüsən?",
+    "ru": "Сколько раз в жизни ты переезжал? Откуда и куда ты переезжал?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "et": "Päris tihti, kuna ma õppisin ja õpingute ajal oli vaja kolida ühest ühiselamust teise ja ühest linnast teise. Ma ei tea, kas kümme või kaksteist korda.",
+     "en": "Quite often, since I was studying, and while I studied I had to move from one dormitory to another and from one town to another. I don't know if it was ten or twelve times.",
+     "az": "Kifayət qədər tez-tez, çünki oxuyurdum və təhsil illərində bir yataqxanadan digərinə, bir şəhərdən digərinə köçmək lazım gəlirdi. Bilmirəm, on dəfə, ya on iki dəfə.",
+     "ru": "Довольно часто, потому что я учился, и во время учёбы нужно было переезжать из одного общежития в другое и из одного города в другой. Не знаю, десять или двенадцать раз."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "Esialgu kolisin Kohtla-Järvelt Tallinna, siis Tallinnast Tartusse ja siis Tartust tagasi Tallinna.",
+     "en": "First I moved from Kohtla-Järve to Tallinn, then from Tallinn to Tartu, and then from Tartu back to Tallinn.",
+     "az": "Əvvəlcə Kohtla-Järvedən Tallinnə köçdüm, sonra Tallinndən Tartuya, sonra da Tartudan yenidən Tallinnə.",
+     "ru": "Сначала я переехал из Кохтла-Ярве в Таллинн, потом из Таллинна в Тарту, а потом из Тарту обратно в Таллинн."
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mitu": {
+   "base": "mitu",
+   "means": {
+    "en": "several; how many",
+    "az": "bir neçə; neçə",
+    "ru": "несколько; сколько"
+   },
+   "deck": "asking"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "elus": {
+   "base": "elu",
+   "means": {
+    "en": "in life",
+    "az": "həyatda",
+    "ru": "в жизни"
+   },
+   "deck": "naera-words"
+  },
+  "kolinud": {
+   "base": "kolima",
+   "means": {
+    "en": "moved (house)",
+    "az": "köçmüsən",
+    "ru": "переезжал"
+   },
+   "deck": "home"
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты есть"
+   },
+   "deck": "verbs"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "kolm": {
+   "base": "kolm",
+   "means": {
+    "en": "three",
+    "az": "üç",
+    "ru": "три"
+   },
+   "deck": "numbers"
+  },
+  "neli": {
+   "base": "neli",
+   "means": {
+    "en": "four",
+    "az": "dörd",
+    "ru": "четыре"
+   },
+   "deck": "numbers"
+  },
+  "viis": {
+   "base": "viis",
+   "means": {
+    "en": "five",
+    "az": "beş",
+    "ru": "пять"
+   },
+   "deck": "numbers"
+  },
+  "kuus": {
+   "base": "kuus",
+   "means": {
+    "en": "six",
+    "az": "altı",
+    "ru": "шесть"
+   },
+   "deck": "numbers"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "kaheksa": {
+   "base": "kaheksa",
+   "means": {
+    "en": "eight",
+    "az": "səkkiz",
+    "ru": "восемь"
+   },
+   "deck": "numbers"
+  },
+  "kust": {
+   "base": "kust",
+   "means": {
+    "en": "from where",
+    "az": "haradan",
+    "ru": "откуда"
+   },
+   "deck": "asking"
+  },
+  "kuhu": {
+   "base": "kuhu",
+   "means": {
+    "en": "to where",
+    "az": "haraya",
+    "ru": "куда"
+   },
+   "deck": "asking"
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "tihti": {
+   "base": "tihti",
+   "means": {
+    "en": "often",
+    "az": "tez-tez",
+    "ru": "часто"
+   },
+   "deck": "often"
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "õppisin": {
+   "base": "õppima",
+   "means": {
+    "en": "I studied",
+    "az": "oxuyurdum",
+    "ru": "учился"
+   },
+   "deck": "moreverbs"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "õpingute": {
+   "base": "õpingud",
+   "means": {
+    "en": "studies' (õpingute ajal: while studying)",
+    "az": "təhsil",
+    "ru": "учёбы"
+   }
+  },
+  "ajal": {
+   "base": "aeg",
+   "means": {
+    "en": "time (sel ajal, kui: while, when)",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "kolida": {
+   "base": "kolima",
+   "means": {
+    "en": "to move (house)",
+    "az": "köçmək",
+    "ru": "переезжать"
+   },
+   "deck": "home"
+  },
+  "ühest": {
+   "base": "üks",
+   "means": {
+    "en": "from one",
+    "az": "birindən",
+    "ru": "из одного"
+   },
+   "deck": "numbers"
+  },
+  "ühiselamust": {
+   "base": "ühiselamu",
+   "means": {
+    "en": "from a dormitory",
+    "az": "yataqxanadan",
+    "ru": "из общежития"
+   },
+   "deck": "home"
+  },
+  "teise": {
+   "base": "teine",
+   "means": {
+    "en": "another, a second",
+    "az": "ikincisini",
+    "ru": "второго"
+   },
+   "deck": "numbers"
+  },
+  "linnast": {
+   "base": "linn",
+   "means": {
+    "en": "from a town",
+    "az": "şəhərdən",
+    "ru": "из города"
+   },
+   "deck": "around"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "tea": {
+   "base": "teadma",
+   "means": {
+    "en": "know (after ei: ei tea, don't know)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не знаю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "kümme": {
+   "base": "kümme",
+   "means": {
+    "en": "ten",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "kaksteist": {
+   "base": "kaksteist",
+   "means": {
+    "en": "twelve",
+    "az": "on iki",
+    "ru": "двенадцать"
+   },
+   "deck": "numbers"
+  },
+  "esialgu": {
+   "base": "esialgu",
+   "means": {
+    "en": "at first",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   }
+  },
+  "kolisin": {
+   "base": "kolima",
+   "means": {
+    "en": "I moved (house)",
+    "az": "köçdüm",
+    "ru": "переехал"
+   },
+   "deck": "home"
+  },
+  "kohtla": {
+   "base": "Kohtla-Järve",
+   "means": {
+    "en": "Kohtla-Järve, a town in the north-east (with järvelt)",
+    "az": "Kohtla-Järve (şəhər)",
+    "ru": "Кохтла-Ярве (город)"
+   }
+  },
+  "järvelt": {
+   "base": "Kohtla-Järve",
+   "means": {
+    "en": "from (Kohtla-)Järve; järv is a lake",
+    "az": "(Kohtla-)Järvedən",
+    "ru": "из (Кохтла-)Ярве"
+   }
+  },
+  "tallinna": {
+   "base": "Tallinn",
+   "means": {
+    "en": "to Tallinn",
+    "az": "Tallinnə",
+    "ru": "в Таллинн"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "tallinnast": {
+   "base": "Tallinn",
+   "means": {
+    "en": "from Tallinn",
+    "az": "Tallinndən",
+    "ru": "из Таллинна"
+   }
+  },
+  "tartusse": {
+   "base": "Tartu",
+   "means": {
+    "en": "to Tartu",
+    "az": "Tartuya",
+    "ru": "в Тарту"
+   }
+  },
+  "tartust": {
+   "base": "Tartu",
+   "means": {
+    "en": "from Tartu",
+    "az": "Tartudan",
+    "ru": "из Тарту"
+   }
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  }
+ }
+}

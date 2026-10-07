@@ -107,5 +107,1220 @@
     }
    ]
   }
- ]
+ ],
+ "words": {
+  "missuguseid": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of (plural partitive)",
+    "az": "hansı",
+    "ru": "какие"
+   }
+  },
+  "koduseid": {
+   "base": "kodune",
+   "means": {
+    "en": "household, domestic",
+    "az": "ev",
+    "ru": "домашние"
+   },
+   "deck": "feelings"
+  },
+  "töid": {
+   "base": "töö",
+   "means": {
+    "en": "jobs, chores",
+    "az": "işlər",
+    "ru": "работы"
+   },
+   "deck": "talk"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "teed": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsən",
+    "ru": "делаешь"
+   },
+   "deck": "verbs"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "igasuguseid": {
+   "base": "igasugune",
+   "means": {
+    "en": "all kinds of",
+    "az": "hər cür",
+    "ru": "всякие"
+   }
+  },
+  "pesen": {
+   "base": "pesema",
+   "means": {
+    "en": "I wash (pesen hambaid: I brush my teeth)",
+    "az": "yuyuram",
+    "ru": "мою"
+   },
+   "deck": "moreverbs"
+  },
+  "pesu": {
+   "base": "pesu",
+   "means": {
+    "en": "laundry, washing",
+    "az": "paltar, yuyulacaq paltar",
+    "ru": "бельё"
+   },
+   "deck": "clothes"
+  },
+  "panen": {
+   "base": "panema",
+   "means": {
+    "en": "I put (panen riidesse: I get dressed)",
+    "az": "qoyuram (panen riidesse: geyinirəm)",
+    "ru": "кладу (panen riidesse: одеваюсь)"
+   },
+   "deck": "repairs"
+  },
+  "kuivama": {
+   "base": "kuivama",
+   "means": {
+    "en": "to dry",
+    "az": "qurumağa",
+    "ru": "сохнуть"
+   }
+  },
+  "nõusid": {
+   "base": "nõu",
+   "means": {
+    "en": "dishes",
+    "az": "qab-qacaq",
+    "ru": "посуду"
+   }
+  },
+  "kuigi": {
+   "base": "kuigi",
+   "means": {
+    "en": "although",
+    "az": "baxmayaraq ki",
+    "ru": "хотя"
+   },
+   "deck": "tana-words"
+  },
+  "kasutan": {
+   "base": "kasutama",
+   "means": {
+    "en": "I use",
+    "az": "istifadə edirəm",
+    "ru": "использую"
+   },
+   "deck": "moreverbs"
+  },
+  "selleks": {
+   "base": "see",
+   "means": {
+    "en": "for that",
+    "az": "bunun üçün",
+    "ru": "для этого"
+   },
+   "deck": "pronouns"
+  },
+  "nõudepesumasinat": {
+   "base": "nõudepesumasin",
+   "means": {
+    "en": "dishwasher",
+    "az": "qabyuyan maşın",
+    "ru": "посудомоечную машину"
+   },
+   "deck": "kitchen"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "eest": {
+   "base": "eest",
+   "means": {
+    "en": "for, instead of (minu eest: for me)",
+    "az": "əvəzinə, üçün",
+    "ru": "за"
+   }
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing)",
+    "az": "tamamilə (fel ilə)",
+    "ru": "до конца (с глаголом)"
+   },
+   "deck": "everyday"
+  },
+  "teeb": {
+   "base": "tegema",
+   "means": {
+    "en": "does, makes",
+    "az": "edir",
+    "ru": "делает"
+   },
+   "deck": "verbs"
+  },
+  "süüa": {
+   "base": "sööma",
+   "means": {
+    "en": "to eat; teen süüa: I cook",
+    "az": "yemək; teen süüa: yemək bişirirəm",
+    "ru": "есть; teen süüa: готовлю еду"
+   },
+   "deck": "verbs"
+  },
+  "nädalavahetuseti": {
+   "base": "nädalavahetuseti",
+   "means": {
+    "en": "at weekends",
+    "az": "həftə sonları",
+    "ru": "по выходным"
+   }
+  },
+  "koristan": {
+   "base": "koristama",
+   "means": {
+    "en": "I clean, I tidy",
+    "az": "yığışdırıram",
+    "ru": "убираю"
+   },
+   "deck": "moreverbs"
+  },
+  "klopin": {
+   "base": "kloppima",
+   "means": {
+    "en": "I beat (a carpet)",
+    "az": "döyürəm (xalça)",
+    "ru": "выбиваю"
+   },
+   "deck": "cooking"
+  },
+  "vaipu": {
+   "base": "vaip",
+   "means": {
+    "en": "carpets",
+    "az": "xalçalar",
+    "ru": "ковры"
+   },
+   "deck": "home"
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "aitavad": {
+   "base": "aitama",
+   "means": {
+    "en": "they help",
+    "az": "kömək edirlər",
+    "ru": "помогают"
+   },
+   "deck": "verbs"
+  },
+  "nõudepesumasinaga": {
+   "base": "nõudepesumasin",
+   "means": {
+    "en": "with the dishwasher",
+    "az": "qabyuyan maşınla",
+    "ru": "посудомоечной машиной"
+   },
+   "deck": "kitchen"
+  },
+  "pesumasinaga": {
+   "base": "pesumasin",
+   "means": {
+    "en": "with the washing machine",
+    "az": "paltaryuyan maşınla",
+    "ru": "стиральной машиной"
+   },
+   "deck": "kitchen"
+  },
+  "imen": {
+   "base": "imema",
+   "means": {
+    "en": "I suck (imen tolmu: I vacuum)",
+    "az": "sorur (imen tolmu: tozsoranla təmizləyirəm)",
+    "ru": "сосу (imen tolmu: пылесошу)"
+   }
+  },
+  "tolmu": {
+   "base": "tolm",
+   "means": {
+    "en": "dust",
+    "az": "toz",
+    "ru": "пыль"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "aega": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "põranda": {
+   "base": "põrand",
+   "means": {
+    "en": "floor (to wash)",
+    "az": "döşəmə",
+    "ru": "пол"
+   },
+   "deck": "home"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "oleme": {
+   "base": "olema",
+   "means": {
+    "en": "we are; we have (oleme kokku leppinud)",
+    "az": "-ıq",
+    "ru": "мы есть"
+   },
+   "deck": "verbs"
+  },
+  "niimoodi": {
+   "base": "niimoodi",
+   "means": {
+    "en": "like this, this way",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "kokku": {
+   "base": "kokku",
+   "means": {
+    "en": "together; in all (kokku leppima: to agree)",
+    "az": "bir yerə; cəmi",
+    "ru": "вместе; всего"
+   },
+   "deck": "cafe"
+  },
+  "leppinud": {
+   "base": "leppima",
+   "means": {
+    "en": "agreed (kokku leppinud)",
+    "az": "razılaşmış",
+    "ru": "договорились"
+   }
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "asju": {
+   "base": "asi",
+   "means": {
+    "en": "things",
+    "az": "şeylər",
+    "ru": "вещи"
+   },
+   "deck": "everyday"
+  },
+  "parandada": {
+   "base": "parandama",
+   "means": {
+    "en": "to fix, to mend",
+    "az": "təmir etmək",
+    "ru": "чинить"
+   },
+   "deck": "repairs"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "need": {
+   "base": "see",
+   "means": {
+    "en": "these, they",
+    "az": "bunlar",
+    "ru": "эти"
+   },
+   "deck": "pronouns"
+  },
+  "paraku": {
+   "base": "paraku",
+   "means": {
+    "en": "unfortunately",
+    "az": "təəssüf ki",
+    "ru": "к сожалению"
+   }
+  },
+  "lähevad": {
+   "base": "minema",
+   "means": {
+    "en": "they go; they get (lähevad katki: break)",
+    "az": "gedirlər; olurlar",
+    "ru": "идут; становятся"
+   },
+   "deck": "verbs"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "katki": {
+   "base": "katki",
+   "means": {
+    "en": "broken",
+    "az": "sınıq",
+    "ru": "сломанный"
+   },
+   "deck": "repairs"
+  },
+  "põrandaid": {
+   "base": "põrand",
+   "means": {
+    "en": "floors",
+    "az": "döşəmələr",
+    "ru": "полы"
+   },
+   "deck": "home"
+  },
+  "eelkõige": {
+   "base": "eelkõige",
+   "means": {
+    "en": "above all",
+    "az": "ilk növbədə",
+    "ru": "прежде всего"
+   }
+  },
+  "otseselt": {
+   "base": "otseselt",
+   "means": {
+    "en": "directly, as such",
+    "az": "birbaşa",
+    "ru": "непосредственно"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "pese": {
+   "base": "pesema",
+   "means": {
+    "en": "wash (after ei: ei pese, don't wash)",
+    "az": "yumuram (ei ilə)",
+    "ru": "не мою (с ei)"
+   },
+   "deck": "moreverbs"
+  },
+  "nõud": {
+   "base": "nõu",
+   "means": {
+    "en": "the dishes",
+    "az": "qablar",
+    "ru": "посуда"
+   }
+  },
+  "nõudepesumasinasse": {
+   "base": "nõudepesumasin",
+   "means": {
+    "en": "into the dishwasher",
+    "az": "qabyuyan maşına",
+    "ru": "в посудомоечную машину"
+   },
+   "deck": "kitchen"
+  },
+  "viin": {
+   "base": "viima",
+   "means": {
+    "en": "I take (somewhere)",
+    "az": "aparıram",
+    "ru": "отношу"
+   },
+   "deck": "moreverbs"
+  },
+  "prügi": {
+   "base": "prügi",
+   "means": {
+    "en": "rubbish, trash",
+    "az": "zibil",
+    "ru": "мусор"
+   },
+   "deck": "kitchen"
+  },
+  "välja": {
+   "base": "välja",
+   "means": {
+    "en": "out (näeb välja: looks like)",
+    "az": "çölə",
+    "ru": "наружу"
+   },
+   "deck": "around"
+  },
+  "missugused": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of (plural)",
+    "az": "hansı",
+    "ru": "какие"
+   }
+  },
+  "kodused": {
+   "base": "kodune",
+   "means": {
+    "en": "household (plural)",
+    "az": "ev",
+    "ru": "домашние"
+   },
+   "deck": "feelings"
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "sulle": {
+   "base": "sina",
+   "means": {
+    "en": "to you (sulle meeldib: you like)",
+    "az": "sənə",
+    "ru": "тебе"
+   }
+  },
+  "meeldi": {
+   "base": "meeldima",
+   "means": {
+    "en": "like (after ei: mulle ei meeldi, I don't like)",
+    "az": "xoşuma gəlmir (ei ilə)",
+    "ru": "нравится (с ei: не нравится)"
+   },
+   "deck": "verbs"
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "korrust": {
+   "base": "korrus",
+   "means": {
+    "en": "floors, storeys",
+    "az": "mərtəbə",
+    "ru": "этажа"
+   },
+   "deck": "home"
+  },
+  "vedada": {
+   "base": "vedama",
+   "means": {
+    "en": "to drag, to haul",
+    "az": "sürümək",
+    "ru": "таскать"
+   },
+   "deck": "moreverbs"
+  },
+  "tolmuimejat": {
+   "base": "tolmuimeja",
+   "means": {
+    "en": "vacuum cleaner",
+    "az": "tozsoran",
+    "ru": "пылесос"
+   },
+   "deck": "kitchen"
+  },
+  "alumiselt": {
+   "base": "alumine",
+   "means": {
+    "en": "from the lower",
+    "az": "aşağıdakı",
+    "ru": "с нижнего"
+   },
+   "deck": "describing"
+  },
+  "korruselt": {
+   "base": "korrus",
+   "means": {
+    "en": "from the floor (storey)",
+    "az": "mərtəbədən",
+    "ru": "с этажа"
+   },
+   "deck": "home"
+  },
+  "ülemisele": {
+   "base": "ülemine",
+   "means": {
+    "en": "to the upper",
+    "az": "yuxarıdakına",
+    "ru": "на верхний"
+   },
+   "deck": "describing"
+  },
+  "korrusele": {
+   "base": "korrus",
+   "means": {
+    "en": "to the floor (storey)",
+    "az": "mərtəbəyə",
+    "ru": "на этаж"
+   },
+   "deck": "home"
+  },
+  "ülemiselt": {
+   "base": "ülemine",
+   "means": {
+    "en": "from the upper",
+    "az": "yuxarıdakından",
+    "ru": "с верхнего"
+   },
+   "deck": "describing"
+  },
+  "alumisele": {
+   "base": "alumine",
+   "means": {
+    "en": "to the lower",
+    "az": "aşağıdakına",
+    "ru": "на нижний"
+   },
+   "deck": "describing"
+  },
+  "muidu": {
+   "base": "muidu",
+   "means": {
+    "en": "otherwise",
+    "az": "əks halda, yoxsa",
+    "ru": "иначе, в остальном"
+   },
+   "deck": "everyday"
+  },
+  "tõmmata": {
+   "base": "tõmbama",
+   "means": {
+    "en": "to pull (tolmu tõmbama: to vacuum)",
+    "az": "çəkmək",
+    "ru": "тянуть (tolmu tõmbama: пылесосить)"
+   },
+   "deck": "tana-words"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "aknaid": {
+   "base": "aken",
+   "means": {
+    "en": "windows",
+    "az": "pəncərələr",
+    "ru": "окна"
+   },
+   "deck": "home"
+  },
+  "pesta": {
+   "base": "pesema",
+   "means": {
+    "en": "to wash",
+    "az": "yumaq",
+    "ru": "мыть"
+   },
+   "deck": "moreverbs"
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "aknapesu": {
+   "base": "aknapesu",
+   "means": {
+    "en": "window washing",
+    "az": "pəncərə yumaq",
+    "ru": "мытьё окон"
+   }
+  },
+  "läheb": {
+   "base": "minema",
+   "means": {
+    "en": "goes",
+    "az": "gedir",
+    "ru": "идёт"
+   },
+   "deck": "verbs"
+  },
+  "kiiresti": {
+   "base": "kiiresti",
+   "means": {
+    "en": "quickly",
+    "az": "tez",
+    "ru": "быстро"
+   },
+   "deck": "everyday"
+  },
+  "vanni": {
+   "base": "vann",
+   "means": {
+    "en": "the bath",
+    "az": "vanna",
+    "ru": "ванну"
+   }
+  },
+  "pesemine": {
+   "base": "pesemine",
+   "means": {
+    "en": "washing",
+    "az": "yuma",
+    "ru": "мытьё"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "suur": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большой"
+   },
+   "deck": "basics"
+  },
+  "saa": {
+   "base": "saama",
+   "means": {
+    "en": "can, get (after ei: ei saa aru, don't understand)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не могу (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "aru": {
+   "base": "aru",
+   "means": {
+    "en": "sense (aru saama: to understand)",
+    "az": "anlam (aru saama: başa düşmək)",
+    "ru": "понимание (aru saama: понимать)"
+   }
+  },
+  "vann": {
+   "base": "vann",
+   "means": {
+    "en": "bath, bathtub",
+    "az": "vanna",
+    "ru": "ванна"
+   }
+  },
+  "niikuinii": {
+   "base": "niikuinii",
+   "means": {
+    "en": "anyway",
+    "az": "onsuz da",
+    "ru": "всё равно"
+   },
+   "deck": "plans"
+  },
+  "kogu": {
+   "base": "kogu",
+   "means": {
+    "en": "whole, all (kogu aeg: all the time)",
+    "az": "bütün",
+    "ru": "весь"
+   },
+   "deck": "everyday"
+  },
+  "aeg": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "valge": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белый"
+   },
+   "deck": "describing"
+  },
+  "miks": {
+   "base": "miks",
+   "means": {
+    "en": "why",
+    "az": "niyə",
+    "ru": "почему"
+   },
+   "deck": "everyday"
+  },
+  "pean": {
+   "base": "pidama",
+   "means": {
+    "en": "I must, I have to",
+    "az": "məcburam",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "pesema": {
+   "base": "pesema",
+   "means": {
+    "en": "to wash",
+    "az": "yumaq",
+    "ru": "мыть"
+   },
+   "deck": "moreverbs"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "triikimine": {
+   "base": "triikimine",
+   "means": {
+    "en": "ironing",
+    "az": "ütüləmə",
+    "ru": "глажка"
+   }
+  },
+  "naiste": {
+   "base": "naine",
+   "means": {
+    "en": "women's",
+    "az": "qadınların",
+    "ru": "женская"
+   },
+   "deck": "talk"
+  },
+  "oo": {
+   "base": "oo",
+   "means": {
+    "en": "oh",
+    "az": "o",
+    "ru": "о"
+   }
+  },
+  "jaa": {
+   "base": "jaa",
+   "means": {
+    "en": "yes (long and sure)",
+    "az": "hə, bəli",
+    "ru": "да"
+   }
+  },
+  "meelest": {
+   "base": "meel",
+   "means": {
+    "en": "to the mind (minu meelest: in my opinion)",
+    "az": "fikrimcə",
+    "ru": "по мнению"
+   },
+   "deck": "randaja-words"
+  },
+  "mees": {
+   "base": "mees",
+   "means": {
+    "en": "husband; man",
+    "az": "ər; kişi",
+    "ru": "муж; мужчина"
+   },
+   "deck": "talk"
+  },
+  "hakkab": {
+   "base": "hakkama",
+   "means": {
+    "en": "begins",
+    "az": "başlayır",
+    "ru": "начинает"
+   },
+   "deck": "moreverbs"
+  },
+  "vahel": {
+   "base": "vahel",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   }
+  },
+  "triikima": {
+   "base": "triikima",
+   "means": {
+    "en": "to iron",
+    "az": "ütüləməyə",
+    "ru": "гладить"
+   }
+  },
+  "tunnen": {
+   "base": "tundma",
+   "means": {
+    "en": "I feel",
+    "az": "hiss edirəm",
+    "ru": "чувствую"
+   },
+   "deck": "moreverbs"
+  },
+  "ennast": {
+   "base": "ise",
+   "means": {
+    "en": "myself (oneself)",
+    "az": "özümü",
+    "ru": "себя"
+   },
+   "deck": "pronouns"
+  },
+  "imelikult": {
+   "base": "imelik",
+   "means": {
+    "en": "strange, oddly",
+    "az": "qəribə",
+    "ru": "странно"
+   },
+   "deck": "describing"
+  },
+  "üldiselt": {
+   "base": "üldiselt",
+   "means": {
+    "en": "in general",
+    "az": "ümumiyyətlə",
+    "ru": "в целом"
+   },
+   "deck": "everyday"
+  },
+  "triikida": {
+   "base": "triikima",
+   "means": {
+    "en": "to iron",
+    "az": "ütüləmək",
+    "ru": "гладить"
+   }
+  },
+  "võivad": {
+   "base": "võima",
+   "means": {
+    "en": "they can, may",
+    "az": "bilərlər",
+    "ru": "могут"
+   },
+   "deck": "moreverbs"
+  },
+  "kõike": {
+   "base": "kõik",
+   "means": {
+    "en": "everything",
+    "az": "hər şeyi",
+    "ru": "всё"
+   },
+   "deck": "everyday"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "triigi": {
+   "base": "triikima",
+   "means": {
+    "en": "iron (after ei: ei triigi, don't iron)",
+    "az": "ütüləmirəm (ei ilə)",
+    "ru": "не глажу (с ei)"
+   }
+  },
+  "tea": {
+   "base": "teadma",
+   "means": {
+    "en": "know (after ei: ei tea, don't know)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не знаю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "töösärgid": {
+   "base": "töösärk",
+   "means": {
+    "en": "work shirts",
+    "az": "iş köynəkləri",
+    "ru": "рабочие рубашки"
+   }
+  },
+  "triigin": {
+   "base": "triikima",
+   "means": {
+    "en": "I iron",
+    "az": "ütüləyirəm",
+    "ru": "глажу"
+   }
+  },
+  "ise": {
+   "base": "ise",
+   "means": {
+    "en": "myself, oneself",
+    "az": "özüm",
+    "ru": "сам"
+   },
+   "deck": "pronouns"
+  },
+  "öelda": {
+   "base": "ütlema",
+   "means": {
+    "en": "to say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  }
+ }
 }

@@ -1,0 +1,1004 @@
+{
+ "id": "talk-home",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Where you live, and where you grew up",
+  "az": "Harada yaşayırsan, harada böyümüsən",
+  "ru": "Где ты живёшь и где ты вырос"
+ },
+ "why": {
+  "en": "A top-floor flat in Maarjamäe, and a grandmother's farm with one horse, called Liisi",
+  "az": "Maarjamäedə ən üst mərtəbədə mənzil və nənənin Liisi adlı tək atı olan təsərrüfatı",
+  "ru": "Квартира на последнем этаже в Маарьямяэ и бабушкин хутор с одной лошадью по кличке Liisi"
+ },
+ "taste": "Ma elan kolmandal korrusel.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kus sa elad?",
+    "en": "Where do you live?",
+    "az": "Harada yaşayırsan?",
+    "ru": "Где ты живёшь?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "et": "Praegu ma elan Tallinnas Maarjamäel. Ma kolisin Tallinna juba kümme aastat tagasi. Maja ei ole suur. Majas on kolm korrust. Ja meil, ma arvan, on üsna suur korter. Kokku on 75 ruutmeetrit elamispinda ja lisaks on suur rõdu, umbes 10 ruutmeetrit.",
+     "en": "At the moment I live in Tallinn, in Maarjamäe. I moved to Tallinn ten years ago already. The building isn't big. It has three floors. And we have, I think, quite a big flat. Altogether there are 75 square metres of living space, and on top of that a big balcony, about 10 square metres.",
+     "az": "İndi Tallinndə, Maarjamäedə yaşayıram. Tallinnə artıq on il əvvəl köçmüşəm. Bina böyük deyil. Binada üç mərtəbə var. Məncə, bizim kifayət qədər böyük mənzilimiz var. Cəmi 75 kvadratmetr yaşayış sahəsi var, üstəlik təxminən 10 kvadratmetrlik böyük eyvan da var.",
+     "ru": "Сейчас я живу в Таллинне, в Маарьямяэ. Я переехал в Таллинн уже десять лет назад. Дом небольшой. В доме три этажа. И у нас, я думаю, довольно большая квартира. Всего 75 квадратных метров жилой площади, и ещё большой балкон, примерно 10 квадратных метров."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "Ma elan kolmandal korrusel. See ongi viimane korrus, rohkem korruseid ei ole. Maja number on 12 ja korteri number on seitse. Ei, vastupidi: majanumber on seitse ja korterinumber on 12.",
+     "en": "I live on the third floor. That's the top floor; there are no more floors. The building's number is 12 and the flat's number is seven. No, the other way round: the building's number is seven and the flat's is 12.",
+     "az": "Üçüncü mərtəbədə yaşayıram. Bu, elə sonuncu mərtəbədir, başqa mərtəbə yoxdur. Binanın nömrəsi 12-dir, mənzilin nömrəsi isə yeddi. Yox, əksinə: binanın nömrəsi yeddidir, mənzilin nömrəsi isə 12.",
+     "ru": "Я живу на третьем этаже. Это как раз последний этаж, больше этажей нет. Номер дома 12, а номер квартиры семь. Нет, наоборот: номер дома семь, а номер квартиры 12."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "Ma arvan, et seda peetakse uueks majaks. See ehitati aastal 2004. See on küllaltki uus hoone.",
+     "en": "I think it counts as a new building. It was built in 2004. It's quite a new building.",
+     "az": "Məncə, bu, yeni bina sayılır. O, 2004-cü ildə tikilib. Kifayət qədər yeni binadır.",
+     "ru": "Я думаю, он считается новым домом. Его построили в 2004 году. Это довольно новое здание."
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Milline oli sinu lapsepõlvekodu?",
+    "en": "What was your childhood home like?",
+    "az": "Uşaqlıq evin necə idi?",
+    "ru": "Каким был дом твоего детства?"
+   },
+   "turns": [
+    {
+     "who": "Ingrid",
+     "et": "Minu lapsepõlvekodu oli lihtne maja. Vanaemal oli väga palju loomi. Vanaemal oli kuus lehma, tal olid lehmad ja vasikad. Aga vanaemal oli ainult üks hobune, kelle nimi oli Liisi. Ja siis olid veel lambad ja sead, mitu siga oli. Ja siis olid loomulikult ka kanad.",
+     "en": "My childhood home was a simple house. My grandmother had a great many animals. She had six cows; she had cows and calves. But she had only one horse, whose name was Liisi. And then there were sheep and pigs too, several pigs. And then of course there were chickens as well.",
+     "az": "Uşaqlıq evim sadə bir ev idi. Nənəmin çoxlu heyvanı var idi. Nənəmin altı inəyi var idi, inəkləri də, buzovları da var idi. Amma nənəmin cəmi bir atı var idi, adı Liisi idi. Bir də qoyunlar və donuzlar var idi, bir neçə donuz. Əlbəttə, toyuqlar da var idi.",
+     "ru": "Дом моего детства был простым домом. У бабушки было очень много животных. У бабушки было шесть коров, у неё были коровы и телята. Но лошадь у бабушки была только одна, по кличке Liisi. А ещё были овцы и свиньи, свиней было несколько. И, конечно, были и куры."
+    },
+    {
+     "who": "Aleksandr",
+     "et": "Minu lapsepõlvekodu oli tavaline, kaheksakümnendate aastate alguses ehitatud maja. Me elasime kolmandal korrusel, ema, isa ja meie, kolm last, kõik poisid. Meil oli kolm tuba. Midagi erilist ei olnud.",
+     "en": "My childhood home was an ordinary building, built in the early eighties. We lived on the third floor: mum, dad and us, three children, all boys. We had three rooms. There was nothing special about it.",
+     "az": "Uşaqlıq evim səksəninci illərin əvvəlində tikilmiş adi bir bina idi. Biz üçüncü mərtəbədə yaşayırdıq: anam, atam və biz, üç uşaq, hamımız oğlan. Üç otağımız var idi. Xüsusi bir şey yox idi.",
+     "ru": "Дом моего детства был обычным домом, построенным в начале восьмидесятых. Мы жили на третьем этаже: мама, папа и мы, трое детей, все мальчики. У нас было три комнаты. Ничего особенного."
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kus": {
+   "base": "kus",
+   "means": {
+    "en": "where",
+    "az": "harada",
+    "ru": "где"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "elad": {
+   "base": "elama",
+   "means": {
+    "en": "you live",
+    "az": "yaşayırsan",
+    "ru": "живёшь"
+   },
+   "deck": "verbs"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "elan": {
+   "base": "elama",
+   "means": {
+    "en": "I live",
+    "az": "yaşayıram",
+    "ru": "живу"
+   },
+   "deck": "verbs"
+  },
+  "tallinnas": {
+   "base": "Tallinn",
+   "means": {
+    "en": "in Tallinn",
+    "az": "Tallinndə",
+    "ru": "в Таллинне"
+   }
+  },
+  "maarjamäel": {
+   "base": "Maarjamäe",
+   "means": {
+    "en": "in Maarjamäe (a part of Tallinn by the sea)",
+    "az": "Maarjamäedə",
+    "ru": "в Маарьямяэ"
+   }
+  },
+  "kolisin": {
+   "base": "kolima",
+   "means": {
+    "en": "I moved (house)",
+    "az": "köçdüm",
+    "ru": "переехал"
+   },
+   "deck": "home"
+  },
+  "tallinna": {
+   "base": "Tallinn",
+   "means": {
+    "en": "to Tallinn",
+    "az": "Tallinnə",
+    "ru": "в Таллинн"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "kümme": {
+   "base": "kümme",
+   "means": {
+    "en": "ten",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  },
+  "maja": {
+   "base": "maja",
+   "means": {
+    "en": "house, building",
+    "az": "ev, bina",
+    "ru": "дом"
+   },
+   "deck": "home"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "suur": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большой"
+   },
+   "deck": "basics"
+  },
+  "majas": {
+   "base": "maja",
+   "means": {
+    "en": "in the house",
+    "az": "binada",
+    "ru": "в доме"
+   },
+   "deck": "home"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "kolm": {
+   "base": "kolm",
+   "means": {
+    "en": "three",
+    "az": "üç",
+    "ru": "три"
+   },
+   "deck": "numbers"
+  },
+  "korrust": {
+   "base": "korrus",
+   "means": {
+    "en": "floors, storeys",
+    "az": "mərtəbə",
+    "ru": "этажа"
+   },
+   "deck": "home"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "üsna": {
+   "base": "üsna",
+   "means": {
+    "en": "quite, fairly",
+    "az": "xeyli",
+    "ru": "довольно"
+   },
+   "deck": "plans"
+  },
+  "korter": {
+   "base": "korter",
+   "means": {
+    "en": "flat, apartment",
+    "az": "mənzil",
+    "ru": "квартира"
+   },
+   "deck": "home"
+  },
+  "kokku": {
+   "base": "kokku",
+   "means": {
+    "en": "together; in all (kokku leppima: to agree)",
+    "az": "bir yerə; cəmi",
+    "ru": "вместе; всего"
+   },
+   "deck": "cafe"
+  },
+  "ruutmeetrit": {
+   "base": "ruutmeeter",
+   "means": {
+    "en": "square metres",
+    "az": "kvadratmetr",
+    "ru": "квадратных метров"
+   },
+   "deck": "home"
+  },
+  "elamispinda": {
+   "base": "elamispind",
+   "means": {
+    "en": "living space",
+    "az": "yaşayış sahəsi",
+    "ru": "жилой площади"
+   }
+  },
+  "lisaks": {
+   "base": "lisaks",
+   "means": {
+    "en": "in addition",
+    "az": "əlavə olaraq",
+    "ru": "кроме того"
+   }
+  },
+  "rõdu": {
+   "base": "rõdu",
+   "means": {
+    "en": "balcony",
+    "az": "eyvan",
+    "ru": "балкон"
+   },
+   "deck": "home"
+  },
+  "umbes": {
+   "base": "umbes",
+   "means": {
+    "en": "about, roughly",
+    "az": "təxminən",
+    "ru": "примерно"
+   },
+   "deck": "service"
+  },
+  "kolmandal": {
+   "base": "kolmas",
+   "means": {
+    "en": "on the third",
+    "az": "üçüncü",
+    "ru": "на третьем"
+   },
+   "deck": "numbers"
+  },
+  "korrusel": {
+   "base": "korrus",
+   "means": {
+    "en": "on the floor (storey)",
+    "az": "mərtəbədə",
+    "ru": "на этаже"
+   },
+   "deck": "home"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ongi": {
+   "base": "olema",
+   "means": {
+    "en": "is indeed, is just",
+    "az": "elə var",
+    "ru": "как раз есть"
+   },
+   "deck": "verbs"
+  },
+  "viimane": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "sonuncu",
+    "ru": "последний"
+   },
+   "deck": "time"
+  },
+  "korrus": {
+   "base": "korrus",
+   "means": {
+    "en": "floor, storey",
+    "az": "mərtəbə",
+    "ru": "этаж"
+   },
+   "deck": "home"
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "korruseid": {
+   "base": "korrus",
+   "means": {
+    "en": "floors, storeys",
+    "az": "mərtəbələr",
+    "ru": "этажей"
+   },
+   "deck": "home"
+  },
+  "number": {
+   "base": "number",
+   "means": {
+    "en": "number",
+    "az": "nömrə",
+    "ru": "номер"
+   },
+   "deck": "work"
+  },
+  "korteri": {
+   "base": "korter",
+   "means": {
+    "en": "the flat's",
+    "az": "mənzilin",
+    "ru": "квартиры"
+   },
+   "deck": "home"
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "vastupidi": {
+   "base": "vastupidi",
+   "means": {
+    "en": "on the contrary; the other way round",
+    "az": "əksinə",
+    "ru": "наоборот"
+   }
+  },
+  "majanumber": {
+   "base": "majanumber",
+   "means": {
+    "en": "house number",
+    "az": "bina nömrəsi",
+    "ru": "номер дома"
+   }
+  },
+  "korterinumber": {
+   "base": "korterinumber",
+   "means": {
+    "en": "flat number",
+    "az": "mənzil nömrəsi",
+    "ru": "номер квартиры"
+   }
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "peetakse": {
+   "base": "pidama",
+   "means": {
+    "en": "is considered (peetakse uueks: is considered new)",
+    "az": "sayılır",
+    "ru": "считается"
+   },
+   "deck": "moreverbs"
+  },
+  "uueks": {
+   "base": "uus",
+   "means": {
+    "en": "new (to count as new)",
+    "az": "yeni",
+    "ru": "новым"
+   },
+   "deck": "describing"
+  },
+  "majaks": {
+   "base": "maja",
+   "means": {
+    "en": "a building (to count as one)",
+    "az": "bina",
+    "ru": "домом"
+   },
+   "deck": "home"
+  },
+  "ehitati": {
+   "base": "ehitama",
+   "means": {
+    "en": "was built",
+    "az": "tikilib",
+    "ru": "построили"
+   },
+   "deck": "moreverbs"
+  },
+  "aastal": {
+   "base": "aasta",
+   "means": {
+    "en": "in the year",
+    "az": "ildə",
+    "ru": "в году"
+   },
+   "deck": "time"
+  },
+  "küllaltki": {
+   "base": "küllaltki",
+   "means": {
+    "en": "quite, fairly",
+    "az": "kifayət qədər",
+    "ru": "довольно-таки"
+   }
+  },
+  "uus": {
+   "base": "uus",
+   "means": {
+    "en": "new",
+    "az": "yeni",
+    "ru": "новый"
+   },
+   "deck": "describing"
+  },
+  "hoone": {
+   "base": "hoone",
+   "means": {
+    "en": "building",
+    "az": "bina",
+    "ru": "здание"
+   },
+   "deck": "home"
+  },
+  "milline": {
+   "base": "milline",
+   "means": {
+    "en": "what kind of, what … like",
+    "az": "necə, hansı",
+    "ru": "какой"
+   },
+   "deck": "asking"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "lapsepõlvekodu": {
+   "base": "lapsepõlvekodu",
+   "means": {
+    "en": "childhood home",
+    "az": "uşaqlıq evi",
+    "ru": "дом детства"
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lihtne": {
+   "base": "lihtne",
+   "means": {
+    "en": "simple",
+    "az": "sadə",
+    "ru": "простой"
+   },
+   "deck": "feelings"
+  },
+  "vanaemal": {
+   "base": "vanaema",
+   "means": {
+    "en": "grandmother had (vanaemal oli)",
+    "az": "nənəmin",
+    "ru": "у бабушки"
+   },
+   "deck": "talk"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "loomi": {
+   "base": "loom",
+   "means": {
+    "en": "animals",
+    "az": "heyvanlar",
+    "ru": "животных"
+   },
+   "deck": "country"
+  },
+  "kuus": {
+   "base": "kuus",
+   "means": {
+    "en": "six",
+    "az": "altı",
+    "ru": "шесть"
+   },
+   "deck": "numbers"
+  },
+  "lehma": {
+   "base": "lehm",
+   "means": {
+    "en": "cows (kuus lehma: six cows)",
+    "az": "inək",
+    "ru": "коров"
+   },
+   "deck": "country"
+  },
+  "tal": {
+   "base": "tema",
+   "means": {
+    "en": "he has, she has (tal on); at him, her",
+    "az": "onda, onun",
+    "ru": "у него, у неё"
+   }
+  },
+  "olid": {
+   "base": "olema",
+   "means": {
+    "en": "were",
+    "az": "idilər",
+    "ru": "были"
+   },
+   "deck": "verbs"
+  },
+  "lehmad": {
+   "base": "lehm",
+   "means": {
+    "en": "cows",
+    "az": "inəklər",
+    "ru": "коровы"
+   },
+   "deck": "country"
+  },
+  "vasikad": {
+   "base": "vasikas",
+   "means": {
+    "en": "calves",
+    "az": "buzovlar",
+    "ru": "телята"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "hobune": {
+   "base": "hobune",
+   "means": {
+    "en": "horse",
+    "az": "at",
+    "ru": "лошадь"
+   },
+   "deck": "country"
+  },
+  "kelle": {
+   "base": "kes",
+   "means": {
+    "en": "whose",
+    "az": "kimin",
+    "ru": "чьё"
+   },
+   "deck": "asking"
+  },
+  "nimi": {
+   "base": "nimi",
+   "means": {
+    "en": "name",
+    "az": "ad",
+    "ru": "имя"
+   },
+   "deck": "talk"
+  },
+  "liisi": {
+   "base": "Liisi",
+   "means": {
+    "en": "Liisi (a name)",
+    "az": "Liisi (ad)",
+    "ru": "Liisi (кличка)"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "lambad": {
+   "base": "lammas",
+   "means": {
+    "en": "sheep",
+    "az": "qoyunlar",
+    "ru": "овцы"
+   }
+  },
+  "sead": {
+   "base": "siga",
+   "means": {
+    "en": "pigs",
+    "az": "donuzlar",
+    "ru": "свиньи"
+   }
+  },
+  "mitu": {
+   "base": "mitu",
+   "means": {
+    "en": "several; how many",
+    "az": "bir neçə; neçə",
+    "ru": "несколько; сколько"
+   },
+   "deck": "asking"
+  },
+  "siga": {
+   "base": "siga",
+   "means": {
+    "en": "pig",
+    "az": "donuz",
+    "ru": "свинья"
+   }
+  },
+  "loomulikult": {
+   "base": "loomulikult",
+   "means": {
+    "en": "naturally, of course",
+    "az": "təbii ki",
+    "ru": "естественно"
+   },
+   "deck": "everyday"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "kanad": {
+   "base": "kana",
+   "means": {
+    "en": "hens, chickens",
+    "az": "toyuqlar",
+    "ru": "куры"
+   },
+   "deck": "cooking"
+  },
+  "tavaline": {
+   "base": "tavaline",
+   "means": {
+    "en": "usual, ordinary",
+    "az": "adi",
+    "ru": "обычный"
+   },
+   "deck": "describing"
+  },
+  "kaheksakümnendate": {
+   "base": "kaheksakümnendad",
+   "means": {
+    "en": "the eighties' (kaheksakümnendate aastate alguses: in the early eighties)",
+    "az": "səksəninci illərin",
+    "ru": "восьмидесятых"
+   }
+  },
+  "aastate": {
+   "base": "aasta",
+   "means": {
+    "en": "years'",
+    "az": "illərin",
+    "ru": "годов"
+   },
+   "deck": "time"
+  },
+  "alguses": {
+   "base": "algus",
+   "means": {
+    "en": "at first, in the beginning",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   },
+   "deck": "time"
+  },
+  "ehitatud": {
+   "base": "ehitama",
+   "means": {
+    "en": "built",
+    "az": "tikilmiş",
+    "ru": "построенный"
+   },
+   "deck": "moreverbs"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "elasime": {
+   "base": "elama",
+   "means": {
+    "en": "we lived",
+    "az": "yaşayırdıq",
+    "ru": "жили"
+   },
+   "deck": "verbs"
+  },
+  "ema": {
+   "base": "ema",
+   "means": {
+    "en": "mother",
+    "az": "ana",
+    "ru": "мама"
+   },
+   "deck": "talk"
+  },
+  "isa": {
+   "base": "isa",
+   "means": {
+    "en": "father",
+    "az": "ata",
+    "ru": "отец"
+   },
+   "deck": "talk"
+  },
+  "meie": {
+   "base": "meie",
+   "means": {
+    "en": "our; we",
+    "az": "bizim",
+    "ru": "наш"
+   }
+  },
+  "last": {
+   "base": "laps",
+   "means": {
+    "en": "children (kolm last: three children)",
+    "az": "uşaq",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "poisid": {
+   "base": "poiss",
+   "means": {
+    "en": "boys",
+    "az": "oğlanlar",
+    "ru": "мальчики"
+   },
+   "deck": "talk"
+  },
+  "tuba": {
+   "base": "tuba",
+   "means": {
+    "en": "room",
+    "az": "otaq",
+    "ru": "комната"
+   },
+   "deck": "home"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "erilist": {
+   "base": "eriline",
+   "means": {
+    "en": "special",
+    "az": "xüsusi",
+    "ru": "особенного"
+   },
+   "deck": "describing"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  }
+ }
+}

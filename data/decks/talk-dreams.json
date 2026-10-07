@@ -76,5 +76,772 @@
     }
    ]
   }
- ]
+ ],
+ "words": {
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "näed": {
+   "base": "nägema",
+   "means": {
+    "en": "you see (unenägusid nägema: to dream)",
+    "az": "görürsən",
+    "ru": "видишь"
+   },
+   "deck": "verbs"
+  },
+  "unenägusid": {
+   "base": "unenägu",
+   "means": {
+    "en": "dreams",
+    "az": "yuxular",
+    "ru": "сны"
+   }
+  },
+  "jaa": {
+   "base": "jaa",
+   "means": {
+    "en": "yes (long and sure)",
+    "az": "hə, bəli",
+    "ru": "да"
+   }
+  },
+  "vahel": {
+   "base": "vahel",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   }
+  },
+  "näen": {
+   "base": "nägema",
+   "means": {
+    "en": "I see (unenägusid näen: I dream)",
+    "az": "görürəm",
+    "ru": "вижу"
+   },
+   "deck": "verbs"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "mäletan": {
+   "base": "mäletama",
+   "means": {
+    "en": "I remember",
+    "az": "xatırlayıram",
+    "ru": "помню"
+   },
+   "deck": "moreverbs"
+  },
+  "neid": {
+   "base": "tema",
+   "means": {
+    "en": "them",
+    "az": "onları",
+    "ru": "их"
+   }
+  },
+  "hommikul": {
+   "base": "hommik",
+   "means": {
+    "en": "in the morning",
+    "az": "səhər",
+    "ru": "утром"
+   },
+   "deck": "time"
+  },
+  "teinekord": {
+   "base": "teinekord",
+   "means": {
+    "en": "another time, at other times",
+    "az": "başqa vaxt",
+    "ru": "в другой раз"
+   }
+  },
+  "jälle": {
+   "base": "jälle",
+   "means": {
+    "en": "again",
+    "az": "yenə",
+    "ru": "опять"
+   },
+   "deck": "everyday"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "mäleta": {
+   "base": "mäletama",
+   "means": {
+    "en": "remember (after ei: ei mäleta, don't remember)",
+    "az": "xatırlamıram (ei ilə)",
+    "ru": "не помню (с ei)"
+   },
+   "deck": "moreverbs"
+  },
+  "näe": {
+   "base": "nägema",
+   "means": {
+    "en": "see (after ei: ei näe, don't see)",
+    "az": "görmürəm (ei ilə)",
+    "ru": "не вижу (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "nüüd": {
+   "base": "nüüd",
+   "means": {
+    "en": "now",
+    "az": "indi",
+    "ru": "теперь"
+   },
+   "deck": "time"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "paar": {
+   "base": "paar",
+   "means": {
+    "en": "a couple",
+    "az": "bir-iki",
+    "ru": "пара"
+   },
+   "deck": "everyday"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "näinud": {
+   "base": "nägema",
+   "means": {
+    "en": "seen",
+    "az": "görmüş",
+    "ru": "видел"
+   },
+   "deck": "verbs"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "viimati": {
+   "base": "viimati",
+   "means": {
+    "en": "last, the last time",
+    "az": "axırıncı dəfə",
+    "ru": "в последний раз"
+   }
+  },
+  "unes": {
+   "base": "uni",
+   "means": {
+    "en": "in a dream, in sleep (unes nägema: to dream)",
+    "az": "yuxuda",
+    "ru": "во сне"
+   }
+  },
+  "nägid": {
+   "base": "nägema",
+   "means": {
+    "en": "you saw",
+    "az": "gördün",
+    "ru": "видел"
+   },
+   "deck": "verbs"
+  },
+  "nägin": {
+   "base": "nägema",
+   "means": {
+    "en": "I saw",
+    "az": "gördüm",
+    "ru": "видел"
+   },
+   "deck": "verbs"
+  },
+  "sellist": {
+   "base": "selline",
+   "means": {
+    "en": "such",
+    "az": "belə",
+    "ru": "такую"
+   }
+  },
+  "asja": {
+   "base": "asi",
+   "means": {
+    "en": "thing",
+    "az": "şey",
+    "ru": "вещь"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "tulnud": {
+   "base": "tulema",
+   "means": {
+    "en": "come (after ei: ei tulnud välja, didn't work out)",
+    "az": "alınmadı (ei ilə)",
+    "ru": "не получилось (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "välja": {
+   "base": "välja",
+   "means": {
+    "en": "out (näeb välja: looks like)",
+    "az": "çölə",
+    "ru": "наружу"
+   },
+   "deck": "around"
+  },
+  "läks": {
+   "base": "minema",
+   "means": {
+    "en": "went",
+    "az": "getdi",
+    "ru": "пошло"
+   },
+   "deck": "verbs"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "nässu": {
+   "base": "nässu",
+   "means": {
+    "en": "wrong, awry (läks nässu: went wrong)",
+    "az": "tərs",
+    "ru": "наперекосяк"
+   }
+  },
+  "jäin": {
+   "base": "jääma",
+   "means": {
+    "en": "I stayed; I was left (jäin maha: I missed)",
+    "az": "qaldım",
+    "ru": "остался"
+   },
+   "deck": "stopp-words"
+  },
+  "bussidest": {
+   "base": "buss",
+   "means": {
+    "en": "from the buses (jäin bussidest maha: I missed the buses)",
+    "az": "avtobuslardan",
+    "ru": "от автобусов"
+   },
+   "deck": "around"
+  },
+  "maha": {
+   "base": "maha",
+   "means": {
+    "en": "down; behind (maha jääma: to miss, be left behind)",
+    "az": "aşağı; geri",
+    "ru": "вниз; позади (maha jääma: опоздать)"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "unustasin": {
+   "base": "unustama",
+   "means": {
+    "en": "I forgot",
+    "az": "unutdum",
+    "ru": "забыл"
+   },
+   "deck": "moreverbs"
+  },
+  "asjad": {
+   "base": "asi",
+   "means": {
+    "en": "things",
+    "az": "şeylər",
+    "ru": "вещи"
+   },
+   "deck": "everyday"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing)",
+    "az": "tamamilə (fel ilə)",
+    "ru": "до конца (с глаголом)"
+   },
+   "deck": "everyday"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "viimaseid": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "sonuncu",
+    "ru": "последние"
+   },
+   "deck": "time"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "hirmuunenägu": {
+   "base": "hirmuunenägu",
+   "means": {
+    "en": "nightmare",
+    "az": "qorxulu yuxu",
+    "ru": "кошмарный сон"
+   }
+  },
+  "kogu": {
+   "base": "kogu",
+   "means": {
+    "en": "whole, all (kogu aeg: all the time)",
+    "az": "bütün",
+    "ru": "весь"
+   },
+   "deck": "everyday"
+  },
+  "aeg": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "tavaline": {
+   "base": "tavaline",
+   "means": {
+    "en": "usual, ordinary",
+    "az": "adi",
+    "ru": "обычный"
+   },
+   "deck": "describing"
+  },
+  "keskkooli": {
+   "base": "keskkool",
+   "means": {
+    "en": "secondary school",
+    "az": "orta məktəb",
+    "ru": "среднюю школу"
+   },
+   "deck": "school"
+  },
+  "ühtegi": {
+   "base": "üksi",
+   "means": {
+    "en": "not a single (with ei)",
+    "az": "heç bir",
+    "ru": "ни одной"
+   },
+   "deck": "numbers"
+  },
+  "bioloogia": {
+   "base": "bioloogia",
+   "means": {
+    "en": "biology",
+    "az": "biologiya",
+    "ru": "биология"
+   }
+  },
+  "kontrolltööd": {
+   "base": "kontrolltöö",
+   "means": {
+    "en": "test (at school)",
+    "az": "yoxlama işi",
+    "ru": "контрольную"
+   }
+  },
+  "tehtud": {
+   "base": "tegema",
+   "means": {
+    "en": "done",
+    "az": "edilmiş",
+    "ru": "сделана"
+   },
+   "deck": "verbs"
+  },
+  "jään": {
+   "base": "jääma",
+   "means": {
+    "en": "I stay; I am left (istuma jääma: to repeat a year)",
+    "az": "qalıram",
+    "ru": "остаюсь"
+   },
+   "deck": "stopp-words"
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "kaheteistkümnendasse": {
+   "base": "kaheteistkümnes",
+   "means": {
+    "en": "into the twelfth",
+    "az": "on ikinciyə",
+    "ru": "в двенадцатый"
+   }
+  },
+  "klassi": {
+   "base": "klass",
+   "means": {
+    "en": "class, grade (at school)",
+    "az": "sinif",
+    "ru": "класс"
+   }
+  },
+  "istuma": {
+   "base": "istuma",
+   "means": {
+    "en": "to sit (istuma jääma: to repeat a year)",
+    "az": "oturmağa",
+    "ru": "сидеть (istuma jääma: остаться на второй год)"
+   },
+   "deck": "moreverbs"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "kordi": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "esivanemad": {
+   "base": "esivanem",
+   "means": {
+    "en": "ancestors",
+    "az": "əcdadlar",
+    "ru": "предки"
+   }
+  },
+  "tulevad": {
+   "base": "tulema",
+   "means": {
+    "en": "they come",
+    "az": "gəlirlər",
+    "ru": "приходят"
+   },
+   "deck": "verbs"
+  },
+  "räägivad": {
+   "base": "rääkima",
+   "means": {
+    "en": "they talk",
+    "az": "danışırlar",
+    "ru": "говорят"
+   },
+   "deck": "verbs"
+  },
+  "minuga": {
+   "base": "mina",
+   "means": {
+    "en": "with me",
+    "az": "mənimlə",
+    "ru": "со мной"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "jaburaid": {
+   "base": "jabur",
+   "means": {
+    "en": "absurd, nonsense",
+    "az": "cəfəng",
+    "ru": "бредовые"
+   }
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "tähenda": {
+   "base": "tähendama",
+   "means": {
+    "en": "mean (after ei: ei tähenda, don't mean)",
+    "az": "demək deyil (ei ilə)",
+    "ru": "не значат (с ei)"
+   },
+   "deck": "moreverbs"
+  },
+  "jaoks": {
+   "base": "jaoks",
+   "means": {
+    "en": "for (minu jaoks: for me)",
+    "az": "üçün",
+    "ru": "для"
+   }
+  }
+ }
 }

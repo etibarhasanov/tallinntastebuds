@@ -707,7 +707,7 @@
   "flashTalkCount": "{n} konuşma",
   "flashGoTalks": "Bir konuşma oku",
   "flashTasteTalk": "Replik replik oku",
-  "flashTalkHow": "Estonca oku; her repliğin anlamı altında. Bir repliği dinlemek için hoparlöre bas.",
+  "flashTalkHow": "Estonca oku; her repliğin anlamı altında. Bir repliği dinlemek için hoparlöre bas. Anlamını görmek için herhangi bir kelimeye dokun.",
   "flashTalkFrom": "{who} B1 kursundan",
   "flashReadIt": "Okudum",
   "statsSkip": "Sıralamaya geç",

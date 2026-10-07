@@ -130,5 +130,1068 @@
     }
    ]
   }
- ]
+ ],
+ "words": {
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "olete": {
+   "base": "olema",
+   "means": {
+    "en": "you are (polite or plural)",
+    "az": "siz -sınız",
+    "ru": "вы"
+   },
+   "deck": "verbs"
+  },
+  "valmis": {
+   "base": "valmis",
+   "means": {
+    "en": "ready",
+    "az": "hazır",
+    "ru": "готов"
+   },
+   "deck": "describing"
+  },
+  "tegelikult": {
+   "base": "tegelikult",
+   "means": {
+    "en": "actually",
+    "az": "əslində",
+    "ru": "на самом деле"
+   },
+   "deck": "everyday"
+  },
+  "õlu": {
+   "base": "õlu",
+   "means": {
+    "en": "beer",
+    "az": "pivə",
+    "ru": "пиво"
+   },
+   "deck": "food"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "oi": {
+   "base": "oi",
+   "means": {
+    "en": "oh",
+    "az": "oy",
+    "ru": "ой"
+   },
+   "deck": "everyday"
+  },
+  "muidugi": {
+   "base": "muidugi",
+   "means": {
+    "en": "of course",
+    "az": "əlbəttə",
+    "ru": "конечно"
+   },
+   "deck": "basics"
+  },
+  "vabandust": {
+   "base": "vabandus",
+   "means": {
+    "en": "excuse me, sorry",
+    "az": "bağışlayın",
+    "ru": "извините"
+   }
+  },
+  "otsustanud": {
+   "base": "otsustama",
+   "means": {
+    "en": "decided",
+    "az": "qərara gəlmiş",
+    "ru": "решили"
+   },
+   "deck": "moreverbs"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "võtaksin": {
+   "base": "võtma",
+   "means": {
+    "en": "I would take, I'd have",
+    "az": "götürərdim",
+    "ru": "я бы взял"
+   },
+   "deck": "verbs"
+  },
+  "kalasupi": {
+   "base": "kalasupp",
+   "means": {
+    "en": "fish soup",
+    "az": "balıq şorbası",
+    "ru": "рыбный суп"
+   }
+  },
+  "ega": {
+   "base": "ega",
+   "means": {
+    "en": "nor; ega … ei ole?: it isn't …, is it?",
+    "az": "nə də; … deyil ki?",
+    "ru": "и не; ведь не … ?"
+   },
+   "deck": "everyday"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "terav": {
+   "base": "terav",
+   "means": {
+    "en": "spicy; sharp",
+    "az": "acı; iti",
+    "ru": "острый"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "tšillit": {
+   "base": "tšilli",
+   "means": {
+    "en": "chilli",
+    "az": "çili bibəri",
+    "ru": "чили"
+   }
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "kookospiim": {
+   "base": "kookospiim",
+   "means": {
+    "en": "coconut milk",
+    "az": "kokos südü",
+    "ru": "кокосовое молоко"
+   }
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "sees": {
+   "base": "sees",
+   "means": {
+    "en": "inside, in it",
+    "az": "içində",
+    "ru": "внутри"
+   },
+   "deck": "home"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "supp": {
+   "base": "supp",
+   "means": {
+    "en": "soup",
+    "az": "şorba",
+    "ru": "суп"
+   },
+   "deck": "food"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "pigem": {
+   "base": "pigem",
+   "means": {
+    "en": "rather",
+    "az": "daha çox",
+    "ru": "скорее"
+   }
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "mahe": {
+   "base": "mahe",
+   "means": {
+    "en": "mild",
+    "az": "yumşaq",
+    "ru": "мягкий"
+   }
+  },
+  "ilma": {
+   "base": "ilma",
+   "means": {
+    "en": "without",
+    "az": "-sız, olmadan",
+    "ru": "без"
+   },
+   "deck": "everyday"
+  },
+  "kookospiimata": {
+   "base": "kookospiim",
+   "means": {
+    "en": "without coconut milk",
+    "az": "kokos südü olmadan",
+    "ru": "без кокосового молока"
+   }
+  },
+  "saaks": {
+   "base": "saama",
+   "means": {
+    "en": "could (ei saaks: couldn't it be)",
+    "az": "olardı",
+    "ru": "можно было бы"
+   },
+   "deck": "verbs"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "kookospiima": {
+   "base": "kookospiim",
+   "means": {
+    "en": "coconut milk",
+    "az": "kokos südü",
+    "ru": "кокосовое молоко"
+   }
+  },
+  "armasta": {
+   "base": "armastama",
+   "means": {
+    "en": "love (after ei: don't love, don't like)",
+    "az": "sevmirəm (ei ilə)",
+    "ru": "не люблю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked); gets",
+    "az": "olar; alır",
+    "ru": "можно; получает"
+   },
+   "deck": "verbs"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "räägin": {
+   "base": "rääkima",
+   "means": {
+    "en": "I talk",
+    "az": "danışıram",
+    "ru": "говорю"
+   },
+   "deck": "verbs"
+  },
+  "kokaga": {
+   "base": "kokk",
+   "means": {
+    "en": "with the cook",
+    "az": "aşpazla",
+    "ru": "с поваром"
+   },
+   "deck": "service"
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "šašlõkk": {
+   "base": "šašlõkk",
+   "means": {
+    "en": "shashlik, kebab",
+    "az": "şaşlıq",
+    "ru": "шашлык"
+   }
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "lisandit": {
+   "base": "lisand",
+   "means": {
+    "en": "side dish",
+    "az": "qarnir",
+    "ru": "гарнир"
+   }
+  },
+  "te": {
+   "base": "teie",
+   "means": {
+    "en": "you (polite or plural)",
+    "az": "siz",
+    "ru": "вы"
+   }
+  },
+  "šašlõki": {
+   "base": "šašlõkk",
+   "means": {
+    "en": "shashlik, kebab",
+    "az": "şaşlıq",
+    "ru": "шашлык"
+   }
+  },
+  "kõrvale": {
+   "base": "kõrvale",
+   "means": {
+    "en": "beside, to go with",
+    "az": "yanına",
+    "ru": "к, рядом"
+   },
+   "deck": "everyday"
+  },
+  "soovite": {
+   "base": "soovima",
+   "means": {
+    "en": "you wish, you would like (polite)",
+    "az": "istəyirsiniz",
+    "ru": "желаете"
+   },
+   "deck": "moreverbs"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "valida": {
+   "base": "valima",
+   "means": {
+    "en": "to choose",
+    "az": "seçmək",
+    "ru": "выбирать"
+   },
+   "deck": "moreverbs"
+  },
+  "friikartulid": {
+   "base": "friikartulid",
+   "means": {
+    "en": "chips, French fries",
+    "az": "kartof fri",
+    "ru": "картофель фри"
+   }
+  },
+  "praekartulid": {
+   "base": "praekartulid",
+   "means": {
+    "en": "fried potatoes",
+    "az": "qızardılmış kartof",
+    "ru": "жареный картофель"
+   }
+  },
+  "ahjukartulid": {
+   "base": "ahjukartulid",
+   "means": {
+    "en": "oven-baked potatoes",
+    "az": "sobada bişmiş kartof",
+    "ru": "печёный картофель"
+   }
+  },
+  "keedukartulid": {
+   "base": "keedukartulid",
+   "means": {
+    "en": "boiled potatoes",
+    "az": "qaynadılmış kartof",
+    "ru": "варёный картофель"
+   }
+  },
+  "hautatud": {
+   "base": "hautama",
+   "means": {
+    "en": "stewed, braised",
+    "az": "bişirilmiş, pörtlədilmiş",
+    "ru": "тушёные"
+   }
+  },
+  "aedviljad": {
+   "base": "aedvili",
+   "means": {
+    "en": "vegetables",
+    "az": "tərəvəzlər",
+    "ru": "овощи"
+   }
+  },
+  "tatar": {
+   "base": "tatar",
+   "means": {
+    "en": "buckwheat",
+    "az": "qarabaşaq",
+    "ru": "гречка"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "riis": {
+   "base": "riis",
+   "means": {
+    "en": "rice",
+    "az": "düyü",
+    "ru": "рис"
+   },
+   "deck": "food"
+  },
+  "valikus": {
+   "base": "valik",
+   "means": {
+    "en": "on offer, in the selection",
+    "az": "seçimdə",
+    "ru": "в выборе"
+   },
+   "deck": "shops"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "mingi": {
+   "base": "mingi",
+   "means": {
+    "en": "some",
+    "az": "hansısa",
+    "ru": "какой-то"
+   },
+   "deck": "everyday"
+  },
+  "värske": {
+   "base": "värske",
+   "means": {
+    "en": "fresh",
+    "az": "təzə",
+    "ru": "свежий"
+   },
+   "deck": "cooking"
+  },
+  "salati": {
+   "base": "salat",
+   "means": {
+    "en": "salad",
+    "az": "salat",
+    "ru": "салат"
+   },
+   "deck": "food"
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "tomati": {
+   "base": "tomat",
+   "means": {
+    "en": "tomato (tomati-kurgisalat: tomato and cucumber salad)",
+    "az": "pomidor",
+    "ru": "томатный"
+   },
+   "deck": "food"
+  },
+  "kurgisalati": {
+   "base": "kurgisalat",
+   "means": {
+    "en": "cucumber salad",
+    "az": "xiyar salatı",
+    "ru": "огуречный салат"
+   }
+  },
+  "millest": {
+   "base": "mis",
+   "means": {
+    "en": "of what",
+    "az": "nədən",
+    "ru": "из чего"
+   },
+   "deck": "asking"
+  },
+  "salat": {
+   "base": "salat",
+   "means": {
+    "en": "salad",
+    "az": "salat",
+    "ru": "салат"
+   },
+   "deck": "food"
+  },
+  "koosneb": {
+   "base": "koosnema",
+   "means": {
+    "en": "consists",
+    "az": "ibarətdir",
+    "ru": "состоит"
+   }
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "küüslauku": {
+   "base": "küüslauk",
+   "means": {
+    "en": "garlic",
+    "az": "sarımsaq",
+    "ru": "чеснок"
+   },
+   "deck": "food"
+  },
+  "pole": {
+   "base": "olema",
+   "means": {
+    "en": "isn't, there isn't (short of ei ole; pole midagi: it's nothing)",
+    "az": "yoxdur (ei ole-nin qısası)",
+    "ru": "нет (кратко от ei ole)"
+   },
+   "deck": "verbs"
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "küüslaugu": {
+   "base": "küüslauk",
+   "means": {
+    "en": "garlic (küüslaugu vastu: to garlic)",
+    "az": "sarımsağa",
+    "ru": "на чеснок"
+   },
+   "deck": "food"
+  },
+  "vastu": {
+   "base": "vastu",
+   "means": {
+    "en": "against, to",
+    "az": "qarşı",
+    "ru": "против, на"
+   },
+   "deck": "everyday"
+  },
+  "allergiline": {
+   "base": "allergiline",
+   "means": {
+    "en": "allergic",
+    "az": "allergik",
+    "ru": "аллергик"
+   }
+  },
+  "selles": {
+   "base": "see",
+   "means": {
+    "en": "in this",
+    "az": "bunda",
+    "ru": "в этом"
+   },
+   "deck": "pronouns"
+  },
+  "salatis": {
+   "base": "salat",
+   "means": {
+    "en": "in the salad",
+    "az": "salatda",
+    "ru": "в салате"
+   },
+   "deck": "food"
+  },
+  "ongi": {
+   "base": "olema",
+   "means": {
+    "en": "is indeed, is just",
+    "az": "elə var",
+    "ru": "как раз есть"
+   },
+   "deck": "verbs"
+  },
+  "tomat": {
+   "base": "tomat",
+   "means": {
+    "en": "tomato",
+    "az": "pomidor",
+    "ru": "помидор"
+   },
+   "deck": "food"
+  },
+  "kurk": {
+   "base": "kurk",
+   "means": {
+    "en": "cucumber",
+    "az": "xiyar",
+    "ru": "огурец"
+   },
+   "deck": "food"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "hetkel": {
+   "base": "hetk",
+   "means": {
+    "en": "at the moment",
+    "az": "hələlik",
+    "ru": "на данный момент"
+   },
+   "deck": "time"
+  },
+  "vist": {
+   "base": "vist",
+   "means": {
+    "en": "probably, I suppose",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "hüva": {
+   "base": "hüva",
+   "means": {
+    "en": "very well, good",
+    "az": "yaxşı",
+    "ru": "хорошо"
+   }
+  },
+  "jätan": {
+   "base": "jätma",
+   "means": {
+    "en": "I leave",
+    "az": "qoyuram",
+    "ru": "оставляю"
+   },
+   "deck": "moreverbs"
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "menüü": {
+   "base": "menüü",
+   "means": {
+    "en": "menu",
+    "az": "menyu",
+    "ru": "меню"
+   },
+   "deck": "service"
+  },
+  "lauda": {
+   "base": "laud",
+   "means": {
+    "en": "a table",
+    "az": "masa",
+    "ru": "стол"
+   },
+   "deck": "home"
+  },
+  "äkki": {
+   "base": "äkki",
+   "means": {
+    "en": "maybe; suddenly",
+    "az": "bəlkə; birdən",
+    "ru": "может; вдруг"
+   },
+   "deck": "everyday"
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "magustoitu": {
+   "base": "magustoit",
+   "means": {
+    "en": "dessert",
+    "az": "desert",
+    "ru": "десерт"
+   },
+   "deck": "food"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "söökidega": {
+   "base": "söök",
+   "means": {
+    "en": "with the food",
+    "az": "yeməklərlə",
+    "ru": "с едой"
+   },
+   "deck": "food"
+  },
+  "läheb": {
+   "base": "minema",
+   "means": {
+    "en": "goes",
+    "az": "gedir",
+    "ru": "идёт"
+   },
+   "deck": "verbs"
+  },
+  "lähe": {
+   "base": "minema",
+   "means": {
+    "en": "go (after ei: ei lähe, doesn't go)",
+    "az": "getmir (ei ilə)",
+    "ru": "не идёт (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "supi": {
+   "base": "supp",
+   "means": {
+    "en": "soup",
+    "az": "şorba",
+    "ru": "суп"
+   },
+   "deck": "food"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "šašlõkiga": {
+   "base": "šašlõkk",
+   "means": {
+    "en": "with the shashlik",
+    "az": "şaşlıqla",
+    "ru": "с шашлыком"
+   }
+  },
+  "kõige": {
+   "base": "kõige",
+   "means": {
+    "en": "most (kõige esimesena: the very first; kõige vanem: the oldest)",
+    "az": "ən",
+    "ru": "самый, больше всего"
+   }
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "minutit": {
+   "base": "minut",
+   "means": {
+    "en": "minutes",
+    "az": "dəqiqə",
+    "ru": "минут"
+   },
+   "deck": "time"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "terviseks": {
+   "base": "tervis",
+   "means": {
+    "en": "to your health, cheers",
+    "az": "sağlığına",
+    "ru": "за здоровье"
+   },
+   "deck": "health"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lill": {
+   "base": "lill",
+   "means": {
+    "en": "flower (mu lill: my darling)",
+    "az": "gül",
+    "ru": "цветок"
+   },
+   "deck": "home"
+  },
+  "kõks": {
+   "base": "kõks",
+   "means": {
+    "en": "clink!",
+    "az": "cing!",
+    "ru": "дзынь!"
+   }
+  }
+ }
 }
