@@ -8724,8 +8724,8 @@ read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
 line and every word in them means — **Songs, which are listened to** — and
-after the songs fifteen conversations off a language course's sheets, every turn
-in Estonian with what it means under it and every word in it a press —
+after the songs twenty conversations off a language course's sheets, sentence
+by sentence with what each means under it and every word in it a press —
 **Conversations, which are read**.
 
 It is the second thing on this site that is not about restaurants, and it is
@@ -10891,7 +10891,7 @@ owner's call, which has been put to them.
 A card teaches a word, a lesson says why it changes shape, and a song is how
 anybody comes to like the language. None of them is how it is said across a
 table. So the shelf carries a fifth part, **Conversations**, after **Songs**,
-and under it a tile for each of fifteen sheets from **Keeletee** — *Eesti keele
+and under it a tile for each of twenty sheets from **Keeletee** — *Eesti keele
 B1-taseme e-õppekursus*, the free B1 course — which the owner handed over as
 PDFs, each a page or three of Estonian with its English under every turn.
 
@@ -10912,29 +10912,50 @@ family and home: Krista, Kiur, Mihkel and Ingrid on who is at home, on the
 wider family — Krista's of twins, Ingrid's grandchildren with twins and
 triplets of their own — and on their youngest and oldest relative; Aleksandr
 and Ingrid on where they live now and the home they grew up in; and Arvo and
-Aleksandr on how many times they have moved, and from where to where.
+Aleksandr on how many times they have moved, and from where to where. The
+third batch, five more from the sixth and seventh modules, finishes the flat
+and goes shopping for it: Arvo, Aleksandr and Ingrid on whether they like
+their home — Arvo's is Vancouver, Ingrid's has a squirrel that visits — on
+the neighbours and what comes through the wall, and on which colours they
+like and what colour the kitchen is; then a washing machine bought for under
+six hundred euros, with a client card made out on the spot and a discount
+that will not go further, and its delivery to the ninth floor, free within
+the city.
 
 **A conversation is one page.** Its name, the line that says how to read it,
 and under that in the mono whose sheet it is — *From Keeletee, a B1 course*,
 out of `source` on the conversation, a name and so never translated; only the
 words round it are, `flashTalkFrom`. Then each scene: the question put, in
 Estonian as a heading with what it means under it, and the answers, each a
-turn — who is speaking, the Estonian, and what it means in the language the
-page is being read in. A scene at the table has no question over it and
-starts straight on its first turn. At the end of every turn's Estonian is a
-speaker that says the whole turn in Mari's voice: a sentence is the thing
-somebody will actually have to say in a café, and here is where it is a
-sentence. At the foot, one filled action, **Read it**, which is Got it under
+turn — who is speaking, and then what they said a sentence at a time, the
+Estonian with what it means under it in the language the page is being read
+in. A scene at the table has no question over it and starts straight on its
+first turn. Beside every sentence is a speaker that says it in Mari's voice:
+a sentence is the thing somebody will actually have to say in a café, and
+here is where it is a sentence. At the foot, one filled action, **Read it**, which is Got it under
 another name and marks the tile *Read*.
 
 **The name is on a line of its own, over the turn.** The sheets print it in a
 column beside the text, and on a phone that column is a third of 390 px; the
-Estonian is what the width is for. So a turn is the song line's grid — the
-Estonian with the speaker beside it, what it means under — with the name in
-the mono on the row above, where a song has nothing.
+Estonian is what the width is for. So a turn is the name in the mono, and
+under it its sentences, each the song line's grid — the Estonian with the
+speaker beside it, what it means under — with the hairline over the turn
+rather than over each sentence, so that one person speaking reads as one.
+
+**Sentence by sentence, because a paragraph over a paragraph is a puzzle.**
+The first version put a turn's Estonian whole over its translation whole, and
+a turn of eight sentences left the reader to find which half of the English
+was which half of the Estonian. The owner asked for it the way the songs do
+it, line by line, and that is what it is: a turn is `lines`, each a sentence
+and what it means, and the speaker beside each says that one. The fifteen
+that were there were split at their own full stops, question and
+exclamation marks — every language of every turn came apart into the same
+number of sentences but one, where the English had joined two with a
+semicolon and was mended to match. An ellipsis never ends a sentence:
+*Teisipäev… teisipäev…* is one.
 
 **Every word is a press, as in a song.** Pressing one opens the song's box
-under its turn — or under the question, for a word in that — saying what the
+under its sentence — or under the question, for a word in that — saying what the
 word means there, the form a dictionary files it under where that is
 different, and where on the shelf it is taught. One box open at a time, and
 pressing its word again shuts it. The first version had none of this, on the
@@ -10942,13 +10963,13 @@ reasoning that a conversation is read at the reader's own pace and what a
 turn means is one line down; the owner asked for it the day after, because a
 turn translated whole says what the sentence means and nothing about which
 word in it does what, and that is the half a learner is missing. So the
-translation of the turn stays, sentence by sentence as the sheets print it,
-and the words are pressed for the rest.
+translation stays, a sentence at a time, and the words are pressed for the
+rest.
 
-**One glossary for all of them.** The fifteen sheets carry some nine hundred
+**One glossary for all of them.** The twenty sheets carry some eleven hundred
 different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
 up in nearly every sheet. A song's `words` is its own, because a song is one
-text; fifteen copies of what *ma* means would be fifteen to keep in step. So
+text; twenty copies of what *ma* means would be twenty to keep in step. So
 the words are `talkWords` in `data/decks.json`, one entry per word as it is
 written, lowercased — its `base`, what it `means` in the three languages, an
 optional `note` — and a conversation's own `words` says something different
@@ -10976,22 +10997,30 @@ songs', and want a native reader the way the rest of the shelf does. The
 second batch had one thing more: the English of the sheet on the wider
 family carries two sentences Ingrid does not say — *So I am very proud! I
 have, to be honest, very good grandchildren I have.* — which are left out,
-since the English is there to say what the Estonian means. Every word's gloss
-in all fifteen, in all three languages, is mine too.
+since the English is there to say what the Estonian means. The third batch's
+English had the same tidying — a *delviery*, a *your live*, an oven the sheet
+called a stove, a *working surface* that is a worktop — and its two shop
+sheets' headings, *Ostmine, kauba uurimine, allahindlus* and *Paigalduse ja
+kojuveo tellimine*, are their names rather than a question over them, the way
+the restaurant's are; *Müüja* and *Klient*, seller and customer, stay as the
+two people's names. Its sheet on the home has Arvo's own *Vancouver*,
+Ingrid's *Liia* and the rest as names, never translated. Every word's gloss
+in all twenty, in all three languages, is mine too.
 *Klient* and *Ettekandja* stay as the names of the two people in the first
 restaurant scene: they are the Estonian for customer and waiter, which is the
 point.
 
 **Where it lives, and what shape it is.** `talks` in `data/decks.json`, beside
 the songs: an `id` in the decks' namespace, `added`, a `name` and a `why`, a
-`taste` — the opening of one of its turns, which is what its card on Start
-shows — `source`, and `scenes`, each an optional `ask` of `et` and what it
-means, over `turns` of `who`, `et` and what it means; and `words`, only where
+`taste` — the opening of one of its sentences, or of a turn read straight
+through, which is what its card on Start shows — `source`, and `scenes`, each
+an optional `ask` of `et` and what it means, over `turns` of `who` and
+`lines`, each a sentence's `et` and what it means; and `words`, only where
 a word means something there the glossary does not say. `who` is a name or an
 Estonian role word and is never translated. `tools/validate.mjs` holds every
 text to the three languages a card's back is, fails a scene with no turns, a
-turn with no `who` or no `et`, a `taste` no turn opens with, a word in a
-question or a turn that neither the glossary nor the conversation glosses, a
+turn with no `who` or no lines, a line with no `et`, a `taste` nothing opens
+with, a word in a question or a sentence that neither the glossary nor the conversation glosses, a
 glossary entry no conversation says, a word that names a deck by hand, and an
 id that is a deck's, a lesson's or a song's — and reserves `talks` the way it reserves
 `grammar` and `songs`, since that is the deck id a conversation read is filed
@@ -11004,12 +11033,12 @@ load that has a session, and seen by nothing that counts cards. Reading one
 signed out does not spend the free word, for the reason reading a lesson does
 not. `node tools/decks.mjs` writes each conversation into `data/decks/` with
 the rest — its own file, with the words it uses out of the glossary, its row
-in the index without its scenes or its words, and every turn into the
-voice's list — so `functions/api/say.js` speaks a turn only as
-the file has it, exactly, the way it speaks a song's line. `functions/flashcard.js` writes a
+in the index without its scenes or its words, and every sentence into the
+voice's list — so `functions/api/say.js` speaks a sentence only as the file
+has it, exactly, the way it speaks a song's line. `functions/flashcard.js` writes a
 conversation into the `<main>` as its questions with a description list under
-each, who said it and the Estonian as the term and the three translations
-under it, because somebody searching for how to book a table in Estonian is
+each, a sentence as the term — who said it in front of a turn's first — and
+the three translations under it, because somebody searching for how to book a table in Estonian is
 asking what this page answers; `tools/sitemap.mjs` lists each beside the
 decks, the lessons and the songs, and a conversation opened is counted under
 **What was opened** on `/admin/visitors` with them. A word pressed is
@@ -11027,14 +11056,12 @@ only the words no sheet has said before.
 
 **What it does not do.** No conversation has a deck of its words: a press
 says what a word means, and a deck to learn them by is the next thing to
-build if the presses say people are using them. No turn is split into its
-sentences with a translation each — the sheets translate a turn whole, and
-the voice says it whole. No recording
+build if the presses say people are using them. No recording
 of the real speakers: the voice is Mari's, the same one the cards use, and a
 turn in a man's voice wants the second voice **Hearing it** has already set
 aside a parameter for. No conversation in the other seven languages; they get
 English, as the cards do. No conversation of your own written through the
-site. There are fifteen. And the text is Keeletee's: it is credited under every
+site. There are twenty. And the text is Keeletee's: it is credited under every
 title, and printing every line of it is the owner's call, which has been put
 to them, as the songs' was.
 
@@ -15318,7 +15345,7 @@ assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            headings, the songs' and the cases', ten lessons of
-                           grammar, four songs, fifteen conversations and the
+                           grammar, four songs, twenty conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
                            languages rather than the site's ten
@@ -17872,7 +17899,7 @@ Flashcards, `assets/flashcard.js`:
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_turn` | `deck_id` — the first card turned over in a load, and only the first: every turn after it is said by the answer that follows. Before it, a visitor who turned cards and answered none counted as a view with nothing pressed |
 | `flash_hint` | `deck_id` — the first letters of a meaning asked for, once per card at most. Against `flash_knew` with `hint: 1`, this is what says whether a hint leads to knowing the word — see **The hint** under **Flashcards** |
-| `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`/`lesson`/`form`/`turn`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's, or a sentence or a paradigm form of a grammar lesson, when it is the lesson's, or a turn of a conversation, when it is the conversation's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
+| `flash_say` | `deck_id`, `what` (`word`/`sentence`/`line`/`lesson`/`form`/`turn`) — a card's Estonian asked for aloud, by a button under the card or the S key, or a line of a song by the speaker beside it, when `deck_id` is the song's, or a sentence or a paradigm form of a grammar lesson, when it is the lesson's, or a sentence of a conversation, when it is the conversation's; a second press that stops it is not counted. Nothing says whether it was heard: a voice that failed is still one of these — see **Hearing it** under **Flashcards** |
 | `flash_again_deck`, `flash_anyway`, `flash_reset` | `deck_id` — going through a finished deck again, going through one with nothing due, and forgetting one. `deck_id` is `missed` for the deck of what you got wrong |
 | `flash_deck`, `flash_card`, `flash_editcard`, `flash_uncard`, `flash_drop` | `deck_id` — writing a deck of your own |
 | `flash_wrong` | `deck_id`, `lang` — a card reported wrong, and which of the three backs was on screen when it was. The row it writes is in `flashcard_reports`; this is the same press counted where every other press on this site is counted |

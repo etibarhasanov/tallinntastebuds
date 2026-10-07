@@ -1,0 +1,916 @@
+{
+ "id": "talk-delivery",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Ordering delivery and installation",
+  "az": "Çatdırılma və quraşdırma sifarişi",
+  "ru": "Заказ доставки и установки"
+ },
+ "why": {
+  "en": "The form for a client card, delivery tomorrow, and free all the way up to the ninth floor",
+  "az": "Müştəri kartı üçün anket, sabah çatdırılma və doqquzuncu mərtəbəyə qədər pulsuz",
+  "ru": "Анкета для карты клиента, доставка завтра и бесплатно хоть на девятый этаж"
+ },
+ "taste": "Ma elan üheksandal korrusel.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Ma vormistan siis teile kliendikaardi.",
+       "en": "I'll make you a client card, then.",
+       "az": "Onda sizə müştəri kartı rəsmiləşdirirəm.",
+       "ru": "Тогда я оформлю вам карту клиента."
+      },
+      {
+       "et": "Täitke palun see ankeet ära.",
+       "en": "Please fill in this form.",
+       "az": "Zəhmət olmasa, bu anketi doldurun.",
+       "ru": "Заполните, пожалуйста, эту анкету."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Mhm.",
+       "en": "Mm-hm.",
+       "az": "Mhm.",
+       "ru": "Угу."
+      },
+      {
+       "et": "Kui ma täna ostan, siis millal ma masina kätte saan?",
+       "en": "If I buy today, when will I get the machine?",
+       "az": "Bu gün alsam, maşını nə vaxt alaram?",
+       "ru": "Если я куплю сегодня, когда я получу машину?"
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Sõltub, kas te soovite kojuvedu ka või mitte.",
+       "en": "That depends on whether you want delivery or not.",
+       "az": "Evə çatdırılma istəyib-istəməməyinizdən asılıdır.",
+       "ru": "Зависит от того, нужна ли вам доставка на дом."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kindlasti soovin.",
+       "en": "I certainly do.",
+       "az": "Əlbəttə istəyirəm.",
+       "ru": "Обязательно нужна."
+      },
+      {
+       "et": "Keegi võiks selle masina mul kodus tööle ka panna.",
+       "en": "Someone could get the machine working at my home, too.",
+       "az": "Kimsə bu maşını evimdə qoşub işə də sala bilərdi.",
+       "ru": "И хорошо бы кто-нибудь подключил эту машину у меня дома."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Üks hetk, ma kontrollin, kas täna veel saab kojuvedu ja paigaldust tellida.",
+       "en": "Just a moment, I'll check whether delivery and installation can still be ordered for today.",
+       "az": "Bir dəqiqə, yoxlayıram, bu gün hələ çatdırılma və quraşdırma sifariş etmək olarmı.",
+       "ru": "Одну минуту, я проверю, можно ли ещё сегодня заказать доставку и установку."
+      },
+      {
+       "et": "Paistab, et ei saa.",
+       "en": "It looks like they can't.",
+       "az": "Deyəsən, olmaz.",
+       "ru": "Похоже, что нельзя."
+      },
+      {
+       "et": "Aga homse päeva jooksul kindlasti saab.",
+       "en": "But sometime tomorrow, certainly.",
+       "az": "Amma sabah gün ərzində mütləq olar.",
+       "ru": "Но в течение завтрашнего дня — точно можно."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Hästi.",
+       "en": "OK.",
+       "az": "Yaxşı.",
+       "ru": "Хорошо."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Kirjutage palun siia oma aadress ja telefoninumber.",
+       "en": "Please write your address and phone number here.",
+       "az": "Zəhmət olmasa, ünvanınızı və telefon nömrənizi bura yazın.",
+       "ru": "Напишите, пожалуйста, сюда свой адрес и номер телефона."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kui palju see kojuvedu maksab?",
+       "en": "How much does the delivery cost?",
+       "az": "Bu çatdırılma neçəyədir?",
+       "ru": "Сколько стоит доставка?"
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Kojuvedu on meil linna piires tasuta.",
+       "en": "Within the city our delivery is free.",
+       "az": "Şəhər daxilində çatdırılmamız pulsuzdur.",
+       "ru": "В пределах города доставка у нас бесплатная."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Ma elan üheksandal korrusel.",
+       "en": "I live on the ninth floor.",
+       "az": "Mən doqquzuncu mərtəbədə yaşayıram.",
+       "ru": "Я живу на девятом этаже."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Ärge muretsege.",
+       "en": "Don't worry.",
+       "az": "Narahat olmayın.",
+       "ru": "Не волнуйтесь."
+      },
+      {
+       "et": "Ilmselt on teil majas lift ja nagu ma ütlesin, kojuvedu on niikuinii tasuta.",
+       "en": "There's probably a lift in your building, and as I said, delivery is free anyway.",
+       "az": "Yəqin ki, binanızda lift var və dediyim kimi, çatdırılma onsuz da pulsuzdur.",
+       "ru": "Наверняка в вашем доме есть лифт, и, как я сказал, доставка всё равно бесплатная."
+      },
+      {
+       "et": "Pole vahet, mis korrusel te elate.",
+       "en": "It doesn't matter which floor you live on.",
+       "az": "Neçənci mərtəbədə yaşamağınızın fərqi yoxdur.",
+       "ru": "Неважно, на каком этаже вы живёте."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Väga hea.",
+       "en": "Very good.",
+       "az": "Çox gözəl.",
+       "ru": "Очень хорошо."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "vormistan": {
+   "base": "vormistama",
+   "means": {
+    "en": "I make out, register",
+    "az": "rəsmiləşdirirəm",
+    "ru": "я оформлю"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "teile": {
+   "base": "teie",
+   "means": {
+    "en": "to you, for you (polite or plural)",
+    "az": "sizə",
+    "ru": "вам"
+   }
+  },
+  "kliendikaardi": {
+   "base": "kliendikaart",
+   "means": {
+    "en": "client card",
+    "az": "müştəri kartı",
+    "ru": "карту клиента"
+   },
+   "deck": "service"
+  },
+  "täitke": {
+   "base": "täitma",
+   "means": {
+    "en": "fill in (polite)",
+    "az": "doldurun",
+    "ru": "заполните"
+   }
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ankeet": {
+   "base": "ankeet",
+   "means": {
+    "en": "form, questionnaire",
+    "az": "anket",
+    "ru": "анкета"
+   },
+   "deck": "work"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing)",
+    "az": "tamamilə (fel ilə)",
+    "ru": "до конца (с глаголом)"
+   },
+   "deck": "everyday"
+  },
+  "mhm": {
+   "base": "mhm",
+   "means": {
+    "en": "mm-hm, yes",
+    "az": "hı-hı",
+    "ru": "угу"
+   }
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "täna": {
+   "base": "täna",
+   "means": {
+    "en": "today (täna õhtul: tonight)",
+    "az": "bu gün",
+    "ru": "сегодня"
+   },
+   "deck": "time"
+  },
+  "ostan": {
+   "base": "ostma",
+   "means": {
+    "en": "I buy",
+    "az": "alıram",
+    "ru": "я куплю"
+   },
+   "deck": "verbs"
+  },
+  "millal": {
+   "base": "millal",
+   "means": {
+    "en": "when",
+    "az": "nə vaxt",
+    "ru": "когда"
+   },
+   "deck": "time"
+  },
+  "masina": {
+   "base": "masin",
+   "means": {
+    "en": "machine",
+    "az": "maşın",
+    "ru": "машину, машины"
+   },
+   "deck": "work"
+  },
+  "kätte": {
+   "base": "kätte",
+   "means": {
+    "en": "into hand (kätte saama, to receive)",
+    "az": "ələ (kätte saama, almaq)",
+    "ru": "в руки (kätte saama, получить)"
+   }
+  },
+  "saan": {
+   "base": "saama",
+   "means": {
+    "en": "I can; I get, I will have",
+    "az": "bilərəm; alıram",
+    "ru": "могу; получаю"
+   },
+   "deck": "verbs"
+  },
+  "sõltub": {
+   "base": "sõltuma",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   },
+   "deck": "moreverbs"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "te": {
+   "base": "teie",
+   "means": {
+    "en": "you (polite or plural)",
+    "az": "siz",
+    "ru": "вы"
+   }
+  },
+  "soovite": {
+   "base": "soovima",
+   "means": {
+    "en": "you wish, you would like (polite)",
+    "az": "istəyirsiniz",
+    "ru": "желаете"
+   },
+   "deck": "moreverbs"
+  },
+  "kojuvedu": {
+   "base": "kojuvedu",
+   "means": {
+    "en": "home delivery",
+    "az": "evə çatdırılma",
+    "ru": "доставка на дом"
+   }
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "kindlasti": {
+   "base": "kindlasti",
+   "means": {
+    "en": "certainly",
+    "az": "mütləq",
+    "ru": "обязательно, точно"
+   },
+   "deck": "repairs"
+  },
+  "soovin": {
+   "base": "soovima",
+   "means": {
+    "en": "I want, I'd like",
+    "az": "istəyirəm",
+    "ru": "я хочу"
+   },
+   "deck": "moreverbs"
+  },
+  "keegi": {
+   "base": "keegi",
+   "means": {
+    "en": "somebody (with ei: nobody)",
+    "az": "kimsə (ei ilə: heç kim)",
+    "ru": "кто-то (с ei: никто)"
+   },
+   "deck": "everyday"
+  },
+  "võiks": {
+   "base": "võima",
+   "means": {
+    "en": "could, might",
+    "az": "olar",
+    "ru": "можно было бы"
+   },
+   "deck": "moreverbs"
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "kodus": {
+   "base": "kodu",
+   "means": {
+    "en": "at home",
+    "az": "evdə",
+    "ru": "дома"
+   },
+   "deck": "home"
+  },
+  "tööle": {
+   "base": "töö",
+   "means": {
+    "en": "to work",
+    "az": "işə",
+    "ru": "на работу"
+   },
+   "deck": "talk"
+  },
+  "panna": {
+   "base": "panema",
+   "means": {
+    "en": "to put",
+    "az": "qoymaq",
+    "ru": "поставить"
+   },
+   "deck": "repairs"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "hetk": {
+   "base": "hetk",
+   "means": {
+    "en": "moment (mingi hetk: at some point)",
+    "az": "an",
+    "ru": "момент"
+   },
+   "deck": "time"
+  },
+  "kontrollin": {
+   "base": "kontrollima",
+   "means": {
+    "en": "I check",
+    "az": "yoxlayıram",
+    "ru": "я проверяю"
+   }
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked); gets",
+    "az": "olar; alır",
+    "ru": "можно; получает"
+   },
+   "deck": "verbs"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "paigaldust": {
+   "base": "paigaldus",
+   "means": {
+    "en": "installation",
+    "az": "quraşdırma",
+    "ru": "установку"
+   }
+  },
+  "tellida": {
+   "base": "tellima",
+   "means": {
+    "en": "to order",
+    "az": "sifariş etmək",
+    "ru": "заказать"
+   },
+   "deck": "service"
+  },
+  "paistab": {
+   "base": "paistma",
+   "means": {
+    "en": "it seems",
+    "az": "görünür",
+    "ru": "похоже"
+   },
+   "deck": "weather"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "saa": {
+   "base": "saama",
+   "means": {
+    "en": "can, get (after ei: ei saa aru, don't understand)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не могу (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "homse": {
+   "base": "homne",
+   "means": {
+    "en": "tomorrow's",
+    "az": "sabahkı",
+    "ru": "завтрашнего"
+   }
+  },
+  "päeva": {
+   "base": "päev",
+   "means": {
+    "en": "days",
+    "az": "gün",
+    "ru": "дня"
+   },
+   "deck": "time"
+  },
+  "jooksul": {
+   "base": "jooksul",
+   "means": {
+    "en": "during",
+    "az": "ərzində",
+    "ru": "в течение"
+   }
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "kirjutage": {
+   "base": "kirjutama",
+   "means": {
+    "en": "write (polite)",
+    "az": "yazın",
+    "ru": "напишите"
+   },
+   "deck": "moreverbs"
+  },
+  "siia": {
+   "base": "siia",
+   "means": {
+    "en": "here (to)",
+    "az": "bura",
+    "ru": "сюда"
+   },
+   "deck": "around"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "aadress": {
+   "base": "aadress",
+   "means": {
+    "en": "address",
+    "az": "ünvan",
+    "ru": "адрес"
+   },
+   "deck": "around"
+  },
+  "telefoninumber": {
+   "base": "telefoninumber",
+   "means": {
+    "en": "phone number",
+    "az": "telefon nömrəsi",
+    "ru": "номер телефона"
+   }
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "maksab": {
+   "base": "maksma",
+   "means": {
+    "en": "costs",
+    "az": "dəyər, qiyməti … -dir",
+    "ru": "стоит"
+   },
+   "deck": "verbs"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "linna": {
+   "base": "linn",
+   "means": {
+    "en": "of the city",
+    "az": "şəhərin",
+    "ru": "города"
+   },
+   "deck": "around"
+  },
+  "piires": {
+   "base": "piires",
+   "means": {
+    "en": "within",
+    "az": "daxilində",
+    "ru": "в пределах"
+   }
+  },
+  "tasuta": {
+   "base": "tasuta",
+   "means": {
+    "en": "free of charge",
+    "az": "pulsuz",
+    "ru": "бесплатно"
+   },
+   "deck": "shops"
+  },
+  "elan": {
+   "base": "elama",
+   "means": {
+    "en": "I live",
+    "az": "yaşayıram",
+    "ru": "живу"
+   },
+   "deck": "verbs"
+  },
+  "üheksandal": {
+   "base": "üheksas",
+   "means": {
+    "en": "on the ninth",
+    "az": "doqquzuncu",
+    "ru": "на девятом"
+   },
+   "deck": "numbers"
+  },
+  "korrusel": {
+   "base": "korrus",
+   "means": {
+    "en": "on the floor (storey)",
+    "az": "mərtəbədə",
+    "ru": "на этаже"
+   },
+   "deck": "home"
+  },
+  "ärge": {
+   "base": "ära",
+   "means": {
+    "en": "don't (polite)",
+    "az": "etməyin",
+    "ru": "не (вежл.)"
+   },
+   "deck": "everyday"
+  },
+  "muretsege": {
+   "base": "muretsema",
+   "means": {
+    "en": "worry (polite)",
+    "az": "narahat olun",
+    "ru": "волнуйтесь"
+   },
+   "deck": "moreverbs"
+  },
+  "ilmselt": {
+   "base": "ilmselt",
+   "means": {
+    "en": "probably",
+    "az": "yəqin ki",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "teil": {
+   "base": "teie",
+   "means": {
+    "en": "you have (teil on); with you (polite or plural)",
+    "az": "sizdə",
+    "ru": "у вас"
+   }
+  },
+  "majas": {
+   "base": "maja",
+   "means": {
+    "en": "in the house",
+    "az": "binada",
+    "ru": "в доме"
+   },
+   "deck": "home"
+  },
+  "lift": {
+   "base": "lift",
+   "means": {
+    "en": "lift",
+    "az": "lift",
+    "ru": "лифт"
+   },
+   "deck": "home"
+  },
+  "nagu": {
+   "base": "nagu",
+   "means": {
+    "en": "like, as",
+    "az": "kimi",
+    "ru": "как"
+   },
+   "deck": "everyday"
+  },
+  "ütlesin": {
+   "base": "ütlema",
+   "means": {
+    "en": "I said",
+    "az": "dedim",
+    "ru": "сказал"
+   },
+   "deck": "everyday"
+  },
+  "niikuinii": {
+   "base": "niikuinii",
+   "means": {
+    "en": "anyway",
+    "az": "onsuz da",
+    "ru": "всё равно"
+   },
+   "deck": "plans"
+  },
+  "pole": {
+   "base": "olema",
+   "means": {
+    "en": "isn't, there isn't (short of ei ole; pole midagi: it's nothing)",
+    "az": "yoxdur (ei ole-nin qısası)",
+    "ru": "нет (кратко от ei ole)"
+   },
+   "deck": "verbs"
+  },
+  "vahet": {
+   "base": "vahe",
+   "means": {
+    "en": "difference (pole vahet, it doesn't matter)",
+    "az": "fərq (pole vahet, fərqi yoxdur)",
+    "ru": "разница (pole vahet, неважно)"
+   }
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "elate": {
+   "base": "elama",
+   "means": {
+    "en": "you live",
+    "az": "yaşayırsınız",
+    "ru": "вы живёте"
+   },
+   "deck": "verbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hea": {
+   "base": "hea",
+   "means": {
+    "en": "good",
+    "az": "yaxşı",
+    "ru": "хороший"
+   },
+   "deck": "basics"
+  }
+ }
+}

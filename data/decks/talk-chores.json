@@ -24,31 +24,95 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Ma teen igasuguseid koduseid töid. Pesen pesu, panen pesu kuivama. Pesen nõusid, kuigi ma kasutan selleks nõudepesumasinat, mis minu eest selle töö ära teeb. Teen süüa, nädalavahetuseti koristan. Klopin vaipu, lapsed aitavad.",
-     "en": "I do all sorts of household chores. I wash the laundry and hang it up to dry. I wash the dishes, although I use the dishwasher for that, which does the work for me. I cook, and at the weekend I clean. I beat the carpets; the kids help.",
-     "az": "Hər cür ev işi görürəm. Paltar yuyuram, qurumağa sərirəm. Qab yuyuram, baxmayaraq ki, bunun üçün qabyuyan maşından istifadə edirəm — işi mənim əvəzimə o görür. Yemək bişirirəm, həftə sonları yığışdırıram. Xalçaları çırpıram, uşaqlar kömək edir.",
-     "ru": "Я делаю всякую домашнюю работу. Стираю, развешиваю бельё сушиться. Мою посуду, хотя для этого у меня посудомоечная машина, которая делает эту работу за меня. Готовлю, по выходным убираю. Выбиваю ковры, дети помогают."
+     "lines": [
+      {
+       "et": "Ma teen igasuguseid koduseid töid.",
+       "en": "I do all sorts of household chores.",
+       "az": "Hər cür ev işi görürəm.",
+       "ru": "Я делаю всякую домашнюю работу."
+      },
+      {
+       "et": "Pesen pesu, panen pesu kuivama.",
+       "en": "I wash the laundry and hang it up to dry.",
+       "az": "Paltar yuyuram, qurumağa sərirəm.",
+       "ru": "Стираю, развешиваю бельё сушиться."
+      },
+      {
+       "et": "Pesen nõusid, kuigi ma kasutan selleks nõudepesumasinat, mis minu eest selle töö ära teeb.",
+       "en": "I wash the dishes, although I use the dishwasher for that, which does the work for me.",
+       "az": "Qab yuyuram, baxmayaraq ki, bunun üçün qabyuyan maşından istifadə edirəm — işi mənim əvəzimə o görür.",
+       "ru": "Мою посуду, хотя для этого у меня посудомоечная машина, которая делает эту работу за меня."
+      },
+      {
+       "et": "Teen süüa, nädalavahetuseti koristan.",
+       "en": "I cook, and at the weekend I clean.",
+       "az": "Yemək bişirirəm, həftə sonları yığışdırıram.",
+       "ru": "Готовлю, по выходным убираю."
+      },
+      {
+       "et": "Klopin vaipu, lapsed aitavad.",
+       "en": "I beat the carpets; the kids help.",
+       "az": "Xalçaları çırpıram, uşaqlar kömək edir.",
+       "ru": "Выбиваю ковры, дети помогают."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Ma pesen nõusid nõudepesumasinaga. Ma pesen pesu pesumasinaga. Ma imen tolmu ja kui on aega, siis ma pesen pärast seda põranda ära, kui me oleme niimoodi kokku leppinud. Mulle meeldib asju parandada, aga need paraku lähevad kõik tavaliselt rohkem katki.",
-     "en": "I wash the dishes with the dishwasher. I wash the laundry with the washing machine. I vacuum, and if there is time I wash the floor afterwards — if that is what we have agreed. I like fixing things, but unfortunately they usually all end up more broken.",
-     "az": "Qabları qabyuyan maşınla yuyuram. Paltarı paltaryuyan maşınla yuyuram. Tozsoranla təmizləyirəm və vaxt olsa, ondan sonra döşəməni də yuyuram — əgər belə razılaşmışıqsa. Əşyaları təmir etməyi xoşlayıram, amma təəssüf ki, adətən hamısı daha çox xarab olur.",
-     "ru": "Я мою посуду в посудомоечной машине. Стираю в стиральной машине. Пылесошу, и если есть время, потом мою пол — если мы так договорились. Я люблю чинить вещи, но они, к сожалению, обычно ломаются ещё сильнее."
+     "lines": [
+      {
+       "et": "Ma pesen nõusid nõudepesumasinaga.",
+       "en": "I wash the dishes with the dishwasher.",
+       "az": "Qabları qabyuyan maşınla yuyuram.",
+       "ru": "Я мою посуду в посудомоечной машине."
+      },
+      {
+       "et": "Ma pesen pesu pesumasinaga.",
+       "en": "I wash the laundry with the washing machine.",
+       "az": "Paltarı paltaryuyan maşınla yuyuram.",
+       "ru": "Стираю в стиральной машине."
+      },
+      {
+       "et": "Ma imen tolmu ja kui on aega, siis ma pesen pärast seda põranda ära, kui me oleme niimoodi kokku leppinud.",
+       "en": "I vacuum, and if there is time I wash the floor afterwards — if that is what we have agreed.",
+       "az": "Tozsoranla təmizləyirəm və vaxt olsa, ondan sonra döşəməni də yuyuram — əgər belə razılaşmışıqsa.",
+       "ru": "Пылесошу, и если есть время, потом мою пол — если мы так договорились."
+      },
+      {
+       "et": "Mulle meeldib asju parandada, aga need paraku lähevad kõik tavaliselt rohkem katki.",
+       "en": "I like fixing things, but unfortunately they usually all end up more broken.",
+       "az": "Əşyaları təmir etməyi xoşlayıram, amma təəssüf ki, adətən hamısı daha çox xarab olur.",
+       "ru": "Я люблю чинить вещи, но они, к сожалению, обычно ломаются ещё сильнее."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Pesen põrandaid eelkõige. Otseselt ma nõusid ei pese, aga panen nõud nõudepesumasinasse.",
-     "en": "I wash the floors, above all. I don't exactly wash the dishes, but I put them in the dishwasher.",
-     "az": "Ən çox döşəmələri yuyuram. Qabları, düzü, yumuram, amma qabyuyan maşına yığıram.",
-     "ru": "Прежде всего мою полы. Посуду я, собственно, не мою, но складываю её в посудомоечную машину."
+     "lines": [
+      {
+       "et": "Pesen põrandaid eelkõige.",
+       "en": "I wash the floors, above all.",
+       "az": "Ən çox döşəmələri yuyuram.",
+       "ru": "Прежде всего мою полы."
+      },
+      {
+       "et": "Otseselt ma nõusid ei pese, aga panen nõud nõudepesumasinasse.",
+       "en": "I don't exactly wash the dishes, but I put them in the dishwasher.",
+       "az": "Qabları, düzü, yumuram, amma qabyuyan maşına yığıram.",
+       "ru": "Посуду я, собственно, не мою, но складываю её в посудомоечную машину."
+      }
+     ]
     },
     {
      "who": "Kiur",
-     "et": "Ma viin prügi välja.",
-     "en": "I take the rubbish out.",
-     "az": "Zibili atıram.",
-     "ru": "Я выношу мусор."
+     "lines": [
+      {
+       "et": "Ma viin prügi välja.",
+       "en": "I take the rubbish out.",
+       "az": "Zibili atıram.",
+       "ru": "Я выношу мусор."
+      }
+     ]
     }
    ]
   },
@@ -62,17 +126,43 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Kuna meil on kaks korrust, siis mulle ei meeldi vedada tolmuimejat alumiselt korruselt ülemisele korrusele ja ülemiselt korruselt alumisele korrusele. Aga muidu tolmu mulle meeldib tõmmata. Mulle meeldib ka aknaid pesta, sest meil ei ole palju aknaid ja aknapesu läheb kiiresti.",
-     "en": "Since we have two floors, I don't like dragging the vacuum cleaner from the lower floor to the upper one and from the upper floor back down. But otherwise I like vacuuming. I also like washing the windows, because we don't have many windows and the window washing goes quickly.",
-     "az": "Bizim iki mərtəbəmiz olduğundan tozsoranı aşağı mərtəbədən yuxarı mərtəbəyə, yuxarıdan da aşağıya daşımağı sevmirəm. Amma tozsoranla təmizləməyin özünü xoşlayıram. Pəncərə yumağı da xoşlayıram, çünki pəncərəmiz çox deyil və tez yuyulub qurtarır.",
-     "ru": "Поскольку у нас два этажа, мне не нравится таскать пылесос с нижнего этажа на верхний и с верхнего на нижний. А так пылесосить я люблю. Люблю и мыть окна, потому что окон у нас немного и мытьё идёт быстро."
+     "lines": [
+      {
+       "et": "Kuna meil on kaks korrust, siis mulle ei meeldi vedada tolmuimejat alumiselt korruselt ülemisele korrusele ja ülemiselt korruselt alumisele korrusele.",
+       "en": "Since we have two floors, I don't like dragging the vacuum cleaner from the lower floor to the upper one and from the upper floor back down.",
+       "az": "Bizim iki mərtəbəmiz olduğundan tozsoranı aşağı mərtəbədən yuxarı mərtəbəyə, yuxarıdan da aşağıya daşımağı sevmirəm.",
+       "ru": "Поскольку у нас два этажа, мне не нравится таскать пылесос с нижнего этажа на верхний и с верхнего на нижний."
+      },
+      {
+       "et": "Aga muidu tolmu mulle meeldib tõmmata.",
+       "en": "But otherwise I like vacuuming.",
+       "az": "Amma tozsoranla təmizləməyin özünü xoşlayıram.",
+       "ru": "А так пылесосить я люблю."
+      },
+      {
+       "et": "Mulle meeldib ka aknaid pesta, sest meil ei ole palju aknaid ja aknapesu läheb kiiresti.",
+       "en": "I also like washing the windows, because we don't have many windows and the window washing goes quickly.",
+       "az": "Pəncərə yumağı da xoşlayıram, çünki pəncərəmiz çox deyil və tez yuyulub qurtarır.",
+       "ru": "Люблю и мыть окна, потому что окон у нас немного и мытьё идёт быстро."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Vanni pesemine. Mulle ei meeldi vanni pesta, sest see on suur ja ma ei saa aru: vann on niikuinii kogu aeg valge, miks ma pean seda pesema?",
-     "en": "Cleaning the bath. I don't like cleaning the bath, because it is big and I don't understand it: the bath is white all the time anyway, so why do I have to wash it?",
-     "az": "Vannanı yumaq. Vannanı yumağı sevmirəm, çünki böyükdür və başa düşmürəm: vanna onsuz da həmişə ağdır, niyə onu yumalıyam?",
-     "ru": "Мытьё ванны. Я не люблю мыть ванну, потому что она большая и я не понимаю: ванна и так всё время белая, зачем мне её мыть?"
+     "lines": [
+      {
+       "et": "Vanni pesemine.",
+       "en": "Cleaning the bath.",
+       "az": "Vannanı yumaq.",
+       "ru": "Мытьё ванны."
+      },
+      {
+       "et": "Mulle ei meeldi vanni pesta, sest see on suur ja ma ei saa aru: vann on niikuinii kogu aeg valge, miks ma pean seda pesema?",
+       "en": "I don't like cleaning the bath, because it is big and I don't understand it: the bath is white all the time anyway, so why do I have to wash it?",
+       "az": "Vannanı yumağı sevmirəm, çünki böyükdür və başa düşmürəm: vanna onsuz da həmişə ağdır, niyə onu yumalıyam?",
+       "ru": "Я не люблю мыть ванну, потому что она большая и я не понимаю: ванна и так всё время белая, зачем мне её мыть?"
+      }
+     ]
     }
    ]
   },
@@ -86,24 +176,66 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Oo jaa, triikimine on minu meelest naiste töö. Kui minu mees hakkab vahel pesu triikima, siis ma tunnen ennast imelikult. Aga üldiselt mulle meeldib triikida.",
-     "en": "Oh yes, ironing is women's work, to my mind. When my husband sometimes starts ironing the laundry, I feel strange. But in general I like ironing.",
-     "az": "Hə, məncə ütüləmək qadın işidir. Ərim bəzən paltar ütüləməyə başlayanda özümü qəribə hiss edirəm. Amma ümumiyyətlə ütüləməyi xoşlayıram.",
-     "ru": "О да, по-моему, глажка — женское дело. Когда мой муж иногда берётся гладить бельё, мне становится как-то странно. Но вообще я люблю гладить."
+     "lines": [
+      {
+       "et": "Oo jaa, triikimine on minu meelest naiste töö.",
+       "en": "Oh yes, ironing is women's work, to my mind.",
+       "az": "Hə, məncə ütüləmək qadın işidir.",
+       "ru": "О да, по-моему, глажка — женское дело."
+      },
+      {
+       "et": "Kui minu mees hakkab vahel pesu triikima, siis ma tunnen ennast imelikult.",
+       "en": "When my husband sometimes starts ironing the laundry, I feel strange.",
+       "az": "Ərim bəzən paltar ütüləməyə başlayanda özümü qəribə hiss edirəm.",
+       "ru": "Когда мой муж иногда берётся гладить бельё, мне становится как-то странно."
+      },
+      {
+       "et": "Aga üldiselt mulle meeldib triikida.",
+       "en": "But in general I like ironing.",
+       "az": "Amma ümumiyyətlə ütüləməyi xoşlayıram.",
+       "ru": "Но вообще я люблю гладить."
+      }
+     ]
     },
     {
      "who": "Kiur",
-     "et": "Kõik võivad kõike teha. Mina ei triigi.",
-     "en": "Everybody can do everything. I don't iron.",
-     "az": "Hamı hər şeyi edə bilər. Mən ütüləmirəm.",
-     "ru": "Все могут делать всё. Я не глажу."
+     "lines": [
+      {
+       "et": "Kõik võivad kõike teha.",
+       "en": "Everybody can do everything.",
+       "az": "Hamı hər şeyi edə bilər.",
+       "ru": "Все могут делать всё."
+      },
+      {
+       "et": "Mina ei triigi.",
+       "en": "I don't iron.",
+       "az": "Mən ütüləmirəm.",
+       "ru": "Я не глажу."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Ma ei tea, ei ole, sest kõik oma töösärgid triigin ma ise. Ma ei saa öelda, et triikimine on naiste töö. Ei ole.",
-     "en": "I don't know — no, because I iron all my work shirts myself. I can't say that ironing is women's work. It isn't.",
-     "az": "Bilmirəm, yox, çünki bütün iş köynəklərimi özüm ütüləyirəm. Deyə bilmərəm ki, ütüləmək qadın işidir. Deyil.",
-     "ru": "Не знаю, нет, потому что все свои рабочие рубашки я глажу сам. Я не могу сказать, что глажка — женское дело. Это не так."
+     "lines": [
+      {
+       "et": "Ma ei tea, ei ole, sest kõik oma töösärgid triigin ma ise.",
+       "en": "I don't know — no, because I iron all my work shirts myself.",
+       "az": "Bilmirəm, yox, çünki bütün iş köynəklərimi özüm ütüləyirəm.",
+       "ru": "Не знаю, нет, потому что все свои рабочие рубашки я глажу сам."
+      },
+      {
+       "et": "Ma ei saa öelda, et triikimine on naiste töö.",
+       "en": "I can't say that ironing is women's work.",
+       "az": "Deyə bilmərəm ki, ütüləmək qadın işidir.",
+       "ru": "Я не могу сказать, что глажка — женское дело."
+      },
+      {
+       "et": "Ei ole.",
+       "en": "It isn't.",
+       "az": "Deyil.",
+       "ru": "Это не так."
+      }
+     ]
     }
    ]
   }

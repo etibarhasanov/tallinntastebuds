@@ -1,0 +1,1187 @@
+{
+ "id": "talk-neighbours",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Neighbours",
+  "az": "Qonşular",
+  "ru": "Соседи"
+ },
+ "why": {
+  "en": "Who talks to the neighbours, who only says hello, and what comes through the wall",
+  "az": "Kim qonşularla danışır, kim sadəcə salam verir və divarın o tayından nə eşidilir",
+  "ru": "Кто общается с соседями, кто только здоровается и что слышно через стену"
+ },
+ "taste": "Läbi seina kostab mõnikord hääli.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kas sa suhtled oma naabritega?",
+    "en": "Do you talk to your neighbours?",
+    "az": "Qonşularınla ünsiyyət qurursan?",
+    "ru": "Ты общаешься с соседями?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "lines": [
+      {
+       "et": "Mina suhtlen oma naabritega küll.",
+       "en": "I do talk to my neighbours.",
+       "az": "Mən qonşularımla ünsiyyət qururam.",
+       "ru": "Я со своими соседями общаюсь."
+      },
+      {
+       "et": "Näiteks ma suhtlen ühe venelasega.",
+       "en": "For instance, I talk with one Russian guy.",
+       "az": "Məsələn, bir rusla danışıram.",
+       "ru": "Например, я общаюсь с одним русским."
+      },
+      {
+       "et": "Varem me suhtlesime päris tihedalt ja käisime üksteisel külas.",
+       "en": "We used to be in touch quite a lot and visited each other.",
+       "az": "Əvvəllər çox sıx əlaqədə idik və bir-birimizə qonaq gedirdik.",
+       "ru": "Раньше мы общались довольно тесно и ходили друг к другу в гости."
+      },
+      {
+       "et": "Aga teisi naabreid ma tervitan.",
+       "en": "The other neighbours I just greet.",
+       "az": "Digər qonşularla isə sadəcə salamlaşıram.",
+       "ru": "А с остальными соседями я здороваюсь."
+      }
+     ]
+    },
+    {
+     "who": "Ingrid",
+     "lines": [
+      {
+       "et": "Teate, ma suhtlesin naabritega, kui ma siia kolisin.",
+       "en": "You know, I did talk to my neighbours when I moved here.",
+       "az": "Bilirsiniz, buraya köçəndə qonşularla ünsiyyət qururdum.",
+       "ru": "Знаете, я общалась с соседями, когда сюда переехала."
+      },
+      {
+       "et": "Kohe minu kõrval elas üks tädi Liia.",
+       "en": "Right next door lived an old lady, Liia.",
+       "az": "Düz yanımda Liia xala yaşayırdı.",
+       "ru": "Прямо рядом со мной жила одна тётя Liia."
+      },
+      {
+       "et": "Temaga me saime väga hästi läbi.",
+       "en": "We got along with her very well.",
+       "az": "Onunla çox yaxşı yola gedirdik.",
+       "ru": "Мы с ней очень хорошо ладили."
+      },
+      {
+       "et": "Väga tore inimene oli.",
+       "en": "She was a very nice person.",
+       "az": "Çox gözəl insan idi.",
+       "ru": "Очень славный был человек."
+      },
+      {
+       "et": "Hästi tore inimene oli.",
+       "en": "A really nice person.",
+       "az": "Həqiqətən gözəl insan idi.",
+       "ru": "Очень хороший был человек."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mis sind häirib sinu kodu juures?",
+    "en": "What bothers you about your home?",
+    "az": "Evində səni nə narahat edir?",
+    "ru": "Что тебе мешает дома?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "lines": [
+      {
+       "et": "Mind häirib, kui teisel korrusel elav naaber või naabrid suitsetavad ventilatsioonitorru.",
+       "en": "It bothers me when the neighbour or neighbours on the second floor smoke into the ventilation shaft.",
+       "az": "İkinci mərtəbədə yaşayan qonşu və ya qonşular ventilyasiya borusuna siqaret çəkəndə məni narahat edir.",
+       "ru": "Меня раздражает, когда сосед или соседи со второго этажа курят в вентиляцию."
+      },
+      {
+       "et": "See häirib mind väga.",
+       "en": "That bothers me a lot.",
+       "az": "Bu, məni çox narahat edir.",
+       "ru": "Это меня очень раздражает."
+      },
+      {
+       "et": "Olen käinud juba mitu korda nendega rääkimas.",
+       "en": "I've already gone to talk to them several times.",
+       "az": "Artıq bir neçə dəfə gedib onlarla danışmışam.",
+       "ru": "Я уже несколько раз ходил с ними поговорить."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kas sa kuuled oma naabreid?",
+    "en": "Do you hear your neighbours?",
+    "az": "Qonşularını eşidirsən?",
+    "ru": "Ты слышишь своих соседей?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "lines": [
+      {
+       "et": "Läbi seina kostab mõnikord hääli.",
+       "en": "Sometimes you hear voices through the wall.",
+       "az": "Bəzən divarın o tayından səslər eşidilir.",
+       "ru": "Через стену иногда слышны голоса."
+      },
+      {
+       "et": "Aga õnneks on minu naabrid sellised vaiksed, kes eriti ei laamenda ja elavad rahulikult.",
+       "en": "Fortunately, my neighbours are quiet types who don't make much of a racket and live peacefully.",
+       "az": "Amma xoşbəxtlikdən qonşularım elə sakit adamlardır ki, çox səs-küy salmırlar və rahat yaşayırlar.",
+       "ru": "Но, к счастью, мои соседи такие тихие, особо не буянят и живут спокойно."
+      },
+      {
+       "et": "Kui üldse midagi kostab, siis ainult see, kui keegi kõnnib või tormab ringi korteris.",
+       "en": "When anything can be heard at all, it's just someone walking or rushing around the flat.",
+       "az": "Ümumiyyətlə nəsə eşidilirsə, ancaq kimsə mənzildə gəzəndə və ya o yan-bu yana qaçanda.",
+       "ru": "Если вообще что-то слышно, то только когда кто-то ходит или носится по квартире."
+      },
+      {
+       "et": "Ma ei tea, võib-olla otsib midagi.",
+       "en": "I don't know, maybe looking for something.",
+       "az": "Bilmirəm, bəlkə nəsə axtarır.",
+       "ru": "Не знаю, может, что-то ищет."
+      },
+      {
+       "et": "Ja siis, kui midagi kukub, siis võib-olla kostab läbi.",
+       "en": "And then when something falls, maybe that comes through.",
+       "az": "Bir də nəsə yerə düşəndə, bəlkə o eşidilir.",
+       "ru": "А ещё когда что-то падает, тогда, может, слышно."
+      },
+      {
+       "et": "Või kui lapsed kisavad.",
+       "en": "Or when the kids scream.",
+       "az": "Ya da uşaqlar qışqıranda.",
+       "ru": "Или когда дети кричат."
+      },
+      {
+       "et": "Aga see ei ole minu jaoks probleem.",
+       "en": "But it isn't a problem for me.",
+       "az": "Amma bu, mənim üçün problem deyil.",
+       "ru": "Но для меня это не проблема."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mis sind häirib sinu kodu juures?",
+    "en": "What bothers you about your home?",
+    "az": "Evində səni nə narahat edir?",
+    "ru": "Что тебе мешает дома?"
+   },
+   "turns": [
+    {
+     "who": "Arvo",
+     "lines": [
+      {
+       "et": "Mind häirivad minu naabrid.",
+       "en": "My neighbours bother me.",
+       "az": "Məni qonşularım narahat edir.",
+       "ru": "Мне мешают мои соседи."
+      },
+      {
+       "et": "Mõned inimesed on väga lapsikud.",
+       "en": "Some people are so childish.",
+       "az": "Bəzi adamlar çox uşaq kimidir.",
+       "ru": "Некоторые люди очень инфантильны."
+      },
+      {
+       "et": "See on uskumatu, kuidas nad kaebavad ja ei korista.",
+       "en": "It's unbelievable how they complain and don't clean up after themselves.",
+       "az": "İnanılmazdır, necə şikayət edirlər və arxalarınca yığışdırmırlar.",
+       "ru": "Невероятно, как они жалуются и не убирают за собой."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "suhtled": {
+   "base": "suhtlema",
+   "means": {
+    "en": "you talk, are in touch",
+    "az": "ünsiyyət qurursan",
+    "ru": "ты общаешься"
+   },
+   "deck": "moreverbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "naabritega": {
+   "base": "naaber",
+   "means": {
+    "en": "with the neighbours",
+    "az": "qonşularla",
+    "ru": "с соседями"
+   },
+   "deck": "home"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "suhtlen": {
+   "base": "suhtlema",
+   "means": {
+    "en": "I talk, am in touch",
+    "az": "ünsiyyət qururam",
+    "ru": "я общаюсь"
+   },
+   "deck": "moreverbs"
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "venelasega": {
+   "base": "venelane",
+   "means": {
+    "en": "with a Russian",
+    "az": "bir rusla",
+    "ru": "с русским"
+   },
+   "deck": "countries"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "me": {
+   "base": "meie",
+   "means": {
+    "en": "we",
+    "az": "biz",
+    "ru": "мы"
+   }
+  },
+  "suhtlesime": {
+   "base": "suhtlema",
+   "means": {
+    "en": "we were in touch",
+    "az": "ünsiyyətdə idik",
+    "ru": "мы общались"
+   },
+   "deck": "moreverbs"
+  },
+  "päris": {
+   "base": "päris",
+   "means": {
+    "en": "quite; real",
+    "az": "tam; əsl",
+    "ru": "вполне; настоящий"
+   },
+   "deck": "everyday"
+  },
+  "tihedalt": {
+   "base": "tihedalt",
+   "means": {
+    "en": "closely, often",
+    "az": "sıx",
+    "ru": "тесно"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "käisime": {
+   "base": "käima",
+   "means": {
+    "en": "we went, we visited",
+    "az": "getdik",
+    "ru": "ходили, ездили"
+   },
+   "deck": "moreverbs"
+  },
+  "üksteisel": {
+   "base": "üksteise",
+   "means": {
+    "en": "each other",
+    "az": "bir-birimizə",
+    "ru": "друг у друга"
+   }
+  },
+  "külas": {
+   "base": "külas",
+   "means": {
+    "en": "visiting (külas käima: to visit)",
+    "az": "qonaq",
+    "ru": "в гостях"
+   }
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "teisi": {
+   "base": "teine",
+   "means": {
+    "en": "the other",
+    "az": "başqalarını",
+    "ru": "других"
+   },
+   "deck": "numbers"
+  },
+  "naabreid": {
+   "base": "naaber",
+   "means": {
+    "en": "neighbours",
+    "az": "qonşuları",
+    "ru": "соседей"
+   },
+   "deck": "home"
+  },
+  "tervitan": {
+   "base": "tervitama",
+   "means": {
+    "en": "I greet",
+    "az": "salamlaşıram",
+    "ru": "я здороваюсь"
+   }
+  },
+  "teate": {
+   "base": "teadma",
+   "means": {
+    "en": "you know (polite or plural)",
+    "az": "bilirsiniz",
+    "ru": "знаете"
+   },
+   "deck": "verbs"
+  },
+  "suhtlesin": {
+   "base": "suhtlema",
+   "means": {
+    "en": "I was in touch",
+    "az": "ünsiyyət qururdum",
+    "ru": "я общался"
+   },
+   "deck": "moreverbs"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "siia": {
+   "base": "siia",
+   "means": {
+    "en": "here (to)",
+    "az": "bura",
+    "ru": "сюда"
+   },
+   "deck": "around"
+  },
+  "kolisin": {
+   "base": "kolima",
+   "means": {
+    "en": "I moved (house)",
+    "az": "köçdüm",
+    "ru": "переехал"
+   },
+   "deck": "home"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "kõrval": {
+   "base": "kõrval",
+   "means": {
+    "en": "next to",
+    "az": "yanında",
+    "ru": "рядом"
+   },
+   "deck": "around"
+  },
+  "elas": {
+   "base": "elama",
+   "means": {
+    "en": "lived",
+    "az": "yaşayırdı",
+    "ru": "жил, жила"
+   },
+   "deck": "verbs"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "tädi": {
+   "base": "tädi",
+   "means": {
+    "en": "aunt, older lady",
+    "az": "xala",
+    "ru": "тётя"
+   },
+   "deck": "family"
+  },
+  "liia": {
+   "base": "Liia",
+   "means": {
+    "en": "Liia",
+    "az": "Liia",
+    "ru": "Лийа"
+   }
+  },
+  "temaga": {
+   "base": "tema",
+   "means": {
+    "en": "with him, with her",
+    "az": "onunla",
+    "ru": "с ним, с ней"
+   }
+  },
+  "saime": {
+   "base": "saama",
+   "means": {
+    "en": "we got (läbi saama, to get along)",
+    "az": "yola gedirdik (läbi saama)",
+    "ru": "ладили (läbi saama)"
+   },
+   "deck": "verbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "läbi": {
+   "base": "läbi",
+   "means": {
+    "en": "through, over (läbi saama: to end)",
+    "az": "başa (läbi saama: bitmək)",
+    "ru": "через, конец (läbi saama: кончиться)"
+   },
+   "deck": "everyday"
+  },
+  "tore": {
+   "base": "tore",
+   "means": {
+    "en": "nice, lovely",
+    "az": "gözəl",
+    "ru": "хороший, замечательный"
+   },
+   "deck": "talk"
+  },
+  "inimene": {
+   "base": "inimene",
+   "means": {
+    "en": "person",
+    "az": "insan",
+    "ru": "человек"
+   },
+   "deck": "talk"
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "sind": {
+   "base": "sina",
+   "means": {
+    "en": "you",
+    "az": "səni",
+    "ru": "тебя"
+   }
+  },
+  "häirib": {
+   "base": "häirima",
+   "means": {
+    "en": "bothers",
+    "az": "narahat edir",
+    "ru": "мешает, беспокоит"
+   }
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "kodu": {
+   "base": "kodu",
+   "means": {
+    "en": "home",
+    "az": "ev",
+    "ru": "дом"
+   },
+   "deck": "home"
+  },
+  "juures": {
+   "base": "juures",
+   "means": {
+    "en": "at, with (ema juures: at my mother's)",
+    "az": "yanında",
+    "ru": "у"
+   },
+   "deck": "around"
+  },
+  "mind": {
+   "base": "mina",
+   "means": {
+    "en": "me",
+    "az": "məni",
+    "ru": "меня"
+   }
+  },
+  "teisel": {
+   "base": "teine",
+   "means": {
+    "en": "on the second",
+    "az": "ikinci",
+    "ru": "на втором"
+   },
+   "deck": "numbers"
+  },
+  "korrusel": {
+   "base": "korrus",
+   "means": {
+    "en": "on the floor (storey)",
+    "az": "mərtəbədə",
+    "ru": "на этаже"
+   },
+   "deck": "home"
+  },
+  "elav": {
+   "base": "elav",
+   "means": {
+    "en": "living",
+    "az": "yaşayan",
+    "ru": "живущий"
+   }
+  },
+  "naaber": {
+   "base": "naaber",
+   "means": {
+    "en": "neighbour",
+    "az": "qonşu",
+    "ru": "сосед"
+   },
+   "deck": "home"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "naabrid": {
+   "base": "naaber",
+   "means": {
+    "en": "neighbours",
+    "az": "qonşular",
+    "ru": "соседи"
+   },
+   "deck": "home"
+  },
+  "suitsetavad": {
+   "base": "suitsetama",
+   "means": {
+    "en": "smoke",
+    "az": "siqaret çəkirlər",
+    "ru": "курят"
+   },
+   "deck": "moreverbs"
+  },
+  "ventilatsioonitorru": {
+   "base": "ventilatsioonitoru",
+   "means": {
+    "en": "into the ventilation shaft",
+    "az": "ventilyasiya borusuna",
+    "ru": "в вентиляцию"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "käinud": {
+   "base": "käima",
+   "means": {
+    "en": "been (to)",
+    "az": "olmuşam",
+    "ru": "бывал"
+   },
+   "deck": "moreverbs"
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "mitu": {
+   "base": "mitu",
+   "means": {
+    "en": "several; how many",
+    "az": "bir neçə; neçə",
+    "ru": "несколько; сколько"
+   },
+   "deck": "asking"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nendega": {
+   "base": "nemad",
+   "means": {
+    "en": "with them",
+    "az": "onlarla",
+    "ru": "с ними"
+   }
+  },
+  "rääkimas": {
+   "base": "rääkima",
+   "means": {
+    "en": "talking (käima rääkimas, go to talk)",
+    "az": "danışmağa (getmək)",
+    "ru": "поговорить (ходить)"
+   },
+   "deck": "verbs"
+  },
+  "kuuled": {
+   "base": "kuulma",
+   "means": {
+    "en": "you hear",
+    "az": "eşidirsən",
+    "ru": "ты слышишь"
+   },
+   "deck": "verbs"
+  },
+  "seina": {
+   "base": "sein",
+   "means": {
+    "en": "wall",
+    "az": "divar",
+    "ru": "стену"
+   },
+   "deck": "home"
+  },
+  "kostab": {
+   "base": "kostma",
+   "means": {
+    "en": "can be heard",
+    "az": "eşidilir",
+    "ru": "слышно"
+   }
+  },
+  "mõnikord": {
+   "base": "mõnikord",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   },
+   "deck": "often"
+  },
+  "hääli": {
+   "base": "hääl",
+   "means": {
+    "en": "voices",
+    "az": "səslər",
+    "ru": "голоса"
+   },
+   "deck": "paper"
+  },
+  "õnneks": {
+   "base": "õnneks",
+   "means": {
+    "en": "fortunately",
+    "az": "xoşbəxtlikdən",
+    "ru": "к счастью"
+   },
+   "deck": "feelings"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sellised": {
+   "base": "selline",
+   "means": {
+    "en": "such, like that",
+    "az": "belə",
+    "ru": "такие"
+   }
+  },
+  "vaiksed": {
+   "base": "vaikne",
+   "means": {
+    "en": "quiet",
+    "az": "sakit",
+    "ru": "тихие"
+   },
+   "deck": "describing"
+  },
+  "kes": {
+   "base": "kes",
+   "means": {
+    "en": "who",
+    "az": "kim",
+    "ru": "кто, который"
+   },
+   "deck": "asking"
+  },
+  "eriti": {
+   "base": "eriti",
+   "means": {
+    "en": "particularly (eriti ei, not really)",
+    "az": "xüsusilə (eriti ei, o qədər də yox)",
+    "ru": "особенно (eriti ei, не особо)"
+   },
+   "deck": "everyday"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "laamenda": {
+   "base": "laamendama",
+   "means": {
+    "en": "make a racket (after ei)",
+    "az": "səs-küy salmır (ei ilə)",
+    "ru": "буянят (после ei)"
+   }
+  },
+  "elavad": {
+   "base": "elama",
+   "means": {
+    "en": "they live",
+    "az": "yaşayırlar",
+    "ru": "живут"
+   },
+   "deck": "verbs"
+  },
+  "rahulikult": {
+   "base": "rahulikult",
+   "means": {
+    "en": "peacefully",
+    "az": "sakit",
+    "ru": "спокойно"
+   },
+   "deck": "everyday"
+  },
+  "üldse": {
+   "base": "üldse",
+   "means": {
+    "en": "at all",
+    "az": "ümumiyyətlə",
+    "ru": "вообще"
+   },
+   "deck": "plans"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "keegi": {
+   "base": "keegi",
+   "means": {
+    "en": "somebody (with ei: nobody)",
+    "az": "kimsə (ei ilə: heç kim)",
+    "ru": "кто-то (с ei: никто)"
+   },
+   "deck": "everyday"
+  },
+  "kõnnib": {
+   "base": "kõndima",
+   "means": {
+    "en": "walks",
+    "az": "gəzir",
+    "ru": "ходит"
+   },
+   "deck": "moreverbs"
+  },
+  "tormab": {
+   "base": "tormama",
+   "means": {
+    "en": "rushes",
+    "az": "qaçır, cumur",
+    "ru": "носится"
+   }
+  },
+  "ringi": {
+   "base": "ringi",
+   "means": {
+    "en": "around",
+    "az": "ətrafa, o yan-bu yana",
+    "ru": "кругом, туда-сюда"
+   }
+  },
+  "korteris": {
+   "base": "korter",
+   "means": {
+    "en": "in the flat",
+    "az": "mənzildə",
+    "ru": "в квартире"
+   },
+   "deck": "home"
+  },
+  "tea": {
+   "base": "teadma",
+   "means": {
+    "en": "know (after ei: ei tea, don't know)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не знаю (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "otsib": {
+   "base": "otsima",
+   "means": {
+    "en": "looks for",
+    "az": "axtarır",
+    "ru": "ищет"
+   },
+   "deck": "moreverbs"
+  },
+  "kukub": {
+   "base": "kukkuma",
+   "means": {
+    "en": "falls",
+    "az": "düşür",
+    "ru": "падает"
+   },
+   "deck": "moreverbs"
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "kisavad": {
+   "base": "kisama",
+   "means": {
+    "en": "scream",
+    "az": "qışqırırlar",
+    "ru": "кричат"
+   }
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "jaoks": {
+   "base": "jaoks",
+   "means": {
+    "en": "for (minu jaoks: for me)",
+    "az": "üçün",
+    "ru": "для"
+   }
+  },
+  "probleem": {
+   "base": "probleem",
+   "means": {
+    "en": "problem",
+    "az": "problem",
+    "ru": "проблема"
+   }
+  },
+  "häirivad": {
+   "base": "häirima",
+   "means": {
+    "en": "bother",
+    "az": "narahat edirlər",
+    "ru": "мешают"
+   }
+  },
+  "mõned": {
+   "base": "mõni",
+   "means": {
+    "en": "some",
+    "az": "bəzi",
+    "ru": "некоторые"
+   },
+   "deck": "everyday"
+  },
+  "inimesed": {
+   "base": "inimene",
+   "means": {
+    "en": "people",
+    "az": "insanlar",
+    "ru": "люди"
+   },
+   "deck": "talk"
+  },
+  "lapsikud": {
+   "base": "lapsik",
+   "means": {
+    "en": "childish",
+    "az": "uşaq kimi, uşaqcasına",
+    "ru": "инфантильные, ребячливые"
+   }
+  },
+  "uskumatu": {
+   "base": "uskumatu",
+   "means": {
+    "en": "unbelievable",
+    "az": "inanılmaz",
+    "ru": "невероятно"
+   },
+   "deck": "describing"
+  },
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "kaebavad": {
+   "base": "kaebama",
+   "means": {
+    "en": "they complain",
+    "az": "şikayət edirlər",
+    "ru": "жалуются"
+   },
+   "deck": "moreverbs"
+  },
+  "korista": {
+   "base": "koristama",
+   "means": {
+    "en": "clean up (after ei)",
+    "az": "yığışdırmır (ei ilə)",
+    "ru": "убирают (после ei)"
+   },
+   "deck": "moreverbs"
+  }
+ }
+}

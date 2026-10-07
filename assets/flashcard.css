@@ -1153,10 +1153,10 @@
 /* A line: the Estonian with the speaker beside it, what it means under it,
    and the box a word opens under that, across the whole width. The Estonian
    is in the face a card's front is, since it is the thing being learnt; what
-   it means is a sentence and is in the body face, quieter. A conversation's
-   turn is the same grid with a name on the row above — the rules below it. */
+   it means is a sentence and is in the body face, quieter. A sentence of a
+   conversation is the same grid, under a name — the rules below it. */
 .flash-song-line,
-.flash-talk-turn {
+.flash-talk-line {
   display: grid;
   grid-template-columns: 1fr auto;
   column-gap: 8px;
@@ -1270,11 +1270,20 @@
   color: var(--muted);
 }
 
-/* The name over a turn, on a line of its own across the grid: a column for
-   a name is a third of 390 px, and the Estonian is what the width is for.
-   The speaker then sits on the Estonian's row rather than the name's. */
+/* A turn is who said it and then its sentences, each a song line's grid;
+   the hairline is the turn's, so the sentences of one turn read as one
+   person speaking. The name is on a line of its own over them: a column for
+   a name is a third of 390 px, and the Estonian is what the width is for. */
+.flash-talk-turn {
+  padding: 9px 0;
+  border-top: 1px solid var(--hairline);
+}
+.flash-talk-line {
+  padding: 0;
+  border-top: 0;
+}
+.flash-talk-line + .flash-talk-line { margin-top: 8px; }
 .flash-talk-who {
-  grid-column: 1 / -1;
   margin: 0 0 2px;
   font-size: 10px;
   font-weight: 500;
@@ -1282,7 +1291,6 @@
   text-transform: uppercase;
   color: var(--muted);
 }
-.flash-talk-say.alt { grid-row: 2; }
 
 .flash-talk .lists-foot { margin-top: 10px; }
 

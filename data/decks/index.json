@@ -3881,6 +3881,86 @@
    },
    "taste": "Üks, kaks, kolm, neli, viis, kuus",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-like-home",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Do you like your home?",
+    "az": "Evini sevirsən?",
+    "ru": "Тебе нравится твой дом?"
+   },
+   "why": {
+    "en": "Arvo's Vancouver, Aleksandr's park next door, and Ingrid's squirrel that visits",
+    "az": "Arvonun Vankuveri, Aleksandrın evinin yanındakı park və Ingridə qonaq gələn dələ",
+    "ru": "Ванкувер Arvo, парк рядом с домом Aleksandr и белка, которая ходит в гости к Ingrid"
+   },
+   "taste": "Minu kodu kõrval on park",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-neighbours",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Neighbours",
+    "az": "Qonşular",
+    "ru": "Соседи"
+   },
+   "why": {
+    "en": "Who talks to the neighbours, who only says hello, and what comes through the wall",
+    "az": "Kim qonşularla danışır, kim sadəcə salam verir və divarın o tayından nə eşidilir",
+    "ru": "Кто общается с соседями, кто только здоровается и что слышно через стену"
+   },
+   "taste": "Läbi seina kostab mõnikord hääli.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-colours",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Colours at home",
+    "az": "Evdə rənglər",
+    "ru": "Цвета в доме"
+   },
+   "why": {
+    "en": "Calm Nordic greys, an all-white kitchen, and a yellow one with green wallpaper once",
+    "az": "Sakit Şimal boz rəngləri, ağappaq mətbəx və bir vaxtlar yaşıl divar kağızı olan sarı mətbəx",
+    "ru": "Спокойные северные серые тона, совсем белая кухня и жёлтая, где когда-то были зелёные обои"
+   },
+   "taste": "Meie köök on täiesti valge.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-shopping",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Buying a washing machine",
+    "az": "Paltaryuyan maşın almaq",
+    "ru": "Покупка стиральной машины"
+   },
+   "why": {
+    "en": "A white washing machine under six hundred euros, a client card, and a discount that will not go further",
+    "az": "Altı yüz avrodan ucuz ağ paltaryuyan, müştəri kartı və daha artıq olmayan endirim",
+    "ru": "Белая стиральная машина дешевле шестисот евро, карта клиента и скидка, больше которой не будет"
+   },
+   "taste": "Tere, kas saan kuidagi abiks olla?",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-delivery",
+   "added": "2026-10-07",
+   "name": {
+    "en": "Ordering delivery and installation",
+    "az": "Çatdırılma və quraşdırma sifarişi",
+    "ru": "Заказ доставки и установки"
+   },
+   "why": {
+    "en": "The form for a client card, delivery tomorrow, and free all the way up to the ninth floor",
+    "az": "Müştəri kartı üçün anket, sabah çatdırılma və doqquzuncu mərtəbəyə qədər pulsuz",
+    "ru": "Анкета для карты клиента, доставка завтра и бесплатно хоть на девятый этаж"
+   },
+   "taste": "Ma elan üheksandal korrusel.",
+   "source": "Keeletee"
   }
  ]
 }

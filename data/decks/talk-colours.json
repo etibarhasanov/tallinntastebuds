@@ -1,0 +1,847 @@
+{
+ "id": "talk-colours",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Colours at home",
+  "az": "Evdə rənglər",
+  "ru": "Цвета в доме"
+ },
+ "why": {
+  "en": "Calm Nordic greys, an all-white kitchen, and a yellow one with green wallpaper once",
+  "az": "Sakit Şimal boz rəngləri, ağappaq mətbəx və bir vaxtlar yaşıl divar kağızı olan sarı mətbəx",
+  "ru": "Спокойные северные серые тона, совсем белая кухня и жёлтая, где когда-то были зелёные обои"
+ },
+ "taste": "Meie köök on täiesti valge.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Missugused värvid sulle meeldivad?",
+    "en": "Which colours do you like?",
+    "az": "Hansı rənglər xoşuna gəlir?",
+    "ru": "Какие цвета тебе нравятся?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "lines": [
+      {
+       "et": "Praegu mulle meeldivad sellised rahulikud värvid.",
+       "en": "At the moment I like calm colours.",
+       "az": "İndi belə sakit rənglər xoşuma gəlir.",
+       "ru": "Сейчас мне нравятся такие спокойные цвета."
+      },
+      {
+       "et": "Seda nimetatakse Põhjamaade disainiks või kujunduseks.",
+       "en": "It's called Nordic design, or Nordic style.",
+       "az": "Buna Şimal dizaynı və ya Şimal üslubu deyirlər.",
+       "ru": "Это называют северным дизайном или оформлением."
+      },
+      {
+       "et": "Mulle ei meeldi eredad või karjuvad värvid.",
+       "en": "I don't like bright or loud colours.",
+       "az": "Parlaq və ya qışqırıq rənglər xoşuma gəlmir.",
+       "ru": "Мне не нравятся яркие или кричащие цвета."
+      },
+      {
+       "et": "Mulle meeldivad rahulikud värvid, mis tekitavad hubasust ja rahu.",
+       "en": "I like calm colours that create cosiness and peace.",
+       "az": "Rahatlıq və dinclik yaradan sakit rənglər xoşuma gəlir.",
+       "ru": "Мне нравятся спокойные цвета, которые создают уют и покой."
+      },
+      {
+       "et": "Näiteks hallid ja rohelised värvid, sellised pastellvärvid.",
+       "en": "For instance, grey and green colours, pastel tones like that.",
+       "az": "Məsələn, boz və yaşıl rənglər, belə pastel rənglər.",
+       "ru": "Например, серые и зелёные цвета, такие пастельные тона."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mis värvi on sinu köök?",
+    "en": "What colour is your kitchen?",
+    "az": "Mətbəxin hansı rəngdədir?",
+    "ru": "Какого цвета твоя кухня?"
+   },
+   "turns": [
+    {
+     "who": "Aleksandr",
+     "lines": [
+      {
+       "et": "Meie köök on täiesti valge.",
+       "en": "Our kitchen is completely white.",
+       "az": "Bizim mətbəx tamamilə ağdır.",
+       "ru": "Наша кухня совсем белая."
+      },
+      {
+       "et": "Meil on suured kõrged valged kapid.",
+       "en": "We have big, tall white cupboards.",
+       "az": "Böyük, hündür ağ şkaflarımız var.",
+       "ru": "У нас большие высокие белые шкафы."
+      },
+      {
+       "et": "Musta värvi on ainult ahi, kraanikauss ja induktsioonpliit.",
+       "en": "Only the oven, the sink and the induction hob are black.",
+       "az": "Yalnız soba, əlüzyuyan və induksiya plitəsi qara rəngdədir.",
+       "ru": "Чёрного цвета только духовка, раковина и индукционная плита."
+      },
+      {
+       "et": "Ja tööpind köögis on loomulikult ka teist värvi, see on selline hallikas-pruun.",
+       "en": "And the worktop is of course a different colour too, a sort of greyish brown.",
+       "az": "Mətbəxdə iş səthi də təbii ki, başqa rəngdədir, belə bozumtul-qəhvəyi.",
+       "ru": "А столешница на кухне, конечно, тоже другого цвета, такая серовато-коричневая."
+      },
+      {
+       "et": "See värv sobib väga hästi kokku valge interjööriga.",
+       "en": "That colour goes very well with the white interior.",
+       "az": "Bu rəng ağ interyerlə çox yaxşı uyğun gəlir.",
+       "ru": "Этот цвет очень хорошо сочетается с белым интерьером."
+      },
+      {
+       "et": "Seinad on ka valged.",
+       "en": "The walls are white too.",
+       "az": "Divarlar da ağdır.",
+       "ru": "Стены тоже белые."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Missugused värvid sulle meeldivad?",
+    "en": "Which colours do you like?",
+    "az": "Hansı rənglər xoşuna gəlir?",
+    "ru": "Какие цвета тебе нравятся?"
+   },
+   "turns": [
+    {
+     "who": "Ingrid",
+     "lines": [
+      {
+       "et": "Roheline meeldib, niisugune mitte väga tume roheline värv.",
+       "en": "I like green, not a very dark green.",
+       "az": "Yaşıl xoşuma gəlir, elə çox da tünd olmayan yaşıl rəng.",
+       "ru": "Мне нравится зелёный, такой не очень тёмный зелёный цвет."
+      },
+      {
+       "et": "Mul oli kunagi selline roheline tapeet.",
+       "en": "I once had wallpaper of that green.",
+       "az": "Bir vaxtlar məndə belə yaşıl divar kağızı vardı.",
+       "ru": "У меня когда-то были такие зелёные обои."
+      },
+      {
+       "et": "Siis meeldib mulle väga kollane värv.",
+       "en": "Then I like yellow a lot.",
+       "az": "Sonra sarı rəng çox xoşuma gəlir.",
+       "ru": "Ещё мне очень нравится жёлтый цвет."
+      },
+      {
+       "et": "Minu köök on kollane.",
+       "en": "My kitchen is yellow.",
+       "az": "Mənim mətbəxim sarıdır.",
+       "ru": "Моя кухня жёлтая."
+      },
+      {
+       "et": "Punane mulle eriti ei meeldi.",
+       "en": "I don't much like red.",
+       "az": "Qırmızı o qədər də xoşuma gəlmir.",
+       "ru": "Красный мне не особо нравится."
+      },
+      {
+       "et": "Beež ka meeldib, beež on ka väga armas.",
+       "en": "I like beige too, beige is lovely as well.",
+       "az": "Bej də xoşuma gəlir, bej də çox şirindir.",
+       "ru": "Бежевый тоже нравится, бежевый тоже очень милый."
+      },
+      {
+       "et": "Niisugused tagasihoidlikud värvid meeldivad mulle.",
+       "en": "Modest colours like that are what I like.",
+       "az": "Belə sadə, təvazökar rənglər xoşuma gəlir.",
+       "ru": "Мне нравятся такие сдержанные цвета."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "missugused": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of (plural)",
+    "az": "hansı",
+    "ru": "какие"
+   }
+  },
+  "värvid": {
+   "base": "värv",
+   "means": {
+    "en": "colours",
+    "az": "rənglər",
+    "ru": "цвета"
+   },
+   "deck": "describing"
+  },
+  "sulle": {
+   "base": "sina",
+   "means": {
+    "en": "to you (sulle meeldib: you like)",
+    "az": "sənə",
+    "ru": "тебе"
+   }
+  },
+  "meeldivad": {
+   "base": "meeldima",
+   "means": {
+    "en": "I like them",
+    "az": "xoşuma gəlir",
+    "ru": "нравятся"
+   },
+   "deck": "verbs"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "sellised": {
+   "base": "selline",
+   "means": {
+    "en": "such, like that",
+    "az": "belə",
+    "ru": "такие"
+   }
+  },
+  "rahulikud": {
+   "base": "rahulik",
+   "means": {
+    "en": "calm",
+    "az": "sakit",
+    "ru": "спокойные"
+   },
+   "deck": "feelings"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "nimetatakse": {
+   "base": "nimetama",
+   "means": {
+    "en": "it is called",
+    "az": "adlanır",
+    "ru": "называют"
+   }
+  },
+  "põhjamaade": {
+   "base": "põhjamaad",
+   "means": {
+    "en": "Nordic",
+    "az": "Şimal ölkələrinin",
+    "ru": "северный, скандинавский"
+   }
+  },
+  "disainiks": {
+   "base": "disain",
+   "means": {
+    "en": "design (it is called…)",
+    "az": "dizayn",
+    "ru": "дизайном"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "kujunduseks": {
+   "base": "kujundus",
+   "means": {
+    "en": "style, design",
+    "az": "tərtibat",
+    "ru": "оформлением"
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "meeldi": {
+   "base": "meeldima",
+   "means": {
+    "en": "like (after ei: mulle ei meeldi, I don't like)",
+    "az": "xoşuma gəlmir (ei ilə)",
+    "ru": "нравится (с ei: не нравится)"
+   },
+   "deck": "verbs"
+  },
+  "eredad": {
+   "base": "ere",
+   "means": {
+    "en": "bright",
+    "az": "parlaq",
+    "ru": "яркие"
+   }
+  },
+  "karjuvad": {
+   "base": "karjuv",
+   "means": {
+    "en": "loud, garish",
+    "az": "qışqırıq, gözə soxulan",
+    "ru": "кричащие"
+   }
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "tekitavad": {
+   "base": "tekitama",
+   "means": {
+    "en": "create",
+    "az": "yaradır",
+    "ru": "создают"
+   }
+  },
+  "hubasust": {
+   "base": "hubasus",
+   "means": {
+    "en": "cosiness",
+    "az": "rahatlıq",
+    "ru": "уют"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "rahu": {
+   "base": "rahu",
+   "means": {
+    "en": "peace",
+    "az": "dinclik",
+    "ru": "покой"
+   }
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "hallid": {
+   "base": "hall",
+   "means": {
+    "en": "grey",
+    "az": "boz",
+    "ru": "серые"
+   },
+   "deck": "describing"
+  },
+  "rohelised": {
+   "base": "roheline",
+   "means": {
+    "en": "green",
+    "az": "yaşıl",
+    "ru": "зелёные"
+   },
+   "deck": "describing"
+  },
+  "pastellvärvid": {
+   "base": "pastellvärv",
+   "means": {
+    "en": "pastel colours",
+    "az": "pastel rənglər",
+    "ru": "пастельные цвета"
+   }
+  },
+  "värvi": {
+   "base": "värv",
+   "means": {
+    "en": "colour",
+    "az": "rəng",
+    "ru": "цвета"
+   },
+   "deck": "describing"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "köök": {
+   "base": "köök",
+   "means": {
+    "en": "kitchen",
+    "az": "mətbəx",
+    "ru": "кухня"
+   },
+   "deck": "home"
+  },
+  "meie": {
+   "base": "meie",
+   "means": {
+    "en": "our; we",
+    "az": "bizim",
+    "ru": "наш"
+   }
+  },
+  "täiesti": {
+   "base": "täiesti",
+   "means": {
+    "en": "completely",
+    "az": "tamamilə",
+    "ru": "совсем"
+   },
+   "deck": "everyday"
+  },
+  "valge": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белый"
+   },
+   "deck": "describing"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "suured": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большие"
+   },
+   "deck": "basics"
+  },
+  "kõrged": {
+   "base": "kõrge",
+   "means": {
+    "en": "tall, high",
+    "az": "hündür",
+    "ru": "высокие"
+   }
+  },
+  "valged": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белые"
+   },
+   "deck": "describing"
+  },
+  "kapid": {
+   "base": "kapp",
+   "means": {
+    "en": "cupboards",
+    "az": "şkaflar",
+    "ru": "шкафы"
+   },
+   "deck": "kitchen"
+  },
+  "musta": {
+   "base": "must",
+   "means": {
+    "en": "black",
+    "az": "qara",
+    "ru": "чёрного"
+   },
+   "deck": "describing"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "ahi": {
+   "base": "ahi",
+   "means": {
+    "en": "oven",
+    "az": "soba, duxovka",
+    "ru": "духовка, печь"
+   },
+   "deck": "kitchen"
+  },
+  "kraanikauss": {
+   "base": "kraanikauss",
+   "means": {
+    "en": "sink",
+    "az": "əlüzyuyan",
+    "ru": "раковина"
+   },
+   "deck": "kitchen"
+  },
+  "induktsioonpliit": {
+   "base": "induktsioonpliit",
+   "means": {
+    "en": "induction hob",
+    "az": "induksiya plitəsi",
+    "ru": "индукционная плита"
+   }
+  },
+  "tööpind": {
+   "base": "tööpind",
+   "means": {
+    "en": "worktop",
+    "az": "iş səthi",
+    "ru": "столешница"
+   }
+  },
+  "köögis": {
+   "base": "köök",
+   "means": {
+    "en": "in the kitchen",
+    "az": "mətbəxdə",
+    "ru": "на кухне"
+   },
+   "deck": "home"
+  },
+  "loomulikult": {
+   "base": "loomulikult",
+   "means": {
+    "en": "naturally, of course",
+    "az": "təbii ki",
+    "ru": "естественно"
+   },
+   "deck": "everyday"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "teist": {
+   "base": "teine",
+   "means": {
+    "en": "other, different",
+    "az": "başqa",
+    "ru": "другого"
+   },
+   "deck": "numbers"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "selline": {
+   "base": "selline",
+   "means": {
+    "en": "such, like this",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "hallikas": {
+   "base": "hallikas",
+   "means": {
+    "en": "greyish",
+    "az": "bozumtul",
+    "ru": "сероватый"
+   }
+  },
+  "pruun": {
+   "base": "pruun",
+   "means": {
+    "en": "brown",
+    "az": "qəhvəyi",
+    "ru": "коричневый"
+   },
+   "deck": "describing"
+  },
+  "värv": {
+   "base": "värv",
+   "means": {
+    "en": "colour",
+    "az": "rəng",
+    "ru": "цвет"
+   },
+   "deck": "describing"
+  },
+  "sobib": {
+   "base": "sobima",
+   "means": {
+    "en": "suits",
+    "az": "uyğundur",
+    "ru": "подходит"
+   },
+   "deck": "moreverbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "kokku": {
+   "base": "kokku",
+   "means": {
+    "en": "together; in all (kokku leppima: to agree)",
+    "az": "bir yerə; cəmi",
+    "ru": "вместе; всего"
+   },
+   "deck": "cafe"
+  },
+  "interjööriga": {
+   "base": "interjöör",
+   "means": {
+    "en": "with the interior",
+    "az": "interyerlə",
+    "ru": "с интерьером"
+   }
+  },
+  "seinad": {
+   "base": "sein",
+   "means": {
+    "en": "walls",
+    "az": "divarlar",
+    "ru": "стены"
+   },
+   "deck": "home"
+  },
+  "roheline": {
+   "base": "roheline",
+   "means": {
+    "en": "green",
+    "az": "yaşıl",
+    "ru": "зелёный"
+   },
+   "deck": "describing"
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "niisugune": {
+   "base": "niisugune",
+   "means": {
+    "en": "such, that kind",
+    "az": "belə",
+    "ru": "такой"
+   },
+   "deck": "everyday"
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "tume": {
+   "base": "tume",
+   "means": {
+    "en": "dark",
+    "az": "tünd",
+    "ru": "тёмный"
+   },
+   "deck": "describing"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "oli": {
+   "base": "olema",
+   "means": {
+    "en": "was; had (tal oli: he had)",
+    "az": "idi, var idi",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "kunagi": {
+   "base": "kunagi",
+   "means": {
+    "en": "once, ever",
+    "az": "bir vaxtlar",
+    "ru": "когда-то"
+   },
+   "deck": "often"
+  },
+  "tapeet": {
+   "base": "tapeet",
+   "means": {
+    "en": "wallpaper",
+    "az": "divar kağızı",
+    "ru": "обои"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "kollane": {
+   "base": "kollane",
+   "means": {
+    "en": "yellow",
+    "az": "sarı",
+    "ru": "жёлтый"
+   },
+   "deck": "describing"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "punane": {
+   "base": "punane",
+   "means": {
+    "en": "red",
+    "az": "qırmızı",
+    "ru": "красный"
+   },
+   "deck": "describing"
+  },
+  "eriti": {
+   "base": "eriti",
+   "means": {
+    "en": "particularly (eriti ei, not really)",
+    "az": "xüsusilə (eriti ei, o qədər də yox)",
+    "ru": "особенно (eriti ei, не особо)"
+   },
+   "deck": "everyday"
+  },
+  "beež": {
+   "base": "beež",
+   "means": {
+    "en": "beige",
+    "az": "bej",
+    "ru": "бежевый"
+   }
+  },
+  "armas": {
+   "base": "armas",
+   "means": {
+    "en": "sweet, lovely",
+    "az": "şirin, sevimli",
+    "ru": "милый"
+   },
+   "deck": "looks"
+  },
+  "niisugused": {
+   "base": "niisugune",
+   "means": {
+    "en": "such",
+    "az": "belə",
+    "ru": "такие"
+   },
+   "deck": "everyday"
+  },
+  "tagasihoidlikud": {
+   "base": "tagasihoidlik",
+   "means": {
+    "en": "modest, subdued",
+    "az": "təvazökar, sadə",
+    "ru": "сдержанные"
+   },
+   "deck": "describing"
+  }
+ }
+}

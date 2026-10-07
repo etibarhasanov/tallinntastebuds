@@ -3782,11 +3782,15 @@
    *
    * The name over the turn is on a line of its own rather than in a column
    * beside it, which is how the sheets print it: a column for a name is a
-   * third of 390 px, and the Estonian is what the width is for.
+   * third of 390 px, and the Estonian is what the width is for. Under the
+   * name the turn goes sentence by sentence, the way a song goes line by
+   * line — each with its speaker and what it means under it — since a
+   * paragraph of Estonian over a paragraph of English leaves the reader to
+   * find which half of one is which half of the other.
    *
    * Every word is a press, the way a song's is, and opens the same box under
-   * its turn — pressLine() and wordBox() above, with the turn as the row.
-   * The turn's translation one line down says what the sentence means; the
+   * its sentence — pressLine() and wordBox() above, with the sentence as the
+   * row. The translation one line down says what the sentence means; the
    * box says what the one word in it does, which is the thing a sentence
    * translated whole hides. The words come from one glossary for every
    * conversation, `talkWords` in data/decks.json, which tools/decks.mjs
@@ -3807,16 +3811,21 @@
     return { event: 'flash_talk_word', props: { talk_id: talk.id } };
   }
 
-  /* One turn: who, the Estonian as a row of presses with its speaker, and
-     what it means. A word's box opens at the foot of the turn. */
+  /* One turn: who, and then each sentence of it — the Estonian as a row of
+     presses with its speaker, and what it means under it. A word's box opens
+     at the foot of its sentence. */
   function talkTurn(talk, turn) {
-    var row = el('div', { className: 'flash-talk-turn' }, [
+    var box = el('div', { className: 'flash-talk-turn' }, [
       el('p', { className: 'flash-talk-who mono', textContent: turn.who })
     ]);
-    row.appendChild(pressLine(talk, row, el('p', { className: 'flash-talk-et', lang: 'et' }), turn.et, talkTrack(talk)));
-    row.appendChild(speaker(turn.et, 'turn', 'flash-talk-say'));
-    row.appendChild(el('p', { className: 'flash-talk-means', textContent: means(turn) }));
-    return row;
+    turn.lines.forEach(function (line) {
+      var row = el('div', { className: 'flash-talk-line' });
+      row.appendChild(pressLine(talk, row, el('p', { className: 'flash-talk-et', lang: 'et' }), line.et, talkTrack(talk)));
+      row.appendChild(speaker(line.et, 'turn', 'flash-talk-say'));
+      row.appendChild(el('p', { className: 'flash-talk-means', textContent: means(line) }));
+      box.appendChild(row);
+    });
+    return box;
   }
 
   /* A scene: the question over it where there is one, in Estonian with what

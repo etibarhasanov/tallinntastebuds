@@ -24,38 +24,148 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Mul on väga tore pere. Mul on abikaasa Timo, ta on 39-aastane. Ta on sportlik ja töökas ja väga hea isa lastele ja temaga saab vahel nalja, mis mulle väga meeldib.",
-     "en": "I have a very nice family. I have a husband, Timo, he is 39 years old. He is sporty and hard-working and a very good father to the children, and sometimes he is lots of fun, which I like a lot.",
-     "az": "Mənim çox gözəl ailəm var. Ərim Timo var, onun 39 yaşı var. O, idmançıdır, çalışqandır, uşaqlara çox yaxşı atadır, bəzən onunla çox əylənmək olur, bu da mənim çox xoşuma gəlir.",
-     "ru": "У меня очень хорошая семья. У меня есть муж Timo, ему 39 лет. Он спортивный, трудолюбивый и очень хороший отец детям, и с ним иногда бывает очень весело, что мне очень нравится."
+     "lines": [
+      {
+       "et": "Mul on väga tore pere.",
+       "en": "I have a very nice family.",
+       "az": "Mənim çox gözəl ailəm var.",
+       "ru": "У меня очень хорошая семья."
+      },
+      {
+       "et": "Mul on abikaasa Timo, ta on 39-aastane.",
+       "en": "I have a husband, Timo, he is 39 years old.",
+       "az": "Ərim Timo var, onun 39 yaşı var.",
+       "ru": "У меня есть муж Timo, ему 39 лет."
+      },
+      {
+       "et": "Ta on sportlik ja töökas ja väga hea isa lastele ja temaga saab vahel nalja, mis mulle väga meeldib.",
+       "en": "He is sporty and hard-working and a very good father to the children, and sometimes he is lots of fun, which I like a lot.",
+       "az": "O, idmançıdır, çalışqandır, uşaqlara çox yaxşı atadır, bəzən onunla çox əylənmək olur, bu da mənim çox xoşuma gəlir.",
+       "ru": "Он спортивный, трудолюбивый и очень хороший отец детям, и с ним иногда бывает очень весело, что мне очень нравится."
+      }
+     ]
     },
     {
      "who": "Krista",
-     "et": "Ja siis on mul veel kolm last. Kõige vanem on tüdruk, Sigrid, ta on 14-aastane. Tema on väga aktiivne, tantsib ja sõidab lumelauaga. Ta on ka väga heasüdamlik ja abivalmis. Siis on Sigvard, kes on 12-aastane. Tema suur kirg on jalgpall, ta on väga auahne ja ta tahaks saada kuulsaks jalgpalluriks. Ja pesamuna on Sixten, kes on 9-aastane. Temale meeldib ka jalgpall, ta tahaks väga venna moodi olla, aga iseloomult on ta selline rõõmsameelne ja seltskondlik.",
-     "en": "And then I also have three children. The oldest is a girl, Sigrid, she is 14. She is very active, she dances and snowboards. She is also very good-hearted and helpful. Then there is Sigvard, who is 12. His great passion is football; he is very ambitious and would like to become a famous footballer. And the baby of the family is Sixten, who is 9. He likes football too and would very much like to be like his brother, but by nature he is more cheerful and outgoing.",
-     "az": "Bir də üç uşağım var. Ən böyüyü qızdır, Sigrid, onun 14 yaşı var. O, çox fəaldır, rəqs edir və snoubordla sürüşür. Həm də çox ürəyiyumşaq və köməksevərdir. Sonra Sigvard var, onun 12 yaşı var. Onun böyük ehtirası futboldur, çox iddialıdır və məşhur futbolçu olmaq istəyir. Ailənin sonbeşiyi isə Sixtendir, onun 9 yaşı var. O da futbolu sevir, qardaşına oxşamağı çox istəyir, amma xasiyyətcə daha şən və ünsiyyətcildir.",
-     "ru": "А ещё у меня трое детей. Старшая — девочка, Sigrid, ей 14 лет. Она очень активная, танцует и катается на сноуборде. Ещё она очень добрая и отзывчивая. Потом Sigvard, ему 12 лет. Его большая страсть — футбол, он очень честолюбивый и хотел бы стать знаменитым футболистом. А младшенький — Sixten, ему 9 лет. Ему тоже нравится футбол, он очень хотел бы быть как брат, но по характеру он такой весёлый и общительный."
+     "lines": [
+      {
+       "et": "Ja siis on mul veel kolm last.",
+       "en": "And then I also have three children.",
+       "az": "Bir də üç uşağım var.",
+       "ru": "А ещё у меня трое детей."
+      },
+      {
+       "et": "Kõige vanem on tüdruk, Sigrid, ta on 14-aastane.",
+       "en": "The oldest is a girl, Sigrid, she is 14.",
+       "az": "Ən böyüyü qızdır, Sigrid, onun 14 yaşı var.",
+       "ru": "Старшая — девочка, Sigrid, ей 14 лет."
+      },
+      {
+       "et": "Tema on väga aktiivne, tantsib ja sõidab lumelauaga.",
+       "en": "She is very active, she dances and snowboards.",
+       "az": "O, çox fəaldır, rəqs edir və snoubordla sürüşür.",
+       "ru": "Она очень активная, танцует и катается на сноуборде."
+      },
+      {
+       "et": "Ta on ka väga heasüdamlik ja abivalmis.",
+       "en": "She is also very good-hearted and helpful.",
+       "az": "Həm də çox ürəyiyumşaq və köməksevərdir.",
+       "ru": "Ещё она очень добрая и отзывчивая."
+      },
+      {
+       "et": "Siis on Sigvard, kes on 12-aastane.",
+       "en": "Then there is Sigvard, who is 12.",
+       "az": "Sonra Sigvard var, onun 12 yaşı var.",
+       "ru": "Потом Sigvard, ему 12 лет."
+      },
+      {
+       "et": "Tema suur kirg on jalgpall, ta on väga auahne ja ta tahaks saada kuulsaks jalgpalluriks.",
+       "en": "His great passion is football; he is very ambitious and would like to become a famous footballer.",
+       "az": "Onun böyük ehtirası futboldur, çox iddialıdır və məşhur futbolçu olmaq istəyir.",
+       "ru": "Его большая страсть — футбол, он очень честолюбивый и хотел бы стать знаменитым футболистом."
+      },
+      {
+       "et": "Ja pesamuna on Sixten, kes on 9-aastane.",
+       "en": "And the baby of the family is Sixten, who is 9.",
+       "az": "Ailənin sonbeşiyi isə Sixtendir, onun 9 yaşı var.",
+       "ru": "А младшенький — Sixten, ему 9 лет."
+      },
+      {
+       "et": "Temale meeldib ka jalgpall, ta tahaks väga venna moodi olla, aga iseloomult on ta selline rõõmsameelne ja seltskondlik.",
+       "en": "He likes football too and would very much like to be like his brother, but by nature he is more cheerful and outgoing.",
+       "az": "O da futbolu sevir, qardaşına oxşamağı çox istəyir, amma xasiyyətcə daha şən və ünsiyyətcildir.",
+       "ru": "Ему тоже нравится футбол, он очень хотел бы быть как брат, но по характеру он такой весёлый и общительный."
+      }
+     ]
     },
     {
      "who": "Kiur",
-     "et": "Õdesid-vendi mul ei ole. Mul on ema, ma elan ema juures. Siis mul on vanaemad-vanaisad. Ühed elavad Viimsis ja teised elavad natuke Tabasalust edasi.",
-     "en": "I don't have any brothers or sisters. I have a mother; I live with my mother. Then I have grandmothers and grandfathers. One pair live in Viimsi and the others live a bit past Tabasalu.",
-     "az": "Bacım-qardaşım yoxdur. Anam var, anamın yanında yaşayıram. Bir də nənələrim-babalarım var. Biri Viimsidə yaşayır, o biriləri isə Tabasalunun bir az o tayında.",
-     "ru": "Сестёр и братьев у меня нет. У меня есть мама, я живу у мамы. Ещё у меня есть бабушки и дедушки. Одни живут в Виймси, а другие чуть дальше Табасалу."
+     "lines": [
+      {
+       "et": "Õdesid-vendi mul ei ole.",
+       "en": "I don't have any brothers or sisters.",
+       "az": "Bacım-qardaşım yoxdur.",
+       "ru": "Сестёр и братьев у меня нет."
+      },
+      {
+       "et": "Mul on ema, ma elan ema juures.",
+       "en": "I have a mother; I live with my mother.",
+       "az": "Anam var, anamın yanında yaşayıram.",
+       "ru": "У меня есть мама, я живу у мамы."
+      },
+      {
+       "et": "Siis mul on vanaemad-vanaisad.",
+       "en": "Then I have grandmothers and grandfathers.",
+       "az": "Bir də nənələrim-babalarım var.",
+       "ru": "Ещё у меня есть бабушки и дедушки."
+      },
+      {
+       "et": "Ühed elavad Viimsis ja teised elavad natuke Tabasalust edasi.",
+       "en": "One pair live in Viimsi and the others live a bit past Tabasalu.",
+       "az": "Biri Viimsidə yaşayır, o biriləri isə Tabasalunun bir az o tayında.",
+       "ru": "Одни живут в Виймси, а другие чуть дальше Табасалу."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Mul on suur pere, mul on kaks õde ja üks vend ja ema ja isa. Me oleme sellised hästi jutukad, ma arvan.",
-     "en": "I have a big family: I have two sisters and one brother, and a mother and a father. We are a very talkative lot, I think.",
-     "az": "Mənim böyük ailəm var: iki bacım, bir qardaşım, anam və atam var. Məncə, biz çox danışqan adamlarıq.",
-     "ru": "У меня большая семья: две сестры, один брат, мама и папа. Мы такие очень разговорчивые, я думаю."
+     "lines": [
+      {
+       "et": "Mul on suur pere, mul on kaks õde ja üks vend ja ema ja isa.",
+       "en": "I have a big family: I have two sisters and one brother, and a mother and a father.",
+       "az": "Mənim böyük ailəm var: iki bacım, bir qardaşım, anam və atam var.",
+       "ru": "У меня большая семья: две сестры, один брат, мама и папа."
+      },
+      {
+       "et": "Me oleme sellised hästi jutukad, ma arvan.",
+       "en": "We are a very talkative lot, I think.",
+       "az": "Məncə, biz çox danışqan adamlarıq.",
+       "ru": "Мы такие очень разговорчивые, я думаю."
+      }
+     ]
     },
     {
      "who": "Ingrid",
-     "et": "Mul on kolm last. Kõige vanem on tütar, siis järgmine on poeg ja siis mul on veel üks poeg. Ma olin siis 39-aastane, kui viimane poeg sündis.",
-     "en": "I have three children. The oldest is a daughter, the next one is a son, and then I have one more son. I was 39 when my last son was born.",
-     "az": "Üç uşağım var. Ən böyüyü qızdır, sonrakı oğuldur, bir oğlum da var. Sonuncu oğlum doğulanda mənim 39 yaşım var idi.",
-     "ru": "У меня трое детей. Старшая — дочь, следующий — сын, и потом у меня есть ещё один сын. Мне было 39 лет, когда родился последний сын."
+     "lines": [
+      {
+       "et": "Mul on kolm last.",
+       "en": "I have three children.",
+       "az": "Üç uşağım var.",
+       "ru": "У меня трое детей."
+      },
+      {
+       "et": "Kõige vanem on tütar, siis järgmine on poeg ja siis mul on veel üks poeg.",
+       "en": "The oldest is a daughter, the next one is a son, and then I have one more son.",
+       "az": "Ən böyüyü qızdır, sonrakı oğuldur, bir oğlum da var.",
+       "ru": "Старшая — дочь, следующий — сын, и потом у меня есть ещё один сын."
+      },
+      {
+       "et": "Ma olin siis 39-aastane, kui viimane poeg sündis.",
+       "en": "I was 39 when my last son was born.",
+       "az": "Sonuncu oğlum doğulanda mənim 39 yaşım var idi.",
+       "ru": "Мне было 39 лет, когда родился последний сын."
+      }
+     ]
     }
    ]
   }

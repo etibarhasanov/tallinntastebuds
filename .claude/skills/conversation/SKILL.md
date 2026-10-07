@@ -6,6 +6,7 @@ description: Add a conversation to the flashcards from a sheet of a language cou
 # Add a conversation
 
 A conversation is a sheet from a language course, written out turn by turn
+and sentence by sentence
 under the **Conversations** part of the flashcards: who said it, the Estonian,
 and what it means in the three languages the cards are written in. It is one
 entry under `talks` in `data/decks.json`, written out into `data/decks/` by
@@ -47,8 +48,8 @@ pdftoppm -r 110 -png <sheet>.pdf <dir>/<name>
 then open each PNG with the Read tool, which shows it as an image, and type
 the Estonian out. Read it twice: õ, ä, ö and ü are the letters a quick reading
 drops, and *„…“* quotes and an ellipsis are part of the text. Keep the
-sheet's own paragraphing of a turn; a turn is one string, sentences and all,
-because the speaker beside it says the whole turn.
+sheet's own paragraphing into turns, and then split each turn into its
+sentences — **A turn is its sentences** below.
 
 Four things were done to the first ten and are done again:
 
@@ -81,12 +82,25 @@ order the shelf draws:
     {
       "ask": { "et": "Kas sa näed unenägusid?", "en": "Do you dream?", "az": "…", "ru": "…" },
       "turns": [
-        { "who": "Krista", "et": "Jaa, vahel näen unenägusid. …", "en": "Yes, sometimes I dream. …", "az": "…", "ru": "…" }
+        {
+          "who": "Krista",
+          "lines": [
+            { "et": "Jaa, vahel näen unenägusid.", "en": "Yes, sometimes I dream.", "az": "…", "ru": "…" },
+            { "et": "…", "en": "…", "az": "…", "ru": "…" }
+          ]
+        }
       ]
     }
   ]
 }
 ```
+
+**A turn is its sentences.** Split it at the sheet's own full stops,
+question and exclamation marks — never at an ellipsis — and give every
+sentence its own English, Azerbaijani and Russian, so the reader never has to
+find which half of a paragraph is which; the speaker beside each says that
+one sentence. Where the sheet's English joins two Estonian sentences with a
+semicolon or splits one in two, follow the Estonian.
 
 What `tools/validate.mjs` holds it to:
 
@@ -95,23 +109,26 @@ What `tools/validate.mjs` holds it to:
 | `id` | lowercase slug, `talk-` in front by convention, not a deck's, a lesson's or a song's, and not `talks`, `grammar`, `songs`, `missed`, `review`, `index` or `spoken` | error |
 | `added` | a day, `YYYY-MM-DD`; the Start card calls the newest *New* for two weeks after it | missing warns, malformed fails |
 | `name`, `why` | objects keyed by language: `en` required, `az` and `ru` warned about, never `et` | error / warning |
-| `taste` | the opening of one of the turns, exactly, and at most 36 characters — the line the Start card shows | error |
+| `taste` | the opening of one of the sentences, or of a turn read straight through, exactly, and at most 36 characters — the line the Start card shows | error |
 | `source` | a name, optional; drawn as *From {who}, a B1 course* | error if not a string |
 | `scenes` | a non-empty list. Each has `turns`, a non-empty list, and an optional `ask` with `et` and the three meanings | error |
-| a turn | `who` and `et` non-empty; `en` required, `az` and `ru` warned about; never `et` among the meanings | error / warning |
-| every word | each word of every `ask` and turn, lowercased, has an entry in `talkWords` or in the conversation's own `words` | error |
+| a turn | `who` non-empty and `lines` a non-empty list | error |
+| a line | `et` non-empty; `en` required, `az` and `ru` warned about; never `et` among the meanings | error / warning |
+| every word | each word of every `ask` and sentence, lowercased, has an entry in `talkWords` or in the conversation's own `words` | error |
 | `talkWords` | the glossary every conversation shares: per word, `base` and `means` (`en` required), an optional `note`, never a `deck`; an entry no conversation says fails | error |
 | `words` | optional, on the conversation: the same shape, for a word that means something else in this sheet; an entry nobody in it says fails | error |
 
-An interview sheet is one scene per question. A dialogue sheet is one scene
-with no `ask`. Nothing in a conversation is a card, so there is no deck to
+An interview sheet is one scene per question, in the sheet's order, a
+question asked twice included. A dialogue sheet is one scene with no `ask`;
+its heading — *Ostmine, kauba uurimine, allahindlus* — is the
+conversation's `name`, not a question. Nothing in a conversation is a card, so there is no deck to
 make; but every word is a press, so every word needs a gloss.
 
 ## The words
 
 After the entry, `node tools/validate.mjs` names every word in the new sheet
 that `talkWords` does not know yet — on a sheet from the same course that is
-a third to a half of them, since the fifteen so far share most of their
+a quarter to a half of them, since the twenty so far share most of their
 words. Write each one into `talkWords`, keyed by the word as written and
 lowercased (`Järvelt` is `järvelt`; a hyphen splits a word, so
 *Kohtla-Järve* is two and *39-aastane* is `aastane`): its `base`, the form a
@@ -121,7 +138,7 @@ used two ways across sheets, say both with the phrase each is in (*kui*:
 *if; when; than; how*), and where one sheet uses it a way the entry does not
 cover, give that sheet its own `words` entry rather than bending the
 glossary. Glosses written by hand in a scratch file, `form|base|en|az|ru` a
-line, and a short script that merges them sorted is how the first nine
+line, and a short script that merges them sorted is how the first eleven
 hundred went in. Never write a `deck`: `tools/decks.mjs` finds where a word
 is taught from its `base`, so the base has to be the bare dictionary form a
 card's front would be.
@@ -129,7 +146,7 @@ card's front would be.
 ## The translations
 
 The English is the sheet's. The Azerbaijani and the Russian are written here,
-turn by turn, in the register of the Estonian — *sina* is *сен* and *ты*, the
+sentence by sentence, in the register of the Estonian — *sina* is *сен* and *ты*, the
 waiter's *teie* is *siz* and *вы* — and they want a native reader the way the
 songs' did; say so in the PR. Write the `why` so it reads as a line under a
 tile at 390 px: what happens, not what the sheet is called.
@@ -138,7 +155,8 @@ tile at 390 px: what happens, not what the sheet is called.
 
 1. Render and read the sheet, as above. Write the entry.
 2. `node tools/decks.mjs`, which writes the conversation's own file into
-   `data/decks/`, its row into the index and its turns into the voice's list.
+   `data/decks/`, its row into the index and its sentences into the voice's
+   list.
    The routes read that folder and not the source, so a conversation not
    written out is one the page cannot open and the voice will not say.
 3. `node tools/sitemap.mjs`, because every conversation is an address.
@@ -154,8 +172,9 @@ tile at 390 px: what happens, not what the sheet is called.
    light and a dark style. Press a speaker: the button should go quiet with
    the voice's own line when the route is stubbed, and the page go on.
 6. Press a few words of the new tile — one in a question, one at the foot of
-   a long turn — and see the box open under it and shut on a second press.
-7. The README section's count — *there are fifteen* — and the line in **Files**
+   a long turn — and see the box open under its sentence and shut on a second
+   press.
+7. The README section's count — *there are twenty* — and the line in **Files**
    move with it, and so does this file if the sheet taught a step nobody had
    written down.
 
@@ -182,12 +201,17 @@ translations are the session's.
 
 ## Where it goes wrong
 
-- A `taste` that is not exactly the opening of a turn, or that runs past 36
+- A `taste` that is not exactly the opening of a sentence or a turn, or that runs past 36
   characters — the first ten tripped on the second with a greeting of 38.
 - The source edited and `node tools/decks.mjs` not run: CI fails on the file
   it would write, and under a local server the new tile is simply not there.
-- An `et` among the meanings of a turn: the validator fails it, since Estonian
-  is what the turn is, never what it means.
+- An `et` among the meanings of a line: the validator fails it, since Estonian
+  is what the line is, never what it means.
+- A turn whose languages split into different numbers of sentences — the
+  sheet's English with two joined by a semicolon. Follow the Estonian.
+- An id another batch already took. The second and third batches were
+  written at once, and both reached for `talk-home`; the third's is
+  `talk-like-home`. `git fetch` and look at `talks` before naming one.
 - Text read off a rendered page with an õ read as an o. Read the Estonian
   twice, and where the page is blurry, render it at a higher `-r`.
 - A new press name — a new `TTBTrack.event` — without its row in the README's

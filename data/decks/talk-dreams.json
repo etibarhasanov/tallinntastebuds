@@ -24,17 +24,37 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Jaa, vahel näen unenägusid. Vahel ma mäletan neid hommikul, teinekord jälle ei mäleta.",
-     "en": "Yes, sometimes I dream. Sometimes I remember them in the morning, and other times I don't.",
-     "az": "Hə, bəzən yuxu görürəm. Bəzən səhər yadımda qalır, bəzən də yox.",
-     "ru": "Да, иногда вижу сны. Иногда помню их утром, а иногда не помню."
+     "lines": [
+      {
+       "et": "Jaa, vahel näen unenägusid.",
+       "en": "Yes, sometimes I dream.",
+       "az": "Hə, bəzən yuxu görürəm.",
+       "ru": "Да, иногда вижу сны."
+      },
+      {
+       "et": "Vahel ma mäletan neid hommikul, teinekord jälle ei mäleta.",
+       "en": "Sometimes I remember them in the morning, and other times I don't.",
+       "az": "Bəzən səhər yadımda qalır, bəzən də yox.",
+       "ru": "Иногда помню их утром, а иногда не помню."
+      }
+     ]
     },
     {
      "who": "Kiur",
-     "et": "Ei näe. Nüüd juba paar aastat ei ole näinud.",
-     "en": "I don't. I haven't for a couple of years now.",
-     "az": "Görmürəm. Artıq bir-iki ildir görmürəm.",
-     "ru": "Нет. Уже пару лет не вижу."
+     "lines": [
+      {
+       "et": "Ei näe.",
+       "en": "I don't.",
+       "az": "Görmürəm.",
+       "ru": "Нет."
+      },
+      {
+       "et": "Nüüd juba paar aastat ei ole näinud.",
+       "en": "I haven't for a couple of years now.",
+       "az": "Artıq bir-iki ildir görmürəm.",
+       "ru": "Уже пару лет не вижу."
+      }
+     ]
     }
    ]
   },
@@ -48,31 +68,95 @@
    "turns": [
     {
      "who": "Kiur",
-     "et": "Ei mäleta.",
-     "en": "I don't remember.",
-     "az": "Yadımda deyil.",
-     "ru": "Не помню."
+     "lines": [
+      {
+       "et": "Ei mäleta.",
+       "en": "I don't remember.",
+       "az": "Yadımda deyil.",
+       "ru": "Не помню."
+      }
+     ]
     },
     {
      "who": "Krista",
-     "et": "Viimati ma nägin unes sellist asja, et mul ei tulnud mitte midagi välja. Mul läks kõik nässu. Ma jäin bussidest maha ja unustasin kõik asjad ära.",
-     "en": "Last time I dreamt that I couldn't get anything right. Everything went wrong. I missed buses and forgot everything.",
-     "az": "Sonuncu dəfə yuxuda gördüm ki, heç nə alınmır. Hər şey korlandı. Avtobuslara gecikdim və hər şeyi unutdum.",
-     "ru": "В последний раз мне снилось, что у меня ничего не получается. Всё пошло наперекосяк. Я опаздывала на автобусы и всё забывала."
+     "lines": [
+      {
+       "et": "Viimati ma nägin unes sellist asja, et mul ei tulnud mitte midagi välja.",
+       "en": "Last time I dreamt that I couldn't get anything right.",
+       "az": "Sonuncu dəfə yuxuda gördüm ki, heç nə alınmır.",
+       "ru": "В последний раз мне снилось, что у меня ничего не получается."
+      },
+      {
+       "et": "Mul läks kõik nässu.",
+       "en": "Everything went wrong.",
+       "az": "Hər şey korlandı.",
+       "ru": "Всё пошло наперекосяк."
+      },
+      {
+       "et": "Ma jäin bussidest maha ja unustasin kõik asjad ära.",
+       "en": "I missed buses and forgot everything.",
+       "az": "Avtobuslara gecikdim və hər şeyi unutdum.",
+       "ru": "Я опаздывала на автобусы и всё забывала."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Ma ei mäleta oma viimaseid unenägusid. Aga mul on üks hirmuunenägu, mida ma näen kogu aeg. See on hästi tavaline. Ma näen keskkooli ja et mul ei ole ühtegi bioloogia kontrolltööd tehtud ja ma jään selle pärast kaheteistkümnendasse klassi istuma. See on mu hirmuunenägu, ma olen seda näinud hästi palju kordi.",
-     "en": "I don't remember my last dreams. But I have one nightmare that I have all the time. It is very ordinary. I see my secondary school, and that I haven't done a single biology test, and because of that I have to repeat the twelfth grade. That is my nightmare; I have had it a great many times.",
-     "az": "Son yuxularım yadımda deyil. Amma bir qorxulu yuxum var ki, onu həmişə görürəm. Çox adi bir yuxudur. Orta məktəbi görürəm və ki, biologiyadan heç bir yoxlama işi yazmamışam, ona görə də on ikinci sinifdə qalıram. Bu mənim qorxulu yuxumdur, onu çox dəfə görmüşəm.",
-     "ru": "Я не помню своих последних снов. Но есть один кошмар, который мне снится всё время. Он совсем обычный. Я вижу школу и то, что у меня не написана ни одна контрольная по биологии, и из-за этого я остаюсь на второй год в двенадцатом классе. Это мой кошмар, я видел его очень много раз."
+     "lines": [
+      {
+       "et": "Ma ei mäleta oma viimaseid unenägusid.",
+       "en": "I don't remember my last dreams.",
+       "az": "Son yuxularım yadımda deyil.",
+       "ru": "Я не помню своих последних снов."
+      },
+      {
+       "et": "Aga mul on üks hirmuunenägu, mida ma näen kogu aeg.",
+       "en": "But I have one nightmare that I have all the time.",
+       "az": "Amma bir qorxulu yuxum var ki, onu həmişə görürəm.",
+       "ru": "Но есть один кошмар, который мне снится всё время."
+      },
+      {
+       "et": "See on hästi tavaline.",
+       "en": "It is very ordinary.",
+       "az": "Çox adi bir yuxudur.",
+       "ru": "Он совсем обычный."
+      },
+      {
+       "et": "Ma näen keskkooli ja et mul ei ole ühtegi bioloogia kontrolltööd tehtud ja ma jään selle pärast kaheteistkümnendasse klassi istuma.",
+       "en": "I see my secondary school, and that I haven't done a single biology test, and because of that I have to repeat the twelfth grade.",
+       "az": "Orta məktəbi görürəm və ki, biologiyadan heç bir yoxlama işi yazmamışam, ona görə də on ikinci sinifdə qalıram.",
+       "ru": "Я вижу школу и то, что у меня не написана ни одна контрольная по биологии, и из-за этого я остаюсь на второй год в двенадцатом классе."
+      },
+      {
+       "et": "See on mu hirmuunenägu, ma olen seda näinud hästi palju kordi.",
+       "en": "That is my nightmare; I have had it a great many times.",
+       "az": "Bu mənim qorxulu yuxumdur, onu çox dəfə görmüşəm.",
+       "ru": "Это мой кошмар, я видел его очень много раз."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Ikka näen unenägusid. Aga kas ma neid mäletan või ei mäleta… Tavaliselt mäletan neid unenägusid, kui näiteks minu esivanemad tulevad ja räägivad minuga, neid ma mäletan väga hästi. Aga jaburaid unenägusid ma ei mäleta, sest nad ei tähenda minu jaoks midagi.",
-     "en": "I do dream. But whether I remember them or not… Usually I remember the dreams where, for instance, my ancestors come and talk to me; those I remember very well. But the nonsense dreams I don't remember, because they don't mean anything to me.",
-     "az": "Yuxu görürəm. Amma yadımda qalır, ya yox… Adətən o yuxular yadımda qalır ki, məsələn, əcdadlarım gəlib mənimlə danışırlar — onları çox yaxşı xatırlayıram. Amma mənasız yuxular yadımda qalmır, çünki mənim üçün heç nə ifadə etmirlər.",
-     "ru": "Сны я вижу. А вот помню их или нет… Обычно я помню те сны, где, например, приходят мои предки и разговаривают со мной, — их я помню очень хорошо. А бессмысленные сны я не помню, потому что для меня они ничего не значат."
+     "lines": [
+      {
+       "et": "Ikka näen unenägusid.",
+       "en": "I do dream.",
+       "az": "Yuxu görürəm.",
+       "ru": "Сны я вижу."
+      },
+      {
+       "et": "Aga kas ma neid mäletan või ei mäleta… Tavaliselt mäletan neid unenägusid, kui näiteks minu esivanemad tulevad ja räägivad minuga, neid ma mäletan väga hästi.",
+       "en": "But whether I remember them or not… Usually I remember the dreams where, for instance, my ancestors come and talk to me; those I remember very well.",
+       "az": "Amma yadımda qalır, ya yox… Adətən o yuxular yadımda qalır ki, məsələn, əcdadlarım gəlib mənimlə danışırlar — onları çox yaxşı xatırlayıram.",
+       "ru": "А вот помню их или нет… Обычно я помню те сны, где, например, приходят мои предки и разговаривают со мной, — их я помню очень хорошо."
+      },
+      {
+       "et": "Aga jaburaid unenägusid ma ei mäleta, sest nad ei tähenda minu jaoks midagi.",
+       "en": "But the nonsense dreams I don't remember, because they don't mean anything to me.",
+       "az": "Amma mənasız yuxular yadımda qalmır, çünki mənim üçün heç nə ifadə etmirlər.",
+       "ru": "А бессмысленные сны я не помню, потому что для меня они ничего не значат."
+      }
+     ]
     }
    ]
   }

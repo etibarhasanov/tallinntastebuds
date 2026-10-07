@@ -24,24 +24,72 @@
    "turns": [
     {
      "who": "Krista",
-     "et": "Esimesena räägin ma tavaliselt oma kõige väiksema lapsega, kes on kaheksa-aastane. Tema ärkab kõige varem üles, kuigi ta kooli ei lähe kõige varem.",
-     "en": "The first one I usually talk to is my youngest child, who is eight years old. He wakes up the earliest, although he isn't the one who goes to school the earliest.",
-     "az": "İlk olaraq adətən ən kiçik uşağımla danışıram, səkkiz yaşı var. O hamıdan tez oyanır, baxmayaraq ki, məktəbə hamıdan tez getmir.",
-     "ru": "Первым делом я обычно разговариваю со своим младшим ребёнком, ему восемь лет. Он просыпается раньше всех, хотя в школу раньше всех не идёт."
+     "lines": [
+      {
+       "et": "Esimesena räägin ma tavaliselt oma kõige väiksema lapsega, kes on kaheksa-aastane.",
+       "en": "The first one I usually talk to is my youngest child, who is eight years old.",
+       "az": "İlk olaraq adətən ən kiçik uşağımla danışıram, səkkiz yaşı var.",
+       "ru": "Первым делом я обычно разговариваю со своим младшим ребёнком, ему восемь лет."
+      },
+      {
+       "et": "Tema ärkab kõige varem üles, kuigi ta kooli ei lähe kõige varem.",
+       "en": "He wakes up the earliest, although he isn't the one who goes to school the earliest.",
+       "az": "O hamıdan tez oyanır, baxmayaraq ki, məktəbə hamıdan tez getmir.",
+       "ru": "Он просыпается раньше всех, хотя в школу раньше всех не идёт."
+      }
+     ]
     },
     {
      "who": "Mihkel",
-     "et": "Ma räägin oma elukaaslasega. Esimese asjana ma ütlen talle tavaliselt, mis kell on. Ja siis ma küsin, kas ta tahab, et ma teen talle kohvi.",
-     "en": "I talk to my partner. The first thing I usually tell her is what time it is. And then I ask whether she wants me to make her a coffee.",
-     "az": "Həyat yoldaşımla danışıram. İlk olaraq adətən ona saatın neçə olduğunu deyirəm. Sonra soruşuram ki, ona kofe hazırlamağımı istəyir, ya yox.",
-     "ru": "Я разговариваю со своей девушкой. Первым делом я обычно говорю ей, который час. А потом спрашиваю, хочет ли она, чтобы я сварил ей кофе."
+     "lines": [
+      {
+       "et": "Ma räägin oma elukaaslasega.",
+       "en": "I talk to my partner.",
+       "az": "Həyat yoldaşımla danışıram.",
+       "ru": "Я разговариваю со своей девушкой."
+      },
+      {
+       "et": "Esimese asjana ma ütlen talle tavaliselt, mis kell on.",
+       "en": "The first thing I usually tell her is what time it is.",
+       "az": "İlk olaraq adətən ona saatın neçə olduğunu deyirəm.",
+       "ru": "Первым делом я обычно говорю ей, который час."
+      },
+      {
+       "et": "Ja siis ma küsin, kas ta tahab, et ma teen talle kohvi.",
+       "en": "And then I ask whether she wants me to make her a coffee.",
+       "az": "Sonra soruşuram ki, ona kofe hazırlamağımı istəyir, ya yox.",
+       "ru": "А потом спрашиваю, хочет ли она, чтобы я сварил ей кофе."
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "No sel ajal, kui mina tõusen, naine magab, sest ta töötab kodus. Ta tõuseb natuke hiljem kui mina. Kui mina lähen tööle, siis tema just ärkab. Ma ei räägigi hommikul kellegagi, mulle meeldib selline vaikus.",
-     "en": "Well, when I get up my wife is asleep, because she works from home. She gets up a little later than I do. When I leave for work, she is just waking up. So I don't really talk to anyone in the morning; I like that kind of quiet.",
-     "az": "Mən duranda arvadım yatır, çünki o evdə işləyir. O məndən bir az gec durur. Mən işə gedəndə o təzəcə oyanır. Səhər heç kimlə danışmıram da — mənə belə sakitlik xoşdur.",
-     "ru": "Ну, когда я встаю, жена спит, потому что она работает дома. Она встаёт немного позже меня. Когда я ухожу на работу, она как раз просыпается. Так что утром я ни с кем и не разговариваю — мне нравится такая тишина."
+     "lines": [
+      {
+       "et": "No sel ajal, kui mina tõusen, naine magab, sest ta töötab kodus.",
+       "en": "Well, when I get up my wife is asleep, because she works from home.",
+       "az": "Mən duranda arvadım yatır, çünki o evdə işləyir.",
+       "ru": "Ну, когда я встаю, жена спит, потому что она работает дома."
+      },
+      {
+       "et": "Ta tõuseb natuke hiljem kui mina.",
+       "en": "She gets up a little later than I do.",
+       "az": "O məndən bir az gec durur.",
+       "ru": "Она встаёт немного позже меня."
+      },
+      {
+       "et": "Kui mina lähen tööle, siis tema just ärkab.",
+       "en": "When I leave for work, she is just waking up.",
+       "az": "Mən işə gedəndə o təzəcə oyanır.",
+       "ru": "Когда я ухожу на работу, она как раз просыпается."
+      },
+      {
+       "et": "Ma ei räägigi hommikul kellegagi, mulle meeldib selline vaikus.",
+       "en": "So I don't really talk to anyone in the morning; I like that kind of quiet.",
+       "az": "Səhər heç kimlə danışmıram da — mənə belə sakitlik xoşdur.",
+       "ru": "Так что утром я ни с кем и не разговариваю — мне нравится такая тишина."
+      }
+     ]
     }
    ]
   },
@@ -55,24 +103,60 @@
    "turns": [
     {
      "who": "Kiur",
-     "et": "Rääkisin oma emaga. Head ööd!",
-     "en": "With my mother. Good night!",
-     "az": "Anamla danışdım. Gecən xeyrə!",
-     "ru": "Говорил с мамой. Спокойной ночи!"
+     "lines": [
+      {
+       "et": "Rääkisin oma emaga.",
+       "en": "With my mother.",
+       "az": "Anamla danışdım.",
+       "ru": "Говорил с мамой."
+      },
+      {
+       "et": "Head ööd!",
+       "en": "Good night!",
+       "az": "Gecən xeyrə!",
+       "ru": "Спокойной ночи!"
+      }
+     ]
     },
     {
      "who": "Krista",
-     "et": "Ma arvan, et ma rääkisin eile viimati oma abikaasaga. Ma arvan, et ma ütlesin talle „Head ööd!“.",
-     "en": "I think the last one I talked to yesterday was my husband. I think I told him “Good night!”",
-     "az": "Məncə, dünən ən son ərimlə danışdım. Məncə, ona „Gecən xeyrə!“ dedim.",
-     "ru": "Думаю, последним вчера я разговаривала с мужем. Думаю, я сказала ему: «Спокойной ночи!»"
+     "lines": [
+      {
+       "et": "Ma arvan, et ma rääkisin eile viimati oma abikaasaga.",
+       "en": "I think the last one I talked to yesterday was my husband.",
+       "az": "Məncə, dünən ən son ərimlə danışdım.",
+       "ru": "Думаю, последним вчера я разговаривала с мужем."
+      },
+      {
+       "et": "Ma arvan, et ma ütlesin talle „Head ööd!“.",
+       "en": "I think I told him “Good night!”",
+       "az": "Məncə, ona „Gecən xeyrə!“ dedim.",
+       "ru": "Думаю, я сказала ему: «Спокойной ночи!»"
+      }
+     ]
     },
     {
      "who": "Aleksandr",
-     "et": "Ikka oma naisega rääkisin. Ma rääkisin sellest, et ma olen natuke väsinud ja et mul on palju tööd. Ja siis lõpus ütlesin talle: „Musi-musi, kalli-kalli!“, nagu ikka.",
-     "en": "With my wife, as always. I said that I was a little tired and that I had a lot of work. And then at the end I told her, “Kiss-kiss, hug-hug!”, like always.",
-     "az": "Yenə arvadımla danışdım. Dedim ki, bir az yorğunam və işim çoxdur. Axırda da həmişəki kimi dedim: „Öpürəm, qucaqlayıram!“",
-     "ru": "Как всегда, с женой. Я говорил о том, что немного устал и что у меня много работы. А в конце сказал ей, как всегда: «Чмок-чмок, обнимаю!»"
+     "lines": [
+      {
+       "et": "Ikka oma naisega rääkisin.",
+       "en": "With my wife, as always.",
+       "az": "Yenə arvadımla danışdım.",
+       "ru": "Как всегда, с женой."
+      },
+      {
+       "et": "Ma rääkisin sellest, et ma olen natuke väsinud ja et mul on palju tööd.",
+       "en": "I said that I was a little tired and that I had a lot of work.",
+       "az": "Dedim ki, bir az yorğunam və işim çoxdur.",
+       "ru": "Я говорил о том, что немного устал и что у меня много работы."
+      },
+      {
+       "et": "Ja siis lõpus ütlesin talle: „Musi-musi, kalli-kalli!“, nagu ikka.",
+       "en": "And then at the end I told her, “Kiss-kiss, hug-hug!”, like always.",
+       "az": "Axırda da həmişəki kimi dedim: „Öpürəm, qucaqlayıram!“",
+       "ru": "А в конце сказал ей, как всегда: «Чмок-чмок, обнимаю!»"
+      }
+     ]
     }
    ]
   }

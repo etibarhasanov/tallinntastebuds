@@ -173,14 +173,14 @@ function deckList(decks, lessons, songs, talks) {
 
 /* And one conversation, as the talk and what it means: each scene's question
    as a heading with its English under it, and its turns as a description
-   list, who said it and the Estonian as the term and what it means in each
-   of the three languages under it. Somebody searching for how to book a
-   table in Estonian, or for what "jätku leiba" means, is asking what this
-   page answers. */
+   list, a term for each sentence — who said it in front of a turn's first —
+   and what it means in each of the three languages under it. Somebody
+   searching for how to book a table in Estonian, or for what "jätku leiba"
+   means, is asking what this page answers. */
 function talkWords(talk) {
-  const turn = (one) =>
-    '<dt lang="et">' + esc(one.who) + ': ' + esc(one.et) + '</dt>' +
-    DECK_LANGS.map((lang) => (one[lang] ? '<dd lang="' + lang + '">' + esc(one[lang]) + '</dd>' : '')).join('');
+  const turn = (one) => (one.lines || []).map((line, i) =>
+    '<dt lang="et">' + (i ? '' : esc(one.who) + ': ') + esc(line.et) + '</dt>' +
+    DECK_LANGS.map((lang) => (line[lang] ? '<dd lang="' + lang + '">' + esc(line[lang]) + '</dd>' : '')).join('')).join('');
   const scene = (one) =>
     (one.ask ? '<h2 lang="et">' + esc(one.ask.et) + '</h2><p>' + esc(inEnglish(one.ask)) + '</p>' : '') +
     '<dl>' + one.turns.map(turn).join('') + '</dl>';

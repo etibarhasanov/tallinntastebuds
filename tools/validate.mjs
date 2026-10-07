@@ -775,14 +775,14 @@ if (decksFile !== null) {
        the reason a lesson's is; a name and a line; `source`, whose sheet it
        is, a name and so never translated; and `scenes`, each an optional
        `ask` — the question put, the Estonian in `et` and what it means — over
-       a list of `turns`, each `who` said it, the Estonian in `et` and what it
-       means. A turn's `who` is a name or an Estonian role word and is never
-       translated either. Nothing in one is a card, but every word in one is
-       a press, as a song's is: `talkWords`, one glossary for every
+       a list of `turns`, each `who` said it and its `lines`, a sentence each,
+       the Estonian in `et` and what it means. A turn's `who` is a name or an
+       Estonian role word and is never translated either. Nothing in one is
+       a card, but every word in one is a press, as a song's is: `talkWords`, one glossary for every
        conversation keyed by the word as it is written, lowercased, says what
        each means, and a conversation's own `words` says it differently for a
-       word that means something else there. So a question or a turn with a
-       word neither knows fails, and so does a glossary entry no conversation
+       word that means something else there. So a question or a sentence with
+       a word neither knows fails, and so does a glossary entry no conversation
        says and an own entry its conversation does not. Where a word is
        taught on the shelf is not written here — tools/decks.mjs finds it.
        See **Conversations, which are read** under **Flashcards** in
@@ -823,7 +823,12 @@ if (decksFile !== null) {
       }
       tasted(talk.taste, where, `conversation "${talk.id}"`, (taste) =>
         talk.scenes.some((scene) => isPlainObject(scene) && Array.isArray(scene.turns) &&
-          scene.turns.some((turn) => turn && String(turn.et || '').indexOf(taste) === 0)));
+          scene.turns.some((turn) => {
+            /* The opening of a sentence, or of a turn read straight through —
+               "Vabandust! Hei! Halloo!" is three sentences and one taste. */
+            const lines = turn && Array.isArray(turn.lines) ? turn.lines.map((line) => String(line && line.et || '')) : [];
+            return lines.join(' ').indexOf(taste) === 0 || lines.some((et) => et.indexOf(taste) === 0);
+          })));
       talk.scenes.forEach((scene, j) => {
         const at = `${where} → scenes[${j}]`;
         if (!isPlainObject(scene)) { fail(at, 'a scene is an object'); return; }
@@ -840,19 +845,26 @@ if (decksFile !== null) {
           const row = `${at} → turns[${k}]`;
           if (!isPlainObject(turn)) { fail(row, 'a turn is an object'); return; }
           if (!isNonEmptyString(turn.who)) fail(row, 'a turn has no "who"');
-          if (!isNonEmptyString(turn.et)) { fail(row, 'a turn has no Estonian in "et"'); return; }
-          const { who, et, ...means } = turn;
-          said(means, row, 'what the turn means');
+          if (!Array.isArray(turn.lines) || turn.lines.length === 0) { fail(row, 'a turn is a list of "lines", a sentence each'); return; }
+          turn.lines.forEach((line, m) => {
+            const one = `${row} → lines[${m}]`;
+            if (!isPlainObject(line) || !isNonEmptyString(line.et)) { fail(one, 'a line has no Estonian in "et"'); return; }
+            const { et, ...means } = line;
+            said(means, one, 'what the sentence means');
+          });
         });
       });
-      /* Every word in a question or a turn is a press, so each has to say
-         what it means. */
+      /* Every word in a question or a sentence is a press, so each has to
+         say what it means. */
       const own = talk.words === undefined ? {} : isPlainObject(talk.words) ? talk.words : null;
       if (!own) { fail(where, `conversation "${talk.id}" has "words" that is not an object`); return; }
       const inIt = new Set();
       talk.scenes.forEach((scene, j) => {
         if (!isPlainObject(scene)) return;
-        const lines = [['ask', scene.ask]].concat((Array.isArray(scene.turns) ? scene.turns : []).map((turn, k) => [`turns[${k}]`, turn]));
+        const lines = [['ask', scene.ask]];
+        (Array.isArray(scene.turns) ? scene.turns : []).forEach((turn, k) => {
+          (turn && Array.isArray(turn.lines) ? turn.lines : []).forEach((line, m) => lines.push([`turns[${k}] → lines[${m}]`, line]));
+        });
         for (const [name, line] of lines) {
           if (!isPlainObject(line) || typeof line.et !== 'string') continue;
           for (const word of line.et.match(WORD) || []) {

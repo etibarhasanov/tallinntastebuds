@@ -1,0 +1,1261 @@
+{
+ "id": "talk-shopping",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Buying a washing machine",
+  "az": "Paltaryuyan maşın almaq",
+  "ru": "Покупка стиральной машины"
+ },
+ "why": {
+  "en": "A white washing machine under six hundred euros, a client card, and a discount that will not go further",
+  "az": "Altı yüz avrodan ucuz ağ paltaryuyan, müştəri kartı və daha artıq olmayan endirim",
+  "ru": "Белая стиральная машина дешевле шестисот евро, карта клиента и скидка, больше которой не будет"
+ },
+ "taste": "Tere, kas saan kuidagi abiks olla?",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Tere, kas saan kuidagi abiks olla?",
+       "en": "Hello, can I help you in any way?",
+       "az": "Salam, sizə bir köməyim dəyə bilərmi?",
+       "ru": "Здравствуйте, могу я чем-нибудь помочь?"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Jah, ma tahaksin pesumasinat osta.",
+       "en": "Yes, I would like to buy a washing machine.",
+       "az": "Bəli, paltaryuyan maşın almaq istərdim.",
+       "ru": "Да, я хотел бы купить стиральную машину."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Tulge palun minuga kaasa.",
+       "en": "Please come with me.",
+       "az": "Zəhmət olmasa, mənimlə gəlin.",
+       "ru": "Пройдёмте, пожалуйста, со мной."
+      },
+      {
+       "et": "Pesumasinad on meil siinpool.",
+       "en": "Our washing machines are over here.",
+       "az": "Paltaryuyanlarımız bu tərəfdədir.",
+       "ru": "Стиральные машины у нас здесь."
+      },
+      {
+       "et": "Missugust teil vaja on?",
+       "en": "What kind do you need?",
+       "az": "Sizə necəsi lazımdır?",
+       "ru": "Какая вам нужна?"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Ma tahaks, et see masin oleks valget värvi.",
+       "en": "I'd like the machine to be white.",
+       "az": "İstərdim ki, maşın ağ rəngdə olsun.",
+       "ru": "Я бы хотел, чтобы машина была белого цвета."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Jah.",
+       "en": "Yes.",
+       "az": "Bəli.",
+       "ru": "Да."
+      },
+      {
+       "et": "Meie pesumasinad on kõik valged.",
+       "en": "Our washing machines are all white.",
+       "az": "Bizim paltaryuyanların hamısı ağdır.",
+       "ru": "Наши стиральные машины все белые."
+      },
+      {
+       "et": "Valgeid pesumasinaid ostetakse kõige rohkem.",
+       "en": "White washing machines are the ones people buy most.",
+       "az": "Ən çox ağ paltaryuyanlar alınır.",
+       "ru": "Белые стиральные машины покупают чаще всего."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Väga hea.",
+       "en": "Very good.",
+       "az": "Çox gözəl.",
+       "ru": "Очень хорошо."
+      },
+      {
+       "et": "Mis teil praegu soodsa hinnaga on?",
+       "en": "What do you have on offer at the moment?",
+       "az": "Hazırda sizdə nə sərfəli qiymətədir?",
+       "ru": "Что у вас сейчас по выгодной цене?"
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "See sõltub teie soovidest.",
+       "en": "It depends on what you want.",
+       "az": "Bu, istəklərinizdən asılıdır.",
+       "ru": "Это зависит от ваших пожеланий."
+      },
+      {
+       "et": "Kui palju see masin umbes maksta võiks?",
+       "en": "Roughly how much could the machine cost?",
+       "az": "Maşın təxminən neçəyə olsa, olar?",
+       "ru": "Примерно сколько может стоить машина?"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Palju üle kuuesaja euro ma küll maksta ei saa.",
+       "en": "I can't pay much more than six hundred euros.",
+       "az": "Altı yüz avrodan çox ödəyə bilmərəm.",
+       "ru": "Намного больше шестисот евро я точно заплатить не могу."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Sellise raha eest saate väga kvaliteetse masina.",
+       "en": "For that kind of money you get a very good quality machine.",
+       "az": "Bu pula çox keyfiyyətli maşın ala bilərsiniz.",
+       "ru": "За такие деньги вы получите очень качественную машину."
+      },
+      {
+       "et": "Need siin on kampaaniahinnaga ja kui teil on kliendikaart, saate veel kümme protsenti odavamalt.",
+       "en": "These here are on special offer, and if you have a client card you get another ten per cent off.",
+       "az": "Bunlar kampaniya qiymətinədir və müştəri kartınız varsa, daha on faiz ucuz alarsınız.",
+       "ru": "Вот эти по акционной цене, а если у вас есть карта клиента, будет ещё на десять процентов дешевле."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Mul ei ole kliendikaarti.",
+       "en": "I don't have a client card.",
+       "az": "Məndə müştəri kartı yoxdur.",
+       "ru": "У меня нет карты клиента."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Vormistame.",
+       "en": "We'll make you one.",
+       "az": "Rəsmiləşdirərik.",
+       "ru": "Оформим."
+      },
+      {
+       "et": "Vormistamine ei maksa midagi.",
+       "en": "It doesn't cost anything.",
+       "az": "Rəsmiləşdirmək pulsuzdur.",
+       "ru": "Оформление ничего не стоит."
+      },
+      {
+       "et": "Missugust mudelit te siis soovite?",
+       "en": "Which model would you like, then?",
+       "az": "Bəs hansı modeli istəyirsiniz?",
+       "ru": "Какую модель вы тогда хотите?"
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Seda valget siin.",
+       "en": "This white one here.",
+       "az": "Bu ağı, buradakını.",
+       "ru": "Вот эту белую."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Kohe kontrollin, kas see masin on laos olemas.",
+       "en": "I'll check right away whether we have this machine in stock.",
+       "az": "İndi yoxlayıram, görüm bu maşın anbarda varmı.",
+       "ru": "Сейчас проверю, есть ли эта машина на складе."
+      },
+      {
+       "et": "Teate, see näidis siin ongi meil viimane eksemplar.",
+       "en": "You know, this display model here is actually our last one.",
+       "az": "Bilirsiniz, buradakı bu nümunə elə bizim sonuncu nüsxədir.",
+       "ru": "Знаете, вот этот образец как раз наш последний экземпляр."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Kas te saate sellele siis veel natukene allahindlust teha?",
+       "en": "Could you give me a little more off on this one, then?",
+       "az": "Onda buna bir az da endirim edə bilərsinizmi?",
+       "ru": "Тогда вы можете сделать на неё ещё небольшую скидку?"
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Ei saa.",
+       "en": "No, I can't.",
+       "az": "Yox, olmaz.",
+       "ru": "Не могу."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Tõesti?",
+       "en": "Really?",
+       "az": "Doğrudan?",
+       "ru": "Правда?"
+      },
+      {
+       "et": "Äkki siiski?",
+       "en": "Are you sure?",
+       "az": "Bəlkə yenə də olar?",
+       "ru": "А может, всё-таки?"
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Vaadake, see on lõplik hind.",
+       "en": "Look, this is the final price.",
+       "az": "Baxın, bu, son qiymətdir.",
+       "ru": "Смотрите, это окончательная цена."
+      },
+      {
+       "et": "Ainult teile ja ainult täna.",
+       "en": "For you only and today only.",
+       "az": "Ancaq sizə və ancaq bu gün.",
+       "ru": "Только для вас и только сегодня."
+      }
+     ]
+    },
+    {
+     "who": "Klient",
+     "lines": [
+      {
+       "et": "Las ma mõtlen.",
+       "en": "Let me think.",
+       "az": "Qoyun fikirləşim.",
+       "ru": "Дайте подумать."
+      }
+     ]
+    },
+    {
+     "who": "Müüja",
+     "lines": [
+      {
+       "et": "Lähme kassasse!",
+       "en": "Let's go to the till!",
+       "az": "Gedək kassaya!",
+       "ru": "Пойдёмте на кассу!"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "tere": {
+   "base": "tere",
+   "means": {
+    "en": "hello",
+    "az": "salam",
+    "ru": "привет, здравствуйте"
+   },
+   "deck": "greetings"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "saan": {
+   "base": "saama",
+   "means": {
+    "en": "I can; I get, I will have",
+    "az": "bilərəm; alıram",
+    "ru": "могу; получаю"
+   },
+   "deck": "verbs"
+  },
+  "kuidagi": {
+   "base": "kuidagi",
+   "means": {
+    "en": "somehow, in any way",
+    "az": "bir növ, bir şəkildə",
+    "ru": "как-нибудь"
+   }
+  },
+  "abiks": {
+   "base": "abi",
+   "means": {
+    "en": "of help (abiks olema, to help)",
+    "az": "kömək (abiks olema, kömək etmək)",
+    "ru": "в помощь (abiks olema, помочь)"
+   }
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "tahaksin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "pesumasinat": {
+   "base": "pesumasin",
+   "means": {
+    "en": "washing machine",
+    "az": "paltaryuyan maşın",
+    "ru": "стиральную машину"
+   },
+   "deck": "kitchen"
+  },
+  "osta": {
+   "base": "ostma",
+   "means": {
+    "en": "to buy",
+    "az": "almaq",
+    "ru": "купить"
+   },
+   "deck": "verbs"
+  },
+  "tulge": {
+   "base": "tulema",
+   "means": {
+    "en": "come! (polite)",
+    "az": "gəlin!",
+    "ru": "идите!"
+   },
+   "deck": "verbs"
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "minuga": {
+   "base": "mina",
+   "means": {
+    "en": "with me",
+    "az": "mənimlə",
+    "ru": "со мной"
+   }
+  },
+  "kaasa": {
+   "base": "kaasa",
+   "means": {
+    "en": "along (kaasa pakkima: to pack to take away; tulge kaasa: come along)",
+    "az": "özü ilə",
+    "ru": "с собой"
+   },
+   "deck": "cafe"
+  },
+  "pesumasinad": {
+   "base": "pesumasin",
+   "means": {
+    "en": "washing machines",
+    "az": "paltaryuyan maşınlar",
+    "ru": "стиральные машины"
+   },
+   "deck": "kitchen"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "meil": {
+   "base": "meie",
+   "means": {
+    "en": "we have (meil on); at us",
+    "az": "bizdə, bizim",
+    "ru": "у нас"
+   }
+  },
+  "siinpool": {
+   "base": "siinpool",
+   "means": {
+    "en": "over here, this side",
+    "az": "bu tərəfdə",
+    "ru": "здесь, с этой стороны"
+   }
+  },
+  "missugust": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of",
+    "az": "hansı",
+    "ru": "какое"
+   }
+  },
+  "teil": {
+   "base": "teie",
+   "means": {
+    "en": "you have (teil on); with you (polite or plural)",
+    "az": "sizdə",
+    "ru": "у вас"
+   }
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "tahaks": {
+   "base": "tahtma",
+   "means": {
+    "en": "would like",
+    "az": "istərdi",
+    "ru": "хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "masin": {
+   "base": "masin",
+   "means": {
+    "en": "machine",
+    "az": "maşın",
+    "ru": "машина"
+   },
+   "deck": "work"
+  },
+  "oleks": {
+   "base": "olema",
+   "means": {
+    "en": "would be (mul oleks vaja: I would need)",
+    "az": "olardı",
+    "ru": "было бы"
+   },
+   "deck": "verbs"
+  },
+  "valget": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белый"
+   },
+   "deck": "describing"
+  },
+  "värvi": {
+   "base": "värv",
+   "means": {
+    "en": "colour",
+    "az": "rəng",
+    "ru": "цвета"
+   },
+   "deck": "describing"
+  },
+  "meie": {
+   "base": "meie",
+   "means": {
+    "en": "our; we",
+    "az": "bizim",
+    "ru": "наш"
+   }
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "valged": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белые"
+   },
+   "deck": "describing"
+  },
+  "valgeid": {
+   "base": "valge",
+   "means": {
+    "en": "white",
+    "az": "ağ",
+    "ru": "белые"
+   },
+   "deck": "describing"
+  },
+  "pesumasinaid": {
+   "base": "pesumasin",
+   "means": {
+    "en": "washing machines",
+    "az": "paltaryuyan maşınları",
+    "ru": "стиральные машины"
+   },
+   "deck": "kitchen"
+  },
+  "ostetakse": {
+   "base": "ostma",
+   "means": {
+    "en": "are bought",
+    "az": "alınır",
+    "ru": "покупают"
+   },
+   "deck": "verbs"
+  },
+  "kõige": {
+   "base": "kõige",
+   "means": {
+    "en": "most (kõige esimesena: the very first; kõige vanem: the oldest)",
+    "az": "ən",
+    "ru": "самый, больше всего"
+   }
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hea": {
+   "base": "hea",
+   "means": {
+    "en": "good",
+    "az": "yaxşı",
+    "ru": "хороший"
+   },
+   "deck": "basics"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "soodsa": {
+   "base": "soodne",
+   "means": {
+    "en": "favourable, good (price)",
+    "az": "sərfəli",
+    "ru": "выгодной"
+   },
+   "deck": "shops"
+  },
+  "hinnaga": {
+   "base": "hind",
+   "means": {
+    "en": "at a price",
+    "az": "qiymətə",
+    "ru": "по цене"
+   },
+   "deck": "shops"
+  },
+  "sõltub": {
+   "base": "sõltuma",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   },
+   "deck": "moreverbs"
+  },
+  "teie": {
+   "base": "teie",
+   "means": {
+    "en": "your; you (polite or plural)",
+    "az": "sizin",
+    "ru": "ваш"
+   }
+  },
+  "soovidest": {
+   "base": "soov",
+   "means": {
+    "en": "on the wishes",
+    "az": "istəklərdən",
+    "ru": "от пожеланий"
+   }
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "umbes": {
+   "base": "umbes",
+   "means": {
+    "en": "about, roughly",
+    "az": "təxminən",
+    "ru": "примерно"
+   },
+   "deck": "service"
+  },
+  "maksta": {
+   "base": "maksma",
+   "means": {
+    "en": "to pay",
+    "az": "ödəmək",
+    "ru": "заплатить"
+   },
+   "deck": "verbs"
+  },
+  "võiks": {
+   "base": "võima",
+   "means": {
+    "en": "could, might",
+    "az": "olar",
+    "ru": "можно было бы"
+   },
+   "deck": "moreverbs"
+  },
+  "üle": {
+   "base": "üle",
+   "means": {
+    "en": "over (mille üle rõõmustama: to be glad about)",
+    "az": "üstündən",
+    "ru": "над, о"
+   },
+   "deck": "everyday"
+  },
+  "kuuesaja": {
+   "base": "kuussada",
+   "means": {
+    "en": "six hundred",
+    "az": "altı yüz",
+    "ru": "шестисот"
+   }
+  },
+  "euro": {
+   "base": "euro",
+   "means": {
+    "en": "euro",
+    "az": "avro",
+    "ru": "евро"
+   },
+   "deck": "cafe"
+  },
+  "küll": {
+   "base": "küll",
+   "means": {
+    "en": "indeed, certainly (stresses the sentence)",
+    "az": "əlbəttə, həqiqətən",
+    "ru": "уж, конечно"
+   },
+   "deck": "everyday"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "saa": {
+   "base": "saama",
+   "means": {
+    "en": "can, get (after ei: ei saa aru, don't understand)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не могу (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "sellise": {
+   "base": "selline",
+   "means": {
+    "en": "such",
+    "az": "belə",
+    "ru": "такие"
+   }
+  },
+  "raha": {
+   "base": "raha",
+   "means": {
+    "en": "money",
+    "az": "pul",
+    "ru": "деньги"
+   },
+   "deck": "shops"
+  },
+  "eest": {
+   "base": "eest",
+   "means": {
+    "en": "for, instead of (minu eest: for me)",
+    "az": "əvəzinə, üçün",
+    "ru": "за"
+   }
+  },
+  "saate": {
+   "base": "saama",
+   "means": {
+    "en": "you get, you can",
+    "az": "alırsınız, bilərsiniz",
+    "ru": "вы получите, можете"
+   },
+   "deck": "verbs"
+  },
+  "kvaliteetse": {
+   "base": "kvaliteetne",
+   "means": {
+    "en": "good-quality",
+    "az": "keyfiyyətli",
+    "ru": "качественную"
+   }
+  },
+  "masina": {
+   "base": "masin",
+   "means": {
+    "en": "machine",
+    "az": "maşın",
+    "ru": "машину, машины"
+   },
+   "deck": "work"
+  },
+  "need": {
+   "base": "see",
+   "means": {
+    "en": "these, they",
+    "az": "bunlar",
+    "ru": "эти"
+   },
+   "deck": "pronouns"
+  },
+  "siin": {
+   "base": "siin",
+   "means": {
+    "en": "here",
+    "az": "burada",
+    "ru": "здесь"
+   },
+   "deck": "everyday"
+  },
+  "kampaaniahinnaga": {
+   "base": "kampaaniahind",
+   "means": {
+    "en": "at a sale price",
+    "az": "kampaniya qiymətinə",
+    "ru": "по акционной цене"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "kliendikaart": {
+   "base": "kliendikaart",
+   "means": {
+    "en": "client card",
+    "az": "müştəri kartı",
+    "ru": "карта клиента"
+   },
+   "deck": "service"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "kümme": {
+   "base": "kümme",
+   "means": {
+    "en": "ten",
+    "az": "on",
+    "ru": "десять"
+   },
+   "deck": "numbers"
+  },
+  "protsenti": {
+   "base": "protsent",
+   "means": {
+    "en": "per cent",
+    "az": "faiz",
+    "ru": "процентов"
+   }
+  },
+  "odavamalt": {
+   "base": "odavalt",
+   "means": {
+    "en": "cheaper",
+    "az": "daha ucuz",
+    "ru": "дешевле"
+   }
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "kliendikaarti": {
+   "base": "kliendikaart",
+   "means": {
+    "en": "client card",
+    "az": "müştəri kartı",
+    "ru": "карты клиента"
+   },
+   "deck": "service"
+  },
+  "vormistame": {
+   "base": "vormistama",
+   "means": {
+    "en": "we'll make it out, register",
+    "az": "rəsmiləşdirərik",
+    "ru": "оформим"
+   }
+  },
+  "vormistamine": {
+   "base": "vormistamine",
+   "means": {
+    "en": "making it out, registering",
+    "az": "rəsmiləşdirmə",
+    "ru": "оформление"
+   }
+  },
+  "maksa": {
+   "base": "maksma",
+   "means": {
+    "en": "cost, pay (after ei)",
+    "az": "ödəmir, dəymir (ei ilə)",
+    "ru": "стоит, платит (после ei)"
+   },
+   "deck": "verbs"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "mudelit": {
+   "base": "mudel",
+   "means": {
+    "en": "model",
+    "az": "model",
+    "ru": "модель"
+   },
+   "deck": "clothes"
+  },
+  "te": {
+   "base": "teie",
+   "means": {
+    "en": "you (polite or plural)",
+    "az": "siz",
+    "ru": "вы"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "soovite": {
+   "base": "soovima",
+   "means": {
+    "en": "you wish, you would like (polite)",
+    "az": "istəyirsiniz",
+    "ru": "желаете"
+   },
+   "deck": "moreverbs"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "kontrollin": {
+   "base": "kontrollima",
+   "means": {
+    "en": "I check",
+    "az": "yoxlayıram",
+    "ru": "я проверяю"
+   }
+  },
+  "laos": {
+   "base": "ladu",
+   "means": {
+    "en": "in stock, in the warehouse",
+    "az": "anbarda",
+    "ru": "на складе"
+   }
+  },
+  "olemas": {
+   "base": "olemas",
+   "means": {
+    "en": "there, available",
+    "az": "var, mövcud",
+    "ru": "в наличии"
+   }
+  },
+  "teate": {
+   "base": "teadma",
+   "means": {
+    "en": "you know (polite or plural)",
+    "az": "bilirsiniz",
+    "ru": "знаете"
+   },
+   "deck": "verbs"
+  },
+  "näidis": {
+   "base": "näidis",
+   "means": {
+    "en": "display model, sample",
+    "az": "nümunə",
+    "ru": "образец"
+   }
+  },
+  "ongi": {
+   "base": "olema",
+   "means": {
+    "en": "is indeed, is just",
+    "az": "elə var",
+    "ru": "как раз есть"
+   },
+   "deck": "verbs"
+  },
+  "viimane": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "sonuncu",
+    "ru": "последний"
+   },
+   "deck": "time"
+  },
+  "eksemplar": {
+   "base": "eksemplar",
+   "means": {
+    "en": "copy, one of its kind",
+    "az": "nüsxə",
+    "ru": "экземпляр"
+   }
+  },
+  "sellele": {
+   "base": "see",
+   "means": {
+    "en": "on this, for this",
+    "az": "buna",
+    "ru": "на это"
+   },
+   "deck": "pronouns"
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "allahindlust": {
+   "base": "allahindlus",
+   "means": {
+    "en": "discount",
+    "az": "endirim",
+    "ru": "скидку"
+   },
+   "deck": "shops"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "tõesti": {
+   "base": "tõesti",
+   "means": {
+    "en": "really",
+    "az": "həqiqətən",
+    "ru": "правда"
+   },
+   "deck": "everyday"
+  },
+  "äkki": {
+   "base": "äkki",
+   "means": {
+    "en": "maybe; suddenly",
+    "az": "bəlkə; birdən",
+    "ru": "может; вдруг"
+   },
+   "deck": "everyday"
+  },
+  "siiski": {
+   "base": "siiski",
+   "means": {
+    "en": "still, after all",
+    "az": "yenə də",
+    "ru": "всё-таки"
+   },
+   "deck": "randaja-words"
+  },
+  "vaadake": {
+   "base": "vaatama",
+   "means": {
+    "en": "look (polite)",
+    "az": "baxın",
+    "ru": "посмотрите"
+   },
+   "deck": "moreverbs"
+  },
+  "lõplik": {
+   "base": "lõplik",
+   "means": {
+    "en": "final",
+    "az": "son",
+    "ru": "окончательный"
+   }
+  },
+  "hind": {
+   "base": "hind",
+   "means": {
+    "en": "price",
+    "az": "qiymət",
+    "ru": "цена"
+   },
+   "deck": "shops"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "teile": {
+   "base": "teie",
+   "means": {
+    "en": "to you, for you (polite or plural)",
+    "az": "sizə",
+    "ru": "вам"
+   }
+  },
+  "täna": {
+   "base": "täna",
+   "means": {
+    "en": "today (täna õhtul: tonight)",
+    "az": "bu gün",
+    "ru": "сегодня"
+   },
+   "deck": "time"
+  },
+  "las": {
+   "base": "las",
+   "means": {
+    "en": "let (las ma vaatan: let me see)",
+    "az": "qoy",
+    "ru": "пусть, дай"
+   }
+  },
+  "mõtlen": {
+   "base": "mõtlema",
+   "means": {
+    "en": "I think",
+    "az": "fikirləşirəm",
+    "ru": "я подумаю"
+   },
+   "deck": "moreverbs"
+  },
+  "lähme": {
+   "base": "minema",
+   "means": {
+    "en": "we go",
+    "az": "gedirik",
+    "ru": "идём"
+   },
+   "deck": "verbs"
+  },
+  "kassasse": {
+   "base": "kassa",
+   "means": {
+    "en": "to the till",
+    "az": "kassaya",
+    "ru": "на кассу"
+   },
+   "deck": "service"
+  }
+ }
+}
