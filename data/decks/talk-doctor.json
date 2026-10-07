@@ -1,0 +1,806 @@
+{
+ "id": "talk-doctor",
+ "added": "2026-10-07",
+ "name": {
+  "en": "Making a doctor’s appointment",
+  "az": "Həkim qəbuluna yazılmaq",
+  "ru": "Запись на приём к врачу"
+ },
+ "why": {
+  "en": "A referral, a driving licence for ID, and the first free time with a neurologist two months away",
+  "az": "Göndəriş, şəxsiyyət vəsiqəsi əvəzinə sürücülük vəsiqəsi və nevroloqda ilk boş vaxt iki ay sonra",
+  "ru": "Направление, водительские права вместо паспорта и первое свободное время у невролога через два месяца"
+ },
+ "taste": "Kas juhiluba sobib?",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Tere, ma tahaksin minna eriarsti vastuvõtule.",
+       "en": "Hello, I would like an appointment with a specialist.",
+       "az": "Salam, mütəxəssis həkimin qəbuluna getmək istərdim.",
+       "ru": "Здравствуйте, я хотел бы попасть на приём к специалисту."
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Tere jah!",
+       "en": "Hello, yes!",
+       "az": "Salam, bəli!",
+       "ru": "Здравствуйте, да!"
+      },
+      {
+       "et": "Võtke palun järjekorranumber!",
+       "en": "Please take a number!",
+       "az": "Zəhmət olmasa, növbə nömrəsi götürün!",
+       "ru": "Возьмите, пожалуйста, номерок!"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Oi, vabandust!",
+       "en": "Oh, sorry!",
+       "az": "Oy, bağışlayın!",
+       "ru": "Ой, извините!"
+      },
+      {
+       "et": "Ma sooviks minna eriarsti, täpsemalt neuroloogi vastuvõtule.",
+       "en": "I would like to see a specialist - a neurologist, to be more precise.",
+       "az": "Mütəxəssisin, daha dəqiq desək, nevroloqun qəbuluna getmək istərdim.",
+       "ru": "Я хотел бы попасть на приём к специалисту, точнее, к неврологу."
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Kas teil perearsti saatekiri on?",
+       "en": "Do you have a referral from your family doctor?",
+       "az": "Ailə həkimindən göndərişiniz varmı?",
+       "ru": "У вас есть направление от семейного врача?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Jah, on ikka.",
+       "en": "Yes, of course I do.",
+       "az": "Bəli, əlbəttə var.",
+       "ru": "Да, конечно, есть."
+      },
+      {
+       "et": "Palun.",
+       "en": "Here you are.",
+       "az": "Buyurun.",
+       "ru": "Пожалуйста."
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Näidake palun isikut tõendavat dokumenti ka.",
+       "en": "Please show me some identification too.",
+       "az": "Zəhmət olmasa, şəxsiyyəti təsdiq edən sənəd də göstərin.",
+       "ru": "Покажите, пожалуйста, и документ, удостоверяющий личность."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Kas juhiluba sobib?",
+       "en": "Will my driving licence do?",
+       "az": "Sürücülük vəsiqəsi olar?",
+       "ru": "Водительские права подойдут?"
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Ikka.",
+       "en": "Sure.",
+       "az": "Əlbəttə.",
+       "ru": "Конечно."
+      },
+      {
+       "et": "Kas teie telefoninumber lõppeb 9898?",
+       "en": "Does your phone number end in 9898?",
+       "az": "Telefon nömrəniz 9898 ilə bitir?",
+       "ru": "Ваш номер телефона заканчивается на 9898?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Jah.",
+       "en": "Yes.",
+       "az": "Bəli.",
+       "ru": "Да."
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Vaatame.",
+       "en": "Let’s see.",
+       "az": "Baxaq.",
+       "ru": "Посмотрим."
+      },
+      {
+       "et": "Neuroloogi juurde saaks minna kahe kuu pärast, 13. märtsil kell 15.30.",
+       "en": "You could see a neurologist in two months, on the thirteenth of March at 3:30 pm.",
+       "az": "Nevroloqun yanına iki aydan sonra, martın 13-də saat 15:30-da getmək olar.",
+       "ru": "К неврологу можно попасть через два месяца, 13 марта в 15:30."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Selge.",
+       "en": "I see.",
+       "az": "Aydındır.",
+       "ru": "Понятно."
+      },
+      {
+       "et": "Ega varem ei ole aega?",
+       "en": "There isn’t an earlier time, is there?",
+       "az": "Bəlkə daha tez vaxt yoxdur?",
+       "ru": "А раньше времени нет?"
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Ei, kahjuks mitte.",
+       "en": "No, unfortunately not.",
+       "az": "Xeyr, təəssüf ki, yoxdur.",
+       "ru": "Нет, к сожалению."
+      },
+      {
+       "et": "Varem ei ole mitte ühtegi vaba aega.",
+       "en": "There isn’t a single free time any earlier.",
+       "az": "Daha tez heç bir boş vaxt yoxdur.",
+       "ru": "Раньше нет ни одного свободного времени."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "No siis sobib.",
+       "en": "Well, then it will do.",
+       "az": "Yaxşı, onda olar.",
+       "ru": "Ну, тогда подходит."
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "13. märtsil minge otse kabinetti number 307.",
+       "en": "On the thirteenth of March go straight to room number 307.",
+       "az": "Martın 13-də birbaşa 307 nömrəli kabinetə gedin.",
+       "ru": "13 марта идите прямо в кабинет номер 307."
+      },
+      {
+       "et": "See on neljandal, mitte kolmandal korrusel.",
+       "en": "It’s on the fourth floor, not the third.",
+       "az": "O, üçüncü yox, dördüncü mərtəbədədir.",
+       "ru": "Он на четвёртом, а не на третьем этаже."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Ahah, tänan.",
+       "en": "Ah, thank you.",
+       "az": "Aha, təşəkkür edirəm.",
+       "ru": "Ага, спасибо."
+      },
+      {
+       "et": "Head päeva!",
+       "en": "Good day!",
+       "az": "Xeyirli gün!",
+       "ru": "Хорошего дня!"
+      }
+     ]
+    },
+    {
+     "who": "Registratuuritöötaja",
+     "lines": [
+      {
+       "et": "Head päeva!",
+       "en": "Good day!",
+       "az": "Xeyirli gün!",
+       "ru": "Хорошего дня!"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "tere": {
+   "base": "tere",
+   "means": {
+    "en": "hello",
+    "az": "salam",
+    "ru": "привет, здравствуйте"
+   },
+   "deck": "greetings"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "tahaksin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "minna": {
+   "base": "minema",
+   "means": {
+    "en": "to go",
+    "az": "getmək",
+    "ru": "пойти"
+   },
+   "deck": "verbs"
+  },
+  "eriarsti": {
+   "base": "eriarst",
+   "means": {
+    "en": "a specialist doctor's",
+    "az": "mütəxəssis həkimin",
+    "ru": "к специалисту"
+   }
+  },
+  "vastuvõtule": {
+   "base": "vastuvõtt",
+   "means": {
+    "en": "to an appointment",
+    "az": "qəbuluna",
+    "ru": "на приём"
+   },
+   "deck": "health"
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "võtke": {
+   "base": "võtma",
+   "means": {
+    "en": "take (to you, politely)",
+    "az": "götürün",
+    "ru": "возьмите"
+   },
+   "deck": "verbs"
+  },
+  "palun": {
+   "base": "paluma",
+   "means": {
+    "en": "please; here you are",
+    "az": "zəhmət olmasa; buyurun",
+    "ru": "пожалуйста"
+   },
+   "deck": "moreverbs"
+  },
+  "järjekorranumber": {
+   "base": "järjekorranumber",
+   "means": {
+    "en": "queue number",
+    "az": "növbə nömrəsi",
+    "ru": "номерок в очереди"
+   }
+  },
+  "oi": {
+   "base": "oi",
+   "means": {
+    "en": "oh",
+    "az": "oy",
+    "ru": "ой"
+   },
+   "deck": "everyday"
+  },
+  "vabandust": {
+   "base": "vabandus",
+   "means": {
+    "en": "excuse me, sorry",
+    "az": "bağışlayın",
+    "ru": "извините"
+   }
+  },
+  "sooviks": {
+   "base": "soovima",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "moreverbs"
+  },
+  "täpsemalt": {
+   "base": "täpsemalt",
+   "means": {
+    "en": "more precisely",
+    "az": "daha dəqiq",
+    "ru": "точнее"
+   }
+  },
+  "neuroloogi": {
+   "base": "neuroloog",
+   "means": {
+    "en": "a neurologist's (neuroloogi juurde: to a neurologist)",
+    "az": "nevroloqun",
+    "ru": "невролога"
+   }
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "teil": {
+   "base": "teie",
+   "means": {
+    "en": "you have (teil on); with you (polite or plural)",
+    "az": "sizdə",
+    "ru": "у вас"
+   }
+  },
+  "perearsti": {
+   "base": "perearst",
+   "means": {
+    "en": "of the family doctor",
+    "az": "ailə həkiminin",
+    "ru": "семейного врача"
+   },
+   "deck": "health"
+  },
+  "saatekiri": {
+   "base": "saatekiri",
+   "means": {
+    "en": "referral",
+    "az": "göndəriş",
+    "ru": "направление"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "ikka": {
+   "base": "ikka",
+   "means": {
+    "en": "still, as always; of course",
+    "az": "həmişəki kimi; əlbəttə",
+    "ru": "всё-таки, как всегда"
+   },
+   "deck": "everyday"
+  },
+  "näidake": {
+   "base": "näitama",
+   "means": {
+    "en": "show (polite)",
+    "az": "göstərin",
+    "ru": "покажите"
+   },
+   "deck": "moreverbs"
+  },
+  "isikut": {
+   "base": "isik",
+   "means": {
+    "en": "person (isikut tõendav dokument: an ID)",
+    "az": "şəxs (isikut tõendav dokument: şəxsiyyət vəsiqəsi)",
+    "ru": "личность (isikut tõendav dokument: удостоверение личности)"
+   }
+  },
+  "tõendavat": {
+   "base": "tõendav",
+   "means": {
+    "en": "proving, certifying (isikut tõendav: identity)",
+    "az": "təsdiq edən",
+    "ru": "удостоверяющий"
+   }
+  },
+  "dokumenti": {
+   "base": "dokument",
+   "means": {
+    "en": "document",
+    "az": "sənəd",
+    "ru": "документ"
+   },
+   "deck": "work"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "juhiluba": {
+   "base": "juhiluba",
+   "means": {
+    "en": "driving licence",
+    "az": "sürücülük vəsiqəsi",
+    "ru": "водительские права"
+   },
+   "deck": "around"
+  },
+  "sobib": {
+   "base": "sobima",
+   "means": {
+    "en": "suits",
+    "az": "uyğundur",
+    "ru": "подходит"
+   },
+   "deck": "moreverbs"
+  },
+  "teie": {
+   "base": "teie",
+   "means": {
+    "en": "your; you (polite or plural)",
+    "az": "sizin",
+    "ru": "ваш"
+   }
+  },
+  "telefoninumber": {
+   "base": "telefoninumber",
+   "means": {
+    "en": "phone number",
+    "az": "telefon nömrəsi",
+    "ru": "номер телефона"
+   }
+  },
+  "lõppeb": {
+   "base": "lõppema",
+   "means": {
+    "en": "ends",
+    "az": "bitir",
+    "ru": "заканчивается"
+   },
+   "deck": "moreverbs"
+  },
+  "vaatame": {
+   "base": "vaatama",
+   "means": {
+    "en": "let's see",
+    "az": "baxaq",
+    "ru": "посмотрим"
+   },
+   "deck": "moreverbs"
+  },
+  "juurde": {
+   "base": "juurde",
+   "means": {
+    "en": "to (somebody), up to (minu juurde: to me)",
+    "az": "yanına",
+    "ru": "к"
+   },
+   "deck": "around"
+  },
+  "saaks": {
+   "base": "saama",
+   "means": {
+    "en": "could (ei saaks: couldn't it be)",
+    "az": "olardı",
+    "ru": "можно было бы"
+   },
+   "deck": "verbs"
+  },
+  "kahe": {
+   "base": "kaks",
+   "means": {
+    "en": "two (kahe kuu pärast: in two months)",
+    "az": "iki",
+    "ru": "двух"
+   },
+   "deck": "numbers"
+  },
+  "kuu": {
+   "base": "kuu",
+   "means": {
+    "en": "month",
+    "az": "ay",
+    "ru": "месяц"
+   },
+   "deck": "time"
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "märtsil": {
+   "base": "märts",
+   "means": {
+    "en": "in March (13. märtsil: on 13 March)",
+    "az": "martda",
+    "ru": "марта"
+   },
+   "deck": "time"
+  },
+  "kell": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock; clock",
+    "az": "saat",
+    "ru": "час, часы"
+   },
+   "deck": "time"
+  },
+  "selge": {
+   "base": "selge",
+   "means": {
+    "en": "clear; right, understood",
+    "az": "aydın",
+    "ru": "ясно"
+   },
+   "deck": "everyday"
+  },
+  "ega": {
+   "base": "ega",
+   "means": {
+    "en": "nor; ega … ei ole?: it isn't …, is it?",
+    "az": "nə də; … deyil ki?",
+    "ru": "и не; ведь не … ?"
+   },
+   "deck": "everyday"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "aega": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "kahjuks": {
+   "base": "kahjuks",
+   "means": {
+    "en": "unfortunately",
+    "az": "təəssüf ki",
+    "ru": "к сожалению"
+   },
+   "deck": "service"
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "ühtegi": {
+   "base": "ükski",
+   "means": {
+    "en": "not a single (with ei)",
+    "az": "heç bir",
+    "ru": "ни одной"
+   }
+  },
+  "vaba": {
+   "base": "vaba",
+   "means": {
+    "en": "free",
+    "az": "boş, sərbəst",
+    "ru": "свободный"
+   },
+   "deck": "describing"
+  },
+  "no": {
+   "base": "no",
+   "means": {
+    "en": "well (to start a sentence)",
+    "az": "yaxşı, nə isə",
+    "ru": "ну"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "minge": {
+   "base": "minema",
+   "means": {
+    "en": "go (to you, politely)",
+    "az": "gedin",
+    "ru": "идите"
+   },
+   "deck": "verbs"
+  },
+  "otse": {
+   "base": "otse",
+   "means": {
+    "en": "straight, directly",
+    "az": "birbaşa",
+    "ru": "прямо"
+   },
+   "deck": "around"
+  },
+  "kabinetti": {
+   "base": "kabinet",
+   "means": {
+    "en": "to the room, to the office",
+    "az": "kabinetə",
+    "ru": "в кабинет"
+   },
+   "deck": "home"
+  },
+  "number": {
+   "base": "number",
+   "means": {
+    "en": "number",
+    "az": "nömrə",
+    "ru": "номер"
+   },
+   "deck": "work"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "neljandal": {
+   "base": "neljas",
+   "means": {
+    "en": "fourth (üheksakümne neljandal aastal: in ninety-four)",
+    "az": "dördüncü",
+    "ru": "четвёртом"
+   },
+   "deck": "numbers"
+  },
+  "kolmandal": {
+   "base": "kolmas",
+   "means": {
+    "en": "on the third",
+    "az": "üçüncü",
+    "ru": "на третьем"
+   },
+   "deck": "numbers"
+  },
+  "korrusel": {
+   "base": "korrus",
+   "means": {
+    "en": "on the floor (storey)",
+    "az": "mərtəbədə",
+    "ru": "на этаже"
+   },
+   "deck": "home"
+  },
+  "ahah": {
+   "base": "ahah",
+   "means": {
+    "en": "aha, I see",
+    "az": "aha",
+    "ru": "ага"
+   },
+   "deck": "everyday"
+  },
+  "tänan": {
+   "base": "tänama",
+   "means": {
+    "en": "thank you (I thank)",
+    "az": "təşəkkür edirəm",
+    "ru": "благодарю"
+   },
+   "deck": "moreverbs"
+  },
+  "head": {
+   "base": "hea",
+   "means": {
+    "en": "good (head ööd: good night)",
+    "az": "xeyirli (head ööd: gecən xeyrə)",
+    "ru": "доброй, хорошей"
+   },
+   "deck": "basics"
+  },
+  "päeva": {
+   "base": "päev",
+   "means": {
+    "en": "days",
+    "az": "gün",
+    "ru": "дня"
+   },
+   "deck": "time"
+  }
+ }
+}

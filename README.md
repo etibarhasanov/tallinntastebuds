@@ -8724,7 +8724,7 @@ read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
 line and every word in them means — **Songs, which are listened to** — and
-after the songs twenty-five conversations off a language course's sheets,
+after the songs thirty conversations off a language course's sheets,
 sentence by sentence with what each means under it and every word in it a
 press —
 **Conversations, which are read**.
@@ -10892,7 +10892,7 @@ owner's call, which has been put to them.
 A card teaches a word, a lesson says why it changes shape, and a song is how
 anybody comes to like the language. None of them is how it is said across a
 table. So the shelf carries a fifth part, **Conversations**, after **Songs**,
-and under it a tile for each of twenty-five sheets from **Keeletee** — *Eesti keele
+and under it a tile for each of thirty sheets from **Keeletee** — *Eesti keele
 B1-taseme e-õppekursus*, the free B1 course — which the owner handed over as
 PDFs, each a page or three of Estonian with its English under every turn.
 
@@ -10927,7 +10927,15 @@ for on instalments, with a library card handed over for an ID and the
 insurance turned down; Mirja, Mai Riin, Jüri and Timo on where they went to
 school, which subjects they liked and which they did not, what they did after
 lessons, and what they learnt last and would learn next; and a bus ticket to
-Tallinn with the three and the four o'clock sold out.
+Tallinn with the three and the four o'clock sold out. The fifth, five more
+from the ninth and tenth modules, travels and then sees a doctor: a hotel
+room booked by phone for two nights, with an extra bed for a twelve-year-old
+and the spa in the price; Timo, Jüri and Mirja on one trip each — Cuba with a
+backpack, Istanbul where the plane seems to land in the sea, the red dunes
+outside Marrakech — and on what they brought home; Jüri floating in a
+salt-mine lake in Transcarpathia and Mirja climbing through a hole into a
+cave of bats; the two of them on how they keep healthy; and an appointment
+with a neurologist, made at a reception desk.
 
 **A conversation is one page.** Its name, the line that says how to read it,
 and under that in the mono whose sheet it is — *From Keeletee, a B1 course*,
@@ -10973,10 +10981,10 @@ word in it does what, and that is the half a learner is missing. So the
 translation stays, a sentence at a time, and the words are pressed for the
 rest.
 
-**One glossary for all of them.** The twenty-five sheets carry some fourteen
-hundred and sixty different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
+**One glossary for all of them.** The thirty sheets carry some eighteen
+hundred and forty different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
 up in nearly every sheet. A song's `words` is its own, because a song is one
-text; twenty-five copies of what *ma* means would be twenty-five to keep in
+text; thirty copies of what *ma* means would be thirty to keep in
 step. So
 the words are `talkWords` in `data/decks.json`, one entry per word as it is
 written, lowercased — its `base`, what it `means` in the three languages, an
@@ -11025,8 +11033,16 @@ pesumasina saate siis homse päeva jooksul kätte* — and is the seller's by it
 sense, so it is a turn of hers. And Mai Riin says *ma oli pikapäevarühmas*,
 where the grammar wants *olin*; that is how she said it and how the sheet
 prints it, so it stays, and the conversation's own `words` says beside *oli*
-that *ma oli* is *ma olin* said quickly. Every word's gloss in all twenty-five,
-in all three languages, is mine too.
+that *ma oli* is *ma olin* said quickly. The fifth batch's English is tidied
+the same way — a *There's was*, an *I wondered if I will be able*, a hotel
+ordered where Jüri says accommodation — and its two dialogue sheets, *Hotelli
+broneerimine* and *Arsti juurde aja broneerimine*, are names rather than
+questions, their people *Naine* and *Administraator*, *Patsient* and
+*Registratuuritöötaja*, as the sheets call them. Two words in it mean
+something the glossary does not: *tuli* and *tulnud* are *had to* in Jüri's
+salt lake and his childhood of farm work, and each sheet says so in its own
+`words`. Every word's gloss in all thirty, in all three languages, is mine
+too.
 *Klient* and *Ettekandja* stay as the names of the two people in the first
 restaurant scene: they are the Estonian for customer and waiter, which is the
 point.
@@ -15380,7 +15396,7 @@ assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            headings, the songs' and the cases', ten lessons of
-                           grammar, four songs, twenty-five conversations and the
+                           grammar, four songs, thirty conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
                            languages rather than the site's ten
