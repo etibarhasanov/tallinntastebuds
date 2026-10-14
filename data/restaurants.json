@@ -1145,6 +1145,34 @@
     "closed": false
   },
   {
+    "id": "kaheksa",
+    "name": "Kaheksa",
+    "address": "Suur-Karja tn 8, 10140 Tallinn",
+    "lat": 59.4357118,
+    "lng": 24.7435078,
+    "price": 2,
+    "types": [
+      "casual",
+      "date",
+      "restaurant"
+    ],
+    "blurb": {
+      "en": "The place is located in one of oldest surviving buildings in Tallinn. Despite the reconstructions, a number of old constructions and details have been preserved."
+    },
+    "mustOrder": [
+      "Gambas al ajillo,",
+      "Patata Bravas"
+    ],
+    "reel": "",
+    "closed": false,
+    "added": "2026-10-14",
+    "website": "https://www.kaheksas.ee/en/",
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ]
+  },
+  {
     "id": "kalve-kadriorg",
     "name": "Kalve Kadriorg",
     "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
