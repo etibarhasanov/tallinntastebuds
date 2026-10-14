@@ -1157,10 +1157,19 @@
       "restaurant"
     ],
     "blurb": {
-      "en": "The place is located in one of oldest surviving buildings in Tallinn. Despite the reconstructions, a number of old constructions and details have been preserved."
-    },
+    "en": "A great tapas and wine spot in the Old Town, set in one of Tallinn's oldest surviving buildings, where old structures and details have survived the reconstructions. The food is delicious and arrives fast.",
+    "az": "Köhnə şəhərdə əla tapas və şərab məkanı; Tallinnin ən qədim qalmış binalarından birində yerləşir və qədim konstruksiyalar və detallar yenidənqurmalardan sağ çıxıb. Yeməklər dadlıdır və tez gəlir.",
+    "hy": "Հիանալի տապաս և գինու վայր Հին քաղաքում՝ Թալլինի ամենահին պահպանված շենքերից մեկում, որտեղ հին կառույցներն ու դետալները վերակառուցումներից հետո պահպանվել են։ Ուտեստները համեղ են և մատուցվում են արագ։",
+    "et": "Suurepärane tapase- ja veinikoht vanalinnas, mis asub ühes Tallinna vanimas säilinud hoones, kus vanad konstruktsioonid ja detailid on ümberehitustest hoolimata säilinud. Toit on maitsev ja jõuab lauale kiiresti.",
+    "fi": "Loistava tapas- ja viinipaikka vanhassakaupungissa, yhdessä Tallinnan vanimmista säilyneistä rakennuksista, jossa vanhat rakenteet ja yksityiskohdat ovat säilyneet jälleenrakennuksista huolimatta. Ruoka on herkullista ja tulee pöytään nopeasti.",
+    "pt": "Um ótimo sítio de tapas e vinho na Cidade Velha, instalado num dos edifícios mais antigos de Tallinn que ainda existem, onde estruturas e detalhes antigos sobreviveram às reconstruções. A comida é deliciosa e chega depressa.",
+    "ru": "Отличное место с тапас и вином в Старом городе, расположенное в одном из старейших сохранившихся зданий Таллина, где старинные конструкции и детали пережили реконструкции. Еда вкусная и подаётся быстро.",
+    "es": "Un gran sitio de tapas y vino en el casco antiguo, ubicado en uno de los edificios más antiguos que se conservan en Tallin, donde las estructuras y los detalles antiguos han sobrevivido a las reconstrucciones. La comida es deliciosa y llega rápido.",
+    "tr": "Eski Şehir'de harika bir tapas ve şarap mekânı; Tallinn'in günümüze ulaşan en eski binalarından birinde yer alıyor ve eski yapılar ile detaylar yeniden yapılanmalardan sağ çıkmış. Yemekler lezzetli ve çabuk geliyor.",
+    "uk": "Чудове місце з тапас і вином у Старому місті, розташоване в одній із найстаріших збережених будівель Таллінна, де старовинні конструкції та деталі пережили реконструкції. Їжа смачна й подається швидко."
+  },
     "mustOrder": [
-      "Gambas al ajillo,",
+      "Gambas al ajillo",
       "Patata Bravas"
     ],
     "reel": "",
