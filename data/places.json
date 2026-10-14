@@ -256,6 +256,14 @@
     "map": true
   },
   {
+    "id": "kaheksa",
+    "name": "Kaheksa",
+    "address": "Suur-Karja tn 8, 10140 Tallinn",
+    "lat": 59.4357118,
+    "lng": 24.7435078,
+    "map": true
+  },
+  {
     "id": "kalve-kadriorg",
     "name": "Kalve Kadriorg",
     "address": "F. R. Faehlmanni tn 13, 10125 Tallinn",
