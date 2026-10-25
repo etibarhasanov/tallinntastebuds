@@ -782,8 +782,8 @@
     "lng": 24.7752398,
     "price": 2,
     "types": [
-      "restaurant",
-      "caucasian"
+      "caucasian",
+      "restaurant"
     ],
     "blurb": {
       "az": "Bir azərbaycanlı kimi bu yeri təsdiq edirəm. Şaşlıqdan başqa, əsl Azərbaycan mətbəxi də var. Qutabın öz fərqi var: ənənəvi göyərti əvəzinə göyərti və motsarella ilə doldurulur. Porsiyalar çox böyükdür, tək gəlirsənsə, yarım küftə bəs edə bilər. Burada yedikdən sonra Kadrioq parkında gəzməyi unutma. Çünki aldığın bütün kaloriləri həzm etməlisən.",
@@ -804,11 +804,10 @@
     ],
     "reel": "https://www.instagram.com/reel/DJAFJMWKaPZ/",
     "photos": [],
-    "website": "",
     "phone": "+372 687 2125",
     "added": "2026-08-23",
     "visited": "2025-04",
-    "closed": false
+    "closed": true
   },
   {
     "id": "ferment",
