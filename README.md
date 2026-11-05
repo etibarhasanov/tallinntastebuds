@@ -14513,8 +14513,23 @@ which is how every place already in the file got there.
 Everything `tools/validate.mjs` would fail the build over is checked before the
 branch exists, in the same words: the slug, the Tallinn bounding box that
 catches a swapped `lat`/`lng`, the reel permalink shape, the phone's
-international form. So a pull request this opens is a pull request that goes
-green.
+international form. So the entry a pull request carries is one the validator
+will take.
+
+What the page cannot write is everything generated from that entry — the
+catalogue `data/places.json`, `data/map.json` and the write-ups in
+`data/lang/`, `sitemap.xml`, and for a place the Google export already lists,
+its `map_id` line in `db/google-venues.sql`. For a while that meant every pull
+request it opened went red and waited for somebody at a laptop to check the
+branch out and run the tools, and the ones nobody got round to sat unmerged.
+Now `.github/workflows/admin-generated.yml` does it: on every push to an
+`admin/` branch it runs `tools/places.mjs`, `tools/languages.mjs`,
+`tools/sitemap.mjs` and `tools/googlevenues.mjs`, commits whatever changed, and
+starts `validate.yml` on the new head, because a push made with GitHub's own
+token starts no checks by itself. The first check on the pull request may still
+be red for the minute that takes; the one on its newest commit is the one that
+counts. What it cannot fix is a real error — a blog post that links a place the
+edit just closed, say — and that one is still a laptop's.
 
 Then, in this order: a branch `admin/add-<id>`, the photographs, the entry,
 and the pull request last — so a failure part-way leaves a branch nobody is

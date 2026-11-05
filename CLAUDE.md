@@ -493,10 +493,12 @@ ones are the ones that ship broken.
    whole of it.
 
 A pull request the admin page opened — a branch named `admin/add-<id>` or
-`admin/edit-<id>` — is landed the same way, with one step in front: check it
-out, `node tools/places.mjs` and `node tools/languages.mjs`, commit
-`data/places.json`, `data/map.json` and `data/lang/`, push. The `/place`
-skill says why.
+`admin/edit-<id>` — is landed the same way, but the generators have already
+run: `.github/workflows/admin-generated.yml` commits what `tools/places.mjs`,
+`tools/languages.mjs`, `tools/sitemap.mjs` and `tools/googlevenues.mjs` write
+on every push to such a branch, and starts the check on that commit. Rebase,
+look at the check on the newest commit rather than the first, and merge. The
+`/place` skill says what to do when that one is red too.
 
 ## Say where it stands, in the first line
 

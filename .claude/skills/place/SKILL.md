@@ -89,17 +89,19 @@ its pin can land on the wrong side of the street. What it does, in order:
    and any key the form does not know ride along untouched; blank `website`
    and `phone` are deleted from the object; `types` come out in checkbox
    order. A new place gets `added` = today in Tallinn.
-4. **What the page does not do, and a laptop must, before the PR merges:**
-   - **Run `node tools/places.mjs` and `node tools/languages.mjs`, and
-     commit `data/places.json`, `data/map.json` and `data/lang/`.** The page
-     never touches the catalogue or the map's own copies, so every **Add**
-     PR it opens fails CI with "is on the map but not in the catalogue",
-     whatever the PR body says about going green, and every **Edit** fails
-     on `data/map.json` or a file in `data/lang/` — the map reads the
-     places without their write-ups and each write-up in a file of its
-     language, both written by `tools/languages.mjs` (**One language at a
-     time** under **Languages** in `README.md`). Check the branch out, run
-     both, commit, push, and only then merge.
+4. **What the page does not do, and a workflow does for it:**
+   - **The generated files.** The page never touches the catalogue or the
+     map's own copies, so on its own every **Add** PR fails CI with "is on
+     the map but not in the catalogue" and every **Edit** fails on
+     `data/map.json`, a file in `data/lang/` or `sitemap.xml`.
+     `.github/workflows/admin-generated.yml` runs on every push to an
+     `admin/` branch: `tools/places.mjs`, `tools/languages.mjs`,
+     `tools/sitemap.mjs`, `tools/googlevenues.mjs`, a commit if any of them
+     changed something, and then `validate.yml` dispatched on the new head,
+     since a GITHUB_TOKEN push starts no checks of its own. So the PR's
+     first check is red and the one on its newest commit is the verdict.
+     If that one is red too, the error is real — **Closing one** has the
+     one that comes up — and it is fixed on the branch by hand.
    - The other nine languages of the write-up. The validator warns about
      them, and the PR body says so.
    - The README counts below.
@@ -191,6 +193,14 @@ being shut is a fact about the row, not a reason to hide it. Do not write the
 closure into the blurb. Move the
 README's list of closed places, which is written by name.
 
+**A blog post that links the place breaks the build.** `tools/validate.mjs`
+refuses a `?spot=` link in `data/blog.json` to a place that is not open, so
+closing one a post recommends is red until the post says so: `grep -n
+'spot=<id>' data/blog.json`, take the link off the name and say in a clause
+that it has closed. The admin page cannot do that edit, so an admin PR that
+closes such a place stays red after the workflow has caught it up. Faeton was
+the first.
+
 ## The commit
 
 The subject is a sentence about the place, not about the file:
@@ -220,8 +230,11 @@ entry land in one commit, so no commit lists a photo that is not there.
   `map_id` line in `db/google-venues.sql` that has still to be loaded.
 - Landed, the place is on the live map within the minute.
 
-**A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`) is
-red until the catalogue is regenerated, so it is landed like this:
+**A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`)
+catches up by itself (step 4 of **The admin road**). Check that the newest
+commit on it is `github-actions[bot]`'s and that its check is green, then
+rebase and merge. Only when that workflow did not run, or the check on its
+commit is red, is it landed by hand like this:
 
 ```
 git fetch origin admin/add-<id> && git checkout admin/add-<id>
