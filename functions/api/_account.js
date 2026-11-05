@@ -63,7 +63,7 @@ const FAIL_WINDOW = 15 * 60 * 1000;
    has joined the ones that can be joined; \p{Nd} is a digit in any of them.
    Every sheet that asks for a name restates this as a line under the field
    and as `maxlength`, and `accountUsernameHint`, `accountErrUsername` and
-   `feedbackNameHint` in data/ui.json are the sentences that say it in ten
+   `feedbackNameHint` in data/ui.json are the sentences that say it in eleven
    languages — change the pattern, change all of them. `grep -n maxlength
    assets/*.js` finds the fields. */
 const USERNAME_RE = /^[\p{L}\p{Nd}][\p{L}\p{M}\p{Nd}._-]{2,23}$/u;

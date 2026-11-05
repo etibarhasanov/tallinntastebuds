@@ -101,7 +101,7 @@ branch, and it needs nothing from a laptop.
    changed, given a poster if it had none, committed as "Convert <id> to
    web-ready MP4" and deployed again. Then the hourly tick below files it
    away when the 36 hours are over.
-5. **What is left for a laptop:** the caption in the other nine languages,
+5. **What is left for a laptop:** the caption in the other ten languages,
    which can be added while the story is up without it coming down.
 
 ## The hand road
@@ -224,7 +224,7 @@ device a direct edit of `data/stories.json` on the default branch.
 - A time written in the laptop's clock rather than Tallinn's. Every stamp is
   Tallinn wall clock; summer time is worked out for you, and the admin page
   prints Tallinn's clock under the field for exactly this.
-- A caption in English only, on a site with ten languages. The validator
+- A caption in English only, on a site with eleven languages. The validator
   only warns about a missing `en`, so nothing catches the other nine.
 - A replaced file under the same name: `/stories/*` is cached for a week, so
   anyone who saw the old one keeps seeing it. New content is a new name.

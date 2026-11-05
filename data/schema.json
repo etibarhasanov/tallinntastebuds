@@ -126,9 +126,6 @@
         "az": {
           "type": "string"
         },
-        "hy": {
-          "type": "string"
-        },
         "en": {
           "type": "string"
         },
@@ -152,17 +149,18 @@
         },
         "uk": {
           "type": "string"
+        },
+        "fr": {
+          "type": "string"
+        },
+        "de": {
+          "type": "string"
         }
       },
       "anyOf": [
         {
           "required": [
             "az"
-          ]
-        },
-        {
-          "required": [
-            "hy"
           ]
         },
         {
@@ -203,6 +201,16 @@
         {
           "required": [
             "uk"
+          ]
+        },
+        {
+          "required": [
+            "fr"
+          ]
+        },
+        {
+          "required": [
+            "de"
           ]
         }
       ]

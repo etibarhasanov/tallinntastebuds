@@ -97,7 +97,7 @@ const CARD_IMAGE = 'https://tallinntastebuds.ee/assets/logo/og.jpg';
 
 /* The line under the name in a preview card.
  *
- * English, on a site read in ten languages, for the reason describe() in
+ * English, on a site read in eleven languages, for the reason describe() in
  * functions/list/[id].js gives: this is the one string here with no reader to
  * ask. A crawler's Accept-Language is whatever its operator set, and the card
  * it builds is shown to everybody the link is forwarded to rather than to the

@@ -143,7 +143,7 @@ function shareCode(length) {
 
 /* The readable half, so a pasted link says what it is before anybody opens it.
    A name with no Latin letters in it at all — there will be some, the site is
-   read in ten languages — leaves "group" standing on its own in front of the
+   read in eleven languages — leaves "group" standing on its own in front of the
    code. */
 function slugOf(name) {
   const s = String(name || '')

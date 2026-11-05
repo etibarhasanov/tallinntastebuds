@@ -63,7 +63,7 @@ stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
   "name": "Morii Tea House",
   "live": false,
   "key": "…32 characters…",
-  "offer": { "en": "15% off your order", "et": "…", … all ten … },
+  "offer": { "en": "15% off your order", "et": "…", … all eleven … },
   "terms": { "en": "One per table.", … },
   "from": "2026-09-01",
   "until": "2026-12-31"
@@ -90,7 +90,7 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 | `roll` | more than twelve rates — `staff.html` lists a code for each | warning |
 | `offer` | every language carries `{rate}` when the deal has a `roll`, and none does when it has not | error |
 | a live deal | must carry `offer.en` | error |
-| a live deal | should carry `offer` in all ten languages | warning |
+| a live deal | should carry `offer` in all eleven languages | warning |
 | a live deal | `until` in the past | warning |
 | anything else | an unknown key, which is how a typo in a field name is caught | warning |
 
@@ -100,8 +100,8 @@ many are switched on.
 ## Switching one on
 
 1. **Copy a live entry**, not the README's example: the live ones carry
-   `offer` and `terms` in all ten languages. A rate another deal already
-   offers has its ten lines written there; reuse them rather than retranslate.
+   `offer` and `terms` in all eleven languages. A rate another deal already
+   offers has its eleven lines written there; reuse them rather than retranslate.
 2. **Generate the key**, once, and paste it once:
 
    ```

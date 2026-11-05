@@ -2539,12 +2539,41 @@ the note beside `/list/<id>` in that file, and it applies here word for word.
 
 ## Languages
 
-Azerbaijani, Armenian, English, Estonian, Finnish, Portuguese, Russian,
-Spanish, Turkish and Ukrainian — the switcher shows them sorted by their
-two-letter code, so `az` first and `uk` last, whatever order the blocks in
-`ui.json` are written in. The language a visitor *lands* in is a separate
-thing, still English by default, and set by `DEFAULT_LANG` in
-`assets/app.js`.
+Azerbaijani, English, Estonian, Finnish, French, German, Portuguese,
+Russian, Spanish, Turkish and Ukrainian — the switcher shows them sorted by
+their two-letter code, so `az` first and `uk` last, whatever order the blocks
+in `ui.json` are written in. The language a visitor *lands* in is the one
+their browser asks for, when the site has it — the order is below — and
+English otherwise, which is `DEFAULT_LANG` in `assets/app.js`.
+
+### Which eleven, and why they changed
+
+The ten the site opened with were chosen by guess: the languages of the
+people this city hears most, and of whoever was nearest when a language was
+added. In November 2026 they were checked against what visitors' browsers
+actually asked for — the `asks` kind in `visitor_counts`, production, 8
+October to 5 November, the owner's own visits left out — and against the
+seconds read in each language, `kind='lang'`:
+
+| Asked for | en | et | ru | es | fr | fi | de | az | hy |
+|---|---|---|---|---|---|---|---|---|---|
+| Browsers | 756 | 49 | 29 | 23 | 17 | 14 | 13 | 2 | 0 |
+
+Armenian had no browser asking for it and no second read in it, so it went.
+French and German were the fifth and seventh languages asked for and the
+site did not speak either, so a visitor from Lyon or Hamburg landed in
+English; both came in, every string and every write-up. Azerbaijani stays
+on two asks — the owner's decision, and it is one of the three languages the
+flashcards are written in. That makes eleven rather than ten, and nothing in the code
+counted to ten: the switch is a menu that grows downwards, the validator
+holds every language to the same keys whatever their number, and the
+sitemap and the head read the list out of `ui.json`. Nothing anybody wrote
+was lost with it: on the day, production held no post, no profile line and
+no row with an Armenian version, and a version in a language the site no
+longer speaks is dropped when it is read, the way `readLines()` drops any.
+Armenian is still on the list of languages a member can say they speak,
+which is a different list and longer than the site's — **Which languages
+you speak** under **Profiles**.
 
 The switch is the code you are in with a menu under it, listing each
 language's own name for itself. It had two shapes for a while — this menu on a
@@ -2563,7 +2592,7 @@ either.
 **And it grows downwards over the places column**, which took a rule to say.
 Above 860px that column is open from the moment the map draws and starts 98px
 down the right of the window — under the button the menu drops from, and
-straight through the ten languages under it. The panel is 1200 in the stack
+straight through the eleven languages under it. The panel is 1200 in the stack
 and the corner these buttons stand in is 1001, so what a press on the switch
 drew for a few days was the menu *behind* the list: the language somebody was
 reaching for, painted over by seventy-eight restaurants. The menu cannot climb
@@ -2610,16 +2639,16 @@ their own; nobody has asked for them yet.
 
 `/?lang=ru` is the map in Russian, and it is also the address the Russian
 map is indexed at. The file itself is English — one title, one description,
-`<html lang="en">` — and the other nine languages only exist once
+`<html lang="en">` — and the other ten languages only exist once
 `assets/app.js` has run, which a person's browser always does and a search
 engine's crawler often does not. So `functions/index.js` serves the same
 file with the head written for the language the address names: the title and
 `metaDescription` from `data/ui.json`, `<html lang>`, a canonical tag naming
-that address, an `hreflang` link to each of the ten so a search engine reads
-them as one page in ten languages rather than ten copies of one, and the
+that address, an `hreflang` link to each of the eleven so a search engine reads
+them as one page in eleven languages rather than eleven copies of one, and the
 JSON-LD block describing every open place with its write-up in that language.
 The bare address is English and the `x-default`, and `sitemap.xml` lists all
-ten — and every open place at its own address, `?spot=`, which the same
+eleven — and every open place at its own address, `?spot=`, which the same
 route serves with the place's own head. **Getting found** under **Deploy to
 Cloudflare Pages** has the whole of it, including what it costs.
 
@@ -2647,8 +2676,8 @@ of them, and they are what `assets/app.js` fetches:
   visitor's language out of it before it knows which file to ask for.
 - `data/lang/<code>.json` — that language's block of `ui.json`, and every
   place's write-up in it, by place id. About 75 KB raw and 24 KB compressed
-  in English; the Cyrillic and Armenian files are the largest, at about
-  115 KB and 31 KB.
+  in English; the Cyrillic files are the largest, at about 130 KB and
+  36 KB.
 - `data/map.json` — `restaurants.json` without the write-ups, 33 KB raw and
   6 KB compressed.
 
@@ -2686,7 +2715,7 @@ discount pass — `deal.html`, `verify.html` and `staff.html`, all through
 it, and, since a week after the map, the account page, the editor, feedback,
 insights, splitwise and the owner's directory and flows pages, each through
 a `loadWords()` of its own. Each still picks its language exactly as it did,
-out of the same ten codes in the same order, and then fetches that one file
+out of the same eleven codes in the same order, and then fetches that one file
 rather than all ten: 25 to 30 KB on the wire where `ui.json` is 220, which
 on the pass was most of what a guest's phone waited for before it could draw
 the code, and on the account page was the largest download on it — larger
@@ -2698,11 +2727,11 @@ switch on the lists page lists `data/lang/index.json` and still reloads the
 page in the language picked, so one file is all it needs.
 
 Two pages had a second use for the whole file and keep it another way. The
-editor read the ten language codes off `ui.json`'s keys to know which
+editor read the language codes off `ui.json`'s keys to know which
 languages a profile's line can be written in; it reads them off
-`data/lang/index.json` now, the same ten in the same order. Splitwise lays
+`data/lang/index.json` now, the same codes in the same order. Splitwise lays
 its own strings, `data/split.json`, over the site's, and that file still
-carries all ten languages — it is 37 KB, and it is the file that makes
+carries all eleven languages — it is 37 KB, and it is the file that makes
 removing the feature a matter of deleting files — so `merge()` in
 `assets/split.js` takes the one block for the language the index picked and
 lays that over the pack. The flashcards and `/admin/stats` never read either:
@@ -7900,13 +7929,13 @@ What is stored is `["et","en","ru"]`, in the order they were picked, and the
 page names each one in whichever language it is being read in — *Estonian*
 to an English reader, *Эстонский* to a Russian one, *Eesti* to an Estonian —
 out of the browser's own `Intl.DisplayNames`, so a profile reads the same in
-all ten of this site's languages without anybody writing a word twice or this
-repository carrying forty-four names in ten languages. Where a browser is too
+all eleven of this site's languages without anybody writing a word twice or this
+repository carrying forty-four names in eleven languages. Where a browser is too
 old to have it, each language is printed in its own name for itself instead,
 which is the second column of `SPEAKS` in `assets/links.js`. A free box would
 have been a name the page could not translate.
 
-The list is the site's own ten, then thirty-four more that this city hears
+The list is the site's own eleven, then thirty-three more that this city hears
 after them — forty-four, and at most eight picked. The picker is a pill per
 language, pressed to take it off, and a native menu of the rest under them in
 the reader's alphabetical order, because a list of forty-four is what a
@@ -16309,8 +16338,8 @@ being asked; some stream checkers do not, so those two URLs will look dead to a
 link checker and play fine in a browser.
 
 Prefer the station's own address over a rebroadcast of it. Baku Retro FM, YleX,
-Radio Paradise and Radio ROKS are all on their broadcaster's own host, which is
-why those four lines are the shortest in the file. A mirror on an aggregator's
+Radio Paradise, Radio ROKS and FIP are all on their broadcaster's own host, which
+is why those five lines are the shortest in the file. A mirror on an aggregator's
 CDN is a lower bitrate, one remove from the station, and free to drop it
 whenever it likes.
 
@@ -16322,26 +16351,39 @@ than the main feed's Western rock. The other channels on the same host are
 `RadioROKS_ClassicRock`, `RadioROKS_NewRock`, `RadioROKS_HardnHeavy` and
 `RadioROKS_Ballads`, if the taste of the map ever changes.
 
-Armenian is jazz, which is less of a stretch than it sounds: Yerevan has had a
-jazz scene since Malkhas, and Jazz FM 95.3 is the station on the end of it.
-The button reads the frequency rather than the city, which is the same trim
-Radio ROKS took: 18ch, and "Jazz FM Yerevan" ran into the ellipsis.
-`am.radioaurora.am` is Radio Aurora's own host and it carries several Yerevan
-stations off the one Icecast, `/jz` among them, so this is the broadcaster's
-address rather than an aggregator's copy of it. Kiss FM 88.3 is `/kiss.aac` on
-the same host and Aurora itself is `/al.mp3`, if the taste of the map ever
-changes.
+German is Turkish-German, by the owner's choice: Metropol FM, the
+Turkish-language station on 101.9 in Berlin, rather than a German
+broadcaster. The network has regional feeds across Germany and it is the
+Berlin one in the file, not one of its music channels. The address is the
+network's own: `stream.metropolfm.de` lists every mount it carries, and
+`MFMBerlin/mp3-256/stream.metropolfm.de/` is the one that page gives for
+Berlin. It answers with a 302 to a node on `metropolfm.streamabc.net`, the
+streaming company behind it, with a fresh token each time — so, as with the
+two streamtheworld entries, the file holds the address that redirects and
+never the node. Its siblings on the same host are `MFMTurkishPop`,
+`MFMArabesk`, `MFM45lik` and `MFMAlaturka`, and `aac-64` in place of
+`mp3-256` is the same feed at a quarter of the bitrate, if the taste of the
+map ever changes.
 
-101.ru's Armenia channel is the one to avoid. It is the easiest Armenian music
-stream to find and it fails twice over: a Russian aggregator's rebroadcast
-rather than a station, and one remove from the country whose slot it would be
-sitting in.
+**It has not been heard in a browser yet.** The session that added it
+fetched the stream and read 256 kbps MP3 frames off it, and Chromium played
+the same bytes for eight seconds once they were handed to it from a local
+server; played straight from that session's sandbox, Chromium refused the
+redirected response with `ERR_BLOCKED_BY_ORB`, every Metropol mount alike,
+and nothing in the response's headers explained why. FIP, beside it, played
+from the same sandbox the same way. So press the button once in German on a
+real phone before trusting it; if it toasts, that refusal is the first
+thing to look at, and `MFMBerlin/mp3-256/homepage/` — the mount the
+network's own player uses — is the second.
 
-This entry is the only one in the file nobody has listened to before committing
-it. It came out of a mirror of the radio-browser database rather than a
-browser, because the session that added Armenian could not reach a single radio
-host to play one. If the button ever toasts instead of playing, that is why,
-and the two mounts above are the first things to try.
+French is FIP, Radio France's music station: no talk to speak of, an eclectic
+running order of jazz, French chanson, soul and whatever else the programmers
+like, and in French between the records. It is on `icecast.radiofrance.fr`,
+the broadcaster's own Icecast, which is the shortest kind of line in this
+file. `fip-midfi.mp3` is the 128 kbps MP3; `fip-hifi.aac` is the same station
+in better quality where AAC plays, and `franceinter-midfi.mp3` is France
+Inter if the slot ever wants the talk. It was played in Chromium from the
+session that added it before it was committed.
 
 Azerbaijani wants retro **in Azerbaijani**, which is two conditions and not one,
 and the slot took several wrong stations before it took this one. A station
@@ -18392,10 +18434,12 @@ than the Таллин a searcher in Russia types; a search engine reads the two
 as one word, and the readers here are the third of the city that speaks
 Russian.
 
-The other six languages carry the same title and description translated,
+The other seven languages carry the same title and description translated,
 the same text, the same addresses. Nobody is searching for Tallinn in
-Armenian in numbers worth a sentence here; they cost nothing because the
-strings were already written.
+Azerbaijani in numbers worth a sentence here; they cost nothing because the
+strings were already written. French and German say *Où manger à Tallinn* and
+*Wo essen in Tallinn*, the question first as everywhere else, and neither says
+*meilleur* or *beste*.
 
 **The lists, as text.** A list page had the same blind spot the map had: the
 list arrives seeded as JSON in a `<script>`, `assets/lists.js` draws it, and

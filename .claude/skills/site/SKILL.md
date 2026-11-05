@@ -60,9 +60,9 @@ What the description has to settle before a stylesheet is worth opening:
 - **Every state**, drawn in words: empty, loading, error, signed out, and the
   place with no photo. A panel described only in its happy state is a panel
   that gets built only in its happy state.
-- **The copy**, in English, and the note that every string needs all ten
+- **The copy**, in English, and the note that every string needs all eleven
   languages in `data/ui.json` before the validator will pass it. Translating
-  the wrong wording ten times is the expensive way to find out it was wrong.
+  the wrong wording eleven times is the expensive way to find out it was wrong.
 - **What it does at 390 px**, which is the phone the README measures its
   layouts against, and which of **The four styles** it has to work in. All,
   always — but say what changes between them.
@@ -114,7 +114,7 @@ also the one page besides the map with a **language switch** on it, because on
 its own subdomain `ttb.lang` belongs to another origin: it is drawn from the
 `langs` that same answer carries, and picking one asks the route again for the
 one block rather than reloading — **A language of your own to learn it in**
-under **Flashcards**. That switch has **three** rows and not ten: the
+under **Flashcards**. That switch has **three** rows and not eleven: the
 flashcards are the one page on the site that speaks fewer languages than the
 site does, because the back of a card is written in three — `DECK_LANGS` in
 `functions/api/_lib.js` is the list, it narrows the switch and the language
@@ -139,9 +139,9 @@ the *Estonia 7 · Finland 2 · Other 1* line under a list; `/insights`,
 `/admin/stats` and `/admin/visitors` load it before their own script, and a
 page that names a country does the same rather than growing a copy.
 
-**Every UI string lives in `data/ui.json`, in all ten languages** — az, hy,
-en, et, fi, pt, ru, es, tr, uk. Never print a raw key or an English fallback
-to a visitor. A key nothing prints any more goes, in all ten, in the commit
+**Every UI string lives in `data/ui.json`, in all eleven languages** — az, en,
+et, fi, pt, ru, es, tr, uk, fr, de. Never print a raw key or an English fallback
+to a visitor. A key nothing prints any more goes, in all eleven, in the commit
 that orphaned it.
 
 **The map does not read that file.** It reads `data/lang/<code>.json` — one
@@ -166,10 +166,10 @@ needs the list of languages — the editor does, for the line on a profile —
 takes it off the `names` the same call returns, not off the pack's keys.
 
 One exception, and it is a deliberate one: the splitwise page's strings are in
-`data/split.json`, same shape and same ten languages, so that removing that
+`data/split.json`, same shape and same eleven languages, so that removing that
 feature is removing files — see **Taking it out** under **Splitwise** in
 `README.md`. The validator holds it to everything `ui.json` is held to, plus
-the same ten languages and no key in both files. Nothing else may do this; a
+the same eleven languages and no key in both files. Nothing else may do this; a
 second exception is two files to keep in step.
 
 **That rule has been tested once and held.** The flashcards page arrived on a
@@ -177,9 +177,9 @@ subdomain of its own, built to be removable the way splitwise is, and wanted a
 file of its own by exactly the same argument. It did not get one: its
 hundred and eighteen `flash*` keys are in `data/ui.json` with everything else, and taking
 the feature out means `grep -n '"flash' data/ui.json` and a hundred and eighteen deletions
-from ten blocks. What it *does* keep to itself is `data/decks.json` — the words
+from eleven blocks. What it *does* keep to itself is `data/decks.json` — the words
 on the cards, the ten grammar lessons, the songs and the conversations, which are content rather
-than interface and are written in three languages rather than the site's ten. A
+than interface and are written in three languages rather than the site's eleven. A
 card's `back`, a deck's `name` and its `why`, every paragraph, heading and
 gloss of a lesson, every line and word of a song, and every question and turn of a conversation are each an object keyed by language, English required and
 Azerbaijani and Russian written; `means()` in `assets/flashcard.js` picks the
@@ -316,7 +316,7 @@ browser cannot import from `tools/`; change one, change the other.
   forty marker ids, written out twice because neither dialect can import the
   other, and the build fails when they drift. Every tone a kind of place is
   filed under needs a `--pin-<tone>` token and a `.pin-tone-<tone>` rule;
-  every marker needs a `pinX` label in all ten languages, which the scanner
+  every marker needs a `pinX` label in all eleven languages, which the scanner
   for `t()` calls cannot see because the picker builds those keys out of the
   ids. `mark` in either table fails outright, and so does a kind of place a
   list could pick — the mouth goes on a place I have eaten at, and what a
@@ -325,9 +325,9 @@ browser cannot import from `tools/`; change one, change the other.
   titles, intros and per-place lines `db/google-lists.sql` stores in English.
   Every list id in `tools/googlelists.mjs` needs a title key there and in
   `data/ui.json`, and every Google category the lists carry needs a
-  `gcat<Category>` key in all ten languages — built out of the category, so
+  `gcat<Category>` key in all eleven languages — built out of the category, so
   the scanner for `t()` calls cannot see them. The script is loaded by
-  `index.html`, `lists.html` and `account.html`, before their own. **In ten
+  `index.html`, `lists.html` and `account.html`, before their own. **In eleven
   languages, in the browser** under **The six lists Google wrote** in
   `README.md`.
 - **The links a profile carries**: `assets/links.js` and `functions/api/_profile.js`
@@ -446,6 +446,29 @@ The switcher, `functions/index.js`, the sitemap tool and the validator all
 read the language list out of `ui.json`, and the switcher sorts by the
 two-letter code, so nothing else changes. Estonian is `et`, not `ee`, and the
 README says why.
+
+Two lists in code are the exception, and the validator fails on both:
+`LINE_LANGS` in `functions/api/_profile.js`, which must be exactly the
+languages of `ui.json`, and the first block of `SPEAKS` there and in
+`assets/links.js`, which leads with the site's own. A language that leaves
+the site moves into the rest of `SPEAKS` rather than out of it, so nobody's
+"I speak it" is dropped.
+
+### Taking one out
+
+The same files in the other direction, which is where it was done for
+Armenian in November 2026: its block in `data/ui.json` and in
+`data/split.json`; its key in every language-keyed object in
+`data/restaurants.json`, `data/taxonomy.json`, `data/cuisines.json`,
+`data/privacy.json`, `data/deals.json` and `data/stories.json`; its entry in
+`data/radio.json`; the property and the `anyOf` line in `data/schema.json`;
+`LINE_LANGS` and `SPEAKS` as above. Then `node tools/languages.mjs`, which
+deletes its file under `data/lang/` and the validator fails until it has, and
+`node tools/sitemap.mjs`. Before it goes, read production for anything
+somebody wrote in it — `post_texts.lang`, and the `lines` in `users.links`
+and `profile_rows.lines` — since a version in a language the site no longer
+speaks is dropped on the next read. **Which eleven, and why they changed**
+under **Languages** in `README.md` has the numbers that decided it.
 
 ## The commit
 

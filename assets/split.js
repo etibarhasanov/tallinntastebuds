@@ -85,7 +85,7 @@
  * WHAT IT READS
  *
  *   /data/lang/          the strings the whole site shares, one language to a file
- *   /data/split.json     this page's own, in the same ten languages
+ *   /data/split.json     this page's own, in the same eleven languages
  *   /api/account         posted to, to sign in or create an account
  *   /api/split           the groups they are in
  *   /api/split?group=    one group, whole
@@ -96,7 +96,7 @@
 
   /* The words, one language at a time: the list of languages, then the one
      this reader is in — data/lang/index.json and data/lang/<code>.json,
-     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
      **Languages** in README.md. */
@@ -333,7 +333,7 @@
 
   /* ----------------------------------------------------------------- money
    * Cents in, a string somebody reads out. Intl knows where the symbol goes
-   * in each of the ten languages — before the number in English, after it in
+   * in each of the eleven languages — before the number in English, after it in
    * Estonian and Finnish — and falls back to the plainest possible spelling
    * where it does not know the language at all.
    *

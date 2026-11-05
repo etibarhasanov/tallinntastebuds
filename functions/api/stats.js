@@ -189,7 +189,7 @@ const VENUE = 'venue';
 /* The doors on the rail, in the order the full column of eight stood them
    before the rail was cut short, each with the string data/ui.json already
    names it by — the same string the door wears as its own label on the map,
-   so the table reads as the rail does and nothing new was written into ten
+   so the table reads as the rail does and nothing new was written into eleven
    languages to name a button that is already named. Nine: the four the rail
    draws — the lists, Surprise me, More and the arrow — and the five rows
    behind More, the account, Learn Estonian, Ask, the colour and feedback,

@@ -100,7 +100,7 @@
     types: [],
     /* One language's strings and one language's write-ups, out of
        data/lang/<code>.json, and every language's own name for itself out of
-       data/lang/index.json. Never all ten at once: see loadLanguage(). */
+       data/lang/index.json. Never all eleven at once: see loadLanguage(). */
     ui: {},
     blurbs: {},
     langNames: {},
@@ -561,7 +561,7 @@
      column for as long as the menu is down.
 
      That last one is not decoration. Above 860px the column stands open from
-     the moment the map draws, 98px down the right of the window, and the ten
+     the moment the map draws, 98px down the right of the window, and the eleven
      languages drop from a button above it straight into that card — and the
      menu cannot climb over it on its own, because it hangs inside .controls
      and .controls has a z-index of its own. So the corner is raised rather
@@ -580,7 +580,7 @@
      blocks happen to sit in ui.json. It sorts on the code, not on the name:
      the codes are what the trigger and every row in the menu lead with, they
      are Latin whatever the language writes itself in, and sorting on them
-     keeps Հայերեն in the middle of the list where its code puts it instead
+     keeps Русский in the middle of the list where its code puts it instead
      of trailing the Latin names the way a collator would push it. Two
      lowercase ASCII letters, so a plain sort is the alphabet. */
   function sortLanguages(codes) {
@@ -2390,7 +2390,7 @@
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
     dom.panelShare.hidden = !place || !!place.standIn;
     if (dom.panelShare.hidden) return;
-    /* The same word the lists page's own share button says, in the same ten
+    /* The same word the lists page's own share button says, in the same eleven
        languages. The button carries no count and nothing else to spell out,
        so unlike the mark beside it the label is the label. */
     dom.panelShare.setAttribute('aria-label', t('listsShare'));
@@ -8415,10 +8415,10 @@
      than widening the way a plain substring match on the whole phrase would.
 
      A word of five letters or more is also tried without its last two, so
-     that the endings ten languages put on a word still reach the label it
+     that the endings eleven languages put on a word still reach the label it
      came from: "kohvik" and "kohvi" reach Kohv, "kahvila" reaches
      Kahvi, "пиццу" reaches Пицца, "kebabi" the kebab shops. That is the
-     cheap end of stemming, and the only end this site can afford in ten
+     cheap end of stemming, and the only end this site can afford in eleven
      languages. Four letters is the floor, so "pizza" is looked for as
      "pizz" at the shortest and a three-letter stem never matches half the
      map.
@@ -8592,17 +8592,17 @@
    * WHAT IS SEARCHED ON EACH SIDE, WHICH IS NEARLY THE SAME THING NOW
    *
    * The map's own places go through hayIndex above — the name, the street,
-   * the type labels in all ten languages, and the dishes — so "pagariäri"
+   * the type labels in all eleven languages, and the dishes — so "pagariäri"
    * and "bakery" both find the bakery whichever language the page is being
    * read in; and, once the roll is in, what Google files each of them as
-   * cooking, in the same ten languages, which /api/places lends a place of
+   * cooking, in the same eleven languages, which /api/places lends a place of
    * mine off its linked row so that "thai" reaches my Thai place whether or
    * not its write-up says the word. A Google venue used to be matched on a
    * name and a street and nothing else, so "pizza" found the pizzerias with
    * pizza in the name and missed the fifty-odd the export files under it,
    * and "beer" found nothing at all. The roll carries its kinds now —
    * `types`, the map's own seven words, and `kitchens`, the directory's
-   * cuisines — and findHay says each of them in all ten languages, so "õlu",
+   * cuisines — and findHay says each of them in all eleven languages, so "õlu",
    * "пиво" and "beer" all reach the pubs; and Google's own `category` —
    * "Kebab Shop", "Cocktail Bar" — which is the most exact thing the export
    * knows about a place, and is matched here and never printed.
@@ -8616,7 +8616,7 @@
    *
    * The field is read with the chat's own reader, TTBAsk.read() in
    * assets/ask.js, before it is matched, for the two reasons the chat reads
-   * with it: the vocabulary is already in ten languages, and the wishes a
+   * with it: the vocabulary is already in eleven languages, and the wishes a
    * sentence carries are not words a name contains. So "pizza near me" is
    * "pizza" and a wish to be near, "cheap ramen" is "ramen" in the two lower
    * price bands, and "somewhere for beer" loses "somewhere" and "for" before
@@ -8701,7 +8701,7 @@
   var findTrackTimer = null;
 
   /* data/cuisines.json, once the roll has brought it in, and what Google
-     files each place of mine as cooking — folded, in ten languages, by the
+     files each place of mine as cooking — folded, in eleven languages, by the
      map's own id. The two halves of the reader's vocabulary the map does not
      load on the way in: both are empty until the first keystroke, and a
      place is matched on what is known so far. */
@@ -8998,7 +8998,7 @@
      order as the last tiebreak, spelled out rather than left to the sort,
      which older engines do not keep stable. The first FIND_MINE of these open
      the dropdown; the rest join the city's. What a place of mine is, for the tier,
-     is its types in ten languages and its dishes: the haystack hayIndex is
+     is its types in eleven languages and its dishes: the haystack hayIndex is
      built from, cut into its three parts. The kitchens Google lends it are
      in the haystack the place is found by and not in the one it is ranked
      by, because what I filed a place under outranks what Google calls it:

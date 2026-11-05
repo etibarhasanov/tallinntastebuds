@@ -89,7 +89,7 @@
 
   /* The words, one language at a time: the list of languages, then the one
      this reader is in — written by tools/languages.mjs out of data/ui.json,
-     which is ten languages of every string the site has, 190 KB on the wire
+     which is eleven languages of every string the site has, 190 KB on the wire
      against this script's 8. **One language at a time** under **Languages**
      in README.md. */
   var LANGS_URL = '/data/lang/index.json';

@@ -48,11 +48,11 @@
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
  *   - a KITCHENS pattern that no longer matches a single row of the Google
- *     Places export, or one whose id nothing can say in ten languages
+ *     Places export, or one whose id nothing can say in eleven languages
  *   - an assets/pins.js whose forty markers have drifted from the ids
  *     functions/api/_pins.js will let a list store, a glyph called `mark` in
  *     either table, a kind of place a list could also pick, a tone with no
- *     colour token behind it, or a marker nobody has named in ten languages
+ *     colour token behind it, or a marker nobody has named in eleven languages
  *     — the picker builds its keys, so nothing else would catch it
  *   - a UI string present in one language but missing in another
  *   - a string the site asks for — a data-i18n key in the markup, a t('key')
@@ -103,7 +103,7 @@ import { stale as staleFlows, problems as flowProblems, load as loadFlows } from
 import { PAGES } from '../functions/api/_visitors.js';
 /* The directory's own vocabulary. It is a table in the endpoint rather than a
    file, the way VENUE_TYPES is, and the checks below are what keep it honest:
-   every id has a label in ten languages, and every pattern still matches
+   every id has a label in eleven languages, and every pattern still matches
    something in the export it was measured against. */
 import { KITCHENS, NAMED, said } from '../functions/api/venues.js';
 /* The forty markers a list may wear. The server half of a table that is
@@ -289,7 +289,7 @@ if (splitUi !== null) {
 /* -------------------------------------------------------------- FLASHCARDS
    data/decks.json — the Estonian the flashcards page ships: fifty-three decks
    and two thousand five hundred cards, deployed as a file and read as one.
-   It is content rather than interface, so the ten languages of data/ui.json
+   It is content rather than interface, so the eleven languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries
    instead is the three it has been written in, in the shape a place's blurb
    is in: an object keyed by language, English required and the rest as they
@@ -949,7 +949,7 @@ if (taxonomy !== null) {
 
 /* ---------------------------------------------------------- cuisines.json
  * The directory at /google files each of Google's 1,112 places under the
- * cuisines it looks like it cooks, and says those words in ten languages. Two
+ * cuisines it looks like it cooks, and says those words in eleven languages. Two
  * files hold the labels and they are meant to be disjoint: taxonomy.json above
  * already says asian, vegan, bakery, coffee, pub and fine-dining for the map's
  * own chips, and this one carries the thirty-nine the export needs on top of
@@ -1632,7 +1632,7 @@ if (existsSync(STORIES)) {
    offers the ten, and the page has no other way to reach an eleventh.
 
    What is deliberately NOT checked is the thing ui.json is held to: a post
-   does not need all ten languages. It is several hundred words of somebody's
+   does not need all eleven languages. It is several hundred words of somebody's
    writing, the same as a story's caption or a place's blurb, and those have
    always been written in the languages they have been written in. English is
    required because it is what the page falls back to, and a reader whose
@@ -1961,7 +1961,7 @@ if (staleGoogleLists()) {
   fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
 }
 
-/* And what those lists say in ten languages. assets/googlewords.js looks each
+/* And what those lists say in eleven languages. assets/googlewords.js looks each
    list up by its id and each place's category by a key, and a list or a
    category it has no word for prints in English on every page — quietly, in
    a site that is otherwise read in ten. The languages agreeing with each
@@ -1979,7 +1979,7 @@ if (staleGoogleLists()) {
     for (const list of buildGoogleLists().lists) {
       for (const place of list.places) {
         const key = 'gcat' + place.category.replace(/[^A-Za-z]/g, '');
-        if (!(key in en)) fail('data/ui.json', `has no "${key}" for Google's category "${place.category}", which ${list.title} carries — add it in all ten languages`);
+        if (!(key in en)) fail('data/ui.json', `has no "${key}" for Google's category "${place.category}", which ${list.title} carries — add it in all eleven languages`);
       }
     }
   } catch (e) { /* the stale check above says why */ }

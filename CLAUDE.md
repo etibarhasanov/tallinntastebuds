@@ -51,7 +51,7 @@ does not have to:
   answer changes month to month and the rule says how to read a file on
   either side of that line.
 - **The counts are written into the prose** — seventy-eight places, 1,112
-  Google venues, ten languages, fourteen types — in the README, the code
+  Google venues, eleven languages, fourteen types — in the README, the code
   comments and the skills, and each skill says where its own copies live and
   gives the `grep` that finds them. Change a count, move the copies you are
   standing in, and say which you left.
@@ -175,7 +175,7 @@ Something **new** does not. Nobody has seen it yet, so what gets built is
 whatever the session pictured while it read the sentence — and the first time
 the owner sees that picture is when it is merged and live — there are no
 preview deployments any more — after the code, the stamps, the README
-section, the ten languages and the browser pass have all been spent on it. Changing it then is not an edit. It is the whole change
+section, the eleven languages and the browser pass have all been spent on it. Changing it then is not an edit. It is the whole change
 again, written by a session that has already talked itself into the first
 version.
 
@@ -209,7 +209,7 @@ enough to read on a phone, saying:
 - every state it has — empty, loading, error, signed out, the place with no
   photo — because the states are where a description and an implementation
   turn out to have disagreed;
-- the copy, in English, and the note that it needs all ten languages in
+- the copy, in English, and the note that it needs all eleven languages in
   `data/ui.json` before it ships;
 - what it does at 390 px, which is the phone the README measures against;
 - what it deliberately does not do yet, so the boundary is a decision rather

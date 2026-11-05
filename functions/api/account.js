@@ -668,7 +668,7 @@ export async function onRequestPost(context) {
 
   /* ------------------------------------ the line, in other languages
    *
-   * The line under the name again in any of the site's ten languages, for a
+   * The line under the name again in any of the site's eleven languages, for a
    * reader whose page is in that one — see cleanLines() in ./_profile.js.
    * A session and no password, for the reason the line itself takes none.
    * The whole set every time, so what is in the boxes when Save is pressed

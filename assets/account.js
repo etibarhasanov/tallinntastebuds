@@ -161,7 +161,7 @@
 
   /* The words, one language at a time: the list of languages, then the one
      this reader is in — data/lang/index.json and data/lang/<code>.json,
-     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
      **Languages** in README.md. */

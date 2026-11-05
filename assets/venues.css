@@ -88,7 +88,7 @@
    the page is for: scrolling past them and having to come back up to change a
    filter is the one thing a directory must not do.
 
-   How tall it ends up is a question for the browser — five controls, ten
+   How tall it ends up is a question for the browser — five controls, eleven
    languages, and a phone that scrolls them sideways — so nothing here guesses
    at it. assets/venues.js measures it into --venues-bar, and the map below
    reads that rather than a number somebody would have to keep in step. */

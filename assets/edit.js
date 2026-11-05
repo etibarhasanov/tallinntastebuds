@@ -99,7 +99,7 @@
 
   /* The words, one language at a time: the list of languages, then the one
      this reader is in — data/lang/index.json and data/lang/<code>.json,
-     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
      **Languages** in README.md. */
@@ -349,7 +349,7 @@
 
   function flat(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
 
-  /* The languages the line can be written again in: the site's own ten, in
+  /* The languages the line can be written again in: the site's own eleven, in
      the order LINE_LANGS in functions/api/_profile.js has them, which is the
      order SPEAKS in assets/links.js starts with. Read off the language index
      this page loaded rather than written a third time, since a page is only

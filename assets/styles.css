@@ -1066,7 +1066,7 @@ a:hover { color: var(--accent-lit); }
 
 /* And over the places column while the menu is down. Above 860px that column
    stands open from the moment the map draws, starting 98px down the right of
-   the window — which is under these buttons and straight through the ten
+   the window — which is under these buttons and straight through the eleven
    languages that drop from them. The panel is 1200 in the stack and this was
    1001, so the menu opened behind the list: the language you wanted was drawn,
    and a card with seventy-six restaurants on it was painted over it.

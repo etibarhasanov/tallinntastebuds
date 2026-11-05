@@ -197,7 +197,7 @@
    pair rather than pushed to the two ends, and allowed to become two rows
    rather than shrink: a pill squeezed until its label wraps inside it is worse
    than a band two rows tall. At 390px, the width the README measures against,
-   the pair fits on one row in all ten languages; at 320px it fits in none of
+   the pair fits on one row in all eleven languages; at 320px it fits in none of
    them. Which is why the room under it is measured rather than written down —
    see below. */
 .lists-dock-mine {
@@ -215,7 +215,7 @@
    THE ROOM IS MEASURED, NOT WRITTEN DOWN
    It was 92px for as long as the band held one pill and nothing else. Your own
    list's holds two — see listDockMine() in assets/lists.js — and two controls
-   in a row is a row that wraps: one row at 390px in all ten languages, two at
+   in a row is a row that wraps: one row at 390px in all eleven languages, two at
    320px in every one of them. A number here that was right for one row puts the
    last place on the list under the band, which is the exact thing the band was
    added to stop, and the height it has to be is a function of two translated
@@ -343,7 +343,7 @@
   margin: 0;
 }
 .lists-fold[open] > summary > .lists-title { margin-bottom: 12px; }
-/* The count is one unit — Armenian's "3 վայր" broken over two lines is two
+/* The count is one unit — "3 места" broken over two lines is two
    things. The title beside it gives up the width instead; it is a sentence
    and it can wrap. */
 .lists-fold > summary .lists-count { white-space: nowrap; }
@@ -465,7 +465,7 @@
    answer to "what will my list look like" instead of a column of words.
    Which also makes it the one control on this page with nothing to
    translate: the tooltip and the label carry the words, and every visible
-   character in it is the same in all ten languages. */
+   character in it is the same in all eleven languages. */
 .lists-pins { margin-top: 12px; }
 
 .lists-pin-grid {
@@ -1762,7 +1762,7 @@
    hover. The chevron is the row's own ::after, a third grid item stood beside
    the body across every row of the grid; the press sheet is the link's
    ::after, so the two never meet. It is a mark and not a word, so it costs no
-   string in ten languages and says nothing a screen reader has not already
+   string in eleven languages and says nothing a screen reader has not already
    been told by the link it sits beside.
 
    What it costs is dragging over the note to copy it: a sheet across the row

@@ -222,7 +222,7 @@ export function query(q) {
  *
  * SQLite's LIKE folds case for ASCII and for nothing else, so "Kohvik" finds
  * "kohvik" and "Õlle" does not find "õlle". That is a real limit on a site
- * read in ten languages and it is accepted here rather than papered over:
+ * read in eleven languages and it is accepted here rather than papered over:
  * LOWER() is ASCII-only in exactly the same way, so pairing the two would buy
  * nothing, and the alternative is a second stored column of folded text kept
  * in step with the first by every write on the site. A search that is

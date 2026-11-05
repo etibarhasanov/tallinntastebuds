@@ -273,7 +273,7 @@
            data-i18n-aria-label="findLabel" data-i18n-placeholder="findPlaceholder"
            aria-label="Find a place anywhere in Tallinn" placeholder="Find anywhere in Tallinn">
     <!-- searchClear and not a findClear of its own: the words are the same
-         words, and a second key saying "Clear the search" in ten languages is
+         words, and a second key saying "Clear the search" in eleven languages is
          a second key to keep in step with the first. -->
     <button type="button" class="find-clear" id="find-clear"
             data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
@@ -710,7 +710,7 @@
 <!-- Shared with deal.html, verify.html and staff.html. The map uses only the
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
-<script src="assets/pass.js?v=f70ed673" defer></script>
+<script src="assets/pass.js?v=afc1991c" defer></script>
 <!-- The basemap, shared with the lists picker and the admin one. Before
      app.js and deferred like it: deferred scripts run in document order, so
      the global is there by the time the map is drawn. -->
@@ -727,12 +727,12 @@
      of place, cheap or fancy, open now, near what — before the model sees a
      line of either list. It names no place itself. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
-<script src="assets/ask.js?v=e15c0e48" defer></script>
+<script src="assets/ask.js?v=ac7e3464" defer></script>
 <!-- The eighteen glyphs, the six tones, and which of them a place draws. The
      map's own places wear the mark and nothing else can; a place off Google's
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
-<script src="assets/pins.js?v=91c86c1c" defer></script>
+<script src="assets/pins.js?v=a6fa7690" defer></script>
 <!-- The id this browser files a save or a heart under when nobody is signed
      in, shared with the feedback page. After track.js and before the page's own script,
      deferred like it, so document order puts the global in place first. -->

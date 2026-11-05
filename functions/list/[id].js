@@ -78,7 +78,7 @@ import {
 /* The line under the title in a preview card. Their own if they wrote one,
    and otherwise a plain statement of what the link holds.
  *
- * English, on a site that is read in ten languages, because this is the one
+ * English, on a site that is read in eleven languages, because this is the one
  * string here that has no reader to ask: a crawler's Accept-Language is
  * whatever its operator set, and the card it builds is shown to everybody the
  * link is forwarded to rather than to the person who fetched it. The page

@@ -24,7 +24,7 @@
  *
  * They cost nothing — no file, no sprite, no request, and no thirteenth
  * thing to re-render when a size changes — and everybody already knows what
- * they mean, in ten languages, without a legend. The price is that the
+ * they mean, in eleven languages, without a legend. The price is that the
  * picture is the reader's platform's: a croissant is Apple's on an iPhone
  * and Google's on a Pixel, and neither is ours. That trade would be the
  * wrong one for the mark, which is why the mark is a photograph and is not
@@ -186,7 +186,7 @@ window.TTBPins = (function () {
 
   /* Google's words, read into one of the five. The keys are ids out of
      data/taxonomy.json and data/cuisines.json, which are deliberately
-     disjoint — see "Cuisines, in ten languages" in README.md — so one object
+     disjoint — see "Cuisines, in eleven languages" in README.md — so one object
      can hold both without a collision.
 
      Everything not named here is somewhere you sit and eat, which is the

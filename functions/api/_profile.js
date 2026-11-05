@@ -228,12 +228,12 @@ export function linkUrl(id, handle) {
  *
  * Two-letter ISO 639-1 codes out of the list below, and the page names each
  * one in the reader's language — "Estonian" in English, "эстонский" in
- * Russian — so a profile reads the same in all ten of this site's languages
+ * Russian — so a profile reads the same in all eleven of this site's languages
  * without anybody having written a word of it twice. A list rather than a
  * free box because a name somebody typed is a name the page cannot translate,
  * and because a free box on a profile is a line nobody asked for.
  *
- * The site's own ten first, then the languages this city hears most often
+ * The site's own eleven first, then the languages this city hears most often
  * after them. Adding one is a code here and the same code, with its own name
  * for itself, in SPEAKS in assets/links.js — node tools/validate.mjs fails the
  * build when the two lists drift, the way it does for the networks above.
@@ -249,9 +249,9 @@ export function linkUrl(id, handle) {
  * functions/api/account.js each keep the other's half — mergeLinks() below.
  */
 export const SPEAKS = [
-  'az', 'hy', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk',
-  'ar', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'fa', 'fr',
-  'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ka', 'kk', 'ko',
+  'az', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk', 'fr', 'de',
+  'ar', 'be', 'bg', 'ca', 'cs', 'da', 'el', 'fa', 'he', 'hi',
+  'hr', 'hu', 'hy', 'id', 'it', 'ja', 'ka', 'kk', 'ko',
   'lt', 'lv', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sr', 'sv',
   'th', 'uz', 'vi', 'zh'
 ];
@@ -296,11 +296,11 @@ export function readSpeaks(raw) {
  * A reader in a language nobody wrote it in gets the line as it was first
  * written, exactly as before this existed.
  *
- * WHY THE SITE'S TEN AND NOT THE FORTY-FOUR ABOVE
+ * WHY THE SITE'S ELEVEN AND NOT THE FORTY-FOUR ABOVE
  *
  * A version is chosen by the language the page is being read in, and a page
- * on this site is only ever read in one of the ten data/ui.json speaks. A
- * line in German would be a box nobody's page could ever choose. So these are
+ * on this site is only ever read in one of the eleven data/ui.json speaks. A
+ * line in Polish would be a box nobody's page could ever choose. So these are
  * exactly the languages of data/ui.json, and node tools/validate.mjs fails the
  * build when the two part company — a language added to the site is a code
  * added here in the same commit.
@@ -310,8 +310,8 @@ export function readSpeaks(raw) {
  * `{"et":"…","ru":"…"}`, which is the shape a card's back and a deck's name
  * have in data/decks.json and a place's blurb has in data/restaurants.json:
  * an object keyed by code, and the page picks the one it is read in. Not a
- * column per language — ten ALTERs run by hand against a live table, and an
- * eleventh with the next language — and not a table of its own, for a thing
+ * column per language — eleven ALTERs run by hand against a live table, and a
+ * twelfth with the next language — and not a table of its own, for a thing
  * read on one page, about one person, by primary key. It rides in
  * users.links under `lines`, beside the handles and the languages, for the
  * reason the languages do: that column is JSON so that one more small thing
@@ -320,7 +320,7 @@ export function readSpeaks(raw) {
  * Same cap as the line, same flatten-and-cut, and an empty box is a version
  * taken down rather than stored as ''.
  */
-export const LINE_LANGS = ['az', 'hy', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk'];
+export const LINE_LANGS = ['az', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk', 'fr', 'de'];
 
 /* The line's cap, and every version's. Two hundred because a line under a
    title is what this is — **The line about yourself** in README.md — and
