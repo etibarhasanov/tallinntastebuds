@@ -4169,6 +4169,86 @@
    },
    "taste": "Tuleb klient.",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-tools",
+   "added": "2026-11-05",
+   "name": {
+    "en": "The tools of your trade",
+    "az": "İşində istifadə etdiyin alətlər",
+    "ru": "Инструменты твоей работы"
+   },
+   "why": {
+    "en": "Piret’s pens and syringe, a guitar teacher’s pick and music stand, a coach’s balls and a hairdresser’s scissors",
+    "az": "Piretin qələmləri və şprisi, gitara müəlliminin mediatoru və not altlığı, məşqçinin topları və bərbərin qayçısı",
+    "ru": "Ручки и шприц Пирет, медиатор и пюпитр учителя гитары, мячи тренера и ножницы парикмахера"
+   },
+   "taste": "Ilma selleta ei saa!",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-content-work",
+   "added": "2026-11-05",
+   "name": {
+    "en": "Are you happy with your work?",
+    "az": "İşindən razısanmı?",
+    "ru": "Ты доволен своей работой?"
+   },
+   "why": {
+    "en": "Good colleagues make the work fly, a pupil scores a goal for the first time, and the feedback is mostly kind",
+    "az": "Yaxşı həmkarlarla iş uçub gedir, şagird ilk dəfə qol vurur, rəylər də çox vaxt xoşdur",
+    "ru": "С хорошими коллегами работа летит, ученик впервые забивает гол, а отзывы в основном добрые"
+   },
+   "taste": "Ma olen väga rahul.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-free-time",
+   "added": "2026-11-05",
+   "name": {
+    "en": "What you do in your free time",
+    "az": "Boş vaxtında nə edirsən",
+    "ru": "Что ты делаешь в свободное время"
+   },
+   "why": {
+    "en": "Sport outdoors in every season, a jazz club in Tallinn and Netflix, basketball and an evening lost on YouTube",
+    "az": "Hər fəsildə açıq havada idman, Tallinndə caz klubu və Netflix, basketbol və YouTube-da itən bir axşam",
+    "ru": "Спорт на улице в любое время года, джаз-клуб в Таллинне и Netflix, баскетбол и вечер, потерянный на YouTube"
+   },
+   "taste": "Mul ei ole kunagi igav.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-spring",
+   "added": "2026-11-05",
+   "name": {
+    "en": "What you do in spring",
+    "az": "Yazda nə edirsən",
+    "ru": "Что ты делаешь весной"
+   },
+   "why": {
+    "en": "Longer days, the first grill of the season, birdsong, a lawn to tidy and seeds put in to grow",
+    "az": "Uzun günlər, mövsümün ilk manqalı, quş səsləri, səliqəyə salınacaq çəmən və cücərməyə qoyulan toxumlar",
+    "ru": "Длинные дни, первый гриль сезона, пение птиц, газон, который надо привести в порядок, и посеянные семена"
+   },
+   "taste": "Kevadel istutame lilli.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-summer",
+   "added": "2026-11-05",
+   "name": {
+    "en": "What you do in summer",
+    "az": "Yayda nə edirsən",
+    "ru": "Что ты делаешь летом"
+   },
+   "why": {
+    "en": "Camping round Estonia, a beer on a summer evening, the football season and a bike ride further afield",
+    "az": "Estoniyada çadırda gəzinti, yay axşamı bir pivə, futbol mövsümü və velosipedlə uzaqlara səfər",
+    "ru": "Палатки по всей Эстонии, пиво летним вечером, футбольный сезон и поездка на велосипеде подальше"
+   },
+   "taste": "Mängime lauatennist.",
+   "source": "Keeletee"
   }
  ]
 }

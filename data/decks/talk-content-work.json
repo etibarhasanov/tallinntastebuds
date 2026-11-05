@@ -1,0 +1,1594 @@
+{
+ "id": "talk-content-work",
+ "added": "2026-11-05",
+ "name": {
+  "en": "Are you happy with your work?",
+  "az": "İşindən razısanmı?",
+  "ru": "Ты доволен своей работой?"
+ },
+ "why": {
+  "en": "Good colleagues make the work fly, a pupil scores a goal for the first time, and the feedback is mostly kind",
+  "az": "Yaxşı həmkarlarla iş uçub gedir, şagird ilk dəfə qol vurur, rəylər də çox vaxt xoşdur",
+  "ru": "С хорошими коллегами работа летит, ученик впервые забивает гол, а отзывы в основном добрые"
+ },
+ "taste": "Ma olen väga rahul.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Kas sa oled oma tööga rahul?",
+    "en": "Are you happy with your work?",
+    "az": "İşindən razısanmı?",
+    "ru": "Ты доволен своей работой?"
+   },
+   "turns": [
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Kuna ma olen siin osakonnas nii kaua töötanud, siis see vist näitabki seda, et ma olen rahul.",
+       "en": "Since I have worked in this department for so long, that probably shows that I am happy.",
+       "az": "Bu şöbədə bu qədər uzun müddət işlədiyimə görə, yəqin, elə bu da razı olduğumu göstərir.",
+       "ru": "Раз я так долго работаю в этом отделении, это, наверное, и показывает, что я довольна."
+      },
+      {
+       "et": "Ma arvan, et ma olen rahul!",
+       "en": "I think I am happy!",
+       "az": "Məncə, razıyam!",
+       "ru": "Думаю, я довольна!"
+      },
+      {
+       "et": "Ma ei ole suutnud välja mõelda ühtegi teist kohta, kus ma tahaksin töötada.",
+       "en": "I haven’t been able to think of any other place where I would want to work.",
+       "az": "İşləmək istədiyim başqa heç bir yer ağlıma gəlməyib.",
+       "ru": "Я не смогла придумать ни одного другого места, где мне хотелось бы работать."
+      }
+     ]
+    },
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Mulle meeldib see, kui kõik sujub ja töö õnnestub.",
+       "en": "I like it when everything goes smoothly and the work goes well.",
+       "az": "Hər şey qaydasında gedəndə və iş alınanda xoşuma gəlir.",
+       "ru": "Мне нравится, когда всё идёт гладко и работа удаётся."
+      },
+      {
+       "et": "Mulle meeldib see, kui tööl on toredad kolleegid, kellega koos on hea ja mõnus töötada.",
+       "en": "I like it when there are nice colleagues at work whom it is good and pleasant to work with.",
+       "az": "İşdə birlikdə işləmək yaxşı və xoş olan gözəl həmkarlar olanda xoşuma gəlir.",
+       "ru": "Мне нравится, когда на работе славные коллеги, с которыми хорошо и приятно работать."
+      },
+      {
+       "et": "Siis töö lihtsalt lendab käes!",
+       "en": "Then the work simply flies!",
+       "az": "Onda iş sadəcə uçub gedir!",
+       "ru": "Тогда работа просто горит в руках!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Mis on sinu töös kõige toredam?",
+    "en": "What is the best thing about your work?",
+    "az": "İşində ən gözəl şey nədir?",
+    "ru": "Что в твоей работе самое приятное?"
+   },
+   "turns": [
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Kõige toredam õpetajatöös on see, kui ma näen, et mõni õpilane areneb.",
+       "en": "The best thing in a teacher’s work is when I see a pupil developing.",
+       "az": "Müəllim işində ən gözəl şey hansısa şagirdin inkişaf etdiyini görməkdir.",
+       "ru": "Самое приятное в работе учителя — когда я вижу, что какой-то ученик развивается."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Saladuskatte all võin öelda, et tegelikult kõige tublimad õpilased on tublid sellepärast, et nad on ise tublid, nad on ise töökad ja harjutavad.",
+       "en": "Strictly between us, I can say that the best pupils are actually good because they are good themselves — they are hard-working themselves, and they practise.",
+       "az": "Aramızda qalsın, deyə bilərəm ki, əslində ən bacarıqlı şagirdlər ona görə bacarıqlıdırlar ki, özləri bacarıqlıdırlar, özləri çalışqandırlar və məşq edirlər.",
+       "ru": "По секрету могу сказать, что на самом деле лучшие ученики хороши потому, что они сами молодцы, сами трудолюбивы и занимаются."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Ma usun, et õpetaja töö… Kuidas ma ütlen?",
+       "en": "I believe that a teacher’s work… How shall I put it?",
+       "az": "Məncə, müəllimin işi… Necə deyim?",
+       "ru": "Я считаю, что работа учителя… Как бы сказать?"
+      },
+      {
+       "et": "Õpetajatööst võib sõltuda nii mõndagi, aga tegelikult, kui keegi tahab õppida klaverit või kitarri või ükskõik mis instrumenti, siis kõige tähtsam on enda motivatsioon ja töökus.",
+       "en": "A good deal can depend on the teacher’s work, but actually, when someone wants to learn the piano or the guitar or any instrument at all, the most important thing is their own motivation and hard work.",
+       "az": "Müəllimin işindən çox şey asılı ola bilər, amma əslində kimsə pianino, gitara və ya hər hansı bir alət öyrənmək istəyirsə, ən vacibi öz motivasiyası və çalışqanlığıdır.",
+       "ru": "От работы учителя может зависеть многое, но на самом деле, если кто-то хочет научиться играть на пианино, гитаре или на любом инструменте, самое важное — собственная мотивация и трудолюбие."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kas sa oled oma tööga rahul?",
+    "en": "Are you happy with your work?",
+    "az": "İşindən razısanmı?",
+    "ru": "Ты доволен своей работой?"
+   },
+   "turns": [
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Minu töö mulle tegelikult väga meeldib.",
+       "en": "I actually like my work a lot.",
+       "az": "Əslində işimi çox sevirəm.",
+       "ru": "Мне на самом деле очень нравится моя работа."
+      },
+      {
+       "et": "Esimene suur pluss ongi see, et minu tööaeg on väga paindlik ja suhteliselt vaba.",
+       "en": "The first big plus is that my working hours are very flexible and fairly free.",
+       "az": "Birinci böyük üstünlük elə odur ki, iş vaxtım çox çevik və nisbətən sərbəstdir.",
+       "ru": "Первый большой плюс как раз в том, что мой рабочий график очень гибкий и довольно свободный."
+      },
+      {
+       "et": "See on esimene pluss.",
+       "en": "That is the first plus.",
+       "az": "Bu, birinci üstünlükdür.",
+       "ru": "Это первый плюс."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Teiseks ma ei teadnud, et mulle väga meeldib lastega suhelda ja nendega koos töötada.",
+       "en": "Second, I didn’t know that I really like talking with children and working with them.",
+       "az": "İkincisi, bilmirdim ki, uşaqlarla ünsiyyət qurmaq və onlarla birlikdə işləmək mənim çox xoşuma gəlir.",
+       "ru": "Во-вторых, я не знал, что мне очень нравится общаться с детьми и работать с ними."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Ja kõige rohkem meeldib mulle see, kui laps ise tunnetab, et ta on midagi saavutanud ja tal on tõesti hästi läinud.",
+       "en": "And what I like most is when a child feels for themselves that they have achieved something and have really done well.",
+       "az": "Ən çox da o xoşuma gəlir ki, uşaq özü hiss edir ki, nəyəsə nail olub və həqiqətən yaxşı alınıb.",
+       "ru": "А больше всего мне нравится, когда ребёнок сам чувствует, что чего-то добился и у него действительно хорошо получилось."
+      },
+      {
+       "et": "Näiteks lööb jalgpallis värava, mida ta varem võib-olla ei ole teinud.",
+       "en": "For example, they score a goal in football, which perhaps they have never done before.",
+       "az": "Məsələn, futbolda qol vurur, bəlkə də əvvəllər heç vurmayıb.",
+       "ru": "Например, забивает гол в футболе, чего раньше, может быть, не делал."
+      },
+      {
+       "et": "Siis ma tunnen, et mina olen midagi talle õpetanud.",
+       "en": "Then I feel that I have taught them something.",
+       "az": "Onda hiss edirəm ki, ona nəsə öyrətmişəm.",
+       "ru": "Тогда я чувствую, что я чему-то его научил."
+      },
+      {
+       "et": "Ja ma näen ka tema rõõmu.",
+       "en": "And I see their joy too.",
+       "az": "Onun sevincini də görürəm.",
+       "ru": "И я вижу его радость."
+      },
+      {
+       "et": "See on kõige suurem rõõm.",
+       "en": "That is the greatest joy.",
+       "az": "Bu, ən böyük sevincdir.",
+       "ru": "Это самая большая радость."
+      },
+      {
+       "et": "Sealt ma saan kõige suurema rahulolu.",
+       "en": "That is where I get my greatest satisfaction.",
+       "az": "Ən böyük məmnunluğu elə ondan alıram.",
+       "ru": "Вот откуда я получаю самое большое удовлетворение."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kas sa oled oma tööga rahul?",
+    "en": "Are you happy with your work?",
+    "az": "İşindən razısanmı?",
+    "ru": "Ты довольна своей работой?"
+   },
+   "turns": [
+    {
+     "who": "Marita",
+     "lines": [
+      {
+       "et": "Ma olen väga rahul.",
+       "en": "I am very happy.",
+       "az": "Çox razıyam.",
+       "ru": "Я очень довольна."
+      },
+      {
+       "et": "Väga rahul!",
+       "en": "Very happy!",
+       "az": "Çox razı!",
+       "ru": "Очень довольна!"
+      },
+      {
+       "et": "Ma armastan seda, mida ma teen.",
+       "en": "I love what I do.",
+       "az": "Gördüyüm işi sevirəm.",
+       "ru": "Я люблю то, что делаю."
+      },
+      {
+       "et": "Minu töös on kõige toredam, et ma saan suhelda inimestega.",
+       "en": "The best thing in my work is that I get to talk with people.",
+       "az": "İşimdə ən gözəl şey insanlarla ünsiyyət qura bilməyimdir.",
+       "ru": "Самое приятное в моей работе то, что я могу общаться с людьми."
+      }
+     ]
+    },
+    {
+     "who": "Marita",
+     "lines": [
+      {
+       "et": "See, mis mulle tegelikult kõige rohkem meeldib, on inimeste aus tagasiside.",
+       "en": "What I actually like most is people’s honest feedback.",
+       "az": "Əslində ən çox xoşuma gələn insanların səmimi rəyidir.",
+       "ru": "Что мне на самом деле нравится больше всего — это честные отзывы людей."
+      },
+      {
+       "et": "Olgu see ükskõik, milline.",
+       "en": "Whatever it is like.",
+       "az": "Necə olursa olsun.",
+       "ru": "Какими бы они ни были."
+      },
+      {
+       "et": "Aga mina olen positiivset tagasisidet rohkem saanud.",
+       "en": "But I have had more positive feedback.",
+       "az": "Amma mən daha çox müsbət rəy almışam.",
+       "ru": "Но я получала больше положительных отзывов."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты есть"
+   },
+   "deck": "verbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "tööga": {
+   "base": "töö",
+   "means": {
+    "en": "with work (tööga rahul: happy with one’s work)",
+    "az": "işdən",
+    "ru": "работой"
+   },
+   "deck": "talk"
+  },
+  "rahul": {
+   "base": "rahul",
+   "means": {
+    "en": "satisfied, happy",
+    "az": "razı",
+    "ru": "доволен"
+   }
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "siin": {
+   "base": "siin",
+   "means": {
+    "en": "here",
+    "az": "burada",
+    "ru": "здесь"
+   },
+   "deck": "everyday"
+  },
+  "osakonnas": {
+   "base": "osakond",
+   "means": {
+    "en": "in the department, on the ward",
+    "az": "şöbədə",
+    "ru": "в отделении"
+   }
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "töötanud": {
+   "base": "töötama",
+   "means": {
+    "en": "worked",
+    "az": "işləmiş",
+    "ru": "работал"
+   },
+   "deck": "verbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "vist": {
+   "base": "vist",
+   "means": {
+    "en": "probably, I suppose",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   "deck": "everyday"
+  },
+  "näitabki": {
+   "base": "näitama",
+   "means": {
+    "en": "shows, indeed shows",
+    "az": "elə göstərir",
+    "ru": "и показывает"
+   },
+   "deck": "moreverbs"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "ole": {
+   "base": "olema",
+   "means": {
+    "en": "is (after ei: ei ole, is not)",
+    "az": "deyil, yoxdur (ei ilə)",
+    "ru": "нет, не является (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "suutnud": {
+   "base": "suutma",
+   "means": {
+    "en": "been able",
+    "az": "bacarmamışam",
+    "ru": "смогла"
+   },
+   "deck": "tana-words"
+  },
+  "välja": {
+   "base": "välja",
+   "means": {
+    "en": "out (näeb välja: looks like; ostate välja: buy outright; välja müüdud: sold out; välja arvatud: except)",
+    "az": "çölə (välja müüdud: satılıb; välja arvatud: -dan başqa)",
+    "ru": "наружу (välja müüdud: распродано; välja arvatud: кроме)"
+   },
+   "deck": "around"
+  },
+  "mõelda": {
+   "base": "mõtlema",
+   "means": {
+    "en": "to think (välja mõelda: to think up)",
+    "az": "fikirləşmək",
+    "ru": "придумать"
+   },
+   "deck": "moreverbs"
+  },
+  "ühtegi": {
+   "base": "ükski",
+   "means": {
+    "en": "not a single (with ei)",
+    "az": "heç bir",
+    "ru": "ни одной"
+   }
+  },
+  "teist": {
+   "base": "teine",
+   "means": {
+    "en": "other, different",
+    "az": "başqa",
+    "ru": "другого"
+   },
+   "deck": "numbers"
+  },
+  "kohta": {
+   "base": "koht",
+   "means": {
+    "en": "place (ühtegi teist kohta: any other place)",
+    "az": "yer",
+    "ru": "место"
+   },
+   "deck": "around"
+  },
+  "kus": {
+   "base": "kus",
+   "means": {
+    "en": "where",
+    "az": "harada",
+    "ru": "где"
+   },
+   "deck": "asking"
+  },
+  "tahaksin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "töötada": {
+   "base": "töötama",
+   "means": {
+    "en": "to work",
+    "az": "işləmək",
+    "ru": "работать"
+   },
+   "deck": "verbs"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "sujub": {
+   "base": "sujuma",
+   "means": {
+    "en": "goes smoothly",
+    "az": "qaydasında gedir",
+    "ru": "идёт гладко"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "õnnestub": {
+   "base": "õnnestuma",
+   "means": {
+    "en": "succeeds, goes well",
+    "az": "alınır",
+    "ru": "удаётся"
+   }
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "toredad": {
+   "base": "tore",
+   "means": {
+    "en": "nice, lovely",
+    "az": "gözəl",
+    "ru": "хорошие, славные"
+   },
+   "deck": "talk"
+  },
+  "kolleegid": {
+   "base": "kolleeg",
+   "means": {
+    "en": "colleagues",
+    "az": "həmkarlar",
+    "ru": "коллеги"
+   }
+  },
+  "kellega": {
+   "base": "kes",
+   "means": {
+    "en": "with whom",
+    "az": "kiminlə",
+    "ru": "с кем"
+   },
+   "deck": "asking"
+  },
+  "koos": {
+   "base": "koos",
+   "means": {
+    "en": "together",
+    "az": "birlikdə",
+    "ru": "вместе"
+   },
+   "deck": "service"
+  },
+  "hea": {
+   "base": "hea",
+   "means": {
+    "en": "good",
+    "az": "yaxşı",
+    "ru": "хороший"
+   },
+   "deck": "basics"
+  },
+  "mõnus": {
+   "base": "mõnus",
+   "means": {
+    "en": "pleasant, nice",
+    "az": "xoş",
+    "ru": "приятный"
+   },
+   "deck": "describing"
+  },
+  "lihtsalt": {
+   "base": "lihtsalt",
+   "means": {
+    "en": "simply, just",
+    "az": "sadəcə",
+    "ru": "просто"
+   },
+   "deck": "everyday"
+  },
+  "lendab": {
+   "base": "lendama",
+   "means": {
+    "en": "flies",
+    "az": "uçur",
+    "ru": "летит"
+   },
+   "deck": "moreverbs"
+  },
+  "käes": {
+   "base": "käsi",
+   "means": {
+    "en": "in the hand (töö lendab käes: the work flies)",
+    "az": "əldə",
+    "ru": "в руках"
+   },
+   "deck": "health"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "töös": {
+   "base": "töö",
+   "means": {
+    "en": "in work",
+    "az": "işdə",
+    "ru": "в работе"
+   },
+   "deck": "talk"
+  },
+  "kõige": {
+   "base": "kõige",
+   "means": {
+    "en": "most (kõige esimesena: the very first; kõige vanem: the oldest)",
+    "az": "ən",
+    "ru": "самый, больше всего"
+   }
+  },
+  "toredam": {
+   "base": "tore",
+   "means": {
+    "en": "nicer (kõige toredam: the best, the nicest)",
+    "az": "daha gözəl",
+    "ru": "приятнее"
+   },
+   "deck": "talk"
+  },
+  "õpetajatöös": {
+   "base": "õpetajatöö",
+   "means": {
+    "en": "in a teacher’s work",
+    "az": "müəllim işində",
+    "ru": "в работе учителя"
+   }
+  },
+  "näen": {
+   "base": "nägema",
+   "means": {
+    "en": "I see (unenägusid näen: I dream)",
+    "az": "görürəm",
+    "ru": "вижу"
+   },
+   "deck": "verbs"
+  },
+  "mõni": {
+   "base": "mõni",
+   "means": {
+    "en": "some, one or other",
+    "az": "hansısa",
+    "ru": "какой-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "õpilane": {
+   "base": "õpilane",
+   "means": {
+    "en": "pupil, student",
+    "az": "şagird",
+    "ru": "ученик"
+   },
+   "deck": "school"
+  },
+  "areneb": {
+   "base": "arenema",
+   "means": {
+    "en": "develops, is improving",
+    "az": "inkişaf edir",
+    "ru": "развивается"
+   }
+  },
+  "saladuskatte": {
+   "base": "saladuskate",
+   "means": {
+    "en": "secrecy (saladuskatte all: in confidence, strictly between us)",
+    "az": "sirr örtüyü (saladuskatte all: aramızda qalsın)",
+    "ru": "тайна (saladuskatte all: по секрету)"
+   }
+  },
+  "all": {
+   "base": "all",
+   "means": {
+    "en": "downstairs, below",
+    "az": "aşağıda",
+    "ru": "внизу"
+   },
+   "deck": "around"
+  },
+  "võin": {
+   "base": "võima",
+   "means": {
+    "en": "I can, I may",
+    "az": "bilərəm",
+    "ru": "могу"
+   },
+   "deck": "moreverbs"
+  },
+  "öelda": {
+   "base": "ütlema",
+   "means": {
+    "en": "to say",
+    "az": "demək",
+    "ru": "сказать"
+   },
+   "deck": "everyday"
+  },
+  "tegelikult": {
+   "base": "tegelikult",
+   "means": {
+    "en": "actually",
+    "az": "əslində",
+    "ru": "на самом деле"
+   },
+   "deck": "everyday"
+  },
+  "tublimad": {
+   "base": "tubli",
+   "means": {
+    "en": "better, more capable (kõige tublimad: the best)",
+    "az": "daha bacarıqlı",
+    "ru": "лучшие"
+   },
+   "deck": "talk"
+  },
+  "õpilased": {
+   "base": "õpilane",
+   "means": {
+    "en": "pupils",
+    "az": "şagirdlər",
+    "ru": "ученики"
+   },
+   "deck": "school"
+  },
+  "tublid": {
+   "base": "tubli",
+   "means": {
+    "en": "capable, good, doing well",
+    "az": "bacarıqlı, afərin",
+    "ru": "молодцы"
+   },
+   "deck": "talk"
+  },
+  "sellepärast": {
+   "base": "sellepärast",
+   "means": {
+    "en": "because of that (sellepärast, et: because)",
+    "az": "ona görə",
+    "ru": "потому"
+   }
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "ise": {
+   "base": "ise",
+   "means": {
+    "en": "myself, oneself",
+    "az": "özüm",
+    "ru": "сам"
+   },
+   "deck": "pronouns"
+  },
+  "töökad": {
+   "base": "töökas",
+   "means": {
+    "en": "hard-working",
+    "az": "çalışqan",
+    "ru": "трудолюбивые"
+   },
+   "deck": "character"
+  },
+  "harjutavad": {
+   "base": "harjutama",
+   "means": {
+    "en": "they practise",
+    "az": "məşq edirlər",
+    "ru": "занимаются, упражняются"
+   }
+  },
+  "usun": {
+   "base": "uskuma",
+   "means": {
+    "en": "I believe",
+    "az": "inanıram, məncə",
+    "ru": "считаю, верю"
+   }
+  },
+  "õpetaja": {
+   "base": "õpetaja",
+   "means": {
+    "en": "teacher’s, of a teacher",
+    "az": "müəllimin",
+    "ru": "учителя"
+   },
+   "deck": "school"
+  },
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "ütlen": {
+   "base": "ütlema",
+   "means": {
+    "en": "I say, I tell",
+    "az": "deyirəm",
+    "ru": "говорю"
+   },
+   "deck": "everyday"
+  },
+  "õpetajatööst": {
+   "base": "õpetajatöö",
+   "means": {
+    "en": "on a teacher’s work",
+    "az": "müəllim işindən",
+    "ru": "от работы учителя"
+   }
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "sõltuda": {
+   "base": "sõltuma",
+   "means": {
+    "en": "to depend",
+    "az": "asılı olmaq",
+    "ru": "зависеть"
+   },
+   "deck": "moreverbs"
+  },
+  "mõndagi": {
+   "base": "mõni",
+   "means": {
+    "en": "quite a few things (nii mõndagi: a good deal)",
+    "az": "çox şey",
+    "ru": "многое"
+   },
+   "deck": "everyday"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "keegi": {
+   "base": "keegi",
+   "means": {
+    "en": "somebody (with ei: nobody)",
+    "az": "kimsə (ei ilə: heç kim)",
+    "ru": "кто-то (с ei: никто)"
+   },
+   "deck": "everyday"
+  },
+  "tahab": {
+   "base": "tahtma",
+   "means": {
+    "en": "wants",
+    "az": "istəyir",
+    "ru": "хочет"
+   },
+   "deck": "verbs"
+  },
+  "õppida": {
+   "base": "õppima",
+   "means": {
+    "en": "to study, to learn",
+    "az": "oxumaq, öyrənmək",
+    "ru": "учиться, изучать"
+   },
+   "deck": "moreverbs"
+  },
+  "klaverit": {
+   "base": "klaver",
+   "means": {
+    "en": "the piano",
+    "az": "pianino",
+    "ru": "пианино"
+   },
+   "deck": "home"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "kitarri": {
+   "base": "kitarr",
+   "means": {
+    "en": "guitar",
+    "az": "gitara",
+    "ru": "на гитаре"
+   }
+  },
+  "ükskõik": {
+   "base": "ükskõik",
+   "means": {
+    "en": "any at all (ükskõik mis: whatever; olgu see ükskõik, milline: whatever it is like)",
+    "az": "hər hansı, fərq etməz",
+    "ru": "любой, всё равно"
+   },
+   "deck": "plans"
+  },
+  "instrumenti": {
+   "base": "instrument",
+   "means": {
+    "en": "instrument",
+    "az": "alət",
+    "ru": "инструмент"
+   }
+  },
+  "tähtsam": {
+   "base": "tähtis",
+   "means": {
+    "en": "more important (kõige tähtsam: the most important)",
+    "az": "daha vacib",
+    "ru": "важнее"
+   },
+   "deck": "describing"
+  },
+  "enda": {
+   "base": "ise",
+   "means": {
+    "en": "one's own (enda kätt: my own hand)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "motivatsioon": {
+   "base": "motivatsioon",
+   "means": {
+    "en": "motivation",
+    "az": "motivasiya",
+    "ru": "мотивация"
+   }
+  },
+  "töökus": {
+   "base": "töökus",
+   "means": {
+    "en": "diligence, hard work",
+    "az": "çalışqanlıq",
+    "ru": "трудолюбие"
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "esimene": {
+   "base": "esimene",
+   "means": {
+    "en": "first",
+    "az": "birinci, ilk",
+    "ru": "первый"
+   },
+   "deck": "numbers"
+  },
+  "suur": {
+   "base": "suur",
+   "means": {
+    "en": "big",
+    "az": "böyük",
+    "ru": "большой"
+   },
+   "deck": "basics"
+  },
+  "pluss": {
+   "base": "pluss",
+   "means": {
+    "en": "plus, advantage",
+    "az": "üstünlük",
+    "ru": "плюс"
+   }
+  },
+  "ongi": {
+   "base": "olema",
+   "means": {
+    "en": "is indeed, is just",
+    "az": "elə var",
+    "ru": "как раз есть"
+   },
+   "deck": "verbs"
+  },
+  "tööaeg": {
+   "base": "tööaeg",
+   "means": {
+    "en": "working hours",
+    "az": "iş vaxtı",
+    "ru": "рабочее время"
+   }
+  },
+  "paindlik": {
+   "base": "paindlik",
+   "means": {
+    "en": "flexible",
+    "az": "çevik",
+    "ru": "гибкий"
+   }
+  },
+  "suhteliselt": {
+   "base": "suhteliselt",
+   "means": {
+    "en": "relatively, fairly",
+    "az": "nisbətən",
+    "ru": "относительно"
+   }
+  },
+  "vaba": {
+   "base": "vaba",
+   "means": {
+    "en": "free",
+    "az": "boş, sərbəst",
+    "ru": "свободный"
+   },
+   "deck": "describing"
+  },
+  "teiseks": {
+   "base": "teiseks",
+   "means": {
+    "en": "second, secondly",
+    "az": "ikincisi",
+    "ru": "во-вторых"
+   }
+  },
+  "teadnud": {
+   "base": "teadma",
+   "means": {
+    "en": "known (ei teadnud: did not know)",
+    "az": "bilmirdim",
+    "ru": "знала"
+   },
+   "deck": "verbs"
+  },
+  "lastega": {
+   "base": "laps",
+   "means": {
+    "en": "with children",
+    "az": "uşaqlarla",
+    "ru": "с детьми"
+   },
+   "deck": "talk"
+  },
+  "suhelda": {
+   "base": "suhtlema",
+   "means": {
+    "en": "to communicate",
+    "az": "ünsiyyət qurmaq",
+    "ru": "общаться"
+   },
+   "deck": "moreverbs"
+  },
+  "nendega": {
+   "base": "nemad",
+   "means": {
+    "en": "with them",
+    "az": "onlarla",
+    "ru": "с ними"
+   }
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "laps": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнок"
+   },
+   "deck": "talk"
+  },
+  "tunnetab": {
+   "base": "tunnetama",
+   "means": {
+    "en": "feels, senses",
+    "az": "hiss edir",
+    "ru": "чувствует"
+   }
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "saavutanud": {
+   "base": "saavutama",
+   "means": {
+    "en": "achieved",
+    "az": "nail olub",
+    "ru": "добился"
+   }
+  },
+  "tal": {
+   "base": "tema",
+   "means": {
+    "en": "he has, she has (tal on); at him, her",
+    "az": "onda, onun",
+    "ru": "у него, у неё"
+   }
+  },
+  "tõesti": {
+   "base": "tõesti",
+   "means": {
+    "en": "really",
+    "az": "həqiqətən",
+    "ru": "правда"
+   },
+   "deck": "everyday"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "läinud": {
+   "base": "minema",
+   "means": {
+    "en": "gone (tal on hästi läinud: they have done well)",
+    "az": "getmiş (yaxşı alınıb)",
+    "ru": "пошло (у него хорошо получилось)"
+   },
+   "deck": "verbs"
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "lööb": {
+   "base": "lööma",
+   "means": {
+    "en": "hits (lööb värava: scores a goal)",
+    "az": "vurur",
+    "ru": "забивает"
+   }
+  },
+  "jalgpallis": {
+   "base": "jalgpall",
+   "means": {
+    "en": "in football",
+    "az": "futbolda",
+    "ru": "в футболе"
+   },
+   "deck": "plans"
+  },
+  "värava": {
+   "base": "värav",
+   "means": {
+    "en": "goal (lööb värava: scores a goal)",
+    "az": "qol",
+    "ru": "гол"
+   },
+   "deck": "home"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "teinud": {
+   "base": "tegema",
+   "means": {
+    "en": "done",
+    "az": "etmişəm",
+    "ru": "сделал"
+   },
+   "deck": "verbs"
+  },
+  "tunnen": {
+   "base": "tundma",
+   "means": {
+    "en": "I feel",
+    "az": "hiss edirəm",
+    "ru": "чувствую"
+   },
+   "deck": "moreverbs"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "talle": {
+   "base": "tema",
+   "means": {
+    "en": "to him, to her",
+    "az": "ona",
+    "ru": "ему, ей"
+   }
+  },
+  "õpetanud": {
+   "base": "õpetama",
+   "means": {
+    "en": "taught",
+    "az": "öyrətmişəm",
+    "ru": "научил"
+   },
+   "deck": "school"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "tema": {
+   "base": "tema",
+   "means": {
+    "en": "he, she (stressed)",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "rõõmu": {
+   "base": "rõõm",
+   "means": {
+    "en": "joy",
+    "az": "sevinc",
+    "ru": "радость"
+   }
+  },
+  "suurem": {
+   "base": "suur",
+   "means": {
+    "en": "greater (kõige suurem: the greatest)",
+    "az": "daha böyük",
+    "ru": "больше"
+   },
+   "deck": "basics"
+  },
+  "rõõm": {
+   "base": "rõõm",
+   "means": {
+    "en": "joy",
+    "az": "sevinc",
+    "ru": "радость"
+   }
+  },
+  "sealt": {
+   "base": "sealt",
+   "means": {
+    "en": "from there",
+    "az": "oradan",
+    "ru": "оттуда"
+   },
+   "deck": "around"
+  },
+  "saan": {
+   "base": "saama",
+   "means": {
+    "en": "I can; I get, I will have",
+    "az": "bilərəm; alıram",
+    "ru": "могу; получаю"
+   },
+   "deck": "verbs"
+  },
+  "suurema": {
+   "base": "suur",
+   "means": {
+    "en": "greater (kõige suurema: the greatest)",
+    "az": "daha böyük",
+    "ru": "большее"
+   },
+   "deck": "basics"
+  },
+  "rahulolu": {
+   "base": "rahulolu",
+   "means": {
+    "en": "satisfaction",
+    "az": "məmnunluq",
+    "ru": "удовлетворение"
+   }
+  },
+  "armastan": {
+   "base": "armastama",
+   "means": {
+    "en": "I love",
+    "az": "sevirəm",
+    "ru": "я люблю"
+   },
+   "deck": "verbs"
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "inimestega": {
+   "base": "inimene",
+   "means": {
+    "en": "with people",
+    "az": "insanlarla",
+    "ru": "с людьми"
+   },
+   "deck": "talk"
+  },
+  "inimeste": {
+   "base": "inimene",
+   "means": {
+    "en": "people’s, of people",
+    "az": "insanların",
+    "ru": "людей"
+   },
+   "deck": "talk"
+  },
+  "aus": {
+   "base": "aus",
+   "means": {
+    "en": "honest",
+    "az": "səmimi, dürüst",
+    "ru": "честный"
+   }
+  },
+  "tagasiside": {
+   "base": "tagasiside",
+   "means": {
+    "en": "feedback",
+    "az": "rəy",
+    "ru": "отзывы"
+   }
+  },
+  "olgu": {
+   "base": "olgu",
+   "means": {
+    "en": "all right, OK",
+    "az": "yaxşı, olsun",
+    "ru": "хорошо, ладно"
+   },
+   "deck": "everyday"
+  },
+  "milline": {
+   "base": "milline",
+   "means": {
+    "en": "what kind of, what … like",
+    "az": "necə, hansı",
+    "ru": "какой"
+   },
+   "deck": "asking"
+  },
+  "positiivset": {
+   "base": "positiivne",
+   "means": {
+    "en": "positive",
+    "az": "müsbət",
+    "ru": "положительный"
+   }
+  },
+  "tagasisidet": {
+   "base": "tagasiside",
+   "means": {
+    "en": "feedback",
+    "az": "rəy",
+    "ru": "отзывов"
+   }
+  },
+  "saanud": {
+   "base": "saama",
+   "means": {
+    "en": "could, got (after ei: ei saanud aru, couldn't understand)",
+    "az": "bilmədim (ei ilə)",
+    "ru": "не смог (с ei)"
+   },
+   "deck": "verbs"
+  }
+ }
+}

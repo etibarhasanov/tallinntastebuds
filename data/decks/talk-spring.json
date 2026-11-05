@@ -1,0 +1,1065 @@
+{
+ "id": "talk-spring",
+ "added": "2026-11-05",
+ "name": {
+  "en": "What you do in spring",
+  "az": "Yazda nə edirsən",
+  "ru": "Что ты делаешь весной"
+ },
+ "why": {
+  "en": "Longer days, the first grill of the season, birdsong, a lawn to tidy and seeds put in to grow",
+  "az": "Uzun günlər, mövsümün ilk manqalı, quş səsləri, səliqəyə salınacaq çəmən və cücərməyə qoyulan toxumlar",
+  "ru": "Длинные дни, первый гриль сезона, пение птиц, газон, который надо привести в порядок, и посеянные семена"
+ },
+ "taste": "Kevadel istutame lilli.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mida sa teed kevadel?",
+    "en": "What do you do in spring?",
+    "az": "Yazda nə edirsən?",
+    "ru": "Что ты делаешь весной?"
+   },
+   "turns": [
+    {
+     "who": "Martin",
+     "lines": [
+      {
+       "et": "Kevaditi saab rohkem käia jalutamas.",
+       "en": "In spring you can go for walks more.",
+       "az": "Yazda daha çox gəzməyə çıxmaq olur.",
+       "ru": "Весной можно больше гулять."
+      },
+      {
+       "et": "Kevaditi läheb varem valgeks ja hiljem pimedaks, nii et saab rohkem tööd teha, mis on ka väga tore!",
+       "en": "In spring it gets light earlier and dark later, so you can work more, which is also very nice!",
+       "az": "Yazda tez işıqlanır, gec qaralır, belə ki, daha çox iş görmək olur, bu da çox gözəldir!",
+       "ru": "Весной раньше светает и позже темнеет, так что можно больше работать, что тоже очень здорово!"
+      },
+      {
+       "et": "Kõigile väga meeldib töö!",
+       "en": "Everybody loves work!",
+       "az": "Hamı işi çox sevir!",
+       "ru": "Все ведь очень любят работать!"
+      },
+      {
+       "et": "Aprilli teises pooles, mai alguses algab ju ka grillihooaeg, nii et saab hakata väljas liha grillima.",
+       "en": "In the second half of April or early May the grilling season starts too, so you can start grilling meat outdoors.",
+       "az": "Aprelin ikinci yarısında, mayın əvvəlində manqal mövsümü də başlayır, belə ki, çöldə ət qızartmağa başlamaq olar.",
+       "ru": "Во второй половине апреля, в начале мая ведь начинается и сезон гриля, так что можно начинать жарить мясо на улице."
+      },
+      {
+       "et": "Kutsun sõbrad endale külla või lähen sõpradele külla, võtan kaasa liha, grillime seda, ajame juttu.",
+       "en": "I invite friends over or go to friends’ places, I take meat along, we grill it and chat.",
+       "az": "Dostları qonaq çağırıram ya da dostlara qonaq gedirəm, özümlə ət götürürəm, onu qızardırıq, söhbət edirik.",
+       "ru": "Приглашаю друзей к себе или иду в гости к друзьям, беру с собой мясо, жарим его, болтаем."
+      },
+      {
+       "et": "Linnud, muuseas, hakkavad ka laulma.",
+       "en": "The birds, by the way, start singing too.",
+       "az": "Yeri gəlmişkən, quşlar da oxumağa başlayır.",
+       "ru": "Птицы, кстати, тоже начинают петь."
+      },
+      {
+       "et": "Lindude laulu kuulamine on ka väga tore asi, millega kevadet sisustada.",
+       "en": "Listening to the birds singing is also a very nice way to fill the spring.",
+       "az": "Quşların səsini dinləmək də yazı doldurmaq üçün çox gözəl bir şeydir.",
+       "ru": "Слушать пение птиц — тоже прекрасное занятие, которым можно заполнить весну."
+      },
+      {
+       "et": "Praegu nad juba laulavad.",
+       "en": "They are already singing now.",
+       "az": "İndi artıq oxuyurlar.",
+       "ru": "Сейчас они уже поют."
+      }
+     ]
+    },
+    {
+     "who": "Anastassia",
+     "lines": [
+      {
+       "et": "Kevadel käin jooksmas ja siis käin kodus aias ringi, võib-olla kõpitsen muru natukene ja vaatan, kuidas kevadlilledel läheb.",
+       "en": "In spring I go running, and then I walk round the garden at home, maybe tidy the lawn a little and see how the spring flowers are doing.",
+       "az": "Yazda qaçmağa gedirəm, sonra evdə bağda gəzişirəm, bəlkə çəməni bir az səliqəyə salıram və yaz çiçəklərinin necə olduğuna baxıram.",
+       "ru": "Весной я бегаю, а потом хожу по саду у дома, может, немного вожусь с газоном и смотрю, как там весенние цветы."
+      },
+      {
+       "et": "Ja olen niisama.",
+       "en": "And I just take it easy.",
+       "az": "Bir də elə-belə vaxt keçirirəm.",
+       "ru": "И просто отдыхаю."
+      },
+      {
+       "et": "Pesen grilli puhtaks ja valmistun grillihooajaks.",
+       "en": "I wash the grill clean and get ready for the grilling season.",
+       "az": "Manqalı təmiz yuyuram və manqal mövsümünə hazırlaşıram.",
+       "ru": "Отмываю гриль дочиста и готовлюсь к сезону гриля."
+      }
+     ]
+    },
+    {
+     "who": "Maria Liis",
+     "lines": [
+      {
+       "et": "Kevadel istutame lilli.",
+       "en": "In spring we plant flowers.",
+       "az": "Yazda gül əkirik.",
+       "ru": "Весной мы сажаем цветы."
+      },
+      {
+       "et": "Kui lumi ära sulab, siis kõigepealt vaatame, mis lilled on alles.",
+       "en": "When the snow melts, the first thing we do is look at which flowers have survived.",
+       "az": "Qar əriyəndə əvvəlcə baxırıq ki, hansı güllər qalıb.",
+       "ru": "Когда снег растает, мы первым делом смотрим, какие цветы уцелели."
+      },
+      {
+       "et": "Siis kaevame aiamaa üles, paneme seemned kasvama.",
+       "en": "Then we dig over the vegetable patch and put seeds in to grow.",
+       "az": "Sonra bostanı belləyirik, toxumları cücərməyə qoyuruq.",
+       "ru": "Потом вскапываем огород, ставим семена прорастать."
+      },
+      {
+       "et": "Ja siis istutame taimed maha.",
+       "en": "And then we plant the seedlings out.",
+       "az": "Sonra da şitilləri torpağa əkirik.",
+       "ru": "А потом высаживаем рассаду в землю."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "teed": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsən",
+    "ru": "делаешь"
+   },
+   "deck": "verbs"
+  },
+  "kevadel": {
+   "base": "kevad",
+   "means": {
+    "en": "in spring",
+    "az": "yazda",
+    "ru": "весной"
+   },
+   "deck": "weather"
+  },
+  "kevaditi": {
+   "base": "kevaditi",
+   "means": {
+    "en": "in spring, in springtime",
+    "az": "yazlar, yazda",
+    "ru": "весной, по вёснам"
+   }
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
+   },
+   "deck": "verbs"
+  },
+  "rohkem": {
+   "base": "rohkem",
+   "means": {
+    "en": "more",
+    "az": "daha çox",
+    "ru": "больше"
+   },
+   "deck": "everyday"
+  },
+  "käia": {
+   "base": "käima",
+   "means": {
+    "en": "to go (regularly), to attend",
+    "az": "getmək",
+    "ru": "ходить"
+   },
+   "deck": "moreverbs"
+  },
+  "jalutamas": {
+   "base": "jalutama",
+   "means": {
+    "en": "walking (käia jalutamas: go for walks)",
+    "az": "gəzməyə",
+    "ru": "гулять"
+   },
+   "deck": "moreverbs"
+  },
+  "läheb": {
+   "base": "minema",
+   "means": {
+    "en": "goes",
+    "az": "gedir",
+    "ru": "идёт"
+   },
+   "deck": "verbs"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "valgeks": {
+   "base": "valge",
+   "means": {
+    "en": "light (läheb valgeks: gets light)",
+    "az": "işıq",
+    "ru": "светло"
+   },
+   "deck": "describing"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "hiljem": {
+   "base": "hiljem",
+   "means": {
+    "en": "later",
+    "az": "daha gec",
+    "ru": "позже"
+   },
+   "deck": "time"
+  },
+  "pimedaks": {
+   "base": "pime",
+   "means": {
+    "en": "dark (läheb pimedaks: gets dark)",
+    "az": "qaranlıq",
+    "ru": "темно"
+   },
+   "deck": "weather"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "tore": {
+   "base": "tore",
+   "means": {
+    "en": "nice, lovely",
+    "az": "gözəl",
+    "ru": "хороший, замечательный"
+   },
+   "deck": "talk"
+  },
+  "kõigile": {
+   "base": "kõik",
+   "means": {
+    "en": "everybody, to everybody (kõigile meeldib: everybody likes)",
+    "az": "hamıya",
+    "ru": "всем"
+   },
+   "deck": "everyday"
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "aprilli": {
+   "base": "aprill",
+   "means": {
+    "en": "of April",
+    "az": "aprelin",
+    "ru": "апреля"
+   },
+   "deck": "time"
+  },
+  "teises": {
+   "base": "teine",
+   "means": {
+    "en": "in the second (teises pooles: in the second half)",
+    "az": "ikinci",
+    "ru": "во второй"
+   },
+   "deck": "numbers"
+  },
+  "pooles": {
+   "base": "pool",
+   "means": {
+    "en": "in the half (teises pooles: in the second half)",
+    "az": "yarısında",
+    "ru": "в половине"
+   },
+   "deck": "numbers"
+  },
+  "mai": {
+   "base": "mai",
+   "means": {
+    "en": "of May",
+    "az": "mayın",
+    "ru": "мая"
+   },
+   "deck": "time"
+  },
+  "alguses": {
+   "base": "algus",
+   "means": {
+    "en": "at first, in the beginning",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   },
+   "deck": "time"
+  },
+  "algab": {
+   "base": "algama",
+   "means": {
+    "en": "begins, starts",
+    "az": "başlayır",
+    "ru": "начинается"
+   },
+   "deck": "moreverbs"
+  },
+  "ju": {
+   "base": "ju",
+   "means": {
+    "en": "after all, you know",
+    "az": "axı",
+    "ru": "ведь"
+   },
+   "deck": "everyday"
+  },
+  "grillihooaeg": {
+   "base": "grillihooaeg",
+   "means": {
+    "en": "the grilling season",
+    "az": "manqal mövsümü",
+    "ru": "сезон гриля"
+   }
+  },
+  "hakata": {
+   "base": "hakkama",
+   "means": {
+    "en": "to start (saab hakata: one can start)",
+    "az": "başlamaq",
+    "ru": "начать"
+   },
+   "deck": "moreverbs"
+  },
+  "väljas": {
+   "base": "väljas",
+   "means": {
+    "en": "outside, outdoors (käin sõpradega väljas: I go out with friends)",
+    "az": "çöldə, bayırda",
+    "ru": "на улице, вне дома"
+   }
+  },
+  "liha": {
+   "base": "liha",
+   "means": {
+    "en": "meat",
+    "az": "ət",
+    "ru": "мясо"
+   },
+   "deck": "food"
+  },
+  "grillima": {
+   "base": "grillima",
+   "means": {
+    "en": "to grill",
+    "az": "qızartmağa (manqalda)",
+    "ru": "жарить на гриле"
+   },
+   "deck": "cooking"
+  },
+  "kutsun": {
+   "base": "kutsuma",
+   "means": {
+    "en": "I invite",
+    "az": "çağırıram",
+    "ru": "приглашаю"
+   },
+   "deck": "everyday"
+  },
+  "sõbrad": {
+   "base": "sõber",
+   "means": {
+    "en": "friends",
+    "az": "dostlar",
+    "ru": "друзья"
+   },
+   "deck": "talk"
+  },
+  "endale": {
+   "base": "ise",
+   "means": {
+    "en": "for ourselves, for oneself",
+    "az": "özümüzə",
+    "ru": "себе"
+   },
+   "deck": "pronouns"
+  },
+  "külla": {
+   "base": "külla",
+   "means": {
+    "en": "visiting, on a visit",
+    "az": "qonaq",
+    "ru": "в гости"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "lähen": {
+   "base": "minema",
+   "means": {
+    "en": "I go",
+    "az": "gedirəm",
+    "ru": "иду"
+   },
+   "deck": "verbs"
+  },
+  "sõpradele": {
+   "base": "sõber",
+   "means": {
+    "en": "to friends (lähen sõpradele külla: I visit friends)",
+    "az": "dostlara",
+    "ru": "к друзьям"
+   },
+   "deck": "talk"
+  },
+  "võtan": {
+   "base": "võtma",
+   "means": {
+    "en": "I take, I'll have",
+    "az": "götürürəm",
+    "ru": "беру"
+   },
+   "deck": "verbs"
+  },
+  "kaasa": {
+   "base": "kaasa",
+   "means": {
+    "en": "along (kaasa pakkima: to pack to take away; tulge kaasa: come along)",
+    "az": "özü ilə",
+    "ru": "с собой"
+   },
+   "deck": "cafe"
+  },
+  "grillime": {
+   "base": "grillima",
+   "means": {
+    "en": "we grill",
+    "az": "qızardırıq (manqalda)",
+    "ru": "жарим на гриле"
+   },
+   "deck": "cooking"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "ajame": {
+   "base": "ajama",
+   "means": {
+    "en": "we drive, we keep up (ajame juttu: we chat)",
+    "az": "sürürük (ajame juttu: söhbət edirik)",
+    "ru": "ведём (ajame juttu: болтаем)"
+   }
+  },
+  "juttu": {
+   "base": "jutt",
+   "means": {
+    "en": "talk, chat (ajame juttu: we chat)",
+    "az": "söhbət",
+    "ru": "разговор"
+   },
+   "deck": "randaja-words"
+  },
+  "linnud": {
+   "base": "lind",
+   "means": {
+    "en": "birds",
+    "az": "quşlar",
+    "ru": "птицы"
+   },
+   "deck": "country"
+  },
+  "muuseas": {
+   "base": "muuseas",
+   "means": {
+    "en": "by the way",
+    "az": "yeri gəlmişkən",
+    "ru": "кстати"
+   }
+  },
+  "hakkavad": {
+   "base": "hakkama",
+   "means": {
+    "en": "they begin",
+    "az": "başlayırlar",
+    "ru": "начинают"
+   },
+   "deck": "moreverbs"
+  },
+  "laulma": {
+   "base": "laulma",
+   "means": {
+    "en": "to sing",
+    "az": "oxumağa",
+    "ru": "петь"
+   },
+   "deck": "moreverbs"
+  },
+  "lindude": {
+   "base": "lind",
+   "means": {
+    "en": "of the birds",
+    "az": "quşların",
+    "ru": "птиц"
+   },
+   "deck": "country"
+  },
+  "laulu": {
+   "base": "laul",
+   "means": {
+    "en": "song, singing (lindude laulu: the birds’ singing)",
+    "az": "nəğmə, oxuma",
+    "ru": "пение"
+   },
+   "deck": "plans"
+  },
+  "kuulamine": {
+   "base": "kuulamine",
+   "means": {
+    "en": "listening",
+    "az": "dinləmək",
+    "ru": "слушание"
+   }
+  },
+  "asi": {
+   "base": "asi",
+   "means": {
+    "en": "thing",
+    "az": "şey",
+    "ru": "вещь"
+   },
+   "deck": "everyday"
+  },
+  "millega": {
+   "base": "mis",
+   "means": {
+    "en": "with which",
+    "az": "onunla, hansı ilə",
+    "ru": "которым"
+   },
+   "deck": "asking"
+  },
+  "kevadet": {
+   "base": "kevad",
+   "means": {
+    "en": "spring (kevadet sisustada: to fill the spring)",
+    "az": "yazı",
+    "ru": "весну"
+   },
+   "deck": "weather"
+  },
+  "sisustada": {
+   "base": "sisustama",
+   "means": {
+    "en": "to fill (a time)",
+    "az": "doldurmaq",
+    "ru": "заполнить"
+   }
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "laulavad": {
+   "base": "laulma",
+   "means": {
+    "en": "they sing",
+    "az": "oxuyurlar",
+    "ru": "поют"
+   },
+   "deck": "moreverbs"
+  },
+  "käin": {
+   "base": "käima",
+   "means": {
+    "en": "I go, I visit",
+    "az": "gedirəm",
+    "ru": "я хожу, бываю"
+   },
+   "deck": "moreverbs"
+  },
+  "jooksmas": {
+   "base": "jooksma",
+   "means": {
+    "en": "running (käin jooksmas: I go running)",
+    "az": "qaçmağa",
+    "ru": "бегать"
+   },
+   "deck": "moreverbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "kodus": {
+   "base": "kodu",
+   "means": {
+    "en": "at home",
+    "az": "evdə",
+    "ru": "дома"
+   },
+   "deck": "home"
+  },
+  "aias": {
+   "base": "aed",
+   "means": {
+    "en": "in the garden",
+    "az": "bağda",
+    "ru": "в саду"
+   },
+   "deck": "country"
+  },
+  "ringi": {
+   "base": "ringi",
+   "means": {
+    "en": "around",
+    "az": "ətrafa, o yan-bu yana",
+    "ru": "кругом, туда-сюда"
+   }
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "kõpitsen": {
+   "base": "kõpitsema",
+   "means": {
+    "en": "I tinker, potter about (kõpitsen muru: tidy the lawn)",
+    "az": "əlləşirəm",
+    "ru": "вожусь"
+   }
+  },
+  "muru": {
+   "base": "muru",
+   "means": {
+    "en": "lawn, grass",
+    "az": "çəmən",
+    "ru": "газон"
+   }
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "vaatan": {
+   "base": "vaatama",
+   "means": {
+    "en": "I watch, I look",
+    "az": "baxıram",
+    "ru": "смотрю"
+   },
+   "deck": "moreverbs"
+  },
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "kevadlilledel": {
+   "base": "kevadlill",
+   "means": {
+    "en": "for the spring flowers (kuidas kevadlilledel läheb: how the spring flowers are doing)",
+    "az": "yaz çiçəklərinin",
+    "ru": "у весенних цветов"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "niisama": {
+   "base": "niisama",
+   "means": {
+    "en": "just like that, for nothing",
+    "az": "elə-belə",
+    "ru": "просто так"
+   }
+  },
+  "pesen": {
+   "base": "pesema",
+   "means": {
+    "en": "I wash (pesen hambaid: I brush my teeth)",
+    "az": "yuyuram",
+    "ru": "мою"
+   },
+   "deck": "moreverbs"
+  },
+  "grilli": {
+   "base": "grill",
+   "means": {
+    "en": "the grill",
+    "az": "manqalı",
+    "ru": "гриль"
+   }
+  },
+  "puhtaks": {
+   "base": "puhas",
+   "means": {
+    "en": "clean (pesen puhtaks: wash clean)",
+    "az": "təmiz",
+    "ru": "дочиста"
+   },
+   "deck": "repairs"
+  },
+  "valmistun": {
+   "base": "valmistuma",
+   "means": {
+    "en": "I get ready",
+    "az": "hazırlaşıram",
+    "ru": "готовлюсь"
+   }
+  },
+  "grillihooajaks": {
+   "base": "grillihooaeg",
+   "means": {
+    "en": "for the grilling season",
+    "az": "manqal mövsümünə",
+    "ru": "к сезону гриля"
+   }
+  },
+  "istutame": {
+   "base": "istutama",
+   "means": {
+    "en": "we plant",
+    "az": "əkirik",
+    "ru": "сажаем"
+   }
+  },
+  "lilli": {
+   "base": "lill",
+   "means": {
+    "en": "flowers",
+    "az": "gül",
+    "ru": "цветы"
+   },
+   "deck": "home"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "lumi": {
+   "base": "lumi",
+   "means": {
+    "en": "snow",
+    "az": "qar",
+    "ru": "снег"
+   },
+   "deck": "weather"
+  },
+  "ära": {
+   "base": "ära",
+   "means": {
+    "en": "off, away (pesen ära: wash through, finish washing; suri ära: died; ära teha: get done)",
+    "az": "tamam, bitirərək (suri ära: öldü; ära teha: başa çatdırmaq)",
+    "ru": "прочь, до конца (suri ära: умер; ära teha: успеть сделать)"
+   },
+   "deck": "everyday"
+  },
+  "sulab": {
+   "base": "sulama",
+   "means": {
+    "en": "melts (ära sulab: melts away)",
+    "az": "əriyir",
+    "ru": "тает"
+   },
+   "deck": "weather"
+  },
+  "kõigepealt": {
+   "base": "kõigepealt",
+   "means": {
+    "en": "first of all",
+    "az": "ilk növbədə",
+    "ru": "прежде всего"
+   },
+   "deck": "everyday"
+  },
+  "vaatame": {
+   "base": "vaatama",
+   "means": {
+    "en": "let's see",
+    "az": "baxaq",
+    "ru": "посмотрим"
+   },
+   "deck": "moreverbs"
+  },
+  "lilled": {
+   "base": "lill",
+   "means": {
+    "en": "flowers",
+    "az": "güllər",
+    "ru": "цветы"
+   },
+   "deck": "home"
+  },
+  "alles": {
+   "base": "alles",
+   "means": {
+    "en": "still there, left, surviving",
+    "az": "hələ qalıb, sağ",
+    "ru": "ещё есть, уцелели"
+   },
+   "deck": "everyday"
+  },
+  "kaevame": {
+   "base": "kaevama",
+   "means": {
+    "en": "we dig (kaevame üles: we dig over)",
+    "az": "qazırıq, belləyirik",
+    "ru": "копаем"
+   }
+  },
+  "aiamaa": {
+   "base": "aiamaa",
+   "means": {
+    "en": "vegetable patch, garden bed",
+    "az": "bostan, ləklər",
+    "ru": "огород, грядки"
+   }
+  },
+  "üles": {
+   "base": "üles",
+   "means": {
+    "en": "up",
+    "az": "yuxarı",
+    "ru": "вверх"
+   }
+  },
+  "paneme": {
+   "base": "panema",
+   "means": {
+    "en": "we put; let's put",
+    "az": "qoyuruq; qoyaq",
+    "ru": "кладём; давайте поставим"
+   },
+   "deck": "repairs"
+  },
+  "seemned": {
+   "base": "seeme",
+   "means": {
+    "en": "seeds",
+    "az": "toxumlar",
+    "ru": "семена"
+   },
+   "deck": "country"
+  },
+  "kasvama": {
+   "base": "kasvama",
+   "means": {
+    "en": "to grow (paneme kasvama: we put to grow)",
+    "az": "cücərməyə, böyüməyə",
+    "ru": "расти"
+   },
+   "deck": "moreverbs"
+  },
+  "taimed": {
+   "base": "taim",
+   "means": {
+    "en": "plants",
+    "az": "bitkilər",
+    "ru": "растения"
+   },
+   "deck": "country"
+  },
+  "maha": {
+   "base": "maha",
+   "means": {
+    "en": "down; behind (maha jääma: to miss, be left behind)",
+    "az": "aşağı; geri",
+    "ru": "вниз; позади (maha jääma: опоздать)"
+   }
+  }
+ }
+}

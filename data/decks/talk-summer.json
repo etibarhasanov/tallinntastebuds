@@ -1,0 +1,589 @@
+{
+ "id": "talk-summer",
+ "added": "2026-11-05",
+ "name": {
+  "en": "What you do in summer",
+  "az": "Yayda nə edirsən",
+  "ru": "Что ты делаешь летом"
+ },
+ "why": {
+  "en": "Camping round Estonia, a beer on a summer evening, the football season and a bike ride further afield",
+  "az": "Estoniyada çadırda gəzinti, yay axşamı bir pivə, futbol mövsümü və velosipedlə uzaqlara səfər",
+  "ru": "Палатки по всей Эстонии, пиво летним вечером, футбольный сезон и поездка на велосипеде подальше"
+ },
+ "taste": "Mängime lauatennist.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mida sa teed suvel?",
+    "en": "What do you do in summer?",
+    "az": "Yayda nə edirsən?",
+    "ru": "Что ты делаешь летом?"
+   },
+   "turns": [
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Suviti ma käin mööda Eestimaad ringi.",
+       "en": "In summer I travel round Estonia.",
+       "az": "Yayda Estoniyanı gəzirəm.",
+       "ru": "Летом я езжу по Эстонии."
+      },
+      {
+       "et": "Aeg-ajalt lähen kuskile loodusesse telkima.",
+       "en": "From time to time I go camping somewhere out in nature.",
+       "az": "Arabir təbiətə, hansısa bir yerə çadır qurmağa gedirəm.",
+       "ru": "Время от времени уезжаю куда-нибудь на природу с палаткой."
+      },
+      {
+       "et": "Vahepeal käin rannas, võtan päikest, käin sõpradega väljas, joome õhtul õlut kuskil.",
+       "en": "In between I go to the beach, sunbathe, go out with friends, and we have a beer somewhere in the evening.",
+       "az": "Arada çimərliyə gedirəm, günəş vannası qəbul edirəm, dostlarla bayıra çıxıram, axşam haradasa pivə içirik.",
+       "ru": "В промежутках хожу на пляж, загораю, выбираюсь с друзьями куда-нибудь, вечером пьём где-нибудь пиво."
+      },
+      {
+       "et": "Mängime lauatennist.",
+       "en": "We play table tennis.",
+       "az": "Stolüstü tennis oynayırıq.",
+       "ru": "Играем в настольный теннис."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Suvel meeldib mulle rattaga sõita ja teha väljas sporti.",
+       "en": "In summer I like cycling and doing sport outdoors.",
+       "az": "Yayda velosiped sürməyi və çöldə idmanla məşğul olmağı sevirəm.",
+       "ru": "Летом мне нравится кататься на велосипеде и заниматься спортом на улице."
+      },
+      {
+       "et": "Siis algab ka jalgpallihooaeg ja väljas saab mängida korvpalli.",
+       "en": "Then the football season starts too, and you can play basketball outdoors.",
+       "az": "Onda futbol mövsümü də başlayır, çöldə basketbol da oynamaq olur.",
+       "ru": "Тогда начинается и футбольный сезон, и на улице можно играть в баскетбол."
+      },
+      {
+       "et": "Siis on nii palju võimalusi, mida teha.",
+       "en": "Then there are so many things you can do.",
+       "az": "Onda görüləsi o qədər imkan olur ki.",
+       "ru": "Тогда столько всего можно делать."
+      },
+      {
+       "et": "Oleneb päevast, mida ma teha tahaksin.",
+       "en": "What I would like to do depends on the day.",
+       "az": "Nə etmək istədiyim gündən asılıdır.",
+       "ru": "Что мне хочется делать, зависит от дня."
+      }
+     ]
+    },
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Suvel käin ka matkamas ja võib-olla telkimas.",
+       "en": "In summer I also go hiking and maybe camping.",
+       "az": "Yayda yürüşə də gedirəm, bəlkə də çadırda qalmağa.",
+       "ru": "Летом я ещё хожу в походы и, может быть, с палаткой."
+      },
+      {
+       "et": "Ja rattaga saab sõita kuhugi kaugemale juba!",
+       "en": "And by then you can cycle somewhere further away!",
+       "az": "Artıq velosipedlə haradasa daha uzağa getmək olur!",
+       "ru": "И на велосипеде уже можно уехать куда-нибудь подальше!"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "teed": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsən",
+    "ru": "делаешь"
+   },
+   "deck": "verbs"
+  },
+  "suvel": {
+   "base": "suvi",
+   "means": {
+    "en": "in summer",
+    "az": "yayda",
+    "ru": "летом"
+   },
+   "deck": "weather"
+  },
+  "suviti": {
+   "base": "suviti",
+   "means": {
+    "en": "in summer, in summertime",
+    "az": "yaylar, yayda",
+    "ru": "летом, каждое лето"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "käin": {
+   "base": "käima",
+   "means": {
+    "en": "I go, I visit",
+    "az": "gedirəm",
+    "ru": "я хожу, бываю"
+   },
+   "deck": "moreverbs"
+  },
+  "mööda": {
+   "base": "mööda",
+   "means": {
+    "en": "past, over (sai mööda: passed)",
+    "az": "keçmiş",
+    "ru": "прошёл"
+   },
+   "deck": "naera-words"
+  },
+  "eestimaad": {
+   "base": "Eestimaa",
+   "means": {
+    "en": "Estonia, the land of Estonia (mööda Eestimaad: round Estonia)",
+    "az": "Estoniyanı",
+    "ru": "по Эстонии"
+   }
+  },
+  "ringi": {
+   "base": "ringi",
+   "means": {
+    "en": "around",
+    "az": "ətrafa, o yan-bu yana",
+    "ru": "кругом, туда-сюда"
+   }
+  },
+  "aeg": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "ajalt": {
+   "base": "aeg",
+   "means": {
+    "en": "time (aeg-ajalt: from time to time)",
+    "az": "vaxt (aeg-ajalt: arabir)",
+    "ru": "время (aeg-ajalt: время от времени)"
+   },
+   "deck": "paper"
+  },
+  "lähen": {
+   "base": "minema",
+   "means": {
+    "en": "I go",
+    "az": "gedirəm",
+    "ru": "иду"
+   },
+   "deck": "verbs"
+  },
+  "kuskile": {
+   "base": "kuskile",
+   "means": {
+    "en": "somewhere (to)",
+    "az": "hansısa bir yerə",
+    "ru": "куда-нибудь"
+   },
+   "deck": "around"
+  },
+  "loodusesse": {
+   "base": "loodus",
+   "means": {
+    "en": "into nature, out to the countryside",
+    "az": "təbiətə",
+    "ru": "на природу"
+   },
+   "deck": "country"
+  },
+  "telkima": {
+   "base": "telkima",
+   "means": {
+    "en": "to camp (in a tent)",
+    "az": "çadırda qalmağa",
+    "ru": "в палатку, с палаткой"
+   }
+  },
+  "vahepeal": {
+   "base": "vahepeal",
+   "means": {
+    "en": "for a change, in between",
+    "az": "arada",
+    "ru": "в промежутке, для разнообразия"
+   }
+  },
+  "rannas": {
+   "base": "rand",
+   "means": {
+    "en": "on the beach",
+    "az": "çimərlikdə",
+    "ru": "на пляже"
+   },
+   "deck": "country"
+  },
+  "võtan": {
+   "base": "võtma",
+   "means": {
+    "en": "I take, I'll have",
+    "az": "götürürəm",
+    "ru": "беру"
+   },
+   "deck": "verbs"
+  },
+  "päikest": {
+   "base": "päike",
+   "means": {
+    "en": "sun (võtan päikest: I sunbathe)",
+    "az": "günəş",
+    "ru": "солнце"
+   },
+   "deck": "weather"
+  },
+  "sõpradega": {
+   "base": "sõber",
+   "means": {
+    "en": "with friends",
+    "az": "dostlarla",
+    "ru": "с друзьями"
+   },
+   "deck": "talk"
+  },
+  "väljas": {
+   "base": "väljas",
+   "means": {
+    "en": "outside, outdoors (käin sõpradega väljas: I go out with friends)",
+    "az": "çöldə, bayırda",
+    "ru": "на улице, вне дома"
+   }
+  },
+  "joome": {
+   "base": "jooma",
+   "means": {
+    "en": "we drink",
+    "az": "içirik",
+    "ru": "пьём"
+   },
+   "deck": "verbs"
+  },
+  "õhtul": {
+   "base": "õhtu",
+   "means": {
+    "en": "in the evening",
+    "az": "axşam",
+    "ru": "вечером"
+   },
+   "deck": "time"
+  },
+  "õlut": {
+   "base": "õlu",
+   "means": {
+    "en": "beer",
+    "az": "pivə",
+    "ru": "пиво"
+   },
+   "deck": "food"
+  },
+  "kuskil": {
+   "base": "kuskil",
+   "means": {
+    "en": "somewhere",
+    "az": "haradasa",
+    "ru": "где-нибудь"
+   },
+   "deck": "around"
+  },
+  "mängime": {
+   "base": "mängima",
+   "means": {
+    "en": "we play",
+    "az": "oynayırıq",
+    "ru": "играем"
+   },
+   "deck": "moreverbs"
+  },
+  "lauatennist": {
+   "base": "lauatennis",
+   "means": {
+    "en": "table tennis",
+    "az": "stolüstü tennis",
+    "ru": "настольный теннис"
+   }
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "rattaga": {
+   "base": "ratas",
+   "means": {
+    "en": "by bike",
+    "az": "velosipedlə",
+    "ru": "на велосипеде"
+   }
+  },
+  "sõita": {
+   "base": "sõitma",
+   "means": {
+    "en": "to ride, to go (rattaga sõita: to cycle)",
+    "az": "sürmək, getmək",
+    "ru": "ездить"
+   },
+   "deck": "moreverbs"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "sporti": {
+   "base": "sport",
+   "means": {
+    "en": "sport",
+    "az": "idman",
+    "ru": "спорт"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "algab": {
+   "base": "algama",
+   "means": {
+    "en": "begins, starts",
+    "az": "başlayır",
+    "ru": "начинается"
+   },
+   "deck": "moreverbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "jalgpallihooaeg": {
+   "base": "jalgpallihooaeg",
+   "means": {
+    "en": "the football season",
+    "az": "futbol mövsümü",
+    "ru": "футбольный сезон"
+   }
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
+   },
+   "deck": "verbs"
+  },
+  "mängida": {
+   "base": "mängima",
+   "means": {
+    "en": "to play",
+    "az": "oynamaq",
+    "ru": "играть"
+   },
+   "deck": "moreverbs"
+  },
+  "korvpalli": {
+   "base": "korvpall",
+   "means": {
+    "en": "basketball",
+    "az": "basketbol",
+    "ru": "баскетбол"
+   },
+   "deck": "plans"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "võimalusi": {
+   "base": "võimalus",
+   "means": {
+    "en": "options, possibilities",
+    "az": "imkanlar",
+    "ru": "возможностей"
+   }
+  },
+  "oleneb": {
+   "base": "olenema",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   }
+  },
+  "päevast": {
+   "base": "päev",
+   "means": {
+    "en": "on the day (oleneb päevast: depends on the day)",
+    "az": "gündən",
+    "ru": "от дня"
+   },
+   "deck": "time"
+  },
+  "tahaksin": {
+   "base": "tahtma",
+   "means": {
+    "en": "I would like",
+    "az": "istərdim",
+    "ru": "я хотел бы"
+   },
+   "deck": "verbs"
+  },
+  "matkamas": {
+   "base": "matkama",
+   "means": {
+    "en": "hiking (käin matkamas: I go hiking)",
+    "az": "yürüşə",
+    "ru": "в поход"
+   }
+  },
+  "võib": {
+   "base": "võima",
+   "means": {
+    "en": "may (võib-olla: maybe)",
+    "az": "bilər (võib-olla: bəlkə)",
+    "ru": "может (võib-olla: может быть)"
+   },
+   "deck": "moreverbs"
+  },
+  "olla": {
+   "base": "olema",
+   "means": {
+    "en": "to be (võib-olla: maybe)",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "telkimas": {
+   "base": "telkima",
+   "means": {
+    "en": "camping (käin telkimas: I go camping)",
+    "az": "çadırda qalmağa",
+    "ru": "в поход с палаткой"
+   }
+  },
+  "kuhugi": {
+   "base": "kuhugi",
+   "means": {
+    "en": "somewhere (to)",
+    "az": "haradasa, bir yerə",
+    "ru": "куда-нибудь"
+   }
+  },
+  "kaugemale": {
+   "base": "kaugele",
+   "means": {
+    "en": "further away",
+    "az": "daha uzağa",
+    "ru": "подальше"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  }
+ }
+}

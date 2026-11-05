@@ -8724,7 +8724,7 @@ read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
 and after them songs, with what every
 line and every word in them means — **Songs, which are listened to** — and
-after the songs thirty-three conversations off a language course's sheets,
+after the songs thirty-eight conversations off a language course's sheets,
 sentence by sentence with what each means under it and every word in it a
 press —
 **Conversations, which are read**.
@@ -10892,7 +10892,7 @@ owner's call, which has been put to them.
 A card teaches a word, a lesson says why it changes shape, and a song is how
 anybody comes to like the language. None of them is how it is said across a
 table. So the shelf carries a fifth part, **Conversations**, after **Songs**,
-and under it a tile for each of thirty-five sheets from **Keeletee** — *Eesti keele
+and under it a tile for each of forty sheets from **Keeletee** — *Eesti keele
 B1-taseme e-õppekursus*, the free B1 course — which the owner handed over as
 PDFs, each a page or three of Estonian with its English under every turn.
 
@@ -10945,7 +10945,15 @@ tennis to small children with his mornings free, Marita in the salon she
 opened herself. Those four sheets each put two or three of the same three
 questions, so they are filed by question rather than by person, the way the
 first interviews were: their workday and how long they have worked are one
-conversation, what they do at work is another.
+conversation, what they do at work is another. The seventh, five sheets from
+the eleventh and twelfth modules, finishes work and goes out of doors: the
+same four on the tools of their trade — two ballpoint pens and a syringe, a
+guitar pick and a music stand, a great many footballs, scissors and combs —
+and on whether they are happy with their work; Piret, Johannes and Ott on
+their free time, from a jazz club in Tallinn to an evening lost on YouTube;
+Martin, Anastassia and Maria Liis on spring, the first grill and the seeds
+put in to grow; and Johannes, Ott and Piret on summer. These sheets put all
+the people on one page, so each is a conversation of its own.
 
 **A conversation is one page.** Its name, the line that says how to read it,
 and under that in the mono whose sheet it is — *From Keeletee, a B1 course*,
@@ -10991,10 +10999,10 @@ word in it does what, and that is the half a learner is missing. So the
 translation stays, a sentence at a time, and the words are pressed for the
 rest.
 
-**One glossary for all of them.** The thirty-five sheets carry some two
-thousand and twenty different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
+**One glossary for all of them.** The forty sheets carry some two
+thousand two hundred and sixty different words, and most of them — *ma*, *on*, *ja*, *siis*, *kõige* — turn
 up in nearly every sheet. A song's `words` is its own, because a song is one
-text; thirty-five copies of what *ma* means would be thirty to keep in
+text; thirty-eight copies of what *ma* means would be thirty-eight to keep in
 step. So
 the words are `talkWords` in `data/decks.json`, one entry per word as it is
 written, lowercased — its `base`, what it `means` in the three languages, an
@@ -11059,8 +11067,20 @@ note* is a sick note, Ott's *bombardment* is dodgeball, his *free hands* a free
 hand and his *trainer* a coach. The doctor's *Arst* and *Patsient* are the
 names, as the reception desk's were. And *Tervist!* is how the patient says
 hello, so the doctor's sheet has its own `words` saying so where the glossary
-says *health*. Every word's gloss in all thirty-five, in all three languages,
-is mine too.
+says *health*. The seventh batch's English is tidied the same way — *Under
+the shadow of secrecy* is *Strictly between us*, *I love it, what I do* is *I
+love what I do*, a *greates* is a *greatest* — and put right where it says
+more or other than the Estonian: Ott's English on the joy of a pupil's first
+goal adds *that he has achieved and acquired this*, which he never says, so
+it goes, and Johannes's *a teacher's work depends on different things* is
+turned round to what he does say, that a good deal can depend on it. Where
+Johannes stops to look for his pick the sheet's English has a full stop the
+Estonian does not, and the sentence runs on through both ellipses as the
+Estonian does; Ott's *Youtube´i*, typed with an acute accent, has the
+apostrophe the glossary's *-i* is written after. One of its sheets asks *Kas
+sa oled oma tööga rahul?* three times, over Piret, Ott and Marita, and each is
+a scene of its own, as a question asked twice always is. Every word's gloss in
+all forty, in all three languages, is mine too.
 *Klient* and *Ettekandja* stay as the names of the two people in the first
 restaurant scene: they are the Estonian for customer and waiter, which is the
 point.
@@ -15414,7 +15434,7 @@ assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            headings, the songs' and the cases', ten lessons of
-                           grammar, four songs, thirty-three conversations and the
+                           grammar, four songs, thirty-eight conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
                            languages rather than the site's ten
