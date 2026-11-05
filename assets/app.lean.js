@@ -1876,10 +1876,11 @@
     renderAccount();
   }
 
-  function returnAfterAccount() {
+  function returnAfterAccount(said) {
     if (!accountThen) return false;
     var back = accountThen;
     accountThen = '';
+    if (said) back += (back.indexOf('?') === -1 ? '?' : '&') + 'said=' + said;
     if (!window.TTBShell.walk(back)) window.location.href = back;
     return true;
   }
@@ -2619,8 +2620,8 @@
           TTBTrack.event('account_password_change', { setting: setting });
           state.account.password = true;
           closeAccount();
-          toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
-          returnAfterAccount();
+          var said = setting ? 'password-set' : 'password';
+          if (!returnAfterAccount(said)) toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
@@ -2660,8 +2661,7 @@
           state.account.user = a.out.user;
           paintAccountButton();
           closeAccount();
-          toast(t('accountNameDone', { name: a.out.user }));
-          returnAfterAccount();
+          if (!returnAfterAccount('name')) toast(t('accountNameDone', { name: a.out.user }));
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);

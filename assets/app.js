@@ -3191,11 +3191,18 @@
      sheet: Save on a list sends somebody here and back, and the way back used
      to be a whole load of the list's page, the radio and all. An address the
      shell does not frame — the map's own, with a door on it — is still
-     loaded whole. */
-  function returnAfterAccount() {
+     loaded whole.
+
+     `said` is a step's one word of news — a password set or changed, a new
+     name — and goes along as ?said=, because a toast said here would be
+     under the page that is about to cover the map. The account page is the
+     one that sends people to those steps, and the one that reads it: see
+     sayArrived() in assets/account.js. */
+  function returnAfterAccount(said) {
     if (!accountThen) return false;
     var back = accountThen;
     accountThen = '';
+    if (said) back += (back.indexOf('?') === -1 ? '?' : '&') + 'said=' + said;
     if (!window.TTBShell.walk(back)) window.location.href = back;
     return true;
   }
@@ -4318,13 +4325,13 @@
              going anywhere, and then this is the only thing that knows. */
           state.account.password = true;
           /* Back where it was pressed, which is the account page: the sheet
-             this step is drawn in has nothing behind it any more. The toast
-             is said on the map, so it is only seen when there is nowhere to go
-             back to: the page that goes back up over the map covers it, the
-             way a whole load used to take it away. */
+             this step is drawn in has nothing behind it any more. A toast
+             here would be said on the map, under the page going back up over
+             it, so the word goes with the walk and that page says it — see
+             returnAfterAccount(). With nowhere to go back to it is said here. */
           closeAccount();
-          toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
-          returnAfterAccount();
+          var said = setting ? 'password-set' : 'password';
+          if (!returnAfterAccount(said)) toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
@@ -4396,8 +4403,9 @@
           state.account.user = a.out.user;
           paintAccountButton();
           closeAccount();
-          toast(t('accountNameDone', { name: a.out.user }));
-          returnAfterAccount();
+          /* Said by the page it goes back to, for the reason the password
+             step above gives. */
+          if (!returnAfterAccount('name')) toast(t('accountNameDone', { name: a.out.user }));
         }).catch(function () { accountFail({}); });
     });
     form.appendChild(go);
