@@ -6953,6 +6953,19 @@ to that one and names where to come back to:
 and taken straight back off the address bar. `?then=` only ever accepts a path
 on this site; anything else and the map would be an open redirector.
 
+The way back opens over the map, the way the page it names was open before
+the walk through the sheet — `returnAfterAccount()` hands it to
+`TTBShell.walk()` — so a list somebody signed in from is back in a fifth of a
+second with the radio still playing, rather than loaded whole.
+
+**Save on somebody's list, signed out**, is one of these links, and the press
+used to be lost on the way: they made an account because they wanted the
+list, came back to it, and found the button asking them a second time. The
+way back now carries the list — `?then=/list/<id>?keep=<id>` — and
+`keepAsked()` in `assets/lists.js` makes the save once the page is back and
+signed in, then takes `?keep=` off the address bar so a reload does not press
+it again. A list of their own, or one already kept, is left alone.
+
 `?account=me` is still accepted and no longer opens anything: it is the old
 name for what is now `/account.html`, so it redirects there. Asking to sign in
 while already signed in does the same, because the honest answer to that is
@@ -16498,6 +16511,11 @@ does, with no load at all. A door it cannot answer in place — `?story=`,
 `?saved=`, `?deleted=`, a place not seated yet — is loaded whole, the way a
 fresh visit would answer it: slower, never lost. Back from a row's place is
 the list, and Back again is the list's page, reopened over the map.
+
+The other way round, the map walks to a page on its own behalf once: after
+the account sheet, back to the page that sent somebody to it. `TTBShell.walk()`
+opens that over the map when it is a page the shell takes, and says no when it
+is not, for the map to load it whole.
 
 Continue with Google is a redirect to
 Google, which refuses to be framed by anybody, so that link leaves through

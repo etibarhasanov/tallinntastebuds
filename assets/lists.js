@@ -659,9 +659,15 @@
   }
 
   /* The map, with the account sheet already open on the right view and this
-     page named as where to come back to. assets/app.js reads both. */
-  function accountHref(view) {
-    return '/?account=' + view + '&then=' + encodeURIComponent(here());
+     page named as where to come back to. assets/app.js reads both.
+
+     `keep` is the list a signed-out Save was pressed on, carried in the way
+     back as ?keep=<id> so the press is not lost on the walk through the
+     sheet — keepAsked() makes it once the page is back and signed in. */
+  function accountHref(view, keep) {
+    var back = here();
+    if (keep) back += (back.indexOf('?') === -1 ? '?' : '&') + 'keep=' + encodeURIComponent(keep);
+    return '/?account=' + view + '&then=' + encodeURIComponent(back);
   }
 
   function here() {
@@ -2601,7 +2607,7 @@
       return el('span', { className: 'lists-keep-wrap' }, [
         TTBTrack.click(el('a', {
           className: 'alt lists-keep',
-          href: accountHref('up'),
+          href: accountHref('up', list.id),
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>',
           'aria-label': t('listsKeepIn')
         }, [el('span', { textContent: t('listsKeep') })]), 'list_keep', { list_id: list.id, list_state: 'signed_out' }),
@@ -2661,6 +2667,43 @@
     });
 
     return el('span', { className: 'lists-keep-wrap' }, [b, count]);
+  }
+
+  /* The Save somebody pressed while signed out, made now that they are back
+     and signed in. That press was a link to the sign-up sheet, and for its
+     first weeks the way back was this page and nothing else: they made an
+     account because they wanted the list, and landed on it unsaved with the
+     button asking them a second time. accountHref() carries the list in the
+     way back as ?keep=<id>, and this is the other half.
+
+     Taken off the address bar whatever happens, so a reload or a copied link
+     does not press it again. Quiet when there is nothing to do — still signed
+     out, a list of their own, one already kept — and a failure says so the
+     way a press of the button would. The list it names is repainted when it
+     is on this page, the list itself or a row of the directory; one that is
+     not is kept all the same. */
+  function keepAsked() {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('keep') || '';
+    if (!id) return;
+    params.delete('keep');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+    } catch (e) { /* the keep still goes ahead */ }
+
+    if (!state.me || !/^[a-z0-9][a-z0-9-]{2,47}$/.test(id)) return;
+    var held = state.list && state.list.id === id ? state.list : null;
+    (state.all || []).forEach(function (l) { if (l.id === id) held = l; });
+    if (held && (held.kept || held.mine)) return;
+
+    post({ action: 'keep', id: id }).then(function (a) {
+      if (!a.ok) return failed(a.out);
+      if (!held) return;
+      held.kept = !!a.out.kept;
+      held.keeps = a.out.keeps || 0;
+      render();
+    }).catch(function () { failed({}); });
   }
 
   /* Your own: the same card, with the title and the line under it as fields
@@ -4848,6 +4891,7 @@
       mountRadio();
       mountLanguage();
       render();
+      keepAsked();
 
       /* And the open is counted, once the page is on the screen and out of the
          way of anything it could slow down. Somebody else's list only: see

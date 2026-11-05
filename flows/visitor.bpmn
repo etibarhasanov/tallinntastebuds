@@ -230,9 +230,11 @@ ref: assets/app.js</bpmn:documentation>
       <bpmn:outgoing>visitor-e30</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="session" name="Opens a session, claims this device's saves">
-      <bpmn:documentation>ref: functions/api/account.js POST create, login, google-name
+      <bpmn:documentation>Then back to the page that asked, over the map. From Save on a list, that list is kept on arrival.
+ref: functions/api/account.js POST create, login, google-name
 ref: functions/api/_account.js claimDeviceSaves()
-ref: functions/api/google.js GET</bpmn:documentation>
+ref: functions/api/google.js GET
+ref: assets/lists.js keepAsked()</bpmn:documentation>
       <bpmn:incoming>visitor-e30</bpmn:incoming>
       <bpmn:outgoing>visitor-e31</bpmn:outgoing>
     </bpmn:serviceTask>
