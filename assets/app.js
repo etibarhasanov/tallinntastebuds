@@ -3185,12 +3185,18 @@
 
   /* Where somebody was sent from, once they are signed in. Nothing to go back
      to is the ordinary case — the map is where most people sign in — and then
-     this does nothing at all. */
+     this does nothing at all.
+
+     Opened over the map, the way the page was before the walk through the
+     sheet: Save on a list sends somebody here and back, and the way back used
+     to be a whole load of the list's page, the radio and all. An address the
+     shell does not frame — the map's own, with a door on it — is still
+     loaded whole. */
   function returnAfterAccount() {
     if (!accountThen) return false;
     var back = accountThen;
     accountThen = '';
-    window.location.href = back;
+    if (!window.TTBShell.walk(back)) window.location.href = back;
     return true;
   }
 
@@ -4313,8 +4319,9 @@
           state.account.password = true;
           /* Back where it was pressed, which is the account page: the sheet
              this step is drawn in has nothing behind it any more. The toast
-             is what says it worked, because the page it lands on is a fresh
-             load and cannot carry a note across. */
+             is said on the map, so it is only seen when there is nowhere to go
+             back to: the page that goes back up over the map covers it, the
+             way a whole load used to take it away. */
           closeAccount();
           toast(t(setting ? 'accountSetPasswordDone' : 'accountChangeDone'));
           returnAfterAccount();

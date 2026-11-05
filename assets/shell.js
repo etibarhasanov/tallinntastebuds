@@ -366,6 +366,13 @@ window.TTBShell = (function () {
     }
   });
 
+  /* A walk the map makes on its own behalf — back to the page that sent
+     somebody to the account sheet — opened over it when it is a page this
+     surface takes, and false when it is not, for the map to load whole. */
+  function walk(url) {
+    return framed(url) && open(url, null);
+  }
+
   /* Whether a page is open over the map. The map's own history listener
      asks, so that an entry whose address is a page's is left to the page. */
   function up() {
@@ -384,5 +391,5 @@ window.TTBShell = (function () {
     mapUrl = window.location.href;
   }
 
-  return { mount: mount, open: open, close: close, up: up };
+  return { mount: mount, walk: walk, up: up };
 })();

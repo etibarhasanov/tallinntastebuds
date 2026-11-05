@@ -362,8 +362,10 @@
     dom.who.setAttribute('aria-label', t('accountSignedIn', { name: state.me }));
   }
 
-  function accountHref(view) {
-    return '/?account=' + view + '&then=' + encodeURIComponent(here());
+  function accountHref(view, keep) {
+    var back = here();
+    if (keep) back += (back.indexOf('?') === -1 ? '?' : '&') + 'keep=' + encodeURIComponent(keep);
+    return '/?account=' + view + '&then=' + encodeURIComponent(back);
   }
 
   function here() {
@@ -1362,7 +1364,7 @@
       return el('span', { className: 'lists-keep-wrap' }, [
         TTBTrack.click(el('a', {
           className: 'alt lists-keep',
-          href: accountHref('up'),
+          href: accountHref('up', list.id),
           html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_KEEP + '</svg>',
           'aria-label': t('listsKeepIn')
         }, [el('span', { textContent: t('listsKeep') })]), 'list_keep', { list_id: list.id, list_state: 'signed_out' }),
@@ -1413,6 +1415,30 @@
     });
 
     return el('span', { className: 'lists-keep-wrap' }, [b, count]);
+  }
+
+  function keepAsked() {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('keep') || '';
+    if (!id) return;
+    params.delete('keep');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+    } catch (e) { /* the keep still goes ahead */ }
+
+    if (!state.me || !/^[a-z0-9][a-z0-9-]{2,47}$/.test(id)) return;
+    var held = state.list && state.list.id === id ? state.list : null;
+    (state.all || []).forEach(function (l) { if (l.id === id) held = l; });
+    if (held && (held.kept || held.mine)) return;
+
+    post({ action: 'keep', id: id }).then(function (a) {
+      if (!a.ok) return failed(a.out);
+      if (!held) return;
+      held.kept = !!a.out.kept;
+      held.keeps = a.out.keeps || 0;
+      render();
+    }).catch(function () { failed({}); });
   }
 
   function listHeadMine(list) {
@@ -2838,6 +2864,7 @@
       mountRadio();
       mountLanguage();
       render();
+      keepAsked();
 
       if (state.view === 'one' && state.list && !state.list.mine) countOpen(state.list.id);
       if (state.view === 'who' && state.profile) countProfile();

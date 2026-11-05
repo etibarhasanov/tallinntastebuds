@@ -1880,7 +1880,7 @@
     if (!accountThen) return false;
     var back = accountThen;
     accountThen = '';
-    window.location.href = back;
+    if (!window.TTBShell.walk(back)) window.location.href = back;
     return true;
   }
 
