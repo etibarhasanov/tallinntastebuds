@@ -1,0 +1,59 @@
+name: google-refresh
+
+# The clock behind the Google refresh's daily fill.
+#
+# functions/api/_refresh.js asks Google about a place when somebody opens it,
+# inside a budget of thirty-two calls a day — Google's free thousand a month,
+# spread over the month. Opens alone never came near that: October spent 181
+# of its 950, and most of the directory had never been asked about. So the
+# day's thirty-two are a floor as well as a cap now, and this is what makes
+# them one. Every evening it POSTs to /api/refresh on the live site, which
+# spends whatever the day's opens left on the oldest rows the directory
+# shows — refreshFill() in that module says which rows and in what order, and
+# functions/api/refresh.js is the door.
+#
+# There is nothing to keep secret here and no token in the store: the budget
+# is claimed in the database before any call leaves, and the route does
+# nothing before FILL_FROM_HOUR UTC, so a call from anywhere else can only do
+# what this does, later. That is also why the time below is near the end of
+# the UTC day: the opens have had their turn, and the fill takes the rest.
+#
+# A run that GitHub starts late still finds the door open, since the gate is
+# two hours before the schedule; one that slips past midnight is answered
+# 'early' and spends nothing, which is the right outcome for a day that has
+# only just begun. A run that fails — the site unreachable, the key gone —
+# is a day not filled and nothing worse; the next evening carries on from
+# wherever the rows are.
+#
+# GitHub stops scheduled workflows in a repository that has had no activity
+# for 60 days. If the Google tab on /admin.html shows the days stuck under
+# thirty-two, the Actions tab is the first place to look.
+
+on:
+  schedule:
+    # Seventeen past, so it is not queued behind the whole world's cron; ten
+    # in the evening UTC, so nearly every open of the day has already spent
+    # what it was going to.
+    - cron: '17 22 * * *'
+  # By hand, from the Actions tab. Before FILL_FROM_HOUR UTC the site answers
+  # 'early' and does nothing, which the log will say.
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  fill:
+    name: Spend what the day left
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # No checkout: the site is what is being asked, not the repository.
+      - name: Ask the site to fill the day
+        run: |
+          set -euo pipefail
+          answer=$(curl -sS --fail-with-body --max-time 180 -X POST https://tallinntastebuds.ee/api/refresh)
+          echo "$answer"
+          case "$answer" in
+            *'"ok":true'*) ;;
+            *) echo "::warning::The fill did not run — the answer above says why." ;;
+          esac
