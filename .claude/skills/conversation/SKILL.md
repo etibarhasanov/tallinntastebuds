@@ -122,14 +122,18 @@ What `tools/validate.mjs` holds it to:
 An interview sheet is one scene per question, in the sheet's order, a
 question asked twice included. A dialogue sheet is one scene with no `ask`;
 its heading — *Ostmine, kauba uurimine, allahindlus* — is the
-conversation's `name`, not a question. Nothing in a conversation is a card, so there is no deck to
+conversation's `name`, not a question. A batch whose interview sheets are one person each,
+answering two or three of the same questions — the sixth was Piret, Johannes,
+Ott and Marita on their work — is filed by question, the way the first
+interviews were: a conversation per question or pair of questions, each scene
+its people in the order of the sheets, not a conversation per person. Nothing in a conversation is a card, so there is no deck to
 make; but every word is a press, so every word needs a gloss.
 
 ## The words
 
 After the entry, `node tools/validate.mjs` names every word in the new sheet
 that `talkWords` does not know yet — on a sheet from the same course that is
-a quarter to a half of them, since the thirty so far share most of their
+a quarter to a half of them, since the thirty-five so far share most of their
 words. Write each one into `talkWords`, keyed by the word as written and
 lowercased (`Järvelt` is `järvelt`; a hyphen splits a word, so
 *Kohtla-Järve* is two and *39-aastane* is `aastane`): its `base`, the form a

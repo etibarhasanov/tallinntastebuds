@@ -1,0 +1,1663 @@
+{
+ "id": "talk-workday",
+ "added": "2026-11-05",
+ "name": {
+  "en": "Your workday, and how long you’ve worked",
+  "az": "İş günün və nə qədərdir işləyirsən",
+  "ru": "Твой рабочий день и сколько ты уже работаешь"
+ },
+ "why": {
+  "en": "Piret works twelve-hour days, Johannes finishes at a quarter to eight, Ott has his mornings free, Marita opened a salon",
+  "az": "Piret on iki saat işləyir, Yohannes səkkizə on beş qalmış qurtarır, Ottun səhərləri boşdur, Marita salon açıb",
+  "ru": "У Пирет двенадцатичасовой день, Йоханнес заканчивает без четверти восемь, у Отта утро свободно, Марита открыла салон"
+ },
+ "taste": "Hommikud on mul vabad.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Missugune on sinu tööpäev?",
+    "en": "What is your workday like?",
+    "az": "İş günün necə keçir?",
+    "ru": "Какой у тебя рабочий день?"
+   },
+   "turns": [
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Ma pean ärkama kell kuus ja tööle jõuan kella seitsmeks.",
+       "en": "I have to wake up at six, and I get to work by seven.",
+       "az": "Saat altıda oyanmalıyam və saat yeddiyə işə çatıram.",
+       "ru": "Мне нужно вставать в шесть, и на работу я прихожу к семи."
+      },
+      {
+       "et": "Ja minu tööpäevad on kaheteisttunnised, algavad poole kaheksast hommikul ja lõppevad õhtul kell kaheksa või pool kaheksa.",
+       "en": "And my workdays are twelve hours long: they start at half past seven in the morning and finish at eight or half past seven in the evening.",
+       "az": "İş günlərim on iki saatlıqdır: səhər yeddinin yarısında başlayır və axşam saat səkkizdə və ya yeddinin yarısında bitir.",
+       "ru": "А рабочие дни у меня двенадцатичасовые: начинаются в половине восьмого утра и заканчиваются вечером в восемь или в половине восьмого."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Õpetajatööd teen esmaspäeviti ja kolmapäeviti.",
+       "en": "I do my teaching on Mondays and Wednesdays.",
+       "az": "Müəllimlik işini bazar ertəsi və çərşənbə günləri görürəm.",
+       "ru": "Преподаю я по понедельникам и средам."
+      },
+      {
+       "et": "Esimene õpilane tuleb kell pool kaks ja viimane tuleb kell seitse.",
+       "en": "The first student comes at half past one and the last one comes at seven.",
+       "az": "Birinci şagird saat birin yarısında gəlir, sonuncu isə saat yeddidə.",
+       "ru": "Первый ученик приходит в половине второго, а последний — в семь."
+      },
+      {
+       "et": "Nii et kolmveerand kaheksa mu tööpäev lõppeb.",
+       "en": "So my workday finishes at a quarter to eight.",
+       "az": "Belə ki, iş günüm səkkizə on beş dəqiqə qalmış bitir.",
+       "ru": "Так что мой рабочий день заканчивается без четверти восемь."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Mina töötan jalgpalliklubis jalgpallitreenerina ja tenniseklubis olen laste liikumistreener ning samal ajal õpin ka ülikoolis.",
+       "en": "I work at a football club as a football coach, and at a tennis club I am a children’s fitness coach, and at the same time I study at university too.",
+       "az": "Mən futbol klubunda futbol məşqçisi işləyirəm, tennis klubunda isə uşaqların hərəkət məşqçisiyəm və eyni zamanda universitetdə də oxuyuram.",
+       "ru": "Я работаю футбольным тренером в футбольном клубе, а в теннисном клубе я детский тренер по движению, и в то же время ещё учусь в университете."
+      },
+      {
+       "et": "Töötanud olen kaks aastat mõlemal kohal.",
+       "en": "I have worked at both places for two years.",
+       "az": "Hər iki yerdə iki ildir işləyirəm.",
+       "ru": "В обоих местах я работаю два года."
+      },
+      {
+       "et": "Jalgpallitrenni teen kaks korda nädalas, seal on mul hetkel üks grupp - väikesed mudilased.",
+       "en": "I run football training twice a week; there I have one group at the moment - little toddlers.",
+       "az": "Futbol məşqini həftədə iki dəfə keçirəm, orada hazırda bir qrupum var - balaca körpələr.",
+       "ru": "Футбольные тренировки я провожу два раза в неделю, там у меня сейчас одна группа — малыши."
+      },
+      {
+       "et": "Ja tenniseklubis töötan ühe päeva nädalas, aga mitme grupiga.",
+       "en": "And at the tennis club I work one day a week, but with several groups.",
+       "az": "Tennis klubunda isə həftədə bir gün işləyirəm, amma bir neçə qrupla.",
+       "ru": "А в теннисном клубе я работаю один день в неделю, но с несколькими группами."
+      },
+      {
+       "et": "Tavaliselt kestab trenn tund aega.",
+       "en": "A training session usually lasts an hour.",
+       "az": "Adətən məşq bir saat çəkir.",
+       "ru": "Обычно тренировка длится час."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Hommikud on mul vabad.",
+       "en": "My mornings are free.",
+       "az": "Səhərlərim boşdur.",
+       "ru": "По утрам я свободен."
+      },
+      {
+       "et": "Minu tööpäev algab siis, kui lastel kool või lasteaed läbi saab, siis umbes kella neljast.",
+       "en": "My workday begins when the children’s school or kindergarten is over, so at about four o’clock.",
+       "az": "İş günüm uşaqların məktəbi və ya bağçası qurtaranda başlayır, yəni təxminən saat dörddən.",
+       "ru": "Мой рабочий день начинается, когда у детей заканчивается школа или садик, то есть примерно с четырёх."
+      },
+      {
+       "et": "Tööpäev on lühike: kolm-neli tundi, olenevalt sellest, kui palju gruppe on ja oleneb perioodist.",
+       "en": "The workday is short: three or four hours, depending on how many groups there are, and it depends on the season.",
+       "az": "İş günü qısadır: üç-dörd saat, neçə qrup olmasından asılı olaraq, bir də dövrdən asılıdır.",
+       "ru": "Рабочий день короткий: три-четыре часа, в зависимости от того, сколько групп, и от периода."
+      },
+      {
+       "et": "Tööpäev saab tavaliselt ikkagi enne kella seitset läbi.",
+       "en": "The workday is usually over before seven all the same.",
+       "az": "İş günü adətən yenə də saat yeddidən əvvəl bitir.",
+       "ru": "Рабочий день обычно всё-таки заканчивается до семи."
+      },
+      {
+       "et": "Mulle endale meeldib see vabadus, et mul on hommikud vabad ja õhtud vabad.",
+       "en": "I myself like the freedom of having my mornings free and my evenings free.",
+       "az": "Özümə bu azadlıq xoşdur ki, səhərlərim də, axşamlarım da boşdur.",
+       "ru": "Мне самому нравится эта свобода — что у меня свободны и утро, и вечер."
+      }
+     ]
+    },
+    {
+     "who": "Marita",
+     "lines": [
+      {
+       "et": "Ma töötan juuksurisalongis.",
+       "en": "I work in a hair salon.",
+       "az": "Mən bərbər salonunda işləyirəm.",
+       "ru": "Я работаю в парикмахерской."
+      },
+      {
+       "et": "Ma olen selle salongi loonud, olen selle juht ja töötan ka juuksurina.",
+       "en": "I set up this salon, I am its manager and I also work as a hairdresser.",
+       "az": "Bu salonu mən yaratmışam, onun rəhbəriyəm və həm də bərbər işləyirəm.",
+       "ru": "Я создала этот салон, я его руководитель и работаю ещё и парикмахером."
+      },
+      {
+       "et": "Salongi avasin ma kaks aastat tagasi.",
+       "en": "I opened the salon two years ago.",
+       "az": "Salonu iki il əvvəl açmışam.",
+       "ru": "Салон я открыла два года назад."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ask": {
+    "et": "Kui kaua sa oled töötanud?",
+    "en": "How long have you been working?",
+    "az": "Nə qədərdir işləyirsən?",
+    "ru": "Сколько ты уже работаешь?"
+   },
+   "turns": [
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Ma olen töötanud umbes kaheksateist aastat.",
+       "en": "I have been working for about eighteen years.",
+       "az": "Təxminən on səkkiz ildir işləyirəm.",
+       "ru": "Я работаю примерно восемнадцать лет."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "See on mu kolmas töökoht muusikaõpetajana.",
+       "en": "This is my third job as a music teacher.",
+       "az": "Bu, musiqi müəllimi kimi üçüncü iş yerimdir.",
+       "ru": "Это моё третье место работы учителем музыки."
+      },
+      {
+       "et": "Alustasin Tartus juba varem ja siis eelmisel aastal õpetasin Tallinnas veel ühes kohas.",
+       "en": "I started out in Tartu earlier, and then last year I taught at another place in Tallinn.",
+       "az": "Daha əvvəl Tartuda başlamışdım, sonra keçən il Tallində daha bir yerdə dərs dedim.",
+       "ru": "Начинал я ещё раньше в Тарту, а потом в прошлом году преподавал в Таллинне ещё в одном месте."
+      },
+      {
+       "et": "Nii et kokku on mul kolm töökohta olnud ja selle viimase koha peal ma olen praegu töötanud pool aastat.",
+       "en": "So altogether I have had three jobs, and at this last one I have been working for half a year now.",
+       "az": "Belə ki, ümumilikdə üç iş yerim olub və bu sonuncu yerdə hazırda yarım ildir işləyirəm.",
+       "ru": "Так что всего у меня было три места работы, и на последнем я сейчас работаю полгода."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Esialgu alustasin jalgpallitreenerina umbes kaks aastat tagasi, täiesti juhuslikult.",
+       "en": "I first started as a football coach about two years ago, quite by chance.",
+       "az": "Futbol məşqçisi kimi təxminən iki il əvvəl, tamamilə təsadüfən başladım.",
+       "ru": "Начал я футбольным тренером примерно два года назад, совершенно случайно."
+      },
+      {
+       "et": "Pakuti tööd.",
+       "en": "I was offered work.",
+       "az": "İş təklif etdilər.",
+       "ru": "Предложили работу."
+      },
+      {
+       "et": "Ja kuna ma olen eluaeg sporti teinud, siis see treeneritöö pakkus mulle väga huvi.",
+       "en": "And since I have done sport all my life, coaching interested me a lot.",
+       "az": "Bütün ömrüm boyu idmanla məşğul olduğum üçün bu məşqçilik işi mənə çox maraqlı gəldi.",
+       "ru": "А так как я всю жизнь занимался спортом, эта тренерская работа меня очень заинтересовала."
+      },
+      {
+       "et": "Olen siiamaani tööl samas klubis ja olen töötanud väga paljude erinevate gruppide ja laagritega.",
+       "en": "I am still working at the same club, and I have worked with a great many different groups and camps.",
+       "az": "Hələ də həmin klubda işləyirəm və çox müxtəlif qruplar və düşərgələrlə işləmişəm.",
+       "ru": "Я до сих пор работаю в том же клубе и работал с очень многими разными группами и лагерями."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "missugune": {
+   "base": "missugune",
+   "means": {
+    "en": "what kind of, what … like",
+    "az": "necə, hansı cür",
+    "ru": "какой"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   }
+  },
+  "tööpäev": {
+   "base": "tööpäev",
+   "means": {
+    "en": "workday",
+    "az": "iş günü",
+    "ru": "рабочий день"
+   },
+   "deck": "work"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "pean": {
+   "base": "pidama",
+   "means": {
+    "en": "I must, I have to",
+    "az": "məcburam",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "ärkama": {
+   "base": "ärkama",
+   "means": {
+    "en": "wake up",
+    "az": "oyanmaq",
+    "ru": "просыпаться"
+   }
+  },
+  "kell": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock; clock",
+    "az": "saat",
+    "ru": "час, часы"
+   },
+   "deck": "time"
+  },
+  "kuus": {
+   "base": "kuus",
+   "means": {
+    "en": "six",
+    "az": "altı",
+    "ru": "шесть"
+   },
+   "deck": "numbers"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "tööle": {
+   "base": "töö",
+   "means": {
+    "en": "to work",
+    "az": "işə",
+    "ru": "на работу"
+   },
+   "deck": "talk"
+  },
+  "jõuan": {
+   "base": "jõudma",
+   "means": {
+    "en": "I get to, I arrive",
+    "az": "çatıram",
+    "ru": "добираюсь"
+   },
+   "deck": "moreverbs"
+  },
+  "kella": {
+   "base": "kell",
+   "means": {
+    "en": "o'clock (kella kolm: three o'clock)",
+    "az": "saat",
+    "ru": "часов"
+   },
+   "deck": "time"
+  },
+  "seitsmeks": {
+   "base": "seitse",
+   "means": {
+    "en": "seven (kella seitsmeks: by seven)",
+    "az": "yeddiyə",
+    "ru": "к семи"
+   },
+   "deck": "numbers"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "tööpäevad": {
+   "base": "tööpäev",
+   "means": {
+    "en": "workdays",
+    "az": "iş günləri",
+    "ru": "рабочие дни"
+   },
+   "deck": "work"
+  },
+  "kaheteisttunnised": {
+   "base": "kaheteisttunnine",
+   "means": {
+    "en": "twelve hours long",
+    "az": "on iki saatlıq",
+    "ru": "двенадцатичасовые"
+   }
+  },
+  "algavad": {
+   "base": "algama",
+   "means": {
+    "en": "they begin, start",
+    "az": "başlayırlar",
+    "ru": "начинаются"
+   },
+   "deck": "moreverbs"
+  },
+  "poole": {
+   "base": "pool",
+   "means": {
+    "en": "half (poole kuueni: till half past five; kella poole neljasele: for half past three)",
+    "az": "yarım (kella poole neljasele: saat üç yarıma)",
+    "ru": "половина (kella poole neljasele: на половину четвёртого)"
+   },
+   "deck": "numbers"
+  },
+  "kaheksast": {
+   "base": "kaheksa",
+   "means": {
+    "en": "eight (poole kaheksast: from half past seven)",
+    "az": "səkkiz (yeddinin yarısından)",
+    "ru": "восьми (с половины восьмого)"
+   },
+   "deck": "numbers"
+  },
+  "hommikul": {
+   "base": "hommik",
+   "means": {
+    "en": "in the morning",
+    "az": "səhər",
+    "ru": "утром"
+   },
+   "deck": "time"
+  },
+  "lõppevad": {
+   "base": "lõppema",
+   "means": {
+    "en": "they end, finish",
+    "az": "bitirlər",
+    "ru": "заканчиваются"
+   },
+   "deck": "moreverbs"
+  },
+  "õhtul": {
+   "base": "õhtu",
+   "means": {
+    "en": "in the evening",
+    "az": "axşam",
+    "ru": "вечером"
+   },
+   "deck": "time"
+  },
+  "kaheksa": {
+   "base": "kaheksa",
+   "means": {
+    "en": "eight",
+    "az": "səkkiz",
+    "ru": "восемь"
+   },
+   "deck": "numbers"
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "pool": {
+   "base": "pool",
+   "means": {
+    "en": "half (pool kaheksa: half past seven)",
+    "az": "yarım (pool kaheksa: yeddinin yarısı)",
+    "ru": "половина (pool kaheksa: половина восьмого)"
+   },
+   "deck": "numbers"
+  },
+  "õpetajatööd": {
+   "base": "õpetajatöö",
+   "means": {
+    "en": "teaching work",
+    "az": "müəllimlik işi",
+    "ru": "работу учителя"
+   }
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "esmaspäeviti": {
+   "base": "esmaspäeviti",
+   "means": {
+    "en": "on Mondays",
+    "az": "bazar ertəsi günləri",
+    "ru": "по понедельникам"
+   },
+   "deck": "often"
+  },
+  "kolmapäeviti": {
+   "base": "kolmapäeviti",
+   "means": {
+    "en": "on Wednesdays",
+    "az": "çərşənbə günləri",
+    "ru": "по средам"
+   }
+  },
+  "esimene": {
+   "base": "esimene",
+   "means": {
+    "en": "first",
+    "az": "birinci, ilk",
+    "ru": "первый"
+   },
+   "deck": "numbers"
+  },
+  "õpilane": {
+   "base": "õpilane",
+   "means": {
+    "en": "pupil, student",
+    "az": "şagird",
+    "ru": "ученик"
+   },
+   "deck": "school"
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes; has to (tuleb vahetada: has to be changed)",
+    "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+    "ru": "приходит; надо (tuleb vahetada: надо сменить)"
+   },
+   "deck": "verbs"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "viimane": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "sonuncu",
+    "ru": "последний"
+   },
+   "deck": "time"
+  },
+  "seitse": {
+   "base": "seitse",
+   "means": {
+    "en": "seven",
+    "az": "yeddi",
+    "ru": "семь"
+   },
+   "deck": "numbers"
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "kolmveerand": {
+   "base": "kolmveerand",
+   "means": {
+    "en": "three quarters (kolmveerand seitse: quarter to seven)",
+    "az": "dörddə üç (kolmveerand seitse: yeddiyə on beş qalmış)",
+    "ru": "три четверти (kolmveerand seitse: без четверти семь)"
+   }
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lõppeb": {
+   "base": "lõppema",
+   "means": {
+    "en": "ends",
+    "az": "bitir",
+    "ru": "заканчивается"
+   },
+   "deck": "moreverbs"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I (stressed)",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "töötan": {
+   "base": "töötama",
+   "means": {
+    "en": "I work",
+    "az": "işləyirəm",
+    "ru": "работаю"
+   },
+   "deck": "verbs"
+  },
+  "jalgpalliklubis": {
+   "base": "jalgpalliklubi",
+   "means": {
+    "en": "at a football club",
+    "az": "futbol klubunda",
+    "ru": "в футбольном клубе"
+   }
+  },
+  "jalgpallitreenerina": {
+   "base": "jalgpallitreener",
+   "means": {
+    "en": "as a football coach",
+    "az": "futbol məşqçisi kimi",
+    "ru": "футбольным тренером"
+   }
+  },
+  "tenniseklubis": {
+   "base": "tenniseklubi",
+   "means": {
+    "en": "at a tennis club",
+    "az": "tennis klubunda",
+    "ru": "в теннисном клубе"
+   }
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "laste": {
+   "base": "laps",
+   "means": {
+    "en": "children's",
+    "az": "uşaqların",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "liikumistreener": {
+   "base": "liikumistreener",
+   "means": {
+    "en": "fitness coach, movement coach",
+    "az": "hərəkət məşqçisi",
+    "ru": "тренер по движению"
+   }
+  },
+  "ning": {
+   "base": "ning",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "samal": {
+   "base": "sama",
+   "means": {
+    "en": "same (samal ajal: at the same time)",
+    "az": "eyni",
+    "ru": "то же"
+   },
+   "deck": "everyday"
+  },
+  "ajal": {
+   "base": "aeg",
+   "means": {
+    "en": "time (sel ajal, kui: while, when)",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "õpin": {
+   "base": "õppima",
+   "means": {
+    "en": "I study",
+    "az": "oxuyuram",
+    "ru": "учусь"
+   },
+   "deck": "moreverbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "ülikoolis": {
+   "base": "ülikool",
+   "means": {
+    "en": "at university",
+    "az": "universitetdə",
+    "ru": "в университете"
+   },
+   "deck": "school"
+  },
+  "töötanud": {
+   "base": "töötama",
+   "means": {
+    "en": "worked",
+    "az": "işləmiş",
+    "ru": "работал"
+   },
+   "deck": "verbs"
+  },
+  "aastat": {
+   "base": "aasta",
+   "means": {
+    "en": "years",
+    "az": "il",
+    "ru": "лет"
+   },
+   "deck": "time"
+  },
+  "mõlemal": {
+   "base": "mõlemad",
+   "means": {
+    "en": "both (mõlemal kohal: at both places)",
+    "az": "hər iki",
+    "ru": "обоих"
+   }
+  },
+  "kohal": {
+   "base": "koht",
+   "means": {
+    "en": "place (mõlemal kohal: at both places)",
+    "az": "yerdə",
+    "ru": "местах"
+   },
+   "deck": "around"
+  },
+  "jalgpallitrenni": {
+   "base": "jalgpallitrenn",
+   "means": {
+    "en": "football training",
+    "az": "futbol məşqi",
+    "ru": "футбольную тренировку"
+   }
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nädalas": {
+   "base": "nädal",
+   "means": {
+    "en": "a week, per week",
+    "az": "həftədə",
+    "ru": "в неделю"
+   },
+   "deck": "time"
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "hetkel": {
+   "base": "hetk",
+   "means": {
+    "en": "at the moment",
+    "az": "hələlik",
+    "ru": "на данный момент"
+   },
+   "deck": "time"
+  },
+  "üks": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "grupp": {
+   "base": "grupp",
+   "means": {
+    "en": "group",
+    "az": "qrup",
+    "ru": "группа"
+   }
+  },
+  "väikesed": {
+   "base": "väike",
+   "means": {
+    "en": "little, small",
+    "az": "balaca",
+    "ru": "маленькие"
+   },
+   "deck": "basics"
+  },
+  "mudilased": {
+   "base": "mudilane",
+   "means": {
+    "en": "little kids, toddlers",
+    "az": "balaca uşaqlar",
+    "ru": "малыши"
+   }
+  },
+  "ühe": {
+   "base": "üks",
+   "means": {
+    "en": "one",
+    "az": "bir",
+    "ru": "один"
+   },
+   "deck": "numbers"
+  },
+  "päeva": {
+   "base": "päev",
+   "means": {
+    "en": "days",
+    "az": "gün",
+    "ru": "дня"
+   },
+   "deck": "time"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "mitme": {
+   "base": "mitu",
+   "means": {
+    "en": "several, many (mitme grupiga: with several groups)",
+    "az": "bir neçə",
+    "ru": "несколькими"
+   },
+   "deck": "asking"
+  },
+  "grupiga": {
+   "base": "grupp",
+   "means": {
+    "en": "group (with … groups)",
+    "az": "qrup(la)",
+    "ru": "группой"
+   }
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "kestab": {
+   "base": "kestma",
+   "means": {
+    "en": "lasts",
+    "az": "davam edir, çəkir",
+    "ru": "длится"
+   }
+  },
+  "trenn": {
+   "base": "trenn",
+   "means": {
+    "en": "training session",
+    "az": "məşq",
+    "ru": "тренировка"
+   },
+   "deck": "plans"
+  },
+  "tund": {
+   "base": "tund",
+   "means": {
+    "en": "hour; lesson (tund aega: an hour)",
+    "az": "saat; dərs",
+    "ru": "час; урок"
+   },
+   "deck": "time"
+  },
+  "aega": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "hommikud": {
+   "base": "hommik",
+   "means": {
+    "en": "mornings",
+    "az": "səhərlər",
+    "ru": "утра, утро"
+   },
+   "deck": "time"
+  },
+  "vabad": {
+   "base": "vaba",
+   "means": {
+    "en": "free",
+    "az": "boş, sərbəst",
+    "ru": "свободны"
+   },
+   "deck": "describing"
+  },
+  "algab": {
+   "base": "algama",
+   "means": {
+    "en": "begins, starts",
+    "az": "başlayır",
+    "ru": "начинается"
+   },
+   "deck": "moreverbs"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "lastel": {
+   "base": "laps",
+   "means": {
+    "en": "for the children (lastel oleks: the children would have)",
+    "az": "uşaqlar üçün",
+    "ru": "у детей, детям"
+   },
+   "deck": "talk"
+  },
+  "kool": {
+   "base": "kool",
+   "means": {
+    "en": "school",
+    "az": "məktəb",
+    "ru": "школа"
+   },
+   "deck": "school"
+  },
+  "lasteaed": {
+   "base": "lasteaed",
+   "means": {
+    "en": "kindergarten",
+    "az": "uşaq bağçası",
+    "ru": "детский сад"
+   },
+   "deck": "family"
+  },
+  "läbi": {
+   "base": "läbi",
+   "means": {
+    "en": "through, over (läbi saama: to end)",
+    "az": "başa (läbi saama: bitmək)",
+    "ru": "через, конец (läbi saama: кончиться)"
+   },
+   "deck": "everyday"
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
+   },
+   "deck": "verbs"
+  },
+  "umbes": {
+   "base": "umbes",
+   "means": {
+    "en": "about, roughly",
+    "az": "təxminən",
+    "ru": "примерно"
+   },
+   "deck": "service"
+  },
+  "neljast": {
+   "base": "neli",
+   "means": {
+    "en": "four (kella neljast: from four o'clock)",
+    "az": "dörd (saat dörddən)",
+    "ru": "четырёх"
+   },
+   "deck": "numbers"
+  },
+  "lühike": {
+   "base": "lühike",
+   "means": {
+    "en": "short",
+    "az": "qısa",
+    "ru": "короткий"
+   },
+   "deck": "describing"
+  },
+  "kolm": {
+   "base": "kolm",
+   "means": {
+    "en": "three",
+    "az": "üç",
+    "ru": "три"
+   },
+   "deck": "numbers"
+  },
+  "neli": {
+   "base": "neli",
+   "means": {
+    "en": "four",
+    "az": "dörd",
+    "ru": "четыре"
+   },
+   "deck": "numbers"
+  },
+  "tundi": {
+   "base": "tund",
+   "means": {
+    "en": "to a lesson, class; hour",
+    "az": "dərsə",
+    "ru": "на урок"
+   },
+   "deck": "time"
+  },
+  "olenevalt": {
+   "base": "olenevalt",
+   "means": {
+    "en": "depending (olenevalt sellest: depending on)",
+    "az": "asılı olaraq",
+    "ru": "в зависимости"
+   }
+  },
+  "sellest": {
+   "base": "see",
+   "means": {
+    "en": "on that, from that",
+    "az": "bundan",
+    "ru": "от того"
+   },
+   "deck": "pronouns"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "gruppe": {
+   "base": "grupp",
+   "means": {
+    "en": "groups",
+    "az": "qruplar",
+    "ru": "групп"
+   }
+  },
+  "oleneb": {
+   "base": "olenema",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   }
+  },
+  "perioodist": {
+   "base": "periood",
+   "means": {
+    "en": "period, season (oleneb perioodist: depends on the season)",
+    "az": "dövr(dən)",
+    "ru": "от периода"
+   }
+  },
+  "ikkagi": {
+   "base": "ikkagi",
+   "means": {
+    "en": "after all, at all",
+    "az": "hər halda, axı",
+    "ru": "всё-таки"
+   }
+  },
+  "enne": {
+   "base": "enne",
+   "means": {
+    "en": "before",
+    "az": "əvvəl",
+    "ru": "до"
+   },
+   "deck": "time"
+  },
+  "seitset": {
+   "base": "seitse",
+   "means": {
+    "en": "seven (enne kella seitset: before seven)",
+    "az": "yeddi",
+    "ru": "семи"
+   },
+   "deck": "numbers"
+  },
+  "mulle": {
+   "base": "mina",
+   "means": {
+    "en": "to me (mulle meeldib: I like)",
+    "az": "mənə (mulle meeldib: xoşuma gəlir)",
+    "ru": "мне (mulle meeldib: мне нравится)"
+   }
+  },
+  "endale": {
+   "base": "ise",
+   "means": {
+    "en": "for ourselves, for oneself",
+    "az": "özümüzə",
+    "ru": "себе"
+   },
+   "deck": "pronouns"
+  },
+  "meeldib": {
+   "base": "meeldima",
+   "means": {
+    "en": "is liked (mulle meeldib: I like)",
+    "az": "xoşa gəlir",
+    "ru": "нравится"
+   },
+   "deck": "verbs"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "vabadus": {
+   "base": "vabadus",
+   "means": {
+    "en": "freedom",
+    "az": "azadlıq",
+    "ru": "свобода"
+   }
+  },
+  "õhtud": {
+   "base": "õhtu",
+   "means": {
+    "en": "evenings",
+    "az": "axşamlar",
+    "ru": "вечера"
+   },
+   "deck": "time"
+  },
+  "juuksurisalongis": {
+   "base": "juuksurisalong",
+   "means": {
+    "en": "in a hair salon",
+    "az": "bərbər salonunda",
+    "ru": "в парикмахерской"
+   }
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "salongi": {
+   "base": "salong",
+   "means": {
+    "en": "salon",
+    "az": "salon",
+    "ru": "салон"
+   }
+  },
+  "loonud": {
+   "base": "looma",
+   "means": {
+    "en": "created, set up",
+    "az": "yaratmış",
+    "ru": "создал(а)"
+   }
+  },
+  "juht": {
+   "base": "juht",
+   "means": {
+    "en": "manager, head, boss",
+    "az": "rəhbər",
+    "ru": "руководитель"
+   }
+  },
+  "juuksurina": {
+   "base": "juuksur",
+   "means": {
+    "en": "as a hairdresser",
+    "az": "bərbər kimi",
+    "ru": "парикмахером"
+   },
+   "deck": "jobs"
+  },
+  "avasin": {
+   "base": "avama",
+   "means": {
+    "en": "I opened",
+    "az": "açdım",
+    "ru": "я открыл(а)"
+   },
+   "deck": "moreverbs"
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты есть"
+   },
+   "deck": "verbs"
+  },
+  "kaheksateist": {
+   "base": "kaheksateist",
+   "means": {
+    "en": "eighteen",
+    "az": "on səkkiz",
+    "ru": "восемнадцать"
+   },
+   "deck": "numbers"
+  },
+  "kolmas": {
+   "base": "kolmas",
+   "means": {
+    "en": "third",
+    "az": "üçüncü",
+    "ru": "третий"
+   },
+   "deck": "numbers"
+  },
+  "töökoht": {
+   "base": "töökoht",
+   "means": {
+    "en": "job, workplace",
+    "az": "iş yeri",
+    "ru": "место работы"
+   },
+   "deck": "work"
+  },
+  "muusikaõpetajana": {
+   "base": "muusikaõpetaja",
+   "means": {
+    "en": "as a music teacher",
+    "az": "musiqi müəllimi kimi",
+    "ru": "учителем музыки"
+   }
+  },
+  "alustasin": {
+   "base": "alustama",
+   "means": {
+    "en": "I started",
+    "az": "başladım",
+    "ru": "я начал"
+   },
+   "deck": "moreverbs"
+  },
+  "tartus": {
+   "base": "Tartu",
+   "means": {
+    "en": "in Tartu",
+    "az": "Tartuda",
+    "ru": "в Тарту"
+   }
+  },
+  "juba": {
+   "base": "juba",
+   "means": {
+    "en": "already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   "deck": "everyday"
+  },
+  "varem": {
+   "base": "varem",
+   "means": {
+    "en": "earlier",
+    "az": "daha tez",
+    "ru": "раньше"
+   },
+   "deck": "everyday"
+  },
+  "eelmisel": {
+   "base": "eelmine",
+   "means": {
+    "en": "last, previous",
+    "az": "keçən",
+    "ru": "прошлой"
+   },
+   "deck": "describing"
+  },
+  "aastal": {
+   "base": "aasta",
+   "means": {
+    "en": "in the year",
+    "az": "ildə",
+    "ru": "в году"
+   },
+   "deck": "time"
+  },
+  "õpetasin": {
+   "base": "õpetama",
+   "means": {
+    "en": "I taught",
+    "az": "dərs dedim",
+    "ru": "я преподавал(а)"
+   },
+   "deck": "school"
+  },
+  "tallinnas": {
+   "base": "Tallinn",
+   "means": {
+    "en": "in Tallinn",
+    "az": "Tallinndə",
+    "ru": "в Таллинне"
+   }
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "ühes": {
+   "base": "üks",
+   "means": {
+    "en": "one (ühes kohas: at one place)",
+    "az": "bir",
+    "ru": "одном"
+   },
+   "deck": "numbers"
+  },
+  "kohas": {
+   "base": "koht",
+   "means": {
+    "en": "place (ühes kohas: at one place)",
+    "az": "yerdə",
+    "ru": "месте"
+   },
+   "deck": "around"
+  },
+  "kokku": {
+   "base": "kokku",
+   "means": {
+    "en": "together; in all (kokku leppima: to agree)",
+    "az": "bir yerə; cəmi",
+    "ru": "вместе; всего"
+   },
+   "deck": "cafe"
+  },
+  "töökohta": {
+   "base": "töökoht",
+   "means": {
+    "en": "jobs, workplaces",
+    "az": "iş yeri",
+    "ru": "места работы"
+   },
+   "deck": "work"
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "viimase": {
+   "base": "viimane",
+   "means": {
+    "en": "last",
+    "az": "son",
+    "ru": "последней"
+   },
+   "deck": "time"
+  },
+  "koha": {
+   "base": "koht",
+   "means": {
+    "en": "place, job (selle viimase koha peal: at this last job)",
+    "az": "yer",
+    "ru": "месте"
+   },
+   "deck": "around"
+  },
+  "peal": {
+   "base": "peal",
+   "means": {
+    "en": "on, on top of",
+    "az": "üstündə",
+    "ru": "на"
+   },
+   "deck": "around"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "esialgu": {
+   "base": "esialgu",
+   "means": {
+    "en": "at first",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   }
+  },
+  "täiesti": {
+   "base": "täiesti",
+   "means": {
+    "en": "completely",
+    "az": "tamamilə",
+    "ru": "совсем"
+   },
+   "deck": "everyday"
+  },
+  "juhuslikult": {
+   "base": "juhuslikult",
+   "means": {
+    "en": "by chance",
+    "az": "təsadüfən",
+    "ru": "случайно"
+   }
+  },
+  "pakuti": {
+   "base": "pakkuma",
+   "means": {
+    "en": "was offered",
+    "az": "təklif edildi",
+    "ru": "предложили"
+   },
+   "deck": "service"
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "kuna": {
+   "base": "kuna",
+   "means": {
+    "en": "since, because",
+    "az": "çünki",
+    "ru": "так как"
+   }
+  },
+  "eluaeg": {
+   "base": "eluaeg",
+   "means": {
+    "en": "all one's life",
+    "az": "bütün ömür boyu",
+    "ru": "всю жизнь"
+   }
+  },
+  "sporti": {
+   "base": "sport",
+   "means": {
+    "en": "sport",
+    "az": "idman",
+    "ru": "спорт"
+   }
+  },
+  "teinud": {
+   "base": "tegema",
+   "means": {
+    "en": "done",
+    "az": "etmişəm",
+    "ru": "сделал"
+   },
+   "deck": "verbs"
+  },
+  "treeneritöö": {
+   "base": "treeneritöö",
+   "means": {
+    "en": "coaching work",
+    "az": "məşqçilik işi",
+    "ru": "тренерская работа"
+   }
+  },
+  "pakkus": {
+   "base": "pakkuma",
+   "means": {
+    "en": "offered (huvi pakkus: interested)",
+    "az": "təklif etdi",
+    "ru": "предлагал(о)"
+   },
+   "deck": "service"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "huvi": {
+   "base": "huvi",
+   "means": {
+    "en": "interest (huvi pakkuma: to interest)",
+    "az": "maraq",
+    "ru": "интерес"
+   },
+   "deck": "plans"
+  },
+  "siiamaani": {
+   "base": "siiamaani",
+   "means": {
+    "en": "up to now, so far",
+    "az": "indiyədək",
+    "ru": "до сих пор"
+   }
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "samas": {
+   "base": "sama",
+   "means": {
+    "en": "same (samas klubis: at the same club)",
+    "az": "eyni",
+    "ru": "том же"
+   },
+   "deck": "everyday"
+  },
+  "klubis": {
+   "base": "klubi",
+   "means": {
+    "en": "at the club",
+    "az": "klubda",
+    "ru": "в клубе"
+   }
+  },
+  "paljude": {
+   "base": "palju",
+   "means": {
+    "en": "many (with)",
+    "az": "çox",
+    "ru": "многими"
+   }
+  },
+  "erinevate": {
+   "base": "erinev",
+   "means": {
+    "en": "different, various (with)",
+    "az": "müxtəlif",
+    "ru": "разных"
+   },
+   "deck": "describing"
+  },
+  "gruppide": {
+   "base": "grupp",
+   "means": {
+    "en": "groups (with … groups)",
+    "az": "qruplar(la)",
+    "ru": "группами"
+   }
+  },
+  "laagritega": {
+   "base": "laager",
+   "means": {
+    "en": "camps (with … camps)",
+    "az": "düşərgələrlə",
+    "ru": "лагерями"
+   }
+  }
+ }
+}

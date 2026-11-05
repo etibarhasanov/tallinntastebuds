@@ -1,0 +1,1280 @@
+{
+ "id": "talk-at-work",
+ "added": "2026-11-05",
+ "name": {
+  "en": "What you do at work",
+  "az": "İşdə nə edirsən",
+  "ru": "Что ты делаешь на работе"
+ },
+ "why": {
+  "en": "An intensive-care nurse, a guitar teacher, a children’s football coach and a hairdresser on what their work is",
+  "az": "Reanimasiya tibb bacısı, gitara müəllimi, balacaların məşqçisi və bərbər işlərinin nə olduğundan danışır",
+  "ru": "Медсестра реанимации, учитель гитары, тренер малышей и парикмахер рассказывают, в чём их работа"
+ },
+ "taste": "Tuleb klient.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mida sa tööl teed?",
+    "en": "What do you do at work?",
+    "az": "İşdə nə edirsən?",
+    "ru": "Что ты делаешь на работе?"
+   },
+   "turns": [
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Põhiliselt tähendab intensiivraviõe töö patsientide jälgimist, nende seisundi jälgimist.",
+       "en": "Mainly an intensive-care nurse’s work means watching the patients, watching their condition.",
+       "az": "Reanimasiya tibb bacısının işi əsasən xəstələri izləmək, onların vəziyyətini izləmək deməkdir.",
+       "ru": "В основном работа медсестры реанимации — это наблюдение за пациентами, наблюдение за их состоянием."
+      },
+      {
+       "et": "Kui on vaja, siis tuleb sekkuda kas protseduuride või ravimitega.",
+       "en": "If it’s necessary, you have to step in, either with procedures or with medicines.",
+       "az": "Lazım olanda ya prosedurlarla, ya da dərmanlarla müdaxilə etmək lazım gəlir.",
+       "ru": "Если нужно, приходится вмешиваться — процедурами или лекарствами."
+      },
+      {
+       "et": "Kui midagi juhtub, teavitatakse sellest arsti, kes siis annab vastavad korraldused.",
+       "en": "If something happens, the doctor is told, and then gives the orders that are needed.",
+       "az": "Nəsə baş verəndə bu barədə həkimə xəbər verilir, o da lazımi göstərişləri verir.",
+       "ru": "Если что-то случается, об этом сообщают врачу, и он даёт соответствующие распоряжения."
+      },
+      {
+       "et": "Üldiselt hakkame siis ikkagi koostöös arsti ja kogu meeskonnaga, kuhu kuulub veel hooldaja, tegutsema.",
+       "en": "Generally we then act together with the doctor and the whole team, which also includes a care assistant.",
+       "az": "Ümumiyyətlə, sonra həkim və bütün komanda ilə birlikdə hərəkət edirik, komandaya bir də baxıcı daxildir.",
+       "ru": "Обычно мы тогда всё-таки действуем вместе с врачом и всей командой, в которую входит ещё и санитар."
+      },
+      {
+       "et": "Võime teha uuringuid, teha protseduure, anda ravimeid või lihtsalt jälgida.",
+       "en": "We may do tests, do procedures, give medicines or simply watch.",
+       "az": "Müayinələr edə, prosedurlar apara, dərman verə və ya sadəcə izləyə bilərik.",
+       "ru": "Мы можем делать обследования, проводить процедуры, давать лекарства или просто наблюдать."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Ma õpetan lastemuusikakoolis väikseid tulevasi kitarrivirtuoose.",
+       "en": "I teach little future guitar virtuosos at a children’s music school.",
+       "az": "Uşaq musiqi məktəbində balaca gələcək gitara virtuozlarına dərs deyirəm.",
+       "ru": "Я учу маленьких будущих гитарных виртуозов в детской музыкальной школе."
+      },
+      {
+       "et": "Lapsed on keskmiselt üheteist-kaheteistaastased, osa on nooremad, osa on natuke vanemad.",
+       "en": "The children are eleven or twelve on average; some are younger, some a little older.",
+       "az": "Uşaqlar orta hesabla on bir-on iki yaşındadırlar, bəziləri daha kiçik, bəziləri bir az böyükdür.",
+       "ru": "Детям в среднем одиннадцать-двенадцать лет, некоторые младше, некоторые немного старше."
+      },
+      {
+       "et": "Praegu on mul neid kaheksa, teen kõigiga kaks korda nädalas individuaaltunde.",
+       "en": "At the moment I have eight of them, and I give each of them a private lesson twice a week.",
+       "az": "Hazırda onlardan səkkizi var, hamısı ilə həftədə iki dəfə fərdi dərs keçirəm.",
+       "ru": "Сейчас их у меня восемь, со всеми я два раза в неделю занимаюсь индивидуально."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Tavaliselt alustan trennides soojendusega.",
+       "en": "I usually start the training sessions with a warm-up.",
+       "az": "Məşqlərə adətən istiləşmə ilə başlayıram.",
+       "ru": "Обычно я начинаю тренировки с разминки."
+      },
+      {
+       "et": "Väiksemate puhul töötavad väga hästi erinevad kullimängud.",
+       "en": "With the smaller ones, all kinds of tag games work very well.",
+       "az": "Balacalarla müxtəlif tutmaca oyunları çox yaxşı alınır.",
+       "ru": "С малышами очень хорошо работают разные игры в салки."
+      },
+      {
+       "et": "Ja üldse kõik see, kus saab hästi kiiresti ja hästi palju joosta.",
+       "en": "And generally anything where you get to run really fast and really a lot.",
+       "az": "Ümumiyyətlə, çox sürətlə və çox qaçmaq olan hər şey.",
+       "ru": "И вообще всё, где можно очень быстро и очень много бегать."
+      },
+      {
+       "et": "Ja lõpus jällegi annan lastele vabad käed.",
+       "en": "And at the end I give the children a free hand again.",
+       "az": "Sonda isə yenə uşaqlara sərbəstlik verirəm.",
+       "ru": "А в конце я опять даю детям свободу."
+      },
+      {
+       "et": "Kui nad tahavad mängida mõnda pallimängu, näiteks rahvastepalli, siis minugi poolest, peaasi, et laps liigub.",
+       "en": "If they want to play some ball game, dodgeball for instance, that’s fine by me; the main thing is that the child moves.",
+       "az": "Hansısa top oyunu oynamaq istəsələr, məsələn, “yakan top”, mənim üçün fərqi yoxdur, əsas odur ki, uşaq hərəkət etsin.",
+       "ru": "Если они хотят поиграть в какую-нибудь игру с мячом, например в вышибалы, то я не против — главное, чтобы ребёнок двигался."
+      }
+     ]
+    },
+    {
+     "who": "Marita",
+     "lines": [
+      {
+       "et": "Tuleb klient.",
+       "en": "A client comes in.",
+       "az": "Müştəri gəlir.",
+       "ru": "Приходит клиентка."
+      },
+      {
+       "et": "Ma võtan ta avasüli vastu.",
+       "en": "I welcome her with open arms.",
+       "az": "Onu açıq qucaqla qarşılayıram.",
+       "ru": "Я встречаю её с распростёртыми объятиями."
+      },
+      {
+       "et": "Siis kõigepealt pesen kliendil pea.",
+       "en": "Then first of all I wash the client’s hair.",
+       "az": "Sonra ilk növbədə müştərinin başını yuyuram.",
+       "ru": "Потом первым делом мою клиентке голову."
+      },
+      {
+       "et": "Teen peamassaaži.",
+       "en": "I do a head massage.",
+       "az": "Baş masajı edirəm.",
+       "ru": "Делаю массаж головы."
+      },
+      {
+       "et": "Ja siis vastavalt sellele, kas klient soovib juukseid lõigata või värvida, siis vastavalt sellele tegutsen.",
+       "en": "And then, depending on whether the client wants her hair cut or coloured, I act accordingly.",
+       "az": "Sonra da müştərinin saçını kəsdirmək, yoxsa boyatmaq istəməsindən asılı olaraq, ona uyğun hərəkət edirəm.",
+       "ru": "А потом, в зависимости от того, хочет ли клиентка подстричься или покраситься, действую соответственно."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "teed": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsən",
+    "ru": "делаешь"
+   },
+   "deck": "verbs"
+  },
+  "põhiliselt": {
+   "base": "põhiliselt",
+   "means": {
+    "en": "mainly",
+    "az": "əsasən",
+    "ru": "в основном"
+   }
+  },
+  "tähendab": {
+   "base": "tähendama",
+   "means": {
+    "en": "means",
+    "az": "deməkdir",
+    "ru": "означает"
+   },
+   "deck": "moreverbs"
+  },
+  "intensiivraviõe": {
+   "base": "intensiivraviõde",
+   "means": {
+    "en": "intensive-care nurse's",
+    "az": "reanimasiya tibb bacısının",
+    "ru": "медсестры реанимации"
+   }
+  },
+  "töö": {
+   "base": "töö",
+   "means": {
+    "en": "work, job",
+    "az": "iş",
+    "ru": "работа"
+   },
+   "deck": "talk"
+  },
+  "patsientide": {
+   "base": "patsient",
+   "means": {
+    "en": "patients'",
+    "az": "xəstələrin",
+    "ru": "пациентов"
+   }
+  },
+  "jälgimist": {
+   "base": "jälgimine",
+   "means": {
+    "en": "watching, monitoring",
+    "az": "izləmə",
+    "ru": "наблюдение"
+   }
+  },
+  "nende": {
+   "base": "nemad",
+   "means": {
+    "en": "of them, those (nende punaste düünide vahel: among those red dunes)",
+    "az": "onların, o",
+    "ru": "их, этих"
+   }
+  },
+  "seisundi": {
+   "base": "seisund",
+   "means": {
+    "en": "condition, state",
+    "az": "vəziyyət",
+    "ru": "состояния"
+   }
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "tuleb": {
+   "base": "tulema",
+   "means": {
+    "en": "comes; has to (tuleb vahetada: has to be changed)",
+    "az": "gəlir; lazımdır (tuleb vahetada: dəyişmək lazımdır)",
+    "ru": "приходит; надо (tuleb vahetada: надо сменить)"
+   },
+   "deck": "verbs"
+  },
+  "sekkuda": {
+   "base": "sekkuma",
+   "means": {
+    "en": "to intervene, step in",
+    "az": "müdaxilə etmək",
+    "ru": "вмешиваться"
+   }
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "protseduuride": {
+   "base": "protseduur",
+   "means": {
+    "en": "procedures (with)",
+    "az": "prosedurlar(la)",
+    "ru": "процедурами"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "ravimitega": {
+   "base": "ravim",
+   "means": {
+    "en": "with medicines",
+    "az": "dərmanlarla",
+    "ru": "лекарствами"
+   },
+   "deck": "health"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "juhtub": {
+   "base": "juhtuma",
+   "means": {
+    "en": "happens",
+    "az": "baş verir",
+    "ru": "случается"
+   },
+   "deck": "moreverbs"
+  },
+  "teavitatakse": {
+   "base": "teavitama",
+   "means": {
+    "en": "is informed, is told",
+    "az": "xəbər verilir",
+    "ru": "сообщают"
+   }
+  },
+  "sellest": {
+   "base": "see",
+   "means": {
+    "en": "on that, from that",
+    "az": "bundan",
+    "ru": "от того"
+   },
+   "deck": "pronouns"
+  },
+  "arsti": {
+   "base": "arst",
+   "means": {
+    "en": "doctor (the doctor, of the doctor)",
+    "az": "həkim(i)",
+    "ru": "врача"
+   },
+   "deck": "health"
+  },
+  "kes": {
+   "base": "kes",
+   "means": {
+    "en": "who",
+    "az": "kim",
+    "ru": "кто, который"
+   },
+   "deck": "asking"
+  },
+  "annab": {
+   "base": "andma",
+   "means": {
+    "en": "gives",
+    "az": "verir",
+    "ru": "даёт"
+   },
+   "deck": "verbs"
+  },
+  "vastavad": {
+   "base": "vastav",
+   "means": {
+    "en": "appropriate, corresponding",
+    "az": "müvafiq",
+    "ru": "соответствующие"
+   }
+  },
+  "korraldused": {
+   "base": "korraldus",
+   "means": {
+    "en": "orders, instructions",
+    "az": "göstərişlər",
+    "ru": "распоряжения"
+   }
+  },
+  "üldiselt": {
+   "base": "üldiselt",
+   "means": {
+    "en": "in general",
+    "az": "ümumiyyətlə",
+    "ru": "в целом"
+   },
+   "deck": "everyday"
+  },
+  "hakkame": {
+   "base": "hakkama",
+   "means": {
+    "en": "let's begin; we begin",
+    "az": "başlayaq",
+    "ru": "начнём"
+   },
+   "deck": "moreverbs"
+  },
+  "ikkagi": {
+   "base": "ikkagi",
+   "means": {
+    "en": "after all, at all",
+    "az": "hər halda, axı",
+    "ru": "всё-таки"
+   }
+  },
+  "koostöös": {
+   "base": "koostöö",
+   "means": {
+    "en": "together, in cooperation (koostöös … ga: together with)",
+    "az": "əməkdaşlıqda",
+    "ru": "в сотрудничестве"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "kogu": {
+   "base": "kogu",
+   "means": {
+    "en": "whole, all (kogu aeg: all the time)",
+    "az": "bütün",
+    "ru": "весь"
+   },
+   "deck": "everyday"
+  },
+  "meeskonnaga": {
+   "base": "meeskond",
+   "means": {
+    "en": "with the team",
+    "az": "komanda ilə",
+    "ru": "с командой"
+   }
+  },
+  "kuhu": {
+   "base": "kuhu",
+   "means": {
+    "en": "to where",
+    "az": "haraya",
+    "ru": "куда"
+   },
+   "deck": "asking"
+  },
+  "kuulub": {
+   "base": "kuuluma",
+   "means": {
+    "en": "belongs, is part of",
+    "az": "daxildir",
+    "ru": "входит"
+   }
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "hooldaja": {
+   "base": "hooldaja",
+   "means": {
+    "en": "care assistant",
+    "az": "baxıcı",
+    "ru": "санитар, сиделка"
+   }
+  },
+  "tegutsema": {
+   "base": "tegutsema",
+   "means": {
+    "en": "to act",
+    "az": "hərəkət etmək",
+    "ru": "действовать"
+   }
+  },
+  "võime": {
+   "base": "võima",
+   "means": {
+    "en": "we can, may",
+    "az": "bilərik",
+    "ru": "можем"
+   },
+   "deck": "moreverbs"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "uuringuid": {
+   "base": "uuring",
+   "means": {
+    "en": "tests, examinations",
+    "az": "müayinələr",
+    "ru": "обследования"
+   }
+  },
+  "protseduure": {
+   "base": "protseduur",
+   "means": {
+    "en": "procedures",
+    "az": "prosedurlar",
+    "ru": "процедуры"
+   }
+  },
+  "anda": {
+   "base": "andma",
+   "means": {
+    "en": "to give",
+    "az": "vermək",
+    "ru": "давать"
+   },
+   "deck": "verbs"
+  },
+  "ravimeid": {
+   "base": "ravim",
+   "means": {
+    "en": "medicines",
+    "az": "dərmanlar",
+    "ru": "лекарства"
+   },
+   "deck": "health"
+  },
+  "lihtsalt": {
+   "base": "lihtsalt",
+   "means": {
+    "en": "simply, just",
+    "az": "sadəcə",
+    "ru": "просто"
+   },
+   "deck": "everyday"
+  },
+  "jälgida": {
+   "base": "jälgima",
+   "means": {
+    "en": "to watch, monitor",
+    "az": "izləmək",
+    "ru": "наблюдать"
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "õpetan": {
+   "base": "õpetama",
+   "means": {
+    "en": "I teach",
+    "az": "öyrədirəm",
+    "ru": "преподаю"
+   },
+   "deck": "school"
+  },
+  "lastemuusikakoolis": {
+   "base": "lastemuusikakool",
+   "means": {
+    "en": "at a children's music school",
+    "az": "uşaq musiqi məktəbində",
+    "ru": "в детской музыкальной школе"
+   }
+  },
+  "väikseid": {
+   "base": "väike",
+   "means": {
+    "en": "small",
+    "az": "kiçik",
+    "ru": "маленьких"
+   },
+   "deck": "basics"
+  },
+  "tulevasi": {
+   "base": "tulevane",
+   "means": {
+    "en": "future",
+    "az": "gələcək",
+    "ru": "будущих"
+   }
+  },
+  "kitarrivirtuoose": {
+   "base": "kitarrivirtuoos",
+   "means": {
+    "en": "guitar virtuosos",
+    "az": "gitara virtuozları",
+    "ru": "гитарных виртуозов"
+   }
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "keskmiselt": {
+   "base": "keskmiselt",
+   "means": {
+    "en": "on average",
+    "az": "orta hesabla",
+    "ru": "в среднем"
+   }
+  },
+  "üheteist": {
+   "base": "üksteist",
+   "means": {
+    "en": "eleven (üheteist-kaheteistaastased: eleven or twelve years old)",
+    "az": "on bir",
+    "ru": "одиннадцати"
+   },
+   "deck": "numbers"
+  },
+  "kaheteistaastased": {
+   "base": "kaheteistaastane",
+   "means": {
+    "en": "twelve-year-olds (üheteist-kaheteistaastased: eleven or twelve years old)",
+    "az": "on iki yaşlı",
+    "ru": "двенадцатилетние"
+   }
+  },
+  "osa": {
+   "base": "osa",
+   "means": {
+    "en": "part; some (osa on nooremad: some are younger)",
+    "az": "hissə; bəziləri",
+    "ru": "часть; некоторые"
+   }
+  },
+  "nooremad": {
+   "base": "noor",
+   "means": {
+    "en": "younger",
+    "az": "daha kiçik",
+    "ru": "младше"
+   },
+   "deck": "family"
+  },
+  "natuke": {
+   "base": "natuke",
+   "means": {
+    "en": "a little",
+    "az": "bir az",
+    "ru": "немного"
+   },
+   "deck": "basics"
+  },
+  "vanemad": {
+   "base": "vanem",
+   "means": {
+    "en": "parents; older",
+    "az": "valideynlər; böyük",
+    "ru": "родители; старшие"
+   },
+   "deck": "adjectives-cards"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "neid": {
+   "base": "tema",
+   "means": {
+    "en": "them",
+    "az": "onları",
+    "ru": "их"
+   }
+  },
+  "kaheksa": {
+   "base": "kaheksa",
+   "means": {
+    "en": "eight",
+    "az": "səkkiz",
+    "ru": "восемь"
+   },
+   "deck": "numbers"
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "kõigiga": {
+   "base": "kõik",
+   "means": {
+    "en": "with everyone, with all of them",
+    "az": "hamısı ilə",
+    "ru": "со всеми"
+   },
+   "deck": "everyday"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "korda": {
+   "base": "kord",
+   "means": {
+    "en": "times",
+    "az": "dəfə",
+    "ru": "раз"
+   },
+   "deck": "often"
+  },
+  "nädalas": {
+   "base": "nädal",
+   "means": {
+    "en": "a week, per week",
+    "az": "həftədə",
+    "ru": "в неделю"
+   },
+   "deck": "time"
+  },
+  "individuaaltunde": {
+   "base": "individuaaltund",
+   "means": {
+    "en": "private lessons, one-to-one lessons",
+    "az": "fərdi dərslər",
+    "ru": "индивидуальные занятия"
+   }
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "alustan": {
+   "base": "alustama",
+   "means": {
+    "en": "I begin, start",
+    "az": "başlayıram",
+    "ru": "начинаю"
+   },
+   "deck": "moreverbs"
+  },
+  "trennides": {
+   "base": "trenn",
+   "means": {
+    "en": "in training sessions",
+    "az": "məşqlərdə",
+    "ru": "на тренировках"
+   },
+   "deck": "plans"
+  },
+  "soojendusega": {
+   "base": "soojendus",
+   "means": {
+    "en": "with a warm-up",
+    "az": "istiləşmə ilə",
+    "ru": "с разминки"
+   }
+  },
+  "väiksemate": {
+   "base": "väike",
+   "means": {
+    "en": "smaller (the smaller ones)",
+    "az": "daha balacalar",
+    "ru": "младших, маленьких"
+   },
+   "deck": "basics"
+  },
+  "puhul": {
+   "base": "puhul",
+   "means": {
+    "en": "in the case of, with (väiksemate puhul: with the smaller ones)",
+    "az": "halında",
+    "ru": "в случае, у"
+   }
+  },
+  "töötavad": {
+   "base": "töötama",
+   "means": {
+    "en": "work (they work well: töötavad hästi)",
+    "az": "işləyir",
+    "ru": "работают"
+   },
+   "deck": "verbs"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "erinevad": {
+   "base": "erinev",
+   "means": {
+    "en": "different, various",
+    "az": "müxtəlif",
+    "ru": "разные"
+   },
+   "deck": "describing"
+  },
+  "kullimängud": {
+   "base": "kullimäng",
+   "means": {
+    "en": "tag games, games of tag",
+    "az": "tutmaca oyunları",
+    "ru": "игры в салки"
+   }
+  },
+  "üldse": {
+   "base": "üldse",
+   "means": {
+    "en": "at all",
+    "az": "ümumiyyətlə",
+    "ru": "вообще"
+   },
+   "deck": "plans"
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "kus": {
+   "base": "kus",
+   "means": {
+    "en": "where",
+    "az": "harada",
+    "ru": "где"
+   },
+   "deck": "asking"
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
+   },
+   "deck": "verbs"
+  },
+  "kiiresti": {
+   "base": "kiiresti",
+   "means": {
+    "en": "quickly",
+    "az": "tez",
+    "ru": "быстро"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "joosta": {
+   "base": "jooksma",
+   "means": {
+    "en": "to run",
+    "az": "qaçmaq",
+    "ru": "бегать"
+   },
+   "deck": "moreverbs"
+  },
+  "lõpus": {
+   "base": "lõpp",
+   "means": {
+    "en": "at the end",
+    "az": "sonda",
+    "ru": "в конце"
+   },
+   "deck": "time"
+  },
+  "jällegi": {
+   "base": "jällegi",
+   "means": {
+    "en": "again",
+    "az": "yenə",
+    "ru": "опять"
+   }
+  },
+  "annan": {
+   "base": "andma",
+   "means": {
+    "en": "I give",
+    "az": "verirəm",
+    "ru": "даю"
+   },
+   "deck": "verbs"
+  },
+  "lastele": {
+   "base": "laps",
+   "means": {
+    "en": "for the children",
+    "az": "uşaqlara",
+    "ru": "детям"
+   },
+   "deck": "talk"
+  },
+  "vabad": {
+   "base": "vaba",
+   "means": {
+    "en": "free",
+    "az": "boş, sərbəst",
+    "ru": "свободны"
+   },
+   "deck": "describing"
+  },
+  "käed": {
+   "base": "käsi",
+   "means": {
+    "en": "hands (vabad käed: a free hand)",
+    "az": "əllər",
+    "ru": "руки"
+   },
+   "deck": "health"
+  },
+  "nad": {
+   "base": "tema",
+   "means": {
+    "en": "they",
+    "az": "onlar",
+    "ru": "они"
+   }
+  },
+  "tahavad": {
+   "base": "tahtma",
+   "means": {
+    "en": "they want",
+    "az": "istəyirlər",
+    "ru": "хотят"
+   },
+   "deck": "verbs"
+  },
+  "mängida": {
+   "base": "mängima",
+   "means": {
+    "en": "to play",
+    "az": "oynamaq",
+    "ru": "играть"
+   },
+   "deck": "moreverbs"
+  },
+  "mõnda": {
+   "base": "mõni",
+   "means": {
+    "en": "some (mõnda aega: for some time)",
+    "az": "bəzi, hansısa",
+    "ru": "какой-нибудь, некоторое"
+   },
+   "deck": "everyday"
+  },
+  "pallimängu": {
+   "base": "pallimäng",
+   "means": {
+    "en": "ball game",
+    "az": "top oyunu",
+    "ru": "игру с мячом"
+   }
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "rahvastepalli": {
+   "base": "rahvastepall",
+   "means": {
+    "en": "dodgeball",
+    "az": "yakan top",
+    "ru": "вышибалы"
+   }
+  },
+  "minugi": {
+   "base": "mina",
+   "means": {
+    "en": "me too (minugi poolest: fine by me)",
+    "az": "mən də (mənim üçün fərqi yoxdur)",
+    "ru": "и я (по мне — пожалуйста)"
+   }
+  },
+  "poolest": {
+   "base": "pool",
+   "means": {
+    "en": "half, from the half (teisest poolest: from the second half); for (kuulsad kreemide poolest: famous for their creams)",
+    "az": "yarısından; ilə (kremləri ilə məşhur)",
+    "ru": "половины; своими (славятся кремами)"
+   },
+   "deck": "numbers"
+  },
+  "peaasi": {
+   "base": "peaasi",
+   "means": {
+    "en": "the main thing",
+    "az": "əsas odur",
+    "ru": "главное"
+   }
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "laps": {
+   "base": "laps",
+   "means": {
+    "en": "child",
+    "az": "uşaq",
+    "ru": "ребёнок"
+   },
+   "deck": "talk"
+  },
+  "liigub": {
+   "base": "liikuma",
+   "means": {
+    "en": "moves",
+    "az": "hərəkət edir",
+    "ru": "двигается"
+   }
+  },
+  "klient": {
+   "base": "klient",
+   "means": {
+    "en": "client, customer",
+    "az": "müştəri",
+    "ru": "клиент"
+   },
+   "deck": "service"
+  },
+  "võtan": {
+   "base": "võtma",
+   "means": {
+    "en": "I take, I'll have",
+    "az": "götürürəm",
+    "ru": "беру"
+   },
+   "deck": "verbs"
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "he, she",
+    "az": "o",
+    "ru": "он, она"
+   }
+  },
+  "avasüli": {
+   "base": "avasüli",
+   "means": {
+    "en": "with open arms (avasüli vastu võtma)",
+    "az": "açıq qucaqla",
+    "ru": "с распростёртыми объятиями"
+   }
+  },
+  "vastu": {
+   "base": "vastu",
+   "means": {
+    "en": "against, to; for (uue vastu: for a new one)",
+    "az": "qarşı; əvəzinə (uue vastu: yenisinə)",
+    "ru": "против; на (uue vastu: на новую)"
+   },
+   "deck": "everyday"
+  },
+  "kõigepealt": {
+   "base": "kõigepealt",
+   "means": {
+    "en": "first of all",
+    "az": "ilk növbədə",
+    "ru": "прежде всего"
+   },
+   "deck": "everyday"
+  },
+  "pesen": {
+   "base": "pesema",
+   "means": {
+    "en": "I wash (pesen hambaid: I brush my teeth)",
+    "az": "yuyuram",
+    "ru": "мою"
+   },
+   "deck": "moreverbs"
+  },
+  "kliendil": {
+   "base": "klient",
+   "means": {
+    "en": "client's (kliendil pea: the client's head)",
+    "az": "müştərinin",
+    "ru": "у клиента"
+   },
+   "deck": "service"
+  },
+  "pea": {
+   "base": "pea",
+   "means": {
+    "en": "head (pead pesema: to wash someone's hair)",
+    "az": "baş",
+    "ru": "голова"
+   },
+   "deck": "health"
+  },
+  "peamassaaži": {
+   "base": "peamassaaž",
+   "means": {
+    "en": "head massage",
+    "az": "baş masajı",
+    "ru": "массаж головы"
+   }
+  },
+  "vastavalt": {
+   "base": "vastavalt",
+   "means": {
+    "en": "according to, accordingly (vastavalt sellele: depending on that)",
+    "az": "uyğun olaraq",
+    "ru": "соответственно"
+   }
+  },
+  "sellele": {
+   "base": "see",
+   "means": {
+    "en": "on this, for this",
+    "az": "buna",
+    "ru": "на это"
+   },
+   "deck": "pronouns"
+  },
+  "soovib": {
+   "base": "soovima",
+   "means": {
+    "en": "wants, wishes",
+    "az": "istəyir",
+    "ru": "желает"
+   },
+   "deck": "moreverbs"
+  },
+  "juukseid": {
+   "base": "juuksed",
+   "means": {
+    "en": "hair",
+    "az": "saç(ları)",
+    "ru": "волосы"
+   },
+   "deck": "body"
+  },
+  "lõigata": {
+   "base": "lõikama",
+   "means": {
+    "en": "to cut",
+    "az": "kəsmək",
+    "ru": "стричь, резать"
+   },
+   "deck": "cooking"
+  },
+  "värvida": {
+   "base": "värvima",
+   "means": {
+    "en": "to colour, dye",
+    "az": "boyamaq",
+    "ru": "красить"
+   },
+   "deck": "colours"
+  },
+  "tegutsen": {
+   "base": "tegutsema",
+   "means": {
+    "en": "I keep busy, I act",
+    "az": "nəsə edirəm",
+    "ru": "я действую"
+   }
+  }
+ }
+}

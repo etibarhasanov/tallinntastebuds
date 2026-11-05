@@ -1,0 +1,1660 @@
+{
+ "id": "talk-at-doctor",
+ "added": "2026-11-05",
+ "name": {
+  "en": "At the doctor’s",
+  "az": "Həkimin yanında",
+  "ru": "У врача"
+ },
+ "why": {
+  "en": "A cook’s right hand has hurt for two months: an injection, a scan next Wednesday, and no fishing",
+  "az": "Aşpazın sağ əli iki aydır ağrıyır: iynə, gələn çərşənbə müayinə və balıq tutmaq yox",
+  "ru": "У повара два месяца болит правая рука: укол, обследование в следующую среду и никакой рыбалки"
+ },
+ "taste": "Ma väga kardan süsti.",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "turns": [
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Tervist!",
+       "en": "Hello!",
+       "az": "Salam!",
+       "ru": "Здравствуйте!"
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Tere-tere!",
+       "en": "Hello, hello!",
+       "az": "Salam, salam!",
+       "ru": "Здравствуйте, здравствуйте!"
+      },
+      {
+       "et": "Kuidas te ennast tunnete?",
+       "en": "How are you feeling?",
+       "az": "Özünüzü necə hiss edirsiniz?",
+       "ru": "Как вы себя чувствуете?"
+      },
+      {
+       "et": "Mille üle kaebate?",
+       "en": "What are you complaining of?",
+       "az": "Nədən şikayətlənirsiniz?",
+       "ru": "На что жалуетесь?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Mul see parem käsi valutab kohutavalt.",
+       "en": "My right hand hurts terribly.",
+       "az": "Sağ əlim dəhşətli ağrıyır.",
+       "ru": "У меня ужасно болит правая рука."
+      },
+      {
+       "et": "Päeval valutab, kui liigutan, ja öösel mõnikord on tuim, nii et ma üldse ei tunne enda kätt.",
+       "en": "In the daytime it hurts when I move it, and at night it is sometimes numb, so that I can’t feel my hand at all.",
+       "az": "Gündüz tərpədəndə ağrıyır, gecə isə bəzən keyiyir, elə ki, əlimi heç hiss etmirəm.",
+       "ru": "Днём болит, когда двигаю, а ночью иногда немеет, так что я совсем не чувствую своей руки."
+      },
+      {
+       "et": "Vahel on tunne, nagu sipelgad jookseksid …",
+       "en": "Sometimes it feels as if ants were running…",
+       "az": "Bəzən elə bil qarışqalar qaçır…",
+       "ru": "Иногда такое чувство, будто бегают мурашки…"
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Hm.",
+       "en": "Hm.",
+       "az": "Hm.",
+       "ru": "Хм."
+      },
+      {
+       "et": "Kas olete ise midagi teinud ka, et valu vähendada?",
+       "en": "Have you done anything yourself to reduce the pain?",
+       "az": "Ağrını azaltmaq üçün özünüz nəsə etmisinizmi?",
+       "ru": "Вы сами что-нибудь делали, чтобы уменьшить боль?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Jah.",
+       "en": "Yes.",
+       "az": "Bəli.",
+       "ru": "Да."
+      },
+      {
+       "et": "Alguses võtsin valuvaigisteid.",
+       "en": "At first I took painkillers.",
+       "az": "Əvvəlcə ağrıkəsici içdim.",
+       "ru": "Сначала я принимал обезболивающие."
+      },
+      {
+       "et": "Siis käisin füsioterapeudi juures.",
+       "en": "Then I went to a physiotherapist.",
+       "az": "Sonra fizioterapevtin yanına getdim.",
+       "ru": "Потом ходил к физиотерапевту."
+      },
+      {
+       "et": "Seal tehti massaaži.",
+       "en": "There I had a massage.",
+       "az": "Orada masaj etdilər.",
+       "ru": "Там мне делали массаж."
+      },
+      {
+       "et": "Mitte miski pole aidanud.",
+       "en": "Nothing at all has helped.",
+       "az": "Heç nə kömək etməyib.",
+       "ru": "Ничего не помогло."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Ja kui kaua see valu teil on olnud?",
+       "en": "And how long have you had this pain?",
+       "az": "Bəs bu ağrı sizdə nə vaxtdandır?",
+       "ru": "А как давно у вас эта боль?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Umbes kaks kuud.",
+       "en": "About two months.",
+       "az": "Təxminən iki aydır.",
+       "ru": "Около двух месяцев."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Ahah.",
+       "en": "Ahah.",
+       "az": "Aha.",
+       "ru": "Ага."
+      },
+      {
+       "et": "Vaatame.",
+       "en": "Let’s see.",
+       "az": "Baxaq.",
+       "ru": "Посмотрим."
+      },
+      {
+       "et": "Kas nii on valus?",
+       "en": "Does this hurt?",
+       "az": "Belə ağrıyır?",
+       "ru": "Так больно?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Ai!",
+       "en": "Ouch!",
+       "az": "Ay!",
+       "ru": "Ай!"
+      },
+      {
+       "et": "Väga valus on.",
+       "en": "It really hurts.",
+       "az": "Çox ağrıyır.",
+       "ru": "Очень больно."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Aga nii?",
+       "en": "And like this?",
+       "az": "Bəs belə?",
+       "ru": "А так?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Aa!",
+       "en": "Aa!",
+       "az": "Aa!",
+       "ru": "А-а!"
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Selge, teeme mõned uuringud.",
+       "en": "Right, we’ll do some tests.",
+       "az": "Aydındır, bir neçə müayinə edək.",
+       "ru": "Ясно, сделаем несколько обследований."
+      },
+      {
+       "et": "Aga ma kardan, et siin on vaja kohe valuvaigistav süst teha.",
+       "en": "But I’m afraid this needs a painkilling injection straight away.",
+       "az": "Amma qorxuram ki, burada dərhal ağrıkəsici iynə vurmaq lazımdır.",
+       "ru": "Но боюсь, что здесь нужно сразу сделать обезболивающий укол."
+      },
+      {
+       "et": "Hiljem võibolla operatsioon.",
+       "en": "Maybe an operation later.",
+       "az": "Sonra bəlkə də əməliyyat.",
+       "ru": "Позже, может быть, операция."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Kas tõesti on vaja süsti?",
+       "en": "Is an injection really necessary?",
+       "az": "Doğrudanmı iynə lazımdır?",
+       "ru": "Неужели нужен укол?"
+      },
+      {
+       "et": "Ma väga kardan süsti.",
+       "en": "I’m really afraid of injections.",
+       "az": "Mən iynədən çox qorxuram.",
+       "ru": "Я очень боюсь уколов."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Pole vaja karta.",
+       "en": "There’s no need to be afraid.",
+       "az": "Qorxmağa ehtiyac yoxdur.",
+       "ru": "Не нужно бояться."
+      },
+      {
+       "et": "Pange lihtsalt silmad kinni.",
+       "en": "Just close your eyes.",
+       "az": "Sadəcə gözlərinizi yumun.",
+       "ru": "Просто закройте глаза."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Oeeh.",
+       "en": "Oeeh.",
+       "az": "Uff.",
+       "ru": "Ой-ой."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Nii.",
+       "en": "There.",
+       "az": "Bax belə.",
+       "ru": "Вот так."
+      },
+      {
+       "et": "Siin on teie saatekiri.",
+       "en": "Here is your referral.",
+       "az": "Budur göndərişiniz.",
+       "ru": "Вот ваше направление."
+      },
+      {
+       "et": "Järgmise kolmapäeva hommikul minge kabinetti number 342.",
+       "en": "Next Wednesday morning go to room number 342.",
+       "az": "Gələn çərşənbə səhəri 342 nömrəli otağa gedin.",
+       "ru": "В следующую среду утром идите в кабинет номер 342."
+      },
+      {
+       "et": "Teile tehakse kompuuteruuring.",
+       "en": "You will have a CT scan.",
+       "az": "Sizə kompüter tomoqrafiyası ediləcək.",
+       "ru": "Вам сделают компьютерную томографию."
+      },
+      {
+       "et": "Pärast seda tulge tagasi minu juurde.",
+       "en": "After that, come back to me.",
+       "az": "Ondan sonra yenidən mənim yanıma gəlin.",
+       "ru": "После этого возвращайтесь ко мне."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Aga kas ma vahepeal tööl võiksin käia?",
+       "en": "But could I go to work in the meantime?",
+       "az": "Bəs bu arada işə gedə bilərəmmi?",
+       "ru": "А можно мне пока ходить на работу?"
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Mis tööd te muidu teete?",
+       "en": "What work do you do?",
+       "az": "Ümumiyyətlə, nə işlə məşğulsunuz?",
+       "ru": "А кем вы работаете?"
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Ma olen kokk.",
+       "en": "I’m a cook.",
+       "az": "Mən aşpazam.",
+       "ru": "Я повар."
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Siis ma arvan, et peaksite mõnda aega tööst puhkama.",
+       "en": "Then I think you should take some time off work.",
+       "az": "Onda məncə, bir müddət işdən istirahət etməlisiniz.",
+       "ru": "Тогда, я думаю, вам стоит какое-то время отдохнуть от работы."
+      },
+      {
+       "et": "Perearstilt saate tervisetõendi.",
+       "en": "You can get a sick note from your family doctor.",
+       "az": "Ailə həkimindən arayış alarsınız.",
+       "ru": "Справку получите у семейного врача."
+      }
+     ]
+    },
+    {
+     "who": "Patsient",
+     "lines": [
+      {
+       "et": "Aga kas ma kalale tohiks minna?",
+       "en": "But may I go fishing?",
+       "az": "Bəs balıq tutmağa gedə bilərəmmi?",
+       "ru": "А на рыбалку мне можно?"
+      }
+     ]
+    },
+    {
+     "who": "Arst",
+     "lines": [
+      {
+       "et": "Kuidas te ise arvate?",
+       "en": "What do you think yourself?",
+       "az": "Özünüz necə düşünürsünüz?",
+       "ru": "А вы сами как думаете?"
+      },
+      {
+       "et": "Ma soovitan teil kalale mitte minna.",
+       "en": "I would advise you not to go fishing.",
+       "az": "Sizə balıq tutmağa getməməyi məsləhət görürəm.",
+       "ru": "Я советую вам не ходить на рыбалку."
+      },
+      {
+       "et": "Praegu on tähtis puhata.",
+       "en": "Right now it is important to rest.",
+       "az": "İndi dincəlmək vacibdir.",
+       "ru": "Сейчас важно отдыхать."
+      },
+      {
+       "et": "Ainult niimoodi saab käsi paraneda.",
+       "en": "Only this way can the hand heal.",
+       "az": "Əl yalnız belə sağala bilər.",
+       "ru": "Только так рука может зажить."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "tervist": {
+   "base": "tervis",
+   "means": {
+    "en": "hello (a greeting: health to you)",
+    "az": "salam (salamlaşma: sağlıq arzusu)",
+    "ru": "здравствуйте (приветствие: «здоровья»)"
+   },
+   "deck": "health"
+  },
+  "tere": {
+   "base": "tere",
+   "means": {
+    "en": "hello",
+    "az": "salam",
+    "ru": "привет, здравствуйте"
+   },
+   "deck": "greetings"
+  },
+  "kuidas": {
+   "base": "kuidas",
+   "means": {
+    "en": "how",
+    "az": "necə",
+    "ru": "как"
+   },
+   "deck": "asking"
+  },
+  "te": {
+   "base": "teie",
+   "means": {
+    "en": "you (polite or plural)",
+    "az": "siz",
+    "ru": "вы"
+   }
+  },
+  "ennast": {
+   "base": "ise",
+   "means": {
+    "en": "myself (oneself)",
+    "az": "özümü",
+    "ru": "себя"
+   },
+   "deck": "pronouns"
+  },
+  "tunnete": {
+   "base": "tundma",
+   "means": {
+    "en": "you feel (kuidas te ennast tunnete: how are you feeling)",
+    "az": "hiss edirsiniz",
+    "ru": "чувствуете"
+   },
+   "deck": "moreverbs"
+  },
+  "mille": {
+   "base": "mis",
+   "means": {
+    "en": "what (mille üle: about what; mille peale: at what)",
+    "az": "nə",
+    "ru": "чему, чем"
+   },
+   "deck": "asking"
+  },
+  "üle": {
+   "base": "üle",
+   "means": {
+    "en": "over (mille üle rõõmustama: to be glad about)",
+    "az": "üstündən",
+    "ru": "над, о"
+   },
+   "deck": "everyday"
+  },
+  "kaebate": {
+   "base": "kaebama",
+   "means": {
+    "en": "you complain (mille üle kaebate: what is the complaint)",
+    "az": "şikayətlənirsiniz",
+    "ru": "жалуетесь"
+   },
+   "deck": "moreverbs"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "parem": {
+   "base": "parem",
+   "means": {
+    "en": "better (kõige parem: the best)",
+    "az": "daha yaxşı",
+    "ru": "лучше"
+   },
+   "deck": "around"
+  },
+  "käsi": {
+   "base": "käsi",
+   "means": {
+    "en": "hand, arm",
+    "az": "əl",
+    "ru": "рука"
+   },
+   "deck": "health"
+  },
+  "valutab": {
+   "base": "valutama",
+   "means": {
+    "en": "hurts, aches",
+    "az": "ağrıyır",
+    "ru": "болит"
+   },
+   "deck": "health"
+  },
+  "kohutavalt": {
+   "base": "kohutavalt",
+   "means": {
+    "en": "terribly",
+    "az": "dəhşətli",
+    "ru": "ужасно"
+   },
+   "deck": "everyday"
+  },
+  "päeval": {
+   "base": "päev",
+   "means": {
+    "en": "during the day",
+    "az": "gündüz",
+    "ru": "днём"
+   },
+   "deck": "time"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "liigutan": {
+   "base": "liigutama",
+   "means": {
+    "en": "I move (it)",
+    "az": "tərpədirəm",
+    "ru": "двигаю"
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "öösel": {
+   "base": "öö",
+   "means": {
+    "en": "at night",
+    "az": "gecə",
+    "ru": "ночью"
+   },
+   "deck": "time"
+  },
+  "mõnikord": {
+   "base": "mõnikord",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   },
+   "deck": "often"
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "tuim": {
+   "base": "tuim",
+   "means": {
+    "en": "numb",
+    "az": "keyimiş",
+    "ru": "онемевший"
+   }
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so, thus",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "üldse": {
+   "base": "üldse",
+   "means": {
+    "en": "at all",
+    "az": "ümumiyyətlə",
+    "ru": "вообще"
+   },
+   "deck": "plans"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "tunne": {
+   "base": "tunne",
+   "means": {
+    "en": "feeling",
+    "az": "hiss",
+    "ru": "чувство"
+   },
+   "deck": "feelings"
+  },
+  "enda": {
+   "base": "ise",
+   "means": {
+    "en": "one's own (enda kätt: my own hand)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "kätt": {
+   "base": "käsi",
+   "means": {
+    "en": "hand, arm",
+    "az": "əli",
+    "ru": "руку"
+   },
+   "deck": "health"
+  },
+  "vahel": {
+   "base": "vahel",
+   "means": {
+    "en": "sometimes",
+    "az": "bəzən",
+    "ru": "иногда"
+   }
+  },
+  "nagu": {
+   "base": "nagu",
+   "means": {
+    "en": "like, as",
+    "az": "kimi",
+    "ru": "как"
+   },
+   "deck": "everyday"
+  },
+  "sipelgad": {
+   "base": "sipelgas",
+   "means": {
+    "en": "ants",
+    "az": "qarışqalar",
+    "ru": "муравьи"
+   }
+  },
+  "jookseksid": {
+   "base": "jooksma",
+   "means": {
+    "en": "were running (nagu … jookseksid: as if … were running)",
+    "az": "qaçırmış kimi",
+    "ru": "бегали бы"
+   },
+   "deck": "moreverbs"
+  },
+  "hm": {
+   "base": "hm",
+   "means": {
+    "en": "hm",
+    "az": "hm",
+    "ru": "хм"
+   }
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "olete": {
+   "base": "olema",
+   "means": {
+    "en": "you are (polite or plural)",
+    "az": "siz -sınız",
+    "ru": "вы"
+   },
+   "deck": "verbs"
+  },
+  "ise": {
+   "base": "ise",
+   "means": {
+    "en": "myself, oneself",
+    "az": "özüm",
+    "ru": "сам"
+   },
+   "deck": "pronouns"
+  },
+  "midagi": {
+   "base": "miski",
+   "means": {
+    "en": "something, anything",
+    "az": "nəsə",
+    "ru": "что-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "teinud": {
+   "base": "tegema",
+   "means": {
+    "en": "done",
+    "az": "etmişəm",
+    "ru": "сделал"
+   },
+   "deck": "verbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "valu": {
+   "base": "valu",
+   "means": {
+    "en": "pain",
+    "az": "ağrı",
+    "ru": "боль"
+   },
+   "deck": "health"
+  },
+  "vähendada": {
+   "base": "vähendama",
+   "means": {
+    "en": "to reduce",
+    "az": "azaltmaq",
+    "ru": "уменьшить"
+   }
+  },
+  "jah": {
+   "base": "jah",
+   "means": {
+    "en": "yes",
+    "az": "bəli",
+    "ru": "да"
+   },
+   "deck": "basics"
+  },
+  "alguses": {
+   "base": "algus",
+   "means": {
+    "en": "at first, in the beginning",
+    "az": "əvvəlcə",
+    "ru": "сначала"
+   },
+   "deck": "time"
+  },
+  "võtsin": {
+   "base": "võtma",
+   "means": {
+    "en": "I took",
+    "az": "götürdüm, içdim",
+    "ru": "принимал, взял"
+   },
+   "deck": "verbs"
+  },
+  "valuvaigisteid": {
+   "base": "valuvaigisti",
+   "means": {
+    "en": "painkillers",
+    "az": "ağrıkəsicilər",
+    "ru": "обезболивающие"
+   },
+   "deck": "health"
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "käisin": {
+   "base": "käima",
+   "means": {
+    "en": "I went, I visited",
+    "az": "getdim, oldum",
+    "ru": "ходил, был"
+   },
+   "deck": "moreverbs"
+  },
+  "füsioterapeudi": {
+   "base": "füsioterapeut",
+   "means": {
+    "en": "physiotherapist (füsioterapeudi juures: at the physiotherapist's)",
+    "az": "fizioterapevt",
+    "ru": "физиотерапевт(а)"
+   }
+  },
+  "juures": {
+   "base": "juures",
+   "means": {
+    "en": "at, with (ema juures: at my mother's)",
+    "az": "yanında",
+    "ru": "у"
+   },
+   "deck": "around"
+  },
+  "seal": {
+   "base": "seal",
+   "means": {
+    "en": "there",
+    "az": "orada",
+    "ru": "там"
+   },
+   "deck": "around"
+  },
+  "tehti": {
+   "base": "tegema",
+   "means": {
+    "en": "was done (seal tehti massaaži: there I had a massage)",
+    "az": "edildi",
+    "ru": "делали"
+   },
+   "deck": "verbs"
+  },
+  "massaaži": {
+   "base": "massaaž",
+   "means": {
+    "en": "massage",
+    "az": "masaj",
+    "ru": "массаж"
+   }
+  },
+  "mitte": {
+   "base": "mitte",
+   "means": {
+    "en": "not",
+    "az": "deyil",
+    "ru": "не"
+   }
+  },
+  "miski": {
+   "base": "miski",
+   "means": {
+    "en": "anything, something (mitte miski: nothing at all)",
+    "az": "nəsə (heç nə)",
+    "ru": "что-то (ничто)"
+   },
+   "deck": "everyday"
+  },
+  "pole": {
+   "base": "olema",
+   "means": {
+    "en": "isn't, there isn't (short of ei ole; pole midagi: it's nothing)",
+    "az": "yoxdur (ei ole-nin qısası)",
+    "ru": "нет (кратко от ei ole)"
+   },
+   "deck": "verbs"
+  },
+  "aidanud": {
+   "base": "aitama",
+   "means": {
+    "en": "helped",
+    "az": "kömək etmiş",
+    "ru": "помог"
+   },
+   "deck": "verbs"
+  },
+  "kaua": {
+   "base": "kaua",
+   "means": {
+    "en": "long (time)",
+    "az": "uzun müddət",
+    "ru": "долго"
+   },
+   "deck": "time"
+  },
+  "teil": {
+   "base": "teie",
+   "means": {
+    "en": "you have (teil on); with you (polite or plural)",
+    "az": "sizdə",
+    "ru": "у вас"
+   }
+  },
+  "olnud": {
+   "base": "olema",
+   "means": {
+    "en": "been",
+    "az": "olub",
+    "ru": "был"
+   },
+   "deck": "verbs"
+  },
+  "umbes": {
+   "base": "umbes",
+   "means": {
+    "en": "about, roughly",
+    "az": "təxminən",
+    "ru": "примерно"
+   },
+   "deck": "service"
+  },
+  "kaks": {
+   "base": "kaks",
+   "means": {
+    "en": "two",
+    "az": "iki",
+    "ru": "два"
+   },
+   "deck": "numbers"
+  },
+  "kuud": {
+   "base": "kuu",
+   "means": {
+    "en": "months",
+    "az": "ay",
+    "ru": "месяца"
+   },
+   "deck": "time"
+  },
+  "ahah": {
+   "base": "ahah",
+   "means": {
+    "en": "aha, I see",
+    "az": "aha",
+    "ru": "ага"
+   },
+   "deck": "everyday"
+  },
+  "vaatame": {
+   "base": "vaatama",
+   "means": {
+    "en": "let's see",
+    "az": "baxaq",
+    "ru": "посмотрим"
+   },
+   "deck": "moreverbs"
+  },
+  "valus": {
+   "base": "valus",
+   "means": {
+    "en": "painful (valus on: it hurts)",
+    "az": "ağrılı",
+    "ru": "больно"
+   }
+  },
+  "ai": {
+   "base": "ai",
+   "means": {
+    "en": "ouch",
+    "az": "ay",
+    "ru": "ай"
+   },
+   "deck": "everyday"
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "aga": {
+   "base": "aga",
+   "means": {
+    "en": "but",
+    "az": "amma",
+    "ru": "но"
+   },
+   "deck": "everyday"
+  },
+  "aa": {
+   "base": "aa",
+   "means": {
+    "en": "ah",
+    "az": "a",
+    "ru": "а"
+   }
+  },
+  "selge": {
+   "base": "selge",
+   "means": {
+    "en": "clear; right, understood",
+    "az": "aydın",
+    "ru": "ясно"
+   },
+   "deck": "everyday"
+  },
+  "teeme": {
+   "base": "tegema",
+   "means": {
+    "en": "we do, we make",
+    "az": "edirik",
+    "ru": "делаем"
+   },
+   "deck": "verbs"
+  },
+  "mõned": {
+   "base": "mõni",
+   "means": {
+    "en": "some",
+    "az": "bəzi",
+    "ru": "некоторые"
+   },
+   "deck": "everyday"
+  },
+  "uuringud": {
+   "base": "uuring",
+   "means": {
+    "en": "tests, examinations",
+    "az": "müayinələr",
+    "ru": "обследования"
+   }
+  },
+  "kardan": {
+   "base": "kartma",
+   "means": {
+    "en": "I am afraid, I fear",
+    "az": "qorxuram",
+    "ru": "боюсь"
+   },
+   "deck": "moreverbs"
+  },
+  "siin": {
+   "base": "siin",
+   "means": {
+    "en": "here",
+    "az": "burada",
+    "ru": "здесь"
+   },
+   "deck": "everyday"
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "kohe": {
+   "base": "kohe",
+   "means": {
+    "en": "right away, in a moment",
+    "az": "dərhal",
+    "ru": "сейчас, сразу"
+   },
+   "deck": "service"
+  },
+  "valuvaigistav": {
+   "base": "valuvaigistav",
+   "means": {
+    "en": "painkilling",
+    "az": "ağrıkəsici",
+    "ru": "обезболивающий"
+   }
+  },
+  "süst": {
+   "base": "süst",
+   "means": {
+    "en": "injection",
+    "az": "iynə",
+    "ru": "укол"
+   },
+   "deck": "health"
+  },
+  "teha": {
+   "base": "tegema",
+   "means": {
+    "en": "to do, to make",
+    "az": "etmək",
+    "ru": "делать"
+   },
+   "deck": "verbs"
+  },
+  "hiljem": {
+   "base": "hiljem",
+   "means": {
+    "en": "later",
+    "az": "daha gec",
+    "ru": "позже"
+   },
+   "deck": "time"
+  },
+  "võibolla": {
+   "base": "võib-olla",
+   "means": {
+    "en": "maybe (also written võib-olla)",
+    "az": "bəlkə də",
+    "ru": "может быть"
+   },
+   "deck": "basics"
+  },
+  "operatsioon": {
+   "base": "operatsioon",
+   "means": {
+    "en": "operation",
+    "az": "əməliyyat",
+    "ru": "операция"
+   }
+  },
+  "tõesti": {
+   "base": "tõesti",
+   "means": {
+    "en": "really",
+    "az": "həqiqətən",
+    "ru": "правда"
+   },
+   "deck": "everyday"
+  },
+  "süsti": {
+   "base": "süst",
+   "means": {
+    "en": "injection",
+    "az": "iynə(ni)",
+    "ru": "укол(а)"
+   },
+   "deck": "health"
+  },
+  "karta": {
+   "base": "kartma",
+   "means": {
+    "en": "to be afraid",
+    "az": "qorxmaq",
+    "ru": "бояться"
+   },
+   "deck": "moreverbs"
+  },
+  "pange": {
+   "base": "panema",
+   "means": {
+    "en": "put! (polite)",
+    "az": "qoyun!",
+    "ru": "положите!, запишите!"
+   },
+   "deck": "repairs"
+  },
+  "lihtsalt": {
+   "base": "lihtsalt",
+   "means": {
+    "en": "simply, just",
+    "az": "sadəcə",
+    "ru": "просто"
+   },
+   "deck": "everyday"
+  },
+  "silmad": {
+   "base": "silm",
+   "means": {
+    "en": "eyes (silmad kinni: eyes shut)",
+    "az": "gözlər",
+    "ru": "глаза"
+   },
+   "deck": "health"
+  },
+  "kinni": {
+   "base": "kinni",
+   "means": {
+    "en": "shut; reserved (kinni panema: to reserve)",
+    "az": "bağlı; rezerv",
+    "ru": "закрыто; забронировано"
+   },
+   "deck": "shops"
+  },
+  "oeeh": {
+   "base": "oeeh",
+   "means": {
+    "en": "oh dear (a sigh)",
+    "az": "uff",
+    "ru": "ой-ой"
+   }
+  },
+  "teie": {
+   "base": "teie",
+   "means": {
+    "en": "your; you (polite or plural)",
+    "az": "sizin",
+    "ru": "ваш"
+   }
+  },
+  "saatekiri": {
+   "base": "saatekiri",
+   "means": {
+    "en": "referral",
+    "az": "göndəriş",
+    "ru": "направление"
+   }
+  },
+  "järgmise": {
+   "base": "järgmine",
+   "means": {
+    "en": "next (järgmise kolmapäeva hommikul: next Wednesday morning)",
+    "az": "gələn, növbəti",
+    "ru": "следующей"
+   },
+   "deck": "time"
+  },
+  "kolmapäeva": {
+   "base": "kolmapäev",
+   "means": {
+    "en": "Wednesday('s)",
+    "az": "çərşənbə",
+    "ru": "среды"
+   },
+   "deck": "time"
+  },
+  "hommikul": {
+   "base": "hommik",
+   "means": {
+    "en": "in the morning",
+    "az": "səhər",
+    "ru": "утром"
+   },
+   "deck": "time"
+  },
+  "minge": {
+   "base": "minema",
+   "means": {
+    "en": "go (to you, politely)",
+    "az": "gedin",
+    "ru": "идите"
+   },
+   "deck": "verbs"
+  },
+  "kabinetti": {
+   "base": "kabinet",
+   "means": {
+    "en": "to the room, to the office",
+    "az": "kabinetə",
+    "ru": "в кабинет"
+   },
+   "deck": "home"
+  },
+  "number": {
+   "base": "number",
+   "means": {
+    "en": "number",
+    "az": "nömrə",
+    "ru": "номер"
+   },
+   "deck": "work"
+  },
+  "teile": {
+   "base": "teie",
+   "means": {
+    "en": "to you, for you (polite or plural)",
+    "az": "sizə",
+    "ru": "вам"
+   }
+  },
+  "tehakse": {
+   "base": "tegema",
+   "means": {
+    "en": "will be done, is done",
+    "az": "ediləcək",
+    "ru": "сделают"
+   },
+   "deck": "verbs"
+  },
+  "kompuuteruuring": {
+   "base": "kompuuteruuring",
+   "means": {
+    "en": "CT scan, computer examination",
+    "az": "kompüter tomoqrafiyası",
+    "ru": "компьютерная томография"
+   }
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "after; afterwards",
+    "az": "sonra",
+    "ru": "после"
+   },
+   "deck": "everyday"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "tulge": {
+   "base": "tulema",
+   "means": {
+    "en": "come! (polite)",
+    "az": "gəlin!",
+    "ru": "идите!"
+   },
+   "deck": "verbs"
+  },
+  "tagasi": {
+   "base": "tagasi",
+   "means": {
+    "en": "back",
+    "az": "geri",
+    "ru": "назад, обратно"
+   },
+   "deck": "around"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "juurde": {
+   "base": "juurde",
+   "means": {
+    "en": "to (somebody), up to (minu juurde: to me)",
+    "az": "yanına",
+    "ru": "к"
+   },
+   "deck": "around"
+  },
+  "vahepeal": {
+   "base": "vahepeal",
+   "means": {
+    "en": "for a change, in between",
+    "az": "arada",
+    "ru": "в промежутке, для разнообразия"
+   }
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "võiksin": {
+   "base": "võima",
+   "means": {
+    "en": "I could",
+    "az": "bilərdim",
+    "ru": "я мог бы"
+   },
+   "deck": "moreverbs"
+  },
+  "käia": {
+   "base": "käima",
+   "means": {
+    "en": "to go (regularly), to attend",
+    "az": "getmək",
+    "ru": "ходить"
+   },
+   "deck": "moreverbs"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "tööd": {
+   "base": "töö",
+   "means": {
+    "en": "work",
+    "az": "iş",
+    "ru": "работу"
+   },
+   "deck": "talk"
+  },
+  "muidu": {
+   "base": "muidu",
+   "means": {
+    "en": "otherwise",
+    "az": "əks halda, yoxsa",
+    "ru": "иначе, в остальном"
+   },
+   "deck": "everyday"
+  },
+  "teete": {
+   "base": "tegema",
+   "means": {
+    "en": "you do",
+    "az": "edirsiniz",
+    "ru": "делаете"
+   },
+   "deck": "verbs"
+  },
+  "olen": {
+   "base": "olema",
+   "means": {
+    "en": "I am",
+    "az": "-am, varam",
+    "ru": "я есть"
+   },
+   "deck": "verbs"
+  },
+  "kokk": {
+   "base": "kokk",
+   "means": {
+    "en": "cook",
+    "az": "aşpaz",
+    "ru": "повар"
+   },
+   "deck": "service"
+  },
+  "arvan": {
+   "base": "arvama",
+   "means": {
+    "en": "I think",
+    "az": "düşünürəm",
+    "ru": "думаю"
+   },
+   "deck": "moreverbs"
+  },
+  "peaksite": {
+   "base": "pidama",
+   "means": {
+    "en": "you should",
+    "az": "etməlisiniz",
+    "ru": "вам следовало бы"
+   },
+   "deck": "moreverbs"
+  },
+  "mõnda": {
+   "base": "mõni",
+   "means": {
+    "en": "some (mõnda aega: for some time)",
+    "az": "bəzi, hansısa",
+    "ru": "какой-нибудь, некоторое"
+   },
+   "deck": "everyday"
+  },
+  "aega": {
+   "base": "aeg",
+   "means": {
+    "en": "time",
+    "az": "vaxt",
+    "ru": "время"
+   },
+   "deck": "paper"
+  },
+  "tööst": {
+   "base": "töö",
+   "means": {
+    "en": "from work",
+    "az": "işdən",
+    "ru": "от работы"
+   },
+   "deck": "talk"
+  },
+  "puhkama": {
+   "base": "puhkama",
+   "means": {
+    "en": "rest (tööst puhkama: take time off work)",
+    "az": "dincəlmək",
+    "ru": "отдыхать"
+   },
+   "deck": "moreverbs"
+  },
+  "perearstilt": {
+   "base": "perearst",
+   "means": {
+    "en": "from the family doctor",
+    "az": "ailə həkimindən",
+    "ru": "у семейного врача"
+   },
+   "deck": "health"
+  },
+  "saate": {
+   "base": "saama",
+   "means": {
+    "en": "you get, you can",
+    "az": "alırsınız, bilərsiniz",
+    "ru": "вы получите, можете"
+   },
+   "deck": "verbs"
+  },
+  "tervisetõendi": {
+   "base": "tervisetõend",
+   "means": {
+    "en": "sick note, health certificate",
+    "az": "arayış",
+    "ru": "справку"
+   }
+  },
+  "kalale": {
+   "base": "kala",
+   "means": {
+    "en": "fish (kalale minema: to go fishing)",
+    "az": "balıq (balıq tutmağa)",
+    "ru": "на рыбалку"
+   },
+   "deck": "food"
+  },
+  "tohiks": {
+   "base": "tohtima",
+   "means": {
+    "en": "may, would be allowed to",
+    "az": "olarmı, icazə varmı",
+    "ru": "можно, разрешено"
+   },
+   "deck": "moreverbs"
+  },
+  "minna": {
+   "base": "minema",
+   "means": {
+    "en": "to go",
+    "az": "getmək",
+    "ru": "пойти"
+   },
+   "deck": "verbs"
+  },
+  "arvate": {
+   "base": "arvama",
+   "means": {
+    "en": "you think (polite; kuidas arvate: as you wish)",
+    "az": "düşünürsünüz",
+    "ru": "вы думаете"
+   },
+   "deck": "moreverbs"
+  },
+  "soovitan": {
+   "base": "soovitama",
+   "means": {
+    "en": "I advise, recommend",
+    "az": "məsləhət görürəm",
+    "ru": "советую"
+   },
+   "deck": "service"
+  },
+  "praegu": {
+   "base": "praegu",
+   "means": {
+    "en": "now, at the moment",
+    "az": "indi",
+    "ru": "сейчас"
+   },
+   "deck": "time"
+  },
+  "tähtis": {
+   "base": "tähtis",
+   "means": {
+    "en": "important",
+    "az": "vacib",
+    "ru": "важно"
+   },
+   "deck": "describing"
+  },
+  "puhata": {
+   "base": "puhkama",
+   "means": {
+    "en": "to rest",
+    "az": "dincəlmək",
+    "ru": "отдыхать"
+   },
+   "deck": "moreverbs"
+  },
+  "ainult": {
+   "base": "ainult",
+   "means": {
+    "en": "only",
+    "az": "yalnız",
+    "ru": "только"
+   },
+   "deck": "everyday"
+  },
+  "niimoodi": {
+   "base": "niimoodi",
+   "means": {
+    "en": "like this, this way",
+    "az": "belə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "saab": {
+   "base": "saama",
+   "means": {
+    "en": "can (saab broneerida: it can be booked; kui saab: if possible); gets",
+    "az": "olar (kui saab: mümkünsə); alır",
+    "ru": "можно (kui saab: если можно); получает"
+   },
+   "deck": "verbs"
+  },
+  "paraneda": {
+   "base": "paranema",
+   "means": {
+    "en": "to heal, get better",
+    "az": "sağalmaq",
+    "ru": "зажить, поправиться"
+   }
+  }
+ }
+}
