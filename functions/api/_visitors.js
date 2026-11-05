@@ -207,7 +207,7 @@
  * THE RAIL, BY THE DAY
  *
  * Every press of a door on the map's rail — RAIL_PILLS in ./stats.js, the
- * five pills and the four rows behind More — is counted twice: once into
+ * four pills and the five rows behind More — is counted twice: once into
  * press_counts, which has no day and is what /admin/stats ranks, and once
  * here under the `rail` kind, by the pill's id, so a change to the rail can
  * be read before and after. countRail() below, called by ./stats.js once the
@@ -385,7 +385,9 @@
  *   account_nudge_shown, _faded      the offer over the map, and it going
  *                                    away unanswered; account_from_nudge is
  *                                    it taken
- *   account_from_<door>              what put the sheet up: the rail, the
+ *   account_from_<door>              what put the sheet up: the rail (the
+ *                                    account row behind More, since
+ *                                    2026-11-05, and the pill before), the
  *                                    offer, a discount, a list to keep, a
  *                                    session that ran out under a press, a
  *                                    link from another page, the way back

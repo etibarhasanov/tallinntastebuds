@@ -686,12 +686,9 @@
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
     window.TTBRadio.language(code);
-    /* applyStaticStrings has just put "Account" back on the button through
-       its data-i18n, which is the right word for a stranger and the wrong one
-       for somebody signed in: the button wears their name. So it is repainted
-       from the state rather than from the markup, before the rail goes and
-       reads it out below. */
-    paintAccountButton();
+    /* The More sheet, if it is open, in the new language — its account row
+       wears the name of whoever is signed in, or Account in these words. */
+    paintAccountRow();
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
@@ -2382,7 +2379,7 @@
      ?spot= resolves one only while the ?list= it arrived on is still in the
      URL — byId() looks down the list's own places after the map's — so a link
      copied off a stand-in would open a bare map for whoever it was sent to.
-     Same rule the account button follows: a control that could only
+     Same rule the account's door follows: a control that could only
      disappoint is not drawn at all.
 
      A closed place keeps its button. It keeps its pin and its link on
@@ -2621,7 +2618,7 @@
      there is a door to the saves at all; every press in between leaves the
      rail exactly as it was. */
   function syncSavedFilter(on) {
-    if (savedCount() === (on ? 1 : 0)) paintAccountButton();
+    if (savedCount() === (on ? 1 : 0)) paintAccountRow();
     if (state.active.indexOf(SAVED_FILTER) === -1) return;
     /* The list being filtered by just changed underneath the filter, so the
        map and the panel are both out of date. And if that was the last mark,
@@ -2670,7 +2667,7 @@
    * signed-out sheet too, directly under the sentence offering to keep them
    * somewhere better — and the button that opens the sheet is drawn for them
    * even where accounts do not work here at all. See savedRow() and
-   * paintAccountButton().
+   * paintAccountRow().
    */
 
   var ACCOUNT_URL = '/api/account';
@@ -2785,10 +2782,10 @@
           password: out.user ? !!out.password : true
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
-        paintAccountButton();
+        paintAccountRow();
         /* The other pill this answer draws. Here and nowhere else, because
            this is the one place `ready` is ever set — every other call to
-           paintAccountButton() is about a save or a name changing, and the
+           paintAccountRow() is about a save or a name changing, and the
            lists door has an opinion about neither. */
         paintListsButton();
         /* The keep on a list waits on this answer — it is not drawn at all
@@ -2830,64 +2827,42 @@
     storeSet(SAVED_KEY, JSON.stringify(state.saved));
     seatSaved();
     paintSave();
-    paintAccountButton();
+    paintAccountRow();
     if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
   }
 
-  function paintAccountButton() {
-    if (!dom.btnAccount) return;
-    /* Drawn once the endpoint has answered that it can do the job: a sign-in
-       button on a site whose Function is not deployed, or whose database is
-       not bound yet, is a button that can only disappoint.
-
-       And drawn anyway for a browser that has saved something, whatever the
-       endpoint says, because since the marks came off the chip row this
-       button is the only way back to them — and saving has never needed the
-       endpoint to work. What that sheet holds in that state is one row and
-       no form: see renderAccountAuth. */
-    var wasHidden = dom.btnAccount.hidden;
-    dom.btnAccount.hidden = !state.account.ready && !savedCount();
-    /* A pill arriving or going changes how tall the rail is, and the rail is
-       placed against the corner above it — so that measurement is owed again.
-       This and the lists door below are the only two pills that come and go,
-       and /api/account draws both of them after the map has settled: without
-       this the rail is placed while it is seven pills tall and then grows to
-       nine under the answer, which on a window with no room to spare lands the
-       first pill on the handle. Nothing else in either function changes the
-       height, so neither asks unless the pill actually moved. */
-    if (dom.btnAccount.hidden !== wasHidden) placeRail();
-    if (dom.btnAccount.hidden) return;
-    var name = state.account.user;
-    dom.accountLabel.textContent = name || t('accountOpen');
-    dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
-    dom.btnAccount.setAttribute('title', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
-    dom.btnAccount.classList.toggle('is-on', !!name);
-
-    /* It is the top button on the rail, and on a phone the rail says what its
-       buttons are for on arrival. The introduction holds a moment for this
-       answer — see introduceRail — so on the load that introduces the rail
-       it opens at the head of the cascade with the rest. This is the other
-       case: an answer slower than the hold, which says its name when it turns
-       up rather than appearing as a silent disc above a column of pills that
-       have all had their say. Nothing happens on a return visit, where no
-       pill had its say, or on a desktop, where the label is never hidden in
-       the first place. */
-    if (wasHidden && railIntroduced) openHint('account', 0);
+  /* Whether the account has a door at all: once the endpoint has answered
+     that it can do the job — a sign-in on a site whose Function is not
+     deployed, or whose database is not bound yet, is a door that can only
+     disappoint — and anyway for a browser that has saved something, whatever
+     the endpoint says, because the account is the only way back to those
+     saves, and saving has never needed the endpoint to work. What the sheet
+     holds in that state is one row and no form: see renderAccountAuth. */
+  function accountDoor() {
+    return state.account.ready || savedCount() > 0;
   }
 
-  /* The door to everybody's lists: the second pill on the rail, and the one
+  /* The account lives behind More now, as its first row, and the row wears
+     the name of whoever is signed in. So when the answer from /api/account,
+     a save or a new name arrives with the sheet open, the sheet is drawn
+     again; shut, there is nothing to paint, because renderMore() reads it
+     all as the sheet opens. */
+  function paintAccountRow() {
+    if (!dom.moreScrim.hidden) renderMore();
+  }
+
+  /* The door to everybody's lists: the first pill on the rail, and the one
      pill here that is a link rather than a press. Its picture and its words
      are both in the markup, so all this does is decide whether it is there.
 
      Hidden until the endpoint says the database is bound, for the reason the
-     account button above is: the lists are in that same database, and a door
+     account's door above is: the lists are in that same database, and a door
      onto "Lists are switched off on this copy of the site" is a button that
      can only disappoint. Unlike the account there is no second reason to draw
      it anyway — saves are this browser's and work regardless; a list is not.
 
-     And it says its name late if the answer came late, the way the account
-     does, rather than appearing as a silent disc under a column of pills that
-     have all had their say. */
+     And it says its name late if the answer came late, rather than appearing
+     as a silent disc above a column of pills that have all had their say. */
   function paintListsButton() {
     if (!dom.btnLists) return;
     var wasHidden = dom.btnLists.hidden;
@@ -3109,8 +3084,9 @@
     var arriving = dom.accountScrim.hidden;
     if (arriving) state.lastFocus = document.activeElement;
     /* Signing in is the only thing this sheet opens on its own, because the
-       one caller that names no view is the rail button and it only reaches
-       here signed out — signed in it leaves for the account page. */
+       one caller that names no view is the account row behind More and it
+       only reaches here signed out — signed in it leaves for the account
+       page. */
     accountView = view || 'in';
     accountNote = note || '';
     accountErr = '';
@@ -3140,8 +3116,8 @@
   }
 
   /* --------------------------------------------------------- the More sheet
-   * The four doors the rail does not draw as pills — Ask, the flashcards,
-   * the colour and feedback — as rows, in the account sheet's own menu shape
+   * The five doors the rail does not draw as pills — the account, Ask, the
+   * flashcards, the colour and feedback — as rows, in the account sheet's own menu shape
    * and under its own card. Built when it opens, because the colour row
    * names the side you are about to get and that is decided at the moment
    * of opening. "The short rail" in README.md.
@@ -3181,11 +3157,12 @@
     });
     dom.moreCard.appendChild(close);
 
-    /* A row that leaves for an address is an <a>, the way the two doors are
+    /* A row that leaves for an address is an <a>, the way the lists door is
        on the rail; a row that does something to this page is a button. `id`
        is the pill the row stands in for, counted as a press of it; Privacy
-       stands in for no pill, so it passes none and counts only its event. */
-    function row(id, name, why, href, event, press) {
+       stands in for no pill, so it passes none and counts only its event.
+       `params` rides with the event where the pill's own did. */
+    function row(id, name, why, href, event, press, params) {
       var node = el(href ? 'a' : 'button', href
         ? { className: 'menu-row', href: href }
         : { type: 'button', className: 'menu-row' }, [
@@ -3196,7 +3173,7 @@
         el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
       ]);
       node.addEventListener('click', function () {
-        TTBTrack.event(event);
+        TTBTrack.event(event, params);
         if (id) postPress('rail', id);
         if (press) press();
       });
@@ -3204,11 +3181,27 @@
     }
 
     var next = nextStyle();
+    var name = state.account.user;
     dom.moreCard.appendChild(el('div', { className: 'ac-form' }, [
       el('p', { className: 'eyebrow ac-eyebrow', textContent: t('wordmark') }),
       el('h2', { className: 'ac-title', textContent: t('moreOpen') }),
       el('p', { className: 'ac-why', textContent: t('moreLine') }),
       el('ul', { className: 'menu' }, [
+        /* The account first, as it was at the head of the rail: who you are,
+           then what the map can do. It wears the name of whoever is signed
+           in, and stands only where the pill used to — once /api/account
+           has said accounts work, or this browser has saved something, since
+           this is the only way back to those saves — see accountDoor().
+           Signed out it opens the sign-in sheet; signed in it leaves for
+           /account.html, the way the pill did. Counted as `account` on the
+           rail, and a sign-up it starts is still filed under the `rail`
+           door, so the numbers run on across the move. */
+        accountDoor() ? row('account', name || t('accountOpen'),
+          name ? t('accountSignedIn', { name: name }) : t('accountWhy'), '', 'account_open', function () {
+            closeMore();
+            if (name) { window.location.href = ACCOUNT_PAGE; return; }
+            openAccount('', '', 'rail');
+          }, { view: name ? 'page' : 'sheet' }) : null,
         row('ask', t('askOpen'), t('askTitle'), '', 'ask_open', function () {
           closeMore();
           openAsk();
@@ -3492,16 +3485,17 @@
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
-    { key: 'explainSave', at: function () { return dom.btnAccount; },
-      when: function () { return !dom.btnAccount.hidden; },
-      pills: function () { return [dom.btnAccount]; } },
-    /* Straight after the account, the way the two stand on the rail: what
-       you keep, then what everybody else kept. Guarded like the account and
-       the radio, because this pill is not there either until /api/account
-       says the database behind the lists is bound. */
+    /* Guarded like the radio, because this pill is not there until
+       /api/account says the database behind the lists is bound. */
     { key: 'explainLists', at: function () { return dom.btnLists; },
       when: function () { return !dom.btnLists.hidden; },
       pills: function () { return [dom.btnLists]; } },
+    /* The account is the first row behind More, so the step about saving
+       points at More, straight before the step that says what else is in
+       there: one thing a step. Left out where the account has no door. */
+    { key: 'explainSave', at: function () { return dom.btnMore; },
+      when: accountDoor,
+      pills: function () { return [dom.btnMore]; } },
     { key: 'explainMore', at: function () { return dom.btnMore; },
       pills: function () { return [dom.btnMore]; } },
     /* Second in the row, after All: renderFilters draws the discount chip
@@ -4002,7 +3996,7 @@
         if (!a.ok) return accountFail(a.out);
         state.account.user = a.out.user;
         if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-        paintAccountButton();
+        paintAccountRow();
         TTBTrack.event(creating ? 'account_create' : 'account_login', {});
         TTBTrack.event('account_done_' + (creating ? 'up' : 'in'));
         closeAccount();
@@ -4124,7 +4118,7 @@
           state.account.linked = true;
           state.account.password = false;
           if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-          paintAccountButton();
+          paintAccountRow();
           TTBTrack.event('account_create', { via: 'google' });
           TTBTrack.event('account_done_google');
           closeAccount();
@@ -4264,7 +4258,7 @@
              there is nowhere to go back to this sheet closes onto the map
              with them still saying the old one. */
           state.account.user = a.out.user;
-          paintAccountButton();
+          paintAccountRow();
           closeAccount();
           /* Said by the page it goes back to, for the reason the password
              step above gives. */
@@ -4399,25 +4393,24 @@
    * rather than one per load, so the two agree here the same way they agree
    * up there — by counting the same gesture the same way.
    *
-   * One listener on the rail rather than five on the buttons, because the
-   * lists door is a link that leaves the page and the account and lists
-   * pills are hidden until /api/account answers. Delegation takes all five,
-   * whenever they are shown, and takes the next one for free.
+   * One listener on the rail rather than four on the buttons, because the
+   * lists door is a link that leaves the page and is hidden until
+   * /api/account answers. Delegation takes all four, whenever they are
+   * shown, and takes the next one for free.
    *
    * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
    * the list this half has to be kept in step with: a pill counted here and
    * not named there is a press the route answers {ok:false} to. Nothing in
-   * #rail but these five is counted, and the radio is outside it — it stands
+   * #rail but these four is counted, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
    *
-   * RAIL_PILLS names nine, and the other four are the rows behind More:
-   * Learn Estonian, Ask, the colour and feedback, each counted under the id
-   * it had when it was a pill of its own, through postPress() in
+   * RAIL_PILLS names nine, and the other five are the rows behind More:
+   * the account, Learn Estonian, Ask, the colour and feedback, each counted
+   * under the id it had when it was a pill of its own, through postPress() in
    * renderMore(), so the numbers from before the rail was cut short and
    * after it are one column. More itself is a pill and counts as one.
    */
   var RAIL_PRESS = {
-    'btn-account': 'account',
     'btn-lists': 'lists',
     'btn-random': 'random',
     'btn-more': 'more',
@@ -4743,7 +4736,7 @@
        Saved used to sit second in this row and read as a category of the map
        rather than as something of yours, which is backwards: the marks are
        the one thing on the page that somebody put there themselves. They are
-       behind the account button now, with the lists — see savedRow(). The
+       behind the account now, with the lists — see savedRow(). The
        filter itself is unchanged; only the door to it moved.
 
        Nothing on this row is pressed while either of them is what the map is
@@ -5234,26 +5227,26 @@
      a corner it shares with the language switch, which says what it is
      without being told; this one is leaving for an empty corner nobody has
      seen it in before, and the one reading of the cascade that matters is the
-     stranger's first. Last of five, so it opens after the pills above it
+     stranger's first. Last of four, so it opens after the pills above it
      have named themselves and the eye has somewhere to be sent. The label
      grows leftwards out of the corner, because the pill is anchored by its
      right edge down here.
 
-     Five, and the cascade is over inside two seconds — which is half of why
+     Four, and the cascade is over inside two seconds — which is half of why
      the rail is this short. The column of eight it replaced took 7.45s. The
      die is one of them: it was left out of this list for an afternoon,
      which made it the one button a stranger was never told the meaning of. */
-  var HINT_KEYS = ['account', 'lists', 'random', 'more', 'locate'];
+  var HINT_KEYS = ['lists', 'random', 'more', 'locate'];
   var hintTimers = {};
 
   /* Before any of them, the welcome card: see showWelcome below. The pills
      wait until it has been put away, so there is one introduction at a time.
 
      The first pill waits a little over a second after that, so the map has
-     settled before the buttons start naming themselves. Five pills 300ms
-     apart and held for 4.2s each are all open by 2.35s and gone by 6.55s,
+     settled before the buttons start naming themselves. Four pills 300ms
+     apart and held for 4.2s each are all open by 2.05s and gone by 6.25s,
      and every pill added puts another 300ms on how long the corner spends
-     talking — which is the cost of a sixth, and a real one. */
+     talking — which is the cost of a fifth, and a real one. */
   var RAIL_IN = 1150;
   /* Whether this visit owes the welcome card: set on the way in when
      INTRO_KEY says this browser has never been introduced, and spent the
@@ -5264,18 +5257,18 @@
   var introPending = false;
   /* Whether the cascade has already run. */
   var railIntroduced = false;
-  /* The two pills at the head of the rail are the ones that are not in the
-     markup until the network says so: both wait on /api/account, one for the
-     account and one for the lists in the same database. So the introduction
-     waits on that answer too, rather than starting without them and letting
-     them catch up out of turn — a pill that opens after the ones below it
-     have opened, and closes before they do, reads as the last thing on the
-     rail rather than the first, and on a fast answer it can be up and gone
-     before the eye has got down the rail.
+  /* The pill at the head of the rail, the lists, is the one that is not in
+     the markup until the network says so: it waits on /api/account, which
+     says whether the database behind the lists is bound. So the
+     introduction waits on that answer too, rather than starting without it
+     and letting it catch up out of turn — a pill that opens after the ones
+     below it have opened, and closes before they do, reads as the last
+     thing on the rail rather than the first, and on a fast answer it can be
+     up and gone before the eye has got down the rail.
      The wait is short and it is capped: a slow endpoint, an unbound database
-     or no Function at all must not cost the other six their labels, so
-     after RAIL_WAIT_MS the rail goes ahead without them and
-     paintAccountButton and paintListsButton catch them up as before. */
+     or no Function at all must not cost the other three their labels, so
+     after RAIL_WAIT_MS the rail goes ahead without it and paintListsButton
+     catches it up as before. */
   var RAIL_WAIT_MS = 1400;
   /* Whether the wait has been spent — it is worth having once, on the way in
      — and whether an introduction is still owed at the end of it. */
@@ -5295,7 +5288,6 @@
   var INTRO_KEY = 'ttb.introduced';
 
   function hintPill(key) {
-    if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
     if (key === 'more') return dom.btnMore;
     if (key === 'radio') return dom.btnRadio;
@@ -10527,7 +10519,7 @@
      The count beside it is drawn for everybody and hidden at nought, the way
      a save count is. */
   function listKeep() {
-    /* No database, no keeps. Same rule the account button follows: a control
+    /* No database, no keeps. Same rule the account's door follows: a control
        that could only fail is not drawn at all. */
     if (!state.account.ready) return null;
 
@@ -10588,7 +10580,7 @@
              one press away once it is done. */
           if (a.out && a.out.error === 'signed-out') {
             state.account.user = null;
-            paintAccountButton();
+            paintAccountRow();
             openAccount('in', '', 'expired');
           }
           paint();
@@ -12083,21 +12075,6 @@
 
     /* Same as Surprise me: pressing it answers the question the label was
        there to ask, and the sheet it opens wants the room. */
-    /* Signed out this opens the sheet, which is the sign-in form and the one
-       thing on this site that genuinely belongs over the map: it is a step you
-       take and dismiss, with the map still behind it.
-
-       Signed in it leaves for /account.html, because what used to be behind
-       this button — your saved places and your lists — are things to read
-       rather than a step to take, and a sheet was the wrong room for them.
-       See the header of assets/account.js. */
-    dom.btnAccount.addEventListener('click', function () {
-      closeHint('account');
-      TTBTrack.event('account_open', { view: state.account.user ? 'page' : 'sheet' });
-      if (state.account.user) { window.location.href = ACCOUNT_PAGE; return; }
-      openAccount('', '', 'rail');
-    });
-
     dom.nudgeGo.addEventListener('click', function () {
       hideNudge();
       /* Straight to the sign-up sheet rather than the sign-in one: somebody
@@ -12647,7 +12624,6 @@
       routeClose: $('route-close'),
       routeModes: $('route-modes'),
       routeTrips: $('route-trips'),
-      btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       btnMore: $('btn-more'),
       moreScrim: $('more-scrim'),
@@ -12658,7 +12634,6 @@
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),
       nudgeNo: $('nudge-no'),
-      accountLabel: $('account-label'),
       accountScrim: $('account-scrim'),
       accountCard: $('account-card'),
       sheetGrip: $('sheet-grip'),
@@ -12809,7 +12784,7 @@
       renderFilters();
       /* Before loadAccount answers, and whether or not it ever does: what
          this browser saved is already read, and the button is their door. */
-      paintAccountButton();
+      paintAccountRow();
       renderPanel();
       mountRadio();
       mountShell();

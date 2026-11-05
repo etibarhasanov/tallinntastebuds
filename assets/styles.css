@@ -1415,16 +1415,14 @@ body.lang-open .controls { z-index: 1250; }
   background: rgba(214, 190, 240, .18);
 }
 
-/* ---- the left rail: who you are, everybody else, the pick, the rest ---
+/* ---- the left rail: everybody else, the pick, the rest ---
 
-   Top to bottom: the account, everybody's lists, Surprise me, More, and
-   where am I — which a phone draws in the bottom-right corner instead. The
-   account leads because it is the only one whose answer outlasts the visit,
-   and because it wears the name of whoever is signed in; the lists follow it
-   because the two are the same half of the site — who you are, and what
-   everybody else has written. Then the one that changes your evening, then
-   the door to everything else: Ask, the flashcards, the colour and feedback
-   are rows behind More, "The short rail" in README.md. */
+   Top to bottom: everybody's lists, Surprise me, More, and where am I —
+   which a phone draws in the bottom-right corner instead. The lists lead,
+   what everybody else has written; then the one that changes your evening,
+   then the door to everything else: the account, Ask, the flashcards, the
+   colour and feedback are rows behind More, "The short rail" in
+   README.md. */
 
 .rail {
   position: fixed;
@@ -1447,10 +1445,10 @@ body.lang-open .controls { z-index: 1250; }
    is one column of one shape.
 
    display on a class beats the UA sheet's [hidden] rule, so every button in
-   here that can be taken away has to be told to go. Two are: the account
-   and the lists, until /api/account says the database behind them is
-   actually bound. Without this both draw as an empty pill instead of not
-   drawing at all — the same trap
+   here that can be taken away has to be told to go. One is: the lists,
+   until /api/account says the database behind them is actually bound.
+   Without this it draws as an empty pill instead of not drawing at all —
+   the same trap
    .search-clear and .panel-save fall into further down. */
 .rail-btn[hidden] { display: none; }
 
@@ -1648,7 +1646,7 @@ body.lang-open .controls { z-index: 1250; }
 
    And it is the one pill on the rail drawn in something other than the
    accent. Everything on this map is the style's own red — the pins, the
-   chips, the other three icon-sized drawings down the left — so a red
+   chips, the other two icon-sized drawings down the left — so a red
    arrow on red paper in the corner was one more red thing to find rather
    than the one control that is about you. It takes --here instead, which is
    the hue the dot it drops is painted in and is chosen in the palette block
@@ -2456,10 +2454,14 @@ body.panel-detail .panel {
    keyboard pushes them up instead of covering the field being filled in.
    ========================================================================== */
 
+/* Over the find bar (1210), which stands over the panel: at 1200, level
+   with the panel, the bar floated across the top of every sheet and on a
+   390px phone covered the More sheet's title and its close button. Under
+   body.lang-open .controls (1250), a menu never open while a sheet is. */
 .scrim {
   position: fixed;
   inset: 0;
-  z-index: 1200;
+  z-index: 1220;
   display: grid;
   place-items: center;
   padding: 20px;
@@ -2697,11 +2699,6 @@ body.panel-detail .panel {
   height: 1px;
   background: var(--hairline);
 }
-
-/* The rail button wears the name of whoever is signed in, so it can run
-   longer than the fixed-width buttons around it. */
-#btn-account.is-on { color: var(--accent); }
-#btn-account .rail-label { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; }
 
 /* The offer of an account, after a save made signed out. It stands where the
    toast stands and looks like a quieter relative of it: same corner of the
@@ -5204,7 +5201,7 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
 
      Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
      on top of that — so the buttons still read as one column of circles down
-     the edge of the map. One set of numbers for all five, because every icon
+     the edge of the map. One set of numbers for all four, because every icon
      on the rail is drawn at the same size: the lists emblem is sized to the
      21.6px the drawings are. */
   .rail-btn {
@@ -5303,8 +5300,8 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
 
   /* ---- the rail, on a phone ----
 
-     Surprise me is the third of the rail's four pills, under the
-     lists, and the same pill as the three beside it. For a while it left
+     Surprise me is the second of the rail's three pills in the column,
+     under the lists, and the same pill as the two beside it. For a while it left
      the column for the corner above the arrow, filled in the accent — and
      over a map already dotted with the accent's round cluster discs, a
      filled round disc read as one more of them rather than as a button. So

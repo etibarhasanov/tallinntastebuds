@@ -219,7 +219,7 @@ Each of these exists twice, and `grep -n` finds both:
 
 | In | and in | which is |
 |---|---|---|
-| `RAIL_PILLS` in `functions/api/stats.js` | `RAIL_PRESS` and `renderMore()` in `assets/app.js` | the nine door ids: five pills, and four rows behind More under the ids they had as pills |
+| `RAIL_PILLS` in `functions/api/stats.js` | `RAIL_PRESS` and `renderMore()` in `assets/app.js` | the nine door ids: four pills, and five rows behind More under the ids they had as pills |
 | `PAGES` in `functions/api/_visitors.js` | every page that loads `assets/track.js`; `page:` and `view:` signals in `data/flows.json` | the validator fails a page or a signal `PAGES` does not name |
 | `SPANS` in `functions/api/_visitors.js` | `SPANS` in `assets/visitors.js` and `assets/found.js` | the ranges 1, 7, 28, 90 |
 | `ABOUT` in `functions/api/_visitors.js` | `TTBTrack.about()` calls in `assets/app.js`, `blog.js`, `flashcard.js`, `deal.js`, `verify.js` | what a page may say it was about |

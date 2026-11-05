@@ -65,8 +65,8 @@
  *            /admin/visitors.
  *   rail     a door on the rail down the left of the map pressed — the nine
  *            in RAIL_PILLS below: every button inside #rail and nothing
- *            else, and the four rows behind More, each counted under
- *            the id of the pill it was before the rail was cut short —
+ *            else, and the five rows behind More, each counted under
+ *            the id of the pill it was before it moved there —
  *            renderMore() in assets/app.js. The radio is not one of them: it
  *            left the rail for the corner beside the language switch, and a
  *            table about the rail that carried it would be a table about
@@ -190,11 +190,11 @@ const VENUE = 'venue';
    before the rail was cut short, each with the string data/ui.json already
    names it by — the same string the door wears as its own label on the map,
    so the table reads as the rail does and nothing new was written into ten
-   languages to name a button that is already named. Nine: the five the rail
-   draws — the account, the lists, Surprise me, More and the arrow — and the
-   four rows behind More, Learn Estonian, Ask, the colour and feedback, each
-   counted under the id it had as a pill, so the numbers from before the
-   short rail and after it are one column. "The short rail" in README.md.
+   languages to name a button that is already named. Nine: the four the rail
+   draws — the lists, Surprise me, More and the arrow — and the five rows
+   behind More, the account, Learn Estonian, Ask, the colour and feedback,
+   each counted under the id it had as a pill, so the numbers from before
+   the short rail and after it are one column. "The short rail" in README.md.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is

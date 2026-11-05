@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=d94b0f0c">
+<link rel="stylesheet" href="assets/styles.lean.css?v=851389e1">
 </head>
 <body>
 
@@ -108,28 +108,11 @@
 </header>
 
 <div class="rail" id="rail">
-  <!-- Who you are, first. Everything under it is about this visit — a place
-       for tonight, everything else the map can do, where you are standing — and the
-       account is the one button that says the saves outlast the visit. It
-       also wears a name once there is one, which is the rail telling you
-       whose list you are looking at before you go looking for it.
-
-       Hidden until /api/account says accounts are actually bound — see
-       paintAccountButton in assets/app.js, which is also what holds the
-       introduction below open for it. -->
-  <button type="button" class="rail-btn" id="btn-account"
-          data-i18n-title="accountOpen" data-i18n-aria-label="accountOpen"
-          aria-label="Account" title="Account" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="8.4" r="3.6"/>
-      <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
-    </svg>
-    <span class="rail-label" id="account-label" data-i18n="accountOpen">Account</span>
-  </button>
-  <!-- Then everybody else. The account and this are the same half of the site
-       — who you are, and what other people have written — so they stand
-       together at the head of the rail, above the buttons that are about
-       tonight. The map had no way to a list at all until this: the only door
+  <!-- Everybody else, first. What other people have written stands at the
+       head of the rail, above the buttons that are about tonight; the
+       account, which stood above it until 2026-11-05, is the first row
+       behind More now — "The short rail" in README.md. The map had no way to
+       a list at all until this: the only door
        was your own account page, so a stranger never learnt lists existed.
        That page has no door either now, which leaves this one and the bar at
        the foot of a list. See "One door to the lists" under Lists in
@@ -165,7 +148,7 @@
        whole point: the buttons at the top are the ones that introduce
        themselves first.
 
-       Third of four, straight under the lists. It stood apart for a while,
+       Second of three in the column, straight under the lists. It stood apart for a while,
        a filled disc in the corner above the arrow, and beside the accent's
        cluster discs on the map it read as one more of them rather than as a
        button, so it came back into the column, the same pill as its
@@ -179,19 +162,18 @@
     </svg>
     <span class="rail-label" data-i18n="randomPick">Surprise me</span>
   </button>
-  <!-- Fourth, under the die, and the door to the rest of what the map can
-       do: Ask, the flashcards, the colour, feedback, each a row in the
+  <!-- Under the die, and the door to the rest of what the map can do: the
+       account, Ask, the flashcards, the colour, feedback, each a row in the
        sheet renderMore() in assets/app.js draws. They were pills of their
-       own in a column of eight until the rail was cut short for everybody,
-       and "The short rail" in README.md is why.
+       own, and "The short rail" in README.md is why they are not.
 
        Counted on /admin/stats as `more`, the way every pill here is, and
-       the rows in the sheet it opens count as the pills they were, so Ask
-       pressed from here today and Ask pressed on the old column are one
-       number. A button rather than a link: it opens a sheet over the map
+       the rows in the sheet it opens count as the pills they were, so the
+       account opened from here today and from the head of the rail before
+       are one number. A button rather than a link: it opens a sheet over the map
        and leaves nothing behind in the address bar. -->
   <button type="button" class="rail-btn" id="btn-more" data-i18n-title="moreWhy" data-i18n-aria-label="moreOpen"
-          aria-label="More" title="Ask, flashcards, colour, feedback">
+          aria-label="More" title="Account, ask, flashcards, colour, feedback">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <circle cx="6" cy="12" r="1.5" class="pip"/>
       <circle cx="12" cy="12" r="1.5" class="pip"/>
@@ -572,7 +554,7 @@
   <div class="account card" id="account-card"></div>
 </div>
 
-<!-- The rest of the rail: the four doors the four pills do not carry, as
+<!-- The rest of the rail: the five doors the pills do not carry, as
      rows. Built by assets/app.js the way the account sheet is, because one
      row — the colour — names the side you are about to get, which is
      decided at the moment it opens. "The short rail" in README.md. -->
@@ -763,6 +745,6 @@
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
      a page that loads it directly. "The lean copies" in README.md. -->
-<script src="assets/app.lean.js?v=637cdbbf" defer></script>
+<script src="assets/app.lean.js?v=6880ce43" defer></script>
 </body>
 </html>
