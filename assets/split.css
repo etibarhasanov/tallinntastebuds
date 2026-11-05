@@ -40,7 +40,6 @@
   margin: 2px 0 0;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .03em;
   line-height: 1.55;
 }
 
@@ -65,7 +64,7 @@
 /* Taking a line back off, or saying a payment was made: a word at the end of
    the row it is about. It is .alt out of the map's stylesheet, sized down to
    sit on one line of a receipt rather than at the foot of a card. */
-.split-act { padding: 2px 6px; font-size: 11px; letter-spacing: .04em; }
+.split-act { padding: 2px 6px; font-size: 11px; }
 
 /* ---------- who a bill was split between ---------- */
 

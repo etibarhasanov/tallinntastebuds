@@ -10187,7 +10187,7 @@ count used to drift at the end of a row for exactly that reason.
 
 **The line under the name is a sentence, so it is set like one.** *The words a
 day in Tallinn opens and closes with.* That is prose, and prose on this site is
-Literata — the second of the design rules. It arrived mono at eleven points,
+`--body` — the second of the design rules. It arrived as a mono label at eleven points,
 because the row was copied from the account page's doors, where the same line
 reads *everybody's lists, most opened first* and is a label rather than a
 sentence. `assets/blog.css` had already made this argument for a post's
@@ -17891,7 +17891,7 @@ data; those do not belong in a static site at all.
 | [Leaflet](https://leafletjs.com/) | 1.9.4, pinned | BSD-2-Clause | Loaded from unpkg with Subresource Integrity hashes, so a compromised CDN cannot swap the file. |
 | [CARTO Positron](https://carto.com/basemaps/) basemap (`light_all`, `dark_all`) | — | Free with attribution, up to 5M tiles a month, **key required** | The tiles. See [The map tiles need a key](#the-map-tiles-need-a-key). |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) data | — | ODbL | The map data behind the tiles. |
-| [Familjen Grotesk](https://fonts.google.com/specimen/Familjen+Grotesk), [Literata](https://fonts.google.com/specimen/Literata), [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
+| [Rubik](https://fonts.google.com/specimen/Rubik) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | `/p/<shortcode>/embed/`, whatever kind of post the permalink calls itself. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
@@ -18733,16 +18733,27 @@ photograph** — the lightbox, the stories, and the scrim behind a sheet. Those
 are black-and-white by construction, belong to no style, and say so where they
 are defined.
 
-### 2. Three faces, and a thing picks one
+### 2. One face, three roles, and a thing picks one
 
-| Face | Token | What wears it |
+Everything is set in [Rubik](https://fonts.google.com/specimen/Rubik). The three
+tokens are roles rather than faces, and each rule still names the one it means:
+
+| Token | Set as | What wears it |
 | --- | --- | --- |
-| Familjen Grotesk | `--display` | names and titles: the wordmark, a place, a list, a sheet's heading, a row's name |
-| Literata | `--body` | sentences — the tagline, a blurb, the line under a title that says why |
-| IBM Plex Mono | `--mono` | anything that is a label rather than a sentence: eyebrows, field labels, buttons, counts, badges, addresses, the price gauge |
+| `--display` | heavier, 600–700 | names and titles: the wordmark, a place, a list, a sheet's heading, a row's name |
+| `--body` | 400, at reading size | sentences — the tagline, a blurb, the line under a title that says why |
+| `--mono` | small, often `--muted`, in ordinary case | anything that is a label rather than a sentence: eyebrows, field labels, buttons, counts, badges, addresses, the price gauge |
 
-The mono is the site's tell. It is what says "this is a control or a fact",
-and it is why a button in the display face read as somebody else's button.
+The role is the site's tell: it is what says "this is a control or a fact",
+and it is why a button set as a name read as somebody else's button. Until
+November 2026 the three roles were three faces — Familjen Grotesk, Literata,
+and IBM Plex Mono in wide-tracked capitals for every label — and people said
+the site looked generated. They were right: a grotesque, a reading serif and
+spaced mono capitals is the exact costume a thousand generated sites wear. So
+the face became one, and the capitals and the tracking came off every label.
+The pass code and the waiter's verdict word on `verify.html` are the two
+places that kept their capitals and spacing, because there they are for
+reading aloud across a counter rather than for look.
 
 There is a fourth and nothing picks it: `--emoji`, the platform's own colour
 emoji face, for the five things on this site that draw one — a pin on the
@@ -18847,9 +18858,9 @@ an edge, a line under the name saying what it does, a mark on the right saying
 it opens something, and **a target the width of the card rather than the width
 of the word**. That last part is the one that matters on a phone.
 
-### 9. A field is a mono label over a 16px input
+### 9. A field is a small label over a 16px input
 
-The label is uppercase mono in `--muted`; the input is `--paper` inside a
+The label is `--mono` in `--muted`, small and in ordinary case; the input is `--paper` inside a
 hairline. **16px is not a taste decision**: anything smaller makes iOS zoom
 the page when the field takes focus, and it never zooms back out. A field that
 is smaller on a wide screen has to be bumped at the phone breakpoint, which is
@@ -19364,14 +19375,13 @@ on one pin only — whichever place is open — cut out of the dot in the dot's
 own ring colour, so the pin keeps saying what it said before. The full account
 of it is in [The mark](#the-mark).
 
-**Type.** Three faces with three jobs, and they never trade places.
-*Familjen Grotesk* — a contemporary Nordic grotesque — sets place names and
-the wordmark only. *Literata* sets prose; it is a screen-reading serif with
-proper Cyrillic, which matters when a third of the copy is Russian.
-*IBM Plex Mono* is reserved for micro-labels, the price and the buttons, set
-at 10px uppercase with wide letter-spacing. Reading a label in a monospace
-face and a blurb in a serif is a quiet signal about which is data and which is
-opinion.
+**Type.** One face, *Rubik*, a little rounded and a little warm, with proper
+Cyrillic, which matters when a third of the copy is Russian, and every letter
+Azerbaijani and Estonian need. It plays three roles — names, sentences and
+labels — told apart by weight, size and colour rather than by three faces; the
+second design rule is the table. Labels are small and in ordinary case: the
+spaced-out monospace capitals the site wore before were the single thing that
+made it read as generated.
 
 **The signature: the price gauge.** Price always renders as four slots, never
 fewer. The slots you are paying for are in the accent; the rest stay

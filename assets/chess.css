@@ -67,7 +67,7 @@
    member — as an outlined tag in the accent rather than the grey eyebrow
    every other heading on the site wears: three cards on one page looked
    like one long form until each said plainly what it was. Still the
-   eyebrow's mono capitals, so it is a label and not a button. */
+   eyebrow's small label face, so it is a label and not a button. */
 .eyebrow.chess-kind {
   display: inline-block;
   align-self: flex-start;
@@ -75,14 +75,13 @@
   border: 1px solid var(--accent);
   border-radius: 100px;
   color: var(--accent);
-  letter-spacing: .12em;
 }
 /* The board's own answer when the route is not there: a card in the place a
    board would be, the words from the markup so it reads with no answer at all. */
 .chess-offline { margin: 0; padding: 14px; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .chess-head .lists-say { margin: 0; }
 /* The house's own record under the lead: a fact, so mono. */
-.chess-you { margin: 10px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--muted); }
+.chess-you { margin: 10px 0 0; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
 /* ---------- the one-on-one card ---------- */
 
@@ -102,7 +101,7 @@
 .chess-play div.menu-row:hover .menu-name { color: inherit; }
 /* The reader's own place, and the member the house is playing now: a word
    beside the name rather than a colour alone. */
-.chess-tag { margin-left: 6px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.chess-tag { margin-left: 6px; font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--muted); }
 .chess-play .is-playing .menu-why { color: var(--accent); }
 /* A member reading the line can challenge the others in it: the sentence that
    says so, and in each row the name as the way to the page, since the row's
@@ -149,8 +148,6 @@
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
   color: var(--ink);
 }
 .chess-turn-why { margin: 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
@@ -231,7 +228,7 @@
 .co-rank { top: 3px; left: 4px; }
 .co-file { bottom: 3px; right: 4px; }
 
-.chess-last { margin: 12px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-last { margin: 12px 0 0; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .chess-last b { font-weight: 500; color: var(--ink); }
 /* Undo, for the ten seconds after the reader's own move: a way out rather
    than an action, so an .alt under the last move, its chevron-less padding
@@ -254,9 +251,9 @@
 .chess-n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .chess-m { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .chess-san { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--ink); }
-.chess-who { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chess-who { font-family: var(--mono); font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chess-empty { margin: 10px 0 0; font-family: var(--body); font-size: 14px; color: var(--muted); }
-.chess-foot { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted); }
+.chess-foot { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .chess-signin { margin: 10px 0 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .chess-signin a { color: var(--accent); }
 .chess-moves > .alt { margin: 8px 0 0 -12px; }
@@ -295,7 +292,7 @@
 .chess-note-list { list-style: none; margin: 10px 0 0; padding: 0; max-height: 380px; overflow-y: auto; }
 .chess-note { padding: 8px 0; border-top: 1px solid var(--hairline); }
 .chess-note-text { margin: 0; font-family: var(--body); font-size: 14px; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
-.chess-note-meta { margin: 3px 0 0; font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); }
+.chess-note-meta { margin: 3px 0 0; font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .chess-note .alt { margin: 2px 0 0 -12px; }
 /* The composer: the field at 16px, which is what keeps iOS from zooming the
    page when it takes focus — design rule 9 — then who it goes out as, then

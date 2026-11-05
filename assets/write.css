@@ -54,7 +54,6 @@
   text-align: right;
   font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: .02em;
   color: var(--muted);
 }
 .write-count.is-over { color: var(--accent); }

@@ -84,7 +84,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
@@ -272,13 +271,13 @@
 /* The byline under a list's own title. The phrase inside it, and the link in
    the phrase, are .lists-index-by — the same byline every directory row
    carries. */
-.lists-by { margin: -4px 0 12px; font-size: 11.5px; letter-spacing: .04em; color: var(--muted); }
+.lists-by { margin: -4px 0 12px; font-size: 11.5px; color: var(--muted); }
 
 /* The one number a profile keeps: how many times, in all, other people have
    kept the lists on it. It sits where a list's own byline sits, in the accent,
    because on that card it is the fact the page was opened for. Never drawn at
    nought — see standing() in assets/lists.js. */
-.lists-standing { margin: -2px 0 12px; font-size: 12px; letter-spacing: .04em; color: var(--accent); }
+.lists-standing { margin: -2px 0 12px; font-size: 12px; color: var(--accent); }
 
 .lists-none {
   margin: 0;
@@ -287,7 +286,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
 }
 
 .lists-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
@@ -308,7 +306,6 @@
   margin-left: auto;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .04em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -393,7 +390,6 @@
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .02em;
 }
 
 /* ---------- who can open it ---------- */
@@ -408,7 +404,6 @@
   padding: 0 0 6px;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .04em;
 }
 
 .lists-seg {
@@ -430,7 +425,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   cursor: pointer;
 }
 /* The radio itself is what the keyboard and the screen reader use; the label
@@ -605,7 +599,7 @@
 }
 .lists-link:hover .lists-link-who,
 .lists-link:focus-visible .lists-link-who { text-decoration: underline; }
-.lists-link-net { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lists-link-net { font-size: 12px; color: var(--muted); }
 .lists-link-who { font-family: var(--body); font-size: 14px; }
 
 /* The languages somebody speaks, under the handles: one line, the label in
@@ -849,7 +843,7 @@
    page: the title, the address, the note, the name, the line, the handles. */
 .ed-fields { display: flex; flex-direction: column; gap: 12px; }
 .ed-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.ed-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ed-label { font-size: 12px; color: var(--muted); }
 .ed-field .lists-input { width: 100%; }
 .ed-field textarea.lists-input { min-height: 64px; resize: vertical; font-family: var(--body); line-height: 1.45; }
 
@@ -1012,7 +1006,7 @@
 /* A list: the same face, with nothing behind it but the handle. */
 .ed-row-open.is-still { cursor: default; }
 .ed-row-open.is-still:hover .menu-name { color: inherit; }
-.ed-kind { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ed-kind { font-size: 12px; color: var(--muted); }
 .ed-row.is-open .ed-fields { padding: 0 14px 0 40px; }
 .ed-row-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; padding: 6px 6px 0 32px; }
 .ed-row-foot .ed-remove { margin-left: auto; }
@@ -1034,7 +1028,7 @@
   border-radius: 0 0 var(--radius) var(--radius);
   background: var(--paper);
 }
-.ed-status { margin: 0 auto 0 0; font-size: 11.5px; letter-spacing: .04em; color: var(--muted); }
+.ed-status { margin: 0 auto 0 0; font-size: 11.5px; color: var(--muted); }
 /* Unsaved, in a dot and the words — design rule 10. */
 .ed-status.is-dirty::before {
   content: "";
@@ -1064,7 +1058,7 @@
 /* The row being written, lit on the page as well, so it is plain which of
    them the fields on the left are. */
 .ed-screen .is-editing { outline: 2px solid var(--accent); outline-offset: 2px; }
-.ed-note { margin: 10px 0 0; font-size: 11px; letter-spacing: .04em; color: var(--muted); text-align: center; }
+.ed-note { margin: 10px 0 0; font-size: 11px; color: var(--muted); text-align: center; }
 .ed-only-phone { display: none; }
 .ed-shut { top: calc(10px + var(--safe-t)); right: max(10px, var(--safe-r)); }
 
@@ -1196,7 +1190,6 @@
   gap: 2px 10px;
   color: var(--muted);
   font-size: 11px;
-  letter-spacing: .04em;
   white-space: nowrap;
 }
 .lists-private { color: var(--accent); }
@@ -1298,7 +1291,6 @@
   margin: -6px 0 -8px 2px;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .03em;
 }
 .lists-all-body.is-searching { opacity: .55; transition: opacity .15s var(--ease) .1s; }
 
@@ -1346,7 +1338,6 @@
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .03em;
   line-height: 1.65;
 }
 /* A list with no author the API would name and nobody's keep has nothing on
@@ -1469,7 +1460,6 @@
   font-family: var(--display);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: .01em;
   color: var(--ink);
 }
 
@@ -1530,10 +1520,8 @@
   position: absolute;
   left: 8px;
   bottom: 5px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -1683,7 +1671,6 @@
 .lists-keeps {
   color: var(--muted);
   font-size: 11.5px;
-  letter-spacing: .04em;
   white-space: nowrap;
 }
 
@@ -1813,7 +1800,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   text-align: left;
   cursor: pointer;
 }
@@ -1863,7 +1849,6 @@ a.item-name:hover .item-where { color: var(--accent); }
   margin: 2px 0 0;
   color: var(--muted);
   font-size: 11px;
-  letter-spacing: .03em;
   overflow-wrap: anywhere;
 }
 
@@ -2061,7 +2046,6 @@ a.item-name:hover .item-where { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
 }
 
 .picker-list { list-style: none; margin: 0; padding: 0; }
@@ -2094,10 +2078,9 @@ a.item-name:hover .item-where { color: var(--accent); }
   margin-top: 1px;
   color: var(--muted);
   font-size: 10.5px;
-  letter-spacing: .03em;
   overflow-wrap: anywhere;
 }
-.picker-on { display: block; margin-top: 2px; color: var(--accent); font-size: 10.5px; letter-spacing: .04em; }
+.picker-on { display: block; margin-top: 2px; color: var(--accent); font-size: 10.5px; }
 
 /* Nothing behind the sheet moves while it is open. The map does this with a
    fixed body; this page is scrolled, so it is held where it is instead. */
@@ -2180,7 +2163,6 @@ body.has-scrim { overflow: hidden; }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   cursor: pointer;
 }
 .picker-add:hover { border-color: var(--accent); color: var(--accent); }
@@ -2259,7 +2241,6 @@ body.has-scrim { overflow: hidden; }
 .picker-suggest-where {
   color: var(--muted);
   font-size: 10.5px;
-  letter-spacing: .03em;
   overflow-wrap: anywhere;
 }
 
