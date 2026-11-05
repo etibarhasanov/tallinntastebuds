@@ -1,0 +1,1344 @@
+{
+ "id": "talk-tools",
+ "added": "2026-11-05",
+ "name": {
+  "en": "The tools of your trade",
+  "az": "İşində istifadə etdiyin alətlər",
+  "ru": "Инструменты твоей работы"
+ },
+ "why": {
+  "en": "Piret’s pens and syringe, a guitar teacher’s pick and music stand, a coach’s balls and a hairdresser’s scissors",
+  "az": "Piretin qələmləri və şprisi, gitara müəlliminin mediatoru və not altlığı, məşqçinin topları və bərbərin qayçısı",
+  "ru": "Ручки и шприц Пирет, медиатор и пюпитр учителя гитары, мячи тренера и ножницы парикмахера"
+ },
+ "taste": "Ilma selleta ei saa!",
+ "source": "Keeletee",
+ "scenes": [
+  {
+   "ask": {
+    "et": "Mis vahendeid sa kasutad oma töös?",
+    "en": "What tools do you use in your work?",
+    "az": "İşində hansı vasitələrdən istifadə edirsən?",
+    "ru": "Какими инструментами ты пользуешься в работе?"
+   },
+   "turns": [
+    {
+     "who": "Piret",
+     "lines": [
+      {
+       "et": "Mu lihtsamad töövahendid on sinine ja punane pastapliiats, sest osa tööst ma teen ikkagi paberi ja pastakaga.",
+       "en": "My simplest tools are a blue and a red ballpoint pen, because I still do part of the work with paper and pen.",
+       "az": "Ən sadə iş alətlərim göy və qırmızı diyircəkli qələmdir, çünki işin bir hissəsini yenə də kağız və qələmlə görürəm.",
+       "ru": "Мои самые простые рабочие инструменты — синяя и красная шариковые ручки, потому что часть работы я всё-таки делаю на бумаге и ручкой."
+      },
+      {
+       "et": "Mul on väga palju töövahendeid, näiteks süstal.",
+       "en": "I have a great many tools, for example a syringe.",
+       "az": "Çoxlu iş alətim var, məsələn, şpris.",
+       "ru": "У меня очень много рабочих инструментов, например шприц."
+      },
+      {
+       "et": "Väga tähtis on tööl olles ise terveks jääda ja seega kuuluvad minu töövahendite hulka sellised enesekaitsevahendid nagu müts, mask, kindad ja kittel.",
+       "en": "It is very important to stay healthy yourself while you are at work, so my tools include protective equipment like a cap, a mask, gloves and a gown.",
+       "az": "İşdə olarkən özün sağlam qalmaq çox vacibdir, ona görə də iş alətlərimin arasında papaq, maska, əlcək və xalat kimi qoruyucu vasitələr var.",
+       "ru": "Очень важно самой оставаться здоровой на работе, поэтому к моим рабочим инструментам относятся такие средства защиты, как шапочка, маска, перчатки и халат."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Tunni läbiviimiseks on mul vajalik kitarr.",
+       "en": "To give a lesson I need a guitar.",
+       "az": "Dərs keçmək üçün mənə gitara lazımdır.",
+       "ru": "Чтобы провести урок, мне нужна гитара."
+      },
+      {
+       "et": "Ma õpetan lastele klassikalist kitarri, mis tähendab seda, et tegelikult peaks kitarr olema vasaku jala peal.",
+       "en": "I teach children classical guitar, which means that the guitar should actually rest on the left leg.",
+       "az": "Uşaqlara klassik gitara öyrədirəm, bu da o deməkdir ki, əslində gitara sol ayağın üstündə olmalıdır.",
+       "ru": "Я учу детей классической гитаре, а это значит, что гитара, вообще-то, должна лежать на левой ноге."
+      },
+      {
+       "et": "See on natukene teine lähenemine.",
+       "en": "That is a slightly different approach.",
+       "az": "Bu, bir az başqa yanaşmadır.",
+       "ru": "Это немного другой подход."
+      },
+      {
+       "et": "Siis ma kasutan veel oma sõrmi ja tavaliselt ma kasutan sihukest plastmassist… Oota, ma vaatan, kas ma leian selle üles… Kasutan sellist plastmassist medikat.",
+       "en": "Then I also use my own fingers, and usually I use this plastic… Wait, I’ll see if I can find it… I use this kind of plastic pick.",
+       "az": "Sonra öz barmaqlarımdan da istifadə edirəm, adətən də belə plastik bir… Dayan, baxım, tapa bilərəmmi… Belə plastik mediatordan istifadə edirəm.",
+       "ru": "Ещё я пользуюсь своими пальцами и обычно такой пластмассовой… Подожди, посмотрю, найду ли я её… Пользуюсь таким пластмассовым медиатором."
+      },
+      {
+       "et": "Ja siis ma natukene mängin mingeid asju, akorde või lugusid, näiteks mängin Bachi.",
+       "en": "And then I play a few things, chords or pieces — I play Bach, for example.",
+       "az": "Sonra da bir az nəsə çalıram, akkordlar ya da əsərlər, məsələn, Bax çalıram.",
+       "ru": "А потом немного играю что-нибудь, аккорды или пьесы, например играю Баха."
+      }
+     ]
+    },
+    {
+     "who": "Johannes",
+     "lines": [
+      {
+       "et": "Ja teine oluline asi, mida ma kasutan, kui ma õpetan väikeseid lapsi, on noodipult.",
+       "en": "And another important thing I use when I teach little children is a music stand.",
+       "az": "Balaca uşaqlara dərs deyəndə istifadə etdiyim başqa vacib bir şey də not altlığıdır.",
+       "ru": "И ещё одна важная вещь, которой я пользуюсь, когда учу маленьких детей, — это пюпитр."
+      },
+      {
+       "et": "Ilma selleta ei saa!",
+       "en": "You can’t do without it!",
+       "az": "Onsuz olmaz!",
+       "ru": "Без него никак!"
+      },
+      {
+       "et": "Lapsed peavad kuskilt nooti vaatama.",
+       "en": "Children have to read their music from somewhere.",
+       "az": "Uşaqlar notlara haradansa baxmalıdırlar.",
+       "ru": "Детям ведь надо откуда-то смотреть в ноты."
+      }
+     ]
+    },
+    {
+     "who": "Ott",
+     "lines": [
+      {
+       "et": "Treeneritöös oleneb kõik erialast ja spordialast.",
+       "en": "In a coach’s work everything depends on the field and the sport.",
+       "az": "Məşqçi işində hər şey ixtisasdan və idman növündən asılıdır.",
+       "ru": "В работе тренера всё зависит от специальности и вида спорта."
+      },
+      {
+       "et": "Jalgpallitreenerina kasutan ma hästi palju palle, neid läheb mul palju vaja.",
+       "en": "As a football coach I use a great many balls; I need a lot of them.",
+       "az": "Futbol məşqçisi kimi çoxlu top işlədirəm, onlar mənə çox lazım olur.",
+       "ru": "Как футбольный тренер я использую очень много мячей, они мне нужны в большом количестве."
+      },
+      {
+       "et": "Talvel on mul vaja kasutada saali ja suvel väljakut.",
+       "en": "In winter I need a sports hall, and in summer a pitch.",
+       "az": "Qışda mənə zal, yayda isə meydança lazımdır.",
+       "ru": "Зимой мне нужен зал, а летом — поле."
+      },
+      {
+       "et": "Ilma nendeta on raske.",
+       "en": "Without them it is hard.",
+       "az": "Onlarsız çətindir.",
+       "ru": "Без них трудно."
+      }
+     ]
+    },
+    {
+     "who": "Marita",
+     "lines": [
+      {
+       "et": "Oma juuksuritöös kasutan ma kääre, erinevaid kamme, harjasid, fööne ja igasuguseid viimistlusvahendeid.",
+       "en": "In my work as a hairdresser I use scissors, different combs, brushes, hairdryers and all kinds of styling products.",
+       "az": "Bərbər işimdə qayçıdan, müxtəlif daraqlardan, fırçalardan, fenlərdən və hər cür üslub vasitələrindən istifadə edirəm.",
+       "ru": "В своей парикмахерской работе я пользуюсь ножницами, разными расчёсками, щётками, фенами и всевозможными средствами для укладки."
+      },
+      {
+       "et": "Peapesu puhul on olulised ka šampoonid, palsamid ja maskid.",
+       "en": "For washing hair, shampoos, conditioners and masks matter too.",
+       "az": "Baş yuyulanda şampunlar, balzamlar və maskalar da vacibdir.",
+       "ru": "Для мытья головы важны ещё шампуни, бальзамы и маски."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "words": {
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "what; which",
+    "az": "nə; hansı ki",
+    "ru": "что; который"
+   },
+   "deck": "asking"
+  },
+  "vahendeid": {
+   "base": "vahend",
+   "means": {
+    "en": "tools, means",
+    "az": "vasitələr",
+    "ru": "инструменты, средства"
+   }
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you (one person you know)",
+    "az": "sən",
+    "ru": "ты"
+   }
+  },
+  "kasutad": {
+   "base": "kasutama",
+   "means": {
+    "en": "you use",
+    "az": "istifadə edirsən",
+    "ru": "используешь"
+   },
+   "deck": "moreverbs"
+  },
+  "oma": {
+   "base": "oma",
+   "means": {
+    "en": "own, my own (one's own)",
+    "az": "öz",
+    "ru": "свой"
+   },
+   "deck": "pronouns"
+  },
+  "töös": {
+   "base": "töö",
+   "means": {
+    "en": "in work",
+    "az": "işdə",
+    "ru": "в работе"
+   },
+   "deck": "talk"
+  },
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my (short of minu)",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "lihtsamad": {
+   "base": "lihtne",
+   "means": {
+    "en": "simplest",
+    "az": "ən sadə",
+    "ru": "самые простые"
+   },
+   "deck": "feelings"
+  },
+  "töövahendid": {
+   "base": "töövahend",
+   "means": {
+    "en": "tools, work equipment",
+    "az": "iş alətləri",
+    "ru": "рабочие инструменты"
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is, are; has (with mul, tal…)",
+    "az": "-dır, var",
+    "ru": "есть, является"
+   },
+   "deck": "verbs"
+  },
+  "sinine": {
+   "base": "sinine",
+   "means": {
+    "en": "blue",
+    "az": "göy",
+    "ru": "синий"
+   },
+   "deck": "describing"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "punane": {
+   "base": "punane",
+   "means": {
+    "en": "red",
+    "az": "qırmızı",
+    "ru": "красный"
+   },
+   "deck": "describing"
+  },
+  "pastapliiats": {
+   "base": "pastapliiats",
+   "means": {
+    "en": "ballpoint pen",
+    "az": "diyircəkli qələm",
+    "ru": "шариковая ручка"
+   }
+  },
+  "sest": {
+   "base": "sest",
+   "means": {
+    "en": "because",
+    "az": "çünki",
+    "ru": "потому что"
+   },
+   "deck": "everyday"
+  },
+  "osa": {
+   "base": "osa",
+   "means": {
+    "en": "part; some (osa on nooremad: some are younger)",
+    "az": "hissə; bəziləri",
+    "ru": "часть; некоторые"
+   }
+  },
+  "tööst": {
+   "base": "töö",
+   "means": {
+    "en": "from work",
+    "az": "işdən",
+    "ru": "от работы"
+   },
+   "deck": "talk"
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "teen": {
+   "base": "tegema",
+   "means": {
+    "en": "I do, I make",
+    "az": "edirəm, hazırlayıram",
+    "ru": "делаю"
+   },
+   "deck": "verbs"
+  },
+  "ikkagi": {
+   "base": "ikkagi",
+   "means": {
+    "en": "after all, at all",
+    "az": "hər halda, axı",
+    "ru": "всё-таки"
+   }
+  },
+  "paberi": {
+   "base": "paber",
+   "means": {
+    "en": "paper",
+    "az": "kağız",
+    "ru": "бумаги"
+   }
+  },
+  "pastakaga": {
+   "base": "pastakas",
+   "means": {
+    "en": "with a pen",
+    "az": "qələmlə",
+    "ru": "ручкой"
+   },
+   "deck": "paper"
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "I have (mul on: I have); at me",
+    "az": "məndə (mul on: mənim var)",
+    "ru": "у меня"
+   }
+  },
+  "väga": {
+   "base": "väga",
+   "means": {
+    "en": "very",
+    "az": "çox",
+    "ru": "очень"
+   },
+   "deck": "everyday"
+  },
+  "palju": {
+   "base": "palju",
+   "means": {
+    "en": "a lot, many, much",
+    "az": "çox",
+    "ru": "много"
+   }
+  },
+  "töövahendeid": {
+   "base": "töövahend",
+   "means": {
+    "en": "tools, work equipment",
+    "az": "iş alətləri",
+    "ru": "рабочие инструменты"
+   }
+  },
+  "näiteks": {
+   "base": "näiteks",
+   "means": {
+    "en": "for example",
+    "az": "məsələn",
+    "ru": "например"
+   },
+   "deck": "plans"
+  },
+  "süstal": {
+   "base": "süstal",
+   "means": {
+    "en": "syringe",
+    "az": "şpris",
+    "ru": "шприц"
+   }
+  },
+  "tähtis": {
+   "base": "tähtis",
+   "means": {
+    "en": "important",
+    "az": "vacib",
+    "ru": "важно"
+   },
+   "deck": "describing"
+  },
+  "tööl": {
+   "base": "töö",
+   "means": {
+    "en": "at work",
+    "az": "işdə",
+    "ru": "на работе"
+   },
+   "deck": "talk"
+  },
+  "olles": {
+   "base": "olema",
+   "means": {
+    "en": "being (tööl olles: while at work)",
+    "az": "olarkən",
+    "ru": "находясь"
+   },
+   "deck": "verbs"
+  },
+  "ise": {
+   "base": "ise",
+   "means": {
+    "en": "myself, oneself",
+    "az": "özüm",
+    "ru": "сам"
+   },
+   "deck": "pronouns"
+  },
+  "terveks": {
+   "base": "terve",
+   "means": {
+    "en": "healthy (terveks jääda: to stay healthy)",
+    "az": "sağlam",
+    "ru": "здоровым"
+   },
+   "deck": "health"
+  },
+  "jääda": {
+   "base": "jääma",
+   "means": {
+    "en": "to stay, to get (caught)",
+    "az": "qalmaq",
+    "ru": "оставаться, попасть"
+   },
+   "deck": "stopp-words"
+  },
+  "seega": {
+   "base": "seega",
+   "means": {
+    "en": "so, therefore",
+    "az": "ona görə",
+    "ru": "так что"
+   }
+  },
+  "kuuluvad": {
+   "base": "kuuluma",
+   "means": {
+    "en": "belong (kuuluvad hulka: are among)",
+    "az": "aiddir",
+    "ru": "относятся"
+   }
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   }
+  },
+  "töövahendite": {
+   "base": "töövahend",
+   "means": {
+    "en": "of tools (töövahendite hulka: among my tools)",
+    "az": "iş alətlərinin",
+    "ru": "рабочих инструментов"
+   }
+  },
+  "hulka": {
+   "base": "hulk",
+   "means": {
+    "en": "among (töövahendite hulka: among my tools)",
+    "az": "arasına",
+    "ru": "к числу, в число"
+   }
+  },
+  "sellised": {
+   "base": "selline",
+   "means": {
+    "en": "such, like that",
+    "az": "belə",
+    "ru": "такие"
+   }
+  },
+  "enesekaitsevahendid": {
+   "base": "enesekaitsevahend",
+   "means": {
+    "en": "protective equipment",
+    "az": "qoruyucu vasitələr",
+    "ru": "средства защиты"
+   }
+  },
+  "nagu": {
+   "base": "nagu",
+   "means": {
+    "en": "like, as",
+    "az": "kimi",
+    "ru": "как"
+   },
+   "deck": "everyday"
+  },
+  "müts": {
+   "base": "müts",
+   "means": {
+    "en": "cap",
+    "az": "papaq",
+    "ru": "шапочка"
+   },
+   "deck": "shoes"
+  },
+  "mask": {
+   "base": "mask",
+   "means": {
+    "en": "mask",
+    "az": "maska",
+    "ru": "маска"
+   }
+  },
+  "kindad": {
+   "base": "kinnas",
+   "means": {
+    "en": "gloves",
+    "az": "əlcəklər",
+    "ru": "перчатки"
+   },
+   "deck": "shoes"
+  },
+  "kittel": {
+   "base": "kittel",
+   "means": {
+    "en": "gown, lab coat",
+    "az": "xalat",
+    "ru": "халат"
+   }
+  },
+  "tunni": {
+   "base": "tund",
+   "means": {
+    "en": "of a lesson (tunni läbiviimiseks: to give a lesson)",
+    "az": "dərsin",
+    "ru": "урока"
+   },
+   "deck": "time"
+  },
+  "läbiviimiseks": {
+   "base": "läbiviimine",
+   "means": {
+    "en": "for giving, to carry out (tunni läbiviimiseks: to give a lesson)",
+    "az": "keçirmək üçün",
+    "ru": "для проведения"
+   }
+  },
+  "vajalik": {
+   "base": "vajalik",
+   "means": {
+    "en": "needed, necessary",
+    "az": "lazım",
+    "ru": "нужна"
+   }
+  },
+  "kitarr": {
+   "base": "kitarr",
+   "means": {
+    "en": "guitar",
+    "az": "gitara",
+    "ru": "гитара"
+   }
+  },
+  "õpetan": {
+   "base": "õpetama",
+   "means": {
+    "en": "I teach",
+    "az": "öyrədirəm",
+    "ru": "преподаю"
+   },
+   "deck": "school"
+  },
+  "lastele": {
+   "base": "laps",
+   "means": {
+    "en": "for the children",
+    "az": "uşaqlara",
+    "ru": "детям"
+   },
+   "deck": "talk"
+  },
+  "klassikalist": {
+   "base": "klassikaline",
+   "means": {
+    "en": "classical",
+    "az": "klassik",
+    "ru": "классическую"
+   }
+  },
+  "kitarri": {
+   "base": "kitarr",
+   "means": {
+    "en": "guitar",
+    "az": "gitara",
+    "ru": "на гитаре"
+   }
+  },
+  "tähendab": {
+   "base": "tähendama",
+   "means": {
+    "en": "means",
+    "az": "deməkdir",
+    "ru": "означает"
+   },
+   "deck": "moreverbs"
+  },
+  "seda": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bunu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "et": {
+   "base": "et",
+   "means": {
+    "en": "that (joining two sentences)",
+    "az": "ki",
+    "ru": "что (союз)"
+   },
+   "deck": "everyday"
+  },
+  "tegelikult": {
+   "base": "tegelikult",
+   "means": {
+    "en": "actually",
+    "az": "əslində",
+    "ru": "на самом деле"
+   },
+   "deck": "everyday"
+  },
+  "peaks": {
+   "base": "pidama",
+   "means": {
+    "en": "should (peaks olema: there should be)",
+    "az": "olmalıdır",
+    "ru": "должен"
+   },
+   "deck": "moreverbs"
+  },
+  "olema": {
+   "base": "olema",
+   "means": {
+    "en": "to be",
+    "az": "olmaq",
+    "ru": "быть"
+   },
+   "deck": "verbs"
+  },
+  "vasaku": {
+   "base": "vasak",
+   "means": {
+    "en": "left",
+    "az": "sol",
+    "ru": "левой"
+   },
+   "deck": "around"
+  },
+  "jala": {
+   "base": "jalg",
+   "means": {
+    "en": "leg (vasaku jala peal: on the left leg)",
+    "az": "ayaq",
+    "ru": "нога"
+   },
+   "deck": "health"
+  },
+  "peal": {
+   "base": "peal",
+   "means": {
+    "en": "on, on top of",
+    "az": "üstündə",
+    "ru": "на"
+   },
+   "deck": "around"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this, it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "natukene": {
+   "base": "natukene",
+   "means": {
+    "en": "a little bit",
+    "az": "bir azca",
+    "ru": "немножко"
+   }
+  },
+  "teine": {
+   "base": "teine",
+   "means": {
+    "en": "other, another; second",
+    "az": "digər; ikinci",
+    "ru": "другой; второй"
+   },
+   "deck": "numbers"
+  },
+  "lähenemine": {
+   "base": "lähenemine",
+   "means": {
+    "en": "approach",
+    "az": "yanaşma",
+    "ru": "подход"
+   }
+  },
+  "siis": {
+   "base": "siis",
+   "means": {
+    "en": "then",
+    "az": "sonra",
+    "ru": "потом"
+   },
+   "deck": "everyday"
+  },
+  "kasutan": {
+   "base": "kasutama",
+   "means": {
+    "en": "I use",
+    "az": "istifadə edirəm",
+    "ru": "использую"
+   },
+   "deck": "moreverbs"
+  },
+  "veel": {
+   "base": "veel",
+   "means": {
+    "en": "still, more, also; yet",
+    "az": "daha, hələ",
+    "ru": "ещё"
+   },
+   "deck": "everyday"
+  },
+  "sõrmi": {
+   "base": "sõrm",
+   "means": {
+    "en": "fingers",
+    "az": "barmaqlar",
+    "ru": "пальцы"
+   },
+   "deck": "body"
+  },
+  "tavaliselt": {
+   "base": "tavaliselt",
+   "means": {
+    "en": "usually",
+    "az": "adətən",
+    "ru": "обычно"
+   },
+   "deck": "often"
+  },
+  "sihukest": {
+   "base": "sihuke",
+   "means": {
+    "en": "this kind of, such a (talk: sellist)",
+    "az": "belə",
+    "ru": "такой"
+   }
+  },
+  "plastmassist": {
+   "base": "plastmass",
+   "means": {
+    "en": "plastic, of plastic",
+    "az": "plastik",
+    "ru": "пластмассовый"
+   }
+  },
+  "oota": {
+   "base": "ootama",
+   "means": {
+    "en": "wait!",
+    "az": "dayan, gözlə",
+    "ru": "подожди"
+   },
+   "deck": "verbs"
+  },
+  "vaatan": {
+   "base": "vaatama",
+   "means": {
+    "en": "I watch, I look",
+    "az": "baxıram",
+    "ru": "смотрю"
+   },
+   "deck": "moreverbs"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "the word that opens a yes-or-no question; whether; kas … või: either … or",
+    "az": "sual sözü (bəli-xeyr); kas … või: ya … ya da",
+    "ru": "ли (вопрос «да или нет»); kas … või: либо … либо"
+   },
+   "deck": "asking"
+  },
+  "leian": {
+   "base": "leidma",
+   "means": {
+    "en": "I find (leian üles: find it)",
+    "az": "tapıram",
+    "ru": "найду"
+   },
+   "deck": "moreverbs"
+  },
+  "selle": {
+   "base": "see",
+   "means": {
+    "en": "this, that",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns"
+  },
+  "üles": {
+   "base": "üles",
+   "means": {
+    "en": "up",
+    "az": "yuxarı",
+    "ru": "вверх"
+   }
+  },
+  "sellist": {
+   "base": "selline",
+   "means": {
+    "en": "such",
+    "az": "belə",
+    "ru": "такую"
+   }
+  },
+  "medikat": {
+   "base": "medikas",
+   "means": {
+    "en": "pick, plectrum",
+    "az": "mediator",
+    "ru": "медиатор"
+   }
+  },
+  "mängin": {
+   "base": "mängima",
+   "means": {
+    "en": "I play",
+    "az": "çalıram",
+    "ru": "играю"
+   },
+   "deck": "moreverbs"
+  },
+  "mingeid": {
+   "base": "mingi",
+   "means": {
+    "en": "some (mingeid asju: a few things)",
+    "az": "hansısa",
+    "ru": "какие-нибудь"
+   },
+   "deck": "everyday"
+  },
+  "asju": {
+   "base": "asi",
+   "means": {
+    "en": "things",
+    "az": "şeylər",
+    "ru": "вещи"
+   },
+   "deck": "everyday"
+  },
+  "akorde": {
+   "base": "akord",
+   "means": {
+    "en": "chords",
+    "az": "akkordlar",
+    "ru": "аккорды"
+   }
+  },
+  "või": {
+   "base": "või",
+   "means": {
+    "en": "or",
+    "az": "və ya",
+    "ru": "или"
+   },
+   "deck": "food"
+  },
+  "lugusid": {
+   "base": "lugu",
+   "means": {
+    "en": "pieces, tunes",
+    "az": "əsərlər, mahnılar",
+    "ru": "пьесы, мелодии"
+   },
+   "deck": "paper"
+  },
+  "bachi": {
+   "base": "Bach",
+   "means": {
+    "en": "Bach (whom I play)",
+    "az": "Baxı",
+    "ru": "Баха"
+   }
+  },
+  "oluline": {
+   "base": "oluline",
+   "means": {
+    "en": "important",
+    "az": "vacib",
+    "ru": "важный"
+   },
+   "deck": "describing"
+  },
+  "asi": {
+   "base": "asi",
+   "means": {
+    "en": "thing",
+    "az": "şey",
+    "ru": "вещь"
+   },
+   "deck": "everyday"
+  },
+  "mida": {
+   "base": "mis",
+   "means": {
+    "en": "what (partitive)",
+    "az": "nə",
+    "ru": "что"
+   },
+   "deck": "asking"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "if; when; than; how",
+    "az": "əgər; nə vaxt ki; -dan; necə",
+    "ru": "если; когда; чем; как"
+   },
+   "deck": "everyday"
+  },
+  "väikeseid": {
+   "base": "väike",
+   "means": {
+    "en": "little, small",
+    "az": "balaca",
+    "ru": "маленьких"
+   },
+   "deck": "basics"
+  },
+  "lapsi": {
+   "base": "laps",
+   "means": {
+    "en": "children",
+    "az": "uşaqlar",
+    "ru": "детей"
+   },
+   "deck": "talk"
+  },
+  "noodipult": {
+   "base": "noodipult",
+   "means": {
+    "en": "music stand",
+    "az": "not altlığı",
+    "ru": "пюпитр"
+   }
+  },
+  "ilma": {
+   "base": "ilma",
+   "means": {
+    "en": "without",
+    "az": "-sız, olmadan",
+    "ru": "без"
+   },
+   "deck": "everyday"
+  },
+  "selleta": {
+   "base": "see",
+   "means": {
+    "en": "without it",
+    "az": "onsuz",
+    "ru": "без него"
+   },
+   "deck": "pronouns"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not, no",
+    "az": "yox, deyil",
+    "ru": "не, нет"
+   },
+   "deck": "basics"
+  },
+  "saa": {
+   "base": "saama",
+   "means": {
+    "en": "can, get (after ei: ei saa aru, don't understand)",
+    "az": "bilmirəm (ei ilə)",
+    "ru": "не могу (с ei)"
+   },
+   "deck": "verbs"
+  },
+  "lapsed": {
+   "base": "laps",
+   "means": {
+    "en": "the children",
+    "az": "uşaqlar",
+    "ru": "дети"
+   },
+   "deck": "talk"
+  },
+  "peavad": {
+   "base": "pidama",
+   "means": {
+    "en": "must, have to",
+    "az": "məcburdurlar, gərək",
+    "ru": "должны"
+   },
+   "deck": "moreverbs"
+  },
+  "kuskilt": {
+   "base": "kuskilt",
+   "means": {
+    "en": "from somewhere",
+    "az": "haradansa",
+    "ru": "откуда-то"
+   },
+   "deck": "everyday"
+  },
+  "nooti": {
+   "base": "noot",
+   "means": {
+    "en": "music, the notes (nooti vaatama: read music)",
+    "az": "not",
+    "ru": "ноты"
+   }
+  },
+  "vaatama": {
+   "base": "vaatama",
+   "means": {
+    "en": "to look (nooti vaatama: to read music)",
+    "az": "baxmalı",
+    "ru": "смотреть"
+   },
+   "deck": "moreverbs"
+  },
+  "treeneritöös": {
+   "base": "treeneritöö",
+   "means": {
+    "en": "in a coach’s work",
+    "az": "məşqçi işində",
+    "ru": "в работе тренера"
+   }
+  },
+  "oleneb": {
+   "base": "olenema",
+   "means": {
+    "en": "depends",
+    "az": "asılıdır",
+    "ru": "зависит"
+   }
+  },
+  "kõik": {
+   "base": "kõik",
+   "means": {
+    "en": "all, everybody, everything",
+    "az": "hamı, hər şey",
+    "ru": "все, всё"
+   },
+   "deck": "everyday"
+  },
+  "erialast": {
+   "base": "eriala",
+   "means": {
+    "en": "on the field, the speciality",
+    "az": "ixtisasdan",
+    "ru": "от специальности"
+   },
+   "deck": "jobs"
+  },
+  "spordialast": {
+   "base": "spordiala",
+   "means": {
+    "en": "on the sport (oleneb spordialast: depends on the sport)",
+    "az": "idman növündən",
+    "ru": "от вида спорта"
+   }
+  },
+  "jalgpallitreenerina": {
+   "base": "jalgpallitreener",
+   "means": {
+    "en": "as a football coach",
+    "az": "futbol məşqçisi kimi",
+    "ru": "футбольным тренером"
+   }
+  },
+  "hästi": {
+   "base": "hästi",
+   "means": {
+    "en": "well; very (colloquial)",
+    "az": "yaxşı; çox",
+    "ru": "хорошо; очень"
+   },
+   "deck": "everyday"
+  },
+  "palle": {
+   "base": "pall",
+   "means": {
+    "en": "balls",
+    "az": "toplar",
+    "ru": "мячи"
+   }
+  },
+  "neid": {
+   "base": "tema",
+   "means": {
+    "en": "them",
+    "az": "onları",
+    "ru": "их"
+   }
+  },
+  "läheb": {
+   "base": "minema",
+   "means": {
+    "en": "goes",
+    "az": "gedir",
+    "ru": "идёт"
+   },
+   "deck": "verbs"
+  },
+  "vaja": {
+   "base": "vaja",
+   "means": {
+    "en": "needed (on vaja: is needed)",
+    "az": "lazım",
+    "ru": "нужно"
+   }
+  },
+  "talvel": {
+   "base": "talv",
+   "means": {
+    "en": "in winter",
+    "az": "qışda",
+    "ru": "зимой"
+   },
+   "deck": "weather"
+  },
+  "kasutada": {
+   "base": "kasutama",
+   "means": {
+    "en": "to use",
+    "az": "istifadə etmək",
+    "ru": "использовать"
+   },
+   "deck": "moreverbs"
+  },
+  "saali": {
+   "base": "saal",
+   "means": {
+    "en": "hall, sports hall",
+    "az": "zal",
+    "ru": "зал"
+   },
+   "deck": "plans"
+  },
+  "suvel": {
+   "base": "suvi",
+   "means": {
+    "en": "in summer",
+    "az": "yayda",
+    "ru": "летом"
+   },
+   "deck": "weather"
+  },
+  "väljakut": {
+   "base": "väljak",
+   "means": {
+    "en": "pitch, sports ground",
+    "az": "meydança",
+    "ru": "поле, площадка"
+   },
+   "deck": "around"
+  },
+  "nendeta": {
+   "base": "need",
+   "means": {
+    "en": "without them",
+    "az": "onlarsız",
+    "ru": "без них"
+   },
+   "deck": "pronouns"
+  },
+  "raske": {
+   "base": "raske",
+   "means": {
+    "en": "difficult, hard",
+    "az": "çətin",
+    "ru": "трудный"
+   },
+   "deck": "feelings"
+  },
+  "juuksuritöös": {
+   "base": "juuksuritöö",
+   "means": {
+    "en": "in hairdressing work",
+    "az": "bərbər işində",
+    "ru": "в работе парикмахера"
+   }
+  },
+  "kääre": {
+   "base": "käärid",
+   "means": {
+    "en": "scissors",
+    "az": "qayçı",
+    "ru": "ножницы"
+   },
+   "deck": "kitchen"
+  },
+  "erinevaid": {
+   "base": "erinev",
+   "means": {
+    "en": "different, various",
+    "az": "müxtəlif",
+    "ru": "разные"
+   },
+   "deck": "describing"
+  },
+  "kamme": {
+   "base": "kamm",
+   "means": {
+    "en": "combs",
+    "az": "daraqlar",
+    "ru": "расчёски"
+   }
+  },
+  "harjasid": {
+   "base": "hari",
+   "means": {
+    "en": "brushes",
+    "az": "fırçalar",
+    "ru": "щётки"
+   }
+  },
+  "fööne": {
+   "base": "föön",
+   "means": {
+    "en": "hairdryers",
+    "az": "fenlər",
+    "ru": "фены"
+   },
+   "deck": "kitchen"
+  },
+  "igasuguseid": {
+   "base": "igasugune",
+   "means": {
+    "en": "all kinds of",
+    "az": "hər cür",
+    "ru": "всякие"
+   }
+  },
+  "viimistlusvahendeid": {
+   "base": "viimistlusvahend",
+   "means": {
+    "en": "styling products",
+    "az": "üslub vasitələri",
+    "ru": "средства для укладки"
+   }
+  },
+  "peapesu": {
+   "base": "peapesu",
+   "means": {
+    "en": "hair wash, washing the hair",
+    "az": "baş yuma",
+    "ru": "мытьё головы"
+   }
+  },
+  "puhul": {
+   "base": "puhul",
+   "means": {
+    "en": "in the case of, with (väiksemate puhul: with the smaller ones)",
+    "az": "halında",
+    "ru": "в случае, у"
+   }
+  },
+  "olulised": {
+   "base": "oluline",
+   "means": {
+    "en": "important",
+    "az": "vacib",
+    "ru": "важные"
+   },
+   "deck": "describing"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, həm də",
+    "ru": "тоже, также"
+   },
+   "deck": "everyday"
+  },
+  "šampoonid": {
+   "base": "šampoon",
+   "means": {
+    "en": "shampoos",
+    "az": "şampunlar",
+    "ru": "шампуни"
+   }
+  },
+  "palsamid": {
+   "base": "palsam",
+   "means": {
+    "en": "conditioners",
+    "az": "balzamlar",
+    "ru": "бальзамы"
+   }
+  },
+  "maskid": {
+   "base": "mask",
+   "means": {
+    "en": "masks (for the hair)",
+    "az": "maskalar",
+    "ru": "маски"
+   }
+  }
+ }
+}
