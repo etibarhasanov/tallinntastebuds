@@ -52132,6 +52132,814 @@
           ]
         }
       ]
+    },
+    {
+      "id": "talk-at-doctor",
+      "added": "2026-11-05",
+      "name": {
+        "en": "At the doctor’s",
+        "az": "Həkimin yanında",
+        "ru": "У врача"
+      },
+      "why": {
+        "en": "A cook’s right hand has hurt for two months: an injection, a scan next Wednesday, and no fishing",
+        "az": "Aşpazın sağ əli iki aydır ağrıyır: iynə, gələn çərşənbə müayinə və balıq tutmaq yox",
+        "ru": "У повара два месяца болит правая рука: укол, обследование в следующую среду и никакой рыбалки"
+      },
+      "taste": "Ma väga kardan süsti.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "turns": [
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Tervist!",
+                  "en": "Hello!",
+                  "az": "Salam!",
+                  "ru": "Здравствуйте!"
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Tere-tere!",
+                  "en": "Hello, hello!",
+                  "az": "Salam, salam!",
+                  "ru": "Здравствуйте, здравствуйте!"
+                },
+                {
+                  "et": "Kuidas te ennast tunnete?",
+                  "en": "How are you feeling?",
+                  "az": "Özünüzü necə hiss edirsiniz?",
+                  "ru": "Как вы себя чувствуете?"
+                },
+                {
+                  "et": "Mille üle kaebate?",
+                  "en": "What are you complaining of?",
+                  "az": "Nədən şikayətlənirsiniz?",
+                  "ru": "На что жалуетесь?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Mul see parem käsi valutab kohutavalt.",
+                  "en": "My right hand hurts terribly.",
+                  "az": "Sağ əlim dəhşətli ağrıyır.",
+                  "ru": "У меня ужасно болит правая рука."
+                },
+                {
+                  "et": "Päeval valutab, kui liigutan, ja öösel mõnikord on tuim, nii et ma üldse ei tunne enda kätt.",
+                  "en": "In the daytime it hurts when I move it, and at night it is sometimes numb, so that I can’t feel my hand at all.",
+                  "az": "Gündüz tərpədəndə ağrıyır, gecə isə bəzən keyiyir, elə ki, əlimi heç hiss etmirəm.",
+                  "ru": "Днём болит, когда двигаю, а ночью иногда немеет, так что я совсем не чувствую своей руки."
+                },
+                {
+                  "et": "Vahel on tunne, nagu sipelgad jookseksid …",
+                  "en": "Sometimes it feels as if ants were running…",
+                  "az": "Bəzən elə bil qarışqalar qaçır…",
+                  "ru": "Иногда такое чувство, будто бегают мурашки…"
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Hm.",
+                  "en": "Hm.",
+                  "az": "Hm.",
+                  "ru": "Хм."
+                },
+                {
+                  "et": "Kas olete ise midagi teinud ka, et valu vähendada?",
+                  "en": "Have you done anything yourself to reduce the pain?",
+                  "az": "Ağrını azaltmaq üçün özünüz nəsə etmisinizmi?",
+                  "ru": "Вы сами что-нибудь делали, чтобы уменьшить боль?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Jah.",
+                  "en": "Yes.",
+                  "az": "Bəli.",
+                  "ru": "Да."
+                },
+                {
+                  "et": "Alguses võtsin valuvaigisteid.",
+                  "en": "At first I took painkillers.",
+                  "az": "Əvvəlcə ağrıkəsici içdim.",
+                  "ru": "Сначала я принимал обезболивающие."
+                },
+                {
+                  "et": "Siis käisin füsioterapeudi juures.",
+                  "en": "Then I went to a physiotherapist.",
+                  "az": "Sonra fizioterapevtin yanına getdim.",
+                  "ru": "Потом ходил к физиотерапевту."
+                },
+                {
+                  "et": "Seal tehti massaaži.",
+                  "en": "There I had a massage.",
+                  "az": "Orada masaj etdilər.",
+                  "ru": "Там мне делали массаж."
+                },
+                {
+                  "et": "Mitte miski pole aidanud.",
+                  "en": "Nothing at all has helped.",
+                  "az": "Heç nə kömək etməyib.",
+                  "ru": "Ничего не помогло."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Ja kui kaua see valu teil on olnud?",
+                  "en": "And how long have you had this pain?",
+                  "az": "Bəs bu ağrı sizdə nə vaxtdandır?",
+                  "ru": "А как давно у вас эта боль?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Umbes kaks kuud.",
+                  "en": "About two months.",
+                  "az": "Təxminən iki aydır.",
+                  "ru": "Около двух месяцев."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Ahah.",
+                  "en": "Ahah.",
+                  "az": "Aha.",
+                  "ru": "Ага."
+                },
+                {
+                  "et": "Vaatame.",
+                  "en": "Let’s see.",
+                  "az": "Baxaq.",
+                  "ru": "Посмотрим."
+                },
+                {
+                  "et": "Kas nii on valus?",
+                  "en": "Does this hurt?",
+                  "az": "Belə ağrıyır?",
+                  "ru": "Так больно?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Ai!",
+                  "en": "Ouch!",
+                  "az": "Ay!",
+                  "ru": "Ай!"
+                },
+                {
+                  "et": "Väga valus on.",
+                  "en": "It really hurts.",
+                  "az": "Çox ağrıyır.",
+                  "ru": "Очень больно."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Aga nii?",
+                  "en": "And like this?",
+                  "az": "Bəs belə?",
+                  "ru": "А так?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Aa!",
+                  "en": "Aa!",
+                  "az": "Aa!",
+                  "ru": "А-а!"
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Selge, teeme mõned uuringud.",
+                  "en": "Right, we’ll do some tests.",
+                  "az": "Aydındır, bir neçə müayinə edək.",
+                  "ru": "Ясно, сделаем несколько обследований."
+                },
+                {
+                  "et": "Aga ma kardan, et siin on vaja kohe valuvaigistav süst teha.",
+                  "en": "But I’m afraid this needs a painkilling injection straight away.",
+                  "az": "Amma qorxuram ki, burada dərhal ağrıkəsici iynə vurmaq lazımdır.",
+                  "ru": "Но боюсь, что здесь нужно сразу сделать обезболивающий укол."
+                },
+                {
+                  "et": "Hiljem võibolla operatsioon.",
+                  "en": "Maybe an operation later.",
+                  "az": "Sonra bəlkə də əməliyyat.",
+                  "ru": "Позже, может быть, операция."
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Kas tõesti on vaja süsti?",
+                  "en": "Is an injection really necessary?",
+                  "az": "Doğrudanmı iynə lazımdır?",
+                  "ru": "Неужели нужен укол?"
+                },
+                {
+                  "et": "Ma väga kardan süsti.",
+                  "en": "I’m really afraid of injections.",
+                  "az": "Mən iynədən çox qorxuram.",
+                  "ru": "Я очень боюсь уколов."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Pole vaja karta.",
+                  "en": "There’s no need to be afraid.",
+                  "az": "Qorxmağa ehtiyac yoxdur.",
+                  "ru": "Не нужно бояться."
+                },
+                {
+                  "et": "Pange lihtsalt silmad kinni.",
+                  "en": "Just close your eyes.",
+                  "az": "Sadəcə gözlərinizi yumun.",
+                  "ru": "Просто закройте глаза."
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Oeeh.",
+                  "en": "Oeeh.",
+                  "az": "Uff.",
+                  "ru": "Ой-ой."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Nii.",
+                  "en": "There.",
+                  "az": "Bax belə.",
+                  "ru": "Вот так."
+                },
+                {
+                  "et": "Siin on teie saatekiri.",
+                  "en": "Here is your referral.",
+                  "az": "Budur göndərişiniz.",
+                  "ru": "Вот ваше направление."
+                },
+                {
+                  "et": "Järgmise kolmapäeva hommikul minge kabinetti number 342.",
+                  "en": "Next Wednesday morning go to room number 342.",
+                  "az": "Gələn çərşənbə səhəri 342 nömrəli otağa gedin.",
+                  "ru": "В следующую среду утром идите в кабинет номер 342."
+                },
+                {
+                  "et": "Teile tehakse kompuuteruuring.",
+                  "en": "You will have a CT scan.",
+                  "az": "Sizə kompüter tomoqrafiyası ediləcək.",
+                  "ru": "Вам сделают компьютерную томографию."
+                },
+                {
+                  "et": "Pärast seda tulge tagasi minu juurde.",
+                  "en": "After that, come back to me.",
+                  "az": "Ondan sonra yenidən mənim yanıma gəlin.",
+                  "ru": "После этого возвращайтесь ко мне."
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Aga kas ma vahepeal tööl võiksin käia?",
+                  "en": "But could I go to work in the meantime?",
+                  "az": "Bəs bu arada işə gedə bilərəmmi?",
+                  "ru": "А можно мне пока ходить на работу?"
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Mis tööd te muidu teete?",
+                  "en": "What work do you do?",
+                  "az": "Ümumiyyətlə, nə işlə məşğulsunuz?",
+                  "ru": "А кем вы работаете?"
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Ma olen kokk.",
+                  "en": "I’m a cook.",
+                  "az": "Mən aşpazam.",
+                  "ru": "Я повар."
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Siis ma arvan, et peaksite mõnda aega tööst puhkama.",
+                  "en": "Then I think you should take some time off work.",
+                  "az": "Onda məncə, bir müddət işdən istirahət etməlisiniz.",
+                  "ru": "Тогда, я думаю, вам стоит какое-то время отдохнуть от работы."
+                },
+                {
+                  "et": "Perearstilt saate tervisetõendi.",
+                  "en": "You can get a sick note from your family doctor.",
+                  "az": "Ailə həkimindən arayış alarsınız.",
+                  "ru": "Справку получите у семейного врача."
+                }
+              ]
+            },
+            {
+              "who": "Patsient",
+              "lines": [
+                {
+                  "et": "Aga kas ma kalale tohiks minna?",
+                  "en": "But may I go fishing?",
+                  "az": "Bəs balıq tutmağa gedə bilərəmmi?",
+                  "ru": "А на рыбалку мне можно?"
+                }
+              ]
+            },
+            {
+              "who": "Arst",
+              "lines": [
+                {
+                  "et": "Kuidas te ise arvate?",
+                  "en": "What do you think yourself?",
+                  "az": "Özünüz necə düşünürsünüz?",
+                  "ru": "А вы сами как думаете?"
+                },
+                {
+                  "et": "Ma soovitan teil kalale mitte minna.",
+                  "en": "I would advise you not to go fishing.",
+                  "az": "Sizə balıq tutmağa getməməyi məsləhət görürəm.",
+                  "ru": "Я советую вам не ходить на рыбалку."
+                },
+                {
+                  "et": "Praegu on tähtis puhata.",
+                  "en": "Right now it is important to rest.",
+                  "az": "İndi dincəlmək vacibdir.",
+                  "ru": "Сейчас важно отдыхать."
+                },
+                {
+                  "et": "Ainult niimoodi saab käsi paraneda.",
+                  "en": "Only this way can the hand heal.",
+                  "az": "Əl yalnız belə sağala bilər.",
+                  "ru": "Только так рука может зажить."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "words": {
+        "tervist": {
+          "base": "tervis",
+          "means": {
+            "en": "hello (a greeting: health to you)",
+            "az": "salam (salamlaşma: sağlıq arzusu)",
+            "ru": "здравствуйте (приветствие: «здоровья»)"
+          }
+        }
+      }
+    },
+    {
+      "id": "talk-workday",
+      "added": "2026-11-05",
+      "name": {
+        "en": "Your workday, and how long you’ve worked",
+        "az": "İş günün və nə qədərdir işləyirsən",
+        "ru": "Твой рабочий день и сколько ты уже работаешь"
+      },
+      "why": {
+        "en": "Piret works twelve-hour days, Johannes finishes at a quarter to eight, Ott has his mornings free, Marita opened a salon",
+        "az": "Piret on iki saat işləyir, Yohannes səkkizə on beş qalmış qurtarır, Ottun səhərləri boşdur, Marita salon açıb",
+        "ru": "У Пирет двенадцатичасовой день, Йоханнес заканчивает без четверти восемь, у Отта утро свободно, Марита открыла салон"
+      },
+      "taste": "Hommikud on mul vabad.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Missugune on sinu tööpäev?",
+            "en": "What is your workday like?",
+            "az": "İş günün necə keçir?",
+            "ru": "Какой у тебя рабочий день?"
+          },
+          "turns": [
+            {
+              "who": "Piret",
+              "lines": [
+                {
+                  "et": "Ma pean ärkama kell kuus ja tööle jõuan kella seitsmeks.",
+                  "en": "I have to wake up at six, and I get to work by seven.",
+                  "az": "Saat altıda oyanmalıyam və saat yeddiyə işə çatıram.",
+                  "ru": "Мне нужно вставать в шесть, и на работу я прихожу к семи."
+                },
+                {
+                  "et": "Ja minu tööpäevad on kaheteisttunnised, algavad poole kaheksast hommikul ja lõppevad õhtul kell kaheksa või pool kaheksa.",
+                  "en": "And my workdays are twelve hours long: they start at half past seven in the morning and finish at eight or half past seven in the evening.",
+                  "az": "İş günlərim on iki saatlıqdır: səhər yeddinin yarısında başlayır və axşam saat səkkizdə və ya yeddinin yarısında bitir.",
+                  "ru": "А рабочие дни у меня двенадцатичасовые: начинаются в половине восьмого утра и заканчиваются вечером в восемь или в половине восьмого."
+                }
+              ]
+            },
+            {
+              "who": "Johannes",
+              "lines": [
+                {
+                  "et": "Õpetajatööd teen esmaspäeviti ja kolmapäeviti.",
+                  "en": "I do my teaching on Mondays and Wednesdays.",
+                  "az": "Müəllimlik işini bazar ertəsi və çərşənbə günləri görürəm.",
+                  "ru": "Преподаю я по понедельникам и средам."
+                },
+                {
+                  "et": "Esimene õpilane tuleb kell pool kaks ja viimane tuleb kell seitse.",
+                  "en": "The first student comes at half past one and the last one comes at seven.",
+                  "az": "Birinci şagird saat birin yarısında gəlir, sonuncu isə saat yeddidə.",
+                  "ru": "Первый ученик приходит в половине второго, а последний — в семь."
+                },
+                {
+                  "et": "Nii et kolmveerand kaheksa mu tööpäev lõppeb.",
+                  "en": "So my workday finishes at a quarter to eight.",
+                  "az": "Belə ki, iş günüm səkkizə on beş dəqiqə qalmış bitir.",
+                  "ru": "Так что мой рабочий день заканчивается без четверти восемь."
+                }
+              ]
+            },
+            {
+              "who": "Ott",
+              "lines": [
+                {
+                  "et": "Mina töötan jalgpalliklubis jalgpallitreenerina ja tenniseklubis olen laste liikumistreener ning samal ajal õpin ka ülikoolis.",
+                  "en": "I work at a football club as a football coach, and at a tennis club I am a children’s fitness coach, and at the same time I study at university too.",
+                  "az": "Mən futbol klubunda futbol məşqçisi işləyirəm, tennis klubunda isə uşaqların hərəkət məşqçisiyəm və eyni zamanda universitetdə də oxuyuram.",
+                  "ru": "Я работаю футбольным тренером в футбольном клубе, а в теннисном клубе я детский тренер по движению, и в то же время ещё учусь в университете."
+                },
+                {
+                  "et": "Töötanud olen kaks aastat mõlemal kohal.",
+                  "en": "I have worked at both places for two years.",
+                  "az": "Hər iki yerdə iki ildir işləyirəm.",
+                  "ru": "В обоих местах я работаю два года."
+                },
+                {
+                  "et": "Jalgpallitrenni teen kaks korda nädalas, seal on mul hetkel üks grupp - väikesed mudilased.",
+                  "en": "I run football training twice a week; there I have one group at the moment - little toddlers.",
+                  "az": "Futbol məşqini həftədə iki dəfə keçirəm, orada hazırda bir qrupum var - balaca körpələr.",
+                  "ru": "Футбольные тренировки я провожу два раза в неделю, там у меня сейчас одна группа — малыши."
+                },
+                {
+                  "et": "Ja tenniseklubis töötan ühe päeva nädalas, aga mitme grupiga.",
+                  "en": "And at the tennis club I work one day a week, but with several groups.",
+                  "az": "Tennis klubunda isə həftədə bir gün işləyirəm, amma bir neçə qrupla.",
+                  "ru": "А в теннисном клубе я работаю один день в неделю, но с несколькими группами."
+                },
+                {
+                  "et": "Tavaliselt kestab trenn tund aega.",
+                  "en": "A training session usually lasts an hour.",
+                  "az": "Adətən məşq bir saat çəkir.",
+                  "ru": "Обычно тренировка длится час."
+                }
+              ]
+            },
+            {
+              "who": "Ott",
+              "lines": [
+                {
+                  "et": "Hommikud on mul vabad.",
+                  "en": "My mornings are free.",
+                  "az": "Səhərlərim boşdur.",
+                  "ru": "По утрам я свободен."
+                },
+                {
+                  "et": "Minu tööpäev algab siis, kui lastel kool või lasteaed läbi saab, siis umbes kella neljast.",
+                  "en": "My workday begins when the children’s school or kindergarten is over, so at about four o’clock.",
+                  "az": "İş günüm uşaqların məktəbi və ya bağçası qurtaranda başlayır, yəni təxminən saat dörddən.",
+                  "ru": "Мой рабочий день начинается, когда у детей заканчивается школа или садик, то есть примерно с четырёх."
+                },
+                {
+                  "et": "Tööpäev on lühike: kolm-neli tundi, olenevalt sellest, kui palju gruppe on ja oleneb perioodist.",
+                  "en": "The workday is short: three or four hours, depending on how many groups there are, and it depends on the season.",
+                  "az": "İş günü qısadır: üç-dörd saat, neçə qrup olmasından asılı olaraq, bir də dövrdən asılıdır.",
+                  "ru": "Рабочий день короткий: три-четыре часа, в зависимости от того, сколько групп, и от периода."
+                },
+                {
+                  "et": "Tööpäev saab tavaliselt ikkagi enne kella seitset läbi.",
+                  "en": "The workday is usually over before seven all the same.",
+                  "az": "İş günü adətən yenə də saat yeddidən əvvəl bitir.",
+                  "ru": "Рабочий день обычно всё-таки заканчивается до семи."
+                },
+                {
+                  "et": "Mulle endale meeldib see vabadus, et mul on hommikud vabad ja õhtud vabad.",
+                  "en": "I myself like the freedom of having my mornings free and my evenings free.",
+                  "az": "Özümə bu azadlıq xoşdur ki, səhərlərim də, axşamlarım da boşdur.",
+                  "ru": "Мне самому нравится эта свобода — что у меня свободны и утро, и вечер."
+                }
+              ]
+            },
+            {
+              "who": "Marita",
+              "lines": [
+                {
+                  "et": "Ma töötan juuksurisalongis.",
+                  "en": "I work in a hair salon.",
+                  "az": "Mən bərbər salonunda işləyirəm.",
+                  "ru": "Я работаю в парикмахерской."
+                },
+                {
+                  "et": "Ma olen selle salongi loonud, olen selle juht ja töötan ka juuksurina.",
+                  "en": "I set up this salon, I am its manager and I also work as a hairdresser.",
+                  "az": "Bu salonu mən yaratmışam, onun rəhbəriyəm və həm də bərbər işləyirəm.",
+                  "ru": "Я создала этот салон, я его руководитель и работаю ещё и парикмахером."
+                },
+                {
+                  "et": "Salongi avasin ma kaks aastat tagasi.",
+                  "en": "I opened the salon two years ago.",
+                  "az": "Salonu iki il əvvəl açmışam.",
+                  "ru": "Салон я открыла два года назад."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ask": {
+            "et": "Kui kaua sa oled töötanud?",
+            "en": "How long have you been working?",
+            "az": "Nə qədərdir işləyirsən?",
+            "ru": "Сколько ты уже работаешь?"
+          },
+          "turns": [
+            {
+              "who": "Piret",
+              "lines": [
+                {
+                  "et": "Ma olen töötanud umbes kaheksateist aastat.",
+                  "en": "I have been working for about eighteen years.",
+                  "az": "Təxminən on səkkiz ildir işləyirəm.",
+                  "ru": "Я работаю примерно восемнадцать лет."
+                }
+              ]
+            },
+            {
+              "who": "Johannes",
+              "lines": [
+                {
+                  "et": "See on mu kolmas töökoht muusikaõpetajana.",
+                  "en": "This is my third job as a music teacher.",
+                  "az": "Bu, musiqi müəllimi kimi üçüncü iş yerimdir.",
+                  "ru": "Это моё третье место работы учителем музыки."
+                },
+                {
+                  "et": "Alustasin Tartus juba varem ja siis eelmisel aastal õpetasin Tallinnas veel ühes kohas.",
+                  "en": "I started out in Tartu earlier, and then last year I taught at another place in Tallinn.",
+                  "az": "Daha əvvəl Tartuda başlamışdım, sonra keçən il Tallində daha bir yerdə dərs dedim.",
+                  "ru": "Начинал я ещё раньше в Тарту, а потом в прошлом году преподавал в Таллинне ещё в одном месте."
+                },
+                {
+                  "et": "Nii et kokku on mul kolm töökohta olnud ja selle viimase koha peal ma olen praegu töötanud pool aastat.",
+                  "en": "So altogether I have had three jobs, and at this last one I have been working for half a year now.",
+                  "az": "Belə ki, ümumilikdə üç iş yerim olub və bu sonuncu yerdə hazırda yarım ildir işləyirəm.",
+                  "ru": "Так что всего у меня было три места работы, и на последнем я сейчас работаю полгода."
+                }
+              ]
+            },
+            {
+              "who": "Ott",
+              "lines": [
+                {
+                  "et": "Esialgu alustasin jalgpallitreenerina umbes kaks aastat tagasi, täiesti juhuslikult.",
+                  "en": "I first started as a football coach about two years ago, quite by chance.",
+                  "az": "Futbol məşqçisi kimi təxminən iki il əvvəl, tamamilə təsadüfən başladım.",
+                  "ru": "Начал я футбольным тренером примерно два года назад, совершенно случайно."
+                },
+                {
+                  "et": "Pakuti tööd.",
+                  "en": "I was offered work.",
+                  "az": "İş təklif etdilər.",
+                  "ru": "Предложили работу."
+                },
+                {
+                  "et": "Ja kuna ma olen eluaeg sporti teinud, siis see treeneritöö pakkus mulle väga huvi.",
+                  "en": "And since I have done sport all my life, coaching interested me a lot.",
+                  "az": "Bütün ömrüm boyu idmanla məşğul olduğum üçün bu məşqçilik işi mənə çox maraqlı gəldi.",
+                  "ru": "А так как я всю жизнь занимался спортом, эта тренерская работа меня очень заинтересовала."
+                },
+                {
+                  "et": "Olen siiamaani tööl samas klubis ja olen töötanud väga paljude erinevate gruppide ja laagritega.",
+                  "en": "I am still working at the same club, and I have worked with a great many different groups and camps.",
+                  "az": "Hələ də həmin klubda işləyirəm və çox müxtəlif qruplar və düşərgələrlə işləmişəm.",
+                  "ru": "Я до сих пор работаю в том же клубе и работал с очень многими разными группами и лагерями."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "talk-at-work",
+      "added": "2026-11-05",
+      "name": {
+        "en": "What you do at work",
+        "az": "İşdə nə edirsən",
+        "ru": "Что ты делаешь на работе"
+      },
+      "why": {
+        "en": "An intensive-care nurse, a guitar teacher, a children’s football coach and a hairdresser on what their work is",
+        "az": "Reanimasiya tibb bacısı, gitara müəllimi, balacaların məşqçisi və bərbər işlərinin nə olduğundan danışır",
+        "ru": "Медсестра реанимации, учитель гитары, тренер малышей и парикмахер рассказывают, в чём их работа"
+      },
+      "taste": "Tuleb klient.",
+      "source": "Keeletee",
+      "scenes": [
+        {
+          "ask": {
+            "et": "Mida sa tööl teed?",
+            "en": "What do you do at work?",
+            "az": "İşdə nə edirsən?",
+            "ru": "Что ты делаешь на работе?"
+          },
+          "turns": [
+            {
+              "who": "Piret",
+              "lines": [
+                {
+                  "et": "Põhiliselt tähendab intensiivraviõe töö patsientide jälgimist, nende seisundi jälgimist.",
+                  "en": "Mainly an intensive-care nurse’s work means watching the patients, watching their condition.",
+                  "az": "Reanimasiya tibb bacısının işi əsasən xəstələri izləmək, onların vəziyyətini izləmək deməkdir.",
+                  "ru": "В основном работа медсестры реанимации — это наблюдение за пациентами, наблюдение за их состоянием."
+                },
+                {
+                  "et": "Kui on vaja, siis tuleb sekkuda kas protseduuride või ravimitega.",
+                  "en": "If it’s necessary, you have to step in, either with procedures or with medicines.",
+                  "az": "Lazım olanda ya prosedurlarla, ya da dərmanlarla müdaxilə etmək lazım gəlir.",
+                  "ru": "Если нужно, приходится вмешиваться — процедурами или лекарствами."
+                },
+                {
+                  "et": "Kui midagi juhtub, teavitatakse sellest arsti, kes siis annab vastavad korraldused.",
+                  "en": "If something happens, the doctor is told, and then gives the orders that are needed.",
+                  "az": "Nəsə baş verəndə bu barədə həkimə xəbər verilir, o da lazımi göstərişləri verir.",
+                  "ru": "Если что-то случается, об этом сообщают врачу, и он даёт соответствующие распоряжения."
+                },
+                {
+                  "et": "Üldiselt hakkame siis ikkagi koostöös arsti ja kogu meeskonnaga, kuhu kuulub veel hooldaja, tegutsema.",
+                  "en": "Generally we then act together with the doctor and the whole team, which also includes a care assistant.",
+                  "az": "Ümumiyyətlə, sonra həkim və bütün komanda ilə birlikdə hərəkət edirik, komandaya bir də baxıcı daxildir.",
+                  "ru": "Обычно мы тогда всё-таки действуем вместе с врачом и всей командой, в которую входит ещё и санитар."
+                },
+                {
+                  "et": "Võime teha uuringuid, teha protseduure, anda ravimeid või lihtsalt jälgida.",
+                  "en": "We may do tests, do procedures, give medicines or simply watch.",
+                  "az": "Müayinələr edə, prosedurlar apara, dərman verə və ya sadəcə izləyə bilərik.",
+                  "ru": "Мы можем делать обследования, проводить процедуры, давать лекарства или просто наблюдать."
+                }
+              ]
+            },
+            {
+              "who": "Johannes",
+              "lines": [
+                {
+                  "et": "Ma õpetan lastemuusikakoolis väikseid tulevasi kitarrivirtuoose.",
+                  "en": "I teach little future guitar virtuosos at a children’s music school.",
+                  "az": "Uşaq musiqi məktəbində balaca gələcək gitara virtuozlarına dərs deyirəm.",
+                  "ru": "Я учу маленьких будущих гитарных виртуозов в детской музыкальной школе."
+                },
+                {
+                  "et": "Lapsed on keskmiselt üheteist-kaheteistaastased, osa on nooremad, osa on natuke vanemad.",
+                  "en": "The children are eleven or twelve on average; some are younger, some a little older.",
+                  "az": "Uşaqlar orta hesabla on bir-on iki yaşındadırlar, bəziləri daha kiçik, bəziləri bir az böyükdür.",
+                  "ru": "Детям в среднем одиннадцать-двенадцать лет, некоторые младше, некоторые немного старше."
+                },
+                {
+                  "et": "Praegu on mul neid kaheksa, teen kõigiga kaks korda nädalas individuaaltunde.",
+                  "en": "At the moment I have eight of them, and I give each of them a private lesson twice a week.",
+                  "az": "Hazırda onlardan səkkizi var, hamısı ilə həftədə iki dəfə fərdi dərs keçirəm.",
+                  "ru": "Сейчас их у меня восемь, со всеми я два раза в неделю занимаюсь индивидуально."
+                }
+              ]
+            },
+            {
+              "who": "Ott",
+              "lines": [
+                {
+                  "et": "Tavaliselt alustan trennides soojendusega.",
+                  "en": "I usually start the training sessions with a warm-up.",
+                  "az": "Məşqlərə adətən istiləşmə ilə başlayıram.",
+                  "ru": "Обычно я начинаю тренировки с разминки."
+                },
+                {
+                  "et": "Väiksemate puhul töötavad väga hästi erinevad kullimängud.",
+                  "en": "With the smaller ones, all kinds of tag games work very well.",
+                  "az": "Balacalarla müxtəlif tutmaca oyunları çox yaxşı alınır.",
+                  "ru": "С малышами очень хорошо работают разные игры в салки."
+                },
+                {
+                  "et": "Ja üldse kõik see, kus saab hästi kiiresti ja hästi palju joosta.",
+                  "en": "And generally anything where you get to run really fast and really a lot.",
+                  "az": "Ümumiyyətlə, çox sürətlə və çox qaçmaq olan hər şey.",
+                  "ru": "И вообще всё, где можно очень быстро и очень много бегать."
+                },
+                {
+                  "et": "Ja lõpus jällegi annan lastele vabad käed.",
+                  "en": "And at the end I give the children a free hand again.",
+                  "az": "Sonda isə yenə uşaqlara sərbəstlik verirəm.",
+                  "ru": "А в конце я опять даю детям свободу."
+                },
+                {
+                  "et": "Kui nad tahavad mängida mõnda pallimängu, näiteks rahvastepalli, siis minugi poolest, peaasi, et laps liigub.",
+                  "en": "If they want to play some ball game, dodgeball for instance, that’s fine by me; the main thing is that the child moves.",
+                  "az": "Hansısa top oyunu oynamaq istəsələr, məsələn, “yakan top”, mənim üçün fərqi yoxdur, əsas odur ki, uşaq hərəkət etsin.",
+                  "ru": "Если они хотят поиграть в какую-нибудь игру с мячом, например в вышибалы, то я не против — главное, чтобы ребёнок двигался."
+                }
+              ]
+            },
+            {
+              "who": "Marita",
+              "lines": [
+                {
+                  "et": "Tuleb klient.",
+                  "en": "A client comes in.",
+                  "az": "Müştəri gəlir.",
+                  "ru": "Приходит клиентка."
+                },
+                {
+                  "et": "Ma võtan ta avasüli vastu.",
+                  "en": "I welcome her with open arms.",
+                  "az": "Onu açıq qucaqla qarşılayıram.",
+                  "ru": "Я встречаю её с распростёртыми объятиями."
+                },
+                {
+                  "et": "Siis kõigepealt pesen kliendil pea.",
+                  "en": "Then first of all I wash the client’s hair.",
+                  "az": "Sonra ilk növbədə müştərinin başını yuyuram.",
+                  "ru": "Потом первым делом мою клиентке голову."
+                },
+                {
+                  "et": "Teen peamassaaži.",
+                  "en": "I do a head massage.",
+                  "az": "Baş masajı edirəm.",
+                  "ru": "Делаю массаж головы."
+                },
+                {
+                  "et": "Ja siis vastavalt sellele, kas klient soovib juukseid lõigata või värvida, siis vastavalt sellele tegutsen.",
+                  "en": "And then, depending on whether the client wants her hair cut or coloured, I act accordingly.",
+                  "az": "Sonra da müştərinin saçını kəsdirmək, yoxsa boyatmaq istəməsindən asılı olaraq, ona uyğun hərəkət edirəm.",
+                  "ru": "А потом, в зависимости от того, хочет ли клиентка подстричься или покраситься, действую соответственно."
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "talkWords": {
@@ -52319,6 +53127,22 @@
         "ru": "печёный картофель"
       }
     },
+    "ai": {
+      "base": "ai",
+      "means": {
+        "en": "ouch",
+        "az": "ay",
+        "ru": "ай"
+      }
+    },
+    "aidanud": {
+      "base": "aitama",
+      "means": {
+        "en": "helped",
+        "az": "kömək etmiş",
+        "ru": "помог"
+      }
+    },
     "ained": {
       "base": "aine",
       "means": {
@@ -52463,12 +53287,28 @@
         "ru": "всегда"
       }
     },
+    "algab": {
+      "base": "algama",
+      "means": {
+        "en": "begins, starts",
+        "az": "başlayır",
+        "ru": "начинается"
+      }
+    },
     "algas": {
       "base": "algama",
       "means": {
         "en": "began, started",
         "az": "başladı",
         "ru": "началась"
+      }
+    },
+    "algavad": {
+      "base": "algama",
+      "means": {
+        "en": "they begin, start",
+        "az": "başlayırlar",
+        "ru": "начинаются"
       }
     },
     "alguses": {
@@ -52543,6 +53383,14 @@
         "ru": "с нижнего"
       }
     },
+    "alustan": {
+      "base": "alustama",
+      "means": {
+        "en": "I begin, start",
+        "az": "başlayıram",
+        "ru": "начинаю"
+      }
+    },
     "alustasin": {
       "base": "alustama",
       "means": {
@@ -52559,12 +53407,28 @@
         "ru": "давно"
       }
     },
+    "anda": {
+      "base": "andma",
+      "means": {
+        "en": "to give",
+        "az": "vermək",
+        "ru": "давать"
+      }
+    },
     "ankeet": {
       "base": "ankeet",
       "means": {
         "en": "form, questionnaire",
         "az": "anket",
         "ru": "анкета"
+      }
+    },
+    "annab": {
+      "base": "andma",
+      "means": {
+        "en": "gives",
+        "az": "verir",
+        "ru": "даёт"
       }
     },
     "annan": {
@@ -52605,6 +53469,14 @@
         "en": "I love",
         "az": "sevirəm",
         "ru": "я люблю"
+      }
+    },
+    "arsti": {
+      "base": "arst",
+      "means": {
+        "en": "doctor (the doctor, of the doctor)",
+        "az": "həkim(i)",
+        "ru": "врача"
       }
     },
     "aru": {
@@ -52813,6 +53685,22 @@
         "en": "driving school (as the object)",
         "az": "sürücülük məktəbini",
         "ru": "автошколу"
+      }
+    },
+    "avasin": {
+      "base": "avama",
+      "means": {
+        "en": "I opened",
+        "az": "açdım",
+        "ru": "я открыл(а)"
+      }
+    },
+    "avasüli": {
+      "base": "avasüli",
+      "means": {
+        "en": "with open arms (avasüli vastu võtma)",
+        "az": "açıq qucaqla",
+        "ru": "с распростёртыми объятиями"
       }
     },
     "bakalaureuse": {
@@ -53359,6 +54247,14 @@
         "ru": "жизнь"
       }
     },
+    "eluaeg": {
+      "base": "eluaeg",
+      "means": {
+        "en": "all one's life",
+        "az": "bütün ömür boyu",
+        "ru": "всю жизнь"
+      }
+    },
     "elukaaslane": {
       "base": "elukaaslane",
       "means": {
@@ -53455,6 +54351,14 @@
         "ru": "больше (ei … enam: уже не)"
       }
     },
+    "enda": {
+      "base": "ise",
+      "means": {
+        "en": "one's own (enda kätt: my own hand)",
+        "az": "öz",
+        "ru": "свой"
+      }
+    },
     "endale": {
       "base": "ise",
       "means": {
@@ -53533,6 +54437,22 @@
         "en": "special",
         "az": "xüsusi",
         "ru": "особенного"
+      }
+    },
+    "erinevad": {
+      "base": "erinev",
+      "means": {
+        "en": "different, various",
+        "az": "müxtəlif",
+        "ru": "разные"
+      }
+    },
+    "erinevate": {
+      "base": "erinev",
+      "means": {
+        "en": "different, various (with)",
+        "az": "müxtəlif",
+        "ru": "разных"
       }
     },
     "eriti": {
@@ -53623,6 +54543,14 @@
         "ru": "понедельник"
       }
     },
+    "esmaspäeviti": {
+      "base": "esmaspäeviti",
+      "means": {
+        "en": "on Mondays",
+        "az": "bazar ertəsi günləri",
+        "ru": "по понедельникам"
+      }
+    },
     "et": {
       "base": "et",
       "means": {
@@ -53703,6 +54631,14 @@
         "ru": "картофель фри"
       }
     },
+    "füsioterapeudi": {
+      "base": "füsioterapeut",
+      "means": {
+        "en": "physiotherapist (füsioterapeudi juures: at the physiotherapist's)",
+        "az": "fizioterapevt",
+        "ru": "физиотерапевт(а)"
+      }
+    },
     "füüsika": {
       "base": "füüsika",
       "means": {
@@ -53741,6 +54677,38 @@
         "en": "grilled",
         "az": "qril edilmiş",
         "ru": "на гриле"
+      }
+    },
+    "grupiga": {
+      "base": "grupp",
+      "means": {
+        "en": "group (with … groups)",
+        "az": "qrup(la)",
+        "ru": "группой"
+      }
+    },
+    "grupp": {
+      "base": "grupp",
+      "means": {
+        "en": "group",
+        "az": "qrup",
+        "ru": "группа"
+      }
+    },
+    "gruppe": {
+      "base": "grupp",
+      "means": {
+        "en": "groups",
+        "az": "qruplar",
+        "ru": "групп"
+      }
+    },
+    "gruppide": {
+      "base": "grupp",
+      "means": {
+        "en": "groups (with … groups)",
+        "az": "qruplar(la)",
+        "ru": "группами"
       }
     },
     "hakanud": {
@@ -54119,6 +55087,14 @@
         "ru": "утро"
       }
     },
+    "hommikud": {
+      "base": "hommik",
+      "means": {
+        "en": "mornings",
+        "az": "səhərlər",
+        "ru": "утра, утро"
+      }
+    },
     "hommikuinimene": {
       "base": "hommikuinimene",
       "means": {
@@ -54175,6 +55151,14 @@
         "ru": "осторожный"
       }
     },
+    "hooldaja": {
+      "base": "hooldaja",
+      "means": {
+        "en": "care assistant",
+        "az": "baxıcı",
+        "ru": "санитар, сиделка"
+      }
+    },
     "hoone": {
       "base": "hoone",
       "means": {
@@ -54205,6 +55189,14 @@
         "en": "madhouse",
         "az": "dəlixana",
         "ru": "сумасшедший дом"
+      }
+    },
+    "huvi": {
+      "base": "huvi",
+      "means": {
+        "en": "interest (huvi pakkuma: to interest)",
+        "az": "maraq",
+        "ru": "интерес"
       }
     },
     "huvitav": {
@@ -54407,6 +55399,14 @@
         "ru": "сосу (imen tolmu: пылесошу)"
       }
     },
+    "individuaaltunde": {
+      "base": "individuaaltund",
+      "means": {
+        "en": "private lessons, one-to-one lessons",
+        "az": "fərdi dərslər",
+        "ru": "индивидуальные занятия"
+      }
+    },
     "induktsioonpliit": {
       "base": "induktsioonpliit",
       "means": {
@@ -54453,6 +55453,14 @@
         "en": "people",
         "az": "adamlar",
         "ru": "людей"
+      }
+    },
+    "intensiivraviõe": {
+      "base": "intensiivraviõde",
+      "means": {
+        "en": "intensive-care nurse's",
+        "az": "reanimasiya tibb bacısının",
+        "ru": "медсестры реанимации"
       }
     },
     "interjööriga": {
@@ -54671,6 +55679,30 @@
         "ru": "футбол"
       }
     },
+    "jalgpalliklubis": {
+      "base": "jalgpalliklubi",
+      "means": {
+        "en": "at a football club",
+        "az": "futbol klubunda",
+        "ru": "в футбольном клубе"
+      }
+    },
+    "jalgpallitreenerina": {
+      "base": "jalgpallitreener",
+      "means": {
+        "en": "as a football coach",
+        "az": "futbol məşqçisi kimi",
+        "ru": "футбольным тренером"
+      }
+    },
+    "jalgpallitrenni": {
+      "base": "jalgpallitrenn",
+      "means": {
+        "en": "football training",
+        "az": "futbol məşqi",
+        "ru": "футбольную тренировку"
+      }
+    },
     "jalgpalluriks": {
       "base": "jalgpallur",
       "means": {
@@ -54735,6 +55767,14 @@
         "ru": "бегает"
       }
     },
+    "jookseksid": {
+      "base": "jooksma",
+      "means": {
+        "en": "were running (nagu … jookseksid: as if … were running)",
+        "az": "qaçırmış kimi",
+        "ru": "бегали бы"
+      }
+    },
     "jooksma": {
       "base": "jooksma",
       "means": {
@@ -54757,6 +55797,14 @@
         "en": "we drink",
         "az": "içirik",
         "ru": "пьём"
+      }
+    },
+    "joosta": {
+      "base": "jooksma",
+      "means": {
+        "en": "to run",
+        "az": "qaçmaq",
+        "ru": "бегать"
       }
     },
     "jope": {
@@ -54791,6 +55839,22 @@
         "ru": "водительские права"
       }
     },
+    "juht": {
+      "base": "juht",
+      "means": {
+        "en": "manager, head, boss",
+        "az": "rəhbər",
+        "ru": "руководитель"
+      }
+    },
+    "juhtub": {
+      "base": "juhtuma",
+      "means": {
+        "en": "happens",
+        "az": "baş verir",
+        "ru": "случается"
+      }
+    },
     "juhtus": {
       "base": "juhtuma",
       "means": {
@@ -54805,6 +55869,14 @@
         "en": "case (sel juhul: in that case)",
         "az": "halda",
         "ru": "случае"
+      }
+    },
+    "juhuslikult": {
+      "base": "juhuslikult",
+      "means": {
+        "en": "by chance",
+        "az": "təsadüfən",
+        "ru": "случайно"
       }
     },
     "julgegi": {
@@ -54853,6 +55925,30 @@
         "en": "to drink",
         "az": "içmək",
         "ru": "пить"
+      }
+    },
+    "juukseid": {
+      "base": "juuksed",
+      "means": {
+        "en": "hair",
+        "az": "saç(ları)",
+        "ru": "волосы"
+      }
+    },
+    "juuksurina": {
+      "base": "juuksur",
+      "means": {
+        "en": "as a hairdresser",
+        "az": "bərbər kimi",
+        "ru": "парикмахером"
+      }
+    },
+    "juuksurisalongis": {
+      "base": "juuksurisalong",
+      "means": {
+        "en": "in a hair salon",
+        "az": "bərbər salonunda",
+        "ru": "в парикмахерской"
       }
     },
     "juurat": {
@@ -54951,8 +56047,32 @@
         "ru": "соблюдаю"
       }
     },
+    "jälgida": {
+      "base": "jälgima",
+      "means": {
+        "en": "to watch, monitor",
+        "az": "izləmək",
+        "ru": "наблюдать"
+      }
+    },
+    "jälgimist": {
+      "base": "jälgimine",
+      "means": {
+        "en": "watching, monitoring",
+        "az": "izləmə",
+        "ru": "наблюдение"
+      }
+    },
     "jälle": {
       "base": "jälle",
+      "means": {
+        "en": "again",
+        "az": "yenə",
+        "ru": "опять"
+      }
+    },
+    "jällegi": {
+      "base": "jällegi",
       "means": {
         "en": "again",
         "az": "yenə",
@@ -54981,6 +56101,14 @@
         "en": "next",
         "az": "növbəti",
         "ru": "следующий"
+      }
+    },
+    "järgmise": {
+      "base": "järgmine",
+      "means": {
+        "en": "next (järgmise kolmapäeva hommikul: next Wednesday morning)",
+        "az": "gələn, növbəti",
+        "ru": "следующей"
       }
     },
     "järgmisel": {
@@ -55127,6 +56255,14 @@
         "ru": "в кабинет"
       }
     },
+    "kaebate": {
+      "base": "kaebama",
+      "means": {
+        "en": "you complain (mille üle kaebate: what is the complaint)",
+        "az": "şikayətlənirsiniz",
+        "ru": "жалуетесь"
+      }
+    },
     "kaebavad": {
       "base": "kaebama",
       "means": {
@@ -55199,6 +56335,22 @@
         "ru": "восьмидесятых"
       }
     },
+    "kaheksast": {
+      "base": "kaheksa",
+      "means": {
+        "en": "eight (poole kaheksast: from half past seven)",
+        "az": "səkkiz (yeddinin yarısından)",
+        "ru": "восьми (с половины восьмого)"
+      }
+    },
+    "kaheksateist": {
+      "base": "kaheksateist",
+      "means": {
+        "en": "eighteen",
+        "az": "on səkkiz",
+        "ru": "восемнадцать"
+      }
+    },
     "kahekümne": {
       "base": "kakskümmend",
       "means": {
@@ -55223,6 +56375,14 @@
         "ru": "двухместные"
       }
     },
+    "kaheteistaastased": {
+      "base": "kaheteistaastane",
+      "means": {
+        "en": "twelve-year-olds (üheteist-kaheteistaastased: eleven or twelve years old)",
+        "az": "on iki yaşlı",
+        "ru": "двенадцатилетние"
+      }
+    },
     "kaheteistaastastele": {
       "base": "kaheteistaastane",
       "means": {
@@ -55245,6 +56405,14 @@
         "en": "into the twelfth",
         "az": "on ikinciyə",
         "ru": "в двенадцатый"
+      }
+    },
+    "kaheteisttunnised": {
+      "base": "kaheteisttunnine",
+      "means": {
+        "en": "twelve hours long",
+        "az": "on iki saatlıq",
+        "ru": "двенадцатичасовые"
       }
     },
     "kahjuks": {
@@ -55327,6 +56495,14 @@
         "ru": "двенадцать"
       }
     },
+    "kalale": {
+      "base": "kala",
+      "means": {
+        "en": "fish (kalale minema: to go fishing)",
+        "az": "balıq (balıq tutmağa)",
+        "ru": "на рыбалку"
+      }
+    },
     "kalasupi": {
       "base": "kalasupp",
       "means": {
@@ -55399,6 +56575,14 @@
         "ru": "шкафы"
       }
     },
+    "kardan": {
+      "base": "kartma",
+      "means": {
+        "en": "I am afraid, I fear",
+        "az": "qorxuram",
+        "ru": "боюсь"
+      }
+    },
     "karjuvad": {
       "base": "karjuv",
       "means": {
@@ -55413,6 +56597,14 @@
         "en": "in the Carpathians (Taga-Karpaatides: in Transcarpathia)",
         "az": "Karpatlarda",
         "ru": "в Карпатах"
+      }
+    },
+    "karta": {
+      "base": "kartma",
+      "means": {
+        "en": "to be afraid",
+        "az": "qorxmaq",
+        "ru": "бояться"
       }
     },
     "kas": {
@@ -55791,6 +56983,22 @@
         "ru": "средний"
       }
     },
+    "keskmiselt": {
+      "base": "keskmiselt",
+      "means": {
+        "en": "on average",
+        "az": "orta hesabla",
+        "ru": "в среднем"
+      }
+    },
+    "kestab": {
+      "base": "kestma",
+      "means": {
+        "en": "lasts",
+        "az": "davam edir, çəkir",
+        "ru": "длится"
+      }
+    },
     "kevadel": {
       "base": "kevad",
       "means": {
@@ -55927,6 +57135,14 @@
         "ru": "на гитаре"
       }
     },
+    "kitarrivirtuoose": {
+      "base": "kitarrivirtuoos",
+      "means": {
+        "en": "guitar virtuosos",
+        "az": "gitara virtuozları",
+        "ru": "гитарных виртуозов"
+      }
+    },
     "klaas": {
       "base": "klaas",
       "means": {
@@ -55983,12 +57199,36 @@
         "ru": "карты клиента"
       }
     },
+    "kliendil": {
+      "base": "klient",
+      "means": {
+        "en": "client's (kliendil pea: the client's head)",
+        "az": "müştərinin",
+        "ru": "у клиента"
+      }
+    },
+    "klient": {
+      "base": "klient",
+      "means": {
+        "en": "client, customer",
+        "az": "müştəri",
+        "ru": "клиент"
+      }
+    },
     "klopin": {
       "base": "kloppima",
       "means": {
         "en": "I beat (a carpet)",
         "az": "döyürəm (xalça)",
         "ru": "выбиваю"
+      }
+    },
+    "klubis": {
+      "base": "klubi",
+      "means": {
+        "en": "at the club",
+        "az": "klubda",
+        "ru": "в клубе"
       }
     },
     "kodu": {
@@ -56079,6 +57319,22 @@
         "ru": "собирание"
       }
     },
+    "koha": {
+      "base": "koht",
+      "means": {
+        "en": "place, job (selle viimase koha peal: at this last job)",
+        "az": "yer",
+        "ru": "месте"
+      }
+    },
+    "kohal": {
+      "base": "koht",
+      "means": {
+        "en": "place (mõlemal kohal: at both places)",
+        "az": "yerdə",
+        "ru": "местах"
+      }
+    },
     "kohaliku": {
       "base": "kohalik",
       "means": {
@@ -56103,6 +57359,14 @@
         "ru": "на месте"
       }
     },
+    "kohas": {
+      "base": "koht",
+      "means": {
+        "en": "place (ühes kohas: at one place)",
+        "az": "yerdə",
+        "ru": "месте"
+      }
+    },
     "kohe": {
       "base": "kohe",
       "means": {
@@ -56125,6 +57389,14 @@
         "en": "Kohtla-Järve, a town in the north-east (with järvelt)",
         "az": "Kohtla-Järve (şəhər)",
         "ru": "Кохтла-Ярве (город)"
+      }
+    },
+    "kohutavalt": {
+      "base": "kohutavalt",
+      "means": {
+        "en": "terribly",
+        "az": "dəhşətli",
+        "ru": "ужасно"
       }
     },
     "kohvi": {
@@ -56165,6 +57437,14 @@
         "en": "old cook (a woman cook in a household)",
         "az": "aşpaz qadın",
         "ru": "кухарка"
+      }
+    },
+    "kokk": {
+      "base": "kokk",
+      "means": {
+        "en": "cook",
+        "az": "aşpaz",
+        "ru": "повар"
       }
     },
     "kokku": {
@@ -56263,6 +57543,22 @@
         "ru": "в третий"
       }
     },
+    "kolmapäeva": {
+      "base": "kolmapäev",
+      "means": {
+        "en": "Wednesday('s)",
+        "az": "çərşənbə",
+        "ru": "среды"
+      }
+    },
+    "kolmapäeviti": {
+      "base": "kolmapäeviti",
+      "means": {
+        "en": "on Wednesdays",
+        "az": "çərşənbə günləri",
+        "ru": "по средам"
+      }
+    },
     "kolmas": {
       "base": "kolmas",
       "means": {
@@ -56357,6 +57653,14 @@
         "en": "sweets",
         "az": "konfetlər",
         "ru": "конфеты"
+      }
+    },
+    "kompuuteruuring": {
+      "base": "kompuuteruuring",
+      "means": {
+        "en": "CT scan, computer examination",
+        "az": "kompüter tomoqrafiyası",
+        "ru": "компьютерная томография"
       }
     },
     "konflikt": {
@@ -56567,6 +57871,14 @@
         "ru": "на собрании"
       }
     },
+    "koostöös": {
+      "base": "koostöö",
+      "means": {
+        "en": "together, in cooperation (koostöös … ga: together with)",
+        "az": "əməkdaşlıqda",
+        "ru": "в сотрудничестве"
+      }
+    },
     "kord": {
       "base": "kord",
       "means": {
@@ -56645,6 +57957,14 @@
         "en": "organised, run",
         "az": "təşkil edilmiş",
         "ru": "организованный"
+      }
+    },
+    "korraldused": {
+      "base": "korraldus",
+      "means": {
+        "en": "orders, instructions",
+        "az": "göstərişlər",
+        "ru": "распоряжения"
       }
     },
     "korrus": {
@@ -56853,6 +58173,14 @@
         "en": "falls",
         "az": "düşür",
         "ru": "падает"
+      }
+    },
+    "kullimängud": {
+      "base": "kullimäng",
+      "means": {
+        "en": "tag games, games of tag",
+        "az": "tutmaca oyunları",
+        "ru": "игры в салки"
       }
     },
     "kultuuri": {
@@ -57079,6 +58407,14 @@
         "ru": "знаменитым"
       }
     },
+    "kuulub": {
+      "base": "kuuluma",
+      "means": {
+        "en": "belongs, is part of",
+        "az": "daxildir",
+        "ru": "входит"
+      }
+    },
     "kuupäev": {
       "base": "kuupäev",
       "means": {
@@ -57119,12 +58455,28 @@
         "ru": "самый, больше всего"
       }
     },
+    "kõigepealt": {
+      "base": "kõigepealt",
+      "means": {
+        "en": "first of all",
+        "az": "ilk növbədə",
+        "ru": "прежде всего"
+      }
+    },
     "kõiges": {
       "base": "kõik",
       "means": {
         "en": "in everything",
         "az": "hər şeydə",
         "ru": "во всём"
+      }
+    },
+    "kõigiga": {
+      "base": "kõik",
+      "means": {
+        "en": "with everyone, with all of them",
+        "az": "hamısı ilə",
+        "ru": "со всеми"
       }
     },
     "kõik": {
@@ -57215,6 +58567,14 @@
         "ru": "заядлый, крепкий"
       }
     },
+    "käed": {
+      "base": "käsi",
+      "means": {
+        "en": "hands (vabad käed: a free hand)",
+        "az": "əllər",
+        "ru": "руки"
+      }
+    },
     "käi": {
       "base": "käima",
       "means": {
@@ -57303,12 +58663,28 @@
         "ru": "ходил, был"
       }
     },
+    "käsi": {
+      "base": "käsi",
+      "means": {
+        "en": "hand, arm",
+        "az": "əl",
+        "ru": "рука"
+      }
+    },
     "käsitööõlu": {
       "base": "käsitööõlu",
       "means": {
         "en": "craft beer",
         "az": "sənətkarlıq pivəsi",
         "ru": "крафтовое пиво"
+      }
+    },
+    "kätt": {
+      "base": "käsi",
+      "means": {
+        "en": "hand, arm",
+        "az": "əli",
+        "ru": "руку"
       }
     },
     "kätte": {
@@ -57469,6 +58845,14 @@
         "en": "garlic",
         "az": "sarımsaq",
         "ru": "чеснок"
+      }
+    },
+    "laagritega": {
+      "base": "laager",
+      "means": {
+        "en": "camps (with … camps)",
+        "az": "düşərgələrlə",
+        "ru": "лагерями"
       }
     },
     "laamenda": {
@@ -57639,6 +59023,14 @@
         "ru": "детей"
       }
     },
+    "lasteaed": {
+      "base": "lasteaed",
+      "means": {
+        "en": "kindergarten",
+        "az": "uşaq bağçası",
+        "ru": "детский сад"
+      }
+    },
     "lastel": {
       "base": "laps",
       "means": {
@@ -57661,6 +59053,14 @@
         "en": "for the children",
         "az": "uşaqlara",
         "ru": "детям"
+      }
+    },
+    "lastemuusikakoolis": {
+      "base": "lastemuusikakool",
+      "means": {
+        "en": "at a children's music school",
+        "az": "uşaq musiqi məktəbində",
+        "ru": "в детской музыкальной школе"
       }
     },
     "lastevanemate": {
@@ -57879,6 +59279,14 @@
         "ru": "Лийа"
       }
     },
+    "liigub": {
+      "base": "liikuma",
+      "means": {
+        "en": "moves",
+        "az": "hərəkət edir",
+        "ru": "двигается"
+      }
+    },
     "liigutama": {
       "base": "liigutama",
       "means": {
@@ -57887,12 +59295,28 @@
         "ru": "двигать"
       }
     },
+    "liigutan": {
+      "base": "liigutama",
+      "means": {
+        "en": "I move (it)",
+        "az": "tərpədirəm",
+        "ru": "двигаю"
+      }
+    },
     "liikuda": {
       "base": "liikuma",
       "means": {
         "en": "to move",
         "az": "hərəkət etmək",
         "ru": "двигаться"
+      }
+    },
+    "liikumistreener": {
+      "base": "liikumistreener",
+      "means": {
+        "en": "fitness coach, movement coach",
+        "az": "hərəkət məşqçisi",
+        "ru": "тренер по движению"
       }
     },
     "liisi": {
@@ -58023,6 +59447,14 @@
         "ru": "естественно"
       }
     },
+    "loonud": {
+      "base": "looma",
+      "means": {
+        "en": "created, set up",
+        "az": "yaratmış",
+        "ru": "создал(а)"
+      }
+    },
     "lootsin": {
       "base": "lootma",
       "means": {
@@ -58063,6 +59495,14 @@
         "ru": "удовольствие"
       }
     },
+    "lõigata": {
+      "base": "lõikama",
+      "means": {
+        "en": "to cut",
+        "az": "kəsmək",
+        "ru": "стричь, резать"
+      }
+    },
     "lõpetan": {
       "base": "lõpetama",
       "means": {
@@ -58101,6 +59541,14 @@
         "en": "ends",
         "az": "bitir",
         "ru": "заканчивается"
+      }
+    },
+    "lõppevad": {
+      "base": "lõppema",
+      "means": {
+        "en": "they end, finish",
+        "az": "bitirlər",
+        "ru": "заканчиваются"
       }
     },
     "lõpuni": {
@@ -58237,6 +59685,14 @@
         "en": "I went",
         "az": "getdim",
         "ru": "я пошёл"
+      }
+    },
+    "lühike": {
+      "base": "lühike",
+      "means": {
+        "en": "short",
+        "az": "qısa",
+        "ru": "короткий"
       }
     },
     "lütseumi": {
@@ -58583,6 +60039,14 @@
         "ru": "машину, машины"
       }
     },
+    "massaaži": {
+      "base": "massaaž",
+      "means": {
+        "en": "massage",
+        "az": "masaj",
+        "ru": "массаж"
+      }
+    },
     "matemaatikas": {
       "base": "matemaatika",
       "means": {
@@ -58693,6 +60157,14 @@
         "en": "husband; man",
         "az": "ər; kişi",
         "ru": "муж; мужчина"
+      }
+    },
+    "meeskonnaga": {
+      "base": "meeskond",
+      "means": {
+        "en": "with the team",
+        "az": "komanda ilə",
+        "ru": "с командой"
       }
     },
     "mehe": {
@@ -58967,6 +60439,14 @@
         "ru": "со мной"
       }
     },
+    "minugi": {
+      "base": "mina",
+      "means": {
+        "en": "me too (minugi poolest: fine by me)",
+        "az": "mən də (mənim üçün fərqi yoxdur)",
+        "ru": "и я (по мне — пожалуйста)"
+      }
+    },
     "minul": {
       "base": "mina",
       "means": {
@@ -58999,6 +60479,14 @@
         "ru": "что; который"
       }
     },
+    "miski": {
+      "base": "miski",
+      "means": {
+        "en": "anything, something (mitte miski: nothing at all)",
+        "az": "nəsə (heç nə)",
+        "ru": "что-то (ничто)"
+      }
+    },
     "missugune": {
       "base": "missugune",
       "means": {
@@ -59029,6 +60517,14 @@
         "en": "what kind of",
         "az": "hansı",
         "ru": "какое"
+      }
+    },
+    "mitme": {
+      "base": "mitu",
+      "means": {
+        "en": "several, many (mitme grupiga: with several groups)",
+        "az": "bir neçə",
+        "ru": "несколькими"
       }
     },
     "mitmekesi": {
@@ -59117,6 +60613,14 @@
         "en": "model",
         "az": "model",
         "ru": "модель"
+      }
+    },
+    "mudilased": {
+      "base": "mudilane",
+      "means": {
+        "en": "little kids, toddlers",
+        "az": "balaca uşaqlar",
+        "ru": "малыши"
       }
     },
     "muid": {
@@ -59231,6 +60735,14 @@
         "ru": "другой"
       }
     },
+    "muusikaõpetajana": {
+      "base": "muusikaõpetaja",
+      "means": {
+        "en": "as a music teacher",
+        "az": "musiqi müəllimi kimi",
+        "ru": "учителем музыки"
+      }
+    },
     "mõelnud": {
       "base": "mõtlema",
       "means": {
@@ -59253,6 +60765,22 @@
         "en": "to affect, to have an effect",
         "az": "təsir etmək",
         "ru": "влиять"
+      }
+    },
+    "mõlemal": {
+      "base": "mõlemad",
+      "means": {
+        "en": "both (mõlemal kohal: at both places)",
+        "az": "hər iki",
+        "ru": "обоих"
+      }
+    },
+    "mõnda": {
+      "base": "mõni",
+      "means": {
+        "en": "some (mõnda aega: for some time)",
+        "az": "bəzi, hansısa",
+        "ru": "какой-нибудь, некоторое"
       }
     },
     "mõned": {
@@ -59349,6 +60877,14 @@
         "en": "I remember",
         "az": "xatırlayıram",
         "ru": "помню"
+      }
+    },
+    "mängida": {
+      "base": "mängima",
+      "means": {
+        "en": "to play",
+        "az": "oynamaq",
+        "ru": "играть"
       }
     },
     "mängima": {
@@ -59647,6 +61183,14 @@
         "ru": "четвёрки"
       }
     },
+    "neljast": {
+      "base": "neli",
+      "means": {
+        "en": "four (kella neljast: from four o'clock)",
+        "az": "dörd (saat dörddən)",
+        "ru": "четырёх"
+      }
+    },
     "nende": {
       "base": "nemad",
       "means": {
@@ -59805,6 +61349,14 @@
         "en": "younger (kõige noorem: the youngest)",
         "az": "kiçik",
         "ru": "младший"
+      }
+    },
+    "nooremad": {
+      "base": "noor",
+      "means": {
+        "en": "younger",
+        "az": "daha kiçik",
+        "ru": "младше"
       }
     },
     "nooremal": {
@@ -60079,6 +61631,14 @@
         "ru": "дешевле"
       }
     },
+    "oeeh": {
+      "base": "oeeh",
+      "means": {
+        "en": "oh dear (a sigh)",
+        "az": "uff",
+        "ru": "ой-ой"
+      }
+    },
     "oi": {
       "base": "oi",
       "means": {
@@ -60173,6 +61733,22 @@
         "en": "I am",
         "az": "-am, varam",
         "ru": "я есть"
+      }
+    },
+    "oleneb": {
+      "base": "olenema",
+      "means": {
+        "en": "depends",
+        "az": "asılıdır",
+        "ru": "зависит"
+      }
+    },
+    "olenevalt": {
+      "base": "olenevalt",
+      "means": {
+        "en": "depending (olenevalt sellest: depending on)",
+        "az": "asılı olaraq",
+        "ru": "в зависимости"
       }
     },
     "olengi": {
@@ -60319,6 +61895,14 @@
         "ru": "о"
       }
     },
+    "operatsioon": {
+      "base": "operatsioon",
+      "means": {
+        "en": "operation",
+        "az": "əməliyyat",
+        "ru": "операция"
+      }
+    },
     "orav": {
       "base": "orav",
       "means": {
@@ -60333,6 +61917,14 @@
         "en": "orienteering",
         "az": "oriyentirləmə",
         "ru": "ориентирование"
+      }
+    },
+    "osa": {
+      "base": "osa",
+      "means": {
+        "en": "part; some (osa on nooremad: some are younger)",
+        "az": "hissə; bəziləri",
+        "ru": "часть; некоторые"
       }
     },
     "osaga": {
@@ -60551,12 +62143,44 @@
         "ru": "предложить"
       }
     },
+    "pakkus": {
+      "base": "pakkuma",
+      "means": {
+        "en": "offered (huvi pakkus: interested)",
+        "az": "təklif etdi",
+        "ru": "предлагал(о)"
+      }
+    },
+    "pakuti": {
+      "base": "pakkuma",
+      "means": {
+        "en": "was offered",
+        "az": "təklif edildi",
+        "ru": "предложили"
+      }
+    },
     "palju": {
       "base": "palju",
       "means": {
         "en": "a lot, many, much",
         "az": "çox",
         "ru": "много"
+      }
+    },
+    "paljude": {
+      "base": "palju",
+      "means": {
+        "en": "many (with)",
+        "az": "çox",
+        "ru": "многими"
+      }
+    },
+    "pallimängu": {
+      "base": "pallimäng",
+      "means": {
+        "en": "ball game",
+        "az": "top oyunu",
+        "ru": "игру с мячом"
       }
     },
     "palun": {
@@ -60631,6 +62255,14 @@
         "ru": "чинить"
       }
     },
+    "paraneda": {
+      "base": "paranema",
+      "means": {
+        "en": "to heal, get better",
+        "az": "sağalmaq",
+        "ru": "зажить, поправиться"
+      }
+    },
     "pardifilee": {
       "base": "pardifilee",
       "means": {
@@ -60687,6 +62319,22 @@
         "ru": "пастельные цвета"
       }
     },
+    "patsientide": {
+      "base": "patsient",
+      "means": {
+        "en": "patients'",
+        "az": "xəstələrin",
+        "ru": "пациентов"
+      }
+    },
+    "pea": {
+      "base": "pea",
+      "means": {
+        "en": "head (pead pesema: to wash someone's hair)",
+        "az": "baş",
+        "ru": "голова"
+      }
+    },
     "peaaegu": {
       "base": "peaaegu",
       "means": {
@@ -60695,12 +62343,28 @@
         "ru": "почти"
       }
     },
+    "peaasi": {
+      "base": "peaasi",
+      "means": {
+        "en": "the main thing",
+        "az": "əsas odur",
+        "ru": "главное"
+      }
+    },
     "peaks": {
       "base": "pidama",
       "means": {
         "en": "should (peaks olema: there should be)",
         "az": "olmalıdır",
         "ru": "должен"
+      }
+    },
+    "peaksite": {
+      "base": "pidama",
+      "means": {
+        "en": "you should",
+        "az": "etməlisiniz",
+        "ru": "вам следовало бы"
       }
     },
     "peal": {
@@ -60725,6 +62389,14 @@
         "en": "in the capital",
         "az": "paytaxtda",
         "ru": "в столице"
+      }
+    },
+    "peamassaaži": {
+      "base": "peamassaaž",
+      "means": {
+        "en": "head massage",
+        "az": "baş masajı",
+        "ru": "массаж головы"
       }
     },
     "pean": {
@@ -60775,6 +62447,14 @@
         "ru": "семейного врача"
       }
     },
+    "perearstilt": {
+      "base": "perearst",
+      "means": {
+        "en": "from the family doctor",
+        "az": "ailə həkimindən",
+        "ru": "у семейного врача"
+      }
+    },
     "perekond": {
       "base": "perekond",
       "means": {
@@ -60789,6 +62469,14 @@
         "en": "for the family",
         "az": "ailə üçün",
         "ru": "для семьи"
+      }
+    },
+    "perioodist": {
+      "base": "periood",
+      "means": {
+        "en": "period, season (oleneb perioodist: depends on the season)",
+        "az": "dövr(dən)",
+        "ru": "от периода"
       }
     },
     "pesamuna": {
@@ -61223,6 +62911,22 @@
         "ru": "я пыталась"
       }
     },
+    "protseduure": {
+      "base": "protseduur",
+      "means": {
+        "en": "procedures",
+        "az": "prosedurlar",
+        "ru": "процедуры"
+      }
+    },
+    "protseduuride": {
+      "base": "protseduur",
+      "means": {
+        "en": "procedures (with)",
+        "az": "prosedurlar(la)",
+        "ru": "процедурами"
+      }
+    },
     "protsenti": {
       "base": "protsent",
       "means": {
@@ -61245,6 +62949,30 @@
         "en": "rubbish, trash",
         "az": "zibil",
         "ru": "мусор"
+      }
+    },
+    "puhata": {
+      "base": "puhkama",
+      "means": {
+        "en": "to rest",
+        "az": "dincəlmək",
+        "ru": "отдыхать"
+      }
+    },
+    "puhkama": {
+      "base": "puhkama",
+      "means": {
+        "en": "rest (tööst puhkama: take time off work)",
+        "az": "dincəlmək",
+        "ru": "отдыхать"
+      }
+    },
+    "puhul": {
+      "base": "puhul",
+      "means": {
+        "en": "in the case of, with (väiksemate puhul: with the smaller ones)",
+        "az": "halında",
+        "ru": "в случае, у"
       }
     },
     "puid": {
@@ -61325,6 +63053,14 @@
         "en": "main, basic",
         "az": "əsas",
         "ru": "главное"
+      }
+    },
+    "põhiliselt": {
+      "base": "põhiliselt",
+      "means": {
+        "en": "mainly",
+        "az": "əsasən",
+        "ru": "в основном"
       }
     },
     "põhimõtteliselt": {
@@ -61551,6 +63287,14 @@
         "ru": "спокойно"
       }
     },
+    "rahvastepalli": {
+      "base": "rahvastepall",
+      "means": {
+        "en": "dodgeball",
+        "az": "yakan top",
+        "ru": "вышибалы"
+      }
+    },
     "rajatud": {
       "base": "rajama",
       "means": {
@@ -61621,6 +63365,22 @@
         "en": "by bike",
         "az": "velosipedlə",
         "ru": "на велосипеде"
+      }
+    },
+    "ravimeid": {
+      "base": "ravim",
+      "means": {
+        "en": "medicines",
+        "az": "dərmanlar",
+        "ru": "лекарства"
+      }
+    },
+    "ravimitega": {
+      "base": "ravim",
+      "means": {
+        "en": "with medicines",
+        "az": "dərmanlarla",
+        "ru": "лекарствами"
       }
     },
     "reaalained": {
@@ -62167,12 +63927,36 @@
         "ru": "в салате"
       }
     },
+    "salongi": {
+      "base": "salong",
+      "means": {
+        "en": "salon",
+        "az": "salon",
+        "ru": "салон"
+      }
+    },
     "samad": {
       "base": "sama",
       "means": {
         "en": "the same",
         "az": "eyni",
         "ru": "те же"
+      }
+    },
+    "samal": {
+      "base": "sama",
+      "means": {
+        "en": "same (samal ajal: at the same time)",
+        "az": "eyni",
+        "ru": "то же"
+      }
+    },
+    "samas": {
+      "base": "sama",
+      "means": {
+        "en": "same (samas klubis: at the same club)",
+        "az": "eyni",
+        "ru": "том же"
       }
     },
     "sanatoorium": {
@@ -62295,12 +64079,28 @@
         "ru": "стены"
       }
     },
+    "seisundi": {
+      "base": "seisund",
+      "means": {
+        "en": "condition, state",
+        "az": "vəziyyət",
+        "ru": "состояния"
+      }
+    },
     "seitse": {
       "base": "seitse",
       "means": {
         "en": "seven",
         "az": "yeddi",
         "ru": "семь"
+      }
+    },
+    "seitset": {
+      "base": "seitse",
+      "means": {
+        "en": "seven (enne kella seitset: before seven)",
+        "az": "yeddi",
+        "ru": "семи"
       }
     },
     "seitsme": {
@@ -62317,6 +64117,22 @@
         "en": "seven years old",
         "az": "yeddi yaşlı",
         "ru": "семилетний"
+      }
+    },
+    "seitsmeks": {
+      "base": "seitse",
+      "means": {
+        "en": "seven (kella seitsmeks: by seven)",
+        "az": "yeddiyə",
+        "ru": "к семи"
+      }
+    },
+    "sekkuda": {
+      "base": "sekkuma",
+      "means": {
+        "en": "to intervene, step in",
+        "az": "müdaxilə etmək",
+        "ru": "вмешиваться"
       }
     },
     "sel": {
@@ -62567,6 +64383,14 @@
         "ru": "в глаза"
       }
     },
+    "silmad": {
+      "base": "silm",
+      "means": {
+        "en": "eyes (silmad kinni: eyes shut)",
+        "az": "gözlər",
+        "ru": "глаза"
+      }
+    },
     "sind": {
       "base": "sina",
       "means": {
@@ -62589,6 +64413,14 @@
         "en": "your",
         "az": "sənin",
         "ru": "твой"
+      }
+    },
+    "sipelgad": {
+      "base": "sipelgas",
+      "means": {
+        "en": "ants",
+        "az": "qarışqalar",
+        "ru": "муравьи"
       }
     },
     "sisekujundusdisaineriks": {
@@ -62671,6 +64503,14 @@
         "ru": "льготный билет"
       }
     },
+    "soojendusega": {
+      "base": "soojendus",
+      "means": {
+        "en": "with a warm-up",
+        "az": "istiləşmə ilə",
+        "ru": "с разминки"
+      }
+    },
     "soolakaevandused": {
       "base": "soolakaevandus",
       "means": {
@@ -62711,6 +64551,14 @@
         "ru": "не хочу (ei soovi)"
       }
     },
+    "soovib": {
+      "base": "soovima",
+      "means": {
+        "en": "wants, wishes",
+        "az": "istəyir",
+        "ru": "желает"
+      }
+    },
     "soovidest": {
       "base": "soov",
       "means": {
@@ -62749,6 +64597,14 @@
         "en": "you wished, you wanted",
         "az": "istəyirdiniz",
         "ru": "вы хотели"
+      }
+    },
+    "soovitan": {
+      "base": "soovitama",
+      "means": {
+        "en": "I advise, recommend",
+        "az": "məsləhət görürəm",
+        "ru": "советую"
       }
     },
     "soovite": {
@@ -63255,12 +65111,28 @@
         "ru": "рождается"
       }
     },
+    "süst": {
+      "base": "süst",
+      "means": {
+        "en": "injection",
+        "az": "iynə",
+        "ru": "укол"
+      }
+    },
     "süsteem": {
       "base": "süsteem",
       "means": {
         "en": "system",
         "az": "sistem",
         "ru": "система"
+      }
+    },
+    "süsti": {
+      "base": "süst",
+      "means": {
+        "en": "injection",
+        "az": "iynə(ni)",
+        "ru": "укол(а)"
       }
     },
     "süüa": {
@@ -63583,6 +65455,14 @@
         "ru": "Тарту"
       }
     },
+    "tartus": {
+      "base": "Tartu",
+      "means": {
+        "en": "in Tartu",
+        "az": "Tartuda",
+        "ru": "в Тарту"
+      }
+    },
     "tartusse": {
       "base": "Tartu",
       "means": {
@@ -63711,6 +65591,14 @@
         "ru": "знаете"
       }
     },
+    "teavitatakse": {
+      "base": "teavitama",
+      "means": {
+        "en": "is informed, is told",
+        "az": "xəbər verilir",
+        "ru": "сообщают"
+      }
+    },
     "teda": {
       "base": "tema",
       "means": {
@@ -63765,6 +65653,14 @@
         "en": "having served, been in service",
         "az": "xidmət etmiş",
         "ru": "служивший"
+      }
+    },
+    "teete": {
+      "base": "tegema",
+      "means": {
+        "en": "you do",
+        "az": "edirsiniz",
+        "ru": "делаете"
       }
     },
     "tegele": {
@@ -63831,6 +65727,14 @@
         "ru": "я сделал"
       }
     },
+    "tegutsema": {
+      "base": "tegutsema",
+      "means": {
+        "en": "to act",
+        "az": "hərəkət etmək",
+        "ru": "действовать"
+      }
+    },
     "tegutsen": {
       "base": "tegutsema",
       "means": {
@@ -63845,6 +65749,22 @@
         "en": "to do, to make",
         "az": "etmək",
         "ru": "делать"
+      }
+    },
+    "tehakse": {
+      "base": "tegema",
+      "means": {
+        "en": "will be done, is done",
+        "az": "ediləcək",
+        "ru": "сделают"
+      }
+    },
+    "tehti": {
+      "base": "tegema",
+      "means": {
+        "en": "was done (seal tehti massaaži: there I had a massage)",
+        "az": "edildi",
+        "ru": "делали"
       }
     },
     "tehtud": {
@@ -64039,6 +65959,14 @@
         "ru": "ему, ей"
       }
     },
+    "tenniseklubis": {
+      "base": "tenniseklubi",
+      "means": {
+        "en": "at a tennis club",
+        "az": "tennis klubunda",
+        "ru": "в теннисном клубе"
+      }
+    },
     "teoreetilised": {
       "base": "teoreetiline",
       "means": {
@@ -64101,6 +66029,14 @@
         "en": "to health",
         "az": "sağlamlığa",
         "ru": "здоровью"
+      }
+    },
+    "tervisetõendi": {
+      "base": "tervisetõend",
+      "means": {
+        "en": "sick note, health certificate",
+        "az": "arayış",
+        "ru": "справку"
       }
     },
     "tervislik": {
@@ -64181,6 +66117,14 @@
         "en": "in the room",
         "az": "otaqda",
         "ru": "в номере, в комнате"
+      }
+    },
+    "tohiks": {
+      "base": "tohtima",
+      "means": {
+        "en": "may, would be allowed to",
+        "az": "olarmı, icazə varmı",
+        "ru": "можно, разрешено"
       }
     },
     "toidu": {
@@ -64303,6 +66247,22 @@
         "ru": "тракториста"
       }
     },
+    "treeneritöö": {
+      "base": "treeneritöö",
+      "means": {
+        "en": "coaching work",
+        "az": "məşqçilik işi",
+        "ru": "тренерская работа"
+      }
+    },
+    "trenn": {
+      "base": "trenn",
+      "means": {
+        "en": "training session",
+        "az": "məşq",
+        "ru": "тренировка"
+      }
+    },
     "trenne": {
       "base": "trenn",
       "means": {
@@ -64317,6 +66277,14 @@
         "en": "to training, to practice",
         "az": "məşqə",
         "ru": "на тренировку"
+      }
+    },
+    "trennides": {
+      "base": "trenn",
+      "means": {
+        "en": "in training sessions",
+        "az": "məşqlərdə",
+        "ru": "на тренировках"
       }
     },
     "trennidest": {
@@ -64423,6 +66391,14 @@
         "ru": "молодцы"
       }
     },
+    "tuim": {
+      "base": "tuim",
+      "means": {
+        "en": "numb",
+        "az": "keyimiş",
+        "ru": "онемевший"
+      }
+    },
     "tuleb": {
       "base": "tulema",
       "means": {
@@ -64445,6 +66421,14 @@
         "en": "they come",
         "az": "gəlirlər",
         "ru": "приходят"
+      }
+    },
+    "tulevasi": {
+      "base": "tulevane",
+      "means": {
+        "en": "future",
+        "az": "gələcək",
+        "ru": "будущих"
       }
     },
     "tulge": {
@@ -64495,6 +66479,14 @@
         "ru": "тёмный"
       }
     },
+    "tund": {
+      "base": "tund",
+      "means": {
+        "en": "hour; lesson (tund aega: an hour)",
+        "az": "saat; dərs",
+        "ru": "час; урок"
+      }
+    },
     "tunde": {
       "base": "tund",
       "means": {
@@ -64533,6 +66525,14 @@
         "en": "I feel",
         "az": "hiss edirəm",
         "ru": "чувствую"
+      }
+    },
+    "tunnete": {
+      "base": "tundma",
+      "means": {
+        "en": "you feel (kuidas te ennast tunnete: how are you feeling)",
+        "az": "hiss edirsiniz",
+        "ru": "чувствуете"
       }
     },
     "turistid": {
@@ -64679,6 +66679,14 @@
         "ru": "означает"
       }
     },
+    "tähtis": {
+      "base": "tähtis",
+      "means": {
+        "en": "important",
+        "az": "vacib",
+        "ru": "важно"
+      }
+    },
     "täiesti": {
       "base": "täiesti",
       "means": {
@@ -64823,6 +66831,14 @@
         "ru": "место работы"
       }
     },
+    "töökohta": {
+      "base": "töökoht",
+      "means": {
+        "en": "jobs, workplaces",
+        "az": "iş yeri",
+        "ru": "места работы"
+      }
+    },
     "tööl": {
       "base": "töö",
       "means": {
@@ -64845,6 +66861,30 @@
         "en": "worktop",
         "az": "iş səthi",
         "ru": "столешница"
+      }
+    },
+    "tööpäev": {
+      "base": "tööpäev",
+      "means": {
+        "en": "workday",
+        "az": "iş günü",
+        "ru": "рабочий день"
+      }
+    },
+    "tööpäevad": {
+      "base": "tööpäev",
+      "means": {
+        "en": "workdays",
+        "az": "iş günləri",
+        "ru": "рабочие дни"
+      }
+    },
+    "tööst": {
+      "base": "töö",
+      "means": {
+        "en": "from work",
+        "az": "işdən",
+        "ru": "от работы"
       }
     },
     "töösärgid": {
@@ -64877,6 +66917,14 @@
         "en": "worked",
         "az": "işləmiş",
         "ru": "работал"
+      }
+    },
+    "töötavad": {
+      "base": "töötama",
+      "means": {
+        "en": "work (they work well: töötavad hästi)",
+        "az": "işləyir",
+        "ru": "работают"
       }
     },
     "tüdruk": {
@@ -65103,6 +67151,22 @@
         "ru": "заново"
       }
     },
+    "uuringud": {
+      "base": "uuring",
+      "means": {
+        "en": "tests, examinations",
+        "az": "müayinələr",
+        "ru": "обследования"
+      }
+    },
+    "uuringuid": {
+      "base": "uuring",
+      "means": {
+        "en": "tests, examinations",
+        "az": "müayinələr",
+        "ru": "обследования"
+      }
+    },
     "uus": {
       "base": "uus",
       "means": {
@@ -65181,6 +67245,22 @@
         "en": "free",
         "az": "boş, sərbəst",
         "ru": "свободный"
+      }
+    },
+    "vabad": {
+      "base": "vaba",
+      "means": {
+        "en": "free",
+        "az": "boş, sərbəst",
+        "ru": "свободны"
+      }
+    },
+    "vabadus": {
+      "base": "vabadus",
+      "means": {
+        "en": "freedom",
+        "az": "azadlıq",
+        "ru": "свобода"
       }
     },
     "vabandust": {
@@ -65383,6 +67463,46 @@
         "ru": "готов"
       }
     },
+    "valu": {
+      "base": "valu",
+      "means": {
+        "en": "pain",
+        "az": "ağrı",
+        "ru": "боль"
+      }
+    },
+    "valus": {
+      "base": "valus",
+      "means": {
+        "en": "painful (valus on: it hurts)",
+        "az": "ağrılı",
+        "ru": "больно"
+      }
+    },
+    "valutab": {
+      "base": "valutama",
+      "means": {
+        "en": "hurts, aches",
+        "az": "ağrıyır",
+        "ru": "болит"
+      }
+    },
+    "valuvaigistav": {
+      "base": "valuvaigistav",
+      "means": {
+        "en": "painkilling",
+        "az": "ağrıkəsici",
+        "ru": "обезболивающий"
+      }
+    },
+    "valuvaigisteid": {
+      "base": "valuvaigisti",
+      "means": {
+        "en": "painkillers",
+        "az": "ağrıkəsicilər",
+        "ru": "обезболивающие"
+      }
+    },
     "vana": {
       "base": "vana",
       "means": {
@@ -65549,6 +67669,22 @@
         "en": "calves",
         "az": "buzovlar",
         "ru": "телята"
+      }
+    },
+    "vastavad": {
+      "base": "vastav",
+      "means": {
+        "en": "appropriate, corresponding",
+        "az": "müvafiq",
+        "ru": "соответствующие"
+      }
+    },
+    "vastavalt": {
+      "base": "vastavalt",
+      "means": {
+        "en": "according to, accordingly (vastavalt sellele: depending on that)",
+        "az": "uyğun olaraq",
+        "ru": "соответственно"
       }
     },
     "vastu": {
@@ -66007,6 +68143,14 @@
         "ru": "возможно"
       }
     },
+    "võime": {
+      "base": "võima",
+      "means": {
+        "en": "we can, may",
+        "az": "bilərik",
+        "ru": "можем"
+      }
+    },
     "võite": {
       "base": "võima",
       "means": {
@@ -66087,6 +68231,14 @@
         "ru": "возьмите"
       }
     },
+    "võtsin": {
+      "base": "võtma",
+      "means": {
+        "en": "I took",
+        "az": "götürdüm, içdim",
+        "ru": "принимал, взял"
+      }
+    },
     "võttis": {
       "base": "võtma",
       "means": {
@@ -66127,6 +68279,14 @@
         "ru": "как минимум"
       }
     },
+    "vähendada": {
+      "base": "vähendama",
+      "means": {
+        "en": "to reduce",
+        "az": "azaltmaq",
+        "ru": "уменьшить"
+      }
+    },
     "väike": {
       "base": "väike",
       "means": {
@@ -66141,6 +68301,14 @@
         "en": "in a small town",
         "az": "kiçik şəhərdə",
         "ru": "в маленьком городе"
+      }
+    },
+    "väikesed": {
+      "base": "väike",
+      "means": {
+        "en": "little, small",
+        "az": "balaca",
+        "ru": "маленькие"
       }
     },
     "väikseid": {
@@ -66173,6 +68341,14 @@
         "en": "smallest, youngest (kõige väiksemat)",
         "az": "ən kiçik",
         "ru": "самого маленького"
+      }
+    },
+    "väiksemate": {
+      "base": "väike",
+      "means": {
+        "en": "smaller (the smaller ones)",
+        "az": "daha balacalar",
+        "ru": "младших, маленьких"
       }
     },
     "välja": {
@@ -66213,6 +68389,14 @@
         "en": "colours",
         "az": "rənglər",
         "ru": "цвета"
+      }
+    },
+    "värvida": {
+      "base": "värvima",
+      "means": {
+        "en": "to colour, dye",
+        "az": "boyamaq",
+        "ru": "красить"
       }
     },
     "värvimist": {
@@ -66269,6 +68453,14 @@
         "en": "evening",
         "az": "axşam",
         "ru": "вечер"
+      }
+    },
+    "õhtud": {
+      "base": "õhtu",
+      "means": {
+        "en": "evenings",
+        "az": "axşamlar",
+        "ru": "вечера"
       }
     },
     "õhtuinimene": {
@@ -66375,12 +68567,28 @@
         "ru": "удалось (ei õnnestunud: не удалось)"
       }
     },
+    "õpetajatööd": {
+      "base": "õpetajatöö",
+      "means": {
+        "en": "teaching work",
+        "az": "müəllimlik işi",
+        "ru": "работу учителя"
+      }
+    },
     "õpetan": {
       "base": "õpetama",
       "means": {
         "en": "I teach",
         "az": "öyrədirəm",
         "ru": "преподаю"
+      }
+    },
+    "õpetasin": {
+      "base": "õpetama",
+      "means": {
+        "en": "I taught",
+        "az": "dərs dedim",
+        "ru": "я преподавал(а)"
       }
     },
     "õpiks": {
@@ -66397,6 +68605,14 @@
         "en": "you would study",
         "az": "oxuyardın",
         "ru": "ты бы учился"
+      }
+    },
+    "õpilane": {
+      "base": "õpilane",
+      "means": {
+        "en": "pupil, student",
+        "az": "şagird",
+        "ru": "ученик"
       }
     },
     "õpin": {
@@ -66535,6 +68751,14 @@
         "ru": "просыпается"
       }
     },
+    "ärkama": {
+      "base": "ärkama",
+      "means": {
+        "en": "wake up",
+        "az": "oyanmaq",
+        "ru": "просыпаться"
+      }
+    },
     "ärkan": {
       "base": "ärkama",
       "means": {
@@ -66589,6 +68813,14 @@
         "en": "for nights, for a night",
         "az": "gecəlik",
         "ru": "на ночь, на ночи"
+      }
+    },
+    "öösel": {
+      "base": "öö",
+      "means": {
+        "en": "at night",
+        "az": "gecə",
+        "ru": "ночью"
       }
     },
     "ühe": {
@@ -66655,12 +68887,28 @@
         "ru": "связь"
       }
     },
+    "ühes": {
+      "base": "üks",
+      "means": {
+        "en": "one (ühes kohas: at one place)",
+        "az": "bir",
+        "ru": "одном"
+      }
+    },
     "ühest": {
       "base": "üks",
       "means": {
         "en": "from one",
         "az": "birindən",
         "ru": "из одного"
+      }
+    },
+    "üheteist": {
+      "base": "üksteist",
+      "means": {
+        "en": "eleven (üheteist-kaheteistaastased: eleven or twelve years old)",
+        "az": "on bir",
+        "ru": "одиннадцати"
       }
     },
     "ühiselamust": {

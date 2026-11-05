@@ -4121,6 +4121,54 @@
    },
    "taste": "Kas juhiluba sobib?",
    "source": "Keeletee"
+  },
+  {
+   "id": "talk-at-doctor",
+   "added": "2026-11-05",
+   "name": {
+    "en": "At the doctor’s",
+    "az": "Həkimin yanında",
+    "ru": "У врача"
+   },
+   "why": {
+    "en": "A cook’s right hand has hurt for two months: an injection, a scan next Wednesday, and no fishing",
+    "az": "Aşpazın sağ əli iki aydır ağrıyır: iynə, gələn çərşənbə müayinə və balıq tutmaq yox",
+    "ru": "У повара два месяца болит правая рука: укол, обследование в следующую среду и никакой рыбалки"
+   },
+   "taste": "Ma väga kardan süsti.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-workday",
+   "added": "2026-11-05",
+   "name": {
+    "en": "Your workday, and how long you’ve worked",
+    "az": "İş günün və nə qədərdir işləyirsən",
+    "ru": "Твой рабочий день и сколько ты уже работаешь"
+   },
+   "why": {
+    "en": "Piret works twelve-hour days, Johannes finishes at a quarter to eight, Ott has his mornings free, Marita opened a salon",
+    "az": "Piret on iki saat işləyir, Yohannes səkkizə on beş qalmış qurtarır, Ottun səhərləri boşdur, Marita salon açıb",
+    "ru": "У Пирет двенадцатичасовой день, Йоханнес заканчивает без четверти восемь, у Отта утро свободно, Марита открыла салон"
+   },
+   "taste": "Hommikud on mul vabad.",
+   "source": "Keeletee"
+  },
+  {
+   "id": "talk-at-work",
+   "added": "2026-11-05",
+   "name": {
+    "en": "What you do at work",
+    "az": "İşdə nə edirsən",
+    "ru": "Что ты делаешь на работе"
+   },
+   "why": {
+    "en": "An intensive-care nurse, a guitar teacher, a children’s football coach and a hairdresser on what their work is",
+    "az": "Reanimasiya tibb bacısı, gitara müəllimi, balacaların məşqçisi və bərbər işlərinin nə olduğundan danışır",
+    "ru": "Медсестра реанимации, учитель гитары, тренер малышей и парикмахер рассказывают, в чём их работа"
+   },
+   "taste": "Tuleb klient.",
+   "source": "Keeletee"
   }
  ]
 }
