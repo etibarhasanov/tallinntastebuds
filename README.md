@@ -16467,7 +16467,24 @@ page is left to the browser.
 is the way home, and home is the map the surface is standing on, so that
 link closes the surface rather than loading a second map inside it — a page
 that walks home by itself, the account page after Sign out, is noticed on
-arrival and closed the same way. Continue with Google is a redirect to
+arrival and closed the same way.
+
+**A link home with a door on it is followed, not dropped.** A list's **On
+the map** is `/?list=<id>`, every row under it is `/?list=<id>&at=<place>`,
+a place on a blog card is `/?spot=`, and Sign in is `/?account=in`. For its
+first weeks the shell read all of them as the plain way home: it closed the
+page and put back the map's address from before the page opened, so a list
+pressed On the map arrived as the bare map and a row as the bare map with
+nothing open on it. Now `door()` in `assets/shell.js` asks the map first —
+`walkIn()` in `assets/app.js` — and the map answers the ones it can where it
+stands: the door's address is pushed, the surface closes, and the list's
+pins go up with its panel, or the place opens over it, or the sign-in sheet
+does, with no load at all. A door it cannot answer in place — `?story=`,
+`?saved=`, `?deleted=`, a place not seated yet — is loaded whole, the way a
+fresh visit would answer it: slower, never lost. Back from a row's place is
+the list, and Back again is the list's page, reopened over the map.
+
+Continue with Google is a redirect to
 Google, which refuses to be framed by anybody, so that link leaves through
 the top: the whole tab goes to Google and comes back to the page it left
 from, as it always did. A link to another site leaves the same way.

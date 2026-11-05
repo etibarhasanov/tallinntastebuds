@@ -5206,7 +5206,21 @@
 
   function forgetList() {
     if (!state.list) return;
+    letGoOfList();
 
+    /* Pushed here, before the chip that called this has changed anything, so
+       the entry left behind is the list exactly as it stood: its pins, and
+       whatever else was pressed at the time. The chip's own applyFilters()
+       rewrites the entry this just made, the way every filter does. */
+    syncUrl(true);
+  }
+
+  /* The list off the map, kept in `dropped` for Back to hand straight back.
+     Three things let go of one — a chip (forgetList above), Forward onto the
+     entry where a chip let go of it (wireHistory), and another list walked
+     to from a page over the map (walkIn) — and each writes the address bar
+     its own way, so that part stays with them. */
+  function letGoOfList() {
     /* Everything needed to put it back, together, so restoreList() cannot
        reassemble half of one. */
     dropped = { list: state.list, places: state.listPlaces };
@@ -5227,12 +5241,6 @@
     dropPins(state.listPlaces);
     state.list = null;
     state.listPlaces = [];
-
-    /* Pushed here, before the chip that called this has changed anything, so
-       the entry left behind is the list exactly as it stood: its pins, and
-       whatever else was pressed at the time. The chip's own applyFilters()
-       rewrites the entry this just made, the way every filter does. */
-    syncUrl(true);
   }
 
   /* Back, or a ?list= that came round again on an entry this page has already
@@ -5845,8 +5853,73 @@
     window.TTBShell.mount({
       surface: document.getElementById('shell'),
       onopen: function () { closeMore(); closeAccount(); },
-      onclose: function () { loadAccount(); }
+      onclose: function () { loadAccount(); },
+      onwalk: walkIn
     });
+  }
+
+  /* A page over the map walking back to it with something to say: a list's
+     On the map and every row under it (?list=, &at=), a place on a card in
+     the blog (?spot=), Sign in and Sign up (?account=, ?then=). Each of those
+     is a door boot already answers on a fresh load, and the shell used to
+     treat all of them as the plain way home — it closed the page and put
+     back the map's address from before it opened, so a list pressed On the
+     map arrived as the bare map, and a row as the bare map with nothing open
+     on it. See WHAT GOES THROUGH THE TOP in assets/shell.js.
+
+     So the shell asks here first. The answer is a function to run once the
+     door's address is on the bar and the page has closed, or null for a door
+     this page cannot answer where it stands — ?story=, ?saved=, a place the
+     map has not seated yet — which the shell then loads whole, the way a
+     fresh visit would, rather than drop.
+
+     The list is fetched again rather than taken from the page that was just
+     showing it: the owner may have reordered it there a moment ago, and it
+     is one small answer. Failing is as quiet as it is at boot — the map is
+     the map. The chips go, because a list is a mode the chips end, and the
+     list that was up before, if any, is let go of the way a chip lets go of
+     one, so Back can hand it back. */
+  var WALK_DOORS = ['list', 'at', 'spot', 'account', 'then', 'lang', 'style'];
+
+  function walkIn(search) {
+    var params = new URLSearchParams(search);
+    var plain = true;
+    params.forEach(function (value, key) {
+      if (WALK_DOORS.indexOf(key) === -1) plain = false;
+    });
+    var spot = params.get('spot') || '';
+    if (!plain || (spot && !byId(spot))) return null;
+
+    return function () {
+      readAccountLink(params);
+      var id = wantedList();
+      var at = params.get('at') || '';
+      if (!id) {
+        syncUrl();
+        if (spot) selectPlace(spot, { fly: true, arrived: true });
+        return;
+      }
+      loadList(id).then(function (list) {
+        if (state.list) letGoOfList();
+        seatList(list);
+        if (!state.list) {
+          syncUrl();
+          if (state.view === 'list') renderPanel();
+          return;
+        }
+        state.active = [];
+        addPins(state.listPlaces);
+        renderFilters();
+        paintMarkers();
+        var stand = isOnList(at) ? byId(at) : null;
+        syncUrl();
+        if (stand) openFromRow(stand);
+        else {
+          showList(false);
+          fitToPins({ clearPanel: true });
+        }
+      });
+    };
   }
 
   /* ----------------------------------------------------------- random pick
@@ -11898,10 +11971,7 @@
            forgetList(): that one pushes, and writing history from inside a
            popstate is how a Back button starts fighting the person pressing
            it. */
-        dropped = { list: state.list, places: state.listPlaces };
-        dropPins(state.listPlaces);
-        state.list = null;
-        state.listPlaces = [];
+        letGoOfList();
         moved = true;
       }
 

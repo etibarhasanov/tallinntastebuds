@@ -57,13 +57,16 @@
  * Three links inside a page cannot be followed inside the frame. The name in
  * the page's header is the way home, and home is the map this surface is
  * standing on, so that link closes the surface rather than loading a second
- * map inside it. Continue with Google is a redirect to Google, and Google
+ * map inside it. So does every other link to the map — a list's On the
+ * map, a row on it, a place on the blog, Sign in — but those carry a door in
+ * their query, which the map is handed to open where it stands rather than
+ * dropped; see door(). Continue with Google is a redirect to Google, and Google
  * refuses to be framed by anybody, so that one goes through the top of the
  * tab — the whole tab leaves for Google and comes back to the page it left
  * from, as it always did. And a link to another site is left alone in the
  * same way: it leaves, through the top. A page that walks home by itself —
  * the account page after Sign out — is noticed on arrival and closed the
- * same way the name does it.
+ * same way the name does it, door and all.
  *
  * WHAT THE MAP IS TOLD
  *
@@ -89,6 +92,7 @@ window.TTBShell = (function () {
   var mapUrl = '';        // the map's address when the page opened, put back by home()
   var told = null;        // the map's onclose, from mount()
   var warned = null;      // and its onopen, before the surface goes up
+  var walked = null;      // and its onwalk, asked about a door onto the map
   var watching = 0;       // requestAnimationFrame handle of watch(), while a document is awaited
   var titleWatch = null;  // MutationObserver on the page's <title>
 
@@ -196,6 +200,28 @@ window.TTBShell = (function () {
     close();
   }
 
+  /* A walk to the map that says something on the way: /?list=, /?spot=,
+     /?account=. Home is still the map underneath, but not the map as it was
+     when the page opened — the address names what the page sent somebody to
+     see, and dropping it is what home() used to do to every one of these,
+     so a list pressed On the map arrived as the bare map. The map is asked
+     whether it can answer the door where it stands; if it can, the door's
+     address is pushed, the surface closes and the map opens what was asked.
+     If it cannot, the tab loads the address whole, which is what the link
+     would have done before there was a shell — slower, never lost. */
+  function door(href) {
+    if (!frame) return;
+    var a = document.createElement('a');
+    a.href = href;
+    if (!a.search) { home(); return; }
+    var to = '/' + a.search + a.hash;
+    var then = walked ? walked(a.search) : null;
+    if (!then) { window.location.assign(to); return; }
+    try { window.history.pushState(null, '', to); } catch (e) { /* the surface still closes */ }
+    close();
+    then();
+  }
+
   /* -------------------------------------------------- the page inside it */
 
   /* A new document inside the frame, as soon as there is one. The frame's
@@ -229,7 +255,7 @@ window.TTBShell = (function () {
     if (win.ttbShelled === doc) return;
     win.ttbShelled = doc;
     var path = doc.location.pathname;
-    if (path === '/' || path === '/index.html') { home(); return; }
+    if (path === '/' || path === '/index.html') { door(doc.location.href); return; }
     mirror(doc.location);
     hook(win);
     win.addEventListener('popstate', function () { mirror(win.location); });
@@ -278,7 +304,7 @@ window.TTBShell = (function () {
     var path = ours ? href.slice(here.length).split(/[?#]/)[0] : '';
     if (ours && (path === '/' || path === '/index.html')) {
       ev.preventDefault();
-      home();
+      door(href);
       return;
     }
     if (!ours || path.indexOf('/api/') === 0) a.target = '_top';
@@ -348,11 +374,13 @@ window.TTBShell = (function () {
 
   /* The map hands over the surface and somewhere to send the news: onopen
      as a page is about to go up, for the sheets the map shuts behind it,
-     and onclose once it has gone, for the account the map asks about again. */
+     onclose once it has gone, for the account the map asks about again, and
+     onwalk for a link back to the map with a door on it — see door(). */
   function mount(opts) {
     root = opts.surface;
     warned = opts.onopen || null;
     told = opts.onclose || null;
+    walked = opts.onwalk || null;
     mapUrl = window.location.href;
   }
 
