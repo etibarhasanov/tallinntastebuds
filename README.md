@@ -3076,17 +3076,19 @@ map for everybody else.
 
 ### Where the account lives, and when it is offered
 
-The account button is the **top button on the left rail** — above Surprise
-me, the colour swatch and the locate button, because it is the only one
-whose answer outlasts the visit, and because once somebody is signed in it
-wears their name and so tells them whose list the map is holding. It is
-**hidden until `/api/account` says the database behind it is bound**, so on a
-deployment without the bindings there is no sign-up sheet to find — with one
-exception, which is a browser that has saved something. Saving needs no
-Function and no database, and since the marks moved off the filter row this
-button is the only way back to them, so it is drawn for them regardless. What
-is behind it in that state is the one row and no form: a sign-in that could
-only fail is worse than no sign-in at all.
+The account is the **first row behind More** on the left rail — see **The
+short rail**. It was the top pill on the rail until 2026-11-05, and the row
+keeps what the pill did: once somebody is signed in it wears their name, with
+*Signed in as …* under it, and tells them whose list the map is holding;
+signed out it says *Account*, with the line about keeping saves safe. It is
+**left out until `/api/account` says the database behind it is bound**, so on
+a deployment without the bindings there is no sign-up sheet to find — with
+one exception, which is a browser that has saved something. Saving needs no
+Function and no database, and since the marks moved off the filter row the
+account is the only way back to them, so the row is drawn for them
+regardless — `accountDoor()` in `assets/app.js`. What is behind it in that
+state is the one row and no form: a sign-in that could only fail is worse
+than no sign-in at all.
 
 **What it does depends on whether it knows you.** Signed out it opens the
 sheet, which is the sign-in form and is a step you take with the map still
@@ -5736,7 +5738,7 @@ account page stopped carrying a door of its own this is where a stranger meets
 them at all. It is hidden only where
 `/api/account` says the database behind the lists is not bound, because a door
 onto "Lists are switched off on this copy of the site" is a button that can
-only disappoint — the same rule the account button beside it keeps.
+only disappoint — the same rule the account row behind More keeps.
 
 There used to be more, and every step of the argument below has been the same
 one getting shorter. The map's sheet had three rows for lists once — **Your
@@ -13096,18 +13098,18 @@ both count the same gesture the same way. That is the rule —
 agree with the report beside it — and once per load is how it comes out for a
 place, every press for a pill.
 
-The nine are the five pills inside `#rail` — the account, the lists,
-Surprise me, **More** and the arrow — and the four rows behind More, Ask,
+The nine are the four pills inside `#rail` — the lists, Surprise me,
+**More** and the arrow — and the five rows behind More, the account, Ask,
 Learn Estonian, the colour and feedback, each counted under the id it had
-when it was a pill in the column of eight. They are named in `RAIL_PILLS` in
-`functions/api/stats.js`, and again in `RAIL_PRESS` (the five) and
-`renderMore()` (the four) in `assets/app.js`, which is the pair that has to
+when it was a pill. They are named in `RAIL_PILLS` in
+`functions/api/stats.js`, and again in `RAIL_PRESS` (the four) and
+`renderMore()` (the five) in `assets/app.js`, which is the pair that has to
 be kept in step: a door counted on the map and not named in the route is a
 press answered `{ok:false}`. Neither file can import the other — the
 arrangement **The pins** has — so a door added to the rail is counted once
-it is written into both. One listener on the rail rather than five on the
-buttons, since the lists door is a link that leaves the page and two of them
-are hidden until `/api/account` answers. Because the rows kept the pills'
+it is written into both. One listener on the rail rather than four on the
+buttons, since the lists door is a link that leaves the page and is hidden
+until `/api/account` answers. Because the rows kept the pills'
 ids, Ask pressed behind More today and Ask pressed on the old column are one
 number, and the table reads the rail's whole history without a column for
 which shape it was.
@@ -16654,12 +16656,12 @@ the whole of it.
 
 ### The rail introduces itself on a phone
 
-The rail runs the account, everybody's lists, Surprise me, More and the
-locate button — who you are and what everybody else has written, then the
-one that changes your evening, then the door to the rest, then the one that
-changes the map — see **The short rail**. It was a column of eight, with the
-flashcards, Ask, the colour swatch and feedback standing in it, and some of
-what follows was written about that column. The radio left it for the corner beside the language
+The rail runs everybody's lists, Surprise me, More and the locate button —
+what everybody else has written, then the one that changes your evening,
+then the door to the rest, then the one that changes the map — see **The
+short rail**. It was a column of eight, with the account, the flashcards,
+Ask, the colour swatch and feedback standing in it, and some of what follows
+was written about that column. The radio left it for the corner beside the language
 switch, in the same pill the lists, account, blog and feedback pages already
 stand it in — see **The radio** below. The lists pill is the one that is a
 link rather than a press, and the only one wearing an emoji rather than a
@@ -16681,21 +16683,21 @@ rather than being asked to read the whole column at once. Each holds for
 `HINT_MS` (4.2 seconds) and collapses back to its icon, the same disc as
 before.
 
-The account button is the one the rail has to wait for, and the lists pill
-under it waits on the same answer. They lead the cascade and they are the two
-buttons not in the markup until the network says so: both are drawn by an
-answer from `/api/account`. So the introduction holds for that answer, up to
-`RAIL_WAIT_MS` (1.4 seconds), and then runs with the account at its head. A
+The lists pill is the one the rail has to wait for. It leads the cascade and
+it is the one button not in the markup until the network says so: it is
+drawn by an answer from `/api/account`, as the account pill above it was
+while there was one. So the introduction holds for that answer, up to
+`RAIL_WAIT_MS` (1.4 seconds), and then runs with the lists at its head. A
 pill that opens after the ones below it and closes before they do reads as
 the last thing on the rail rather than the first, and on a fast answer it was
 up and gone again before the eye had got down the rail.
 
 The wait is capped because it has to be: a slow endpoint, an unbound database
-or no Function at all must not cost the other six their labels. So an answer
-slower than the hold gets the old behaviour — `paintAccountButton()` and
-`paintListsButton()` open the label the moment their button appears, rather
-than leaving a silent disc above a column of pills that have all had their
-say — and an answer that never comes leaves a rail of six that introduced
+or no Function at all must not cost the other three their labels. So an answer
+slower than the hold gets the old behaviour — `paintListsButton()` opens the
+label the moment the button appears, rather than leaving a silent disc above
+a column of pills that have all had their say — and an answer that never
+comes leaves a rail of three that introduced
 itself on time.
 
 **The chip row says itself too, and it is the one that cannot do it with a
@@ -16745,10 +16747,8 @@ below.
 label on the page changes in front of you; the ones on the rail are the only
 ones not on screen to change with them, and somebody switching to Ukrainian is
 telling you they did not read the English one. So `setLanguage()` runs the
-introduction again. It repaints the account button first: the language sweep
-puts the word "Account" back on it through `data-i18n`, which is the right
-word for a stranger and the wrong one for somebody whose name was on it a
-moment ago.
+introduction again, and draws the More sheet again if it is open, so the
+account row says *Account* or the name in the new language's words.
 
 **And it runs once.** The introduction is for a stranger, and the second
 visit is not a stranger's: a map that explains the die every morning to
@@ -16958,14 +16958,15 @@ used to provide by standing in the corner. It releases the `bottom` when it
 pins a `top`, or the auto margin would re-centre the rail in whatever was left
 under the brand rather than putting it where the nudge asked for.
 
-**It is asked again when a pill arrives.** The account and the lists door are
-the only two that come and go, and `/api/account` draws them after the map has
-settled — so the rail was being placed while it was seven pills tall and then
-growing to nine under the answer, which re-centred it over the corner it had
-just been measured clear of. On a window with room to spare nobody saw it; on
-one without, the first pill landed on the handle. `paintAccountButton()` and
-`paintListsButton()` now call `placeRail()` when the pill actually moved, which
-is the only thing either of them does that changes the rail's height.
+**It is asked again when a pill arrives.** The lists door is the one that
+comes and goes — the account was the other, while it was a pill — and
+`/api/account` draws it after the map has settled, so the rail was being
+placed while it was a pill short and then grew under the answer, which
+re-centred it over the corner it had just been measured clear of. On a window
+with room to spare nobody saw it; on one without, the first pill landed on
+the handle. `paintListsButton()` now calls `placeRail()` when the pill
+actually moved, which is the only thing it does that changes the rail's
+height.
 
 ### How this works, for the asking
 
@@ -17002,13 +17003,14 @@ The walk, in order, and what each step is anchored to:
 6. **Surprise me**, with its label held open for as long as the step is up —
    which is every width where the pill is a disc: a phone always, and a
    desktop whenever the pointer is somewhere other than the corner.
-7. The account button, left out when `/api/account` never said accounts
-   work — there is no button to point at.
-8. **Everybody's lists**, straight after it, the way the two stand on the
-   rail: what you keep, then what everybody else kept. Left out on the same
-   answer, for the same reason.
-9. **More**, straight after the lists the way the two stand: the one pill
-   that holds the chat, the flashcards, the colour and feedback.
+7. **Everybody's lists**, left out when `/api/account` never said the
+   database behind the lists is bound — there is no button to point at.
+8. **More**, for saving with an account, since the account is the first row
+   behind it; left out where the account has no door, the rule in
+   `accountDoor()`.
+9. **More** again, straight after, for what else it holds: the chat, the
+   flashcards, the colour and feedback. Two steps on one pill, because one
+   step is about one thing.
 10. The discount chip, second in the row after All — the row rolled out
     again for it on a phone; left out when no deal is on.
 
@@ -17090,11 +17092,13 @@ in all ten languages. The pieces are `#tour` in
 
 ## The short rail
 
-Every browser draws the same rail: **the account, everybody's lists,
-Surprise me and More** down the left, with the locate arrow under them on a
-desktop and in the bottom-right corner on a phone; three chips standing
-outside the Filters drawer on a phone; and the other four doors — Ask, the
-flashcards, the colour and feedback — as rows behind More. It began as one
+Every browser draws the same rail: **everybody's lists, Surprise me and
+More** down the left, with the locate arrow under them on a desktop and in
+the bottom-right corner on a phone; three chips standing outside the Filters
+drawer on a phone; and the other five doors — the account, Ask, the
+flashcards, the colour and feedback — as rows behind More. The account was
+the rail's top pill through the test and moved behind More on the owner's
+word the day the test ended — **The account, behind More** below. It began as one
 arm of a test against the full column of eight the map had before it, and
 it is everybody's since 2026-11-05, because the test said so — **What the
 test found** below. There is one rail, so there is no `data-layout` on
@@ -17123,8 +17127,8 @@ the lists — it spent a while as the map's one filled button in the corner,
 and **Surprise me** says why it came back — the three most pressed chips stand in the open, and the
 four at the foot go behind one pill together. The cascade that introduces
 the rail on a phone — **The rail introduces itself on a phone** — was 300ms
-a pill and 7.45s for eight; it is four pills and the arrow now, all open
-by 2.35s. How this works went altogether rather than behind More: the
+a pill and 7.45s for eight; it is three pills and the arrow now, all open
+by 2.05s. How this works went altogether rather than behind More: the
 welcome card's **Show me around** is the same walk, offered to the same
 stranger — **How this works, for the asking**.
 
@@ -17150,20 +17154,20 @@ them taken out rather than left switched off.
 
 ### What it draws, and what it does not
 
-- **Four pills and the arrow**, and the account and lists pills are the ones
-  they always were, hidden until `/api/account` answers exactly as before.
-  **More** is a button, `#btn-more`, counted on `/admin/stats` as `more` and
+- **Three pills and the arrow**, and the lists pill is the one it always
+  was, hidden until `/api/account` answers exactly as before. **More** is a
+  button, `#btn-more`, counted on `/admin/stats` as `more` and
   introduced in the cascade with a label of its own — *More* — and a title
   saying what is behind it.
-- **Surprise me third**, under the lists and above More: `#btn-random`, the
+- **Surprise me second**, under the lists and above More: `#btn-random`, the
   same pill as its neighbours, whose label slides out with the others' in
   the cascade and, for a moment after a roll, says *Surprised* — on a
   desktop, where the label is always out, the word changes in it.
   **Surprise me** has the rest.
 - **The More sheet**, `renderMore()`: the account sheet's card and scrim, the
   wordmark as its eyebrow, *More* as its title, one line under it, and the
-  `.menu-row`s — Ask, Learn Estonian, Colour, Feedback, and Privacy. Each of
-  the first four is the pill it was in the column of eight: it reports that
+  `.menu-row`s — the account, Ask, Learn Estonian, Colour, Feedback, and
+  Privacy. Each of the first five is the pill it was before: it reports that
   pill's event and is counted under that pill's id, so the rail's numbers
   read as one line across the change. The Colour row's second line is the
   style you are about to get, and pressing it redraws the sheet so the line
@@ -17185,12 +17189,34 @@ them taken out rather than left switched off.
 It is not another style: **The four styles** are the colours, and the rail
 wears all four.
 
+### The account, behind More
+
+The test was of the rail with the account at its head, and the account
+stayed there for its whole month. The owner moved it behind More on
+2026-11-05, as the first row: who you are, then what the map can do. The row
+does what the pill did — it wears the name of whoever is signed in, with
+*Signed in as …* under it, or *Account* with the line about keeping saves
+safe; signed out it opens the sign-in sheet, signed in it leaves for
+`/account.html` — and stands under the same rule, there once `/api/account`
+says accounts work or once this browser has saved something, `accountDoor()`
+in `assets/app.js`. It is still counted as the rail's `account`, and a
+sign-up it starts is still filed under the `rail` door, so the account's
+numbers run on across the move and can be read before and after it by the
+day. The walk's step about saving points at More now, straight before the
+step about the rest of what More holds.
+
+What this costs is one press: the account and the saves behind it were one
+tap away and are two. The account was a quarter of the rail's presses when
+`/admin/stats` was first read (**Why**, above), so it is the move on the rail
+most worth reading again in a few weeks — `visitor_counts`, kind `rail`, id
+`account`, before and after 2026-11-05.
+
 ### What is counted
 
 - **The rail's presses, under nine ids.** `RAIL_PILLS` in
-  `functions/api/stats.js` names the five pills and the four rows behind
+  `functions/api/stats.js` names the four pills and the five rows behind
   More, which keep the ids they had as pills. `RAIL_PRESS` in
-  `assets/app.js` is the five and `renderMore()` the four. **Statistics** is
+  `assets/app.js` is the four and `renderMore()` the five. **Statistics** is
   the rest.
 - **The same presses by the day**, since 2026-11-05: every rail press is
   filed again into `visitor_counts` as its `rail` kind, by the pill's id and
@@ -17750,14 +17776,14 @@ The map, `assets/app.js`:
 | `ask_open` | — the Ask row behind More |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
-| `account_open` | `view` (`sheet` signed out, `page` signed in) |
+| `account_open` | `view` (`sheet` signed out, `page` signed in) — the account row behind More, and the pill at the head of the rail before 2026-11-05 |
 | `account_switch` | `view` (`in`/`up`) |
 | `account_close`, `account_page` | — |
 | `account_create`, `account_login` | — |
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
-| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account button, the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in`, `_google` | — the sheet up, and on which view: making an account, signing in, or naming one Google has just vouched for. Not reported again for moving between views |
 | `account_try_up`, `_in`, `_google` | — its button pressed |
 | `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`, `no_pending`, `linked`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |

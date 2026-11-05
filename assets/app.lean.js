@@ -394,7 +394,7 @@
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
     window.TTBRadio.language(code);
-    paintAccountButton();
+    paintAccountRow();
     renderStoryRing();
     if (dom.stories && !dom.stories.hidden) paintStoryText(state.story.list[state.story.index]);
     syncUrl();
@@ -1601,7 +1601,7 @@
   }
 
   function syncSavedFilter(on) {
-    if (savedCount() === (on ? 1 : 0)) paintAccountButton();
+    if (savedCount() === (on ? 1 : 0)) paintAccountRow();
     if (state.active.indexOf(SAVED_FILTER) === -1) return;
     if (!savedCount()) state.active.splice(state.active.indexOf(SAVED_FILTER), 1);
     applyFilters();
@@ -1677,7 +1677,7 @@
           password: out.user ? !!out.password : true
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
-        paintAccountButton();
+        paintAccountRow();
         paintListsButton();
         if (state.list && state.view === 'list') renderList();
         if (!out.user && state.view === 'detail' && state.selected) {
@@ -1697,23 +1697,16 @@
     storeSet(SAVED_KEY, JSON.stringify(state.saved));
     seatSaved();
     paintSave();
-    paintAccountButton();
+    paintAccountRow();
     if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderList();
   }
 
-  function paintAccountButton() {
-    if (!dom.btnAccount) return;
-    var wasHidden = dom.btnAccount.hidden;
-    dom.btnAccount.hidden = !state.account.ready && !savedCount();
-    if (dom.btnAccount.hidden !== wasHidden) placeRail();
-    if (dom.btnAccount.hidden) return;
-    var name = state.account.user;
-    dom.accountLabel.textContent = name || t('accountOpen');
-    dom.btnAccount.setAttribute('aria-label', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
-    dom.btnAccount.setAttribute('title', name ? t('accountSignedIn', { name: name }) : t('accountOpen'));
-    dom.btnAccount.classList.toggle('is-on', !!name);
+  function accountDoor() {
+    return state.account.ready || savedCount() > 0;
+  }
 
-    if (wasHidden && railIntroduced) openHint('account', 0);
+  function paintAccountRow() {
+    if (!dom.moreScrim.hidden) renderMore();
   }
 
   function paintListsButton() {
@@ -1864,7 +1857,7 @@
     });
     dom.moreCard.appendChild(close);
 
-    function row(id, name, why, href, event, press) {
+    function row(id, name, why, href, event, press, params) {
       var node = el(href ? 'a' : 'button', href
         ? { className: 'menu-row', href: href }
         : { type: 'button', className: 'menu-row' }, [
@@ -1875,7 +1868,7 @@
         el('span', { className: 'menu-go', 'aria-hidden': 'true', html: AC_CHEVRON })
       ]);
       node.addEventListener('click', function () {
-        TTBTrack.event(event);
+        TTBTrack.event(event, params);
         if (id) postPress('rail', id);
         if (press) press();
       });
@@ -1883,11 +1876,18 @@
     }
 
     var next = nextStyle();
+    var name = state.account.user;
     dom.moreCard.appendChild(el('div', { className: 'ac-form' }, [
       el('p', { className: 'eyebrow ac-eyebrow', textContent: t('wordmark') }),
       el('h2', { className: 'ac-title', textContent: t('moreOpen') }),
       el('p', { className: 'ac-why', textContent: t('moreLine') }),
       el('ul', { className: 'menu' }, [
+        accountDoor() ? row('account', name || t('accountOpen'),
+          name ? t('accountSignedIn', { name: name }) : t('accountWhy'), '', 'account_open', function () {
+            closeMore();
+            if (name) { window.location.href = ACCOUNT_PAGE; return; }
+            openAccount('', '', 'rail');
+          }, { view: name ? 'page' : 'sheet' }) : null,
         row('ask', t('askOpen'), t('askTitle'), '', 'ask_open', function () {
           closeMore();
           openAsk();
@@ -2061,12 +2061,12 @@
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
-    { key: 'explainSave', at: function () { return dom.btnAccount; },
-      when: function () { return !dom.btnAccount.hidden; },
-      pills: function () { return [dom.btnAccount]; } },
     { key: 'explainLists', at: function () { return dom.btnLists; },
       when: function () { return !dom.btnLists.hidden; },
       pills: function () { return [dom.btnLists]; } },
+    { key: 'explainSave', at: function () { return dom.btnMore; },
+      when: accountDoor,
+      pills: function () { return [dom.btnMore]; } },
     { key: 'explainMore', at: function () { return dom.btnMore; },
       pills: function () { return [dom.btnMore]; } },
     { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
@@ -2413,7 +2413,7 @@
         if (!a.ok) return accountFail(a.out);
         state.account.user = a.out.user;
         if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-        paintAccountButton();
+        paintAccountRow();
         TTBTrack.event(creating ? 'account_create' : 'account_login', {});
         TTBTrack.event('account_done_' + (creating ? 'up' : 'in'));
         closeAccount();
@@ -2491,7 +2491,7 @@
           state.account.linked = true;
           state.account.password = false;
           if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-          paintAccountButton();
+          paintAccountRow();
           TTBTrack.event('account_create', { via: 'google' });
           TTBTrack.event('account_done_google');
           closeAccount();
@@ -2577,7 +2577,7 @@
           if (!a.ok) return accountFail(a.out);
           TTBTrack.event('account_rename');
           state.account.user = a.out.user;
-          paintAccountButton();
+          paintAccountRow();
           closeAccount();
           if (!returnAfterAccount('name')) toast(t('accountNameDone', { name: a.out.user }));
         }).catch(function () { accountFail({}); });
@@ -2647,7 +2647,6 @@
   }
 
   var RAIL_PRESS = {
-    'btn-account': 'account',
     'btn-lists': 'lists',
     'btn-random': 'random',
     'btn-more': 'more',
@@ -3065,7 +3064,7 @@
   }
 
   var HINT_MS = 4200;
-  var HINT_KEYS = ['account', 'lists', 'random', 'more', 'locate'];
+  var HINT_KEYS = ['lists', 'random', 'more', 'locate'];
   var hintTimers = {};
 
   var RAIL_IN = 1150;
@@ -3078,7 +3077,6 @@
   var INTRO_KEY = 'ttb.introduced';
 
   function hintPill(key) {
-    if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
     if (key === 'more') return dom.btnMore;
     if (key === 'radio') return dom.btnRadio;
@@ -5994,7 +5992,7 @@
           list.keeps = Math.max(0, (list.keeps || 0) + (want ? -1 : 1));
           if (a.out && a.out.error === 'signed-out') {
             state.account.user = null;
-            paintAccountButton();
+            paintAccountRow();
             openAccount('in', '', 'expired');
           }
           paint();
@@ -7004,13 +7002,6 @@
       TTBTrack.event(routeMode === 'car' ? 'route_waze' : 'route_google');
     });
 
-    dom.btnAccount.addEventListener('click', function () {
-      closeHint('account');
-      TTBTrack.event('account_open', { view: state.account.user ? 'page' : 'sheet' });
-      if (state.account.user) { window.location.href = ACCOUNT_PAGE; return; }
-      openAccount('', '', 'rail');
-    });
-
     dom.nudgeGo.addEventListener('click', function () {
       hideNudge();
       openAccount('up', '', 'nudge');
@@ -7359,7 +7350,6 @@
       routeClose: $('route-close'),
       routeModes: $('route-modes'),
       routeTrips: $('route-trips'),
-      btnAccount: $('btn-account'),
       btnLists: $('btn-lists'),
       btnMore: $('btn-more'),
       moreScrim: $('more-scrim'),
@@ -7370,7 +7360,6 @@
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),
       nudgeNo: $('nudge-no'),
-      accountLabel: $('account-label'),
       accountScrim: $('account-scrim'),
       accountCard: $('account-card'),
       sheetGrip: $('sheet-grip'),
@@ -7480,7 +7469,7 @@
       wireLocation();
       buildMarkers();
       renderFilters();
-      paintAccountButton();
+      paintAccountRow();
       renderPanel();
       mountRadio();
       mountShell();
