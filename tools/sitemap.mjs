@@ -6,7 +6,7 @@
  * data/restaurants.json, the decks out of data/decks.json, the posts out of
  * data/blog.json, Google's six lists out of tools/googlelists.mjs and the
  * faces out of assets/faces/, and writes sitemap.xml: the map at each of its
- * ten addresses, every open place at its own, the directory, the blog and
+ * eleven addresses, every open place at its own, the directory, the blog and
  * every post on it, the flashcards and every deck of them, the six lists, and
  * a profile for every face.
  *
@@ -21,8 +21,8 @@
  *
  * It was three addresses written by hand, and that was the right size for a
  * hand. What made it a file to generate is the map: functions/index.js
- * serves it in whichever of the ten languages the address names, and a
- * search engine only treats ten addresses as one page in ten languages when
+ * serves it in whichever of the eleven languages the address names, and a
+ * search engine only treats eleven addresses as one page in eleven languages when
  * each of them links to all ten — so the map is ten entries of eleven lines
  * each, adding a language would mean touching every one of them, and every
  * place is another entry of the same shape that moves when the map does.

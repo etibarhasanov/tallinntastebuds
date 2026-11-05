@@ -226,7 +226,7 @@ window.TTBPass = (function () {
      the offer it belongs to, and tools/validate.mjs refuses a deploy where
      the two files disagree about what a place is called.
 
-     And not data/ui.json either, for the same reason at twice the size: ten
+     And not data/ui.json either, for the same reason at twice the size: eleven
      languages of every string the site has, to print a dozen of them in one.
      The words come the way the map's do — the list of languages out of
      data/lang/index.json, then the one this guest reads in out of

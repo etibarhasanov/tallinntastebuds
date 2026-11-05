@@ -236,7 +236,7 @@ needs stamping for a content change.
 
 - **It fetches one thing**: `/api/flashcard`. The words ride in the answer,
   in one of `DECK_LANGS`' three; the `flash*` keys are in `data/ui.json` in
-  all ten like every page's, and the page can be read in three of them.
+  all eleven like every page's, and the page can be read in three of them.
   **Three languages, not ten** under **Flashcards** is why.
 - **`assets/flashcard-first.js` asks before the page's scripts arrive.**
   `boot()` takes its answer only when the address it would have asked is the

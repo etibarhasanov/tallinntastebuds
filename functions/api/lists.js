@@ -162,7 +162,7 @@ function slugOf(title) {
     .slice(0, 32)
     .replace(/-+$/g, '');
   /* A title with no Latin letters in it at all — and there will be some, the
-     site is read in ten languages — leaves the code standing on its own. */
+     site is read in eleven languages — leaves the code standing on its own. */
   return s || 'list';
 }
 

@@ -66,7 +66,7 @@ In practice:
   list stopped being a filter, `LIST_FILTER` went with it rather than staying
   as a constant that misled every reader after.
 - **Dead things go** in the commit that orphaned them: an unused `ui.json` key
-  in all ten languages, a CSS rule for an element nothing renders any more, a
+  in all eleven languages, a CSS rule for an element nothing renders any more, a
   helper with no callers.
 - **Refactoring and behaviour change belong in the same commit**, because the
   point is the state the file is left in. Do not open a follow-up for tidying

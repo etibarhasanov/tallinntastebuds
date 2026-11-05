@@ -17,7 +17,7 @@ that does not divide**, **Who may do what**, **The caps**, **Taking it out**.
 What sessions here kept rediscovering:
 
 - `data/split.json` is the one strings file besides `data/ui.json`: the same
-  shape and the same ten languages, held by the validator to everything
+  shape and the same eleven languages, held by the validator to everything
   `ui.json` is held to and to sharing no key with it, so that taking the
   feature out is deleting files. It is a deliberate exception and the only
   one; the `/site` skill says why the flashcards were refused a third.

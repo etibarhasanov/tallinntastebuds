@@ -51,7 +51,7 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `visited` | `YYYY-MM`; absent warns only when there is a reel to date it from | error / warning |
 | `closed` | `false`, `true`, or `"temporary"` — a door that should open again, Google's word, raised from the admin page's Google tab | error |
 
-The taxonomy is checked too: every type needs a label in all ten languages,
+The taxonomy is checked too: every type needs a label in all eleven languages,
 and no type may claim `discount` or `saved`. A `photos/` folder no place
 points at warns.
 
@@ -102,14 +102,14 @@ its pin can land on the wrong side of the street. What it does, in order:
      first check is red and the one on its newest commit is the verdict.
      If that one is red too, the error is real — **Closing one** has the
      one that comes up — and it is fixed on the branch by hand.
-   - The other nine languages of the write-up. The validator warns about
+   - The other ten languages of the write-up. The validator warns about
      them, and the PR body says so.
    - The README counts below.
 
 ## The hand road
 
 1. **Write the entry** by copying a live one of the same kind — the live
-   ones carry the blurb in ten languages, the README example three. `added`
+   ones carry the blurb in eleven languages, the README example three. `added`
    is today, `visited` the month you ate there, `reel` is `""` until you hold
    the real link.
 2. **Coordinates.** Right-click the pin in Google Maps and paste. The map is
@@ -165,9 +165,9 @@ its pin can land on the wrong side of the street. What it does, in order:
 - **The id never changes.** If the place renamed itself, change `name`.
 - **A renamed place with a discount** is a name in two files: `deals.json`
   copies it, and the validator fails with both spellings if they disagree.
-- **A blurb is ten languages.** Changing the English and not the other nine
-  leaves nine languages saying the old thing, and nothing catches that.
-  Change all ten, or say in the commit why not.
+- **A blurb is eleven languages.** Changing the English and not the other ten
+  leaves eleven languages saying the old thing, and nothing catches that.
+  Change all eleven, or say in the commit why not.
 - **A type change is a filter change.** "A ramen shop with a drinks licence
   is not a beer pub" was a whole commit, and the README's definition of each
   type is what to argue from.
@@ -243,7 +243,7 @@ git add data/places.json data/map.json data/lang
 git commit -m "The catalogue knows <name>" && git push
 ```
 
-Then the other nine blurb languages on the same branch, if you have them,
+Then the other ten blurb languages on the same branch, if you have them,
 and the same merge. The map is live with the push.
 
 ## Where it goes wrong

@@ -77,7 +77,7 @@ import { mostKept, query, sortOf } from '../api/_mostkept.js';
 
 const PATH = '/lists';
 
-/* English, on a site read in ten languages, for the reason the same decision
+/* English, on a site read in eleven languages, for the reason the same decision
    is explained at length in functions/list/[id].js: a crawler's
    Accept-Language is whatever its operator set, and the card built from these
    tags is shown to everybody a link is forwarded to rather than to whoever

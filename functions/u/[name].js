@@ -104,7 +104,7 @@ import {
 
 /* The words of a line, without the pictures. Surrogate pairs are every
    character above the basic plane, which is where the emoji, the flags and
-   the skin tones live and where none of the site's ten languages does; the
+   the skin tones live and where none of the site's eleven languages does; the
    ranges are the symbol and dingbat blocks that sit inside it (☕ ⭐ ✉ ⌚
    ✨), and the three singles are the joiner, the presentation selector and
    the keycap that dress one. The same expression, in ES5, is plainOf() in
@@ -146,7 +146,7 @@ function title(profile) {
 
 /* The line under the name in a preview card, and under a search result.
  *
- * English, on a site that is read in ten languages, for the reason
+ * English, on a site that is read in eleven languages, for the reason
  * functions/list/[id].js gives: a crawler's Accept-Language is whatever its
  * operator set, and the card it builds is shown to everybody the link is
  * forwarded to rather than to the person who fetched it. The page underneath

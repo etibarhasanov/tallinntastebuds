@@ -51,14 +51,14 @@
  * Five things a person asks for have no words in the data: cheap, fancy,
  * open now, near somewhere, and themselves — "near me", "around here".
  * Everything else they might type — bakery, vegan, date, asian — is already
- * a taxonomy label in all ten languages, and app.js already indexes those,
+ * a taxonomy label in all eleven languages, and app.js already indexes those,
  * so typing "pagariäri" or "пекарня" finds the bakeries for free.
  *
  * The five that are missing live in ui.json under askWordsCheap,
  * askWordsFancy, askWordsOpen, askWordsNear and askWordsMe, as synonyms
  * joined by "|" — the same shape `days` and `months` already use. That puts
  * them where every other string on this site lives, which means the
- * validator holds them to all ten languages like everything else, and adding
+ * validator holds them to all eleven languages like everything else, and adding
  * a language is one file rather than two.
  */
 window.TTBAsk = (function () {
@@ -69,7 +69,7 @@ window.TTBAsk = (function () {
      long question is usually still the question. */
   var MAX_QUESTION = 200;
 
-  /* Words that carry no wish in any of the ten languages — the joins and
+  /* Words that carry no wish in any of the eleven languages — the joins and
      articles a sentence is made of. Left in, each would match a place whose
      name or street happens to contain those letters, and "a" matches nearly
      everything. Folded already, because that is how they are compared.
@@ -109,7 +109,7 @@ window.TTBAsk = (function () {
   ).split(' ');
 
   /* Two letters is not a word anybody asks for a place by, in any of the
-     ten languages, and it is a substring of half the map: "it" is in Piti
+     eleven languages, and it is a substring of half the map: "it" is in Piti
      and in Vesta, and "how does it work" was answered with three
      restaurants before this said so. */
   function isNoise(word) {
@@ -119,8 +119,9 @@ window.TTBAsk = (function () {
   /* The punctuation a typed sentence carries, spelled out rather than written
      as "not a letter". `\w` is ASCII in this dialect and unicode property
      escapes are two language versions past it, so either way of saying "not a
-     letter" here would throw away Cyrillic and Armenian wholesale — which is
-     three of the ten languages this box answers in. Listing what to remove
+     letter" here would throw away Cyrillic wholesale — two of the eleven
+     languages this box answers in — and every é, ü and õ in most of the
+     rest. Listing what to remove
      cannot make that mistake: anything unlisted is kept. */
   var PUNCTUATION = /[.,!?;:()[\]{}"'`\/\\|~@#$%^&*_+=<>–—‘’“”«»¿¡-]+/g;
 
@@ -152,7 +153,7 @@ window.TTBAsk = (function () {
 
      The padding is not decoration. Without it the Portuguese label for coffee,
      "chá", folds to "cha" and matches "khaCHApuri", so asking for a Georgian
-     cheese bread returned three cafés. Every short label in ten languages is
+     cheese bread returned three cafés. Every short label in eleven languages is
      that bug waiting: "tee", "cay", "pub", "date". */
   function has(question, phrase) {
     return (' ' + question + ' ').indexOf(' ' + phrase + ' ') !== -1;
@@ -197,7 +198,7 @@ window.TTBAsk = (function () {
     return out;
   }
 
-  /* Which taxonomy types a sentence names, in all ten languages at once —
+  /* Which taxonomy types a sentence names, in all eleven languages at once —
      which is how "bakery", "pagariäri" and "пекарня" all reach `bakery`.
 
      app.js has typeWords() joining the same labels for its search index, and

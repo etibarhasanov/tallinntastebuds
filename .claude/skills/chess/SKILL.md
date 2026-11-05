@@ -179,12 +179,12 @@ for four choices in the segmented control the language switch is.
   header, and the station follows the language. This is the map's origin, so
   the radio walks over from the map already playing.
 
-**The words.** All of them in `data/ui.json`, all ten languages, keyed
+**The words.** All of them in `data/ui.json`, all eleven languages, keyed
 `chess*`; `TASKS.md` lists every string with its English under the task that
 adds it. The house is named by `wordmark`, which already exists. The page
 fetches nothing but its one route: the words ride in the answer through
 `wordsFor()` in `functions/api/_lib.js`, the way the flashcards' do, and
-`langs` carries all ten codes for the switch.
+`langs` carries all eleven codes for the switch.
 
 **The pieces** are the platform's own chess glyphs, U+2654 to U+265F, each
 followed by U+FE0E so the black pawn stays a piece rather than an emoji, in a
@@ -370,7 +370,7 @@ What this process adds:
    a step missing, a decision this file got wrong — change `TASKS.md` and this
    file in the same pull request and say so in its body. Do not start the next
    task in the same PR, even when it is small.
-3. Every string in all ten languages before the validator will pass it, and
+3. Every string in all eleven languages before the validator will pass it, and
    the generators the task names before the five checks.
 4. Drive it under `npx wrangler pages dev .`, in both styles, at 390px and on
    a desktop, in the states the task lists. The house's side needs a

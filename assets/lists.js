@@ -774,7 +774,7 @@
      The name is the link and the words around it are not. The whole phrase was
      underlined for a while, on the argument that the name is three or four
      characters on a phone and that splitting a translated sentence around it
-     would mean assembling one out of pieces in ten languages. The first half
+     would mean assembling one out of pieces in eleven languages. The first half
      of that was a small target bought with a misleading one: "created by"
      underlined reads as a caption about the list, and the thing a byline
      leads to is the person. The second half is not true of the strings as
@@ -858,7 +858,7 @@
      was that pill plus its padding plus a breath. Your own list's band holds
      two controls — see listDockMine() — and a row of two controls wraps. At
      390px, the width this site is measured against, the pair fits on one row in
-     all ten languages; at 320px it fits in none of them and the band is two
+     all eleven languages; at 320px it fits in none of them and the band is two
      rows tall. A number written for one row is then wrong by the height of the
      other, and it is wrong in the direction that hides the last place on the
      list, which is the thing the band exists to stop happening to the buttons.

@@ -19,7 +19,7 @@ This skill is the checklist for changing either half. It is not the
 explanation of what the numbers mean — that is the README, and **Read
 first** says which sections — and it is not a licence to add a count. A
 count is a cost: a kind nobody chose from a list is capped, a table is
-applied by hand to production, and a page that gains a card gains ten
+applied by hand to production, and a page that gains a card gains eleven
 languages. **What is deliberately not counted** below is as much of the
 design as what is.
 
@@ -272,7 +272,7 @@ cost is the whole chain, and all of it lands in one PR:
    what it costs — this is the **Something new is described before it is
    built** gate in `CLAUDE.md`, and a card on an admin page is a new thing
    a person can see. Two things make it cheaper than most: the owner is the
-   only reader, and the words are still ten languages.
+   only reader, and the words are still eleven languages.
 2. `assets/track.js`: the field on the `arrive` or `leave` body, or a new
    `TTBTrack.*` the page calls. Keep the two-reports rule; a third request
    per page is a design change.
@@ -288,7 +288,7 @@ cost is the whole chain, and all of it lands in one PR:
    `wrangler d1 execute tallinntastebuds --remote --command "..."` the owner
    runs after landing — **The schema** in the `/api` skill.
 5. The admin route: `ready`, the field, the words.
-6. The page: the card, the `ui.json` keys in all ten languages — the
+6. The page: the card, the `ui.json` keys in all eleven languages — the
    `visitors*`, `found*`, `stats*` and `flows*` prefixes are the
    convention — `node tools/stamp.mjs`.
 7. `README.md`: a `###` under the page's section saying what it counts,
@@ -439,6 +439,6 @@ particulars apply, and this area adds:
 - **Driving the count under `http.server`.** There is no Function there;
   every beacon 404s silently and nothing is wrong. `wrangler pages dev`.
 - **A count added before it was described.** A card the owner had not
-  asked for, in ten languages, with a kind in the schema comment and a
+  asked for, in eleven languages, with a kind in the schema comment and a
   README section, and then not the card they wanted. The gate in
   `CLAUDE.md` is cheaper than the second version.

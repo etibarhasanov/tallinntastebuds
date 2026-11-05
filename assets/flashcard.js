@@ -239,7 +239,7 @@
  *   /api/say?text=             a card's Estonian aloud, only when a speaker
  *                              under the card is pressed — see sayLine()
  *
- * Most other pages fetch data/ui.json whole on the way in — ten languages of
+ * Most other pages fetch data/ui.json whole on the way in — eleven languages of
  * every string the site has, 190 KB gzipped — to print their few dozen keys in
  * one of them; the map, the pass, the blog and the lists page read one
  * language's file out of data/lang/ instead, written by tools/languages.mjs.
@@ -1713,7 +1713,7 @@
      Split on the placeholder rather than printed through t()'s substitution,
      which is how listsBy on the lists page and the rate on a deal card both
      put something of their own inside a translated sentence. The sentence
-     stays one string in data/ui.json, in all ten languages, so a language that
+     stays one string in data/ui.json, in all eleven languages, so a language that
      puts the number somewhere else in the line gets it there. */
   function learnedLine() {
     var said = t('flashLearned').split('{n}');

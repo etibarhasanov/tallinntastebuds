@@ -11,7 +11,8 @@
       "es": "Informal/solo",
       "tr": "Rahat/tek başına",
       "uk": "Неформально/наодинці",
-      "hy": "Հանգիստ/մենակ"
+      "fr": "Simple/Solo",
+      "de": "Locker/Solo"
     },
     {
       "id": "bakery",
@@ -24,7 +25,8 @@
       "es": "Panadería",
       "tr": "Fırın",
       "uk": "Пекарня",
-      "hy": "Հացատուն"
+      "fr": "Boulangerie",
+      "de": "Bäckerei"
     },
     {
       "id": "coffee",
@@ -37,8 +39,9 @@
       "es": "Café",
       "tr": "Kahve",
       "uk": "Кава",
-      "hy": "Սուրճ",
-      "words": "espresso/cappuccino/latte/flatwhite/americano/macchiato/cortado/mocha/cafe/kohvik/kahvila/kafe/cafeteria/кофейня/капучино/латте/эспрессо/кав'ярня/սրճարան"
+      "words": "espresso/cappuccino/latte/flatwhite/americano/macchiato/cortado/mocha/cafe/kohvik/kahvila/kafe/cafeteria/кофейня/капучино/латте/эспрессо/кав'ярня/սրճարան",
+      "fr": "Café",
+      "de": "Kaffee"
     },
     {
       "id": "tea",
@@ -52,8 +55,9 @@
       "es": "Té",
       "tr": "Çay",
       "uk": "Чай",
-      "hy": "Թեյ",
-      "words": "matcha/hojicha/genmaicha/sencha/oolong/teahouse/teemaja/teehuone/çayxana/çayevi/чайная/чайхана/թեյարան"
+      "words": "matcha/hojicha/genmaicha/sencha/oolong/teahouse/teemaja/teehuone/çayxana/çayevi/чайная/чайхана/թեյարան",
+      "fr": "Thé",
+      "de": "Tee"
     },
     {
       "id": "pub",
@@ -66,7 +70,8 @@
       "es": "Cerveza/pub",
       "tr": "Bira/pub",
       "uk": "Пиво/паб",
-      "hy": "Գարեջուր/փաբ"
+      "fr": "Bière/pub",
+      "de": "Bier/Pub"
     },
     {
       "id": "hidden-gem",
@@ -79,7 +84,8 @@
       "es": "Joya escondida",
       "tr": "Gizli cevher",
       "uk": "Прихована перлина",
-      "hy": "Թաքնված գոհար"
+      "fr": "Pépite cachée",
+      "de": "Geheimtipp"
     },
     {
       "id": "cheap-eats",
@@ -92,7 +98,8 @@
       "es": "Barato",
       "tr": "Hesaplı",
       "uk": "Недорого",
-      "hy": "Էժան"
+      "fr": "Petits prix",
+      "de": "Günstig essen"
     },
     {
       "id": "laptop",
@@ -105,7 +112,8 @@
       "es": "Bueno para portátil",
       "tr": "Laptopa uygun",
       "uk": "З ноутбуком",
-      "hy": "Նոութբուքով"
+      "fr": "Bon pour bosser",
+      "de": "Laptopfreundlich"
     },
     {
       "id": "date",
@@ -118,7 +126,8 @@
       "es": "Cita",
       "tr": "Buluşma",
       "uk": "Побачення",
-      "hy": "Ժամադրություն"
+      "fr": "En amoureux",
+      "de": "Date-Abend"
     },
     {
       "id": "asian",
@@ -131,7 +140,8 @@
       "es": "Asiática",
       "tr": "Asya",
       "uk": "Азійська",
-      "hy": "Ասիական"
+      "fr": "Asiatique",
+      "de": "Asiatisch"
     },
     {
       "id": "vegan",
@@ -144,7 +154,8 @@
       "es": "Vegano",
       "tr": "Vegan",
       "uk": "Веганське",
-      "hy": "Վեգան"
+      "fr": "Vegan",
+      "de": "Vegan"
     },
     {
       "id": "fine-dining",
@@ -157,7 +168,8 @@
       "es": "Alta cocina",
       "tr": "Fine dining",
       "uk": "Висока кухня",
-      "hy": "Բարձր խոհանոց"
+      "fr": "Gastronomique",
+      "de": "Fine Dining"
     },
     {
       "id": "caucasian",
@@ -170,7 +182,8 @@
       "es": "Cáucaso",
       "tr": "Kafkasya",
       "uk": "Кавказька",
-      "hy": "Կովկասյան"
+      "fr": "Caucase",
+      "de": "Kaukasus"
     },
     {
       "id": "restaurant",
@@ -183,7 +196,8 @@
       "es": "Restaurante",
       "tr": "Restoran",
       "uk": "Ресторан",
-      "hy": "Ռեստորան"
+      "fr": "Restaurant",
+      "de": "Restaurant"
     }
   ]
 }

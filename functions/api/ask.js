@@ -241,12 +241,12 @@ import { adminUser } from './_admin.js';
    of the whole feature: a reasoning model, thinking through several hundred
    tokens before writing three ids, inside an output budget the thinking
    sometimes used up. This one is a quarter of the size, built for latency,
-   and reads all ten of this site's languages; and thinking is switched off
+   and reads all eleven of this site's languages; and thinking is switched off
    below either way, because picking three lines out of a list is not a
    thing to deliberate over. */
 const MODEL = '@cf/zai-org/glm-4.7-flash';
 
-/* Long enough for a real sentence in any of the ten languages, short enough
+/* Long enough for a real sentence in any of the eleven languages, short enough
    that nothing anybody pastes in decides what this costs to run.
 
    The same number is in assets/ask.js, which is where the browser reads it

@@ -316,7 +316,7 @@ categories renamed, patterns dropped — and that production was loaded.
   for a refresh that brought 1,110.
 - A refresh that brought a Google category the six lists had not carried
   before: the validator names the missing `gcat<Category>` key in
-  `data/ui.json`, and it wants all ten languages. Until it is added the lists
+  `data/ui.json`, and it wants all eleven languages. Until it is added the lists
   print that one category in English (`assets/googlewords.js`).
 - The venues file regenerated and the lists file not, so CI fails on a top
   ten that names last month's order; or the lists file loaded and the

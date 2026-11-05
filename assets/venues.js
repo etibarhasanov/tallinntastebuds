@@ -46,7 +46,7 @@
   var DEFAULT_LANG = 'en';
   /* The words, one language at a time: the list of languages, then the one
      this reader is in — data/lang/index.json and data/lang/<code>.json,
-     written by tools/languages.mjs out of data/ui.json, which is ten languages
+     written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
      **Languages** in README.md. */
@@ -916,7 +916,7 @@
    * and then pressed Map is asking to see that place, not the whole city.
    */
   /* How tall the pinned bar actually is, in a custom property the stylesheet
-     reads. It is not a constant anywhere: five controls in ten languages wrap
+     reads. It is not a constant anywhere: five controls in eleven languages wrap
      differently, a phone scrolls them sideways into one row, and the switch
      below them is only drawn under the breakpoint. The map is the window less
      this, so guessing at it would be a map that is short on one language and

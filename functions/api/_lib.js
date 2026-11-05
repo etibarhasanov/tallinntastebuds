@@ -505,11 +505,11 @@ export async function dataFile(context, path) {
 /* ------------------------------------------------------- the languages
  * Every language the site speaks, each with its own name for itself:
  * data/lang/index.json, which tools/languages.mjs writes out of data/ui.json
- * beside one file per language. Ten codes and ten names, two hundred bytes,
+ * beside one file per language. Eleven codes and eleven names, two hundred bytes,
  * read through the same five-minute cache every other data file is.
  *
  * Until October 2026 this was uiStrings(), data/ui.json whole — every string
- * in all ten languages, 810 KB — read to answer which languages there are,
+ * in all eleven languages, 810 KB — read to answer which languages there are,
  * and in wordsFor() below to pick one block out of it. The pages had gone
  * over to the index and one file each by then (One language at a time under
  * Languages in README.md); the Functions were the last readers of the whole
@@ -644,7 +644,7 @@ export async function wordsFor(context, asked, only) {
   /* The menu's own rows: the code, and the name that language has for itself.
      Sorted by code rather than by name, which is what the map's switch does
      and for its reason — the codes are Latin whatever the language writes
-     itself in, so Հայերեն keeps the place `hy` gives it instead of trailing
+     itself in, so Русский keeps the place `ru` gives it instead of trailing
      the Latin names a collator would put it after. A language with no name
      falls back to its code, the way the map's switch does; an index that
      could not be read is an empty list, and the page then draws no switch
@@ -675,7 +675,7 @@ export async function wordsFor(context, asked, only) {
  *
  * The export files a place as "Sushi Restaurant" and "Japanese";
  * data/taxonomy.json calls those `restaurant` and `asian`, and carries both
- * in ten languages. A list row draws the taxonomy ids for the same reason
+ * in eleven languages. A list row draws the taxonomy ids for the same reason
  * every other visible string on this site comes out of a translated file: a
  * picker that prints Google's English at a Ukrainian reader is the one thing
  * this codebase refuses to do.

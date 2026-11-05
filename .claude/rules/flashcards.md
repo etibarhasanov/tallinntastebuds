@@ -22,7 +22,7 @@ and speak them. If the `flashcards` skill is not already loaded, load it now
 (`/flashcards`, or `.claude/skills/flashcards/SKILL.md`) and follow it end to
 end, including its pull-request section. The `/site` and `/api` skills apply
 as well, since the page is a page and the routes are Functions. The data file
-is content in three languages, not interface in ten; `node tools/validate.mjs`
+is content in three languages, not interface in eleven; `node tools/validate.mjs`
 holds every deck, card, lesson and song in it to a shape the skill spells
 out, and `data/decks/` is generated from it by `node tools/decks.mjs` — never
 edited by hand. A conversation under `talks` is the `/conversation` skill as

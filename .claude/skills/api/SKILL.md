@@ -446,7 +446,7 @@ what it costs per request, and what has to be applied by hand and where.
   midnight UTC. Same allowance, one account.
 - A pattern and the sentence that restated it meaning different things.
   `USERNAME_RE` was `[a-z0-9-]` for a month while `accountUsernameHint`
-  promised "letters" in ten languages — which in Tallinn includes ü and õ, and
+  promised "letters" in eleven languages — which in Tallinn includes ü and õ, and
   in Kyiv a whole alphabet — so `jüri` was refused with the sentence it had
   just followed. Nothing in the code could show it; the sign-up funnel on
   `/admin/visitors` did, where `account_err_username` was the only refusal

@@ -43,7 +43,7 @@
  * fifty-three the export files under it. Two things ride on a Google row now
  * that the picker never reads: `kitchens`, what Google says the place cooks
  * in the directory's cuisine ids, the same kitchensOf() the directory and
- * the chat read a row with, so the bar can say them in ten languages; and
+ * the chat read a row with, so the bar can say them in eleven languages; and
  * `category`, Google's own word for what the place is — "Kebab Shop",
  * "Cocktail Bar" — which is matched and never printed, because a
  * Ukrainian reader typing "kebab" should find the kebab shops and should
