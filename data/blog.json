@@ -343,5 +343,27 @@
         "And if the menu in front of you is in Estonian rather than Georgian, [the flashcards](/flashcard) have a deck for [at the table](/flashcard?d=table)."
       ]
     }
+  },
+  {
+    "id": "four-weeks-of-counting-who-comes",
+    "date": "2026-11-05",
+    "link": "/blog",
+    "title": {
+      "en": "Four weeks of counting who comes, and what it changes"
+    },
+    "standfirst": {
+      "en": "The site keeps its own count of what gets opened and what does not. Here is what the first month said, and what I am doing about it."
+    },
+    "body": {
+      "en": [
+        "Since the start of October this site has counted its visitors itself: which pages open, how long they stay, what they press and what they never press. Nobody is followed and nothing is filed under a name; a day is a row of numbers and that is all. Four weeks is enough rows to read, so I read them. Nine hundred and twenty-five people came, with my own visits taken out.",
+        "Nearly everyone is on a phone or a laptop, and almost nobody is on a tablet: five people in four weeks. More than half of those who open the map leave within five seconds, and the half that stay mostly open a place, which is what the map is for. People who arrive from Facebook are the keenest, with four in five opening somewhere. People who arrive from a search engine are the steadiest, with the same forty-odd every fortnight.",
+        "Languages were the clearest answer. The site speaks ten, and one of them, Armenian, was asked for by nobody and read for not one second. Meanwhile visitors' browsers asked for French seventeen times and German thirteen, and got English. So Armenian goes, and French and German come in, each with a radio station of its own. If your browser is set to one of them, the site will simply arrive in it.",
+        "The column of buttons down the left of the map was an experiment with two versions, a long one and a short one. The short one kept newcomers on the site nearly twice as long and sent just as many of them to a place, so everybody gets the short one now, on every device. The buttons nobody pressed, chess among them, with four presses in all its life, move behind More.",
+        "The flashcards are the part that most wants work. They are used, and used seriously: five hundred cards answered in a month, mostly on phones, and a couple of people who come back week after week. But half the people who open the page leave without touching it, and most of them came straight to it from outside. The first screen describes what the page does instead of doing it. So the next thing to build is a front door that puts a card in front of a newcomer and welcomes somebody back to where they left off.",
+        "Two things I looked at and left alone. The search on the map does find what people type; two misses in a month is not a problem to build for. And signing in with Google loses people, but not at the step I expected: of eighteen who went to Google, eleven never came back at all, and the likely reason is that Facebook's and Instagram's own browsers will not let Google sign anyone in. That gets fixed, and new Google accounts will get a name without being asked for one.",
+        "The four colours the site deals out are still a draw. One does slightly better with newcomers on a laptop and none stands out on a phone, so the test runs a while longer before one of them becomes the colour. The counting itself is on the site's own pages, read by me alone, and the reasoning for every number is in the README, which is where the reasoning for everything here lives."
+      ]
+    }
   }
 ]
