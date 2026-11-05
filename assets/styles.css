@@ -30,7 +30,6 @@
   --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
   --attrib-bg: rgba(255, 240, 234, .88);
   --map-tint: rgba(168, 30, 40, .36);
-  --swatch-edge: rgba(0, 0, 0, .14);
 
   /* The resting palette: what a page made of many cards wears instead of
      the brick and ceramic the map stands on. One reader, the directory's
@@ -1291,7 +1290,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(74, 26, 22, .28);
   --glass: rgba(255, 240, 234, .74);
   --attrib-bg: rgba(255, 240, 234, .88);
-  --swatch-edge: rgba(0, 0, 0, .14);
   --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
@@ -1321,7 +1319,6 @@ body.lang-open .controls { z-index: 1250; }
      edge against the map instead of sitting on it. */
   --glass: rgba(29, 42, 35, .82);
   --attrib-bg: rgba(16, 26, 21, .86);
-  --swatch-edge: rgba(255, 255, 255, .22);
   /* Already green, and already dark, so resting is a step quieter rather
      than a different world: the cards a shade nearer the ground, the edges
      softer, no cast shadow on a page that is already night. */
@@ -1360,7 +1357,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(16, 34, 64, .28);
   --glass: rgba(237, 243, 251, .74);
   --attrib-bg: rgba(237, 243, 251, .88);
-  --swatch-edge: rgba(0, 0, 0, .14);
   --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
@@ -1385,7 +1381,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(0, 0, 0, .5);
   --glass: rgba(39, 31, 48, .82);
   --attrib-bg: rgba(22, 17, 28, .86);
-  --swatch-edge: rgba(255, 255, 255, .22);
   --rest-wash: #17121d; --rest-paper: #221b2a; --rest-line: #352c40;
   --rest-ground: #2e2638; --rest-muted: #b0a0bd;
   --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
@@ -1420,17 +1415,16 @@ body.lang-open .controls { z-index: 1250; }
   background: rgba(214, 190, 240, .18);
 }
 
-/* ---- the left rail: who you are, everybody else, the picks, the settings ---
+/* ---- the left rail: who you are, everybody else, the pick, the rest ---
 
-   Top to bottom: the account, everybody's lists, Surprise me, Ask, the radio,
-   the colour swatch, where am I, and how this works. The account leads
-   because it is the only one whose answer outlasts the visit, and because it
-   wears the name of whoever is signed in; the lists follow it because the two
-   are the same half of the site — who you are, and what everybody else has
-   written — and because they are the only two here that can take you off the
-   map at all. Then the ones that change your
-   evening, then the ones that change the map: a rail that opens with a colour
-   picker reads as a settings strip rather than as the shortcut it is. */
+   Top to bottom: the account, everybody's lists, Surprise me, More, and
+   where am I — which a phone draws in the bottom-right corner instead. The
+   account leads because it is the only one whose answer outlasts the visit,
+   and because it wears the name of whoever is signed in; the lists follow it
+   because the two are the same half of the site — who you are, and what
+   everybody else has written. Then the one that changes your evening, then
+   the door to everything else: Ask, the flashcards, the colour and feedback
+   are rows behind More, "The short rail" in README.md. */
 
 .rail {
   position: fixed;
@@ -1444,43 +1438,21 @@ body.lang-open .controls { z-index: 1250; }
   gap: 10px;
 }
 
-/* One pill, written once, worn by every button on it. The account, Surprise me and the
-   radio had it and the two below them did not: a colour swatch in a round
-   case of its own and an arrow in a second one, both of them mute, under
-   three buttons that say what they are. Down the left edge of the map that
-   read as two things somebody had forgotten to finish rather than as the
-   quieter half of one rail — the eye counts labels before it counts jobs. So
-   the swatch and the arrow are pills too, wearing the words they were
-   already carrying for the phone's sake, and the rail is one column of one
-   shape.
+/* One pill, written once, worn by every button on it. There was a time when
+   the colour swatch and the arrow each sat in a round case of their own,
+   mute, under buttons that said what they were, and down the left edge of
+   the map that read as two things somebody had forgotten to finish — the
+   eye counts labels before it counts jobs. So every door here is a pill,
+   wearing the words it already carries for the phone's sake, and the rail
+   is one column of one shape.
 
    display on a class beats the UA sheet's [hidden] rule, so every button in
-   here that can be taken away has to be told to go. Two are: the radio, when
-   data/radio.json has no station for the language, and the account, until
-   /api/account says the database behind it is actually bound. Without this
-   both draw as an empty pill instead of not drawing at all — the same trap
+   here that can be taken away has to be told to go. Two are: the account
+   and the lists, until /api/account says the database behind them is
+   actually bound. Without this both draw as an empty pill instead of not
+   drawing at all — the same trap
    .search-clear and .panel-save fall into further down. */
 .rail-btn[hidden] { display: none; }
-
-/* ---------- the short rail ----------
-
-   Two rails on one page, and <html data-layout> says which is drawn. A phone
-   that has never been here gets the short one — see pickLayout() in
-   assets/app.js and "The short rail" in README.md: the account, the lists,
-   Surprise me and More, and the other four doors behind More as rows. Everybody who was here before the split keeps the
-   full column, and the only thing the attribute does is put away whichever
-   pills the other rail draws. Neither rail is a second stylesheet: the pill
-   is the same pill, and a rule that is not scoped to the attribute belongs
-   to both.
-
-   display on the attribute beats the UA sheet's [hidden] the same way the
-   rule above does, and it beats .styles' own display: flex, which is what
-   makes the swatch go with the rest. */
-html:not([data-layout="b"]) #btn-more { display: none; }
-[data-layout="b"] #btn-flash,
-[data-layout="b"] #btn-ask,
-[data-layout="b"] #styles,
-[data-layout="b"] #btn-feedback { display: none; }
 
 .rail-btn {
   flex: 0 0 auto;
@@ -1610,8 +1582,7 @@ html:not([data-layout="b"]) #btn-more { display: none; }
    button with no palette in it.
 
    It leans in under a pointer instead of turning. The drawings rotate; a
-   photograph of a clipboard on its side is a mistake, and the swatch below
-   has always leant the same way for the same reason. */
+   photograph of a clipboard on its side is a mistake. */
 .rail-glyph {
   display: grid;
   place-items: center;
@@ -1629,42 +1600,6 @@ html:not([data-layout="b"]) #btn-more { display: none; }
   transition: transform .15s var(--ease);
 }
 .rail-btn:hover .rail-glyph { transform: scale(1.15); }
-
-/* ---------- the colour swatch ---------- */
-
-/* A group with nothing drawn on it. The button inside is the pill, the way it
-   is everywhere else on the rail; the group is only what assets/app.js
-   renders the switch into, and what names the pair of them to a screen
-   reader. */
-.styles { display: flex; }
-
-/* One button, not one per style. A swatch for the style you are already
-   looking at is a control that does nothing. What is left shows the next
-   style along — light and dark alternate, see STYLES in assets/app.js — and
-   the label beside it names it, so the pill reads as the thing you are about
-   to get.
-
-   The colour is a dot inside the button rather than the button itself, which
-   is what lets the switch wear the same pill as the rest of the rail. It is
-   the size of the icons above it and it leans in under a pointer the way
-   they turn, so the one button here with no drawing in it still answers. */
-.sw-dot {
-  width: 21.6px;
-  height: 21.6px;
-  flex: 0 0 auto;
-  border-radius: 100px;
-  border: 1px solid var(--swatch-edge);
-  transition: transform .15s var(--ease);
-}
-.rail-btn:hover .sw-dot { transform: scale(1.15); }
-
-/* The light style is its accent; the dark one is its card with the accent as
-   a ring, so the rail says which of the two you are about to get before you
-   press it. */
-.sw-red    { background: #a81e28; }
-.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4.3px #6fd39a; }
-.sw-blue   { background: #1b4a8c; }
-.sw-plum   { background: #271f30; box-shadow: inset 0 0 0 4.3px #c9a6f2; }
 
 /* ---------- the radio ---------- */
 
@@ -1713,7 +1648,7 @@ html:not([data-layout="b"]) #btn-more { display: none; }
 
    And it is the one pill on the rail drawn in something other than the
    accent. Everything on this map is the style's own red — the pins, the
-   chips, the other seven icon-sized drawings down the left — so a red
+   chips, the other three icon-sized drawings down the left — so a red
    arrow on red paper in the corner was one more red thing to find rather
    than the one control that is about you. It takes --here instead, which is
    the hue the dot it drops is painted in and is chosen in the palette block
@@ -2075,13 +2010,12 @@ body.is-results #panel-detail.is-swiping { transition: none; }
    has to keep checking for — so this is where it is put away. */
 .filter-toggle { display: none; }
 
-/* The short rail's three chips outside the drawer, and they are a phone's:
-   above 860px the whole row is flat on the map and there is nothing to stand
-   outside of, so the second nav draws nothing at any layout up here. The
-   phone block below is where it is drawn, and only under the short rail —
-   and not while it is empty, or its padding and the bar's gap stand the
-   Filters button a finger's width to the right of where the full rail has
-   it. */
+/* The three chips outside the drawer, and they are a phone's: above 860px
+   the whole row is flat on the map and there is nothing to stand outside
+   of, so the second nav draws nothing up here. The phone block below is
+   where it is drawn — and not while it is empty, or its padding and the
+   bar's gap stand the Filters button a finger's width to the right of where
+   it belongs. */
 .chips-front,
 .chips-front:empty { display: none; }
 
@@ -5236,29 +5170,6 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     gap: 8px;
   }
 
-  /* And the feedback door steps out of that row, which is arithmetic before
-     it is taste. Collapsed, a pill is a 35.6px disc and the row's gap is 8px,
-     and a 390px screen leaves 374px after the rail's own left inset — less
-     the arrow, which stands at the right end of this same strip in its
-     corner and takes 35.6px of it plus a gap to be told apart from the row.
-     That leaves 330px. The eight pills still in the row measure 341px, so the
-     last one hangs off the edge; seven measure 297px, which is the room this
-     row was built with.
-
-     It is the right one of the eight to drop. Every other pill here answers a
-     question somebody with a place open still has — another place, what is
-     playing, which colour — and this one is the way off the map entirely.
-     Nobody reading about a restaurant is looking for the form that
-     asks what they would change about the site, and it is one press of the
-     close away in any case. The same argument the rule above it makes about
-     the whole rail behind a full-height sheet, one button smaller.
-
-     If a tenth pill is ever wanted, this is where the next one comes out —
-     and introduceRail() in assets/app.js carries the other half of the
-     arithmetic, which is the cascade running past the sentence under the
-     mark. */
-  body.panel-open #btn-feedback { display: none; }
-
   /* The rail introduces itself, then gets out of the way.
 
      A phone has no hover and no title tooltip, so the desktop pill lost its
@@ -5272,9 +5183,8 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
      after that.
 
      Every one of them is the same shape: an icon at the left, a label that
-     grows out of nothing beside it, and a pill drawn around the pair — which
-     is one rule now that the swatch and the arrow wear the same pill as
-     the ones above them. */
+     grows out of nothing beside it, and a pill drawn around the pair, in one
+     rule. */
   .rail-label {
     display: block;
     min-width: 0;
@@ -5294,9 +5204,9 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
 
      Collapsed it is a 35.6px disc — 21.6px of icon, 6px each side, the border
      on top of that — so the buttons still read as one column of circles down
-     the edge of the map. One set of numbers for all eight, because every icon
-     on the rail is drawn at the same size: the swatch's dot and the lists
-     emblem are both sized to the 21.6px the drawings are. */
+     the edge of the map. One set of numbers for all five, because every icon
+     on the rail is drawn at the same size: the lists emblem is sized to the
+     21.6px the drawings are. */
   .rail-btn {
     display: grid;
     grid-auto-flow: column;
@@ -5391,9 +5301,9 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     bottom: calc(var(--locate-b) + 40px);
   }
 
-  /* ---- the short rail, on a phone ----
+  /* ---- the rail, on a phone ----
 
-     Surprise me is the third of the short rail's four pills, under the
+     Surprise me is the third of the rail's four pills, under the
      lists, and the same pill as the three beside it. For a while it left
      the column for the corner above the arrow, filled in the accent — and
      over a map already dotted with the accent's round cluster discs, a
@@ -5401,19 +5311,19 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
      it is back among its equals, and what it keeps from the corner is the
      word after a press: for a moment the label opens to say it has done
      it, "Surprised", .is-rolled, see sayRolled() in assets/app.js. */
-  [data-layout="b"] #btn-random.is-rolled {
+  #btn-random.is-rolled {
     grid-template-columns: auto 1fr;
     padding: 0 13px 0 6px;
     gap: 8px;
   }
-  [data-layout="b"] #btn-random.is-rolled > .rail-label { opacity: 1; }
+  #btn-random.is-rolled > .rail-label { opacity: 1; }
 
   /* The three chips outside the drawer. The nav wears .filters for the row's
      own rules — the gap, the scroll, the hidden scrollbar — and gives back
      the four that fold a drawer shut, so it is a row that is simply there.
      The same chips inside the drawer are put away, so the row and the drawer
      between them are the vocabulary once. */
-  [data-layout="b"] .chips-front:not(:empty) {
+  .chips-front:not(:empty) {
     display: flex;
     max-width: 100%;
     padding-left: 2px;
@@ -5426,18 +5336,18 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
      included, and the second nav steps out of the bar rather than standing
      squeezed to a sliver beside it. Shut, the drawer is 0px wide, so the
      three inside it need no putting away of their own. */
-  [data-layout="b"] .filter-bar.is-open .chips-front { display: none; }
+  .filter-bar.is-open .chips-front { display: none; }
   /* The button after three chips is the icon alone, or the fourth chip is
      cut off at the edge of a 390px phone: the word stays for a reader, as
      the pill's own name, the way .rail-label does when it is folded. */
-  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle span {
+  .filter-bar:not(.is-open) .filter-toggle span {
     position: absolute;
     width: 1px;
     height: 1px;
     overflow: hidden;
     clip: rect(0 0 0 0);
   }
-  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
+  .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
 
   /* The welcome card: what this site is, once, to a phone that has never
      been here — see showWelcome() in assets/app.js. On the shelf above the

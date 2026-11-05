@@ -99,8 +99,8 @@ CREATE TABLE IF NOT EXISTS save_counts (
 -- --------------------------------------------------------- what gets pressed
 -- One row per thing somebody has pressed on this site, and how many times.
 --
--- This is what /stats ranks and what functions/api/stats.js writes. Eight
--- kinds of thing are counted and `kind` is which:
+-- This is what /stats ranks and what functions/api/stats.js writes. Seven
+-- kinds of thing are counted and `kind` is which, and an eighth is kept:
 --
 --   'place'    a place opened — a write-up read on the map, or a card pressed
 --              on the directory at /google. The id is a slug out of
@@ -127,21 +127,25 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              /insights, and drawn to the site's owner on /admin/stats; a
 --              post taken back to draft keeps its count and stops growing,
 --              the way a private list does.
---   'rail'     a pill on the rail down the left of the map pressed, every
+--   'rail'     a door on the rail down the left of the map pressed, every
 --              press rather than once a load. The id is one of the nine in
---              RAIL_PILLS in functions/api/stats.js — account, lists, flash,
---              random, ask, style, locate, explain, feedback — and the radio
---              is not among them, because it stands beside the language
---              switch rather than in the rail.
---   'layout'   the map's two rails: `a` and `b`, a stranger dealt each, and
---              `a-opened` and `b-opened`, the first place that stranger
---              opened on the visit. LAYOUT_IDS in functions/api/stats.js;
---              **The short rail** in README.md.
+--              RAIL_PILLS in functions/api/stats.js — account, lists, more,
+--              flash, random, ask, style, locate, feedback, the last four's
+--              rows behind More counted as the pills they were — and the
+--              radio is not among them, because it stands beside the
+--              language switch rather than in the rail. No day here; the
+--              same press is filed by the day in visitor_counts below, as
+--              its 'rail' kind, since 2026-11-05.
+--   'layout'   no longer written: the map's two rails, `a` and `b`, a
+--              stranger dealt each, and `a-opened` and `b-opened`, the first
+--              place that stranger opened on the visit, until the short rail
+--              became everybody's on 2026-11-05. The rows are kept and read
+--              by nothing. **The short rail** in README.md.
 --   'look'     the directory's two looks, a test of its own: `a` and `b`,
 --              somebody new to the site dealt each on their first open of
 --              /lists, and `-opened` and `-kept` after either, the first list
---              they opened and kept from it that day. LOOK_IDS beside the
---              rails'; **The lists' two looks** in README.md.
+--              they opened and kept from it that day. LOOK_IDS in
+--              functions/api/stats.js; **The lists' two looks** in README.md.
 --   'style'    the four colours, a test of its own: `red`, `green`, `blue`
 --              and `plum`, somebody new to the site dealt each as their
 --              first page opened, and after each `-opened` (something opened
@@ -306,7 +310,8 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Twenty-seven kinds:
+-- the key, one row per fact per day, and a number. Twenty-eight kinds, one
+-- of them no longer written:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
 --                   and whether it had been here on an earlier one
@@ -319,16 +324,22 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --   kind 'cohort'   id is '<who>:<fact>' — pages, seconds, presses, places
 --                   opened, sign-ins and accounts made, split by new ('new')
 --                   and returning ('back') visitors
---   kind 'layout'   id is '<rail>:<who>' for the visitors on each of the
---                   map's two rails, and '<rail>:<who>:<fact>' for the same
---                   facts as 'cohort', split by rail as well
+--   kind 'layout'   no longer written: '<rail>:<who>' for the visitors on
+--                   each of the map's two rails, and '<rail>:<who>:<fact>'
+--                   for the same facts as 'cohort', split by rail as well,
+--                   until the short rail became everybody's on 2026-11-05
+--   kind 'rail'     id is one of RAIL_PILLS in functions/api/stats.js, a
+--                   door on the map's rail pressed — the same press
+--                   press_counts holds with no day. THE RAIL, BY THE DAY in
+--                   _visitors.js
 --   kind 'style'    the same again by the colour a newcomer was dealt —
 --                   '<colour>:<who>' and '<colour>:<who>:<fact>' — THE FOUR
 --                   COLOURS in _visitors.js
 --   kind 'phone'    a newcomer on a phone, by the rail and colour pinned on
 --                   their first page: '<rail>:<colour>:visitors' and
---                   '<rail>:<colour>:secs', the rail a, b or none — TIME ON
---                   PHONES in _visitors.js
+--                   '<rail>:<colour>:secs', the rail a, b or none, and b
+--                   for everybody since 2026-11-05 — TIME ON PHONES in
+--                   _visitors.js
 --   kind 'lang'     id is '<who>:<code>' for the language a visitor arrived
 --                   in, '<who>:secs:<code>' for seconds read in it, and
 --                   '<from>><to>' for a switch pressed
@@ -366,7 +377,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- And every kind but 'device', 'phone' and the ones a route counts ('ask',
 -- 'use', a 'signup' of the Google round trip) a second time under the device
 -- the report was made on, the kind written '<device>.<kind>' — 'phone.view',
--- 'desktop.press', 'tablet.layout' — with the same ids. No kind above has a
+-- 'desktop.press', 'tablet.rail' — with the same ids. No kind above has a
 -- dot in it, so a row without one is every device and a row with one is one
 -- device. BY DEVICE in _visitors.js, since 2026-10-06; press_counts and
 -- flow_counts are split the same way, by '<device>.<kind>' and

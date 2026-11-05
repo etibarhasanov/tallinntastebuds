@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=8e9f6fb2">
+<link rel="stylesheet" href="assets/styles.lean.css?v=d94b0f0c">
 </head>
 <body>
 
@@ -109,7 +109,7 @@
 
 <div class="rail" id="rail">
   <!-- Who you are, first. Everything under it is about this visit — a place
-       for tonight, a station, a colour, where you are standing — and the
+       for tonight, everything else the map can do, where you are standing — and the
        account is the one button that says the saves outlast the visit. It
        also wears a name once there is one, which is the rail telling you
        whose list you are looking at before you go looking for it.
@@ -160,61 +160,16 @@
     <span class="rail-glyph" aria-hidden="true">📋</span>
     <span class="rail-label" data-i18n="listsAllTitle">Everybody’s lists</span>
   </a>
-  <!-- The other thing on this site that is not about tonight's dinner: a
-       door onto flashcard.tallinntastebuds.ee, and now the only one
-       anywhere. The first was a row on /account.html, behind a sign-in, and
-       for a while it was the whole of the way in — which meant a stranger on
-       the map never learnt the decks existed at all. This pill answered
-       that, and the row went once it had: a page of your own things does not
-       need to carry a door the map already carries, and the one everybody
-       sees is worth more than the one you have to sign in to reach. See "How
-       it is found, which is one pill" under Flashcards in README.md.
+  <!-- Then what the rail does. Surprise me is the one button here that
+       *does* something to the evening, and on a phone that order is the
+       whole point: the buttons at the top are the ones that introduce
+       themselves first.
 
-       It wears flashDoor and flashDoorWhy, which were the account row's
-       strings first and are in all ten languages. flash_open_rail is what it
-       reports; flash_open_account went with the row.
-
-       An <a> and not a button, for the reason the lists door above is one:
-       /flashcard is an address somebody can open in a tab or send. It
-       carries no ?d=, so it lands on the list of decks rather than
-       presuming which one somebody came for, and it points at the path
-       rather than the subdomain, which is what lets the language and the
-       station follow along — see "It is the same account as the map" and
-       "And a radio while you learn it" under Flashcards.
-
-       Never hidden, unlike the account and lists doors above it: those wait
-       on /api/account because a list or an account with no database behind
-       it is a door onto nothing, and this page works with no database bound
-       at all — functions/flashcard.js draws the shipped decks straight out
-       of data/decks.json.
-
-       Two overlapping cards, not the clipboard the lists door wears or an
-       emoji: there is no glyph on this map for "a deck of Estonian" the way
-       📋 already meant "a pin" before it meant "the lists", so this one is
-       drawn in the rail's own line style instead, like every icon above and
-       below it. -->
-  <a class="rail-btn" id="btn-flash" href="/flashcard" data-track="flash_open_rail"
-     data-i18n-title="flashDoorWhy" data-i18n-aria-label="flashDoor"
-     title="Decks of the words, and the ones you collect yourself."
-     aria-label="Learn Estonian">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="3.5" y="6.5" width="13" height="11" rx="2"/>
-      <path d="M8 3.6l11.5 3-3 11"/>
-    </svg>
-    <span class="rail-label" data-i18n="flashDoor">Learn Estonian</span>
-  </a>
-  <!-- Then what the rail does, before what the rail looks like. Surprise me
-       is the one button here that *does* something to the evening; the
-       colour swatch and "where am I" are settings, and settings belong under
-       the things they settle. On a phone that order is the whole point: the
-       buttons at the top are the ones that introduce themselves first.
-
-       On the short rail it is third of four, straight under the lists —
-       the flashcards above it are put away there. It stood apart for a
-       while, a filled disc in the corner above the arrow, and beside the
-       accent's cluster discs on the map it read as one more of them rather
-       than as a button, so it came back into the column, the same pill as
-       its neighbours. -->
+       Third of four, straight under the lists. It stood apart for a while,
+       a filled disc in the corner above the arrow, and beside the accent's
+       cluster discs on the map it read as one more of them rather than as a
+       button, so it came back into the column, the same pill as its
+       neighbours. -->
   <button type="button" class="rail-btn" id="btn-random" data-i18n-title="randomPick" data-i18n-aria-label="randomPick" aria-label="Surprise me" title="Surprise me">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
@@ -224,24 +179,17 @@
     </svg>
     <span class="rail-label" data-i18n="randomPick">Surprise me</span>
   </button>
-  <!-- The short rail's last pill, and the door to the four below that it
-       does not draw. A stranger's phone gets the rail four pills long —
-       account, lists, Surprise me, this — and the rest of what the map can do one press behind this: Ask, the
-       flashcards, the colour, feedback. Somebody who has been here before
-       keeps the full rail, where this pill is put away by the stylesheet
-       and the four stand in the column as they always have. Which of the
-       two a browser gets is decided once, on the way in — pickLayout() in
-       assets/app.js — and "The short rail" in README.md is why.
+  <!-- Fourth, under the die, and the door to the rest of what the map can
+       do: Ask, the flashcards, the colour, feedback, each a row in the
+       sheet renderMore() in assets/app.js draws. They were pills of their
+       own in a column of eight until the rail was cut short for everybody,
+       and "The short rail" in README.md is why.
 
        Counted on /admin/stats as `more`, the way every pill here is, and
-       the rows in the sheet it opens count as the pills they stand for, so
-       Ask pressed from here and Ask pressed on the full rail are one
+       the rows in the sheet it opens count as the pills they were, so Ask
+       pressed from here today and Ask pressed on the old column are one
        number. A button rather than a link: it opens a sheet over the map
-       and leaves nothing behind in the address bar.
-
-       After Surprise me in the markup, so the short rail reads account,
-       lists, the die, More from the top; the full rail puts this away, so
-       where it stands changes nothing there. -->
+       and leaves nothing behind in the address bar. -->
   <button type="button" class="rail-btn" id="btn-more" data-i18n-title="moreWhy" data-i18n-aria-label="moreOpen"
           aria-label="More" title="Ask, flashcards, colour, feedback">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -251,20 +199,6 @@
     </svg>
     <span class="rail-label" data-i18n="moreOpen">More</span>
   </button>
-  <!-- Next to Surprise me, because the two are the same button with the
-       question turned round: one answers "anywhere, you choose", the other
-       "somewhere like this". Both hand back a place with the map still under
-       it, and neither is a filter — see the answer mode in assets/app.js. -->
-  <button type="button" class="rail-btn" id="btn-ask" data-i18n-title="askOpen" data-i18n-aria-label="askOpen" aria-label="Ask" title="Ask">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.4L4 20.5l1.6-3.7a6.5 6.5 0 0 1-2.1-4.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/>
-      <circle cx="8.6" cy="12.4" r="1.15" class="pip"/>
-      <circle cx="12" cy="12.4" r="1.15" class="pip"/>
-      <circle cx="15.4" cy="12.4" r="1.15" class="pip"/>
-    </svg>
-    <span class="rail-label" data-i18n="askOpen">Ask</span>
-  </button>
-  <div class="styles" id="styles" role="group" data-i18n-aria-label="styleLabel" aria-label="Colour"></div>
   <button type="button" class="rail-btn" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="here-arrow" d="M20.2 3.8 3.9 10.6l7 2.5 2.5 7z"/></svg>
     <!-- The button keeps its own aria-label, so the words are decoration to a
@@ -277,46 +211,6 @@
          counter, the introduction cascade and the walk all still find it. -->
     <span class="rail-label" data-i18n="locate" aria-hidden="true">Show my location</span>
   </button>
-  <!-- Last, the site asking. Everything above it answers a question about
-       where to eat; this one answers a question about the map itself.
-
-       The question mark that stood here — How this works, the walk round
-       the page on demand — has gone. The welcome card starts the same walk
-       on a phone's first visit, through Show me around, and /admin/stats
-       said the button was pressed about once for every six presses of the
-       account: the introduction is owed to a stranger, and a stranger has
-       the card. The walk itself is untouched — see openExplain() in
-       assets/app.js — only the second door to it went.
-
-       An <a> and not a button, for the reason the lists door is one: /feedback
-       is an address somebody can open in a tab or send to somebody else.
-
-       Never hidden, unlike the two doors at the head of the rail. Those wait
-       on /api/account because a list with no database behind it is a page
-       with nothing on it at all; this page draws its title, its sentence and
-       its field out of data/ui.json alone and says for itself when the
-       feedback could not be read — which is a state it has on a perfectly
-       healthy deployment whenever a request does not come back.
-
-       IT TAKES THE LAST SLOT ON THE FULL RAIL, AND ANOTHER IS NOT FREE.
-       The cascade that introduces these pills on a phone opens them 300ms
-       apart and holds each for 4.2s, so at eight the last one collapses at
-       7.45s. It used to be timed to finish inside the sentence under the
-       mark, which cleared at 7.86s; that sentence is the welcome card now,
-       which the pills wait for, but every pill added is another 300ms of the
-       corner talking to somebody who came for the map. The short rail is
-       the other answer to that: a stranger gets four pills and a chip row,
-       and the cascade is done inside two seconds. See introduceRail() in
-       assets/app.js, where those numbers are. -->
-  <a class="rail-btn" id="btn-feedback" href="/feedback" data-track="feedback_open"
-     data-i18n-title="feedbackWhy" data-i18n-aria-label="feedbackTitle"
-     title="What you would change about this site." aria-label="Feedback">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.4L4 20.5l1.6-3.7a6.5 6.5 0 0 1-2.1-4.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/>
-      <path d="M15.1 9.6a2.6 2.6 0 0 0-3.1 0L12 9.7l-.1-.1a2.6 2.6 0 0 0-3.1 0 2.1 2.1 0 0 0 0 3.2L12 15.7l3.1-2.9a2.1 2.1 0 0 0 0-3.2z" class="pip"/>
-    </svg>
-    <span class="rail-label" data-i18n="feedbackTitle">Feedback</span>
-  </a>
 </div>
 
 <div class="controls">
@@ -426,14 +320,14 @@
 </div>
 
 <div class="filter-bar" id="filter-bar">
-  <!-- The short rail's three chips, standing outside the drawer on a phone:
+  <!-- The three chips standing outside the drawer on a phone:
        Discount while a discount is live, Bakery and Hidden gem, which are the
        three /admin/stats says get pressed — and All, only while a chip is
        on, so the way out of the chips is never behind the button. Drawn by
-       renderFilters() beside the row proper, and empty on the full rail and
-       above 860px, where every chip is already flat on the map. The same
-       chips inside the drawer are put away by the stylesheet on the short
-       rail, so nothing is on the page twice. -->
+       renderFilters() beside the row proper, and empty above 860px, where
+       every chip is already flat on the map. The same chips inside the
+       drawer are put away by the stylesheet, so nothing is on the page
+       twice. -->
   <nav class="filters chips-front" id="chips-front" data-i18n-aria-label="filters" aria-label="Filter by type"></nav>
   <button type="button" class="chip filter-toggle" id="btn-filters" aria-expanded="false" aria-controls="filters">
     <svg class="filter-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -678,11 +572,10 @@
   <div class="account card" id="account-card"></div>
 </div>
 
-<!-- The rest of the short rail: the four doors the four pills do not carry,
-     as rows. Built by assets/app.js the way the account sheet is, because
-     one row — the colour — names the side you are about to get, which is
-     decided at the moment it opens. Never opened on the full rail, whose
-     pill is put away by the stylesheet; see "The short rail" in README.md. -->
+<!-- The rest of the rail: the four doors the four pills do not carry, as
+     rows. Built by assets/app.js the way the account sheet is, because one
+     row — the colour — names the side you are about to get, which is
+     decided at the moment it opens. "The short rail" in README.md. -->
 <div class="scrim" id="more-scrim" role="dialog" aria-modal="true"
      data-i18n-aria-label="moreOpen" aria-label="More" hidden>
   <div class="account card" id="more-card"></div>
@@ -826,11 +719,8 @@
 <!-- What every press reports, to Clarity and to the site's own count,
      shared by every page.
      Before the page's own script and deferred like it, so document order puts
-     the global in place first. data-arrive="late" because this is the page
-     that deals the rail, and it does that once the places are in — after the
-     page is ready, which is when track.js would otherwise say the page was
-     opened. assets/app.js says it instead, once the rail is dealt. -->
-<script src="assets/track.js?v=861e366a" data-arrive="late" defer></script>
+     the global in place first. -->
+<script src="assets/track.js?v=92bd1a8f" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
@@ -873,6 +763,6 @@
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
      a page that loads it directly. "The lean copies" in README.md. -->
-<script src="assets/app.lean.js?v=7a33e751" defer></script>
+<script src="assets/app.lean.js?v=637cdbbf" defer></script>
 </body>
 </html>

@@ -31,8 +31,8 @@
      just before this file — three maps on this site draw the same basemap and
      used to hold three copies of it. See the note at the top of that file. */
 
-  /* Four styles, two by day and two by night, in the order the swatch walks
-     them: light, dark, light, dark, so one press always changes the light as
+  /* Four styles, two by day and two by night, in the order the Colour row
+     behind More walks them: light, dark, light, dark, so one press always changes the light as
      well as the colour. There were seven, one per colour of the spectrum, and
      then two; four is the owner's choice of how many colour worlds a member
      can pick from — see **The four styles** in README.md. `dark` is the half
@@ -87,14 +87,7 @@
      a block you can recognise and walk from, rather than in a city. */
   var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
-  /* Which rail this browser draws — see pickLayout(). 'a' is the full column
-     of pills, 'b' the short one: four pills, Surprise me third, the rest
-     behind More. "The short rail" in README.md. */
-  var LAYOUT_KEY = 'ttb.layout';
-  var LAYOUT_BY_KEY = 'ttb.layout.by';
-  var LAYOUT_DEAL_KEY = 'ttb.layout.deal';
-  var LAYOUTS = ['a', 'b'];
-  /* The chips the short rail stands outside the drawer, in this order, out
+  /* The chips the rail stands outside the drawer on a phone, in this order, out
      of the thirteen chips and the discount. The three /admin/stats says get
      pressed; the discount only while one is live, since renderFilters draws
      it nowhere otherwise. */
@@ -105,7 +98,6 @@
     places: [],
     deals: [],           // data/deals.json, usually empty
     types: [],
-    layout: 'a',         // which rail, see pickLayout()
     /* One language's strings and one language's write-ups, out of
        data/lang/<code>.json, and every language's own name for itself out of
        data/lang/index.json. Never all ten at once: see loadLanguage(). */
@@ -688,7 +680,6 @@
     storeSet(STORE_KEY, code);
     applyStaticStrings();
     renderLanguageSwitch();
-    renderStyleSwitch();
     renderFilters();
     /* The six lists Google wrote are English in the database and are said
        again in the language just picked — see assets/googlewords.js. */
@@ -745,91 +736,6 @@
     return TTBBasemap.layer(L, { dark: dark });
   }
 
-  /* ------------------------------------------------------- which rail
-   * Decided once per browser and kept: a rail that changed between visits
-   * is a rail nobody learns. In order:
-   *
-   * 1. ?layout= names one and pins it, the way ?style= does — how the owner
-   *    looks at either on a phone that was dealt the other.
-   * 2. A rail chosen by hand — that, or the Map layout card on
-   *    /account.html, layoutCard() in assets/account.js — is never dealt
-   *    over. LAYOUT_BY_KEY says a hand chose it.
-   * 3. A rail dealt under this deal, which LAYOUT_DEAL_KEY records, is kept.
-   * 4. Anything but a phone — a desktop or a tablet, device() in
-   *    assets/track.js, the same rule /admin/visitors files a visitor's
-   *    device by — is dealt nothing and draws the full rail. The short rail
-   *    was cut for a thumb on a 390px screen, and a laptop or a tablet has
-   *    room for the whole column; the owner, on a laptop, asked for it. This
-   *    is for browsers with no rail yet: one already holding a rail from
-   *    the steps above keeps it, on a laptop too, because a returning
-   *    visitor is left exactly as they were. Its key is cleared rather than
-   *    written, so track.js files its visits under no rail, and the
-   *    strangers counted on /admin/visitors are phones alone.
-   * 5. Otherwise the deal: the short rail with LAYOUT_SHARE, the full one
-   *    otherwise, for a stranger and for somebody who was here before alike.
-   *    The first deal gave every stranger the short rail and everybody else
-   *    the full one; a browser holding the short rail from then keeps it,
-   *    because it has already learnt it, and one holding the full rail from
-   *    then is dealt again, once. "The short rail" in README.md.
-   *
-   * A stranger's deal is counted — `a` or `b` under the `layout` kind — so
-   * /admin/stats can set the two rails' strangers side by side, with how many
-   * of each opened a place on that first visit; see selectPlace(). Only
-   * strangers, because a returning visitor's first visit is long gone and
-   * what they do next is not the same question. Their rail still rides on
-   * every report the site's own count gets, and is a Clarity tag —
-   * assets/track.js.
-   *
-   * Storage that throws cannot keep a deal, and a rail rolled afresh on every
-   * load would be the one thing worse than either rail, so it draws the short
-   * one every time and counts nobody. */
-  var LAYOUT_SHARE = 0.8;
-  var LAYOUT_DEAL = '2';
-
-  function pickLayout() {
-    var params = new URLSearchParams(window.location.search);
-    var asked = params.get('layout');
-    if (asked && LAYOUTS.indexOf(asked) !== -1) {
-      storeSet(LAYOUT_KEY, asked);
-      storeSet(LAYOUT_BY_KEY, 'hand');
-      return asked;
-    }
-    var stored = storeGet(LAYOUT_KEY);
-    var known = stored && LAYOUTS.indexOf(stored) !== -1;
-    if (known && (storeGet(LAYOUT_BY_KEY) === 'hand' || storeGet(LAYOUT_DEAL_KEY) === LAYOUT_DEAL || stored === 'b')) {
-      return stored;
-    }
-    if (TTBTrack.device() !== 'phone') {
-      storeDel(LAYOUT_KEY);
-      storeDel(LAYOUT_DEAL_KEY);
-      return 'a';
-    }
-    var dealt = Math.random() < LAYOUT_SHARE ? 'b' : 'a';
-    storeSet(LAYOUT_KEY, dealt);
-    storeSet(LAYOUT_DEAL_KEY, LAYOUT_DEAL);
-    if (storeGet(LAYOUT_KEY) !== dealt) return 'b';
-    if (!storeGet(INTRO_KEY)) {
-      layoutFresh = true;
-      postPress('layout', dealt);
-    }
-    return dealt;
-  }
-
-  /* Whether this load is a stranger's first, with the rail it was dealt, so
-     the first place opened on it can be counted against that rail — and
-     whether one has been. */
-  var layoutFresh = false;
-  var layoutOpened = false;
-
-  function shortRail() {
-    return state.layout === 'b';
-  }
-
-  function applyLayout(id) {
-    state.layout = id;
-    document.documentElement.setAttribute('data-layout', id);
-  }
-
   function applyStyle(id) {
     document.documentElement.setAttribute('data-style', id);
 
@@ -860,7 +766,6 @@
     }
 
     paintMarkers();
-    markStyleSwitch();
     syncUrl();
     if (!opts || opts.pin !== false) TTBTrack.event('style_select', { style: id });
   }
@@ -901,10 +806,10 @@
     }
   }
 
-  /* One button rather than one per style: with two styles, whichever you
+  /* One door rather than one per style: with two styles, whichever you
      were looking at, one of them was already pressed and did nothing, and a
-     row of four would read like a settings screen. So it is one button, and
-     it shows the style you are about to get — the next one in STYLES, which
+     row of four would read like a settings screen. So it is one row behind
+     More, and it shows the style you are about to get — the next one in STYLES, which
      alternates light and dark, so every press is a visible change. Written
      against STYLES rather than against the ids, which is why going from two
      to four styles changed nothing in it. */
@@ -917,40 +822,6 @@
 
   function styleKey(id) {
     return 'style' + id.charAt(0).toUpperCase() + id.slice(1);
-  }
-
-  function markStyleSwitch() {
-    if (!dom.styles) return;
-    var btn = dom.styles.querySelector('.rail-btn');
-    if (!btn) return;
-    var next = nextStyle();
-    btn.querySelector('.sw-dot').className = 'sw-dot sw-' + next;
-    btn.setAttribute('aria-label', t(styleKey(next)));
-    btn.setAttribute('title', t(styleKey(next)));
-    /* The label names the style you are about to get, exactly as the title
-       does — so a swatch that has just been pressed says the way back. */
-    var name = btn.querySelector('.rail-label');
-    if (name) name.textContent = t(styleKey(next));
-  }
-
-  /* The same pill the rest of the rail wears, with a coloured dot where the
-     others keep their icon: a lone swatch in a case of its own was the one
-     button down here that never said what it did. */
-  function renderStyleSwitch() {
-    if (!dom.styles) return;
-    clear(dom.styles);
-    var btn = el('button', { type: 'button', className: 'rail-btn' });
-    /* Read at click time, not at render: the button outlives every switch. */
-    btn.addEventListener('click', function () {
-      setStyle(nextStyle());
-      /* And say what it has become, the way the radio names its station:
-         one press in and the swatch is showing the other side again. */
-      openHint('style', 0);
-    });
-    btn.appendChild(el('span', { className: 'sw-dot' }));
-    btn.appendChild(el('span', { className: 'rail-label' }));
-    dom.styles.appendChild(btn);
-    markStyleSwitch();
   }
 
   /* ------------------------------------------------------------------- map */
@@ -1523,8 +1394,7 @@
        edge is not used because a pill opening its label mid-introduction
        would pad the fit for words that are about to go. */
     r = dom.rail && dom.rail.getBoundingClientRect();
-    var disc = dom.btnFlash || dom.btnRandom;
-    if (r && r.height > r.width && disc) c.l = Math.max(0, r.left - box.left + disc.offsetHeight);
+    if (r && r.height > r.width) c.l = Math.max(0, r.left - box.left + dom.btnRandom.offsetHeight);
     r = dom.btnLocate && !dom.btnLocate.hidden && dom.btnLocate.getBoundingClientRect();
     if (r && r.height) c.b = Math.max(0, box.bottom - r.top);
     if (c.l > box.width - 160 || c.t + c.b > box.height - 160) return null;
@@ -3270,17 +3140,16 @@
   }
 
   /* --------------------------------------------------------- the More sheet
-   * The four doors the short rail does not draw as pills — Ask, the
-   * flashcards, the colour and feedback — as rows, in the account sheet's
-   * own menu shape and under its own card. Built when it opens, because the
-   * colour row names the side you are about to get and that is decided at
-   * the moment of opening, the way the swatch's label is. Never opened on the
-   * full rail: its pill is put away there. "The short rail" in README.md.
+   * The four doors the rail does not draw as pills — Ask, the flashcards,
+   * the colour and feedback — as rows, in the account sheet's own menu shape
+   * and under its own card. Built when it opens, because the colour row
+   * names the side you are about to get and that is decided at the moment
+   * of opening. "The short rail" in README.md.
    *
-   * Every row is the pill it stands for. It reports the same event the pill
-   * reports and is counted on /admin/stats under the pill's own id, so a
-   * door pressed here and the same door pressed on the full rail are one
-   * number and the two rails can be read against each other. */
+   * Every row is the pill it was in the column of eight. It reports the
+   * event that pill reported and is counted on /admin/stats under the pill's
+   * own id, so a door pressed here and the same door pressed on the old
+   * column are one number, and the rail's history reads as one line. */
   function openMore() {
     state.lastFocus = document.activeElement;
     dom.moreScrim.hidden = false;
@@ -3345,9 +3214,9 @@
           openAsk();
         }),
         row('flash', t('flashDoor'), t('flashDoorWhy'), '/flashcard', 'flash_open_rail'),
-        /* The line under Colour is the side you are about to get, exactly as
-           the swatch's label is; pressing it redraws the sheet so the line
-           says the way back. */
+        /* The line under Colour is the side you are about to get — see
+           nextStyle(); pressing it redraws the sheet so the line says the
+           way back. */
         row('style', t('styleLabel'), t(styleKey(next)), '', 'style_open', function () {
           setStyle(next);
           renderMore();
@@ -3623,11 +3492,6 @@
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
-    /* Ask is a pill on the full rail and a row behind More on the short one,
-       so the walk points at whichever door this rail has. */
-    { key: 'explainAsk', at: function () { return dom.btnAsk; },
-      when: function () { return !shortRail(); },
-      pills: function () { return [dom.btnAsk]; } },
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
@@ -3639,7 +3503,6 @@
       when: function () { return !dom.btnLists.hidden; },
       pills: function () { return [dom.btnLists]; } },
     { key: 'explainMore', at: function () { return dom.btnMore; },
-      when: shortRail,
       pills: function () { return [dom.btnMore]; } },
     /* Second in the row, after All: renderFilters draws the discount chip
        ahead of the types. */
@@ -4530,38 +4393,35 @@
   /* THE RAIL IS COUNTED EVERY PRESS, AND THAT IS THE DIFFERENCE
    * A place and a chip are one question asked once — see above. A pill is a
    * press: the question /admin/stats answers about the rail is which of the nine
-   * buttons people actually push and how often, and pressing the die four
+   * doors people actually push and how often, and pressing the die four
    * times is somebody asking for four restaurants. It is also what this page
    * already tells Clarity, which gets an event per press of these buttons
    * rather than one per load, so the two agree here the same way they agree
    * up there — by counting the same gesture the same way.
    *
-   * One listener on the rail rather than nine on the buttons, because two of
-   * them are links that leave the page and the colour swatch is not in the
-   * markup at all: renderStyleSwitch() draws it, and a listener bound at boot
-   * would be bound to a button that did not exist yet. Delegation takes all
-   * nine, whenever they arrive, and takes the next one for free.
+   * One listener on the rail rather than five on the buttons, because the
+   * lists door is a link that leaves the page and the account and lists
+   * pills are hidden until /api/account answers. Delegation takes all five,
+   * whenever they are shown, and takes the next one for free.
    *
    * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
    * the list this half has to be kept in step with: a pill counted here and
    * not named there is a press the route answers {ok:false} to. Nothing in
-   * #rail but these nine is counted,, and the radio is outside it — it stands
+   * #rail but these five is counted, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
    *
-   * The rows behind More count as the pills they stand for — a row is that
-   * pill, drawn elsewhere — through postPress() in renderMore(), so Ask
-   * pressed on either rail is one number. More itself is a pill and counts
-   * as one.
+   * RAIL_PILLS names nine, and the other four are the rows behind More:
+   * Learn Estonian, Ask, the colour and feedback, each counted under the id
+   * it had when it was a pill of its own, through postPress() in
+   * renderMore(), so the numbers from before the rail was cut short and
+   * after it are one column. More itself is a pill and counts as one.
    */
   var RAIL_PRESS = {
     'btn-account': 'account',
     'btn-lists': 'lists',
-    'btn-flash': 'flash',
     'btn-random': 'random',
-    'btn-ask': 'ask',
-    'btn-locate': 'locate',
     'btn-more': 'more',
-    'btn-feedback': 'feedback'
+    'btn-locate': 'locate'
   };
 
   function countRailPress(ev) {
@@ -4571,13 +4431,7 @@
       if (node.classList && node.classList.contains('rail-btn')) { btn = node; break; }
       node = node.parentNode;
     }
-    if (!btn) return;
-    /* The swatch has no id of its own — it is the one pill drawn by a script
-       rather than written into index.html — so it is known by where it
-       stands, which is the same way hintPill() finds it. */
-    var id = RAIL_PRESS[btn.id]
-      || (dom.styles && dom.styles.contains(btn) ? 'style' : '');
-    if (id) postPress('rail', id);
+    if (btn && RAIL_PRESS[btn.id]) postPress('rail', RAIL_PRESS[btn.id]);
   }
 
   /* --------------------------------------------------------------- filters */
@@ -4801,13 +4655,11 @@
   function closeFilterMenu() { setFilterMenu(false); }
 
   /* Whether shutting the drawer would hide a chip that is filtering the
-     map, which is the one state this design says cannot exist. On the full
-     rail that is any chip at all; on the short one the three out front stay
-     in view with the drawer shut, so only a chip from inside it counts. A
-     desktop has no drawer and shuts nothing. */
+     map, which is the one state this design says cannot exist. The three out
+     front stay in view with the drawer shut, so only a chip from inside it
+     counts. A desktop has no drawer and shuts nothing. */
   function drawerHolds() {
     if (!isNarrow()) return false;
-    if (!shortRail()) return state.active.length > 0;
     return state.active.some(function (id) { return FRONT_CHIPS.indexOf(id) === -1; });
   }
 
@@ -4853,7 +4705,7 @@
   }
 
   /* One chip, however many rows it is drawn on: All, the discount and the
-     types were three copies of this before the short rail wanted a fourth. */
+     types were three copies of this before the chips out front wanted a fourth. */
   function chipEl(label, on, press) {
     var chip = el('button', {
       type: 'button',
@@ -4907,15 +4759,12 @@
       var on = state.active.indexOf(id) !== -1;
       var label = id === DEAL_FILTER ? t('filterDiscount') : typeLabel(id);
       var press = function () { toggleChip(id); };
-      var chip = dom.filters.appendChild(chipEl(label, on, press));
-      /* The short rail's three stand outside the drawer as well, and the
-         copy inside it wears a class the stylesheet puts away on that rail,
-         so the chip is on the page once at a time. Drawn at every width and
-         on both rails, cheaply; the stylesheet decides what shows. */
-      if (FRONT_CHIPS.indexOf(id) !== -1) {
-        chip.classList.add('chip-front');
-        dom.chipsFront.appendChild(chipEl(label, on, press));
-      }
+      dom.filters.appendChild(chipEl(label, on, press));
+      /* The three stand outside the drawer as well, on a phone. Shut, the
+         drawer is 0px wide, and open it is the whole row with the three in
+         it and the nav put away, so the chip is on the page once at a time.
+         Drawn at every width, cheaply; the stylesheet decides what shows. */
+      if (FRONT_CHIPS.indexOf(id) !== -1) dom.chipsFront.appendChild(chipEl(label, on, press));
     });
 
     /* Each chip slides in a beat after the one before it. Capped at eight
@@ -4930,7 +4779,7 @@
   }
 
   /* Keep the fade classes in step with how far a chip row is scrolled — the
-     drawer's row, and the short rail's three outside it, which run past a
+     drawer's row, and the three outside it, which run past a
      390px phone the moment All joins them. */
   function updateFilterFades() {
     fadeEdges(dom.filters);
@@ -5385,36 +5234,26 @@
      a corner it shares with the language switch, which says what it is
      without being told; this one is leaving for an empty corner nobody has
      seen it in before, and the one reading of the cascade that matters is the
-     stranger's first. Seventh of nine, so it opens after the pills above it
+     stranger's first. Last of five, so it opens after the pills above it
      have named themselves and the eye has somewhere to be sent. The label
      grows leftwards out of the corner, because the pill is anchored by its
-     right edge down here. */
-  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'more', 'ask',
-                   'style', 'locate', 'feedback'];
+     right edge down here.
+
+     Five, and the cascade is over inside two seconds — which is half of why
+     the rail is this short. The column of eight it replaced took 7.45s. The
+     die is one of them: it was left out of this list for an afternoon,
+     which made it the one button a stranger was never told the meaning of. */
+  var HINT_KEYS = ['account', 'lists', 'random', 'more', 'locate'];
   var hintTimers = {};
-
-  /* The ones this rail draws, top to bottom. The full rail is eight; the
-     short one is four pills and the arrow, and its cascade is over inside
-     two seconds — which is half of why it exists. openHint() would skip a
-     put-away pill on its own; naming the five keeps the arithmetic honest.
-
-     The die is one of them on both rails. It was left out of this list for
-     an afternoon, which made it the one button a stranger was never told
-     the meaning of. */
-  function railKeys() {
-    if (shortRail()) return ['account', 'lists', 'random', 'more', 'locate'];
-    return HINT_KEYS.filter(function (key) { return key !== 'more'; });
-  }
 
   /* Before any of them, the welcome card: see showWelcome below. The pills
      wait until it has been put away, so there is one introduction at a time.
 
      The first pill waits a little over a second after that, so the map has
-     settled before the buttons start naming themselves. Eight pills 300ms
-     apart and held for 4.2s each put the last collapse at 7.45s, and every
-     pill added puts another 300ms on how long the corner spends talking —
-     which is the cost of a ninth, and a real one. The short rail's five are
-     all open by 2.35s and gone by 6.55s. */
+     settled before the buttons start naming themselves. Five pills 300ms
+     apart and held for 4.2s each are all open by 2.35s and gone by 6.55s,
+     and every pill added puts another 300ms on how long the corner spends
+     talking — which is the cost of a sixth, and a real one. */
   var RAIL_IN = 1150;
   /* Whether this visit owes the welcome card: set on the way in when
      INTRO_KEY says this browser has never been introduced, and spent the
@@ -5455,18 +5294,12 @@
      than none. */
   var INTRO_KEY = 'ttb.introduced';
 
-  /* The swatch is the one that is not in the markup — renderStyleSwitch draws
-     it into the group — so it is asked for by class rather than held in dom. */
   function hintPill(key) {
     if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
     if (key === 'more') return dom.btnMore;
-    if (key === 'flash') return dom.btnFlash;
-    if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
-    if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
-    if (key === 'feedback') return dom.btnFeedback;
     return dom.btnRandom;
   }
 
@@ -5490,8 +5323,9 @@
     for (var i = 0; i < HINT_KEYS.length; i++) closeHint(HINT_KEYS[i]);
   }
 
-  /* A pill the other rail draws is put away by the stylesheet rather than
-     by `hidden`, so it is asked for its width, the way chipRow() asks. */
+  /* A pill the stylesheet has put away — the radio's, say, while a sheet
+     stands over it — is gone by its width rather than by `hidden`, so it is
+     asked for its width, the way chipRow() asks. */
   function shownPill(btn) {
     return !!(btn && !btn.hidden && btn.getBoundingClientRect().width);
   }
@@ -5503,7 +5337,7 @@
     hintTimers[key] = setTimeout(function () {
       /* Never over an open sheet. With a place open the rail lies along the
          strip above it as a row, and two pills at their full width push the
-         colour swatch and the locate button off the side of the screen. */
+         ones after them off the side of the screen. */
       if (btn.hidden || !hintText(btn) || sheetIsOver()) {
         hintTimers[key] = null;
         return;
@@ -5599,8 +5433,7 @@
     /* A cascade rather than the whole column at once: 300ms apart is slow
        enough to read down the rail and quick enough that they are all up
        together for most of the time they are up at all. */
-    var keys = railKeys();
-    for (var i = 0; i < keys.length; i++) openHint(keys[i], RAIL_IN + i * 300);
+    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
   }
 
@@ -5911,7 +5744,7 @@
       var at = params.get('at') || '';
       if (!id) {
         syncUrl();
-        if (spot) selectPlace(spot, { fly: true, arrived: true });
+        if (spot) selectPlace(spot, { fly: true });
         return;
       }
       loadList(id).then(function (list) {
@@ -5948,21 +5781,17 @@
    * out to be true of a name you tapped as well, so it is what every place
    * does now. See selectPlace().
    *
-   * And the button says it has done it. On the short rail a roll opens the
-   * die's label for a moment — "the short rail, on a phone" in
-   * assets/styles.css — reading "Surprised", the way a Copy button says
-   * Copied, and folds back to the die.
+   * And the button says it has done it. On a phone a roll opens the die's
+   * label for a moment — "the rail, on a phone" in assets/styles.css —
+   * reading "Surprised", the way a Copy button says Copied, and folds back
+   * to the die. On a desktop, where the label is always out, the word
+   * changes in it for the same moment.
    *
    * For as long as the map is in the air, and no longer. The pill grows
    * rightwards out of the rail over the map, where the place it chose may
    * land with its name over it; held for two seconds it was still standing
    * on names when the map arrived. At FLY_MS it is folding as the pin comes
    * down.
-   *
-   * The short rail's alone. The full rail is the old design, the one the
-   * short rail is set against, and the owner wants it left exactly as it
-   * was: its die says Surprise me on hover and in the cascade, and a press
-   * there changes nothing about the button.
    */
   var ROLLED_MS = FLY_MS * 1000;
   var rolledTimer = null;
@@ -5988,7 +5817,7 @@
        you together, so it answers "where is it" as "this far from where you
        are standing" — the panel prints the distance too. See frameWithHere(). */
     selectPlace(choice.id, { fly: true, withHere: true });
-    if (shortRail()) sayRolled();
+    sayRolled();
   }
 
   function sayRolled() {
@@ -7246,14 +7075,6 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
-    /* The first place this visit opened, on a stranger's first visit — the
-       number /admin/stats sets against how many were dealt that rail.
-       Once, whatever else this visit opens; the place a link opened is the
-       link's and not a press, and is left out — see boot. */
-    if (layoutFresh && !opts.arrived && !layoutOpened) {
-      layoutOpened = true;
-      postPress('layout', state.layout + '-opened');
-    }
     /* The phone, the site and the week of a venue the find bar put there,
        fetched the first time it is opened — see dressFound(). */
     if (isFound(id) || isSavedStandIn(id)) dressFound(place);
@@ -7308,7 +7129,7 @@
      second Back is the list's own page. */
   function openFromRow(place) {
     state.fromRow = place.id;
-    selectPlace(place.id, { fly: true, arrived: true });
+    selectPlace(place.id, { fly: true });
   }
 
   /* The list, standing on one of its places: the list at its half stop, its
@@ -11918,10 +11739,6 @@
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
     else params.delete('style');
-    /* Read once by pickLayout() and kept in storage, so it has said its
-       piece: left on the bar it would deal the same rail to whoever the link
-       was sent on to. */
-    params.delete('layout');
     /* ?story= is a door, not a state: it opens the queue on the way in and is
        taken off the address bar there and then, so nothing anybody copies out
        of it later reopens a video that has since gone.
@@ -12216,15 +12033,6 @@
       randomPick();
     });
     holdForChess(dom.btnRandom);
-
-    /* And the one beside it, for the same reason — its own label rather than
-       the die's, because pressing one of the two is not an answer to the
-       other. */
-    dom.btnAsk.addEventListener('click', function () {
-      closeHint('ask');
-      TTBTrack.event('ask_open');
-      openAsk();
-    });
 
     dom.askForm.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -12823,10 +12631,8 @@
       chipsFront: $('chips-front'),
       filterBar: $('filter-bar'),
       btnFilters: $('btn-filters'),
-      styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),
-      btnAsk: $('btn-ask'),
       panel: $('panel'),
       panelBand: $('panel-band'),
       panelScroll: $('panel-scroll'),
@@ -12848,7 +12654,6 @@
       moreCard: $('more-card'),
       whereScrim: $('where-scrim'),
       whereCard: $('where-card'),
-      btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),
@@ -12883,9 +12688,6 @@
       btnLocate: $('btn-locate'),
       welcome: $('welcome'),
       welcomeTour: $('welcome-tour'),
-      /* Held only so the introduction can open its label — the press itself
-         is an <a> going to an address, and nothing in this file wires it. */
-      btnFeedback: $('btn-feedback'),
       tour: $('tour'),
       tourRing: $('tour-ring'),
       tourCursor: $('tour-cursor'),
@@ -12996,18 +12798,10 @@
       state.style = styled.style;
       state.stylePinned = styled.pinned;
       applyStyle(state.style);
-      /* And which rail, before the rail is measured: a pill the stylesheet
-         puts away has no height for placeRail() to count. */
-      applyLayout(pickLayout());
-      /* And now the page may say it was opened: the site's own count files
-         a visit under the rail it was dealt, and on a stranger's first visit
-         that is this line — see data-arrive on track.js in index.html. */
-      TTBTrack.arrive();
 
       buildSearchIndex();
       applyStaticStrings();
       renderLanguageSwitch();
-      renderStyleSwitch();
       initMap();
       wireFindMoved();
       wireLocation();
@@ -13073,7 +12867,7 @@
          the map frames them when they land. */
       if (spot && !byId(spot) && isSaved(spot)) {
         seatSaved(function () {
-          if (byId(spot) && !state.selected) selectPlace(spot, { fly: true, arrived: true });
+          if (byId(spot) && !state.selected) selectPlace(spot, { fly: true });
         });
       } else {
         seatSaved();
@@ -13086,7 +12880,7 @@
             if (state.selected || byId(spot)) return;
             for (var i = 0; i < roll.length; i++) {
               if (roll[i].id === spot) {
-                selectPlace(seatFound(roll[i]).id, { fly: true, arrived: true });
+                selectPlace(seatFound(roll[i]).id, { fly: true });
                 return;
               }
             }
@@ -13094,9 +12888,7 @@
         }
       }
 
-      /* `arrived` says this open was the link's and not a press, which the
-         count of first places opened on the short rail leaves out. */
-      if (spot && byId(spot)) selectPlace(spot, { fly: true, arrived: true });
+      if (spot && byId(spot)) selectPlace(spot, { fly: true });
 
       /* The place a row on the list's own page was pressed on, open, with
          the list underneath it for the close to land on. See openFromRow(). */

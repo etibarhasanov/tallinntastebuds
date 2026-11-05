@@ -15,7 +15,6 @@
   --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
   --attrib-bg: rgba(255, 240, 234, .88);
   --map-tint: rgba(168, 30, 40, .36);
-  --swatch-edge: rgba(0, 0, 0, .14);
 
   --rest-wash:   #f1f4ec;
   --rest-paper:  #fcfdfa;
@@ -757,7 +756,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(74, 26, 22, .28);
   --glass: rgba(255, 240, 234, .74);
   --attrib-bg: rgba(255, 240, 234, .88);
-  --swatch-edge: rgba(0, 0, 0, .14);
   --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
@@ -780,7 +778,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(0, 0, 0, .5);
   --glass: rgba(29, 42, 35, .82);
   --attrib-bg: rgba(16, 26, 21, .86);
-  --swatch-edge: rgba(255, 255, 255, .22);
   --rest-wash: #111b16; --rest-paper: #18241e; --rest-line: #2a3832;
   --rest-ground: #25332c; --rest-muted: #9fb2a5;
   --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
@@ -803,7 +800,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(16, 34, 64, .28);
   --glass: rgba(237, 243, 251, .74);
   --attrib-bg: rgba(237, 243, 251, .88);
-  --swatch-edge: rgba(0, 0, 0, .14);
   --rest-wash: #f1f4ec; --rest-paper: #fcfdfa; --rest-line: #e1e6dc;
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
@@ -826,7 +822,6 @@ body.lang-open .controls { z-index: 1250; }
   --lift: 0 1px 6px rgba(0, 0, 0, .5);
   --glass: rgba(39, 31, 48, .82);
   --attrib-bg: rgba(22, 17, 28, .86);
-  --swatch-edge: rgba(255, 255, 255, .22);
   --rest-wash: #17121d; --rest-paper: #221b2a; --rest-line: #352c40;
   --rest-ground: #2e2638; --rest-muted: #b0a0bd;
   --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
@@ -864,12 +859,6 @@ body.lang-open .controls { z-index: 1250; }
 }
 
 .rail-btn[hidden] { display: none; }
-
-html:not([data-layout="b"]) #btn-more { display: none; }
-[data-layout="b"] #btn-flash,
-[data-layout="b"] #btn-ask,
-[data-layout="b"] #styles,
-[data-layout="b"] #btn-feedback { display: none; }
 
 .rail-btn {
   flex: 0 0 auto;
@@ -961,23 +950,6 @@ html:not([data-layout="b"]) #btn-more { display: none; }
   transition: transform .15s var(--ease);
 }
 .rail-btn:hover .rail-glyph { transform: scale(1.15); }
-
-.styles { display: flex; }
-
-.sw-dot {
-  width: 21.6px;
-  height: 21.6px;
-  flex: 0 0 auto;
-  border-radius: 100px;
-  border: 1px solid var(--swatch-edge);
-  transition: transform .15s var(--ease);
-}
-.rail-btn:hover .sw-dot { transform: scale(1.15); }
-
-.sw-red    { background: #a81e28; }
-.sw-green  { background: #1d2a23; box-shadow: inset 0 0 0 4.3px #6fd39a; }
-.sw-blue   { background: #1b4a8c; }
-.sw-plum   { background: #271f30; box-shadow: inset 0 0 0 4.3px #c9a6f2; }
 
 .radio svg { fill: var(--accent); stroke: none; }
 .radio .ico-stop { display: none; }
@@ -3392,8 +3364,6 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     gap: 8px;
   }
 
-  body.panel-open #btn-feedback { display: none; }
-
   .rail-label {
     display: block;
     min-width: 0;
@@ -3451,14 +3421,14 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     bottom: calc(var(--locate-b) + 40px);
   }
 
-  [data-layout="b"] #btn-random.is-rolled {
+  #btn-random.is-rolled {
     grid-template-columns: auto 1fr;
     padding: 0 13px 0 6px;
     gap: 8px;
   }
-  [data-layout="b"] #btn-random.is-rolled > .rail-label { opacity: 1; }
+  #btn-random.is-rolled > .rail-label { opacity: 1; }
 
-  [data-layout="b"] .chips-front:not(:empty) {
+  .chips-front:not(:empty) {
     display: flex;
     max-width: 100%;
     padding-left: 2px;
@@ -3467,15 +3437,15 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
     visibility: visible;
     transition: none;
   }
-  [data-layout="b"] .filter-bar.is-open .chips-front { display: none; }
-  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle span {
+  .filter-bar.is-open .chips-front { display: none; }
+  .filter-bar:not(.is-open) .filter-toggle span {
     position: absolute;
     width: 1px;
     height: 1px;
     overflow: hidden;
     clip: rect(0 0 0 0);
   }
-  [data-layout="b"] .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
+  .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
 
   .welcome {
     position: fixed;

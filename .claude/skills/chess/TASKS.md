@@ -520,23 +520,22 @@ in — *Surprise me* held for five seconds, `holdForChess()` in `assets/app.js`
 — which is not this task and does not tick it. The brief below is still what a door would
 be, and the `CLAUDE.md` lines are still owed whenever it comes back.
 
-**Lands:** `#btn-chess` on the rail in `index.html` under `#btn-flash`, a row
-behind More, `chess` in `RAIL_PRESS` in `assets/app.js` and in `RAIL_PILLS` in
-`functions/api/stats.js`, the short rail's stylesheet rule hiding the new pill
-with the others it hides, `chessDoor` and `chessDoorWhy`, the `chess_open_rail`
+**Lands:** a row behind More, after Learn Estonian — the rail is four pills
+and the arrow for everybody since 2026-11-05 (**The short rail** in the
+README), so a pill of its own would be a new decision about that rail and
+not part of this task — `chess` in `RAIL_PILLS` in `functions/api/stats.js`
+and posted by the row in `renderMore()`, `chessDoor` and `chessDoorWhy`, the `chess_open_rail`
 event and its row in **Analytics**, the rail in the first step of the `chess`
 flow in `data/flows.json` and the re-run `flows/chess.bpmn`, the door in the
-README's **Chess** and the five-doors count under **The short rail**, the
+README's **Chess** and the rows behind More under **The short rail**, the
 opening sentence of `CLAUDE.md` and its process table, the `/api` skill's `/*`
 row if the page gained a route (it did not), the stamps.
 
 **Do:**
 
-1. The pill: an `<a class="rail-btn" id="btn-chess" href="/chess"
-   data-track="chess_open_rail">` in the rail's own line style — a knight, or a
-   pawn, drawn in a `<svg>` like `#btn-flash`'s two cards — with the two
-   strings, never hidden, for the reason the flashcards door is never hidden.
-   The More sheet's row after Learn Estonian, counted under the pill's id.
+1. The row: the More sheet's row after Learn Estonian, a link to `/chess`
+   reporting `chess_open_rail` and counted under `chess`, with the two
+   strings, never hidden, for the reason the flashcards row is never hidden.
 2. The strings: `chessDoor` *Play chess*, `chessDoorWhy` *One board for the
    whole city, against Tallinn Tastebuds.*, all ten languages.
 3. The flow: the rail and the More row in the `open` step's note and `ref`,
@@ -545,10 +544,10 @@ row if the page gained a route (it did not), the stamps.
    press belongs on the visitor's and the member's diagrams, where the map
    is. Then `node tools/flows.mjs`, commit the `.bpmn`.
 4. The README and `CLAUDE.md` lines above; then `node tools/stamp.mjs`.
-5. Drive the map on both rails — `?layout=a` and `?layout=b` — and both styles:
-   the pill, the row, the count arriving on `/admin/stats` under `chess`.
+5. Drive the map at 390 px and at a desktop width, in a light and a dark
+   style: the row, the count arriving on `/admin/stats` under `chess`.
 
-**Done when:** the page is reachable from the rail on both layouts, counted,
+**Done when:** the page is reachable from the rail, counted,
 its door is on `/admin/flows`, and every document that lists the site's parts
 lists it.
 

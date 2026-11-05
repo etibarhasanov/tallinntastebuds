@@ -368,7 +368,7 @@ purpose — a chip row that rearranged itself under people's thumbs would move
 the thing they were reaching for — but it is the measurement to read before
 moving a line in `taxonomy.json`. See **[Statistics](#statistics)**.
 
-It has been read once, for the short rail: on a phone dealt that rail, three
+It has been read once, for the short rail: on a phone, three
 of these stand outside the drawer — Discount while one is live, Bakery and
 Hidden gem, `FRONT_CHIPS` in `assets/app.js` — and they are the three the
 table said get pressed. Casual/Solo is pressed as often as Bakery and is not
@@ -1561,8 +1561,8 @@ to — a place opening is not leaving it.
 
 ## Ask for somewhere
 
-The speech bubble on the left rail, next to the die — and on the short rail
-a row behind **More**, see **The short rail** — opens the panel on a chat,
+**Ask**, a row behind **More** on the left rail — see **The short rail** —
+opens the panel on a chat,
 and the site speaks first: *What do you feel like?*, with the field
 ready at the bottom of the panel. Type a sentence into it — *cheap asian
 food*, *somewhere for a date*, *khachapuri, still open* — and it sits on the
@@ -4421,19 +4421,6 @@ here before it draws anything, now sends them to a page with no way back to
 the three addresses it kept. The way back is the mark in this page's own
 header, which is the map, and the pill on the map's rail under it — two
 presses where there was one.
-
-### Which rail this phone draws
-
-The last card, under the three columns, is the one setting on this page:
-**Map layout**, a segment with two answers, **Full rail** and **Short rail**.
-The map deals one — eight phones in ten the short one, **The short rail** —
-and this is where somebody signed in says otherwise, marked as chosen so no
-deal overrides it. It is written into the
-same `ttb.layout` the map reads, so the next load of the map draws what was
-chosen; and it is this browser's choice rather than the account's, which the
-line under the title says: the key is local, and making the rail follow a
-person across their devices would be a column on `users` nobody has asked
-for. `layoutCard()` in `assets/account.js`, reporting `layout_select`.
 
 ### The columns fold, and the ways on do not
 
@@ -8831,10 +8818,12 @@ map struck for a reason this page has not got.
 ### How it is found, which is one pill
 
 **The map's own chrome points here, and it is the whole of the way in.** A
-pill on the rail — `#btn-flash` in `index.html`, third down, under
-Everybody's lists — links to `/flashcard` in plain markup, no script needed
-to find it. It wears `flashDoor` and `flashDoorWhy` out of `data/ui.json`,
-already in all ten languages, and reports `flash_open_rail`.
+row behind **More** on the rail — **Learn Estonian**, drawn by
+`renderMore()` in `assets/app.js` — links to `/flashcard`. It wears
+`flashDoor` and `flashDoorWhy` out of `data/ui.json`, already in all ten
+languages, and reports `flash_open_rail`. It was a pill of its own in the
+rail's column of eight until the rail was cut short for everybody — **The
+short rail**.
 
 The door count has been one, then two, then one again. It began as **a row
 on `/account.html`** and nothing else, behind a sign-in, on the card that
@@ -11412,7 +11401,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `shelfIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
-| `index.html` | `#btn-flash` on the rail, the only link to the feature on this site — plain markup, so nothing in `assets/` goes with it |
+| `assets/app.js` | the `flash` row in `renderMore()`, the only link to the feature on this site, and `'flash'` with it in `RAIL_PILLS` in `functions/api/stats.js` |
 | `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
@@ -12765,9 +12754,9 @@ the way it does; this is the half that listens.
 
 One page, the frame every page that is not the map wears — the brand header,
 the 640px column, the cards — with a field at the top and everything anybody
-has written under it. The door is the last pill on the map's full rail, and
-a row behind **More** on the short one — see **The short rail** — and it is
-the site asking, where everything above it on the rail is the site answering.
+has written under it. The door is the last row behind **More** on the map's
+rail — see **The short rail** — and it is the site asking, where everything
+above it in the sheet is the site answering.
 
 ### Saying something needs no account, and putting your name on it is one press
 
@@ -12998,10 +12987,7 @@ list anybody has opened with where they opened it from — see **Which lists,
 and from where** below — then every member's post anybody has read — see
 **Which posts** below — then what the site holds, nine counts of its
 tables from the accounts to the decks people made, and a footnote under all
-of it, every open counted — see **What the site holds** below. How many strangers got each of the
-map's two rails and how many of them opened a place with it used to be two
-more footnotes here, and is now on `/admin/visitors` with everything else
-about the rails — see **The two rails** under **Visitors**. Nothing on the
+of it, every open counted — see **What the site holds** below. Nothing on the
 site links to it. That is the blog's arrangement rather than
 the directory's, with one difference: the blog is indexed and this is not,
 and **Not indexed, and not disallowed either** below says why.
@@ -13110,21 +13096,29 @@ both count the same gesture the same way. That is the rule —
 agree with the report beside it — and once per load is how it comes out for a
 place, every press for a pill.
 
-The nine are the nine inside `#rail` across its two shapes — the full rail
-draws eight of them and the short one four, and **More** is the short rail's
-alone — named in `RAIL_PILLS` in `functions/api/stats.js` and again in
-`RAIL_PRESS` in `assets/app.js`, which is the pair that has to be kept in
-step: a button counted on the map and not named in the route is a press
-answered `{ok:false}`. Neither file can import the other — the arrangement
-**The pins** has — so a pill added to the rail is counted once it is written
-into both. The colour swatch is one of them and has no id in the markup,
-because `renderStyleSwitch()` draws it; it is known by standing inside
-`#styles`, the same way `hintPill()` finds it. One listener on the rail
-rather than nine on the buttons, since two of them are links that leave the
-page and a third does not exist at boot. A row in the More sheet is the pill
-it stands for and is counted under that pill's id — `renderMore()` posts it
-— so Ask pressed on either rail is one number, and the table reads the two
-rails against each other without a column for which one it was.
+The nine are the five pills inside `#rail` — the account, the lists,
+Surprise me, **More** and the arrow — and the four rows behind More, Ask,
+Learn Estonian, the colour and feedback, each counted under the id it had
+when it was a pill in the column of eight. They are named in `RAIL_PILLS` in
+`functions/api/stats.js`, and again in `RAIL_PRESS` (the five) and
+`renderMore()` (the four) in `assets/app.js`, which is the pair that has to
+be kept in step: a door counted on the map and not named in the route is a
+press answered `{ok:false}`. Neither file can import the other — the
+arrangement **The pins** has — so a door added to the rail is counted once
+it is written into both. One listener on the rail rather than five on the
+buttons, since the lists door is a link that leaves the page and two of them
+are hidden until `/api/account` answers. Because the rows kept the pills'
+ids, Ask pressed behind More today and Ask pressed on the old column are one
+number, and the table reads the rail's whole history without a column for
+which shape it was.
+
+**And by the day, from 2026-11-05.** `press_counts` has no day, so a running
+total cannot say what a change to the rail did. Every rail press is filed a
+second time into `visitor_counts`, as its `rail` kind — the pill's id, the
+day, and the device beside it — through `countRail()` in
+`functions/api/_visitors.js`, so the rail can be read before and after the
+next change to it. Nothing draws it yet; a `SELECT day, id, n FROM
+visitor_counts WHERE kind = 'rail'` is the way to read it.
 
 **The radio is not on this table.** It wears the rail's pill and reports its
 presses like everything else, but it stands next to the language switch in the corner
@@ -13221,15 +13215,13 @@ on `google_venues` that exists only because it is Google's and says so.
 ### What it argues about
 
 Two tables have something to change, and the rail's is the newer of them. The
-full rail is eight pills deep on a phone and the cascade that introduces them
-is timed for 300ms a pill — eight put the last collapse at 7.45s, and a ninth
-is another 300ms of the corner talking to somebody who came for the map,
-which is written out at the foot of the rail in `index.html`. So "what earns
-a slot" is a question with a real cost behind it, and this is the measurement
-of it. It has been read once: the short rail — **The short rail** — is what
-this table argued for, and the pills it put behind More are the four at the
-bottom of it. Nothing is wired to it beyond that: both rails are in a
-hand-written order and stay that way.
+cascade that introduces the rail on a phone is timed for 300ms a pill, and
+every pill added is another 300ms of the corner talking to somebody who came
+for the map. So "what earns a slot" is a question with a real cost behind
+it, and this is the measurement of it. It has been read once: the short rail
+— **The short rail** — is what this table argued for, and the pills it put
+behind More are the four at the bottom of it. Nothing is wired to it beyond
+that: the rail is in a hand-written order and stays that way.
 
 The filter table is the other one. **The order of the
 filter chips** is a hand-written order with a paragraph of reasoning behind
@@ -13405,19 +13397,18 @@ its own.
   and a bar for each of those thirty minutes. It asks again every minute
   while the page is on screen — see **Right now** below.
 - **Today so far**, whatever range is chosen: visitors, new ones, sign-ins
-  and accounts made, and under them the same four for the full rail, the
-  short rail and **no rail yet** — the visitors who have not opened the map,
-  so no rail has been dealt to them. It is the one card that answers "who
-  came today, and on which rail".
+  and accounts made. It is the one card that answers "who came today". It
+  split the four by rail while the map dealt two; **The short rail**.
 - **Who came**, over a range — today so far, 7, 28 or 90 days: five figures,
   each against the same length of time just before it — **visitors**, the
   share of them **returning**, **page views**, **time per visitor** and
   **clicks per visitor**. Today is not set against yesterday: half a day
   against a whole one says nothing.
 - **Tests**: **The lists' two looks**, the directory's own test; **Time on
-  phones**, how long newcomers on a phone stay by colour and rail; **The four
-  colours**, the swatch's; and **The two rails**, the map's — see **The two
-  rails** and **Time on phones** below.
+  phones**, how long newcomers on a phone stay by colour and rail; and **The
+  four colours**, the colour row's — see **The tests** and **Time on
+  phones** below. The map's two rails were a test here until 2026-11-05;
+  **The short rail** has what they found.
 - **Who they are**: a bar a day of new and returning visitors (a bar a week
   for ninety days, and none for today), **new against returning** — see
   **New against returning** below — a bar an hour of the day on Tallinn's
@@ -13632,67 +13623,43 @@ and a share of that would be a number about nothing.
 
 This began after the visitors did, so a range that reaches back past its
 first day has visitors on days that have nothing else to divide among them.
-Those days are left out of this card and the rails' — the visitors along
+Those days are left out of this card and the colours' — the visitors along
 with the rest — and a line under each says from when.
 
-### The two rails
+### The tests
 
-The map deals a stranger one of two rails — **The short rail** — and this is
-the card that reads the experiment, in three blocks under one sentence.
+The site has dealt newcomers more than one version of something, at random,
+to see which holds them better, and the **Tests** group is where each is
+read. The map's two rails were the first, and the card that read them — the
+strangers dealt each and the share who opened a place, everyone on each rail
+over the range, and a two-proportion z-test over the first block — is gone
+with the full rail: **The short rail** has what it found and why it ended.
+Its rows are still in `press_counts` and `visitor_counts` under `layout`,
+and nothing reads them.
 
-- **Strangers, since the split began**: how many browsers that had never
-  been here were dealt each rail, and the share of them that opened a place
-  on that first visit. These are the four `layout` rows in `press_counts`,
-  which have no day, so they are all-time rather than the range. They used
-  to be two footnotes on `/admin/stats`.
-- **Everyone on the rail, in this range**: visitors, the share returning,
-  and the per-visitor figures **New against returning** has.
-- **New visitors only**: the same, for the rail's first-day visitors alone,
-  which is the half of a rail's traffic that has not already learnt the map.
+**The lists' two looks** reads the directory's own test in one block: how
+many newcomers each look was dealt, and the share of them that opened a list
+from it and kept one that day, under one sentence — a two-proportion z-test
+at the usual 95%, **too early to call** until each arm has thirty newcomers
+(`FEWEST` in `assets/visitors.js`), then **no clear difference yet** or one
+look **ahead** once the gap is bigger than chance would make. The six `look`
+rows of `press_counts`, which have no day, so they are all-time rather than
+the range; **The lists' two looks** has the rest.
 
-The sentence over them is the verdict on the first block, as a two-
-proportion z-test at the usual 95%: **too early to call** until each rail
-has thirty strangers (`FEWEST` in `assets/visitors.js`), where one visitor
-stops swinging a share by several points; then **no clear difference yet**,
-or **the full rail (or the short one) is ahead** once the gap is bigger than
-chance would make. It is there so that four strangers against five is never
-read as a result.
-
-From 2026-10-06 a stranger is dealt a rail only on a phone — **Who gets it**
-under **The short rail** — so the first block's new strangers are phones
-alone. It is all-time, and the strangers before that day include desktops and
-tablets on both rails. Returning visitors keep whatever rail they held, so the
-range blocks still carry a returning laptop dealt either rail before then.
-
-Only a browser that has been dealt a rail counts in the second and third
-blocks: one that has never opened the map has not, and filing it under the
-full rail by default would be comparing the short rail against everybody. The map deals
-the rail once its places are in, which is after the page is ready, so its
-`track.js` tag carries `data-arrive="late"` and `assets/app.js` calls
-`TTBTrack.arrive()` itself once the rail is dealt — otherwise the one visit
-the comparison most needs, a stranger's first, would arrive with no rail.
-
-Above it, under the same **Tests** heading, **The lists' two looks** reads
-the directory's own test the same way, in one block: how many newcomers each
-look was dealt, and the share of them that opened a list from it and kept one
-that day, under the same verdict asked of the opens. The six `look` rows of
-`press_counts`, all-time like the rails' strangers; **The lists' two looks**
-has the rest.
-
-Between the two, **The four colours** reads the colour test the same way, a
+**The four colours** reads the colour test the same way, a
 column per colour: newcomers dealt each, and the share that opened something
 that day, came back another day and chose another colour, under a verdict
 that sets the best colour against the worst; then everyone dealt each colour
-over the range and its new visitors alone, with the rails' per-visitor
-figures, out of the `style` kind of `visitor_counts`. **The four styles,
+over the range and its new visitors alone, with the per-visitor figures
+**New against returning** has, out of the `style` kind of `visitor_counts`. **The four styles,
 dealt** has the rest.
 
 ### Time on phones
 
-The rails and the colours are two tests dealt independently, and the owner's
+The rails and the colours were two tests dealt independently, and the owner's
 question about them was one question: how long does somebody new on a phone
 stay, by the colour and the rail they got? Neither card could say. Both mix
-phones with desktops, and a desktop always draws the full rail unless its
+phones with desktops, and a desktop always drew the full rail unless its
 owner picked otherwise, so the rails' time per visitor was partly a
 comparison of desks against phones; and the time a visit spent was never
 filed with its device at all — `device` was counted once, on the day's first
@@ -13715,10 +13682,10 @@ the map, and read fresh their visit would be counted under no rail and their
 minutes on the map under one, dividing a cell's time by visitors it never
 had. So `assets/track.js`, on a phone newcomer's first page of the day,
 writes `<rail>:<colour>` into `ttb.phoneday` with the date — `pinPhone()` —
-and every report until midnight UTC carries it as `phone`. The map's own
-first page is reported after the rail is dealt (`data-arrive="late"`, see
-**The two rails**), so somebody who lands there is filed under the rail they
-got. Only a colour that was dealt counts, the colours' rule: a newcomer who
+and every report until midnight UTC carries it as `phone`. Since
+2026-11-05 every newcomer draws the short rail, so the rail is always `b`,
+the short rail's column, and the full rail's and **no rail yet** hold the
+days before. Only a colour that was dealt counts, the colours' rule: a newcomer who
 arrived on a link carrying a colour is in no cell. Returning visitors,
 tablets and desktops are in none either.
 
@@ -16578,7 +16545,7 @@ It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
 scrolls out of reach is no use.
 
-**On the short rail it is the third of four pills**, straight under the
+**It is the third of the rail's four pills**, straight under the
 lists and above More, the same pill as the three beside it. For a while it
 stood apart as the map's one filled button, a disc in the accent in the
 corner above the locate arrow — `/admin/stats` had it the most pressed thing
@@ -16588,14 +16555,14 @@ filled round disc among them read as one more cluster rather than as a
 button; the owner asked for it back among the rail's pills. It keeps its
 place high on the rail, which is what the number argued for.
 
-**After a roll it says so.** On the short rail the label opens for a moment
+**After a roll it says so.** On a phone the label opens for a moment
 reading *Surprised*, the way a Copy button says Copied, for as long as the
 map is flying to the place (`FLY_MS`, 1.2 seconds), then folds back to the
 die as the pin lands. No longer than that, because the pill grows out over
 the map where the chosen pin may come down with its name over it. That word
 is `randomDone`, and `sayRolled()` in `assets/app.js` is the whole of it.
-**The full rail is untouched**: the die there says Surprise me in the
-cascade and on hover, and says nothing new when it is pressed.
+On a desktop, where the label is always out, the word changes in it for the
+same moment.
 
 **On a phone it opens the place at the low stop, and this is the button that
 argued for it.** The name means nothing to you yet, and the first thing you
@@ -16687,14 +16654,12 @@ the whole of it.
 
 ### The rail introduces itself on a phone
 
-The full rail runs the account, everybody's lists, the flashcards, Surprise
-me, Ask, the colour swatch, the locate button and, last, feedback — who you
-are and what everybody else has written, then the ones that change your
-evening, then the one that changes the map, then the one that is about the
-rest, because a rail that opens with a colour picker reads as a settings
-strip rather than as the shortcut it is. The short rail a stranger's phone is
-dealt runs three of them and More — see **The short rail** — and everything
-in this section holds for it with fewer pills. The radio left it for the corner beside the language
+The rail runs the account, everybody's lists, Surprise me, More and the
+locate button — who you are and what everybody else has written, then the
+one that changes your evening, then the door to the rest, then the one that
+changes the map — see **The short rail**. It was a column of eight, with the
+flashcards, Ask, the colour swatch and feedback standing in it, and some of
+what follows was written about that column. The radio left it for the corner beside the language
 switch, in the same pill the lists, account, blog and feedback pages already
 stand it in — see **The radio** below. The lists pill is the one that is a
 link rather than a press, and the only one wearing an emoji rather than a
@@ -17037,30 +17002,29 @@ The walk, in order, and what each step is anchored to:
 6. **Surprise me**, with its label held open for as long as the step is up —
    which is every width where the pill is a disc: a phone always, and a
    desktop whenever the pointer is somewhere other than the corner.
-7. **Ask**, the same way — on the full rail, where it is a pill.
-8. The account button, left out when `/api/account` never said accounts
+7. The account button, left out when `/api/account` never said accounts
    work — there is no button to point at.
-9. **Everybody's lists**, straight after it, the way the two stand on the
+8. **Everybody's lists**, straight after it, the way the two stand on the
    rail: what you keep, then what everybody else kept. Left out on the same
    answer, for the same reason.
-10. **More**, on the short rail only, straight after the lists the way the
-    two stand: the one pill that holds the chat, the flashcards, the colour
-    and feedback.
-11. The discount chip, second in the row after All — the row rolled out
+9. **More**, straight after the lists the way the two stand: the one pill
+   that holds the chat, the flashcards, the colour and feedback.
+10. The discount chip, second in the row after All — the row rolled out
     again for it on a phone; left out when no deal is on.
 
 One step is about one thing. Surprise me and Ask used to share a step — the
 ring round the die, both labels held open, one sentence saying what each
 did — and a sentence introducing two buttons while pointing at one of them
-read as one button with two names. Each has its own step now. The Places
+read as one button with two names. Each had its own step after that, and
+Ask is a row behind More now, which the More step names. The Places
 button, the language switcher and the radio had no step at all, and a
 visitor who had just been told what some of the buttons do was left to
 guess at the rest; the walk now takes in everything on the page that a
 first visitor might press, in the order it sits on the page: the pin, the
 buttons top right, the filters, the rail from the top down, and last the
-chip. The colour swatch and the locate button are the two it still passes
-over: both are settings, both are plain on sight, and a walk that stops to
-explain an arrow is a walk that gets skipped.
+chip. The locate button is the one it still passes over: it is a setting,
+it is plain on sight, and a walk that stops to explain an arrow is a walk
+that gets skipped.
 
 Every step is about something that can be pressed. The walk used to open
 on the mark, with the one sentence the site rests on set large in the
@@ -17126,18 +17090,21 @@ in all ten languages. The pieces are `#tour` in
 
 ## The short rail
 
-Eight phones in ten get a shorter rail than the map had — somebody new on a
-laptop or a tablet draws the full one, **Who gets it** says why — **the account,
-everybody's lists, Surprise me and More** down the left, three
-chips standing outside the Filters drawer, and the other four doors — Ask, the
-flashcards, the colour and feedback — as rows behind More. The other two
-in ten keep the full column of eight, which is what makes the short rail's
-numbers mean anything: there is a group of strangers on the old rail to set
-them against. Which of the two a browser
-draws is `data-layout` on `<html>`, `a` for the full rail and `b` for the
-short one, and everything about the difference is a stylesheet rule scoped to
-that attribute: the pill is the same pill, the sheet is the account sheet's
-own shape, and neither rail is a second page.
+Every browser draws the same rail: **the account, everybody's lists,
+Surprise me and More** down the left, with the locate arrow under them on a
+desktop and in the bottom-right corner on a phone; three chips standing
+outside the Filters drawer on a phone; and the other four doors — Ask, the
+flashcards, the colour and feedback — as rows behind More. It began as one
+arm of a test against the full column of eight the map had before it, and
+it is everybody's since 2026-11-05, because the test said so — **What the
+test found** below. There is one rail, so there is no `data-layout` on
+`<html>`, no deal and no choice of rail on `/account.html`; the pills it
+leaves out are not in the markup at all.
+
+Chess and the walk round the page are not behind More, and never were.
+Chess has no door on the map on purpose — **No door, on purpose** under
+**Chess** — and the walk is the welcome card's **Show me around** — **How
+this works, for the asking**.
 
 ### Why
 
@@ -17156,135 +17123,90 @@ the lists — it spent a while as the map's one filled button in the corner,
 and **Surprise me** says why it came back — the three most pressed chips stand in the open, and the
 four at the foot go behind one pill together. The cascade that introduces
 the rail on a phone — **The rail introduces itself on a phone** — was 300ms
-a pill and 7.45s for eight; it is four pills and the chip row now, all open
+a pill and 7.45s for eight; it is four pills and the arrow now, all open
 by 2.35s. How this works went altogether rather than behind More: the
 welcome card's **Show me around** is the same walk, offered to the same
 stranger — **How this works, for the asking**.
 
-### Who gets it
+### What the test found
 
-`pickLayout()` in `assets/app.js`, once per browser, and then kept:
+For a month the map dealt each newcomer on a phone one of the two rails at
+random — the short one eight times in ten, the full column otherwise — kept
+the answer in the browser, and counted both. Read on production from 8
+October to 5 November 2026, with the owner's own browsers left out:
 
-1. `?layout=a` or `?layout=b` on the address names one and pins it, the way
-   `?style=` does. It is how the owner looks at either rail on a phone that
-   was dealt the other, and `syncUrl()` takes it back off the bar so a link
-   sent on does not deal the same rail to whoever opens it.
-2. A rail chosen by hand — that, or the card on `/account.html` — is never
-   dealt over: `ttb.layout.by` says a hand chose it.
-3. A rail dealt under this deal is kept: `ttb.layout.deal` records which deal
-   wrote `ttb.layout`.
-4. A browser with no rail yet that is not a phone — a desktop or a tablet —
-   is dealt nothing and draws the full rail. Which it is comes from `device()`
-   in `assets/track.js`, the same rule **Visitors** files a visitor's device
-   by, handed to the map as `TTBTrack.device()`: a mouse for the primary
-   pointer is a desktop, a laptop with a touchscreen included, and a finger
-   on a screen 768px or wider is a tablet. The short rail was cut for a thumb
-   on a 390px screen and either has the room for the whole column; the
-   owner, on a laptop, asked for it on 2026-10-06. It is for newcomers only:
-   a returning browser keeps the rail steps 1 to 3 kept for it, a laptop
-   dealt the short rail before then included. `ttb.layout` is cleared rather
-   than written, so its visits are filed under no rail and the strangers in
-   **The two rails** are phones alone from that day.
-5. Otherwise the deal: the short rail with `LAYOUT_SHARE` — 0.8 — and the
-   full one otherwise, **for a stranger and for somebody who was here before
-   alike**. The first deal, for the first hour this was live, gave every
-   stranger the short rail and everybody else the full one; a browser holding
-   the short rail from then keeps it, having already learnt it, and one
-   holding the full rail from then is dealt again, once.
+- **Opening a place: a tie.** `press_counts`, kind `layout`: 580 newcomers
+  dealt the short rail and 171 the full one, of whom 151 and 45 opened a
+  place on that first visit — 26% each.
+- **Staying, and looking further: the short rail.** Per new visitor, out of
+  `visitor_counts` kind `layout`, with the outlier days capped: 71 seconds
+  on the short rail against 42 on the full one, and 2.0 places opened
+  against 1.3.
 
-A rail that changed between visits would be a rail nobody learns, which is
-why the answer is kept rather than worked out fresh each time, and why nobody
-is moved from one to the other after that but by their own hand — the one
-re-deal of the first hour's full rails aside. That hand is
-the **Map layout** card on `/account.html` — **Which rail this phone draws**
-under **The account page** — where somebody signed in picks either. It is
-the browser's choice and not the account's: the key is local, and a rail
-that followed a person across their phones would be a column on `users` that
-nobody has asked for.
-
-Storage that throws — some private windows — cannot keep a deal, and a rail
-rolled afresh on every load would be worse than either rail, so it draws the
-short one every time and counts nobody. And Safari's seven-day storage rule applies here as it
-does to the style and the language: a phone that stays away long enough
-comes back a stranger and is dealt again, possibly the other rail.
+The short rail found people their first place no worse, and held them half
+as long again while they looked at more. The owner decided on that: the
+short rail for everybody, and the full one, the deal and the choice between
+them taken out rather than left switched off.
 
 ### What it draws, and what it does not
 
-- **Three pills**, and the account and lists pills are the ones they always
-  were, hidden until `/api/account` answers exactly as before. **More** is a
-  button, `#btn-more`, counted on `/admin/stats` as `more` and introduced in
-  the cascade with a label of its own — *More* — and a title saying what is
-  behind it.
-- **Surprise me third**, under the lists and above More: the same
-  `#btn-random` and the same pill, whose label slides out with the others'
-  in the cascade and, for a moment after a roll, to say *Surprised*.
+- **Four pills and the arrow**, and the account and lists pills are the ones
+  they always were, hidden until `/api/account` answers exactly as before.
+  **More** is a button, `#btn-more`, counted on `/admin/stats` as `more` and
+  introduced in the cascade with a label of its own — *More* — and a title
+  saying what is behind it.
+- **Surprise me third**, under the lists and above More: `#btn-random`, the
+  same pill as its neighbours, whose label slides out with the others' in
+  the cascade and, for a moment after a roll, says *Surprised* — on a
+  desktop, where the label is always out, the word changes in it.
   **Surprise me** has the rest.
 - **The More sheet**, `renderMore()`: the account sheet's card and scrim, the
-  wordmark as its eyebrow, *More* as its title, one line under it, and four
-  `.menu-row`s in the rail's own order — Ask, Learn Estonian, Colour,
-  Feedback. Each row is the pill it stands for: it reports the pill's event
-  and is counted under the pill's id, so a door pressed here and the same
-  door pressed on the full rail are one number. The Colour row's second line
-  is the style you are about to get, exactly as the swatch's label is, and
-  pressing it redraws the sheet so the line names the next one. Escape and the
-  scrim close it, like the account sheet.
+  wordmark as its eyebrow, *More* as its title, one line under it, and the
+  `.menu-row`s — Ask, Learn Estonian, Colour, Feedback, and Privacy. Each of
+  the first four is the pill it was in the column of eight: it reports that
+  pill's event and is counted under that pill's id, so the rail's numbers
+  read as one line across the change. The Colour row's second line is the
+  style you are about to get, and pressing it redraws the sheet so the line
+  names the next one. Escape and the scrim close it, like the account sheet.
 - **Three chips outside the drawer**, on a phone: Discount while one is
   live, Bakery and Hidden gem — `FRONT_CHIPS` — drawn by `renderFilters()`
   into a second nav beside the drawer, with All at their head only while a
-  chip is on, so the way out of the chips is never behind the button. The
-  same three inside the drawer are put away by the stylesheet on that rail,
-  so the vocabulary is on the page once. The drawer's one rule — that a shut
-  row can never be a filtered map — bends exactly as far as this needs:
-  `drawerHolds()` says a chip standing out front does not need the drawer
-  open to be seen, and a chip from inside it still does. Above 860px the
-  whole row is flat on the map and the second nav draws nothing.
-- **The walk** points at whichever door this rail has: the Ask step is the
-  full rail's and a More step is the short rail's, straight after the lists;
-  `explainMore` is its sentence. **How this works, for the asking**.
+  chip is on, so the way out of the chips is never behind the button. Open,
+  the drawer is the whole row with the three in it and the second nav steps
+  aside, so the vocabulary is on the page once. The drawer's one rule — that
+  a shut row can never be a filtered map — bends exactly as far as this
+  needs: `drawerHolds()` says a chip standing out front does not need the
+  drawer open to be seen, and a chip from inside it still does. Above 860px
+  the whole row is flat on the map and the second nav draws nothing.
+- **The walk** points at More, straight after the lists; `explainMore` is
+  its sentence, and Ask has no step of its own since it left the rail.
+  **How this works, for the asking**.
 
-It is a split of two, at random, and nothing more. The first draft of this
-was an experiment with three arms and a page of its own to read them on; what
-the owner asked for was the short rail for most people and the full one for
-the rest, and a choice on the account page — which is what this is, and it
-costs no table. A newcomer on a desktop or a tablet is not dealt, and
-draws the column, the corner and the chip row as they were; one that picks the
-short rail by hand on `/account.html` gets it, with four pills behind one and
-nothing else moved. And it is not another style: **The four styles** are the colours, and
-both rails wear all four.
+It is not another style: **The four styles** are the colours, and the rail
+wears all four.
 
 ### What is counted
 
-Three things, so the question the split was made for can be answered from
-the site's own numbers rather than only from Google's:
+- **The rail's presses, under nine ids.** `RAIL_PILLS` in
+  `functions/api/stats.js` names the five pills and the four rows behind
+  More, which keep the ids they had as pills. `RAIL_PRESS` in
+  `assets/app.js` is the five and `renderMore()` the four. **Statistics** is
+  the rest.
+- **The same presses by the day**, since 2026-11-05: every rail press is
+  filed again into `visitor_counts` as its `rail` kind, by the pill's id and
+  under the device beside it, through `countRail()` in
+  `functions/api/_visitors.js`. `press_counts` has no day, so this is what
+  lets the next change to the rail be read before and after. Nothing draws
+  it yet.
 
-- **The rail's presses, under the same ids on both rails.** `RAIL_PILLS` in
-  `functions/api/stats.js` names nine: the eight the full rail draws and
-  More. A row in the sheet counts as its pill. **Statistics** is the rest.
-- **`layout`, a fifth kind in `press_counts`**, four rows: `a` and `b`, once
-  per stranger dealt that rail, and `a-opened` and `b-opened`, the first place
-  that stranger opened on the visit it was dealt — a press, not a link: a
-  place a shared link opened is left out. Strangers only, because a
-  returning visitor's first visit is long gone. `/admin/visitors` sets the
-  two rails side by side — how many strangers each was dealt, the share of
-  them that opened a place on that first visit, and a line saying whether
-  the gap is bigger than chance yet — see **The two rails** under
-  **Visitors**. Returning visitors are there too, because
-- **every report carries the rail.** `assets/track.js` reads `ttb.layout`
-  on every page — the lists, the account page, feedback and the rest
-  included, since the visitor carries the rail with them — and sends it on
-  both of the site's own reports, and once per page it tags the Clarity
-  session with the same word. So the count splits by rail, and a recording
-  can be filtered to the short rail's strangers alone.
-
-### Making it everybody's, or nobody's
-
-When the numbers say so, one line does it: `LAYOUT_SHARE` at 1 deals the
-short rail to everybody not dealt one already, and at 0 the full one — and
-bumping `LAYOUT_DEAL` alongside deals everybody again, once, hand-chosen
-rails aside. The pills that go, the sheet, the front chips and
-the counting are all scoped to the attribute and come and go with it. The
-full rail's markup stays either way: it is the rail, and the short one is a
-list of what it leaves out.
+What the test counted has stopped: the `layout` kind in `press_counts` — the
+newcomers dealt each rail and the first place each opened — the `layout`
+kind in `visitor_counts`, every visit's facts split by rail, and the rail on
+every report and as a Clarity tag. The rows stay where they are and nothing
+reads them, so the numbers above can be read again; the two cards that drew
+them on `/admin/visitors` are gone. **Time on phones** still files a phone
+newcomer under a rail as well as a colour, and from 2026-11-05 that rail is
+always the short one.
 
 ---
 
@@ -17302,9 +17224,10 @@ Kept is still the filled mark in the accent; on B's ground the accent and the
 marks are the only warm things on the screen, which is the point. A phone
 keeps its layout under either and gets B's colours under B.
 
-It is a test of its own, beside **The short rail** and not inside it: its own
-key, `ttb.look`, its own roll of the dice and its own kind in `press_counts`.
-Each deal is random whatever the other dealt, so neither can lean on the
+It is a test of its own, and was beside **The short rail** rather than inside
+it while the rails were a test: its own key, `ttb.look`, its own roll of the
+dice and its own kind in `press_counts`. Each deal is random whatever the
+other dealt, so neither can lean on the
 other's result, and a browser can hold any of the four pairs.
 
 ### Who gets it
@@ -17326,7 +17249,7 @@ anything is drawn:
    browser, which the count never hears, is never new.
 
 Storage that throws cannot keep a deal, so it draws A and counts nobody, and
-Safari's seven-day rule applies the way it does to the rail. Which look is on
+Safari's seven-day rule applies as it does to every key a page keeps. Which look is on
 screen is `data-look` on `<html>`, and B is one section of `assets/lists.css`
 — **the directory, look B: at rest** — every rule in it under
 `[data-look="b"]`. The tokens it restates are six of its own,
@@ -17349,7 +17272,7 @@ swatch still picks which resting palette that is and no rule names a colour.
 `/admin/visitors` sets the two side by side in **The lists' two looks**,
 the first card under **Tests**, drawn from the day the test began: how many newcomers each was dealt, and the share that
 opened a list and that kept one that day. The sentence over them is the
-rails' own verdict — a two-proportion z-test at 95%, **too early to call**
+verdict the rails' card had — a two-proportion z-test at 95%, **too early to call**
 until each look has thirty — asked of the opens. Keeping a list is beside it
 and not under it: one in eight days at the start was too rare to call a test
 on.
@@ -17373,9 +17296,9 @@ the record of what was decided.
 The four colours on the swatch — **The four styles** — are a test as well as
 a choice. Somebody new to the site is dealt one of them at random, a quarter
 each, as their first page opens, and the site counts what they do with it.
-It is a test of its own beside the rails and the lists' two looks: its own
-key, its own roll and its own kind, so a browser can hold any combination of
-the three.
+It is a test of its own beside the lists' two looks, as it was beside the
+rails while they were one: its own key, its own roll and its own kind, so a
+browser can hold any combination of them.
 
 ### Who gets it
 
@@ -17415,9 +17338,9 @@ and a small one.
   different colour than the one they were given. `STYLE_IDS` in
   `functions/api/stats.js` is the closed list the route holds them to.
 - **`style` as a Clarity tag**, on every page where a colour was dealt,
-  beside `layout` and `look`.
-- **`style` in `visitor_counts`**, the way the rails are in it under
-  `layout`: both of the site's own reports carry the dealt colour, and
+  beside `look`.
+- **`style` in `visitor_counts`**, the way the rails were in it under
+  `layout` while there were two: both of the site's own reports carry the dealt colour, and
   `countArrive()` and `countLeave()` file the visitors dealt each colour as
   `<colour>:new` and `<colour>:back`, and every visit's pages, seconds,
   presses, places opened, sign-ins and accounts made as
@@ -17427,7 +17350,7 @@ and a small one.
   `functions/api/_visitors.js`.
 
 `/admin/visitors` sets the four side by side in **The four colours**, under
-**Tests** between the looks' card and the rails', in the three blocks the rails' card has: how many newcomers
+**Tests** after the looks' card and time on phones, in three blocks: how many newcomers
 each was dealt, and the share that opened something that day, came back
 another day, and chose another colour; then everyone dealt each colour in the
 range — visitors, the returning share, and pages, time, clicks and places
@@ -17761,11 +17684,11 @@ even the pages that do change address are mostly buttons that change nothing
 in the address bar. So every deliberate press on every page is reported as
 an event, through the one global `assets/track.js` sets —
 `TTBTrack.event(name, params)`, and `TTBTrack.click(node, name, params)` for
-a link or button built inline. Clarity gets the rail this browser was dealt
-on the map (**The short rail**), the colour (**The four styles, dealt**) and
-the directory's look (**The lists' two looks**) as tags, so its recordings
-can be split by them; the site's own count carries the same three on every
-report. Opening a place on the map is reported as a view of its own, through
+a link or button built inline. Clarity gets the colour (**The four styles,
+dealt**) and the directory's look (**The lists' two looks**) as tags, so its
+recordings can be split by them, and the site's own count carries the colour
+on every report. The rail this browser was dealt was a third tag until every
+visitor was given the same one (**The short rail**). Opening a place on the map is reported as a view of its own, through
 `TTBTrack.view()`, which is what **What was opened** ranks. The links written straight into the
 markup — the wordmark, the Instagram link, the mark on a pass — carry the
 event's name as a `data-track` attribute, and `track.js` wires them itself.
@@ -17821,10 +17744,10 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
-| `flash_open_rail` | — the flashcards door on the rail, and the row behind More on the short rail: one door, one name |
-| `more_open`, `more_close` | — the More pill on the short rail, and its sheet put away by the cross or the scrim |
-| `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` as the swatch does |
-| `ask_open` | — the pill on the full rail, and the row behind More on the short one |
+| `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
+| `more_open`, `more_close` | — the More pill on the rail, and its sheet put away by the cross or the scrim |
+| `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` |
+| `ask_open` | — the Ask row behind More |
 | `ask` | `search_term` |
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
 | `account_open` | `view` (`sheet` signed out, `page` signed in) |
@@ -17884,7 +17807,6 @@ The account page, `assets/account.js`:
 | `saved_map` | `places_saved` |
 | `list_page`, `profile_open` | as on the lists |
 | `list_create` | `list_id` |
-| `layout_select` | `layout` (`a`/`b`) — the Map layout card, which rail this browser draws |
 | `account_open` | `view` — the two doors when signed out |
 | `account_rename_open`, `account_password_open`, `account_delete_open` | — into the map's sheet |
 | `edit_open` | — the door to `/edit`, where the page under your name is written |
@@ -17997,7 +17919,7 @@ Feedback, `assets/feedback.js`:
 | `feedback_remove` | — your own, taken down |
 | `feedback_more` | `feedback_page` — the page being asked for |
 | `feedback_google` | — Continue with Google, from inside the composer |
-| `feedback_open` | — the door on the map's rail, reported through `data-track` |
+| `feedback_open` | — the Feedback row behind More on the map |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way

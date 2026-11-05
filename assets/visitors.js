@@ -1,12 +1,12 @@
 /* Tallinn Tastebuds — /admin/visitors, who came to the site and what they did.
  *
  * Drawn from the site's own count. Right now and today so far first,
- * whatever the range: who came, who signed in and made an account, and on
- * which of the map's two rails. Then a range and its five figures, and under them four groups, each
- * under a heading — see group():
+ * whatever the range: who came, who signed in and made an account. Then a
+ * range and its five figures, and under them four groups, each under a
+ * heading — see group():
  *
  *   Tests            the directory's two looks, time on phones by colour
- *                    and rail, the four colours, then the map's two rails
+ *                    and rail, then the four colours
  *   Who they are     a bar a day, new against returning, a bar an hour,
  *                    phone against desktop, countries, languages
  *   How they found it  where they came from, where search landed them
@@ -61,19 +61,16 @@
   /* How many rows a table names before the rest are one line of Other. */
   var TOP = 8;
 
-  /* The two rails by the id pickLayout() in assets/app.js deals them. */
-  var RAILS = { a: 'visitorsLayoutFull', b: 'visitorsLayoutShort' };
-
   /* The directory's two looks by the id pickLook() in assets/lists.js deals
-     them — a test apart from the rails. */
+     them. */
   var LOOKS = { a: 'visitorsLookA', b: 'visitorsLookB' };
 
   /* And the four colours by the id dealStyle() in assets/track.js deals them,
      named by the words the swatch itself uses. */
   var COLOURS = { red: 'styleRed', green: 'styleGreen', blue: 'styleBlue', plum: 'stylePlum' };
 
-  /* How many strangers each rail needs before the two are set against each
-     other at all. Thirty is where a share out of them stops swinging ten
+  /* How many strangers each arm of a test needs before the arms are set
+     against each other at all. Thirty is where a share out of them stops swinging ten
      points on one visitor; below it the page says it is too early rather
      than print a verdict on four against five. */
   var FEWEST = 30;
@@ -592,19 +589,10 @@
     return card(kids);
   }
 
-  /* Today so far, whatever the range: four figures, and under them new and
-     returning visitors, sign-ins and accounts made for each rail and for the
-     visitors no rail has been dealt to yet — the one place the page answers
-     "who came today, and on which rail". */
+  /* Today so far, whatever the range: four figures — the one place the page
+     answers "who came today". */
   function today() {
     var d = state.data.today;
-    var cols = ['a', 'b', 'none'];
-    var rows = [
-      [t('visitorsNew'), 'fresh'],
-      [t('visitorsReturning'), 'back'],
-      [t('visitorsSignIns'), 'login'],
-      [t('visitorsSignUps'), 'signup']
-    ];
     return card([
       el('h2', { className: 'lists-title', textContent: t('visitorsTodayHead') }),
       el('dl', { className: 'ins-kpis vis-kpis vis-kpis-4' }, [
@@ -612,10 +600,7 @@
         figure(t('visitorsNew'), num(d.fresh), null),
         figure(t('visitorsSignIns'), num(d.login), null),
         figure(t('visitorsSignUps'), num(d.signup), null)
-      ]),
-      grid(t('visitorsTodayHead'), [t(RAILS.a), t(RAILS.b), t('visitorsNoRail')], rows,
-        function (r) { return r[0]; },
-        function (r) { return cols.map(function (c) { return num(d.rails[c][r[1]]); }); })
+      ])
     ]);
   }
 
@@ -793,8 +778,8 @@
     return card(kids);
   }
 
-  /* Whether the two arms of a test — the rails, the directory's looks, or
-     the best and worst of the four colours —
+  /* Whether the two arms of a test — the directory's looks, or the best and
+     worst of the four colours —
      opened something at rates that differ by more than chance: a
      two-proportion z-test on `opened` out of `given`, with 1.96 as the line,
      which is the ordinary 95%. Said in words, and only once each arm has
@@ -815,46 +800,11 @@
                  : say(words[2], { name: t(names.b), ahead: pb, behind: pa });
   }
 
-  /* The map's two rails against each other, in three blocks under one
-     verdict: the strangers each was dealt to since the split began and how
-     many found a place, everyone on each rail in the range, and the rail's
-     new visitors alone. A row per figure and a column per rail, which is the
-     one arrangement of these numbers that fits across a phone. Absent until
-     either rail has had anybody. */
-  function layouts() {
-    var d = state.data;
-    var rails = d.layouts.filter(function (r) { return RAILS[r.id]; });
-    var dealt = d.dealt;
-    var lived = rails.some(function (r) { return r.visitors; });
-    if (!lived && !dealt.a.given && !dealt.b.given) return null;
-    var heads = rails.map(function (r) { return t(RAILS[r.id]); });
-    var visitors = [t('visitorsVisitors'), function (r) { return num(r.visitors); }];
-    var block = function (key, cols, rows) {
-      return [el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }), sideBySide(t(key), cols, heads, rows)];
-    };
-    var kids = [
-      el('h2', { className: 'lists-title', textContent: t('visitorsLayouts') }),
-      el('p', { className: 'stats-lead', textContent: t('visitorsLayoutsLead') }),
-      verdict(dealt, RAILS, ['visitorsVerdictEarly', 'visitorsVerdictNone', 'visitorsVerdictAhead'])
-    ].concat(block('visitorsStrangers', rails, [
-      [t('visitorsDealt'), function (r) { return num(dealt[r.id].given); }],
-      [t('visitorsOpened'), function (r) { return share(dealt[r.id].opened, dealt[r.id].given); }]
-    ]));
-    if (lived) {
-      kids = kids
-        .concat(block('visitorsEveryone', rails, [visitors,
-          [t('visitorsReturning'), function (r) { return share(r.back, r.visitors); }]].concat(perVisitor())))
-        .concat(block('visitorsNewOnly', rails.map(function (r) { return r.fresh; }), [visitors].concat(perVisitor())))
-        .concat([splitSince()]);
-    }
-    return card(kids);
-  }
-
   /* The directory's two looks against each other — "The lists' two looks" in
      README.md: how many people new to the site were dealt each on their first
      open of /lists, and the share of them that opened a list from it, and
-     that kept one, on the day they were dealt it. Since the test began, like
-     the rails' strangers, because press_counts has no day. Opened is what
+     that kept one, on the day they were dealt it. Since the test began,
+     because press_counts has no day. Opened is what
      the verdict is on; kept is beside it, too rare to call a test on. Drawn
      from the day the test began, noughts and all: a card that waited for its
      first newcomer was a test the owner went looking for and could not find. */
@@ -877,8 +827,7 @@
   }
 
   /* The four colours against each other — "The four styles, dealt" in
-     README.md, in three blocks under one verdict, the shape of the rails'
-     card: how many people new to the site were dealt each as their first
+     README.md, in three blocks under one verdict: how many people new to the site were dealt each as their first
      page opened, and the share of them that opened a place, a post or a
      deck that day, came back on a later day, and chose a different colour;
      then everyone dealt each colour in the range, with the per-visitor
@@ -936,7 +885,9 @@
      somebody new on a phone stayed, by the colour they were dealt down the
      side and the rail across, with a column for those who never reached the
      map and so were dealt no rail, and a total each way — the last column
-     is the colours alone, the last row the rails alone. Then the same grid
+     is the colours alone, the last row the rails alone. Every newcomer has
+     drawn the short rail since 2026-11-05, so a range after that fills its
+     column alone and the others hold the days before. Then the same grid
      as head counts, so a long average out of three visitors is read as the
      three it is. No verdict: a time is not the yes-or-no the z-test asks
      about. Drawn from the day it began counting, noughts and all, like the
@@ -1109,10 +1060,10 @@
          they are what a look at this page is most often for, and at the
          twelfth card they were found by scrolling past everything else. The
          short cards before the long inside it — the lists' looks is a few
-         rows and time on phones two small grids, the colours and the rails
-         three tables each — so the short ones are not a screen and a half
+         rows and time on phones two small grids, the colours three tables —
+         so the short ones are not a screen and a half
          under the heading. A group with nothing in it draws no heading. */
-      group(stack, 'visitorsTests', [looks(), phones(), colours(), layouts()]);
+      group(stack, 'visitorsTests', [looks(), phones(), colours()]);
       group(stack, 'visitorsWho', [
         d.series ? card(chart()) : null,
         cohorts(),
