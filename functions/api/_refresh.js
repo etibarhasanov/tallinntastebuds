@@ -10,18 +10,28 @@
  * Google" — and its row has not been refreshed for REFRESH_AFTER, the place is
  * asked about again and the answer written back.
  *
- * WHY ON OPEN, AND NOT ON A SCHEDULE
+ * WHY ON OPEN FIRST, AND THE REST OF THE DAY ON A CLOCK
  *
  * Because the open is the signal. The places people look at are the ones whose
- * numbers somebody is reading, so they are the ones worth keeping true, and a
- * place nobody opens costs nothing. A queue ordered by press_counts would work
- * out the same order the long way round; this is that order without the queue,
- * without a cron, and without a second thing to deploy. It rides on the one
- * request that already happens at that moment — the POST that reports the
- * open, in functions/api/stats.js, which counts one on the map and not one on
- * the owner's directory — and runs after that answer has gone out, through
+ * numbers somebody is reading, so they are the ones worth keeping true first.
+ * A queue ordered by press_counts would work out the same order the long way
+ * round; this is that order without the queue. It rides on the one request
+ * that already happens at that moment — the POST that reports the open, in
+ * functions/api/stats.js, which counts one on the map and not one on the
+ * owner's directory — and runs after that answer has gone out, through
  * waitUntil, so nobody ever waits on Google. The visitor who triggers a refresh
  * sees the row as it was; the next one sees it fresh.
+ *
+ * For its first two months the open was the only signal, and it was not
+ * enough: October spent 181 of the 950 calls it had, and eight hundred of the
+ * eleven hundred rows had never been asked about at all. So the day's thirty-
+ * two are no longer left to chance. At the end of each UTC day, what the opens
+ * and the top hundred did not spend goes to the oldest rows the directory
+ * shows — refreshFill() at the foot of this file, behind POST /api/refresh,
+ * which .github/workflows/google-refresh.yml calls on a clock, since Pages
+ * Functions have no scheduler of their own. The opens keep first claim
+ * because the fill runs last; what the fill adds is the floor, so that every
+ * row comes round about once in five weeks whether or not anybody opens it.
  *
  * WHAT IS ASKED FOR, AND WHAT IT COSTS
  *
@@ -81,9 +91,9 @@
  * the same budget, logged under source 'top' rather than 'open' — and the
  * route behind the Top 100 tab of /admin/google calls it after its answer
  * has gone. TOP_A_LOAD of them a time, leaving the rest of the day's
- * thirty-two to opens, so a hundred stale rows take a few openings of the
- * tab; after the first month they fall due a few at a time and one opening
- * covers them.
+ * thirty-two to opens and to the evening's fill, so a hundred stale rows take
+ * a few openings of the tab; after the first month they fall due a few at a
+ * time and one opening covers them.
  *
  * Every step is quiet. A missing table, a missing column, a refused key and a
  * Google outage all end the same way: the row stays as it was and the page
@@ -101,10 +111,22 @@ export const REFRESH_AFTER = 30 * 24 * 60 * 60 * 1000;
 /* The spending limit, per kind of call. `details` is Place Details Enterprise,
    a thousand free a month: thirty-two a day is at most 992 in a thirty-one-day
    month, and the monthly cap under it catches whatever the daily one does not.
-   Anything that calls Google claims from here first — see spend(). */
+   Anything that calls Google claims from here first — see spend(). The day's
+   thirty-two is also what refreshFill() spends up to, so the cap and the
+   floor are the one number. */
 export const BUDGET = {
   details: { day: 32, month: 950 }
 };
+
+/* The UTC hour from which the fill may run. The fill takes what the day left,
+   so it belongs at the day's end: POST /api/refresh does nothing before this
+   hour, which is what lets the route stand open with no secret on it — a
+   stranger calling it can only spend, on the same oldest rows, what the clock
+   would have spent two hours later. Twenty, rather than the twenty-two the
+   workflow fires at, because GitHub's cron runs late on a busy minute and a
+   run that slipped must still find the door open; one that slips past
+   midnight finds it shut and spends nothing of the new day's opens. */
+export const FILL_FROM_HOUR = 20;
 
 /* Ninety days of the log, which is three full rounds of REFRESH_AFTER — long
    enough to see a place come round again, short enough that the table is a few
@@ -344,7 +366,8 @@ async function keepScores(env, placeId, before, after, at, was, source) {
 /* One line of the log, and the prune that keeps it to KEEP_LOG, in one round
    trip. `changes` is { column: [from, to] } or nothing; `note` is a sentence
    for the outcomes a column cannot explain — a refusal, a closure, a place
-   Google no longer knows. `source` is why it was asked: 'open' or 'top'. */
+   Google no longer knows. `source` is why it was asked: 'open', 'top' or
+   'fill'. */
 async function log(env, now, id, source, outcome, changes, note) {
   await env.DB.batch([
     env.DB
@@ -362,11 +385,11 @@ async function log(env, now, id, source, outcome, changes, note) {
 /* The whole of it, for one place somebody has just opened. Called from
  * functions/api/stats.js through waitUntil, with an id that route has already
  * checked is real — either kind of id, because both kinds of place now show
- * Google's numbers — and from refreshTop() below with source 'top', which is
- * the only other reason a place is asked about. Never throws. The word it
- * answers with names the exit it took; refreshTop() reads it to know when the
- * day is spent, and it is what a console.log under `wrangler pages dev` would
- * want. */
+ * Google's numbers — and from refreshTop() and refreshFill() below with
+ * source 'top' or 'fill', which are the only other reasons a place is asked
+ * about. Never throws. The word it answers with names the exit it took; the
+ * two loops below read it to know when the day is spent, and it is what a
+ * console.log under `wrangler pages dev` would want. */
 export async function refreshOnOpen(env, id, source = 'open') {
   const at = Date.now();
   const key = googleKey(env);
@@ -513,10 +536,7 @@ const TOP_A_LOAD = 24;
  * column is what the directory shows and is the thing to keep honest; on a
  * database without the column the SELECT throws and this stops, quietly.
  *
- * refreshOnOpen() does the claiming, so a row another request is already
- * asking about comes back 'taken' and is simply skipped; 'spent' ends the
- * loop, since the next row would get the same answer. Returns how many were
- * written, for a console.log under `wrangler pages dev`. */
+ * askEach() below does the asking and says what it returns. */
 export async function refreshTop(env, now) {
   if (!env || !env.DB || !googleKey(env)) return 0;
 
@@ -534,11 +554,60 @@ export async function refreshTop(env, now) {
     return 0;
   }
 
+  return askEach(env, due, 'top');
+}
+
+/* The rows a loop found due, asked about one after another under `source`
+ * until the list or the day runs out. refreshOnOpen() does the claiming, so a
+ * row another request is already asking about comes back 'taken' and is
+ * simply skipped; 'spent' ends the loop, since the next row would get the
+ * same answer, and so do the two exits that mean nothing will be answered
+ * today. Returns how many were written, which is what the fill's answer and
+ * a console.log under `wrangler pages dev` want. */
+async function askEach(env, due, source) {
   let written = 0;
   for (const row of (due && due.results) || []) {
-    const outcome = await refreshOnOpen(env, row.place_id, 'top');
+    const outcome = await refreshOnOpen(env, row.place_id, source);
     if (outcome === 'spent' || outcome === 'no-key' || outcome === 'not-ready') break;
     if (outcome === 'changed' || outcome === 'same' || outcome === 'closed' || outcome === 'gone') written++;
   }
   return written;
+}
+
+/* The rest of the day's thirty-two, spent on the oldest rows.
+ *
+ * Called from functions/api/refresh.js at the end of the UTC day, and inside
+ * the request rather than after it, so the answer the workflow logs says how
+ * many were asked. The rows are the ones the directory shows — not hidden,
+ * not missing, since nobody reads the numbers of a row that is not drawn —
+ * whose numbers are REFRESH_AFTER old, oldest first; the never-refreshed all
+ * tie at zero, and among them the better-ranked go first, so the first weeks
+ * of this spend themselves on the places a reader is likeliest to find. At
+ * most a day's worth are read, because the loop would stop there anyway: an
+ * open or the top hundred already took some of the day, spend() refuses the
+ * first call past the cap, and askEach() stops at that refusal.
+ *
+ * At BUDGET.details.day a day and REFRESH_AFTER of thirty, the eleven hundred
+ * rows come round in about five weeks — a little slower than the month, which
+ * is the monthly cap sitting under thirty-one days of thirty-two and nothing
+ * to correct. Quiet like the rest: no key, no column, no database, and it
+ * answers zero. */
+export async function refreshFill(env, now) {
+  if (!env || !env.DB || !googleKey(env)) return 0;
+
+  let due;
+  try {
+    due = await env.DB
+      .prepare(
+        'SELECT place_id FROM google_venues ' +
+        'WHERE hidden = 0 AND missing_since IS NULL AND COALESCE(refreshed_at, 0) <= ? ' +
+        'ORDER BY COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
+      )
+      .bind(now - REFRESH_AFTER, BUDGET.details.day)
+      .all();
+  } catch (e) {
+    return 0;
+  }
+
+  return askEach(env, due, 'fill');
 }

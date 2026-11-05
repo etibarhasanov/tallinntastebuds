@@ -4807,8 +4807,8 @@ place and writes
 back the seven columns that move: `rating`, `reviews`, `status`, `price`,
 `phone`, `website` and `opening_hours`. Nobody waits on Google; whoever opened
 it sees the row as it was, and the next visitor sees it fresh. A place nobody
-opens is never asked about and costs nothing. `functions/api/_refresh.js` is the
-whole of it, and its header is the argument.
+opens waits for the end of the day — **The rest of the day, spent** below.
+`functions/api/_refresh.js` is the whole of it, and its header is the argument.
 
 What it leaves alone, and why:
 
@@ -4848,8 +4848,9 @@ the row is stamped first, and only one stamp finds it still due.
 
 **Where it says what it did.** `google_refreshes` logs every call — which place,
 why it was asked (`open`, somebody opened it; `top`, it stands in the week's
-top hundred and its numbers were a month old), whether it moved, what from and
-to, or why it failed — and keeps ninety days.
+top hundred and its numbers were a month old; `fill`, the day's end came and
+it was among the oldest), whether it moved, what from and to, or why it
+failed — and keeps ninety days.
 The **Google** tab on `/admin.html` reads it through `/api/admin/refreshes`,
 with the day's and the month's calls against their limits, how much of the
 directory has been refreshed, and how much is due. That route answers the
@@ -4859,6 +4860,41 @@ owner is signed in on the site, whatever the admin page's own door says — and
 same answer carries `map`: Google's status on every row tied to a place on my
 map, which the tab lays against `data/restaurants.json` — **The map against
 Google** under **The admin page** says what it does with a disagreement.
+
+**The rest of the day, spent.** For its first two months the open was the only
+reason a place was asked about, and the budget said what that was worth: 181
+calls in October out of 950, and 848 of the 1,105 rows the directory shows
+never asked about at all — a directory printing September's numbers under a
+promise to keep them current. So the thirty-two a day is a floor now as well
+as a cap. Every evening at 22:17 UTC, `.github/workflows/google-refresh.yml`
+POSTs to `/api/refresh`, and `refreshFill()` in `functions/api/_refresh.js`
+spends whatever the day's opens and the top hundred left on the rows the
+directory shows whose numbers are more than thirty days old, oldest first —
+the never-refreshed ahead of everything, and among those the better-ranked
+first, so the first weeks go to the places a reader is likeliest to find.
+The same call, the same seven columns, the same claim on a row, logged under
+source `fill`. At thirty-two a day the whole directory comes round in about
+five weeks, which is the monthly cap sitting under thirty-one days of
+thirty-two and nothing to correct. The opens keep first claim because the
+fill runs last: an open at noon is asked about at noon, and the fill takes
+what is left at ten.
+
+The route is open to anybody and carries no secret, because there is nothing
+a caller could take: the budget is claimed in the database before any call
+leaves, so nobody can spend past the thirty-two, and before `FILL_FROM_HOUR`
+— eight in the evening UTC — the route answers `early` and asks nothing, so a
+call at breakfast cannot take the day away from the opens. A stranger calling
+it at nine in the evening does what the workflow would have done at ten, on
+the same rows. The gate sits two hours before the schedule because GitHub's
+cron runs late on a busy minute; a run that slips past midnight is answered
+`early` and spends nothing of the new day. The fill runs inside the request
+rather than after it, so the answer the workflow logs — `asked`, `today`,
+`day` — says what it did. Without the key, the column or the tables it
+answers why and does nothing, like every refresh. Pages Functions have no
+scheduler, and this is the one piece of the site a GitHub cron drives
+besides the stories' clock, for the same reason: the thing it does is about
+the time of day, and no request of a visitor's happens to be at ten every
+evening.
 
 **What the numbers used to be.** A refresh writes the new rating and review
 count over the old ones in `google_venues`, and `google_refreshes` forgets
@@ -4914,8 +4950,8 @@ ranking before.
 
 **Once a week, on the owner's request.** Pages Functions have no scheduler, so
 nothing here runs on Monday morning by itself; what happens instead is what
-happens everywhere else on this site — the work rides on a request that already
-happens. `/api/admin/top100`, which the page asks for as it opens, is that
+happens nearly everywhere else on this site — the work rides on a request that
+already happens. `/api/admin/top100`, which the page asks for as it opens, is that
 request: the first time it is asked in a new week, `rerankIfDue()` in
 `functions/api/_rank.js` renumbers every rated row in one statement before the
 answer is read, and every later ask that week reads what it made. Weeks are UTC
@@ -15392,6 +15428,9 @@ assets/insights.js         line and the tables; noindex, one door off the
                            account page
 functions/api/_refresh.js  asking Google about one opened place again, inside
                            a daily and monthly budget (not a route: leading _)
+functions/api/refresh.js   POST /api/refresh — the rest of the day's budget,
+                           spent on the oldest rows; the workflow
+                           google-refresh.yml calls it every evening
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
