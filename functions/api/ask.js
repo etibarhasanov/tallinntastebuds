@@ -188,7 +188,7 @@
  * press the page sends says only that something was typed.
  */
 
-import { json, mapPlaces, nearTallinn, venueCard, venueHours, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wrongDatabase } from './_lib.js';
 /* What a Google row cooks, in the directory's ids, off the one table that
    decides it — and in the order the directory says them, so a card here reads
    the same as a card there. See the note above KITCHENS for why it is that
@@ -513,18 +513,6 @@ function cooksOf(rows) {
 let venues = null;
 let venuesAt = 0;
 
-/* Lowercased and with the accents taken off, and nothing else: "Põhja Konn"
-   and "pohja konn" are one string, "Пельменная" keeps every letter. It is not
-   fold() in /api/places, which strips to a-z0-9 to ask whether two names are
-   one place; this has to leave words as words so a question can land on one. */
-function foldWords(value) {
-  return String(value == null ? '' : value)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/\s+/g, ' ');
-}
-
 async function googleVenues(env) {
   if (venues && Date.now() - venuesAt < 300000) return venues;
   if (!env.DB) return [];
@@ -627,17 +615,6 @@ function readHere(raw) {
   const lng = Number(raw.lng);
   if (!Number.isFinite(lat) || !Number.isFinite(lng) || !nearTallinn(lat, lng)) return null;
   return { lat, lng };
-}
-
-/* Kilometres between two points as the crow flies, which the model is told
-   they are: a rail yard or the bay can double the walk. */
-function km(a, b) {
-  const rad = Math.PI / 180;
-  const dLat = (b.lat - a.lat) * rad;
-  const dLng = (b.lng - a.lng) * rad;
-  const s = Math.sin(dLat / 2) ** 2 +
-    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(s));
 }
 
 /* How far a row is from the visitor, or nothing: nobody said where they
