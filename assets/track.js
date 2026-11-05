@@ -112,7 +112,7 @@
  * (`-changed`). `ttb.styledeal` keeps what was dealt and what has been told.
  * Nobody else is dealt anything: a colour already chosen is kept, and so is
  * one a link carried. And the colour rides on both of the site's own
- * reports, as `style`, the way the rail rides as `layout`, so THE FOUR
+ * reports, as `style`, so THE FOUR
  * COLOURS in functions/api/_visitors.js can count every visit's seconds,
  * pages and places under the colour it was spent in. dealStyle() below;
  * "The four styles, dealt" in README.md.
@@ -171,29 +171,6 @@ window.TTBTrack = (function () {
     event('account_err_' + (/^[a-z_]{1,20}$/.test(said) ? said : 'generic'), { view: view });
   }
 
-  /* Which rail this browser was dealt on the map — 'a', the full column, or
-     'b', the short one — read off the key pickLayout() in assets/app.js
-     writes, so Clarity can be told it as a tag once the page is up, below,
-     which is what lets its recordings be filtered by rail. Every page and
-     not the map alone, because the question is about the visitor and they
-     carry the rail with them to the lists and back. 'a' where nothing is
-     written, which is every browser from before the split and every page
-     opened before the map has dealt one. The site's own count reads dealt()
-     instead, which keeps those apart. */
-  var LAYOUT_KEY = 'ttb.layout';
-
-  function layout() {
-    return dealt() || 'a';
-  }
-
-  /* The rail as it was dealt, or '' where none has been — the site's own
-     count keeps those apart rather than filing them under the full rail. */
-  function dealt() {
-    var id = '';
-    try { id = window.localStorage.getItem(LAYOUT_KEY); } catch (e) { id = ''; }
-    return id === 'a' || id === 'b' ? id : '';
-  }
-
   /* Which of the directory's two looks this browser was dealt — 'a', the page
      as it was, or 'b', at rest — read off the key pickLook() in
      assets/lists.js writes, and '' where none was, which is everybody who
@@ -241,15 +218,12 @@ window.TTBTrack = (function () {
      here, once, for every page. Deferred scripts run before DOMContentLoaded,
      so the whole page is there to walk. */
   document.addEventListener('DOMContentLoaded', function () {
-    /* Deferred scripts have all run by now, so a rail dealt on any earlier
-       visit is in storage. A stranger's first visit to the map is the one
-       exception: the map deals the rail once its places are in, which is
-       later than this, so that one visit is tagged 'a' here — see LATE
-       below for how the site's own count avoids the same mistake. Clarity's
-       queue takes the call before its script lands, the same as an event. */
+    /* The tests a recording can be filtered by, as Clarity tags. Deferred
+       scripts have all run by now, so a look dealt on this very page is in
+       storage. Clarity's queue takes the call before its script lands, the
+       same as an event. */
     if (typeof window.clarity === 'function') {
-      window.clarity('set', 'layout', layout());
-      /* The look the same way, where there is one. A stranger's first open
+      /* The directory's look, where there is one. A stranger's first open
          of /lists is dealt one before this runs — pickLook() is called as
          the page's own deferred script boots — so that visit is tagged. */
       if (look()) window.clarity('set', 'look', look());
@@ -264,12 +238,8 @@ window.TTBTrack = (function () {
       click(marked[i], marked[i].getAttribute('data-track'));
     }
     /* Here and not as the script loads, so every other deferred script
-       has run. The map is the exception: it deals the rail once its places
-       are in, which is later than this, and a stranger's first visit is the
-       one the comparison of the two rails most needs — so its tag carries
-       data-arrive="late" and assets/app.js calls arrive() itself once the
-       rail is dealt. */
-    if (!LATE) arrive();
+       has run. */
+    arrive();
   });
 
   /* ------------------------------------------------ the site's own count
@@ -282,7 +252,6 @@ window.TTBTrack = (function () {
   var VIA_KEY = 'ttb.via';
   var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
   var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER;
-  var LATE = !!(document.currentScript && document.currentScript.getAttribute('data-arrive') === 'late');
   /* Which page this is, for the count: its own address, except where its tag
      says otherwise. 404.html is the one that does — Pages serves it at
      whatever address was mistyped, and that address names no page, so it
@@ -315,9 +284,10 @@ window.TTBTrack = (function () {
 
   /* The query as the page was opened, read now, before the page's own
      script has had a chance to rewrite it — the map puts a place's ?spot= in
-     the address as somebody opens one, and it arrives late (see LATE), so
-     reading it in arrive() could file a search visitor under a place they
-     opened rather than the one they landed on. The `?from=` tag
+     the address as somebody opens one, and a page put away before it said
+     it was opened says so then (see putAway()), so reading it in arrive()
+     could file a search visitor under a place they opened rather than the
+     one they landed on. The `?from=` tag
      rides in it: functions/api/_visitors.js, HOW THEY FOUND IT. */
   var LANDED = window.location.search;
   var TAGGED = (function () {
@@ -370,7 +340,7 @@ window.TTBTrack = (function () {
      it had a day before that, is the date in ttb.seen against today's — and
      where storage cannot be written, neither: the page is a view and never a
      visitor, which undercounts rather than counting a visitor per page.
-     Once a page, however it is reached — see LATE.
+     Once a page, however it is reached.
 
      `who` is the same question asked of every page rather than only the
      first: a browser whose first day here is today is new all day, and one
@@ -410,7 +380,6 @@ window.TTBTrack = (function () {
       back: who === 'back',
       who: who,
       from: document.referrer,
-      layout: dealt(),
       style: styleDealt(),
       /* The language the browser asks for, as two letters — the site's
          count of which languages people arrive wanting, spoken here or not.
@@ -514,25 +483,25 @@ window.TTBTrack = (function () {
   /* Somebody new on a phone, filed for the rest of the day under the rail and
      the colour they arrived with — TIME ON PHONES in
      functions/api/_visitors.js. Pinned on the day's first page rather than
-     read off each report, because the rail is dealt on the map and somebody
-     who lands on the flashcards has none until they get there: read fresh,
-     their visit would be counted under no rail and their minutes on the map
-     under one, and a cell's time would be divided by visitors it never had.
-     So `<rail>:<colour>` is written once, with today, and every report until
-     midnight UTC carries it; `none` for no rail yet. Only a colour that was
-     dealt counts, the colours' own rule, and nothing at all for a returning
-     browser, a tablet or a desktop. */
+     read off each report, which mattered while the rail was dealt on the
+     map: somebody who landed on the flashcards had none until they got
+     there. Every newcomer draws the short rail now, so the rail half is
+     always `b`, the cell the short rail's phones were counted under while
+     there were two, and the colour is what still tells the cells apart.
+     Written once, with today, and every report until midnight UTC carries
+     it. Only a colour that was dealt counts, the colours' own rule, and
+     nothing at all for a returning browser, a tablet or a desktop. */
   var PHONE_KEY = 'ttb.phoneday';
 
   function pinPhone() {
     var colour = styleDealt();
     if (who !== 'new' || device() !== 'phone' || !colour) return;
     try {
-      window.localStorage.setItem(PHONE_KEY, JSON.stringify({ day: today(), arm: (dealt() || 'none') + ':' + colour }));
+      window.localStorage.setItem(PHONE_KEY, JSON.stringify({ day: today(), arm: 'b:' + colour }));
     } catch (e) { /* not pinned, not counted */ }
   }
 
-  /* The pinned `<rail>:<colour>`, or '' on any day but the one it was
+  /* The pinned `b:<colour>`, or '' on any day but the one it was
      pinned. */
   function phoneArm() {
     var p = null;
@@ -544,10 +513,9 @@ window.TTBTrack = (function () {
      coarse primary pointer is a finger, and a finger on something narrower
      than 768px is a phone. A laptop with a touchscreen keeps its mouse as
      the primary pointer and counts as a desktop, which is what it is. Handed
-     out as TTBTrack.device() as well, because pickLayout() in assets/app.js
-     draws a newcomer on anything but a phone the full rail by this same
-     rule: a rail decided by one test and counted by another would file some
-     laptops under a deal they were never in. */
+     out as TTBTrack.device() as well, for the three pages that post a
+     press of their own, so a press and a visit are filed under the same
+     device by the same rule. */
   function device() {
     var coarse = false;
     try { coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch (e) { coarse = false; }
@@ -600,8 +568,8 @@ window.TTBTrack = (function () {
      site chose — and the first report of any page says the page opened, so
      the diagrams count the page itself as a step before the trail. */
   function putAway() {
-    /* A page put away before it said it was opened — the map, closed before
-       its places came in — says so now, so the view is not lost. */
+    /* A page put away before it said it was opened — closed before its
+       scripts had all run — says so now, so the view is not lost. */
     arrive();
     charge();
     since = null;
@@ -614,7 +582,7 @@ window.TTBTrack = (function () {
     if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
         !trail.length && !searched.length && !abouts.length) return;
     var body = { kind: 'leave', id: PAGE, secs: secs, presses: tallied,
-      places: opened, langs: langs, moved: moved, who: who, layout: dealt(), style: styleDealt(), phone: phoneArm(),
+      places: opened, langs: langs, moved: moved, who: who, style: styleDealt(), phone: phoneArm(),
       trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     if (via) body.via = via;
     /* Whether this view pressed nothing is decided on its first report, and
@@ -733,5 +701,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, arrive: arrive, refused: refused, about: about, newcomer: newcomer, device: device, owner: OWNER };
+  return { event: event, click: click, view: view, seen: seen, refused: refused, about: about, newcomer: newcomer, device: device, owner: OWNER };
 })();

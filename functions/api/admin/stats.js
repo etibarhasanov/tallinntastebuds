@@ -76,9 +76,11 @@
  * table not there yet answers 0 rather than failing the others, the way the
  * ranking answers empty rather than failing when `press_counts` is not.
  *
- * The two rails' strangers are in the same table, under the `layout` kind,
- * and are not read here: ./visitors.js carries them to /admin/visitors, to
- * sit with everything else about the two rails.
+ * The tests' deals are in the same table, under the `look` and `style`
+ * kinds, and are not read here: ./visitors.js carries them to
+ * /admin/visitors, to sit with everything else about each test. The rails'
+ * old `layout` rows are there too, and read by nothing since the short rail
+ * became everybody's.
  */
 
 import {

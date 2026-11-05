@@ -27,17 +27,12 @@
   var PIN_BOX = 46;          /* the icon box each of those is centred in */
   var FOCUS_ZOOM = 16;
   var STYLE_KEY = 'ttb.style';
-  var LAYOUT_KEY = 'ttb.layout';
-  var LAYOUT_BY_KEY = 'ttb.layout.by';
-  var LAYOUT_DEAL_KEY = 'ttb.layout.deal';
-  var LAYOUTS = ['a', 'b'];
   var FRONT_CHIPS = [DEAL_FILTER, 'bakery', 'hidden-gem'];
 
   var state = {
     places: [],
     deals: [],           // data/deals.json, usually empty
     types: [],
-    layout: 'a',         // which rail, see pickLayout()
     ui: {},
     blurbs: {},
     langNames: {},
@@ -395,7 +390,6 @@
     storeSet(STORE_KEY, code);
     applyStaticStrings();
     renderLanguageSwitch();
-    renderStyleSwitch();
     renderFilters();
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
@@ -434,50 +428,6 @@
     return TTBBasemap.layer(L, { dark: dark });
   }
 
-  var LAYOUT_SHARE = 0.8;
-  var LAYOUT_DEAL = '2';
-
-  function pickLayout() {
-    var params = new URLSearchParams(window.location.search);
-    var asked = params.get('layout');
-    if (asked && LAYOUTS.indexOf(asked) !== -1) {
-      storeSet(LAYOUT_KEY, asked);
-      storeSet(LAYOUT_BY_KEY, 'hand');
-      return asked;
-    }
-    var stored = storeGet(LAYOUT_KEY);
-    var known = stored && LAYOUTS.indexOf(stored) !== -1;
-    if (known && (storeGet(LAYOUT_BY_KEY) === 'hand' || storeGet(LAYOUT_DEAL_KEY) === LAYOUT_DEAL || stored === 'b')) {
-      return stored;
-    }
-    if (TTBTrack.device() !== 'phone') {
-      storeDel(LAYOUT_KEY);
-      storeDel(LAYOUT_DEAL_KEY);
-      return 'a';
-    }
-    var dealt = Math.random() < LAYOUT_SHARE ? 'b' : 'a';
-    storeSet(LAYOUT_KEY, dealt);
-    storeSet(LAYOUT_DEAL_KEY, LAYOUT_DEAL);
-    if (storeGet(LAYOUT_KEY) !== dealt) return 'b';
-    if (!storeGet(INTRO_KEY)) {
-      layoutFresh = true;
-      postPress('layout', dealt);
-    }
-    return dealt;
-  }
-
-  var layoutFresh = false;
-  var layoutOpened = false;
-
-  function shortRail() {
-    return state.layout === 'b';
-  }
-
-  function applyLayout(id) {
-    state.layout = id;
-    document.documentElement.setAttribute('data-layout', id);
-  }
-
   function applyStyle(id) {
     document.documentElement.setAttribute('data-style', id);
 
@@ -505,7 +455,6 @@
     }
 
     paintMarkers();
-    markStyleSwitch();
     syncUrl();
     if (!opts || opts.pin !== false) TTBTrack.event('style_select', { style: id });
   }
@@ -535,32 +484,6 @@
 
   function styleKey(id) {
     return 'style' + id.charAt(0).toUpperCase() + id.slice(1);
-  }
-
-  function markStyleSwitch() {
-    if (!dom.styles) return;
-    var btn = dom.styles.querySelector('.rail-btn');
-    if (!btn) return;
-    var next = nextStyle();
-    btn.querySelector('.sw-dot').className = 'sw-dot sw-' + next;
-    btn.setAttribute('aria-label', t(styleKey(next)));
-    btn.setAttribute('title', t(styleKey(next)));
-    var name = btn.querySelector('.rail-label');
-    if (name) name.textContent = t(styleKey(next));
-  }
-
-  function renderStyleSwitch() {
-    if (!dom.styles) return;
-    clear(dom.styles);
-    var btn = el('button', { type: 'button', className: 'rail-btn' });
-    btn.addEventListener('click', function () {
-      setStyle(nextStyle());
-      openHint('style', 0);
-    });
-    btn.appendChild(el('span', { className: 'sw-dot' }));
-    btn.appendChild(el('span', { className: 'rail-label' }));
-    dom.styles.appendChild(btn);
-    markStyleSwitch();
   }
 
   function initMap() {
@@ -869,8 +792,7 @@
     var r = bar && bar.getBoundingClientRect();
     if (r && r.height) c.t = Math.max(0, r.bottom - box.top);
     r = dom.rail && dom.rail.getBoundingClientRect();
-    var disc = dom.btnFlash || dom.btnRandom;
-    if (r && r.height > r.width && disc) c.l = Math.max(0, r.left - box.left + disc.offsetHeight);
+    if (r && r.height > r.width) c.l = Math.max(0, r.left - box.left + dom.btnRandom.offsetHeight);
     r = dom.btnLocate && !dom.btnLocate.hidden && dom.btnLocate.getBoundingClientRect();
     if (r && r.height) c.b = Math.max(0, box.bottom - r.top);
     if (c.l > box.width - 160 || c.t + c.b > box.height - 160) return null;
@@ -2139,9 +2061,6 @@
       at: function () { return chipRow() || dom.btnFilters; } },
     { key: 'explainRandom', at: function () { return dom.btnRandom; },
       pills: function () { return [dom.btnRandom]; } },
-    { key: 'explainAsk', at: function () { return dom.btnAsk; },
-      when: function () { return !shortRail(); },
-      pills: function () { return [dom.btnAsk]; } },
     { key: 'explainSave', at: function () { return dom.btnAccount; },
       when: function () { return !dom.btnAccount.hidden; },
       pills: function () { return [dom.btnAccount]; } },
@@ -2149,7 +2068,6 @@
       when: function () { return !dom.btnLists.hidden; },
       pills: function () { return [dom.btnLists]; } },
     { key: 'explainMore', at: function () { return dom.btnMore; },
-      when: shortRail,
       pills: function () { return [dom.btnMore]; } },
     { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
       at: function () {
@@ -2731,12 +2649,9 @@
   var RAIL_PRESS = {
     'btn-account': 'account',
     'btn-lists': 'lists',
-    'btn-flash': 'flash',
     'btn-random': 'random',
-    'btn-ask': 'ask',
-    'btn-locate': 'locate',
     'btn-more': 'more',
-    'btn-feedback': 'feedback'
+    'btn-locate': 'locate'
   };
 
   function countRailPress(ev) {
@@ -2746,10 +2661,7 @@
       if (node.classList && node.classList.contains('rail-btn')) { btn = node; break; }
       node = node.parentNode;
     }
-    if (!btn) return;
-    var id = RAIL_PRESS[btn.id]
-      || (dom.styles && dom.styles.contains(btn) ? 'style' : '');
-    if (id) postPress('rail', id);
+    if (btn && RAIL_PRESS[btn.id]) postPress('rail', RAIL_PRESS[btn.id]);
   }
 
   function toggleChip(id) {
@@ -2859,7 +2771,6 @@
 
   function drawerHolds() {
     if (!isNarrow()) return false;
-    if (!shortRail()) return state.active.length > 0;
     return state.active.some(function (id) { return FRONT_CHIPS.indexOf(id) === -1; });
   }
 
@@ -2908,11 +2819,8 @@
       var on = state.active.indexOf(id) !== -1;
       var label = id === DEAL_FILTER ? t('filterDiscount') : typeLabel(id);
       var press = function () { toggleChip(id); };
-      var chip = dom.filters.appendChild(chipEl(label, on, press));
-      if (FRONT_CHIPS.indexOf(id) !== -1) {
-        chip.classList.add('chip-front');
-        dom.chipsFront.appendChild(chipEl(label, on, press));
-      }
+      dom.filters.appendChild(chipEl(label, on, press));
+      if (FRONT_CHIPS.indexOf(id) !== -1) dom.chipsFront.appendChild(chipEl(label, on, press));
     });
 
     var chips = dom.filters.children;
@@ -3157,14 +3065,8 @@
   }
 
   var HINT_MS = 4200;
-  var HINT_KEYS = ['account', 'lists', 'flash', 'random', 'more', 'ask',
-                   'style', 'locate', 'feedback'];
+  var HINT_KEYS = ['account', 'lists', 'random', 'more', 'locate'];
   var hintTimers = {};
-
-  function railKeys() {
-    if (shortRail()) return ['account', 'lists', 'random', 'more', 'locate'];
-    return HINT_KEYS.filter(function (key) { return key !== 'more'; });
-  }
 
   var RAIL_IN = 1150;
   var welcomeOwed = false;
@@ -3179,12 +3081,8 @@
     if (key === 'account') return dom.btnAccount;
     if (key === 'lists') return dom.btnLists;
     if (key === 'more') return dom.btnMore;
-    if (key === 'flash') return dom.btnFlash;
-    if (key === 'ask') return dom.btnAsk;
     if (key === 'radio') return dom.btnRadio;
-    if (key === 'style') return dom.styles && dom.styles.querySelector('.rail-btn');
     if (key === 'locate') return dom.btnLocate;
-    if (key === 'feedback') return dom.btnFeedback;
     return dom.btnRandom;
   }
 
@@ -3270,8 +3168,7 @@
     introPending = false;
     railIntroduced = true;
     storeSet(INTRO_KEY, '1');
-    var keys = railKeys();
-    for (var i = 0; i < keys.length; i++) openHint(keys[i], RAIL_IN + i * 300);
+    for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
   }
 
@@ -3416,7 +3313,7 @@
       var at = params.get('at') || '';
       if (!id) {
         syncUrl();
-        if (spot) selectPlace(spot, { fly: true, arrived: true });
+        if (spot) selectPlace(spot, { fly: true });
         return;
       }
       loadList(id).then(function (list) {
@@ -3463,7 +3360,7 @@
     state.lastPick = choice.id;
     TTBTrack.event('random_pick', { place: choice.name, pool: pool.length });
     selectPlace(choice.id, { fly: true, withHere: true });
-    if (shortRail()) sayRolled();
+    sayRolled();
   }
 
   function sayRolled() {
@@ -4163,10 +4060,6 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
-    if (layoutFresh && !opts.arrived && !layoutOpened) {
-      layoutOpened = true;
-      postPress('layout', state.layout + '-opened');
-    }
     if (isFound(id) || isSavedStandIn(id)) dressFound(place);
   }
 
@@ -4189,7 +4082,7 @@
 
   function openFromRow(place) {
     state.fromRow = place.id;
-    selectPlace(place.id, { fly: true, arrived: true });
+    selectPlace(place.id, { fly: true });
   }
 
   function standOn(place) {
@@ -6898,7 +6791,6 @@
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
     else params.delete('style');
-    params.delete('layout');
     params.delete('story');
     params.delete('account');
     params.delete('then');
@@ -7072,12 +6964,6 @@
       randomPick();
     });
     holdForChess(dom.btnRandom);
-
-    dom.btnAsk.addEventListener('click', function () {
-      closeHint('ask');
-      TTBTrack.event('ask_open');
-      openAsk();
-    });
 
     dom.askForm.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -7457,10 +7343,8 @@
       chipsFront: $('chips-front'),
       filterBar: $('filter-bar'),
       btnFilters: $('btn-filters'),
-      styles: $('styles'),
       rail: $('rail'),
       btnRandom: $('btn-random'),
-      btnAsk: $('btn-ask'),
       panel: $('panel'),
       panelBand: $('panel-band'),
       panelScroll: $('panel-scroll'),
@@ -7482,7 +7366,6 @@
       moreCard: $('more-card'),
       whereScrim: $('where-scrim'),
       whereCard: $('where-card'),
-      btnFlash: $('btn-flash'),
       nudge: $('nudge'),
       nudgeSay: $('nudge-say'),
       nudgeGo: $('nudge-go'),
@@ -7513,7 +7396,6 @@
       btnLocate: $('btn-locate'),
       welcome: $('welcome'),
       welcomeTour: $('welcome-tour'),
-      btnFeedback: $('btn-feedback'),
       tour: $('tour'),
       tourRing: $('tour-ring'),
       tourCursor: $('tour-cursor'),
@@ -7589,13 +7471,10 @@
       state.style = styled.style;
       state.stylePinned = styled.pinned;
       applyStyle(state.style);
-      applyLayout(pickLayout());
-      TTBTrack.arrive();
 
       buildSearchIndex();
       applyStaticStrings();
       renderLanguageSwitch();
-      renderStyleSwitch();
       initMap();
       wireFindMoved();
       wireLocation();
@@ -7631,7 +7510,7 @@
       syncUrl();
       if (spot && !byId(spot) && isSaved(spot)) {
         seatSaved(function () {
-          if (byId(spot) && !state.selected) selectPlace(spot, { fly: true, arrived: true });
+          if (byId(spot) && !state.selected) selectPlace(spot, { fly: true });
         });
       } else {
         seatSaved();
@@ -7640,7 +7519,7 @@
             if (state.selected || byId(spot)) return;
             for (var i = 0; i < roll.length; i++) {
               if (roll[i].id === spot) {
-                selectPlace(seatFound(roll[i]).id, { fly: true, arrived: true });
+                selectPlace(seatFound(roll[i]).id, { fly: true });
                 return;
               }
             }
@@ -7648,7 +7527,7 @@
         }
       }
 
-      if (spot && byId(spot)) selectPlace(spot, { fly: true, arrived: true });
+      if (spot && byId(spot)) selectPlace(spot, { fly: true });
 
       else if (stand) openFromRow(stand);
 

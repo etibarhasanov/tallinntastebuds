@@ -38,7 +38,7 @@ must keep, and where this area has gone wrong.
     opens, and an open is a gesture** and **A count and not a log** are the
     two arguments every change here is held to.
   - **Visitors** — `/admin/visitors`: who came, from where, on what, for
-    how long, what they pressed, the sign-up funnel, the two rails, the
+    how long, what they pressed, the sign-up funnel, the tests, the
     chat, the products, Right now. **A visitor is a browser on a day** is
     what a visitor is; **What it does not do** is the boundary.
   - **How they found it** — `/admin/found`. **The words typed into Google
@@ -49,8 +49,9 @@ must keep, and where this area has gone wrong.
   - **Analytics** (a `###` under the site's own sections) — the table of
     every press name the pages report. It is the list: a name not in it
     is a name nobody will find in the console or on `/admin/visitors`.
-  - **The short rail** — why the map deals strangers one of two rails and
-    what `layout` counts about it.
+  - **The short rail** — the rail everybody gets, what the test that chose
+    it found, and how its presses are counted, by the day as well since
+    2026-11-05.
   - **The lists' two looks** — the directory's own A/B test, apart from
     the rails, and what `look` counts about it.
   - **The four styles, dealt** — the colour each newcomer is given, and
@@ -92,15 +93,14 @@ trail with the on-screen second each name happened at, the languages, the
 searches and the abouts. Two reports a page and
 no more — a visit of twelve presses is not twelve requests.
 
-`stats.js` is the door for all of it. Thirteen kinds, and each is handed on or
+`stats.js` is the door for all of it. Twelve kinds, and each is handed on or
 counted in one place:
 
 | `kind` | checked against | counted by | into |
 |---|---|---|---|
 | `place` | the map's roll, or `google_venues` with `hidden = 0` | `stats.js` | `press_counts` |
 | `filter` | `data/taxonomy.json` plus `DEAL_FILTER` | `stats.js` | `press_counts` |
-| `rail` | `RAIL_PILLS` | `stats.js`, every press | `press_counts` |
-| `layout` | `LAYOUT_IDS` | `stats.js` | `press_counts` |
+| `rail` | `RAIL_PILLS` | `stats.js`, every press, then `countRail()` | `press_counts`, and `visitor_counts` by the day |
 | `look` | `LOOK_IDS` | `stats.js` | `press_counts` |
 | `style` | `STYLE_IDS` | `stats.js` | `press_counts` |
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
@@ -219,16 +219,15 @@ Each of these exists twice, and `grep -n` finds both:
 
 | In | and in | which is |
 |---|---|---|
-| `RAIL_PILLS` in `functions/api/stats.js` | `RAIL_PRESS` in `assets/app.js` | the nine pill ids across the rail's two shapes |
+| `RAIL_PILLS` in `functions/api/stats.js` | `RAIL_PRESS` and `renderMore()` in `assets/app.js` | the nine door ids: five pills, and four rows behind More under the ids they had as pills |
 | `PAGES` in `functions/api/_visitors.js` | every page that loads `assets/track.js`; `page:` and `view:` signals in `data/flows.json` | the validator fails a page or a signal `PAGES` does not name |
 | `SPANS` in `functions/api/_visitors.js` | `SPANS` in `assets/visitors.js` and `assets/found.js` | the ranges 1, 7, 28, 90 |
 | `ABOUT` in `functions/api/_visitors.js` | `TTBTrack.about()` calls in `assets/app.js`, `blog.js`, `flashcard.js`, `deal.js`, `verify.js` | what a page may say it was about |
 | `SIGNUP` in `functions/api/_visitors.js` | the `account_*` names the sheet and forms report; the error words `account.js` answers | the funnel |
-| `LAYOUT_IDS` in `functions/api/stats.js` | `pickLayout()` in `assets/app.js` | the two rails and their opens |
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
 | `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
-| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-seven today | what the table holds |
+| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-eight today, `layout` among them and no longer written | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 | `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |
 
@@ -241,8 +240,7 @@ file adds:
    characters — `PRESS` in `_visitors.js` — and says what the person meant.
    The same gesture on two pages reports the same name.
 2. `TTBTrack.event(name, params)` in the handler, `TTBTrack.click()` round an
-   inline node, or `data-track` in the markup. `layout` is added to the
-   params for you.
+   inline node, or `data-track` in the markup.
 3. A row in the **Analytics** table in `README.md`, in the same commit.
 4. If it is a step somebody takes in a diagram, `when` in `data/flows.json`
    names it, then `node tools/flows.mjs`.
@@ -357,8 +355,10 @@ free; the questions, in the order the pages answer them:
   against `account_try_*` against `account_done_*`, and the `account_err_*`
   word they were refused with. The `username` pattern bug was found here
   and nowhere else.
-- **Which rail works?** `layout`: strangers dealt each, and how many
-  opened a place with it.
+- **What does the rail get pressed for?** `rail` in `press_counts`, and by
+  the day in `visitor_counts` since 2026-11-05, so a change to the rail is
+  read before and after. The two rails' test is over and its `layout` rows
+  are kept, read by nothing — **The short rail**.
 - **What did they come for?** `found` and `search` on `/admin/found` —
   the words people type into the site's own fields are the nearest thing
   to what they typed into Google.

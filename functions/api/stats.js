@@ -25,7 +25,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Eight kinds, which is the whole of `kind` in db/schema.sql:
+ * Seven kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened on the map — selectPlace() in assets/app.js,
  *            which is the same moment TTBTrack.view() reports one — whether one of the map's own, by its slug, or one of
@@ -63,21 +63,18 @@
  *            posts in data/blog.json are not this kind: they are the
  *            owner's, counted under `about` by ./_visitors.js and read on
  *            /admin/visitors.
- *   rail     a pill on the rail down the left of the map pressed — the nine
- *            in RAIL_PILLS below, which is every button inside #rail and
- *            nothing else. The radio is not one of them: it left the rail for
- *            the corner beside the language switch, and a table about the rail
- *            that carried it would be a table about something else. A row in
- *            the More sheet on the short rail is the pill it stands for and
- *            is counted under that pill's id — renderMore() in assets/app.js.
- *   layout   the rail a browser that had never been here was dealt — `a`
- *            the full one or `b` the short one, once per browser, from
- *            pickLayout() in assets/app.js — and `a-opened` / `b-opened`,
- *            the first place that browser opened on the visit it was dealt
- *            it. Four ids and no more, LAYOUT_IDS below, so the page can set
- *            the two rails' strangers side by side: how many got each, and
- *            how many of them found a place with it. "The short rail" in
- *            README.md.
+ *   rail     a door on the rail down the left of the map pressed — the nine
+ *            in RAIL_PILLS below: every button inside #rail and nothing
+ *            else, and the four rows behind More, each counted under
+ *            the id of the pill it was before the rail was cut short —
+ *            renderMore() in assets/app.js. The radio is not one of them: it
+ *            left the rail for the corner beside the language switch, and a
+ *            table about the rail that carried it would be a table about
+ *            something else. press_counts has no day, so every rail press is
+ *            filed a second time by the day, into visitor_counts as the
+ *            `rail` kind — countRail() in ./_visitors.js — which is what lets
+ *            a change to the rail be read before and after. "The short rail"
+ *            in README.md.
  *   look     the directory's look somebody new to the site was dealt on
  *            their first open of /lists — `a` the page as it was or `b` at
  *            rest, from pickLook() in assets/lists.js — and, on the day it
@@ -130,7 +127,7 @@
  * to agree with the one page view TTBTrack.view() reports beside it. A pill
  * is a press, Clarity is sent an event per press of one, and the question
  * this table answers is the plain one:
- * which of the nine buttons do people actually push, and how often. Counting
+ * which of the nine doors do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
  * a quieter question nobody asked.
  *
@@ -138,7 +135,7 @@
  *
  * Every press counted into press_counts is counted a second time under the
  * device the page says it was pressed on, the kind written
- * `<device>.<kind>` — `desktop.rail`, `phone.layout` — so /admin/stats and
+ * `<device>.<kind>` — `desktop.rail`, `phone.look` — so /admin/stats and
  * the tests on /admin/visitors can be read for phones, tablets or
  * computers alone. BY DEVICE in ./_visitors.js is the reasoning, and the
  * visits are split the same way there. A list's countries are not: they
@@ -163,7 +160,7 @@ import { LIST_ID } from './_lists.js';
 /* And of a post's, for the same reason. */
 import { POST_ID } from './_posts.js';
 import { countView, countPress, countListOpen, firstToday } from './_visits.js';
-import { countArrive, countLeave, DEVICES } from './_visitors.js';
+import { countArrive, countLeave, countRail, DEVICES } from './_visitors.js';
 import { countFlows } from './_flows.js';
 /* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
    ./_visitors.js. */
@@ -171,7 +168,7 @@ import { adminUser } from './_admin.js';
 /* A Google place opened is also the moment its numbers are worth checking. */
 import { refreshOnOpen } from './_refresh.js';
 
-/* The eight kinds of thing a press can be about. In one place because the POST
+/* The seven kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the ranking in ./admin/stats.js
    splits the rows on it. */
 export const PLACE = 'place';
@@ -179,7 +176,6 @@ export const FILTER = 'filter';
 export const LIST = 'list';
 export const POST = 'post';
 export const RAIL = 'rail';
-export const LAYOUT = 'layout';
 export const LOOK = 'look';
 export const STYLE = 'style';
 /* And four that are not counted here at all but handed on — see the POST —
@@ -190,20 +186,21 @@ const ARRIVE = 'arrive';
 const LEAVE = 'leave';
 const VENUE = 'venue';
 
-/* The pills on the rail, top to bottom as index.html stands them, each with
-   the string data/ui.json already names it by — the same string the button
-   wears as its own label on the map, so the table reads as the rail does and
-   nothing new was written into ten languages to name a button that is already
-   named. The ids are the keys hintPill() in assets/app.js uses for the same
-   nine buttons, which is where they came from. Nine across the two rails:
-   the full one draws eight of them and the short one four — More is only
-   the short rail's, and its rows count as the four pills it stands in for.
+/* The doors on the rail, in the order the full column of eight stood them
+   before the rail was cut short, each with the string data/ui.json already
+   names it by — the same string the door wears as its own label on the map,
+   so the table reads as the rail does and nothing new was written into ten
+   languages to name a button that is already named. Nine: the five the rail
+   draws — the account, the lists, Surprise me, More and the arrow — and the
+   four rows behind More, Learn Estonian, Ask, the colour and feedback, each
+   counted under the id it had as a pill, so the numbers from before the
+   short rail and after it are one column. "The short rail" in README.md.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is
    the arrangement DEAL_FILTER above has — a button added to the rail is
-   counted once it is named here and not before, and RAIL_PRESS in
-   assets/app.js is the other half of the pair. The radio is deliberately
+   counted once it is named here and not before, and RAIL_PRESS and
+   renderMore() in assets/app.js are the other half of the pair. The radio is deliberately
    absent: it is not in #rail. */
 export const RAIL_PILLS = [
   { id: 'account', label: 'accountOpen' },
@@ -217,10 +214,7 @@ export const RAIL_PILLS = [
   { id: 'feedback', label: 'feedbackTitle' }
 ];
 
-/* The four things a stranger's deal can say — see the header. */
-export const LAYOUT_IDS = ['a', 'b', 'a-opened', 'b-opened'];
-
-/* And the six the directory's two looks can — see the header. */
+/* The six things the directory's two looks can say — see the header. */
 export const LOOK_IDS = ['a', 'b', 'a-opened', 'b-opened', 'a-kept', 'b-kept'];
 
 /* And the sixteen the four colours can: each colour dealt, and each with the
@@ -268,7 +262,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, POST, RAIL, LAYOUT, LOOK, STYLE, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, POST, RAIL, LOOK, STYLE, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -325,7 +319,6 @@ export async function onRequestPost(context) {
              : kind === LIST ? await realList(context, id)
              : kind === POST ? await realPost(context, id)
              : kind === RAIL ? realPill(id)
-             : kind === LAYOUT ? LAYOUT_IDS.indexOf(id) !== -1
              : kind === LOOK ? LOOK_IDS.indexOf(id) !== -1
              : kind === STYLE ? STYLE_IDS.indexOf(id) !== -1
              : await realFilter(context, id);
@@ -366,6 +359,11 @@ export async function onRequestPost(context) {
      /admin/stats. After the running count and not inside its statement, so
      a database without list_counts still orders /lists. */
   if (kind === LIST) context.waitUntil(countListOpen(context, id));
+
+  /* A pill pressed: the same press again, by the day, into visitor_counts —
+     countRail() in ./_visitors.js. After the answer and in a statement of its
+     own, so a running total that landed is never taken down with it. */
+  if (kind === RAIL) context.waitUntil(countRail(env, id, device));
 
   /* A place opened: ask Google whether its numbers still hold, if they are
      old enough to be worth asking about. After the answer has gone, so nobody
@@ -469,7 +467,7 @@ async function realPost(context, id) {
   }
 }
 
-/* And whether that id is a pill the rail actually draws. RAIL_PILLS is the
+/* And whether that id is a door the rail actually has. RAIL_PILLS is the
    whole of it: nine ids written into this file, checked against so that the
    table cannot fill with names of buttons that do not exist. The radio is not
    one of them and neither is anything in the header. */

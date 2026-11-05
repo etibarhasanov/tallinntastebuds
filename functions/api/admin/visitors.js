@@ -9,28 +9,25 @@
  *                      DEVICE in ../_visitors.js — and every device without;
  *                      the answer says which in `device`.
  *
- * And `dealt`, the four rows of press_counts ./stats.js counts the two rails'
- * strangers in: for each of `a` and `b`, `given`, how many browsers that had
- * never been here were dealt it, and `opened`, how many of them opened a
- * place on that first visit. They are since the split began rather than in
- * the range, because they are one row each and have no day; the page says
- * so. They used to be a footnote on /admin/stats, and moved here to sit with
- * everything else about the two rails.
- *
- * And `looks`, the same for the directory's two looks — the six `look` rows
- * ./stats.js counts: for each of `a` and `b`, `given`, how many people new to
- * the site were dealt it on their first open of /lists, and `opened` and
- * `kept`, how many of them opened a list from it and kept one on that day.
- * A test apart from the rails, read in the same query because it is the
- * same table. "The lists' two looks" in README.md.
+ * And `looks`, the directory's two looks — the six `look` rows of
+ * press_counts ./stats.js counts: for each of `a` and `b`, `given`, how many
+ * people new to the site were dealt it on their first open of /lists, and
+ * `opened` and `kept`, how many of them opened a list from it and kept one
+ * on that day. They are since the test began rather than in the range,
+ * because they are one row each and have no day; the page says so. "The
+ * lists' two looks" in README.md.
  *
  * And `styles`, the four colours somebody new to the site is dealt as their
  * first page opens — the sixteen `style` rows: for each of red, green, blue
  * and plum, `given`, and `opened`, `back` and `changed`, how many of them
  * opened something that day, came back on a later one, and chose another
  * colour. "The four styles, dealt" in README.md. And `colours` out of
- * readVisitors(), beside `layouts`: everyone dealt each colour over the
- * range, with the same per-visitor facts as the rails.
+ * readVisitors(): everyone dealt each colour over the range, with the
+ * per-visitor facts.
+ *
+ * The map's two rails were the third test here, under the `layout` kind,
+ * until every visitor was given the short rail; their rows are still in
+ * press_counts and nothing reads them. "The short rail" in README.md.
  *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.
@@ -52,7 +49,7 @@
 
 import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
 import { SPANS, readVisitors, askedDevice } from '../_visitors.js';
-import { LAYOUT, LOOK, STYLE, STYLE_ARMS } from '../stats.js';
+import { LOOK, STYLE, STYLE_ARMS } from '../stats.js';
 
 /* Five minutes in the colo, for the reason ./stats.js holds its ranking that
    long: it is what the page may be stale by, and the only thing between the
@@ -87,22 +84,22 @@ export async function onRequestGet(context) {
   return privately(res);
 }
 
-/* The three tests' rows — `dealt` the rails', `looks` the directory's,
-   `styles` the colours' — see the header. An id is the arm, then the fact
+/* The two tests' rows — `looks` the directory's, `styles` the colours' —
+   see the header. An id is the arm, then the fact
    after a dash where there is one: `b` is how many were given B, `b-opened`
    how many of them opened something. Nought all round where press_counts is
    not there. With a device, that device's rows — ../stats.js files each
    press a second time under `<device>.<kind>`. */
 async function readDeals(env, device) {
   const at = device ? device + '.' : '';
-  const arms = () => ({ a: { given: 0, opened: 0, kept: 0 }, b: { given: 0, opened: 0, kept: 0 } });
+  const looks = { a: { given: 0, opened: 0, kept: 0 }, b: { given: 0, opened: 0, kept: 0 } };
   const colours = Object.fromEntries(STYLE_ARMS.map((id) => [id, { given: 0, opened: 0, back: 0, changed: 0 }]));
-  const deals = { dealt: arms(), looks: arms(), styles: colours };
-  const tests = { [LAYOUT]: deals.dealt, [LOOK]: deals.looks, [STYLE]: deals.styles };
+  const deals = { looks: looks, styles: colours };
+  const tests = { [LOOK]: deals.looks, [STYLE]: deals.styles };
   try {
     const got = await env.DB
-      .prepare('SELECT kind, id, n FROM press_counts WHERE kind IN (?, ?, ?)')
-      .bind(at + LAYOUT, at + LOOK, at + STYLE)
+      .prepare('SELECT kind, id, n FROM press_counts WHERE kind IN (?, ?)')
+      .bind(at + LOOK, at + STYLE)
       .all();
     for (const r of got.results || []) {
       const [arm, fact] = r.id.split('-');

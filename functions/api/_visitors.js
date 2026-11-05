@@ -204,30 +204,33 @@
  * the languages data/ui.json speaks, so the kind is a closed list: four rows
  * a language a day at the most, and a row per pair somebody pressed.
  *
- * THE TWO RAILS
+ * THE RAIL, BY THE DAY
  *
- * The map deals a stranger one of two rails, and **The short rail** in
- * README.md is why. The same facts are counted a third time per rail and
- * per kind of visitor, under the `layout` kind as `<rail>:<who>:<fact>`, and
- * the visitors on each rail as `<rail>:new` and `<rail>:back`. Only a
- * browser that has been dealt one is counted there — one that has never
- * opened the map has not, and filing it under the full rail by default would
- * be comparing the short rail against everybody. Since 2026-10-06 only a
- * newcomer on a phone is dealt one — a desktop or a tablet with no rail yet
- * draws the full one undealt, pickLayout() in assets/app.js — so from then
- * the strangers on each rail are phones alone. How
- * many strangers were
- * dealt each and how many opened a place on that first visit is press_counts'
- * and ./stats.js's, and ./admin/visitors.js reads it beside this.
+ * Every press of a door on the map's rail — RAIL_PILLS in ./stats.js, the
+ * five pills and the four rows behind More — is counted twice: once into
+ * press_counts, which has no day and is what /admin/stats ranks, and once
+ * here under the `rail` kind, by the pill's id, so a change to the rail can
+ * be read before and after. countRail() below, called by ./stats.js once the
+ * id has been checked against that list, which is what makes it a closed
+ * kind: nine ids a day at the most, and the same nine again per device. It
+ * began on 2026-11-05, with the short rail for everybody; nothing before
+ * that has a day.
+ *
+ * Until then the map dealt strangers one of two rails, and the same facts
+ * were counted a third time per rail and per kind of visitor, under the
+ * `layout` kind as `<rail>:<who>:<fact>`, with the visitors on each rail as
+ * `<rail>:new` and `<rail>:back`. **The short rail** in README.md says what
+ * that test found and why it ended. Its rows stay in the table and nothing
+ * reads them any more.
  *
  * THE FOUR COLOURS
  *
  * Somebody new is dealt one of the four styles as their first page opens —
  * dealStyle() in assets/track.js, **The four styles, dealt** in README.md —
- * and the same facts are counted a fourth time per colour and per kind of
+ * and the same facts are counted a third time per colour and per kind of
  * visitor, under the `style` kind as `<colour>:<who>:<fact>`, with the
  * visitors dealt each as `<colour>:new` and `<colour>:back`. Only a browser
- * that was dealt a colour is counted here, the rails' rule: one that chose
+ * that was dealt a colour is counted here, the rule the rails kept: one that chose
  * a colour, or arrived on a link carrying one, is in no arm. This is what
  * says which colour people stay longest in and open most under, which the
  * deal's own counts in press_counts — dealt, opened, back, changed — cannot:
@@ -236,11 +239,15 @@
  * TIME ON PHONES
  *
  * How long somebody new spends on a phone, by the rail and the colour they
- * were dealt together — the question neither test's card answers alone,
- * since each mixes phones with desktops, which always draw the full rail.
- * Under the `phone` kind, `<rail>:<colour>:visitors` once on a newcomer's
- * first page of the day and `<rail>:<colour>:secs` on every report after,
- * the rail `a`, `b` or `none` for one not dealt yet. The arm is not read
+ * were dealt together — the question neither test's card answered alone,
+ * since each mixed phones with desktops, which drew the full rail while
+ * there were two. Under the `phone` kind, `<rail>:<colour>:visitors` once
+ * on a newcomer's first page of the day and `<rail>:<colour>:secs` on every
+ * report after, the rail `a`, `b` or `none` for one not dealt yet. Since
+ * 2026-11-05 every newcomer draws the short rail and is filed under `b`,
+ * so the rail half of the cell is the same for everybody from then and the
+ * colour is what still varies; the other rails' cells are kept for the
+ * days before. The arm is not read
  * off each report but pinned by assets/track.js on that first page and
  * carried all day — pinPhone() there says why — so a visitor and their
  * minutes are always in the same cell. New visitors only, on phones only,
@@ -252,7 +259,7 @@
  *
  * Every fact a page reports is counted twice: once as it always was, and
  * once more under its device, the kind written `<device>.<kind>` — so
- * `phone.view`, `desktop.press`, `tablet.layout` — with the id and the
+ * `phone.view`, `desktop.press`, `tablet.rail` — with the id and the
  * number the same. The device is the one assets/track.js reads off the
  * primary pointer and the width, and both reports carry it. No kind had a
  * dot in it before, so a row without one is every device together and a
@@ -269,7 +276,9 @@
  * route rather than a page, since no route knows the device: the chat
  * (`ask`), the products (`use`), the Google round trip's steps of signing
  * up and Right now. A device's view shows those for every device, and
- * says so. It began on 2026-10-06, the day the map stopped dealing a rail
+ * says so. The rail's presses are counted by ./stats.js rather than a page,
+ * and are filed by device all the same, because the press itself says
+ * which device it was made on — THE RAIL, BY THE DAY. It began on 2026-10-06, the day the map stopped dealing a rail
  * to newcomers on a laptop or a tablet, and nothing before it can be split.
  *
  * WHAT THE CHAT WAS ASKED
@@ -350,9 +359,9 @@
  *
  * One row per fact per day, like profile_counts: a busy day and a quiet one
  * with the same pages in them are the same number of rows. The pages, the
- * visitor kinds, the rails and the facts counted under them are lists
- * written here — forty ids a day at the most between the `cohort` and
- * `layout` kinds, another sixty-four for `style`, and ten for `ask` — and so
+ * visitor kinds, the colours and the facts counted under them are lists
+ * written here — twelve ids a day at the most for the `cohort` kind,
+ * another sixty-four for `style`, nine for `rail` and ten for `ask` — and so
  * are the steps of SIGNING UP,
  * a page's worth of them for each page that has a form; the languages are
  * the ones data/ui.json speaks, and WHAT IT WAS ABOUT is the stories, posts,
@@ -485,8 +494,6 @@ export const PAGES = [
   { id: 'privacy', label: 'privacyLink', paths: ['/privacy', '/privacy.html'] }
 ];
 
-/* The two rails, as pickLayout() in assets/app.js deals them. */
-const RAILS = ['a', 'b'];
 /* The four colours a newcomer may be dealt — STYLE_DEALS in assets/track.js,
    STYLE_ARMS in ./stats.js. THE FOUR COLOURS. */
 const COLOURS = ['red', 'green', 'blue', 'plum'];
@@ -494,7 +501,7 @@ const COLOURS = ['red', 'green', 'blue', 'plum'];
 /* New and returning — see NEW AGAINST RETURNING. */
 const WHO = ['new', 'back'];
 
-/* What is counted per kind of visitor and per rail: pages opened, seconds
+/* What is counted per kind of visitor and per colour: pages opened, seconds
    on screen, presses, places opened on the map, sign-ins and accounts made.
    The last two are presses already, picked out of a report by SIGNS. */
 const FACTS = ['views', 'secs', 'presses', 'places', 'login', 'signup'];
@@ -696,11 +703,6 @@ export function stepBefore(request, sent) {
   return m ? { kind: m[1], page: pageOf(request, m[2]) } : null;
 }
 
-/* The rail the browser was dealt, or null where it has not been dealt one. */
-function railOf(body) {
-  return RAILS.includes(body.layout) ? body.layout : null;
-}
-
 /* The colour the browser was dealt, or null where it was not dealt one. */
 function colourOf(body) {
   return COLOURS.includes(body.style) ? body.style : null;
@@ -716,14 +718,13 @@ function whoOf(body) {
   return WHO.includes(body.who) ? body.who : null;
 }
 
-/* One fact about a visit, filed under its kind of visitor and, where it has
-   them, under its rail and its colour as well — NEW AGAINST RETURNING, THE
-   TWO RAILS and THE FOUR COLOURS. */
-function split(facts, arms, who, fact, n) {
+/* One fact about a visit, filed under its kind of visitor and, where it was
+   dealt one, under its colour as well — NEW AGAINST RETURNING and THE FOUR
+   COLOURS. */
+function split(facts, colour, who, fact, n) {
   if (!who || !(n > 0)) return;
   facts.push(['cohort', who + ':' + fact, n]);
-  if (arms.rail) facts.push(['layout', arms.rail + ':' + who + ':' + fact, n]);
-  if (arms.colour) facts.push(['style', arms.colour + ':' + who + ':' + fact, n]);
+  if (colour) facts.push(['style', colour + ':' + who + ':' + fact, n]);
 }
 
 /* One batch of [kind, id, n] facts, today, and the same again under the
@@ -778,16 +779,16 @@ function foundOf(from, at) {
 
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
    `who` what ttb.since said, `from` the referrer it was opened with, `at`
-   its whole address, `layout` the rail if any, `asks` the language the
+   its whole address, `style` the colour it was dealt if any, `asks` the language the
    browser asks for, `device` phone, tablet or desktop, and `tag` the
    `?from=` where the address had one. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  const arms = { rail: railOf(body), colour: colourOf(body) };
+  const colour = colourOf(body);
 
   const facts = [['view', page, 1], ['hour', hourNow(), 1]];
-  split(facts, arms, whoOf(body), 'views', 1);
+  split(facts, colour, whoOf(body), 'views', 1);
   if (body.first === true) {
     const who = body.back === true ? 'back' : 'new';
     const site = siteOf(request);
@@ -798,8 +799,7 @@ export async function countArrive(context, body) {
       ['from', source, 1],
       ['entry', page, 1]
     );
-    if (arms.rail) facts.push(['layout', arms.rail + ':' + who, 1]);
-    if (arms.colour) facts.push(['style', arms.colour + ':' + who, 1]);
+    if (colour) facts.push(['style', colour + ':' + who, 1]);
     const found = foundOf(body.from, body.at);
     if (found) facts.push(['found', found, 1]);
     const ref = refOf(body.from, source, site);
@@ -930,7 +930,7 @@ export async function readLive(env) {
 export async function countLeave(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
-  const arms = { rail: railOf(body), colour: colourOf(body) };
+  const colour = colourOf(body);
   const who = whoOf(body);
 
   const facts = [];
@@ -948,7 +948,7 @@ export async function countLeave(context, body) {
   }
   const secs = Math.min(MAX_SECS, Math.round(Number(body.secs) || 0));
   if (secs > 0) facts.push(['time', page, secs]);
-  split(facts, arms, who, 'secs', secs);
+  split(facts, colour, who, 'secs', secs);
   const phone = phoneOf(body);
   if (phone && secs > 0) facts.push(['phone', phone + ':secs', secs]);
 
@@ -970,15 +970,22 @@ export async function countLeave(context, body) {
     if (SIGNUP.has(name)) facts.push(['signup', page + ':' + name, n]);
     if (SIGNS[name]) signs[SIGNS[name]] += n;
   }
-  split(facts, arms, who, 'presses', pressed);
-  split(facts, arms, who, 'login', signs.login);
-  split(facts, arms, who, 'signup', signs.signup);
-  if (page === 'map') split(facts, arms, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
+  split(facts, colour, who, 'presses', pressed);
+  split(facts, colour, who, 'login', signs.login);
+  split(facts, colour, who, 'signup', signs.signup);
+  if (page === 'map') split(facts, colour, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
   facts.push(...await languageFacts(context, body, who));
   facts.push(...searchFacts(body));
   facts.push(...await aboutFacts(context, body));
 
   return facts.length ? file(env, facts, deviceOf(body)) : false;
+}
+
+/* A door on the map's rail pressed, by the day — THE RAIL, BY THE DAY. `id`
+   is one of RAIL_PILLS, which ./stats.js has already checked, and `device`
+   the device the press said it was made on, or null. */
+export function countRail(env, id, device) {
+  return file(env, [['rail', id, 1]], device);
 }
 
 /* One step of signing up that no page can see — the Google round trip's,
@@ -1131,18 +1138,16 @@ function paired(one, two, a, b) {
  *   now        { visitors, back, views, secs, presses } in the range
  *   before     the same over the range just before it; null for today,
  *              since a day half over set against a whole one says nothing
- *   today      { fresh, back, login, signup, rails } today so far, whatever
- *              the range, `rails` holding the same four for `a`, `b` and
- *              `none` — the visitors no rail has been dealt to yet
+ *   today      { fresh, back, login, signup } today so far, whatever
+ *              the range
  *   unit       'day' or 'week' — what one bar is — or null for today
  *   series     [{ day, fresh, back }] visitors per bar, oldest first, zeros
  *              included; `day` is the first day the bar covers
  *   cohorts    [{ id, visitors, ...FACTS }] new and returning, over the
  *              days of the range that tell them apart
  *   colours    [{ id, visitors, back, ...FACTS, fresh }] the four colours,
- *              the same shape as the rails — THE FOUR COLOURS
- *   layouts    [{ id, visitors, back, ...FACTS, fresh }] the two rails over
- *              the same days, `fresh` being the rail's new visitors alone
+ *              `fresh` being the colour's new visitors alone — THE FOUR
+ *              COLOURS
  *   phones     [{ id, visitors, secs }] the twelve `<rail>:<colour>` cells
  *              of phone newcomers over the range — TIME ON PHONES
  *   pages      [{ id, name, views, secs, left, idle, secsLeft }] most
@@ -1226,11 +1231,9 @@ export async function readVisitors(env, span, ui, spoken, device) {
   const about = new Map(Object.keys(ABOUT).map((what) => [what, new Map()]));
   const hours = new Array(24).fill(0);
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
-  const rails = new Map(RAILS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const colours = new Map(COLOURS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const phones = new Map(PHONE_ARMS.map((id) => [id, { id: id, visitors: 0, secs: 0 }]));
-  const quad = () => ({ fresh: 0, back: 0, login: 0, signup: 0 });
-  const sofar = { ...quad(), rails: { a: quad(), b: quad(), none: quad() } };
+  const sofar = { fresh: 0, back: 0, login: 0, signup: 0 };
 
   /* The days that tell new from returning, and the days that counted which
      views reported — see the note above. */
@@ -1283,9 +1286,9 @@ export async function readVisitors(env, span, ui, spoken, device) {
     else if (r.kind === 'cohort') {
       const [who, fact] = r.id.split(':');
       if (cohorts.has(who) && FACTS.includes(fact)) cohorts.get(who)[fact] += r.n;
-    } else if ((r.kind === 'layout' || r.kind === 'style') && told.has(r.day)) {
+    } else if (r.kind === 'style' && told.has(r.day)) {
       const [arm, who, fact] = r.id.split(':');
-      const into = (r.kind === 'layout' ? rails : colours).get(arm);
+      const into = colours.get(arm);
       if (!into || !WHO.includes(who)) continue;
       if (!fact) {
         into.visitors += r.n;
@@ -1298,11 +1301,6 @@ export async function readVisitors(env, span, ui, spoken, device) {
     }
   }
 
-  /* The visitors no rail has been dealt to yet are everybody less the two. */
-  for (const f of ['fresh', 'back', 'login', 'signup']) {
-    sofar.rails.none[f] = Math.max(0, sofar[f] - sofar.rails.a[f] - sofar.rails.b[f]);
-  }
-
   return {
     span: span,
     from: cut,
@@ -1313,7 +1311,6 @@ export async function readVisitors(env, span, ui, spoken, device) {
     today: sofar,
     ...bars(span, byDay),
     cohorts: [...cohorts.values()],
-    layouts: [...rails.values()],
     colours: [...colours.values()],
     phones: [...phones.values()],
     pages: PAGES
@@ -1371,19 +1368,13 @@ function countLanguage(languages, switches, r) {
 }
 
 /* One of today's rows into the Today card: visitors new and returning,
- * sign-ins and accounts made, in all and per rail. */
+ * sign-ins and accounts made. */
 function countToday(into, r) {
   if (r.kind === 'visitor') {
     into[r.id === 'back' ? 'back' : 'fresh'] += r.n;
   } else if (r.kind === 'cohort') {
     const fact = r.id.split(':')[1];
     if (fact === 'login' || fact === 'signup') into[fact] += r.n;
-  } else if (r.kind === 'layout') {
-    const [rail, who, fact] = r.id.split(':');
-    const arm = into.rails[rail];
-    if (!arm || !WHO.includes(who)) return;
-    if (!fact) arm[who === 'back' ? 'back' : 'fresh'] += r.n;
-    else if (fact === 'login' || fact === 'signup') arm[fact] += r.n;
   }
 }
 
