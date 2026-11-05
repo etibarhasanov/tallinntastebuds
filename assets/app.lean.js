@@ -3088,7 +3088,12 @@
 
   function forgetList() {
     if (!state.list) return;
+    letGoOfList();
 
+    syncUrl(true);
+  }
+
+  function letGoOfList() {
     dropped = { list: state.list, places: state.listPlaces };
 
     var standing = {};
@@ -3102,8 +3107,6 @@
     dropPins(state.listPlaces);
     state.list = null;
     state.listPlaces = [];
-
-    syncUrl(true);
   }
 
   function restoreList(id) {
@@ -3391,8 +3394,52 @@
     window.TTBShell.mount({
       surface: document.getElementById('shell'),
       onopen: function () { closeMore(); closeAccount(); },
-      onclose: function () { loadAccount(); }
+      onclose: function () { loadAccount(); },
+      onwalk: walkIn
     });
+  }
+
+  var WALK_DOORS = ['list', 'at', 'spot', 'account', 'then', 'lang', 'style'];
+
+  function walkIn(search) {
+    var params = new URLSearchParams(search);
+    var plain = true;
+    params.forEach(function (value, key) {
+      if (WALK_DOORS.indexOf(key) === -1) plain = false;
+    });
+    var spot = params.get('spot') || '';
+    if (!plain || (spot && !byId(spot))) return null;
+
+    return function () {
+      readAccountLink(params);
+      var id = wantedList();
+      var at = params.get('at') || '';
+      if (!id) {
+        syncUrl();
+        if (spot) selectPlace(spot, { fly: true, arrived: true });
+        return;
+      }
+      loadList(id).then(function (list) {
+        if (state.list) letGoOfList();
+        seatList(list);
+        if (!state.list) {
+          syncUrl();
+          if (state.view === 'list') renderPanel();
+          return;
+        }
+        state.active = [];
+        addPins(state.listPlaces);
+        renderFilters();
+        paintMarkers();
+        var stand = isOnList(at) ? byId(at) : null;
+        syncUrl();
+        if (stand) openFromRow(stand);
+        else {
+          showList(false);
+          fitToPins({ clearPanel: true });
+        }
+      });
+    };
   }
 
   var ROLLED_MS = FLY_MS * 1000;
@@ -6877,10 +6924,7 @@
       if (wanted && (!state.list || state.list.id !== wanted)) {
         moved = restoreList(wanted);
       } else if (!wanted && state.list) {
-        dropped = { list: state.list, places: state.listPlaces };
-        dropPins(state.listPlaces);
-        state.list = null;
-        state.listPlaces = [];
+        letGoOfList();
         moved = true;
       }
 
