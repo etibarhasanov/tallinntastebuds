@@ -2221,9 +2221,9 @@ and the list keeps its shut places on purpose. They stay on the map, and in
 the list, and at their own `?spot=` link — that is the whole point — but
 nothing ever *suggests* them.
 
-Five places in `data/restaurants.json` are marked closed for good today —
-Bueno Gourmet Kadriorg, Cafe Cape Town, Lendav Maaler, Lokaal Tilk and Maison
-François. All five have a reel, so all five get `closedReelNote`. Two are
+Six places in `data/restaurants.json` are marked closed for good today —
+Bueno Gourmet Kadriorg, Cafe Cape Town, Faeton, Lendav Maaler, Lokaal Tilk and
+Maison François. All six have a reel, so all six get `closedReelNote`. Two are
 shut for the moment — Borsch & Varenyk and Elman Bites — on Google's word, and
 they come back the same way.
 
