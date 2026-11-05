@@ -40,13 +40,17 @@ here. It is the main rule and it applies to every line you touch.
 ## Is it new?
 
 If a visitor could not see or press this thing yesterday and could tomorrow,
-it does not get built from the prompt. It gets described first, the owner
+or would see it differently tomorrow, it does not get built from the prompt. It gets described first, the owner
 answers, and the code comes after —
 **Something new is described before it is built** in `CLAUDE.md` is the rule
 and this is the page-shaped half of it. A new page, panel, sheet, button,
-field or filter chip is this. Restyling, rewording or fixing one that is
-already there is not, and neither is a place, a story, a discount or a blog
-post.
+field or filter chip is this, and so is restyling or re-laying-out one that
+is already there: anything a visitor would see differently tomorrow gets a
+small mockup — before and after at 390 px, drawn with the site's own
+stylesheet — and the owner's yes before the stylesheet is opened. **A small
+mockup, every time** in `CLAUDE.md` says how small and how it is sent.
+Fixing one back to how it was meant to look is not this, and neither is a
+place, a story, a discount or a blog post.
 
 What the description has to settle before a stylesheet is worth opening:
 

@@ -27,11 +27,14 @@ what has bitten people already — and an index to the rest.
 What a session tends to spend its first quarter-hour rediscovering, so it
 does not have to:
 
-- **Something new is described before it is built.** A new page, panel,
-  button, field, chip or route gets a written shape and the owner's yes
-  before any code is written — **Something new is described before it is
-  built** below is the whole of it. Everything else, which is nearly all the
-  work, goes straight to code the way it always has.
+- **Something new is described before it is built, and anything a visitor
+  will see differently is drawn first.** A new page, panel, button, field,
+  chip or route, and a restyle or new layout of one already there, gets a
+  written shape, a small mockup — a picture of it at 390 px — and the
+  owner's yes before any code is written. **Something new is described
+  before it is built** below is the whole of it. Content (a place, a story,
+  a discount, a deck), a fix that puts something back the way it was meant
+  to look, and anything with no visible effect go straight to code.
 - **There is no test suite.** `node tools/validate.mjs`, `node
   tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
   tools/chessperf.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
@@ -177,17 +180,26 @@ version.
 
 So the shape comes first, in words, and it comes from the owner.
 
-**What this catches: anything new a visitor can see or press.** A new page, a
-new panel or sheet, a new button, a new field, a new filter chip, a new route
-under `functions/api/`, a new thing a group can do on splitwise. The test is
-whether a visitor could not do something yesterday and could tomorrow.
+**What this catches: anything new a visitor can see or press, and anything
+they will see differently.** A new page, a new panel or sheet, a new button, a
+new field, a new filter chip, a new route under `functions/api/`, a new thing
+a group can do on splitwise — and a restyle, a new layout, a new colour, size,
+spacing or arrangement of something already there. Two tests, and either is
+enough: a visitor could not do something yesterday and could tomorrow, or a
+visitor would look at the page tomorrow and see it differently. The owner's
+words for it: every task like that gets a small mockup and a confirmation,
+especially when it is about design.
 
-**What it does not catch, which is nearly all the work.** Fixing what is
-broken. Restyling or rewording what is already there. A place, a story, a
-discount, a language, a refresh of the export, a README correction, anything
-in `tools/`, a cleanup under `leave-it-better.md`. Those go straight to code
-the way they always have. This gate is about things nobody has seen yet, not
-about being careful in general, and an ordinary afternoon never reaches it.
+**What it does not catch.** Fixing what is broken back to how it was meant to
+look — the button that lost its colour gets it back without a picture. A
+place, a story, a discount, a deck, a language, a refresh of the export, a
+README correction, anything in `tools/`, a cleanup under `leave-it-better.md`
+that changes nothing on screen, a Function that answers faster or tighter.
+Those go straight to code the way they always have. Rewording a string is
+caught, but its mockup is the old line and the new one in the message, with
+no picture. When it is honestly unclear which side a task falls on, it is
+the caught side: a mockup nobody needed costs ten minutes, and a design
+nobody agreed to costs the change twice.
 
 **What to send.** Prose in the same voice as everything else here, short
 enough to read on a phone, saying:
@@ -210,20 +222,43 @@ Hold it to **The design rules** in `README.md` while writing it. They are
 twelve rules a new sheet, page or button is held to, and it is cheaper to
 fail them in a paragraph than in a stylesheet.
 
-**A mockup when the words will not settle it.** A layout that does not exist
-yet is hard to argue about in prose. When the shape is a new arrangement on
-screen rather than another instance of one the site already has, follow the
-words with something to look at, and say plainly that it is a mockup rather
-than the change. It is drawn and driven the way everything else here is —
-`npx wrangler pages dev .`, or `python3 -m http.server 8000` for something
-static — and what the owner gets is a picture of it rather than a link.
-**There are no preview deployments** below is why: a URL spends one of the
-five hundred builds a month, and making one is the owner's to run rather than
-a session's to spend. A new button on a panel that already exists does not
-need a mockup. A new page does.
+For a restyle of something that already exists, the list shrinks to what
+changes, what stays, and the states it touches — the thing is there, so only
+the difference needs words.
 
-**Then stop.** Post the shape, say in the first line that the session is
-waiting on an answer — **Say where it stands** below is how — and write no
+**A small mockup, every time.** Words alone are not the confirmation: the
+owner sees what is going to be built before it is built, every time a task
+falls on the caught side above, a new button on an existing panel included.
+Small means small — not a prototype, and not the change written early:
+
+- **One static HTML file in the session's scratchpad**, not in the repo. It
+  links the site's real stylesheet (`/assets/styles.css`, or the page's own)
+  so the colours, type and spacing are the site's and not a guess, and draws
+  only the part that changes, with a line of the page around it for context.
+  No data from D1, no Function, no script beyond what switches between
+  states.
+- **Every state the description named**, side by side or one per picture —
+  empty, loading, error, signed out, the place with no photo.
+- **Before and after** when it changes something that exists: a screenshot
+  of the page as it is now beside the mockup of what it would be.
+- **At 390 px**, the phone the README measures against, and at desktop width
+  as well when the change is about the wide layout.
+- **Served and photographed**: `python3 -m http.server 8000` from the repo
+  root, Playwright's Chromium at `deviceScaleFactor: 2`, and the PNGs sent to
+  the owner as files in the message — a picture rather than a link, because
+  **There are no preview deployments** below: a URL spends one of the five
+  hundred builds a month, and making one is the owner's to run rather than a
+  session's to spend.
+- **Labelled as a mockup** in the first line, so nobody mistakes it for the
+  change.
+
+Where there are two honest ways to draw it, draw both and ask which, rather
+than picking one and defending it. A mockup stays out of the repository
+unless the owner asks for it to be kept as the reference a long feature
+builds against, the way `.claude/skills/chess/mockup.html` was.
+
+**Then stop.** Post the shape and the mockup, say in the first line that the
+session is waiting on an answer — **Say where it stands** below is how — and write no
 code. Not the schema, not the Function, not the scaffolding that will "be
 needed either way". A session that guesses and builds while it waits has
 spent the afternoon the asking was meant to save, and a guess is much harder
@@ -238,8 +273,9 @@ the process, and it is bought against writing the whole change twice.
 The repository is yours to work in: branch, edit, generate, validate, drive a
 browser, commit, push, open a pull request. None of that needs asking, and
 asking about it wastes an afternoon. What needs asking is *what to build*,
-when the thing is new and nobody has seen it — the section above — and once
-that is answered the building is yours.
+when the thing is new or will look different and nobody has seen it — the
+section above, mockup and all — and once that is answered the building is
+yours.
 
 **Two live things are not yours, and one of them is a database.** The rows in
 D1 — production `tallinntastebuds` and preview `tallinntastebuds-preview` —
