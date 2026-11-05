@@ -47,6 +47,8 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 │
 ├── /api/*       functions/api/     JSON; every answer leaves through _middleware.js
 │                                   wearing functions/_security.js
+├── /mcp         functions/mcp.js   the places, read by an AI assistant over the Model
+│                                   Context Protocol; JSON-RPC, never a page, never framed
 │
 ├── splitwise.tallinntastebuds.ee   split.html at the root; its own site to a browser
 └── flashcard.tallinntastebuds.ee   flashcard.html at the root; the same page as /flashcard

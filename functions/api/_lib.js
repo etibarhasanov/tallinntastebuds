@@ -10,12 +10,14 @@
  * page routes a directory up reach in here too, for a session, for the
  * database check and for the map's places: functions/list/[id].js,
  * functions/u/[name].js, functions/lists/index.js, functions/index.js and
- * functions/split.js. Four things at the bottom hold a value between
- * requests — which database this deployment is holding, the places on the map,
- * the catalogue a list draws from, and the data files read as they are — and
- * all four are caches of something that only a deploy changes, kept per
- * isolate and re-asked every five minutes. Nothing else here remembers
- * anything.
+ * functions/split.js — and functions/mcp.js, which is not a page but reads
+ * the map's places, the box around Tallinn, the folding and the distance
+ * from here rather than keeping copies. Four things at the bottom hold a
+ * value between requests — which database this deployment is holding, the
+ * places on the map, the catalogue a list draws from, and the data files
+ * read as they are — and all four are caches of something that only a
+ * deploy changes, kept per isolate and re-asked every five minutes. Nothing
+ * else here remembers anything.
  */
 
 export function json(body, status, maxAge) {
@@ -397,17 +399,47 @@ export async function knownPlaces(context) {
  * the city, which is generous — it reaches Paldiski and past Kehra — and
  * still refuses a point in another country.
  *
- * It lives here rather than beside either of its users because there are two:
- * /api/lists checks a submitted pin against it, and /api/geocode asks
- * Photon to look only inside it. Two copies would be one drifting copy,
- * and the drift would show up as an address the geocoder was happy to find
- * and the save then refused.
+ * It lives here rather than beside any of its users because there are
+ * several: /api/lists checks a submitted pin against it, /api/geocode asks
+ * Photon to look only inside it, /api/route holds both ends of a walk to it,
+ * and /api/ask and /mcp refuse a point to measure from that is outside it.
+ * Copies would be drifting copies, and the drift would show up as an address
+ * the geocoder was happy to find and the save then refused.
  */
 export const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
 
 export function nearTallinn(lat, lng) {
   return Math.abs(lat - TALLINN.lat) <= TALLINN.degLat &&
     Math.abs(lng - TALLINN.lng) <= TALLINN.degLng;
+}
+
+/* Kilometres between two points as the crow flies, which is what a visitor
+   is told they are: a rail yard or the bay can double the walk. /api/ask
+   measures a question's "near" with it and /mcp orders a search by it. */
+export function km(a, b) {
+  const rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad;
+  const dLng = (b.lng - a.lng) * rad;
+  const s = Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(s));
+}
+
+/* ---------------------------------------------------------------- words
+ * Lowercased and with the accents taken off, and nothing else: "Põhja Konn"
+ * and "pohja konn" are one string, "Пельменная" keeps every letter. It is
+ * not fold() in /api/places, which strips to a-z0-9 to ask whether two
+ * names are one place; this has to leave words as words so a question can
+ * land on one. The map's find bar folds the same way (fold() in
+ * assets/app.js), and a Function cannot import from assets/, so this is the
+ * server's copy: /api/ask reads a question through it and /mcp a search.
+ */
+export function foldWords(value) {
+  return String(value == null ? '' : value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ');
 }
 
 /* ------------------------------------------------------------- catalogue

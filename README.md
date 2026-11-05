@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, one small Function, no build step and no npm install. Adding a
+Static files, thirty-nine small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -48,6 +48,7 @@ completely with the database switched off.
 - [Finding anywhere in Tallinn](#finding-anywhere-in-tallinn)
 - [The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
 - [Ask for somewhere](#ask-for-somewhere)
+- [Read by an assistant](#read-by-an-assistant)
 - [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Sharing a place](#sharing-a-place)
@@ -2138,6 +2139,144 @@ places of the kind are within reach and their distances, and asked once
 more, in the one retry the rules share. Per roll, so that the nearest place
 of mine stays an answer beside a Google row on the corner rather than being
 ruled out by it.
+
+## Read by an assistant
+
+`https://tallinntastebuds.ee/mcp` is the map as an AI assistant reads it.
+Claude, ChatGPT and the rest can be handed a tool over the Model Context
+Protocol — a server that says what it can do, and that a model calls in the
+middle of a conversation and reads the answer of — and this is that server
+for the map: two tools, **search my places** and **read one**, over the roll
+in `data/restaurants.json` and nothing else. Somebody asks their assistant
+for somewhere to eat in Tallinn, the assistant asks the map, and the answer
+it writes carries my write-up, the dish to order and the link to the place.
+`functions/mcp.js` is the whole of it: one Function, data only, no model of
+its own, no AI binding, no database, no Google. Nothing a visitor to the
+site sees changes.
+
+### Connecting it
+
+There is no key, no sign-in and no app to install. The address is the
+connector:
+
+- **Claude** — Settings → Connectors → *Add custom connector*, with
+  `https://tallinntastebuds.ee/mcp` as the URL. On a paid plan; a connector
+  added on the web is there in the apps too.
+- **ChatGPT** — Settings → Apps & Connectors, with *Developer mode* on
+  (paid plans), then *Create* with the same URL. No authentication.
+
+Then ask it something — *somewhere for a date in Kalamaja*, *cheap Asian
+food near the bus station* — and look at whether the answer carries the
+link and whether it has started ranking places on the map's behalf. The
+server's own instructions, sent the moment a client connects, say what the
+map is and what may not be said about it: that being on the map is the
+verdict, that there are no scores, stars or rankings, that nothing on it is
+to be called rated, ranked or best by Tallinn Tastebuds, that the write-ups
+are mine and the link is always given, and that the opening hours are not
+in this data and should be checked elsewhere. An assistant reads those once
+beside every other server it has, so they are a paragraph rather than a
+page.
+
+### The two tools
+
+**`search_places`** takes any of a few words (`query`), one kind of place
+(`type`), a ceiling on the map's own price scale (`max_price`), a point in
+Tallinn with an optional radius (`near_lat`, `near_lng`, `radius_m`), a
+language and a limit — five unless asked, ten at most — and all of them
+combine. The words are matched against the name, the street, the kinds of
+place in the asked-for language and in English, the dishes and the write-up
+in both, folded the way the map's find bar folds, so *pohjala* finds
+Põhjala. A word in the name counts for more than a word in the write-up,
+and that weight is the whole of the order when no point was given: by how
+well the words matched, then alphabetical. With a point, the order is
+distance and nothing else, with `distance_m` on every row. Never quality,
+freshness or popularity, because the map does not have an order of those
+and will not be given one here. A closed place is never returned. Nothing
+fitting is a normal answer, not an error: an empty list and a sentence
+saying nothing on the map fits, so the assistant says that rather than
+guessing.
+
+**`get_place`** takes an id a search returned and answers with everything
+in a search row plus the video, every photograph, the phone, the website,
+when I ate there and when it joined the map, and a Google Maps *search*
+link built out of my own name and address — the one place an assistant can
+get directions and today's hours from, and it costs no Google data. An id
+that is not on the map, or a place that has closed, is a tool result with
+`isError` and one plain sentence, because that is an answer to the question
+and not a fault in the asking.
+
+Every row carries `id`, `name`, `address`, `lat`, `lng`, `types`, `price`,
+`blurb` in the language asked for — English where the place has none in it
+— `must_order`, `url` (`https://tallinntastebuds.ee/?spot=<id>`), `photo`
+(the first file in `photos/<id>/`, absolute, or null) and `has_reel`. Both
+tools are marked read-only, non-destructive, idempotent and closed-world,
+each carries a title and a description written for a model deciding
+whether to call it, with a question or two it should call it for, and each
+answers the same object twice: as `structuredContent` for a client that
+reads JSON and as the same JSON in a text block for one that reads only
+text. The kinds of place and the languages in the schemas are read out of
+`data/taxonomy.json` and `data/lang/index.json` at runtime rather than
+typed in, so a type or a language added to the site is one here too.
+
+### The shape of the server
+
+Streamable HTTP, stateless, JSON only. `POST /mcp` takes one JSON-RPC 2.0
+message and answers with one; a notification — `notifications/initialized`,
+anything with no id — is a 202 with no body; `GET`, `DELETE` and the rest
+are a 405 with `Allow: POST`, which is how a server declines the stream.
+`initialize` answers with the client's version when it is one the server
+speaks and with the newest otherwise, out of 2025-11-25, 2025-06-18 and
+2025-03-26; an unknown method is `-32601`, bad params `-32602`, a body that
+is not JSON `-32700`, and the batch of messages in one array that the
+oldest of those allowed is `-32600`, because the protocol took batches out
+and this server never took one. Every answer is `application/json` and
+`no-store`. No session is opened and no `Mcp-Session-Id` handed out: a
+Pages Function remembers nothing between requests, and there is nothing in
+this exchange worth remembering. The header of `functions/mcp.js` carries
+the three decisions — my places only, stateless, JSON only — at length.
+
+`functions/_middleware.js` passes `/mcp` through untouched. It is on the
+live hostname, under neither of the owner's prefixes, and its answers wear
+the security headers the way every Function's do; the two subdomains 301
+it back to the live hostname like every other address of the map's.
+
+To look at it from a terminal, under `npx wrangler pages dev .` or against
+the live site:
+
+```
+curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_places","arguments":{"query":"ramen","limit":3}}}'
+```
+
+### Deliberately not in this version
+
+Each of these is a decision rather than an oversight, so that the next
+version argues with a list rather than discovering one:
+
+- **No Google content of any kind** — not a place id, not a rating, not a
+  row out of `google_venues`. The map is the verdict; Google's roll would
+  be answered under the site's name whenever mine fell short.
+- **No discounts, lists, profiles or blog posts.** The places, and only
+  the places.
+- **No opening hours and no "open now".** The map does not hold them; the
+  Google Maps link on `get_place` is where an assistant sends somebody for
+  today's.
+- **No auth and no API keys.** The data is a public file already.
+- **No rate limit past Cloudflare's own.**
+- **Nothing counted in the stats.** An assistant's call is not a visit and
+  appears on none of the pages under `/admin/`; `data/flows.json` has no
+  diagram for it either, because the diagrams are of people at the site and
+  nothing on the site can see a call made from somewhere else.
+- **No REST `/api/v1`, no OpenAPI file**, no ChatGPT app-directory
+  submission.
+- **No visible UI**, so nothing in `data/ui.json` and nothing in the ten
+  languages.
+
+What it costs: one Function, spending from the same free Pages Functions
+request allowance as the rest of the site. No table, no `.sql` file to
+load, no secret, no new binding.
 
 ## Close a place instead of deleting it
 
@@ -15381,6 +15520,9 @@ functions/_middleware.js   which hostname is this: the pages.dev copy goes to
 functions/index.js         / — the map, with its head and its JSON-LD written
                            in the language ?lang= names, so a search engine
                            can index it ten times
+functions/mcp.js           /mcp — the map as an AI assistant reads it: two
+                           tools over data/restaurants.json, through the
+                           Model Context Protocol, and nothing else
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password, name an
                            account that arrived through Google
