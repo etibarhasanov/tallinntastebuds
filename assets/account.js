@@ -1227,6 +1227,7 @@
     }).then(function () {
       mountRadio();
       render();
+      sayArrived();
     }).catch(function () {
       /* The strings themselves did not arrive, so there is nothing to say in
          any language. The markup's own English is what is left, and the map
@@ -1234,6 +1235,30 @@
       state.ui = {};
       render();
     });
+  }
+
+  /* The word a step on the map's sheet sends back with the walk here — the
+     password or the name this page sent somebody to change. The map cannot
+     say it: its toast is under this page once this page is back over it. So
+     it comes as ?said= and is said here, then taken off the address bar so a
+     reload or a copied link does not say it again. See returnAfterAccount()
+     in assets/app.js. */
+  var SAID = {
+    'password-set': 'accountSetPasswordDone',
+    password: 'accountChangeDone',
+    name: 'accountNameDone'
+  };
+
+  function sayArrived() {
+    var params = new URLSearchParams(window.location.search);
+    var said = params.get('said') || '';
+    if (!said) return;
+    params.delete('said');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+    } catch (e) { /* it is still said */ }
+    if (SAID.hasOwnProperty(said) && state.user) toast(t(SAID[said], { name: state.user }));
   }
 
   if (document.readyState === 'loading') {

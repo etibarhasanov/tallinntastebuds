@@ -4539,6 +4539,14 @@ the same reason: a second copy of a password form is a copy that quietly stops
 matching the API. The step comes back here when it is done, because here is
 where it was pressed.
 
+**And this page says it worked.** The step's one line — *Password changed*,
+*You are <name> now* — used to be a toast on the map, said a moment before
+the walk back took it away, and then under this page once the walk back
+opened it over the map; nobody ever read it. Now it goes with the walk as
+`?said=password`, `password-set` or `name`, and `sayArrived()` in
+`assets/account.js` says it here and takes it off the address bar. With
+nowhere to go back to, the map still says it itself.
+
 ### Signed out is a real state on it
 
 A save needs no account, so the page has something of its own to show before
