@@ -153,8 +153,6 @@
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
 }
 /* On the trailing edge — the side still on screen while the card goes off
    the other one. Put on the leading edge it left the screen first. */
@@ -209,7 +207,6 @@
   margin: 0;
   font-family: var(--body);
   font-size: 18px;
-  letter-spacing: .04em;
   line-height: 1.45;
   color: var(--muted);
 }
@@ -236,7 +233,6 @@
   margin: 8px 0 4px;
   font-family: var(--mono);
   font-size: 13px;
-  letter-spacing: .02em;
   color: var(--muted);
 }
 .flash-form + .flash-form::before {
@@ -267,14 +263,13 @@
   margin: 0 0 4px;
   font-family: var(--mono);
   font-size: 13px;
-  letter-spacing: .02em;
   color: var(--ink);
 }
 .flash-case { color: var(--muted); }
 
 /* The word in a sentence, at the foot of the card. Two lines: the Estonian in
    the body face, because it is a sentence and this site sets sentences in
-   Literata, and what it means under it in the muted tone. A word on its own is
+   --body, and what it means under it in the muted tone. A word on its own is
    a thing to recognise and a word in a sentence is a thing to say — and the
    case it is standing in there is half of what the three forms above it are
    for.
@@ -309,10 +304,8 @@
 .flash-turn {
   margin: 14px 0 0;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -407,7 +400,6 @@
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
   font-size: 11.5px;
-  letter-spacing: .06em;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -482,10 +474,8 @@
 
 .flash-tally-say {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -620,7 +610,7 @@
 .flash-deck .alt { padding-top: 0; padding-bottom: 0; }
 
 /* The deck's name, in the display face a name is set in. It was an eyebrow —
-   eleven points of spaced capitals — which made the one thing that says where
+   eleven points of muted label — which made the one thing that says where
    you are the smallest thing on the screen. Still not a heading over the
    card: the size of a tile's name on the shelf, a notch up. */
 .flash-deck .eyebrow {
@@ -774,9 +764,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 8px;
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--muted);
 }
 /* The New tag: the accent, filled, which is the one thing on the card in
@@ -798,7 +786,6 @@
 .flash-part-go,
 .flash-part-in {
   font-size: 12px;
-  letter-spacing: .02em;
   color: var(--accent);
 }
 .flash-part-go::after,
@@ -882,7 +869,7 @@
 }
 .flash-lifted .menu-go { grid-row: 1; grid-column: 2; }
 .flash-lifted .menu-say { grid-row: 2; grid-column: 1 / -1; }
-.flash-lifted .lists-count { margin-left: 0; font-size: 12px; letter-spacing: .04em; }
+.flash-lifted .lists-count { margin-left: 0; font-size: 12px; }
 .flash-lifted .lists-count b {
   margin-right: 2px;
   font-family: var(--display);
@@ -1030,14 +1017,11 @@
   margin: 4px 0 18px;
   font-family: var(--mono);
   font-size: 13px;
-  letter-spacing: .02em;
 }
 .flash-table th {
   padding: 0 8px 6px 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   text-align: left;
   color: var(--muted);
 }
@@ -1135,7 +1119,6 @@
 .flash-song-credit {
   margin: 0 0 20px;
   font-size: 11px;
-  letter-spacing: .04em;
   color: var(--muted);
 }
 
@@ -1143,10 +1126,8 @@
 .flash-song-head {
   margin: 0 0 6px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -1245,7 +1226,6 @@
 .flash-talk-source {
   margin: -10px 0 20px;
   font-size: 11px;
-  letter-spacing: .04em;
   color: var(--muted);
 }
 
@@ -1285,10 +1265,8 @@
 .flash-talk-line + .flash-talk-line { margin-top: 8px; }
 .flash-talk-who {
   margin: 0 0 2px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 

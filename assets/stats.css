@@ -40,7 +40,7 @@
 /* ---------------------------------------------------------------- the lead */
 
 /* The sentence under a card's title, saying what the table below it counts.
-   Literata rather than the mono: it is prose, and the two tables each need a
+   --body rather than --mono: it is prose, and the two tables each need a
    line of it before the numbers mean anything. */
 .stats-lead {
   margin: 8px 0 18px;
@@ -81,7 +81,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
 }
 
 @media (max-width: 419px) {
@@ -123,7 +122,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -144,14 +142,12 @@
 a.stats-name:hover { color: var(--accent); }
 
 /* Whose list it is, after the title on /admin/stats: the username as it is,
-   in the mono, leading to their page. Not uppercased the way the word after
-   a shut place is — a name is not a label. */
+   in the mono, leading to their page. */
 .stats-by {
   margin-left: 8px;
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -168,7 +164,6 @@ a.stats-name:hover { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   line-height: 1.45;
 }
 
@@ -176,10 +171,8 @@ a.stats-name:hover { color: var(--accent); }
   margin-left: 8px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -215,7 +208,6 @@ a.stats-name:hover { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
 }
 
 /* ------------------------------------------------------------- /insights */
@@ -263,7 +255,6 @@ a.stats-name:hover { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   line-height: 1.35;
 }
 
@@ -289,7 +280,7 @@ a.stats-name:hover { color: var(--accent); }
 /* Where they came from: the ranking row with three numbers where it has one.
    One grid for the whole table, with each row's cells laid straight into it
    (display: contents), so a column is as wide as the widest thing in it —
-   "ПРОСМОТРЫ" over a column of twos included — and every row lines up with
+   "Просмотры" over a column of twos included — and every row lines up with
    the header. Rows that were grids of their own sized each column alone,
    and in Russian the headers ran into each other. The name keeps
    minmax(0, 1fr) for the reason .stats-row's does. */
@@ -321,9 +312,7 @@ a.stats-name:hover { color: var(--accent); }
   padding-top: 14px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 12px;
 }
 
 .ins-row .stats-n,
@@ -336,7 +325,6 @@ a.stats-name:hover { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   line-height: 1.45;
 }
 
@@ -381,7 +369,6 @@ a.stats-name:hover { color: var(--accent); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
 }
 
 .vis-swatch {
@@ -404,8 +391,8 @@ a.stats-name:hover { color: var(--accent); }
 .vis-table { grid-template-columns: minmax(0, 1fr) auto auto; margin-top: 4px; }
 .vis-table-3 { grid-template-columns: minmax(0, 1fr) auto auto auto; }
 /* The four colours' card, the one table with four columns. At 390px four
-   headings in spaced capitals do not fit on one line each, so they wrap —
-   GREEN over (DARK) — and every column keeps room for a "54%". */
+   headings do not always fit on one line each, so they may wrap —
+   Green over (dark) — and every column keeps room for a "54%". */
 .vis-table-4 { grid-template-columns: minmax(0, 1fr) repeat(4, 3.6em); }
 .vis-table-4 .ins-row > :nth-child(n+2) { padding-left: 8px; }
 .vis-table .ins-row > :nth-child(2) { padding-left: 14px; }
@@ -439,7 +426,6 @@ a.stats-name:hover { color: var(--accent); }
   border-radius: var(--radius-soft);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   line-height: 1.45;
 }
 

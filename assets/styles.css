@@ -99,9 +99,21 @@
   --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
   --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
 
-  --display: "Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --body: "Literata", Georgia, "Times New Roman", serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* One face, Rubik, in three roles. The site used to wear three faces — a
+     grotesque for names, a reading serif for sentences, and a monospace set
+     in wide-tracked capitals for every label and button — and that trio is
+     exactly the costume a thousand generated sites wear, which is what
+     people said it looked like. Rubik is a little rounded, a little warm,
+     and has Cyrillic and every letter Azerbaijani and Estonian need.
+
+     The three tokens stay as roles, so a rule still says what a thing is: a
+     name (--display, set heavier), a sentence (--body), or a label or fact
+     (--mono, set small and in the muted tone, in ordinary case). The tells
+     that used to be the typeface are now size, weight and colour. Armenian
+     falls through to the platform's own face, as it always did. */
+  --display: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --body: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* The fourth face, and the only one nobody chose: whatever the reader's
      platform draws emoji with. Apple's first where there is one, then the
@@ -252,10 +264,8 @@ a:hover { color: var(--accent-lit); }
 
 .eyebrow {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -294,7 +304,6 @@ a:hover { color: var(--accent-lit); }
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .06em;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -310,7 +319,6 @@ a:hover { color: var(--accent-lit); }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -1034,7 +1042,6 @@ a:hover { color: var(--accent-lit); }
   display: inline-block;
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .01em;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   padding-bottom: 1px;
@@ -1155,7 +1162,6 @@ body.lang-open .controls { z-index: 1250; }
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .1em;
 }
 .btn-lang-now svg {
   width: 8px;
@@ -1214,10 +1220,8 @@ body.lang-open .controls { z-index: 1250; }
   gap: 6px;
   padding: 0 14px;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .13em;
-  text-transform: uppercase;
 }
 .btn-ico {
   flex: 0 0 auto;
@@ -1234,7 +1238,6 @@ body.lang-open .controls { z-index: 1250; }
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .1em;
   min-width: 0;
 }
 
@@ -1464,10 +1467,8 @@ body.lang-open .controls { z-index: 1250; }
   box-shadow: var(--shadow);
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .13em;
-  text-transform: uppercase;
   white-space: nowrap;
   /* One of them is an <a>, because the lists it leads to are an address
      rather than a step taken over the map. A link is underlined and wears the
@@ -1614,8 +1615,8 @@ body.lang-open .controls { z-index: 1250; }
 .radio:hover svg { transform: none; }
 /* Wide enough for the longest station actually on the dial — "Raadio Tallinn"
    needs 103px and 15ch only bought 90, so every name arrived clipped to
-   "RAADIO TALL…". The label is uppercased and letter-spaced, which buys fewer
-   characters per ch than the unit suggests. 18ch clears it and still leaves
+   "RAADIO TALL…". The label used to be uppercased and letter-spaced, which bought
+   fewer characters per ch than the unit suggests. 18ch clears it and still leaves
    the button inside the rail; the ellipsis stays for anything longer. */
 .radio-name { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
 
@@ -1793,10 +1794,8 @@ body.lang-open .controls { z-index: 1250; }
 .find-group {
   padding: 10px 14px 4px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -1917,7 +1916,6 @@ body.is-results #panel-detail.is-swiping { transition: none; }
   min-width: 56px;
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: .06em;
   color: var(--muted);
   text-align: center;
 }
@@ -2119,7 +2117,6 @@ body.is-results #panel-detail.is-swiping { transition: none; }
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .06em;
   color: var(--muted);
   white-space: nowrap;
   /* Chips are buttons on the filter row and links in the two places a chip
@@ -2158,7 +2155,6 @@ body.is-results #panel-detail.is-swiping { transition: none; }
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: .02em;
   white-space: nowrap;
 }
 .price i { font-style: normal; color: var(--hairline); }
@@ -2515,7 +2511,6 @@ body.panel-detail .panel {
   gap: 7px;
   margin: -6px 0 0;
   font-size: 11.5px;
-  letter-spacing: .04em;
   color: var(--muted);
 }
 .ac-state::before {
@@ -2583,10 +2578,8 @@ body.panel-detail .panel {
 .ac-field { display: flex; flex-direction: column; gap: 5px; }
 .ac-label {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .06em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 /* 16px is not a taste decision: anything smaller makes iOS zoom the page when
@@ -2671,7 +2664,6 @@ body.panel-detail .panel {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .06em;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -2688,9 +2680,7 @@ body.panel-detail .panel {
   margin: -4px 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  font-size: 12px;
 }
 .ac-or::before,
 .ac-or::after {
@@ -2730,7 +2720,6 @@ body.panel-detail .panel {
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .06em;
   border-radius: 100px;
   padding: 7px 13px;
 }
@@ -2818,10 +2807,8 @@ body.panel-detail .panel {
   border: 1px solid var(--muted);
   border-radius: 100px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .closed-flag .shut-glyph svg { width: 10px; height: 10px; }
@@ -2848,7 +2835,6 @@ body.panel-detail .panel {
   border-radius: 100px;
   font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: .06em;
   color: var(--muted);
 }
 
@@ -2871,10 +2857,8 @@ body.panel-detail .panel {
 .facts { display: grid; grid-template-columns: auto 1fr; gap: 9px 18px; align-items: baseline; }
 .facts dt {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .facts dd { margin: 0; font-size: 14px; }
@@ -2890,10 +2874,8 @@ body.panel-detail .panel {
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
   text-decoration: none;
   color: var(--ink);
   transition: border-color .15s var(--ease), color .15s var(--ease);
@@ -2919,7 +2901,6 @@ body.panel-detail .panel {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: .04em;
   line-height: 1.4;
   color: var(--accent);
   white-space: nowrap;
@@ -2993,8 +2974,6 @@ body.panel-detail .panel {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
   text-decoration: none;
   transition: background .15s var(--ease);
 }
@@ -3039,7 +3018,6 @@ body.panel-detail .panel {
   margin-top: 3px;
   color: var(--muted);
   font-size: 10.5px;
-  letter-spacing: .03em;
   overflow-wrap: anywhere;
 }
 .place-source .price { font-size: 12px; }
@@ -3374,7 +3352,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 }
 /* The count keeps the eyebrow's mono, so the pair reads as a name and a
    measurement rather than as two competing headings. */
-.list-label-n { flex: 0 0 auto; letter-spacing: .04em; opacity: .75; }
+.list-label-n { flex: 0 0 auto; opacity: .75; }
 
 .place-list li + li { border-top: 1px solid var(--hairline); }
 
@@ -3431,7 +3409,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   font-family: var(--mono);
   font-size: 11px;
   color: var(--muted);
-  letter-spacing: .02em;
 }
 /* How far a place is from the visitor — "450 m", "1,2 km". A measurement, so
    it keeps the row's mono, and in the ink rather than the row's grey because
@@ -3590,7 +3567,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .06em;
   text-decoration: none;
   white-space: nowrap;
   /* One of the two is a button and one is a link, so the line box is set here
@@ -3634,7 +3610,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .06em;
   white-space: nowrap;
   cursor: pointer;
   transition: color .15s var(--ease), border-color .15s var(--ease),
@@ -3695,11 +3670,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   border: 1px solid var(--muted);
   border-radius: 100px;
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .11em;
   line-height: 1.4;
-  text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -3730,11 +3703,9 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   border: 1px solid transparent;
   border-radius: 100px;
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .11em;
   line-height: 1.4;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 .depth-mark svg { display: block; width: 9px; height: 9px; fill: currentColor; }
@@ -3762,7 +3733,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   border-color: var(--hairline);
   color: var(--muted);
   text-transform: none;
-  letter-spacing: .06em;
 }
 .depth-mark.is-google .google-score { color: var(--ink); font-weight: 500; }
 
@@ -3771,7 +3741,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    reel is still there to watch, and greying the badge said the opposite of
    the reason the entry is still on the map at all. The name greys, the price
    greys, the Call button greys — everything that was about going. What is
-   left to look at stays lit, and the CLOSED mark beside it carries the news
+   left to look at stays lit, and the Closed mark beside it carries the news
    on its own. */
 
 .list-row:hover .depth-mark.is-photos { border-color: var(--accent-lit); color: var(--accent-lit); }
@@ -3820,7 +3790,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   background: var(--ink);
   transform-origin: 0 0;
 }
-#lb-caption { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .6); }
+#lb-caption { font-size: 12px; color: rgba(255, 255, 255, .6); }
 
 /* The buttons stand over a zoomed photograph: a transform paints its element
    above anything that has no stacking of its own, and the close button and
@@ -4049,9 +4019,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    what makes anybody open it now rather than later. */
 .story-left {
   flex: 0 0 auto;
-  font-size: 10.5px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: rgba(255, 255, 255, .78);
 }
 
@@ -4318,7 +4286,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   border-radius: 100px;
   font-family: var(--mono);
   font-size: 11.5px;
-  letter-spacing: .02em;
   max-width: calc(100vw - 32px);
   text-align: center;
 }
@@ -4374,7 +4341,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   grid-column: 1 / -1;
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .02em;
 }
 .route-close {
   grid-column: 2;
@@ -5083,7 +5049,7 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
   .list-sub .deal-mark { padding: 1px 6px; font-size: 9.5px; }
   /* Narrower screen, narrower badge — the name is what the row is for and it
      gets the space back. */
-  .depth-mark { gap: 4px; padding: 2px 7px; font-size: 9px; letter-spacing: .08em; }
+  .depth-mark { gap: 4px; padding: 2px 7px; font-size: 9px; }
   .depth-mark svg { width: 8px; height: 8px; }
   /* On a phone this is the way out of a sheet standing over the whole screen,
      so it is a target rather than a mark. It sits in the grip bar, which is
@@ -5372,9 +5338,7 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
   .welcome-eyebrow {
     margin: 0 36px 8px 0;
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .14em;
-    text-transform: uppercase;
+    font-size: 12px;
     color: var(--muted);
   }
   .welcome-line {

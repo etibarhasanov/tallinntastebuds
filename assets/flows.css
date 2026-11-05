@@ -30,7 +30,6 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .04em;
 }
 .flows-state.is-error { color: var(--no); }
 
@@ -83,7 +82,6 @@
   color: var(--accent);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .04em;
 }
 
 /* The diagram scrolls inside its card in both directions and the page never
@@ -112,7 +110,6 @@
   fill: var(--ink);
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: .06em;
 }
 .flow-lane-name { fill: var(--muted); }
 
@@ -184,9 +181,7 @@
   margin: 14px 0 6px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  font-size: 12px;
 }
 
 .flows-refs {
@@ -236,7 +231,6 @@
   font-family: var(--mono);
   font-size: 11.5px;
   line-height: 1.5;
-  letter-spacing: .02em;
 }
 .flows-counted b { color: var(--ink); font-weight: 500; }
 .flows-counted.is-error { color: var(--no); }
@@ -300,18 +294,16 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: .02em;
 }
 .flows-move .flows-next { display: inline; margin: 0 6px; }
 
 /* Three numbers beside a name is one too many on a phone, where the
-   headers alone — STOPPED, in Russian ОСТАНОВИЛИСЬ — took the name's width
+   headers alone — Stopped, in Russian Остановились — took the name's width
    and stood it one word to a line. The share of views goes, since it is
    the reached number over the line above the diagram. */
 @media (max-width: 480px) {
   .flows-steps { grid-template-columns: minmax(0, 1fr) auto auto; }
   .flows-steps .ins-row > :nth-child(3) { display: none; }
-  .flows-steps .ins-head > * { letter-spacing: .03em; }
 }
 .flows-moves { grid-template-columns: minmax(0, 1fr) auto; margin-top: 4px; }
 .flows-moves .ins-row > :nth-child(2) { padding-left: 14px; }
