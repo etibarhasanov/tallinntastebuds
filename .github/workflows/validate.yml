@@ -3,6 +3,10 @@ name: validate
 on:
   push:
   pull_request:
+  # Started by admin-generated.yml after it commits the regenerated files to
+  # an admin/ branch: that push is made with GITHUB_TOKEN, which starts no
+  # push run of its own, and this is how the PR's new head gets its check.
+  workflow_dispatch:
 
 permissions:
   contents: read
