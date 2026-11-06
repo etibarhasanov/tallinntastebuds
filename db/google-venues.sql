@@ -1663,7 +1663,7 @@ ON CONFLICT(place_id) DO UPDATE SET
     missing_since = CASE WHEN google_venues.refreshed_at IS NULL THEN NULL ELSE google_venues.missing_since END;
 
 UPDATE google_venues SET missing_since = CAST(strftime('%s','now') AS INTEGER) * 1000
-WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (
+WHERE missing_since IS NULL AND refreshed_at IS NULL AND found_at IS NULL AND place_id NOT IN (
   'ChIJnYxLw5WTkkYRbBZIQ-rVs70',
   'ChIJUdUjCV2TkkYRcg8TxVp1XUI',
   'ChIJS2PX_Y6TkkYRyCr1I1IKuV0',

@@ -869,7 +869,7 @@
   function pinOf(place) {
     if (!place.standIn) return 'mark';
     if (state.list && isOnList(place.id)) return TTBPins.ofList(state.list);
-    return TTBPins.forKinds(place.kitchens, place.types);
+    return TTBPins.forKinds(place.kitchens, place.types, place.kind);
   }
 
   function pinDepth(place) {
@@ -1437,7 +1437,7 @@
 
   function paintShare() {
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
-    dom.panelShare.hidden = !place || !!place.standIn;
+    dom.panelShare.hidden = !place || (!!place.standIn && !/[A-Z]/.test(place.id));
     if (dom.panelShare.hidden) return;
     dom.panelShare.setAttribute('aria-label', t('listsShare'));
     dom.panelShare.setAttribute('title', t('listsShare'));
@@ -3513,6 +3513,7 @@
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
       reviews: typeof row.reviews === 'number' ? row.reviews : null,
+      kind: row.kind || 'eat',
       google: true,
       phone: row.phone || '',
       website: row.website || '',
@@ -4925,16 +4926,7 @@
           };
           continue;
         }
-        if (typeof row.lat !== 'number' || typeof row.lng !== 'number') continue;
-        findKind[row.id] = fold([
-          row.category || '',
-          (row.types || []).map(function (id) {
-            return id === 'pub' ? '' : labelWords(state.types, id);
-          }).join(' '),
-          (row.kitchens || []).map(kitchenWords).join(' ')
-        ].join(' '));
-        findHay[row.id] = fold(row.name + ' ' + (row.address || '')) + ' ' + findKind[row.id];
-        rows.push(row);
+        findKeep(row, rows);
       }
       findRoll = rows;
       return findRoll;
@@ -5230,6 +5222,7 @@
     var mine = hits.mine;
     var city = hits.city;
     var shown = city.slice(0, FIND_CITY);
+    var looked = findLooked && findLooked.q === typed ? findLooked : null;
 
     if (mine.length) {
       dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findOnMap') }));
@@ -5252,8 +5245,34 @@
       }
     }
 
+    var nothing = !findRows.length;
+    var drawn = {};
+    for (var d = 0; d < findRows.length; d++) drawn[findRows[d].getAttribute('data-id')] = true;
+    var fromGoogle = looked ? looked.rows.filter(function (row) { return !drawn[row.id]; }) : [];
+    if (fromGoogle.length) {
+      dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findFromGoogle') }));
+      for (var g = 0; g < fromGoogle.length; g++) {
+        var grow = findRow(fromGoogle[g], false, far(fromGoogle[g]));
+        findRows.push(grow);
+        dom.findBody.appendChild(grow);
+      }
+    }
+
+    if (findRoll && nothing && !looked && findCanLook === null) findCanLookAsk();
+    var offer = !!(findRoll && nothing && !looked && findCanLook && typed.length >= 2);
+    dom.findAsk.hidden = !offer;
+    if (offer) dom.findAskText.textContent = t('findGoogleAsk', { q: typed });
+
     if (!findRoll) {
       dom.findNote.textContent = t('findLooking');
+    } else if (looked && looked.state === 'asking') {
+      dom.findNote.textContent = t('findGoogleAsking');
+    } else if (looked && looked.state === 'resting') {
+      dom.findNote.textContent = t('findGoogleResting');
+    } else if (looked && !looked.rows.length) {
+      dom.findNote.textContent = t('findGoogleNone', { q: typed });
+    } else if (looked) {
+      dom.findNote.textContent = t('findGoogleKept');
     } else if (!findRows.length) {
       dom.findNote.textContent = t('searchNone', { q: typed });
     } else if (wish.nearby && !wish.near && !away) {
@@ -5290,7 +5309,8 @@
       kitchens: row.kitchens || [],
       price: typeof row.price === 'number' ? row.price : null,
       rating: typeof row.rating === 'number' ? row.rating : null,
-      reviews: typeof row.reviews === 'number' ? row.reviews : null
+      reviews: typeof row.reviews === 'number' ? row.reviews : null,
+      kind: row.kind
     });
   }
 
@@ -5306,6 +5326,77 @@
       place.hours = row.hours || [];
       if (state.selected === place.id) renderPanel({ keepList: true });
     }).catch(function () { /* the card stands without it */ });
+  }
+
+  function findKeep(row, rows) {
+    if (typeof row.lat !== 'number' || typeof row.lng !== 'number') return false;
+    findKind[row.id] = fold([
+      row.category || '',
+      (row.types || []).map(function (id) {
+        return id === 'pub' ? '' : labelWords(state.types, id);
+      }).join(' '),
+      (row.kitchens || []).map(kitchenWords).join(' ')
+    ].join(' '));
+    findHay[row.id] = fold(row.name + ' ' + (row.address || '')) + ' ' + findKind[row.id];
+    rows.push(row);
+    return true;
+  }
+
+  var findCanLook = null;
+  var findCanLookAsked = false;
+  var findLooked = null;
+
+  function findCanLookAsk() {
+    if (findCanLookAsked) return;
+    findCanLookAsked = true;
+    getJSON('/api/lookup').then(function (answer) {
+      findCanLook = !!(answer && answer.ready);
+    }).catch(function () {
+      findCanLook = false;
+    }).then(function () {
+      if (findCanLook && state.find) renderFound();
+    });
+  }
+
+  function findLookUp() {
+    var typed = findTyped();
+    if (!typed || !findRoll || (findLooked && findLooked.q === typed)) return;
+    TTBTrack.event('find_google', { search_term: typed.toLowerCase() });
+    var looked = findLooked = { q: typed, state: 'asking', rows: [] };
+    renderFound();
+
+    fetch('/api/lookup', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ q: typed })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (answer) {
+      if (answer && answer.why === 'no-key') {
+        findCanLook = false;
+        findLooked = null;
+        return;
+      }
+      if (!answer || !answer.ok || !Array.isArray(answer.places)) {
+        looked.state = 'resting';
+        return;
+      }
+      looked.state = 'done';
+      var seated = {};
+      for (var i = 0; i < findRoll.length; i++) seated[findRoll[i].id] = findRoll[i];
+      for (var p = 0; p < answer.places.length; p++) {
+        var place = answer.places[p];
+        if (!place || !place.id || !place.name) continue;
+        if (!seated[place.id]) {
+          if (!findKeep(place, findRoll)) continue;
+          seated[place.id] = place;
+        }
+        looked.rows.push(seated[place.id]);
+      }
+    }).catch(function () {
+      looked.state = 'resting';
+    }).then(renderFound);
   }
 
   function findPick(id, mine) {
@@ -7083,6 +7174,7 @@
     });
 
     dom.findInput.addEventListener('input', function () { setFind(dom.findInput.value); });
+    dom.findAsk.addEventListener('click', findLookUp);
     dom.findClear.addEventListener('click', function () {
       TTBTrack.event('find_clear');
       setFind('');
@@ -7335,6 +7427,8 @@
       findArea: $('find-area'),
       findOut: $('find-out'),
       findNote: $('find-note'),
+      findAsk: $('find-ask'),
+      findAskText: $('find-ask-text'),
       findBody: $('find-body'),
       ask: $('panel-ask'),
       askForm: $('ask-form'),

@@ -77,6 +77,8 @@
  * gone, because the budget and the claim on a row live there.
  */
 
+import { eatOnly } from './_lib.js';
+
 /* How many reviews a place needs before its own rating counts for half —
    the same hundred as PRIOR in assets/venues.js and RANK_PRIOR in
    tools/googlevenues.mjs, for the reason in the header. */
@@ -108,7 +110,11 @@ export function weekAfter(week) {
   return new Date(Date.parse(week + 'T00:00:00Z') + 7 * DAY).toISOString().slice(0, 10);
 }
 
-/* The one statement that renumbers every row.
+/* The one statement that renumbers every row, given the clause eatOnly() in
+ * ./_lib.js hands back — so a museum the find bar looked up on Google is not
+ * ranked among the city's restaurants. Ranking the other kinds too, each
+ * among its own, would be PARTITION BY kind in the window below and the
+ * clause dropped; nothing else about the table would have to change.
  *
  * Three CTEs: the rows with both numbers that the directory shows; the
  * review-weighted mean over them; each row's position in the order the
@@ -118,12 +124,12 @@ export function weekAfter(week) {
  * does not keep last week's number. MATERIALIZED because the correlated
  * subquery would otherwise be free to re-run the window over the whole
  * table once per row, eleven hundred times. */
-const RERANK_SQL =
+const rerankSql = (only) =>
   'WITH rated AS (' +
   '  SELECT place_id, rating, reviews, ' +
   "    CASE WHEN status = 'Temporarily closed' THEN 1 ELSE 0 END AS closed " +
   '  FROM google_venues ' +
-  '  WHERE rating IS NOT NULL AND reviews IS NOT NULL AND hidden = 0 AND missing_since IS NULL' +
+  '  WHERE rating IS NOT NULL AND reviews IS NOT NULL AND hidden = 0 AND missing_since IS NULL' + only +
   '), m AS (' +
   '  SELECT SUM(rating * reviews) / SUM(reviews) AS mean FROM rated' +
   '), scored AS MATERIALIZED (' +
@@ -164,8 +170,9 @@ export async function rerankIfDue(env, now) {
   if (!claimed) return 'had';
 
   try {
+    const only = await eatOnly(env);
     await env.DB.batch([
-      env.DB.prepare(RERANK_SQL).bind(RANK_PRIOR),
+      env.DB.prepare(rerankSql(only)).bind(RANK_PRIOR),
       env.DB
         .prepare(
           'INSERT INTO google_ranks (week, place_id, rank) ' +

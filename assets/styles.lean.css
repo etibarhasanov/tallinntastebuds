@@ -1042,6 +1042,43 @@ body.lang-open .controls { z-index: 1250; }
 }
 .find-note:empty { display: none; }
 
+.find-ask {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 20px);
+  margin: 0 10px 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  text-align: left;
+  transition: background-color .12s var(--ease), border-color .12s var(--ease);
+}
+.find-ask[hidden] { display: none; }
+.find-ask:hover,
+.find-ask:focus-visible { background: var(--wash); border-color: var(--accent); }
+.find-ask svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.find-ask span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .find-group {
   padding: 10px 14px 4px;
   font-family: var(--mono);

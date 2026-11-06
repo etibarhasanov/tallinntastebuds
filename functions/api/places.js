@@ -17,7 +17,10 @@
  *                      in Tallinn you can eat or drink in — eleven hundred and
  *                      eleven of them — so that somebody building "top ten
  *                      bars" can find the bar whether or not I have filmed
- *                      it. See db/schema.sql.
+ *                      it. See db/schema.sql. And whatever the find bar
+ *                      has since looked up on Google Maps when nothing here
+ *                      answered — ./lookup.js — museums included, which
+ *                      arrive carrying `kind: 'see'`.
  *
  * WHY IT IS ONE ANSWER AND NOT TWO
  *
@@ -71,7 +74,7 @@
  * under **The find bar's order** in README.md. The picker reads none of them.
  */
 
-import { json, catalogue, venueEntry, venuesByIds, wrongDatabase } from './_lib.js';
+import { json, catalogue, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
 import { kitchensOf } from './venues.js';
 
 /* How a name is compared when deciding whether two rows are one place. The
@@ -93,10 +96,15 @@ function fold(value) {
    way rankedRows() in ./venues.js does, and the bar falls back on the score. */
 let ranks;
 async function googleRows(env) {
+  /* And `kind`, when the table has it, so a museum somebody looked up on
+     Google Maps reaches the find bar saying so — eatOnly() in ./_lib.js is
+     the same once-per-isolate question, and its clause is only non-empty
+     where the column is there to select. */
+  const kind = (await eatOnly(env)) ? ', kind' : '';
   const select = (withRank) => env.DB
     .prepare(
       'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
-      'address, postal_code, city, latitude, longitude, map_id' + (withRank ? ', rank ' : ' ') +
+      'address, postal_code, city, latitude, longitude, map_id' + kind + (withRank ? ', rank ' : ' ') +
       'FROM google_venues ' +
       /* hidden is the curation switch — a duplicate, or a car park Google
          thinks is a restaurant. missing_since is a row the last sync no

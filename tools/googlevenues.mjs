@@ -94,6 +94,11 @@
  * list may be pointing at it, and somebody wrote a sentence about it. A row
  * that comes back is cleared by its own upsert.
  *
+ * Nor is a row the find bar looked up on Google — functions/api/lookup.js,
+ * which stamps `found_at`. It was never in an export, so its absence from
+ * this one says nothing, and the mark skips it. That makes `found_at` a
+ * prerequisite of loading the file, the way `refreshed_at` is.
+ *
  * It used to open by marking every row missing and let the upserts clear
  * the marks, which reads as neat and is not: a file that stops after that
  * first statement has flagged the whole table, and nothing in it names a
@@ -509,10 +514,11 @@ export function build() {
   /* Whatever is in the table and not in the list above has left the export.
      Marked rather than deleted: a list may be pointing at it. A place that
      comes back is cleared by its own upsert. Not a row a refresh has touched,
-     for the reason under NEVER OVER A ROW GOOGLE HAS ANSWERED FOR SINCE. */
+     for the reason under NEVER OVER WHAT GOOGLE HAS ANSWERED SINCE, and not
+     a row the find bar looked up, which no export ever carried. */
   out.push(
     `UPDATE google_venues SET missing_since = ${NOW}\n` +
-    'WHERE missing_since IS NULL AND refreshed_at IS NULL AND place_id NOT IN (\n' +
+    'WHERE missing_since IS NULL AND refreshed_at IS NULL AND found_at IS NULL AND place_id NOT IN (\n' +
     places.map((place) => '  ' + q(place.place_id)).join(',\n') + '\n);'
   );
 
