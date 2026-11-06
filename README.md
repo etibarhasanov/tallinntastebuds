@@ -9514,14 +9514,22 @@ when it is not.
 by `noteDay()` in `functions/api/flashcard.js` with `INSERT OR IGNORE`, so the
 second answer of a day writes nothing. `flashcard_known` could not have said
 it: it keeps the last time each card was seen, not the days in between.
-`daysOf()` answers the last day and how many ran into it, and only for the
-front door, which asks with `?hello=1`; what that means today is the page's to
-work out, against a today the server does not know. **Signed out, the days are
+`daysOf()` answers the last day and how many ran into it, for the front door,
+which asks with `?hello=1`, and for the shelf; what that means today is the
+page's to work out, against a today the server does not know. **Signed out, the days are
 `ttb.flash.days`** in the device's own `localStorage` — the same two facts,
 written by `keep()` on every answer — and never reach the server.
 
+**Where it is said.** In the front door's line, and on Start, as a second line
+under the count of words — *4 days in a row*, the figure set the way the
+words' figure is, by `daysLine()` — so the number is on the page somebody comes
+back to and not only in a sentence that goes with the first answer. Signed out,
+where there is no count of words, it is the only line there. After a break
+Start says nothing about days: the front door has already said how long it
+was, and a nought there would be the page scolding.
+
 **What it is not.** No flame, no badge, no record to beat, no warning that a
-run is about to end, and nothing anywhere but the front door's line. A run of
+run is about to end. A run of
 one is not said — "1 day in a row" is nobody's sentence — and neither is a
 single day away, which is just yesterday. After a break the line says how long,
 and the count starts again with the next answer.
@@ -10199,8 +10207,8 @@ It is the only thing on that page that is about the person rather than about
 the decks. Forty-two rows each saying "9 / 22" is forty-two facts and no
 score, and a score is what somebody who came back on a Tuesday wants: the
 number that was 128 last week. It is deliberately not a badge or a
-level, and the days in a row are said once, at the front door, rather than
-here — **Days in a row** — there is nothing to be out of, and a box drawn round it would make it a
+level. On Start the days in a row stand under it, set the same way, while a run
+of them is going — **Days in a row** — there is nothing to be out of, and a box drawn round it would make it a
 mark rather than a count.
 
 **It is the stages' own number, said out loud.** `wordsKnown()` in
@@ -10297,7 +10305,7 @@ rather than having any. It never stands alone: the count beside it says the
 same thing in words, which is design rule 10.
 
 **The count is a figure and a word**, *21 due*, and the figure carries the
-weight: `figure()` splits the string on its `{n}` the way `learnedLine()`
+weight: `figure()` splits the string on its `{n}` the way `countLine()`
 does, so the sentence stays one string in `data/ui.json`. What is due is the
 reason to open a deck and is in the accent; a deck with nothing waiting says
 its *22 / 22* in the quiet tone and its rule fills in the colour **Knew it**
@@ -11785,8 +11793,8 @@ deliberately not made in the change that brought this page.
 
 No typing the answer in, no matching game, no test
 mode — not even one to jump a stage with — no badges or records for the days
-in a row, which are counted once on the front door and said nowhere else
-(**Days in a row**), no decks anybody can
+in a row, which are a number in a sentence on the front door and on Start and
+nothing more (**Days in a row**), no decks anybody can
 share, and no notifications — this site has no address for anybody, and that
 has not changed for this. And no spacing: a card known stays known, and
 **The spacing, which is off** above says why and how it would come back.

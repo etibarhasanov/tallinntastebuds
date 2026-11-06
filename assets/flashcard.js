@@ -471,6 +471,7 @@
     state.talks = out.talks || [];
     state.talk = out.talk || null;
     state.words = state.wordsIn = out.words || 0;
+    if (out.days) userDays = out.days;
     state.gates = out.gates || {};
     state.run = null;
     state.gated = false;
@@ -1426,7 +1427,7 @@
   }
 
   /* A count with its figure set apart from the words around it, the same way
-     learnedLine() sets the words known: split on the placeholder rather than
+     countLine() sets the words known: split on the placeholder rather than
      printed through t()'s substitution, so the string stays one sentence in
      data/ui.json and a language that puts the number after the word gets it
      there. The figure is what a row is scanned for, so it is the one thing in
@@ -1743,13 +1744,14 @@
      which is how listsBy on the lists page and the rate on a deal card both
      put something of their own inside a translated sentence. The sentence
      stays one string in data/ui.json, in all eleven languages, so a language that
-     puts the number somewhere else in the line gets it there. */
-  function learnedLine() {
-    var said = t('flashLearned').split('{n}');
+     puts the number somewhere else in the line gets it there. The days in a
+     row are set the same way under it on Start — daysLine() below. */
+  function countLine(key, n) {
+    var said = t(key).split('{n}');
     return el('p', { className: 'flash-learned' }, [
       said[0] || '',
-      el('b', { textContent: String(state.words) }),
-      said[1] || ''
+      el('b', { textContent: String(n) }),
+      said.slice(1).join(String(n))
     ]);
   }
 
@@ -1835,7 +1837,19 @@
      remembered is a promise on a deployment that is remembering nothing. It
      appears on the load after the first card is known and rises from there. */
   function learned() {
-    return state.user && state.ready && state.words > 0 ? learnedLine() : null;
+    return state.user && state.ready && state.words > 0 ? countLine('flashLearned', state.words) : null;
+  }
+
+  /* And under it on Start, the days in a row, while a run is going: the same
+     figure the front door's line opens with, kept on the page somebody comes
+     back to rather than said once and gone. Signed out as well, out of this
+     device's own store, since a run of days is the one thing a stranger has
+     that is worth counting. Nothing after a break — the front door has said
+     how long it was, and a nought here would be the page scolding. See
+     **Days in a row** under **Flashcards** in README.md. */
+  function daysLine() {
+    var days = daysNow(daysHere());
+    return days.run ? countLine('flashDaysRun', days.run) : null;
   }
 
   /* The decks that are words, which is every deck the site ships but the ones
@@ -1861,6 +1875,7 @@
     return [
       el('p', { className: 'lists-say', textContent: t('flashStartSay') }),
       learned(),
+      daysLine(),
       list
     ];
   }
@@ -3938,7 +3953,16 @@
      for a stranger, 'back' for somebody coming back to where they were, and
      '' once they have answered a card or walked anywhere — helloLine(). */
   var hello = '';
-  var doorDays = null;
+
+  /* A member's days, as the route last said them — the last day practised
+     and the run into it, on every answer for the front door or the shelf;
+     daysOf() in functions/api/flashcard.js. Somebody signed out has theirs
+     on this device instead, and daysHere() reads whichever is theirs. */
+  var userDays = null;
+
+  function daysHere() {
+    return state.user ? userDays : storedDays();
+  }
 
   function rememberHere() {
     var here = state.lesson ? state.lesson.id
@@ -3992,7 +4016,7 @@
       return line;
     }
 
-    var days = daysNow(doorDays);
+    var days = daysNow(daysHere());
     var said = [days.away ? figure('flashHelloAway', days.away, '')
               : days.run ? figure('flashHelloRun', days.run, '')
               : el('span', { textContent: t('flashHelloBack') })];
@@ -4240,7 +4264,6 @@
       });
 
       var found = !!(state.deck || state.lesson || state.song || state.talk);
-      doorDays = state.user ? (answer.out.days || null) : storedDays();
       storeSet(BEEN_KEY, '1');
 
       if (fresh && state.user) {
