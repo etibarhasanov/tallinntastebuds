@@ -2677,6 +2677,14 @@ nothing else here has — gets the button wherever it came from: the bar, a
 list, the chat. A place somebody typed into a list by hand still does not:
 nothing outside that list knows it. `paintShare()` in `assets/app.js`.
 
+A key the roll does not carry is asked for by itself, from
+`/api/venues?ids=`, before the link gives up on it. The roll is kept five
+minutes in the browser, so a place found with **Look for it on Google Maps**
+is missing from the copy the finder's own browser holds — and the first
+thing anybody does with a place they have just found is share it and open
+the link. Logi saun went out that way on its first day: looked up, shared,
+and opened as a bare map.
+
 Pasted into a message, the link unfurls as that place rather than as the site:
 the name, then *Weizenbergi 34, 10127 Tallinn. Found on Tallinn Tastebuds —
 not one of its own places.* (`foundCard`, in the link's language), and the

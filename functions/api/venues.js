@@ -340,6 +340,10 @@ function entry(row) {
   if (/^\$+$/.test(row.price || '')) out.price = String(row.price).length;
   if (typeof row.latitude === 'number') out.lat = row.latitude;
   if (typeof row.longitude === 'number') out.lng = row.longitude;
+  /* Not somewhere to eat — a sauna somebody looked up on Google Maps — so a
+     link the map opens through `?ids=` draws it the plain pin. Absent on
+     `eat`, and on a database without the column. */
+  if (row.kind && row.kind !== 'eat') out.kind = row.kind;
   if (row.phone) out.phone = row.phone;
   if (row.website) out.website = row.website;
 
@@ -389,11 +393,12 @@ let ranks;
    been used to look up. `mine` is a map id instead, and wins over both.
    `only` is eatOnly()'s clause, which only the directory half reads: a
    museum somebody looked up is somewhere the find bar can still dress, and
-   not one of the city's restaurants. */
-function roll(env, withRank, ids, mine, only) {
+   not one of the city's restaurants. `kind` is ', kind' where the table has
+   the column, so the other two halves can say what such a row is. */
+function roll(env, withRank, ids, mine, only, kind) {
   const sql =
     'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
-    'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' +
+    'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' + kind +
     (withRank ? ', rank' : '') +
     (withRank && mine ? ', (SELECT COUNT(*) FROM google_venues WHERE missing_since IS NULL) AS ranked' : '') + ' ' +
     'FROM google_venues ' +
@@ -422,16 +427,18 @@ function roll(env, withRank, ids, mine, only) {
 }
 
 async function readingRanks(env, ids, mine) {
-  const only = ids || mine ? '' : await eatOnly(env);
-  if (ranks === false) return roll(env, false, ids, mine, only);
+  const clause = await eatOnly(env);
+  const only = ids || mine ? '' : clause;
+  const kind = clause ? ', kind' : '';
+  if (ranks === false) return roll(env, false, ids, mine, only, kind);
   try {
-    const out = await roll(env, true, ids, mine, only);
+    const out = await roll(env, true, ids, mine, only, kind);
     ranks = true;
     return out;
   } catch (e) {
     if (!/no such column/i.test(String((e && e.message) || e))) throw e;
     ranks = false;
-    return roll(env, false, ids, mine, only);
+    return roll(env, false, ids, mine, only, kind);
   }
 }
 
