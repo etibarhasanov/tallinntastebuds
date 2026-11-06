@@ -23,6 +23,8 @@
  *   - a search by `type: "bakery"` lists the places whose primary type is
  *     bakery first, nearest first within each group when a point is given;
  *   - a search that finds nothing is an empty `places`, not an error;
+ *   - a search row carries the name, the address, the point, the phone and
+ *     the website, Google's phone only where the map has none;
  *   - a Google row that is not plainly the same door is not trusted;
  *   - the tools are listed, and the server introduces itself by name.
  *
@@ -66,6 +68,7 @@ const ROWS = [
   row('cafe-tempo', 'Cafe Tempo', 'Restaurant'),
   row('koho', 'Telliskivi KoHo', 'Restaurant'),
   row('karu-talu-sokolaad', 'Karu Talu Šokolaad', 'Chocolate Shop'),
+  { ...row('varav-coffee-toast', 'Värav Coffee and toast', 'Cafe'), phone: '+372 555 0100' },
   /* A link nobody should trust: the right name, a door across town. */
   row('crustum-bakery', 'Crustum Bakery', 'Bakery', 'pulla-bakery')
 ];
@@ -133,7 +136,7 @@ const plain = (await places({ id: unreeled.id }))[0];
 check('a place without a reel gives reel: null', plain.reel === null && plain.has_reel === false);
 
 const every = await places({ limit: 10, near_lat: 59.437, near_lng: 24.7536, radius_m: 100000 });
-const fields = ['reel', 'has_reel', 'reel_summary', 'photo', 'last_visited', 'primary_type', 'google_place_id', 'opening_hours'];
+const fields = ['reel', 'has_reel', 'reel_summary', 'photo', 'last_visited', 'primary_type', 'opening_hours', 'phone', 'website', 'name', 'address', 'lat', 'lng'];
 check('every search row carries the new fields', every.every((p) => fields.every((f) => f in p)));
 check('every row\'s url is the place\'s own page on the site',
   every.every((p) => p.url === SITE + '/?spot=' + encodeURIComponent(p.id)));
@@ -167,8 +170,11 @@ const pulla = (await places({ id: 'pulla-bakery' }))[0];
 check('Google\'s hours come with their source and day',
   pulla.opening_hours && pulla.opening_hours.weekday_text[0] === 'Monday: 08:00-18:00' &&
   pulla.opening_hours.weekday_text[6] === 'Sunday: Closed' && pulla.opening_hours.checked_at === '2026-11-01');
+const varav = (await places({ query: 'Värav' })).find((p) => p.id === 'varav-coffee-toast');
+check('a place with no phone of its own gives Google\'s, in a search row', varav && varav.phone === '+372 555 0100');
 const crustum = (await places({ id: 'crustum-bakery' }))[0];
-check('a Google row at another door is not trusted', crustum.google_place_id === null && crustum.opening_hours === null);
+check('a Google row at another door is not trusted', crustum.opening_hours === null && crustum.primary_type === null &&
+  !/query_place_id/.test(crustum.maps_url));
 const unlisted = (await places({ id: unreeled.id }))[0];
 check('a place Google does not list has null hours', ROWS.some((r) => r.map_id === unreeled.id) || unlisted.opening_hours === null);
 

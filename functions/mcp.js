@@ -162,9 +162,9 @@
  * it to, as "Watch the video", every time — and what the file does not hold:
  * the link to the place on the map, the absolute address of its first
  * photograph, and out of the Google row filed against it (GOOGLE'S HALF
- * below) Google's key, its week of opening hours with the day it was read,
- * its temporarily-closed and the primary type its category names, never its
- * rating; and the reel's one-line summary where a person wrote one. A place read by its id adds
+ * below) its week of opening hours with the day it was read, its
+ * temporarily-closed and the primary type its category names, never its key
+ * or its rating — the key only rides inside maps_url, to open the listing; and the reel's one-line summary where a person wrote one. A place read by its id adds
  * a Google Maps link that opens that listing by its key, or a search by my
  * own name and address where Google does not list it. An id that is not on the
  * map, or a place that has closed, is a tool result with `isError` and one
@@ -327,15 +327,13 @@ const PLACE_FIELDS = {
     description: 'One plain sentence, written by a person, about what the video shows, or null. ' +
       'Describe the video only from this.'
   },
+  phone: { type: ['string', 'null'], description: 'The number to ring, or null. Google\'s where the map has none.' },
+  website: { type: ['string', 'null'], description: 'The place\'s own website, or null. Google\'s where the map has none.' },
   last_visited: { type: ['string', 'null'], description: 'When Tallinn Tastebuds last ate there, as a month, or null.' },
   primary_type: {
     type: ['string', 'null'],
     description: 'The one main kind of place, as one of the ids in types — "bakery" for a bakery, ' +
       '"restaurant" for a restaurant that also bakes — or null when it is not known.'
-  },
-  google_place_id: {
-    type: ['string', 'null'],
-    description: 'The place\'s Google Maps place id, or null when Google does not list it or the listing is not plainly the same place.'
   },
   opening_hours: {
     type: ['object', 'null'],
@@ -366,14 +364,12 @@ const SEARCH_FIELDS = {
 /* What a place read by its id adds to a search row. */
 const DETAIL_FIELDS = {
   photos: { type: 'array', items: { type: 'string' }, description: 'Every photograph, absolute addresses.' },
-  phone: { type: ['string', 'null'] },
-  website: { type: ['string', 'null'] },
   visited: { type: ['string', 'null'], description: 'When Tallinn Tastebuds ate there, as a month, or null.' },
   added: { type: ['string', 'null'], description: 'When the place joined the map, as a date.' },
   maps_url: {
     type: 'string',
-    description: 'The place on Google Maps — its own listing where google_place_id is known, else a search by ' +
-      'name and address — for directions and today\'s hours.'
+    description: 'The place on Google Maps — its own listing where Google lists it, else a search by ' +
+      'name and address — for directions.'
   }
 };
 
@@ -446,11 +442,10 @@ function tools(types, langs) {
         'otherwise, never quality — with a `type`, the places whose `primary_type` is that kind come ' +
         'first, so a bakery search starts with the bakeries rather than a restaurant that bakes. Every ' +
         'place carries `reel` (an Instagram video, or null — give it as "Watch the video"), ' +
-        '`reel_summary`, `photo`, `last_visited`, `primary_type`, `google_place_id`, and Google\'s ' +
+        '`reel_summary`, `photo`, `phone`, `website`, `last_visited` and `primary_type`, and Google\'s ' +
         '`opening_hours` with the day they were checked, or null when there are none to trust. When the conversation turns to one place — "tell me more ' +
         'about Badam", "what should I order there" — pass its `id` instead, and the one place ' +
-        'comes back with every photograph, the phone number and website, when it ' +
-        'was visited, and its Google Maps listing for directions; the filters are ignored then.',
+        'comes back with every photograph, when it was visited, and its Google Maps listing for directions; the filters are ignored then.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -645,6 +640,10 @@ function entry(place, lang, google) {
     must_order: place.mustOrder || [],
     url: SITE + '/?spot=' + encodeURIComponent(place.id),
     photo: photos.length ? photoUrl(place, photos[0]) : null,
+    /* Mine first, Google's only where mine is empty — the panel's rule, so
+       nothing a few lines above on the map is contradicted here. */
+    phone: place.phone || g && g.phone || null,
+    website: place.website || g && g.website || null,
     reel: place.reel || null,
     /* Kept beside `reel`, which says the same thing, for the clients that
        read it before `reel` was in every row. */
@@ -654,22 +653,19 @@ function entry(place, lang, google) {
     reel_summary: place.reelSummary || null,
     last_visited: place.visited || null,
     primary_type: g ? primaryType(place, g.category) : null,
-    google_place_id: g ? g.key : null,
     opening_hours: g ? g.hours : null,
     temporarily_closed: !!(g && g.shut)
   };
 }
 
 function detail(place, lang, google) {
-  const row = entry(place, lang, google);
+  const g = google.get(place.id);
   return {
-    ...row,
+    ...entry(place, lang, google),
     photos: (place.photos || []).map((photo) => photoUrl(place, photo)),
-    phone: place.phone || null,
-    website: place.website || null,
     visited: place.visited || null,
     added: place.added || null,
-    maps_url: mapsSearch(place.name, place.address, row.google_place_id)
+    maps_url: mapsSearch(place.name, place.address, g && g.key)
   };
 }
 
@@ -689,9 +685,10 @@ function mapsSearch(name, address, key) {
  * The Google row filed against each of my places through `map_id` — the
  * join the map's panel makes through /api/venues?map= and the chat makes in
  * linkedRows() in api/ask.js — read for what an assistant asking "is it open"
- * or "is that a bakery" needs and my file does not hold: Google's key, the
- * week, when Google was last asked for it, Google's temporarily-closed, and
- * what Google files the place as. Never the rating, the review count or the
+ * or "is that a bakery" needs and my file does not hold: the week, when
+ * Google was last asked for it, Google's temporarily-closed, what Google
+ * files the place as, the phone and website where mine are empty, and the
+ * key, which only rides inside maps_url to open the listing. Never the rating, the review count or the
  * rank: the map has no scores and this door does not lend it Google's.
  *
  * A link is only trusted when it is plainly the same door: the names share a
@@ -742,7 +739,7 @@ async function googleRows(env, places) {
   try {
     ({ results } = await env.DB
       .prepare(
-        'SELECT map_id, place_id, name, category, status, opening_hours, latitude, longitude, ' +
+        'SELECT map_id, place_id, name, category, status, opening_hours, phone, website, latitude, longitude, ' +
         'refreshed_at, synced_at FROM google_venues ' +
         'WHERE map_id IS NOT NULL AND hidden = 0 AND missing_since IS NULL'
       )
@@ -767,6 +764,8 @@ async function googleRows(env, places) {
     google.set(row.map_id, {
       key: row.place_id,
       category: row.category || '',
+      phone: row.phone || '',
+      website: row.website || '',
       shut: row.status === 'Temporarily closed',
       hours: week.length ? {
         weekday_text: DAY_NAMES.map((day, i) => day + ': ' + (week[i] || 'Closed')),
@@ -1161,6 +1160,8 @@ function chatgptFetch(raw, places, all, types, google) {
         place.opening_hours.weekday_text.join('; ') + '.'
       : 'Opening hours are not in this data; check them elsewhere.',
     'Being on the Tallinn Tastebuds map is the verdict: there are no scores, stars or rankings.',
+    place.phone ? 'Phone: ' + place.phone + '.' : '',
+    place.website ? 'Website: ' + place.website : '',
     'On the map: ' + place.url,
     place.reel ? 'Watch the video: ' + place.reel : '',
     place.reel_summary ? 'The video: ' + place.reel_summary : '',
