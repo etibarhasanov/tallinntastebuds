@@ -618,7 +618,8 @@ async function noteDay(env, user, said) {
   } catch (e) { /* no table yet: the answer itself has already been written */ }
 }
 
-/* The last day practised and how many days ran into it, unbroken. What that
+/* The last day practised and how many days ran into it, unbroken, for the
+   front door's line and the line under the words on Start. What that
    means today is the page's to work out, against the reader's own today —
    this side does not know what day it is where they are. A year is as far
    back as it counts, which is a count nobody will reach before this comment
@@ -834,9 +835,10 @@ export async function onRequestGet(context) {
     knownOf(env, user),
     asked ? deckOf(env, asked, user) : null,
     !asked && user ? ownDecks(env, user) : null,
-    /* Only for the front door, which is the one place the page says it — the
-       page asks with ?hello=1 when the address it opened on named nothing. */
-    params.get('hello') ? daysOf(env, user) : null
+    /* Only where the page says them: the front door, which asks with
+       ?hello=1 when the address it opened on named nothing, and the shelf,
+       whose Start carries the run under the count of words. */
+    params.get('hello') || !asked ? daysOf(env, user) : null
   ]);
 
   /* What every answer below carries, whichever deck it is about: the three
