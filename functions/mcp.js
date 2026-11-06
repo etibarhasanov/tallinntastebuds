@@ -254,8 +254,11 @@ const INSTRUCTIONS =
   'scores, stars or rankings, and the order places come back in is never ' +
   'one. So never describe a place as rated, ranked or recommended above ' +
   'another by Tallinn Tastebuds, and never say "best" on its behalf. ' +
-  'Attribute the write-ups to Tallinn Tastebuds and always give the ' +
-  'place\'s link (the url field). A search that finds nothing means ' +
+  'Attribute the write-ups to Tallinn Tastebuds. Every place you ' +
+  'mention links to its url, the place\'s own page on ' +
+  'tallinntastebuds.ee, put on the place\'s name so the person can open ' +
+  'it there: that is the main link, and maps_url is only for directions. ' +
+  'A search that finds nothing means ' +
   'nothing on the map fits; say so rather than guessing. Opening hours, ' +
   'where a place has them, are Google\'s as of opening_hours.checked_at: ' +
   'give them as Google\'s and say they are worth confirming. When ' +
@@ -308,7 +311,11 @@ const PLACE_FIELDS = {
     description: 'Tallinn Tastebuds\' own write-up, in the language asked for, in English when it has none there.'
   },
   must_order: { type: 'array', items: { type: 'string' }, description: 'The dishes to order.' },
-  url: { type: 'string', description: 'The place on the map. Always give it.' },
+  url: {
+    type: 'string',
+    description: 'The place\'s own page on tallinntastebuds.ee. Always give it, as the link on the place\'s name, ' +
+      'ahead of any Google Maps or Instagram link.'
+  },
   photo: { type: ['string', 'null'], description: 'The first photograph of the place, or null when there is none.' },
   reel: {
     type: ['string', 'null'],

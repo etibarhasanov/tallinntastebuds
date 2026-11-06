@@ -14,6 +14,8 @@
  * real data/ files, with a stand-in database holding Google rows shaped like
  * production's, and holds the answers to what the owner asked for:
  *
+ *   - every place links to its own page on the site, and the instructions say
+ *     to put that link on its name;
  *   - a place with a reel gives the reel's URL in a search, in a read by id,
  *     and in `fetch`; a place without one gives `reel: null`;
  *   - every `photo` answered is an address on the site, of a file that is in
@@ -114,6 +116,8 @@ const unreeled = open.find((p) => !p.reel);
 const init = await rpc('initialize', { protocolVersion: '2025-11-25' });
 check('the server introduces itself as Tallinn Tastebuds', init.serverInfo.title === 'Tallinn Tastebuds');
 check('the instructions say "Watch the video"', /Watch the video/.test(init.instructions));
+check('the instructions make the site\'s own page the link on every place',
+  /links to its url/.test(init.instructions) && /tallinntastebuds\.ee/.test(init.instructions));
 const listed = (await rpc('tools/list', {})).tools.map((t) => t.name);
 check('the tools are listed', ['places', 'lists', 'search', 'fetch'].every((t) => listed.includes(t)), listed.join(', '));
 
@@ -131,6 +135,8 @@ check('a place without a reel gives reel: null', plain.reel === null && plain.ha
 const every = await places({ limit: 10, near_lat: 59.437, near_lng: 24.7536, radius_m: 100000 });
 const fields = ['reel', 'has_reel', 'reel_summary', 'photo', 'last_visited', 'primary_type', 'google_place_id', 'opening_hours'];
 check('every search row carries the new fields', every.every((p) => fields.every((f) => f in p)));
+check('every row\'s url is the place\'s own page on the site',
+  every.every((p) => p.url === SITE + '/?spot=' + encodeURIComponent(p.id)));
 
 const photos = [];
 for (const p of open) photos.push(...(await places({ id: p.id })).map((r) => [p.id, r.photo]));

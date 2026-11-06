@@ -2301,7 +2301,10 @@ server's own instructions, sent the moment a client connects, say what the
 map is and what may not be said about it: that being on the map is the
 verdict, that there are no scores, stars or rankings, that nothing on it is
 to be called rated, ranked or best by Tallinn Tastebuds, that the write-ups
-are mine and the link is always given, that the opening hours are
+are mine, that every place mentioned links to its own page here — `url`,
+put on the place's name, so the person comes to the site rather than only
+reading about it, with `maps_url` for directions and nothing more — that
+the opening hours are
 Google's as of the day they were checked and worth confirming — and to be
 checked elsewhere where a place has none — and that a reel's link is
 always in the answer, labelled *Watch the video*, beside the place's link,
