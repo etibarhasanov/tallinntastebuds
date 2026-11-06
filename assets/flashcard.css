@@ -624,6 +624,28 @@
 }
 .flash-deck .eyebrow + .alt { margin-left: auto; }
 
+/* The front door's line over whatever it opened on — "Estonian, one card at
+   a time. Here's the first." for a stranger, a welcome back for anybody else.
+   A sentence, so --body (design rule 2), in the ink rather than the muted
+   tone because it is the first thing a newcomer reads; no box and no accent
+   but its figures, so the card under it stays the loudest thing on the
+   screen. The figures — days in a row, days away, words known — are set the
+   way the shelf's count of words is, a notch down. helloLine() in
+   assets/flashcard.js. */
+.flash-hello {
+  margin: 0 0 4px;
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.flash-hello b {
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent);
+}
+
 /* ---------- the decks, as tiles ---------- */
 
 /* The shelf. It was one column of hairline-ruled rows, forty-two of them with

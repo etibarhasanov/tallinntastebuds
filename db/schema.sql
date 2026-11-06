@@ -1825,6 +1825,33 @@ CREATE TABLE IF NOT EXISTS flashcard_reports (
 -- hour. The primary key starts with the deck, so it cannot answer this one.
 CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_hash, created_at);
 
+-- One row is one day somebody answered at least one card: what the front door
+-- says "4 days in a row" and "you've been away 9 days" out of. flashcard_known
+-- cannot say it, because it keeps the last time each card was seen and not
+-- the days in between — a card answered on Monday and again on Thursday has
+-- one row, dated Thursday.
+--
+-- `day` is the reader's own calendar day, YYYY-MM-DD, as the page sends it
+-- with every answer, and not Tallinn's: somebody revising at eleven at night
+-- in Baku has not missed a day because it turned midnight somewhere else.
+-- The route holds it to two days either side of the server's, and uses the
+-- server's when it is not, so a clock set wrong costs a day rather than a
+-- year of them. INSERT OR IGNORE, so the second answer of a day writes
+-- nothing. See **Days in a row** under **Flashcards** in README.md, which is
+-- also where the decision this table reverses is written down.
+--
+-- Signed out nothing is written here: a stranger's days are kept in their own
+-- browser, under ttb.flash.days, and never reach the server.
+--
+-- The route survives the table's absence — every read and write of it is in a
+-- try — so the afternoon between the deploy and this statement is a front
+-- door that says "Welcome back" without a count, not one that fails.
+CREATE TABLE IF NOT EXISTS flashcard_days (
+  user_id TEXT NOT NULL,
+  day     TEXT NOT NULL,
+  PRIMARY KEY (user_id, day)
+) WITHOUT ROWID;
+
 -- One row is one game of chess. Two kinds are against the house — the owner's
 -- account, the one ADMINS in wrangler.toml names — and share the table with a
 -- third that is not, a duel between two members. A public game

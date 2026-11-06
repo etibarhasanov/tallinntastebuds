@@ -390,6 +390,7 @@
      page, and the card in hand or <main> under it. */
   function go(id, push) {
     var mine = ++trip;
+    hello = '';
     if (!asked) deckScroll = window.pageYOffset || 0;
 
     /* The scroll the browser would put back on the back button is put back
@@ -709,6 +710,7 @@
   }
 
   function keep(deck, card, knew) {
+    noteDayHere();
     var all = kept();
     var key = deck + '/' + card;
     if (!all[key] && Object.keys(all).length >= MAX_KEPT) return;
@@ -717,6 +719,69 @@
       window.sessionStorage.setItem(KEPT_KEY, JSON.stringify(all));
     } catch (e) { /* private browsing, or a full quota. The run is this page's,
                      which is where it stood before any of this. */ }
+  }
+
+  /* One answer, to the route: a card known or missed, a lesson read, a song
+     heard. Three callers — flush(), sendKept() and markRead() — and each used
+     to spell the body out; it carries the reader's own day now as well, which
+     is what flashcard_days is kept by, so it is written once. */
+  function sendAnswer(deck, card, knew, leaving) {
+    return post(FLASH_API, { action: knew ? 'knew' : 'again', deck: deck, card: card, day: today() }, leaving);
+  }
+
+  /* ------------------------------------------------------------ days in a row
+   * Which day it is here, and how many days in a row somebody has answered a
+   * card — the line the front door opens with. Signed in, the route keeps the
+   * days, one row each in flashcard_days, and says on the way in which was
+   * the last and how many ran into it. Signed out it is this device's, under
+   * ttb.flash.days, written by keep() on every answer and read by nothing but
+   * the front door: the same two facts, kept where the person keeps them
+   * rather than on a server that does not know who they are. See **Days in a
+   * row** under **Flashcards** in README.md.
+   *
+   * The day is the reader's own calendar day rather than Tallinn's, for the
+   * reason **The spacing, which is off** gives for measuring from the answer:
+   * somebody revising at eleven at night should not lose a day to a midnight
+   * in a city they are not in. */
+  var DAYS_KEY = 'ttb.flash.days';
+
+  function today() {
+    var d = new Date();
+    var two = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate());
+  }
+
+  /* Whole days from one YYYY-MM-DD to another, at noon so that a clock going
+     forward an hour in spring is still one day and not nought. */
+  function daysBetween(from, to) {
+    var at = function (day) { return Date.parse(day + 'T12:00:00Z'); };
+    return Math.round((at(to) - at(from)) / 86400000);
+  }
+
+  function noteDayHere() {
+    var was = storedDays();
+    var now = today();
+    if (was && was.last === now) return;
+    var run = was && daysBetween(was.last, now) === 1 ? was.run + 1 : 1;
+    storeSet(DAYS_KEY, JSON.stringify({ last: now, run: run }));
+  }
+
+  function storedDays() {
+    try {
+      var was = JSON.parse(storeGet(DAYS_KEY) || 'null');
+      return was && typeof was.last === 'string' && was.run > 0 ? was : null;
+    } catch (e) { return null; }
+  }
+
+  /* What the two facts mean today: a run still going — answered today or
+     yesterday — or how long somebody has been away. A run of one is not said,
+     because "1 day in a row" is not a sentence anybody wants, and neither is
+     a day away, which is just yesterday. */
+  function daysNow(days) {
+    if (!days) return { run: 0, away: 0 };
+    var gap = daysBetween(days.last, today());
+    return gap <= 1 ? { run: days.run > 1 ? days.run : 0, away: 0 }
+                    : { run: 0, away: gap };
   }
 
   /* Everything the tab was holding, now that there is somewhere to put it.
@@ -731,7 +796,7 @@
     if (!keys.length) return all;
     try { window.sessionStorage.removeItem(KEPT_KEY); } catch (e) { /* nothing was stored */ }
     keys.forEach(function (k) {
-      post(FLASH_API, { action: all[k].knew ? 'knew' : 'again', deck: all[k].deck, card: all[k].card });
+      sendAnswer(all[k].deck, all[k].card, all[k].knew);
     });
     return all;
   }
@@ -2071,6 +2136,9 @@
        Undo can put it all back — undo() below. The previous answer's write is
        sent now, because only one answer can be taken back at a time. */
     flush();
+    /* The front door's line has done its job once a card has been answered:
+       the next card is drawn without it. */
+    hello = '';
     var was = {
       word: word, knew: knew, known: word.known, words: state.words,
       at: run.at, turned: run.turned, hint: run.hint, length: run.queue.length,
@@ -2183,7 +2251,7 @@
     run.pending = null;
     run.last = null;
     if (state.user && state.ready) {
-      post(FLASH_API, { action: p.knew ? 'knew' : 'again', deck: p.deck, card: p.card }, leaving);
+      sendAnswer(p.deck, p.card, p.knew, leaving);
     } else {
       keep(p.deck, p.card, p.knew);
     }
@@ -3542,7 +3610,7 @@
   function markRead(deck, id, next) {
     var back = function () { go(next, true); };
     if (state.user && state.ready) {
-      post(FLASH_API, { action: 'knew', deck: deck, card: id }).then(back);
+      sendAnswer(deck, id, true).then(back);
     } else {
       keep(deck, id, true);
       back();
@@ -3847,14 +3915,32 @@
    * never a screen somebody had finished with. localStorage rather than the
    * account, because it is where this device was closed — a phone closed on
    * a deck and a laptop closed on the shelf were closed in two places — and
-   * only signed in, since signed out the run is the tab's and goes with it.
-   * boot() is the reader. See **Where you left off** under **Flashcards** in
-   * README.md.
+   * signed out as well as in: the answers of a run signed out are the tab's
+   * and go with it, but which deck it was is this device's, and coming back
+   * to it is the welcome a stranger who came back has earned. Nothing of it
+   * reaches the server. boot() is the reader. See **Where you left off**
+   * under **Flashcards** in README.md.
    */
   var LAST_KEY = 'ttb.flash.last';
 
+  /* And whether this device has opened the flashcards before at all, which
+     LAST_KEY cannot say: it is cleared on purpose by a walk back to the shelf.
+     Without it somebody who chose the shelf would be shown the first card as
+     a stranger next time. Written by boot() once the first answer is drawn. */
+  var BEEN_KEY = 'ttb.flash.been';
+
+  /* The deck a stranger's front door opens on, at its first card — Tere. The
+     most opened deck on the site, and one short word is a gentler first card
+     than a question about a table. assets/flashcard-first.js names it too. */
+  var FIRST_DECK = 'greetings';
+
+  /* What the line over the front door says, while it says anything: 'first'
+     for a stranger, 'back' for somebody coming back to where they were, and
+     '' once they have answered a card or walked anywhere — helloLine(). */
+  var hello = '';
+  var doorDays = null;
+
   function rememberHere() {
-    if (!state.user || !state.ready) return;
     var here = state.lesson ? state.lesson.id
              : state.song ? state.song.id
              : state.talk ? state.talk.id
@@ -3887,6 +3973,46 @@
     ]);
   }
 
+  /* ----------------------------------------------------------- the front door
+   * The one line over what the front door opened on, set as a sentence
+   * because it is a sentence. A stranger is told what this is and that the
+   * card under it is the first; somebody coming back is welcomed, told how
+   * many days they have answered in a row or how long they have been away,
+   * and — signed in — how many words they know and how far into this deck
+   * they are. Signed out there is no count of words to give, since the
+   * answers were the tab's, so the line says the deck is where they were.
+   * Gone with the first answer or the first walk anywhere: `hello` above.
+   * See **The front door** under **Flashcards** in README.md.
+   */
+  function helloLine() {
+    if (!hello) return null;
+    var line = el('p', { className: 'flash-hello' });
+    if (hello === 'first') {
+      line.textContent = t('flashHelloFirst');
+      return line;
+    }
+
+    var days = daysNow(doorDays);
+    var said = [days.away ? figure('flashHelloAway', days.away, '')
+              : days.run ? figure('flashHelloRun', days.run, '')
+              : el('span', { textContent: t('flashHelloBack') })];
+    if (state.user) {
+      if (state.words > 1) said.push(figure('flashHelloWords', state.words, ''));
+      if (state.deck && !state.deck.own) {
+        var of = state.deck.cards.length;
+        var known = state.deck.cards.filter(function (c) { return c.known; }).length;
+        if (known > 0) said.push(el('span', { textContent: t('flashHelloDeck', { k: known, m: of }) }));
+      }
+    } else {
+      said.push(el('span', { textContent: t('flashHelloWhere') }));
+    }
+    said.forEach(function (part, i) {
+      if (i) line.appendChild(document.createTextNode(' '));
+      line.appendChild(part);
+    });
+    return line;
+  }
+
   /* ---------------------------------------------------------------- the page
    * One place decides what is on screen and decides it once, after every
    * answer is in.
@@ -3910,6 +4036,8 @@
 
     var wrap = el('div', { className: 'lists-stack' });
     var add = function (node) { if (node) wrap.appendChild(node); };
+
+    add(helloLine());
 
     if (asked && !state.deck && !state.lesson && !state.song && !state.talk) {
       add(goneCard());
@@ -4043,12 +4171,23 @@
     /* Where this device left off, if the address does not say: the deck, the
        lesson, the song or the conversation the front door reopens instead of
        the shelf — see rememberHere(). Asked for in the same one request. */
-    var resumed = asked ? '' : (storeGet(LAST_KEY) || '');
+    /* And where the address names nothing at all — no deck and no part of
+       the shelf — the front door: a stranger is put in front of the first
+       card of FIRST_DECK rather than a menu, which is **The front door**
+       under **Flashcards** in README.md. A link to a part of the shelf opens
+       that part, the way a link to a deck opens the deck. */
+    var door = !asked && !new URLSearchParams(window.location.search).has('part');
+    var resumed = door ? (storeGet(LAST_KEY) || '') : '';
+    var fresh = door && !resumed && !storeGet(BEEN_KEY);
     if (resumed) asked = resumed;
+    else if (fresh) asked = FIRST_DECK;
 
     var query = new URLSearchParams();
     query.set('lang', wanted().join(','));
     if (asked) query.set('deck', asked);
+    /* Days in a row are asked for only here: nothing but the front door says
+       them. assets/flashcard-first.js builds the same address. */
+    if (door) query.set('hello', '1');
 
     /* Usually already asked: assets/flashcard-first.js works out the same
        address in the head and sends it while this file is still downloading.
@@ -4100,23 +4239,47 @@
         go(id, false);
       });
 
-      if (resumed && (!state.user || (!state.deck && !state.lesson && !state.song))) {
-        /* A place remembered for somebody no longer signed in, or a deck, a
-           lesson or a song that has gone since: the front door is the shelf after
-           all, asked for a second time — rare, and the one case where this
-           page makes two requests on the way in. */
-        forgetHere();
+      var found = !!(state.deck || state.lesson || state.song || state.talk);
+      doorDays = state.user ? (answer.out.days || null) : storedDays();
+      storeSet(BEEN_KEY, '1');
+
+      if (fresh && state.user) {
+        /* Signed in on a device that has never opened this page: not a
+           stranger, whatever the device says, so the shelf rather than the
+           first card — asked for a second time, since the first answer was
+           only the deck. Rare, and one of the two cases where this page makes
+           two requests on the way in. */
         asked = '';
         go('', false);
+      } else if ((resumed || fresh) && !found) {
+        /* A deck, a lesson, a song or a conversation that has gone since it
+           was left open — one of your own deleted in another tab, or one the
+           file no longer ships. A member is put on the shelf; somebody signed
+           out has no shelf of their own to be put on, so they get the
+           stranger's door — unless it was the stranger's door that has gone,
+           FIRST_DECK taken out of the file, when the shelf is all there is.
+           The other of the two cases with two requests. */
+        forgetHere();
+        asked = '';
+        if (state.user || fresh) {
+          go('', false);
+        } else {
+          go(FIRST_DECK, true);
+          /* After go(), which clears the line on every walk and draws when
+             its answer lands, so the line is there by then. */
+          hello = 'first';
+          TTBTrack.event('flash_first', { deck_id: FIRST_DECK });
+        }
       } else {
-        if (resumed) {
+        if ((resumed || fresh) && found) {
           /* The address says where this is, as it would after a press, and
              the front door stays under it, so the back button leaves the deck
              rather than the site. */
           try {
-            window.history.pushState(null, '', deckHref(resumed));
+            window.history.pushState(null, '', deckHref(asked));
           } catch (e) { /* an old browser keeps the address; the page is right */ }
-          TTBTrack.event('flash_resume', { deck_id: resumed });
+          hello = fresh ? 'first' : 'back';
+          TTBTrack.event(fresh ? 'flash_first' : 'flash_resume', { deck_id: asked });
         }
         render();
       }

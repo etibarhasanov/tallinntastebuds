@@ -9404,28 +9404,127 @@ at the same card would have put you.
 So the front door reopens what this device had open: the deck a run was going
 in, or the lesson being read, or the song being listened to, or the
 conversation being read. `rememberHere()` in `assets/flashcard.js` writes
-it on every draw and `boot()` reads it when the address does not name a deck —
-the page asks the route for that deck in the same one request it would have
+it on every draw and `boot()` reads it when the address names neither a deck
+nor a part of the shelf — the page asks the route for that deck in the same one request it would have
 asked for the shelf with, then puts the deck's address on the history so the
 back button goes to the shelf rather than leaving the site. Only what was
 actually underway is ever reopened: the shelf, the end of a run, the gate, a
 shut stage and the editor all clear it, so nobody is put back on a screen they
 had finished with, and a remembered place that has gone — a deck deleted in
-another tab — falls back to the shelf and is forgotten.
+another tab — is forgotten, and the door is the shelf for a member and the
+stranger's first card for anybody else, who has no shelf of their own to go
+back to.
 
 **The device's, and not the account's.** It is `ttb.flash.last` in this
 origin's `localStorage`, beside the language, rather than a column on the
 account, because it is a fact about where *this* was closed: a phone closed on
 *Food and drink* and a laptop closed on the shelf were closed in two places,
 and a laptop that opened on the phone's deck would be a jump nobody made. It
-costs no column, no write and no string in ten languages. And only signed in:
-signed out the run is the tab's and goes with the tab, so there is nothing to
-come back to, and a stranger's front door stays the nine decks and the offer of
-an account.
+costs no column and no write.
+
+**And signed out as well, since November 2026.** It was signed in only, on
+the argument that signed out the run is the tab's and goes with the tab, so
+there was nothing to come back to and a stranger's front door stayed the
+shelf and the offer of an account. The answers are still the tab's — the five
+free words are five a tab, **Signed out, five words to a tab** — but *which
+deck it was* is a fact about this device like any other, and between 8 October
+and 5 November 2026 only 19 of 111 signed-out opens reached a deck at all. So
+the deck is remembered for anybody, and somebody who comes back to it is
+welcomed back to it: **The front door** below. Nothing of it reaches the
+server; it is the same key in the same store, written for one more kind of
+reader.
 
 **What a link does is unchanged.** An address carrying `?d=` opens what it
-names, as it always did, and a walk back to the shelf with *All the decks* is a
-decision to be on the shelf, so the next front door is the shelf too.
+names, as it always did, and so does one carrying `?part=` — a link to the
+songs opens the songs, where it used to be overruled by whatever deck this
+device had open. A walk back to the shelf with *All the decks* is a decision to
+be on the shelf, so the next front door is the shelf too.
+
+### The front door
+
+The blog said it in October: the next thing to build was a front door that puts
+a card in front of a newcomer and welcomes somebody back to where they left
+off. The numbers it said it over, 8 October to 5 November 2026 with the owner
+left out: 245 views of this page, 123 of them the first page of the visit and
+107 of those on a phone; 121 views ended with nothing pressed, and 240 of 397
+opens in the flow diagrams lasted under five seconds. A stranger was being
+shown a menu — Start, five parts, a card for each — and asked to choose before
+they had seen what the page does, which is put a word in front of you and ask.
+
+**So a stranger is shown the word.** Where the address names nothing and this
+device has never opened the flashcards — no `ttb.flash.been` in its
+`localStorage` — the front door opens on the first card of `FIRST_DECK` in
+`assets/flashcard.js`, *Hello and goodbye*, front up: **Tere**. Over the deck's
+name is one line set as a sentence (`--body`), `flashHelloFirst`: *Estonian, one card at
+a time. Here's the first.* Everything under it is the deck as any link to it
+draws it — the five free words, the gate, *All the decks* in the head as the
+way to the shelf. *Hello and goodbye* rather than *At the table* because it is
+the most opened deck on the shelf and one short word is a gentler first card
+than a question about a table. `ttb.flash.been` is written once the first
+answer is drawn, because `ttb.flash.last` cannot say whether somebody has been
+here: it is cleared on purpose by a walk to the shelf, and without a second key
+the person who chose the shelf would be a stranger again next time.
+
+A member on a device that has never been here is not a stranger, whatever the
+device says. The page cannot know who is signed in until the first answer is
+back, so it asks for the first deck anyway and, seeing a user in the answer,
+asks again for the shelf — one of the two cases where this page makes two
+requests on the way in; a remembered deck that has gone is the other.
+
+**And somebody coming back is welcomed back.** Over the deck, the lesson, the
+song or the conversation the door reopens, the same line says, out of
+`helloLine()`: *Welcome back* — and *4 days in a row* while a run of days is
+going, or *you've been away 9 days* after a break of two or more; then, signed
+in, *you know 134 words* and *in this deck, 12 of 27*; signed out, *here's
+where you were*, since there is no count of words for somebody whose answers
+went with the tab. The figures are set as names (`--display`) in the accent, a
+notch below the shelf's count of words. The line goes with the first answer or
+the first walk anywhere: it is a door, not a header.
+
+**It was drawn twice.** The other drawing was a welcome card in front of the
+deck — *Welcome back*, the count, a filled **Carry on** and *All the decks* —
+and it lost because it put a press between somebody and the card, on a page
+where half the views already end with nothing pressed. The card is the carry
+on.
+
+`flash_first` counts the door opening on a stranger and `flash_resume` the door
+reopening somebody's deck, signed in or out — **Analytics**. Measured two weeks
+after it landed against the figures above: views with nothing pressed, opens
+that reach a deck, and learners who come back.
+
+### Days in a row
+
+Until November 2026 this page refused to count them — **What it does not do**
+said "no streaks", and **How many words you know** that the count was
+"deliberately not a badge, a streak or a level". The owner reversed the first
+half of that, for the front door's sake: of the 69 accounts only 2 were really
+active, and 9 of the 10 who signed up in the four weeks before never came back
+after their first day. A number that says you came back yesterday is a reason
+to come back today.
+
+**What is counted is a day with an answer in it** — a card known or missed, a
+lesson read, a song heard — on the reader's own calendar, not Tallinn's, for
+the reason **The spacing, which is off** measures from the answer: somebody
+revising at eleven at night in Baku has not missed a day because it turned
+midnight somewhere else. The page sends its own day, `YYYY-MM-DD`, with every
+answer; the route holds it to two days either side of its own and uses its own
+when it is not.
+
+**Signed in, the days are `flashcard_days`**, one row a person a day, written
+by `noteDay()` in `functions/api/flashcard.js` with `INSERT OR IGNORE`, so the
+second answer of a day writes nothing. `flashcard_known` could not have said
+it: it keeps the last time each card was seen, not the days in between.
+`daysOf()` answers the last day and how many ran into it, and only for the
+front door, which asks with `?hello=1`; what that means today is the page's to
+work out, against a today the server does not know. **Signed out, the days are
+`ttb.flash.days`** in the device's own `localStorage` — the same two facts,
+written by `keep()` on every answer — and never reach the server.
+
+**What it is not.** No flame, no badge, no record to beat, no warning that a
+run is about to end, and nothing anywhere but the front door's line. A run of
+one is not said — "1 day in a row" is nobody's sentence — and neither is a
+single day away, which is just yesterday. After a break the line says how long,
+and the count starts again with the next answer.
 
 ### And a radio while you learn it
 
@@ -9502,8 +9601,10 @@ script on the site and is deferred behind the tag, the radio and the language
 switch — so the route did not hear a thing until all four had downloaded and
 run, and only then started on the file and the database. On a phone those were
 two waits end to end. `assets/flashcard-first.js` is a dozen lines, `async` in
-the head, and it works out the same address `boot()` would — `?d=` or where
-this device left off, and the languages in the same order — and sends it at
+the head, and it works out the same address `boot()` would — `?d=`; or, where
+the address names no part of the shelf either, where this device left off or
+the first deck for a device that has never been here, with `hello=1`; and the
+languages in the same order — and sends it at
 once, so the answer is on its way while the scripts are still arriving.
 `boot()` takes that answer only when the address it built is the same one
 character for character; if the two files ever drift, the cost is one wasted
@@ -10097,8 +10198,9 @@ sentence around it and was read straight past.
 It is the only thing on that page that is about the person rather than about
 the decks. Forty-two rows each saying "9 / 22" is forty-two facts and no
 score, and a score is what somebody who came back on a Tuesday wants: the
-number that was 128 last week. It is deliberately not a badge, a streak or a
-level — there is nothing to be out of, and a box drawn round it would make it a
+number that was 128 last week. It is deliberately not a badge or a
+level, and the days in a row are said once, at the front door, rather than
+here — **Days in a row** — there is nothing to be out of, and a box drawn round it would make it a
 mark rather than a count.
 
 **It is the stages' own number, said out loud.** `wordsKnown()` in
@@ -10129,7 +10231,9 @@ line above it has already said so.
 ### The menu, and Start
 
 The shelf is five parts with a menu across the top of it — **Start · Words ·
-Grammar · Songs · Conversations** — and the front door opens on Start. It was
+Grammar · Songs · Conversations** — and the shelf opens on Start: for a
+member, and for anybody who has been here before and walked back to it; a
+stranger's front door is a card, **The front door** above. It was
 one column, and the column had become fifty-two decks with the grammar, the
 fourteen cases and the songs filed between its first stage and its second:
 somebody who came for a song scrolled past *Hello and goodbye* to find it.
@@ -11680,7 +11784,9 @@ deliberately not made in the change that brought this page.
 ### What it does not do
 
 No typing the answer in, no matching game, no test
-mode — not even one to jump a stage with — no streaks, no decks anybody can
+mode — not even one to jump a stage with — no badges or records for the days
+in a row, which are counted once on the front door and said nowhere else
+(**Days in a row**), no decks anybody can
 share, and no notifications — this site has no address for anybody, and that
 has not changed for this. And no spacing: a card known stays known, and
 **The spacing, which is off** above says why and how it would come back.
@@ -18251,7 +18357,8 @@ Flashcards, `assets/flashcard.js`:
 | `flash_talk_open` | `talk_id` — a conversation's tile under the Conversations heading |
 | `flash_talk_read` | `talk_id` — Read it at the foot of a conversation, read before or not — see **Conversations, which are read** |
 | `flash_talk_word` | `talk_id`, `word` — a word of a conversation pressed and its box opened, as it is written and lowercased; a press that shuts the box is not counted — see **Conversations, which are read** |
-| `flash_resume` | `deck_id` — the front door reopening the deck, the lesson, the song or the conversation this device was closed on, which is its id — see **Where you left off** |
+| `flash_resume` | `deck_id` — the front door reopening the deck, the lesson, the song or the conversation this device was closed on, which is its id, signed in or out — see **Where you left off** |
+| `flash_first` | `deck_id` — the front door putting a stranger in front of the first card of `FIRST_DECK`, on a device that has never opened the flashcards; against `flash_knew` with the same `deck_id`, how many of them turn it over — see **The front door** under **Flashcards** |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_turn` | `deck_id` — the first card turned over in a load, and only the first: every turn after it is said by the answer that follows. Before it, a visitor who turned cards and answered none counted as a view with nothing pressed |

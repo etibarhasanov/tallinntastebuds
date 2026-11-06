@@ -584,6 +584,63 @@ async function knownOf(env, user) {
   return out;
 }
 
+/* ------------------------------------------------------------ days in a row
+ * Which days this person answered a card on, one row a day in
+ * flashcard_days, for the line the front door opens with: "4 days in a row",
+ * or "you've been away 9 days". **Days in a row** under **Flashcards** in
+ * README.md is the argument for counting it at all, which this page refused
+ * to do until November 2026.
+ *
+ * The day is the reader's own, sent by the page with every answer, because a
+ * streak broken by midnight in a city somebody is not in is a streak that
+ * lies. It is held to two days either side of the server's — a clock set to
+ * 1970 would otherwise be a year of days — and the server's is used instead
+ * when it is not. Both functions survive the table's absence: a deploy lands
+ * before anybody runs the CREATE, and that afternoon is a welcome with no
+ * count rather than an answer that fails. */
+const A_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+function dayOf(said) {
+  const server = Date.now();
+  if (typeof said === 'string' && A_DAY.test(said)) {
+    const at = Date.parse(said + 'T12:00:00Z');
+    if (Math.abs(at - server) <= 2.5 * DAY) return said;
+  }
+  return new Date(server).toISOString().slice(0, 10);
+}
+
+async function noteDay(env, user, said) {
+  try {
+    await env.DB
+      .prepare('INSERT OR IGNORE INTO flashcard_days (user_id, day) VALUES (?, ?)')
+      .bind(user.id, dayOf(said))
+      .run();
+  } catch (e) { /* no table yet: the answer itself has already been written */ }
+}
+
+/* The last day practised and how many days ran into it, unbroken. What that
+   means today is the page's to work out, against the reader's own today —
+   this side does not know what day it is where they are. A year is as far
+   back as it counts, which is a count nobody will reach before this comment
+   is out of date. */
+async function daysOf(env, user) {
+  if (!user) return null;
+  try {
+    const { results } = await env.DB
+      .prepare('SELECT day FROM flashcard_days WHERE user_id = ? ORDER BY day DESC LIMIT 366')
+      .bind(user.id)
+      .all();
+    const days = (results || []).map((r) => r.day);
+    if (!days.length) return null;
+    let run = 1;
+    while (run < days.length &&
+           Date.parse(days[run - 1] + 'T12:00:00Z') - Date.parse(days[run] + 'T12:00:00Z') === DAY) run += 1;
+    return { last: days[0], run: run };
+  } catch (e) {
+    return null;
+  }
+}
+
 /* How many of the shipped cards this person knows, across every deck: the
    number the stages open on. Summed over the decks on the shelf — each with
    the ids of its cards, which is all the index carries of them — rather than
@@ -773,10 +830,13 @@ export async function onRequestGet(context) {
      address names or — on the shelf — the decks they wrote and the cards in
      them. Each is a round trip to D1, and in a row they were most of the time
      a signed-in page spent waiting before it could draw a card. */
-  const [known, mine, own] = await Promise.all([
+  const [known, mine, own, days] = await Promise.all([
     knownOf(env, user),
     asked ? deckOf(env, asked, user) : null,
-    !asked && user ? ownDecks(env, user) : null
+    !asked && user ? ownDecks(env, user) : null,
+    /* Only for the front door, which is the one place the page says it — the
+       page asks with ?hello=1 when the address it opened on named nothing. */
+    params.get('hello') ? daysOf(env, user) : null
   ]);
 
   /* What every answer below carries, whichever deck it is about: the three
@@ -789,7 +849,7 @@ export async function onRequestGet(context) {
   const words = wordsKnown(decks, known);
   const base = {
     ready: ready, google: google, user: who,
-    words: words, gates: GATES,
+    words: words, gates: GATES, days: days,
     ...(await wordsFor(context, params.get('lang'), DECK_LANGS))
   };
 
@@ -1237,6 +1297,10 @@ async function mark(context, body, user, knew) {
           : [user.id, deckId, cardId]))
         .run());
   }
+
+  /* Either answer is a day practised: a word got wrong was still a word
+     looked at. See daysOf() above. */
+  await noteDay(env, user, body.day);
 
   return json({ ok: true }, 200);
 }

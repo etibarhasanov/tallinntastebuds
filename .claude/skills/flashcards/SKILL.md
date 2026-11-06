@@ -64,7 +64,7 @@ A new *kind* of thing is new: a block a lesson has never had, a view, an
 action on a deck, a way to answer a card. That is described first, as
 **Something new is described before it is built** says. **What it does not
 do** under **Flashcards** is the list of what was considered and refused —
-shuffling, typing the answer, streaks, spacing, a voice on somebody's own
+shuffling, typing the answer, spacing, a voice on somebody's own
 deck — and a proposal that brings one back says why the reason given there
 no longer holds.
 
