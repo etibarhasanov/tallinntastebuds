@@ -255,6 +255,24 @@
  * and two facts. It began counting the day it shipped and nothing before
  * that can be split by device, because the time was never filed with one.
  *
+ * ON THE MAP AND ON THE FLASHCARDS
+ *
+ * How long somebody new stays on each product under the colour they were
+ * dealt there — the map, the flashcards, and everything else as `other` —
+ * since `secs` under THE FOUR COLOURS is the whole visit and `time` has no
+ * colour. Under the `stay` kind, `<page>:<colour>:visitors` once a day per
+ * place, on the first page there that day, and `<page>:<colour>:secs` on
+ * every report after; firstStay() in assets/track.js keeps the once-a-day,
+ * and STAY_PAGES below is which pages are told apart. New visitors only,
+ * and only under a dealt colour, the test's own rule; and filed again by
+ * device like every fact (BY DEVICE), which is how phones and desktops are
+ * read apart. The flashcards live on their own host with their own storage,
+ * so their colour is dealt there and may not be the one the same person was
+ * dealt on the map: the kind says which colour works on each product, never
+ * which colour one person met. Three places, four colours, two facts —
+ * twenty-four ids a day at most. It began counting on 2026-11-06, and
+ * nothing before can be split by page.
+ *
  * BY DEVICE
  *
  * Every fact a page reports is counted twice: once as it always was, and
@@ -361,7 +379,8 @@
  * with the same pages in them are the same number of rows. The pages, the
  * visitor kinds, the colours and the facts counted under them are lists
  * written here — twelve ids a day at the most for the `cohort` kind,
- * another sixty-four for `style`, nine for `rail` and ten for `ask` — and so
+ * another sixty-four for `style`, twenty-four for `stay`, nine for `rail`
+ * and ten for `ask` — and so
  * are the steps of SIGNING UP,
  * a page's worth of them for each page that has a form; the languages are
  * the ones data/ui.json speaks, and WHAT IT WAS ABOUT is the stories, posts,
@@ -509,6 +528,11 @@ export const PAGES = [
 /* The four colours a newcomer may be dealt — STYLE_DEALS in assets/track.js,
    STYLE_ARMS in ./stats.js. THE FOUR COLOURS. */
 const COLOURS = ['red', 'green', 'blue', 'plum'];
+
+/* The pages the time of somebody new is told apart on, by their ids in
+   PAGES; every other page is `other` — ON THE MAP AND ON THE FLASHCARDS. */
+const STAY_PAGES = ['map', 'flashcard'];
+const STAY_PLACES = STAY_PAGES.concat(['other']);
 
 /* New and returning — see NEW AGAINST RETURNING. */
 const WHO = ['new', 'back'];
@@ -725,6 +749,11 @@ function phoneOf(body) {
   return PHONE_ARMS.includes(body.phone) ? body.phone : null;
 }
 
+/* The place a page's time is told under — ON THE MAP AND ON THE FLASHCARDS. */
+function stayOf(page) {
+  return STAY_PAGES.includes(page) ? page : 'other';
+}
+
 /* New or returning, or null where the browser could not keep the date. */
 function whoOf(body) {
   return WHO.includes(body.who) ? body.who : null;
@@ -792,8 +821,10 @@ function foundOf(from, at) {
 /* A page opened: `id` is its path, `first` and `back` what ttb.seen said,
    `who` what ttb.since said, `from` the referrer it was opened with, `at`
    its whole address, `style` the colour it was dealt if any, `asks` the language the
-   browser asks for, `device` phone, tablet or desktop, and `tag` the
-   `?from=` where the address had one. */
+   browser asks for, `device` phone, tablet or desktop, `stay` whether it is
+   somebody new's first page today on the map, the flashcards or elsewhere —
+   ON THE MAP AND ON THE FLASHCARDS — and `tag` the `?from=` where the
+   address had one. */
 export async function countArrive(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
@@ -820,6 +851,9 @@ export async function countArrive(context, body) {
     if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
     const phone = phoneOf(body);
     if (phone) facts.push(['phone', phone + ':visitors', 1]);
+  }
+  if (body.stay === true && colour && whoOf(body) === 'new') {
+    facts.push(['stay', stayOf(page) + ':' + colour + ':visitors', 1]);
   }
   const tag = typeof body.tag === 'string' ? body.tag.toLowerCase() : '';
   if (TAG.test(tag)) facts.push(['tag', tag, 1]);
@@ -963,6 +997,7 @@ export async function countLeave(context, body) {
   split(facts, colour, who, 'secs', secs);
   const phone = phoneOf(body);
   if (phone && secs > 0) facts.push(['phone', phone + ':secs', secs]);
+  if (colour && who === 'new' && secs > 0) facts.push(['stay', stayOf(page) + ':' + colour + ':secs', secs]);
 
   let pressed = 0;
   const presses = body.presses && typeof body.presses === 'object' ? body.presses : {};
@@ -1162,6 +1197,9 @@ function paired(one, two, a, b) {
  *              COLOURS
  *   phones     [{ id, visitors, secs }] the twelve `<rail>:<colour>` cells
  *              of phone newcomers over the range — TIME ON PHONES
+ *   stays      [{ id, map, flashcard, other }] the four colours, each place
+ *              { visitors, secs } of newcomers over the range — ON THE MAP
+ *              AND ON THE FLASHCARDS
  *   pages      [{ id, name, views, secs, left, idle, secsLeft }] most
  *              viewed first: `left` the views that reported how they ended,
  *              `idle` the ones that reported nothing pressed, and `secsLeft`
@@ -1245,6 +1283,9 @@ export async function readVisitors(env, span, ui, spoken, device) {
   const cohorts = new Map(WHO.map((id) => [id, { id: id, ...facts() }]));
   const colours = new Map(COLOURS.map((id) => [id, { id: id, back: 0, ...facts(), fresh: facts() }]));
   const phones = new Map(PHONE_ARMS.map((id) => [id, { id: id, visitors: 0, secs: 0 }]));
+  const stays = new Map(COLOURS.map((id) => [id, {
+    id: id, ...Object.fromEntries(STAY_PLACES.map((p) => [p, { visitors: 0, secs: 0 }]))
+  }]));
   const sofar = { fresh: 0, back: 0, login: 0, signup: 0 };
 
   /* The days that tell new from returning, and the days that counted which
@@ -1278,6 +1319,11 @@ export async function readVisitors(env, span, ui, spoken, device) {
       const cell = phones.get(r.id.slice(0, at));
       const fact = r.id.slice(at + 1);
       if (cell && (fact === 'visitors' || fact === 'secs')) cell[fact] += r.n;
+    }
+    else if (r.kind === 'stay') {
+      const [place, colour, fact] = r.id.split(':');
+      const into = stays.get(colour);
+      if (into && STAY_PLACES.includes(place) && (fact === 'visitors' || fact === 'secs')) into[place][fact] += r.n;
     }
     else if (r.kind === 'signup') {
       const at = r.id.indexOf(':');
@@ -1325,6 +1371,7 @@ export async function readVisitors(env, span, ui, spoken, device) {
     cohorts: [...cohorts.values()],
     colours: [...colours.values()],
     phones: [...phones.values()],
+    stays: [...stays.values()],
     pages: PAGES
       .filter((p) => pages.has(p.id))
       .map((p) => ({ id: p.id, name: pageName(ui, p.id), ...pages.get(p.id) }))

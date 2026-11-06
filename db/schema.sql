@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Twenty-eight kinds, one
+-- the key, one row per fact per day, and a number. Twenty-nine kinds, one
 -- of them no longer written:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
@@ -340,6 +340,11 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   '<rail>:<colour>:secs', the rail a, b or none, and b
 --                   for everybody since 2026-11-05 — TIME ON PHONES in
 --                   _visitors.js
+--   kind 'stay'     a newcomer under a dealt colour, by where the time
+--                   was spent: '<page>:<colour>:visitors' once a day per
+--                   page and '<page>:<colour>:secs', the page map,
+--                   flashcard or other — ON THE MAP AND ON THE FLASHCARDS
+--                   in _visitors.js, since 2026-11-06
 --   kind 'lang'     id is '<who>:<code>' for the language a visitor arrived
 --                   in, '<who>:secs:<code>' for seconds read in it, and
 --                   '<from>><to>' for a switch pressed
