@@ -3855,13 +3855,24 @@
   /* Something that cannot be undone by pressing the same button again, said
      at the weight of a notice rather than of a footnote: the accent colour, a
      rule down its edge, and the same size as the words it is warning about.
-     Both places it is used — losing a forgotten password for good, and
-     turning every other device out — are that kind of thing. */
-  function accountWarn(words) {
+     Every place it is used — losing a forgotten password for good, turning
+     every other device out, a name given up, an account deleted — is that
+     kind of thing.
+
+     `ico` is the one other thing said at that weight: an in-app browser
+     where Continue with Google cannot work, which is not a warning but is
+     the line that stands where the button would be, and wears a circled i
+     rather than the triangle — see googleInApp(). */
+  var AC_WARN_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
+    '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>';
+  var AC_INFO_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18z"/>' +
+    '<path d="M12 11v5"/><circle cx="12" cy="7.8" r=".9"/></svg>';
+
+  function accountWarn(words, ico) {
     return el('p', { className: 'ac-warn', role: 'note' }, [
-      el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
-        '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
-        '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>' }),
+      el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html: ico || AC_WARN_ICO }),
       el('span', { textContent: words })
     ]);
   }
@@ -3944,7 +3955,7 @@
        deployment with no Google client set is a deployment where this button
        could only end on an error page of Google's. */
     if (state.account.google) {
-      form.appendChild(googleGo());
+      form.appendChild(TTBDevice.inApp() ? googleInApp() : googleGo());
       form.appendChild(googleOr());
     }
 
@@ -3969,14 +3980,10 @@
        back. */
     if (creating) form.appendChild(accountWarn(t('accountNoReset')));
 
-    /* And where it says what an account keeps, for anybody who wants to know
-       before they make one rather than after. A link and not a box to tick:
-       nothing here is agreed to, it is said. */
-    if (creating) {
-      form.appendChild(el('p', { className: 'ac-why' }, [
-        TTBTrack.click(el('a', { href: '/privacy', textContent: t('privacySignup') }), 'privacy_open', { from: 'signup' })
-      ]));
-    }
+    /* What an account keeps is said at /privacy, behind More. It was a link
+       here too, under the warning, until November 2026: the sheet had more to
+       read than to fill in, and the owner took the line out with the rest of
+       what made it long. */
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
     go.addEventListener('click', function () {
@@ -4059,6 +4066,11 @@
       (device ? '&client=' + encodeURIComponent(device) : '');
   }
 
+  /* Out of the app and into the phone's own browser. */
+  var AC_OUT_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false" class="ac-out-ico"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/>' +
+    '<path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+
   function googleGo() {
     return TTBTrack.click(
       el('a', { className: 'ac-google', href: googleHref() }, [
@@ -4066,6 +4078,27 @@
         el('span', { textContent: t('accountGoogle') })
       ]),
       'account_google', { view: accountView }
+    );
+  }
+
+  /* Inside Instagram's, Facebook's or TikTok's own browser, where Google
+     refuses to sign anybody in (`disallowed_useragent`) and never sends them
+     back: in October 2026 eleven of eighteen trips out never came back, in a
+     month most arrivals came from those three apps. On Android the button
+     takes the same trip from the phone's own browser instead — TTBDevice.outside()
+     hands the address to it — and on an iPhone, where no page can leave the
+     app's browser, it is a line saying where in the app's menu to tap. The
+     username and password under it work in either. */
+  function googleInApp() {
+    var app = TTBDevice.inApp();
+    var out = TTBDevice.outside(googleHref());
+    if (!out) return accountWarn(t('accountGoogleInApp', { app: app }), AC_INFO_ICO);
+    return TTBTrack.click(
+      el('a', { className: 'ac-google', href: out }, [
+        el('span', { className: 'ac-google-mark', 'aria-hidden': 'true', html: AC_OUT_ICO }),
+        el('span', { textContent: t('accountGoogleBrowser') })
+      ]),
+      'account_google_browser', { app: app }
     );
   }
 

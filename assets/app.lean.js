@@ -2323,11 +2323,16 @@
     return link;
   }
 
-  function accountWarn(words) {
+  var AC_WARN_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
+    '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>';
+  var AC_INFO_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18z"/>' +
+    '<path d="M12 11v5"/><circle cx="12" cy="7.8" r=".9"/></svg>';
+
+  function accountWarn(words, ico) {
     return el('p', { className: 'ac-warn', role: 'note' }, [
-      el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
-        '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5 21 19.5H3z"/>' +
-        '<path d="M12 10v4"/><circle cx="12" cy="16.7" r=".9"/></svg>' }),
+      el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html: ico || AC_WARN_ICO }),
       el('span', { textContent: words })
     ]);
   }
@@ -2371,7 +2376,7 @@
     accountMessages(form);
 
     if (state.account.google) {
-      form.appendChild(googleGo());
+      form.appendChild(TTBDevice.inApp() ? googleInApp() : googleGo());
       form.appendChild(googleOr());
     }
 
@@ -2385,12 +2390,6 @@
     }));
 
     if (creating) form.appendChild(accountWarn(t('accountNoReset')));
-
-    if (creating) {
-      form.appendChild(el('p', { className: 'ac-why' }, [
-        TTBTrack.click(el('a', { href: '/privacy', textContent: t('privacySignup') }), 'privacy_open', { from: 'signup' })
-      ]));
-    }
 
     var go = accountSubmit(creating ? 'accountCreate' : 'accountSignIn');
     go.addEventListener('click', function () {
@@ -2446,6 +2445,10 @@
       (device ? '&client=' + encodeURIComponent(device) : '');
   }
 
+  var AC_OUT_ICO =
+    '<svg viewBox="0 0 24 24" focusable="false" class="ac-out-ico"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/>' +
+    '<path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+
   function googleGo() {
     return TTBTrack.click(
       el('a', { className: 'ac-google', href: googleHref() }, [
@@ -2453,6 +2456,19 @@
         el('span', { textContent: t('accountGoogle') })
       ]),
       'account_google', { view: accountView }
+    );
+  }
+
+  function googleInApp() {
+    var app = TTBDevice.inApp();
+    var out = TTBDevice.outside(googleHref());
+    if (!out) return accountWarn(t('accountGoogleInApp', { app: app }), AC_INFO_ICO);
+    return TTBTrack.click(
+      el('a', { className: 'ac-google', href: out }, [
+        el('span', { className: 'ac-google-mark', 'aria-hidden': 'true', html: AC_OUT_ICO }),
+        el('span', { textContent: t('accountGoogleBrowser') })
+      ]),
+      'account_google_browser', { app: app }
     );
   }
 

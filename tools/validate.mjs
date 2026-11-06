@@ -2431,6 +2431,31 @@ if (ui !== null && isPlainObject(ui)) {
   }
 }
 
+/* 1d. The in-app browsers, which are written out twice.
+
+   SOURCES in functions/api/_visits.js names Instagram's, TikTok's and
+   Facebook's own browsers by their user agents, to file a visit and to count
+   google_out_inapp; IN_APP in assets/device.js names the same three, so the
+   sign-in forms stop offering Continue with Google where Google will refuse
+   it. Neither dialect can import the other, so this is what keeps the
+   patterns the same: an app the server counts and the page never notices is
+   a button that goes on dead-ending, and the other way round is a line
+   telling somebody in a browser that works that it does not. */
+
+{
+  const visits = readFileSync(join(ROOT, 'functions', 'api', '_visits.js'), 'utf8');
+  const device = readFileSync(join(ROOT, 'assets', 'device.js'), 'utf8');
+  const server = [...visits.matchAll(/\{ id: '([a-z]+)', ua: (\/.+?\/[a-z]*), hosts/g)]
+    .map((m) => m[1] + ' ' + m[2]);
+  const browser = [...device.matchAll(/^\s*\['([A-Za-z]+)', (\/.+?\/[a-z]*)\],?$/gm)]
+    .map((m) => m[1].toLowerCase() + ' ' + m[2]);
+  if (!browser.length) {
+    fail('assets/device.js', 'has no IN_APP rows, so no sign-in form can tell an in-app browser');
+  } else if (server.join('\n') !== browser.join('\n')) {
+    fail('assets/device.js', `IN_APP is [${browser.join('; ')}] and SOURCES in functions/api/_visits.js is [${server.join('; ')}] — one of the two has moved`);
+  }
+}
+
 /* 2. A colour token one style has and the other has not.
 
    Both styles are meant to restate every token, so that pressing the swatch

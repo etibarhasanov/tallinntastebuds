@@ -1190,6 +1190,34 @@
     );
   }
 
+  /* Inside Instagram's, Facebook's or TikTok's own browser Google refuses to
+     sign anybody in and never sends them back, so the button is not offered
+     there: on Android it becomes the same trip from the phone's own browser,
+     and on an iPhone, where no page can leave the app's browser, a line
+     saying where in the app's menu to tap. googleInApp() in assets/app.js is
+     the map's copy and says why; the two icons are the ones it draws. */
+  function googleInApp() {
+    var app = TTBDevice.inApp();
+    var out = TTBDevice.outside(googleHref());
+    if (!out) {
+      return el('p', { className: 'ac-warn', role: 'note' }, [
+        el('span', { className: 'ac-warn-ico', 'aria-hidden': 'true', html:
+          '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18z"/>' +
+          '<path d="M12 11v5"/><circle cx="12" cy="7.8" r=".9"/></svg>' }),
+        el('span', { textContent: t('accountGoogleInApp', { app: app }) })
+      ]);
+    }
+    return TTBTrack.click(
+      el('a', { className: 'ac-google', href: out }, [
+        el('span', { className: 'ac-google-mark', 'aria-hidden': 'true', html:
+          '<svg viewBox="0 0 24 24" focusable="false" class="ac-out-ico"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/>' +
+          '<path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>' }),
+        el('span', { textContent: t('accountGoogleBrowser') })
+      ]),
+      'account_google_browser', { app: app, via: 'flashcard' }
+    );
+  }
+
   /* ------------------------------------------------------------- signing in
    * Continue with Google, or two fields and a switch between making an
    * account and signing in to one — the same actions, the same fields and the
@@ -1204,7 +1232,7 @@
     /* Before the fields, the way the map's sheet draws it: the quick way
        first, then the rule, then the form for anybody who would rather not. */
     if (state.google) {
-      form.appendChild(googleGo());
+      form.appendChild(TTBDevice.inApp() ? googleInApp() : googleGo());
       form.appendChild(el('p', { className: 'ac-or' }, [
         el('span', { textContent: t('accountOr') })
       ]));

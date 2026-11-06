@@ -18,7 +18,26 @@
  *
  * Every localStorage touch is in a try/catch: private mode and a blocked
  * store throw, and a device that cannot remember its id makes a new one per
- * page load, which costs a duplicate save and nothing else.
+ * page load, which costs a duplicate save and nothing else. *
+ * WHICH APP'S BROWSER THIS IS, AND HOW TO LEAVE IT
+ *
+ * window.TTBDevice.inApp() answers 'Instagram', 'Facebook' or 'TikTok' when
+ * the page is open inside that app's own browser, and '' anywhere else.
+ * Google refuses to sign anybody in inside those (`disallowed_useragent`)
+ * and never sends them back, so the sign-in forms ask this before drawing
+ * Continue with Google. The patterns are SOURCES in
+ * functions/api/_visits.js, which files a visit by the same question and
+ * counts google_out_inapp with it; neither dialect can import the other, so
+ * they are written twice and `node tools/validate.mjs` holds the two to each
+ * other, the way it holds the pins.
+ *
+ * window.TTBDevice.outside(path) answers an address that opens `path` on
+ * this site in the phone's own browser, or '' where a page cannot do that.
+ * On Android it can: an intent: link with no package named is handed to
+ * whatever browser the person uses by default, Chrome, Firefox or Samsung's.
+ * On an iPhone nothing a page offers can leave Instagram's browser for
+ * Safari, so the answer there is '' and the form says where in the app's
+ * own menu to tap instead.
  */
 (function () {
   'use strict';
@@ -65,5 +84,27 @@
     return storeGet(CID_KEY) || '';
   }
 
-  window.TTBDevice = { id: id, known: known };
+  /* Instagram before Facebook, because Instagram's browser has at times
+     carried Facebook's markers as well as its own — the order SOURCES keeps. */
+  var IN_APP = [
+    ['Instagram', /\bInstagram\b/],
+    ['TikTok', /BytedanceWebview|musical_ly|\bTikTok\b/i],
+    ['Facebook', /\bFBA[NV]\b|FB_IAB|\bFB4A\b/]
+  ];
+
+  function inApp() {
+    var agent = navigator.userAgent || '';
+    for (var i = 0; i < IN_APP.length; i++) if (IN_APP[i][1].test(agent)) return IN_APP[i][0];
+    return '';
+  }
+
+  function outside(path) {
+    if (!/Android/i.test(navigator.userAgent || '')) return '';
+    var url = window.location.origin + path;
+    var scheme = window.location.protocol.replace(':', '');
+    return 'intent://' + url.replace(/^[a-z]+:\/\//, '') +
+      '#Intent;scheme=' + scheme + ';S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  }
+
+  window.TTBDevice = { id: id, known: known, inApp: inApp, outside: outside };
 })();
