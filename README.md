@@ -2452,15 +2452,21 @@ empty list and a sentence.
 **`lists` with an `id`** reads that one list through `readList()` in
 `functions/api/_lists.js`, the reader the list page seeds from, signed out:
 every place in its author's order with the author's sentence, the dish
-they say to order, the address and the point, and `on_map`. A place that
-is also on my map carries the map's id and its link, so the assistant can
-follow it with `places` and that id; one that is not — a row out of the Google
-export, or one somebody added by hand — carries a Google Maps search for
-its name and address instead. A private list and an id that does not exist
-are the same sentence, as they are on the page, so the tool cannot be used
+they say to order, the address and the point, its link, and `approved`. A
+place I have eaten at and approved carries the map's id, so the assistant
+can follow it with `places` and that id. Every row out of the Google export
+is on the map too — not approved, but `?spot=` with its key opens it out of
+the find bar's roll — so its link is its address on this site as well, never
+Google's. Only a place somebody typed in by hand, which no roll knows and
+the map cannot open, carries a Google Maps search for its name and address
+instead. The field was `on_map` until 1.3.0, and an assistant read
+`on_map: false` as "not on the map" and handed over Google links for places
+the map draws; `approved` says the thing the flag actually measures.
+
+A private list and an id that does not exist are the same sentence, as they are on the page, so the tool cannot be used
 to learn which codes are real.
 
-Places on a list that are not on my map answer with their name, address
+Places on a list I have not approved answer with their name, address
 and point. Those are public facts about a place, the ones the list page
 draws, and they go to an assistant the same way. Nothing the export says
 *about* a place is added to a row — no rating, no review count — except
