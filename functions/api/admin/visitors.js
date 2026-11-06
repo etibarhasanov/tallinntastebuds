@@ -118,7 +118,7 @@ async function readDeals(env, device) {
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
-const SHAPE = '9';
+const SHAPE = '10';
 
 function visitorsKey(request, lang, span, device) {
   const url = new URL('/api/admin/visitors', request.url);

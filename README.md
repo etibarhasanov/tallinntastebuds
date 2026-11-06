@@ -17775,11 +17775,41 @@ What it will take: around sixty newcomers arrive on an ordinary day, so
 thirty a colour is two or three days, and a real difference between four is
 likelier a few weeks.
 
+### On the map and on the flashcards, apart
+
+The owner means to choose the colour by device, and the counts above cannot
+say where the time went: `secs` under `style` is the whole visit, the map and
+the flashcards and the lists together, and `time` per page has no colour. So
+since 2026-11-06 a newcomer's time is counted a fourth way, under the `stay`
+kind in `visitor_counts`, by where it was spent and the colour dealt:
+`<page>:<colour>:secs` on every report a newcomer under a dealt colour sends,
+and `<page>:<colour>:visitors` once a day per page, on the first report from
+it — `firstStay()` in `assets/track.js` keeps the once-a-day in
+`ttb.stayday`. The page is `map`, `flashcard` or `other` for everything else
+(`STAY_PAGES` in `functions/api/_visitors.js`), so twenty-four ids a day at
+most, and every row is filed again by device the way every fact is (**By
+device**), which is how phones and desktops are read apart. Returning
+visitors, a colour chosen or carried on a link, and the owner are not in it,
+the test's own rules.
+
+What it cannot say: **which colour one person met.** The flashcards keep
+their own storage on their own address and deal their own colour, so a
+newcomer who goes from the map to the flashcards may be Blue on one and Plum
+on the other, and is counted under each where they were. A column says which
+colour holds people on that product; two columns side by side are not one
+person's day. And nothing before 2026-11-06 can be split by page.
+
+What it will take: about sixty phone newcomers a colour arrive in a month,
+fewer of them on the flashcards, so a cell is worth comparing at thirty or so
+— two to four weeks on a range of twenty-eight days. It is worth keeping
+only while the colours are dealt.
+
 ### Ending it
 
-When the numbers say so, delete `dealStyle()`, `styleTold()`, `styleDeal()`
-and their calls in `assets/track.js`, `STYLE_IDS` and the `style` kind in
-`functions/api/stats.js`, the card and its strings. The colours stay as a
+When the numbers say so, delete `dealStyle()`, `styleTold()`, `styleDeal()`,
+`firstStay()` and their calls in `assets/track.js`, `STYLE_IDS` and the
+`style` kind in `functions/api/stats.js`, the `stay` kind and `STAY_PAGES` in
+`functions/api/_visitors.js`, the card and its strings. The colours stay as a
 choice, everybody new opens in Red again — or `DEFAULT_STYLE` in every page
 moves to the colour that won — and the sixteen rows stay in `press_counts`
 as the record of what was decided.

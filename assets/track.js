@@ -114,7 +114,10 @@
  * one a link carried. And the colour rides on both of the site's own
  * reports, as `style`, so THE FOUR
  * COLOURS in functions/api/_visitors.js can count every visit's seconds,
- * pages and places under the colour it was spent in. dealStyle() below;
+ * pages and places under the colour it was spent in. The first report on
+ * the map, the flashcards or anywhere else today also says, for somebody
+ * new, that it is the first there — firstStay() below — so the time on
+ * each can be read per newcomer by colour. dealStyle() below;
  * "The four styles, dealt" in README.md.
  *
  * TO REMOVE TRACKING
@@ -367,6 +370,7 @@ window.TTBTrack = (function () {
     } catch (e) { kept = false; }
     first = kept && last !== day;
     if (first) pinPhone();
+    var stay = firstStay();
     send({
       kind: 'arrive',
       id: PAGE,
@@ -387,6 +391,7 @@ window.TTBTrack = (function () {
          already picked one out of it. */
       asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
       phone: phoneArm(),
+      stay: stay,
       tag: TAGGED
     });
     untag();
@@ -507,6 +512,31 @@ window.TTBTrack = (function () {
     var p = null;
     try { p = JSON.parse(window.localStorage.getItem(PHONE_KEY) || 'null'); } catch (e) { p = null; }
     return p && p.day === today() && typeof p.arm === 'string' ? p.arm : '';
+  }
+
+  /* Somebody new, under a dealt colour, on the map, the flashcards or
+     anywhere else for the first time today — ON THE MAP AND ON THE
+     FLASHCARDS in functions/api/_visitors.js, which counts them once a day
+     per place and the seconds of every report after. The three are worked
+     out here as well as there because the once-a-day has to be kept where
+     the day is: `ttb.stayday` holds today and the ones already told, and
+     a new day starts it afresh. The flashcards on their own host keep their
+     own storage, and every page there is the flashcards. Read once, as the
+     page arrives; false where storage cannot keep it, so nobody is counted
+     twice. */
+  var STAY_KEY = 'ttb.stayday';
+
+  function firstStay() {
+    if (who !== 'new' || !styleDealt()) return false;
+    var where = window.location.hostname.indexOf('flashcard.') === 0 || /^\/flashcard(\.html)?$/.test(PAGE)
+      ? 'flashcard' : PAGE === '/' || PAGE === '/index.html' ? 'map' : 'other';
+    try {
+      var kept = JSON.parse(window.localStorage.getItem(STAY_KEY) || 'null');
+      var told = kept && kept.day === today() && kept.told instanceof Array ? kept.told : [];
+      if (told.indexOf(where) !== -1) return false;
+      window.localStorage.setItem(STAY_KEY, JSON.stringify({ day: today(), told: told.concat([where]) }));
+      return true;
+    } catch (e) { return false; }
   }
 
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
