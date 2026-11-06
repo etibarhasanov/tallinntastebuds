@@ -115,7 +115,15 @@ export const REFRESH_AFTER = 30 * 24 * 60 * 60 * 1000;
    thirty-two is also what refreshFill() spends up to, so the cap and the
    floor are the one number. */
 export const BUDGET = {
-  details: { day: 32, month: 950 }
+  details: { day: 32, month: 950 },
+  /* Text Search, asked by the find bar's "Look for it on Google Maps" when
+     nothing on the map or in the export answers — functions/api/lookup.js.
+     Its mask holds to Text Search Pro fields, a SKU billed apart from the
+     Details above with a free allowance of its own several times the size,
+     so a hundred a day and three thousand a month sit well inside it. The
+     route is open to anybody, so this is the whole of what a stranger
+     pressing the button in a loop can spend. */
+  search: { day: 100, month: 3000 }
 };
 
 /* The UTC hour from which the fill may run. The fill takes what the day left,
@@ -188,7 +196,7 @@ function dayOf(now) {
  * A claim is spent whether or not the call then succeeds. Google does not bill
  * a refused call, so this can undercount what is free by the odd failure; it
  * can never overcount what is billed, which is the direction that matters. */
-async function spend(env, kind, now) {
+export async function spend(env, kind, now) {
   const limit = BUDGET[kind];
   if (!limit) return false;
   const day = dayOf(now);

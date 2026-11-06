@@ -188,7 +188,7 @@
  * press the page sends says only that something was typed.
  */
 
-import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wrongDatabase, eatOnly } from './_lib.js';
 /* What a Google row cooks, in the directory's ids, off the one table that
    decides it — and in the order the directory says them, so a card here reads
    the same as a card there. See the note above KITCHENS for why it is that
@@ -519,13 +519,16 @@ async function googleVenues(env) {
 
   let rows = [];
   try {
+    /* Not a museum the find bar looked up on Google: the chat answers with
+       somewhere to eat or drink, `kind = 'eat'`. eatOnly() in _lib.js. */
+    const only = await eatOnly(env);
     const out = await env.DB
       .prepare(
         'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
         'address, postal_code, city, phone, website, opening_hours, maps_url, ' +
         'latitude, longitude, map_id FROM google_venues ' +
         "WHERE hidden = 0 AND missing_since IS NULL AND status = 'Open' " +
-        'AND map_id IS NULL AND latitude IS NOT NULL'
+        'AND map_id IS NULL AND latitude IS NOT NULL' + only
       )
       .all();
     rows = out.results || [];

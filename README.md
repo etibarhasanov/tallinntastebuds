@@ -1345,6 +1345,66 @@ the chat arriving takes the results and their word with it, the same way.
 `showResults()` and `forgetResults()` in `assets/app.js` are the whole of it,
 and `state.results` is what the map is narrowed to.
 
+### Look for it on Google Maps
+
+The bar used to end at *Nothing matches "Kumu".* — a museum, a shop, a café
+that opened after the export was swept, and the city search had nowhere to
+send anybody. Now, when neither my places nor the export answer, a button
+sits under that line: **Look for "Kumu" on Google Maps**. Pressing it asks
+Google, held to Tallinn's box, and the dropdown reads *Asking Google Maps…*
+until up to five places come back under **From Google Maps**, or under the
+usual heading when the words already reach them by name. A row works like
+any Google venue's: a pin, and the card. The owner chose the shape in
+November 2026 — anyone may press it, what it finds is searchable afterwards,
+and it is a button rather than a search that fires by itself, because each
+press is a call against a budget and a dropdown redraws on every letter.
+
+**What Google answers is kept.** `/api/lookup` writes every place into
+`google_venues`, so the next person typing *kumu* finds Kumu in the roll
+`/api/places` already sends, and never sees the button — one call to Google
+per place, not per visitor. A row is only ever inserted, never written over,
+so a place the export already has, or one the owner hid, stays as it was. Two
+columns say what the export's rows do not: `found_at`, when it was looked up,
+which keeps the export's load from marking it missing for not being in a file
+it was never in; and `kind`, what sort of place Google says it is — `eat`,
+`see`, `shop` or `other`, read off Google's types by `kindOf()` in
+`functions/api/lookup.js`, where every row of the export is `eat`. A museum
+is `see`. The find bar still offers it, its card names no kind of place and
+its pin is the plain map pin rather than a knife and fork — and the
+directory, the weekly ranking and the chat leave it out, through `eatOnly()`
+in `functions/api/_lib.js`, because those three are the city's restaurants
+and a museum is not one.
+
+`kind` is a word rather than a yes or no because the owner asked for the
+table not to be a dead end: ranking the other kinds one day — museums among
+museums, never a gallery's 4.9 pushing a restaurant down the city's order —
+is `PARTITION BY kind` in `_rank.js` and the clause dropped, with no new
+column and nothing else in the table to change. One table rather than a
+second one for the city's other places, so that saves, lists, links and the
+export's load all keep reading the one key they already read.
+
+And every one of them can be shared — **A Google place has a link too**
+under **Sharing a place**.
+
+**What it costs.** Text Search with a mask of Pro fields — name, street,
+point, kinds, listing — so a press never bills at the Enterprise price the
+refresh's ratings do. `BUDGET.search` in `functions/api/_refresh.js` is a
+hundred a day and three thousand a month, claimed in the database before
+anything leaves, and that is the whole of what a stranger pressing it in a
+loop can spend; the same words twice in a day are answered out of the colo's
+cache. The rating, the hours and the phone come the first time somebody opens
+the place, through the refresh that keeps every row current (**Keeping it
+current** under **Google venues**).
+
+**When it cannot.** No `GOOGLE_MAPS_API_KEY`, and `GET /api/lookup` answers
+`ready: false` and the button never appears — the dead end is what it was.
+Google with nothing in Tallinn for the words: *Google Maps has nothing in
+Tallinn for "Kumu" either.* (`findGoogleNone`). The day's budget spent,
+Google refusing, or a database without the two columns: *Looking on Google is
+resting for today. Try again tomorrow.* (`findGoogleResting`). Whichever it
+was, the button does not come back for the same words while they are in the
+field. `findLookUp()` and ON GOOGLE MAPS in `assets/app.js` are the page's half.
+
 ### Where it stands
 
 In the strip of chrome across the top — the row `--chrome-h` in
@@ -2554,6 +2614,31 @@ site's card — a filter has no name and a story is gone within the day. And
 the note beside `/list/<id>` in that file, and it applies here word for word.
 
 ---
+
+
+### A Google place has a link too
+
+Everything somebody finds in the find bar can be shared, the city's places as
+well as mine, and whatever **Look for it on Google Maps** brought back with
+them — the owner's word, in November 2026: if it was searched and found, it is
+on the map now, and it is sharable. The card's Share button used to be hidden
+on every stand-in, because a stand-in's link opened a bare map; but
+`/?spot=<Google key>` has opened its venue out of the find bar's roll since the
+blog's cards needed it, so a stand-in with a Google key — capitals, which
+nothing else here has — gets the button wherever it came from: the bar, a
+list, the chat. A place somebody typed into a list by hand still does not:
+nothing outside that list knows it. `paintShare()` in `assets/app.js`.
+
+Pasted into a message, the link unfurls as that place rather than as the site:
+the name, then *Weizenbergi 34, 10127 Tallinn. Found on Tallinn Tastebuds —
+not one of its own places.* (`foundCard`, in the link's language), and the
+mark for a picture, since nothing here holds a photograph of it.
+`googleSpot()` in `functions/index.js` reads the row by its key once per colo,
+and only a row the roll would offer — not hidden, not missing, not the Google
+copy of a place of mine. It is a card and not a page: the canonical, the
+JSON-LD and the text stay the map's, the way a closed place's do, because a
+thousand addresses whose every word is Google's would be a thousand thin
+pages under this site's name, and none of them is somewhere it vouches for.
 
 ## Languages
 
@@ -4918,6 +5003,20 @@ The columns split in two, and the split is the point:
 | **Google's** — `name`, `category`, `cuisine`, `rating`, `reviews`, `price`, `status`, `address`, `postal_code`, `city`, `phone`, `website`, `opening_hours`, `tags`, `latitude`, `longitude`, `maps_url` | overwritten by every refresh, without asking |
 | **Derived from Google's** — `rank` | the same, and for the same reason |
 | **Mine** — `map_id`, `hidden`, `note` | never touched by a refresh |
+| **The find bar's** — `found_at`, `kind` | written once, by `/api/lookup`, on a row it inserts; `kind` is `eat` on every row of the export |
+
+Not every row came out of the export any more. A row the find bar looked up
+on Google Maps carries `found_at`, and a `kind` of `see`, `shop` or `other`
+where it is a museum or a shop rather than somewhere to eat; the export's
+load leaves such a row alone, and the directory, the ranking and the chat
+read `eat` alone. See
+**Look for it on Google Maps** under **Finding anywhere in Tallinn**. Both
+columns are appended by hand on a database made before them:
+
+```sql
+ALTER TABLE google_venues ADD COLUMN found_at INTEGER;
+ALTER TABLE google_venues ADD COLUMN kind TEXT NOT NULL DEFAULT 'eat';
+```
 
 `rank` is the one column Google did not send. It is where a place stands among
 all 1,111 once Google's rating is weighed by Google's review count — `ranked()`
@@ -18109,6 +18208,7 @@ The map, `assets/app.js`:
 | `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map — and for `map`, `results`, how many places the column was left showing. `/admin/found` counts the words too; see **How they found it** |
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
+| `find_google` | `search_term` — **Look for it on Google Maps** pressed, when nothing in the find bar answered |
 | `find_clear` | — the cross on the find bar |
 | `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
 | `find_area` | `search_term`, `results` — Search this area, the same words over the part of the map on screen |

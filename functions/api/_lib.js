@@ -803,11 +803,50 @@ export function venueEntry(row) {
        flatters. */
     rating: typeof row.rating === 'number' ? row.rating : null,
     reviews: typeof row.reviews === 'number' ? row.reviews : null,
+    /* `see`, `shop` or `other`, and only on a row the find bar looked up on
+       Google Maps that is not somewhere to eat or drink — a museum — so the
+       map draws it the plain pin and not a fork. Absent on `eat`, and
+       wherever the row was read without the column, which is every reader
+       but the two that offer such a row: /api/places and /api/lookup. */
+    ...(row.kind && row.kind !== 'eat' ? { kind: row.kind } : {}),
     /* Not "is this row from the table" — the id already says that. It is
        "whose description this is", and it travels with the description so
        that nothing downstream can draw one without the other. */
     google: true
   };
+}
+
+/* The clause that keeps a reader of google_venues to the places to eat and
+ * drink, when the table can tell them apart.
+ *
+ * Since November 2026 the table holds more than the export: the find bar's
+ * "Look for it on Google Maps" (functions/api/lookup.js) keeps whatever
+ * Google answered, so the next person typing the same word finds it without
+ * asking again — and what Google answers to "Kumu" is a museum. Each row says
+ * what sort of place it is in `kind`: `eat` for every row of the export and
+ * every café or bar looked up, `see`, `shop` or `other` for the rest. The
+ * find bar offers all four. The three things that read the table as the
+ * city's restaurants — the directory, the weekly ranking and the chat — read
+ * `eat` alone, through this.
+ *
+ * The column arrives by a hand-run ALTER, and the code is live before
+ * anybody runs it, so it is asked about once per isolate the way `rank` is
+ * in ./venues.js: a database without it has no looked-up rows either, and
+ * the clause is empty. Only "no such column" is remembered; a database that
+ * is down answers empty this once and is asked again next time. A non-empty
+ * answer is also how a reader learns the column is there to select. */
+let kindColumn;
+export async function eatOnly(env) {
+  if (kindColumn === undefined) {
+    try {
+      await env.DB.prepare('SELECT kind FROM google_venues LIMIT 0').all();
+      kindColumn = true;
+    } catch (e) {
+      if (!/no such column/i.test(String((e && e.message) || e))) return '';
+      kindColumn = false;
+    }
+  }
+  return kindColumn ? " AND kind = 'eat'" : '';
 }
 
 /* The venues behind a set of ids, as a Map. Ids that are not in the table —

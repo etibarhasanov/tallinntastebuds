@@ -1195,7 +1195,28 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- Appended for the same reason `rank` is:
   --   ALTER TABLE google_venues ADD COLUMN refreshed_at INTEGER;
   -- Until that runs, the refresh finds no column and does nothing.
-  refreshed_at INTEGER
+  refreshed_at INTEGER,
+
+  -- When the find bar's "Look for it on Google Maps" put this row here, in
+  -- ms — functions/api/lookup.js, which inserts whatever Google answered to
+  -- words nothing on the map or in the export matched. NULL on every row the
+  -- export loaded. It is what tells db/google-venues.sql to leave the row
+  -- alone: a place that was never in the file is not missing from it.
+  found_at INTEGER,
+  -- What sort of place it is: 'eat' on every row of the export, which is a
+  -- sweep of exactly that, and on every café or bar the find bar looks up;
+  -- 'see' for a museum, a gallery, a sight or a park; 'shop'; and 'other'.
+  -- kindOf() in functions/api/lookup.js reads it off Google's types, which
+  -- `tags` keeps whole. The find bar offers all four; the directory, the
+  -- weekly ranking and the chat read 'eat' alone — eatOnly() in
+  -- functions/api/_lib.js. A word rather than a yes or no so that ranking
+  -- museums among museums one day is PARTITION BY kind in _rank.js and not
+  -- another column. Both appended for the reason `rank` is:
+  --   ALTER TABLE google_venues ADD COLUMN found_at INTEGER;
+  --   ALTER TABLE google_venues ADD COLUMN kind TEXT NOT NULL DEFAULT 'eat';
+  -- Until they run, /api/lookup answers no-database and the button is a
+  -- polite dead end; nothing else notices.
+  kind TEXT NOT NULL DEFAULT 'eat'
 );
 
 -- Best-first, which is the order the export itself is sorted in and the order

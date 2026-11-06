@@ -256,8 +256,11 @@ window.TTBPins = (function () {
      Falls through to the fork and knife and not to the map pin: this answers
      "what is this place", and for half the export the answer really is
      "somewhere you sit and eat". The map pin is what a LIST defaults to,
-     which is a different question. */
-  function forKinds(kitchens, types) {
+     which is a different question — and what a place that is not somewhere
+     to eat or drink wears: a museum the find bar looked up on Google Maps
+     says `kind: 'see'`, and a fork on it would be a lie. */
+  function forKinds(kitchens, types, kind) {
+    if (kind && kind !== 'eat') return DEFAULT_PIN;
     var all = (kitchens || []).concat(types || []);
     for (var j = 0; j < all.length; j++) {
       if (Object.prototype.hasOwnProperty.call(KINDS, all[j])) return KINDS[all[j]];

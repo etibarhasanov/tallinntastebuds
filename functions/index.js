@@ -72,6 +72,22 @@
  * two and three hundred without asking where the words are; the description
  * for a search engine is the whole write-up.
  *
+ * A GOOGLE PLACE IS A CARD, AND NOT A PAGE
+ *
+ * ?spot= with a Google key opens that venue out of the find bar's roll —
+ * any of the export's eleven hundred, and anything somebody has since found
+ * with Look for it on Google Maps, which is kept there. The card's Share
+ * button hands that link out, so the link gets a card of its own too: the
+ * name for a title, the street and foundCard's line saying it is not one of
+ * this site's own places, and the mark for a picture, because nothing here
+ * holds a photograph of it. Read out of google_venues by its key, once per
+ * colo per place like every other card here, and only while the row is one
+ * the roll would offer. It is not a page: the canonical, the JSON-LD and the
+ * text are the map's, the way a closed place's are, because a thousand
+ * addresses whose every word is Google's description would be a thousand
+ * thin pages under this site's name, and none of them is somewhere it vouches
+ * for. **A Google place has a link too** under **Sharing a place**.
+ *
  * A closed place keeps its card and is not a page. Its ?spot= link still
  * opens, because links that were shared still work, and the card says so
  * first — closedFlag, in the card's language, before the write-up, so a card
@@ -208,7 +224,7 @@
  * page the asset server could not give is not a page to keep.
  */
 
-import { mapPlaces, dataFile } from './api/_lib.js';
+import { mapPlaces, dataFile, venueEntry, wrongDatabase } from './api/_lib.js';
 import {
   SITE, esc, seed, rehead, canonical, fill, EMPTY,
   REVALIDATE, deployStamp, coloKey, fromColo, keepInColo
@@ -431,6 +447,32 @@ function structuredData(request, places, ui, lang, spot) {
   return { '@context': 'https://schema.org', '@graph': graph };
 }
 
+/* A Google venue for a ?spot= that names one, in the shape card() reads:
+   the name, the street and the point, and `google` to say whose. Only a row
+   the find bar's roll would offer — not hidden, not missing, not tied to a
+   place of mine, which has its own card — and null for anything else, a
+   database that cannot answer included, so the link falls back to the
+   map's own card rather than failing. */
+async function googleSpot(context, id) {
+  const { env } = context;
+  if (!/^[A-Za-z0-9_-]{16,128}$/.test(id) || !/[A-Z]/.test(id)) return null;
+  if (!env.DB || (await wrongDatabase(env))) return null;
+  try {
+    const row = await env.DB
+      .prepare(
+        'SELECT place_id, name, address, postal_code, city, latitude, longitude FROM google_venues ' +
+        'WHERE place_id = ? AND hidden = 0 AND missing_since IS NULL AND map_id IS NULL'
+      )
+      .bind(id)
+      .first();
+    if (!row || !row.name) return null;
+    const entry = venueEntry(row);
+    return { id: entry.id, name: entry.name, address: entry.address, lat: entry.lat, lng: entry.lng, google: true };
+  } catch (e) {
+    return null;
+  }
+}
+
 /* ------------------------------------------------------------- the card
  * What an unfurler reads: the site's own for the map, and the place's for a
  * place — see the header for the four decisions. The map's title and
@@ -455,10 +497,12 @@ function card(request, spot, ui, lang, self) {
      data/ui.json promises exactly that — so the card says so before the
      write-up sells a kitchen that is not cooking. For good or for the
      moment: the two are different words on the card and the same rule. */
-  const said = blurbOf(spot, lang) || spot.address || '';
+  const said = spot.google
+    ? String(ui.foundCard || '').replace('{address}', spot.address || 'Tallinn')
+    : blurbOf(spot, lang) || spot.address || '';
   const flag = spot.closed === 'temporary' ? ui.venuesShutFor : ui.closedFlag;
   const description = clip(spot.closed && flag ? flag + '. ' + said : said);
-  const photo = photoOf(spot);
+  const photo = spot.google ? '' : photoOf(spot);
 
   return [
     /* A restaurant at a coordinate is a place, which is a type Open Graph
@@ -522,18 +566,23 @@ export async function onRequest(context) {
      whether that makes it a page, which a closed place is not. */
   const wanted = params.get('spot');
   const spot = wanted ? places.find((place) => place.id === wanted) || null : null;
+  /* A Google venue's card is read out of the database, so it is asked for
+     only once the colo has no copy of this address — see googleSpot(). */
+  const google = !spot && wanted && /[A-Z]/.test(wanted) ? wanted : null;
   const page = spot && !spot.closed ? spot : null;
 
   /* The copy this colo already holds, if it does — see the header. */
-  const key = mapKey(request, lang, spot, stamp);
+  const key = mapKey(request, lang, spot || (google && { id: google }), stamp);
   const hit = await fromColo(request, key, REVALIDATE);
   if (hit) return hit;
+  const venue = google ? await googleSpot(context, google) : null;
+  const shown = spot || venue;
 
   /* The page, and the headers _headers gives it — see the header. */
   const res = await context.next();
 
   const self = addressOf(request, lang, page && page.id);
-  const title = spot ? spot.name + SUFFIX : ui.documentTitle;
+  const title = shown ? shown.name + SUFFIX : ui.documentTitle;
   const description = page ? blurbOf(page, lang) || ui.metaDescription : ui.metaDescription;
 
   let html = rehead(await res.text(), [
@@ -548,7 +597,7 @@ export async function onRequest(context) {
     '<link rel="alternate" hreflang="x-default" href="' + esc(addressOf(request, DEFAULT_LANG, page && page.id)) + '">',
     ...Object.keys(languages).sort().map((code) =>
       '<link rel="alternate" hreflang="' + esc(code) + '" href="' + esc(addressOf(request, code, page && page.id)) + '">'),
-    ...card(request, spot, ui, lang, spot ? addressOf(request, lang, spot.id) : self),
+    ...card(request, shown, ui, lang, shown ? addressOf(request, lang, shown.id) : self),
     '<script type="application/ld+json">' + seed(structuredData(request, places, ui, lang, page)) + '</script>'
   ].join('\n'));
 
