@@ -12925,9 +12925,18 @@
       } else {
         seatSaved();
         /* And any other Google venue a link names — a card in a member's
-           post on the blog, which may pin any place in the city — is looked
-           up in the find bar's roll and opened the way a row of the bar
-           opens it. A key the roll does not carry is the bare map. */
+           post on the blog, which may pin any place in the city, or the
+           Share button on any Google place — is looked up in the find bar's
+           roll and opened the way a row of the bar opens it.
+
+           A key the roll does not carry is asked for by itself, from
+           /api/venues?ids=, before the link gives up on it. /api/places is
+           kept five minutes in the browser, so a place somebody has just
+           found with Look for it on Google Maps is missing from the copy
+           their own browser holds — and the first thing a person does with
+           a place they just found is share it and open the link. It went
+           out that way once: Logi saun, looked up, shared, and opened as a
+           bare map. A key nobody knows at all is still the bare map. */
         if (spot && !byId(spot) && !/^[a-z0-9-]+$/.test(spot)) {
           findLoad().then(function (roll) {
             if (state.selected || byId(spot)) return;
@@ -12937,7 +12946,13 @@
                 return;
               }
             }
-          });
+            return getJSON('/api/venues?ids=' + encodeURIComponent(spot)).then(function (rows) {
+              var row = Array.isArray(rows) ? rows[0] : null;
+              if (!row || row.id !== spot || state.selected || byId(spot)) return;
+              if (!findKeep(row, roll)) return;
+              selectPlace(seatFound(row).id, { fly: true });
+            });
+          }).catch(function () { /* the bare map, which is what it was */ });
         }
       }
 

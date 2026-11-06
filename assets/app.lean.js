@@ -7565,7 +7565,13 @@
                 return;
               }
             }
-          });
+            return getJSON('/api/venues?ids=' + encodeURIComponent(spot)).then(function (rows) {
+              var row = Array.isArray(rows) ? rows[0] : null;
+              if (!row || row.id !== spot || state.selected || byId(spot)) return;
+              if (!findKeep(row, roll)) return;
+              selectPlace(seatFound(row).id, { fly: true });
+            });
+          }).catch(function () { /* the bare map, which is what it was */ });
         }
       }
 
