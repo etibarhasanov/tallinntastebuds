@@ -713,8 +713,15 @@ coordinates: a dot drawn from yesterday's reading would be a lie about today.
 The owner asked for it in as many words — somebody who gave their location
 once should not have to give it again to land on their own street.
 
-It stays out of the way in four places. A link that was about something — a
+It stays out of the way in five places. A link that was about something — a
 place, a row of a list, a list, a story — opens on that and not on you. A
+walk home — the name in the header pressed on the map, or on a page that
+loaded outside it, so the map arrived from a link on the site's own origin —
+draws the dot and turns the list, but leaves the city on screen:
+`walkedHome()` reads the referrer and the navigation's type, and a reload, a
+bookmark or a link from elsewhere is still an arrival. Pressing the name to
+get the city back used to take it away again, every time, until the owner
+asked for it to stop. A
 place opened in the seconds the fix takes is not flown away from. A reading
 that fails, or lands more than 25 km from everything, says nothing and leaves
 the city on screen, because nobody pressed anything. And a refusal — the

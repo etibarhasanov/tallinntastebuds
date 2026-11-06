@@ -7329,6 +7329,8 @@
     renderList();
 
     if (quiet && state.selected) return;
+
+    if (quiet && hereStill) { hereStill = false; return; }
     frameHere(latlng, quiet, pressed);
   }
 
@@ -7338,10 +7340,23 @@
 
   var herePressed = false;
 
+  var hereStill = false;
+
+  function walkedHome() {
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type !== 'navigate') return false;
+      return !!document.referrer &&
+        new URL(document.referrer).origin === window.location.origin;
+    } catch (e) { return false; }
+  }
+
   function resumeHere() {
     if (!storeGet(HERE_KEY) || !navigator.geolocation) return;
+    var still = walkedHome();
     var go = function () {
       hereQuiet = true;
+      hereStill = still;
       map.locate({ setView: false, timeout: 10000, maximumAge: 60000 });
     };
     if (!navigator.permissions || !navigator.permissions.query) { go(); return; }

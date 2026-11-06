@@ -12579,6 +12579,11 @@
        has opened in the seconds the fix took: flying them off it to frame
        where they are standing answers a question they stopped asking. */
     if (quiet && state.selected) return;
+
+    /* And walked back to by the name in the header, it leaves the city where
+       it was: the dot goes on, the list turns to Nearest you, and the map
+       does not move. See walkedHome(). One reading's worth, then spent. */
+    if (quiet && hereStill) { hereStill = false; return; }
     frameHere(latlng, quiet, pressed);
   }
 
@@ -12600,6 +12605,26 @@
      that sheet rather than a toast. */
   var herePressed = false;
 
+  /* The arrival's own locate, when the arrival was a walk home rather than a
+     visit: it draws the dot and leaves the view alone. */
+  var hereStill = false;
+
+  /* Whether this load of the map was a link followed from one of the site's
+     own pages — the name in the header, pressed on the map itself or on a
+     page opened outside the shell. Opening on your own street is the greeting
+     for somebody arriving; for somebody who pressed the name to get the city
+     back, it took the city away again, every time, and the owner asked for it
+     to stop. A reload, a bookmark, a typed address and a link from anywhere
+     else are still arrivals and still open on you. */
+  function walkedHome() {
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type !== 'navigate') return false;
+      return !!document.referrer &&
+        new URL(document.referrer).origin === window.location.origin;
+    } catch (e) { return false; }
+  }
+
   /* Somebody who gave the map their location once opens it on themselves
      every time after, the way a map app does. Never the first time — that is
      still the button's to ask — and never once the browser says the answer
@@ -12609,8 +12634,10 @@
      somebody who has already said it. */
   function resumeHere() {
     if (!storeGet(HERE_KEY) || !navigator.geolocation) return;
+    var still = walkedHome();
     var go = function () {
       hereQuiet = true;
+      hereStill = still;
       map.locate({ setView: false, timeout: 10000, maximumAge: 60000 });
     };
     if (!navigator.permissions || !navigator.permissions.query) { go(); return; }
