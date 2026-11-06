@@ -2236,7 +2236,10 @@ somewhere to eat in Tallinn, or for a top ten of bakeries, the assistant
 asks the site, and the answer it writes carries my write-up, the dish to
 order, whose list it is and the link. `functions/mcp.js` is the whole of
 it: one Function, reads only, no model of its own, no AI binding, no write
-to anything. Nothing a visitor to the site sees changes.
+to anything. Nothing a visitor to the site sees changes. Beside the two
+it lists ChatGPT's pair, **search** and **fetch**, the shape ChatGPT
+insists on before it will use a connector anywhere but Developer mode —
+**And ChatGPT's two** below.
 
 ### Connecting it
 
@@ -2247,7 +2250,34 @@ connector:
   `https://tallinntastebuds.ee/mcp` as the URL. On a paid plan; a connector
   added on the web is there in the apps too.
 - **ChatGPT** — Settings → Apps & Connectors, with *Developer mode* on
-  (paid plans), then *Create* with the same URL. No authentication.
+  (paid plans), then *Create* with the same URL. No authentication. With
+  `search` and `fetch` listed, the same connector is also one Deep
+  Research and company knowledge can be pointed at, where an admin's
+  workspace allows custom connectors.
+- **Claude Code** — `claude mcp add --transport http tallinntastebuds
+  https://tallinntastebuds.ee/mcp`.
+- **Cursor, VS Code, Windsurf, Gemini CLI, LM Studio and the rest** — any
+  client that takes a remote server by URL over Streamable HTTP: the same
+  address, no headers. In a JSON config that is `{"url":
+  "https://tallinntastebuds.ee/mcp"}` under `mcpServers` (VS Code's
+  `servers` wants `"type": "http"` beside it, Gemini CLI calls the key
+  `httpUrl`). A client that speaks only stdio reaches it through
+  `npx mcp-remote https://tallinntastebuds.ee/mcp`.
+- **In a browser** — the MCP Inspector, or any page, can call it directly:
+  every answer carries `Access-Control-Allow-Origin: *` and `OPTIONS`
+  answers the preflight. Nothing here reads a cookie, so a page can read
+  what any server can.
+
+It introduces itself as **Tallinn Tastebuds** with the site's icon
+(`icon-192.png` and `icon-48.png` out of `assets/logo/`), a line saying
+what it is and a link to the site — the 2025-11-25 `title`, `description`,
+`icons` and `websiteUrl` in `serverInfo`, which is what the assistants draw
+in their list of connectors. A client that predates them shows the id,
+`tallinntastebuds`, and ignores the rest.
+
+A client that looks for OAuth first — Claude and ChatGPT both do, at
+`/.well-known/oauth-protected-resource` — is answered the site's 404, and
+takes that as a server that needs no sign-in. Nothing is there on purpose.
 
 An assistant reads the tool list and the instructions when it connects, and
 a chat that is already open keeps what it read. So after this server
@@ -2259,8 +2289,9 @@ card with *Allow once* and *Always allow*, and a server cannot switch that
 off: both tools are marked read-only, which is the only thing it can say,
 and the client asks anyway, once per tool. *Always allow* on each, or both
 set to it under Settings → Connectors → TallinnTastebuds, and it never
-asks again. That card is why there are two tools and not four — **The two
-tools** below.
+asks again. That card is why there are two tools of the map's own and not
+four — **The two tools** below — and ChatGPT's pair adds two more cards
+for a Claude that calls them, which their descriptions steer it away from.
 
 Then ask it something — *somewhere for a date in Kalamaja*, *cheap Asian
 food near the bus station*, *a top 10 bakery list* — and look at whether
@@ -2386,8 +2417,9 @@ the deployment as they always did.
 
 Streamable HTTP, stateless, JSON only. `POST /mcp` takes one JSON-RPC 2.0
 message and answers with one; a notification — `notifications/initialized`,
-anything with no id — is a 202 with no body; `GET`, `DELETE` and the rest
-are a 405 with `Allow: POST`, which is how a server declines the stream.
+anything with no id — is a 202 with no body; `OPTIONS` is a browser's
+preflight and a 204; `GET`, `DELETE` and the rest are a 405 with `Allow:
+POST, OPTIONS`, which is how a server declines the stream.
 `initialize` answers with the client's version when it is one the server
 speaks and with the newest otherwise, out of 2025-11-25, 2025-06-18 and
 2025-03-26; an unknown method is `-32601`, bad params `-32602`, a body that
@@ -2414,6 +2446,35 @@ curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/js
 curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"places","arguments":{"query":"ramen","limit":3}}}'
 ```
+
+### And ChatGPT's two
+
+ChatGPT uses a connector in three places: a chat with Developer mode on,
+Deep Research, and company knowledge. Only the first calls whatever tools
+it is handed. The other two call exactly two, by name, in a shape OpenAI
+fixed, and refuse a connector without them — and on a plan without
+Developer mode that is everywhere. So the server lists them as well:
+
+- **`search`** takes one `query` and answers `{"results": [{"id",
+  "title", "url"}]}`: the `places` search with nothing but the words, in
+  English, ten at most, in the same order.
+- **`fetch`** takes one of those ids and answers `{"id", "title", "text",
+  "url", "metadata"}`. `text` is the place as a page — the address, the
+  kinds of place, my write-up, what to order, the price on the map's
+  scale, the sentence that being on the map is the verdict, the link and
+  the Google Maps search for hours — because a research model reads text
+  and quotes it. `metadata` is the rest of the row, as `places` with an id
+  gives it. A closed place or an id not on the map is the same `isError`
+  sentence.
+
+Each is JSON in a text block, which is what ChatGPT reads, and carries no
+`outputSchema`. They are over the map and only the map: a list is
+somebody's opinion under their name, and a pair of tools with one query
+box and no field for an author is no place to keep that apart. The cost is
+two more names in every client's tool list, and in Claude two more
+permission cards should it call them; their descriptions point it at
+`places`, which takes the filters and answers with the write-ups in one
+call. That cost was the owner's call, taken for ChatGPT.
 
 ### Deliberately not in this version
 
@@ -2443,8 +2504,11 @@ version argues with a list rather than discovering one:
   `data/flows.json` has no diagram for it either, because the diagrams are
   of people at the site and nothing on the site can see a call made from
   somewhere else.
-- **No REST `/api/v1`, no OpenAPI file**, no ChatGPT app-directory
-  submission.
+- **No REST `/api/v1`, no OpenAPI file**, and no listing anywhere: not
+  Claude's connectors directory, not ChatGPT's app directory, not the MCP
+  Registry. Each is the owner's to submit, under the owner's name, and the
+  registry also wants the domain proved with a key only the owner should
+  hold.
 - **No visible UI**, so nothing in `data/ui.json` and nothing in the
   site's languages.
 

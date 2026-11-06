@@ -3,7 +3,8 @@
  *
  * POST /mcp   one JSON-RPC 2.0 message    ->  one JSON-RPC 2.0 answer
  *             a notification              ->  202, nothing
- * GET, DELETE, anything else on /mcp      ->  405, Allow: POST
+ * OPTIONS     a browser's preflight       ->  204, the CORS headers
+ * GET, DELETE, anything else on /mcp      ->  405, Allow: POST, OPTIONS
  *
  * The Model Context Protocol is how Claude, ChatGPT and the rest are handed
  * a tool: a server says what it can do, and a model calls it in the middle
@@ -70,6 +71,24 @@
  * so the shape does not change with the question. The old four names are
  * still answered on tools/call for a client that read the list before the
  * change and has not read it again, and are listed nowhere.
+ *
+ * AND CHATGPT'S TWO
+ *
+ * ChatGPT uses a connector in three places — a chat with Developer mode on,
+ * Deep Research, and its company-knowledge search — and only the first will
+ * call any tool it is handed. The other two call exactly two, named `search`
+ * and `fetch`, in a shape OpenAI fixed: `search` takes one `query` and
+ * answers `{results: [{id, title, url}]}`, `fetch` takes one of those ids
+ * and answers `{id, title, text, url, metadata}`, each as JSON in a text
+ * block. A connector without them is refused there, and on a plan without
+ * Developer mode it is refused everywhere. So they are listed too, over the
+ * map and only the map — the lists are somebody's opinion, and a pair of
+ * tools with one query box and no author field is no place to keep that
+ * apart — and they are the cost the owner chose to pay for ChatGPT: in
+ * Claude, two more permission cards if it ever calls them. Their
+ * descriptions point it at `places` instead, which takes the filters.
+ * `fetch`'s `text` is the write-up in sentences, with the dishes, the price
+ * and the link, because a research model reads text and quotes it.
  *
  * WHY STATELESS
  *
@@ -150,7 +169,11 @@
  *
  * No `Origin` check: the protocol asks a server on localhost to refuse a
  * browser's rebinding, and this one answers at a public hostname to clients
- * that are servers themselves. No rate limit past Cloudflare's own, no key,
+ * that are servers themselves — and to the few that are a web page, the MCP
+ * Inspector in a browser or a playground, which is why every answer carries
+ * `Access-Control-Allow-Origin: *` and OPTIONS answers a preflight. Nothing
+ * here reads a cookie or a credential, so any page may read what any server
+ * may. No rate limit past Cloudflare's own, no key,
  * nothing counted — this does not go through assets/track.js or /api/stats,
  * so an assistant's call is not a visit and appears on none of the owner's
  * pages, and a list it reads is not an open: the order the lists page opens
@@ -173,7 +196,23 @@ import { SITE } from './_shell.js';
    speaks. THE VERSIONS in the header. */
 const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 
-const SERVER = { name: 'tallinntastebuds', version: '1.0.0' };
+/* How the server introduces itself in `initialize`. `name` is the id a
+   client keys it on and stays as it was; the title, the line under it, the
+   site and the icons are 2025-11-25's, and what Claude and ChatGPT draw in
+   their list of connectors in place of a bare id and a grey square. An
+   older client ignores them. The icons are the site's own, the files the
+   pages' <link rel="icon"> name. */
+const SERVER = {
+  name: 'tallinntastebuds',
+  title: 'Tallinn Tastebuds',
+  version: '1.1.0',
+  description: 'One person\'s map of places to eat and drink in Tallinn, and the lists its members make.',
+  websiteUrl: SITE,
+  icons: [
+    { src: SITE + '/assets/logo/icon-192.png', mimeType: 'image/png', sizes: ['192x192'] },
+    { src: SITE + '/assets/logo/icon-48.png', mimeType: 'image/png', sizes: ['48x48'] }
+  ]
+};
 
 /* The language a write-up falls back to when the one asked for is missing,
    and the one a search is read in beside the asked-for one. The same
@@ -464,6 +503,46 @@ function tools(types, langs) {
         required: ['lists']
       },
       annotations: ANNOTATIONS
+    },
+    /* ChatGPT's two, in the shape it fixed — AND CHATGPT'S TWO. No
+       outputSchema: the shape is the text block's JSON, which is what
+       ChatGPT reads. */
+    {
+      name: 'search',
+      title: 'Search Tallinn Tastebuds',
+      description:
+        'Search the places on Tallinn Tastebuds, one person\'s map of places to eat and drink in ' +
+        'Tallinn they have eaten at and approved, by a few words: a name, a street, a kind of ' +
+        'place, a dish. Answers with ids, names and links; pass an id to `fetch` for the ' +
+        'write-up. When you can call `places` instead, do: it takes a kind of place, a price and ' +
+        'a point to measure from, and answers with the write-ups in one call.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', maxLength: MAX_QUERY, description: 'A few words to look for.' }
+        },
+        required: ['query'],
+        additionalProperties: false
+      },
+      annotations: ANNOTATIONS
+    },
+    {
+      name: 'fetch',
+      title: 'Read a place on Tallinn Tastebuds',
+      description:
+        'Read one place on Tallinn Tastebuds whole, by the id `search` gave: Tallinn Tastebuds\' ' +
+        'own write-up, the dishes to order, the price on the map\'s own scale, the address and ' +
+        'the link. Being on the map is the verdict; there are no scores. Opening hours are not ' +
+        'in it.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', description: 'The id `search` gave.' }
+        },
+        required: ['id'],
+        additionalProperties: false
+      },
+      annotations: ANNOTATIONS
     }
   ];
 }
@@ -471,7 +550,7 @@ function tools(types, langs) {
 /* The names a call may ask for, for the error that names a wrong one. The
    four from before the two are still answered — WHY TWO TOOLS — and are not
    named here, since nothing should be told to call them. */
-const TOOL_NAMES = ['places', 'lists'];
+const TOOL_NAMES = ['places', 'lists', 'search', 'fetch'];
 
 /* ------------------------------------------------------------- a place
  * The row as a tool answers with it. The write-up in one language, the
@@ -842,6 +921,38 @@ function getPlace(raw, places, all, langs) {
     : 'There is no place with the id "' + id + '" on the map.');
 }
 
+/* ChatGPT's two — AND CHATGPT'S TWO in the header. `search` is the search
+   above with nothing but the words, in English, at the most it will answer
+   with; `fetch` is one place as a page of text, the way a research model
+   reads and quotes, with the row's facts beside it in `metadata`. */
+function chatgptSearch(raw, places, types) {
+  const found = search(places, types, {
+    query: optionalString(raw, 'query', MAX_QUERY),
+    at: null,
+    language: DEFAULT_LANG,
+    limit: MAX_LIMIT
+  });
+  return toolResult({ results: found.places.map((p) => ({ id: p.id, title: p.name, url: p.url })) });
+}
+
+function chatgptFetch(raw, places, all, types) {
+  const place = getPlace(raw, places, all, [DEFAULT_LANG]);
+  if (place.isError) return place;
+  const kinds = place.types.map((id) => (types.find((t) => t.id === id) || {})[DEFAULT_LANG] || id);
+  const text = [
+    place.name + ', ' + place.address + '.',
+    kinds.length ? 'Kind of place: ' + kinds.join(', ') + '.' : '',
+    place.blurb ? 'Tallinn Tastebuds\' write-up: ' + place.blurb : '',
+    place.must_order.length ? 'What to order: ' + place.must_order.join('; ') + '.' : '',
+    place.price ? 'Price: ' + place.price + ' on the map\'s own scale of 1 (cheap) to 4 (a tasting menu).' : '',
+    'Being on the Tallinn Tastebuds map is the verdict: there are no scores, stars or rankings.',
+    'On the map: ' + place.url,
+    'Directions and opening hours: ' + place.maps_url
+  ].filter(Boolean).join('\n\n');
+  const { id, name, url, blurb, ...metadata } = place;
+  return toolResult({ id, title: name, text, url, metadata });
+}
+
 /* ----------------------------------------------------------- the protocol
  * One message in, one answer out. The answer to a request carries its id;
  * a notification — no id — and a response the client sends are 202 with no
@@ -907,6 +1018,8 @@ async function answer(context, message) {
       return reply(id, toolResult(search(places, types, searchArgs(args, types, langs))));
     }
     if (name === 'get_place') return reply(id, readOne(getPlace(args, places, all, langs), null));
+    if (name === 'search') return reply(id, chatgptSearch(args, places, types));
+    if (name === 'fetch') return reply(id, chatgptFetch(args, places, all, types));
     if (name === 'lists' || name === 'search_lists' || name === 'get_list') {
       return reply(id, await listCall(context, name, args, all));
     }
@@ -917,13 +1030,31 @@ async function answer(context, message) {
   return fail(id, INVALID_PARAMS, 'Unknown tool: ' + name, 200, { tools: TOOL_NAMES });
 }
 
+/* What a browser needs to be let read an answer, on every answer and on the
+   preflight before one — the CORS note under WHAT IS NOT HERE. The request
+   headers are the ones the transport sends; nothing is credentialed. */
+const CORS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'POST, OPTIONS',
+  'access-control-allow-headers': 'content-type, accept, authorization, mcp-protocol-version, mcp-session-id, last-event-id',
+  'access-control-max-age': '86400'
+};
+
 export async function onRequest(context) {
+  const response = context.request.method === 'OPTIONS'
+    ? new Response(null, { status: 204 })
+    : await handle(context);
+  for (const [key, value] of Object.entries(CORS)) response.headers.set(key, value);
+  return response;
+}
+
+async function handle(context) {
   const request = context.request;
 
   if (request.method !== 'POST') {
     return new Response(null, {
       status: 405,
-      headers: { allow: 'POST', 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+      headers: { allow: 'POST, OPTIONS', 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
     });
   }
 
