@@ -2375,7 +2375,7 @@ guessing.
 
 **`places` with an `id`** — one a search returned — ignores the filters and
 answers with that one place: everything in a search row plus
-every photograph, the phone, the website,
+every photograph,
 when I ate there and when it joined the map, and `maps_url`: Google's own
 listing for the place by its key where Google lists it — the address the
 map's panel opens — and a Google Maps search built out of my own name and
@@ -2399,12 +2399,15 @@ that read it first; `reel_summary`, one plain sentence about what the video
 shows, out of `reelSummary` in the place's row and null wherever nobody
 has written one — never made up from the name or the write-up, since it is
 the only thing the assistant may say about a video it cannot watch;
-`last_visited`, the month I last ate there; and `primary_type`, above.
+`last_visited`, the month I last ate there; `phone` and `website`, mine
+and Google's only where mine is empty — the panel's rule, so the two never
+contradict each other; and `primary_type`, above. With the name, the
+address and the point already there, a search row is enough to ring a
+place, open its site or walk to it without a second call.
 
 And what Google says about the same door, out of the `google_venues` row
 filed against the place through `map_id` — the join **Google, on a place
-of mine** makes for the panel: `google_place_id`, Google's key;
-`opening_hours`, as `weekday_text` — seven lines, Monday first, Tallinn
+of mine** makes for the panel: `opening_hours`, as `weekday_text` — seven lines, Monday first, Tallinn
 time, *Monday: 08:00-18:00*, *Sunday: Closed*, through `venueHours()` in
 `_lib.js` — with its `source` and `checked_at`, the day Google was last
 asked (`refreshed_at`, or the export's `synced_at` where nothing has
