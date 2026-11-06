@@ -46,9 +46,11 @@
  * list and an id that does not exist are the same sentence, as they are on
  * the page, so the tool cannot be used to learn which codes are real.
  *
- * A place on a list that is not on my map is one out of the export or one
+ * A place on a list I have not approved is one out of the export or one
  * somebody added by hand, and it answers with its name, its address and its
- * point. Those are facts about the place, the same ones the list page draws,
+ * point. One out of the export is on the map all the same, out of the find
+ * bar's roll, so its link is its ?spot= on this site like any other; only
+ * the hand-typed one, which the map cannot open, links to a Google search. Those are facts about the place, the same ones the list page draws,
  * and the owner's decision was that they go to an assistant the same way.
  * What does not go is anything the export says *about* a place — its
  * rating, its reviews — except where a list's author wrote it into their own
@@ -214,7 +216,7 @@ const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const SERVER = {
   name: 'tallinntastebuds',
   title: 'Tallinn Tastebuds',
-  version: '1.2.0',
+  version: '1.3.0',
   description: 'A local\'s personal food map of Tallinn: places they\'ve eaten at and approved, ' +
     'with what to order, walking-distance search, and video links.',
   websiteUrl: SITE,
@@ -279,8 +281,9 @@ const INSTRUCTIONS =
   'title and order are its author\'s opinion, not Tallinn Tastebuds\' ' +
   'verdict, so say whose list it is ("on etibar\'s list") and give the ' +
   'list\'s link. Lists by google-statistics are Google\'s ratings, under ' +
-  'Google\'s name: say so. A place on a list with on_map false has no ' +
-  'write-up from Tallinn Tastebuds.';
+  'Google\'s name: say so. A place on a list with approved false is still ' +
+  'on the map and its url opens it there, but it has no write-up from ' +
+  'Tallinn Tastebuds, so never call it approved by Tallinn Tastebuds.';
 
 /* ------------------------------------------------------------ the tools
  * What tools/list hands over. The enums are read out of the deployment —
@@ -400,19 +403,23 @@ const LIST_PLACE_FIELDS = {
   address: { type: ['string', 'null'] },
   lat: { type: ['number', 'null'] },
   lng: { type: ['number', 'null'] },
-  on_map: {
+  approved: {
     type: 'boolean',
-    description: 'Whether it is also on the Tallinn Tastebuds map. When it is, place_id read through the places tool gives the place whole.'
+    description: 'Whether Tallinn Tastebuds has eaten there and approved it, with a write-up of its own. ' +
+      'When it has, place_id read through the places tool gives the place whole. When it has not, the ' +
+      'place is still on the map, out of Google\'s listings, with no write-up from Tallinn Tastebuds.'
   },
-  place_id: { type: ['string', 'null'], description: 'The map\'s id for it when on_map, else null.' },
+  place_id: { type: ['string', 'null'], description: 'The map\'s id for it when approved, else null.' },
   reel: {
     type: ['string', 'null'],
-    description: 'A short video of the place on Instagram when on_map and there is one, else null. Give it as a link to watch.'
+    description: 'A short video of the place on Instagram when approved and there is one, else null. Give it as a link to watch.'
   },
   closed: { type: 'boolean', description: 'Present and true when the map has it as closed.' },
   url: {
     type: 'string',
-    description: 'The place on the map when on_map, else a Google Maps search for it by name and address.'
+    description: 'The place on the Tallinn Tastebuds map — approved or out of Google\'s listings, both open ' +
+      'there. Only a place the list\'s author typed in by hand, which the map cannot open, has a ' +
+      'Google Maps search by name and address here instead.'
   }
 };
 
@@ -514,8 +521,8 @@ function tools(types, langs) {
         'places. An empty `lists` means no list fits. When the conversation turns to one list ' +
         '— "show me that bakery list", "what is on etibar\'s coffee list" — pass its `id`, and ' +
         'it comes back with every place in the order its author put them, what the author ' +
-        'wrote about each, its address and point, and whether it is also on the Tallinn ' +
-        'Tastebuds map. The order is the author\'s, not the site\'s.',
+        'wrote about each, its address and point, its link on the map, and whether Tallinn ' +
+        'Tastebuds has approved it. The order is the author\'s, not the site\'s.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -671,7 +678,7 @@ function detail(place, lang, google) {
 
 /* A Google Maps search for a name and an address, which is a link anybody
    could type and carries nothing out of the export: a place read by its id
-   has one, and so does a place on a list that is not on the map. With
+   has one, and so does a place on a list typed in by hand. With
    Google's key beside it, the search opens that one listing rather than
    Google's guess at the words — the address Google documents for it, and
    the one the map's own panel sends. */
@@ -1029,7 +1036,7 @@ async function searchLists(env, raw) {
    the list page seeds from, so the two cannot disagree about what is on it —
    signed out, so a private list is the null it is to any stranger. Each row
    in the author's order, said in the author's words, with its name, address
-   and point, and the map's id and link when the place is also on the map.
+   and point, its link on the map, and the map's id when the place is approved.
    The list itself, or a tool error saying there is none. */
 async function getList(context, raw, all) {
   const id = optionalString(raw, 'id', 60);
@@ -1051,8 +1058,13 @@ async function getList(context, raw, all) {
     items: list.items.map((row, i) => {
       /* A Google row for a place on the map is `map` too, and carries the
          map's id in `mapId`; a row of mine has only `map`, and its own id is
-         the map's. */
+         the map's. Every other Google row is on the map as well, out of the
+         find bar's roll, and ?spot= with its key opens it there — a Google
+         key always carries capitals, the rule paintShare() in assets/app.js
+         reads. Only a place typed in by hand, lowercase and in no roll, has
+         nowhere on the map to open, and gets a Google Maps search. */
       const mapId = row.mapId || (row.map ? row.place : null);
+      const spot = mapId || (/[A-Z]/.test(row.place) ? row.place : null);
       const out = {
         position: i + 1,
         name: row.name,
@@ -1061,10 +1073,10 @@ async function getList(context, raw, all) {
         address: row.address || null,
         lat: row.lat,
         lng: row.lng,
-        on_map: !!mapId,
+        approved: !!mapId,
         place_id: mapId || null,
         reel: mapId && reels.get(mapId) || null,
-        url: mapId ? SITE + '/?spot=' + encodeURIComponent(mapId) : mapsSearch(row.name, row.address)
+        url: spot ? SITE + '/?spot=' + encodeURIComponent(spot) : mapsSearch(row.name, row.address)
       };
       if (mapId && closed.has(mapId)) out.closed = true;
       return out;
