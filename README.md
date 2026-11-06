@@ -2301,8 +2301,12 @@ server's own instructions, sent the moment a client connects, say what the
 map is and what may not be said about it: that being on the map is the
 verdict, that there are no scores, stars or rankings, that nothing on it is
 to be called rated, ranked or best by Tallinn Tastebuds, that the write-ups
-are mine and the link is always given, and that the opening hours are not
-in this data and should be checked elsewhere. And that a list is its
+are mine and the link is always given, that the opening hours are
+Google's as of the day they were checked and worth confirming — and to be
+checked elsewhere where a place has none — and that a reel's link is
+always in the answer, labelled *Watch the video*, beside the place's link,
+with nothing said about what is in it unless `reel_summary` says so,
+because the assistant cannot watch it. And that a list is its
 author's opinion under their name and never the map's verdict: the
 assistant says whose list it is and gives its link, and says that the lists
 under `google-statistics` are Google's ratings. An assistant reads those
@@ -2348,7 +2352,18 @@ in both, folded the way the map's find bar folds, so *pohjala* finds
 Põhjala. A word in the name counts for more than a word in the write-up,
 and that weight is the whole of the order when no point was given: by how
 well the words matched, then alphabetical. With a point, the order is
-distance and nothing else, with `distance_m` on every row. Never quality,
+distance, with `distance_m` on every row. Either way a `type` splits the
+answer in two and puts the places whose `primary_type` is that kind in
+front, each half in the order above. My own `types` say everything a place
+is, in no order that means anything — the admin page writes them out in
+the taxonomy's — so a bakery search used to come back with KoHo, a
+restaurant that bakes, and a chocolate shop between the bakeries. The
+primary type is the one of the place's own types that Google's single
+category names, through `PRIMARY` in `functions/mcp.js`: *Bakery* makes
+Pulla a bakery, *Restaurant* makes Cafe Tempo a restaurant, and Karu
+Talu's *Chocolate Shop* names none of its three, so it has none. A mood —
+casual, date, laptop — is never a primary type, and a place Google does
+not list has null rather than a guess. Never quality,
 freshness or popularity, because the map does not have an order of those
 and will not be given one here. A closed place is never returned. Nothing
 fitting is a normal answer, not an error: an empty list and a sentence
@@ -2358,9 +2373,10 @@ guessing.
 **`places` with an `id`** — one a search returned — ignores the filters and
 answers with that one place: everything in a search row plus
 every photograph, the phone, the website,
-when I ate there and when it joined the map, and a Google Maps *search*
-link built out of my own name and address — the one place an assistant can
-get directions and today's hours from, and it costs no Google data. An id
+when I ate there and when it joined the map, and `maps_url`: Google's own
+listing for the place by its key where Google lists it — the address the
+map's panel opens — and a Google Maps search built out of my own name and
+address where it does not. An id
 that is not on the map, or a place that has closed, is a tool result with
 `isError` and one plain sentence, because that is an answer to the question
 and not a fault in the asking.
@@ -2368,12 +2384,44 @@ and not a fault in the asking.
 Every row carries `id`, `name`, `address`, `lat`, `lng`, `types`, `price`,
 `blurb` in the language asked for — English where the place has none in it
 — `must_order`, `url` (`https://tallinntastebuds.ee/?spot=<id>`), `photo`
-(the first file in `photos/<id>/`, absolute, or null), `reel` — the
-Instagram video of the place, or null — and `has_reel`, and the
-instructions tell the assistant to give the reel beside the place's link
-as one to watch, so somebody asking where to eat can see the place before
-they go. A place on a list that is also on the map carries its `reel` there
-too, read off the roll rather than the list row. Both
+(the first file in `photos/<id>/`, absolute, or null), and `reel` — the
+Instagram video of the place, or null. The instructions tell the assistant
+to always give the reel as *Watch the video* beside the place's link, so
+somebody asking where to eat can see the place before they go. A place on a list that is also
+on the map carries its `reel` there too, read off the roll rather than the
+list row.
+
+Every row also carries `has_reel`, kept beside `reel` for the clients
+that read it first; `reel_summary`, one plain sentence about what the video
+shows, out of `reelSummary` in the place's row and null wherever nobody
+has written one — never made up from the name or the write-up, since it is
+the only thing the assistant may say about a video it cannot watch;
+`last_visited`, the month I last ate there; and `primary_type`, above.
+
+And what Google says about the same door, out of the `google_venues` row
+filed against the place through `map_id` — the join **Google, on a place
+of mine** makes for the panel: `google_place_id`, Google's key;
+`opening_hours`, as `weekday_text` — seven lines, Monday first, Tallinn
+time, *Monday: 08:00-18:00*, *Sunday: Closed*, through `venueHours()` in
+`_lib.js` — with its `source` and `checked_at`, the day Google was last
+asked (`refreshed_at`, or the export's `synced_at` where nothing has
+refreshed the row); and `temporarily_closed` when Google says so. A link is
+trusted only when it is plainly the same door: the names share a word that
+is not *restaurant* or *bakery* or *Tallinn*, and the two points are
+within 150 metres. A row that fails answers as if Google did not list the
+place, every Google field null, and is logged for the owner to review; on
+the day this landed all sixty-three passed. Never the rating, the review
+count or the rank: the map has no scores, and this door does not lend it
+Google's. The sixty-odd rows are one statement, kept five minutes per
+isolate, and a database that cannot answer leaves those fields null rather
+than costing the places.
+
+`node tools/mcpcheck.mjs --check`, in CI beside the validator, calls the
+Function over the real data files with a stand-in database and holds it to
+all of that: the reel in a search, a read and `fetch`, `reel: null`
+without one, every photo a file on the site, bakeries first, an empty
+search an empty list, a Google row at the wrong door not trusted. Without
+`--check` it also lists the places with a reel and no photograph. Both
 tools are marked read-only, non-destructive, idempotent and closed-world,
 each carries a title and a description written for a model deciding
 whether to call it, with a question or two it should call it for, and each
@@ -2413,10 +2461,10 @@ draws, and they go to an assistant the same way. Nothing the export says
 where a list's author wrote it into their own sentence, which is what
 Google's six lists are.
 
-The lists are the only thing here that reads the database. One that is
-missing, the wrong one, or failing costs the lists — a tool result saying
-they cannot be read right now — and nothing else: the places answer out of
-the deployment as they always did.
+A database that is missing, the wrong one, or failing costs the lists — a
+tool result saying they cannot be read right now — and Google's hours on
+the places, and nothing else: the places answer out of the deployment as
+they always did.
 
 ### The shape of the server
 
@@ -2467,7 +2515,8 @@ Developer mode that is everywhere. So the server lists them as well:
   "url", "metadata"}`. `text` is the place as a page — the address, the
   kinds of place, my write-up, what to order, the price on the map's
   scale, the sentence that being on the map is the verdict, the link and
-  the Google Maps search for hours — because a research model reads text
+  Google's week of hours where there is one, the reel as *Watch the
+  video*, and the Google Maps link — because a research model reads text
   and quotes it. `metadata` is the rest of the row, as `places` with an id
   gives it. A closed place or an id not on the map is the same `isError`
   sentence.
@@ -2494,9 +2543,15 @@ version argues with a list rather than discovering one:
 - **No private lists, and no making or changing one.** Reads of public
   lists only, signed out.
 - **No discounts, profiles or blog posts.**
-- **No opening hours and no "open now".** The map does not hold them; the
-  Google Maps link on a place read by its id is where an assistant sends somebody for
-  today's.
+- **No "open now".** The week is there, Google's, in Tallinn time; working
+  out whether that means open at this minute is the assistant's, and the
+  chat's own `openUntil()` in `api/ask.js` stays where it is rather than
+  growing a third copy here.
+- **No still from the reel yet.** Twenty-eight of the thirty-seven places
+  with a reel have no photograph, so `photo` is null on most of the rows
+  an assistant would most like to show. A still would be a file on the
+  site per place — Instagram's own image addresses expire — and none has
+  been saved yet; `node tools/mcpcheck.mjs` lists the twenty-eight.
 - **No street turned into a point by the server.** The assistant estimates
   the point itself. Looking a typed street up with the Photon geocoder the
   chat uses would be closer, and it would also be the first call this
