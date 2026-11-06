@@ -2177,6 +2177,20 @@ in this data and should be checked elsewhere. An assistant reads those once
 beside every other server it has, so they are a paragraph rather than a
 page.
 
+**It fills in where the person is.** Neither app hands a connector the
+phone's position, and the protocol has no field for one, so *food place
+close to my place* arrives with no point at all — and the first assistant
+asked it asked back for a street before it would search. Correct, and a
+question where an answer was wanted. So the instructions and the search
+tool's description tell the assistant to fill `near_lat` and `near_lng`
+itself whenever where the person is matters: a street or area they named,
+anything earlier in the conversation, the rough location its own app gives
+it, and the middle of Tallinn when it has nothing finer. Then it searches,
+says which point it measured from, and asks for a street only to make the
+answer closer. The point is an estimate and the distances are measured from
+it: a street the assistant places from memory can be a few hundred metres
+out, which is why it has to say where it measured from.
+
 ### The two tools
 
 **`search_places`** takes any of a few words (`query`), one kind of place
@@ -2263,6 +2277,10 @@ version argues with a list rather than discovering one:
 - **No opening hours and no "open now".** The map does not hold them; the
   Google Maps link on `get_place` is where an assistant sends somebody for
   today's.
+- **No street turned into a point by the server.** The assistant estimates
+  the point itself. Looking a typed street up with the Photon geocoder the
+  chat uses would be closer, and it would also be the first call this
+  server makes to anybody.
 - **No auth and no API keys.** The data is a public file already.
 - **No rate limit past Cloudflare's own.**
 - **Nothing counted in the stats.** An assistant's call is not a visit and

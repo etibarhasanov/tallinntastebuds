@@ -74,6 +74,23 @@
  * of the protocol in 2025-06-18, and this server never took one: an array
  * is answered with one invalid-request error whatever version is in play.
  *
+ * WHERE THE PERSON IS
+ *
+ * Neither Claude nor ChatGPT hands a connector the phone's position, and the
+ * protocol has no field for one: a server is sent only what the model writes
+ * into the call. So "food close to my place" arrived with no point, and the
+ * first assistant to be asked it asked back for a street before searching —
+ * correct, and a question where the owner wanted an answer. The assistant is
+ * told instead to fill the point itself, every time where the person is
+ * matters: the street or area they named, anything earlier in the
+ * conversation, or the rough location its own app gives it, and the middle
+ * of Tallinn when it has nothing finer — then to search, say which point it
+ * measured from, and invite a street only to make the answer closer. That is
+ * words in INSTRUCTIONS and in the search tool's description, not a field:
+ * the server cannot tell an estimate from a position and does not try, and
+ * it turns no typed street into a point itself, which would be a call to a
+ * geocoder from a server that otherwise asks nobody anything.
+ *
  * WHAT A TOOL ANSWERS WITH
  *
  * Every call answers the same object twice, as `structuredContent` for a
@@ -147,7 +164,14 @@ const INSTRUCTIONS =
   'Attribute the write-ups to Tallinn Tastebuds and always give the ' +
   'place\'s link (the url field). A search that finds nothing means ' +
   'nothing on the map fits; say so rather than guessing. Opening hours ' +
-  'are not in this data: say they should be checked elsewhere.';
+  'are not in this data: say they should be checked elsewhere. ' +
+  'Whenever where the person is matters to the answer — near me, close ' +
+  'to my place, around here, or a street or area they named — fill ' +
+  'near_lat and near_lng yourself rather than asking first: the place ' +
+  'they named, anything earlier in the conversation, or the location ' +
+  'your app gives you, and the middle of Tallinn (59.437, 24.7536) when ' +
+  'you have nothing finer. Then say in one line which point you measured ' +
+  'from, and that naming a street would make it closer.';
 
 /* ------------------------------------------------------------ the tools
  * What tools/list hands over. The enums are read out of the deployment —
@@ -227,9 +251,13 @@ function tools(types, langs) {
         'places they have eaten at and approved. Use it for any question about where to eat, ' +
         'drink coffee or go out in Tallinn: "somewhere for a date in Kalamaja", "cheap Asian ' +
         'food near the bus station", "a bakery in the old town". Pass a few words in `query`, ' +
-        'not the whole question; pick a `type` when the question names a kind of place; give ' +
-        '`near_lat` and `near_lng` when it names a point and the answer should be ordered by ' +
-        'distance. Every filter is optional and they combine. An empty `places` list means ' +
+        'not the whole question; pick a `type` when the question names a kind of place. ' +
+        'Whenever where the person is matters — "food close to my place", "coffee around ' +
+        'here", "near Balti jaam" — fill `near_lat` and `near_lng` with your best estimate ' +
+        'rather than asking first: the street or area named, the location your app gives you, ' +
+        'or the middle of Tallinn (59.437, 24.7536) when you have nothing finer; then say which ' +
+        'point you measured from. Leave them out when the question names a place to look up. ' +
+        'Every filter is optional and they combine. An empty `places` list means ' +
         'nothing on the map fits, which is a real answer: do not fill it from elsewhere. The ' +
         'order is distance when a point was given and how well the words matched otherwise, ' +
         'never quality.',
@@ -252,7 +280,10 @@ function tools(types, langs) {
             type: 'number', minimum: 1, maximum: 4,
             description: 'Places at or under this on the map\'s own scale: 1 is cheap, 4 is a tasting menu.'
           },
-          near_lat: { type: 'number', description: 'Latitude of a point in Tallinn to measure from. With near_lng.' },
+          near_lat: {
+            type: 'number',
+            description: 'Latitude of where the person is, or your best estimate of it, in Tallinn. With near_lng.'
+          },
           near_lng: { type: 'number', description: 'Longitude of that point. With near_lat.' },
           radius_m: {
             type: 'integer', minimum: 1,
