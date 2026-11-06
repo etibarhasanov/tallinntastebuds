@@ -34,6 +34,22 @@ Everything the map itself draws — the places, the write-ups, the discounts,
 the stories — is still a JSON file in this repository, and the map renders
 completely with the database switched off.
 
+**Ask your AI assistant.** The map and the public lists can be read by
+Claude, ChatGPT or any other assistant that takes an MCP connector. Add
+this address as a custom connector — no key, no sign-in, nothing to
+install:
+
+```
+https://tallinntastebuds.ee/mcp
+```
+
+Then ask it the way you would ask a friend: *somewhere for a date in
+Kalamaja*, *food close to my place*, *a top 10 bakery list*. It answers out
+of my places and the lists people have made here, says whose list a list
+is, and gives the link to each one. It reads and never writes. See **Read
+by an assistant** for how to connect it in Claude and ChatGPT, the four
+tools, and what is deliberately left out.
+
 ---
 
 ## Contents
@@ -2225,6 +2241,11 @@ connector:
   added on the web is there in the apps too.
 - **ChatGPT** — Settings → Apps & Connectors, with *Developer mode* on
   (paid plans), then *Create* with the same URL. No authentication.
+
+An assistant reads the tool list and the instructions when it connects, and
+a chat that is already open keeps what it read. So after this server
+changes, test it in a new chat; if the tools there are still the old ones,
+disconnect the connector and connect it again.
 
 Then ask it something — *somewhere for a date in Kalamaja*, *cheap Asian
 food near the bus station*, *a top 10 bakery list* — and look at whether
