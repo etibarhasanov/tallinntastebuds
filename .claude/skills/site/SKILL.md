@@ -125,10 +125,15 @@ and `<meta name="theme-color">` like `lists.html`'s.
 
 **Three things pages used to copy are globals now.** `assets/device.js`
 is `TTBDevice.id()` — the v4 UUID under `ttb.cid`, minted on the first ask —
-and `TTBDevice.known()`, the same id read without minting one; the map and the
-feedback page load it before their own script, and a page that files
-something under a device does the same rather than growing a third
-`clientId()`. `assets/language.js` is `TTBLanguage.mount(node, langs, current,
+and `TTBDevice.known()`, the same id read without minting one; the map, the
+feedback page and the chess page load it before their own script, and a page
+that files something under a device does the same rather than growing a third
+`clientId()`. It is also `TTBDevice.inApp()` and `TTBDevice.outside()` —
+whether this is Instagram's, Facebook's or TikTok's own browser, where Google
+will not sign anybody in, and the `intent:` address that leaves it on Android —
+which is why the flashcards load it too; its user agents are `SOURCES` in
+`functions/api/_visits.js` written twice, and the validator holds the two
+together. `assets/language.js` is `TTBLanguage.mount(node, langs, current,
 onPick, label)`, the switch the flashcards and the chess page draw on a
 `.lists-brand` header, its surface `.lang-surface` in `assets/lists.css`;
 picking stays the page's own. The map's switch in `assets/app.js` is not on

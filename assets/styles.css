@@ -2712,6 +2712,16 @@ body.panel-detail .panel {
 }
 .ac-google:hover { border-color: var(--ink); }
 .ac-google-mark svg { display: block; width: 16px; height: 16px; }
+/* The same button inside an in-app browser on Android, where it leaves for
+   the phone's own browser: an arrow out of a box, drawn in the ink, where
+   Google's mark is drawn in Google's colours. googleInApp() in app.js. */
+.ac-google-mark .ac-out-ico {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* The word sitting in the rule rather than above it, which is what says the
    two sides are alternatives and not steps. */

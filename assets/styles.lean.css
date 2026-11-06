@@ -1703,6 +1703,14 @@ body.panel-detail .panel {
 .ac-google:hover { border-color: var(--ink); }
 .ac-google-mark svg { display: block; width: 16px; height: 16px; }
 
+.ac-google-mark .ac-out-ico {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .ac-or {
   display: flex;
   align-items: center;

@@ -3903,10 +3903,10 @@ one thing this site asks anybody to decide about themselves was being decided
 for them — and a field that fills itself in under the cursor a moment late is
 its own small rudeness on a slow connection.
 
-So the box is empty and the rule is printed under it instead: **3 to 24
-letters, numbers, dots, dashes or underscores**, plus the part that is
-actually worth knowing before you choose — that the name goes on any list you
-share. It is `accountUsernameHint` in `data/ui.json`, in all ten languages,
+So the box is empty and the rule is printed under it instead: **3–24 letters
+or numbers**, plus the part that is actually worth knowing before you choose —
+that the name is shown on lists you share. It is `accountUsernameHint` in
+`data/ui.json`, in all eleven languages,
 and it sits inside the field's own `<label>` so a screen reader reads it when
 the field takes focus rather than never. The rule itself is not new; before,
 the only way to meet it was to get it wrong, because the name already in the
@@ -3914,6 +3914,12 @@ box had been built to satisfy it. `USERNAME_RE` in `functions/api/_account.js`
 is the one that binds — opening on a letter or a digit so that a name cannot
 begin with a character that separates its words — and the field restates it
 as a `maxlength` of 24 and that sentence.
+
+The sentence says less than the pattern allows, on purpose. It named dots,
+dashes and underscores as well until November 2026, when the owner cut the
+sheet down because it had more to read than to fill in. Underselling a rule
+refuses nobody — a name with a dot in it still goes through — where
+overselling one is exactly the bug the next paragraph is about.
 
 **Letters means letters, in every alphabet the site is read in.** For the
 first month the pattern was `[a-z0-9-]` while the sentence under the field
@@ -3969,8 +3975,9 @@ Google can prove who you are, and so that account has a way back in that a
 password account has not. It is the one practical argument for making an
 account that way, and it is why the button is not buried — and it is an
 argument about *signing up*, which is the only moment it is on offer now.
-The sign-up sheet says that above the button rather than letting
-somebody find out later, and the fields carry the autocomplete hints that make
+The sign-up sheet says it above the button in one line — *There's no reset —
+let your browser save it*, two sentences until November 2026 — rather than
+letting somebody find out later, and the fields carry the autocomplete hints that make
 a browser's password manager offer to keep the details — which is what
 actually rescues people in practice.
 
@@ -4267,6 +4274,32 @@ never read, and the scope is still `openid` alone. A word and four digits
 says nothing about anybody. The sign-up sheet still asks, for the reason
 **The name is chosen, not handed out** gives: there the person is already
 typing.
+
+#### Inside Instagram, Facebook and TikTok
+
+Those three apps open a link in a browser of their own, and Google refuses to
+sign anybody in there — `disallowed_useragent`, on Google's own page — and
+never sends them back. From 8 October to 5 November eleven of eighteen trips
+out never came back, in a month when most arrivals came from those apps, and
+`google_out_inapp` (see **Signing up**) is what says how much of that was why.
+
+So inside them the sheet on the map and the flashcards' card do not offer
+**Continue with Google**. On Android the button stands where it was as **Open
+in your browser to use Google**: an `intent:` link with no package named,
+which Android hands to whatever browser the person uses by default, and which
+starts the same trip from there — `/api/google` with the same `?then=` and the
+same device id, so the saves made inside the app are still claimed. On an
+iPhone no page can leave the app's browser for Safari, so the button is a
+line: *Google won't sign in inside Instagram. Tap ⋯ → Open in browser.* The
+username and password under it work in either.
+
+`TTBDevice.inApp()` and `TTBDevice.outside()` in `assets/device.js` are the
+whole of it, and the user agents are `SOURCES` in `functions/api/_visits.js`
+written a second time, because the browser cannot import from a Function;
+`node tools/validate.mjs` holds the two to each other. An undocumented link
+that opens Safari on some recent iPhones was looked at and left out: it does
+nothing in some of those apps, and the line would have to stand under it
+anyway. Splitwise and the feedback page still draw the plain button.
 
 #### The duplicate nobody wants, and the step that no longer answers it
 
@@ -12757,10 +12790,11 @@ translation says at the top that it is one. The page wears the lists page's
 frame and the blog's prose styles and has no stylesheet of its own.
 
 **Where it is linked.** A row on the map's **More** sheet, under Feedback; the
-account page, beside **Delete account**; and one line on the sign-up sheet,
-*How your account is kept*, under the warning about the password — a link
-and not a box to tick, since nothing is agreed to, it is said. It is in the
-sitemap, in English.
+account page, beside **Delete account**. It is in the sitemap, in English.
+Until November 2026 the sign-up sheet carried a third, *How your account is
+kept*, under the warning about the password; it went when the owner cut the
+sheet down to what has to be filled in, and the More row is one press away
+from the same sheet.
 
 **When it changes**, `updated` in the file moves with it and the page prints
 the new date. What it does not do: it does not ask for consent — that is
@@ -15955,7 +15989,8 @@ assets/chess.css           the board and the cards around it
 assets/language.js         the language switch the flashcards and the chess
                            page draw on a .lists-brand header
 assets/device.js           the id this browser files a save, a heart or a chess
-                           move under when nobody is signed in
+                           move under when nobody is signed in, and which
+                           app's in-app browser this is, if any
 flashcard.html             flashcards, at /flashcard and at the root of
                            flashcard.tallinntastebuds.ee; served by the route
                            above, which writes a deck's words into it
@@ -18354,6 +18389,8 @@ The map, `assets/app.js`:
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
 | `account_open` | `view` (`sheet` signed out, `page` signed in) — the account row behind More, and the pill at the head of the rail before 2026-11-05 |
 | `account_switch` | `view` (`in`/`up`) |
+| `account_google` | `view` — Continue with Google pressed on the sheet; `via` on the flashcards and splitwise, and `feedback_google` on the feedback page |
+| `account_google_browser` | `app` — and on the flashcards `via` — the button that stands where Continue with Google was inside Instagram's, Facebook's or TikTok's browser on Android, which takes the same trip from the phone's own browser. **Inside Instagram, Facebook and TikTok** |
 | `account_close`, `account_page` | — |
 | `account_create`, `account_login` | `via` (`google`) where the round trip to Google came back with `?google=new` or `?google=in`; nothing on the sheet's own form. The flashcards, splitwise and feedback report `account_create` with `via: google` for `new` as well |
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
@@ -18528,8 +18565,8 @@ Feedback, `assets/feedback.js`:
 
 The privacy policy is read rather than pressed, so what is reported is the way
 in: `privacy_open`, from the row on the map's **More** sheet with no
-parameters, from the sign-up sheet with `from` `signup`, and from the account
-page with `from` `account`.
+parameters and from the account page with `from` `account` — and, before
+November 2026, from the sign-up sheet with `from` `signup`.
 
 No id travels with any of these. The page is a handful of sentences and the
 interesting question is how many people say something rather than which
