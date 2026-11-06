@@ -125,13 +125,35 @@ export function sow(html, global, value) {
    exact markup, open tag and close tag together, so a page edit that changes
    its spelling stops this matching and tools/validate.mjs says so rather
    than a crawler quietly getting the empty page back. The script empties the
-   element again before it draws, so nobody sees what went in here.
+   element again before it draws.
 
    A function for the replacement, for the reason sow() gives: a dollar sign
    in somebody's write-up must not be read as a substitution. */
 export function fill(html, empty, inner) {
   const close = empty.lastIndexOf('</');
   return html.replace(empty, () => empty.slice(0, close) + inner + empty.slice(close));
+}
+
+/* The same text, kept off the screen of a reader whose browser runs scripts.
+ *
+ * "The script empties the element before it draws" was meant to be the whole
+ * of it, and on a desk it nearly is. On a phone it is not: the lists page's
+ * own script is deferred behind a dozen others, and for the second they take
+ * the bare headings, blue links and numbered list written here are the page —
+ * a flash of what looks like a broken stylesheet every time a list was opened
+ * from the map, and the blog and the flashcards did the same. So every route
+ * that fills one of those pages wraps its text in this, and assets/lists.css,
+ * which all of them load, hides it under @media (scripting: enabled): a
+ * crawler and a reader with scripts off still get every word, everybody else
+ * sees the column empty for that second and then the page. A browser too old
+ * to know the media feature shows the flash as before and nothing worse.
+ *
+ * Two fills are left alone on purpose. The privacy page's text is the page,
+ * written in the classes it is drawn with and never redrawn, so hiding it
+ * would leave it blank; and the map's list is drawn by a stylesheet of its
+ * own, in a panel of its own, and was not what flashed. */
+export function unscripted(inner) {
+  return '<div class="unscripted">' + inner + '</div>';
 }
 
 /* The elements, by page. Said once: the routes fill them and tools/validate.mjs

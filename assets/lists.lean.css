@@ -70,6 +70,10 @@
 .lists-main { max-width: 640px; margin: 0 auto; }
 .lists-main:focus { outline: none; }
 
+@media (scripting: enabled) {
+  .unscripted { display: none; }
+}
+
 .lists-stack { display: flex; flex-direction: column; gap: 18px; }
 
 .lists-bar {

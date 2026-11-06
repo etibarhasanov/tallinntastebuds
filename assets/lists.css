@@ -98,6 +98,15 @@
 .lists-main { max-width: 640px; margin: 0 auto; }
 .lists-main:focus { outline: none; }
 
+/* The page as text that a Function writes into the column for a crawler and
+   a reader with scripts off — unscripted() in functions/_shell.js. A browser
+   that runs scripts is about to draw the column itself, and until it does
+   this text was the page: bare headings and blue links on a phone, for the
+   second the deferred scripts take. */
+@media (scripting: enabled) {
+  .unscripted { display: none; }
+}
+
 .lists-stack { display: flex; flex-direction: column; gap: 18px; }
 
 /* ---------- the head and the foot of somebody else's list ---------- */

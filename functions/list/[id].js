@@ -71,7 +71,7 @@ import { readList, LIST_ID } from '../api/_lists.js';
    with one person's. See functions/_shell.js for why they are not written out
    three times. */
 import {
-  canonical, esc, head, shell, sow, rehead, fill, EMPTY, page,
+  canonical, esc, head, shell, sow, rehead, fill, unscripted, EMPTY, page,
   PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
 } from '../_shell.js';
 
@@ -182,7 +182,7 @@ export async function onRequest(context) {
     user: user ? user.username : null,
     list: list
   });
-  html = fill(html, EMPTY['lists.html'], prose(list));
+  html = fill(html, EMPTY['lists.html'], unscripted(prose(list)));
 
   /* Indexable only if it is public. A private list reaches this line only
      when its own owner asked for it, and their session is not a crawler —

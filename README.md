@@ -18869,10 +18869,22 @@ serve `lists.html` now writes what the page is about into its empty
 `<main>` — a list's title, its line, whose it is and every place with its
 street and its sentence, each linked to its own address on the map; the
 directory's first page of lists; a person's name, line and
-lists — and `render()` empties it before drawing, so nobody sees the plain
-version. `fill()` in `functions/_shell.js` is the one mechanism for the map
-and the lists both, and the validator holds both pages to the exact spelling
-of the element it fills.
+lists — and `render()` empties it before drawing. `fill()` in
+`functions/_shell.js` is the one mechanism for the map and the lists both,
+and the validator holds both pages to the exact spelling of the element it
+fills.
+
+"Empties it before drawing" was meant to mean nobody sees the plain version,
+and on a phone it did not: `lists.js` is deferred behind a dozen other
+scripts, and for the second they took, a list opened from the map was bare
+headings and blue underlined links, which read as the font or the stylesheet
+failing to load. So the text goes in wrapped by `unscripted()`, beside
+`fill()`, and `assets/lists.css` hides that wrapper under `@media (scripting:
+enabled)`. A crawler and a reader with scripts off get every word; everybody
+else gets the empty column for that second, then the page. The blog and the
+flashcards fill the same `<main>` from the same stylesheet and take the same
+wrapper. The privacy page does not, because its text is the page and is never
+redrawn.
 
 **The blog, as text.** The same again for `/blog`: `functions/blog.js` writes
 each post's own head, a `BlogPosting` in JSON-LD, and the post itself with

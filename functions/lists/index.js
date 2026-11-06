@@ -70,7 +70,7 @@
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import {
-  canonical, esc, head, shell, sow, rehead, fill, EMPTY, page,
+  canonical, esc, head, shell, sow, rehead, fill, unscripted, EMPTY, page,
   PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
 } from '../_shell.js';
 import { mostKept, query, sortOf } from '../api/_mostkept.js';
@@ -187,7 +187,7 @@ export async function onRequest(context) {
     all: first.all,
     next: first.next
   });
-  html = fill(html, EMPTY['lists.html'], prose(first));
+  html = fill(html, EMPTY['lists.html'], unscripted(prose(first)));
 
   const res = page(html, 200, true);
   return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;

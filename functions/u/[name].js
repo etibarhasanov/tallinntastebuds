@@ -98,7 +98,7 @@ import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import { readProfile, NETWORKS, linkUrl } from '../api/_profile.js';
 import { asUsername } from '../api/_account.js';
 import {
-  canonical, esc, seed, head, shell, sow, rehead, fill, EMPTY, page,
+  canonical, esc, seed, head, shell, sow, rehead, fill, unscripted, EMPTY, page,
   PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
 } from '../_shell.js';
 
@@ -377,14 +377,14 @@ export async function onRequest(context) {
   /* The page as text, for the reader that runs no script — see fill() in
      functions/_shell.js: the name, the line they wrote and its versions,
      where else they are, their page of links, and their lists, each a link. */
-  html = fill(html, EMPTY['lists.html'],
+  html = fill(html, EMPTY['lists.html'], unscripted(
     '<h1>' + esc(profile.display || profile.name) + '</h1>' +
     (profile.about ? '<p>' + esc(profile.about) + '</p>' : '') +
     versions +
     (elsewhere ? '<ul>' + elsewhere + '</ul>' : '') +
     rowsAsText(profile.rows) +
     '<ol>' + profile.lists.map((list) =>
-      '<li><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></li>').join('') + '</ol>');
+      '<li><a href="/list/' + esc(list.id) + '">' + esc(list.title) + '</a></li>').join('') + '</ol>'));
 
   html = sow(html, '__TTB_PROFILE', {
     user: user ? user.username : null,
