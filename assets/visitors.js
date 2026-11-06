@@ -6,7 +6,8 @@
  * heading — see group():
  *
  *   Tests            the directory's two looks, time on phones by colour
- *                    and rail, then the four colours
+ *                    and rail, then the four colours, ending in where a
+ *                    newcomer's time went under each
  *   Who they are     a bar a day, new against returning, a bar an hour,
  *                    phone against desktop, countries, languages
  *   How they found it  where they came from, where search landed them
@@ -889,7 +890,38 @@
         .concat(block('visitorsNewOnly', lived.map(function (c) { return c.fresh; }), [visitors].concat(perVisitor())))
         .concat([splitSince()]);
     }
-    return card(kids);
+    return card(kids.concat(stays(arms)));
+  }
+
+  /* The day the `stay` kind began counting — ON THE MAP AND ON THE
+     FLASHCARDS in functions/api/_visitors.js — said under its tables. */
+  var STAY_SINCE = '2026-11-06';
+
+  /* Where a newcomer's time went, by the colour they were dealt: the map,
+     the flashcards and every other page, as time per newcomer and then the
+     newcomers themselves, so a long average out of three is read as three.
+     The device chips split it the way they split everything. The foot says
+     the two products deal their colours apart. Drawn noughts and all, like
+     time on phones; `stays` is missing only in a colo's answer from before
+     it existed. */
+  function stays(arms) {
+    var rows = state.data.stays;
+    if (!rows) return [];
+    var byId = {};
+    rows.forEach(function (r) { byId[r.id] = r; });
+    var heads = [t('visitorsStayMap'), t('visitorsStayCards'), t('visitorsStayOther')];
+    var name = function (id) { return t(COLOURS[id]); };
+    var table = function (key, show) {
+      return [
+        el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }),
+        grid(t(key), heads, arms.filter(function (id) { return byId[id]; }), name, function (id) {
+          return ['map', 'flashcard', 'other'].map(function (place) { return show(byId[id][place]); });
+        })
+      ];
+    };
+    return table('visitorsStays', function (c) { return c.visitors ? clock(c.secs / c.visitors) : '–'; })
+      .concat(table('visitorsStaysCount', function (c) { return num(c.visitors); }))
+      .concat([el('p', { className: 'ins-note', textContent: t('visitorsStaysFoot', { date: dateLabel(STAY_SINCE, true), min: FEWEST }) })]);
   }
 
   /* Time on phones — TIME ON PHONES in functions/api/_visitors.js: how long

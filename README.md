@@ -17939,6 +17939,13 @@ device**), which is how phones and desktops are read apart. Returning
 visitors, a colour chosen or carried on a link, and the owner are not in it,
 the test's own rules.
 
+`/admin/visitors` draws it at the foot of **The four colours**, in two small
+tables of a colour a row and three columns — Map, Flashcards and Other pages,
+the last being the lists, profiles, the blog, the account, the discounts and
+everything else: time per newcomer as minutes and seconds, then the newcomers
+behind each cell. The device chips split it as they split everything, so
+**Phone** and **Desktop** are the two readings the owner chooses between.
+
 What it cannot say: **which colour one person met.** The flashcards keep
 their own storage on their own address and deal their own colour, so a
 newcomer who goes from the map to the flashcards may be Blue on one and Plum

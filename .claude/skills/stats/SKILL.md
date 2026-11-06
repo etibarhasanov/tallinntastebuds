@@ -229,7 +229,7 @@ Each of these exists twice, and `grep -n` finds both:
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
 | the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-nine today, `layout` among them and no longer written | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
-| `STAY_PAGES` in `functions/api/_visitors.js` | `firstStay()` in `assets/track.js`, which tells the map, the flashcards and `other` apart by the same addresses `PAGES` gives them; `STAYS` in `assets/visitors.js` | where a newcomer's time is told apart by colour — the `stay` kind |
+| `STAY_PAGES` in `functions/api/_visitors.js` | `firstStay()` in `assets/track.js`, which tells the map, the flashcards and `other` apart by the same addresses `PAGES` gives them; the three columns of `stays()` in `assets/visitors.js` | where a newcomer's time is told apart by colour — the `stay` kind |
 | `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |
 
 ## Adding a press
