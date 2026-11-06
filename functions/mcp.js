@@ -154,10 +154,14 @@
  * reads only text, and each tool carries an `outputSchema` saying the shape.
  * A place is the row in data/restaurants.json with the write-up in the one
  * language asked for, the names under the protocol's conventions
- * (must_order, has_reel), and three things the file does not hold: the link
- * to the place on the map, the absolute address of its first photograph, and
- * on a place read by its id a Google Maps *search* link built out of my own
- * name and address, which costs no Google data. An id that is not on the
+ * (must_order, has_reel), the link to its Instagram video where it has one
+ * in every row and not only on a place read whole — the video is the one
+ * thing a write-up cannot do, so an assistant answering "where should I eat"
+ * should be able to hand it over without a second call — and three things
+ * the file does not hold: the link to the place on the map, the absolute
+ * address of its first photograph, and on a place read by its id a Google
+ * Maps *search* link built out of my own name and address, which costs no
+ * Google data. An id that is not on the
  * map, or a place that has closed, is a tool result with `isError` and one
  * plain sentence rather than a protocol error, because that is an answer to
  * the question and not a fault in the asking. A list is its title, its
@@ -248,6 +252,10 @@ const INSTRUCTIONS =
   'place\'s link (the url field). A search that finds nothing means ' +
   'nothing on the map fits; say so rather than guessing. Opening hours ' +
   'are not in this data: say they should be checked elsewhere. ' +
+  'When a place has a reel, it is a short video of the place on ' +
+  'Instagram: give it beside the place\'s link as one to watch, ' +
+  '"watch the video on Instagram", so the person can see the place ' +
+  'and the food before they go. ' +
   'Whenever where the person is matters to the answer — near me, close ' +
   'to my place, around here, or a street or area they named — fill ' +
   'near_lat and near_lng yourself rather than asking first: the place ' +
@@ -294,7 +302,11 @@ const PLACE_FIELDS = {
   must_order: { type: 'array', items: { type: 'string' }, description: 'The dishes to order.' },
   url: { type: 'string', description: 'The place on the map. Always give it.' },
   photo: { type: ['string', 'null'], description: 'The first photograph of the place, or null when there is none.' },
-  has_reel: { type: 'boolean', description: 'Whether there is a video of the place.' }
+  reel: {
+    type: ['string', 'null'],
+    description: 'A short video of the place on Instagram, or null. When there is one, give it as a link to watch.'
+  },
+  has_reel: { type: 'boolean', description: 'Whether there is a video of the place: reel is not null.' }
 };
 
 const SEARCH_FIELDS = {
@@ -307,7 +319,6 @@ const SEARCH_FIELDS = {
 
 /* What a place read by its id adds to a search row. */
 const DETAIL_FIELDS = {
-  reel: { type: ['string', 'null'], description: 'The video of the place, or null.' },
   photos: { type: 'array', items: { type: 'string' }, description: 'Every photograph, absolute addresses.' },
   phone: { type: ['string', 'null'] },
   website: { type: ['string', 'null'] },
@@ -351,6 +362,10 @@ const LIST_PLACE_FIELDS = {
     description: 'Whether it is also on the Tallinn Tastebuds map. When it is, place_id read through the places tool gives the place whole.'
   },
   place_id: { type: ['string', 'null'], description: 'The map\'s id for it when on_map, else null.' },
+  reel: {
+    type: ['string', 'null'],
+    description: 'A short video of the place on Instagram when on_map and there is one, else null. Give it as a link to watch.'
+  },
   closed: { type: 'boolean', description: 'Present and true when the map has it as closed.' },
   url: {
     type: 'string',
@@ -383,7 +398,7 @@ function tools(types, langs) {
         'The order is distance when a point was given and how well the words matched ' +
         'otherwise, never quality. When the conversation turns to one place — "tell me more ' +
         'about Badam", "what should I order there" — pass its `id` instead, and the one place ' +
-        'comes back with every photograph, the video, the phone number and website, when it ' +
+        'comes back with every photograph, the phone number and website, when it ' +
         'was visited, and a Google Maps link for directions; the filters are ignored then. ' +
         'Opening hours are not in the answer.',
       inputSchema: {
@@ -577,6 +592,7 @@ function entry(place, lang) {
     must_order: place.mustOrder || [],
     url: SITE + '/?spot=' + encodeURIComponent(place.id),
     photo: photos.length ? photoUrl(place, photos[0]) : null,
+    reel: place.reel || null,
     has_reel: !!place.reel
   };
 }
@@ -584,7 +600,6 @@ function entry(place, lang) {
 function detail(place, lang) {
   return {
     ...entry(place, lang),
-    reel: place.reel || null,
     photos: (place.photos || []).map((photo) => photoUrl(place, photo)),
     phone: place.phone || null,
     website: place.website || null,
@@ -835,6 +850,9 @@ async function getList(context, raw, all) {
   if (!list) return toolError('There is no public list with the id "' + id + '" on Tallinn Tastebuds.');
 
   const closed = new Set(all.filter((p) => p.closed).map((p) => p.id));
+  /* A place on the map brings its video onto the list with it: the list
+     row does not carry one, the roll does. */
+  const reels = new Map(all.filter((p) => p.reel).map((p) => [p.id, p.reel]));
   return {
     id: list.id,
     title: list.title,
@@ -857,6 +875,7 @@ async function getList(context, raw, all) {
         lng: row.lng,
         on_map: !!mapId,
         place_id: mapId || null,
+        reel: mapId && reels.get(mapId) || null,
         url: mapId ? SITE + '/?spot=' + encodeURIComponent(mapId) : mapsSearch(row.name, row.address)
       };
       if (mapId && closed.has(mapId)) out.closed = true;
