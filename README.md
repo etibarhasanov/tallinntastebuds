@@ -2229,9 +2229,9 @@ ruled out by it.
 Claude, ChatGPT and the rest can be handed a tool over the Model Context
 Protocol — a server that says what it can do, and that a model calls in the
 middle of a conversation and reads the answer of — and this is that server
-for the map: four tools, **search my places** and **read one** over the roll
-in `data/restaurants.json`, and **search the public lists** and **read one**
-out of the database the lists page reads. Somebody asks their assistant for
+for the map: two tools, **places**, which searches my places or reads one
+over the roll in `data/restaurants.json`, and **lists**, which searches the
+public lists or reads one out of the database the lists page reads. Somebody asks their assistant for
 somewhere to eat in Tallinn, or for a top ten of bakeries, the assistant
 asks the site, and the answer it writes carries my write-up, the dish to
 order, whose list it is and the link. `functions/mcp.js` is the whole of
@@ -2253,6 +2253,14 @@ An assistant reads the tool list and the instructions when it connects, and
 a chat that is already open keeps what it read. So after this server
 changes, test it in a new chat; if the tools there are still the old ones,
 disconnect the connector and connect it again.
+
+**Claude asks before each tool's first call**, a "Claude wants to use…"
+card with *Allow once* and *Always allow*, and a server cannot switch that
+off: both tools are marked read-only, which is the only thing it can say,
+and the client asks anyway, once per tool. *Always allow* on each, or both
+set to it under Settings → Connectors → TallinnTastebuds, and it never
+asks again. That card is why there are two tools and not four — **The two
+tools** below.
 
 Then ask it something — *somewhere for a date in Kalamaja*, *cheap Asian
 food near the bus station*, *a top 10 bakery list* — and look at whether
@@ -2284,9 +2292,22 @@ answer closer. The point is an estimate and the distances are measured from
 it: a street the assistant places from memory can be a few hundred metres
 out, which is why it has to say where it measured from.
 
-### The four tools
+### The two tools
 
-**`search_places`** takes any of a few words (`query`), one kind of place
+There were four — `search_places`, `get_place`, `search_lists` and
+`get_list` — and somebody who had just added the connector met four
+permission cards before the map had answered one question whole. So each
+pair became one tool that searches unless it is handed an `id` and then
+reads that one whole, and both answer with an array — `places` or `lists`
+— of one row or of several, so the shape does not change with the
+question. Two rather than one, because the line between them is the line
+the site cares about most: `places` is the map's verdict and `lists` is
+somebody's opinion under their name, and an assistant keeps the two apart
+more easily when they are two things to call. The old four names are still
+answered on `tools/call`, for a client that read the list before the change
+and has not read it again, and are listed nowhere.
+
+**`places`**, searching, takes any of a few words (`query`), one kind of place
 (`type`), a ceiling on the map's own price scale (`max_price`), a point in
 Tallinn with an optional radius (`near_lat`, `near_lng`, `radius_m`), a
 language and a limit — five unless asked, ten at most — and all of them
@@ -2303,8 +2324,9 @@ fitting is a normal answer, not an error: an empty list and a sentence
 saying nothing on the map fits, so the assistant says that rather than
 guessing.
 
-**`get_place`** takes an id a search returned and answers with everything
-in a search row plus the video, every photograph, the phone, the website,
+**`places` with an `id`** — one a search returned — ignores the filters and
+answers with that one place: everything in a search row plus the video,
+every photograph, the phone, the website,
 when I ate there and when it joined the map, and a Google Maps *search*
 link built out of my own name and address — the one place an assistant can
 get directions and today's hours from, and it costs no Google data. An id
@@ -2325,7 +2347,7 @@ text. The kinds of place and the languages in the schemas are read out of
 `data/taxonomy.json` and `data/lang/index.json` at runtime rather than
 typed in, so a type or a language added to the site is one here too.
 
-**`search_lists`** finds public lists by a word or two (`query`) matched
+**`lists`**, searching, finds public lists by a word or two (`query`) matched
 against the title, the line under it, the author's name and every place on
 it, folded the same way, so *pohjala* finds a list with Põhjala ninth on
 it; `by` keeps one author's. Five lists unless asked, ten at most, each
@@ -2337,12 +2359,12 @@ not how often a list is opened, which is the lists page's order and a
 ranking an assistant has no reason to be handed. Nothing fitting is an
 empty list and a sentence.
 
-**`get_list`** reads one list by its id through `readList()` in
+**`lists` with an `id`** reads that one list through `readList()` in
 `functions/api/_lists.js`, the reader the list page seeds from, signed out:
 every place in its author's order with the author's sentence, the dish
 they say to order, the address and the point, and `on_map`. A place that
 is also on my map carries the map's id and its link, so the assistant can
-follow it with `get_place`; one that is not — a row out of the Google
+follow it with `places` and that id; one that is not — a row out of the Google
 export, or one somebody added by hand — carries a Google Maps search for
 its name and address instead. A private list and an id that does not exist
 are the same sentence, as they are on the page, so the tool cannot be used
@@ -2355,7 +2377,7 @@ draws, and they go to an assistant the same way. Nothing the export says
 where a list's author wrote it into their own sentence, which is what
 Google's six lists are.
 
-The two list tools are the only ones that read the database. One that is
+The lists are the only thing here that reads the database. One that is
 missing, the wrong one, or failing costs the lists — a tool result saying
 they cannot be read right now — and nothing else: the places answer out of
 the deployment as they always did.
@@ -2390,7 +2412,7 @@ the live site:
 curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
-  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_places","arguments":{"query":"ramen","limit":3}}}'
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"places","arguments":{"query":"ramen","limit":3}}}'
 ```
 
 ### Deliberately not in this version
@@ -2398,7 +2420,7 @@ curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/js
 Each of these is a decision rather than an oversight, so that the next
 version argues with a list rather than discovering one:
 
-- **No search over Google's roll.** `search_places` answers out of the
+- **No search over Google's roll.** `places` answers out of the
   map and only the map; the map is the verdict, and Google's eleven
   hundred would be answered under the site's name whenever mine fell
   short. A Google place reaches an assistant only as a row on somebody's
@@ -2407,7 +2429,7 @@ version argues with a list rather than discovering one:
   lists only, signed out.
 - **No discounts, profiles or blog posts.**
 - **No opening hours and no "open now".** The map does not hold them; the
-  Google Maps link on `get_place` is where an assistant sends somebody for
+  Google Maps link on a place read by its id is where an assistant sends somebody for
   today's.
 - **No street turned into a point by the server.** The assistant estimates
   the point itself. Looking a typed street up with the Photon geocoder the
@@ -15929,7 +15951,7 @@ functions/index.js         / — the map, with its head and its JSON-LD written
                            can index it ten times
 functions/mcp.js           /mcp — the map and the public lists as an AI
                            assistant reads them, through the Model Context
-                           Protocol: four read-only tools
+                           Protocol: two read-only tools
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password or a
                            username, delete an account
