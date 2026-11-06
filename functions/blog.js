@@ -85,7 +85,7 @@
  */
 
 import {
-  canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE,
+  canonical, esc, head, seed, shell, rehead, fill, unscripted, EMPTY, page, SITE,
   PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo
 } from './_shell.js';
 import { dataFile, wrongDatabase, venuesByIds } from './api/_lib.js';
@@ -346,7 +346,7 @@ async function memberPage(context, html, db, asked) {
 
   const body = firstText(post).body;
   const words = memberWords(post, await placeNames(context, body), await listsOf(db, body));
-  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], words), 200, true);
+  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], unscripted(words)), 200, true);
 }
 
 async function authorPage(context, html, db, by) {
@@ -364,7 +364,7 @@ async function authorPage(context, html, db, by) {
     url: canonical(request, PATH + '?by=' + encodeURIComponent(shown)),
     type: 'website'
   });
-  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], authorWords(shown, list.posts)), 200, list.posts.length > 0);
+  return page(fill(rehead(html, tags), EMPTY[FILE.slice(1)], unscripted(authorWords(shown, list.posts))), 200, list.posts.length > 0);
 }
 
 /* One post as text, and then every other post as a link — so a crawler that
@@ -535,5 +535,5 @@ export async function onRequest(context) {
     seed(structuredData(request, posts, post)) + '</script>';
 
   const newest = !post && db ? (await readPage(db, "p.status = 'published'", [], null).catch(() => ({ posts: [] }))).posts : [];
-  return keep(page(fill(rehead(html, said), EMPTY[FILE.slice(1)], post ? postWords(post, posts) : indexWords(posts, newest)), 200, true));
+  return keep(page(fill(rehead(html, said), EMPTY[FILE.slice(1)], unscripted(post ? postWords(post, posts) : indexWords(posts, newest))), 200, true));
 }

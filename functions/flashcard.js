@@ -66,7 +66,7 @@
  * nearly all of them.
  */
 
-import { canonical, esc, head, seed, shell, rehead, fill, EMPTY, page, SITE } from './_shell.js';
+import { canonical, esc, head, seed, shell, rehead, fill, unscripted, EMPTY, page, SITE } from './_shell.js';
 import { languageIndex, wordsIn, DECK_LANGS } from './api/_lib.js';
 import { shelf, shippedOne } from './api/_decks.js';
 
@@ -608,5 +608,5 @@ export async function onRequest(context) {
     : tags + '\n<script type="application/ld+json">' +
       seed(structuredData(request, decks, deck, lesson, song, talk)) + '</script>';
 
-  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], words), 200, !own);
+  return page(fill(rehead(html, said), EMPTY[FILE.slice(1)], unscripted(words)), 200, !own);
 }
