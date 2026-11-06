@@ -33,15 +33,12 @@
  * about this site should not have to go to another page, sign in there, come
  * back and write it again.
  *
- * The other way in is Continue with Google, and it ends here too. The round
- * trip through /api/google with `?then=/feedback` comes back either signed in
- * — nothing left to do — or holding a sealed note saying a Google account has
- * proved itself and has never been here before. That one still needs a name,
- * and it is asked for in this same composer rather than on the map's sheet:
- * `say` takes the name, nameGoogleAccount() makes the account, and the
- * sentence somebody left the page holding is posted under it. Sending them to
- * the map to be named and back again would be the round trip this whole
- * arrangement exists to avoid, one page later.
+ * The other way in is Continue with Google, and it ends here too: the round
+ * trip through /api/google with `?then=/feedback` comes back signed in, with
+ * an account made under a drawn name where there was none, and the sentence
+ * somebody left the page holding is still in the composer to post. It used to
+ * come back holding a sealed note and ask for a name here; makeGoogleAccount()
+ * in ./_account.js says why it no longer does.
  *
  * WHAT IS STORED
  *
@@ -65,8 +62,8 @@ import {
   json, sessionUser, wrongDatabase, randomHex, fingerprint, clientIp,
   sessionCookie, SESSION_DAYS
 } from './_lib.js';
-import { enterAccount, nameGoogleAccount, googlePending } from './_account.js';
-import { googleReady, pendingCookie } from './_google.js';
+import { enterAccount } from './_account.js';
+import { googleReady } from './_google.js';
 
 /* Five hundred characters. Long enough for a paragraph about what is wrong
    with the filter chips, short enough that the page stays a page of things
@@ -248,10 +245,6 @@ export async function onRequestGet(context) {
        same reason: on a deployment with no Google client set the button would
        lead somewhere that can only send them back saying it failed. */
     google: googleReady(env),
-    /* A Google account that has proved itself and has not been named yet, so
-       the composer asks for a name and no password. Only worth asking when
-       there is no session — with one, the trip is over. */
-    naming: !user && (await googlePending(request, env)),
     rows: rows,
     more: more
   }, 200);
@@ -283,11 +276,9 @@ export async function onRequestPost(context) {
   }
 
   let user = await sessionUser(request, env);
-  /* The cookies a sign-in taken on the way past this request has to set: the
-     session, and — where the trip came through Google — the spent note being
-     cleared, since it is good for one account and that was it.
+  /* The cookie a sign-in taken on the way past this request has to set.
 
-     They ride on whatever this call answers with, including a refusal, which
+     It rides on whatever this call answers with, including a refusal, which
      is the case worth saying out loud: once the account step has returned,
      the account exists and the session is open in the database, so an answer
      that dropped the cookie because the insert after it failed would leave
@@ -306,33 +297,15 @@ export async function onRequestPost(context) {
     const named = body.as === 'name';
 
     if (named && !user) {
-      /* Two doors, and the browser is already holding the answer to which.
-         A sealed note from /api/google means somebody pressed Continue with
-         Google a moment ago and Google has proved who they are — so there is
-         no password to ask for and none to check, and what is left is the
-         name. Without one it is the ordinary username and password, which
-         makes an account or enters one.
-
-         Asked in this order because the note is the stronger claim: somebody
-         mid-round-trip who also typed something into the name field is still
-         mid-round-trip, and naming the Google account is what they came back
-         to do. */
-      const viaGoogle = await googlePending(request, env);
-      const entered = viaGoogle
-        ? await nameGoogleAccount(context, {
-            username: body.username,
-            client: body.client
-          })
-        : await enterAccount(context, {
-            username: body.username,
-            password: body.password,
-            client: body.client,
-            mode: 'either'
-          });
+      const entered = await enterAccount(context, {
+        username: body.username,
+        password: body.password,
+        client: body.client,
+        mode: 'either'
+      });
       if (!entered.ok) return json({ error: entered.error }, entered.status);
       user = { id: entered.userId, username: entered.username };
       cookies.push(sessionCookie(entered.token, SESSION_DAYS, request));
-      if (viaGoogle) cookies.push(pendingCookie(''));
     }
 
     const me = actor(user, body);

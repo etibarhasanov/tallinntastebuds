@@ -1722,13 +1722,13 @@
 
   var ACCOUNT_PAGE = '/account.html';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'delete', 'google'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'delete'];
 
   var ACCOUNT_STEPS = ['password', 'username', 'delete'];
 
   var googleSaid = '';
   var accountDeleted = false;
-  var GOOGLE_SAID = ['in', 'name', 'linked', 'taken', 'failed'];
+  var GOOGLE_SAID = ['in', 'new', 'linked', 'taken', 'failed'];
 
   function readAccountLink(params) {
     var said = params.get('google') || '';
@@ -1761,7 +1761,7 @@
     var view = accountAsked;
     accountAsked = '';
     if (!state.account.user) {
-      if (view !== 'up' && view !== 'google') view = 'in';
+      if (view !== 'up') view = 'in';
     } else if (ACCOUNT_STEPS.indexOf(view) === -1) {
       window.location.href = ACCOUNT_PAGE;
       return;
@@ -1774,10 +1774,8 @@
     var said = googleSaid;
     googleSaid = '';
 
-    if (said === 'name') { openAccount('google', '', 'google'); return; }
-
-    if (said === 'in') {
-      TTBTrack.event('account_login', { via: 'google' });
+    if (said === 'in' || said === 'new') {
+      TTBTrack.event(said === 'new' ? 'account_create' : 'account_login', { via: 'google' });
       if (state.account.user) toast(t('accountSignedIn', { name: state.account.user }));
       return;
     }
@@ -1801,7 +1799,7 @@
   }
 
   var accountView = 'in';
-  var SIGN_VIEWS = ['up', 'in', 'google'];
+  var SIGN_VIEWS = ['up', 'in'];
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -2272,8 +2270,6 @@
     same: 'accountErrSame',
     'same-name': 'accountErrSameName',
     'signed-out': 'accountErrSignedOut',
-    'no-pending': 'accountErrGooglePending',
-    linked: 'accountErrGoogleTaken',
     'needs-password': 'accountErrNeedsPassword',
     confirm: 'accountErrDeleteConfirm'
   };
@@ -2309,7 +2305,6 @@
     if (accountView === 'password') return renderAccountPassword(form);
     if (accountView === 'username') return renderAccountUsername(form);
     if (accountView === 'delete') return renderAccountDelete(form);
-    if (accountView === 'google') return renderAccountGoogle(form);
     return renderAccountAuth(form);
   }
 
@@ -2463,43 +2458,6 @@
 
   function googleOr() {
     return el('p', { className: 'ac-or' }, [el('span', { textContent: t('accountOr') })]);
-  }
-
-  function renderAccountGoogle(form) {
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountGoogleName') }));
-    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountGoogleNameWhy') }));
-
-    accountMessages(form);
-
-    form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
-      autocomplete: 'username',
-      maxlength: '24',
-      hint: t('accountUsernameHint')
-    }));
-
-    var go = accountSubmit('accountCreate');
-    go.addEventListener('click', function () {
-      if (accountBusy) return;
-      var v = accountValues();
-      accountBusy = true; accountErr = ''; renderAccount();
-      TTBTrack.event('account_try_google');
-      accountPost({ action: 'google-name', username: v.username, client: TTBDevice.id() })
-        .then(function (a) {
-          accountBusy = false;
-          if (!a.ok) return accountFail(a.out);
-          state.account.user = a.out.user;
-          state.account.linked = true;
-          state.account.password = false;
-          if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-          paintAccountRow();
-          TTBTrack.event('account_create', { via: 'google' });
-          TTBTrack.event('account_done_google');
-          closeAccount();
-          if (returnAfterAccount()) return;
-          toast(t('accountSignedIn', { name: a.out.user }));
-        }).catch(function () { accountFail({ error: 'network' }); });
-    });
-    form.appendChild(go);
   }
 
   function renderAccountPassword(form) {
@@ -6795,6 +6753,7 @@
     params.delete('at');
     params.delete('saved');
     params.delete('deleted');
+    params.delete('google');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;

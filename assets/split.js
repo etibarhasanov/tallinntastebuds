@@ -138,7 +138,7 @@
     user: null,
     groups: [],      // the ones you are in, most recently spent in first
     group: null,     // the one that is open, whole
-    view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
+    view: 'in'       // which half of the sign-in form: 'in' or 'up'
   };
 
   /* Which group the address is asking for, read once. */
@@ -309,11 +309,6 @@
     password: 'accountErrPassword',
     username: 'accountErrUsername',
     'slow-down': 'accountErrSlow',
-    /* The sealed note saying which Google account proved itself has run out
-       between the round trip and the name being typed. The way out is the
-       button, not this form. */
-    'no-pending': 'accountErrGooglePending',
-    linked: 'accountErrGoogleTaken',
     /* this one */
     'not-found': 'splitErrGone',
     full: 'splitErrFull',
@@ -560,12 +555,8 @@
    * Continue with Google, or two fields and a switch between making an
    * account and signing in to one — the same actions, the same fields and the
    * same strings as the map's sheet. See the header for why there is a second
-   * copy of this on the site at all.
-   *
-   * Three views, and only two of them are a choice. 'in' and 'up' are the
-   * halves of the switch; 'google' is where a Google account that has never
-   * been here lands, and it is the same form with the password half taken out
-   * — see `naming` below.
+   * copy of this on the site at all. Two views, 'in' and 'up', the halves of
+   * the switch.
    *
    * It is built here and worn by two cards: the front door, where somebody
    * arrived with no code and no account, and the join offer under a group
@@ -575,30 +566,13 @@
    */
   function authForm(saying) {
     var creating = state.view === 'up';
-    /* The third view, and the one nobody chooses: a Google account that has
-       just proved itself and has no account here yet. It is the same form
-       with the password half taken out, in the same two frames, rather than a
-       card of its own — the frames are about whether you are at the front
-       door or under a group, and that is still true when the question has
-       become what to call you. */
-    var naming = state.view === 'google';
     var form = el('form', { className: 'ac-form' });
-
-    /* The card's own framing is about deciding to have an account, and by the
-       time this view is drawn that decision has been made on Google's screen.
-       What is left to say is what the field is for. */
-    if (naming) {
-      form.appendChild(heading(t('accountGoogleName'), 'h2'));
-      form.appendChild(el('p', { className: 'lists-say', textContent: t('accountGoogleNameWhy') }));
-    } else {
-      saying.forEach(function (node) { form.appendChild(node); });
-    }
+    saying.forEach(function (node) { form.appendChild(node); });
 
     /* Before the fields, the way the map's sheet draws it: the quick way
        first, then the rule, then the form for anybody who would rather not.
-       See the comment in renderAccountAuth() there. Not on the naming view,
-       which is already the far end of that road. */
-    if (state.google && !naming) {
+       See the comment in renderAccountAuth() there. */
+    if (state.google) {
       form.appendChild(googleGo());
       form.appendChild(el('p', { className: 'ac-or' }, [
         el('span', { textContent: t('accountOr') })
@@ -610,35 +584,29 @@
     form.appendChild(field('sp-user', 'accountUsername', {
       autocomplete: 'username',
       maxlength: '24',
-      hint: creating || naming ? t('accountUsernameHint') : ''
+      hint: creating ? t('accountUsernameHint') : ''
     }));
-    if (!naming) {
-      form.appendChild(field('sp-pass', 'accountPassword', {
-        type: 'password',
-        autocomplete: creating ? 'new-password' : 'current-password'
-      }));
-    }
+    form.appendChild(field('sp-pass', 'accountPassword', {
+      type: 'password',
+      autocomplete: creating ? 'new-password' : 'current-password'
+    }));
 
     /* What happens if the password goes, said before the button rather than
        discovered afterwards. The same sentence the map's sheet leads with,
-       out of the same key. Not on the naming view: the account it is about to
-       make has no password to lose, and Google is the way back into it. */
+       out of the same key. */
     if (creating) {
       form.appendChild(el('p', { className: 'ac-warn', textContent: t('accountNoReset') }));
     }
 
-    form.appendChild(actor(creating || naming ? 'accountCreate' : 'accountSignIn', 'go', function (done) {
+    form.appendChild(actor(creating ? 'accountCreate' : 'accountSignIn', 'go', function (done) {
       var pass = form.querySelector('#sp-pass');
       /* The try, the refusal and the account, as the map's sheet reports
          them, so SIGNING UP in functions/api/_visitors.js can say why people
          who pressed this did not come out of it with an account. There is no
          sheet here to count opening or shutting: the form is the page. */
-      var view = naming ? 'google' : creating ? 'up' : 'in';
+      var view = creating ? 'up' : 'in';
       TTBTrack.event('account_try_' + view);
-      post(ACCOUNT_API, naming ? {
-        action: 'google-name',
-        username: value(form, 'sp-user')
-      } : {
+      post(ACCOUNT_API, {
         action: creating ? 'create' : 'login',
         username: value(form, 'sp-user'),
         password: pass ? pass.value : ''
@@ -649,38 +617,26 @@
           complain(form, say(a.out));
           return;
         }
-        TTBTrack.event(naming || creating ? 'account_create' : 'account_login',
-                       { via: naming ? 'google' : 'split' });
+        TTBTrack.event(creating ? 'account_create' : 'account_login', { via: 'split' });
         TTBTrack.event('account_done_' + view);
         /* Straight back through boot() rather than patching state: signing in
            changes every answer on this page, including whether the group on
-           screen is one this browser may write to.
-         *
-           Naming goes to the same address without ?google=name rather than
-           reloading this one. The sealed note it named an account with is
-           spent, so a reload would draw the naming form a second time over an
-           account that already exists. */
-        if (naming) window.location.href = hereWithoutGoogle();
-        else window.location.reload();
+           screen is one this browser may write to. */
+        window.location.reload();
       });
     }, form));
 
-    /* Nothing to switch to on the naming view: it is not one of a pair, and
-       the only other thing somebody could want there is to not have an
-       account, which is the back button. */
-    if (!naming) {
-      var swap = el('button', {
-        type: 'button',
-        className: 'alt',
-        textContent: t(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate')
-      });
-      swap.addEventListener('click', function () {
-        state.view = creating ? 'in' : 'up';
-        TTBTrack.event('account_switch', { view: state.view, via: 'split' });
-        render();
-      });
-      form.appendChild(swap);
-    }
+    var swap = el('button', {
+      type: 'button',
+      className: 'alt',
+      textContent: t(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate')
+    });
+    swap.addEventListener('click', function () {
+      state.view = creating ? 'in' : 'up';
+      TTBTrack.event('account_switch', { view: state.view, via: 'split' });
+      render();
+    });
+    form.appendChild(swap);
 
     return form;
   }
@@ -1200,13 +1156,13 @@
   }
 
   /* What came of a round trip to Google, said once the page has drawn and
-     knows who is signed in.
-   *
-     'name' is not here: it is not news, it is the form above, and it has
-     already become state.view by the time this runs. 'linked' is not either
-     — connecting is pressed on the account page and comes back there. */
+     knows who is signed in. 'linked' is not here — connecting is pressed on
+     the account page and comes back there. `new` is an account the trip made
+     on the way back, under a name drawn for it: said like a sign-in, since
+     the name is the news either way, and counted as an account made. */
   function sayGoogle() {
-    if (googleSaid === 'in') {
+    if (googleSaid === 'in' || googleSaid === 'new') {
+      if (googleSaid === 'new') TTBTrack.event('account_create', { via: 'google' });
       if (state.user) toast(t('accountSignedIn', { name: state.user }));
     } else if (googleSaid === 'taken') {
       toast(t('accountErrGoogleTaken'));
@@ -1216,10 +1172,7 @@
       return;
     }
 
-    /* And off the address bar, so a reload does not say it again. The naming
-       view is the exception and is left alone: it is not a message, it is
-       what the page is currently asking, and taking the word away would take
-       the form with it. */
+    /* And off the address bar, so a reload does not say it again. */
     try {
       window.history.replaceState(null, '', hereWithoutGoogle());
     } catch (e) { /* an old browser keeps the parameter, which is harmless */ }
@@ -1262,12 +1215,6 @@
       state.user = answer.out.user || null;
       state.groups = answer.out.groups || [];
       state.group = answer.out.group || null;
-
-      /* A Google account with no account here yet: the form this page draws
-         for somebody signed out becomes the one that asks for a name. Only
-         where nobody is signed in — a spent note and a session already in
-         hand means the naming happened, in this tab or another. */
-      if (googleSaid === 'name' && !state.user) state.view = 'google';
 
       render();
       sayGoogle();

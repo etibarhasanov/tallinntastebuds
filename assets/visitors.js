@@ -89,9 +89,11 @@
   /* Signing up — SIGNING UP in functions/api/_visitors.js. The three views
      of the sheet, which are the table's columns; what put the sheet up, by
      the door in account_from_<door>; and the refusals by the word
-     /api/account answered, the five that are the site's own fault sharing
+     /api/account answered, the four that are the site's own fault sharing
      one line, since the owner's question about them is the same. A word
-     not here is drawn as itself. */
+     not here is drawn as itself. 'google' was the step that named a Google
+     account, which no sheet draws since November 2026 — the account is made
+     on the way back now — and stays a column so a range before that reads. */
   var SIGN_VIEWS = ['up', 'in', 'google'];
   var DOORS = {
     rail: 'visitorsFromRail', nudge: 'visitorsFromNudge', deal: 'visitorsFromDeal',
@@ -100,8 +102,8 @@
   };
   var REFUSALS = {
     taken: 'visitorsErrTaken', username: 'visitorsErrUsername', password: 'visitorsErrPassword',
-    no_match: 'visitorsErrNoMatch', slow_down: 'visitorsErrSlow', no_pending: 'visitorsErrPending',
-    linked: 'visitorsErrLinked', network: 'visitorsErrNetwork', generic: 'visitorsErrGeneric',
+    no_match: 'visitorsErrNoMatch', slow_down: 'visitorsErrSlow',
+    network: 'visitorsErrNetwork', generic: 'visitorsErrGeneric',
     malformed: 'visitorsErrSite', no_database: 'visitorsErrSite', no_salt: 'visitorsErrSite',
     wrong_database: 'visitorsErrSite'
   };
@@ -659,18 +661,27 @@
     /* Everybody sent to Google less everybody who came back, however they
        came back, is the people who never did. */
     var out = n('google_out');
-    var backs = ['in', 'name', 'cancel', 'failed'];
+    /* `name` is how a Google account new here came back until November
+       2026, sent to pick a username; it is `new` since, the account made on
+       the way back. Both are a back, and the old row is drawn only in a
+       range that has one. */
+    var backs = ['in', 'new', 'name', 'cancel', 'failed'];
     var back = 0;
     backs.forEach(function (w) { back += n('google_back_' + w); });
     if (out || back) {
-      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('accountGoogle') }), listed([
+      var rows = [
         { name: t('visitorsGoogleOut'), n: out },
+        { name: t('visitorsGoogleInApp'), n: n('google_out_inapp') },
         { name: t('visitorsGoogleIn'), n: n('google_back_in') },
-        { name: t('visitorsGoogleName'), n: n('google_back_name') },
+        { name: t('visitorsGoogleNew'), n: n('google_back_new') }
+      ];
+      if (n('google_back_name')) rows.push({ name: t('visitorsGoogleName'), n: n('google_back_name') });
+      rows.push(
         { name: t('visitorsGoogleCancel'), n: n('google_back_cancel') },
         { name: t('visitorsGoogleFailed'), n: n('google_back_failed') },
         { name: t('visitorsGoogleLost'), n: Math.max(0, out - back) }
-      ]));
+      );
+      kids.push(el('h3', { className: 'eyebrow vis-sub', textContent: t('accountGoogle') }), listed(rows));
     }
 
     /* Turned down is what is left of the offers shown once the taken and

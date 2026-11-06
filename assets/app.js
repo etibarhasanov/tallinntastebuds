@@ -2891,7 +2891,7 @@
      for, and it is answered by sending them there. */
   var ACCOUNT_PAGE = '/account.html';
 
-  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'delete', 'google'];
+  var ACCOUNT_VIEWS = ['in', 'up', 'me', 'password', 'username', 'delete'];
 
   /* Which of those are a step somebody already signed in is standing in,
      rather than a way of becoming signed in. A link asking for one of these
@@ -2908,7 +2908,7 @@
   /* ?deleted=1, which the delete step lands on: the account it belonged to is
      gone, and this is the one word left to say about it. */
   var accountDeleted = false;
-  var GOOGLE_SAID = ['in', 'name', 'linked', 'taken', 'failed'];
+  var GOOGLE_SAID = ['in', 'new', 'linked', 'taken', 'failed'];
 
   function readAccountLink(params) {
     var said = params.get('google') || '';
@@ -2979,9 +2979,7 @@
        answered by the account page. The steps are the exception, because a
        step is what somebody signed in is standing in. */
     if (!state.account.user) {
-      /* 'google' is the naming step, which is for somebody with no account at
-         all — the same argument that leaves 'up' alone. */
-      if (view !== 'up' && view !== 'google') view = 'in';
+      if (view !== 'up') view = 'in';
     } else if (ACCOUNT_STEPS.indexOf(view) === -1) {
       window.location.href = ACCOUNT_PAGE;
       return;
@@ -3002,12 +3000,12 @@
     var said = googleSaid;
     googleSaid = '';
 
-    /* A Google account with nobody here yet. The sheet asks for the one thing
-       the round trip deliberately did not go and find out. */
-    if (said === 'name') { openAccount('google', '', 'google'); return; }
-
-    if (said === 'in') {
-      TTBTrack.event('account_login', { via: 'google' });
+    /* Signed in, and `new` where the round trip made the account on the way
+       back, under a name drawn for it: said the same way, since the name is
+       the news either way and the account page is where it is changed, and
+       counted apart, because one is a sign-in and the other an account. */
+    if (said === 'in' || said === 'new') {
+      TTBTrack.event(said === 'new' ? 'account_create' : 'account_login', { via: 'google' });
       if (state.account.user) toast(t('accountSignedIn', { name: state.account.user }));
       return;
     }
@@ -3053,21 +3051,21 @@
   }
 
   /* ------------------------------------------------------------- the sheet
-   * One card, and a view inside it: signing in, creating, naming an account
-   * that arrived through Google, changing the password, changing the
-   * username. Which one is showing is a variable rather than five hidden
-   * blocks, so there is exactly one place that decides and nothing can be
-   * left over from the state before.
+   * One card, and a view inside it: signing in, creating, changing the
+   * password, changing the username, deleting the account. Which one is
+   * showing is a variable rather than five hidden blocks, so there is exactly
+   * one place that decides and nothing can be left over from the state
+   * before.
    *
    * Everything that is not "here is who you are" is a step of its own with a
    * way back to the account, rather than another field stacked on the sheet
    * you started on: one surface asks one thing.
    */
   var accountView = 'in';
-  /* 'in' | 'up' | 'me' | 'password' | 'username' | 'delete' | 'google' */
-  /* The three of those somebody with no account is standing in, and so the
-     three the sign-up funnel is counted on. */
-  var SIGN_VIEWS = ['up', 'in', 'google'];
+  /* 'in' | 'up' | 'me' | 'password' | 'username' | 'delete' */
+  /* The two of those somebody with no account is standing in, and so the
+     two the sign-up funnel is counted on. */
+  var SIGN_VIEWS = ['up', 'in'];
   var accountBusy = false;
   var accountNote = '';
   var accountErr = '';
@@ -3783,10 +3781,6 @@
     same: 'accountErrSame',
     'same-name': 'accountErrSameName',
     'signed-out': 'accountErrSignedOut',
-    /* The sealed note saying which Google account proved itself has run out,
-       or was never there. The way out is the button, not this form. */
-    'no-pending': 'accountErrGooglePending',
-    linked: 'accountErrGoogleTaken',
     'needs-password': 'accountErrNeedsPassword',
     confirm: 'accountErrDeleteConfirm'
   };
@@ -3829,7 +3823,6 @@
     if (accountView === 'password') return renderAccountPassword(form);
     if (accountView === 'username') return renderAccountUsername(form);
     if (accountView === 'delete') return renderAccountDelete(form);
-    if (accountView === 'google') return renderAccountGoogle(form);
     return renderAccountAuth(form);
   }
 
@@ -4075,58 +4068,6 @@
      alternatives rather than steps. */
   function googleOr() {
     return el('p', { className: 'ac-or' }, [el('span', { textContent: t('accountOr') })]);
-  }
-
-  /* ------------------------------------------- naming a Google account
-   * Google has said who somebody is, and this site still does not know what
-   * to call them. It is a step of its own rather than a field on the sheet
-   * they came from, because by the time it is drawn they have been to Google
-   * and back and the sheet they came from is not the question any more.
-   *
-   * One field, and the same field the sign-up sheet asks: the same rule under
-   * it, the same limit, and empty. Everything in the comment there about why
-   * nobody is handed a name applies twice over here — the name Google would
-   * have offered is a real person's real name, out of a profile this site
-   * deliberately never asked to read.
-   */
-  function renderAccountGoogle(form) {
-    form.appendChild(el('h2', { className: 'ac-title', textContent: t('accountGoogleName') }));
-    form.appendChild(el('p', { className: 'ac-why', textContent: t('accountGoogleNameWhy') }));
-
-    accountMessages(form);
-
-    form.appendChild(accountField('ac-user', 'accountUsername', 'text', {
-      autocomplete: 'username',
-      maxlength: '24',
-      hint: t('accountUsernameHint')
-    }));
-
-    var go = accountSubmit('accountCreate');
-    go.addEventListener('click', function () {
-      if (accountBusy) return;
-      var v = accountValues();
-      accountBusy = true; accountErr = ''; renderAccount();
-      TTBTrack.event('account_try_google');
-      accountPost({ action: 'google-name', username: v.username, client: TTBDevice.id() })
-        .then(function (a) {
-          accountBusy = false;
-          if (!a.ok) return accountFail(a.out);
-          state.account.user = a.out.user;
-          /* Made through Google, so there is no password on it yet and the
-             two steps behind the account page have to know that before the
-             next load tells them. */
-          state.account.linked = true;
-          state.account.password = false;
-          if (Array.isArray(a.out.saved)) adoptSaved(a.out.saved);
-          paintAccountRow();
-          TTBTrack.event('account_create', { via: 'google' });
-          TTBTrack.event('account_done_google');
-          closeAccount();
-          if (returnAfterAccount()) return;
-          toast(t('accountSignedIn', { name: a.out.user }));
-        }).catch(function () { accountFail({ error: 'network' }); });
-    });
-    form.appendChild(go);
   }
 
   /* ------------------------------------------------ changing a password
@@ -11754,8 +11695,11 @@
        your own marks with it, and a link copied afterwards is a link to the
        map, not to a filter nobody else can answer. */
     params.delete('saved');
-    /* And ?deleted=, which has said its one word by now. */
+    /* And ?deleted= and ?google=, which have said their one word by now. A
+       ?google= left on would say it again on a reload, and `new` would count
+       a second account made. */
     params.delete('deleted');
+    params.delete('google');
 
     var query = params.toString();
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;

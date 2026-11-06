@@ -4072,7 +4072,7 @@ Every ending is a redirect back to where the trip started, carrying one word:
 | `?google=` | What happened |
 | --- | --- |
 | `in` | signed in; the page says who, and claims this device's saves |
-| `name` | this Google account has never been here, so the sheet asks for a username |
+| `new` | this Google account had never been here, and now has an account under a drawn name, signed in — the page says who, the way it does for `in` |
 | `linked` | connected to the account that was already signed in |
 | `taken` | that Google account already belongs to another account here |
 | `failed` | the swap did not complete |
@@ -4080,36 +4080,52 @@ Every ending is a redirect back to where the trip started, carrying one word:
 and **nothing at all** where somebody pressed Cancel on Google's own screen.
 Changing your mind is not an error and should not come back as one.
 
-#### Two sealed cookies, and no table of half-finished sign-ups
+#### A sealed cookie, and no table of half-finished trips
 
 `ttb_g` carries the trip — the state to compare, the PKCE verifier, the nonce,
 where to return to, and whether this is a sign-in or a connect — for ten
-minutes. `ttb_gp` carries a Google account that has proved itself and has no
-account here yet, for fifteen.
+minutes. It is **sealed rather than stored**: the value carries its own HMAC
+under `SAVE_SALT`, so a forged one is refused with no table to check it
+against. A row per trip would be a table that fills with people who changed
+their mind, and a sweep to write for it. There was a second, `ttb_gp`, which
+held a new Google account for the fifteen minutes it took to choose a name;
+nothing needs holding now that the name is drawn on the way back.
 
-Both are **sealed rather than stored**: the value carries its own HMAC under
-`SAVE_SALT`, so a forged one is refused with no table to check it against. A
-row per half-finished sign-up would be a table that fills with people who
-changed their mind, and a sweep to write for it.
-
-Both are `SameSite=Lax` and not `Strict`, which is the one attribute here that
+It is `SameSite=Lax` and not `Strict`, which is the one attribute here that
 is not simply the safest available. `Strict` withholds a cookie from a
 navigation that started on another site, and the navigation that matters is
 the one Google sends back. `Lax` allows exactly that — a top-level GET — and
 nothing else.
 
-#### The name is still chosen
+#### The name is drawn, and changed later
 
-A Google account arriving for the first time does not become an account. It
-gets the sheet, on a step of its own, asking for a username — and **nothing
-is written until it answers**, so a tab closed on that step leaves no row.
+A Google account arriving for the first time becomes an account on the way
+back, before the browser has even left `/api/google`: a row in `users` with
+no password, a row in `identities`, a session, and the page says who they
+are. The username is drawn for them — one of ten Estonian things to eat and
+four digits, `kringel-4821` — out of `NAME_WORDS` in
+`functions/api/_account.js`, checked free against the table and against the
+thirty-day holds, and drawn again if not. They change it on the account
+page, through the same username step anybody uses.
 
-The name Google would have offered is a real person's real name out of a
-profile this site deliberately never read. The sheet used to hand out
-`smoky-walnut-418` and that was taken away for the smaller version of the same
-reason: **the one thing this site asks anybody to decide about themselves is
-what they are called here**, because it is the byline on every list they share
-and the whole of `/u/<name>`. See **The name is chosen, not handed out**.
+**It used to ask, and the asking is where people went.** Until November 2026
+nothing was written here: the route went home holding a sealed note, and the
+sheet asked for a username before there was an account, on the argument that
+the one thing this site asks anybody to decide about themselves is what they
+are called here. Between 8 October and 5 November, with the owner left out,
+eighteen sign-ins went out to Google and seven came back; five of those were
+new accounts sent to choose a name, and four finished. Every step of that
+trip was losing people, and a question between somebody and an account they
+had already proved themselves for was the one the site could take away. So
+the choice moved from the door to the account page, where it is the same
+choice, made when somebody wants to make it.
+
+**It is still not out of the Google profile.** The name Google would have
+offered is a real person's real name out of a profile this site deliberately
+never read, and the scope is still `openid` alone. A word and four digits
+says nothing about anybody. The sign-up sheet still asks, for the reason
+**The name is chosen, not handed out** gives: there the person is already
+typing.
 
 #### The duplicate nobody wants, and the step that no longer answers it
 
@@ -4693,14 +4709,14 @@ that costs.
 ### What is left on the map
 
 The sheet, and only what a sheet is good at: **signing in**, **creating an
-account**, **Continue with Google**, the **naming step** behind it, the
-**password** step and the **username** step. Every one of them is a thing you
+account**, **Continue with Google**, the **password** step and the
+**username** step. Every one of them is a thing you
 do and dismiss with the map still behind you, which is the test.
 
 Two of those are no longer the sheet's alone, and neither is on the map: the
-feedback composer makes an account, enters one, and names a Google account
-that arrives without one, because the moment to ask is the moment somebody has
-written something they want their name on — see **Feedback**. What the sheet
+feedback composer makes an account and enters one, and offers Continue with
+Google, because the moment to ask is the moment somebody has written something
+they want their name on — see **Feedback**. What the sheet
 still has by itself is the password step, the username step and signing out. The button on the rail is
 what tells the two apart — signed out it opens the sheet, signed in it leaves
 for this page — and `?account=me`, the old link to the menu, redirects here.
@@ -13052,20 +13068,13 @@ somebody the sentence they had written. The button is drawn only where
 map's sheet makes — without a Google client set on a deployment it is not a
 button that can do anything but come back saying it failed.
 
-**And the awkward half of it ends here too.** A Google account this site has
-never seen still has to be given a name, and that step used to be the map's
-sheet's: the browser was sent there, named, and returned. It is asked for in
-this composer now, above the sentence still sitting in the field. `/api/feedback`
-sees the sealed note `/api/google` left in a cookie, answers `naming: true`,
-and the composer draws a name and nothing else — no password, because a Google
-account has none, and no second way in to offer to somebody halfway through
-using one. Posting names the account and posts the sentence under it, in the
-one press.
-
-Nothing on this page sends the browser to the map and back, which is the whole
-point of the composer and was not true of this corner of it for a day. The
-sheet keeps its own copy of the step for its own visitors; the step itself is
-`nameGoogleAccount()` in `functions/api/_account.js`, read by both.
+**And the round trip ends here too.** It comes back to this page signed in —
+with an account made under a drawn name where the Google account was new, see
+**The name is drawn, and changed later** — to the sentence still sitting in
+the field, ready to post under that name. Nothing on this page sends the
+browser to the map and back, which is the whole point of the composer. Until
+November 2026 a new Google account came back here wanting a name, and the
+composer asked for it; nothing asks now.
 
 ### The heart, and there is no other number
 
@@ -13979,9 +13988,20 @@ a sheet, and report the try, the refusal and getting in the same way.
 
 The trip to Google is counted by `/api/google` itself, since a page that has
 sent somebody there cannot see what happened: `google_out` for a sign-in
-that left, and `google_back_in`, `_name`, `_cancel` or `_failed` for how it
-came back. Out less back is the people who never came back from Google's
-screen. A connect is not a sign-up and is not counted, nor is the owner
+that left, `google_out_inapp` beside it where it left from the in-app
+browser of Instagram, Facebook or TikTok — `inAppOf()` in
+`functions/api/_visits.js`, the same test `sourceOf()` files a visit by — and
+`google_back_in`, `_new`, `_cancel` or `_failed` for how it came back. Out
+less back is the people who never came back from Google's screen, and the
+in-app count is how many of them it could be that Google turned away: Google
+refuses OAuth inside those browsers (`disallowed_useragent`) and never
+redirects back, and from 8 October to 5 November eleven of eighteen trips out
+vanished while most arrivals came from those three apps. `google_back_new`
+is a Google account new here, made into an account on the way back under a
+drawn name; until November 2026 the same moment was `google_back_name`, sent
+to choose one first, and the funnel draws those rows where a range holds
+them. The sheet's `google` view, which asked for that name, went with it, and
+its column stays for the same reason. A connect is not a sign-up and is not counted, nor is the owner
 coming back in; the owner's trip out is counted, because the route cannot
 tell who is leaving without asking the database.
 
@@ -15571,12 +15591,12 @@ functions/mcp.js           /mcp — the map as an AI assistant reads it: two
                            tools over data/restaurants.json, through the
                            Model Context Protocol, and nothing else
 functions/api/saves.js     the save count
-functions/api/account.js   sign up, sign in, change a password, name an
-                           account that arrived through Google
+functions/api/account.js   sign up, sign in, change a password or a
+                           username, delete an account
 functions/api/google.js    the round trip to Google and back: one route, asked
                            once on the way out and once on the way in
-functions/api/_google.js   what that round trip is made of — the two sealed
-                           cookies, the code swap, the identities table (not a
+functions/api/_google.js   what that round trip is made of — the sealed
+                           cookie, the code swap, the identities table (not a
                            route: leading _)
 functions/api/lists.js     somebody else's top ten: make one, fill it, share
                            it, keep somebody else's, add a place nobody has
@@ -17911,11 +17931,10 @@ visitor's own choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen
 on the first save and never before it, kept by `assets/device.js`), `ttb.saved`
 (which places it has saved), `ttb.nudged` (the date an offer of an account was
 turned down), and the `ttb_s` session cookie, which is set by the server and
-only exists once somebody has signed in. A sign-in through Google passes two
-more cookies through the browser — `ttb_g` for the ten minutes of the round
-trip and `ttb_gp` for the fifteen a half-finished sign-up is held — and both
-are this site's own, server-set, and gone the moment the trip ends. See
-**Signing in with Google**.
+only exists once somebody has signed in. A sign-in through Google passes one
+more cookie through the browser — `ttb_g`, for the ten minutes of the round
+trip — which is this site's own, server-set, and gone the moment the trip
+ends. See **Signing in with Google**.
 
 `assets/qr.js` is deliberately **not** in that table. Every QR library worth
 using is a dependency this repo would otherwise not have, and the discount
@@ -18020,16 +18039,18 @@ The map, `assets/app.js`:
 | `account_open` | `view` (`sheet` signed out, `page` signed in) — the account row behind More, and the pill at the head of the rail before 2026-11-05 |
 | `account_switch` | `view` (`in`/`up`) |
 | `account_close`, `account_page` | — |
-| `account_create`, `account_login` | — |
+| `account_create`, `account_login` | `via` (`google`) where the round trip to Google came back with `?google=new` or `?google=in`; nothing on the sheet's own form. The flashcards, splitwise and feedback report `account_create` with `via: google` for `new` as well |
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
 | `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
-| `account_sheet_up`, `_in`, `_google` | — the sheet up, and on which view: making an account, signing in, or naming one Google has just vouched for. Not reported again for moving between views |
-| `account_try_up`, `_in`, `_google` | — its button pressed |
-| `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`, `no_pending`, `linked`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
-| `account_done_up`, `_in`, `_google` | — an account made or signed into through that view; beside `account_create` and `account_login`, which cannot say which view |
-| `account_leave_up`, `_in`, `_google`, `account_left_err` | the last with `view` — the sheet shut without an account, and whether a refusal was on screen as it went |
+| `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
+| `account_try_up`, `_in` | — its button pressed |
+| `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
+| `account_done_up`, `_in` | — an account made or signed into through that view; beside `account_create` and `account_login`, which cannot say which view |
+| `account_leave_up`, `_in`, `account_left_err` | the last with `view` — the sheet shut without an account, and whether a refusal was on screen as it went |
+| `google_out`, `google_out_inapp` | — counted by `/api/google` itself, not by a page: a sign-in sent to Google, and the same from the in-app browser of Instagram, Facebook or TikTok, where Google refuses to sign anybody in. Into the sign-up funnel only, never the press kind — **Signing up** under **Visitors** |
+| `google_back_in`, `_new`, `_cancel`, `_failed` | — the same route, on the way back: signed in, an account made under a drawn name, Cancel on Google's screen, or a trip that did not complete. `_name` was a new account sent to choose a name, until November 2026 |
 | `saved_open` | — the row in the sheet |
 | `welcome_ok`, `welcome_tour` | — the two buttons on the welcome card; the cross and a touch on the map put it away without reporting |
 | `explain_open` | — |
@@ -18205,7 +18226,7 @@ Splitwise, `assets/split.js`:
 | event | parameters |
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`split`) — its own sign-in form |
-| `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
+| `account_try_up`, `_in`, `account_err_<error>`, `account_done_up`, `_in` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
 | `split_open` | `group_id` — a row under Your groups |
 | `split_create`, `split_join`, `split_leave`, `split_remove` | `group_id` |
 | `split_share` | `group_id` — the copied invite link |
@@ -18217,7 +18238,7 @@ Flashcards, `assets/flashcard.js`:
 | event | parameters |
 | --- | --- |
 | `account_create`, `account_login`, `account_switch` | `via` (`flashcard`) — its own sign-in form |
-| `account_try_up`, `_in`, `_google`, `account_err_<error>`, `account_done_up`, `_in`, `_google` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
+| `account_try_up`, `_in`, `account_err_<error>`, `account_done_up`, `_in` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
 | `page_view` | one per deck opened or closed in the page: `page_title` is the deck, `page_location` its `?d=` URL. The tag counts the load and `TTBTrack.view()` counts the walks, because opening a deck stopped being a load — see **Opening a deck does not load the page** |
 | `flash_open` | `deck_id`, `own` — a row on the decks page |
 | `flash_taste` | `deck_id`, `what` (`deck`, `song`, `lesson` or `talk`) — the deck, lesson, song or conversation shown on a card on Start. **The menu, and Start** under **Flashcards** |

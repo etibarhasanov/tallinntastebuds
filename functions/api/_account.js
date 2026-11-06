@@ -22,17 +22,17 @@
  * because the map's sheet and the feedback composer say different things
  * afterwards.
  *
- * enterAccount() and nameGoogleAccount() below are the only places an account
- * is made. ./account.js and ./feedback.js call them; ./google.js makes none —
- * a Google account new here goes home holding a sealed note, and one of those
- * two names it.
+ * enterAccount() and makeGoogleAccount() below are the only places an account
+ * is made. ./account.js and ./feedback.js call the first, with a name and a
+ * password somebody typed; ./google.js calls the second, for a Google account
+ * new here, under a name drawn for it.
  */
 
 import {
   clientIp, fingerprint, randomHex, derivePassword, sameSecret, pwIterations,
-  openSession, claimDeviceSaves, countsKey, readCookie
+  openSession, claimDeviceSaves, countsKey
 } from './_lib.js';
-import { googleUser, PENDING_COOKIE, unseal, PROVIDER } from './_google.js';
+import { googleUser, PROVIDER } from './_google.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no
    address to intercept — so it is the thing to make slow. Ten wrong passwords
@@ -74,7 +74,7 @@ export const MIN_PASSWORD = 8;
 
    One spelling per name, whatever the keyboard did: trimmed; a run of spaces
    folded to the dash that separates words in a name here, because somebody
-   on the step after Google types "Etibar Hasanov" and should get in as
+   on the sign-up sheet types "Etibar Hasanov" and should get in as
    etibar-hasanov rather than be refused for the space; NFC, so a ü that
    arrived as a u and a combining mark is the same ü as one that arrived
    whole; lowercased, as every name here has been since the first; and the
@@ -317,96 +317,87 @@ export async function enterAccount(context, opts) {
   return { ok: true, userId: userId, username: username, made: made, token: token, claimed: claimed };
 }
 
-/* ------------------------------------------- naming a Google account
- * The second half of the round trip in ./google.js, and the only part of it
- * that is a form.
+/* ------------------------------------------- a Google account new here
+ * The second half of the round trip in ./google.js, for a Google account that
+ * has never been here: the account is made on the spot, under a name drawn
+ * for it, and the route signs them straight in. Out comes the new users.id,
+ * or the id of the account this Google account already has where two tabs
+ * landed at once, or '' where no free name could be drawn.
  *
- * A Google account that has never been here arrives holding a sealed note
- * saying which Google account proved itself, and nothing has been written yet
- * — no half-made row, nothing to sweep if they close the tab. This is where it
- * becomes an account, and the one thing it asks for is the thing this site
- * asks everybody: a name.
+ * IT USED TO ASK FOR A NAME, AND THAT IS WHERE PEOPLE WENT
  *
- * IT IS NOT ASSEMBLED OUT OF THE GOOGLE PROFILE, AND THAT IS ON PURPOSE
+ * From the first Google sign-in until November 2026 nothing was written here:
+ * the route went home holding a sealed note, and the sheet asked for a
+ * username before there was an account — the one thing this site asks
+ * anybody to decide, asked at the door. Between 8 October and 5 November
+ * five people came back from Google to that step and four finished it, and
+ * every other step of Google's own trip was losing far more: eighteen sent
+ * out and seven back. A question between somebody and an account they had
+ * already proved themselves for is a question worth taking away, so the name
+ * is drawn now and changed later on the account page, the way any name here
+ * is changed — the username step, which keeps the thirty-day hold on the
+ * name it leaves.
+ *
+ * IT IS STILL NOT ASSEMBLED OUT OF THE GOOGLE PROFILE
  *
  * Google would hand over a display name and a picture for the asking.
- * ./_google.js asks for neither — the scope is `openid` alone — and this is
- * the reason: the username here is the byline on every list somebody shares
- * and the whole of /u/<name>, so "Etibar H." out of a Google profile would be
- * this site naming somebody out of a directory they did not know it had read.
+ * ./_google.js asks for neither — the scope is `openid` alone — and drawing a
+ * name changes nothing about why: the username here is the byline on every
+ * list somebody shares and the whole of /u/<name>, so "Etibar H." out of a
+ * Google profile would be this site naming somebody out of a directory they
+ * did not know it had read. A word and four digits says nothing about anybody.
  *
- * The account it makes has no password: an empty hash, an empty salt and
- * nought iterations, which `matches` above reads as "no password on this
- * account" and refuses a sign-in against. Setting one later is the password
- * step, which asks for no current password when there is none.
- *
- * TWO PAGES FINISH THIS STEP, WHICH IS WHY IT IS HERE
- *
- * The map's sheet does, and so does the feedback composer — somebody who
- * pressed Continue with Google under a sentence they were writing comes back
- * to that sentence and names themselves there, without being sent to the map
- * and back. Out comes the same shape `enterAccount` hands back, so a caller
- * can treat the two doors as one.
+ * The account has no password: an empty hash, an empty salt and nought
+ * iterations, which `matches` above reads as "no password on this account"
+ * and refuses a sign-in against. Setting one later is the password step,
+ * which asks for no current password when there is none.
  */
-export async function nameGoogleAccount(context, opts) {
-  const { request, env } = context;
 
-  const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
-  /* Fifteen minutes gone, a forged cookie, or somebody who arrived at this
-     form by typing the address. One answer for all three: there is nothing to
-     name, so start the trip again. */
-  if (!pending || pending.provider !== PROVIDER || !pending.subject) {
-    return { ok: false, error: 'no-pending', status: 401 };
-  }
+/* What a drawn name is made of: one of these, a dash, and four digits —
+   kringel-4821. Estonian things to eat, in plain letters so the name types
+   on any keyboard, every one inside USERNAME_RE with its digits. Ten words
+   and nine thousand numbers is ninety thousand names, which is enough that a
+   draw almost never meets a taken one and the retries below are a belt. */
+const NAME_WORDS = [
+  'kringel', 'pirukas', 'kama', 'kohuke', 'leib',
+  'kilu', 'sai', 'kissell', 'mannavaht', 'rosolje'
+];
+const NAME_TRIES = 6;
 
-  const name = asUsername(opts.username);
-  const client = typeof opts.client === 'string' ? opts.client : '';
-  if (!name) return { ok: false, error: 'username', status: 400 };
-
-  /* Every hold counts, exactly as on the sign-up sheet: a name somebody
-     walked away from last week is not a name a stranger may take, whichever
-     door they came in by. */
-  if (await nameTaken(env, name)) return { ok: false, error: 'taken', status: 409 };
-
-  /* The same Google account naming itself twice — two tabs, or a back button
-     after it worked. The account already exists, so the answer is to go round
-     again and be signed into it rather than to make a second one under a
-     second name. */
-  if (await googleUser(env, pending.subject)) return { ok: false, error: 'linked', status: 409 };
-
-  const userId = crypto.randomUUID();
-  try {
-    await env.DB.batch([
-      env.DB
-        .prepare(
-          'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
-          "VALUES (?, ?, '', '', 0, ?, ?)"
-        )
-        .bind(userId, name, Date.now(), Date.now()),
-      env.DB
-        .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
-        .bind(PROVIDER, pending.subject, userId, Date.now())
-    ]);
-  } catch (e) {
-    /* Two people taking the same free name in the same second, or the same
-       Google account landing here twice at once. Both unique indexes say the
-       same thing and the loser is told what the checks above would have told
-       them. The batch is one transaction, so neither row is left. */
-    return { ok: false, error: 'taken', status: 409 };
-  }
-
-  const token = await openSession(env, userId);
-  const claimed = await claimDeviceSaves(env, userId, client);
-  if (claimed.length) context.waitUntil(caches.default.delete(countsKey(request)));
-
-  return { ok: true, userId: userId, username: name, made: true, token: token, claimed: claimed };
+function drawnName() {
+  const [a, b] = crypto.getRandomValues(new Uint32Array(2));
+  return NAME_WORDS[a % NAME_WORDS.length] + '-' + (1000 + (b % 9000));
 }
 
-/* Whether this browser is holding a Google account that has proved itself and
-   has not been named yet. It is what tells the two composers to ask for a name
-   and no password: there is no password to ask for, and the session does not
-   exist yet either. */
-export async function googlePending(request, env) {
-  const pending = await unseal(env.SAVE_SALT, readCookie(request, PENDING_COOKIE));
-  return !!(pending && pending.provider === PROVIDER && pending.subject);
+export async function makeGoogleAccount(env, subject) {
+  for (let i = 0; i < NAME_TRIES; i++) {
+    const name = asUsername(drawnName());
+    /* Every hold counts, as on the sign-up sheet: a name somebody walked away
+       from last week is not one to hand a stranger. */
+    if (!name || (await nameTaken(env, name))) continue;
+
+    const userId = crypto.randomUUID();
+    try {
+      await env.DB.batch([
+        env.DB
+          .prepare(
+            'INSERT INTO users (id, username, pw_hash, pw_salt, pw_iter, created_at, last_seen_at) ' +
+            "VALUES (?, ?, '', '', 0, ?, ?)"
+          )
+          .bind(userId, name, Date.now(), Date.now()),
+        env.DB
+          .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
+          .bind(PROVIDER, subject, userId, Date.now())
+      ]);
+      return userId;
+    } catch (e) {
+      /* The same name drawn twice in one second, or the same Google account
+         landing here from two tabs at once. The batch is one transaction, so
+         neither row is left; the second is answered by signing into the
+         account the first made, and the first by drawing again. */
+      const already = await googleUser(env, subject);
+      if (already) return already;
+    }
+  }
+  return '';
 }

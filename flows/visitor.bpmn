@@ -218,7 +218,7 @@ ref: assets/app.js dealBlock()</bpmn:documentation>
       <bpmn:outgoing>visitor-e28</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="sign-in" name="Signs up or signs in">
-      <bpmn:documentation>A username of 3 to 24 letters, numbers, dots, dashes or underscores, in any alphabet, and a password or Google. No email.
+      <bpmn:documentation>A username of 3 to 24 letters, numbers, dots, dashes or underscores, in any alphabet, and a password — or Google, which makes the account at once under a drawn name like kringel-4821, changed later on the account page. No email.
 when: account_create
 when: account_login
 ref: index.html the account sheet
@@ -231,8 +231,8 @@ ref: assets/app.js</bpmn:documentation>
     </bpmn:userTask>
     <bpmn:serviceTask id="session" name="Opens a session, claims this device's saves">
       <bpmn:documentation>Then back to the page that asked, over the map. From Save on a list, that list is kept on arrival.
-ref: functions/api/account.js POST create, login, google-name
-ref: functions/api/_account.js claimDeviceSaves()
+ref: functions/api/account.js POST create, login
+ref: functions/api/_account.js claimDeviceSaves(), makeGoogleAccount()
 ref: functions/api/google.js GET
 ref: assets/lists.js keepAsked()</bpmn:documentation>
       <bpmn:incoming>visitor-e30</bpmn:incoming>

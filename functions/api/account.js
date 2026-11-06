@@ -16,6 +16,13 @@
  * to name themselves. So the sheet asks, and the rule it has to keep is
  * printed under the field rather than only in the refusal after the button.
  *
+ * Continue with Google is the one door that no longer asks, since November
+ * 2026: a name typed at that point was a question between somebody and an
+ * account they had already proved themselves for, and the funnel showed it
+ * costing people. That account is made under a drawn name — a word and four
+ * digits — which the username step on the account page changes like any
+ * other. makeGoogleAccount() in ./_account.js is the argument.
+ *
  * TWO WAYS IN, AND THE SECOND ONE NEEDS NOTHING SENT
  *
  * A username and a password is one. Continue with Google is the other, and it
@@ -85,9 +92,9 @@ import {
 import {
   asUsername, MIN_PASSWORD, HOLD_DAYS,
   nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash,
-  enterAccount, nameGoogleAccount
+  enterAccount
 } from './_account.js';
-import { googleReady, unlinkGoogle, hasGoogle, pendingCookie } from './_google.js';
+import { googleReady, unlinkGoogle, hasGoogle } from './_google.js';
 import {
   NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, rowToStore, publicLists, placeLists,
   cleanSpeaks, readSpeaks,
@@ -771,55 +778,6 @@ export async function onRequestPost(context) {
     /* What was stored, read the way the profile will read it, so the form
        redraws exactly what the page now shows. */
     return json({ rows: placeLists(await readRows(env, user.id), theirs) }, 200);
-  }
-
-  /* ------------------------------------------ naming a Google account
-   * The second half of the round trip in ./google.js, and the only part of
-   * it that is a form.
-   *
-   * A Google account that has never been here arrives holding a sealed note
-   * saying which Google account proved itself, and nothing has been written
-   * yet — no half-made row, nothing to sweep if they close the tab. This is
-   * where it becomes an account, and the one thing it asks for is the thing
-   * this site asks everybody: a name.
-   *
-   * IT IS NOT ASSEMBLED OUT OF THE GOOGLE PROFILE, AND THAT IS ON PURPOSE
-   *
-   * Google would hand over a display name and a picture for the asking.
-   * ./_google.js asks for neither — the scope is `openid` alone — and this is
-   * the reason: the username here is the byline on every list somebody
-   * shares and the whole of /u/<name>, so "Etibar H." out of a Google profile
-   * would be this site naming somebody out of a directory they did not know
-   * it had read. The sheet used to hand out `smoky-walnut-418` for the same
-   * job and it was taken out for the same reason. See the header.
-   *
-   * The account it makes has no password: an empty hash, an empty salt and
-   * nought iterations, which `matches` above reads as "no password on this
-   * account" and refuses a sign-in against. Setting one later is the
-   * password step, which asks for no current password when there is none.
-   */
-  /* The step itself is `nameGoogleAccount` in ./_account.js, because two
-     forms finish it: this sheet, and the feedback composer, where somebody
-     who pressed Continue with Google under a half-written sentence names
-     themselves without being sent here and back. */
-  if (action === 'google-name') {
-    const named = await nameGoogleAccount(context, {
-      username: body.username,
-      client: body.client
-    });
-    if (!named.ok) return json({ error: named.error }, named.status);
-
-    const made = new Headers({
-      'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'no-store'
-    });
-    made.append('set-cookie', sessionCookie(named.token, SESSION_DAYS, request));
-    /* Spent. It is good for one account and this was it. */
-    made.append('set-cookie', pendingCookie(''));
-    return new Response(
-      JSON.stringify({ user: named.username, saved: await savedByUser(env, named.userId) }),
-      { headers: made }
-    );
   }
 
   /* ------------------------------------------------- disconnecting Google

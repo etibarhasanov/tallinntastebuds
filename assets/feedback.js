@@ -36,13 +36,12 @@
  *
  * NOTHING ON THIS PAGE SENDS THE BROWSER TO THE MAP AND BACK
  *
- * Including the awkward half of Continue with Google. A Google account that
- * has never been here before still has to be given a name, and that step used
- * to be the map's sheet's — the browser was sent there, named, and returned.
- * It is asked for in this composer now, above the sentence still sitting in
- * the field, and `naming` out of /api/feedback is what says to ask. The map's
- * sheet keeps its own copy of the step for its own visitors; the step itself
- * is one function that both read.
+ * Continue with Google included. The round trip comes back here signed in —
+ * with an account made under a drawn name where the Google account was new —
+ * to the sentence still sitting in the field. It used to come back wanting a
+ * name, asked for first on the map's sheet and later in this composer; since
+ * November 2026 nothing asks, and makeGoogleAccount() in
+ * functions/api/_account.js says why.
  *
  * Plain browser JavaScript, ES5, one IIFE, no modules and no framework, the
  * same as every other file in assets/.
@@ -94,7 +93,6 @@
     ready: false,   // whether /api/feedback could read its tables at all
     me: null,       // the username signed in on this browser, or null
     google: false,  // whether Continue with Google leads anywhere here
-    naming: false,  // a Google account that has proved itself and wants a name
     rows: [],       // everything drawn, in the server's order
     page: 0,        // the last page asked for
     more: false,    // whether there is another one
@@ -305,14 +303,11 @@
     state.ready = !!answer.ready;
     state.me = answer.me || null;
     state.google = !!answer.google;
-    state.naming = !!answer.naming;
     state.more = !!answer.more;
     state.rows = append ? state.rows.concat(answer.rows || []) : (answer.rows || []);
     /* Somebody signed in posts under their name unless they say otherwise;
-       signed out, the quiet answer is the one that asks for nothing. And
-       somebody halfway through naming a Google account came back here to do
-       exactly that, so the choice opens on the half that asks. */
-    if (!append && state.as === 'anon' && (state.me || state.naming)) state.as = 'name';
+       signed out, the quiet answer is the one that asks for nothing. */
+    if (!append && state.as === 'anon' && state.me) state.as = 'name';
   }
 
   /* ---------------------------------------------------------- the drawing */
@@ -546,25 +541,13 @@
      somebody has written something they want their name on, and sending them
      to another page to sign in is asking them to write it twice.
    *
-     It has two shapes, and which one is drawn is the server's answer rather
-     than this page's guess.
-   *
-     ORDINARILY, a name and a password. There is no separate Sign up and Sign
-     in: the name decides — a name nobody has makes an account, one that
+     A name and a password. There is no separate Sign up and Sign in: the
+     name decides — a name nobody has makes an account, one that
      exists signs you into it — and the line under the field says so before
      the button rather than after it. See enterAccount() in
      functions/api/_account.js, where `mode: 'either'` is that decision. Under
      them, where this deployment has Google configured at all, the other way
-     in.
-   *
-     COMING BACK FROM GOOGLE having never been here before, a name and
-     nothing else. Google has already proved who this is, so there is no
-     password to ask for and no second way in to offer — the one thing left is
-     the thing this site asks everybody, which is what to call them. That step
-     used to happen on the map's sheet and the browser was sent there and
-     back; it happens here now, with the sentence they were writing still in
-     the field above it. nameGoogleAccount() in functions/api/_account.js is
-     the same step the sheet takes, read by both. */
+     in, which comes back signed in and so never draws these at all. */
   function account() {
     var user = el('input', {
       type: 'text',
@@ -577,13 +560,6 @@
     });
     user.value = state.user;
     user.addEventListener('input', function () { state.user = user.value; });
-
-    if (state.naming) {
-      return el('div', { className: 'fb-name' }, [
-        el('p', { className: 'ac-why', textContent: t('accountGoogleNameWhy') }),
-        field('fb-user', t('accountUsername'), t('accountUsernameHint'), user)
-      ]);
-    }
 
     var pass = el('input', {
       type: 'password',
@@ -632,23 +608,8 @@
     password: 'accountErrPassword',
     'no-match': 'accountErrNoMatch',
     taken: 'accountErrTaken',
-    'slow-down': 'accountErrSlow',
-    /* The two ways the Google half can end with nothing to name: the sealed
-       note has run out — it is good for fifteen minutes — or that Google
-       account already has an account here, which two tabs or a back button
-       will do. The remedy is the same sentence for both, and it is the map
-       sheet's own: press Continue with Google again. */
-    'no-pending': 'accountErrGooglePending',
-    linked: 'accountErrGooglePending'
+    'slow-down': 'accountErrSlow'
   };
-
-  /* Which refusals mean the name-only form has nothing left to name. Without
-     this the page would go on asking for a name it can no longer use, and
-     every press would fail the same way — a dead end with a button in it. The
-     ordinary fields come back instead, Continue with Google among them. */
-  function stillNaming(error) {
-    return error !== 'no-pending' && error !== 'linked';
-  }
 
   function composer() {
     var text = el('textarea', {
@@ -726,10 +687,7 @@
 
     if (state.as === 'name' && !state.me) {
       body.username = state.user;
-      /* Nothing to send when Google has already proved who this is: the
-         account it makes has no password at all, and the route reads the
-         sealed note rather than a field. */
-      if (!state.naming) body.password = state.pass;
+      body.password = state.pass;
     }
 
     /* Against a second press while the first is in flight. Nothing re-enables
@@ -743,7 +701,6 @@
         var why = a.out && a.out.error;
         state.err = t(ERRORS[why] || 'listsErrGeneric');
         state.note = '';
-        if (state.naming && !stillNaming(why)) state.naming = false;
         return render();
       }
       storeDrop(DRAFT_KEY);
@@ -751,9 +708,6 @@
          is now the site's answer to who this is. */
       var fresh = !state.me && a.out.me;
       state.me = a.out.me || state.me;
-      /* Named, if that is what this was. The sealed note is spent and the
-         route has cleared it. */
-      if (state.me) state.naming = false;
       state.as = a.out.said.name ? 'name' : 'anon';
       state.note = fresh ? t('feedbackPostedNew', { name: state.me }) : t('feedbackPosted');
       state.err = '';
@@ -848,10 +802,10 @@
 
     /* Coming back from Google. /api/google redirects here carrying one word
        saying how it went, and this page handles every one of them itself:
-       `in` and `linked` arrive with a session and need nothing said, `name`
-       is answered by the composer asking for a name — /api/feedback sees the
-       sealed note and says `naming` — and the last two are a sentence above
-       the fields. Nothing is sent to the map and back. */
+       `in`, `new` and `linked` arrive with a session and need nothing said
+       — the composer draws the name it is posting under — and `failed` and
+       `taken` are a sentence above the fields. Nothing is sent to the map and
+       back. */
     var google = new URLSearchParams(window.location.search).get('google');
 
     /* Whatever was in the field when this browser left for Google. Read once,
@@ -871,6 +825,9 @@
       applyStaticStrings();
       take(answers[1], false);
 
+      /* An account the trip made on the way back is an account made, counted
+         the way the map's sheet counts one. */
+      if (google === 'new') TTBTrack.event('account_create', { via: 'google' });
       if (google === 'failed' || google === 'taken') {
         state.err = t(google === 'taken' ? 'accountErrGoogleTaken' : 'accountErrGoogle');
       }

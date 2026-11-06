@@ -88,8 +88,8 @@ through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 | `/*` | `_middleware.js` | none | as `_headers` | the owner's lock — `/admin/` a 404, `/api/admin/` a 403, through `adminUser()` in `api/_admin.js`; `pages.dev` 301ed home; both subdomain roots *call* their routes; the security headers on every answer — **The security headers** |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, a weak ETag, and the colo copy under `countsKey()` | the counts out of `save_counts`, never a `COUNT(*)` — **Saves** |
 | `POST /api/saves` | `saves.js` | `saves` and `RECOUNT_SQL` in one `batch()`; `countUse()` | `no-store`; purges `countsKey()` | the purge reaches one colo, and the minute's TTL is the backstop — **Saves** |
-| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`, `profile_rows`; device saves through `claimDeviceSaves()` | `no-store`; `Set-Cookie ttb_s` | the profile's writes take a session and not the password; an account is made only by `enterAccount()` and `nameGoogleAccount()` in `_account.js` — **Accounts**, **Your page** |
-| `GET /api/google` | `google.js` | `sessions`, `identities`, `users.last_seen_at`; device saves through `claimDeviceSaves()`; `visitor_counts` (`signup`) through `countSignup()` | `no-store`; `Set-Cookie ttb_s`, `ttb_g`, `ttb_gp` | one route asked twice, out and back; never JSON, every ending a 302 to `?then=` with one word in `?google=`; makes no account — **Signing in with Google** |
+| `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`, `profile_rows`; device saves through `claimDeviceSaves()` | `no-store`; `Set-Cookie ttb_s` | the profile's writes take a session and not the password; an account is made only by `enterAccount()` and `makeGoogleAccount()` in `_account.js` — **Accounts**, **Your page** |
+| `GET /api/google` | `google.js` | `users`, `sessions`, `identities`, `users.last_seen_at`; device saves through `claimDeviceSaves()`; `visitor_counts` (`signup`) through `countSignup()` | `no-store`; `Set-Cookie ttb_s`, `ttb_g` | one route asked twice, out and back; never JSON, every ending a 302 to `?then=` with one word in `?google=`; a Google account new here is made into an account on the way back, under a name `makeGoogleAccount()` draws; `google_out_inapp` beside `google_out` through `inAppOf()` in `_visits.js` — **Signing in with Google** |
 | `GET/POST /api/lists` | `lists.js` | `lists`, `list_items`, `list_keeps`, `added_places`; `countUse()` | `no-store`: the owner reads it mid-edit | every write but `keep()` reads `lists.owner` first — the header's ownership rule — **Lists** |
 | `GET /api/places` | `places.js` | none | `public, max-age=300` | the map's roll merged with open `google_venues`; `?q=` for the post editor's picker, `?ids=` for a post's cards |
 | `GET /api/venues` | `venues.js` | none | `public, max-age=300` | `?ids=` or `?map=` and nothing else: the whole roll is `/api/admin/venues`, and this cannot become a search — **Finding anywhere in Tallinn**, **Google, on a place of mine** |
@@ -264,7 +264,8 @@ form in `assets/lists.js`; the username's 3–24 in `_account.js` —
 `USERNAME_RE`, read by `asUsername()` alone, which every route that takes a
 name calls rather than keeping a copy, `_profile.js` and `_visits.js` included
 — as a `maxlength: '24'` on all three of `app.js`'s username fields — the
-sign-up sheet's, the rename step's and the one behind Continue with Google —
+sign-up sheet's, the rename step's and the delete step's, where an account
+with no password types its name to confirm —
 on `split.js`'s and `flashcard.js`'s, each one field worn by three views, and
 in words as `accountUsernameHint`, `accountErrUsername` and `feedbackNameHint`
 in `data/ui.json`. `grep -n maxlength assets/*.js` finds every copy. Change
