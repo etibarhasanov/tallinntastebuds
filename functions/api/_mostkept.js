@@ -49,8 +49,11 @@ import { readingPins, pinSelect, pinsOf } from './_pins.js';
    same kind of number and neither is the other's rule. That one is about
    what its owner is ready to send, and stays at three; this one is about what
    a stranger's first sight of the feature should be, and a page of
-   half-filled lists recommends nothing. */
-const MIN_ITEMS = 4;
+   half-filled lists recommends nothing.
+
+   Exported because functions/mcp.js holds the lists an assistant can find
+   to the same floor, so a list too thin for this page is too thin there. */
+export const MIN_ITEMS = 4;
 
 /* One page of /lists. Long enough to be worth scrolling, short enough that
    Show more arrives before anybody has stopped reading. */

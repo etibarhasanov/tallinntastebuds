@@ -2,11 +2,13 @@
  * Tallinn Tastebuds — reading one list.
  *
  * Underscore-prefixed, so this is a module and never a route. It holds the one
- * thing two files both need: the shape of a list as the page wants it.
+ * thing three files all need: the shape of a list as the page wants it.
  *
  *   functions/api/lists.js     answers GET /api/lists?id=<id> with it
  *   functions/list/[id].js     seeds it into the page it serves, so a shared
  *                              link draws without a second round trip
+ *   functions/mcp.js           hands it to an assistant as get_list, signed
+ *                              out, so an assistant reads what a stranger does
  *
  * It lives here rather than in _lib.js because _lib.js is the plumbing every
  * route needs — hashing, sessions, which database this is — and this is one

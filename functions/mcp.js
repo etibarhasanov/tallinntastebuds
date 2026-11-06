@@ -8,32 +8,48 @@
  * The Model Context Protocol is how Claude, ChatGPT and the rest are handed
  * a tool: a server says what it can do, and a model calls it in the middle
  * of a conversation and reads the answer. This is that server for the map,
- * and it hands over two tools — search my places, read one — over the roll
- * in data/restaurants.json and nothing else. Somebody asks their assistant
- * for somewhere to eat in Tallinn and the assistant can ask the map, with
- * the write-up, the dish to order and the link to the place in the answer
- * it writes. Data only: no model of its own, no AI binding, no database, no
- * Google. Nothing a visitor to the site sees changes.
+ * and it hands over four tools: search my places and read one, over the roll
+ * in data/restaurants.json, and search the public lists and read one, out of
+ * the database the lists page reads. Somebody asks their assistant for
+ * somewhere to eat in Tallinn, or for a top ten of bakeries, and the
+ * assistant can ask the site, with the write-up, the dish to order, whose
+ * list it is and the link in the answer it writes. Reads only: no model of
+ * its own, no AI binding, no write to anything. Nothing a visitor to the site
+ * sees changes.
  *
  * It is added to an assistant as a custom connector by its address alone,
  * https://tallinntastebuds.ee/mcp — no key, no sign-in, no app to install.
  * **Read by an assistant** in README.md says how, and what it deliberately
  * leaves out.
  *
- * WHY MY PLACES ONLY
+ * WHOSE PLACES, AND WHOSE LISTS
  *
  * The site holds two rolls and the difference is the point — the header of
  * /api/venues. The places in data/restaurants.json are places I have eaten
- * at and approved; the eleven hundred rows in `google_venues` are
- * Google's description of the city, with Google's ratings on them. A model
- * handed both would answer with Google's roll whenever mine fell short, under
- * this site's name, and the one thing the site promises is that being on the
- * map is the verdict: no scores, stars or rankings. So an assistant gets the
- * map and only the map — nothing out of the database, not a place id, not a
- * rating — and the server's own instructions tell it what the map is and what
- * it is not allowed to claim about it. Where the map has nothing that fits,
- * the right answer is that nothing on the map fits, and the tool says exactly
- * that rather than reaching for the rest of the city.
+ * at and approved; the eleven hundred rows in `google_venues` are the rest
+ * of the city, as the Places export describes it. The one thing the site
+ * promises is that being on the map is the verdict: no scores, stars or
+ * rankings. So search_places answers out of the map and only the map, and
+ * where the map has nothing that fits it says exactly that rather than
+ * reaching for the rest of the city.
+ *
+ * The lists are the other kind of thing the site has: somebody's opinion,
+ * under their name, in the order they put it in — **Lists** in README.md.
+ * A "top 10" there is its author's top ten and never the map's verdict, and
+ * the six under `google-statistics` are Google's ratings under Google's
+ * name. So search_lists and get_list answer with whose list it is on every
+ * one, and the instructions tell the assistant to say so. Only public lists
+ * of four places or more, the floor the lists page holds them to; a private
+ * list and an id that does not exist are the same sentence, as they are on
+ * the page, so the tool cannot be used to learn which codes are real.
+ *
+ * A place on a list that is not on my map is one out of the export or one
+ * somebody added by hand, and it answers with its name, its address and its
+ * point. Those are facts about the place, the same ones the list page draws,
+ * and the owner's decision was that they go to an assistant the same way.
+ * What does not go is anything the export says *about* a place — its
+ * rating, its reviews — except where a list's author wrote it into their own
+ * sentence, which is what Google's six lists are.
  *
  * WHY STATELESS
  *
@@ -43,7 +59,8 @@
  * Function is an isolate that can be in any colo and remembers nothing from
  * one request to the next, so a session would be a row somewhere, and there
  * is nothing in this exchange worth a row: `initialize` says which tools
- * exist and a call answers out of a file both sides can read again tomorrow.
+ * exist and a call answers out of a file or a table both sides can read
+ * again tomorrow.
  * So no session is opened, no id is handed out, and every request is complete
  * on its own. A client that sends an id it got from somewhere else is
  * answered the same as one that sends none.
@@ -104,7 +121,10 @@
  * address, which costs no Google data. An id that is not on the map, or a
  * place that has closed, is a tool result with `isError` and one plain
  * sentence rather than a protocol error, because that is an answer to the
- * question and not a fault in the asking.
+ * question and not a fault in the asking. A list is its title, its author,
+ * the line under it and its link, and get_list adds every place in the
+ * author's order in the author's words; a list that is private or missing
+ * is the same kind of sentence.
  *
  * WHAT IS NOT HERE, ON PURPOSE
  *
@@ -113,7 +133,9 @@
  * that are servers themselves. No rate limit past Cloudflare's own, no key,
  * nothing counted — this does not go through assets/track.js or /api/stats,
  * so an assistant's call is not a visit and appears on none of the owner's
- * pages. No resources, no prompts, no `tools/list` change notifications:
+ * pages, and a list it reads is not an open: the order the lists page opens
+ * on is what people did, and an assistant reading a list a hundred times
+ * must not be able to move it. No resources, no prompts, no `tools/list` change notifications:
  * `capabilities` names tools and nothing else.
  *
  * functions/_middleware.js lets this address through untouched — it is on
@@ -122,7 +144,9 @@
  * subdomains 301 it back to the live hostname like every other page.
  */
 
-import { json, mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km } from './api/_lib.js';
+import { json, mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase } from './api/_lib.js';
+import { readList, LIST_ID } from './api/_lists.js';
+import { MIN_ITEMS } from './api/_mostkept.js';
 import { SITE } from './_shell.js';
 
 /* Newest first: the one answered to a client that names none this server
@@ -171,7 +195,14 @@ const INSTRUCTIONS =
   'they named, anything earlier in the conversation, or the location ' +
   'your app gives you, and the middle of Tallinn (59.437, 24.7536) when ' +
   'you have nothing finer. Then say in one line which point you measured ' +
-  'from, and that naming a street would make it closer.';
+  'from, and that naming a street would make it closer. ' +
+  'The lists (search_lists, get_list) are something else: public lists ' +
+  'members of the site have made, each under its author\'s name. A list\'s ' +
+  'title and order are its author\'s opinion, not Tallinn Tastebuds\' ' +
+  'verdict, so say whose list it is ("on etibar\'s list") and give the ' +
+  'list\'s link. Lists by google-statistics are Google\'s ratings, under ' +
+  'Google\'s name: say so. A place on a list with on_map false has no ' +
+  'write-up from Tallinn Tastebuds.';
 
 /* ------------------------------------------------------------ the tools
  * What tools/list hands over. The enums are read out of the deployment —
@@ -233,12 +264,42 @@ const languageParam = (langs) => ({
   type: 'string',
   enum: langs,
   default: DEFAULT_LANG,
-  description: 'The language the write-up comes in: the ten the site speaks, as codes. ' +
+  description: 'The language the write-up comes in: the languages the site speaks, as codes. ' +
     'A place with no write-up in it answers in English.'
 });
 
-/* Read-only, harmless to repeat, and over a closed list of places rather
-   than the open world; the same four on both. */
+/* What a list answers with, in both list tools; get_list adds its places. */
+const LIST_FIELDS = {
+  id: { type: 'string', description: 'The list\'s id, for get_list.' },
+  title: { type: 'string', description: 'The title its author gave it.' },
+  intro: { type: 'string', description: 'The line its author wrote under the title, or empty.' },
+  by: { type: ['string', 'null'], description: 'Whose list it is: the author\'s username. Always say it.' },
+  places: { type: 'integer', description: 'How many places are on it.' },
+  url: { type: 'string', description: 'The list on Tallinn Tastebuds. Always give it.' }
+};
+
+const LIST_PLACE_FIELDS = {
+  position: { type: 'integer', description: 'Where its author put it, from 1.' },
+  name: { type: 'string' },
+  note: { type: ['string', 'null'], description: 'What the list\'s author wrote about it, or null.' },
+  must_order: { type: ['string', 'null'], description: 'What the author says to order there, or null.' },
+  address: { type: ['string', 'null'] },
+  lat: { type: ['number', 'null'] },
+  lng: { type: ['number', 'null'] },
+  on_map: {
+    type: 'boolean',
+    description: 'Whether it is also on the Tallinn Tastebuds map. When it is, place_id reads it with get_place.'
+  },
+  place_id: { type: ['string', 'null'], description: 'The map\'s id for it when on_map, else null.' },
+  closed: { type: 'boolean', description: 'Present and true when the map has it as closed.' },
+  url: {
+    type: 'string',
+    description: 'The place on the map when on_map, else a Google Maps search for it by name and address.'
+  }
+};
+
+/* Read-only, harmless to repeat, and over the site's own data rather than
+   the open world; the same four on all of them. */
 const ANNOTATIONS = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 
 function tools(types, langs) {
@@ -328,9 +389,85 @@ function tools(types, langs) {
       },
       outputSchema: { type: 'object', properties: DETAIL_FIELDS },
       annotations: ANNOTATIONS
+    },
+    {
+      name: 'search_lists',
+      title: 'Search lists on Tallinn Tastebuds',
+      description:
+        'Find public lists on Tallinn Tastebuds: lists of places in Tallinn that members of ' +
+        'the site have made, each somebody\'s own picks under their name — "top 10 coffee", ' +
+        '"best places to work with laptop", "best beer bars" — and six lists of Google\'s ' +
+        'ratings under the name google-statistics. Use it when the question asks for a list, ' +
+        'a top ten or somebody\'s picks: "a top 10 bakery list", "where do locals say to ' +
+        'drink beer". Pass a word or two in `query`, not the whole question; give `by` for one ' +
+        'author\'s lists. Each result says whose list it is and its first few places; read ' +
+        'one whole with get_list. An empty `lists` means no list fits.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: {
+            type: 'string',
+            maxLength: MAX_QUERY,
+            description: 'A word or two, matched against the title, the line under it, the author ' +
+              'and the places on it. Accents do not matter.'
+          },
+          by: { type: 'string', maxLength: 40, description: 'Only the lists by this username.' },
+          limit: {
+            type: 'integer', minimum: 1, maximum: MAX_LIMIT, default: DEFAULT_LIMIT,
+            description: 'How many lists at most.'
+          }
+        },
+        additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          lists: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                ...LIST_FIELDS,
+                first_places: { type: 'array', items: { type: 'string' }, description: 'The first three places on it.' }
+              }
+            }
+          },
+          note: { type: 'string', description: 'Present when nothing fits: one sentence saying so.' }
+        },
+        required: ['lists']
+      },
+      annotations: ANNOTATIONS
+    },
+    {
+      name: 'get_list',
+      title: 'Read a list on Tallinn Tastebuds',
+      description:
+        'One public list on Tallinn Tastebuds, whole, by the id search_lists returned: its ' +
+        'title, its author, the line under it, and every place in the order its author put ' +
+        'them, each with what the author wrote about it, its address and point, and whether ' +
+        'it is also on the Tallinn Tastebuds map. Use it when the conversation turns to one ' +
+        'list: "show me that bakery list", "what is on etibar\'s coffee list". The order is ' +
+        'the author\'s, not the site\'s.',
+      inputSchema: {
+        type: 'object',
+        properties: { id: { type: 'string', description: 'The list\'s id, as search_lists gave it.' } },
+        required: ['id'],
+        additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          ...LIST_FIELDS,
+          items: { type: 'array', items: { type: 'object', properties: LIST_PLACE_FIELDS } }
+        }
+      },
+      annotations: ANNOTATIONS
     }
   ];
 }
+
+/* The names a call may ask for, for the error that names a wrong one. */
+const TOOL_NAMES = ['search_places', 'get_place', 'search_lists', 'get_list'];
 
 /* ------------------------------------------------------------- a place
  * The row as a tool answers with it. The write-up in one language, the
@@ -369,9 +506,16 @@ function detail(place, lang) {
     website: place.website || null,
     visited: place.visited || null,
     added: place.added || null,
-    maps_url: 'https://www.google.com/maps/search/?api=1&query=' +
-      encodeURIComponent(place.name + ', ' + place.address)
+    maps_url: mapsSearch(place.name, place.address)
   };
+}
+
+/* A Google Maps search for a name and an address, which is a link anybody
+   could type and carries nothing out of the export: get_place gives one for
+   every place, and get_list for a place on a list that is not on the map. */
+function mapsSearch(name, address) {
+  return 'https://www.google.com/maps/search/?api=1&query=' +
+    encodeURIComponent(address ? name + ', ' + address : name + ', Tallinn');
 }
 
 /* ------------------------------------------------------------- a search
@@ -512,9 +656,133 @@ function searchArgs(raw, types, langs) {
   };
 }
 
+/* ------------------------------------------------------------- the lists
+ * Every public list of MIN_ITEMS places or more, with its places' names, in
+ * one read: the lists joined to their rows and grouped here, so a word can
+ * land on a place deep in a list and not only on the three the lists page
+ * prints. Every row of every public list, a couple of hundred today; it
+ * grows with what people write, and READ_CAP is where it stops rather than
+ * where it should ever arrive — the day it does, this wants the LIKE search
+ * mostKept() in functions/api/_mostkept.js already runs, with its paging.
+ *
+ * The order is how well the words matched and then the title, alphabetical,
+ * as search_places orders a tie: not how often a list is opened, which is
+ * the lists page's order and a ranking this server has no reason to repeat.
+ */
+const READ_CAP = 2000;
+
+const LIST_WEIGHTS = [['title', 4], ['intro', 3], ['by', 2], ['names', 2]];
+
+const listUrl = (id) => SITE + '/list/' + encodeURIComponent(id);
+
+async function publicLists(env) {
+  const { results } = await env.DB
+    .prepare(
+      'SELECT l.id AS id, l.title AS title, l.intro AS intro, u.username AS by, i.name AS name ' +
+      'FROM lists l LEFT JOIN users u ON u.id = l.owner ' +
+      'JOIN list_items i ON i.list_id = l.id ' +
+      'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?'
+    )
+    .bind(READ_CAP)
+    .all();
+  const lists = new Map();
+  for (const row of results) {
+    if (!lists.has(row.id)) {
+      lists.set(row.id, { id: row.id, title: row.title, intro: row.intro || '', by: row.by || null, names: [] });
+    }
+    lists.get(row.id).names.push(row.name);
+  }
+  return [...lists.values()].filter((l) => l.names.length >= MIN_ITEMS);
+}
+
+async function searchLists(env, raw) {
+  const query = optionalString(raw, 'query', MAX_QUERY);
+  const by = foldWords(optionalString(raw, 'by', 40)).trim();
+  const limit = optionalNumber(raw, 'limit');
+  const words = wordsOf(query);
+
+  const found = [];
+  for (const list of await publicLists(env)) {
+    if (by && foldWords(list.by || '') !== by) continue;
+    const hay = {
+      title: foldWords(list.title),
+      intro: foldWords(list.intro),
+      by: foldWords(list.by || ''),
+      names: foldWords(list.names.join(' '))
+    };
+    let hits = 0;
+    for (const word of words) {
+      for (const [field, weight] of LIST_WEIGHTS) {
+        if (hay[field].includes(word)) { hits += weight; break; }
+      }
+    }
+    if (words.length && !hits) continue;
+    found.push({ list, hits, title: hay.title });
+  }
+  found.sort((a, b) => b.hits - a.hits || (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
+
+  const out = {
+    lists: found
+      .slice(0, limit === null ? DEFAULT_LIMIT : Math.min(MAX_LIMIT, Math.max(1, Math.floor(limit))))
+      .map(({ list }) => ({
+        id: list.id,
+        title: list.title,
+        intro: list.intro,
+        by: list.by,
+        places: list.names.length,
+        url: listUrl(list.id),
+        first_places: list.names.slice(0, 3)
+      }))
+  };
+  if (!out.lists.length) out.note = 'No public list on Tallinn Tastebuds fits that.';
+  return out;
+}
+
+/* One list, through readList() in functions/api/_lists.js — the same reader
+   the list page seeds from, so the two cannot disagree about what is on it —
+   signed out, so a private list is the null it is to any stranger. Each row
+   in the author's order, said in the author's words, with its name, address
+   and point, and the map's id and link when the place is also on the map. */
+async function getList(context, raw, all) {
+  const id = optionalString(raw, 'id', 60);
+  if (!id) throw bad('id is required');
+  const list = LIST_ID.test(id) ? await readList(context, id, null) : null;
+  if (!list) return toolError('There is no public list with the id "' + id + '" on Tallinn Tastebuds.');
+
+  const closed = new Set(all.filter((p) => p.closed).map((p) => p.id));
+  return toolResult({
+    id: list.id,
+    title: list.title,
+    intro: list.intro || '',
+    by: list.by,
+    places: list.items.length,
+    url: listUrl(list.id),
+    items: list.items.map((row, i) => {
+      /* A Google row for a place on the map is `map` too, and carries the
+         map's id in `mapId`; a row of mine has only `map`, and its own id is
+         the map's. */
+      const mapId = row.mapId || (row.map ? row.place : null);
+      const out = {
+        position: i + 1,
+        name: row.name,
+        note: row.say || null,
+        must_order: row.mustOrder || null,
+        address: row.address || null,
+        lat: row.lat,
+        lng: row.lng,
+        on_map: !!mapId,
+        place_id: mapId || null,
+        url: mapId ? SITE + '/?spot=' + encodeURIComponent(mapId) : mapsSearch(row.name, row.address)
+      };
+      if (mapId && closed.has(mapId)) out.closed = true;
+      return out;
+    })
+  });
+}
+
 /* ------------------------------------------------------------- the calls
  * The protocol's tool result: the object twice, or a sentence with isError
- * on it. search() above is the one tool; get_place is here.
+ * on it. search() and the two list tools above; get_place is here.
  */
 function toolResult(object) {
   return { content: [{ type: 'text', text: JSON.stringify(object) }], structuredContent: object };
@@ -522,6 +790,22 @@ function toolResult(object) {
 
 function toolError(sentence) {
   return { content: [{ type: 'text', text: sentence }], isError: true };
+}
+
+/* The two list tools, which are the only ones that read the database. A
+   database that is missing, the wrong one, or failing costs the lists and
+   nothing else: a tool result saying so, while the places answer as ever.
+   Bad arguments still go up as the protocol's invalid-params error. */
+async function listCall(context, name, args, all) {
+  const { env } = context;
+  const down = toolError('The lists on Tallinn Tastebuds cannot be read right now; the places can.');
+  if (!env.DB || await wrongDatabase(env)) return down;
+  try {
+    return name === 'search_lists' ? toolResult(await searchLists(env, args)) : await getList(context, args, all);
+  } catch (e) {
+    if (e.invalid) throw e;
+    return down;
+  }
 }
 
 function getPlace(raw, places, all, langs) {
@@ -598,11 +882,12 @@ async function answer(context, message) {
   try {
     if (name === 'search_places') return reply(id, toolResult(search(places, types, searchArgs(args, types, langs))));
     if (name === 'get_place') return reply(id, getPlace(args, places, all, langs));
+    if (name === 'search_lists' || name === 'get_list') return reply(id, await listCall(context, name, args, all));
   } catch (e) {
     if (e.invalid) return fail(id, INVALID_PARAMS, e.message);
     throw e;
   }
-  return fail(id, INVALID_PARAMS, 'Unknown tool: ' + name, 200, { tools: ['search_places', 'get_place'] });
+  return fail(id, INVALID_PARAMS, 'Unknown tool: ' + name, 200, { tools: TOOL_NAMES });
 }
 
 export async function onRequest(context) {

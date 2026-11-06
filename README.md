@@ -2206,13 +2206,14 @@ ruled out by it.
 Claude, ChatGPT and the rest can be handed a tool over the Model Context
 Protocol — a server that says what it can do, and that a model calls in the
 middle of a conversation and reads the answer of — and this is that server
-for the map: two tools, **search my places** and **read one**, over the roll
-in `data/restaurants.json` and nothing else. Somebody asks their assistant
-for somewhere to eat in Tallinn, the assistant asks the map, and the answer
-it writes carries my write-up, the dish to order and the link to the place.
-`functions/mcp.js` is the whole of it: one Function, data only, no model of
-its own, no AI binding, no database, no Google. Nothing a visitor to the
-site sees changes.
+for the map: four tools, **search my places** and **read one** over the roll
+in `data/restaurants.json`, and **search the public lists** and **read one**
+out of the database the lists page reads. Somebody asks their assistant for
+somewhere to eat in Tallinn, or for a top ten of bakeries, the assistant
+asks the site, and the answer it writes carries my write-up, the dish to
+order, whose list it is and the link. `functions/mcp.js` is the whole of
+it: one Function, reads only, no model of its own, no AI binding, no write
+to anything. Nothing a visitor to the site sees changes.
 
 ### Connecting it
 
@@ -2226,16 +2227,20 @@ connector:
   (paid plans), then *Create* with the same URL. No authentication.
 
 Then ask it something — *somewhere for a date in Kalamaja*, *cheap Asian
-food near the bus station* — and look at whether the answer carries the
-link and whether it has started ranking places on the map's behalf. The
+food near the bus station*, *a top 10 bakery list* — and look at whether
+the answer carries the link, says whose list a list is, and has not started
+ranking places on the map's behalf. The
 server's own instructions, sent the moment a client connects, say what the
 map is and what may not be said about it: that being on the map is the
 verdict, that there are no scores, stars or rankings, that nothing on it is
 to be called rated, ranked or best by Tallinn Tastebuds, that the write-ups
 are mine and the link is always given, and that the opening hours are not
-in this data and should be checked elsewhere. An assistant reads those once
-beside every other server it has, so they are a paragraph rather than a
-page.
+in this data and should be checked elsewhere. And that a list is its
+author's opinion under their name and never the map's verdict: the
+assistant says whose list it is and gives its link, and says that the lists
+under `google-statistics` are Google's ratings. An assistant reads those
+once beside every other server it has, so they are a paragraph rather than
+a page.
 
 **It fills in where the person is.** Neither app hands a connector the
 phone's position, and the protocol has no field for one, so *food place
@@ -2251,7 +2256,7 @@ answer closer. The point is an estimate and the distances are measured from
 it: a street the assistant places from memory can be a few hundred metres
 out, which is why it has to say where it measured from.
 
-### The two tools
+### The four tools
 
 **`search_places`** takes any of a few words (`query`), one kind of place
 (`type`), a ceiling on the map's own price scale (`max_price`), a point in
@@ -2292,6 +2297,41 @@ text. The kinds of place and the languages in the schemas are read out of
 `data/taxonomy.json` and `data/lang/index.json` at runtime rather than
 typed in, so a type or a language added to the site is one here too.
 
+**`search_lists`** finds public lists by a word or two (`query`) matched
+against the title, the line under it, the author's name and every place on
+it, folded the same way, so *pohjala* finds a list with Põhjala ninth on
+it; `by` keeps one author's. Five lists unless asked, ten at most, each
+with its title, intro, author, how many places it holds, its link and its
+first three places. Only lists of four places or more — `MIN_ITEMS` in
+`functions/api/_mostkept.js`, the floor the lists page holds them to — and
+only public ones. The order is how well the words matched, then the title:
+not how often a list is opened, which is the lists page's order and a
+ranking an assistant has no reason to be handed. Nothing fitting is an
+empty list and a sentence.
+
+**`get_list`** reads one list by its id through `readList()` in
+`functions/api/_lists.js`, the reader the list page seeds from, signed out:
+every place in its author's order with the author's sentence, the dish
+they say to order, the address and the point, and `on_map`. A place that
+is also on my map carries the map's id and its link, so the assistant can
+follow it with `get_place`; one that is not — a row out of the Google
+export, or one somebody added by hand — carries a Google Maps search for
+its name and address instead. A private list and an id that does not exist
+are the same sentence, as they are on the page, so the tool cannot be used
+to learn which codes are real.
+
+Places on a list that are not on my map answer with their name, address
+and point. Those are public facts about a place, the ones the list page
+draws, and they go to an assistant the same way. Nothing the export says
+*about* a place is added to a row — no rating, no review count — except
+where a list's author wrote it into their own sentence, which is what
+Google's six lists are.
+
+The two list tools are the only ones that read the database. One that is
+missing, the wrong one, or failing costs the lists — a tool result saying
+they cannot be read right now — and nothing else: the places answer out of
+the deployment as they always did.
+
 ### The shape of the server
 
 Streamable HTTP, stateless, JSON only. `POST /mcp` takes one JSON-RPC 2.0
@@ -2307,7 +2347,8 @@ and this server never took one. Every answer is `application/json` and
 `no-store`. No session is opened and no `Mcp-Session-Id` handed out: a
 Pages Function remembers nothing between requests, and there is nothing in
 this exchange worth remembering. The header of `functions/mcp.js` carries
-the three decisions — my places only, stateless, JSON only — at length.
+the three decisions — whose places and whose lists, stateless, JSON only —
+at length.
 
 `functions/_middleware.js` passes `/mcp` through untouched. It is on the
 live hostname, under neither of the owner's prefixes, and its answers wear
@@ -2329,11 +2370,14 @@ curl -s -X POST https://tallinntastebuds.ee/mcp -H 'Content-Type: application/js
 Each of these is a decision rather than an oversight, so that the next
 version argues with a list rather than discovering one:
 
-- **No Google content of any kind** — not a place id, not a rating, not a
-  row out of `google_venues`. The map is the verdict; Google's roll would
-  be answered under the site's name whenever mine fell short.
-- **No discounts, lists, profiles or blog posts.** The places, and only
-  the places.
+- **No search over Google's roll.** `search_places` answers out of the
+  map and only the map; the map is the verdict, and Google's eleven
+  hundred would be answered under the site's name whenever mine fell
+  short. A Google place reaches an assistant only as a row on somebody's
+  list, with its name, address and point and no rating of its own.
+- **No private lists, and no making or changing one.** Reads of public
+  lists only, signed out.
+- **No discounts, profiles or blog posts.**
 - **No opening hours and no "open now".** The map does not hold them; the
   Google Maps link on `get_place` is where an assistant sends somebody for
   today's.
@@ -2344,17 +2388,21 @@ version argues with a list rather than discovering one:
 - **No auth and no API keys.** The data is a public file already.
 - **No rate limit past Cloudflare's own.**
 - **Nothing counted in the stats.** An assistant's call is not a visit and
-  appears on none of the pages under `/admin/`; `data/flows.json` has no
-  diagram for it either, because the diagrams are of people at the site and
-  nothing on the site can see a call made from somewhere else.
+  appears on none of the pages under `/admin/`, and a list it reads is not
+  an open, so an assistant cannot move the order the lists page opens on;
+  `data/flows.json` has no diagram for it either, because the diagrams are
+  of people at the site and nothing on the site can see a call made from
+  somewhere else.
 - **No REST `/api/v1`, no OpenAPI file**, no ChatGPT app-directory
   submission.
-- **No visible UI**, so nothing in `data/ui.json` and nothing in the ten
-  languages.
+- **No visible UI**, so nothing in `data/ui.json` and nothing in the
+  site's languages.
 
 What it costs: one Function, spending from the same free Pages Functions
-request allowance as the rest of the site. No table, no `.sql` file to
-load, no secret, no new binding.
+request allowance as the rest of the site, and for a list call a few small
+reads of D1 — one for a search, which reads every row of every public list
+and stops at `READ_CAP`, and the three `readList()` makes for one list. No
+table, no `.sql` file to load, no secret, no new binding.
 
 ## Close a place instead of deleting it
 
@@ -15800,9 +15848,9 @@ functions/_middleware.js   which hostname is this: the pages.dev copy goes to
 functions/index.js         / — the map, with its head and its JSON-LD written
                            in the language ?lang= names, so a search engine
                            can index it ten times
-functions/mcp.js           /mcp — the map as an AI assistant reads it: two
-                           tools over data/restaurants.json, through the
-                           Model Context Protocol, and nothing else
+functions/mcp.js           /mcp — the map and the public lists as an AI
+                           assistant reads them, through the Model Context
+                           Protocol: four read-only tools
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password or a
                            username, delete an account
