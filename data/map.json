@@ -892,8 +892,7 @@
   "lng": 24.7303523,
   "price": 2,
   "types": [
-   "restaurant",
-   "bakery"
+   "restaurant"
   ],
   "mustOrder": [],
   "reel": "",

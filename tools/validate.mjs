@@ -158,7 +158,7 @@ const PHONE = /^\+[1-9][0-9]{0,3}(?: [0-9]{2,4}){1,4}$/;
 
 const KNOWN_KEYS = new Set([
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
+  'mustOrder', 'reel', 'reelSummary', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
 ]);
 
 /* visited is deliberately absent: a place you have been to but not filmed has
@@ -1180,6 +1180,16 @@ if (places !== null) {
         warn(where, 'has no reel yet');
       } else if (!isReel(place.reel)) {
         fail(where, `reel "${place.reel}" is not a video permalink — expected https://www.instagram.com/reel/SHORTCODE/ or https://www.tiktok.com/@user/video/ID`);
+      }
+
+      /* reelSummary — optional, one sentence a person wrote about what the
+         reel shows, which /mcp hands an assistant as reel_summary. It is the
+         only thing an assistant may say about the video, so it is about a
+         video that exists and is never longer than a sentence. */
+      if ('reelSummary' in place) {
+        if (!isNonEmptyString(place.reelSummary)) fail(where, '"reelSummary" must be a non-empty string, or left out');
+        else if (!place.reel) fail(where, 'has a "reelSummary" but no reel for it to describe');
+        else if (place.reelSummary.length > 200) fail(where, '"reelSummary" is over 200 characters — one plain sentence');
       }
 
       /* photos */

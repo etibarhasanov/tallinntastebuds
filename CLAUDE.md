@@ -38,8 +38,8 @@ does not have to:
   to look, and anything with no visible effect go straight to code.
 - **There is no test suite.** `node tools/validate.mjs`, `node
   tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
-  tools/chessperf.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
-  --check` are the whole of CI. Anything with a visible effect is driven in a
+  tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check` and `node
+  .claude/hooks/d1-write-gate.mjs --check` are the whole of CI. Anything with a visible effect is driven in a
   browser; the `/site` and `/api` skills say how. Do not go looking for a
   test runner, and do not write one into a PR that was about something else.
 - **Line numbers in the docs are not to be trusted; names are.** The skills
@@ -453,7 +453,7 @@ repo, a UI string present in one language and missing in another, a deal whose
 place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
-four more checks alongside it: `node tools/functions-check.mjs`, which imports
+five more checks alongside it: `node tools/functions-check.mjs`, which imports
 every module under `functions/` so that a name imported from a module that no
 longer exports it, or a syntax error, fails the build here — Pages bundles
 them into one Worker, and on a deploy that takes every route down rather than
@@ -461,7 +461,9 @@ its own; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera; `node
 tools/chessperf.mjs --check`, which holds the rules of chess in
 `functions/api/_chess.js` to published move counts and to positions worked out
-by hand; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
+by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` over the real
+data files the way an assistant would and holds the answers to what it was
+promised; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
 gate's own cases so that the thing standing between a session and the database
 cannot be loosened without the build saying so.
 
@@ -509,8 +511,9 @@ ones are the ones that ship broken.
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs`, `node tools/functions-check.mjs`,
-   `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check` and
-   `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
+   `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
+   `node tools/mcpcheck.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
+   --check` on the push and on the PR.
    Red CI is yours to fix before anything else happens. **There is no preview
    URL** — pushing the branch deploys nothing, and the PR's checks carry no
    Cloudflare link. Anything with a visible effect gets driven under `npx

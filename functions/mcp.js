@@ -10,7 +10,8 @@
  * a tool: a server says what it can do, and a model calls it in the middle
  * of a conversation and reads the answer. This is that server for the map,
  * and it hands over two tools: `places`, which searches my places or reads
- * one, over the roll in data/restaurants.json, and `lists`, which searches
+ * one, over the roll in data/restaurants.json with Google's opening hours
+ * read beside it, and `lists`, which searches
  * the public lists or reads one, out of the database the lists page reads.
  * Somebody asks their assistant for
  * somewhere to eat in Tallinn, or for a top ten of bakeries, and the
@@ -154,14 +155,18 @@
  * reads only text, and each tool carries an `outputSchema` saying the shape.
  * A place is the row in data/restaurants.json with the write-up in the one
  * language asked for, the names under the protocol's conventions
- * (must_order, has_reel), the link to its Instagram video where it has one
- * in every row and not only on a place read whole — the video is the one
- * thing a write-up cannot do, so an assistant answering "where should I eat"
- * should be able to hand it over without a second call — and three things
- * the file does not hold: the link to the place on the map, the absolute
- * address of its first photograph, and on a place read by its id a Google
- * Maps *search* link built out of my own name and address, which costs no
- * Google data. An id that is not on the
+ * (must_order), the link to its Instagram video where it has one in every
+ * row and not only on a place read whole — the video is the one thing a
+ * write-up cannot do, so an assistant answering "where should I eat" should
+ * be able to hand it over without a second call, and the instructions tell
+ * it to, as "Watch the video", every time — and what the file does not hold:
+ * the link to the place on the map, the absolute address of its first
+ * photograph, and out of the Google row filed against it (GOOGLE'S HALF
+ * below) Google's key, its week of opening hours with the day it was read,
+ * its temporarily-closed and the primary type its category names, never its
+ * rating; and the reel's one-line summary where a person wrote one. A place read by its id adds
+ * a Google Maps link that opens that listing by its key, or a search by my
+ * own name and address where Google does not list it. An id that is not on the
  * map, or a place that has closed, is a tool result with `isError` and one
  * plain sentence rather than a protocol error, because that is an answer to
  * the question and not a fault in the asking. A list is its title, its
@@ -191,7 +196,7 @@
  * subdomains 301 it back to the live hostname like every other page.
  */
 
-import { json, mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase } from './api/_lib.js';
+import { json, mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours } from './api/_lib.js';
 import { readList, LIST_ID } from './api/_lists.js';
 import { MIN_ITEMS } from './api/_mostkept.js';
 import { SITE } from './_shell.js';
@@ -209,8 +214,9 @@ const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const SERVER = {
   name: 'tallinntastebuds',
   title: 'Tallinn Tastebuds',
-  version: '1.1.0',
-  description: 'One person\'s map of places to eat and drink in Tallinn, and the lists its members make.',
+  version: '1.2.0',
+  description: 'A local\'s personal food map of Tallinn: places they\'ve eaten at and approved, ' +
+    'with what to order, walking-distance search, and video links.',
   websiteUrl: SITE,
   icons: [
     { src: SITE + '/assets/logo/icon-192.png', mimeType: 'image/png', sizes: ['192x192'] },
@@ -250,12 +256,14 @@ const INSTRUCTIONS =
   'another by Tallinn Tastebuds, and never say "best" on its behalf. ' +
   'Attribute the write-ups to Tallinn Tastebuds and always give the ' +
   'place\'s link (the url field). A search that finds nothing means ' +
-  'nothing on the map fits; say so rather than guessing. Opening hours ' +
-  'are not in this data: say they should be checked elsewhere. ' +
-  'When a place has a reel, it is a short video of the place on ' +
-  'Instagram: give it beside the place\'s link as one to watch, ' +
-  '"watch the video on Instagram", so the person can see the place ' +
-  'and the food before they go. ' +
+  'nothing on the map fits; say so rather than guessing. Opening hours, ' +
+  'where a place has them, are Google\'s as of opening_hours.checked_at: ' +
+  'give them as Google\'s and say they are worth confirming. When ' +
+  'opening_hours is null, say the hours should be checked elsewhere. ' +
+  'When a place has a reel, always give its link in the answer, ' +
+  'labelled \'Watch the video\', alongside the place\'s url. You can\'t ' +
+  'watch the video, so don\'t describe what\'s in it unless reel_summary ' +
+  'says so. ' +
   'Whenever where the person is matters to the answer — near me, close ' +
   'to my place, around here, or a street or area they named — fill ' +
   'near_lat and near_lng yourself rather than asking first: the place ' +
@@ -304,9 +312,40 @@ const PLACE_FIELDS = {
   photo: { type: ['string', 'null'], description: 'The first photograph of the place, or null when there is none.' },
   reel: {
     type: ['string', 'null'],
-    description: 'A short video of the place on Instagram, or null. When there is one, give it as a link to watch.'
+    description: 'A short video of the place on Instagram, or null. When there is one, always give it as "Watch the video".'
   },
-  has_reel: { type: 'boolean', description: 'Whether there is a video of the place: reel is not null.' }
+  has_reel: { type: 'boolean', description: 'Whether there is a video of the place: reel is not null.' },
+  reel_summary: {
+    type: ['string', 'null'],
+    description: 'One plain sentence, written by a person, about what the video shows, or null. ' +
+      'Describe the video only from this.'
+  },
+  last_visited: { type: ['string', 'null'], description: 'When Tallinn Tastebuds last ate there, as a month, or null.' },
+  primary_type: {
+    type: ['string', 'null'],
+    description: 'The one main kind of place, as one of the ids in types — "bakery" for a bakery, ' +
+      '"restaurant" for a restaurant that also bakes — or null when it is not known.'
+  },
+  google_place_id: {
+    type: ['string', 'null'],
+    description: 'The place\'s Google Maps place id, or null when Google does not list it or the listing is not plainly the same place.'
+  },
+  opening_hours: {
+    type: ['object', 'null'],
+    properties: {
+      weekday_text: {
+        type: 'array', items: { type: 'string' },
+        description: 'Seven lines, Monday first, Tallinn time: "Monday: 08:00-18:00", "Sunday: Closed".'
+      },
+      source: { type: 'string', description: 'Where the hours came from.' },
+      checked_at: { type: ['string', 'null'], description: 'The day they were last read from there, YYYY-MM-DD.' }
+    },
+    description: 'Google\'s opening hours, or null when there are none to trust: then say they should be checked elsewhere.'
+  },
+  temporarily_closed: {
+    type: 'boolean',
+    description: 'Google lists the place as temporarily closed. Say so before suggesting it.'
+  }
 };
 
 const SEARCH_FIELDS = {
@@ -326,7 +365,8 @@ const DETAIL_FIELDS = {
   added: { type: ['string', 'null'], description: 'When the place joined the map, as a date.' },
   maps_url: {
     type: 'string',
-    description: 'A Google Maps search for the place by its name and address, for directions and opening hours.'
+    description: 'The place on Google Maps — its own listing where google_place_id is known, else a search by ' +
+      'name and address — for directions and today\'s hours.'
   }
 };
 
@@ -396,11 +436,14 @@ function tools(types, langs) {
         'a place to look up. Every filter is optional and they combine. An empty `places` list ' +
         'means nothing on the map fits, which is a real answer: do not fill it from elsewhere. ' +
         'The order is distance when a point was given and how well the words matched ' +
-        'otherwise, never quality. When the conversation turns to one place — "tell me more ' +
+        'otherwise, never quality — with a `type`, the places whose `primary_type` is that kind come ' +
+        'first, so a bakery search starts with the bakeries rather than a restaurant that bakes. Every ' +
+        'place carries `reel` (an Instagram video, or null — give it as "Watch the video"), ' +
+        '`reel_summary`, `photo`, `last_visited`, `primary_type`, `google_place_id`, and Google\'s ' +
+        '`opening_hours` with the day they were checked, or null when there are none to trust. When the conversation turns to one place — "tell me more ' +
         'about Badam", "what should I order there" — pass its `id` instead, and the one place ' +
         'comes back with every photograph, the phone number and website, when it ' +
-        'was visited, and a Google Maps link for directions; the filters are ignored then. ' +
-        'Opening hours are not in the answer.',
+        'was visited, and its Google Maps listing for directions; the filters are ignored then.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -529,8 +572,9 @@ function tools(types, langs) {
         'Search the places on Tallinn Tastebuds, one person\'s map of places to eat and drink in ' +
         'Tallinn they have eaten at and approved, by a few words: a name, a street, a kind of ' +
         'place, a dish. Answers with ids, names and links; pass an id to `fetch` for the ' +
-        'write-up. When you can call `places` instead, do: it takes a kind of place, a price and ' +
-        'a point to measure from, and answers with the write-ups in one call.',
+        'write-up, the video link, the main kind of place and Google\'s opening hours where there ' +
+        'are any to trust. When you can call `places` instead, do: it takes a kind of place, a price ' +
+        'and a point to measure from, and answers with all of that in one call.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -547,8 +591,9 @@ function tools(types, langs) {
       description:
         'Read one place on Tallinn Tastebuds whole, by the id `search` gave: Tallinn Tastebuds\' ' +
         'own write-up, the dishes to order, the price on the map\'s own scale, the address and ' +
-        'the link. Being on the map is the verdict; there are no scores. Opening hours are not ' +
-        'in it.',
+        'the link, the video as "Watch the video" where there is one, and Google\'s opening hours ' +
+        'with the day they were checked where there are any to trust. Being on the map is the ' +
+        'verdict; there are no scores.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -578,8 +623,9 @@ function photoUrl(place, photo) {
   return SITE + '/photos/' + encodeURIComponent(place.id) + '/' + encodeURIComponent(photo);
 }
 
-function entry(place, lang) {
+function entry(place, lang, google) {
   const photos = place.photos || [];
+  const g = google.get(place.id);
   return {
     id: place.id,
     name: place.name,
@@ -593,28 +639,161 @@ function entry(place, lang) {
     url: SITE + '/?spot=' + encodeURIComponent(place.id),
     photo: photos.length ? photoUrl(place, photos[0]) : null,
     reel: place.reel || null,
-    has_reel: !!place.reel
+    /* Kept beside `reel`, which says the same thing, for the clients that
+       read it before `reel` was in every row. */
+    has_reel: !!place.reel,
+    /* Only ever a sentence a person wrote into the place's row: an assistant
+       cannot watch the video, and neither can this server. */
+    reel_summary: place.reelSummary || null,
+    last_visited: place.visited || null,
+    primary_type: g ? primaryType(place, g.category) : null,
+    google_place_id: g ? g.key : null,
+    opening_hours: g ? g.hours : null,
+    temporarily_closed: !!(g && g.shut)
   };
 }
 
-function detail(place, lang) {
+function detail(place, lang, google) {
+  const row = entry(place, lang, google);
   return {
-    ...entry(place, lang),
+    ...row,
     photos: (place.photos || []).map((photo) => photoUrl(place, photo)),
     phone: place.phone || null,
     website: place.website || null,
     visited: place.visited || null,
     added: place.added || null,
-    maps_url: mapsSearch(place.name, place.address)
+    maps_url: mapsSearch(place.name, place.address, row.google_place_id)
   };
 }
 
 /* A Google Maps search for a name and an address, which is a link anybody
    could type and carries nothing out of the export: a place read by its id
-   has one, and so does a place on a list that is not on the map. */
-function mapsSearch(name, address) {
+   has one, and so does a place on a list that is not on the map. With
+   Google's key beside it, the search opens that one listing rather than
+   Google's guess at the words — the address Google documents for it, and
+   the one the map's own panel sends. */
+function mapsSearch(name, address, key) {
   return 'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent(address ? name + ', ' + address : name + ', Tallinn');
+    encodeURIComponent(address ? name + ', ' + address : name + ', Tallinn') +
+    (key ? '&query_place_id=' + encodeURIComponent(key) : '');
+}
+
+/* ------------------------------------------------------- Google's half
+ * The Google row filed against each of my places through `map_id` — the
+ * join the map's panel makes through /api/venues?map= and the chat makes in
+ * linkedRows() in api/ask.js — read for what an assistant asking "is it open"
+ * or "is that a bakery" needs and my file does not hold: Google's key, the
+ * week, when Google was last asked for it, Google's temporarily-closed, and
+ * what Google files the place as. Never the rating, the review count or the
+ * rank: the map has no scores and this door does not lend it Google's.
+ *
+ * A link is only trusted when it is plainly the same door: the names share a
+ * word that is not "restaurant" or "bakery" or "Tallinn", and the two points
+ * are within SAME_DOOR metres. `map_id` is set by a matcher and can be set
+ * by hand, and an assistant handed the wrong listing's hours sends somebody
+ * to a shut door with the map's name on the answer. A row that fails is
+ * answered as if Google did not list the place — every Google field null —
+ * and logged, so the owner's review list is one `wrangler pages deployment
+ * tail` away. On the day this was written all sixty-three links passed.
+ *
+ * One statement, sixty-odd rows, kept five minutes per isolate like the rest
+ * of what this route reads, since the join moves once a month and the hours
+ * when somebody opens a place on the map. A database that is missing, wrong
+ * or down is an empty map: every place answers with its Google fields null,
+ * and the places tool answers as it did before there were any.
+ */
+const GOOGLE_TTL = 5 * 60 * 1000;
+const SAME_DOOR = 150;
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const HOURS_SOURCE = 'Google Maps, through the Google Places API';
+let google = null;
+let googleAt = 0;
+
+/* The words of a name that say which place it is rather than what kind. */
+const GENERIC = new Set([
+  'restoran', 'restaurant', 'resto', 'bakery', 'bakehouse', 'boulangerie', 'pagar', 'pagariari',
+  'cafe', 'kohvik', 'coffee', 'roastery', 'roasters', 'tea', 'house', 'pub', 'bar', 'baar',
+  'brewery', 'taproom', 'kitchen', 'tallinn', 'old', 'town', 'the', 'and', 'ja', 'la'
+]);
+const squash = (name) => foldWords(name).replace(/[^a-z0-9]/g, '');
+const ownWords = (name) => foldWords(name).split(/[^a-z0-9]+/).filter((w) => w.length > 1 && !GENERIC.has(w));
+
+function sameDoor(place, row) {
+  if (typeof row.latitude !== 'number' || typeof row.longitude !== 'number') return false;
+  if (km(place, { lat: row.latitude, lng: row.longitude }) * 1000 > SAME_DOOR) return false;
+  const mine = ownWords(place.name);
+  const theirs = ownWords(row.name);
+  /* "La Boulangerie" is every word generic: the whole name has to agree. */
+  if (!mine.length || !theirs.length) return squash(place.name) === squash(row.name);
+  return mine.some((w) => squash(row.name).includes(w)) || theirs.some((w) => squash(place.name).includes(w));
+}
+
+async function googleRows(env, places) {
+  if (google && Date.now() - googleAt < GOOGLE_TTL) return google;
+  if (!env.DB || await wrongDatabase(env)) return new Map();
+  let results;
+  try {
+    ({ results } = await env.DB
+      .prepare(
+        'SELECT map_id, place_id, name, category, status, opening_hours, latitude, longitude, ' +
+        'refreshed_at, synced_at FROM google_venues ' +
+        'WHERE map_id IS NOT NULL AND hidden = 0 AND missing_since IS NULL'
+      )
+      .all());
+  } catch (e) {
+    return new Map();
+  }
+  const byId = new Map(places.map((p) => [p.id, p]));
+  google = new Map();
+  for (const row of results || []) {
+    /* The first row wins where two carry one map_id, which nothing stops —
+       the same LIMIT 1 /api/venues?map= takes. */
+    const place = byId.get(row.map_id);
+    if (!place || google.has(row.map_id)) continue;
+    if (!sameDoor(place, row)) {
+      console.log('mcp: google_venues ' + row.place_id + ' (' + row.name + ') does not look like ' +
+        place.id + ' (' + place.name + '); answered without Google — review its map_id');
+      continue;
+    }
+    const week = venueHours(row.opening_hours);
+    const asked = row.refreshed_at || row.synced_at;
+    google.set(row.map_id, {
+      key: row.place_id,
+      category: row.category || '',
+      shut: row.status === 'Temporarily closed',
+      hours: week.length ? {
+        weekday_text: DAY_NAMES.map((day, i) => day + ': ' + (week[i] || 'Closed')),
+        source: HOURS_SOURCE,
+        checked_at: asked ? new Date(asked).toISOString().slice(0, 10) : null
+      } : null
+    });
+  }
+  googleAt = Date.now();
+  return google;
+}
+
+/* The one main kind of place, as one of the map's own type ids — what a
+ * search by `type` puts first. My own `types` say everything a place is, in
+ * no order that means anything (the admin page writes them out in the
+ * taxonomy's), so KoHo, a restaurant that bakes, and a chocolate shop said
+ * "bakery" exactly as loudly as Pulla. Google gives each place one category,
+ * and the primary type is the one of the place's own types that category
+ * names: Pulla's "Bakery" makes it a bakery, Cafe Tempo's "Restaurant" a
+ * restaurant, and Karu Talu's "Chocolate Shop" none of its three — null
+ * rather than a guess, as for every place Google does not list. A mood —
+ * casual, date, laptop — is never a primary type.
+ */
+const PRIMARY = {
+  bakery: /bakery|boulangerie|patisserie|pastry/i,
+  coffee: /coffee|cafe|café/i,
+  tea: /\btea\b/i,
+  pub: /\bpub\b|\bbar\b|brew/i,
+  restaurant: /restaurant|izakaya/i,
+  vegan: /vegan|vegetarian/i
+};
+
+function primaryType(place, category) {
+  return (place.types || []).find((id) => PRIMARY[id] && PRIMARY[id].test(category)) || null;
 }
 
 /* ------------------------------------------------------------- a search
@@ -660,7 +839,7 @@ function score(hay, words) {
   return total;
 }
 
-function search(places, types, args) {
+function search(places, types, args, google) {
   const lang = args.language;
   const words = args.query ? wordsOf(args.query) : [];
   const at = args.at;
@@ -672,9 +851,12 @@ function search(places, types, args) {
     if (far !== null && args.radius_m && far > args.radius_m) continue;
     const hits = words.length ? score(haystack(place, types, lang), words) : 0;
     if (words.length && !hits) continue;
-    found.push({ place, hits, far });
+    const g = google.get(place.id);
+    const first = !!args.type && !!g && primaryType(place, g.category) === args.type;
+    found.push({ place, hits, far, first });
   }
   found.sort((a, b) => {
+    if (a.first !== b.first) return a.first ? -1 : 1;
     if (at && a.far !== b.far) return a.far - b.far;
     if (b.hits !== a.hits) return b.hits - a.hits;
     const x = foldWords(a.place.name);
@@ -684,7 +866,7 @@ function search(places, types, args) {
   found = found.slice(0, args.limit);
   const out = {
     places: found.map((f) => {
-      const row = entry(f.place, lang);
+      const row = entry(f.place, lang, google);
       if (at) row.distance_m = Math.round(f.far);
       return row;
     })
@@ -909,9 +1091,10 @@ function readOne(found, key) {
   return toolResult(key ? { [key]: [found] } : found);
 }
 
-/* The lists, which are the only thing here that reads the database. A
+/* The lists, which read the database for everything they answer. A
    database that is missing, the wrong one, or failing costs the lists and
-   nothing else: a tool result saying so, while the places answer as ever.
+   nothing else: a tool result saying so, while the places answer as ever,
+   without Google's hours — GOOGLE'S HALF.
    Bad arguments still go up as the protocol's invalid-params error. */
 async function listCall(context, name, args, all) {
   const { env } = context;
@@ -928,12 +1111,12 @@ async function listCall(context, name, args, all) {
 
 /* One place whole, or a tool error saying it has closed or was never on
    the map. */
-function getPlace(raw, places, all, langs) {
+function getPlace(raw, places, all, langs, google) {
   const id = optionalString(raw, 'id', 80);
   if (!id) throw bad('id is required');
   const lang = language(raw, langs);
   const place = places.find((p) => p.id === id);
-  if (place) return detail(place, lang);
+  if (place) return detail(place, lang, google);
   const closed = all.find((p) => p.id === id);
   return toolError(closed
     ? closed.name + ' has closed and is no longer on the map.'
@@ -944,18 +1127,18 @@ function getPlace(raw, places, all, langs) {
    above with nothing but the words, in English, at the most it will answer
    with; `fetch` is one place as a page of text, the way a research model
    reads and quotes, with the row's facts beside it in `metadata`. */
-function chatgptSearch(raw, places, types) {
+function chatgptSearch(raw, places, types, google) {
   const found = search(places, types, {
     query: optionalString(raw, 'query', MAX_QUERY),
     at: null,
     language: DEFAULT_LANG,
     limit: MAX_LIMIT
-  });
+  }, google);
   return toolResult({ results: found.places.map((p) => ({ id: p.id, title: p.name, url: p.url })) });
 }
 
-function chatgptFetch(raw, places, all, types) {
-  const place = getPlace(raw, places, all, [DEFAULT_LANG]);
+function chatgptFetch(raw, places, all, types, google) {
+  const place = getPlace(raw, places, all, [DEFAULT_LANG], google);
   if (place.isError) return place;
   const kinds = place.types.map((id) => (types.find((t) => t.id === id) || {})[DEFAULT_LANG] || id);
   const text = [
@@ -964,9 +1147,17 @@ function chatgptFetch(raw, places, all, types) {
     place.blurb ? 'Tallinn Tastebuds\' write-up: ' + place.blurb : '',
     place.must_order.length ? 'What to order: ' + place.must_order.join('; ') + '.' : '',
     place.price ? 'Price: ' + place.price + ' on the map\'s own scale of 1 (cheap) to 4 (a tasting menu).' : '',
+    place.temporarily_closed ? 'Google lists it as temporarily closed.' : '',
+    place.opening_hours
+      ? 'Opening hours, Tallinn time, from ' + place.opening_hours.source +
+        (place.opening_hours.checked_at ? ' as of ' + place.opening_hours.checked_at : '') + ': ' +
+        place.opening_hours.weekday_text.join('; ') + '.'
+      : 'Opening hours are not in this data; check them elsewhere.',
     'Being on the Tallinn Tastebuds map is the verdict: there are no scores, stars or rankings.',
     'On the map: ' + place.url,
-    'Directions and opening hours: ' + place.maps_url
+    place.reel ? 'Watch the video: ' + place.reel : '',
+    place.reel_summary ? 'The video: ' + place.reel_summary : '',
+    'Directions on Google Maps: ' + place.maps_url
   ].filter(Boolean).join('\n\n');
   const { id, name, url, blurb, ...metadata } = place;
   return toolResult({ id, title: name, text, url, metadata });
@@ -1031,14 +1222,17 @@ async function answer(context, message) {
     ? params.arguments
     : {};
   const places = all.filter((p) => !p.closed);
+  /* The lists read the database on their own; only the place tools want
+     Google's half — GOOGLE'S HALF above. */
+  const google = /^(places|search_places|get_place|search|fetch)$/.test(name) ? await googleRows(context.env, all) : null;
   try {
-    if (name === 'places' && named(args)) return reply(id, readOne(getPlace(args, places, all, langs), 'places'));
+    if (name === 'places' && named(args)) return reply(id, readOne(getPlace(args, places, all, langs, google), 'places'));
     if (name === 'places' || name === 'search_places') {
-      return reply(id, toolResult(search(places, types, searchArgs(args, types, langs))));
+      return reply(id, toolResult(search(places, types, searchArgs(args, types, langs), google)));
     }
-    if (name === 'get_place') return reply(id, readOne(getPlace(args, places, all, langs), null));
-    if (name === 'search') return reply(id, chatgptSearch(args, places, types));
-    if (name === 'fetch') return reply(id, chatgptFetch(args, places, all, types));
+    if (name === 'get_place') return reply(id, readOne(getPlace(args, places, all, langs, google), null));
+    if (name === 'search') return reply(id, chatgptSearch(args, places, types, google));
+    if (name === 'fetch') return reply(id, chatgptFetch(args, places, all, types, google));
     if (name === 'lists' || name === 'search_lists' || name === 'get_list') {
       return reply(id, await listCall(context, name, args, all));
     }
