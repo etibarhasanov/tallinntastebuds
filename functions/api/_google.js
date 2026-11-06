@@ -3,7 +3,7 @@
  *
  * Underscore-prefixed files under functions/ are not routed, so this is a
  * module and never an endpoint. It is everything the Google round trip needs
- * that is not the route itself: what the two sealed cookies carry, the swap
+ * that is not the route itself: what the sealed cookie carries, the swap
  * of a code for an identity, and the one question the rest of the site asks
  * it — is this configured at all, which it answers strictly enough to also
  * mean *configured with something that could work*. See googleReady().
@@ -32,21 +32,23 @@
  * worth nothing on its own, and the whole flow is plain fetch and WebCrypto
  * — no library, which is the rule this repo is built on.
  *
- * WHAT THE TWO COOKIES ARE
+ * WHAT THE COOKIE IS
  *
  *   ttb_g   the flow, set on the way out to Google and read on the way back:
  *           the state to compare, the PKCE verifier, the nonce, where to
  *           return to, and whether this trip is a sign-in or a link. Ten
  *           minutes, and scoped to this route's own path so it rides on
  *           nothing else.
- *   ttb_gp  a Google account that has just proved itself and has no account
- *           here yet, held for as long as it takes to choose a username.
- *           Fifteen minutes, and the only thing in it is the subject.
  *
- * Both are sealed rather than stored: the value carries its own HMAC under
+ * It is sealed rather than stored: the value carries its own HMAC under
  * SAVE_SALT, so a forged one is refused without a table to check it against.
- * A row per half-finished sign-up would be a table that fills with people who
- * changed their mind, and something to sweep it.
+ * A row per trip would be a table that fills with people who changed their
+ * mind, and something to sweep it.
+ *
+ * There was a second, ttb_gp, which held a Google account new here for the
+ * fifteen minutes it took to choose a username. The name is drawn on the way
+ * back now and the account made there and then — makeGoogleAccount() in
+ * ./_account.js — so there is nothing left to hold.
  */
 
 import { hmacHex, sameSecret } from './_lib.js';
@@ -65,13 +67,11 @@ const ISSUERS = ['https://accounts.google.com', 'accounts.google.com'];
 export const PROVIDER = 'google';
 
 export const FLOW_COOKIE = 'ttb_g';
-export const PENDING_COOKIE = 'ttb_gp';
 
 /* Long enough to sign in on a phone that has to fetch a password out of a
    manager, short enough that a tab left open on a shared machine is not a
    way in tomorrow. */
 const FLOW_MINUTES = 10;
-const PENDING_MINUTES = 15;
 
 /* The route path, which is also the redirect URI registered with Google and
    also the only path the flow cookie is sent on. One constant, because those
@@ -250,18 +250,14 @@ async function seal(secret, payload) {
   return body + '.' + (await hmacHex(secret, body));
 }
 
-/* One per cookie, because a sealed value and the cookie carrying it have to
-   run out at the same moment. They were two separate numbers for a while — an
-   `exp` the caller put in the payload and a `Max-Age` the cookie builder put
-   on the header — and nothing at all held the two together, so a change to one
-   would have left a value the browser keeps sending and this file refuses, or
-   the other way about. Now each lifetime is written once, here. */
+/* The lifetime is FLOW_MINUTES here and in flowCookie() below, because a
+   sealed value and the cookie carrying it have to run out at the same moment.
+   They were two separate numbers for a while — an `exp` the caller put in the
+   payload and a `Max-Age` the cookie builder put on the header — and nothing
+   at all held the two together, so a change to one would have left a value
+   the browser keeps sending and this file refuses, or the other way about. */
 export async function sealFlow(secret, payload) {
   return seal(secret, Object.assign({}, payload, { exp: Date.now() + FLOW_MINUTES * 60000 }));
-}
-
-export async function sealPending(secret, payload) {
-  return seal(secret, Object.assign({}, payload, { exp: Date.now() + PENDING_MINUTES * 60000 }));
 }
 
 /* Null for anything that is not a value this site sealed and has not expired:
@@ -293,29 +289,19 @@ export async function unseal(secret, text) {
    Google sends back. Lax allows exactly that — a top-level GET — and nothing
    else, which is the shape of this flow and no more.
 
-   The path is the route's own for the flow cookie, so it is not attached to
-   every request the site makes; the pending one is site-wide because the
-   username it is waiting for is posted to /api/account. Neither is
-   domain-scoped the way the session cookie is: a round trip begins and ends
-   on one host, and the session it eventually mints is what has to cover
-   both hosts. */
-function cookie(name, value, minutes, path) {
+   The path is the route's own, so it is not attached to every request the
+   site makes, and it is not domain-scoped the way the session cookie is: a
+   round trip begins and ends on one host, and the session it eventually
+   mints is what has to cover both hosts. */
+export function flowCookie(value) {
   return [
-    name + '=' + (value || ''),
-    'Path=' + path,
+    FLOW_COOKIE + '=' + (value || ''),
+    'Path=' + GOOGLE_PATH,
     'HttpOnly',
     'Secure',
     'SameSite=Lax',
-    'Max-Age=' + (value ? minutes * 60 : 0)
+    'Max-Age=' + (value ? FLOW_MINUTES * 60 : 0)
   ].join('; ');
-}
-
-export function flowCookie(value) {
-  return cookie(FLOW_COOKIE, value, FLOW_MINUTES, GOOGLE_PATH);
-}
-
-export function pendingCookie(value) {
-  return cookie(PENDING_COOKIE, value, PENDING_MINUTES, '/');
 }
 
 /* -------------------------------------------------------------- the trip

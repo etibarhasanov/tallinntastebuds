@@ -174,11 +174,23 @@ const SOURCES = [
   { id: 'search', ua: null, hosts: ['bing.com', 'duckduckgo.com', 'yandex.ru', 'yandex.com', 'ecosia.org', 'search.yahoo.com'] }
 ];
 
+/* The app whose in-app browser this is — instagram, tiktok or facebook — or
+   '' for a browser of somebody's own choosing. The `ua` half of SOURCES and
+   nothing else, so the sign-in route asks the same question sourceOf() does
+   and the two cannot drift: ./google.js counts google_out_inapp with it,
+   because Google refuses to sign anybody in inside those browsers
+   (`disallowed_useragent`) and never sends them back. */
+export function inAppOf(ua) {
+  const agent = String(ua || '');
+  for (const s of SOURCES) if (s.ua && s.ua.test(agent)) return s.id;
+  return '';
+}
+
 /* One of the buckets above, `here` for this site itself, `direct` for
    nothing at all — the page names those out of data/ui.json — or a host. */
 export function sourceOf(from, ua, siteHost) {
-  const agent = String(ua || '');
-  for (const s of SOURCES) if (s.ua && s.ua.test(agent)) return s.id;
+  const app = inAppOf(ua);
+  if (app) return app;
 
   let host = '';
   try {

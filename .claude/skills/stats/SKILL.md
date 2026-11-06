@@ -307,7 +307,10 @@ Two things are this area's own:
   d1 execute tallinntastebuds-preview --local --command "SELECT id,
   username FROM users"`, and restart with `--binding ADMINS=<id> --binding
   SAVE_SALT=dev`. Without it every page under `/admin/` is a 404 and
-  nothing can be looked at.
+  nothing can be looked at. If it is still a 404, the empty `ADMINS = ""`
+  at the top of `wrangler.toml` is winning over the flag — it did in
+  November 2026, on wrangler 4.158 — so write the id into that line of the
+  scratch copy the `/chess` skill's recipe makes, never the repository's.
 - **To be a visitor**, be signed out, or signed in as anybody but that id,
   in another browser profile. Then open the map, press things, hide the tab
   — a `leave` is sent on `visibilitychange`, so switching tabs is enough —

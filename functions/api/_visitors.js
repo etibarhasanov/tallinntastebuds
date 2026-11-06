@@ -392,8 +392,11 @@
  *                                    session that ran out under a press, a
  *                                    link from another page, the way back
  *                                    from Google
- *   account_sheet_<view>             the sheet up, on 'up' (make one), 'in'
- *                                    or 'google' (naming a Google account)
+ *   account_sheet_<view>             the sheet up, on 'up' (make one) or
+ *                                    'in'; 'google' was naming a Google
+ *                                    account, a step there is no longer, and
+ *                                    is kept so a range before November
+ *                                    2026 still reads
  *   account_try_<view>               its button pressed
  *   account_err_<error>              refused, and the word the route said —
  *                                    TTBTrack.refused() in assets/track.js
@@ -405,13 +408,20 @@
  * sent somebody to Google cannot see what happened there:
  *
  *   google_out                       sent to Google to sign in
- *   google_back_<word>               back, and how: `in`, `name` (a new
- *                                    Google account, sent to pick a name),
- *                                    `cancel` (Cancel on Google's screen)
- *                                    or `failed`
+ *   google_out_inapp                 ... from the in-app browser of
+ *                                    Instagram, Facebook or TikTok, where
+ *                                    Google refuses to sign anybody in
+ *   google_back_<word>               back, and how: `in`, `new` (a Google
+ *                                    account new here, its account made
+ *                                    under a drawn name), `cancel` (Cancel
+ *                                    on Google's screen) or `failed`
  *
  * The difference between google_out and the backs is the people who never
- * came back from Google's screen at all.
+ * came back from Google's screen at all, and google_out_inapp is how many of
+ * those it could be that Google turned away. Until November 2026 a new Google
+ * account came back as `name`, sent to pick a username before it had an
+ * account; those rows stay and the funnel reads them, and nothing writes the
+ * word any more.
  *
  * A closed list of its own rather than the `press` kind, because sign-up
  * names are rare ones that arrive late in a visit and late in the day,
@@ -511,7 +521,7 @@ const SIGNS = { account_login: 'login', account_create: 'signup' };
 
 /* Every step of signing up that is counted under the `signup` kind — see
    SIGNING UP. The errors are the words functions/api/account.js answers a
-   sign-in, a sign-up or a Google name with, dashes as underscores, plus
+   sign-in or a sign-up with, dashes as underscores, plus
    `network` for a request that never came back and `generic` for one that
    came back saying nothing. */
 const SIGN_VIEWS = ['up', 'in', 'google'];
@@ -519,10 +529,10 @@ const SIGNUP = new Set([
   'account_nudge_shown', 'account_nudge_faded', 'account_left_err',
   ...['rail', 'nudge', 'deal', 'keep', 'expired', 'link', 'google'].map((d) => 'account_from_' + d),
   ...['sheet', 'try', 'done', 'leave'].flatMap((step) => SIGN_VIEWS.map((v) => 'account_' + step + '_' + v)),
-  ...['taken', 'username', 'password', 'no_match', 'slow_down', 'no_pending', 'linked',
+  ...['taken', 'username', 'password', 'no_match', 'slow_down',
     'malformed', 'no_database', 'no_salt', 'wrong_database', 'network', 'generic'].map((e) => 'account_err_' + e),
-  'google_out',
-  ...['in', 'name', 'cancel', 'failed'].map((w) => 'google_back_' + w)
+  'google_out', 'google_out_inapp',
+  ...['in', 'new', 'cancel', 'failed'].map((w) => 'google_back_' + w)
 ]);
 
 /* The kinds whose ids nobody chose from a list, and how many ids a day each

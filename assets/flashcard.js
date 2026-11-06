@@ -294,7 +294,7 @@
     locked: false,   // whether the open deck is in a stage not yet reached
     editing: false,  // a deck of your own, being written rather than turned
     editingCard: null, // the one row in the editor showing its fields open, or none
-    view: 'in'       // which half of the sign-in form: 'in', 'up' or 'google'
+    view: 'in'       // which half of the sign-in form: 'in' or 'up'
   };
 
   /* Which deck the address is asking for. Read off the address on the way in
@@ -544,8 +544,8 @@
     var open = state.deck || state.lesson || state.song || state.talk;
     if (open && !open.own) TTBTrack.about('deck', open.id);
 
-    /* And whether the gate is already up. Two cases, and mark() has the
-       ordinary third.
+    /* And whether the gate is already up. One case here, and mark() has the
+       ordinary other.
      *
        The tab has answered its FREE_WORDS signed out already — `sent` is what
        it is holding, read above rather than posted — so they are spent, on
@@ -555,18 +555,11 @@
        and the next card would be handed over for nothing. Five words are five
        words, not five a deck opened.
      *
-       And Google has come back wanting a name. That round trip returns to the
-       address it left from, so it lands on the deck, and the form that asks a
-       new Google account for a name lives on this card and nowhere else here.
-       Without this the page would draw a card and the name would never be
-       asked for, which is a dead end rather than a gate.
-     *
-       Both only where an account would work: with the database off there is
+       Only where an account would work: with the database off there is
        nothing behind the form but a 503, nothing to sign in to, and nothing
        being kept from anybody — so the deck runs as it always did, which is
        the same rule authCard() is drawn under. */
-    if (state.deck && !state.user && state.ready &&
-        (state.view === 'google' || answered(sent) >= FREE_WORDS)) standGate();
+    if (state.deck && !state.user && state.ready && answered(sent) >= FREE_WORDS) standGate();
   }
 
   /* A link to one of this page's two addresses, answered here rather than by
@@ -826,8 +819,6 @@
     password: 'accountErrPassword',
     username: 'accountErrUsername',
     'slow-down': 'accountErrSlow',
-    'no-pending': 'accountErrGooglePending',
-    linked: 'accountErrGoogleTaken',
     /* this one */
     'not-found': 'flashErrGone',
     'too-many': 'flashErrTooMany',
@@ -1141,22 +1132,12 @@
    */
   function authForm(saying) {
     var creating = state.view === 'up';
-    /* The third view, and the one nobody chooses: a Google account that has
-       just proved itself and has no account here yet. Same form with the
-       password half taken out. */
-    var naming = state.view === 'google';
     var form = el('form', { className: 'ac-form' });
-
-    if (naming) {
-      form.appendChild(heading(t('accountGoogleName'), 'h2'));
-      form.appendChild(el('p', { className: 'lists-say', textContent: t('accountGoogleNameWhy') }));
-    } else {
-      saying.forEach(function (node) { form.appendChild(node); });
-    }
+    saying.forEach(function (node) { form.appendChild(node); });
 
     /* Before the fields, the way the map's sheet draws it: the quick way
        first, then the rule, then the form for anybody who would rather not. */
-    if (state.google && !naming) {
+    if (state.google) {
       form.appendChild(googleGo());
       form.appendChild(el('p', { className: 'ac-or' }, [
         el('span', { textContent: t('accountOr') })
@@ -1166,14 +1147,12 @@
     form.appendChild(field('fc-user', 'accountUsername', {
       autocomplete: 'username',
       maxlength: '24',
-      hint: creating || naming ? t('accountUsernameHint') : ''
+      hint: creating ? t('accountUsernameHint') : ''
     }));
-    if (!naming) {
-      form.appendChild(field('fc-pass', 'accountPassword', {
-        type: 'password',
-        autocomplete: creating ? 'new-password' : 'current-password'
-      }));
-    }
+    form.appendChild(field('fc-pass', 'accountPassword', {
+      type: 'password',
+      autocomplete: creating ? 'new-password' : 'current-password'
+    }));
 
     /* What happens if the password goes, said before the button rather than
        discovered afterwards. The same sentence the map's sheet leads with. */
@@ -1181,18 +1160,15 @@
       form.appendChild(el('p', { className: 'ac-warn', textContent: t('accountNoReset') }));
     }
 
-    form.appendChild(actor(creating || naming ? 'accountCreate' : 'accountSignIn', 'go', function (done) {
+    form.appendChild(actor(creating ? 'accountCreate' : 'accountSignIn', 'go', function (done) {
       var pass = form.querySelector('#fc-pass');
       /* The try, the refusal and the account, as the map's sheet reports
          them, so SIGNING UP in functions/api/_visitors.js can say why people
          who pressed this did not come out of it with an account. There is no
          sheet here to count opening or shutting: the form is the page. */
-      var view = naming ? 'google' : creating ? 'up' : 'in';
+      var view = creating ? 'up' : 'in';
       TTBTrack.event('account_try_' + view);
-      post(ACCOUNT_API, naming ? {
-        action: 'google-name',
-        username: value(form, 'fc-user')
-      } : {
+      post(ACCOUNT_API, {
         action: creating ? 'create' : 'login',
         username: value(form, 'fc-user'),
         password: pass ? pass.value : ''
@@ -1203,8 +1179,7 @@
           complain(form, say(a.out));
           return;
         }
-        TTBTrack.event(naming || creating ? 'account_create' : 'account_login',
-                       { via: naming ? 'google' : 'flashcard' });
+        TTBTrack.event(creating ? 'account_create' : 'account_login', { via: 'flashcard' });
         TTBTrack.event('account_done_' + view);
         /* Straight back to the route rather than patching state: signing in
            changes every answer on this page, including how much of the deck on
@@ -1217,34 +1192,23 @@
            bug wearing a different hat: the document went, the radio went with
            it, and Safari refused the rejoin, so somebody who signed in at the
            gate spent the rest of the sitting in silence behind a button that
-           said the radio was on. Nothing loads now.
-
-           The address drops ?google= on the way — a stale word from the last
-           trip carried into the next one would report something that did not
-           just happen — and keeps the deck, so this lands back on the card
-           the gate went up in front of. */
-        if (naming) {
-          try {
-            window.history.replaceState(null, '', hereWithoutGoogle());
-          } catch (e) { /* an old browser keeps the parameter, which is harmless */ }
-        }
+           said the radio was on. Nothing loads now, and the deck is kept, so
+           this lands back on the card the gate went up in front of. */
         go(asked, false);
       });
     }, form));
 
-    if (!naming) {
-      var swap = el('button', {
-        type: 'button',
-        className: 'alt',
-        textContent: t(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate')
-      });
-      swap.addEventListener('click', function () {
-        state.view = creating ? 'in' : 'up';
-        TTBTrack.event('account_switch', { view: state.view, via: 'flashcard' });
-        render();
-      });
-      form.appendChild(swap);
-    }
+    var swap = el('button', {
+      type: 'button',
+      className: 'alt',
+      textContent: t(creating ? 'accountSwitchSignIn' : 'accountSwitchCreate')
+    });
+    swap.addEventListener('click', function () {
+      state.view = creating ? 'in' : 'up';
+      TTBTrack.event('account_switch', { view: state.view, via: 'flashcard' });
+      render();
+    });
+    form.appendChild(swap);
 
     return form;
   }
@@ -4035,7 +3999,11 @@
   /* What came of a round trip to Google, said once the page has drawn and
      knows who is signed in. */
   function sayGoogle() {
-    if (googleSaid === 'in') {
+    /* `new` is an account the trip made on the way back, under a name drawn
+       for it: said like a sign-in, since the name is the news either way,
+       and counted as an account made. */
+    if (googleSaid === 'in' || googleSaid === 'new') {
+      if (googleSaid === 'new') TTBTrack.event('account_create', { via: 'google' });
       if (state.user) toast(t('accountSignedIn', { name: state.user }));
     } else if (googleSaid === 'taken') {
       toast(t('accountErrGoogleTaken'));
@@ -4107,11 +4075,6 @@
       renderLanguageSwitch();
       mountRadio();
       document.title = t('flashDocumentTitle');
-
-      /* A Google account with no account here yet: the form this page draws
-         for somebody signed out becomes the one that asks for a name. Before
-         settle(), which reads state.view to decide whether the gate stands. */
-      if (googleSaid === 'name' && !state.user) state.view = 'google';
 
       /* The decks, the deck and the tab's own answers, put where they go. The
          same call go() makes for every address after this one — settle() is

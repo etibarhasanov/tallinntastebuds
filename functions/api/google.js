@@ -18,8 +18,10 @@
  *
  *   ?google=in      signed in; the page says who, and this device's saves
  *                   have been claimed the way a password sign-in claims them
- *   ?google=name    this Google account has never been here. The sheet asks
- *                   for a username and posts it to /api/account
+ *   ?google=new     this Google account had never been here, and now has
+ *                   an account under a name drawn for it, signed in — the
+ *                   page says who, the way it does for `in`, and counts an
+ *                   account made rather than a sign-in
  *   ?google=linked  connected to the account that was already signed in
  *   ?google=taken   that Google account is already somebody else's here
  *   ?google=failed  the swap did not complete
@@ -54,8 +56,15 @@
  * A page that sends somebody to Google cannot see what happened to them
  * there, and one that never sees them back cannot report anything at all.
  * This route sees both ends, so it counts both: `google_out` for a sign-in
- * that left, and `google_back_<word>` for how one came back — `in`, `name`,
- * `cancel`, `failed` — into the sign-up funnel on /admin/visitors.
+ * that left, `google_out_inapp` beside it where it left from the in-app
+ * browser of Instagram, Facebook or TikTok, and `google_back_<word>` for how
+ * one came back — `in`, `new`, `cancel`, `failed` — into the sign-up funnel
+ * on /admin/visitors. The in-app count is there because Google refuses to
+ * sign anybody in inside those browsers (`disallowed_useragent`) and never
+ * redirects back, and between 8 October and 5 November eleven of eighteen
+ * trips out never came back while the site's arrivals were mostly those
+ * three apps; it is the number that says whether that is why. inAppOf() in
+ * ./_visits.js is the test, the same one sourceOf() files a visit by.
  * SIGNING UP in ./_visitors.js is the whole of it. A connect, which is
  * somebody already signed in, is not a sign-up and is counted nowhere, and
  * neither is the owner coming back in, whom the route can tell only once
@@ -70,12 +79,14 @@ import {
   claimDeviceSaves, SESSION_DAYS, countsKey
 } from './_lib.js';
 import {
-  googleReady, googleUser, linkIdentity, PROVIDER, GOOGLE_PATH,
-  FLOW_COOKIE, flowCookie, pendingCookie,
-  sealFlow, sealPending, unseal, pkce, authorizeUrl, identify
+  googleReady, googleUser, linkIdentity, GOOGLE_PATH,
+  FLOW_COOKIE, flowCookie,
+  sealFlow, unseal, pkce, authorizeUrl, identify
 } from './_google.js';
+import { makeGoogleAccount } from './_account.js';
 import { adminIds } from './_admin.js';
 import { countSignup } from './_visitors.js';
+import { inAppOf } from './_visits.js';
 
 /* One step of the round trip into the sign-up funnel, after the answer has
    gone — AND WHAT IT COUNTS. */
@@ -182,14 +193,11 @@ async function depart(context, url, origin) {
     'cache-control': 'no-store'
   });
   off.append('set-cookie', flowCookie(sealed));
-  /* And any half-finished sign-up from a trip before this one, cleared. A new
-     trip supersedes it: somebody who reached the name step with one Google
-     account and then started again with another would otherwise still be
-     holding a note for the first, and the sheet could be talked into naming
-     an account for a person who is no longer the one signing in. */
-  off.append('set-cookie', pendingCookie(''));
 
-  if (!user) tally(context, 'google_out');
+  if (!user) {
+    tally(context, 'google_out');
+    if (inAppOf(request.headers.get('user-agent'))) tally(context, 'google_out_inapp');
+  }
   return new Response(null, { status: 302, headers: off });
 }
 
@@ -264,28 +272,26 @@ async function connect(context, origin, then, identity, clear) {
   return land(origin, then, 'linked', [clear]);
 }
 
-/* Signing in, or finding out there is nobody here to sign in as yet. */
+/* Signing in, and making the account first where there is none yet. */
 async function signIn(context, origin, then, identity, client, clear) {
   const { request, env } = context;
 
-  const userId = await googleUser(env, identity.subject);
+  let userId = await googleUser(env, identity.subject);
+  const made = !userId;
 
-  /* Never been here. Nothing is written — no half-made account, and no row to
-     sweep when somebody closes the tab on this step — and what is handed back
-     instead is a sealed note saying which Google account proved itself, good
-     for fifteen minutes. The username is the one thing this site asks anybody
-     to decide, and it is asked for on the sheet rather than assembled out of
-     a Google profile this route deliberately never asked for. */
-  if (!userId) {
-    const pending = await sealPending(env.SAVE_SALT, {
-      provider: PROVIDER,
-      subject: identity.subject
-    });
-    tally(context, 'google_back_name');
-    return land(origin, then, 'name', [clear, pendingCookie(pending)]);
+  /* Never been here: the account is made now, under a drawn name they can
+     change on the account page — makeGoogleAccount() in ./_account.js says
+     why it no longer asks. Ninety thousand names make a draw that finds none
+     free all but impossible; were it to happen, it is a failed trip. */
+  if (made) {
+    userId = await makeGoogleAccount(env, identity.subject);
+    if (!userId) {
+      tally(context, 'google_back_failed');
+      return land(origin, then, 'failed', [clear]);
+    }
+  } else {
+    await env.DB.prepare('UPDATE users SET last_seen_at = ? WHERE id = ?').bind(Date.now(), userId).run();
   }
-
-  await env.DB.prepare('UPDATE users SET last_seen_at = ? WHERE id = ?').bind(Date.now(), userId).run();
 
   /* The same claim a password sign-in makes: what this browser saved before
      anybody signed in moves onto the account, merged rather than doubled. */
@@ -293,6 +299,7 @@ async function signIn(context, origin, then, identity, client, clear) {
   if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
 
   const token = await openSession(env, userId);
-  if (!adminIds(env).has(String(userId).toLowerCase())) tally(context, 'google_back_in');
-  return land(origin, then, 'in', [clear, sessionCookie(token, SESSION_DAYS, request)]);
+  if (made) tally(context, 'google_back_new');
+  else if (!adminIds(env).has(String(userId).toLowerCase())) tally(context, 'google_back_in');
+  return land(origin, then, made ? 'new' : 'in', [clear, sessionCookie(token, SESSION_DAYS, request)]);
 }
