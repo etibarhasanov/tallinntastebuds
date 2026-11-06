@@ -19,8 +19,11 @@
  * boot() wants the answer it is usually already in.
  *
  * IT IS A GUESS THAT IS CHECKED. What is asked is worked out the way boot()
- * works it out — ?d=, else where this device left off under ttb.flash.last;
- * the language out of ?lang=, ttb.lang and the browser's own, in that order —
+ * works it out — ?d=; else, where the address names no part of the shelf
+ * either, where this device left off under ttb.flash.last, or the first deck
+ * for a device that has never been here (ttb.flash.been), with hello=1 for
+ * the line the front door opens with; the language out of ?lang=, ttb.lang
+ * and the browser's own, in that order —
  * and boot() takes the response only when the address it would have built is
  * the same address character for character. If the two ever drift, the cost
  * is one wasted request and the page asks for itself, exactly as it did before
@@ -57,11 +60,16 @@
       if (tag && langs.indexOf(tag) === -1) langs.push(tag);
     });
 
-  var asked = search.get('d') || storeGet('ttb.flash.last') || '';
+  /* FIRST_DECK in assets/flashcard.js, which is the copy that decides. */
+  var named = search.get('d') || '';
+  var door = !named && !search.has('part');
+  var asked = named ||
+    (door && (storeGet('ttb.flash.last') || (storeGet('ttb.flash.been') ? '' : 'greetings'))) || '';
 
   var query = new URLSearchParams();
   query.set('lang', langs.slice(0, 10).join(','));
   if (asked) query.set('deck', asked);
+  if (door) query.set('hello', '1');
 
   var url = '/api/flashcard?' + query.toString();
   var response = fetch(url, { headers: { accept: 'application/json' } });

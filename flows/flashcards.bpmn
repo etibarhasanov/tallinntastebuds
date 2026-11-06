@@ -7,7 +7,7 @@
     <bpmn:participant id="flashcards-pool" name="Flashcards, a learner" processRef="flashcards-process" />
   </bpmn:collaboration>
   <bpmn:process id="flashcards-process" name="Flashcards, a learner" isExecutable="false">
-    <bpmn:documentation>Somebody learning Estonian on flashcard.tallinntastebuds.ee. Signed out they get the decks page and five words; an account remembers every answer, spaces the next time, and lets them write decks of their own.</bpmn:documentation>
+    <bpmn:documentation>Somebody learning Estonian on flashcard.tallinntastebuds.ee. Signed out, the first time, they are put in front of the first card and get five words; coming back, they are welcomed back to where they left off with the days they have practised in a row. An account remembers every answer, spaces the next time, and lets them write decks of their own.</bpmn:documentation>
     <bpmn:laneSet id="flashcards-lanes">
       <bpmn:lane id="flashcards-lane-learner" name="Learner">
         <bpmn:flowNodeRef>open</bpmn:flowNodeRef>
@@ -51,12 +51,13 @@ ref: assets/shell.js</bpmn:documentation>
       <bpmn:outgoing>flashcards-e17</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="deck" name="Opens a deck, a lesson, a song or a conversation">
-      <bpmn:documentation>Deeper stages open as the count of known words grows. A case lesson's Got it goes straight on into the deck that follows it. A song is listened to, and every word in it pressed for what it means. A conversation is read sentence by sentence, each sentence heard by pressing its speaker and every word in it pressed for what it means. A lesson's every sentence and every form in its tables is heard by pressing it.
+      <bpmn:documentation>A stranger's front door opens on the first card of Hello and goodbye; anybody coming back is put back where they left off. Deeper stages open as the count of known words grows. A case lesson's Got it goes straight on into the deck that follows it. A song is listened to, and every word in it pressed for what it means. A conversation is read sentence by sentence, each sentence heard by pressing its speaker and every word in it pressed for what it means. A lesson's every sentence and every form in its tables is heard by pressing it.
 when: flash_open
 when: flash_lesson_open
 when: flash_song_open
 when: flash_talk_open
 when: flash_resume
+when: flash_first
 when: flash_taste
 ref: assets/flashcard.js
 ref: functions/api/say.js GET</bpmn:documentation>
@@ -94,7 +95,7 @@ ref: functions/api/google.js GET</bpmn:documentation>
       <bpmn:outgoing>flashcards-e9</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="remember" name="Remembers it and spaces the next time">
-      <bpmn:documentation>Boxes of 1, 3, 7, 14, 35 and 77 days; a miss goes back to the start.
+      <bpmn:documentation>Boxes of 1, 3, 7, 14, 35 and 77 days; a miss goes back to the start. And the day, for the days in a row the front door counts.
 ref: functions/api/flashcard.js POST knew, again</bpmn:documentation>
       <bpmn:incoming>flashcards-e6</bpmn:incoming>
       <bpmn:incoming>flashcards-e9</bpmn:incoming>
