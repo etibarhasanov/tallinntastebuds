@@ -2325,7 +2325,7 @@ saying nothing on the map fits, so the assistant says that rather than
 guessing.
 
 **`places` with an `id`** — one a search returned — ignores the filters and
-answers with that one place: everything in a search row plus the video,
+answers with that one place: everything in a search row plus
 every photograph, the phone, the website,
 when I ate there and when it joined the map, and a Google Maps *search*
 link built out of my own name and address — the one place an assistant can
@@ -2337,7 +2337,12 @@ and not a fault in the asking.
 Every row carries `id`, `name`, `address`, `lat`, `lng`, `types`, `price`,
 `blurb` in the language asked for — English where the place has none in it
 — `must_order`, `url` (`https://tallinntastebuds.ee/?spot=<id>`), `photo`
-(the first file in `photos/<id>/`, absolute, or null) and `has_reel`. Both
+(the first file in `photos/<id>/`, absolute, or null), `reel` — the
+Instagram video of the place, or null — and `has_reel`, and the
+instructions tell the assistant to give the reel beside the place's link
+as one to watch, so somebody asking where to eat can see the place before
+they go. A place on a list that is also on the map carries its `reel` there
+too, read off the roll rather than the list row. Both
 tools are marked read-only, non-destructive, idempotent and closed-world,
 each carries a title and a description written for a model deciding
 whether to call it, with a question or two it should call it for, and each
