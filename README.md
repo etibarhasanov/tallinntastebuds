@@ -10411,6 +10411,15 @@ in the file were read out of this repository's history, and
 `tools/validate.mjs` fails a date that is not a day and warns on one that is
 missing, since a thing with no date simply can never be new.
 
+Both are chosen out of what you have not finished. Signed in, a deck whose
+every card you know, a lesson or conversation you have read and a song you
+have heard are passed over, so somebody through *The first words* is offered
+the next deck rather than *Ma ei saa aru* again — the file runs easy to hard,
+and the first thing left in it is the next thing. A thing you already know
+is never on the front door: through all of a part, its card shows nothing out
+of it, only its name, its count and the way in.
+Signed out the route sends no progress, so nothing is passed over.
+
 That line of Estonian is the job the *Start here* row did before the menu,
 and the reason for it has not changed: from 30 September to 6 October two
 opens in three ended without a deck opened, because tiles saying what a deck

@@ -1679,12 +1679,28 @@
     return el('nav', { className: 'flash-parts', 'aria-label': t('flashParts') }, [row]);
   }
 
+  /* Whether somebody is through with a thing: every card of a deck known, a
+     lesson or a conversation read, a song heard. Only ever true signed in,
+     since signed out the route sends no progress at all. */
+  function finished(x) {
+    return !!(x.read || x.heard || (x.cards && x.known >= x.cards));
+  }
+
   /* The one thing a card on Start shows out of its part: the newest, while it
      is new, and otherwise the first with a line of Estonian to show — or the
      first at all. The newest is the earliest in the file of those added on the
      latest day, which is the one a run of them going in together opened with:
-     the fourteen cases before the first of the lessons that teach them. */
+     the fourteen cases before the first of the lessons that teach them.
+
+     Out of what somebody has not finished. The front door kept offering The
+     first words, Ma ei saa aru and all, to a member who knew every card in
+     it, which is an invitation to do again what they had just done rather
+     than to go on. The file runs easy to hard, so the first thing left is the
+     next thing. Somebody through all of a part is shown nothing out of it —
+     a thing they already know is never the front door's offer — and the card
+     still carries its name, its count and the way in. */
   function newest(things) {
+    things = things.filter(function (x) { return !finished(x); });
     if (!things.length) return null;
     var latest = '';
     things.forEach(function (x) { if (x.added && x.added > latest) latest = x.added; });
