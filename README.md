@@ -3312,8 +3312,9 @@ A deal can be filed under Google's key instead of a place of mine. The
 owner's word, in November 2026, about Faxinin marketi on Keldrimäe: it is
 not on the map, a member who opens it gets ten percent when they show the
 QR, the QR is as usual, and the place does not need to be on the map. So it
-is not. Being on the map is the verdict, and a market that gives members
-something off has agreed to a discount, not been eaten at and written up.
+is not, and the ten became twenty the same day. Being on the map is the
+verdict, and a market that gives members something off has agreed to a
+discount, not been eaten at and written up.
 
 ```json
 { "id": "ChIJjT6uOdiVkkYRwHK_f2mL67M", "name": "Faxinin marketi", "live": true, … }
