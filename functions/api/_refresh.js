@@ -25,13 +25,14 @@
  * For its first two months the open was the only signal, and it was not
  * enough: October spent 181 of the 950 calls it had, and eight hundred of the
  * eleven hundred rows had never been asked about at all. So the day's thirty-
- * two are no longer left to chance. At the end of each UTC day, what the opens
- * and the top hundred did not spend goes to the oldest rows the directory
- * shows — refreshFill() at the foot of this file, behind POST /api/refresh,
- * which .github/workflows/google-refresh.yml calls on a clock, since Pages
- * Functions have no scheduler of their own. The opens keep first claim
- * because the fill runs last; what the fill adds is the floor, so that every
- * row comes round about once in five weeks whether or not anybody opens it.
+ * two are no longer left to chance. Through the second half of each UTC day,
+ * what the opens and the top hundred did not spend goes to the oldest rows the
+ * directory shows — refreshFill() at the foot of this file, behind POST
+ * /api/refresh, which .github/workflows/google-refresh.yml calls on a clock,
+ * since Pages Functions have no scheduler of their own. The opens keep first
+ * claim because the fill keeps KEEP_FOR_OPENS back until the evening; what
+ * the fill adds is the floor, so that every row comes round about once in
+ * five weeks whether or not anybody opens it.
  *
  * WHAT IS ASKED FOR, AND WHAT IT COSTS
  *
@@ -91,7 +92,7 @@
  * the same budget, logged under source 'top' rather than 'open' — and the
  * route behind the Top 100 tab of /admin/google calls it after its answer
  * has gone. TOP_A_LOAD of them a time, leaving the rest of the day's
- * thirty-two to opens and to the evening's fill, so a hundred stale rows take
+ * thirty-two to opens and to the afternoon's fill, so a hundred stale rows take
  * a few openings of the tab; after the first month they fall due a few at a
  * time and one opening covers them.
  *
@@ -126,15 +127,26 @@ export const BUDGET = {
   search: { day: 100, month: 3000 }
 };
 
-/* The UTC hour from which the fill may run. The fill takes what the day left,
-   so it belongs at the day's end: POST /api/refresh does nothing before this
-   hour, which is what lets the route stand open with no secret on it — a
-   stranger calling it can only spend, on the same oldest rows, what the clock
-   would have spent two hours later. Twenty, rather than the twenty-two the
-   workflow fires at, because GitHub's cron runs late on a busy minute and a
-   run that slipped must still find the door open; one that slips past
-   midnight finds it shut and spends nothing of the new day's opens. */
-export const FILL_FROM_HOUR = 20;
+/* The UTC hours the fill works between. It was one run at 22:17 UTC behind a
+   gate at twenty, and it never once spent a call: GitHub started the run
+   between three and four hours late every evening — 01:28, 01:58, 02:32 —
+   so it always arrived on the next UTC day and was answered 'early', and
+   the day it was meant to fill had already ended with its calls unspent.
+   GitHub's schedule is a wish, not a clock.
+
+   So the workflow knocks several times a day now, from the afternoon, and
+   the fill takes what it is given in two halves. From FILL_FROM_HOUR it may
+   spend all but KEEP_FOR_OPENS of the day, so the evening's opens — when
+   most people look at the map — still find calls waiting; from
+   SPEND_ALL_FROM_HOUR it takes everything left. A run four hours late still
+   lands inside the day it was meant for, and a run that slips past midnight
+   is answered 'early' and spends nothing of the new day, as before.
+
+   The route is still open with no secret on it: a stranger calling it can
+   only spend, on the same oldest rows, what the next knock would have. */
+export const FILL_FROM_HOUR = 12;
+export const SPEND_ALL_FROM_HOUR = 20;
+export const KEEP_FOR_OPENS = 8;
 
 /* Ninety days of the log, which is three full rounds of REFRESH_AFTER — long
    enough to see a place come round again, short enough that the table is a few
@@ -584,34 +596,40 @@ async function askEach(env, due, source) {
 
 /* The rest of the day's thirty-two, spent on the oldest rows.
  *
- * Called from functions/api/refresh.js at the end of the UTC day, and inside
- * the request rather than after it, so the answer the workflow logs says how
- * many were asked. The rows are the ones the directory shows — not hidden,
- * not missing, since nobody reads the numbers of a row that is not drawn —
- * whose numbers are REFRESH_AFTER old, oldest first; the never-refreshed all
- * tie at zero, and among them the better-ranked go first, so the first weeks
- * of this spend themselves on the places a reader is likeliest to find. At
- * most a day's worth are read, because the loop would stop there anyway: an
- * open or the top hundred already took some of the day, spend() refuses the
- * first call past the cap, and askEach() stops at that refusal.
+ * Called from functions/api/refresh.js, several times through the second half
+ * of the UTC day, and inside the request rather than after it, so the answer
+ * the workflow logs says how many were asked. `leave` is how many of the day's
+ * calls to keep back for the opens still to come — KEEP_FOR_OPENS in the
+ * afternoon, nought from SPEND_ALL_FROM_HOUR — so at most the day's cap less
+ * what is already spent and what is kept back is read. The cap still binds on
+ * its own: an open that lands mid-loop takes its call, spend() refuses the
+ * first one past thirty-two, and askEach() stops at that refusal.
+ *
+ * The rows are the ones the directory shows — not hidden, not missing, since
+ * nobody reads the numbers of a row that is not drawn — whose numbers are
+ * REFRESH_AFTER old, oldest first; the never-refreshed all tie at zero, and
+ * among them the better-ranked go first, so the first weeks of this spend
+ * themselves on the places a reader is likeliest to find.
  *
  * At BUDGET.details.day a day and REFRESH_AFTER of thirty, the eleven hundred
  * rows come round in about five weeks — a little slower than the month, which
  * is the monthly cap sitting under thirty-one days of thirty-two and nothing
  * to correct. Quiet like the rest: no key, no column, no database, and it
  * answers zero. */
-export async function refreshFill(env, now) {
+export async function refreshFill(env, now, leave = 0) {
   if (!env || !env.DB || !googleKey(env)) return 0;
 
   let due;
   try {
+    const room = BUDGET.details.day - leave - (await spent(env, 'details', now)).today;
+    if (room <= 0) return 0;
     due = await env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
         'WHERE hidden = 0 AND missing_since IS NULL AND COALESCE(refreshed_at, 0) <= ? ' +
         'ORDER BY COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
       )
-      .bind(now - REFRESH_AFTER, BUDGET.details.day)
+      .bind(now - REFRESH_AFTER, room)
       .all();
   } catch (e) {
     return 0;

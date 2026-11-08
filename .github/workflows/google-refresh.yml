@@ -7,23 +7,30 @@ name: google-refresh
 # spread over the month. Opens alone never came near that: October spent 181
 # of its 950, and most of the directory had never been asked about. So the
 # day's thirty-two are a floor as well as a cap now, and this is what makes
-# them one. Every evening it POSTs to /api/refresh on the live site, which
-# spends whatever the day's opens left on the oldest rows the directory
-# shows — refreshFill() in that module says which rows and in what order, and
-# functions/api/refresh.js is the door.
+# them one. Three times an afternoon and evening it POSTs to /api/refresh on
+# the live site, which spends what the day's opens left on the oldest rows
+# the directory shows — refreshFill() in that module says which rows and in
+# what order, and functions/api/refresh.js is the door.
 #
 # There is nothing to keep secret here and no token in the store: the budget
 # is claimed in the database before any call leaves, and the route does
 # nothing before FILL_FROM_HOUR UTC, so a call from anywhere else can only do
-# what this does, later. That is also why the time below is near the end of
-# the UTC day: the opens have had their turn, and the fill takes the rest.
+# what this does, later.
 #
-# A run that GitHub starts late still finds the door open, since the gate is
-# two hours before the schedule; one that slips past midnight is answered
-# 'early' and spends nothing, which is the right outcome for a day that has
-# only just begun. A run that fails — the site unreachable, the key gone —
-# is a day not filled and nothing worse; the next evening carries on from
-# wherever the rows are.
+# It used to be one run at 22:17 UTC, and that one run never spent a call:
+# GitHub started it between three and four hours late every night of its
+# first week, after midnight UTC, where the site answered 'early' for a day
+# that had already ended with its calls unspent. Scheduled runs are queued
+# behind everybody else's and can be hours late or dropped. So there are
+# three knocks now, and the fill is idempotent: whichever lands first spends
+# what the hour allows — all but eight before 20:00 UTC, to leave the
+# evening's opens something, and everything after — and the rest find less
+# or nothing to do. Even four hours late, the first two land inside the day
+# they were meant for.
+#
+# An 'early' answer is a warning and not a failure, since the last knock
+# slipping past midnight is expected. A missing key or database is a
+# failure, because then no knock will ever fill anything.
 #
 # GitHub stops scheduled workflows in a repository that has had no activity
 # for 60 days. If the Google tab on /admin.html shows the days stuck under
@@ -31,10 +38,10 @@ name: google-refresh
 
 on:
   schedule:
-    # Seventeen past, so it is not queued behind the whole world's cron; ten
-    # in the evening UTC, so nearly every open of the day has already spent
-    # what it was going to.
-    - cron: '17 22 * * *'
+    # Seventeen past, so it is not queued behind the whole world's cron; two,
+    # five and eight in the afternoon and evening UTC, so even a late start
+    # lands before midnight.
+    - cron: '17 14,17,20 * * *'
   # By hand, from the Actions tab. Before FILL_FROM_HOUR UTC the site answers
   # 'early' and does nothing, which the log will say.
   workflow_dispatch:
@@ -55,5 +62,6 @@ jobs:
           echo "$answer"
           case "$answer" in
             *'"ok":true'*) ;;
-            *) echo "::warning::The fill did not run — the answer above says why." ;;
+            *'"why":"early"'*) echo "::warning::Too early or past midnight UTC — the fill did nothing this time." ;;
+            *) echo "::error::The fill cannot run — the answer above says why."; exit 1 ;;
           esac
