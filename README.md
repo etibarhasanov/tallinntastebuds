@@ -5501,30 +5501,39 @@ reason a place was asked about, and the budget said what that was worth: 181
 calls in October out of 950, and 848 of the 1,105 rows the directory shows
 never asked about at all — a directory printing September's numbers under a
 promise to keep them current. So the thirty-two a day is a floor now as well
-as a cap. Every evening at 22:17 UTC, `.github/workflows/google-refresh.yml`
+as a cap. At 14:17, 17:17 and 20:17 UTC, `.github/workflows/google-refresh.yml`
 POSTs to `/api/refresh`, and `refreshFill()` in `functions/api/_refresh.js`
-spends whatever the day's opens and the top hundred left on the rows the
+spends what the day's opens and the top hundred left on the rows the
 directory shows whose numbers are more than thirty days old, oldest first —
 the never-refreshed ahead of everything, and among those the better-ranked
 first, so the first weeks go to the places a reader is likeliest to find.
 The same call, the same seven columns, the same claim on a row, logged under
 source `fill`. At thirty-two a day the whole directory comes round in about
 five weeks, which is the monthly cap sitting under thirty-one days of
-thirty-two and nothing to correct. The opens keep first claim because the
-fill runs last: an open at noon is asked about at noon, and the fill takes
-what is left at ten.
+thirty-two and nothing to correct. The opens keep first claim: before
+`SPEND_ALL_FROM_HOUR`, eight in the evening UTC, a knock leaves
+`KEEP_FOR_OPENS` — eight — of the day unspent for the opens still to come,
+and from then on it takes everything left. The knocks are idempotent, so
+whichever lands first does the work and the rest find less or nothing.
 
 The route is open to anybody and carries no secret, because there is nothing
 a caller could take: the budget is claimed in the database before any call
 leaves, so nobody can spend past the thirty-two, and before `FILL_FROM_HOUR`
-— eight in the evening UTC — the route answers `early` and asks nothing, so a
-call at breakfast cannot take the day away from the opens. A stranger calling
-it at nine in the evening does what the workflow would have done at ten, on
-the same rows. The gate sits two hours before the schedule because GitHub's
-cron runs late on a busy minute; a run that slips past midnight is answered
-`early` and spends nothing of the new day. The fill runs inside the request
-rather than after it, so the answer the workflow logs — `asked`, `today`,
-`day` — says what it did. Without the key, the column or the tables it
+— noon UTC — the route answers `early` and asks nothing, so a call at
+breakfast cannot take the day away from the opens. A stranger calling it does
+what the workflow's next knock would have done, on the same rows.
+
+It was one knock at 22:17 UTC behind a gate at eight for its first week, and
+that knock never spent a call: GitHub started it between three and four hours
+late every night — 01:28, 01:58, 02:32 — so it arrived on the next UTC day,
+was answered `early`, and the day it was meant to fill had ended with its
+calls unspent, while the workflow showed green. Three knocks from the
+afternoon means even a four-hour delay lands inside the right day; the last
+slipping past midnight is answered `early`, logged as a warning, and costs
+nothing. A missing key or database fails the run instead, since then no knock
+would ever fill anything. The fill runs inside the request rather than after
+it, so the answer the workflow logs — `asked`, `today`, `day`, `kept` — says
+what it did. Without the key, the column or the tables it
 answers why and does nothing, like every refresh. Pages Functions have no
 scheduler, and this is the one piece of the site a GitHub cron drives
 besides the stories' clock, for the same reason: the thing it does is about
@@ -16197,7 +16206,7 @@ functions/api/_refresh.js  asking Google about one opened place again, inside
                            a daily and monthly budget (not a route: leading _)
 functions/api/refresh.js   POST /api/refresh — the rest of the day's budget,
                            spent on the oldest rows; the workflow
-                           google-refresh.yml calls it every evening
+                           google-refresh.yml calls it three times a day
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
