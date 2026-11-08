@@ -3230,8 +3230,9 @@ being the one this account drew for the hour — see
 
 ### The three addresses
 
-Replace `<place-id>` with the `id` from `restaurants.json` — the same slug
-`?spot=` uses.
+Replace `<place-id>` with the deal's `id`: a place's slug from
+`restaurants.json`, or Google's key for a place that is not on the map —
+whichever `?spot=` opens it by.
 
 | Who | Address | How they get there |
 | --- | --- | --- |
@@ -3304,6 +3305,52 @@ several, none of which are on screen, moves the map too — see
 
 `?type=discount` works as a link, and combines with the rest: `?type=discount,bakery`
 is either.
+
+### A discount at a place that is not on the map
+
+A deal can be filed under Google's key instead of a place of mine. The
+owner's word, in November 2026, about Faxinin marketi on Keldrimäe: it is
+not on the map, a member who opens it gets ten percent when they show the
+QR, the QR is as usual, and the place does not need to be on the map. So it
+is not. Being on the map is the verdict, and a market that gives members
+something off has agreed to a discount, not been eaten at and written up.
+
+```json
+{ "id": "ChIJjT6uOdiVkkYRwHK_f2mL67M", "name": "Faxinin marketi", "live": true, … }
+```
+
+The key is the `place_id` out of `google_venues`, the same one
+`/?spot=` opens the place's card by — see
+[A Google place has a link too](#a-google-place-has-a-link-too). Everything
+past the map already worked by the deal's id rather than by anything in
+`restaurants.json`, so the guest page, the QR, the hourly code, the verify
+page, the staff page and the member gate are exactly what any other deal
+gets. Three things learnt to take a key with capitals in it:
+`functions/api/pass.js`, which admits the account; `tools/validate.mjs`,
+which holds the id to the shape of a key rather than to a place in a file;
+and the card and the row in `assets/app.js`, which used to draw nothing of
+mine on a Google place.
+
+On the card the pill sits under the name and the offer with its button sits
+under the "According to Google" line, above the address, so on a phone the
+button is on screen when the card opens. A row for the place, on a list or
+in the find bar, carries the pill too. What it does not get:
+
+- **The Discount chip.** The chip filters the map's own places, and this one
+  is not among them. It is reached by its link, the find bar, a list or a
+  save.
+- **The name check.** The name is copied from `google_venues` by hand, and
+  the validator, which reads files and not the database, takes it on trust.
+  If Google renames the place, the deal's `name` is the line to change.
+- **The admin page.** The **Discount** tab lists the map's places, so a deal
+  under a Google key is written, switched and taken down in
+  `data/deals.json` by hand.
+
+The staff link is the same shape with the key in it:
+
+```
+https://tallinntastebuds.ee/staff.html?r=ChIJjT6uOdiVkkYRwHK_f2mL67M
+```
 
 ### A rate that is drawn
 
@@ -3404,8 +3451,8 @@ Add an entry to `data/deals.json`:
 
 | Field | |
 | --- | --- |
-| `id` | Must be a place in `restaurants.json` |
-| `name` | The same name that place has in `restaurants.json`, copied here so the three pass pages never have to load it — see [Why the name is written twice](#why-the-name-is-written-twice) |
+| `id` | A place in `restaurants.json`, or Google's key for one that is not on the map — see [A discount at a place that is not on the map](#a-discount-at-a-place-that-is-not-on-the-map) |
+| `name` | The same name that place has in `restaurants.json`, or in `google_venues` for a Google key, copied here so the three pass pages never have to load it — see [Why the name is written twice](#why-the-name-is-written-twice) |
 | `live` | `false` keeps it invisible on the map while remaining testable by URL |
 | `key` | 16–64 characters of `0-9 A-Z`, no `I L O U`. **Different for every place** |
 | `offer` | Translations, like `blurb`. A live deal must have `en` at minimum |
@@ -3419,8 +3466,8 @@ Generate a key with:
 node -e "const A='0123456789ABCDEFGHJKMNPQRSTVWXYZ';console.log([...require('crypto').randomBytes(32)].map(x=>A[x%32]).join('').slice(0,32))"
 ```
 
-Then `node tools/validate.mjs`. It refuses a deal pointing at a place that does
-not exist, two deals sharing a key, a name that `restaurants.json` disagrees
+Then `node tools/validate.mjs`. It refuses a deal pointing at a map place that
+does not exist, two deals sharing a key, a name that `restaurants.json` disagrees
 with, anything switched `live` with no words in it, and a `roll` whose run
 leaves 1–99 or whose `offer` has nowhere to put the rate. The summary line
 ends with a live-deal count, so CI tells you what is switched on.
@@ -15986,8 +16033,9 @@ instead of a minute after the merge.
   `clips/` that make one, or whose `clip` sentence — the `alt` on that picture
   — is missing in English. A file in `clips/` that no post names only warns,
   and so does a clip heavier than 600 KB
-- a deal in `data/deals.json` for a place that is not on the map, whose
-  `name` is not what `restaurants.json` calls the place, whose key is shared
+- a deal in `data/deals.json` whose id is neither a place on the map nor
+  the shape of a Google key, whose `name` is not what `restaurants.json`
+  calls the place, whose key is shared
   with another deal or off the code alphabet, or a live one with no
   `offer.en` — see **Restaurant discounts**
 - a deal whose `roll` is not three whole numbers, whose run leaves 1–99 or

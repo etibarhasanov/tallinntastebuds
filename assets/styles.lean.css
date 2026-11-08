@@ -1924,6 +1924,8 @@ body.panel-detail .panel {
 
 .deal-offer { font-size: 15px; }
 
+.is-from-list .deal-block { margin: 18px 0 22px; }
+
 .reel-frame {
   margin-inline: calc(var(--panel-pad) * -1);
   aspect-ratio: var(--reel-ratio, 9 / 19);

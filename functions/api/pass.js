@@ -13,6 +13,12 @@
  * admin sets stay in the file, where everything else about a discount
  * already is, and nothing about any deal is in here.
  *
+ * The place is a map slug, or Google's key for a place the map has no
+ * write-up of: a deal can be filed under either — see "A discount at a place
+ * that is not on the map" in the README. The key is held to the shape
+ * googleSpot() in functions/index.js holds a ?spot= to, and nothing more is
+ * asked of it here, since this never reads deals.json either way.
+ *
  * WHY THE DISCOUNTS MOVED BEHIND AN ACCOUNT
  *
  * They were open to everybody who opened the map, and the offer was worth
@@ -53,6 +59,8 @@
 import { json, fingerprint, sessionUser, wrongDatabase } from './_lib.js';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/* Google's key: capitals, which no slug has, and the length of a real one. */
+const GOOGLE = /^[A-Za-z0-9_-]{16,128}$/;
 const HOUR = 3600000;
 
 export async function onRequestGet(context) {
@@ -68,7 +76,9 @@ export async function onRequestGet(context) {
   if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
 
   const place = new URL(request.url).searchParams.get('r') || '';
-  if (!SLUG.test(place)) return json({ error: 'bad-place' }, 400);
+  if (!SLUG.test(place) && !(GOOGLE.test(place) && /[A-Z]/.test(place))) {
+    return json({ error: 'bad-place' }, 400);
+  }
 
   const user = await sessionUser(request, env);
   if (!user) return json({ error: 'sign-in' }, 401);

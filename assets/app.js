@@ -7508,13 +7508,20 @@
   function renderListOnly(place) {
     dom.detail.className = 'is-from-list';
 
+    /* A place I have not written up can still give members something off,
+       filed in deals.json under Google's key — see "A discount at a place
+       that is not on the map" in the README. It says so the way a place of
+       mine does: the pill in the head, and the offer with its button. */
+    var deal = liveDealFor(place);
+
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
         tabindex: '-1',
         textContent: place.name
-      })
+      }),
+      deal ? el('div', { className: 'head-meta' }, [dealMark(deal)]) : null
     ]));
 
     dom.detail.appendChild(el('p', { className: 'muted-note', textContent: standInNote(place) }));
@@ -7529,6 +7536,11 @@
 
     var source = sourceLine(place);
     if (source) dom.detail.appendChild(source);
+
+    /* Under what Google says and above the address: the offer is part of
+       deciding whether to go, and on a phone the button is on screen when
+       the card opens rather than under the week of hours. */
+    if (deal) dom.detail.appendChild(dealBlock(place, deal));
 
     if (place.address || place.phone) {
       dom.detail.appendChild(el('dl', { className: 'facts' }, [
@@ -10027,9 +10039,10 @@
   function listRow(place, said, far) {
     /* A place that is on the list but not on my map: a name, an address and
        a pin out of the catalogue, and nothing to read. The badges a row
-       normally carries are all claims about a write-up that does not exist
+       normally carries are claims about a write-up that does not exist
        — how much there is to look at, what it costs, which types it is —
-       so a stand-in row carries the sentence and the address instead. */
+       so a stand-in row carries the sentence and the address instead, and
+       of the badges only a discount, which is an offer and not a verdict. */
     if (place.standIn) return listOnlyRow(place, said, far);
 
     /* A discount used to be something you could only find by opening the
@@ -10110,9 +10123,9 @@
      It used to be a plainer row — the name, the address, and Google's
      description on a line of its own underneath — on the argument that the
      badges a row of mine carries are claims about a write-up that does not
-     exist. True of the depth mark, the discount and the save count, which
-     it still does not get. But drawn beside a row of mine it read as a
-     different kind of thing rather than a different place, and an answer
+     exist. True of the depth mark and the save count, which it still does
+     not get. But drawn beside a row of mine it read as a different kind of
+     thing rather than a different place, and an answer
      that mixes the two rolls needs them to read as one list. So it takes
      the row's shape: the gauge and the types in the same slots, and in the
      slot where a row of mine says how much there is to look at, a mark
@@ -10123,10 +10136,16 @@
 
      A place off nobody's export — added by hand to a list — has no gauge,
      no types and no score, and keeps the plainer row: the address is the
-     whole of what is known about it. */
+     whole of what is known about it.
+
+     The discount is the one badge of mine it can carry after all: a deal
+     filed under Google's key is an offer, not a write-up, and it is shown
+     where the choosing happens for the reason listRow() gives. */
   function listOnlyRow(place, said, far) {
     var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
     var described = !!place.google && !!(kinds || place.price || place.rating);
+    var deal = liveDealFor(place);
+    var offer = deal ? window.TTBPass.offerText(deal, state.lang) : '';
     var distance = far ? el('span', { className: 'list-far', textContent: far }) : null;
     /* The same mark a row of mine takes, for the same reason and out of the
        same question — which of these is the one the map is lit on. Most of a
@@ -10140,15 +10159,18 @@
       'data-id': place.id,
       'aria-current': kept ? 'true' : null,
       'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote(place) +
+        (deal ? ', ' + (offer || t('filterDiscount')) : '') +
         (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '') +
         (far ? ', ' + far : '')
     }, [
       el('span', { className: 'list-name', textContent: place.name }),
       el('span', { className: 'list-sub' }, described ? [
         place.price ? priceGauge(place.price) : null,
+        deal ? dealMark(deal) : null,
         distance,
         el('span', { className: 'list-types', textContent: kinds })
       ] : [
+        deal ? dealMark(deal) : null,
         distance,
         el('span', { className: 'list-types', textContent: place.address || '' })
       ]),

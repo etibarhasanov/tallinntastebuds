@@ -2970,6 +2970,13 @@ body.panel-detail .panel {
 
 .deal-offer { font-size: 15px; }
 
+/* On a Google place's card the block stands between Google's line and the
+   address rather than in a ruled section of its own: the card is short, and
+   a rule and an eyebrow there would make the offer read as one more of
+   Google's facts. The room either side is the room that card's own lines
+   keep. */
+.is-from-list .deal-block { margin: 18px 0 22px; }
+
 /* reel */
 
 /* The player is the reason a profile gets opened, so it is given every pixel

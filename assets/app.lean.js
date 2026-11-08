@@ -4269,13 +4269,16 @@
   function renderListOnly(place) {
     dom.detail.className = 'is-from-list';
 
+    var deal = liveDealFor(place);
+
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
         tabindex: '-1',
         textContent: place.name
-      })
+      }),
+      deal ? el('div', { className: 'head-meta' }, [dealMark(deal)]) : null
     ]));
 
     dom.detail.appendChild(el('p', { className: 'muted-note', textContent: standInNote(place) }));
@@ -4287,6 +4290,8 @@
 
     var source = sourceLine(place);
     if (source) dom.detail.appendChild(source);
+
+    if (deal) dom.detail.appendChild(dealBlock(place, deal));
 
     if (place.address || place.phone) {
       dom.detail.appendChild(el('dl', { className: 'facts' }, [
@@ -5787,6 +5792,8 @@
   function listOnlyRow(place, said, far) {
     var kinds = (place.types || []).map(typeLabel).filter(Boolean).join(' \u00b7 ');
     var described = !!place.google && !!(kinds || place.price || place.rating);
+    var deal = liveDealFor(place);
+    var offer = deal ? window.TTBPass.offerText(deal, state.lang) : '';
     var distance = far ? el('span', { className: 'list-far', textContent: far }) : null;
     var kept = isKept(place);
 
@@ -5796,15 +5803,18 @@
       'data-id': place.id,
       'aria-current': kept ? 'true' : null,
       'aria-label': t('openPlace', { name: place.name }) + ', ' + standInNote(place) +
+        (deal ? ', ' + (offer || t('filterDiscount')) : '') +
         (place.rating ? ', ' + t('googleSays') + ' ' + scoreMark(place).textContent : '') +
         (far ? ', ' + far : '')
     }, [
       el('span', { className: 'list-name', textContent: place.name }),
       el('span', { className: 'list-sub' }, described ? [
         place.price ? priceGauge(place.price) : null,
+        deal ? dealMark(deal) : null,
         distance,
         el('span', { className: 'list-types', textContent: kinds })
       ] : [
+        deal ? dealMark(deal) : null,
         distance,
         el('span', { className: 'list-types', textContent: place.address || '' })
       ]),
