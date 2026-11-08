@@ -187,8 +187,9 @@ A read, so no prompt. The row wants `hidden = 0`, `missing_since` null and
 the map, and its deal belongs under the map's slug instead. Everything else
 in **Switching one on** applies, with three differences. The card is the
 stand-in's — `renderListOnly()` in `assets/app.js` — with the pill under the
-name and the offer under Google's line. The Discount chip does not list it,
-because the chip filters the map's own places. And the admin page's
+name and the offer under Google's line. The Discount chip lists it, seated
+by `seatDeals()` out of the find bar's roll and wearing the plain pin, so
+drive the chip as well as the card. And the admin page's
 **Discount** tab cannot see it, so it is switched by hand here. Drive the
 card with `/api/places` and `/api/venues` stubbed to return the row, or under
 `pages dev` with the row in the local database. **A discount at a place that
