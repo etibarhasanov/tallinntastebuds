@@ -195,6 +195,12 @@
        they are pins nothing draws. See matchesFilters() for why a chip never
        answers for one. */
     savedPlaces: [],
+    /* And the fifth: the places a live deal is filed under by Google's key,
+       which are not on my map — see "A discount at a place that is not on
+       the map" in the README. Seated by seatDeals() the first time the
+       Discount chip is on, out of the same roll, and then they stay, shown
+       only under that chip, the way the saved ones are under theirs. */
+    dealPlaces: [],
     /* What the map is narrowed to after Enter in the find bar: every place
        the words reached, mine and the city's, in the order the card's arrows
        step through them — nearest the dot, or the middle of the map, first.
@@ -392,11 +398,12 @@
   /* Everything that has a pin on the map right now: my seventy-six, plus the
      stand-ins for a list's places that are not among them, the ones an answer
      on the whole city put there, the ones the find bar put there, and the
-     saved ones seatSaved() put there. A list, an answer and the find bar's
+     saved ones seatSaved() put there, and the discounted ones seatDeals()
+     put there. A list, an answer and the find bar's
      results are never up together — each puts the others away before it
      draws — and one venue looked up in the find bar can be up with a list or
-     an answer, because a pick narrows nothing. The saved ones stay once
-     seated and are shown only under their filter. The loops below do not
+     an answer, because a pick narrows nothing. The saved and the discounted
+     ones stay once seated and are shown only under their filter. The loops below do not
      need to know any of that.
 
      Deliberately not "everything the map knows about". state.places is the
@@ -406,10 +413,11 @@
      label and cluster pins ask for this wider set. */
   function allPlaces() {
     if (!state.listPlaces.length && !state.askPlaces.length && !state.foundPlaces.length &&
-        !state.savedPlaces.length) {
+        !state.savedPlaces.length && !state.dealPlaces.length) {
       return state.places;
     }
-    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces, state.savedPlaces);
+    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces,
+      state.savedPlaces, state.dealPlaces);
   }
 
   function byId(id) {
@@ -428,17 +436,22 @@
     for (var m = 0; m < state.foundPlaces.length; m++) {
       if (state.foundPlaces[m].id === id) return state.foundPlaces[m];
     }
-    /* And last, the saves the map had no other door to — see seatSaved(). */
+    /* And last, the saves and the discounts the map had no other door to —
+       see seatSaved() and seatDeals(). */
     for (var n = 0; n < state.savedPlaces.length; n++) {
       if (state.savedPlaces[n].id === id) return state.savedPlaces[n];
+    }
+    for (var d = 0; d < state.dealPlaces.length; d++) {
+      if (state.dealPlaces[d].id === id) return state.dealPlaces[d];
     }
     return null;
   }
 
   /* Why a place with no write-up is on this map at all. A stand-in arrives
-     four ways now; the fourth, a saved one, is answered with the third. Two of them are modes and are never on screen together —
-     an answer puts a list away before it draws — so for those the mode says
-     which and the place carries no flag for it.
+     five ways now; the fourth, a saved one, and the fifth, one the Discount
+     chip seated, are answered with the third. Two of them are modes and are
+     never on screen together — an answer puts a list away before it draws —
+     so for those the mode says which and the place carries no flag for it.
 
      The third is the find bar's, and a venue picked from its dropdown is not
      a mode: a list or an answer may perfectly well still be underneath it.
@@ -448,26 +461,22 @@
      door. Called without one it answers as it always did. */
   function standInNote(place) {
     /* A saved one was found somewhere in Tallinn too — that is how it came
-       to be saved — so it says what the find bar's say. */
-    if (place && (isFound(place.id) || isSavedStandIn(place.id))) return t('findNotMine');
+       to be saved — so it says what the find bar's say, and so does one the
+       Discount chip put there, which is a place in Tallinn and on no list. */
+    if (place && (holds(state.foundPlaces, place.id) || holds(state.savedPlaces, place.id) ||
+        holds(state.dealPlaces, place.id))) {
+      return t('findNotMine');
+    }
     if (state.answer) return t('askNotMine');
     return state.list && state.list.by
       ? t('listNotMineBy', { name: state.list.by })
       : t('listNotMine');
   }
 
-  /* Whether this is a saved venue seatSaved() put on the map. */
-  function isSavedStandIn(id) {
-    for (var i = 0; i < state.savedPlaces.length; i++) {
-      if (state.savedPlaces[i].id === id) return true;
-    }
-    return false;
-  }
-
-  /* Whether this is a venue the find bar put on the map. */
-  function isFound(id) {
-    for (var i = 0; i < state.foundPlaces.length; i++) {
-      if (state.foundPlaces[i].id === id) return true;
+  /* Whether one of the rolls of stand-ins holds this place. */
+  function holds(places, id) {
+    for (var i = 0; i < places.length; i++) {
+      if (places[i].id === id) return true;
     }
     return false;
   }
@@ -501,8 +510,20 @@
   function liveDealFor(place) {
     if (!window.TTBPass || place.closed) return null;
     var deal = window.TTBPass.find(state.deals, place.id);
-    if (!deal || !deal.live) return null;
-    return window.TTBPass.windowState(deal) === 'open' ? deal : null;
+    return deal && dealIsOn(deal) ? deal : null;
+  }
+
+  function dealIsOn(deal) {
+    return deal.live === true && window.TTBPass.windowState(deal) === 'open';
+  }
+
+  /* The live deals filed under Google's key rather than under a place of
+     mine: capitals, which no map id has. */
+  function googleDeals() {
+    if (!window.TTBPass) return [];
+    return state.deals.filter(function (deal) {
+      return /[A-Z]/.test(deal.id) && dealIsOn(deal);
+    });
   }
 
   function toast(message) {
@@ -2111,6 +2132,38 @@
       }
       if (then) then();
     });
+  }
+
+  /* The places a live deal is filed under by Google's key, on the map while
+     the Discount chip is on — the owner's word: when people press Discount,
+     the market is there as well. The same road seatSaved() takes, out of
+     the same roll and for the same reasons; they wear the pin of what they
+     are, a plain one for a market, because the face is for places I have
+     eaten at. A key the roll does not carry, a place Google has closed,
+     stays off the map, and the chip lists the rest. */
+  var dealSeating = false;
+
+  function seatDeals() {
+    if (state.active.indexOf(DEAL_FILTER) === -1 || dealSeating) return;
+    var missing = googleDeals().filter(function (deal) { return !byId(deal.id); });
+    if (!missing.length) return;
+
+    dealSeating = true;
+    findLoad().then(function (roll) {
+      dealSeating = false;
+      var rows = {};
+      roll.forEach(function (row) { rows[row.id] = row; });
+      var seated = [];
+      missing.forEach(function (deal) {
+        if (rows[deal.id] && !byId(deal.id)) seated.push(foundStandIn(rows[deal.id]));
+      });
+      if (!seated.length) return;
+      state.dealPlaces = state.dealPlaces.concat(seated);
+      addPins(seated);
+      if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderPanel();
+      paintMarkers();
+      fitToPins({ animate: true });
+    }, function () { dealSeating = false; });
   }
 
   function isSaved(id) { return state.saved.indexOf(id) !== -1; }
@@ -4488,7 +4541,7 @@
   }
 
   function anyLiveDeal() {
-    return state.places.some(function (p) { return !!liveDealFor(p); });
+    return googleDeals().length > 0 || state.places.some(function (p) { return !!liveDealFor(p); });
   }
 
   /* Filters are OR, so a place shows if it answers any active one — and two
@@ -4497,12 +4550,15 @@
      pressed. */
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
-    /* Saving is the one thing a place I have never eaten at can answer. A
-       stand-in off the Google export carries types, and a chip answering for
-       one would put a pin I have not vouched for under "Coffee" — the chips
-       are my places, narrowed. */
-    if (place.standIn) return false;
+    /* A discount is the other: it is an offer the place made, not a verdict
+       of mine, and a deal filed under Google's key is how the owner put a
+       place there without putting it on the map. */
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
+    /* Those are the only two things a place I have never eaten at can
+       answer. A stand-in off the Google export carries types, and a chip
+       answering for one would put a pin I have not vouched for under
+       "Coffee" — the type chips are my places, narrowed. */
+    if (place.standIn) return false;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
     });
@@ -4516,8 +4572,9 @@
      all. Outside it, allPlaces() can still hold stand-ins — a venue the find
      bar picked, the saves seatSaved() put there — and a stand-in off the
      Google export carries types, so it would answer a chip. matchesFilters()
-     is what refuses it, and what keeps a chip from ever standing over a place
-     I have not eaten at: only the saved filter answers for one.
+     is what refuses it, and what keeps a type chip from ever standing over a
+     place I have not eaten at: only the saved filter and the Discount chip
+     answer for one.
 
      Then the chips, over my own places. No chips is the whole map, and the
      whole map is mine. */
@@ -5094,6 +5151,7 @@
 
   function applyFilters(change) {
     seatSaved();
+    seatDeals();
     /* A chip that rules the marked place out takes the mark with it: a lit
        pin for a place the filter says you are not looking at is the map
        arguing with the chips. */
@@ -7050,9 +7108,12 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
-    /* The phone, the site and the week of a venue the find bar put there,
-       fetched the first time it is opened — see dressFound(). */
-    if (isFound(id) || isSavedStandIn(id)) dressFound(place);
+    /* The phone, the site and the week of a venue the find bar, the saved
+       filter or the Discount chip put there, fetched the first time it is
+       opened — see dressFound(). */
+    if (holds(state.foundPlaces, id) || holds(state.savedPlaces, id) || holds(state.dealPlaces, id)) {
+      dressFound(place);
+    }
   }
 
   function showList(focus, opts) {
@@ -9420,8 +9481,9 @@
 
      Asked by selectPlace() the first time a venue the bar put there is
      opened, however it was opened — a row, a pin, or the arrows on the card
-     stepping through results — and the same for a saved one seatSaved() put
-     there, which came off the same roll and is missing the same half. Once:
+     stepping through results — and the same for one seatSaved() or
+     seatDeals() put there, which came off the same roll and is missing the
+     same half. Once:
      `dressed` is set on the way out, so stepping back to a place does not
      ask for it twice. */
   function dressFound(place) {
@@ -13000,6 +13062,9 @@
          seated out of the find bar's roll, and opened once it is in. Every
          other arrival with the saved filter on is seated the same way, and
          the map frames them when they land. */
+      /* A ?type=discount link arrives with the chip on, and the places a
+         deal is filed under by Google's key join the six of mine. */
+      seatDeals();
       if (spot && !byId(spot) && isSaved(spot)) {
         seatSaved(function () {
           if (byId(spot) && !state.selected) selectPlace(spot, { fly: true });

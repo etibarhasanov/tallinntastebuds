@@ -54,6 +54,7 @@
     askPlaces: [],
     foundPlaces: [],
     savedPlaces: [],
+    dealPlaces: [],
     results: null,       // { q, ids: [...] }, or null
     account: { ready: false, google: false, user: null, linked: false, password: true },
     selected: null,      // restaurant id, or null
@@ -185,10 +186,11 @@
 
   function allPlaces() {
     if (!state.listPlaces.length && !state.askPlaces.length && !state.foundPlaces.length &&
-        !state.savedPlaces.length) {
+        !state.savedPlaces.length && !state.dealPlaces.length) {
       return state.places;
     }
-    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces, state.savedPlaces);
+    return state.places.concat(state.listPlaces, state.askPlaces, state.foundPlaces,
+      state.savedPlaces, state.dealPlaces);
   }
 
   function byId(id) {
@@ -207,27 +209,26 @@
     for (var n = 0; n < state.savedPlaces.length; n++) {
       if (state.savedPlaces[n].id === id) return state.savedPlaces[n];
     }
+    for (var d = 0; d < state.dealPlaces.length; d++) {
+      if (state.dealPlaces[d].id === id) return state.dealPlaces[d];
+    }
     return null;
   }
 
   function standInNote(place) {
-    if (place && (isFound(place.id) || isSavedStandIn(place.id))) return t('findNotMine');
+    if (place && (holds(state.foundPlaces, place.id) || holds(state.savedPlaces, place.id) ||
+        holds(state.dealPlaces, place.id))) {
+      return t('findNotMine');
+    }
     if (state.answer) return t('askNotMine');
     return state.list && state.list.by
       ? t('listNotMineBy', { name: state.list.by })
       : t('listNotMine');
   }
 
-  function isSavedStandIn(id) {
-    for (var i = 0; i < state.savedPlaces.length; i++) {
-      if (state.savedPlaces[i].id === id) return true;
-    }
-    return false;
-  }
-
-  function isFound(id) {
-    for (var i = 0; i < state.foundPlaces.length; i++) {
-      if (state.foundPlaces[i].id === id) return true;
+  function holds(places, id) {
+    for (var i = 0; i < places.length; i++) {
+      if (places[i].id === id) return true;
     }
     return false;
   }
@@ -251,8 +252,18 @@
   function liveDealFor(place) {
     if (!window.TTBPass || place.closed) return null;
     var deal = window.TTBPass.find(state.deals, place.id);
-    if (!deal || !deal.live) return null;
-    return window.TTBPass.windowState(deal) === 'open' ? deal : null;
+    return deal && dealIsOn(deal) ? deal : null;
+  }
+
+  function dealIsOn(deal) {
+    return deal.live === true && window.TTBPass.windowState(deal) === 'open';
+  }
+
+  function googleDeals() {
+    if (!window.TTBPass) return [];
+    return state.deals.filter(function (deal) {
+      return /[A-Z]/.test(deal.id) && dealIsOn(deal);
+    });
   }
 
   function toast(message) {
@@ -1232,6 +1243,31 @@
       }
       if (then) then();
     });
+  }
+
+  var dealSeating = false;
+
+  function seatDeals() {
+    if (state.active.indexOf(DEAL_FILTER) === -1 || dealSeating) return;
+    var missing = googleDeals().filter(function (deal) { return !byId(deal.id); });
+    if (!missing.length) return;
+
+    dealSeating = true;
+    findLoad().then(function (roll) {
+      dealSeating = false;
+      var rows = {};
+      roll.forEach(function (row) { rows[row.id] = row; });
+      var seated = [];
+      missing.forEach(function (deal) {
+        if (rows[deal.id] && !byId(deal.id)) seated.push(foundStandIn(rows[deal.id]));
+      });
+      if (!seated.length) return;
+      state.dealPlaces = state.dealPlaces.concat(seated);
+      addPins(seated);
+      if (state.view === 'list' && dom.panel.classList.contains('is-open')) renderPanel();
+      paintMarkers();
+      fitToPins({ animate: true });
+    }, function () { dealSeating = false; });
   }
 
   function isSaved(id) { return state.saved.indexOf(id) !== -1; }
@@ -2677,13 +2713,13 @@
   }
 
   function anyLiveDeal() {
-    return state.places.some(function (p) { return !!liveDealFor(p); });
+    return googleDeals().length > 0 || state.places.some(function (p) { return !!liveDealFor(p); });
   }
 
   function matchesFilters(place) {
     if (state.active.indexOf(SAVED_FILTER) !== -1 && isSaved(place.id)) return true;
-    if (place.standIn) return false;
     if (state.active.indexOf(DEAL_FILTER) !== -1 && liveDealFor(place)) return true;
+    if (place.standIn) return false;
     return (place.types || []).some(function (id) {
       return state.active.indexOf(id) !== -1;
     });
@@ -3001,6 +3037,7 @@
 
   function applyFilters(change) {
     seatSaved();
+    seatDeals();
     if (state.marked && state.marked !== state.selected) {
       var held = byId(state.marked);
       var keeps = !held ? false
@@ -4033,7 +4070,9 @@
 
     TTBTrack.view(place.name);
     countPress('place', place.id);
-    if (isFound(id) || isSavedStandIn(id)) dressFound(place);
+    if (holds(state.foundPlaces, id) || holds(state.savedPlaces, id) || holds(state.dealPlaces, id)) {
+      dressFound(place);
+    }
   }
 
   function showList(focus, opts) {
@@ -7591,6 +7630,7 @@
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
       syncUrl();
+      seatDeals();
       if (spot && !byId(spot) && isSaved(spot)) {
         seatSaved(function () {
           if (byId(spot) && !state.selected) selectPlace(spot, { fly: true });

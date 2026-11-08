@@ -3335,11 +3335,22 @@ mine on a Google place.
 On the card the pill sits under the name and the offer with its button sits
 under the "According to Google" line, above the address, so on a phone the
 button is on screen when the card opens. A row for the place, on a list or
-in the find bar, carries the pill too. What it does not get:
+in the find bar, carries the pill too.
 
-- **The Discount chip.** The chip filters the map's own places, and this one
-  is not among them. It is reached by its link, the find bar, a list or a
-  save.
+**The Discount chip lists it**, the owner's word again: when people press
+Discount, the market is there as well. Pressing the chip, or arriving on
+`?type=discount`, seats every place a live deal is filed under by Google's
+key out of the find bar's roll — `seatDeals()`, the road `seatSaved()`
+already takes for a saved Google place — and the chip answers for it the way
+it answers for a place of mine, in distance order with the rest. It wears the
+plain pin of what it is, not the face, because the face is for places I have
+eaten at. Until the roll arrives the list is the map's six, and if the roll
+cannot load it stays the six. It is the only chip that answers for a Google
+place besides **Places I saved**; the type chips are still my places alone.
+And it keeps the chip drawn even if every deal of mine is switched off.
+
+What it does not get:
+
 - **The name check.** The name is copied from `google_venues` by hand, and
   the validator, which reads files and not the database, takes it on trust.
   If Google renames the place, the deal's `name` is the line to change.
