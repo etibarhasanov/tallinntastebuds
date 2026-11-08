@@ -1280,11 +1280,11 @@ if (places !== null) {
    which is why a long run is warned about.
 
    A deal's id is a place on the map, or Google's key for a place the map has
-   no write-up of — a market that gives members ten percent is somewhere the
-   site sends people without being somewhere it vouches for. Such a key is in
-   no file here, only in google_venues, so it is held to the shape of one and
-   its name is taken on trust: see "A discount at a place that is not on the
-   map" in the README. */
+   no write-up of — a market that gives members something off is somewhere
+   the site sends people without being somewhere it vouches for. Such a key
+   is in no file here, only in google_venues, so it is held to the shape of
+   one and its name is taken on trust: see "A discount at a place that is
+   not on the map" in the README. */
 
 const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;

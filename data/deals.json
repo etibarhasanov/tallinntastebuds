@@ -119,17 +119,17 @@
     "live": true,
     "key": "XJFKHV3BHPSN74MP1QGYKN6CX8KFJ2EF",
     "offer": {
-      "en": "10% off your order",
-      "et": "10% soodustust tellimuselt",
-      "ru": "Скидка 10% на заказ",
-      "fi": "10% alennus tilauksesta",
-      "az": "Sifarişinizə 10% endirim",
-      "pt": "10% de desconto no seu pedido",
-      "es": "10% de descuento en tu pedido",
-      "tr": "Siparişinizde %10 indirim",
-      "uk": "Знижка 10% на замовлення",
-      "fr": "10 % sur ta commande",
-      "de": "10 % auf deine Bestellung"
+      "en": "20% off your order",
+      "et": "20% soodustust tellimuselt",
+      "ru": "Скидка 20% на заказ",
+      "fi": "20% alennus tilauksesta",
+      "az": "Sifarişinizə 20% endirim",
+      "pt": "20% de desconto no seu pedido",
+      "es": "20% de descuento en tu pedido",
+      "tr": "Siparişinizde %20 indirim",
+      "uk": "Знижка 20% на замовлення",
+      "fr": "20 % sur ta commande",
+      "de": "20 % auf deine Bestellung"
     }
   }
 ]
