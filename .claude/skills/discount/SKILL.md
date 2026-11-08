@@ -80,8 +80,8 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 
 | Field | Rule | If wrong |
 |---|---|---|
-| `id` | a slug, `^[a-z0-9]+(-[a-z0-9]+)*$`, unique among deals, and **a place in `restaurants.json`** | error |
-| `name` | non-empty, and **exactly that place's `name`** — the pass pages load `deals.json` and `ui.json` only, never the map, so the name is copied here and the validator is what keeps the copy honest | error, with both spellings in the message |
+| `id` | unique among deals, and either a slug, `^[a-z0-9]+(-[a-z0-9]+)*$`, that is **a place in `restaurants.json`**, or **a Google key** — `^[A-Za-z0-9_-]{16,128}$` with a capital in it, `GOOGLE_KEY` — for a place that is not on the map | error |
+| `name` | non-empty, and **exactly that place's `name`** — the pass pages load `deals.json` and `ui.json` only, never the map, so the name is copied here and the validator is what keeps the copy honest. A Google key's name is copied from `google_venues` and taken on trust, since the validator reads no database | error, with both spellings in the message |
 | `live` | `true` or `false`. "Leave it false until the restaurant has agreed", in the validator's own message | error |
 | `key` | `^[0-9A-HJKMNP-TV-Z]{16,64}$` — digits and capitals without `I L O U` — and **shared with no other deal**: two places on one key verify each other's codes | error |
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
@@ -172,6 +172,27 @@ many are switched on.
    `robots.txt`, and the QR points at whichever origin drew it, so a page
    driven on a local server verifies against itself rather than sending a
    waiter to the live site.
+
+## A deal at a place that is not on the map
+
+The `id` is Google's `place_id` out of `google_venues` — the key `/?spot=`
+opens the place's card by — and the `name` is that row's, copied by hand:
+
+```sql
+select place_id, name, hidden, missing_since, map_id from google_venues where place_id = '<key>'
+```
+
+A read, so no prompt. The row wants `hidden = 0`, `missing_since` null and
+`map_id` null, or `/?spot=` does not open it: a place with a `map_id` is on
+the map, and its deal belongs under the map's slug instead. Everything else
+in **Switching one on** applies, with three differences. The card is the
+stand-in's — `renderListOnly()` in `assets/app.js` — with the pill under the
+name and the offer under Google's line. The Discount chip does not list it,
+because the chip filters the map's own places. And the admin page's
+**Discount** tab cannot see it, so it is switched by hand here. Drive the
+card with `/api/places` and `/api/venues` stubbed to return the row, or under
+`pages dev` with the row in the local database. **A discount at a place that
+is not on the map** in the README is the reasoning.
 
 ## Switching one off
 

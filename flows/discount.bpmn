@@ -33,8 +33,10 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="offer" name="Sees an offer on a place">
-      <bpmn:documentation>when: deal_open
+      <bpmn:documentation>On a place of the map, or on the card of a Google place the deal is filed under.
+when: deal_open
 ref: assets/app.js dealBlock()
+ref: assets/app.js renderListOnly()
 ref: data/deals.json</bpmn:documentation>
       <bpmn:outgoing>discount-e1</bpmn:outgoing>
     </bpmn:startEvent>

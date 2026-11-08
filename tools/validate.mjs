@@ -62,7 +62,7 @@
  *   - a photo listed in the data that does not exist in the repo
  *   - a reel value that is not a real Instagram or TikTok permalink shape
  *   - a phone number that is not in international form, such as +372 661 0180
- *   - a deal in deals.json for a place that does not exist, sharing a key with
+ *   - a deal in deals.json for a map place that does not exist, sharing a key with
  *     another deal, switched live with nothing written in it, carrying a
  *     name that restaurants.json disagrees with, or rolling a run of rates
  *     that leaves 1–99 or has nowhere in the offer line to put the one drawn
@@ -1277,7 +1277,14 @@ if (places !== null) {
    The three numbers are held to a run that stays inside 1–99 and to a
    spread that is a whole number of steps, so the code that walks the run
    never has to think about either; the staff page lists one code per rate,
-   which is why a long run is warned about. */
+   which is why a long run is warned about.
+
+   A deal's id is a place on the map, or Google's key for a place the map has
+   no write-up of — a market that gives members ten percent is somewhere the
+   site sends people without being somewhere it vouches for. Such a key is in
+   no file here, only in google_venues, so it is held to the shape of one and
+   its name is taken on trust: see "A discount at a place that is not on the
+   map" in the README. */
 
 const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
@@ -1285,6 +1292,9 @@ const ROLL_KEYS = ['base', 'spread', 'step'];
 const ROLL_MAX_RATES = 12;
 const RATE_SLOT = '{rate}';
 const DAY = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+/* The shape googleSpot() in functions/index.js opens a ?spot= by, and
+   functions/api/pass.js admits: capitals, which no slug has. */
+const GOOGLE_KEY = /^[A-Za-z0-9_-]{16,128}$/;
 
 const dealsPath = join(DATA, 'deals.json');
 const deals = existsSync(dealsPath) ? readJSON('data/deals.json') : [];
@@ -1302,14 +1312,16 @@ if (deals !== null && !Array.isArray(deals)) {
       if (!DEAL_KEYS.has(key)) warn(where, `unknown key "${key}"`);
     }
 
-    if (!isNonEmptyString(deal.id) || !SLUG.test(deal.id)) {
-      fail(where, '"id" must be a lowercase slug');
+    const google = isNonEmptyString(deal.id) && GOOGLE_KEY.test(deal.id) && /[A-Z]/.test(deal.id);
+    if (!isNonEmptyString(deal.id) || !(SLUG.test(deal.id) || google)) {
+      fail(where, '"id" must be a place\'s slug from restaurants.json, or a Google key');
     } else {
       if (seenDeals.has(deal.id)) fail(where, `duplicate deal for "${deal.id}"`);
       seenDeals.add(deal.id);
-      /* The id is the join to restaurants.json, and a deal for a place that
-         is not on the map can never be opened from it. */
-      if (seenIds.size && !seenIds.has(deal.id)) {
+      /* A slug is the join to restaurants.json, and a deal for a place that
+         is not on the map, and is not Google's either, can never be opened
+         from it. */
+      if (!google && seenIds.size && !seenIds.has(deal.id)) {
         fail(where, `"${deal.id}" is not a place in restaurants.json`);
       }
     }
@@ -1320,7 +1332,7 @@ if (deals !== null && !Array.isArray(deals)) {
        and CI says so here rather than a guest finding the old name over the
        QR code. */
     if (!isNonEmptyString(deal.name)) {
-      fail(where, '"name" must be the restaurant\'s name, copied from restaurants.json');
+      fail(where, '"name" must be the restaurant\'s name, copied from restaurants.json or google_venues');
     } else if (placeNames.has(deal.id) && placeNames.get(deal.id) !== deal.name) {
       fail(where, `"name" is "${deal.name}" but restaurants.json calls this place "${placeNames.get(deal.id)}"`);
     }

@@ -112,5 +112,24 @@
       "fr": "15 % sur ta commande",
       "de": "15 % auf deine Bestellung"
     }
+  },
+  {
+    "id": "ChIJjT6uOdiVkkYRwHK_f2mL67M",
+    "name": "Faxinin marketi",
+    "live": true,
+    "key": "XJFKHV3BHPSN74MP1QGYKN6CX8KFJ2EF",
+    "offer": {
+      "en": "10% off your order",
+      "et": "10% soodustust tellimuselt",
+      "ru": "Скидка 10% на заказ",
+      "fi": "10% alennus tilauksesta",
+      "az": "Sifarişinizə 10% endirim",
+      "pt": "10% de desconto no seu pedido",
+      "es": "10% de descuento en tu pedido",
+      "tr": "Siparişinizde %10 indirim",
+      "uk": "Знижка 10% на замовлення",
+      "fr": "10 % sur ta commande",
+      "de": "10 % auf deine Bestellung"
+    }
   }
 ]

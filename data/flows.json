@@ -172,7 +172,7 @@
         { "id": "counter", "name": "Counter" }
       ],
       "nodes": [
-        {"id": "offer", "type": "start", "lane": "guest", "name": "Sees an offer on a place", "when": ["deal_open"], "ref": ["assets/app.js dealBlock()", "data/deals.json"]},
+        {"id": "offer", "type": "start", "lane": "guest", "name": "Sees an offer on a place", "when": ["deal_open"], "note": "On a place of the map, or on the card of a Google place the deal is filed under.", "ref": ["assets/app.js dealBlock()", "assets/app.js renderListOnly()", "data/deals.json"]},
         {"id": "signed-in", "type": "gateway", "lane": "guest", "name": "Signed in?"},
         {"id": "sign-in", "type": "user", "lane": "guest", "name": "Signs in from the sheet, lands back on the pass", "when": ["deal_signin", "pass_signin"], "ref": ["index.html the account sheet"]},
         {"id": "show-qr", "type": "user", "lane": "guest", "name": "Presses Show QR", "when": ["page:deal"], "ref": ["deal.html"]},
