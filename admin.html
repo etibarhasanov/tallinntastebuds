@@ -14,58 +14,37 @@
 
 <!-- No analytics on this page, deliberately. The only visits it could
      record are the owner's own, which answer no question anybody asked of the
-     numbers, and it is the one page holding a GitHub token. The other nine
-     carry assets/analytics.js; the head of that file has the rest, including
-     why nobody is asked about any of it. -->
+     numbers, and it is the one page that writes to the repository. The other
+     nine carry assets/analytics.js; the head of that file has the rest,
+     including why nobody is asked about any of it. -->
 
 <!--
   WHAT THIS PAGE IS
 
   The door, and the five things behind it: post a story, add a place, change
-  a place, set a discount, and see what the Google refresh has been doing —
-  the one of the five that reads the site's own API rather than GitHub. It holds a GitHub token for this one device,
-  encrypted with a passphrase, and proves the token can still reach the
-  repository.
+  a place, set a discount, and see what the Google refresh has been doing.
 
-  There is a second, narrower way in: an account ADMINS in wrangler.toml
-  names, signed in on the site with its password, sees the numbers and the
-  Google report without a token, and can change nothing — see siteDoor()
-  below.
+  THE DOOR IS THE OWNER'S ACCOUNT
 
-  WHERE THE SECRET LIVES
+  Signed in on the site as an account ADMINS in wrangler.toml names, on any
+  device, with the password or Google — and nothing else. Every change goes
+  through /api/admin/github/, which holds the GitHub token as a secret and is
+  locked to that same account by functions/_middleware.js; the header of
+  functions/api/admin/github/[[path]].js says what it lets through.
 
-  In this browser's localStorage, on this device, as ciphertext:
+  It used to be a token pasted into each device and sealed under a passphrase,
+  which meant a token to make on GitHub for every phone, a vault to unlock,
+  and a passphrase to forget. The account was already on every device, so the
+  account is the door now and the token never leaves the server.
 
-      { salt, iv, ct }   AES-GCM, key from PBKDF2-SHA256 over your passphrase
+  WHAT A PLACE DOES WHEN IT IS SAVED
 
-  Nowhere else. Not in the repository, not on the server — there is no server,
-  this is a static file on a CDN. The decrypted token exists only as a
-  variable in this tab, is never written to disk, and is dropped when the tab
-  closes or after fifteen idle minutes.
-
-  WHY THERE IS NO "PUBLIC KEY" IN THE SITE
-
-  The obvious design publishes a verifier — a hash of the passphrase — so the
-  page can tell a right passphrase from a wrong one. Do not do that. A
-  verifier in a public repository is a free offline oracle: anybody who clones
-  the site can grind guesses against it forever, on their own hardware,
-  without ever touching your phone.
-
-  There is nothing to publish, because AES-GCM already answers the question.
-  A wrong passphrase derives a wrong key, the tag fails to authenticate, and
-  the decrypt rejects. The check comes free, and an attacker needs the device
-  before they can even start guessing. So: strong passphrase, and a stolen
-  phone leaks a blob that is worth nothing without it.
-
-  WHAT THIS IS NOT
-
-  This gate is not what stops somebody else editing the map — the token is.
-  Anybody can read this file and skip the passphrase; they still have no
-  token, and the page can do nothing without one. Scope the token to this one
-  repository, give it a short expiry, and revoke it the moment a device goes
-  missing. The passphrase protects the token at rest on the device. That is
-  the whole of its job, and it is enough, because the blast radius on the
-  other side is one public repository whose every change is revertible.
+  One commit, on a branch of its own, admin/add-<id> or admin/edit-<id>, and
+  .github/workflows/generated.yml does the rest: it rebuilds the files made
+  from restaurants.json, runs every check CI runs, and puts it on the live
+  branch if they pass. The page watches that run and then the map, and says
+  when the place is live — or why it is not. See **The admin page** in
+  README.md.
 -->
 <meta name="theme-color" content="#f7ddd4">
 
@@ -105,7 +84,7 @@ label {
   font-weight: 500;
 }
 
-input[type="password"], input[type="text"], input[type="number"],
+input[type="text"], input[type="number"],
 select, textarea, input[type="datetime-local"] {
   width: 100%;
   font: inherit;
@@ -116,7 +95,7 @@ select, textarea, input[type="datetime-local"] {
   border: 1px solid var(--hairline);
   border-radius: var(--radius-soft);
 }
-input[type="password"], input[type="text"], input[type="number"] { font-family: var(--mono); font-size: 16px; }
+input[type="text"], input[type="number"] { font-family: var(--mono); font-size: 16px; }
 textarea { min-height: 4.5rem; resize: vertical; font-family: var(--body); line-height: 1.5; }
 input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--accent-lit); outline-offset: 1px; border-radius: var(--radius-soft);
@@ -263,8 +242,41 @@ fieldset { border: 0; padding: 0; margin: 0; }
 .map .hint { padding: 12px; margin: 0; }
 .leaflet-container { font-family: var(--body); }
 
-ol { margin: 0 0 12px; padding-left: 1.3rem; list-style: decimal; font-size: 14px; }
-ol li { margin-bottom: 6px; }
+/* A place in three steps — find it, your take, live — and which one this is.
+   See findStep(), placeForm() and watchLanding(). */
+.steps { display: flex; gap: 6px; margin: 0 0 16px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.steps span { flex: 1; text-align: center; padding: 6px 0; border-bottom: 2px solid var(--hairline); }
+.steps span.on { color: var(--ink); border-color: var(--accent); }
+
+/* Google's directory, as rows to press. A row is a button, so it gives up
+   the filled pill every other button on this page wears. */
+ul.found { list-style: none; margin: 8px 0 0; padding: 0; }
+ul.found li { border-top: 1px solid var(--hairline); }
+ul.found li.hint { padding: 10px 2px; }
+button.found-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  margin: 0; padding: 11px 2px; min-height: 0;
+  background: transparent; border: 0; border-radius: 0;
+  color: var(--ink); font-family: var(--body); font-size: 15px; text-align: left;
+}
+button.found-row:hover { background: var(--wash); }
+button.found-row b { display: block; font-family: var(--display); font-weight: 600; }
+button.found-row small { color: var(--muted); font-size: 12.5px; }
+button.found-row em { flex: 0 0 auto; font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+/* What is folded away: Google's facts once picked, and the id and the reel. */
+.place-name { margin-top: 4px; }
+details.more { margin-top: 14px; }
+details.more > summary { cursor: pointer; font-size: 13.5px; color: var(--muted); }
+.fromg { font-family: var(--mono); font-size: 11px; color: var(--yes); }
+
+/* Saved, checked, live — watchLanding()'s three rows. */
+ul.prog { list-style: none; padding: 0; margin: 0 0 14px; }
+ul.prog li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--hairline); font-size: 14px; }
+ul.prog em { font-style: normal; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+ul.prog li.done em { color: var(--yes); }
+ul.prog li.bad em { color: var(--no); }
+
 code { font-family: var(--mono); font-size: .85em; background: var(--wash); padding: 1px 4px; border-radius: 3px; }
 .spin { opacity: .6; }
 [hidden] { display: none !important; }
@@ -305,7 +317,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 <div class="lists-main">
   <p class="eyebrow">Tallinn</p>
   <h1 class="lists-title">Admin</h1>
-  <p class="stats-lead" id="sub">Checking this device…</p>
+  <p class="stats-lead" id="sub">Checking…</p>
 </div>
 
 <main class="lists-main" id="card" aria-live="polite">
@@ -324,42 +336,15 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 (function () {
   'use strict';
 
-  var REPO = 'etibarhasanov/tallinntastebuds';
-  var VAULT_KEY = 'ttb.admin.vault';
-
-  /* OWASP's floor for PBKDF2-SHA256. It costs a phone a second or two, which
-     is the point: every guess an attacker makes costs them the same. */
-  var ITERATIONS = 600000;
-
-  /* The decrypted token is dropped after this long without a touch, so a
-     phone left on a table locks itself. */
-  var IDLE_MS = 15 * 60 * 1000;
+  /* Every write goes through the site, which holds the token and answers only
+     the owner — see the header of functions/api/admin/github/[[path]].js. */
+  var API = '/api/admin/github';
 
   var stack = document.getElementById('stack');
   var body = document.getElementById('body');
   var sub = document.getElementById('sub');
 
-  /* The only place the plaintext token ever lives. Never persisted, never
-     logged, gone when this tab is. */
-  var token = null;
-  var idleTimer = null;
-
   /* ------------------------------------------------------------- plumbing */
-
-  function enc(text) { return new TextEncoder().encode(text); }
-  function dec(buf) { return new TextDecoder().decode(buf); }
-
-  function b64(bytes) {
-    var s = '';
-    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    return btoa(s);
-  }
-  function unb64(text) {
-    var raw = atob(text);
-    var out = new Uint8Array(raw.length);
-    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
-    return out;
-  }
 
   function el(tag, props, kids) {
     var node = document.createElement(tag);
@@ -380,80 +365,28 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
 
-  function vault() {
-    try { return JSON.parse(window.localStorage.getItem(VAULT_KEY) || 'null'); }
-    catch (e) { return null; }
-  }
-  function storeVault(v) {
-    try { window.localStorage.setItem(VAULT_KEY, JSON.stringify(v)); return true; }
-    catch (e) { return false; }
-  }
-  function dropVault() {
-    try { window.localStorage.removeItem(VAULT_KEY); } catch (e) { /* nothing to do */ }
-  }
-
-  /* ---------------------------------------------------------------- crypto
-   * One key, derived from the passphrase and this device's own salt. The
-   * salt is per-device and lives beside the ciphertext: two devices holding
-   * the same passphrase share nothing, which is what makes revoking one of
-   * them a local act.
-   */
-  function keyFrom(pass, salt, iterations) {
-    return crypto.subtle
-      .importKey('raw', enc(pass), 'PBKDF2', false, ['deriveKey'])
-      .then(function (base) {
-        return crypto.subtle.deriveKey(
-          { name: 'PBKDF2', salt: salt, iterations: iterations, hash: 'SHA-256' },
-          base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-      });
-  }
-
-  function seal(pass, secret) {
-    var salt = crypto.getRandomValues(new Uint8Array(16));
-    var iv = crypto.getRandomValues(new Uint8Array(12));
-    return keyFrom(pass, salt, ITERATIONS)
-      .then(function (key) {
-        return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc(secret));
-      })
-      .then(function (ct) {
-        return { v: 1, iterations: ITERATIONS, salt: b64(salt), iv: b64(iv), ct: b64(new Uint8Array(ct)) };
-      });
-  }
-
-  /* The wrong passphrase derives the wrong key, the tag fails, and this
-     rejects. That rejection is the whole of the verification — there is
-     nothing published anywhere for anybody to check a guess against. */
-  function unseal(pass, v) {
-    return keyFrom(pass, unb64(v.salt), v.iterations || ITERATIONS)
-      .then(function (key) {
-        return crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(v.iv) }, key, unb64(v.ct));
-      })
-      .then(dec);
-  }
-
   /* ---------------------------------------------------------------- github
-   * The one call that proves the whole chain: this token, this repository,
-   * write access. If this answers, posting a story is only a matter of
-   * writing the form.
+   * The one call that proves the whole chain: the account, the secret, the
+   * repository, write access. Its status is also the door's answer — 403 is
+   * somebody who is not the owner, 503 a site with no token to write with.
    */
-  function reachRepo(tok) {
-    return fetch('https://api.github.com/repos/' + REPO, {
-      headers: { Authorization: 'Bearer ' + tok, Accept: 'application/vnd.github+json' }
-    }).then(function (res) {
-      if (res.status === 401) throw new Error('GitHub rejected the token — it has expired, or been revoked.');
-      if (res.status === 403) throw new Error('GitHub refused the token. Check its permissions have not been narrowed.');
-      if (res.status === 404) throw new Error('The token cannot see ' + REPO + '. Check it is scoped to this repository.');
+  function reachRepo() {
+    return fetch(API, { cache: 'no-store' }).then(function (res) {
+      if (res.status === 403) return { door: 'out' };
+      if (res.status === 503) return { door: 'no-token' };
+      if (res.status === 401) throw new Error('GitHub rejected the site’s token — it has expired, or been revoked. Make a new one and set it as GITHUB_TOKEN.');
       if (!res.ok) throw new Error('GitHub answered ' + res.status + '.');
       return res.json().then(function (repo) {
         return {
+          door: 'in',
           name: repo.full_name,
           canWrite: !!(repo.permissions && repo.permissions.push),
           branch: repo.default_branch,
-          expires: res.headers.get('github-authentication-token-expiration')
+          expires: res.headers.get('x-token-expires')
         };
       });
     }, function () {
-      throw new Error('Could not reach GitHub. Check the connection and try again.');
+      throw new Error('Could not reach the site. Check the connection and try again.');
     });
   }
 
@@ -463,158 +396,6 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     var node = el('p', { className: 'msg ' + (kind || ''), textContent: text });
     where.appendChild(node);
     return node;
-  }
-
-  function insecure() {
-    sub.textContent = 'This page needs a secure context.';
-    body.appendChild(el('p', { textContent:
-      'Web Crypto only exists over HTTPS, so there is nothing here to unlock. Open the ' +
-      'page over https://, or over http://localhost while working on it — localhost counts as secure.' }));
-  }
-
-  /* First run on this device: choose a passphrase, hand over a token. */
-  function setup() {
-    sub.textContent = 'This device does not have a token yet.';
-    clear(body);
-
-    body.appendChild(el('h2', { textContent: 'Set this device up' }));
-    body.appendChild(el('p', { className: 'note', textContent:
-      'Once per device. The token is encrypted with your passphrase and kept in this ' +
-      'browser only — it never reaches the site, the repository, or anywhere else.' }));
-
-    var steps = el('ol', {}, []);
-    [
-      'On GitHub, make a fine-grained personal access token.',
-      'Repository access: only select repositories → tallinntastebuds.',
-      'Permissions: Contents → Read and write, and Pull requests → Read and write.',
-      'Give it 90 days. A token you forget about then dies on its own.'
-    ].forEach(function (line) { steps.appendChild(el('li', { textContent: line })); });
-    body.appendChild(steps);
-    body.appendChild(el('p', { className: 'small' }, [
-      el('a', {
-        href: 'https://github.com/settings/personal-access-tokens/new',
-        target: '_blank', rel: 'noopener noreferrer',
-        textContent: 'Make one on GitHub →'
-      })
-    ]));
-
-    var tokenIn = el('input', { type: 'password', id: 'tok', autocomplete: 'off',
-      autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false',
-      placeholder: 'github_pat_…' });
-    var passIn = el('input', { type: 'password', id: 'pass1',
-      autocomplete: 'new-password', placeholder: 'four or five words' });
-    var pass2In = el('input', { type: 'password', id: 'pass2',
-      autocomplete: 'new-password', placeholder: 'again' });
-
-    body.appendChild(el('label', { for: 'tok', textContent: 'The token' }));
-    body.appendChild(tokenIn);
-    body.appendChild(el('label', { for: 'pass1', textContent: 'A passphrase to lock it with' }));
-    body.appendChild(passIn);
-    body.appendChild(el('p', { className: 'small', textContent:
-      'Words beat symbols. Nothing published anywhere can be used to guess this, but ' +
-      'somebody holding the device could try — so make it long rather than clever. ' +
-      'Let Chrome save it and it will be on your other device too.' }));
-    body.appendChild(el('label', { for: 'pass2', textContent: 'And again' }));
-    body.appendChild(pass2In);
-
-    var go = el('button', { type: 'button', textContent: 'Check it and remember it' });
-    body.appendChild(go);
-
-    go.addEventListener('click', function () {
-      var tok = tokenIn.value.trim();
-      var p1 = passIn.value, p2 = pass2In.value;
-      var old = body.querySelector('.msg');
-      if (old) old.parentNode.removeChild(old);
-
-      if (!tok) return say(body, 'Paste the token first.', 'bad');
-      if (p1.length < 10) return say(body, 'A passphrase of at least ten characters, please.', 'bad');
-      if (p1 !== p2) return say(body, 'The two passphrases are not the same.', 'bad');
-
-      go.disabled = true;
-      var working = say(body, 'Asking GitHub…', 'spin');
-
-      reachRepo(tok)
-        .then(function (repo) {
-          if (!repo.canWrite) {
-            throw new Error('That token can read ' + repo.name + ' but not write to it. ' +
-                            'Give it Contents → Read and write.');
-          }
-          working.textContent = 'Locking it to this device…';
-          return seal(p1, tok).then(function (v) {
-            if (!storeVault(v)) {
-              throw new Error('This browser refused to store anything. Private browsing?');
-            }
-            token = tok;
-            if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
-            ready(repo);
-          });
-        })
-        .catch(function (err) {
-          go.disabled = false;
-          working.className = 'msg bad';
-          working.textContent = err.message;
-        });
-    });
-  }
-
-  /* Every visit after that. */
-  function locked() {
-    sub.textContent = 'Locked.';
-    clear(body);
-
-    body.appendChild(el('h2', { textContent: 'Unlock' }));
-
-    var passIn = el('input', { type: 'password', id: 'pass',
-      autocomplete: 'current-password', placeholder: 'passphrase' });
-    body.appendChild(el('label', { for: 'pass', textContent: 'Passphrase' }));
-    body.appendChild(passIn);
-
-    var go = el('button', { type: 'button', textContent: 'Unlock' });
-    body.appendChild(go);
-
-    var forget = el('button', { type: 'button', className: 'quiet',
-      textContent: 'Forget this device' });
-    body.appendChild(forget);
-    body.appendChild(el('p', { className: 'small', textContent:
-      'Forgetting removes the encrypted token from this browser. It does not revoke ' +
-      'it — do that on GitHub, which is also what to do if the device is lost.' }));
-
-    function attempt() {
-      var pass = passIn.value;
-      var old = body.querySelector('.msg');
-      if (old) old.parentNode.removeChild(old);
-      if (!pass) return;
-
-      go.disabled = true;
-      var working = say(body, 'Unlocking…', 'spin');
-
-      unseal(pass, vault())
-        .then(function (tok) {
-          working.textContent = 'Asking GitHub…';
-          return reachRepo(tok).then(function (repo) {
-            token = tok;
-            ready(repo);
-          });
-        })
-        .catch(function (err) {
-          go.disabled = false;
-          working.className = 'msg bad';
-          working.textContent = /operation-specific reason|OperationError|decrypt/i.test(err.name + err.message)
-            ? 'That is not the passphrase for this device.'
-            : err.message;
-        });
-    }
-
-    go.addEventListener('click', attempt);
-    passIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(); });
-
-    forget.addEventListener('click', function () {
-      dropVault();
-      token = null;
-      boot();
-    });
-
-    passIn.focus();
   }
 
   /* ------------------------------------------------------------- the wire
@@ -642,11 +423,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 
   function gh(path, init) {
     var opts = init || {};
-    opts.headers = Object.assign({
-      Authorization: 'Bearer ' + token,
-      Accept: 'application/vnd.github+json'
-    }, opts.headers || {});
-    return fetch('https://api.github.com/repos/' + REPO + path, opts).then(function (res) {
+    opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    opts.cache = 'no-store';
+    return fetch(API + path, opts).then(function (res) {
       if (res.status === 404) return null;
       if (!res.ok) {
         return res.json().catch(function () { return {}; }).then(function (err) {
@@ -660,7 +439,6 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   function putFile(path, b64, message, branch, sha) {
     return gh('/contents/' + path, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: message, content: b64, branch: branch, sha: sha || undefined })
     });
   }
@@ -1126,16 +904,14 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    *
    * A place is the opposite. It is permanent, it has coordinates that can be
    * on the wrong side of the street, a price, a write-up and a set of tags,
-   * and it is the file the whole map is drawn from. So it opens a pull
-   * request and waits to be read, which is also the only way to see the
-   * validator's verdict before the thing is live rather than after.
+   * and it is the file the whole map is drawn from, with four more files
+   * made out of it. So it goes onto a branch of its own, the generated
+   * workflow rebuilds those files and runs every check, and it reaches the
+   * live branch only if they pass — the validator's verdict before the
+   * thing is live rather than after, without anybody having to merge it.
    */
   function ready(repo) {
-    sub.textContent = 'Unlocked on this device.';
-    clear(body);
-    while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
-    while (body.nextSibling) stack.removeChild(body.nextSibling);
-    touch();
+    sub.textContent = 'Signed in as the owner.';
 
     var tabs = el('div', { className: 'tabs' });
     var panel = el('div');
@@ -1189,7 +965,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       });
       clear(panel);
       if (which === 'story') storyForm(repo, panel);
-      else if (which === 'place') placeForm(repo, panel, null);
+      else if (which === 'place') findStep(repo, panel);
       else if (which === 'deal') dealForm(repo, panel);
       else if (which === 'google') googleReport(repo, panel);
       else editPicker(repo, panel);
@@ -1226,32 +1002,24 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     fact('Publishes to', repo.branch);
     if (repo.expires) fact('Token expires', repo.expires);
 
-    var lock = el('button', { type: 'button', className: 'quiet', textContent: 'Lock' });
-    lock.addEventListener('click', function () { token = null; boot(); });
-
-    var forget = el('button', { type: 'button', className: 'quiet',
-      textContent: 'Forget this device' });
-    forget.addEventListener('click', function () {
-      dropVault();
-      token = null;
-      boot();
-    });
-
     stack.appendChild(el('section', { className: 'card admin-card' }, [
-      el('h2', { className: 'lists-title', textContent: 'This device' }),
-      facts, lock, forget
+      el('h2', { className: 'lists-title', textContent: 'GitHub' }),
+      el('p', { className: 'stats-lead', textContent:
+        'The site writes with its own token, the GITHUB_TOKEN secret. When it ' +
+        'expires, make a new one and set it there; nothing on this device changes.' }),
+      facts
     ]));
   }
 
   /* The five pages that are the owner's and live under /admin/, as a card.
-     Drawn by the unlocked page and by the site door below, which is the
-     page an admin signed in on the site sees without a token. */
+     Drawn by ready(), and by boot() for an owner whose site has no token to
+     write with yet. */
   function numbersCard() {
     /* Not tabs, because they are whole pages with their own scripts, and they
        are not behind this door: the server locks them — an account ADMINS
        names in wrangler.toml, see functions/api/_admin.js — so they open for
-       the owner signed in on the site and are a 404 to everybody else,
-       passphrase or not. Drawn as the account sheet's rows, a name and what
+       the owner signed in on the site and are a 404 to everybody else.
+       Drawn as the account sheet's rows, a name and what
        is behind it, because that is what they are: places to go. First on
        the page, over the tools, because they are what the door is opened
        for most days. */
@@ -1302,8 +1070,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    * Google's word is on every row tied to one of my places, and this tab lays
    * that against data/restaurants.json: a place Google calls temporarily
    * closed that the map still sends people to, or one the map holds shut for
-   * the moment that Google says is open again. Each gets a button that opens
-   * the same pull request Edit a place would, with `closed` moved and nothing
+   * the moment that Google says is open again. Each gets a button that saves
+   * the same change Edit a place would, with `closed` moved and nothing
    * else — the map is still mine to change, Google only says when to look.
    * Closing for good is never offered from here: Google losing a row is not
    * the same fact, and that one is a decision for the edit form.
@@ -1455,11 +1223,11 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     }
 
     /* One row per disagreement, and a button where there is a move. The
-       button opens the pull request through openPlacePR() with no
-       photographs either way, so what lands is the entry as it stands with
-       `closed` moved — the same commit Edit a place would make. Drawn by the
-       site door there is no repository to open it on, so the rows are there
-       to read and the button is not. */
+       button saves through savePlace() with no photographs either way, so
+       what lands is the entry as it stands with `closed` moved — the same
+       commit Edit a place would make, landed the same way. Drawn without
+       a token on the site there is nothing to save with, so the rows are
+       there to read and the button is not. */
     function drawAgainst(into, rows) {
       clear(into);
       if (!rows.length) {
@@ -1493,13 +1261,13 @@ ul.log li button.quiet { width: auto; display: inline-block; }
               status.appendChild(node);
               return node;
             }
-            var step = tell('Making a branch…', 'spin');
+            var step = tell('Saving…', 'spin');
             var next = JSON.parse(JSON.stringify(row.place));
             next.closed = row.to;
-            openPlacePR(repo, next, [], [], [], row.place, function (msg) { step.textContent = msg; })
-              .then(function (pr) {
-                tell('Opened. Nothing on the map changes until it is merged.', 'good');
-                status.appendChild(el('p', { className: 'small', textContent: pr.url }));
+            savePlace(repo, next, [], [], [], row.place, function (msg) { step.textContent = msg; })
+              .then(function () {
+                tell('Saved. It is on the map in two or three minutes if the check passes; ' +
+                  'Edit a place shows it when it has.', 'good');
               })
               .catch(function (err) {
                 tell(err.message, 'bad');
@@ -1855,9 +1623,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    * tab was built for: a rate that is drawn rather than named — base, spread
    * and step, the three numbers README.md calls a roll. It commits straight
    * to the publishing branch the way a story does. A discount is changed at
-   * a counter's request on the afternoon it is asked for, and a pull request
-   * nobody is at a laptop to merge would leave the old rate running through
-   * the evening; git keeps every version, so a change is undone by making
+   * a counter's request on the afternoon it is asked for, and nothing needs
+   * rebuilding after deals.json, so there is nothing to wait for; git keeps every version, so a change is undone by making
    * the next one. Everything tools/validate.mjs would fail the build over is
    * asked here first, in the same words.
    *
@@ -2191,11 +1958,12 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   }
 
   /* ------------------------------------------------------------- a place
-   * Adding one and changing one are the same form and the same road: a pull
-   * request, because a place is permanent and it is the file the whole map is
-   * drawn from. Everything tools/validate.mjs would fail the build over is
-   * asked here first, in the same words, so a pull request this opens is one
-   * that goes green.
+   * Adding one and changing one are the same form and the same road: a
+   * branch of its own that lands on the live one only if every check passes,
+   * because a place is permanent and it is the file the whole map is drawn
+   * from — see savePlace(). Everything tools/validate.mjs would fail the
+   * build over is asked here first, in the same words, so what is saved is
+   * one that goes green.
    */
   var SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   var REEL_IG = /^https:\/\/www\.instagram\.com\/(?:[A-Za-z0-9._]{1,30}\/)?(reel|reels|p|tv)\/[A-Za-z0-9_-]{5,}\/?(\?.*)?$/;
@@ -2252,7 +2020,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   /* ---------------------------------------------------------------- the map
    * The pin, dragged rather than typed. The README has told you to "check the
    * dot lands on the right side of the street" since the first place went in,
-   * and until now the only way to do that was to merge it and go and look.
+   * and before this form the only way to do that was to publish it and look.
    *
    * Leaflet and the CARTO tiles are the map's own — same version, same
    * integrity hashes, same key as index.html. That key is in assets/app.js in
@@ -2341,6 +2109,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   /* Which place to change. Closed ones are in the list too — reopening one is
      an edit like any other, and it is the only way back. */
   function editPicker(repo, into) {
+    clear(into);
     var pick = el('select', { id: 'which' }, [
       el('option', { value: '', textContent: 'Loading the places…' })
     ]);
@@ -2348,10 +2117,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     into.appendChild(pick);
     var hint = el('p', { className: 'hint', textContent:
       'Everything the form does not ask about is left exactly as it is — the other ' +
-      'nine write-ups, the month you visited, the date it was added.' });
+      'ten write-ups, the month you visited, the date it was added.' });
     into.appendChild(hint);
-    var host = el('div');
-    into.appendChild(host);
 
     loadPlaces(true).then(function (places) {
       clear(pick);
@@ -2361,9 +2128,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
           textContent: pl.name + (pl.closed ? ' (closed)' : '') }));
       });
       pick.addEventListener('change', function () {
-        clear(host);
         var chosen = places.filter(function (pl) { return pl.id === pick.value; })[0];
-        if (chosen) placeForm(repo, host, chosen);
+        if (chosen) placeForm(repo, into, chosen, null);
       });
     }).catch(function () {
       clear(pick);
@@ -2371,48 +2137,173 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     });
   }
 
-  /* One form, two jobs. `existing` null means a new place; anything else is
-     the object as it sits in the file right now, and the entry written back is
+  /* ---------------------------------------------------------- find it first
+   * Adding a place starts from Google's directory rather than a blank form.
+   * Eleven hundred places in Tallinn are already in google_venues with their
+   * name, address, door, phone and website, so the one the owner has just
+   * eaten at is almost always there: type a few letters, pick it, and the
+   * part of the form that is facts rather than opinion is filled in. What is
+   * left is the part only the owner can write — the kind of place, the
+   * price, a line about it, the photographs.
+   *
+   * /api/admin/venues hands the whole roll over once, as /admin/google reads
+   * it, and it is filtered here letter by letter. A row already tied to a
+   * place on the map says so and opens that place's edit instead, so nothing
+   * is added twice. If the roll will not load, or the place is not in it, the
+   * form opens blank: typing it in is how every place before this got there.
+   */
+  var venuesReady = null;
+  function loadVenues() {
+    if (!venuesReady) {
+      venuesReady = fetch('/api/admin/venues', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .catch(function (e) { venuesReady = null; throw e; });
+    }
+    return venuesReady;
+  }
+
+  /* Lowercase, accents off, so "pohja" finds Põhja. */
+  function folded(text) {
+    var out = String(text || '').toLowerCase();
+    try { out = out.normalize('NFD').replace(/[̀-ͯ]/g, ''); } catch (e) { /* older engine */ }
+    return out;
+  }
+
+  /* Google writes a phone however the place gave it; the map wants the
+     international form the validator checks, +372 then groups. A number that
+     will not fit is left as Google had it, and the form says so. */
+  function phoneFrom(raw) {
+    var digits = String(raw || '').replace(/[^\d+]/g, '');
+    if (!digits) return '';
+    if (digits.charAt(0) !== '+') digits = '+372' + digits.replace(/^0+/, '');
+    var m = /^\+372(\d{7,8})$/.exec(digits);
+    if (!m) return String(raw).trim();
+    var n = m[1];
+    return '+372 ' + (n.length === 7 ? n.slice(0, 3) + ' ' + n.slice(3) : n.slice(0, 4) + ' ' + n.slice(4));
+  }
+
+  function findStep(repo, into) {
+    clear(into);
+    into.appendChild(steps(0));
+    var q = el('input', { type: 'text', id: 'find', autocomplete: 'off',
+      autocapitalize: 'off', spellcheck: 'false', placeholder: 'A few letters of the name' });
+    into.appendChild(el('label', { for: 'find', textContent: 'Where is it?' }));
+    into.appendChild(q);
+    var hint = el('p', { className: 'hint', textContent: 'Loading Google’s Tallinn directory…' });
+    into.appendChild(hint);
+    var list = el('ul', { className: 'found' });
+    into.appendChild(list);
+    var byHand = el('button', { type: 'button', className: 'quiet',
+      textContent: 'Not in the list — type it in by hand' });
+    byHand.addEventListener('click', function () { placeForm(repo, into, null, null); });
+    into.appendChild(byHand);
+
+    var rows = [], mine = {};
+    function draw() {
+      clear(list);
+      var want = folded(q.value.trim());
+      if (want.length < 2) return;
+      rows.filter(function (v) { return folded(v.name).indexOf(want) !== -1; })
+        .slice(0, 8)
+        .forEach(function (v) {
+          var onMap = v.mapId && mine[v.mapId];
+          var row = el('button', { type: 'button', className: 'found-row' }, [
+            el('span', {}, [
+              el('b', { textContent: v.name }),
+              el('small', { textContent: [v.address, v.kitchens && v.kitchens[0]].filter(Boolean).join(' · ') })
+            ]),
+            el('em', { textContent: onMap ? 'on the map — edit' : 'pick' })
+          ]);
+          row.addEventListener('click', function () {
+            if (onMap) placeForm(repo, into, mine[v.mapId], null);
+            else placeForm(repo, into, null, v);
+          });
+          list.appendChild(el('li', {}, [row]));
+        });
+      if (!list.firstChild) list.appendChild(el('li', { className: 'hint', textContent: 'Nothing by that name.' }));
+    }
+    q.addEventListener('input', draw);
+
+    Promise.all([loadVenues(), loadPlaces(true)]).then(function (got) {
+      rows = got[0];
+      got[1].forEach(function (pl) { mine[pl.id] = pl; });
+      hint.textContent = 'Searches the ' + rows.length.toLocaleString('en') +
+        ' places in Google’s Tallinn directory.';
+      draw();
+    }).catch(function () {
+      hint.textContent = 'Google’s directory would not load, so type it in by hand.';
+    });
+    q.focus();
+  }
+
+  /* The three steps across the top of a place form, the one it is on lit. */
+  function steps(on) {
+    return el('div', { className: 'steps' }, ['1 Find it', '2 Your take', '3 Live'].map(function (t, i) {
+      return el('span', { className: i === on ? 'on' : '', textContent: t });
+    }));
+  }
+
+  /* One form, two jobs. `existing` null means a new place, prefilled from
+     `google` when it was picked from the directory; anything else is the
+     object as it sits in the file right now, and the entry written back is
      that object with only the fields below replaced — which is the whole
      reason an edit cannot be built by filling a blank form and saving it. */
-  function placeForm(repo, into, existing) {
+  function placeForm(repo, into, existing, google) {
     var editing = !!existing;
     var shots = [];
     var drop = {};        /* photos ticked for removal, by filename */
+    var start = editing ? existing : google ? {
+      name: google.name, address: google.address || '',
+      lat: google.lat, lng: google.lng,
+      website: google.website || '', phone: phoneFrom(google.phone),
+      price: google.price || 2
+    } : null;
 
-    function field(id, label, node, hint) {
-      into.appendChild(el('label', { for: id, textContent: label }));
-      into.appendChild(node);
-      if (hint) into.appendChild(el('p', { className: 'hint', textContent: hint }));
+    clear(into);
+    into.appendChild(steps(1));
+
+    function field(where, id, label, node, hint) {
+      where.appendChild(el('label', { for: id, textContent: label }));
+      where.appendChild(node);
+      if (hint) where.appendChild(el('p', { className: 'hint', textContent: hint }));
       return node;
     }
 
-    var nameIn = field('name', 'Name', el('input', { type: 'text', id: 'name',
-      value: editing ? existing.name : '' }));
-    var idIn = field('id', 'Id', el('input', { type: 'text', id: 'id',
-      value: editing ? existing.id : '', readonly: editing || null,
-      autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' }),
-      editing
-        ? 'Fixed. It is the folder the photographs live in and what ?spot= points at, and every link ever shared uses it.'
-        : 'Made from the name. It is the folder the photos live in and what ?spot= points at, so it never changes afterwards.');
-    if (!editing) {
-      nameIn.addEventListener('input', function () {
-        if (!idIn.dataset.touched) idIn.value = slugify(nameIn.value);
-      });
-      idIn.addEventListener('input', function () { idIn.dataset.touched = '1'; });
+    /* The facts. Picked from Google they are folded away under one line that
+       says so — open it to correct one; typed by hand, or being edited, they
+       are the top of the form. */
+    var facts = into;
+    if (google) {
+      into.appendChild(el('h2', { className: 'place-name', textContent: google.name }));
+      facts = el('details', { className: 'more' }, [
+        el('summary', {}, [
+          (google.address || 'No address') + ' ',
+          el('span', { className: 'fromg', textContent: '✓ from Google · change' })
+        ])
+      ]);
+      into.appendChild(facts);
     }
 
-    var addrIn = field('addr', 'Address', el('input', { type: 'text', id: 'addr',
-      value: editing ? existing.address : '' }));
+    var nameIn = field(facts, 'name', 'Name', el('input', { type: 'text', id: 'name',
+      value: start ? start.name : '' }));
+    var addrIn = field(facts, 'addr', 'Address', el('input', { type: 'text', id: 'addr',
+      value: start ? start.address : '' }));
+    var siteIn = field(facts, 'site', 'Website', el('input', { type: 'text', id: 'site',
+      value: start ? (start.website || '') : '',
+      placeholder: 'https://…', autocapitalize: 'off', spellcheck: 'false' }));
+    var phoneIn = field(facts, 'phone', 'Phone', el('input', { type: 'text', id: 'phone',
+      value: start ? (start.phone || '') : '', placeholder: '+372 661 0180' }),
+      'Optional, international form. Without it the panel drops the Call button.');
 
     var coordIn = el('input', { type: 'text', id: 'coord',
-      value: editing ? existing.lat + ', ' + existing.lng : '',
+      value: start && typeof start.lat === 'number' ? start.lat + ', ' + start.lng : '',
       placeholder: '59.4370, 24.7536', autocapitalize: 'off', spellcheck: 'false' });
     var hereBtn = el('button', { type: 'button', className: 'quiet', textContent: 'I am here' });
-    into.appendChild(el('label', { for: 'coord', textContent: 'Coordinates' }));
+    into.appendChild(el('label', { for: 'coord', textContent: 'Where the door is' }));
     into.appendChild(el('div', { className: 'row' }, [coordIn, hereBtn]));
     var coordHint = el('p', { className: 'hint', textContent: editing
       ? 'Drag the pin, or press the map where it should be. Zoom in far enough to see which side of the street it is on.'
+      : google ? 'Google’s pin. Drag it onto the door if it is out.'
       : 'Press the map where the door is, paste the pair off Google Maps, or press the button while standing there.' });
     into.appendChild(coordHint);
 
@@ -2424,7 +2315,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     /* The field and the pin are two views of one number, so each has to be
        able to move the other without setting off the one that moved it. */
     var pinMoving = false;
-    var picker = mapPicker(mapBox, editing ? [existing.lat, existing.lng] : null,
+    var startAt = coords();
+    var picker = mapPicker(mapBox, startAt ? [startAt.lat, startAt.lng] : null,
       function (lat, lng) {
         pinMoving = true;
         coordIn.value = lat.toFixed(5) + ', ' + lng.toFixed(5);
@@ -2453,16 +2345,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       }, { enableHighAccuracy: true, timeout: 10000 });
     });
 
-    var priceIn = el('select', { id: 'price' });
-    [1, 1.5, 2, 2.5, 3, 3.5, 4].forEach(function (n) {
-      priceIn.appendChild(el('option', { value: String(n),
-        textContent: '€'.repeat(Math.ceil(n)) + (n % 1 ? ' (half a step down)' : '') + '  ·  ' + n }));
-    });
-    priceIn.value = String(editing ? existing.price : 2);
-    field('price', 'Price', priceIn);
-
     var typeBox = el('div', { className: 'types' });
-    into.appendChild(el('label', { textContent: 'Types' }));
+    into.appendChild(el('label', { textContent: 'What kind of place' }));
     into.appendChild(typeBox);
     fetch('data/taxonomy.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -2480,42 +2364,39 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         typeBox.appendChild(el('p', { className: 'hint', textContent: 'Could not load the types.' }));
       });
 
+    var priceIn = el('select', { id: 'price' });
+    [1, 1.5, 2, 2.5, 3, 3.5, 4].forEach(function (n) {
+      priceIn.appendChild(el('option', { value: String(n),
+        textContent: '€'.repeat(Math.ceil(n)) + (n % 1 ? ' (half a step down)' : '') + '  ·  ' + n }));
+    });
+    priceIn.value = String(start ? start.price : 2);
+    field(into, 'price', 'Price', priceIn, google && google.price ? 'Google’s band. Move it if it is wrong.' : null);
+
     var hadEn = editing && existing.blurb && existing.blurb.en ? existing.blurb.en : '';
     var others = editing
       ? Object.keys(existing.blurb || {}).filter(function (l) { return l !== 'en'; })
       : [];
-    var blurbIn = field('blurb', 'The write-up, in English',
+    var blurbIn = field(into, 'blurb', 'Your line about it, in English',
       el('textarea', { id: 'blurb', maxlength: '600', textContent: hadEn }),
-      'The one thing that has to be written. House style keeps em and en dashes out of it.');
+      others.length ? null
+        : 'The one thing that has to be written. The other ten languages show it until they are translated.');
     if (others.length) {
       var warnLine = el('p', { className: 'hint' });
       into.appendChild(warnLine);
       var sayDrift = function () {
         warnLine.textContent = blurbIn.value.trim() !== hadEn
           ? 'Changed. The ' + others.length + ' other translations are left as they are, so they ' +
-            'no longer say this — the pull request will point that out.'
+            'no longer say this.'
           : 'There are ' + others.length + ' other translations. They are left untouched.';
       };
       blurbIn.addEventListener('input', sayDrift);
       sayDrift();
     }
 
-    var dishesIn = field('dishes', 'Must order',
+    var dishesIn = field(into, 'dishes', 'Must order',
       el('textarea', { id: 'dishes',
         textContent: editing ? (existing.mustOrder || []).join('\n') : '',
-        placeholder: 'One a line. Leave it empty if there is nothing yet.' }));
-
-    var reelIn = field('reel', 'Reel', el('input', { type: 'text', id: 'reel',
-      value: editing ? (existing.reel || '') : '',
-      placeholder: 'https://www.instagram.com/reel/…', autocapitalize: 'off', spellcheck: 'false' }),
-      'Optional. Instagram or TikTok permalink, off the web rather than the app.');
-
-    var siteIn = field('site', 'Website', el('input', { type: 'text', id: 'site',
-      value: editing ? (existing.website || '') : '',
-      placeholder: 'https://…', autocapitalize: 'off', spellcheck: 'false' }));
-    var phoneIn = field('phone', 'Phone', el('input', { type: 'text', id: 'phone',
-      value: editing ? (existing.phone || '') : '', placeholder: '+372 661 0180' }),
-      'Optional, international form. Without it the panel drops the Call button.');
+        placeholder: 'Optional. One a line.' }));
 
     /* Closed is the one field that only makes sense on something that already
        exists, and it is a change rather than a deletion on purpose: the place
@@ -2568,16 +2449,44 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         'nothing else points at it.' }));
     }
 
-    var photoIn = field('photos', editing ? 'Add more photographs' : 'Photographs',
+    var photoIn = field(into, 'photos', editing ? 'Add more photographs' : 'Photographs',
       el('input', { type: 'file', id: 'photos', accept: 'image/*', multiple: true }),
       'Shrunk here to 1600px under 200 KB, WebP or JPEG depending on the browser. ' +
-      'EXIF and GPS go with the re-encode.');
+      'EXIF and GPS go with the re-encode. The first one is the picture a shared link shows.');
     var thumbs = el('div', { className: 'thumbs' });
     into.appendChild(thumbs);
 
+    /* What is rarely touched: the id, which is made from the name and never
+       changes once a place exists, and the reel, which usually comes later. */
+    var more = el('details', { className: 'more' }, [
+      el('summary', { textContent: 'More: the id, the reel' })
+    ]);
+    var idIn = field(more, 'id', 'Id', el('input', { type: 'text', id: 'id',
+      value: editing ? existing.id : slugify(nameIn.value), readonly: editing || null,
+      autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' }),
+      editing
+        ? 'Fixed. It is the folder the photographs live in and what ?spot= points at, and every link ever shared uses it.'
+        : 'Made from the name. It is the folder the photos live in and what ?spot= points at, so it never changes afterwards.');
+    if (!editing) {
+      nameIn.addEventListener('input', function () {
+        if (!idIn.dataset.touched) idIn.value = slugify(nameIn.value);
+      });
+      idIn.addEventListener('input', function () { idIn.dataset.touched = '1'; });
+    }
+    var reelIn = field(more, 'reel', 'Reel', el('input', { type: 'text', id: 'reel',
+      value: editing ? (existing.reel || '') : '',
+      placeholder: 'https://www.instagram.com/reel/…', autocapitalize: 'off', spellcheck: 'false' }),
+      'Optional. Instagram or TikTok permalink, off the web rather than the app.');
+    into.appendChild(more);
+
     var go = el('button', { type: 'button', disabled: true,
-      textContent: editing ? 'Open a pull request with the changes' : 'Open a pull request' });
+      textContent: editing ? 'Save the changes' : 'Put it on the map' });
     into.appendChild(go);
+    var back = el('button', { type: 'button', className: 'quiet', textContent: 'Back' });
+    back.addEventListener('click', function () {
+      if (editing) editPicker(repo, into); else findStep(repo, into);
+    });
+    into.appendChild(back);
     var out = el('div');
     into.appendChild(out);
 
@@ -2649,7 +2558,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     }
 
     /* The same list the validator keeps, asked before the branch exists rather
-       than after CI has gone red on somebody else's morning. */
+       than after the check has gone red. */
     function complaints() {
       var bad = [];
       if (!nameIn.value.trim()) bad.push('It needs a name.');
@@ -2661,8 +2570,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       else if (c.lat < BBOX.latMin || c.lat > BBOX.latMax || c.lng < BBOX.lngMin || c.lng > BBOX.lngMax) {
         bad.push('Those coordinates are outside Tallinn. Lat is about 59.4 and lng about 24.7 — the wrong way round puts it in the Arabian Sea.');
       }
-      if (!chosenTypes().length) bad.push('Pick at least one type.');
-      if (!blurbIn.value.trim()) bad.push('The write-up is the one thing that has to be written.');
+      if (!chosenTypes().length) bad.push('Pick at least one kind of place.');
+      if (!blurbIn.value.trim()) bad.push('The line about it is the one thing that has to be written.');
 
       var reel = reelIn.value.trim();
       if (reel && !REEL_IG.test(reel) && !REEL_TT.test(reel)) {
@@ -2684,14 +2593,18 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       var bad = complaints();
       clear(out);
       if (bad.length) {
+        /* The facts and the id may be folded away; a complaint about one of
+           them is no use if the field it is about cannot be seen. */
+        if (facts !== into) facts.open = true;
+        more.open = true;
         bad.forEach(function (line) { say(out, line, 'bad'); });
         return;
       }
 
       var c = coords();
       /* An edit starts from the object as it is and replaces only what the
-         form asked about. Everything else rides along untouched: the nine
-         other write-ups, "visited", "added", and any key added to the data
+         form asked about. Everything else rides along untouched: the other
+         ten write-ups, "visited", "added", and any key added to the data
          after this page was written. */
       var place = editing ? JSON.parse(JSON.stringify(existing)) : {};
       place.id = idIn.value.trim();
@@ -2720,124 +2633,76 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       place.photos = had.filter(function (f) { return gone.indexOf(f) === -1; }).concat(fresh);
 
       go.disabled = true;
-      var step = say(out, 'Making a branch…', 'spin');
-      openPlacePR(repo, place, shots, fresh, gone, existing, function (msg) { step.textContent = msg; })
-        .then(function (pr) {
-          clear(out);
-          say(out, 'Opened. It is a pull request, so nothing on the map changes until it is merged.', 'good');
-          out.appendChild(el('dl', { className: 'admin-facts' }, [
-            el('div', {}, [el('dt', { textContent: 'Pull request' }), el('dd', { textContent: pr.title })]),
-            el('div', {}, [el('dt', { textContent: 'Open it' }), el('dd', { textContent: pr.url })])
-          ]));
-          out.appendChild(el('p', { className: 'hint', textContent:
-            'The validator runs on it. Merge it there and the map catches up on the next deploy.' }));
-          var again = el('button', { type: 'button',
-            textContent: editing ? 'Change something else' : 'Add another' });
-          again.addEventListener('click', function () {
-            clear(into);
-            if (editing) editPicker(repo, into); else placeForm(repo, into, null);
+      back.disabled = true;
+      var step = say(out, 'Saving…', 'spin');
+      savePlace(repo, place, shots, fresh, gone, existing, function (msg) { step.textContent = msg; })
+        .then(function (branch) {
+          clear(into);
+          into.appendChild(steps(2));
+          watchLanding(into, branch, place, function () {
+            if (editing) editPicker(repo, into); else findStep(repo, into);
           });
-          out.appendChild(again);
         })
         .catch(function (err) {
           clear(out);
           say(out, err.message, 'bad');
           go.disabled = false;
+          back.disabled = false;
         });
     });
 
     settle();
   }
 
-  /* The Open row of the pull request's table, in words. */
-  function shutWords(closed) {
-    if (closed === 'temporary') return 'no, temporarily closed';
-    return closed ? 'no, it has closed for good' : 'yes';
-  }
-
-  /* A branch, the photographs, the entry, and then the pull request — in that
-     order, so a failure part-way leaves a branch nobody is looking at rather
-     than a pull request that is missing half of itself. */
-  function openPlacePR(repo, place, shots, fresh, gone, existing, step) {
-    var base = repo.branch;
+  /* A place is saved as one commit on a branch of its own, made through the
+   * Git Data API rather than a commit per file: the photographs as blobs, one
+   * tree with them, the photographs taken away and restaurants.json in it, one
+   * commit, and the branch pointed at it last. One push, so the workflow that
+   * lands it runs once, on the whole change — a commit per photograph would
+   * start a run per photograph, and the first would land a folder of pictures
+   * with no place to show them. A failure part-way leaves loose blobs nobody
+   * points at, which GitHub sweeps up, and no branch at all.
+   *
+   * .github/workflows/generated.yml does the rest: rebuild, check, and put it
+   * on the live branch if every check passes. Resolves with the branch name.
+   */
+  function savePlace(repo, place, shots, fresh, gone, existing, step) {
     var editing = !!existing;
-    var branch = 'admin/' + (editing ? 'edit-' : 'add-') + place.id;
+    var stem = 'admin/' + (editing ? 'edit-' : 'add-') + place.id;
+    var base, entries = [];
 
-    /* Not encodeURIComponent: this branch name has a slash in it, the ref
-       path wants that slash literal, and %2F is a ref that does not exist.
-       The ?ref= further down IS a query value, where encoding is right. */
-    return gh('/git/ref/heads/' + base)
+    return gh('/git/ref/heads/' + repo.branch)
       .then(function (ref) {
-        if (!ref) throw new Error('Could not find the ' + base + ' branch.');
-        var sha = ref.object.sha;
-
-        function make(name, tries) {
-          return fetch('https://api.github.com/repos/' + REPO + '/git/refs', {
-            method: 'POST',
-            headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
-                       'Content-Type': 'application/json' },
-            body: JSON.stringify({ ref: 'refs/heads/' + name, sha: sha })
-          }).then(function (res) {
-            if (res.ok) return name;
-            /* 422 is the branch already being there, which is a second go at
-               the same place rather than a problem. */
-            if (res.status === 422 && tries < 5) return make(branch + '-' + (tries + 2), tries + 1);
-            throw new Error('Could not make a branch (' + res.status + ').');
-          });
-        }
-        return make(branch, 0);
-      })
-      .then(function (name) {
-        branch = name;
-        if (!gone.length) return;
-        /* A delete needs the blob's own sha, so the folder is listed once. */
-        step('Removing ' + gone.length + ' photograph' + (gone.length === 1 ? '' : 's') + '…');
-        return gh('/contents/photos/' + place.id + '?ref=' + encodeURIComponent(branch))
-          .then(function (listing) {
-            var shaOf = {};
-            (listing || []).forEach(function (f) { shaOf[f.name] = f.sha; });
-            var i = 0;
-            function next() {
-              if (i >= gone.length) return Promise.resolve();
-              var file = gone[i++];
-              if (!shaOf[file]) return next();
-              return fetch('https://api.github.com/repos/' + REPO +
-                  '/contents/photos/' + place.id + '/' + file, {
-                method: 'DELETE',
-                headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
-                           'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: 'Drop ' + file + ' from ' + place.name,
-                                       sha: shaOf[file], branch: branch })
-              }).then(function (res) {
-                if (!res.ok) throw new Error('Could not remove ' + file + ' (' + res.status + ').');
-                return next();
-              });
-            }
-            return next();
-          });
-      })
-      .then(function () {
-        /* One at a time: the Contents API writes a commit per call, and two
-           in flight against one branch is one of them losing. */
+        if (!ref) throw new Error('Could not find the ' + repo.branch + ' branch.');
+        base = ref.object.sha;
+        /* One at a time, so a phone on a slow connection is not holding five
+           photographs' worth of base64 in flight at once. */
         var i = 0;
         function next() {
           if (i >= shots.length) return Promise.resolve();
-          var n = i + 1;
-          step('Uploading photograph ' + n + ' of ' + shots.length + '…');
-          return blobToB64(shots[i].small.blob)
+          var n = i++;
+          step('Uploading photograph ' + (n + 1) + ' of ' + shots.length + '…');
+          return blobToB64(shots[n].small.blob)
             .then(function (b64) {
-              return putFile('photos/' + place.id + '/' + fresh[i], b64,
-                'Add ' + fresh[i] + ' for ' + place.name, branch);
+              return gh('/git/blobs', { method: 'POST',
+                body: JSON.stringify({ content: b64, encoding: 'base64' }) });
             })
-            .then(function () { i++; return next(); });
+            .then(function (blob) {
+              entries.push({ path: 'photos/' + place.id + '/' + fresh[n], mode: '100644', type: 'blob', sha: blob.sha });
+              return next();
+            });
         }
         return next();
       })
       .then(function () {
         step('Writing the entry…');
-        return gh('/contents/data/restaurants.json?ref=' + encodeURIComponent(branch));
+        return Promise.all([
+          gh('/contents/data/restaurants.json?ref=' + base),
+          gh('/git/commits/' + base)
+        ]);
       })
-      .then(function (current) {
+      .then(function (got) {
+        var current = got[0], parent = got[1];
         var places = JSON.parse(b64ToText(current.content));
         var at = places.findIndex(function (pl) { return pl.id === place.id; });
 
@@ -2857,91 +2722,177 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         });
         if (to === -1) places.push(place); else places.splice(to, 0, place);
 
-        return putFile('data/restaurants.json',
-          textToB64(JSON.stringify(places, null, 2) + '\n'),
-          (editing ? 'Update ' : 'Add ') + place.name, branch, current.sha);
-      })
-      .then(function () {
-        step('Opening the pull request…');
-        var lines = [
-          (editing ? 'Changed' : 'Added') + ' from the admin page on a phone.',
-          '',
-          '| | |',
-          '| --- | --- |',
-          '| Address | ' + place.address + ' |',
-          '| Coordinates | ' + place.lat + ', ' + place.lng + ' |',
-          '| Price | ' + place.price + ' |',
-          '| Types | ' + place.types.join(', ') + ' |',
-          '| Photographs | ' + (place.photos.length || 'none yet') + ' |',
-          '| Reel | ' + (place.reel || 'none yet') + ' |'
-        ];
-        if (editing) {
-          lines.push('| Open | ' + shutWords(place.closed) + ' |');
-          var changed = [];
-          if (existing.name !== place.name) changed.push('renamed from "' + existing.name + '"');
-          if (existing.address !== place.address) changed.push('address');
-          if (existing.lat !== place.lat || existing.lng !== place.lng) changed.push('coordinates');
-          if (existing.price !== place.price) changed.push('price');
-          if (existing.types.join() !== place.types.join()) changed.push('types');
-          if ((existing.reel || '') !== place.reel) changed.push('reel');
-          if ((existing.closed || false) !== (place.closed || false)) {
-            changed.push(place.closed === 'temporary' ? 'marked temporarily closed'
-              : place.closed ? 'marked closed for good' : 'reopened');
-          }
-          if (fresh.length) changed.push(fresh.length + ' photograph' + (fresh.length === 1 ? '' : 's') + ' added');
-          if (gone.length) changed.push(gone.join(', ') + ' removed');
-          lines.push('', '**Changed:** ' + (changed.length ? changed.join(', ') : 'the write-up or the dishes') + '.');
-
-          var others = Object.keys(existing.blurb || {}).filter(function (l) { return l !== 'en'; });
-          if (others.length && (existing.blurb.en || '') !== place.blurb.en) {
-            lines.push('',
-              '> The English write-up changed and the other ' + others.length +
-              ' translations did not, so they no longer say the same thing. ' +
-              'They are ' + others.join(', ') + '.');
-          }
-        } else {
-          lines.push('',
-            'The write-up is English only. The other nine languages, the `visited` month',
-            'and anything else still missing are a laptop job — the validator warns about',
-            'them rather than failing, so this can be merged and finished after.');
-        }
-        lines.push('', 'Check the pin lands on the right side of the street before merging.');
-
-        return fetch('https://api.github.com/repos/' + REPO + '/pulls', {
-          method: 'POST',
-          headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
-                     'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: (editing ? 'Update ' : 'Add ') + place.name,
-            head: branch, base: base, body: lines.join('\n')
-          })
-        }).then(function (res) {
-          if (!res.ok) {
-            return res.json().catch(function () { return {}; }).then(function (err) {
-              throw new Error('The branch is pushed, but the pull request would not open (' +
-                res.status + (err.message ? ': ' + err.message : '') + '). Open it by hand from ' + branch + '.');
-            });
-          }
-          return res.json();
+        entries.push({ path: 'data/restaurants.json', mode: '100644', type: 'blob',
+          content: JSON.stringify(places, null, 2) + '\n' });
+        gone.forEach(function (file) {
+          entries.push({ path: 'photos/' + place.id + '/' + file, mode: '100644', type: 'blob', sha: null });
         });
+        return gh('/git/trees', { method: 'POST',
+          body: JSON.stringify({ base_tree: parent.tree.sha, tree: entries }) });
       })
-      .then(function (pr) { return { title: pr.title, url: pr.html_url }; });
+      .then(function (tree) {
+        return gh('/git/commits', { method: 'POST', body: JSON.stringify({
+          message: (editing ? 'Update ' : 'Add ') + place.name + '\n\n' + commitBody(place, existing, fresh, gone),
+          tree: tree.sha, parents: [base]
+        }) });
+      })
+      .then(function (commit) {
+        step('Sending it…');
+        /* A second go at the same place finds the first branch still there if
+           it has not landed yet, so it takes the next free name. */
+        function make(name, tries) {
+          return fetch(API + '/git/refs', {
+            method: 'POST', cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref: 'refs/heads/' + name, sha: commit.sha })
+          }).then(function (res) {
+            if (res.ok) return name;
+            if (res.status === 422 && tries < 5) return make(stem + '-' + (tries + 2), tries + 1);
+            throw new Error('Could not make a branch (' + res.status + ').');
+          });
+        }
+        return make(stem, 0);
+      });
   }
 
-  /* ------------------------------------------------------------ idle lock */
-
-  function touch() {
-    window.clearTimeout(idleTimer);
-    if (!token) return;
-    idleTimer = window.setTimeout(function () {
-      token = null;
-      boot();
-    }, IDLE_MS);
+  /* The commit's body, in the repository's voice: what moved, and what the
+     page could not do. */
+  function commitBody(place, existing, fresh, gone) {
+    var lines = [];
+    if (!existing) {
+      lines.push('Added from the admin page, ' + place.address + ', with ' +
+        (place.photos.length ? place.photos.length + ' photograph' + (place.photos.length === 1 ? '' : 's') : 'no photographs yet') + '.',
+        'The write-up is in English only; the other languages show it until they are translated.');
+      return lines.join('\n');
+    }
+    var changed = [];
+    if (existing.name !== place.name) changed.push('renamed from "' + existing.name + '"');
+    if (existing.address !== place.address) changed.push('the address');
+    if (existing.lat !== place.lat || existing.lng !== place.lng) changed.push('the pin');
+    if (existing.price !== place.price) changed.push('the price');
+    if (existing.types.join() !== place.types.join()) changed.push('the kinds of place');
+    if ((existing.reel || '') !== place.reel) changed.push('the reel');
+    if ((existing.closed || false) !== (place.closed || false)) {
+      changed.push(place.closed === 'temporary' ? 'marked temporarily closed'
+        : place.closed ? 'marked closed for good' : 'reopened');
+    }
+    if (fresh.length) changed.push(fresh.length + ' photograph' + (fresh.length === 1 ? '' : 's') + ' added');
+    if (gone.length) changed.push(gone.join(', ') + ' removed');
+    lines.push('Changed from the admin page: ' + (changed.length ? changed.join(', ') : 'the write-up or the dishes') + '.');
+    var others = Object.keys(existing.blurb || {}).filter(function (l) { return l !== 'en'; });
+    if (others.length && (existing.blurb.en || '') !== place.blurb.en) {
+      lines.push('The English write-up changed and the ' + others.join(', ') +
+        ' ones did not, so they no longer say the same thing.');
+    }
+    return lines.join('\n');
   }
 
-  ['pointerdown', 'keydown'].forEach(function (kind) {
-    window.addEventListener(kind, function () { if (token) touch(); }, { passive: true });
-  });
+  /* The place without its write-ups, keys in order, as data/map.json would
+     carry it — what "live" is checked against. */
+  function mapShape(place) {
+    var out = {};
+    Object.keys(place).sort().forEach(function (k) { if (k !== 'blurb') out[k] = place[k]; });
+    return JSON.stringify(out);
+  }
+
+  /* After the branch is pushed, the page says what is happening to it, in the
+   * three rows below, until it is live or until it is clear it will not be.
+   *
+   *   Checked    the generated workflow's run on the branch: rebuilt and
+   *              every check passed, or red with a link to why. A red run
+   *              puts nothing live and leaves the branch where it is.
+   *   Live       data/map.json on this site carrying the place as it was
+   *              saved. Cloudflare deploys within a minute or two of the
+   *              push the workflow made.
+   *
+   * The page can be closed at any point; none of this needs it open. Past
+   * the time limits it stops asking and says where to look.
+   */
+  var CHECK_LIMIT_MS = 10 * 60 * 1000;
+  var LIVE_LIMIT_MS = 6 * 60 * 1000;
+
+  function watchLanding(into, branch, place, again) {
+    into.appendChild(el('h2', { textContent: place.name + ' is going on the map' }));
+    var rows = el('ul', { className: 'prog' });
+    function row(text) {
+      var state = el('em', { textContent: 'waiting' });
+      var li = el('li', {}, [el('span', { textContent: text }), state]);
+      rows.appendChild(li);
+      return { li: li, say: function (t, kind) { state.textContent = t; li.className = kind || ''; } };
+    }
+    var saved = row('Saved');
+    var checked = row('Rebuilt and checked');
+    var live = row('Live on tallinntastebuds.ee');
+    saved.say('✓', 'done');
+    checked.say('about two minutes…');
+    into.appendChild(rows);
+    var note = el('p', { className: 'note', textContent:
+      'You can close this page; it finishes without you. If the check goes red, ' +
+      'nothing goes live and the reason shows here.' });
+    into.appendChild(note);
+    var after = el('div');
+    into.appendChild(after);
+
+    function finish(link, linkText) {
+      if (link) after.appendChild(el('p', { className: 'small' }, [
+        el('a', { href: link, target: link.charAt(0) === '/' ? null : '_blank',
+          rel: 'noopener noreferrer', textContent: linkText })
+      ]));
+      var b = el('button', { type: 'button', className: 'quiet', textContent: 'Add or change another' });
+      b.addEventListener('click', again);
+      after.appendChild(b);
+    }
+
+    var started = Date.now();
+    function pollRun() {
+      gh('/actions/runs?branch=' + encodeURIComponent(branch) + '&event=push&per_page=10')
+        .then(function (r) {
+          var run = ((r && r.workflow_runs) || []).filter(function (x) { return x.name === 'generated'; })[0];
+          if (run && run.status === 'completed') {
+            if (run.conclusion === 'success') {
+              checked.say('✓', 'done');
+              live.say('about a minute…');
+              started = Date.now();
+              return pollMap();
+            }
+            checked.say('✗ red', 'bad');
+            note.textContent = 'Nothing went live. The run says why; the branch ' + branch +
+              ' is kept, so the change is not lost.';
+            return finish(run.html_url, 'Open the run on GitHub →');
+          }
+          if (Date.now() - started > CHECK_LIMIT_MS) {
+            checked.say('still running', '');
+            note.textContent = 'This is taking longer than it should. It will still land if it passes.';
+            return finish('https://github.com/etibarhasanov/tallinntastebuds/actions', 'Watch it on GitHub →');
+          }
+          window.setTimeout(pollRun, 6000);
+        })
+        .catch(function () { window.setTimeout(pollRun, 10000); });
+    }
+
+    var want = mapShape(place);
+    function pollMap() {
+      fetch('/data/map.json', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (all) {
+          var there = all.filter(function (pl) { return pl.id === place.id; })[0];
+          if (there && mapShape(there) === want) {
+            live.say('✓', 'done');
+            note.textContent = 'Done. It is on the map now.';
+            return finish('/?spot=' + encodeURIComponent(place.id), 'Open it on the map →');
+          }
+          if (Date.now() - started > LIVE_LIMIT_MS) {
+            live.say('not yet', '');
+            note.textContent = 'It passed and was pushed; the deploy is slow. Look again in a few minutes.';
+            return finish('/?spot=' + encodeURIComponent(place.id), 'Open it on the map →');
+          }
+          window.setTimeout(pollMap, 8000);
+        })
+        .catch(function () { window.setTimeout(pollMap, 10000); });
+    }
+
+    pollRun();
+  }
 
   /* ----------------------------------------------------------------- boot */
 
@@ -2962,65 +2913,54 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     if (meta && wash) meta.setAttribute('content', wash);
   }
 
-  /* ------------------------------------------------------- the site door
-   * The other way in, beside this device's token, and a narrower one: an
-   * account ADMINS in wrangler.toml names, signed in on the site with its
-   * password or Google, sees what the site itself can show — the five pages
-   * under /admin/ and the Google report — and nothing that writes to the
-   * repository, because only a token can do that and the site holds none.
-   * The device's door stays underneath it for that.
+  /* ------------------------------------------------------------ the door
+   * One question, asked of the site: is this browser signed in as the owner,
+   * and can the site write to the repository? reachRepo() says which of the
+   * four it is, and each draws its own page.
    *
-   * Whether this browser is signed in as one of them is asked of the
-   * smallest route the owner has, /api/admin/live — sixty rows. Everything
-   * under /api/admin/ is a 403 to anybody else, the lock in
-   * functions/_middleware.js, so its status is the whole check: 403 offers
-   * the sign-in, a yes opens the reading, and anything else (offline, a
-   * deploy going wrong) draws nothing and leaves the device's door alone.
-   *
-   * `asked` is which boot() the answer belongs to. A slow answer arriving
-   * after the passphrase has already opened the page, or after another
-   * boot(), draws nothing.
+   *   in         the numbers, the tools and the GitHub card.
+   *   no-token   signed in, but GITHUB_TOKEN is not set: the numbers and the
+   *              Google report, which need no token, and a line saying what
+   *              is missing.
+   *   out        anybody else, or the owner signed out: Sign in, which is the
+   *              map's own sheet and comes back here.
+   *   an error   said in words, with nothing else drawn.
    */
-  var asked = 0;
-
-  function siteDoor() {
-    var mine = ++asked;
-    fetch('/api/admin/live', { cache: 'no-store' })
-      .then(function (res) { return res.status; }, function () { return 0; })
-      .then(function (status) {
-        if (mine !== asked || token) return;
-        if (status === 403) {
-          var signIn = el('button', { type: 'button', textContent: 'Sign in' });
-          signIn.addEventListener('click', function () {
-            window.location.href = '/?account=in&then=' + encodeURIComponent('/admin.html');
-          });
-          stack.appendChild(el('section', { className: 'card admin-card' }, [
-            el('h2', { className: 'lists-title', textContent: 'Or sign in with your account' }),
-            el('p', { className: 'stats-lead', textContent:
-              'An admin account sees the numbers and the Google report here without a ' +
-              'token. Changing the site still needs this device unlocked.' }),
-            signIn
-          ]));
-          return;
-        }
-        if (status !== 200) return;
-        sub.textContent = 'Signed in on the site — reading only. Unlock to change anything.';
-        var google = el('section', { className: 'card admin-card' });
-        stack.insertBefore(numbersCard(), body);
-        stack.insertBefore(google, body);
-        googleReport(null, google);
-      });
-  }
-
-  /* Back to the door: the one card, emptied, and the ones the unlocked page
-     or the site door add around it taken away. */
   function boot() {
     clear(body);
     while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
     while (body.nextSibling) stack.removeChild(body.nextSibling);
-    siteDoor();
-    if (!window.crypto || !window.crypto.subtle) return insecure();
-    return vault() ? locked() : setup();
+    sub.textContent = 'Checking…';
+
+    reachRepo().then(function (repo) {
+      if (repo.door === 'in') return ready(repo);
+      if (repo.door === 'out') {
+        sub.textContent = 'Signed out.';
+        var signIn = el('button', { type: 'button', textContent: 'Sign in' });
+        signIn.addEventListener('click', function () {
+          window.location.href = '/?account=in&then=' + encodeURIComponent('/admin.html');
+        });
+        body.appendChild(el('h2', { textContent: 'Sign in with the owner’s account' }));
+        body.appendChild(el('p', { className: 'small', textContent:
+          'The same account as on the map, with its password or Google. Nothing ' +
+          'else is needed on this device.' }));
+        body.appendChild(signIn);
+        return;
+      }
+      sub.textContent = 'Signed in — reading only.';
+      body.appendChild(el('h2', { textContent: 'The site has no GitHub token' }));
+      body.appendChild(el('p', { className: 'note', textContent:
+        'Changing the site needs GITHUB_TOKEN set in the Pages project’s production ' +
+        'secrets: a fine-grained token for this one repository with Contents read and ' +
+        'write and Actions read. README.md, under The admin page, has the steps.' }));
+      var google = el('section', { className: 'card admin-card' });
+      stack.insertBefore(numbersCard(), body);
+      stack.appendChild(google);
+      googleReport(null, google);
+    }).catch(function (err) {
+      sub.textContent = 'Something is wrong.';
+      say(body, err.message, 'bad');
+    });
   }
 
   applyStyle();

@@ -414,8 +414,15 @@ push afterwards is another deploy — and re-run everything below afterwards
 each time: replaying your commits over somebody else's `assets/` change is
 exactly what makes the stamps stale.
 
-Thirteen things in this repo are **generated**. Editing a source without
-re-running its generator is the single most common way to fail CI:
+Thirteen things in this repo are **generated**. `node tools/generate.mjs`
+runs every one of them below except the two that need a Chromium, in the order
+they depend on each other, and `.github/workflows/generated.yml` runs it on
+every push to every branch but the live one and commits what changed — so a
+forgotten generator is a bot commit on your branch now, not a red pull
+request. Run it yourself before the push anyway: it saves that second commit,
+the validator needs the tree caught up to say anything useful, and **if your
+next push is refused because the bot got there first, `git pull --rebase`**
+and push again. **The scripts that run themselves** in `README.md`.
 
 | After changing | Run | It rewrites |
 |---|---|---|
@@ -528,13 +535,14 @@ ones are the ones that ship broken.
    the owner knows whether the tab can be closed. The next section is the
    whole of it.
 
-A pull request the admin page opened — a branch named `admin/add-<id>` or
-`admin/edit-<id>` — is landed the same way, but the generators have already
-run: `.github/workflows/admin-generated.yml` commits what `tools/places.mjs`,
-`tools/languages.mjs`, `tools/sitemap.mjs` and `tools/googlevenues.mjs` write
-on every push to such a branch, and starts the check on that commit. Rebase,
-look at the check on the newest commit rather than the first, and merge. The
-`/place` skill says what to do when that one is red too.
+The one exception is a branch the admin page made — `admin/add-<id>` or
+`admin/edit-<id>`. It has no pull request: the owner pressing **Put it on the
+map** is the yes, given once for all of them, and the `land` job in
+`.github/workflows/generated.yml` replays its one commit onto the default
+branch, runs the generators, runs every check CI runs, and pushes if they
+pass. A red one stays where it is, with its branch, for somebody to look at;
+the `/place` skill says what to do with it. Merge on green is for the admin
+page's branches and no others.
 
 ## Say where it stands, in the first line
 

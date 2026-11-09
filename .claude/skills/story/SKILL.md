@@ -58,10 +58,10 @@ other.
 
 ## The admin road
 
-`/admin.html`, unlocked with the device's passphrase, on a device that was set
-up once with a fine-grained token (**Contents** and **Pull requests**, read and
-write, 90 days). It targets whatever GitHub reports as the repo's default
-branch, and it needs nothing from a laptop.
+`/admin.html`, signed in on the site as the owner, on any device. The site
+writes with its own `GITHUB_TOKEN` secret through `/api/admin/github/` —
+**The token the site writes with** in `README.md`. It targets whatever GitHub
+reports as the repo's default branch, and it needs nothing from a laptop.
 
 1. **Pick a photograph or a video.** A photo is shrunk on the device down the
    ladder 1600/0.72, 1400/0.68, 1200/0.62, 1100/0.58 until it is under 200 KB,

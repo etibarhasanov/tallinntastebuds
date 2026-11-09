@@ -62,51 +62,46 @@ it does not know `added`, so an editor will flag a key every entry carries.
 
 ## The admin road
 
-`/admin.html` → **Add a place** or **Edit a place**. It opens a **pull
-request**, not a commit to the live site, because a place is permanent and
-its pin can land on the wrong side of the street. What it does, in order:
+`/admin.html` → **Add a place** or **Edit a place**, signed in on the site as
+the owner — no token on the device; the site writes with its `GITHUB_TOKEN`
+secret through `/api/admin/github/`. Nothing about it is a pull request. What
+it does, in order:
 
-1. The form: name (the id is made from it, `Põhja Pagar` → `pohja-pagar`, and
-   is read-only when editing), address, coordinates by tapping the map,
-   dragging the pin or **I am here**, price, types as checkboxes, the
-   **English** write-up only, must-orders one per line, reel, website, phone,
-   and photographs. Editing adds **Open or closed** — Open, Temporarily
-   closed, Closed for good. There is no
-   `visited` field. Every rule in the table above that the validator would
-   fail on is checked before anything is written, in the same words.
-2. Photographs are shrunk on the device down the ladder 1600/0.72, 1400/0.68,
+1. **Find it**: a search over Google's directory (`/api/admin/venues`). A
+   pick fills the name, address, pin, phone (into `+372 …` form), website and
+   price; a row already tied to a place opens its edit instead; **Not in the
+   list** opens the form blank. Edit starts from the place picker.
+2. **Your take**: types, price, the **English** write-up only, must-orders
+   one per line, photographs; the id (made from the name, `Põhja Pagar` →
+   `pohja-pagar`, read-only when editing) and the reel under **More**. Editing
+   adds **Open or closed** — Open, Temporarily closed, Closed for good. There
+   is no `visited` field. Every rule in the table above that the validator
+   would fail on is checked before anything is written, in the same words.
+3. Photographs are shrunk on the device down the ladder 1600/0.72, 1400/0.68,
    1200/0.62, 1100/0.58 until under 200 KB, as WebP if the browser can really
    write one and JPEG if not, rotation baked in and EXIF gone. New files are
    numbered **past the highest that has ever been in the folder**, never into
    a gap, because `/photos/*` is cached for a week and a reused name would
    serve last month's picture.
-3. Through the GitHub Contents API, one commit per call: a branch
-   `admin/add-<id>` or `admin/edit-<id>` off the default branch; `Drop
-   <file> from <name>` for each photo un-ticked; `Add <file> for <name>` per
-   new photo; then `Add <name>` or `Update <name>` writing the whole of
-   `restaurants.json` with the entry slotted in **name order under Estonian
-   collation**, which is why Põhja Konn sits after Pulla; then the PR, last,
-   so a failure part-way leaves a branch nobody is looking at. An edit starts
-   from the existing object, so the other nine write-ups, `visited`, `added`
+4. **One commit** through the Git Data API, `savePlace()`: the photographs as
+   blobs, `restaurants.json` with the entry slotted in **name order under
+   Estonian collation**, photos un-ticked removed from the tree, one commit
+   `Add <name>` or `Update <name>` on the default branch's tip, and the branch
+   `admin/add-<id>` or `admin/edit-<id>` pointed at it last. An edit starts
+   from the existing object, so the other ten write-ups, `visited`, `added`
    and any key the form does not know ride along untouched; blank `website`
    and `phone` are deleted from the object; `types` come out in checkbox
    order. A new place gets `added` = today in Tallinn.
-4. **What the page does not do, and a workflow does for it:**
-   - **The generated files.** The page never touches the catalogue or the
-     map's own copies, so on its own every **Add** PR fails CI with "is on
-     the map but not in the catalogue" and every **Edit** fails on
-     `data/map.json`, a file in `data/lang/` or `sitemap.xml`.
-     `.github/workflows/admin-generated.yml` runs on every push to an
-     `admin/` branch: `tools/places.mjs`, `tools/languages.mjs`,
-     `tools/sitemap.mjs`, `tools/googlevenues.mjs`, a commit if any of them
-     changed something, and then `validate.yml` dispatched on the new head,
-     since a GITHUB_TOKEN push starts no checks of its own. So the PR's
-     first check is red and the one on its newest commit is the verdict.
-     If that one is red too, the error is real — **Closing one** has the
-     one that comes up — and it is fixed on the branch by hand.
-   - The other ten languages of the write-up. The validator warns about
-     them, and the PR body says so.
-   - The README counts below.
+5. **The `land` job in `.github/workflows/generated.yml`** replays that
+   commit onto the default branch, runs `node tools/generate.mjs`, folds what
+   it wrote into the commit, runs every check CI runs, pushes to the default
+   branch if they pass, deletes the admin branch, and starts `validate.yml`
+   and `indexnow.yml`. The page watches the run and then `data/map.json` and
+   says **Live** when the place is there.
+6. **What it does not do:** the other ten languages of the write-up (they
+   show the English until translated, and the validator warns); the README
+   counts below; and the `map_id` line in `db/google-venues.sql` is written
+   but not loaded — that one is a D1 write and asks.
 
 ## The hand road
 
@@ -186,7 +181,8 @@ its pin can land on the wrong side of the street. What it does, in order:
 Set `"closed": true` and change nothing else — or `"closed": "temporary"`
 for a door that should open again, which is normally not typed at all: the
 **Google** tab on `/admin.html` lists every place where Google's status and
-the map disagree and opens the edit PR that moves it, both ways. **The map
+the map disagree and saves the edit that moves it, both ways, landed like
+any other admin edit. **The map
 against Google** under **The admin page** in `README.md`. Either way, every `?spot=` link keeps
 working, the pin greys and gains a dashed ring, the row and the panel say so
 in every language, and **Surprise me** and the locate framing skip it on their
@@ -199,8 +195,8 @@ README's list of closed places, which is written by name.
 refuses a `?spot=` link in `data/blog.json` to a place that is not open, so
 closing one a post recommends is red until the post says so: `grep -n
 'spot=<id>' data/blog.json`, take the link off the name and say in a clause
-that it has closed. The admin page cannot do that edit, so an admin PR that
-closes such a place stays red after the workflow has caught it up. Faeton was
+that it has closed. The admin page cannot do that edit, so an admin branch
+that closes such a place goes red and lands nothing. Faeton was
 the first.
 
 ## The commit
@@ -232,26 +228,28 @@ entry land in one commit, so no commit lists a photo that is not there.
   `map_id` line in `db/google-venues.sql` that has still to be loaded.
 - Landed, the place is on the live map within the minute.
 
-**A PR the admin page opened** (`admin/add-<id>` or `admin/edit-<id>`)
-catches up by itself (step 4 of **The admin road**). Check that the newest
-commit on it is `github-actions[bot]`'s and that its check is green, then
-rebase and merge. Only when that workflow did not run, or the check on its
-commit is red, is it landed by hand like this:
+**A red admin branch** (`admin/add-<id>` or `admin/edit-<id>` still there,
+its `generated` run red) put nothing live. The run's log names the check
+that failed; the usual two are a blog post linking a place the edit closed
+(**Closing one**), and the same lines of `restaurants.json` changed on the
+default branch since the page read them, which makes the replay refuse. Fix
+it on a branch of your own and land that through a pull request like any
+other:
 
 ```
-git fetch origin admin/add-<id> && git checkout admin/add-<id>
-node tools/places.mjs && node tools/languages.mjs && node tools/validate.mjs
-git add data/places.json data/map.json data/lang
-git commit -m "The catalogue knows <name>" && git push
+git fetch origin admin/add-<id>
+git checkout -b claude/<name> origin/claude/tallinn-tastebuds-map-nzoqx0
+git cherry-pick origin/admin/add-<id>      # resolve, if it was the replay
+node tools/generate.mjs && node tools/validate.mjs
 ```
 
-Then the other ten blurb languages on the same branch, if you have them,
-and the same merge. The map is live with the push.
+Then the other ten blurb languages on the same branch, if you have them.
 
 ## Where it goes wrong
 
-- `data/places.json` not regenerated — by hand, or by every **Add** PR the
-  admin page opens. It is the most common way to fail CI.
+- `data/places.json` not regenerated by hand. The generated workflow now
+  catches it with a commit of its own, but running `node tools/generate.mjs`
+  before the push saves the round trip.
 - A photo straight off a phone, 6 MB, committed, and in the history forever.
 - `lat` and `lng` the wrong way round.
 - A place the directory already listed, added without `node

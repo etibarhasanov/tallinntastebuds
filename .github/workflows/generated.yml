@@ -1,0 +1,188 @@
+name: generated
+
+# The scripts nobody should have to remember.
+#
+# Thirteen files in this repository are written by a tool from another file —
+# the catalogue and the map's copies from data/restaurants.json, the ?v=
+# stamps from assets/, the sitemap, the deck files, the diagrams. There is no
+# build step, on purpose: Cloudflare Pages serves the files as they are, so
+# what it serves has to be committed already rebuilt. For a long time that
+# rebuild was a list in CLAUDE.md that a person or a session ran before every
+# push, and the validator failed the build on whichever one was forgotten. It
+# only ever checked; nothing ever fixed.
+#
+# So this runs every one of those tools on every push to every branch except
+# the live one, and commits whatever they changed. A branch that was already
+# caught up is a run that touches nothing. Running them by hand before a push
+# still saves a round trip, and is still what the skills say, but forgetting
+# is no longer a red pull request — the commit this makes is the fix.
+#
+# Two jobs, by branch name:
+#
+#   regenerate   any branch but admin/ ones. Rebuild, commit to the branch,
+#                and start validate.yml on the new head, because a push made
+#                with GITHUB_TOKEN starts no workflow of its own and the pull
+#                request's checks belong to its head commit. A person or a
+#                session pushing to the branch afterwards pulls first; their
+#                push is refused otherwise, which is the safe way round.
+#
+#   land         admin/ branches, which /admin.html makes. The owner pressed
+#                "Put it on the map" there, and the yes to merge on a green
+#                check was given once, for all of them: a branch whose rebuilt
+#                tree passes every check CI runs goes straight onto the live
+#                branch, and a red one does not move and is left for a look.
+#                The page's one commit is replayed onto the live branch as it
+#                is now — not merged, so the history stays a line — the tools
+#                rebuild on top, and the rebuild is folded into that same
+#                commit so it stands alone. One push, one deploy. The admin
+#                branch is deleted afterwards: it has no pull request, and the
+#                commit on the live branch is the record.
+#
+# Neither job runs on the live branch, which only changes through a merged
+# pull request or this job's own push.
+
+on:
+  push:
+    branches-ignore:
+      - claude/tallinn-tastebuds-map-nzoqx0
+
+permissions:
+  contents: write
+  actions: write
+
+env:
+  LIVE: claude/tallinn-tastebuds-map-nzoqx0
+
+jobs:
+  regenerate:
+    name: Rebuild the generated files
+    if: ${{ !startsWith(github.ref_name, 'admin/') }}
+    runs-on: ubuntu-latest
+    # One run per branch at a time, and only the newest waiting: each one
+    # checks out the branch as it is now, so a queued older push has nothing
+    # left to do.
+    concurrency:
+      group: generated-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No `npm install`, here or anywhere else in this repo.
+      - name: Run the generators
+        run: node tools/generate.mjs
+
+      - name: Commit what they changed
+        id: commit
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Already caught up; nothing to commit."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "The generated files catch up with their sources" \
+                     -m "Rebuilt by the generated workflow with node tools/generate.mjs, on the branch as it was pushed."
+          pushed=false
+          for i in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then pushed=true; break; fi
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+          done
+          if [ "$pushed" != true ]; then echo "Could not push after three tries."; exit 1; fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check the new head
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run validate.yml --ref "${GITHUB_REF_NAME}"
+
+  land:
+    name: Put it on the map
+    if: ${{ startsWith(github.ref_name, 'admin/') }}
+    runs-on: ubuntu-latest
+    # One landing at a time across every admin branch, so two places added a
+    # minute apart are replayed one after the other rather than racing for
+    # the live branch.
+    concurrency:
+      group: land
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.LIVE }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Replay the page's commit, rebuild, check and push
+        run: |
+          set -e
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          BRANCH="${GITHUB_REF_NAME}"
+
+          # A queued run whose branch an earlier run already landed and
+          # deleted has nothing to do.
+          if ! git fetch origin "refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"; then
+            echo "The branch is gone; an earlier run landed it."
+            exit 0
+          fi
+
+          # The live branch can move between the fetch and the push — another
+          # pull request merging — and the push is then refused rather than
+          # forced. Start again from the new tip, up to three times. Every
+          # other failure stops the run where it is and nothing goes live.
+          landed=false
+          for i in 1 2 3; do
+            git fetch origin "${LIVE}"
+            git checkout -q -B landing "origin/${LIVE}"
+            base=$(git merge-base "origin/${LIVE}" "origin/${BRANCH}")
+            commits=$(git rev-list --reverse --no-merges "${base}..origin/${BRANCH}")
+            if [ -z "$commits" ]; then echo "Nothing on the branch the live one lacks."; landed=true; break; fi
+            for c in $commits; do
+              if ! git cherry-pick "$c"; then
+                git cherry-pick --abort
+                echo "::error::The change no longer applies: the same lines of the live branch changed since the page read them. Nothing went live."
+                exit 1
+              fi
+            done
+
+            node tools/generate.mjs
+            git add -A
+            git diff --cached --quiet || git commit -q --amend --no-edit
+
+            # Every check validate.yml runs, here, because a push made with
+            # GITHUB_TOKEN starts no workflow and this push is the deploy.
+            # set -e stops the run at the first one that fails.
+            node tools/validate.mjs
+            node tools/functions-check.mjs
+            node tools/qrperf.mjs --check
+            node tools/chessperf.mjs --check
+            node tools/mcpcheck.mjs --check
+            node .claude/hooks/d1-write-gate.mjs --check
+
+            if git push origin "HEAD:${LIVE}"; then landed=true; break; fi
+          done
+          if [ "$landed" != true ]; then echo "::error::Could not land after three tries."; exit 1; fi
+          git push origin --delete "${BRANCH}" || true
+
+      # The ping validate.yml and indexnow.yml would have had from a push of
+      # their own. Search engines hear about the new place; the live branch
+      # gets a check run on its new commit.
+      - name: Tell the rest of CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run validate.yml --ref "${LIVE}"
+          gh workflow run indexnow.yml --ref "${LIVE}"

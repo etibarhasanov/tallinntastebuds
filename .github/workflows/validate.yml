@@ -2,10 +2,16 @@ name: validate
 
 on:
   push:
+    # An admin/ branch is checked by the land job in generated.yml, after the
+    # generators have run on it. Checked here as it arrives, before them, it
+    # would be a red run on every place the admin page ever adds.
+    branches-ignore:
+      - 'admin/**'
   pull_request:
-  # Started by admin-generated.yml after it commits the regenerated files to
-  # an admin/ branch: that push is made with GITHUB_TOKEN, which starts no
-  # push run of its own, and this is how the PR's new head gets its check.
+  # Started by generated.yml: after it commits rebuilt files to a branch, and
+  # after it lands an admin/ branch on the live one. Both pushes are made with
+  # GITHUB_TOKEN, which starts no push run of its own, and this is how the new
+  # head gets its check.
   workflow_dispatch:
 
 permissions:

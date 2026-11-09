@@ -29,12 +29,12 @@
  * cookie sessionUser() in ./_lib.js reads. Written in wrangler.toml, it is in
  * the review of whoever changes it.
  *
- * /admin.html is not this, or not only. Changing the site from it takes a
- * GitHub token sealed under a passphrase on the device, which the server
- * never sees — see **The admin page** in README.md. What it reads without one
- * — the five pages and the Google report — is behind this check, so an
- * account named here and signed in on the site opens that half of the page on
- * any device, and nothing else.
+ * /admin.html is this too. It is a static page anybody can load, but every
+ * thing it reads or changes is under /api/admin/ — including
+ * ./admin/github/[[path]].js, which writes to the repository with the
+ * GITHUB_TOKEN secret — so an account named here, signed in on the site, is
+ * the whole of the door to changing the site. See **The admin page** in
+ * README.md.
  *
  * FAILS CLOSED
  *
