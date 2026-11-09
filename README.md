@@ -89,6 +89,7 @@ tools, and what is deliberately left out.
 - [The map is the shell](#the-map-is-the-shell)
 - [The short rail](#the-short-rail)
 - [The admin page](#the-admin-page)
+- [The scripts that run themselves](#the-scripts-that-run-themselves)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
 - [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
 - [The map tiles need a key](#the-map-tiles-need-a-key)
@@ -14759,18 +14760,22 @@ alone. Follow a tab into a second tab, which starts with no segment.
 terminal. It is not linked from anywhere, carries `noindex` in the markup, in
 `robots.txt` and in `_headers`, and is served `no-store`.
 
-Behind it, four tabs, and they reach the repository by two different roads.
+The door is the owner's account: signed in on the site, on any device, and
+nothing else — see [Signing in](#signing-in). Behind it, five tabs, and they
+reach the repository by two different roads.
 
 **Post a story** commits straight to the branch the site publishes from. A
 story is a thing happening now, and one that waits for a review has missed the
 morning it was about. It is also the cheap kind of mistake: four lines of JSON
 that take themselves down after 36 hours.
 
-**Add a place** and **Edit a place** open a **pull request**. A place is
-permanent, it is the file the whole map is drawn from, and it has coordinates
-that can land on the wrong side of the street. So it waits to be read — and
-waits for the validator, which is the difference between seeing the verdict
-before it is live and after.
+**Add a place** and **Edit a place** go onto a **branch of their own** and
+land on the live one only if every check passes. A place is permanent, it is
+the file the whole map is drawn from, and four more files are made out of it,
+so it waits for those to be rebuilt and for the validator — the difference
+between seeing the verdict before it is live and after — but it does not wait
+for anybody to merge it. Pressing the button is the yes. See
+[Adding a place](#adding-a-place).
 
 **Discount** commits straight, the way a story does — see
 [Setting a discount](#setting-a-discount) for why.
@@ -14782,7 +14787,7 @@ links — so the owner's five pages looked like two sites. It now links the same
 three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
 `lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
 same header, eyebrow and title, and reads the style the map's swatch left in
-`ttb.style`, so the dark style reaches it too. Unlocked, it is three cards.
+`ttb.style`, so the dark style reaches it too. Signed in, it is three cards.
 **The numbers** comes first — the five pages under `/admin/` as the account
 sheet's rows, Visitors at the top — because reading them is what the door is
 opened for most days. Then **Edit the site**, a fold that is shut when the
@@ -14791,50 +14796,63 @@ its title so a disagreement is seen without opening it, and inside the five
 tools behind the lists page's segmented control, which wraps rather than
 scrolls so the Google tab is never off the edge. A half-written story
 survives the fold being shut again, since a `<details>` only hides what it
-holds. Last, **This device**, the token's facts with Lock and Forget under
-them. Nothing any of the tools does has changed.
+holds. Last, **GitHub**, the facts of the token the site writes with: which
+repository, whether it can write, which branch is live, when it expires.
 
-### Signing in with an account instead
+### Signing in
 
-The token is the only thing that can change the site, and it lives on the
-device. But most days the door is opened to read, and reading needs no
-token: the five pages under `/admin/` and the Google report are the site's
-own, locked to the accounts `ADMINS` in `wrangler.toml` names — `etibar` and
-`tallinntastebuds` in production. So the door asks the site first, through
-`siteDoor()`: one request to `/api/admin/live`, whose status is the check.
+The owner's account is the whole of the door: an account `ADMINS` in
+`wrangler.toml` names — `etibar` and `tallinntastebuds` in production —
+signed in on the site with its password or Google, on any phone. There is no
+second password and no device to set up. Making somebody an admin is their
+`users.id` added to `ADMINS` in the production block of `wrangler.toml` — the
+id and not the name, for the reason the header of `functions/api/_admin.js`
+gives.
 
-- **Signed in as one of them**, on any phone, with the password or Google:
-  The numbers and the Google report open above the device's own door, which
-  stays underneath for the day something has to change. The report's
-  *Mark temporarily closed* and *Reopen it* buttons are left out, because
-  they open a pull request and there is no token to open it with.
-- **Signed out, or as anybody else**: a card under the device's door offers
-  **Sign in**, which is the map's own sheet and comes back here.
-- **No answer at all**: nothing is drawn, and the device's door works as it
-  always has.
+The page asks the site one question when it opens, `GET /api/admin/github`,
+and draws one of four pages from the answer:
 
-There is no second password and no extra step. Making somebody an admin is
-their `users.id` added to `ADMINS` in the production block of
-`wrangler.toml` — the id and not the name, for the reason the header of
-`functions/api/_admin.js` gives.
+- **Signed in, and the site can write**: the numbers, the tools, and the
+  GitHub card.
+- **Signed in, but `GITHUB_TOKEN` is not set**: the numbers and the Google
+  report, which need no token, and a line saying what is missing. The
+  report's *Mark temporarily closed* and *Reopen it* buttons are left out.
+- **Signed out, or as anybody else**: **Sign in**, which is the map's own
+  sheet and comes back here.
+- **No answer**: the reason, in words, and nothing else.
 
-### Setting up a device
+It used to be a GitHub token pasted into each device and sealed there under a
+passphrase: a token to make on GitHub for every phone, a vault to unlock, a
+passphrase to forget, and every ninety days all of it again. The account was
+already on every device, so the account is the door now, and the token lives
+on the server where no device has to hold it.
 
-Once per device, per browser. Do the laptop first — Chrome will sync the
-passphrase to the phone, so the phone only needs the token pasted.
+### The token the site writes with
+
+Every change the page makes goes through `/api/admin/github/…`, which forwards
+it to GitHub's API for this one repository with the token in the
+`GITHUB_TOKEN` secret, and answers only the owner — the lock in
+`functions/_middleware.js` on everything under `/api/admin/`. The header of
+`functions/api/admin/github/[[path]].js` says what it lets through: the
+repository itself, `contents/`, `git/`, and `actions/runs` to read. A write
+also has to come from a page on the site's own origin.
+
+Once, and again when it expires:
 
 1. Make a **fine-grained** personal access token on
    [GitHub](https://github.com/settings/personal-access-tokens/new).
 2. Repository access: **only select repositories** → `tallinntastebuds`.
-3. Permissions: **Contents → Read and write**, and **Pull requests → Read and
-   write** for when adding a place lands.
-4. Expiry: **90 days.** A token you forget about then dies on its own.
-5. Open `/admin.html`, paste the token, choose a passphrase.
+3. Permissions: **Contents → Read and write**, and **Actions → Read**, so the
+   page can watch a place land.
+4. Expiry: as long as you are happy to go between renewals. The GitHub card
+   on the page says when it runs out.
+5. In the Pages project, **Settings → Variables and Secrets**, under
+   **Production**, add it as a secret named `GITHUB_TOKEN`. The next deploy
+   picks it up.
 
-On an **iPhone**, add the page to the Home Screen. Safari — and Chrome on
-iOS, which is Safari underneath — clears a site's storage after seven days
-without a visit, and an installed web app is exempt. On Android nothing needs
-doing; the page asks for persistent storage itself.
+If it leaks, revoke it on GitHub — one click — and set a new one. What a
+stolen token reaches is one public repository whose every change is in the
+history, behind a branch rule against force-pushes.
 
 ### Posting a story
 
@@ -14878,9 +14896,26 @@ you press it, and nothing comes out of the speaker while it runs.
 
 ### Adding a place
 
-The same form the data needs: name, address, coordinates, price, types, the
-English write-up, must-orders one to a line, and as many photographs as you
-like. The id is made from the name — `Põhja Pagar` becomes `pohja-pagar`.
+Three steps, drawn across the top of the form: **Find it**, **Your take**,
+**Live**.
+
+**Find it.** Type a few letters of the name. The list under the field is
+Google's Tallinn directory — the eleven hundred rows of `google_venues`,
+handed over once by `/api/admin/venues` and filtered on the phone, accents
+ignored, so `pohja` finds Põhja Pagar. Pick one and the part of the form that
+is facts rather than opinion is filled in from Google: the name, the address,
+the pin, the phone (rewritten into the `+372 …` form the validator wants), the
+website and the price band. A row already tied to a place on the map says
+**on the map — edit** and opens that place's edit instead, so nothing goes in
+twice. **Not in the list — type it in by hand** opens the form blank, which is
+also what happens if the directory will not load.
+
+**Your take.** What only the owner can write: the kinds of place, the price,
+a line about it in English, must-orders one to a line, and the photographs.
+Google's facts are folded under a single line that says they came from
+Google, and open to correct one. The id is made from the name — `Põhja Pagar`
+becomes `pohja-pagar` — and sits with the reel under **More**, because neither
+is usually touched.
 
 **The coordinates are a map.** Press where the door is, or drag the pin.
 **I am here** fills it from the phone's own position, which is the one thing
@@ -14894,37 +14929,43 @@ place form is open, so the story tab and the door stay as light as they were.
 If it will not load, the form says so and the numbers can still be typed,
 which is how every place already in the file got there.
 
-Everything `tools/validate.mjs` would fail the build over is checked before the
-branch exists, in the same words: the slug, the Tallinn bounding box that
+Everything `tools/validate.mjs` would fail the build over is checked before
+anything is saved, in the same words: the slug, the Tallinn bounding box that
 catches a swapped `lat`/`lng`, the reel permalink shape, the phone's
-international form. So the entry a pull request carries is one the validator
-will take.
+international form. So the entry that is saved is one the validator will take.
 
-What the page cannot write is everything generated from that entry — the
-catalogue `data/places.json`, `data/map.json` and the write-ups in
-`data/lang/`, `sitemap.xml`, and for a place the Google export already lists,
-its `map_id` line in `db/google-venues.sql`. For a while that meant every pull
-request it opened went red and waited for somebody at a laptop to check the
-branch out and run the tools, and the ones nobody got round to sat unmerged.
-Now `.github/workflows/admin-generated.yml` does it: on every push to an
-`admin/` branch it runs `tools/places.mjs`, `tools/languages.mjs`,
-`tools/sitemap.mjs` and `tools/googlevenues.mjs`, commits whatever changed, and
-starts `validate.yml` on the new head, because a push made with GitHub's own
-token starts no checks by itself. The first check on the pull request may still
-be red for the minute that takes; the one on its newest commit is the one that
-counts. What it cannot fix is a real error — a blog post that links a place the
-edit just closed, say — and that one is still a laptop's.
+**Live.** **Put it on the map** saves the change as **one commit** on a branch
+of its own, `admin/add-<id>`: the photographs as blobs, `restaurants.json`
+with the entry **slotted in name order under Estonian collation** — which is
+why Põhja Konn sits after Pulla and not before it — and one tree and one
+commit made of them through GitHub's Git Data API, the branch pointed at it
+last. One commit and not one per file, because each push starts the workflow
+that lands it, and the first of five would have landed a folder of pictures
+with no place to show them.
 
-Then, in this order: a branch `admin/add-<id>`, the photographs, the entry,
-and the pull request last — so a failure part-way leaves a branch nobody is
-looking at rather than a half-written pull request. The entry is **slotted into
-the file in name order under Estonian collation**, which is why Põhja Konn sits
-after Pulla and not before it, and which keeps the diff to the lines that
-actually changed.
+Then `.github/workflows/generated.yml` takes it — see
+[The scripts that run themselves](#the-scripts-that-run-themselves). It
+replays the commit onto the live branch as it is now, runs the generators for
+everything made from that file (the catalogue `data/places.json`,
+`data/map.json` and the write-ups in `data/lang/`, `sitemap.xml`, the
+`map_id` line in `db/google-venues.sql` for a place the Google export already
+lists), folds what they wrote into the same commit, runs every check CI runs,
+and pushes to the live branch if they pass. The admin branch is deleted after;
+the commit on the live branch is the record.
 
-What it cannot do is the other nine languages. The write-up goes in in English,
-the validator warns rather than fails, and the pull request says so — merge it
-and finish it from a laptop.
+The page watches it happen, in three rows — **Saved**, **Rebuilt and
+checked**, **Live on tallinntastebuds.ee** — the second from the run on the
+branch, the third from `data/map.json` on the site carrying the place as it
+was saved. Two or three minutes end to end. The page can be closed at any
+point; none of it needs the page open. A red check puts nothing live, keeps
+the branch, and links the run that says why — a blog post that links a place
+the edit just closed, say, or the same lines of `restaurants.json` changed by
+somebody else since the form read them.
+
+What it cannot do is the other ten languages. The write-up goes in in
+English, every other language shows the English until somebody translates it
+(`BLURB_FALLBACK` in `tools/languages.mjs`), and the validator warns rather
+than fails.
 
 ### Changing one
 
@@ -14934,16 +14975,16 @@ except the **id**, which is the folder the photographs live in and what every
 
 **What the form does not ask about is not touched.** The entry written back is
 the object as it is in the file with only the fields above replaced, so the
-other nine write-ups, `visited`, `added` and any key added to the data since
+other ten write-ups, `visited`, `added` and any key added to the data since
 this page was written all ride along untouched. That is the whole reason an
 edit is not a blank form you fill in and save.
 
 Two things it will tell you rather than decide for you:
 
-- **Change the English write-up and the other nine no longer say the same
-  thing.** They are left exactly as they are — blanking nine languages is not
-  a thing a phone should do on its own — and the form and the pull request
-  both say so, by name.
+- **Change the English write-up and the other ten no longer say the same
+  thing.** They are left exactly as they are — blanking ten languages is not
+  a thing a phone should do on its own — and the form and the commit both
+  say so, by name.
 - **Closed is a change, not a deletion.** Closed places are in the picker too,
   so reopening one is an edit like any other. The choice has three answers —
   **Open**, **Temporarily closed**, **Closed for good** — and the form is the
@@ -14952,8 +14993,8 @@ Two things it will tell you rather than decide for you:
 
 Editing opens the map on that place at street zoom, which is the point: **check
 the pin lands on the right side of the street** — the note this README has been
-ending every place with — is finally a thing you can do before merging rather
-than after.
+ending every place with — is finally a thing you can do before it is live
+rather than after.
 
 Photographs already there are shown with a tick to drop one, which deletes the
 file from the repository as well, since nothing else points at it. New ones are
@@ -14980,10 +15021,10 @@ under **The map against Google**:
   the only move that fits is *closed for good*, and that is not a thing to do
   on Google's say-so — it points at **Edit a place** instead.
 
-The button opens the same pull request **Edit a place** would, through the
-same code, with `closed` moved and nothing else touched — so it is a pull
-request to read and merge, not a change to the live map, and the map stays
-the owner's to change with Google only saying when to look. The count of
+The button saves the same change **Edit a place** would, through the same
+code, with `closed` moved and nothing else touched, and it lands the same
+way — checked, then live. Pressing it is the owner's decision; the map stays
+the owner's to change, with Google only saying when to look. The count of
 disagreements rides on the tab's label as a small filled count, **Google (2)**, looked up once when
 the page opens, so it is found on the way to posting a story rather than by
 opening the tab on a hunch. When the two agree everywhere the section says
@@ -15114,44 +15155,40 @@ story an iPhone cannot watch.
 `STORY_SECONDS`, `VIDEO_BUDGET` and `RECORDER_TYPES` at the top of the script
 in `admin.html` are the whole of it, and nothing else depends on them.
 
-### Where the token lives
-
-In that browser's `localStorage`, encrypted:
-
-```
-{ salt, iv, ct }     AES-GCM, key from PBKDF2-SHA256 over the passphrase
-```
-
-Nowhere else. Not in this repository, not on the server — there is no server.
-The decrypted token exists only as a variable in the open tab, is never
-written to disk, and is dropped when the tab closes or after fifteen idle
-minutes.
-
-**Nothing is published for a guess to be checked against.** The obvious design
-puts a verifier — a hash of the passphrase — in the repo so the page can tell
-a right passphrase from a wrong one. That is a free offline oracle: anybody
-who clones a public site can grind guesses at it forever without ever touching
-your phone. AES-GCM already answers the question. A wrong passphrase derives a
-wrong key, the tag fails to authenticate, and the decrypt rejects — so an
-attacker needs the device in their hand before they can begin.
-
-### If a device goes missing
-
-Revoke that device's token on GitHub. One click, and it does not touch the
-other device, because each holds its own token sealed with its own salt.
-
-What a thief has in the meantime is the encrypted blob, which is worth nothing
-without the passphrase — so make the passphrase long. And the floor under all
-of it: the token reaches one public repository, every change is in git
-history, and a branch rule against force-pushes keeps the history you would
-revert from.
-
-**The gate is not what stops somebody editing the map — the token is.** Anyone
-can read `admin.html` and skip the passphrase; they still have no token, and
-the page can do nothing without one. The passphrase protects the token at rest
-on the device. That is the whole of its job.
-
 ---
+
+## The scripts that run themselves
+
+Thirteen files here are made by a tool out of another file — the table under
+**Before you push** in `CLAUDE.md` lists them. There is no build step, on
+purpose: Cloudflare Pages serves the repository as it is, so what it serves
+has to be committed already made. For a long time each of those tools was a
+command somebody had to remember after changing its source, and CI only ever
+checked: the validator failed the build on whichever was forgotten, and fixed
+nothing.
+
+Now `node tools/generate.mjs` runs all of them in the order they depend on
+each other, and `.github/workflows/generated.yml` runs that on **every push to
+every branch but the live one**:
+
+- **Any branch but an `admin/` one** — a session's, a hand edit's — gets a
+  commit of whatever the tools changed, *The generated files catch up with
+  their sources*, and `validate.yml` started on the new head, since a push
+  made with GitHub's own token starts no checks by itself. A branch that was
+  caught up gets nothing. Whoever pushes to that branch next pulls first.
+- **An `admin/` branch**, which only the admin page makes, is **landed**: its
+  commit replayed onto the live branch as it is now, the tools run, what they
+  wrote folded into that commit, every check CI runs, and a push to the live
+  branch if they all pass — then the branch is deleted, and `validate.yml` and
+  `indexnow.yml` are started on the live branch, which a push from the
+  workflow would not start either. A red check pushes nothing. This is the
+  owner's standing yes to merging on green, given for the admin page and
+  nothing else: every other branch still lands through a pull request.
+
+Running `node tools/generate.mjs` before a push is still worth it — it saves a
+round trip and a second commit — but forgetting it is no longer a red pull
+request. The two tools that need a Chromium, `tools/blogclips.mjs` and
+`tools/ogcard.mjs`, are left out, because a runner has none.
 
 ## Deploy to Cloudflare Pages
 
@@ -15755,7 +15792,8 @@ functions/api/venues.js    the Google Places directory, whole and unmerged
 functions/api/admin/       the owner's routes, locked by functions/_middleware.js:
                            stats.js the ranking, venues.js the whole directory,
                            refreshes.js what the Google refresh has done lately
-                           for the Google tab on /admin.html
+                           for the Google tab on /admin.html, github/[[path]].js
+                           the admin page's road to the repository
 functions/api/_admin.js    who the owner is (not a route: leading _)
 functions/api/geocode.js   a typed street to a point, for the add-a-place form,
                            for the Where sheet behind the map's locate button
@@ -15944,6 +15982,7 @@ indexnow.txt               the IndexNow key, public on purpose — see
 photos/<restaurant-id>/    photos, one folder per place
 stories/                   the story videos and photos, one file each
 tools/validate.mjs         dependency-free data validator
+tools/generate.mjs         runs every generator below that needs no Chromium, in order
 tools/places.mjs           builds data/places.json from the CSV and the map
 tools/decks.mjs            writes data/decks/ from data/decks.json: the index,
                            one file per deck, and what the voice may say
@@ -15969,6 +16008,7 @@ tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link t
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
 .github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check and the write gate, on every push
+.github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone

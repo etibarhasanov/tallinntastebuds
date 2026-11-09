@@ -115,6 +115,14 @@
 #                      after itself. See **Signing in with Google** in
 #                      README.md.
 #
+#   GITHUB_TOKEN       SECRET, optional, Production only. A fine-grained token
+#                      for this one repository, Contents read and write and
+#                      Actions read. What /admin.html changes the site with,
+#                      through functions/api/admin/github/[[path]].js, which
+#                      answers only an account ADMINS names. Unset, the page
+#                      reads and changes nothing. See **The token the site
+#                      writes with** in README.md.
+#
 # There were three more — CF_ACCOUNT_ID, CF_EMAIL_TOKEN and MAIL_FROM — for a
 # password reset by email. Nothing reads them any more, so if they are set in
 # either environment they can be deleted from the Pages project.
