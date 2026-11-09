@@ -75,7 +75,7 @@
     {
       "id": "member",
       "name": "A member, signed in",
-      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and splitwise and flashcards (each drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
+      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
       "lanes": [
         { "id": "member", "name": "Member" }
       ],
@@ -202,64 +202,6 @@
         ["valid", "given", "VALID"],
         ["valid", "refused", "expired, early, wrong"],
         ["compare", "given-counter"]
-      ]
-    },
-    {
-      "id": "splitwise",
-      "name": "Splitwise, a group",
-      "who": "Friends splitting a bill on splitwise.tallinntastebuds.ee. The code in the link is enough to read the whole group; writing to it takes an account and a press of Join. The owner is whoever made the group.",
-      "lanes": [
-        { "id": "owner", "name": "Group owner" },
-        { "id": "holder", "name": "Link holder" },
-        { "id": "member", "name": "Member" },
-        { "id": "site", "name": "The site" }
-      ],
-      "nodes": [
-        {"id": "paid", "type": "start", "lane": "owner", "name": "Paid for dinner", "when": ["page:split"], "ref": ["split.html"]},
-        {"id": "create", "type": "user", "lane": "owner", "name": "Names a group", "when": ["split_create"], "ref": ["assets/split.js"]},
-        {"id": "created", "type": "service", "lane": "site", "name": "Creates it", "note": "Up to 20 groups an account.", "ref": ["functions/api/split.js POST create"]},
-        {"id": "send", "type": "user", "lane": "owner", "name": "Sends the link to the table", "when": ["split_share"], "ref": ["functions/split.js the head a message unfurls"]},
-        {"id": "open-link", "type": "user", "lane": "holder", "name": "Opens the link", "handover": true, "ref": ["functions/split.js"]},
-        {"id": "ledger", "type": "service", "lane": "site", "name": "Answers the whole ledger to the code", "note": "Members, expenses, payments, balances and who pays whom.", "ref": ["functions/api/split.js GET ?group="]},
-        {"id": "signed-in", "type": "gateway", "lane": "holder", "name": "Signed in?"},
-        {"id": "sign-in", "type": "user", "lane": "holder", "name": "Signs in on the page", "when": ["account_login@split", "account_create@split"], "ref": ["assets/split.js", "functions/api/account.js POST login, create"]},
-        {"id": "join", "type": "user", "lane": "holder", "name": "Presses Join", "when": ["split_join"], "ref": ["assets/split.js joinCard()"]},
-        {"id": "joined", "type": "service", "lane": "site", "name": "Adds the member", "note": "12 members a group, 429 full past that.", "ref": ["functions/api/split.js POST join"]},
-        {"id": "what-now", "type": "gateway", "lane": "member", "name": "What now?"},
-        {"id": "spend", "type": "user", "lane": "member", "name": "Adds an expense, for anybody", "when": ["split_spend"], "ref": ["assets/split.js spendForm()"]},
-        {"id": "settle", "type": "user", "lane": "member", "name": "Marks a payment as paid", "when": ["split_settle"], "ref": ["assets/split.js"]},
-        {"id": "undo", "type": "user", "lane": "member", "name": "Removes a line they wrote or paid", "when": ["split_unspend", "split_unsettle"]},
-        {"id": "leave", "type": "user", "lane": "member", "name": "Leaves", "when": ["split_leave"], "note": "Only while nothing in the sums names them: 409 spent otherwise."},
-        {"id": "write", "type": "service", "lane": "site", "name": "Stores it, in cents", "note": "200 expenses and 200 payments a group.", "ref": ["functions/api/split.js POST spend, settle, unspend, unsettle, leave"]},
-        {"id": "balances", "type": "end", "lane": "member", "name": "Who pays whom, in one sentence"},
-        {"id": "owner-acts", "type": "user", "lane": "owner", "name": "Removes a member, or deletes the group", "when": ["split_drop", "split_remove"], "note": "Only a member nothing in the sums names. Deleting takes everything and has no undo.", "ref": ["assets/split.js"]},
-        {"id": "owner-write", "type": "service", "lane": "site", "name": "Drops them, or the group", "ref": ["functions/api/split.js POST drop, remove"]},
-        {"id": "owner-done", "type": "end", "lane": "owner", "name": "Group changed"}
-      ],
-      "edges": [
-        ["paid", "create"],
-        ["create", "created"],
-        ["created", "send"],
-        ["send", "open-link"],
-        ["open-link", "ledger"],
-        ["ledger", "signed-in"],
-        ["signed-in", "sign-in", "no"],
-        ["signed-in", "join", "yes"],
-        ["sign-in", "join"],
-        ["join", "joined"],
-        ["joined", "what-now"],
-        ["what-now", "spend", "spent"],
-        ["what-now", "settle", "paid back"],
-        ["what-now", "undo", "a mistake"],
-        ["what-now", "leave", "wrong group"],
-        ["what-now", "owner-acts", "owner only"],
-        ["spend", "write"],
-        ["settle", "write"],
-        ["undo", "write"],
-        ["leave", "write"],
-        ["write", "balances"],
-        ["owner-acts", "owner-write"],
-        ["owner-write", "owner-done"]
       ]
     },
     {

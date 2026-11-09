@@ -7,7 +7,7 @@
     <bpmn:participant id="member-pool" name="A member, signed in" processRef="member-process" />
   </bpmn:collaboration>
   <bpmn:process id="member-process" name="A member, signed in" isExecutable="false">
-    <bpmn:documentation>Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and splitwise and flashcards (each drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.</bpmn:documentation>
+    <bpmn:documentation>Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.</bpmn:documentation>
     <bpmn:laneSet id="member-lanes">
       <bpmn:lane id="member-lane-member" name="Member">
         <bpmn:flowNodeRef>signed-in</bpmn:flowNodeRef>

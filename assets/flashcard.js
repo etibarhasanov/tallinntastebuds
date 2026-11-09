@@ -36,21 +36,18 @@
  * work, and the people this site is written for are the ones it was hardest
  * on. See **Flashcards** in README.md.
  *
- * It is on its own hostname for the reason splitwise is: it is not the map,
- * and a sixth card on the account page reading "Flashcards" would have been a
- * second product filed under somebody's saved places.
+ * It is on its own hostname because it is not the map, and a sixth card on
+ * the account page reading "Flashcards" would have been a second product
+ * filed under somebody's saved places.
  * functions/_middleware.js is what makes the subdomain the front door to this
  * page and sends every other address on it back to the map; the page itself
  * answers at /flashcard on every host, including the previews under
  * *.tallinntastebuds.pages.dev where a subdomain of the live domain cannot
  * exist at all.
  *
- * functions/flashcard.js serves the document, the way functions/split.js
- * serves that one — and for a different reason. A group's link is pasted into
- * a chat, so that head carries the group's name. Nothing here is ever sent to
- * anybody: what that route is for is the decks the site ships being
- * indexed, so it writes the deck's own head and its words into the page as
- * text. Nothing here depends on that having happened — every answer this page
+ * functions/flashcard.js serves the document. What that route is for is the
+ * decks the site ships being indexed, so it writes the deck's own head and
+ * its words into the page as text. Nothing here depends on that having happened — every answer this page
  * draws it fetches for itself, the route is an improvement on the load rather
  * than a requirement for it, and the <main> it writes into is emptied by
  * render() before anything is drawn.
@@ -172,27 +169,25 @@
  * are the only proofreaders it has, and an account in front of that is a
  * mistake nobody reports.
  *
- * THE SIGN-IN FORM IS HERE, AND IT IS THE THIRD COPY ON THE SITE
+ * THE SIGN-IN FORM IS HERE, AND IT IS THE SECOND COPY ON THE SITE
  *
  * Worth being plain about. There is one password form on this site, in
  * assets/app.js, inside the sheet the map opens; /account.html and
  * /lists.html both send people there with ?then= rather than growing a copy.
- * assets/split.js has the second, and its header argues the case: ?then= is
- * deliberately same-host, so sending somebody from a subdomain to the map to
- * sign in and back again is either an open redirect or a dead end.
+ * This page has the second: ?then= is deliberately same-host, so sending
+ * somebody from a subdomain to the map to sign in and back again is either an
+ * open redirect or a dead end.
  *
- * This is the same argument on a second subdomain, and a third copy of a form
- * is the point at which the argument stops being free. What makes it
- * survivable is the same thing that makes split.js's survivable: it is a copy
- * of the *form* and not of the *API*. It posts the same two fields to the
+ * A second copy of a form is not free. What makes it survivable is that it is
+ * a copy of the *form* and not of the *API*. It posts the same two fields to the
  * same /api/account with the same actions, reads the same errors out of the
  * same map, and prints the same strings out of data/ui.json — accountUsername,
  * accountPassword, accountNoReset, accountGoogle and the rest. Nothing about
  * accounts is decided here.
  *
- * If a fourth ever wants one, the answer is not a fourth copy: it is a shared
+ * If a third ever wants one, the answer is not a third copy: it is a shared
  * global beside assets/track.js — TTBAuth, drawing the form and owning the
- * three actions — and the three existing copies moved onto it. That is a
+ * three actions — and the two existing copies moved onto it. That is a
  * refactor of the sign-in on every page of this site and it is deliberately
  * not in the change that brought this page.
  *
@@ -203,7 +198,7 @@
  * fifty-three before anybody has answered a card — and yours under them. With it, it is that deck,
  * turning over. A deck somebody wrote has exactly one reader and it is its owner —
  * there is no share link here and holding an id buys nothing, which is the
- * one place this feature deliberately differs from lists and from splitwise.
+ * one place this feature deliberately differs from lists.
  *
  * AND THE ADDRESS CHANGES WITHOUT THE DOCUMENT CHANGING
  *
@@ -324,8 +319,8 @@
   var googleSaid = new URLSearchParams(window.location.search).get('google') || '';
 
   /* Which of the two hostnames this is being read on, and what that changes.
-     Same three lines assets/split.js carries, and the same reasoning: on the
-     subdomain this page is the bare root and the map is one domain up. */
+     On the subdomain this page is the bare root and the map is one domain
+     up. */
   var ON_SUBDOMAIN = window.location.hostname.indexOf('flashcard.') === 0;
   var HOME = ON_SUBDOMAIN ? '/' : '/flashcard';
   var MAP = ON_SUBDOMAIN ? 'https://tallinntastebuds.ee/' : '/';

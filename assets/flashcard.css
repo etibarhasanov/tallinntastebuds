@@ -1325,8 +1325,7 @@
 
 /* ---------- a deck somebody is writing ---------- */
 
-/* Ruled rather than carded, the same argument assets/split.css makes about a
-   receipt: twenty short lines read down the page, where twenty cards with
+/* Ruled rather than carded, the way a receipt is: twenty short lines read down the page, where twenty cards with
    shadows under them would be the same words at four times the height. */
 .flash-rows { list-style: none; margin: 0; padding: 0; }
 

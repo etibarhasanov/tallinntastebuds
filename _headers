@@ -103,31 +103,6 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, nofollow
 
-# Splitwise. Stored as split.html and served at /split as well — and, on
-# splitwise.tallinntastebuds.ee, at the bare root, which
-# functions/_middleware.js rewrites to this file. These rules match the
-# request path, so both spellings are spelled out, the same reason "/" and
-# "/index.html" both appear at the top of this file.
-#
-# Neither rule is the one that usually binds any more. functions/split.js
-# serves this page and sets its own Cache-Control and X-Robots-Tag, the way
-# the three routes that serve lists.html do — see page() in
-# functions/_shell.js. These stay for the case where that route is not
-# reached, and they are what the subdomain's own root would otherwise fall
-# through to: it matches "/" further up, which carries no noindex at all.
-#
-# Same revalidating Cache-Control as the map, for the ?v= stamps, and the same
-# noindex the account page has, for the same reason: everything here is one
-# session's own, and a search result for it would be the sign-in offer shown
-# to everybody who is not the person who signed in.
-/split.html
-  Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
-
-/split
-  Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
-
 # Flashcards. Stored as flashcard.html and served at /flashcard as well — and,
 # on flashcard.tallinntastebuds.ee, at the bare root, which
 # functions/_middleware.js rewrites to this path. These rules match the request

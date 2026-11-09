@@ -107,7 +107,7 @@
 #                      Per-environment like the rest, and in the Google console
 #                      the *redirect URI* is per-hostname besides: register
 #                      https://tallinntastebuds.ee/api/google and
-#                      https://splitwise.tallinntastebuds.ee/api/google for
+#                      https://flashcard.tallinntastebuds.ee/api/google for
 #                      production, and the preview host you actually open for
 #                      preview. Google matches them exactly and accepts no
 #                      wildcard, so a new preview branch is a new URI — which

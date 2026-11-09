@@ -47,9 +47,9 @@
  *   a scroll       a finger that goes up or down as much as across is
  *                  scrolling. The direction is settled once, at LOCK px of
  *                  travel, and a swipe has to be twice as wide as it is tall.
- *   the flashcards a swipe on a card is an answer there, and splitwise
- *                  and the admin pages are on screens of their own; none of
- *                  the three carries this file.
+ *   the flashcards a swipe on a card is an answer there, and the admin
+ *                  pages are on screens of their own; neither carries this
+ *                  file.
  *
  * NOWHERE TO GO
  *

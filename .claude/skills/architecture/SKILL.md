@@ -1,6 +1,6 @@
 ---
 name: architecture
-description: The shape of the site and why it is that shape — pages as documents, the map as the shell they open on, the two subdomains, globals instead of modules, where a new page or script goes. Use before changing how pages, scripts or hosts fit together, before proposing a new page or route, and for anything in assets/shell.js, assets/radio.js, functions/_security.js, functions/_middleware.js, _headers or _routes.json.
+description: The shape of the site and why it is that shape — pages as documents, the map as the shell they open on, the flashcards' subdomain, globals instead of modules, where a new page or script goes. Use before changing how pages, scripts or hosts fit together, before proposing a new page or route, and for anything in assets/shell.js, assets/radio.js, functions/_security.js, functions/_middleware.js, _headers or _routes.json.
 ---
 
 # The shape of the site
@@ -18,8 +18,8 @@ kind have an answer already written down below.
 - `CLAUDE.md` → **Orient in two minutes, not twenty**, **Branches and
   deploys**, and **Something new is described before it is built**. A new
   page or route is new, and gets described before it gets built.
-- `README.md` → **The map is the shell**, **The radio**, **Splitwise** →
-  *Why a subdomain*, **Flashcards** → *Why a subdomain, again*, **Getting
+- `README.md` → **The map is the shell**, **The radio**, **Flashcards** →
+  *Why a subdomain*, *Taking it out*, **Getting
   found**, **The security headers**, **The build budget**. `grep -n '^## '
   README.md` is the table of contents with line numbers.
 - The header block of `assets/shell.js` and of `assets/radio.js`: the two
@@ -50,7 +50,7 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 ├── /mcp         functions/mcp.js   the places, read by an AI assistant over the Model
 │                                   Context Protocol; JSON-RPC, never a page, never framed
 │
-├── splitwise.tallinntastebuds.ee   split.html at the root; its own site to a browser
+├── splitwise.tallinntastebuds.ee   gone since 2026-11-09; every address 301s to the map
 └── flashcard.tallinntastebuds.ee   flashcard.html at the root; the same page as /flashcard
                                     on a different origin — no ttb.lang, no radio carried
 ```
@@ -66,7 +66,8 @@ test runner, by decision — `CLAUDE.md` says which decision each is.
 address, loadable on its own, indexable where it should be. That is what
 makes a link shareable, a middle click work, a crawler read the flashcards,
 and a page removable by deleting its files — **Taking it out** under
-**Splitwise** is that argument in full and it holds for every page.
+**Flashcards** is that argument in full and it holds for every page.
+Splitwise was removed on 2026-11-09 by following its own.
 
 **A walk that starts on the map does not leave the map.** `assets/shell.js`
 opens the page in an `<iframe>` inside `#shell`, a full-screen surface over
@@ -118,7 +119,7 @@ to "help" the shell.
 
 **What is not framed, on purpose:** the map itself, anything under `/api/`,
 `/admin` and `admin.html`, files (a photo, a data file, a stylesheet), and
-the two subdomains. `framed()` in `assets/shell.js` is the list; a new page
+the flashcards' subdomain. `framed()` in `assets/shell.js` is the list; a new page
 is framed by default and needs no line there.
 
 **The headers allow exactly this.** `frame-ancestors 'self'` and
@@ -128,16 +129,17 @@ blank; not same-site, under which a subdomain could frame the map. A
 proposal to frame the subdomains is a proposal to loosen this, and is a
 decision.
 
-## The two subdomains
+## The subdomain
 
-Splitwise and the flashcards are each a page of this repository served at
-the root of a hostname of its own — `functions/_middleware.js`, the two
-fenced blocks. To a browser each is a different site: its own
-`localStorage` and `sessionStorage`, so no `ttb.lang` and no radio carried
-over, which is why each carries a language switch of its own and why the
-flashcards start silent there. The session cookie is scoped to the domain,
-so an account is the same account on all three. **Why a subdomain** under
-each feature says why that trade was made; **Flashcards** → *Three
+The flashcards are a page of this repository served at the root of a
+hostname of its own — `functions/_middleware.js`, the `FLASHCARDS` block.
+To a browser it is a different site: its own `localStorage` and
+`sessionStorage`, so no `ttb.lang` and no radio carried over, which is why it
+carries a language switch of its own and starts silent there. The session
+cookie is scoped to the domain, so an account is the same account on both.
+Splitwise was a second subdomain on the same terms until 2026-11-09; the
+`GONE` block 301s its hostname to the map until the domain is detached.
+**Why a subdomain** under **Flashcards** says why that trade was made; **Flashcards** → *Three
 languages, not ten* says what it cost.
 
 The same page at `/flashcard` on the map's own host is what the rail

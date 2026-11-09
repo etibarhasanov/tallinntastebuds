@@ -14,8 +14,6 @@
  *                             it
  *   functions/u/[name].js     lists.html: one person, which is where a byline
  *                             leads
- *   functions/split.js        split.html: one group, so a pasted link says
- *                             which
  *   functions/flashcard.js    flashcard.html: one deck of Estonian, written
  *                             into the page as text so a search for what a
  *                             word means finds this site answering
@@ -23,12 +21,11 @@
  *                             text, so a search for where to eat finds the
  *                             post that answers it
  *
- * The map and the split page write their own tags rather than taking head():
- * it spells one title for every caller and hands every caller the mark as its
- * picture, and neither is right for a restaurant, which has a photograph and
- * a language, or for a group, whose name wants no site suffix after it. Both
- * take esc(), rehead() and canonical(); the map also takes SITE, because a
- * place's card is a photograph at an address of its own.
+ * The map writes its own tags rather than taking head(): it spells one title
+ * for every caller and hands every caller the mark as its picture, and
+ * neither is right for a restaurant, which has a photograph and a language.
+ * It takes esc(), rehead(), canonical() and SITE, because a place's card is
+ * a photograph at an address of its own.
  *
  * What is in here is the part they cannot each have their own copy of: the two
  * escaping rules, the page out of the deployment, the head, the head swap, the
@@ -82,7 +79,7 @@ export function seed(value) {
 }
 
 /* A static file out of the deployment, by its path — "/lists.html",
-   "/split.html". ASSETS is the binding Pages gives a Function for its own
+   "/flashcard.html". ASSETS is the binding Pages gives a Function for its own
    static files; the plain fetch is what makes this work under `wrangler pages
    dev`, where the binding is not always there. The map is the one page not
    fetched this way: "/" is index.html, and functions/index.js says why it
@@ -205,10 +202,9 @@ export function canonical(request, path) {
  * third kind, and is not drawn at any size of this file's choosing — see
  * below.
  *
- * The name is the site's rather than the page's because functions/index.js and
- * functions/split.js each hold a copy of this path — they write their twelve
- * tags out rather than calling this, so there is nowhere yet for the three to
- * agree. Two of the four are one edit apart from being one. */
+ * The name is the site's rather than the page's because functions/index.js
+ * holds a copy of this path — it writes its twelve tags out rather than
+ * calling this, so there is nowhere yet for the two to agree. */
 const SITE_CARD = '/assets/logo/og.jpg';
 
 /* A face is the other kind of picture, and it changes three things about the
@@ -253,7 +249,7 @@ export function head(meta) {
        shared into a chat showed "Lists | Tallinn Tastebuds" to every unfurler
        that falls back to the tag, and every tab opened one flashed it before
        assets/lists.js caught up. lists.html's own now sits inside the markers,
-       where split.html has always kept its, so this replaces it rather than
+       where index.html keeps its, so this replaces it rather than
        queueing behind it. */
     '<title>' + title + '</title>',
     '<meta name="description" content="' + description + '">',

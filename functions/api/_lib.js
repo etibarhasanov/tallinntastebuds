@@ -9,8 +9,8 @@
  * signed in to (two routes do that now: ./account.js and ./google.js). The
  * page routes a directory up reach in here too, for a session, for the
  * database check and for the map's places: functions/list/[id].js,
- * functions/u/[name].js, functions/lists/index.js, functions/index.js and
- * functions/split.js — and functions/mcp.js, which is not a page but reads
+ * functions/u/[name].js, functions/lists/index.js and functions/index.js —
+ * and functions/mcp.js, which is not a page but reads
  * the map's places, the box around Tallinn, the folding and the distance
  * from here rather than keeping copies. Four things at the bottom hold a
  * value between requests — which database this deployment is holding, the
@@ -185,18 +185,17 @@ export function sameSecret(a, b) {
 export const SESSION_COOKIE = 'ttb_s';
 export const SESSION_DAYS = 365;
 
-/* The site is three hostnames now — tallinntastebuds.ee, the splitwise
-   subdomain under it and the flashcards one — and a cookie set without a
-   Domain is a cookie for the one host that set it. So signing in on the map
-   would have been signing in on the map only, and either subdomain would have
-   asked for the password again on a site the same person was already signed in
+/* The site is two hostnames — tallinntastebuds.ee and the flashcards
+   subdomain under it — and a cookie set without a Domain is a cookie for the
+   one host that set it. So signing in on the map would have been signing in on
+   the map only, and the subdomain would have asked for the password again on a site the same person was already signed in
    to.
  *
    Scoping it to the domain is what makes one account cover all of them. It is
    not free: every subdomain of tallinntastebuds.ee receives this cookie, so
    nothing may be hosted under one that should not hold a session token. There
-   are two subdomains and this file is where to come back to before there is a
-   third.
+   is one subdomain and this file is where to come back to before there is a
+   second.
  *
    Only where the domain is actually ours. A preview deployment answers at
    <branch>.tallinntastebuds.pages.dev, and a Set-Cookie naming another
@@ -205,11 +204,9 @@ export const SESSION_DAYS = 365;
    read from the request rather than assumed, and anything that is not the
    live domain or a subdomain of it gets the host-only cookie it always had.
  *
-   THIS BLOCK ARRIVED FOR SPLITWISE AND IS NOT SPLITWISE'S ANY MORE. The
-   flashcards subdomain is its second reader and signs people in by it too, so
-   removing splitwise now leaves this exactly where it is — that was true for a
-   while and is not; see **Taking it out** under **Splitwise** in README.md,
-   where the row for this file says so. It goes when the last subdomain goes,
+   This block arrived for splitwise, the bill-splitting subdomain, and stayed
+   when splitwise was taken out because the flashcards sign people in by it
+   too. It goes when the last subdomain goes,
    and then it is the SESSION_DOMAIN constant, the two lines that read it, the
    third parameter and the second Set-Cookie in the logout branch of
    account.js — and sessionCookie(token, days) is back to what it was.

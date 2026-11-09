@@ -17,8 +17,8 @@
  *
  * Nothing on this site links to the flashcards except one pill on the map's
  * rail. That is deliberate — see **How it is found** under **Flashcards** in
- * README.md — and it is the blog's arrangement rather than the split page's:
- * unlinked and indexed, not unlinked and hidden. The page shipped with a
+ * README.md — and it is the blog's arrangement: unlinked and indexed, not
+ * unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
  * alone. That is still true and this does not touch it: what is indexed is the
  * decks in data/decks.json, which are a file anybody may read, and a deck
@@ -31,9 +31,8 @@
  *
  * WHAT GOES IN, AND WHERE
  *
- * The head: head() out of ../_shell.js, uncopied — unlike the map and the split
- * page, which write their twelve tags out because a restaurant has a photograph
- * and a group's name wants no site suffix after it. A deck wants what head()
+ * The head: head() out of ../_shell.js, uncopied — unlike the map, which
+ * writes its twelve tags out because a restaurant has a photograph. A deck wants what head()
  * spells — "At the table | Tallinn Tastebuds", and the site's name beside it —
  * with one thing of its own, which is the picture. The mouth over "All the
  * places in this map I have personally been and approved" is the site's card
@@ -130,8 +129,7 @@ const CARD = '/assets/logo/og-flashcard.png';
  * flashcard.tallinntastebuds.ee, and /flashcard on every preview. The first
  * two are one page on two hostnames, which is precisely the split the
  * pages.dev redirect in functions/_middleware.js exists to stop — a search
- * engine picking one and half the links pointing at the other. Splitwise never
- * had to answer this because nothing on it is indexed at all.
+ * engine picking one and half the links pointing at the other.
  *
  * So the subdomain names the live domain's spelling rather than its own, and a
  * preview goes on naming itself, which is what canonical() is for and why it

@@ -129,7 +129,7 @@ async function savedByUser(env, userId) {
    account, which signs out on the way.
 
    Two clears, and the second one is not a mistake. The session cookie is
-   scoped to tallinntastebuds.ee so that the splitwise subdomain is signed in
+   scoped to tallinntastebuds.ee so that the flashcards subdomain is signed in
    when the map is — see sessionCookie() in ./_lib.js — and a browser that
    signed in before it was may still be holding the host-only cookie this site
    set for years. Clearing only the domain-scoped one would leave that one
@@ -185,7 +185,7 @@ export async function onRequestGet(context) {
   const pw = await passwordOn(env, user.id);
 
   /* Read here rather than added to sessionUser(), which every signed-in
-     request on this site goes through — saves, lists and splitwise included,
+     request on this site goes through — saves, lists and flashcards included,
      and not one of them prints this. One indexed read on the id already in
      hand, on the one page that draws the box it fills.
 
@@ -439,7 +439,7 @@ export async function onRequestPost(context) {
    * before somebody has seen a single list — the sign-up sheet asks for it
    * on the way past a bakery they wanted to save. So it is a choice worth
    * being able to make again. Nothing else moves — the saves,
-   * the lists, the keeps and every splitwise group are filed under
+   * the lists, the keeps and the decks are filed under
    * `users.id`, which no rename touches — so this is one UPDATE and a row
    * saying what the account used to be called.
    *
@@ -823,9 +823,6 @@ export async function onRequestPost(context) {
    *                                 list somebody else wrote still has one
    *   flashcard_decks, _cards,      the decks it wrote and what it knew
    *   flashcard_known
-   *   split_*                       every group it owns, whole, as the
-   *                                 owner's own delete takes one; and its
-   *                                 place in everybody else's
    *
    * WHAT STAYS, AND WHY IT IS NOT THE PERSON
    *
@@ -836,13 +833,6 @@ export async function onRequestPost(context) {
    * the chess games stay too — they are things said and played in public, and
    * every reader of them is a LEFT JOIN against users, so with the row gone
    * they draw with no name on them, which is what a deleted account is.
-   *
-   * In somebody else's splitwise group, an expense this account paid or owed
-   * a share of stays in the list and draws with no name, the way a member who
-   * left does — see readGroup() in ./split.js. Deleting those lines would be
-   * this account rewriting what other people paid; keeping the membership
-   * would be keeping the account. The group's balances then add up among the
-   * people still in it.
    *
    * The name is held for thirty days, exactly as a rename holds the old one:
    * /u/<name> answers nothing rather than a stranger who signed up a minute
@@ -896,14 +886,6 @@ export async function onRequestPost(context) {
       'DELETE FROM flashcard_cards WHERE deck_id IN (SELECT id FROM flashcard_decks WHERE owner = ?)',
       'DELETE FROM flashcard_decks WHERE owner = ?',
       'DELETE FROM flashcard_known WHERE user_id = ?',
-      /* The groups it owns, in the order remove() in ./split.js takes one. */
-      'DELETE FROM split_shares WHERE expense_id IN (SELECT e.id FROM split_expenses e ' +
-        'JOIN split_groups g ON g.id = e.group_id WHERE g.owner = ?)',
-      'DELETE FROM split_expenses WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
-      'DELETE FROM split_settlements WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
-      'DELETE FROM split_members WHERE group_id IN (SELECT id FROM split_groups WHERE owner = ?)',
-      'DELETE FROM split_groups WHERE owner = ?',
-      'DELETE FROM split_members WHERE user_id = ?',
       'DELETE FROM identities WHERE user_id = ?',
       'DELETE FROM sessions WHERE user_id = ?',
       'DELETE FROM users WHERE id = ?'

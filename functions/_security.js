@@ -64,8 +64,8 @@ export const SECURITY = {
 
 /* The routes' answers are this site's pages' to read and nobody else's: a
    page on another site cannot load one into itself as a script or an image.
-   Same-site rather than same-origin, because splitwise and the flashcards ask
-   /api/ from their own subdomains. Not in `_headers`, which never serves an
+   Same-site rather than same-origin, because the flashcards ask /api/ from
+   their own subdomain. Not in `_headers`, which never serves an
    /api/ answer. */
 const API = '/api/';
 const API_ONLY = { 'Cross-Origin-Resource-Policy': 'same-site' };

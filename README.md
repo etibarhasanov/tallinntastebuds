@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, thirty-nine small Functions, no build step and no npm install. Adding a
+Static files, thirty-seven small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -79,7 +79,6 @@ tools, and what is deliberately left out.
 - [Lists](#lists)
 - [Public lists](#public-lists)
 - [Profiles](#profiles)
-- [Splitwise](#splitwise)
 - [Flashcards](#flashcards)
 - [Chess](#chess)
 - [Stories](#stories)
@@ -2499,7 +2498,7 @@ at length.
 
 `functions/_middleware.js` passes `/mcp` through untouched. It is on the
 live hostname, under neither of the owner's prefixes, and its answers wear
-the security headers the way every Function's do; the two subdomains 301
+the security headers the way every Function's do; the flashcards' subdomain 301s
 it back to the live hostname like every other address of the map's.
 
 To look at it from a terminal, under `npx wrangler pages dev .` or against
@@ -2714,7 +2713,7 @@ an address** under **Getting found** for the search half. The card:
 > Moussaka, tzatziki, souvlaki and dolma, and the moussaka is the one…
 > *the first photograph in `photos/varkizana/`*
 
-It is the same arrangement `/list/<id>` and `/split` already had — a Function
+It is the same arrangement `/list/<id>` already had — a Function
 in front of a static page, swapping the block between the `<!--PAGE-HEAD-->`
 markers — and the head of that file carries the reasoning. Four things about
 it are worth knowing from out here.
@@ -2977,8 +2976,8 @@ site's default, taken to be the one it was first written in, and every
 language its line or a row has a version in — so a page written in English,
 Azerbaijani, Russian and Estonian offers those four, and a page written in
 one offers none and draws no switch; `pageWrittenIn()` in `assets/lists.js`.
-The account page and splitwise still read the map's choice and have none of
-their own; nobody has asked for them yet.
+The account page still reads the map's choice and has none of its own;
+nobody has asked for one yet.
 
 ### Each language is an address
 
@@ -3058,7 +3057,7 @@ alongside the places rather than in front of them.
 discount pass — `deal.html`, `verify.html` and `staff.html`, all through
 `TTBPass.load()` — the blog, the lists page with every list and profile on
 it, and, since a week after the map, the account page, the editor, feedback,
-insights, splitwise and the owner's directory and flows pages, each through
+insights and the owner's directory and flows pages, each through
 a `loadWords()` of its own. Each still picks its language exactly as it did,
 out of the same eleven codes in the same order, and then fetches that one file
 rather than all ten: 25 to 30 KB on the wire where `ui.json` is 220, which
@@ -3071,15 +3070,10 @@ all: the line saying so is the English written into the script rather than
 switch on the lists page lists `data/lang/index.json` and still reloads the
 page in the language picked, so one file is all it needs.
 
-Two pages had a second use for the whole file and keep it another way. The
+One page had a second use for the whole file and keeps it another way. The
 editor read the language codes off `ui.json`'s keys to know which
 languages a profile's line can be written in; it reads them off
-`data/lang/index.json` now, the same codes in the same order. Splitwise lays
-its own strings, `data/split.json`, over the site's, and that file still
-carries all eleven languages — it is 37 KB, and it is the file that makes
-removing the feature a matter of deleting files — so `merge()` in
-`assets/split.js` takes the one block for the language the index picked and
-lays that over the pack. The flashcards and `/admin/stats` never read either:
+`data/lang/index.json` now, the same codes in the same order. The flashcards and `/admin/stats` never read either:
 their words ride in the same answer as their data — **One request on the way
 in** under **Flashcards**. `data/ui.json` is still served, because a browser
 holding yesterday's script still asks for it.
@@ -4192,11 +4186,6 @@ emoji gets the same sentence. What it does not do is tell alphabets apart: a
 one, and telling the two apart on a byline is a problem this site is too small
 to have yet.
 
-The splitwise page carries the same sheet and lost the same thing, and with it
-the `/api/account` request it made on every boot: `/api/split` already says who
-is signed in, so a name for the empty field was the only reason that second
-request existed.
-
 ### What signing in actually does to the rows
 
 `saves.owner` holds a `users.id` when the request carries a session and the
@@ -4301,7 +4290,7 @@ sheet, with the same `maxlength` and the same hint under it, because it is the
 same decision being made with more to go on.
 
 **Nothing moves but the name.** The saves, the lists, the keeps, the places
-somebody added and every splitwise group they are in are filed under
+somebody added and the flashcard decks they wrote are filed under
 `users.id`, and no page or table anywhere carries a second copy of the
 username: every byline on the site is a join against `users` at the moment it
 is drawn. So a rename is one `UPDATE` and everybody reading a list of yours
@@ -4371,7 +4360,7 @@ identity; its saves, recounted so a place's number drops; every list it wrote
 with the places on them, and other people's keeps of those lists; the lists it
 kept; the page of links under its name; the places it added by hand, unless a
 list somebody else wrote still has one on it; its flashcard decks and what it
-knew; every splitwise group it owns, whole, and its place in everybody else's.
+knew.
 
 **What stays is the numbers**, and the things said and played in public.
 `press_counts`, `profile_counts`, `list_counts`, `visitor_counts`,
@@ -4379,10 +4368,7 @@ knew; every splitwise group it owns, whole, and its place in everybody else's.
 key rather than under anybody, and a site that unwound its history whenever
 somebody left would be counting nothing. Feedback, hearts and chess games stay
 too; every reader of them is a `LEFT JOIN` against `users`, so with the row
-gone they draw with no name. In somebody else's splitwise group, an expense
-the account paid or owed a share of stays and draws with no name, the way a
-member who left does — deleting it would be rewriting what other people paid —
-and the group's balances add up among the people still in it.
+gone they draw with no name.
 
 **The name is held for thirty days**, exactly as a rename holds the old one,
 so `/u/<name>` answers nothing rather than a stranger who signed up a minute
@@ -4396,7 +4382,7 @@ gone. `delete` in `functions/api/account.js` is the whole of it.
 ### Signing in with Google
 
 **Continue with Google**, above the username and password on the map's sheet
-and on the splitwise page, with a rule and the word *or* between the two. It
+and on the flashcards, with a rule and the word *or* between the two. It
 is the other way in, and it exists for the reason the password reset does not:
 **a reset has to send an email and this sends nothing.** The browser goes to
 Google, the person signs in there, and what comes back is a statement this
@@ -4544,7 +4530,7 @@ written a second time, because the browser cannot import from a Function;
 `node tools/validate.mjs` holds the two to each other. An undocumented link
 that opens Safari on some recent iPhones was looked at and left out: it does
 nothing in some of those apps, and the line would have to stand under it
-anyway. Splitwise and the feedback page still draw the plain button.
+anyway. The flashcards and the feedback page still draw the plain button.
 
 #### The duplicate nobody wants, and the step that no longer answers it
 
@@ -4754,7 +4740,7 @@ down.
 The rest is in the Google Cloud console — an OAuth client, a consent screen,
 and the **redirect URIs, which are per hostname and matched exactly**:
 `https://tallinntastebuds.ee/api/google`,
-`https://splitwise.tallinntastebuds.ee/api/google`, and the preview host you
+`https://flashcard.tallinntastebuds.ee/api/google`, and the preview host you
 actually open. Google accepts no wildcard, so a new preview branch is a new
 URI to add — the one part of this that cannot be made to look after itself.
 `http://127.0.0.1:8788/api/google` is allowed too, which is what makes
@@ -4805,8 +4791,8 @@ the `about` column is guarded against a few lines above it.
   server set, which is the difference between a sign-in lasting a week and
   lasting a year on an iPhone.
 - **It is scoped to the domain, not to the host**, so that one account covers
-  `tallinntastebuds.ee` and the splitwise subdomain under it — see
-  **[Splitwise](#splitwise)** for the whole of that argument. Only where the
+  `tallinntastebuds.ee` and the flashcards subdomain under it — see
+  **[Flashcards](#flashcards)** for the whole of that argument. Only where the
   domain is actually ours: a preview at `*.tallinntastebuds.pages.dev` gets the
   host-only cookie it always had, because a `Set-Cookie` naming another
   registrable domain is dropped by the browser and the sign-in would silently
@@ -8998,403 +8984,6 @@ else is switched on or off.
 
 ---
 
-## Splitwise
-
-Five people eat somewhere on this map, one card pays, and the rest of the
-evening is arithmetic done badly in a group chat. **splitwise.tallinntastebuds.ee**
-is that arithmetic done once: a group somebody names, a link they send to the
-other four, a line for each thing anybody paid for, and one sentence at the
-bottom saying who hands what to whom.
-
-It is the only thing on this site that is not about restaurants, and it is
-here because it is what happens immediately after one.
-
-### Why a subdomain
-
-Everything else on this site is a view of the map — a list is places off it, a
-profile is the person who wrote the lists, the account page is your things.
-This is not. Nothing in it points at a restaurant, nothing in it can, and a
-fifth card on the account page reading "Groups" would have been a second
-product filed under somebody's saved places.
-
-So it has an address of its own, and the address is the only thing that is its
-own. There is no second Pages project, no second database, no second build and
-no second account system: `functions/_middleware.js` reads the hostname, serves
-`split.html` at the root of the subdomain, and 301s every other address on it
-back to `tallinntastebuds.ee`, so there is one copy of the map and one link to
-it.
-
-The page also answers at **`/split`** on every host, and that is not a
-fallback — it is where the page actually lives. A preview deployment is
-`<branch>.tallinntastebuds.pages.dev`, and no subdomain of the live domain can
-exist under it, so a feature that only answered on the subdomain could never be
-looked at on a pull request. The subdomain's root is one call to that route —
-not a rewrite, which hands the request to the static file and never to the
-route, and unfurled every group's link as the site's name for as long as it
-was one.
-
-### The name
-
-"Splitwise" is the name of an existing company's app, and this is a subdomain
-and a page title using it. Nothing here is passing itself off as theirs —
-there is no borrowed branding and nothing is sold — but the word is somebody
-else's mark, and a site that keeps its reasoning in a file should say so rather
-than leave the next person to discover it. Changing it is two constants and a
-handful of strings: `SPLIT_HOST` in `functions/_middleware.js`, `ON_SUBDOMAIN`
-in `assets/split.js`, and the `split*` keys in `data/ui.json`. Everything else
-— the tables, the routes, the file names — is spelled `split`.
-
-### It is the same account as the map
-
-A member of a group is a `users.id` out of `functions/api/account.js`, made
-from the same two fields the map's sheet asks for. Somebody who has been saving
-places for a year is already somebody who can be owed eleven euros, and
-somebody who signs up here to split a dinner can go and save places under the
-same name.
-
-**One line makes that work across two hostnames.** A cookie set with no
-`Domain` is a cookie for the host that set it, so a session made on
-`tallinntastebuds.ee` would not be sent to `splitwise.tallinntastebuds.ee` at
-all — signing in on the map and arriving here signed out. `sessionCookie()` in
-`functions/api/_lib.js` now scopes it to `tallinntastebuds.ee` when the request
-came in on that domain or a subdomain of it, and leaves it host-only anywhere
-else, because a `Set-Cookie` naming a domain that is not the request's is
-dropped by the browser outright and every preview under `*.pages.dev` would
-have lost its sign-in.
-
-The cost is worth writing down: **every subdomain of `tallinntastebuds.ee` now
-receives the session cookie.** There are two of them — this and
-**[Flashcards](#flashcards)**, which signs people in by the same line — and
-`_lib.js` is where to come back to before there is a third.
-
-Signing out clears the cookie twice, host-only as well as domain-scoped, so a
-browser still holding the one this site set for years before any of this is not
-left signed in by a Sign out that appeared to work.
-
-And a browser holding both sends both, under the same name, the older first.
-Reading only the first was a bug for three days: that older one is usually a
-session already gone — a password change deletes them all and sets only the
-new cookie — so the owner, signed in with a perfectly good second cookie, was
-read as nobody and got a 404 on every page under `/admin/`. `sessionTokens()`
-in `_lib.js` hands over every `ttb_s` the request carries, two at most, and
-`sessionUser()` takes the first that names a live session; Sign out ends every
-one of them rather than the first.
-
-### The invitation
-
-A group's id is its invitation: `dinner-at-rataskaevu-k3fmqw`, minted exactly
-the way a list's id is — a readable stem from the name, and six characters out
-of an alphabet with no vowels and no `0/o/1/l` in it. The link is
-`/split?g=<id>`, and that one address is the whole of the routing:
-
-| You are holding | and you are | so the page is |
-|---|---|---|
-| nothing | signed in | your groups, and the box that makes one |
-| nothing | signed out | the offer of an account |
-| a code | anybody at all | **the group** — and what changes is only what you may press |
-
-The link people send each other is the same link they use afterwards, which is
-the only shape of share link nobody has to be told twice about.
-
-**Holding the link is the whole of the permission to read, and it buys the
-whole group.** Its members, every line anybody put in, where everybody stands
-and who pays whom — with no account, no membership and nothing to press first.
-A stranger sees the group and a sign-in form where the controls would be; a
-signed-in non-member sees the group and a Join.
-
-That is a deliberate widening and it was not always so. For a day the code
-bought the name and the headcount, and everything else was behind an account —
-which put a wall in front of the one thing that would make somebody want to
-climb it. Nobody should be asked to make an account to find out what they are
-being asked to join. It is the rule a shared list has always been under, said
-about a ledger.
-
-**What it costs, said here rather than discovered.** The link *is* the
-permission, so a link that gets away — forwarded past the table, pasted in a
-channel that later gains a member, read off somebody's screen — is the group's
-whole ledger and not just its name. Four things hold that in:
-
-- the code is six characters from an alphabet of twenty-eight on the end of a
-  stem, which is not something anybody guesses or walks;
-- what is in there is usernames, what somebody called a bill and what it came
-  to. No address, no card, no telephone number — this site holds none of those
-  about anybody;
-- **reading is all it buys.** Every write goes through a session *and* a
-  membership, so a stranger with the link can read every row and change none.
-  That is enforced in `functions/api/split.js` and driven as a test each time
-  this changes;
-- and the preview card a link-preview service builds carries the name and the
-  headcount only, because the ledger is fetched by the page's own script and a
-  crawler does not run it.
-
-If a link does get away, the answer is the owner's: delete the group and make
-another. There is no rotating the code, and adding one would be a second
-address for the same thing.
-
-### What the link looks like in a message
-
-A group's link is not an address anybody browses to. It is a thing one person
-pastes into a chat and four other people tap, so **the little preview card is
-most of what the link is**. Pasted as a static page it arrived as *Splitwise |
-Tallinn Tastebuds*, or as a bare blue URL — which tells the four people nothing
-they did not know and reads like a link to the map.
-
-`functions/split.js` serves the page instead of the file: it fetches
-`split.html` out of the deployment and swaps the block between the
-`<!--PAGE-HEAD-->` markers for that group's own tags, so the card carries
-
-> **Split in Berlin**
-> 4 people splitting what they paid for. Open the link to join.
-
-with the site's mark beside it, and the tab says *Split in Berlin* rather than
-the site's name. It is the same move `functions/list/[id].js` makes for a
-shared list and it borrows that route's `esc()`, `rehead()`, `page()` and
-`canonical()` — importing them, changing nothing there.
-
-**The title is the group's name and nothing else.** `head()` in
-`functions/_shell.js` spells one as *"<name> | Tallinn Tastebuds"*, hardcoded
-so no caller can differ, and that is right for a page of the site and wrong for
-this one: a card already carries the domain under it and `og:site_name` beside
-it, so the suffix says the site's name a third time and pushes the only words
-that matter further from the front. So this route writes its twelve tags out
-rather than calling `head()`. `esc()` is the one thing it does **not** copy —
-group names are typed by people and go straight into `content="…"`, and that
-escaping lives in exactly one place on purpose.
-
-**Fetched but never indexed**, which is not a contradiction: the card is built
-by a fetch, and the page has nothing on it for a stranger and no business in a
-search result. Every answer the route gives carries `noindex`.
-
-That is also why **`robots.txt` deliberately does not disallow `/split`** — it
-did for a day. A `Disallow` stops the fetch, and a stopped fetch is a bare blue
-URL. The note beside `/list/<id>` in that file has made the same argument since
-lists became shareable, and it applies harder here: a list at least has its
-title in its address, and `/split?g=dinner-at-rataskaevu-k3fmqw` does not.
-
-**It gives away nothing new.** The card carries the group's name and how many
-people are in it — exactly what `inviteOf()` already answers to anybody holding
-the code, signed in or not. It never carries an expense, a balance or a
-member's name; those need a session and a membership, and a crawler has
-neither.
-
-### Money is cents, everywhere
-
-Never a float. Money in a float is the bug that takes a year to surface —
-three shares of 33.33 against a total of 100.00 that never quite balances, and
-no way to say which cent went missing. The browser's fields take `24.60` and
-`24,60` (one of the ten keyboards this site is read on writes the comma) and
-send `2460`; `split_expenses.cents` is an integer; every sum in
-`functions/api/split.js` is integer arithmetic. Euros only: the city has one
-currency, and a column that could hold another is a column every sum would have
-to start caring about.
-
-### How a bill is divided, and the cent that does not divide
-
-The obvious version divides the total by the number of members when the page is
-read. It is wrong twice over. A group's membership changes — somebody joins on
-Sunday and would retroactively owe a third of Friday's dinner — and an equal
-split of 10.00 between three people is 3.33 three times, which is 9.99.
-
-So the division happens once, when the expense is entered, against the members
-as they stand at that moment, and the answer is written down in
-`split_shares`: 3.34, 3.33, 3.33. The remainder cents go to the first few
-members in join order, so the same bill divides the same way every time it is
-read rather than moving a cent about between refreshes. Somebody has to have
-the extra cent, and it is better that it is written down than that it is lost.
-
-What a group owes is then a sum of integers over rows that cannot change.
-
-### Where everybody stands, and who pays whom
-
-Each member's balance is what they paid for, plus what they have handed over
-since, less what they owe and what has been handed to them. The column sums to
-zero — every cent that leaves one balance arrives in another, which is what the
-remainder above is protecting.
-
-Under it, the shortest list of payments that clears the column: biggest debt
-against biggest credit, repeat. That greedy pairing is not guaranteed to be the
-theoretical minimum number of transfers — that is an NP-hard problem and nobody
-at a dinner table has one — but it always clears the balances, needs at most one
-payment fewer than there are people, and gives the same answer every time it is
-asked, which is what a page five people are reading together needs.
-
-Pressing **Mark as paid** on one of those lines writes a `split_settlements`
-row. A payment is deliberately not an expense with a negative amount: an
-expense buys something and a payment only moves a debt, and folding the two
-together would make every sum in the file have to know which it was looking at.
-
-### Who may do what
-
-A group is a room of friends rather than a wiki, and the rules are the smallest
-set that keeps it honest:
-
-| | who |
-|---|---|
-| add an expense | any member — the payer need not be the person typing, which is how this ever gets filled in at all |
-| remove one | whoever entered it, and whoever paid it |
-| record a payment | any member, since the button sits on a line about two other people |
-| remove a payment | either end of it, and whoever wrote it down |
-| rename the group | its owner |
-| delete the group | its owner, and it takes everything in it |
-| see the group | anybody holding the link — see **The invitation** |
-| leave | any member who is not yet in the arithmetic |
-| remove somebody | its owner, on a member who is not yet in the arithmetic |
-
-**Leaving is for the person who opened the wrong link**, and that is all it is
-for. The moment somebody appears as a payer, as a share of somebody else's
-bill, or at either end of a payment, leaving would take their name out of a
-column that still counts their cents and the group would stop adding up. So it
-is refused, and the way out of a group you have spent in is for its owner to
-take the whole thing down.
-
-**Removing somebody is the same rule, held by the owner.** A group's code gets
-handed around a table and lands in the wrong chat sometimes, and the only
-answer used to be asking whoever arrived to leave and hoping. The owner can
-take the whole group down; being able to take one name out of it is the smaller
-version of a power they already have. It is refused on anybody the sums
-mention, for the reason leaving is, and it is refused rather than cascaded —
-deleting their expenses would be the owner quietly rewriting what other people
-paid. The page only draws the control where it would work, reading that off
-what the group already answered with rather than asking again.
-
-The owner cannot remove themselves. The group's row names them, and what they
-are reaching for there is **delete the group**.
-
-There is no archive and no undo on that. What it deletes is who owed whom what
-three weeks ago, which is exactly the thing nobody wants kept.
-
-**A username, never a `users.id`, crosses the wire.** The id is the site's
-internal handle — it is the owner column on a save, a list and a place somebody
-added — and there is no reason for four friends to learn each other's. A
-username is already public: it is the byline on every list here.
-
-### The caps
-
-| | | why |
-|---|---|---|
-| `MAX_MEMBERS` | 12 | the table you are sitting at. Past this the suggested payments stop being something anybody reads, and the thing being asked for is a different feature |
-| `MAX_GROUPS` | 20 | per account, counted over membership: a group you were added to costs the same as one you made |
-| `MAX_ENTRIES` | 200 | expenses per group, and payments per group |
-| `MAX_NAME` | 60 | the group's name |
-| `MAX_WHAT` | 60 | what an expense was for |
-| `MAX_CENTS` | 1000000 | €10,000. Nobody splitting a dinner meets it, and a typo of six extra digits is refused at the door rather than left sitting in somebody's balance |
-
-They are in `functions/api/split.js`, which is the copy that binds. The first
-three of the lengths are restated in `assets/split.js` as `MAX_NAME`,
-`MAX_WHAT` and `MAX_CENTS`, so a field stops somebody at the keystroke rather
-than at the round trip — change one, change the other.
-
-### Turning it on
-
-Two things, and neither is automatic:
-
-1. **Apply the schema to production.** `db/schema.sql` is re-runnable and
-   nothing in CI applies it. Preview is set aside until it is replicated from
-   production, so it gets nothing:
-
-   ```
-   wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql
-   ```
-
-   Until it is run, `/api/split` answers `no such table` and the page shows
-   nothing but its own error line. Preview first; production the moment the
-   change lands, because the code is live within the minute of the push.
-
-2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
-   `tallinntastebuds` project → **Custom domains** → add
-   `splitwise.tallinntastebuds.ee`. The DNS is already Cloudflare's, so this is
-   one form and a certificate that issues itself. Until it is added, everything
-   works at `/split` and the subdomain does not resolve.
-
-There is no third variable and no second service. `DB` and `SAVE_SALT` are the
-same two the saves and the accounts already need.
-
-### Taking it out
-
-This feature is meant to be removable, and it was built that way on purpose:
-it is not sure yet whether it stays. So it is **six files of its own, eight
-small additions to code that already existed and four to the documentation** —
-no shared helper was extracted for it, no existing function was rewritten
-around it, and nothing anywhere else on this site reads a row, a string or a
-line of it. What it borrows, it borrows by importing: `functions/split.js`
-reads four functions out of `functions/_shell.js` and that file is
-byte-identical to what it was before any of this.
-
-Delete these outright:
-
-```
-split.html                 the page
-functions/split.js         the route that serves it, and the head that makes
-                           a pasted link say the group's name
-assets/split.js            the browser half
-assets/split.css           its eighteen rules
-functions/api/split.js     the route, and the five tables' only writer
-data/split.json            its strings, all ten languages
-```
-
-Then take these back out. Each is an addition to a file that stood before it,
-and each is fenced or prefixed so it can be found by looking:
-
-| File | What is splitwise's |
-|---|---|
-| `functions/_middleware.js` | the `SPLITWISE` block of constants (including the `import` of the route above) and the `SPLITWISE` block inside `onRequest()` — both marked, both additions, nothing above them was touched |
-| `functions/api/_lib.js` | **Nothing, any more.** `SESSION_DOMAIN`, the two lines in `sessionCookie()` that read it and its third parameter were the only thing splitwise changed rather than added, and taking splitwise out used to mean putting them back. It does not now: **[Flashcards](#flashcards)** is on a subdomain too and signs people in by the same cookie. Leave this alone until the last subdomain goes |
-| `functions/api/account.js` | the third argument at the two `sessionCookie(token, SESSION_DAYS, request)` calls, and the second `set-cookie` in the `logout` branch, which exists only to clear the domain-scoped one |
-| `tools/validate.mjs` | the `SPLITWISE` block after the `ui.json` check, and the one line adding `splitKeys` to `known` |
-| `tools/stamp.mjs` | `'split.html'` in `PAGES` |
-| `_headers` | the `/split.html` and `/split` rules |
-| `robots.txt` | the paragraph about splitwise. There is no `Disallow` to put back — see **What the link looks like in a message** — so removing it is removing a comment |
-| `README.md` | this section, its line in **Contents**, its four lines in **Files**, the two `split.json` lines under **What the validator checks**, the domain-scoped-cookie bullet under **Accounts**, and the subdomain paragraph under **The custom domain** |
-| `CLAUDE.md` | the row in the process table, and the clause in the opening sentence |
-| `.claude/skills/api/SKILL.md` | the `/split` and `/api/split` rows, and the splitwise clause in the `/*` row |
-| `.claude/skills/site/SKILL.md` | the `split.html` in the stamped-pages list, and the paragraph about `data/split.json` |
-
-And in Cloudflare: remove `splitwise.tallinntastebuds.ee` from the Pages
-project's **Custom domains**, and drop the five tables —
-`split_shares` first, then `split_expenses`, `split_settlements`,
-`split_members`, `split_groups` — from both databases, along with their block
-in `db/schema.sql`.
-
-**What has no removal step, and that is the point.** `data/ui.json` is
-untouched by this feature — not one of its strings moved, which is why the
-splitwise ones are in a file of their own. `functions/_shell.js` is not edited
-by it either, though `functions/split.js` reads four functions out of it: it is
-imported from and never changed, which is what makes deleting the importer the
-whole of the job. `functions/api/lists.js`, `functions/list/[id].js`,
-`assets/app.js`, `assets/lists.js`, `assets/account.js`, `index.html`,
-`account.html`, `lists.html`, every other stylesheet and every file under
-`data/` except the new one carry no line of splitwise's.
-
-Three of those files have since been edited by something else —
-**[Flashcards](#flashcards)** put a line in `EMPTY` in `functions/_shell.js`, a
-row in `youCard()` in `assets/account.js`, and its own keys in `data/ui.json`.
-None of it is splitwise's and none of it moves when splitwise goes. The claim
-above is about this feature's reach, not about the files standing still.
-
-**The one real cost of keeping it separate**, said out loud because this repo
-does not hide trades: `functions/api/split.js` carries its own `shareCode()`,
-`slugOf()` and `words()`, which are a second copy of what
-`functions/api/lists.js` has. They were shared in `_lib.js` for a while, which
-is what this codebase normally does with anything two routes need —
-`nearTallinn()` says so in its own note. That is the right answer for a
-permanent feature and the wrong one for a provisional one: a shared helper is
-the thread that turns a deletion into an unpicking. **If splitwise is kept,
-that is the first thing to revisit**, because two copies of how an unguessable
-invitation is minted is two copies that can drift.
-
-### What it does not do
-
-No receipts, no photographs, no categories, no reminders, no currency but the
-euro, no unequal shares — a bill is split evenly between the people you tick,
-and the way to handle "I only had the soup" is to enter the soup as its own
-line. No notifications of any kind: this site has no address for anybody, which
-is the whole shape of its account, and that has not changed for this.
-
-It is also not on the map, and must not become so. Nothing in `data/` knows
-this feature exists.
-
----
-
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
@@ -9419,16 +9008,15 @@ sentence by sentence with what each means under it and every word in it a
 press —
 **Conversations, which are read**.
 
-It is the second thing on this site that is not about restaurants, and it is
-here for the same reason the first one is: it is what the people this map is
-written for are short of.
+It is not about restaurants, and it is here anyway because it is what the
+people this map is written for are short of.
 
-### Why a subdomain, again
+### Why a subdomain
 
-The argument is **Splitwise**'s, word for word, and it is worth not repeating
-at length: everything else here is a view of the map, this is not, and a sixth
-card on the account page reading "Flashcards" would be a second product filed
-under somebody's saved places.
+Everything else here is a view of the map, this is not, and a sixth card on
+the account page reading "Flashcards" would be a second product filed under
+somebody's saved places. The bill-splitting page called splitwise made the
+same argument first and was taken out on 2026-11-09; this one stays.
 
 So it has an address of its own and nothing else of its own. No second Pages
 project, no second database, no second build, no second account system:
@@ -9441,13 +9029,10 @@ actually lives. A preview deployment is `<branch>.tallinntastebuds.pages.dev`
 and no subdomain of the live domain can exist under one, so a feature that
 answered only on the subdomain could never be looked at on a pull request.
 
-**The page has a route of its own, and it is for both of the reasons
-splitwise's is one.** `functions/split.js` writes a group's name into the head
-because a group's link is pasted into a chat and the little preview card is
-most of what the link is — and a link to this page is sent to somebody too,
-which is the half of it written up under **When somebody sends the link**
-below. What splitwise has no version of is the other half:
-`functions/flashcard.js` writes the deck's own title and description **and the
+**The page has a route of its own, and for two reasons.** A link to this page
+is sent to somebody, and the little preview card is most of what the link is
+— the half written up under **When somebody sends the link** below. The other
+half: `functions/flashcard.js` writes the deck's own title and description **and the
 deck's words into the page as text**, so that somebody searching for what an
 Estonian word means finds the deck that answers it — in all three languages the
 cards are written in, one `<dt>` and up to three `<dd>`s, because *что значит
@@ -9718,10 +9303,10 @@ through an English they are shaky in — as the one person with no way to ask
 for Russian. So there is a switch, and the next section is it.
 
 **And the interface is still in `ui.json` with everything else.** That half of
-the old argument stands: it is deliberately *not* the arrangement splitwise has,
-where the strings live in a file of their own. The `/site` skill says in so many
-words that there is one such exception and a second would be two files to keep
-in step. So the hundred and one `flash*` keys are in `ui.json`, and taking this
+the old argument stands: the strings do not live in a file of their own. The
+`/site` skill says in so many words that `data/ui.json` is the one strings file,
+and that splitwise's `data/split.json` was the only exception while it lasted.
+So the hundred and one `flash*` keys are in `ui.json`, and taking this
 feature out means taking a hundred and one keys out of ten blocks rather than deleting
 a file. That is the price of the rule, and it is the right way round — a stale
 string is worse than a tedious deletion.
@@ -10006,11 +9591,11 @@ make at the start, and after that the decks go by underneath it.
 ### It is the same account as the map
 
 An owner is a `users.id` out of `functions/api/account.js`, and the session
-cookie has been scoped to the domain rather than the host since splitwise — see
-`sessionCookie()` in `functions/api/_lib.js`. Signing in on the map is being
-signed in here. **That line now has two readers**, which is worth knowing
-before either feature is removed: taking splitwise out does not take the line
-out any more.
+cookie has been scoped to the domain rather than the host since splitwise, the
+bill-splitting subdomain since taken out — see `sessionCookie()` in
+`functions/api/_lib.js`. Signing in on the map is being signed in here. **This
+page is now that line's only reader**, so taking the flashcards out takes the
+line out with them.
 
 ### One request on the way in
 
@@ -10071,9 +9656,9 @@ reads and works, and the map is one press away in the header.
 
 **The other pages went the other way.** This was offered as the pattern for
 them, and was deliberately not made in the change that made this page fast.
-They were cut down later by a different road: the map, the lists, the account
-page and splitwise each fetch one language's file out of `data/lang/` —
-splitwise its own `data/split.json` beside it — which sheds most of the same
+They were cut down later by a different road: the map, the lists and the
+account page each fetch one language's file out of `data/lang/`, which sheds
+most of the same
 weight without a route of their own. **One language at a time** under
 **Languages** is that change; this page still asks for nothing but its route,
 and `wordsFor()` reads the same file for it.
@@ -12074,8 +11659,8 @@ ones, and shuffling it would undo the one thing about it worth keeping.
 
 **A deck somebody wrote has exactly one reader, and it is its owner.** There is
 no sharing here, no public deck, and no link that buys anything — which is the
-one place this feature deliberately differs from lists and from splitwise,
-where holding the code *is* the permission. Every read of a deck out of the
+one place this feature deliberately differs from lists, where holding the
+link *is* the permission. Every read of a deck out of the
 database goes through `deckOf()`, which takes the session's own id, and a deck
 belonging to somebody else answers exactly the way a deck that does not exist
 answers.
@@ -12127,9 +11712,8 @@ Two things, and neither is automatic:
 
    Until it is run, the decks still turn over — they are a file — and every
    write answers `no such table`, which the page shows as the quiet line under
-   the title saying nothing is being remembered. That is a better failure than
-   splitwise's, which has nothing at all to show without its tables, and it is
-   still a failure: production, the moment the change lands.
+   the title saying nothing is being remembered. That is a quiet failure, and
+   it is still a failure: production, the moment the change lands.
 
    **A database that already had `flashcard_known` needs the two spacing
    columns put on by hand.** `IF NOT EXISTS` cannot add a column to a table
@@ -12171,8 +11755,9 @@ is the same bargain `readingBoxes()` takes above.
 
 ### Taking it out
 
-Built to be removable, the way splitwise was, because it is not yet known
-whether it stays. Delete these outright:
+Built to be removable, the way splitwise was — and splitwise was removed, on
+2026-11-09, by following its own list — because it is not yet known whether
+it stays. Delete these outright:
 
 ```
 flashcard.html                 the page
@@ -12200,13 +11785,16 @@ and each is fenced or prefixed so it can be found by looking:
 | File | What is the flashcards' |
 |---|---|
 | `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
-| `tools/validate.mjs` | the `FLASHCARDS` block after the splitwise one, `'flashcard.html'` in the PAGE-HEAD marker list, and the `data/decks/` staleness check with its import of `tools/decks.mjs` |
+| `tools/validate.mjs` | the `FLASHCARDS` block after the `ui.json` check, `'flashcard.html'` in the PAGE-HEAD marker list, and the `data/decks/` staleness check with its import of `tools/decks.mjs` |
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `shelfIds()`, the two `entries.push` lines and the third argument the three callers pass |
 | `robots.txt` | the paragraph about the flashcards. There is no `Disallow` to put back — see **How it is found** — so removing it is removing a comment |
 | `assets/app.js` | the `flash` row in `renderMore()`, the only link to the feature on this site, and `'flash'` with it in `RAIL_PILLS` in `functions/api/stats.js` |
 | `data/ui.json` | `flashDoor` and `flashDoorWhy` with the rest |
 | `tools/stamp.mjs` | `'flashcard.html'` in `PAGES` |
+| `functions/api/_lib.js` | the two lines in `sessionCookie()` that read `SESSION_DOMAIN`, and its third parameter — splitwise's once, the flashcards' alone since it went. The constant itself stays while `ownerCookie()` in `_admin.js` reads it |
+| `functions/api/account.js` | the third argument at the two `sessionCookie(token, SESSION_DAYS, request)` calls, and the second `set-cookie` in `signedOut()`, which exists only to clear the domain-scoped one |
+| `functions/_middleware.js`, again | the `GONE` block too, if splitwise's domain has been detached by then |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
 | `data/ui.json` | the hundred and one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
@@ -12228,16 +11816,15 @@ from and not edited — `json()`, `sessionUser()`, `wrongDatabase()`,
 paragraph above says why that was the right trade.
 
 **The cost of keeping it separate, said out loud.** `assets/flashcard.js`
-carries the **third** copy of the sign-in form on this site: the map's sheet,
-the split page's, and this. The reason is the hostname and it is
-`assets/split.js`'s reason — `?then=` is deliberately same-host, so sending
+carries the **second** copy of the sign-in form on this site: the map's sheet,
+and this. (Splitwise carried a third until it was taken out.) The reason is
+the hostname — `?then=` is deliberately same-host, so sending
 somebody from a subdomain to the map to sign in and back is either an open
 redirect or a dead end. It is a copy of the *form* and not of the *API*: same
-fields, same actions, same errors, same strings. But three is where that
-argument stops being free, and **if a fourth ever wants one the answer is not a
-fourth copy** — it is a shared global beside `assets/track.js`, `TTBAuth`,
-owning the form and the three actions, with all three existing copies moved
-onto it. That is a change to the sign-in on every page of this site and it was
+fields, same actions, same errors, same strings. But a copy is not free, and
+**if a third ever wants one the answer is not a third copy** — it is a shared
+global beside `assets/track.js`, `TTBAuth`, owning the form and the three
+actions, with both existing copies moved onto it. That is a change to the sign-in on every page of this site and it was
 deliberately not made in the change that brought this page.
 
 ### What it does not do
@@ -13022,7 +12609,7 @@ who can see it, who else handles anything, why, how long, and the reader's
 rights, with the Estonian regulator. Every sentence is about what the code
 does today, checked against it rather than against what a policy usually
 says: the **Delete account** button, for one, takes the account, saves,
-lists, profile, decks, splitwise groups and sign-in, holds the username for
+lists, profile, decks and sign-in, holds the username for
 thirty days, and does *not* take posted feedback or chess games, and the page
 says exactly that and that Instagram is where to ask for the rest.
 
@@ -13288,7 +12875,7 @@ rows rather than a column of links.
 
 A post is `?post=<id>` on the same address: the date, the title, the line, the
 paragraphs, and one button at the foot going to whatever the post is about —
-the map, `/lists`, `/split`. The way back is at the top, where a back belongs.
+the map, `/lists`. The way back is at the top, where a back belongs.
 
 Walking between them is `pushState` rather than a fresh document. The posts
 are already in memory, so re-fetching the page to show four paragraphs would
@@ -14062,7 +13649,7 @@ rather than taking the others with it. `held` in the answer
 `/api/admin/stats` gives, `HELD` in `functions/api/admin/stats.js` the nine
 statements, and the figures are the ones `/admin/visitors` draws. They draw
 whenever the ranking is in at all, `opened` or not: none of them is a press.
-Splitwise's groups and chess's games are not among them.
+Chess's games are not among them.
 
 It used to be one number, how many accounts, in a footnote under the total
 of opens. That footnote is the first figure now.
@@ -14549,8 +14136,8 @@ answered with (`account_err_<error>`), getting in (`account_done_<view>`),
 and shutting it with neither (`account_leave_<view>`, and
 `account_left_err` when a refusal was on screen as it went). The offer over
 the map reports being shown and fading away unanswered as well as the two
-presses. Splitwise and the flashcards carry a form of their own rather than
-a sheet, and report the try, the refusal and getting in the same way.
+presses. The flashcards carry a form of their own rather than a sheet, and
+report the try, the refusal and getting in the same way.
 
 The trip to Google is counted by `/api/google` itself, since a page that has
 sent somebody there cannot see what happened: `google_out` for a sign-in
@@ -14687,13 +14274,14 @@ flashcard reviewed twice is one row with the second date on it. So *how
 much were lists used last week* had no answer, and *how many different
 people used the flashcards* had none anywhere. Two counts answer them, both
 written by `countUse()` in `functions/api/_visitors.js` from the write
-routes of the five products those tables cannot speak for — saves (`map`),
-`lists`, `flashcards`, `splitwise` and `chess` — once a write has gone
-through, and never for the owner:
+routes of the four products those tables cannot speak for — saves (`map`),
+`lists`, `flashcards` and `chess` — once a write has gone through, and never
+for the owner. Weeks before 2026-11-09 also hold `splitwise`, the
+bill-splitting page since taken out:
 
 - **What was done**: `visitor_counts` under the kind `use`, one row a day
   per `<product>:<action>` — `map:save`, `lists:add`, `flashcards:knew`,
-  `splitwise:spend`, `chess:move` — the action named as the route names it.
+  `chess:move` — the action named as the route names it.
 - **How many people did it**: `usage_people`, one row per person per
   product per week. A person is the account where there is a session and
   the device id where there is not; the row is only an HMAC under
@@ -14902,21 +14490,20 @@ public page at `/flows` for the length of one pull request, and moved under
 `/admin/` before it landed: the page is the owner's workbench, and a file is
 the better thing to hand somebody anyway.
 
-Seven diagrams, and the line between them is a person rather than a feature:
+Six diagrams, and the line between them is a person rather than a feature:
 
 | Diagram | Who | Lanes |
 |---|---|---|
 | `visitor` | anybody without an account | one |
 | `member` | anybody with one | one |
 | `discount` | the guest, the waiter and the counter, around one code | four: guest, site, waiter, counter |
-| `splitwise` | the owner of a group, somebody holding its link, a member | four: owner, link holder, member, site |
 | `flashcards` | a learner, signed in or not | one |
 | `chess` | anybody at the city's board, a member with a game of their own, and the house | three: anybody, member, the house |
 | `owner` | the person whose site this is | three: owner, GitHub, site |
 
-Flashcards is a sixth rather than a part of the visitor and the member because
+Flashcards is a fifth rather than a part of the visitor and the member because
 it lives on its own subdomain and a learner is somebody who may never open the
-map at all. Chess is a seventh for the same reason the discount is one: it is
+map at all. Chess is a sixth for the same reason the discount is one: it is
 three people around one thing — the city's game, a member's own, and the
 owner at both as the house — and its steps are theirs, not the map's. It
 was drawn without waiting for the door the chess task list still holds:
@@ -14950,7 +14537,7 @@ the step pointing at it is moved too.
 
 ### Why three of them have one lane
 
-A lane for the site was tried on all six. On the discount, splitwise and owner
+A lane for the site was tried on all of them. On the discount and owner
 diagrams it earns its place — those are several people handing work to each
 other and to the site, which is what lanes are for. On the visitor, the member
 and the learner it did not: each is one person fanning out into eight
@@ -15100,8 +14687,7 @@ word, per tab, gone when the tab closes, and nothing that names anybody —
 but one more thing written to a device, beside the two dates **A visitor is
 a browser on a day** already puts there, and the same call.
 
-**A hand-over.** The pass shown to a waiter's camera, the splitwise link
-sent to the table: no one browser makes that journey, so the step it lands
+**A hand-over.** The pass shown to a waiter's camera: no one browser makes that journey, so the step it lands
 on carries `handover` in `flows.json`, the walk never enters it, and the
 arrow into it is drawn thin with no number. The step still counts when it
 is reached on the other device.
@@ -15782,16 +15368,17 @@ Two steps, in this order:
 2. **Custom domains.** Add the domain under the Pages project's **Custom
    domains** tab. Cloudflare issues the certificate automatically.
 
-**`splitwise.tallinntastebuds.ee` is a third entry on that same tab**, on the
+**`flashcard.tallinntastebuds.ee` is a third entry on that same tab**, on the
 same project, pointing at the same deployment — see
-**[Splitwise](#splitwise)**. `functions/_middleware.js` is what makes it a
+**[Flashcards](#flashcards)**. `functions/_middleware.js` is what makes it a
 different site rather than a second copy of this one, and until the entry
-exists that feature answers at `/split` and the subdomain does not resolve.
-
-**`flashcard.tallinntastebuds.ee` is a fourth entry on it**, on the same terms
-— see **[Flashcards](#flashcards)**. Same file makes it a different site, and
-until the entry exists that feature answers at `/flashcard` and the subdomain
+exists that feature answers at `/flashcard` and the subdomain
 does not resolve.
+
+**`splitwise.tallinntastebuds.ee` was a fourth**, for the bill-splitting page
+taken out on 2026-11-09. Until its entry is removed from the tab, the `GONE`
+block in `functions/_middleware.js` answers every address on it with a 301 to
+the map; once it is removed, that block can go too.
 
 Five lines in the repo name the host — see [Getting found](#getting-found).
 Nothing else needs touching: every path in the site is relative, and the
@@ -15994,12 +15581,7 @@ instead of a minute after the merge.
   languages, or a label no pattern can ever produce — see **The directory**
 - a UI string present in one language but missing in another
 - a string the site asks for — a `data-i18n` key in the markup, a `t('key')`
-  in a script — that is in no language of `data/ui.json` or `data/split.json`
-  at all, which is how a visitor ends up reading the key itself off the page
-- a `data/split.json` that speaks a language `data/ui.json` does not, or is
-  missing one it does, or is missing a string in one of them, or carries a key
-  `data/ui.json` also carries — one string, one home. See
-  **[Splitwise](#splitwise)**
+  in a script — that is in no language of `data/ui.json` at all, which is how a visitor ends up reading the key itself off the page
 - a file in `data/decks/` that is not what `tools/decks.mjs` would write from
   `data/decks.json`, or one left there for a deck the source no longer has —
   the index, the one file per deck, lesson and song, and the voice's list, which
@@ -16083,7 +15665,7 @@ instead of a minute after the merge.
   `functions/api/_visitors.js` does not name, since an address nothing
   claims is counted as not found and every view of the page would be filed
   on that row — see **A visitor is a browser on a day** under **Visitors**
-- `index.html`, `lists.html`, `split.html` or `flashcard.html` without exactly
+- `index.html`, `lists.html`, `flashcard.html` or `blog.html` without exactly
   one pair of `PAGE-HEAD` markers, which is where the Function serving that
   page writes its head; `rehead()` in `functions/_shell.js` leaves a page
   without them alone, so this is the only thing that would say so
@@ -16149,8 +15731,9 @@ assets/styles.lean.css     the same without the comments — generated, what the
 assets/app.js              map, panel, filters, i18n, lightbox — no framework
 assets/app.lean.js         the same without the comments — generated, what index.html loads
 functions/_middleware.js   which hostname is this: the pages.dev copy goes to
-                           the real one, and the splitwise subdomain serves the
-                           page below and nothing else
+                           the real one, the flashcards subdomain serves its
+                           own page and nothing else, and splitwise's old one
+                           goes to the map
 functions/index.js         / — the map, with its head and its JSON-LD written
                            in the language ?lang= names, so a search engine
                            can index it ten times
@@ -16179,8 +15762,6 @@ functions/api/geocode.js   a typed street to a point, for the add-a-place form,
                            and for "near Laulupeo" in the chat; Photon behind
                            it, open to anybody and cached a day
 functions/api/profile.js   one person's public lists, and their standing
-functions/api/split.js     splitwise: a group, who is in it, what everybody
-                           paid, and who hands what to whom
 functions/api/flashcard.js flashcards: the decks somebody wrote, which cards
                            each account knows, and which of the shipped ones
                            a reader has said is wrong
@@ -16227,15 +15808,6 @@ assets/lists.lean.css      the same without the comments — generated, what the
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
 assets/account.js          all three of its states; no stylesheet of its own
-split.html                 splitwise, at /split and at the root of
-                           splitwise.tallinntastebuds.ee
-assets/split.js            all four of its states, the second sign-in form on
-                           the site, and the reason there is one
-assets/split.css           what a column of money needs and the other pages
-                           do not
-data/split.json            that page's strings, in the same ten languages —
-                           its own file so that deleting the feature is
-                           deleting files
 chess.html                 the chess page, at /chess as well; unlinked and
                            indexed, like the blog
 assets/chess.js            the board, the turn line, the moves and the poll,
@@ -17340,16 +16912,16 @@ the page inside it.
 site is a blank rectangle. Both now say the site may frame itself and nobody
 else may — `'self'` and `SAMEORIGIN`, in `functions/_security.js` and in
 `_headers`, which the validator holds to each other. Same origin and not
-same site, deliberately: the two subdomains cannot frame the map and the
-map does not frame them, and every walk from the map is to an address on
+same site, deliberately: the flashcards' subdomain cannot frame the map and
+the map does not frame it, and every walk from the map is to an address on
 its own host.
 
 **What it deliberately does not do.** A walk that starts on a page loaded
 whole — a shared list, say — and goes on to the account is still two
 documents, with the carry across them that **The radio** describes. The
 owner's pages under `/admin` and `admin.html` stay whole-tab; they are
-tools rather than a walk. Splitwise is its own site on its own subdomain and
-is not framed. And a page that was closed and opened again starts again: the
+tools rather than a walk. The flashcards are their own site on their own
+subdomain and are not framed. And a page that was closed and opened again starts again: the
 frame is made on each open and taken down on each close, so nothing from the
 last visit to it can be left standing.
 
@@ -18314,7 +17886,7 @@ as across is scrolling: the direction is settled once, twelve pixels in, and a
 swipe counts at eighty, twice as wide as it is tall.
 
 The flashcards do not carry it, because a swipe on a card is an answer there;
-neither do splitwise nor the owner's pages, nor `verify.html` and
+neither do the owner's pages, nor `verify.html` and
 `staff.html`, which are a waiter's camera and a restaurant's screen rather
 than somewhere a visitor walks back from.
 
@@ -18520,7 +18092,7 @@ data; those do not belong in a static site at all.
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | `/p/<shortcode>/embed/`, whatever kind of post the permalink calls itself. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
 | [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
-| [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js` and `assets/split.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
+| [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js`, `assets/flashcard.js` and `assets/feedback.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
 
 **The attribution control in the bottom-right corner is a licence condition of
 both OpenStreetMap and CARTO. Do not remove it.**
@@ -18644,10 +18216,10 @@ The map, `assets/app.js`:
 | `ask_answer`, `ask_none`, `ask_resting` | `search_term`, and on the first two `source`, `places_shown`, `from_google` — what came back; see **Ask for somewhere** |
 | `account_open` | `view` (`sheet` signed out, `page` signed in) — the account row behind More, and the pill at the head of the rail before 2026-11-05 |
 | `account_switch` | `view` (`in`/`up`) |
-| `account_google` | `view` — Continue with Google pressed on the sheet; `via` on the flashcards and splitwise, and `feedback_google` on the feedback page |
+| `account_google` | `view` — Continue with Google pressed on the sheet; `via` on the flashcards, and `feedback_google` on the feedback page |
 | `account_google_browser` | `app` — and on the flashcards `via` — the button that stands where Continue with Google was inside Instagram's, Facebook's or TikTok's browser on Android, which takes the same trip from the phone's own browser. **Inside Instagram, Facebook and TikTok** |
 | `account_close`, `account_page` | — |
-| `account_create`, `account_login` | `via` (`google`) where the round trip to Google came back with `?google=new` or `?google=in`; nothing on the sheet's own form. The flashcards, splitwise and feedback report `account_create` with `via: google` for `new` as well |
+| `account_create`, `account_login` | `via` (`google`) where the round trip to Google came back with `?google=new` or `?google=in`; nothing on the sheet's own form. The flashcards and feedback report `account_create` with `via: google` for `new` as well |
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
@@ -18828,18 +18400,6 @@ interesting question is how many people say something rather than which
 sentence they agreed with — and unlike a list or a place, a piece of feedback
 has no name in the reports for an id to be looked up against, so sending one
 would put an opaque string in a console that nothing could resolve it from.
-
-Splitwise, `assets/split.js`:
-
-| event | parameters |
-| --- | --- |
-| `account_create`, `account_login`, `account_switch` | `via` (`split`) — its own sign-in form |
-| `account_try_up`, `_in`, `account_err_<error>`, `account_done_up`, `_in` | as on the map; there is no sheet here to open or shut, so nothing else of the map's sign-up funnel |
-| `split_open` | `group_id` — a row under Your groups |
-| `split_create`, `split_join`, `split_leave`, `split_remove` | `group_id` |
-| `split_share` | `group_id` — the copied invite link |
-| `split_spend`, `split_unspend`, `split_settle`, `split_unsettle`, `split_drop` | `group_id` — one per kind of write, named after the API's action |
-| `split_home`, `home` | — |
 
 Flashcards, `assets/flashcard.js`:
 

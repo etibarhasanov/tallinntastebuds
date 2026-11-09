@@ -124,8 +124,8 @@
  *
  * THE PAGE COMES FROM context.next(), NOT FROM A FILENAME
  *
- * The other four routes name the file they serve — '/lists.html' and
- * '/split.html' through shell() — because the address each answers at is not
+ * The other routes name the file they serve — '/lists.html' through
+ * shell(), say — because the address each answers at is not
  * its file's. This one's is: "/" *is* index.html, and asking Pages for
  * "/index.html" by name is asking for a path it answers with a 308 back to
  * "/". context.next() has no such question in it: it is, by definition, what
@@ -304,8 +304,7 @@ function kindsOf(place, types, lang) {
   });
 }
 
-/* A place's first photograph, on the live host even from a preview, for the
-   reason functions/split.js gives about the mark: an unfurler is not a
+/* A place's first photograph, on the live host even from a preview: an unfurler is not a
    browser and does not resolve a relative URL, and a preview's address
    outlives nothing. Empty for a place that has none. */
 function photoOf(place) {
@@ -514,8 +513,8 @@ function card(request, spot, ui, lang, self) {
     '<meta property="og:site_name" content="Tallinn Tastebuds">',
     /* The name on its own. og:site_name beside it already says where the link
        leads, so the suffix the <title> carries would spend the front of the
-       card saying it a second time — the argument functions/split.js makes for
-       a group's name, and a restaurant's is no less the point of the card. */
+       card saying it a second time, and a restaurant's name is the point of
+       the card. */
     '<meta property="og:title" content="' + esc(spot.name) + '">',
     '<meta property="og:description" content="' + esc(description) + '">',
     ...(photo ? [

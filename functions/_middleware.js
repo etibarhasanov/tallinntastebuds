@@ -34,47 +34,43 @@
  * are served straight from the edge and never spend a Function invocation.
  *
  * ---------------------------------------------------------------------------
- * AND ONE MORE HOSTNAME, WHICH IS SPLITWISE'S
+ * AND ONE MORE HOSTNAME, WHICH IS THE FLASHCARDS'
  *
- * Everything below the SPLITWISE line is that feature's and only that
- * feature's: one constant, three path names and one block inside onRequest().
- * Delete the four of them and this file is exactly what it was — see **Taking
- * it out** under **Splitwise** in README.md.
- *
- * splitwise.tallinntastebuds.ee is one more custom domain on this same Pages
+ * flashcard.tallinntastebuds.ee is one more custom domain on this same Pages
  * project. There is no second project, no second database and no second build;
- * what makes it a different site is the block below, which serves the split
- * page at its root and 301s every other address on it back to
+ * what makes it a different site is the FLASHCARDS block below, which serves
+ * the flashcards page at its root and 301s every other address on it back to
  * tallinntastebuds.ee, so there is one copy of the map and one link to it.
+ * Estonian on cards is not the map, and a person learning the language should
+ * not have to walk through a restaurant to reach it. Everything below the
+ * FLASHCARDS line is that feature's and only that feature's — see **Taking it
+ * out** under **Flashcards** in README.md.
  *
  * The subdomain is where a person types the address and not where the page
- * lives. `/split` answers on every host, including every preview under
- * *.tallinntastebuds.pages.dev where a subdomain of the live domain cannot
- * exist at all, so the feature can be looked at on a pull request the way
- * everything else here is. The rewrite below is convenience over that route,
- * not the route itself.
+ * lives. `/flashcard` answers on every host, so the page can be driven under
+ * `pages dev` on a localhost where a subdomain of the live domain cannot exist
+ * at all. The block below is convenience over that route, not the route
+ * itself.
  *
- * ---------------------------------------------------------------------------
- * AND ONE MORE AGAIN, WHICH IS THE FLASHCARDS'
- *
- * flashcard.tallinntastebuds.ee, on the same terms and for the same reason:
- * Estonian on cards is not the map either, and a person learning the language
- * should not have to walk through a restaurant to reach it. Everything below
- * the FLASHCARDS line is that feature's and only that feature's — see **Taking
- * it out** under **Flashcards** in README.md.
- *
- * It is answered the same way splitwise's is, and for both of the reasons
- * rather than one. A group's link is pasted into a message, so that head
- * carries the group's name; a link to this page is sent to somebody too, and
- * carries the picture of a card and the language it was sent in rather than the
- * map's — and, unlike splitwise, the fifty-three decks the site ships are also
- * indexed, so a deck's head and its words are what a search finds. Both are a
- * route, so both are called rather than rewritten to — see the block inside
- * onRequest(), and the note beside splitwise's for what a rewrite does
- * instead.
+ * A link to a deck is sent to somebody, and carries the picture of a card and
+ * the language it was sent in rather than the map's — and the fifty-three
+ * decks the site ships are also indexed, so a deck's head and its words are
+ * what a search finds. That head is written by a route, so the root is called
+ * rather than rewritten to — see the block inside onRequest() for what a
+ * rewrite does instead.
  *
  * This was a rewrite for a day, when the page carried a noindex and had no
  * route to call.
+ *
+ * ---------------------------------------------------------------------------
+ * AND ONE HOSTNAME THAT IS GONE
+ *
+ * splitwise.tallinntastebuds.ee was the bill-splitting page, on the same
+ * terms, until it was taken out on 2026-11-09. For as long as the custom
+ * domain is still attached to the Pages project, every address on it is a 301
+ * to the map's root — an old group link lands somewhere rather than on a copy
+ * of the map at the wrong hostname. Once the domain is removed in the
+ * dashboard, the GONE block below can go with it.
  *
  * ---------------------------------------------------------------------------
  * AND EVERYTHING UNDER /admin/ AND /api/admin/, WHICH IS THE OWNER'S
@@ -147,37 +143,26 @@ async function notFound(context) {
 }
 /* ------------------------------------------------------- end OWNER ONLY */
 
-/* ------------------------------------------------------------- SPLITWISE */
-/* The page at that hostname's root is not the static file: it is the route
-   that writes a group's own name into the head, so a link pasted into a
-   message says what it is. Called rather than rewritten to — see the block
-   inside onRequest(). */
-import { onRequest as splitPage } from './split.js';
-
-const SPLIT_HOST = 'splitwise.' + CANONICAL_HOST;
-
-/* The three paths that mean anything on that hostname. Everything else it is
-   asked for is a page of the map's and goes back to the map's own address.
-   /api is one prefix rather than a list because the splitwise page reads the
-   account route as well as its own, and the map's other routes answering there
-   costs nothing — none of them is a page anybody links to. */
-const SPLIT_PAGE = '/split';
-const SPLIT_FILE = '/split.html';
-const API_PREFIX = '/api/';
-/* --------------------------------------------------------- end SPLITWISE */
+/* ------------------------------------------------------------------ GONE */
+const GONE_HOSTS = ['splitwise.' + CANONICAL_HOST];
+/* -------------------------------------------------------------- end GONE */
 
 /* ------------------------------------------------------------ FLASHCARDS */
-/* Same as splitwise above: the page at that hostname's root is not the static
-   file, it is the route that writes the deck's own words into it. */
+/* The page at that hostname's root is not the static file, it is the route
+   that writes the deck's own words into it. Called rather than rewritten to —
+   see the block inside onRequest(). */
 import { onRequest as flashPage } from './flashcard.js';
 
 const FLASH_HOST = 'flashcard.' + CANONICAL_HOST;
 
 /* The two paths that mean anything on that hostname, plus /api, which is one
    prefix rather than a list because the page reads the account route as well
-   as its own. Same three lines splitwise has above and the same reasoning. */
+   as its own, and the map's other routes answering there costs nothing — none
+   of them is a page anybody links to. Everything else it is asked for is a
+   page of the map's and goes back to the map's own address. */
 const FLASH_PAGE = '/flashcard';
 const FLASH_FILE = '/flashcard.html';
+const API_PREFIX = '/api/';
 /* ------------------------------------------------------- end FLASHCARDS */
 
 /* The security headers, onto whatever route() below answers. */
@@ -248,48 +233,25 @@ async function route(context) {
   }
   /* ------------------------------------------------------ end OWNER ONLY */
 
-  /* ----------------------------------------------------------- SPLITWISE */
-  if (url.hostname === SPLIT_HOST) {
-    /* The front door, answered where it was asked. Not a redirect, so the
-       short address people were given is the address they keep — and not a
-       rewrite either, which is what this was and what did not work.
-     *
-       `context.next(new Request('/split…'))` hands the rewritten request to
-       the static assets and never to the route that serves /split, so the head
-       arrived unswapped and a group's link pasted into a message unfurled as
-       the site's name. Calling the route is what actually routes.
-     *
-       It is handed this request untouched rather than one pointed at /split,
-       and that is the second half of the fix: functions/split.js reads ?g= and
-       builds og:url out of the address it was asked at, so the card carries
-       the short one somebody would actually send. */
-    if (url.pathname === '/') return splitPage(context);
-
-    /* Everything that is not that feature belongs to the site, at the site's
-       own address. Same argument as the pages.dev redirect above, and the same
-       301: one copy of the map, one link to it. */
-    if (url.pathname !== SPLIT_PAGE && url.pathname !== SPLIT_FILE &&
-        !url.pathname.startsWith(API_PREFIX)) {
-      url.protocol = 'https:';
-      url.hostname = CANONICAL_HOST;
-      url.port = '';
-      return Response.redirect(url.toString(), 301);
-    }
+  /* ---------------------------------------------------------------- GONE */
+  if (GONE_HOSTS.indexOf(url.hostname) !== -1) {
+    return Response.redirect('https://' + CANONICAL_HOST + '/', 301);
   }
-  /* ------------------------------------------------------- end SPLITWISE */
+  /* ------------------------------------------------------------ end GONE */
 
   /* ---------------------------------------------------------- FLASHCARDS */
   if (url.hostname === FLASH_HOST) {
     /* The front door, answered where it was asked rather than redirected to,
        so the short address people were given is the address they keep — and
-       called rather than rewritten to, for the reason written out beside
-       splitwise's: a rewritten request goes to the asset server and never to
-       the route, so the head would arrive unswapped.
+       called rather than rewritten to, which is what this was and what did not
+       work: `context.next(new Request('/flashcard…'))` hands the rewritten
+       request to the asset server and never to the route that serves
+       /flashcard, so the head would arrive unswapped. Calling the route is
+       what actually routes.
 
        It is handed this request untouched rather than one pointed at
-       /flashcard, which is the one thing here that is not splitwise's reason:
-       that route builds og:url out of the address it was asked at, and this
-       one deliberately does not. See where() in functions/flashcard.js — a
+       /flashcard. The route does not build og:url out of the address it was
+       asked at — deliberately. See where() in functions/flashcard.js — a
        deck names the live domain's spelling whichever of the two hostnames
        asked for it, because both answer and only one of them should be the
        address a search engine keeps. What the request carries that this route
@@ -297,8 +259,8 @@ async function route(context) {
     if (url.pathname === '/') return flashPage(context);
 
     /* Everything that is not that feature belongs to the site, at the site's
-       own address. Same argument and the same 301 as the two blocks above:
-       one copy of the map, one link to it. */
+       own address. Same argument and the same 301 as the pages.dev redirect
+       above: one copy of the map, one link to it. */
     if (url.pathname !== FLASH_PAGE && url.pathname !== FLASH_FILE &&
         !url.pathname.startsWith(API_PREFIX)) {
       url.protocol = 'https:';

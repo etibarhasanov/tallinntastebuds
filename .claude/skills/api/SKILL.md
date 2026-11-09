@@ -40,7 +40,7 @@ A route that does not exist yet is not built from the prompt. It is described
 first, the owner answers, and the code comes after —
 **Something new is described before it is built** in `CLAUDE.md` is the rule
 and this is the server-shaped half of it. A new route, a new table, a new
-column somebody can fill in, a new thing a group can do on splitwise: all of
+column somebody can fill in, a new thing a deck can do on the flashcards: all of
 this. Fixing, tightening or speeding up a route that already answers is not.
 
 What the description has to settle before a Function is worth opening:
@@ -85,7 +85,7 @@ through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 | Route | File | Writes | Cache | What to know |
 |---|---|---|---|---|
 | `/` | `index.js` | none; one `google_venues` read for a `?spot=` Google key, on a colo miss | `REVALIDATE` with a weak ETag; the rendered page in the colo under `mapKey()` — language, place, deployment — for `MAP_TTL` | `index.html` with its head and its places as text, per `?lang=` and `?spot=`; the static file when the data cannot be read — **Getting found**, **Sharing a place** |
-| `/*` | `_middleware.js` | none | as `_headers` | the owner's lock — `/admin/` a 404, `/api/admin/` a 403, through `adminUser()` in `api/_admin.js`; `pages.dev` 301ed home; both subdomain roots *call* their routes; the security headers on every answer — **The security headers** |
+| `/*` | `_middleware.js` | none | as `_headers` | the owner's lock — `/admin/` a 404, `/api/admin/` a 403, through `adminUser()` in `api/_admin.js`; `pages.dev` 301ed home; the flashcards' subdomain root *calls* its route and splitwise's old one 301s to the map; the security headers on every answer — **The security headers** |
 | `GET /api/saves` | `saves.js` | none | `public, max-age=60`, a weak ETag, and the colo copy under `countsKey()` | the counts out of `save_counts`, never a `COUNT(*)` — **Saves** |
 | `POST /api/saves` | `saves.js` | `saves` and `RECOUNT_SQL` in one `batch()`; `countUse()` | `no-store`; purges `countsKey()` | the purge reaches one colo, and the minute's TTL is the backstop — **Saves** |
 | `GET/POST /api/account` | `account.js` | `users`, `sessions`, `login_fails`, `username_holds`, `identities`, `profile_rows`; device saves through `claimDeviceSaves()` | `no-store`; `Set-Cookie ttb_s` | the profile's writes take a session and not the password; an account is made only by `enterAccount()` and `makeGoogleAccount()` in `_account.js` — **Accounts**, **Your page** |
@@ -109,9 +109,7 @@ through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 | `GET /api/route` | `route.js` | none | `public`: an hour for a walk or a drive, a minute for a bus | open to anybody, both ends inside `nearTallinn()` and rounded, nothing stored or counted — **Sharing a place** |
 | `GET /api/profile` | `profile.js` | none | `no-store` | `readProfile()` in `_profile.js`, the one `/u/<name>` seeds from; public lists only — **Profiles** |
 | `GET /api/pass` | `pass.js` | none | `no-store` | `401` signed out, so `deal.html` offers the sheet; one draw per account, place and hour, an HMAC under `SAVE_SALT` and nothing stored — **It is for members**, **A rate that is drawn** |
-| `/split` | `split.js` | none | `no-store`, `noindex` | **splitwise** — `split.html` with the `?g=` group's head; `_middleware.js` calls it for the subdomain's root — **What the link looks like in a message** |
 | `/flashcard` | `flashcard.js` | none | `no-store` | **flashcards** — `flashcard.html` with the `?d=` deck, lesson, song or conversation in its head, its `<main>` and its JSON-LD; `noindex` for a deck out of the database — the `/flashcards` skill |
-| `GET/POST /api/split` | `api/split.js` | `split_groups`, `split_members`, `split_expenses`, `split_shares`, `split_settlements`; `countUse()` | `no-store` | **splitwise** — the code alone reads a group; every write but `create` and `join` needs a session and a membership — **Splitwise** |
 | `GET/POST /api/feedback` | `feedback.js` | `feedback`, `feedback_hearts`; `users` and `sessions` through `_account.js` | `no-store` | saying something and hearting need no account; `say` with `as: 'name'` makes or enters one in the same request — **Feedback** |
 | `/privacy` | `privacy.js` | none | `no-store` | `privacy.html` with `data/privacy.json` written in as text, in the `?lang=` language and English at the bare address — **Privacy** |
 | `GET/POST /api/posts` | `api/posts.js` | `posts`, `post_texts` | `no-store` | a session for every POST, and a draft is a 404 to anybody but its owner; a body is blocks, never HTML, kept by `cleanBody()` in `_posts.js` — **Everybody's posts** |
@@ -127,14 +125,13 @@ through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 | `/u/<name>` | `u/[name].js` | none | as `/list/<id>`, under the address with the name lowercased | `lists.html` with the profile seeded and as text, its head and `ProfilePage` built from the line under the name |
 | `POST /mcp` | `mcp.js` | none | `no-store`; the roll, the taxonomy and the language index five minutes per isolate through `_lib.js`, and the Google rows five minutes in `googleRows()` | the map and the public lists as an AI assistant reads them, over the Model Context Protocol: one JSON-RPC message in, one out, two read-only tools — `places` over `data/restaurants.json`, with Google's key, hours and category read off `google_venues` by `map_id` and trusted only at the same door, and `lists` over public lists through `readList()` and one read of `lists` and `list_items`, each searching unless handed an `id`, and the four names from before still answered — so Claude's permission card comes up twice and not four times — and ChatGPT's `search` and `fetch` over the map beside them, in the shape it needs outside Developer mode; `serverInfo` carries the title and icon; every answer `Access-Control-Allow-Origin: *`, `OPTIONS` a 204; no write, no `AI`; stateless and JSON only, `GET` a 405; a closed place is never answered, a private list is the same sentence as a missing one, a list read is not an open, and a database that is down costs the list tools and Google's hours and not the places; `node tools/mcpcheck.mjs --check` holds it to what an assistant is promised — **Read by an assistant** |
 
-Seven routes serve a static page with a head of their own — `index.js` the
-map, `split.js` a group, `flashcard.js` a deck, `blog.js` a post, and the
+Six routes serve a static page with a head of their own — `index.js` the
+map, `flashcard.js` a deck, `blog.js` a post, and the
 three list routes the same `lists.html` —
 and the page out of the deployment, the escaping, the head swap, the seeding
 and the filling of an element the page ships empty are in
-`functions/_shell.js`. `index.js` and `split.js` write their own tags rather
-than taking `head()`, because a place has a photograph and a language for
-its card and a group's name wants no site suffix after it. The query each
+`functions/_shell.js`. `index.js` writes its own tags rather than taking
+`head()`, because a place has a photograph and a language for its card. The query each
 list route seeds is in a module beside the route that also answers it —
 `_lists.js` for one list, `_mostkept.js` for everybody's, `_profile.js` for
 one person — so the page and the API cannot drift apart. Underscore-prefixed
@@ -267,7 +264,7 @@ name calls rather than keeping a copy, `_profile.js` and `_visits.js` included
 — as a `maxlength: '24'` on all three of `app.js`'s username fields — the
 sign-up sheet's, the rename step's and the delete step's, where an account
 with no password types its name to confirm —
-on `split.js`'s and `flashcard.js`'s, each one field worn by three views, and
+on `flashcard.js`'s, one field worn by three views, and
 in words as `accountUsernameHint`, `accountErrUsername` and `feedbackNameHint`
 in `data/ui.json`. `grep -n maxlength assets/*.js` finds every copy. Change
 one, change the other, and the README's table under **The caps**.

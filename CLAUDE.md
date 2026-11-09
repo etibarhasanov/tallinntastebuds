@@ -4,9 +4,9 @@ A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does and where to eat that members write in too, a page of which places get opened, a page of
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
-through which an AI assistant reads the places and the public lists, and — each on a subdomain of its own — a way to split
-the bill afterwards and a deck of Estonian flashcards.
-Static files, thirty-nine Cloudflare Functions, two D1 databases (preview and
+through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
+flashcards.
+Static files, thirty-seven Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -115,7 +115,6 @@ command does the same by hand, and is the way to be sure.
 | Switch a discount on or off, or change what it offers | `/discount` |
 | Change what a page does or looks like — anything in `assets/`, an HTML file, `data/ui.json`, a language, a post on the blog | `/site` |
 | Change a Function, the schema, `wrangler.toml`, the chat's model or prompt, or anything that reads or writes D1 | `/api` |
-| Change splitwise — the group page, what a group can do, or the subdomain itself | `/site` **and** `/api`, and **Splitwise** in `README.md` |
 | Change the flashcards — a deck, a lesson or a song in `data/decks.json`, the page, what a deck can do, or the subdomain itself | `/flashcards`, with `/site` **and** `/api` |
 | Add a conversation to the flashcards from a sheet of a language course, or change one | `/conversation` |
 | Refresh the Google Places export | `/google-venues` |
@@ -140,14 +139,11 @@ skill to load. Two roads, then: the prompt loads the skill by its
 description, and failing that, the first file opened does. Either way the
 checklist arrives before the change is made.
 
-Two rules point at no skill of their own. The main one is
+One rule points at no skill of its own:
 `.claude/rules/leave-it-better.md`, which loads by itself the moment a session
 reads or edits anything under `assets/`, `functions/`, `tools/`, `db/` or an
 HTML page; it outranks "keep the diff small", and its last section is the
-process for a session with nothing else to do. The other is `splitwise.md`:
-splitwise has no skill, so its files load a rule that sends a session to the
-`/site` and `/api` skills and to **Splitwise** in `README.md`, with the few
-facts about it that sessions kept rediscovering.
+process for a session with nothing else to do.
 
 The files are templates as much as instructions: when a process turns out to
 have a step nobody wrote down, or a way of going wrong that is not in its
@@ -184,7 +180,7 @@ So the shape comes first, in words, and it comes from the owner.
 **What this catches: anything new a visitor can see or press, and anything
 they will see differently.** A new page, a new panel or sheet, a new button, a
 new field, a new filter chip, a new route under `functions/api/`, a new thing
-a group can do on splitwise — and a restyle, a new layout, a new colour, size,
+a deck can do on the flashcards — and a restyle, a new layout, a new colour, size,
 spacing or arrangement of something already there. Two tests, and either is
 enough: a visitor could not do something yesterday and could tomorrow, or a
 visitor would look at the page tomorrow and see it differently. The owner's
