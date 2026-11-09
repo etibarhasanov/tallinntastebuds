@@ -139,7 +139,7 @@ it does, in order:
    `restaurant` and `laptop` — "31 of the 78", "8 of the 78" — and names the
    closed places by name in **Close a place instead of deleting it**. `grep
    -n 'of the 7' README.md` and move each one. The total is also spelled out
-   in words — "seventy-eight" today; a "seventy-four" or "seventy-five" is a
+   in words — "seventy-nine" today; a "seventy-four" or "seventy-five" is a
    file written before the last sweep — across the README, the scripts, the
    Functions and the header of `tools/places.mjs`. A comment in an `assets/`
    file that is not one of the lean pair costs every page a new `?v=` stamp,

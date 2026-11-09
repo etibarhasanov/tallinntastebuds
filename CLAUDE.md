@@ -15,7 +15,7 @@ served, and every tool in `tools/` is zero-dependency on purpose so it still
 runs in five years. If a change seems to want a bundler, it is the wrong
 change.
 
-`README.md` is over five thousand lines and is the real documentation — what
+`README.md` is nearly twenty thousand lines and is the real documentation — what
 counts as a Restaurant, how discounts work at the table, why Estonian is `et`.
 Read the section you need before touching that area, and only that section:
 `grep -n '^## ' README.md` is its table of contents with line numbers, and
@@ -50,7 +50,7 @@ does not have to:
   carries the one-line `wc -l` that lists every file over ~600 lines; the
   answer changes month to month and the rule says how to read a file on
   either side of that line.
-- **The counts are written into the prose** — seventy-eight places, 1,112
+- **The counts are written into the prose** — seventy-nine places, 1,112
   Google venues, eleven languages, fourteen types — in the README, the code
   comments and the skills, and each skill says where its own copies live and
   gives the `grep` that finds them. Change a count, move the copies you are
