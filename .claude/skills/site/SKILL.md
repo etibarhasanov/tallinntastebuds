@@ -118,7 +118,7 @@ under **Flashcards**. That switch has **three** rows and not eleven: the
 flashcards are the one page on the site that speaks fewer languages than the
 site does, because the back of a card is written in three — `DECK_LANGS` in
 `functions/api/_lib.js` is the list, it narrows the switch and the language
-the page is read in together, and **Three languages, not ten** under
+the page is read in together, and **Three languages, not eleven** under
 **Flashcards** is the argument. A new page
 copies the block whole, and its head carries `<meta name="color-scheme">`
 and `<meta name="theme-color">` like `lists.html`'s.

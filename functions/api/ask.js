@@ -36,7 +36,7 @@
  * TWO ROLLS, ONE ASK
  *
  * This site has two lists of places and the difference is the point — see the
- * header of /api/venues. The seventy-eight in data/restaurants.json are places
+ * header of /api/venues. The seventy-nine in data/restaurants.json are places
  * I have been to and written up; the eleven hundred in `google_venues` are
  * Google's description of the city. Every question is asked of both at once,
  * and the model is told how the two stand to each other: mine first, because
@@ -63,7 +63,7 @@
  *
  * Google's roll is read a second way, joined on `google_venues.map_id` — the
  * column that says which Google row is which of my places. Sixty-six of my
- * seventy-eight have one, and it lends each of them two things the map does
+ * seventy-nine have one, and it lends each of them two things the map does
  * not record: the opening hours, and what Google files the place as cooking,
  * in the directory's cuisine ids, so that "thai" scores my Thai place the
  * way it scores Google's and the line the model reads says so. The other

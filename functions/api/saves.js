@@ -93,13 +93,13 @@ async function challengePassed(secret, token, ip) {
 
 /* ------------------------------------------------------------------ counts
  * Every place's count in one request, so the map asks once on the way in
- * rather than seventy-eight times.
+ * rather than seventy-nine times.
  *
  * This reads save_counts and never aggregates. The obvious way to answer
  * "how many saves has each place got" is COUNT(*) GROUP BY over the saves
  * table, and that was the first version of this — but its cost grows with
  * the data forever: ten thousand saves means reading ten thousand rows to
- * produce seventy-eight numbers, on every cache miss, for a table that only
+ * produce seventy-nine numbers, on every cache miss, for a table that only
  * ever gets bigger. save_counts is one row per place, so this read is capped
  * at the number of places on the map no matter how popular the map gets, and
  * the count is brought up to date by the write that changed it rather than by

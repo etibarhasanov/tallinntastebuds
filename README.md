@@ -56,6 +56,11 @@ tools, and what is deliberately left out.
 
 - [Run it locally](#run-it-locally)
 - [Add a place](#add-a-place)
+- [What counts as a Restaurant](#what-counts-as-a-restaurant)
+- [What counts as Laptop friendly](#what-counts-as-laptop-friendly)
+- [What counts as Coffee, and what counts as Tea](#what-counts-as-coffee-and-what-counts-as-tea)
+- [The order of the filter chips](#the-order-of-the-filter-chips)
+- [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Get the coordinates](#get-the-coordinates)
 - [Copy a video permalink](#copy-a-video-permalink)
 - [Add photos](#add-photos)
@@ -65,7 +70,6 @@ tools, and what is deliberately left out.
 - [The places column, and what opens beside it](#the-places-column-and-what-opens-beside-it)
 - [Ask for somewhere](#ask-for-somewhere)
 - [Read by an assistant](#read-by-an-assistant)
-- [A filter never answers with an empty screen](#a-filter-never-answers-with-an-empty-screen)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Sharing a place](#sharing-a-place)
 - [Languages](#languages)
@@ -77,26 +81,35 @@ tools, and what is deliberately left out.
 - [Google venues](#google-venues)
 - [The directory](#the-directory)
 - [Lists](#lists)
-- [Public lists](#public-lists)
+  - [Public lists](#public-lists)
 - [Profiles](#profiles)
 - [Flashcards](#flashcards)
 - [Chess](#chess)
 - [Stories](#stories)
+- [Privacy](#privacy)
 - [The blog](#the-blog)
 - [Feedback](#feedback)
 - [Statistics](#statistics)
+- [Visitors](#visitors)
+- [How they found it](#how-they-found-it)
 - [Who uses the site, drawn](#who-uses-the-site-drawn)
-- [The map is the shell](#the-map-is-the-shell)
-- [The short rail](#the-short-rail)
 - [The admin page](#the-admin-page)
 - [The scripts that run themselves](#the-scripts-that-run-themselves)
 - [Deploy to Cloudflare Pages](#deploy-to-cloudflare-pages)
-- [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
-- [The map tiles need a key](#the-map-tiles-need-a-key)
 - [What the validator checks](#what-the-validator-checks)
 - [Files](#files)
 - [The mark](#the-mark)
 - [The pins](#the-pins)
+- [The four styles](#the-four-styles)
+- [The radio](#the-radio)
+- [The map is the shell](#the-map-is-the-shell)
+- [Surprise me](#surprise-me)
+- [The short rail](#the-short-rail)
+- [The lists' two looks](#the-lists-two-looks)
+- [The four styles, dealt](#the-four-styles-dealt)
+- [A swipe to the right is Back](#a-swipe-to-the-right-is-back)
+- [The map zooms by the pixel](#the-map-zooms-by-the-pixel)
+- [The map tiles need a key](#the-map-tiles-need-a-key)
 - [Third-party pieces and their licences](#third-party-pieces-and-their-licences)
 - [The design rules](#the-design-rules)
 - [Design notes](#design-notes)
@@ -228,7 +241,7 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-31 of the 78 carry it today — nearly two places in five, which is why the
+32 of the 79 carry it today — nearly two places in five, which is why the
 chip sits at the end of the row rather than near the front. If one of them
 looks wrong to you, it is one line in `data/restaurants.json`.
 
@@ -260,7 +273,7 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 78 carry it today, and all eight are cafés, tea rooms or bakeries.
+8 of the 79 carry it today, and all eight are cafés, tea rooms or bakeries.
 
 ---
 
@@ -308,7 +321,7 @@ same door.
 the row, so the owner kept it off: `"chip": false` beside its labels in
 `data/taxonomy.json` is what `usedTypeIds()` in `assets/app.js` reads, and the
 validator lets that one key through as false and nothing else. Everywhere
-else it is a type like any other — a row says *Tea* in ten languages, both
+else it is a type like any other — a row says *Tea* in eleven languages, both
 searches and the chat find *tea*, *чай*, *matcha* and *hojicha*, a Google
 venue can be one — so somebody after tea types it into the search rather
 than pressing for it. A `?type=tea` link is ignored the way a type no place
@@ -773,7 +786,7 @@ km *from you*, wherever it was actually measured from, and no wording in a row
 three words wide undoes that. The order is still the useful half — the nearest
 thing to the middle of town is a better opening row than the first name in the
 alphabet — but a number about a point nobody chose is a small lie told on
-seventy-eight rows at once. So there is no number until there is a dot, which is
+seventy-nine rows at once. So there is no number until there is a dot, which is
 the same moment it starts being true of the person reading it.
 
 **The point is Raekoja plats — `59.4372, 24.7453`**, the middle of the Old
@@ -854,18 +867,18 @@ and give no clue why.
 The placeholder names two of the four — *Name or street* — and that is
 deliberate. It used to name three, *Name, street or dish*, and three things
 separated by a comma and an *or* is a sentence being read rather than a hint
-being glanced at, in ten languages and in the width a phone leaves for it.
+being glanced at, in eleven languages and in the width a phone leaves for it.
 The two it keeps are the two somebody is most likely to arrive holding; the
 type labels and the dishes still match, they are just found rather than
 advertised.
 
-The type labels go in **in all ten languages at once**, not the one the
+The type labels go in **in all eleven languages at once**, not the one the
 switcher happens to be showing. Somebody reading the map in Turkish still types
 "bakery" half the time, and somebody reading it in English may well know the
 place as a *pagariäri*: `bakery`, `pagariäri`, `leipomo`, `padaria`, `пекарня`,
-`çörəkxana`, `panadería`, `fırın` and `հացատուն` all return the same fourteen,
+`çörəkxana`, `panadería`, `fırın`, `boulangerie` and `bäckerei` all return the same sixteen,
 whichever language is on screen. Russian and Ukrainian happen to share the
-word, which is why nine of them cover ten languages. The index is built once at
+word, which is why ten of them cover eleven languages. The index is built once at
 load, since none of what goes into it can change afterwards; folding sixty-nine
 of these on every keystroke would be work for nothing.
 
@@ -877,10 +890,10 @@ decomposition of its own and is mapped by hand, which is what makes `firin`
 work as well as `fırın`.
 
 A word of five letters or more is also tried without its last two, so the
-endings ten languages put on a word still reach the label it came from:
+endings eleven languages put on a word still reach the label it came from:
 `kohvik` and `kohvi` reach *Kohv*, `kahvila` reaches *Kahvi*,
 `пиццу` reaches *Пицца*, `kebabi` the kebab shops. That is the cheap end of
-stemming — one rule and no dictionary — and the only end a site in ten
+stemming — one rule and no dictionary — and the only end a site in eleven
 languages can afford. Four letters is the floor: `pizza` is looked for as
 `pizz` at the shortest, and a three-letter stem would match half the map.
 The price of it is a stem two words share — `pasta` reaches the pastry shops
@@ -951,7 +964,7 @@ and the street and not at the type labels or the dishes, because that page is
 sent its rows already filled out and never downloads the catalogue those two
 come from.
 
-**This field never leaves the seventy-eight.** It is the list's own search and it
+**This field never leaves the seventy-nine.** It is the list's own search and it
 narrows the list. The question it cannot answer is "is this place on here at
 all", asked about somewhere that is not — and that one has a field of its own
 across the top of the map. See
@@ -972,7 +985,7 @@ the field and the map is back to the one that opens, chips and all.
 
 Type a kind of place rather than a name — *pizza*, *õlu*, *nearby ramen*,
 *ближайший бар* — and the same two groups come back, of that kind, in
-whichever of the ten languages it was typed, and nearest first when the map
+whichever of the eleven languages it was typed, and nearest first when the map
 knows where you are. **What the bar understands** below is the whole of what
 it reads a field as, and **Where you are** what the dot changes. Zoom in
 and it looks only at the part of the map on screen; zoom back out, or load the
@@ -996,7 +1009,7 @@ input** in the design rules.
 
 They are two questions and they want two fields.
 
-The column's field narrows what the map is already showing: seventy-eight places,
+The column's field narrows what the map is already showing: seventy-nine places,
 every one of them written up, and it tells you which of them was the ramen one.
 This bar asks whether somewhere is on here at all, over eleven hundred venues,
 and nearly everything it finds has no write-up behind it.
@@ -1035,10 +1048,10 @@ is the argument.
 ### What is searched on each side, which is nearly the same thing now
 
 My own places go through the map's own index: the name, the street, the type
-labels **in all ten languages**, and the dishes in `mustOrder` — the four
+labels **in all eleven languages**, and the dishes in `mustOrder` — the four
 columns **Searching the list** describes, reused rather than rebuilt — and,
 once the roll is in, a fifth the column's field does not have: what Google
-files the place as cooking, in the directory's cuisine ids and the ten
+files the place as cooking, in the directory's cuisine ids and the eleven
 languages `data/cuisines.json` says them in. `/api/places` lends that to a
 place of mine off the Google row `map_id` joins to it, the way the chat's
 Function does for its own narrowing (**One Ask, two rolls**), so *korean*,
@@ -1050,7 +1063,7 @@ A Google venue used to be matched on a name and a street and nothing else,
 which is why *pizza* found the pizzerias with pizza in the name and missed
 the fifty-three the export files under it, and *beer* found nothing at all.
 The roll carries a row's kinds now — `types`, the map's own words for it, and
-`kitchens`, the directory's — and the bar says each of them in all ten
+`kitchens`, the directory's — and the bar says each of them in all eleven
 languages before it matches, so *õlu*, *пиво*, *bira* and *beer* all reach
 the pubs and *pitsa*, *піца* and *pizza* the pizzerias, whichever language
 was typed and whichever is on screen. Google's own `category` — *Kebab Shop*,
@@ -1165,7 +1178,7 @@ below takes up.
 
 The field is read with the chat's own reader — `read()` in `assets/ask.js`,
 see **Ask for somewhere** — before anything is matched, for the two reasons
-the chat reads with it: the vocabulary is already in ten languages, and the
+the chat reads with it: the vocabulary is already in eleven languages, and the
 wishes a sentence carries are not words a name contains. So *pizza near me*
 is *pizza* and a wish to be near; *cheap ramen* is *ramen* in the two lower
 price bands; *somewhere for beer* loses *somewhere* and *for* before
@@ -1496,7 +1509,7 @@ of the site answers that question.
 
 ### And a row you rest on takes the map there before you press it
 
-Reading seventy-eight names is asking where they are, and the answer used to be a
+Reading seventy-nine names is asking where they are, and the answer used to be a
 press away for every one of them: press, read, close, press the next. Rest the
 pointer on a row now and the city comes to the name under it. The write-up is
 then for the one you actually want.
@@ -1523,7 +1536,7 @@ come to rest is where the last name you looked at is — which is the one thing
 you might still want to see.
 
 The listener is on `#list-body` rather than on each row, because `renderList()`
-throws every row away and builds seventy-eight more whenever a chip or the
+throws every row away and builds seventy-nine more whenever a chip or the
 language moves. And it is behind the same `(min-width: 861px) and (hover:
 hover) and (pointer: fine)` query the corner is: a tap synthesises a `mouseover`
 before it synthesises a click, and on a phone the list is a sheet over the map
@@ -1532,7 +1545,7 @@ in any case.
 ### The list keeps its place
 
 The column is not redrawn when something opens beside it. `renderList()` builds
-seventy-eight rows and puts the scroller back at the top, which is right when the
+seventy-nine rows and puts the scroller back at the top, which is right when the
 language or a chip has changed and exactly wrong when all that happened is that
 a place opened — you would lose the row you had your eye on and the scroll that
 got you to it. So the two transitions that must not disturb it, opening a place
@@ -1548,7 +1561,7 @@ paper instead of leaving a strip of Tallinn in it.
 
 And the row you have open is marked in the list: a bar down its inside edge and
 the name in the accent, so the eye can get from the write-up back to where it
-was without reading seventy-eight names again. `markOpenRow()` puts the class on
+was without reading seventy-nine names again. `markOpenRow()` puts the class on
 rows that are already drawn; `renderList()` drawing fresh ones clears it, so
 nothing has to unmark on the way out.
 
@@ -1698,7 +1711,7 @@ search for a place called Instead. The constraints are the price, open now
 and near, each kept until restated — *fancy* replaces *cheap*, *near
 Kalamaja* replaces *near me* — and *open* only accumulates, since nothing in
 the reader can hear *not necessarily open*. The price lists know the
-comparatives, *cheaper* and *more expensive* in all ten languages, because
+comparatives, *cheaper* and *more expensive* in all eleven languages, because
 they are what a follow-up says. The device is asked for a location only by
 a sentence that itself said *near me*, never by one that inherited it. And
 it all goes when the chat is closed, with the thread.
@@ -1744,7 +1757,7 @@ The model's side was slow on its first day, and most of it was one line. The
 first model was a reasoning one, left to reason: it thought through several
 hundred tokens before writing three ids, inside an output budget the thinking
 sometimes used up. Thinking is switched off now, the model is a smaller one
-built for latency that reads all ten languages, the blurbs it is shown are a
+built for latency that reads all eleven languages, the blurbs it is shown are a
 clause each, and the output budget is what three picks and a sentence need.
 And a question the map cannot answer no longer costs a second whole request
 to find out — see the next section.
@@ -1776,7 +1789,7 @@ unreachable.
 
 ### One Ask, two rolls
 
-Every question is asked of both lists at once: my seventy-eight, and Google's
+Every question is asked of both lists at once: my seventy-nine, and Google's
 eleven hundred — see [Google venues](#google-venues) — with the model told
 how the two stand to each other. Mine first, because I have been there and
 can vouch for it: when a place of mine fits what was asked, it comes before a
@@ -1832,7 +1845,7 @@ cuisine, a price band, a rating and the week. No write-up, no must-order dish.
 The cuisine is the part that earns its keep. Nothing on my map says what a
 place cooks beyond its name and its dishes, but the export files a place as
 *Thai Restaurant* or *Georgian*, and `data/cuisines.json` already carries
-those ids in ten languages for [the directory](#the-directory) — so the reader
+those ids in eleven languages for [the directory](#the-directory) — so the reader
 takes them the way it takes the taxonomy, and *thai*, *tai* and *тайская* all
 score a Thai row as a type would. The file is fetched the first time a
 question is asked, not on load. And the sixty-six of my places that have a Google
@@ -1934,14 +1947,14 @@ them, in the model's voice. A shrug is honest; that was not.
 What `assets/ask.js` still does is read. It turns a sentence into the wish
 the Function narrows on — which of the fourteen types, cheap or fancy, open
 now, what to be near, and the words left over that might be a dish or a
-street — in all ten languages at once, because its vocabulary is the taxonomy
+street — in all eleven languages at once, because its vocabulary is the taxonomy
 labels this page already holds, so *pagariäri*, *bakery* and *пекарня* all
 reach the bakeries without a word of it being written down twice. The five
 things people ask for that have no words in the data — cheap, fancy, open
 now, near, and themselves — live in `data/ui.json` under `askWordsCheap`,
 `askWordsFancy`, `askWordsOpen`, `askWordsNear` and `askWordsMe`, as
 synonyms joined by `|`, the same shape `days` and `months` already use.
-Which means the validator holds them to all ten languages like every other
+Which means the validator holds them to all eleven languages like every other
 string, and adding a language stays one file.
 
 **Except when it is the allowance, in which case the chat says so.** Workers
@@ -1974,7 +1987,7 @@ says what each count is and why it is the server's rather than the page's.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty-six of the seventy-eight are also rows in
+`data/restaurants.json` — but sixty-six of the seventy-nine are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -1990,7 +2003,7 @@ that door. Split days — a kitchen that shuts between three and five — and
 spans past midnight both read correctly; a bar open until one in the morning is
 open at half past midnight, off the previous day's row.
 
-The twelve places with no Google row, and the seventy-seven Google rows with
+The thirteen places with no Google row, and the seventy-seven Google rows with
 no hours in the export, simply say nothing about hours. An answer that is
 silent about them is honest; one that guesses is not.
 
@@ -2060,7 +2073,7 @@ had been given and invented a walk between the two.
 
 So *near* is now the fourth thing the reader in `assets/ask.js` looks for,
 beside cheap, fancy and open now, with its words in `data/ui.json` under
-`askWordsNear` in all ten languages — *close to*, *nearest*, *lähedal*,
+`askWordsNear` in all eleven languages — *close to*, *nearest*, *lähedal*,
 *рядом с*, *perto de*. What follows the phrase is what they want to be near, and
 `/api/ask` turns it into a point with the same lookup the add-a-place form
 uses — `/api/geocode`'s Photon call, biased to Tallinn and bounded to it,
@@ -2111,7 +2124,7 @@ somewhere to be near, and that the site did not know where the visitor was
 when it was drawing them.
 
 The reader now knows the visitor as a word. `askWordsMe` in `data/ui.json`
-holds *me*, *my hotel*, *here*, *minu*, *siin*, *здесь* in all ten
+holds *me*, *my hotel*, *here*, *minu*, *siin*, *здесь* in all eleven
 languages, and a near question with any of them in it is about the visitor
 themself: nothing is looked up, and the point is the dot. Type labels the
 reader matched — *coffee*, *fine dining*, *thai* — never name a place to be
@@ -2697,7 +2710,7 @@ Telegram or a Slack channel, `?spot=varkizana` arrived as the site:
 > All the places in this map I have personally been and approved.
 > *the watercolour mouth*
 
-The same card for all seventy-eight places. Somebody sending a friend a Greek
+The same card for all seventy-nine places. Somebody sending a friend a Greek
 tavern in Lasnamäe got a card about a map, and the one thing the message was
 about — which place — was in the part of the link nobody reads. And a search
 for the place by name found the whole map or nothing, since the map was the
@@ -2729,7 +2742,7 @@ does. The blurb's own keys are the list of what counts, so nothing in this
 route needs touching on the day an eleventh language arrives.
 
 **The picture is the place's first photograph**, and the mark for a place that
-has none, which today is fifty of the seventy-eight. They are photographs
+has none, which today is forty-nine of the seventy-nine. They are photographs
 off a phone and not cards drawn at 1200×630, so no `og:image:width` is claimed
 for one: nothing in this repository knows a photo's dimensions without opening
 the file, and a size claimed wrongly is worse than one an unfurler measures
@@ -2940,7 +2953,7 @@ down the right of the window — under the button the menu drops from, and
 straight through the eleven languages under it. The panel is 1200 in the stack
 and the corner these buttons stand in is 1001, so what a press on the switch
 drew for a few days was the menu *behind* the list: the language somebody was
-reaching for, painted over by seventy-eight restaurants. The menu cannot climb
+reaching for, painted over by seventy-nine restaurants. The menu cannot climb
 over it on its own, either, because it hangs inside `.controls` and that has a
 `z-index` of its own; so the corner is raised instead, to 1250, and only while
 there is a menu to raise it for — `body.lang-open`, put on by
@@ -3000,8 +3013,8 @@ Cloudflare Pages** has the whole of it, including what it costs.
 ### One language at a time
 
 The map used to open by fetching `data/ui.json` whole — every string the site
-has, in all ten languages — and `data/restaurants.json`, whose write-ups were
-also in all ten. Measured at phone width, which is what this site is built
+has, in all eleven languages — and `data/restaurants.json`, whose write-ups were
+also in all eleven. Measured at phone width, which is what this site is built
 for, that was most of the first load that was not the script. Measured on
 the day it changed, early October 2026:
 
@@ -3061,7 +3074,7 @@ it, and, since a week after the map, the account page, the editor, feedback,
 insights and the owner's directory and flows pages, each through
 a `loadWords()` of its own. Each still picks its language exactly as it did,
 out of the same eleven codes in the same order, and then fetches that one file
-rather than all ten: 25 to 30 KB on the wire where `ui.json` is 220, which
+rather than all eleven: 25 to 30 KB on the wire where `ui.json` is 220, which
 on the pass was most of what a guest's phone waited for before it could draw
 the code, and on the account page was the largest download on it — larger
 than the stylesheet, and `lists.html` loads that script too. Nothing a
@@ -3549,7 +3562,7 @@ restaurant rather than as nobody having pressed it yet.
 ### Every place with a bookmark can be saved
 
 The bookmark is on every card the map opens, and the map opens more than my
-seventy-eight: a Google venue out of the find bar, a place on somebody's list,
+seventy-nine: a Google venue out of the find bar, a place on somebody's list,
 one the chat answered with, one somebody added by hand. For a while the mark
 was on all of those and the save behind it was not — `/api/saves` checked the
 id against `data/restaurants.json` alone, so pressing it on anything else was
@@ -3587,7 +3600,7 @@ none of those doors is open on the next visit. So:
 ### Where your own saves live, and why one bookmark does both jobs
 
 The count is on the list rows too, not only inside an open place: a small
-bookmark and a number beside the price, so a scroll down seventy-eight rows shows
+bookmark and a number beside the price, so a scroll down seventy-nine rows shows
 which ones other people have kept without opening any of them. Rows at zero
 show nothing — a "0" against a restaurant reads as a verdict rather than as
 nobody having got there yet.
@@ -3767,7 +3780,7 @@ under **The directory** — as orders, which is a ranking, and the rule says
 there are none.
 
 It holds because of what is being ranked. A ranking is a claim by whoever
-publishes it, and the only claim this site makes is the map — seventy-eight
+publishes it, and the only claim this site makes is the map — seventy-nine
 places somebody ate at, in no order but how far away they are. The directory
 publishes
 no claim at all: it is a mirror of what Google says about eleven hundred places
@@ -4062,13 +4075,13 @@ exactly as they were and says so in a toast.
 ### Where the counts come from, and why not from a `COUNT(*)`
 
 `GET /api/saves` returns every place's count in one request — the map asks once
-on the way in rather than seventy-eight times — and it reads them from
+on the way in rather than seventy-nine times — and it reads them from
 `save_counts`, one row per place, rather than aggregating the `saves` table.
 
 That is the important part. The obvious query is
 `SELECT place_id, COUNT(*) FROM saves GROUP BY place_id`, and it was the first
 version of this, but its cost grows with the data and never stops: ten thousand
-saves means reading ten thousand rows to produce seventy-eight numbers, on a
+saves means reading ten thousand rows to produce seventy-nine numbers, on a
 table that only ever gets bigger. Reading `save_counts` costs one row per place
 on the map and never more, however popular the map gets.
 
@@ -5363,7 +5376,7 @@ rows that lead to it, print "According to Google 4.8 from 3,041 reviews" —
 attributed, every time, in the same line as the kinds and the band — and the
 panel for a place of mine that Google also lists closes with the same two
 numbers under a heading that says whose they are. I score none of the
-seventy-eight, nothing sorts or ranks by these except under Google's own name,
+seventy-nine, nothing sorts or ranks by these except under Google's own name,
 and that is the rule these numbers do not touch — see **On "no scores, stars
 or rankings"**, **Google, on a place of mine** below, and **A Google row says
 whose description it is**. They are also still what decides which of these
@@ -5682,7 +5695,7 @@ those needs: all 1,112 rows in one answer, so a filter can run over them. See
 ### Google, on a place of mine
 
 The panel for a place on my map closes with what Google says about the same
-door, when Google lists it — sixty-six of the seventy-eight, the ones `map_id`
+door, when Google lists it — sixty-six of the seventy-nine, the ones `map_id`
 joins. Under a heading that reads **According to Google**, below the address,
 the phone and the directions:
 
@@ -5732,7 +5745,7 @@ MON  Closed          TUE  16:00–21:00   …
   and the directory's cards in `assets/venues.js` send the same shape.
 
 Every string here was already in `data/ui.json` for `/admin/google` or the card, so
-it costs no new keys and speaks all ten languages on the day it lands.
+it costs no new keys and speaks all eleven languages on the day it lands.
 
 **It is asked for, not shipped with the map.** `data/restaurants.json` is
 static and Google's rows live in D1, so the panel asks `/api/venues?map=<id>`
@@ -5899,7 +5912,7 @@ list on its id, and replaces its rows whole — a place that fell out of a
 top ten or the top twenty has to leave it — so running it twice changes
 nothing and running it after a refresh moves the lists.
 
-**In ten languages, in the browser.** The rows are English — a title, an intro
+**In eleven languages, in the browser.** The rows are English — a title, an intro
 and a line under each place, in D1 — and stay so: ten copies of six lists would
 want a `lang` column on `lists` and `list_items` and sixty rows a language from
 the generator. `assets/googlewords.js` (`TTBGoogleWords`) translates them when
@@ -5986,7 +5999,7 @@ not the sitemap. It carries `noindex, nofollow` and `robots.txt` disallows it. T
 and it is the price of the page existing at all: it is Google's description of
 Tallinn and this site is one person's, and the two must not be mistaken for
 each other by a reader or by a search engine. The first paragraph on the page
-says which one it is, in ten languages, before anything else is drawn.
+says which one it is, in eleven languages, before anything else is drawn.
 
 **And only the owner can open it.** An unlinked address is still an address,
 and this one handed the whole export — every phone number, website and week of
@@ -6008,7 +6021,7 @@ assets/venues.js           ES5, one IIFE, like every other file in assets/
 assets/venues.css          only what a directory has and the map does not
 functions/api/venues.js    GET /api/venues?ids= and ?map=, the narrow asks
 functions/api/admin/venues.js  GET /api/admin/venues, the whole roll
-data/cuisines.json         39 cuisine labels in ten languages
+data/cuisines.json         39 cuisine labels in eleven languages
 ```
 
 ### What it shows
@@ -6153,12 +6166,12 @@ second shape sent down the wire. It reads all 4,704 spans across the 4,642 open
 days in the export, including the 62 days on which one of twelve kitchens shuts
 for the afternoon and reopens, and the 685 spans that close after midnight.
 
-### Cuisines, in ten languages
+### Cuisines, in eleven languages
 
 Google files these places as "Sushi Restaurant" and "Middle Eastern", in
 English. None of that reaches the page. `KITCHENS` in `functions/api/venues.js`
 matches the category, cuisine and leftover tags as one string and answers with
-ids; `data/cuisines.json` and `data/taxonomy.json` say those ids in ten
+ids; `data/cuisines.json` and `data/taxonomy.json` say those ids in eleven
 languages between them.
 
 The two label files are deliberately disjoint. `taxonomy.json` already carries
@@ -6193,7 +6206,7 @@ the Bar chip keeps it, but `kitchensOf()` puts `bar` last on a row that has
 
 A cuisine may carry a `words` key the way a type in `taxonomy.json` does —
 what else somebody types when they mean it, joined by `/` and never printed.
-Wine bar carries the word for wine in ten languages, so *wine*, *vein*,
+Wine bar carries the word for wine in eleven languages, so *wine*, *vein*,
 *вино* and *şarap* all reach the same twenty-one in the find bar and in the
 chat, where a label alone (*Винный бар*) would have missed *вино*. On the
 map's card for a Google place, `wine` also takes the slot the map's own types
@@ -6312,7 +6325,7 @@ stylesheet reads that.
 
 The map is mine. A list is somebody else's.
 
-Everything else on this site is one person's opinion — seventy-eight places I
+Everything else on this site is one person's opinion — seventy-nine places I
 have eaten at, in `data/restaurants.json`, and being on the map is the verdict.
 A list is the other thing: a name somebody chose, places they picked, and a
 sentence about each one. *Top ten burgers. Where to take your parents. The
@@ -6660,7 +6673,7 @@ a link its author remembered to send, and by a search result nothing linked
 to. Every list was an island. "No page ranks them" was, in practice, "no page
 shows them", and the honest name for that is not restraint.
 
-**It is called Everybody's lists**, in all ten languages and in the `<title>`
+**It is called Everybody's lists**, in all eleven languages and in the `<title>`
 a crawler reads — `listsAllTitle` and `listsAllDocumentTitle` in
 `data/ui.json`, and `TITLE` in `functions/lists/index.js`, which is English on
 purpose for the reason that file gives. It was called *Public lists* until
@@ -6912,7 +6925,7 @@ a half of Google before the first thing a person had written. The ranking
 answers the question the strip was asserting, and if those five really are
 what a stranger opens, they are at the top on their own account. It also took
 `start` out of the answer, the `listsStart`, `listsStartWhy` and
-`listsEverybody` strings out of all ten languages, and one query out of
+`listsEverybody` strings out of all eleven languages, and one query out of
 `_mostkept.js`. See **The six lists Google wrote**.
 
 **The row carries the first three places.** A page of titles is a search
@@ -6934,7 +6947,7 @@ of a list, and **Lists you saved** on `/account.html`.
 Only the name is underlined. The whole phrase was the link for a while, on
 the argument that a name is three or four characters on a phone and that
 underlining only the name would mean splitting a translated sentence around
-it — assembling a sentence out of pieces, in ten languages. The first half of
+it — assembling a sentence out of pieces, in eleven languages. The first half of
 that bought a bigger target with a misleading one: "created by" underlined
 reads as a caption about the list, when the thing it opens is the person. The
 second half was not true of the strings as written: every language's phrase
@@ -7131,7 +7144,7 @@ saying that the day something asked for these counts in bulk was the day to
 give them the `save_counts` treatment. This page is that day, so the table
 was written — and then taken out again, because the comparison the note was
 making does not hold. `save_counts` exists because the map asks for
-seventy-eight numbers on every load, over a table that grows with every
+seventy-nine numbers on every load, over a table that grows with every
 anonymous save from every visitor. A keep needs an account, one account can
 hold two hundred of them, and one page asks. It is one row read per keep in
 the database, to draw twenty rows.
@@ -7208,7 +7221,7 @@ of. On 3 October an Instagram story sent 117 strangers to the bakeries, and
 twelve of 158 views pressed it, with the pill filled and on screen the whole
 time. Somebody who has just read a list wants more of the same thing, so the
 label says that is what is behind it, and the page they arrive on is still
-called what it is called. `listsMore`, in all ten languages; the press is
+called what it is called. `listsMore`, in all eleven languages; the press is
 still `lists_all`, so the count before and after reads as one line.
 
 **Your own list has a foot but no head.** That page is an editor — its title
@@ -7246,7 +7259,7 @@ that question, asked once and read by both the bar and the room under it.
 
 **The room under the last card is measured, not written down.** It was 92px
 while the band held one pill. Two controls in a row is a row that wraps: one
-row at 390px in all ten languages, two at 320px in every one of them. A
+row at 390px in all eleven languages, two at 320px in every one of them. A
 breakpoint would cover the width, and the width is not the whole question — the
 band is as tall as its two labels wrap, and those are ten translations of two
 strings that anybody may reword and that an eleventh language will arrive
@@ -7505,7 +7518,7 @@ And every row carries a chevron at its right edge, drawn always: on 3 October
 two thirds of the views of the bakery list ended with nothing pressed, and
 nothing on a row said it was a door except a pin the size of a letter. The
 chevron is the mark every phone already reads as "this opens", it costs no
-string in ten languages, and it is the row's own `::after` in a third grid
+string in eleven languages, and it is the row's own `::after` in a third grid
 column — the press sheet is the link's `::after`, so the two never meet. What it
 costs is dragging over a note to copy it, since a sheet across the row is a
 sheet across the words on it; that is the same trade every row on the directory
@@ -7566,7 +7579,7 @@ ten is, and renumbering the survivors 1, 2, 3 would be the page quietly
 claiming a different list.
 
 **It looks at the name and the street, and the placeholder says so.** The
-map's copy also reads the type labels in all ten languages and the dishes in
+map's copy also reads the type labels in all eleven languages and the dishes in
 `mustOrder`; neither is on this page to read. `readList()` in
 `functions/api/_lists.js` fills each row out from the catalogue and sends what
 a row draws — the name, the street, Google's description where there is one —
@@ -7648,7 +7661,7 @@ The picker asks `/api/places`, which is the one place the two rolls are put
 together — `functions/api/places.js`:
 
 ```
-data/places.json    the map. Seventy-eight places I have been to, and the only
+data/places.json    the map. Seventy-nine places I have been to, and the only
                     rows that link through to a write-up.
 google_venues       the Google Places export, in D1. Every place in the city
                     you can eat or drink in — see The Google export above.
@@ -7703,7 +7716,7 @@ The kinds and the band are turned into the map's own words on the way out, in
 **The kinds.** `category`, `cuisine` and `tags` are matched as one string
 against seven taxonomy ids, so "Sushi Restaurant" and "Japanese" come out as
 `restaurant` and `asian` — and the row prints the names `data/taxonomy.json`
-already carries in ten languages instead of Google's English, which is the
+already carries in eleven languages instead of Google's English, which is the
 same rule every other visible string on this site follows. Matching all three
 columns at once is what makes "Bar & Grill" both a pub and a restaurant. Over
 the export as it stands, 1,098 of the 1,110 rows come out with at least one
@@ -7733,7 +7746,7 @@ Google's name in front of it — on Google's place here, and at the foot of the
 panel on a place of mine Google also lists. Nothing sorts by it.
 
 **Why it is attributed.** The gauge is drawn in the site's accent, in the
-vocabulary the map uses for the seventy-eight places I have eaten at. Without a
+vocabulary the map uses for the seventy-nine places I have eaten at. Without a
 word saying where it came from it would be borrowing that verdict for a place
 nobody here has been to. So the line leads with the attribution rather than
 trailing it: whose description this is, and then the description.
@@ -7785,7 +7798,7 @@ name typed into a form is not a description, a phone number or a week.
 
 ### The place nobody has
 
-The picker searches about eleven hundred places — my seventy-eight and the Google
+The picker searches about eleven hundred places — my seventy-nine and the Google
 export behind `/api/places` — and between them they still miss things:
 somewhere that opened last month, somewhere Google files as not a restaurant.
 Search for it, find nothing, and the picker offers **Can't find it? Add it
@@ -7924,7 +7937,7 @@ survives the absence of — see **The two columns, and the afternoon they do
 not exist** under **The pins**.
 
 There is deliberately no counts table behind the keeps, the way `save_counts`
-sits behind the saves. That one exists because the map asks for seventy-eight
+sits behind the saves. That one exists because the map asks for seventy-nine
 numbers at once and a `GROUP BY` over every save would cost one row read per
 save to answer. Nothing asks that question of lists: a keep count is wanted one
 list at a time, and the primary key answers it on an indexed prefix. The day
@@ -7953,7 +7966,7 @@ the drag and the save — is appended rather than left to collide.
 | title | 60 characters |
 | the line under it | 200 |
 | the line about yourself | 200 |
-| that line, or a row, in each other language | its own cap, in any of the site's ten |
+| that line, or a row, in each other language | its own cap, in any of the site's eleven |
 | the name you go by | 60 |
 | an Instagram handle | 30 characters |
 | a TikTok handle | 24 |
@@ -8207,13 +8220,13 @@ is the point.
 
 Everything on a profile that its owner wrote — the line under the name and
 every row's title and note — is written once, in whatever language they
-wrote it in, and on a site read in ten languages that is a page most of its
+wrote it in, and on a site read in eleven languages that is a page most of its
 readers get in somebody else's. The first profile to run into it put two
 languages into one row's title, *About me · Haqqımda*, which is the workaround
 this replaces.
 
 So a page can be written again. Under **Your line** on `/edit`, *Add another
-language* is a menu of the site's ten; each one picked is a box for the line
+language* is a menu of the site's eleven; each one picked is a box for the line
 in that language, named for it, with a cross that takes that language off the
 whole page. And every row, opened, has a title box — and for a note, a note
 box — in each of the page's languages. The address of a link is one address
@@ -8230,23 +8243,23 @@ in Estonian, Russian and English, so a country is a poor guess at which of
 them somebody reads, and the site has never guessed one from it anywhere
 else.
 
-**The site's ten, and no more.** A version is only ever chosen by the language
+**The site's eleven, and no more.** A version is only ever chosen by the language
 a page is being read in, and a page on this site is only ever read in one of
-the ten in `data/ui.json`, so a line in German would be a box no reader's page
+the eleven in `data/ui.json`, so a line in Armenian would be a box no reader's page
 could choose. `LINE_LANGS` in `functions/api/_profile.js` is the list, and
 `node tools/validate.mjs` fails the build when it and `data/ui.json` part
 company — a language added to the site is a code added there in the same
 commit. The editor reads its list off `ui.json` directly. The first line is
 not tagged with a language, because nothing asks which it is in; the menu
-therefore offers all ten, and a version in the line's own language simply
+therefore offers all eleven, and a version in the line's own language simply
 wins for that language's readers.
 
 **Keyed by language, the way every translated thing here is.** What is
 stored is `{"et":"…","ru":"…"}` — the shape a card's back has in
 `data/decks.json` and a blurb has in `data/restaurants.json` — inside
 `users.links` under `lines`, beside the handles and the languages. Not a
-column per language, which would be ten `ALTER`s run by hand against a live
-table and an eleventh with the next language, and not a table of its own for
+column per language, which would be eleven `ALTER`s run by hand against a live
+table and a twelfth with the next language, and not a table of its own for
 something read on one page, about one person, by primary key. So, like the
 languages, **it shipped with no hand step**. `cleanLines()` holds each
 version to the line's own two hundred characters and its flatten-and-cut —
@@ -8808,7 +8821,7 @@ quietly add up to less than the figure at the top.
 request carries whatever this code does; the address it was worked out from
 is never read. The browser names the country in the language the page is
 read in, through `Intl.DisplayNames`, so two hundred names did not have to be
-written into `data/ui.json` ten times. Cloudflare's *XX* and Tor's *T1* are
+written into `data/ui.json` eleven times. Cloudflare's *XX* and Tor's *T1* are
 **Unknown**.
 
 **What was pressed** is every row on your page of links — a link followed, a
@@ -9066,9 +9079,9 @@ they were sending it to — the same argument
 **[Sharing a place](#sharing-a-place)** makes for `?spot=`, and the opposite of
 the one a shared list is under, which has no reader to ask. The door's two
 strings are `flashDoor` and `flashWhat` out of `data/ui.json`, which speaks all
-ten; this page reads three of them, so `?lang=fi` gets an English card in front
+eleven; this page reads three of them, so `?lang=fi` gets an English card in front
 of an English page rather than a Finnish door over an English deck name.
-**Three languages, not ten** below is why.
+**Three languages, not eleven** below is why.
 
 Two things it deliberately does not do. **The picture stays in English**,
 whatever language the words beside it are in: it is a rendered file rather than
@@ -9088,7 +9101,7 @@ map struck for a reason this page has not got.
 **The map's own chrome points here, and it is the whole of the way in.** A
 row behind **More** on the rail — **Learn Estonian**, drawn by
 `renderMore()` in `assets/app.js` — links to `/flashcard`. It wears
-`flashDoor` and `flashDoorWhy` out of `data/ui.json`, already in all ten
+`flashDoor` and `flashDoorWhy` out of `data/ui.json`, already in all eleven
 languages, and reports `flash_open_rail`. It was a pill of its own in the
 rail's column of eight until the rail was cut short for everybody — **The
 short rail**.
@@ -9261,7 +9274,7 @@ card's `sentence` are the same shape. `forms` is not: those are Estonian.
 
 **This section used to say the opposite, and the argument it made was a good
 one.** A deck is somebody's writing rather than an interface string — the same
-footing a post on **[the blog](#the-blog)** is on — and the ten languages are
+footing a post on **[the blog](#the-blog)** is on — and the eleven languages are
 for the words *around* it. What that missed is what a flashcard is. A blog post
 in English is a paragraph somebody skips; the back of a flashcard in English
 *is* the lesson, and an Azerbaijani or Russian speaker learning Estonian off one
@@ -9273,7 +9286,7 @@ hardest on.
 **Three rather than ten**, and that is a decision rather than a first pass at
 all of them. Azerbaijani and Russian were asked for and are written; the other
 seven fall back to the English, and the page around the cards is in three for
-the same reason — **[Three languages, not ten](#three-languages-not-ten)**
+the same reason — **[Three languages, not eleven](#three-languages-not-eleven)**
 below. `means()` in `assets/flashcard.js` is the whole of the picking and the
 only thing it does. Adding a fourth is a key per card in `data/decks.json` and
 a code in `DECK_LANGS`, which is one list in `functions/api/_lib.js` that both
@@ -9329,10 +9342,10 @@ cards from. A file that could not be read is an empty list and no switch at
 all, which is right: a page that cannot name the languages should not offer
 them.
 
-#### Three languages, not ten
+#### Three languages, not eleven
 
 This is the one page on the site that speaks fewer languages than the site
-does. The map, the lists, the directory and the blog are all in ten; the
+does. The map, the lists, the directory and the blog are all in eleven; the
 flashcards are in **English, Azerbaijani and Russian**, which is the three
 `data/decks.json` writes the back of a card in.
 
@@ -9357,7 +9370,7 @@ not admit to having.
 
 Adding a fourth is therefore two steps and no code: write that language into
 every card's `back`, every deck's `name` and `why` in `data/decks.json`, and
-add its code to `DECK_LANGS`. `data/ui.json` already speaks all ten, so the
+add its code to `DECK_LANGS`. `data/ui.json` already speaks all eleven, so the
 words around the cards are waiting.
 
 **Picking one does not reload the page.** That is the whole reason this is
@@ -9628,7 +9641,7 @@ The three codes come with it — `langs`, each with that language's own name for
 itself — because the page has a switch on it now and the switch has to be able
 to name them. Well under a hundred bytes, and still one request before a card
 can be drawn. **A language of your own to learn it in** above is the switch,
-and **Three languages, not ten** under it is why there are three of them and
+and **Three languages, not eleven** under it is why there are three of them and
 not ten.
 
 **And it is asked before the page has arrived.** For a long time the one
@@ -10451,7 +10464,7 @@ So the rows go in the order of what each deck is asking for. Three rungs, and
 **Nothing is pressed and nothing is stored.** The two numbers this turns on are
 already on every row the route answers — `due` and `known`, which are what draw
 "6 due" against "22 / 22" at the foot of a tile — so this is a sort over what the
-page is already holding, and it costs no column, no write, no string in ten
+page is already holding, and it costs no column, no write, no string in eleven
 languages and nothing to run by hand against either database.
 
 **And a press would have been the wrong thing anyway**, which is worth saying
@@ -10701,7 +10714,7 @@ and only into decks under *Getting by* and *Going deeper*. Nothing went into
 four-hundred gate is counted against, and a card added there moves the gate.
 *Koor* came in a second time, as a choir, beside the cream it already was. That
 book's list prints German and Finnish beside the English and the Russian, and
-those two columns were left where they are: **Three languages, not ten** is why.
+those two columns were left where they are: **Three languages, not eleven** is why.
 Its verbs printed bare — *kohtuma*, *koristama*, *lubama*, with no parts after
 them — have parts here anyway, and those two are mine rather than the book's.
 
@@ -10872,7 +10885,7 @@ has three forms**, **Every tense of a verb** and **Bigger, biggest, and the
 opposite** — each pair the forms first and then what grows out of them, and
 the fifth the word that stands in front of a noun.
 Each is a page of a few hundred words in the language the cards are being read
-in — the three the decks speak, not the ten the site does — with a paradigm or
+in — the three the decks speak, not the eleven the site does — with a paradigm or
 two set in the mono the card prints its forms in, a few sentences under each
 saying it the way it will be said, and one filled action at the
 foot, **Got it**, which marks it read and goes back to the shelf. The tile's
@@ -11798,7 +11811,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `functions/_middleware.js`, again | the `GONE` block too, if splitwise's domain has been detached by then |
 | `_headers` | the `/flashcard.html` and `/flashcard` rules |
 | `sitemap.xml` | re-run `node tools/sitemap.mjs` once the tool is back to what it was |
-| `data/ui.json` | the hundred and one `flash*` keys, in all ten languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
+| `data/ui.json` | the hundred and one `flash*` keys, in all eleven languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `README.md` | this section, its line in **Contents**, its ten lines in **Files**, the `data/decks.json` and `data/decks/` lines under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, the `data/decks.json` row in the generated-files table, and the clause in the opening sentence |
 | `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
@@ -12597,7 +12610,7 @@ is everybody: nothing about a story is cached beyond the page it is on.
 ## Privacy
 
 `/privacy` — what the site keeps about the person reading it, why, and for how
-long, in plain words and in all ten languages. It was the one thing the audit
+long, in plain words and in all eleven languages. It was the one thing the audit
 against specification.website found missing that the law, rather than good
 practice, asks for: the site has accounts, a sign-in cookie, Google
 Analytics, Clarity and Google sign-in, and nowhere said so.
@@ -12766,7 +12779,7 @@ other nine, each a tab in the editor. A reader gets their own where it is
 written in it and the first one where it is not, with the blog's one
 admission of a fallback above the first paragraph, and a post written in more
 than one shows its languages as pills to switch between. There is no machine
-translation, for the reason **A post is not held to the ten languages** gives.
+translation, for the reason **A post is not held to the eleven languages** gives.
 
 **Pages, not everything.** Every list — the blog's, a person's, your own on
 `/write` — is ten rows at a time with a cursor for the next, `PAGE_SIZE` in
@@ -13024,11 +13037,11 @@ has no button. `clip` is the sentence saying what the clip shows — it is the
 than as a caption — and a post that carries one has to have the four files in
 `clips/` to go with it, which the validator checks.
 
-### A post is not held to the ten languages
+### A post is not held to the eleven languages
 
 Every string the page draws **around** a post — the title over the index, the
 lead, the way back, the button, the date's fallback — is in `data/ui.json` in
-all ten, like every other word on this site, and the validator holds it to
+all eleven, like every other word on this site, and the validator holds it to
 that the way it holds everything else. See
 [Languages](#languages) and rule 11 of [the design rules](#the-design-rules).
 
@@ -13036,8 +13049,8 @@ The posts themselves are not. A post is several hundred words of somebody's
 own writing, which is what a story's caption and a place's blurb are, and
 those have always been written in the languages they have been written in —
 `data/stories.json` has captions that are English alone and nobody has ever
-thought that a bug. Holding a blog to ten languages means either ten
-translations before a post can go up, or nine machine translations of an
+thought that a bug. Holding a blog to eleven languages means either eleven
+translations before a post can go up, or ten machine translations of an
 argument about why there are no ratings on a map.
 
 So: **English is required**, because it is what every language falls back to,
@@ -13057,7 +13070,7 @@ other way round from `formatMonth()` in `assets/app.js`, and the reason is
 grammar. A date with a day in it puts the month in a case the twelve names in
 `ui.json` are not written in — Russian wants *9 января* where the list says
 *январь*, Finnish wants *9. huhtikuuta* where it says *huhtikuu*. `Intl` knows
-that for all ten and a pattern of our own cannot, short of a second list of
+that for all eleven and a pattern of our own cannot, short of a second list of
 twelve names per language for this one line. `blogDate` in `ui.json` is the
 fallback underneath, in each language's own order, for an engine with no
 `Intl` at all.
@@ -13068,7 +13081,7 @@ is the case the fallback was written as theoretical and is not. Chromium draws
 `formatMonth()` in `assets/app.js` exists to dodge — and nothing said so for as
 long as every post was written in English alone, because nobody ever asked this
 page for an Azerbaijani date. `NOT_A_MONTH` in `assets/blog.js` is the guard:
-an `M` and two digits is not a month in any of the ten, so an answer carrying
+an `M` and two digits is not a month in any of the eleven, so an answer carrying
 one is thrown away and `ui.json`'s names are printed instead. What it cannot
 catch is the other half of the same gap — `Intl` answering *September 21, 2026*
 in **Armenian**, a well-formed date in the wrong language, which there is
@@ -13123,7 +13136,7 @@ for the owner rather than a line to slip into a post's pull request.
    deploy step beyond the push.
 
 Counts are deliberately kept out of the posts. This file, the code comments
-and the skills already carry "seventy-eight places" and "eleven hundred and
+and the skills already carry "seventy-nine places" and "eleven hundred and
 ten" in enough places that changing one is a `grep` and a careful afternoon,
 and a blog is the last place that should quietly become one more copy of a
 number that drifts. A post says *the map* and *the whole export of the city*
@@ -13718,7 +13731,7 @@ over the table says where they are.
 
 No time window, which **A count and not a log** above is the whole of — the
 lists' countries have a day in their key and are not cut by one yet. No
-chart: a ranking is a list and a bar chart of seventy-eight rows is a list with
+chart: a ranking is a list and a bar chart of seventy-nine rows is a list with
 decoration on it. No visitors, referrers or time on this page, and no
 countries but a list's:
 those are **Visitors** below, the site's own count of who came and what they
@@ -13990,7 +14003,7 @@ asks for — the two letters of `navigator.language`, once per visitor off the
 first page of the day, spoken here or not — with the ones the site does not
 speak marked. It is the one thing on this page read straight off the browser
 rather than off what the site did with it, and it is the list to read before
-adding a language: the languages people arrive wanting, against the ten the
+adding a language: the languages people arrive wanting, against the eleven the
 site has. An open list, capped a day the way the countries are.
 
 ### New against returning
@@ -15062,7 +15075,7 @@ number of steps, a run that stays inside 1–99, a rate between 1 and 99.
 **What it changes in the offer lines is the number, and nothing else.** Every
 deal says its rate once per language — *15% off your order*, *Siparişinizde
 %15 indirim* — and the form replaces that number, or the `{rate}` a rolled
-deal leaves in its place, in all ten. A new deal borrows its ten lines from a
+deal leaves in its place, in all eleven. A new deal borrows its eleven lines from a
 deal already in the file, with the number changed, gets a fresh key made the
 way the README's one-liner makes one, and takes its name from the map. What
 the form does not ask about — the key, the small print, the dates — is left
@@ -15614,7 +15627,7 @@ instead of a minute after the merge.
 - a cuisine in `data/cuisines.json` missing a label in any language, or one
   claiming an id `taxonomy.json` already uses
 - a `KITCHENS` pattern in `functions/api/venues.js` that no longer matches a
-  single row of the Google Places export, an id nothing can say in ten
+  single row of the Google Places export, an id nothing can say in eleven
   languages, or a label no pattern can ever produce — see **The directory**
 - a UI string present in one language but missing in another
 - a string the site asks for — a `data-i18n` key in the markup, a `t('key')`
@@ -15649,7 +15662,7 @@ instead of a minute after the merge.
   `functions/api/_pins.js` will let a list store, a glyph called `mark` in
   either table, a kind of place a list could also pick, a kind filed under a
   tone that does not exist, a tone with no colour token or no `.pin-tone-`
-  rule behind it, or a marker nobody has named in ten languages — the picker
+  rule behind it, or a marker nobody has named in eleven languages — the picker
   builds its keys out of the ids, so the scanner for `t()` calls cannot see
   one of the eight and nothing else would catch it. See
   **[The pins](#the-pins)**
@@ -15771,12 +15784,23 @@ functions/_middleware.js   which hostname is this: the pages.dev copy goes to
                            the real one, the flashcards subdomain serves its
                            own page and nothing else, and splitwise's old one
                            goes to the map
+functions/_security.js     the security headers every Function's answer
+                           carries, said once; the validator holds `_headers`
+                           to the same lines
 functions/index.js         / — the map, with its head and its JSON-LD written
                            in the language ?lang= names, so a search engine
-                           can index it ten times
+                           can index it eleven times
+functions/blog.js          /blog and /blog?post=<id> — blog.html with the
+                           post's head and words written in, for a crawler
+                           that runs no script
+functions/blog/sitemap.js  /blog/sitemap — every member's published post,
+                           which no file in the repository can name
+functions/privacy.js       /privacy — the whole policy written into the page,
+                           one language per address, out of data/privacy.json
 functions/mcp.js           /mcp — the map and the public lists as an AI
                            assistant reads them, through the Model Context
-                           Protocol: two read-only tools
+                           Protocol: four read-only tools — places, lists,
+                           search and fetch
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password or a
                            username, delete an account
@@ -15793,7 +15817,23 @@ functions/api/admin/       the owner's routes, locked by functions/_middleware.j
                            stats.js the ranking, venues.js the whole directory,
                            refreshes.js what the Google refresh has done lately
                            for the Google tab on /admin.html, github/[[path]].js
-                           the admin page's road to the repository
+                           the admin page's road to the repository, top100.js the
+                           week's top hundred of Google's directory and how it
+                           moved, visitors.js and live.js /admin/visitors and
+                           its last half hour, found.js /admin/found, flows.js
+                           the numbers on one diagram of /admin/flows
+functions/api/_rank.js     the week's ranking of Google's directory, written
+                           once a week from the numbers the table holds (not
+                           a route: leading _)
+functions/api/_visitors.js who came to the site and what they did, counted for
+                           /admin/visitors and /admin/found (not a route)
+functions/api/_flows.js    how people walk the diagrams on /admin/flows (not
+                           a route: leading _)
+functions/api/lookup.js    asking Google Maps for a place nothing here knows,
+                           inside the same budget as the refresh, and keeping
+                           the answer
+functions/api/route.js     the way from here to a place — on foot, by bus or
+                           by car — rounded and cached a day
 functions/api/_admin.js    who the owner is (not a route: leading _)
 functions/api/geocode.js   a typed street to a point, for the add-a-place form,
                            for the Where sheet behind the map's locate button
@@ -15868,7 +15908,7 @@ data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
                            grammar, four songs, thirty-eight conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
-                           languages rather than the site's ten
+                           languages rather than the site's eleven
 data/decks/                what the Functions read instead: the index, one file
                            per deck, lesson, song and conversation, and the
                            voice's list, written by tools/decks.mjs
@@ -15876,6 +15916,21 @@ blog.html                  a post per thing this site does   } unlinked, and
 assets/blog.js             the index, one post, and the walk  } indexed on
 assets/blog.css            only what a page of prose has      } purpose
 data/blog.json             the posts
+functions/api/posts.js     the blog members write: their posts, drafts and
+                           published, in any of the site's eleven languages
+functions/api/_posts.js    what a post is — blocks, never HTML — shared by
+                           that route and functions/blog.js (not a route)
+write.html                 /write — a member's posts, and the editor one
+assets/write.js            opens in; noindex
+assets/write.css           the desk around the post: tabs, toolbar, counters
+edit.html                  /edit — the page of links under somebody's name,
+assets/edit.js             built where it is read rather than on the account
+                           page; noindex
+privacy.html               /privacy, served by functions/privacy.js; the
+assets/privacy.js          script only wears the style and the frame words
+data/privacy.json          the policy, in all eleven languages
+404.html                   the page at an address nothing answers, in the
+assets/notfound.js         reader's language and style
 feedback.html              what people would change about this site, at
                            /feedback and behind the last pill on the rail
 assets/feedback.js         every state of it, and the one sign-in form that is
@@ -15901,6 +15956,10 @@ assets/stats.css           the rows of a ranking, and what /insights adds
 admin/flows.html           who uses the site, one BPMN diagram each  } owner only
 assets/flows.js            reads a .bpmn and draws it as SVG          } and noindex
 assets/flows.css           the diagram, in the site's tokens          }
+admin/visitors.html        who came, from where, and what they   } owner only
+assets/visitors.js         pressed, with the last half hour       } and noindex
+admin/found.html           how people found the site: engines,  } owner only
+assets/found.js            links and the pages they landed on    } and noindex
 flows/                     the diagrams as .bpmn, public — GENERATED
                            to them
 assets/rows.js             the page of links on a profile: what a row is,
@@ -15923,6 +15982,18 @@ assets/basemap.js          the CARTO tiles, said once for every map that draws t
 assets/track.js            what a press reports, to Clarity and the site's count, said once
                            for every page that has a button
 assets/radio.js            the station, and the on/off that survives a navigation
+assets/shell.js            the map as the shell every other page opens on, so
+                           a walk between pages tears nothing down
+assets/back.js             a swipe to the right, from anywhere on the glass,
+                           is Back
+assets/analytics.js        the Microsoft Clarity tag, said once for every page
+                           but admin.html
+assets/country.js          a country's name by its two letters, in the page's
+                           language, out of the browser's own Intl
+assets/googlewords.js      the six lists Google wrote, put into the reader's
+                           language in the browser
+assets/flashcard-first.js  the flashcards' first request, started before the
+                           page that wants its answer has arrived
 assets/ask.js              a typed sentence read as a wish, for when the model
                            cannot: no DOM, no state, one global
 functions/api/ask.js       the chat box answered — a model on the free
@@ -15962,9 +16033,13 @@ db/google-venues.sql       GENERATED — loads that export into D1
 db/google-lists.sql        GENERATED — the five top tens and a top twenty
                            under `google-statistics`
 data/taxonomy.json         the controlled vocabulary of types
-data/cuisines.json         the 39 cuisines only the directory needs, in ten
+data/cuisines.json         the 39 cuisines only the directory needs, in eleven
                            languages — taxonomy.json holds the other six
 data/ui.json               every interface string, in every language
+data/lang/                 GENERATED — one language's strings and write-ups to
+                           a file, and the index of them, what the pages read
+data/map.json              GENERATED — the places without their write-ups,
+                           what the map reads instead of the whole file
 data/radio.json            the stations, by language and a default
 data/deals.json            the discounts, and which of them are live
 data/stories.json          the stories, when each goes up and when it goes away
@@ -15975,7 +16050,7 @@ _headers                   caching and the noindex on the unlinked pages
 _routes.json               which paths reach the Functions, and which never do
 robots.txt                 what a crawler is told not to
 sitemap.xml                GENERATED — every address a crawler is told about:
-                           the map in ten languages, every open place, /lists,
+                           the map in eleven languages, every open place, /lists,
                            /blog and Google's six lists
 indexnow.txt               the IndexNow key, public on purpose — see
                            tools/indexnow.mjs
@@ -15990,11 +16065,19 @@ tools/city.mjs             turns the same export into data/city.json, the city
                            under every list's panel
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
 tools/googlelists.mjs      ranks the same export into db/google-lists.sql
+tools/cityvenues.mjs       the exports of Tartu, Narva and Pärnu into
+                           db/city-venues.sql and a table nothing on the site
+                           reads; neither the exports nor the file is here yet
 tools/sitemap.mjs          writes sitemap.xml from the languages, the places
                            and the six lists the site wrote
 tools/indexnow.mjs         submits every address in it to Bing once each deploy
                            is live
 tools/stamp.mjs            writes the ?v= content hash on every asset URL
+tools/lean.mjs             writes the .lean copies of app.js, styles.css,
+                           lists.js and lists.css — the same files without the
+                           comments; run it before the stamper
+tools/languages.mjs        writes data/lang/ and data/map.json out of ui.json
+                           and restaurants.json
 tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
@@ -16007,8 +16090,12 @@ tools/functions-check.mjs  imports every module under functions/, the way the
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
-.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check and the write gate, on every push
+tools/mcpcheck.mjs         asks /mcp what an assistant would, over the real
+                           data files, and holds the answers to what was
+                           promised; --check is what CI runs
+.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the /mcp check and the write gate, on every push
 .github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
+.github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, so the day's Google budget is spent
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone
@@ -16065,7 +16152,7 @@ icon, which Google refuses, so a search for the site came back with the grey
 globe instead of the mouth. Google re-crawls favicons on its own schedule;
 there is no way to make it look sooner.
 
-On the map it *is* the pin — for the seventy-eight places on it. Every one of
+On the map it *is* the pin — for the seventy-nine places on it. Every one of
 them is the mouth, cropped round, drawn at 22px — 34px for the one whose panel
 is open, and 17px for the quietest of them. It used to go on the chosen pin
 alone, over a circle, on the reasoning that a picture inside a 14px dot is mud.
@@ -16128,7 +16215,7 @@ turns up in either table — three answers to the same question, because this
 is the one thing on the site that has to survive somebody hand-writing a
 request.
 
-That is not fussiness about a decoration. The map is seventy-eight places I
+That is not fussiness about a decoration. The map is seventy-nine places I
 have been to, and being on it is the verdict; a list is somebody saying they
 liked somewhere, which is a much smaller claim and a claim about themselves.
 If a list could put the mouth on a restaurant, those two sentences would be
@@ -16136,7 +16223,7 @@ the same sentence. So a top ten with three of my places on it draws three
 mouths among seven of whatever its owner chose, and that reads as what it is:
 partly approved, mostly recommended.
 
-The picker says so in words under it — `listsPinMark`, in ten languages —
+The picker says so in words under it — `listsPinMark`, in eleven languages —
 rather than leaving somebody to work it out from a map where two of their
 pins came out wrong.
 
@@ -16232,13 +16319,13 @@ kitchens that name a kind of door — `coffee`, `bar`, `pub`, `fast-food`,
 
 They cost nothing — no file, no sprite, no request, no thirteenth thing to
 re-render when a size changes — and everybody already knows what they mean, in
-ten languages, with no legend. The price is real: the picture is the reader's
+eleven languages, with no legend. The price is real: the picture is the reader's
 own platform's, so a croissant is Apple's on an iPhone and Google's on a Pixel
 and neither of them is ours. That trade is the wrong one for the mark, which
 is why the mark is a photograph and is in neither table. It is the right one
 for a marker somebody picks out of a grid.
 
-The forty markers have names in all ten languages, because a swatch needs a
+The forty markers have names in all eleven languages, because a swatch needs a
 label and a tooltip: `pinFlame`, `pinBlossom` and the rest. The picker builds
 those keys out of the id — `pinKey('flame')` — which means the validator's
 scanner for `t()` calls cannot see a single one of them, so it walks the same
@@ -16370,7 +16457,7 @@ clock in `assets/app.js` restates `tools/clock.mjs`.
 Change one, change the other. `node tools/validate.mjs` fails the build when
 the two sets of ids drift, when a kind of place is also something a list could
 pick, when a tone has no `--pin-<tone>` token or no `.pin-tone-<tone>` rule
-behind it, or when a marker has no name in ten languages — so the promise is
+behind it, or when a marker has no name in eleven languages — so the promise is
 kept by something other than a comment asking nicely.
 
 ---
@@ -16430,7 +16517,7 @@ dark form controls and scrollbars. No component rule anywhere names a colour.
 Adding a fifth is that block, a `.sw-<id>` swatch rule, an entry in `STYLES` in
 `assets/app.js`, the id in the `STYLES` list every other page script keeps to
 read `?style=` and `ttb.style` (seventeen of them — `grep -n "var STYLES"
-assets/*.js admin.html`), and a `style<Id>` label in all ten languages. A dark
+assets/*.js admin.html`), and a `style<Id>` label in all eleven languages. A dark
 one also takes the tile-pane lift and screen pass below. The `color-scheme`
 used to be set by each of those page scripts with a test for the word
 `green`, which would have drawn a second dark style's fields light on seventeen
@@ -17526,7 +17613,7 @@ own bubble, which is the one thing that still needs it.
 
 The strings are `explainOpen` — the bubble's name — the eleven `explainPin` …
 `explainDiscount` lines, `explainNext`, `explainSkip` and `explainClose`,
-in all ten languages. The pieces are `#tour` in
+in all eleven languages. The pieces are `#tour` in
 `index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
 `openExplain()`, `showStep()` and `placeTourStep()`; and under
 `prefers-reduced-motion` nothing slides, breathes or rocks.
@@ -18617,14 +18704,14 @@ visitor with no history, and was then told by the canonical tag that
 `functions/index.js` is what changed that. It serves the same file with the
 head written for the language the address names — `<html lang>`, the
 `documentTitle` and `metaDescription` from `data/ui.json`, a canonical tag
-naming that address, an `hreflang` link to each of the ten and an
+naming that address, an `hreflang` link to each of the eleven and an
 `x-default` pointing at the bare English page, the `og:` tags in that
 language, and the JSON-LD block. That block used to be built by
 `assets/app.js` after the map had drawn, where only a crawler that runs
 scripts could read it; now it is in the page as served: the site, and every
 open place as a `Restaurant`, `Bakery`, `CafeOrCoffeeShop` or `BarOrPub`
 with its address, its coordinates, its phone, its first photo, its price
-band and its write-up in that language. The ten addresses are the ones the
+band and its write-up in that language. The eleven addresses are the ones the
 site already had — `?lang=` is what the switcher writes into the address bar
 — so nothing new was invented for a crawler's sake; see **Each language is
 an address** under **Languages** for the visitor's half.
@@ -19125,7 +19212,7 @@ something in colour alone says it twice.
 
 ### 11. Every word is in `data/ui.json`
 
-Ten languages, and a string that exists in one and not another fails the
+Eleven languages, and a string that exists in one and not another fails the
 build. Nothing user-facing is written into a script at all, and the words in
 the markup are only the English the page is served with — every one of them
 sits under a `data-i18n` key that replaces it as soon as the strings load.

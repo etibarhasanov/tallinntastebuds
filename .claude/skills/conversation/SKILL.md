@@ -27,7 +27,7 @@ costs less than the first.
   the name is on its own line, why every word is a press and the glossary
   they share, and what was done to
   the sheets' text. Then **The back of the card is in three languages** and
-  **Three languages, not ten**, which are why a turn carries `en`, `az` and
+  **Three languages, not eleven**, which are why a turn carries `en`, `az` and
   `ru` and no more.
 - The `talks` block of `tools/validate.mjs` — every rule below is a line in it
   — and `talkCard()` in `assets/flashcard.js`, which is what the entry is
