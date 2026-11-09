@@ -38,7 +38,7 @@
  *     functions/api/_visitors.js, which would count its every view as the
  *     map's
  *   - a page served through a Function with a head of its own — index.html,
- *     lists.html, split.html, flashcard.html — missing the pair of PAGE-HEAD markers that
+ *     lists.html, flashcard.html — missing the pair of PAGE-HEAD markers that
  *     head goes between, which would leave it wearing its static head at
  *     every address without anything saying so; and an index.html or a
  *     lists.html whose empty element — #list-body, <main> — is not spelled
@@ -236,55 +236,6 @@ if (ui !== null) {
 }
 
 if (languages.length === 0) languages = ['en'];
-
-/* --------------------------------------------------------------- SPLITWISE
-   data/split.json — the splitwise page's own strings, in a file of its own so
-   that removing that feature is removing files rather than picking six hundred
-   lines out of the middle of the one every other page reads. See **Taking it
-   out** under **Splitwise** in README.md; this block and the one line in the
-   key check further down are all this file knows about it.
-
-   Held to exactly what ui.json is held to, and to one thing more: the same
-   languages, no more and no fewer. A pack that speaks nine of the ten would
-   print raw keys at whoever chose the tenth, and a language in here that is
-   not a language of the site is a translation nothing will ever read. */
-
-const splitUi = existsSync(join(DATA, 'split.json')) ? readJSON('data/split.json') : null;
-const splitKeys = new Set();
-
-if (splitUi !== null) {
-  if (!isPlainObject(splitUi)) {
-    fail('data/split.json', 'must be an object keyed by language code');
-  } else {
-    const said = Object.keys(splitUi);
-    for (const lang of said) {
-      if (!languages.includes(lang)) {
-        fail('data/split.json', `speaks "${lang}", which is not a language of data/ui.json`);
-      }
-    }
-    for (const lang of languages) {
-      if (!said.includes(lang)) fail('data/split.json', `has no "${lang}" — data/ui.json has one`);
-    }
-
-    const usable = said.filter((l) => isPlainObject(splitUi[l]));
-    const everyKey = new Set();
-    for (const lang of usable) for (const key of Object.keys(splitUi[lang])) everyKey.add(key);
-
-    for (const key of [...everyKey].sort()) {
-      splitKeys.add(key);
-      const missing = usable.filter((lang) => !isNonEmptyString(splitUi[lang][key]));
-      if (missing.length > 0) {
-        fail('data/split.json', `string "${key}" is missing (or empty) in: ${missing.join(', ')}`);
-      }
-      /* One string, one home. A key in both files is a string with two values
-         and no way to tell which one a page drew. */
-      if (ui !== null && isPlainObject(ui) && usable.some((lang) => ui[lang] && key in ui[lang])) {
-        fail('data/split.json', `string "${key}" is also in data/ui.json — it belongs in one of them`);
-      }
-    }
-  }
-}
-/* ----------------------------------------------------------- end SPLITWISE */
 
 /* -------------------------------------------------------------- FLASHCARDS
    data/decks.json — the Estonian the flashcards page ships: fifty-three decks
@@ -2225,9 +2176,6 @@ if (ui !== null && isPlainObject(ui)) {
   for (const lang of Object.keys(ui)) {
     if (isPlainObject(ui[lang])) for (const key of Object.keys(ui[lang])) known.add(key);
   }
-  /* SPLITWISE: split.html and assets/split.js draw theirs from data/split.json.
-     Delete this line with the block above. */
-  for (const key of splitKeys) known.add(key);
 
   /* The root's pages and the owner's pages under admin/. */
   const ADMIN_PAGES = join(ROOT, 'admin');
@@ -2241,7 +2189,7 @@ if (ui !== null && isPlainObject(ui)) {
       const re = new RegExp(attr + '="([^"]+)"', 'g');
       let hit;
       while ((hit = re.exec(text)) !== null) {
-        if (!known.has(hit[1])) fail(page, `asks for the string "${hit[1]}", which is in no language of data/ui.json or data/split.json`);
+        if (!known.has(hit[1])) fail(page, `asks for the string "${hit[1]}", which is in no language of data/ui.json`);
       }
     }
   }
@@ -2259,7 +2207,7 @@ if (ui !== null && isPlainObject(ui)) {
         /* Only things shaped like a key. A t() call can hold a fallback or a
            separator, and neither is a missing string. */
         if (!KEY_SHAPE.test(key) || known.has(key)) continue;
-        fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json or data/split.json`);
+        fail(`assets/${script}`, `calls t('${key}'), which is in no language of data/ui.json`);
       }
     }
   }
@@ -2547,14 +2495,14 @@ for (const ref of staleStamps()) {
 /* --------------------------------------------------------------- the head
    Five pages are served through a Function that swaps the block between
    their PAGE-HEAD markers for a head of that address's own — the map in the
-   language ?lang= names, a list, a person, the directory, a group, a deck, a
+   language ?lang= names, a list, a person, the directory, a deck, a
    post on the blog. rehead()
    in functions/_shell.js leaves a page alone when it cannot find both
    markers, so a page that lost one would go on answering at every address
    with its static head and nothing would say so. Exactly one of each, the
    opening one first. */
 
-for (const page of ['index.html', 'lists.html', 'split.html', 'flashcard.html', 'blog.html']) {
+for (const page of ['index.html', 'lists.html', 'flashcard.html', 'blog.html']) {
   const html = readFileSync(join(ROOT, page), 'utf8');
   const open = html.indexOf('<!--PAGE-HEAD-->');
   const close = html.indexOf('<!--/PAGE-HEAD-->');

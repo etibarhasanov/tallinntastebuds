@@ -39,7 +39,7 @@
  * and one language file, for the strings and not the write-ups: the discount
  * pass (assets/pass.js, for deal.html, verify.html and staff.html), the blog,
  * the lists page, and since October 2026 the account page, the editor,
- * feedback, insights, splitwise and the owner's pages, each through a
+ * feedback, insights and the owner's pages, each through a
  * loadWords() of its own. So do the Functions that answer with a page's
  * words — wordsFor(), languageIndex() and wordsIn() in functions/api/_lib.js
  * — and the one that writes the flashcards' head. functions/index.js alone

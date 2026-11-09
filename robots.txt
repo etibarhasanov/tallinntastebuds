@@ -107,21 +107,6 @@ Disallow: /account.html
 # because the bylines on it lead to real profiles and there is no reason a
 # crawler should not walk to them.
 
-# Splitwise is deliberately NOT disallowed, and it was for a day.
-#
-# A group's link is pasted into a message and tapped by four people, so the
-# little preview card is most of what the link is — and the crawler that builds
-# that card has to fetch the page to read its og: tags. A Disallow here would
-# stop it fetching at all, and every group anybody shared would arrive as a
-# bare blue URL. That is the same argument /list/<id> has carried since lists
-# became shareable, and it applies harder here: a list at least has a title in
-# its address, and /split?g=dinner-at-rataskaevu-k3fmqw does not.
-#
-# Not being disallowed is not the same as being indexed. functions/split.js
-# sets noindex on every answer it gives and _headers sets it on the page
-# itself, so the card gets built and the search result never does. There is
-# nothing on the page for anybody who is not in the group in any case.
-
 # The admin page is not for anybody, crawler or otherwise. Nothing links to
 # it and it carries its own noindex tag.
 Disallow: /admin.html

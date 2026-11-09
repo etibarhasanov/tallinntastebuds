@@ -94,7 +94,7 @@ export async function adminUser(request, env) {
  * anybody may do to themselves. A year, renewed on every visit signed in, so
  * it outlasts a sign-out on the owner's own devices — that is the point of
  * it — and domain-scoped on the live site, the way the session is, so the
- * flashcards and splitwise subdomains see it too. The first page a browser
+ * flashcards subdomain sees it too. The first page a browser
  * ever opens signed in as the owner is counted once, because the tags load
  * before the account is read; every page after it is not. Clearing the
  * site's cookies puts that browser back in the count until the owner signs

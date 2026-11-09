@@ -6,7 +6,7 @@
  * thousand five hundred cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
- * functions/_middleware.js — for the reason splitwise does: it is not the map,
+ * functions/_middleware.js — because it is not the map,
  * and a sixth card on the account page reading "Flashcards" would have been a
  * second product filed under somebody's saved places.
  *
@@ -115,13 +115,12 @@
  *
  * IT IS THE SAME ACCOUNT AS THE MAP
  *
- * No second users table, no second password, no second sign-in route — the
- * same argument functions/api/split.js makes at more length. An owner is a
- * users.id out of ./account.js, and one line in sessionCookie() in ./_lib.js
- * scopes the session cookie to the domain rather than the host, so signing in
- * on the map is being signed in here. That line arrived for splitwise and
- * this feature is its second reader, which is worth knowing before either of
- * them is taken out.
+ * No second users table, no second password, no second sign-in route. An
+ * owner is a users.id out of ./account.js, and one line in sessionCookie() in
+ * ./_lib.js scopes the session cookie to the domain rather than the host, so
+ * signing in on the map is being signed in here. That line arrived for
+ * splitwise, the bill-splitting subdomain since taken out, and this feature
+ * is now its only reader: it goes when this does.
  *
  * SIGNED OUT, THE DECKS STILL WORK
  *
@@ -150,7 +149,7 @@
  *     a request is ever concatenated into SQL.
  *   - **A deck somebody wrote has exactly one reader, and it is its owner.**
  *     There is no sharing here and no link that buys anything — unlike a list
- *     or a splitwise group, where holding the code is the permission. Every
+ *     on the map, where holding the link is the permission. Every
  *     read of a deck out of the database goes through deckOf(), which takes
  *     the session's own id, and a deck belonging to somebody else answers the
  *     way a deck that does not exist answers.
@@ -364,9 +363,9 @@ function mintedId() {
 
 /* Trim, cap, and flatten the newlines somebody's phone keyboard put in, so no
    field here can be stored longer than the card that draws it. The same three
-   lines ./split.js keeps, kept here for the same reason it gives: a feature
-   that is meant to be removable in an afternoon does not put a helper in a
-   shared file to be unpicked out of it later. */
+   lines ./lists.js keeps, kept here rather than shared: a feature that is
+   meant to be removable in an afternoon does not put a helper in a shared
+   file to be unpicked out of it later. */
 function words(value, max) {
   return String(typeof value === 'string' ? value : '')
     .replace(/\s+/g, ' ')
@@ -810,8 +809,7 @@ export async function onRequestGet(context) {
      the database is doing. `ready` is about the other two things this page
      can do — remembering where you got to, and the decks you wrote yourself —
      and the page says one quiet line where it is false rather than refusing
-     to draw. That is the difference between this page and splitwise's, which
-     has nothing to show at all without a database. */
+     to draw. */
   const ready = !!env.DB && !(await wrongDatabase(env));
   const google = googleReady(env);
   /* The shelf and the session at once: on a fresh isolate the first is a read

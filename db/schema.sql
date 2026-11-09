@@ -1,6 +1,6 @@
 -- Tallinn Tastebuds — every table the site has.
 --
--- Fourteen things live here: the saves and their counts, how often each place
+-- Thirteen things live here: the saves and their counts, how often each place
 -- and each filter has been pressed, how often somebody's profile was opened
 -- and from where, who came to the site and what they did, how they moved
 -- through the diagrams of what they can do, the accounts a save can follow a
@@ -8,11 +8,10 @@
 -- bookmark on somebody else's, the places somebody adds by hand when the
 -- catalogue does not have them, 1,110 Tallinn venues mirrored out of Google
 -- Places with what Google has said about them since, what people would
--- change about this site and who agreed with them, the groups splitting a
--- bill on the splitwise subdomain, the decks and answers of the flashcards,
--- the games of chess the city and its members play against the house and the
--- notes left beside the public one, and one meta row saying which database
--- this is. Everything the map itself draws — the places, the write-ups, the
+-- change about this site and who agreed with them, the decks and answers of
+-- the flashcards, the games of chess the city and its members play against
+-- the house and the notes left beside the public one, and one meta row saying
+-- which database this is. Everything the map itself draws — the places, the write-ups, the
 -- discounts, the stories — is a JSON file in the repository and never a row.
 --
 -- Applied to both D1 databases — "tallinntastebuds" behind the live site and
@@ -475,7 +474,7 @@ CREATE TABLE IF NOT EXISTS flow_counts (
 -- How many different people used each product in a week: one row per
 -- person per product per week, and a week's rows for a product are the
 -- answer. countUse() in functions/api/_visitors.js writes it, once a write
--- on saves, lists, flashcards, splitwise or chess has gone through, and
+-- on saves, lists, flashcards or chess has gone through, and
 -- WHAT THE PRODUCTS WERE USED FOR, AND BY HOW MANY in that file's header is
 -- the reasoning; **Usage, week by week** in README.md is the reading half.
 --
@@ -491,7 +490,8 @@ CREATE TABLE IF NOT EXISTS flow_counts (
 CREATE TABLE IF NOT EXISTS usage_people (
   -- YYYY-MM-DD, the Monday the week begins on, UTC.
   week    TEXT NOT NULL,
-  -- map, lists, flashcards, splitwise or chess — PRODUCTS in _visitors.js.
+  -- map, lists, flashcards or chess — PRODUCTS in _visitors.js. Weeks before
+  -- 2026-11-09 also hold splitwise, the bill-splitting page since taken out.
   product TEXT NOT NULL,
   key     TEXT NOT NULL,
   PRIMARY KEY (week, product, key)
@@ -1531,141 +1531,6 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 
 
--- -------------------------------------------------------------- splitwise
--- Five people, one card at the table, and the argument afterwards.
---
--- These five tables are the whole of splitwise.tallinntastebuds.ee: a group
--- somebody named, the people who joined it by the link, what each of them
--- paid for, how that was divided, and the money handed back afterwards. It is
--- the only feature on this site that is not about restaurants, and it is here
--- because it is the thing that happens immediately after one — see
--- **Splitwise** in README.md, and functions/api/split.js, which is the only
--- thing that writes any of these.
---
--- IT IS THE SAME ACCOUNT AS THE MAP, AND THAT IS THE POINT
---
--- There is no second users table and no second sign-in. A member is a
--- users.id, minted by functions/api/account.js from the same two fields the
--- map's sheet asks for, and somebody who saves places is already somebody who
--- can be owed eleven euros. The subdomain is a room in the same house, not a
--- second house; what makes it work across the two hostnames is one line in
--- sessionCookie() in functions/api/_lib.js, which scopes the session cookie
--- to the domain rather than to the host.
---
--- EVERY AMOUNT IS AN INTEGER NUMBER OF CENTS
---
--- Never a REAL. Money in a float is the bug that takes a year to show up: a
--- 33.33 that is really 33.329999999999998, three of them summed against a
--- 100.00 that is exact, and a group that is one cent from even forever with
--- nobody able to say which cent. SQLite would happily store either; this
--- stores 3333, and the division below is integer division with the remainder
--- handed out rather than dropped.
---
--- Euros, and only euros. The city has one currency and a column that could
--- hold another would be a column every sum here would have to start caring
--- about.
-CREATE TABLE IF NOT EXISTS split_groups (
-  -- The invitation, and the whole of the URL: /split?join=<id>. Minted from
-  -- the name plus six random characters exactly as a list's id is, so a link
-  -- says what it is before anybody opens it and still cannot be guessed at
-  -- from a neighbouring one. Guessing it is the only way in — there is no
-  -- request-to-join and no approval — so it has to be unguessable.
-  id         TEXT    PRIMARY KEY,
-  name       TEXT    NOT NULL,
-  -- users.id. Who made it, and the only person who can rename or delete it.
-  -- They are also a row in split_members: being the owner is a fact about
-  -- the group, being a member is what puts you in the arithmetic.
-  owner      TEXT    NOT NULL,
-  created_at INTEGER NOT NULL,
-  -- Touched by every expense and every settlement, so "your groups, the one
-  -- you were last splitting first" is one indexed read.
-  updated_at INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_split_groups_owner ON split_groups (owner, updated_at DESC);
-
--- One row is one person in one group.
---
--- There is no username column here, and that is a deliberate difference from
--- list_items, which does copy the name it was added under. A list item points
--- at a place in a generated file that a refresh can renumber, so the name is
--- copied or the sentence somebody wrote ends up attached to nothing. A member
--- points at a users row, so the join is exact and stays exact: an account can
--- be renamed — see username_holds above — and everybody in every group it is
--- in reads the new name on their next load, because there is no second copy
--- of it to go stale. A username column here would be that copy.
-CREATE TABLE IF NOT EXISTS split_members (
-  group_id  TEXT    NOT NULL,
-  user_id   TEXT    NOT NULL,
-  joined_at INTEGER NOT NULL,
-  -- Opening the link twice is the conflict clause and not a second seat.
-  PRIMARY KEY (group_id, user_id)
-);
--- "The groups this person is in", which is the whole of the front page.
-CREATE INDEX IF NOT EXISTS idx_split_members_user ON split_members (user_id, joined_at DESC);
-
--- One row is one thing somebody paid for: the bill, the taxi, the wine.
-CREATE TABLE IF NOT EXISTS split_expenses (
-  id         TEXT    PRIMARY KEY,
-  group_id   TEXT    NOT NULL,
-  -- users.id — whose card it was. Not necessarily whoever typed it in: the
-  -- person holding the phone puts in what the person across the table paid,
-  -- which is most of how this gets filled in at all.
-  payer      TEXT    NOT NULL,
-  -- "Dinner", "the taxi back". Capped at MAX_WHAT in the Function.
-  what       TEXT    NOT NULL,
-  -- Euro cents, always positive. See the note above about floats.
-  cents      INTEGER NOT NULL,
-  -- users.id — who put the row in. Kept because they are the one person
-  -- besides the payer allowed to take it out again.
-  added_by   TEXT    NOT NULL,
-  created_at INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_split_expenses_group ON split_expenses (group_id, created_at DESC);
-
--- How one expense was divided, one row per person it was divided between.
---
--- WHY THE SHARES ARE STORED AND NOT COMPUTED
---
--- The obvious version divides the total by the number of members at read
--- time. It is wrong twice. A group's membership changes — somebody joins on
--- Sunday and would retroactively owe a third of Friday's dinner — and an
--- equal division of 10.00 between three people is 3.33 three times, which is
--- 9.99, so the arithmetic quietly loses a cent every time it runs.
---
--- So the division is done once, when the expense is entered, against the
--- members as they stand at that moment; the remainder cents are handed to
--- the first few members in id order so the shares always sum to exactly the
--- total; and the answer is written down. What a group owes is then a sum of
--- integers over rows that cannot change, rather than an opinion recalculated
--- against today's membership.
-CREATE TABLE IF NOT EXISTS split_shares (
-  expense_id TEXT    NOT NULL,
-  user_id    TEXT    NOT NULL,
-  cents      INTEGER NOT NULL,
-  PRIMARY KEY (expense_id, user_id)
-);
-
--- One row is money actually handed over: "I sent you the eleven euros."
---
--- Deliberately not an expense with a negative amount, which is how this is
--- often done and which makes every sum in the file have to know the
--- difference. A settlement moves a debt and buys nothing, so it is its own
--- table and its own line in the balance.
-CREATE TABLE IF NOT EXISTS split_settlements (
-  id         TEXT    PRIMARY KEY,
-  group_id   TEXT    NOT NULL,
-  -- users.id, both: who handed it over and who took it.
-  payer      TEXT    NOT NULL,
-  payee      TEXT    NOT NULL,
-  cents      INTEGER NOT NULL,
-  -- users.id — who recorded it. Either end of the payment may, and either
-  -- end may take it back off again.
-  added_by   TEXT    NOT NULL,
-  created_at INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (group_id, created_at DESC);
-
-
 -- ------------------------------------------------------------- flashcards
 -- Estonian, one word at a time, on flashcard.tallinntastebuds.ee.
 --
@@ -1683,21 +1548,20 @@ CREATE INDEX IF NOT EXISTS idx_split_settlements_group ON split_settlements (gro
 --
 -- IT IS THE SAME ACCOUNT AS THE MAP
 --
--- Same argument splitwise makes above: no second users table, no second
--- sign-in. An owner is a users.id out of functions/api/account.js, and the
+-- No second users table, no second sign-in. An owner is a users.id out of functions/api/account.js, and the
 -- session cookie is already scoped to the domain rather than the host — see
 -- sessionCookie() in functions/api/_lib.js — so signing in on the map is
--- being signed in here. That line was splitwise's and this feature is its
--- second reader, which is worth knowing before either of them is removed.
+-- being signed in here. That line arrived for splitwise, the bill-splitting
+-- subdomain since taken out, and this feature is now its only reader.
 
 -- One row is one deck somebody wrote. The decks in data/decks.json have no
 -- row here and never will: they belong to the deployment, not to a person.
 CREATE TABLE IF NOT EXISTS flashcard_decks (
-  -- Sixteen random hex characters, minted the way a splitwise expense's id
-  -- is. Deliberately not the readable stem-plus-code a list or a group gets:
-  -- those ids are in links people send each other and have to say what they
-  -- are before they are opened, and a deck is never sent to anybody. Nothing
-  -- reads this but its owner, so it only has to be unique.
+  -- Sixteen random hex characters. Deliberately not the readable
+  -- stem-plus-code a list gets: those ids are in links people send each other
+  -- and have to say what they are before they are opened, and a deck is never
+  -- sent to anybody. Nothing reads this but its owner, so it only has to be
+  -- unique.
   id         TEXT    PRIMARY KEY,
   -- users.id. The only person who can read it, add to it, rename it or take
   -- it down — there is no sharing here and no second reader.

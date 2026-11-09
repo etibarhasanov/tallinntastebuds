@@ -170,15 +170,13 @@ against the 25 to 30 of one language. Two things to know when copying it:
 needs the list of languages — the editor does, for the line on a profile —
 takes it off the `names` the same call returns, not off the pack's keys.
 
-One exception, and it is a deliberate one: the splitwise page's strings are in
-`data/split.json`, same shape and same eleven languages, so that removing that
-feature is removing files — see **Taking it out** under **Splitwise** in
-`README.md`. The validator holds it to everything `ui.json` is held to, plus
-the same eleven languages and no key in both files. Nothing else may do this; a
-second exception is two files to keep in step.
+There is no exception. Splitwise, the bill-splitting page, had one —
+`data/split.json`, so that removing the feature would be removing files — and
+it was removed on 2026-11-09, file and all. A strings file beside `ui.json` is
+two files to keep in step, and nothing gets one again.
 
-**That rule has been tested once and held.** The flashcards page arrived on a
-subdomain of its own, built to be removable the way splitwise is, and wanted a
+**That rule has been tested and held.** The flashcards page arrived on a
+subdomain of its own, built to be removable the way splitwise was, and wanted a
 file of its own by exactly the same argument. It did not get one: its
 hundred and thirty-four `flash*` keys are in `data/ui.json` with everything else, and taking
 the feature out means `grep -n '"flash' data/ui.json` and a hundred and thirty-four deletions
@@ -349,10 +347,10 @@ browser cannot import from `tools/`; change one, change the other.
 - **The lean copies**: every copy `LEAN` in `tools/lean.mjs` names —
   `app`, `styles`, `lists` and `lists.css` today — must be what the tool
   writes from its source, and no stamped page may load a source directly.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-one pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
-  `deal.html`, `verify.html`, `staff.html`, `split.html`,
+  `deal.html`, `verify.html`, `staff.html`,
   `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's five under
   `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html` — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
@@ -462,8 +460,8 @@ the site moves into the rest of `SPEAKS` rather than out of it, so nobody's
 ### Taking one out
 
 The same files in the other direction, which is where it was done for
-Armenian in November 2026: its block in `data/ui.json` and in
-`data/split.json`; its key in every language-keyed object in
+Armenian in November 2026: its block in `data/ui.json` (and, back then, in
+`data/split.json`); its key in every language-keyed object in
 `data/restaurants.json`, `data/taxonomy.json`, `data/cuisines.json`,
 `data/privacy.json`, `data/deals.json` and `data/stories.json`; its entry in
 `data/radio.json`; the property and the `anyOf` line in `data/schema.json`;

@@ -30,7 +30,7 @@
  * account sheet's own two fields inside this card, and Post feedback then
  * makes the account or signs into it and posts, in one request — see the
  * header of functions/api/feedback.js. This is the one page on the site
- * outside the map's sheet and splitwise that draws a password field, and it
+ * outside the map's sheet and the flashcards that draws a password field, and it
  * draws the sheet's, with the sheet's hints and the sheet's errors, rather
  * than a second design for the same form.
  *

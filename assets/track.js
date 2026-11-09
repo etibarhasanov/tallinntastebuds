@@ -162,10 +162,9 @@ window.TTBTrack = (function () {
   /* A refusal from /api/account, reported as a press of its own:
      account_err_ and the error the route sent, its dashes as underscores —
      `taken`, `password`, `slow_down` — and `generic` where it sent none,
-     which is a network that failed as often as a server that did. The map,
-     splitwise and the flashcards each carry a sign-in form, and all three
-     report a refusal through this so the one word is spelt one way. The
-     name is a press like any other here; functions/api/_visitors.js is
+     which is a network that failed as often as a server that did. The map
+     and the flashcards each carry a sign-in form, and both report a refusal
+     through this so the one word is spelt one way. The name is a press like any other here; functions/api/_visitors.js is
      what also files it under SIGNING UP, which is where /admin/visitors
      reads why people who tried to make an account did not. `view` is the
      form it happened on — 'up', 'in' or 'google', the naming step. */
