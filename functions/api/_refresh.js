@@ -140,12 +140,13 @@ const CLOSED = 'Temporarily closed';
    or a shorter wait in one of these, has to be paid for out of another; the
    sum is places × 30 ÷ days, and it has to stay under the cap.
 
-   Two things stand outside it. An open still asks at REFRESH_AFTER whatever
-   the rank, because somebody is reading that row's numbers now. And a row
-   Google calls temporarily closed keeps the month too: _rank.js puts every
-   closed place below every open one, so by rank they would all wait sixty
-   days, and CLOSED_A_DAY exists so that a reopened one is found in about
-   five weeks.
+   Three things stand outside it. An open still asks at REFRESH_AFTER
+   whatever the rank, because somebody is reading that row's numbers now. A
+   row Google calls temporarily closed keeps the month too: _rank.js puts
+   every closed place below every open one, so by rank they would all wait
+   sixty days, and CLOSED_A_DAY exists so that a reopened one is found in
+   about five weeks. And a busy place is never asked about less than monthly
+   — BUSY_A_MONTH below.
 
    `rank` is last week's by the time it is read, or older — _rank.js makes a
    ranking when the Top 100 tab is opened in a new week. A place that crossed
@@ -157,25 +158,62 @@ export const TIERS = [
   { to: Infinity, after: 60 * DAY }
 ];
 
+/* A place gathering reviews fast is worth a point a month whatever its rank.
+   Rank weighs the rating, so a big place with an ordinary score stands low
+   and still moves more than nearly anything above it: in November 2026
+   F-Hoone stood 567th at 4.4 and gained forty-five reviews a month, the
+   seventh most in the city, and by rank it would be asked about every forty
+   days. So a row whose last two dated answers show BUSY_A_MONTH reviews or
+   more gained in a month waits REFRESH_AFTER at most, and is asked in the
+   fill beside the tier that waits the same.
+
+   Read off google_scores rather than kept in a column, so there is nothing
+   to apply and nothing to keep in step: the row's latest answer is the one
+   stamped with its refreshed_at — keepScores() writes both from the same
+   clock — and the one before it is the newest dated line older than that.
+   A row with one dated answer has only the export's undated pair behind it
+   and is not busy yet. Thirteen places cleared the line when it was drawn
+   and two of them stood below the top hundred, so it costs a handful of
+   calls a month; it is checked only for rows whose tier waits longer than a
+   month, since for the rest it changes nothing. */
+export const BUSY_A_MONTH = 30;
+const BUSY_SQL =
+  'EXISTS (SELECT 1 FROM google_scores a, google_scores b ' +
+  'WHERE a.place_id = google_venues.place_id AND a.at = google_venues.refreshed_at ' +
+  'AND b.place_id = a.place_id ' +
+  'AND b.at = (SELECT MAX(c.at) FROM google_scores c WHERE c.place_id = a.place_id AND c.at < a.at) ' +
+  'AND (a.reviews - b.reviews) * ' + (30 * DAY) + ' >= ' + BUSY_A_MONTH + ' * (a.at - b.at))';
+
 /* The wait for one row, and the same two answers as SQL over google_venues —
    the tier's number, for the order, and its wait, for what is due — written
    from TIERS so the three cannot disagree. Every value inlined is a number
-   out of the table above or the one word in CLOSED. */
-export function refreshAfter(rank, status) {
+   out of the table above or the one word in CLOSED. A row with no rank
+   answers no `rank <=` and falls to the last tier, as in refreshAfter(). */
+export function refreshAfter(rank, status, busy) {
   if (status === CLOSED) return REFRESH_AFTER;
   const at = Number(rank);
   const tier = TIERS.find((t) => at >= 1 && at <= t.to) || TIERS[TIERS.length - 1];
-  return tier.after;
+  return busy ? Math.min(tier.after, REFRESH_AFTER) : tier.after;
 }
 
-const ranked = (pick) => TIERS.slice(0, -1)
-  .map((t, i) => 'WHEN rank <= ' + t.to + ' THEN ' + pick(t, i) + ' ')
-  .join('');
-const LAST = TIERS.length - 1;
-const TIER_SQL = 'CASE WHEN rank IS NULL THEN ' + LAST + ' ' + ranked((t, i) => i) + 'ELSE ' + LAST + ' END';
+/* The tiers as a CASE, with the busy rows let in just ahead of the first
+   tier that waits longer than they do. */
+const BUSY_TIER = Math.max(0, TIERS.findIndex((t) => t.after >= REFRESH_AFTER));
+const tiered = (pick, busy) => {
+  let out = '';
+  let asked = false;
+  TIERS.forEach((t, i) => {
+    if (!asked && t.after > REFRESH_AFTER) {
+      out += 'WHEN ' + BUSY_SQL + ' THEN ' + busy + ' ';
+      asked = true;
+    }
+    out += i < TIERS.length - 1 ? 'WHEN rank <= ' + t.to + ' THEN ' + pick(t, i) + ' ' : 'ELSE ' + pick(t, i) + ' END';
+  });
+  return out;
+};
+const TIER_SQL = 'CASE ' + tiered((t, i) => i, BUSY_TIER);
 const AFTER_SQL = "CASE WHEN status = '" + CLOSED + "' THEN " + REFRESH_AFTER + ' ' +
-  'WHEN rank IS NULL THEN ' + TIERS[LAST].after + ' ' + ranked((t) => t.after) +
-  'ELSE ' + TIERS[LAST].after + ' END';
+  tiered((t) => t.after, REFRESH_AFTER);
 
 /* Whether a row is due, as a WHERE clause with one `?` for now. Read by the
    two loops below and by ./admin/refreshes.js, whose "Due now" is this
@@ -543,7 +581,18 @@ export async function refreshOnOpen(env, id, source = 'open') {
   /* An open asks at a month, whatever the rank; the top hundred and the fill
      ask at the row's tier — TIERS. The same wait is the claim's, below, so a
      row a loop found due is due here too. */
-  const wait = source === 'open' ? REFRESH_AFTER : refreshAfter(before.rank, before.status);
+  let wait = source === 'open' ? REFRESH_AFTER : refreshAfter(before.rank, before.status);
+  if (wait > REFRESH_AFTER) {
+    try {
+      const row = await env.DB
+        .prepare('SELECT ' + BUSY_SQL + ' AS busy FROM google_venues WHERE place_id = ?')
+        .bind(placeId)
+        .first();
+      wait = refreshAfter(before.rank, before.status, !!(row && row.busy));
+    } catch (e) {
+      /* google_scores not applied to this database yet: nothing is busy. */
+    }
+  }
   if ((Number(was) || 0) > at - wait) return 'fresh';
 
   /* The row first, and the budget second. Stamping the row is what stops two
