@@ -144,7 +144,7 @@ function where(request, path) {
 
 /* The decks, as text: what each one is called and the line saying what is in
    it. A list of links, so a crawler that landed on this page walks to the
-   fifty-three decks, ten lessons, four songs and thirty conversations under it
+   fifty-three decks, eleven lessons, four songs and thirty conversations under it
    rather than treating it as a leaf. */
 function deckList(decks, lessons, songs, talks) {
   const row = (one) =>

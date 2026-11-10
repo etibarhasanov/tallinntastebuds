@@ -54,9 +54,9 @@
  *
  * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
  *
- * Five lessons sit on the shelf under a heading of their own, after the first
- * stage: why a noun has three forms and the fourteen cases they open, why a
- * verb does and every tense it grows into, and how an adjective compares and
+ * Six lessons sit on the shelf under a heading of their own, after the first
+ * stage: why a noun has three forms, why Tallinn's street signs wear the
+ * second of them, and the fourteen cases they open, why a verb does and every tense it grows into, and how an adjective compares and
  * what it is made from — and the last of those is followed by a deck of
  * comparatives, the way each case lesson is by its cards. Under them, a
  * second heading teaches the cases one at a time — five short lessons, each

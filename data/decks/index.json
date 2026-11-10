@@ -3423,6 +3423,21 @@
    "taste": "leib · leiva · leiba"
   },
   {
+   "id": "street-names",
+   "added": "2026-11-10",
+   "name": {
+    "en": "Why the street sign says Laulupeo",
+    "az": "Küçə lövhəsində niyə Laulupeo yazılıb",
+    "ru": "Почему на табличке написано Laulupeo"
+   },
+   "why": {
+    "en": "Laulupeo, Lasnamäe, Mustamäe: why Tallinn’s streets and districts are named in the second case, and the word to look up behind each.",
+    "az": "Laulupeo, Lasnamäe, Mustamäe: Tallinnin küçə və rayon adları niyə yiyəlik haldadır və lüğətdə hansı sözü axtarmaq lazımdır.",
+    "ru": "Laulupeo, Lasnamäe, Mustamäe: почему улицы и районы Таллинна названы в родительном падеже и какое слово искать в словаре."
+   },
+   "taste": "laulupidu · Laulupeo tänav"
+  },
+  {
    "id": "cases",
    "added": "2026-10-06",
    "name": {
