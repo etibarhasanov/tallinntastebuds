@@ -106,6 +106,54 @@ export async function fingerprint(secret, ip, ua) {
   return hmacHex(secret, ip + '|' + ua);
 }
 
+/* The privacy page promises the fingerprint "is cleared once it is no longer
+   needed", and for a while nothing cleared it: the saves, the feedback, the
+   chess notes and the flashcard reports each kept theirs for as long as the
+   row lived. login_fails and view_seen were always swept; these four were not.
+
+   How long each one is needed is how far back its cap looks:
+
+     - the feedback and the chess notes are capped per hour, so a day is the
+       hour with room to spare;
+     - a save and a flashcard report also use it to count one network once —
+       PER_PLACE_CAP saves of a place, one report of a card — so those keep it
+       for a month. Past that the same network can save the place or report the
+       card again, which is the trade: a month of a stranger's fingerprint
+       against a count that can be nudged by one, once a month.
+
+   The column is NOT NULL in all four, so cleared is an empty string rather
+   than NULL, which no fingerprint can equal — hmacHex is always sixty-four
+   hex characters, and that is also how a row still holding one is told apart.
+   flashcard_reports has the fingerprint in its primary key, so two cleared
+   reports of the same card would be one key; each gets '#' and its rowid
+   instead, unique and about nobody.
+
+   Called after the answer from each of the four routes' writes, and it never
+   throws. Four statements run apart rather than as one batch(), which is one
+   transaction: a table not applied yet fails its own statement and leaves the
+   other three to land. Each touches only the rows that have aged past their
+   window since the last run, so it is a read and a handful of writes. */
+const FINGERPRINT_DAY = 24 * 60 * 60 * 1000;
+const FINGERPRINT_MONTH = 30 * FINGERPRINT_DAY;
+
+const FORGET = [
+  ['feedback', "''", 'created_at', FINGERPRINT_DAY],
+  ['chess_notes', "''", 'at', FINGERPRINT_DAY],
+  ['saves', "''", 'created_at', FINGERPRINT_MONTH],
+  ['flashcard_reports', "'#' || rowid", 'created_at', FINGERPRINT_MONTH]
+];
+
+export function forgetFingerprints(env) {
+  const now = Date.now();
+  return Promise.all(FORGET.map(([table, cleared, at, keep]) =>
+    env.DB
+      .prepare(`UPDATE ${table} SET ip_hash = ${cleared} WHERE length(ip_hash) = 64 AND ${at} < ?`)
+      .bind(now - keep)
+      .run()
+      .catch(() => {})
+  ));
+}
+
 /* ------------------------------------------------------------- passwords
  * PBKDF2-HMAC-SHA256 through WebCrypto, which is what a Worker has: there is
  * no bcrypt or argon2 in this runtime without shipping WASM, and PBKDF2 is

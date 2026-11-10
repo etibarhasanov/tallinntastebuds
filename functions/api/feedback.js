@@ -44,7 +44,8 @@
  *
  *   feedback        the sentence, who wrote it, whether their name shows, a
  *                   hashed network fingerprint for the cap, and when. Never
- *                   the address itself.
+ *                   the address itself, and the fingerprint only for a day —
+ *                   forgetFingerprints() in ./_lib.js.
  *   feedback_hearts one row per person per piece of feedback.
  *
  * BOTH TABLES ARRIVE BY HAND, AND EVERY READ HERE SURVIVES THEIR ABSENCE
@@ -60,7 +61,7 @@
 
 import {
   json, sessionUser, wrongDatabase, randomHex, fingerprint, clientIp,
-  sessionCookie, SESSION_DAYS
+  sessionCookie, SESSION_DAYS, forgetFingerprints
 } from './_lib.js';
 import { enterAccount } from './_account.js';
 import { googleReady } from './_google.js';
@@ -338,6 +339,7 @@ export async function onRequestPost(context) {
         )
         .bind(id, me.id, me.kind, named ? 1 : 0, text, hash, at)
         .run();
+      context.waitUntil(forgetFingerprints(env));
 
       return answer({
         said: {

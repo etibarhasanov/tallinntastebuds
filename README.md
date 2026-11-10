@@ -3913,6 +3913,15 @@ handful of identical phones that will still collide, while the sixth attempt
 from one fingerprint on one place is the clear-your-storage-and-try-again loop
 this exists to stop.
 
+The fingerprint stays on a save for **thirty days** and is then overwritten
+with an empty string — `forgetFingerprints()` in `functions/api/_lib.js`,
+which runs after every save, feedback, chess note and flashcard report and
+clears all four tables at once. So the cap is five a month rather than five
+for ever: past a month the same network can save the place again, which is a
+count nudged by one, once a month, against keeping a stranger's fingerprint
+for as long as the save exists. The privacy page promised it was cleared once
+it was no longer needed, and until November 2026 nothing cleared it.
+
 **3. Turnstile, optional.** Cloudflare's CAPTCHA replacement, in invisible
 mode: no puzzle, no traffic lights, usually nothing the visitor ever sees. It
 is the only layer that stops a *script* rather than a person — the two above
@@ -12672,6 +12681,17 @@ from the same sheet.
 the new date. What it does not do: it does not ask for consent — that is
 **No consent banner**, and this page documents the arrangement rather than
 changing it.
+
+**"Cleared once it is no longer needed"** is the page's sentence about the
+hashed network fingerprint, and the code that makes it true is
+`forgetFingerprints()` in `functions/api/_lib.js`. Four tables keep one: the
+feedback and the chess notes for a day, since their caps look back an hour,
+and the saves and the flashcard reports for thirty, since those also count
+one network once. `login_fails` deletes its own rows past the fifteen
+minutes, and `view_seen` its own past the day. An audit in November 2026
+found the four kept theirs for as long as the row lived; that is what the
+function is for, and a new table that files a fingerprint joins `FORGET`
+there.
 
 ## The blog
 

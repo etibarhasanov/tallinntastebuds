@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS saves (
   owner_kind TEXT    NOT NULL DEFAULT 'device',
   -- HMAC(SAVE_SALT, ip + '|' + user agent). The raw address is never stored
   -- and cannot be recovered from this without the salt, which lives only in
-  -- the Pages environment.
+  -- the Pages environment. Emptied to '' after thirty days by
+  -- forgetFingerprints() in functions/api/_lib.js.
   ip_hash    TEXT    NOT NULL,
   created_at INTEGER NOT NULL,
   PRIMARY KEY (place_id, owner)
@@ -1455,6 +1456,8 @@ CREATE TABLE IF NOT EXISTS feedback (
   -- HMAC(SAVE_SALT, ip + '|' + user agent), for the three-an-hour cap. The
   -- raw address is never stored and cannot be recovered from this without the
   -- salt, which lives only in the Pages environment — same as `saves`.
+  -- Emptied to '' after a day by forgetFingerprints() in
+  -- functions/api/_lib.js.
   ip_hash    TEXT    NOT NULL,
   created_at INTEGER NOT NULL,
   -- Taking one down. There is no route and no button that writes this: it is
@@ -1707,6 +1710,9 @@ CREATE TABLE IF NOT EXISTS flashcard_reports (
   -- row: the count is how many *people* said so, which is the only question
   -- this table is ever asked. Two readers behind one network with the same
   -- phone count as one, and that is the safe direction to be wrong in.
+  -- After thirty days forgetFingerprints() in functions/api/_lib.js puts '#'
+  -- and the rowid here instead — unique, so the key holds, and about nobody —
+  -- and the same network can report the card once more.
   ip_hash    TEXT    NOT NULL,
   created_at INTEGER NOT NULL,
   PRIMARY KEY (deck_id, card_id, ip_hash)
@@ -1872,7 +1878,8 @@ CREATE TABLE IF NOT EXISTS chess_notes (
   -- Up to MAX_NOTE in functions/api/chess.js, restated in assets/chess.js.
   text       TEXT    NOT NULL,
   -- The HMAC of the address and the user agent under SAVE_SALT that the
-  -- hourly cap counts by, never the address itself — feedback's arrangement.
+  -- hourly cap counts by, never the address itself — feedback's arrangement,
+  -- emptied after a day the same way.
   ip_hash    TEXT    NOT NULL,
   at         INTEGER NOT NULL,
   -- 1 once the house has hidden it. Kept rather than deleted, so a hidden
