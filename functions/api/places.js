@@ -9,13 +9,13 @@
  * One answer, two sources, and two things ask for it whole — the picker on
  * the lists page, and the find bar across the top of the map:
  *
- *   data/places.json   the map and the hand-kept CSV beside it. Seventy-six
+ *   data/places.json   the map and the hand-kept CSV beside it. Seventy-nine
  *                      places I have been to, and the only ones that link
  *                      through to a write-up.
  *
  *   google_venues      the Google Places export, in the database. Every place
- *                      in Tallinn you can eat or drink in — eleven hundred and
- *                      eleven of them — so that somebody building "top ten
+ *                      in Tallinn you can eat or drink in — about eleven
+ *                      hundred of them — so that somebody building "top ten
  *                      bars" can find the bar whether or not I have filmed
  *                      it. See db/schema.sql. And whatever the find bar
  *                      has since looked up on Google Maps when nothing here
@@ -37,6 +37,22 @@
  * answers no-store. This is the opposite kind of thing: it changes when a
  * deploy or a sync changes it, it is the same for everybody, and it is the
  * one big answer on the page. Five minutes.
+ *
+ * Five minutes in two places, and the second is the one that matters. The
+ * `max-age` only tells the browser; Cloudflare does not keep a Function's
+ * answer at the edge because of it, so every request still ran this file.
+ * And building the roll reads every row of google_venues — 1,127 rows read
+ * for one request, measured against production in November 2026 — which on
+ * D1's free plan is five million a day for the whole site: about four and a
+ * half thousand asks of this route, `?q=` with a word nobody typed before
+ * included, and every read the site makes fails until midnight UTC — the
+ * saves, the lists, signing in. So the merged roll is also kept in the
+ * isolate for ROLL_TTL, the way ./ask.js and ../mcp.js keep their copies of
+ * the same table: a bare GET and every `?q=` inside those five minutes are
+ * answered out of memory, and the table is read about once per isolate per
+ * five minutes however hard the route is asked. A place somebody looks up on
+ * Google Maps reaches the roll within the five minutes, which is the same
+ * time the browser was already allowed to keep the old one.
  *
  * WHAT A ROW CARRIES BEYOND A NAME, AND FOR WHOM
  *
@@ -127,9 +143,19 @@ async function googleRows(env) {
 }
 
 /* The whole roll, merged and sorted: what a bare GET answers, and what ?q=
-   searches. Null when the map's half cannot be read. */
+   searches. Null when the map's half cannot be read. Kept for ROLL_TTL — see
+   WHY IT IS CACHED at the top — but only a roll that has Google's half in it,
+   so a database that failed to answer once is asked again on the next
+   request rather than leaving the find bar without the city for five
+   minutes. */
+const ROLL_TTL = 5 * 60 * 1000;
+let kept = null;
+let keptAt = 0;
+
 async function cityRoll(context) {
+  if (kept && Date.now() - keptAt < ROLL_TTL) return kept;
   const { env } = context;
+  let whole = false;
 
   /* The map's places first: they carry ids that are already written into
      lists, and they are the only rows that link to a write-up. Unreadable is
@@ -168,6 +194,7 @@ async function cityRoll(context) {
   if (env.DB && !(await wrongDatabase(env))) {
     try {
       const { results } = await googleRows(env);
+      whole = true;
 
       for (const row of results || []) {
         if (!row || typeof row.name !== 'string' || !row.name) continue;
@@ -208,6 +235,10 @@ async function cityRoll(context) {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 
+  if (whole) {
+    kept = out;
+    keptAt = Date.now();
+  }
   return out;
 }
 
