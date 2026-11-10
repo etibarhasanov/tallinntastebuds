@@ -15224,6 +15224,21 @@ on it; see **The build budget** below.
    - **Build output directory**: `/`
 4. **Save and Deploy.** First build takes about a minute.
 
+**The output directory is the whole repository**, since there is no build, so
+every file in it is a file of the deployment. What the repository keeps for
+its own sake — anything under a dot directory, `db/`, `exports/`, `tools/`,
+Markdown and `wrangler.toml` — is answered with the site's 404 by the
+**NOT THE SITE** block in `functions/_middleware.js`, which is a list of
+what is not the site rather than of what is, so a new page works the moment
+it is committed. Until November 2026 all of it was served: `README.md`,
+`.claude/settings.json`, the Google export as CSV and SQL, which the Places
+terms do not let us redistribute. The repository is public on GitHub, so
+that disclosed nothing new; what it meant is that a secret committed by
+mistake would have been a download on the live domain within the minute. The
+block reaches only what `_routes.json` sends to the Functions, so the small
+README in `assets/`, `photos/`, `stories/` and `clips/` is still served —
+notes about the folder and nothing more.
+
 Every push to the production branch redeploys. No other branch deploys
 anything — see **The build budget**. A deployment made by hand with
 `wrangler pages deploy --branch=<name>` still gets a preview URL, and that URL
