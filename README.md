@@ -5568,9 +5568,9 @@ as a cap. From noon UTC, every page somebody opens knocks: the report it
 sends to `/api/stats` calls `fillOnVisit()` after its answer has gone, and
 `refreshFill()` in `functions/api/_refresh.js`
 spends what the day's opens and the top hundred left on the rows the
-directory shows whose numbers are more than thirty days old, oldest first —
-the never-refreshed ahead of everything, and among those the better-ranked
-first, so the first weeks go to the places a reader is likeliest to find.
+directory shows whose numbers are older than their tier allows — **How often
+a place is asked about** below — the top tier's due rows first and so down,
+and inside a tier the oldest first, the never-refreshed ahead of everything.
 The places Google calls temporarily closed are the exception: at most two a
 day (`CLOSED_A_DAY`), taken first. Nobody opens them, since the find bar, the
 picker and the chat leave them out, and `_rank.js` puts every closed place
@@ -5579,9 +5579,7 @@ sixty-three of the sixty-seven had never been asked about. Two a day brings
 each round in about the same five weeks as the rest, and **Look for it on
 Google Maps** catches a reopened one sooner.
 The same call, the same seven columns, the same claim on a row, logged under
-source `fill`. At thirty-two a day the whole directory comes round in about
-five weeks, which is the monthly cap sitting under thirty-one days of
-thirty-two and nothing to correct. The opens keep first claim: before
+source `fill`. The opens keep first claim: before
 `SPEND_ALL_FROM_HOUR`, eight in the evening UTC, a knock leaves
 `KEEP_FOR_OPENS` — eight — of the day unspent for the opens still to come,
 and from then on it takes everything left. A knock asks about six places
@@ -5591,6 +5589,32 @@ at all, and the afternoon's twenty-four calls are four knocks — twenty
 minutes of anybody being on the site. The knocks are idempotent, so two that
 land together are settled by the claim on the row and neither spends past
 the day.
+
+**How often a place is asked about.** It was every thirty days for every
+row, which spent the month evenly on a city that is not read evenly. The
+hundred at the top are the ones a ranking is printed for and the ones whose
+review counts are worth reading as a series, and a point a month is a thin
+series. So the wait goes by where a place stands in the week's ranking —
+`TIERS` in `_refresh.js`:
+
+| Google's rank | Asked about every | Calls a month |
+| --- | --- | --- |
+| 1–100 | 14 days | about 215 |
+| 101–400 | 30 days | about 300 |
+| 401–600 | 40 days | about 150 |
+| the rest, and the unranked | 60 days | about 265 |
+
+About 930 of the month's 950, on eleven hundred and thirty rows, and there is
+no slack in that on purpose: the fill asks in tier order, so on a day of busy
+opens it is the last tier that waits past its sixty days and never the first
+past its fourteen. A change to one row of the table is paid for out of
+another — the sum is places × 30 ÷ days. Two things stand outside it: an open
+still asks at thirty days whatever the rank, because somebody is reading
+that row now, and a place Google calls temporarily closed keeps the thirty
+days too, since by rank every one of them would wait sixty. `rank` is the
+last ranking's, which is made when the Top 100 tab is opened in a new week,
+so a place that crossed a line waits by the tier it was in until the next
+one. "Due now" on the Google tab of `/admin.html` counts by the same rule.
 
 **A visit is the clock, because GitHub's was not one.** The fill shipped on
 2026-11-05 with `.github/workflows/google-refresh.yml` as its only clock,
@@ -5732,11 +5756,11 @@ the top hundred is a claim about this month's numbers, and under the refresh
 alone a place nobody happened to open since August would be ranked on
 August's. So after the route's answer has gone, `refreshTop()` in
 `functions/api/_refresh.js` asks Google about the top hundred's rows whose
-numbers are more than thirty days old — the same call, the same seven columns,
+numbers are more than fourteen days old, their tier's wait — the same call, the same seven columns,
 the same budget, logged under source `top` — twenty-four of them at a time, so
 a day of busy opens still has something to spend. A hundred stale rows take a
-few openings of the page; after the first month they fall due a few at a time
-and one opening covers them. Without `GOOGLE_MAPS_API_KEY` it does nothing,
+few openings of the page; after that they fall due a few at a time, the
+afternoon's fill takes them first, and one opening covers what is left. Without `GOOGLE_MAPS_API_KEY` it does nothing,
 like every refresh, and the ranking is made from whatever the table holds.
 
 ### The 62 that are already on the map

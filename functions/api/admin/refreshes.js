@@ -38,7 +38,8 @@
  *
  * `table` counts the rows the directory shows — not hidden, not missing — so
  * its total is the number on /admin/google rather than the number in the table.
- * `due` is the ones an open would refresh right now.
+ * `due` is the ones the fill would ask about right now: older than their tier
+ * allows — TIERS in ../_refresh.js. `refreshAfterDays` is an open's thirty.
  *
  * WHO MAY READ IT
  *
@@ -58,7 +59,7 @@
  */
 
 import { json, wrongDatabase } from '../_lib.js';
-import { BUDGET, REFRESH_AFTER, googleKey, spent } from '../_refresh.js';
+import { BUDGET, DUE_SQL, REFRESH_AFTER, googleKey, spent } from '../_refresh.js';
 
 /* Fifty lines of the log: a few days of opens on an ordinary week, and a
    screen and a half on a phone. */
@@ -87,10 +88,10 @@ export async function onRequestGet(context) {
         .prepare(
           'SELECT COUNT(*) AS total, ' +
           'SUM(CASE WHEN refreshed_at IS NOT NULL THEN 1 ELSE 0 END) AS refreshed, ' +
-          'SUM(CASE WHEN COALESCE(refreshed_at, 0) <= ? THEN 1 ELSE 0 END) AS due ' +
+          'SUM(CASE WHEN ' + DUE_SQL + ' THEN 1 ELSE 0 END) AS due ' +
           'FROM google_venues WHERE hidden = 0 AND missing_since IS NULL'
         )
-        .bind(now - REFRESH_AFTER)
+        .bind(now)
         .first(),
       spent(env, 'details', now),
       env.DB

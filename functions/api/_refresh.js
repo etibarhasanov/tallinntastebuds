@@ -97,8 +97,9 @@
  * route behind the Top 100 tab of /admin/google calls it after its answer
  * has gone. TOP_A_LOAD of them a time, leaving the rest of the day's
  * thirty-two to opens and to the afternoon's fill, so a hundred stale rows take
- * a few openings of the tab; after the first month they fall due a few at a
- * time and one opening covers them.
+ * a few openings of the tab. Stale for the hundred is fourteen days, not an
+ * open's thirty — TIERS — and the fill asks after them first as well, so the
+ * tab is the second road to the same rows and not the only one.
  *
  * Every step is quiet. A missing table, a missing column, a refused key and a
  * Google outage all end the same way: the row stays as it was and the page
@@ -111,12 +112,75 @@ import { TOP } from './_rank.js';
    because that is the horizon Google's terms put on keeping its content, and
    because a review count that is a month old is still a fair description of
    how established a place is. */
-export const REFRESH_AFTER = 30 * 24 * 60 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
+export const REFRESH_AFTER = 30 * DAY;
 
 /* How many of the day's fill may go to rows Google calls temporarily closed,
    and the word the table spells that in. See refreshFill(). */
 const CLOSED_A_DAY = 2;
 const CLOSED = 'Temporarily closed';
+
+/* How old a row's numbers may get before the site asks of its own accord —
+   the fill and the top hundred, which nobody's open stands behind. It was
+   REFRESH_AFTER for every row, and that spent the month evenly on a city
+   that is not read evenly: the hundred at the top are the ones a ranking is
+   printed for and the ones whose review counts are worth reading as a
+   series, and a point a month is a thin series. So the wait goes by where a
+   place stands in the week's ranking, and the budget is spent top down:
+
+     rank    1–100    14 days    about 215 calls a month
+     rank  101–400    30 days    about 300
+     rank  401–600    40 days    about 150
+     the rest         60 days    about 265, with the unranked among them
+
+   which is about 930 of BUDGET.details.month's 950, on eleven hundred and
+   thirty rows. There is no slack in that, on purpose: the fill asks in tier
+   order — refreshFill() — so on a day of busy opens it is the last tier that
+   waits past its sixty days, never the first past its fourteen. A fifth tier,
+   or a shorter wait in one of these, has to be paid for out of another; the
+   sum is places × 30 ÷ days, and it has to stay under the cap.
+
+   Two things stand outside it. An open still asks at REFRESH_AFTER whatever
+   the rank, because somebody is reading that row's numbers now. And a row
+   Google calls temporarily closed keeps the month too: _rank.js puts every
+   closed place below every open one, so by rank they would all wait sixty
+   days, and CLOSED_A_DAY exists so that a reopened one is found in about
+   five weeks.
+
+   `rank` is last week's by the time it is read, or older — _rank.js makes a
+   ranking when the Top 100 tab is opened in a new week. A place that crossed
+   a line since then waits by the tier it was in, until the next ranking. */
+export const TIERS = [
+  { to: TOP, after: 14 * DAY },
+  { to: 400, after: 30 * DAY },
+  { to: 600, after: 40 * DAY },
+  { to: Infinity, after: 60 * DAY }
+];
+
+/* The wait for one row, and the same two answers as SQL over google_venues —
+   the tier's number, for the order, and its wait, for what is due — written
+   from TIERS so the three cannot disagree. Every value inlined is a number
+   out of the table above or the one word in CLOSED. */
+export function refreshAfter(rank, status) {
+  if (status === CLOSED) return REFRESH_AFTER;
+  const at = Number(rank);
+  const tier = TIERS.find((t) => at >= 1 && at <= t.to) || TIERS[TIERS.length - 1];
+  return tier.after;
+}
+
+const ranked = (pick) => TIERS.slice(0, -1)
+  .map((t, i) => 'WHEN rank <= ' + t.to + ' THEN ' + pick(t, i) + ' ')
+  .join('');
+const LAST = TIERS.length - 1;
+const TIER_SQL = 'CASE WHEN rank IS NULL THEN ' + LAST + ' ' + ranked((t, i) => i) + 'ELSE ' + LAST + ' END';
+const AFTER_SQL = "CASE WHEN status = '" + CLOSED + "' THEN " + REFRESH_AFTER + ' ' +
+  'WHEN rank IS NULL THEN ' + TIERS[LAST].after + ' ' + ranked((t) => t.after) +
+  'ELSE ' + TIERS[LAST].after + ' END';
+
+/* Whether a row is due, as a WHERE clause with one `?` for now. Read by the
+   two loops below and by ./admin/refreshes.js, whose "Due now" is this
+   count. */
+export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ? - (' + AFTER_SQL + ')';
 
 /* The spending limit, per kind of call. `details` is Place Details Enterprise,
    a thousand free a month: thirty-two a day is at most 992 in a thirty-one-day
@@ -379,7 +443,7 @@ export function jumped(before, after, waited) {
   const was = Number(before);
   const now = Number(after);
   if (!(was > 0) || !(now > was) || !(waited > 0)) return false;
-  const aMonth = (now - was) * Math.min(1, REFRESH_AFTER / waited);
+  const aMonth = (now - was) * Math.min(1, 30 * DAY / waited);
   return aMonth >= JUMP_BY && aMonth >= was * JUMP_SHARE;
 }
 
@@ -462,7 +526,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
     before = await env.DB
       .prepare(
         'SELECT place_id, rating, reviews, status, price, phone, website, opening_hours, ' +
-        'refreshed_at, hidden FROM google_venues ' +
+        'refreshed_at, hidden, rank FROM google_venues ' +
         (google
           ? 'WHERE place_id = ?'
           : 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1')
@@ -470,13 +534,17 @@ export async function refreshOnOpen(env, id, source = 'open') {
       .bind(id)
       .first();
   } catch (e) {
-    /* refreshed_at not applied to this database yet. */
+    /* refreshed_at or rank not applied to this database yet. */
     return 'not-ready';
   }
   if (!before || before.hidden) return 'not-a-venue';
   const placeId = before.place_id;
   const was = before.refreshed_at === undefined ? null : before.refreshed_at;
-  if ((Number(was) || 0) > at - REFRESH_AFTER) return 'fresh';
+  /* An open asks at a month, whatever the rank; the top hundred and the fill
+     ask at the row's tier — TIERS. The same wait is the claim's, below, so a
+     row a loop found due is due here too. */
+  const wait = source === 'open' ? REFRESH_AFTER : refreshAfter(before.rank, before.status);
+  if ((Number(was) || 0) > at - wait) return 'fresh';
 
   /* The row first, and the budget second. Stamping the row is what stops two
      visitors opening the same place in the same second from paying for it
@@ -487,7 +555,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
         'UPDATE google_venues SET refreshed_at = ?1 ' +
         'WHERE place_id = ?2 AND COALESCE(refreshed_at, 0) <= ?3'
       )
-      .bind(at, placeId, at - REFRESH_AFTER)
+      .bind(at, placeId, at - wait)
       .run();
     if (!claimed || !claimed.meta || claimed.meta.changes !== 1) return 'taken';
   } catch (e) {
@@ -600,10 +668,10 @@ export async function refreshTop(env, now) {
     due = await env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
-        'WHERE rank IS NOT NULL AND rank <= ? AND COALESCE(refreshed_at, 0) <= ? ' +
+        'WHERE rank IS NOT NULL AND rank <= ? AND ' + DUE_SQL + ' ' +
         'ORDER BY rank LIMIT ?'
       )
-      .bind(TOP, now - REFRESH_AFTER, TOP_A_LOAD)
+      .bind(TOP, now, TOP_A_LOAD)
       .all();
   } catch (e) {
     return 0;
@@ -644,25 +712,27 @@ async function askEach(env, due, source) {
  *
  * The rows are the ones the directory shows — not hidden, not missing, since
  * nobody reads the numbers of a row that is not drawn — whose numbers are
- * REFRESH_AFTER old, oldest first; the never-refreshed all tie at zero, and
- * among them the better-ranked go first, so the first weeks of this spend
- * themselves on the places a reader is likeliest to find.
+ * older than their tier allows, TIERS above: the top hundred's due rows
+ * first, then the next tier's, and so down, so that when a day cannot cover
+ * everything due it is the bottom of the ranking that waits. Inside a tier
+ * the oldest go first; the never-refreshed all tie at zero, and among them
+ * the better-ranked go first.
  *
  * Except the rows Google calls temporarily closed, which take at most
  * CLOSED_A_DAY of the day and go first. The find bar, the picker and the chat
  * leave those out, so nobody opens one, and in rank order they came last of
  * all, since _rank.js puts every closed place below every open one: in
  * November 2026 sixty-three of the sixty-seven had never been asked about,
- * and Alanya Grill, open again, could not be found by name. Two a day brings
- * each of them round in about the same five weeks as everything else, without
- * the backlog taking a whole day's thirty-two. The find bar's "Look for it on
+ * and Alanya Grill, open again, could not be found by name. Two a day, due
+ * at a month whatever their rank, brings each of them round in about five
+ * weeks without the backlog taking a whole day's thirty-two. The find bar's "Look for it on
  * Google Maps" catches a reopened one sooner — ./lookup.js.
  *
- * At BUDGET.details.day a day and REFRESH_AFTER of thirty, the eleven hundred
- * rows come round in about five weeks — a little slower than the month, which
- * is the monthly cap sitting under thirty-one days of thirty-two and nothing
- * to correct. Quiet like the rest: no key, no column, no database, and it
- * answers zero. */
+ * At BUDGET.details.day a day the tiers' waits add up to a little under the
+ * month's cap — the table above TIERS is the sum — so every row comes round
+ * at about its tier's pace once the never-refreshed backlog is through, which
+ * at the bottom of the ranking is the first two months. Quiet like the rest:
+ * no key, no column, no database, and it answers zero. */
 export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day) {
   if (!env || !env.DB || !googleKey(env)) return 0;
 
@@ -681,11 +751,11 @@ export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day
     const oldest = (closed, limit) => env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
-        'WHERE hidden = 0 AND missing_since IS NULL AND COALESCE(refreshed_at, 0) <= ? ' +
+        'WHERE hidden = 0 AND missing_since IS NULL AND ' + DUE_SQL + ' ' +
         (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
-        'ORDER BY COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
+        'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
       )
-      .bind(now - REFRESH_AFTER, CLOSED, limit)
+      .bind(now, CLOSED, limit)
       .all();
     const first = shut ? ((await oldest(true, shut)).results || []) : [];
     const rest = room > first.length ? ((await oldest(false, room - first.length)).results || []) : [];
