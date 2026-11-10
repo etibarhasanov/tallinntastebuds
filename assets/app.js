@@ -8265,13 +8265,16 @@
    * the chat uses, so the roll's kitchens have their ten labels by the time
    * they are folded.
    *
-   * A `?q=` route querying D1 was the obvious other shape and it cannot be
-   * written, for a reason that is specific to this city: SQLite has no
-   * accent folding. Nobody types Põhjala with the tilde or Šašlõkk with the
-   * caron, fold() below drops the marks from both sides of every comparison,
-   * and no LIKE can do the same. So the roll is folded here, in the browser,
-   * exactly as the lists page's picker has been folding the same answer all
-   * along.
+   * A `?q=` route querying D1 was the obvious other shape and SQL could not
+   * write it: SQLite has no accent folding, nobody types Põhjala with the
+   * tilde or Šašlõkk with the caron, and no LIKE drops the marks. So the
+   * roll is folded here, in the browser. Since November 2026 the server
+   * folds the same roll in its own memory and answers /api/places?q= by the
+   * rules below — functions/api/_find.js, which copies fold(), hasWords(),
+   * wordAt(), findTier(), findSays(), findScore() and the order of
+   * findHits() for the iOS app and the pickers. This bar is the one reader
+   * still searching its own copy; until it asks that route instead, a change
+   * to how a word is matched is made in both files.
    *
    * WHAT IS SEARCHED ON EACH SIDE, WHICH IS NEARLY THE SAME THING NOW
    *

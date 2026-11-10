@@ -1029,13 +1029,16 @@ the lists page's picker has been searching all along. It is not asked for on
 the way in: somebody who opens the map and never types has no use for three
 hundred kilobytes of it, sixty on the wire.
 
-**A `?q=` route querying D1 per keystroke was the obvious other shape and it
-cannot be written here.** SQLite has no accent folding. Nobody types *Põhjala*
-with the tilde or *Šašlõkk* with the caron, the fold both this bar and the
-column's field apply drops the marks from both sides of every comparison before
-anything is matched, and no `LIKE` can do the same. Searching in the browser is
-not the lazy option in this city — it is the only one that finds Põhjala when
-you type `pohjala`.
+**The bar still searches its own copy, and it is the last thing that does.**
+It was built that way because a `?q=` route asking D1 could not fold an accent
+— nobody types *Põhjala* with the tilde, and no `LIKE` drops it — and that
+reason was about SQL rather than about the server. Since November 2026
+`/api/places?q=` searches the same roll in the Function's memory, by this
+bar's own rules, written out a second time in `functions/api/_find.js`, and
+the iOS app, its list picker and the blog editor's picker ask that. **One
+search of the city** under **The roll a list is built from** is the route.
+Until the bar asks it too, a change to how a word is matched is a change in
+both files, and the header of `_find.js` names the functions that pair up.
 
 Two things ride on a Google row for this bar that the picker never reads:
 `kitchens`, what Google says the place cooks in the directory's cuisine ids,
@@ -7716,6 +7719,34 @@ asked. Five hundred random `?q=` against the export read it twice rather than
 five hundred times. Only a roll with Google's half in it is kept, so a
 database that failed once is asked again on the next request.
 
+**One search of the city.** `/api/places?q=<words>` answers with the twenty
+rows of the roll the words reach best, from two letters typed, and it is the
+one search every client but the map's find bar asks: the iOS app, the picker
+in the app that adds a place to a list, and the blog editor's picker. It
+matches what the find bar matches — the name, the street, Google's category,
+the kinds and the cuisines in all eleven languages, the dishes of a place of
+mine, a stem, a slip — and orders the way the find bar orders: up to three of
+my own places, then everything by the week's rank. `near=<lat>,<lng>` puts
+the nearest first and adds `distance` in metres to each row, `bbox=<south>,
+<west>,<north>,<east>` holds it to a part of the map, and `limit` raises
+twenty as far as sixty. A place of mine that has shut carries `closed: true`
+and is never one of the three. Until November 2026 the same address matched a
+name and then a street, from three letters, alphabetically, so *pizza* in the
+app found the places with pizza in their name and two letters found nothing.
+
+It searches memory and reads no rows: the haystacks are folded once per kept
+roll, and a search is a pass over them, about a millisecond. A table of words
+in D1 was costed against it and left — between a hundred and fourteen hundred
+rows read per search, three writers to keep in step and a load of seven
+thousand rows by hand, for a prefix match that forgives neither a stem nor a
+slip. The header of `functions/api/_find.js` is the argument.
+
+**What an installed app holds the server to.** The iOS app
+(`etibarhasanov/TallinnTasteBudsApp`) has no server of its own and cannot be
+updated in a day, so every route and file it reads may gain a field and may
+never lose or rename one. On this route that is `id`, `name`, `address` and
+`map` on every row. **What the app reads** in `CLAUDE.md` is the list.
+
 A Google row also carries `kitchens` — what Google says it cooks, in the
 directory's cuisine ids — and `category`, Google's own word for what the
 place is, and a row of mine carries the `kitchens` of the Google row `map_id`
@@ -12790,8 +12821,8 @@ reader presses to open the place on the map. *My ten favourite places* is
 somebody's ten, not mine, so the bar I have never filmed is as pinnable as
 the one I have, and `/?spot=` with a Google key opens it as the find bar
 would. The roll is never downloaded for it: the picker asks
-`/api/places?q=` by name once three letters are typed, a quarter of a second
-after the last key, and the blog and the editor ask `/api/places?ids=` for
+`/api/places?q=` once three letters are typed, a quarter of a second
+after the last key — **One search of the city**, and the blog and the editor ask `/api/places?ids=` for
 just the Google venues a post's cards name — the map's they already have out
 of `data/map.json`. *My ten favourite places* is ten of those with a paragraph
 between each, or one list of them. Writing in Google Docs or Word and pasting works the

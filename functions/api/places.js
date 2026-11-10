@@ -2,8 +2,13 @@
  * Tallinn Tastebuds — the roll a list is built from.
  *
  * GET /api/places            the whole roll
- * GET /api/places?q=<name>     at most twenty of it by name, three letters
- *                              or more — the blog editor's picker
+ * GET /api/places?q=<words>    the twenty of it the words reach best, from
+ *                              two letters — the one search of the city, for
+ *                              the app, the blog editor's picker and anything
+ *                              else that wants a place found; see search()
+ *     &near=<lat>,<lng>        nearest first, and `distance` in metres a row
+ *     &bbox=<s>,<w>,<n>,<e>    only that part of the map
+ *     &limit=<n>               up to sixty rather than twenty
  * GET /api/places?ids=a,b,…    just those places — the cards in a post
  *
  * One answer, two sources, and two things ask for it whole — the picker on
@@ -90,7 +95,8 @@
  * under **The find bar's order** in README.md. The picker reads none of them.
  */
 
-import { json, catalogue, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
+import { json, catalogue, dataFile, nearTallinn, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
+import { find, findIndex } from './_find.js';
 import { kitchensOf } from './venues.js';
 
 /* How a name is compared when deciding whether two rows are one place. The
@@ -242,28 +248,55 @@ async function cityRoll(context) {
   return out;
 }
 
-/* ?q= — the blog editor's picker, which asks by name once three letters are
-   typed rather than holding eleven hundred rows to search one post's worth
-   of places in. Folded the way the merge folds, so "pohjala" finds Põhjala;
-   a name that starts with what was typed comes before one that only holds
-   it, and the street is searched after the name. At most SEARCH_MAX. */
-const SEARCH_MIN = 3;
-const SEARCH_MAX = 20;
+/* ?q= — the one search of the city: the app's map and its picker, the blog
+   editor's picker, and in time the find bar. ./_find.js is the matching and
+   says why it is the find bar's own; this is what it is handed.
 
-function search(roll, typed) {
-  const q = fold(typed);
-  if (q.length < SEARCH_MIN) return [];
-  const starts = [];
-  const holds = [];
-  const street = [];
-  for (const p of roll) {
-    const name = fold(p.name);
-    if (name.startsWith(q)) starts.push(p);
-    else if (name.includes(q)) holds.push(p);
-    else if (fold(p.address).includes(q)) street.push(p);
-    if (starts.length >= SEARCH_MAX) break;
-  }
-  return starts.concat(holds, street).slice(0, SEARCH_MAX);
+   The roll's haystacks are folded once per roll and kept beside it, with the
+   three files that say what a kind is called and what only the map knows
+   about a place of mine — data/map.json for its kinds, its dishes and
+   whether it has shut. Each is read through the five-minute readers in
+   ./_lib.js, and a file that cannot be read costs the words it carried and
+   not the search. */
+const SEARCH_MAX = 20;
+const SEARCH_MOST = 60;
+
+let index = null;
+let indexOf = null;
+
+async function searchIndex(context, roll) {
+  if (indexOf === roll) return index;
+  const file = (path) => dataFile(context, path).catch(() => null);
+  const [taxonomy, cuisines, map] = await Promise.all([
+    file('/data/taxonomy.json'), file('/data/cuisines.json'), file('/data/map.json')
+  ]);
+  index = findIndex(
+    roll,
+    (taxonomy && taxonomy.types) || [],
+    (cuisines && cuisines.cuisines) || [],
+    new Map((Array.isArray(map) ? map : []).map((place) => [place.id, place]))
+  );
+  indexOf = roll;
+  return index;
+}
+
+/* `near=lat,lng` and `bbox=south,west,north,east`, each a list of numbers
+   near Tallinn or nothing at all: a point somewhere else measures nothing
+   worth ordering by. */
+function numbers(value, count) {
+  const out = String(value || '').split(',').map(Number);
+  return out.length === count && out.every(Number.isFinite) ? out : null;
+}
+
+async function search(context, roll, query) {
+  const typed = String(query.get('q') || '').slice(0, 80);
+  const near = numbers(query.get('near'), 2);
+  const limit = Math.floor(Number(query.get('limit')));
+  return find(await searchIndex(context, roll), typed, {
+    near: near && nearTallinn(near[0], near[1]) ? { lat: near[0], lng: near[1] } : null,
+    box: numbers(query.get('bbox'), 4),
+    limit: limit >= 1 ? Math.min(limit, SEARCH_MOST) : SEARCH_MAX
+  });
 }
 
 /* ?ids=a,b,… — the places a post's cards name, for the name and the street
@@ -302,6 +335,6 @@ export async function onRequestGet(context) {
 
   const roll = await cityRoll(context);
   if (!roll) return json({ error: 'places' }, 503);
-  if (query.has('q')) return json(search(roll, query.get('q') || ''), 200, 300);
+  if (query.has('q')) return json(await search(context, roll, query), 200, 300);
   return json(roll, 200, 300);
 }
