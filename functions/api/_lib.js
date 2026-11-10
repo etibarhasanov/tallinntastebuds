@@ -282,10 +282,11 @@ export function sessionCookie(token, days, request) {
   return parts.join('; ');
 }
 
-/* A new session for an account, and the token to put in the cookie. Three
-   places mint one — creating an account, signing in to one, and coming back
-   from Google — and all three do exactly this. The fourth, a password change,
-   deliberately does not use it: there the insert has to be in the same batch
+/* A new session for an account, and the token to put in the cookie. Five
+   places mint one — creating an account, signing in to one, coming back from
+   Google, the iPhone app presenting the ticket its own Google trip ended in,
+   and the app's Sign in with Apple — and all five do exactly this. The
+   sixth, a password change, deliberately does not use it: there the insert has to be in the same batch
    as the delete that clears the old sessions, or a change could leave an
    account with none.
 

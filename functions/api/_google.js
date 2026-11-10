@@ -189,9 +189,17 @@ export function googleReady(env) {
  */
 
 export async function googleUser(env, subject) {
+  return identityUser(env, PROVIDER, subject);
+}
+
+/* The same read with the provider said out loud, for the second one: Apple,
+   which signs people in from the iPhone app and has its own file —
+   ./_apple.js. The column stopped meaning 'google' the day that arrived, which
+   is the day the note above this section was written for. */
+export async function identityUser(env, provider, subject) {
   const row = await env.DB
     .prepare('SELECT user_id FROM identities WHERE provider = ? AND subject = ?')
-    .bind(PROVIDER, subject)
+    .bind(provider, subject)
     .first();
   return row ? row.user_id : '';
 }
@@ -258,6 +266,68 @@ async function seal(secret, payload) {
    the browser keeps sending and this file refuses, or the other way about. */
 export async function sealFlow(secret, payload) {
   return seal(secret, Object.assign({}, payload, { exp: Date.now() + FLOW_MINUTES * 60000 }));
+}
+
+/* -------------------------------------------------- the app's way back in
+ * THE IPHONE APP CANNOT BE HANDED A COOKIE, SO IT IS HANDED A TICKET
+ *
+ * The app runs this same trip in the system's sign-in sheet, because Google
+ * will not sign anybody in inside a web view. That sheet is a browser of its
+ * own: a session cookie set at the end of the trip would sign in the sheet,
+ * which closes a second later, and not the app, whose requests come from
+ * somewhere else entirely.
+ *
+ * So the app starts the trip with `?app=<challenge>` — the base64url SHA-256
+ * of a verifier it made and kept — and the trip ends not on a page of this
+ * site but at APP_BACK, an address only the app that opened the sheet is
+ * given, carrying a ticket: who signed in and the challenge, sealed like the
+ * flow. The app then asks /api/account for the session with the ticket and
+ * the verifier (`action: ticket`), and is answered the way a password is.
+ *
+ * The verifier is what makes the ticket worth nothing to anybody else. A
+ * ticket read off a screen, out of a log or by an app that claimed the same
+ * scheme opens no session without the string that hashes to the challenge
+ * inside it, and that string never left the phone that made it. It is PKCE
+ * with this site as the one issuing the code.
+ *
+ * Two minutes, and not FLOW_MINUTES: the flow has to outlast somebody finding
+ * a password, and the ticket only the moment between the sheet closing and
+ * the app's next request. It can be presented more than once inside those two
+ * minutes — there is no table of spent tickets — and each time by the holder
+ * of the verifier alone, who is the one being signed in.
+ *
+ * `kind` is what keeps the two sealed things apart. unseal() checks a
+ * signature and an expiry and says nothing about what the payload is for, so
+ * without it a flow cookie would pass as a ticket's envelope and a ticket as
+ * a flow's.
+ */
+export const APP_BACK = 'tallinntastebuds://signin';
+const TICKET_MINUTES = 2;
+
+/* What a challenge looks like: 32 bytes of SHA-256 in base64url, no padding. */
+export function appChallenge(raw) {
+  const text = String(raw || '');
+  return /^[A-Za-z0-9_-]{43}$/.test(text) ? text : '';
+}
+
+export async function challengeOf(verifier) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(verifier || '')));
+  return b64url(new Uint8Array(digest));
+}
+
+export async function sealTicket(secret, { userId, challenge }) {
+  return seal(secret, { kind: 'app', u: userId, c: challenge, exp: Date.now() + TICKET_MINUTES * 60000 });
+}
+
+/* The account a ticket is for, or '' — for a ticket that is not one, has run
+   out, or is presented without the verifier its challenge was made from. */
+export async function redeemTicket(secret, ticket, verifier) {
+  const payload = await unseal(secret, ticket);
+  if (!payload || payload.kind !== 'app') return '';
+  if (typeof payload.u !== 'string' || !payload.u || typeof payload.c !== 'string') return '';
+  if (typeof verifier !== 'string' || !verifier) return '';
+  if (!sameSecret(await challengeOf(verifier), payload.c)) return '';
+  return payload.u;
 }
 
 /* Null for anything that is not a value this site sealed and has not expired:

@@ -33,6 +33,16 @@
  * is a navigation, so what a browser gets is a page, and the page is the one
  * they were standing on.
  *
+ * THE ONE TRIP THAT DOES NOT END ON A PAGE
+ *
+ * The iPhone app's. It starts the trip with `?app=<challenge>`, in the
+ * system's sign-in sheet, and every ending of it is `tallinntastebuds://signin`
+ * rather than `?then=`: the same `google=` outcomes, and a `ticket` in place
+ * of the session cookie where somebody signed in, which the app trades for
+ * the session at /api/account. It never links — a session found in the sheet
+ * is the browser's, not the app's. THE APP'S WAY BACK IN in ./_google.js is
+ * the whole argument.
+ *
  * AND WHEN IT IS OFF
  *
  * Without a usable GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET — googleReady()
@@ -49,7 +59,8 @@
  * "is there a session now?" — would mean a browser that signed in on another
  * tab mid-trip silently attaches somebody's Google account to whatever
  * account happened to be open. Sealed at the start, it is the question the
- * person actually answered.
+ * person actually answered. A trip the app started is sealed as a sign-in
+ * whatever it carried, for the reason above.
  *
  * AND WHAT IT COUNTS
  *
@@ -81,7 +92,8 @@ import {
 import {
   googleReady, googleUser, linkIdentity, GOOGLE_PATH,
   FLOW_COOKIE, flowCookie,
-  sealFlow, unseal, pkce, authorizeUrl, identify
+  sealFlow, unseal, pkce, authorizeUrl, identify,
+  APP_BACK, appChallenge, sealTicket
 } from './_google.js';
 import { makeGoogleAccount } from './_account.js';
 import { adminIds } from './_admin.js';
@@ -132,6 +144,25 @@ function land(origin, then, outcome, cookies) {
   return new Response(null, { status: 302, headers });
 }
 
+/* The same for a trip the iPhone app started: every ending is APP_BACK, which
+   the system's sign-in sheet hands to the app that opened it, with the
+   outcome said the way land() says it and a ticket where somebody signed in.
+   THE APP'S WAY BACK IN in ./_google.js is the argument for the ticket.
+
+   The flow cookie is cleared here too. The sheet shares the browser's
+   cookies, so one left standing would be read by the next trip that browser
+   starts on the site itself. */
+function landApp(outcome, ticket, cookies) {
+  const params = new URLSearchParams();
+  if (outcome) params.set('google', outcome);
+  if (ticket) params.set('ticket', ticket);
+  const query = params.toString();
+
+  const headers = new Headers({ location: APP_BACK + (query ? '?' + query : ''), 'cache-control': 'no-store' });
+  for (const c of cookies) headers.append('set-cookie', c);
+  return new Response(null, { status: 302, headers });
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -166,9 +197,18 @@ async function depart(context, url, origin) {
      challenge and nothing else about this browser. */
   const client = url.searchParams.get('client') || '';
 
+  /* The iPhone app's challenge, where the app is who is asking. See THE
+     APP'S WAY BACK IN in ./_google.js. Anything that is not the shape of one
+     is no challenge at all, and the trip is a browser's. */
+  const app = appChallenge(url.searchParams.get('app'));
+
   /* Signed in already means this is a connect and not a sign-in, and that is
      settled here rather than on the way back. See the header. */
-  const user = await sessionUser(request, env);
+  /* Never for the app. Its sheet carries the browser's cookies, so somebody
+     signed in to the site in Safari would otherwise have the Google account
+     they pick in the app connected to that account — and the app, which is
+     the one that asked, signed in to nothing. The app only ever signs in. */
+  const user = app ? null : await sessionUser(request, env);
 
   const state = crypto.randomUUID();
   const nonce = crypto.randomUUID();
@@ -180,6 +220,7 @@ async function depart(context, url, origin) {
     verifier,
     then,
     client,
+    app,
     intent: user ? 'link' : 'in'
   });
 
@@ -219,22 +260,27 @@ async function arrive(context, url, origin, { code, state, failure }) {
   const then = safePath(flow.then, origin);
   const signing = flow.intent !== 'link';
 
+  /* Where every ending below goes: the page the trip started on, or the app
+     that started it. One function, so no ending can pick the wrong one. */
+  const app = appChallenge(flow.app);
+  const end = (outcome) => (app ? landApp(outcome, '', [clear]) : land(origin, then, outcome, [clear]));
+
   /* Pressing Cancel on Google's screen. A decision, not a fault: back where
      they were, with nothing said about it. */
   if (failure === 'access_denied') {
     if (signing) tally(context, 'google_back_cancel');
-    return land(origin, then, '', [clear]);
+    return end('');
   }
   if (failure || !code) {
     if (signing) tally(context, 'google_back_failed');
-    return land(origin, then, 'failed', [clear]);
+    return end('failed');
   }
 
   /* What the state parameter is for: this answer belongs to the trip this
      browser started, and not to one somebody else started in a link. */
   if (state !== flow.state) {
     if (signing) tally(context, 'google_back_failed');
-    return land(origin, then, 'failed', [clear]);
+    return end('failed');
   }
 
   const identity = await identify(env, {
@@ -245,11 +291,11 @@ async function arrive(context, url, origin, { code, state, failure }) {
   });
   if (!identity) {
     if (signing) tally(context, 'google_back_failed');
-    return land(origin, then, 'failed', [clear]);
+    return end('failed');
   }
 
   if (!signing) return connect(context, origin, then, identity, clear);
-  return signIn(context, origin, then, identity, flow.client, clear);
+  return signIn(context, origin, then, identity, flow.client, clear, app);
 }
 
 /* Connecting Google to the account that started the trip signed in. */
@@ -273,7 +319,7 @@ async function connect(context, origin, then, identity, clear) {
 }
 
 /* Signing in, and making the account first where there is none yet. */
-async function signIn(context, origin, then, identity, client, clear) {
+async function signIn(context, origin, then, identity, client, clear, app) {
   const { request, env } = context;
 
   let userId = await googleUser(env, identity.subject);
@@ -287,7 +333,7 @@ async function signIn(context, origin, then, identity, client, clear) {
     userId = await makeGoogleAccount(env, identity.subject);
     if (!userId) {
       tally(context, 'google_back_failed');
-      return land(origin, then, 'failed', [clear]);
+      return app ? landApp('failed', '', [clear]) : land(origin, then, 'failed', [clear]);
     }
   } else {
     await env.DB.prepare('UPDATE users SET last_seen_at = ? WHERE id = ?').bind(Date.now(), userId).run();
@@ -297,6 +343,17 @@ async function signIn(context, origin, then, identity, client, clear) {
      anybody signed in moves onto the account, merged rather than doubled. */
   const touched = await claimDeviceSaves(env, userId, client);
   if (touched.length) context.waitUntil(caches.default.delete(countsKey(request)));
+
+  /* The app is handed a ticket and no cookie: the sheet this answer goes to
+     is not the app, and a session opened here would be one nobody holds. The
+     session is opened when the app presents the ticket — `action: ticket` in
+     ./account.js — and counted here, where the sign-in happened. */
+  if (app) {
+    if (made) tally(context, 'google_back_new');
+    else if (!adminIds(env).has(String(userId).toLowerCase())) tally(context, 'google_back_in');
+    const ticket = await sealTicket(env.SAVE_SALT, { userId, challenge: app });
+    return landApp(made ? 'new' : 'in', ticket, [clear]);
+  }
 
   const token = await openSession(env, userId);
   if (made) tally(context, 'google_back_new');

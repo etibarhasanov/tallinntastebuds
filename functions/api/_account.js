@@ -32,7 +32,7 @@ import {
   clientIp, fingerprint, randomHex, derivePassword, sameSecret, pwIterations,
   openSession, claimDeviceSaves, countsKey
 } from './_lib.js';
-import { googleUser, PROVIDER } from './_google.js';
+import { identityUser, PROVIDER } from './_google.js';
 
 /* Guessing is the only way in — there is no reset link to phish and no
    address to intercept — so it is the thing to make slow. Ten wrong passwords
@@ -370,6 +370,13 @@ function drawnName() {
 }
 
 export async function makeGoogleAccount(env, subject) {
+  return makeIdentityAccount(env, PROVIDER, subject);
+}
+
+/* The same for any provider — Apple is the second, from the iPhone app; see
+   ./_apple.js. Nothing about drawing a name or filing the pair depends on
+   whose id the subject is. */
+export async function makeIdentityAccount(env, provider, subject) {
   for (let i = 0; i < NAME_TRIES; i++) {
     const name = asUsername(drawnName());
     /* Every hold counts, as on the sign-up sheet: a name somebody walked away
@@ -387,7 +394,7 @@ export async function makeGoogleAccount(env, subject) {
           .bind(userId, name, Date.now(), Date.now()),
         env.DB
           .prepare('INSERT INTO identities (provider, subject, user_id, created_at) VALUES (?, ?, ?, ?)')
-          .bind(PROVIDER, subject, userId, Date.now())
+          .bind(provider, subject, userId, Date.now())
       ]);
       return userId;
     } catch (e) {
@@ -395,7 +402,7 @@ export async function makeGoogleAccount(env, subject) {
          landing here from two tabs at once. The batch is one transaction, so
          neither row is left; the second is answered by signing into the
          account the first made, and the first by drawing again. */
-      const already = await googleUser(env, subject);
+      const already = await identityUser(env, provider, subject);
       if (already) return already;
     }
   }
