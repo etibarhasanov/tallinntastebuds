@@ -94,6 +94,10 @@ does not have to:
   in the statement, and never runs `DROP` at all. That and the two hard
   denials in `.claude/settings.json` are the owner's standing instruction and
   are not to be argued with — **What needs a yes** below is the whole of it.
+- **An installed app reads this backend, and it cannot be updated in a day.**
+  The iOS app in `etibarhasanov/TallinnTasteBudsApp` has no server of its
+  own. **What the app reads** below lists the routes and files it asks for; a
+  change to any of them may add a field and may never rename or remove one.
 - **Nothing is missing from the environment.** No `package.json`, no
   `node_modules`, no Cloudflare token in GitHub's secret store, no test
   runner, no `main` branch. Each of those is a decision, and the sections
@@ -332,6 +336,24 @@ see below. That one the pull request is the yes for.
 change at hand, top to bottom, at the start of the session and again before
 anything irreversible: they are checklists rather than background reading, and
 the step that gets skipped is always the one nobody re-read.
+
+## What the app reads
+
+The iOS app (`etibarhasanov/TallinnTasteBudsApp`, SwiftUI) signs in with the
+site's own `ttb_s` cookie and reads the same backend the pages do, through
+`TallinnTasteBuds/Core/API.swift`. A phone keeps the version it has for
+months, so everything here is a promise: **add a field, never rename or
+remove one**, and before changing any of these read how the app decodes it —
+its models are in `TallinnTasteBuds/Models/`.
+
+- Files: `data/map.json`, `data/taxonomy.json`, `data/lang/index.json`,
+  `data/lang/<code>.json`, `data/deals.json`, and `photos/<place>/<file>`.
+- Routes: `GET/POST /api/account`, `GET/POST /api/lists`, `/api/saves`,
+  `GET /api/profile?name=`, `GET /api/pass?r=`, `GET /api/route`, and
+  `GET /api/places?q=`, whose rows keep `id`, `name`, `address` and `map`.
+
+The list was read out of the app on 2026-11-10. When the app starts asking
+for something else, add it here in the same week.
 
 ## Branches and deploys
 
