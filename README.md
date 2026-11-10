@@ -5541,7 +5541,14 @@ the row is stamped first, and only one stamp finds it still due.
 why it was asked (`open`, somebody opened it; `top`, it stands in the week's
 top hundred and its numbers were a month old; `fill`, the day's end came and
 it was among the oldest), whether it moved, what from and to, or why it
-failed — and keeps ninety days.
+failed — and keeps ninety days. A review count that grew too fast to be
+people writing reviews — a hundred or more in a month's worth of waiting, and
+15% of what was there — is written like any other answer and its line
+says to check the listing, because that is what a merged or swapped listing
+looks like from here: Q Pizza Jaam went from 27 to 299 in a month and was
+logged as a change like any other. `jumped()` in `_refresh.js` is the test,
+and it never calls a first refresh a jump, since the export's numbers carry
+no date to measure a month against.
 The **Google** tab on `/admin.html` reads it through `/api/admin/refreshes`,
 with the day's and the month's calls against their limits, how much of the
 directory has been refreshed, and how much is due. That route answers the
@@ -5557,8 +5564,9 @@ reason a place was asked about, and the budget said what that was worth: 181
 calls in October out of 950, and 848 of the 1,105 rows the directory shows
 never asked about at all — a directory printing September's numbers under a
 promise to keep them current. So the thirty-two a day is a floor now as well
-as a cap. At 14:17, 17:17 and 20:17 UTC, `.github/workflows/google-refresh.yml`
-POSTs to `/api/refresh`, and `refreshFill()` in `functions/api/_refresh.js`
+as a cap. From noon UTC, every page somebody opens knocks: the report it
+sends to `/api/stats` calls `fillOnVisit()` after its answer has gone, and
+`refreshFill()` in `functions/api/_refresh.js`
 spends what the day's opens and the top hundred left on the rows the
 directory shows whose numbers are more than thirty days old, oldest first —
 the never-refreshed ahead of everything, and among those the better-ranked
@@ -5576,10 +5584,30 @@ five weeks, which is the monthly cap sitting under thirty-one days of
 thirty-two and nothing to correct. The opens keep first claim: before
 `SPEND_ALL_FROM_HOUR`, eight in the evening UTC, a knock leaves
 `KEEP_FOR_OPENS` — eight — of the day unspent for the opens still to come,
-and from then on it takes everything left. The knocks are idempotent, so
-whichever lands first does the work and the rest find less or nothing.
+and from then on it takes everything left. A knock asks about six places
+(`FILL_A_KNOCK`) and one isolate knocks at most every five minutes
+(`KNOCK_EVERY`), so nearly every report returns on a comparison with no query
+at all, and the afternoon's twenty-four calls are four knocks — twenty
+minutes of anybody being on the site. The knocks are idempotent, so two that
+land together are settled by the claim on the row and neither spends past
+the day.
 
-The route is open to anybody and carries no secret, because there is nothing
+**A visit is the clock, because GitHub's was not one.** The fill shipped on
+2026-11-05 with `.github/workflows/google-refresh.yml` as its only clock,
+POSTing to `/api/refresh`, and in its first five days it did not write one
+row. The paragraph after next is the first half of that. The second half: of
+the three knocks a day that replaced the one, GitHub ran a single one on the
+first full day, at 23:27 UTC, after the Top 100 tab had spent the day — and
+on 2026-11-10 `google_scores` still held 287 lines from opens, 106 from the
+top hundred and none from the fill, with 276 of 1,129 places ever asked
+about. A scheduled run on a free runner is late or dropped as a matter of
+course. The site's own visitors are neither, so they are the clock, and the
+workflow stays as the backstop for a day nobody comes after noon UTC: on
+time it finds little left to do, and late or missing, nothing depended on
+it.
+
+`POST /api/refresh` is that second door. It is open to anybody and carries
+no secret, because there is nothing
 a caller could take: the budget is claimed in the database before any call
 leaves, so nobody can spend past the thirty-two, and before `FILL_FROM_HOUR`
 — noon UTC — the route answers `early` and asks nothing, so a call at
@@ -5594,14 +5622,10 @@ calls unspent, while the workflow showed green. Three knocks from the
 afternoon means even a four-hour delay lands inside the right day; the last
 slipping past midnight is answered `early`, logged as a warning, and costs
 nothing. A missing key or database fails the run instead, since then no knock
-would ever fill anything. The fill runs inside the request rather than after
-it, so the answer the workflow logs — `asked`, `today`, `day`, `kept` — says
-what it did. Without the key, the column or the tables it
-answers why and does nothing, like every refresh. Pages Functions have no
-scheduler, and this is the one piece of the site a GitHub cron drives
-besides the stories' clock, for the same reason: the thing it does is about
-the time of day, and no request of a visitor's happens to be at ten every
-evening.
+would ever fill anything. Through the route the fill runs inside the request
+rather than after it, so the answer the workflow logs — `asked`, `today`,
+`day`, `kept` — says what it did. Without the key, the column or the tables it
+answers why and does nothing, like every refresh.
 
 **What the numbers used to be.** A refresh writes the new rating and review
 count over the old ones in `google_venues`, and `google_refreshes` forgets
@@ -15998,7 +16022,8 @@ functions/api/_refresh.js  asking Google about one opened place again, inside
                            a daily and monthly budget (not a route: leading _)
 functions/api/refresh.js   POST /api/refresh — the rest of the day's budget,
                            spent on the oldest rows; the workflow
-                           google-refresh.yml calls it three times a day
+                           google-refresh.yml calls it three times a day,
+                           as the backstop; a visit is the clock
 functions/_shell.js        a static page with a head and an answer written
                            in, shared by the five Functions that serve one
 functions/list/[id].js     /list/<id> — the page a shared link opens
@@ -16228,7 +16253,7 @@ tools/mcpcheck.mjs         asks /mcp what an assistant would, over the real
                            promised; --check is what CI runs
 .github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the /mcp check and the write gate, on every push
 .github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
-.github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, so the day's Google budget is spent
+.github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, the backstop behind fillOnVisit(), so the day's Google budget is spent
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
 .github/workflows/stories.yml      the hourly tick, and the tidying up after it
 .github/workflows/story-media.yml  converts a video posted from a phone

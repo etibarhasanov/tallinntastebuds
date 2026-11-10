@@ -27,12 +27,16 @@
  * eleven hundred rows had never been asked about at all. So the day's thirty-
  * two are no longer left to chance. Through the second half of each UTC day,
  * what the opens and the top hundred did not spend goes to the oldest rows the
- * directory shows — refreshFill() at the foot of this file, behind POST
- * /api/refresh, which .github/workflows/google-refresh.yml calls on a clock,
- * since Pages Functions have no scheduler of their own. The opens keep first
- * claim because the fill keeps KEEP_FOR_OPENS back until the evening; what
- * the fill adds is the floor, so that every row comes round about once in
- * five weeks whether or not anybody opens it.
+ * directory shows — refreshFill() at the foot of this file. Pages Functions
+ * have no scheduler of their own, so the clock is the site's own visitors:
+ * every page that opens reports to functions/api/stats.js, and fillOnVisit()
+ * rides on that report, after its answer, a few rows a knock. The opens keep
+ * first claim because the fill keeps KEEP_FOR_OPENS back until the evening;
+ * what the fill adds is the floor, so that every row comes round about once
+ * in five weeks whether or not anybody opens it. POST /api/refresh is the
+ * same fill behind a door, which .github/workflows/google-refresh.yml still
+ * knocks on — a backstop for a day nobody came, and WHY A VISIT IS THE CLOCK
+ * above fillOnVisit() is why it is no more than that.
  *
  * WHAT IS ASKED FOR, AND WHAT IT COSTS
  *
@@ -132,23 +136,16 @@ export const BUDGET = {
   search: { day: 100, month: 3000 }
 };
 
-/* The UTC hours the fill works between. It was one run at 22:17 UTC behind a
-   gate at twenty, and it never once spent a call: GitHub started the run
-   between three and four hours late every evening — 01:28, 01:58, 02:32 —
-   so it always arrived on the next UTC day and was answered 'early', and
-   the day it was meant to fill had already ended with its calls unspent.
-   GitHub's schedule is a wish, not a clock.
-
-   So the workflow knocks several times a day now, from the afternoon, and
-   the fill takes what it is given in two halves. From FILL_FROM_HOUR it may
+/* The UTC hours the fill works between, whoever knocks — a visit through
+   fillOnVisit() or the workflow through POST /api/refresh. Nothing before
+   FILL_FROM_HOUR, so the morning belongs to the opens. From then it may
    spend all but KEEP_FOR_OPENS of the day, so the evening's opens — when
    most people look at the map — still find calls waiting; from
-   SPEND_ALL_FROM_HOUR it takes everything left. A run four hours late still
-   lands inside the day it was meant for, and a run that slips past midnight
-   is answered 'early' and spends nothing of the new day, as before.
+   SPEND_ALL_FROM_HOUR it takes everything left. A knock that slips past
+   midnight is 'early' again and spends nothing of the new day.
 
-   The route is still open with no secret on it: a stranger calling it can
-   only spend, on the same oldest rows, what the next knock would have. */
+   The route is open with no secret on it: a stranger calling it can only
+   spend, on the same oldest rows, what the next knock would have. */
 export const FILL_FROM_HOUR = 12;
 export const SPEND_ALL_FROM_HOUR = 20;
 export const KEEP_FOR_OPENS = 8;
@@ -354,6 +351,38 @@ function changesBetween(before, after) {
   return moved;
 }
 
+/* A review count that grew too fast to be people writing reviews. Google
+   merges two listings into one, or hands an id to a different branch, and the
+   count leaps in a single answer: Q Pizza Jaam went from 27 to 299 in a month
+   with its rating falling from 5.0 to 4.6, and MyShisha from 1,100 to 1,346,
+   and both were logged as an ordinary 'changed'. Two tests, and a jump
+   passes both: JUMP_BY reviews gained in a month, and that gain JUMP_SHARE
+   of what was there before. The fastest honest growth in the table's first
+   six weeks was 89 in a month on 243 — a third of itself, and short of
+   JUMP_BY — and a place with thousands gains a hundred
+   in a slow month, which is why the share is asked for as well. And it is a
+   month's worth that is measured, not the gap as it came: a row nobody opened
+   since the spring has a year of honest reviews in one answer, so the gain is
+   scaled to thirty days by how long the row had waited — and a row asked
+   about for the first time, whose last numbers are the export's and carry no
+   date, is never called a jump, because there is nothing to scale by.
+
+   Nothing is held back on the strength of it. The numbers are Google's and
+   are written as they came; the log line carries JUMP_NOTE, so whoever reads
+   the Google tab checks the listing the day it happens rather than finding
+   it in a chart six weeks later. */
+export const JUMP_BY = 100;
+export const JUMP_SHARE = 0.15;
+const JUMP_NOTE = 'the review count jumped: check the listing was not merged or swapped';
+
+export function jumped(before, after, waited) {
+  const was = Number(before);
+  const now = Number(after);
+  if (!(was > 0) || !(now > was) || !(waited > 0)) return false;
+  const aMonth = (now - was) * Math.min(1, REFRESH_AFTER / waited);
+  return aMonth >= JUMP_BY && aMonth >= was * JUMP_SHARE;
+}
+
 /* ------------------------------------------------------------------ refresh */
 
 /* The numbers an answer carried, added to google_scores rather than written
@@ -391,8 +420,8 @@ async function keepScores(env, placeId, before, after, at, was, source) {
 /* One line of the log, and the prune that keeps it to KEEP_LOG, in one round
    trip. `changes` is { column: [from, to] } or nothing; `note` is a sentence
    for the outcomes a column cannot explain — a refusal, a closure, a place
-   Google no longer knows. `source` is why it was asked: 'open', 'top' or
-   'fill'. */
+   Google no longer knows, a review count that jumped. `source` is why it was
+   asked: 'open', 'top' or 'fill'. */
 async function log(env, now, id, source, outcome, changes, note) {
   await env.DB.batch([
     env.DB
@@ -539,7 +568,8 @@ export async function refreshOnOpen(env, id, source = 'open') {
     const any = Object.keys(moved).length > 0;
     const outcome = closedForGood ? 'closed' : any ? 'changed' : 'same';
     await log(env, at, placeId, source, outcome, any ? moved : null,
-      closedForGood ? 'Google says it has closed for good' : '');
+      closedForGood ? 'Google says it has closed for good'
+        : jumped(before.reviews, row.reviews, was ? at - was : 0) ? JUMP_NOTE : '');
     return outcome;
   } catch (e) {
     if (!written) {
@@ -601,12 +631,14 @@ async function askEach(env, due, source) {
 
 /* The rest of the day's thirty-two, spent on the oldest rows.
  *
- * Called from functions/api/refresh.js, several times through the second half
- * of the UTC day, and inside the request rather than after it, so the answer
- * the workflow logs says how many were asked. `leave` is how many of the day's
- * calls to keep back for the opens still to come — KEEP_FOR_OPENS in the
- * afternoon, nought from SPEND_ALL_FROM_HOUR — so at most the day's cap less
- * what is already spent and what is kept back is read. The cap still binds on
+ * Called from fillOnVisit() below, a few rows a knock through the second half
+ * of the UTC day, and from functions/api/refresh.js, inside the request
+ * rather than after it, so the answer the workflow logs says how many were
+ * asked. `leave` is how many of the day's calls to keep back for the opens
+ * still to come — KEEP_FOR_OPENS in the afternoon, nought from
+ * SPEND_ALL_FROM_HOUR — and `most` how many one caller may ask about, so at
+ * most the day's cap less what is already spent and what is kept back is
+ * read, and no more than `most` of that. The cap still binds on
  * its own: an open that lands mid-loop takes its call, spend() refuses the
  * first one past thirty-two, and askEach() stops at that refusal.
  *
@@ -631,12 +663,12 @@ async function askEach(env, due, source) {
  * is the monthly cap sitting under thirty-one days of thirty-two and nothing
  * to correct. Quiet like the rest: no key, no column, no database, and it
  * answers zero. */
-export async function refreshFill(env, now, leave = 0) {
+export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day) {
   if (!env || !env.DB || !googleKey(env)) return 0;
 
   let due;
   try {
-    const room = BUDGET.details.day - leave - (await spent(env, 'details', now)).today;
+    const room = Math.min(most, BUDGET.details.day - leave - (await spent(env, 'details', now)).today);
     if (room <= 0) return 0;
     /* How many closed rows were already asked about today, by anything. A
        row that answered open no longer counts, which only ever lets one more
@@ -663,4 +695,59 @@ export async function refreshFill(env, now, leave = 0) {
   }
 
   return askEach(env, due, 'fill');
+}
+
+/* WHY A VISIT IS THE CLOCK
+ *
+ * The fill was built on 2026-11-05 with GitHub's scheduler as its clock, and
+ * in its first five days it did not write one row. The schedule ran four
+ * times in all. Three started between three and four hours late — 01:28,
+ * 01:58, 02:32 — on the wrong side of midnight UTC, and were answered
+ * 'early'. Then it was made three knocks an afternoon, and on the first full
+ * day GitHub ran one of the three, at 23:27, after the top hundred had spent
+ * the day. Scheduled runs on a free runner are queued behind everybody
+ * else's and are late or dropped as a matter of course; that is a wish, not
+ * a clock.
+ *
+ * The site already has something that happens all afternoon: somebody opens
+ * a page, and the page reports it to functions/api/stats.js. So the fill
+ * rides on that report the way the refresh rides on an open — after the
+ * answer has gone, through waitUntil, so nobody waits on Google — and the
+ * day's calls are spent a few at a time by the people who came:
+ *
+ *   KNOCK_EVERY   how often one isolate may try. A report arrives for every
+ *                 page opened and most of them find the last knock a minute
+ *                 old; they return on a comparison, with no query at all.
+ *                 Cloudflare runs several isolates, each with a `knocked` of
+ *                 its own, so the true rate is a few times this, and that is
+ *                 fine: two knocks that find the same rows due are settled
+ *                 by the claim in refreshOnOpen(), where the second is
+ *                 'taken', and neither can spend past spend().
+ *   FILL_A_KNOCK  how many places one knock asks about. Six is two seconds
+ *                 of Google and some forty statements, well inside what a
+ *                 Function may do after its answer, and twenty-four
+ *                 afternoon calls are four knocks — twenty minutes of
+ *                 anybody being on the site.
+ *
+ * The hours are the fill's own: nothing before FILL_FROM_HOUR, KEEP_FOR_OPENS
+ * kept back until SPEND_ALL_FROM_HOUR. The owner's visit knocks like anybody's
+ * — it counts nowhere, and a call spent on the oldest row is the same call
+ * whoever's page caused it. On a day with no visitor after noon UTC nothing
+ * knocks, which is what the workflow is still there for. Never throws, and
+ * answers how many places it asked about. */
+export const KNOCK_EVERY = 5 * 60 * 1000;
+export const FILL_A_KNOCK = 6;
+
+let knocked = 0;
+
+export async function fillOnVisit(env, now) {
+  const hour = new Date(now).getUTCHours();
+  if (hour < FILL_FROM_HOUR) return 0;
+  if (now - knocked < KNOCK_EVERY) return 0;
+  knocked = now;
+  try {
+    return await refreshFill(env, now, hour < SPEND_ALL_FROM_HOUR ? KEEP_FOR_OPENS : 0, FILL_A_KNOCK);
+  } catch (e) {
+    return 0;
+  }
 }
