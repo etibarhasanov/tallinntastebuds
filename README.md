@@ -4793,6 +4793,42 @@ the length of the window — no name on the rail, no saves, no lists, an account
 page saying accounts are switched off — which is exactly the shape of failure
 the `about` column is guarded against a few lines above it.
 
+### The iPhone app signs in through these too
+
+The app (`etibarhasanov/TallinnTasteBudsApp`) has the same three ways in, and
+two of them needed something here.
+
+**Google, ending in a ticket.** The app runs the round trip above in the
+system's sign-in sheet, because Google will not sign anybody in inside a web
+view. That sheet is a browser of its own, so a session cookie at the end of
+the trip would sign in the sheet and not the app. The app starts the trip at
+`/api/google?app=<challenge>` — the SHA-256 of a verifier it keeps — and the
+trip ends at `tallinntastebuds://signin?google=in|new&ticket=…` instead of on
+a page: a sealed, two-minute ticket naming the account and the challenge.
+`POST /api/account` with `action: "ticket"`, the ticket and the verifier
+answers as a sign-in does, cookie and all. A ticket without the verifier its
+challenge was made from opens nothing. An `app` trip only ever signs in: the
+sheet carries the browser's cookies, and reading a session off them would
+connect the Google account to whoever is signed in to the site in Safari.
+The redirect URI registered with Google is the one it always was.
+**THE APP'S WAY BACK IN** in `functions/api/_google.js` is the argument.
+
+**Apple, with no trip at all.** `POST /api/apple` takes the token Apple's own
+sheet hands the app and the nonce it was asked for under, checks the
+signature against Apple's published keys, and that the token was made for
+the app's bundle id, has not run out and carries that nonce — then signs in,
+making an account under a drawn name for an Apple id that has never been
+here, the way Google's does. Only Apple's permanent id for the person is
+kept, in `identities` under `apple`. There is no secret to set: the app is
+the client, and `APPLE_APP_ID` exists only for a build signed under a bundle
+id other than `ee.tallinntastebuds.app`. There is no Apple button on the
+site — a web sign-in with Apple is a different integration, with a Services
+ID and a key — so an account made this way is reached from a browser by
+setting a password on it first. `functions/api/_apple.js` says the rest.
+
+`GET /api/account` answers `appGoogle` and `appApple`, and the app draws each
+button only where its flag is true.
+
 ### How it is kept safe
 
 - **Passwords** are PBKDF2-HMAC-SHA256 through WebCrypto — there is no bcrypt

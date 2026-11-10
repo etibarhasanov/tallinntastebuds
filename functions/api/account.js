@@ -33,6 +33,11 @@
  * whole of that; by the time anything reaches this file a subject has already
  * proved itself.
  *
+ * The iPhone app has the same two and a third, Sign in with Apple, which is
+ * ./apple.js and never reaches this file. Its Google trip does, once: the
+ * trip ends in a ticket rather than a cookie, and `action: ticket` below is
+ * where the app trades it for the session.
+ *
  * An account may have either way in, or both, and the guards below are what
  * make one with a single way in work properly rather than half-work: a
  * sign-in against an account with no password is refused outright, and the
@@ -87,14 +92,15 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey
+  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey, openSession
 } from './_lib.js';
 import {
   asUsername, MIN_PASSWORD, HOLD_DAYS,
   nameTaken, tooManyFails, noteFail, passwordOn, matches, failHash,
   enterAccount
 } from './_account.js';
-import { googleReady, unlinkGoogle, hasGoogle } from './_google.js';
+import { googleReady, unlinkGoogle, hasGoogle, redeemTicket } from './_google.js';
+import { appleReady } from './_apple.js';
 import {
   NETWORKS, cleanHandle, readLinks, readingExtras, cleanRows, readRows, rowToStore, publicLists, placeLists,
   cleanSpeaks, readSpeaks,
@@ -173,8 +179,18 @@ export async function onRequestGet(context) {
      one level in. */
   const google = googleReady(env);
 
+  /* The same question from the iPhone app, which draws its Google and Apple
+     buttons only where these say they would lead somewhere. Two flags of
+     their own rather than `google` read twice: the app shipped before this
+     route could finish either for it, and an older copy of the site answers
+     neither, which the app reads as no buttons. `appGoogle` is the round
+     trip ending in a ticket — THE APP'S WAY BACK IN in ./_google.js — and
+     `appApple` is ./apple.js. */
+  const appGoogle = google;
+  const appApple = appleReady(env);
+
   const user = await sessionUser(request, env);
-  if (!user) return json({ ready: true, google: google, user: null }, 200);
+  if (!user) return json({ ready: true, google: google, appGoogle: appGoogle, appApple: appApple, user: null }, 200);
 
   /* Whether there is a password on this account, which is what the two steps
      on the map's sheet read to decide whether to ask for the one in use.
@@ -255,6 +271,8 @@ export async function onRequestGet(context) {
   const res = json({
     ready: true,
     google: google,
+    appGoogle: appGoogle,
+    appApple: appApple,
     user: user.username,
     linked: linked,
     /* Whether there is a password on this account at all. An account made
@@ -938,6 +956,38 @@ export async function onRequestPost(context) {
    * makes an account and one that exists signs you in, because there is no
    * sheet there to ask the question twice.
    */
+  /* ------------------------------------------ the app, back from Google
+   * The iPhone app's half of the Google trip: the ticket ./google.js ended
+   * the trip with, and the verifier whose hash is sealed inside it. Both, or
+   * nothing — THE APP'S WAY BACK IN in ./_google.js is why. The answer is a
+   * sign-in's, cookie and all, because from here on that is what it is.
+   *
+   * One word for every refusal. A ticket that ran out, one made for another
+   * verifier and something that was never a ticket are the same thing to the
+   * app, which is "start the trip again".
+   */
+  if (action === 'ticket') {
+    const userId = await redeemTicket(env.SAVE_SALT, body.ticket, body.verifier);
+    if (!userId) return json({ error: 'ticket' }, 401);
+
+    /* Deleted between the trip and this request, which is two minutes at the
+       most and not nothing. */
+    const row = await env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(userId).first();
+    if (!row) return json({ error: 'ticket' }, 401);
+
+    const token = await openSession(env, userId);
+    return new Response(
+      JSON.stringify({ user: row.username, saved: await savedByUser(env, userId) }),
+      {
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
+          'cache-control': 'no-store',
+          'set-cookie': sessionCookie(token, SESSION_DAYS, request)
+        }
+      }
+    );
+  }
+
   if (action !== 'create' && action !== 'login') return json({ error: 'action' }, 400);
 
   const entered = await enterAccount(context, {
