@@ -5608,10 +5608,17 @@ About 930 of the month's 950, on eleven hundred and thirty rows, and there is
 no slack in that on purpose: the fill asks in tier order, so on a day of busy
 opens it is the last tier that waits past its sixty days and never the first
 past its fourteen. A change to one row of the table is paid for out of
-another — the sum is places × 30 ÷ days. Two things stand outside it: an open
+another — the sum is places × 30 ÷ days. Three things stand outside it: an open
 still asks at thirty days whatever the rank, because somebody is reading
-that row now, and a place Google calls temporarily closed keeps the thirty
-days too, since by rank every one of them would wait sixty. `rank` is the
+that row now; a place Google calls temporarily closed keeps the thirty
+days too, since by rank every one of them would wait sixty; and a busy place
+is asked about monthly at the least. Busy is thirty reviews or more gained in
+a month between its last two dated answers (`BUSY_A_MONTH`), read off
+`google_scores`: rank weighs the rating, so F-Hoone stood 567th at 4.4 while
+gaining forty-five reviews a month, the seventh most in the city, and by rank
+it would have been asked about every forty days. Thirteen places cleared that
+line when it was drawn and two of them stood below the top hundred, so it
+costs a handful of calls. `rank` is the
 last ranking's, which is made when the Top 100 tab is opened in a new week,
 so a place that crossed a line waits by the tier it was in until the next
 one. "Due now" on the Google tab of `/admin.html` counts by the same rule.
