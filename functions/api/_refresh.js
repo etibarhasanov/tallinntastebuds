@@ -109,6 +109,11 @@ import { TOP } from './_rank.js';
    how established a place is. */
 export const REFRESH_AFTER = 30 * 24 * 60 * 60 * 1000;
 
+/* How many of the day's fill may go to rows Google calls temporarily closed,
+   and the word the table spells that in. See refreshFill(). */
+const CLOSED_A_DAY = 2;
+const CLOSED = 'Temporarily closed';
+
 /* The spending limit, per kind of call. `details` is Place Details Enterprise,
    a thousand free a month: thirty-two a day is at most 992 in a thirty-one-day
    month, and the monthly cap under it catches whatever the daily one does not.
@@ -329,7 +334,7 @@ function fromGoogle(place, before) {
   /* A place that has not opened yet is, to somebody standing at the door,
      closed for now; the export filed everything that was not OPERATIONAL the
      same way. */
-  else if (said === 'CLOSED_TEMPORARILY' || said === 'FUTURE_OPENING') out.status = 'Temporarily closed';
+  else if (said === 'CLOSED_TEMPORARILY' || said === 'FUTURE_OPENING') out.status = CLOSED;
 
   return { row: out, closedForGood: said === 'CLOSED_PERMANENTLY' };
 }
@@ -611,6 +616,16 @@ async function askEach(env, due, source) {
  * among them the better-ranked go first, so the first weeks of this spend
  * themselves on the places a reader is likeliest to find.
  *
+ * Except the rows Google calls temporarily closed, which take at most
+ * CLOSED_A_DAY of the day and go first. The find bar, the picker and the chat
+ * leave those out, so nobody opens one, and in rank order they came last of
+ * all, since _rank.js puts every closed place below every open one: in
+ * November 2026 sixty-three of the sixty-seven had never been asked about,
+ * and Alanya Grill, open again, could not be found by name. Two a day brings
+ * each of them round in about the same five weeks as everything else, without
+ * the backlog taking a whole day's thirty-two. The find bar's "Look for it on
+ * Google Maps" catches a reopened one sooner — ./lookup.js.
+ *
  * At BUDGET.details.day a day and REFRESH_AFTER of thirty, the eleven hundred
  * rows come round in about five weeks — a little slower than the month, which
  * is the monthly cap sitting under thirty-one days of thirty-two and nothing
@@ -623,14 +638,26 @@ export async function refreshFill(env, now, leave = 0) {
   try {
     const room = BUDGET.details.day - leave - (await spent(env, 'details', now)).today;
     if (room <= 0) return 0;
-    due = await env.DB
+    /* How many closed rows were already asked about today, by anything. A
+       row that answered open no longer counts, which only ever lets one more
+       through on the day something reopened. */
+    const asked = await env.DB
+      .prepare('SELECT COUNT(*) AS n FROM google_venues WHERE status = ? AND refreshed_at >= ?')
+      .bind(CLOSED, Date.parse(dayOf(now)))
+      .first();
+    const shut = Math.min(room, Math.max(0, CLOSED_A_DAY - ((asked && asked.n) || 0)));
+    const oldest = (closed, limit) => env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
         'WHERE hidden = 0 AND missing_since IS NULL AND COALESCE(refreshed_at, 0) <= ? ' +
+        (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
         'ORDER BY COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
       )
-      .bind(now - REFRESH_AFTER, room)
+      .bind(now - REFRESH_AFTER, CLOSED, limit)
       .all();
+    const first = shut ? ((await oldest(true, shut)).results || []) : [];
+    const rest = room > first.length ? ((await oldest(false, room - first.length)).results || []) : [];
+    due = { results: first.concat(rest) };
   } catch (e) {
     return 0;
   }
