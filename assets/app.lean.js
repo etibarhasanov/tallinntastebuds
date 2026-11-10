@@ -706,7 +706,7 @@
       bubblingMouseEvents: false
     });
 
-    marker.bindTooltip(place.name, {
+    marker.bindTooltip(document.createTextNode(place.name), {
       className: 'pin-tip',
       direction: 'top',
       offset: [0, -15],
@@ -941,7 +941,7 @@
 
   function tooltipFor(marker, name, permanent, chosen, kept) {
     marker.unbindTooltip();
-    marker.bindTooltip(name, {
+    marker.bindTooltip(document.createTextNode(name), {
       className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') +
         (kept ? ' pin-tip-kept' : '') +
         (permanent && !chosen && !kept ? ' pin-tip-quiet' : ''),

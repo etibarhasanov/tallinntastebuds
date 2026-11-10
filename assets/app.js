@@ -1218,7 +1218,8 @@
       bubblingMouseEvents: false
     });
 
-    marker.bindTooltip(place.name, {
+    /* A text node, never the name as a string — tooltipFor() says why. */
+    marker.bindTooltip(document.createTextNode(place.name), {
       className: 'pin-tip',
       direction: 'top',
       offset: [0, -15],
@@ -1657,10 +1658,17 @@
      it is only there because the pointer is already on the dot. */
   /* Three readings, not two: the open one wears the accent, the one you last
      had open wears the same label a shade quieter, and the rest are the grey
-     names that fit. */
+     names that fit.
+
+     The name goes in as a text node. Leaflet writes a string tooltip with
+     innerHTML, and a name here is not always one I typed: the Google rows
+     anybody can add from the find bar carry whatever the business called
+     itself on Google, so a name with markup in it would have run on every
+     phone that drew its pin. A node is appended as it is, and reads exactly
+     the same for every name that was only ever a name. */
   function tooltipFor(marker, name, permanent, chosen, kept) {
     marker.unbindTooltip();
-    marker.bindTooltip(name, {
+    marker.bindTooltip(document.createTextNode(name), {
       className: 'pin-tip' + (chosen ? ' pin-tip-on' : '') +
         (kept ? ' pin-tip-kept' : '') +
         (permanent && !chosen && !kept ? ' pin-tip-quiet' : ''),

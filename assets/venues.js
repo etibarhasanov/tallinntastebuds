@@ -798,7 +798,9 @@
         fillOpacity: venue.closed ? 0.5 : 0.9
       });
       dot.on('click', function () { select(venue.id, false); });
-      dot.bindTooltip(venue.name, { direction: 'top', offset: [0, -6] });
+      /* A text node: Leaflet writes a string tooltip as HTML, and this is
+         Google's name for the place, not ours. tooltipFor() in app.js. */
+      dot.bindTooltip(document.createTextNode(venue.name), { direction: 'top', offset: [0, -6] });
       dot.addTo(dots);
       byPlace[venue.id] = dot;
       bounds.push([venue.lat, venue.lng]);
