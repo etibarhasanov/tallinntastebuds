@@ -6,7 +6,7 @@ blog about what all of it does and where to eat that members write in too, a pag
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
 through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
 flashcards.
-Static files, thirty-seven Cloudflare Functions, two D1 databases (preview and
+Static files, forty-one Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -351,6 +351,21 @@ its models are in `TallinnTasteBuds/Models/`.
 - Routes: `GET/POST /api/account`, `GET/POST /api/lists`, `/api/saves`,
   `GET /api/profile?name=`, `GET /api/pass?r=`, `GET /api/route`, and
   `GET /api/places?q=`, whose rows keep `id`, `name`, `address` and `map`.
+- Signing in, which is three promises of its own. `GET /api/account` answers
+  `appGoogle` and `appApple`, and the app draws a button only where its flag
+  is true — so taking one away hides a button, and renaming one hides it for
+  good on every phone that has the app. `GET /api/google?app=<challenge>`
+  ends at `tallinntastebuds://signin` with `google=` and `ticket=`, and
+  `POST /api/account` with `action: "ticket"`, `ticket` and `verifier`
+  answers `{ user, saved }`. `POST /api/apple` takes `{ token, nonce }` and
+  answers the same. The address, the parameter names and the two error
+  words the app has sentences for — `ticket` and `apple` — are all part of
+  it. **The iPhone app signs in through these too** in `README.md`.
+- Strings: the app asks `data/lang/<code>.json` for its words by the site's
+  own keys — the account sheet's, the lists', `styleLabel` and the four
+  style names among them — so a key renamed in `data/ui.json` is a sentence
+  that falls back to English in the app. Its own build checks the keys it
+  borrows against a snapshot; nothing here does.
 
 The list was read out of the app on 2026-11-10. When the app starts asking
 for something else, add it here in the same week.
