@@ -1398,8 +1398,16 @@ press is a call against a budget and a dropdown redraws on every letter.
 **What Google answers is kept.** `/api/lookup` writes every place into
 `google_venues`, so the next person typing *kumu* finds Kumu in the roll
 `/api/places` already sends, and never sees the button — one call to Google
-per place, not per visitor. A row is only ever inserted, never written over,
-so a place the export already has, or one the owner hid, stays as it was. Two
+per place, not per visitor. A place the export already has, or one the owner
+hid, stays as it was except for one column: its status, which Google has just
+said. That is how a place Google had called temporarily closed comes back.
+The roll leaves those out, so a reopened one is exactly what somebody types,
+finds nothing for, and looks up here. Alanya Grill, in November 2026, was open
+again and still shut in the table since September. The button asked Google,
+heard "open", and used to keep the row closed. Now the row opens, and its
+`refreshed_at` goes to 0, which makes it due for **Keeping it current** on its
+first open (so it gets the hours it was closed through) while still telling the
+export's next load not to write September's status back. Two
 columns say what the export's rows do not: `found_at`, when it was looked up,
 which keeps the export's load from marking it missing for not being in a file
 it was never in; and `kind`, what sort of place Google says it is — `eat`,
@@ -5507,6 +5515,13 @@ spends what the day's opens and the top hundred left on the rows the
 directory shows whose numbers are more than thirty days old, oldest first —
 the never-refreshed ahead of everything, and among those the better-ranked
 first, so the first weeks go to the places a reader is likeliest to find.
+The places Google calls temporarily closed are the exception: at most two a
+day (`CLOSED_A_DAY`), taken first. Nobody opens them, since the find bar, the
+picker and the chat leave them out, and `_rank.js` puts every closed place
+below every open one, so in rank order they came last of all. In November
+sixty-three of the sixty-seven had never been asked about. Two a day brings
+each round in about the same five weeks as the rest, and **Look for it on
+Google Maps** catches a reopened one sooner.
 The same call, the same seven columns, the same claim on a row, logged under
 source `fill`. At thirty-two a day the whole directory comes round in about
 five weeks, which is the monthly cap sitting under thirty-one days of

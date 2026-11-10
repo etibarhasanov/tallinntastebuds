@@ -28,9 +28,19 @@
  * Every place Google answers with is written into google_venues, so the next
  * person to type the same word finds it in the roll /api/places already sends
  * and never sees the button — one call to Google per place, not per visitor.
- * A row is only ever inserted: one that is already there, from the export or
- * an earlier lookup, is left exactly as it is, hidden ones included, so this
- * cannot undo a curation or write over a refresh.
+ * A row that is already there, from the export or an earlier lookup, keeps
+ * everything but one column, hidden ones included, so this cannot undo a
+ * curation or write over a refresh's numbers. The one column is `status`,
+ * because Google has just said it and the mask carries it for nothing: the
+ * roll leaves out a place Google calls temporarily closed, so a closed row
+ * that has reopened is exactly the one somebody types, finds nothing for, and
+ * looks up here — Alanya Grill, in November 2026, open again and still shut
+ * in the table since September, because nobody can open what the bar does
+ * not offer. Without this the button asked Google, heard "open", and kept
+ * the row closed. A row whose status changes here gets `refreshed_at` 0:
+ * due, so the first open fetches the hours and numbers it was closed through,
+ * and not NULL, which is what tells the export's next load
+ * (tools/googlevenues.mjs) it may write September's status back over it.
  *
  * A looked-up row says two things the export's rows do not. `found_at` is
  * when it was looked up, which is what tells the export's load to leave it
@@ -243,16 +253,19 @@ export async function onRequestPost(context) {
 
   const rows = places.map((place) => asRow(place, now)).filter(Boolean).slice(0, LOOKUP_MAX);
 
-  /* Inserted and never updated: ON CONFLICT DO NOTHING leaves a row that is
-     already there as it was. Throws on a database without the two columns,
-     which is the one failure this route answers as no database at all. */
+  /* Inserted, or for a row already there its status alone, and only when
+     Google said one — asRow() answers '' when it did not. Throws on a
+     database without the two columns, which is the one failure this route
+     answers as no database at all. */
   try {
     if (rows.length) {
       await env.DB.batch(rows.map((row) => env.DB
         .prepare(
           'INSERT INTO google_venues (place_id, name, category, status, address, postal_code, city, ' +
           'tags, latitude, longitude, maps_url, first_seen_at, synced_at, kind, found_at) ' +
-          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(place_id) DO NOTHING'
+          'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ' +
+          'ON CONFLICT(place_id) DO UPDATE SET status = excluded.status, refreshed_at = 0 ' +
+          "WHERE excluded.status <> '' AND COALESCE(google_venues.status, '') <> excluded.status"
         )
         .bind(row.place_id, row.name, row.category, row.status, row.address, row.postal_code,
           row.city, row.tags, row.latitude, row.longitude, row.maps_url, now, now, row.kind, row.found_at)));
