@@ -518,8 +518,6 @@
 
     takeWheel();
 
-    map.on('click dragstart', function () { dismissWelcome(false); });
-
     map.on('zoomend', function () { settled(true); });
     map.on('moveend', function () { settled(false); });
   }
@@ -2080,169 +2078,6 @@
     if (back && document.contains(back) && back.focus) back.focus();
   }
 
-  var TOUR_STEPS = [
-    { key: 'explainPin', at: nearestPin },
-    { key: 'explainList', at: function () {
-        return dom.btnList.offsetParent
-          ? dom.btnList
-          : (dom.list.querySelector('.search-field') || dom.panel);
-      } },
-    { key: 'explainLang', at: function () { return dom.langSwitch; } },
-    { key: 'explainRadio', at: function () { return dom.btnRadio; },
-      when: function () { return !dom.btnRadio.hidden; },
-      pills: function () { return [dom.btnRadio]; } },
-    { key: 'explainChips', drawer: true,
-      at: function () { return chipRow() || dom.btnFilters; } },
-    { key: 'explainRandom', at: function () { return dom.btnRandom; },
-      pills: function () { return [dom.btnRandom]; } },
-    { key: 'explainLists', at: function () { return dom.btnLists; },
-      when: function () { return !dom.btnLists.hidden; },
-      pills: function () { return [dom.btnLists]; } },
-    { key: 'explainSave', at: function () { return dom.btnMore; },
-      when: accountDoor,
-      pills: function () { return [dom.btnMore]; } },
-    { key: 'explainMore', at: function () { return dom.btnMore; },
-      pills: function () { return [dom.btnMore]; } },
-    { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
-      at: function () {
-        var row = chipRow();
-        return row ? row.children[1] : dom.btnFilters;
-      } }
-  ];
-  var tour = { steps: [], i: -1, press: null, roll: null, slide: null, lit: [] };
-
-  function nearestPin() {
-    var pins = dom.map.querySelectorAll('.leaflet-marker-icon');
-    var cx = window.innerWidth / 2;
-    var cy = window.innerHeight / 2;
-    var best = null;
-    var bestD = Infinity;
-    for (var i = 0; i < pins.length; i++) {
-      var r = pins[i].getBoundingClientRect();
-      if (!r.width || r.right < 0 || r.bottom < 0 ||
-          r.left > window.innerWidth || r.top > window.innerHeight) continue;
-      var dx = r.left + r.width / 2 - cx;
-      var dy = r.top + r.height / 2 - cy;
-      if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = pins[i]; }
-    }
-    return best;
-  }
-
-  function openExplain() {
-    if (!dom.tour || tour.i >= 0) return;
-    if (welcomeOwed && dom.welcome && !dom.welcome.hidden) { dismissWelcome(true); return; }
-    TTBTrack.event('explain_open');
-    if (dom.panel.classList.contains('is-open')) {
-      if (isNarrow()) closePanel({ band: false });
-      else if (state.view !== 'list') restOnList();
-    }
-    closeHints();
-    tour.steps = [];
-    for (var k = 0; k < TOUR_STEPS.length; k++) {
-      if (!TOUR_STEPS[k].when || TOUR_STEPS[k].when()) tour.steps.push(TOUR_STEPS[k]);
-    }
-    state.lastFocus = document.activeElement;
-    dom.tour.hidden = false;
-    dom.tour.classList.add('no-move');
-    var from = dom.welcomeTour.getBoundingClientRect();
-    moveCursor(from.left + from.width / 2, from.top + from.height / 2);
-    void dom.tour.offsetWidth;
-    dom.tour.classList.remove('no-move');
-    window.addEventListener('resize', placeTourStep);
-    showStep(0);
-  }
-
-  function closeExplain() {
-    if (tour.i < 0) return;
-    tour.i = -1;
-    litPills([]);
-    tourDrawer(false);
-    clearTimeout(tour.press);
-    dom.tourCursor.classList.remove('is-click');
-    dom.tour.hidden = true;
-    window.removeEventListener('resize', placeTourStep);
-    var back = state.lastFocus;
-    state.lastFocus = null;
-    if (back && document.contains(back) && back.focus) back.focus();
-  }
-
-  function showStep(i) {
-    if (i >= tour.steps.length) { closeExplain(); return; }
-    tour.i = i;
-    var step = tour.steps[i];
-    litPills(step.pills ? step.pills() : []);
-    dom.tourSay.textContent = t(step.key);
-    var last = i === tour.steps.length - 1;
-    dom.tourNext.textContent = t(last ? 'explainClose' : 'explainNext');
-    dom.tourSkip.hidden = last;
-    clear(dom.tourDots);
-    for (var d = 0; d < tour.steps.length; d++) {
-      dom.tourDots.appendChild(el('i', { className: d === i ? 'is-on' : '' }));
-    }
-    placeTourStep();
-    tourDrawer(step.drawer);
-    dom.tourNext.focus();
-  }
-
-  function tourDrawer(want) {
-    window.clearTimeout(tour.roll);
-    if (!want) { hideChipRow(); return; }
-    showChipRow();
-    tour.roll = window.setTimeout(placeTourStep, CHIP_ROLL_MS);
-  }
-
-  function litPills(pills) {
-    window.clearTimeout(tour.slide);
-    for (var i = 0; i < tour.lit.length; i++) tour.lit[i].classList.remove('hint-open');
-    tour.lit = pills;
-    for (var j = 0; j < pills.length; j++) pills[j].classList.add('hint-open');
-    if (pills.length) tour.slide = window.setTimeout(placeTourStep, PILL_SLIDE_MS);
-  }
-
-  function moveCursor(x, y) {
-    clearTimeout(tour.press);
-    dom.tourCursor.classList.remove('is-click');
-    dom.tourCursor.style.transform = 'translate(' + Math.round(x - 16) + 'px,' + Math.round(y - 6) + 'px)';
-    tour.press = setTimeout(function () { dom.tourCursor.classList.add('is-click'); }, 800);
-  }
-
-  function placeTourStep() {
-    if (tour.i < 0) return;
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    var target = tour.steps[tour.i].at();
-    var r = target ? target.getBoundingClientRect() : null;
-    if (r && (!r.width || r.bottom < 0 || r.top > vh)) r = null;
-    var ring = dom.tourRing;
-    var bubble = dom.tourBubble;
-    var bw = bubble.offsetWidth;
-    var bh = bubble.offsetHeight;
-    var bx, by;
-    if (r) {
-      var left = Math.max(r.left, 8);
-      var right = Math.min(r.right, vw - 8);
-      var pad = 5;
-      ring.hidden = false;
-      ring.style.width = Math.round(right - left + pad * 2) + 'px';
-      ring.style.height = Math.round(r.height + pad * 2) + 'px';
-      ring.style.transform = 'translate(' + Math.round(left - pad) + 'px,' + Math.round(r.top - pad) + 'px)';
-      var beside = right < vw / 3 && right + 16 + bw <= vw - 12;
-      if (beside) by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
-      else if (r.bottom + 34 + bh <= vh - 12) by = r.bottom + 34;
-      else if (r.top - 14 - bh >= 30) by = r.top - 14 - bh;
-      else by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
-      bx = beside ? right + 16 : (left + right) / 2 - bw / 2;
-      bx = Math.min(Math.max(12, bx), vw - bw - 12);
-      moveCursor(Math.min(left + (right - left) * .6, right - 8), r.top + r.height * .62);
-    } else {
-      ring.hidden = true;
-      bx = (vw - bw) / 2;
-      by = (vh - bh) / 2;
-      moveCursor(bx + bw - 44, by - 8);
-    }
-    bubble.style.transform = 'translate(' + Math.round(bx) + 'px,' + Math.round(by) + 'px)';
-  }
-
   function accountField(id, labelKey, type, opts) {
     opts = opts || {};
     var kids = [
@@ -2752,7 +2587,6 @@
 
   var filterOpenTimer = null;
   var CHIP_ROLL_MS = 640;
-  var PILL_SLIDE_MS = 380;
 
   function filterMenuOpen() {
     return dom.filterBar.classList.contains('is-open');
@@ -2781,10 +2615,6 @@
   function drawerHolds() {
     if (!isNarrow()) return false;
     return state.active.some(function (id) { return FRONT_CHIPS.indexOf(id) === -1; });
-  }
-
-  function chipRow() {
-    return dom.filters.getBoundingClientRect().width ? dom.filters : null;
   }
 
   var chipRowShown = false;
@@ -3079,7 +2909,6 @@
   var hintTimers = {};
 
   var RAIL_IN = 1150;
-  var welcomeOwed = false;
   var introPending = false;
   var railIntroduced = false;
   var RAIL_WAIT_MS = 1400;
@@ -3160,11 +2989,6 @@
       introPending = true;
       return;
     }
-    if (welcomeOwed) {
-      introPending = false;
-      showWelcome();
-      return;
-    }
     if (!accountAnswered && !railWaited) {
       railWaited = true;
       railWaiting = true;
@@ -3179,27 +3003,6 @@
     storeSet(INTRO_KEY, '1');
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
-  }
-
-  function showWelcome() {
-    if (!dom.welcome || !dom.welcome.hidden) return;
-    dom.welcome.hidden = false;
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { dom.welcome.classList.add('is-up'); });
-    });
-  }
-
-  function dismissWelcome(tour) {
-    if (!welcomeOwed || !dom.welcome || dom.welcome.hidden) return;
-    welcomeOwed = false;
-    dom.welcome.classList.remove('is-up');
-    setTimeout(function () { dom.welcome.hidden = true; }, reduceMotion() ? 0 : 320);
-    if (tour) {
-      storeSet(INTRO_KEY, '1');
-      openExplain();
-    } else {
-      introduceRail();
-    }
   }
 
   var RAIL_NEAR = 300;
@@ -3967,7 +3770,6 @@
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
-    dismissWelcome(false);
     closeHints();
   }
 
@@ -3993,17 +3795,16 @@
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
     var row = state.fromRow;
-    if (row && state.list && state.view === 'detail' && state.selected === row &&
-        (!opts || opts.band !== false)) {
+    if (row && state.list && state.view === 'detail' && state.selected === row) {
       state.fromRow = null;
       state.selected = null;
       lastReelKey = null;
       standOn(byId(row));
       return;
     }
-    if (state.list && isNarrow() && (!opts || opts.band !== false)) { restOnBand(); return; }
-    if (listIsFixed() && (!opts || opts.band !== false)) { restOnList(); return; }
-    if (state.view === 'detail' && state.answer && (!opts || opts.band !== false)) {
+    if (state.list && isNarrow()) { restOnBand(); return; }
+    if (listIsFixed()) { restOnList(); return; }
+    if (state.view === 'detail' && state.answer) {
       lastReelKey = null;
       openAsk({ keyboard: false });
       if (!opts || opts.history !== false) syncUrl();
@@ -7148,23 +6949,6 @@
       TTBTrack.event('where_close');
       closeWhere();
     });
-    if (dom.welcome) {
-      $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
-      $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
-      dom.welcomeTour.addEventListener('click', function () { dismissWelcome(true); });
-    }
-    var tourNext = function () {
-      TTBTrack.event('explain_step', { step: tour.i + 1 });
-      showStep(tour.i + 1);
-    };
-    dom.tourNext.addEventListener('click', tourNext);
-    dom.tourSkip.addEventListener('click', function () {
-      TTBTrack.event('explain_close', { step: tour.i + 1 });
-      closeExplain();
-    });
-    dom.tour.addEventListener('click', function (ev) {
-      if (ev.target === dom.tour) tourNext();
-    });
     wireSheet();
     wireKeyboard();
 
@@ -7204,7 +6988,6 @@
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.moreScrim.hidden) { closeMore(); return; }
         if (!dom.whereScrim.hidden) { closeWhere(); return; }
-        if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         if (dom.find.contains(document.activeElement) && state.find) {
@@ -7516,16 +7299,6 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      welcome: $('welcome'),
-      welcomeTour: $('welcome-tour'),
-      tour: $('tour'),
-      tourRing: $('tour-ring'),
-      tourCursor: $('tour-cursor'),
-      tourBubble: $('tour-bubble'),
-      tourSay: $('tour-say'),
-      tourNext: $('tour-next'),
-      tourSkip: $('tour-skip'),
-      tourDots: $('tour-dots'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
@@ -7680,7 +7453,7 @@
 
       if (!spot && !stand && !state.list && !wanted) resumeHere();
 
-      if (!storeGet(INTRO_KEY)) { welcomeOwed = true; introduceRail(); }
+      if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 

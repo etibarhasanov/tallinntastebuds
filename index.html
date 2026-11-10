@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=b12ad216">
+<link rel="stylesheet" href="assets/styles.lean.css?v=8942302f">
 </head>
 <body>
 
@@ -583,51 +583,6 @@
   <div class="account card" id="where-card"></div>
 </div>
 
-<!-- The welcome card: what this site is, from the foot of the map, once, on
-     a phone that has never been here. Built in the sheet order — eyebrow,
-     the line, the one action, the way out — with the tagline the desktop
-     prints beside the mark as its line. Put away by either button, the
-     cross, or a touch on the map; then the rail introduces itself. See
-     showWelcome() in assets/app.js and "The welcome card" in README.md. -->
-<section class="welcome" id="welcome" aria-labelledby="welcome-eyebrow" hidden>
-  <button type="button" class="welcome-x" id="welcome-x" data-i18n-aria-label="close" aria-label="Close">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
-  </button>
-  <p class="welcome-eyebrow" id="welcome-eyebrow" data-i18n="welcomeEyebrow">New here?</p>
-  <p class="welcome-line" data-i18n="tagline">An independent, honest guide to Tallinn's best restaurants. Every place on this map I have been to myself.</p>
-  <div class="welcome-row">
-    <button type="button" class="go" id="welcome-ok" data-track="welcome_ok" data-i18n="welcomeOk">Got it</button>
-    <button type="button" class="alt" id="welcome-tour" data-track="welcome_tour" data-i18n="welcomeTour">Show me around</button>
-  </div>
-</section>
-
-<!-- How this works: a walk round the page, started by Show me around on
-     the welcome card. A big cursor sets off from that button and glides
-     to each thing in turn — a pin, Places, the language, the filters, then
-     the rail button by button, then the discount chip — a ring settles
-     round it, and the mouth says what it is from a bubble beside it. The
-     layer swallows the taps, so nothing being pointed at gets pressed
-     mid-sentence, and a tap anywhere on it that is not the bubble is
-     Next. -->
-<div class="tour" id="tour" hidden>
-  <div class="tour-ring" id="tour-ring" hidden></div>
-  <div class="tour-cursor" id="tour-cursor" aria-hidden="true">
-    <svg viewBox="0 0 32 32" focusable="false">
-      <path d="M8 3l17 13.5-7.6 1.3 4.4 8.6-3.6 1.8-4.4-8.7L8 25z"/>
-    </svg>
-  </div>
-  <div class="tour-bubble card" id="tour-bubble" role="dialog" aria-live="polite"
-       data-i18n-aria-label="explainOpen" aria-label="How this works">
-    <img class="tour-face" src="assets/logo/mark-round.webp" alt="" width="48" height="48">
-    <p class="tour-say" id="tour-say"></p>
-    <div class="tour-row">
-      <button type="button" class="go" id="tour-next"></button>
-      <button type="button" class="alt" id="tour-skip" data-i18n="explainSkip">Skip</button>
-      <span class="tour-dots" id="tour-dots" aria-hidden="true"></span>
-    </div>
-  </div>
-</div>
-
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria-label="photos" aria-label="Photos" hidden>
   <button type="button" class="lb-btn lb-close" id="lb-close" data-i18n-aria-label="photoClose" aria-label="Close photo">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -753,6 +708,6 @@
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
      a page that loads it directly. "The lean copies" in README.md. -->
-<script src="assets/app.lean.js?v=fc4d99b5" defer></script>
+<script src="assets/app.lean.js?v=88eeb934" defer></script>
 </body>
 </html>
