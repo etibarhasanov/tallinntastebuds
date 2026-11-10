@@ -2,7 +2,7 @@
  *
  * window.TTBCountry.name(code, lang, unknown) is the browser's own name for
  * a country, in the language the page is being read in — Intl carries every
- * one of them in all ten, which is two hundred names nobody has to write into
+ * one of them in all eleven, which is two hundred names nobody has to write into
  * data/ui.json. `code` is Cloudflare's two letters as countryOf() in
  * functions/api/_visits.js files them; XX is Cloudflare not knowing and T1 is
  * Tor, and both are answered with `unknown`, the page's word for it.

@@ -6,8 +6,8 @@
  * WHY IT EXISTS. Those lists are rows in D1 like anybody's, and everything in
  * a row is one string in one language: the title, the intro, the line under
  * each place and the account's profile line are English on every page, in a
- * site that is otherwise read in ten. Translating them in the database would
- * mean ten copies of every list, a `lang` column on `lists` and `list_items`,
+ * site that is otherwise read in eleven. Translating them in the database would
+ * mean eleven copies of every list, a `lang` column on `lists` and `list_items`,
  * and a generator that writes sixty rows a language. What the row holds is
  * fixed and generated — tools/googlelists.mjs writes exactly six titles, two
  * intros and one shape of line — so the browser translates it instead, out of
