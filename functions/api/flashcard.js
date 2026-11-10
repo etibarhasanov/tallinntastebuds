@@ -174,7 +174,7 @@
 
 import {
   json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp,
-  DECK_LANGS
+  DECK_LANGS, forgetFingerprints
 } from './_lib.js';
 import { googleReady } from './_google.js';
 /* The decks the site ships, as deployed: the shelf's index and one file per
@@ -1408,6 +1408,7 @@ async function report(context, body) {
                'VALUES (?, ?, ?, ?, ?)')
       .bind(deckId, cardId, lang, hash, now)
       .run();
+    context.waitUntil(forgetFingerprints(env));
   } catch (e) {
     return json({ error: 'no-table' }, 503);
   }
