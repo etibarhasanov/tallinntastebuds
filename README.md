@@ -2958,7 +2958,7 @@ over it on its own, either, because it hangs inside `.controls` and that has a
 `z-index` of its own; so the corner is raised instead, to 1250, and only while
 there is a menu to raise it for — `body.lang-open`, put on by
 `markLangMenu()` and taken off by the same. 1250 is over the panel and under
-the lightbox, the walk, the toast and the stories, and under the account
+the lightbox, the toast and the stories, and under the account
 sheet's scrim at 1200, which is a modal over a dimmed map and must not have a
 language button floating on top of it. Every interface string is in `data/ui.json`, keyed by language and then
 by string id, so a translator never has to open the HTML.
@@ -13099,8 +13099,7 @@ owner wrote — those are doors to somebody's own writing rather than to the
 blog as such. The map is a map: what it
 has to say in its own chrome is where to eat, and a pill on the rail offering
 an essay about the rail would be the site clearing its throat at somebody who
-came here to find dinner. **Show me around** on the welcome card is already
-the short answer, in eight sentences, at the moment somebody wants it.
+came here to find dinner.
 
 **It is not hidden from search, though, and that is the difference between
 this page and `/admin/google`.** The directory is unlinked *and* `noindex` *and*
@@ -13119,7 +13118,7 @@ and the index links all of them.
 That is still the weakest part of the blog's reach. A page nothing on its own
 site links to is a page a search engine is told exists and given no reason to
 rank, and the posts about food are the ones that would most earn a door —
-from the lists page, from a place's panel on the map, from the welcome card.
+from the lists page, or from a place's panel on the map.
 Each of those is a new thing on a page somebody can see, so it is a question
 for the owner rather than a line to slip into a post's pull request.
 
@@ -17135,52 +17134,25 @@ also left the brand card and the rail standing on the strip. `stripCover()`
 now measures the whole of what covers the map with a place open — the panel,
 the top row down to the filter bar, the rail — and the fit clears all of it.
 
-### The welcome card
+### No welcome card
 
-**Before the pills, a card says what the site is.** On a phone the sentence
-the desktop prints beside the mark has no room in the header. For a long time
-it unrolled under the mark on arrival, held for 7.6 seconds and cleared, with
-the rail timed to finish inside it — which left a stranger who looked at the
-pins first with a map of grinning faces that never said what it was. It was
-then kept up for the whole visit for a day, which fixed that and spent the top
-of the map on every visit to tell a regular what they already knew.
+**A first visit is not greeted.** For a while a phone that had never been
+here got a card from the foot of the map — *New here?*, the tagline, **Got
+it** and **Show me around** — and **Show me around** started a walk round the
+page: a cursor the size of a thumb gliding from pin to Places to the language
+to the chips to each pill on the rail, a ring round each, and the mark
+talking from a bubble. The owner took both out in November 2026: a stranger
+who opens a map wants the map, and a card standing in front of it on arrival
+is a press between them and the first place.
 
-So a first visit on a phone gets a card from the foot of the map instead:
-
-> NEW HERE?
-> An independent, honest guide to Tallinn's best restaurants. Every place on
-> this map I have been to myself.
-> **Got it** · Show me around
-
-The line is the owner's own words. It says *best*, which the rest of this
-README keeps out of the site's voice — see **The list is ordered by
-distance**, where a ranking is a claim by whoever publishes it — and here that
-is exactly the point: the whole map is one person's claim, made in the first
-person, and *independent* and *honest* say what it is not. What stays true
-everywhere else is that nothing *on* the map is ranked against anything else.
-
-It stands on the shelf above the arrow (`--above-locate`), across the
-width less the 10px gutter, and is built like a sheet — eyebrow, the line, one
-filled action, the way out, a cross in the corner. The line is the `tagline`
-key, the same sentence the desktop prints, and it is also the site's
-`og:description` and the WebSite description `functions/index.js` writes, so a
-shared link says the same thing. The eyebrow and the two buttons are
-`welcomeEyebrow`, `welcomeOk` and `welcomeTour`.
-
-It goes when it is told to — **Got it**, the cross — or the moment the map is
-used: a tap or a drag on it, or a place or the list opening. Then the rail
-introduces itself, exactly as below; the pills wait for the card, so there is
-one introduction at a time. **Show me around** is the one way out that does
-not: it starts **How this works**, which opens the labels it wants itself,
-and it is the one door to that walk now — see **How this works, for the
-asking**.
-
-It is owed by the same `ttb.introduced` flag as the cascade, and it waits
-the same way: a visitor who arrived on a place link or a story gets it when
-they are first looking at the map. A language switch while it is up rewrites
-it in place. It is a phone's alone — above 860px the sentence is in the
-corner — and `showWelcome()` and `dismissWelcome()` in `assets/app.js` are
-the whole of it.
+What a first visit gets now is the map, and on a phone the rail naming its
+buttons for a few seconds — the section below. The tagline is still printed
+beside the mark on a desktop, and on a phone it is not printed at all: the
+header has no room for it, and the map says what it is by being looked at.
+`ttb.introduced` is the rail's flag alone again. The card, the walk, their
+seventeen strings and their stylesheet went together rather than being left
+switched off; the commit that took them out is where to find them if either
+is wanted back.
 
 ### The rail introduces itself on a phone
 
@@ -17256,15 +17228,13 @@ can never be a filtered map. So `showChipRow()` and `hideChipRow()` roll back
 only a row they rolled out, and only while nothing is pressed in it: a visitor
 who arrived on `?type=bakery` has the row open already with their chip in it,
 and one who presses a chip during the four seconds keeps both the chip and the
-row it is in. The same pair does the same job for the walk, below.
+row it is in.
 
 One of them says something again when pressed: pressing the swatch opens the
 name of the style it has just become the way back to. Surprise me and Ask do
 the opposite and shut their own label early — the question each of them
 answers is the question its label was there to ask, and each shuts its own:
-pressing one of the two is not an answer to the other. How this works shuts
-all of them, because the walk it starts opens
-the labels it wants itself and two introductions talking at once is neither.
+pressing one of the two is not an answer to the other.
 The radio does the same trick from outside this cascade now — starting it
 still opens the station's name, so a triangle in a circle is not the only
 thing saying what is playing — because `openHint()` and `closeHint()` answer
@@ -17416,8 +17386,8 @@ twice the movement for a question nobody asked — and on a desktop with no
 hover the labels never left, so there was nothing to introduce there either.
 `introduceRail()` asks `isNarrow()` and returns, which puts the section above
 back to being exactly what its title says: the rail introduces itself **on a
-phone**. Nothing above 860px is ever `.hint-open` now except a pill the walk
-is pointing at.
+phone**. Nothing above 860px is ever `.hint-open` now except the radio,
+which opens its station's name when play is pressed.
 
 Next to last on the rail is the locate button, which frames you
 together with the nearest place rather than dropping you at a fixed zoom on
@@ -17471,7 +17441,7 @@ it, where it was 6px and flat — the smallest thing on the screen at the one
 moment it was the only thing anybody wanted to find.
 
 It stays one of the rail's children in the markup, so `RAIL_PRESS`, the
-introduction cascade and the walk all still find it where they left it; the
+introduction cascade both still find it where they left it; the
 stylesheet is the only thing that knows it has moved. That costs the rail its
 `transform` below 860px — a transformed ancestor is the containing block for a
 fixed child, so the corner it measured from would have been the rail's own box
@@ -17496,128 +17466,6 @@ the handle. `paintListsButton()` now calls `placeRail()` when the pill
 actually moved, which is the only thing it does that changes the rail's
 height.
 
-### How this works, for the asking
-
-Everything above is an introduction that runs once, for a few seconds, and
-only for somebody who happened to be looking at the rail when it ran. A
-visitor who landed on a place, or on a story, or who spent the first ten
-seconds looking at the pins, gets a map that never said whose pins they are
-or what the buttons down the side do. The welcome card says the first half on
-a phone's first visit, and the tagline beside the mark on a desktop whenever
-the corner is open; nothing on the page said the second half twice.
-
-So **Show me around** on the welcome card walks the page rather than
-describing it. A cursor the size of a thumb sets off from that button and
-glides to each thing in turn; a ring settles round it and breathes; and the mouth — the
-mark, sitting on the top edge of a bubble like a face over a fence, rocking
-gently while it talks — says what the thing is. **Next** sends the cursor
-on, and so does a tap anywhere that is not the bubble; **Skip** ends it,
-and so does Escape. The first version of this was a card of prose over the
-map, which was the introduction as a document. This is it as a person,
-which is what a first visitor is short of.
-
-The walk, in order, and what each step is anchored to:
-
-1. A pin — whichever is nearest the middle of the screen, or the bubble
-   sits in the middle with no ring when none is on it.
-2. The **Places** button on a phone, and above 860px the places column's own
-   search field, since there is no button up there to point at: the whole map
-   as a list, with the field at the top of it.
-3. The language switcher.
-4. The radio, next to it — left out when `data/radio.json` gave the
-   language no station and the button never appeared.
-5. The chip row, which on a phone the walk rolls out of the **Filters**
-   button first, so that there is a row to point at.
-6. **Surprise me**, with its label held open for as long as the step is up —
-   which is every width where the pill is a disc: a phone always, and a
-   desktop whenever the pointer is somewhere other than the corner.
-7. **Everybody's lists**, left out when `/api/account` never said the
-   database behind the lists is bound — there is no button to point at.
-8. **More**, for saving with an account, since the account is the first row
-   behind it; left out where the account has no door, the rule in
-   `accountDoor()`.
-9. **More** again, straight after, for what else it holds: the chat, the
-   flashcards, the colour and feedback. Two steps on one pill, because one
-   step is about one thing.
-10. The discount chip, second in the row after All — the row rolled out
-    again for it on a phone; left out when no deal is on.
-
-One step is about one thing. Surprise me and Ask used to share a step — the
-ring round the die, both labels held open, one sentence saying what each
-did — and a sentence introducing two buttons while pointing at one of them
-read as one button with two names. Each had its own step after that, and
-Ask is a row behind More now, which the More step names. The Places
-button, the language switcher and the radio had no step at all, and a
-visitor who had just been told what some of the buttons do was left to
-guess at the rest; the walk now takes in everything on the page that a
-first visitor might press, in the order it sits on the page: the pin, the
-buttons top right, the filters, the rail from the top down, and last the
-chip. The locate button is the one it still passes over: it is a setting,
-it is plain on sight, and a walk that stops to explain an arrow is a walk
-that gets skipped.
-
-Every step is about something that can be pressed. The walk used to open
-on the mark, with the one sentence the site rests on set large in the
-display face: every pin a place I have eaten at myself and approved,
-nothing here because it paid to be. That sentence is the tagline, which
-the page has already said under the mark, and a first step that points at
-nothing to do and repeats what was just read is a step that gets skipped —
-with the useful ones behind it. It went, and the walk opens on a pin.
-
-**The two steps about the chips press their button first.** On a phone the
-row is folded away, and a ring round a shut button under a sentence about
-bakeries and bars explained the filters without ever showing one: the walk
-named a feature and left it named, which is the one thing a walk ought to
-be better than a paragraph at. So those two steps carry `drawer: true` —
-the row rolls out under the cursor, the ring leaves the button and settles
-on what came out of it, and it rolls shut again on the way to the next
-step. That is also what lets the discount step ring the actual Discount
-chip on a phone, the same target it has always had on a desktop, instead of
-pointing at a button and asking you to imagine the chip behind it. It is
-the same `showChipRow()` / `hideChipRow()` the arrival introduction uses, so
-the same rule holds: a row with a chip pressed in it is never rolled back,
-and a visitor who came in filtered still has their filter at **Got it**.
-
-Every step points at something real on the page as it stands, which is why
-the steps are functions and not co-ordinates, and why the pieces are put
-back on every resize — and why the two steps above ask the row how wide it
-is rather than asking the window: out, it is the row and the chip in it;
-still folded, it is the button that is about to open it. Placing the step
-twice is what makes that read as a press — once on the shut button, and
-again once the drawer has finished its `CHIP_ROLL_MS`.
-
-**A step about a rail pill is placed twice for the same reason.** Everything
-in `showStep()` happens in one breath, so a ring drawn the instant the label
-was told to open is a ring the size of the disc the pill still was — and it
-stayed that size while the words slid out from under it, which on a phone hung
-the label out of the side of the ring and on a desktop, where the bubble sits
-beside the rail rather than under it, put the label behind the bubble
-altogether. So `litPills()` waits out `PILL_SLIDE_MS` and places the step
-again, and the ring, the bubble and the cursor land against the pill at the
-width it has actually opened to.
-
-Nothing under the walk can be pressed while it is up: the layer swallows the
-taps, so the thing being pointed at is not opened mid-sentence — and the same
-layer is why a tap anywhere outside the bubble is Next: on a phone, it is
-there rather than a button the size of a word.
-
-**It had a pill of its own, and the pill has gone.** For a while the last
-thing on the rail was a question mark labelled **How this works**, so the
-walk could be asked for on a later visit as well as offered on the first.
-`/admin/stats` said it was pressed about once for every six presses of the
-account, and every pill on a phone costs another 300ms of the corner
-introducing itself — **The rail introduces itself on a phone** — so the pill
-went and the card is the one door. The walk is untouched; only the way to
-replay it. The `explainOpen` string it wore is now the name of the walk's
-own bubble, which is the one thing that still needs it.
-
-The strings are `explainOpen` — the bubble's name — the eleven `explainPin` …
-`explainDiscount` lines, `explainNext`, `explainSkip` and `explainClose`,
-in all eleven languages. The pieces are `#tour` in
-`index.html`; the steps are `TOUR_STEPS` in `assets/app.js`, run by
-`openExplain()`, `showStep()` and `placeTourStep()`; and under
-`prefers-reduced-motion` nothing slides, breathes or rocks.
-
 ## The short rail
 
 Every browser draws the same rail: **everybody's lists, Surprise me and
@@ -17633,10 +17481,8 @@ test found** below. There is one rail, so there is no `data-layout` on
 `<html>`, no deal and no choice of rail on `/account.html`; the pills it
 leaves out are not in the markup at all.
 
-Chess and the walk round the page are not behind More, and never were.
-Chess has no door on the map on purpose — **No door, on purpose** under
-**Chess** — and the walk is the welcome card's **Show me around** — **How
-this works, for the asking**.
+Chess is not behind More, and never was: it has no door on the map on
+purpose — **No door, on purpose** under **Chess**.
 
 ### Why
 
@@ -17656,9 +17502,8 @@ and **Surprise me** says why it came back — the three most pressed chips stand
 four at the foot go behind one pill together. The cascade that introduces
 the rail on a phone — **The rail introduces itself on a phone** — was 300ms
 a pill and 7.45s for eight; it is three pills and the arrow now, all open
-by 2.05s. How this works went altogether rather than behind More: the
-welcome card's **Show me around** is the same walk, offered to the same
-stranger — **How this works, for the asking**.
+by 2.05s. How this works went altogether rather than behind More, and the
+walk it started went later with the welcome card — **No welcome card**.
 
 ### What the test found
 
@@ -17710,9 +17555,6 @@ them taken out rather than left switched off.
   needs: `drawerHolds()` says a chip standing out front does not need the
   drawer open to be seen, and a chip from inside it still does. Above 860px
   the whole row is flat on the map and the second nav draws nothing.
-- **The walk** points at More, straight after the lists; `explainMore` is
-  its sentence, and Ask has no step of its own since it left the rail.
-  **How this works, for the asking**.
 
 It is not another style: **The four styles** are the colours, and the rail
 wears all four.
@@ -18359,9 +18201,8 @@ The map, `assets/app.js`:
 | `google_out`, `google_out_inapp` | — counted by `/api/google` itself, not by a page: a sign-in sent to Google, and the same from the in-app browser of Instagram, Facebook or TikTok, where Google refuses to sign anybody in. Into the sign-up funnel only, never the press kind — **Signing up** under **Visitors** |
 | `google_back_in`, `_new`, `_cancel`, `_failed` | — the same route, on the way back: signed in, an account made under a drawn name, Cancel on Google's screen, or a trip that did not complete. `_name` was a new account sent to choose a name, until November 2026 |
 | `saved_open` | — the row in the sheet |
-| `welcome_ok`, `welcome_tour` | — the two buttons on the welcome card; the cross and a touch on the map put it away without reporting |
-| `explain_open` | — |
-| `explain_step`, `explain_close` | `step`, one-based, the one being left |
+| `welcome_ok`, `welcome_tour` | — the two buttons on the welcome card, until November 2026 — **No welcome card** |
+| `explain_open`, `explain_step`, `explain_close` | the last two with `step`, one-based, the one being left — the walk round the page, until November 2026 |
 | `story_open`, `story_view`, `story_watch`, `story_sound`, `story_link` | see **Stories** |
 | `radio_play`, `radio_stop` | `station` — reported from `assets/radio.js`, so every page with the button counts it |
 | `home`, `instagram` | — the wordmark and the Instagram link |

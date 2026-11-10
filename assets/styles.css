@@ -1080,7 +1080,7 @@ a:hover { color: var(--accent-lit); }
 
    The class rather than the z-index outright, because the raise has to end
    where the menu does. 1250 stands over the panel and under the lightbox, the
-   nudge, the walk, the toast and the stories — and, the one that matters, under
+   nudge, the toast and the stories — and, the one that matters, under
    the 1200 scrim of the account sheet, which is a modal over a dimmed map and
    must not have a language button floating on top of it. Nothing can be open
    at once in any case: a press anywhere outside the switch shuts the menu
@@ -1642,7 +1642,7 @@ body.lang-open .controls { z-index: 1250; }
    doing the panning rather than across the screen under the one holding the
    phone. It keeps the rail's pill and its label; all that moves is
    where it is drawn, and it is still one of the rail's own children in the
-   markup, so the press counter, the cascade and the walk all find it exactly
+   markup, so the press counter and the cascade both find it exactly
    where they left it. The media query below is the whole of it.
 
    And it is the one pill on the rail drawn in something other than the
@@ -4190,147 +4190,6 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   }
 }
 
-/* ---------- how this works: the tour ---------- */
-
-/* Three things on one layer over the whole page, each put where it goes by
-   placeTourStep() in assets/app.js and left to the stylesheet to get there:
-   a ring round the thing being talked about, a cursor whose tip lands on it,
-   and the bubble the mouth talks from. All three are positioned with a
-   transform so the move between two steps is one eased slide rather than a
-   layout, and so a change of step animates the same way a hand would move —
-   the cursor most slowly, because it is the thing the eye follows.
-
-   Over the nudge and the account sheet, under the toast: a toast saying the
-   location could not be found is worth more than the step that pointed at
-   the button. */
-.tour {
-  position: fixed;
-  inset: 0;
-  z-index: 2450;
-  overscroll-behavior: contain;
-}
-.tour[hidden] { display: none; }
-/* The first placement of each open is a jump, not a slide from wherever
-   the pieces were left last time. */
-.tour.no-move * { transition: none !important; }
-
-/* The ring is the accent on a paper halo, the same two rings a pin wears,
-   and a second ring breathes out from it so the eye is drawn there even
-   while the cursor is still on its way. */
-.tour-ring {
-  position: absolute;
-  left: 0;
-  top: 0;
-  box-sizing: border-box;
-  border: 2px solid var(--accent);
-  border-radius: 100px;
-  box-shadow: 0 0 0 3px var(--paper);
-  pointer-events: none;
-  transition: transform .6s var(--ease), width .6s var(--ease), height .6s var(--ease);
-}
-.tour-ring[hidden] { display: none; }
-.tour-ring::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border: 2px solid var(--accent);
-  border-radius: inherit;
-  animation: tour-breathe 1.6s ease-out infinite;
-}
-@keyframes tour-breathe {
-  from { transform: scale(1); opacity: .7; }
-  to   { transform: scale(1.22); opacity: 0; }
-}
-
-/* A cursor the size of a thumb: paper with an ink edge, so it reads on both
-   the light map and the dark one, and a shadow under it so it is over the
-   page rather than drawn on it. Its tip is at 8,3 of a 32 box, which is
-   what placeTourStep() offsets for when it sends the tip somewhere. It
-   presses when it arrives — a short scale about the tip. */
-.tour-cursor {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 64px;
-  height: 64px;
-  pointer-events: none;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .3));
-  transition: transform .8s cubic-bezier(.35, .9, .25, 1);
-}
-.tour-cursor svg {
-  width: 100%;
-  height: 100%;
-  fill: var(--paper);
-  stroke: var(--ink);
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-  transform-origin: 16px 6px;
-}
-.tour-cursor.is-click svg { animation: tour-click .4s var(--ease); }
-@keyframes tour-click { 45% { transform: scale(.8); } }
-
-/* The bubble is the card the rest of the site uses, with the mark sitting
-   on its top edge like a face over a fence — that is who is talking. The
-   mark rocks gently while it talks. Every step is a line of reading text:
-   the walk once opened with the site's one sentence set large in the
-   display face, and that step went with its styling. */
-.tour-bubble {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: min(340px, calc(100vw - 24px));
-  padding: 16px 16px 14px;
-  transition: transform .6s var(--ease);
-}
-.tour-face {
-  position: absolute;
-  top: -24px;
-  left: 14px;
-  width: 48px;
-  height: 48px;
-  border-radius: 100px;
-  object-fit: cover;
-  box-shadow: 0 0 0 3px var(--paper), var(--shadow);
-  animation: tour-talk 2.6s ease-in-out infinite;
-}
-@keyframes tour-talk {
-  0%, 100% { transform: rotate(-7deg); }
-  50%      { transform: rotate(7deg) translateY(-2px); }
-}
-.tour-say {
-  margin: 16px 0 0;
-  font-size: 15px;
-  line-height: 1.45;
-}
-.tour-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 12px;
-}
-/* .alt is display: inline-block, which beats the UA sheet's [hidden] — the
-   same trap .rail-btn notes. Skip is hidden on the last step, where Got it
-   is the only way out and a second way out beside it would be a choice
-   between two things that do the same. */
-#tour-skip[hidden] { display: none; }
-.tour-dots {
-  display: flex;
-  gap: 5px;
-  margin-left: auto;
-}
-.tour-dots i {
-  width: 6px;
-  height: 6px;
-  border-radius: 100px;
-  background: var(--hairline);
-}
-.tour-dots i.is-on { background: var(--accent); }
-
-@media (prefers-reduced-motion: reduce) {
-  .tour-ring, .tour-cursor, .tour-bubble { transition: none; }
-  .tour-ring::after, .tour-face, .tour-cursor.is-click svg { animation: none; }
-}
-
 /* ---------- toast ---------- */
 
 .toast {
@@ -4726,8 +4585,9 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
    seven seconds later on a machine where moving the mouse opens it anyway —
    twice the movement for an answer already a hand's width away. introduceRail()
    in assets/app.js asks isNarrow() and returns above 860px, so nothing on this
-   side of the breakpoint is ever .hint-open except a pill the walk is pointing
-   at, which is why .rail-btn.hint-open is still written below and .brand.hint-open
+   side of the breakpoint is ever .hint-open except the radio, which opens
+   its station's name when play is pressed, which is why .rail-btn.hint-open is
+   still written below and .brand.hint-open
    is not.
 
    TWO THINGS THIS DELIBERATELY DOES NOT DO.
@@ -4917,8 +4777,8 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
   /* The sentence the desktop prints beside the mark says what this site is,
      and on a phone it is not in the header at all: there is no room for it
      up here without pushing the find bar and the chips down for the whole
-     visit. A first visit gets it in the welcome card at the foot of the map
-     instead — see .welcome below — and a return visit already knows. */
+     visit. So a phone does without it, and the map says what it is by being
+     looked at. */
   .brand .tagline { display: none; }
 
   /* The mark and the name are laid out against the handle and the sentence,
@@ -5371,60 +5231,6 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
   }
   .filter-bar:not(.is-open) .filter-toggle { gap: 0; padding-left: 12px; padding-right: 12px; }
 
-  /* The welcome card: what this site is, once, to a phone that has never
-     been here — see showWelcome() in assets/app.js. On the shelf above the
-     arrow, so neither covers the other, and across the width less the
-     gutter the find bar keeps. Built like a sheet (rule 6): eyebrow, the
-     line, the one filled action, the way out, and a cross in the corner
-     where a cross is looked for. It rises from below the glass and sinks
-     back, and under reduced motion it simply appears. */
-  .welcome {
-    position: fixed;
-    z-index: 1100;
-    left: 10px;
-    right: 10px;
-    bottom: calc(var(--above-locate) + 4px);
-    padding: 16px 18px 14px;
-    background: var(--paper);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-soft);
-    box-shadow: var(--shadow);
-    color: var(--ink);
-    transform: translateY(calc(100% + var(--above-locate) + 8px));
-    transition: transform .38s var(--ease);
-  }
-  .welcome.is-up { transform: none; }
-  .welcome-eyebrow {
-    margin: 0 36px 8px 0;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .welcome-line {
-    margin: 0 0 14px;
-    font-family: var(--body);
-    font-size: 15px;
-    line-height: 1.45;
-  }
-  .welcome-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
-  .welcome-x {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 36px;
-    height: 36px;
-    display: grid;
-    place-items: center;
-    padding: 0;
-    background: none;
-    border: 0;
-    color: var(--muted);
-    cursor: pointer;
-  }
-  .welcome-x svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
-  @media (prefers-reduced-motion: reduce) {
-    .welcome { transition: none; }
-  }
   .rail {
     top: 0;
     bottom: 0;

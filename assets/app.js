@@ -871,10 +871,6 @@
 
     takeWheel();
 
-    /* A touch on the map is somebody who has stopped reading the welcome
-       card and started using the thing it was about. */
-    map.on('click dragstart', function () { dismissWelcome(false); });
-
     /* Which pins share a dot depends on the zoom and on nothing else; which
        names fit depends on the whole view, so that one follows the pan too.
        Both go through settled(), which is the one thing that knows a move may
@@ -3473,295 +3469,6 @@
     if (back && document.contains(back) && back.focus) back.focus();
   }
 
-  /* ---------- how this works ----------
-   * The introduction, for the asking, and walked rather than read. On
-   * arrival the page says what it is once: the tagline under the mark for a
-   * few seconds, then each pill on the rail wearing its label for four. A
-   * visitor who landed on a place, or was looking at the pins, gets a map
-   * that never introduced itself, and a card of prose over it would be the
-   * introduction as a document. This is it as a person: a big cursor sets
-   * off from the button that was pressed and glides to each thing in turn,
-   * a ring settles round it, and the mouth says what it is from a bubble
-   * beside it. Then the next.
-   *
-   * Every step is about something that can be pressed. The walk used to
-   * open on the mark with the sentence the site rests on — every pin a
-   * place eaten at and approved — but that is the tagline, which the page
-   * has already said under the mark, and a first step that points at
-   * nothing to do and says what was just read is a step that gets skipped,
-   * with the useful ones behind it. So the first thing the cursor
-   * lands on is a pin.
-   *
-   * And one step is about one thing. Surprise me and Ask were once a single
-   * step, ringed round the die and saying both in one breath, and a
-   * sentence introducing two buttons while pointing at one of them was
-   * read as one button with two names. Each gets its own step now, and so
-   * do the things the walk used to leave out — the Places button, the
-   * language switcher, the radio — because a visitor who has just been
-   * told what some of the buttons do is left wondering about the rest.
-   *
-   * Every step points at something real on the page as it stands, which is
-   * why the steps are functions and not co-ordinates: the pin is whichever
-   * pin is nearest the middle of the screen, and the four steps about
-   * things that may not be there — the radio when data/radio.json has no
-   * station, an account and the lists when /api/account never answered, the
-   * discount chip when nothing is on — are left out rather than pointed at
-   * nothing.
-   *
-   * The two steps about the chips press the button first. On a phone the row
-   * is folded behind Filters, and a ring round a shut button under a sentence
-   * about bakeries and bars explained the filters without ever showing one:
-   * the walk named a feature and left it named, which is the one thing a
-   * walk is supposed to be better than a paragraph at. So they carry
-   * drawer: true — the row rolls out under the cursor, the ring leaves the
-   * button and settles on what came out of it, and it rolls shut again on
-   * the way to the next step. Which is why their targets are asked of the
-   * row rather than of the window's width: out, it is the row and the chip
-   * in it; folded away, it is the button that is about to open it.
-   */
-  var TOUR_STEPS = [
-    { key: 'explainPin', at: nearestPin },
-    /* The button, where there is one. Above 860px there is not: the places
-       column is open from the moment the map draws and the button that used
-       to open it has gone, so the step points at the column's own search
-       field instead — the top of the thing the button used to be about. */
-    { key: 'explainList', at: function () {
-        return dom.btnList.offsetParent
-          ? dom.btnList
-          : (dom.list.querySelector('.search-field') || dom.panel);
-      } },
-    { key: 'explainLang', at: function () { return dom.langSwitch; } },
-    /* Right after the language switch now, the way the two stand in the
-       corner — see The radio in README.md for why it left the rail for
-       here. */
-    { key: 'explainRadio', at: function () { return dom.btnRadio; },
-      when: function () { return !dom.btnRadio.hidden; },
-      pills: function () { return [dom.btnRadio]; } },
-    { key: 'explainChips', drawer: true,
-      at: function () { return chipRow() || dom.btnFilters; } },
-    { key: 'explainRandom', at: function () { return dom.btnRandom; },
-      pills: function () { return [dom.btnRandom]; } },
-    /* Guarded like the radio, because this pill is not there until
-       /api/account says the database behind the lists is bound. */
-    { key: 'explainLists', at: function () { return dom.btnLists; },
-      when: function () { return !dom.btnLists.hidden; },
-      pills: function () { return [dom.btnLists]; } },
-    /* The account is the first row behind More, so the step about saving
-       points at More, straight before the step that says what else is in
-       there: one thing a step. Left out where the account has no door. */
-    { key: 'explainSave', at: function () { return dom.btnMore; },
-      when: accountDoor,
-      pills: function () { return [dom.btnMore]; } },
-    { key: 'explainMore', at: function () { return dom.btnMore; },
-      pills: function () { return [dom.btnMore]; } },
-    /* Second in the row, after All: renderFilters draws the discount chip
-       ahead of the types. */
-    { key: 'explainDiscount', when: anyLiveDeal, drawer: true,
-      at: function () {
-        var row = chipRow();
-        return row ? row.children[1] : dom.btnFilters;
-      } }
-  ];
-  /* The steps this open is taking, which of them is up (-1 when the tour is
-     closed), the timer for the cursor's press on arrival, the two timers that
-     place the step again once the thing it points at has finished opening —
-     the drawer rolling out, a rail pill sliding its label out — and the pills
-     holding their label open for the step. */
-  var tour = { steps: [], i: -1, press: null, roll: null, slide: null, lit: [] };
-
-  /* The pin nearest the middle of the screen, or null when none is on it —
-     zoomed out to the whole of Estonia, say — and the bubble then sits in
-     the middle with nothing to point at. */
-  function nearestPin() {
-    var pins = dom.map.querySelectorAll('.leaflet-marker-icon');
-    var cx = window.innerWidth / 2;
-    var cy = window.innerHeight / 2;
-    var best = null;
-    var bestD = Infinity;
-    for (var i = 0; i < pins.length; i++) {
-      var r = pins[i].getBoundingClientRect();
-      if (!r.width || r.right < 0 || r.bottom < 0 ||
-          r.left > window.innerWidth || r.top > window.innerHeight) continue;
-      var dx = r.left + r.width / 2 - cx;
-      var dy = r.top + r.height / 2 - cy;
-      if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = pins[i]; }
-    }
-    return best;
-  }
-
-  function openExplain() {
-    if (!dom.tour || tour.i >= 0) return;
-    /* The question mark pressed with the card still up is Show me around by
-       another door: the card goes, and dismissWelcome comes back here. */
-    if (welcomeOwed && dom.welcome && !dom.welcome.hidden) { dismissWelcome(true); return; }
-    TTBTrack.event('explain_open');
-    /* Over the map, not over a sheet: the walk points at the pins and the
-       rail, and on a phone a sheet covers the one and lays the other along
-       its top edge. And not with the rail mid-cascade, which would be two
-       introductions talking at once.
-
-       On a desktop there is no sheet to be under and the places column does
-       not close, so what it clears is whatever opened in front of the column —
-       a place, or the chat — and the walk then runs over the page as it
-       actually stands, which is what it is for. That is also what leaves the
-       list step something to point at: it points at the column's search field
-       up here, and a walk that had just shut the column would be ringing
-       nothing. */
-    if (dom.panel.classList.contains('is-open')) {
-      if (isNarrow()) closePanel({ band: false });
-      else if (state.view !== 'list') restOnList();
-    }
-    closeHints();
-    tour.steps = [];
-    for (var k = 0; k < TOUR_STEPS.length; k++) {
-      if (!TOUR_STEPS[k].when || TOUR_STEPS[k].when()) tour.steps.push(TOUR_STEPS[k]);
-    }
-    state.lastFocus = document.activeElement;
-    dom.tour.hidden = false;
-    /* The cursor sets off from the button that was pressed, so it is seen
-       to leave somewhere rather than to appear, and the first step is placed
-       without a slide from wherever the last open left the pieces. */
-    dom.tour.classList.add('no-move');
-    /* From Show me around, which is the one button that starts this now:
-       the card is on its way out but still drawn, so the cursor is seen to
-       leave it. */
-    var from = dom.welcomeTour.getBoundingClientRect();
-    moveCursor(from.left + from.width / 2, from.top + from.height / 2);
-    /* The reflow is what makes the jump a jump: without it the browser
-       coalesces the two transforms into one transition. */
-    void dom.tour.offsetWidth;
-    dom.tour.classList.remove('no-move');
-    window.addEventListener('resize', placeTourStep);
-    showStep(0);
-  }
-
-  function closeExplain() {
-    if (tour.i < 0) return;
-    tour.i = -1;
-    litPills([]);
-    tourDrawer(false);
-    clearTimeout(tour.press);
-    dom.tourCursor.classList.remove('is-click');
-    dom.tour.hidden = true;
-    window.removeEventListener('resize', placeTourStep);
-    var back = state.lastFocus;
-    state.lastFocus = null;
-    if (back && document.contains(back) && back.focus) back.focus();
-  }
-
-  /* Past the last step is the way out. */
-  function showStep(i) {
-    if (i >= tour.steps.length) { closeExplain(); return; }
-    tour.i = i;
-    var step = tour.steps[i];
-    litPills(step.pills ? step.pills() : []);
-    dom.tourSay.textContent = t(step.key);
-    var last = i === tour.steps.length - 1;
-    dom.tourNext.textContent = t(last ? 'explainClose' : 'explainNext');
-    dom.tourSkip.hidden = last;
-    clear(dom.tourDots);
-    for (var d = 0; d < tour.steps.length; d++) {
-      dom.tourDots.appendChild(el('i', { className: d === i ? 'is-on' : '' }));
-    }
-    /* Placed first, then the drawer, which is what makes a step about the
-       chips read as a press on a phone: the ring lands on the shut button the
-       cursor is arriving at, and the placing tourDrawer schedules moves it
-       onto the row that came out. */
-    placeTourStep();
-    tourDrawer(step.drawer);
-    dom.tourNext.focus();
-  }
-
-  /* The drawer a step about the chips asks for, and the placing that follows
-     it. Only a phone has one to roll — showChipRow says so — and only a row
-     the walk rolled out is rolled back, so a visitor who arrived with a
-     filter on keeps it through the step that explains it. */
-  function tourDrawer(want) {
-    window.clearTimeout(tour.roll);
-    if (!want) { hideChipRow(); return; }
-    showChipRow();
-    tour.roll = window.setTimeout(placeTourStep, CHIP_ROLL_MS);
-  }
-
-  /* A pill is a disc until it opens its label — on a phone always, and on a
-     desktop whenever the pointer is somewhere else — so the ones a step is
-     about wear theirs for as long as the step is up.
-
-     And the step is placed again when the label has finished sliding, the way
-     tourDrawer places it again after the chip row has rolled. Everything in
-     showStep happens in the same breath, so the ring and the bubble would
-     otherwise be measured against the disc the pill still was at that instant
-     and left sitting round it while the words slid out from underneath —
-     which on a desktop puts the label behind the bubble, and on a phone hangs
-     it out of the side of the ring. Only when something actually opened:
-     a step about a pin or a chip has no slide to wait for. */
-  function litPills(pills) {
-    window.clearTimeout(tour.slide);
-    for (var i = 0; i < tour.lit.length; i++) tour.lit[i].classList.remove('hint-open');
-    tour.lit = pills;
-    for (var j = 0; j < pills.length; j++) pills[j].classList.add('hint-open');
-    if (pills.length) tour.slide = window.setTimeout(placeTourStep, PILL_SLIDE_MS);
-  }
-
-  /* The tip of the cursor goes to x,y. The press on arrival is timed to the
-     slide in the stylesheet, and cancelled if the cursor is sent on again
-     before it lands. */
-  function moveCursor(x, y) {
-    clearTimeout(tour.press);
-    dom.tourCursor.classList.remove('is-click');
-    dom.tourCursor.style.transform = 'translate(' + Math.round(x - 16) + 'px,' + Math.round(y - 6) + 'px)';
-    tour.press = setTimeout(function () { dom.tourCursor.classList.add('is-click'); }, 800);
-  }
-
-  /* Where the three pieces go for the step that is up: the ring round the
-     target, the bubble under it when there is room and over it when there is
-     not, and the cursor's tip a little inside its lower right, where it
-     covers the least of it. On resize as well as on each step, because the
-     target has moved. A target that has gone — the pin scrolled off the
-     screen — leaves the bubble in the middle with no ring. */
-  function placeTourStep() {
-    if (tour.i < 0) return;
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    var target = tour.steps[tour.i].at();
-    var r = target ? target.getBoundingClientRect() : null;
-    if (r && (!r.width || r.bottom < 0 || r.top > vh)) r = null;
-    var ring = dom.tourRing;
-    var bubble = dom.tourBubble;
-    var bw = bubble.offsetWidth;
-    var bh = bubble.offsetHeight;
-    var bx, by;
-    if (r) {
-      /* Clipped to the screen: the chip row runs off the right edge, and the
-         ring should not go with it. */
-      var left = Math.max(r.left, 8);
-      var right = Math.min(r.right, vw - 8);
-      var pad = 5;
-      ring.hidden = false;
-      ring.style.width = Math.round(right - left + pad * 2) + 'px';
-      ring.style.height = Math.round(r.height + pad * 2) + 'px';
-      ring.style.transform = 'translate(' + Math.round(left - pad) + 'px,' + Math.round(r.top - pad) + 'px)';
-      /* Beside, to the right, for a target down the left edge with room
-         for it — a pill on the rail, whose bubble put under it would cover
-         the pills under it. Otherwise under, then over, then wherever it
-         fits. The 34px under is the face's overhang plus a gap. */
-      var beside = right < vw / 3 && right + 16 + bw <= vw - 12;
-      if (beside) by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
-      else if (r.bottom + 34 + bh <= vh - 12) by = r.bottom + 34;
-      else if (r.top - 14 - bh >= 30) by = r.top - 14 - bh;
-      else by = Math.min(Math.max(30, r.top + r.height / 2 - bh / 2), vh - bh - 12);
-      bx = beside ? right + 16 : (left + right) / 2 - bw / 2;
-      bx = Math.min(Math.max(12, bx), vw - bw - 12);
-      moveCursor(Math.min(left + (right - left) * .6, right - 8), r.top + r.height * .62);
-    } else {
-      ring.hidden = true;
-      bx = (vw - bw) / 2;
-      by = (vh - bh) / 2;
-      moveCursor(bx + bw - 44, by - 8);
-    }
-    bubble.style.transform = 'translate(' + Math.round(bx) + 'px,' + Math.round(by) + 'px)';
-  }
-
   /* A hint goes inside the label rather than beside it, so it is part of what
      a screen reader reads when the field takes focus — the rule arrives with
      the question, the way it does for somebody who can see it sitting there,
@@ -4617,11 +4324,6 @@
      held for exactly that, and it is also the moment anything measuring the
      row can trust what it measures. */
   var CHIP_ROLL_MS = 640;
-  /* And how long a rail pill takes to open its label: the .34s the stylesheet
-     slides grid-template-columns over, with a little after it for the frame
-     that lands on the end of it. litPills waits this out before placing the
-     step again. */
-  var PILL_SLIDE_MS = 380;
 
   /* Under 860px the chip row is a drawer. Shut, the bar is one button; open,
      it is the row it always was. And shut is All: the chips are the only
@@ -4631,9 +4333,9 @@
      and no visitor has to wonder what the map is not showing them. It costs
      the filter you had picked, which is why the row does not shut on a stray
      press of the map: the only ways a visitor gets out of it are the button
-     and Escape, and both are deliberate. The introduction and the walk open
-     and shut it too, but through showChipRow/hideChipRow below, which never
-     roll back a row that has a chip pressed in it.
+     and Escape, and both are deliberate. The introduction opens and shuts it
+     too, but through showChipRow/hideChipRow below, which never roll back a
+     row that has a chip pressed in it.
 
      Above 860px none of this applies. The drawer answers a row that does not
      fit, and on a desktop it does fit: the chips stay flat on the map, the
@@ -4692,17 +4394,10 @@
     return state.active.some(function (id) { return FRONT_CHIPS.indexOf(id) === -1; });
   }
 
-  /* The chip row when it is out on the page, and null while it is folded
-     away behind Filters. Above 860px there is no drawer, so it is always
-     out. */
-  function chipRow() {
-    return dom.filters.getBoundingClientRect().width ? dom.filters : null;
-  }
-
   /* Rolling the drawer out to show what is in it, and rolling it back after.
-     The arrival introduction and the walk both do this, for the same reason:
-     on a phone every filter this map has is folded behind one word, and a
-     visitor who never presses that word never learns the map narrows at all.
+     The arrival introduction does this, because on a phone every filter this
+     map has is folded behind one word, and a visitor who never presses that
+     word never learns the map narrows at all.
      Naming the button does not show them what is behind it; opening it does.
 
      Two rules, and both are about taking nothing away. Above 860px there is
@@ -5276,19 +4971,12 @@
   var HINT_KEYS = ['lists', 'random', 'more', 'locate'];
   var hintTimers = {};
 
-  /* Before any of them, the welcome card: see showWelcome below. The pills
-     wait until it has been put away, so there is one introduction at a time.
-
-     The first pill waits a little over a second after that, so the map has
+  /* The first pill waits a little over a second, so the map has
      settled before the buttons start naming themselves. Four pills 300ms
      apart and held for 4.2s each are all open by 2.05s and gone by 6.25s,
      and every pill added puts another 300ms on how long the corner spends
      talking — which is the cost of a fifth, and a real one. */
   var RAIL_IN = 1150;
-  /* Whether this visit owes the welcome card: set on the way in when
-     INTRO_KEY says this browser has never been introduced, and spent the
-     moment the card is put away, however that happens. */
-  var welcomeOwed = false;
   /* An introduction owed to a visitor who has had a sheet standing open ever
      since it was due. Paid off by closePanel. */
   var introPending = false;
@@ -5354,7 +5042,7 @@
 
   /* A pill the stylesheet has put away — the radio's, say, while a sheet
      stands over it — is gone by its width rather than by `hidden`, so it is
-     asked for its width, the way chipRow() asks. */
+     asked for its width. */
   function shownPill(btn) {
     return !!(btn && !btn.hidden && btn.getBoundingClientRect().width);
   }
@@ -5436,15 +5124,6 @@
       introPending = true;
       return;
     }
-    /* The card first, on a first visit. It says what the map is; the pills
-       say what the buttons do, and they wait for it to be put away —
-       dismissWelcome() comes back here. A language switch while it is up
-       lands here too, and finds it already up. */
-    if (welcomeOwed) {
-      introPending = false;
-      showWelcome();
-      return;
-    }
     /* Once, on the way in: after that the answer has either landed or been
        given up on, and a language switch introduces the rail as it stands. */
     if (!accountAnswered && !railWaited) {
@@ -5464,49 +5143,6 @@
        together for most of the time they are up at all. */
     for (var i = 0; i < HINT_KEYS.length; i++) openHint(HINT_KEYS[i], RAIL_IN + i * 300);
     openChipRowHint();
-  }
-
-  /* The welcome card: what this site is, said once, to a phone that has
-     never been here. The header has no room for the sentence the desktop
-     prints beside the mark, and for a while it was said there anyway —
-     for 7.6s on arrival, then for the whole visit, pushing the find bar
-     down — and neither was right: the first went before a stranger looking
-     at the pins had read it, the second spent the top of the map on every
-     visit to tell a regular what they knew. This comes up from the foot of
-     the map, says it, and goes when it is told to, or the moment the map is
-     touched.
-
-     It is the same sentence as the desktop's, the tagline key, and the same
-     INTRO_KEY as the rail: one first visit, one introduction, card then
-     pills. Storage that throws makes every visit a first visit, which is the
-     right failure — one welcome too many rather than none. */
-  function showWelcome() {
-    if (!dom.welcome || !dom.welcome.hidden) return;
-    dom.welcome.hidden = false;
-    /* A frame between unhiding and sliding, or the browser draws it where
-       it ends up and there is nothing to slide. */
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { dom.welcome.classList.add('is-up'); });
-    });
-  }
-
-  /* Put away, by the button, the cross, a touch on the map, or a place
-     opening. Only "Show me around" starts the walk, and the walk opens the
-     labels it wants itself, so it is the one way out that does not go on to
-     the pills. */
-  function dismissWelcome(tour) {
-    /* Only a card that is up: a sheet a link opened on arrival is not the
-       visitor putting away a card they have not been shown yet. */
-    if (!welcomeOwed || !dom.welcome || dom.welcome.hidden) return;
-    welcomeOwed = false;
-    dom.welcome.classList.remove('is-up');
-    setTimeout(function () { dom.welcome.hidden = true; }, reduceMotion() ? 0 : 320);
-    if (tour) {
-      storeSet(INTRO_KEY, '1');
-      openExplain();
-    } else {
-      introduceRail();
-    }
   }
 
   /* --------------------------------------------------- the corner on approach
@@ -6894,10 +6530,6 @@
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
     dom.btnList.setAttribute('aria-expanded', 'true');
-    /* A place or the list opening is somebody using the map, which is what
-       the card was waiting for; the pills it hands on to wait for the sheet
-       to go, the way they always have. */
-    dismissWelcome(false);
     /* The rail turns into a row along the top of the sheet here, and a pill
        still wearing its label would push the buttons after it off the side of
        the screen. Whatever it was saying, it has been read. */
@@ -6949,13 +6581,9 @@
      on the band, with the list's name and the switch to its own page on it.
      Being rid of it is leaving the list — any chip, or the name in the
      corner — which hands back a map nothing is narrowing and a panel that
-     closes like any other.
-
-     `band: false` is the one way past that, and the walk is the one caller:
-     it is about to point at the pins and the rail, and it asks for the map
-     with nothing over it. A desktop never takes this road at all — the panel
-     there is a column that slides off the side, with no band to sit on and a
-     whole map still showing behind it. */
+     closes like any other. A desktop never takes this road at all — the
+     panel there is a column that slides off the side, with no band to sit on
+     and a whole map still showing behind it. */
   function closePanel(opts) {
     if (!dom.panel.classList.contains('is-open')) return;
     /* A place a list's own row opened goes back to the list, at its half
@@ -6964,35 +6592,27 @@
        is going back to where they were rather than down to the band. Back
        reaches here too, through wireHistory(). See openFromRow(). */
     var row = state.fromRow;
-    if (row && state.list && state.view === 'detail' && state.selected === row &&
-        (!opts || opts.band !== false)) {
+    if (row && state.list && state.view === 'detail' && state.selected === row) {
       state.fromRow = null;
       state.selected = null;
       lastReelKey = null;
       standOn(byId(row));
       return;
     }
-    if (state.list && isNarrow() && (!opts || opts.band !== false)) { restOnBand(); return; }
+    if (state.list && isNarrow()) { restOnBand(); return; }
     /* Above 860px the places column does not close, so a cross is never about
        the panel — it is about whatever opened in front of the list, and what
        it hands back is the list. The same end restOnBand() reaches on a phone
        sitting on a list's name, by the same reasoning: a close wants somewhere
-       to land, and here there always is somewhere.
-
-       `band: false` is still the way past it, and the walk is still the one
-       caller — but only from a phone now. Up here it asks for this road
-       instead: it wants whatever opened in front of the column gone and the
-       column itself left standing, because the step about the places points
-       at that column's search field. See openExplain. */
-    if (listIsFixed() && (!opts || opts.band !== false)) { restOnList(); return; }
+       to land, and here there always is somewhere. */
+    if (listIsFixed()) { restOnList(); return; }
     /* A place opened out of an answer closes back into the chat, the way
        one opened under a list lands on the band: the conversation is what
        the visitor is in the middle of, and the map stays narrowed to its
        answer. It used to close to the map with the panel shut, and from a
        phone that read as the chat having gone — the thread was there behind
-       the bubble, but nothing said so. The walk's close (`band: false`)
-       still shuts everything, since it wants the map bare. */
-    if (state.view === 'detail' && state.answer && (!opts || opts.band !== false)) {
+       the bubble, but nothing said so. */
+    if (state.view === 'detail' && state.answer) {
       lastReelKey = null;
       openAsk({ keyboard: false });
       if (!opts || opts.history !== false) syncUrl();
@@ -12305,28 +11925,6 @@
       TTBTrack.event('where_close');
       closeWhere();
     });
-    if (dom.welcome) {
-      $('welcome-ok').addEventListener('click', function () { dismissWelcome(false); });
-      $('welcome-x').addEventListener('click', function () { dismissWelcome(false); });
-      dom.welcomeTour.addEventListener('click', function () { dismissWelcome(true); });
-    }
-    /* Reported with the step being left, one-based, so the report reads as
-       how far into the tour people get before Next stops being pressed. */
-    var tourNext = function () {
-      TTBTrack.event('explain_step', { step: tour.i + 1 });
-      showStep(tour.i + 1);
-    };
-    dom.tourNext.addEventListener('click', tourNext);
-    dom.tourSkip.addEventListener('click', function () {
-      TTBTrack.event('explain_close', { step: tour.i + 1 });
-      closeExplain();
-    });
-    /* A tap anywhere that is not the bubble is Next. The layer is there so
-       the thing being pointed at cannot be pressed mid-sentence, not to make
-       somebody find a button the size of a word on a phone. */
-    dom.tour.addEventListener('click', function (ev) {
-      if (ev.target === dom.tour) tourNext();
-    });
     wireSheet();
     wireKeyboard();
 
@@ -12375,7 +11973,6 @@
         if (!dom.accountScrim.hidden) { closeAccount(); return; }
         if (!dom.moreScrim.hidden) { closeMore(); return; }
         if (!dom.whereScrim.hidden) { closeWhere(); return; }
-        if (tour.i >= 0) { closeExplain(); return; }
         if (!dom.lightbox.hidden) { closeLightbox(); return; }
         if (dom.langSwitch.classList.contains('is-open')) { closeLangMenu(); return; }
         /* The find bar goes ahead of the filter drawer, and it is the only
@@ -12883,16 +12480,6 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      welcome: $('welcome'),
-      welcomeTour: $('welcome-tour'),
-      tour: $('tour'),
-      tourRing: $('tour-ring'),
-      tourCursor: $('tour-cursor'),
-      tourBubble: $('tour-bubble'),
-      tourSay: $('tour-say'),
-      tourNext: $('tour-next'),
-      tourSkip: $('tour-skip'),
-      tourDots: $('tour-dots'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
@@ -13170,7 +12757,7 @@
          the deep link has had its say: a link straight to a place opens the
          sheet, and the introduction is owed to the map behind it rather than
          spent on a screen the rail is only a row along the top of. */
-      if (!storeGet(INTRO_KEY)) { welcomeOwed = true; introduceRail(); }
+      if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 
