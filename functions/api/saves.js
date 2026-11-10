@@ -46,7 +46,8 @@
 
 import {
   json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
-  addedByIds, isAdded, RECOUNT_SQL, countsKey, weakTag, withNotModified
+  addedByIds, isAdded, RECOUNT_SQL, countsKey, weakTag, withNotModified,
+  forgetFingerprints
 } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
@@ -62,6 +63,10 @@ import { countUse } from './_visitors.js';
  * a table of friends and the handful of identical phones that will still
  * collide, while the sixth attempt from one fingerprint on one place is the
  * clear-your-storage-and-do-it-again loop this is here to stop.
+ *
+ * Five a month, strictly: a save's fingerprint is emptied after thirty days
+ * by forgetFingerprints() in ./_lib.js, so an older save no longer counts
+ * against the network that made it.
  */
 const PER_PLACE_CAP = 5;
 
@@ -313,6 +318,9 @@ export async function onRequestPost(context) {
         .bind(place, owner, ownerKind, hash, Date.now()),
       env.DB.prepare(recount).bind(place, place)
     ]);
+    /* A fingerprint is kept only as long as a cap reads it — forgetFingerprints()
+       in ./_lib.js, which says how long that is for each table. */
+    context.waitUntil(forgetFingerprints(env));
   } else {
     await env.DB.batch([
       env.DB

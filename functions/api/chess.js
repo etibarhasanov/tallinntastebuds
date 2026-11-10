@@ -139,7 +139,8 @@
  */
 
 import {
-  json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp
+  json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp,
+  forgetFingerprints
 } from './_lib.js';
 import { adminIds } from './_admin.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
@@ -746,6 +747,10 @@ export async function onRequestPost(context) {
   const who = await whoIs(request, env, body.client, body.duel);
   const act = Object.hasOwn(ACTIONS, body.action) ? ACTIONS[body.action] : null;
   if (!act) return json({ error: 'action' }, 400);
+  /* A note files a fingerprint, so a note is when the old ones are let go —
+     forgetFingerprints() in ./_lib.js. Here because an action is handed env
+     and not the context that can wait. */
+  if (act === note) context.waitUntil(forgetFingerprints(env));
   return countUse(context, 'chess', body.action, act(env, who, body, request), who.user, who.client);
 }
 
