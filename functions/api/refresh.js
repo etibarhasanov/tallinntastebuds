@@ -13,13 +13,19 @@
  * most of the free thousand unspent and most of the directory never asked
  * about. This is the other reason: through the second half of each UTC day,
  * whatever the opens and the top hundred left of the thirty-two goes to the
- * oldest rows — refreshFill() there says which rows and in what order. The
- * route is only the door; the clock is .github/workflows/google-refresh.yml,
- * which POSTs here several times an afternoon and evening, since Pages
- * Functions cannot run anything by themselves. Before SPEND_ALL_FROM_HOUR a
- * knock keeps KEEP_FOR_OPENS of the day back for the evening's opens and
- * answers how many it kept; from then on it takes everything left. Why it is
- * several knocks and not one is the comment above FILL_FROM_HOUR.
+ * oldest rows — refreshFill() there says which rows and in what order.
+ *
+ * This route is the fill's second door, and no longer its clock. The clock is
+ * the site's own visitors: fillOnVisit() in ./_refresh.js rides on the report
+ * every opened page sends to ./stats.js and spends the day a few rows at a
+ * time, and WHY A VISIT IS THE CLOCK there says what GitHub's scheduler did
+ * in the five days it was trusted with the job. .github/workflows/
+ * google-refresh.yml still POSTs here three times an afternoon and evening,
+ * for the day nobody comes: when it arrives on time it finds little or
+ * nothing left, and when it arrives late or not at all nothing depended on
+ * it. Before SPEND_ALL_FROM_HOUR a knock keeps KEEP_FOR_OPENS of the day back
+ * for the evening's opens and answers how many it kept; from then on it takes
+ * everything left.
  *
  * WHO MAY CALL IT
  *

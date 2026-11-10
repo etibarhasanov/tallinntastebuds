@@ -1,6 +1,11 @@
 name: google-refresh
 
-# The clock behind the Google refresh's daily fill.
+# The backstop behind the Google refresh's daily fill. It was the fill's only
+# clock for its first five days, in which the fill did not write one row —
+# the last paragraph here is why — so the site's own visitors are the clock
+# now: fillOnVisit() in functions/api/_refresh.js spends the day a few rows
+# at a time off the report every opened page sends. This still knocks, for
+# the day nobody comes after noon UTC, and nothing depends on it arriving.
 #
 # functions/api/_refresh.js asks Google about a place when somebody opens it,
 # inside a budget of thirty-two calls a day — Google's free thousand a month,

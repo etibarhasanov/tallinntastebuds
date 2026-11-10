@@ -165,8 +165,9 @@ import { countFlows } from './_flows.js';
 /* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
    ./_visitors.js. */
 import { adminUser } from './_admin.js';
-/* A Google place opened is also the moment its numbers are worth checking. */
-import { refreshOnOpen } from './_refresh.js';
+/* A Google place opened is also the moment its numbers are worth checking,
+   and any page opened in the afternoon is the clock the day's fill runs by. */
+import { refreshOnOpen, fillOnVisit } from './_refresh.js';
 
 /* The seven kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the ranking in ./admin/stats.js
@@ -271,6 +272,15 @@ export async function onRequestPost(context) {
      and the page is not listening anyway. */
   if (!env.DB) return json({ ok: false }, 200);
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
+
+  /* The day's leftover Google calls, spent on the oldest rows a few at a
+     time. Every page reports here, which makes this the one thing on the
+     site that happens all afternoon — WHY A VISIT IS THE CLOCK in
+     ./_refresh.js. After the answer, like the refresh at the foot; nearly
+     every report returns on a comparison without a query, and before
+     FILL_FROM_HOUR UTC all of them do. Ahead of the owner's exit on
+     purpose: this counts nothing, so whose visit it was does not matter. */
+  context.waitUntil(fillOnVisit(env, Date.now()));
 
   /* The owner signed in is not a visitor, and nothing they do is counted —
      not a page, not a press, not a place, chip, pill or list opened, not a
