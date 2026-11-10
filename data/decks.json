@@ -37773,6 +37773,249 @@
       ]
     },
     {
+      "id": "street-names",
+      "added": "2026-11-10",
+      "name": {
+        "en": "Why the street sign says Laulupeo",
+        "az": "Küçə lövhəsində niyə Laulupeo yazılıb",
+        "ru": "Почему на табличке написано Laulupeo"
+      },
+      "why": {
+        "en": "Laulupeo, Lasnamäe, Mustamäe: why Tallinn’s streets and districts are named in the second case, and the word to look up behind each.",
+        "az": "Laulupeo, Lasnamäe, Mustamäe: Tallinnin küçə və rayon adları niyə yiyəlik haldadır və lüğətdə hansı sözü axtarmaq lazımdır.",
+        "ru": "Laulupeo, Lasnamäe, Mustamäe: почему улицы и районы Таллинна названы в родительном падеже и какое слово искать в словаре."
+      },
+      "taste": "laulupidu · Laulupeo tänav",
+      "body": [
+        {
+          "say": {
+            "en": "Walk through Kadriorg and a sign says *Laulupeo tänav*. Look up *laulupeo* and the dictionary has nothing, because the word is *laulupidu*, song festival. The street is not called Song Festival: it is the street *of* the song festival, and *of* is the second case, omastav, the middle one of the three forms on the back of every card.",
+            "az": "Kadriorqda gəzirsiniz, lövhədə *Laulupeo tänav* yazılıb. Lüğətdə *laulupeo* axtarsanız, tapmayacaqsınız, çünki söz *laulupidu*, mahnı bayramıdır. Küçənin adı Mahnı bayramı deyil, mahnı bayramının küçəsidir. Bu, eston dilinin ikinci halı, omastav, yəni bizim yiyəlik haldır: hər kartın arxasındakı üç formanın ortancılı.",
+            "ru": "Идёте по Кадриоргу, а на табличке *Laulupeo tänav*. В словаре *laulupeo* нет, потому что слово на самом деле *laulupidu*, певческий праздник. Улица называется не «Певческий праздник», а улица певческого праздника, и это второй падеж, omastav, наш родительный: средняя из трёх форм на обороте каждой карточки."
+          }
+        },
+        {
+          "say": {
+            "en": "English puts two nouns side by side, Song Festival Street, and lets the order say which belongs to which. Estonian says it out loud: the first noun goes into the omastav, and the word for what it is comes after it, unchanged. *Tänav* is a street, *puiestee* an avenue, *maantee* a road, *väljak* a square.",
+            "az": "Azərbaycan dilində də küçə adları belə qurulur, sadəcə şəkilçi o biri sözə gəlir: Nizami küçəsi, Azadlıq meydanı. Biz ikinci sözü dəyişirik, küçə olur küçəsi. Eston dili isə birinci sözü yiyəlik hala qoyur, ikincisi dəyişmir: *Vabaduse väljak*, Azadlıq meydanı. *Tänav* küçə, *puiestee* bulvar, *maantee* şosse, *väljak* meydandır.",
+            "ru": "По-русски так тоже говорят: улица Пушкина, проспект Мира, площадь Свободы. Разница в порядке слов. Русский ставит родительный после, эстонский перед: *Vabaduse väljak*, площадь Свободы, буквально «Свободы площадь». А второе слово не меняется: *tänav* улица, *puiestee* бульвар, *maantee* шоссе, *väljak* площадь."
+          }
+        },
+        {
+          "head": {
+            "en": "Streets: the omastav, then tänav",
+            "az": "Küçələr: əvvəl omastav, sonra tänav",
+            "ru": "Улицы: сначала omastav, потом tänav"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "the word",
+                "az": "söz",
+                "ru": "слово"
+              },
+              {
+                "en": "omastav",
+                "az": "omastav",
+                "ru": "omastav"
+              },
+              {
+                "en": "on the sign",
+                "az": "lövhədə",
+                "ru": "на табличке"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "laulupidu",
+                  "laulupeo",
+                  "Laulupeo tänav"
+                ],
+                "means": {
+                  "en": "song festival",
+                  "az": "mahnı bayramı",
+                  "ru": "певческий праздник"
+                }
+              },
+              {
+                "et": [
+                  "meri",
+                  "mere",
+                  "Mere puiestee"
+                ],
+                "means": {
+                  "en": "the sea",
+                  "az": "dəniz",
+                  "ru": "море"
+                }
+              },
+              {
+                "et": [
+                  "vabadus",
+                  "vabaduse",
+                  "Vabaduse väljak"
+                ],
+                "means": {
+                  "en": "freedom",
+                  "az": "azadlıq",
+                  "ru": "свобода"
+                }
+              },
+              {
+                "et": [
+                  "Pärnu",
+                  "Pärnu",
+                  "Pärnu maantee"
+                ],
+                "means": {
+                  "en": "the town of Pärnu, and the road to it",
+                  "az": "Pärnu şəhəri və ora gedən yol",
+                  "ru": "город Пярну и дорога туда"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "Some names keep their shape: *Pärnu maantee* is the road to Pärnu, and Pärnu is the same in both forms. Others change, and the commonest change is a letter dropping out of the middle. *Pidu* loses its *d* and becomes *peo*; *mägi* loses its *g* and becomes *mäe*. It is the same thing that turns *leib* into *leiva* on the cards, and the lesson on why a noun has three forms says why it happens.",
+            "az": "Bəzi adlar dəyişmir: *Pärnu maantee* Pärnuya gedən yoldur və Pärnu hər iki formada eynidir. Başqaları dəyişir, ən çox da sözün ortasından bir hərf düşür. *Pidu* öz *d* hərfini itirib *peo* olur, *mägi* öz *g* hərfini itirib *mäe* olur. Kartlarda *leib* sözünü *leiva* edən də elə budur, isimin niyə üç forması olduğu haqqındakı dərs bunun səbəbini izah edir.",
+            "ru": "Некоторые названия не меняются: *Pärnu maantee*, Пярнуское шоссе, это дорога на Пярну, и Pärnu одинаково в обеих формах. Другие меняются, и чаще всего из середины слова выпадает буква. *Pidu* теряет *d* и становится *peo*, *mägi* теряет *g* и становится *mäe*. То же самое превращает *leib* в *leiva* на карточках, а урок о том, почему у существительного три формы, объясняет, отчего так."
+          }
+        },
+        {
+          "head": {
+            "en": "Districts: a hill and a valley",
+            "az": "Rayonlar: təpə və vadi",
+            "ru": "Районы: гора и долина"
+          }
+        },
+        {
+          "table": {
+            "heads": [
+              {
+                "en": "the word",
+                "az": "söz",
+                "ru": "слово"
+              },
+              {
+                "en": "omastav",
+                "az": "omastav",
+                "ru": "omastav"
+              },
+              {
+                "en": "in it",
+                "az": "orada",
+                "ru": "там"
+              }
+            ],
+            "rows": [
+              {
+                "et": [
+                  "Lasnamägi",
+                  "Lasnamäe",
+                  "Lasnamäel"
+                ],
+                "means": {
+                  "en": "Lasnamägi, the hill",
+                  "az": "Lasnamägi təpəsi",
+                  "ru": "холм Ласнамяги"
+                }
+              },
+              {
+                "et": [
+                  "Mustamägi",
+                  "Mustamäe",
+                  "Mustamäel"
+                ],
+                "means": {
+                  "en": "the black hill",
+                  "az": "qara təpə",
+                  "ru": "чёрный холм"
+                }
+              },
+              {
+                "et": [
+                  "Õismägi",
+                  "Õismäe",
+                  "Õismäel"
+                ],
+                "means": {
+                  "en": "the blossom hill",
+                  "az": "çiçək təpəsi",
+                  "ru": "цветущий холм"
+                }
+              },
+              {
+                "et": [
+                  "Kadriorg",
+                  "Kadrioru",
+                  "Kadriorus"
+                ],
+                "means": {
+                  "en": "Catherine’s valley",
+                  "az": "Yekaterina vadisi",
+                  "ru": "долина Екатерины"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": {
+            "en": "The districts work the same way. *Mustamäe* is short for *Mustamäe linnaosa*, the district of Mustamägi, the black hill, and *Lasnamäe* is the district of Lasnamägi. *Kadriorg*, Catherine’s valley, keeps its own name, but anything of it is *Kadrioru*: *Kadrioru park*, *Kadrioru loss*.",
+            "az": "Rayon adları da eyni cürdür. *Mustamäe*, *Mustamäe linnaosa* sözünün qısaltmasıdır: Mustamägi rayonu, yəni Qara təpənin rayonu. *Lasnamäe* da Lasnamägi rayonudur. *Kadriorg*, Yekaterina vadisi, öz adını saxlayır, amma ona aid hər şey *Kadrioru* olur: *Kadrioru park*, Kadriorq parkı, *Kadrioru loss*, Kadriorq sarayı.",
+            "ru": "Районы устроены так же. *Mustamäe* значит *Mustamäe linnaosa*, район Мустамяги, Чёрного холма, а *Lasnamäe* это район Ласнамяги. Поэтому и по-русски говорят Мустамяэ и Ласнамяэ: русское название района и есть эстонский родительный падеж. *Kadriorg*, долина Екатерины, сохраняет своё имя, но всё, что к нему относится, будет *Kadrioru*: *Kadrioru park*, *Kadrioru loss*, Кадриоргский дворец."
+          }
+        },
+        {
+          "say": {
+            "en": "And because the omastav is the form the other cases are built on, it is the one an ending goes onto: *Lasnamäe* and *-l* is *Lasnamäel*, in Lasnamäe. A hill takes *-l*, on it; a valley takes *-s*, in it. So it is *Mustamäel*, but *Kadriorus*.",
+            "az": "Omastav başqa halların üstündə qurulduğu formadır, ona görə şəkilçi də ona əlavə olunur: *Lasnamäe* və *-l* birlikdə *Lasnamäel* olur, yəni Lasnamäedə. Bizdə hər yer üçün bir -da, -də var, eston dilində isə iki şəkilçi: təpənin üstündə *-l*, vadinin içində *-s*. Ona görə *Mustamäel*, amma *Kadriorus*.",
+            "ru": "Omastav это форма, от которой строятся остальные падежи, поэтому окончание прибавляется к нему: *Lasnamäe* и *-l* дают *Lasnamäel*, в Ласнамяэ. Где русский выбирает между «в» и «на», эстонский выбирает окончание: холм берёт *-l*, на нём, долина *-s*, в ней. Поэтому *Mustamäel*, но *Kadriorus*."
+          }
+        },
+        {
+          "examples": [
+            {
+              "et": "Ma elan Lasnamäel.",
+              "en": "I live in Lasnamäe.",
+              "az": "Lasnamäedə yaşayıram.",
+              "ru": "Я живу в Ласнамяэ."
+            },
+            {
+              "et": "Buss sõidab Mustamäele.",
+              "en": "The bus goes to Mustamäe.",
+              "az": "Avtobus Mustamäeyə gedir.",
+              "ru": "Автобус идёт в Мустамяэ."
+            },
+            {
+              "et": "Restoran on Laulupeo tänaval.",
+              "en": "The restaurant is on Laulupeo Street.",
+              "az": "Restoran Laulupeo küçəsindədir.",
+              "ru": "Ресторан на улице Лаулупео."
+            },
+            {
+              "et": "Lähme Kadrioru parki.",
+              "en": "Let’s go to Kadriorg Park.",
+              "az": "Gəlin Kadriorq parkına gedək.",
+              "ru": "Пойдём в Кадриоргский парк."
+            }
+          ]
+        },
+        {
+          "say": {
+            "en": "Two kinds of name are not in the omastav. In the Old Town some streets are named by an adjective, *Pikk tänav*, Long Street, and *Lai tänav*, Wide Street, and an adjective stands in the same case as the noun it describes. Everything else on the map is the omastav, so to find the word behind a sign, undo it: *-mäe* is *mägi*, *-peo* is *pidu*, *-oru* is *org*.",
+            "az": "İki cür ad yiyəlik halda deyil. Köhnə şəhərdə bəzi küçələrin adı sifətdir: *Pikk tänav*, Uzun küçə, *Lai tänav*, Enli küçə. Sifət isə aid olduğu isimlə eyni haldadır. Xəritədəki qalan hər şey omastavdır, ona görə lövhənin arxasındakı sözü tapmaq üçün onu geri çevirin: *-mäe* *mägi*, *-peo* *pidu*, *-oru* *org* olur.",
+            "ru": "Два вида названий стоят не в родительном. В Старом городе некоторые улицы названы прилагательным: *Pikk tänav*, Длинная улица, *Lai tänav*, Широкая улица. Как в «Тверской улице», прилагательное стоит в том же падеже, что и улица. Всё остальное на карте в omastav, поэтому, чтобы найти слово за табличкой, отмените его: *-mäe* это *mägi*, *-peo* это *pidu*, *-oru* это *org*."
+          }
+        }
+      ]
+    },
+    {
       "id": "cases",
       "added": "2026-10-06",
       "name": {

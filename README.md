@@ -9024,9 +9024,9 @@ two words under it — *Knew it*, and *Show me again*. Over the card, how the
 sitting is going; under it, while the front is up, the first letters of the
 answer for anybody who wants them; and on the decks page, how many words you
 know in all. And, in a part of their own behind the menu at the top of that page — **The
-menu, and Start** below — five lessons of
-grammar about why the words on the cards come in threes, what grows out of them
-and how an adjective compares, the last with a deck of comparatives after it —
+menu, and Start** below — six lessons of
+grammar about why the words on the cards come in threes, what grows out of them,
+why Tallinn's street signs wear the second of them and how an adjective compares, the last with a deck of comparatives after it —
 **Grammar, which is
 read rather than turned over** below — then the fourteen cases taught one at a
 time, each lesson followed by a deck of its own — **The cases, one at a time** —
@@ -10304,7 +10304,7 @@ somebody who came for a song scrolled past *Hello and goodbye* to find it.
 Turning a card over, reading a lesson, listening to a song and following a
 conversation are four different things to do, and the menu says so before
 anything is scrolled. Words is the decks by stage, with the two gathered decks
-on top and your own under them; Grammar is the five lessons and then the
+on top and your own under them; Grammar is the six lessons and then the
 cases, each followed by its deck; Songs is each song with the deck of its
 words under it; Conversations is a tile per sheet. Each pill in the menu is as
 wide as its word, and where the five do not fit across the card —
@@ -10894,11 +10894,13 @@ the whole case system hangs off those two forms and the words that change most
 are the commonest.
 
 So the shelf carries a heading of its own, **Grammar**, between *First words*
-and *At a restaurant*, and under it five tiles that open to prose rather than
-to a run: **Why a noun has three forms**, **The fourteen cases**, **Why a verb
-has three forms**, **Every tense of a verb** and **Bigger, biggest, and the
-opposite** — each pair the forms first and then what grows out of them, and
-the fifth the word that stands in front of a noun.
+and *At a restaurant*, and under it six tiles that open to prose rather than
+to a run: **Why a noun has three forms**, **Why the street sign says
+Laulupeo**, **The fourteen cases**, **Why a verb has three forms**, **Every
+tense of a verb** and **Bigger, biggest, and the opposite** — each pair the
+forms first and then what grows out of them, the street names the second form
+read off the map of Tallinn, and the last the word that stands in front of a
+noun.
 Each is a page of a few hundred words in the language the cards are being read
 in — the three the decks speak, not the eleven the site does — with a paradigm or
 two set in the mono the card prints its forms in, a few sentences under each
@@ -10915,7 +10917,7 @@ card wears the forms it explains. And it holds nothing back: the lessons are a
 file, prose, open signed out and behind no gate — a lesson never stands between
 anybody and a deck, and reading one does not spend the free word. It could not
 be the other way round: **Which decks are open** holds a *deck* back so that a
-beginner has somewhere to start, and five tiles under a heading called Grammar
+beginner has somewhere to start, and six tiles under a heading called Grammar
 are not that problem.
 
 **Each language argues from its own grammar.** The three texts are not
@@ -11101,8 +11103,8 @@ a lesson carries `heading: "cases"` to be drawn under that heading, and
 nothing to stay under Grammar — the validator holds it to that one value —
 and `deck` says only what follows the lesson. `underCases()` and `followed()`
 in `assets/flashcard.js` are the two tests, and `deckList()` in
-`functions/flashcard.js` splits the crawler's lists the same way. Four of the
-five lessons under **Grammar** carry no `deck` and are drawn where they always
+`functions/flashcard.js` splits the crawler's lists the same way. Five of the
+six lessons under **Grammar** carry no `deck` and are drawn where they always
 were; the fifth has its deck drawn straight under it, still under Grammar.
 
 **Got it goes on into the cards.** On a lesson with a deck the button reads
@@ -15918,7 +15920,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
 data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
-                           headings, the songs' and the cases', ten lessons of
+                           headings, the songs' and the cases', eleven lessons of
                            grammar, four songs, thirty-eight conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
