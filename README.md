@@ -12759,6 +12759,19 @@ lists, profile, decks and sign-in, holds the username for
 thirty days, and does *not* take posted feedback or chess games, and the page
 says exactly that and that Instagram is where to ask for the rest.
 
+**It speaks for the iPhone app as well, in a section of its own.** The app
+(`etibarhasanov/TallinnTasteBudsApp`) opens this page from its last tab and
+gives the App Store this address as its policy, and most of the page was
+already true of it, since an account there is an account here. **In the
+iPhone app** says what is not: that the app loads no analytics, that Apple
+draws its map where CARTO draws this one, that a position is sent here when
+somebody asks for the way to a place and what `/api/route` passes on, that
+Apple is a third way in and what is kept of it, what stays on the phone,
+and where the app's own Delete account is. It is held to the code the way
+the rest is, and the list it was checked against is `docs/PRIVACY.md` in
+the app's repository — a change to what the app sends changes that file
+and this section together.
+
 **The words are in `data/privacy.json`, not `data/ui.json`.** It is prose,
 like a post, and `ui.json` is fetched by the map one language at a time on
 every visit; three thousand words of policy in it would ride along on every
