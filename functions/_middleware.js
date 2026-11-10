@@ -85,6 +85,14 @@
  * and /google, are a 404 to everybody.
  *
  * ---------------------------------------------------------------------------
+ * AND THE REPOSITORY'S OWN FILES, WHICH ARE NOT THE SITE
+ *
+ * There is no build, so the deployment is the repository: README.md, the
+ * .claude and .github directories, db/, exports/ and tools/ are files of it.
+ * The NOT THE SITE block answers them the way it answers an address that was
+ * never there, and says why.
+ *
+ * ---------------------------------------------------------------------------
  * AND EVERY ANSWER LEAVES WITH THE SECURITY HEADERS ON IT
  *
  * Whichever branch below gave it — a page, a JSON answer, a 404, a redirect,
@@ -117,6 +125,54 @@ const OWNER_API = '/api/admin/';
    so rather than be handed whatever a static file of that name might one day
    be. */
 const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
+
+/* ---------------------------------------------------------- NOT THE SITE */
+/* The build output directory is the repository root, because there is no
+   build — so every file in the repository is a file of the deployment, and
+   until this block every one of them was served at the live address:
+   README.md, CLAUDE.md, wrangler.toml, .claude/settings.json, the workflows,
+   db/schema.sql, the Google export as a CSV and as SQL, the tools. The
+   repository is public on GitHub as well, so none of that told anybody
+   anything new on the day it was closed. What it did mean is that a file
+   committed by mistake — a `.dev.vars` with the salt in it, which went
+   unignored for a day once — would have been a download on the live domain
+   within the minute of the push, and that the Google export, which the
+   Places terms do not let us redistribute, was one.
+
+   So the files the repository keeps for its own sake answer what an address
+   that was never there answers, the same 404.html with the same 404. Three
+   kinds:
+
+     - a path with a segment starting with a dot — .claude, .github, .git,
+       .gitignore, .dev.vars — except /.well-known/, which is the one dot
+       directory the web means something by;
+     - the directories that are inputs to the generators and nothing a page
+       reads: db/, exports/, tools/;
+     - Markdown, which is documentation, and wrangler.toml, which is
+       configuration.
+
+   This is a list of what is not the site, rather than a list of what is,
+   because a new page or a new data file should work the moment it is
+   committed without anybody remembering to let it out. The cost is the
+   other way round: a new directory of the repository's own is public until
+   it joins DOCS_ONLY.
+
+   It only reaches what `_routes.json` sends here. /assets/, /photos/,
+   /stories/, /clips/ and /data/ never come through a Function, so the small
+   README in each of those is still served; they are notes about the folder
+   and nothing more. And a Function reading a file through env.ASSETS goes
+   around this block entirely, which is why none of them needed changing.
+   flows/ is not on the list: /admin/flows draws its diagrams from there. */
+const DOCS_ONLY = ['/db/', '/exports/', '/tools/'];
+const CONFIG_ONLY = new Set(['/wrangler.toml']);
+
+function notTheSite(lower) {
+  if (/(^|\/)\.(?!well-known(\/|$))/.test(lower)) return true;
+  if (lower.endsWith('.md') || CONFIG_ONLY.has(lower)) return true;
+  const dir = lower + '/';
+  return DOCS_ONLY.some(function (prefix) { return dir.startsWith(prefix); });
+}
+/* ------------------------------------------------------ end NOT THE SITE */
 
 /* The answer any other unknown address gets — 404.html with a 404 — so an
    address under /admin/ looks exactly like one that was never there and says
@@ -205,6 +261,7 @@ async function route(context) {
   const bare = path.length > 1 ? path.replace(/\/+$/, '') : path;
   const lower = bare.toLowerCase();
   if (RETIRED.has(lower)) return notFound(context);
+  if (notTheSite(lower)) return notFound(context);
 
   if (lower.startsWith(OWNER_API)) {
     if (!(await adminUser(context.request, context.env))) {
