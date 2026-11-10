@@ -7701,6 +7701,21 @@ owner in the middle of writing it and is never cached for them; the copy a
 colo keeps of a public list is of the page a stranger gets, for a minute, and
 **Kept in the colo** under **Getting found** says how.
 
+Five minutes in the Function as well as in the browser, and the Function's is
+the one that protects anything. `max-age` is advice to the browser:
+Cloudflare does not keep a Function's answer at the edge for it, so until
+November 2026 every request — and every `?q=`, whatever word it carried — read
+the whole of `google_venues` again, 1,127 rows read for one answer. D1's free
+plan reads five million rows a day for the whole site, so about four and a
+half thousand asks of this one route, from anybody with a loop, would have
+spent the day and failed every read after it: the saves, the lists, signing
+in. The merged roll is now kept in the isolate under `ROLL_TTL`, the way
+`ask.js` and `mcp.js` already kept their copies of the same table, and the
+table is read about once per isolate per five minutes however the route is
+asked. Five hundred random `?q=` against the export read it twice rather than
+five hundred times. Only a roll with Google's half in it is kept, so a
+database that failed once is asked again on the next request.
+
 A Google row also carries `kitchens` — what Google says it cooks, in the
 directory's cuisine ids — and `category`, Google's own word for what the
 place is, and a row of mine carries the `kitchens` of the Google row `map_id`
