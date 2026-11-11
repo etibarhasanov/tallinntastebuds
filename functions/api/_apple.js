@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — Sign in with Apple, for the iPhone app.
+ * Tallinn Tastebuds — Sign in with Apple, for the two iPhone apps.
  *
  * WHY THIS IS A SECOND FILE AND NOT A SECOND HALF OF ./_google.js
  *
@@ -24,10 +24,10 @@
  *   the signature   RS256 under one of Apple's keys, by the `kid` in the
  *                   header: Apple wrote this
  *   iss             Apple's, exactly
- *   aud             this app's bundle id: Apple wrote it for this app, not
- *                   for some other app the same person signed in to, whose
- *                   developer would otherwise be holding a key to their
- *                   account here
+ *   aud             one of the apps' bundle ids: Apple wrote it for one of
+ *                   these apps, not for some other app the same person
+ *                   signed in to, whose developer would otherwise be holding
+ *                   a key to their account here
  *   exp             not run out; Apple gives a token ten minutes
  *   nonce           the SHA-256 of the string the app posts beside the token,
  *                   which the app made for this one request and Apple sealed
@@ -48,9 +48,10 @@
  * A web sign-in with Apple needs a Services ID and a private key to mint a
  * client secret with. This is not that: the app is the client, the token is
  * already signed, and all this side needs is Apple's public keys and the
- * app's bundle id. So it is on wherever accounts are, with no binding to
- * forget. `APPLE_APP_ID` exists for the one case that needs it — a build
- * signed under another bundle id — and is a comma-separated list.
+ * bundle ids of the apps — APP_IDS below, the map's and Kohuke's. So it is on
+ * wherever accounts are, with no binding to forget. `APPLE_APP_ID` exists for
+ * the one case that needs it — a build signed under another bundle id — and
+ * is a comma-separated list that replaces the two.
  */
 
 import { sha256Hex } from './_lib.js';
@@ -60,10 +61,16 @@ export const APPLE = 'apple';
 const ISSUER = 'https://appleid.apple.com';
 const KEYS_URL = 'https://appleid.apple.com/auth/keys';
 
-/* The bundle id in TallinnTasteBuds.xcodeproj. It is the `aud` of every
-   token Apple signs for the app, and a token made for anything else is
-   refused. */
-const APP_ID = 'ee.tallinntastebuds.app';
+/* The bundle ids of the two apps that sign in here: the map's, in
+   TallinnTasteBuds.xcodeproj, and the flashcards', in Kohuke.xcodeproj in
+   etibarhasanov/kohuke. One of them is the `aud` of every token Apple signs
+   for either app, and a token made for anything else is refused.
+
+   Two apps, one account: both are under one developer team, and `sub` is
+   Apple's id for a person with a team rather than with an app, so somebody
+   who signs in to both with Apple is the same row in `identities` and the
+   same account, which is the point of Kohuke having no accounts of its own. */
+const APP_IDS = ['ee.tallinntastebuds.app', 'ee.tallinntastebuds.kohuke'];
 
 /* How long Apple's keys are trusted without asking again. Apple rotates them
    rarely and publishes the new one beside the old well ahead, and a `kid`
@@ -77,7 +84,7 @@ function appIds(env) {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
-  return set.length ? set : [APP_ID];
+  return set.length ? set : APP_IDS;
 }
 
 /* Whether /api/apple can answer, which /api/account reports as `appApple`

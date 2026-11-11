@@ -4943,7 +4943,9 @@ making an account under a drawn name for an Apple id that has never been
 here, the way Google's does. Only Apple's permanent id for the person is
 kept, in `identities` under `apple`. There is no secret to set: the app is
 the client, and `APPLE_APP_ID` exists only for a build signed under a bundle
-id other than `ee.tallinntastebuds.app`. There is no Apple button on the
+id other than the two `APP_IDS` in `_apple.js` names: `ee.tallinntastebuds.app`,
+the map's, and `ee.tallinntastebuds.kohuke`, the flashcards' — **Kohuke reads
+the flashcards** below. There is no Apple button on the
 site — a web sign-in with Apple is a different integration, with a Services
 ID and a key — so an account made this way is reached from a browser by
 setting a password on it first. `functions/api/_apple.js` says the rest.
@@ -12238,6 +12240,44 @@ those is a decision rather than a first pass.
 
 It is also not on the map, and must not become so. Nothing in `data/` knows
 this feature exists except the file of words it reads.
+
+### Kohuke reads the flashcards
+
+The flashcards are an iPhone app as well, and it is not the map's app. Kohuke
+— `etibarhasanov/kohuke`, named for the glazed curd bar, three bites and
+gone — is this section drawn natively: the decks, the lessons, the songs and
+the conversations, for people who read English, Azerbaijani or Russian.
+
+**It is an interface and nothing else.** There is no second backend and no
+second database. Kohuke asks `/api/flashcard` for what this page asks it
+for, `/api/say` for the voice, and `/api/account`, `/api/google` and
+`/api/apple` for who is asking, with the site's own `ttb_s` cookie kept by
+the phone. So an account is one account: somebody who learnt forty words on
+the page has learnt them in the app, and a deck added to `data/decks.json`
+is in the app on the next deploy with nothing sent to Apple. Its screens are
+printed with this site's strings, out of the `ui` block the route's answer
+already carries for the page.
+
+**What that makes a promise.** A phone keeps the build it has for months, so
+the shape of every answer above is now something an installed app decodes:
+a field may be added and may never be renamed or removed. **What the app
+reads** in `CLAUDE.md` lists Kohuke's half beside the map app's — the
+fields, the actions, the error words, and the handful of numbers it restates
+because Swift cannot import a Function.
+
+**The one thing the site had to learn** is the app's name. Apple signs a
+sign-in token for a bundle id, and `_apple.js` refuses one made for an app it
+does not name; `APP_IDS` there holds the map's id and Kohuke's. Both apps
+are under one developer team, and Apple's id for a person is per team, so
+signing in to either with Apple reaches the same account. Google needed
+nothing: the round trip ends at `tallinntastebuds://signin` whichever app
+began it, and the system hands that address back to the app that opened the
+sheet.
+
+**What it does not have.** No radio and no map behind it; no `Start` view
+of four tiles, since a tab bar is that already; and no door of its own for
+an assistant — `/mcp` reads the places and the lists, and one that reads the
+decks is a separate piece of work that has not been started.
 
 ---
 

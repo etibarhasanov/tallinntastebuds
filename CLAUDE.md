@@ -370,6 +370,41 @@ its models are in `TallinnTasteBuds/Models/`.
 The list was read out of the app on 2026-11-10. When the app starts asking
 for something else, add it here in the same week.
 
+**And a second app reads the flashcards.** Kohuke (`etibarhasanov/kohuke`,
+SwiftUI, bundle id `ee.tallinntastebuds.kohuke`) is `/flashcard` as an app of
+its own, for people who read English, Azerbaijani or Russian. It has no
+backend either: the same accounts, the same cookie, the same rule — **add a
+field, never rename or remove one** — and its models are in
+`Kohuke/Models/Flash.swift`.
+
+- `GET /api/flashcard?lang=` and `?lang=&deck=<id>`, whole: `ready`, `user`,
+  `words`, `gates`, `days`, `langs`, `ui`, and `decks`, `lessons`, `songs`,
+  `talks`, or one `deck`, `lesson`, `song` or `talk` — every field
+  `deckAnswer()`, `lessonAnswer()`, `songAnswer()` and `talkAnswer()` send,
+  the kinds of block a lesson's `body` is made of, and `error: "not-found"`.
+- `POST /api/flashcard`, every action by name with the fields it reads:
+  `knew` and `again` (`deck`, `card`, `day`), `reset`, `report` (`lang`),
+  and `deck`, `rename`, `drop`, `card`, `editcard`, `uncard`, each answering
+  `{ deck }`. The ids a lesson, a song and a conversation are filed under —
+  `grammar`, `songs`, `talks` — and the two gathered decks' — `missed`,
+  `review` — are written into the app. So are the error words it has
+  sentences for: `name`, `front`, `back`, `too-many`, `full`, `often`,
+  `not-found`, `signed-out`.
+- `GET /api/say?take=&text=`, answering a WAV.
+- Signing in, as above, with two things of its own: `/api/apple` has to
+  accept its bundle id — `APP_IDS` in `functions/api/_apple.js` — and the
+  Google trip still ends at `tallinntastebuds://signin`, which Kohuke
+  listens for under that name.
+- Strings: the `flash*` keys, the `account*` keys the sign-in and delete
+  sheets print, `styleLabel`, `language`, `privacyLink` and `close`, out of
+  the `ui` block the route's answer carries.
+- Numbers it restates, to be changed in both places: `FREE_WORDS`, `GATES`'
+  two levels by name (`more`, `deep`), the four levels a deck is filed under
+  and the two that are not stages (`case`, `song`), `MAX_NAME`, `MAX_SIDE`
+  and `SAY_TAKE`.
+
+Read out of Kohuke on 2026-11-11, the day it was written.
+
 ## Branches and deploys
 
 - **There is no `main`.** The default branch is
