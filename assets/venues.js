@@ -1205,6 +1205,28 @@
     return el('tr', {}, [el('td', { className: 'growth-more', colspan: 11 }, [line])]);
   }
 
+  /* A name pressed: the line goes in under its row, or comes out, and the
+     line that was open elsewhere closes — in place, with every other row left
+     where it is. It was renderGrowth() once, which empties the table and
+     fills it again; the page is for a moment as short as its header, the
+     window is carried up to fit it, and the row that was pressed is three
+     screens below where the reader is left. */
+  function toggleGrowth(row) {
+    var was = dom.growthRows.querySelector('.growth-more');
+    if (was) {
+      var above = was.parentNode.previousElementSibling;
+      var name = above && above.querySelector('.growth-name');
+      if (name) name.setAttribute('aria-expanded', 'false');
+      dom.growthRows.removeChild(was.parentNode);
+    }
+    if (!state.growthOpen) return;
+    var place = null;
+    state.growth.places.forEach(function (p) { if (p.id === state.growthOpen) place = p; });
+    if (!place) return;
+    row.querySelector('.growth-name').setAttribute('aria-expanded', 'true');
+    dom.growthRows.insertBefore(growthMore(place), row.nextSibling);
+  }
+
   /* The chips: the five verdicts with how many places each holds, pressed
      one at a time, and beside them the one that keeps the top hundred, which
      narrows whichever of them is pressed. */
@@ -1551,9 +1573,10 @@
     dom.growthRows.addEventListener('click', function (e) {
       var button = e.target.closest ? e.target.closest('.growth-name') : null;
       if (!button) return;
-      var id = button.closest('tr').getAttribute('data-id');
+      var row = button.closest('tr');
+      var id = row.getAttribute('data-id');
       state.growthOpen = state.growthOpen === id ? '' : id;
-      renderGrowth();
+      toggleGrowth(row);
       TTBTrack.event('growth_open', { venue: button.textContent });
     });
     dom.growthCopy.addEventListener('click', function () {
