@@ -36,6 +36,10 @@
   margin: 0 auto 14px;
 }
 .venues-brand .numbers-nav { max-width: none; margin: 14px 0 0; }
+/* The page of diagrams is the one of the four that is laid out for a desk —
+   .lists-main.is-wide, 1180px — and its row stands on that column's edge
+   rather than 270px in from it, over a title it no longer lined up with. */
+.numbers-nav.is-wide { max-width: 1180px; }
 
 /* ---------------------------------------------------------------- the lead */
 
