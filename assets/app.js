@@ -8107,14 +8107,12 @@
   /* Every word has to land somewhere, so "telliskivi kohvik" narrows rather
      than widening the way a plain substring match on the whole phrase would.
 
-     A word of five letters or more is also tried without its last two, so
+     A word of five letters or more is also tried with another ending, so
      that the endings eleven languages put on a word still reach the label it
-     came from: "kohvik" and "kohvi" reach Kohv, "kahvila" reaches
-     Kahvi, "пиццу" reaches Пицца, "kebabi" the kebab shops. That is the
-     cheap end of stemming, and the only end this site can afford in eleven
-     languages. Four letters is the floor, so "pizza" is looked for as
-     "pizz" at the shortest and a three-letter stem never matches half the
-     map.
+     came from: "kohvikus" reaches Kohvik, "kahvila" reaches Kahvi, "пиццу"
+     reaches Пицца, "kebabi" the kebab shops. That is the cheap end of
+     stemming, and the only end this site can afford in eleven languages;
+     sameWord() below is the rule and says what it replaced.
 
      And a word of five letters or more that still landed nowhere is allowed
      one slip against a whole word of the haystack — a letter missing, one
@@ -8125,11 +8123,11 @@
      drift into a different one.
 
      Three when every word is there as typed, two when any of them reached
-     the haystack only by its stem, one when any of them reached it only by
-     a slip, nought when a word landed nowhere. The kinds of hit are told
-     apart so that what was typed can be drawn above what it might have
-     meant: "pasta" is the pasta places first and the pastry shops, whose
-     stem it shares, after them — and a slip is only offered at all when
+     the haystack only with another ending, one when any of them reached it
+     only by a slip, nought when a word landed nowhere. The kinds of hit are
+     told apart so that what was typed can be drawn above what it might have
+     meant: "burgers" is the places that say burgers first and the ones
+     called Burger after them — and a slip is only offered at all when
      nothing carries the words as typed; see bestOnly(). Three searches
      ask this of a haystack — the column's, and each half of the find bar's
      — which is why it is one function and not a loop in each. */
@@ -8139,7 +8137,7 @@
       var word = words[i];
       if (hay.indexOf(word) !== -1) continue;
       if (word.length < 5) return 0;
-      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) !== -1) {
+      if (wordAs(hay, word)) {
         hit = Math.min(hit, 2);
         continue;
       }
@@ -8149,10 +8147,51 @@
     return hit;
   }
 
-  /* A haystack's words, split once and kept: the slip above is tried
-     against every word of eleven hundred haystacks on a keystroke that
-     matched nothing, and splitting each of them again every time would be
-     the bulk of the work. Keyed by the haystack itself, which is built once
+  /* Whether `h`, a whole word of a haystack, is `word` with another ending:
+     its last one or two letters taken off, four left at the least —
+     "kohvikus" is kohvik, "burgers" burger, "kebabi" kebab — or swapped for
+     as many — "пиццу" is пицца, "pizze" pizza.
+
+     Until November 2026 the rule was the word less its last two letters,
+     looked for anywhere in the haystack, and four letters two words happen
+     to share are not an ending. "pasta" answered with the pastry shops,
+     which the README had down as the price of it, and the price turned out
+     to be the whole class: "store" was every restoran in town, seven hundred
+     of them, "bread" the places that serve breakfast, "asian" the
+     Caucasian kitchens by way of Kaukaasia, "ramen" a bakery by way of its
+     salted caramel, "chinese" somewhere called Veg Machine. Asked of every word of five
+     letters the city's haystacks carry, the old rule brought 8,926 rows that
+     did not have the word; this one brings 4,479, every one of them among
+     the old ones, and what went is that list.
+
+     What it gives up is an ending against a longer word: "pagarid" is pagar
+     and pagari and no longer pagariäri, "mexico" is not mexican. The first
+     is still found by "pagar", which is in it; the second is what `words`
+     on a cuisine in data/cuisines.json is for, and the words the bar offers
+     under the field — findWords() — are where a word that might have been
+     meant is shown now rather than guessed at. And two words one letter
+     apart at the end are still one word to it — "fried" reaches Fries —
+     which no rule without a dictionary tells from пиццу and пицца. */
+  function sameWord(word, h) {
+    var keep = Math.max(4, word.length - 2);
+    if (h.length < keep || h.length > word.length) return false;
+    return h.length < word.length ? word.indexOf(h) === 0 : h.slice(0, keep) === word.slice(0, keep);
+  }
+
+  /* The whole word of a haystack that `word` is with another ending, or
+     nothing. */
+  function wordAs(hay, word) {
+    var words = hayWords(hay);
+    for (var i = 0; i < words.length; i++) {
+      if (sameWord(word, words[i])) return words[i];
+    }
+    return '';
+  }
+
+  /* A haystack's words, split once and kept: an ending and a slip are each
+     tried against every word of eleven hundred haystacks on a keystroke
+     that matched nothing as typed, and splitting each of them again every
+     time would be the bulk of the work. Keyed by the haystack itself, which is built once
      and never changes. */
   var hayWordsCache = {};
   function hayWords(hay) {
@@ -8185,12 +8224,12 @@
   }
 
   /* A slip is a guess, and a guess is only worth showing when nothing
-     answered the words themselves: "bread" should not bring in somewhere
-     called Break under the bakeries it found. So once any row carries the
-     words as typed, the rows that only slipped in go. A stem is a guess as
-     well, and not a better one than a slip — "expresso" reaches somewhere
-     called Express by its stem and the espresso bars only by a slip — so
-     a stem does not push the slips out; it is drawn above them.
+     answered the words themselves: "pizza" should not bring in somewhere
+     called Piazza under the pizzerias it found. So once any row carries the
+     words as typed, the rows that only slipped in go. Another ending is a
+     guess as well, and not a better one than a slip — "expresso" reaches
+     somewhere called Express by its ending and the espresso bars only by a
+     slip — so an ending does not push the slips out; it is drawn above them.
      `level` is every row the search tried, by id, so the find bar's two
      halves are judged together: a slip among the city's rows goes when one
      of mine answered the word itself. */
@@ -8202,8 +8241,8 @@
   }
 
   /* The column's test is whether a place is in or out, and its list is
-     ordered by distance: a row that reached it by a stem is visible for what
-     it is among seventy-odd. `level` is filled in for bestOnly(). */
+     ordered by distance: a row that reached it by another ending is visible
+     for what it is among seventy-odd. `level` is filled in for bestOnly(). */
   function matches(place, words, level) {
     var hit = hasWords((hayIndex && hayIndex[place.id]) || '', words);
     if (level) level[place.id] = hit;
@@ -8301,7 +8340,12 @@
    * cuisines — and findHay says each of them in all eleven languages, so "õlu",
    * "пиво" and "beer" all reach the pubs; and Google's own `category` —
    * "Kebab Shop", "Cocktail Bar" — which is the most exact thing the export
-   * knows about a place, and is matched here and never printed.
+   * knows about a place, and is matched here and never printed; and its
+   * `tags`, everything else Google files the place as — a bakery is a pastry
+   * shop and a dessert shop too — matched the same way and lent to a place
+   * of mine off its linked row with the kitchens. Hidden tags, over the
+   * whole city rather than the places I wrote up; tagsFor() in
+   * functions/api/places.js is what they are.
    *
    * What is still not the same: a place of mine is searched by its dishes and
    * a Google one is not, because the export does not know any. Better
@@ -8397,12 +8441,16 @@
   var findTrackTimer = null;
 
   /* data/cuisines.json, once the roll has brought it in, and what Google
-     files each place of mine as cooking — folded, in eleven languages, by the
-     map's own id. The two halves of the reader's vocabulary the map does not
+     files each place of mine as cooking and tags it as — folded, the
+     kitchens in eleven languages, by the map's own id. The two halves of the reader's vocabulary the map does not
      load on the way in: both are empty until the first keystroke, and a
      place is matched on what is known so far. */
   var findCuisines = [];
   var findLent = {};
+
+  /* Every tag some row of the roll carries, as it arrived, for the words the
+     bar offers under the field — findVocabulary(). */
+  var findTags = {};
 
   /* Google's numbers for a place of mine, by the map's id, off the row the
      export has tied to it: { rating, reviews, rank, category }. Only for
@@ -8444,18 +8492,19 @@
       /* Only what this bar can actually offer: a venue with no point cannot
          be dropped on the map, and one of my own is already in state.places
          and is searched properly there — what the roll adds for one of mine
-         is the kitchens lent to it, kept here by its id. */
+         is the kitchens and the tags lent to it, kept here by its id. */
       findHay = {};
       findKind = {};
       findLent = {};
       findRated = {};
+      findTags = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
         if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) {
-          if (row.kitchens && row.kitchens.length) {
-            findLent[row.mapId || row.id] = fold(row.kitchens.map(kitchenWords).join(' '));
-          }
+          var lent = (row.kitchens || []).map(kitchenWords).concat(row.tags || []).join(' ');
+          if (lent) findLent[row.mapId || row.id] = fold(lent);
+          (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
           findRated[row.mapId || row.id] = {
             rating: row.rating,
             reviews: row.reviews,
@@ -8559,7 +8608,7 @@
      are standing on, not about which pizzeria is best. `away` is metres by
      id from that dot, or null when there is none in reach. Ahead of either
      order, the rows that carry the words as typed come before the rows that
-     only reached them by a stem — see hasWords() — and within each, the rows
+     only reached them with another ending — see hasWords() — and within each, the rows
      the words land on squarely before the ones they only brush: see
      findTier() — and among those, the ones that ARE what was typed before
      the ones only filed beside it: see findSays(). And ahead of all of
@@ -8669,7 +8718,7 @@
     return (n * row.rating + FIND_PRIOR * FIND_MEAN) / (n + FIND_PRIOR);
   }
 
-  /* Mine: the words as typed ahead of the words by their stems and their
+  /* Mine: the words as typed ahead of the words by their endings and their
      slips, then the squarest hits ahead of the glancing ones — findTier() —
      then the ones that are what was typed ahead of the ones filed beside it
      — findSays() — then nearest first when the field asked to be near and there is a dot
@@ -8762,8 +8811,9 @@
      tier only stops a place that was never about the word from standing
      among the ones that are. A 0 is dropped outright when anything on
      either half scored above it; see findHits(). A word that landed nowhere
-     as typed is tried by its stem the way hasWords() tries it, and one that
-     only slipped in is given a 1 and left to bestOnly(). */
+     as typed is asked as the word it is with another ending, the way
+     hasWords() found it, and one that only slipped in is given a 1 and left
+     to bestOnly(). */
   function findTier(name, kind, where, words) {
     var low = 3;
     for (var i = 0; i < words.length && low > 0; i++) {
@@ -8772,7 +8822,7 @@
       var k = wordAt(kind, word);
       var w = wordAt(where, word);
       if (!n && !k && !w && word.length >= 5) {
-        word = word.slice(0, Math.max(4, word.length - 2));
+        word = wordAs(name, word) || wordAs(kind, word) || wordAs(where, word) || word;
         n = wordAt(name, word);
         k = wordAt(kind, word);
         w = wordAt(where, word);
@@ -8850,6 +8900,152 @@
       return [p.lat, p.lng];
     })));
     return view.zoom > whole + 0.5 ? view.bounds : null;
+  }
+
+  /* THE WORDS UNDER THE FIELD
+
+     While somebody is still typing, the bar offers the words it knows that
+     begin the way the field does, above the places: "pas" is pasta and
+     pastry shop, each with how many places a press would bring. A press
+     puts the word in the field and the search is that word, as typed.
+
+     It is the answer to what an ending used to guess at — sameWord() has
+     that story. Four letters are not enough to know which word was meant,
+     and the bar does know every word it can be asked for, so it shows them
+     and the visitor chooses. The words are the hidden half of the search
+     made visible: a kind of place and a cuisine in the language being read,
+     the `words` either carries in no language in particular — cappuccino,
+     matcha, pasta — and the tags Google files the city's places under,
+     which are English because Google's are. Lowercase, because they are
+     something to type and not the name of anything.
+
+     A word is offered when it starts with the field, or one of its later
+     words does — "shop" is pastry shop — and never the field itself, which
+     is already typed. When nothing at all answered, the net is wider: a
+     word one slip from what was typed, or one that begins with it less its
+     ending, so "mexico" with nothing to show for it offers mexican. Three
+     at most, the ones a press brings most places for first; a word that
+     would bring none is not offered.
+
+     The count is findHits() asked about the word, so it is what a press
+     shows — the part of the map on screen included — and it is asked of
+     three words, after a cheaper count has chosen which three. */
+  var FIND_WORDS = 3;
+  var findVocab = null;
+
+  /* Every word the bar can offer, folded once per roll and per language. */
+  function findVocabulary() {
+    if (findVocab && findVocab.lang === state.lang && findVocab.roll === findRoll) return findVocab.words;
+    var seen = {};
+    var words = [];
+    var add = function (text) {
+      text = String(text || '').toLowerCase().replace(/\s+/g, ' ').replace(/^ | $/g, '');
+      var key = fold(text);
+      if (key.length < 3 || seen[key]) return;
+      seen[key] = true;
+      words.push({ text: text, fold: key });
+    };
+    state.types.concat(findCuisines).forEach(function (entry) {
+      String(entry[state.lang] || '').split('/').forEach(add);
+      String(entry.words || '').split('/').forEach(add);
+    });
+    Object.keys(findTags).forEach(add);
+    findVocab = { lang: state.lang, roll: findRoll, words: words };
+    return words;
+  }
+
+  /* How many places carry `words` as typed, on both halves and the whole
+     city: enough to order the candidates by, and a fraction of findHits(). */
+  function findCount(words) {
+    var n = 0;
+    var i;
+    for (i = 0; i < state.places.length; i++) {
+      var place = state.places[i];
+      if (place.closed) continue;
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      if (hasWords(hay, words) === 3) n++;
+    }
+    for (i = 0; findRoll && i < findRoll.length; i++) {
+      if (hasWords(findHay[findRoll[i].id] || '', words) === 3) n++;
+    }
+    return n;
+  }
+
+  /* The words to offer for a field, best first: { text, typed, n }, `typed`
+     how many of its letters the field already holds. `nothing` is whether
+     the field found no place at all. */
+  function findWords(typed, nothing) {
+    var q = fold(typed);
+    if (q.length < 2) return [];
+    var stub = nothing && q.length >= 5 && q.indexOf(' ') === -1 ? q.slice(0, Math.max(4, q.length - 2)) : '';
+    var near = function (w) { return oneSlip(q, w); };
+    var vocab = findVocabulary();
+    var found = [];
+    for (var i = 0; i < vocab.length; i++) {
+      var word = vocab[i];
+      if (word.fold === q) continue;
+      var at = (' ' + word.fold).indexOf(' ' + q);
+      var rank = at === 0 ? 0 : at > 0 ? 1 : -1;
+      if (rank < 0 && stub && ((' ' + word.fold).indexOf(' ' + stub) !== -1 || hayWords(word.fold).some(near))) rank = 2;
+      if (rank < 0) continue;
+      var n = findCount(word.fold.split(' '));
+      if (n) {
+        found.push({
+          text: word.text,
+          typed: rank === 0 && fold(word.text.slice(0, q.length)) === q ? q.length : 0,
+          rank: rank,
+          n: n
+        });
+      }
+    }
+    found.sort(function (a, b) {
+      return a.rank - b.rank || b.n - a.n || (a.text < b.text ? -1 : 1);
+    });
+    return found.slice(0, FIND_WORDS).filter(function (word) {
+      var hits = findHits(word.text);
+      word.n = hits.mine.length + hits.city.length;
+      return word.n > 0;
+    });
+  }
+
+  /* One word in the dropdown: the glass the field wears where a place has
+     its pin, the word with the letters still to type in the heavier weight,
+     and under it how many places it brings. A button like every other row,
+     so the arrows reach it and Enter presses it. */
+  function findWordRow(word) {
+    var glass = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    glass.setAttribute('class', 'find-pin');
+    glass.setAttribute('viewBox', '0 0 24 24');
+    glass.setAttribute('aria-hidden', 'true');
+    glass.setAttribute('focusable', 'false');
+    var lens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    lens.setAttribute('cx', '11');
+    lens.setAttribute('cy', '11');
+    lens.setAttribute('r', '6');
+    var handle = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    handle.setAttribute('d', 'M15.5 15.5L20 20');
+    glass.appendChild(lens);
+    glass.appendChild(handle);
+
+    var row = el('button', { type: 'button', className: 'find-row is-word' }, [
+      glass,
+      el('span', { className: 'find-text' }, [
+        el('span', { className: 'find-name' }, [
+          document.createTextNode(word.text.slice(0, word.typed)),
+          el('b', { textContent: word.text.slice(word.typed) })
+        ]),
+        el('span', {
+          className: 'find-where',
+          textContent: word.n === 1 ? t('listCountOne') : t('listCount', { n: word.n })
+        })
+      ])
+    ]);
+    row.addEventListener('click', function () {
+      TTBTrack.event('find_word', { search_term: state.find.trim().toLowerCase(), word: word.text });
+      setFind(word.text);
+      dom.findInput.focus();
+    });
+    return row;
   }
 
   /* One row in the dropdown: a pin, a name, and under it the street, with
@@ -8978,9 +9174,9 @@
     };
   }
 
-  /* The dropdown as it stands: nothing at all while the field is empty, my
-     own places the moment anything is typed, and the city's underneath them
-     as soon as the roll is in. The note under both is the one line that says
+  /* The dropdown as it stands: nothing at all while the field is empty, the
+     words the bar can offer and my own places the moment anything is typed,
+     and the city's underneath them as soon as the roll is in. The note under both is the one line that says
      what is happening — looking, nothing matched, or nothing to measure from
      — and it is the live region, so a screen reader hears the outcome rather
      than every row again on every keystroke. */
@@ -9006,6 +9202,15 @@
     var city = hits.city;
     var shown = city.slice(0, FIND_CITY);
     var looked = findLooked && findLooked.q === typed ? findLooked : null;
+    var nothing = !mine.length && !shown.length;
+
+    /* The words first — THE WORDS UNDER THE FIELD above findVocabulary(). */
+    var words = findWords(typed, nothing);
+    for (var w = 0; w < words.length; w++) {
+      var wrow = findWordRow(words[w]);
+      findRows.push(wrow);
+      dom.findBody.appendChild(wrow);
+    }
 
     if (mine.length) {
       dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findOnMap') }));
@@ -9032,7 +9237,6 @@
     /* What Google Maps answered, when the button was pressed for these
        words: under a heading of its own and after anything the roll found,
        less any row already drawn above. See ON GOOGLE MAPS above findLookUp(). */
-    var nothing = !findRows.length;
     var drawn = {};
     for (var d = 0; d < findRows.length; d++) drawn[findRows[d].getAttribute('data-id')] = true;
     var fromGoogle = looked ? looked.rows.filter(function (row) { return !drawn[row.id]; }) : [];
@@ -9076,7 +9280,7 @@
       dom.findNote.textContent = t('findGoogleNone', { q: typed });
     } else if (looked) {
       dom.findNote.textContent = t('findGoogleKept');
-    } else if (!findRows.length) {
+    } else if (nothing) {
       dom.findNote.textContent = t('searchNone', { q: typed });
     } else if (wish.nearby && !wish.near && !away) {
       dom.findNote.textContent = t(findLocating ? 'findLocating' : hereMarker ? 'locateAway' : 'locateFail');
@@ -9174,11 +9378,13 @@
        "riva" the name. */
     findKind[row.id] = fold([
       row.category || '',
+      (row.tags || []).join(' '),
       (row.types || []).map(function (id) {
         return id === 'pub' ? '' : labelWords(state.types, id);
       }).join(' '),
       (row.kitchens || []).map(kitchenWords).join(' ')
     ].join(' '));
+    (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
     findHay[row.id] = fold(row.name + ' ' + (row.address || '')) + ' ' + findKind[row.id];
     rows.push(row);
     return true;

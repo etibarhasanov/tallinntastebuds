@@ -75,7 +75,18 @@
  * stands, the two together are fifty kilobytes before compression and five
  * and a half after, on a roll the bar has already decided to download whole.
  *
- * And a place of mine is lent its linked row's kitchens on the way past:
+ * And `tags`: everything else Google says a place is. The export files a
+ * place under one category and several tags — a bakery is also "Pastry
+ * Shop; Dessert Shop; Confectionery" — and only the first was searched, so
+ * "pastry" found the six places Google calls a Pastry Shop first and not
+ * the eight more that are one. tagsFor() below is what rides: lowercase,
+ * the word "restaurant" off the end, and the handful that say nothing about
+ * what is eaten there left out. They are matched like the category and
+ * never printed on a place — hidden tags, the owner's words for them — and
+ * they are also most of the words the find bar offers under the field while
+ * somebody is still typing. About two and a half a row.
+ *
+ * And a place of mine is lent its linked row's kitchens and tags on the way past:
  * nothing on my map records a cuisine beyond a name and its dishes, so
  * "thai" reached my Thai place only when its write-up said the word. The
  * chat's Function lends the same thing for the same reason (cooksOf() in
@@ -110,7 +121,7 @@
  * else's to say.
  */
 
-import { json, catalogue, dataFile, nearTallinn, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
+import { json, catalogue, dataFile, nearTallinn, tagsOf, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
 import { find, findIndex } from './_find.js';
 import { kitchensOf } from './venues.js';
 
@@ -127,6 +138,25 @@ function fold(value) {
 
 /* Google's word for a door that should open again, as the export writes it. */
 const SHUT = 'Temporarily closed';
+
+/* Google's tags for a row as words to search by: lowercase, "Ramen
+   Restaurant" as "ramen", none twice. NOT_A_TAG is what the export says of
+   a place that is not about eating there — a third of the rows are a "Food
+   Store" or do "Meal Takeaway" — and a tag that was only "Restaurant" says
+   nothing the map's own type does not. */
+const NOT_A_TAG = new Set([
+  'restaurant', 'service', 'food store', 'meal takeaway', 'meal delivery', 'food delivery',
+  'catering service', 'manufacturer', 'association or organization', 'event venue',
+  'wholesaler', 'supplier'
+]);
+
+function tagsFor(row) {
+  const tags = tagsOf(row)
+    .split(';')
+    .map((tag) => tag.trim().toLowerCase().replace(/\s+restaurant$/, ''))
+    .filter((tag) => tag && !NOT_A_TAG.has(tag));
+  return [...new Set(tags)];
+}
 
 /* The export's half of the roll, with `rank` when the table has it. The
    column arrived by a hand-run ALTER (db/schema.sql says so beside it), and a
@@ -200,7 +230,8 @@ async function cityRoll(context) {
     lng: typeof p.lng === 'number' ? p.lng : null,
     map: !!p.map,
     mapId: null,
-    kitchens: []
+    kitchens: [],
+    tags: []
   }));
 
   /* What the merge refuses: an id already in the answer, a Google row the
@@ -235,6 +266,7 @@ async function cityRoll(context) {
              bar's order" at the top. */
           const place = mine.get(row.map_id);
           place.kitchens = kitchensOf(row);
+          place.tags = tagsFor(row);
           if (typeof row.rating === 'number') place.rating = row.rating;
           if (typeof row.reviews === 'number') place.reviews = row.reviews;
           if (typeof row.rank === 'number') place.rank = row.rank;
@@ -245,7 +277,7 @@ async function cityRoll(context) {
         if (names.has(name)) continue;
         ids.add(row.place_id);
         names.add(name);
-        const entry = { ...venueEntry(row), kitchens: kitchensOf(row), category: row.category || '' };
+        const entry = { ...venueEntry(row), kitchens: kitchensOf(row), tags: tagsFor(row), category: row.category || '' };
         if (typeof row.rank === 'number') entry.rank = row.rank;
         if (row.status === SHUT) entry.closed = true;
         out.push(entry);

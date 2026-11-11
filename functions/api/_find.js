@@ -13,12 +13,12 @@
  * letters, in alphabetical order. The app's picker sent two letters and got
  * nothing, "pizza" found the places with pizza in the name, and the app's map
  * tab did not ask at all. The find bar meanwhile knew a place by its kinds
- * and its cuisines in eleven languages, by Google's category, by a stem and
- * by a typing slip, and put the answers in the order of the week's ranking —
+ * and its cuisines in eleven languages, by Google's category, by a word with
+ * another ending and by a typing slip, and put the answers in the order of the week's ranking —
  * all in assets/app.js, where nothing else could reach it. A Function cannot
  * import from assets/, so the matching is written out here a second time,
  * function for function and under the same names less their prefix: fold(),
- * hasWords(), oneSlip(), wordAt(), tier() for findTier(), says() for
+ * hasWords(), sameWord(), wordAs(), oneSlip(), wordAt(), tier() for findTier(), says() for
  * findSays(), score() for findScore(), and the order of findHits(). A change
  * to one is a change to both until the find bar asks this route instead of
  * searching its own copy, which is the change after this one.
@@ -37,8 +37,8 @@
  * "restaurant" lands on two places in three — and a loop of made-up words
  * would have spent the day's reads the way the uncached roll once could. A
  * table would also have needed three writers kept in step with it, a load of
- * seven thousand rows by hand, and a prefix index forgives neither a stem
- * nor a slip. Eleven hundred haystacks are folded once per roll and a search
+ * seven thousand rows by hand, and a prefix index forgives neither an
+ * ending nor a slip. Eleven hundred haystacks are folded once per roll and a search
  * is a pass over them: well under a millisecond. The day the city is fifty
  * thousand rows this is the file to rewrite, and its callers need not know.
  */
@@ -79,20 +79,38 @@ function oneSlip(a, b) {
   return ja < i + 1 && jb < i + 1;
 }
 
+/* Whether `h`, a whole word of a haystack, is `word` with another ending:
+   its last one or two letters taken off, four left at the least — "kohvikus"
+   is kohvik, "burgers" burger — or swapped for as many — "пиццу" is пицца.
+   It was any four letters two words shared, anywhere in either, until
+   November 2026, and "pasta" was the pastry shops and "store" every
+   restoran in town; sameWord() in assets/app.js has the count. */
+function sameWord(word, h) {
+  const keep = Math.max(4, word.length - 2);
+  if (h.length < keep || h.length > word.length) return false;
+  return h.length < word.length ? word.startsWith(h) : h.slice(0, keep) === word.slice(0, keep);
+}
+
+/* The whole word of a folded string that `word` is with another ending, or
+   nothing. */
+function wordAs(hay, word) {
+  return hay.split(EDGES).find((h) => sameWord(word, h)) || '';
+}
+
 /* Three when every word is in the haystack as typed, two when any reached it
-   only by its stem — a word of five letters or more less its last two, four
-   at the shortest — one when any reached it only by a slip against a whole
-   word, nought when a word landed nowhere. */
+   only as a word of five letters or more with another ending, one when any
+   reached it only by a slip against a whole word, nought when a word landed
+   nowhere. */
 function hasWords(entry, words) {
   let hit = 3;
   for (const word of words) {
     if (entry.hay.includes(word)) continue;
     if (word.length < 5) return 0;
-    if (entry.hay.includes(word.slice(0, Math.max(4, word.length - 2)))) {
+    if (!entry.words) entry.words = entry.hay.split(EDGES);
+    if (entry.words.some((h) => sameWord(word, h))) {
       hit = Math.min(hit, 2);
       continue;
     }
-    if (!entry.words) entry.words = entry.hay.split(EDGES);
     if (!entry.words.some((w) => oneSlip(word, w))) return 0;
     hit = 1;
   }
@@ -133,7 +151,7 @@ function tier(entry, words) {
     let k = wordAt(entry.kind, word);
     let w = wordAt(entry.where, word);
     if (!n && !k && !w && word.length >= 5) {
-      word = word.slice(0, Math.max(4, word.length - 2));
+      word = wordAs(entry.name, word) || wordAs(entry.kind, word) || wordAs(entry.where, word) || word;
       n = wordAt(entry.name, word);
       k = wordAt(entry.kind, word);
       w = wordAt(entry.where, word);
@@ -196,10 +214,11 @@ function labels(list, id) {
  * empty, and the search is then by name, street and Google's category.
  *
  * A Google row is what it is called, where it is, and what it is: Google's
- * category, the map's words for it less `pub` — which VENUE_TYPES in
- * ./_lib.js hands any place with a drinks licence — and the directory's
- * kitchens. A place of mine is found by its name, street, kinds, dishes and
- * the kitchens its linked Google row lends it, and ranked by the first four:
+ * category and its tags, the map's words for it less `pub` — which
+ * VENUE_TYPES in ./_lib.js hands any place with a drinks licence — and the
+ * directory's kitchens. A place of mine is found by its name, street, kinds,
+ * dishes and the kitchens and tags its linked Google row lends it, and
+ * ranked by the first four:
  * what I filed a place under outranks what Google calls it.
  */
 export function findIndex(roll, types, cuisines, mine) {
@@ -211,6 +230,7 @@ export function findIndex(roll, types, cuisines, mine) {
     const own = mine.get(row.id);
     const name = fold(row.name);
     const where = fold(row.address || '');
+    const tags = fold((row.tags || []).join(' '));
     const lent = fold((row.kitchens || []).map(kitchen).join(' '));
     let kind;
     let hay;
@@ -219,12 +239,12 @@ export function findIndex(roll, types, cuisines, mine) {
         ((own && own.types) || []).map((id) => labels(types, id)).join(' '),
         ((own && own.mustOrder) || []).join(' ')
       ].join(' '));
-      hay = [name, where, kind, lent].join(' ');
+      hay = [name, where, kind, lent, tags].join(' ');
     } else {
       kind = fold([
         row.category || '',
         (row.types || []).map((id) => (id === 'pub' ? '' : labels(types, id))).join(' ')
-      ].join(' ')) + ' ' + lent;
+      ].join(' ')) + ' ' + tags + ' ' + lent;
       hay = name + ' ' + where + ' ' + kind;
     }
     return {
@@ -251,8 +271,8 @@ const MINE_FIRST = 3;
  * metres, and the nearest come first among rows that landed equally well.
  * `box` is [south, west, north, east], and holds the search to it.
  *
- * The order is the find bar's. The words as typed before a stem before a
- * slip, and a slip only when nothing carried the words themselves; the
+ * The order is the find bar's. The words as typed before another ending
+ * before a slip, and a slip only when nothing carried the words themselves; the
  * squarest landing first, and the rows the words only brushed dropped when
  * anything landed better; the places that say the word before the ones filed
  * beside it. Then up to three of my own places, best by Google's reviews, and

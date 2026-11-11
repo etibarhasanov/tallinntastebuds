@@ -4667,7 +4667,7 @@
       var word = words[i];
       if (hay.indexOf(word) !== -1) continue;
       if (word.length < 5) return 0;
-      if (hay.indexOf(word.slice(0, Math.max(4, word.length - 2))) !== -1) {
+      if (wordAs(hay, word)) {
         hit = Math.min(hit, 2);
         continue;
       }
@@ -4675,6 +4675,20 @@
       hit = 1;
     }
     return hit;
+  }
+
+  function sameWord(word, h) {
+    var keep = Math.max(4, word.length - 2);
+    if (h.length < keep || h.length > word.length) return false;
+    return h.length < word.length ? word.indexOf(h) === 0 : h.slice(0, keep) === word.slice(0, keep);
+  }
+
+  function wordAs(hay, word) {
+    var words = hayWords(hay);
+    for (var i = 0; i < words.length; i++) {
+      if (sameWord(word, words[i])) return words[i];
+    }
+    return '';
   }
 
   var hayWordsCache = {};
@@ -4758,6 +4772,8 @@
   var findCuisines = [];
   var findLent = {};
 
+  var findTags = {};
+
   var findRated = {};
 
   var findLocating = null;
@@ -4778,13 +4794,14 @@
       findKind = {};
       findLent = {};
       findRated = {};
+      findTags = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
         if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) {
-          if (row.kitchens && row.kitchens.length) {
-            findLent[row.mapId || row.id] = fold(row.kitchens.map(kitchenWords).join(' '));
-          }
+          var lent = (row.kitchens || []).map(kitchenWords).concat(row.tags || []).join(' ');
+          if (lent) findLent[row.mapId || row.id] = fold(lent);
+          (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
           findRated[row.mapId || row.id] = {
             rating: row.rating,
             reviews: row.reviews,
@@ -4944,7 +4961,7 @@
       var k = wordAt(kind, word);
       var w = wordAt(where, word);
       if (!n && !k && !w && word.length >= 5) {
-        word = word.slice(0, Math.max(4, word.length - 2));
+        word = wordAs(name, word) || wordAs(kind, word) || wordAs(where, word) || word;
         n = wordAt(name, word);
         k = wordAt(kind, word);
         w = wordAt(where, word);
@@ -4994,6 +5011,114 @@
       return [p.lat, p.lng];
     })));
     return view.zoom > whole + 0.5 ? view.bounds : null;
+  }
+
+  var FIND_WORDS = 3;
+  var findVocab = null;
+
+  function findVocabulary() {
+    if (findVocab && findVocab.lang === state.lang && findVocab.roll === findRoll) return findVocab.words;
+    var seen = {};
+    var words = [];
+    var add = function (text) {
+      text = String(text || '').toLowerCase().replace(/\s+/g, ' ').replace(/^ | $/g, '');
+      var key = fold(text);
+      if (key.length < 3 || seen[key]) return;
+      seen[key] = true;
+      words.push({ text: text, fold: key });
+    };
+    state.types.concat(findCuisines).forEach(function (entry) {
+      String(entry[state.lang] || '').split('/').forEach(add);
+      String(entry.words || '').split('/').forEach(add);
+    });
+    Object.keys(findTags).forEach(add);
+    findVocab = { lang: state.lang, roll: findRoll, words: words };
+    return words;
+  }
+
+  function findCount(words) {
+    var n = 0;
+    var i;
+    for (i = 0; i < state.places.length; i++) {
+      var place = state.places[i];
+      if (place.closed) continue;
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      if (hasWords(hay, words) === 3) n++;
+    }
+    for (i = 0; findRoll && i < findRoll.length; i++) {
+      if (hasWords(findHay[findRoll[i].id] || '', words) === 3) n++;
+    }
+    return n;
+  }
+
+  function findWords(typed, nothing) {
+    var q = fold(typed);
+    if (q.length < 2) return [];
+    var stub = nothing && q.length >= 5 && q.indexOf(' ') === -1 ? q.slice(0, Math.max(4, q.length - 2)) : '';
+    var near = function (w) { return oneSlip(q, w); };
+    var vocab = findVocabulary();
+    var found = [];
+    for (var i = 0; i < vocab.length; i++) {
+      var word = vocab[i];
+      if (word.fold === q) continue;
+      var at = (' ' + word.fold).indexOf(' ' + q);
+      var rank = at === 0 ? 0 : at > 0 ? 1 : -1;
+      if (rank < 0 && stub && ((' ' + word.fold).indexOf(' ' + stub) !== -1 || hayWords(word.fold).some(near))) rank = 2;
+      if (rank < 0) continue;
+      var n = findCount(word.fold.split(' '));
+      if (n) {
+        found.push({
+          text: word.text,
+          typed: rank === 0 && fold(word.text.slice(0, q.length)) === q ? q.length : 0,
+          rank: rank,
+          n: n
+        });
+      }
+    }
+    found.sort(function (a, b) {
+      return a.rank - b.rank || b.n - a.n || (a.text < b.text ? -1 : 1);
+    });
+    return found.slice(0, FIND_WORDS).filter(function (word) {
+      var hits = findHits(word.text);
+      word.n = hits.mine.length + hits.city.length;
+      return word.n > 0;
+    });
+  }
+
+  function findWordRow(word) {
+    var glass = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    glass.setAttribute('class', 'find-pin');
+    glass.setAttribute('viewBox', '0 0 24 24');
+    glass.setAttribute('aria-hidden', 'true');
+    glass.setAttribute('focusable', 'false');
+    var lens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    lens.setAttribute('cx', '11');
+    lens.setAttribute('cy', '11');
+    lens.setAttribute('r', '6');
+    var handle = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    handle.setAttribute('d', 'M15.5 15.5L20 20');
+    glass.appendChild(lens);
+    glass.appendChild(handle);
+
+    var row = el('button', { type: 'button', className: 'find-row is-word' }, [
+      glass,
+      el('span', { className: 'find-text' }, [
+        el('span', { className: 'find-name' }, [
+          document.createTextNode(word.text.slice(0, word.typed)),
+          el('b', { textContent: word.text.slice(word.typed) })
+        ]),
+        el('span', {
+          className: 'find-where',
+          textContent: word.n === 1 ? t('listCountOne') : t('listCount', { n: word.n })
+        })
+      ])
+    ]);
+    row.addEventListener('click', function () {
+      TTBTrack.event('find_word', { search_term: state.find.trim().toLowerCase(), word: word.text });
+      setFind(word.text);
+      dom.findInput.focus();
+    });
+    return row;
   }
 
   function findRow(place, mine, far) {
@@ -5093,6 +5218,14 @@
     var city = hits.city;
     var shown = city.slice(0, FIND_CITY);
     var looked = findLooked && findLooked.q === typed ? findLooked : null;
+    var nothing = !mine.length && !shown.length;
+
+    var words = findWords(typed, nothing);
+    for (var w = 0; w < words.length; w++) {
+      var wrow = findWordRow(words[w]);
+      findRows.push(wrow);
+      dom.findBody.appendChild(wrow);
+    }
 
     if (mine.length) {
       dom.findBody.appendChild(el('p', { className: 'find-group', textContent: t('findOnMap') }));
@@ -5115,7 +5248,6 @@
       }
     }
 
-    var nothing = !findRows.length;
     var drawn = {};
     for (var d = 0; d < findRows.length; d++) drawn[findRows[d].getAttribute('data-id')] = true;
     var fromGoogle = looked ? looked.rows.filter(function (row) { return !drawn[row.id]; }) : [];
@@ -5143,7 +5275,7 @@
       dom.findNote.textContent = t('findGoogleNone', { q: typed });
     } else if (looked) {
       dom.findNote.textContent = t('findGoogleKept');
-    } else if (!findRows.length) {
+    } else if (nothing) {
       dom.findNote.textContent = t('searchNone', { q: typed });
     } else if (wish.nearby && !wish.near && !away) {
       dom.findNote.textContent = t(findLocating ? 'findLocating' : hereMarker ? 'locateAway' : 'locateFail');
@@ -5204,11 +5336,13 @@
     if (typeof row.lat !== 'number' || typeof row.lng !== 'number') return false;
     findKind[row.id] = fold([
       row.category || '',
+      (row.tags || []).join(' '),
       (row.types || []).map(function (id) {
         return id === 'pub' ? '' : labelWords(state.types, id);
       }).join(' '),
       (row.kitchens || []).map(kitchenWords).join(' ')
     ].join(' '));
+    (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
     findHay[row.id] = fold(row.name + ' ' + (row.address || '')) + ' ' + findKind[row.id];
     rows.push(row);
     return true;

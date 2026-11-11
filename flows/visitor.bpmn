@@ -63,6 +63,7 @@ ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
 when: filter_select
 when: search@map
 when: find_pick
+when: find_word
 when: find_submit
 when: find_area
 when: find_google
