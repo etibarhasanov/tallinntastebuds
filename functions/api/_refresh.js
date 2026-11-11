@@ -107,11 +107,26 @@
  * day by five. The lines it wrote are still in google_refreshes and
  * google_scores under that word; nothing writes a new one.
  *
+ * ONLY THE PLACES TO EAT ARE ASKED ABOUT AGAIN
+ *
+ * The find bar's "Look for it on Google Maps" keeps whatever Google answered,
+ * and what it answers is not always somewhere to eat: by 2026-11-11 the table
+ * held a museum, three climbing halls, an embassy, a barber and two bus
+ * stops, each due again every sixty days like any other row, and ten of the
+ * month's calls had gone on them. The owner's rule: the calls are for the
+ * restaurants. So the fill reads `kind = 'eat'` alone — eatOnly() in
+ * ./_lib.js, the clause the directory, the ranking and the chat already read
+ * through — and a row of any other kind is asked about once, by the first
+ * open after it was looked up, which is what gives its card hours and
+ * numbers at all, and never again. A café or a bakery looked up is `eat`,
+ * and is refreshed and ranked like a row of the export.
+ *
  * Every step is quiet. A missing table, a missing column, a refused key and a
  * Google outage all end the same way: the row stays as it was and the page
  * never hears about it.
  */
 
+import { eatOnly } from './_lib.js';
 import { TOP } from './_rank.js';
 
 /* How old a row's numbers may get before an open asks Google again. A month,
@@ -586,10 +601,11 @@ export async function refreshOnOpen(env, id, source = 'open') {
   const google = /[A-Z]/.test(id);
   let before;
   try {
+    const kind = (await eatOnly(env)) ? ', kind' : '';
     before = await env.DB
       .prepare(
         'SELECT place_id, rating, reviews, status, price, phone, website, opening_hours, ' +
-        'refreshed_at, hidden, rank FROM google_venues ' +
+        'refreshed_at, hidden, rank' + kind + ' FROM google_venues ' +
         (google
           ? 'WHERE place_id = ?'
           : 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1')
@@ -603,6 +619,10 @@ export async function refreshOnOpen(env, id, source = 'open') {
   if (!before || before.hidden) return 'not-a-venue';
   const placeId = before.place_id;
   const was = before.refreshed_at === undefined ? null : before.refreshed_at;
+  /* Not somewhere to eat — a museum, a shop, a bus stop the find bar looked
+     up: asked about once, to give its card hours and numbers, and then left
+     as it is. ONLY THE PLACES TO EAT, in the header. */
+  if (before.kind && before.kind !== 'eat' && Number(was) > 0) return 'fresh';
   /* An open asks at a month, whatever the rank; the fill asks at the row's
      tier — TIERS. The same wait is the claim's, below, so a
      row a loop found due is due here too. */
@@ -734,8 +754,9 @@ export async function refreshOnOpen(env, id, source = 'open') {
  * its own: an open that lands mid-loop takes its call, spend() refuses the
  * first one past thirty-two, and the loop stops at that refusal.
  *
- * The rows are the ones the directory shows — not hidden, not missing, since
- * nobody reads the numbers of a row that is not drawn — whose numbers are
+ * The rows are the ones the directory shows — not hidden, not missing, and
+ * somewhere to eat or drink, since nobody reads the numbers of a row that is
+ * not drawn and the calls are not for museums — whose numbers are
  * older than their tier allows, TIERS above: the top hundred's due rows
  * first, then the next tier's, and so down, so that when a day cannot cover
  * everything due it is the bottom of the ranking that waits. Inside a tier
@@ -772,10 +793,11 @@ export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day
       .bind(CLOSED, Date.parse(dayOf(now)))
       .first();
     const shut = Math.min(room, Math.max(0, CLOSED_A_DAY - ((asked && asked.n) || 0)));
+    const only = await eatOnly(env);
     const oldest = (closed, limit) => env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
-        'WHERE hidden = 0 AND missing_since IS NULL AND ' + DUE_SQL + ' ' +
+        'WHERE hidden = 0 AND missing_since IS NULL' + only + ' AND ' + DUE_SQL + ' ' +
         (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
         'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
       )

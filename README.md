@@ -1530,9 +1530,11 @@ it was never in; and `kind`, what sort of place Google says it is — `eat`,
 `functions/api/lookup.js`, where every row of the export is `eat`. A museum
 is `see`. The find bar still offers it, its card names no kind of place and
 its pin is the plain map pin rather than a knife and fork — and the
-directory, the weekly ranking and the chat leave it out, through `eatOnly()`
-in `functions/api/_lib.js`, because those three are the city's restaurants
-and a museum is not one.
+directory, the weekly ranking, the chat and the refresh's daily fill leave
+it out, through `eatOnly()` in `functions/api/_lib.js`, because those four
+are the city's restaurants and a museum is not one. Its numbers are asked
+for once, by the first open after it was looked up, and not again — **Keeping
+it current**.
 
 `kind` is a word rather than a yes or no because the owner asked for the
 table not to be a dead end: ranking the other kinds one day — museums among
@@ -5711,7 +5713,9 @@ as a cap. From noon UTC, every page somebody opens knocks: the report it
 sends to `/api/stats` calls `fillOnVisit()` after its answer has gone, and
 `refreshFill()` in `functions/api/_refresh.js`
 spends what the day's opens left on the rows the
-directory shows whose numbers are older than their tier allows — **How often
+directory shows — the places to eat and drink, `kind = 'eat'`, and not the
+museum or the barber the find bar once looked up, which are asked about by
+their first open and never again — whose numbers are older than their tier allows — **How often
 a place is asked about** below — the top tier's due rows first and so down,
 and inside a tier the oldest first, the never-refreshed ahead of everything.
 The places Google calls temporarily closed are the exception: at most two a

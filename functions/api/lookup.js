@@ -47,8 +47,9 @@
  * alone rather than mark it missing for not being in the file. `kind` says
  * what sort of place it is — `eat`, `see`, `shop` or `other`, kindOf() below
  * — where every row of the export is `eat`. eatOnly() in ./_lib.js keeps the
- * other three out of the directory, the weekly ranking and the chat, which
- * are the city's restaurants, while the find bar offers all four. Nothing on
+ * other three out of the directory, the weekly ranking, the chat and the
+ * refresh's fill, which are the city's restaurants, while the find bar offers
+ * all four — a row of another kind is asked about once, by its first open. Nothing on
  * a museum's card calls it a restaurant: VENUE_TYPES in ./_lib.js finds no
  * kind of place in "Art museum", and the card draws none. The column is a
  * word rather than a yes or no on purpose, so that ranking museums among
