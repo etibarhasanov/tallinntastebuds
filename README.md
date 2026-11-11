@@ -13938,8 +13938,8 @@ see it at all rather than a missing link.
 `/admin/visitors` — who came to the site, from where, and what they did. Drawn
 from this site's own count.
 The owner's alone, under the same lock as **Statistics** — a 404 for the page
-and a 403 for `GET /api/admin/visitors` to anybody else — the first row of
-**The numbers** on `/admin.html`, not indexed, and not disallowed either.
+and a 403 for `GET /api/admin/visitors` to anybody else — the second chip of
+the owner's menu, not indexed, and not disallowed either.
 
 It is right now and today at the top, then the range and its five figures,
 and then four groups under headings of their own: **Tests**, **Who they
@@ -13969,11 +13969,21 @@ and one page of all of it would be a scroll nobody finishes on a phone, with
 a range control that means one thing for half of it and nothing for the rest.
 What the five lacked was being a set: each was an address to remember and
 the way from one to the next went back through `/admin.html`. So every one
-of them now carries the same row under its brand header — the five as the
-map's chips, in the order `/admin.html` lists them, the page you are on
-filled through `aria-current` the way the map fills the view you are in.
-It is static markup in each page, `.numbers-nav` in `assets/stats.css`,
-which the directory page loads for it, and six `numbers*` keys in
+of them carries the same menu — **Admin** and then the five as the map's
+chips, the page you are on filled through `aria-current` the way the map
+fills the view you are in. At first that row stood on each page's own
+column: 640px in the middle on three of them, 1180px on the diagrams,
+inside a 1320px header under a smaller mark on the directory, and not at
+all on `/admin.html`, which listed the five as a card called *The numbers*
+instead. So it was somewhere else after every press, under a mark that
+changed size. It is now one block, `.owner-bar` in `assets/stats.css`: the
+mark that goes back to the map, at one size, and the six chips beside it —
+or under it, whole, when the two do not fit across, which on a phone they
+never do. It belongs to no column, so it starts the gap in from the edge of
+the screen on all six pages and a press on it moves nothing but the fill.
+It is not pinned while the page scrolls, because the directory already pins
+its filters and two pinned bars would take a third of a phone. It is static
+markup in each of the six pages and seven `numbers*` keys in
 `data/ui.json`. Where a list is opened from — **Which lists, and from
 where** under **Statistics** — stays where it is, a column of the lists
 table rather than a page: it is one fact about each list, not a question of
@@ -14572,8 +14582,8 @@ and the next section says why it is not anywhere.
 a search visitor landed on, the pages on other sites that linked here, the
 tagged links — the owner's own and the site's Share buttons' — and the words
 typed into the site's own search fields. The owner's alone, under the same lock as **Visitors** — a 404 for
-the page and a 403 for `GET /api/admin/found` to anybody else — the second
-row of **The numbers** on `/admin.html`, and linked from **Where they came
+the page and a 403 for `GET /api/admin/found` to anybody else — the third
+chip of the owner's menu, and linked from **Where they came
 from** on `/admin/visitors`.
 
 ### The words typed into Google are not to be had
@@ -14986,33 +14996,34 @@ links — so the owner's five pages looked like two sites. It now links the same
 three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
 `lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
 same header, eyebrow and title, and reads the style the map's swatch left in
-`ttb.style`, so the dark style reaches it too. Signed in, it is three cards.
-**The numbers** comes first — the five pages under `/admin/` as the account
-sheet's rows, Visitors at the top — because reading them is what the door is
-opened for most days. Then **Edit the site**, a fold that is shut when the
-door opens: the account page's `.lists-fold`, with the Google count beside
-its title so a disagreement is seen without opening it, and inside the five
-tools behind the lists page's segmented control, which wraps rather than
-scrolls so the Google tab is never off the edge. A half-written story
-survives the fold being shut again, since a `<details>` only hides what it
-holds. Last, **GitHub**, the facts of the token the site writes with: which
-repository, whether it can write, which branch is live, when it expires.
+`ttb.style`, so the dark style reaches it too. Signed in, it is the owner's
+menu — the same block the five pages under `/admin/` carry, see
+**Visitors** — and two cards. **Edit the site** is the five tools behind
+the lists page's segmented control, which wraps rather than scrolls so the
+Google tab, and the count of disagreements that rides on it, is never off
+the edge. Then **GitHub**, the facts of the token the site writes with:
+which repository, whether it can write, which branch is live, when it
+expires.
 
-**At a desk it is two columns.** That stack is the phone's page, and until
+It used to be three. **The numbers** came first, the five pages under
+`/admin/` as a card of rows, and the tools were a fold under it that was
+shut when the door opened, because reading the numbers was what the door
+was opened for most days. The menu carries those five on every page now, so
+the card would have said the same thing twice, and with nothing above the
+tools there was nothing for a fold to make room for.
+
+**At a desk it is two columns.** The stack is the phone's page, and until
 November 2026 it was the desk's as well: a 640px column in the middle of a
-monitor, the tools shut behind their fold, every button a bar as wide as the
-card. From 1000px — so a tablet held upright keeps the phone's page — the
-page is the 1180px the lists directory is, with a 340px rail on the left
-holding **The numbers** and **GitHub**, and **Edit the site** beside it as
-the work. The fold is open there and its title is not something to press,
-since the numbers it used to make room for are now beside it rather than
-above; the five tabs are one row the width of their words; fields stop at
-620px and a button is as wide as a button. With no token on the site the
-cards change sides: the Google report is the work and *The site has no
-GitHub token* is the fact in the rail. Signed out, or on an error, it is the
-one card at the old width. The classes `is-rail` and `is-work` are how
-`ready()` and `boot()` say which card is which, and the whole of it is one
-`@media` block at the end of the page's stylesheet.
+monitor and every button a bar as wide as the card. From 1000px — so a
+tablet held upright keeps the phone's page — the page is the 1180px the
+lists directory is, with **GitHub** in a 340px rail on the left and **Edit
+the site** beside it as the work; the five tabs are one row the width of
+their words, fields stop at 620px and a button is as wide as a button. With
+no token on the site the cards change sides: the Google report is the work
+and *The site has no GitHub token* is the fact in the rail. Signed out, or
+on an error, it is the one card at the old width. The classes `is-rail` and
+`is-work` are how `ready()` and `boot()` say which card is which, and the
+whole of it is one `@media` block at the end of the page's stylesheet.
 
 ### Signing in
 

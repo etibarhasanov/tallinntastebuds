@@ -31,37 +31,17 @@
    column of cards stops crowding the map beside it: narrower than that and the
    map is a strip neither half of the page is any use in. */
 
-.venues-brand {
+/* The title and the sentence under it, on the 1320px column the filters and
+   the results stand on. The mark and the menu over it are the owner's bar —
+   .owner-bar in assets/stats.css — which is the same on all six of the
+   owner's pages and belongs to no column. */
+.venues-head {
   max-width: 1320px;
   margin: 0 auto;
-  padding: calc(18px + var(--safe-t)) max(var(--gap), var(--safe-r)) 14px max(var(--gap), var(--safe-l));
+  padding: 4px max(var(--gap), var(--safe-r)) 14px max(var(--gap), var(--safe-l));
 }
 
-.venues-home {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: inherit;
-  text-decoration: none;
-  min-width: 0;
-}
-.venues-mark {
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  box-shadow: var(--lift);
-}
-.venues-wordmark {
-  font-family: var(--display);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -.01em;
-  white-space: nowrap;
-}
-.venues-home:hover .venues-wordmark { color: var(--accent); }
-
-.venues-intro { margin-top: 14px; max-width: 62ch; }
+.venues-intro { max-width: 62ch; }
 
 .venues-title {
   font-family: var(--display);
@@ -100,10 +80,10 @@
   border-bottom: 1px solid var(--hairline);
 }
 
-/* The header's column, exactly: 1320px with the gap inside it, the way
-   .venues-brand is. The cap used to be on the search and the controls
+/* The title's column, exactly: 1320px with the gap inside it, the way
+   .venues-head is. The cap used to be on the search and the controls
    instead, inside this padding, so on a screen wider than the column they
-   started sixteen pixels to the left of the wordmark and the title above
+   started sixteen pixels to the left of the title above
    them and ended sixteen to the right of the map below. */
 .venues-filters {
   max-width: 1320px;
@@ -238,7 +218,7 @@
    results by. */
 .venues-tabs {
   width: fit-content;
-  /* Its left edge is the header's: the gap from the edge of the screen on a
+  /* Its left edge is the title's: the gap from the edge of the screen on a
      phone, and the gap from the edge of the 1320px column once the screen is
      wider than that. It had only the first half, so at a desk the pair sat
      against the edge of the window, well to the left of everything else on
