@@ -162,6 +162,7 @@ ref: functions/api/admin/venues.js GET
 ref: functions/api/admin/top100.js GET
 ref: functions/api/admin/growth.js GET
 ref: functions/api/admin/refreshes.js GET
+ref: functions/api/admin/refreshes.js POST
 ref: functions/api/admin/github/[[path]].js</bpmn:documentation>
       <bpmn:incoming>owner-e21</bpmn:incoming>
       <bpmn:outgoing>owner-e22</bpmn:outgoing>

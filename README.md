@@ -5683,8 +5683,22 @@ with the day's and the month's calls against their limits, how much of the
 directory has been refreshed, and how much is due. That route answers the
 owner alone, like everything under `/api/admin/` — so the tab fills when the
 owner is signed in on the site, whatever the admin page's own door says — and
-`key` says whether the secret is set without saying a character of it. The
-same answer carries `map`: Google's status on every row tied to a place on my
+`key` says whether the secret is set without saying a character of it.
+
+Under those figures is **Refresh from Google now**, since 2026-11-11: the
+day's fill when the owner says so rather than when the afternoon comes
+round. It POSTs to the same address, which runs `refreshFill()` inside the
+request — the top hundred's due rows first, then the oldest — and answers
+how many places it asked about; the tab reads the report again, so what
+moved is under **Latest**. One call a place and never past the day's
+thirty-two of the site's own accord, so the line under the button says how
+many are left before it is pressed, and once the day is spent the button is
+dead and says the next are tomorrow. It has none of `POST /api/refresh`'s
+hours, because that door is open to anybody and this one is the owner's,
+and a press must carry the site's own `Origin`. Without the key it is not
+drawn.
+
+The same answer carries `map`: Google's status on every row tied to a place on my
 map, which the tab lays against `data/restaurants.json` — **The map against
 Google** under **The admin page** says what it does with a disagreement.
 

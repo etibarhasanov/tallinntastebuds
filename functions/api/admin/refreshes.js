@@ -56,10 +56,30 @@
  * refreshed_at column applied yet; the admin tab says so and prints the line
  * that would do it. no-store, because the only person who reads it has just
  * pressed a button to see it now.
+ *
+ * POST /api/admin/refreshes
+ *
+ *   { ok: true, asked: 23, today: 32, day: 32 }    the fill ran
+ *   { ok: false, why: 'no-key' | 'no-database' }   it could not
+ *
+ * The tab's **Refresh from Google now**: the day's fill, when the owner
+ * says so rather than when the afternoon comes round. It is refreshFill()
+ * in ../_refresh.js and nothing else — the same rows in the same order, the
+ * top hundred's due ones first, and the same thirty-two a day, claimed in
+ * the database before any call leaves — so a press can spend what is left
+ * of the day and not one call more, and a second press finds nothing to
+ * do. What it does not have is POST /api/refresh's hours: that door is open
+ * to anybody and keeps the morning and eight of the afternoon's calls back
+ * from a stranger, and this one is the owner's, pressed on purpose. `asked`
+ * counts the places that were written, inside the request, a quarter of a
+ * minute at the most; what moved on each is in the report the tab reads
+ * again afterwards. A write must carry the site's own Origin, the way one
+ * through ./github/ must: the cookie is SameSite=Lax, and this is the
+ * second lock on a route that spends.
  */
 
 import { json, wrongDatabase } from '../_lib.js';
-import { BUDGET, DUE_SQL, REFRESH_AFTER, googleKey, spent } from '../_refresh.js';
+import { BUDGET, DUE_SQL, REFRESH_AFTER, googleKey, refreshFill, spent } from '../_refresh.js';
 
 /* Fifty lines of the log: a few days of opens on an ordinary week, and a
    screen and a half on a phone. */
@@ -141,4 +161,17 @@ export async function onRequestGet(context) {
     /* A table or the column not applied yet. */
     return json({ ready: false, key });
   }
+}
+
+export async function onRequestPost(context) {
+  const { env, request } = context;
+  const now = Date.now();
+
+  if (request.headers.get('Origin') !== new URL(request.url).origin) return json({ error: 'origin' }, 403);
+  if (!env.DB || (await wrongDatabase(env))) return json({ ok: false, why: 'no-database' });
+  if (!googleKey(env)) return json({ ok: false, why: 'no-key' });
+
+  const asked = await refreshFill(env, now);
+  const calls = await spent(env, 'details', now);
+  return json({ ok: true, asked, today: calls.today, day: BUDGET.details.day });
 }
