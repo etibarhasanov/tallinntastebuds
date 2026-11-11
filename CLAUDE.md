@@ -350,7 +350,11 @@ its models are in `TallinnTasteBuds/Models/`.
   `data/lang/<code>.json`, `data/deals.json`, and `photos/<place>/<file>`.
 - Routes: `GET/POST /api/account`, `GET/POST /api/lists`, `/api/saves`,
   `GET /api/profile?name=`, `GET /api/pass?r=`, `GET /api/route`, and
-  `GET /api/places?q=`, whose rows keep `id`, `name`, `address` and `map`.
+  `GET /api/places?q=`, whose rows keep `id`, `name`, `address` and `map`,
+  and `GET /api/lookup` with `POST /api/lookup`, from the list picker's
+  **Look for it on Google Maps**: `ready`, then `{ q }` answered by `ok`,
+  `why` and `places` in those same rows. The app hides the button on
+  `why: 'no-key'` and says it is resting on any other refusal.
 - Signing in, which is three promises of its own. `GET /api/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
