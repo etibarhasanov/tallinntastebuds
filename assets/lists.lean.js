@@ -69,6 +69,8 @@
     list: null,        // the one being shown
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
+    canLook: false,    // whether /api/lookup can ask Google Maps at all
+    looked: null,      // what the last press of Look for it on Google Maps came back with
     hay: null          // id -> folded searchable text
   };
 
@@ -2185,6 +2187,11 @@
 
     if (state.places) { paintPicker(); return; }
 
+    getJSON('/api/lookup').then(function (answer) {
+      state.canLook = !!(answer && answer.ready);
+      if (state.canLook && state.places && !dom.pickerScrim.hidden) paintPicker();
+    }).catch(function () { /* no button */ });
+
     clear(dom.pickerBody);
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
@@ -2230,12 +2237,7 @@
     state.list.items.forEach(function (it) { on[it.place] = true; });
 
     var full = state.list.items.length >= MAX_ITEMS;
-    if (full) {
-      dom.pickerBody.appendChild(el('p', {
-        className: 'picker-note',
-        textContent: t('listsErrFull')
-      }));
-    }
+    if (full) dom.pickerBody.appendChild(note('listsErrFull'));
 
     var found = [];
     for (var i = 0; i < state.places.length && found.length <= PICKER_ROWS; i++) {
@@ -2248,29 +2250,91 @@
       if (hit) found.push(place);
     }
 
-    if (!found.length) {
-      dom.pickerBody.appendChild(el('p', {
-        className: 'picker-note',
-        textContent: terms.length ? t('searchNone', { q: dom.pickerSearch.value.trim() }) : t('listsSearchHint')
-      }));
-      if (terms.length && !full) dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
-      return;
-    }
+    var typed = dom.pickerSearch.value.trim();
+    var looked = state.looked && state.looked.q === typed ? state.looked : null;
 
     var more = found.length > PICKER_ROWS;
-    var ul = el('ul', { className: 'picker-list' });
-    found.slice(0, PICKER_ROWS).forEach(function (place) {
-      ul.appendChild(pickerRow(place, !!on[place.id], full));
+    if (found.length) {
+      var ul = el('ul', { className: 'picker-list' });
+      found.slice(0, PICKER_ROWS).forEach(function (place) {
+        ul.appendChild(pickerRow(place, !!on[place.id], full));
+      });
+      dom.pickerBody.appendChild(ul);
+      if (more) dom.pickerBody.appendChild(note('listsNarrow'));
+    } else if (!looked) {
+      dom.pickerBody.appendChild(note(terms.length ? 'searchNone' : 'listsSearchHint', { q: typed }));
+    }
+
+    if (looked && looked.state === 'asking') {
+      dom.pickerBody.appendChild(note('findGoogleAsking'));
+    } else if (looked && looked.state === 'resting') {
+      dom.pickerBody.appendChild(note('findGoogleResting'));
+    } else if (looked && !looked.rows.length) {
+      dom.pickerBody.appendChild(note('findGoogleNone', { q: typed }));
+    } else if (looked) {
+      var drawn = {};
+      found.forEach(function (place) { drawn[place.id] = true; });
+      var fromGoogle = looked.rows.filter(function (row) { return !drawn[row.id]; });
+      if (fromGoogle.length) {
+        dom.pickerBody.appendChild(note('findFromGoogle'));
+        var gl = el('ul', { className: 'picker-list' });
+        fromGoogle.forEach(function (row) { gl.appendChild(pickerRow(row, !!on[row.id], full)); });
+        dom.pickerBody.appendChild(gl);
+      }
+    }
+
+    if (!terms.length || full) return;
+    if (!looked && state.canLook && typed.length >= 2) {
+      var look = el('button', {
+        type: 'button',
+        className: 'picker-add',
+        textContent: t('findGoogleAsk', { q: typed })
+      });
+      look.addEventListener('click', function () { pickerLookUp(typed); });
+      dom.pickerBody.appendChild(look);
+    }
+    if (!looked || looked.state !== 'asking') dom.pickerBody.appendChild(addDoor(typed));
+  }
+
+  function note(key, vars) {
+    return el('p', { className: 'picker-note', textContent: t(key, vars) });
+  }
+
+  function pickerLookUp(typed) {
+    TTBTrack.event('find_google', { search_term: typed.toLowerCase() });
+    var looked = state.looked = { q: typed, state: 'asking', rows: [] };
+    paintPicker();
+
+    fetch('/api/lookup', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ q: typed })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (answer) {
+      if (answer && answer.why === 'no-key') {
+        state.canLook = false;
+        state.looked = null;
+        return;
+      }
+      if (!answer || !answer.ok || !Array.isArray(answer.places)) {
+        looked.state = 'resting';
+        return;
+      }
+      looked.state = 'done';
+      answer.places.forEach(function (place) {
+        if (!place || !place.id || !place.name) return;
+        if (state.hay[place.id] === undefined) {
+          state.places.push(place);
+          state.hay[place.id] = fold(place.name + ' ' + (place.address || ''));
+        }
+        looked.rows.push(place);
+      });
+    }).catch(function () {
+      looked.state = 'resting';
+    }).then(function () {
+      if (!dom.pickerSearch.closest('.search').hidden) paintPicker();
     });
-    dom.pickerBody.appendChild(ul);
-
-    if (more) {
-      dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('listsNarrow') }));
-    }
-
-    if (terms.length && !full) {
-      dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
-    }
   }
 
   var LEAFLET_JS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';

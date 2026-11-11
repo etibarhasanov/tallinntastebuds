@@ -113,7 +113,7 @@ ref: functions/api/lists.js POST create</bpmn:documentation>
       <bpmn:outgoing>member-e10</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="fill-list" name="Adds places, notes, what to order">
-      <bpmn:documentation>Up to 50 places. A place nobody has is found by address.
+      <bpmn:documentation>Up to 50 places. A place the picker does not have is looked up on Google Maps, and one Google does not have either is typed in and found by address.
 when: list_add
 when: list_save
 when: list_pin
@@ -121,7 +121,9 @@ when: list_reorder
 when: list_remove
 when: place_add
 ref: lists.html
-ref: assets/lists.js</bpmn:documentation>
+ref: assets/lists.js
+ref: assets/lists.js pickerLookUp()
+ref: functions/api/lookup.js</bpmn:documentation>
       <bpmn:incoming>member-e10</bpmn:incoming>
       <bpmn:outgoing>member-e11</bpmn:outgoing>
     </bpmn:userTask>

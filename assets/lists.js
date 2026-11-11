@@ -214,6 +214,8 @@
     list: null,        // the one being shown
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
+    canLook: false,    // whether /api/lookup can ask Google Maps at all
+    looked: null,      // what the last press of Look for it on Google Maps came back with
     hay: null          // id -> folded searchable text
   };
 
@@ -3911,6 +3913,13 @@
 
     if (state.places) { paintPicker(); return; }
 
+    /* Whether Look for it on Google Maps can be offered, asked alongside the
+       roll and allowed to fail by itself: without it the button never draws. */
+    getJSON('/api/lookup').then(function (answer) {
+      state.canLook = !!(answer && answer.ready);
+      if (state.canLook && state.places && !dom.pickerScrim.hidden) paintPicker();
+    }).catch(function () { /* no button */ });
+
     clear(dom.pickerBody);
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
@@ -3977,12 +3986,7 @@
        refuses the fifty-first place anyway, but finding that out by watching
        a row appear and then vanish is a worse way to be told. */
     var full = state.list.items.length >= MAX_ITEMS;
-    if (full) {
-      dom.pickerBody.appendChild(el('p', {
-        className: 'picker-note',
-        textContent: t('listsErrFull')
-      }));
-    }
+    if (full) dom.pickerBody.appendChild(note('listsErrFull'));
 
     var found = [];
     for (var i = 0; i < state.places.length && found.length <= PICKER_ROWS; i++) {
@@ -3995,36 +3999,122 @@
       if (hit) found.push(place);
     }
 
-    /* The place is not on either roll. This is the moment the feature exists
-       for, so the door is the answer to the empty state rather than a line
-       under it — there is nothing else on screen to read. */
-    if (!found.length) {
-      dom.pickerBody.appendChild(el('p', {
-        className: 'picker-note',
-        textContent: terms.length ? t('searchNone', { q: dom.pickerSearch.value.trim() }) : t('listsSearchHint')
-      }));
-      if (terms.length && !full) dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
-      return;
-    }
+    /* What a press of Look for it on Google Maps came back with, for as long
+       as the field still holds the words it asked about. */
+    var typed = dom.pickerSearch.value.trim();
+    var looked = state.looked && state.looked.q === typed ? state.looked : null;
 
     var more = found.length > PICKER_ROWS;
-    var ul = el('ul', { className: 'picker-list' });
-    found.slice(0, PICKER_ROWS).forEach(function (place) {
-      ul.appendChild(pickerRow(place, !!on[place.id], full));
-    });
-    dom.pickerBody.appendChild(ul);
-
-    if (more) {
-      dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('listsNarrow') }));
+    if (found.length) {
+      var ul = el('ul', { className: 'picker-list' });
+      found.slice(0, PICKER_ROWS).forEach(function (place) {
+        ul.appendChild(pickerRow(place, !!on[place.id], full));
+      });
+      dom.pickerBody.appendChild(ul);
+      if (more) dom.pickerBody.appendChild(note('listsNarrow'));
+    } else if (!looked) {
+      dom.pickerBody.appendChild(note(terms.length ? 'searchNone' : 'listsSearchHint', { q: typed }));
     }
 
-    /* And under the results, because "not found" is not always an empty
+    /* The four things a press can end in, said in the map's own words:
+       asking, resting, nothing there either, or Google's rows under a heading
+       of their own — less any the roll already drew above, since a place
+       looked up joins the roll and the same words find it there. */
+    if (looked && looked.state === 'asking') {
+      dom.pickerBody.appendChild(note('findGoogleAsking'));
+    } else if (looked && looked.state === 'resting') {
+      dom.pickerBody.appendChild(note('findGoogleResting'));
+    } else if (looked && !looked.rows.length) {
+      dom.pickerBody.appendChild(note('findGoogleNone', { q: typed }));
+    } else if (looked) {
+      var drawn = {};
+      found.forEach(function (place) { drawn[place.id] = true; });
+      var fromGoogle = looked.rows.filter(function (row) { return !drawn[row.id]; });
+      if (fromGoogle.length) {
+        dom.pickerBody.appendChild(note('findFromGoogle'));
+        var gl = el('ul', { className: 'picker-list' });
+        fromGoogle.forEach(function (row) { gl.appendChild(pickerRow(row, !!on[row.id], full)); });
+        dom.pickerBody.appendChild(gl);
+      }
+    }
+
+    /* The two doors for a place the roll does not have, and only once
+       something has been typed — under eight hundred unfiltered rows either
+       is an invitation to add a duplicate. They sit under the results as well
+       as under "nothing matches", because "not found" is not always an empty
        screen: searching "burger" can return nine places and still not the one
-       being looked for. Only once something has been typed — the door under
-       eight hundred unfiltered rows is an invitation to add a duplicate. */
-    if (terms.length && !full) {
-      dom.pickerBody.appendChild(addDoor(dom.pickerSearch.value.trim()));
+       being looked for. Google first, since a place it knows arrives with its
+       address, its hours and its score, and typing one in by hand is what is
+       left when it does not. */
+    if (!terms.length || full) return;
+    if (!looked && state.canLook && typed.length >= 2) {
+      var look = el('button', {
+        type: 'button',
+        className: 'picker-add',
+        textContent: t('findGoogleAsk', { q: typed })
+      });
+      look.addEventListener('click', function () { pickerLookUp(typed); });
+      dom.pickerBody.appendChild(look);
     }
+    if (!looked || looked.state !== 'asking') dom.pickerBody.appendChild(addDoor(typed));
+  }
+
+  function note(key, vars) {
+    return el('p', { className: 'picker-note', textContent: t(key, vars) });
+  }
+
+  /* ------------------------------------------------------ on Google Maps
+   * The picker's half of the map's own button — ON GOOGLE MAPS above
+   * findLookUp() in assets/app.js, and **Look for it on Google Maps** in
+   * README.md. A press, never a search that fires by itself: each one is a
+   * call against a budget. /api/lookup keeps what Google answers in
+   * google_venues, so the row a tap then puts on the list is a Google place
+   * like any other, with a card behind it, rather than a name and a pin
+   * somebody typed. Before this the sheet's only answer to a place the roll
+   * lacked was the form below, and a list of eight new cafés went up with
+   * four of them typed in by hand.
+   *
+   * Whether the button can be offered at all — state.canLook — is asked once,
+   * when the picker first opens, and stays false on a site with no Google
+   * key, where the sheet is exactly what it was.
+   */
+  function pickerLookUp(typed) {
+    TTBTrack.event('find_google', { search_term: typed.toLowerCase() });
+    var looked = state.looked = { q: typed, state: 'asking', rows: [] };
+    paintPicker();
+
+    fetch('/api/lookup', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ q: typed })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (answer) {
+      if (answer && answer.why === 'no-key') {
+        state.canLook = false;
+        state.looked = null;
+        return;
+      }
+      if (!answer || !answer.ok || !Array.isArray(answer.places)) {
+        looked.state = 'resting';
+        return;
+      }
+      looked.state = 'done';
+      answer.places.forEach(function (place) {
+        if (!place || !place.id || !place.name) return;
+        /* Into the roll, so the next word typed finds it like any other. */
+        if (state.hay[place.id] === undefined) {
+          state.places.push(place);
+          state.hay[place.id] = fold(place.name + ' ' + (place.address || ''));
+        }
+        looked.rows.push(place);
+      });
+    }).catch(function () {
+      looked.state = 'resting';
+    }).then(function () {
+      /* Unless the add form has been opened over the answer meanwhile. */
+      if (!dom.pickerSearch.closest('.search').hidden) paintPicker();
+    });
   }
 
   /* ------------------------------------------------- adding a place
