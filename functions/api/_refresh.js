@@ -26,7 +26,7 @@
  * enough: October spent 181 of the 950 calls it had, and eight hundred of the
  * eleven hundred rows had never been asked about at all. So the day's thirty-
  * two are no longer left to chance. Through the second half of each UTC day,
- * what the opens and the top hundred did not spend goes to the oldest rows the
+ * what the opens did not spend goes to the oldest rows the
  * directory shows — refreshFill() at the foot of this file. Pages Functions
  * have no scheduler of their own, so the clock is the site's own visitors:
  * every page that opens reports to functions/api/stats.js, and fillOnVisit()
@@ -95,15 +95,17 @@
  * An open is the right signal for eleven hundred places and the wrong one for
  * the hundred at the top of the ranking: a position among them is a claim
  * about this month's numbers, and a place nobody happened to open since
- * August would be ranked on August's. So refreshTop() below asks after the
- * top hundred's stale rows as well — the same call, the same seven columns,
- * the same budget, logged under source 'top' rather than 'open' — and the
- * route behind the Top 100 tab of /admin/google calls it after its answer
- * has gone. TOP_A_LOAD of them a time and never the last KEEP_FOR_OPENS of
- * the day's thirty-two, leaving the rest to opens and to the afternoon's
- * fill, so a hundred stale rows take a few openings of the tab. Stale for the hundred is fourteen days, not an
- * open's thirty — TIERS — and the fill asks after them first as well, so the
- * tab is the second road to the same rows and not the only one.
+ * August would be ranked on August's. So stale for the hundred is fourteen
+ * days, not an open's thirty — TIERS — and the fill asks after them before
+ * anything else.
+ *
+ * Until 2026-11-11 the Top 100 tab of /admin/google asked as well: opening
+ * it sent Google after two dozen of the hundred's stale rows, logged under
+ * source 'top'. The owner took that out — a page that is opened to be read
+ * should read the table and call nobody — and on the morning that is told
+ * above BUDGET it was the tab, opened a few times, that had helped spend the
+ * day by five. The lines it wrote are still in google_refreshes and
+ * google_scores under that word; nothing writes a new one.
  *
  * Every step is quiet. A missing table, a missing column, a refused key and a
  * Google outage all end the same way: the row stays as it was and the page
@@ -220,7 +222,7 @@ const AFTER_SQL = "CASE WHEN status = '" + CLOSED + "' THEN " + REFRESH_AFTER + 
   tiered((t) => t.after, REFRESH_AFTER);
 
 /* Whether a row is due, as a WHERE clause with one `?` for now. Read by the
-   two loops below and by ./admin/refreshes.js, whose "Due now" is this
+   fill below and by ./admin/refreshes.js, whose "Due now" is this
    count. */
 export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ? - (' + AFTER_SQL + ')';
 
@@ -546,7 +548,7 @@ async function keepScores(env, placeId, before, after, at, was, source) {
    trip. `changes` is { column: [from, to] } or nothing; `note` is a sentence
    for the outcomes a column cannot explain — a refusal, a closure, a place
    Google no longer knows, a review count that jumped. `source` is why it was
-   asked: 'open', 'top' or 'fill'. */
+   asked: 'open' or 'fill' — and 'top' on lines from before 2026-11-11. */
 async function log(env, now, id, source, outcome, changes, note) {
   await env.DB.batch([
     env.DB
@@ -564,10 +566,10 @@ async function log(env, now, id, source, outcome, changes, note) {
 /* The whole of it, for one place somebody has just opened. Called from
  * functions/api/stats.js through waitUntil, with an id that route has already
  * checked is real — either kind of id, because both kinds of place now show
- * Google's numbers — and from refreshTop() and refreshFill() below with
- * source 'top' or 'fill', which are the only other reasons a place is asked
- * about. Never throws. The word it answers with names the exit it took; the
- * two loops below read it to know when the day is spent, and it is what a
+ * Google's numbers — and from refreshFill() below with source 'fill', which
+ * is the only other reason a place is asked about. Never throws. The word it
+ * answers with names the exit it took; the loop below reads it to know when
+ * the day is spent, and it is what a
  * console.log under `wrangler pages dev` would want. */
 export async function refreshOnOpen(env, id, source = 'open') {
   const at = Date.now();
@@ -601,8 +603,8 @@ export async function refreshOnOpen(env, id, source = 'open') {
   if (!before || before.hidden) return 'not-a-venue';
   const placeId = before.place_id;
   const was = before.refreshed_at === undefined ? null : before.refreshed_at;
-  /* An open asks at a month, whatever the rank; the top hundred and the fill
-     ask at the row's tier — TIERS. The same wait is the claim's, below, so a
+  /* An open asks at a month, whatever the rank; the fill asks at the row's
+     tier — TIERS. The same wait is the claim's, below, so a
      row a loop found due is due here too. */
   let wait = source === 'open' ? REFRESH_AFTER : refreshAfter(before.rank, before.status);
   if (wait > REFRESH_AFTER) {
@@ -719,62 +721,6 @@ export async function refreshOnOpen(env, id, source = 'open') {
   }
 }
 
-/* How many of the top hundred one opening of the Top 100 tab may ask about:
-   the day's thirty-two less the KEEP_FOR_OPENS the tab never takes, whatever
-   the hour and however many times it is opened — refreshTop(). */
-const TOP_A_LOAD = BUDGET.details.day - KEEP_FOR_OPENS;
-
-/* The top hundred's stale rows, asked about in rank order until TOP_A_LOAD
- * are done or the day is down to its last KEEP_FOR_OPENS — the room is
- * counted the way refreshFill() counts its own, so a second opening of the
- * tab takes what the first left of the twenty-four and not the eight behind
- * them. Unlike the fill it keeps them back in the evening too: the fill is
- * the one that spends the day out. Called from functions/api/admin/top100.js
- * through waitUntil, after _rank.js has made the week's ranking, so `rank`
- * is this week's. Reads `rank` directly rather than google_ranks because the
- * column is what the directory shows and is the thing to keep honest; on a
- * database without the column the SELECT throws and this stops, quietly.
- *
- * askEach() below does the asking and says what it returns. */
-export async function refreshTop(env, now) {
-  if (!env || !env.DB || !googleKey(env)) return 0;
-
-  let due;
-  try {
-    const room = TOP_A_LOAD - (await spent(env, 'details', now)).today;
-    if (room <= 0) return 0;
-    due = await env.DB
-      .prepare(
-        'SELECT place_id FROM google_venues ' +
-        'WHERE rank IS NOT NULL AND rank <= ? AND ' + DUE_SQL + ' ' +
-        'ORDER BY rank LIMIT ?'
-      )
-      .bind(TOP, now, room)
-      .all();
-  } catch (e) {
-    return 0;
-  }
-
-  return askEach(env, due, 'top');
-}
-
-/* The rows a loop found due, asked about one after another under `source`
- * until the list or the day runs out. refreshOnOpen() does the claiming, so a
- * row another request is already asking about comes back 'taken' and is
- * simply skipped; 'spent' ends the loop, since the next row would get the
- * same answer, and so do the two exits that mean nothing will be answered
- * today. Returns how many were written, which is what the fill's answer and
- * a console.log under `wrangler pages dev` want. */
-async function askEach(env, due, source) {
-  let written = 0;
-  for (const row of (due && due.results) || []) {
-    const outcome = await refreshOnOpen(env, row.place_id, source);
-    if (outcome === 'spent' || outcome === 'no-key' || outcome === 'not-ready') break;
-    if (outcome === 'changed' || outcome === 'same' || outcome === 'closed' || outcome === 'gone') written++;
-  }
-  return written;
-}
-
 /* The rest of the day's thirty-two, spent on the oldest rows.
  *
  * Called from fillOnVisit() below, a few rows a knock through the second half
@@ -786,7 +732,7 @@ async function askEach(env, due, source) {
  * most the day's cap less what is already spent and what is kept back is
  * read, and no more than `most` of that. The cap still binds on
  * its own: an open that lands mid-loop takes its call, spend() refuses the
- * first one past thirty-two, and askEach() stops at that refusal.
+ * first one past thirty-two, and the loop stops at that refusal.
  *
  * The rows are the ones the directory shows — not hidden, not missing, since
  * nobody reads the numbers of a row that is not drawn — whose numbers are
@@ -842,7 +788,18 @@ export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day
     return 0;
   }
 
-  return askEach(env, due, 'fill');
+  /* Asked about one after another until the list or the day runs out.
+     refreshOnOpen() does the claiming, so a row another request is already
+     asking about comes back 'taken' and is simply skipped; 'spent' ends the
+     loop, since the next row would get the same answer, and so do the two
+     exits that mean nothing will be answered today. */
+  let written = 0;
+  for (const row of due.results) {
+    const outcome = await refreshOnOpen(env, row.place_id, 'fill');
+    if (outcome === 'spent' || outcome === 'no-key' || outcome === 'not-ready') break;
+    if (outcome === 'changed' || outcome === 'same' || outcome === 'closed' || outcome === 'gone') written++;
+  }
+  return written;
 }
 
 /* WHY A VISIT IS THE CLOCK

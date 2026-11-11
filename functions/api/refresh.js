@@ -12,7 +12,7 @@
  * it, and for two months that was the only reason it ever asked, which left
  * most of the free thousand unspent and most of the directory never asked
  * about. This is the other reason: through the second half of each UTC day,
- * whatever the opens and the top hundred left of the thirty-two goes to the
+ * whatever the opens left of the thirty-two goes to the
  * oldest rows — refreshFill() there says which rows and in what order.
  *
  * This route is the fill's second door, and no longer its clock. The clock is
