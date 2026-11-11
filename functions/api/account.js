@@ -841,6 +841,8 @@ export async function onRequestPost(context) {
    *                                 list somebody else wrote still has one
    *   flashcard_decks, _cards,      the decks it wrote and what it knew
    *   flashcard_known
+   *   walks, walk_checks            the lists it walked, where it checked in
+   *                                 and what it said there
    *
    * WHAT STAYS, AND WHY IT IS NOT THE PERSON
    *
@@ -939,6 +941,18 @@ export async function onRequestPost(context) {
       return json({ error: 'failed' }, 500);
     }
     if (saved.length) await caches.default.delete(countsKey(request));
+
+    /* The walks it started and the places it checked in at, its comments
+       with them — functions/api/walk.js. After the batch and on their own,
+       because those two tables reach a database by hand as the posts' do,
+       and here the cost of one being absent is nothing: the account is
+       already gone, and rows under an id nobody holds draw nowhere. */
+    try {
+      await env.DB.batch([
+        env.DB.prepare('DELETE FROM walk_checks WHERE user_id = ?').bind(id),
+        env.DB.prepare('DELETE FROM walks WHERE user_id = ?').bind(id)
+      ]);
+    } catch (e) { /* not applied here yet */ }
 
     return signedOut(request, { deleted: true, user: null });
   }

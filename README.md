@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-two small Functions, no build step and no npm install. Adding a
+Static files, forty-three small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -7613,6 +7613,12 @@ switched on". `.chip[aria-current="page"]` fills alongside
 added. They report `list_map` and `list_page`, which are the names the two
 buttons they replace reported.
 
+There is a third chip now, **Walk**, on a list with at least two places that
+have somewhere to stand, and it reports `list_walk`. On the list's page it and
+**List** change the view without a load and write `?walk=1` into the address;
+on the map it is a link to that address. **Walking a list** below is what it
+opens.
+
 The accent on the half you are already looking at is the one thing worth
 arguing with, because on this site the accent usually marks the thing a
 surface is asking for, and here it marks the thing you already have. It is the
@@ -8353,6 +8359,7 @@ the drag and the save — is appended rather than left to collide.
 | a Facebook username | 50 |
 | languages you speak | 8 |
 | what you say about a place | 280 |
+| a comment where you checked in on a walk | 280 |
 | places before a list is listed on `/lists` | 3 |
 | rows on your page | 20 |
 | a row's title | 60 characters |
@@ -8485,6 +8492,93 @@ account button simply does not appear.
 - **A ranking of people.** `/lists` orders lists; a profile prints one person's
   total and no position in anything. See the end of **Profiles** for why the
   number was built and the table of people was not.
+
+### Walking a list
+
+A list is a set of places, and the game in a set of places is having been to
+all of them. **Walk** is the third view of any list, beside **Map** and
+**List**: its places in the shortest order to walk them in, how far that is,
+and — for a member — a walk they start, check in on at each door with their
+phone's location, and finish. It may take an afternoon or a month, in any
+order, and nothing is bought. Everybody who finishes is on a board under the
+list, fastest first, and what people said where they checked in is under each
+place. The prize for finishing is the owner's to hand out by hand and is not
+in the code.
+
+`assets/walk.js` draws it, as a global `TTBWalk` that `walkView()` in
+`assets/lists.js` hands the list and a few of the page's own pieces;
+`functions/api/walk.js` is the rows behind it, in two tables, `walks` and
+`walk_checks`. Both files open with their reasoning and this is the short of
+it.
+
+**The order is worked out in the browser, and it is an estimate.** Every row
+of a list already carries its place's coordinates, so no request is made. A
+leg is the straight line stretched by 1.3, which is what streets cost on
+average, walked at 80 metres a minute, and every total says "about". Up to
+twelve places the order is the true shortest one, found by Held–Karp — the
+best way to have visited each set of places and be standing at each of them,
+built up a place at a time; past twelve it is nearest-next with every crossed
+pair of legs uncrossed. Asking `/api/route` for the real walk between every
+pair would be forty-five requests for a top ten, to move "about 5.4 km" by a
+few hundred metres. A line on the map for the whole walk is not drawn yet for
+the same reason: a row opens its place on the map, where the arrow already
+gives the way to it.
+
+It starts at the list's first place, because the page knows nothing about
+where a reader is and never asks on its own. **Start from where I am** asks
+the phone and starts at the nearest place instead. **Change the order** puts
+two arrows on every row and the distances follow; the card then says how much
+longer your order is than the shortest, with the way back beside it. That
+order is the walker's and not the list's: it is stored with their walk, and
+lives in the page alone before there is one.
+
+**A check is made wherever you are standing.** **Check in here** sends the
+phone's coordinates, and the server checks whichever unchecked place is
+nearest if it is within `RADIUS`, 75 metres, and otherwise says how far the
+nearest one left is. So the order on screen is a suggestion and the places can
+be walked in any. The coordinates are compared and forgotten — in no table, no
+log and no count — and what is stored is the place and the time. A fresh fix
+is asked for on every press, never a cached one, so somebody told they are
+forty metres short can walk them and press again.
+
+**It can be faked, and that is accepted.** A browser's location is whatever
+the browser says. Nothing here can tell a person on Telliskivi from one with
+developer tools open, which is the reason the prize is handed out by a person.
+
+**A comment goes on a check and nowhere else.** Right after a check the band
+offers one optional field; the comment is public, under the place, with the
+walker's name, the newest three of everybody else's shown. Nobody can comment
+on a place they have not checked in at, because the statement that writes one
+can only touch a row made by standing there. The owner of the site — `ADMINS`
+— sees **Remove** beside anybody's, since words anybody with an account can
+publish need somebody who can take them down. The check stays; the words go.
+
+**One walk per person per list, and finished is decided at the check.** The
+clock on the board runs from the first press of **Start the walk** to the
+check that left no place unchecked, and stays: a place added to the list a
+week later takes nobody's name off. A place with no location cannot be stood
+at and is counted neither way; the card says how many were left out.
+
+**The states.** Signed out, the order and the distances with **Sign in to
+start**. Signed in and not started, **Start the walk** and a sentence saying
+what a walk is. Started, the progress, a bar, a tick and the time on each
+checked place, the next one outlined, and **Check in here**. Just checked, the
+comment field. Too far and location refused, a line over the button saying so.
+Finished, the board over the places and the band's way out to more lists. On a
+database the two tables have not reached, or with the route not answering, the
+order and the distances and nothing to press — neither needs the server.
+
+Your own list has no bar, so its head carries **Walk** as a fourth, quiet
+control, and the walk of it has the bar so there is a way back.
+
+**What it costs.** One read of the list, two or four small reads of the two
+tables, per view; nothing cached, for the reason nothing in `/api/lists` is.
+The tables reach a database by hand —
+`wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql` — and
+until they have, the view draws without its buttons. Deleting an account
+deletes its walks, and deleting a list deletes everybody's walk of it; both
+are outside the main batch, so neither delete depends on the tables being
+there.
 
 ---
 
@@ -18724,6 +18818,15 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | --- | --- |
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
+| `list_walk` | `list_id` — the Walk chip on a list's bar and on the map's band, and Walk in the head of your own list |
+| `walk_open` | `list_id` — the Walk view drawn, once a load — `assets/walk.js` reports this and the eight below |
+| `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
+| `walk_reorder` | `list_id` — Done, after changing the order |
+| `walk_signin` | `list_id` — Sign in to start, signed out |
+| `walk_start` | `list_id` — Start the walk, once the server has it |
+| `walk_check`, `walk_finish` | `list_id` — a check that went through, and the one that finished the walk |
+| `walk_far` | `list_id` — a check refused for being more than 75 m from every place left |
+| `walk_note` | `list_id` — a comment saved on a check |
 | `profile_open` | `name` — any byline |
 | `place_link` | `place`, `map` (`mine`/`google`/`added`) — a name on a list, which opens that list on the map. The parameter says which roll the place came off, which is all it can say now that every row goes to the same place |
 | `list_keep` | `list_id`, `list_state` |

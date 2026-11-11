@@ -67,6 +67,7 @@
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
+    walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
     canLook: false,    // whether /api/lookup can ask Google Maps at all
@@ -1164,8 +1165,13 @@
     }
 
     var wrap = el('div', { className: 'lists-stack' });
-    var bar = list.mine ? null : listBar(list);
+    var bar = list.mine && !state.walking ? null : listBar(list);
     if (bar) wrap.appendChild(bar);
+    if (state.walking) {
+      walkView(list).forEach(function (node) { if (node) wrap.appendChild(node); });
+      nameWhenPast(bar, wrap.querySelector('.lists-title'));
+      return wrap;
+    }
     wrap.appendChild(list.mine ? listHeadMine(list) : listHead(list));
     if (bar) nameWhenPast(bar, wrap.querySelector('.lists-title'));
 
@@ -1295,6 +1301,16 @@
   }
 
   function listBar(list) {
+    var here = '/list/' + encodeURIComponent(list.id);
+    function view(label, on, href, walking) {
+      if (on) return el('span', { className: 'chip', 'aria-current': 'page', textContent: label });
+      var a = el('a', { className: 'chip', href: href, textContent: label });
+      a.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        setWalking(walking);
+      });
+      return TTBTrack.click(a, walking ? 'list_walk' : 'list_page', { list_id: list.id });
+    }
     return el('div', { className: 'lists-bar' }, [
       el('span', { className: 'lists-bar-name', textContent: list.title }),
       el('span', { className: 'lists-bar-views' }, [
@@ -1303,9 +1319,46 @@
           href: mapHref(list.id),
           textContent: t('listsViewMap')
         }), 'list_map', { list_id: list.id }),
-        el('span', { className: 'chip', 'aria-current': 'page', textContent: t('listsViewList') })
+        view(t('listsViewList'), !state.walking, here, false),
+        walkable(list) ? view(t('walkView'), state.walking, here + '?walk=1', true) : null
       ])
     ]);
+  }
+
+  function walkable(list) {
+    return !!window.TTBWalk && list.items.filter(function (item) {
+      return typeof item.lat === 'number' && typeof item.lng === 'number';
+    }).length >= 2;
+  }
+
+  function setWalking(on) {
+    state.walking = on;
+    var params = new URLSearchParams(window.location.search);
+    if (on) params.set('walk', '1'); else params.delete('walk');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+    } catch (e) { /* the view still changes; only the address does not */ }
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function walkView(list) {
+    return TTBWalk.view({
+      list: list,
+      lang: state.lang,
+      t: t,
+      el: el,
+      card: card,
+      heading: heading,
+      button: button,
+      countLabel: countLabel,
+      placeHref: placeHref,
+      profileHref: profileHref,
+      signInHref: function () { return accountHref('up'); },
+      moreLists: moreLists,
+      redraw: render
+    });
   }
 
   function nameWhenPast(bar, title) {
@@ -1318,17 +1371,19 @@
   }
 
   function listDock() {
-    return el('div', { className: 'lists-dock' }, [
-      TTBTrack.click(el('a', {
-        className: 'go lists-dock-out',
-        href: ALL_PATH,
-        textContent: t('listsMore')
-      }), 'lists_all')
-    ]);
+    return el('div', { className: 'lists-dock' }, [moreLists()]);
+  }
+
+  function moreLists() {
+    return TTBTrack.click(el('a', {
+      className: 'go lists-dock-out',
+      href: ALL_PATH,
+      textContent: t('listsMore')
+    }), 'lists_all');
   }
 
   function hasDock(list) {
-    return !list.mine || list.items.length >= MIN_ITEMS;
+    return state.walking || !list.mine || list.items.length >= MIN_ITEMS;
   }
 
   function listDockMine() {
@@ -1510,7 +1565,11 @@
       el('div', { className: 'lists-row lists-acts' }, [
         mapLink(list.id),
         share,
-        save
+        save,
+        walkable(list) ? button(t('walkView'), 'alt', function () {
+          TTBTrack.event('list_walk', { list_id: list.id });
+          setWalking(true);
+        }) : null
       ]),
       ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
@@ -2917,6 +2976,8 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.list = out.list || null;
+      state.walking = !!state.list && walkable(state.list) &&
+        new URLSearchParams(window.location.search).has('walk');
       state.all = out.all || null;
       state.next = out.next || '';
       state.profile = out.profile || null;

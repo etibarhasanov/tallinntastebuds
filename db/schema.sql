@@ -1969,3 +1969,50 @@ CREATE TABLE IF NOT EXISTS post_texts (
   words      INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (post, lang)
 );
+
+
+-- Walking a list: a member goes to every place on it and checks in at each
+-- one, standing there. functions/api/walk.js is the only thing that reads or
+-- writes these two tables, and its header is the reasoning.
+--
+-- One row is one person walking one list. There is one walk per person per
+-- list, started once: the clock on the board runs from the first press of
+-- Start to the check that left nothing unchecked, and a second walk of the
+-- same list would be a second time to pick the better of.
+CREATE TABLE IF NOT EXISTS walks (
+  -- users.id. Never a device: a walk takes days and has to survive the phone
+  -- it was started on, for the reason a kept list does.
+  user_id     TEXT    NOT NULL,
+  -- lists.id, public or the walker's own.
+  list_id     TEXT    NOT NULL,
+  started_at  INTEGER NOT NULL,
+  -- NULL until the check that finished it. Never moved after: a place added
+  -- to the list later does not take a name off the board.
+  finished_at INTEGER,
+  -- The order the walker put the places in, a JSON array of place ids, or
+  -- '[]' for the shortest one the page works out. A suggestion only: a check
+  -- is made wherever somebody is standing.
+  route       TEXT    NOT NULL DEFAULT '[]',
+  PRIMARY KEY (user_id, list_id)
+);
+-- The board under a list: everybody who finished it. The primary key leads
+-- with the person and cannot serve it.
+CREATE INDEX IF NOT EXISTS idx_walks_list ON walks (list_id, finished_at);
+
+-- One row is one place checked on one walk. Which place and when, and never
+-- where the phone said it was: the coordinates a check sends are compared
+-- with the place's own and are not kept.
+CREATE TABLE IF NOT EXISTS walk_checks (
+  user_id    TEXT    NOT NULL,
+  list_id    TEXT    NOT NULL,
+  -- list_items.place_id as it was on the day.
+  place      TEXT    NOT NULL,
+  checked_at INTEGER NOT NULL,
+  -- What the walker said about it, shown to everybody under the place, or ''.
+  -- 280 characters at the most, capped in the Function.
+  note       TEXT    NOT NULL DEFAULT '',
+  -- One person checks one place on one list once.
+  PRIMARY KEY (user_id, list_id, place)
+);
+-- Everybody's comments on one list, newest first.
+CREATE INDEX IF NOT EXISTS idx_walk_checks_list ON walk_checks (list_id, checked_at);

@@ -75,7 +75,7 @@
     {
       "id": "member",
       "name": "A member, signed in",
-      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
+      "who": "Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, walking a list and checking in at its places, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.",
       "lanes": [
         { "id": "member", "name": "Member" }
       ],
@@ -98,6 +98,9 @@
         {"id": "keep", "type": "user", "lane": "member", "name": "Keeps somebody else's list", "when": ["list_keep"], "ref": ["assets/lists.js"]},
         {"id": "kept", "type": "service", "lane": "member", "name": "Adds it to Lists you saved", "note": "400 own on your own list, cap of 200.", "ref": ["functions/api/lists.js POST keep, unkeep"]},
         {"id": "kept-done", "type": "end", "lane": "member", "name": "Kept"},
+        {"id": "walk", "type": "user", "lane": "member", "name": "Walks a list", "when": ["walk_start", "walk_check", "walk_note", "walk_reorder"], "note": "Any list they can read: starts a walk, checks in at each place with the phone's location, in any order and over as many days as it takes, and may leave a comment where they checked in.", "ref": ["assets/walk.js", "assets/lists.js walkView()"]},
+        {"id": "walk-check", "type": "service", "lane": "member", "name": "Checks the nearest place within 75 m, keeps the place and the time", "when": ["walk_finish"], "note": "The location a check sends is compared and not kept.", "ref": ["functions/api/walk.js POST start, check, note, order"]},
+        {"id": "walk-done", "type": "end", "lane": "member", "name": "Finished, on the list's board"},
         {"id": "deal", "type": "user", "lane": "member", "name": "Opens a discount pass", "when": ["page:deal"], "ref": ["deal.html", "assets/deal.js"]},
         {"id": "admit", "type": "service", "lane": "member", "name": "Admits the account, draws the hour's rate", "when": ["pass_shown"], "ref": ["functions/api/pass.js GET"]},
         {"id": "deal-done", "type": "end", "lane": "member", "name": "Shows the code (see the discount diagram)"},
@@ -138,6 +141,9 @@
         ["what-now", "keep", "keep a list"],
         ["keep", "kept"],
         ["kept", "kept-done"],
+        ["what-now", "walk", "walk a list"],
+        ["walk", "walk-check"],
+        ["walk-check", "walk-done"],
         ["what-now", "deal", "discount"],
         ["deal", "admit"],
         ["admit", "deal-done"],
