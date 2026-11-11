@@ -981,6 +981,12 @@
   color: var(--muted);
 }
 .flash-opens .flash-track { flex: 0 0 72px; height: 4px; }
+/* And a stage Find your level skipped, folded to the same dashed line: what
+   it is, in the colour Knew it is drawn in, how many decks, and Show them at
+   the far end. */
+.flash-skipped { justify-content: space-between; }
+.flash-skipped b { color: var(--yes); font-weight: 500; }
+.flash-skipped .alt { padding: 0; font-size: 11px; }
 
 /* ---------- find your level ---------- */
 
