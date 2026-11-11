@@ -238,10 +238,14 @@
    because the pair that switches back is in it. */
 .venues-on-top .venues-filters,
 .venues-on-top .venues-view,
-.venues-on-top .venues-split { display: none; }
+.venues-on-top .venues-split,
+.venues-on-growth .venues-filters,
+.venues-on-growth .venues-view,
+.venues-on-growth .venues-split { display: none; }
 /* The bar closes on the tabs alone, so they want the bottom margin the
    filters would have given them. */
-.venues-on-top .venues-tabs { margin-bottom: 12px; }
+.venues-on-top .venues-tabs,
+.venues-on-growth .venues-tabs { margin-bottom: 12px; }
 
 .venues-top {
   max-width: 760px;
@@ -338,6 +342,121 @@
     row-gap: 2px;
   }
   .top-facts { grid-column: 3; }
+}
+
+/* ---------- growth ---------- */
+
+/* The third tab is the second one's section — the title, the lead, the line —
+   with a table under it, and a table of eleven columns wants more room than
+   a list of names does. */
+.venues-growth { max-width: 1120px; }
+
+.growth-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.growth-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 12px;
+}
+.growth-copy { margin-left: auto; }
+
+/* The one thing on the page allowed to be wider than the phone: it slides
+   inside this, under the place's name, and the page stays put. */
+.growth-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+}
+
+/* Mono and tabular throughout, because every cell but the name is a count or
+   a date and a column of them is read down, not across. */
+.growth-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.growth-table th,
+.growth-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--hairline);
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.growth-table thead th {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--muted);
+  vertical-align: bottom;
+}
+.growth-table tbody tr:last-child > * { border-bottom: 0; }
+
+/* The name stays while the numbers slide: sticky to the wrapper's left edge,
+   on paper so the columns pass under it rather than through it. */
+.growth-table thead th:nth-child(2),
+.growth-table tbody th {
+  position: sticky;
+  left: 0;
+  background: var(--paper);
+  text-align: left;
+}
+.growth-table tbody th {
+  min-width: 150px;
+  max-width: 240px;
+  white-space: normal;
+  font-weight: 400;
+}
+.growth-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.growth-rank { color: var(--accent); font-weight: 600; }
+.growth-day { display: block; font-size: 11px; color: var(--muted); }
+.growth-none { color: var(--muted); }
+
+/* The verdict is a word with an arrow in front of it, so the colour is the
+   third thing saying it. Ahead and Check take the accent, the way a place
+   that climbed the hundred does; behind and on pace are muted. */
+.growth-table .growth-verdict { text-align: left; color: var(--muted); }
+.growth-table .growth-verdict.is-up { color: var(--accent); font-weight: 600; }
+
+/* A row opened: one cell the width of the table, holding the place's line.
+   The cell is as wide as eleven columns, which on a phone is three screens,
+   so the line sits in a block of its own that sticks to the wrapper's left
+   edge and is never wider than the part of the table that shows. */
+.growth-table .growth-more {
+  padding: 4px 12px 14px;
+  text-align: left;
+  white-space: normal;
+}
+.growth-line {
+  position: sticky;
+  left: 12px;
+  width: min(420px, calc(100vw - 2 * var(--gap) - 26px));
+}
+.ins-chart .growth-ahead { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.ins-chart .growth-hollow { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+
+.growth-note {
+  margin: 10px 0 0;
+  max-width: 68ch;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 /* ---------- the split: results down one side, the map down the other ---- */

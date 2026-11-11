@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-one small Functions, no build step and no npm install. Adding a
+Static files, forty-two small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -5797,8 +5797,8 @@ before it, with source `export` and no time, since the export is one sweep
 with no time on its rows. Nothing falls between the two: a place with a line
 in the table has `refreshed_at` set, and the export never overwrites the
 numbers on such a row. At most 950 answers a month and a baseline each, so a
-few thousand rows a year. Nothing reads it yet; it is being kept for the
-statistics to come. `keepScores()` in `functions/api/_refresh.js` writes it,
+few thousand rows a year. The Growth tab of `/admin/google` is what reads it
+— **How a place's count has grown** below. `keepScores()` in `functions/api/_refresh.js` writes it,
 and without the table the refresh carries on and only the history misses a
 point.
 
@@ -5897,6 +5897,54 @@ the page is opened, so a day of busy opens still has something to spend. A hundr
 few openings of the page; after that they fall due a few at a time, the
 afternoon's fill takes them first, and one opening covers what is left. Without `GOOGLE_MAPS_API_KEY` it does nothing,
 like every refresh, and the ranking is made from whatever the table holds.
+
+### How a place's count has grown
+
+The third tab of `/admin/google`, **Growth**, is `google_scores` read as a
+table: one row for every place Google has answered about twice, saying where
+its review count started, what the last two answers were and the day each
+came, what it has gained, what it gathers in a month, what places its size
+usually gather, and where it would stand at the year's end at this pace. It
+came out of a question — which places are getting reviews faster than they
+should, and which have stopped — that was first answered by hand, as a CSV
+out of the database, and the table is that CSV kept current: nothing in it is
+stored, `GET /api/admin/growth` reads the history each time the tab is
+pressed, so a row moves the next time the page is opened after Google has
+answered about the place again. `functions/api/admin/growth.js` is the whole
+of the arithmetic and its header is the argument; the short of it:
+
+- **A month** is the gain over the last interval, scaled to thirty days —
+  between the last two dated answers, or from the export's pair to the one
+  answer where a place has only that. One interval and not an average,
+  because the tab is for what a place is doing now. The export's pair has no
+  time of its own and is dated by the row's `first_seen_at`, the day the
+  place was first loaded.
+- **Usual** is what a place that size gathers: a line through
+  log(month + 1) against log(reviews) over every place in the table, fitted
+  on each request. A place with six thousand reviews gathers more than one
+  with two hundred, and a pace means nothing until it is held against that.
+- **Against usual** is (month + 1) ÷ (usual + 1), and the verdict is two
+  lines through it: half as fast again is **Ahead**, two thirds is
+  **Behind**, between them **On pace**.
+- **Check** is not a pace. A count that leaps in one answer is two listings
+  Google merged — `jumped()`, the test that marks the refresh log — so the
+  place is named, kept out of the fit, and given no forecast.
+
+The chips narrow it to one verdict, or to Google's top hundred; the order is
+one of five; the place's name is a button that opens the row onto its line —
+every answer a dot, this month's pace carried to the forecast's day as a
+dashed line. **Copy as CSV** puts the table as it stands on the clipboard,
+with the same header in every language and ISO days, since that copy is for
+a spreadsheet. On a phone the table slides sideways inside its own box, under
+the place's name, and the page does not. The tab is asked for the first time
+it is pressed rather than as the page opens, because most openings are for
+the directory.
+
+What it does not do: it keeps no history of the verdicts themselves, says
+nothing of the rating, and has no word for a place speeding up or slowing
+down — two intervals are not a trend, and the tiers in **How often a place is
+asked about** are what will make that sayable. The owner's alone, like the
+page it is on.
 
 ### The 62 that are already on the map
 
@@ -18682,7 +18730,11 @@ The directory, `assets/venues.js`:
 | `venues_clear` | — |
 | `venues_more` | `page` |
 | `venues_view` | `view` (`map`/`list`) |
-| `venues_tab` | `tab` (`all`/`top`) — the directory or the week's top hundred |
+| `venues_tab` | `tab` (`all`/`top`/`growth`) — the directory, the week's top hundred, or how the counts have grown |
+| `growth_filter` | `filter` — a verdict's chip on the Growth tab (`all`/`ahead`/`pace`/`behind`/`check`), or `top` for the top hundred only |
+| `growth_sort` | `sort` (`ahead`/`behind`/`month`/`gained`/`rank`) |
+| `growth_open` | `venue` — a row of the Growth tab opened onto its line, or closed |
+| `growth_copy` | — the Growth table copied as CSV |
 | `venue_select` | `venue`, `from` (`list`/`map`/`top`) |
 | `venue_call`, `venue_website`, `venue_directions`, `venue_google` | `venue` |
 | `place_link` | `place`, `map` — the door to the write-up for the ones on the map |
