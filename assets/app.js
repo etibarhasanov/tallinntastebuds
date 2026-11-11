@@ -8213,6 +8213,17 @@
      nothing, and /admin/found marks those. */
   var searchHits = 0;
 
+  /* Where the cursor goes once a field's ✕ has emptied it. With a mouse it
+     stays in the field, since the next thing is usually another word and
+     nothing was in the way. On a phone the field being focused is the
+     keyboard being up, over half the map, and pressing ✕ there says the
+     search is over: the keyboard goes with the word. Backspacing to empty
+     does not come through here, so somebody retyping keeps it. */
+  function afterClear(field) {
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) field.blur();
+    else field.focus();
+  }
+
   function setQuery(value) {
     var next = String(value == null ? '' : value);
     if (dom.search.value !== next) dom.search.value = next;
@@ -12029,7 +12040,7 @@
     dom.searchClear.addEventListener('click', function () {
       TTBTrack.event('search_clear', { scope: 'map' });
       setQuery('');
-      dom.search.focus();
+      afterClear(dom.search);
     });
     /* Enter on a phone means "done": drop the keyboard rather than submit
        anything, since the list has already narrowed with every keystroke. */
@@ -12044,7 +12055,7 @@
     dom.findClear.addEventListener('click', function () {
       TTBTrack.event('find_clear');
       setFind('');
-      dom.findInput.focus();
+      afterClear(dom.findInput);
     });
     /* Enter is every result on the map at once — see RESULTS above
        submitFind(). A row is still one place: the arrows reach them, and

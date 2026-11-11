@@ -4719,6 +4719,11 @@
 
   var searchHits = 0;
 
+  function afterClear(field) {
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) field.blur();
+    else field.focus();
+  }
+
   function setQuery(value) {
     var next = String(value == null ? '' : value);
     if (dom.search.value !== next) dom.search.value = next;
@@ -7015,7 +7020,7 @@
     dom.searchClear.addEventListener('click', function () {
       TTBTrack.event('search_clear', { scope: 'map' });
       setQuery('');
-      dom.search.focus();
+      afterClear(dom.search);
     });
     dom.search.addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter') { ev.preventDefault(); dom.search.blur(); }
@@ -7026,7 +7031,7 @@
     dom.findClear.addEventListener('click', function () {
       TTBTrack.event('find_clear');
       setFind('');
-      dom.findInput.focus();
+      afterClear(dom.findInput);
     });
     dom.findInput.addEventListener('keydown', function (ev) {
       if (ev.key !== 'Enter') return;

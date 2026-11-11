@@ -1329,6 +1329,13 @@ opens one card, and narrows nothing, so a chip, a list and a found venue can
 all be true at once, and the pin goes when the field is emptied and at no
 other time.
 
+Emptying it with the ✕ on a phone also puts the keyboard away: pressing it
+says the search is over, and the keyboard was standing over half the map.
+With a mouse the cursor stays in the field, and backspacing to empty keeps
+the keyboard on a phone too, since that is somebody about to type the next
+word. `afterClear()` in `assets/app.js`, which the column's search field
+goes through as well.
+
 ### Enter puts the results on the map
 
 Pressing Enter (the Search key on a phone's keyboard) is the other question:
