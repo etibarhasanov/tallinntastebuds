@@ -8531,12 +8531,15 @@ the same reason: a row opens its place on the map, where the arrow already
 gives the way to it.
 
 It starts at the list's first place, because the page knows nothing about
-where a reader is and never asks on its own. **Start from where I am** asks
-the phone and starts at the nearest place instead. **Change the order** puts
-two arrows on every row and the distances follow; the card then says how much
-longer your order is than the shortest, with the way back beside it. That
-order is the walker's and not the list's: it is stored with their walk, and
-lives in the page alone before there is one.
+where a reader is and, before a walk is started, never asks on its own.
+**Start from where I am** asks the phone and starts at the nearest place
+instead. **Change the order** is a screen of its own: a grip on every row to
+press and drag the place by, or to focus and move with the arrow keys, the
+distances following on the drop, and **Reset to the shortest order** — which
+is there and nowhere else, since on the main card "Back to the shortest" read
+as a way back out of something. That order is the walker's and not the
+list's: it is stored with their walk, and lives in the page alone before
+there is one.
 
 **On foot or by bike.** Two chips on the card, **On foot** pressed until
 somebody presses the other. The choice changes the time the card and every
@@ -8545,7 +8548,19 @@ name on the board, since an hour by bike is not an hour on foot. The order and
 the distances are the same streets either way. It is taken on trust, is kept
 with the walk, and can be changed until the walk is finished and not after.
 
-**A check is made wherever you are standing.** **Check in here** sends the
+**Once it is started, the page watches where you are.** "Check in here" did
+not say where. While a walk is on, unfinished and on screen, the phone's
+position is watched and the band names the nearest place left and how far it
+is — "Nearest: Koht · 240 m away · check-in opens within 75 m" — and the
+button reads **Check in at Koht**, greyed until that is inside the radius.
+Greyed and not disabled: a fix lags a person walking, so a press always goes
+through to the server, which decides. The position is the device's own and
+nothing else; the place somebody types into the map's search is never read
+for a walk. It is watched on the phone and sent only with a check. The watch
+stops when the page is hidden, when the walk is finished and when the view is
+left. A phone that fakes its GPS is still believed — see below.
+
+**A check is made wherever you are standing.** The button sends the
 phone's coordinates, and the server checks whichever unchecked place is
 nearest if it is within `RADIUS`, 75 metres, and otherwise says how far the
 nearest one left is. So the order on screen is a suggestion and the places can
@@ -8568,6 +8583,16 @@ publish need somebody who can take them down. The check stays; the words go.
 A finished walk can be given one comment about the whole of it, the same 280
 characters, offered once in the band after the last place's own and afterwards
 from the card; it is drawn under the walker's name on the board.
+
+**The clock, and starting again.** A walk that is on says how long it has
+been going — "Started 9 November · playing for 2 days 1 h" — and what
+finishing is: check in at all of them. The time is wall-clock from **Start**,
+nights included; a stopwatch to pause would be one more thing to forget and
+one more way to shave a time. **Start again** is on the card while a walk is
+on and after it is finished, and asks first, because it deletes the walk —
+every check, every comment, and the name on the board until the new one is
+finished. There is one walk per person per list, and a board that kept the
+better of two would be a board anybody could improve by trying again.
 
 **One walk per person per list, and finished is decided at the check.** The
 clock on the board runs from the first press of **Start** to the
@@ -18963,10 +18988,11 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
-| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the nine below |
+| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the ten below |
 | `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
+| `walk_again` | `list_id` — Start again, confirmed, once the server has thrown the walk away |
 | `walk_signin` | `list_id` — Sign in to start, signed out |
 | `walk_start` | `list_id` — Start, once the server has it |
 | `walk_check`, `walk_finish` | `list_id` — a check that went through, and the one that finished the walk |

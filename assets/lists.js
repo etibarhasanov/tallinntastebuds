@@ -2457,6 +2457,7 @@
      views, instead of walking through every press of the switch. */
   function setWalking(on) {
     state.walking = on;
+    if (!on) TTBWalk.leave();
     var params = new URLSearchParams(window.location.search);
     if (on) params.set('walk', '1'); else params.delete('walk');
     var query = params.toString();

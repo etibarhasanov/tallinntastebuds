@@ -34,6 +34,9 @@
  *                                or with place '' on the whole of a finished
  *                                walk; '' takes it away
  *   order   { order }            the member's own order; [] is the shortest again
+ *   again   {}                   throws the walk away — its checks, their
+ *                                comments, its time on the board — so that
+ *                                Start begins a new one
  *   unnote  { place, name }      the owner of the site taking down somebody's
  *                                comment, and nobody else
  *
@@ -78,6 +81,15 @@
  * later does not take anybody's name off the board. A place with no
  * location — a row the catalogue has lost — cannot be stood at and is not
  * counted either way.
+ *
+ * STARTING AGAIN THROWS THE FIRST ONE AWAY
+ *
+ * There is one walk per person per list, so starting again is not a second
+ * row: it deletes the first, with every check and comment on it, and the
+ * name comes off the board until the new one is finished. Keeping the old
+ * time while a new clock runs would be two walks under one key, and a board
+ * that showed the better of them would be a board anybody could improve by
+ * trying until it came out right. The page asks before it sends this.
  *
  * WHEN THE TABLES ARE NOT THERE
  *
@@ -254,7 +266,7 @@ export async function onRequestPost(context) {
   if (!list || !LIST_ID.test(list.id)) return json({ error: 'not-found' }, 404);
 
   const action = body.action;
-  const run = { start, mode, check, note, order, unnote }[action];
+  const run = { start, mode, check, note, order, again, unnote }[action];
   if (!run) return json({ error: 'malformed' }, 400);
 
   try {
@@ -366,6 +378,16 @@ async function order(env, list, user, body) {
     .bind(JSON.stringify(cleanOrder(body.order, list)), user.id, list.id)
     .run();
   if (!done.meta.changes) return json({ error: 'not-started' }, 409);
+  return json(await answer(env, list, user), 200);
+}
+
+/* STARTING AGAIN THROWS THE FIRST ONE AWAY. Both tables in one batch, so a
+   walk is never left without its checks or checks without their walk. */
+async function again(env, list, user) {
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM walk_checks WHERE user_id = ? AND list_id = ?').bind(user.id, list.id),
+    env.DB.prepare('DELETE FROM walks WHERE user_id = ? AND list_id = ?').bind(user.id, list.id)
+  ]);
   return json(await answer(env, list, user), 200);
 }
 

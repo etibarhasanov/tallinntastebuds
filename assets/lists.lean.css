@@ -1594,14 +1594,39 @@ body.has-scrim { overflow: hidden; }
 .walk-leg { margin: 0 0 4px 58px; color: var(--muted); font-size: 12px; }
 
 .item.has-moves { grid-template-columns: 28px 1fr auto; }
-.item.has-moves .item-moves {
+.walk-grip {
   grid-column: 3;
   grid-row: 1;
-  flex-direction: row;
   align-self: center;
-  margin: 0;
+  width: 40px;
+  height: 40px;
+  cursor: grab;
+  touch-action: none;
 }
-.item-moves .row-btn:disabled { opacity: .3; cursor: default; }
+.walk-grip svg { width: 20px; height: 20px; stroke-width: 2.6; }
+
+.walk-stop { transition: transform 150ms var(--ease); }
+.walk-stop.is-carrying { position: relative; z-index: 2; transition: none; }
+.walk-stop.is-carrying .item { border-color: var(--accent); box-shadow: var(--shadow), var(--lift); }
+.walk-stop.is-carrying .walk-grip { cursor: grabbing; }
+
+.walk-ask {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--wash);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.walk-ask p { margin: 0 0 10px; }
+.walk-ask .lists-row { gap: 6px 18px; }
+
+.walk-near { margin: 0; font-family: var(--display); font-size: 16px; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+.walk-near-sub { margin: 0; color: var(--muted); font-size: 13.5px; text-align: center; }
+.walk-near-sub.is-yes { color: var(--yes); }
+
+.walk-dock .go.is-wait { background: var(--wash); border-color: var(--hairline); color: var(--muted); }
 
 .walk-tick { color: var(--yes); }
 .walk-tick svg {
