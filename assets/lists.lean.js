@@ -2196,6 +2196,7 @@
     ]).then(function (loaded) {
       var answer = loaded[0];
       var places = Array.isArray(answer) ? answer : (answer && answer.places) || [];
+      places = places.filter(function (p) { return !p.closed; });
       state.places = loaded[1].concat(places);
       state.hay = {};
       state.places.forEach(function (p) {

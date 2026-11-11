@@ -1113,6 +1113,9 @@ body.lang-open .controls { z-index: 1250; }
 }
 .find-row.is-mine .find-pin { stroke: var(--accent); }
 
+.find-row.is-shut .find-pin { stroke-dasharray: 2.2 2.2; }
+.find-row.is-shut .find-name { color: var(--muted); }
+
 .find-text {
   min-width: 0;
 }

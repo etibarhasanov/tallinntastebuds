@@ -1870,6 +1870,12 @@ body.lang-open .controls { z-index: 1250; }
 }
 .find-row.is-mine .find-pin { stroke: var(--accent); }
 
+/* Temporarily closed: the name steps back to the muted ink and the pin's
+   outline breaks, the way the ring round a shut pin on the map is dashed.
+   The words themselves lead the street line — findRow() in assets/app.js. */
+.find-row.is-shut .find-pin { stroke-dasharray: 2.2 2.2; }
+.find-row.is-shut .find-name { color: var(--muted); }
+
 /* The text column beside the pin. A block in a grid track is still allowed to
    push its track wider than the track's own maximum unless it is told it may
    shrink, which is what min-width: 0 is for: without it a long address stopped

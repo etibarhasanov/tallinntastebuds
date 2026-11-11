@@ -2688,9 +2688,19 @@ the visible set before it draws, so a shut place cannot come up however many
 times you press it, and with every place filtered out the toast says so rather
 than sending you to a closed door. The locate framing walks you to the
 nearest *open* place. And the find bar across the top of the map never
-answers with one — `findMine()` skips `place.closed` — because that bar is
-the one thing on the page that only ever offers somewhere to go, and a name
-found there is a name somebody sets off for. The column's own field still
+answers with one that is shut for good — `findMine()` skips those — because
+a name found there is a name somebody sets off for. **A place shut for the
+moment it does answer with, and says so.** It used to leave those out as
+well, mine and the sixty-five rows Google calls temporarily closed, and what
+that drew was "Nothing matches" under the name of a place whose sign is
+still up — the site not knowing the city, when it did. So a row of the bar
+for one leads its street line with *Temporarily closed* (`venuesShutFor`),
+its name in the muted ink and its pin's outline broken; it stands under
+every open row the words reach, on both halves of the dropdown, so "pizza"
+still opens on somewhere to go; and picked, a Google one lands with the
+dashed ring round its pin and the flag over its name. `/api/places` carries
+those rows with `closed: true` for this bar alone: `?q=`, the app and both
+pickers leave them out as they did. The column's own field still
 narrows the list to it, badge and all: that field is a search of the list,
 and the list keeps its shut places on purpose. They stay on the map, and in
 the list, and at their own `?spot=` link — that is the whole point — but
@@ -5572,8 +5582,8 @@ directory shows whose numbers are older than their tier allows — **How often
 a place is asked about** below — the top tier's due rows first and so down,
 and inside a tier the oldest first, the never-refreshed ahead of everything.
 The places Google calls temporarily closed are the exception: at most two a
-day (`CLOSED_A_DAY`), taken first. Nobody opens them, since the find bar, the
-picker and the chat leave them out, and `_rank.js` puts every closed place
+day (`CLOSED_A_DAY`), taken first. Hardly anybody opens them, since the
+picker and the chat leave them out and the find bar puts them last, and `_rank.js` puts every closed place
 below every open one, so in rank order they came last of all. In November
 sixty-three of the sixty-seven had never been asked about. Two a day brings
 each round in about the same five weeks as the rest, and **Look for it on
@@ -7788,7 +7798,10 @@ google_venues       the Google Places export, in D1. Every place in the city
 The map's entry always wins. A Google row is dropped when the table ties it to
 a place on the map (`map_id`), and dropped again when the name is a name the
 catalogue already carries, so the sheet never shows one restaurant twice.
-Rows Google says are shut, and rows marked `hidden`, are not offered at all.
+Rows marked `hidden` are not offered at all. Rows Google says are temporarily
+closed are in the answer carrying `closed: true`, for the map's find bar, which
+says so on the row; the picker drops them, so a list is still built out of
+places that are open.
 The answer is cached five minutes: it changes when a deploy or a sync changes
 it, and it is the same for everybody — unlike a list, which is read by its
 owner in the middle of writing it and is never cached for them; the copy a

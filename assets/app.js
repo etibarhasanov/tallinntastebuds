@@ -2100,13 +2100,13 @@
   /* The saved Google venues on the map, while Places I saved is on.
 
      Out of the find bar's roll — /api/places, the map's places and every
-     open Google venue with its kinds and its pin — rather than a request of
+     Google venue with its kinds and its pin, the temporarily closed saying so — rather than a request of
      its own, because it is the same rows in the shape foundStandIn() already
      turns into a stand-in, and the bar may well have asked for it already.
      Only when the filter is on and a saved id is one the map cannot place:
      somebody whose saves are all mine never asks for it at all.
 
-     An id the roll does not carry either — a place Google has closed, or one
+     An id the roll does not carry either — a place Google has lost, or one
      somebody added by hand, which only its list draws — stays saved and
      simply has no pin here; the mark is right wherever it does turn up.
      `then` runs once the stand-ins are in, which is how ?spot= opens one
@@ -2143,7 +2143,7 @@
      the market is there as well. The same road seatSaved() takes, out of
      the same roll and for the same reasons; they wear the pin of what they
      are, a plain one for a market, because the face is for places I have
-     eaten at. A key the roll does not carry, a place Google has closed,
+     eaten at. A key the roll does not carry, a place Google has lost,
      stays off the map, and the chip lists the rest. */
   var dealSeating = false;
 
@@ -7204,6 +7204,15 @@
     var deal = liveDealFor(place);
 
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
+      /* A venue the find bar brought in that Google calls temporarily
+         closed: the flag a place of mine wears, in Google's words. No note
+         under it — that one is about a write-up, and there is none. */
+      place.closed
+        ? el('div', { className: 'closed-flag' }, [
+            el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
+            el('span', { textContent: shutWord(place) })
+          ])
+        : null,
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
@@ -8553,10 +8562,14 @@
      only reached them by a stem — see hasWords() — and within each, the rows
      the words land on squarely before the ones they only brush: see
      findTier() — and among those, the ones that ARE what was typed before
-     the ones only filed beside it: see findSays(). */
+     the ones only filed beside it: see findSays(). And ahead of all of
+     it, on both halves, the open before the temporarily closed: the bar
+     leads with somewhere to go, and a shut door is there to be found by
+     name rather than to be the best pizza in town. */
   function findOrder(words, wish, away, level, tier, says, named) {
     var q = words.join(' ');
     return function (a, b) {
+      if (!a.closed !== !b.closed) return a.closed ? 1 : -1;
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
@@ -8680,11 +8693,12 @@
     var order = {};
     for (var i = 0; i < state.places.length; i++) {
       var place = state.places[i];
-      /* Shut, for good or for now, and it is not an answer: the bar is the
-         one thing on the page that only ever offers somewhere to go, and a
-         place found here is a place somebody sets off for. The row and the
-         pin keep saying it is shut — this is the only place it is left out. */
-      if (place.closed) continue;
+      /* Shut for good, and it is not an answer: a place found here is a
+         place somebody sets off for. Shut for now is one — it used to be
+         left out too, and typing the name of a place whose sign is still up
+         answered "Nothing matches" — but it says so on its row, and it
+         stands under every open place the words reach: see findRow(). */
+      if (place.closed && !isPaused(place)) continue;
       if (area && !area.contains([place.lat, place.lng])) continue;
       var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
@@ -8700,6 +8714,7 @@
       }
     }
     hits.sort(function (a, b) {
+      if (!a.closed !== !b.closed) return a.closed ? 1 : -1;
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
@@ -8854,10 +8869,16 @@
      that sorts by one. */
   function findRow(place, mine, far) {
     var where = place.address || '';
+    /* Temporarily closed, on a place of mine or a row of Google's — the only
+       kind of shut the bar offers. The words lead the mono line, where the
+       fact is read before the street is, and the name keeps the whole of
+       its own; a pin with a broken outline is the dashed ring on the map
+       said small. */
+    var shut = place.closed ? t('venuesShutFor') : '';
     /* How far it is, ahead of the street on the same mono line — "450 m ·
        Kopli tn 16" — and only while the map knows where you are: see WHERE
        YOU ARE in the header. */
-    var line = far ? (where ? far + ' \u00b7 ' + where : far) : where;
+    var line = [shut, far, where].filter(Boolean).join(' \u00b7 ');
 
     var pin = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     pin.setAttribute('class', 'find-pin');
@@ -8870,9 +8891,9 @@
 
     var row = el('button', {
       type: 'button',
-      className: 'find-row' + (mine ? ' is-mine' : ''),
+      className: 'find-row' + (mine ? ' is-mine' : '') + (shut ? ' is-shut' : ''),
       'data-id': place.id,
-      'aria-label': place.name + (where ? ', ' + where : '') + (far ? ', ' + far : '') +
+      'aria-label': place.name + (shut ? ', ' + shut : '') + (where ? ', ' + where : '') + (far ? ', ' + far : '') +
         ', ' + (mine ? t('findOnMap') : t('findInCity'))
     }, [
       pin,
@@ -9087,7 +9108,7 @@
   /* A row off the roll in the stand-in shape. Only what the roll carries:
      the rest is dressFound()'s, one venue at a time, once it is opened. */
   function foundStandIn(row) {
-    return cityStandIn({
+    var place = cityStandIn({
       id: row.id,
       name: row.name,
       address: row.address || '',
@@ -9100,6 +9121,11 @@
       reviews: typeof row.reviews === 'number' ? row.reviews : null,
       kind: row.kind
     });
+    /* The only shut the export knows, in the word a place of mine uses for
+       it, so the pin takes the dashed ring, a results row the badge and the
+       card the flag without any of them asking whose row this is. */
+    if (row.closed) place.closed = 'temporary';
+    return place;
   }
 
   /* The half the roll does not carry: the number to ring, the site to read
