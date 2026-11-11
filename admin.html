@@ -57,12 +57,14 @@
      and the lead line under a title. This page used to carry a palette and a
      box of its own, and the owner's five pages looked like two sites — this
      one in Helvetica on a plain card, the four under /admin/ in the site's own
-     faces. Unstamped, like basemap.js below: the page is served no-store and
-     /assets/* revalidates, so it never holds a stale copy. What follows the
-     links is only what a form has and a ranking does not. -->
-<link rel="stylesheet" href="/assets/styles.lean.css">
-<link rel="stylesheet" href="/assets/lists.lean.css">
-<link rel="stylesheet" href="/assets/stats.css">
+     faces. Stamped, like every other page: this one went without for a
+     while, on the argument that it is served no-store and /assets/* is told
+     to revalidate, and the browser held last week's stats.css for four hours
+     under this week's markup all the same — see PAGES in tools/stamp.mjs.
+     What follows the links is only what a form has and a ranking does not. -->
+<link rel="stylesheet" href="/assets/styles.lean.css?v=15fa27a0">
+<link rel="stylesheet" href="/assets/lists.lean.css?v=84cd3dc5">
+<link rel="stylesheet" href="/assets/stats.css?v=60bcdad6">
 <style>
 /* No colour is named below — rule 1 of The design rules in README.md — so
    the dark style the owner picked on the map reaches this page too. */
@@ -368,10 +370,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 </main>
 
 <!-- The basemap the pin picker draws, shared with the map page and the lists
-     picker. Deferred, so it is there by the time a place form is opened; this
-     page is served no-store and /assets/* revalidates, so unlike the stamped
-     pages it needs no ?v= to stay off a stale copy. -->
-<script src="/assets/basemap.js" defer></script>
+     picker. Deferred, so it is there by the time a place form is opened, and
+     stamped like the sheets in the head. -->
+<script src="/assets/basemap.js?v=357d3794" defer></script>
 
 <script>
 (function () {

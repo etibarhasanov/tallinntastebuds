@@ -15007,7 +15007,7 @@ and a box of its own — Helvetica on a plain card, five boxed tabs that broke
 onto two lines on a phone, the pages under `/admin/` as a row of underlined
 links — so the owner's five pages looked like two sites. It now links the same
 three sheets `/admin/stats` and `/admin/visitors` do (`styles.css`,
-`lists.css`, `stats.css`, unstamped because the page is `no-store`), wears the
+`lists.css`, `stats.css`, stamped like theirs), wears the
 same header, eyebrow and title, and reads the style the map's swatch left in
 `ttb.style`, so the dark style reaches it too. Signed in, it is the owner's
 menu — the same block the five pages under `/admin/` carry, see
@@ -15577,6 +15577,16 @@ every phone still holding the previous script hit `new Array(2.5 + 1)` —
 itself. A fresh private window worked, the window they had been using did not,
 and reloading changed nothing, because reloading asked for the same URL again.
 The revalidation headers above are a request; the stamp is not.
+
+And the request is not even passed on as written. `_headers` says
+`max-age=0, must-revalidate` for `/assets/*`, and what reaches a browser from
+tallinntastebuds.ee is `max-age=14400`: the Cloudflare zone in front of Pages
+raises a browser lifetime shorter than its own setting to four hours.
+`/admin.html` was the one page left unstamped, on the argument that it is
+served `no-store` and its assets revalidate, and on the day the owner's menu
+arrived it drew the new markup with the `stats.css` from before it — the mark
+and the chips unstyled, for the owner, for four hours. It is in `PAGES` now
+like the rest, and no page that loads from `assets/` is an exception.
 
 Data files are deliberately **not** stamped. They are the files you edit every
 week, and they have to go live the moment they are pushed without anybody

@@ -46,7 +46,14 @@ export const PAGES = [
   'flashcard.html', 'edit.html', 'write.html', 'insights.html', 'chess.html', '404.html', 'privacy.html',
   /* The owner's five, under admin/ — see functions/_middleware.js. */
   'admin/google.html', 'admin/stats.html', 'admin/visitors.html', 'admin/found.html',
-  'admin/flows.html'
+  'admin/flows.html',
+  /* And the door to them. It went without stamps for a while, on the
+     argument that it is served no-store and /assets/* is told to revalidate,
+     so it could never hold a stale copy. The zone in front of Pages raises
+     that max-age=0 to four hours for the browser, and on the day the owner's
+     menu arrived this page drew the new markup with the stylesheet from
+     before it. A header is a request; the stamp is not. */
+  'admin.html'
 ];
 
 /* Scripts and stylesheets only. Images are addressed by name and replaced
