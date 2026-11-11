@@ -1124,7 +1124,10 @@ whose id is on neither half, which is how a typo in an id shows.
 The file opened with fifty-eight entries: one for each of my open places
 whose write-up or dishes name something the search did not already find
 them by — read out of the write-ups, nothing added to them — and One Sixty,
-on the owner's word. It is meant to grow by being told: a line saying a
+on the owner's word. The first thing told to it after that was the
+guide: the eight places in Tallinn with a Michelin Bib Gourmand, six of them
+Google's rows, so *michelin* and *bib gourmand* find all of them. *michelin
+star* is 180° and NOA Chef's Hall. It is meant to grow by being told: a line saying a
 place and what it serves is the whole of an edit. The chat does not read it
 yet, and neither does the column's field.
 
