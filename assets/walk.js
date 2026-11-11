@@ -37,8 +37,20 @@
  *
  * It starts at the first place on the list, because that is the one thing
  * known about where a reader is: nowhere. "Start from where I am" asks the
- * phone and starts at the nearest place instead. The page never asks for a
- * location on its own.
+ * phone and starts at the nearest place instead. Before a walk is started
+ * the page never asks for a location on its own.
+ *
+ * ONCE IT IS STARTED, THE PAGE WATCHES WHERE YOU ARE
+ *
+ * "Check in here" was a button that did not say where. So while a walk is
+ * on and the page is on screen, the phone's position is watched, and the
+ * band names the nearest place left and how far it is; the button reads
+ * "Check in at Pudel" and is greyed until that is inside the radius. Greyed
+ * and not disabled: a fix lags a person walking, so a press always asks for
+ * a fresh one and lets the server decide. The watch is the device's own
+ * position and nothing else — the place somebody types into the map's
+ * search is never read here — and it stops when the page is hidden, when
+ * the walk is finished and when the view is left.
  *
  * ON FOOT OR BY BIKE
  *
@@ -49,8 +61,10 @@
  *
  * YOUR ORDER IS YOURS
  *
- * "Change the order" turns every row into one that can be moved up or
- * down, and the distances follow. That order belongs to the walker and not
+ * "Change the order" puts a grip on every row: press it and drag the place
+ * to where it goes, or focus it and use the arrow keys, and the distances
+ * follow. The way back to the shortest order is on that screen and nowhere
+ * else, where it reads as what it is. That order belongs to the walker and not
  * to the list: it is kept with their walk once there is one, and in this
  * page alone before that. It changes nothing about checking in, which is
  * done wherever somebody is standing.
@@ -89,8 +103,7 @@
      place under a list is a row, not a thread. */
   var NOTES_SHOWN = 3;
 
-  var ICON_UP = '<path d="M6 15l6-6 6 6"/>';
-  var ICON_DOWN = '<path d="M6 9l6 6 6-6"/>';
+  var ICON_GRIP = '<path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/>';
   var ICON_TICK = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
 
   /* The walk on screen. One at a time, because the page shows one list:
@@ -101,14 +114,19 @@
 
   /* ------------------------------------------------------------ the order */
 
-  function metres(a, b) {
+  /* The straight line, which is what a check is measured by — the server
+     measures the same way, km() in functions/api/_lib.js. */
+  function crow(a, b) {
     var rad = Math.PI / 180;
     var dLat = (b.lat - a.lat) * rad;
     var dLng = (b.lng - a.lng) * rad;
     var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    return 2 * 6371000 * Math.asin(Math.sqrt(s)) * DETOUR;
+    return 2 * 6371000 * Math.asin(Math.sqrt(s));
   }
+
+  /* And the walk between them, as near as a straight line can say. */
+  function metres(a, b) { return crow(a, b) * DETOUR; }
 
   /* Every place against every other, once. */
   function table(points) {
@@ -228,11 +246,14 @@
     return c.t('walkHours', { h: Math.floor(n / 60), m: n % 60 });
   }
 
-  /* How long a walk took: minutes and hours inside a day, days past one. */
+  /* How long a walk took, or has been going: minutes and hours inside a
+     day, days and hours past one. */
   function took(ms) {
     var days = Math.floor(ms / 86400000);
     if (days < 1) return minutes(ms / 60000);
-    return days === 1 ? c.t('walkDayOne') : c.t('walkDays', { n: days });
+    var hours = Math.floor(ms % 86400000 / 3600000);
+    var said = days === 1 ? c.t('walkDayOne') : c.t('walkDays', { n: days });
+    return hours ? said + ' ' + c.t('walkHoursOnly', { h: hours }) : said;
   }
 
   /* "7 November", and with `clock` "7 November, 18:42". Intl first, because
@@ -359,14 +380,20 @@
     }).then(read, function () { return { status: 0, out: {} }; });
   }
 
-  /* Where the phone says it is, or a refusal. Asked for only inside a press:
-     the page never asks on its own. A fresh fix every time, never the one
-     from ten seconds ago: somebody told they are forty metres short walks
-     the forty metres and presses again, and an answer out of the cache
-     would tell them the same thing standing at the door. */
+  /* Where the phone says it is, or a refusal. Asked for only inside a press
+     before a walk is on. Never an answer out of the browser's cache:
+     somebody told they are forty metres short walks the forty metres and
+     presses again, and a fix from before they moved would tell them the
+     same thing standing at the door. While the watch below is running its
+     last fix is the freshest there is, and is used where it is seconds
+     old — asking a second time beside a running watch is also the one
+     arrangement in which some browsers never answer at all. */
+  var FRESH = 15000;
+
   function locate() {
     return new Promise(function (resolve, reject) {
       if (!navigator.geolocation) { reject(); return; }
+      if (w.watch !== null && w.here && Date.now() - w.hereAt < FRESH) { resolve(w.here); return; }
       navigator.geolocation.getCurrentPosition(function (pos) {
         resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       }, function () { reject(); }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
@@ -489,32 +516,210 @@
     w.own = plan().stops.map(function (item) { return item.place; });
     w.editing = true;
     w.noting = null;
+    w.asking = false;
     say('');
     c.redraw();
   }
 
-  function move(place, delta) {
-    var i = w.own.indexOf(place);
-    var j = i + delta;
-    if (i === -1 || j < 0 || j >= w.own.length) return;
-    w.own.splice(j, 0, w.own.splice(i, 1)[0]);
+  /* One place moved to `to`, and the page drawn again around it. The grip
+     that did it has been rebuilt by the redraw, so the focus is put back on
+     the same place's: a second press of an arrow key moves it again. */
+  function moveTo(place, to) {
+    var from = w.own.indexOf(place);
+    if (from === -1 || to < 0 || to >= w.own.length || to === from) return;
+    w.own.splice(to, 0, w.own.splice(from, 1)[0]);
     c.redraw();
-    /* The redraw rebuilt the button that was pressed; the press stays on
-       the same place, so a second press moves it again. */
-    var again = document.querySelector('[data-walk-move="' + (delta < 0 ? 'up' : 'down') + '-' + j + '"]');
-    if (again) again.focus();
+    var grip = document.querySelector('[data-walk-grip="' + to + '"]');
+    if (grip) grip.focus();
   }
 
+  /* Dragging a place to where it goes. The row follows the finger, the rows
+     it passes step out of its way by its own height, and the order changes
+     once, on the drop — so the legs between the rows are stale for as long
+     as the finger is down and right the moment it lifts.
+
+     Pointer events, captured on the grip, so one handler is a mouse, a
+     finger and a pen. The grip is `touch-action: none` in the stylesheet,
+     which is what keeps the page from scrolling under the finger and what
+     tells assets/back.js that a sideways finger here is not Back; near
+     the top or the foot of the window the page is scrolled by hand
+     instead, since a list is longer than a phone. */
+  function carry(grip, row, place) {
+    grip.addEventListener('pointerdown', function (ev) {
+      if (ev.button) return;
+      ev.preventDefault();
+      var rows = [].slice.call(row.parentNode.children);
+      var from = rows.indexOf(row);
+      var to = from;
+      var startY = ev.clientY;
+      var startScroll = window.pageYOffset;
+      var boxes = rows.map(function (r) {
+        var b = r.getBoundingClientRect();
+        return { mid: b.top + startScroll + b.height / 2, height: b.height };
+      });
+
+      try { grip.setPointerCapture(ev.pointerId); } catch (e) { /* the drag still works on the grip itself */ }
+      row.classList.add('is-carrying');
+
+      function moved(e) {
+        if (e.clientY < 110) window.scrollBy(0, -14);
+        else if (e.clientY > window.innerHeight - 150) window.scrollBy(0, 14);
+        var dy = e.clientY - startY + window.pageYOffset - startScroll;
+        var mid = boxes[from].mid + dy;
+        to = from;
+        rows.forEach(function (r, i) {
+          if (i < from && mid < boxes[i].mid) to = Math.min(to, i);
+          if (i > from && mid > boxes[i].mid) to = Math.max(to, i);
+        });
+        row.style.transform = 'translateY(' + dy + 'px)';
+        rows.forEach(function (r, i) {
+          if (r === row) return;
+          var step = i >= to && i < from ? boxes[from].height : i <= to && i > from ? -boxes[from].height : 0;
+          r.style.transform = step ? 'translateY(' + step + 'px)' : '';
+        });
+      }
+
+      function dropped() {
+        grip.removeEventListener('pointermove', moved);
+        grip.removeEventListener('pointerup', dropped);
+        grip.removeEventListener('pointercancel', dropped);
+        if (to === from) c.redraw(); else moveTo(place, to);
+      }
+
+      grip.addEventListener('pointermove', moved);
+      grip.addEventListener('pointerup', dropped);
+      grip.addEventListener('pointercancel', dropped);
+    });
+
+    grip.addEventListener('keydown', function (ev) {
+      var delta = ev.key === 'ArrowUp' ? -1 : ev.key === 'ArrowDown' ? 1 : 0;
+      if (!delta) return;
+      ev.preventDefault();
+      moveTo(place, w.own.indexOf(place) + delta);
+    });
+  }
+
+  /* An order that came out the same as the shortest is the shortest, and
+     is kept as that: the card then says where it starts rather than "your
+     order, 0 m longer". */
   function doneReordering() {
+    var short = shortOrder().map(function (item) { return item.place; });
+    if (w.own.join('|') === short.join('|')) w.own = null;
     w.editing = false;
     TTBTrack.event('walk_reorder', { list_id: w.list.id });
     keepOrder();
+  }
+
+  /* On the reordering screen: every place back where the shortest order
+     has it, and the screen left open to carry on from there. */
+  function resetOrder() {
+    w.own = shortOrder().map(function (item) { return item.place; });
+    c.redraw();
   }
 
   function shortestAgain() {
     w.own = null;
     w.editing = false;
     keepOrder();
+  }
+
+  /* -------------------------------------------------------- where you are
+   * ONCE IT IS STARTED, THE PAGE WATCHES WHERE YOU ARE — the header. The
+   * watch runs only while a walk is on, unfinished and on screen, and what
+   * it changes is one line and one label in the band; so a new position
+   * repaints only when the nearest place or the ten metres it rounds to
+   * has changed, and never under a comment somebody is typing.
+   */
+  function watching() {
+    return started() && !finished() && document.visibilityState !== 'hidden' && !!navigator.geolocation;
+  }
+
+  function watch() {
+    if (!watching()) { unwatch(); return; }
+    if (w.watch !== null) return;
+    w.watch = navigator.geolocation.watchPosition(function (pos) {
+      var was = nearSaid();
+      w.here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      w.hereAt = Date.now();
+      w.refused = false;
+      if (nearSaid() !== was && w.noting === null && !w.editing && !w.busy) c.redraw();
+    }, function (err) {
+      /* 1 is a refusal, and is said; anything else is a fix that did not
+         come, and the next one may. */
+      if (err && err.code === 1 && !w.refused) { w.refused = true; c.redraw(); }
+    }, { enableHighAccuracy: true, maximumAge: 5000 });
+  }
+
+  function unwatch() {
+    if (w && w.watch !== null && navigator.geolocation) navigator.geolocation.clearWatch(w.watch);
+    if (w) w.watch = null;
+  }
+
+  /* The nearest place left and how far it is as the crow flies, or null
+     before the phone has said where it is. */
+  function nearest() {
+    if (!w.here) return null;
+    var best = null;
+    doors().forEach(function (item) {
+      if (checkOf(item.place)) return;
+      var m = crow(w.here, item);
+      if (!best || m < best.metres) best = { item: item, metres: m };
+    });
+    return best;
+  }
+
+  /* What the band would say about it, as one string to compare. */
+  function nearSaid() {
+    var n = nearest();
+    return n ? n.item.place + '|' + Math.round(n.metres / 10) : '';
+  }
+
+  document.addEventListener('visibilitychange', function () { if (w && c) watch(); });
+
+  /* ------------------------------------------------------------ the clock
+   * How long the walk has been going, on the card. Wall-clock time from
+   * Start, nights included: a walk may take a month, and a stopwatch to
+   * pause would be one more thing to forget and one more way to shave a
+   * time. It reads to the minute, so the one element that holds it is
+   * rewritten twice a minute and nothing else is redrawn for it.
+   */
+  var tick = null;
+
+  function clock(node) {
+    if (tick) { window.clearInterval(tick); tick = null; }
+    if (!node) return;
+    function write() {
+      node.textContent = c.t('walkPlaying', {
+        date: day(w.data.walk.started),
+        took: took(Date.now() - w.data.walk.started)
+      });
+    }
+    /* Written now, before the card it is in has reached the document, and
+       then for as long as it is still there. */
+    write();
+    tick = window.setInterval(function () {
+      if (document.body.contains(node) && started()) { write(); return; }
+      window.clearInterval(tick);
+      tick = null;
+    }, 30000);
+  }
+
+  /* Throwing the walk away so Start begins another. The card asks first —
+     see head() — because it takes every check, every comment and a time on
+     the board with it. */
+  function startAgain() {
+    w.busy = 'again';
+    c.redraw();
+    send({ action: 'again' }).then(function (answer) {
+      w.busy = '';
+      w.asking = false;
+      if (answer.status !== 200) { say(c.t('walkErr'), true); c.redraw(); return; }
+      TTBTrack.event('walk_again', { list_id: w.list.id });
+      w.noting = null;
+      w.asked = false;
+      say('');
+      land(answer.out);
+    });
   }
 
   /* ------------------------------------------------------------- the pieces */
@@ -534,14 +739,24 @@
       distance: distance(p.total),
       time: minutes(p.total / PACE[w.mode])
     });
+    var playing = null;
+
+    if (w.editing) {
+      /* Changing the order is its own screen: the totals, what to do, and
+         the way back to the shortest — which lives here and nowhere else. */
+      kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
+      kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkReorderHint') }));
+      kids.push(c.el('div', { className: 'lists-row walk-alts' }, [alt(c.t('walkShortest'), resetOrder)]));
+      return c.card(kids);
+    }
 
     if (finished()) {
       kids.push(c.el('p', { className: 'walk-facts mono', textContent: c.t('walkDoneIn', {
         n: done, total: total, took: took(w.data.walk.finished - w.data.walk.started)
       }) }));
     } else if (started()) {
-      kids.push(c.el('p', { className: 'walk-facts mono', textContent: c.t('walkProgress', {
-        n: done, total: total, date: day(w.data.walk.started)
+      kids.push(c.el('p', { className: 'walk-facts mono', textContent: c.t('walkToGo', {
+        n: done, total: total, left: total - done
       }) }));
     } else {
       kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
@@ -551,17 +766,25 @@
       kids.push(c.el('div', { className: 'walk-bar', 'aria-hidden': 'true' }, [
         c.el('i', { style: 'width:' + (total ? Math.min(100, done / total * 100) : 0) + '%' })
       ]));
-      if (!finished()) kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
     }
 
-    if (w.editing) {
-      kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkReorderHint') }));
-    } else if (!finished() && total) {
-      kids.push(c.el('p', { className: 'walk-from', textContent:
-        w.own ? (p.more >= 10 ? c.t('walkYours', { more: distance(p.more) }) : c.t('walkYoursPlain'))
-        : c.t(w.here ? 'walkFromHere' : 'walkFromFirst', { place: p.stops[0].name })
-      }));
-      if (!started()) kids.push(c.el('p', { className: 'walk-how', textContent: c.t('walkHow') }));
+    if (finished()) {
+      kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkFinishedSay') }));
+    } else if (total) {
+      if (started()) {
+        /* The clock, then what is left to walk, then what finishing is —
+           the three things a walk half done was not saying. */
+        playing = c.el('p', { className: 'walk-facts mono' });
+        kids.push(playing);
+        kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
+        kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkGoal', { total: total }) }));
+      } else {
+        kids.push(c.el('p', { className: 'walk-from', textContent:
+          w.own ? (p.more >= 10 ? c.t('walkYours', { more: distance(p.more) }) : c.t('walkYoursPlain'))
+          : c.t(w.here ? 'walkFromHere' : 'walkFromFirst', { place: p.stops[0].name })
+        }));
+        kids.push(c.el('p', { className: 'walk-how', textContent: c.t('walkHow') }));
+      }
       kids.push(c.el('div', { className: 'lists-row walk-modes' }, MODES.map(function (mode) {
         var chip = c.el('button', {
           type: 'button',
@@ -572,43 +795,62 @@
         chip.addEventListener('click', function () { setMode(mode); });
         return chip;
       })));
-      var alts = [
-        w.here || w.own ? null : alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe),
-        total > 2 ? alt(c.t('walkReorder'), reorder) : null,
-        w.own ? alt(c.t('walkShortest'), shortestAgain) : null
-      ].filter(Boolean);
-      if (alts.length) kids.push(c.el('div', { className: 'lists-row walk-alts' }, alts));
     }
 
-    /* What the walker said about the whole of it, and the way to say it or
-       change it — the board under this card shows it to everybody. */
-    if (finished() && w.noting !== '') {
-      if (w.data.walk.note) kids.push(c.el('p', { className: 'walk-note', textContent: w.data.walk.note }));
-      kids.push(alt(c.t(w.data.walk.note ? 'walkNoteEdit' : 'walkNoteAdd'), function () {
+    /* What the walker said about the whole of it — the board under this
+       card shows it to everybody. */
+    if (finished() && w.noting !== '' && w.data.walk.note) {
+      kids.push(c.el('p', { className: 'walk-note', textContent: w.data.walk.note }));
+    }
+
+    /* The quiet row: everything else this card can do, in the order
+       somebody would reach for it. */
+    var alts = [
+      finished() && w.noting !== '' ? alt(c.t(w.data.walk.note ? 'walkNoteEdit' : 'walkNoteAdd'), function () {
         w.noting = '';
         say('');
         c.redraw();
-      }));
+      }) : null,
+      !started() && !w.here && !w.own && total
+        ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe) : null,
+      !finished() && total > 2 ? alt(c.t('walkReorder'), reorder) : null,
+      started() && !w.asking ? alt(c.t('walkAgain'), function () { w.asking = true; c.redraw(); }) : null
+    ].filter(Boolean);
+    if (alts.length) kids.push(c.el('div', { className: 'lists-row walk-alts' }, alts));
+
+    /* Start again, asked before it is done: it takes every check, every
+       comment and a time on the board with it. */
+    if (started() && w.asking) {
+      var yes = c.button(c.t('walkAgainYes'), 'alt is-danger', startAgain);
+      yes.disabled = w.busy === 'again';
+      kids.push(c.el('div', { className: 'walk-ask', role: 'group', 'aria-label': c.t('walkAgain') }, [
+        c.el('p', { textContent: c.t('walkAgainAsk') }),
+        c.el('div', { className: 'lists-row' }, [
+          yes,
+          alt(c.t('walkAgainNo'), function () { w.asking = false; c.redraw(); })
+        ])
+      ]));
     }
 
     if (lost > 0) {
       kids.push(c.el('p', { className: 'walk-facts mono', textContent: c.t('walkLeftOut', { n: lost }) }));
     }
+    clock(playing);
     return c.card(kids);
   }
 
-  function moveButton(labelKey, icon, item, i, delta, off) {
-    var b = c.el('button', {
+  /* The handle a place is moved by — see carry(). */
+  function gripFor(item, i, row) {
+    var grip = c.el('button', {
       type: 'button',
-      className: 'row-btn',
-      'aria-label': c.t(labelKey, { place: item.name }),
-      title: c.t(labelKey, { place: item.name }),
-      disabled: off,
-      'data-walk-move': (delta < 0 ? 'up' : 'down') + '-' + i,
-      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + icon + '</svg>'
+      className: 'row-btn walk-grip',
+      'aria-label': c.t('walkGrip', { place: item.name }),
+      title: c.t('walkGrip', { place: item.name }),
+      'data-walk-grip': String(i),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICON_GRIP + '</svg>'
     });
-    b.addEventListener('click', function () { move(item.place, delta); });
-    return b;
+    carry(grip, row, item.place);
+    return grip;
   }
 
   /* What people said at a place: the walker's own first, with the way to
@@ -650,11 +892,11 @@
       item.address ? c.el('p', { className: 'item-address mono', textContent: item.address }) : null,
       mine ? c.el('p', { className: 'walk-done mono', textContent: c.t('walkChecked', { when: day(mine.at, true) }) }) : null,
       next === item ? c.el('p', { className: 'walk-next mono', textContent: w.here
-        ? c.t('walkNextFrom', { distance: distance(metres(w.here, item)) })
+        ? c.t('walkNextFrom', { distance: distance(crow(w.here, item)) })
         : c.t('walkNext') }) : null
     ].concat(notesOf(item, mine));
 
-    return c.el('li', { className: 'walk-stop' }, [
+    var row = c.el('li', { className: 'walk-stop' }, [
       i ? c.el('p', { className: 'walk-leg mono', textContent: '↓ ' + c.t('walkLeg', {
         distance: distance(metres(p.stops[i - 1], item)),
         time: minutes(metres(p.stops[i - 1], item) / PACE[w.mode])
@@ -666,12 +908,11 @@
               html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_TICK + '</svg>' })
           : c.el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
         c.el('div', { className: 'item-body' }, body),
-        w.editing ? c.el('div', { className: 'item-moves' }, [
-          moveButton('walkUp', ICON_UP, item, i, -1, i === 0),
-          moveButton('walkDown', ICON_DOWN, item, i, 1, i === p.stops.length - 1)
-        ]) : null
+        null
       ])
     ]);
+    if (w.editing) row.lastChild.appendChild(gripFor(item, i, row));
+    return row;
   }
 
   /* Everybody who finished, fastest first. Drawn only once somebody has:
@@ -771,7 +1012,26 @@
       go.disabled = w.busy === 'start';
       kids.push(go);
     } else {
-      var check = c.button(c.t(w.busy === 'check' ? 'walkFinding' : 'walkCheck'), 'go', checkIn);
+      /* Where, and how far: the nearest place left, by name. Inside the
+         radius the button is the accent and says so; outside it is greyed
+         and still pressable — ONCE IT IS STARTED, THE PAGE WATCHES WHERE YOU
+         ARE. Before the phone has answered, or where it will not, the
+         button is the plain one and the press is what asks. */
+      var near = nearest();
+      var at = near && near.metres <= w.data.radius;
+      if (near && !w.msg) {
+        kids.push(c.el('p', { className: 'walk-near', textContent:
+          c.t(at ? 'walkAt' : 'walkNearest', { place: near.item.name }) }));
+        kids.push(c.el('p', { className: 'walk-near-sub' + (at ? ' is-yes' : ''), textContent: at
+          ? c.t('walkAtDoor', { distance: distance(near.metres) })
+          : c.t('walkAway', { distance: distance(near.metres), radius: w.data.radius }) }));
+      } else if (w.refused && !w.msg) {
+        kids.push(c.el('p', { className: 'walk-msg is-no', textContent: c.t('walkNoLocation') }));
+      }
+      var check = c.button(
+        w.busy === 'check' ? c.t('walkFinding')
+          : near ? c.t('walkCheckAt', { place: near.item.name }) : c.t('walkCheck'),
+        'go' + (near && !at ? ' is-wait' : ''), checkIn);
       check.disabled = w.busy === 'check';
       kids.push(check);
     }
@@ -792,21 +1052,27 @@
    *   moreLists()  the band's way out, as the List view draws it
    *   redraw()     the page's render(), which calls this again
    *
-   * and answers the nodes to put under the bar.
+   * and answers the nodes to put under the bar. The page calls leave() when
+   * the view is switched away from.
    */
   function view(ctx) {
     c = ctx;
     if (!w || w.list.id !== ctx.list.id) {
+      unwatch();
       w = {
         list: ctx.list,
         data: null,       // what /api/walk last answered; null until it has
         own: null,        // the walker's own order as place ids, or null for the shortest
         short: null,      // the shortest order, remembered — see shortOrder()
         here: null,       // where the phone last said it was
+        hereAt: 0,        // and when the watch said so — see locate()
         editing: false,   // the order is being changed
         mode: MODES[0],   // on foot or by bike — see setMode()
         noting: null,     // what a comment is being written on: a place, '' for the whole walk
         asked: false,     // the finished walk's comment has been offered once
+        asking: false,    // Start again has been pressed and is being confirmed
+        watch: null,      // the id of the position watch, while one runs — see watch()
+        refused: false,   // the phone would not say where it is
         busy: '',         // 'here' | 'start' | 'check' | 'note' while one is in flight
         msg: null         // the line over the band's button
       };
@@ -814,6 +1080,7 @@
       load();
     }
     w.list = ctx.list;
+    watch();
 
     var p = plan();
     var next = null;
@@ -833,5 +1100,12 @@
       : [head(p), stops, board(), dock()];
   }
 
-  window.TTBWalk = { view: view };
+  /* The view has been left for the list's other one: nothing here should
+     go on asking the phone where it is, or rewriting a clock nobody sees. */
+  function leave() {
+    unwatch();
+    clock(null);
+  }
+
+  window.TTBWalk = { view: view, leave: leave };
 })();

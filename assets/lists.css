@@ -2426,18 +2426,49 @@ body.has-scrim { overflow: hidden; }
    names, which is the column the eye is already reading down. */
 .walk-leg { margin: 0 0 4px 58px; color: var(--muted); font-size: 12px; }
 
-/* A place being moved: the two arrows beside it, at every width. The
-   editor's rows drop theirs underneath on a phone because a row there is a
-   textarea wide; these are a name and a street, and have the room. */
+/* A place being moved: a grip at the end of its row, at every width — a row
+   here is a name and a street and has the room the editor's does not.
+   `touch-action: none` is what lets a finger drag it rather than scroll the
+   page, and what tells assets/back.js a sideways finger here is not Back. */
 .item.has-moves { grid-template-columns: 28px 1fr auto; }
-.item.has-moves .item-moves {
+.walk-grip {
   grid-column: 3;
   grid-row: 1;
-  flex-direction: row;
   align-self: center;
-  margin: 0;
+  width: 40px;
+  height: 40px;
+  cursor: grab;
+  touch-action: none;
 }
-.item-moves .row-btn:disabled { opacity: .3; cursor: default; }
+.walk-grip svg { width: 20px; height: 20px; stroke-width: 2.6; }
+/* The row in the hand: lifted over the others, and the others moving out of
+   its way rather than jumping — see carry() in assets/walk.js. */
+.walk-stop { transition: transform 150ms var(--ease); }
+.walk-stop.is-carrying { position: relative; z-index: 2; transition: none; }
+.walk-stop.is-carrying .item { border-color: var(--accent); box-shadow: var(--shadow), var(--lift); }
+.walk-stop.is-carrying .walk-grip { cursor: grabbing; }
+
+/* Start again, asked before it is done. */
+.walk-ask {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--wash);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.walk-ask p { margin: 0 0 10px; }
+.walk-ask .lists-row { gap: 6px 18px; }
+
+/* The band's two lines over the button: which place is nearest, as a name,
+   and how far it is. */
+.walk-near { margin: 0; font-family: var(--display); font-size: 16px; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+.walk-near-sub { margin: 0; color: var(--muted); font-size: 13.5px; text-align: center; }
+.walk-near-sub.is-yes { color: var(--yes); }
+/* Not there yet: the pill steps back to paper so the accent is kept for the
+   moment a check will go through. Still a button, and still pressable. */
+.walk-dock .go.is-wait { background: var(--wash); border-color: var(--hairline); color: var(--muted); }
 
 /* A place that is checked says so three ways — a tick where its number was,
    the word and the time under it, and its name stepping back — so the

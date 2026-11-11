@@ -170,6 +170,7 @@ when: walk_check
 when: walk_note
 when: walk_reorder
 when: walk_mode
+when: walk_again
 ref: assets/walk.js
 ref: assets/lists.js walkView()</bpmn:documentation>
       <bpmn:incoming>member-e18</bpmn:incoming>
@@ -178,7 +179,7 @@ ref: assets/lists.js walkView()</bpmn:documentation>
     <bpmn:serviceTask id="walk-check" name="Checks the nearest place within 75 m, keeps the place and the time">
       <bpmn:documentation>The location a check sends is compared and not kept.
 when: walk_finish
-ref: functions/api/walk.js POST start, mode, check, note, order</bpmn:documentation>
+ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:documentation>
       <bpmn:incoming>member-e19</bpmn:incoming>
       <bpmn:outgoing>member-e20</bpmn:outgoing>
     </bpmn:serviceTask>
