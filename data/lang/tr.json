@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} sa",
   "walkOnMap": "Haritada gör",
   "walkBandTop": "{total} yerden {n} tanesi işaretlendi",
+  "walkReplan": "Buradan en kısa yol",
+  "walkLeft": "{n} kaldı · yaklaşık {distance} · yürüyerek {time}",
+  "walkLeftBike": "{n} kaldı · yaklaşık {distance} · bisikletle {time}",
+  "walkReplanned": "Kalan yerler için en kısa sıra, sana en yakın yer olan {place} ile başlıyor.",
   "walkOpenList": "Listeyi aç"
  },
  "blurbs": {

@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} ч",
   "walkOnMap": "Показать на карте",
   "walkBandTop": "Отмечено {n} из {total}",
+  "walkReplan": "Кратчайший путь отсюда",
+  "walkLeft": "осталось {n} · около {distance} · {time} пешком",
+  "walkLeftBike": "осталось {n} · около {distance} · {time} на велосипеде",
+  "walkReplanned": "Кратчайший порядок для оставшихся мест, начиная с ближайшего к вам: {place}.",
   "walkOpenList": "Открыть список"
  },
  "blurbs": {

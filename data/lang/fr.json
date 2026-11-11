@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} h",
   "walkOnMap": "Voir sur la carte",
   "walkBandTop": "{n} sur {total} validés",
+  "walkReplan": "Le plus court d’ici",
+  "walkLeft": "il en reste {n} · environ {distance} · {time} à pied",
+  "walkLeftBike": "il en reste {n} · environ {distance} · {time} à vélo",
+  "walkReplanned": "L’ordre le plus court pour ceux qui restent, en partant de {place}, le plus proche de toi.",
   "walkOpenList": "Ouvrir la liste"
  },
  "blurbs": {

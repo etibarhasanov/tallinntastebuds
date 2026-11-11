@@ -164,11 +164,12 @@ ref: functions/api/lists.js POST keep, unkeep</bpmn:documentation>
       <bpmn:incoming>member-e17</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="walk" name="Walks a list">
-      <bpmn:documentation>Any list they can read, on foot or by bike: starts a walk, checks in at each place with the phone's location, in any order and over as many days as it takes, and may leave a comment where they checked in and one on the whole of it at the end.
+      <bpmn:documentation>Any list they can read, on foot or by bike: starts a walk, checks in at each place with the phone's location, in any order and over as many days as it takes, can have the places left put in the shortest order from where they are standing, and may leave a comment where they checked in and one on the whole of it at the end.
 when: walk_start
 when: walk_check
 when: walk_note
 when: walk_reorder
+when: walk_replan
 when: walk_mode
 when: walk_again
 when: walk_map_open

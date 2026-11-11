@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} Std.",
   "walkOnMap": "Auf der Karte ansehen",
   "walkBandTop": "{n} von {total} abgehakt",
+  "walkReplan": "Kürzester Weg von hier",
+  "walkLeft": "noch {n} · etwa {distance} · {time} zu Fuß",
+  "walkLeftBike": "noch {n} · etwa {distance} · {time} mit dem Rad",
+  "walkReplanned": "Die kürzeste Reihenfolge für die übrigen Orte, beginnend bei {place}, dem Ort in deiner Nähe.",
   "walkOpenList": "Liste öffnen"
  },
  "blurbs": {
