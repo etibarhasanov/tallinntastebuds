@@ -36,7 +36,8 @@
  * in the log below is something the owner finds rather than remembers. See
  * **Close a place instead of deleting it** in README.md.
  *
- * `table` counts the rows the directory shows — not hidden, not missing — so
+ * `table` counts the rows the directory shows — not hidden, not missing, and
+ * somewhere to eat, which is all the fill asks about, eatOnly() — so
  * its total is the number on /admin/google rather than the number in the table.
  * `due` is the ones the fill would ask about right now: older than their tier
  * allows — TIERS in ../_refresh.js. `refreshAfterDays` is an open's thirty.
@@ -78,7 +79,7 @@
  * second lock on a route that spends.
  */
 
-import { json, wrongDatabase } from '../_lib.js';
+import { json, wrongDatabase, eatOnly } from '../_lib.js';
 import { BUDGET, DUE_SQL, REFRESH_AFTER, googleKey, refreshFill, spent } from '../_refresh.js';
 
 /* Fifty lines of the log: a few days of opens on an ordinary week, and a
@@ -103,13 +104,14 @@ export async function onRequestGet(context) {
   if (!env.DB || (await wrongDatabase(env))) return json({ ready: false, key });
 
   try {
+    const only = await eatOnly(env);
     const [counts, calls, log, tied] = await Promise.all([
       env.DB
         .prepare(
           'SELECT COUNT(*) AS total, ' +
           'SUM(CASE WHEN refreshed_at IS NOT NULL THEN 1 ELSE 0 END) AS refreshed, ' +
           'SUM(CASE WHEN ' + DUE_SQL + ' THEN 1 ELSE 0 END) AS due ' +
-          'FROM google_venues WHERE hidden = 0 AND missing_since IS NULL'
+          'FROM google_venues WHERE hidden = 0 AND missing_since IS NULL' + only
         )
         .bind(now)
         .first(),

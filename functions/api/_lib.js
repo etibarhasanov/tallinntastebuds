@@ -871,9 +871,9 @@ export function venueEntry(row) {
  * asking again — and what Google answers to "Kumu" is a museum. Each row says
  * what sort of place it is in `kind`: `eat` for every row of the export and
  * every café or bar looked up, `see`, `shop` or `other` for the rest. The
- * find bar offers all four. The three things that read the table as the
- * city's restaurants — the directory, the weekly ranking and the chat — read
- * `eat` alone, through this.
+ * find bar offers all four. The four things that read the table as the
+ * city's restaurants — the directory, the weekly ranking, the chat and the
+ * refresh that keeps the numbers current — read `eat` alone, through this.
  *
  * The column arrives by a hand-run ALTER, and the code is live before
  * anybody runs it, so it is asked about once per isolate the way `rank` is
