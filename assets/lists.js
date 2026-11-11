@@ -2391,7 +2391,8 @@
 
      AND A THIRD, WHICH IS THIS PAGE DRAWN ANOTHER WAY
 
-     Walk is the same list in the order to walk it — see "walking it" below.
+     Route is the same list in the order to go round it, on foot or by bike
+     — see "walking it" below.
      It and List are both this page, so pressing either redraws it without a
      load; they are still links to real addresses, `?walk=1` and without, for
      a tab, a message, and a browser with no script. It is drawn only on a

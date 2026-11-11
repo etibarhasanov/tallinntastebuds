@@ -1993,6 +1993,12 @@ CREATE TABLE IF NOT EXISTS walks (
   -- '[]' for the shortest one the page works out. A suggestion only: a check
   -- is made wherever somebody is standing.
   route       TEXT    NOT NULL DEFAULT '[]',
+  -- How they are going round: 'foot' or 'bike'. Theirs to say, shown beside
+  -- their time on the board, and fixed once the walk is finished.
+  mode        TEXT    NOT NULL DEFAULT 'foot',
+  -- What they said about the whole of it once it was finished, shown under
+  -- their name on the board, or ''. 280 characters, as a check's is.
+  note        TEXT    NOT NULL DEFAULT '',
   PRIMARY KEY (user_id, list_id)
 );
 -- The board under a list: everybody who finished it. The primary key leads

@@ -11,9 +11,10 @@
  * GET  /api/walk?list=<id>
  *
  *   { ready, user, admin, radius,
- *     walk:   null | { started, finished, order: [place, …] },
+ *     walk:   null | { started, finished, mode, note, order: [place, …] },
  *     checks: [ { place, at, note } ],          the reader's own
- *     board:  [ { name, started, finished } ],  everybody who finished, fastest first
+ *     board:  [ { name, started, finished, mode, note } ]
+ *                                               everybody who finished, fastest first
  *     notes:  [ { place, name, note, at } ] }   everybody's comments, newest first
  *
  *   Open to anybody who can read the list: the board and the comments are
@@ -24,12 +25,14 @@
  *
  * POST /api/walk   { action, list, … }      a session, every one
  *
- *   start   { order? }           begins the walk; pressing it twice is one walk
+ *   start   { order?, mode? }    begins the walk; pressing it twice is one walk
+ *   mode    { mode }             `foot` or `bike`, until it is finished
  *   check   { lat, lng }         checks the nearest unchecked place, if it is
  *                                within RADIUS metres; 409 `far` otherwise,
  *                                with the place and how far it is
- *   note    { place, note }      a comment on a place the session has checked;
- *                                '' takes it away
+ *   note    { place, note }      a comment on a place the session has checked,
+ *                                or with place '' on the whole of a finished
+ *                                walk; '' takes it away
  *   order   { order }            the member's own order; [] is the shortest again
  *   unnote  { place, name }      the owner of the site taking down somebody's
  *                                comment, and nobody else
@@ -51,6 +54,14 @@
  * nothing here pretends to. The prize for finishing is the owner's to hand
  * out by hand and is not in this code, which is where a judgement about
  * whether somebody really walked it belongs.
+ *
+ * ON FOOT OR BY BIKE
+ *
+ * A walk is not only walked. The mode is the walker's to say, `foot` unless
+ * they say `bike`, and it changes two things: the time the page estimates,
+ * and the word beside their name on the board, since an hour by bike and an
+ * hour on foot are not the same hour. It is taken on trust like everything
+ * else here, and it can be changed until the walk is finished and not after.
  *
  * THE ORDER IS A SUGGESTION
  *
@@ -106,6 +117,11 @@ const MAX_ORDER = 50;
 const BOARD = 50;
 const NOTES = 100;
 
+/* The ways to go round — ON FOOT OR BY BIKE. The first is what a walk is
+   unless somebody says otherwise. Restated as MODES in assets/walk.js. */
+const MODES = ['foot', 'bike'];
+const modeOf = (raw) => (MODES.includes(raw) ? raw : MODES[0]);
+
 /* Everything the page draws, in one answer. `list` has been read through
    readList() by the caller, so a private list has already been refused. */
 async function answer(env, list, user, extra) {
@@ -124,7 +140,8 @@ async function answer(env, list, user, extra) {
   try {
     const board = await env.DB
       .prepare(
-        'SELECT u.username AS name, w.started_at AS started, w.finished_at AS finished ' +
+        'SELECT u.username AS name, w.started_at AS started, w.finished_at AS finished, ' +
+        'w.mode AS mode, w.note AS note ' +
         'FROM walks w JOIN users u ON u.id = w.user_id ' +
         'WHERE w.list_id = ? AND w.finished_at IS NOT NULL ' +
         'ORDER BY (w.finished_at - w.started_at), w.finished_at LIMIT ?'
@@ -145,11 +162,17 @@ async function answer(env, list, user, extra) {
 
     if (user) {
       const walk = await env.DB
-        .prepare('SELECT started_at, finished_at, route FROM walks WHERE user_id = ? AND list_id = ?')
+        .prepare('SELECT started_at, finished_at, route, mode, note FROM walks WHERE user_id = ? AND list_id = ?')
         .bind(user.id, list.id)
         .first();
       if (walk) {
-        out.walk = { started: walk.started_at, finished: walk.finished_at, order: orderOf(walk.route) };
+        out.walk = {
+          started: walk.started_at,
+          finished: walk.finished_at,
+          mode: modeOf(walk.mode),
+          note: walk.note,
+          order: orderOf(walk.route)
+        };
         const checks = await env.DB
           .prepare(
             'SELECT place, checked_at AS at, note FROM walk_checks ' +
@@ -231,7 +254,7 @@ export async function onRequestPost(context) {
   if (!list || !LIST_ID.test(list.id)) return json({ error: 'not-found' }, 404);
 
   const action = body.action;
-  const run = { start, check, note, order, unnote }[action];
+  const run = { start, mode, check, note, order, unnote }[action];
   if (!run) return json({ error: 'malformed' }, 400);
 
   try {
@@ -245,9 +268,20 @@ export async function onRequestPost(context) {
    clock runs from. */
 async function start(env, list, user, body) {
   await env.DB
-    .prepare('INSERT OR IGNORE INTO walks (user_id, list_id, started_at, route) VALUES (?, ?, ?, ?)')
-    .bind(user.id, list.id, Date.now(), JSON.stringify(cleanOrder(body.order, list)))
+    .prepare('INSERT OR IGNORE INTO walks (user_id, list_id, started_at, route, mode) VALUES (?, ?, ?, ?, ?)')
+    .bind(user.id, list.id, Date.now(), JSON.stringify(cleanOrder(body.order, list)), modeOf(body.mode))
     .run();
+  return json(await answer(env, list, user), 200);
+}
+
+/* Until it is finished and not after: the word on the board is how the
+   time beside it was made. */
+async function mode(env, list, user, body) {
+  const done = await env.DB
+    .prepare('UPDATE walks SET mode = ? WHERE user_id = ? AND list_id = ? AND finished_at IS NULL')
+    .bind(modeOf(body.mode), user.id, list.id)
+    .run();
+  if (!done.meta.changes) return json({ error: 'not-started' }, 409);
   return json(await answer(env, list, user), 200);
 }
 
@@ -306,16 +340,22 @@ async function check(env, list, user, body) {
   return json(await answer(env, list, user, { checked: nearest.place }), 200);
 }
 
-/* A comment goes on a check and nowhere else: the statement can only touch
-   a row this session wrote by standing somewhere, so nobody comments on a
-   place they have not been to and nobody writes on somebody else's row. */
+/* A comment goes on a check, or on a walk that is finished, and nowhere
+   else: either statement can only touch a row this session made by standing
+   somewhere, so nobody comments on a place they have not been to, nobody
+   sums up a walk they have not done, and nobody writes on somebody else's
+   row. */
 async function note(env, list, user, body) {
   const place = typeof body.place === 'string' ? body.place : '';
   const text = String(body.note || '').replace(/\s+/g, ' ').trim().slice(0, MAX_NOTE);
-  const done = await env.DB
-    .prepare('UPDATE walk_checks SET note = ? WHERE user_id = ? AND list_id = ? AND place = ?')
-    .bind(text, user.id, list.id, place)
-    .run();
+  const done = await (place
+    ? env.DB
+      .prepare('UPDATE walk_checks SET note = ? WHERE user_id = ? AND list_id = ? AND place = ?')
+      .bind(text, user.id, list.id, place)
+    : env.DB
+      .prepare('UPDATE walks SET note = ? WHERE user_id = ? AND list_id = ? AND finished_at IS NOT NULL')
+      .bind(text, user.id, list.id)
+  ).run();
   if (!done.meta.changes) return json({ error: 'not-checked' }, 409);
   return json(await answer(env, list, user), 200);
 }
@@ -335,12 +375,15 @@ async function order(env, list, user, body) {
    check stays; only the words go. */
 async function unnote(env, list, user, body) {
   if (!adminIds(env).has(String(user.id).toLowerCase())) return json({ error: 'not-found' }, 404);
-  await env.DB
-    .prepare(
-      "UPDATE walk_checks SET note = '' WHERE list_id = ? AND place = ? " +
-      'AND user_id = (SELECT id FROM users WHERE username = ?)'
-    )
-    .bind(list.id, typeof body.place === 'string' ? body.place : '', asUsername(body.name) || '')
-    .run();
+  const place = typeof body.place === 'string' ? body.place : '';
+  const whose = 'user_id = (SELECT id FROM users WHERE username = ?)';
+  await (place
+    ? env.DB
+      .prepare("UPDATE walk_checks SET note = '' WHERE list_id = ? AND place = ? AND " + whose)
+      .bind(list.id, place, asUsername(body.name))
+    : env.DB
+      .prepare("UPDATE walks SET note = '' WHERE list_id = ? AND " + whose)
+      .bind(list.id, asUsername(body.name))
+  ).run();
   return json(await answer(env, list, user), 200);
 }
