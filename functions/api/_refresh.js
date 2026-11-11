@@ -55,7 +55,11 @@
  * account: BUDGET says how many calls a day and a month, and spend() claims one
  * in the database before any request leaves. The monthly figure sits under a
  * thousand on purpose — Google's month turns over on Pacific time and this
- * counter's on UTC, so the two do not start at the same instant.
+ * counter's on UTC, so the two do not start at the same instant. The day has
+ * two figures: thirty-two for what the site asks of its own accord, and
+ * sixty-four for a place somebody has just opened, so that a morning's
+ * browsing cannot leave the rest of the day's opens with nothing — WHY AN
+ * OPEN MAY GO PAST THE DAY above BUDGET.
  *
  * The key is GOOGLE_MAPS_API_KEY, a secret in the Pages dashboard. Set it for
  * Production only: the counter lives in whichever database the site is bound
@@ -95,9 +99,9 @@
  * top hundred's stale rows as well — the same call, the same seven columns,
  * the same budget, logged under source 'top' rather than 'open' — and the
  * route behind the Top 100 tab of /admin/google calls it after its answer
- * has gone. TOP_A_LOAD of them a time, leaving the rest of the day's
- * thirty-two to opens and to the afternoon's fill, so a hundred stale rows take
- * a few openings of the tab. Stale for the hundred is fourteen days, not an
+ * has gone. TOP_A_LOAD of them a time and never the last KEEP_FOR_OPENS of
+ * the day's thirty-two, leaving the rest to opens and to the afternoon's
+ * fill, so a hundred stale rows take a few openings of the tab. Stale for the hundred is fourteen days, not an
  * open's thirty — TIERS — and the fill asks after them first as well, so the
  * tab is the second road to the same rows and not the only one.
  *
@@ -225,9 +229,24 @@ export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ? - (' + AFTER_SQL + ')';
    month, and the monthly cap under it catches whatever the daily one does not.
    Anything that calls Google claims from here first — see spend(). The day's
    thirty-two is also what refreshFill() spends up to, so the cap and the
-   floor are the one number. */
+   floor are the one number.
+
+   WHY AN OPEN MAY GO PAST THE DAY
+
+   `opens` is the day's cap for a place somebody has just opened, and it is
+   twice `day`. Thirty-two was one number for everything, and on 2026-11-11
+   it was gone by 05:11 UTC — seventeen opens and fifteen of the top hundred
+   in one morning on the owner's pages — with the month at 154 of 950. Every
+   place opened for the nineteen hours after that was refused, a place just
+   looked up on Google Maps among them, which has no numbers at all until its
+   first open; and the month had eight hundred calls it was never going to
+   reach at thirty-two a day. So the one counter has two lines on it: the top
+   hundred and the fill stop at `day`, and an open stops at `opens`. The
+   month's cap is the same for both and is the one that keeps this free: a
+   run of busy days spends it sooner, and then it is the fill's last tier
+   that waits, which is the order the tiers were written in. */
 export const BUDGET = {
-  details: { day: 32, month: 950 },
+  details: { day: 32, opens: 64, month: 950 },
   /* Text Search, asked by the find bar's "Look for it on Google Maps" when
      nothing on the map or in the export answers — functions/api/lookup.js.
      Its mask holds to Text Search Pro fields, a SKU billed apart from the
@@ -311,8 +330,12 @@ function dayOf(now) {
  *
  * A claim is spent whether or not the call then succeeds. Google does not bill
  * a refused call, so this can undercount what is free by the odd failure; it
- * can never overcount what is billed, which is the direction that matters. */
-export async function spend(env, kind, now) {
+ * can never overcount what is billed, which is the direction that matters.
+ *
+ * `cap` is the day's limit this claim is held to, and is the kind's own
+ * unless the caller has another — an open, which is held to
+ * BUDGET.details.opens against the same day's count. */
+export async function spend(env, kind, now, cap) {
   const limit = BUDGET[kind];
   if (!limit) return false;
   const day = dayOf(now);
@@ -328,7 +351,7 @@ export async function spend(env, kind, now) {
       'AND (SELECT COALESCE(SUM(n), 0) FROM google_calls WHERE kind = ?2 AND day >= ?3) < ?5 ' +
       'RETURNING n'
     )
-    .bind(day, kind, month, limit.day, limit.month)
+    .bind(day, kind, month, cap || limit.day, limit.month)
     .first();
   return !!row;
 }
@@ -623,7 +646,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
     .run();
 
   try {
-    if (!(await spend(env, 'details', at))) {
+    if (!(await spend(env, 'details', at, source === 'open' ? BUDGET.details.opens : 0))) {
       await unclaim();
       return 'spent';
     }
@@ -696,13 +719,17 @@ export async function refreshOnOpen(env, id, source = 'open') {
   }
 }
 
-/* How many of the top hundred one opening of the Top 100 tab may ask about.
-   Twenty-four of the day's thirty-two, so a tab opened on a day of busy opens
-   still leaves the opens something to spend. */
-const TOP_A_LOAD = 24;
+/* How many of the top hundred one opening of the Top 100 tab may ask about:
+   the day's thirty-two less the KEEP_FOR_OPENS the tab never takes, whatever
+   the hour and however many times it is opened — refreshTop(). */
+const TOP_A_LOAD = BUDGET.details.day - KEEP_FOR_OPENS;
 
 /* The top hundred's stale rows, asked about in rank order until TOP_A_LOAD
- * are done or the day is spent. Called from functions/api/admin/top100.js
+ * are done or the day is down to its last KEEP_FOR_OPENS — the room is
+ * counted the way refreshFill() counts its own, so a second opening of the
+ * tab takes what the first left of the twenty-four and not the eight behind
+ * them. Unlike the fill it keeps them back in the evening too: the fill is
+ * the one that spends the day out. Called from functions/api/admin/top100.js
  * through waitUntil, after _rank.js has made the week's ranking, so `rank`
  * is this week's. Reads `rank` directly rather than google_ranks because the
  * column is what the directory shows and is the thing to keep honest; on a
@@ -714,13 +741,15 @@ export async function refreshTop(env, now) {
 
   let due;
   try {
+    const room = TOP_A_LOAD - (await spent(env, 'details', now)).today;
+    if (room <= 0) return 0;
     due = await env.DB
       .prepare(
         'SELECT place_id FROM google_venues ' +
         'WHERE rank IS NOT NULL AND rank <= ? AND ' + DUE_SQL + ' ' +
         'ORDER BY rank LIMIT ?'
       )
-      .bind(TOP, now, TOP_A_LOAD)
+      .bind(TOP, now, room)
       .all();
   } catch (e) {
     return 0;

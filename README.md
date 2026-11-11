@@ -5543,8 +5543,13 @@ Google Cloud console, which will not lower a quota on every kind of account:
 statement before any request leaves, only while the day is under thirty-two and
 the month under nine hundred and fifty. A thirty-one-day month at thirty-two a
 day is 992; the monthly cap sits lower still because Google's month turns over
-on Pacific time. When the day is spent, an open serves the stored row and tries
-again tomorrow. Two visitors opening one place in the same second make one call:
+on Pacific time. The thirty-two is what the site spends of its own accord — the
+top hundred and the fill. A place somebody opens is held to sixty-four on the
+same day's count (`BUDGET.details.opens`): on 2026-11-11 one morning of opens
+and the Top 100 tab spent the day by 05:11 UTC with the month at 154 of 950,
+and every open after it was refused, a place just looked up on Google Maps
+among them. The month's cap is what keeps a run of such days free. When an
+open's day is spent, it serves the stored row and tries again tomorrow. Two visitors opening one place in the same second make one call:
 the row is stamped first, and only one stamp finds it still due.
 
 **Where it says what it did.** `google_refreshes` logs every call — which place,
@@ -5650,7 +5655,7 @@ it.
 `POST /api/refresh` is that second door. It is open to anybody and carries
 no secret, because there is nothing
 a caller could take: the budget is claimed in the database before any call
-leaves, so nobody can spend past the thirty-two, and before `FILL_FROM_HOUR`
+leaves, so nobody can make the fill spend past the thirty-two, and before `FILL_FROM_HOUR`
 — noon UTC — the route answers `early` and asks nothing, so a call at
 breakfast cannot take the day away from the opens. A stranger calling it does
 what the workflow's next knock would have done, on the same rows.
@@ -5774,8 +5779,9 @@ alone a place nobody happened to open since August would be ranked on
 August's. So after the route's answer has gone, `refreshTop()` in
 `functions/api/_refresh.js` asks Google about the top hundred's rows whose
 numbers are more than fourteen days old, their tier's wait — the same call, the same seven columns,
-the same budget, logged under source `top` — twenty-four of them at a time, so
-a day of busy opens still has something to spend. A hundred stale rows take a
+the same budget, logged under source `top` — twenty-four of them at a time and
+never the last eight of the day's thirty-two (`KEEP_FOR_OPENS`), however often
+the page is opened, so a day of busy opens still has something to spend. A hundred stale rows take a
 few openings of the page; after that they fall due a few at a time, the
 afternoon's fill takes them first, and one opening covers what is left. Without `GOOGLE_MAPS_API_KEY` it does nothing,
 like every refresh, and the ranking is made from whatever the table holds.
