@@ -43,6 +43,22 @@
  *                            holds a request to, so that it never needs the
  *                            cards to answer whether a text is on one.
  *
+ *   data/decks/words.json    every card of every deck but a song's, in the
+ *                            file's order, as one flat list: the deck it is
+ *                            in, the card as the source has it without its
+ *                            `build`, and `find` — its Estonian (the front
+ *                            and its forms) and its back in each language,
+ *                            folded the way a search folds what was typed.
+ *                            What the flashcards' door for assistants,
+ *                            functions/flashcard/mcp.js, looks a word up in:
+ *                            "bread" or "хлеб" or "leiba" finds *leib*
+ *                            without the route parsing two megabytes or
+ *                            folding ten thousand strings to do it — the
+ *                            folding is done here, once, and is the slow
+ *                            half. A song's deck is left out because its
+ *                            cards' sentences are the song's lines, and that
+ *                            door does not hand out lyrics.
+ *
  * WHO READS WHAT
  *
  * functions/api/_decks.js is the ways of reading the folder, for
@@ -50,14 +66,16 @@
  * the index, a deck, a lesson or a song out of its file, and the two decks
  * gathered out of somebody's rows out of the files those rows name, or out of
  * the source once when they name more than a few: the header of that module
- * says why. functions/api/say.js reads spoken.json and nothing else. functions/api/_visitors.js reads the index for the ids a
+ * says why. functions/api/say.js reads spoken.json and nothing else, and
+ * functions/flashcard/mcp.js reads words.json beside the index and a deck's
+ * or a lesson's own file. functions/api/_visitors.js reads the index for the ids a
  * visitor's report may say it was about. Nothing in a browser reads any of
  * them: the page asks /api/flashcard, which answers with what it read.
  * tools/validate.mjs and tools/sitemap.mjs read the source, as they always
  * did, and the validator fails the build on a file here that is not what
  * this would write.
  *
- * Two names are the folder's own and no deck, lesson or song may take them:
+ * Three names are the folder's own and no deck, lesson or song may take them:
  * RESERVED_FILES below, which the validator holds every id against.
  *
  *   node tools/decks.mjs           rewrite the files above
@@ -69,14 +87,17 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
+/* The fold a search applies to what was typed, so that what is written here
+   is folded by the same function and the two cannot drift. */
+import { foldWords, DECK_LANGS } from '../functions/api/_lib.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, 'data', 'decks.json');
 const DIR = join(ROOT, 'data', 'decks');
 
-/* The two files in the folder that are not a deck, a lesson or a song, and so
-   the two ids none of them may have. tools/validate.mjs reserves them. */
-export const RESERVED_FILES = ['index', 'spoken'];
+/* The three files in the folder that are not a deck, a lesson or a song, and
+   so the three ids none of them may have. tools/validate.mjs reserves them. */
+export const RESERVED_FILES = ['index', 'spoken', 'words'];
 
 /* A shipped id as data/decks.json spells one, and the only shape that gets a
    file: the same test functions/api/_decks.js applies before it builds a path
@@ -138,6 +159,28 @@ function spoken(file) {
     }
   }
   return [...set].sort();
+}
+
+/* Every card an assistant may look a word up among — words.json in the
+   header. `find` is four strings, the Estonian and then DECK_LANGS' three in
+   their order, each empty where the card has nothing in that language. */
+function words(file) {
+  const out = [];
+  for (const deck of file.decks || []) {
+    if (!deck || deck.level === 'song') continue;
+    for (const card of deck.cards || []) {
+      if (!card || !card.front || !card.back) continue;
+      const { build, ...row } = card;
+      out.push({
+        deck: deck.id,
+        ...row,
+        find: [[card.front].concat(card.forms || []).join(' | ')]
+          .concat(DECK_LANGS.map((lang) => card.back[lang] || ''))
+          .map((text) => foldWords(text).trim())
+      });
+    }
+  }
+  return out;
 }
 
 /* What a word is, for splitting a sentence into words: WORD in
@@ -228,6 +271,9 @@ export function build() {
   }
   out[join(DIR, 'index.json')] = serialise(index);
   out[join(DIR, 'spoken.json')] = serialise(spoken(file));
+  /* One card to a line: two and a half thousand of them indented a field to
+     a line would be most of the file's weight in spaces. */
+  out[join(DIR, 'words.json')] = '[\n' + words(file).map((row) => JSON.stringify(row)).join(',\n') + '\n]\n';
   return out;
 }
 
@@ -283,5 +329,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
 
   const { changed, files } = write();
-  console.log(`data/decks/ — ${files - 2} decks, lessons, songs and conversations, the index and the voice's list; ${changed} file(s) rewritten.`);
+  console.log(`data/decks/ — ${files - 3} decks, lessons, songs and conversations, the index, the voice's list and the words; ${changed} file(s) rewritten.`);
 }

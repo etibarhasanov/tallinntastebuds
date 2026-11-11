@@ -5,8 +5,8 @@ lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does and where to eat that members write in too, a page of which places get opened, a page of
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
 through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
-flashcards.
-Static files, forty-three Cloudflare Functions, two D1 databases (preview and
+flashcards, with a door of its own at its `/mcp` for the words and the grammar.
+Static files, forty-four Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -508,7 +508,7 @@ and push again. **The scripts that run themselves** in `README.md`.
 | anything in `assets/` | `node tools/stamp.mjs` | the `?v=` hashes in every page named in `PAGES` at the top of the tool |
 | `data/restaurants.json` | `node tools/places.mjs` | `data/places.json` |
 | `data/ui.json` or `data/restaurants.json` | `node tools/languages.mjs` | `data/lang/<code>.json` and `data/lang/index.json`, one language's strings and write-ups to a file, and `data/map.json`, the places without their write-ups — what the map reads instead of the two whole files |
-| `data/decks.json` | `node tools/decks.mjs` | `data/decks/index.json`, one file per deck, lesson and song, and `data/decks/spoken.json` — what the flashcards' Functions and the voice read instead of the whole file |
+| `data/decks.json` | `node tools/decks.mjs` | `data/decks/index.json`, one file per deck, lesson and song, `data/decks/spoken.json` and `data/decks/words.json` — what the flashcards' Functions, the voice and the door an assistant looks a word up through read instead of the whole file |
 | `exports/tallinn_restaurants.csv` | `node tools/city.mjs` | `data/city.json` |
 | `exports/tallinn_restaurants.csv`, or a place added to `data/restaurants.json` that the export already lists | `node tools/googlevenues.mjs` | `db/google-venues.sql` |
 | `exports/tallinn_restaurants.csv` | `node tools/googlelists.mjs` | `db/google-lists.sql` |
@@ -542,7 +542,8 @@ its own; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera; `node
 tools/chessperf.mjs --check`, which holds the rules of chess in
 `functions/api/_chess.js` to published move counts and to positions worked out
-by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` over the real
+by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` and the flashcards'
+`/flashcard/mcp` over the real
 data files the way an assistant would and holds the answers to what it was
 promised; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
 gate's own cases so that the thing standing between a session and the database

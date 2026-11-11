@@ -57,7 +57,9 @@ jobs:
       # The door at /mcp, asked what an assistant would ask: the reel in
       # every row, the bakeries before a restaurant that bakes, an empty
       # search an empty list, a Google row at the wrong door not trusted.
-      # The Function over the real data files and a stand-in database.
+      # The Function over the real data files and a stand-in database. And
+      # the flashcards' door at /flashcard/mcp beside it: a word found from
+      # each language, every deck and lesson read whole, no song answered.
       - name: Check the MCP server
         run: node tools/mcpcheck.mjs --check
 

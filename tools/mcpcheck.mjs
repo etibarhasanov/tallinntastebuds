@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Tallinn Tastebuds — the door at /mcp, asked what an assistant would ask.
+ * Tallinn Tastebuds — the two doors an assistant reads the site through,
+ * /mcp and the flashcards' /flashcard/mcp, asked what an assistant would ask.
  *
  *     node tools/mcpcheck.mjs           every check, with what is still missing
  *     node tools/mcpcheck.mjs --check   the checks alone (this is what CI runs)
@@ -27,6 +28,18 @@
  *     the website, Google's phone only where the map has none;
  *   - a Google row that is not plainly the same door is not trusted;
  *   - the tools are listed, and the server introduces itself by name.
+ *
+ * And the flashcards' door, functions/flashcard/mcp.js, over the real
+ * data/decks/ files and no database at all, since it reads none:
+ *
+ *   - a word is found from any of the four languages and from one of its
+ *     forms, with the meaning in the language asked for;
+ *   - a word that is on no card is an empty `words`, not an error;
+ *   - every deck the shelf lists reads whole, with as many cards as it said;
+ *   - every grammar lesson reads as text in each of the three languages, and
+ *     the three are different texts;
+ *   - no song, no song's deck and no conversation is answered;
+ *   - the middleware answers /mcp on the flashcards' hostname with this door.
  *
  * Without --check it also prints what the data does not hold yet: the places
  * with a reel and no photograph, and with a reel and no reelSummary.
@@ -89,16 +102,21 @@ const ASSETS = {
   }
 };
 
-const { onRequest } = await import(pathToFileURL(join(ROOT, 'functions', 'mcp.js')).href);
+const load = async (...file) => (await import(pathToFileURL(join(ROOT, 'functions', ...file)).href)).onRequest;
+const onRequest = await load('mcp.js');
+const flashDoor = await load('flashcard', 'mcp.js');
+const middleware = await load('_middleware.js');
 
+/* One JSON-RPC call to a door: the map's unless handed another, at the
+   address it would be asked at. */
 let n = 0;
-async function rpc(method, params) {
-  const request = new Request(SITE + '/mcp', {
+async function rpc(method, params, door = onRequest, url = SITE + '/mcp') {
+  const request = new Request(url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: ++n, method, params })
   });
-  const body = await (await onRequest({ request, env: { DB, ASSETS } })).json();
+  const body = await (await door({ request, env: { DB, ASSETS }, next: async () => new Response('', { status: 404 }) })).json();
   if (body.error) throw new Error(method + ': ' + body.error.message);
   return body.result;
 }
@@ -178,6 +196,68 @@ check('a Google row at another door is not trusted', crustum.opening_hours === n
 const unlisted = (await places({ id: unreeled.id }))[0];
 check('a place Google does not list has null hours', ROWS.some((r) => r.map_id === unreeled.id) || unlisted.opening_hours === null);
 
+/* ------------------------------------------------------- the flashcards */
+const source = JSON.parse(readFileSync(join(ROOT, 'data', 'decks.json'), 'utf8'));
+const LANGS = ['en', 'az', 'ru'];
+const flash = (name, args) => rpc('tools/call', { name, arguments: args }, flashDoor, SITE + '/flashcard/mcp');
+const got = async (name, args) => (await flash(name, args)).structuredContent[name === 'grammar' ? 'lessons' : name];
+
+const flashInit = await rpc('initialize', {}, flashDoor, SITE + '/flashcard/mcp');
+check('the flashcards introduce themselves as their own server', flashInit.serverInfo.name === 'tallinntastebuds-flashcards');
+check('the flashcards\' instructions name the three languages and simple Estonian',
+  LANGS.every((l) => flashInit.instructions.includes('(' + l + ')')) && /simple Estonian/.test(flashInit.instructions));
+const flashTools = (await rpc('tools/list', {}, flashDoor, SITE + '/flashcard/mcp')).tools.map((t) => t.name);
+check('the flashcards\' tools are listed', ['words', 'decks', 'grammar', 'search', 'fetch'].every((t) => flashTools.includes(t)), flashTools.join(', '));
+
+/* A card with forms and all three backs, out of a deck the door answers. */
+const taught = source.decks.filter((d) => d.level !== 'song');
+const sample = taught.flatMap((d) => d.cards).find((c) => c.forms && LANGS.every((l) => c.back[l]) && !/[,;/(]/.test(LANGS.map((l) => c.back[l]).join('')));
+const finds = async (query, language) => (await got('words', { query, language, limit: 20 })).find((w) => w.estonian === sample.front);
+for (const lang of LANGS) {
+  const hit = await finds(sample.back[lang], lang);
+  check('a word is found from its ' + lang + ' meaning, and answers in ' + lang, hit && hit.meaning === sample.back[lang], sample.front);
+}
+check('a word is found from its Estonian', !!(await finds(sample.front, 'en')));
+const byForm = await finds(sample.forms[1], 'en');
+check('a word is found from one of its forms, and carries them', byForm && byForm.forms.join() === sample.forms.join(), sample.forms[1]);
+const nothing = await flash('words', { query: 'zzzqqqxx' });
+check('a word on no card is an empty words list', !nothing.isError && nothing.structuredContent.words.length === 0);
+
+const shelfDecks = await got('decks', {});
+check('the shelf is every deck but the songs\'', shelfDecks.map((d) => d.id).join() === taught.map((d) => d.id).join());
+const short = [];
+for (const row of shelfDecks) {
+  const whole = (await got('decks', { id: row.id }))[0];
+  const from = source.decks.find((d) => d.id === row.id);
+  if (whole.words.length !== row.cards || whole.words.length !== from.cards.length ||
+      whole.words.some((w, i) => w.estonian !== from.cards[i].front || !w.meaning)) short.push(row.id);
+}
+check('every deck reads whole, card for card', !short.length, short.join(', '));
+
+const lessons = await got('grammar', {});
+check('every grammar lesson is listed', lessons.map((l) => l.id).join() === source.lessons.map((l) => l.id).join());
+const thin = [];
+for (const row of lessons) {
+  const texts = [];
+  for (const lang of LANGS) texts.push((await got('grammar', { id: row.id, language: lang }))[0].text);
+  if (texts.some((t) => t.length < 200) || new Set(texts).size !== LANGS.length) thin.push(row.id);
+}
+check('every lesson reads as text in three languages, each its own', !thin.length, thin.join(', '));
+check('a lesson\'s practice deck is one the decks tool reads',
+  lessons.every((l) => !l.practice_deck || shelfDecks.some((d) => d.id === l.practice_deck)));
+
+const kept = [source.songs[0].id, source.songs[0].deck, source.talks[0].id];
+const leaked = [];
+for (const id of kept) {
+  for (const name of ['decks', 'grammar', 'fetch']) if (!(await flash(name, { id })).isError) leaked.push(name + ' ' + id);
+}
+check('no song, song\'s deck or conversation is answered', !leaked.length, leaked.join(', '));
+const fetchedDeck = JSON.parse((await flash('fetch', { id: taught[0].id })).content[0].text);
+check('fetch reads a deck as text', fetchedDeck.text.includes(taught[0].cards[0].front) && fetchedDeck.url.endsWith('?d=' + taught[0].id));
+
+const onHost = await rpc('initialize', {}, middleware, 'https://flashcard.tallinntastebuds.ee/mcp');
+check('/mcp on the flashcards\' hostname is the flashcards\' door', onHost.serverInfo.name === 'tallinntastebuds-flashcards');
+
 /* --------------------------------------------------------------- the end */
 if (!CHECK) {
   const noPhoto = open.filter((p) => p.reel && !(p.photos || []).length).map((p) => p.id);
@@ -189,4 +269,4 @@ if (failures.length) {
   for (const f of failures) console.error('  FAIL  ' + f);
   process.exit(1);
 }
-console.log('OK — /mcp answers ' + (CHECK ? 'every check' : 'as asked') + '.');
+console.log('OK — /mcp and /flashcard/mcp answer ' + (CHECK ? 'every check' : 'as asked') + '.');

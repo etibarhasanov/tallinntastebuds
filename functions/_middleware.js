@@ -39,7 +39,8 @@
  * flashcard.tallinntastebuds.ee is one more custom domain on this same Pages
  * project. There is no second project, no second database and no second build;
  * what makes it a different site is the FLASHCARDS block below, which serves
- * the flashcards page at its root and 301s every other address on it back to
+ * the flashcards page at its root, the flashcards' door for an AI assistant
+ * at /mcp, and 301s every other address on it back to
  * tallinntastebuds.ee, so there is one copy of the map and one link to it.
  * Estonian on cards is not the map, and a person learning the language should
  * not have to walk through a restaurant to reach it. Everything below the
@@ -208,6 +209,9 @@ const GONE_HOSTS = ['splitwise.' + CANONICAL_HOST];
    that writes the deck's own words into it. Called rather than rewritten to —
    see the block inside onRequest(). */
 import { onRequest as flashPage } from './flashcard.js';
+/* And /mcp there is the flashcards' door for an assistant rather than the
+   map's, called for the same reason. */
+import { onRequest as flashDoor } from './flashcard/mcp.js';
 
 const FLASH_HOST = 'flashcard.' + CANONICAL_HOST;
 
@@ -314,6 +318,13 @@ async function route(context) {
        address a search engine keeps. What the request carries that this route
        does need is ?d=. */
     if (url.pathname === '/') return flashPage(context);
+
+    /* An assistant handed this hostname as a connector means the flashcards.
+       Redirected like everything else below, /mcp would land on the map's
+       door — and a client that follows a 301 follows it with a GET, which
+       that door answers 405. So the flashcards' own door, which lives at
+       /flashcard/mcp on every host, answers here under the short name. */
+    if (url.pathname === '/mcp') return flashDoor(context);
 
     /* Everything that is not that feature belongs to the site, at the site's
        own address. Same argument and the same 301 as the pages.dev redirect

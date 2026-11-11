@@ -2,9 +2,6 @@
  * Tallinn Tastebuds — the map, read by an assistant.
  *
  * POST /mcp   one JSON-RPC 2.0 message    ->  one JSON-RPC 2.0 answer
- *             a notification              ->  202, nothing
- * OPTIONS     a browser's preflight       ->  204, the CORS headers
- * GET, DELETE, anything else on /mcp      ->  405, Allow: POST, OPTIONS
  *
  * The Model Context Protocol is how Claude, ChatGPT and the rest are handed
  * a tool: a server says what it can do, and a model calls it in the middle
@@ -93,45 +90,12 @@
  * `fetch`'s `text` is the write-up in sentences, with the dishes, the price
  * and the link, because a research model reads text and quotes it.
  *
- * WHY STATELESS
+ * THE PROTOCOL
  *
- * The transport is the protocol's Streamable HTTP, which allows a server to
- * open a session on `initialize` — an `Mcp-Session-Id` the client sends back
- * on every request after — and to keep things between calls. A Pages
- * Function is an isolate that can be in any colo and remembers nothing from
- * one request to the next, so a session would be a row somewhere, and there
- * is nothing in this exchange worth a row: `initialize` says which tools
- * exist and a call answers out of a file or a table both sides can read
- * again tomorrow.
- * So no session is opened, no id is handed out, and every request is complete
- * on its own. A client that sends an id it got from somewhere else is
- * answered the same as one that sends none.
- *
- * WHY JSON ONLY
- *
- * The same transport lets a server answer with a stream of server-sent
- * events instead of one JSON body, for an answer that arrives in pieces, for
- * progress, for messages the server starts. A search over a few dozen rows
- * answers in one piece in a millisecond, and a stream to carry it would be a
- * connection held open for nothing on a plan that counts requests. So every
- * answer is one `application/json` body; a client asking to open the stream
- * with GET is told 405, which is how the protocol says a server declines it.
- * `Cache-Control: no-store` on all of it, because a JSON-RPC answer is to
- * one message and a cache has nothing to key it on.
- *
- * THE VERSIONS
- *
- * A client names the protocol version it speaks in `initialize`, and the
- * server answers with that one if it can speak it and with its newest if
- * not. VERSIONS below is what this one speaks, newest first: 2025-11-25 is
- * the current specification, and the two before it are what the clients
- * people actually run were built against. After `initialize` a client sends
- * the agreed version in an `MCP-Protocol-Version` header, and one naming a
- * version not in the list is answered 400, as the specification asks; one
- * with no header is assumed to be an older client and answered normally.
- * The batch of messages in one array that 2025-03-26 allowed was taken out
- * of the protocol in 2025-06-18, and this server never took one: an array
- * is answered with one invalid-request error whatever version is in play.
+ * The transport, the handshake and the errors are ./_mcp.js, which the
+ * flashcards' door at ./flashcard/mcp.js speaks through as well: stateless,
+ * JSON only, and the three versions it answers to, each argued in that
+ * file's header. This file is what the map hands over and nothing about how.
  *
  * WHERE THE PERSON IS
  *
@@ -189,23 +153,21 @@
  * so an assistant's call is not a visit and appears on none of the owner's
  * pages, and a list it reads is not an open: the order the lists page opens
  * on is what people did, and an assistant reading a list a hundred times
- * must not be able to move it. No resources, no prompts, no `tools/list` change notifications:
- * `capabilities` names tools and nothing else.
+ * must not be able to move it.
  *
  * functions/_middleware.js lets this address through untouched — it is on
  * the live hostname, under neither owner prefix, and the security headers go
- * on the answer the way they go on every Function's — and the two
- * subdomains 301 it back to the live hostname like every other page.
+ * on the answer the way they go on every Function's. On the flashcards'
+ * hostname /mcp is not this door: the middleware answers it with
+ * ./flashcard/mcp.js, which is what somebody handing an assistant that
+ * hostname means.
  */
 
-import { json, mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours } from './api/_lib.js';
+import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours } from './api/_lib.js';
+import { door, bad, optionalString, optionalNumber, named, wordsOf, toolResult, toolError, MAX_QUERY, ANNOTATIONS } from './_mcp.js';
 import { readList, LIST_ID } from './api/_lists.js';
 import { MIN_ITEMS } from './api/_mostkept.js';
 import { SITE } from './_shell.js';
-
-/* Newest first: the one answered to a client that names none this server
-   speaks. THE VERSIONS in the header. */
-const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 
 /* How the server introduces itself in `initialize`. `name` is the id a
    client keys it on and stays as it was; the title, the line under it, the
@@ -235,17 +197,6 @@ const DEFAULT_LANG = 'en';
    however it is asked: a model reading ten write-ups has read the map. */
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 10;
-
-/* A query longer than this is a paragraph, and a paragraph's words match
-   everything a little; the tool asks for a few words and holds to that. */
-const MAX_QUERY = 200;
-
-/* JSON-RPC 2.0's own codes, and the only ones this server uses. */
-const PARSE_ERROR = -32700;
-const INVALID_REQUEST = -32600;
-const METHOD_NOT_FOUND = -32601;
-const INVALID_PARAMS = -32602;
-const INTERNAL_ERROR = -32603;
 
 /* What the assistant is told about the map in `initialize`, before it has
    called anything. Short, because an assistant reads it once beside every
@@ -422,10 +373,6 @@ const LIST_PLACE_FIELDS = {
       'Google Maps search by name and address here instead.'
   }
 };
-
-/* Read-only, harmless to repeat, and over the site's own data rather than
-   the open world; the same four on all of them. */
-const ANNOTATIONS = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 
 function tools(types, langs) {
   return [
@@ -834,14 +781,6 @@ function haystack(place, types, lang) {
   };
 }
 
-/* The query as words: folded, split on anything that is not a letter or a
-   digit, and the one-character pieces dropped, since "a" is in every name. */
-function wordsOf(query) {
-  return foldWords(query)
-    .split(/[^\p{L}\p{N}]+/u)
-    .filter((w) => w.length > 1);
-}
-
 function score(hay, words) {
   let total = 0;
   for (const word of words) {
@@ -892,31 +831,10 @@ function search(places, types, args, google) {
 }
 
 /* ---------------------------------------------------------- the arguments
- * Each tool's arguments read off the call and held to the schema that was
- * sent, one message per thing wrong, so a model that passed a string for a
- * number is told which. Throws the message; the caller turns it into the
- * protocol's invalid-params error.
+ * The `places` search's arguments read off the call and held to the schema
+ * that was sent, through the readers in ./_mcp.js: one message per thing
+ * wrong, thrown, and turned there into the protocol's invalid-params error.
  */
-function bad(message) {
-  const e = new Error(message);
-  e.invalid = true;
-  return e;
-}
-
-function optionalString(args, key, max) {
-  const value = args[key];
-  if (value === undefined || value === null) return '';
-  if (typeof value !== 'string') throw bad(key + ' must be a string');
-  return value.slice(0, max);
-}
-
-function optionalNumber(args, key) {
-  const value = args[key];
-  if (value === undefined || value === null) return null;
-  if (typeof value !== 'number' || !Number.isFinite(value)) throw bad(key + ' must be a number');
-  return value;
-}
-
 function language(args, langs) {
   const value = optionalString(args, 'language', 8);
   if (!value) return DEFAULT_LANG;
@@ -1085,20 +1003,8 @@ async function getList(context, raw, all) {
 }
 
 /* ------------------------------------------------------------- the calls
- * The protocol's tool result: the object twice, or a sentence with isError
- * on it. search() and the lists above; reading one place is here.
+ * search() and the lists are above; reading one place is here.
  */
-function toolResult(object) {
-  return { content: [{ type: 'text', text: JSON.stringify(object) }], structuredContent: object };
-}
-
-function toolError(sentence) {
-  return { content: [{ type: 'text', text: sentence }], isError: true };
-}
-
-/* Whether a call to `places` or `lists` names one to read rather than
-   asking for a search. */
-const named = (args) => args.id !== undefined && args.id !== null && args.id !== '';
 
 /* One place or one list read by its id, as a tool result: inside the
    `places` or `lists` array the two tools answer with, or bare for the old
@@ -1183,153 +1089,44 @@ function chatgptFetch(raw, places, all, types, google) {
   return toolResult({ id, title: name, text, url, metadata });
 }
 
-/* ----------------------------------------------------------- the protocol
- * One message in, one answer out. The answer to a request carries its id;
- * a notification — no id — and a response the client sends are 202 with no
- * body, as the transport says.
+/* --------------------------------------------------------------- the door
+ * Both tools/list and a call read the deployment: the roll, the kinds of
+ * place and the languages, each five minutes per isolate through _lib.js.
  */
-function reply(id, result) {
-  return json({ jsonrpc: '2.0', id, result });
-}
-
-function fail(id, code, message, status, data) {
-  const error = { code, message };
-  if (data !== undefined) error.data = data;
-  return json({ jsonrpc: '2.0', id: id === undefined ? null : id, error }, status);
-}
-
-function accepted() {
-  return new Response(null, {
-    status: 202,
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
-  });
-}
-
-async function answer(context, message) {
-  const id = message.id;
-  const params = message.params && typeof message.params === 'object' ? message.params : {};
-
-  if (message.method === 'initialize') {
-    const asked = typeof params.protocolVersion === 'string' ? params.protocolVersion : '';
-    return reply(id, {
-      protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
-      capabilities: { tools: {} },
-      serverInfo: SERVER,
-      instructions: INSTRUCTIONS
-    });
-  }
-
-  if (message.method === 'ping') return reply(id, {});
-
-  if (message.method !== 'tools/list' && message.method !== 'tools/call') {
-    return fail(id, METHOD_NOT_FOUND, 'Method not found: ' + message.method);
-  }
-
-  /* Both of the rest read the deployment: the roll, the kinds of place and
-     the languages, each five minutes per isolate through _lib.js. */
+async function deployment(context) {
   const [all, taxonomy, index] = await Promise.all([
     mapPlaces(context),
     dataFile(context, '/data/taxonomy.json'),
     languageIndex(context)
   ]);
-  const types = taxonomy.types;
-  const langs = Object.keys(index);
+  return { all, types: taxonomy.types, langs: Object.keys(index) };
+}
 
-  if (message.method === 'tools/list') return reply(id, { tools: tools(types, langs) });
-
-  const name = typeof params.name === 'string' ? params.name : '';
-  const args = params.arguments && typeof params.arguments === 'object' && !Array.isArray(params.arguments)
-    ? params.arguments
-    : {};
+async function call(context, name, args) {
+  const { all, types, langs } = await deployment(context);
   const places = all.filter((p) => !p.closed);
+  if (name === 'lists' || name === 'search_lists' || name === 'get_list') return listCall(context, name, args, all);
+  if (!/^(places|search_places|get_place|search|fetch)$/.test(name)) return undefined;
   /* The lists read the database on their own; only the place tools want
      Google's half — GOOGLE'S HALF above. */
-  const google = /^(places|search_places|get_place|search|fetch)$/.test(name) ? await googleRows(context.env, all) : null;
-  try {
-    if (name === 'places' && named(args)) return reply(id, readOne(getPlace(args, places, all, langs, google), 'places'));
-    if (name === 'places' || name === 'search_places') {
-      return reply(id, toolResult(search(places, types, searchArgs(args, types, langs), google)));
-    }
-    if (name === 'get_place') return reply(id, readOne(getPlace(args, places, all, langs, google), null));
-    if (name === 'search') return reply(id, chatgptSearch(args, places, types, google));
-    if (name === 'fetch') return reply(id, chatgptFetch(args, places, all, types, google));
-    if (name === 'lists' || name === 'search_lists' || name === 'get_list') {
-      return reply(id, await listCall(context, name, args, all));
-    }
-  } catch (e) {
-    if (e.invalid) return fail(id, INVALID_PARAMS, e.message);
-    throw e;
+  const google = await googleRows(context.env, all);
+  if (name === 'places' && named(args)) return readOne(getPlace(args, places, all, langs, google), 'places');
+  if (name === 'places' || name === 'search_places') {
+    return toolResult(search(places, types, searchArgs(args, types, langs), google));
   }
-  return fail(id, INVALID_PARAMS, 'Unknown tool: ' + name, 200, { tools: TOOL_NAMES });
+  if (name === 'get_place') return readOne(getPlace(args, places, all, langs, google), null);
+  if (name === 'search') return chatgptSearch(args, places, types, google);
+  return chatgptFetch(args, places, all, types, google);
 }
 
-/* What a browser needs to be let read an answer, on every answer and on the
-   preflight before one — the CORS note under WHAT IS NOT HERE. The request
-   headers are the ones the transport sends; nothing is credentialed. */
-const CORS = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'POST, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept, authorization, mcp-protocol-version, mcp-session-id, last-event-id',
-  'access-control-max-age': '86400'
-};
-
-export async function onRequest(context) {
-  const response = context.request.method === 'OPTIONS'
-    ? new Response(null, { status: 204 })
-    : await handle(context);
-  for (const [key, value] of Object.entries(CORS)) response.headers.set(key, value);
-  return response;
-}
-
-async function handle(context) {
-  const request = context.request;
-
-  if (request.method !== 'POST') {
-    return new Response(null, {
-      status: 405,
-      headers: { allow: 'POST, OPTIONS', 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
-    });
-  }
-
-  const spoken = request.headers.get('MCP-Protocol-Version');
-  if (spoken && !VERSIONS.includes(spoken)) {
-    return fail(null, INVALID_REQUEST, 'Unsupported MCP-Protocol-Version: ' + spoken, 400, { supported: VERSIONS });
-  }
-
-  let message;
-  try {
-    message = JSON.parse(await request.text());
-  } catch (e) {
-    return fail(null, PARSE_ERROR, 'Parse error: the body is not JSON');
-  }
-
-  if (Array.isArray(message)) {
-    return fail(null, INVALID_REQUEST, 'Batches are not supported: send one message per request');
-  }
-  if (!message || typeof message !== 'object' || message.jsonrpc !== '2.0') {
-    return fail(null, INVALID_REQUEST, 'Invalid request: one JSON-RPC 2.0 message is expected');
-  }
-
-  /* A notification, or the client's answer to something: nothing to say
-     back, and the transport wants a 202 with no body. A request whose id is
-     the wrong shape is refused rather than mistaken for one. */
-  if (!('id' in message)) {
-    if (typeof message.method === 'string' || 'result' in message || 'error' in message) return accepted();
-    return fail(null, INVALID_REQUEST, 'Invalid request: no method');
-  }
-  if (typeof message.id !== 'string' && typeof message.id !== 'number') {
-    return fail(null, INVALID_REQUEST, 'Invalid request: id must be a string or a number');
-  }
-  if (typeof message.method !== 'string') {
-    return fail(message.id, INVALID_REQUEST, 'Invalid request: no method');
-  }
-
-  try {
-    return await answer(context, message);
-  } catch (e) {
-    /* The roll or a data file missing from the deployment is a broken
-       build, not a bad question; say so in the protocol's own words rather
-       than as a Worker's 500. */
-    return fail(message.id, INTERNAL_ERROR, 'The map could not be read: ' + (e && e.message ? e.message : e), 500);
-  }
-}
+export const onRequest = door({
+  server: SERVER,
+  instructions: INSTRUCTIONS,
+  tools: async (context) => {
+    const { types, langs } = await deployment(context);
+    return tools(types, langs);
+  },
+  call,
+  names: TOOL_NAMES,
+  what: 'The map'
+});
