@@ -86,6 +86,16 @@
  * they are also most of the words the find bar offers under the field while
  * somebody is still typing. About two and a half a row.
  *
+ * And `serves`: what somebody who has eaten there says a place serves, out
+ * of data/serves.json, on any row of either half. Google's tags say what a
+ * place is and never what is good there — One Sixty Smokehouse is a
+ * Barbecue Restaurant to Google and the owner goes for the burger, F-Hoone
+ * is a Restaurant and the write-up says pizza and pelmeni — so "burger"
+ * found everything with burger in its name and neither of those. The file
+ * is keyed by the id a row has here, the map's or Google's, and a row is
+ * found by its words exactly as by its category. A file that cannot be read
+ * costs those words and not the roll.
+ *
  * And a place of mine is lent its linked row's kitchens and tags on the way past:
  * nothing on my map records a cuisine beyond a name and its dishes, so
  * "thai" reached my Thai place only when its write-up said the word. The
@@ -286,6 +296,13 @@ async function cityRoll(context) {
       /* No table, or a database that cannot answer. The map's places are
          still a roll, and the picker still opens. */
     }
+  }
+
+  /* What each is known to serve, on either half, by the id it has here. */
+  const serves = await dataFile(context, '/data/serves.json').catch(() => null);
+  const served = new Map(((serves && serves.places) || []).map((entry) => [entry.id, entry.serves]));
+  for (const row of out) {
+    if (served.has(row.id)) row.serves = served.get(row.id);
   }
 
   /* Alphabetical, folded, so the sheet reads down the way a phone book does

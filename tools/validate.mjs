@@ -45,6 +45,8 @@
  *     the way fill() in functions/_shell.js matches it, which would leave a
  *     crawler with an empty page again
  *   - a taxonomy type missing a label in any language
+ *   - an entry in data/serves.json for a place neither the map nor the
+ *     Google export has, or one whose words are not plain lowercase words
  *   - a cuisine in data/cuisines.json missing a label in any language, or one
  *     the directory's KITCHENS table cannot produce
  *   - a KITCHENS pattern that no longer matches a single row of the Google
@@ -1912,6 +1914,45 @@ if (catalogue !== null) {
         fail('data/places.json', `"${id}" is on the map but not in the catalogue — run \`node tools/places.mjs\``);
       }
     }
+  }
+}
+
+/* ------------------------------------------------------------ serves.json
+   What somebody who ate there says a place serves, for any place in the
+   city: the search finds a row by these words and nothing prints them —
+   **What a place serves** in README.md. Keyed by the id the roll gives the
+   row, so an entry for a place that is on neither half is a line that can
+   never be found by, and the usual way to get one is a typo in the id. The
+   `name` is for whoever reads the file and is held to nothing. */
+{
+  const serves = readJSON('data/serves.json');
+  const where = 'data/serves.json';
+  if (!isPlainObject(serves) || !Array.isArray(serves.places)) {
+    fail(where, 'must be an object with a "places" array');
+  } else {
+    const known = new Set(Array.isArray(places) ? places.map((place) => place && place.id) : []);
+    const csv = join(ROOT, 'exports', 'tallinn_restaurants.csv');
+    if (existsSync(csv)) {
+      const rows = parseCsv(readFileSync(csv, 'utf8'));
+      const at = (rows[0] || []).indexOf('place_id');
+      for (const row of rows.slice(1)) known.add(row[at]);
+    }
+    const seen = new Set();
+    serves.places.forEach((entry, i) => {
+      const at = `${where} → places[${i}]`;
+      if (!isPlainObject(entry) || !isNonEmptyString(entry.id)) { fail(at, 'needs an "id"'); return; }
+      if (seen.has(entry.id)) fail(at, `"${entry.id}" is listed twice`);
+      seen.add(entry.id);
+      if (!known.has(entry.id)) fail(at, `"${entry.id}" is neither a place on the map nor a place_id in the Google export`);
+      const words = entry.serves;
+      if (!Array.isArray(words) || !words.length) { fail(at, `"${entry.id}" needs a "serves" array with a word in it`); return; }
+      words.forEach((word) => {
+        if (!isNonEmptyString(word) || word !== word.toLowerCase().trim().replace(/\s+/g, ' ')) {
+          fail(at, `"${entry.id}" serves ${JSON.stringify(word)}, which is not a plain lowercase word or phrase`);
+        }
+      });
+      if (new Set(words).size !== words.length) fail(at, `"${entry.id}" serves the same thing twice`);
+    });
   }
 }
 

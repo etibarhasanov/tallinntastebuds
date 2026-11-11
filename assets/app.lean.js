@@ -4774,6 +4774,8 @@
 
   var findTags = {};
 
+  var findServes = {};
+
   var findRated = {};
 
   var findLocating = null;
@@ -4795,13 +4797,16 @@
       findLent = {};
       findRated = {};
       findTags = {};
+      findServes = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
+        (row.serves || []).forEach(function (word) { findTags[word] = true; });
         if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) {
           var lent = (row.kitchens || []).map(kitchenWords).concat(row.tags || []).join(' ');
           if (lent) findLent[row.mapId || row.id] = fold(lent);
           (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
+          if (row.serves && byMapId(row.id)) findServes[row.id] = fold(row.serves.join(' '));
           findRated[row.mapId || row.id] = {
             rating: row.rating,
             reviews: row.reviews,
@@ -4887,7 +4892,9 @@
 
   function findSays(row, words) {
     var name = fold(row.name);
-    var category = fold(byMapId(row.id) ? (findRated[row.id] || {}).category || '' : row.category || '');
+    var mine = byMapId(row.id);
+    var category = fold(mine ? (findRated[row.id] || {}).category || '' : row.category || '') + ' ' +
+      (mine ? findServes[row.id] || '' : fold((row.serves || []).join(' ')));
     for (var i = 0; i < words.length; i++) {
       if (wordAt(name, words[i]) < 2 && wordAt(category, words[i]) < 2) return 0;
     }
@@ -4926,14 +4933,15 @@
       var place = state.places[i];
       if (place.closed && !isPaused(place)) continue;
       if (area && !area.contains([place.lat, place.lng])) continue;
-      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      var serves = findServes[place.id] || '';
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + serves + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
       if (hit && findPriced(place, wish)) {
         level[place.id] = hit;
         tier[place.id] = findTier(fold(place.name), fold([
           (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
           (place.mustOrder || []).join(' ')
-        ].join(' ')), fold(place.address || ''), words);
+        ].join(' ')) + ' ' + serves, fold(place.address || ''), words);
         says[place.id] = findSays(place, words);
         order[place.id] = i;
         hits.push(place);
@@ -5041,8 +5049,8 @@
     var i;
     for (i = 0; i < state.places.length; i++) {
       var place = state.places[i];
-      if (place.closed) continue;
-      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      if (place.closed && !isPaused(place)) continue;
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findServes[place.id] || '') + ' ' + (findLent[place.id] || '');
       if (hasWords(hay, words) === 3) n++;
     }
     for (i = 0; findRoll && i < findRoll.length; i++) {
@@ -5336,6 +5344,7 @@
     if (typeof row.lat !== 'number' || typeof row.lng !== 'number') return false;
     findKind[row.id] = fold([
       row.category || '',
+      (row.serves || []).join(' '),
       (row.tags || []).join(' '),
       (row.types || []).map(function (id) {
         return id === 'pub' ? '' : labelWords(state.types, id);

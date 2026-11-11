@@ -1091,6 +1091,43 @@ finds the Mexican places and *italy* the Italian. A dish Google does tag —
 *sushi*, *ramen*, *kebab* — is left to the tag, which is on the places that
 serve it rather than on everything Japanese.
 
+### What a place serves
+
+Tags say what a place is. They do not say what is good there, and that is
+what people search for. The owner's examples, on the day the tags went in:
+*burger* should bring One Sixty Smokehouse, because the burger there is
+good, and Google calls it a Barbecue Restaurant; *pizza* and *pelmeni*
+should both bring F-Hoone, which Google calls a Restaurant and whose
+write-up says both words. A search that answers *burger* with the places
+called Burger is following a rule, and nobody typing the word is asking
+about names.
+
+Nothing in the export knows any of that, so it is written down:
+`data/serves.json`, one entry a place, **any place in the city** — the id
+is the map's own for a place of mine and Google's `place_id` for the other
+eleven hundred, the `name` is there for whoever reads the file, and
+`serves` is plain lowercase words.
+
+```json
+{ "id": "f-hoone", "name": "F-Hoone", "serves": ["pizza", "pelmeni", "breakfast"] },
+{ "id": "ChIJWULez_qTkkYRBdct4TQvjjE", "name": "One Sixty Smokehouse", "serves": ["burger"] }
+```
+
+`/api/places` puts the words on the row as `serves`, and both copies of the
+search count them as part of what the place is: found by them, ranked as
+squarely as by Google's category, and among the places that *say* the word
+rather than under them — the word of somebody who ate there is worth at
+least Google's one word for a place. They are offered under the field like
+any other word and never printed on a place. The validator fails an entry
+whose id is on neither half, which is how a typo in an id shows.
+
+The file opened with fifty-eight entries: one for each of my open places
+whose write-up or dishes name something the search did not already find
+them by — read out of the write-ups, nothing added to them — and One Sixty,
+on the owner's word. It is meant to grow by being told: a line saying a
+place and what it serves is the whole of an edit. The chat does not read it
+yet, and neither does the column's field.
+
 ### The words under the field
 
 While somebody is still typing, the bar offers the words it knows that begin
@@ -1103,7 +1140,8 @@ It is what the four shared letters used to guess at. The bar knows every
 word it can be asked for, so it shows them and the visitor chooses. The
 words are the hidden half of the search made visible: a kind and a cuisine
 in the language being read, the `words` either carries, and Google's tags,
-which are English because Google's are — lowercase all of them, because
+which are English because Google's are, and what `data/serves.json` says
+a place serves — lowercase all of them, because
 they are something to type and not the name of anything.
 
 A word is offered when it starts with the field or one of its later words
