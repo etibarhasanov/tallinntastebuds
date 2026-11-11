@@ -1876,6 +1876,13 @@ body.lang-open .controls { z-index: 1250; }
 .find-row.is-shut .find-pin { stroke-dasharray: 2.2 2.2; }
 .find-row.is-shut .find-name { color: var(--muted); }
 
+/* A word the bar offers rather than a place: the field's own glass where a
+   pin would be, and the letters already typed in the body weight so the
+   ones a press would add are what the eye lands on — findWordRow() in
+   assets/app.js. */
+.find-row.is-word .find-name { font-weight: 400; }
+.find-row.is-word .find-name b { font-weight: 600; }
+
 /* The text column beside the pin. A block in a grid track is still allowed to
    push its track wider than the track's own maximum unless it is told it may
    shrink, which is what min-width: 0 is for: without it a long address stopped

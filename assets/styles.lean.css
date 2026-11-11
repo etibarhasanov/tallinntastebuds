@@ -1116,6 +1116,9 @@ body.lang-open .controls { z-index: 1250; }
 .find-row.is-shut .find-pin { stroke-dasharray: 2.2 2.2; }
 .find-row.is-shut .find-name { color: var(--muted); }
 
+.find-row.is-word .find-name { font-weight: 400; }
+.find-row.is-word .find-name b { font-weight: 600; }
+
 .find-text {
   min-width: 0;
 }

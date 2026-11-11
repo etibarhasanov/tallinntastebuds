@@ -889,20 +889,36 @@ marks (`NFD`) and dropping the marks; the dotless Turkish `ı` has no
 decomposition of its own and is mapped by hand, which is what makes `firin`
 work as well as `fırın`.
 
-A word of five letters or more is also tried without its last two, so the
+A word of five letters or more is also tried with another ending, so the
 endings eleven languages put on a word still reach the label it came from:
-`kohvik` and `kohvi` reach *Kohv*, `kahvila` reaches *Kahvi*,
-`пиццу` reaches *Пицца*, `kebabi` the kebab shops. That is the cheap end of
-stemming — one rule and no dictionary — and the only end a site in eleven
-languages can afford. Four letters is the floor: `pizza` is looked for as
-`pizz` at the shortest, and a three-letter stem would match half the map.
-The price of it is a stem two words share — `pasta` reaches the pastry shops
-— and here, in a list of seventy-odd ordered by distance, a row like that is
-visible for what it is. `hasWords()` in `assets/app.js` is the rule, and the
-find bar's two halves match through the same function, with one thing more:
+`kohvikus` reaches *Kohvik*, `kahvila` reaches *Kahvi*, `пиццу` reaches
+*Пицца*, `kebabi` the kebab shops. The word typed has to be a whole word of
+the haystack with its last one or two letters taken off — four left at the
+least — or swapped for as many. That is the cheap end of stemming — one rule
+and no dictionary — and the only end a site in eleven languages can afford.
+`sameWord()` in `assets/app.js` is the rule, `hasWords()` asks it, and the
+find bar's two halves match through the same functions, with one thing more:
 there the rows that carry a word as typed are drawn above the rows that only
-reached it by its stem, so *pasta* is the pasta places first and the pastry
-shops after them.
+reached it with another ending, so *burgers* is the places that say burgers
+first and the ones called Burger after them.
+
+**It used to be any four letters two words shared**, and that was not an
+ending. Until November 2026 the rule was the word less its last two letters,
+looked for anywhere in the haystack, and this paragraph named its price as
+*pasta* reaching the pastry shops. The owner asked how come a bakery had
+answered *pasta*, and the price turned out to be the whole class: *store* was
+every *restoran* in town, seven hundred of them, *bread* the places that
+serve breakfast, *asian* the Caucasian kitchens by way of *Kaukaasia*,
+*ramen* a bakery by way of its salted caramel, *chinese* somewhere called Veg
+Machine. Asked of every word of five letters or more the city's haystacks
+carry, the old rule brought 8,926 rows that did not have the word and this
+one brings 4,479, every one of them among the old ones. What it gives up is
+an ending against a longer word — *pagarid* is *pagar* and no longer
+*pagariäri*, *mexico* is not *mexican* — and those are what a kind's `words`
+are for, below, and what **The words under the field** shows rather than
+guesses. Two words one letter apart at the end are still one word to it:
+*fried* reaches somewhere called Fries, which nothing short of a dictionary
+tells from *пиццу* and *пицца*.
 
 **A word that still lands nowhere is allowed one slip.** At five letters or
 more, a word one keystroke away from a whole word of the haystack — a letter
@@ -910,10 +926,10 @@ missing, one too many, one wrong, two the wrong way round — still reaches it,
 because the words people type into a food search are the ones nobody can
 spell: *cappucino*, *expresso*, *croissnt*. One slip and no more, and not
 below five letters, so *bar* never reaches *bor*. A slip is a guess, so it is
-only offered when nothing carries the words as typed — *bread* finds the
-bakeries and not somewhere called Break under them — and it is drawn below
-anything that reached the words by a stem. `oneSlip()` and `bestOnly()` in
-`assets/app.js`; the find bar's two halves are judged together, so a slip in
+only offered when nothing carries the words as typed — *pizza* finds the
+pizzerias and not somewhere called Piazza under them — and it is drawn below
+anything that reached the words with another ending. `oneSlip()` and
+`bestOnly()` in `assets/app.js`; the find bar's two halves are judged together, so a slip in
 the city's half goes when one of mine carries the word itself.
 
 **And a kind of place can carry words that are not its name.** A type in
@@ -1040,13 +1056,68 @@ search of the city** under **The roll a list is built from** is the route.
 Until the bar asks it too, a change to how a word is matched is a change in
 both files, and the header of `_find.js` names the functions that pair up.
 
-Two things ride on a Google row for this bar that the picker never reads:
+Three things ride on a Google row for this bar that the picker never reads:
 `kitchens`, what Google says the place cooks in the directory's cuisine ids,
-and `category`, Google's own word for what it is — the next section says
-what for. Measured over the export as it stands they are fifty kilobytes
-before compression and five and a half after, on an answer the bar has
-already decided to download whole; the header of `functions/api/places.js`
-is the argument.
+`category`, Google's own word for what it is, and `tags`, everything else
+Google files it as — the next section says what for. Measured over the
+export as it stands the first two are fifty kilobytes before compression and
+five and a half after, and the tags twenty-one before, on an answer the bar
+has already decided to download whole; the header of
+`functions/api/places.js` is the argument.
+
+### Hidden tags, over the whole city
+
+The owner's words, and the condition that came with them: the search is for
+every place in Tallinn, nearly twelve hundred, and not for the seventy-nine
+with a write-up — so the tags are not a field somebody fills in on a place.
+They are two things that were already true of every row.
+
+**Google's tags.** The export files a place under one category and several
+tags: Kalamaja Pagarikoda is a *Pastry Shop*, and also a *Dessert Shop*, a
+*Confectionery* and a *Bakery*. Only the category was searched. `tagsFor()`
+in `functions/api/places.js` sends the rest — lowercase, *Ramen Restaurant*
+as *ramen*, and less the dozen that say nothing about eating there, *Food
+Store* and *Meal Takeaway* among them. Eight rows in ten carry some, a
+place of mine is lent its linked row's the way it is lent the kitchens, and
+they are matched exactly as the category is and never printed on a place.
+
+**A kind's `words`.** A cuisine in `data/cuisines.json` and a type in
+`data/taxonomy.json` may carry `words` — **Searching the list** above has
+the rule — and every place filed under the kind answers to them. That is
+how a dish Google has no tag for reaches the city: *pasta*, *carbonara* and
+*risotto* are Italian's, *curry* and *naan* Indian's, *bread* and
+*croissant* the bakeries', and a country is its cuisine's, so *mexico*
+finds the Mexican places and *italy* the Italian. A dish Google does tag —
+*sushi*, *ramen*, *kebab* — is left to the tag, which is on the places that
+serve it rather than on everything Japanese.
+
+### The words under the field
+
+While somebody is still typing, the bar offers the words it knows that begin
+the way the field does, above the places: *pas* is **pasta** and **pastry
+shop**, each with how many places a press would bring, the letters still to
+type in the heavier weight. A press puts the word in the field, and the
+search is that word as typed.
+
+It is what the four shared letters used to guess at. The bar knows every
+word it can be asked for, so it shows them and the visitor chooses. The
+words are the hidden half of the search made visible: a kind and a cuisine
+in the language being read, the `words` either carries, and Google's tags,
+which are English because Google's are — lowercase all of them, because
+they are something to type and not the name of anything.
+
+A word is offered when it starts with the field or one of its later words
+does — *shop* is *pastry shop* — and never the field itself. Three at most,
+the ones that bring the most places first, and none that would bring
+nothing. When no place answered at all the net is wider: a word one slip
+from what was typed, or one that begins with it less its ending, so
+*vegetus* offers *vegetarian* over the line saying nothing matches. A name
+— *kodu* — starts no word and the dropdown is what it was. They are rows
+like any other, so the arrows reach them and Enter presses one; a press
+reports `find_word`. `findVocabulary()`, `findWords()` and `findWordRow()`
+in `assets/app.js`. The column's field does not offer them, and neither
+does the iOS app, which gets the tags and the endings through
+`/api/places?q=` and would draw the words itself.
 
 ### What is searched on each side, which is nearly the same thing now
 
@@ -1091,11 +1162,11 @@ know more about them.
 
 A word has to land somewhere in the haystack for the row to match, so
 `telliskivi kohvik` narrows rather than widening — and a word of five letters
-or more also lands on its first letters, so `kohvik` reaches *Kohv*, and
+or more also lands with another ending, so `kohvikus` reaches *Kohvik*, and
 failing that on a word one slip away, so `cappucino` reaches the cafés;
 **Searching the list** has both rules. Ahead of any other order, the rows that
-carry the words as typed come before the rows that only reached them by a
-stem, and those before the rows that reached them by a slip.
+carry the words as typed come before the rows that only reached them with
+another ending, and those before the rows that reached them by a slip.
 
 Then how squarely the words landed, because a substring is a generous
 somewhere: *riva* is inside *Müürivahe*, and answered with every place on that
@@ -7833,9 +7904,9 @@ database that failed once is asked again on the next request.
 rows of the roll the words reach best, from two letters typed, and it is the
 one search every client but the map's find bar asks: the iOS app, the picker
 in the app that adds a place to a list, and the blog editor's picker. It
-matches what the find bar matches — the name, the street, Google's category,
-the kinds and the cuisines in all eleven languages, the dishes of a place of
-mine, a stem, a slip — and orders the way the find bar orders: up to three of
+matches what the find bar matches — the name, the street, Google's category
+and tags, the kinds and the cuisines in all eleven languages, the dishes of a
+place of mine, another ending, a slip — and orders the way the find bar orders: up to three of
 my own places, then everything by the week's rank. `near=<lat>,<lng>` puts
 the nearest first and adds `distance` in metres to each row, `bbox=<south>,
 <west>,<north>,<east>` holds it to a part of the map, and `limit` raises
@@ -7848,8 +7919,8 @@ It searches memory and reads no rows: the haystacks are folded once per kept
 roll, and a search is a pass over them, about a millisecond. A table of words
 in D1 was costed against it and left — between a hundred and fourteen hundred
 rows read per search, three writers to keep in step and a load of seven
-thousand rows by hand, for a prefix match that forgives neither a stem nor a
-slip. The header of `functions/api/_find.js` is the argument.
+thousand rows by hand, for a prefix match that forgives neither an ending
+nor a slip. The header of `functions/api/_find.js` is the argument.
 
 **What an installed app holds the server to.** The iOS app
 (`etibarhasanov/TallinnTasteBudsApp`) has no server of its own and cannot be
@@ -18415,6 +18486,7 @@ The map, `assets/app.js`:
 | `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map — and for `map`, `results`, how many places the column was left showing. `/admin/found` counts the words too; see **How they found it** |
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
+| `find_word` | `search_term`, `word` — a word the find bar offered under the field, pressed: what was typed, and the word it became |
 | `find_google` | `search_term` — **Look for it on Google Maps** pressed, when nothing in the find bar answered, or in a list's picker for a place its roll does not have |
 | `find_clear` | — the cross on the find bar |
 | `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
