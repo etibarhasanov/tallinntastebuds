@@ -1311,7 +1311,7 @@
   "walkDown": "Mover {place} para baixo",
   "walkLeftOut": "Sem localização, ficaram de fora: {n}",
   "walkLeg": "{distance} · {time}",
-  "walkStart": "Começar o percurso",
+  "walkStart": "Começar",
   "walkSignIn": "Entrar para começar",
   "walkCheck": "Confirmar presença aqui",
   "walkChecked": "Confirmado · {when}",
@@ -1334,7 +1334,11 @@
   "walkMin": "{n} min",
   "walkHours": "{h} h {m} min",
   "walkDayOne": "1 dia",
-  "walkDays": "{n} dias"
+  "walkDays": "{n} dias",
+  "walkFoot": "A pé",
+  "walkBike": "De bicicleta",
+  "walkAboutBike": "{places} · cerca de {distance} · {time} de bicicleta",
+  "walkRouteNoteHint": "Diz alguma coisa sobre o percurso todo, se quiseres"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

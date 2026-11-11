@@ -142,7 +142,8 @@ a:hover { color: var(--accent-lit); }
   text-decoration: none;
   cursor: pointer;
 }
-.go:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
+
+.go:hover { background: var(--accent-lit); border-color: var(--accent-lit); color: var(--paper); }
 .go[disabled] { opacity: .6; cursor: default; }
 
 .alt {

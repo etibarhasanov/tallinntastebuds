@@ -40,6 +40,13 @@
  * phone and starts at the nearest place instead. The page never asks for a
  * location on its own.
  *
+ * ON FOOT OR BY BIKE
+ *
+ * Two chips on the card, and the walker picks one or leaves it on foot. It
+ * changes the time the card and the legs estimate — PACE — and the word
+ * beside their name on the board; the order and the distances are the same
+ * streets either way. It can be changed until the walk is finished.
+ *
  * YOUR ORDER IS YOURS
  *
  * "Change the order" turns every row into one that can be moved up or
@@ -63,10 +70,15 @@
      said again so the field stops somebody at the keystroke. */
   var MAX_NOTE = 280;
 
-  /* Streets against the straight line, and metres walked in a minute: 4.8
-     km/h, which is what Google and the journey planner both assume. */
+  /* Streets against the straight line, and metres covered in a minute: 4.8
+     km/h on foot, which is what Google and the journey planner both assume,
+     and 15 km/h on a bike through a city with lights in it. */
   var DETOUR = 1.3;
-  var PACE = 80;
+  var PACE = { foot: 80, bike: 250 };
+
+  /* The ways to go round, the first being what a walk is until somebody
+     says otherwise. The server's — MODES in functions/api/walk.js. */
+  var MODES = ['foot', 'bike'];
 
   /* The longest list whose order is found exactly. Twelve places is four
      thousand sets of them and half a million steps, which a phone does
@@ -333,6 +345,7 @@
      changing it here. */
   function land(out) {
     w.data = out;
+    if (out.walk && MODES.indexOf(out.walk.mode) !== -1) w.mode = out.walk.mode;
     if (out.walk && out.walk.order && out.walk.order.length && !w.editing) w.own = out.walk.order;
     c.redraw();
   }
@@ -385,7 +398,7 @@
   function startWalk() {
     w.busy = 'start';
     c.redraw();
-    send({ action: 'start', order: w.own || [] }).then(function (answer) {
+    send({ action: 'start', order: w.own || [], mode: w.mode }).then(function (answer) {
       w.busy = '';
       if (answer.status !== 200) { say(c.t('walkErr'), true); c.redraw(); return; }
       TTBTrack.event('walk_start', { list_id: w.list.id });
@@ -432,6 +445,18 @@
     });
   }
 
+  /* On foot or by bike. Kept with the walk where there is one, and in this
+     page until Start sends it. */
+  function setMode(mode) {
+    if (mode === w.mode) return;
+    w.mode = mode;
+    TTBTrack.event('walk_mode', { list_id: w.list.id, mode: mode });
+    c.redraw();
+    if (started()) send({ action: 'mode', mode: mode });
+  }
+
+  /* A comment: on the place checked in at, or with `place` '' on the whole
+     of a finished walk. */
   function saveNote(place, text) {
     w.busy = 'note';
     c.redraw();
@@ -504,10 +529,10 @@
       c.el('p', { className: 'eyebrow', textContent: c.t(finished() ? 'walkFinishedEyebrow' : 'walkEyebrow') }),
       c.heading(w.list.title)
     ];
-    var about = c.t('walkAbout', {
+    var about = c.t(w.mode === 'bike' ? 'walkAboutBike' : 'walkAbout', {
       places: c.countLabel(total),
       distance: distance(p.total),
-      time: minutes(p.total / PACE)
+      time: minutes(p.total / PACE[w.mode])
     });
 
     if (finished()) {
@@ -537,12 +562,33 @@
         : c.t(w.here ? 'walkFromHere' : 'walkFromFirst', { place: p.stops[0].name })
       }));
       if (!started()) kids.push(c.el('p', { className: 'walk-how', textContent: c.t('walkHow') }));
+      kids.push(c.el('div', { className: 'lists-row walk-modes' }, MODES.map(function (mode) {
+        var chip = c.el('button', {
+          type: 'button',
+          className: 'chip',
+          'aria-pressed': mode === w.mode ? 'true' : 'false',
+          textContent: c.t(mode === 'bike' ? 'walkBike' : 'walkFoot')
+        });
+        chip.addEventListener('click', function () { setMode(mode); });
+        return chip;
+      })));
       var alts = [
         w.here || w.own ? null : alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe),
         total > 2 ? alt(c.t('walkReorder'), reorder) : null,
         w.own ? alt(c.t('walkShortest'), shortestAgain) : null
       ].filter(Boolean);
       if (alts.length) kids.push(c.el('div', { className: 'lists-row walk-alts' }, alts));
+    }
+
+    /* What the walker said about the whole of it, and the way to say it or
+       change it — the board under this card shows it to everybody. */
+    if (finished() && w.noting !== '') {
+      if (w.data.walk.note) kids.push(c.el('p', { className: 'walk-note', textContent: w.data.walk.note }));
+      kids.push(alt(c.t(w.data.walk.note ? 'walkNoteEdit' : 'walkNoteAdd'), function () {
+        w.noting = '';
+        say('');
+        c.redraw();
+      }));
     }
 
     if (lost > 0) {
@@ -611,7 +657,7 @@
     return c.el('li', { className: 'walk-stop' }, [
       i ? c.el('p', { className: 'walk-leg mono', textContent: '↓ ' + c.t('walkLeg', {
         distance: distance(metres(p.stops[i - 1], item)),
-        time: minutes(metres(p.stops[i - 1], item) / PACE)
+        time: minutes(metres(p.stops[i - 1], item) / PACE[w.mode])
       }) }) : null,
       c.el('div', { className: 'item' + (mine ? ' is-checked' : '') + (next === item ? ' is-next' : '') +
           (w.editing ? ' has-moves' : '') }, [
@@ -639,11 +685,20 @@
       c.el('p', { className: 'eyebrow', textContent: c.t('walkBoard') }),
       c.el('ol', { className: 'walk-board' }, rows.map(function (row, i) {
         return c.el('li', null, [
-          c.el('span', null, [
-            (i + 1) + ' · ',
-            c.el('a', { href: c.profileHref(row.name), textContent: row.name })
+          c.el('div', { className: 'walk-board-row' }, [
+            c.el('span', null, [
+              (i + 1) + ' · ',
+              c.el('a', { href: c.profileHref(row.name), textContent: row.name })
+            ]),
+            /* How, then how long: an hour by bike is not an hour on foot. */
+            c.el('span', { className: 'walk-took', textContent:
+              c.t(row.mode === 'bike' ? 'walkBike' : 'walkFoot') + ' · ' + took(row.finished - row.started) })
           ]),
-          c.el('span', { className: 'walk-took', textContent: took(row.finished - row.started) })
+          row.note ? c.el('p', { className: 'walk-note is-theirs' }, [
+            row.note,
+            w.data.admin && row.name !== w.data.user
+              ? alt(c.t('walkNoteRemove'), function () { removeNote('', row.name); }) : null
+          ]) : null
         ]);
       }))
     ]);
@@ -660,14 +715,52 @@
 
   /* The band at the foot of the window, and the one filled action the view
      has: Done while the order is being changed, the comment while one is
-     being written, and otherwise the next thing a walk wants — to be
-     started, to be checked in on, or, finished, the way on to more lists. */
+     being written — on a place, or on the whole of a finished walk — and
+     otherwise the next thing a walk wants: to be started, to be checked in
+     on, or, finished, the way on to more lists. */
   function dock() {
     var kids = [message()];
+    var live = !!(w.data && w.data.ready && doors().length);
+
+    /* What a comment is being written on: a place checked in at, '' for the
+       whole of a finished walk, or null. A walk just finished with nothing
+       said about it is offered the field once, after the last place's own. */
+    var on = w.noting;
+    if (live && on === null && finished() && !w.data.walk.note && !w.asked) on = '';
+    var was = on === null ? null : on === '' ? (finished() ? w.data.walk : null) : checkOf(on);
 
     if (w.editing) {
       kids.push(c.button(c.t('walkDone'), 'go', doneReordering));
-    } else if (!w.data || !w.data.ready || !doors().length || finished() && !w.noting) {
+    } else if (live && was) {
+      var hint = c.t(on === '' ? 'walkRouteNoteHint' : 'walkNoteHint');
+      var field = c.el('input', {
+        type: 'text',
+        className: 'lists-input walk-field',
+        maxlength: String(MAX_NOTE),
+        placeholder: hint,
+        'aria-label': hint,
+        autocomplete: 'off'
+      });
+      field.value = was.note || '';
+      var form = c.el('form', { className: 'walk-form' }, [
+        field,
+        c.el('div', { className: 'lists-row walk-form-row' }, [
+          c.el('button', { type: 'submit', className: 'go', textContent: c.t('walkNoteSave'), disabled: w.busy === 'note' }),
+          alt(c.t('walkNoteSkip'), function () {
+            if (on === '') w.asked = true;
+            w.noting = null;
+            say('');
+            c.redraw();
+          })
+        ])
+      ]);
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        if (on === '') w.asked = true;
+        saveNote(on, field.value);
+      });
+      kids.push(form);
+    } else if (!live || finished()) {
       kids.push(c.moreLists());
     } else if (!w.data.user) {
       kids.push(TTBTrack.click(c.el('a', {
@@ -677,29 +770,6 @@
       var go = c.button(c.t('walkStart'), 'go', startWalk);
       go.disabled = w.busy === 'start';
       kids.push(go);
-    } else if (w.noting && checkOf(w.noting)) {
-      var field = c.el('input', {
-        type: 'text',
-        className: 'lists-input walk-field',
-        maxlength: String(MAX_NOTE),
-        placeholder: c.t('walkNoteHint'),
-        'aria-label': c.t('walkNoteHint'),
-        autocomplete: 'off'
-      });
-      field.value = checkOf(w.noting).note || '';
-      var place = w.noting;
-      var form = c.el('form', { className: 'walk-form' }, [
-        field,
-        c.el('div', { className: 'lists-row walk-form-row' }, [
-          c.el('button', { type: 'submit', className: 'go', textContent: c.t('walkNoteSave'), disabled: w.busy === 'note' }),
-          alt(c.t('walkNoteSkip'), function () { w.noting = null; say(''); c.redraw(); })
-        ])
-      ]);
-      form.addEventListener('submit', function (ev) {
-        ev.preventDefault();
-        saveNote(place, field.value);
-      });
-      kids.push(form);
     } else {
       var check = c.button(c.t(w.busy === 'check' ? 'walkFinding' : 'walkCheck'), 'go', checkIn);
       check.disabled = w.busy === 'check';
@@ -734,7 +804,9 @@
         short: null,      // the shortest order, remembered — see shortOrder()
         here: null,       // where the phone last said it was
         editing: false,   // the order is being changed
-        noting: null,     // the place a comment is being written on
+        mode: MODES[0],   // on foot or by bike — see setMode()
+        noting: null,     // what a comment is being written on: a place, '' for the whole walk
+        asked: false,     // the finished walk's comment has been offered once
         busy: '',         // 'here' | 'start' | 'check' | 'note' while one is in flight
         msg: null         // the line over the band's button
       };

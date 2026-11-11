@@ -1570,6 +1570,9 @@ body.has-scrim { overflow: hidden; }
 .walk-how { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; }
 .walk-alts { margin-top: 12px; gap: 6px 18px; }
 
+.walk-modes { margin-top: 12px; gap: 8px; }
+.lists-card > .alt { margin-top: 8px; }
+
 .walk-bar {
   height: 6px;
   margin: 12px 0 4px;
@@ -1624,13 +1627,12 @@ body.has-scrim { overflow: hidden; }
 
 .walk-board { list-style: none; margin: 8px 0 0; padding: 0; }
 .walk-board li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
   padding: 9px 0;
   border-top: 1px solid var(--hairline);
   font-size: 14px;
 }
+.walk-board-row { display: flex; justify-content: space-between; gap: 12px; }
+.walk-board .walk-note { margin-top: 4px; }
 .walk-board li:first-child { border-top: 0; }
 .walk-board a { color: inherit; }
 .walk-took { color: var(--muted); white-space: nowrap; }

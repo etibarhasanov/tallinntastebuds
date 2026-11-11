@@ -7613,7 +7613,7 @@ switched on". `.chip[aria-current="page"]` fills alongside
 added. They report `list_map` and `list_page`, which are the names the two
 buttons they replace reported.
 
-There is a third chip now, **Walk**, on a list with at least two places that
+There is a third chip now, **Route**, on a list with at least two places that
 have somewhere to stand, and it reports `list_walk`. On the list's page it and
 **List** change the view without a load and write `?walk=1` into the address;
 on the map it is a link to that address. **Walking a list** below is what it
@@ -8496,11 +8496,14 @@ account button simply does not appear.
 ### Walking a list
 
 A list is a set of places, and the game in a set of places is having been to
-all of them. **Walk** is the third view of any list, beside **Map** and
-**List**: its places in the shortest order to walk them in, how far that is,
-and — for a member — a walk they start, check in on at each door with their
-phone's location, and finish. It may take an afternoon or a month, in any
-order, and nothing is bought. Everybody who finishes is on a board under the
+all of them. **Route** is the third view of any list, beside **Map** and
+**List**: its places in the shortest order to go round them in, how far that
+is, and — for a member — a walk they start, check in on at each door with
+their phone's location, and finish, on foot or by bike. It may take an
+afternoon or a month, in any order, and nothing is bought. The chip says
+Route and not Walk because of the bike; the code, the tables and the events
+say walk, which is what it was called for its first afternoon and is still
+what most people will do. Everybody who finishes is on a board under the
 list, fastest first, and what people said where they checked in is under each
 place. The prize for finishing is the owner's to hand out by hand and is not
 in the code.
@@ -8532,6 +8535,13 @@ longer your order is than the shortest, with the way back beside it. That
 order is the walker's and not the list's: it is stored with their walk, and
 lives in the page alone before there is one.
 
+**On foot or by bike.** Two chips on the card, **On foot** pressed until
+somebody presses the other. The choice changes the time the card and every
+leg estimate — 80 metres a minute or 250 — and the word beside the walker's
+name on the board, since an hour by bike is not an hour on foot. The order and
+the distances are the same streets either way. It is taken on trust, is kept
+with the walk, and can be changed until the walk is finished and not after.
+
 **A check is made wherever you are standing.** **Check in here** sends the
 phone's coordinates, and the server checks whichever unchecked place is
 nearest if it is within `RADIUS`, 75 metres, and otherwise says how far the
@@ -8552,23 +8562,26 @@ on a place they have not checked in at, because the statement that writes one
 can only touch a row made by standing there. The owner of the site — `ADMINS`
 — sees **Remove** beside anybody's, since words anybody with an account can
 publish need somebody who can take them down. The check stays; the words go.
+A finished walk can be given one comment about the whole of it, the same 280
+characters, offered once in the band after the last place's own and afterwards
+from the card; it is drawn under the walker's name on the board.
 
 **One walk per person per list, and finished is decided at the check.** The
-clock on the board runs from the first press of **Start the walk** to the
+clock on the board runs from the first press of **Start** to the
 check that left no place unchecked, and stays: a place added to the list a
 week later takes nobody's name off. A place with no location cannot be stood
 at and is counted neither way; the card says how many were left out.
 
 **The states.** Signed out, the order and the distances with **Sign in to
-start**. Signed in and not started, **Start the walk** and a sentence saying
-what a walk is. Started, the progress, a bar, a tick and the time on each
+start**. Signed in and not started, **Start** and a sentence saying what a
+walk is. Started, the progress, a bar, a tick and the time on each
 checked place, the next one outlined, and **Check in here**. Just checked, the
 comment field. Too far and location refused, a line over the button saying so.
 Finished, the board over the places and the band's way out to more lists. On a
 database the two tables have not reached, or with the route not answering, the
 order and the distances and nothing to press — neither needs the server.
 
-Your own list has no bar, so its head carries **Walk** as a fourth, quiet
+Your own list has no bar, so its head carries **Route** as a fourth, quiet
 control, and the walk of it has the bar so there is a way back.
 
 **What it costs.** One read of the list, two or four small reads of the two
@@ -18818,15 +18831,16 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | --- | --- |
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
-| `list_walk` | `list_id` — the Walk chip on a list's bar and on the map's band, and Walk in the head of your own list |
-| `walk_open` | `list_id` — the Walk view drawn, once a load — `assets/walk.js` reports this and the eight below |
+| `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
+| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the nine below |
+| `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
 | `walk_signin` | `list_id` — Sign in to start, signed out |
-| `walk_start` | `list_id` — Start the walk, once the server has it |
+| `walk_start` | `list_id` — Start, once the server has it |
 | `walk_check`, `walk_finish` | `list_id` — a check that went through, and the one that finished the walk |
 | `walk_far` | `list_id` — a check refused for being more than 75 m from every place left |
-| `walk_note` | `list_id` — a comment saved on a check |
+| `walk_note` | `list_id` — a comment saved, on a check or on the whole of a finished walk |
 | `profile_open` | `name` — any byline |
 | `place_link` | `place`, `map` (`mine`/`google`/`added`) — a name on a list, which opens that list on the map. The parameter says which roll the place came off, which is all it can say now that every row goes to the same place |
 | `list_keep` | `list_id`, `list_state` |

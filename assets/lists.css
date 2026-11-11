@@ -2399,6 +2399,9 @@ body.has-scrim { overflow: hidden; }
 .walk-from,
 .walk-how { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; }
 .walk-alts { margin-top: 12px; gap: 6px 18px; }
+/* On foot or by bike: the two chips, pressed the way a filter is. */
+.walk-modes { margin-top: 12px; gap: 8px; }
+.lists-card > .alt { margin-top: 8px; }
 
 /* How much of it is checked. The one place the accent is drawn as a length
    rather than as a control, and only once there is a walk. */
@@ -2467,13 +2470,12 @@ body.has-scrim { overflow: hidden; }
 /* Who finished, fastest first. */
 .walk-board { list-style: none; margin: 8px 0 0; padding: 0; }
 .walk-board li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
   padding: 9px 0;
   border-top: 1px solid var(--hairline);
   font-size: 14px;
 }
+.walk-board-row { display: flex; justify-content: space-between; gap: 12px; }
+.walk-board .walk-note { margin-top: 4px; }
 .walk-board li:first-child { border-top: 0; }
 .walk-board a { color: inherit; }
 .walk-took { color: var(--muted); white-space: nowrap; }
