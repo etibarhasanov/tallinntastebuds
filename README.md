@@ -7622,6 +7622,13 @@ have somewhere to stand, and it reports `list_walk`. On the list's page it and
 on the map it is a link to that address. **Walking a list** below is what it
 opens.
 
+Three chips beside a title in a four-hundred-pixel panel leave the title a
+column a few letters wide, and for a while that is what the map's band drew —
+*best beer bars* broken into *bes / t / bee / r / bar / s*. So the band wraps:
+the chips stand beside the title only when the whole title fits there on one
+line, and otherwise drop to a line of their own under it. `.list-label.is-credit`
+in `assets/styles.css`.
+
 The accent on the half you are already looking at is the one thing worth
 arguing with, because on this site the accent usually marks the thing a
 surface is asking for, and here it marks the thing you already have. It is the

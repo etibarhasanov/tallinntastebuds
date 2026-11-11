@@ -2328,13 +2328,14 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
     "said";
 }
 
-.list-label.is-credit { align-items: center; }
+.list-label.is-credit { align-items: center; flex-wrap: wrap; row-gap: 8px; }
 
 #panel-band .list-label { position: static; margin: 0; }
 
 .list-views { flex: 0 0 auto; display: flex; gap: 6px; }
 
 .list-label.is-credit .list-group {
+  flex: 1 1 auto;
   display: flex;
   align-items: baseline;
   gap: .42em;

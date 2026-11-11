@@ -3573,19 +3573,26 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 
    Centred rather than on the baseline the other group headings use: a chip is
    a box and a name is a word, and a box hung off a baseline sits low. */
-.list-label.is-credit { align-items: center; }
+.list-label.is-credit { align-items: center; flex-wrap: wrap; row-gap: 8px; }
 /* Its sticky is a scroller's and there is no scroller over it; its bleed
    margins are a list body's and the band has no padding to bleed out of. By
    id, because it has to beat .list-label:first-of-type wherever that sits in
    this file. */
 #panel-band .list-label { position: static; margin: 0; }
-/* The two chips keep their own width whatever the title does — the switch is
-   what the band is for — and the title takes what is left and wraps into it.
+/* The chips keep their own width whatever the title does — the switch is
+   what the band is for — and they sit beside the title only when the whole
+   title fits there on one line. When it does not, the chips drop to a line of
+   their own under it and the title has the band's full width to wrap in.
    Wraps rather than ends in an ellipsis: the panel is four hundred pixels
-   wide, "Top ten bakeries, by Google" does not fit beside two chips at 21px,
+   wide, "Top ten bakeries, by Google" does not fit beside the chips at 21px,
    and a title cut to "Top ten bakeries, b…" has lost the half that says whose
-   ranking it is. A second line is what this band did before it carried a
-   switch, and it costs twenty pixels of a panel that is scrolling anyway. */
+   ranking it is.
+
+   It used to wrap beside them instead, which was fine with two chips. The
+   third, Route, left the title a column a few letters wide — "bes / t / bee /
+   r / bar / s" in Azerbaijani, "bakeri / es" in English — because only the
+   title would shrink. Hence the basis below: the title asks for its whole
+   one-line width, so the band breaks before the title does. */
 .list-views { flex: 0 0 auto; display: flex; gap: 6px; }
 /* And the title is itself a row of two, because it carries the list's pin in
    front of it: the pin sits on the first line's baseline rather than being
@@ -3599,6 +3606,7 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
    `break-word` because only `anywhere` shrinks what the row asks for in the
    first place. */
 .list-label.is-credit .list-group {
+  flex: 1 1 auto;
   display: flex;
   align-items: baseline;
   gap: .42em;
