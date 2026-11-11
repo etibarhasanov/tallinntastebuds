@@ -151,6 +151,9 @@ dl.admin-facts { margin: 0; font-size: 14px; }
 dl.admin-facts div { display: flex; gap: 12px; padding: 9px 0; border-top: 1px solid var(--hairline); }
 dl.admin-facts div:last-child { border-bottom: 1px solid var(--hairline); }
 dl.admin-facts dt { color: var(--muted); flex: 0 0 8.5rem; }
+/* The Google tab's one button that spends, and the line under it. */
+.refresh-now { margin: 14px 0 4px; }
+.refresh-now .msg { margin: 10px 0 0; }
 dl.admin-facts dd { margin: 0; min-width: 0; font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
 
 .shot { margin-top: 12px; text-align: center; }
@@ -1134,6 +1137,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   function googleReport(repo, panel) {
     var out = el('div');
     var again = el('button', { type: 'button', className: 'quiet', textContent: 'Check again' });
+    var told = '';
     panel.appendChild(el('h2', { textContent: 'Google refresh' }));
     panel.appendChild(out);
     panel.appendChild(again);
@@ -1158,7 +1162,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       out.appendChild(el('p', { className: 'note', textContent:
         'A Google place is asked about again when somebody opens it and its numbers are more than ' +
         r.refreshAfterDays + ' days old, and every evening what is left of the day’s calls goes to ' +
-        'the oldest rows. At most ' + r.calls.day + ' calls a day of the site’s own accord, ' +
+        'the oldest rows, or when the button below is pressed. At most ' + r.calls.day + ' calls a day of the site’s own accord, ' +
         r.calls.opens + ' with the places people open, and ' +
         r.calls.monthCap + ' a month, inside Google’s free thousand.' }));
 
@@ -1173,6 +1177,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         r.table.total.toLocaleString('en') + ' places');
       fact('Due now', r.table.due.toLocaleString('en'));
       out.appendChild(facts);
+      if (r.key) out.appendChild(refreshNow(r));
 
       out.appendChild(el('h2', { className: 'gap', textContent: 'The map against Google' }));
       var against = el('div');
@@ -1210,6 +1215,48 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         ]));
       });
       out.appendChild(list);
+    }
+
+    /* Refresh from Google now: the day's fill, on the owner's say-so — POST
+       /api/admin/refreshes. One call a place, and at most what is left of
+       the day's thirty-two of the site's own accord, so the line under the
+       button says how many that is before it is pressed and the button is
+       dead once it is none. `told` is what the last press came to, said in
+       the report drawn after it. Not drawn without a key: there is nothing
+       it could ask with. */
+    function refreshNow(r) {
+      var left = Math.max(0, r.calls.day - r.calls.today);
+      var go = el('button', { type: 'button', textContent: 'Refresh from Google now' });
+      var line = el('p', { className: 'msg', textContent: told ||
+        (left ? 'Up to ' + left + (left === 1 ? ' place' : ' places') +
+          ': the top hundred’s stale rows first, then the oldest.'
+          : 'Today’s ' + r.calls.day + ' calls are spent. The next are tomorrow.') });
+      told = '';
+      go.disabled = !left;
+      go.addEventListener('click', function () {
+        go.disabled = true;
+        go.textContent = 'Asking Google…';
+        line.className = 'msg';
+        line.textContent = 'One place at a time — a quarter of a minute at the most.';
+        fetch('/api/admin/refreshes', { method: 'POST', cache: 'no-store' })
+          .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function (a) {
+            if (!a.ok) throw new Error(a.why === 'no-key' ? 'the key is not set' : 'the database is not there');
+            told = 'Asked about ' + a.asked + (a.asked === 1 ? ' place' : ' places') + '. ' +
+              (a.asked ? 'What moved is under Latest.' : 'Nothing was due, or the month’s calls are spent.');
+            load();
+          })
+          .catch(function (e) {
+            go.disabled = false;
+            go.textContent = 'Refresh from Google now';
+            line.className = 'msg bad';
+            line.textContent = 'Could not refresh: ' + (e && e.message || e) + '. Try again.';
+          });
+      });
+      return el('div', { className: 'refresh-now' }, [go, line]);
     }
 
     /* One row per disagreement, and a button where there is a move. The
