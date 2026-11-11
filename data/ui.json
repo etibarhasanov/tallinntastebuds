@@ -1388,6 +1388,10 @@
     "walkHoursOnly": "{h} saat",
     "walkOnMap": "Xəritədə bax",
     "walkBandTop": "{total} yerdən {n} qeyd olunub",
+    "walkReplan": "Buradan ən qısa yol",
+    "walkLeft": "{n} qalıb · təxminən {distance} · piyada {time}",
+    "walkLeftBike": "{n} qalıb · təxminən {distance} · velosipedlə {time}",
+    "walkReplanned": "Qalan yerlər üçün ən qısa sıra, sənə ən yaxın olan {place} ilə başlayır.",
     "walkOpenList": "Siyahını aç"
   },
   "en": {
@@ -2779,6 +2783,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "See it on the map",
     "walkBandTop": "{n} of {total} checked",
+    "walkReplan": "Shortest from here",
+    "walkLeft": "{n} left · about {distance} · {time} on foot",
+    "walkLeftBike": "{n} left · about {distance} · {time} by bike",
+    "walkReplanned": "Shortest order for the places left, starting at {place}, the nearest to you.",
     "walkOpenList": "Open the list"
   },
   "et": {
@@ -4170,6 +4178,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "Vaata kaardil",
     "walkBandTop": "{n}/{total} märgitud",
+    "walkReplan": "Lühim tee siit",
+    "walkLeft": "{n} jäänud · umbes {distance} · {time} jalgsi",
+    "walkLeftBike": "{n} jäänud · umbes {distance} · {time} rattaga",
+    "walkReplanned": "Lühim järjekord allesjäänud kohtadele, algab kohast {place}, mis on sulle lähim.",
     "walkOpenList": "Ava nimekiri"
   },
   "fi": {
@@ -5561,6 +5573,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "Näytä kartalla",
     "walkBandTop": "{n}/{total} kuitattu",
+    "walkReplan": "Lyhin reitti tästä",
+    "walkLeft": "{n} jäljellä · noin {distance} · {time} kävellen",
+    "walkLeftBike": "{n} jäljellä · noin {distance} · {time} pyörällä",
+    "walkReplanned": "Lyhin järjestys jäljellä oleville paikoille, alkaa paikasta {place}, joka on sinua lähinnä.",
     "walkOpenList": "Avaa lista"
   },
   "pt": {
@@ -6952,6 +6968,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "Ver no mapa",
     "walkBandTop": "{n} de {total} confirmados",
+    "walkReplan": "O mais curto a partir daqui",
+    "walkLeft": "faltam {n} · cerca de {distance} · {time} a pé",
+    "walkLeftBike": "faltam {n} · cerca de {distance} · {time} de bicicleta",
+    "walkReplanned": "A ordem mais curta para os que faltam, a começar em {place}, o mais perto de ti.",
     "walkOpenList": "Abrir a lista"
   },
   "ru": {
@@ -8343,6 +8363,10 @@
     "walkHoursOnly": "{h} ч",
     "walkOnMap": "Показать на карте",
     "walkBandTop": "Отмечено {n} из {total}",
+    "walkReplan": "Кратчайший путь отсюда",
+    "walkLeft": "осталось {n} · около {distance} · {time} пешком",
+    "walkLeftBike": "осталось {n} · около {distance} · {time} на велосипеде",
+    "walkReplanned": "Кратчайший порядок для оставшихся мест, начиная с ближайшего к вам: {place}.",
     "walkOpenList": "Открыть список"
   },
   "es": {
@@ -9734,6 +9758,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "Verla en el mapa",
     "walkBandTop": "{n} de {total} marcados",
+    "walkReplan": "El más corto desde aquí",
+    "walkLeft": "quedan {n} · unos {distance} · {time} a pie",
+    "walkLeftBike": "quedan {n} · unos {distance} · {time} en bici",
+    "walkReplanned": "El orden más corto para los que quedan, empezando por {place}, el más cercano a ti.",
     "walkOpenList": "Abrir la lista"
   },
   "tr": {
@@ -11125,6 +11153,10 @@
     "walkHoursOnly": "{h} sa",
     "walkOnMap": "Haritada gör",
     "walkBandTop": "{total} yerden {n} tanesi işaretlendi",
+    "walkReplan": "Buradan en kısa yol",
+    "walkLeft": "{n} kaldı · yaklaşık {distance} · yürüyerek {time}",
+    "walkLeftBike": "{n} kaldı · yaklaşık {distance} · bisikletle {time}",
+    "walkReplanned": "Kalan yerler için en kısa sıra, sana en yakın yer olan {place} ile başlıyor.",
     "walkOpenList": "Listeyi aç"
   },
   "uk": {
@@ -12516,6 +12548,10 @@
     "walkHoursOnly": "{h} год",
     "walkOnMap": "Показати на карті",
     "walkBandTop": "Відмічено {n} з {total}",
+    "walkReplan": "Найкоротший шлях звідси",
+    "walkLeft": "залишилося {n} · близько {distance} · {time} пішки",
+    "walkLeftBike": "залишилося {n} · близько {distance} · {time} на велосипеді",
+    "walkReplanned": "Найкоротший порядок для решти місць, починаючи з найближчого до вас: {place}.",
     "walkOpenList": "Відкрити список"
   },
   "fr": {
@@ -13907,6 +13943,10 @@
     "walkHoursOnly": "{h} h",
     "walkOnMap": "Voir sur la carte",
     "walkBandTop": "{n} sur {total} validés",
+    "walkReplan": "Le plus court d’ici",
+    "walkLeft": "il en reste {n} · environ {distance} · {time} à pied",
+    "walkLeftBike": "il en reste {n} · environ {distance} · {time} à vélo",
+    "walkReplanned": "L’ordre le plus court pour ceux qui restent, en partant de {place}, le plus proche de toi.",
     "walkOpenList": "Ouvrir la liste"
   },
   "de": {
@@ -15298,6 +15338,10 @@
     "walkHoursOnly": "{h} Std.",
     "walkOnMap": "Auf der Karte ansehen",
     "walkBandTop": "{n} von {total} abgehakt",
+    "walkReplan": "Kürzester Weg von hier",
+    "walkLeft": "noch {n} · etwa {distance} · {time} zu Fuß",
+    "walkLeftBike": "noch {n} · etwa {distance} · {time} mit dem Rad",
+    "walkReplanned": "Die kürzeste Reihenfolge für die übrigen Orte, beginnend bei {place}, dem Ort in deiner Nähe.",
     "walkOpenList": "Liste öffnen"
   }
 }

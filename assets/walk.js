@@ -69,6 +69,18 @@
  * page alone before that. It changes nothing about checking in, which is
  * done wherever somebody is standing.
  *
+ * AND AGAIN FROM WHERE YOU ARE
+ *
+ * The order is found once and stays, and a walk does not go the way it was
+ * planned: two places in, the next one on the page may be the far end of
+ * the list while its walker stands beside the sixth. "Shortest from here",
+ * on the card while a walk is on, asks the phone and puts the places left
+ * in the shortest order from where it is, under the ones already checked.
+ * It is a press and not something the watch does, for the reason the order
+ * stays put at all; it can be pressed again after every check. What it
+ * leaves behind is the walker's own order, kept the way one dragged into
+ * place is.
+ *
  * AND THE SAME WALK ON THE MAP
  *
  * A walk is places, and places are on the map. So the map can be handed the
@@ -351,6 +363,10 @@
     };
   }
 
+  function unchecked(stops) {
+    return stops.filter(function (item) { return !checkOf(item.place); });
+  }
+
   function checkOf(place) {
     var checks = (w.data && w.data.checks) || [];
     for (var i = 0; i < checks.length; i++) if (checks[i].place === place) return checks[i];
@@ -420,20 +436,46 @@
 
   /* ------------------------------------------------------------ the presses */
 
-  function fromMe() {
+  /* The two presses that order the places from where the phone is: each
+     asks it, and says so when it will not answer. */
+  function fromHere(then) {
     w.busy = 'here';
     say('');
     c.redraw();
     locate().then(function (here) {
       w.busy = '';
       w.here = here;
-      w.from = here;
-      TTBTrack.event('walk_from_me', { list_id: w.list.id });
-      shortestAgain();
+      then(here);
     }, function () {
       w.busy = '';
       say(c.t('walkNoLocation'), true);
       c.redraw();
+    });
+  }
+
+  function fromMe() {
+    fromHere(function (here) {
+      w.from = here;
+      TTBTrack.event('walk_from_me', { list_id: w.list.id });
+      shortestAgain();
+    });
+  }
+
+  /* AND AGAIN FROM WHERE YOU ARE — the header. The places checked go to the
+     top in the order they were checked, and the ones left under them in the
+     shortest order from the phone: the phone is the start handed to
+     shortest(), and is dropped from what comes back. */
+  function replan() {
+    fromHere(function (here) {
+      var left = unchecked(plan().stops);
+      var done = doors().filter(function (item) { return checkOf(item.place); }).sort(function (a, b) {
+        return checkOf(a.place).at - checkOf(b.place).at;
+      });
+      var order = shortest([here].concat(left), 0).slice(1).map(function (i) { return left[i - 1]; });
+      w.own = done.concat(order).map(function (item) { return item.place; });
+      w.replanned = true;
+      TTBTrack.event('walk_replan', { list_id: w.list.id });
+      keepOrder();
     });
   }
 
@@ -465,6 +507,7 @@
           TTBTrack.event(out.walk && out.walk.finished ? 'walk_finish' : 'walk_check', { list_id: w.list.id });
           say(c.t('walkCheckedAt', { place: item ? item.name : '', n: out.checks.length, total: total }));
           w.noting = out.checked;
+          w.replanned = false;
           land(out);
           return;
         }
@@ -530,6 +573,7 @@
   function reorder() {
     w.own = plan().stops.map(function (item) { return item.place; });
     w.editing = true;
+    w.replanned = false;
     w.noting = null;
     w.asking = false;
     say('');
@@ -734,6 +778,7 @@
       TTBTrack.event('walk_again', { list_id: w.list.id });
       w.noting = null;
       w.asked = false;
+      w.replanned = false;
       say('');
       land(answer.out);
     });
@@ -757,6 +802,11 @@
       time: minutes(p.total / PACE[w.mode])
     });
     var playing = null;
+    /* What is left of a walk that is on, and how far it is from the phone
+       through them in order — from the first of them before the phone has
+       said where it is. */
+    var left = unchecked(p.stops);
+    var toGo = lengthOf((w.here ? [w.here] : []).concat(left));
 
     if (w.editing) {
       /* Changing the order is its own screen: the totals, what to do, and
@@ -793,8 +843,14 @@
            the three things a walk half done was not saying. */
         playing = c.el('p', { className: 'walk-facts mono' });
         kids.push(playing);
-        kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
-        kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkGoal', { total: total }) }));
+        kids.push(c.el('p', { className: 'walk-facts mono', textContent: toGo
+          ? c.t(w.mode === 'bike' ? 'walkLeftBike' : 'walkLeft', {
+            n: left.length, distance: distance(toGo), time: minutes(toGo / PACE[w.mode])
+          })
+          : about }));
+        kids.push(c.el('p', { className: 'walk-from', textContent: w.replanned
+          ? c.t('walkReplanned', { place: left[0].name })
+          : c.t('walkGoal', { total: total }) }));
       } else {
         kids.push(c.el('p', { className: 'walk-from', textContent:
           w.own ? (p.more >= 10 ? c.t('walkYours', { more: distance(p.more) }) : c.t('walkYoursPlain'))
@@ -830,6 +886,8 @@
       }) : null,
       !started() && !w.from && !w.own && total
         ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe) : null,
+      started() && !finished() && left.length > 1
+        ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkReplan'), replan) : null,
       total ? TTBTrack.click(c.el('a', {
         className: 'alt', href: c.mapHref(), textContent: c.t('walkOnMap')
       }), 'walk_map', { list_id: w.list.id }) : null,
@@ -1102,6 +1160,7 @@
         from: null,       // where "Start from where I am" was pressed — see shortOrder()
         hereAt: 0,        // and when the watch said so — see locate()
         editing: false,   // the order is being changed
+        replanned: false, // "Shortest from here" was pressed and nothing has moved since — see replan()
         mode: MODES[0],   // on foot or by bike — see setMode()
         noting: null,     // what a comment is being written on: a place, '' for the whole walk
         asked: false,     // the finished walk's comment has been offered once

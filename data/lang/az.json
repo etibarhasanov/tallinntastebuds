@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} saat",
   "walkOnMap": "Xəritədə bax",
   "walkBandTop": "{total} yerdən {n} qeyd olunub",
+  "walkReplan": "Buradan ən qısa yol",
+  "walkLeft": "{n} qalıb · təxminən {distance} · piyada {time}",
+  "walkLeftBike": "{n} qalıb · təxminən {distance} · velosipedlə {time}",
+  "walkReplanned": "Qalan yerlər üçün ən qısa sıra, sənə ən yaxın olan {place} ilə başlayır.",
   "walkOpenList": "Siyahını aç"
  },
  "blurbs": {

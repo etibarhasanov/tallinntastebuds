@@ -1388,6 +1388,10 @@
   "walkHoursOnly": "{h} h",
   "walkOnMap": "Näytä kartalla",
   "walkBandTop": "{n}/{total} kuitattu",
+  "walkReplan": "Lyhin reitti tästä",
+  "walkLeft": "{n} jäljellä · noin {distance} · {time} kävellen",
+  "walkLeftBike": "{n} jäljellä · noin {distance} · {time} pyörällä",
+  "walkReplanned": "Lyhin järjestys jäljellä oleville paikoille, alkaa paikasta {place}, joka on sinua lähinnä.",
   "walkOpenList": "Avaa lista"
  },
  "blurbs": {

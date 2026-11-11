@@ -8542,6 +8542,24 @@ as a way back out of something. That order is the walker's and not the
 list's: it is stored with their walk, and lives in the page alone before
 there is one.
 
+**And again from where you are.** A walk does not go the way it was planned.
+Two places in, the next one on the page could be the far end of the list while
+its walker stood beside the sixth, and **Start from where I am** had gone with
+the press of **Start**. So the card of a walk that is on carries **Shortest
+from here**: it asks the phone, moves the places already checked to the top in
+the order they were checked, and puts the ones left under them in the shortest
+order from where the walker is standing — `replan()` in `assets/walk.js`, the
+phone handed to the same `shortest()` as the place to start from. It is a
+press, never something the watch does, for the reason the order stays put at
+all, and it can be pressed again after every check. What it leaves is the
+walker's own order, kept with the walk like one dragged into place, so no
+table and no route moved for it. The card's line under the clock says what is
+left rather than the whole — "5 left · about 1.3 km · 16 min on foot",
+measured from the phone once it has said where it is — and until the next
+check, the sentence under that says where the new order starts. It is gone
+with one place left, there being nothing to order, and a phone that will not
+answer gets the line a refused check gets.
+
 **On foot or by bike.** Two chips on the card, **On foot** pressed until
 somebody presses the other. The choice changes the time the card and every
 leg estimate — 80 metres a minute or 250 — and the word beside the walker's
@@ -19133,10 +19151,11 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
-| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the twelve below |
+| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the thirteen below |
 | `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
+| `walk_replan` | `list_id` — Shortest from here, on a walk that is on, once the phone has answered |
 | `walk_again` | `list_id` — Start again, confirmed, once the server has thrown the walk away |
 | `walk_map` | `list_id` — See it on the map, on the Route view's card |
 | `walk_directions` | `list_id` — Directions: on the next place in the Route view, and in the map's band |
