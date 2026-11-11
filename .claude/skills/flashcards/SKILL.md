@@ -148,6 +148,18 @@ and nothing no line sings may be, each `{ base, means, note?, deck? }`, its
 in `tools/validate.mjs` and `assets/flashcard.js`, so a clipped form like
 *sidun'd* is written whole.
 
+### A question of Find your level
+
+`level`: about a hundred, of which a test draws `LEVEL_DRAW` in
+`functions/api/_level.js` — five, five, four, six and five. Each is a card,
+`{ stage, deck, card }`, asked at the stage its deck is in, with `write` to
+have it typed rather than picked and `also` for another way of writing it; or
+a lesson's example, `{ id, stage: "grammar", lesson, et, gap, wrong }`, with
+the word to leave out and at least two wrong forms. A card that is picked
+needs three neighbours in its deck whose meanings share no word with its own:
+the validator fails one that has fewer, and the fix is to ask it as `write` or
+to ask another card. **Find your level** in `README.md`.
+
 ### A conversation
 
 `talks`: a sheet from a language course, turn by turn and sentence by
@@ -261,7 +273,11 @@ needs stamping for a content change.
   `GRAMMAR_DECK` and `SONG_DECK` in the route; `WORD` in the page and the
   validator; `asForm()` in the page and in `tools/decks.mjs`; `WRITTEN` in
   `functions/api/_decks.js` and `tools/decks.mjs`; and `SAY_TAKE` in the
-  page, bumped whenever `VOICE` or `SPEED` in `say.js` changes.
+  page, bumped whenever `VOICE` or `SPEED` in `say.js` changes. And Find
+  your level's marking, which the page does at once and the route does again
+  on what it keeps: `LEVEL_DRAW`, `PASS`, `NEAR`, the fold, `markOf()` and
+  `placedAt()` in the page against `LEVEL_DRAW`, `PASS`, `NEAR`, `folded()`,
+  `marked()` and `placed()` in `functions/api/_level.js`.
 - **The share card** is `assets/logo/og-flashcard.png`, drawn by `node
   tools/ogcard.mjs` from `assets/flashcard.css`, the colour tokens, and the
   `flashEyebrow`, `flashTitle`, `flashWhat` and `flashTurn` words. Change any

@@ -982,6 +982,125 @@
 }
 .flash-opens .flash-track { flex: 0 0 72px; height: 4px; }
 
+/* ---------- find your level ---------- */
+
+/* The ways in: a quiet .alt under the first stage that is shut, and under a
+   stranger's first card — the test is offered, never put in front of
+   anything. In the accent, since it is the one line on either that is a
+   way somewhere rather than a word about the card. */
+.flash-test-in { color: var(--accent); }
+.flash-opens + .flash-test-in { display: inline-block; margin: 8px 0 0 -12px; }
+.flash-test-in::after { content: ' \2192'; }
+/* On Start the card above the four wears the accent's edge, so a newcomer
+   sees it is the one to begin with; once it has placed somebody it is one
+   line under the sentence, with the way to take it again inside it. */
+.flash-test-part { border-color: var(--accent); }
+.flash-test-you .alt { padding: 0; }
+
+/* The question, on the flashcard's own paper and not pressable: what kind of
+   question in the mono, the thing asked as large as a card's front, and for
+   a gap what the sentence means under it. */
+.flash-test-ask {
+  padding: 26px 20px 24px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.flash-test-kind { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
+.flash-test-word {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.flash-test-word.is-small { font-size: 23px; }
+.flash-test-gap { display: inline-block; min-width: 64px; border-bottom: 2px solid var(--accent); }
+.flash-test-sub { margin: 10px 0 0; font-family: var(--body); font-size: 14px; color: var(--muted); }
+
+/* The choices: a .menu of .menu-rows, the fourth control, one answer a row.
+   Once one is pressed the right one is in the colour Knew it is drawn in and
+   a wrong one pressed is struck through in Show me again's, each with its
+   mark as well as its colour — design rule 10. */
+.flash-test-opts { margin: 14px 0 0; }
+.flash-test-opts .menu-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 500;
+  text-align: left;
+}
+.flash-test-opts .menu-row[disabled] { cursor: default; }
+.flash-test-opts .menu-row.is-right { color: var(--yes); }
+.flash-test-opts .menu-row.is-wrong { color: var(--no); text-decoration: line-through; }
+.flash-test-mark { margin-left: auto; font-size: 13px; text-decoration: none; }
+
+.flash-test-form { margin-top: 14px; }
+/* What came of a written answer, on the wash, its first word in the colour
+   of the verdict: Right, Almost, Not yet — and then the card's own front. */
+.flash-test-verdict {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-soft);
+  background: var(--wash);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.flash-test-verdict b { font-family: var(--display); font-weight: 600; }
+.flash-test-verdict.is-right b:first-child { color: var(--yes); }
+.flash-test-verdict.is-near b:first-child { color: var(--accent); }
+.flash-test-verdict.is-wrong b:first-child { color: var(--no); }
+
+/* I don't know yet on the left, the one action on the right — under the
+   thumb. */
+.flash-test-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+.flash-test-foot .alt { margin-left: -12px; }
+
+/* The result: the stage as large as the score at the end of a run, and the
+   ladder of the four with the one somebody is at boxed in the accent. */
+.flash-test-here {
+  margin: 6px 0 0;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+.flash-test-ladder { list-style: none; margin: 18px 0 0; padding: 0; text-align: left; }
+.flash-test-rung {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--hairline);
+}
+.flash-test-rung-name { font-family: var(--display); font-size: 16px; font-weight: 600; }
+.flash-test-rung-n { align-self: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.flash-test-rung-say { grid-column: 1 / -1; font-size: 11px; color: var(--muted); }
+.flash-test-rung.is-passed .flash-test-rung-say { color: var(--yes); }
+.flash-test-rung.is-here {
+  margin: 0 -12px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-soft);
+  background: var(--wash);
+}
+.flash-test-rung.is-here + .flash-test-rung { border-top: 0; }
+.flash-test-rung.is-here .flash-test-rung-say { color: var(--accent); }
+.flash-test-keep { margin: 16px 0 0; text-align: left; }
+
 /* A form under a list of things, rather than against it. Three cards on this
    page end in one — the decks you wrote, the words in a deck, and the empty
    state of either — and without this the label of the first field sits on the

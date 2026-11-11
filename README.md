@@ -11136,6 +11136,10 @@ for is what they are shown, and the free word is what stands in front of it.
 Signed in, an address is held like the list — the deck it names is one this
 page is not offering yet, and it draws the card that says so.
 
+**And the count is not the only way a stage opens.** Twenty-five questions can
+open it too, for somebody who arrived knowing some Estonian: **Find your
+level** below.
+
 **A deck with a card already known in it used to be held open**, whatever its
 stage said, on the reasoning that the stages arrived after the decks did and
 somebody halfway through *Going deeper* was not to find it shut behind them.
@@ -11162,6 +11166,110 @@ stage's decks out of the answer entirely, so the page is given the shelf this
 person has rather than all forty-two and a rule for drawing the rest. That is
 where the grandfather clause used to have to live as well, on both sides at
 once. And no per-deck numbers, for the reason two paragraphs up.
+
+### Find your level
+
+**The stages above were a wall for anybody who already knew some
+Estonian.** In November 2026 fifty-two people had a word known on the
+flashcards and forty-nine of them were under a hundred, so *Getting by* and
+*Going deeper* were shut for almost everybody — and whoever among them could
+already order dinner had to press Knew it a hundred times on *Tere* and
+*Palun* to be shown a card at their level. This section's own **What it does
+not do** said, for a year, that there was "no test mode — not even one to jump
+a stage with". There is one now, and that sentence came out with it.
+
+**What it is.** Twenty-five questions, easy to hard, and at the end of them a
+stage: *You are here — Getting by*. Five on *First words*, five on *At a
+restaurant*, four on grammar, six on *Getting by* and five on *Going deeper*,
+in that order — `LEVEL_DRAW` in `functions/api/_level.js`. Three kinds:
+
+- **pick the meaning** of an Estonian word, from four, printed in the
+  reader's language;
+- **fill the gap** in a sentence out of a grammar lesson, from three forms —
+  *Lähme ___!* with *köögis*, *kööki*, *köögist*;
+- **write it yourself**: the meaning is shown and the Estonian is typed.
+
+Every question has *I don't know yet*, and three answers in a row not known
+among the stages' words ends the test there — the rest only get harder, and a
+beginner walked through twenty questions they cannot read is a beginner who
+leaves. The grammar does not count towards that, either way.
+
+**About a hundred questions, and a different twenty-five each time.** They are
+`level` in `data/decks.json`: 102 of them, twenty to twenty-four a stage and
+eighteen of grammar, and the route draws a test at random every time it is
+asked — so taking it again is a different test, which is what makes taking it
+again worth anything. Each names something the shelf already has and nothing
+of its own: a card, by its deck and id, or a grammar lesson's example, by the
+lesson and the sentence. So a question can never say anything the decks do
+not, and what it means is already written in three languages. A card is asked
+at the stage its deck is in, which is what makes passing a stage's questions
+mean knowing that stage. `node tools/decks.mjs` writes each one out whole into
+`data/decks/level.json`: a picked card with the meanings of the cards nearest
+it in its deck as the wrong answers — nearest, because a deck runs by subject
+and the believable wrong answer to *Juust* is *Milk* rather than *Signature* —
+leaving out any that shares a word with the right one or with another wrong
+one, which is how *Thank you very much* is kept from standing beside *Thank
+you*. A gap's wrong forms are written by hand in the source. The validator
+holds every question to existing and every stage to having enough.
+
+**How a written answer is marked, which is not a model.** Capitals, full stops
+and commas are ignored. What folds to the card's front — or to another way of
+saying it the source allows, *Tervist* beside *Tere* — is **Right**, a
+point. What is within a fifth of it by edit distance, a letter or two out or
+the dots left off an *õ*, is **Almost — 85% there**, half a point, with the
+right spelling under it. Anything further is **Not yet**, with the answer. The
+chat's model could judge a freer sentence, and was turned down for this: it
+runs on the free daily allowance the live chat spends, and a busy afternoon of
+tests would put the chat out until midnight UTC.
+
+**Where the answers put somebody.** A stage is passed at four answers in five,
+counting halves, and only on a full draw of its questions — a test that
+stopped early has not passed what it never asked. The result is the first
+stage not passed: everything under it is *you can skip these*, it is *carry on
+from here*, and the button is the first deck in it not yet finished. The
+grammar opens nothing — a stage is a shelf of words — and its row on the
+result names the lesson behind the first grammar question missed.
+
+**What it opens, and what it does not touch.** Signed in, the answers are sent
+— what was said to each question, never what the page scored — and the route
+marks them again, out of `marked()` and `placed()` in `functions/api/_level.js`,
+and files one row in `flashcard_known` under the deck id `level` with the
+stage as its card: the trick a lesson read already uses, so there is no table
+and nothing to apply by hand. From then on the stage it names and every stage
+under it is open, whatever the count of words. The route says so by sending
+`gates` as they stand for that person — nought for a stage the test opened —
+so the page's one question, whether the gate is past the count, and the
+app's, did not change. The highest placement is the one that holds: a test
+taken again on a worse day shuts nothing.
+
+The count of words is not touched. Nothing is marked known that nobody turned
+over: *you know 134 words* stays a fact, the deck of what you know stays what
+you answered, and the decks that were skipped are still there to be done.
+Marking up to 397 skipped cards as known was the other way to draw it, and
+lost for exactly that.
+
+**Signed out**, the test is free and the result is the same, and a stage it
+placed somebody at that is behind a gate says *Going deeper opens with an
+account* over the sign-in card. The answers wait in the tab, under
+`ttb.flash.level`, and are filed the moment there is an account — the way the
+five free words are. With the database off the test is not offered at all,
+since every stage is open already.
+
+**Where it is offered**, quietly each time and never in front of anything: a
+line under a stranger's first card, *Know some Estonian already? Find your
+level*, gone with the first answer; a line under the first stage that is shut
+on Words; and a card at the top of Start, which once the test has placed
+somebody becomes one line — *You're at Getting by* — with *Take it again*
+in it. The test is its own address, `/flashcard?level=1`, over whatever was
+open, so the back button leaves it and a link opens it.
+`flash_test_open` counts it opened, with where from, and `flash_test_done`
+where it put somebody, how many questions it asked and whether it stopped.
+
+**What it does not do yet.** It is not in Kohuke. The app reads `gates` and
+`level` from the same answer, so a stage the test opened on the site is open
+in the app; taking the test there is a screen of its own to build. No question
+in it has been read by a native speaker any more than the cards have, and the
+gap questions' wrong forms are the part to check.
 
 ### Three forms, where a word has three
 
@@ -12502,8 +12610,8 @@ deliberately not made in the change that brought this page.
 
 ### What it does not do
 
-No typing the answer in, no matching game, no test
-mode — not even one to jump a stage with — no badges or records for the days
+No typing the answer in on a card, no matching game, no
+badges or records for the days
 in a row, which are a number in a sentence on the front door and on Start and
 nothing more (**Days in a row**), no decks anybody can
 share, and no notifications — this site has no address for anybody, and that
@@ -19204,6 +19312,8 @@ Flashcards, `assets/flashcard.js`:
 | `flash_talk_word` | `talk_id`, `word` — a word of a conversation pressed and its box opened, as it is written and lowercased; a press that shuts the box is not counted — see **Conversations, which are read** |
 | `flash_resume` | `deck_id` — the front door reopening the deck, the lesson, the song or the conversation this device was closed on, which is its id, signed in or out — see **Where you left off** |
 | `flash_first` | `deck_id` — the front door putting a stranger in front of the first card of `FIRST_DECK`, on a device that has never opened the flashcards; against `flash_knew` with the same `deck_id`, how many of them turn it over — see **The front door** under **Flashcards** |
+| `flash_test_open` | `from` (`door`, `words`, `start`, `again`, `link` or `back`) — Find your level opened. **Find your level** under **Flashcards** |
+| `flash_test_done` | `placed` (`start`, `eat`, `more` or `deep`), `asked`, `stopped` (`1` if three in a row ended it) — a test finished, and where it put somebody |
 | `flash_knew`, `flash_again` | `deck_id`, `how` (`press`/`swipe`/`key`), `face` (`front`/`back`), `hint` (`1`/`0`) — one per card answered, which of the three ways it was answered, whether the card had been turned over first (`front` is a throw or an arrow on a card nobody opened), and whether the first letters had been asked for before the answer was given |
 | `flash_undo` | `deck_id`, `was` (`knew`/`again`) — the last answer taken back, which is how anybody will find out whether the throw is misfiring in one direction more than the other — see **Undo** under **Flashcards** |
 | `flash_turn` | `deck_id` — the first card turned over in a load, and only the first: every turn after it is said by the answer that follows. Before it, a visitor who turned cards and answered none counted as a view with nothing pressed |

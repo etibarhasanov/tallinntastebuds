@@ -1,0 +1,3242 @@
+[
+ {
+  "id": "greetings.tere-hommikust",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Tere hommikust",
+  "right": {
+   "en": "Good morning",
+   "az": "Sabahın xeyir",
+   "ru": "Доброе утро"
+  },
+  "wrong": [
+   {
+    "en": "Hello",
+    "az": "Salam",
+    "ru": "Здравствуйте"
+   },
+   {
+    "en": "Goodbye",
+    "az": "Sağ ol",
+    "ru": "До свидания"
+   },
+   {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   },
+   {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   },
+   {
+    "en": "How are you?",
+    "az": "Necəsən?",
+    "ru": "Как дела?"
+   },
+   {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   }
+  ]
+ },
+ {
+  "id": "greetings.head-aega",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Head aega",
+  "right": {
+   "en": "Goodbye",
+   "az": "Sağ ol",
+   "ru": "До свидания"
+  },
+  "wrong": [
+   {
+    "en": "Good night",
+    "az": "Gecən xeyrə qalsın",
+    "ru": "Доброй ночи"
+   },
+   {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   },
+   {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   },
+   {
+    "en": "How are you?",
+    "az": "Necəsən?",
+    "ru": "Как дела?"
+   },
+   {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   },
+   {
+    "en": "Hello",
+    "az": "Salam",
+    "ru": "Здравствуйте"
+   }
+  ]
+ },
+ {
+  "id": "greetings.kuidas-laheb",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Kuidas läheb?",
+  "right": {
+   "en": "How are you?",
+   "az": "Necəsən?",
+   "ru": "Как дела?"
+  },
+  "wrong": [
+   {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   },
+   {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   },
+   {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   },
+   {
+    "en": "Nice to meet you",
+    "az": "Tanış olmaqdan məmnunam",
+    "ru": "Приятно познакомиться"
+   },
+   {
+    "en": "Goodbye",
+    "az": "Sağ ol",
+    "ru": "До свидания"
+   },
+   {
+    "en": "Have a good day",
+    "az": "Gününüz xoş",
+    "ru": "Хорошего дня"
+   }
+  ]
+ },
+ {
+  "id": "greetings.head-ood",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Head ööd",
+  "right": {
+   "en": "Good night",
+   "az": "Gecən xeyrə qalsın",
+   "ru": "Доброй ночи"
+  },
+  "wrong": [
+   {
+    "en": "Goodbye",
+    "az": "Sağ ol",
+    "ru": "До свидания"
+   },
+   {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   },
+   {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   },
+   {
+    "en": "Hello",
+    "az": "Salam",
+    "ru": "Здравствуйте"
+   },
+   {
+    "en": "How are you?",
+    "az": "Necəsən?",
+    "ru": "Как дела?"
+   },
+   {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   }
+  ]
+ },
+ {
+  "id": "greetings.tere",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "Hello",
+   "az": "Salam",
+   "ru": "Здравствуйте"
+  },
+  "right": "Tere",
+  "also": [
+   "Tervist"
+  ]
+ },
+ {
+  "id": "greetings.meeldiv-tutvuda",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Meeldiv tutvuda",
+  "right": {
+   "en": "Nice to meet you",
+   "az": "Tanış olmaqdan məmnunam",
+   "ru": "Приятно познакомиться"
+  },
+  "wrong": [
+   {
+    "en": "Well, thank you",
+    "az": "Yaxşı, sağ ol",
+    "ru": "Хорошо, спасибо"
+   },
+   {
+    "en": "Have a good day",
+    "az": "Gününüz xoş",
+    "ru": "Хорошего дня"
+   },
+   {
+    "en": "How are you?",
+    "az": "Necəsən?",
+    "ru": "Как дела?"
+   },
+   {
+    "en": "Welcome",
+    "az": "Xoş gəlmisən",
+    "ru": "Добро пожаловать"
+   },
+   {
+    "en": "See you",
+    "az": "Görüşənədək",
+    "ru": "До встречи"
+   },
+   {
+    "en": "Goodbye",
+    "az": "Sağ ol",
+    "ru": "До свидания"
+   }
+  ]
+ },
+ {
+  "id": "basics.palun",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "Please",
+   "az": "Zəhmət olmasa",
+   "ru": "Пожалуйста"
+  },
+  "right": "Palun",
+  "also": []
+ },
+ {
+  "id": "basics.voib-olla",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Võib-olla",
+  "right": {
+   "en": "Maybe",
+   "az": "Bəlkə",
+   "ru": "Может быть"
+  },
+  "wrong": [
+   {
+    "en": "Of course",
+    "az": "Əlbəttə",
+    "ru": "Конечно"
+   },
+   {
+    "en": "I do not know",
+    "az": "Bilmirəm",
+    "ru": "Я не знаю"
+   },
+   {
+    "en": "Sorry",
+    "az": "Üzr istəyirəm",
+    "ru": "Простите"
+   },
+   {
+    "en": "I do not understand",
+    "az": "Başa düşmürəm",
+    "ru": "Я не понимаю"
+   },
+   {
+    "en": "Excuse me",
+    "az": "Bağışlayın",
+    "ru": "Извините"
+   },
+   {
+    "en": "Do you speak English?",
+    "az": "İngilis dilində danışırsan?",
+    "ru": "Вы говорите по-английски?"
+   }
+  ]
+ },
+ {
+  "id": "basics.ma-ei-saa-aru",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Ma ei saa aru",
+  "right": {
+   "en": "I do not understand",
+   "az": "Başa düşmürəm",
+   "ru": "Я не понимаю"
+  },
+  "wrong": [
+   {
+    "en": "I do not know",
+    "az": "Bilmirəm",
+    "ru": "Я не знаю"
+   },
+   {
+    "en": "Do you speak English?",
+    "az": "İngilis dilində danışırsan?",
+    "ru": "Вы говорите по-английски?"
+   },
+   {
+    "en": "Maybe",
+    "az": "Bəlkə",
+    "ru": "Может быть"
+   },
+   {
+    "en": "Of course",
+    "az": "Əlbəttə",
+    "ru": "Конечно"
+   },
+   {
+    "en": "A little",
+    "az": "Bir az",
+    "ru": "Немного"
+   },
+   {
+    "en": "Sorry",
+    "az": "Üzr istəyirəm",
+    "ru": "Простите"
+   }
+  ]
+ },
+ {
+  "id": "basics.natuke",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Natuke",
+  "right": {
+   "en": "A little",
+   "az": "Bir az",
+   "ru": "Немного"
+  },
+  "wrong": [
+   {
+    "en": "I do not speak Estonian",
+    "az": "Eston dilində danışmıram",
+    "ru": "Я не говорю по-эстонски"
+   },
+   {
+    "en": "Slower, please",
+    "az": "Zəhmət olmasa, daha yavaş",
+    "ru": "Медленнее, пожалуйста"
+   },
+   {
+    "en": "Help!",
+    "az": "Kömək edin!",
+    "ru": "Помогите!"
+   },
+   {
+    "en": "I do not understand",
+    "az": "Başa düşmürəm",
+    "ru": "Я не понимаю"
+   },
+   {
+    "en": "Good",
+    "az": "Yaxşı",
+    "ru": "Хороший"
+   },
+   {
+    "en": "I do not know",
+    "az": "Bilmirəm",
+    "ru": "Я не знаю"
+   }
+  ]
+ },
+ {
+  "id": "basics.jah",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "Yes",
+   "az": "Bəli",
+   "ru": "Да"
+  },
+  "right": "Jah",
+  "also": []
+ },
+ {
+  "id": "basics.vaike",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Väike",
+  "right": {
+   "en": "Small",
+   "az": "Kiçik",
+   "ru": "Маленький"
+  },
+  "wrong": [
+   {
+    "en": "Big",
+    "az": "Böyük",
+    "ru": "Большой"
+   },
+   {
+    "en": "Thank you very much",
+    "az": "Çox sağ olun",
+    "ru": "Большое спасибо"
+   },
+   {
+    "en": "Bad",
+    "az": "Pis",
+    "ru": "Плохой"
+   },
+   {
+    "en": "Many thanks",
+    "az": "Çox təşəkkür",
+    "ru": "Огромное спасибо"
+   },
+   {
+    "en": "Good",
+    "az": "Yaxşı",
+    "ru": "Хороший"
+   },
+   {
+    "en": "Excuse me, what?",
+    "az": "Bağışlayın, nə dediniz?",
+    "ru": "Что, простите?"
+   }
+  ]
+ },
+ {
+  "id": "basics.aitah",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "Thank you",
+   "az": "Sağ ol",
+   "ru": "Спасибо"
+  },
+  "right": "Aitäh",
+  "also": [
+   "Tänan"
+  ]
+ },
+ {
+  "id": "pronouns.mul-on",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Mul on",
+  "right": {
+   "en": "I have",
+   "az": "Məndə var",
+   "ru": "У меня есть"
+  },
+  "wrong": [
+   {
+    "en": "Their name",
+    "az": "Onların adı",
+    "ru": "Их имя"
+   },
+   {
+    "en": "He has, she has",
+    "az": "Onda var",
+    "ru": "У него, у неё есть"
+   },
+   {
+    "en": "To me, for me",
+    "az": "Mənə",
+    "ru": "Мне"
+   },
+   {
+    "en": "To him, to her",
+    "az": "Ona",
+    "ru": "Ему, ей"
+   },
+   {
+    "en": "This, it",
+    "az": "Bu",
+    "ru": "Этот, это"
+   },
+   {
+    "en": "They are",
+    "az": "Onlar ...-dırlar",
+    "ru": "Они (есть)"
+   }
+  ]
+ },
+ {
+  "id": "asking.kus",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Kus?",
+  "right": {
+   "en": "Where?",
+   "az": "Harada?",
+   "ru": "Где?"
+  },
+  "wrong": [
+   {
+    "en": "Of what?",
+    "az": "Nəyin?",
+    "ru": "Чего?"
+   },
+   {
+    "en": "Who likes it?",
+    "az": "Kimin xoşuna gəlir?",
+    "ru": "Кому нравится?"
+   },
+   {
+    "en": "How many?",
+    "az": "Neçə?",
+    "ru": "Сколько?"
+   },
+   {
+    "en": "Who has?",
+    "az": "Kimdə var?",
+    "ru": "У кого есть?"
+   },
+   {
+    "en": "Whose?",
+    "az": "Kimin?",
+    "ru": "Чей?"
+   },
+   {
+    "en": "How?",
+    "az": "necə?",
+    "ru": "как?"
+   }
+  ]
+ },
+ {
+  "id": "asking.kui-palju",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "How much?",
+   "az": "nə qədər?",
+   "ru": "сколько?"
+  },
+  "right": "Kui palju?",
+  "also": []
+ },
+ {
+  "id": "asking.kuidas",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Kuidas?",
+  "right": {
+   "en": "How?",
+   "az": "necə?",
+   "ru": "как?"
+  },
+  "wrong": [
+   {
+    "en": "To where?",
+    "az": "Hara?",
+    "ru": "Куда?"
+   },
+   {
+    "en": "Which? What kind of?",
+    "az": "hansı?",
+    "ru": "какой?"
+   },
+   {
+    "en": "How many?",
+    "az": "Neçə?",
+    "ru": "Сколько?"
+   },
+   {
+    "en": "How much?",
+    "az": "nə qədər?",
+    "ru": "сколько?"
+   },
+   {
+    "en": "With what? By what?",
+    "az": "nə ilə?",
+    "ru": "чем? на чём?"
+   },
+   {
+    "en": "On which one? (floor, date)",
+    "az": "Neçəncidə?",
+    "ru": "На каком?"
+   }
+  ]
+ },
+ {
+  "id": "numbers.kolm",
+  "stage": "start",
+  "kind": "write",
+  "means": {
+   "en": "Three",
+   "az": "Üç",
+   "ru": "Три"
+  },
+  "right": "Kolm",
+  "also": []
+ },
+ {
+  "id": "numbers.kumme",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Kümme",
+  "right": {
+   "en": "Ten",
+   "az": "On",
+   "ru": "Десять"
+  },
+  "wrong": [
+   {
+    "en": "Nine",
+    "az": "Doqquz",
+    "ru": "Девять"
+   },
+   {
+    "en": "Eleven",
+    "az": "On bir",
+    "ru": "Одиннадцать"
+   },
+   {
+    "en": "Eight",
+    "az": "Səkkiz",
+    "ru": "Восемь"
+   },
+   {
+    "en": "Twelve",
+    "az": "On iki",
+    "ru": "Двенадцать"
+   },
+   {
+    "en": "Seven",
+    "az": "Yeddi",
+    "ru": "Семь"
+   },
+   {
+    "en": "Thirteen",
+    "az": "On üç",
+    "ru": "Тринадцать"
+   }
+  ]
+ },
+ {
+  "id": "numbers.sada",
+  "stage": "start",
+  "kind": "pick",
+  "et": "Sada",
+  "right": {
+   "en": "A hundred",
+   "az": "Yüz",
+   "ru": "Сто"
+  },
+  "wrong": [
+   {
+    "en": "Fifty",
+    "az": "Əlli",
+    "ru": "Пятьдесят"
+   },
+   {
+    "en": "A thousand",
+    "az": "Min",
+    "ru": "Тысяча"
+   },
+   {
+    "en": "Thirty",
+    "az": "Otuz",
+    "ru": "Тридцать"
+   },
+   {
+    "en": "Half",
+    "az": "Yarım",
+    "ru": "Половина"
+   },
+   {
+    "en": "Twenty",
+    "az": "İyirmi",
+    "ru": "Двадцать"
+   },
+   {
+    "en": "First",
+    "az": "Birinci",
+    "ru": "Первый"
+   }
+  ]
+ },
+ {
+  "id": "table.kas-see-laud-on-vaba",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Kas see laud on vaba?",
+  "right": {
+   "en": "Is this table free?",
+   "az": "Bu masa boşdur?",
+   "ru": "Этот столик свободен?"
+  },
+  "wrong": [
+   {
+    "en": "Two people, please",
+    "az": "İki nəfər, zəhmət olmasa",
+    "ru": "Двое, пожалуйста"
+   },
+   {
+    "en": "I would like...",
+    "az": "Mən istərdim...",
+    "ru": "Я хотел бы..."
+   },
+   {
+    "en": "What do you recommend?",
+    "az": "Nə məsləhət verirsiniz?",
+    "ru": "Что вы посоветуете?"
+   },
+   {
+    "en": "Without sugar",
+    "az": "Şəkərsiz",
+    "ru": "Без сахара"
+   },
+   {
+    "en": "Enjoy your meal!",
+    "az": "Nuş olsun!",
+    "ru": "Приятного аппетита!"
+   },
+   {
+    "en": "Cheers!",
+    "az": "Sağlığınıza!",
+    "ru": "За здоровье!"
+   }
+  ]
+ },
+ {
+  "id": "table.menuu-palun",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "The menu, please",
+   "az": "Menyu, zəhmət olmasa",
+   "ru": "Меню, пожалуйста"
+  },
+  "right": "Menüü, palun",
+  "also": []
+ },
+ {
+  "id": "table.uks-kohv-palun",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "One coffee, please",
+   "az": "Bir qəhvə, zəhmət olmasa",
+   "ru": "Один кофе, пожалуйста"
+  },
+  "right": "Üks kohv, palun",
+  "also": []
+ },
+ {
+  "id": "table.head-isu",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Head isu!",
+  "right": {
+   "en": "Enjoy your meal!",
+   "az": "Nuş olsun!",
+   "ru": "Приятного аппетита!"
+  },
+  "wrong": [
+   {
+    "en": "One more, please",
+    "az": "Bir də, zəhmət olmasa",
+    "ru": "Ещё один, пожалуйста"
+   },
+   {
+    "en": "Cheers!",
+    "az": "Sağlığınıza!",
+    "ru": "За здоровье!"
+   },
+   {
+    "en": "Without sugar",
+    "az": "Şəkərsiz",
+    "ru": "Без сахара"
+   },
+   {
+    "en": "Very tasty",
+    "az": "Çox dadlıdır",
+    "ru": "Очень вкусно"
+   },
+   {
+    "en": "Can I pay by card?",
+    "az": "Kartla ödəyə bilərəm?",
+    "ru": "Можно заплатить картой?"
+   },
+   {
+    "en": "What do you recommend?",
+    "az": "Nə məsləhət verirsiniz?",
+    "ru": "Что вы посоветуете?"
+   }
+  ]
+ },
+ {
+  "id": "table.terviseks",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Terviseks!",
+  "right": {
+   "en": "Cheers!",
+   "az": "Sağlığınıza!",
+   "ru": "За здоровье!"
+  },
+  "wrong": [
+   {
+    "en": "Enjoy your meal!",
+    "az": "Nuş olsun!",
+    "ru": "Приятного аппетита!"
+   },
+   {
+    "en": "Very tasty",
+    "az": "Çox dadlıdır",
+    "ru": "Очень вкусно"
+   },
+   {
+    "en": "One more, please",
+    "az": "Bir də, zəhmət olmasa",
+    "ru": "Ещё один, пожалуйста"
+   },
+   {
+    "en": "Without sugar",
+    "az": "Şəkərsiz",
+    "ru": "Без сахара"
+   },
+   {
+    "en": "Can I pay by card?",
+    "az": "Kartla ödəyə bilərəm?",
+    "ru": "Можно заплатить картой?"
+   },
+   {
+    "en": "Is service included?",
+    "az": "Servis haqqı daxildir?",
+    "ru": "Обслуживание включено?"
+   }
+  ]
+ },
+ {
+  "id": "table.arve-palun",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "The bill, please",
+   "az": "Hesab, zəhmət olmasa",
+   "ru": "Счёт, пожалуйста"
+  },
+  "right": "Arve, palun",
+  "also": []
+ },
+ {
+  "id": "table.vaga-maitsev",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Väga maitsev",
+  "right": {
+   "en": "Very tasty",
+   "az": "Çox dadlıdır",
+   "ru": "Очень вкусно"
+  },
+  "wrong": [
+   {
+    "en": "Cheers!",
+    "az": "Sağlığınıza!",
+    "ru": "За здоровье!"
+   },
+   {
+    "en": "The bill, please",
+    "az": "Hesab, zəhmət olmasa",
+    "ru": "Счёт, пожалуйста"
+   },
+   {
+    "en": "Enjoy your meal!",
+    "az": "Nuş olsun!",
+    "ru": "Приятного аппетита!"
+   },
+   {
+    "en": "Can I pay by card?",
+    "az": "Kartla ödəyə bilərəm?",
+    "ru": "Можно заплатить картой?"
+   },
+   {
+    "en": "Is service included?",
+    "az": "Servis haqqı daxildir?",
+    "ru": "Обслуживание включено?"
+   },
+   {
+    "en": "Without sugar",
+    "az": "Şəkərsiz",
+    "ru": "Без сахара"
+   }
+  ]
+ },
+ {
+  "id": "table.kas-ma-saan-maksta-kaardiga",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Kas ma saan maksta kaardiga?",
+  "right": {
+   "en": "Can I pay by card?",
+   "az": "Kartla ödəyə bilərəm?",
+   "ru": "Можно заплатить картой?"
+  },
+  "wrong": [
+   {
+    "en": "The bill, please",
+    "az": "Hesab, zəhmət olmasa",
+    "ru": "Счёт, пожалуйста"
+   },
+   {
+    "en": "Is service included?",
+    "az": "Servis haqqı daxildir?",
+    "ru": "Обслуживание включено?"
+   },
+   {
+    "en": "Very tasty",
+    "az": "Çox dadlıdır",
+    "ru": "Очень вкусно"
+   },
+   {
+    "en": "This one is mine",
+    "az": "Bu mənim üçündür",
+    "ru": "Это для меня"
+   },
+   {
+    "en": "Cheers!",
+    "az": "Sağlığınıza!",
+    "ru": "За здоровье!"
+   },
+   {
+    "en": "Where is the toilet?",
+    "az": "Tualet haradadır?",
+    "ru": "Где туалет?"
+   }
+  ]
+ },
+ {
+  "id": "food.leib",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Leib",
+  "right": {
+   "en": "Black bread",
+   "az": "Qara çörək",
+   "ru": "Чёрный хлеб"
+  },
+  "wrong": [
+   {
+    "en": "Butter",
+    "az": "Kərə yağı",
+    "ru": "Масло"
+   },
+   {
+    "en": "Cheese",
+    "az": "Pendir",
+    "ru": "Сыр"
+   },
+   {
+    "en": "Milk",
+    "az": "Süd",
+    "ru": "Молоко"
+   },
+   {
+    "en": "Water",
+    "az": "Su",
+    "ru": "Вода"
+   },
+   {
+    "en": "Coffee",
+    "az": "Qəhvə",
+    "ru": "Кофе"
+   },
+   {
+    "en": "Tea",
+    "az": "Çay",
+    "ru": "Чай"
+   }
+  ]
+ },
+ {
+  "id": "food.juust",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Juust",
+  "right": {
+   "en": "Cheese",
+   "az": "Pendir",
+   "ru": "Сыр"
+  },
+  "wrong": [
+   {
+    "en": "Butter",
+    "az": "Kərə yağı",
+    "ru": "Масло"
+   },
+   {
+    "en": "Milk",
+    "az": "Süd",
+    "ru": "Молоко"
+   },
+   {
+    "en": "White bread",
+    "az": "Ağ çörək",
+    "ru": "Белый хлеб"
+   },
+   {
+    "en": "Water",
+    "az": "Su",
+    "ru": "Вода"
+   },
+   {
+    "en": "Coffee",
+    "az": "Qəhvə",
+    "ru": "Кофе"
+   },
+   {
+    "en": "Tea",
+    "az": "Çay",
+    "ru": "Чай"
+   }
+  ]
+ },
+ {
+  "id": "food.vesi",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "Water",
+   "az": "Su",
+   "ru": "Вода"
+  },
+  "right": "Vesi",
+  "also": []
+ },
+ {
+  "id": "food.kala",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Kala",
+  "right": {
+   "en": "Fish",
+   "az": "Balıq",
+   "ru": "Рыба"
+  },
+  "wrong": [
+   {
+    "en": "Chicken",
+    "az": "Toyuq əti",
+    "ru": "Курица"
+   },
+   {
+    "en": "Soup",
+    "az": "Şorba",
+    "ru": "Суп"
+   },
+   {
+    "en": "Pork",
+    "az": "Donuz əti",
+    "ru": "Свинина"
+   },
+   {
+    "en": "Salad",
+    "az": "Salat",
+    "ru": "Салат"
+   },
+   {
+    "en": "Meat",
+    "az": "Ət",
+    "ru": "Мясо"
+   },
+   {
+    "en": "Potato",
+    "az": "Kartof",
+    "ru": "Картофель"
+   }
+  ]
+ },
+ {
+  "id": "food.supp",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Supp",
+  "right": {
+   "en": "Soup",
+   "az": "Şorba",
+   "ru": "Суп"
+  },
+  "wrong": [
+   {
+    "en": "Fish",
+    "az": "Balıq",
+    "ru": "Рыба"
+   },
+   {
+    "en": "Salad",
+    "az": "Salat",
+    "ru": "Салат"
+   },
+   {
+    "en": "Chicken",
+    "az": "Toyuq əti",
+    "ru": "Курица"
+   },
+   {
+    "en": "Potato",
+    "az": "Kartof",
+    "ru": "Картофель"
+   },
+   {
+    "en": "Pork",
+    "az": "Donuz əti",
+    "ru": "Свинина"
+   },
+   {
+    "en": "Rice",
+    "az": "Düyü",
+    "ru": "Рис"
+   }
+  ]
+ },
+ {
+  "id": "food.jaatis",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Jäätis",
+  "right": {
+   "en": "Ice cream",
+   "az": "Dondurma",
+   "ru": "Мороженое"
+  },
+  "wrong": [
+   {
+    "en": "Dessert",
+    "az": "Şirniyyat",
+    "ru": "Десерт"
+   },
+   {
+    "en": "Salt",
+    "az": "Duz",
+    "ru": "Соль"
+   },
+   {
+    "en": "Fruit",
+    "az": "Meyvə",
+    "ru": "Фрукт"
+   },
+   {
+    "en": "Sugar",
+    "az": "Şəkər",
+    "ru": "Сахар"
+   },
+   {
+    "en": "Vegetable",
+    "az": "Tərəvəz",
+    "ru": "Овощ"
+   },
+   {
+    "en": "Pepper",
+    "az": "Bibər",
+    "ru": "Перец"
+   }
+  ]
+ },
+ {
+  "id": "food.hommikusook",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Hommikusöök",
+  "right": {
+   "en": "Breakfast",
+   "az": "Səhər yeməyi",
+   "ru": "Завтрак"
+  },
+  "wrong": [
+   {
+    "en": "Pepper",
+    "az": "Bibər",
+    "ru": "Перец"
+   },
+   {
+    "en": "Lunch",
+    "az": "Nahar",
+    "ru": "Обед"
+   },
+   {
+    "en": "Sugar",
+    "az": "Şəkər",
+    "ru": "Сахар"
+   },
+   {
+    "en": "Dinner",
+    "az": "Şam yeməyi",
+    "ru": "Ужин"
+   },
+   {
+    "en": "Salt",
+    "az": "Duz",
+    "ru": "Соль"
+   },
+   {
+    "en": "Egg",
+    "az": "Yumurta",
+    "ru": "Яйцо"
+   }
+  ]
+ },
+ {
+  "id": "food.oun",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "Apple",
+   "az": "Alma",
+   "ru": "Яблоко"
+  },
+  "right": "Õun",
+  "also": []
+ },
+ {
+  "id": "food.piim",
+  "stage": "eat",
+  "kind": "write",
+  "means": {
+   "en": "Milk",
+   "az": "Süd",
+   "ru": "Молоко"
+  },
+  "right": "Piim",
+  "also": []
+ },
+ {
+  "id": "cafe.kaasa",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Kaasa",
+  "right": {
+   "en": "To take away",
+   "az": "Aparmaq üçün",
+   "ru": "С собой"
+  },
+  "wrong": [
+   {
+    "en": "Sandwich",
+    "az": "Buterbrod",
+    "ru": "Бутерброд"
+   },
+   {
+    "en": "A piece, a slice",
+    "az": "Tikə, dilim",
+    "ru": "Кусок, кусочек"
+   },
+   {
+    "en": "I will bring it to you",
+    "az": "Sizə gətirəcəyəm",
+    "ru": "Я вам принесу"
+   },
+   {
+    "en": "Cake",
+    "az": "Tort",
+    "ru": "Торт"
+   },
+   {
+    "en": "Cinnamon bun",
+    "az": "Darçınlı bulka",
+    "ru": "Булочка с корицей"
+   },
+   {
+    "en": "Eating in, on the spot",
+    "az": "Burada, yerində",
+    "ru": "Здесь, на месте"
+   }
+  ]
+ },
+ {
+  "id": "service.kahjuks",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Kahjuks",
+  "right": {
+   "en": "Unfortunately",
+   "az": "Təəssüf ki",
+   "ru": "К сожалению"
+  },
+  "wrong": [
+   {
+    "en": "About, roughly",
+    "az": "Təxminən",
+    "ru": "Примерно"
+   },
+   {
+    "en": "Sorry for the wait",
+    "az": "Gözlətdiyim üçün üzr istəyirəm",
+    "ru": "Извините за ожидание"
+   },
+   {
+    "en": "Right away",
+    "az": "Dərhal",
+    "ru": "Сейчас же"
+   },
+   {
+    "en": "Careful!",
+    "az": "Ehtiyatlı olun!",
+    "ru": "Осторожно!"
+   },
+   {
+    "en": "Would you like anything else?",
+    "az": "Başqa bir şey istəyirsiniz?",
+    "ru": "Хотите что-нибудь ещё?"
+   },
+   {
+    "en": "Is everything all right?",
+    "az": "Hər şey qaydasındadır?",
+    "ru": "Всё в порядке?"
+   }
+  ]
+ },
+ {
+  "id": "service.eraldi",
+  "stage": "eat",
+  "kind": "pick",
+  "et": "Eraldi",
+  "right": {
+   "en": "Separately",
+   "az": "Ayrı",
+   "ru": "Отдельно"
+  },
+  "wrong": [
+   {
+    "en": "Together",
+    "az": "Birlikdə",
+    "ru": "Вместе"
+   },
+   {
+    "en": "Till, checkout",
+    "az": "Kassa",
+    "ru": "Касса"
+   },
+   {
+    "en": "Bill",
+    "az": "Hesab",
+    "ru": "Счёт"
+   },
+   {
+    "en": "Change",
+    "az": "Qalıq pul",
+    "ru": "Сдача"
+   },
+   {
+    "en": "To close",
+    "az": "Bağlamaq",
+    "ru": "Закрывать"
+   },
+   {
+    "en": "Loyalty card",
+    "az": "Müştəri kartı",
+    "ru": "Карта клиента"
+   }
+  ]
+ },
+ {
+  "id": "weather.vihm",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Vihm",
+  "right": {
+   "en": "Rain",
+   "az": "Yağış",
+   "ru": "Дождь"
+  },
+  "wrong": [
+   {
+    "en": "Hot",
+    "az": "Çox isti",
+    "ru": "Жаркий"
+   },
+   {
+    "en": "Snow",
+    "az": "Qar",
+    "ru": "Снег"
+   },
+   {
+    "en": "Warm",
+    "az": "İsti, ilıq",
+    "ru": "Тёплый"
+   },
+   {
+    "en": "Sun",
+    "az": "Günəş",
+    "ru": "Солнце"
+   },
+   {
+    "en": "Cold",
+    "az": "Soyuq",
+    "ru": "Холодный"
+   },
+   {
+    "en": "Wind",
+    "az": "Külək",
+    "ru": "Ветер"
+   }
+  ]
+ },
+ {
+  "id": "weather.lumi",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Lumi",
+  "right": {
+   "en": "Snow",
+   "az": "Qar",
+   "ru": "Снег"
+  },
+  "wrong": [
+   {
+    "en": "Rain",
+    "az": "Yağış",
+    "ru": "Дождь"
+   },
+   {
+    "en": "Sun",
+    "az": "Günəş",
+    "ru": "Солнце"
+   },
+   {
+    "en": "Hot",
+    "az": "Çox isti",
+    "ru": "Жаркий"
+   },
+   {
+    "en": "Wind",
+    "az": "Külək",
+    "ru": "Ветер"
+   },
+   {
+    "en": "Warm",
+    "az": "İsti, ilıq",
+    "ru": "Тёплый"
+   },
+   {
+    "en": "Cloudy",
+    "az": "Buludlu",
+    "ru": "Облачно"
+   }
+  ]
+ },
+ {
+  "id": "weather.talv",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Talv",
+  "right": {
+   "en": "Winter",
+   "az": "Qış",
+   "ru": "Зима"
+  },
+  "wrong": [
+   {
+    "en": "Autumn",
+    "az": "Payız",
+    "ru": "Осень"
+   },
+   {
+    "en": "The weather is lovely today",
+    "az": "Bu gün hava gözəldir",
+    "ru": "Сегодня прекрасная погода"
+   },
+   {
+    "en": "Summer",
+    "az": "Yay",
+    "ru": "Лето"
+   },
+   {
+    "en": "It is cold outside",
+    "az": "Çöldə soyuqdur",
+    "ru": "На улице холодно"
+   },
+   {
+    "en": "Spring",
+    "az": "Yaz",
+    "ru": "Весна"
+   },
+   {
+    "en": "Season",
+    "az": "Fəsil",
+    "ru": "Время года"
+   }
+  ]
+ },
+ {
+  "id": "weather.tana-on-ilus-ilm",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "The weather is lovely today",
+   "az": "Bu gün hava gözəldir",
+   "ru": "Сегодня прекрасная погода"
+  },
+  "right": "Täna on ilus ilm",
+  "also": []
+ },
+ {
+  "id": "verbs.ostma",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Ostma",
+  "right": {
+   "en": "To buy",
+   "az": "almaq",
+   "ru": "покупать"
+  },
+  "wrong": [
+   {
+    "en": "To speak",
+    "az": "danışmaq",
+    "ru": "говорить"
+   },
+   {
+    "en": "To pay, to cost",
+    "az": "ödəmək, dəyəri olmaq",
+    "ru": "платить, стоить"
+   },
+   {
+    "en": "To drink",
+    "az": "içmək",
+    "ru": "пить"
+   },
+   {
+    "en": "To know",
+    "az": "bilmək",
+    "ru": "знать"
+   },
+   {
+    "en": "To eat",
+    "az": "yemək",
+    "ru": "есть"
+   },
+   {
+    "en": "To want",
+    "az": "istəmək",
+    "ru": "хотеть"
+   }
+  ]
+ },
+ {
+  "id": "verbs.raakima",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Rääkima",
+  "right": {
+   "en": "To speak",
+   "az": "danışmaq",
+   "ru": "говорить"
+  },
+  "wrong": [
+   {
+    "en": "To drink",
+    "az": "içmək",
+    "ru": "пить"
+   },
+   {
+    "en": "To buy",
+    "az": "almaq",
+    "ru": "покупать"
+   },
+   {
+    "en": "To eat",
+    "az": "yemək",
+    "ru": "есть"
+   },
+   {
+    "en": "To pay, to cost",
+    "az": "ödəmək, dəyəri olmaq",
+    "ru": "платить, стоить"
+   },
+   {
+    "en": "To do, to make",
+    "az": "etmək, qurmaq",
+    "ru": "делать"
+   },
+   {
+    "en": "To know",
+    "az": "bilmək",
+    "ru": "знать"
+   }
+  ]
+ },
+ {
+  "id": "verbs.teadma",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Teadma",
+  "right": {
+   "en": "To know",
+   "az": "bilmək",
+   "ru": "знать"
+  },
+  "wrong": [
+   {
+    "en": "To pay, to cost",
+    "az": "ödəmək, dəyəri olmaq",
+    "ru": "платить, стоить"
+   },
+   {
+    "en": "To want",
+    "az": "istəmək",
+    "ru": "хотеть"
+   },
+   {
+    "en": "To buy",
+    "az": "almaq",
+    "ru": "покупать"
+   },
+   {
+    "en": "To get, to be able",
+    "az": "almaq, bacarmaq",
+    "ru": "получать, мочь"
+   },
+   {
+    "en": "To speak",
+    "az": "danışmaq",
+    "ru": "говорить"
+   },
+   {
+    "en": "To give",
+    "az": "vermək",
+    "ru": "давать"
+   }
+  ]
+ },
+ {
+  "id": "home.voti",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Võti",
+  "right": {
+   "en": "Key",
+   "az": "Açar",
+   "ru": "Ключ"
+  },
+  "wrong": [
+   {
+    "en": "Chair",
+    "az": "Stul",
+    "ru": "Стул"
+   },
+   {
+    "en": "Rent",
+    "az": "Kirayə haqqı",
+    "ru": "Арендная плата"
+   },
+   {
+    "en": "Table",
+    "az": "Masa",
+    "ru": "Стол"
+   },
+   {
+    "en": "Neighbour",
+    "az": "Qonşu",
+    "ru": "Сосед"
+   },
+   {
+    "en": "Bed",
+    "az": "Çarpayı",
+    "ru": "Кровать"
+   },
+   {
+    "en": "Stairs",
+    "az": "Pilləkən",
+    "ru": "Лестница"
+   }
+  ]
+ },
+ {
+  "id": "home.aken",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Aken",
+  "right": {
+   "en": "Window",
+   "az": "Pəncərə",
+   "ru": "Окно"
+  },
+  "wrong": [
+   {
+    "en": "Door",
+    "az": "Qapı",
+    "ru": "Дверь"
+   },
+   {
+    "en": "Room",
+    "az": "Otaq",
+    "ru": "Комната"
+   },
+   {
+    "en": "House",
+    "az": "Ev",
+    "ru": "Дом"
+   },
+   {
+    "en": "Kitchen",
+    "az": "Mətbəx",
+    "ru": "Кухня"
+   },
+   {
+    "en": "Flat",
+    "az": "Mənzil",
+    "ru": "Квартира"
+   },
+   {
+    "en": "Bathroom",
+    "az": "Hamam",
+    "ru": "Ванная"
+   }
+  ]
+ },
+ {
+  "id": "home.naaber",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Naaber",
+  "right": {
+   "en": "Neighbour",
+   "az": "Qonşu",
+   "ru": "Сосед"
+  },
+  "wrong": [
+   {
+    "en": "Rent",
+    "az": "Kirayə haqqı",
+    "ru": "Арендная плата"
+   },
+   {
+    "en": "Stairs",
+    "az": "Pilləkən",
+    "ru": "Лестница"
+   },
+   {
+    "en": "Key",
+    "az": "Açar",
+    "ru": "Ключ"
+   },
+   {
+    "en": "Roof",
+    "az": "Dam",
+    "ru": "Крыша"
+   },
+   {
+    "en": "Chair",
+    "az": "Stul",
+    "ru": "Стул"
+   },
+   {
+    "en": "Floor",
+    "az": "Döşəmə",
+    "ru": "Пол"
+   }
+  ]
+ },
+ {
+  "id": "time.homme",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "Tomorrow",
+   "az": "Sabah",
+   "ru": "Завтра"
+  },
+  "right": "Homme",
+  "also": []
+ },
+ {
+  "id": "time.nadal",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Nädal",
+  "right": {
+   "en": "Week",
+   "az": "Həftə",
+   "ru": "Неделя"
+  },
+  "wrong": [
+   {
+    "en": "Night",
+    "az": "Gecə",
+    "ru": "Ночь"
+   },
+   {
+    "en": "Month",
+    "az": "Ay",
+    "ru": "Месяц"
+   },
+   {
+    "en": "Evening",
+    "az": "Axşam",
+    "ru": "Вечер"
+   },
+   {
+    "en": "Year",
+    "az": "İl",
+    "ru": "Год"
+   },
+   {
+    "en": "Day",
+    "az": "Gün",
+    "ru": "День"
+   },
+   {
+    "en": "Monday",
+    "az": "Bazar ertəsi",
+    "ru": "Понедельник"
+   }
+  ]
+ },
+ {
+  "id": "time.esmaspaev",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "Monday",
+   "az": "Bazar ertəsi",
+   "ru": "Понедельник"
+  },
+  "right": "Esmaspäev",
+  "also": []
+ },
+ {
+  "id": "around.lennujaam",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Lennujaam",
+  "right": {
+   "en": "The airport",
+   "az": "Hava limanı",
+   "ru": "Аэропорт"
+  },
+  "wrong": [
+   {
+    "en": "The harbour",
+    "az": "Liman",
+    "ru": "Порт"
+   },
+   {
+    "en": "The bus station",
+    "az": "Avtovağzal",
+    "ru": "Автовокзал"
+   },
+   {
+    "en": "Town Hall Square",
+    "az": "Ratuşa meydanı",
+    "ru": "Ратушная площадь"
+   },
+   {
+    "en": "The city centre",
+    "az": "Şəhərin mərkəzi",
+    "ru": "Центр города"
+   },
+   {
+    "en": "Bus",
+    "az": "Avtobus",
+    "ru": "Автобус"
+   },
+   {
+    "en": "Tram",
+    "az": "Tramvay",
+    "ru": "Трамвай"
+   }
+  ]
+ },
+ {
+  "id": "around.peatus",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Peatus",
+  "right": {
+   "en": "Stop",
+   "az": "Dayanacaq",
+   "ru": "Остановка"
+  },
+  "wrong": [
+   {
+    "en": "Ticket",
+    "az": "Bilet",
+    "ru": "Билет"
+   },
+   {
+    "en": "Street",
+    "az": "Küçə",
+    "ru": "Улица"
+   },
+   {
+    "en": "Taxi",
+    "az": "Taksi",
+    "ru": "Такси"
+   },
+   {
+    "en": "Square",
+    "az": "Meydan",
+    "ru": "Площадь"
+   },
+   {
+    "en": "Train",
+    "az": "Qatar",
+    "ru": "Поезд"
+   },
+   {
+    "en": "To the left",
+    "az": "Sola",
+    "ru": "Налево"
+   }
+  ]
+ },
+ {
+  "id": "around.pilet",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "Ticket",
+   "az": "Bilet",
+   "ru": "Билет"
+  },
+  "right": "Pilet",
+  "also": []
+ },
+ {
+  "id": "feelings.vasinud",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "Tired",
+   "az": "Yorğun",
+   "ru": "Усталый"
+  },
+  "right": "Väsinud",
+  "also": []
+ },
+ {
+  "id": "feelings.kurb",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Kurb",
+  "right": {
+   "en": "Sad",
+   "az": "Kədərli",
+   "ru": "Печальный"
+  },
+  "wrong": [
+   {
+    "en": "Happy",
+    "az": "Xoşbəxt",
+    "ru": "Счастливый"
+   },
+   {
+    "en": "Angry",
+    "az": "Hirsli",
+    "ru": "Злой"
+   },
+   {
+    "en": "Tired",
+    "az": "Yorğun",
+    "ru": "Усталый"
+   },
+   {
+    "en": "Boring",
+    "az": "Darıxdırıcı",
+    "ru": "Скучный"
+   },
+   {
+    "en": "Interesting",
+    "az": "Maraqlı",
+    "ru": "Интересный"
+   },
+   {
+    "en": "Hard, heavy",
+    "az": "Çətin, ağır",
+    "ru": "Трудный, тяжёлый"
+   }
+  ]
+ },
+ {
+  "id": "feelings.naljane",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Näljane",
+  "right": {
+   "en": "Hungry",
+   "az": "Ac",
+   "ru": "Голодный"
+  },
+  "wrong": [
+   {
+    "en": "Calm",
+    "az": "Sakit",
+    "ru": "Спокойный"
+   },
+   {
+    "en": "Thirsty",
+    "az": "Susamış",
+    "ru": "Хочет пить"
+   },
+   {
+    "en": "Slow",
+    "az": "Yavaş",
+    "ru": "Медленный"
+   },
+   {
+    "en": "Worried",
+    "az": "Narahat",
+    "ru": "Встревоженный"
+   },
+   {
+    "en": "Fast, in a hurry",
+    "az": "Sürətli, tələsik",
+    "ru": "Быстрый, спешащий"
+   },
+   {
+    "en": "Not bad",
+    "az": "Pis deyil",
+    "ru": "Неплохо"
+   }
+  ]
+ },
+ {
+  "id": "family.tutar",
+  "stage": "more",
+  "kind": "write",
+  "means": {
+   "en": "Daughter",
+   "az": "Qız övlad",
+   "ru": "Дочь"
+  },
+  "right": "Tütar",
+  "also": []
+ },
+ {
+  "id": "family.abikaasa",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Abikaasa",
+  "right": {
+   "en": "Spouse",
+   "az": "Həyat yoldaşı",
+   "ru": "Супруг, супруга"
+  },
+  "wrong": [
+   {
+    "en": "Marriage",
+    "az": "Nikah",
+    "ru": "Брак"
+   },
+   {
+    "en": "To get married",
+    "az": "evlənmək",
+    "ru": "жениться, выходить замуж"
+   },
+   {
+    "en": "Single",
+    "az": "Subay",
+    "ru": "Холостой, незамужняя"
+   },
+   {
+    "en": "Divorced",
+    "az": "Boşanmış",
+    "ru": "Разведён"
+   },
+   {
+    "en": "Parents",
+    "az": "Valideynlər",
+    "ru": "Родители"
+   },
+   {
+    "en": "Son",
+    "az": "Oğul",
+    "ru": "Сын"
+   }
+  ]
+ },
+ {
+  "id": "body.polv",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Põlv",
+  "right": {
+   "en": "Knee",
+   "az": "Diz",
+   "ru": "Колено"
+  },
+  "wrong": [
+   {
+    "en": "Shoulder",
+    "az": "Çiyin",
+    "ru": "Плечо"
+   },
+   {
+    "en": "Elbow",
+    "az": "Dirsək",
+    "ru": "Локоть"
+   },
+   {
+    "en": "Neck",
+    "az": "Boyun",
+    "ru": "Шея"
+   },
+   {
+    "en": "Finger",
+    "az": "Barmaq",
+    "ru": "Палец"
+   },
+   {
+    "en": "Toe",
+    "az": "Ayaq barmağı",
+    "ru": "Палец ноги"
+   },
+   {
+    "en": "Chest",
+    "az": "Sinə",
+    "ru": "Грудь"
+   }
+  ]
+ },
+ {
+  "id": "clothes.kampsun",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Kampsun",
+  "right": {
+   "en": "Jumper",
+   "az": "Sviter",
+   "ru": "Свитер"
+  },
+  "wrong": [
+   {
+    "en": "T-shirt",
+    "az": "Futbolka",
+    "ru": "Футболка"
+   },
+   {
+    "en": "Jacket",
+    "az": "Gödəkçə",
+    "ru": "Куртка"
+   },
+   {
+    "en": "Shirt",
+    "az": "Köynək",
+    "ru": "Рубашка"
+   },
+   {
+    "en": "Blouse",
+    "az": "Bluzka",
+    "ru": "Блузка"
+   },
+   {
+    "en": "Suit",
+    "az": "Kostyum",
+    "ru": "Костюм"
+   },
+   {
+    "en": "Skirt",
+    "az": "Yubka",
+    "ru": "Юбка"
+   }
+  ]
+ },
+ {
+  "id": "describing.kitsas",
+  "stage": "more",
+  "kind": "pick",
+  "et": "Kitsas",
+  "right": {
+   "en": "Narrow",
+   "az": "Dar",
+   "ru": "Узкий"
+  },
+  "wrong": [
+   {
+    "en": "Thick",
+    "az": "Qalın",
+    "ru": "Толстый"
+   },
+   {
+    "en": "Wide",
+    "az": "Geniş",
+    "ru": "Широкий"
+   },
+   {
+    "en": "Thin",
+    "az": "Nazik",
+    "ru": "Тонкий"
+   },
+   {
+    "en": "Wider",
+    "az": "Daha geniş",
+    "ru": "Шире"
+   },
+   {
+    "en": "Tinier",
+    "az": "Daha balaca",
+    "ru": "Меньше"
+   },
+   {
+    "en": "Faster",
+    "az": "Daha sürətli",
+    "ru": "Быстрее"
+   }
+  ]
+ },
+ {
+  "id": "looks.habe",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Habe",
+  "right": {
+   "en": "Beard",
+   "az": "Saqqal",
+   "ru": "Борода"
+  },
+  "wrong": [
+   {
+    "en": "Ponytail",
+    "az": "At quyruğu",
+    "ru": "Конский хвост"
+   },
+   {
+    "en": "Moustache",
+    "az": "Bığ",
+    "ru": "Усы"
+   },
+   {
+    "en": "Braid",
+    "az": "Hörük",
+    "ru": "Коса"
+   },
+   {
+    "en": "Glasses",
+    "az": "Eynək",
+    "ru": "Очки"
+   },
+   {
+    "en": "Hairstyle",
+    "az": "Saç düzümü",
+    "ru": "Причёска"
+   },
+   {
+    "en": "Bald",
+    "az": "Keçəl",
+    "ru": "Лысый"
+   }
+  ]
+ },
+ {
+  "id": "character.laisk",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Laisk",
+  "right": {
+   "en": "Lazy",
+   "az": "Tənbəl",
+   "ru": "Ленивый"
+  },
+  "wrong": [
+   {
+    "en": "Energetic",
+    "az": "Enerjili",
+    "ru": "Энергичный"
+   },
+   {
+    "en": "Hard-working",
+    "az": "Zəhmətkeş",
+    "ru": "Трудолюбивый"
+   },
+   {
+    "en": "Character",
+    "az": "Xasiyyət",
+    "ru": "Характер"
+   },
+   {
+    "en": "Brave",
+    "az": "Cəsur",
+    "ru": "Смелый"
+   },
+   {
+    "en": "Cowardly",
+    "az": "Qorxaq",
+    "ru": "Трусливый"
+   },
+   {
+    "en": "Restless",
+    "az": "Narahat",
+    "ru": "Беспокойный"
+   }
+  ]
+ },
+ {
+  "id": "character.viisakas",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Viisakas",
+  "right": {
+   "en": "Polite",
+   "az": "Nəzakətli",
+   "ru": "Вежливый"
+  },
+  "wrong": [
+   {
+    "en": "Restless",
+    "az": "Narahat",
+    "ru": "Беспокойный"
+   },
+   {
+    "en": "Impolite",
+    "az": "Nəzakətsiz",
+    "ru": "Невежливый"
+   },
+   {
+    "en": "Cowardly",
+    "az": "Qorxaq",
+    "ru": "Трусливый"
+   },
+   {
+    "en": "Funny",
+    "az": "Gülməli",
+    "ru": "Смешной"
+   },
+   {
+    "en": "Brave",
+    "az": "Cəsur",
+    "ru": "Смелый"
+   },
+   {
+    "en": "Decent, respectable",
+    "az": "Qaydalı",
+    "ru": "Порядочный"
+   }
+  ]
+ },
+ {
+  "id": "character.julge",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Julge",
+  "right": {
+   "en": "Brave",
+   "az": "Cəsur",
+   "ru": "Смелый"
+  },
+  "wrong": [
+   {
+    "en": "Hard-working",
+    "az": "Zəhmətkeş",
+    "ru": "Трудолюбивый"
+   },
+   {
+    "en": "Cowardly",
+    "az": "Qorxaq",
+    "ru": "Трусливый"
+   },
+   {
+    "en": "Lazy",
+    "az": "Tənbəl",
+    "ru": "Ленивый"
+   },
+   {
+    "en": "Restless",
+    "az": "Narahat",
+    "ru": "Беспокойный"
+   },
+   {
+    "en": "Energetic",
+    "az": "Enerjili",
+    "ru": "Энергичный"
+   },
+   {
+    "en": "Polite",
+    "az": "Nəzakətli",
+    "ru": "Вежливый"
+   }
+  ]
+ },
+ {
+  "id": "cooking.loikama",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Lõikama",
+  "right": {
+   "en": "To cut",
+   "az": "kəsmək",
+   "ru": "резать"
+  },
+  "wrong": [
+   {
+    "en": "To mix, to stir",
+    "az": "qarışdırmaq",
+    "ru": "мешать"
+   },
+   {
+    "en": "To chop",
+    "az": "doğramaq",
+    "ru": "рубить"
+   },
+   {
+    "en": "To bake, to roast",
+    "az": "bişirmək",
+    "ru": "печь"
+   },
+   {
+    "en": "To peel",
+    "az": "soymaq",
+    "ru": "чистить"
+   },
+   {
+    "en": "To heat",
+    "az": "qızdırmaq",
+    "ru": "нагревать"
+   },
+   {
+    "en": "To add",
+    "az": "əlavə etmək",
+    "ru": "добавлять"
+   }
+  ]
+ },
+ {
+  "id": "cooking.koorima",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Koorima",
+  "right": {
+   "en": "To peel",
+   "az": "soymaq",
+   "ru": "чистить"
+  },
+  "wrong": [
+   {
+    "en": "To chop",
+    "az": "doğramaq",
+    "ru": "рубить"
+   },
+   {
+    "en": "To heat",
+    "az": "qızdırmaq",
+    "ru": "нагревать"
+   },
+   {
+    "en": "To cut",
+    "az": "kəsmək",
+    "ru": "резать"
+   },
+   {
+    "en": "To add",
+    "az": "əlavə etmək",
+    "ru": "добавлять"
+   },
+   {
+    "en": "To mix, to stir",
+    "az": "qarışdırmaq",
+    "ru": "мешать"
+   },
+   {
+    "en": "To knead",
+    "az": "yoğurmaq",
+    "ru": "замешивать"
+   }
+  ]
+ },
+ {
+  "id": "paper.ajaleht",
+  "stage": "deep",
+  "kind": "write",
+  "means": {
+   "en": "Newspaper",
+   "az": "Qəzet",
+   "ru": "Газета"
+  },
+  "right": "Ajaleht",
+  "also": []
+ },
+ {
+  "id": "paper.viga",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Viga",
+  "right": {
+   "en": "Mistake",
+   "az": "Səhv",
+   "ru": "Ошибка"
+  },
+  "wrong": [
+   {
+    "en": "Idea",
+    "az": "Fikir",
+    "ru": "Идея"
+   },
+   {
+    "en": "Time",
+    "az": "Vaxt",
+    "ru": "Время"
+   },
+   {
+    "en": "Voice",
+    "az": "Səs",
+    "ru": "Голос"
+   },
+   {
+    "en": "Book",
+    "az": "Kitab",
+    "ru": "Книга"
+   },
+   {
+    "en": "Exercise",
+    "az": "Çalışma",
+    "ru": "Упражнение"
+   },
+   {
+    "en": "Word",
+    "az": "Söz",
+    "ru": "Слово"
+   }
+  ]
+ },
+ {
+  "id": "country.saar",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Saar",
+  "right": {
+   "en": "Island",
+   "az": "Ada",
+   "ru": "Остров"
+  },
+  "wrong": [
+   {
+    "en": "Capital",
+    "az": "Paytaxt",
+    "ru": "Столица"
+   },
+   {
+    "en": "Sea",
+    "az": "Dəniz",
+    "ru": "Море"
+   },
+   {
+    "en": "Country, state",
+    "az": "Ölkə, dövlət",
+    "ru": "Страна, государство"
+   },
+   {
+    "en": "Lake",
+    "az": "Göl",
+    "ru": "Озеро"
+   },
+   {
+    "en": "Forest",
+    "az": "Meşə",
+    "ru": "Лес"
+   },
+   {
+    "en": "Beach",
+    "az": "Çimərlik",
+    "ru": "Пляж"
+   }
+  ]
+ },
+ {
+  "id": "country.jarv",
+  "stage": "deep",
+  "kind": "write",
+  "means": {
+   "en": "Lake",
+   "az": "Göl",
+   "ru": "Озеро"
+  },
+  "right": "Järv",
+  "also": []
+ },
+ {
+  "id": "health.palavik",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Palavik",
+  "right": {
+   "en": "Fever",
+   "az": "Qızdırma",
+   "ru": "Жар"
+  },
+  "wrong": [
+   {
+    "en": "Pain",
+    "az": "Ağrı",
+    "ru": "Боль"
+   },
+   {
+    "en": "Medicine",
+    "az": "Dərman",
+    "ru": "Лекарство"
+   },
+   {
+    "en": "Ambulance",
+    "az": "Təcili yardım",
+    "ru": "Скорая помощь"
+   },
+   {
+    "en": "Ill",
+    "az": "Xəstə",
+    "ru": "Больной"
+   },
+   {
+    "en": "Hospital",
+    "az": "Xəstəxana",
+    "ru": "Больница"
+   },
+   {
+    "en": "Healthy, whole",
+    "az": "Sağlam, bütöv",
+    "ru": "Здоровый, целый"
+   }
+  ]
+ },
+ {
+  "id": "health.kulmetus",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Külmetus",
+  "right": {
+   "en": "A cold",
+   "az": "Soyuqlama",
+   "ru": "Простуда"
+  },
+  "wrong": [
+   {
+    "en": "Healthy, whole",
+    "az": "Sağlam, bütöv",
+    "ru": "Здоровый, целый"
+   },
+   {
+    "en": "Cough",
+    "az": "Öskürək",
+    "ru": "Кашель"
+   },
+   {
+    "en": "Ill",
+    "az": "Xəstə",
+    "ru": "Больной"
+   },
+   {
+    "en": "Head",
+    "az": "Baş",
+    "ru": "Голова"
+   },
+   {
+    "en": "Medicine",
+    "az": "Dərman",
+    "ru": "Лекарство"
+   },
+   {
+    "en": "Stomach",
+    "az": "Qarın",
+    "ru": "Живот"
+   }
+  ]
+ },
+ {
+  "id": "health.ravim",
+  "stage": "deep",
+  "kind": "write",
+  "means": {
+   "en": "Medicine",
+   "az": "Dərman",
+   "ru": "Лекарство"
+  },
+  "right": "Ravim",
+  "also": []
+ },
+ {
+  "id": "work.leping",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Leping",
+  "right": {
+   "en": "Contract",
+   "az": "Müqavilə",
+   "ru": "Договор"
+  },
+  "wrong": [
+   {
+    "en": "Salary",
+    "az": "Əmək haqqı",
+    "ru": "Зарплата"
+   },
+   {
+    "en": "Document",
+    "az": "Sənəd",
+    "ru": "Документ"
+   },
+   {
+    "en": "Signature",
+    "az": "İmza",
+    "ru": "Подпись"
+   },
+   {
+    "en": "Meeting",
+    "az": "İclas",
+    "ru": "Совещание"
+   },
+   {
+    "en": "Deadline",
+    "az": "Son tarix",
+    "ru": "Срок"
+   },
+   {
+    "en": "Tax",
+    "az": "Vergi",
+    "ru": "Налог"
+   }
+  ]
+ },
+ {
+  "id": "work.tahtaeg",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Tähtaeg",
+  "right": {
+   "en": "Deadline",
+   "az": "Son tarix",
+   "ru": "Срок"
+  },
+  "wrong": [
+   {
+    "en": "Meeting",
+    "az": "İclas",
+    "ru": "Совещание"
+   },
+   {
+    "en": "Tax",
+    "az": "Vergi",
+    "ru": "Налог"
+   },
+   {
+    "en": "Signature",
+    "az": "İmza",
+    "ru": "Подпись"
+   },
+   {
+    "en": "Bank",
+    "az": "Bank",
+    "ru": "Банк"
+   },
+   {
+    "en": "Document",
+    "az": "Sənəd",
+    "ru": "Документ"
+   },
+   {
+    "en": "Account",
+    "az": "Hesab",
+    "ru": "Счёт"
+   }
+  ]
+ },
+ {
+  "id": "work.allkiri",
+  "stage": "deep",
+  "kind": "write",
+  "means": {
+   "en": "Signature",
+   "az": "İmza",
+   "ru": "Подпись"
+  },
+  "right": "Allkiri",
+  "also": []
+ },
+ {
+  "id": "moreverbs.unustama",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Unustama",
+  "right": {
+   "en": "To forget",
+   "az": "unutmaq",
+   "ru": "забывать"
+  },
+  "wrong": [
+   {
+    "en": "To be late",
+    "az": "gecikmək",
+    "ru": "опаздывать"
+   },
+   {
+    "en": "To smile",
+    "az": "gülümsəmək",
+    "ru": "улыбаться"
+   },
+   {
+    "en": "To breathe",
+    "az": "nəfəs almaq",
+    "ru": "дышать"
+   },
+   {
+    "en": "To fry",
+    "az": "qızartmaq",
+    "ru": "жарить"
+   },
+   {
+    "en": "To begin",
+    "az": "başlamaq",
+    "ru": "начинать"
+   },
+   {
+    "en": "To boil, to brew",
+    "az": "qaynatmaq, dəmləmək",
+    "ru": "варить, заваривать"
+   }
+  ]
+ },
+ {
+  "id": "twowords.alla-kirjutama",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Alla kirjutama",
+  "right": {
+   "en": "To sign",
+   "az": "imzalamaq",
+   "ru": "подписывать"
+  },
+  "wrong": [
+   {
+    "en": "To give up, surrender",
+    "az": "təslim olmaq",
+    "ru": "сдаваться"
+   },
+   {
+    "en": "To download",
+    "az": "endirmək, yükləmək",
+    "ru": "скачивать"
+   },
+   {
+    "en": "To present, perform, report",
+    "az": "təqdim etmək, ifa etmək",
+    "ru": "докладывать, исполнять"
+   },
+   {
+    "en": "To imagine",
+    "az": "təsəvvür etmək",
+    "ru": "представлять себе"
+   },
+   {
+    "en": "To foresee",
+    "az": "qabaqcadan görmək",
+    "ru": "предвидеть"
+   },
+   {
+    "en": "To happen, come up",
+    "az": "baş vermək, rast gəlmək",
+    "ru": "случаться, встречаться"
+   }
+  ]
+ },
+ {
+  "id": "twowords.ette-kujutama",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Ette kujutama",
+  "right": {
+   "en": "To imagine",
+   "az": "təsəvvür etmək",
+   "ru": "представлять себе"
+  },
+  "wrong": [
+   {
+    "en": "To present, perform, report",
+    "az": "təqdim etmək, ifa etmək",
+    "ru": "докладывать, исполнять"
+   },
+   {
+    "en": "To foresee",
+    "az": "qabaqcadan görmək",
+    "ru": "предвидеть"
+   },
+   {
+    "en": "To download — said casually",
+    "az": "endirmək — danışıqda",
+    "ru": "скачивать — разговорное"
+   },
+   {
+    "en": "To happen, come up",
+    "az": "baş vermək, rast gəlmək",
+    "ru": "случаться, встречаться"
+   },
+   {
+    "en": "To look out, be careful",
+    "az": "ehtiyatlı olmaq",
+    "ru": "быть осторожным"
+   },
+   {
+    "en": "To sign",
+    "az": "imzalamaq",
+    "ru": "подписывать"
+   }
+  ]
+ },
+ {
+  "id": "everyday.tegelikult",
+  "stage": "deep",
+  "kind": "pick",
+  "et": "Tegelikult",
+  "right": {
+   "en": "Actually",
+   "az": "əslində",
+   "ru": "вообще-то"
+  },
+  "wrong": [
+   {
+    "en": "Through",
+    "az": "içindən",
+    "ru": "через, сквозь"
+   },
+   {
+    "en": "Already",
+    "az": "artıq",
+    "ru": "уже"
+   },
+   {
+    "en": "Over, across",
+    "az": "üzərindən, o tayda",
+    "ru": "через, на той стороне"
+   },
+   {
+    "en": "Probably",
+    "az": "deyəsən",
+    "ru": "наверное"
+   },
+   {
+    "en": "After",
+    "az": "sonra",
+    "ru": "после"
+   },
+   {
+    "en": "Such a, like that",
+    "az": "belə, o cür",
+    "ru": "такой"
+   }
+  ]
+ },
+ {
+  "id": "into-kitchen",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-inside",
+  "et": "Lähme ___!",
+  "means": {
+   "en": "Let's go into the kitchen!",
+   "az": "Gəl mətbəxə gedək!",
+   "ru": "Пойдём на кухню!"
+  },
+  "right": "kööki",
+  "wrong": [
+   "köögis",
+   "köögist"
+  ]
+ },
+ {
+  "id": "in-kitchen",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-inside",
+  "et": "Kohv on ___.",
+  "means": {
+   "en": "The coffee is in the kitchen.",
+   "az": "Qəhvə mətbəxdədir.",
+   "ru": "Кофе на кухне."
+  },
+  "right": "köögis",
+  "wrong": [
+   "kööki",
+   "köögist"
+  ]
+ },
+ {
+  "id": "from-town",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-inside",
+  "et": "Ma tulen ___ kell kuus.",
+  "means": {
+   "en": "I'm coming back from town at six.",
+   "az": "Saat altıda şəhərdən qayıdıram.",
+   "ru": "Я вернусь из города в шесть."
+  },
+  "right": "linnast",
+  "wrong": [
+   "linnas",
+   "linna"
+  ]
+ },
+ {
+  "id": "onto-table",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-surface",
+  "et": "Pane leib ___.",
+  "means": {
+   "en": "Put the bread on the table.",
+   "az": "Çörəyi stolun üstünə qoy.",
+   "ru": "Положи хлеб на стол."
+  },
+  "right": "lauale",
+  "wrong": [
+   "laual",
+   "laualt"
+  ]
+ },
+ {
+  "id": "on-table",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-surface",
+  "et": "___ on kaks tassi.",
+  "means": {
+   "en": "There are two cups on the table.",
+   "az": "Stolun üstündə iki fincan var.",
+   "ru": "На столе две чашки."
+  },
+  "right": "Laual",
+  "wrong": [
+   "Lauale",
+   "Laualt"
+  ]
+ },
+ {
+  "id": "from-friend",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-surface",
+  "et": "Ma laenasin raha ___.",
+  "means": {
+   "en": "I borrowed money from a friend.",
+   "az": "Dostdan borc pul aldım.",
+   "ru": "Я занял деньги у друга."
+  },
+  "right": "sõbralt",
+  "wrong": [
+   "sõbrale",
+   "sõbral"
+  ]
+ },
+ {
+  "id": "no-bread",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-three",
+  "et": "Mul ei ole ___.",
+  "means": {
+   "en": "I have no bread.",
+   "az": "Çörəyim yoxdur.",
+   "ru": "У меня нет хлеба."
+  },
+  "right": "leiba",
+  "wrong": [
+   "leib",
+   "leiva"
+  ]
+ },
+ {
+  "id": "one-loaf",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-three",
+  "et": "Ma ostan ühe ___.",
+  "means": {
+   "en": "I'll buy one loaf.",
+   "az": "Bir çörək alıram.",
+   "ru": "Я куплю одну буханку."
+  },
+  "right": "leiva",
+  "wrong": [
+   "leib",
+   "leiba"
+  ]
+ },
+ {
+  "id": "with-friend",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-with",
+  "et": "Ma lähen ___ kinno.",
+  "means": {
+   "en": "I'm going to the cinema with a friend.",
+   "az": "Dostla kinoya gedirəm.",
+   "ru": "Я иду в кино с другом."
+  },
+  "right": "sõbraga",
+  "wrong": [
+   "sõbrata",
+   "sõbrana"
+  ]
+ },
+ {
+  "id": "without-sugar",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-with",
+  "et": "Palun üks tee ___.",
+  "means": {
+   "en": "One tea without sugar, please.",
+   "az": "Bir şəkərsiz çay, zəhmət olmasa.",
+   "ru": "Один чай без сахара, пожалуйста."
+  },
+  "right": "suhkruta",
+  "wrong": [
+   "suhkruga",
+   "suhkruna"
+  ]
+ },
+ {
+  "id": "become-doctor",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-becoming",
+  "et": "Ma tahan saada ___.",
+  "means": {
+   "en": "I want to become a doctor.",
+   "az": "Həkim olmaq istəyirəm.",
+   "ru": "Я хочу стать врачом."
+  },
+  "right": "arstiks",
+  "wrong": [
+   "arstina",
+   "arstini"
+  ]
+ },
+ {
+  "id": "until-evening",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "cases-becoming",
+  "et": "Ma töötan ___.",
+  "means": {
+   "en": "I work until the evening.",
+   "az": "Axşamadək işləyirəm.",
+   "ru": "Я работаю до вечера."
+  },
+  "right": "õhtuni",
+  "wrong": [
+   "õhtuks",
+   "õhtuna"
+  ]
+ },
+ {
+  "id": "want-to-go",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "verb-forms",
+  "et": "Ma tahan koju ___.",
+  "means": {
+   "en": "I want to go home.",
+   "az": "Evə getmək istəyirəm.",
+   "ru": "Я хочу пойти домой."
+  },
+  "right": "minna",
+  "wrong": [
+   "minema",
+   "lähen"
+  ]
+ },
+ {
+  "id": "must-go",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "verb-forms",
+  "et": "Ma pean tööle ___.",
+  "means": {
+   "en": "I have to go to work.",
+   "az": "İşə getməliyəm.",
+   "ru": "Мне надо идти на работу."
+  },
+  "right": "minema",
+  "wrong": [
+   "minna",
+   "lähen"
+  ]
+ },
+ {
+  "id": "we-ate",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "verb-tenses",
+  "et": "Eile me ___ vanalinnas.",
+  "means": {
+   "en": "Yesterday we ate in the Old Town.",
+   "az": "Dünən köhnə şəhərdə yemək yedik.",
+   "ru": "Вчера мы ели в Старом городе."
+  },
+  "right": "sõime",
+  "wrong": [
+   "sööme",
+   "sööksime"
+  ]
+ },
+ {
+  "id": "not-eaten",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "verb-tenses",
+  "et": "Ma ei ole veel ___.",
+  "means": {
+   "en": "I have not eaten yet.",
+   "az": "Hələ yemək yeməmişəm.",
+   "ru": "Я ещё не ел."
+  },
+  "right": "söönud",
+  "wrong": [
+   "sööma",
+   "söön"
+  ]
+ },
+ {
+  "id": "where-live",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "verb-tenses",
+  "et": "Kus sa ___?",
+  "means": {
+   "en": "Where do you live?",
+   "az": "Harada yaşayırsan?",
+   "ru": "Где ты живёшь?"
+  },
+  "right": "elad",
+  "wrong": [
+   "elan",
+   "elab"
+  ]
+ },
+ {
+  "id": "bigger-than",
+  "stage": "grammar",
+  "kind": "gap",
+  "lesson": "adjectives",
+  "et": "Tallinn on ___ kui Tartu.",
+  "means": {
+   "en": "Tallinn is bigger than Tartu.",
+   "az": "Tallinn Tartudan böyükdür.",
+   "ru": "Таллинн больше Тарту."
+  },
+  "right": "suurem",
+  "wrong": [
+   "suur",
+   "suurim"
+  ]
+ }
+]

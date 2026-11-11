@@ -1655,7 +1655,11 @@ CREATE TABLE IF NOT EXISTS flashcard_known (
   -- somebody has read is a row under that id with the lesson's id as the
   -- card — GRAMMAR_DECK in functions/api/flashcard.js, reserved by the
   -- validator so no shipped deck takes the name — and the route keeps it out
-  -- of every count of cards.
+  -- of every count of cards. "songs" and "talks" are the same for a song
+  -- heard and a conversation read, and "level" for where Find your level put
+  -- somebody, with the stage as the card: LEVEL_DECK in
+  -- functions/api/_level.js. A stage named there is open to them whatever
+  -- they know.
   deck_id TEXT    NOT NULL,
   card_id TEXT    NOT NULL,
   seen_at INTEGER NOT NULL,
