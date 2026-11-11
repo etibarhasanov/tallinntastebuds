@@ -212,6 +212,7 @@
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
+    walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
     canLook: false,    // whether /api/lookup can ask Google Maps at all
@@ -2135,9 +2136,17 @@
     var wrap = el('div', { className: 'lists-stack' });
     /* The bar first, and it stays there: a list runs to twenty places and
        everything saying what you were reading used to scroll away with the
-       head card. Only on somebody else's — see listBar(). */
-    var bar = list.mine ? null : listBar(list);
+       head card. Only on somebody else's — see listBar() — and on a walk of
+       your own, which is a view to get back out of. */
+    var bar = list.mine && !state.walking ? null : listBar(list);
     if (bar) wrap.appendChild(bar);
+    /* The third view, and the whole of it is another file's: the places in
+       the order to walk them, and a walk to start and check in on. */
+    if (state.walking) {
+      walkView(list).forEach(function (node) { if (node) wrap.appendChild(node); });
+      nameWhenPast(bar, wrap.querySelector('.lists-title'));
+      return wrap;
+    }
     wrap.appendChild(list.mine ? listHeadMine(list) : listHead(list));
     if (bar) nameWhenPast(bar, wrap.querySelector('.lists-title'));
 
@@ -2360,7 +2369,7 @@
      over the same list — see listCredit() in assets/app.js, which builds it
      out of the map's own pieces because the two pages share no module.
      It says two things and sticks to the top of the window saying them: which
-     list this is, and which of its two views you are looking at. Where you
+     list this is, and which of its views you are looking at. Where you
      can go instead is the other bar, at the foot — see listDock().
 
      A LIST IS ONE THING WITH TWO VIEWS, AND THE BAR IS WHAT SAYS SO
@@ -2380,12 +2389,36 @@
      `list_map` and the list half `list_page`, which are the names the two
      buttons it replaces reported.
 
+     AND A THIRD, WHICH IS THIS PAGE DRAWN ANOTHER WAY
+
+     Walk is the same list in the order to walk it — see "walking it" below.
+     It and List are both this page, so pressing either redraws it without a
+     load; they are still links to real addresses, `?walk=1` and without, for
+     a tab, a message, and a browser with no script. It is drawn only on a
+     list with two places that have somewhere to stand, and reports
+     `list_walk`.
+
      Your own list has no bar and no foot. That page is an editor — its title
      is a field you type in rather than a heading, and the accent on it
-     belongs to Save — and the way onto the map is in its row of controls
-     where the other things you do to a list are. Somebody reading a list they
-     were sent is the journey this is about. */
+     belongs to Save — and the ways onto the map and onto a walk are in its
+     row of controls where the other things you do to a list are. A walk of
+     your own list does have the bar, as the way back out of it. Somebody
+     reading a list they were sent is the journey this is about. */
   function listBar(list) {
+    var here = '/list/' + encodeURIComponent(list.id);
+    /* The view on screen is a word and the other two are doors. Map leaves
+       the page; List and Walk are this page drawn the other way, so each is
+       a real address — a link somebody can copy, and what a browser with no
+       script follows — that a press answers without a load. */
+    function view(label, on, href, walking) {
+      if (on) return el('span', { className: 'chip', 'aria-current': 'page', textContent: label });
+      var a = el('a', { className: 'chip', href: href, textContent: label });
+      a.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        setWalking(walking);
+      });
+      return TTBTrack.click(a, walking ? 'list_walk' : 'list_page', { list_id: list.id });
+    }
     return el('div', { className: 'lists-bar' }, [
       el('span', { className: 'lists-bar-name', textContent: list.title }),
       el('span', { className: 'lists-bar-views' }, [
@@ -2394,9 +2427,61 @@
           href: mapHref(list.id),
           textContent: t('listsViewMap')
         }), 'list_map', { list_id: list.id }),
-        el('span', { className: 'chip', 'aria-current': 'page', textContent: t('listsViewList') })
+        view(t('listsViewList'), !state.walking, here, false),
+        walkable(list) ? view(t('walkView'), state.walking, here + '?walk=1', true) : null
       ])
     ]);
+  }
+
+  /* ------------------------------------------------------------- walking it
+   * The third way to read a list: its places in the order to walk them, and
+   * for a member a walk to start, check in on and finish. assets/walk.js is
+   * the view and functions/api/walk.js the rows behind it; what is here is
+   * the switch, and the page's own pieces handed over so a card there is the
+   * card everywhere. **Walking a list** in README.md.
+   *
+   * A list of one place is not a walk, and neither is one whose places the
+   * catalogue has lost: two with somewhere to stand is the least there is an
+   * order of.
+   */
+  function walkable(list) {
+    return !!window.TTBWalk && list.items.filter(function (item) {
+      return typeof item.lat === 'number' && typeof item.lng === 'number';
+    }).length >= 2;
+  }
+
+  /* On or off, in the address as well as on the page, so a reload and a
+     link somebody sends both land on the view that was showing. Replaced
+     rather than pushed: Back leaves the list, as it does from the other two
+     views, instead of walking through every press of the switch. */
+  function setWalking(on) {
+    state.walking = on;
+    var params = new URLSearchParams(window.location.search);
+    if (on) params.set('walk', '1'); else params.delete('walk');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+    } catch (e) { /* the view still changes; only the address does not */ }
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function walkView(list) {
+    return TTBWalk.view({
+      list: list,
+      lang: state.lang,
+      t: t,
+      el: el,
+      card: card,
+      heading: heading,
+      button: button,
+      countLabel: countLabel,
+      placeHref: placeHref,
+      profileHref: profileHref,
+      signInHref: function () { return accountHref('up'); },
+      moreLists: moreLists,
+      redraw: render
+    });
   }
 
   /* The bar's name is the card's title, so at the top of the page the two
@@ -2472,13 +2557,17 @@
      wants more of what they were reading, and the label now says that is
      what is behind it. */
   function listDock() {
-    return el('div', { className: 'lists-dock' }, [
-      TTBTrack.click(el('a', {
-        className: 'go lists-dock-out',
-        href: ALL_PATH,
-        textContent: t('listsMore')
-      }), 'lists_all')
-    ]);
+    return el('div', { className: 'lists-dock' }, [moreLists()]);
+  }
+
+  /* The way out onto the rest of the directory — this band's one pill, and
+     a finished walk's too: see dock() in assets/walk.js. */
+  function moreLists() {
+    return TTBTrack.click(el('a', {
+      className: 'go lists-dock-out',
+      href: ALL_PATH,
+      textContent: t('listsMore')
+    }), 'lists_all');
   }
 
   /* WHICH LISTS GET A BAND AT THE FOOT OF THE WINDOW
@@ -2508,7 +2597,9 @@
    * three they move into the band.
    */
   function hasDock(list) {
-    return !list.mine || list.items.length >= MIN_ITEMS;
+    /* A walk always ends in one: the band is where it is started and where
+       a place is checked — see dock() in assets/walk.js. */
+    return state.walking || !list.mine || list.items.length >= MIN_ITEMS;
   }
 
   /* Your own list's band: the same paper, the same hairline, the same safe
@@ -2801,7 +2892,14 @@
            the map. */
         mapLink(list.id),
         share,
-        save
+        save,
+        /* And the way onto a walk of it, which your own list has no bar to
+           carry — see renderOne(). Quiet: it is the fourth thing in a row
+           whose accent is Save's. */
+        walkable(list) ? button(t('walkView'), 'alt', function () {
+          TTBTrack.event('list_walk', { list_id: list.id });
+          setWalking(true);
+        }) : null
       ]),
       ready ? null : el('p', { className: 'lists-hint mono', textContent: t('listsShareNeeds') })
     ]);
@@ -4966,6 +5064,8 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.list = out.list || null;
+      state.walking = !!state.list && walkable(state.list) &&
+        new URLSearchParams(window.location.search).has('walk');
       state.all = out.all || null;
       state.next = out.next || '';
       state.profile = out.profile || null;

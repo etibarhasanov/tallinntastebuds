@@ -10471,7 +10471,14 @@
           className: 'chip',
           href: '/list/' + state.list.id,
           textContent: t('listsViewList')
-        }), 'list_page', { list_id: state.list.id })
+        }), 'list_page', { list_id: state.list.id }),
+        /* The third view, on the list's own page: its places in the order
+           to walk them, and a walk to check in on — assets/walk.js. */
+        TTBTrack.click(el('a', {
+          className: 'chip',
+          href: '/list/' + state.list.id + '?walk=1',
+          textContent: t('walkView')
+        }), 'list_walk', { list_id: state.list.id })
       ])
     ]);
   }

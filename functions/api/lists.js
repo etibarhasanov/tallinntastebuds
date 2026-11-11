@@ -683,6 +683,16 @@ async function remove(context, id) {
     env.DB.prepare('DELETE FROM list_keeps WHERE list_id = ?').bind(id),
     env.DB.prepare('DELETE FROM lists WHERE id = ?').bind(id)
   ]);
+  /* And everybody's walk of it — functions/api/walk.js — which has nothing
+     left to be a walk of. Outside the batch because those two tables reach a
+     database by hand, and a list has to be deletable on one they have not
+     reached. */
+  try {
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM walk_checks WHERE list_id = ?').bind(id),
+      env.DB.prepare('DELETE FROM walks WHERE list_id = ?').bind(id)
+    ]);
+  } catch (e) { /* not applied here yet */ }
   return json({ deleted: id }, 200);
 }
 

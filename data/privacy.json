@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-10",
+  "updated": "2026-11-11",
   "title": {
     "en": "Privacy",
     "et": "Privaatsus",
@@ -269,57 +269,68 @@
         "en": [
           "An account is a username and either a password or Google. The site keeps your username and a scrambled form of your password that cannot be turned back into it. If you use Google, it keeps the number Google gives you for this site — never your email address, your name or your picture.",
           "It also keeps what you make: your saves, your lists, your profile line and links, your flashcard decks and progress, your chess games, and feedback you post. A cookie keeps you signed in for up to a year, or until you sign out.",
-          "Your profile, your public lists and anything you post as feedback can be seen by anyone. Everything else is yours alone."
+          "Your profile, your public lists and anything you post as feedback can be seen by anyone. Everything else is yours alone.",
+          "Walking a list is the one exception. The site keeps which places you checked in at, when, and any comment you left there, and a walk you finish and the comments you leave can be seen by anyone, under your username. Checking in sends your location with that one press so it can be compared with the place; the location itself is not kept."
         ],
         "et": [
           "Konto on kasutajanimi ja kas parool või Google. Sait hoiab sinu kasutajanime ja parooli segatud kuju, mida ei saa tagasi parooliks muuta. Kui kasutad Google'it, hoiab sait numbrit, mille Google sulle selle saidi jaoks annab — mitte kunagi sinu e-posti aadressi, nime ega pilti.",
           "Samuti hoiab see seda, mida sa teed: salvestusi, nimekirju, profiilirida ja linke, mälukaardipakke ja edenemist, malepartiisid ja tagasisidet, mille postitad. Küpsis hoiab sind sisselogituna kuni aasta või kuni välja logid.",
-          "Sinu profiili, avalikke nimekirju ja kõike, mida tagasisidena postitad, näevad kõik. Kõik muu on ainult sinu."
+          "Sinu profiili, avalikke nimekirju ja kõike, mida tagasisidena postitad, näevad kõik. Kõik muu on ainult sinu.",
+          "Nimekirja läbikäimine on ainus erand. Sait hoiab alles, millistes kohtades sa kohaloleku märkisid, millal, ja kommentaari, kui sa selle sinna jätsid. Lõpetatud jalutuskäiku ja sinu jäetud kommentaare näeb igaüks, sinu kasutajanime all. Kohaloleku märkimine saadab selle ühe vajutusega sinu asukoha, et seda saaks kohaga võrrelda; asukohta ennast alles ei hoita."
         ],
         "ru": [
           "Аккаунт — это имя пользователя и либо пароль, либо Google. Сайт хранит ваше имя пользователя и зашифрованный вид пароля, который нельзя превратить обратно в пароль. Если вы входите через Google, сайт хранит номер, который Google выдаёт вам для этого сайта, — но никогда ваш адрес почты, имя или фото.",
           "Также хранится то, что вы создаёте: сохранения, списки, строка и ссылки профиля, колоды карточек и прогресс, ваши шахматные партии и отзывы, которые вы публикуете. Куки держит вас в аккаунте до года или пока вы не выйдете.",
-          "Ваш профиль, публичные списки и всё, что вы публикуете как отзыв, видны всем. Всё остальное принадлежит только вам."
+          "Ваш профиль, публичные списки и всё, что вы публикуете как отзыв, видны всем. Всё остальное принадлежит только вам.",
+          "Прогулка по списку — единственное исключение. Сайт хранит, в каких местах вы отметились, когда, и комментарий, если вы его оставили. Пройденную прогулку и ваши комментарии может видеть кто угодно, под вашим именем пользователя. Когда вы отмечаетесь, с этим одним нажатием отправляется ваше местоположение, чтобы сравнить его с местом; само местоположение не сохраняется."
         ],
         "uk": [
           "Акаунт — це ім'я користувача і або пароль, або Google. Сайт зберігає ваше ім'я користувача і зашифрований вигляд пароля, який неможливо перетворити назад на пароль. Якщо ви входите через Google, сайт зберігає номер, який Google видає вам для цього сайту, — але ніколи вашу адресу пошти, ім'я чи фото.",
           "Також зберігається те, що ви створюєте: збереження, списки, рядок і посилання профілю, колоди карток і прогрес, ваші шахові партії і відгуки, які ви публікуєте. Кукі тримає вас в акаунті до року або доки ви не вийдете.",
-          "Ваш профіль, публічні списки і все, що ви публікуєте як відгук, бачать усі. Усе інше належить лише вам."
+          "Ваш профіль, публічні списки і все, що ви публікуєте як відгук, бачать усі. Усе інше належить лише вам.",
+          "Прогулянка списком — єдиний виняток. Сайт зберігає, у яких місцях ви відмітилися, коли, і коментар, якщо ви його залишили. Пройдену прогулянку та ваші коментарі може бачити будь-хто, під вашим іменем користувача. Коли ви відмічаєтеся, з цим одним натисканням надсилається ваше місцезнаходження, щоб порівняти його з місцем; саме місцезнаходження не зберігається."
         ],
         "fi": [
           "Tili on käyttäjänimi ja joko salasana tai Google. Sivusto säilyttää käyttäjänimesi ja salasanasi sekoitetun muodon, jota ei voi muuttaa takaisin salasanaksi. Jos käytät Googlea, sivusto säilyttää numeron, jonka Google antaa sinulle tätä sivustoa varten — ei koskaan sähköpostiosoitettasi, nimeäsi tai kuvaasi.",
           "Se säilyttää myös sen, mitä teet: tallennukset, listat, profiilirivin ja linkit, sanakorttipakat ja edistymisen, shakkipelisi ja lähettämäsi palautteen. Eväste pitää sinut kirjautuneena enintään vuoden tai kunnes kirjaudut ulos.",
-          "Profiilisi, julkiset listasi ja kaikki palautteena lähettämäsi näkyvät kaikille. Kaikki muu on vain sinun."
+          "Profiilisi, julkiset listasi ja kaikki palautteena lähettämäsi näkyvät kaikille. Kaikki muu on vain sinun.",
+          "Listan käveleminen on ainoa poikkeus. Sivusto tallentaa, missä paikoissa kuittasit käynnin, milloin, ja kommentin, jos jätit sellaisen. Valmiin kävelyn ja jättämäsi kommentit näkee kuka tahansa, käyttäjänimesi alla. Käynnin kuittaaminen lähettää sijaintisi sillä yhdellä painalluksella, jotta sitä voidaan verrata paikkaan; itse sijaintia ei tallenneta."
         ],
         "pt": [
           "Uma conta é um nome de utilizador e uma palavra-passe ou o Google. O site guarda o seu nome de utilizador e uma forma baralhada da palavra-passe, que não pode ser transformada de volta nela. Se usar o Google, guarda o número que o Google lhe dá para este site — nunca o seu endereço de email, o seu nome ou a sua fotografia.",
           "Guarda também o que cria: os seus guardados, as suas listas, a linha e as ligações do perfil, os baralhos e o progresso nos cartões, as suas partidas de xadrez e o feedback que publica. Um cookie mantém a sessão iniciada até um ano, ou até sair.",
-          "O seu perfil, as suas listas públicas e o que publicar como feedback podem ser vistos por qualquer pessoa. Tudo o resto é só seu."
+          "O seu perfil, as suas listas públicas e o que publicar como feedback podem ser vistos por qualquer pessoa. Tudo o resto é só seu.",
+          "Percorrer uma lista é a única exceção. O site guarda em que sítios confirmaste presença, quando, e o comentário que lá deixaste, se deixaste algum. Um percurso que concluis e os comentários que deixas podem ser vistos por qualquer pessoa, com o teu nome de utilizador. Confirmar presença envia a tua localização com esse único toque, para ser comparada com o sítio; a localização em si não é guardada."
         ],
         "es": [
           "Una cuenta es un nombre de usuario y una contraseña o Google. El sitio guarda tu nombre de usuario y una forma revuelta de tu contraseña que no puede convertirse de nuevo en ella. Si usas Google, guarda el número que Google te da para este sitio — nunca tu correo, tu nombre ni tu foto.",
           "También guarda lo que creas: tus guardados, tus listas, la línea y los enlaces de tu perfil, tus mazos de tarjetas y tu progreso, tus partidas de ajedrez y los comentarios que publicas. Una cookie mantiene tu sesión iniciada hasta un año, o hasta que la cierres.",
-          "Tu perfil, tus listas públicas y lo que publiques como comentario puede verlo cualquiera. Todo lo demás es solo tuyo."
+          "Tu perfil, tus listas públicas y lo que publiques como comentario puede verlo cualquiera. Todo lo demás es solo tuyo.",
+          "Pasear una lista es la única excepción. El sitio guarda en qué sitios marcaste tu visita, cuándo, y el comentario que dejaste allí, si dejaste alguno. Un paseo que terminas y los comentarios que dejas los puede ver cualquiera, con tu nombre de usuario. Marcar una visita envía tu ubicación con esa única pulsación, para compararla con el sitio; la ubicación en sí no se guarda."
         ],
         "tr": [
           "Hesap bir kullanıcı adı ve ya bir şifre ya da Google'dır. Site kullanıcı adını ve şifrenin, tekrar şifreye çevrilemeyen karıştırılmış bir biçimini tutar. Google kullanırsan Google'ın sana bu site için verdiği numarayı tutar — asla e-posta adresini, adını ya da fotoğrafını değil.",
           "Ayrıca oluşturduklarını da tutar: kayıtlarını, listelerini, profil satırını ve bağlantılarını, kart destelerini ve ilerlemeni, satranç oyunlarını ve paylaştığın geri bildirimleri. Bir çerez seni bir yıla kadar ya da çıkış yapana kadar oturumda tutar.",
-          "Profilini, herkese açık listelerini ve geri bildirim olarak paylaştığın her şeyi herkes görebilir. Geri kalan her şey yalnızca senindir."
+          "Profilini, herkese açık listelerini ve geri bildirim olarak paylaştığın her şeyi herkes görebilir. Geri kalan her şey yalnızca senindir.",
+          "Bir listeyi yürümek tek istisnadır. Site hangi yerlerde işaret bıraktığını, ne zaman bıraktığını ve yazdıysan oradaki yorumunu saklar. Tamamladığın bir yürüyüşü ve bıraktığın yorumları kullanıcı adınla herkes görebilir. Bir yeri işaretlemek, konumunu o tek basışla gönderir ki yerle karşılaştırılabilsin; konumun kendisi saklanmaz."
         ],
         "az": [
           "Hesab istifadəçi adı və ya şifrə, ya da Google deməkdir. Sayt istifadəçi adını və şifrənin yenidən şifrəyə çevrilə bilməyən qarışdırılmış formasını saxlayır. Google istifadə etsən, Google-un sənə bu sayt üçün verdiyi nömrəni saxlayır — heç vaxt e-poçt ünvanını, adını və ya şəklini yox.",
           "Həmçinin yaratdıqlarını saxlayır: yadda saxlamalarını, siyahılarını, profil sətrini və keçidlərini, kart dəstlərini və irəliləyişini, şahmat oyunlarını və paylaşdığın rəyləri. Kuki səni bir ilədək və ya çıxana qədər hesabda saxlayır.",
-          "Profilini, açıq siyahılarını və rəy kimi paylaşdığın hər şeyi hamı görə bilər. Qalan hər şey yalnız sənindir."
+          "Profilini, açıq siyahılarını və rəy kimi paylaşdığın hər şeyi hamı görə bilər. Qalan hər şey yalnız sənindir.",
+          "Siyahını gəzmək yeganə istisnadır. Sayt hansı yerlərdə qeyd olduğunu, nə vaxt qeyd olduğunu və yazmısansa, oradakı şərhini saxlayır. Bitirdiyin gəzintini və yazdığın şərhləri istifadəçi adınla hər kəs görə bilər. Qeyd olmaq yerini həmin bir basışla göndərir ki, məkanla müqayisə edilsin; yerin özü saxlanmır."
         ],
         "fr": [
           "Un compte, c’est un nom d’utilisateur et soit un mot de passe, soit Google. Le site garde ton nom d’utilisateur et une forme brouillée de ton mot de passe qui ne peut pas être reconvertie en mot de passe. Si tu utilises Google, il garde le numéro que Google te donne pour ce site — jamais ton adresse e-mail, ton nom ni ta photo.",
           "Il garde aussi ce que tu crées : tes enregistrements, tes listes, la ligne et les liens de ton profil, tes paquets de flashcards et ta progression, tes parties d’échecs, et les avis que tu publies. Un cookie te garde connecté jusqu’à un an, ou jusqu’à ce que tu te déconnectes.",
-          "Ton profil, tes listes publiques et tout ce que tu publies comme avis peuvent être vus par n’importe qui. Tout le reste n’appartient qu’à toi."
+          "Ton profil, tes listes publiques et tout ce que tu publies comme avis peuvent être vus par n’importe qui. Tout le reste n’appartient qu’à toi.",
+          "Parcourir une liste est la seule exception. Le site conserve les adresses où tu as validé ta présence, le moment, et le commentaire que tu y as laissé, s’il y en a un. Une balade terminée et les commentaires que tu laisses sont visibles par tout le monde, sous ton nom d’utilisateur. Valider ta présence envoie ta position avec ce seul appui, pour la comparer à l’adresse ; la position elle-même n’est pas conservée."
         ],
         "de": [
           "Ein Konto besteht aus einem Benutzernamen und entweder einem Passwort oder Google. Die Seite speichert deinen Benutzernamen und eine verschlüsselte Form deines Passworts, die sich nicht in das Passwort zurückverwandeln lässt. Wenn du Google nutzt, speichert sie die Nummer, die Google dir für diese Seite gibt – nie deine E-Mail-Adresse, deinen Namen oder dein Bild.",
           "Sie speichert auch, was du erstellst: deine gemerkten Orte, deine Listen, deine Profilzeile und Links, deine Lernkarten-Stapel und deinen Fortschritt, deine Schachpartien und das Feedback, das du postest. Ein Cookie hält dich bis zu ein Jahr lang angemeldet oder bis du dich abmeldest.",
-          "Dein Profil, deine öffentlichen Listen und alles, was du als Feedback postest, kann jeder sehen. Alles andere gehört nur dir."
+          "Dein Profil, deine öffentlichen Listen und alles, was du als Feedback postest, kann jeder sehen. Alles andere gehört nur dir.",
+          "Eine Liste abzulaufen ist die eine Ausnahme. Die Seite speichert, an welchen Orten du eingecheckt hast, wann, und den Kommentar, falls du dort einen hinterlassen hast. Einen Spaziergang, den du geschafft hast, und deine Kommentare kann jeder sehen, unter deinem Benutzernamen. Beim Einchecken wird dein Standort mit diesem einen Tippen gesendet, damit er mit dem Ort verglichen werden kann; der Standort selbst wird nicht gespeichert."
         ]
       }
     },
