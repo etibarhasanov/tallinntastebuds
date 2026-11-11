@@ -3930,6 +3930,10 @@
     ]).then(function (loaded) {
       var answer = loaded[0];
       var places = Array.isArray(answer) ? answer : (answer && answer.places) || [];
+      /* Less the ones Google calls temporarily closed: the roll carries them
+         so the map's find bar can say so, and a list is somewhere to send
+         people. One already on a list still draws. */
+      places = places.filter(function (p) { return !p.closed; });
       /* Yours first. They are few, they are the ones you went to the trouble
          of typing, and the picker stops at forty rows. */
       state.places = loaded[1].concat(places);

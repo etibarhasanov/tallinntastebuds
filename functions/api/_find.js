@@ -204,7 +204,10 @@ function labels(list, id) {
  */
 export function findIndex(roll, types, cuisines, mine) {
   const kitchen = (id) => labels(cuisines, id) || labels(types, id);
-  return roll.map((row) => {
+  /* Less the rows Google calls temporarily closed, which the roll carries for
+     the map's find bar alone — WHAT A SHUT ROW IS FOR in ./places.js. A place
+     of mine never carries `closed` on the roll; its own comes off `mine`. */
+  return roll.filter((row) => !row.closed).map((row) => {
     const own = mine.get(row.id);
     const name = fold(row.name);
     const where = fold(row.address || '');

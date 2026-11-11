@@ -4112,6 +4112,12 @@
     var deal = liveDealFor(place);
 
     dom.detail.appendChild(el('div', { className: 'place-head' }, [
+      place.closed
+        ? el('div', { className: 'closed-flag' }, [
+            el('span', { className: 'shut-glyph', 'aria-hidden': 'true', html: SHUT_GLYPH }),
+            el('span', { textContent: shutWord(place) })
+          ])
+        : null,
       el('h2', {
         className: 'place-name',
         id: 'panel-title',
@@ -4833,6 +4839,7 @@
   function findOrder(words, wish, away, level, tier, says, named) {
     var q = words.join(' ');
     return function (a, b) {
+      if (!a.closed !== !b.closed) return a.closed ? 1 : -1;
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
@@ -4900,7 +4907,7 @@
     var order = {};
     for (var i = 0; i < state.places.length; i++) {
       var place = state.places[i];
-      if (place.closed) continue;
+      if (place.closed && !isPaused(place)) continue;
       if (area && !area.contains([place.lat, place.lng])) continue;
       var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
@@ -4916,6 +4923,7 @@
       }
     }
     hits.sort(function (a, b) {
+      if (!a.closed !== !b.closed) return a.closed ? 1 : -1;
       if (level[a.id] !== level[b.id]) return level[b.id] - level[a.id];
       if (tier[a.id] !== tier[b.id]) return tier[b.id] - tier[a.id];
       if (says[a.id] !== says[b.id]) return says[b.id] - says[a.id];
@@ -4990,7 +4998,8 @@
 
   function findRow(place, mine, far) {
     var where = place.address || '';
-    var line = far ? (where ? far + ' \u00b7 ' + where : far) : where;
+    var shut = place.closed ? t('venuesShutFor') : '';
+    var line = [shut, far, where].filter(Boolean).join(' \u00b7 ');
 
     var pin = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     pin.setAttribute('class', 'find-pin');
@@ -5003,9 +5012,9 @@
 
     var row = el('button', {
       type: 'button',
-      className: 'find-row' + (mine ? ' is-mine' : ''),
+      className: 'find-row' + (mine ? ' is-mine' : '') + (shut ? ' is-shut' : ''),
       'data-id': place.id,
-      'aria-label': place.name + (where ? ', ' + where : '') + (far ? ', ' + far : '') +
+      'aria-label': place.name + (shut ? ', ' + shut : '') + (where ? ', ' + where : '') + (far ? ', ' + far : '') +
         ', ' + (mine ? t('findOnMap') : t('findInCity'))
     }, [
       pin,
@@ -5160,7 +5169,7 @@
   }
 
   function foundStandIn(row) {
-    return cityStandIn({
+    var place = cityStandIn({
       id: row.id,
       name: row.name,
       address: row.address || '',
@@ -5173,6 +5182,8 @@
       reviews: typeof row.reviews === 'number' ? row.reviews : null,
       kind: row.kind
     });
+    if (row.closed) place.closed = 'temporary';
+    return place;
   }
 
   function dressFound(place) {
