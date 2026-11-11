@@ -15,31 +15,73 @@
 
 /* ----------------------------------------------------------- the five pages */
 
-/* The owner's five pages under /admin/ as one row of the map's chips, under
-   the brand header on every one of them, the page you are on filled through
-   aria-current the way the map fills the view you are in. They are five
-   pages rather than one because each answers a different question out of a
-   different table over a different stretch of time — what gets opened is
-   all-time, who came and how they found it are a chosen range, the
-   directory is Google's list, the diagrams are a drawing — and one page of
-   all of it would be a scroll nobody finishes on a phone. What they lacked
-   was being a set, and this row is that. Wrapping, for the reason the range
-   row wraps: five of them in the mono do not fit across 390px, and a row that
-   scrolled sideways would hide the one being looked for. The column is the
-   lists page's on four of them; on the directory the row sits inside its
-   wider header and takes that header's padding. */
-.numbers-nav {
+/* The owner's menu: the mark and the six pages that are the owner's, as one
+   block that is the same on all six — /admin.html and the five under
+   /admin/. The page you are on is filled through aria-current the way the
+   map fills the view you are in.
+
+   They are six pages rather than one because each answers a different
+   question out of a different table over a different stretch of time — what
+   gets opened is all-time, who came and how they found it are a chosen
+   range, the directory is Google's list, the diagrams are a drawing, and the
+   door is where the site is changed — and one page of all of it would be a
+   scroll nobody finishes on a phone. What they lacked was being a set.
+
+   The row used to stand on each page's own column: 640px in the middle on
+   three of them, 1180px on the diagrams, inside a 1320px header under a
+   smaller mark on the directory, and not at all on /admin.html, which listed
+   the five as a card instead. So it was somewhere else after every press,
+   under a mark that changed size. The bar belongs to no column: it starts
+   the gap in from the edge of the screen on every page, the mark is one
+   size, and the row sits beside it — or under it, whole, when the two do not
+   fit across, which at 390px they never do. The chips wrap inside the row
+   for the reason the range row wraps: a row that scrolled sideways would
+   hide the one being looked for.
+
+   Not pinned. The directory pins its filters to the top of the screen, and
+   a second pinned bar over them would take a third of a phone. */
+.owner-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  max-width: 640px;
-  margin: 0 auto 14px;
+  align-items: center;
+  gap: 10px 24px;
+  padding: calc(14px + var(--safe-t)) 0 14px;
 }
-.venues-brand .numbers-nav { max-width: none; margin: 14px 0 0; }
-/* The page of diagrams is the one of the four that is laid out for a desk —
-   .lists-main.is-wide, 1180px — and its row stands on that column's edge
-   rather than 270px in from it, over a title it no longer lined up with. */
-.numbers-nav.is-wide { max-width: 1180px; }
+/* The lists pages' body carries the gap at its sides and the directory's
+   does not, so that one says it here. */
+.venues-body > .owner-bar {
+  padding-left: max(var(--gap), var(--safe-l));
+  padding-right: max(var(--gap), var(--safe-r));
+}
+.owner-home {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+.owner-mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: var(--lift);
+}
+.owner-wordmark {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.owner-home:hover .owner-wordmark { color: var(--accent); }
+.numbers-nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 
 /* ---------------------------------------------------------------- the lead */
 

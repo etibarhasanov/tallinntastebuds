@@ -163,15 +163,8 @@ dl.admin-facts dd { margin: 0; min-width: 0; font-family: var(--mono); font-size
 .hint { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin: 6px 0 0; }
 hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 
-/* The five tools, folded under one title so the numbers above them are what
-   the door opens on, and the tools one press away. The fold is the account
-   page's — .lists-fold in assets/lists.css — and the title keeps the Google
-   count beside it, so a disagreement is seen with the fold shut. */
-.admin-card > .lists-fold[open] > summary > .lists-title { margin-bottom: 18px; }
-/* The name takes the free width, so the count and the chevron sit together
-   at the far end, where the account page's fold keeps them. */
-.admin-fold-name { flex: 1 1 auto; }
-.lists-fold > summary .count { margin-left: 0; }
+/* The tools' title, and the room between it and the tabs. */
+.admin-card > .lists-title { margin-bottom: 18px; }
 
 /* The five tools, as the lists page's segmented control: the wash as the
    track and the chosen one lifted onto paper. It wraps rather than scrolls,
@@ -203,8 +196,7 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 22px 0 4px; }
 .tabs button:hover { background: transparent; color: var(--ink); }
 .tabs button.on,
 .tabs button.on:hover { background: var(--paper); border-color: var(--hairline); color: var(--ink); box-shadow: var(--lift); }
-.tabs .count,
-.lists-fold .count {
+.tabs .count {
   display: inline-block;
   min-width: 18px;
   margin-left: 6px;
@@ -281,10 +273,6 @@ code { font-family: var(--mono); font-size: .85em; background: var(--wash); padd
 .spin { opacity: .6; }
 [hidden] { display: none !important; }
 
-/* The owner's pages under /admin/, as the account sheet's rows. */
-.admin-card > .menu { margin-top: 14px; }
-.menu-row:hover { color: inherit; }
-
 /* The Google tab's log. */
 h2.gap { margin-top: 26px; }
 pre.cmd {
@@ -304,32 +292,25 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 
 /* ---------- laid out for a desk ----------
    Everything above is the phone's page, and until this block it was the
-   desk's too: a 640px column in the middle of a monitor, the tools shut
-   behind a fold, and every button a bar as wide as the card. From 1000px the
-   page is the width the lists directory is — .lists-main.is-wide in
-   assets/lists.css — and two columns: a rail of places to go and facts to
-   read, and beside it the work, which is whatever is filled in or read at
-   length. ready() and boot() say which card is which, since the door's states
-   disagree about it: with a token the tools are the work and GitHub is a
-   fact; without one the Google report is the work and the missing token is
-   the fact. 1000px, so a tablet held upright keeps the phone's page. */
+   desk's too: a 640px column in the middle of a monitor and every button a
+   bar as wide as the card. From 1000px the page is the width the lists
+   directory is — .lists-main.is-wide in assets/lists.css — and two columns:
+   a rail for the fact to read, and beside it the work, which is whatever is
+   filled in or read at length. ready() and boot() say which card is which,
+   since the door's states disagree about it: with a token the tools are the
+   work and GitHub is the fact; without one the Google report is the work and
+   the missing token is the fact. 1000px, so a tablet held upright keeps the
+   phone's page. */
 @media (min-width: 1000px) {
-  .lists-brand, .lists-main { max-width: 1180px; }
-  /* Two rows, and the second takes what is left: a long form beside the
-     rail would otherwise share its height out between the rows it spans and
-     push the rail's second card halfway down the page. */
-  #stack { display: grid; grid-template-columns: 340px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
-  #stack > .is-rail { grid-column: 1; }
-  #stack > .is-work { grid-column: 2; grid-row: 1 / span 2; }
+  .lists-main { max-width: 1180px; }
+  #stack { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; align-items: start; }
+  #stack > .is-rail { grid-column: 1; grid-row: 1; }
+  #stack > .is-work { grid-column: 2; grid-row: 1; }
   /* Signed out, checking, or an error: one card, and no reason for it to be
      wider than the sentence in it. */
   #stack > .admin-card:only-child { grid-column: 1 / -1; max-width: 640px; }
 
   .admin-card.is-work { padding: 28px 32px; }
-  /* The fold is open here and stays open — see ready() — so its title is a
-     title and not something to press. */
-  .is-work .lists-fold > summary { cursor: default; }
-  .is-work .lists-fold > summary .menu-go { display: none; }
   .tabs { display: inline-flex; flex-wrap: nowrap; }
   .tabs button { padding: 8px 18px; }
 
@@ -344,18 +325,32 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   .is-work .row button { min-width: 0; margin-right: 0; }
   .is-work .types label { max-width: none; }
 
-  .is-rail .menu-why { font-size: 12.5px; }
   .is-rail dl.admin-facts dt { flex-basis: 6.5rem; }
 }
 </style>
 </head>
 <body class="lists-body">
 
-<header class="lists-brand">
-  <a class="lists-home" href="/" aria-label="Back to the map">
-    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
-    <span class="lists-wordmark">Tallinn Tastebuds</span>
+<!-- The owner's menu: the mark that goes back to the map and the six pages
+     that are the owner's, the page you are on filled the way the map fills
+     the view you are in. One block, .owner-bar in assets/stats.css, and the
+     same markup on all six, so the row is in the same place whichever of
+     them is open rather than where each page's own column happened to put
+     it. Static markup rather than something each script draws, so it is
+     there before the numbers arrive and still there if they never do. -->
+<header class="owner-bar">
+  <a class="owner-home" href="/" aria-label="Back to the map">
+    <img class="owner-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="owner-wordmark">Tallinn Tastebuds</span>
   </a>
+  <nav class="numbers-nav" aria-label="The owner’s pages">
+    <a class="chip" href="/admin.html" aria-current="page">Admin</a>
+    <a class="chip" href="/admin/visitors">Visitors</a>
+    <a class="chip" href="/admin/found">How they found it</a>
+    <a class="chip" href="/admin/stats">What people open</a>
+    <a class="chip" href="/admin/google">Google’s directory</a>
+    <a class="chip" href="/admin/flows">Who uses the site</a>
+  </nav>
 </header>
 
 <!-- The title and the line under it, as on the four pages under /admin/; the
@@ -963,27 +958,14 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     var panel = el('div');
     var which = 'story';
 
-    /* The tools under one title that opens them — see .lists-fold above.
-       Shut when the door opens on a phone, because the numbers are what it
-       is opened for more often than a story; a half-written form is kept
-       when it is shut again, since a <details> only hides what it holds.
-       At a desk the numbers are in the rail beside it and there is nothing
-       to make room for, so it is open and a press on its title does not
-       shut it — see the block for 1000px in the stylesheet above. */
-    var desk = window.matchMedia('(min-width: 1000px)');
-    var told = el('span', { className: 'count', hidden: true });
-    var fold = el('details', { className: 'lists-fold', open: desk.matches }, [
-      el('summary', {}, [
-        el('h2', { className: 'lists-title' }, [
-          el('span', { className: 'admin-fold-name', textContent: 'Edit the site' }),
-          told,
-          el('span', { className: 'menu-go', 'aria-hidden': 'true',
-            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
-        ])
-      ]),
-      tabs,
-      panel
-    ]);
+    /* The tools were a fold once, shut when the door opened, because the
+       five pages of numbers were a card above them and were what the door
+       was opened for most days. Those are the menu on every page now —
+       .owner-bar in assets/stats.css — so there is nothing above to make
+       room for, and a title is all that is left of it. */
+    body.appendChild(el('h2', { className: 'lists-title', textContent: 'Edit the site' }));
+    body.appendChild(tabs);
+    body.appendChild(panel);
 
     /* How many places the map and Google disagree about — see
        mapAgainstGoogle(). It rides on the Google tab's label so the
@@ -1021,17 +1003,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       else editPicker(repo, panel);
     }
 
-    fold.firstChild.addEventListener('click', function (e) {
-      if (desk.matches) e.preventDefault();
-    });
-    /* A window dragged wide after the door opened: the title stopped being
-       pressable, so the fold must not be left shut behind it. */
-    function widened() { if (desk.matches) fold.open = true; }
-    if (desk.addEventListener) desk.addEventListener('change', widened);
-    else if (desk.addListener) desk.addListener(widened);
-
     body.classList.add('is-work');
-    body.appendChild(fold);
     draw();
 
     /* The label, not the panel: a redraw here would take a half-written
@@ -1042,13 +1014,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         disagree = mapAgainstGoogle(got[0], got[1]).length;
         var last = tabs.lastChild;
         if (last) tabLabel(last, ['google', 'Google']);
-        told.textContent = String(disagree);
-        told.setAttribute('aria-label', disagree + (disagree === 1 ? ' disagreement' : ' disagreements'));
-        told.hidden = !disagree;
       })
       .catch(function () { /* the tab says so */ });
-
-    stack.insertBefore(numbersCard(), body);
 
     var facts = el('dl', { className: 'admin-facts' });
     function fact(term, value) {
@@ -1069,45 +1036,6 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         'expires, make a new one and set it there; nothing on this device changes.' }),
       facts
     ]));
-  }
-
-  /* The five pages that are the owner's and live under /admin/, as a card.
-     Drawn by ready(), and by boot() for an owner whose site has no token to
-     write with yet. */
-  function numbersCard() {
-    /* Not tabs, because they are whole pages with their own scripts, and they
-       are not behind this door: the server locks them — an account ADMINS
-       names in wrangler.toml, see functions/api/_admin.js — so they open for
-       the owner signed in on the site and are a 404 to everybody else.
-       Drawn as the account sheet's rows, a name and what
-       is behind it, because that is what they are: places to go. First on
-       the page, over the tools, because they are what the door is opened
-       for most days. */
-    var pages = el('ul', { className: 'menu' });
-    [
-      ['/admin/visitors', 'Visitors', 'Today, who came, new against returning, the two rails'],
-      ['/admin/found', 'How they found it', 'Search engines, where they landed, links, what was searched'],
-      ['/admin/stats', 'Statistics', 'Which places and chips get opened most'],
-      ['/admin/google', 'Google directory', 'Every place in Tallinn, off Google’s list'],
-      ['/admin/flows', 'Who uses the site', 'What each kind of person can do, drawn']
-    ].forEach(function (page) {
-      pages.appendChild(el('li', { className: 'menu-item' }, [
-        el('a', { className: 'menu-row', href: page[0] }, [
-          el('span', { className: 'menu-say' }, [
-            el('span', { className: 'menu-name', textContent: page[1] }),
-            el('span', { className: 'menu-why', textContent: page[2] })
-          ]),
-          el('span', { className: 'menu-go', 'aria-hidden': 'true',
-            html: '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>' })
-        ])
-      ]));
-    });
-    return el('section', { className: 'card admin-card is-rail' }, [
-      el('h2', { className: 'lists-title', textContent: 'The numbers' }),
-      el('p', { className: 'stats-lead', textContent:
-        'They open when you are signed in on the site as the owner.' }),
-      pages
-    ]);
   }
 
   /* ------------------------------------------------------ the Google refresh
@@ -2978,10 +2906,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    * and can the site write to the repository? reachRepo() says which of the
    * four it is, and each draws its own page.
    *
-   *   in         the numbers, the tools and the GitHub card.
-   *   no-token   signed in, but GITHUB_TOKEN is not set: the numbers and the
-   *              Google report, which need no token, and a line saying what
-   *              is missing.
+   *   in         the tools and the GitHub card.
+   *   no-token   signed in, but GITHUB_TOKEN is not set: the Google report,
+   *              which needs no token, and a line saying what is missing.
    *   out        anybody else, or the owner signed out: Sign in, which is the
    *              map's own sheet and comes back here.
    *   an error   said in words, with nothing else drawn.
@@ -3017,7 +2944,6 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       /* At a desk the report is the work and this card a fact beside it. */
       body.classList.add('is-rail');
       var google = el('section', { className: 'card admin-card is-work' });
-      stack.insertBefore(numbersCard(), body);
       stack.appendChild(google);
       googleReport(null, google);
     }).catch(function (err) {
