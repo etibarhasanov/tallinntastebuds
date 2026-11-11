@@ -78,7 +78,7 @@ conversations' words share. Three rules hold across all of it:
   never sixteen hex characters, which is the shape of a deck somebody wrote
   (`MINTED`); never `missed`, `review`, `grammar`, `songs` or `talks`, which the route
   keeps for decks it assembles and rows it files (`RESERVED`); and never
-  `index` or `spoken`, the generated folder's own two files
+  `index`, `spoken` or `words`, the generated folder's own three files
   (`RESERVED_FILES` in `tools/decks.mjs`).
 - **A pack is what a reader reads in their language**: an object keyed by
   language. `en` is required and is what every other language falls back to;
@@ -223,6 +223,9 @@ than a check:
   `functions/api/_decks.js`, for a gathered deck that spans more than
   `FEW_DECKS` decks. **Where the words are, and it is mostly not the
   database** has the arithmetic.
+- **What an assistant can look up** is `data/decks/words.json`, which the
+  tool writes with every card's words folded for a search. Nothing to do
+  for a card added; it is why the tool's run rewrites one more file.
 - **What `/api/say` will speak** is `data/decks/spoken.json`, which the tool
   writes out of the file: a front, a card's sentence, a lesson's sentence or
   form, a song's line. A new *kind* of text is a line in `spoken()` in
@@ -280,6 +283,16 @@ needs stamping for a content change.
   word with its meaning in all three, the rest in English — with a
   `DefinedTermSet` beside them. `where()` makes the live domain the canonical
   even on the subdomain. A deck out of the database is `noindex`.
+- **`functions/flashcard/mcp.js`** is the door an AI assistant reads the
+  decks and the lessons through, at `/flashcard/mcp` and at `/mcp` on the
+  subdomain: `words`, `decks` and `grammar`, with ChatGPT's `search` and
+  `fetch`. It reads `data/decks/words.json`, the index and one file, never
+  the database, and answers no song, song's deck or conversation. A field a
+  card or a lesson gains is not in its answers until `card()` or
+  `lessonText()` there says so, and a new kind of lesson block prints
+  nothing until `lessonText()` knows it. `node tools/mcpcheck.mjs --check`
+  reads every deck and every lesson through it. **Read by an assistant,
+  the flashcards** in `README.md`.
 - **`functions/api/say.js`** is Tartu's voice for exactly what is in
   `data/decks/spoken.json`, and reads nothing else. **Hearing it** says the
   sandbox a session works in cannot reach

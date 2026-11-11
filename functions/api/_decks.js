@@ -15,8 +15,9 @@
  * exactly what each holds, and **Where the words are, and it is mostly not
  * the database** under **Flashcards** in README.md says why.
  *
- * This is the ways of reading that folder, shared by the two routes so that
- * neither carries a copy of the other's filtering: shelf(), the index with
+ * This is the ways of reading that folder, shared by the two routes — and by
+ * ../flashcard/mcp.js, the door an assistant reads the decks through — so that
+ * none carries a copy of another's filtering: shelf(), the index with
  * each list held to the id shape the routes accept; shippedOne(), one deck,
  * lesson, song or conversation out of its file, asked for only when the index says it
  * exists, so an id somebody guessed is never a fetch; and shippedDecks(),

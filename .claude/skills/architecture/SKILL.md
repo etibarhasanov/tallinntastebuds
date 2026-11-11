@@ -49,10 +49,13 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 │                                   wearing functions/_security.js
 ├── /mcp         functions/mcp.js   the places, read by an AI assistant over the Model
 │                                   Context Protocol; JSON-RPC, never a page, never framed
+├── /flashcard/mcp                  functions/flashcard/mcp.js, the same for the flashcards'
+│                                   words and grammar; both speak through functions/_mcp.js
 │
 ├── splitwise.tallinntastebuds.ee   gone since 2026-11-09; every address 301s to the map
 └── flashcard.tallinntastebuds.ee   flashcard.html at the root; the same page as /flashcard
-                                    on a different origin — no ttb.lang, no radio carried
+                                    on a different origin — no ttb.lang, no radio carried;
+                                    /mcp there is /flashcard/mcp, not the map's door
 ```
 
 Two databases, production and preview, bound in `wrangler.toml`; only

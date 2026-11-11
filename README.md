@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-three small Functions, no build step and no npm install. Adding a
+Static files, forty-four small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -2373,7 +2373,7 @@ public lists or reads one out of the database the lists page reads. Somebody ask
 somewhere to eat in Tallinn, or for a top ten of bakeries, the assistant
 asks the site, and the answer it writes carries my write-up, the dish to
 order, whose list it is and the link. `functions/mcp.js` is the whole of
-it: one Function, reads only, no model of its own, no AI binding, no write
+it, speaking the protocol through `functions/_mcp.js`: one Function, reads only, no model of its own, no AI binding, no write
 to anything. Nothing a visitor to the site sees changes. Beside the two
 it lists ChatGPT's pair, **search** and **fetch**, the shape ChatGPT
 insists on before it will use a connector anywhere but Developer mode —
@@ -2631,14 +2631,17 @@ oldest of those allowed is `-32600`, because the protocol took batches out
 and this server never took one. Every answer is `application/json` and
 `no-store`. No session is opened and no `Mcp-Session-Id` handed out: a
 Pages Function remembers nothing between requests, and there is nothing in
-this exchange worth remembering. The header of `functions/mcp.js` carries
-the three decisions — whose places and whose lists, stateless, JSON only —
-at length.
+this exchange worth remembering. All of this paragraph is
+`functions/_mcp.js`, which the flashcards' door speaks through as well
+(**Read by an assistant, the flashcards**), and its header carries the two
+decisions about the transport — stateless, JSON only — at length; the
+header of `functions/mcp.js` carries the one about whose places and whose
+lists.
 
 `functions/_middleware.js` passes `/mcp` through untouched. It is on the
 live hostname, under neither of the owner's prefixes, and its answers wear
-the security headers the way every Function's do; the flashcards' subdomain 301s
-it back to the live hostname like every other address of the map's.
+the security headers the way every Function's do. On the flashcards'
+subdomain `/mcp` is not this door but the flashcards' own.
 
 To look at it from a terminal, under `npx wrangler pages dev .` or against
 the live site:
@@ -9698,8 +9701,10 @@ out into `data/decks/`, the way `tools/languages.mjs` writes `data/lang/`:
 `index.json`, every deck with the ids of its cards and every lesson and song
 without its body, which is all the shelf draws — 77 KB, a fifth of a
 millisecond to parse; one file per deck, lesson and song, named by its id,
-whole, the largest of them the two-word verbs at 57 KB; and `spoken.json`,
-every string the voice may say, sorted. The two routes read the index and one file through
+whole, the largest of them the two-word verbs at 57 KB; `spoken.json`,
+every string the voice may say, sorted; and since November `words.json`,
+every card with its words folded for a search, which only the door an
+assistant reads through opens — **Read by an assistant, the flashcards**. The two routes read the index and one file through
 `functions/api/_decks.js`, the voice reads its list and nothing else, and the
 visitor count reads the index for the ids a report may name. The one reader
 of the source left at run time is the pair of decks gathered out of
@@ -12256,6 +12261,119 @@ and until it is run the button is there and every press answers *That did not
 work* — the route catches the missing table rather than throwing a 500, which
 is the same bargain `readingBoxes()` takes above.
 
+### Read by an assistant, the flashcards
+
+`https://flashcard.tallinntastebuds.ee/mcp` is the flashcards as an AI
+assistant reads them — the same kind of door the map has at `/mcp`
+(**Read by an assistant**), for somebody learning Estonian with Claude or
+ChatGPT beside them. They ask how to say bread, why the menu says *leiba*,
+or to be tested on ten words for a café, and the assistant asks the site
+and answers out of cards and lessons that are in this repository rather
+than out of what a model remembers of a small language, which is where
+Estonian forms go wrong. `functions/flashcard/mcp.js` is the whole of it:
+one Function, reads only, no database, no model of its own. Nothing a
+visitor to the site sees changes.
+
+It answers at two addresses and they are one door. `/flashcard/mcp` is
+where the Function lives, on every host, which is what makes it drivable
+on a localhost; `/mcp` on the flashcards' hostname is the short one to hand
+out, and the `FLASHCARDS` block in `functions/_middleware.js` answers it by
+calling the same Function — redirected like the rest of that hostname, it
+would have landed on the map's door. It is added to an assistant exactly as
+the map's is under **Connecting it**, with this address in place of that
+one: no key, no sign-in.
+
+**Three tools**, because each is a permission card the first time it is
+called and a learner asks three different kinds of question:
+
+- **`words`** looks a word or a short phrase up in either direction. The
+  `query` may be Estonian — the dictionary form or one of the card's other
+  forms, so *leiba* finds *leib* — or English, Russian or Azerbaijani, and
+  accents do not matter. Each card found comes back with the Estonian, the
+  meaning in the `language` asked for, the forms, the sentence where the
+  card has one, and the deck that teaches it with its link. A whole match
+  comes before a whole word inside a longer back, and that before part of
+  a word; eight unless `limit` says otherwise, twenty at most. A word on
+  no card is an empty `words` with a `note`, and the assistant is told to
+  say the cards do not have it before answering from what it knows.
+- **`decks`** with no `id` is the shelf: every deck's name, its line, its
+  stage from *First words* to *Going deeper* and how many cards, in the
+  order a learner meets them, narrowed by `query`. With an `id` it is that
+  deck with every card.
+- **`grammar`** with no `id` is the eleven lessons; with one it is the
+  lesson as `text` — Markdown: the paragraphs, the tables of forms with
+  their headings, the example sentences — and the id of the deck that
+  practises it, where a lesson has one.
+
+Beside them ChatGPT's pair, `search` and `fetch`, for the reason given
+under **And ChatGPT's two**: `search` answers lessons, decks and words in
+one list, and `fetch` is a lesson or a deck as a page of text, in English.
+
+**The languages.** `language` is `en`, `ru` or `az` — `DECK_LANGS`, the
+three every back and every lesson is written in — and what a card lacks in
+one answers in English, as on the page. The lessons are not translations
+of each other (**Grammar, which is read rather than turned over**): the
+Russian one argues from Russian's prepositions and cases, the Azerbaijani
+from its endings. That is the reason to ask for the learner's own.
+
+The owner also asked for grammar in simple Estonian, and nothing in
+`data/decks.json` is that: an `et` pack fails the validator, because
+Estonian is what a card asks and never what it answers, and a lesson in
+easy Estonian is content somebody has to write and a native speaker has to
+read. So the server does not pretend to have one. Its instructions tell
+the assistant that for Estonian, or any language that is not one of the
+three, it reads the lesson in English and explains it itself in short
+plain sentences, taking every Estonian form, table row and example from
+the lesson exactly as written. The forms are the part a model gets wrong
+and they come from the file; the sentences around them are the part it is
+good at. If that turns out not to be good enough, the fix is a fourth pack
+written into the lessons, not a cleverer server.
+
+**Where a word is looked up.** Not in the source: `data/decks.json` is two
+megabytes, and folding two and a half thousand cards' worth of strings the
+way a search folds what was typed took longer than a Workers request is
+given. `node tools/decks.mjs` writes `data/decks/words.json` — every card
+of every deck but a song's, one to a line, with `find`: its Estonian and
+its back in each language, already folded, by the same `foldWords()` the
+route folds the query with. The route folds one string and compares. The
+file is 700 KB and is parsed once per isolate, about five milliseconds in
+Node, then kept five minutes like every data file; it is the one cost here
+worth watching, and a `find` without the backs' raw copies beside it is
+the first thing to try if it grows.
+
+**Deliberately not here:**
+
+- **No songs and no conversations**, and not the four decks of a song's
+  words. Printing a living author's verses and a course's sheets on the
+  page was the owner's call, made for the page; handing them to every
+  assistant is a second call nobody has made. An id of one answers the
+  same sentence as an id of nothing.
+- **No gates.** On the page a stage opens when enough words are known and
+  an account is asked for after five answers. This door asks nobody who
+  they are, so every deck reads whole — which is what `functions/flashcard.js`
+  already writes into the page as text for anybody with a deck's address.
+  The gate paces a learner; it was never what kept the words in.
+- **No progress.** What somebody knows is rows under their account, and
+  there is no sign-in. The assistant is told to give the deck's link so
+  the learner can turn the cards over, hear them and keep score there.
+- **No voice**, no decks people wrote, no report of a wrong card.
+- **Nothing counted**, as next door: a call is not a visit.
+
+`node tools/mcpcheck.mjs --check` holds it to this in CI, over the real
+files: a word found from each of the four languages and from a form, every
+deck read whole card for card, every lesson a different text in each of the
+three languages, no song or conversation answered, and the short address
+on the flashcards' hostname reaching this door and not the map's.
+
+To look at it from a terminal:
+
+```
+curl -s -X POST https://flashcard.tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"words","arguments":{"query":"хлеб","language":"ru"}}}'
+curl -s -X POST https://flashcard.tallinntastebuds.ee/mcp -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"grammar","arguments":{"id":"cases-inside","language":"az"}}}'
+```
+
 ### Taking it out
 
 Built to be removable, the way splitwise was — and splitwise was removed, on
@@ -12273,13 +12391,16 @@ functions/api/say.js           the voice, which reads data/decks/spoken.json and
                                nothing else
 functions/api/_decks.js        the ways of reading data/decks/, for the two
                                routes
+functions/flashcard/mcp.js     the door an assistant reads the decks and the
+                               grammar through; functions/_mcp.js stays, the
+                               map's door speaks through it too
 tools/decks.mjs                writes data/decks/ out of data/decks.json
 data/decks.json                the decks the site ships, the grammar lessons,
                                the songs and the conversations — the file
                                anybody edits
 data/decks/                    the index, one file per deck, lesson, song and
-                               conversation, and the voice's list, as the tool
-                               writes them
+                               conversation, the voice's list and the words
+                               an assistant looks up, as the tool writes them
 ```
 
 Then take these back out. Each is an addition to a file that stood before it,
@@ -12288,6 +12409,7 @@ and each is fenced or prefixed so it can be found by looking:
 | File | What is the flashcards' |
 |---|---|
 | `functions/_middleware.js` | the `FLASHCARDS` block of constants and the `FLASHCARDS` block inside `onRequest()` — both marked, both additions |
+| `tools/mcpcheck.mjs` | the block under `the flashcards`, the two loads it calls through and the lines about it in the header |
 | `tools/validate.mjs` | the `FLASHCARDS` block after the `ui.json` check, `'flashcard.html'` in the PAGE-HEAD marker list, and the `data/decks/` staleness check with its import of `tools/decks.mjs` |
 | `functions/_shell.js` | the `flashcard.html` line in `EMPTY`, and the route's line in the header's list. **This is the only file the flashcards changed rather than added to**, and it is one key |
 | `tools/sitemap.mjs` | `DECKS`, `shelfIds()`, the two `entries.push` lines and the third argument the three callers pass |
@@ -16249,9 +16371,10 @@ instead of a minute after the merge.
   in a script — that is in no language of `data/ui.json` at all, which is how a visitor ends up reading the key itself off the page
 - a file in `data/decks/` that is not what `tools/decks.mjs` would write from
   `data/decks.json`, or one left there for a deck the source no longer has —
-  the index, the one file per deck, lesson and song, and the voice's list, which
+  the index, the one file per deck, lesson and song, the voice's list and the
+  words an assistant looks up, which
   are what the Functions read instead of the whole — or a deck, lesson or song
-  whose id is `index` or `spoken`, the folder's own two files
+  whose id is `index`, `spoken` or `words`, the folder's own three files
 - a `data/decks.json` whose decks or cards are malformed: a duplicate id, a
   missing side, a side longer than the sixty characters the card draws, a name,
   a line or a back that is a bare string rather than an object keyed by
@@ -16416,6 +16539,12 @@ functions/mcp.js           /mcp — the map and the public lists as an AI
                            assistant reads them, through the Model Context
                            Protocol: four read-only tools — places, lists,
                            search and fetch
+functions/flashcard/mcp.js /flashcard/mcp, and /mcp on the flashcards'
+                           hostname — the decks and the grammar lessons as
+                           an assistant reads them: words, decks, grammar,
+                           search and fetch
+functions/_mcp.js          the protocol those two doors speak (not a route:
+                           leading _)
 functions/api/saves.js     the save count
 functions/api/account.js   sign up, sign in, change a password or a
                            username, delete an account
@@ -16464,8 +16593,8 @@ functions/api/say.js       flashcards: a card's, a lesson's, a song's or a
 functions/flashcard.js     the page, with a deck's head and a deck's words
                            written into it so a search finds the Estonian
 functions/api/_decks.js    flashcards: the shelf's index and one deck's file,
-                           as both of those routes read them (not a route:
-                           leading _)
+                           as those routes and the flashcards' door for an
+                           assistant read them (not a route: leading _)
 functions/api/_lib.js      what those routes share (not a route: leading _)
 functions/api/_lists.js    reading one list, shared with the page below
 functions/api/_mostkept.js reading a page of everybody's, most opened first
@@ -16676,7 +16805,8 @@ tools/validate.mjs         dependency-free data validator
 tools/generate.mjs         runs every generator below that needs no Chromium, in order
 tools/places.mjs           builds data/places.json from the CSV and the map
 tools/decks.mjs            writes data/decks/ from data/decks.json: the index,
-                           one file per deck, and what the voice may say
+                           one file per deck, what the voice may say, and the
+                           words an assistant looks up
 tools/city.mjs             turns the same export into data/city.json, the city
                            under every list's panel
 tools/googlevenues.mjs     turns the Google Places export into db/google-venues.sql
@@ -16706,10 +16836,11 @@ tools/functions-check.mjs  imports every module under functions/, the way the
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn
-tools/mcpcheck.mjs         asks /mcp what an assistant would, over the real
-                           data files, and holds the answers to what was
-                           promised; --check is what CI runs
-.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the /mcp check and the write gate, on every push
+tools/mcpcheck.mjs         asks /mcp and /flashcard/mcp what an assistant
+                           would, over the real data files, and holds the
+                           answers to what was promised; --check is what CI
+                           runs
+.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the check of the two MCP doors and the write gate, on every push
 .github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
 .github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, the backstop behind fillOnVisit(), so the day's Google budget is spent
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
