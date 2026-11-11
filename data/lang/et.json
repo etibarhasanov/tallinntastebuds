@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Jah, alusta uuesti",
   "walkAgainNo": "Jätka",
   "walkGrip": "Liiguta kohta {place}: lohista või kasuta nooleklahve",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "Vaata kaardil",
+  "walkBandTop": "{n}/{total} märgitud",
+  "walkOpenList": "Ava nimekiri"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

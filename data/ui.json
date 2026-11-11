@@ -1350,7 +1350,10 @@
     "walkAgainYes": "Bəli, yenidən başla",
     "walkAgainNo": "Davam et",
     "walkGrip": "{place} — yerini dəyiş: sürüklə və ya ox düymələrindən istifadə et",
-    "walkHoursOnly": "{h} saat"
+    "walkHoursOnly": "{h} saat",
+    "walkOnMap": "Xəritədə bax",
+    "walkBandTop": "{total} yerdən {n} qeyd olunub",
+    "walkOpenList": "Siyahını aç"
   },
   "en": {
     "langName": "English",
@@ -2703,7 +2706,10 @@
     "walkAgainYes": "Yes, start again",
     "walkAgainNo": "Keep going",
     "walkGrip": "Move {place}: drag it, or use the arrow keys",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "See it on the map",
+    "walkBandTop": "{n} of {total} checked",
+    "walkOpenList": "Open the list"
   },
   "et": {
     "langName": "Eesti",
@@ -4056,7 +4062,10 @@
     "walkAgainYes": "Jah, alusta uuesti",
     "walkAgainNo": "Jätka",
     "walkGrip": "Liiguta kohta {place}: lohista või kasuta nooleklahve",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "Vaata kaardil",
+    "walkBandTop": "{n}/{total} märgitud",
+    "walkOpenList": "Ava nimekiri"
   },
   "fi": {
     "langName": "Suomi",
@@ -5409,7 +5418,10 @@
     "walkAgainYes": "Kyllä, aloita alusta",
     "walkAgainNo": "Jatka",
     "walkGrip": "Siirrä {place}: vedä tai käytä nuolinäppäimiä",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "Näytä kartalla",
+    "walkBandTop": "{n}/{total} kuitattu",
+    "walkOpenList": "Avaa lista"
   },
   "pt": {
     "langName": "Português",
@@ -6762,7 +6774,10 @@
     "walkAgainYes": "Sim, recomeçar",
     "walkAgainNo": "Continuar",
     "walkGrip": "Mover {place}: arrasta ou usa as setas",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "Ver no mapa",
+    "walkBandTop": "{n} de {total} confirmados",
+    "walkOpenList": "Abrir a lista"
   },
   "ru": {
     "langName": "Русский",
@@ -8115,7 +8130,10 @@
     "walkAgainYes": "Да, начать заново",
     "walkAgainNo": "Продолжить",
     "walkGrip": "Передвинуть: {place}. Перетащите или используйте стрелки",
-    "walkHoursOnly": "{h} ч"
+    "walkHoursOnly": "{h} ч",
+    "walkOnMap": "Показать на карте",
+    "walkBandTop": "Отмечено {n} из {total}",
+    "walkOpenList": "Открыть список"
   },
   "es": {
     "langName": "Español",
@@ -9468,7 +9486,10 @@
     "walkAgainYes": "Sí, empezar de nuevo",
     "walkAgainNo": "Seguir",
     "walkGrip": "Mover {place}: arrástralo o usa las flechas",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "Verla en el mapa",
+    "walkBandTop": "{n} de {total} marcados",
+    "walkOpenList": "Abrir la lista"
   },
   "tr": {
     "langName": "Türkçe",
@@ -10821,7 +10842,10 @@
     "walkAgainYes": "Evet, baştan başla",
     "walkAgainNo": "Devam et",
     "walkGrip": "{place} — taşı: sürükle ya da ok tuşlarını kullan",
-    "walkHoursOnly": "{h} sa"
+    "walkHoursOnly": "{h} sa",
+    "walkOnMap": "Haritada gör",
+    "walkBandTop": "{total} yerden {n} tanesi işaretlendi",
+    "walkOpenList": "Listeyi aç"
   },
   "uk": {
     "langName": "Українська",
@@ -12174,7 +12198,10 @@
     "walkAgainYes": "Так, почати заново",
     "walkAgainNo": "Продовжити",
     "walkGrip": "Пересунути: {place}. Перетягніть або скористайтеся стрілками",
-    "walkHoursOnly": "{h} год"
+    "walkHoursOnly": "{h} год",
+    "walkOnMap": "Показати на карті",
+    "walkBandTop": "Відмічено {n} з {total}",
+    "walkOpenList": "Відкрити список"
   },
   "fr": {
     "langName": "Français",
@@ -13527,7 +13554,10 @@
     "walkAgainYes": "Oui, recommencer",
     "walkAgainNo": "Continuer",
     "walkGrip": "Déplacer {place} : fais glisser ou utilise les flèches",
-    "walkHoursOnly": "{h} h"
+    "walkHoursOnly": "{h} h",
+    "walkOnMap": "Voir sur la carte",
+    "walkBandTop": "{n} sur {total} validés",
+    "walkOpenList": "Ouvrir la liste"
   },
   "de": {
     "langName": "Deutsch",
@@ -14880,6 +14910,9 @@
     "walkAgainYes": "Ja, neu starten",
     "walkAgainNo": "Weitermachen",
     "walkGrip": "{place} verschieben: ziehen oder Pfeiltasten benutzen",
-    "walkHoursOnly": "{h} Std."
+    "walkHoursOnly": "{h} Std.",
+    "walkOnMap": "Auf der Karte ansehen",
+    "walkBandTop": "{n} von {total} abgehakt",
+    "walkOpenList": "Liste öffnen"
   }
 }

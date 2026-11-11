@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Kyllä, aloita alusta",
   "walkAgainNo": "Jatka",
   "walkGrip": "Siirrä {place}: vedä tai käytä nuolinäppäimiä",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "Näytä kartalla",
+  "walkBandTop": "{n}/{total} kuitattu",
+  "walkOpenList": "Avaa lista"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

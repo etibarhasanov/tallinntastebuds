@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Evet, baştan başla",
   "walkAgainNo": "Devam et",
   "walkGrip": "{place} — taşı: sürükle ya da ok tuşlarını kullan",
-  "walkHoursOnly": "{h} sa"
+  "walkHoursOnly": "{h} sa",
+  "walkOnMap": "Haritada gör",
+  "walkBandTop": "{total} yerden {n} tanesi işaretlendi",
+  "walkOpenList": "Listeyi aç"
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",

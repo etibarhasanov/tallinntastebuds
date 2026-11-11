@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Sim, recomeçar",
   "walkAgainNo": "Continuar",
   "walkGrip": "Mover {place}: arrasta ou usa as setas",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "Ver no mapa",
+  "walkBandTop": "{n} de {total} confirmados",
+  "walkOpenList": "Abrir a lista"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

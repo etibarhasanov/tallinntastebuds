@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Sí, empezar de nuevo",
   "walkAgainNo": "Seguir",
   "walkGrip": "Mover {place}: arrástralo o usa las flechas",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "Verla en el mapa",
+  "walkBandTop": "{n} de {total} marcados",
+  "walkOpenList": "Abrir la lista"
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",

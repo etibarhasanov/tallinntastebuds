@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Yes, start again",
   "walkAgainNo": "Keep going",
   "walkGrip": "Move {place}: drag it, or use the arrow keys",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "See it on the map",
+  "walkBandTop": "{n} of {total} checked",
+  "walkOpenList": "Open the list"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

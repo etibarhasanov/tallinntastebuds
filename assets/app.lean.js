@@ -1317,11 +1317,14 @@
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
     dom.panelDirections.hidden = !place || typeof place.lat !== 'number' || typeof place.lng !== 'number';
     if (dom.panelDirections.hidden) return;
-    var row = googleFor[place.id];
-    var key = place.google ? place.id : row && row !== ASKING ? row.id : '';
-    dom.panelDirections.href = directionsUrl(place, key);
+    dom.panelDirections.href = googleWay(place);
     dom.panelDirections.setAttribute('aria-label', t('directions'));
     dom.panelDirections.setAttribute('title', t('directions'));
+  }
+
+  function googleWay(place) {
+    var row = googleFor[place.id];
+    return directionsUrl(place, place.google ? place.id : row && row !== ASKING ? row.id : '');
   }
 
   var ROUTE_TRAVEL = { foot: 'walking', bus: 'transit', car: 'driving' };
@@ -1335,7 +1338,7 @@
     paintRouteModes();
     dom.routeOut.href = mode === 'car'
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
-      : dom.panelDirections.href + '&travelmode=' + ROUTE_TRAVEL[mode];
+      : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
     dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
@@ -2842,6 +2845,7 @@
 
   function letGoOfList() {
     dropped = { list: state.list, places: state.listPlaces };
+    walkOffMap();
 
     var standing = {};
     state.listPlaces.forEach(function (p) { standing[p.id] = true; });
@@ -3956,6 +3960,7 @@
   function renderPanel(opts) {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     if (routeFor && (state.view !== 'detail' || state.selected !== routeFor)) clearRoute();
+    paintWalkOn();
     paintSave();
     paintShare();
     paintDirections();
@@ -6809,6 +6814,7 @@
     var items = [];
 
     list.items.forEach(function (item) {
+      item.listed = item.place;
       if (item.mapId && byMapId(item.mapId)) item.place = item.mapId;
       if (byId(item.place)) { items.push(item); return; }
 
@@ -6849,6 +6855,171 @@
     state.listPlaces = stand;
   }
 
+  var walkOn = false;      // the list on the map is being walked
+  var walkLayer = null;    // the line and the numbers, a feature group
+  var walkFitted = false;  // the map has been framed on the walk once
+  var walkClock = null;    // the interval that keeps the band's time
+
+  function walkList() {
+    return {
+      id: state.list.id,
+      title: state.list.title,
+      items: state.list.items.map(function (item) {
+        var place = byId(item.place);
+        return {
+          place: item.listed || item.place,
+          at: item.place,
+          name: place ? place.name : item.name,
+          lat: place ? place.lat : null,
+          lng: place ? place.lng : null
+        };
+      })
+    };
+  }
+
+  function walkOnMap() {
+    if (!state.list || !window.TTBWalk || walkOn) return;
+    walkOn = true;
+    walkFitted = false;
+    TTBTrack.event('walk_map_open', { list_id: state.list.id });
+    paintWalkOn();
+    paintWalk();
+    syncUrl();
+  }
+
+  function walkOffMap() {
+    if (!walkOn) return;
+    walkOn = false;
+    if (walkLayer) { map.removeLayer(walkLayer); walkLayer = null; }
+    if (walkClock) { window.clearInterval(walkClock); walkClock = null; }
+    TTBWalk.leave();
+    paintWalkOn();
+  }
+
+  function paintWalkOn() {
+    var on = walkOn && state.view === 'list' && !state.selected;
+    document.body.classList.toggle('walk-on', on);
+    dom.walkBand.hidden = !on;
+  }
+
+  function walkHere(here, accuracy) {
+    var at = L.latLng(here.lat, here.lng);
+    if (hereMarker) {
+      hereMarker.setLatLng(at);
+      if (hereAccuracy) hereAccuracy.setLatLng(at);
+      return;
+    }
+    hereStill = true;
+    drawHere(at, accuracy || 30, true, false);
+  }
+
+  function paintWalk() {
+    if (!walkOn || !state.list) return;
+    var list = walkList();
+    var out = TTBWalk.band({
+      list: list,
+      lang: state.lang,
+      t: t,
+      el: el,
+      button: function (label, className, onClick) {
+        var b = el('button', { type: 'button', className: className, textContent: label });
+        b.addEventListener('click', onClick);
+        return b;
+      },
+      signInHref: function () {
+        return '/?account=up&then=' + encodeURIComponent(window.location.pathname + window.location.search);
+      },
+      moreLists: function () { return null; },
+      redraw: paintWalk,
+      onHere: walkHere
+    });
+
+    if (walkLayer) map.removeLayer(walkLayer);
+    walkLayer = L.featureGroup().addTo(map);
+    L.polyline(out.stops.map(function (stop) { return [stop.lat, stop.lng]; }), {
+      className: 'walk-line',
+      weight: 4,
+      dashArray: '2 9',
+      lineCap: 'round',
+      lineJoin: 'round',
+      interactive: false
+    }).addTo(walkLayer);
+    out.stops.forEach(function (stop, i) {
+      L.marker([stop.lat, stop.lng], {
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: 3000,
+        icon: L.divIcon({
+          className: 'walk-num' + (stop.checked ? ' is-checked' : '') + (stop.next ? ' is-next' : ''),
+          html: stop.checked ? '✓' : String(i + 1),
+          iconSize: [22, 22],
+          iconAnchor: [-5, 36]
+        })
+      }).addTo(walkLayer);
+    });
+    if (!walkFitted && out.stops.length) {
+      walkFitted = true;
+      map.fitBounds(walkLayer.getBounds(), {
+        paddingTopLeft: [50, isNarrow() ? 190 : 90],
+        paddingBottomRight: [50, 230],
+        maxZoom: 17
+      });
+    }
+
+    var target = null;
+    out.stops.forEach(function (stop) {
+      if (out.near ? stop.place === out.near : stop.next) target = stop;
+    });
+    var at = null;
+    list.items.forEach(function (item) { if (target && item.place === target.place) at = byId(item.at); });
+
+    var top = el('span', { className: 'walk-band-top' });
+    var since = out.started && !out.finished ? TTBWalk.since() : 0;
+    function tell() {
+      top.textContent = !out.started ? state.list.title
+        : t('walkBandTop', { n: out.done, total: out.total }) +
+          (since ? ' · ' + TTBWalk.took(Date.now() - since) : '');
+    }
+    tell();
+    if (walkClock) { window.clearInterval(walkClock); walkClock = null; }
+    if (since) walkClock = window.setInterval(tell, 30000);
+
+    var close = el('button', {
+      type: 'button',
+      className: 'route-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', function () {
+      TTBTrack.event('walk_map_close', { list_id: state.list.id });
+      walkOffMap();
+      syncUrl();
+    });
+
+    var way = at ? el('button', { type: 'button', className: 'alt', textContent: t('directions') }) : null;
+    if (way) {
+      way.addEventListener('click', function () {
+        TTBTrack.event('walk_directions', { list_id: state.list.id });
+        selectPlace(at.id, { fly: false });
+        showRoute(at);
+      });
+    }
+
+    dom.walkBand.textContent = '';
+    [
+      el('div', { className: 'walk-band-head' }, [top, close])
+    ].concat(out.kids, [
+      el('div', { className: 'walk-band-row' }, [
+        way,
+        TTBTrack.click(el('a', {
+          className: 'alt',
+          href: '/list/' + state.list.id + '?walk=1',
+          textContent: t('walkOpenList')
+        }), 'list_walk', { list_id: state.list.id })
+      ])
+    ]).forEach(function (node) { dom.walkBand.appendChild(node); });
+  }
+
   function syncUrl(push) {
     var params = new URLSearchParams(window.location.search);
     if (state.selected) params.set('spot', state.selected);
@@ -6859,6 +7030,9 @@
 
     if (state.list) params.set('list', state.list.id);
     else params.delete('list');
+    if (walkOn && state.list) params.set('walk', '1');
+    else params.delete('walk');
+    params.delete('go');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -7418,6 +7592,7 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
+      walkBand: $('walk-band'),
       routeSay: $('route-say'),
       routeOut: $('route-out'),
       routeClose: $('route-close'),
@@ -7561,6 +7736,8 @@
       var spot = params.get('spot');
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
+      var walking = params.get('walk') === '1';
+      var going = params.get('go') === '1';
       syncUrl();
       seatDeals();
       if (spot && !byId(spot) && isSaved(spot)) {
@@ -7590,11 +7767,15 @@
 
       if (spot && byId(spot)) selectPlace(spot, { fly: true });
 
-      else if (stand) openFromRow(stand);
+      else if (stand) {
+        openFromRow(stand);
+        if (going) showRoute(stand);
+      }
 
       else if (state.list) {
         showList(false);
         fitToPins({ clearPanel: true });
+        if (walking) walkOnMap();
       }
 
       else if (listIsFixed()) {

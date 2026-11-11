@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=bd345a27">
+<link rel="stylesheet" href="assets/styles.lean.css?v=6de423a7">
 </head>
 <body>
 
@@ -621,6 +621,12 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
 </div>
+<!-- A list being walked, on the map: how far through, the nearest place
+     left, the button that checks in and the way to it. Empty here — its
+     contents are assets/walk.js's, the same ones the list's own page shows,
+     and walkOnMap() in assets/app.js puts them in. It stands where the sheet
+     would, while the sheet would be the list. -->
+<div class="walk-band" id="walk-band" hidden></div>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <!-- The offer to keep a list somewhere better than this browser. Shown after
@@ -708,6 +714,10 @@
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
      a page that loads it directly. "The lean copies" in README.md. -->
-<script src="assets/app.lean.js?v=c70c2728" defer></script>
+<!-- A list read as a walk, which the map can follow: TTBWalk, the same
+     global the list's own page hands its list to. Before the map's script,
+     which asks it. -->
+<script src="assets/walk.js?v=6b381af3" defer></script>
+<script src="assets/app.lean.js?v=dd8b5fd1" defer></script>
 </body>
 </html>
