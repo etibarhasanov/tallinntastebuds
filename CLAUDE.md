@@ -377,7 +377,9 @@ backend either: the same accounts, the same cookie, the same rule — **add a
 field, never rename or remove one** — and its models are in
 `Kohuke/Models/Flash.swift`.
 
-- `GET /api/flashcard?lang=` and `?lang=&deck=<id>`, whole: `ready`, `user`,
+- `GET /api/flashcard?lang=` and `?lang=&deck=<id>`, each with `ui=` —
+  the key prefixes of the strings the app prints on the shelf, and nothing
+  after the `=` for a deck, which carries none. Then, whole: `ready`, `user`,
   `words`, `gates`, `days`, `langs`, `ui`, and `decks`, `lessons`, `songs`,
   `talks`, or one `deck`, `lesson`, `song` or `talk` — every field
   `deckAnswer()`, `lessonAnswer()`, `songAnswer()` and `talkAnswer()` send,

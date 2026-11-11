@@ -12259,6 +12259,19 @@ is in the app on the next deploy with nothing sent to Apple. Its screens are
 printed with this site's strings, out of the `ui` block the route's answer
 already carries for the page.
 
+**It asks for what it shows and no more.** The shelf is one request, a deck
+another, a lesson, a song or a conversation one each, when it is opened —
+never the whole of `data/decks.json` and never a deck ahead of being asked
+for. And not the whole of the site's words either: the `ui` block was every
+string the site has, twelve hundred of them and sixty-five KB, in every
+answer, which on the page is one request on the way in and in an app was
+the same sixty-five KB with every deck it opened. So the route takes `?ui=`:
+the beginnings of the keys wanted, comma-separated, and nothing after the
+`=` for none. Kohuke asks for its five prefixes with the shelf — a third of
+the size it was — and for none with a deck, which comes back at four KB
+instead of seventy. Left out, the block is whole, which is what this page
+still asks for and why nothing on it changed.
+
 **What that makes a promise.** A phone keeps the build it has for months, so
 the shape of every answer above is now something an installed app decodes:
 a field may be added and may never be renamed or removed. **What the app

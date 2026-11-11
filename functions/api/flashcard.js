@@ -92,7 +92,8 @@
  * way for the same reason. The whole block
  * goes rather than the eighty keys, because a list of keys here would be a
  * second copy of what assets/flashcard.js asks for, and the validator could
- * not see them drift.
+ * not see them drift. A caller that wants fewer names them itself, with
+ * `?ui=` — wordsWanted() below, and Kohuke is why.
  *
  * AND THE LIST IS THREE LANGUAGES LONG, NOT TEN
  *
@@ -802,6 +803,42 @@ function reviewDeck(context, user, index, known) {
 
 /* ---------------------------------------------------------------- reading */
 
+/* Which of the page's words go with an answer, when the caller says.
+
+   Left out, `ui` is the whole block, as it always was: this page prints from
+   it, and the argument in the header above for sending the block rather than
+   a list of keys is still the page's. Kohuke, the flashcards' own iPhone
+   app, prints two hundred of those twelve hundred strings and opens a deck
+   at a time, and was being sent the other thousand with every card it asked
+   for — sixty-five KB of an answer whose deck was four. So `?ui=` takes the
+   beginnings of the keys a caller prints, comma-separated — `flash,account`
+   — and the block is cut to the keys that start with one of them; and
+   `?ui=` with nothing after it is no block at all, which is what a caller
+   that already holds its strings sends for a deck. The list is the caller's,
+   in the caller's code, so there is no second copy of anybody's keys on this
+   side to drift. `lang` and `langs` go either way: they are three short pairs
+   and the language is what the answer was settled in.
+
+   Twelve beginnings at most and none longer than twenty-four characters, so
+   a query string cannot make this a loop over anything it likes; past that
+   the rest are ignored rather than refused, since the worst a short list can
+   do is leave a string in English. */
+const UI_PREFIXES = 12;
+const UI_PREFIX_LENGTH = 24;
+
+function wordsWanted(words, asked) {
+  if (asked === null) return words;
+  const prefixes = asked.split(',')
+    .map((p) => p.trim())
+    .filter((p) => p && p.length <= UI_PREFIX_LENGTH)
+    .slice(0, UI_PREFIXES);
+  const ui = {};
+  for (const [key, value] of Object.entries(words.ui || {})) {
+    if (prefixes.some((p) => key.startsWith(p))) ui[key] = value;
+  }
+  return { ...words, ui: ui };
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
 
@@ -850,7 +887,7 @@ export async function onRequestGet(context) {
   const base = {
     ready: ready, google: google, user: who,
     words: words, gates: GATES, days: days,
-    ...(await wordsFor(context, params.get('lang'), DECK_LANGS))
+    ...wordsWanted(await wordsFor(context, params.get('lang'), DECK_LANGS), params.get('ui'))
   };
 
   if (asked) {
