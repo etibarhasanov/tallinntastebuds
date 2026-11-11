@@ -11248,6 +11248,20 @@ you answered, and the decks that were skipped are still there to be done.
 Marking up to 397 skipped cards as known was the other way to draw it, and
 lost for exactly that.
 
+**And the stages it skipped fold away.** The Words page used to open on them
+anyway, for somebody placed at *Getting by*: five decks of *First words* and
+four of *At a restaurant*, each saying *27 due*, two screens of what the test
+had just said they could skip. So a skipped stage is its heading and one
+line — *✓ Skipped by the test — 5 decks*, with **Show them** — and the decks
+are a press away, unchanged, with **Hide them** to fold them again. Which
+stages are opened is kept on the device, under `ttb.flash.unfold`, the way
+the language is: it is a way of looking at the page rather than a fact about
+the person. A skipped stage with a word known in it is never folded — that is
+somebody who went back to it, and a fold would hide what they did. The other
+drawing moved the skipped stages under the person's own, whole, and lost on
+order: the shelf runs easy to hard, and a page that runs hard, harder, then
+easy again reads as sorted by nothing. `skipped()` in `assets/flashcard.js`.
+
 **Signed out**, the test is free and the result is the same, and a stage it
 placed somebody at that is behind a gate says *Going deeper opens with an
 account* over the sign-in card. The answers wait in the tab, under

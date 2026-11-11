@@ -1983,7 +1983,19 @@
           /* And under the first that is shut, the other way it opens. */
           if (first) kids.push(testLink('alt flash-test-in', 'flashTestShut', 'words'));
         }
-        if (these.length) kids.push(deckList(these));
+        /* A stage Find your level put somebody past is folded to one line
+           saying so, with a way to open it — they were told they could skip
+           these, and a page whose first screens are decks they skipped
+           says otherwise. Never one with a word known in it: that is
+           somebody who came back to it, and a fold would hide what they did.
+           See skippedLine() below. */
+        if (these.length && skipped(level.id, these)) {
+          var open = unfolded(level.id);
+          kids.push(skippedLine(level.id, these.length, open));
+          if (open) kids.push(deckList(these));
+        } else if (these.length) {
+          kids.push(deckList(these));
+        }
       }
     });
 
@@ -1992,6 +2004,48 @@
     });
     if (loose.length) kids.push(deckList(loose));
     return kids;
+  }
+
+  /* ------------------------------------------------- the stages skipped
+   * Somebody Find your level placed at a stage was told the ones under it
+   * are theirs to skip, and the Words page used to open on them anyway —
+   * five decks of First words and four of At a restaurant, every one saying
+   * "27 due", before the stage they were sent to. So a skipped stage is its
+   * heading and one line, ✓ Skipped by the test — 5 decks, with Show them;
+   * the decks are a press away and nothing about them changed. Which stages
+   * a person has opened is this device's, in localStorage, like the
+   * language: it is a way of looking at the page and not a fact about them.
+   * **Find your level** under **Flashcards** in README.md.
+   */
+  var UNFOLD_KEY = 'ttb.flash.unfold';
+
+  function skipped(level, decks) {
+    if (!state.level) return false;
+    var ids = LEVELS.map(function (l) { return l.id; });
+    if (ids.indexOf(level) >= ids.indexOf(state.level)) return false;
+    return !decks.some(function (d) { return d.known > 0; });
+  }
+
+  function unfoldedAll() {
+    try { return JSON.parse(storeGet(UNFOLD_KEY) || '[]') || []; } catch (e) { return []; }
+  }
+
+  function unfolded(level) {
+    return unfoldedAll().indexOf(level) !== -1;
+  }
+
+  function skippedLine(level, n, open) {
+    var press = el('button', { type: 'button', className: 'alt', textContent: t(open ? 'flashSkipHide' : 'flashSkipShow') });
+    press.addEventListener('click', function () {
+      var all = unfoldedAll().filter(function (l) { return l !== level; });
+      if (!open) all.push(level);
+      storeSet(UNFOLD_KEY, JSON.stringify(all));
+      render();
+    });
+    return el('p', { className: 'flash-opens flash-skipped mono' }, [
+      el('span', {}, [el('b', { textContent: '\u2713 ' + t('flashSkipped') }), ' \u2014 ' + t('flashDeckCount', { n: n })]),
+      press
+    ]);
   }
 
   /* The grammar: the lessons under Grammar, then the cases, one at a time,
