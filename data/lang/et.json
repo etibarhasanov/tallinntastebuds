@@ -537,6 +537,8 @@
   "growthReading": "Loen…",
   "growthNone": "Kasv pole veel saadaval: ajaloo tabel pole veel rakendatud.",
   "growthEmpty": "Pole veel midagi võrrelda: ühegi koha kohta pole kaks korda küsitud.",
+  "growthSearch": "Leia koht",
+  "growthSearchNone": "Tabelis pole kohta nimega „{q}“. Koht jõuab tabelisse siis, kui Google on selle kohta kaks korda vastanud.",
   "growthAll": "Kõik {n}",
   "growthAhead": "Ees {n}",
   "growthPace": "Tempos {n}",

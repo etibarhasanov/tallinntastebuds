@@ -5947,7 +5947,11 @@ of the arithmetic and its header is the argument; the short of it:
   Google merged — `jumped()`, the test that marks the refresh log — so the
   place is named, kept out of the fit, and given no forecast.
 
-The chips narrow it to one verdict, or to Google's top hundred; the order is
+A field over the chips narrows the table by name as it is typed into — the
+directory's own field, folding case and accents the same way — over the rows
+the tab already holds, so a letter asks nobody anything. A name no row
+answers to puts a line where the table was, saying a place joins once Google
+has answered about it twice; it does not look outside the table. The chips narrow it to one verdict, or to Google's top hundred; the order is
 one of five; the place's name is a button that opens the row onto its line —
 every answer a dot, this month's pace carried to the forecast's day as a
 dashed line. **Copy as CSV** puts the table as it stands on the clipboard,

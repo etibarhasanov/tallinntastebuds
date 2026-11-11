@@ -537,6 +537,8 @@
   "growthReading": "Reading it…",
   "growthNone": "Growth isn’t available yet: the history table hasn’t been applied.",
   "growthEmpty": "Nothing to compare yet: no place has been asked about twice.",
+  "growthSearch": "Find a place",
+  "growthSearchNone": "No place in the table is called “{q}”. A place joins it once Google has answered about it twice.",
   "growthAll": "All {n}",
   "growthAhead": "Ahead {n}",
   "growthPace": "On pace {n}",

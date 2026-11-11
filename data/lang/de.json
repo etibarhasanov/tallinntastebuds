@@ -537,6 +537,8 @@
   "growthReading": "Wird gelesen…",
   "growthNone": "Wachstum gibt es noch nicht: Die Verlaufstabelle wurde noch nicht angelegt.",
   "growthEmpty": "Noch nichts zu vergleichen: Nach keinem Ort wurde zweimal gefragt.",
+  "growthSearch": "Ort finden",
+  "growthSearchNone": "Kein Ort in der Tabelle heißt „{q}“. Ein Ort kommt hinein, sobald Google zweimal über ihn geantwortet hat.",
   "growthAll": "Alle {n}",
   "growthAhead": "Voraus {n}",
   "growthPace": "Im Tempo {n}",

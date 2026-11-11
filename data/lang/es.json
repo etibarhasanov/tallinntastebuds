@@ -537,6 +537,8 @@
   "growthReading": "Leyendo…",
   "growthNone": "El crecimiento aún no está disponible: la tabla del historial no se ha aplicado.",
   "growthEmpty": "Aún no hay nada que comparar: ningún lugar se ha consultado dos veces.",
+  "growthSearch": "Buscar un sitio",
+  "growthSearchNone": "Ningún sitio de la tabla se llama “{q}”. Un sitio entra en ella cuando Google ha respondido sobre él dos veces.",
   "growthAll": "Todos {n}",
   "growthAhead": "Por delante {n}",
   "growthPace": "Al ritmo {n}",

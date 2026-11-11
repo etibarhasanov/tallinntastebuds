@@ -537,6 +537,8 @@
   "growthReading": "Okunuyor…",
   "growthNone": "Büyüme henüz hazır değil: geçmiş tablosu uygulanmadı.",
   "growthEmpty": "Henüz karşılaştıracak bir şey yok: hiçbir mekân iki kez sorulmadı.",
+  "growthSearch": "Mekân bul",
+  "growthSearchNone": "Tabloda “{q}” adında bir mekân yok. Bir mekân, Google onun hakkında iki kez yanıt verince tabloya girer.",
   "growthAll": "Tümü {n}",
   "growthAhead": "Önde {n}",
   "growthPace": "Tempoda {n}",
