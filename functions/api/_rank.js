@@ -72,9 +72,9 @@
  * what it was. The claim failing is what makes that safe: without the table
  * the INSERT throws before any UPDATE is reached.
  *
- * Nothing in here calls Google. Keeping the top hundred's numbers fresh is
- * refreshTop() in _refresh.js, which the route asks for after its answer has
- * gone, because the budget and the claim on a row live there.
+ * Nothing in here calls Google, and neither does the route. Keeping the top
+ * hundred's numbers fresh is refreshFill() in _refresh.js, which takes their
+ * due rows first, because the budget and the claim on a row live there.
  */
 
 import { eatOnly } from './_lib.js';

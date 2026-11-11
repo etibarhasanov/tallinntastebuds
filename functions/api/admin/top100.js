@@ -20,12 +20,11 @@
  * because the owner looked, which is the one scheduler Pages Functions have.
  * Its header is the argument for a week and for the arithmetic.
  *
- * Then, after the answer has gone and through waitUntil, refreshTop() in
- * ../_refresh.js asks Google about the top hundred's rows whose numbers are a
- * month old, a couple of dozen at a time inside the same budget every open
- * spends from. A position in the top hundred is a claim about this month's
- * numbers, and this is what makes it one whether or not anybody opened the
- * place. It does nothing without GOOGLE_MAPS_API_KEY, like every refresh.
+ * It reads and it ranks, and it calls nobody. Until 2026-11-11 it also sent
+ * Google after the top hundred's stale rows once its answer had gone; the
+ * owner took that out, so opening the tab costs none of the day's calls. The
+ * hundred are kept fresh by the fill in ../_refresh.js, which asks after
+ * them first and at fourteen days.
  *
  * The owner's alone: every /api/admin/ address is answered by the lock in
  * functions/_middleware.js first — adminUser() in ../_admin.js, a 403 to
@@ -43,7 +42,6 @@
 
 import { json, wrongDatabase } from '../_lib.js';
 import { rerankIfDue, topOfWeek, weekAfter } from '../_rank.js';
-import { refreshTop } from '../_refresh.js';
 
 export async function onRequestGet(context) {
   const { env } = context;
@@ -61,8 +59,6 @@ export async function onRequestGet(context) {
     return json({ ready: false });
   }
   if (!week) return json({ ready: true, top: null });
-
-  context.waitUntil(refreshTop(env, now));
 
   return json({
     ready: true,

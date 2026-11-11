@@ -1324,10 +1324,11 @@ CREATE TABLE IF NOT EXISTS google_calls (
 --             'gone'     Google does not know the id any more; missing_since set
 --             'failed'   no answer, or a refusal; `note` says which
 --   source    'open'     somebody opened the place
---             'top'      it stands in the top hundred of the week's ranking and
---                        its numbers were a month old — refreshTop() in
---                        functions/api/_refresh.js, asked for by
---                        /api/admin/top100 after its answer has gone
+--             'fill'     the day's leftover calls, spent on the oldest rows —
+--                        refreshFill() in functions/api/_refresh.js
+--             'top'      until 2026-11-11: it stood in the top hundred, its
+--                        numbers were stale and the Top 100 tab was opened.
+--                        Nothing writes it now; the fill asks instead
 --   changes   {"reviews":[148,170],"rating":[4.9,5]} — from, to — or ''
 CREATE TABLE IF NOT EXISTS google_refreshes (
   id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1396,8 +1397,10 @@ CREATE INDEX IF NOT EXISTS idx_google_ranks_place ON google_ranks (place_id, wee
 --                      because the export is one sweep with no time on the
 --                      row. Which sweep is in git, against the CSV.
 --            'open'    a refresh when somebody opened the place; `at` is when
---            'top'     a refresh because the place stands in the week's top
---                      hundred and its numbers were stale; `at` is when
+--            'fill'    a refresh out of the day's leftover calls; `at` is when
+--            'top'     until 2026-11-11, a refresh because the place stood in
+--                      the week's top hundred and the Top 100 tab was opened;
+--                      `at` is when
 --
 -- Nothing is lost between the two: a row with a line here has refreshed_at
 -- set, and the export never overwrites the numbers on such a row. At most

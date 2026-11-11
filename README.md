@@ -5696,7 +5696,7 @@ promise to keep them current. So the thirty-two a day is a floor now as well
 as a cap. From noon UTC, every page somebody opens knocks: the report it
 sends to `/api/stats` calls `fillOnVisit()` after its answer has gone, and
 `refreshFill()` in `functions/api/_refresh.js`
-spends what the day's opens and the top hundred left on the rows the
+spends what the day's opens left on the rows the
 directory shows whose numbers are older than their tier allows — **How often
 a place is asked about** below — the top tier's due rows first and so down,
 and inside a tier the oldest first, the never-refreshed ahead of everything.
@@ -5890,15 +5890,16 @@ else 403 before the route is reached.
 **The hundred are kept fresh whether or not anybody opens them.** A position in
 the top hundred is a claim about this month's numbers, and under the refresh
 alone a place nobody happened to open since August would be ranked on
-August's. So after the route's answer has gone, `refreshTop()` in
-`functions/api/_refresh.js` asks Google about the top hundred's rows whose
-numbers are more than fourteen days old, their tier's wait — the same call, the same seven columns,
-the same budget, logged under source `top` — twenty-four of them at a time and
-never the last eight of the day's thirty-two (`KEEP_FOR_OPENS`), however often
-the page is opened, so a day of busy opens still has something to spend. A hundred stale rows take a
-few openings of the page; after that they fall due a few at a time, the
-afternoon's fill takes them first, and one opening covers what is left. Without `GOOGLE_MAPS_API_KEY` it does nothing,
-like every refresh, and the ranking is made from whatever the table holds.
+August's. So the hundred fall due at fourteen days rather than an open's
+thirty, their tier's wait, and the afternoon's fill — `refreshFill()` in
+`functions/api/_refresh.js` — takes their due rows before anything else.
+Opening the tab asks Google nothing. Until 2026-11-11 it did: the route sent
+Google after two dozen of the hundred's stale rows once its answer had gone,
+logged under source `top`, and a few openings of the page in a morning could
+spend the day. The owner took that out, since a page opened to be read should
+read the table and call nobody; the lines it wrote are still in the log and
+in `google_scores` under that word. Without `GOOGLE_MAPS_API_KEY` nothing is
+refreshed at all, and the ranking is made from whatever the table holds.
 
 ### How a place's count has grown
 
