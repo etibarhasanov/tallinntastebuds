@@ -60,6 +60,13 @@ points at warns.
 `data/schema.json` gives editors autocomplete and is otherwise not enforced;
 it does not know `added`, so an editor will flag a key every entry carries.
 
+**What a place serves is a second file.** `data/serves.json` holds the words
+a place should be found by that are not its name, its types or its
+`mustOrder` — *pizza* and *pelmeni* for F-Hoone — for any place in the
+city, keyed by the map's id or Google's `place_id`. Nothing prints them.
+A new place whose write-up names a dish the entry does not carry gets a
+line there in the same commit; **What a place serves** in `README.md`.
+
 ## The admin road
 
 `/admin.html` → **Add a place** or **Edit a place**, signed in on the site as

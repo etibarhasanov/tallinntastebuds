@@ -168,8 +168,9 @@ function tier(entry, words) {
   return low;
 }
 
-/* 1 when every word starts a word of the name or of Google's category for
-   the place — it says it is a coffee shop — and 0 when it is only filed
+/* 1 when every word starts a word of the name, of Google's category for the
+   place or of what data/serves.json says it serves — it says it is a coffee
+   shop, or somebody who ate there says so — and 0 when it is only filed
    beside one. */
 function says(entry, words) {
   return words.every((word) => wordAt(entry.name, word) >= 2 || wordAt(entry.category, word) >= 2) ? 1 : 0;
@@ -218,7 +219,8 @@ function labels(list, id) {
  * VENUE_TYPES in ./_lib.js hands any place with a drinks licence — and the
  * directory's kitchens. A place of mine is found by its name, street, kinds,
  * dishes and the kitchens and tags its linked Google row lends it, and
- * ranked by the first four:
+ * ranked by the first four. What data/serves.json says either serves is
+ * part of what it is, for the finding and the ranking both:
  * what I filed a place under outranks what Google calls it.
  */
 export function findIndex(roll, types, cuisines, mine) {
@@ -231,18 +233,21 @@ export function findIndex(roll, types, cuisines, mine) {
     const name = fold(row.name);
     const where = fold(row.address || '');
     const tags = fold((row.tags || []).join(' '));
+    const serves = (row.serves || []).join(' ');
     const lent = fold((row.kitchens || []).map(kitchen).join(' '));
     let kind;
     let hay;
     if (row.map && !row.google) {
       kind = fold([
         ((own && own.types) || []).map((id) => labels(types, id)).join(' '),
-        ((own && own.mustOrder) || []).join(' ')
+        ((own && own.mustOrder) || []).join(' '),
+        serves
       ].join(' '));
       hay = [name, where, kind, lent, tags].join(' ');
     } else {
       kind = fold([
         row.category || '',
+        serves,
         (row.types || []).map((id) => (id === 'pub' ? '' : labels(types, id))).join(' ')
       ].join(' ')) + ' ' + tags + ' ' + lent;
       hay = name + ' ' + where + ' ' + kind;
@@ -255,7 +260,7 @@ export function findIndex(roll, types, cuisines, mine) {
       where,
       kind,
       hay,
-      category: fold(row.category || ''),
+      category: fold([row.category || '', serves].join(' ')),
       words: null
     };
   });

@@ -8345,7 +8345,10 @@
    * shop and a dessert shop too — matched the same way and lent to a place
    * of mine off its linked row with the kitchens. Hidden tags, over the
    * whole city rather than the places I wrote up; tagsFor() in
-   * functions/api/places.js is what they are.
+   * functions/api/places.js is what they are. And `serves`, on either half:
+   * what somebody who ate there says a place serves, out of
+   * data/serves.json — the burger at a smokehouse, the pelmeni at F-Hoone —
+   * which no tag of Google's knows.
    *
    * What is still not the same: a place of mine is searched by its dishes and
    * a Google one is not, because the export does not know any. Better
@@ -8452,6 +8455,11 @@
      bar offers under the field — findVocabulary(). */
   var findTags = {};
 
+  /* What data/serves.json says a place of mine serves, folded, by its id:
+     the roll brings it, and unlike what Google lends it is part of what the
+     place is — findMine() ranks by it as it does by the dishes. */
+  var findServes = {};
+
   /* Google's numbers for a place of mine, by the map's id, off the row the
      export has tied to it: { rating, reviews, rank, category }. Only for
      ordering —
@@ -8498,13 +8506,16 @@
       findLent = {};
       findRated = {};
       findTags = {};
+      findServes = {};
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row || !row.name) continue;
+        (row.serves || []).forEach(function (word) { findTags[word] = true; });
         if (byMapId(row.id) || (row.mapId && byMapId(row.mapId))) {
           var lent = (row.kitchens || []).map(kitchenWords).concat(row.tags || []).join(' ');
           if (lent) findLent[row.mapId || row.id] = fold(lent);
           (row.tags || []).forEach(function (tag) { findTags[tag] = true; });
+          if (row.serves && byMapId(row.id)) findServes[row.id] = fold(row.serves.join(' '));
           findRated[row.mapId || row.id] = {
             rating: row.rating,
             reviews: row.reviews,
@@ -8670,10 +8681,17 @@
      its coffee and it is still a bakery. A place of mine reads its linked
      row's category out of findRated, a Google row its own. Google's category
      is English, so a word typed in another language lands on names alone,
-     and where nothing says it the order is what it was. */
+     and where nothing says it the order is what it was.
+
+     And what data/serves.json says a place serves says it too: the word of
+     somebody who ate there is worth at least Google's one word for the
+     place, so the smokehouse with the burger stands among the places called
+     Burger rather than under every one of them. */
   function findSays(row, words) {
     var name = fold(row.name);
-    var category = fold(byMapId(row.id) ? (findRated[row.id] || {}).category || '' : row.category || '');
+    var mine = byMapId(row.id);
+    var category = fold(mine ? (findRated[row.id] || {}).category || '' : row.category || '') + ' ' +
+      (mine ? findServes[row.id] || '' : fold((row.serves || []).join(' ')));
     for (var i = 0; i < words.length; i++) {
       if (wordAt(name, words[i]) < 2 && wordAt(category, words[i]) < 2) return 0;
     }
@@ -8749,14 +8767,15 @@
          stands under every open place the words reach: see findRow(). */
       if (place.closed && !isPaused(place)) continue;
       if (area && !area.contains([place.lat, place.lng])) continue;
-      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      var serves = findServes[place.id] || '';
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + serves + ' ' + (findLent[place.id] || '');
       var hit = hasWords(hay, words);
       if (hit && findPriced(place, wish)) {
         level[place.id] = hit;
         tier[place.id] = findTier(fold(place.name), fold([
           (place.types || []).map(function (id) { return labelWords(state.types, id); }).join(' '),
           (place.mustOrder || []).join(' ')
-        ].join(' ')), fold(place.address || ''), words);
+        ].join(' ')) + ' ' + serves, fold(place.address || ''), words);
         says[place.id] = findSays(place, words);
         order[place.id] = i;
         hits.push(place);
@@ -8916,7 +8935,8 @@
      made visible: a kind of place and a cuisine in the language being read,
      the `words` either carries in no language in particular — cappuccino,
      matcha, pasta — and the tags Google files the city's places under,
-     which are English because Google's are. Lowercase, because they are
+     which are English because Google's are, and what data/serves.json says
+     a place serves. Lowercase, because they are
      something to type and not the name of anything.
 
      A word is offered when it starts with the field, or one of its later
@@ -8961,8 +8981,8 @@
     var i;
     for (i = 0; i < state.places.length; i++) {
       var place = state.places[i];
-      if (place.closed) continue;
-      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findLent[place.id] || '');
+      if (place.closed && !isPaused(place)) continue;
+      var hay = ((hayIndex && hayIndex[place.id]) || '') + ' ' + (findServes[place.id] || '') + ' ' + (findLent[place.id] || '');
       if (hasWords(hay, words) === 3) n++;
     }
     for (i = 0; findRoll && i < findRoll.length; i++) {
@@ -9378,6 +9398,7 @@
        "riva" the name. */
     findKind[row.id] = fold([
       row.category || '',
+      (row.serves || []).join(' '),
       (row.tags || []).join(' '),
       (row.types || []).map(function (id) {
         return id === 'pub' ? '' : labelWords(state.types, id);
