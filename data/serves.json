@@ -1,6 +1,6 @@
 {
   "places": [
-    { "id": "180-degrees", "name": "180° by Matthias Diether", "serves": ["michelin", "tasting menu"] },
+    { "id": "180-degrees", "name": "180° by Matthias Diether", "serves": ["michelin", "michelin star", "tasting menu"] },
     { "id": "annon", "name": "Annön", "serves": ["korean", "soup"] },
     { "id": "ariran", "name": "Ariran", "serves": ["korean"] },
     { "id": "badam", "name": "Badam", "serves": ["azerbaijani"] },
@@ -13,7 +13,7 @@
     { "id": "f-hoone", "name": "F-Hoone", "serves": ["pizza", "pelmeni", "breakfast", "lunch", "sandwiches", "terrace"] },
     { "id": "faehlmanni-kohvik", "name": "Faehlmanni kohvik", "serves": ["brunch", "coffee"] },
     { "id": "ferment", "name": "Ferment", "serves": ["pizza", "bread"] },
-    { "id": "fotografiska", "name": "Fotografiska", "serves": ["michelin"] },
+    { "id": "fotografiska", "name": "Fotografiska", "serves": ["michelin", "bib gourmand"] },
     { "id": "gobi", "name": "Gobi", "serves": ["georgian"] },
     { "id": "gotsu-kyuho", "name": "Gotsu Kyuho's Kitchen", "serves": ["korean"] },
     { "id": "hell-hunt", "name": "Hell Hunt", "serves": ["beer"] },
@@ -54,9 +54,16 @@
     { "id": "vana-villem", "name": "Vana Villem", "serves": ["snacks"] },
     { "id": "varkizana", "name": "Varkizana Kreeka tavern", "serves": ["greek"] },
     { "id": "veino", "name": "Veino", "serves": ["wine"] },
-    { "id": "vesta", "name": "Vesta", "serves": ["michelin"] },
+    { "id": "vesta", "name": "Vesta", "serves": ["michelin", "bib gourmand"] },
     { "id": "varav-coffee-toast", "name": "Värav Coffee and toast", "serves": ["toast", "coffee"] },
     { "id": "xinhai-1911", "name": "Xinhai 1911 Restoran & Baar", "serves": ["chinese", "noodles", "soup"] },
-    { "id": "ChIJWULez_qTkkYRBdct4TQvjjE", "name": "One Sixty Smokehouse", "serves": ["burger"] }
+    { "id": "ChIJWULez_qTkkYRBdct4TQvjjE", "name": "One Sixty Smokehouse", "serves": ["burger"] },
+    { "id": "ChIJE7kMbseTkkYR5V6vwwtZXbI", "name": "Lore Bistroo", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJrcVFo1CTkkYRD_QMESZRgrM", "name": "Restaurant Mantel & Korsten", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJMcfu-ueTkkYRnTW9K2Pz788", "name": "FUME Restoran", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJkTHCSleTkkYRE0rN1nRr9gw", "name": "UMA Restoran", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJGYdT9zWTkkYRANDjztNbVa8", "name": "Tuljak", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJk8v5DL-SkkYRsmzlzx4XNXg", "name": "NOA Restaurant", "serves": ["michelin", "bib gourmand"] },
+    { "id": "ChIJC68P3HCTkkYR5TiLl9FXMOQ", "name": "NCH, NOA CHEF’s HALL", "serves": ["michelin", "michelin star"] }
   ]
 }
