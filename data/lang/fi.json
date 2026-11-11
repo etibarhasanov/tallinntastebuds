@@ -537,6 +537,8 @@
   "growthReading": "Luetaan…",
   "growthNone": "Kasvu ei ole vielä saatavilla: historiataulua ei ole vielä otettu käyttöön.",
   "growthEmpty": "Ei vielä mitään verrattavaa: yhdestäkään paikasta ei ole kysytty kahdesti.",
+  "growthSearch": "Etsi paikka",
+  "growthSearchNone": "Taulukossa ei ole paikkaa nimeltä ”{q}”. Paikka tulee taulukkoon, kun Google on vastannut siitä kahdesti.",
   "growthAll": "Kaikki {n}",
   "growthAhead": "Edellä {n}",
   "growthPace": "Tahdissa {n}",

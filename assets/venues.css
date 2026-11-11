@@ -97,7 +97,8 @@
    token the panel sets. There is no panel here, so the field fell back to a
    browser's bare input — a sliver of a pill on a band of the wrong ground.
    The bar it sits in is already pinned and already painted. */
-.venues-filters .search {
+.venues-filters .search,
+.growth-search {
   --search-field-h: 40px;
   position: static;
   margin: 0;
@@ -350,6 +351,10 @@
    with a table under it, and a table of eleven columns wants more room than
    a list of names does. */
 .venues-growth { max-width: 1120px; }
+
+/* The same field over the Growth table, and the room under it. No wider
+   than a name is long: across a desk it was a bar the width of the table. */
+.venues-growth .growth-search { margin: 0 0 10px; max-width: 420px; }
 
 .growth-chips {
   display: flex;

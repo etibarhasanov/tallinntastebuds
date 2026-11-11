@@ -147,6 +147,7 @@
     growth: undefined,
     growthFilter: 'all',
     growthTop: false,   // only the places in Google's top hundred
+    growthQ: '',        // what is typed into the tab's field, narrowing by name
     growthSort: 'ahead',
     growthOpen: '',     // the place whose row is opened onto its line
 
@@ -1070,7 +1071,9 @@
      under the three orders that read the pace it goes last whichever way
      they run. */
   function growthRows() {
+    var q = fold(state.growthQ);
     var rows = state.growth.places.filter(function (place) {
+      if (q && fold(place.name).indexOf(q) < 0) return false;
       if (state.growthFilter !== 'all' && place.verdict !== state.growthFilter) return false;
       return !state.growthTop || (place.rank !== null && place.rank <= 100);
     });
@@ -1288,8 +1291,18 @@
       }));
     });
 
+    /* A name typed that no row answers to: the table gives way to a line
+       saying so, and why a place somebody knows is open may not be in it. A
+       chip that holds nothing is left as the empty table it always was —
+       its own count already says nought. */
+    var rows = growthRows();
+    var none = !rows.length && !!state.growthQ.trim();
+    dom.growthWrap.hidden = none;
+    dom.growthNone.hidden = !none;
+    if (none) dom.growthNone.textContent = t('growthSearchNone', { q: state.growthQ.trim() });
+
     clear(dom.growthRows);
-    growthRows().forEach(function (place) {
+    rows.forEach(function (place) {
       dom.growthRows.appendChild(growthRow(place));
       if (state.growthOpen === place.id) dom.growthRows.appendChild(growthMore(place));
     });
@@ -1554,7 +1567,7 @@
     dom.tabAll.addEventListener('click', function () { showTab('all'); TTBTrack.event('venues_tab', { tab: 'all' }); });
     dom.tabGrowth.addEventListener('click', function () { showTab('growth'); TTBTrack.event('venues_tab', { tab: 'growth' }); });
 
-    /* The Growth tab's four controls. The chips and the rows are rebuilt on
+    /* The Growth tab's five controls. The chips and the rows are rebuilt on
        every draw, so each has one listener on the element that outlives them. */
     dom.growthChips.addEventListener('click', function (e) {
       var chip = e.target.closest ? e.target.closest('.chip') : null;
@@ -1564,6 +1577,20 @@
       else state.growthFilter = filter;
       renderGrowth();
       TTBTrack.event('growth_filter', { filter: filter });
+    });
+    /* Per letter, with no wait: it is a hundred and some rows the tab
+       already holds, not the directory's eleven hundred dots. */
+    dom.growthSearch.addEventListener('input', function () {
+      state.growthQ = dom.growthSearch.value;
+      dom.growthSearchClear.hidden = !state.growthQ;
+      renderGrowth();
+    });
+    dom.growthSearchClear.addEventListener('click', function () {
+      state.growthQ = '';
+      dom.growthSearch.value = '';
+      dom.growthSearchClear.hidden = true;
+      dom.growthSearch.focus();
+      renderGrowth();
     });
     dom.growthSort.addEventListener('change', function () {
       state.growthSort = dom.growthSort.value;
@@ -1632,6 +1659,10 @@
       growth: $('venues-growth'),
       growthLine: $('growth-line'),
       growthBody: $('growth-body'),
+      growthSearch: $('growth-search'),
+      growthSearchClear: $('growth-search-clear'),
+      growthNone: $('growth-none'),
+      growthWrap: $('growth-wrap'),
       growthChips: $('growth-chips'),
       growthSort: $('growth-sort'),
       growthCopy: $('growth-copy'),

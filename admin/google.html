@@ -38,7 +38,7 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
 <link rel="stylesheet" href="/assets/styles.lean.css?v=b15f554f">
-<link rel="stylesheet" href="/assets/venues.css?v=6d8d0d1d">
+<link rel="stylesheet" href="/assets/venues.css?v=596013fa">
 <!-- The row of the owner's pages under the header, which the other four
      draw from the same sheet. -->
 <link rel="stylesheet" href="/assets/stats.css?v=60bcdad6">
@@ -197,6 +197,23 @@
   <p class="venues-top-lead" data-i18n="growthLead">How each place’s Google review count has moved, and how fast it is gathering reviews against the pace usual for a place its size.</p>
   <p class="venues-count" id="growth-line" role="status" aria-live="polite"></p>
   <div id="growth-body" hidden>
+    <!-- The directory's own field, narrowing the table by name as it is typed
+         into. It filters the rows the tab already holds and asks nobody. -->
+    <div class="search growth-search" role="search">
+      <div class="search-field">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>
+        </svg>
+        <input type="search" class="search-input" id="growth-search" autocomplete="off"
+               autocorrect="off" autocapitalize="none" spellcheck="false"
+               data-i18n-aria-label="search" data-i18n-placeholder="growthSearch"
+               aria-label="Search places" placeholder="Find a place">
+        <button type="button" class="search-clear" id="growth-search-clear"
+                data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
     <div class="growth-chips" id="growth-chips"></div>
     <div class="growth-tools">
       <label class="venues-pick">
@@ -205,7 +222,8 @@
       </label>
       <button type="button" class="alt growth-copy" id="growth-copy" data-i18n="growthCopy">Copy as CSV</button>
     </div>
-    <div class="growth-wrap">
+    <p class="venues-count" id="growth-none" hidden></p>
+    <div class="growth-wrap" id="growth-wrap">
       <table class="growth-table">
         <thead><tr>
           <th scope="col" data-i18n="growthColRank">Rank</th>
@@ -271,6 +289,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="/assets/pins.js?v=034d403c" defer></script>
-<script src="/assets/venues.js?v=182e456a" defer></script>
+<script src="/assets/venues.js?v=5b7be6a1" defer></script>
 </body>
 </html>

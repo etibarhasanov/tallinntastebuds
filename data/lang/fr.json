@@ -537,6 +537,8 @@
   "growthReading": "Lecture…",
   "growthNone": "La croissance n’est pas encore disponible : la table de l’historique n’a pas été appliquée.",
   "growthEmpty": "Rien à comparer pour l’instant : aucun lieu n’a été interrogé deux fois.",
+  "growthSearch": "Trouver un lieu",
+  "growthSearchNone": "Aucun lieu du tableau ne s’appelle « {q} ». Un lieu y entre une fois que Google a répondu deux fois à son sujet.",
   "growthAll": "Tous {n}",
   "growthAhead": "En avance {n}",
   "growthPace": "Au rythme {n}",

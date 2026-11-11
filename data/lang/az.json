@@ -537,6 +537,8 @@
   "growthReading": "Oxunur…",
   "growthNone": "Artım hələ mövcud deyil: tarixçə cədvəli tətbiq edilməyib.",
   "growthEmpty": "Hələ müqayisə ediləcək heç nə yoxdur: heç bir məkan haqqında iki dəfə soruşulmayıb.",
+  "growthSearch": "Məkan tap",
+  "growthSearchNone": "Cədvəldə “{q}” adlı məkan yoxdur. Məkan cədvələ Google onun haqqında iki dəfə cavab verəndən sonra düşür.",
   "growthAll": "Hamısı {n}",
   "growthAhead": "İrəlidə {n}",
   "growthPace": "Tempdə {n}",
