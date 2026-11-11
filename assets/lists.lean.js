@@ -1356,6 +1356,7 @@
       countLabel: countLabel,
       placeHref: placeHref,
       profileHref: profileHref,
+      mapHref: function () { return mapHref(list.id) + '&walk=1'; },
       signInHref: function () { return accountHref('up'); },
       moreLists: moreLists,
       redraw: render

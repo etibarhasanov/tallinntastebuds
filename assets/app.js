@@ -2242,11 +2242,17 @@
     var place = state.view === 'detail' && state.selected ? byId(state.selected) : null;
     dom.panelDirections.hidden = !place || typeof place.lat !== 'number' || typeof place.lng !== 'number';
     if (dom.panelDirections.hidden) return;
-    var row = googleFor[place.id];
-    var key = place.google ? place.id : row && row !== ASKING ? row.id : '';
-    dom.panelDirections.href = directionsUrl(place, key);
+    dom.panelDirections.href = googleWay(place);
     dom.panelDirections.setAttribute('aria-label', t('directions'));
     dom.panelDirections.setAttribute('title', t('directions'));
+  }
+
+  /* Google's route to a place, by Google's own key for it where one is
+     known. The arrow's href, and the small way out under a route drawn here
+     — which a walk on the map asks for with no place open on the panel. */
+  function googleWay(place) {
+    var row = googleFor[place.id];
+    return directionsUrl(place, place.google ? place.id : row && row !== ASKING ? row.id : '');
   }
 
   /* The way to the open place, drawn on our own map before anything is
@@ -2282,7 +2288,7 @@
     paintRouteModes();
     dom.routeOut.href = mode === 'car'
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
-      : dom.panelDirections.href + '&travelmode=' + ROUTE_TRAVEL[mode];
+      : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
     dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
@@ -4820,6 +4826,8 @@
     /* Everything needed to put it back, together, so restoreList() cannot
        reassemble half of one. */
     dropped = { list: state.list, places: state.listPlaces };
+    /* A walk is of a list, and goes with it. */
+    walkOffMap();
 
     /* A stand-in is only ever on the map because the list put it there, so
        one being read right now goes out with it. Left alone, the panel would
@@ -6924,6 +6932,7 @@
   function renderPanel(opts) {
     document.body.classList.toggle('panel-detail', state.view === 'detail' && !!state.selected);
     if (routeFor && (state.view !== 'detail' || state.selected !== routeFor)) clearRoute();
+    paintWalkOn();
     paintSave();
     /* Beside the mark, and painted with it: both turn on which place is open,
        and the label is a string that moves with the language. */
@@ -11694,6 +11703,10 @@
          answers to. Left under the key, seven of Google's ten bakeries drew
          as stand-ins — a Google card and no write-up — over places with a
          reel and photographs behind them. */
+      /* What the list itself calls the row, kept beside the id it stands
+         under: a walk's checks are filed under the list's own — see
+         walkList(). */
+      item.listed = item.place;
       if (item.mapId && byMapId(item.mapId)) item.place = item.mapId;
       if (byId(item.place)) { items.push(item); return; }
 
@@ -11767,6 +11780,220 @@
     state.listPlaces = stand;
   }
 
+  /* ---------------------------------------------------- a walk, on the map
+   * A list can be walked — its Route view, assets/walk.js — and a walk is
+   * places, so it can be followed here: the line through the places in the
+   * walker's order, a number on each, a tick on the ones checked, the dot
+   * where the walker is, and a band at the foot with the nearest place, the
+   * button that checks in and the way to it. **Walking a list** in README.md.
+   *
+   * NOTHING ABOUT THE WALK IS KEPT HERE
+   *
+   * TTBWalk.band() is asked every time this draws, and answers the places in
+   * order and the band's contents; the state — what is checked, the comment
+   * half typed, where the phone is — stays in that file, which is the same
+   * one the list's page asks. This half is what only a map can do.
+   *
+   * THE SHEET STEPS OUT, AS IT DOES FOR A ROUTE
+   *
+   * While the list is what the panel would be showing, the band stands in
+   * for it and the map has the window (body.walk-on, the arrangement
+   * body.route-on already makes). Open a place and the panel is the place
+   * again; close it and the band is back. Directions is that: it opens the
+   * nearest place left and draws the way to it, with the route bar's own
+   * Walk, Bus and Car.
+   *
+   * THE DOT IS THE DEVICE
+   *
+   * The walk watches the phone's own position and hands each reading here,
+   * so the dot on the map is where a check would be measured from. A place
+   * typed into the Where sheet is not a reading and is never passed on.
+   */
+  var walkOn = false;      // the list on the map is being walked
+  var walkLayer = null;    // the line and the numbers, a feature group
+  var walkFitted = false;  // the map has been framed on the walk once
+  var walkClock = null;    // the interval that keeps the band's time
+
+  /* The list as the walk knows it: every row under the id the list itself
+     files it under, which is the one its checks are kept by, and beside it
+     the id it stands under on this map. */
+  function walkList() {
+    return {
+      id: state.list.id,
+      title: state.list.title,
+      items: state.list.items.map(function (item) {
+        var place = byId(item.place);
+        return {
+          place: item.listed || item.place,
+          at: item.place,
+          name: place ? place.name : item.name,
+          lat: place ? place.lat : null,
+          lng: place ? place.lng : null
+        };
+      })
+    };
+  }
+
+  function walkOnMap() {
+    if (!state.list || !window.TTBWalk || walkOn) return;
+    walkOn = true;
+    walkFitted = false;
+    TTBTrack.event('walk_map_open', { list_id: state.list.id });
+    paintWalkOn();
+    paintWalk();
+    syncUrl();
+  }
+
+  /* Off, and everything it drew with it. Says nothing to the address bar:
+     the three things that let go of a list each write it their own way, and
+     the band's own cross does after calling this. */
+  function walkOffMap() {
+    if (!walkOn) return;
+    walkOn = false;
+    if (walkLayer) { map.removeLayer(walkLayer); walkLayer = null; }
+    if (walkClock) { window.clearInterval(walkClock); walkClock = null; }
+    TTBWalk.leave();
+    paintWalkOn();
+  }
+
+  /* The band in place of the sheet, while the sheet would be the list. */
+  function paintWalkOn() {
+    var on = walkOn && state.view === 'list' && !state.selected;
+    document.body.classList.toggle('walk-on', on);
+    dom.walkBand.hidden = !on;
+  }
+
+  /* The walker's own position, as the walk reads it — THE DOT IS THE DEVICE.
+     The dot is moved where there is one and drawn quietly where there is
+     not: a reading taken for a walk must not fly the map off the line. */
+  function walkHere(here, accuracy) {
+    var at = L.latLng(here.lat, here.lng);
+    if (hereMarker) {
+      hereMarker.setLatLng(at);
+      if (hereAccuracy) hereAccuracy.setLatLng(at);
+      return;
+    }
+    hereStill = true;
+    drawHere(at, accuracy || 30, true, false);
+  }
+
+  function paintWalk() {
+    if (!walkOn || !state.list) return;
+    var list = walkList();
+    var out = TTBWalk.band({
+      list: list,
+      lang: state.lang,
+      t: t,
+      el: el,
+      button: function (label, className, onClick) {
+        var b = el('button', { type: 'button', className: className, textContent: label });
+        b.addEventListener('click', onClick);
+        return b;
+      },
+      signInHref: function () {
+        return '/?account=up&then=' + encodeURIComponent(window.location.pathname + window.location.search);
+      },
+      /* The band's way out once a walk is finished is the list's own page,
+         which is the quiet link under it already. */
+      moreLists: function () { return null; },
+      redraw: paintWalk,
+      onHere: walkHere
+    });
+
+    /* The line and the numbers. The line wears the accent through its class
+       and not through a colour handed to Leaflet, so a change of style
+       repaints it with nothing here hearing about it. A number sits at the
+       shoulder of its place's pin rather than over it: the pin still says
+       what the place is. */
+    if (walkLayer) map.removeLayer(walkLayer);
+    walkLayer = L.featureGroup().addTo(map);
+    L.polyline(out.stops.map(function (stop) { return [stop.lat, stop.lng]; }), {
+      className: 'walk-line',
+      weight: 4,
+      dashArray: '2 9',
+      lineCap: 'round',
+      lineJoin: 'round',
+      interactive: false
+    }).addTo(walkLayer);
+    out.stops.forEach(function (stop, i) {
+      L.marker([stop.lat, stop.lng], {
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: 3000,
+        icon: L.divIcon({
+          className: 'walk-num' + (stop.checked ? ' is-checked' : '') + (stop.next ? ' is-next' : ''),
+          html: stop.checked ? '✓' : String(i + 1),
+          iconSize: [22, 22],
+          iconAnchor: [-5, 36]
+        })
+      }).addTo(walkLayer);
+    });
+    if (!walkFitted && out.stops.length) {
+      walkFitted = true;
+      map.fitBounds(walkLayer.getBounds(), {
+        paddingTopLeft: [50, isNarrow() ? 190 : 90],
+        paddingBottomRight: [50, 230],
+        maxZoom: 17
+      });
+    }
+
+    /* The band: how far through and for how long, the walk's own contents,
+       and under them the way to the place they are about and the way back
+       to the list. */
+    var target = null;
+    out.stops.forEach(function (stop) {
+      if (out.near ? stop.place === out.near : stop.next) target = stop;
+    });
+    var at = null;
+    list.items.forEach(function (item) { if (target && item.place === target.place) at = byId(item.at); });
+
+    var top = el('span', { className: 'walk-band-top' });
+    var since = out.started && !out.finished ? TTBWalk.since() : 0;
+    function tell() {
+      top.textContent = !out.started ? state.list.title
+        : t('walkBandTop', { n: out.done, total: out.total }) +
+          (since ? ' · ' + TTBWalk.took(Date.now() - since) : '');
+    }
+    tell();
+    if (walkClock) { window.clearInterval(walkClock); walkClock = null; }
+    if (since) walkClock = window.setInterval(tell, 30000);
+
+    var close = el('button', {
+      type: 'button',
+      className: 'route-close',
+      'aria-label': t('close'),
+      html: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    });
+    close.addEventListener('click', function () {
+      TTBTrack.event('walk_map_close', { list_id: state.list.id });
+      walkOffMap();
+      syncUrl();
+    });
+
+    var way = at ? el('button', { type: 'button', className: 'alt', textContent: t('directions') }) : null;
+    if (way) {
+      way.addEventListener('click', function () {
+        TTBTrack.event('walk_directions', { list_id: state.list.id });
+        selectPlace(at.id, { fly: false });
+        showRoute(at);
+      });
+    }
+
+    dom.walkBand.textContent = '';
+    [
+      el('div', { className: 'walk-band-head' }, [top, close])
+    ].concat(out.kids, [
+      el('div', { className: 'walk-band-row' }, [
+        way,
+        TTBTrack.click(el('a', {
+          className: 'alt',
+          href: '/list/' + state.list.id + '?walk=1',
+          textContent: t('walkOpenList')
+        }), 'list_walk', { list_id: state.list.id })
+      ])
+    ]).forEach(function (node) { dom.walkBand.appendChild(node); });
+  }
+
   /* ------------------------------------------------------------------- URL */
 
   /* Opening a place is a step you can come back from, so it gets a history
@@ -11807,6 +12034,12 @@
        it is on screen, the way ?spot= does. */
     if (state.list) params.set('list', state.list.id);
     else params.delete('list');
+    /* And whether that list is being walked — walkOnMap() — so a reload
+       comes back to the walk. ?go= is a press, not a state: it asked for
+       directions once and is gone. */
+    if (walkOn && state.list) params.set('walk', '1');
+    else params.delete('walk');
+    params.delete('go');
     if (state.langPinned) params.set('lang', state.lang);
     else params.delete('lang');
     if (state.stylePinned) params.set('style', state.style);
@@ -12707,6 +12940,7 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
+      walkBand: $('walk-band'),
       routeSay: $('route-say'),
       routeOut: $('route-out'),
       routeClose: $('route-close'),
@@ -12914,6 +13148,12 @@
          is not on the screen. syncUrl() below takes it off the address bar. */
       var at = params.get('at') || '';
       var stand = isOnList(at) ? byId(at) : null;
+      /* Two more doors off the list's own page, both from its Route view:
+         ?walk=1 is the walk drawn on the map, and ?go=1 beside an ?at= is
+         Directions pressed on the next place — the way to it, already
+         drawn. Read here because syncUrl() below rewrites the address. */
+      var walking = params.get('walk') === '1';
+      var going = params.get('go') === '1';
       syncUrl();
       /* A saved Google venue named by /account.html arrives with ?saved=1
          and a ?spot= nothing on the map answers to yet: its stand-in is
@@ -12965,7 +13205,10 @@
 
       /* The place a row on the list's own page was pressed on, open, with
          the list underneath it for the close to land on. See openFromRow(). */
-      else if (stand) openFromRow(stand);
+      else if (stand) {
+        openFromRow(stand);
+        if (going) showRoute(stand);
+      }
 
       /* Arriving on a list opens the panel on it. The pins answer "where are
          these"; the panel answers "why these" — the sentence its owner wrote
@@ -12983,6 +13226,7 @@
            behind it — on the one page where seeing all of them at once is the
            entire point. */
         fitToPins({ clearPanel: true });
+        if (walking) walkOnMap();
       }
 
       /* And on a desktop, a plain arrival opens on the places. The map used to

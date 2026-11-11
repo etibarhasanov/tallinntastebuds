@@ -8526,9 +8526,10 @@ best way to have visited each set of places and be standing at each of them,
 built up a place at a time; past twelve it is nearest-next with every crossed
 pair of legs uncrossed. Asking `/api/route` for the real walk between every
 pair would be forty-five requests for a top ten, to move "about 5.4 km" by a
-few hundred metres. A line on the map for the whole walk is not drawn yet for
-the same reason: a row opens its place on the map, where the arrow already
-gives the way to it.
+few hundred metres. The order starts from the list's first place, or from
+where **Start from where I am** was pressed, and stays put: it is not
+re-sorted as the walker moves, which the watch below would otherwise do to it
+with every step.
 
 It starts at the list's first place, because the page knows nothing about
 where a reader is and, before a walk is started, never asks on its own.
@@ -8583,6 +8584,28 @@ publish need somebody who can take them down. The check stays; the words go.
 A finished walk can be given one comment about the whole of it, the same 280
 characters, offered once in the band after the last place's own and afterwards
 from the card; it is drawn under the walker's name on the board.
+
+**And the same walk on the map.** **See it on the map** on the card, and
+`?walk=1` beside `?list=` in the address, draw the walk where the places are:
+a dashed line through them in the walker's order, a number at the shoulder of
+each pin, a tick on the ones checked, the next one filled, and the dot where
+the walker is. The sheet steps out as it does for a route (`body.walk-on`)
+and a band stands at the foot in its place: how many are checked and for how
+long, the nearest place left and how far, **Check in at …**, the comment's
+field after a check, and under them **Directions** and **Open the list**. The
+band's contents are `assets/walk.js`'s on both pages — `TTBWalk.band()` — so
+the map holds no copy of a walk's state; `walkOnMap()` and `paintWalk()` in
+`assets/app.js` are the half only a map can do. The line is straight from
+door to door, which is the same estimate the totals are; **Directions** is the
+real one, the map's own route from the dot to the nearest place left, with
+Walk, Bus and Car. On the list's page the next place carries the same
+**Directions**, a link that opens the map on that place with the way already
+drawn (`?at=…&go=1`). The dot is the device: the walk hands the map each
+position it reads, and a place typed into the Where sheet is never one of
+them. The map has always opened on your own position once you have allowed
+it — `resumeHere()` — and that is unchanged. Open a place and the panel is the
+place again; close it and the band is back; the cross on the band puts the
+list's panel back.
 
 **The clock, and starting again.** A walk that is on says how long it has
 been going — "Started 9 November · playing for 2 days 1 h" — and what
@@ -18988,11 +19011,14 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
-| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the ten below |
+| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the twelve below |
 | `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
 | `walk_again` | `list_id` — Start again, confirmed, once the server has thrown the walk away |
+| `walk_map` | `list_id` — See it on the map, on the Route view's card |
+| `walk_directions` | `list_id` — Directions: on the next place in the Route view, and in the map's band |
+| `walk_map_open`, `walk_map_close` | `list_id` — the walk drawn on the map, and the cross on its band; `assets/app.js` reports these two |
 | `walk_signin` | `list_id` — Sign in to start, signed out |
 | `walk_start` | `list_id` — Start, once the server has it |
 | `walk_check`, `walk_finish` | `list_id` — a check that went through, and the one that finished the walk |

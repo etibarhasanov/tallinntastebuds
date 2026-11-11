@@ -171,8 +171,11 @@ when: walk_note
 when: walk_reorder
 when: walk_mode
 when: walk_again
+when: walk_map_open
+when: walk_directions
 ref: assets/walk.js
-ref: assets/lists.js walkView()</bpmn:documentation>
+ref: assets/lists.js walkView()
+ref: assets/app.js walkOnMap()</bpmn:documentation>
       <bpmn:incoming>member-e18</bpmn:incoming>
       <bpmn:outgoing>member-e19</bpmn:outgoing>
     </bpmn:userTask>

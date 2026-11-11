@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Bəli, yenidən başla",
   "walkAgainNo": "Davam et",
   "walkGrip": "{place} — yerini dəyiş: sürüklə və ya ox düymələrindən istifadə et",
-  "walkHoursOnly": "{h} saat"
+  "walkHoursOnly": "{h} saat",
+  "walkOnMap": "Xəritədə bax",
+  "walkBandTop": "{total} yerdən {n} qeyd olunub",
+  "walkOpenList": "Siyahını aç"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

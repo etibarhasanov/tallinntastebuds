@@ -69,6 +69,16 @@
  * page alone before that. It changes nothing about checking in, which is
  * done wherever somebody is standing.
  *
+ * AND THE SAME WALK ON THE MAP
+ *
+ * A walk is places, and places are on the map. So the map can be handed the
+ * same walk — band() below — and draws its own half: the line through the
+ * places in order, a number on each, the dot where the walker is. What it
+ * takes from here is the band's contents, which are this file's on both
+ * pages: the nearest place, the button that checks in, the comment. One
+ * walk, one state, two pages that draw it; assets/app.js holds no copy of
+ * any of it.
+ *
  * EVERYTHING HERE FAILS QUIET
  *
  * A route that does not answer, or a database the two tables have not
@@ -290,15 +300,19 @@
     return null;
   }
 
-  /* The shortest order from where it starts: the place nearest the reader
-     when the phone has said where that is, the list's first otherwise. Kept
-     until the start changes, because every redraw asks. */
+  /* The shortest order from where it starts: the place nearest to where
+     "Start from where I am" was pressed, the list's first otherwise. Kept
+     until the start changes, because every redraw asks.
+
+     From `w.from` and not from `w.here`. Once a walk is on the position is
+     watched, and an order that started at wherever the phone is now would
+     renumber every place as its owner walked between them. */
   function shortOrder() {
     var all = doors();
     var start = 0;
-    if (w.here) {
+    if (w.from) {
       all.forEach(function (item, i) {
-        if (metres(w.here, item) < metres(w.here, all[start])) start = i;
+        if (metres(w.from, item) < metres(w.from, all[start])) start = i;
       });
     }
     if (!w.short || w.short.start !== start || w.short.n !== all.length) {
@@ -413,6 +427,7 @@
     locate().then(function (here) {
       w.busy = '';
       w.here = here;
+      w.from = here;
       TTBTrack.event('walk_from_me', { list_id: w.list.id });
       shortestAgain();
     }, function () {
@@ -642,6 +657,8 @@
       w.here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       w.hereAt = Date.now();
       w.refused = false;
+      /* The map moves its own dot with it — see band(). */
+      if (c.onHere) c.onHere(w.here, pos.coords.accuracy);
       if (nearSaid() !== was && w.noting === null && !w.editing && !w.busy) c.redraw();
     }, function (err) {
       /* 1 is a refusal, and is said; anything else is a fix that did not
@@ -781,7 +798,7 @@
       } else {
         kids.push(c.el('p', { className: 'walk-from', textContent:
           w.own ? (p.more >= 10 ? c.t('walkYours', { more: distance(p.more) }) : c.t('walkYoursPlain'))
-          : c.t(w.here ? 'walkFromHere' : 'walkFromFirst', { place: p.stops[0].name })
+          : c.t(w.from ? 'walkFromHere' : 'walkFromFirst', { place: p.stops[0].name })
         }));
         kids.push(c.el('p', { className: 'walk-how', textContent: c.t('walkHow') }));
       }
@@ -811,8 +828,11 @@
         say('');
         c.redraw();
       }) : null,
-      !started() && !w.here && !w.own && total
+      !started() && !w.from && !w.own && total
         ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe) : null,
+      total ? TTBTrack.click(c.el('a', {
+        className: 'alt', href: c.mapHref(), textContent: c.t('walkOnMap')
+      }), 'walk_map', { list_id: w.list.id }) : null,
       !finished() && total > 2 ? alt(c.t('walkReorder'), reorder) : null,
       started() && !w.asking ? alt(c.t('walkAgain'), function () { w.asking = true; c.redraw(); }) : null
     ].filter(Boolean);
@@ -895,6 +915,13 @@
         ? c.t('walkNextFrom', { distance: distance(crow(w.here, item)) })
         : c.t('walkNext') }) : null
     ].concat(notesOf(item, mine));
+    /* The way to the next one, on the map, from wherever the phone is: the
+       map's own directions, opened already drawn. */
+    if (next === item && href) {
+      body.push(TTBTrack.click(c.el('a', {
+        className: 'alt', href: href + '&go=1', textContent: c.t('directions')
+      }), 'walk_directions', { list_id: w.list.id }));
+    }
 
     var row = c.el('li', { className: 'walk-stop' }, [
       i ? c.el('p', { className: 'walk-leg mono', textContent: '↓ ' + c.t('walkLeg', {
@@ -959,7 +986,7 @@
      being written — on a place, or on the whole of a finished walk — and
      otherwise the next thing a walk wants: to be started, to be checked in
      on, or, finished, the way on to more lists. */
-  function dock() {
+  function bandKids() {
     var kids = [message()];
     var live = !!(w.data && w.data.ready && doors().length);
 
@@ -976,7 +1003,7 @@
       var hint = c.t(on === '' ? 'walkRouteNoteHint' : 'walkNoteHint');
       var field = c.el('input', {
         type: 'text',
-        className: 'lists-input walk-field',
+        className: 'walk-field',
         maxlength: String(MAX_NOTE),
         placeholder: hint,
         'aria-label': hint,
@@ -985,7 +1012,7 @@
       field.value = was.note || '';
       var form = c.el('form', { className: 'walk-form' }, [
         field,
-        c.el('div', { className: 'lists-row walk-form-row' }, [
+        c.el('div', { className: 'walk-form-row' }, [
           c.el('button', { type: 'submit', className: 'go', textContent: c.t('walkNoteSave'), disabled: w.busy === 'note' }),
           alt(c.t('walkNoteSkip'), function () {
             if (on === '') w.asked = true;
@@ -1036,7 +1063,11 @@
       kids.push(check);
     }
 
-    return c.el('div', { className: 'lists-dock walk-dock' }, kids);
+    return kids.filter(Boolean);
+  }
+
+  function dock() {
+    return c.el('div', { className: 'lists-dock walk-dock' }, bandKids());
   }
 
   /* --------------------------------------------------------------- the view
@@ -1047,15 +1078,18 @@
    *   lang         the language the page is in
    *   t, el, card, heading, button, countLabel
    *                the page's own, so a card here is the card everywhere
-   *   placeHref(item), profileHref(name), signInHref()
-   *                where a place, a person and the sign-in sheet are
+   *   placeHref(item), profileHref(name), signInHref(), mapHref()
+   *                where a place, a person, the sign-in sheet and this walk
+   *                on the map are
    *   moreLists()  the band's way out, as the List view draws it
    *   redraw()     the page's render(), which calls this again
    *
    * and answers the nodes to put under the bar. The page calls leave() when
    * the view is switched away from.
    */
-  function view(ctx) {
+  /* The walk of this list, made the first time either page asks for it
+     and kept from then on. */
+  function open(ctx) {
     c = ctx;
     if (!w || w.list.id !== ctx.list.id) {
       unwatch();
@@ -1065,6 +1099,7 @@
         own: null,        // the walker's own order as place ids, or null for the shortest
         short: null,      // the shortest order, remembered — see shortOrder()
         here: null,       // where the phone last said it was
+        from: null,       // where "Start from where I am" was pressed — see shortOrder()
         hereAt: 0,        // and when the watch said so — see locate()
         editing: false,   // the order is being changed
         mode: MODES[0],   // on foot or by bike — see setMode()
@@ -1081,23 +1116,67 @@
     }
     w.list = ctx.list;
     watch();
+  }
 
-    var p = plan();
-    var next = null;
-    if (started() && !finished() && !w.editing) {
-      p.stops.some(function (item) {
-        if (checkOf(item.place)) return false;
-        next = item;
-        return true;
-      });
+  /* The first place in the order that is not checked, while a walk is on. */
+  function nextOf(p) {
+    if (!started() || finished() || w.editing) return null;
+    for (var i = 0; i < p.stops.length; i++) {
+      if (!checkOf(p.stops[i].place)) return p.stops[i];
     }
+    return null;
+  }
 
+  function view(ctx) {
+    open(ctx);
+    var p = plan();
+    var next = nextOf(p);
     var stops = c.el('ol', { className: 'walk-stops' }, p.stops.map(function (item, i) {
       return stop(item, i, p, next);
     }));
     return finished()
       ? [head(p), board(), stops, dock()]
       : [head(p), stops, board(), dock()];
+  }
+
+  /* The map's half — AND THE SAME WALK ON THE MAP. Called by walkOnMap() in
+   * assets/app.js every time the map draws the walk, with the same `list`,
+   * `lang`, `t`, `el`, `button`, `signInHref()`, `moreLists()` and
+   * `redraw()` the list page hands view(), and optionally
+   *
+   *   onHere(here, accuracy)   called with every position the watch reads,
+   *                            so the map's dot is the walk's
+   *
+   * and answers what the map draws:
+   *
+   *   kids      the band's contents, as the list page's band holds them
+   *   stops     the places in order: { place, name, lat, lng, checked, next }
+   *   started, finished, done, total
+   *   near      the nearest place left, or null before the phone has answered
+   */
+  function band(ctx) {
+    open(ctx);
+    var p = plan();
+    var next = nextOf(p);
+    var near = started() && !finished() ? nearest() : null;
+    return {
+      kids: bandKids(),
+      stops: p.stops.map(function (item) {
+        return {
+          place: item.place,
+          name: item.name,
+          lat: item.lat,
+          lng: item.lng,
+          checked: !!checkOf(item.place),
+          next: item === next
+        };
+      }),
+      started: started(),
+      finished: finished(),
+      done: (w.data && w.data.checks.length) || 0,
+      total: p.stops.length,
+      near: near ? near.item.place : null
+    };
   }
 
   /* The view has been left for the list's other one: nothing here should
@@ -1107,5 +1186,11 @@
     clock(null);
   }
 
-  window.TTBWalk = { view: view, leave: leave };
+  /* When the walk on screen was started, for a page that keeps a clock of
+     its own beside took() — the map's band does. 0 where there is none. */
+  function since() {
+    return w && started() ? w.data.walk.started : 0;
+  }
+
+  window.TTBWalk = { view: view, band: band, leave: leave, took: took, since: since };
 })();

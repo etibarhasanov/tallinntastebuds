@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Ja, neu starten",
   "walkAgainNo": "Weitermachen",
   "walkGrip": "{place} verschieben: ziehen oder Pfeiltasten benutzen",
-  "walkHoursOnly": "{h} Std."
+  "walkHoursOnly": "{h} Std.",
+  "walkOnMap": "Auf der Karte ansehen",
+  "walkBandTop": "{n} von {total} abgehakt",
+  "walkOpenList": "Liste öffnen"
  },
  "blurbs": {
   "180-degrees": "Das einzige Zwei-Sterne-Restaurant im Baltikum. Ein richtig schönes, experimentelles Lokal am Wasser in Noblessner, wo das Degustationsmenü dich Gang für Gang überraschen soll.",

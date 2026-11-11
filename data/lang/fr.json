@@ -1350,7 +1350,10 @@
   "walkAgainYes": "Oui, recommencer",
   "walkAgainNo": "Continuer",
   "walkGrip": "Déplacer {place} : fais glisser ou utilise les flèches",
-  "walkHoursOnly": "{h} h"
+  "walkHoursOnly": "{h} h",
+  "walkOnMap": "Voir sur la carte",
+  "walkBandTop": "{n} sur {total} validés",
+  "walkOpenList": "Ouvrir la liste"
  },
  "blurbs": {
   "180-degrees": "Le seul restaurant deux étoiles Michelin des pays baltes. Une adresse expérimentale vraiment chouette sur le front de mer de Noblessner, où le menu dégustation est pensé pour te surprendre, plat après plat.",
