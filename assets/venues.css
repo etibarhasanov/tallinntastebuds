@@ -100,19 +100,33 @@
   border-bottom: 1px solid var(--hairline);
 }
 
+/* The header's column, exactly: 1320px with the gap inside it, the way
+   .venues-brand is. The cap used to be on the search and the controls
+   instead, inside this padding, so on a screen wider than the column they
+   started sixteen pixels to the left of the wordmark and the title above
+   them and ended sixteen to the right of the map below. */
 .venues-filters {
+  max-width: 1320px;
+  margin: 0 auto;
   padding: 12px max(var(--gap), var(--safe-r)) 12px max(var(--gap), var(--safe-l));
 }
 
+/* The map's find bar, borrowed, and three things about it belong to the
+   map's panel rather than to the field: it is pinned inside a scrolling
+   panel, it paints the panel's paper behind itself, and its height is a
+   token the panel sets. There is no panel here, so the field fell back to a
+   browser's bare input — a sliver of a pill on a band of the wrong ground.
+   The bar it sits in is already pinned and already painted. */
 .venues-filters .search {
-  max-width: 1320px;
-  margin: 0 auto;
+  --search-field-h: 40px;
+  position: static;
+  margin: 0;
   padding: 0;
+  background: none;
 }
 
 .venues-controls {
-  max-width: 1320px;
-  margin: 10px auto 0;
+  margin: 10px 0 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -224,7 +238,13 @@
    results by. */
 .venues-tabs {
   width: fit-content;
-  margin: 12px max(var(--gap), var(--safe-r)) 0 max(var(--gap), var(--safe-l));
+  /* Its left edge is the header's: the gap from the edge of the screen on a
+     phone, and the gap from the edge of the 1320px column once the screen is
+     wider than that. It had only the first half, so at a desk the pair sat
+     against the edge of the window, well to the left of everything else on
+     the page. */
+  margin: 12px max(var(--gap), var(--safe-r)) 0
+          max(var(--gap), var(--safe-l), calc((100% - 1320px) / 2 + var(--gap)));
   border: 1px solid var(--hairline);
   border-radius: var(--radius-soft);
   background: var(--paper);
