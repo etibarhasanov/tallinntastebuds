@@ -301,6 +301,52 @@ ul.log .outcome.failed, ul.log .outcome.closed, ul.log .outcome.gone { color: va
 ul.log .when { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 ul.log .what { font-family: var(--mono); font-size: 12px; margin-top: 3px; overflow-wrap: anywhere; }
 ul.log li button.quiet { width: auto; display: inline-block; }
+
+/* ---------- laid out for a desk ----------
+   Everything above is the phone's page, and until this block it was the
+   desk's too: a 640px column in the middle of a monitor, the tools shut
+   behind a fold, and every button a bar as wide as the card. From 1000px the
+   page is the width the lists directory is — .lists-main.is-wide in
+   assets/lists.css — and two columns: a rail of places to go and facts to
+   read, and beside it the work, which is whatever is filled in or read at
+   length. ready() and boot() say which card is which, since the door's states
+   disagree about it: with a token the tools are the work and GitHub is a
+   fact; without one the Google report is the work and the missing token is
+   the fact. 1000px, so a tablet held upright keeps the phone's page. */
+@media (min-width: 1000px) {
+  .lists-brand, .lists-main { max-width: 1180px; }
+  /* Two rows, and the second takes what is left: a long form beside the
+     rail would otherwise share its height out between the rows it spans and
+     push the rail's second card halfway down the page. */
+  #stack { display: grid; grid-template-columns: 340px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
+  #stack > .is-rail { grid-column: 1; }
+  #stack > .is-work { grid-column: 2; grid-row: 1 / span 2; }
+  /* Signed out, checking, or an error: one card, and no reason for it to be
+     wider than the sentence in it. */
+  #stack > .admin-card:only-child { grid-column: 1 / -1; max-width: 640px; }
+
+  .admin-card.is-work { padding: 28px 32px; }
+  /* The fold is open here and stays open — see ready() — so its title is a
+     title and not something to press. */
+  .is-work .lists-fold > summary { cursor: default; }
+  .is-work .lists-fold > summary .menu-go { display: none; }
+  .tabs { display: inline-flex; flex-wrap: nowrap; }
+  .tabs button { padding: 8px 18px; }
+
+  /* A field as wide as the card is a line nobody reads to the end of, and a
+     button that wide is a thumb target with no thumb. The rows to press —
+     Google's directory, the tabs — keep their own shapes. */
+  .is-work label, .is-work input, .is-work select, .is-work textarea,
+  .is-work .hint, .is-work .note, .is-work .shot, .is-work .map,
+  .is-work .steps, .is-work details.more, .is-work fieldset, .is-work .row,
+  .is-work .types, .is-work .thumbs { max-width: 620px; }
+  .is-work button:not(.tab):not(.found-row) { display: inline-block; width: auto; min-width: 200px; margin-right: 8px; }
+  .is-work .row button { min-width: 0; margin-right: 0; }
+  .is-work .types label { max-width: none; }
+
+  .is-rail .menu-why { font-size: 12.5px; }
+  .is-rail dl.admin-facts dt { flex-basis: 6.5rem; }
+}
 </style>
 </head>
 <body class="lists-body">
@@ -918,11 +964,15 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     var which = 'story';
 
     /* The tools under one title that opens them — see .lists-fold above.
-       Shut when the door opens, because the numbers are what it is opened
-       for more often than a story; a half-written form is kept when it is
-       shut again, since a <details> only hides what it holds. */
+       Shut when the door opens on a phone, because the numbers are what it
+       is opened for more often than a story; a half-written form is kept
+       when it is shut again, since a <details> only hides what it holds.
+       At a desk the numbers are in the rail beside it and there is nothing
+       to make room for, so it is open and a press on its title does not
+       shut it — see the block for 1000px in the stylesheet above. */
+    var desk = window.matchMedia('(min-width: 1000px)');
     var told = el('span', { className: 'count', hidden: true });
-    var fold = el('details', { className: 'lists-fold' }, [
+    var fold = el('details', { className: 'lists-fold', open: desk.matches }, [
       el('summary', {}, [
         el('h2', { className: 'lists-title' }, [
           el('span', { className: 'admin-fold-name', textContent: 'Edit the site' }),
@@ -971,6 +1021,16 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       else editPicker(repo, panel);
     }
 
+    fold.firstChild.addEventListener('click', function (e) {
+      if (desk.matches) e.preventDefault();
+    });
+    /* A window dragged wide after the door opened: the title stopped being
+       pressable, so the fold must not be left shut behind it. */
+    function widened() { if (desk.matches) fold.open = true; }
+    if (desk.addEventListener) desk.addEventListener('change', widened);
+    else if (desk.addListener) desk.addListener(widened);
+
+    body.classList.add('is-work');
     body.appendChild(fold);
     draw();
 
@@ -1002,7 +1062,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     fact('Publishes to', repo.branch);
     if (repo.expires) fact('Token expires', repo.expires);
 
-    stack.appendChild(el('section', { className: 'card admin-card' }, [
+    stack.appendChild(el('section', { className: 'card admin-card is-rail' }, [
       el('h2', { className: 'lists-title', textContent: 'GitHub' }),
       el('p', { className: 'stats-lead', textContent:
         'The site writes with its own token, the GITHUB_TOKEN secret. When it ' +
@@ -1042,7 +1102,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         ])
       ]));
     });
-    return el('section', { className: 'card admin-card' }, [
+    return el('section', { className: 'card admin-card is-rail' }, [
       el('h2', { className: 'lists-title', textContent: 'The numbers' }),
       el('p', { className: 'stats-lead', textContent:
         'They open when you are signed in on the site as the owner.' }),
@@ -2928,6 +2988,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    */
   function boot() {
     clear(body);
+    body.className = 'card admin-card';
     while (stack.firstChild !== body) stack.removeChild(stack.firstChild);
     while (body.nextSibling) stack.removeChild(body.nextSibling);
     sub.textContent = 'Checking…';
@@ -2953,7 +3014,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         'Changing the site needs GITHUB_TOKEN set in the Pages project’s production ' +
         'secrets: a fine-grained token for this one repository with Contents read and ' +
         'write and Actions read. README.md, under The admin page, has the steps.' }));
-      var google = el('section', { className: 'card admin-card' });
+      /* At a desk the report is the work and this card a fact beside it. */
+      body.classList.add('is-rail');
+      var google = el('section', { className: 'card admin-card is-work' });
       stack.insertBefore(numbersCard(), body);
       stack.appendChild(google);
       googleReport(null, google);

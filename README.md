@@ -14998,6 +14998,22 @@ survives the fold being shut again, since a `<details>` only hides what it
 holds. Last, **GitHub**, the facts of the token the site writes with: which
 repository, whether it can write, which branch is live, when it expires.
 
+**At a desk it is two columns.** That stack is the phone's page, and until
+November 2026 it was the desk's as well: a 640px column in the middle of a
+monitor, the tools shut behind their fold, every button a bar as wide as the
+card. From 1000px — so a tablet held upright keeps the phone's page — the
+page is the 1180px the lists directory is, with a 340px rail on the left
+holding **The numbers** and **GitHub**, and **Edit the site** beside it as
+the work. The fold is open there and its title is not something to press,
+since the numbers it used to make room for are now beside it rather than
+above; the five tabs are one row the width of their words; fields stop at
+620px and a button is as wide as a button. With no token on the site the
+cards change sides: the Google report is the work and *The site has no
+GitHub token* is the fact in the rail. Signed out, or on an error, it is the
+one card at the old width. The classes `is-rail` and `is-work` are how
+`ready()` and `boot()` say which card is which, and the whole of it is one
+`@media` block at the end of the page's stylesheet.
+
 ### Signing in
 
 The owner's account is the whole of the door: an account `ADMINS` in
