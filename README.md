@@ -7981,8 +7981,23 @@ name typed into a form is not a description, a phone number or a week.
 The picker searches about eleven hundred places — my seventy-nine and the Google
 export behind `/api/places` — and between them they still miss things:
 somewhere that opened last month, somewhere Google files as not a restaurant.
-Search for it, find nothing, and the picker offers **Can't find it? Add it
-yourself**.
+Search for it, find nothing, and the picker offers two doors, in this order:
+**Look for "…" on Google Maps**, and **Can't find it? Add it yourself**.
+
+**Google first.** The first door is the map's own button —
+[Look for it on Google Maps](#look-for-it-on-google-maps) — pressed from the
+sheet: `/api/lookup` asks Google, keeps what it answers in `google_venues`,
+and up to five rows come back under **From Google Maps**, or among the
+ordinary rows when the words already reach them by name. A tap puts one on
+the list as a Google place, so it arrives with its address, its week and its
+score rather than as a name and a pin. The sentences are the find bar's —
+asking, nothing there either, resting — and so is the budget; with no Google
+key the button never draws and the sheet is what it was. `pickerLookUp()` in
+`assets/lists.js`. It was added in November 2026, after a list of eight new
+cafés went up with four of them typed in by hand because the sheet had no
+other answer — three of which Google knew.
+
+**By hand is what is left**, for the place Google does not have either.
 
 The form is a name, a street if you know it, and a pin you drag to the door.
 The pin is the part that cannot be skipped, and that is a consequence rather
@@ -7990,7 +8005,7 @@ than a rule: `assets/app.js` drops a list row it cannot put a pin for, so a
 place with no coordinates would go on the list and then quietly not be on the
 map — which is the one thing somebody adding a place actually wanted.
 
-The door only appears once something has been typed. Under eight hundred
+Both doors only appear once something has been typed. Under eight hundred
 unfiltered rows it would be an invitation to add a duplicate.
 
 **It is not a way onto the map.** `data/restaurants.json` is hand-written and
@@ -18400,7 +18415,7 @@ The map, `assets/app.js`:
 | `search` | `search_term`, `scope` — `map` for the field in the places column, `find` for the bar across the top of the map — and for `map`, `results`, how many places the column was left showing. `/admin/found` counts the words too; see **How they found it** |
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
-| `find_google` | `search_term` — **Look for it on Google Maps** pressed, when nothing in the find bar answered |
+| `find_google` | `search_term` — **Look for it on Google Maps** pressed, when nothing in the find bar answered, or in a list's picker for a place its roll does not have |
 | `find_clear` | — the cross on the find bar |
 | `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
 | `find_area` | `search_term`, `results` — Search this area, the same words over the part of the map on screen |
