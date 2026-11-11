@@ -50,6 +50,15 @@
  * its own, and are counted like any other. See **Songs, which are listened
  * to** under **Flashcards** in README.md.
  *
+ * AND WHERE A TEST PUT SOMEBODY
+ *
+ * ?level=1 answers twenty-five questions out of data/decks/level.json, and
+ * the `placed` action marks the answers and files one row under LEVEL_DECK
+ * naming the stage they came to — which opens it, and every stage under it,
+ * whatever the count of words: gatesFor() below. ./_level.js holds the test,
+ * the marking and the placing, and its header is the argument; **Find your
+ * level** under **Flashcards** in README.md.
+ *
  * AND THE CONVERSATIONS, WHICH ARE READ
  *
  * A fourth time: `talks` in the file, each a sheet from a language course —
@@ -181,6 +190,7 @@ import { googleReady } from './_google.js';
 /* The decks the site ships, as deployed: the shelf's index and one file per
    deck, lesson and song, and the id shape every one of them has. */
 import { shelf, shippedOne, shippedDecks, WRITTEN } from './_decks.js';
+import { LEVEL_DECK, STAGES, LEVEL_DRAW, questions, drawn, marked, placed } from './_level.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
 
@@ -320,10 +330,43 @@ const GATES = { more: 100, deep: 400 };
  * `GATES[level]` being undefined says, and it is what holds the restaurant
  * stage open too.
  */
-function shutAt(level, words, ready) {
+function shutAt(level, words, ready, gates) {
   if (!ready) return 0;
-  const gate = GATES[level] || 0;
+  const gate = gates[level] || 0;
   return gate > words ? gate : 0;
+}
+
+/* ------------------------------------------------------- find your level
+ * The other way a stage opens: the test in ./_level.js, whose header is the
+ * argument. Somebody it has placed at a stage has that stage and every one
+ * under it open whatever their count of words — which is said to the page,
+ * and to the app, as the stage opening at nought: `gates` in every answer is
+ * what the stages open at *for this person*, so the one question either of
+ * them asks, whether the gate is past the count, goes on being the whole of
+ * the rule and neither needed to learn a second one.
+ *
+ * The count itself is not touched. Nothing is marked known that nobody
+ * turned over: "you know 134 words" stays a fact, the deck of what you know
+ * stays what you answered, and the decks that were skipped are still on the
+ * shelf to be done.
+ */
+
+/* The stage this person was placed at, or null: the highest of their rows
+   under LEVEL_DECK, since a test taken again on a worse day does not shut
+   what an earlier one opened. Read out of the Map knownOf() already built,
+   so it costs no query. */
+function levelOf(known) {
+  let at = null;
+  for (const stage of STAGES) if (known.has(LEVEL_DECK + '/' + stage)) at = stage;
+  return at;
+}
+
+/* GATES as they stand for somebody placed at `at`: nought for every stage up
+   to and including it. */
+function gatesFor(at) {
+  const reach = STAGES.indexOf(at);
+  return Object.fromEntries(Object.entries(GATES)
+    .map(([stage, gate]) => [stage, STAGES.indexOf(stage) <= reach ? 0 : gate]));
 }
 
 /* And the other one: every card, from every deck, that this person has got
@@ -351,7 +394,8 @@ const TALK_DECK = 'talks';
    a conversation read must not be a card in either — not counted on the
    shelf, not a slot in the run. */
 const readRow = (key) =>
-  key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/') || key.startsWith(TALK_DECK + '/');
+  key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/') || key.startsWith(TALK_DECK + '/') ||
+  key.startsWith(LEVEL_DECK + '/');
 
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
@@ -847,6 +891,15 @@ export async function onRequestGet(context) {
      can do — remembering where you got to, and the decks you wrote yourself —
      and the page says one quiet line where it is false rather than refusing
      to draw. */
+  const params = new URL(request.url).searchParams;
+
+  /* A test for Find your level: twenty-five questions out of the hundred,
+     and nothing else — not the session, not the shelf, not the words, since
+     the page that asks already has all three and the answer is the same
+     whoever is asking. Above the database for that reason: a test is drawn
+     out of a file. */
+  if (params.get('level')) return json({ test: drawn(await questions(context)) }, 200);
+
   const ready = !!env.DB && !(await wrongDatabase(env));
   const google = googleReady(env);
   /* The shelf and the session at once: on a fresh isolate the first is a read
@@ -858,7 +911,6 @@ export async function onRequestGet(context) {
   ]);
   const decks = index.decks;
   const who = user ? user.username : null;
-  const params = new URL(request.url).searchParams;
   const asked = params.get('deck') || '';
 
   /* Everything this answer reads about the person, side by side rather than
@@ -879,14 +931,18 @@ export async function onRequestGet(context) {
   /* What every answer below carries, whichever deck it is about: the three
      facts about this deployment and this session, the words the page will
      print them with, and what the stages open on — how many words this person
-     knows, and the two numbers that count is held against. Those go with
-     every answer and not only the list, because a link to a deck in a stage
-     that has not opened yet lands on that deck and the page has to be able to
-     say so there. */
+     knows, and the two numbers that count is held against — as they stand
+     for this person, who may have been placed past one by the test: see
+     gatesFor() above. Those go with every answer and not only the list,
+     because a link to a deck in a stage that has not opened yet lands on
+     that deck and the page has to be able to say so there. `level` is the
+     stage the test placed them at, for the line on Start that says so. */
   const words = wordsKnown(decks, known);
+  const level = levelOf(known);
+  const gates = gatesFor(level);
   const base = {
     ready: ready, google: google, user: who,
-    words: words, gates: GATES, days: days,
+    words: words, gates: gates, level: level, days: days,
     ...wordsWanted(await wordsFor(context, params.get('lang'), DECK_LANGS), params.get('ui'))
   };
 
@@ -954,7 +1010,7 @@ export async function onRequestGet(context) {
      not filtered, here or above: an arrival from a search result is not the
      list, and **Which decks are open** in README.md says why each of the two
      is held differently. */
-  const list = decks.filter((d) => !shutAt(d.level, words, ready)).map((d) => ({
+  const list = decks.filter((d) => !shutAt(d.level, words, ready, gates)).map((d) => ({
     id: d.id,
     name: d.name,
     why: d.why || null,
@@ -1084,6 +1140,7 @@ export async function onRequestPost(context) {
      deck, so it is routed above the ownership check with the two above it: a
      built-in deck has no row to own and is the one most likely to be reset. */
   if (action === 'reset')  return counted(reset(context, user, body.deck));
+  if (action === 'placed') return counted(place(context, body, user));
 
   /* Everything left names a deck of this person's own, and reading it is how
      the ownership rule is applied — once, here, rather than in each of the
@@ -1342,6 +1399,40 @@ async function mark(context, body, user, knew) {
   return json({ ok: true }, 200);
 }
 
+/* The answers to a test, marked here and filed: one row under LEVEL_DECK
+   naming the stage they come to. The page sends what was said to each
+   question it asked — `answers`, [{ id, said }] — and never what it made of
+   them; an id that is not a question, or is one twice, is dropped, and so is
+   anything past the length of a test. What comes back is where these answers
+   put somebody, which is not always where they stand: levelOf() reads the
+   highest row, and the shelf the page asks for next carries that. */
+async function place(context, body, user) {
+  const { env } = context;
+
+  const all = await questions(context);
+  const length = Object.values(LEVEL_DRAW).reduce((sum, n) => sum + n, 0);
+  const asked = new Set();
+  const marks = [];
+  for (const one of Array.isArray(body.answers) ? body.answers.slice(0, length) : []) {
+    const question = one && all.find((q) => q.id === one.id);
+    if (!question || asked.has(question.id)) continue;
+    asked.add(question.id);
+    marks.push({ stage: question.stage, mark: marked(question, one.said) });
+  }
+  if (!marks.length) return json({ error: 'malformed' }, 400);
+
+  const at = placed(marks);
+  await readingBoxes(env, (boxes) =>
+    env.DB
+      .prepare(boxes
+        ? 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) VALUES (?, ?, ?, ?, 1, 0)'
+        : 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at) VALUES (?, ?, ?, ?)')
+      .bind(user.id, LEVEL_DECK, at, Date.now())
+      .run());
+
+  return json({ placed: at }, 200);
+}
+
 /* Start a deck again: this person's rows for it, and nobody else's. Reachable
    for a built-in deck as well as for one of your own, which is why it is not
    behind the ownership check the four above share — deckId is bound, never
@@ -1355,8 +1446,10 @@ async function reset(context, user, deckId) {
   /* The review deck has nothing of its own to forget: it is every known row
      there is, and "forget everything I know" is not a button this site
      offers, so the page never sends this and the route refuses it rather
-     than deleting nothing under a name and reporting that it did. */
-  if (id === REVIEW_DECK) return json({ error: 'not-found' }, 404);
+     than deleting nothing under a name and reporting that it did. And a
+     placement is not a deck to start again: the test is taken again
+     instead, and what it opened stays open. */
+  if (id === REVIEW_DECK || id === LEVEL_DECK) return json({ error: 'not-found' }, 404);
 
   /* Emptying the missed deck is not deleting a deck's rows — it is taking the
      nought off every card that is in it, wherever it came from. Those cards go

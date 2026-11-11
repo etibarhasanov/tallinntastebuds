@@ -75,7 +75,17 @@
  * did, and the validator fails the build on a file here that is not what
  * this would write.
  *
- * Three names are the folder's own and no deck, lesson or song may take them:
+ *   data/decks/level.json    the questions Find your level draws its test
+ *                            from, each written out whole: the source names
+ *                            a card or a lesson's example, and this is the
+ *                            Estonian, what it means in each language and
+ *                            the wrong answers to stand beside the right
+ *                            one — levelFile() below. What ?level=1 on
+ *                            /api/flashcard reads, so that a test of
+ *                            twenty-five questions out of a dozen decks is
+ *                            one file and not a dozen.
+ *
+ * Four names are the folder's own and no deck, lesson or song may take them:
  * RESERVED_FILES below, which the validator holds every id against.
  *
  *   node tools/decks.mjs           rewrite the files above
@@ -95,9 +105,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, 'data', 'decks.json');
 const DIR = join(ROOT, 'data', 'decks');
 
-/* The three files in the folder that are not a deck, a lesson or a song, and
-   so the three ids none of them may have. tools/validate.mjs reserves them. */
-export const RESERVED_FILES = ['index', 'spoken', 'words'];
+/* The four files in the folder that are not a deck, a lesson or a song, and
+   so the four ids none of them may have. tools/validate.mjs reserves them.
+   `level` is reserved twice over: it is also the deck id the route files a
+   placement under, LEVEL_DECK in functions/api/_level.js. */
+export const RESERVED_FILES = ['index', 'spoken', 'words', 'level'];
 
 /* A shipped id as data/decks.json spells one, and the only shape that gets a
    file: the same test functions/api/_decks.js applies before it builds a path
@@ -235,6 +247,75 @@ function talkFile(talk, file, where) {
   return { ...talk, words };
 }
 
+/* How many wrong answers a question that is picked carries, for the route to
+   draw three from: enough that the same word asked twice does not stand
+   among the same three. */
+const WRONG_POOL = 6;
+
+/* The questions of Find your level, written out — `level` in the source,
+   which names a card or a lesson's example and nothing else, so that a
+   question can never say something the shelf does not.
+ *
+   A card asked as `write` is its meaning and the front to type; any other
+   card is its front and its meaning to pick, among the meanings of the cards
+   nearest it in its own deck — nearest, because a deck runs by subject and
+   the plausible wrong answer to *Juust* is *Milk* rather than *Signature* —
+   leaving out any that shares a word of four letters or more with the right
+   one or with a wrong one already taken, which is how *Thank you very much*
+   is kept from standing beside *Thank you*, and *To download* beside *To
+   download — said casually*. A lesson's example is the sentence with one word taken out,
+   and the forms to choose between are written by hand in the source.
+   tools/validate.mjs holds every one of them to existing; a question that
+   names nothing is left out here rather than written half. */
+function levelFile(file) {
+  const out = [];
+  const big = (text) => new Set(foldWords(text).split(' ').filter((word) => word.length >= 4));
+  for (const ask of Array.isArray(file.level) ? file.level : []) {
+    if (!ask || typeof ask !== 'object') continue;
+    if (ask.lesson) {
+      const lesson = (file.lessons || []).find((one) => one && one.id === ask.lesson);
+      const said = ((lesson && lesson.body) || [])
+        .flatMap((block) => (block && block.examples) || [])
+        .find((one) => one && one.et === ask.et);
+      if (!said || !ask.gap || !said.et.includes(ask.gap)) continue;
+      const { et, ...means } = said;
+      out.push({
+        id: ask.id, stage: ask.stage, kind: 'gap', lesson: ask.lesson,
+        et: et.replace(ask.gap, '___'), means, right: ask.gap, wrong: ask.wrong || []
+      });
+      continue;
+    }
+    const deck = (file.decks || []).find((one) => one && one.id === ask.deck);
+    const cards = (deck && deck.cards) || [];
+    const at = cards.findIndex((card) => card && card.id === ask.card);
+    if (at < 0) continue;
+    const card = cards[at];
+    const id = ask.deck + '.' + ask.card;
+    if (ask.write) {
+      out.push({ id, stage: ask.stage, kind: 'write', means: card.back, right: card.front, also: ask.also || [] });
+      continue;
+    }
+    const seen = big(card.back.en);
+    const taken = new Set([card.back.en]);
+    const wrong = cards
+      .map((other, i) => ({ other, far: Math.abs(i - at) }))
+      .filter(({ far }) => far > 0)
+      .sort((a, b) => a.far - b.far)
+      .map(({ other }) => other.back)
+      .filter((back) => {
+        if (!back || !back.en || taken.has(back.en)) return false;
+        const words = [...big(back.en)];
+        if (words.some((word) => seen.has(word))) return false;
+        words.forEach((word) => seen.add(word));
+        taken.add(back.en);
+        return true;
+      })
+      .slice(0, WRONG_POOL);
+    out.push({ id, stage: ask.stage, kind: 'pick', et: card.front, right: card.back, wrong });
+  }
+  return out;
+}
+
 /* A deck, lesson, song or conversation as the index carries it: the
    source's row without the one part of it the shelf never draws — a deck's
    cards become their ids, a lesson loses its body, a song its verses and its
@@ -271,6 +352,7 @@ export function build() {
   }
   out[join(DIR, 'index.json')] = serialise(index);
   out[join(DIR, 'spoken.json')] = serialise(spoken(file));
+  out[join(DIR, 'level.json')] = serialise(levelFile(file));
   /* One card to a line: two and a half thousand of them indented a field to
      a line would be most of the file's weight in spaces. */
   out[join(DIR, 'words.json')] = '[\n' + words(file).map((row) => JSON.stringify(row)).join(',\n') + '\n]\n';
@@ -329,5 +411,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
 
   const { changed, files } = write();
-  console.log(`data/decks/ — ${files - 3} decks, lessons, songs and conversations, the index, the voice's list and the words; ${changed} file(s) rewritten.`);
+  console.log(`data/decks/ — ${files - RESERVED_FILES.length} decks, lessons, songs and conversations, the index, the voice's list, the words and the test; ${changed} file(s) rewritten.`);
 }

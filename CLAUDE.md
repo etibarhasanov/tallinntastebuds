@@ -384,14 +384,17 @@ field, never rename or remove one** — and its models are in
 - `GET /api/flashcard?lang=` and `?lang=&deck=<id>`, each with `ui=` —
   the key prefixes of the strings the app prints on the shelf, and nothing
   after the `=` for a deck, which carries none. Then, whole: `ready`, `user`,
-  `words`, `gates`, `days`, `langs`, `ui`, and `decks`, `lessons`, `songs`,
+  `words`, `gates`, `level`, `days`, `langs`, `ui`, and `decks`, `lessons`, `songs`,
   `talks`, or one `deck`, `lesson`, `song` or `talk` — every field
   `deckAnswer()`, `lessonAnswer()`, `songAnswer()` and `talkAnswer()` send,
   the kinds of block a lesson's `body` is made of, and `error: "not-found"`.
 - `POST /api/flashcard`, every action by name with the fields it reads:
   `knew` and `again` (`deck`, `card`, `day`), `reset`, `report` (`lang`),
   and `deck`, `rename`, `drop`, `card`, `editcard`, `uncard`, each answering
-  `{ deck }`. The ids a lesson, a song and a conversation are filed under —
+  `{ deck }`. `placed` (`answers`, [{ id, said }]) answers `{ placed }` and
+  is the site's alone so far. `gates` is what each stage opens at *for that
+  person* — nought where Find your level opened it — so the app's rule,
+  gate past the count, holds unchanged. The ids a lesson, a song and a conversation are filed under —
   `grammar`, `songs`, `talks` — and the two gathered decks' — `missed`,
   `review` — are written into the app. So are the error words it has
   sentences for: `name`, `front`, `back`, `too-many`, `full`, `often`,

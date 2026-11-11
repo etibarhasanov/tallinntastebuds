@@ -72119,5 +72119,653 @@
         "ru": "YouTube"
       }
     }
-  }
+  },
+  "level": [
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "tere-hommikust"
+    },
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "head-aega"
+    },
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "kuidas-laheb"
+    },
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "head-ood"
+    },
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "tere",
+      "write": true,
+      "also": [
+        "Tervist"
+      ]
+    },
+    {
+      "stage": "start",
+      "deck": "greetings",
+      "card": "meeldiv-tutvuda"
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "palun",
+      "write": true
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "voib-olla"
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "ma-ei-saa-aru"
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "natuke"
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "jah",
+      "write": true
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "vaike"
+    },
+    {
+      "stage": "start",
+      "deck": "basics",
+      "card": "aitah",
+      "write": true,
+      "also": [
+        "Tänan"
+      ]
+    },
+    {
+      "stage": "start",
+      "deck": "pronouns",
+      "card": "mul-on"
+    },
+    {
+      "stage": "start",
+      "deck": "asking",
+      "card": "kus"
+    },
+    {
+      "stage": "start",
+      "deck": "asking",
+      "card": "kui-palju",
+      "write": true
+    },
+    {
+      "stage": "start",
+      "deck": "asking",
+      "card": "kuidas"
+    },
+    {
+      "stage": "start",
+      "deck": "numbers",
+      "card": "kolm",
+      "write": true
+    },
+    {
+      "stage": "start",
+      "deck": "numbers",
+      "card": "kumme"
+    },
+    {
+      "stage": "start",
+      "deck": "numbers",
+      "card": "sada"
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "kas-see-laud-on-vaba"
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "menuu-palun",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "uks-kohv-palun",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "head-isu"
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "terviseks"
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "arve-palun",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "vaga-maitsev"
+    },
+    {
+      "stage": "eat",
+      "deck": "table",
+      "card": "kas-ma-saan-maksta-kaardiga"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "leib"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "juust"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "vesi",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "kala"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "supp"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "jaatis"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "hommikusook"
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "oun",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "food",
+      "card": "piim",
+      "write": true
+    },
+    {
+      "stage": "eat",
+      "deck": "cafe",
+      "card": "kaasa"
+    },
+    {
+      "stage": "eat",
+      "deck": "service",
+      "card": "kahjuks"
+    },
+    {
+      "stage": "eat",
+      "deck": "service",
+      "card": "eraldi"
+    },
+    {
+      "stage": "more",
+      "deck": "weather",
+      "card": "vihm"
+    },
+    {
+      "stage": "more",
+      "deck": "weather",
+      "card": "lumi"
+    },
+    {
+      "stage": "more",
+      "deck": "weather",
+      "card": "talv"
+    },
+    {
+      "stage": "more",
+      "deck": "weather",
+      "card": "tana-on-ilus-ilm",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "verbs",
+      "card": "ostma"
+    },
+    {
+      "stage": "more",
+      "deck": "verbs",
+      "card": "raakima"
+    },
+    {
+      "stage": "more",
+      "deck": "verbs",
+      "card": "teadma"
+    },
+    {
+      "stage": "more",
+      "deck": "home",
+      "card": "voti"
+    },
+    {
+      "stage": "more",
+      "deck": "home",
+      "card": "aken"
+    },
+    {
+      "stage": "more",
+      "deck": "home",
+      "card": "naaber"
+    },
+    {
+      "stage": "more",
+      "deck": "time",
+      "card": "homme",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "time",
+      "card": "nadal"
+    },
+    {
+      "stage": "more",
+      "deck": "time",
+      "card": "esmaspaev",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "around",
+      "card": "lennujaam"
+    },
+    {
+      "stage": "more",
+      "deck": "around",
+      "card": "peatus"
+    },
+    {
+      "stage": "more",
+      "deck": "around",
+      "card": "pilet",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "feelings",
+      "card": "vasinud",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "feelings",
+      "card": "kurb"
+    },
+    {
+      "stage": "more",
+      "deck": "feelings",
+      "card": "naljane"
+    },
+    {
+      "stage": "more",
+      "deck": "family",
+      "card": "tutar",
+      "write": true
+    },
+    {
+      "stage": "more",
+      "deck": "family",
+      "card": "abikaasa"
+    },
+    {
+      "stage": "more",
+      "deck": "body",
+      "card": "polv"
+    },
+    {
+      "stage": "more",
+      "deck": "clothes",
+      "card": "kampsun"
+    },
+    {
+      "stage": "more",
+      "deck": "describing",
+      "card": "kitsas"
+    },
+    {
+      "stage": "deep",
+      "deck": "looks",
+      "card": "habe"
+    },
+    {
+      "stage": "deep",
+      "deck": "character",
+      "card": "laisk"
+    },
+    {
+      "stage": "deep",
+      "deck": "character",
+      "card": "viisakas"
+    },
+    {
+      "stage": "deep",
+      "deck": "character",
+      "card": "julge"
+    },
+    {
+      "stage": "deep",
+      "deck": "cooking",
+      "card": "loikama"
+    },
+    {
+      "stage": "deep",
+      "deck": "cooking",
+      "card": "koorima"
+    },
+    {
+      "stage": "deep",
+      "deck": "paper",
+      "card": "ajaleht",
+      "write": true
+    },
+    {
+      "stage": "deep",
+      "deck": "paper",
+      "card": "viga"
+    },
+    {
+      "stage": "deep",
+      "deck": "country",
+      "card": "saar"
+    },
+    {
+      "stage": "deep",
+      "deck": "country",
+      "card": "jarv",
+      "write": true
+    },
+    {
+      "stage": "deep",
+      "deck": "health",
+      "card": "palavik"
+    },
+    {
+      "stage": "deep",
+      "deck": "health",
+      "card": "kulmetus"
+    },
+    {
+      "stage": "deep",
+      "deck": "health",
+      "card": "ravim",
+      "write": true
+    },
+    {
+      "stage": "deep",
+      "deck": "work",
+      "card": "leping"
+    },
+    {
+      "stage": "deep",
+      "deck": "work",
+      "card": "tahtaeg"
+    },
+    {
+      "stage": "deep",
+      "deck": "work",
+      "card": "allkiri",
+      "write": true
+    },
+    {
+      "stage": "deep",
+      "deck": "moreverbs",
+      "card": "unustama"
+    },
+    {
+      "stage": "deep",
+      "deck": "twowords",
+      "card": "alla-kirjutama"
+    },
+    {
+      "stage": "deep",
+      "deck": "twowords",
+      "card": "ette-kujutama"
+    },
+    {
+      "stage": "deep",
+      "deck": "everyday",
+      "card": "tegelikult"
+    },
+    {
+      "id": "into-kitchen",
+      "stage": "grammar",
+      "lesson": "cases-inside",
+      "et": "Lähme kööki!",
+      "gap": "kööki",
+      "wrong": [
+        "köögis",
+        "köögist"
+      ]
+    },
+    {
+      "id": "in-kitchen",
+      "stage": "grammar",
+      "lesson": "cases-inside",
+      "et": "Kohv on köögis.",
+      "gap": "köögis",
+      "wrong": [
+        "kööki",
+        "köögist"
+      ]
+    },
+    {
+      "id": "from-town",
+      "stage": "grammar",
+      "lesson": "cases-inside",
+      "et": "Ma tulen linnast kell kuus.",
+      "gap": "linnast",
+      "wrong": [
+        "linnas",
+        "linna"
+      ]
+    },
+    {
+      "id": "onto-table",
+      "stage": "grammar",
+      "lesson": "cases-surface",
+      "et": "Pane leib lauale.",
+      "gap": "lauale",
+      "wrong": [
+        "laual",
+        "laualt"
+      ]
+    },
+    {
+      "id": "on-table",
+      "stage": "grammar",
+      "lesson": "cases-surface",
+      "et": "Laual on kaks tassi.",
+      "gap": "Laual",
+      "wrong": [
+        "Lauale",
+        "Laualt"
+      ]
+    },
+    {
+      "id": "from-friend",
+      "stage": "grammar",
+      "lesson": "cases-surface",
+      "et": "Ma laenasin raha sõbralt.",
+      "gap": "sõbralt",
+      "wrong": [
+        "sõbrale",
+        "sõbral"
+      ]
+    },
+    {
+      "id": "no-bread",
+      "stage": "grammar",
+      "lesson": "cases-three",
+      "et": "Mul ei ole leiba.",
+      "gap": "leiba",
+      "wrong": [
+        "leib",
+        "leiva"
+      ]
+    },
+    {
+      "id": "one-loaf",
+      "stage": "grammar",
+      "lesson": "cases-three",
+      "et": "Ma ostan ühe leiva.",
+      "gap": "leiva",
+      "wrong": [
+        "leib",
+        "leiba"
+      ]
+    },
+    {
+      "id": "with-friend",
+      "stage": "grammar",
+      "lesson": "cases-with",
+      "et": "Ma lähen sõbraga kinno.",
+      "gap": "sõbraga",
+      "wrong": [
+        "sõbrata",
+        "sõbrana"
+      ]
+    },
+    {
+      "id": "without-sugar",
+      "stage": "grammar",
+      "lesson": "cases-with",
+      "et": "Palun üks tee suhkruta.",
+      "gap": "suhkruta",
+      "wrong": [
+        "suhkruga",
+        "suhkruna"
+      ]
+    },
+    {
+      "id": "become-doctor",
+      "stage": "grammar",
+      "lesson": "cases-becoming",
+      "et": "Ma tahan saada arstiks.",
+      "gap": "arstiks",
+      "wrong": [
+        "arstina",
+        "arstini"
+      ]
+    },
+    {
+      "id": "until-evening",
+      "stage": "grammar",
+      "lesson": "cases-becoming",
+      "et": "Ma töötan õhtuni.",
+      "gap": "õhtuni",
+      "wrong": [
+        "õhtuks",
+        "õhtuna"
+      ]
+    },
+    {
+      "id": "want-to-go",
+      "stage": "grammar",
+      "lesson": "verb-forms",
+      "et": "Ma tahan koju minna.",
+      "gap": "minna",
+      "wrong": [
+        "minema",
+        "lähen"
+      ]
+    },
+    {
+      "id": "must-go",
+      "stage": "grammar",
+      "lesson": "verb-forms",
+      "et": "Ma pean tööle minema.",
+      "gap": "minema",
+      "wrong": [
+        "minna",
+        "lähen"
+      ]
+    },
+    {
+      "id": "we-ate",
+      "stage": "grammar",
+      "lesson": "verb-tenses",
+      "et": "Eile me sõime vanalinnas.",
+      "gap": "sõime",
+      "wrong": [
+        "sööme",
+        "sööksime"
+      ]
+    },
+    {
+      "id": "not-eaten",
+      "stage": "grammar",
+      "lesson": "verb-tenses",
+      "et": "Ma ei ole veel söönud.",
+      "gap": "söönud",
+      "wrong": [
+        "sööma",
+        "söön"
+      ]
+    },
+    {
+      "id": "where-live",
+      "stage": "grammar",
+      "lesson": "verb-tenses",
+      "et": "Kus sa elad?",
+      "gap": "elad",
+      "wrong": [
+        "elan",
+        "elab"
+      ]
+    },
+    {
+      "id": "bigger-than",
+      "stage": "grammar",
+      "lesson": "adjectives",
+      "et": "Tallinn on suurem kui Tartu.",
+      "gap": "suurem",
+      "wrong": [
+        "suur",
+        "suurim"
+      ]
+    }
+  ]
 }

@@ -285,7 +285,8 @@
     gated: false,    // whether the gate stands in place of the next card
     words: 0,        // how many shipped cards this person knows, all decks
     wordsIn: 0,      // the same number as the route last answered it
-    gates: {},       // what each stage opens at, by level id, off the route
+    gates: {},       // what each stage opens at for this person, by level id, off the route
+    level: null,     // the stage Find your level placed this person at, if it has
     locked: false,   // whether the open deck is in a stage not yet reached
     editing: false,  // a deck of your own, being written rather than turned
     editingCard: null, // the one row in the editor showing its fields open, or none
@@ -386,6 +387,7 @@
   function go(id, push) {
     var mine = ++trip;
     hello = '';
+    test = null;
     if (!asked) deckScroll = window.pageYOffset || 0;
 
     /* The scroll the browser would put back on the back button is put back
@@ -468,6 +470,7 @@
     state.words = state.wordsIn = out.words || 0;
     if (out.days) userDays = out.days;
     state.gates = out.gates || {};
+    state.level = out.level || null;
     state.run = null;
     state.gated = false;
     state.locked = false;
@@ -492,6 +495,8 @@
        the top with fifteen answers sitting in storage. Now it does not, and
        walking out of a deck and into it again keeps them too. */
     var sent = (state.user && state.ready) ? sendKept() : kept();
+    /* And a test taken before there was an account, the same way. */
+    if (state.user && state.ready) sendPlaced();
 
     if (state.deck) {
       state.deck.cards.forEach(function (c) {
@@ -1901,7 +1906,9 @@
   /* Start: one card for each of the other four parts. See partCard(). */
   function startPart(ours) {
     var words = wordDecks(ours);
+    var placedLine = state.level ? testCard() : null;
     var list = el('ul', { className: 'flash-parts-home' }, [
+      state.level ? null : testCard(),
       partCard('words', words, 'deck', t('flashDeckCount', { n: words.length }),
                t('flashWordsSay'), t('flashGoWords')),
       state.lessons.length ? partCard('grammar', state.lessons, 'lesson',
@@ -1913,6 +1920,7 @@
     ]);
     return [
       el('p', { className: 'lists-say', textContent: t('flashStartSay') }),
+      placedLine,
       learned(),
       daysLine(),
       list
@@ -1944,6 +1952,7 @@
        of rows. Forty-two decks in one column was a list to scroll; four short
        under headings is a choice about where you are — and only the stages
        that have opened have rows under them at all. */
+    var shown = false;
     LEVELS.forEach(function (level) {
       var these = ours.filter(function (d) { return d.level === level.id; });
       /* A stage that has not opened has no rows — the route sends none — and
@@ -1958,6 +1967,8 @@
          about a person: the headings are for the decks, not the other way
          round. */
       var gate = gateFor(level.id);
+      var first = gate && !shown;
+      if (gate) shown = true;
       if (these.length || gate) {
         kids.push(el('h2', { className: 'lists-section', textContent: t(level.key) }));
         if (gate) {
@@ -1969,6 +1980,8 @@
             meter(state.words, gate),
             el('span', { textContent: t('flashOpens', { n: gate, left: gate - state.words }) })
           ]));
+          /* And under the first that is shut, the other way it opens. */
+          if (first) kids.push(testLink('alt flash-test-in', 'flashTestShut', 'words'));
         }
         if (these.length) kids.push(deckList(these));
       }
@@ -2772,7 +2785,7 @@
         var at = ev.target;
         if (at && (at.isContentEditable || /^(?:INPUT|TEXTAREA|SELECT)$/.test(at.tagName))) return;
         if (window.TTBLanguage.isOpen()) return;
-        if (!state.run || !state.run.last || state.editing || state.gated) return;
+        if (test || !state.run || !state.run.last || state.editing || state.gated) return;
         ev.preventDefault();
         undo();
         return;
@@ -2809,7 +2822,7 @@
          it — the editor, and the gate — so current() still has a word in hand
          on both, and answering it there would spend a card of a deck from a
          page that is showing a form. */
-      if (!state.deck || state.editing || state.gated) return;
+      if (test || !state.deck || state.editing || state.gated) return;
       var word = current();
       if (!word) return;
 
@@ -3182,7 +3195,7 @@
        face, the word said aloud, which is not a question about the card at
        all: see sayLine(). */
     if (!state.run.turned) {
-      return [runHead(), runBar(), tallyRow(), pile(word), sayLine(word), hintLine(word)];
+      return [runHead(), runBar(), tallyRow(), pile(word), sayLine(word), hintLine(word), doorTest()];
     }
 
     var acts = el('div', { className: 'flash-acts' });
@@ -3196,6 +3209,14 @@
     acts.appendChild(knew);
 
     return [runHead(), runBar(), tallyRow(), pile(word), sayLine(word), acts, wrongLine(word)];
+  }
+
+  /* Under a stranger's first card, the one line that says the test is there:
+     for somebody who arrived knowing some Estonian, and is about to be asked
+     what Tere means. Gone with the line over the card, at the first answer. */
+  function doorTest() {
+    if (hello !== 'first' || !state.ready) return null;
+    return el('div', { className: 'flash-hintline' }, [testLink('alt flash-test-in', 'flashTestDoor', 'door')]);
   }
 
   /* The card in hand, standing on the edges of the ones still under it. The
@@ -4076,6 +4097,483 @@
     return line;
   }
 
+  /* -------------------------------------------------------- find your level
+   * Twenty-five questions, easy to hard, and at the end of them a stage: the
+   * first one whose questions were not got right. Everything under it is
+   * skipped, and signed in it opens — whatever the count of words says. The
+   * route draws the test out of data/decks/level.json, marks the answers
+   * again on their way in and files where they come to; this half asks the
+   * questions, says Right, Almost or Not yet as each is answered, and draws
+   * the ladder at the end. **Find your level** under **Flashcards** in
+   * README.md, and the header of functions/api/_level.js.
+   *
+   * It stands over whatever was open — the first card of a stranger's door,
+   * the shelf — at its own address, ?level=1, so the back button leaves it
+   * and a link can open it. Any walk anywhere, go() included, puts it down.
+   */
+
+  /* The test in hand, or null. `phase` is intro, ask or done; `asked` the
+     questions, in the route's order; `at` the one on screen; `answers` what
+     was said to each so far, [{ id, said }], which is what is sent; `marks`
+     what this side made of them, [{ stage, mark }]; `said` the answer to the
+     one on screen once it is given, and `opts` its choices, shuffled once
+     rather than on every draw. */
+  var test = null;
+
+  /* Answers given signed out, waiting for an account to be filed under. The
+     tab's, like the words in KEPT_KEY, for the same reason. */
+  var LEVEL_KEY = 'ttb.flash.level';
+
+  /* Copies of the route's, in functions/api/_level.js, kept the same by hand:
+     neither dialect imports the other. The route's verdict is the one that is
+     kept; these are for saying Right the moment it is right. */
+  var LEVEL_DRAW = { start: 5, eat: 5, grammar: 4, more: 6, deep: 5 };
+  var PASS = 0.8;
+  var NEAR = 0.8;
+  var TEST_GRAMMAR = 'grammar';
+
+  /* Three answers in a row not known, among the stages' words, and the test
+     stops: the rest only get harder, and a beginner walked through twenty
+     questions they cannot read is a beginner who leaves. The grammar does
+     not count towards it either way — somebody can know four hundred words
+     and none of the cases. */
+  var STOP_AFTER = 3;
+
+  function testLength() {
+    var n = 0;
+    Object.keys(LEVEL_DRAW).forEach(function (k) { n += LEVEL_DRAW[k]; });
+    return n;
+  }
+
+  function folded(text) {
+    return String(text == null ? '' : text).toLowerCase()
+      .replace(/[^a-z0-9À-ɏ]+/g, ' ').replace(/^ | $/g, '');
+  }
+
+  function alike(a, b) {
+    if (!a.length || !b.length) return 0;
+    var row = [];
+    for (var j = 0; j <= b.length; j++) row.push(j);
+    for (var i = 1; i <= a.length; i++) {
+      var next = [i];
+      for (j = 1; j <= b.length; j++) {
+        next[j] = Math.min(row[j] + 1, next[j - 1] + 1, row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      row = next;
+    }
+    return 1 - row[b.length] / Math.max(a.length, b.length);
+  }
+
+  /* marked() in the route, and how alike a near answer was, for the line
+     that says so. */
+  function markOf(q, said) {
+    if (q.kind === 'pick') return { mark: said === q.right.en ? 1 : 0 };
+    if (q.kind === 'gap') return { mark: said === q.right ? 1 : 0 };
+    var mine = folded(said);
+    var best = 0;
+    var rights = [q.right].concat(q.also || []).map(folded);
+    if (rights.indexOf(mine) !== -1) return { mark: 1 };
+    rights.forEach(function (r) { best = Math.max(best, alike(mine, r)); });
+    return best >= NEAR ? { mark: 0.5, near: Math.floor(best * 100) } : { mark: 0 };
+  }
+
+  /* placed() in the route. */
+  function placedAt(marks) {
+    for (var i = 0; i < LEVELS.length; i++) {
+      var id = LEVELS[i].id;
+      var mine = marks.filter(function (m) { return m.stage === id; });
+      var got = 0;
+      mine.forEach(function (m) { got += m.mark; });
+      if (mine.length < LEVEL_DRAW[id] || got / mine.length < PASS) return id;
+    }
+    return LEVELS[LEVELS.length - 1].id;
+  }
+
+  function stageName(id) {
+    return t(LEVELS.filter(function (l) { return l.id === id; })[0].key);
+  }
+
+  /* A score with its halves: 16½, ½, 3. */
+  function halves(n) {
+    var whole = Math.floor(n);
+    return n === whole ? String(whole) : (whole ? whole : '') + '½';
+  }
+
+  function shuffled(list) {
+    var out = list.slice();
+    for (var i = out.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var x = out[i]; out[i] = out[j]; out[j] = x;
+    }
+    return out;
+  }
+
+  /* The choices for the question on screen: a meaning to pick, printed in
+     the reader's language and sent as its English, which is what the route
+     compares; or a form, which is the same either way. */
+  function choices(q) {
+    if (q.kind === 'pick') {
+      return shuffled([q.right].concat(q.wrong || [])).map(function (pack) {
+        return { show: means(pack), said: pack.en };
+      });
+    }
+    return shuffled([q.right].concat(q.wrong || [])).map(function (form) {
+      return { show: form, said: form, et: true };
+    });
+  }
+
+  /* The address the test is at, carrying ?style= and ?lang= like every other. */
+  function testHref() {
+    return at(HOME + '?level=1');
+  }
+
+  /* Open it: the intro at once, and the questions on their way while it is
+     read. `from` is where it was opened from, for the count. */
+  function openTest(push, from) {
+    flush();
+    hello = '';
+    /* Whether the address was pushed to get here, so that Stop can be the
+       back button rather than a second entry on top of the first. A test
+       taken again is the same entry. */
+    var pushed = push || !!(test && test.pushed);
+    test = { pushed: pushed, phase: 'intro', asked: null, at: 0, answers: [], marks: [], said: null, opts: null, streak: 0, stopped: false, failed: false };
+    var mine = test;
+    if (push) {
+      try { window.history.pushState({ test: 1 }, '', testHref()); } catch (e) { /* the page is right */ }
+    }
+    TTBTrack.event('flash_test_open', { from: from });
+    ask(FLASH_API + '?level=1').then(function (a) {
+      if (test !== mine) return;
+      mine.asked = (a.ok && a.out.test) || [];
+      if (!mine.asked.length) mine.failed = true;
+      render();
+    });
+    render();
+    window.scrollTo(0, 0);
+    main.focus({ preventScroll: true });
+    TTBTrack.view(document.title);
+  }
+
+  /* Put it down and go back to the shelf at `which`: a trip, because the
+     shelf in hand may be a deck, or a shelf from before the test opened what
+     it opened. */
+  function closeTest(which) {
+    if (!which && test && test.pushed) {
+      window.history.back();
+      return;
+    }
+    test = null;
+    part = which || part;
+    asked = '';
+    go('', true);
+  }
+
+  function testLink(className, key, from) {
+    var a = el('a', { className: className, href: testHref(), textContent: t(key) });
+    a.addEventListener('click', function (ev) {
+      if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      openTest(true, from);
+    });
+    return a;
+  }
+
+  /* One answer: marked, kept, and — three not known in a row among the
+     stages' words — the end. */
+  function answerTest(said) {
+    var q = test.asked[test.at];
+    var got = markOf(q, said);
+    test.said = { text: said, mark: got.mark, near: got.near };
+    test.answers.push({ id: q.id, said: said });
+    test.marks.push({ stage: q.stage, mark: got.mark });
+    if (q.stage !== TEST_GRAMMAR) test.streak = got.mark ? 0 : test.streak + 1;
+    render();
+    var next = main.querySelector('.flash-test-next');
+    if (next) next.focus();
+  }
+
+  function nextQuestion() {
+    test.at += 1;
+    test.said = null;
+    test.opts = null;
+    if (test.streak >= STOP_AFTER || test.at >= test.asked.length) {
+      test.stopped = test.at < test.asked.length;
+      finishTest();
+      return;
+    }
+    render();
+    window.scrollTo(0, 0);
+    var first = main.querySelector('.flash-test-opts .menu-row, #flash-test-said');
+    if (first) first.focus();
+  }
+
+  /* The end: where the answers come to, and — signed in — filed. Signed out
+     they wait in the tab for the account the result card offers. Either way
+     the shelf is asked for again, since the deck to carry on from is on it
+     and the test may have been opened over a single deck; and signed in,
+     what the stages open at is the route's to say once the row is in. */
+  function finishTest() {
+    test.phase = 'done';
+    test.placed = placedAt(test.marks);
+    TTBTrack.event('flash_test_done', { placed: test.placed, asked: test.answers.length, stopped: test.stopped ? 1 : 0 });
+    var mine = test;
+    mine.saving = true;
+    var filed = state.ready && state.user
+      ? post(FLASH_API, { action: 'placed', answers: mine.answers })
+      : Promise.resolve({ ok: true });
+    if (state.ready && !state.user) {
+      try { window.sessionStorage.setItem(LEVEL_KEY, JSON.stringify(mine.answers)); } catch (e) { /* the result still shows */ }
+    }
+    filed.then(function (a) {
+      if (!a.ok) toast(say(a.out));
+      return ask(FLASH_API + '?lang=' + encodeURIComponent(state.lang));
+    }).then(function (b) {
+      if (test !== mine) return;
+      mine.saving = false;
+      if (b.ok) { asked = ''; settle(b.out); }
+      render();
+    });
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  /* Answers this tab gave signed out, filed now there is an account, and the
+     shelf asked for again so that what they open is open. Once: they are
+     taken out of the tab before they are sent. */
+  function sendPlaced() {
+    var answers;
+    try { answers = JSON.parse(window.sessionStorage.getItem(LEVEL_KEY) || 'null'); } catch (e) { answers = null; }
+    if (!answers || !answers.length) return;
+    try { window.sessionStorage.removeItem(LEVEL_KEY); } catch (e) { /* nothing was stored */ }
+    post(FLASH_API, { action: 'placed', answers: answers }).then(function (a) {
+      if (a.ok) go(asked, false);
+    });
+  }
+
+  function testHead() {
+    var stop = el('button', { type: 'button', className: 'alt', textContent: t('flashTestStop') });
+    stop.addEventListener('click', function () { closeTest(); });
+    return el('div', { className: 'flash-deck' }, [
+      el('span', { className: 'eyebrow', textContent: t('flashTest') }),
+      stop
+    ]);
+  }
+
+  function testIntro() {
+    var start = el('button', { type: 'button', className: 'go', textContent: t('flashTestGo') });
+    if (!test.asked) start.disabled = true;
+    start.addEventListener('click', function () {
+      test.phase = 'ask';
+      render();
+      var first = main.querySelector('.flash-test-opts .menu-row, #flash-test-said');
+      if (first) first.focus();
+    });
+    var back = el('button', { type: 'button', className: 'alt', textContent: t('flashDecks') });
+    back.addEventListener('click', function () { closeTest('words'); });
+    return el('section', { className: 'card lists-card flash-done' }, [
+      el('p', { className: 'eyebrow', textContent: t('flashTest') }),
+      heading(t('flashTestTitle')),
+      el('p', { className: 'lists-say', textContent: test.failed ? t('flashErrGeneric') : t('flashTestWhy', { n: testLength() }) }),
+      el('div', { className: 'flash-doneacts' }, [test.failed ? null : start, back])
+    ]);
+  }
+
+  /* The question: what is asked, on the flashcard's own paper and not
+     pressable, and under it the choices as rows or a field to write in. */
+  function testAsk() {
+    var q = test.asked[test.at];
+    var all = test.asked.length;
+    var fill = el('span', { className: 'flash-fill' });
+    fill.style.width = Math.round((test.at / all) * 100) + '%';
+
+    var word;
+    if (q.kind === 'gap') {
+      var halvesOf = q.et.split('___');
+      word = el('p', { className: 'flash-test-word is-small', lang: 'et' }, [
+        halvesOf[0], el('span', { className: 'flash-test-gap', 'aria-label': '…' }, [' ']), halvesOf[1] || ''
+      ]);
+    } else if (q.kind === 'write') {
+      word = el('p', { className: 'flash-test-word is-small', textContent: means(q.means) });
+    } else {
+      word = el('p', { className: 'flash-test-word', lang: 'et', textContent: q.et });
+    }
+
+    var kids = [
+      testHead(),
+      el('div', { className: 'flash-bar' }, [
+        el('span', { className: 'flash-count', textContent: t('flashAt', { at: test.at + 1, n: all }) }),
+        el('span', { className: 'flash-track', 'aria-hidden': 'true' }, [fill])
+      ]),
+      el('div', { className: 'flash-test-ask' }, [
+        el('p', { className: 'flash-test-kind mono', textContent:
+          q.kind === 'gap' ? t('flashTestGap') : q.kind === 'write' ? t('flashTestWrite') : t('flashTasteDeck') }),
+        word,
+        q.kind === 'gap' ? el('p', { className: 'flash-test-sub', textContent: means(q.means) }) : null
+      ])
+    ];
+
+    var answered = !!test.said;
+    var dunno = el('button', { type: 'button', className: 'alt', textContent: t('flashTestDunno') });
+    dunno.addEventListener('click', function () { answerTest(''); });
+    var next = el('button', { type: 'button', className: 'go flash-test-next', textContent: t('flashTestNext') });
+    next.addEventListener('click', nextQuestion);
+
+    if (q.kind === 'write') {
+      var form = el('form', { className: 'ac-form flash-test-form' }, [
+        field('flash-test-said', 'flashTestAnswer', { hint: t('flashTestHint'), maxlength: MAX_SIDE, autocapitalize: 'off' })
+      ]);
+      var input = form.querySelector('input');
+      input.setAttribute('lang', 'et');
+      if (answered) {
+        input.value = test.said.text;
+        input.readOnly = true;
+      }
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        if (answered) { nextQuestion(); return; }
+        if (!input.value.trim()) return;
+        answerTest(input.value.trim());
+      });
+      kids.push(form);
+      if (answered) {
+        var mark = test.said.mark;
+        kids.push(el('p', { className: 'flash-test-verdict ' + (mark === 1 ? 'is-right' : mark ? 'is-near' : 'is-wrong'), role: 'status' }, [
+          el('b', { textContent: mark === 1 ? t('flashTestRight') : mark ? t('flashTestNear', { n: test.said.near }) : t('flashTestWrong') }),
+          ' ',
+          el('b', { lang: 'et', textContent: q.right })
+        ]));
+        kids.push(el('div', { className: 'flash-test-foot' }, [el('span'), next]));
+      } else {
+        var check = el('button', { type: 'submit', className: 'go', textContent: t('flashTestCheck') });
+        form.appendChild(el('div', { className: 'flash-test-foot' }, [dunno, check]));
+      }
+      return kids;
+    }
+
+    if (!test.opts) test.opts = choices(q);
+    var rightSaid = q.kind === 'pick' ? q.right.en : q.right;
+    var rows = el('div', { className: 'menu flash-test-opts' });
+    test.opts.forEach(function (o) {
+      var row = el('button', { type: 'button', className: 'menu-row', lang: o.et ? 'et' : null }, [
+        el('span', { textContent: o.show })
+      ]);
+      if (answered) {
+        row.disabled = true;
+        if (o.said === rightSaid) {
+          row.className += ' is-right';
+          row.appendChild(el('span', { className: 'flash-test-mark mono', textContent: '✓' }));
+        } else if (o.said === test.said.text) {
+          row.className += ' is-wrong';
+          row.appendChild(el('span', { className: 'flash-test-mark mono', textContent: '✗' }));
+        }
+      } else {
+        row.addEventListener('click', function () { answerTest(o.said); });
+      }
+      rows.appendChild(row);
+    });
+    kids.push(rows);
+    kids.push(el('div', { className: 'flash-test-foot' }, answered ? [el('span'), next] : [dunno, el('span')]));
+    return kids;
+  }
+
+  /* The end: the stage, the ladder of the four with what was got on each,
+     and the deck to carry on from. */
+  function testResult() {
+    var placed = test.placed;
+    var reach = LEVELS.map(function (l) { return l.id; }).indexOf(placed);
+    var total = 0;
+    test.marks.forEach(function (m) { total += m.mark; });
+
+    function score(stage) {
+      var mine = test.marks.filter(function (m) { return m.stage === stage; });
+      if (!mine.length) return '—';
+      var got = 0;
+      mine.forEach(function (m) { got += m.mark; });
+      return halves(got) + ' / ' + mine.length;
+    }
+
+    var ladder = el('ol', { className: 'flash-test-ladder' });
+    LEVELS.forEach(function (level, i) {
+      var gate = gateFor(level.id);
+      var line = i < reach ? '✓ ' + t('flashTestSkip')
+               : i === reach ? '← ' + t('flashTestFrom')
+               : gate ? t('flashTestOpensAt', { n: gate })
+               : t('flashTestOpen');
+      ladder.appendChild(el('li', { className: 'flash-test-rung' + (i < reach ? ' is-passed' : i === reach ? ' is-here' : '') }, [
+        el('span', { className: 'flash-test-rung-name', textContent: t(level.key) }),
+        el('span', { className: 'flash-test-rung-n', textContent: score(level.id) }),
+        el('span', { className: 'flash-test-rung-say mono', textContent: line })
+      ]));
+    });
+
+    /* The grammar, which opens nothing: its score, and the lesson behind the
+       first question of it that was not got right, where the shelf in hand
+       names it. */
+    var grammarAsked = test.answers.filter(function (a, i) { return test.marks[i].stage === TEST_GRAMMAR; });
+    if (grammarAsked.length) {
+      var missed = null;
+      test.answers.forEach(function (a, i) {
+        if (missed || test.marks[i].stage !== TEST_GRAMMAR || test.marks[i].mark === 1) return;
+        var q = test.asked.filter(function (x) { return x.id === a.id; })[0];
+        missed = q && state.lessons.filter(function (l) { return l.id === q.lesson; })[0];
+      });
+      ladder.appendChild(el('li', { className: 'flash-test-rung' }, [
+        el('span', { className: 'flash-test-rung-name', textContent: t('flashGrammar') }),
+        el('span', { className: 'flash-test-rung-n', textContent: score(TEST_GRAMMAR) }),
+        missed ? el('span', { className: 'flash-test-rung-say mono', textContent: t('flashTestRead', { name: means(missed.name) }) }) : null
+      ]));
+    }
+
+    var acts = el('div', { className: 'flash-doneacts' });
+    /* The first deck of the stage not yet finished, where the shelf in hand
+       has it — signed out, a gated stage's decks are not in it, and the
+       account is the way on instead. */
+    var next = state.decks.filter(function (d) { return !d.own && d.level === placed && !finished(d); })[0];
+    if (next && !test.saving) {
+      acts.appendChild(inPage(el('a', { className: 'go', href: deckHref(next.id), textContent: t('flashTestCarry', { deck: deckName(next) }) }), next.id));
+    }
+    var all = el('button', { type: 'button', className: 'alt', textContent: t('flashDecks') });
+    all.addEventListener('click', function () { closeTest('words'); });
+    acts.appendChild(all);
+    var again = el('button', { type: 'button', className: 'alt', textContent: t('flashTestAgain') });
+    again.addEventListener('click', function () { openTest(false, 'again'); });
+    acts.appendChild(again);
+
+    return el('section', { className: 'card lists-card flash-done' }, [
+      el('p', { className: 'eyebrow', textContent: t('flashTestHere') }),
+      el('p', { className: 'flash-test-here', textContent: stageName(placed) }),
+      el('p', { className: 'lists-say', textContent: test.stopped
+        ? t('flashTestStopped', { n: test.answers.length })
+        : t('flashTestScore', { n: halves(total), m: test.answers.length }) }),
+      ladder,
+      state.ready && !state.user && gateFor(placed)
+        ? el('p', { className: 'ac-note flash-test-keep', textContent: t('flashTestKeep', { stage: stageName(placed) }) })
+        : null,
+      acts
+    ]);
+  }
+
+  /* The way in on Start: a card above the four until the test has placed
+     somebody, and a line saying where it did after. Only where there is a
+     database, since without one every stage is open already. */
+  function testCard() {
+    if (!state.ready) return null;
+    if (state.level) {
+      return el('p', { className: 'lists-say flash-test-you' }, [
+        t('flashTestYou', { stage: stageName(state.level) }), ' ',
+        testLink('alt flash-test-again', 'flashTestAgain', 'start')
+      ]);
+    }
+    return el('li', { className: 'flash-part flash-test-part' }, [
+      el('p', { className: 'flash-part-head' }, [
+        el('span', { className: 'flash-part-name', textContent: t('flashTest') }),
+        el('span', { className: 'lists-count mono', textContent: t('flashTestCount', { n: testLength() }) })
+      ]),
+      el('p', { className: 'flash-part-say', textContent: t('flashTestSay') }),
+      testLink('flash-part-in mono', 'flashTestTake', 'start')
+    ]);
+  }
+
   /* ---------------------------------------------------------------- the page
    * One place decides what is on screen and decides it once, after every
    * answer is in.
@@ -4085,13 +4583,14 @@
 
     /* Undo is on offer only while a card of the run is on screen, so anything
        else this draws sends the answer it was holding back — flush(). */
-    if (!(state.deck && !state.editing && !state.locked && !state.gated && current())) flush();
+    if (test || !(state.deck && !state.editing && !state.locked && !state.gated && current())) flush();
 
     /* The tab is part of what a link is: somebody with six tabs open should be
        able to tell which one is the Estonian. And back to the page's own name
        when the deck is closed, because closing one is no longer a page load
        and nothing else would ever put it back. */
-    if (state.deck) document.title = deckName(state.deck);
+    if (test) document.title = t('flashTest');
+    else if (state.deck) document.title = deckName(state.deck);
     else if (state.lesson) document.title = means(state.lesson.name);
     else if (state.song) document.title = means(state.song.name);
     else if (state.talk) document.title = means(state.talk.name);
@@ -4102,7 +4601,16 @@
 
     add(helloLine());
 
-    if (asked && !state.deck && !state.lesson && !state.song && !state.talk) {
+    if (test) {
+      if (test.phase === 'intro' || !test.asked) add(testIntro());
+      else if (test.phase === 'ask') testAsk().forEach(add);
+      else {
+        add(testResult());
+        /* The account, where it is what the stage it placed somebody at
+           opens with — the line on the result card says so. */
+        if (test.phase === 'done' && state.ready && !state.user && gateFor(test.placed)) add(authCard());
+      }
+    } else if (asked && !state.deck && !state.lesson && !state.song && !state.talk) {
       add(goneCard());
     } else if (state.lesson) {
       add(lessonHead());
@@ -4239,7 +4747,8 @@
        card of FIRST_DECK rather than a menu, which is **The front door**
        under **Flashcards** in README.md. A link to a part of the shelf opens
        that part, the way a link to a deck opens the deck. */
-    var door = !asked && !new URLSearchParams(window.location.search).has('part');
+    var testing = new URLSearchParams(window.location.search).has('level');
+    var door = !asked && !testing && !new URLSearchParams(window.location.search).has('part');
     var resumed = door ? (storeGet(LAST_KEY) || '') : '';
     var fresh = door && !resumed && !storeGet(BEEN_KEY);
     if (resumed) asked = resumed;
@@ -4291,6 +4800,15 @@
         var search = window.location.search;
         var id = new URLSearchParams(search).get('d') || '';
         part = partFrom(search);
+        /* Into the test, which is the page's own state and not a trip; and
+           out of it, which is — the end of a test asks for the shelf again,
+           so whatever was under it may no longer be in hand. */
+        var wantTest = new URLSearchParams(search).has('level');
+        if (wantTest !== !!test) {
+          if (wantTest) openTest(false, 'back');
+          else go(id, false);
+          return;
+        }
         /* From one part of the shelf to another the decks are already in
            hand, so it is a draw rather than a trip — the same as the press
            that got here, pickPart(). */
@@ -4344,6 +4862,7 @@
           TTBTrack.event(fresh ? 'flash_first' : 'flash_resume', { deck_id: asked });
         }
         render();
+        if (testing) openTest(false, 'link');
       }
       /* The tag counted this address as the document loaded, deck and all, so
          only the walks from here are go()'s to report. */

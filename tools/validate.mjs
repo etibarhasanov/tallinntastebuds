@@ -125,6 +125,7 @@ import { SECURITY } from '../functions/_security.js';
    has translated is about the same three the page will actually offer, rather
    than a third copy of the list drifting quietly away from them. */
 import { DECK_LANGS } from '../functions/api/_lib.js';
+import { LEVEL_DRAW } from '../functions/api/_level.js';
 /* The elements two pages ship empty for a Function to fill with text, from
    the module that fills them, so the spelling held here is the one matched. */
 import { EMPTY } from '../functions/_shell.js';
@@ -840,6 +841,77 @@ if (decksFile !== null) {
       const at = `data/decks.json → talkWords.${key}`;
       if (!talked.has(key)) fail(at, `"${key}" is in "talkWords" and no conversation says it`);
       glossed(word, at, key);
+    }
+
+    /* The questions of Find your level: `level`, each naming a card or a
+       lesson's example and nothing of its own but the wrong forms a gap is
+       offered with — so a question cannot say something the shelf does not,
+       and what it means is already written in three languages. A card is
+       asked at the stage its deck is in, which is what makes passing a
+       stage's questions mean knowing that stage; a lesson's example is asked
+       as grammar. tools/decks.mjs writes them out and functions/api/_level.js
+       draws a test from them: LEVEL_DRAW there is how many of each, and a
+       stage with fewer than that is a test that cannot be drawn. See **Find
+       your level** under **Flashcards** in README.md. */
+    if (decksFile.level !== undefined && !Array.isArray(decksFile.level)) {
+      fail('data/decks.json', '"level" must be an array of questions');
+    }
+    const asks = Array.isArray(decksFile.level) ? decksFile.level : [];
+    const askIds = new Set();
+    const perStage = {};
+    asks.forEach((ask, i) => {
+      const where = `data/decks.json → level[${i}]`;
+      if (!isPlainObject(ask)) { fail(where, 'a question must be an object'); return; }
+      perStage[ask.stage] = (perStage[ask.stage] || 0) + 1;
+      if (ask.lesson !== undefined) {
+        if (ask.stage !== 'grammar') fail(where, 'a lesson\'s example is asked at stage "grammar"');
+        if (!isNonEmptyString(ask.id) || !/^[a-z0-9][a-z0-9-]{0,31}$/.test(ask.id)) fail(where, '"id" must be a lowercase slug');
+        if (askIds.has(ask.id)) fail(where, `id "${ask.id}" is asked twice`);
+        askIds.add(ask.id);
+        const lesson = (Array.isArray(decksFile.lessons) ? decksFile.lessons : []).find((l) => isPlainObject(l) && l.id === ask.lesson);
+        const said = ((lesson && Array.isArray(lesson.body)) ? lesson.body : [])
+          .flatMap((block) => (isPlainObject(block) && Array.isArray(block.examples)) ? block.examples : [])
+          .some((one) => isPlainObject(one) && one.et === ask.et);
+        if (!said) fail(where, `"${ask.et}" is not an example in the lesson "${ask.lesson}"`);
+        if (!isNonEmptyString(ask.gap) || String(ask.et || '').split(ask.gap).length !== 2) {
+          fail(where, `"gap" must be in the sentence exactly once, so there is one place to leave out`);
+        }
+        const wrong = Array.isArray(ask.wrong) ? ask.wrong : [];
+        if (wrong.length < 2 || !wrong.every(isNonEmptyString) || new Set(wrong.concat(ask.gap)).size !== wrong.length + 1) {
+          fail(where, '"wrong" must be at least two forms, each different and none of them the answer');
+        }
+        return;
+      }
+      const deck = decksFile.decks.find((d) => isPlainObject(d) && d.id === ask.deck);
+      const card = deck && Array.isArray(deck.cards) ? deck.cards.find((c) => isPlainObject(c) && c.id === ask.card) : null;
+      if (!card) { fail(where, `no card "${ask.card}" in a deck "${ask.deck}"`); return; }
+      if (deck.level !== ask.stage) fail(where, `"${ask.deck}" is a "${deck.level}" deck, asked at stage "${ask.stage}"`);
+      const id = ask.deck + '.' + ask.card;
+      if (askIds.has(id)) fail(where, `${id} is asked twice`);
+      askIds.add(id);
+      if (ask.also !== undefined) {
+        if (!ask.write) fail(where, '"also" is another way of writing the answer, and only a written question has one');
+        if (!Array.isArray(ask.also) || !ask.also.every((one) => isNonEmptyString(one) && one.length <= MAX_SIDE)) {
+          fail(where, `"also" must be a list of answers, each at most ${MAX_SIDE} characters`);
+        }
+      }
+    });
+    if (asks.length) {
+      for (const [stage, n] of Object.entries(LEVEL_DRAW)) {
+        if ((perStage[stage] || 0) < n) fail('data/decks.json → level', `a test draws ${n} questions at stage "${stage}" and there are ${perStage[stage] || 0}`);
+      }
+      for (const stage of Object.keys(perStage)) {
+        if (!(stage in LEVEL_DRAW)) fail('data/decks.json → level', `"${stage}" is not a stage a test draws from`);
+      }
+      /* And three wrong answers to stand beside the right one, which only
+         the written-out file can say: they are the neighbours of the card in
+         its deck, chosen by tools/decks.mjs. */
+      const drawnFile = existsSync(join(DATA, 'decks', 'level.json')) ? readJSON('data/decks/level.json') : [];
+      for (const one of Array.isArray(drawnFile) ? drawnFile : []) {
+        if (one && one.kind === 'pick' && (!Array.isArray(one.wrong) || one.wrong.length < 3)) {
+          fail('data/decks.json → level', `${one.id} has fewer than three wrong answers to pick among — ask it as "write", or ask another card`);
+        }
+      }
     }
   }
 }

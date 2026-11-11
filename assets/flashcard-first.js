@@ -62,7 +62,7 @@
 
   /* FIRST_DECK in assets/flashcard.js, which is the copy that decides. */
   var named = search.get('d') || '';
-  var door = !named && !search.has('part');
+  var door = !named && !search.has('part') && !search.has('level');
   var asked = named ||
     (door && (storeGet('ttb.flash.last') || (storeGet('ttb.flash.been') ? '' : 'greetings'))) || '';
 
