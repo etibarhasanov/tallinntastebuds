@@ -347,15 +347,16 @@ browser cannot import from `tools/`; change one, change the other.
 - **The lean copies**: every copy `LEAN` in `tools/lean.mjs` names —
   `app`, `styles`, `lists` and `lists.css` today — must be what the tool
   writes from its source, and no stamped page may load a source directly.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-one pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`,
   `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's five under
-  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html` — must carry `?v=` equal to the first
+  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
-  `assets/` is added to that list, or it never gets stamped. `admin.html` is
-  deliberately unstamped; it is served `no-store`.
+  `assets/` is added to that list, or it never gets stamped. `admin.html` was
+  the exception once, because it is served `no-store`, and drew new markup
+  with a four-hour-old stylesheet for it: there are no exceptions now.
 
 ## The steps
 
