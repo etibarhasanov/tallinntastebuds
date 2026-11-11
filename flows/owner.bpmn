@@ -160,6 +160,7 @@ ref: functions/api/admin/live.js GET
 ref: functions/api/admin/flows.js GET
 ref: functions/api/admin/venues.js GET
 ref: functions/api/admin/top100.js GET
+ref: functions/api/admin/growth.js GET
 ref: functions/api/admin/refreshes.js GET
 ref: functions/api/admin/github/[[path]].js</bpmn:documentation>
       <bpmn:incoming>owner-e21</bpmn:incoming>

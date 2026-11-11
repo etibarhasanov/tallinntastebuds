@@ -6,7 +6,7 @@ blog about what all of it does and where to eat that members write in too, a pag
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
 through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
 flashcards.
-Static files, forty-one Cloudflare Functions, two D1 databases (preview and
+Static files, forty-two Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and

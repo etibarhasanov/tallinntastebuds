@@ -25,6 +25,14 @@
  * current whenever the page is open, and the directory's printed positions
  * are a week old at most.
  *
+ * And a third, Growth: one request to /api/admin/growth, the first time the
+ * tab is pressed, for every place Google has answered about twice — where its
+ * review count started, the last two answers, what it gathers in a month and
+ * what places its size usually do — drawn as a table that is filtered and
+ * sorted here, with a row that opens onto the place's line. Nothing in it is
+ * kept: the route reads the history each time, so the table is as new as
+ * Google's last answer.
+ *
  * Plain browser JavaScript, no modules, no build step, same as every other
  * file in assets/. It shares the tokens, the card, the eyebrow, the search
  * field and the price gauge with assets/styles.css and adds only what a
@@ -70,6 +78,15 @@
      carry last week's printed positions and the next load's carry this
      week's. The order of the cards is this file's own arithmetic either way. */
   var TOP_API = '/api/admin/top100';
+  /* How each place's review count has moved — functions/api/admin/growth.js.
+     Asked for when the tab is first pressed rather than beside the roll: it
+     reads the whole history, and most openings of this page are for the
+     directory. */
+  var GROWTH_API = '/api/admin/growth';
+  /* What the Growth tab can be narrowed to and ordered by. The verdicts are
+     the route's own words for a row; 'all' is none of them. */
+  var GROWTH_FILTERS = ['all', 'ahead', 'pace', 'behind', 'check'];
+  var GROWTH_SORTS = ['ahead', 'behind', 'month', 'gained', 'rank'];
 
   /* How many cards are built at once. Seven hundred articles is a second of
      layout on a phone and a scrollbar nobody can aim with, so the list grows a
@@ -123,8 +140,15 @@
     shown: [],      // the ones matching the filters, in the chosen order
     pages: 1,       // how many screenfuls of cards are built
     selected: '',   // the venue whose card and dot are lit
-    tab: 'all',     // 'all', the directory, or 'top', the week's hundred
+    tab: 'all',     // 'all', the directory; 'top', the week's hundred; 'growth'
     top: null,      // what TOP_API answered, or null when it did not
+    /* The Growth tab: undefined until it is first pressed, null while the
+       answer is on its way, false when it did not come, and the answer. */
+    growth: undefined,
+    growthFilter: 'all',
+    growthTop: false,   // only the places in Google's top hundred
+    growthSort: 'ahead',
+    growthOpen: '',     // the place whose row is opened onto its line
 
     q: '',
     open: false,
@@ -415,7 +439,8 @@
     state.price = PRICES.indexOf(price) !== -1 ? price : 0;
     var sort = p.get('sort');
     state.sort = SORTS.indexOf(sort) !== -1 ? sort : 'best';
-    state.tab = p.get('tab') === 'top' ? 'top' : 'all';
+    var tab = p.get('tab');
+    state.tab = tab === 'top' || tab === 'growth' ? tab : 'all';
   }
 
   function writeUrl() {
@@ -430,7 +455,7 @@
     set('rating', state.rating || '');
     set('price', state.price || '');
     set('sort', state.sort === 'best' ? '' : state.sort);
-    set('tab', state.tab === 'top' ? 'top' : '');
+    set('tab', state.tab === 'all' ? '' : state.tab);
 
     var query = p.toString();
     try {
@@ -1032,20 +1057,297 @@
     top.top.forEach(function (place) { dom.topList.appendChild(topRow(place)); });
   }
 
-  /* Which of the page's two halves is on screen. The class goes on the body
-     and the stylesheet decides what it means, the way venues-on-map does;
-     the bar is measured again because the filters leave it under one tab
-     and the map's height reads off the bar. */
+  /* -------------------------------------------------------------- growth */
+
+  /* A count with its sign, whole: +71, 0, −2 as the language writes it. */
+  function signed(n) {
+    var whole = Math.round(n);
+    return (whole > 0 ? '+' : '') + number(whole);
+  }
+
+  /* The rows the chips and the order leave, out of what the route answered.
+     A jump has no pace to be ordered by — its month is the leap itself — so
+     under the three orders that read the pace it goes last whichever way
+     they run. */
+  function growthRows() {
+    var rows = state.growth.places.filter(function (place) {
+      if (state.growthFilter !== 'all' && place.verdict !== state.growthFilter) return false;
+      return !state.growthTop || (place.rank !== null && place.rank <= 100);
+    });
+    var sort = state.growthSort;
+    var key = function (place) {
+      if (sort === 'gained') return -place.gained;
+      if (sort === 'rank') return place.rank === null ? Infinity : place.rank;
+      if (place.verdict === 'check') return Infinity;
+      if (sort === 'month') return -place.month;
+      return sort === 'behind' ? place.ratio : -place.ratio;
+    };
+    return rows.sort(function (a, b) { return key(a) - key(b) || a.name.localeCompare(b.name); });
+  }
+
+  /* A count over the day it was Google's answer, or a dash where the place
+     has no such point. */
+  function growthPoint(point) {
+    if (!point) return el('td', { className: 'growth-none', textContent: '–' });
+    return el('td', {}, [number(point.n), el('span', { className: 'growth-day', textContent: dayOf(point.at) })]);
+  }
+
+  /* The verdict as a word, with an arrow where there is a direction: an
+     arrow needs no language, and the word is what a screen reader says. */
+  function growthVerdict(verdict) {
+    var word = verdict === 'ahead' ? t('growthIsAhead')
+      : verdict === 'behind' ? t('growthIsBehind')
+      : verdict === 'check' ? t('growthIsCheck')
+      : t('growthIsPace');
+    var arrow = verdict === 'ahead' ? '▲ ' : verdict === 'behind' ? '▼ ' : '';
+    return el('td', {
+      className: 'growth-verdict' + (verdict === 'ahead' || verdict === 'check' ? ' is-up' : ''),
+      textContent: arrow + word
+    });
+  }
+
+  /* One place: its rank, its name — a button, because pressing it opens the
+     row onto the place's line — and the nine numbers. */
+  function growthRow(place) {
+    var open = state.growthOpen === place.id;
+    var check = place.verdict === 'check';
+    return el('tr', { 'data-id': place.id }, [
+      el('td', {
+        className: place.rank === null ? 'growth-none' : 'growth-rank',
+        textContent: place.rank === null ? '–' : t('venuesRank', { n: number(place.rank) })
+      }),
+      el('th', { scope: 'row' }, [el('button', {
+        type: 'button',
+        className: 'growth-name',
+        'aria-expanded': open ? 'true' : 'false',
+        textContent: place.name
+      })]),
+      growthPoint(place.first),
+      growthPoint(place.prev),
+      growthPoint(place.last),
+      el('td', { textContent: signed(place.gained) }),
+      el('td', { textContent: signed(place.month) }),
+      el('td', { textContent: number(Math.round(place.usual)) }),
+      el('td', { textContent: check ? '' : place.ratio.toFixed(1) + '×' }),
+      growthVerdict(place.verdict),
+      el('td', {
+        className: place.forecast === null ? 'growth-none' : null,
+        textContent: place.forecast === null ? '–' : number(place.forecast)
+      })
+    ]);
+  }
+
+  /* The place's line: every answer as a dot, the count over the first and
+     the last of them, and this month's pace carried to the forecast's day as
+     a dashed line ending in a hollow dot — hollow because nobody has counted
+     it. A function of the row and nothing else, sized by its viewBox the way
+     the chart on /insights is, whose classes these are. */
+  function growthChart(place) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var W = 340, H = 120, L = 14, R = 22, T = 22, B = 26;
+    var points = place.series.map(function (p) { return { at: p[0], n: p[1] }; });
+    var ahead = place.forecast === null ? null : { at: state.growth.forecastAt, n: place.forecast };
+    var all = ahead ? points.concat([ahead]) : points;
+    var from = all[0].at, to = all[all.length - 1].at;
+    var lo = Infinity, hi = -Infinity;
+    all.forEach(function (p) { lo = Math.min(lo, p.n); hi = Math.max(hi, p.n); });
+    var x = function (p) { return L + (to > from ? (p.at - from) / (to - from) : 0) * (W - L - R); };
+    var y = function (p) { return H - B - (hi > lo ? (p.n - lo) / (hi - lo) : 0.5) * (H - T - B); };
+    var path = function (list) {
+      return list.map(function (p) { return x(p).toFixed(1) + ',' + y(p).toFixed(1); }).join(' ');
+    };
+    var node = function (tag, attrs, text) {
+      var made = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach(function (k) { made.setAttribute(k, attrs[k]); });
+      if (text !== undefined) made.textContent = text;
+      return made;
+    };
+
+    var svg = node('svg', {
+      'class': 'ins-chart', viewBox: '0 0 ' + W + ' ' + H, role: 'img',
+      'aria-label': t('growthChartLabel', { name: place.name })
+    });
+    svg.appendChild(node('line', { 'class': 'ins-grid', x1: L, x2: W - R, y1: H - B, y2: H - B }));
+    svg.appendChild(node('polyline', { 'class': 'ins-line', points: path(points) }));
+    if (ahead) {
+      svg.appendChild(node('polyline', { 'class': 'growth-ahead', points: path([points[points.length - 1], ahead]) }));
+    }
+    points.forEach(function (p) {
+      svg.appendChild(node('circle', { 'class': 'ins-dot', cx: x(p).toFixed(1), cy: y(p).toFixed(1), r: 4 }));
+    });
+    if (ahead) {
+      svg.appendChild(node('circle', { 'class': 'growth-hollow', cx: x(ahead).toFixed(1), cy: y(ahead).toFixed(1), r: 4 }));
+    }
+    /* Words on the first, the last and the forecast only: a place asked about
+       every fortnight has more dots than a phone has room to label. */
+    var named = [points[0], points[points.length - 1]].concat(ahead ? [ahead] : []);
+    named.forEach(function (p, i) {
+      var anchor = i === 0 ? 'start' : i === named.length - 1 ? 'end' : 'middle';
+      var at = i === 0 ? L : i === named.length - 1 ? W - R + 12 : x(p);
+      svg.appendChild(node('text', { x: at.toFixed(1), y: (y(p) - 9).toFixed(1), 'text-anchor': anchor }, number(p.n)));
+      svg.appendChild(node('text', { x: at.toFixed(1), y: H - 8, 'text-anchor': anchor }, dayOf(p.at)));
+    });
+    return svg;
+  }
+
+  /* The row under an opened one: the line, and for a count that jumped the
+     sentence saying why it has no pace. One cell as wide as the table, and
+     inside it a block as wide as the screen — the stylesheet holds it to the
+     left edge, so on a phone the line is whole wherever the table has slid. */
+  function growthMore(place) {
+    var line = el('div', { className: 'growth-line' }, [growthChart(place)]);
+    line.appendChild(el('p', {
+      className: 'growth-note',
+      textContent: place.verdict === 'check'
+        ? t('growthCheckNote')
+        : t('growthChartNote', { date: dayOf(state.growth.forecastAt) })
+    }));
+    return el('tr', {}, [el('td', { className: 'growth-more', colspan: 11 }, [line])]);
+  }
+
+  /* The chips: the five verdicts with how many places each holds, pressed
+     one at a time, and beside them the one that keeps the top hundred, which
+     narrows whichever of them is pressed. */
+  function growthChips() {
+    var counts = state.growth.counts;
+    clear(dom.growthChips);
+    GROWTH_FILTERS.forEach(function (kind) {
+      var n = number(counts[kind]);
+      dom.growthChips.appendChild(el('button', {
+        type: 'button', className: 'chip', 'data-filter': kind,
+        'aria-pressed': state.growthFilter === kind ? 'true' : 'false',
+        textContent: kind === 'ahead' ? t('growthAhead', { n: n })
+          : kind === 'pace' ? t('growthPace', { n: n })
+          : kind === 'behind' ? t('growthBehind', { n: n })
+          : kind === 'check' ? t('growthCheck', { n: n })
+          : t('growthAll', { n: n })
+      }));
+    });
+    dom.growthChips.appendChild(el('button', {
+      type: 'button', className: 'chip', 'data-filter': 'top',
+      'aria-pressed': state.growthTop ? 'true' : 'false',
+      textContent: t('growthTop')
+    }));
+  }
+
+  /* The whole tab, from what GROWTH_API answered. Four things it can say:
+     that it is being read, that it could not be, that the history is not in
+     this database or holds nothing to compare yet, or the table. */
+  function renderGrowth() {
+    /* Pressed before the strings have landed — a link straight to the tab —
+       there is nothing to say it in yet; boot() draws it again once there is. */
+    if (state.ui.growthLine === undefined) return;
+    var growth = state.growth;
+    var have = !!growth && growth.ready && growth.places.length > 0;
+    dom.growthBody.hidden = !have;
+    if (!have) {
+      dom.growthLine.textContent = growth === null ? t('growthReading')
+        : growth === false ? t('loadError')
+        : !growth.ready ? t('growthNone')
+        : t('growthEmpty');
+      return;
+    }
+    dom.growthLine.textContent = t('growthLine', {
+      n: number(growth.counts.all), ahead: number(growth.counts.ahead),
+      behind: number(growth.counts.behind), date: dayOf(growth.last)
+    });
+    dom.growthForecast.textContent = t('growthColForecast', { date: dayOf(growth.forecastAt) });
+    growthChips();
+
+    clear(dom.growthSort);
+    GROWTH_SORTS.forEach(function (sort) {
+      dom.growthSort.appendChild(el('option', {
+        value: sort, selected: state.growthSort === sort,
+        textContent: sort === 'behind' ? t('growthSortBehind')
+          : sort === 'month' ? t('growthSortMonth')
+          : sort === 'gained' ? t('growthSortGained')
+          : sort === 'rank' ? t('growthSortRank')
+          : t('growthSortAhead')
+      }));
+    });
+
+    clear(dom.growthRows);
+    growthRows().forEach(function (place) {
+      dom.growthRows.appendChild(growthRow(place));
+      if (state.growthOpen === place.id) dom.growthRows.appendChild(growthMore(place));
+    });
+  }
+
+  /* The table as it stands — the chips' rows in the chosen order — as CSV,
+     for a spreadsheet. The header is the same in every language and the days
+     are ISO, because this is for a program to read; the page is for a
+     person. */
+  function growthCsv() {
+    var day = function (point) { return point ? new Date(point.at).toISOString().slice(0, 10) : ''; };
+    var cell = function (value) {
+      var text = value === null || value === undefined ? '' : String(value);
+      return /[",\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    };
+    var lines = [['google_rank', 'name', 'first', 'first_date', 'previous', 'previous_date', 'latest', 'latest_date',
+      'gained', 'reviews_per_month', 'usual_per_month', 'against_usual', 'verdict',
+      'forecast_' + day({ at: state.growth.forecastAt })]];
+    growthRows().forEach(function (p) {
+      lines.push([p.rank, p.name, p.first && p.first.n, day(p.first), p.prev && p.prev.n, day(p.prev),
+        p.last.n, day(p.last), p.gained, p.month, p.usual, p.verdict === 'check' ? '' : p.ratio, p.verdict, p.forecast]);
+    });
+    return lines.map(function (line) { return line.map(cell).join(','); }).join('\n') + '\n';
+  }
+
+  /* Onto the clipboard, and the button says so for a moment. Where the
+     browser will not hand the clipboard over, the old way: a field holding
+     the text, selected, and the copy command. */
+  function copyGrowth() {
+    var text = growthCsv();
+    var done = function () {
+      dom.growthCopy.textContent = t('growthCopied');
+      window.setTimeout(function () { dom.growthCopy.textContent = t('growthCopy'); }, 2000);
+    };
+    var byHand = function () {
+      var field = el('textarea', { readonly: true, 'aria-hidden': 'true' });
+      field.value = text;
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      try { if (document.execCommand('copy')) done(); } catch (e) { /* nothing copied, and the button says nothing */ }
+      document.body.removeChild(field);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, byHand);
+    } else {
+      byHand();
+    }
+  }
+
+  /* The first press of the tab asks; every later one draws what came. */
+  function loadGrowth() {
+    if (state.growth !== undefined) return;
+    state.growth = null;
+    getJSON(GROWTH_API).catch(function () { return false; }).then(function (answer) {
+      state.growth = answer && Array.isArray(answer.places) ? answer : answer ? { ready: false } : false;
+      renderGrowth();
+    });
+  }
+
+  /* Which of the page's three halves is on screen. The class goes on the
+     body and the stylesheet decides what it means, the way venues-on-map
+     does; the bar is measured again because the filters leave it under two
+     of the tabs and the map's height reads off the bar. */
   function showTab(tab) {
     state.tab = tab;
     var top = tab === 'top';
+    var growth = tab === 'growth';
     document.body.classList.toggle('venues-on-top', top);
+    document.body.classList.toggle('venues-on-growth', growth);
+    dom.tabAll.setAttribute('aria-pressed', tab === 'all' ? 'true' : 'false');
     dom.tabTop.setAttribute('aria-pressed', top ? 'true' : 'false');
-    dom.tabAll.setAttribute('aria-pressed', top ? 'false' : 'true');
+    dom.tabGrowth.setAttribute('aria-pressed', growth ? 'true' : 'false');
     dom.top.hidden = !top;
+    dom.growth.hidden = !growth;
+    if (growth) { loadGrowth(); renderGrowth(); }
     measureBar();
     writeUrl();
-    if (!top && map) map.invalidateSize();
+    if (tab === 'all' && map) map.invalidateSize();
   }
 
   /* A row of the hundred pressed: the directory, with nothing narrowing it
@@ -1228,6 +1530,36 @@
 
     dom.tabTop.addEventListener('click', function () { showTab('top'); TTBTrack.event('venues_tab', { tab: 'top' }); });
     dom.tabAll.addEventListener('click', function () { showTab('all'); TTBTrack.event('venues_tab', { tab: 'all' }); });
+    dom.tabGrowth.addEventListener('click', function () { showTab('growth'); TTBTrack.event('venues_tab', { tab: 'growth' }); });
+
+    /* The Growth tab's four controls. The chips and the rows are rebuilt on
+       every draw, so each has one listener on the element that outlives them. */
+    dom.growthChips.addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('.chip') : null;
+      if (!chip) return;
+      var filter = chip.getAttribute('data-filter');
+      if (filter === 'top') state.growthTop = !state.growthTop;
+      else state.growthFilter = filter;
+      renderGrowth();
+      TTBTrack.event('growth_filter', { filter: filter });
+    });
+    dom.growthSort.addEventListener('change', function () {
+      state.growthSort = dom.growthSort.value;
+      renderGrowth();
+      TTBTrack.event('growth_sort', { sort: state.growthSort });
+    });
+    dom.growthRows.addEventListener('click', function (e) {
+      var button = e.target.closest ? e.target.closest('.growth-name') : null;
+      if (!button) return;
+      var id = button.closest('tr').getAttribute('data-id');
+      state.growthOpen = state.growthOpen === id ? '' : id;
+      renderGrowth();
+      TTBTrack.event('growth_open', { venue: button.textContent });
+    });
+    dom.growthCopy.addEventListener('click', function () {
+      copyGrowth();
+      TTBTrack.event('growth_copy');
+    });
 
     /* One listener for the hundred, on the list that outlives them, as above. */
     dom.topList.addEventListener('click', function (e) {
@@ -1272,7 +1604,16 @@
       top: $('venues-top'),
       topLead: $('venues-top-lead'),
       topLine: $('venues-top-line'),
-      topList: $('venues-top-list')
+      topList: $('venues-top-list'),
+      tabGrowth: $('venues-tab-growth'),
+      growth: $('venues-growth'),
+      growthLine: $('growth-line'),
+      growthBody: $('growth-body'),
+      growthChips: $('growth-chips'),
+      growthSort: $('growth-sort'),
+      growthCopy: $('growth-copy'),
+      growthForecast: $('growth-col-forecast'),
+      growthRows: $('growth-rows')
     };
 
     applyStyle();
@@ -1304,6 +1645,7 @@
       drawMap();
       state.top = loaded[4];
       renderTop();
+      if (state.tab === 'growth') renderGrowth();
 
       if (!loaded[3] || !Array.isArray(loaded[3])) { failed(); return; }
       state.all = loaded[3];

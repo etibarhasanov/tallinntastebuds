@@ -38,7 +38,7 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
 <link rel="stylesheet" href="/assets/styles.lean.css?v=b15f554f">
-<link rel="stylesheet" href="/assets/venues.css?v=6762d2ee">
+<link rel="stylesheet" href="/assets/venues.css?v=6d8d0d1d">
 <!-- The row of the owner's pages under the header, which the other four
      draw from the same sheet. -->
 <link rel="stylesheet" href="/assets/stats.css?v=60bcdad6">
@@ -88,16 +88,18 @@
      control onto a second line changes that. -->
 <div class="venues-bar" id="venues-bar">
 
-<!-- The two things this page is: the whole directory, searched and filtered,
-     and the week's top hundred of it with how each place moved since the
-     ranking before. One pair of buttons, the same .seg the phone's list/map
-     switch below is, drawn at every width because the choice exists at every
-     width. The class it puts on the body — venues-on-top — is what hides the
-     filters and the split and shows the hundred; the stylesheet decides what
-     it means. -->
+<!-- The three things this page is: the whole directory, searched and
+     filtered; the week's top hundred of it with how each place moved since
+     the ranking before; and how each place's review count has grown, as a
+     table. One row of buttons, the same .seg the phone's list/map switch
+     below is, drawn at every width because the choice exists at every width.
+     The class it puts on the body — venues-on-top or venues-on-growth — is
+     what hides the filters and the split and shows the other half; the
+     stylesheet decides what it means. -->
 <div class="seg venues-tabs" id="venues-tabs">
   <button type="button" class="btn btn-wide" id="venues-tab-all" aria-pressed="true" data-i18n="venuesTabAll">Directory</button>
   <button type="button" class="btn btn-wide" id="venues-tab-top" aria-pressed="false" data-i18n="venuesTabTop">Top 100</button>
+  <button type="button" class="btn btn-wide" id="venues-tab-growth" aria-pressed="false" data-i18n="venuesTabGrowth">Growth</button>
 </div>
 
 <!-- A form so that a phone keyboard offers Search and Enter does nothing
@@ -184,6 +186,47 @@
   <ol class="venues-top-list" id="venues-top-list"></ol>
 </section>
 
+<!-- How each place's Google review count has moved. Filled by renderGrowth()
+     in assets/venues.js out of /api/admin/growth, asked for the first time
+     the tab is pressed and hidden until then. The head of the table is here
+     and its body is drawn: the columns are the page's, the rows are the
+     data's. The wrapper is what slides sideways on a phone, so the page
+     never does. -->
+<section class="venues-top venues-growth" id="venues-growth" hidden aria-labelledby="venues-growth-title">
+  <h2 class="venues-top-title" id="venues-growth-title" data-i18n="venuesTabGrowth">Growth</h2>
+  <p class="venues-top-lead" data-i18n="growthLead">How each place’s Google review count has moved, and how fast it is gathering reviews against the pace usual for a place its size.</p>
+  <p class="venues-count" id="growth-line" role="status" aria-live="polite"></p>
+  <div id="growth-body" hidden>
+    <div class="growth-chips" id="growth-chips"></div>
+    <div class="growth-tools">
+      <label class="venues-pick">
+        <span class="venues-pick-label" data-i18n="venuesSort">Sort by</span>
+        <select class="venues-select" id="growth-sort"></select>
+      </label>
+      <button type="button" class="alt growth-copy" id="growth-copy" data-i18n="growthCopy">Copy as CSV</button>
+    </div>
+    <div class="growth-wrap">
+      <table class="growth-table">
+        <thead><tr>
+          <th scope="col" data-i18n="growthColRank">Rank</th>
+          <th scope="col" data-i18n="growthColPlace">Place</th>
+          <th scope="col" data-i18n="growthColFirst">First</th>
+          <th scope="col" data-i18n="growthColPrev">Previous</th>
+          <th scope="col" data-i18n="growthColLast">Latest</th>
+          <th scope="col" data-i18n="growthColGained">Gained</th>
+          <th scope="col" data-i18n="growthColMonth">A month</th>
+          <th scope="col" data-i18n="growthColUsual">Usual</th>
+          <th scope="col" data-i18n="growthColRatio">Against usual</th>
+          <th scope="col" class="growth-verdict" data-i18n="growthColVerdict">Verdict</th>
+          <th scope="col" id="growth-col-forecast"></th>
+        </tr></thead>
+        <tbody id="growth-rows"></tbody>
+      </table>
+    </div>
+    <p class="growth-note" data-i18n="growthNote">First is where the place’s history starts. Previous and Latest are Google’s last two answers, with the day each came. A month is the gain between those two, as thirty days’ worth. Usual is what places that size gather.</p>
+  </div>
+</section>
+
 <div class="venues-split" id="venues-split">
   <section class="venues-results" id="venues-results" tabindex="-1" aria-labelledby="venues-count">
     <!-- How many matched, and the one place on the page that says a filter did
@@ -228,6 +271,6 @@
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
 <script src="/assets/pins.js?v=034d403c" defer></script>
-<script src="/assets/venues.js?v=e1340727" defer></script>
+<script src="/assets/venues.js?v=da52bb9e" defer></script>
 </body>
 </html>
