@@ -1158,7 +1158,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       out.appendChild(el('p', { className: 'note', textContent:
         'A Google place is asked about again when somebody opens it and its numbers are more than ' +
         r.refreshAfterDays + ' days old, and every evening what is left of the day’s calls goes to ' +
-        'the oldest rows. At most ' + r.calls.day + ' calls a day and ' +
+        'the oldest rows. At most ' + r.calls.day + ' calls a day of the site’s own accord, ' +
+        r.calls.opens + ' with the places people open, and ' +
         r.calls.monthCap + ' a month, inside Google’s free thousand.' }));
 
       var facts = el('dl', { className: 'admin-facts' });
@@ -1166,7 +1167,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         facts.appendChild(el('div', {}, [el('dt', { textContent: term }), el('dd', { textContent: value })]));
       }
       fact('Key', r.key ? 'set' : 'not set — nothing refreshes');
-      fact('Calls today', r.calls.today + ' of ' + r.calls.day);
+      fact('Calls today', r.calls.today + ' of ' + r.calls.opens);
       fact('This month', r.calls.month + ' of ' + r.calls.monthCap);
       fact('Refreshed', r.table.refreshed.toLocaleString('en') + ' of ' +
         r.table.total.toLocaleString('en') + ' places');

@@ -31,7 +31,7 @@
  *
  * Anybody, and it carries no secret, because there is nothing to protect: the
  * budget is claimed in the database before any call leaves, so no caller can
- * make the site spend past its thirty-two, and the hour gates mean a stranger
+ * make the site spend past the thirty-two the fill stops at, and the hour gates mean a stranger
  * who calls it can only do, on the same rows, what the workflow's next knock
  * would have done. Before FILL_FROM_HOUR it answers 'early' and asks nothing,
  * so a call at breakfast cannot take the day away from the opens.

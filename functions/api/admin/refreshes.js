@@ -14,7 +14,7 @@
  *     ready: true,
  *     key: true,                               a usable GOOGLE_MAPS_API_KEY is set
  *     refreshAfterDays: 30,
- *     calls: { today: 4, month: 118, day: 32, monthCap: 950 },
+ *     calls: { today: 4, month: 118, day: 32, opens: 64, monthCap: 950 },
  *     table: { total: 1045, refreshed: 212, due: 833 },
  *     recent: [
  *       { at: 1790000000000, id: "ChIJ…", name: "Morii Tea House",
@@ -115,6 +115,7 @@ export async function onRequestGet(context) {
         today: calls.today,
         month: calls.month,
         day: BUDGET.details.day,
+        opens: BUDGET.details.opens,
         monthCap: BUDGET.details.month
       },
       table: {
