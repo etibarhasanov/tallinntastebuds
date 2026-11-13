@@ -71,12 +71,29 @@
  * its own, made on the press — traceFor(), and `&who=` in
  * functions/api/walk.js.
  *
- * ON FOOT OR BY BIKE
+ * ON FOOT AND BY BIKE, WITHOUT ASKING WHICH
  *
- * Two chips on the card, and the walker picks one or leaves it on foot. It
- * changes the time the card and the legs estimate — PACE — and the word
- * beside their name on the board; the order and the distances are the same
- * streets either way. It can be changed until the walk is finished.
+ * There were two chips on the card, On foot and By bike, and all they
+ * changed was the time the card estimated and a word on the board: the
+ * order and the distances are the same streets either way. Somebody who
+ * walks to three places and cycles to the other five had nothing to press.
+ * So the card asks nothing and says both — timesLine(), the time on foot
+ * and the time by bike side by side under the distance — and the legs on
+ * the rail are on foot, the slower of the two. Nobody is asked how they
+ * went, and it cannot be read off the clock either, since a walk may take
+ * as many days as its walker likes. The server still keeps a mode with
+ * every walk, `foot` unless it was told otherwise, and the board still says
+ * By bike beside anybody who picked it while there were chips to pick.
+ *
+ * WHAT ELSE THE CARD CAN DO
+ *
+ * Start from where I am, See it on the map, Change the order: three tiles
+ * in a row under the sentences, an icon over the words, the width of the
+ * card shared between however many there are — tiles(). They were
+ * underlined words once, scattered across two lines, and read as small
+ * print rather than as three things to do. Start again stays underlined
+ * words under them, on purpose: it takes everything with it, and should not
+ * look like the others.
  *
  * YOUR ORDER IS YOURS
  *
@@ -131,9 +148,6 @@
   var DETOUR = 1.3;
   var PACE = { foot: 80, bike: 250 };
 
-  /* The ways to go round, the first being what a walk is until somebody
-     says otherwise. The server's — MODES in functions/api/walk.js. */
-  var MODES = ['foot', 'bike'];
 
   /* The longest list whose order is found exactly. Twelve places is four
      thousand sets of them and half a million steps, which a phone does
@@ -146,6 +160,13 @@
 
   var ICON_GRIP = '<path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/>';
   var ICON_TICK = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
+  /* The tiles' — see tiles(). A crosshair for where the phone is, a folded
+     map, two arrows passing for an order changed, a pencil for a comment. */
+  var ICON_HERE = '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/>' +
+    '<path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>';
+  var ICON_MAP = '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>';
+  var ICON_ORDER = '<path d="M7 4v16M3.5 7.5L7 4l3.5 3.5M17 20V4M13.5 16.5L17 20l3.5-3.5"/>';
+  var ICON_NOTE = '<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>';
 
   /* The walk on screen. One at a time, because the page shows one list:
      made the first time view() is handed that list and kept across every
@@ -426,7 +447,6 @@
      changing it here. */
   function land(out) {
     w.data = out;
-    if (out.walk && MODES.indexOf(out.walk.mode) !== -1) w.mode = out.walk.mode;
     if (out.walk && out.walk.order && out.walk.order.length && !w.editing) w.own = out.walk.order;
     c.redraw();
   }
@@ -512,7 +532,7 @@
   function startWalk() {
     w.busy = 'start';
     c.redraw();
-    send({ action: 'start', order: w.own || [], mode: w.mode }).then(function (answer) {
+    send({ action: 'start', order: w.own || [] }).then(function (answer) {
       w.busy = '';
       if (answer.status !== 200) { say(c.t('walkErr'), true); c.redraw(); return; }
       TTBTrack.event('walk_start', { list_id: w.list.id });
@@ -558,16 +578,6 @@
       say(c.t('walkNoLocation'), true);
       c.redraw();
     });
-  }
-
-  /* On foot or by bike. Kept with the walk where there is one, and in this
-     page until Start sends it. */
-  function setMode(mode) {
-    if (mode === w.mode) return;
-    w.mode = mode;
-    TTBTrack.event('walk_mode', { list_id: w.list.id, mode: mode });
-    c.redraw();
-    if (started()) send({ action: 'mode', mode: mode });
   }
 
   /* A comment: on the place checked in at, or with `place` '' on the whole
@@ -819,6 +829,33 @@
 
   function alt(label, onClick) { return c.button(label, 'alt', onClick); }
 
+  /* A tile: an icon over its words, a button or — with an href — a link.
+     The row they stand in shares the card's width between however many
+     there are, so two are halves and three are thirds. */
+  function tile(icon, label, onClick, href) {
+    var node = c.el(href ? 'a' : 'button', href ? { className: 'walk-tile', href: href }
+      : { type: 'button', className: 'walk-tile' }, [
+      c.el('span', { className: 'walk-tile-icon', 'aria-hidden': 'true',
+        html: '<svg viewBox="0 0 24 24" focusable="false">' + icon + '</svg>' }),
+      c.el('span', { textContent: label })
+    ]);
+    if (onClick) node.addEventListener('click', onClick);
+    return node;
+  }
+
+  /* How long a stretch of the walk takes on foot and by bike, said side by
+     side because nobody is asked which — see ON FOOT AND BY BIKE above. The
+     two times are the line's weight, so they are split out of the sentence
+     and drawn in the ink; walkTimes keeps them where each language puts
+     them. */
+  function timesLine(m) {
+    var said = c.t('walkTimes', { foot: '\u0001', bike: '\u0002' });
+    var times = { '\u0001': minutes(m / PACE.foot), '\u0002': minutes(m / PACE.bike) };
+    return c.el('p', { className: 'walk-times mono' }, said.split(/([\u0001\u0002])/).map(function (part) {
+      return times[part] ? c.el('b', { textContent: times[part] }) : part;
+    }).filter(Boolean));
+  }
+
   function head(p) {
     var total = doors().length;
     var lost = w.list.items.length - total;
@@ -827,11 +864,7 @@
       c.el('p', { className: 'eyebrow', textContent: c.t(finished() ? 'walkFinishedEyebrow' : 'walkEyebrow') }),
       c.heading(w.list.title)
     ];
-    var about = c.t(w.mode === 'bike' ? 'walkAboutBike' : 'walkAbout', {
-      places: c.countLabel(total),
-      distance: distance(p.total),
-      time: minutes(p.total / PACE[w.mode])
-    });
+    var about = c.t('walkSpan', { places: c.countLabel(total), distance: distance(p.total) });
     var playing = null;
     /* What is left of a walk that is on, and how far it is from the phone
        through them in order — from the first of them before the phone has
@@ -843,6 +876,7 @@
       /* Changing the order is its own screen: the totals, what to do, and
          the way back to the shortest — which lives here and nowhere else. */
       kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
+      kids.push(timesLine(p.total));
       kids.push(c.el('p', { className: 'walk-from', textContent: c.t('walkReorderHint') }));
       kids.push(c.el('div', { className: 'lists-row walk-alts' }, [alt(c.t('walkShortest'), resetOrder)]));
       return c.card(kids);
@@ -858,6 +892,7 @@
       }) }));
     } else {
       kids.push(c.el('p', { className: 'walk-facts mono', textContent: about }));
+      if (total) kids.push(timesLine(p.total));
     }
 
     if (started()) {
@@ -875,10 +910,9 @@
         playing = c.el('p', { className: 'walk-facts mono' });
         kids.push(playing);
         kids.push(c.el('p', { className: 'walk-facts mono', textContent: toGo
-          ? c.t(w.mode === 'bike' ? 'walkLeftBike' : 'walkLeft', {
-            n: left.length, distance: distance(toGo), time: minutes(toGo / PACE[w.mode])
-          })
+          ? c.t('walkLeftSpan', { n: left.length, distance: distance(toGo) })
           : about }));
+        kids.push(timesLine(toGo || p.total));
         kids.push(c.el('p', { className: 'walk-from', textContent: w.replanned
           ? c.t('walkReplanned', { place: left[0].name })
           : c.t('walkGoal', { total: total }) }));
@@ -889,16 +923,6 @@
         }));
         kids.push(c.el('p', { className: 'walk-how', textContent: c.t('walkHow') }));
       }
-      kids.push(c.el('div', { className: 'lists-row walk-modes' }, MODES.map(function (mode) {
-        var chip = c.el('button', {
-          type: 'button',
-          className: 'chip',
-          'aria-pressed': mode === w.mode ? 'true' : 'false',
-          textContent: c.t(mode === 'bike' ? 'walkBike' : 'walkFoot')
-        });
-        chip.addEventListener('click', function () { setMode(mode); });
-        return chip;
-      })));
     }
 
     /* What the walker said about the whole of it — the board under this
@@ -907,25 +931,28 @@
       kids.push(c.el('p', { className: 'walk-note', textContent: w.data.walk.note }));
     }
 
-    /* The quiet row: everything else this card can do, in the order
-       somebody would reach for it. */
-    var alts = [
-      finished() && w.noting !== '' ? alt(c.t(w.data.walk.note ? 'walkNoteEdit' : 'walkNoteAdd'), function () {
+    /* The tiles: everything else this card can do, in the order somebody
+       would reach for it — see WHAT ELSE THE CARD CAN DO above. */
+    var tiles = [
+      finished() && w.noting !== '' ? tile(ICON_NOTE, c.t(w.data.walk.note ? 'walkNoteEdit' : 'walkNoteAdd'), function () {
         w.noting = '';
         say('');
         c.redraw();
       }) : null,
       !started() && !w.from && !w.own && total
-        ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe) : null,
+        ? tile(ICON_HERE, c.t(w.busy === 'here' ? 'walkFinding' : 'walkFromMe'), fromMe) : null,
       started() && !finished() && left.length > 1
-        ? alt(c.t(w.busy === 'here' ? 'walkFinding' : 'walkReplan'), replan) : null,
-      total ? TTBTrack.click(c.el('a', {
-        className: 'alt', href: c.mapHref(), textContent: c.t('walkOnMap')
-      }), 'walk_map', { list_id: w.list.id }) : null,
-      !finished() && total > 2 ? alt(c.t('walkReorder'), reorder) : null,
-      started() && !w.asking ? alt(c.t('walkAgain'), function () { w.asking = true; c.redraw(); }) : null
+        ? tile(ICON_HERE, c.t(w.busy === 'here' ? 'walkFinding' : 'walkReplan'), replan) : null,
+      total ? TTBTrack.click(tile(ICON_MAP, c.t('walkOnMap'), null, c.mapHref()),
+        'walk_map', { list_id: w.list.id }) : null,
+      !finished() && total > 2 ? tile(ICON_ORDER, c.t('walkReorder'), reorder) : null
     ].filter(Boolean);
-    if (alts.length) kids.push(c.el('div', { className: 'lists-row walk-alts' }, alts));
+    if (tiles.length) kids.push(c.el('div', { className: 'walk-tiles' }, tiles));
+    if (started() && !w.asking) {
+      kids.push(c.el('div', { className: 'lists-row walk-alts' }, [
+        alt(c.t('walkAgain'), function () { w.asking = true; c.redraw(); })
+      ]));
+    }
 
     /* Start again, asked before it is done: it takes every check, every
        comment and a time on the board with it. */
@@ -1019,10 +1046,10 @@
     var leg = i ? c.el('p', { className: 'walk-leg mono' }, [
       c.t('walkLeg', {
         distance: distance(metres(p.stops[i - 1], item)),
-        time: minutes(metres(p.stops[i - 1], item) / PACE[w.mode])
+        time: minutes(metres(p.stops[i - 1], item) / PACE.foot)
       }),
       c.el('span', { className: 'walk-in', textContent: c.t('walkSoFar', {
-        time: minutes(p.sofar[i] / PACE[w.mode])
+        time: minutes(p.sofar[i] / PACE.foot)
       }) })
     ]) : null;
 
@@ -1065,7 +1092,7 @@
       c.el('p', { textContent: end
         ? c.t('walkEndAt', {
           place: stops[stops.length - 1].name,
-          time: finished() ? took(w.data.walk.finished - w.data.walk.started) : minutes(p.total / PACE[w.mode])
+          time: finished() ? took(w.data.walk.finished - w.data.walk.started) : minutes(p.total / PACE.foot)
         })
         : c.t('walkStartAt', { place: stops[0].name }) })
     ]);
@@ -1153,15 +1180,18 @@
       c.el('p', { className: 'eyebrow', textContent: c.t('walkBoard') }),
       c.el('ol', { className: 'walk-board' }, rows.map(function (row, i) {
         var open = w.trace && w.trace.who === row.name;
-        /* How, then how long: an hour by bike is not an hour on foot. And
-           the time is the press, because the parts are what it is made of
-           — the name beside it is already the way to the person. */
+        /* How long, and By bike before it for anybody who picked that
+           while the card had chips to pick it with — an hour by bike is
+           not an hour on foot. Nobody is asked now, so nothing is said
+           for the rest. The time is the press, because the parts are what
+           it is made of — the name beside it is already the way to the
+           person. */
         var time = c.el('button', {
           type: 'button',
           className: 'walk-board-open walk-took',
           'aria-expanded': open ? 'true' : 'false',
           'aria-label': c.t('walkTraceSee', { name: row.name }),
-          textContent: c.t(row.mode === 'bike' ? 'walkBike' : 'walkFoot') + ' · ' + took(row.finished - row.started)
+          textContent: (row.mode === 'bike' ? c.t('walkBike') + ' · ' : '') + took(row.finished - row.started)
         });
         time.addEventListener('click', function () { traceFor(row.name); });
         return c.el('li', { className: open ? 'is-open' : '' }, [
@@ -1314,7 +1344,6 @@
         hereAt: 0,        // and when the watch said so — see locate()
         editing: false,   // the order is being changed
         replanned: false, // "Shortest from here" was pressed and nothing has moved since — see replan()
-        mode: MODES[0],   // on foot or by bike — see setMode()
         trace: null,      // the name on the board whose own walk is open, and its legs — see traceFor()
         noting: null,     // what a comment is being written on: a place, '' for the whole walk
         asked: false,     // the finished walk's comment has been offered once

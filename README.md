@@ -8605,7 +8605,7 @@ A list is a set of places, and the game in a set of places is having been to
 all of them. **Route** is the third view of any list, beside **Map** and
 **List**: its places in the shortest order to go round them in, how far that
 is, and — for a member — a walk they start, check in on at each door with
-their phone's location, and finish, on foot or by bike. It may take an
+their phone's location, and finish, on foot, by bike or both. It may take an
 afternoon or a month, in any order, and nothing is bought. The chip says
 Route and not Walk because of the bike; the code, the tables and the events
 say walk, which is what it was called for its first afternoon and is still
@@ -8674,18 +8674,35 @@ press, never something the watch does, for the reason the order stays put at
 all, and it can be pressed again after every check. What it leaves is the
 walker's own order, kept with the walk like one dragged into place, so no
 table and no route moved for it. The card's line under the clock says what is
-left rather than the whole — "5 left · about 1.3 km · 16 min on foot",
+left rather than the whole — "5 left · about 1.3 km", then "16 min on foot
+· 5 min by bike",
 measured from the phone once it has said where it is — and until the next
 check, the sentence under that says where the new order starts. It is gone
 with one place left, there being nothing to order, and a phone that will not
 answer gets the line a refused check gets.
 
-**On foot or by bike.** Two chips on the card, **On foot** pressed until
-somebody presses the other. The choice changes the time the card and every
-leg estimate — 80 metres a minute or 250 — and the word beside the walker's
-name on the board, since an hour by bike is not an hour on foot. The order and
-the distances are the same streets either way. It is taken on trust, is kept
-with the walk, and can be changed until the walk is finished and not after.
+**On foot and by bike, without asking which.** There were two chips on the
+card, **On foot** and **By bike**, and all they changed was the time the card
+estimated and a word beside the walker's name on the board: the order and the
+distances are the same streets either way, and somebody who walks to three
+places and cycles to the other five had nothing to press. So nothing is asked.
+Under the distance the card says both — "3 h 6 min on foot · 1 h by bike",
+80 metres a minute and 250, the two times in the ink — and the legs on the
+rail are on foot, the slower of the two. How somebody went cannot be read off
+the clock either, since a walk may take a month. The server still keeps a
+`mode` with every walk, `foot` unless told otherwise, and its `mode` action is
+still there for nobody; the board, and the Play card on the discover page,
+say **By bike** beside anybody who picked it while there were chips to pick
+it with, and nothing beside everybody else.
+
+**What else the card can do is three tiles.** **Start from where I am**, **See
+it on the map** and **Change the order** — or, with a walk on, **Shortest from
+here** in the first one's place, and **Comment** once it is finished — stand
+in a row under the sentences, an icon over the words, the card's width shared
+between however many there are. They were underlined words once, scattered
+over two lines, and read as small print rather than as things to do. **Start
+again** stays underlined words under them on purpose: it takes everything
+with it, and should not look like the rest.
 
 **Once it is started, the page watches where you are.** "Check in here" did
 not say where. While a walk is on, unfinished and on screen, the phone's
@@ -19450,7 +19467,6 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
 | `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the fourteen below |
-| `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
 | `walk_replan` | `list_id` — Shortest from here, on a walk that is on, once the phone has answered |

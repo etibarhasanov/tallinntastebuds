@@ -1587,9 +1587,52 @@ body.has-scrim { overflow: hidden; }
 
 .walk-from,
 .walk-how { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; }
-.walk-alts { margin-top: 12px; gap: 6px 18px; }
 
-.walk-modes { margin-top: 12px; gap: 8px; }
+.walk-times { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.walk-times b { color: var(--ink); font-weight: 500; }
+.walk-alts { margin-top: 10px; gap: 6px 18px; }
+
+.walk-tiles {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.walk-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px 6px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: none;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  cursor: pointer;
+  transition: border-color .15s var(--ease), color .15s var(--ease);
+}
+.walk-tile:hover { border-color: var(--accent); color: var(--ink); }
+.walk-tile-icon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .lists-card > .alt { margin-top: 8px; }
 
 .walk-bar {

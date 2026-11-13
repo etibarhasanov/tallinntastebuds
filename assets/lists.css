@@ -2427,18 +2427,68 @@ body.has-scrim { overflow: hidden; }
    that person went round — and a band at the foot that holds the walk's one
    filled action: start it, check in, save a comment.
 
-   Nothing here is a new control. The pill is .go, the quiet ones are .alt,
-   the arrows that move a place are the editor's .row-btn, the comment's
-   field is .lists-input, and a place is the .item it is in the other view. */
+   One control here is new, the tile (.walk-tile, below); everything else
+   is borrowed. The pill is .go, the quiet ones are .alt, the arrows that
+   move a place are the editor's .row-btn, the comment's field is
+   .lists-input, and a place is the .item it is in the other view. */
 
 /* The totals and the progress: facts, so the label role, muted. */
 .walk-facts { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 /* Where it starts, and what a walk is: sentences, so the body face. */
 .walk-from,
 .walk-how { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; }
-.walk-alts { margin-top: 12px; gap: 6px 18px; }
-/* On foot or by bike: the two chips, pressed the way a filter is. */
-.walk-modes { margin-top: 12px; gap: 8px; }
+/* On foot and by bike, side by side: the two times in the ink, the words
+   around them muted like the line above. */
+.walk-times { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.walk-times b { color: var(--ink); font-weight: 500; }
+.walk-alts { margin-top: 10px; gap: 6px 18px; }
+
+/* What else the card can do, as tiles: an icon over its words, the card's
+   width shared between however many there are — two are halves, three are
+   thirds — so a row never wraps and a long word wraps inside its tile
+   instead. A hairline box rather than a filled pill, because the filled one
+   is Start, in the band at the foot, and there is only ever one of those. */
+.walk-tiles {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.walk-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px 6px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: none;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  cursor: pointer;
+  transition: border-color .15s var(--ease), color .15s var(--ease);
+}
+.walk-tile:hover { border-color: var(--accent); color: var(--ink); }
+.walk-tile-icon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .lists-card > .alt { margin-top: 8px; }
 
 /* How much of it is checked. The one place the accent is drawn as a length
