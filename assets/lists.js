@@ -107,9 +107,6 @@
      list's own page. */
   var ALL_PATH = '/lists';
 
-  /* Where a list is made: the Your lists card on the account page, which is
-     the one place the name field is. See makeYours(). */
-  var MINE_PATH = '/account.html';
 
   /* The longest search the field will take, and how long a keystroke is held
      before it becomes a request. The cap is the server's — see MAX_QUERY in
@@ -1455,17 +1452,17 @@
      rather than an action.
 
      It is here because nothing on this page said a reader could be one of the
-     people on it. A list is made in one place, the Your lists card on
-     /account.html, and the only roads to that were your own name in the
-     header and the map's rail: somebody reading twenty other people's top
-     tens was never told there could be a twenty-first.
+     people on it: somebody reading twenty other people's top tens was never
+     told there could be a twenty-first.
 
      A door and not the form. The name field itself was drawn here too, and it
      put two text fields one above the other — the name of a new list and the
-     search — on a page whose field has always meant "find one". So this
-     costs a press more and goes where the field already is. Signed out it
-     goes through the sign-up sheet first and comes back to that same card,
-     which says in its own words that a list needs an account.
+     search — on a page whose field has always meant "find one". So it goes
+     to /list/new, the empty list every Make a list opens — the front page's,
+     the account page's — which writes nothing until it has a name and Save
+     is pressed: see draftList(). It went to the account page's card while
+     that was where a list was made. Signed out it goes through the sign-up
+     sheet first and comes back to the empty list.
 
      With no sentence over it: one was drawn and the owner took it out. The
      line above already says these are everybody's top tens, and the button
@@ -1473,7 +1470,7 @@
   function makeYours() {
     return TTBTrack.click(el('a', {
       className: 'go',
-      href: state.me ? MINE_PATH : '/?account=up&then=' + encodeURIComponent(MINE_PATH),
+      href: state.me ? '/list/' + DRAFT : '/?account=up&then=' + encodeURIComponent('/list/' + DRAFT),
       textContent: t('listsMakeYours')
     }), 'list_new', { signed_in: state.me ? 'yes' : 'no' });
   }

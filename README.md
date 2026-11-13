@@ -7326,12 +7326,14 @@ way a search is, and reports itself as `lists_sort`.
 **And a door to a list of your own.** The head card ends in the page's one
 filled button, **Make your own list** — `makeYours()` in `assets/lists.js`,
 `listsMakeYours` in `data/ui.json`, reported as `list_new`. Nothing on the
-page said a reader could be one of the people on it: a list is made on
-`/account.html`, and the roads there were your own name in the header and the
-map's rail. It is a door rather than the name field itself, because that
-field over the search field was two boxes to type in on a page where a box
-has always meant *find one*; signed in it goes to the account page's **Your
-lists** card, and signed out through the sign-up sheet and back to it. It
+page said a reader could be one of the people on it. It is a door rather than
+the name field itself, because that field over the search field was two boxes
+to type in on a page where a box has always meant *find one*. Signed in it
+opens `/list/new`, the same empty list every **Make a list** opens, which
+writes nothing until it has a name and Save is pressed — **Named afterwards**
+under **Lists**; signed out it goes through the sign-up sheet and comes back
+to it. It went to the account page's **Your lists** card while that was
+where a list was made. It
 carries no sentence of its own — one was drawn, and it was a second line
 saying what the button already did.
 
@@ -19508,7 +19510,6 @@ The map, `assets/app.js`:
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
 | `discover_make` | — **Make a list** at the foot of Discover, which opens the empty `/list/new`, or puts the sign-up sheet up first (`account_from_make`). `list_create` follows only when the list is saved |
-| `list_new` | — **Make a list** on the account page, which opens the empty `/list/new` |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
@@ -19580,7 +19581,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
-| `list_new` | `signed_in` — **Make your own list** in the directory's head card, the door to where a list is made |
+| `list_new` | `signed_in` — **Make your own list** in the directory's head card, and **Make a list** on the account page: both open the empty `/list/new` |
 | `lists_all` | — the way to the directory: **More lists** in the bar at the foot of a list, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
 | `list_end` | `list_id`, `places_on` — the last place on somebody else's list came on screen, once a load and only with nothing typed in the field. What tells a view that ended with nothing pressed apart: read to the bottom, or left at the title |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
