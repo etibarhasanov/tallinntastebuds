@@ -18056,7 +18056,9 @@ map the card opens carries OpenStreetMap's and CARTO's as it always has. It
 does not show every place either; a window in which the streets can be read
 holds the middle of town, and the map is one press away with the rest. The
 pins do not wait for the tiles, and a phone Leaflet never reached gets the
-words and **Open** with no picture.
+words and **Open** with no picture. Under the picture the card says **View
+map** and nothing else: the line that counted the places went, at the owner's
+word, after three wordings of it — the picture is the count.
 
 **When it is up.** A plain arrival on a phone, and nothing else. A link that
 is about something — `?spot=`, `?list=`, `?type=`, `?story=`, the sign-in

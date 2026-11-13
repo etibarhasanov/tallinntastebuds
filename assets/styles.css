@@ -4019,7 +4019,6 @@ body.is-discover #btn-locate { display: none; }
   font-size: 17px;
   line-height: 1.25;
 }
-.discover-map-words p { margin: 0; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
 
 .discover-head { display: flex; align-items: baseline; gap: 10px; padding: 26px var(--gap) 10px; }
 .discover-head h2 {
