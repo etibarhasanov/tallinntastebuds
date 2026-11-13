@@ -2622,7 +2622,6 @@ body.is-discover #btn-locate { display: none; }
 }
 .discover-sky .leaflet-pane { pointer-events: none; }
 .discover-sky .pin-face { pointer-events: none; cursor: inherit; }
-.discover-sky .leaflet-control-attribution { padding-bottom: 3px !important; }
 .discover-map-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px 14px; }
 .discover-map-words { flex: 1 1 auto; min-width: 0; }
 .discover-map-words h2 {
