@@ -14,10 +14,11 @@
  * on those, with the map as the first and biggest thing on the page, one press
  * away and already drawn underneath.
  *
- * FOUR SHELVES, IN THIS ORDER
+ * FOUR SHELVES AND A CARD, IN THIS ORDER
  *
  *   New lists            newest public lists                 /api/discover
  *   Most opened places   what gets opened on the map         /api/discover
+ *   Play                 the game, and one route to start    /api/discover
  *   Popular lists        most opened lists                   /api/discover
  *   New on the map       the places added last               data/map.json
  *
@@ -28,8 +29,11 @@
  * and a route that does not answer costs the three shelves and one sentence
  * saying so — "nothing in assets/ waits on /api/*" holds here too.
  *
- * No counts and no scores on anything. The order of a shelf says what it
- * says; functions/api/discover.js is why the numbers never arrive.
+ * No counts and no scores on a list or a place. The order of a shelf says
+ * what it says; functions/api/discover.js is why the numbers never arrive.
+ * The Play card is the one thing here that prints a number, and it is about
+ * the people who went round a list — how many finished and how fast — which
+ * is the board the list's own page already shows.
  *
  * WHY A FILE OF ITS OWN, AND A GLOBAL
  *
@@ -61,6 +65,9 @@ window.TTBDiscover = (function () {
   var shelves = null;
   /* null while the route has not answered, false when it failed. */
   var data = null;
+  /* The reader's own walk that is still going, or null: nobody signed in,
+     nothing going, or not answered yet. See signed(). */
+  var mine = null;
   var scrolled = 0;
   /* The card's still map, its tiles, whether those are the dark ones, and
      the pins on it. Null until the card has been on screen once. */
@@ -188,6 +195,91 @@ window.TTBDiscover = (function () {
       .sort(function (a, b) { return a.added < b.added ? 1 : a.added > b.added ? -1 : 0; });
   }
 
+  /* How long a walk took: minutes and hours inside a day, days and hours past
+     one, in the list page's own words. took() in assets/walk.js is the first
+     copy and is private to that page's script; this is the second, and a
+     third reader is the day it becomes a global. */
+  function took(ms) {
+    var days = Math.floor(ms / 86400000);
+    if (days < 1) {
+      var n = Math.max(1, Math.round(ms / 60000));
+      return n < 60 ? o.t('walkMin', { n: n }) : o.t('walkHours', { h: Math.floor(n / 60), m: n % 60 });
+    }
+    var hours = Math.floor(ms % 86400000 / 3600000);
+    var said = days === 1 ? o.t('walkDayOne') : o.t('walkDays', { n: days });
+    return hours ? said + ' ' + o.t('walkHoursOnly', { h: hours }) : said;
+  }
+
+  /* PLAY: THE GAME, SAID ONCE, WITH ONE ROUTE TO START
+   *
+   * Every list can be walked — go to each place, check in at the door, on
+   * foot or by bike, and finish onto the list's board — and the only sign of
+   * it was a chip called Route on a list's own page. Four shelves of things
+   * to read said nothing about there being something to do. So the page says
+   * it once, in a card of its own between the places people open and the
+   * lists they open: what the game is in a sentence, and one route under it.
+   *
+   * Which route is the reader's own where they have one going — their list,
+   * how far round they are, and Keep going — and otherwise the one
+   * /api/discover offers everybody: the list most people have finished, with
+   * the fastest time, or before anybody has finished anything a list to be
+   * the first on. The row is a link to the list's Route view, which is where
+   * a walk is started and where signing in is asked for; nothing here starts
+   * one.
+   *
+   * No route to offer — the answer had none, or it is an old answer from
+   * before the field — and the card is not drawn.
+   */
+  function play() {
+    var going = mine;
+    var route = going || data.route;
+    if (!route || !route.id) return null;
+    TTBGoogleWords.list(route, o.t, o.lang());
+
+    var line;
+    var press;
+    if (going) {
+      line = o.t('walkToGo', { n: going.checked, total: going.total, left: going.total - going.checked });
+      press = o.t('discoverPlayKeep');
+    } else {
+      var parts = [route.places === 1 ? o.t('listCountOne') : o.t('listCount', { n: route.places })];
+      if (route.finished && route.best) {
+        parts.push(o.t('discoverPlayDone', { n: route.finished }),
+          o.t('discoverPlayBest', { took: took(route.best) }),
+          o.t(route.mode === 'bike' ? 'walkBike' : 'walkFoot'));
+        press = o.t('walkStart');
+      } else {
+        parts.push(o.t('discoverPlayNobody'));
+        press = o.t('discoverPlayFirst');
+      }
+      line = parts.join(' · ');
+    }
+
+    var box = el('section', 'discover-play');
+    box.appendChild(el('span', 'eyebrow', o.t('discoverPlayEyebrow')));
+    box.appendChild(el('h2', '', o.t('discoverPlayTitle')));
+    box.appendChild(el('p', '', o.t('discoverPlaySay')));
+
+    var row = el('a', 'discover-route');
+    row.href = '/list/' + encodeURIComponent(route.id) + '?walk=1';
+    TTBTrack.click(row, 'discover_play');
+    row.appendChild(el('span', 'discover-route-mark', TTBPins.glyph(TTBPins.ofList(route))));
+    var say = el('span', 'discover-route-say');
+    say.appendChild(el('b', '', route.title));
+    say.appendChild(el('span', '', line));
+    if (going && going.total) {
+      var bar = el('span', 'discover-route-bar');
+      var done = el('i');
+      done.style.width = Math.round(going.checked / going.total * 100) + '%';
+      bar.appendChild(done);
+      say.appendChild(bar);
+    }
+    row.appendChild(say);
+    row.appendChild(el('span', 'discover-route-go', press));
+    box.appendChild(row);
+    return box;
+  }
+
   /* Two blank cards under a title, while the route is out. */
   function waiting(key) {
     var box = el('section', 'discover-shelf');
@@ -294,6 +386,7 @@ window.TTBDiscover = (function () {
       parts.push(
         listShelf('discoverNewLists', data.fresh, '/lists?sort=new', 'discover_all'),
         placeShelf('discoverOpened', 'discoverOpenedSay', mostOpened(), street, true),
+        play(),
         listShelf('discoverPopularLists', data.popular, '/lists', 'discover_all')
       );
     }
@@ -310,6 +403,27 @@ window.TTBDiscover = (function () {
     }).catch(function () {
       data = false;
     }).then(draw);
+  }
+
+  /* Whether somebody is signed in, told by the map each time /api/account
+     answers — on the way in, and again whenever a page over the map closes,
+     which is when a walk may have moved. Signed in, the walk they have going
+     is asked for and the Play card becomes theirs; signed out, or with the
+     route not answering, the card is the one everybody gets. */
+  function signed(yes) {
+    if (!yes) {
+      if (mine) { mine = null; if (up()) draw(); }
+      return;
+    }
+    fetch('/api/walk?mine=1', { credentials: 'same-origin' }).then(function (res) {
+      return res.ok ? res.json() : null;
+    }).then(function (answer) {
+      mine = (answer && answer.mine) || null;
+    }).catch(function () {
+      mine = null;
+    }).then(function () {
+      if (up() && data) draw();
+    });
   }
 
   function up() {
@@ -356,7 +470,7 @@ window.TTBDiscover = (function () {
         o.onMap();
       });
     }
-    return { show: show, hide: hide, up: up, draw: draw };
+    return { show: show, hide: hide, up: up, draw: draw, signed: signed };
   }
 
   return { mount: mount };

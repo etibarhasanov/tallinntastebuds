@@ -29,6 +29,15 @@
  *
  *   One finisher's own walk, leg by leg — HOW SOMEBODY ELSE WALKED IT.
  *
+ * GET  /api/walk?mine=1
+ *
+ *   { ready, mine: null | { id, title, pin, checked, total } }
+ *
+ *   The session's own walk that is still going, the one started last, for
+ *   the Play card on the front page — assets/discover.js, which asks only
+ *   when somebody is signed in. Null signed out, with nothing going, or
+ *   where the list has since gone private or away.
+ *
  * POST /api/walk   { action, list, … }      a session, every one
  *
  *   start   { order?, mode? }    begins the walk; pressing it twice is one walk
@@ -249,7 +258,7 @@ function cleanOrder(raw, list) {
 }
 
 /* The places somebody can stand at. */
-function doors(list) {
+export function doors(list) {
   return list.items.filter((item) => typeof item.lat === 'number' && typeof item.lng === 'number');
 }
 
@@ -275,6 +284,38 @@ async function trace(env, list, name) {
   return rows.results;
 }
 
+/* The session's walk that is still going, the latest started — GET ?mine=1.
+   The list is read through readList() like every other, so one that has gone
+   private or away since is nothing to go back to; `total` is its doors, the
+   number a check counts towards, and `checked` how many of this walk's
+   checks are still among them. */
+async function going(context, user) {
+  if (!user) return { ready: true, mine: null };
+  const { env } = context;
+  try {
+    const walk = await env.DB
+      .prepare(
+        'SELECT list_id FROM walks WHERE user_id = ? AND finished_at IS NULL ' +
+        'ORDER BY started_at DESC LIMIT 1'
+      )
+      .bind(user.id)
+      .first();
+    const list = walk ? await readList(context, walk.list_id, user) : null;
+    if (!list) return { ready: true, mine: null };
+    const checks = await env.DB
+      .prepare('SELECT place FROM walk_checks WHERE user_id = ? AND list_id = ?')
+      .bind(user.id, list.id)
+      .all();
+    const left = new Set(doors(list).map((item) => item.place));
+    const total = left.size;
+    const checked = checks.results.filter((row) => left.has(row.place)).length;
+    return { ready: true, mine: { id: list.id, title: list.title, pin: list.pin, checked, total } };
+  } catch (e) {
+    /* The tables are not applied here — WHEN THE TABLES ARE NOT THERE. */
+    return { ready: false, mine: null };
+  }
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -283,10 +324,15 @@ export async function onRequestGet(context) {
      goes through it rather than keeping a copy of what a username may be. */
   const who = asUsername(url.searchParams.get('who'));
   const empty = { ready: false, user: null, admin: false, radius: RADIUS, walk: null, checks: [], board: [], notes: [] };
+  const mine = url.searchParams.get('mine') === '1';
 
-  if (!env.DB || await wrongDatabase(env)) return json(who ? { ready: false, who, checks: [] } : empty, 200);
+  if (!env.DB || await wrongDatabase(env)) {
+    if (mine) return json({ ready: false, mine: null }, 200);
+    return json(who ? { ready: false, who, checks: [] } : empty, 200);
+  }
 
   const user = await sessionUser(request, env);
+  if (mine) return json(await going(context, user), 200);
   const list = await readList(context, id, user);
   if (!list) return json({ error: 'not-found' }, 404);
 
