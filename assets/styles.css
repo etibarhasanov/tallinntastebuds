@@ -4252,6 +4252,54 @@ body.is-discover #btn-locate { display: none; }
   font-weight: 600;
   white-space: nowrap;
 }
+/* More than one route: the rule moves onto the track and the rows swipe
+   under it, each a little narrower than the card so the edge of the next
+   shows at the right — that edge is what says there is more. The track runs
+   to the card's own edges, so a row slides out under its border rather than
+   stopping short of it. pan-x tells assets/back.js the sideways finger is
+   this row's and not Back. */
+.discover-track {
+  display: flex;
+  gap: 12px;
+  margin: 12px -16px 0;
+  padding: 12px 16px 0;
+  border-top: 1px solid var(--hairline);
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  scroll-padding: 0 16px;
+  scroll-snap-type: x mandatory;
+}
+.discover-track::-webkit-scrollbar { display: none; }
+.discover-track > .discover-route {
+  flex: 0 0 calc(100% - 26px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  scroll-snap-align: start;
+}
+.discover-dots { display: flex; justify-content: center; gap: 2px; margin: 6px 0 -6px; }
+/* The dot is six pixels; the button round it is the thumb's. */
+.discover-dots button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.discover-dots button::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--hairline);
+  border-radius: 100px;
+  transition: width 0.15s, background 0.15s;
+}
+.discover-dots button.is-on::after { width: 16px; background: var(--accent); }
 
 .discover-note {
   margin: 26px var(--gap) 0;

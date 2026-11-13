@@ -2845,6 +2845,49 @@ body.is-discover #btn-locate { display: none; }
   white-space: nowrap;
 }
 
+.discover-track {
+  display: flex;
+  gap: 12px;
+  margin: 12px -16px 0;
+  padding: 12px 16px 0;
+  border-top: 1px solid var(--hairline);
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  scroll-padding: 0 16px;
+  scroll-snap-type: x mandatory;
+}
+.discover-track::-webkit-scrollbar { display: none; }
+.discover-track > .discover-route {
+  flex: 0 0 calc(100% - 26px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  scroll-snap-align: start;
+}
+.discover-dots { display: flex; justify-content: center; gap: 2px; margin: 6px 0 -6px; }
+
+.discover-dots button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.discover-dots button::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--hairline);
+  border-radius: 100px;
+  transition: width 0.15s, background 0.15s;
+}
+.discover-dots button.is-on::after { width: 16px; background: var(--accent); }
+
 .discover-note {
   margin: 26px var(--gap) 0;
   padding: 16px 18px;

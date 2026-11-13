@@ -438,6 +438,7 @@
   "discoverPlayNobody": "henüz kimse bitirmedi",
   "discoverPlayFirst": "İlk sen ol",
   "discoverPlayKeep": "Devam et",
+  "discoverPlayDot": "Rota {n} / {total}",
   "listsOrder": "Sıralama",
   "listsOrderViews": "En çok açılan",
   "listsOrderKept": "En çok kaydedilen",

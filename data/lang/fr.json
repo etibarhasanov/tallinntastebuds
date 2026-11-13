@@ -438,6 +438,7 @@
   "discoverPlayNobody": "personne ne l’a encore terminée",
   "discoverPlayFirst": "Sois le premier",
   "discoverPlayKeep": "Continuer",
+  "discoverPlayDot": "Parcours {n} sur {total}",
   "listsOrder": "Ordre",
   "listsOrderViews": "Plus ouvertes",
   "listsOrderKept": "Plus enregistrées",

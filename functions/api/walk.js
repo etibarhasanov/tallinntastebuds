@@ -31,12 +31,15 @@
  *
  * GET  /api/walk?mine=1
  *
- *   { ready, mine: null | { id, title, pin, checked, total } }
+ *   { ready, mine: null | { id, title, pin, checked, total },
+ *     walks: [ the same shape … ] }
  *
- *   The session's own walk that is still going, the one started last, for
- *   the Play card on the front page — assets/discover.js, which asks only
- *   when somebody is signed in. Null signed out, with nothing going, or
- *   where the list has since gone private or away.
+ *   The session's own walks that are still going, the one last moved first
+ *   and at most GOING of them, for the Play card on the front page —
+ *   assets/discover.js, which asks only when somebody is signed in and puts
+ *   them at the front of the routes it can be swiped through. `mine` is the
+ *   first of them, as it was before there were several. Empty signed out,
+ *   with nothing going, or where a list has since gone private or away.
  *
  * POST /api/walk   { action, list, … }      a session, every one
  *
@@ -166,6 +169,11 @@ const MAX_ORDER = 50;
 const BOARD = 50;
 const NOTES = 100;
 
+/* How many walks still going ?mine=1 answers. Somebody with more than five
+   half-done has a list page for each, and the Play card is a nudge back to
+   the latest of them rather than an index. */
+const GOING = 5;
+
 /* The ways to go round — ON FOOT OR BY BIKE. The first is what a walk is
    unless somebody says otherwise. Restated as MODES in assets/walk.js. */
 const MODES = ['foot', 'bike'];
@@ -289,35 +297,48 @@ async function trace(env, list, name) {
   return rows.results;
 }
 
-/* The session's walk that is still going, the latest started — GET ?mine=1.
-   The list is read through readList() like every other, so one that has gone
-   private or away since is nothing to go back to; `total` is its doors, the
-   number a check counts towards, and `checked` how many of this walk's
-   checks are still among them. */
+/* The session's walks that are still going — GET ?mine=1 — the one last
+   moved first: the later of when it was started and its latest check, so the
+   list somebody was out on yesterday leads the one they started last month
+   and left. At most GOING of them, each read through readList() like every
+   other list, so one that has gone private or away since is nothing to go
+   back to and is dropped; `total` is its doors, the number a check counts
+   towards, and `checked` how many of this walk's checks are still among them.
+   `mine` is the first of `walks`, kept for a page from before the deck. */
 async function going(context, user) {
-  if (!user) return { ready: true, mine: null };
+  if (!user) return { ready: true, mine: null, walks: [] };
   const { env } = context;
   try {
-    const walk = await env.DB
+    const { results: walks } = await env.DB
       .prepare(
-        'SELECT list_id FROM walks WHERE user_id = ? AND finished_at IS NULL ' +
-        'ORDER BY started_at DESC LIMIT 1'
+        'SELECT w.list_id AS id, MAX(w.started_at, COALESCE(MAX(c.checked_at), 0)) AS moved ' +
+        'FROM walks w LEFT JOIN walk_checks c ON c.user_id = w.user_id AND c.list_id = w.list_id ' +
+        'WHERE w.user_id = ? AND w.finished_at IS NULL ' +
+        'GROUP BY w.list_id ORDER BY moved DESC LIMIT ?'
       )
-      .bind(user.id)
-      .first();
-    const list = walk ? await readList(context, walk.list_id, user) : null;
-    if (!list) return { ready: true, mine: null };
-    const checks = await env.DB
-      .prepare('SELECT place FROM walk_checks WHERE user_id = ? AND list_id = ?')
-      .bind(user.id, list.id)
+      .bind(user.id, GOING)
       .all();
-    const left = new Set(doors(list).map((item) => item.place));
-    const total = left.size;
-    const checked = checks.results.filter((row) => left.has(row.place)).length;
-    return { ready: true, mine: { id: list.id, title: list.title, pin: list.pin, checked, total } };
+    if (!walks.length) return { ready: true, mine: null, walks: [] };
+    const [lists, checks] = await Promise.all([
+      Promise.all(walks.map((walk) => readList(context, walk.id, user))),
+      env.DB
+        .prepare(
+          'SELECT c.list_id AS id, c.place AS place FROM walk_checks c ' +
+          'JOIN walks w ON w.user_id = c.user_id AND w.list_id = c.list_id ' +
+          'WHERE c.user_id = ? AND w.finished_at IS NULL'
+        )
+        .bind(user.id)
+        .all()
+    ]);
+    const out = lists.filter(Boolean).map((list) => {
+      const left = new Set(doors(list).map((item) => item.place));
+      const checked = checks.results.filter((row) => row.id === list.id && left.has(row.place)).length;
+      return { id: list.id, title: list.title, pin: list.pin, checked, total: left.size };
+    });
+    return { ready: true, mine: out[0] || null, walks: out };
   } catch (e) {
     /* The tables are not applied here — WHEN THE TABLES ARE NOT THERE. */
-    return { ready: false, mine: null };
+    return { ready: false, mine: null, walks: [] };
   }
 }
 
@@ -332,7 +353,7 @@ export async function onRequestGet(context) {
   const mine = url.searchParams.get('mine') === '1';
 
   if (!env.DB || await wrongDatabase(env)) {
-    if (mine) return json({ ready: false, mine: null }, 200);
+    if (mine) return json({ ready: false, mine: null, walks: [] }, 200);
     return json(who ? { ready: false, who, checks: [] } : empty, 200);
   }
 

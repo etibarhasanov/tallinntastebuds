@@ -438,6 +438,7 @@
   "discoverPlayNobody": "keegi pole seda veel lõpetanud",
   "discoverPlayFirst": "Ole esimene",
   "discoverPlayKeep": "Jätka",
+  "discoverPlayDot": "Teekond {n}/{total}",
   "listsOrder": "Järjestus",
   "listsOrderViews": "Enim avatud",
   "listsOrderKept": "Enim salvestatud",

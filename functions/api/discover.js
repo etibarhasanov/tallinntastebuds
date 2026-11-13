@@ -10,7 +10,8 @@
  *   { fresh:   [ { id, title, by, pin, taste } … ],   newest first
  *     popular: [ the same shape … ],                  most opened first
  *     opened:  [ place id … ],                        most opened first
- *     route:   null | { id, title, pin, places, finished, best, mode } }
+ *     routes:  [ { id, title, pin, places, finished, best, mode } … ],
+ *     route:   the first of routes, or null }
  *
  * WHAT IT IS MADE OF, AND WHY NOTHING IN IT IS NEW
  *
@@ -29,21 +30,23 @@
  * which of these are still on the map and still open. More ids than a shelf
  * draws, so a place that has closed since costs a card and not the row.
  *
- * THE ROUTE IS ONE LIST TO GO ROUND
+ * THE ROUTES ARE LISTS TO GO ROUND
  *
  * Any list can be walked — functions/api/walk.js is the game — and nothing on
- * the front page said so. `route` is the one list the page's Play card offers:
- * the public list most people have finished, the latest finish breaking a
- * tie, with how many finished it, the fastest of them in milliseconds and how
- * that one went round. Until anybody has finished anything it is the most
- * opened list, with `finished` nought, and the card invites rather than
- * reports. `places` is the doors a walk counts, the ones with a location, so
- * the number on the card is the number a walker has to reach. Null where no
- * list can be offered, and the card is then not drawn.
+ * the front page said so. `routes` are the lists the page's Play card offers,
+ * swiped through one at a time, at most ROUTES: first the public lists most
+ * people have finished, the latest finish breaking a tie, each with how many
+ * finished it, the fastest of them in milliseconds and how that one went
+ * round; then, to fill what is left, the most opened lists, with `finished`
+ * nought, where the card invites rather than reports. `places` is the doors a
+ * walk counts, the ones with a location, so the number on the card is the
+ * number a walker has to reach, and a list with none is left out. Empty where
+ * no list can be offered, and the card is then not drawn. `route` is the
+ * first of them, which is all a page from before the swipe reads.
  *
- * It is the same for everybody, which is why it can live in this answer. The
- * reader's own walk, where they have one going, is per person and is asked of
- * /api/walk?mine=1 by a signed-in page alone.
+ * They are the same for everybody, which is why they can live in this answer.
+ * The reader's own walks, where they have some going, are per person and are
+ * asked of /api/walk?mine=1 by a signed-in page alone.
  *
  * WHO MAY ASK, AND WHAT IT COSTS
  *
@@ -73,9 +76,14 @@ const SHELF = 8;
    spares are for the ones the page drops as closed or gone. */
 const OPENED = 16;
 
+/* How many lists the Play card can be swiped through, before the reader's own
+   walks are put in front of them. Past five the dots under it stop being
+   countable at a glance, and /lists is the way on. */
+const ROUTES = 5;
+
 const TTL = 300;
 
-const EMPTY = { fresh: [], popular: [], opened: [], route: null };
+const EMPTY = { fresh: [], popular: [], opened: [], route: null, routes: [] };
 
 function discoverKey(request) {
   return new Request(new URL('/api/discover', request.url).toString());
@@ -110,56 +118,58 @@ async function opened(env) {
   }
 }
 
-/* The list the Play card offers — THE ROUTE IS ONE LIST TO GO ROUND. Two small
-   reads where somebody has finished something: which list, and its fastest
-   walk. `fallback` is the most opened list's id, for the days before that.
-   Anything thrown — the two tables not applied yet among them — is no finish
-   to report, and the fallback stands. */
-async function route(context, fallback) {
+/* The lists the Play card offers — THE ROUTES ARE LISTS TO GO ROUND. Two small
+   reads where somebody has finished something: which lists, most finishers
+   first, and every finished walk of those lists, of which the fastest is
+   kept. `fallback` is the most opened lists' ids, which fill whatever is left
+   of ROUTES. Anything thrown — the two tables not applied yet among them — is
+   no finish to report, and the fallback stands alone. */
+async function routes(context, fallback) {
   const { env } = context;
-  let id = fallback;
-  let finished = 0;
-  let best = null;
+  let top = [];
+  const best = new Map();
   try {
-    const top = await env.DB
+    top = (await env.DB
       .prepare(
         'SELECT w.list_id AS id, COUNT(*) AS n FROM walks w ' +
         'JOIN lists l ON l.id = w.list_id ' +
         'WHERE w.finished_at IS NOT NULL AND l.public = 1 ' +
-        'GROUP BY w.list_id ORDER BY n DESC, MAX(w.finished_at) DESC LIMIT 1'
+        'GROUP BY w.list_id ORDER BY n DESC, MAX(w.finished_at) DESC LIMIT ?'
       )
-      .first();
-    if (top) {
-      id = top.id;
-      finished = top.n;
-      best = await env.DB
+      .bind(ROUTES)
+      .all()).results;
+    if (top.length) {
+      const { results } = await env.DB
         .prepare(
-          'SELECT finished_at - started_at AS took, mode FROM walks ' +
-          'WHERE list_id = ? AND finished_at IS NOT NULL ' +
-          'ORDER BY took, finished_at LIMIT 1'
+          'SELECT list_id AS id, finished_at - started_at AS took, mode FROM walks ' +
+          'WHERE finished_at IS NOT NULL AND list_id IN (' + top.map(() => '?').join(',') + ') ' +
+          'ORDER BY took, finished_at'
         )
-        .bind(id)
-        .first();
+        .bind(...top.map((row) => row.id))
+        .all();
+      for (const row of results) if (!best.has(row.id)) best.set(row.id, row);
     }
   } catch (e) { /* nobody has finished anything this database knows of */ }
 
-  if (!id) return null;
-  try {
-    const list = await readList(context, id, null);
-    const places = list ? doors(list).length : 0;
-    if (!places) return null;
-    return {
-      id: list.id,
-      title: list.title,
-      pin: list.pin,
-      places,
-      finished,
-      best: best ? best.took : null,
-      mode: best ? best.mode : null
-    };
-  } catch (e) {
-    return null;
-  }
+  const finished = new Map(top.map((row) => [row.id, row.n]));
+  const ids = [...new Set([...top.map((row) => row.id), ...fallback])].slice(0, ROUTES);
+  const lists = await Promise.all(ids.map((id) => readList(context, id, null).catch(() => null)));
+  return lists
+    .map((list) => {
+      const places = list ? doors(list).length : 0;
+      if (!places) return null;
+      const fastest = best.get(list.id);
+      return {
+        id: list.id,
+        title: list.title,
+        pin: list.pin,
+        places,
+        finished: finished.get(list.id) || 0,
+        best: fastest ? fastest.took : null,
+        mode: fastest ? fastest.mode : null
+      };
+    })
+    .filter(Boolean);
 }
 
 export async function onRequestGet(context) {
@@ -177,9 +187,9 @@ export async function onRequestGet(context) {
     opened(env)
   ]);
 
-  const play = await route(context, popular.length ? popular[0].id : '');
+  const play = await routes(context, popular.map((list) => list.id));
 
-  const body = JSON.stringify({ fresh, popular, opened: places, route: play });
+  const body = JSON.stringify({ fresh, popular, opened: places, route: play[0] || null, routes: play });
   const res = new Response(body, {
     headers: {
       'content-type': 'application/json; charset=utf-8',
