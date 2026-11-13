@@ -19,8 +19,9 @@
  * The find bar across the top of the map searches my places and the 1,112 of
  * the export, and that is a city of places to eat and drink. Somebody typing a
  * museum, a shop or a café that opened after the sweep reached the end of it:
- * "Nothing matches", and nowhere to go. So when nothing answers, the bar
- * offers to look on Google Maps, and this is what it asks. **Look for it on
+ * "Nothing matches", and nowhere to go. So from five letters the bar
+ * offers to look on Google Maps, under whatever it found itself, and this
+ * is what it asks. **Look for it on
  * Google Maps** under **Finding anywhere in Tallinn** in README.md.
  *
  * WHY THE ANSWER IS KEPT

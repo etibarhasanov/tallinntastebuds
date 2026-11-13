@@ -76,7 +76,7 @@ ref: index.html #discover</bpmn:documentation>
       <bpmn:outgoing>visitor-e3</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="browse" name="Browses the map, the chips and the search">
-      <bpmn:documentation>A chip that would leave nothing on screen pulls the map back instead. Surprise me picks from what the chips allow. A search nothing answers can be looked up on Google Maps, and what Google finds is kept for the next one. The locate button draws the dot the list measures from, and takes a typed place when the device will not say.
+      <bpmn:documentation>A chip that would leave nothing on screen pulls the map back instead. Surprise me picks from what the chips allow. A search of five letters or more can be looked up on Google Maps as well: what Google finds goes on the map as results, and is kept for the next search. The locate button draws the dot the list measures from, and takes a typed place when the device will not say.
 when: filter_select
 when: search@map
 when: find_pick

@@ -5335,8 +5335,9 @@
       }
     }
 
-    if (findRoll && nothing && !looked && findCanLook === null) findCanLookAsk();
-    var offer = !!(findRoll && nothing && !looked && findCanLook && typed.length >= 2);
+    var askable = !!findRoll && !looked && typed.length >= FIND_LOOK_MIN;
+    if (askable && findCanLook === null) findCanLookAsk();
+    var offer = askable && !!findCanLook;
     dom.findAsk.hidden = !offer;
     if (offer) dom.findAskText.textContent = t('findGoogleAsk', { q: typed });
 
@@ -5347,7 +5348,7 @@
     } else if (looked && looked.state === 'resting') {
       dom.findNote.textContent = t('findGoogleResting');
     } else if (looked && !looked.rows.length) {
-      dom.findNote.textContent = t('findGoogleNone', { q: typed });
+      dom.findNote.textContent = t(nothing ? 'findGoogleNone' : 'findGoogleNoMore', { q: typed });
     } else if (looked) {
       dom.findNote.textContent = t('findGoogleKept');
     } else if (nothing) {
@@ -5424,6 +5425,7 @@
     return true;
   }
 
+  var FIND_LOOK_MIN = 5;
   var findCanLook = null;
   var findCanLookAsked = false;
   var findLooked = null;
@@ -5478,7 +5480,23 @@
       }
     }).catch(function () {
       looked.state = 'resting';
-    }).then(renderFound);
+    }).then(function () {
+      if (looked.rows.length && findTyped() === typed) showLooked(looked);
+      else renderFound();
+    });
+  }
+
+  function showLooked(looked) {
+    var hits = findHits(looked.q);
+    var found = [];
+    var seen = {};
+    looked.rows.concat(hits.mine, hits.city).forEach(function (row) {
+      var place = (row.mapId && byMapId(row.mapId)) || row;
+      if (seen[place.id]) return;
+      seen[place.id] = true;
+      found.push(place);
+    });
+    showResults(looked.q, found);
   }
 
   function findPick(id, mine) {
@@ -5588,11 +5606,15 @@
         }
         return;
       }
-      showResults(typed, found, hits, bounds);
+      TTBTrack.event(bounds ? 'find_area' : 'find_submit', {
+        search_term: typed.toLowerCase(),
+        results: found.length
+      });
+      showResults(typed, found, bounds);
     });
   }
 
-  function showResults(typed, found, hits, bounds) {
+  function showResults(typed, found, bounds) {
     var total = found.length;
     found = found.slice(0, FIND_RESULTS);
 
@@ -5622,11 +5644,6 @@
     dom.findArea.hidden = true;
     renderFilters();
     renderList();
-
-    TTBTrack.event(bounds ? 'find_area' : 'find_submit', {
-      search_term: typed.toLowerCase(),
-      results: total
-    });
 
     selectPlace(ids[0], { fly: false });
     if (!bounds) {

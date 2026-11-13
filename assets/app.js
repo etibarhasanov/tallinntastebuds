@@ -9388,18 +9388,21 @@
       }
     }
 
-    /* The offer to look, under the line saying nothing matched: only once the
-       roll is in and nothing in it answered, only where the site can ask
-       Google at all, and not again for words it has already asked about. */
-    if (findRoll && nothing && !looked && findCanLook === null) findCanLookAsk();
-    var offer = !!(findRoll && nothing && !looked && findCanLook && typed.length >= 2);
+    /* The offer to look, under the rows and the line about them: only once
+       the roll is in and FIND_LOOK_MIN letters are, only where the site can
+       ask Google at all, and not again for words it has already asked
+       about. Whether anything matched no longer comes into it. */
+    var askable = !!findRoll && !looked && typed.length >= FIND_LOOK_MIN;
+    if (askable && findCanLook === null) findCanLookAsk();
+    var offer = askable && !!findCanLook;
     dom.findAsk.hidden = !offer;
     if (offer) dom.findAskText.textContent = t('findGoogleAsk', { q: typed });
 
-    /* Ten things this line can be saying, and only one of them at a time:
-       the city half has not landed yet; one of the four a press of Look for
+    /* Eleven things this line can be saying, and only one of them at a time:
+       the city half has not landed yet; one of the five a press of Look for
        it on Google Maps can end in — asking, resting, nothing there either,
-       or kept — which come next because they answer the last thing done;
+       nothing there beyond the rows above, or kept — which come next because
+       they answer the last thing done;
        nothing matched anywhere; the field
        asked to be near and there is nothing to measure from — the device is
        still being asked, or it said no, or the dot is out of town — which
@@ -9416,7 +9419,7 @@
     } else if (looked && looked.state === 'resting') {
       dom.findNote.textContent = t('findGoogleResting');
     } else if (looked && !looked.rows.length) {
-      dom.findNote.textContent = t('findGoogleNone', { q: typed });
+      dom.findNote.textContent = t(nothing ? 'findGoogleNone' : 'findGoogleNoMore', { q: typed });
     } else if (looked) {
       dom.findNote.textContent = t('findGoogleKept');
     } else if (nothing) {
@@ -9532,23 +9535,30 @@
 
   /* ------------------------------------------------------ on Google Maps
    *
-   * When nothing on the map or in the export answers what was typed, the
-   * dropdown offers to look on Google Maps — a button, never a search that
-   * fires by itself, because each one is a call against a budget and a
-   * dropdown redraws on every letter. /api/lookup asks Google, restricted to
+   * Once FIND_LOOK_MIN letters are in the field, the dropdown offers to look
+   * on Google Maps, under whatever the map and the export already answered —
+   * a button, never a search that fires by itself, because each one is a
+   * call against a budget and a dropdown redraws on every letter. It used to
+   * be offered only when nothing matched, from two letters; the owner asked
+   * for it under results too, and never before five, in November 2026:
+   * "raamat" finds three bookshops in the export and Google knows the rest.
+   * /api/lookup asks Google, restricted to
    * Tallinn, and keeps every place it answers in google_venues, so the next
    * person typing the same word finds it in the roll and never sees the
    * button. A museum or a shop is kept too, filed as not somewhere to eat:
    * the bar offers it, and the directory and the chat do not.
    *
    * Whether the button can be offered at all is asked once, the first time
-   * nothing matches — findCanLook is null until then, and false on a site
-   * with no Google key, where the dead end stays exactly as it was. What one
-   * press came back with is findLooked, for as long as the field still holds
-   * the words it asked about: Google's answers under their own heading,
-   * after anything the roll already found, and each of them seated in the
-   * roll by findKeep() so a pick, a distance and Enter treat them like any
-   * other Google row. **Look for it on Google Maps** in README.md. */
+   * the field is long enough — findCanLook is null until then, and false on
+   * a site with no Google key, where the bar stays exactly as it was. What
+   * one press came back with is findLooked, for as long as the field still
+   * holds the words it asked about, and each place in it is seated in the
+   * roll by findKeep() so a pick, a distance and Enter treat it like any
+   * other Google row. An answer with places in it goes straight onto the
+   * map — showLooked() — and the dropdown, opened again on the same words,
+   * draws Google's answers under their own heading after anything the roll
+   * already found. **Look for it on Google Maps** in README.md. */
+  var FIND_LOOK_MIN = 5;
   var findCanLook = null;
   var findCanLookAsked = false;
   var findLooked = null;
@@ -9603,7 +9613,28 @@
       }
     }).catch(function () {
       looked.state = 'resting';
-    }).then(renderFound);
+    }).then(function () {
+      if (looked.rows.length && findTyped() === typed) showLooked(looked);
+      else renderFound();
+    });
+  }
+
+  /* What Google answered, on the map: its places first and in its order,
+     because they are what the press asked for and the card that opens first
+     is read as the answer, then everything the bar had already found for
+     the same words — the results Enter would have drawn, with Google's in
+     front. One of Google's that is a place of mine goes in as mine. */
+  function showLooked(looked) {
+    var hits = findHits(looked.q);
+    var found = [];
+    var seen = {};
+    looked.rows.concat(hits.mine, hits.city).forEach(function (row) {
+      var place = (row.mapId && byMapId(row.mapId)) || row;
+      if (seen[place.id]) return;
+      seen[place.id] = true;
+      found.push(place);
+    });
+    showResults(looked.q, found);
   }
 
   /* Pressing a row. One of mine opens exactly as its pin does; a Google one
@@ -9794,11 +9825,15 @@
         }
         return;
       }
-      showResults(typed, found, hits, bounds);
+      TTBTrack.event(bounds ? 'find_area' : 'find_submit', {
+        search_term: typed.toLowerCase(),
+        results: found.length
+      });
+      showResults(typed, found, bounds);
     });
   }
 
-  function showResults(typed, found, hits, bounds) {
+  function showResults(typed, found, bounds) {
     /* In the dropdown's order: up to three of my own places first, then the
        rest by the export's rank — THE ORDER above findOrder() says which —
        or nearest first when the field asked to be near, which findHits() has
@@ -9843,11 +9878,6 @@
     /* Drawn now, because the card opening below keeps whatever list is
        standing beside it — and the list standing there is the map's. */
     renderList();
-
-    TTBTrack.event(bounds ? 'find_area' : 'find_submit', {
-      search_term: typed.toLowerCase(),
-      results: total
-    });
 
     /* The first result open, and — from Enter — the map framed on all of
        them in the strip the card leaves, which is the whole point: zoom out
