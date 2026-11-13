@@ -937,6 +937,8 @@
 .lists-main.is-wide { max-width: 1180px; }
 .lists-all .lists-say { max-width: 62ch; }
 
+.lists-all .lists-all-make { margin-top: 14px; }
+
 .lists-all-search { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
 .lists-all-search .search-field { flex: 1 1 260px; min-width: 0; }
 .lists-order { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }

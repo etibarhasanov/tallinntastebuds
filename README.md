@@ -7220,16 +7220,28 @@ alternative is the API sending every coordinate on every list to make a panel
 the size of a postage stamp slightly more honest.
 
 **Three orders, and how often a list is opened is the default.** Beside the
-search field are three chips — Most opened, Most saved, Newest — pressed the
+search field are three chips — Most opened, Newest, Most saved — pressed the
 way the map's filter chips are. The first is the page's own order; the other
 two are the ways past the top of a ranking somebody has already seen, to what
-other people bookmarked and to what arrived lately. Each is two columns
+arrived lately and to what other people bookmarked. Each is two columns
 descending and then the id — `SORTS` in `functions/api/_mostkept.js` names
 the three — which is what lets the one cursor shape page all of them; a cursor
 is only ever handed back under the order it was minted in, because the page
 sends both together. The order rides in the address as `?sort=kept` or
 `?sort=new` (never the default), is seeded by `functions/lists/index.js` the
 way a search is, and reports itself as `lists_sort`.
+
+**And a door to a list of your own.** The head card ends in the page's one
+filled button, **Make your own list** — `makeYours()` in `assets/lists.js`,
+`listsMakeYours` in `data/ui.json`, reported as `list_new`. Nothing on the
+page said a reader could be one of the people on it: a list is made on
+`/account.html`, and the roads there were your own name in the header and the
+map's rail. It is a door rather than the name field itself, because that
+field over the search field was two boxes to type in on a page where a box
+has always meant *find one*; signed in it goes to the account page's **Your
+lists** card, and signed out through the sign-up sheet and back to it. It
+carries no sentence of its own — one was drawn, and it was a second line
+saying what the button already did.
 
 **Why the opens and not the keeps.** Keeping a list needs an account; opening
 one needs nothing. The page opened on the keep count for as long as that was
@@ -19296,6 +19308,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `search` | `search_term`, `scope` — `lists` for the directory's field, `list` for the one over a single list's places |
 | `lists_sort` | `sort` (`kept`, `new` or `changed`) — a chip beside the search field |
 | `lists_more` | `rows_shown`, `how` (`scroll` or `press`) |
+| `list_new` | `signed_in` — **Make your own list** in the directory's head card, the door to where a list is made |
 | `lists_all` | — the way to the directory: **More lists** in the bar at the foot of a list, and the pill on the map's rail. `/account.html` reported it too, until the card that did went |
 | `list_end` | `list_id`, `places_on` — the last place on somebody else's list came on screen, once a load and only with nothing typed in the field. What tells a view that ended with nothing pressed apart: read to the bottom, or left at the title |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |

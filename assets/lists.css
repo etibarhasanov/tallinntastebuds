@@ -1436,6 +1436,10 @@
    on the directory and on nothing else — see render(). */
 .lists-main.is-wide { max-width: 1180px; }
 .lists-all .lists-say { max-width: 62ch; }
+/* The door to a list of your own, under the line that says whose these are:
+   the air a button wants under a sentence, which .lists-foot's own 6px is
+   not — that was sized for a foot of links. */
+.lists-all .lists-all-make { margin-top: 14px; }
 
 /* The sticky row under the head card carries the field and, beside it, the
    order: one row so what narrows the page and what orders it are found in the
