@@ -2608,10 +2608,21 @@ body.is-discover #btn-locate { display: none; }
   overflow: hidden;
   cursor: pointer;
 }
-.discover-sky { display: block; width: 100%; height: auto; background: var(--wash); }
-.discover-sea { fill: var(--hairline); }
-.discover-road { fill: none; stroke: var(--paper); stroke-width: 3; stroke-linecap: round; }
-.discover-sky circle { fill: var(--accent); stroke: var(--paper); stroke-width: 1.5; }
+
+.discover-sky { aspect-ratio: 356 / 170; background: var(--wash); }
+.discover-sky:empty { display: none; }
+.discover-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 250;
+  pointer-events: none;
+  background: var(--map-tint, transparent);
+  mix-blend-mode: color;
+}
+.discover-sky .leaflet-pane { pointer-events: none; }
+.discover-sky .pin-face { pointer-events: none; cursor: inherit; }
+.discover-sky .leaflet-control-attribution { padding-bottom: 3px !important; }
 .discover-map-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px 14px; }
 .discover-map-words { flex: 1 1 auto; min-width: 0; }
 .discover-map-words h2 {
