@@ -7243,6 +7243,15 @@ lists** card, and signed out through the sign-up sheet and back to it. It
 carries no sentence of its own — one was drawn, and it was a second line
 saying what the button already did.
 
+**On a phone the head is one line.** The title and that button side by side,
+on the ground with no card round them, and the sentence under the title not
+drawn at all — the rules are in the phones block of `assets/lists.css`. As the
+desk's card it took the first 373px of a 390px screen before a single list;
+now the first list starts at about 220. The sentence went because the title
+and the pressed chip already say it. A desk has the room and keeps the card
+and the sentence; a language too long for one line wraps the button under the
+title.
+
 **Why the opens and not the keeps.** Keeping a list needs an account; opening
 one needs nothing. The page opened on the keep count for as long as that was
 the only number there was, which meant the order every stranger read was

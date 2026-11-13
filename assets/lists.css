@@ -244,9 +244,9 @@
   /* A row, because a title can carry the list's pin in front of it: the pin
      must sit on the first line's baseline rather than being dragged down by
      a title that wraps to two. The gap is here rather than a margin on the
-     pin, and that is not a preference — the pin is sized at .62em so that it
+     pin, and that is not a preference — the pin is sized at .56em so that it
      grows with whatever it stands beside, which means a margin written on it
-     would be .62 of the number it looked like. On the row it is the title's
+     would be .56 of the number it looked like. On the row it is the title's
      own em, which is the measure the eye reads the gap against. */
   display: flex;
   align-items: baseline;
@@ -2120,6 +2120,37 @@ body.has-scrim { overflow: hidden; }
   .lists-index-card { padding: 13px 14px 52px; }
   .lists-all-card { padding: 13px 14px 14px; }
   .lists-all-card.has-keep { padding-bottom: 52px; }
+  /* The directory's head on a phone: the title and the door to a list of
+     your own on one line, on the ground, and the first list under them. It was
+     the desk's card at this width too — a title, a sentence and a button, each
+     on a line of its own — and the first list began 373px down a screen 390
+     wide, which on a page whose whole job is twenty lists was half the first
+     screen spent saying so. The sentence is the part that went: the title says
+     whose these are and the pressed chip under the field says the order, so it
+     was said twice. A desk keeps the card and the sentence, having the room.
+
+     It wraps, so a language whose title and button do not fit side by side
+     puts the button under the title rather than squeezing either. */
+  .lists-all > .lists-card:first-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 0 2px;
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .lists-all > .lists-card:first-child .lists-title { margin: 0; font-size: 20px; }
+  .lists-all > .lists-card:first-child .lists-say { display: none; }
+  .lists-all .lists-all-make { margin: 0; }
+  .lists-all .lists-all-make .go { padding: 8px 14px; }
+  /* And less air round the field, for the same reason. The row's padding
+     still equals the margin it takes back, which is what keeps it where the
+     gap would have put it — see .lists-all-search above. */
+  .lists-stack.lists-all { gap: 12px; }
+  .lists-all-search { margin: -6px 0; padding: 6px 0; }
   .lists-index-map,
   .lists-index-row > .lists-keep-wrap { right: 14px; bottom: 10px; }
   .picker { padding: 20px 16px 12px; }
