@@ -5978,14 +5978,10 @@
     dom.listBody.appendChild(group);
   }
 
-  var GOOGLE_BY = 'google-statistics';
-
   function listBy() {
-    var google = state.list.by === GOOGLE_BY;
-    var name = google ? 'Google Maps' : state.list.by;
     return {
-      name: name,
-      words: state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null
+      name: TTBGoogleWords.who(state.list.by),
+      words: state.list.by ? t('listsBy').split('{name}') : null
     };
   }
 

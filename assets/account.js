@@ -609,16 +609,15 @@
      this site — see byline() in assets/lists.js for why the name is the link
      and the words around it are not, why cutting the translated phrase at its
      placeholder is not assembling a sentence out of pieces, and why the one
-     account Google's numbers write under reads as the product instead. */
-  var GOOGLE_BY = 'google-statistics';
+     account Google's numbers write under is printed under a name instead of
+     its username. */
   function byline(name) {
-    var google = name === GOOGLE_BY;
-    var words = t(google ? 'listsByGoogle' : 'listsBy').split('{name}');
+    var words = t('listsBy').split('{name}');
     return el('span', { className: 'lists-index-by' }, [
       words[0],
       TTBTrack.click(el('a', {
         href: '/u/' + encodeURIComponent(name),
-        textContent: google ? 'Google Maps' : name
+        textContent: TTBGoogleWords.who(name)
       }), 'profile_open', { name: name }),
       words[1]
     ]);

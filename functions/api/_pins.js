@@ -9,28 +9,31 @@
  * **The mark** in README.md — and nothing anybody types can put it on a place
  * that is not. It is the one thing on this site that means "I have eaten here
  * and it is worth your evening", so it is not an option in a picker; it is
- * what being on the map looks like. A list wears one of the forty markers
+ * what being on the map looks like. A list wears one of the forty-five markers
  * below instead, and a place on that list which is also on my map keeps the
  * mouth regardless of what the list chose.
  *
- * AND NEITHER IS A CUP, A CROISSANT OR A BURGER
+ * AND NEITHER IS THE KIND OF DOOR A PLACE IS
  *
- * Those are the other table, and it is not in this file at all. A Google row
+ * That is the other table, and it is not in this file at all. A Google row
  * draws what kind of door it is — five of them, see PLACES in assets/pins.js
  * — and that is the site describing a place rather than somebody choosing
- * something about it. The forty below are symbols: a pin, a flame, a flag.
- * They mark a spot, which is the one thing true of every place on a top ten,
- * and they make no claim about what any of them cooks.
+ * something about it. cleanPin() refuses `coffee` and `bar` for the same
+ * reason it refuses the mouth: those words are not this person's to say.
  *
- * Keeping the two apart is what stops a list wearing a croissant from
- * putting a croissant on a sushi place, which reads as the map being wrong
- * about the sushi place rather than as the list being somebody's. So only
- * the markers are here, and cleanPin() refuses a cup for the same reason it
- * refuses the mouth: that word is not this person's to say.
+ * A list may wear food, though, which it could not until 2026-11-13. Five of
+ * the forty-five below are a plate, a croissant, an espresso, two glasses
+ * and a slice, added because the six lists Google's numbers write had a
+ * balloon on the bars and a map pin on the bakeries. FOOD IS A MARKER TOO in
+ * assets/pins.js is the whole argument, the cost included. What matters on
+ * this side is narrower: the ids stay disjoint from PLACES — `espresso` is
+ * not `coffee`, `beers` is not `bar` — so a list can wear the picture and
+ * still cannot say what a place IS, and tools/validate.mjs fails the build
+ * if an id ever turns up in both.
  *
  * WHY THE IDS ARE HERE AND THE DRAWING IS NOT
  *
- * assets/pins.js is the other half: the same forty ids, plus the emoji each
+ * assets/pins.js is the other half: the same forty-five ids, plus the emoji each
  * one draws, the five kinds of place, and the table that reads a Google
  * venue's words into one of those. It cannot import this file — assets/ is
  * ES5 served raw to the browser and this is ESM on the Workers runtime — so
@@ -48,16 +51,18 @@
  * is what an unset column already means.
  */
 
-/* The forty a list may choose from, in the order the picker draws them.
-   They are marks on a map and mean nothing beyond that, which is the point
-   of them; assets/pins.js says which emoji each one is and why there are
-   forty, and why it once went down to eight. */
+/* The forty-five a list may choose from, in the order the picker draws them.
+   Forty are marks on a map and mean nothing beyond that; the five at the end
+   are food and say what a list of one kind of place is a list of.
+   assets/pins.js says which emoji each one is, why there are forty-five, why
+   it once went down to eight, and what the food five cost to allow. */
 export const PIN_GLYPHS = [
   'pin', 'flag', 'flame', 'sun', 'heart', 'blossom', 'gem', 'balloon',
   'laptop', 'star', 'rainbow', 'cat', 'bow', 'sparkles', 'music', 'moon',
   'dog', 'unicorn', 'bunny', 'bear', 'panda', 'fox', 'frog', 'chick',
   'penguin', 'octopus', 'whale', 'ladybird', 'sunflower', 'tulip', 'cactus', 'snowflake',
-  'cloud', 'gift', 'camera', 'books', 'teddy', 'ghost', 'turtle', 'hedgehog'
+  'cloud', 'gift', 'camera', 'books', 'teddy', 'ghost', 'turtle', 'hedgehog',
+  'plate', 'croissant', 'espresso', 'beers', 'pizza'
 ];
 
 /* What an unset column means, said once. Stored as '' rather than as this,
@@ -74,7 +79,8 @@ export const DEFAULT_PIN = 'pin';
    nobody has dressed, and what the page reads as the default. Never throws
    and never corrects: a value this site does not know is a value it does not
    store, which covers a hand-written request, a glyph taken out of the table
-   since, and the five kinds of place, none of which are anybody's to pick. */
+   since, and the five kinds of place, which are the site's word and not
+   anybody's to pick. */
 export function cleanPin(value) {
   return typeof value === 'string' && PIN_GLYPHS.indexOf(value) >= 0 ? value : '';
 }

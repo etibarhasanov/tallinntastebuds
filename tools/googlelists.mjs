@@ -8,7 +8,10 @@
  * lists under its name, in Google's order. Top ten restaurants, bakeries,
  * cafés, bars and pizzerias, and a top twenty across all of them, as the
  * numbers Google holds about the city have them, and said to be Google's in
- * the title, the byline and every row.
+ * the title, the byline and every row. Each list carries the glyph it wears
+ * in front of its title — a croissant on the bakeries, two glasses on the
+ * bars — because that is a column of the row like the title is, and not
+ * something to be pressed once on a page and lost at the next refresh.
  *
  *   node tools/googlelists.mjs           rewrite db/google-lists.sql
  *   node tools/googlelists.mjs --check   report that it is stale, exit 1
@@ -219,17 +222,27 @@ const NOT_A_BAR = /Restaurant|Pub|Hookah|Venue|Concert|Auditorium|Club|Store|Caf
    The sixth carries `overall: true` instead of a `pick`: it is not one of
    the five category pools above, so build() below routes it to
    rankOverall() rather than rank() — see THE SIXTH LIST IS NOT ONE OF THESE
-   POOLS. */
+   POOLS.
+
+   The `pin` is the glyph each one wears in front of its title and on the
+   map, one of the markers in functions/api/_pins.js, which is what the
+   validator holds these to. Five of them are the food markers that file got
+   on 2026-11-13, and these six lists are why it got them: a top ten of
+   bakeries under a map pin is a title you have to read to tell from a top
+   ten of bars. The sixth is a star rather than a food, because twenty places
+   of every kind is not a kind. */
 export const LISTS = [
   {
     id: 'top-ten-restaurants-by-google-pt7mwk',
     title: 'Top ten restaurants in Tallinn, by Google',
+    pin: 'plate',
     pick: (place) => /Restaurant$/.test(place.category) &&
       !/^(Fast Food|Takeout|Delivery) Restaurant$/.test(place.category)
   },
   {
     id: 'top-ten-bakeries-by-google-65nfrf',
     title: 'Top ten bakeries in Tallinn, by Google',
+    pin: 'croissant',
     pick: (place) => place.category === 'Bakery' ||
       (/^(Cafe|Coffee Shop)$/.test(place.category) && /\bBakery\b/.test(place.tags) &&
         place.tags.split('; ').every((tag) => /^(Cafe|Coffee Shop|Bakery|Food Store)$/.test(tag)))
@@ -237,24 +250,28 @@ export const LISTS = [
   {
     id: 'top-ten-cafes-by-google-jz7c2b',
     title: 'Top ten cafés in Tallinn, by Google',
+    pin: 'espresso',
     pick: (place) => /^(Cafe|Coffee Shop|Coffee roastery|Tea House)$/.test(place.category) ||
       (place.category === 'Bakery' && /Coffee Shop|\bCafe\b/.test(place.tags))
   },
   {
     id: 'top-ten-bars-by-google-8y6grz',
     title: 'Top ten bars in Tallinn, by Google',
+    pin: 'beers',
     pick: (place) => /^(Bar|Cocktail Bar|Wine Bar)$/.test(place.category) &&
       !NOT_A_BAR.test(place.tags)
   },
   {
     id: 'top-ten-pizzerias-by-google-k83p93',
     title: 'Top ten pizzerias in Tallinn, by Google',
+    pin: 'pizza',
     pick: (place) => place.category === 'Pizza Restaurant' ||
       (/^(Italian )?Restaurant$/.test(place.category) && /Pizza Restaurant/.test(place.tags))
   },
   {
     id: 'top-twenty-places-by-google-kwb7l5',
     title: 'Top 20 places, by Google',
+    pin: 'star',
     overall: true
   }
 ];
@@ -360,8 +377,8 @@ export function build() {
   );
 
   out.push(
-    'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at)\nVALUES\n' +
-    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.overall ? INTRO_OVERALL : INTRO)}, 1, ${NOW}, ${NOW})`).join(',\n') + '\n' +
+    'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at, pin)\nVALUES\n' +
+    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.overall ? INTRO_OVERALL : INTRO)}, 1, ${NOW}, ${NOW}, ${q(list.pin)})`).join(',\n') + '\n' +
     'ON CONFLICT(id) DO UPDATE SET\n' +
     /* owner among them, so renaming the account in this file actually moves
        its lists on a database that already holds them. Without it a rename
@@ -371,6 +388,14 @@ export function build() {
     '    owner = excluded.owner,\n' +
     '    title = excluded.title,\n' +
     '    intro = excluded.intro,\n' +
+    /* And the pin, so the glyph is a line in this file rather than something
+       somebody once pressed on the list's own page. It was the second for a
+       year: the bars list wore a balloon and the other five wore the default
+       map pin, because the markers held no food when these lists were written
+       and because nothing here ever wrote the column. A pressed one would not
+       have survived a refresh either — this statement is what every refresh
+       runs, and a column it does not name is a column that drifts. */
+    '    pin = excluded.pin,\n' +
     '    updated_at = excluded.updated_at;'
   );
 

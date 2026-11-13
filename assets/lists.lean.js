@@ -429,13 +429,12 @@
   }
 
   function byline(name) {
-    var google = name === GOOGLE_BY;
-    var words = t(google ? 'listsByGoogle' : 'listsBy').split('{name}');
+    var words = t('listsBy').split('{name}');
     return el('span', { className: 'lists-index-by' }, [
       words[0],
       TTBTrack.click(el('a', {
         href: profileHref(name),
-        textContent: google ? 'Google Maps' : name
+        textContent: TTBGoogleWords.who(name)
       }), 'profile_open', { name: name }),
       words[1]
     ]);

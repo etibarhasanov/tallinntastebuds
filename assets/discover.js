@@ -84,8 +84,12 @@ window.TTBDiscover = (function () {
     a.appendChild(el('span', 'discover-emblem', TTBPins.glyph(TTBPins.ofList(list))));
     a.appendChild(el('b', '', list.title));
     if (list.by) {
+      /* The same byline the other four pages print, through the same swap:
+         the account Google's numbers write under is printed under a name, not
+         under its username — see who() in assets/googlewords.js. This card
+         used to put the raw `google-statistics` into the phrase. */
       a.appendChild(el('span', 'discover-by',
-        o.t(list.by === 'google-statistics' ? 'listsByGoogle' : 'listsBy', { name: list.by })));
+        o.t('listsBy', { name: TTBGoogleWords.who(list.by) })));
     }
     if (list.taste && list.taste.length) {
       a.appendChild(el('span', 'discover-taste', list.taste.join(' · ')));

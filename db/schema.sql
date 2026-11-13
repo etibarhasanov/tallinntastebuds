@@ -794,8 +794,8 @@ CREATE TABLE IF NOT EXISTS lists (
   public     INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
-  -- The marker this list's places wear on the map: one of the forty ids in
-  -- functions/api/_pins.js, which is what validates it on the way in.
+  -- The marker this list's places wear on the map: one of the forty-five ids
+  -- in functions/api/_pins.js, which is what validates it on the way in.
   --
   -- '' is a list nobody has dressed, and it is NOT the same as having chosen
   -- the default. The default lives in assets/pins.js, applied when the page

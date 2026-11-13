@@ -6141,19 +6141,33 @@ ranked by how often it is opened like everybody else's. They had a strip of
 their own above those rows for a while — **Start here**, five across on a desk
 — and see **One column, and nothing above it** under **Public lists** for what
 that cost and why they are ordinary rows again.
-The byline is the one thing on them that is not drawn the way every other
-list's is: it reads "generated from
-Google Maps" rather than "created by google-statistics", because the account
-name is an implementation detail and the sentence a reader needs is where the
-list came from. `byline()` in `assets/lists.js` — and its copies on the
-account page and in the map's panel — swaps the phrase on that one username,
-`GOOGLE_BY`, and the link still leads to the account's profile, where the
-line under the name says how the order was decided. Its profile is the ordinary one every
+The byline is drawn the way every other list's is and says one thing
+differently: it reads "created by Google Statistics" rather than "created by
+google-statistics", because the username is an implementation detail and a
+name is what a byline is for. `who()` in `assets/googlewords.js` is the swap,
+and the four pages that print a byline — a list's own, `/lists`, a profile,
+your account — and the map's band all call it, so the name is written once.
+The link still leads to the account's profile, where the line under the name
+says how the order was decided.
+
+It used to read "generated from Google Maps", a phrase of its own kept in
+eleven languages beside the phrase that says the same thing about everybody
+else, and `/lists` was printing the raw `google-statistics` into it because
+that card had the username and not the swap. The profile line already says the
+numbers are Google's, in the reader's language. One byline, one string,
+`listsBy`. Its profile is the ordinary one every
 account here has, and the line under its name says where the order came
 from — see **Profiles**. What is different is who wrote them. The account has
 a password hash that is not the hash of anything, so nobody can sign in as
 it; `db/google-lists.sql` is the only thing that writes under its name, and
 it is generated from the export the way `db/google-venues.sql` is.
+
+Each of the six wears a glyph of its own — 🍽️ 🥐 ☕️ 🍻 🍕 and ⭐ over
+everything — and that is a column `tools/googlelists.mjs` writes like the
+title and the intro, not something somebody pressed once on the list's own
+page. It is why five of the markers are food: see **Two tables, and no id in
+both** under [The pins](#the-pins). A refresh rewrites `pin` along with the
+rows, so the glyphs survive one.
 
 The name is hyphenated rather than `google_statistics` because, when the
 account was made, a username here was lowercase ASCII letters, digits and
@@ -6898,9 +6912,9 @@ to press Save finds it kept too, and only one of those is a story anybody
 minds.
 
 **The pin** is above that, and it is the one field on the card that is a grid
-of pictures rather than a box to type in: forty markers, five rows of eight,
-and what you press is what this list's places wear on the
-map. It is a field, so it sits with the fields. The mouth is not on the
+of pictures rather than a box to type in: forty-five markers, five rows of
+eight and a short one, and what you press is what this list's places wear on
+the map. It is a field, so it sits with the fields. The mouth is not on the
 grid and cannot be asked for — a place on the map draws it whatever list it is
 on, and the line under the picker says so. **The pins** is the whole of it.
 
@@ -16650,7 +16664,7 @@ instead of a minute after the merge.
 - an `assets/links.js` whose three networks, their addresses or their caps
   have drifted from `functions/api/_profile.js`, which is what decides
   whether a handle may be stored at all
-- an `assets/pins.js` whose forty markers have drifted from the ids
+- an `assets/pins.js` whose forty-five markers have drifted from the ids
   `functions/api/_pins.js` will let a list store, a glyph called `mark` in
   either table, a kind of place a list could also pick, a kind filed under a
   tone that does not exist, a tone with no colour token or no `.pin-tone-`
@@ -16972,9 +16986,9 @@ functions/api/stats.js     POST /api/stats — one press in; a Google place
 assets/links.js            the three sites a profile can link to, the handles
                            they take and the addresses they build — said once
                            for the profile and the account page
-assets/pins.js             the forty markers, the five kinds of place, the six
-                           tones, and which of them a place draws — said once
-                           for every page that draws a pin
+assets/pins.js             the forty-five markers, the five kinds of place,
+                           the six tones, and which of them a place draws —
+                           said once for every page that draws a pin
 functions/api/_pins.js     the same ids, on the side that decides whether a
                            list may store them (not a route: leading _)
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
@@ -17209,7 +17223,7 @@ the two tables behind them.
 
 ### The mouth is not a choice
 
-The picker has forty markers on it and the mark is not one of them. It is
+The picker has forty-five markers on it and the mark is not one of them. It is
 not in `TTBPins.GLYPHS`, `cleanPin()` in `functions/api/_pins.js` refuses it
 on the way in, and `node tools/validate.mjs` fails the build if `mark` ever
 turns up in either table — three answers to the same question, because this
@@ -17228,7 +17242,7 @@ The picker says so in words under it — `listsPinMark`, in eleven languages —
 rather than leaving somebody to work it out from a map where two of their
 pins came out wrong.
 
-### Two tables, and they do not overlap
+### Two tables, and no id in both
 
 A list wears a **marker**. A Google row wears a **kind of place**. They are
 separate lists in `assets/pins.js` — `MARKERS` and `PLACES` — and no id is in
@@ -17238,11 +17252,11 @@ That split is the second version of this. The first had one table of eighteen
 food glyphs and let a list pick any of them, which meant a list wearing a
 croissant put a croissant on a sushi place. That reads as the map being wrong
 about the sushi place rather than as the list being somebody's, and it is the
-wrong thing for a list to be able to say: a list is a choice of places, not a
-claim about what any one of them cooks.
+wrong thing for a list to be able to say about a place it did not choose the
+cooking of.
 
-So the markers say nothing about food at all. They mark a spot — which is the
-one thing that is true of all ten places on a top ten.
+So the markers said nothing about food at all, for a year. They mark a spot —
+which is the one thing that is true of all ten places on a top ten.
 
 | 📍 pin | 🚩 flag | 🔥 flame | ☀️ sun | ❤️ heart | 🌸 blossom | 💎 gem | 🎈 balloon |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -17250,6 +17264,26 @@ one thing that is true of all ten places on a top ten.
 | 🐶 dog | 🦄 unicorn | 🐰 bunny | 🐻 bear | 🐼 panda | 🦊 fox | 🐸 frog | 🐥 chick |
 | 🐧 penguin | 🐙 octopus | 🐳 whale | 🐞 ladybird | 🌻 sunflower | 🌷 tulip | 🌵 cactus | ❄️ snowflake |
 | ☁️ cloud | 🎁 gift | 📷 camera | 📚 books | 🧸 teddy | 👻 ghost | 🐢 turtle | 🦔 hedgehog |
+| 🍽️ plate | 🥐 croissant | ☕️ espresso | 🍻 beers | 🍕 pizza | | | |
+
+**And then five of them were food.** The six lists Google's numbers write are
+what broke the rule: **Top ten bars in Tallinn** wore 🎈, because a balloon was
+the nearest thing to a drink in a table with no drinks in it, and **Top ten
+bakeries** wore the default 📍 like four of the other five. A drawer of lists
+whose glyphs are all interchangeable is a drawer you read word by word, which
+is the one thing a picture in front of a title is there to save.
+
+The old argument was not refuted, it was paid. A croissant can land on a sushi
+place again — but only on a list somebody chose a croissant for, with that
+person's name under the title saying whose choice it was, and never on the
+map's own pin for that place, which is rule 3 and is the site talking rather
+than a list. The mouth is still untouchable and so are the five kinds of
+place: `espresso` is not `coffee` and `beers` is not `bar`, the ids stay
+disjoint, and the validator still fails the build if one ever turns up in
+both. A list can wear the picture; it still cannot say what a place **is**.
+
+They are the short last row on purpose. Five under five rows of eight reads as
+its own group, which is what they are.
 
 It was eight first, and eighteen for an afternoon before that. A grid of eighteen is a decision
 to make before you can name your list, and the ones that went were the ones
@@ -17267,9 +17301,13 @@ sparkles, music, a moon for late.
 unicorn, a bunny, a bear, a panda, a fox, a frog, a chick, a penguin, an
 octopus, a whale, a ladybird, a sunflower, a tulip, a cactus, a snowflake, a
 cloud, a gift, a camera, books, and a teddy, a ghost, a turtle and a hedgehog
-to make the last row whole. Still none of them food. It is a grid to browse
-now rather than a decision to make in a glance, and that is the trade the
-owner chose once eight had been tried.
+to make the last row whole. None of them food, still, at that point. It is a
+grid to browse now rather than a decision to make in a glance, and that is the
+trade the owner chose once eight had been tried.
+
+**Then forty-five**, which is the paragraph above: a plate, a croissant, an
+espresso, two glasses and a slice, for the lists that are a list of one kind
+of place.
 
 **And no colour beside them.** There were six tone swatches under the grid,
 also for an afternoon, and they were a second decision to make before you
@@ -17278,7 +17316,8 @@ marker draws in the style's accent now, which is the colour of everything
 else on this site that is a link or a pin, and a list is one column and one
 press.
 
-Eight to a line at every width, so the forty are five even rows. The columns
+Eight to a line at every width, so the first forty are five even rows and the
+five food ones are a short sixth. The columns
 are fractions rather than a fixed 38px, because eight fixed ones come to 332px
 — eight more than a 390px phone leaves inside that card, and enough to make a
 360px one scroll sideways. As fractions they are 38px on a desk and about 33px
@@ -17326,8 +17365,9 @@ and neither of them is ours. That trade is the wrong one for the mark, which
 is why the mark is a photograph and is in neither table. It is the right one
 for a marker somebody picks out of a grid.
 
-The forty markers have names in all eleven languages, because a swatch needs a
-label and a tooltip: `pinFlame`, `pinBlossom` and the rest. The picker builds
+The forty-five markers have names in all eleven languages, because a swatch
+needs a label and a tooltip: `pinFlame`, `pinBlossom`, `pinCroissant` and the
+rest. The picker builds
 those keys out of the id — `pinKey('flame')` — which means the validator's
 scanner for `t()` calls cannot see a single one of them, so it walks the same
 list and checks them itself. See **What the validator checks**. The five kinds
@@ -17399,7 +17439,7 @@ draw the same list differently.
 It is `aria-hidden` in every one of those places. The title beside it already
 says what the list is, in its author's own words; a screen reader announcing
 "croissant, the bakeries worth the walk" is a decoration read aloud. The
-picker is where the eight have names.
+picker is where the glyphs have names.
 
 On your own list's card there is no emblem, because the picker is on it and a
 picker showing the chosen pin is the emblem.

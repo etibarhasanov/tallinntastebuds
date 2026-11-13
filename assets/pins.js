@@ -39,7 +39,7 @@
  *
  * KEEP IT IN STEP WITH functions/api/_pins.js
  *
- * That file holds the same forty ids, because the server is what decides
+ * That file holds the same forty-five ids, because the server is what decides
  * whether the string a list wants to store is one of them. It cannot import this one and this one cannot import it — different
  * dialects, different runtimes — so they are written out twice, the way the
  * story clock in assets/app.js restates tools/clock.mjs. Change one, change
@@ -50,16 +50,15 @@ window.TTBPins = (function () {
 
   /* ------------------------------------------------ two tables, not one
    *
-   * They say different things, so they are separate lists and they do not
-   * overlap. Mixing them was the first version's mistake: a list wearing a
-   * croissant put a croissant on a sushi place, which reads as the map being
-   * wrong about the sushi place rather than as the list being somebody's.
+   * They say different things, so they are separate lists and no id is in
+   * both. Five pictures now are, and that was a decision rather than a slip
+   * — see FOOD IS A MARKER TOO, AND IT WAS NOT ALWAYS below.
    *
-   *   MARKERS  what a LIST wears. Forty symbols, none of them food —
-   *            a pin, a flame, a flag — because a list is somebody's choice of
-   *            places and not a claim about what any one of them cooks. They
-   *            mark a spot, which is the only thing that is true of all ten
-   *            places on a top ten.
+   *   MARKERS  what a LIST wears. Forty-five of them, in the order they are
+   *            written below. The first forty are symbols — a pin, a flame,
+   *            a flag — which mark a spot, the only thing that is true of all
+   *            ten places on a top ten. The last five are food, and they say
+   *            what a list of one kind of place is a list of.
    *
    *            First eight and not eighteen. A grid of eighteen is a decision to
    *            make before you can name your list, and the ones that went
@@ -85,9 +84,15 @@ window.TTBPins = (function () {
    *            browse rather than a decision to make, which is the trade the
    *            owner chose once eight had been tried.
    *
-   *            All forty draw in the style's accent: a colour picker under
-   *            them was a second decision to make before you could name a
-   *            list, for a difference the marker was already making.
+   *            Then forty-five, when the five food ones arrived — see the
+   *            section under this one. They are the short last row, which
+   *            the grid in assets/lists.css leaves uneven on purpose: they
+   *            are a different kind of thing from the forty above them and
+   *            reading as their own group is the honest shape.
+   *
+   *            All forty-five draw in the style's accent: a colour picker
+   *            under them was a second decision to make before you could name
+   *            a list, for a difference the marker was already making.
    *
    *   PLACES   what a GOOGLE ROW is. Five kinds of place, not forty-six
    *            kitchens: the question a pin on a map answers is "what is
@@ -97,8 +102,37 @@ window.TTBPins = (function () {
    *            also the split Google Maps itself draws.
    *
    * Only MARKERS is a choice. functions/api/_pins.js holds those ids and
-   * nothing else, so a list cannot ask for a cup — that word belongs to
-   * whatever Google says the place is.
+   * nothing else, so the five kinds of place stay the site's own word about
+   * a Google row and are not anybody's to pick.
+   *
+   * ---------------------------------------------------------------------
+   * FOOD IS A MARKER TOO, AND IT WAS NOT ALWAYS
+   *
+   * The forty were food-free for a year, and the argument was good: a list
+   * wearing a croissant puts a croissant on every place on it, so a sushi
+   * place on that list draws a croissant, which reads as the map being wrong
+   * about the sushi place rather than as the list being somebody's.
+   *
+   * What broke it was the six lists Google's numbers write. "Top ten bars in
+   * Tallinn" wore a balloon and "Top ten bakeries" wore the default map pin,
+   * because a balloon was the nearest thing to a drink in a table with no
+   * drinks in it. A reader scanning a drawer of lists for the bakeries one
+   * was reading every title, which is the exact thing a pin in front of a
+   * title is there to save.
+   *
+   * So five were added on 2026-11-13 — a plate, a croissant, an espresso,
+   * two glasses and a slice — and the old argument was not refuted, it was
+   * paid. The cost is real and it is bounded: a croissant can land on a
+   * sushi place, but only on a list somebody chose a croissant for, with that
+   * person's name under the title saying whose choice it was, and never on
+   * the map's own pin for that place, which is what rule 3 above draws. The
+   * mark is still untouchable, and so are the five kinds of place: those are
+   * the site talking, and this is a list talking about itself.
+   *
+   * The ids stay disjoint all the same, and the validator still fails the
+   * build if they stop being — `espresso` is not `coffee` and `beers` is not
+   * `bar`. Two tables that happen to share a picture are two tables; one id
+   * in both would mean a list could say what a place IS.
    *
    * Each row is id, emoji, and the tone it wears when nothing has chosen one
    * for it, which for a marker is always the accent. The tones are custom
@@ -153,7 +187,12 @@ window.TTBPins = (function () {
     ['teddy',     '\uD83E\uDDF8'],
     ['ghost',     '\uD83D\uDC7B'],
     ['turtle',    '\uD83D\uDC22'],
-    ['hedgehog',  '\uD83E\uDD94']
+    ['hedgehog',  '\uD83E\uDD94'],
+    ['plate',     '\uD83C\uDF7D\uFE0F'],
+    ['croissant', '\uD83E\uDD50'],
+    ['espresso',  '\u2615\uFE0F'],
+    ['beers',     '\uD83C\uDF7B'],
+    ['pizza',     '\uD83C\uDF55']
   ];
 
   /* Five kinds, three colours, and the third field is the only place a tone

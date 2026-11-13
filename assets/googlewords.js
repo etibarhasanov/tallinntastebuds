@@ -1,7 +1,8 @@
 /* Tallinn Tastebuds — the six lists Google wrote, in the reader's language.
  *
  * window.TTBGoogleWords.list(list, t, lang) and .about(profile, t) put the
- * words of db/google-lists.sql into the language the page is read in.
+ * words of db/google-lists.sql into the language the page is read in, and
+ * .who(name) gives the account the name it is printed under.
  *
  * WHY IT EXISTS. Those lists are rows in D1 like anybody's, and everything in
  * a row is one string in one language: the title, the intro, the line under
@@ -56,6 +57,25 @@ window.TTBGoogleWords = (function () {
   /* The account the six hang off, and the line its profile carries. */
   var ACCOUNT = 'google-statistics';
 
+  /* And the name it is printed under wherever a byline names it. The rows
+     hold `google-statistics`, which is a username and not a name: "created
+     by google-statistics" is a sentence about how the site is built. Four
+     files print that byline — assets/lists.js for a list's own page, the
+     directory and a profile, assets/account.js for your own drawer of lists,
+     assets/app.js for the band across the map, assets/discover.js for the
+     shelf under it — and all four were asking the same question of the same
+     string, with the shelf answering it with the raw username. So it is
+     answered here, once, beside the other words these six lists are printed
+     in.
+
+     Not translated, and deliberately: it is the name of the thing that wrote
+     the lists, the way the places on them keep their own names. */
+  var NAME = 'Google Statistics';
+
+  function who(name) {
+    return name === ACCOUNT ? NAME : name;
+  }
+
   function number(value, lang, digits) {
     try {
       return value.toLocaleString(lang, { minimumFractionDigits: digits, maximumFractionDigits: digits });
@@ -109,5 +129,5 @@ window.TTBGoogleWords = (function () {
     return profile;
   }
 
-  return { list: list, lists: lists, about: about };
+  return { list: list, lists: lists, about: about, who: who };
 }());
