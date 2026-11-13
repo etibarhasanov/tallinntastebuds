@@ -3483,10 +3483,16 @@
        one ending of the sheet nothing else reports. Every way it shuts on a
        success has set the user first, so this cannot count one of those.
        Whether a refusal was on screen as it went is the difference between
-       somebody who changed their mind and somebody the sheet turned away. */
+       somebody who changed their mind and somebody the sheet turned away.
+
+       Where the sheet was going to send them goes with it. It stayed once,
+       so a discount's Sign in, shut and forgotten, sent a later sign-in from
+       More to the pass page — and with Make a list it would have made a list
+       nobody asked for. */
     if (!dom.accountScrim.hidden && !state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) {
       TTBTrack.event('account_leave_' + accountView);
       if (accountErr) TTBTrack.event('account_left_err', { view: accountView });
+      accountThen = '';
     }
     dom.accountScrim.hidden = true;
     document.body.classList.remove('has-scrim');
@@ -3791,6 +3797,13 @@
         TTBTrack.event(creating ? 'account_create' : 'account_login', {});
         TTBTrack.event('account_done_' + (creating ? 'up' : 'in'));
         closeAccount();
+        /* Make a list, pressed before there was anybody to make it for: made
+           now, from here, rather than by the page MAKE_THEN names. */
+        if (accountThen === MAKE_THEN) {
+          accountThen = '';
+          makeList();
+          return;
+        }
         /* Sent here from somewhere that needed an account — the lists page.
            Straight back to it, and no toast: the page they land on is about
            to say who they are in its own header. */
@@ -5480,6 +5493,79 @@
         leaveDiscover();
         selectPlace(id, { fly: true });
       }
+    });
+    $('discover-make').addEventListener('click', pressMake);
+  }
+
+  /* ------------------------------------------------------------ make a list
+   * Make a list at the foot of Discover, answered where it is pressed.
+   *
+   * It was a link to /account.html?make=1, and that page made the list and
+   * replaced itself with it — which put the account page on the screen for
+   * the length of four requests on the way to a list, and the owner's word
+   * was that it should go straight there. So for somebody signed in the list
+   * is made from here, "My list" in the language the map is read in, and the
+   * new list opens over the map the way a list on a shelf does: Back is
+   * Discover again. It is named on its own page, whose title is a field.
+   *
+   * Signed out, the sign-up sheet comes up over Discover with the press
+   * remembered as MAKE_THEN. Signing in on the sheet answers it here, with no
+   * page in between; the way back from Google cannot, because that trip
+   * leaves the site and comes back to an address, so it comes back to
+   * /account.html?make=1, which makes the list before it draws anything. The
+   * link keeps that address too, for a map that has not heard from
+   * /api/account yet, or a press made to open a new tab.
+   *
+   * A refusal is a toast: there is no form here to say it on, and Discover
+   * is still the page underneath. "Named afterwards" under "Lists" in
+   * README.md. */
+  var MAKE_THEN = '/account.html?make=1';
+  var MAKE_ERRORS = { 'too-many': 'listsErrTooMany' };
+  var makeBusy = false;
+
+  function pressMake(ev) {
+    if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+    if (!state.account.ready) return;
+    ev.preventDefault();
+    if (!state.account.user) {
+      accountThen = MAKE_THEN;
+      openAccount('up', '', 'make');
+      return;
+    }
+    makeList();
+  }
+
+  function makeList() {
+    if (makeBusy) return;
+    makeBusy = true;
+    fetch('/api/lists', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'create', title: t('listsUntitled') })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; })
+        .then(function (out) { return { ok: res.ok, out: out || {} }; });
+    }).then(function (a) {
+      makeBusy = false;
+      if (!a.ok) {
+        /* A session that ran out while Discover was open: the sheet, and the
+           press still owed once it is done. */
+        if (a.out.error === 'signed-out') {
+          state.account.user = null;
+          paintAccountRow();
+          accountThen = MAKE_THEN;
+          openAccount('in', '', 'expired');
+          return;
+        }
+        toast(t(MAKE_ERRORS[a.out.error] || 'listsErrGeneric'));
+        return;
+      }
+      TTBTrack.event('list_create', { list_id: a.out.id });
+      var to = '/list/' + a.out.id;
+      if (!window.TTBShell.walk(to)) window.location.href = to;
+    }).catch(function () {
+      makeBusy = false;
+      toast(t('listsErrGeneric'));
     });
   }
 

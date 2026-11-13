@@ -409,7 +409,7 @@
  *                                    offer, a discount, a list to keep, a
  *                                    session that ran out under a press, a
  *                                    link from another page, the way back
- *                                    from Google
+ *                                    from Google, Make a list on Discover
  *   account_sheet_<view>             the sheet up, on 'up' (make one) or
  *                                    'in'; 'google' was naming a Google
  *                                    account, a step there is no longer, and
@@ -549,7 +549,7 @@ const SIGNS = { account_login: 'login', account_create: 'signup' };
 const SIGN_VIEWS = ['up', 'in', 'google'];
 const SIGNUP = new Set([
   'account_nudge_shown', 'account_nudge_faded', 'account_left_err',
-  ...['rail', 'nudge', 'deal', 'keep', 'expired', 'link', 'google'].map((d) => 'account_from_' + d),
+  ...['rail', 'nudge', 'deal', 'keep', 'expired', 'link', 'google', 'make'].map((d) => 'account_from_' + d),
   ...['sheet', 'try', 'done', 'leave'].flatMap((step) => SIGN_VIEWS.map((v) => 'account_' + step + '_' + v)),
   ...['taken', 'username', 'password', 'no_match', 'slow_down',
     'malformed', 'no_database', 'no_salt', 'wrong_database', 'network', 'generic'].map((e) => 'account_err_' + e),

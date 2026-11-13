@@ -973,6 +973,7 @@
   "visitorsFromNudge": "Предложение над картой",
   "visitorsFromDeal": "Скидка",
   "visitorsFromKeep": "Сохранение списка",
+  "visitorsFromMake": "Создание списка",
   "visitorsFromExpired": "Истёкшая сессия",
   "visitorsFromLink": "Ссылка с другой страницы",
   "visitorsFromGoogle": "Возврат из Google",

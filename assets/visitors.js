@@ -99,7 +99,7 @@
   var DOORS = {
     rail: 'visitorsFromRail', nudge: 'visitorsFromNudge', deal: 'visitorsFromDeal',
     keep: 'visitorsFromKeep', expired: 'visitorsFromExpired', link: 'visitorsFromLink',
-    google: 'visitorsFromGoogle'
+    google: 'visitorsFromGoogle', make: 'visitorsFromMake'
   };
   var REFUSALS = {
     taken: 'visitorsErrTaken', username: 'visitorsErrUsername', password: 'visitorsErrPassword',

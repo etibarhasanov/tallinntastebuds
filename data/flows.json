@@ -91,7 +91,7 @@
         {"id": "account-read", "type": "end", "lane": "member", "name": "Saves and lists read"},
         {"id": "save-account", "type": "service", "lane": "member", "name": "Files the save under the account", "ref": ["functions/api/saves.js POST"]},
         {"id": "saved", "type": "end", "lane": "member", "name": "Saved on every device"},
-        {"id": "make-list", "type": "user", "lane": "member", "name": "Makes a list", "when": ["list_create"], "ref": ["account.html", "assets/account.js"]},
+        {"id": "make-list", "type": "user", "lane": "member", "name": "Makes a list", "when": ["list_create"], "ref": ["account.html", "assets/account.js makeList()", "assets/app.js makeList()", "index.html #discover-make"]},
         {"id": "list-create", "type": "service", "lane": "member", "name": "Creates it", "note": "Up to 24 lists, 429 too-many past that.", "ref": ["functions/api/lists.js POST create"]},
         {"id": "fill-list", "type": "user", "lane": "member", "name": "Adds places, notes, what to order", "when": ["list_add", "list_save", "list_pin", "list_reorder", "list_remove", "place_add"], "note": "Up to 50 places. A place the picker does not have is looked up on Google Maps, and one Google does not have either is typed in and found by address.", "ref": ["lists.html", "assets/lists.js", "assets/lists.js pickerLookUp()", "functions/api/lookup.js"]},
         {"id": "list-edit", "type": "service", "lane": "member", "name": "Stores each edit", "ref": ["functions/api/lists.js POST add, drop, order, say, mustOrder, edit, place, delete", "functions/api/geocode.js GET"]},
