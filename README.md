@@ -18046,12 +18046,13 @@ as a map of somewhere else: a place standing in the drawn sea, a road that is
 not there, forty-three of seventy-one places under a line that said
 seventy-one. Now it is the real thing, small and still: the map's own tiles
 in the palette that is up, its own pins and its own counted discs, standing
-on the word TALLINN as the tiles print it, at the zoom the full map opens
-near. `sky()` in `assets/discover.js` draws it with parts `mountDiscover()`
+on the word TALLINN as the tiles print it, a little further out than the
+full map opens at. `sky()` in `assets/discover.js` draws it with parts `mountDiscover()`
 hands over — `pinGroups()`, `clusterIcon()`, `pinIcon()`, `wearPin()` — so
 nothing there is a second opinion about what a pin looks like. It does not
-drag, zoom or open a place: the whole card is one button, and the two links
-in the tiles' credit are the only thing on it that goes anywhere else. It
+drag, zoom or open a place: the whole card is one button. It carries no
+credit line — the strip covered a corner of a picture this small, and the
+map the card opens carries OpenStreetMap's and CARTO's as it always has. It
 does not show every place either; a window in which the streets can be read
 holds the middle of town, and the map is one press away with the rest. The
 pins do not wait for the tiles, and a phone Leaflet never reached gets the

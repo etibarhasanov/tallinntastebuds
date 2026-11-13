@@ -3996,7 +3996,7 @@ body.is-discover #btn-locate { display: none; }
    room, so a phone Leaflet never reached gets the words and the button
    rather than a blank block over them. It wears the same tint the map does,
    over the tiles and under the pins, or the two would be different maps.
-   Nothing on it takes the pointer but the credit: the card is the button. */
+   Nothing on it takes the pointer: the card is the button. */
 .discover-sky { aspect-ratio: 356 / 170; background: var(--wash); }
 .discover-sky:empty { display: none; }
 .discover-sky::after {
@@ -4010,7 +4010,6 @@ body.is-discover #btn-locate { display: none; }
 }
 .discover-sky .leaflet-pane { pointer-events: none; }
 .discover-sky .pin-face { pointer-events: none; cursor: inherit; }
-.discover-sky .leaflet-control-attribution { padding-bottom: 3px !important; }
 .discover-map-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px 14px; }
 .discover-map-words { flex: 1 1 auto; min-width: 0; }
 .discover-map-words h2 {

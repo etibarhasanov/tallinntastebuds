@@ -47,12 +47,14 @@ window.TTBDiscover = (function () {
   var PLACES = 8;
 
   /* Where the card's still map stands: on the word TALLINN as the tiles
-     print it, at the zoom the full map opens near, so the name of the city is
-     in the middle of the picture and the streets round it can be read. Both
-     were measured off a screenshot of the map itself — the pins on it fix
-     the zoom and where the label sits. A place outside the window is simply
-     not on the picture; the map is one press away and has all of them. */
-  var SKY = { at: [59.4371, 24.7576], zoom: 13.68 };
+     print it, so the name of the city is in the middle of the picture. That
+     point was measured off a screenshot of the map itself, where the pins fix
+     where the label sits. The zoom is a whole level, a little further out
+     than the full map opens at: the first one stood at 13.68 and the owner
+     asked for more of the city on the card. A place outside the window is
+     simply not on the picture; the map is one press away and has all of
+     them. */
+  var SKY = { at: [59.4371, 24.7576], zoom: 13 };
 
   var o = null;
   var node = null;
@@ -228,9 +230,11 @@ window.TTBDiscover = (function () {
      Made on the first draw with the card on screen, because Leaflet measures
      its box and a hidden one measures nought. The pins do not wait for the
      tiles, so on a slow line the picture is the places on the card's own
-     colour until the streets arrive under them. The credit stays on: it is
-     the tiles' licence condition, and the full map's own is out of sight
-     while this page is up. */
+     colour until the streets arrive under them.
+
+     No credit on it, which is the owner's decision: the strip covered a
+     corner of a picture this small, and the full map this card opens carries
+     the OpenStreetMap and CARTO line as it always has. */
   function sky() {
     var box = document.getElementById('discover-sky');
     if (!box || !window.L || !up()) return;
@@ -240,6 +244,7 @@ window.TTBDiscover = (function () {
         zoom: SKY.zoom,
         zoomSnap: 0,
         zoomControl: false,
+        attributionControl: false,
         dragging: false,
         touchZoom: false,
         doubleClickZoom: false,
@@ -249,7 +254,6 @@ window.TTBDiscover = (function () {
         tap: false,
         fadeAnimation: false
       });
-      still.attributionControl.setPrefix(false);
     }
     still.invalidateSize();
     if (!stillTiles || stillDark !== o.dark()) {
@@ -342,16 +346,14 @@ window.TTBDiscover = (function () {
      onPlace(id), and the map's own parts for the card's still map — tiles(),
      dark(), groups(map, places), cluster(count), pin(), wear(node, place).
      The whole of the map's card is the way to the map, and the button on it
-     is the control that says so to a keyboard. The two links in the credit
-     are the one thing on it that goes somewhere else. */
+     is the control that says so to a keyboard. */
   function mount(opts) {
     o = opts;
     node = opts.node;
     shelves = document.getElementById('discover-shelves');
     var card = document.getElementById('discover-map');
     if (card) {
-      card.addEventListener('click', function (ev) {
-        if (ev.target.closest && ev.target.closest('a')) return;
+      card.addEventListener('click', function () {
         TTBTrack.event('discover_map');
         o.onMap();
       });
