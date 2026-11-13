@@ -432,7 +432,7 @@
   "discoverRetry": "Proovi uuesti",
   "discoverPlayEyebrow": "Mängi",
   "discoverPlayTitle": "Käi nimekiri läbi",
-  "discoverPlaySay": "Märgi kohalolek nimekirja igas kohas, jalgsi või rattaga, ja oled selle tabelis.",
+  "discoverPlaySay": "Märgi kohalolek nimekirja igas kohas, enda valitud liikumisviisiga, ja oled selle tabelis.",
   "discoverPlayDone": "lõpetanuid: {n}",
   "discoverPlayBest": "kiireim: {took}",
   "discoverPlayNobody": "keegi pole seda veel lõpetanud",

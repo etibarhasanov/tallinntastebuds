@@ -432,7 +432,7 @@
   "discoverRetry": "Tekrar dene",
   "discoverPlayEyebrow": "Oyna",
   "discoverPlayTitle": "Bir listeyi dolaş",
-  "discoverPlaySay": "Listedeki her mekanda, yürüyerek ya da bisikletle check-in yap ve listenin panosunda yerini al.",
+  "discoverPlaySay": "Listedeki her mekanda, dilediğin ulaşım aracıyla gidip check-in yap ve listenin panosunda yerini al.",
   "discoverPlayDone": "bitirenler: {n}",
   "discoverPlayBest": "en hızlı: {took}",
   "discoverPlayNobody": "henüz kimse bitirmedi",

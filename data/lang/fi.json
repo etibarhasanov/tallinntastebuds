@@ -432,7 +432,7 @@
   "discoverRetry": "Yritä uudelleen",
   "discoverPlayEyebrow": "Pelaa",
   "discoverPlayTitle": "Kierrä lista",
-  "discoverPlaySay": "Kirjaudu jokaisessa listan paikassa, kävellen tai pyörällä, ja pääset sen taululle.",
+  "discoverPlaySay": "Kirjaudu jokaisessa listan paikassa, valitsemallasi kulkutavalla, ja pääset sen taululle.",
   "discoverPlayDone": "suorittaneita: {n}",
   "discoverPlayBest": "nopein: {took}",
   "discoverPlayNobody": "kukaan ei ole vielä suorittanut sitä",
