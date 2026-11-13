@@ -111,7 +111,11 @@
  * somebody choosing a different colour than the one they were given
  * (`-changed`). `ttb.styledeal` keeps what was dealt and what has been told.
  * Nobody else is dealt anything: a colour already chosen is kept, and so is
- * one a link carried. And the colour rides on both of the site's own
+ * one a link carried. On a phone the deal is between Red and Blue alone
+ * since 2026-11-13: six weeks of phone newcomers had those two level at the
+ * top and too few people arriving to tell four apart, so the two that led
+ * share them all — STYLE_PHONE_DEALS below. A tablet and a desktop are
+ * still dealt all four. And the colour rides on both of the site's own
  * reports, as `style`, so THE FOUR
  * COLOURS in functions/api/_visitors.js can count every visit's seconds,
  * pages and places under the colour it was spent in. The first report on
@@ -660,6 +664,10 @@ window.TTBTrack = (function () {
   var STYLE_KEY = 'ttb.style';
   var STYLE_DEAL_KEY = 'ttb.styledeal';
   var STYLE_DEALS = ['red', 'green', 'blue', 'plum'];
+  /* What a phone is dealt from. Green and Plum stay in STYLE_DEALS, which
+     is also what a stored deal is read against, so a phone dealt one of
+     them before 2026-11-13 keeps it and is still counted under it. */
+  var STYLE_PHONE_DEALS = ['red', 'blue'];
 
   /* What this browser was dealt and what has been told about it, or null —
      nothing dealt, or a record this file did not write. */
@@ -678,12 +686,14 @@ window.TTBTrack = (function () {
   }
 
   /* Somebody new, a page with no colour in its address and none stored:
-     one of the four, at random, kept and counted. A deal storage cannot keep
+     one of the four, at random, or one of the phone's two on a phone, kept
+     and counted. A deal storage cannot keep
      is not made — a colour rolled afresh on every load would be worse than
      any of the four. */
   function dealStyle() {
     if (!COUNTED || !newcomer() || styleDeal()) return;
-    var dealt = STYLE_DEALS[Math.floor(Math.random() * STYLE_DEALS.length)];
+    var deals = device() === 'phone' ? STYLE_PHONE_DEALS : STYLE_DEALS;
+    var dealt = deals[Math.floor(Math.random() * deals.length)];
     try {
       if (new URLSearchParams(LANDED).get('style')) return;
       if (STYLE_DEALS.indexOf(window.localStorage.getItem(STYLE_KEY)) !== -1) return;

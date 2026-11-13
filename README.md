@@ -18858,7 +18858,8 @@ the record of what was decided.
 
 The four colours on the swatch — **The four styles** — are a test as well as
 a choice. Somebody new to the site is dealt one of them at random, a quarter
-each, as their first page opens, and the site counts what they do with it.
+each — or Red or Blue, a half each, on a phone — as their first page opens,
+and the site counts what they do with it.
 It is a test of its own beside the lists' two looks, as it was beside the
 rails while they were one: its own key, its own roll and its own kind, so a
 browser can hold any combination of them.
@@ -18878,6 +18879,19 @@ the blog:
 3. **No colour in the address.** A link that carries `?style=` opens in that
    colour, which is what the person sharing it saw, and is not dealt or
    counted.
+
+**On a phone it is Red or Blue, a half each, since 2026-11-13.** Six weeks
+of phone newcomers, read by the week, had no colour reliably ahead: Red and
+Blue were level at the top on time and places opened per newcomer, Green was
+the most often low, and each swung more from one week to the next than the
+four differed from each other. With thirty to fifty phone newcomers a week
+four arms would not have come apart for months, so the two that led share
+them all — `STYLE_PHONE_DEALS` beside `STYLE_DEALS`. A tablet and a desktop
+are still dealt all four. A phone dealt Green or Plum before that day keeps
+it and is counted under it, so those two rows on the phone's reading are the
+earlier newcomers coming back and not new ones, and the verdict over the
+four, which waits for thirty in every colour, has nothing new to say on the
+**Phone** chip: there, read Red against Blue.
 
 The deal is written into `ttb.style`, the key every page already reads its
 colour from, so no page knows there is a test; and into `ttb.styledeal`,
