@@ -973,6 +973,7 @@
   "visitorsFromNudge": "The offer over the map",
   "visitorsFromDeal": "A discount",
   "visitorsFromKeep": "Keeping a list",
+  "visitorsFromMake": "Making a list",
   "visitorsFromExpired": "A session that ran out",
   "visitorsFromLink": "A link from another page",
   "visitorsFromGoogle": "Back from Google",

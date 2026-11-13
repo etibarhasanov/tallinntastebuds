@@ -772,12 +772,15 @@
      makes "My list" in the reader's language and lands in it, where the
      title is the first thing on the card and the places are the next.
 
-     The same press runs from the front page's Make a list, which comes here
-     as ?make=1 — see boot(). That one leaves with replace() rather than a
-     step, so that Back from the new list goes to where the press was made and
-     not to an address that would make another one. A refusal is said above
-     the button, where somebody looking at what they just pressed will see
-     it, and the account page is what is left standing under it.
+     The same press arrives here as ?make=1 from the way back from Google,
+     when it was the front page's Make a list that sent somebody to sign in
+     — the map makes the list itself for everybody else, see makeList() in
+     assets/app.js. That one is made before this page draws anything, and
+     leaves with replace() rather than a step, so the account page is never
+     on the screen on the way to the list and Back from the list does not
+     land on an address that would make another one. A refusal draws the
+     page and is said above the button, where the button is the way to try
+     again.
 
      The button says what the front page's link says, out of the same key,
      discoverMake — two doors to one press, in the same words. */
@@ -786,32 +789,34 @@
     var go = el('button', { type: 'button', className: 'go', textContent: t('discoverMake') });
     box.appendChild(go);
 
-    go.addEventListener('click', function () { makeList(box, go, false); });
+    go.addEventListener('click', function () {
+      var old = box.querySelector('.ac-err');
+      if (old) box.removeChild(old);
+      go.disabled = true;
+      go.textContent = t('accountWorking');
+      makeList(false, function (out) {
+        go.disabled = false;
+        go.textContent = t('discoverMake');
+        sayRefused(box, out);
+      });
+    });
     return box;
   }
 
-  function makeList(box, go, leave) {
-    var old = box.querySelector('.ac-err');
-    if (old) box.removeChild(old);
+  function sayRefused(box, out) {
+    box.insertBefore(
+      el('p', { className: 'ac-err', role: 'alert', textContent: t(ERRORS[out && out.error] || 'listsErrGeneric') }),
+      box.firstChild
+    );
+  }
 
-    go.disabled = true;
-    go.textContent = t('accountWorking');
-
-    var refuse = function (out) {
-      go.disabled = false;
-      go.textContent = t('discoverMake');
-      box.insertBefore(
-        el('p', { className: 'ac-err', role: 'alert', textContent: t(ERRORS[out && out.error] || 'listsErrGeneric') }),
-        go
-      );
-    };
-
+  function makeList(leave, refused) {
     post({ action: 'create', title: t('listsUntitled') }).then(function (a) {
-      if (!a.ok) return refuse(a.out);
+      if (!a.ok) return refused(a.out);
       TTBTrack.event('list_create', { list_id: a.out.id });
       if (leave) window.location.replace('/list/' + a.out.id);
       else window.location.href = '/list/' + a.out.id;
-    }).catch(function () { refuse({}); });
+    }).catch(function () { refused({}); });
   }
 
   function listsCard() {
@@ -1182,13 +1187,20 @@
       return seatVenues();
     }).then(function () {
       mountRadio();
+      /* Back from Google with Make a list still owed: made before anything
+         is drawn, so the page is only ever seen if it is refused — see
+         makeButton(). */
+      if (state.making && state.user) {
+        makeList(true, function (out) {
+          render();
+          sayArrived();
+          var box = main.querySelector('.lists-new');
+          if (box) sayRefused(box, out);
+        });
+        return;
+      }
       render();
       sayArrived();
-      /* The front page's Make a list, pressed by somebody signed in: the
-         button on the page is pressed for them, so there is one way a list
-         gets made and one place a refusal is said. */
-      var box = state.making && state.user && main.querySelector('.lists-new');
-      if (box) makeList(box, box.querySelector('.go'), true);
     }).catch(function () {
       /* The strings themselves did not arrive, so there is nothing to say in
          any language. The markup's own English is what is left, and the map

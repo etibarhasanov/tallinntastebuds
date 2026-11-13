@@ -6790,19 +6790,33 @@ list with nothing on it yet, and it was the step people stopped at. The list's
 own page has had its title as a field you type into all along, so the button
 sends `listsUntitled` — *My list*, in the language the page is read in — and
 lands in the new list, where the title is the first thing on the card and the
-places are the next. `makeList()` in `assets/account.js`; the route is the
-same `create` it always was, and still refuses an empty title.
+places are the next. `makeList()` in `assets/account.js` for the account
+page's button, and one of the same name in `assets/app.js` for the front
+page's; the route is the same `create` it always was, and still refuses an
+empty title.
 
-The front page's **Make a list** is the same press from further away. It
-links to `/account.html?make=1`, and the account page presses its own button
-for whoever is signed in, then leaves with `location.replace` so that Back
-from the new list goes to the front page rather than to an address that would
-make another. `takeMake()` takes the parameter off the address before anything
-else, for the same reason. Signed out, the page is the offer of an account as
-it always is, except that **Create account** and **Sign in** send the sheet
-back to `?make=1`, so the list is made the moment there is somebody to make it
-for. A refusal — twenty-four lists already, or the route not answering — is
-said above the button, with the account page standing under it.
+The front page's **Make a list** makes it from the front page. It was a link
+to `/account.html?make=1` for a day, and that page made the list and replaced
+itself with it, which put the account page on the screen on the way to the
+list — the owner's word was that it should go straight there. So
+`pressMake()` in `assets/app.js` takes the press: signed in, `makeList()`
+there makes the list and opens it over the map the way a list on a shelf
+opens, so Back is Discover again. Signed out, the sign-up sheet comes up over
+Discover with the press remembered, and signing in on the sheet makes the
+list from there with no page in between. A refusal is a toast.
+
+The way back from Google is the one road that still passes the account page,
+because that trip leaves the site and has to come back to an address:
+`/account.html?make=1`, which makes the list before it draws anything and
+leaves with `location.replace`, so the page is only seen if it is refused and
+Back from the new list does not land on an address that would make another.
+`takeMake()` takes the parameter off the address on boot for the same
+reason. The link keeps that address as its `href`, for a map that has not
+heard from `/api/account` yet and for a press that opens a new tab. Opening
+the sheet from it is counted as `account_from_make`, and the sheet shut
+without signing in forgets the press — `accountThen` goes with it, which is
+also what stopped a discount's Sign in, shut and forgotten, from sending a
+later sign-in to the pass page.
 
 The trade-off is in the link. The id is cut from the title at the moment of
 making, so a list made this way is `/list/my-list-k3fmqw` for good, whatever
@@ -19486,7 +19500,7 @@ The map, `assets/app.js`:
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
-| `discover_make` | — **Make a list** at the foot of Discover, which makes one and opens it (`list_create` follows) |
+| `discover_make` | — **Make a list** at the foot of Discover, which makes one and opens it (`list_create` follows), or puts the sign-up sheet up first (`account_from_make`) |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
@@ -19504,7 +19518,7 @@ The map, `assets/app.js`:
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
-| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, or the way back from Google. One name per door because the site's own count keeps names and not parameters |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, or Make a list on Discover. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
 | `account_try_up`, `_in` | — its button pressed |
 | `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |

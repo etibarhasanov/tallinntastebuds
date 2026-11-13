@@ -106,7 +106,9 @@ ref: assets/account.js</bpmn:documentation>
     <bpmn:userTask id="make-list" name="Makes a list">
       <bpmn:documentation>when: list_create
 ref: account.html
-ref: assets/account.js</bpmn:documentation>
+ref: assets/account.js makeList()
+ref: assets/app.js makeList()
+ref: index.html #discover-make</bpmn:documentation>
       <bpmn:incoming>member-e8</bpmn:incoming>
       <bpmn:outgoing>member-e9</bpmn:outgoing>
     </bpmn:userTask>

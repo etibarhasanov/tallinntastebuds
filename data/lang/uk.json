@@ -973,6 +973,7 @@
   "visitorsFromNudge": "Пропозиція над мапою",
   "visitorsFromDeal": "Знижка",
   "visitorsFromKeep": "Збереження списку",
+  "visitorsFromMake": "Створення списку",
   "visitorsFromExpired": "Сесія, що сплила",
   "visitorsFromLink": "Посилання з іншої сторінки",
   "visitorsFromGoogle": "Повернення з Google",
