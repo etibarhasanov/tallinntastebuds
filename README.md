@@ -8681,19 +8681,24 @@ check, the sentence under that says where the new order starts. It is gone
 with one place left, there being nothing to order, and a phone that will not
 answer gets the line a refused check gets.
 
-**On foot and by bike, without asking which.** There were two chips on the
-card, **On foot** and **By bike**, and all they changed was the time the card
-estimated and a word beside the walker's name on the board: the order and the
-distances are the same streets either way, and somebody who walks to three
-places and cycles to the other five had nothing to press. So nothing is asked.
-Under the distance the card says both — "3 h 6 min on foot · 1 h by bike",
-80 metres a minute and 250, the two times in the ink — and the legs on the
-rail are on foot, the slower of the two. How somebody went cannot be read off
-the clock either, since a walk may take a month. The server still keeps a
-`mode` with every walk, `foot` unless told otherwise, and its `mode` action is
-still there for nobody; the board, and the Play card on the discover page,
-say **By bike** beside anybody who picked it while there were chips to pick
-it with, and nothing beside everybody else.
+**How they went round is asked at the end.** There were two chips on the
+card, **On foot** and **By bike**, pressed before the start, and all they
+changed was the time the card estimated and a word beside the walker's name
+on the board: the order and the distances are the same streets however
+somebody goes, and somebody who walks to three places and cycles to the rest
+had nothing to press. So the card estimates every way at once — "5 h 39 min
+on foot · 1 h 48 min by bike · 1 h 5 min by car" under the distance, 80
+metres a minute, 250 and 400, nothing for parking — and the legs on the rail
+are on foot, the slowest. How somebody went is asked once the walk is
+finished, which is when they know: **How did you go round?** on the finished
+card, with **On foot**, **By bike**, **By car** and **Mixed**, and the answer
+is the word beside their time on the board and on the Play card on the
+discover page. It can be changed afterwards, as often as they like. It is
+one board for every way of going round — the owner's decision: the word says
+how the time was made, and the reader weighs it. A walk nobody has answered
+for is `''` in `walks.mode` and has no word. The walks from before
+2026-11-13 say `foot`, because the old chips started there pressed, and are
+left as they are.
 
 **What else the card can do is three tiles.** **Start from where I am**, **See
 it on the map** and **Change the order** — or, with a walk on, **Shortest from
@@ -19487,6 +19492,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
 | `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the fourteen below |
+| `walk_mode` | `list_id`, `mode` (`foot`/`bike`/`car`/`mixed`) — How did you go round?, answered on a finished walk |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
 | `walk_replan` | `list_id` — Shortest from here, on a walk that is on, once the phone has answered |

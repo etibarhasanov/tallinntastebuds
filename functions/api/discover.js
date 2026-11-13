@@ -166,7 +166,9 @@ async function routes(context, fallback) {
         places,
         finished: finished.get(list.id) || 0,
         best: fastest ? fastest.took : null,
-        mode: fastest ? fastest.mode : null
+        /* How the fastest went round, or '' where they never said — HOW
+           THEY WENT ROUND in ./walk.js. */
+        mode: fastest && ['foot', 'bike', 'car', 'mixed'].includes(fastest.mode) ? fastest.mode : ''
       };
     })
     .filter(Boolean);

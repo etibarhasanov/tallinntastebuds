@@ -1997,8 +1997,10 @@ CREATE TABLE IF NOT EXISTS walks (
   -- '[]' for the shortest one the page works out. A suggestion only: a check
   -- is made wherever somebody is standing.
   route       TEXT    NOT NULL DEFAULT '[]',
-  -- How they are going round: 'foot' or 'bike'. Theirs to say, shown beside
-  -- their time on the board, and fixed once the walk is finished.
+  -- How they went round: 'foot', 'bike', 'car' or 'mixed', asked once the
+  -- walk is finished and shown beside their time on the board; '' where
+  -- they have not said. Walks from before 2026-11-13 say 'foot', which was
+  -- the default then. Plain TEXT, so a new way needs no ALTER.
   mode        TEXT    NOT NULL DEFAULT 'foot',
   -- What they said about the whole of it once it was finished, shown under
   -- their name on the board, or ''. 280 characters, as a check's is.
