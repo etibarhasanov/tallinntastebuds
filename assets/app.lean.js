@@ -1749,6 +1749,9 @@
 
   function paintAccountRow() {
     if (!dom.moreScrim.hidden) renderMore();
+    var name = state.account.user || '';
+    dom.findMe.classList.toggle('is-me', !!name);
+    dom.findMe.lastElementChild.textContent = name.charAt(0).toUpperCase();
   }
 
   function paintListsButton() {
@@ -7367,6 +7370,10 @@
       TTBTrack.event('more_open');
       openMore();
     });
+    dom.findMe.addEventListener('click', function () {
+      TTBTrack.event('more_open', { from: 'find' });
+      openMore();
+    });
     dom.moreScrim.addEventListener('click', function (ev) {
       if (ev.target !== dom.moreScrim) return;
       TTBTrack.event('more_close');
@@ -7850,6 +7857,7 @@
       find: $('find'),
       findInput: $('find-input'),
       findClear: $('find-clear'),
+      findMe: $('find-me'),
       findArea: $('find-area'),
       findOut: $('find-out'),
       findNote: $('find-note'),

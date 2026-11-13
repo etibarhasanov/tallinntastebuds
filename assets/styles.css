@@ -1778,6 +1778,35 @@ body.lang-open .controls { z-index: 1250; }
 .find-clear:hover { color: var(--ink); background: var(--wash); }
 .find-clear svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 
+/* The door to More at the end of the field, on Discover only: the rail that
+   carries More is put away while that page is up — body.is-discover, further
+   down — and on the map itself the rail is the door. It stands where the
+   cross does and gives way to it, since a field with something typed in it
+   is a search and the cross is that search's own control. Signed out it is
+   the quiet disc with a person's outline; signed in, .is-me, it is filled in
+   the accent and wears a letter. */
+.find-me { display: none; }
+body.is-discover .find-me {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  transform: translateY(-50%);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: var(--paper);
+  color: var(--muted);
+}
+body.is-discover .find-clear:not([hidden]) ~ .find-me { display: none; }
+.find-me svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.find-me-letter { display: none; font-family: var(--display); font-size: 13px; font-weight: 600; line-height: 1; }
+body.is-discover .find-me.is-me { border-color: var(--accent); background: var(--accent); color: var(--paper); }
+.find-me.is-me svg { display: none; }
+.find-me.is-me .find-me-letter { display: block; }
+
 /* What was found. A card floating on the map, so it takes --radius-soft and
    the map chrome's shadow rather than the panel's. It scrolls at a height
    that leaves the map visible underneath: a dropdown that filled the screen
