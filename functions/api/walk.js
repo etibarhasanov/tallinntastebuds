@@ -97,6 +97,11 @@
  * and the word beside their name on the board, since an hour by bike and an
  * hour on foot are not the same hour. It is taken on trust like everything
  * else here, and it can be changed until the walk is finished and not after.
+ * The page stopped asking on 2026-11-13 — it shows the time on foot and by
+ * bike side by side, since plenty of people do some of each — so every walk
+ * started since is `foot` and the `mode` action has no caller. Both stay:
+ * the walks that said `bike` still say it on the board, and a phone holding
+ * last week's page may still send one.
  *
  * THE ORDER IS A SUGGESTION
  *

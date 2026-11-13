@@ -213,7 +213,7 @@ window.TTBDiscover = (function () {
   /* PLAY: THE GAME, SAID ONCE, WITH ONE ROUTE TO START
    *
    * Every list can be walked — go to each place, check in at the door, on
-   * foot or by bike, and finish onto the list's board — and the only sign of
+   * foot, by bike or both, and finish onto the list's board — and the only sign of
    * it was a chip called Route on a list's own page. Four shelves of things
    * to read said nothing about there being something to do. So the page says
    * it once, in a card of its own between the places people open and the
@@ -246,7 +246,8 @@ window.TTBDiscover = (function () {
       if (route.finished && route.best) {
         parts.push(o.t('discoverPlayDone', { n: route.finished }),
           o.t('discoverPlayBest', { took: took(route.best) }),
-          o.t(route.mode === 'bike' ? 'walkBike' : 'walkFoot'));
+          route.mode === 'bike' ? o.t('walkBike') : null);
+        parts = parts.filter(Boolean);
         press = o.t('walkStart');
       } else {
         parts.push(o.t('discoverPlayNobody'));
