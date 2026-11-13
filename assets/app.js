@@ -2925,10 +2925,15 @@
   /* The account lives behind More now, as its first row, and the row wears
      the name of whoever is signed in. So when the answer from /api/account,
      a save or a new name arrives with the sheet open, the sheet is drawn
-     again; shut, there is nothing to paint, because renderMore() reads it
-     all as the sheet opens. */
+     again; shut, there is nothing of the sheet to paint, because
+     renderMore() reads it all as the sheet opens. */
   function paintAccountRow() {
     if (!dom.moreScrim.hidden) renderMore();
+    /* And the door to More in the find bar, which Discover shows: the first
+       letter of the name, or the outline in the markup for nobody. */
+    var name = state.account.user || '';
+    dom.findMe.classList.toggle('is-me', !!name);
+    dom.findMe.lastElementChild.textContent = name.charAt(0).toUpperCase();
   }
 
   /* The door to everybody's lists: the first pill on the rail, and the one
@@ -12597,6 +12602,12 @@
       TTBTrack.event('more_open');
       openMore();
     });
+    /* The same sheet from Discover, where the rail is put away. The same
+       event, with where it was pressed. */
+    dom.findMe.addEventListener('click', function () {
+      TTBTrack.event('more_open', { from: 'find' });
+      openMore();
+    });
     dom.moreScrim.addEventListener('click', function (ev) {
       if (ev.target !== dom.moreScrim) return;
       TTBTrack.event('more_close');
@@ -13349,6 +13360,7 @@
       find: $('find'),
       findInput: $('find-input'),
       findClear: $('find-clear'),
+      findMe: $('find-me'),
       findArea: $('find-area'),
       findOut: $('find-out'),
       findNote: $('find-note'),

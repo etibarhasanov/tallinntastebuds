@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=29112869">
+<link rel="stylesheet" href="assets/styles.lean.css?v=77e95758">
 </head>
 <body>
 
@@ -278,6 +278,18 @@
     <button type="button" class="find-clear" id="find-clear"
             data-i18n-aria-label="searchClear" aria-label="Clear the search" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <!-- The way to More while Discover is up, which hides the rail More
+         lives on: the account, Ask, the flashcards, the colour, feedback and
+         privacy were all behind Open map from a phone's front page. It wears
+         the first letter of whoever is signed in, and a person's outline for
+         nobody — paintAccountRow() in assets/app.js. After the cross so the
+         stylesheet can stand it down while the cross is up; they share the
+         end of the field. moreOpen and moreWhy are the rail pill's words. -->
+    <button type="button" class="find-me" id="find-me"
+            data-i18n-aria-label="moreOpen" data-i18n-title="moreWhy" aria-label="More">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg>
+      <span class="find-me-letter" aria-hidden="true"></span>
     </button>
   </div>
   <!-- What was found, drawn by renderFound() in assets/app.js: the map's own
@@ -750,6 +762,6 @@
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=a372472d" defer></script>
-<script src="assets/app.lean.js?v=3d417e94" defer></script>
+<script src="assets/app.lean.js?v=01b600b5" defer></script>
 </body>
 </html>

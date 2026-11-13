@@ -18173,7 +18173,14 @@ a style. A desktop is left alone: it already opens on the names beside the
 map, which is that screen's answer to the same question.
 
 **It stands under the brand and the find bar**, which stay the map's own and
-stay live — a name typed there opens a place the way it always has. The rail,
+stay live — a name typed there opens a place the way it always has. While it
+is up the find bar ends in a small round button, `#find-me`, that opens the
+More sheet: the rail More lives on is put away here, so the account, Ask,
+the flashcards, the colour, feedback and privacy were all behind **Open map**
+from a phone's front page. It wears the first letter of whoever is signed in,
+filled in the accent, and a person's outline for nobody; it gives its place
+to the cross once something is typed, and on the map it is not drawn, because
+the rail is there. The rail,
 the chips, the arrow and *Search this area* belong to a map nobody is looking
 at and go while it is up (`body.is-discover` in `assets/styles.css`), and the
 map is inert.
@@ -19513,7 +19520,7 @@ The map, `assets/app.js`:
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
-| `more_open`, `more_close` | — the More pill on the rail, and its sheet put away by the cross or the scrim |
+| `more_open`, `more_close` | `from` (`find` from the find bar's button on Discover, absent from the rail) — the More pill on the rail or the round button in the find bar on Discover, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` |
 | `ask_open` | — the Ask row behind More |
 | `ask` | `search_term` |
