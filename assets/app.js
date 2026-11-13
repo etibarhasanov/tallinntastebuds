@@ -10462,22 +10462,16 @@
     dom.listBody.appendChild(group);
   }
 
-  /* The account Google's numbers write under — see tools/googlelists.mjs and
-     GOOGLE_BY in assets/lists.js, which this restates for the same reason
-     every cap is restated: the two pages share no module. */
-  var GOOGLE_BY = 'google-statistics';
-
   /* The byline's phrase and the name in it, with the one swap byline() in
-     assets/lists.js makes: the account Google's numbers write under reads as
-     the product, because nobody knows it by its username. Read twice — once
+     assets/lists.js makes: the account Google's numbers write under is
+     printed under a name, because nobody knows it by its username — see
+     who() in assets/googlewords.js, which both pages call. Read twice — once
      for the band's label, once for the line printed under it — so it is
      worked out once. */
   function listBy() {
-    var google = state.list.by === GOOGLE_BY;
-    var name = google ? 'Google Maps' : state.list.by;
     return {
-      name: name,
-      words: state.list.by ? t(google ? 'listsByGoogle' : 'listsBy').split('{name}') : null
+      name: TTBGoogleWords.who(state.list.by),
+      words: state.list.by ? t('listsBy').split('{name}') : null
     };
   }
 
@@ -10530,8 +10524,8 @@
 
      The same emblem the list's own page, the directory, its author's profile
      and your account draw in front of its name — listPin() in assets/lists.js
-     is the same two calls, and this page cannot borrow that one any more than
-     it can borrow GOOGLE_BY above. Here it is doing something the four pages
+     is the same two calls, and this page cannot borrow that one: no module,
+     no bundler, and a global apiece. Here it is doing something the four pages
      cannot: the pins under this band are already wearing that glyph, so the
      name and what is drawn under it are one picture rather than two things
      that happen to be on screen at the same time. A place of mine on the list
@@ -10541,7 +10535,7 @@
      aria-hidden, and the band names itself in its own aria-label anyway. The
      title beside it already says what the list is, in its author's words; a
      screen reader announcing "balloon" in front of it is a decoration read
-     aloud. The picker on the list's own page is where the eight have names. */
+     aloud. The picker on the list's own page is where the glyphs have names. */
   function listBand() {
     var by = listBy();
     var said = by.words ? by.words.join(by.name) : '';

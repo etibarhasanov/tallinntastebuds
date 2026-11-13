@@ -812,7 +812,7 @@ a:hover { color: var(--accent-lit); }
 
 /* ---------- a list's own pin, on a line of text ----------
 
-   The same eight markers, drawn small in front of a list's title wherever a
+   The same markers, drawn small in front of a list's title wherever a
    list is named. Not the rules above: those dress a Leaflet marker, which is
    a fixed square with the glyph in a .pin-face inside it, sized off --pin-d.
    This is one element that is the whole pin — TTBPins.paint() writes the

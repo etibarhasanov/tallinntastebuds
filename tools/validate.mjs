@@ -2047,6 +2047,18 @@ if (staleGoogleLists()) {
   fail('db/google-lists.sql', 'is not what tools/googlelists.mjs would write from exports/tallinn_restaurants.csv — run `node tools/googlelists.mjs` and commit the result');
 }
 
+/* And the glyph each of the six wears, which tools/googlelists.mjs writes into
+   the `pin` column. A word that is not one of the markers reaches D1 as a
+   pin no page can draw, and every reader falls back to the default — the
+   quietest way for the six to go back to looking alike, and the one the
+   staleness check above cannot see, because the file would be exactly what
+   the tool writes. */
+for (const list of GOOGLE_LISTS) {
+  if (!PIN_GLYPHS.includes(list.pin)) {
+    fail('tools/googlelists.mjs', `dresses ${list.id} in "${list.pin}", which is not one of the markers in functions/api/_pins.js`);
+  }
+}
+
 /* And what those lists say in eleven languages. assets/googlewords.js looks each
    list up by its id and each place's category by a key, and a list or a
    category it has no word for prints in English on every page — quietly, in

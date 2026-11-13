@@ -791,20 +791,27 @@
      panel draw the same byline the same way, out of assets/account.js and
      assets/app.js.
 
-     One name is not printed: the lists Google's numbers wrote are under an
-     account called google-statistics, and "created by google-statistics" is
-     a sentence about how the site is built, not about the list. Those read
-     "generated from Google Maps", and the link is the product's name, still
+     One name is not printed as it is stored: the lists Google's numbers wrote
+     are under an account called google-statistics, and "created by
+     google-statistics" is a sentence about how the site is built, not about
+     the list. Those read "created by Google Statistics", the link still
      leading to the account's profile, whose line under the name says how the
-     order was decided. */
+     order was decided. TTBGoogleWords.who() is where that swap lives, because
+     four pages make it.
+
+     It used to be a phrase of its own — "generated from Google Maps" — which
+     said where the numbers came from and then had to be kept in eleven
+     languages beside a phrase that said the same thing about everybody else.
+     The profile line under the name already says the numbers are Google's,
+     in the reader's language, and the directory was printing the raw username
+     into that phrase anyway. One byline now. */
   function byline(name) {
-    var google = name === GOOGLE_BY;
-    var words = t(google ? 'listsByGoogle' : 'listsBy').split('{name}');
+    var words = t('listsBy').split('{name}');
     return el('span', { className: 'lists-index-by' }, [
       words[0],
       TTBTrack.click(el('a', {
         href: profileHref(name),
-        textContent: google ? 'Google Maps' : name
+        textContent: TTBGoogleWords.who(name)
       }), 'profile_open', { name: name }),
       words[1]
     ]);
@@ -2909,8 +2916,9 @@
       title,
       intro,
       /* A field, so it sits with the fields rather than down among the
-         buttons — see design rule 6. Its own row because the forty draw
-         five rows of eight and nothing should be wrapping beside them. */
+         buttons — see design rule 6. Its own row because the forty-five draw
+         five rows of eight and a short one, and nothing should be wrapping
+         beside them. */
       pinPicker(list),
       el('div', { className: 'lists-row' }, [
         visibility(list),
@@ -2997,8 +3005,8 @@
       return box;
     }
 
-    /* The forty. Each one draws itself, so the grid is the answer to "what
-       will my list look like" rather than a list of words for it. */
+    /* The forty-five. Each one draws itself, so the grid is the answer to
+       "what will my list look like" rather than a list of words for it. */
     var glyphs = el('div', {
       className: 'lists-pin-grid',
       role: 'radiogroup',
