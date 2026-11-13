@@ -10,6 +10,7 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
+  var DRAFT = 'new';
   var WHO_API = '/api/profile';
 
   var MAX_TITLE = 60;
@@ -69,6 +70,7 @@
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
+    draft: false,      // /list/new: a list on the screen and nowhere else yet
     walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
@@ -1192,7 +1194,7 @@
         ol.appendChild(slotRow(slot));
       }
       wrap.appendChild(ol);
-      if (!hasDock(list)) {
+      if (!hasDock(list) && !state.draft) {
         wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
           button(t('listsDelete'), 'alt is-danger', deleteList)
         ]));
@@ -1516,11 +1518,18 @@
       className: 'lists-input lists-input-title',
       value: list.title,
       maxlength: String(MAX_TITLE),
-      'aria-label': t('listsRename')
+      'aria-label': t('listsRename'),
+      placeholder: state.draft ? t('listsNamePrompt') : null
     });
     firstSeen('title', list.title);
     typedField('title', title, function (value) {
       var next = value.trim();
+      if (state.draft) {
+        list.title = next;
+        unsayNameFirst();
+        paintSave();
+        return null;
+      }
       if (!next) return null;
       list.title = next;
       if (next === sent.title) return null;
@@ -1532,6 +1541,7 @@
     title.addEventListener('blur', function () {
       if (!title.value.trim()) title.value = list.title;
     });
+    if (state.draft) dom.title = title;
 
     var intro = el('input', {
       type: 'text',
@@ -1545,6 +1555,7 @@
     typedField('intro', intro, function (value) {
       var next = value.trim();
       list.intro = next;
+      if (state.draft) return null;
       if (next === sent.intro) return null;
       return function (leaving) {
         sent.intro = next;
@@ -1575,7 +1586,7 @@
         keepCount(list.keeps)
       ]),
       el('div', { className: 'lists-row lists-acts' }, [
-        mapLink(list.id),
+        state.draft ? null : mapLink(list.id),
         share,
         save,
         walkable(list) ? button(t('walkView'), 'alt', function () {
@@ -1680,7 +1691,63 @@
     ]);
   }
 
+  function draftList() {
+    return {
+      id: '', title: '', intro: '', public: true, by: state.me, mine: true,
+      pin: '', tone: '', keeps: 0, kept: false, items: []
+    };
+  }
+
+  var drafting = false;
+
+  function makeDraft(then) {
+    var list = state.list;
+    if (!list.title) { sayNameFirst(); return; }
+    if (drafting) return;
+    drafting = true;
+    post({ action: 'create', title: list.title, intro: list.intro }).then(function (a) {
+      drafting = false;
+      if (!a.ok) return failed(a.out);
+      list.id = a.out.id;
+      state.draft = false;
+      sent.title = list.title;
+      sent.intro = list.intro;
+      TTBTrack.event('list_create', { list_id: list.id });
+      try {
+        window.history.replaceState(null, '', '/list/' + list.id + window.location.search);
+      } catch (e) { /* the list is made either way; a reload would lose the page */ }
+      document.title = list.title + ' | Tallinn Tastebuds';
+      render();
+      then();
+    }).catch(function () {
+      drafting = false;
+      failed({});
+    });
+  }
+
+  function sayNameFirst() {
+    var field = dom.title;
+    if (!field || !field.parentNode) return;
+    unsayNameFirst();
+    field.parentNode.insertBefore(
+      el('p', { className: 'ac-err lists-name-first', role: 'alert', textContent: t('listsNameFirst') }),
+      field
+    );
+    field.focus();
+  }
+
+  function unsayNameFirst() {
+    var said = document.querySelector('.lists-name-first');
+    if (said) said.parentNode.removeChild(said);
+  }
+
   function saveList() {
+    if (state.draft) {
+      var focusedNow = document.activeElement;
+      if (focusedNow && focusedNow.blur && focusedNow !== document.body) focusedNow.blur();
+      makeDraft(function () { mark.asked = true; flushAll(); });
+      return;
+    }
     mark.asked = true;
     TTBTrack.event('list_save', { list_id: state.list.id, writes: pending.length });
     var focused = document.activeElement;
@@ -1858,6 +1925,7 @@
   }
 
   function flush(key, leaving) {
+    if (state.draft) return;
     for (var i = pending.length - 1; i >= 0; i--) {
       if (key && pending[i].key !== key) continue;
       var job = pending[i].run;
@@ -1893,9 +1961,10 @@
 
   function paintSave() {
     if (!mark.btn) return;
-    var done = allSent();
+    var done = !state.draft && allSent();
     mark.btn.classList.toggle('is-saved', done);
     mark.btn.textContent = t(done ? 'listsSaveDone' : 'listsSave');
+    mark.btn.disabled = !!state.draft && (!state.list.title || mark.sending > 0);
   }
 
   function settled() {
@@ -2249,6 +2318,7 @@
   }
 
   function openPicker() {
+    if (state.draft && !state.list.title) { sayNameFirst(); return; }
     TTBTrack.event('picker_open', { list_id: state.list.id, places_on: state.list.items.length });
     dom.pickerScrim.hidden = false;
     document.body.classList.add('has-scrim');
@@ -2775,6 +2845,10 @@
   function addPlace(place) {
     var list = state.list;
     if (!list) return;
+    if (state.draft) {
+      makeDraft(function () { flushAll(); addPlace(place); });
+      return;
+    }
     if (list.items.length >= MAX_ITEMS) { toast(t('listsErrFull')); return; }
     TTBTrack.event('list_add', { list_id: list.id, place: place.name, places_on: list.items.length + 1 });
 
@@ -2964,6 +3038,8 @@
       });
     } else if (who) {
       data = ask(WHO_API + '?name=' + encodeURIComponent(who));
+    } else if (id === DRAFT) {
+      data = ask(API);
     } else if (seeded) {
       data = Promise.resolve({
         status: 200,
@@ -2988,6 +3064,14 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.list = out.list || null;
+      if (id === DRAFT) {
+        if (state.ready && !state.me) {
+          window.location.replace('/?account=up&then=' + encodeURIComponent('/list/' + DRAFT));
+          return;
+        }
+        state.list = state.me ? draftList() : null;
+        state.draft = !!state.list;
+      }
       state.walking = !!state.list && walkable(state.list) &&
         new URLSearchParams(window.location.search).has('walk');
       state.all = out.all || null;
@@ -3003,6 +3087,7 @@
       mountLanguage();
       render();
       keepAsked();
+      if (state.draft && dom.title) dom.title.focus();
 
       if (state.view === 'one' && state.list && !state.list.mine) countOpen(state.list.id);
       if (state.view === 'who' && state.profile) countProfile();

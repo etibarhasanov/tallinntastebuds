@@ -5455,7 +5455,7 @@ page** under **Profiles**. `.lists-new` grew a margin
 of its own when the box arrived here, for the reason its comment gives: what is
 over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
-under a form. It is a button now rather than a box — **Named afterwards**
+under a form. It is a link to `/list/new` now rather than a box — **Named afterwards**
 under **Lists**.
 
 That is the whole reason a third stylesheet was not written. A page that needed
@@ -6783,50 +6783,47 @@ private.
 
 ### Named afterwards
 
-**Make a list** makes one. It asked for the name first for a long time — a
-field and a button on the account page, the name sent with the create — and
-the owner's word on it was that it should not: a name is a decision about a
-list with nothing on it yet, and it was the step people stopped at. The list's
-own page has had its title as a field you type into all along, so the button
-sends `listsUntitled` — *My list*, in the language the page is read in — and
-lands in the new list, where the title is the first thing on the card and the
-places are the next. `makeList()` in `assets/account.js` for the account
-page's button, and one of the same name in `assets/app.js` for the front
-page's; the route is the same `create` it always was, and still refuses an
-empty title.
+**Make a list** writes nothing. It opens `/list/new`, which is the editor
+every list of yours already is, drawn around a list that does not exist yet:
+the name field empty and saying *Name your list*, the line under it, the pin,
+who can open it, and three empty rows to choose places into. `draftList()` in
+`assets/lists.js`; `functions/list/[id].js` serves the page at that address
+without looking anything up, since no list id can be `new` — every one is a
+slug, a dash and six random characters.
 
-The front page's **Make a list** makes it from the front page. It was a link
-to `/account.html?make=1` for a day, and that page made the list and replaced
-itself with it, which put the account page on the screen on the way to the
-list — the owner's word was that it should go straight there. So
-`pressMake()` in `assets/app.js` takes the press: signed in, `makeList()`
-there makes the list and opens it over the map the way a list on a shelf
-opens, so Back is Discover again. Signed out, the sign-up sheet comes up over
-Discover with the press remembered, and signing in on the sheet makes the
-list from there with no page in between. A refusal is a toast.
+The list is made by one of two presses, and only once it has a name: **Save**,
+or choosing its first place. `makeDraft()` sends the name and the line as the
+`create`, puts the id that comes back on the address bar in place of
+`/list/new`, and only then sends the pin and who can open it, which waited in
+the queue every edit waits in — `flush()` sends nothing while the list is a
+draft — and the place, when a place made it. So the link carries the name the
+list was given. Until then the button says **Save** and is faded, because
+there is nothing it could save, and it never says **Saved** about a list that
+is not in the database. **Choose a place** with no name says *Give the list a
+name first* above the name field and puts the cursor there. Leaving a draft
+leaves nothing behind: no row, and no *0 places* on a profile.
 
-The way back from Google is the one road that still passes the account page,
-because that trip leaves the site and has to come back to an address:
-`/account.html?make=1`, which makes the list before it draws anything and
-leaves with `location.replace`, so the page is only seen if it is refused and
-Back from the new list does not land on an address that would make another.
-`takeMake()` takes the parameter off the address on boot for the same
-reason. The link keeps that address as its `href`, for a map that has not
-heard from `/api/account` yet and for a press that opens a new tab. Opening
-the sheet from it is counted as `account_from_make`, and the sheet shut
-without signing in forgets the press — `accountThen` goes with it, which is
-also what stopped a discount's Sign in, shut and forgotten, from sending a
-later sign-in to the pass page.
+It took three goes to get here, on one day. Make a list was a name field and a
+button on the account page — the name before the list had anything on it,
+which was the step people stopped at. Then it made a list called *My list*
+the moment it was pressed and opened that, which meant a round trip before
+anything appeared and a row in the database for every press, wanted or not.
+The owner's word on the second was the rule this is now built on: pressing it
+opens an empty page, and if it says Saved then it is saved.
 
-The trade-off is in the link. The id is cut from the title at the moment of
-making, so a list made this way is `/list/my-list-k3fmqw` for good, whatever
-it is renamed to — the link says less about the list than a named one's did.
-A list with nothing on it is never on a shelf or in the directory, both of
-which read only lists with a place on them. It is on its owner's profile,
-though, which draws every public list with its count — so a *My list* made
-and left stands there as *0 places* until it is filled, made private or
-deleted from the list's own page. That was true of a named list left empty
-too; one press makes it likelier.
+On the front page, `pressMake()` in `assets/app.js` opens `/list/new` over the
+map the way a list on a shelf opens, so Back is Discover again. Signed out, the
+sign-up sheet comes up over Discover first with `/list/new` as where to go
+afterwards, the way a discount's Sign in goes to its pass; the way back from
+Google comes to the same address, and `/list/new` opened cold by somebody with
+no account sends them to the sheet itself. Opening the sheet from here is
+counted as `account_from_make`. The account page's **Make a list** is a link to
+the same address, and `/account.html?make=1` — the address it had while it
+made lists itself — forwards there.
+
+The sheet shut without signing in forgets where it was going to send somebody:
+`accountThen` goes with it. It stayed once, which sent a later sign-in from
+More to the pass page of a discount whose Sign in had been shut and forgotten.
 
 ### One door to the lists
 
@@ -18124,7 +18121,7 @@ opens on a page in front of it: the map as one card with **Open map** on it, the
 four shelves that scroll sideways — **New lists**, **Most opened places**,
 **Popular lists**, **New on the map** — with a card called **Play** between
 the second and the third, and a line at the foot offering to make a list —
-which makes one and opens it, **Named afterwards** under **Lists**.
+which opens an empty list that is made when it is saved, **Named afterwards** under **Lists**.
 
 It is there because the map, to somebody who has never been here, is a
 question rather than an answer. Seventy unlabelled marks say that there are
@@ -19500,7 +19497,8 @@ The map, `assets/app.js`:
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
-| `discover_make` | — **Make a list** at the foot of Discover, which makes one and opens it (`list_create` follows), or puts the sign-up sheet up first (`account_from_make`) |
+| `discover_make` | — **Make a list** at the foot of Discover, which opens the empty `/list/new`, or puts the sign-up sheet up first (`account_from_make`). `list_create` follows only when the list is saved |
+| `list_new` | — **Make a list** on the account page, which opens the empty `/list/new` |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |

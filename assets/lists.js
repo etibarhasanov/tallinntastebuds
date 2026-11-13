@@ -75,6 +75,10 @@
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
   var API = '/api/lists';
+  /* The address of a list that has not been made yet — see draftList(). No
+     list can ever be called this: every id is a slug, a dash and six random
+     characters. */
+  var DRAFT = 'new';
   var WHO_API = '/api/profile';
 
   /* What the server accepts, said again here so a field can stop somebody at
@@ -216,6 +220,7 @@
     asking: false,     // a page of the directory is in flight
     searching: false,  // a search is in flight, so the rows on screen are the old one's
     list: null,        // the one being shown
+    draft: false,      // /list/new: a list on the screen and nowhere else yet
     walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
     places: null,      // /api/places, loaded the first time the picker opens
@@ -2211,7 +2216,7 @@
          a row at the end of a page that is three rows long, which is a page
          you can see the end of. Past three they move into the dock: see
          hasDock(). */
-      if (!hasDock(list)) {
+      if (!hasDock(list) && !state.draft) {
         wrap.appendChild(el('div', { className: 'lists-row lists-foot' }, [
           button(t('listsDelete'), 'alt is-danger', deleteList)
         ]));
@@ -2852,11 +2857,21 @@
       className: 'lists-input lists-input-title',
       value: list.title,
       maxlength: String(MAX_TITLE),
-      'aria-label': t('listsRename')
+      'aria-label': t('listsRename'),
+      placeholder: state.draft ? t('listsNamePrompt') : null
     });
     firstSeen('title', list.title);
     typedField('title', title, function (value) {
       var next = value.trim();
+      /* A draft's name is not an edit: it goes with the list when Save makes
+         it. It is kept as typed, empty included, so Save can say whether
+         there is one. */
+      if (state.draft) {
+        list.title = next;
+        unsayNameFirst();
+        paintSave();
+        return null;
+      }
       /* A list has to be called something, so an empty field is a field on
          its way to being retyped rather than an edit: nothing is recorded and
          nothing is queued. Leaving it empty puts the old name back. */
@@ -2871,6 +2886,7 @@
     title.addEventListener('blur', function () {
       if (!title.value.trim()) title.value = list.title;
     });
+    if (state.draft) dom.title = title;
 
     var intro = el('input', {
       type: 'text',
@@ -2884,6 +2900,8 @@
     typedField('intro', intro, function (value) {
       var next = value.trim();
       list.intro = next;
+      /* Goes with the list when it is made, like the name. */
+      if (state.draft) return null;
       if (next === sent.intro) return null;
       return function (leaving) {
         sent.intro = next;
@@ -2934,7 +2952,7 @@
            wears the accent. Not a line of underlined mono either — beside two
            pills that reads as a caption on them rather than as the door onto
            the map. */
-        mapLink(list.id),
+        state.draft ? null : mapLink(list.id),
         share,
         save,
         /* And the way onto a walk of it, which your own list has no bar to
@@ -3111,11 +3129,98 @@
     ]);
   }
 
+  /* ------------------------------------------------------------ a new list
+   * /list/new, which is where Make a list goes — on the front page, on the
+   * account page — and it is a list on the screen and nowhere else.
+   *
+   * Make a list used to make one. It sent the name first, from a box on the
+   * account page; then, for a day, it sent "My list" before it opened
+   * anything, so every press left a list behind in the database whether
+   * anybody wanted it or not, and the page took a round trip to appear. The
+   * owner's word on it was plain: pressing it writes nothing, the page opens
+   * empty, and if the button says Saved then it is saved.
+   *
+   * So this is the editor every list of yours already is, drawn around a
+   * list that does not exist yet: the name field empty and asking for one,
+   * the line under it, the pin, who can open it, and the three empty rows. The
+   * name and the line are kept on the page as they are typed. The pin and who
+   * can open it are held in the same queue every edit waits in — flush()
+   * sends nothing while this is a draft — and go out with the rest the moment
+   * there is a list to send them to.
+   *
+   * It is made by one of two presses, and only once it has a name: Save, or
+   * choosing its first place. makeDraft() sends the name and the line as the
+   * create, takes the id that comes back, puts it on the address bar in place
+   * of /list/new, and only then sends what was held — and the place, when it
+   * was a place that made it. Until then the button says Save and is faded,
+   * since there is nothing it could save, and pressing Choose a place with no
+   * name says so above the name field rather than opening the picker. Leaving
+   * a draft leaves nothing: no row, no "0 places" on a profile.
+   *
+   * "Named afterwards" under "Lists" in README.md. */
+  function draftList() {
+    return {
+      id: '', title: '', intro: '', public: true, by: state.me, mine: true,
+      pin: '', tone: '', keeps: 0, kept: false, items: []
+    };
+  }
+
+  var drafting = false;
+
+  function makeDraft(then) {
+    var list = state.list;
+    if (!list.title) { sayNameFirst(); return; }
+    if (drafting) return;
+    drafting = true;
+    post({ action: 'create', title: list.title, intro: list.intro }).then(function (a) {
+      drafting = false;
+      if (!a.ok) return failed(a.out);
+      list.id = a.out.id;
+      state.draft = false;
+      sent.title = list.title;
+      sent.intro = list.intro;
+      TTBTrack.event('list_create', { list_id: list.id });
+      try {
+        window.history.replaceState(null, '', '/list/' + list.id + window.location.search);
+      } catch (e) { /* the list is made either way; a reload would lose the page */ }
+      document.title = list.title + ' | Tallinn Tastebuds';
+      render();
+      then();
+    }).catch(function () {
+      drafting = false;
+      failed({});
+    });
+  }
+
+  /* Said above the name field, which is where the answer to it goes, and the
+     cursor put there. */
+  function sayNameFirst() {
+    var field = dom.title;
+    if (!field || !field.parentNode) return;
+    unsayNameFirst();
+    field.parentNode.insertBefore(
+      el('p', { className: 'ac-err lists-name-first', role: 'alert', textContent: t('listsNameFirst') }),
+      field
+    );
+    field.focus();
+  }
+
+  function unsayNameFirst() {
+    var said = document.querySelector('.lists-name-first');
+    if (said) said.parentNode.removeChild(said);
+  }
+
   /* The press that sends everything.
      Whatever is in the field under the cursor counts, so the cursor is taken
      out of it first — a blur is what finishes a half typed word — and then
      the queue goes in one go. */
   function saveList() {
+    if (state.draft) {
+      var focusedNow = document.activeElement;
+      if (focusedNow && focusedNow.blur && focusedNow !== document.body) focusedNow.blur();
+      makeDraft(function () { mark.asked = true; flushAll(); });
+      return;
+    }
     /* Pressed rather than typed, so this one owes a word — and settled() says
        it when the last write has actually landed rather than here, where the
        only true thing yet is that it has been sent. */
@@ -3432,6 +3537,10 @@
      sent — see beacon() below. It is passed down rather than read off a
      variable so that an ordinary press of Save cannot be caught by it. */
   function flush(key, leaving) {
+    /* A list that is not made yet has nowhere to send anything to. What is
+       held waits for makeDraft(), and a draft left behind is meant to leave
+       nothing. */
+    if (state.draft) return;
     for (var i = pending.length - 1; i >= 0; i--) {
       if (key && pending[i].key !== key) continue;
       var job = pending[i].run;
@@ -3511,9 +3620,12 @@
 
   function paintSave() {
     if (!mark.btn) return;
-    var done = allSent();
+    /* A draft is never Saved, because nothing of it is anywhere yet; and
+       Save waits for a name, because a name is what making one needs. */
+    var done = !state.draft && allSent();
     mark.btn.classList.toggle('is-saved', done);
     mark.btn.textContent = t(done ? 'listsSaveDone' : 'listsSave');
+    mark.btn.disabled = !!state.draft && (!state.list.title || mark.sending > 0);
   }
 
   /* Called wherever either count changes. It paints — and if somebody pressed
@@ -4040,6 +4152,7 @@
    * opened.
    */
   function openPicker() {
+    if (state.draft && !state.list.title) { sayNameFirst(); return; }
     TTBTrack.event('picker_open', { list_id: state.list.id, places_on: state.list.items.length });
     dom.pickerScrim.hidden = false;
     document.body.classList.add('has-scrim');
@@ -4759,6 +4872,12 @@
   function addPlace(place) {
     var list = state.list;
     if (!list) return;
+    /* The first place on a draft is what makes it: the list first, under the
+       name it has, and then the place on it. */
+    if (state.draft) {
+      makeDraft(function () { flushAll(); addPlace(place); });
+      return;
+    }
     /* The picker already greys these out; this is the second door, for a
        click that got in before the last render caught up. */
     if (list.items.length >= MAX_ITEMS) { toast(t('listsErrFull')); return; }
@@ -5079,6 +5198,10 @@
       });
     } else if (who) {
       data = ask(WHO_API + '?name=' + encodeURIComponent(who));
+    } else if (id === DRAFT) {
+      /* Nothing to fetch but who is asking: the list is drawn here, empty,
+         and does not exist anywhere else until Save — see draftList(). */
+      data = ask(API);
     } else if (seeded) {
       data = Promise.resolve({
         status: 200,
@@ -5108,6 +5231,17 @@
       state.ready = answer.status === 404 ? true : !!out.ready;
       state.me = out.user || null;
       state.list = out.list || null;
+      if (id === DRAFT) {
+        /* A list is made under somebody's name, so the sheet comes first and
+           brings them back here. The map does this before it ever sends
+           anybody to this address; this is for the link opened cold. */
+        if (state.ready && !state.me) {
+          window.location.replace('/?account=up&then=' + encodeURIComponent('/list/' + DRAFT));
+          return;
+        }
+        state.list = state.me ? draftList() : null;
+        state.draft = !!state.list;
+      }
       state.walking = !!state.list && walkable(state.list) &&
         new URLSearchParams(window.location.search).has('walk');
       state.all = out.all || null;
@@ -5130,6 +5264,9 @@
       mountLanguage();
       render();
       keepAsked();
+      /* A list not made yet opens on the one thing it needs before it can be:
+         a name. */
+      if (state.draft && dom.title) dom.title.focus();
 
       /* And the open is counted, once the page is on the screen and out of the
          way of anything it could slow down. Somebody else's list only: see
