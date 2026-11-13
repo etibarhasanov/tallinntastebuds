@@ -830,15 +830,23 @@ a:hover { color: var(--accent-lit); }
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 1.15em;
-  height: 1.15em;
+  /* The glyph is centred as a track as well as an item. An emoji's advance
+     is wider than its em, and at .62em it was wider than the disc: the track
+     overflowed, started at the disc's left edge, and every glyph sat a little
+     to the right of its ring. place-content centres the track whether it fits
+     or not. */
+  place-content: center;
+  /* In the pin's own em, which is .56 of the title's: .72 of the title, the
+     disc it has always been, with a glyph small enough to sit inside it. */
+  width: 1.28em;
+  height: 1.28em;
   border-radius: 50%;
   background: var(--paper);
   box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
   font-family: var(--emoji);
   /* Set against the title's own size, so it grows with the heading on a
      desk and shrinks with it on a phone without a second breakpoint. */
-  font-size: .62em;
+  font-size: .56em;
   line-height: 1;
   vertical-align: baseline;
   -webkit-user-select: none;
@@ -3613,8 +3621,8 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
 /* And the title is itself a row of two, because it carries the list's pin in
    front of it: the pin sits on the first line's baseline rather than being
    dragged to the middle of a title that has wrapped to two, and the gap is
-   the title's own em rather than a margin on the pin — the pin is .62em, so a
-   margin written on it would be .62 of the number it looked like. The same
+   the title's own em rather than a margin on the pin — the pin is .56em, so a
+   margin written on it would be .56 of the number it looked like. The same
    arrangement .lists-title has on the list's own page.
 
    overflow-wrap so a title that is one long word breaks inside the row

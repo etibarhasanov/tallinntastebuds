@@ -486,13 +486,14 @@ a:hover { color: var(--accent-lit); }
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 1.15em;
-  height: 1.15em;
+  place-content: center;
+  width: 1.28em;
+  height: 1.28em;
   border-radius: 50%;
   background: var(--paper);
   box-shadow: 0 0 0 1px var(--paper), 0 0 0 1.9px var(--pin-tone, var(--accent));
   font-family: var(--emoji);
-  font-size: .62em;
+  font-size: .56em;
   line-height: 1;
   vertical-align: baseline;
   -webkit-user-select: none;
