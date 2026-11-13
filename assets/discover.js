@@ -282,8 +282,6 @@ window.TTBDiscover = (function () {
   /* Everything under the map's card, from whatever is known right now. Called
      again when the route answers and when the language changes. */
   function draw() {
-    var say = document.getElementById('discover-map-say');
-    if (say) say.textContent = o.t('discoverMapSay', { n: open(o.places()).length });
     sky();
 
     shelves.textContent = '';
