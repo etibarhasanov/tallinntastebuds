@@ -24,6 +24,8 @@
 
   var ALL_PATH = '/lists';
 
+  var MINE_PATH = '/account.html';
+
   var MAX_QUERY = 60;
   var SEARCH_WAIT = 220;
 
@@ -41,7 +43,7 @@
 
   var KM_PER_DEGREE = 111.32;
 
-  var SORTS = ['views', 'kept', 'new'];
+  var SORTS = ['views', 'new', 'kept'];
 
   var WIDE = '(min-width: 900px)';
 
@@ -770,7 +772,8 @@
 
     wrap.appendChild(card([
       heading(t('listsAllTitle')),
-      el('p', { className: 'lists-say', textContent: t('listsAllSay') })
+      el('p', { className: 'lists-say', textContent: t('listsAllSay') }),
+      el('div', { className: 'lists-foot lists-all-make' }, [makeYours()])
     ]));
     wrap.appendChild(searchField());
 
@@ -781,6 +784,14 @@
     watchWidth();
 
     return wrap;
+  }
+
+  function makeYours() {
+    return TTBTrack.click(el('a', {
+      className: 'go',
+      href: state.me ? MINE_PATH : '/?account=up&then=' + encodeURIComponent(MINE_PATH),
+      textContent: t('listsMakeYours')
+    }), 'list_new', { signed_in: state.me ? 'yes' : 'no' });
   }
 
   function allUrl(extra) {
