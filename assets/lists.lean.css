@@ -775,8 +775,9 @@
   .is-previewing .ed-shut { position: fixed; display: grid; }
 }
 
-.lists-new { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 16px 0 0; }
-.lists-new .ac-err { align-self: stretch; margin: 0; }
+.lists-new { margin: 16px 0 0; }
+
+.lists-name-first { margin: 0 0 10px; }
 
 .lists-index { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 

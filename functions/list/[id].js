@@ -113,6 +113,11 @@ function prose(list) {
     '<ol>' + rows.join('') + '</ol>';
 }
 
+/* The one address under /list/ that is not a list. No id can be this: every
+   one is a slug, a dash and six random characters — create() in
+   functions/api/lists.js. assets/lists.js names it DRAFT too. */
+const DRAFT = 'new';
+
 export async function onRequest(context) {
   const { request, env, params } = context;
 
@@ -123,7 +128,7 @@ export async function onRequest(context) {
      key; a stamp that cannot be read is the page served the way it was
      before any copy was kept. */
   let key = null;
-  if (LIST_ID.test(id) && !signedIn(request)) {
+  if (LIST_ID.test(id) && id !== DRAFT && !signedIn(request)) {
     try {
       key = coloKey(canonical(request, '/list/' + id), await deployStamp(context, ['/lists.html']));
       const hit = await fromColo(request, key, PRIVATELY);
@@ -144,6 +149,10 @@ export async function onRequest(context) {
   }
 
   if (!LIST_ID.test(id)) return page(html, 404);
+  /* A list not made yet — Make a list opens it, empty, and the page makes it
+     on Save: draftList() in assets/lists.js. Nothing to look up, nothing to
+     seed, and nothing for a crawler. */
+  if (id === DRAFT) return page(html, 200);
   if (!env.DB || (await wrongDatabase(env))) return page(html, 200);
 
   let list;

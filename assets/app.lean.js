@@ -2291,11 +2291,6 @@
         TTBTrack.event(creating ? 'account_create' : 'account_login', {});
         TTBTrack.event('account_done_' + (creating ? 'up' : 'in'));
         closeAccount();
-        if (accountThen === MAKE_THEN) {
-          accountThen = '';
-          makeList();
-          return;
-        }
         if (returnAfterAccount()) return;
         toast(t('accountSignedIn', { name: a.out.user }));
       }).catch(function () { accountFail({ error: 'network' }); });
@@ -3153,52 +3148,18 @@
     $('discover-make').addEventListener('click', pressMake);
   }
 
-  var MAKE_THEN = '/account.html?make=1';
-  var MAKE_ERRORS = { 'too-many': 'listsErrTooMany' };
-  var makeBusy = false;
+  var NEW_LIST = '/list/new';
 
   function pressMake(ev) {
     if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
     if (!state.account.ready) return;
     ev.preventDefault();
     if (!state.account.user) {
-      accountThen = MAKE_THEN;
+      accountThen = NEW_LIST;
       openAccount('up', '', 'make');
       return;
     }
-    makeList();
-  }
-
-  function makeList() {
-    if (makeBusy) return;
-    makeBusy = true;
-    fetch('/api/lists', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ action: 'create', title: t('listsUntitled') })
-    }).then(function (res) {
-      return res.json().catch(function () { return {}; })
-        .then(function (out) { return { ok: res.ok, out: out || {} }; });
-    }).then(function (a) {
-      makeBusy = false;
-      if (!a.ok) {
-        if (a.out.error === 'signed-out') {
-          state.account.user = null;
-          paintAccountRow();
-          accountThen = MAKE_THEN;
-          openAccount('in', '', 'expired');
-          return;
-        }
-        toast(t(MAKE_ERRORS[a.out.error] || 'listsErrGeneric'));
-        return;
-      }
-      TTBTrack.event('list_create', { list_id: a.out.id });
-      var to = '/list/' + a.out.id;
-      if (!window.TTBShell.walk(to)) window.location.href = to;
-    }).catch(function () {
-      makeBusy = false;
-      toast(t('listsErrGeneric'));
-    });
+    if (!window.TTBShell.walk(NEW_LIST)) window.location.href = NEW_LIST;
   }
 
   function standOnDiscover(on) {

@@ -1100,14 +1100,16 @@
   .is-previewing .ed-shut { position: fixed; display: grid; }
 }
 
-/* The button that makes a list, and the refusal above it when there is one.
-   It stands under the fold on the account page, and the room above it is its
-   own: what is over it is a <summary> when the fold is closed and a column of
-   lists when it is open, and neither of those can be given a margin that only
-   means something under this button. It was a name field and a button once;
-   a list is named on its own page now. */
-.lists-new { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 16px 0 0; }
-.lists-new .ac-err { align-self: stretch; margin: 0; }
+/* Make a list, on the account page. It stands under the fold, and the room
+   above it is its own: what is over it is a <summary> when the fold is closed
+   and a column of lists when it is open, and neither of those can be given a
+   margin that only means something under this. It was a name field and a
+   button once; a list is named on its own page now, /list/new. */
+.lists-new { margin: 16px 0 0; }
+
+/* "Give the list a name first", over the name field of a list not made yet —
+   see sayNameFirst() in assets/lists.js. The field under it is the answer. */
+.lists-name-first { margin: 0 0 10px; }
 
 /* ---------- the index of your lists ---------- */
 

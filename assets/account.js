@@ -205,10 +205,6 @@
      rather than at each of the three links that use it. */
   var SHEET = '/?account=';
   var BACK = '&then=%2Faccount.html';
-  /* The way back for somebody who pressed Make a list before signing in:
-     here again with the press still to make, so the list is made the moment
-     there is somebody to make it for. See boot(). */
-  var MAKE_BACK = '&then=%2Faccount.html%3Fmake%3D1';
 
   var state = {
     ui: {},            // one language's strings; see loadWords()
@@ -217,7 +213,6 @@
     ready: false,    // whether accounts work on this deployment
     user: null,
     linked: false,   // whether this account was reached through Google
-    making: false,   // arrived as ?make=1, from the front page's Make a list
     password: true,  // whether there is a password on it at all
     views: null,     // /u/<you> opened in the last 7 days, null without the table
     saved: [],       // place ids, newest first
@@ -316,12 +311,13 @@
       .catch(function () { return { status: 0, out: {} }; });
   }
 
-  /* The one write this page makes besides signing out: a new list. Same
-     endpoint and same shape as every write assets/lists.js makes, because it
-     is the same API — this page grew the way to make a list when the lists
-     page stopped having an index to put it on. */
+  /* The one write this page makes besides signing out: taking Google off the
+     account. It went to the lists route for a while — the page made lists
+     too, and this was written for that — and that route answered
+     not-found to google-unlink every time, so Disconnect Google never
+     disconnected anything. Making a list is /list/new's now. */
   function post(payload) {
-    return fetch(LISTS_API, {
+    return fetch(ACCOUNT_API, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload)
@@ -331,17 +327,6 @@
       });
     });
   }
-
-  /* One sentence per refusal the server can send back from `create`, and the
-     general one for anything else — a visitor should never be shown a word out
-     of the source. The list is shorter than the one in assets/lists.js because
-     the only write here is making a list; the rest of them name a list this
-     page cannot address. The empty title is not among them because this page
-     always sends one — see makeList(). */
-  var ERRORS = {
-    'too-many': 'listsErrTooMany',
-    'signed-out': 'listsErrSignedOut'
-  };
 
   /* --------------------------------------------------------------- dressing
    * Copied whole from assets/lists.js, which copied it from the pass pages:
@@ -764,59 +749,14 @@
     ], 'list_page', { list_id: l.id }, TTBPins.ofList(l));
   }
 
-  /* A list is made by pressing one button, and named afterwards. It asked
-     for the name first once — a field and a button, the name sent with the
-     create — and that was the step people stopped at: a name is a decision
-     about a list that does not have anything on it yet, and the list's own
-     page has had its title as a field you type into all along. So the button
-     makes "My list" in the reader's language and lands in it, where the
-     title is the first thing on the card and the places are the next.
-
-     The same press arrives here as ?make=1 from the way back from Google,
-     when it was the front page's Make a list that sent somebody to sign in
-     — the map makes the list itself for everybody else, see makeList() in
-     assets/app.js. That one is made before this page draws anything, and
-     leaves with replace() rather than a step, so the account page is never
-     on the screen on the way to the list and Back from the list does not
-     land on an address that would make another one. A refusal draws the
-     page and is said above the button, where the button is the way to try
-     again.
-
-     The button says what the front page's link says, out of the same key,
-     discoverMake — two doors to one press, in the same words. */
-  function makeButton() {
-    var box = el('div', { className: 'lists-new' });
-    var go = el('button', { type: 'button', className: 'go', textContent: t('discoverMake') });
-    box.appendChild(go);
-
-    go.addEventListener('click', function () {
-      var old = box.querySelector('.ac-err');
-      if (old) box.removeChild(old);
-      go.disabled = true;
-      go.textContent = t('accountWorking');
-      makeList(false, function (out) {
-        go.disabled = false;
-        go.textContent = t('discoverMake');
-        sayRefused(box, out);
-      });
-    });
-    return box;
-  }
-
-  function sayRefused(box, out) {
-    box.insertBefore(
-      el('p', { className: 'ac-err', role: 'alert', textContent: t(ERRORS[out && out.error] || 'listsErrGeneric') }),
-      box.firstChild
-    );
-  }
-
-  function makeList(leave, refused) {
-    post({ action: 'create', title: t('listsUntitled') }).then(function (a) {
-      if (!a.ok) return refused(a.out);
-      TTBTrack.event('list_create', { list_id: a.out.id });
-      if (leave) window.location.replace('/list/' + a.out.id);
-      else window.location.href = '/list/' + a.out.id;
-    }).catch(function () { refused({}); });
+  /* Make a list, which opens an empty list on /list/new and writes nothing
+     — the list is made there, when it has a name and Save is pressed. See
+     draftList() in assets/lists.js. It is the front page's Make a list, in
+     the same words, out of the same key: discoverMake. */
+  function makeLink() {
+    return el('p', { className: 'lists-new' }, [
+      link('discoverMake', '/list/new', 'list_new', null, 'go')
+    ]);
   }
 
   function listsCard() {
@@ -837,7 +777,7 @@
       kids.push(el('p', { className: 'lists-none', textContent: t('listsNone') }));
     }
 
-    kids.push(makeButton());
+    kids.push(makeLink());
     return card(kids);
   }
 
@@ -1054,15 +994,14 @@
    * the two this page is about.
    */
   function invitation() {
-    var back = state.making ? MAKE_BACK : BACK;
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(t('accountTitle')),
       el('p', { className: 'lists-say', textContent: t('accountWhy') }),
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       foot([
-        link('accountCreate', SHEET + 'up' + back, 'account_open', { view: 'up' }, 'go'),
-        link('accountSignIn', SHEET + 'in' + back, 'account_open', { view: 'in' })
+        link('accountCreate', SHEET + 'up' + BACK, 'account_open', { view: 'up' }, 'go'),
+        link('accountSignIn', SHEET + 'in' + BACK, 'account_open', { view: 'in' })
       ])
     ]);
   }
@@ -1138,7 +1077,13 @@
 
   function boot() {
     main = document.getElementById('main');
-    state.making = takeMake();
+    /* The address Make a list had for a day, which made the list from here.
+       A link to it, or the way back from Google to it, lands on the empty
+       list instead, the way the front page's does now. */
+    if (new URLSearchParams(window.location.search).get('make') === '1') {
+      window.location.replace('/list/new');
+      return;
+    }
 
     applyStyle();
 
@@ -1187,18 +1132,6 @@
       return seatVenues();
     }).then(function () {
       mountRadio();
-      /* Back from Google with Make a list still owed: made before anything
-         is drawn, so the page is only ever seen if it is refused — see
-         makeButton(). */
-      if (state.making && state.user) {
-        makeList(true, function (out) {
-          render();
-          sayArrived();
-          var box = main.querySelector('.lists-new');
-          if (box) sayRefused(box, out);
-        });
-        return;
-      }
       render();
       sayArrived();
     }).catch(function () {
@@ -1232,20 +1165,6 @@
       window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
     } catch (e) { /* it is still said */ }
     if (SAID.hasOwnProperty(said) && state.user) toast(t(SAID[said], { name: state.user }));
-  }
-
-  /* ?make=1 is read once and taken off the address, the way ?said= is: a
-     reload, or Back to this page, must not make a second list. The links
-     that send somebody off to sign in carry it on their own — MAKE_BACK. */
-  function takeMake() {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('make') !== '1') return false;
-    params.delete('make');
-    var query = params.toString();
-    try {
-      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
-    } catch (e) { /* the list is still made once */ }
-    return true;
   }
 
   if (document.readyState === 'loading') {
