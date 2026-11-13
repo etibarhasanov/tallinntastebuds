@@ -1100,12 +1100,14 @@
   .is-previewing .ed-shut { position: fixed; display: grid; }
 }
 
-/* The box that makes a list. It stands under the fold on the account page,
-   and the room above it is its own: what is over it is a <summary> when the
-   fold is closed and a column of lists when it is open, and neither of those
-   can be given a margin that only means something under this form. */
-.lists-new { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
-.lists-new .lists-input { flex: 1 1 200px; min-width: 0; }
+/* The button that makes a list, and the refusal above it when there is one.
+   It stands under the fold on the account page, and the room above it is its
+   own: what is over it is a <summary> when the fold is closed and a column of
+   lists when it is open, and neither of those can be given a margin that only
+   means something under this button. It was a name field and a button once;
+   a list is named on its own page now. */
+.lists-new { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 16px 0 0; }
+.lists-new .ac-err { align-self: stretch; margin: 0; }
 
 /* ---------- the index of your lists ---------- */
 

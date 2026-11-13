@@ -775,8 +775,8 @@
   .is-previewing .ed-shut { position: fixed; display: grid; }
 }
 
-.lists-new { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
-.lists-new .lists-input { flex: 1 1 200px; min-width: 0; }
+.lists-new { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 16px 0 0; }
+.lists-new .ac-err { align-self: stretch; margin: 0; }
 
 .lists-index { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 
