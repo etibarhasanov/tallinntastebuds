@@ -337,6 +337,8 @@
   "listsWhoPublic": "Public",
   "listsWhoPrivate": "Private",
   "listsPin": "The pin",
+  "listsPinsAll": "See all {n}",
+  "listsPinsFewer": "Show fewer",
   "listsPinMark": "Places on the map keep the Tallinn Tastebuds mark.",
   "pinPin": "Map pin",
   "pinFlame": "Flame",

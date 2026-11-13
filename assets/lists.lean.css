@@ -280,6 +280,8 @@
   max-width: 332px;
 }
 
+.lists-pins-more { align-self: flex-start; margin-top: 6px; }
+
 .lists-swatch {
   position: relative;
   display: grid;

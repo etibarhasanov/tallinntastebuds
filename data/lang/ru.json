@@ -337,6 +337,8 @@
   "listsWhoPublic": "Публичный",
   "listsWhoPrivate": "Приватный",
   "listsPin": "Значок",
+  "listsPinsAll": "Показать все {n}",
+  "listsPinsFewer": "Показать меньше",
   "listsPinMark": "Места с карты сохраняют знак Tallinn Tastebuds.",
   "pinPin": "Метка",
   "pinFlame": "Огонь",

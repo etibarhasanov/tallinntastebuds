@@ -337,6 +337,8 @@
   "listsWhoPublic": "Pública",
   "listsWhoPrivate": "Privada",
   "listsPin": "O marcador",
+  "listsPinsAll": "Ver todos os {n}",
+  "listsPinsFewer": "Mostrar menos",
   "listsPinMark": "Os sítios que estão no mapa mantêm a marca do Tallinn Tastebuds.",
   "pinPin": "Marcador",
   "pinFlame": "Chama",

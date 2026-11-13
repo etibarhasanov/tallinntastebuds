@@ -337,6 +337,8 @@
   "listsWhoPublic": "Публічний",
   "listsWhoPrivate": "Приватний",
   "listsPin": "Позначка",
+  "listsPinsAll": "Показати всі {n}",
+  "listsPinsFewer": "Показати менше",
   "listsPinMark": "Місця з мапи зберігають знак Tallinn Tastebuds.",
   "pinPin": "Мітка",
   "pinFlame": "Вогонь",

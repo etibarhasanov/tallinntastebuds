@@ -337,6 +337,8 @@
   "listsWhoPublic": "Açıq",
   "listsWhoPrivate": "Gizli",
   "listsPin": "Nişan",
+  "listsPinsAll": "Hamısına bax ({n})",
+  "listsPinsFewer": "Daha az göstər",
   "listsPinMark": "Xəritədəki yerlər Tallinn Tastebuds nişanını saxlayır.",
   "pinPin": "Xəritə nişanı",
   "pinFlame": "Alov",

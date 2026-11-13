@@ -337,6 +337,8 @@
   "listsWhoPublic": "Herkese açık",
   "listsWhoPrivate": "Gizli",
   "listsPin": "İşaret",
+  "listsPinsAll": "Tümünü gör ({n})",
+  "listsPinsFewer": "Daha az göster",
   "listsPinMark": "Haritadaki yerler Tallinn Tastebuds işaretini korur.",
   "pinPin": "Harita işareti",
   "pinFlame": "Alev",

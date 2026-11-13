@@ -337,6 +337,8 @@
   "listsWhoPublic": "Publique",
   "listsWhoPrivate": "Privée",
   "listsPin": "Le repère",
+  "listsPinsAll": "Voir les {n}",
+  "listsPinsFewer": "Voir moins",
   "listsPinMark": "Les lieux de la carte gardent la marque Tallinn Tastebuds.",
   "pinPin": "Épingle",
   "pinFlame": "Flamme",
