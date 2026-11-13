@@ -71,19 +71,20 @@
  * its own, made on the press — traceFor(), and `&who=` in
  * functions/api/walk.js.
  *
- * ON FOOT AND BY BIKE, WITHOUT ASKING WHICH
+ * HOW THEY WENT ROUND IS ASKED AT THE END
  *
- * There were two chips on the card, On foot and By bike, and all they
- * changed was the time the card estimated and a word on the board: the
- * order and the distances are the same streets either way. Somebody who
- * walks to three places and cycles to the other five had nothing to press.
- * So the card asks nothing and says both — timesLine(), the time on foot
- * and the time by bike side by side under the distance — and the legs on
- * the rail are on foot, the slower of the two. Nobody is asked how they
- * went, and it cannot be read off the clock either, since a walk may take
- * as many days as its walker likes. The server still keeps a mode with
- * every walk, `foot` unless it was told otherwise, and the board still says
- * By bike beside anybody who picked it while there were chips to pick.
+ * There were two chips on the card, On foot and By bike, pressed before
+ * the start, and all they changed was the time the card estimated and a
+ * word on the board: the order and the distances are the same streets
+ * however somebody goes, and somebody who walks to three places and cycles
+ * to the rest had nothing to press. So the card estimates every way at
+ * once — timesLine(), the time on foot, by bike and by car side by side
+ * under the distance — and the legs on the rail are on foot, the slowest.
+ * How somebody went is asked once the walk is finished, when they know:
+ * "How did you go round?" and four chips, On foot, By bike, By car and
+ * Mixed — howWent() — and the answer is the word beside their time on the
+ * board, which is one board for every way of going round. It can be
+ * changed afterwards. A walk nobody has answered for has no word at all.
  *
  * WHAT ELSE THE CARD CAN DO
  *
@@ -144,9 +145,17 @@
 
   /* Streets against the straight line, and metres covered in a minute: 4.8
      km/h on foot, which is what Google and the journey planner both assume,
-     and 15 km/h on a bike through a city with lights in it. */
+     15 km/h on a bike through a city with lights in it, and 24 km/h in a car
+     through the same lights, with nothing for parking, which nobody can
+     estimate. */
   var DETOUR = 1.3;
-  var PACE = { foot: 80, bike: 250 };
+  var PACE = { foot: 80, bike: 250, car: 400 };
+
+  /* The ways to go round, as the board says them — the server's MODES in
+     functions/api/walk.js, restated. A mode not here is one nobody said,
+     and gets no word. */
+  var MODES = ['foot', 'bike', 'car', 'mixed'];
+  var MODE_WORDS = { foot: 'walkFoot', bike: 'walkBike', car: 'walkCar', mixed: 'walkMixed' };
 
 
   /* The longest list whose order is found exactly. Twelve places is four
@@ -580,6 +589,27 @@
     });
   }
 
+  /* How they went round, once it is finished — see howWent(). The answer is
+     drawn pressed at once, and what the server answers replaces it. */
+  function setMode(mode) {
+    if (mode === w.data.walk.mode || w.busy) return;
+    var was = w.data.walk.mode;
+    w.data.walk.mode = mode;
+    w.busy = 'mode';
+    c.redraw();
+    send({ action: 'mode', mode: mode }).then(function (answer) {
+      w.busy = '';
+      if (answer.status !== 200) {
+        w.data.walk.mode = was;
+        say(c.t('walkErr'), true);
+        c.redraw();
+        return;
+      }
+      TTBTrack.event('walk_mode', { list_id: w.list.id, mode: mode });
+      land(answer.out);
+    });
+  }
+
   /* A comment: on the place checked in at, or with `place` '' on the whole
      of a finished walk. */
   function saveNote(place, text) {
@@ -844,16 +874,41 @@
   }
 
   /* How long a stretch of the walk takes on foot and by bike, said side by
-     side because nobody is asked which — see ON FOOT AND BY BIKE above. The
-     two times are the line's weight, so they are split out of the sentence
-     and drawn in the ink; walkTimes keeps them where each language puts
-     them. */
+     side because nobody is asked which before — see HOW THEY WENT ROUND IS
+     ASKED AT THE END above. The times are the line's weight, so they are
+     split out of the sentence and drawn in the ink; walkTimes keeps them
+     where each language puts them. */
   function timesLine(m) {
-    var said = c.t('walkTimes', { foot: '\u0001', bike: '\u0002' });
-    var times = { '\u0001': minutes(m / PACE.foot), '\u0002': minutes(m / PACE.bike) };
-    return c.el('p', { className: 'walk-times mono' }, said.split(/([\u0001\u0002])/).map(function (part) {
+    var said = c.t('walkTimes', { foot: '\u0001', bike: '\u0002', car: '\u0003' });
+    var times = {
+      '\u0001': minutes(m / PACE.foot),
+      '\u0002': minutes(m / PACE.bike),
+      '\u0003': minutes(m / PACE.car)
+    };
+    return c.el('p', { className: 'walk-times mono' }, said.split(/([\u0001-\u0003])/).map(function (part) {
       return times[part] ? c.el('b', { textContent: times[part] }) : part;
     }).filter(Boolean));
+  }
+
+  /* How did you go round? — asked on the card of a finished walk, the four
+     chips pressed the way a filter is, the answer pressed. See HOW THEY WENT
+     ROUND IS ASKED AT THE END above. */
+  function howWent() {
+    var now = w.data.walk.mode;
+    return c.el('div', { className: 'walk-went', role: 'group', 'aria-label': c.t('walkHowWent') }, [
+      c.el('p', { className: 'walk-from', textContent: c.t('walkHowWent') }),
+      c.el('div', { className: 'lists-row walk-modes' }, MODES.map(function (mode) {
+        var chip = c.el('button', {
+          type: 'button',
+          className: 'chip',
+          'aria-pressed': mode === now ? 'true' : 'false',
+          textContent: c.t(MODE_WORDS[mode])
+        });
+        chip.disabled = w.busy === 'mode';
+        chip.addEventListener('click', function () { setMode(mode); });
+        return chip;
+      }))
+    ]);
   }
 
   function head(p) {
@@ -930,6 +985,7 @@
     if (finished() && w.noting !== '' && w.data.walk.note) {
       kids.push(c.el('p', { className: 'walk-note', textContent: w.data.walk.note }));
     }
+    if (finished()) kids.push(howWent());
 
     /* The tiles: everything else this card can do, in the order somebody
        would reach for it — see WHAT ELSE THE CARD CAN DO above. */
@@ -1180,18 +1236,16 @@
       c.el('p', { className: 'eyebrow', textContent: c.t('walkBoard') }),
       c.el('ol', { className: 'walk-board' }, rows.map(function (row, i) {
         var open = w.trace && w.trace.who === row.name;
-        /* How long, and By bike before it for anybody who picked that
-           while the card had chips to pick it with — an hour by bike is
-           not an hour on foot. Nobody is asked now, so nothing is said
-           for the rest. The time is the press, because the parts are what
-           it is made of — the name beside it is already the way to the
-           person. */
+        /* How they went round, then how long: an hour by car is not an
+           hour on foot. Nothing for a walk nobody answered for. The time
+           is the press, because the parts are what it is made of — the
+           name beside it is already the way to the person. */
         var time = c.el('button', {
           type: 'button',
           className: 'walk-board-open walk-took',
           'aria-expanded': open ? 'true' : 'false',
           'aria-label': c.t('walkTraceSee', { name: row.name }),
-          textContent: (row.mode === 'bike' ? c.t('walkBike') + ' · ' : '') + took(row.finished - row.started)
+          textContent: (MODE_WORDS[row.mode] ? c.t(MODE_WORDS[row.mode]) + ' · ' : '') + took(row.finished - row.started)
         });
         time.addEventListener('click', function () { traceFor(row.name); });
         return c.el('li', { className: open ? 'is-open' : '' }, [
@@ -1350,7 +1404,7 @@
         asking: false,    // Start again has been pressed and is being confirmed
         watch: null,      // the id of the position watch, while one runs — see watch()
         refused: false,   // the phone would not say where it is
-        busy: '',         // 'here' | 'start' | 'check' | 'note' while one is in flight
+        busy: '',         // 'here' | 'start' | 'check' | 'note' | 'mode' while one is in flight
         msg: null         // the line over the band's button
       };
       TTBTrack.event('walk_open', { list_id: ctx.list.id });

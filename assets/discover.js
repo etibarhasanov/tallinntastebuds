@@ -214,6 +214,10 @@ window.TTBDiscover = (function () {
     return hours ? said + ' ' + o.t('walkHoursOnly', { h: hours }) : said;
   }
 
+  /* How the fastest went round, as the board says it — MODE_WORDS in
+     assets/walk.js. A mode not here is one nobody said, and gets no word. */
+  var WENT = { foot: 'walkFoot', bike: 'walkBike', car: 'walkCar', mixed: 'walkMixed' };
+
   /* PLAY: THE GAME, SAID ONCE, WITH ROUTES TO SWIPE THROUGH
    *
    * Every list can be walked — go to each place, check in at the door, on
@@ -269,7 +273,7 @@ window.TTBDiscover = (function () {
       if (route.finished && route.best) {
         parts.push(o.t('discoverPlayDone', { n: route.finished }),
           o.t('discoverPlayBest', { took: took(route.best) }),
-          route.mode === 'bike' ? o.t('walkBike') : null);
+          WENT[route.mode] ? o.t(WENT[route.mode]) : null);
         parts = parts.filter(Boolean);
         press = o.t('walkStart');
       } else {

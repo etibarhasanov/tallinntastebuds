@@ -1592,6 +1592,9 @@ body.has-scrim { overflow: hidden; }
 .walk-times b { color: var(--ink); font-weight: 500; }
 .walk-alts { margin-top: 10px; gap: 6px 18px; }
 
+.walk-went .walk-from { margin-top: 14px; }
+.walk-modes { margin-top: 10px; gap: 8px; }
+
 .walk-tiles {
   display: grid;
   grid-auto-flow: column;

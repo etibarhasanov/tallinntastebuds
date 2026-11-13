@@ -2437,11 +2437,15 @@ body.has-scrim { overflow: hidden; }
 /* Where it starts, and what a walk is: sentences, so the body face. */
 .walk-from,
 .walk-how { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; }
-/* On foot and by bike, side by side: the two times in the ink, the words
-   around them muted like the line above. */
+/* On foot, by bike and by car, side by side: the times in the ink, the
+   words around them muted like the line above. */
 .walk-times { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 .walk-times b { color: var(--ink); font-weight: 500; }
 .walk-alts { margin-top: 10px; gap: 6px 18px; }
+/* How did you go round? — the question on a finished walk and its four
+   chips, pressed the way a filter is. */
+.walk-went .walk-from { margin-top: 14px; }
+.walk-modes { margin-top: 10px; gap: 8px; }
 
 /* What else the card can do, as tiles: an icon over its words, the card's
    width shared between however many there are — two are halves, three are

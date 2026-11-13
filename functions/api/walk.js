@@ -44,7 +44,8 @@
  * POST /api/walk   { action, list, … }      a session, every one
  *
  *   start   { order?, mode? }    begins the walk; pressing it twice is one walk
- *   mode    { mode }             `foot` or `bike`, until it is finished
+ *   mode    { mode }             `foot`, `bike`, `car` or `mixed`, asked once
+ *                                the walk is finished and changeable after
  *   check   { lat, lng }         checks the nearest unchecked place, if it is
  *                                within RADIUS metres; 409 `far` otherwise,
  *                                with the place and how far it is
@@ -93,18 +94,25 @@
  * out by hand and is not in this code, which is where a judgement about
  * whether somebody really walked it belongs.
  *
- * ON FOOT OR BY BIKE
+ * HOW THEY WENT ROUND
  *
- * A walk is not only walked. The mode is the walker's to say, `foot` unless
- * they say `bike`, and it changes two things: the time the page estimates,
- * and the word beside their name on the board, since an hour by bike and an
- * hour on foot are not the same hour. It is taken on trust like everything
- * else here, and it can be changed until the walk is finished and not after.
- * The page stopped asking on 2026-11-13 — it shows the time on foot and by
- * bike side by side, since plenty of people do some of each — so every walk
- * started since is `foot` and the `mode` action has no caller. Both stay:
- * the walks that said `bike` still say it on the board, and a phone holding
- * last week's page may still send one.
+ * A walk is not only walked. How somebody went — on foot, by bike, by car,
+ * or a mix of them — is theirs to say, and it is said once, at the end:
+ * the card of a finished walk asks "How did you go round?" and the answer
+ * is the word beside their time on the board, since an hour by car and an
+ * hour on foot are not the same hour. It is asked at the end because that
+ * is when anybody knows, and because the estimate on the card no longer
+ * needs it — the page shows the time on foot, by bike and by car side by
+ * side. One board for all of them, the owner's decision: the word says how
+ * the time was made and the reader weighs it.
+ *
+ * Taken on trust like everything else here, and changeable after the
+ * finish as often as its walker likes. A walk nobody has said anything
+ * about is '' and the board says nothing beside it. Until 2026-11-13 the
+ * page asked before the start, with `foot` already pressed, so the walks
+ * from before then say `foot` whether anybody chose it or not; they are
+ * left as they are. A phone holding an old page still sends a mode with
+ * Start, and it is kept.
  *
  * THE ORDER IS A SUGGESTION
  *
@@ -174,10 +182,11 @@ const NOTES = 100;
    the latest of them rather than an index. */
 const GOING = 5;
 
-/* The ways to go round — ON FOOT OR BY BIKE. The first is what a walk is
-   unless somebody says otherwise. Restated as MODES in assets/walk.js. */
-const MODES = ['foot', 'bike'];
-const modeOf = (raw) => (MODES.includes(raw) ? raw : MODES[0]);
+/* The ways to go round — HOW THEY WENT ROUND. Anything else, '' included,
+   is a walk nobody has said anything about. Restated as MODES in
+   assets/walk.js and assets/discover.js. */
+const MODES = ['foot', 'bike', 'car', 'mixed'];
+const modeOf = (raw) => (MODES.includes(raw) ? raw : '');
 
 /* Everything the page draws, in one answer. `list` has been read through
    readList() by the caller, so a private list has already been refused. */
@@ -205,7 +214,7 @@ async function answer(env, list, user, extra) {
       )
       .bind(list.id, BOARD)
       .all();
-    out.board = board.results;
+    out.board = board.results.map((row) => ({ ...row, mode: modeOf(row.mode) }));
 
     const notes = await env.DB
       .prepare(
@@ -421,11 +430,13 @@ async function start(env, list, user, body) {
   return json(await answer(env, list, user), 200);
 }
 
-/* Until it is finished and not after: the word on the board is how the
-   time beside it was made. */
+/* Any time there is a walk, and the page asks once it is finished — HOW
+   THEY WENT ROUND. Something that is not one of MODES is refused rather
+   than kept as nothing, so a typo cannot unsay an answer. */
 async function mode(env, list, user, body) {
+  if (!modeOf(body.mode)) return json({ error: 'mode' }, 400);
   const done = await env.DB
-    .prepare('UPDATE walks SET mode = ? WHERE user_id = ? AND list_id = ? AND finished_at IS NULL')
+    .prepare('UPDATE walks SET mode = ? WHERE user_id = ? AND list_id = ?')
     .bind(modeOf(body.mode), user.id, list.id)
     .run();
   if (!done.meta.changes) return json({ error: 'not-started' }, 409);
