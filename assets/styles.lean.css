@@ -2860,6 +2860,7 @@ body.is-discover #btn-locate { display: none; }
 .discover-track::-webkit-scrollbar { display: none; }
 .discover-track > .discover-route {
   flex: 0 0 calc(100% - 26px);
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;

@@ -4257,7 +4257,10 @@ body.is-discover #btn-locate { display: none; }
    shows at the right — that edge is what says there is more. The track runs
    to the card's own edges, so a row slides out under its border rather than
    stopping short of it. pan-x tells assets/back.js the sideways finger is
-   this row's and not Back. */
+   this row's and not Back. A row's min-width is nought because a flex
+   item's automatic one is its content's, and the title does not wrap: a
+   long one widened the row past its basis and pushed the press off the
+   card's right edge, where a phone never showed it. */
 .discover-track {
   display: flex;
   gap: 12px;
@@ -4273,6 +4276,7 @@ body.is-discover #btn-locate { display: none; }
 .discover-track::-webkit-scrollbar { display: none; }
 .discover-track > .discover-route {
   flex: 0 0 calc(100% - 26px);
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
