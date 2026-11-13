@@ -2604,6 +2604,7 @@ body.is-discover .find-area,
 body.is-discover #btn-locate { display: none; }
 
 .discover-map {
+  position: relative;
   margin: 0 var(--gap);
   overflow: hidden;
   cursor: pointer;
@@ -2622,14 +2623,41 @@ body.is-discover #btn-locate { display: none; }
 }
 .discover-sky .leaflet-pane { pointer-events: none; }
 .discover-sky .pin-face { pointer-events: none; cursor: inherit; }
-.discover-map-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px 14px; }
-.discover-map-words { flex: 1 1 auto; min-width: 0; }
-.discover-map-words h2 {
-  margin: 0;
-  font-family: var(--display);
+
+[data-style="green"] .discover-sky::after {
+  mix-blend-mode: screen;
+  background: rgba(176, 226, 197, .18);
+}
+[data-style="plum"] .discover-sky::after {
+  mix-blend-mode: screen;
+  background: rgba(214, 190, 240, .18);
+}
+
+.discover-open {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 1.5px solid var(--accent);
+  border-radius: 100px;
+  box-shadow: 0 2px 6px rgba(20, 26, 31, .25);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 13px;
   font-weight: 600;
-  font-size: 17px;
-  line-height: 1.25;
+  cursor: pointer;
+}
+.discover-open svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .discover-head { display: flex; align-items: baseline; gap: 10px; padding: 26px var(--gap) 10px; }

@@ -62,7 +62,7 @@ ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
       <bpmn:outgoing>visitor-e31</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="discover" name="Reads Discover, on a phone">
-      <bpmn:documentation>A plain arrival on a phone opens on a page in front of the map: the map as one card, then new lists, the most opened places, popular lists and what is new on the map. Open, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it, and so does a desktop.
+      <bpmn:documentation>A plain arrival on a phone opens on a page in front of the map: the map as one card, then new lists, the most opened places, popular lists and what is new on the map. Open map, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it, and so does a desktop.
 when: discover_map
 when: discover_list
 when: discover_place

@@ -18027,7 +18027,7 @@ already playing again. Only a pause from outside leaves it paused.
 ## Discover
 
 A phone that opens the bare address does not open on the map any more. It
-opens on a page in front of it: the map as one card with **Open** on it, then
+opens on a page in front of it: the map as one card with **Open map** on it, then
 four shelves that scroll sideways — **New lists**, **Most opened places**,
 **Popular lists**, **New on the map** — and a line at the foot offering to
 make a list.
@@ -18055,10 +18055,12 @@ credit line — the strip covered a corner of a picture this small, and the
 map the card opens carries OpenStreetMap's and CARTO's as it always has. It
 does not show every place either; a window in which the streets can be read
 holds the middle of town, and the map is one press away with the rest. The
-pins do not wait for the tiles, and a phone Leaflet never reached gets the
-words and **Open** with no picture. Under the picture the card says **View
-map** and nothing else: the line that counted the places went, at the owner's
-word, after three wordings of it — the picture is the count.
+pins do not wait for the tiles. There is nothing under the picture any more: the row that
+carried **View map**, a line counting the places and **Open** went in three
+steps, at the owner's word, and what is left is one small **Open map** on the
+picture's bottom corner — paper with the accent round it, like the pills at
+the top of the page, because a filled accent pill among filled accent discs
+got lost. The card is only the map, about seventy pixels shorter.
 
 **When it is up.** A plain arrival on a phone, and nothing else. A link that
 is about something — `?spot=`, `?list=`, `?type=`, `?story=`, the sign-in
@@ -18074,7 +18076,7 @@ at and go while it is up (`body.is-discover` in `assets/styles.css`), and the
 map is inert.
 
 **Leaving is a step, so Back is the way back.** The entry the visitor arrived
-on is marked as Discover's. Whatever leaves — **Open**, a place on a shelf,
+on is marked as Discover's. Whatever leaves — **Open map**, a place on a shelf,
 the Places pill, an answer from the find bar: anything that opens the panel —
 pushes the map as a new entry over it, so Back from the map lands on the
 page again, scrolled where it was. A list on a shelf opens over the map the
@@ -19359,7 +19361,7 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
-| `discover_map` | — the map's card on Discover, the page a phone opens on: the card or the **Open** on it |
+| `discover_map` | — the map's card on Discover, the page a phone opens on: the card or the **Open map** on it |
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |

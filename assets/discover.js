@@ -343,8 +343,8 @@ window.TTBDiscover = (function () {
   /* opts: node (#discover), t, lang(), places(), month(ym), onMap(),
      onPlace(id), and the map's own parts for the card's still map — tiles(),
      dark(), groups(map, places), cluster(count), pin(), wear(node, place).
-     The whole of the map's card is the way to the map, and the button on it
-     is the control that says so to a keyboard. */
+     The whole of the map's card is the way to the map, and the Open map on
+     its corner is the control that says so to a keyboard. */
   function mount(opts) {
     o = opts;
     node = opts.node;
