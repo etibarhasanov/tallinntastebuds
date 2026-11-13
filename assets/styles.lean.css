@@ -2772,6 +2772,79 @@ body.is-discover #btn-locate { display: none; }
 .discover-place b { margin-top: 7px; font-family: var(--display); font-weight: 600; font-size: 14px; line-height: 1.25; }
 .discover-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 
+.discover-play {
+  margin: 26px var(--gap) 0;
+  padding: 15px 16px 14px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.discover-play h2 {
+  margin: 3px 0 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.25;
+}
+.discover-play p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
+.discover-route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  color: var(--ink);
+  text-decoration: none;
+}
+.discover-route-mark {
+  flex: 0 0 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--wash);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  font-family: var(--emoji);
+  font-size: 18px;
+}
+.discover-route-say { flex: 1 1 auto; min-width: 0; }
+.discover-route-say b {
+  display: block;
+  overflow: hidden;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.discover-route-say > span { display: block; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+.discover-route-say > .discover-route-bar {
+  height: 6px;
+  margin-top: 6px;
+  overflow: hidden;
+  background: var(--hairline);
+  border-radius: 100px;
+}
+.discover-route-bar i { display: block; height: 100%; background: var(--accent); border-radius: 100px; }
+.discover-route-go {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 1.5px solid var(--accent);
+  border-radius: 100px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .discover-note {
   margin: 26px var(--gap) 0;
   padding: 16px 18px;

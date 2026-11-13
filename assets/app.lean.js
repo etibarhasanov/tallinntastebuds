@@ -1718,6 +1718,7 @@
           password: out.user ? !!out.password : true
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
+        if (discover) discover.signed(!!out.user);
         paintAccountRow();
         paintListsButton();
         if (state.list && state.view === 'list') renderList();

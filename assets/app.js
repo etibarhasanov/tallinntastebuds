@@ -2860,6 +2860,8 @@
           password: out.user ? !!out.password : true
         };
         if (out.user && Array.isArray(out.saved)) adoptSaved(out.saved);
+        /* Discover's Play card is the reader's own walk where they have one. */
+        if (discover) discover.signed(!!out.user);
         paintAccountRow();
         /* The other pill this answer draws. Here and nowhere else, because
            this is the one place `ready` is ever set — every other call to

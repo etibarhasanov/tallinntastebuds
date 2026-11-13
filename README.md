@@ -18052,8 +18052,8 @@ already playing again. Only a pause from outside leaves it paused.
 A phone that opens the bare address does not open on the map any more. It
 opens on a page in front of it: the map as one card with **Open map** on it, then
 four shelves that scroll sideways — **New lists**, **Most opened places**,
-**Popular lists**, **New on the map** — and a line at the foot offering to
-make a list.
+**Popular lists**, **New on the map** — with a card called **Play** between
+the second and the third, and a line at the foot offering to make a list.
 
 It is there because the map, to somebody who has never been here, is a
 question rather than an answer. Seventy unlabelled marks say that there are
@@ -18117,8 +18117,30 @@ it is left out rather than drawn thin. If the route does not answer, the
 three shelves are replaced by one sentence and **Try again**, and the map's
 card and the last shelf stand.
 
-**Nothing on it is a score.** No count is printed anywhere and none is sent:
-the route answers ids in an order. *Most opened places* is the one shelf that
+**Play is the game, said once.** Every list can be walked — **Walking a
+list** — and the only sign of it was a chip called Route on a list's own
+page; four shelves of things to read said nothing about there being something
+to do. So between *Most opened places* and *Popular lists* there is one card:
+*Go round a list*, the sentence that says what that means, and under a rule
+one route to start. For somebody signed in with a walk still going it is
+their own list, how far round they are, a bar, and **Keep going**. For
+everybody else it is the list most people have finished, with how many did
+and the fastest of them — or, until anybody has finished anything, the most
+opened list and **Be the first**. The row is a link to that list's Route
+view, `?walk=1`, which is where a walk is started and where signing in is
+asked for; nothing on this page starts one. The owner placed it there, after
+the places and before the lists, on 2026-11-13.
+
+The route everybody gets rides in `GET /api/discover` as `route`, since it
+is the same for all of them and can be kept with the shelves. The reader's
+own is `GET /api/walk?mine=1`, asked only once `/api/account` has said
+somebody is signed in, and again each time a page over the map closes, which
+is when a walk may have moved. With no route to offer the card is not drawn.
+
+**Nothing on it is a score.** No count of a place or a list is printed
+anywhere and none is sent: the route answers ids in an order. The Play card
+does print two numbers, and they are about walkers — how many finished a
+list and how fast — which is the board that list's own page already shows. *Most opened places* is the one shelf that
 orders my own places, and **On "no scores, stars or rankings"** says in so
 many words that this is the line moving and who moved it.
 
@@ -19389,6 +19411,7 @@ The map, `assets/app.js`:
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
 | `discover_make` | — **Make a list** at the foot of Discover |
+| `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
 | `more_open`, `more_close` | — the More pill on the rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` |
