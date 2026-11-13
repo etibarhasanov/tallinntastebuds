@@ -3936,6 +3936,200 @@ body.panel-ask .panel-scroll { display: flex; flex: 1 1 auto; flex-direction: co
   border: 0;
 }
 
+/* ---------- discover ----------
+   The page a phone opens on, in front of the map — assets/discover.js draws
+   it, mountDiscover() in assets/app.js says when. A document laid over the
+   map rather than a card floating on it: the ground is the wash, and it
+   scrolls.
+
+   It stands UNDER the brand and the find bar and over everything else of the
+   map's. Those two are fixed to the window and keep working, so the page
+   starts below them: `top` is written by the script from the find bar's own
+   foot, and what is above it is the map with its tiles hidden — the same
+   wash, since the map's ground is the body's. The rail, the chips, the
+   arrow and Search this area belong to a map nobody is looking at, and go.
+
+   Shelves scroll sideways and say so the only way a row can: the card at the
+   right edge is cut. Its scrollbar is hidden because the cut already said it,
+   and `pan-x` is what tells assets/back.js a sideways finger means something
+   here.
+
+   The cards are the site's: paper on a hairline at --radius, since each one
+   holds a picture or a page of words — design rule 3. One filled action on
+   the whole page, the map's — rule 5. */
+.discover {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 6px 0 calc(30px + var(--safe-b));
+  background: var(--wash);
+}
+.discover[hidden] { display: none; }
+body.is-discover #map { visibility: hidden; }
+body.is-discover .rail,
+body.is-discover .filter-bar,
+body.is-discover .find-area,
+body.is-discover #btn-locate { display: none; }
+
+.discover-map {
+  margin: 0 var(--gap);
+  overflow: hidden;
+  cursor: pointer;
+}
+.discover-sky { display: block; width: 100%; height: auto; background: var(--wash); }
+.discover-sea { fill: var(--hairline); }
+.discover-road { fill: none; stroke: var(--paper); stroke-width: 3; stroke-linecap: round; }
+.discover-sky circle { fill: var(--accent); stroke: var(--paper); stroke-width: 1.5; }
+.discover-map-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px 14px; }
+.discover-map-words { flex: 1 1 auto; min-width: 0; }
+.discover-map-words h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.25;
+}
+.discover-map-words p { margin: 0; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
+
+.discover-head { display: flex; align-items: baseline; gap: 10px; padding: 26px var(--gap) 10px; }
+.discover-head h2 {
+  flex: 1 1 auto;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.2;
+}
+.discover-all {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+.discover-why { margin: -6px var(--gap) 10px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+
+.discover-row {
+  display: flex;
+  gap: 12px;
+  /* Room under the cards for their own shadow, taken back by the margin: a
+     row that scrolls clips at its box, and a shadow cut off square under a
+     shelf reads as a band across the page. */
+  padding: 0 var(--gap) 36px;
+  margin-bottom: -30px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  scroll-padding-left: var(--gap);
+  scroll-snap-type: x proximity;
+}
+.discover-row::-webkit-scrollbar { display: none; }
+.discover-row > * { scroll-snap-align: start; }
+
+.discover-list {
+  flex: 0 0 236px;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 15px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  text-decoration: none;
+}
+.discover-list.is-waiting { height: 150px; background: var(--hairline); box-shadow: none; opacity: .7; }
+.discover-emblem { margin-bottom: 9px; font-family: var(--emoji); font-size: 22px; line-height: 1; }
+.discover-list b {
+  display: -webkit-box;
+  min-height: 39px;
+  overflow: hidden;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.25;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.discover-by { margin-top: 5px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.discover-taste {
+  display: -webkit-box;
+  margin-top: 9px;
+  padding-top: 9px;
+  overflow: hidden;
+  border-top: 1px solid var(--hairline);
+  font-size: 12.5px;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.discover-place {
+  flex: 0 0 148px;
+  width: 148px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.discover-photo {
+  position: relative;
+  display: block;
+  height: 185px;
+  overflow: hidden;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+.discover-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* A place nobody has photographed yet: the mark, small, on paper. */
+.discover-photo.is-bare { display: flex; align-items: center; justify-content: center; background: var(--paper); }
+.discover-photo.is-bare img { width: 54px; height: 54px; border-radius: 50%; opacity: .55; }
+.discover-rank {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  min-width: 22px;
+  padding: 2px 7px;
+  background: var(--paper);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+}
+.discover-place b,
+.discover-line { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.discover-place b { margin-top: 7px; font-family: var(--display); font-weight: 600; font-size: 14px; line-height: 1.25; }
+.discover-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+.discover-note {
+  margin: 26px var(--gap) 0;
+  padding: 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+.discover-note p { margin: 0 0 6px; font-size: 14px; line-height: 1.45; }
+
+.discover-foot {
+  margin: 26px var(--gap) 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+  text-align: center;
+}
+.discover-foot p { margin: 0 0 4px; font-size: 14px; }
+
 /* ---------- stories ----------
    One video, full height, with the chrome laid over it: a bar per story along
    the top, who it is from and how long it has left under that, the caption and

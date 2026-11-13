@@ -706,6 +706,7 @@
        again in the language just picked — see assets/googlewords.js. */
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
+    discover.draw();
     window.TTBRadio.language(code);
     /* The More sheet, if it is open, in the new language — its account row
        wears the name of whoever is signed in, or Account in these words. */
@@ -5410,6 +5411,85 @@
      one, so Back can hand it back. */
   var WALK_DOORS = ['list', 'at', 'spot', 'account', 'then', 'lang', 'style'];
 
+  /* ---------------------------------------------------------------- discover
+   * The page a phone opens on, in front of the map: the map as one card, then
+   * shelves of lists and places — assets/discover.js draws it and says why
+   * there is one. This is when it is up, and what leaves it.
+   *
+   * A PLAIN ARRIVAL ON A PHONE, AND NOTHING ELSE. A link that is about
+   * something — a place, a list, a story, a chip, the sign-in sheet — is what
+   * was sent, and a front page over it would bury it; boot asks whether the
+   * address carried anything but a language and a style. And a desktop
+   * already opens on the names beside the map, which is that screen's answer
+   * to the same question.
+   *
+   * IT STANDS UNDER THE BRAND AND THE FIND BAR, which are the map's own and
+   * stay live: a name typed there opens a place the way it always has. The
+   * rail, the chips and the arrow are the map's and go while it is up —
+   * body.is-discover in assets/styles.css — and the map itself is inert.
+   *
+   * LEAVING IS A STEP, SO BACK IS THE WAY BACK. The entry the visitor arrived
+   * on is marked as Discover's, and whatever leaves it — the card's Open, a
+   * place on a shelf, the Places pill, an answer from the find bar: anything
+   * that opens the panel, see openPanel() — pushes the map as a new entry
+   * over it. Back from the map lands on the marked entry and the page is
+   * there again, scrolled where it was; wireHistory() reads the mark.
+   * syncUrl() keeps the mark when it rewrites that entry's address.
+   */
+  var discover = null;
+
+  function mountDiscover() {
+    discover = window.TTBDiscover.mount({
+      node: $('discover'),
+      t: t,
+      lang: function () { return state.lang; },
+      places: function () { return state.places; },
+      month: formatMonth,
+      onMap: leaveDiscover,
+      /* Left first, so the map's entry is under the place's rather than
+         pushed over it by the panel opening. */
+      onPlace: function (id) {
+        leaveDiscover();
+        selectPlace(id, { fly: true });
+      }
+    });
+  }
+
+  /* Up or down, and nothing written to the history: what popstate and a
+     door off a page call, each of which already stands on the right entry. */
+  function standOnDiscover(on) {
+    if (!discover || discover.up() === on) return;
+    if (on) {
+      /* Measured rather than known: the bar's foot moves with the safe area
+         and with the language's own line height. */
+      $('discover').style.top = Math.round(dom.find.getBoundingClientRect().bottom + 10) + 'px';
+      discover.show();
+      dom.map.setAttribute('inert', '');
+    } else {
+      discover.hide();
+      dom.map.removeAttribute('inert');
+      placeRail();
+      /* The rail's introduction, which boot holds back while this is up:
+         it is owed to the map, and this is the map's first appearance. */
+      if (!storeGet(INTRO_KEY)) introduceRail();
+    }
+  }
+
+  function enterDiscover() {
+    standOnDiscover(true);
+    try {
+      window.history.replaceState({ discover: true }, '', window.location.href);
+    } catch (e) { /* Back then leaves the site, as it did before */ }
+  }
+
+  function leaveDiscover() {
+    if (!discover || !discover.up()) return;
+    standOnDiscover(false);
+    try {
+      window.history.pushState(null, '', window.location.href);
+    } catch (e) { /* the map is up either way */ }
+  }
+
   function walkIn(search) {
     var params = new URLSearchParams(search);
     var plain = true;
@@ -5420,6 +5500,8 @@
     if (!plain || (spot && !byId(spot))) return null;
 
     return function () {
+      /* The shell has pushed the door's own entry already. */
+      standOnDiscover(false);
       readAccountLink(params);
       var id = wantedList();
       var at = params.get('at') || '';
@@ -6542,6 +6624,8 @@
   /* ----------------------------------------------------------------- panel */
 
   function openPanel() {
+    /* The panel is the map's, so anything that opens it has left Discover. */
+    leaveDiscover();
     dom.panel.classList.add('is-open');
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
@@ -12078,7 +12162,8 @@
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
     try {
       if (push) window.history.pushState(null, '', next);
-      else window.history.replaceState(null, '', next);
+      /* The entry's own state is kept: Discover marks the one it stands on. */
+      else window.history.replaceState(window.history.state, '', next);
     } catch (e) { /* ignore */ }
   }
 
@@ -12094,6 +12179,9 @@
          one, and only a map entry gets this far. See mountShell. */
       if (window.TTBShell.up()) return;
       var params = new URLSearchParams(window.location.search);
+
+      /* Discover's own entry, or any other: see leaveDiscover(). */
+      standOnDiscover(!!(window.history.state && window.history.state.discover));
 
       /* The list first, because it decides which places exist: byId() below
          has to be able to find a stand-in before ?spot= is asked about one.
@@ -13265,6 +13353,12 @@
          answered — which is long after that. See readAccountLink. */
       var arrived = new URLSearchParams(window.location.search);
       readAccountLink(arrived);
+      /* Whether the address was about anything. A language and a style are
+         how the page is read, not what it is opened on. */
+      var bare = true;
+      arrived.forEach(function (value, key) {
+        if (key !== 'lang' && key !== 'style') bare = false;
+      });
 
       /* Chips before the map, so the opening view fits the filtered set. */
       state.active = activeFromUrl(arrived);
@@ -13301,6 +13395,7 @@
       renderPanel();
       mountRadio();
       mountShell();
+      mountDiscover();
       renderStoryRing();
       wireControls();
       wireStories();
@@ -13471,7 +13566,10 @@
          the deep link has had its say: a link straight to a place opens the
          sheet, and the introduction is owed to the map behind it rather than
          spent on a screen the rail is only a row along the top of. */
-      if (!storeGet(INTRO_KEY)) introduceRail();
+      /* Unless the phone is opening on Discover, where there is no rail to
+         introduce yet: standOnDiscover() does it when the map comes up. */
+      if (bare && isNarrow()) enterDiscover();
+      else if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 

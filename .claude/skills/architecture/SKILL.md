@@ -32,6 +32,7 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 │
 ├── /            index.html         THE MAP, and the shell every other page opens on
 │                assets/app.js      twelve thousand lines; mounts TTBRadio and TTBShell
+│                assets/discover.js the page a phone opens on in front of the map, mounted by it
 │
 ├── /lists /list/<id> /u/<name>     lists.html, one document, three Functions write its head
 ├── /account.html /edit /insights   account.html, edit.html, insights.html
@@ -155,7 +156,8 @@ document, and the music.
 No build step, so browser code is ES5 classic scripts, one IIFE each, and
 what pages share is a global set by one file and loaded before the script
 that uses it: `TTBTrack`, `TTBRadio`, `TTBShell`, `TTBDevice`, `TTBLanguage`,
-`TTBCountry`, `TTBPass`, `TTBBasemap`, `TTBPins`, `TTBGoogleWords`. Document
+`TTBCountry`, `TTBPass`, `TTBBasemap`, `TTBPins`, `TTBGoogleWords`,
+`TTBDiscover`. Document
 order is execution order under `defer`, so the order of `<script>` tags at
 the foot of a page is a dependency list, and each tag's comment says what
 it is there before. A page that needs a shared thing loads the file; a

@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-four small Functions, no build step and no npm install. Adding a
+Static files, forty-five small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -3897,11 +3897,23 @@ ranking lists is a different claim from ranking kitchens, because a
 list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
 
-The line has not moved anywhere else, and the paragraph above still holds
-whole: no place is scored, the list of places is ordered by distance and by
-nothing else, every pin is the same size whatever its count, and there is still
-no "Most saved" chip on the map. The one on `/lists` orders lists, which is
-the distinction this whole section turns on.
+The line moved once more, on 2026-11-13, and it was the owner who moved it:
+**Discover**, the page a phone opens on, carries a shelf called *Most opened
+places* — the map's own places in the order people open them, the first few
+with their position on the picture. That is an order over my places, which
+the paragraph above said there would never be, so it is said here rather than
+left for somebody to find. What it is an order *of* is the visitors: which
+places people look at, counted the way `/admin/stats` has always counted it,
+and the shelf says so in the line under its title. No number is printed and
+none leaves the server, nothing is called best, and it is not a rating — a
+place nobody has opened yet is exactly as approved as the one at the front.
+The reasoning is under **Discover**.
+
+Everywhere else the line is where it was: no place is scored, the list of
+places is ordered by distance and by nothing else, every pin is the same size
+whatever its count, and there is still no "Most saved" chip on the map. The
+one on `/lists` orders lists, which is the distinction this whole section
+turns on.
 Your own lists are in the order you last edited them and the ones you kept
 are in the order you kept them.
 
@@ -17911,6 +17923,71 @@ phone's by the state of the element when the event arrives, not by a flag:
 the switch is already off for the first two, and for the third the element is
 already playing again. Only a pause from outside leaves it paused.
 
+## Discover
+
+A phone that opens the bare address does not open on the map any more. It
+opens on a page in front of it: the map as one card with **Open** on it, then
+four shelves that scroll sideways — **New lists**, **Most opened places**,
+**Popular lists**, **New on the map** — and a line at the foot offering to
+make a list.
+
+It is there because the map, to somebody who has never been here, is a
+question rather than an answer. Seventy unlabelled marks say that there are
+places and nothing about which or why, and the owner's own words for it were
+that a map can be confusing. A list is the opposite: ten places under a title
+somebody stood behind. So the front door leads with those, and with what
+everybody else looks at, and keeps the map as the first and biggest thing on
+the page, one press away and already drawn underneath.
+
+**When it is up.** A plain arrival on a phone, and nothing else. A link that
+is about something — `?spot=`, `?list=`, `?type=`, `?story=`, the sign-in
+door — is what was sent, and a front page over it would bury it; `boot()` in
+`assets/app.js` asks whether the address carried anything but a language and
+a style. A desktop is left alone: it already opens on the names beside the
+map, which is that screen's answer to the same question.
+
+**It stands under the brand and the find bar**, which stay the map's own and
+stay live — a name typed there opens a place the way it always has. The rail,
+the chips, the arrow and *Search this area* belong to a map nobody is looking
+at and go while it is up (`body.is-discover` in `assets/styles.css`), and the
+map is inert.
+
+**Leaving is a step, so Back is the way back.** The entry the visitor arrived
+on is marked as Discover's. Whatever leaves — **Open**, a place on a shelf,
+the Places pill, an answer from the find bar: anything that opens the panel —
+pushes the map as a new entry over it, so Back from the map lands on the
+page again, scrolled where it was. A list on a shelf opens over the map the
+way every page does (**The map is the shell**), and closing it lands back
+here.
+
+**Where the shelves come from.** One request, `GET /api/discover`, answers
+three of them: the two shelves of lists are the directory's own query under
+two of its orders, so a list is on a shelf exactly when it is on `/lists`,
+and the places are `press_counts` read for its order alone. The fourth, *New
+on the map*, is the `added` date in `data/map.json`, which the map already
+holds — so the page is never empty: the map's card is markup, the last shelf
+needs nothing, and the others arrive. A shelf with fewer than three things on
+it is left out rather than drawn thin. If the route does not answer, the
+three shelves are replaced by one sentence and **Try again**, and the map's
+card and the last shelf stand.
+
+**Nothing on it is a score.** No count is printed anywhere and none is sent:
+the route answers ids in an order. *Most opened places* is the one shelf that
+orders my own places, and **On "no scores, stars or rankings"** says in so
+many words that this is the line moving and who moved it.
+
+**What a card shows.** A list: the marker its owner chose, the title, whose
+it is, and its first three places. A place: its first photograph, or the mark
+on paper where nobody has photographed it yet, its name, and the street on
+one shelf or the month it was added on the other. A place whose first
+photograph is its menu draws its menu; the order of `photos` in
+`data/restaurants.json` is where that is fixed.
+
+`assets/discover.js` draws it and is a global the map mounts,
+`mountDiscover()` in `assets/app.js` decides when it is up and what leaves
+it, `functions/api/discover.js` is the route, and the markup is `#discover`
+in `index.html`.
+
 ## The map is the shell
 
 Every page on this site is a document of its own: the lists, a list, a
@@ -19147,6 +19224,11 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
+| `discover_map` | — the map's card on Discover, the page a phone opens on: the card or the **Open** on it |
+| `discover_list` | — a list on either of Discover's two shelves of them |
+| `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
+| `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
+| `discover_make` | — **Make a list** at the foot of Discover |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
 | `more_open`, `more_close` | — the More pill on the rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` |

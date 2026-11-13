@@ -404,6 +404,7 @@
     renderFilters();
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
+    discover.draw();
     window.TTBRadio.language(code);
     paintAccountRow();
     renderStoryRing();
@@ -3114,6 +3115,52 @@
 
   var WALK_DOORS = ['list', 'at', 'spot', 'account', 'then', 'lang', 'style'];
 
+  var discover = null;
+
+  function mountDiscover() {
+    discover = window.TTBDiscover.mount({
+      node: $('discover'),
+      t: t,
+      lang: function () { return state.lang; },
+      places: function () { return state.places; },
+      month: formatMonth,
+      onMap: leaveDiscover,
+      onPlace: function (id) {
+        leaveDiscover();
+        selectPlace(id, { fly: true });
+      }
+    });
+  }
+
+  function standOnDiscover(on) {
+    if (!discover || discover.up() === on) return;
+    if (on) {
+      $('discover').style.top = Math.round(dom.find.getBoundingClientRect().bottom + 10) + 'px';
+      discover.show();
+      dom.map.setAttribute('inert', '');
+    } else {
+      discover.hide();
+      dom.map.removeAttribute('inert');
+      placeRail();
+      if (!storeGet(INTRO_KEY)) introduceRail();
+    }
+  }
+
+  function enterDiscover() {
+    standOnDiscover(true);
+    try {
+      window.history.replaceState({ discover: true }, '', window.location.href);
+    } catch (e) { /* Back then leaves the site, as it did before */ }
+  }
+
+  function leaveDiscover() {
+    if (!discover || !discover.up()) return;
+    standOnDiscover(false);
+    try {
+      window.history.pushState(null, '', window.location.href);
+    } catch (e) { /* the map is up either way */ }
+  }
+
   function walkIn(search) {
     var params = new URLSearchParams(search);
     var plain = true;
@@ -3124,6 +3171,7 @@
     if (!plain || (spot && !byId(spot))) return null;
 
     return function () {
+      standOnDiscover(false);
       readAccountLink(params);
       var id = wantedList();
       var at = params.get('at') || '';
@@ -3770,6 +3818,7 @@
   }
 
   function openPanel() {
+    leaveDiscover();
     dom.panel.classList.add('is-open');
     dom.panel.removeAttribute('inert');
     document.body.classList.add('panel-open');
@@ -7050,7 +7099,7 @@
     var next = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
     try {
       if (push) window.history.pushState(null, '', next);
-      else window.history.replaceState(null, '', next);
+      else window.history.replaceState(window.history.state, '', next);
     } catch (e) { /* ignore */ }
   }
 
@@ -7058,6 +7107,8 @@
     window.addEventListener('popstate', function () {
       if (window.TTBShell.up()) return;
       var params = new URLSearchParams(window.location.search);
+
+      standOnDiscover(!!(window.history.state && window.history.state.discover));
 
       var wanted = params.get('list') || '';
       var moved = false;
@@ -7826,6 +7877,10 @@
 
       var arrived = new URLSearchParams(window.location.search);
       readAccountLink(arrived);
+      var bare = true;
+      arrived.forEach(function (value, key) {
+        if (key !== 'lang' && key !== 'style') bare = false;
+      });
 
       state.active = activeFromUrl(arrived);
 
@@ -7848,6 +7903,7 @@
       renderPanel();
       mountRadio();
       mountShell();
+      mountDiscover();
       renderStoryRing();
       wireControls();
       wireStories();
@@ -7928,7 +7984,8 @@
 
       if (!spot && !stand && !state.list && !wanted) resumeHere();
 
-      if (!storeGet(INTRO_KEY)) introduceRail();
+      if (bare && isNarrow()) enterDiscover();
+      else if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
 
