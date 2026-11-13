@@ -2422,9 +2422,10 @@ body.has-scrim { overflow: hidden; }
 
    The third view of one list — assets/walk.js draws it and **Walking a
    list** in README.md is the reasoning. A card over the places, the places
-   in the order to walk them with the leg into each between them, the board
-   of who finished, and a band at the foot that holds the walk's one filled
-   action: start it, check in, save a comment.
+   on a rail in the order to walk them with the leg into each written beside
+   it, the board of who finished — which opens, a row at a time, into how
+   that person went round — and a band at the foot that holds the walk's one
+   filled action: start it, check in, save a comment.
 
    Nothing here is a new control. The pill is .go, the quiet ones are .alt,
    the arrows that move a place are the editor's .row-btn, the comment's
@@ -2451,25 +2452,96 @@ body.has-scrim { overflow: hidden; }
 }
 .walk-bar i { display: block; height: 100%; border-radius: 100px; background: var(--accent); }
 
-.walk-stops {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* The places as one line down the page rather than a stack with arrows
+   between them: a rail at the left, a dot per place on it, the leg written
+   beside the line into each, and a cap at either end naming where the route
+   starts and where it ends. The number lives on the dot, which is why the
+   card here has no column for one. */
+.walk-stops { list-style: none; margin: 0; padding: 0; }
+.walk-stops > li { position: relative; display: grid; grid-template-columns: 30px 1fr; column-gap: 12px; }
+/* The line itself, drawn behind each row and meeting the next, so the rail
+   is continuous however tall a card grows. */
+.walk-stops > li::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--hairline);
 }
-/* The leg into a place, between its card and the one before: under the
-   names, which is the column the eye is already reading down. */
-.walk-leg { margin: 0 0 4px 58px; color: var(--muted); font-size: 12px; }
+/* Behind you, it is the colour of a check — so how far along a walk is can
+   be read down the page and not only off the bar on the card. */
+.walk-stops > li.is-done::before { background: var(--yes); opacity: .55; }
+
+.walk-stop > .item { grid-column: 2; grid-template-columns: 1fr; }
+/* The leg into a place, beside the line and over the card it leads to. */
+.walk-leg { grid-column: 2; margin: 0; padding: 7px 0; color: var(--muted); font-size: 12px; }
+/* And how far in the walk is once this leg is walked: the running total
+   the legs never added up for anybody. */
+.walk-in { display: block; margin-top: 2px; font-size: 11px; }
+
+.walk-dot {
+  grid-column: 1;
+  align-self: start;
+  margin-top: 13px;
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  border: 2px solid var(--hairline);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+}
+/* A place that is checked says so three ways — the dot filled with a tick
+   in it, the word and the time under its name, and the name stepping back —
+   so the difference is never the colour alone: design rule 10. */
+.walk-dot.is-done { background: var(--yes); border-color: var(--yes); color: var(--paper); }
+.walk-dot.is-next { border-color: var(--accent); box-shadow: 0 0 0 4px var(--wash); }
+.walk-dot svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The two ends. Half a line each, with a flag on it: the route begins at a
+   named place and finishes at one, rather than at the edge of a card. */
+.walk-cap { align-items: center; min-height: 34px; }
+.walk-cap::before { bottom: auto; top: 17px; height: calc(100% - 17px); }
+.walk-cap.is-end::before { top: 0; height: 17px; }
+.walk-cap i {
+  grid-column: 1;
+  justify-self: center;
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  background: var(--muted);
+}
+/* Square at the finish, round at the start: the two ends are told apart
+   with the sound off. */
+.walk-cap.is-end i { border-radius: 2px; }
+.walk-cap p { grid-column: 2; margin: 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 
 /* A place being moved: a grip at the end of its row, at every width — a row
    here is a name and a street and has the room the editor's does not.
    `touch-action: none` is what lets a finger drag it rather than scroll the
-   page, and what tells assets/back.js a sideways finger here is not Back. */
-.item.has-moves { grid-template-columns: 28px 1fr auto; }
+   page, and what tells assets/back.js a sideways finger here is not Back.
+   The card keeps one column for its body, the number being out on the rail,
+   so the grip is the second and not the third. */
+.item.has-moves { grid-template-columns: 1fr auto; }
 .walk-grip {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
   align-self: center;
   width: 40px;
@@ -2481,7 +2553,7 @@ body.has-scrim { overflow: hidden; }
 /* The row in the hand: lifted over the others, and the others moving out of
    its way rather than jumping — see carry() in assets/walk.js. */
 .walk-stop { transition: transform 150ms var(--ease); }
-.walk-stop.is-carrying { position: relative; z-index: 2; transition: none; }
+.walk-stop.is-carrying { z-index: 2; transition: none; }
 .walk-stop.is-carrying .item { border-color: var(--accent); box-shadow: var(--shadow), var(--lift); }
 .walk-stop.is-carrying .walk-grip { cursor: grabbing; }
 
@@ -2500,19 +2572,6 @@ body.has-scrim { overflow: hidden; }
 
 
 
-/* A place that is checked says so three ways — a tick where its number was,
-   the word and the time under it, and its name stepping back — so the
-   difference is never the colour alone: design rule 10. */
-.walk-tick { color: var(--yes); }
-.walk-tick svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 .item.is-checked .item-name { color: var(--muted); }
 .walk-done { margin: 4px 0 0; color: var(--yes); font-size: 12px; }
 
@@ -2541,6 +2600,68 @@ body.has-scrim { overflow: hidden; }
 .walk-board a { color: inherit; }
 .walk-took { color: var(--muted); white-space: nowrap; }
 
+/* ---------- how somebody else walked it ----------
+
+   A time on the board is the sum of its parts and the parts are the
+   interesting half, so the time is a press: it opens that person's own
+   walk under their name — the places in the order they really checked
+   them, and the real gap between each pair. The name beside it stays the
+   way to their profile. */
+.walk-board-open {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-align: right;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--hairline);
+}
+.walk-board li.is-open { background: var(--wash); border-radius: var(--radius); padding: 10px 8px; margin: 0 -8px; }
+.walk-board li.is-open + li { border-top: 0; }
+.walk-trace { list-style: none; margin: 10px 0 2px; padding: 0; }
+/* Not a row of the board, though it is an li inside one. */
+.walk-trace > li {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  column-gap: 10px;
+  border: 0;
+  padding: 0;
+}
+/* The line is drawn upward out of each pip, so it reaches back to the pip
+   before it and stops dead at the last — nothing hangs past the end. */
+.walk-pip {
+  grid-column: 1;
+  justify-self: center;
+  align-self: start;
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  background: var(--yes);
+}
+.walk-pip::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  bottom: 100%;
+  width: 2px;
+  height: 999px;
+  background: var(--yes);
+  opacity: .4;
+}
+.walk-trace > li:first-child .walk-pip::before { display: none; }
+.walk-trace-place { grid-column: 2; margin: 0; font-size: 14px; font-weight: 500; }
+.walk-trace-end { color: var(--muted); font-weight: 400; }
+.walk-trace-gap { grid-column: 2; margin: 0; padding: 6px 0; color: var(--muted); font-size: 11.5px; }
+/* Waiting for the read, and a walk thrown away since the board was drawn. */
+.walk-trace-say { margin: 10px 0 2px; color: var(--muted); font-size: 12px; }
+
 /* The band: a line saying what just happened over the one thing to press,
    both on the column the page reads at. What is in it — the message, the
    nearest place, the comment's field — is drawn by assets/styles.css, since
@@ -2550,7 +2671,11 @@ body.has-scrim { overflow: hidden; }
 .walk-dock .walk-msg,
 .walk-dock .walk-form { max-width: 608px; }
 @media (max-width: 560px) {
-  .item.has-moves { grid-template-columns: 22px 1fr auto; }
-  /* Under the names again, which start nearer the edge on a phone. */
-  .walk-leg { margin-left: 46px; }
+  /* The rail is narrower on a phone, and the dot with it. */
+  .walk-stops > li { grid-template-columns: 26px 1fr; column-gap: 10px; }
+  .walk-stops > li::before { left: 12px; }
+  .walk-dot { width: 26px; height: 26px; margin-top: 11px; font-size: 12px; }
+  .walk-dot svg { width: 14px; height: 14px; }
+  .walk-cap::before { top: 15px; height: calc(100% - 15px); }
+  .walk-cap.is-end::before { height: 15px; }
 }

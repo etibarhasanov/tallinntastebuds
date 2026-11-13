@@ -23,6 +23,12 @@
  *   the two tables applied yet, and the page then draws the route and no
  *   way to start — see WHEN THE TABLES ARE NOT THERE.
  *
+ * GET  /api/walk?list=<id>&who=<name>
+ *
+ *   { ready, who, checks: [ { place, at } ] }
+ *
+ *   One finisher's own walk, leg by leg — HOW SOMEBODY ELSE WALKED IT.
+ *
  * POST /api/walk   { action, list, … }      a session, every one
  *
  *   start   { order?, mode? }    begins the walk; pressing it twice is one walk
@@ -49,6 +55,23 @@
  * coordinates themselves are in no table, no log line and no count — the
  * same promise /api/route makes, kept the same way. What is stored is what
  * the board then shows: that this account stood at this door at this time.
+ *
+ * HOW SOMEBODY ELSE WALKED IT
+ *
+ * The board said how long a walk took and nothing about how it went, and
+ * the interesting half is the parts: that this person did the two bakeries
+ * on Telliskivi eighteen minutes apart and then left the far one for a
+ * week. Every one of those times is already in `walk_checks`, so a name on
+ * the board opens into the places in the order they were really checked —
+ * which is often not the order the route suggested — with the gap between
+ * each pair. It is a read of its own, made when a name is pressed rather
+ * than carried by every load of the page, because most readers press none
+ * of them and a board holds fifty.
+ *
+ * Only a finished walk opens, which is the rule the board is drawn by
+ * already: being on it is what made these times public, and a walk still
+ * going belongs to the person walking it. What comes back is the place and
+ * the time and nothing else — there were never any coordinates to give.
  *
  * IT CAN BE FAKED, AND THAT IS ACCEPTED
  *
@@ -230,16 +253,56 @@ function doors(list) {
   return list.items.filter((item) => typeof item.lat === 'number' && typeof item.lng === 'number');
 }
 
+/* One finisher's own walk, leg by leg: the places in the order they were
+   actually checked and the second each check happened, which is what the
+   list's page draws under a name on the board — HOW SOMEBODY ELSE WALKED IT.
+
+   Only for a walk that is finished, which is the same rule the board is
+   drawn by: a name is on it because its owner walked the whole list, and
+   nothing here opens a walk that is still going. The coordinates of a check
+   were never stored, so this is the place and the time and nothing else. */
+async function trace(env, list, name) {
+  const rows = await env.DB
+    .prepare(
+      'SELECT c.place AS place, c.checked_at AS at FROM walk_checks c ' +
+      'JOIN users u ON u.id = c.user_id ' +
+      'JOIN walks w ON w.user_id = c.user_id AND w.list_id = c.list_id ' +
+      'WHERE c.list_id = ? AND u.username = ? AND w.finished_at IS NOT NULL ' +
+      'ORDER BY c.checked_at LIMIT ?'
+    )
+    .bind(list.id, name, MAX_ORDER)
+    .all();
+  return rows.results;
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const id = new URL(request.url).searchParams.get('list') || '';
+  const url = new URL(request.url);
+  const id = url.searchParams.get('list') || '';
+  /* asUsername() and not the raw parameter: every route that takes a name
+     goes through it rather than keeping a copy of what a username may be. */
+  const who = asUsername(url.searchParams.get('who'));
   const empty = { ready: false, user: null, admin: false, radius: RADIUS, walk: null, checks: [], board: [], notes: [] };
 
-  if (!env.DB || await wrongDatabase(env)) return json(empty, 200);
+  if (!env.DB || await wrongDatabase(env)) return json(who ? { ready: false, who, checks: [] } : empty, 200);
 
   const user = await sessionUser(request, env);
   const list = await readList(context, id, user);
   if (!list) return json({ error: 'not-found' }, 404);
+
+  /* `who` asks for that one person's walk instead of the page's own state:
+     a second, small read made when a name on the board is pressed, rather
+     than every walk of every list arriving with the page. A name with no
+     finished walk answers an empty trace, which is what a walk thrown away
+     since the board was drawn looks like. */
+  if (who) {
+    try {
+      return json({ ready: true, who, checks: await trace(env, list, who) }, 200);
+    } catch (e) {
+      /* The tables are not applied here — WHEN THE TABLES ARE NOT THERE. */
+      return json({ ready: false, who, checks: [] }, 200);
+    }
+  }
 
   return json(await answer(env, list, user), 200);
 }

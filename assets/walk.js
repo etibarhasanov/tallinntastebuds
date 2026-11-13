@@ -52,6 +52,25 @@
  * search is never read here — and it stops when the page is hidden, when
  * the walk is finished and when the view is left.
  *
+ * THE PLACES ARE ONE LINE DOWN THE PAGE
+ *
+ * They were a stack of cards with the leg between them, which said what
+ * each one cost and never what the shape of the whole was: it began at the
+ * top of the screen and ran out at the bottom. So there is a rail — a dot a
+ * place, the leg beside the line into it, how far in the walk is by then
+ * under that, and a cap at either end naming where it starts and where it
+ * ends. The number is on the dot, which is why the card here has one column
+ * where the List view's has two, and the rail behind a checked place is the
+ * colour of a check. cap() draws the ends and stop() the rest.
+ *
+ * AND HOW SOMEBODY ELSE WALKED IT
+ *
+ * The board carries a time per finisher and the parts of it are worth more
+ * than the sum: pressing a time opens that person's checks in the order
+ * they really made them, with the real gap between each pair. One read of
+ * its own, made on the press — traceFor(), and `&who=` in
+ * functions/api/walk.js.
+ *
  * ON FOOT OR BY BIKE
  *
  * Two chips on the card, and the walker picks one or leaves it on foot. It
@@ -352,11 +371,22 @@
     return total;
   }
 
+  /* How far in each stop is, as metres from the first — what the rail
+     writes under each leg as a time. The last of them is the total, so it
+     is the total. */
+  function upto(stops) {
+    var out = [0];
+    for (var i = 1; i < stops.length; i++) out.push(out[i - 1] + metres(stops[i - 1], stops[i]));
+    return out;
+  }
+
   function plan() {
     var stops = w.own ? ownOrder() : shortOrder();
-    var total = lengthOf(stops);
+    var sofar = upto(stops);
+    var total = sofar.length ? sofar[sofar.length - 1] : 0;
     return {
       stops: stops,
+      sofar: sofar,
       total: total,
       /* How much longer the walker's own order is than the shortest. */
       more: w.own ? total - lengthOf(shortOrder()) : 0
@@ -776,6 +806,7 @@
       w.asking = false;
       if (answer.status !== 200) { say(c.t('walkErr'), true); c.redraw(); return; }
       TTBTrack.event('walk_again', { list_id: w.list.id });
+      w.trace = null;
       w.noting = null;
       w.asked = false;
       w.replanned = false;
@@ -981,23 +1012,134 @@
       }), 'walk_directions', { list_id: w.list.id }));
     }
 
-    var row = c.el('li', { className: 'walk-stop' }, [
-      i ? c.el('p', { className: 'walk-leg mono', textContent: '↓ ' + c.t('walkLeg', {
+    /* The leg into this one, written beside the line rather than between
+       two cards, and under it how far in the walk is by the time it has
+       been walked — a running clock, which is the thing a list of legs
+       never added up for anybody. */
+    var leg = i ? c.el('p', { className: 'walk-leg mono' }, [
+      c.t('walkLeg', {
         distance: distance(metres(p.stops[i - 1], item)),
         time: minutes(metres(p.stops[i - 1], item) / PACE[w.mode])
-      }) }) : null,
+      }),
+      c.el('span', { className: 'walk-in', textContent: c.t('walkSoFar', {
+        time: minutes(p.sofar[i] / PACE[w.mode])
+      }) })
+    ]) : null;
+
+    /* The number is on the rail now, which is why the card has no column
+       for one. Checked, it is a tick on a filled dot; the next one to go
+       to wears a ring. */
+    var dot = mine
+      ? c.el('span', { className: 'walk-dot is-done', 'aria-hidden': 'true',
+          html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_TICK + '</svg>' })
+      : c.el('span', { className: 'walk-dot mono' + (next === item ? ' is-next' : ''),
+          'aria-hidden': 'true', textContent: String(i + 1) });
+
+    var row = c.el('li', { className: 'walk-stop' + (mine ? ' is-done' : '') }, [
+      leg,
+      dot,
       c.el('div', { className: 'item' + (mine ? ' is-checked' : '') + (next === item ? ' is-next' : '') +
           (w.editing ? ' has-moves' : '') }, [
-        mine
-          ? c.el('span', { className: 'item-n walk-tick', 'aria-hidden': 'true',
-              html: '<svg viewBox="0 0 24 24" focusable="false">' + ICON_TICK + '</svg>' })
-          : c.el('span', { className: 'item-n mono', 'aria-hidden': 'true', textContent: String(i + 1) }),
-        c.el('div', { className: 'item-body' }, body),
-        null
+        c.el('div', { className: 'item-body' }, body)
       ])
     ]);
     if (w.editing) row.lastChild.appendChild(gripFor(item, i, row));
     return row;
+  }
+
+  /* The two ends of the rail. The order was always there and the page never
+     said where it ended: the stack began at the top of the screen and ran
+     out at the bottom, and the last place was the last card rather than the
+     finish. A cap is a flag on the line, naming the place and — at the
+     bottom — how long the whole of it is. Not while the order is being
+     changed: the ends move with every drop, and a flag that moved under a
+     finger would be noise. That is also what keeps carry() right, which
+     reads a dropped row's new place off its index among the list's
+     children — so a cap drawn while the order is being changed would put
+     every place one out. */
+  function cap(p, end) {
+    var stops = p.stops;
+    if (w.editing || stops.length < 2) return null;
+    return c.el('li', { className: 'walk-cap is-' + (end ? 'end' : 'start') }, [
+      c.el('i', { 'aria-hidden': 'true' }),
+      c.el('p', { textContent: end
+        ? c.t('walkEndAt', {
+          place: stops[stops.length - 1].name,
+          time: finished() ? took(w.data.walk.finished - w.data.walk.started) : minutes(p.total / PACE[w.mode])
+        })
+        : c.t('walkStartAt', { place: stops[0].name }) })
+    ]);
+  }
+
+  /* ------------------------------------------------- how somebody else went
+
+   * A row on the board is a time and nothing else — "By bike · 1 h 9 min" —
+   * and the parts are the interesting half: which place to which, and how
+   * long that bit took them. Every one of those times is in walk_checks
+   * already, so the time is the press and under it opens that person's own
+   * walk; the name beside it stays the way to their profile. One row open
+   * at a time, and pressing the open one closes it.
+   */
+
+  function traceFor(name) {
+    if (w.trace && w.trace.who === name) { w.trace = null; c.redraw(); return; }
+    w.trace = { who: name, rows: null };
+    c.redraw();
+    TTBTrack.event('walk_trace', { list_id: w.list.id });
+    fetch(API + '?list=' + encodeURIComponent(w.list.id) + '&who=' + encodeURIComponent(name),
+      { headers: { accept: 'application/json' } })
+      .then(read)
+      .then(function (answer) {
+        if (!w.trace || w.trace.who !== name) return;
+        w.trace.rows = answer.status === 200 && Array.isArray(answer.out.checks) ? answer.out.checks : [];
+        c.redraw();
+      })
+      .catch(function () {
+        if (!w.trace || w.trace.who !== name) return;
+        w.trace.rows = [];
+        c.redraw();
+      });
+  }
+
+  /* A place by the id a check was filed under, whether or not it has
+     coordinates now: byPlace() is the walk's own and answers doors alone,
+     and a check is kept when its place loses them. */
+  function itemOf(place) {
+    var items = w.list.items;
+    for (var i = 0; i < items.length; i++) if (items[i].place === place) return items[i];
+    return null;
+  }
+
+  /* One person's checks as the line they walked: a pip a place, the real
+     gap between each pair, and the straight-line distance where both ends
+     are still on the list to measure. A place that has left it keeps its
+     time and loses its name — the check is the record, the list is not. */
+  function trace() {
+    if (!w.trace) return null;
+    if (w.trace.rows === null) return c.el('p', { className: 'walk-trace-say mono', textContent: c.t('walkTraceWait') });
+    if (!w.trace.rows.length) return c.el('p', { className: 'walk-trace-say mono', textContent: c.t('walkTraceNone') });
+
+    var rows = w.trace.rows;
+    return c.el('ol', { className: 'walk-trace' }, rows.map(function (row, i) {
+      var item = itemOf(row.place);
+      var was = i ? itemOf(rows[i - 1].place) : null;
+      var far = was && item && typeof item.lat === 'number' && typeof was.lat === 'number'
+        ? metres(was, item) : 0;
+      var gap = i ? took(row.at - rows[i - 1].at) : '';
+      return c.el('li', null, [
+        i ? c.el('p', { className: 'walk-trace-gap mono', textContent: far
+          ? c.t('walkTraceGap', { time: gap, distance: distance(far) })
+          : gap }) : null,
+        c.el('span', { className: 'walk-pip', 'aria-hidden': 'true' }),
+        c.el('p', { className: 'walk-trace-place' }, [
+          item ? item.name : c.t('walkTraceGone'),
+          i === 0 || i === rows.length - 1
+            ? c.el('span', { className: 'walk-trace-end',
+                textContent: ' · ' + c.t(i === 0 ? 'walkTraceStart' : 'walkTraceEnd') })
+            : null
+        ])
+      ]);
+    }));
   }
 
   /* Everybody who finished, fastest first. Drawn only once somebody has:
@@ -1010,21 +1152,32 @@
     return c.card([
       c.el('p', { className: 'eyebrow', textContent: c.t('walkBoard') }),
       c.el('ol', { className: 'walk-board' }, rows.map(function (row, i) {
-        return c.el('li', null, [
+        var open = w.trace && w.trace.who === row.name;
+        /* How, then how long: an hour by bike is not an hour on foot. And
+           the time is the press, because the parts are what it is made of
+           — the name beside it is already the way to the person. */
+        var time = c.el('button', {
+          type: 'button',
+          className: 'walk-board-open walk-took',
+          'aria-expanded': open ? 'true' : 'false',
+          'aria-label': c.t('walkTraceSee', { name: row.name }),
+          textContent: c.t(row.mode === 'bike' ? 'walkBike' : 'walkFoot') + ' · ' + took(row.finished - row.started)
+        });
+        time.addEventListener('click', function () { traceFor(row.name); });
+        return c.el('li', { className: open ? 'is-open' : '' }, [
           c.el('div', { className: 'walk-board-row' }, [
             c.el('span', null, [
               (i + 1) + ' · ',
               c.el('a', { href: c.profileHref(row.name), textContent: row.name })
             ]),
-            /* How, then how long: an hour by bike is not an hour on foot. */
-            c.el('span', { className: 'walk-took', textContent:
-              c.t(row.mode === 'bike' ? 'walkBike' : 'walkFoot') + ' · ' + took(row.finished - row.started) })
+            time
           ]),
           row.note ? c.el('p', { className: 'walk-note is-theirs' }, [
             row.note,
             w.data.admin && row.name !== w.data.user
               ? alt(c.t('walkNoteRemove'), function () { removeNote('', row.name); }) : null
-          ]) : null
+          ]) : null,
+          open ? trace() : null
         ]);
       }))
     ]);
@@ -1162,6 +1315,7 @@
         editing: false,   // the order is being changed
         replanned: false, // "Shortest from here" was pressed and nothing has moved since — see replan()
         mode: MODES[0],   // on foot or by bike — see setMode()
+        trace: null,      // the name on the board whose own walk is open, and its legs — see traceFor()
         noting: null,     // what a comment is being written on: a place, '' for the whole walk
         asked: false,     // the finished walk's comment has been offered once
         asking: false,    // Start again has been pressed and is being confirmed
@@ -1190,9 +1344,9 @@
     open(ctx);
     var p = plan();
     var next = nextOf(p);
-    var stops = c.el('ol', { className: 'walk-stops' }, p.stops.map(function (item, i) {
-      return stop(item, i, p, next);
-    }));
+    var stops = c.el('ol', { className: 'walk-stops' }, [cap(p, false)]
+      .concat(p.stops.map(function (item, i) { return stop(item, i, p, next); }))
+      .concat([cap(p, true)]));
     return finished()
       ? [head(p), board(), stops, dock()]
       : [head(p), stops, board(), dock()];
