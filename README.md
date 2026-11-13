@@ -8597,6 +8597,23 @@ in the code.
 `walk_checks`. Both files open with their reasoning and this is the short of
 it.
 
+**The places are one line down the page.** They were a stack of cards with
+`↓ 3.2 km · 40 min` floating between them, which said what every leg cost and
+never what the whole shape was: the route began at the top of the screen and
+ran out at the bottom, and the last place was the last card rather than the
+finish. So there is a rail at the left — a dot a place, numbered, the leg
+written beside the line into it, and a cap at either end: **Start · pagar
+ISH** over the first dot and **Finish · Fahle Pagar · 2 h 31 min in all**
+under the last, where the time is the estimate until the walk is finished and
+the real one after. Under each leg is how far in the walk is by then —
+"1 h 54 min in" — which is the running total a list of legs never added up for
+anybody. The number moved out of the card onto the dot, so a card here has one
+column where the List view's has two; checked, the dot is filled and carries
+the tick, and the rail behind it is the colour of a check, so how far along a
+walk is can be read down the page and not only off the bar on the card. The
+caps are hidden while the order is being changed, since both ends move with
+every drop.
+
 **The order is worked out in the browser, and it is an estimate.** Every row
 of a list already carries its place's coordinates, so no request is made. A
 leg is the straight line stretched by 1.3, which is what streets cost on
@@ -8683,6 +8700,25 @@ A finished walk can be given one comment about the whole of it, the same 280
 characters, offered once in the band after the last place's own and afterwards
 from the card; it is drawn under the walker's name on the board.
 
+**A time on the board opens into its parts.** The board said that somebody
+finished by bike in 1 h 9 min and nothing about how it went, and the parts are
+the half worth reading: that they did two bakeries eighteen minutes apart and
+left the far one for a week. Every one of those times is in `walk_checks`
+already, so the time beside a name is a press — the name itself stays the way
+to their profile — and under it opens that person's own walk: the places in
+the order they really checked them, which is often not the order the route
+suggested, with the real gap between each pair and the straight-line distance
+where both ends are still on the list to measure. `GET
+/api/walk?list=<id>&who=<name>` answers it, asked when a name is pressed
+rather than carried by every load, since a board holds fifty names and most
+readers press none of them. Only a finished walk opens, which is the rule the
+board is drawn by already: being on it is what made these times public, and a
+walk still going belongs to the person walking it. What comes back is the
+place and the time — there were never any coordinates to give. A place that
+has since left the list keeps its time and loses its name, and a walk thrown
+away with **Start again** between the board being drawn and the press says so
+rather than opening empty.
+
 **And the same walk on the map.** **See it on the map** on the card, and
 `?walk=1` beside `?list=` in the address, draw the walk where the places are:
 a dashed line through them in the walker's order, a number at the shoulder of
@@ -8730,11 +8766,15 @@ Finished, the board over the places and the band's way out to more lists. On a
 database the two tables have not reached, or with the route not answering, the
 order and the distances and nothing to press — neither needs the server.
 
+A name on the board opens for anybody who can read the list, signed in or
+not, and closes on a second press; one is open at a time.
+
 Your own list has no bar, so its head carries **Route** as a fourth, quiet
 control, and the walk of it has the bar so there is a way back.
 
 **What it costs.** One read of the list, two or four small reads of the two
-tables, per view; nothing cached, for the reason nothing in `/api/lists` is.
+tables, per view, and one more — off `walk_checks`' own primary key — each
+time a name on the board is pressed; nothing cached, for the reason nothing in `/api/lists` is.
 The tables reach a database by hand —
 `wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql` — and
 until they have, the view draws without its buttons. Deleting an account
@@ -19327,12 +19367,13 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_page` | `list_id` — any row that opens a list |
 | `list_map` | `list_id` — the "on the map" pill, and the Map half of the switch on a list's bar |
 | `list_walk` | `list_id` — the Route chip on a list's bar and on the map's band, and Route in the head of your own list |
-| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the thirteen below |
+| `walk_open` | `list_id` — the Route view drawn, once a load — `assets/walk.js` reports this and the fourteen below |
 | `walk_mode` | `list_id`, `mode` (`foot`/`bike`) — On foot or By bike, when it changes |
 | `walk_from_me` | `list_id` — Start from where I am, once the phone has answered |
 | `walk_reorder` | `list_id` — Done, after changing the order |
 | `walk_replan` | `list_id` — Shortest from here, on a walk that is on, once the phone has answered |
 | `walk_again` | `list_id` — Start again, confirmed, once the server has thrown the walk away |
+| `walk_trace` | `list_id` — a time on the board pressed, opening how that person walked it |
 | `walk_map` | `list_id` — See it on the map, on the Route view's card |
 | `walk_directions` | `list_id` — Directions: on the next place in the Route view, and in the map's band |
 | `walk_map_open`, `walk_map_close` | `list_id` — the walk drawn on the map, and the cross on its band; `assets/app.js` reports these two |
