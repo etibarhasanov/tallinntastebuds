@@ -28,7 +28,7 @@
  * half of them that was somewhere else, and the way from one page to the other
  * was a row saying "Make a list" that led to a page you had just come from.
  *
- * The box is here now, and so are the lists you kept, and /lists.html sends
+ * The button that makes one is here now, and so are the lists you kept, and /lists.html sends
  * anybody who still has the address to this page before it draws anything.
  * What is left there is what only that page can be: one list, one person, and
  * everybody's — three addresses that are each about something that is not you.
@@ -58,8 +58,8 @@
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
  * A column of names is what this page is for, and it is also what buried the
- * rest of it. Forty saved places and a dozen lists put the box that makes a
- * list and every way out a scroll and a half down the page, under the very
+ * rest of it. Forty saved places and a dozen lists put the button that makes
+ * a list and every way out a scroll and a half down the page, under the very
  * things they were the way out of. So each column is a <details> behind its
  * own title, with the count of what is inside it on the line you press, and
  * the ways on sit outside the fold, where a card that is one line high keeps
@@ -205,6 +205,10 @@
      rather than at each of the three links that use it. */
   var SHEET = '/?account=';
   var BACK = '&then=%2Faccount.html';
+  /* The way back for somebody who pressed Make a list before signing in:
+     here again with the press still to make, so the list is made the moment
+     there is somebody to make it for. See boot(). */
+  var MAKE_BACK = '&then=%2Faccount.html%3Fmake%3D1';
 
   var state = {
     ui: {},            // one language's strings; see loadWords()
@@ -213,6 +217,7 @@
     ready: false,    // whether accounts work on this deployment
     user: null,
     linked: false,   // whether this account was reached through Google
+    making: false,   // arrived as ?make=1, from the front page's Make a list
     password: true,  // whether there is a password on it at all
     views: null,     // /u/<you> opened in the last 7 days, null without the table
     saved: [],       // place ids, newest first
@@ -313,7 +318,7 @@
 
   /* The one write this page makes besides signing out: a new list. Same
      endpoint and same shape as every write assets/lists.js makes, because it
-     is the same API — this page grew the box that makes a list when the lists
+     is the same API — this page grew the way to make a list when the lists
      page stopped having an index to put it on. */
   function post(payload) {
     return fetch(LISTS_API, {
@@ -331,10 +336,10 @@
      general one for anything else — a visitor should never be shown a word out
      of the source. The list is shorter than the one in assets/lists.js because
      the only write here is making a list; the rest of them name a list this
-     page cannot address. */
+     page cannot address. The empty title is not among them because this page
+     always sends one — see makeList(). */
   var ERRORS = {
     'too-many': 'listsErrTooMany',
-    title: 'listsErrTitle',
     'signed-out': 'listsErrSignedOut'
   };
 
@@ -403,7 +408,7 @@
   /* The row of ways on from a card, along its foot. They are `.alt`s wherever
      there is more than one of them, and they are `.alt`s where they are alone
      as well — the accent is spent once on this whole page, and it is spent on
-     the one thing the page is asking for: the box that makes a list when
+     the one thing the page is asking for: the button that makes a list when
      somebody is signed in, and the offer of an account when nobody is. See
      "The design rules" in README.md. */
   function foot(kids) {
@@ -723,7 +728,7 @@
       ].concat(column('saved', places, placeRow))),
       /* The map narrowed to these, which is what the row in the sheet used to
          do and the one thing a column of names cannot: seeing where they are
-         in the city next to each other. Outside the fold, like the box that
+         in the city next to each other. Outside the fold, like the button that
          makes a list, and for the same reason — it is still two presses from
          the map to the map, which is what this page cost when it took the
          saves off the sheet. ?saved=1 is a door the map opens once and takes
@@ -733,16 +738,15 @@
   }
 
   /* ------------------------------------------------------------------ lists
-   * Your lists, the lists you kept, and the box that makes a new one. All
+   * Your lists, the lists you kept, and the button that makes a new one. All
    * three were on /lists.html and two of them were also here, which is how a
    * visitor came to have two pages naming the same lists and a row on each of
    * them pointing at the other.
    *
-   * The box stands outside the fold, one line high, under it. That is the rule
-   * every way on this page follows, said about a form: a fold that is forty
-   * rows long must not be able to push the thing the card is for off the
-   * screen. Closed, this card is its title with its count and the field that
-   * makes the next one.
+   * The button stands outside the fold, one line high, under it. That is the
+   * rule every way on this page follows: a fold that is forty rows long must
+   * not be able to push the thing the card is for off the screen. Closed, this
+   * card is its title with its count and the button that makes the next one.
    */
 
   function listRow(l) {
@@ -760,57 +764,54 @@
     ], 'list_page', { list_id: l.id }, TTBPins.ofList(l));
   }
 
-  /* Name it and you land in it, because the next thing anybody wants after
-     naming a list is to put something on it. The whole of the create step is
-     one field and one button; everything else about a list happens on the
-     list's own page. */
-  function newListForm() {
-    var form = el('form', { className: 'lists-new' });
-    var field = el('input', {
-      type: 'text',
-      className: 'lists-input',
-      maxlength: String(MAX_TITLE),
-      autocomplete: 'off',
-      'aria-label': t('listsNewName'),
-      placeholder: t('listsNewHint')
-    });
-    var go = el('button', { type: 'submit', className: 'go', textContent: t('listsCreate') });
+  /* A list is made by pressing one button, and named afterwards. It asked
+     for the name first once — a field and a button, the name sent with the
+     create — and that was the step people stopped at: a name is a decision
+     about a list that does not have anything on it yet, and the list's own
+     page has had its title as a field you type into all along. So the button
+     makes "My list" in the reader's language and lands in it, where the
+     title is the first thing on the card and the places are the next.
 
-    form.appendChild(field);
-    form.appendChild(go);
+     The same press runs from the front page's Make a list, which comes here
+     as ?make=1 — see boot(). That one leaves with replace() rather than a
+     step, so that Back from the new list goes to where the press was made and
+     not to an address that would make another one. A refusal is said above
+     the button, where somebody looking at what they just pressed will see
+     it, and the account page is what is left standing under it.
 
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var title = field.value.trim();
-      if (!title) { field.focus(); return; }
+     The button says what the front page's link says, out of the same key,
+     discoverMake — two doors to one press, in the same words. */
+  function makeButton() {
+    var box = el('div', { className: 'lists-new' });
+    var go = el('button', { type: 'button', className: 'go', textContent: t('discoverMake') });
+    box.appendChild(go);
 
-      /* Whatever the last try said. It is cleared on the way into this one so
-         a refusal that has been answered cannot stand under a form that is
-         working — and it is put back above the field rather than under the
-         button, because nobody looks under a button they have pressed. */
-      var old = form.querySelector('.ac-err');
-      if (old) form.removeChild(old);
+    go.addEventListener('click', function () { makeList(box, go, false); });
+    return box;
+  }
 
-      go.disabled = true;
-      go.textContent = t('accountWorking');
+  function makeList(box, go, leave) {
+    var old = box.querySelector('.ac-err');
+    if (old) box.removeChild(old);
 
-      var refuse = function (out) {
-        go.disabled = false;
-        go.textContent = t('listsCreate');
-        form.insertBefore(
-          el('p', { className: 'ac-err', role: 'alert', textContent: t(ERRORS[out && out.error] || 'listsErrGeneric') }),
-          field
-        );
-      };
+    go.disabled = true;
+    go.textContent = t('accountWorking');
 
-      post({ action: 'create', title: title }).then(function (a) {
-        if (!a.ok) return refuse(a.out);
-        TTBTrack.event('list_create', { list_id: a.out.id });
-        window.location.href = '/list/' + a.out.id;
-      }).catch(function () { refuse({}); });
-    });
+    var refuse = function (out) {
+      go.disabled = false;
+      go.textContent = t('discoverMake');
+      box.insertBefore(
+        el('p', { className: 'ac-err', role: 'alert', textContent: t(ERRORS[out && out.error] || 'listsErrGeneric') }),
+        go
+      );
+    };
 
-    return form;
+    post({ action: 'create', title: t('listsUntitled') }).then(function (a) {
+      if (!a.ok) return refuse(a.out);
+      TTBTrack.event('list_create', { list_id: a.out.id });
+      if (leave) window.location.replace('/list/' + a.out.id);
+      else window.location.href = '/list/' + a.out.id;
+    }).catch(function () { refuse({}); });
   }
 
   function listsCard() {
@@ -831,7 +832,7 @@
       kids.push(el('p', { className: 'lists-none', textContent: t('listsNone') }));
     }
 
-    kids.push(newListForm());
+    kids.push(makeButton());
     return card(kids);
   }
 
@@ -1048,14 +1049,15 @@
    * the two this page is about.
    */
   function invitation() {
+    var back = state.making ? MAKE_BACK : BACK;
     return card([
       el('p', { className: 'eyebrow', textContent: t('accountOpen') }),
       heading(t('accountTitle')),
       el('p', { className: 'lists-say', textContent: t('accountWhy') }),
       el('p', { className: 'lists-say', textContent: t('listsNeedAccount') }),
       foot([
-        link('accountCreate', SHEET + 'up' + BACK, 'account_open', { view: 'up' }, 'go'),
-        link('accountSignIn', SHEET + 'in' + BACK, 'account_open', { view: 'in' })
+        link('accountCreate', SHEET + 'up' + back, 'account_open', { view: 'up' }, 'go'),
+        link('accountSignIn', SHEET + 'in' + back, 'account_open', { view: 'in' })
       ])
     ]);
   }
@@ -1131,6 +1133,7 @@
 
   function boot() {
     main = document.getElementById('main');
+    state.making = takeMake();
 
     applyStyle();
 
@@ -1181,6 +1184,11 @@
       mountRadio();
       render();
       sayArrived();
+      /* The front page's Make a list, pressed by somebody signed in: the
+         button on the page is pressed for them, so there is one way a list
+         gets made and one place a refusal is said. */
+      var box = state.making && state.user && main.querySelector('.lists-new');
+      if (box) makeList(box, box.querySelector('.go'), true);
     }).catch(function () {
       /* The strings themselves did not arrive, so there is nothing to say in
          any language. The markup's own English is what is left, and the map
@@ -1212,6 +1220,20 @@
       window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
     } catch (e) { /* it is still said */ }
     if (SAID.hasOwnProperty(said) && state.user) toast(t(SAID[said], { name: state.user }));
+  }
+
+  /* ?make=1 is read once and taken off the address, the way ?said= is: a
+     reload, or Back to this page, must not make a second list. The links
+     that send somebody off to sign in carry it on their own — MAKE_BACK. */
+  function takeMake() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('make') !== '1') return false;
+    params.delete('make');
+    var query = params.toString();
+    try {
+      window.history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+    } catch (e) { /* the list is still made once */ }
+    return true;
   }
 
   if (document.readyState === 'loading') {

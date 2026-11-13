@@ -5094,7 +5094,7 @@ username and password it always did.
 `/account.html`. Your name, the line you wrote about yourself and the door to
 your public profile, with everything you can do to an account along the foot
 of the same card, and the doors to the page under your name and to how it is
-doing; then the places you saved, the lists you wrote, the box that
+doing; then the places you saved, the lists you wrote, the button that
 makes another and the ones you kept. Nothing after that: the page ends where
 it stops being about you.
 
@@ -5121,7 +5121,7 @@ Places I saved        8 places  a fold: six rows a place, newest first
   Show more                     inside it, once there are more than six
   See them on the map           outside it, so a long fold cannot bury it
 Your lists             3 lists  a fold: six rows a list
-  [ Name a list ] [ Make it ]   outside the fold, one line high
+  [ Make a list ]               outside the fold, one line high
 Lists you saved         1 list  a fold: six rows somebody else's
 ```
 
@@ -5455,7 +5455,8 @@ page** under **Profiles**. `.lists-new` grew a margin
 of its own when the box arrived here, for the reason its comment gives: what is
 over it is a `<summary>` when the fold is closed and a column of lists when it
 is open, and neither of those can carry a margin that only means something
-under a form.
+under a form. It is a button now rather than a box — **Named afterwards**
+under **Lists**.
 
 That is the whole reason a third stylesheet was not written. A page that needed
 new furniture would be a page that had drifted from the two that were already
@@ -6780,10 +6781,43 @@ The id is the title plus six random characters — `/list/top-ten-burgers-k3fmqw
 at from a neighbouring one. The random half is what makes a private list
 private.
 
+### Named afterwards
+
+**Make a list** makes one. It asked for the name first for a long time — a
+field and a button on the account page, the name sent with the create — and
+the owner's word on it was that it should not: a name is a decision about a
+list with nothing on it yet, and it was the step people stopped at. The list's
+own page has had its title as a field you type into all along, so the button
+sends `listsUntitled` — *My list*, in the language the page is read in — and
+lands in the new list, where the title is the first thing on the card and the
+places are the next. `makeList()` in `assets/account.js`; the route is the
+same `create` it always was, and still refuses an empty title.
+
+The front page's **Make a list** is the same press from further away. It
+links to `/account.html?make=1`, and the account page presses its own button
+for whoever is signed in, then leaves with `location.replace` so that Back
+from the new list goes to the front page rather than to an address that would
+make another. `takeMake()` takes the parameter off the address before anything
+else, for the same reason. Signed out, the page is the offer of an account as
+it always is, except that **Create account** and **Sign in** send the sheet
+back to `?make=1`, so the list is made the moment there is somebody to make it
+for. A refusal — twenty-four lists already, or the route not answering — is
+said above the button, with the account page standing under it.
+
+The trade-off is in the link. The id is cut from the title at the moment of
+making, so a list made this way is `/list/my-list-k3fmqw` for good, whatever
+it is renamed to — the link says less about the list than a named one's did.
+A list with nothing on it is never on a shelf or in the directory, both of
+which read only lists with a place on them. It is on its owner's profile,
+though, which draws every public list with its count — so a *My list* made
+and left stands there as *0 places* until it is filled, made private or
+deleted from the list's own page. That was true of a named list left empty
+too; one press makes it likelier.
+
 ### One door to the lists
 
 Your lists are named on `/account.html`, one row each, behind a fold with the
-count on it — and under that fold the box that makes another one, and under
+count on it — and under that fold the button that makes another one, and under
 that the ones you kept. Everybody else's are not on that page at all any more;
 **Everybody's lists is not on this page** under **The account page** is where
 the door that used to be under all of it went, and why.
@@ -18075,7 +18109,8 @@ A phone that opens the bare address does not open on the map any more. It
 opens on a page in front of it: the map as one card with **Open map** on it, then
 four shelves that scroll sideways — **New lists**, **Most opened places**,
 **Popular lists**, **New on the map** — with a card called **Play** between
-the second and the third, and a line at the foot offering to make a list.
+the second and the third, and a line at the foot offering to make a list —
+which makes one and opens it, **Named afterwards** under **Lists**.
 
 It is there because the map, to somebody who has never been here, is a
 question rather than an answer. Seventy unlabelled marks say that there are
@@ -19451,7 +19486,7 @@ The map, `assets/app.js`:
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
-| `discover_make` | — **Make a list** at the foot of Discover |
+| `discover_make` | — **Make a list** at the foot of Discover, which makes one and opens it (`list_create` follows) |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
