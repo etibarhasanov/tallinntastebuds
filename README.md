@@ -1526,15 +1526,36 @@ and `state.results` is what the map is narrowed to.
 
 The bar used to end at *Nothing matches "Kumu".* — a museum, a shop, a café
 that opened after the export was swept, and the city search had nowhere to
-send anybody. Now, when neither my places nor the export answer, a button
-sits under that line: **Look for "Kumu" on Google Maps**. Pressing it asks
-Google, held to Tallinn's box, and the dropdown reads *Asking Google Maps…*
-until up to five places come back under **From Google Maps**, or under the
-usual heading when the words already reach them by name. A row works like
-any Google venue's: a pin, and the card. The owner chose the shape in
-November 2026 — anyone may press it, what it finds is searchable afterwards,
-and it is a button rather than a search that fires by itself, because each
-press is a call against a budget and a dropdown redraws on every letter.
+send anybody. Now a button sits at the foot of the dropdown: **Look for
+"Kumu art museum" on Google Maps**. Pressing it asks Google, held to
+Tallinn's box, and the dropdown reads *Asking Google Maps…* until up to five
+places come back. The owner chose the shape in November 2026 — anyone may
+press it, what it finds is searchable afterwards, and it is a button rather
+than a search that fires by itself, because each press is a call against a
+budget and a dropdown redraws on every letter.
+
+**It is offered from five letters, whatever else matched.** It began as the
+way out of *Nothing matches*, from two letters, and only there. But the
+export is the city's places to eat, and a word can match a little of it and
+miss most of what somebody meant: *raamat* finds three Rahva Raamat shops
+that earlier lookups kept, and no other bookshop or library in town. So the
+owner asked for the button under results as well, and never before five
+letters — `FIND_LOOK_MIN` in `assets/app.js` — which keeps it off the two
+and three letters of a word still being typed, and off the screen for most
+of what the bar is used for. The price is a four-letter name nothing
+answers: *Kumu* by itself is a dead end again until a fifth letter is typed.
+The list picker's own button, in `assets/lists.js`, still appears from two
+letters and only when nothing matched; it was not part of the ask.
+
+**What comes back goes on the map.** Not rows in the dropdown, which is
+what it used to be: the dropdown shuts and Google's places are drawn as
+results, the way Enter draws them — a pin each, the map framed on all of
+them, the first card open with the arrows either side of *1 of 7* — with
+Google's answers first and in Google's order, since they are what the press
+asked for, and after them everything the bar had already found for the same
+words. `showLooked()` in `assets/app.js`. Open the dropdown again on the
+same words and Google's places are rows under **From Google Maps**, or under
+the usual heading when the words already reach them by name.
 
 **What Google answers is kept.** `/api/lookup` writes every place into
 `google_venues`, so the next person typing *kumu* finds Kumu in the roll
@@ -1586,7 +1607,9 @@ current** under **Google venues**).
 **When it cannot.** No `GOOGLE_MAPS_API_KEY`, and `GET /api/lookup` answers
 `ready: false` and the button never appears — the dead end is what it was.
 Google with nothing in Tallinn for the words: *Google Maps has nothing in
-Tallinn for "Kumu" either.* (`findGoogleNone`). The day's budget spent,
+Tallinn for "Kumu" either.* (`findGoogleNone`), or, with rows of the bar's
+own standing above the line, *Google Maps has nothing more in Tallinn for
+"raamat".* (`findGoogleNoMore`). The day's budget spent,
 Google refusing, or a database without the two columns: *Looking on Google is
 resting for today. Try again tomorrow.* (`findGoogleResting`). Whichever it
 was, the button does not come back for the same words while they are in the
@@ -19325,7 +19348,7 @@ The map, `assets/app.js`:
 | `search_clear` | `scope` |
 | `find_pick` | `search_term`, `scope` (`map`/`city`) — a row pressed in the find bar, and which of the two groups it came from |
 | `find_word` | `search_term`, `word` — a word the find bar offered under the field, pressed: what was typed, and the word it became |
-| `find_google` | `search_term` — **Look for it on Google Maps** pressed, when nothing in the find bar answered, or in a list's picker for a place its roll does not have |
+| `find_google` | `search_term` — **Look for it on Google Maps** pressed: in the find bar, under whatever five letters or more found, or in a list's picker for a place its roll does not have |
 | `find_clear` | — the cross on the find bar |
 | `find_submit` | `search_term`, `results` — Enter in the find bar, putting every result on the map; `results` is how many there were, before the cap of sixty |
 | `find_area` | `search_term`, `results` — Search this area, the same words over the part of the map on screen |

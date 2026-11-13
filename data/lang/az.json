@@ -40,6 +40,7 @@
   "findFromGoogle": "Google Maps-dən",
   "findGoogleKept": "Bundan sonra burada saxlanılır, növbəti axtarış onları tapacaq.",
   "findGoogleNone": "Google Maps-də də Tallində “{q}” üçün heç nə yoxdur.",
+  "findGoogleNoMore": "Google Maps-də Tallində “{q}” üçün başqa heç nə yoxdur.",
   "findGoogleResting": "Google-da axtarış bu gün dincəlir. Sabah yenidən cəhd edin.",
   "foundCard": "{address}. Tallinn Tastebuds-da tapılıb — onun öz məkanlarından deyil.",
   "listCount": "{n} yer",

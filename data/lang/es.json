@@ -40,6 +40,7 @@
   "findFromGoogle": "De Google Maps",
   "findGoogleKept": "Se guardan aquí a partir de ahora, para que la próxima búsqueda los encuentre.",
   "findGoogleNone": "Google Maps tampoco tiene nada en Tallin para «{q}».",
+  "findGoogleNoMore": "Google Maps no tiene nada más en Tallin para «{q}».",
   "findGoogleResting": "La búsqueda en Google descansa por hoy. Inténtalo mañana.",
   "foundCard": "{address}. Encontrado en Tallinn Tastebuds — no es uno de sus propios lugares.",
   "listCount": "{n} sitios",

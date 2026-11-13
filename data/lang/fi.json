@@ -40,6 +40,7 @@
   "findFromGoogle": "Google Mapsista",
   "findGoogleKept": "Ne pysyvät nyt täällä, joten seuraava haku löytää ne.",
   "findGoogleNone": "Google Mapsillakaan ei ole Tallinnasta mitään haulla ”{q}”.",
+  "findGoogleNoMore": "Google Mapsilla ei ole Tallinnassa muuta haulle ”{q}”.",
   "findGoogleResting": "Googlesta etsiminen lepää tänään. Yritä huomenna uudelleen.",
   "foundCard": "{address}. Löytyi Tallinn Tastebudsista — ei yksi sen omista paikoista.",
   "listCount": "{n} paikkaa",
