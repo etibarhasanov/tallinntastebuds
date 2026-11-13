@@ -18,7 +18,7 @@
  *
  *   New lists            newest public lists                 /api/discover
  *   Most opened places   what gets opened on the map         /api/discover
- *   Play                 the game, and one route to start    /api/discover
+ *   Play                 the game, and routes to swipe       /api/discover
  *   Popular lists        most opened lists                   /api/discover
  *   New on the map       the places added last               data/map.json
  *
@@ -65,9 +65,13 @@ window.TTBDiscover = (function () {
   var shelves = null;
   /* null while the route has not answered, false when it failed. */
   var data = null;
-  /* The reader's own walk that is still going, or null: nobody signed in,
-     nothing going, or not answered yet. See signed(). */
-  var mine = null;
+  /* The reader's own walks that are still going, the one last moved first:
+     empty with nobody signed in, nothing going, or not answered yet. See
+     signed(). */
+  var mine = [];
+  /* Whether the Play card has been swiped past its first route on this load,
+     which is reported once — see play(). */
+  var swiped = false;
   var scrolled = 0;
   /* The card's still map, its tiles, whether those are the dark ones, and
      the pins on it. Null until the card has been on screen once. */
@@ -210,36 +214,55 @@ window.TTBDiscover = (function () {
     return hours ? said + ' ' + o.t('walkHoursOnly', { h: hours }) : said;
   }
 
-  /* PLAY: THE GAME, SAID ONCE, WITH ONE ROUTE TO START
+  /* PLAY: THE GAME, SAID ONCE, WITH ROUTES TO SWIPE THROUGH
    *
    * Every list can be walked — go to each place, check in at the door, on
    * foot, by bike or both, and finish onto the list's board — and the only sign of
    * it was a chip called Route on a list's own page. Four shelves of things
    * to read said nothing about there being something to do. So the page says
    * it once, in a card of its own between the places people open and the
-   * lists they open: what the game is in a sentence, and one route under it.
+   * lists they open: what the game is in a sentence, and routes under it.
    *
-   * Which route is the reader's own where they have one going — their list,
-   * how far round they are, and Keep going — and otherwise the one
-   * /api/discover offers everybody: the list most people have finished, with
-   * the fastest time, or before anybody has finished anything a list to be
-   * the first on. The row is a link to the list's Route view, which is where
-   * a walk is started and where signing in is asked for; nothing here starts
-   * one.
+   * One route shows at a time, with the edge of the next one under the
+   * card's right side, and a swipe sideways moves to it — the owner's ask of
+   * 2026-11-13, so that the card is a way to find a list to go round and not
+   * only the one /api/discover happened to pick. The words above the rule
+   * stay put; only the row under it moves. The dots under the row say how
+   * many there are and which is showing, and are buttons, so a mouse and a
+   * keyboard get there too.
+   *
+   * The deck is the reader's own walks still going first — their list, how
+   * far round they are, and Keep going — the one they last moved on leading,
+   * and then the routes /api/discover offers everybody: the lists most people
+   * have finished, with the fastest time, and then lists to be the first on.
+   * A list that is in both is the reader's own. Each row is a link to that
+   * list's Route view, which is where a walk is started and where signing in
+   * is asked for; nothing here starts one. One route and there is nothing to
+   * swipe, so the card is drawn as it was before there were several.
    *
    * No route to offer — the answer had none, or it is an old answer from
    * before the field — and the card is not drawn.
    */
-  function play() {
-    var going = mine;
-    var route = going || data.route;
-    if (!route || !route.id) return null;
-    TTBGoogleWords.list(route, o.t, o.lang());
+  function deck() {
+    var seen = {};
+    var out = [];
+    var theirs = data.routes || (data.route ? [data.route] : []);
+    mine.map(function (walk) { return { route: walk, going: true }; })
+      .concat(theirs.map(function (route) { return { route: route, going: false }; }))
+      .forEach(function (one) {
+        if (!one.route || !one.route.id || seen[one.route.id]) return;
+        seen[one.route.id] = true;
+        out.push(one);
+      });
+    return out;
+  }
 
+  function routeRow(route, going) {
+    TTBGoogleWords.list(route, o.t, o.lang());
     var line;
     var press;
     if (going) {
-      line = o.t('walkToGo', { n: going.checked, total: going.total, left: going.total - going.checked });
+      line = o.t('walkToGo', { n: route.checked, total: route.total, left: route.total - route.checked });
       press = o.t('discoverPlayKeep');
     } else {
       var parts = [route.places === 1 ? o.t('listCountOne') : o.t('listCount', { n: route.places })];
@@ -256,11 +279,6 @@ window.TTBDiscover = (function () {
       line = parts.join(' · ');
     }
 
-    var box = el('section', 'discover-play');
-    box.appendChild(el('span', 'eyebrow', o.t('discoverPlayEyebrow')));
-    box.appendChild(el('h2', '', o.t('discoverPlayTitle')));
-    box.appendChild(el('p', '', o.t('discoverPlaySay')));
-
     var row = el('a', 'discover-route');
     row.href = '/list/' + encodeURIComponent(route.id) + '?walk=1';
     TTBTrack.click(row, 'discover_play');
@@ -268,16 +286,68 @@ window.TTBDiscover = (function () {
     var say = el('span', 'discover-route-say');
     say.appendChild(el('b', '', route.title));
     say.appendChild(el('span', '', line));
-    if (going && going.total) {
+    if (going && route.total) {
       var bar = el('span', 'discover-route-bar');
       var done = el('i');
-      done.style.width = Math.round(going.checked / going.total * 100) + '%';
+      done.style.width = Math.round(route.checked / route.total * 100) + '%';
       bar.appendChild(done);
       say.appendChild(bar);
     }
     row.appendChild(say);
     row.appendChild(el('span', 'discover-route-go', press));
-    box.appendChild(row);
+    return row;
+  }
+
+  function play() {
+    var routes = deck();
+    if (!routes.length) return null;
+
+    var box = el('section', 'discover-play');
+    box.appendChild(el('span', 'eyebrow', o.t('discoverPlayEyebrow')));
+    box.appendChild(el('h2', '', o.t('discoverPlayTitle')));
+    box.appendChild(el('p', '', o.t('discoverPlaySay')));
+
+    if (routes.length === 1) {
+      box.appendChild(routeRow(routes[0].route, routes[0].going));
+      return box;
+    }
+
+    var track = el('div', 'discover-track');
+    var dots = el('div', 'discover-dots');
+    routes.forEach(function (one, i) {
+      track.appendChild(routeRow(one.route, one.going));
+      var dot = el('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', o.t('discoverPlayDot', { n: i + 1, total: routes.length }));
+      dot.addEventListener('click', function () {
+        var to = track.children[i];
+        track.scrollTo({ left: to.offsetLeft - track.children[0].offsetLeft, behavior: 'smooth' });
+      });
+      dots.appendChild(dot);
+    });
+
+    /* Which dot is filled follows the row nearest the start of the track,
+       however it got there. The first time it is not the first row is
+       reported once a load: whether anybody looks past the first route is
+       the question the swipe was built to answer. */
+    function at() {
+      var step = track.children[1].offsetLeft - track.children[0].offsetLeft;
+      var i = Math.round(track.scrollLeft / step);
+      for (var k = 0; k < dots.children.length; k++) {
+        dots.children[k].className = k === i ? 'is-on' : '';
+        if (k === i) dots.children[k].setAttribute('aria-current', 'true');
+        else dots.children[k].removeAttribute('aria-current');
+      }
+      if (i > 0 && !swiped) {
+        swiped = true;
+        TTBTrack.event('discover_play_more');
+      }
+    }
+    track.addEventListener('scroll', at, { passive: true });
+    box.appendChild(track);
+    box.appendChild(dots);
+    dots.children[0].className = 'is-on';
+    dots.children[0].setAttribute('aria-current', 'true');
     return box;
   }
 
@@ -408,20 +478,20 @@ window.TTBDiscover = (function () {
 
   /* Whether somebody is signed in, told by the map each time /api/account
      answers — on the way in, and again whenever a page over the map closes,
-     which is when a walk may have moved. Signed in, the walk they have going
-     is asked for and the Play card becomes theirs; signed out, or with the
-     route not answering, the card is the one everybody gets. */
+     which is when a walk may have moved. Signed in, the walks they have going
+     are asked for and lead the Play card; signed out, or with the route not
+     answering, the card is the one everybody gets. */
   function signed(yes) {
     if (!yes) {
-      if (mine) { mine = null; if (up()) draw(); }
+      if (mine.length) { mine = []; if (up()) draw(); }
       return;
     }
     fetch('/api/walk?mine=1', { credentials: 'same-origin' }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (answer) {
-      mine = (answer && answer.mine) || null;
+      mine = (answer && (answer.walks || (answer.mine ? [answer.mine] : []))) || [];
     }).catch(function () {
-      mine = null;
+      mine = [];
     }).then(function () {
       if (up() && data) draw();
     });

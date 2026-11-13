@@ -18139,20 +18139,39 @@ list** — and the only sign of it was a chip called Route on a list's own
 page; four shelves of things to read said nothing about there being something
 to do. So between *Most opened places* and *Popular lists* there is one card:
 *Go round a list*, the sentence that says what that means, and under a rule
-one route to start. For somebody signed in with a walk still going it is
-their own list, how far round they are, a bar, and **Keep going**. For
-everybody else it is the list most people have finished, with how many did
-and the fastest of them — or, until anybody has finished anything, the most
-opened list and **Be the first**. The row is a link to that list's Route
-view, `?walk=1`, which is where a walk is started and where signing in is
-asked for; nothing on this page starts one. The owner placed it there, after
-the places and before the lists, on 2026-11-13.
+the routes to start, one at a time. The owner placed it there, after the
+places and before the lists, on 2026-11-13.
 
-The route everybody gets rides in `GET /api/discover` as `route`, since it
-is the same for all of them and can be kept with the shelves. The reader's
-own is `GET /api/walk?mine=1`, asked only once `/api/account` has said
-somebody is signed in, and again each time a page over the map closes, which
-is when a walk may have moved. With no route to offer the card is not drawn.
+**Swipe for the next one.** The same day the owner asked for the routes to be
+swiped through, so that the card is a way to find a list to go round and not
+only the one the route happened to pick. The words above the rule stay where
+they are; the row under it is a track that moves sideways, each route a little
+narrower than the card so the edge of the next one shows on the right, and a
+row of dots under it says how many there are and which is up. The dots are
+buttons, for a mouse and a keyboard. One route and there is nothing to swipe,
+so the card is drawn as it was before. The track claims the sideways finger
+the way the shelves do, so a swipe to the right there is the next route back
+and not **A swipe to the right is Back**.
+
+**Your own walks come first.** For somebody signed in with walks still going,
+the deck opens on them — their list, how far round they are, a bar, and **Keep
+going** — the one they last moved on leading: the later of when it was started
+and its latest check, so the list somebody was out on yesterday comes before
+the one they started last month and left. After those come the routes
+everybody gets: the lists most people have finished, each with how many did
+and the fastest of them, and then, filling what is left, the most opened lists
+with **Be the first**. A list in both is the reader's own. Every row is a link
+to that list's Route view, `?walk=1`, which is where a walk is started and
+where signing in is asked for; nothing on this page starts one.
+
+The routes everybody gets ride in `GET /api/discover` as `routes`, at most
+`ROUTES` of them, since they are the same for all and can be kept with the
+shelves; `route` is still sent as the first of them for a page from before the
+swipe. The reader's own are `GET /api/walk?mine=1`, which answers `walks`, at
+most `GOING`, and `mine`, the first, as it did when there was one; it is asked
+only once `/api/account` has said somebody is signed in, and again each time a
+page over the map closes, which is when a walk may have moved. With no route to
+offer the card is not drawn.
 
 **Nothing on it is a score.** No count of a place or a list is printed
 anywhere and none is sent: the route answers ids in an order. The Play card
@@ -19429,6 +19448,7 @@ The map, `assets/app.js`:
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
 | `discover_make` | — **Make a list** at the foot of Discover |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
+| `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
 | `more_open`, `more_close` | — the More pill on the rail, and its sheet put away by the cross or the scrim |
 | `style_open` | — the Colour row in the More sheet; the switch it makes reports `style_select` |

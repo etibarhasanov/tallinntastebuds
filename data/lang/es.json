@@ -438,6 +438,7 @@
   "discoverPlayNobody": "nadie la ha terminado todavía",
   "discoverPlayFirst": "Sé el primero",
   "discoverPlayKeep": "Seguir",
+  "discoverPlayDot": "Ruta {n} de {total}",
   "listsOrder": "Orden",
   "listsOrderViews": "Más abiertas",
   "listsOrderKept": "Más guardadas",

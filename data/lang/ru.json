@@ -438,6 +438,7 @@
   "discoverPlayNobody": "его ещё никто не прошёл",
   "discoverPlayFirst": "Стань первым",
   "discoverPlayKeep": "Продолжить",
+  "discoverPlayDot": "Маршрут {n} из {total}",
   "listsOrder": "Порядок",
   "listsOrderViews": "Самые открываемые",
   "listsOrderKept": "Самые сохраняемые",

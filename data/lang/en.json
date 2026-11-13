@@ -438,6 +438,7 @@
   "discoverPlayNobody": "nobody has finished it yet",
   "discoverPlayFirst": "Be the first",
   "discoverPlayKeep": "Keep going",
+  "discoverPlayDot": "Route {n} of {total}",
   "listsOrder": "Order",
   "listsOrderViews": "Most opened",
   "listsOrderKept": "Most saved",
