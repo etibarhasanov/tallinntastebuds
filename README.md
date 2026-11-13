@@ -744,6 +744,32 @@ here too. Where the browser has forgotten rather than refused — Safari's
 ask-every-time setting reads `prompt` — the map asks again: that prompt only
 ever reaches somebody who has said yes before.
 
+**And the dot follows you, and says which way you are facing.** For a year
+the dot was one reading: it stood where the press or the arrival had put it
+for as long as the page stayed open, and somebody walking to a place watched
+themselves not move until they closed the tab and opened it again. The owner
+walked three kilometres with it and said so. Now a dot the device drew is
+watched for as long as the map is on screen — `followHere()` in
+`assets/app.js` — and the dot and its accuracy ring move with every reading.
+Nothing else does: the map is not carried along under a thumb reading a
+street two blocks ahead, the list is not rebuilt every few seconds and
+measures from the dot again the next time something draws it, and a route
+already drawn stays as drawn with the dot travelling along it. The watch
+stops when the tab is hidden and starts again, with a fresh reading, when it
+is back, so a phone in a pocket is not kept awake by a page nobody is looking
+at. A typed place is not followed: it is where somebody said they are.
+
+The direction is a small arrowhead on the dot's ring, in the dot's own two
+colours — the owner was shown a beam and an arrowhead and picked the
+arrowhead. It points where the phone points when there is a compass, and
+where the phone is travelling when there is only the GPS, which knows a
+course only above a walking pace; with neither there is no arrowhead, since
+the plain dot is the honest drawing of not knowing. Android hands the compass
+over without showing anything. iOS keeps it behind a prompt of its own that
+only a press may raise, so `askCompass()` rides on the locate button: somebody the map found
+on arrival, who has pressed nothing, gets the course while they walk and the
+compass from their first press on.
+
 **Or type where you are.** The device was the only way to put the dot there
 for a year, and a phone that had refused the site, a laptop with no fix, or
 somebody planning tomorrow's lunch from a hotel room got *Couldn't get your
