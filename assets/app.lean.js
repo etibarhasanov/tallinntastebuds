@@ -6907,6 +6907,7 @@
     if (hereMarker) {
       hereMarker.setLatLng(at);
       if (hereAccuracy) hereAccuracy.setLatLng(at);
+      if (hereArrow) hereArrow.setLatLng(at);
       return;
     }
     hereStill = true;
@@ -7288,7 +7289,7 @@
     dom.btnLocate.addEventListener('click', function () {
       TTBTrack.event('locate');
       if (!navigator.geolocation) { openWhere('locateFail'); return; }
-      if (hereMarker) { openWhere(''); return; }
+      if (hereMarker) { askCompass(); openWhere(''); return; }
       askDevice();
     });
 
@@ -7450,11 +7451,14 @@
       if (pressed) openWhere('locateFail');
       else if (!quiet) toast(t('locateFail'));
     });
+
+    document.addEventListener('visibilitychange', followHere);
   }
 
   function askDevice() {
     hereQuiet = false;
     herePressed = true;
+    askCompass();
     map.locate({ setView: false });
   }
 
@@ -7463,22 +7467,10 @@
 
     if (accuracy) storeSet(HERE_KEY, '1');
 
-    if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
-    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+    hereDevice = !!accuracy;
 
-    if (accuracy && accuracy <= 1000) {
-      hereAccuracy = L.circle(latlng, {
-        radius: Math.max(accuracy, 12),
-        weight: 1,
-        color: c.here,
-        opacity: .45,
-        fillColor: c.here,
-        fillOpacity: .14,
-        className: 'here-accuracy',
-        interactive: false
-      }).addTo(map);
-      if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
-    }
+    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+    ringHere(latlng, accuracy);
 
     hereMarker = L.circleMarker(latlng, {
       radius: 8,
@@ -7490,8 +7482,11 @@
       pane: HERE_PANE,
       interactive: false
     }).addTo(map);
+    paintWay();
 
     renderList();
+
+    followHere();
 
     if (quiet && state.selected) return;
 
@@ -7529,6 +7524,146 @@
       if (status.state === 'denied') { storeDel(HERE_KEY); return; }
       go();
     }, go);
+  }
+
+  function ringHere(latlng, accuracy) {
+    if (!accuracy || accuracy > 1000) {
+      if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
+      return;
+    }
+    var radius = Math.max(accuracy, 12);
+    if (hereAccuracy) {
+      hereAccuracy.setLatLng(latlng);
+      hereAccuracy.setRadius(radius);
+      return;
+    }
+    var c = markerColours();
+    hereAccuracy = L.circle(latlng, {
+      radius: radius,
+      weight: 1,
+      color: c.here,
+      opacity: .45,
+      fillColor: c.here,
+      fillOpacity: .14,
+      className: 'here-accuracy',
+      interactive: false
+    }).addTo(map);
+    if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
+  }
+
+  var hereDevice = false;
+  var hereWatch = null;
+
+  function following() {
+    return hereDevice && !!hereMarker && document.visibilityState !== 'hidden' && !!navigator.geolocation;
+  }
+
+  function followHere() {
+    if (!following()) { unfollowHere(); return; }
+    hearCompass();
+    if (hereWatch !== null) return;
+    hereWatch = navigator.geolocation.watchPosition(function (pos) {
+      if (!following()) return;
+      var at = L.latLng(pos.coords.latitude, pos.coords.longitude);
+      hereMarker.setLatLng(at);
+      ringHere(at, pos.coords.accuracy);
+      var course = pos.coords.heading;
+      hereCourse = typeof course === 'number' && !isNaN(course) && pos.coords.speed > HERE_PACE ? course : null;
+      paintWay();
+    }, function (err) {
+      if (err && err.code === 1) {
+        storeDel(HERE_KEY);
+        hereDevice = false;
+        unfollowHere();
+        paintWay();
+      }
+    }, { enableHighAccuracy: true, maximumAge: 5000 });
+  }
+
+  function unfollowHere() {
+    if (hereWatch !== null && navigator.geolocation) navigator.geolocation.clearWatch(hereWatch);
+    hereWatch = null;
+    if (compassOn) {
+      window.removeEventListener(COMPASS_EVENT, onCompass);
+      compassOn = false;
+    }
+  }
+
+  var HERE_PACE = 0.5;
+  var HERE_TURN = 3;
+  var COMPASS_EVENT = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
+  var hereArrow = null;
+  var hereCourse = null;
+  var hereCompass = null;
+  var compassOn = false;
+  var compassAsked = false;
+  var compassTried = false;
+
+  function compassGated() {
+    var D = window.DeviceOrientationEvent;
+    return !!D && typeof D.requestPermission === 'function';
+  }
+
+  function askCompass() {
+    if (!compassGated() || compassAsked) return;
+    try {
+      window.DeviceOrientationEvent.requestPermission().then(function (said) {
+        if (said !== 'granted') return;
+        compassAsked = true;
+        followHere();
+      }, function () {});
+    } catch (e) {}
+  }
+
+  function hearCompass() {
+    if (compassOn || !window.DeviceOrientationEvent) return;
+    if (compassGated() && !compassAsked) {
+      if (!compassTried) { compassTried = true; askCompass(); }
+      return;
+    }
+    compassOn = true;
+    window.addEventListener(COMPASS_EVENT, onCompass);
+  }
+
+  function onCompass(ev) {
+    var deg = null;
+    if (typeof ev.webkitCompassHeading === 'number') {
+      if (!(ev.webkitCompassAccuracy < 0)) deg = ev.webkitCompassHeading;
+    } else if (ev.absolute && typeof ev.alpha === 'number') {
+      deg = 360 - ev.alpha;
+    }
+    if (deg === null || isNaN(deg)) return;
+    var turned = (window.screen && screen.orientation && screen.orientation.angle) || window.orientation || 0;
+    deg = ((deg + turned) % 360 + 360) % 360;
+    if (hereCompass !== null) {
+      var by = Math.abs(deg - hereCompass);
+      if (Math.min(by, 360 - by) < HERE_TURN) return;
+    }
+    hereCompass = deg;
+    paintWay();
+  }
+
+  function paintWay() {
+    var deg = hereCompass !== null ? hereCompass : hereCourse;
+    if (!hereMarker || !hereDevice || deg === null) {
+      if (hereArrow) { map.removeLayer(hereArrow); hereArrow = null; }
+      return;
+    }
+    if (!hereArrow) {
+      hereArrow = L.marker(hereMarker.getLatLng(), {
+        icon: L.divIcon({
+          className: 'here-way',
+          html: '<svg viewBox="-22 -22 44 44" width="44" height="44" aria-hidden="true"><path d="M0 -20 L8 -8 L-8 -8 Z"/></svg>',
+          iconSize: [44, 44]
+        }),
+        pane: HERE_PANE,
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: -100000
+      }).addTo(map);
+    }
+    hereArrow.setLatLng(hereMarker.getLatLng());
+    hereArrow.getElement().firstChild.style.transform = 'rotate(' + deg + 'deg)';
   }
 
   var HERE_MAX_M = 25000;

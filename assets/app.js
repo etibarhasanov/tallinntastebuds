@@ -11871,6 +11871,7 @@
     if (hereMarker) {
       hereMarker.setLatLng(at);
       if (hereAccuracy) hereAccuracy.setLatLng(at);
+      if (hereArrow) hereArrow.setLatLng(at);
       return;
     }
     hereStill = true;
@@ -12439,7 +12440,7 @@
     dom.btnLocate.addEventListener('click', function () {
       TTBTrack.event('locate');
       if (!navigator.geolocation) { openWhere('locateFail'); return; }
-      if (hereMarker) { openWhere(''); return; }
+      if (hereMarker) { askCompass(); openWhere(''); return; }
       askDevice();
     });
 
@@ -12685,6 +12686,9 @@
       if (pressed) openWhere('locateFail');
       else if (!quiet) toast(t('locateFail'));
     });
+
+    /* The dot is followed only while somebody can see it — followHere(). */
+    document.addEventListener('visibilitychange', followHere);
   }
 
   /* The device, asked for a press — the button's, or the Where sheet's "Use
@@ -12697,6 +12701,7 @@
        its answer, or its failure, is now owed out loud. */
     hereQuiet = false;
     herePressed = true;
+    askCompass();
     map.locate({ setView: false });
   }
 
@@ -12714,22 +12719,12 @@
        a yes: it says nothing about what the device would answer. */
     if (accuracy) storeSet(HERE_KEY, '1');
 
-    if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
-    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+    /* Only a dot the device drew is followed and given a direction: a typed
+       street is where somebody said they are, and stays where they said. */
+    hereDevice = !!accuracy;
 
-    if (accuracy && accuracy <= 1000) {
-      hereAccuracy = L.circle(latlng, {
-        radius: Math.max(accuracy, 12),
-        weight: 1,
-        color: c.here,
-        opacity: .45,
-        fillColor: c.here,
-        fillOpacity: .14,
-        className: 'here-accuracy',
-        interactive: false
-      }).addTo(map);
-      if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
-    }
+    if (hereMarker) { map.removeLayer(hereMarker); hereMarker = null; }
+    ringHere(latlng, accuracy);
 
     /* Google's size rather than a pin's: 8px of --here inside a 3px ring
        of paper, which is what a thumb that has used a map on a phone is
@@ -12746,6 +12741,7 @@
       pane: HERE_PANE,
       interactive: false
     }).addTo(map);
+    paintWay();
 
     /* The list is ordered from the dot, so it is redrawn the moment there
        is one rather than waiting for the panel to be opened again — the
@@ -12759,6 +12755,10 @@
        the list body, which is hidden while the chat is up and correct by
        the time it is not. */
     renderList();
+
+    /* Before the framing and its early ways out, since a dot that is drawn
+       and not framed is followed all the same. */
+    followHere();
 
     /* Opened on its own at arrival, the map leaves alone a place somebody
        has opened in the seconds the fix took: flying them off it to frame
@@ -12830,6 +12830,205 @@
       if (status.state === 'denied') { storeDel(HERE_KEY); return; }
       go();
     }, go);
+  }
+
+  /* The circle the device claims as its accuracy, drawn, moved or taken away
+     for one reading — drawHere()'s and every one followHere() hears after it.
+     Moved rather than redrawn where there is one already: the ring pulses,
+     and a new element every few seconds would start the pulse over each
+     time. */
+  function ringHere(latlng, accuracy) {
+    if (!accuracy || accuracy > 1000) {
+      if (hereAccuracy) { map.removeLayer(hereAccuracy); hereAccuracy = null; }
+      return;
+    }
+    var radius = Math.max(accuracy, 12);
+    if (hereAccuracy) {
+      hereAccuracy.setLatLng(latlng);
+      hereAccuracy.setRadius(radius);
+      return;
+    }
+    var c = markerColours();
+    hereAccuracy = L.circle(latlng, {
+      radius: radius,
+      weight: 1,
+      color: c.here,
+      opacity: .45,
+      fillColor: c.here,
+      fillOpacity: .14,
+      className: 'here-accuracy',
+      interactive: false
+    }).addTo(map);
+    if (hereAccuracy.bringToBack) hereAccuracy.bringToBack();
+  }
+
+  /* ------------------------------------------------- the dot follows you
+   * The dot was one reading, taken at the press or on arrival, and it stood
+   * where that reading put it for as long as the page stayed open — so
+   * somebody walking to a place watched themselves not move, and found that
+   * closing the tab and opening it again was the only way to be found. The
+   * owner walked 3 km with it and said so.
+   *
+   * Now a dot the device drew is watched for as long as the map is on screen:
+   * the dot and its ring move with each reading, and nothing else does. The
+   * map is not carried along — somebody reading a street two blocks ahead
+   * would have it pulled out from under their thumb — and the list is not
+   * redrawn, which would rebuild rows under a finger every few seconds; it
+   * measures from the dot again the next time anything draws it. A route
+   * already drawn stays as drawn, and the dot travels along it.
+   *
+   * The watch stops when the tab is hidden and starts again when it is back,
+   * the way the walk's own does in assets/walk.js: a phone in a pocket should
+   * not have its GPS held on by a page nobody is looking at, and the first
+   * reading after coming back is a fresh one.
+   */
+  var hereDevice = false;
+  var hereWatch = null;
+
+  function following() {
+    return hereDevice && !!hereMarker && document.visibilityState !== 'hidden' && !!navigator.geolocation;
+  }
+
+  function followHere() {
+    if (!following()) { unfollowHere(); return; }
+    hearCompass();
+    if (hereWatch !== null) return;
+    hereWatch = navigator.geolocation.watchPosition(function (pos) {
+      if (!following()) return;
+      var at = L.latLng(pos.coords.latitude, pos.coords.longitude);
+      hereMarker.setLatLng(at);
+      ringHere(at, pos.coords.accuracy);
+      /* The device's own course, which it knows only while it is moving:
+         standing still it is null, or NaN, or the last one it had. */
+      var course = pos.coords.heading;
+      hereCourse = typeof course === 'number' && !isNaN(course) && pos.coords.speed > HERE_PACE ? course : null;
+      paintWay();
+    }, function (err) {
+      /* 1 is a refusal given since the yes: stop asking, here and on the
+         next arrival. Anything else is a fix that did not come, and the
+         next one may. */
+      if (err && err.code === 1) {
+        storeDel(HERE_KEY);
+        hereDevice = false;
+        unfollowHere();
+        paintWay();
+      }
+    }, { enableHighAccuracy: true, maximumAge: 5000 });
+  }
+
+  function unfollowHere() {
+    if (hereWatch !== null && navigator.geolocation) navigator.geolocation.clearWatch(hereWatch);
+    hereWatch = null;
+    if (compassOn) {
+      window.removeEventListener(COMPASS_EVENT, onCompass);
+      compassOn = false;
+    }
+  }
+
+  /* -------------------------------------------- which way you are facing
+   * A small arrowhead on the dot's ring — the owner picked it over a beam.
+   * It points where the phone points when there is a compass to ask, and
+   * where the phone is travelling when there is only the GPS, which knows a
+   * direction only above a walking pace. With neither there is no arrowhead:
+   * the plain dot is the honest drawing of "I do not know which way".
+   *
+   * The compass is deviceorientation, and it sits behind
+   * DeviceOrientationEvent.requestPermission() wherever that exists. Chrome
+   * has the method and answers yes without showing anything, at any time.
+   * iOS answers with a prompt of its own, and only to a press — asked at any
+   * other time it refuses, which costs nothing. So the first follow asks
+   * once, quietly, which is all Android needs, and askCompass() rides on the
+   * locate button for iOS: somebody the map found on arrival, who has
+   * pressed nothing, gets the course while walking and the compass from
+   * their first press on.
+   */
+  var HERE_PACE = 0.5;
+  var HERE_TURN = 3;
+  var COMPASS_EVENT = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
+  var hereArrow = null;
+  var hereCourse = null;
+  var hereCompass = null;
+  var compassOn = false;
+  var compassAsked = false;
+  var compassTried = false;
+
+  function compassGated() {
+    var D = window.DeviceOrientationEvent;
+    return !!D && typeof D.requestPermission === 'function';
+  }
+
+  /* A yes is kept by the browser for the visit, so asking again costs no
+     prompt; a yes already had is not asked for twice. */
+  function askCompass() {
+    if (!compassGated() || compassAsked) return;
+    try {
+      window.DeviceOrientationEvent.requestPermission().then(function (said) {
+        if (said !== 'granted') return;
+        compassAsked = true;
+        followHere();
+      }, function () {});
+    } catch (e) {}
+  }
+
+  function hearCompass() {
+    if (compassOn || !window.DeviceOrientationEvent) return;
+    if (compassGated() && !compassAsked) {
+      if (!compassTried) { compassTried = true; askCompass(); }
+      return;
+    }
+    compassOn = true;
+    window.addEventListener(COMPASS_EVENT, onCompass);
+  }
+
+  function onCompass(ev) {
+    var deg = null;
+    /* iOS says it outright, clockwise from north, and says -1 for how sure
+       it is when it is not. Everybody else gives alpha, which runs the other
+       way round and is only a compass when the event is absolute. */
+    if (typeof ev.webkitCompassHeading === 'number') {
+      if (!(ev.webkitCompassAccuracy < 0)) deg = ev.webkitCompassHeading;
+    } else if (ev.absolute && typeof ev.alpha === 'number') {
+      deg = 360 - ev.alpha;
+    }
+    if (deg === null || isNaN(deg)) return;
+    /* Both are measured from the top of the device, and a phone on its side
+       has its top somewhere else. */
+    var turned = (window.screen && screen.orientation && screen.orientation.angle) || window.orientation || 0;
+    deg = ((deg + turned) % 360 + 360) % 360;
+    /* It fires sixty times a second with the hand's own tremble in it. */
+    if (hereCompass !== null) {
+      var by = Math.abs(deg - hereCompass);
+      if (Math.min(by, 360 - by) < HERE_TURN) return;
+    }
+    hereCompass = deg;
+    paintWay();
+  }
+
+  /* The arrowhead, put where the dot is and turned, or taken away. A marker
+     of its own in the dot's pane, sunk under the dot so the ring covers its
+     base; its colours are the stylesheet's, so a change of style needs
+     nothing here. */
+  function paintWay() {
+    var deg = hereCompass !== null ? hereCompass : hereCourse;
+    if (!hereMarker || !hereDevice || deg === null) {
+      if (hereArrow) { map.removeLayer(hereArrow); hereArrow = null; }
+      return;
+    }
+    if (!hereArrow) {
+      hereArrow = L.marker(hereMarker.getLatLng(), {
+        icon: L.divIcon({
+          className: 'here-way',
+          html: '<svg viewBox="-22 -22 44 44" width="44" height="44" aria-hidden="true"><path d="M0 -20 L8 -8 L-8 -8 Z"/></svg>',
+          iconSize: [44, 44]
+        }),
+        pane: HERE_PANE,
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: -100000
+      }).addTo(map);
+    }
+    hereArrow.setLatLng(hereMarker.getLatLng());
+    hereArrow.getElement().firstChild.style.transform = 'rotate(' + deg + 'deg)';
   }
 
   /* How far the nearest place can be and still be worth framing next to you.

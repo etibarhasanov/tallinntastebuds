@@ -654,6 +654,22 @@ a:hover { color: var(--accent-lit); }
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .35));
 }
 
+/* Which way you are facing: an arrowhead on the dot's ring, turned by
+   paintWay() in app.js and drawn only while the phone knows a direction. It
+   wears the dot's own two colours, so it changes with the style by itself. */
+.here-way { pointer-events: none; }
+.here-way svg {
+  display: block;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .3));
+}
+.here-way path {
+  fill: var(--here);
+  stroke: var(--paper);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
 /* Every place on the map is the mark — the painting itself, cropped round,
    not a drawing of it. A plain circle is left to the one dot out there that
    is not a place: the one that says where you are.
