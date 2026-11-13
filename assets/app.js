@@ -782,6 +782,8 @@
       /* The other palette is a different set of tiles and none of them are
          warm. Ask for the neighbouring levels again, in the colour now up. */
       warmTiles();
+      /* The still map on Discover's card wears the same tiles. */
+      if (discover) discover.draw();
     }
 
     paintMarkers();
@@ -1772,6 +1774,28 @@
     haloMarker = null;
   }
 
+  /* What a pin wears whatever the map is doing: which of the three readings
+     below it is, how big, and the mouth or a glyph with the tone that goes
+     with it. The half of dressPin() that is about the place and not about
+     the selection, and so the whole of what the still map on Discover's card
+     needs — it has nothing chosen on it.
+
+     The glyph is written into the face rather than onto the node, because
+     Leaflet owns the pair and .pin-face is the half that takes the pointer;
+     the tone is a class, and the stylesheet owns the colour. */
+  function wearPin(node, place) {
+    var depth = pinDepth(place);
+    node.classList.add('pin-mark');
+    ['reel', 'photos', 'words'].forEach(function (kind) {
+      node.classList.toggle('is-' + kind, depth === kind);
+    });
+    node.style.setProperty('--pin-d', pinSize(place) + 'px');
+    var wears = pinOf(place);
+    TTBPins.dress(node, wears);
+    var face = node.querySelector('.pin-face');
+    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
+  }
+
   /* One pin, dressed for what it is saying. The picture is the same on every
      one of them — that is the point of it — so the three readings that used
      to be solid, hollow and small-and-faint are carried by the collar drawn
@@ -1801,27 +1825,12 @@
     var c = colours || markerColours();
     var chosen = isChosen(place);
     var kept = isKept(place);
-    var depth = pinDepth(place);
-    var d = pinSize(place);
 
-    node.classList.add('pin-mark');
-    ['reel', 'photos', 'words'].forEach(function (kind) {
-      node.classList.toggle('is-' + kind, depth === kind);
-    });
+    wearPin(node, place);
     node.classList.toggle('is-chosen', chosen);
     node.classList.toggle('is-kept', kept);
     node.classList.toggle('is-shut', !!place.closed);
     node.classList.toggle('is-paused', isPaused(place));
-    node.style.setProperty('--pin-d', d + 'px');
-
-    /* The mouth or a glyph, and the tone that goes with it, as classes on
-       this node — the stylesheet owns the colour. The glyph itself is
-       written into the face rather than here, because Leaflet owns the pair
-       and .pin-face is the half that takes the pointer. */
-    var wears = pinOf(place);
-    TTBPins.dress(node, wears);
-    var face = node.querySelector('.pin-face');
-    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
 
     /* Three states outrank whatever the pin chose, and all three are about
        this map rather than about the place: shut for good, open, and the one
@@ -4633,13 +4642,17 @@
     return tier ? tier.d : 30 + count;
   }
 
-  function pinGroups(places) {
-    var zoom = map.getZoom();
+  /* `on` is the map the grouping is worked out for, and the map's own where
+     nobody says: Discover's card is a second, still one, and it groups by the
+     same rule at its own zoom so the two never disagree about a pair. */
+  function pinGroups(places, on) {
+    var m = on || map;
+    var zoom = m.getZoom();
     if (zoom > CLUSTER_ZOOM_MAX) {
       return places.map(function (p) { return [{ place: p }]; });
     }
     var pts = places.map(function (p) {
-      return { place: p, pt: map.project([p.lat, p.lng], zoom) };
+      return { place: p, pt: m.project([p.lat, p.lng], zoom) };
     });
     var taken = [];
     var groups = [];
@@ -4665,6 +4678,20 @@
     clusterPins = [];
   }
 
+  /* The disc itself, for a count: what the map's clusters wear and what the
+     still map on Discover's card draws, so a five is the same five on both. */
+  function clusterIcon(count) {
+    var size = clusterSize(count);
+    return L.divIcon({
+      className: 'cluster-pin',
+      html: '<span class="cluster-dot' + (count > 2 ? ' is-many' : '') +
+            '" style="--cluster-d:' + size + 'px">' +
+            '<span class="cluster-count">' + clusterCount(count) + '</span></span>',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2]
+    });
+  }
+
   function clusterPin(group) {
     var count = group.length;
     var lat = 0;
@@ -4674,18 +4701,9 @@
     /* Against a 22px pin at the small end and just under three times one at
        the big end, so a cluster is never mistaken for a place at any count. The
        count itself grows with the dot; see --cluster-d in the stylesheet. */
-    var size = clusterSize(count);
-    var shown = clusterCount(count);
-    var label = t('clusterLabel', { count: shown });
+    var label = t('clusterLabel', { count: clusterCount(count) });
     var pin = L.marker([lat / count, lng / count], {
-      icon: L.divIcon({
-        className: 'cluster-pin',
-        html: '<span class="cluster-dot' + (count > 2 ? ' is-many' : '') +
-              '" style="--cluster-d:' + size + 'px">' +
-              '<span class="cluster-count">' + shown + '</span></span>',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2]
-      }),
+      icon: clusterIcon(count),
       keyboard: true,
       title: label,
       alt: label,
@@ -5445,6 +5463,14 @@
       lang: function () { return state.lang; },
       places: function () { return state.places; },
       month: formatMonth,
+      /* The card's still map draws with the map's own parts: its tiles in
+         the palette that is up, its grouping, its discs and its pins. */
+      tiles: function () { return makeTiles(isDarkStyle(state.style)); },
+      dark: function () { return isDarkStyle(state.style); },
+      groups: function (on, places) { return pinGroups(places, on); },
+      cluster: clusterIcon,
+      pin: pinIcon,
+      wear: wearPin,
       onMap: leaveDiscover,
       /* Left first, so the map's entry is under the place's rather than
          pushed over it by the panel opening. */

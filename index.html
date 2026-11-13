@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=bed3ec11">
+<link rel="stylesheet" href="assets/styles.lean.css?v=b3d8cc75">
 </head>
 <body>
 
@@ -655,18 +655,15 @@
      one card, then shelves of lists and places that assets/discover.js draws
      into #discover-shelves. The card is markup and not script so that it is
      on screen with the page: it is the way to the map, and the one thing
-     here that must never wait on a request. The two paths in the little
-     picture are a suggestion of a shoreline and a road and nothing more
-     exact; the marks the script adds over them are the real places.
+     here that must never wait on a request. The picture on it is the map
+     itself, small and still, which sky() in assets/discover.js draws into
+     #discover-sky — the box is empty and takes no room until it has.
      Hidden until mountDiscover() in assets/app.js decides it is up, which is
      a plain arrival on a phone and nothing else. It stands under the brand
      and the find bar, which stay the map's own and stay live. -->
 <section class="discover" id="discover" data-i18n-aria-label="discoverLabel" aria-label="Discover" hidden>
   <div class="discover-map card" id="discover-map">
-    <svg class="discover-sky" id="discover-sky" viewBox="0 0 356 118" aria-hidden="true" focusable="false">
-      <path class="discover-sea" d="M107 0Q164 24 214 15T356 35V0Z"/>
-      <path class="discover-road" d="M0 73Q142 57 356 83M78 118Q142 59 121 0M221 118Q185 65 278 24"/>
-    </svg>
+    <div class="discover-sky" id="discover-sky"></div>
     <div class="discover-map-row">
       <div class="discover-map-words">
         <h2 data-i18n="discoverMapTitle">View map</h2>
@@ -752,7 +749,7 @@
 <!-- Discover, the page a phone opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
-<script src="assets/discover.js?v=837329df" defer></script>
-<script src="assets/app.lean.js?v=5a36ae1a" defer></script>
+<script src="assets/discover.js?v=65342f90" defer></script>
+<script src="assets/app.lean.js?v=e9b25e0e" defer></script>
 </body>
 </html>

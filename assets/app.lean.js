@@ -464,6 +464,7 @@
       tileLayer.addTo(map);
       if (tileLayer.getContainer) tileLayer.getContainer().style.opacity = '';
       warmTiles();
+      if (discover) discover.draw();
     }
 
     paintMarkers();
@@ -1025,6 +1026,19 @@
     haloMarker = null;
   }
 
+  function wearPin(node, place) {
+    var depth = pinDepth(place);
+    node.classList.add('pin-mark');
+    ['reel', 'photos', 'words'].forEach(function (kind) {
+      node.classList.toggle('is-' + kind, depth === kind);
+    });
+    node.style.setProperty('--pin-d', pinSize(place) + 'px');
+    var wears = pinOf(place);
+    TTBPins.dress(node, wears);
+    var face = node.querySelector('.pin-face');
+    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
+  }
+
   function dressPin(place, colours) {
     var marker = markers[place.id];
     if (!marker) return;
@@ -1034,23 +1048,12 @@
     var c = colours || markerColours();
     var chosen = isChosen(place);
     var kept = isKept(place);
-    var depth = pinDepth(place);
-    var d = pinSize(place);
 
-    node.classList.add('pin-mark');
-    ['reel', 'photos', 'words'].forEach(function (kind) {
-      node.classList.toggle('is-' + kind, depth === kind);
-    });
+    wearPin(node, place);
     node.classList.toggle('is-chosen', chosen);
     node.classList.toggle('is-kept', kept);
     node.classList.toggle('is-shut', !!place.closed);
     node.classList.toggle('is-paused', isPaused(place));
-    node.style.setProperty('--pin-d', d + 'px');
-
-    var wears = pinOf(place);
-    TTBPins.dress(node, wears);
-    var face = node.querySelector('.pin-face');
-    if (face) face.textContent = wears === 'mark' ? '' : TTBPins.glyph(wears);
 
     if (place.closed === true) node.style.setProperty('--pin-tone', c.muted);
     else if (place.closed) node.style.removeProperty('--pin-tone');
@@ -2714,13 +2717,14 @@
     return tier ? tier.d : 30 + count;
   }
 
-  function pinGroups(places) {
-    var zoom = map.getZoom();
+  function pinGroups(places, on) {
+    var m = on || map;
+    var zoom = m.getZoom();
     if (zoom > CLUSTER_ZOOM_MAX) {
       return places.map(function (p) { return [{ place: p }]; });
     }
     var pts = places.map(function (p) {
-      return { place: p, pt: map.project([p.lat, p.lng], zoom) };
+      return { place: p, pt: m.project([p.lat, p.lng], zoom) };
     });
     var taken = [];
     var groups = [];
@@ -2746,24 +2750,27 @@
     clusterPins = [];
   }
 
+  function clusterIcon(count) {
+    var size = clusterSize(count);
+    return L.divIcon({
+      className: 'cluster-pin',
+      html: '<span class="cluster-dot' + (count > 2 ? ' is-many' : '') +
+            '" style="--cluster-d:' + size + 'px">' +
+            '<span class="cluster-count">' + clusterCount(count) + '</span></span>',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2]
+    });
+  }
+
   function clusterPin(group) {
     var count = group.length;
     var lat = 0;
     var lng = 0;
     group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
 
-    var size = clusterSize(count);
-    var shown = clusterCount(count);
-    var label = t('clusterLabel', { count: shown });
+    var label = t('clusterLabel', { count: clusterCount(count) });
     var pin = L.marker([lat / count, lng / count], {
-      icon: L.divIcon({
-        className: 'cluster-pin',
-        html: '<span class="cluster-dot' + (count > 2 ? ' is-many' : '') +
-              '" style="--cluster-d:' + size + 'px">' +
-              '<span class="cluster-count">' + shown + '</span></span>',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2]
-      }),
+      icon: clusterIcon(count),
       keyboard: true,
       title: label,
       alt: label,
@@ -3124,6 +3131,12 @@
       lang: function () { return state.lang; },
       places: function () { return state.places; },
       month: formatMonth,
+      tiles: function () { return makeTiles(isDarkStyle(state.style)); },
+      dark: function () { return isDarkStyle(state.style); },
+      groups: function (on, places) { return pinGroups(places, on); },
+      cluster: clusterIcon,
+      pin: pinIcon,
+      wear: wearPin,
       onMap: leaveDiscover,
       onPlace: function (id) {
         leaveDiscover();

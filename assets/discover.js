@@ -46,10 +46,13 @@ window.TTBDiscover = (function () {
   /* How many cards a shelf of places carries. */
   var PLACES = 8;
 
-  /* The window of the city the card's little map shows: the middle of town,
-     where most of the marks are, at the card's own proportions. A mark
-     outside it is simply not on the picture. */
-  var SKY = { w: 356, h: 118, lat: 59.4395, lng: 24.742, span: 0.085 };
+  /* Where the card's still map stands: on the word TALLINN as the tiles
+     print it, at the zoom the full map opens near, so the name of the city is
+     in the middle of the picture and the streets round it can be read. Both
+     were measured off a screenshot of the map itself — the pins on it fix
+     the zoom and where the label sits. A place outside the window is simply
+     not on the picture; the map is one press away and has all of them. */
+  var SKY = { at: [59.4371, 24.7576], zoom: 13.68 };
 
   var o = null;
   var node = null;
@@ -57,6 +60,12 @@ window.TTBDiscover = (function () {
   /* null while the route has not answered, false when it failed. */
   var data = null;
   var scrolled = 0;
+  /* The card's still map, its tiles, whether those are the dark ones, and
+     the pins on it. Null until the card has been on screen once. */
+  var still = null;
+  var stillTiles = null;
+  var stillDark = false;
+  var stillPins = [];
 
   function el(tag, className, text) {
     var n = document.createElement(tag);
@@ -203,21 +212,66 @@ window.TTBDiscover = (function () {
     return note;
   }
 
+  /* THE CARD'S PICTURE IS THE MAP. It used to be a drawing: a shoreline and
+     three roads that were nobody's, with a dot for each place over them, and
+     it read as a map of somewhere else — a place in the drawn sea, a road
+     that is not there. So it is the real thing now, small and still: the
+     map's own tiles in the palette that is up, its own pins, its own counted
+     discs, all handed over by mountDiscover() so that nothing here is a
+     second opinion about what a pin looks like.
+
+     Still means no drag, no zoom and no keyboard: the whole card is one
+     button to the map, and a picture that panned under a thumb on its way
+     down the page would be a second map to get lost in. The pins take no
+     pointer for the same reason.
+
+     Made on the first draw with the card on screen, because Leaflet measures
+     its box and a hidden one measures nought. The pins do not wait for the
+     tiles, so on a slow line the picture is the places on the card's own
+     colour until the streets arrive under them. The credit stays on: it is
+     the tiles' licence condition, and the full map's own is out of sight
+     while this page is up. */
   function sky() {
-    var svg = document.getElementById('discover-sky');
-    if (!svg) return;
-    var old = svg.querySelectorAll('circle');
-    for (var i = 0; i < old.length; i++) svg.removeChild(old[i]);
-    var latSpan = SKY.span * Math.cos(SKY.lat * Math.PI / 180) * SKY.h / SKY.w;
-    open(o.places()).forEach(function (p) {
-      var x = (p.lng - (SKY.lng - SKY.span / 2)) / SKY.span * SKY.w;
-      var y = ((SKY.lat + latSpan / 2) - p.lat) / latSpan * SKY.h;
-      if (x < 5 || x > SKY.w - 5 || y < 5 || y > SKY.h - 5) return;
-      var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      dot.setAttribute('cx', x.toFixed(1));
-      dot.setAttribute('cy', y.toFixed(1));
-      dot.setAttribute('r', '4.5');
-      svg.appendChild(dot);
+    var box = document.getElementById('discover-sky');
+    if (!box || !window.L || !up()) return;
+    if (!still) {
+      still = L.map(box, {
+        center: SKY.at,
+        zoom: SKY.zoom,
+        zoomSnap: 0,
+        zoomControl: false,
+        dragging: false,
+        touchZoom: false,
+        doubleClickZoom: false,
+        scrollWheelZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        tap: false,
+        fadeAnimation: false
+      });
+      still.attributionControl.setPrefix(false);
+    }
+    still.invalidateSize();
+    if (!stillTiles || stillDark !== o.dark()) {
+      if (stillTiles) still.removeLayer(stillTiles);
+      stillDark = o.dark();
+      stillTiles = o.tiles();
+      stillTiles.addTo(still);
+    }
+    stillPins.forEach(function (pin) { still.removeLayer(pin); });
+    stillPins = o.groups(still, open(o.places())).map(function (group) {
+      var lat = 0;
+      var lng = 0;
+      group.forEach(function (m) { lat += m.place.lat; lng += m.place.lng; });
+      var one = group.length === 1;
+      var pin = L.marker([lat / group.length, lng / group.length], {
+        icon: one ? o.pin() : o.cluster(group.length),
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: one ? 0 : -100
+      }).addTo(still);
+      if (one) o.wear(pin.getElement(), group[0].place);
+      return pin;
     });
   }
 
@@ -270,6 +324,10 @@ window.TTBDiscover = (function () {
       data = null;
       draw();
       load();
+    } else {
+      /* The card's map measures its box, and the box may have changed while
+         the page was away. */
+      sky();
     }
   }
 
@@ -281,15 +339,19 @@ window.TTBDiscover = (function () {
   }
 
   /* opts: node (#discover), t, lang(), places(), month(ym), onMap(),
-     onPlace(id). The whole of the map's card is the way to the map, and the
-     button on it is the control that says so to a keyboard. */
+     onPlace(id), and the map's own parts for the card's still map — tiles(),
+     dark(), groups(map, places), cluster(count), pin(), wear(node, place).
+     The whole of the map's card is the way to the map, and the button on it
+     is the control that says so to a keyboard. The two links in the credit
+     are the one thing on it that goes somewhere else. */
   function mount(opts) {
     o = opts;
     node = opts.node;
     shelves = document.getElementById('discover-shelves');
     var card = document.getElementById('discover-map');
     if (card) {
-      card.addEventListener('click', function () {
+      card.addEventListener('click', function (ev) {
+        if (ev.target.closest && ev.target.closest('a')) return;
         TTBTrack.event('discover_map');
         o.onMap();
       });
