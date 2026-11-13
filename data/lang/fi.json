@@ -337,6 +337,8 @@
   "listsWhoPublic": "Julkinen",
   "listsWhoPrivate": "Yksityinen",
   "listsPin": "Merkki",
+  "listsPinsAll": "Näytä kaikki {n}",
+  "listsPinsFewer": "Näytä vähemmän",
   "listsPinMark": "Kartalla olevat paikat pitävät Tallinn Tastebudsin merkin.",
   "pinPin": "Karttamerkki",
   "pinFlame": "Liekki",

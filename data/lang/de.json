@@ -337,6 +337,8 @@
   "listsWhoPublic": "Öffentlich",
   "listsWhoPrivate": "Privat",
   "listsPin": "Die Markierung",
+  "listsPinsAll": "Alle {n} zeigen",
+  "listsPinsFewer": "Weniger zeigen",
   "listsPinMark": "Orte auf der Karte behalten das Tallinn-Tastebuds-Zeichen.",
   "pinPin": "Kartennadel",
   "pinFlame": "Flamme",

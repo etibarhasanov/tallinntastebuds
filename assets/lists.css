@@ -473,9 +473,11 @@
 
 .lists-pin-grid {
   display: grid;
-  /* Eight to a line, at every width, so the first forty are five even rows
-     and the five food ones are a short sixth — a different kind of marker,
-     reading as its own group, which is the shape assets/pins.js argues for.
+  /* Eight to a line, at every width: closed, the grid is exactly one row —
+     the eight most worn, see PIN_FIRST in assets/lists.js — and opened it is
+     those eight and then the rest in pins.js's order, so the five food ones
+     are still the short last row, a different kind of marker reading as its
+     own group, which is the shape assets/pins.js argues for.
      The columns are fractions rather than 38px because eight fixed ones
      come to 332px — eight more than a 390px phone leaves inside this card,
      and enough to make a 360px one scroll sideways. As fractions they are
@@ -487,6 +489,9 @@
   gap: 4px;
   max-width: 332px;
 }
+/* See all 45 and Show fewer, under the grid and over the line about the
+   mark, which is what it is the way into. */
+.lists-pins-more { align-self: flex-start; margin-top: 6px; }
 
 /* One press in either group. The same shape the visibility segment uses —
    a label around a real radio, the radio kept focusable rather than

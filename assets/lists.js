@@ -2991,7 +2991,28 @@
    * for an afternoon, and they were a second decision to make before you
    * could name a list — for a difference the marker was already making.
    * Every marker draws in the style's accent now.
+   *
+   * EIGHT FIRST, AND THE REST BEHIND SEE ALL
+   *
+   * Forty-five was six rows of emoji between the name and everything else on
+   * the card, on a list that has no places yet. So the picker opens on one
+   * row: PIN_FIRST, the eight lists wear most, most worn first. See all opens
+   * the grid with those eight still leading, and Show fewer folds it back.
+   * Whatever the list is wearing is always on the row — in the eighth place
+   * when it is not one of the eight — so the answer to "which one is mine" is
+   * never behind a press.
+   *
+   * The eight are written here rather than counted per request. Counted on
+   * 2026-11-13 off production's lists — the default 7, heart and flame 3,
+   * sun, gem, beers and balloon 2, and star the first of the ones — which is
+   * thirty-one lists, and an order recounted live at that size would shuffle
+   * the row whenever anybody picked anything. Recount and rewrite it when the
+   * lists have grown:
+   *   SELECT COALESCE(NULLIF(pin,''),'pin'), COUNT(*) FROM lists GROUP BY 1 ORDER BY 2 DESC
    */
+  var PIN_FIRST = ['pin', 'heart', 'flame', 'sun', 'gem', 'beers', 'balloon', 'star'];
+  var pinsOpen = false;
+
   function pinPicker(list) {
     var worn = TTBPins.ofList(list);
     firstSeen('pin', worn);
@@ -3023,13 +3044,25 @@
       return box;
     }
 
-    /* The forty-five. Each one draws itself, so the grid is the answer to
-       "what will my list look like" rather than a list of words for it. */
+    /* Each one draws itself, so the grid is the answer to "what will my list
+       look like" rather than a list of words for it. Closed, the eight; open,
+       the eight and then the rest in the order pins.js keeps them. */
+    var first = PIN_FIRST.filter(function (id) { return TTBPins.GLYPHS.indexOf(id) !== -1; });
+    var shown;
+    if (pinsOpen) {
+      shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
+    } else {
+      shown = first.slice();
+      if (shown.indexOf(worn) === -1 && TTBPins.GLYPHS.indexOf(worn) !== -1) {
+        shown[shown.length - 1] = worn;
+      }
+    }
+
     var glyphs = el('div', {
       className: 'lists-pin-grid',
       role: 'radiogroup',
       'aria-label': t('listsPin')
-    }, TTBPins.GLYPHS.map(function (id) {
+    }, shown.map(function (id) {
       var face = TTBPins.paint(el('span', { className: 'lists-swatch-face' }), id);
       return swatch('pin', id, t(pinKey(id)), [face], id === worn, function () {
         list.pin = id;
@@ -3046,11 +3079,28 @@
       });
     }));
 
-    return el('fieldset', { className: 'lists-vis lists-pins' }, [
+    /* Redrawn in place rather than with the page, so a fold opened or shut
+       loses nothing typed into the fields above it. */
+    var more = button(
+      pinsOpen ? t('listsPinsFewer') : t('listsPinsAll', { n: String(TTBPins.GLYPHS.length) }),
+      'alt lists-pins-more',
+      function () {
+        pinsOpen = !pinsOpen;
+        TTBTrack.event('list_pins_' + (pinsOpen ? 'all' : 'fewer'), { list_id: list.id });
+        var next = pinPicker(list);
+        set.parentNode.replaceChild(next, set);
+        next.querySelector('.lists-pins-more').focus();
+      }
+    );
+    more.setAttribute('aria-expanded', pinsOpen ? 'true' : 'false');
+
+    var set = el('fieldset', { className: 'lists-vis lists-pins' }, [
       el('legend', { className: 'lists-vis-legend mono', textContent: t('listsPin') }),
       glyphs,
+      more,
       el('p', { className: 'lists-hint mono', textContent: t('listsPinMark') })
     ]);
+    return set;
   }
 
   /* The ui.json key for one marker: pinKey('flame') is 'pinFlame'. Built

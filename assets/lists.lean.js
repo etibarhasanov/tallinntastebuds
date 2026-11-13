@@ -1598,6 +1598,9 @@
     ]);
   }
 
+  var PIN_FIRST = ['pin', 'heart', 'flame', 'sun', 'gem', 'beers', 'balloon', 'star'];
+  var pinsOpen = false;
+
   function pinPicker(list) {
     var worn = TTBPins.ofList(list);
     firstSeen('pin', worn);
@@ -1624,11 +1627,22 @@
       return box;
     }
 
+    var first = PIN_FIRST.filter(function (id) { return TTBPins.GLYPHS.indexOf(id) !== -1; });
+    var shown;
+    if (pinsOpen) {
+      shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
+    } else {
+      shown = first.slice();
+      if (shown.indexOf(worn) === -1 && TTBPins.GLYPHS.indexOf(worn) !== -1) {
+        shown[shown.length - 1] = worn;
+      }
+    }
+
     var glyphs = el('div', {
       className: 'lists-pin-grid',
       role: 'radiogroup',
       'aria-label': t('listsPin')
-    }, TTBPins.GLYPHS.map(function (id) {
+    }, shown.map(function (id) {
       var face = TTBPins.paint(el('span', { className: 'lists-swatch-face' }), id);
       return swatch('pin', id, t(pinKey(id)), [face], id === worn, function () {
         list.pin = id;
@@ -1641,11 +1655,26 @@
       });
     }));
 
-    return el('fieldset', { className: 'lists-vis lists-pins' }, [
+    var more = button(
+      pinsOpen ? t('listsPinsFewer') : t('listsPinsAll', { n: String(TTBPins.GLYPHS.length) }),
+      'alt lists-pins-more',
+      function () {
+        pinsOpen = !pinsOpen;
+        TTBTrack.event('list_pins_' + (pinsOpen ? 'all' : 'fewer'), { list_id: list.id });
+        var next = pinPicker(list);
+        set.parentNode.replaceChild(next, set);
+        next.querySelector('.lists-pins-more').focus();
+      }
+    );
+    more.setAttribute('aria-expanded', pinsOpen ? 'true' : 'false');
+
+    var set = el('fieldset', { className: 'lists-vis lists-pins' }, [
       el('legend', { className: 'lists-vis-legend mono', textContent: t('listsPin') }),
       glyphs,
+      more,
       el('p', { className: 'lists-hint mono', textContent: t('listsPinMark') })
     ]);
+    return set;
   }
 
   function pinKey(id) {

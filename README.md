@@ -6980,9 +6980,19 @@ to press Save finds it kept too, and only one of those is a story anybody
 minds.
 
 **The pin** is above that, and it is the one field on the card that is a grid
-of pictures rather than a box to type in: forty-five markers, five rows of
-eight and a short one, and what you press is what this list's places wear on
-the map. It is a field, so it sits with the fields. The mouth is not on the
+of pictures rather than a box to type in, and what you press is what this
+list's places wear on the map. It opens on one row of eight — the ones lists
+wear most, most worn first, which is `PIN_FIRST` in `assets/lists.js` — with
+whatever this list is wearing always among them, in the eighth place when it
+is not one of the eight. **See all 45** opens the rest, five rows of eight
+and a short one with the same eight leading, and **Show fewer** folds it
+back. All forty-five were the whole of it until 2026-11-13: six rows of emoji
+between the name and everything else, on a list with nothing on it yet, and
+the owner's word was that nobody needs all of them at the start. The eight
+are written in rather than counted per request — thirty-one lists between
+them when they were counted, which is too few for a live order to do anything
+but reshuffle the row — and the comment over them carries the query that
+recounts them. It is a field, so it sits with the fields. The mouth is not on the
 grid and cannot be asked for — a place on the map draws it whatever list it is
 on, and the line under the picker says so. **The pins** is the whole of it.
 
@@ -19560,6 +19570,7 @@ The lists, `assets/lists.js` — a list, a profile, and `/lists`:
 | `list_save` | `list_id`, `writes` |
 | `list_visibility` | `list_id`, `visibility` |
 | `list_pin` | `list_id`, `pin` — a marker pressed in the picker |
+| `list_pins_all`, `list_pins_fewer` | `list_id` — **See all 45** and **Show fewer** under the pin picker |
 | `list_reorder` | `list_id`, `from`, `to` |
 | `list_add`, `list_remove` | `list_id`, `place` |
 | `list_delete` | `list_id` |

@@ -337,6 +337,8 @@
   "listsWhoPublic": "Avalik",
   "listsWhoPrivate": "Privaatne",
   "listsPin": "Tähis",
+  "listsPinsAll": "Vaata kõiki {n}",
+  "listsPinsFewer": "Näita vähem",
   "listsPinMark": "Kaardil olevad kohad kannavad Tallinn Tastebudsi märki.",
   "pinPin": "Kaardinõel",
   "pinFlame": "Leek",
