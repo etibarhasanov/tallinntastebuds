@@ -432,7 +432,7 @@
   "discoverRetry": "Спробувати ще раз",
   "discoverPlayEyebrow": "Грати",
   "discoverPlayTitle": "Обійди список",
-  "discoverPlaySay": "Відміться в кожному місці списку, пішки або на велосипеді, і потрапиш на його дошку.",
+  "discoverPlaySay": "Відміться в кожному місці списку, на будь-якому транспорті на свій вибір, і потрапиш на його дошку.",
   "discoverPlayDone": "пройшли: {n}",
   "discoverPlayBest": "найшвидше: {took}",
   "discoverPlayNobody": "його ще ніхто не пройшов",

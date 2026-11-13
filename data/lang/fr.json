@@ -432,7 +432,7 @@
   "discoverRetry": "Réessayer",
   "discoverPlayEyebrow": "Jouer",
   "discoverPlayTitle": "Fais le tour d’une liste",
-  "discoverPlaySay": "Valide ta présence à chaque adresse d’une liste, à pied ou à vélo, et tu es sur son tableau.",
+  "discoverPlaySay": "Valide ta présence à chaque adresse d’une liste, avec le moyen de transport de ton choix, et tu es sur son tableau.",
   "discoverPlayDone": "terminée par : {n}",
   "discoverPlayBest": "le plus rapide : {took}",
   "discoverPlayNobody": "personne ne l’a encore terminée",
