@@ -25,8 +25,6 @@
 
   var ALL_PATH = '/lists';
 
-  var MINE_PATH = '/account.html';
-
   var MAX_QUERY = 60;
   var SEARCH_WAIT = 220;
 
@@ -790,7 +788,7 @@
   function makeYours() {
     return TTBTrack.click(el('a', {
       className: 'go',
-      href: state.me ? MINE_PATH : '/?account=up&then=' + encodeURIComponent(MINE_PATH),
+      href: state.me ? '/list/' + DRAFT : '/?account=up&then=' + encodeURIComponent('/list/' + DRAFT),
       textContent: t('listsMakeYours')
     }), 'list_new', { signed_in: state.me ? 'yes' : 'no' });
   }
