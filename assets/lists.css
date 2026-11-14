@@ -473,9 +473,10 @@
 
 .lists-pin-grid {
   display: grid;
-  /* Eight to a line, at every width: closed, the grid is exactly one row —
-     the eight most worn, see PIN_FIRST in assets/lists.js — and opened it is
-     those eight and then the rest in pins.js's order, so the five food ones
+  /* Eight to a line, at every width: closed, the grid is two rows — the
+     eight most worn, then four more and See all beside them, see PIN_FIRST
+     and PIN_NEXT in assets/lists.js — and opened it is the same twelve and
+     then the rest in pins.js's order, so the five food ones
      are still the short last row, a different kind of marker reading as its
      own group, which is the shape assets/pins.js argues for.
      The columns are fractions rather than 38px because eight fixed ones
@@ -489,9 +490,23 @@
   gap: 4px;
   max-width: 332px;
 }
-/* See all 45 and Show fewer, under the grid and over the line about the
-   mark, which is what it is the way into. */
-.lists-pins-more { align-self: flex-start; margin-top: 6px; }
+/* The radiogroup holds the swatches and nothing else, and lends its
+   children to the grid above it, so the button after it can stand on the
+   same columns without being one of the choices. */
+.lists-pin-set { display: contents; }
+/* See all 45, on the second row in the four columns the pins leave: as wide
+   as its words, set in from the last swatch, and never broken over two
+   lines, since a row of the grid is one swatch tall. */
+.lists-pins-more {
+  grid-column: span 4;
+  justify-self: start;
+  align-self: center;
+  margin: 0 0 0 8px;
+  white-space: nowrap;
+}
+/* Show fewer, under the whole grid: opened, the last row is the five food
+   ones and a link beside them would read as a sixth. */
+.lists-pins-more[aria-expanded="true"] { grid-column: 1 / -1; margin: 2px 0 0; }
 
 /* One press in either group. The same shape the visibility segment uses —
    a label around a real radio, the radio kept focusable rather than

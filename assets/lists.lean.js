@@ -1597,6 +1597,7 @@
   }
 
   var PIN_FIRST = ['pin', 'heart', 'flame', 'sun', 'gem', 'beers', 'balloon', 'star'];
+  var PIN_NEXT = 4;
   var pinsOpen = false;
 
   function pinPicker(list) {
@@ -1626,18 +1627,16 @@
     }
 
     var first = PIN_FIRST.filter(function (id) { return TTBPins.GLYPHS.indexOf(id) !== -1; });
-    var shown;
-    if (pinsOpen) {
-      shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
-    } else {
-      shown = first.slice();
+    var shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
+    if (!pinsOpen) {
+      shown = shown.slice(0, first.length + PIN_NEXT);
       if (shown.indexOf(worn) === -1 && TTBPins.GLYPHS.indexOf(worn) !== -1) {
         shown[shown.length - 1] = worn;
       }
     }
 
     var glyphs = el('div', {
-      className: 'lists-pin-grid',
+      className: 'lists-pin-set',
       role: 'radiogroup',
       'aria-label': t('listsPin')
     }, shown.map(function (id) {
@@ -1668,8 +1667,7 @@
 
     var set = el('fieldset', { className: 'lists-vis lists-pins' }, [
       el('legend', { className: 'lists-vis-legend mono', textContent: t('listsPin') }),
-      glyphs,
-      more,
+      el('div', { className: 'lists-pin-grid' }, [glyphs, more]),
       el('p', { className: 'lists-hint mono', textContent: t('listsPinMark') })
     ]);
     return set;
