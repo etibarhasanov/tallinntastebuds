@@ -3922,7 +3922,7 @@ list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
 
 The line moved once more, on 2026-11-13, and it was the owner who moved it:
-**Discover**, the page a phone opens on, carries a shelf of the map's own
+**Discover**, the page the bare address opens on, carries a shelf of the map's own
 places in the order people open them. For a day that was *Most opened
 places*, the front of the order; since 2026-11-14 it is *Overlooked places*,
 the five at the back of it, which is the kinder end to print and the one
@@ -18135,8 +18135,8 @@ already playing again. Only a pause from outside leaves it paused.
 
 ## Discover
 
-A phone that opens the bare address does not open on the map any more. It
-opens on a page in front of it: the map as one card with **Open map** on it, then
+The bare address does not open on the map any more, on a phone or on a
+desktop. It opens on a page in front of it: the map as one card with **Open map** on it, then
 four shelves that scroll sideways — **New lists**, **Overlooked places**,
 **Popular lists**, **New on the map** — with a card called **Play** between
 the second and the third, and at the foot a quiet line, **Feedback · Privacy**,
@@ -18173,12 +18173,43 @@ picture's bottom corner — paper with the accent round it, like the pills at
 the top of the page, because a filled accent pill among filled accent discs
 got lost. The card is only the map, about seventy pixels shorter.
 
-**When it is up.** A plain arrival on a phone, and nothing else. A link that
+**When it is up.** A plain arrival, and nothing else. A link that
 is about something — `?spot=`, `?list=`, `?type=`, `?story=`, the sign-in
 door — is what was sent, and a front page over it would bury it; `boot()` in
 `assets/app.js` asks whether the address carried anything but a language and
-a style. A desktop is left alone: it already opens on the names beside the
-map, which is that screen's answer to the same question.
+a style.
+
+**On a desktop it is the same page, laid out wide.** Until 2026-11-14 a
+desktop was left alone, on the argument that it already opens on the names
+beside the map; the owner asked for the phone's page there too, picked the
+first of three drawings, and said the data was to be exactly the phone's. So
+it is: the same shelves in the same order out of the same one answer, and
+nothing in `assets/discover.js` asks which screen it is on — the wide
+arrangement is one block of rules at the end of the page's own in
+`assets/styles.css`, above 860px.
+
+What a wide window changes is that a shelf can be shown whole, so nothing
+there scrolls sideways and nothing is cut at the edge. The page is one column
+in the middle of the window, 1160px at most, and the brand, the find bar and
+the corner come in from the window's edges to stand on that column's while it
+is up. The map's card and **Play** share the first row — the card on the left,
+as tall as Play is and never under 340px, and Play on the right with its
+routes one under another, where a phone swipes through them and counts them in
+dots. Lists stand four to a row and wrap; a shelf of places is one row that
+its cards share, eight at the widest, because a second row of two reads as a
+shelf that ran out. With no route to offer there is no Play and the card spans
+the page; while the route is out a blank card holds Play's column, so the map
+does not start wide and narrow when the routes arrive.
+
+The names beside the map are the map's, and go with it: the columns are
+hidden while the page is up and are there again, scrolled where they were,
+when it comes down. There is no **Places** pill on a desktop's page — that
+button toggles a sheet a desktop does not have — so **Open map** is the one
+way to the map and the names together. Back from the map lands on the page on
+a desktop as on a phone; `wireHistory()` in `assets/app.js` stands the page up
+last, after the map under it has been matched to the entry, because on a
+desktop that matching hands the column back to the list and anything that
+opens the panel leaves Discover.
 
 **It stands under the brand and the find bar**, which stay the map's own and
 stay live — a name typed there opens a place the way it always has. While it
@@ -19540,7 +19571,7 @@ The map, `assets/app.js`:
 | `list_share` | `list_id`, `method` (`sheet`/`copy`) |
 | `list_page`, `profile_open` | `list_id` / `name` — the List half of the switch on the band, and the byline under it |
 | `lists_all` | — the pill on the rail, which is this page's door to the directory; the same name the other two doors report |
-| `discover_map` | — the map's card on Discover, the page a phone opens on: the card or the **Open map** on it |
+| `discover_map` | — the map's card on Discover, the page the bare address opens on: the card or the **Open map** on it |
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
