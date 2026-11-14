@@ -3180,10 +3180,16 @@
     });
   }
 
+  function seatDiscover() {
+    var foot = Math.max(dom.find.getBoundingClientRect().bottom,
+      dom.brand.querySelector('.brand-head').getBoundingClientRect().bottom);
+    $('discover').style.top = Math.round(foot + 10) + 'px';
+  }
+
   function standOnDiscover(on) {
     if (!discover || discover.up() === on) return;
     if (on) {
-      $('discover').style.top = Math.round(dom.find.getBoundingClientRect().bottom + 10) + 'px';
+      seatDiscover();
       discover.show();
       dom.map.setAttribute('inert', '');
     } else {
@@ -7168,36 +7174,41 @@
       if (window.TTBShell.up()) return;
       var params = new URLSearchParams(window.location.search);
 
-      standOnDiscover(!!(window.history.state && window.history.state.discover));
+      var home = !!(window.history.state && window.history.state.discover);
+      if (!home) standOnDiscover(false);
+      try {
 
-      var wanted = params.get('list') || '';
-      var moved = false;
-      if (wanted && (!state.list || state.list.id !== wanted)) {
-        moved = restoreList(wanted);
-      } else if (!wanted && state.list) {
-        letGoOfList();
-        moved = true;
+        var wanted = params.get('list') || '';
+        var moved = false;
+        if (wanted && (!state.list || state.list.id !== wanted)) {
+          moved = restoreList(wanted);
+        } else if (!wanted && state.list) {
+          letGoOfList();
+          moved = true;
+        }
+
+        if (moved) {
+          var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
+          state.active = activeFromUrl(params);
+          if (wasSaved && savedCount()) state.active.push(SAVED_FILTER);
+
+          renderFilters();
+          if (state.view === 'list') renderPanel();
+          paintMarkers();
+          fitToPins({ animate: true });
+        }
+
+        var spot = params.get('spot');
+        if (spot && byId(spot)) {
+          if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
+          return;
+        }
+        if (moved && state.list) { showList(false); return; }
+        if (moved) return;
+        if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
+      } finally {
+        if (home) standOnDiscover(true);
       }
-
-      if (moved) {
-        var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
-        state.active = activeFromUrl(params);
-        if (wasSaved && savedCount()) state.active.push(SAVED_FILTER);
-
-        renderFilters();
-        if (state.view === 'list') renderPanel();
-        paintMarkers();
-        fitToPins({ animate: true });
-      }
-
-      var spot = params.get('spot');
-      if (spot && byId(spot)) {
-        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
-        return;
-      }
-      if (moved && state.list) { showList(false); return; }
-      if (moved) return;
-      if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
     });
   }
 
@@ -7524,6 +7535,7 @@
       placeRail();
       syncRailReveal();
       if (map) map.invalidateSize({ animate: false });
+      if (discover && discover.up()) seatDiscover();
       syncFilterMenuToWidth();
       updateFilterFades();
       measureBand();
@@ -8049,7 +8061,7 @@
 
       if (!spot && !stand && !state.list && !wanted) resumeHere();
 
-      if (bare && isNarrow()) enterDiscover();
+      if (bare) enterDiscover();
       else if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);

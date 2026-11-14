@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=9e198dc6">
+<link rel="stylesheet" href="assets/styles.lean.css?v=30054deb">
 </head>
 <body>
 
@@ -663,7 +663,7 @@
   </div>
 </noscript>
 
-<!-- Discover: the page a phone opens on, in front of the map. The map as
+<!-- Discover: the page the bare address opens on, in front of the map. The map as
      one card, then shelves of lists and places that assets/discover.js draws
      into #discover-shelves. The card is markup and not script so that it is
      on screen with the page: it is the way to the map, and the one thing
@@ -674,7 +674,7 @@
      words are in a span of their own so that the arrow beside them is not
      written over when the language is.
      Hidden until mountDiscover() in assets/app.js decides it is up, which is
-     a plain arrival on a phone and nothing else. It stands under the brand
+     a plain arrival and nothing else, at every width. It stands under the brand
      and the find bar, which stay the map's own and stay live. -->
 <section class="discover" id="discover" data-i18n-aria-label="discoverLabel" aria-label="Discover" hidden>
   <div class="discover-map card" id="discover-map">
@@ -764,10 +764,10 @@
      global the list's own page hands its list to. Before the map's script,
      which asks it. -->
 <script src="assets/walk.js?v=4809fdb9" defer></script>
-<!-- Discover, the page a phone opens on in front of the map. Before the
+<!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
-<script src="assets/discover.js?v=2c10c83d" defer></script>
-<script src="assets/app.lean.js?v=3fddc6f3" defer></script>
+<script src="assets/discover.js?v=8e1c6c47" defer></script>
+<script src="assets/app.lean.js?v=b670adb5" defer></script>
 </body>
 </html>

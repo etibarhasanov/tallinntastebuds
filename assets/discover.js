@@ -1,7 +1,7 @@
-/* Tallinn Tastebuds — Discover, the front page a phone opens on.
+/* Tallinn Tastebuds — Discover, the front page the bare address opens on.
  *
  * window.TTBDiscover.mount(opts) draws the shelves under the map's own card in
- * #discover, and answers { show, hide, up, draw }. The map's script mounts it
+ * #discover, and answers { show, hide, up, draw, signed }. The map's script mounts it
  * and decides when it is up — mountDiscover() in assets/app.js, which is also
  * where the reasons for when live. This file only knows what is on the page.
  *
@@ -10,7 +10,7 @@
  * The map was the whole of the front door, and to somebody who has never been
  * here a map of unlabelled marks is a question rather than an answer: which
  * of these, and why. Lists answer it — ten places with a title somebody stood
- * behind — and so does knowing what everybody else looks at. So a phone opens
+ * behind — and so does knowing what everybody else looks at. So the site opens
  * on those, with the map as the first and biggest thing on the page, one press
  * away and already drawn underneath.
  *
@@ -34,6 +34,15 @@
  * The Play card is the one thing here that prints a number, and it is about
  * the people who went round a list — how many finished and how fast — which
  * is the board the list's own page already shows.
+ *
+ * ONE PAGE, TWO WIDTHS
+ *
+ * A desktop opens on the same page, from the same answer, and nothing in this
+ * file asks which it is on: the wide arrangement — the map's card with Play
+ * beside it, lists four across, a shelf of places in one row, the routes in a
+ * column where a phone swipes through them — is the last block of the page's
+ * rules in assets/styles.css. The two things here that exist for it are the
+ * blank Play in draw() and sky() running after the shelves.
  *
  * WHY A FILE OF ITS OWN, AND A GLOBAL
  *
@@ -448,14 +457,20 @@ window.TTBDiscover = (function () {
   }
 
   /* Everything under the map's card, from whatever is known right now. Called
-     again when the route answers and when the language changes. */
+     again when the route answers and when the language changes. The card's
+     map is drawn last, because on a desktop the card stands beside Play and
+     is as tall as Play is: Leaflet has to measure the box the shelves left
+     it, not the one they found. */
   function draw() {
-    sky();
-
     shelves.textContent = '';
     var parts = [];
     if (data === null) {
-      parts.push(waiting('discoverNewLists'), waiting('discoverPopularLists'));
+      /* The blank Play is a desktop's alone — the stylesheet hides it on a
+         phone — and holds the column beside the map's card, so the card does
+         not start wide and narrow when the routes arrive. */
+      var blank = el('section', 'discover-play is-waiting');
+      blank.setAttribute('aria-hidden', 'true');
+      parts.push(waiting('discoverNewLists'), blank, waiting('discoverPopularLists'));
     } else if (data === false) {
       parts.push(down());
     } else {
@@ -468,6 +483,7 @@ window.TTBDiscover = (function () {
     }
     parts.push(placeShelf('discoverAdded', '', newest(), added));
     parts.forEach(function (part) { if (part) shelves.appendChild(part); });
+    sky();
   }
 
   function load() {

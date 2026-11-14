@@ -61,8 +61,8 @@ ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
       <bpmn:outgoing>visitor-e29</bpmn:outgoing>
       <bpmn:outgoing>visitor-e31</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="discover" name="Reads Discover, on a phone">
-      <bpmn:documentation>A plain arrival on a phone opens on a page in front of the map: the map as one card, then new lists, the most opened places, a Play card offering lists to go round, swiped through one at a time with the reader's own walks first, popular lists and what is new on the map. Open map, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it, and so does a desktop. The round button at the end of the find bar opens More from here — the account, Ask, the flashcards, the colour, feedback and privacy — since the rail is put away.
+    <bpmn:userTask id="discover" name="Reads Discover">
+      <bpmn:documentation>A plain arrival, on a phone or a desktop, opens on a page in front of the map: the map as one card, then new lists, the most opened places, a Play card offering lists to go round, swiped through one at a time with the reader's own walks first, popular lists and what is new on the map. Open map, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it. On a desktop the same shelves are laid out wide, with Play beside the map's card and no Places pill. The round button at the end of the find bar opens More from here — the account, Ask, the flashcards, the colour, feedback and privacy — since the rail is put away.
 when: discover_map
 when: discover_list
 when: discover_place
@@ -266,7 +266,7 @@ ref: assets/lists.js keepAsked()</bpmn:documentation>
       <bpmn:incoming>visitor-e33</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="visitor-e1" sourceRef="open-map" targetRef="what-now" />
-    <bpmn:sequenceFlow id="visitor-e2" name="a phone, nothing asked for" sourceRef="open-map" targetRef="discover" />
+    <bpmn:sequenceFlow id="visitor-e2" name="nothing asked for" sourceRef="open-map" targetRef="discover" />
     <bpmn:sequenceFlow id="visitor-e3" sourceRef="discover" targetRef="what-now" />
     <bpmn:sequenceFlow id="visitor-e4" name="a pin" sourceRef="what-now" targetRef="open-place" />
     <bpmn:sequenceFlow id="visitor-e5" name="find a place" sourceRef="what-now" targetRef="browse" />

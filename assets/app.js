@@ -5491,21 +5491,24 @@
   var WALK_DOORS = ['list', 'at', 'spot', 'account', 'then', 'lang', 'style'];
 
   /* ---------------------------------------------------------------- discover
-   * The page a phone opens on, in front of the map: the map as one card, then
-   * shelves of lists and places — assets/discover.js draws it and says why
-   * there is one. This is when it is up, and what leaves it.
+   * The page the bare address opens on, in front of the map: the map as one
+   * card, then shelves of lists and places — assets/discover.js draws it and
+   * says why there is one. This is when it is up, and what leaves it.
    *
-   * A PLAIN ARRIVAL ON A PHONE, AND NOTHING ELSE. A link that is about
-   * something — a place, a list, a story, a chip, the sign-in sheet — is what
-   * was sent, and a front page over it would bury it; boot asks whether the
-   * address carried anything but a language and a style. And a desktop
-   * already opens on the names beside the map, which is that screen's answer
-   * to the same question.
+   * A PLAIN ARRIVAL, AND NOTHING ELSE. A link that is about something — a
+   * place, a list, a story, a chip, the sign-in sheet — is what was sent, and
+   * a front page over it would bury it; boot asks whether the address carried
+   * anything but a language and a style. At every width: a desktop was left
+   * alone until 2026-11-14, on the argument that the names beside the map
+   * were that screen's answer to the same question, and the owner asked for
+   * the phone's page there too — the same shelves from the same answer, laid
+   * out wide by the stylesheet alone.
    *
    * IT STANDS UNDER THE BRAND AND THE FIND BAR, which are the map's own and
    * stay live: a name typed there opens a place the way it always has. The
-   * rail, the chips and the arrow are the map's and go while it is up —
-   * body.is-discover in assets/styles.css — and the map itself is inert.
+   * rail, the chips, the arrow and, on a desktop, the columns are the map's
+   * and go while it is up — body.is-discover in assets/styles.css — and the
+   * map itself is inert.
    *
    * LEAVING IS A STEP, SO BACK IS THE WAY BACK. The entry the visitor arrived
    * on is marked as Discover's, and whatever leaves it — the card's Open, a
@@ -5542,14 +5545,24 @@
     });
   }
 
+  /* Where the page starts: under whichever of the find bar and the mark
+     reaches further down. On a phone that is the bar, which is under the
+     brand's row; on a desktop it is the mark, which stands taller than the
+     bar beside it. Measured rather than known: both move with the safe area
+     and with the language's own line height, and a window can be dragged from
+     one layout to the other, which is why the resize listener asks again. */
+  function seatDiscover() {
+    var foot = Math.max(dom.find.getBoundingClientRect().bottom,
+      dom.brand.querySelector('.brand-head').getBoundingClientRect().bottom);
+    $('discover').style.top = Math.round(foot + 10) + 'px';
+  }
+
   /* Up or down, and nothing written to the history: what popstate and a
      door off a page call, each of which already stands on the right entry. */
   function standOnDiscover(on) {
     if (!discover || discover.up() === on) return;
     if (on) {
-      /* Measured rather than known: the bar's foot moves with the safe area
-         and with the language's own line height. */
-      $('discover').style.top = Math.round(dom.find.getBoundingClientRect().bottom + 10) + 'px';
+      seatDiscover();
       discover.show();
       dom.map.setAttribute('inert', '');
     } else {
@@ -12290,60 +12303,71 @@
       if (window.TTBShell.up()) return;
       var params = new URLSearchParams(window.location.search);
 
-      /* Discover's own entry, or any other: see leaveDiscover(). */
-      standOnDiscover(!!(window.history.state && window.history.state.discover));
+      /* Discover's own entry, or any other: see leaveDiscover(). Coming
+         down happens first and standing up last, after the map under it has
+         been matched to the entry. On a desktop that matching ends by
+         handing the column back to the list, and anything that opens the
+         panel leaves Discover with a push — which, with the page already up,
+         was a Back that landed on Discover and was at once pushed off it
+         again. */
+      var home = !!(window.history.state && window.history.state.discover);
+      if (!home) standOnDiscover(false);
+      try {
 
-      /* The list first, because it decides which places exist: byId() below
-         has to be able to find a stand-in before ?spot= is asked about one.
+        /* The list first, because it decides which places exist: byId() below
+           has to be able to find a stand-in before ?spot= is asked about one.
 
-         Only ever the list this page dropped. A ?list= for anything else is
-         somebody's link, and a link is boot's job — reaching an entry that
-         names a list this page never had is not a thing the history can
-         produce, and quietly fetching one here would be a second way into a
-         feature that already has one. */
-      var wanted = params.get('list') || '';
-      var moved = false;
-      if (wanted && (!state.list || state.list.id !== wanted)) {
-        moved = restoreList(wanted);
-      } else if (!wanted && state.list) {
-        /* Forward, back onto the entry where the list was let go. Not
-           forgetList(): that one pushes, and writing history from inside a
-           popstate is how a Back button starts fighting the person pressing
-           it. */
-        letGoOfList();
-        moved = true;
+           Only ever the list this page dropped. A ?list= for anything else is
+           somebody's link, and a link is boot's job — reaching an entry that
+           names a list this page never had is not a thing the history can
+           produce, and quietly fetching one here would be a second way into a
+           feature that already has one. */
+        var wanted = params.get('list') || '';
+        var moved = false;
+        if (wanted && (!state.list || state.list.id !== wanted)) {
+          moved = restoreList(wanted);
+        } else if (!wanted && state.list) {
+          /* Forward, back onto the entry where the list was let go. Not
+             forgetList(): that one pushes, and writing history from inside a
+             popstate is how a Back button starts fighting the person pressing
+             it. */
+          letGoOfList();
+          moved = true;
+        }
+
+        if (moved) {
+          /* And the chips this entry was standing on. Without it, going back to
+             a list would put the list back underneath the very chip that
+             dismissed it — the map narrowed by both at once, and an address bar
+             reading ?list=…&type=… for a view nothing could have produced.
+
+             The saved filter is the exception, because it is the one that
+             never travels in the address bar: it narrows to what this browser
+             has pressed, so it cannot be read back out of a URL and is carried
+             across instead. */
+          var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
+          state.active = activeFromUrl(params);
+          if (wasSaved && savedCount()) state.active.push(SAVED_FILTER);
+
+          renderFilters();
+          if (state.view === 'list') renderPanel();
+          paintMarkers();
+          fitToPins({ animate: true });
+        }
+
+        var spot = params.get('spot');
+        if (spot && byId(spot)) {
+          if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
+          return;
+        }
+        /* A list coming back opens the panel on it, the way arriving on a link
+           does: the pins say where, and the panel says why these. */
+        if (moved && state.list) { showList(false); return; }
+        if (moved) return;
+        if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
+      } finally {
+        if (home) standOnDiscover(true);
       }
-
-      if (moved) {
-        /* And the chips this entry was standing on. Without it, going back to
-           a list would put the list back underneath the very chip that
-           dismissed it — the map narrowed by both at once, and an address bar
-           reading ?list=…&type=… for a view nothing could have produced.
-
-           The saved filter is the exception, because it is the one that
-           never travels in the address bar: it narrows to what this browser
-           has pressed, so it cannot be read back out of a URL and is carried
-           across instead. */
-        var wasSaved = state.active.indexOf(SAVED_FILTER) !== -1;
-        state.active = activeFromUrl(params);
-        if (wasSaved && savedCount()) state.active.push(SAVED_FILTER);
-
-        renderFilters();
-        if (state.view === 'list') renderPanel();
-        paintMarkers();
-        fitToPins({ animate: true });
-      }
-
-      var spot = params.get('spot');
-      if (spot && byId(spot)) {
-        if (state.selected !== spot) selectPlace(spot, { fly: true, history: false });
-        return;
-      }
-      /* A list coming back opens the panel on it, the way arriving on a link
-         does: the pins say where, and the panel says why these. */
-      if (moved && state.list) { showList(false); return; }
-      if (moved) return;
-      if (dom.panel.classList.contains('is-open')) closePanel({ history: false });
     });
   }
 
@@ -12816,6 +12840,7 @@
          words — there is no hover left to bring them back. */
       syncRailReveal();
       if (map) map.invalidateSize({ animate: false });
+      if (discover && discover.up()) seatDiscover();
       syncFilterMenuToWidth();
       updateFilterFades();
       /* A turned phone is a different width, and a band whose title wrapped at
@@ -13683,9 +13708,9 @@
          the deep link has had its say: a link straight to a place opens the
          sheet, and the introduction is owed to the map behind it rather than
          spent on a screen the rail is only a row along the top of. */
-      /* Unless the phone is opening on Discover, where there is no rail to
+      /* Unless the page is opening on Discover, where there is no rail to
          introduce yet: standOnDiscover() does it when the map comes up. */
-      if (bare && isNarrow()) enterDiscover();
+      if (bare) enterDiscover();
       else if (!storeGet(INTRO_KEY)) introduceRail();
     }).catch(function (err) {
       if (window.console && console.error) console.error(err);
