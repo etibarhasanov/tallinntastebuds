@@ -3922,15 +3922,18 @@ list is a thing somebody made and "the ones most people kept" says nothing
 about any restaurant on them.
 
 The line moved once more, on 2026-11-13, and it was the owner who moved it:
-**Discover**, the page a phone opens on, carries a shelf called *Most opened
-places* — the map's own places in the order people open them, the first few
-with their position on the picture. That is an order over my places, which
+**Discover**, the page a phone opens on, carries a shelf of the map's own
+places in the order people open them. For a day that was *Most opened
+places*, the front of the order; since 2026-11-14 it is *Overlooked places*,
+the five at the back of it, which is the kinder end to print and the one
+that changes. Either way it is an order over my places, which
 the paragraph above said there would never be, so it is said here rather than
 left for somebody to find. What it is an order *of* is the visitors: which
 places people look at, counted the way `/admin/stats` has always counted it,
 and the shelf says so in the line under its title. No number is printed and
-none leaves the server, nothing is called best, and it is not a rating — a
-place nobody has opened yet is exactly as approved as the one at the front.
+none leaves the server, nothing is called best or worst, and it is not a
+rating — a place nobody has opened yet is exactly as approved as the one
+opened most, and is now the one the shelf leads with.
 The reasoning is under **Discover**.
 
 Everywhere else the line is where it was: no place is scored, the list of
@@ -18134,7 +18137,7 @@ already playing again. Only a pause from outside leaves it paused.
 
 A phone that opens the bare address does not open on the map any more. It
 opens on a page in front of it: the map as one card with **Open map** on it, then
-four shelves that scroll sideways — **New lists**, **Most opened places**,
+four shelves that scroll sideways — **New lists**, **Overlooked places**,
 **Popular lists**, **New on the map** — with a card called **Play** between
 the second and the third, and at the foot a quiet line, **Feedback · Privacy**,
 More's two last rows said where a page ends. It offered to make a list until
@@ -18201,7 +18204,9 @@ here.
 **Where the shelves come from.** One request, `GET /api/discover`, answers
 three of them: the two shelves of lists are the directory's own query under
 two of its orders, so a list is on a shelf exactly when it is on `/lists`,
-and the places are `press_counts` read for its order alone. The fourth, *New
+and the places are `press_counts` read for its order alone — the five open
+places opened least, worked out in the route beside the map's roll, since a
+place nobody has opened has no row to be read. The fourth, *New
 on the map*, is the `added` date in `data/map.json`, which the map already
 holds — so the page is never empty: the map's card is markup, the last shelf
 needs nothing, and the others arrive. A shelf with fewer than three things on
@@ -18212,7 +18217,7 @@ card and the last shelf stand.
 **Play is the game, said once.** Every list can be walked — **Walking a
 list** — and the only sign of it was a chip called Route on a list's own
 page; four shelves of things to read said nothing about there being something
-to do. So between *Most opened places* and *Popular lists* there is one card:
+to do. So between *Overlooked places* and *Popular lists* there is one card:
 *Go round a list*, the sentence that says what that means, and under a rule
 the routes to start, one at a time. The owner placed it there, after the
 places and before the lists, on 2026-11-13.
@@ -18251,9 +18256,25 @@ offer the card is not drawn.
 **Nothing on it is a score.** No count of a place or a list is printed
 anywhere and none is sent: the route answers ids in an order. The Play card
 does print two numbers, and they are about walkers — how many finished a
-list and how fast — which is the board that list's own page already shows. *Most opened places* is the one shelf that
+list and how fast — which is the board that list's own page already shows. *Overlooked places* is the one shelf that
 orders my own places, and **On "no scores, stars or rankings"** says in so
 many words that this is the line moving and who moved it.
+
+**The shelf of places is the quiet end, and it empties itself.** For its
+first day it was *Most opened places*, the most opened first with a number on
+each picture, and a shelf like that feeds itself: the eight on it are the
+eight that get pressed, so they stay the eight. On 2026-11-14 the owner
+turned it round. It is five places now — the five on the map that have been
+opened least, a place nobody has opened yet first among them — and each open
+from the shelf is a step towards leaving it: once a place passes the one
+behind, that one takes its card. So the shelf walks up through the map from
+the bottom, and a place added yesterday is on it today. A place that is
+closed, or closed for now, is never on it; they sit at the bottom of the
+count because they are shut, and the shelf would otherwise stand on doors
+nobody can go through. No position is printed on a card, since the front of
+this shelf is not a place to be. It turns within five minutes of an open,
+which is how long the answer is kept. The route still answers `opened`, the
+old shelf's ids, for a page or an app from before the turn.
 
 **What a card shows.** A list: the marker its owner chose, the title, whose
 it is, and its first three places. A place: its first photograph, or the mark

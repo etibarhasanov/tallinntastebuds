@@ -2,13 +2,14 @@
  * Tallinn Tastebuds — GET /api/discover
  *
  * What the front page offers a phone before the map: the newest public lists,
- * the most opened ones, and which places on the map get opened most. One
+ * the most opened ones, and which places on the map get opened least. One
  * answer for all three shelves, because the page that draws them — Discover,
  * assets/discover.js — is the first thing a stranger sees and three requests
  * would be three chances for it to arrive in pieces.
  *
  *   { fresh:   [ { id, title, by, pin, taste } … ],   newest first
  *     popular: [ the same shape … ],                  most opened first
+ *     quiet:   [ place id … ],                        least opened first
  *     opened:  [ place id … ],                        most opened first
  *     routes:  [ { id, title, pin, places, finished, best, mode } … ],
  *     route:   the first of routes, or null }
@@ -26,9 +27,32 @@
  * a score, and this map does not score — being on it is the verdict. The
  * order says what people look at, which is a fact about the visitors rather
  * than a judgement about the kitchens, and the shelf says so in its own line.
- * Ids only, too: the page already holds data/map.json, and decides for itself
- * which of these are still on the map and still open. More ids than a shelf
- * draws, so a place that has closed since costs a card and not the row.
+ * Ids only, too: the page already holds data/map.json.
+ *
+ * THE SHELF IS THE QUIET END, AND IT EMPTIES ITSELF
+ *
+ * `quiet` is the QUIET places on the map that have been opened least, and it
+ * is what the page draws. Until 2026-11-14 the shelf was the other end, the
+ * most opened first, and a shelf like that feeds itself: the eight on it are
+ * the eight that get pressed, so they stay the eight. The owner turned it
+ * round. A place on this shelf gets opened from it, passes the one behind
+ * it, and the one behind takes its card — so the shelf walks up through the
+ * map from the bottom, and what it shows is whatever nobody has looked at
+ * lately rather than what everybody already has.
+ *
+ * It is worked out here and not on the page for two reasons. A place nobody
+ * has opened has no row in press_counts at all, and it is the quietest there
+ * is, so the order needs the map's roll beside the counts; and sending the
+ * page enough of the order to find the bottom itself would be sending most
+ * of the ranking. Closed places and the ones closed for now are left out
+ * before the cut, or the shelf would stand on doors nobody can go through —
+ * they are the bottom of the count precisely because they are shut. A tie is
+ * broken by id, which is no order at all and is at least the same one twice.
+ *
+ * `opened` is the old shelf's ids, most opened first, with spares for the
+ * ones a reader drops as closed. No page of this deployment draws it; it
+ * stays in the answer for a page or an app from before the turn, which
+ * would otherwise find its shelf gone rather than out of date.
  *
  * THE ROUTES ARE LISTS TO GO ROUND
  *
@@ -63,7 +87,7 @@
  * lists, and the other way round.
  */
 
-import { json, weakTag, withNotModified, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, weakTag, withNotModified, wrongDatabase } from './_lib.js';
 import { mostKept } from './_mostkept.js';
 import { readList } from './_lists.js';
 import { doors } from './walk.js';
@@ -72,8 +96,12 @@ import { doors } from './walk.js';
    the door at its end — See all, to /lists — is the better way on. */
 const SHELF = 8;
 
-/* How many place ids are sent for a shelf that draws SHELF of them: the
-   spares are for the ones the page drops as closed or gone. */
+/* How many places the shelf of the least opened carries. Five is the owner's
+   number: few enough that each open moves the shelf. */
+const QUIET = 5;
+
+/* How many ids `opened` sends, to a reader that drew eight of them: the
+   spares are for the ones it drops as closed or gone. */
 const OPENED = 16;
 
 /* How many lists the Play card can be swiped through, before the reader's own
@@ -83,7 +111,7 @@ const ROUTES = 5;
 
 const TTL = 300;
 
-const EMPTY = { fresh: [], popular: [], opened: [], route: null, routes: [] };
+const EMPTY = { fresh: [], popular: [], quiet: [], opened: [], route: null, routes: [] };
 
 function discoverKey(request) {
   return new Request(new URL('/api/discover', request.url).toString());
@@ -106,15 +134,33 @@ async function shelf(context, sort) {
   }
 }
 
-async function opened(env) {
+/* Both ends of the count, from one read of it — THE SHELF IS THE QUIET END.
+   Every row of the kind is read rather than the top few, because the bottom
+   of the map is the roll less the rows, not a second query: Google's venues
+   are counted under the same kind and are simply never looked up. A count
+   that cannot be read is two empty shelves, never a map of noughts; a roll
+   that cannot be read costs `quiet` alone. */
+async function places(context) {
+  let rows;
   try {
-    const { results } = await env.DB
-      .prepare("SELECT id FROM press_counts WHERE kind = 'place' ORDER BY n DESC, id ASC LIMIT ?")
-      .bind(OPENED)
-      .all();
-    return results.map((row) => row.id);
+    rows = (await context.env.DB
+      .prepare("SELECT id, n FROM press_counts WHERE kind = 'place' ORDER BY n DESC, id ASC")
+      .all()).results;
   } catch (e) {
-    return [];
+    return { quiet: [], opened: [] };
+  }
+  const opened = rows.slice(0, OPENED).map((row) => row.id);
+  try {
+    const n = new Map(rows.map((row) => [row.id, row.n]));
+    const quiet = (await mapPlaces(context))
+      .filter((place) => !place.closed)
+      .map((place) => ({ id: place.id, n: n.get(place.id) || 0 }))
+      .sort((a, b) => a.n - b.n || (a.id < b.id ? -1 : 1))
+      .slice(0, QUIET)
+      .map((place) => place.id);
+    return { quiet, opened };
+  } catch (e) {
+    return { quiet: [], opened };
   }
 }
 
@@ -183,15 +229,15 @@ export async function onRequestGet(context) {
   const hit = await cache.match(key);
   if (hit) return withNotModified(request, hit);
 
-  const [fresh, popular, places] = await Promise.all([
+  const [fresh, popular, { quiet, opened }] = await Promise.all([
     shelf(context, 'new'),
     shelf(context, 'views'),
-    opened(env)
+    places(context)
   ]);
 
   const play = await routes(context, popular.map((list) => list.id));
 
-  const body = JSON.stringify({ fresh, popular, opened: places, route: play[0] || null, routes: play });
+  const body = JSON.stringify({ fresh, popular, quiet, opened, route: play[0] || null, routes: play });
   const res = new Response(body, {
     headers: {
       'content-type': 'application/json; charset=utf-8',
