@@ -256,6 +256,14 @@
     "map": true
   },
   {
+    "id": "jaspier-pagariari",
+    "name": "Jaspier Pagariäri",
+    "address": "A. H. Tammsaare tee 92, 13423 Tallinn",
+    "lat": 59.4074541,
+    "lng": 24.6931868,
+    "map": true
+  },
+  {
     "id": "kaheksa",
     "name": "Kaheksa",
     "address": "Suur-Karja tn 8, 10140 Tallinn",

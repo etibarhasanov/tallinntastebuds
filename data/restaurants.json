@@ -1176,6 +1176,42 @@
     "closed": false
   },
   {
+    "id": "jaspier-pagariari",
+    "name": "Jaspier Pagariäri",
+    "address": "A. H. Tammsaare tee 92, 13423 Tallinn",
+    "lat": 59.4074541,
+    "lng": 24.6931868,
+    "price": 1,
+    "types": [
+      "bakery"
+    ],
+    "blurb": {
+      "az": "Mustamäedə yeni məhəllə çörəkxanası, kruassanı da yaxşıdır. tallinnbits-in dediyinə görə, sentyabrda açılıb, götürüb getmək üçün idealdır, isti, minimalist ab-havası və şirin və duzlu xəmir işlərindən cəlbedici seçimi var. Onlar mövsümi bulkalardan bir neçəsini dadıblar və ən çox bəyəndikləri almalı olub.",
+      "en": "A new neighbourhood bakery in Mustamäe, and the croissant is a nice one. According to tallinnbits, it opened in September, it is perfect to grab and go, and it has a warm, minimalist feel and a tempting selection of sweet and savoury pastries. They tried a few of the seasonal buns and their favourite was the apple one.",
+      "et": "Uus naabruskonna pagariäri Mustamäel ja croissant on hea. tallinnbitsi sõnul avati see septembris, sobib suurepäraselt kaasa haaramiseks ning seal on soe, minimalistlik õhkkond ja ahvatlev valik magusaid ja soolaseid saiakesi. Nad proovisid mitut hooajalist kuklit ja nende lemmik oli õunakukkel.",
+      "fi": "Uusi naapuruston leipomo Mustamäellä, ja croissant on hyvä. tallinnbitsin mukaan se avattiin syyskuussa, se sopii täydellisesti mukaan napattavaksi ja siellä on lämmin, minimalistinen tunnelma ja houkutteleva valikoima makeita ja suolaisia leivonnaisia. He maistoivat muutamaa kauden pullaa, ja heidän suosikkinsa oli omenapulla.",
+      "pt": "Uma nova padaria de bairro em Mustamäe, e o croissant é bom. Segundo a tallinnbits, abriu em setembro, é perfeita para pegar e levar e tem um ambiente acolhedor e minimalista e uma seleção tentadora de doces e salgados. Provaram alguns dos pãezinhos sazonais e o preferido foi o de maçã.",
+      "ru": "Новая районная пекарня в Мустамяэ, и круассан здесь хороший. По словам tallinnbits, она открылась в сентябре, идеально подходит, чтобы взять с собой, и в ней тёплая, минималистичная атмосфера и заманчивый выбор сладкой и солёной выпечки. Они попробовали несколько сезонных булочек, и больше всего им понравилась яблочная.",
+      "es": "Una nueva panadería de barrio en Mustamäe, y el cruasán está rico. Según tallinnbits, abrió en septiembre, es perfecta para llevar y tiene un ambiente cálido y minimalista y una selección tentadora de bollería dulce y salada. Probaron varios de los bollos de temporada y su favorito fue el de manzana.",
+      "tr": "Mustamäe'de yeni bir mahalle fırını ve kruvasanı güzel. tallinnbits'e göre eylülde açıldı, alıp gitmek için ideal, sıcak ve minimalist bir havası ve tatlı ve tuzlu hamur işlerinden cezbedici bir seçkisi var. Mevsimlik çöreklerden birkaçını denemişler ve favorileri elmalı olmuş.",
+      "uk": "Нова районна пекарня в Мустамяе, і круасан тут смачний. За словами tallinnbits, вона відкрилася у вересні, ідеально підходить, щоб узяти із собою, і має теплу, мінімалістичну атмосферу та спокусливий вибір солодкої й солоної випічки. Вони скуштували кілька сезонних булочок, і найбільше їм сподобалася яблучна.",
+      "fr": "Une nouvelle boulangerie de quartier à Mustamäe, et le croissant est bon. Selon tallinnbits, elle a ouvert en septembre, elle est parfaite pour emporter, avec une ambiance chaleureuse et minimaliste et un choix tentant de viennoiseries sucrées et salées. Ils ont goûté quelques brioches de saison et leur préférée était celle aux pommes.",
+      "de": "Eine neue Nachbarschaftsbäckerei in Mustamäe, und das Croissant ist gut. Laut tallinnbits hat sie im September eröffnet, ist perfekt zum Mitnehmen und hat eine warme, minimalistische Atmosphäre und eine verlockende Auswahl an süßem und herzhaftem Gebäck. Sie haben ein paar der saisonalen Teilchen probiert, und ihr Favorit war das mit Apfel."
+    },
+    "mustOrder": [
+      "Croissant"
+    ],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp"
+    ],
+    "website": "https://www.facebook.com/profile.php?id=61591479001368",
+    "added": "2026-11-13",
+    "visited": "2026-11",
+    "closed": false
+  },
+  {
     "id": "kaheksa",
     "name": "Kaheksa",
     "address": "Suur-Karja tn 8, 10140 Tallinn",
