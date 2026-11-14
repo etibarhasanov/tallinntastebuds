@@ -3541,8 +3541,7 @@
 
        Where the sheet was going to send them goes with it. It stayed once,
        so a discount's Sign in, shut and forgotten, sent a later sign-in from
-       More to the pass page, and Make a list's would have opened an empty
-       list nobody asked for. */
+       More to the pass page. */
     if (!dom.accountScrim.hidden && !state.account.user && SIGN_VIEWS.indexOf(accountView) !== -1) {
       TTBTrack.event('account_leave_' + accountView);
       if (accountErr) TTBTrack.event('account_left_err', { view: accountView });
@@ -5541,37 +5540,6 @@
         selectPlace(id, { fly: true });
       }
     });
-    $('discover-make').addEventListener('click', pressMake);
-  }
-
-  /* ------------------------------------------------------------ make a list
-   * Make a list at the foot of Discover. It opens /list/new over the map —
-   * an empty list, on the screen and nowhere else, which is made when it has
-   * a name and Save is pressed: draftList() in assets/lists.js. Pressing it
-   * writes nothing. It made "My list" before it opened anything for a day,
-   * and every press left a list in the database whether anybody wanted it or
-   * not; the owner's word was that it should open empty and that Saved should
-   * mean saved.
-   *
-   * A list goes out under somebody's name, so signed out the sign-up sheet
-   * comes up first, over Discover, and brings them to the empty list once
-   * they are in — accountThen, the way a discount's Sign in sends them to
-   * its pass. The way back from Google comes to the same address. Before
-   * /api/account has answered there is no knowing which, and the link is
-   * left to be a link: /list/new sends a visitor with no account to the
-   * sheet itself. "Named afterwards" under "Lists" in README.md. */
-  var NEW_LIST = '/list/new';
-
-  function pressMake(ev) {
-    if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
-    if (!state.account.ready) return;
-    ev.preventDefault();
-    if (!state.account.user) {
-      accountThen = NEW_LIST;
-      openAccount('up', '', 'make');
-      return;
-    }
-    if (!window.TTBShell.walk(NEW_LIST)) window.location.href = NEW_LIST;
   }
 
   /* Up or down, and nothing written to the history: what popstate and a

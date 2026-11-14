@@ -751,11 +751,10 @@
 
   /* Make a list, which opens an empty list on /list/new and writes nothing
      — the list is made there, when it has a name and Save is pressed. See
-     draftList() in assets/lists.js. It is the front page's Make a list, in
-     the same words, out of the same key: discoverMake. */
+     draftList() in assets/lists.js. */
   function makeLink() {
     return el('p', { className: 'lists-new' }, [
-      link('discoverMake', '/list/new', 'list_new', null, 'go')
+      link('listsMake', '/list/new', 'list_new', null, 'go')
     ]);
   }
 

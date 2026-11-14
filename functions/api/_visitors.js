@@ -409,7 +409,8 @@
  *                                    offer, a discount, a list to keep, a
  *                                    session that ran out under a press, a
  *                                    link from another page, the way back
- *                                    from Google, Make a list on Discover
+ *                                    from Google, and the Make a list that
+ *                                    Discover ended in until 2026-11-14
  *   account_sheet_<view>             the sheet up, on 'up' (make one) or
  *                                    'in'; 'google' was naming a Google
  *                                    account, a step there is no longer, and

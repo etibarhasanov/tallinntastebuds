@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=77e95758">
+<link rel="stylesheet" href="assets/styles.lean.css?v=086127f0">
 </head>
 <body>
 
@@ -685,10 +685,16 @@
     </button>
   </div>
   <div id="discover-shelves"></div>
-  <div class="discover-foot">
-    <p data-i18n="discoverOwn">Got a top ten of your own?</p>
-    <a class="alt" id="discover-make" href="/list/new" data-track="discover_make" data-i18n="discoverMake">Make a list</a>
-  </div>
+  <!-- The end of the page: feedback and privacy, in the quiet words a
+       page's last line is. They are More's two last rows, reported under the
+       same names. A line offering to make a list stood here until
+       2026-11-14; the owner took it out, and Everybody's lists and the
+       account page are where a list is started. -->
+  <p class="discover-foot">
+    <a href="/feedback" data-track="feedback_open" data-i18n="feedbackTitle">Feedback</a>
+    <span aria-hidden="true">·</span>
+    <a href="/privacy" data-track="privacy_open" data-i18n="privacyLink">Privacy</a>
+  </p>
 </section>
 
 <!-- A page opened from the map, on the map. The lists, a list, a profile,
@@ -762,6 +768,6 @@
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=a372472d" defer></script>
-<script src="assets/app.lean.js?v=6f8e2455" defer></script>
+<script src="assets/app.lean.js?v=3fddc6f3" defer></script>
 </body>
 </html>

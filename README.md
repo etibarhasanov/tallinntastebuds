@@ -6812,15 +6812,15 @@ anything appeared and a row in the database for every press, wanted or not.
 The owner's word on the second was the rule this is now built on: pressing it
 opens an empty page, and if it says Saved then it is saved.
 
-On the front page, `pressMake()` in `assets/app.js` opens `/list/new` over the
-map the way a list on a shelf opens, so Back is Discover again. Signed out, the
-sign-up sheet comes up over Discover first with `/list/new` as where to go
-afterwards, the way a discount's Sign in goes to its pass; the way back from
-Google comes to the same address, and `/list/new` opened cold by somebody with
-no account sends them to the sheet itself. Opening the sheet from here is
-counted as `account_from_make`. The account page's **Make a list** is a link to
-the same address, and `/account.html?make=1` — the address it had while it
-made lists itself — forwards there.
+The account page's **Make a list** and the directory's **Make your own
+list** are links to that address, and `/account.html?make=1` — the address the
+account page had while it made lists itself — forwards there. `/list/new`
+opened by somebody with no account sends them to the sign-up sheet, which
+brings them back. The phone's front page had a **Make a list** of its own at
+its foot, through all three goes; the owner took it out on 2026-11-14, and
+the line there is feedback and privacy now. `account_from_make`, the sign-up
+sheet opened from that button, stays a door on `/admin/visitors` so the days
+it was pressed still read.
 
 The sheet shut without signing in forgets where it was going to send somebody:
 `accountThen` goes with it. It stayed once, which sent a later sign-in from
@@ -18136,8 +18136,9 @@ A phone that opens the bare address does not open on the map any more. It
 opens on a page in front of it: the map as one card with **Open map** on it, then
 four shelves that scroll sideways — **New lists**, **Most opened places**,
 **Popular lists**, **New on the map** — with a card called **Play** between
-the second and the third, and a line at the foot offering to make a list —
-which opens an empty list that is made when it is saved, **Named afterwards** under **Lists**.
+the second and the third, and at the foot a quiet line, **Feedback · Privacy**,
+More's two last rows said where a page ends. It offered to make a list until
+2026-11-14 — **Named afterwards** under **Lists**.
 
 It is there because the map, to somebody who has never been here, is a
 question rather than an answer. Seventy unlabelled marks say that there are
@@ -19521,7 +19522,6 @@ The map, `assets/app.js`:
 | `discover_list` | — a list on either of Discover's two shelves of them |
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
-| `discover_make` | — **Make a list** at the foot of Discover, which opens the empty `/list/new`, or puts the sign-up sheet up first (`account_from_make`). `list_create` follows only when the list is saved |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
@@ -19539,7 +19539,7 @@ The map, `assets/app.js`:
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
-| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, or Make a list on Discover. One name per door because the site's own count keeps names and not parameters |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, or the Make a list that stood at the foot of Discover until 2026-11-14. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
 | `account_try_up`, `_in` | — its button pressed |
 | `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
@@ -19724,12 +19724,12 @@ Feedback, `assets/feedback.js`:
 | `feedback_remove` | — your own, taken down |
 | `feedback_more` | `feedback_page` — the page being asked for |
 | `feedback_google` | — Continue with Google, from inside the composer |
-| `feedback_open` | — the Feedback row behind More on the map |
+| `feedback_open` | — the Feedback row behind More on the map, and the word at the foot of Discover |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way
-in: `privacy_open`, from the row on the map's **More** sheet with no
-parameters and from the account page with `from` `account` — and, before
+in: `privacy_open`, from the row on the map's **More** sheet and the word
+at the foot of Discover with no parameters, and from the account page with `from` `account` — and, before
 November 2026, from the sign-up sheet with `from` `signup`.
 
 No id travels with any of these. The page is a handful of sentences and the
