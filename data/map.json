@@ -760,6 +760,29 @@
   "closed": false
  },
  {
+  "id": "jaspier-pagariari",
+  "name": "Jaspier Pagariäri",
+  "address": "A. H. Tammsaare tee 92, 13423 Tallinn",
+  "lat": 59.4074541,
+  "lng": 24.6931868,
+  "price": 1,
+  "types": [
+   "bakery"
+  ],
+  "mustOrder": [
+   "Croissant"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp"
+  ],
+  "website": "https://www.facebook.com/profile.php?id=61591479001368",
+  "added": "2026-11-13",
+  "visited": "2026-11",
+  "closed": false
+ },
+ {
   "id": "kaheksa",
   "name": "Kaheksa",
   "address": "Suur-Karja tn 8, 10140 Tallinn",

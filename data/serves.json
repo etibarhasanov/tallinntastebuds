@@ -18,6 +18,7 @@
     { "id": "gotsu-kyuho", "name": "Gotsu Kyuho's Kitchen", "serves": ["korean"] },
     { "id": "hell-hunt", "name": "Hell Hunt", "serves": ["beer"] },
     { "id": "izakaya-taro", "name": "Izakaya Taro", "serves": ["japanese", "salmon"] },
+    { "id": "jaspier-pagariari", "name": "Jaspier Pagariäri", "serves": ["pastries", "pain au chocolat", "cinnamon bun", "apple bun", "bread"] },
     { "id": "kaheksa", "name": "Kaheksa", "serves": ["tapas", "wine"] },
     { "id": "kalve-kadriorg", "name": "Kalve Kadriorg", "serves": ["specialty coffee"] },
     { "id": "kartul", "name": "Kartul", "serves": ["potato", "dumplings"] },

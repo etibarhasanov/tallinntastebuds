@@ -241,7 +241,7 @@ A place can be a restaurant *and* something else — KoHo is a restaurant and a
 bakery, Gobi is a restaurant and fine dining — but if the tag went on
 everything that serves food it would match the whole map and filter nothing.
 
-32 of the 79 carry it today — nearly two places in five, which is why the
+32 of the 80 carry it today — nearly two places in five, which is why the
 chip sits at the end of the row rather than near the front. If one of them
 looks wrong to you, it is one line in `data/restaurants.json`.
 
@@ -273,7 +273,7 @@ are split into their own entries. Fotografiska is that split: the fine dining
 upstairs and the bakery on the ground floor are two entries, and only the
 ground floor carries the tag.
 
-8 of the 79 carry it today, and all eight are cafés, tea rooms or bakeries.
+8 of the 80 carry it today, and all eight are cafés, tea rooms or bakeries.
 
 ---
 
@@ -812,7 +812,7 @@ km *from you*, wherever it was actually measured from, and no wording in a row
 three words wide undoes that. The order is still the useful half — the nearest
 thing to the middle of town is a better opening row than the first name in the
 alphabet — but a number about a point nobody chose is a small lie told on
-seventy-nine rows at once. So there is no number until there is a dot, which is
+eighty rows at once. So there is no number until there is a dot, which is
 the same moment it starts being true of the person reading it.
 
 **The point is Raekoja plats — `59.4372, 24.7453`**, the middle of the Old
@@ -1006,7 +1006,7 @@ and the street and not at the type labels or the dishes, because that page is
 sent its rows already filled out and never downloads the catalogue those two
 come from.
 
-**This field never leaves the seventy-nine.** It is the list's own search and it
+**This field never leaves the eighty.** It is the list's own search and it
 narrows the list. The question it cannot answer is "is this place on here at
 all", asked about somewhere that is not — and that one has a field of its own
 across the top of the map. See
@@ -1051,7 +1051,7 @@ input** in the design rules.
 
 They are two questions and they want two fields.
 
-The column's field narrows what the map is already showing: seventy-nine places,
+The column's field narrows what the map is already showing: eighty places,
 every one of them written up, and it tells you which of them was the ramen one.
 This bar asks whether somewhere is on here at all, over eleven hundred venues,
 and nearly everything it finds has no write-up behind it.
@@ -1094,7 +1094,7 @@ has already decided to download whole; the header of
 ### Hidden tags, over the whole city
 
 The owner's words, and the condition that came with them: the search is for
-every place in Tallinn, nearly twelve hundred, and not for the seventy-nine
+every place in Tallinn, nearly twelve hundred, and not for the eighty
 with a write-up — so the tags are not a field somebody fills in on a place.
 They are two things that were already true of every row.
 
@@ -1683,7 +1683,7 @@ of the site answers that question.
 
 ### And a row you rest on takes the map there before you press it
 
-Reading seventy-nine names is asking where they are, and the answer used to be a
+Reading eighty names is asking where they are, and the answer used to be a
 press away for every one of them: press, read, close, press the next. Rest the
 pointer on a row now and the city comes to the name under it. The write-up is
 then for the one you actually want.
@@ -1710,7 +1710,7 @@ come to rest is where the last name you looked at is — which is the one thing
 you might still want to see.
 
 The listener is on `#list-body` rather than on each row, because `renderList()`
-throws every row away and builds seventy-nine more whenever a chip or the
+throws every row away and builds eighty more whenever a chip or the
 language moves. And it is behind the same `(min-width: 861px) and (hover:
 hover) and (pointer: fine)` query the corner is: a tap synthesises a `mouseover`
 before it synthesises a click, and on a phone the list is a sheet over the map
@@ -1719,7 +1719,7 @@ in any case.
 ### The list keeps its place
 
 The column is not redrawn when something opens beside it. `renderList()` builds
-seventy-nine rows and puts the scroller back at the top, which is right when the
+eighty rows and puts the scroller back at the top, which is right when the
 language or a chip has changed and exactly wrong when all that happened is that
 a place opened — you would lose the row you had your eye on and the scroll that
 got you to it. So the two transitions that must not disturb it, opening a place
@@ -1735,7 +1735,7 @@ paper instead of leaving a strip of Tallinn in it.
 
 And the row you have open is marked in the list: a bar down its inside edge and
 the name in the accent, so the eye can get from the write-up back to where it
-was without reading seventy-nine names again. `markOpenRow()` puts the class on
+was without reading eighty names again. `markOpenRow()` puts the class on
 rows that are already drawn; `renderList()` drawing fresh ones clears it, so
 nothing has to unmark on the way out.
 
@@ -1963,7 +1963,7 @@ unreachable.
 
 ### One Ask, two rolls
 
-Every question is asked of both lists at once: my seventy-nine, and Google's
+Every question is asked of both lists at once: my eighty, and Google's
 eleven hundred — see [Google venues](#google-venues) — with the model told
 how the two stand to each other. Mine first, because I have been there and
 can vouch for it: when a place of mine fits what was asked, it comes before a
@@ -2161,7 +2161,7 @@ says what each count is and why it is the server's rather than the page's.
 ### Where the opening hours come from
 
 The map's own places carry no hours — there is no such field in
-`data/restaurants.json` — but sixty-six of the seventy-nine are also rows in
+`data/restaurants.json` — but sixty-six of the eighty are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
 `/api/ask` reads both — the cuisine goes onto the line the model reads and
@@ -2897,7 +2897,7 @@ Telegram or a Slack channel, `?spot=varkizana` arrived as the site:
 > All the places in this map I have personally been and approved.
 > *the watercolour mouth*
 
-The same card for all seventy-nine places. Somebody sending a friend a Greek
+The same card for all eighty places. Somebody sending a friend a Greek
 tavern in Lasnamäe got a card about a map, and the one thing the message was
 about — which place — was in the part of the link nobody reads. And a search
 for the place by name found the whole map or nothing, since the map was the
@@ -2929,7 +2929,7 @@ does. The blurb's own keys are the list of what counts, so nothing in this
 route needs touching on the day an eleventh language arrives.
 
 **The picture is the place's first photograph**, and the mark for a place that
-has none, which today is forty-nine of the seventy-nine. They are photographs
+has none, which today is forty-nine of the eighty. They are photographs
 off a phone and not cards drawn at 1200×630, so no `og:image:width` is claimed
 for one: nothing in this repository knows a photo's dimensions without opening
 the file, and a size claimed wrongly is worse than one an unfurler measures
@@ -3140,7 +3140,7 @@ down the right of the window — under the button the menu drops from, and
 straight through the eleven languages under it. The panel is 1200 in the stack
 and the corner these buttons stand in is 1001, so what a press on the switch
 drew for a few days was the menu *behind* the list: the language somebody was
-reaching for, painted over by seventy-nine restaurants. The menu cannot climb
+reaching for, painted over by eighty restaurants. The menu cannot climb
 over it on its own, either, because it hangs inside `.controls` and that has a
 `z-index` of its own; so the corner is raised instead, to 1250, and only while
 there is a menu to raise it for — `body.lang-open`, put on by
@@ -3749,7 +3749,7 @@ restaurant rather than as nobody having pressed it yet.
 ### Every place with a bookmark can be saved
 
 The bookmark is on every card the map opens, and the map opens more than my
-seventy-nine: a Google venue out of the find bar, a place on somebody's list,
+eighty: a Google venue out of the find bar, a place on somebody's list,
 one the chat answered with, one somebody added by hand. For a while the mark
 was on all of those and the save behind it was not — `/api/saves` checked the
 id against `data/restaurants.json` alone, so pressing it on anything else was
@@ -3787,7 +3787,7 @@ none of those doors is open on the next visit. So:
 ### Where your own saves live, and why one bookmark does both jobs
 
 The count is on the list rows too, not only inside an open place: a small
-bookmark and a number beside the price, so a scroll down seventy-nine rows shows
+bookmark and a number beside the price, so a scroll down eighty rows shows
 which ones other people have kept without opening any of them. Rows at zero
 show nothing — a "0" against a restaurant reads as a verdict rather than as
 nobody having got there yet.
@@ -3979,7 +3979,7 @@ under **The directory** — as orders, which is a ranking, and the rule says
 there are none.
 
 It holds because of what is being ranked. A ranking is a claim by whoever
-publishes it, and the only claim this site makes is the map — seventy-nine
+publishes it, and the only claim this site makes is the map — eighty
 places somebody ate at, in no order but how far away they are. The directory
 publishes
 no claim at all: it is a mirror of what Google says about eleven hundred places
@@ -4283,13 +4283,13 @@ exactly as they were and says so in a toast.
 ### Where the counts come from, and why not from a `COUNT(*)`
 
 `GET /api/saves` returns every place's count in one request — the map asks once
-on the way in rather than seventy-nine times — and it reads them from
+on the way in rather than eighty times — and it reads them from
 `save_counts`, one row per place, rather than aggregating the `saves` table.
 
 That is the important part. The obvious query is
 `SELECT place_id, COUNT(*) FROM saves GROUP BY place_id`, and it was the first
 version of this, but its cost grows with the data and never stops: ten thousand
-saves means reading ten thousand rows to produce seventy-nine numbers, on a
+saves means reading ten thousand rows to produce eighty numbers, on a
 table that only ever gets bigger. Reading `save_counts` costs one row per place
 on the map and never more, however popular the map gets.
 
@@ -5623,7 +5623,7 @@ rows that lead to it, print "According to Google 4.8 from 3,041 reviews" —
 attributed, every time, in the same line as the kinds and the band — and the
 panel for a place of mine that Google also lists closes with the same two
 numbers under a heading that says whose they are. I score none of the
-seventy-nine, nothing sorts or ranks by these except under Google's own name,
+eighty, nothing sorts or ranks by these except under Google's own name,
 and that is the rule these numbers do not touch — see **On "no scores, stars
 or rankings"**, **Google, on a place of mine** below, and **A Google row says
 whose description it is**. They are also still what decides which of these
@@ -6079,7 +6079,7 @@ those needs: all 1,112 rows in one answer, so a filter can run over them. See
 ### Google, on a place of mine
 
 The panel for a place on my map closes with what Google says about the same
-door, when Google lists it — sixty-six of the seventy-nine, the ones `map_id`
+door, when Google lists it — sixty-six of the eighty, the ones `map_id`
 joins. Under a heading that reads **According to Google**, below the address,
 the phone and the directions:
 
@@ -6723,7 +6723,7 @@ stylesheet reads that.
 
 The map is mine. A list is somebody else's.
 
-Everything else on this site is one person's opinion — seventy-nine places I
+Everything else on this site is one person's opinion — eighty places I
 have eaten at, in `data/restaurants.json`, and being on the map is the verdict.
 A list is the other thing: a name somebody chose, places they picked, and a
 sentence about each one. *Top ten burgers. Where to take your parents. The
@@ -7619,7 +7619,7 @@ saying that the day something asked for these counts in bulk was the day to
 give them the `save_counts` treatment. This page is that day, so the table
 was written — and then taken out again, because the comparison the note was
 making does not hold. `save_counts` exists because the map asks for
-seventy-nine numbers on every load, over a table that grows with every
+eighty numbers on every load, over a table that grows with every
 anonymous save from every visitor. A keep needs an account, one account can
 hold two hundred of them, and one page asks. It is one row read per keep in
 the database, to draw twenty rows.
@@ -8149,7 +8149,7 @@ The picker asks `/api/places`, which is the one place the two rolls are put
 together — `functions/api/places.js`:
 
 ```
-data/places.json    the map. Seventy-nine places I have been to, and the only
+data/places.json    the map. Eighty places I have been to, and the only
                     rows that link through to a write-up.
 google_venues       the Google Places export, in D1. Every place in the city
                     you can eat or drink in — see The Google export above.
@@ -8280,7 +8280,7 @@ Google's name in front of it — on Google's place here, and at the foot of the
 panel on a place of mine Google also lists. Nothing sorts by it.
 
 **Why it is attributed.** The gauge is drawn in the site's accent, in the
-vocabulary the map uses for the seventy-nine places I have eaten at. Without a
+vocabulary the map uses for the eighty places I have eaten at. Without a
 word saying where it came from it would be borrowing that verdict for a place
 nobody here has been to. So the line leads with the attribution rather than
 trailing it: whose description this is, and then the description.
@@ -8332,7 +8332,7 @@ name typed into a form is not a description, a phone number or a week.
 
 ### The place nobody has
 
-The picker searches about eleven hundred places — my seventy-nine and the Google
+The picker searches about eleven hundred places — my eighty and the Google
 export behind `/api/places` — and between them they still miss things:
 somewhere that opened last month, somewhere Google files as not a restaurant.
 Search for it, find nothing, and the picker offers two doors, in this order:
@@ -8486,7 +8486,7 @@ survives the absence of — see **The two columns, and the afternoon they do
 not exist** under **The pins**.
 
 There is deliberately no counts table behind the keeps, the way `save_counts`
-sits behind the saves. That one exists because the map asks for seventy-nine
+sits behind the saves. That one exists because the map asks for eighty
 numbers at once and a `GROUP BY` over every save would cost one row read per
 save to answer. Nothing asks that question of lists: a keep count is wanted one
 list at a time, and the primary key answers it on an indexed prefix. The day
@@ -14231,7 +14231,7 @@ for the owner rather than a line to slip into a post's pull request.
    deploy step beyond the push.
 
 Counts are deliberately kept out of the posts. This file, the code comments
-and the skills already carry "seventy-nine places" and "eleven hundred and
+and the skills already carry "eighty places" and "eleven hundred and
 ten" in enough places that changing one is a `grep` and a careful afternoon,
 and a blog is the last place that should quietly become one more copy of a
 number that drifts. A post says *the map* and *the whole export of the city*
@@ -14826,7 +14826,7 @@ over the table says where they are.
 
 No time window, which **A count and not a log** above is the whole of — the
 lists' countries have a day in their key and are not cut by one yet. No
-chart: a ranking is a list and a bar chart of seventy-nine rows is a list with
+chart: a ranking is a list and a bar chart of eighty rows is a list with
 decoration on it. No visitors, referrers or time on this page, and no
 countries but a list's:
 those are **Visitors** below, the site's own count of who came and what they
@@ -17309,7 +17309,7 @@ icon, which Google refuses, so a search for the site came back with the grey
 globe instead of the mouth. Google re-crawls favicons on its own schedule;
 there is no way to make it look sooner.
 
-On the map it *is* the pin — for the seventy-nine places on it. Every one of
+On the map it *is* the pin — for the eighty places on it. Every one of
 them is the mouth, cropped round, drawn at 22px — 34px for the one whose panel
 is open, and 17px for the quietest of them. It used to go on the chosen pin
 alone, over a circle, on the reasoning that a picture inside a 14px dot is mud.
@@ -17372,7 +17372,7 @@ turns up in either table — three answers to the same question, because this
 is the one thing on the site that has to survive somebody hand-writing a
 request.
 
-That is not fussiness about a decoration. The map is seventy-nine places I
+That is not fussiness about a decoration. The map is eighty places I
 have been to, and being on it is the verdict; a list is somebody saying they
 liked somewhere, which is a much smaller claim and a claim about themselves.
 If a list could put the mouth on a restaurant, those two sentences would be
