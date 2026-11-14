@@ -88,6 +88,30 @@
           "description": "Full permalink to the video, Instagram or TikTok, or an empty string if there is not one yet. Never invent a shortcode or an id.",
           "pattern": "^$|^https://www\\.instagram\\.com/(?:[A-Za-z0-9._]{1,30}/)?(reel|reels|p|tv)/[A-Za-z0-9_-]{5,}/?(\\?.*)?$|^https://www\\.tiktok\\.com/@[A-Za-z0-9._]{1,30}/video/[0-9]{6,}/?(\\?.*)?$"
         },
+        "links": {
+          "type": "array",
+          "description": "Optional. Phrases of the write-up that are links in the panel. The write-up stays plain text; each entry names an address on this site and the words that carry it.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["href", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string",
+                "description": "An address on this site: /u/<name>, /?list=<id>.",
+                "pattern": "^/(?!/)"
+              },
+              "text": {
+                "description": "The words of the write-up that are the link: one string where every language says the same (an @name), or one per language.",
+                "anyOf": [
+                  { "type": "string", "minLength": 1 },
+                  { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } }
+                ]
+              }
+            }
+          }
+        },
         "photos": {
           "type": "array",
           "description": "Filenames inside photos/<id>/. Just the filename, no path.",

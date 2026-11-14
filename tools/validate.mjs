@@ -161,7 +161,7 @@ const PHONE = /^\+[1-9][0-9]{0,3}(?: [0-9]{2,4}){1,4}$/;
 
 const KNOWN_KEYS = new Set([
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'reelSummary', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
+  'mustOrder', 'reel', 'reelSummary', 'links', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
 ]);
 
 /* visited is deliberately absent: a place you have been to but not filmed has
@@ -1215,6 +1215,49 @@ if (places !== null) {
         if (!isNonEmptyString(place.reelSummary)) fail(where, '"reelSummary" must be a non-empty string, or left out');
         else if (!place.reel) fail(where, 'has a "reelSummary" but no reel for it to describe');
         else if (place.reelSummary.length > 200) fail(where, '"reelSummary" is over 200 characters — one plain sentence');
+      }
+
+      /* links — optional: the phrases of the write-up that are links in the
+         panel, each an address on this site. The write-up itself stays plain
+         text, since it is read in a dozen places that draw no links, so a
+         phrase that is not in the write-up it was written for is a link
+         nobody will ever see, and that is the mistake this is here to catch. */
+      if ('links' in place) {
+        if (!Array.isArray(place.links) || !place.links.length) {
+          fail(where, '"links" must be a non-empty array, or left out');
+        } else {
+          place.links.forEach((link, n) => {
+            const at = `links[${n}]`;
+            if (!link || typeof link !== 'object') { fail(where, `${at} must be an object with "href" and "text"`); return; }
+            if (typeof link.href !== 'string' || !/^\/(?!\/)/.test(link.href)) {
+              fail(where, `${at}.href must be an address on this site, starting with one "/"`);
+            }
+            const blurbs = place.blurb && typeof place.blurb === 'object' ? place.blurb : {};
+            if (typeof link.text === 'string') {
+              if (!link.text.trim()) fail(where, `${at}.text is empty`);
+              else for (const lang of Object.keys(blurbs)) {
+                if (isNonEmptyString(blurbs[lang]) && !blurbs[lang].includes(link.text)) {
+                  fail(where, `${at}.text "${link.text}" is not in the ${lang} write-up`);
+                }
+              }
+            } else if (link.text && typeof link.text === 'object') {
+              for (const lang of Object.keys(link.text)) {
+                if (!languages.includes(lang)) fail(where, `${at}.text has unknown language "${lang}"`);
+                else if (!isNonEmptyString(link.text[lang])) fail(where, `${at}.text.${lang} is empty`);
+                else if (!isNonEmptyString(blurbs[lang]) || !blurbs[lang].includes(link.text[lang])) {
+                  fail(where, `${at}.text.${lang} "${link.text[lang]}" is not in the ${lang} write-up`);
+                }
+              }
+              for (const lang of Object.keys(blurbs)) {
+                if (isNonEmptyString(blurbs[lang]) && !(lang in link.text)) {
+                  warn(where, `${at}.text has no ${lang}, so that write-up carries no link`);
+                }
+              }
+            } else {
+              fail(where, `${at}.text must be a string, or an object by language`);
+            }
+          });
+        }
       }
 
       /* photos */

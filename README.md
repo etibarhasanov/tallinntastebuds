@@ -195,6 +195,7 @@ Field by field:
 | `price` | A number from 1 to 4, in steps of 0.5. Rendered as € to €€€€, where a half step lights half a euro sign — `2.5` reads as €€ and a half. It is a cost band, not a rating. |
 | `types` | Ids that must already exist in `data/taxonomy.json`. Never free text — a typo would silently split a filter in two. |
 | `blurb` | Your write-up, one per language. The only per-place field that is translated. |
+| `links` | Optional. Phrases of the write-up that are links in the panel: `{ "href": "/u/tallinnbits", "text": "@tallinnbits" }`, or `text` as an object by language where the words differ. The write-up itself stays plain text, because the share card, `/mcp` and the iPhone app print it as it is; the address is one on this site, and the validator fails a phrase its write-up does not contain. `blurbKids()` in `assets/app.js`. |
 | `mustOrder` | Dish names exactly as the menu prints them. Not translated. Use `[]` if you have not decided. |
 | `reel` | The full Instagram permalink, or `""` if there is not a reel yet. |
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
@@ -19504,6 +19505,7 @@ The map, `assets/app.js`:
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
 | `photo_open`, `photo_step`, `photo_close` | `place`, `photo_index` |
+| `writeup_link` | `place` — a link in a place's write-up that is not a profile, which reports `profile_open` like any byline |
 | `reel_load` | `place`, `provider` |
 | `reel_open` | `place` — the way out to Instagram or TikTok: the link under a frame that came up blank, or the **Watch on Instagram** button under the name on a phone |
 | `save_place`, `unsave_place` | `place`, `place_id`, `saves_total` |
