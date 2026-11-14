@@ -4184,19 +4184,6 @@ body.is-discover #btn-locate { display: none; }
 /* A place nobody has photographed yet: the mark, small, on paper. */
 .discover-photo.is-bare { display: flex; align-items: center; justify-content: center; background: var(--paper); }
 .discover-photo.is-bare img { width: 54px; height: 54px; border-radius: 50%; opacity: .55; }
-.discover-rank {
-  position: absolute;
-  top: 7px;
-  left: 7px;
-  min-width: 22px;
-  padding: 2px 7px;
-  background: var(--paper);
-  border-radius: 100px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  font-weight: 600;
-  text-align: center;
-}
 .discover-place b,
 .discover-line { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .discover-place b { margin-top: 7px; font-family: var(--display); font-weight: 600; font-size: 14px; line-height: 1.25; }

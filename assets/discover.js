@@ -17,7 +17,7 @@
  * FOUR SHELVES AND A CARD, IN THIS ORDER
  *
  *   New lists            newest public lists                 /api/discover
- *   Most opened places   what gets opened on the map         /api/discover
+ *   Overlooked places    the five opened least on the map    /api/discover
  *   Play                 the game, and routes to swipe       /api/discover
  *   Popular lists        most opened lists                   /api/discover
  *   New on the map       the places added last               data/map.json
@@ -47,7 +47,7 @@ window.TTBDiscover = (function () {
 
   /* Fewer than this and a shelf is not drawn. */
   var MIN = 3;
-  /* How many cards a shelf of places carries. */
+  /* How many cards a shelf of places carries at most. */
   var PLACES = 8;
 
   /* Where the card's still map stands: on the word TALLINN as the tiles
@@ -132,10 +132,8 @@ window.TTBDiscover = (function () {
   }
 
   /* A place as a card: its first photograph, or the mark where it has none —
-     a place is on the map before anybody has photographed it. `rank` is its
-     place on the shelf where the shelf is an order, and absent where it is
-     not. */
-  function placeCard(place, line, rank) {
+     a place is on the map before anybody has photographed it. */
+  function placeCard(place, line) {
     var b = el('button', 'discover-place');
     b.type = 'button';
     var photo = el('span', 'discover-photo');
@@ -149,7 +147,6 @@ window.TTBDiscover = (function () {
       photo.className += ' is-bare';
     }
     photo.appendChild(img);
-    if (rank) photo.appendChild(el('span', 'discover-rank', String(rank)));
     b.appendChild(photo);
     b.appendChild(el('b', '', place.name));
     if (line) b.appendChild(el('span', 'discover-line', line));
@@ -160,14 +157,14 @@ window.TTBDiscover = (function () {
     return b;
   }
 
-  function placeShelf(key, why, places, lineOf, ranked) {
+  function placeShelf(key, why, places, lineOf) {
     if (places.length < MIN) return null;
     var box = el('section', 'discover-shelf');
     box.appendChild(heading(key));
     if (why) box.appendChild(el('p', 'discover-why', o.t(why)));
     var row = el('div', 'discover-row');
-    places.slice(0, PLACES).forEach(function (place, i) {
-      row.appendChild(placeCard(place, lineOf(place), ranked ? i + 1 : 0));
+    places.slice(0, PLACES).forEach(function (place) {
+      row.appendChild(placeCard(place, lineOf(place)));
     });
     box.appendChild(row);
     return box;
@@ -186,10 +183,14 @@ window.TTBDiscover = (function () {
     return o.month(String(place.added || '').slice(0, 7));
   }
 
-  function mostOpened() {
+  /* The places the route says are opened least, in its order — THE SHELF IS
+     THE QUIET END in functions/api/discover.js. The route has already left
+     out what is closed; open() is asked again because the page's copy of the
+     map is the one a press opens, and the two can be a deploy apart. */
+  function leastOpened() {
     var byId = {};
     open(o.places()).forEach(function (p) { byId[p.id] = p; });
-    return (data.opened || []).map(function (id) { return byId[id]; })
+    return (data.quiet || []).map(function (id) { return byId[id]; })
       .filter(function (p) { return !!p; });
   }
 
@@ -460,12 +461,12 @@ window.TTBDiscover = (function () {
     } else {
       parts.push(
         listShelf('discoverNewLists', data.fresh, '/lists?sort=new', 'discover_all'),
-        placeShelf('discoverOpened', 'discoverOpenedSay', mostOpened(), street, true),
+        placeShelf('discoverQuiet', 'discoverQuietSay', leastOpened(), street),
         play(),
         listShelf('discoverPopularLists', data.popular, '/lists', 'discover_all')
       );
     }
-    parts.push(placeShelf('discoverAdded', '', newest(), added, false));
+    parts.push(placeShelf('discoverAdded', '', newest(), added));
     parts.forEach(function (part) { if (part) shelves.appendChild(part); });
   }
 
