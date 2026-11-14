@@ -280,7 +280,17 @@
   max-width: 332px;
 }
 
-.lists-pins-more { align-self: flex-start; margin-top: 6px; }
+.lists-pin-set { display: contents; }
+
+.lists-pins-more {
+  grid-column: span 4;
+  justify-self: start;
+  align-self: center;
+  margin: 0 0 0 8px;
+  white-space: nowrap;
+}
+
+.lists-pins-more[aria-expanded="true"] { grid-column: 1 / -1; margin: 2px 0 0; }
 
 .lists-swatch {
   position: relative;

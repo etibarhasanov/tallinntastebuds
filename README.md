@@ -6982,12 +6982,15 @@ minds.
 
 **The pin** is above that, and it is the one field on the card that is a grid
 of pictures rather than a box to type in, and what you press is what this
-list's places wear on the map. It opens on one row of eight — the ones lists
-wear most, most worn first, which is `PIN_FIRST` in `assets/lists.js` — with
-whatever this list is wearing always among them, in the eighth place when it
-is not one of the eight. **See all 45** opens the rest, five rows of eight
-and a short one with the same eight leading, and **Show fewer** folds it
-back. All forty-five were the whole of it until 2026-11-13: six rows of emoji
+list's places wear on the map. It opens on two rows, on a phone and on a
+desk alike: the eight lists wear most, most worn first, which is `PIN_FIRST`
+in `assets/lists.js`, and under them the next four in the picker's own order
+with **See all 45** beside them on the same line — with whatever this list is
+wearing always among the twelve, in the twelfth place when it is not one of
+them. The link had a line to itself under a single row until 2026-11-14,
+which was the same height spent on four fewer pins. **See all 45** opens the
+rest, five rows of eight and a short one with the same twelve leading, and
+**Show fewer**, under the grid, folds it back. All forty-five were the whole of it until 2026-11-13: six rows of emoji
 between the name and everything else, on a list with nothing on it yet, and
 the owner's word was that nobody needs all of them at the start. The eight
 are written in rather than counted per request — thirty-one lists between

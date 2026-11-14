@@ -2989,15 +2989,19 @@
    * could name a list — for a difference the marker was already making.
    * Every marker draws in the style's accent now.
    *
-   * EIGHT FIRST, AND THE REST BEHIND SEE ALL
+   * TWELVE FIRST, AND THE REST BEHIND SEE ALL
    *
    * Forty-five was six rows of emoji between the name and everything else on
-   * the card, on a list that has no places yet. So the picker opens on one
-   * row: PIN_FIRST, the eight lists wear most, most worn first. See all opens
-   * the grid with those eight still leading, and Show fewer folds it back.
-   * Whatever the list is wearing is always on the row — in the eighth place
-   * when it is not one of the eight — so the answer to "which one is mine" is
-   * never behind a press.
+   * the card, on a list that has no places yet. So the picker opens on two
+   * rows. The first is PIN_FIRST, the eight lists wear most, most worn first.
+   * The second is the next PIN_NEXT in the order pins.js keeps them, and then
+   * See all on the same line, in the half of the row the pins leave empty —
+   * it had a line of its own under one row, which cost the same height and
+   * showed four fewer pins for it. See all opens the grid with the same
+   * twelve still leading, and Show fewer, under it, folds it back.
+   * Whatever the list is wearing is always there — in the twelfth place
+   * when it is not one of the twelve — so the answer to "which one is mine"
+   * is never behind a press.
    *
    * The eight are written here rather than counted per request. Counted on
    * 2026-11-13 off production's lists — the default 7, heart and flame 3,
@@ -3008,6 +3012,10 @@
    *   SELECT COALESCE(NULLIF(pin,''),'pin'), COUNT(*) FROM lists GROUP BY 1 ORDER BY 2 DESC
    */
   var PIN_FIRST = ['pin', 'heart', 'flame', 'sun', 'gem', 'beers', 'balloon', 'star'];
+  /* How many more stand in front of See all on the second row. Four, because
+     the link needs the other four columns: "Hamısına bax (45)" is the longest
+     of the eleven and two columns of a 390px phone do not hold it. */
+  var PIN_NEXT = 4;
   var pinsOpen = false;
 
   function pinPicker(list) {
@@ -3042,21 +3050,20 @@
     }
 
     /* Each one draws itself, so the grid is the answer to "what will my list
-       look like" rather than a list of words for it. Closed, the eight; open,
-       the eight and then the rest in the order pins.js keeps them. */
+       look like" rather than a list of words for it. Open, the eight and then
+       the rest in the order pins.js keeps them; closed, the first twelve of
+       that same line, so opening it moves nothing that was already there. */
     var first = PIN_FIRST.filter(function (id) { return TTBPins.GLYPHS.indexOf(id) !== -1; });
-    var shown;
-    if (pinsOpen) {
-      shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
-    } else {
-      shown = first.slice();
+    var shown = first.concat(TTBPins.GLYPHS.filter(function (id) { return first.indexOf(id) === -1; }));
+    if (!pinsOpen) {
+      shown = shown.slice(0, first.length + PIN_NEXT);
       if (shown.indexOf(worn) === -1 && TTBPins.GLYPHS.indexOf(worn) !== -1) {
         shown[shown.length - 1] = worn;
       }
     }
 
     var glyphs = el('div', {
-      className: 'lists-pin-grid',
+      className: 'lists-pin-set',
       role: 'radiogroup',
       'aria-label': t('listsPin')
     }, shown.map(function (id) {
@@ -3091,10 +3098,12 @@
     );
     more.setAttribute('aria-expanded', pinsOpen ? 'true' : 'false');
 
+    /* The button is in the grid and outside the radiogroup: it sits on the
+       swatches' own columns, and it is not one of the choices. The group is
+       display: contents in assets/lists.css, which is what lets both be true. */
     var set = el('fieldset', { className: 'lists-vis lists-pins' }, [
       el('legend', { className: 'lists-vis-legend mono', textContent: t('listsPin') }),
-      glyphs,
-      more,
+      el('div', { className: 'lists-pin-grid' }, [glyphs, more]),
       el('p', { className: 'lists-hint mono', textContent: t('listsPinMark') })
     ]);
     return set;
