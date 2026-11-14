@@ -69,7 +69,6 @@ when: discover_place
 when: discover_play
 when: discover_play_more
 when: discover_all
-when: discover_make
 ref: index.html #find-me
 ref: assets/discover.js
 ref: assets/app.js mountDiscover()

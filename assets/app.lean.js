@@ -3178,21 +3178,6 @@
         selectPlace(id, { fly: true });
       }
     });
-    $('discover-make').addEventListener('click', pressMake);
-  }
-
-  var NEW_LIST = '/list/new';
-
-  function pressMake(ev) {
-    if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
-    if (!state.account.ready) return;
-    ev.preventDefault();
-    if (!state.account.user) {
-      accountThen = NEW_LIST;
-      openAccount('up', '', 'make');
-      return;
-    }
-    if (!window.TTBShell.walk(NEW_LIST)) window.location.href = NEW_LIST;
   }
 
   function standOnDiscover(on) {

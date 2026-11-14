@@ -4344,12 +4344,16 @@ body.is-discover #btn-locate { display: none; }
 .discover-note p { margin: 0 0 6px; font-size: 14px; line-height: 1.45; }
 
 .discover-foot {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
   margin: 26px var(--gap) 0;
-  padding-top: 18px;
+  padding-top: 16px;
   border-top: 1px solid var(--hairline);
-  text-align: center;
+  font-size: 12.5px;
+  color: var(--muted);
 }
-.discover-foot p { margin: 0 0 4px; font-size: 14px; }
+.discover-foot a { color: inherit; }
 
 /* ---------- stories ----------
    One video, full height, with the chrome laid over it: a bar per story along

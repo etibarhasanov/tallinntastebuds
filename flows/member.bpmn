@@ -107,9 +107,7 @@ ref: assets/account.js</bpmn:documentation>
       <bpmn:documentation>when: list_create
 ref: assets/lists.js draftList() makeDraft()
 ref: functions/list/[id].js /list/new
-ref: assets/app.js pressMake()
-ref: assets/account.js makeLink()
-ref: index.html #discover-make</bpmn:documentation>
+ref: assets/account.js makeLink()</bpmn:documentation>
       <bpmn:incoming>member-e8</bpmn:incoming>
       <bpmn:outgoing>member-e9</bpmn:outgoing>
     </bpmn:userTask>
