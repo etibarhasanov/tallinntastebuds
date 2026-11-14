@@ -160,6 +160,36 @@
     return state.blurbs[place.id] || '';
   }
 
+  function blurbKids(place, blurb) {
+    var links = place.links || [];
+    var found = [];
+    links.forEach(function (link) {
+      var said = typeof link.text === 'string' ? link.text : (link.text || {})[state.lang];
+      var at = said ? blurb.indexOf(said) : -1;
+      if (at >= 0) found.push({ at: at, said: said, href: link.href });
+    });
+    found.sort(function (a, b) { return a.at - b.at; });
+
+    var kids = [];
+    var from = 0;
+    found.forEach(function (hit) {
+      if (hit.at < from) return;
+      if (hit.at > from) kids.push(blurb.slice(from, hit.at));
+      kids.push(blurbLink(place, hit));
+      from = hit.at + hit.said.length;
+    });
+    if (from < blurb.length) kids.push(blurb.slice(from));
+    return kids;
+  }
+
+  function blurbLink(place, hit) {
+    var who = /^\/u\/([^\/?#]+)$/.exec(hit.href);
+    var a = el('a', { href: hit.href, textContent: hit.said });
+    return who
+      ? TTBTrack.click(a, 'profile_open', { name: decodeURIComponent(who[1]) })
+      : TTBTrack.click(a, 'writeup_link', { place: place.id });
+  }
+
   function formatMonth(ym) {
     var m = /^(\d{4})-(\d{2})$/.exec(ym || '');
     if (!m) return ym || '';
@@ -4509,9 +4539,8 @@
     var blurb = blurbFor(place);
     if (blurb) {
       dom.detail.appendChild(el('p', {
-        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : ''),
-        textContent: blurb
-      }));
+        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : '')
+      }, blurbKids(place, blurb)));
     }
 
     if (place.reel && !watchUp) {

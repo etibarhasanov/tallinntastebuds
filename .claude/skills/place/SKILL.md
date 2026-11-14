@@ -30,8 +30,8 @@ one fact decides most of what follows.
 ## The entry
 
 `tools/validate.mjs` (the `restaurants.json` block, the `places.forEach`
-in it) knows seventeen keys — `id, name, address, lat, lng, price, types,
-blurb, mustOrder, reel, reelSummary, photos, website, phone, added, visited,
+in it) knows eighteen keys — `id, name, address, lat, lng, price, types,
+blurb, mustOrder, reel, reelSummary, links, photos, website, phone, added, visited,
 closed` —
 and requires the first twelve. An unknown key is a warning ("typo?"), which is how `blrub` is caught.
 
@@ -46,6 +46,7 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `mustOrder` | array, no empty strings; `[]` is fine | error |
 | `reel` | `""` (warns "no reel yet") or an Instagram or TikTok permalink shape. **Never invent a shortcode** — a made-up one resolves to a stranger's post | error |
 | `reelSummary` | optional: one plain sentence, under 200 characters, about what the reel shows, written by somebody who watched it, and only beside a `reel`. `/mcp` hands it to an assistant as `reel_summary` and it is the only thing an assistant may say about the video. **Never written from the name or the write-up** — left out is the honest answer | error |
+| `links` | optional: the phrases of the write-up that are links in the panel. Each is `href`, an address on this site starting with one `/` (`/u/<name>`, `/?list=<id>`), and `text`, the words that carry it: a string where every language says the same, an object by language where they do not. The blurb stays plain text. A phrase that is not in the write-up it names fails; a language left out of `text` warns | error / warning |
 | `photos` | array of bare filenames matching `\.(webp\|jpg\|jpeg\|png\|avif)$`, each present at `photos/<id>/` | error |
 | `website` | absent, `""`, or `https?://…` | error |
 | `phone` | absent, `""`, or `^\+[1-9][0-9]{0,3}( [0-9]{2,4}){1,4}$` — `+372 661 0180`. Absent on an open place warns | error / warning |

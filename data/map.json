@@ -769,6 +769,28 @@
   "types": [
    "bakery"
   ],
+  "links": [
+   {
+    "href": "/u/tallinnbits",
+    "text": "@tallinnbits"
+   },
+   {
+    "href": "/?list=8-new-cafes-bakeries-to-know-in-z3255p",
+    "text": {
+     "az": "yeni kafe və çörəkxanalar siyahısına",
+     "en": "list of new cafés and bakeries",
+     "et": "uute kohvikute ja pagariäride nimekirja",
+     "fi": "uusien kahviloiden ja leipomoiden listalleen",
+     "pt": "lista de novos cafés e padarias",
+     "ru": "список новых кафе и пекарен",
+     "es": "lista de nuevos cafés y panaderías",
+     "tr": "yeni kafeler ve fırınlar listesine",
+     "uk": "списку нових кав'ярень і пекарень",
+     "fr": "liste de nouveaux cafés et boulangeries",
+     "de": "Liste neuer Cafés und Bäckereien"
+    }
+   }
+  ],
   "mustOrder": [
    "Croissant"
   ],

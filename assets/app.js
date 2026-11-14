@@ -360,6 +360,55 @@
     return state.blurbs[place.id] || '';
   }
 
+  /* The write-up as the paragraph's children: text, and a link wherever the
+     place's `links` name a phrase of it. A write-up is plain text everywhere
+     it travels — the card a shared link unfurls as, /mcp, the iPhone app,
+     a search result — so the links are not written into it. They sit beside
+     it in the place's row, each an address on this site and the words of the
+     write-up that carry it, one string where every language says the same
+     thing (an @name) and one per language where they do not. Jaspier
+     Pagariäri was the first: the account that said it and the list they said
+     it on.
+
+     A phrase is linked where it first occurs, and one the reading language's
+     write-up does not contain is simply not linked — the write-up may have
+     fallen back to English while the phrase did not, and a sentence with no
+     link in it is still the sentence. The validator holds every phrase to
+     the write-up it was written for, so that is the only way to miss. */
+  function blurbKids(place, blurb) {
+    var links = place.links || [];
+    var found = [];
+    links.forEach(function (link) {
+      var said = typeof link.text === 'string' ? link.text : (link.text || {})[state.lang];
+      var at = said ? blurb.indexOf(said) : -1;
+      if (at >= 0) found.push({ at: at, said: said, href: link.href });
+    });
+    found.sort(function (a, b) { return a.at - b.at; });
+
+    var kids = [];
+    var from = 0;
+    found.forEach(function (hit) {
+      /* Two phrases over the same words: the earlier one keeps them. */
+      if (hit.at < from) return;
+      if (hit.at > from) kids.push(blurb.slice(from, hit.at));
+      kids.push(blurbLink(place, hit));
+      from = hit.at + hit.said.length;
+    });
+    if (from < blurb.length) kids.push(blurb.slice(from));
+    return kids;
+  }
+
+  /* A profile reports what every byline reports, so the same door is one
+     name in the numbers wherever it stands; anything else is a link out of
+     a write-up, and says which place it was read on. */
+  function blurbLink(place, hit) {
+    var who = /^\/u\/([^\/?#]+)$/.exec(hit.href);
+    var a = el('a', { href: hit.href, textContent: hit.said });
+    return who
+      ? TTBTrack.click(a, 'profile_open', { name: decodeURIComponent(who[1]) })
+      : TTBTrack.click(a, 'writeup_link', { place: place.id });
+  }
+
   /* Month names come from ui.json, not from Intl.
      Chromium reports az as a supported locale — supportedLocalesOf returns it
      and resolvedOptions().locale says "az" — and then formats April as "M04",
@@ -7838,9 +7887,8 @@
     var blurb = blurbFor(place);
     if (blurb) {
       dom.detail.appendChild(el('p', {
-        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : ''),
-        textContent: blurb
-      }));
+        className: 'blurb' + (/^\s*TODO/i.test(blurb) ? ' is-todo' : '')
+      }, blurbKids(place, blurb)));
     }
 
     /* The reel first and the photos after it, and a place with neither says
