@@ -10,7 +10,6 @@
  *   { fresh:   [ { id, title, by, pin, taste } … ],   newest first
  *     popular: [ the same shape … ],                  most opened first
  *     quiet:   [ place id … ],                        least opened first
- *     opened:  [ place id … ],                        most opened first
  *     routes:  [ { id, title, pin, places, finished, best, mode } … ],
  *     route:   the first of routes, or null }
  *
@@ -49,10 +48,9 @@
  * they are the bottom of the count precisely because they are shut. A tie is
  * broken by id, which is no order at all and is at least the same one twice.
  *
- * `opened` is the old shelf's ids, most opened first, with spares for the
- * ones a reader drops as closed. No page of this deployment draws it; it
- * stays in the answer for a page or an app from before the turn, which
- * would otherwise find its shelf gone rather than out of date.
+ * The other end of the order is not answered any more. `opened`, the old
+ * shelf's ids, stayed for a day in case the iPhone app drew it; it never
+ * did, and a field nothing reads is most of a ranking sent for nobody.
  *
  * THE ROUTES ARE LISTS TO GO ROUND
  *
@@ -100,10 +98,6 @@ const SHELF = 8;
    number: few enough that each open moves the shelf. */
 const QUIET = 5;
 
-/* How many ids `opened` sends, to a reader that drew eight of them: the
-   spares are for the ones it drops as closed or gone. */
-const OPENED = 16;
-
 /* How many lists the Play card can be swiped through, before the reader's own
    walks are put in front of them. Past five the dots under it stop being
    countable at a glance, and /lists is the way on. */
@@ -111,7 +105,7 @@ const ROUTES = 5;
 
 const TTL = 300;
 
-const EMPTY = { fresh: [], popular: [], quiet: [], opened: [], route: null, routes: [] };
+const EMPTY = { fresh: [], popular: [], quiet: [], route: null, routes: [] };
 
 function discoverKey(request) {
   return new Request(new URL('/api/discover', request.url).toString());
@@ -134,33 +128,25 @@ async function shelf(context, sort) {
   }
 }
 
-/* Both ends of the count, from one read of it — THE SHELF IS THE QUIET END.
-   Every row of the kind is read rather than the top few, because the bottom
-   of the map is the roll less the rows, not a second query: Google's venues
-   are counted under the same kind and are simply never looked up. A count
-   that cannot be read is two empty shelves, never a map of noughts; a roll
-   that cannot be read costs `quiet` alone. */
-async function places(context) {
-  let rows;
+/* The places opened least — THE SHELF IS THE QUIET END. Every row of the kind
+   is read, because the bottom of the map is the roll less the rows and not a
+   query: Google's venues are counted under the same kind and are simply never
+   looked up. A count or a roll that cannot be read is an empty shelf, never a
+   map of noughts. */
+async function quiet(context) {
   try {
-    rows = (await context.env.DB
-      .prepare("SELECT id, n FROM press_counts WHERE kind = 'place' ORDER BY n DESC, id ASC")
-      .all()).results;
-  } catch (e) {
-    return { quiet: [], opened: [] };
-  }
-  const opened = rows.slice(0, OPENED).map((row) => row.id);
-  try {
-    const n = new Map(rows.map((row) => [row.id, row.n]));
-    const quiet = (await mapPlaces(context))
+    const { results } = await context.env.DB
+      .prepare("SELECT id, n FROM press_counts WHERE kind = 'place'")
+      .all();
+    const n = new Map(results.map((row) => [row.id, row.n]));
+    return (await mapPlaces(context))
       .filter((place) => !place.closed)
       .map((place) => ({ id: place.id, n: n.get(place.id) || 0 }))
       .sort((a, b) => a.n - b.n || (a.id < b.id ? -1 : 1))
       .slice(0, QUIET)
       .map((place) => place.id);
-    return { quiet, opened };
   } catch (e) {
-    return { quiet: [], opened };
+    return [];
   }
 }
 
@@ -229,15 +215,15 @@ export async function onRequestGet(context) {
   const hit = await cache.match(key);
   if (hit) return withNotModified(request, hit);
 
-  const [fresh, popular, { quiet, opened }] = await Promise.all([
+  const [fresh, popular, places] = await Promise.all([
     shelf(context, 'new'),
     shelf(context, 'views'),
-    places(context)
+    quiet(context)
   ]);
 
   const play = await routes(context, popular.map((list) => list.id));
 
-  const body = JSON.stringify({ fresh, popular, quiet, opened, route: play[0] || null, routes: play });
+  const body = JSON.stringify({ fresh, popular, quiet: places, route: play[0] || null, routes: play });
   const res = new Response(body, {
     headers: {
       'content-type': 'application/json; charset=utf-8',

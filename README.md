@@ -18273,8 +18273,9 @@ closed, or closed for now, is never on it; they sit at the bottom of the
 count because they are shut, and the shelf would otherwise stand on doors
 nobody can go through. No position is printed on a card, since the front of
 this shelf is not a place to be. It turns within five minutes of an open,
-which is how long the answer is kept. The route still answers `opened`, the
-old shelf's ids, for a page or an app from before the turn.
+which is how long the answer is kept. The other end of the order is not sent
+at all: the route answered `opened`, the old shelf's ids, for a few hours
+more in case the iPhone app drew it, and it never had.
 
 **What a card shows.** A list: the marker its owner chose, the title, whose
 it is, and its first three places. A place: its first photograph, or the mark
