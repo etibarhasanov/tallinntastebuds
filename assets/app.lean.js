@@ -82,6 +82,8 @@
   var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
+  var routeFrom = null;   // where the way drawn was asked from, so a dot that has left it can ask again
+  var routeAsked = 0;     // and when, so a moving dot asks at most once every ROUTE_REST
   var tileLayer = null;
   var haloMarker = null;
   var toastTimer = null;
@@ -1365,17 +1367,17 @@
   var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
   var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
 
-  function showRoute(place) {
+  function showRoute(place, again) {
     var token = ++routeToken;
     var mode = routeMode;
     routeFor = place.id;
-    clearRouteLine();
+    if (!again) clearRouteLine();
     paintRouteModes();
     dom.routeOut.href = mode === 'car'
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
       : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
-    dom.routeSay.textContent = t('routeFinding');
+    if (!again) dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
 
@@ -1384,6 +1386,8 @@
     got.then(function (from) {
       if (token !== routeToken) return null;
       if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
+      routeFrom = L.latLng(from.lat, from.lng);
+      routeAsked = Date.now();
       return fetch('/api/route?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
         .then(function (res) { return res.ok ? res.json() : null; })
         .then(function (way) {
@@ -1394,12 +1398,26 @@
             drawTrip(0);
             return;
           }
-          if (!way || !way.line || way.line.length < 2) { dom.routeSay.textContent = t(ROUTE_NONE[mode]); return; }
-          drawRoute(way, mode);
+          if (!way || !way.line || way.line.length < 2) {
+            if (!again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
+            return;
+          }
+          clearRouteLine();
+          drawRoute(way, mode, again);
         });
     }).catch(function () {
-      if (token === routeToken) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
+      if (token === routeToken && !again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
     });
+  }
+
+  var ROUTE_MOVED = 60;
+  var ROUTE_REST = 20000;
+
+  function rerouteIfMoved() {
+    if (!routeFor || routeMode === 'bus' || !routeFrom || !hereMarker) return;
+    if (hereMarker.getLatLng().distanceTo(routeFrom) < ROUTE_MOVED || Date.now() - routeAsked < ROUTE_REST) return;
+    var place = byId(routeFor);
+    if (place) showRoute(place, true);
   }
 
   function paintRouteModes() {
@@ -1436,14 +1454,14 @@
       : t('askKm', { n: formatDecimal(m / 1000, 1) });
   }
 
-  function drawRoute(way, mode) {
+  function drawRoute(way, mode, still) {
     routeLine = L.featureGroup().addTo(map);
     routeStretch(way.line, markerColours().here, 'here', false);
     dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });
-    fitRoute();
+    if (!still) fitRoute();
   }
 
   function drawTrip(n) {
@@ -1501,6 +1519,7 @@
   function clearRoute() {
     routeToken++;
     routeFor = null;
+    routeFrom = null;
     routeTrips = null;
     clearRouteLine();
     dom.routeBar.hidden = true;
@@ -7024,6 +7043,7 @@
       hereMarker.setLatLng(at);
       if (hereAccuracy) hereAccuracy.setLatLng(at);
       if (hereArrow) hereArrow.setLatLng(at);
+      rerouteIfMoved();
       return;
     }
     hereStill = true;
@@ -7698,6 +7718,7 @@
       var course = pos.coords.heading;
       hereCourse = typeof course === 'number' && !isNaN(course) && pos.coords.speed > HERE_PACE ? course : null;
       paintWay();
+      rerouteIfMoved();
     }, function (err) {
       if (err && err.code === 1) {
         storeDel(HERE_KEY);

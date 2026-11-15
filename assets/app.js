@@ -260,6 +260,8 @@
   var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
+  var routeFrom = null;   // where the way drawn was asked from, so a dot that has left it can ask again
+  var routeAsked = 0;     // and when, so a moving dot asks at most once every ROUTE_REST
   var tileLayer = null;
   var haloMarker = null;
   var toastTimer = null;
@@ -2340,17 +2342,22 @@
   var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
   var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
 
-  function showRoute(place) {
+  /* `again` is the same way asked for a second time because the dot has
+     moved — rerouteIfMoved(). The line that is up stays up until the new one
+     has arrived, the bar keeps the sentence it had rather than saying it is
+     looking, the map is not refitted under a thumb, and an answer that does
+     not come leaves the old line where it was. */
+  function showRoute(place, again) {
     var token = ++routeToken;
     var mode = routeMode;
     routeFor = place.id;
-    clearRouteLine();
+    if (!again) clearRouteLine();
     paintRouteModes();
     dom.routeOut.href = mode === 'car'
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
       : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
-    dom.routeSay.textContent = t('routeFinding');
+    if (!again) dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
 
@@ -2359,6 +2366,8 @@
     got.then(function (from) {
       if (token !== routeToken) return null;
       if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
+      routeFrom = L.latLng(from.lat, from.lng);
+      routeAsked = Date.now();
       return fetch('/api/route?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
         .then(function (res) { return res.ok ? res.json() : null; })
         .then(function (way) {
@@ -2369,12 +2378,39 @@
             drawTrip(0);
             return;
           }
-          if (!way || !way.line || way.line.length < 2) { dom.routeSay.textContent = t(ROUTE_NONE[mode]); return; }
-          drawRoute(way, mode);
+          if (!way || !way.line || way.line.length < 2) {
+            if (!again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
+            return;
+          }
+          clearRouteLine();
+          drawRoute(way, mode, again);
         });
     }).catch(function () {
-      if (token === routeToken) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
+      if (token === routeToken && !again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
     });
+  }
+
+  /* The way follows the dot. A walk, a ride or a drive was drawn from where
+     the visitor stood at the press and stayed that line however far they then
+     went — off it down another street, or to the other side of town with the
+     tab in a pocket — so the bar went on saying 22 minutes from a place they
+     had left. Called wherever the dot is moved: once it is ROUTE_MOVED metres
+     from where the way was asked from, the way is asked for again from where
+     it is now, at most once every ROUTE_REST so a car does not ask a free
+     public router every second. That is the remaining way and the remaining
+     time as much as it is a new way round.
+
+     Not the bus: its answer is a departure, pressed and chosen, and redrawing
+     three journeys under somebody reading them is worse than a line that
+     starts a stop behind. */
+  var ROUTE_MOVED = 60;
+  var ROUTE_REST = 20000;
+
+  function rerouteIfMoved() {
+    if (!routeFor || routeMode === 'bus' || !routeFrom || !hereMarker) return;
+    if (hereMarker.getLatLng().distanceTo(routeFrom) < ROUTE_MOVED || Date.now() - routeAsked < ROUTE_REST) return;
+    var place = byId(routeFor);
+    if (place) showRoute(place, true);
   }
 
   function paintRouteModes() {
@@ -2416,14 +2452,14 @@
       : t('askKm', { n: formatDecimal(m / 1000, 1) });
   }
 
-  function drawRoute(way, mode) {
+  function drawRoute(way, mode, still) {
     routeLine = L.featureGroup().addTo(map);
     routeStretch(way.line, markerColours().here, 'here', false);
     dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });
-    fitRoute();
+    if (!still) fitRoute();
   }
 
   /* A bus journey: the walks dashed in the dot's colour, each ride solid in
@@ -2489,6 +2525,7 @@
   function clearRoute() {
     routeToken++;
     routeFor = null;
+    routeFrom = null;
     routeTrips = null;
     clearRouteLine();
     dom.routeBar.hidden = true;
@@ -12080,6 +12117,7 @@
       hereMarker.setLatLng(at);
       if (hereAccuracy) hereAccuracy.setLatLng(at);
       if (hereArrow) hereArrow.setLatLng(at);
+      rerouteIfMoved();
       return;
     }
     hereStill = true;
@@ -13104,8 +13142,9 @@
    * map is not carried along — somebody reading a street two blocks ahead
    * would have it pulled out from under their thumb — and the list is not
    * redrawn, which would rebuild rows under a finger every few seconds; it
-   * measures from the dot again the next time anything draws it. A route
-   * already drawn stays as drawn, and the dot travels along it.
+   * measures from the dot again the next time anything draws it. A walk, a
+   * ride or a drive already drawn is asked for again once the dot has left
+   * where it started — rerouteIfMoved() — and a bus journey stays as drawn.
    *
    * The watch stops when the tab is hidden and starts again when it is back,
    * the way the walk's own does in assets/walk.js: a phone in a pocket should
@@ -13133,6 +13172,7 @@
       var course = pos.coords.heading;
       hereCourse = typeof course === 'number' && !isNaN(course) && pos.coords.speed > HERE_PACE ? course : null;
       paintWay();
+      rerouteIfMoved();
     }, function (err) {
       /* 1 is a refusal given since the yes: stop asking, here and on the
          next arrival. Anything else is a fix that did not come, and the
