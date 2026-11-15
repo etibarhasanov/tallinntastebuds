@@ -18179,27 +18179,33 @@ door — is what was sent, and a front page over it would bury it; `boot()` in
 `assets/app.js` asks whether the address carried anything but a language and
 a style.
 
-**On a desktop it is the same page, laid out wide.** Until 2026-11-14 a
-desktop was left alone, on the argument that it already opens on the names
-beside the map; the owner asked for the phone's page there too, picked the
-first of three drawings, and said the data was to be exactly the phone's. So
-it is: the same shelves in the same order out of the same one answer, and
-nothing in `assets/discover.js` asks which screen it is on — the wide
-arrangement is one block of rules at the end of the page's own in
-`assets/styles.css`, above 860px.
+**On a desktop it is the same page, in the owner's order for that screen.**
+Until 2026-11-14 a desktop was left alone, on the argument that it already
+opens on the names beside the map; the owner asked for the phone's page there
+too, from the same one answer. The first drawing put **Play** beside the
+map's card and showed every list; a day later the owner looked at it built
+and arranged it again, and this is that arrangement: the map's card across
+the top, then **New lists**, **New on the map**, **Overlooked places** and
+**Popular lists**, and no Play. A walk is still started where it always was,
+on a list's own Route view. `draw()` in `assets/discover.js` asks how wide
+the window is and puts the shelves in that screen's order, and draws them
+again when a window is dragged across 860px; how a shelf looks wide is one
+block of rules at the end of the page's own in `assets/styles.css`.
 
-What a wide window changes is that a shelf can be shown whole, so nothing
-there scrolls sideways and nothing is cut at the edge. The page is one column
-in the middle of the window, 1160px at most, and the brand, the find bar and
-the corner come in from the window's edges to stand on that column's while it
-is up. The map's card and **Play** share the first row — the card on the left,
-as tall as Play is and never under 340px, and Play on the right with its
-routes one under another, where a phone swipes through them and counts them in
-dots. Lists stand four to a row and wrap; a shelf of places is one row that
-its cards share, eight at the widest, because a second row of two reads as a
-shelf that ran out. With no route to offer there is no Play and the card spans
-the page; while the route is out a blank card holds Play's column, so the map
-does not start wide and narrow when the routes arrive.
+The page is one column in the middle of the window, 1160px at most, and the
+brand, the find bar and the corner come in from the window's edges to stand
+on that column's while it is up. The card is a band of the city 340px tall
+rather than the phone's picture, which at that width would be most of the
+screen. A shelf of lists shows four, and carries two round arrows after **See
+all**: a press moves the row on by the four it shows, the one pointing back
+is off until it has somewhere to go, and where every list already fits the
+pair is not drawn. The owner's words were that eight are not needed and four
+are fine, going to the right each time. The other four are the same eight
+the phone swipes through, so the data is the phone's and nothing is asked
+for twice. A shelf of places is one row its cards share, eight at the
+widest. The arrows are paper on a hairline and round, the shape of the
+rail's pills, and are none of rule 4's four controls for the reason the
+Play card's dots are not: they move a row, and go nowhere.
 
 The names beside the map are the map's, and go with it: the columns are
 hidden while the page is up and are there again, scrolled where they were,
@@ -19576,6 +19582,7 @@ The map, `assets/app.js`:
 | `discover_place` | — a place on either of Discover's two shelves of them; the place then opens the ordinary way and is counted as any open is |
 | `discover_all` | — **See all** at the head of a shelf of lists, to the directory |
 | `discover_play` | — the route on Discover's Play card: Start, Be the first or Keep going, each the way to that list's Route view |
+| `discover_lists_more` | — the arrow that moves a shelf of lists on to its next four, on a desktop, where a shelf shows four of its eight |
 | `discover_play_more` | — the Play card moved past its first route, by a swipe or a dot; once a load, since the question is whether anybody looks past the first |
 | `flash_open_rail` | — the Learn Estonian row behind More, the flashcards' door, named as it was when the door was a pill on the rail |
 | `more_open`, `more_close` | `from` (`find` from the find bar's button on Discover, absent from the rail) — the More pill on the rail or the round button in the find bar on Discover, and its sheet put away by the cross or the scrim |

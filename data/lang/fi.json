@@ -427,6 +427,8 @@
   "discoverNewLists": "Uudet listat",
   "discoverPopularLists": "Suositut listat",
   "discoverSeeAll": "Näytä kaikki",
+  "discoverPrev": "Edelliset listat",
+  "discoverNext": "Seuraavat listat",
   "discoverQuiet": "Huomaamatta jääneet paikat",
   "discoverQuietSay": "Kartan viisi vähiten avattua paikkaa. Avaa yksi, niin seuraava tulee sen tilalle.",
   "discoverAdded": "Uutta kartalla",

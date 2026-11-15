@@ -427,6 +427,8 @@
   "discoverNewLists": "Uued nimekirjad",
   "discoverPopularLists": "Populaarsed nimekirjad",
   "discoverSeeAll": "Vaata kõiki",
+  "discoverPrev": "Eelmised nimekirjad",
+  "discoverNext": "Järgmised nimekirjad",
   "discoverQuiet": "Märkamata jäänud kohad",
   "discoverQuietSay": "Viis kohta kaardil, mida avatakse kõige vähem. Ava üks ja järgmine võtab selle koha.",
   "discoverAdded": "Uued kaardil",

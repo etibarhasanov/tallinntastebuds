@@ -427,6 +427,8 @@
   "discoverNewLists": "New lists",
   "discoverPopularLists": "Popular lists",
   "discoverSeeAll": "See all",
+  "discoverPrev": "Previous lists",
+  "discoverNext": "Next lists",
   "discoverQuiet": "Overlooked places",
   "discoverQuietSay": "The five on the map that get opened least. Open one and the next takes its place.",
   "discoverAdded": "New on the map",
