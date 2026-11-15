@@ -1559,7 +1559,12 @@
       lit: cssVar('--accent-lit') || '#0072ce',
       muted: cssVar('--muted') || '#536879',
       paper: cssVar('--paper') || '#f2f8ff',
-      here: cssVar('--here') || '#c1420b'
+      here: cssVar('--here') || '#c1420b',
+      /* The way there, keyed by /api/route's own mode — routeStretch(). */
+      foot: cssVar('--way-foot') || '#1a8f4c',
+      bike: cssVar('--way-bike') || '#7ab317',
+      bus: cssVar('--way-bus') || '#e08a1e',
+      car: cssVar('--way-car') || '#d23b3b'
     };
   }
 
@@ -2420,13 +2425,16 @@
     }
   }
 
-  /* One stretch of the way. `tone` says which of the style's colours it wears,
-     so applyMarkerColours() can repaint it when the style changes: the walk, the
-     ride on a bike and the drive are the dot's colour, a ride with no colour of its own the lit
-     pin's, and a ride the timetable gives a colour keeps it. */
-  function routeStretch(line, colour, tone, dashed) {
+  /* One stretch of the way, in the colour of how it is travelled: green for a
+     walk, a lighter green for a bike, amber for a bus and red for a car — how
+     ecological the way is, read off the map. `tone` is the mode, which is the
+     key markerColours() files that colour under, so applyMarkerColours() can
+     repaint the stretch when the style changes. They were all the dot's blue,
+     and a bus ride its timetable's colour, which said which line and nothing
+     the bar did not already say in words. */
+  function routeStretch(line, tone, dashed) {
     return L.polyline(line, {
-      color: colour,
+      color: markerColours()[tone],
       tone: tone,
       weight: dashed ? 4 : 5,
       opacity: .85,
@@ -2454,7 +2462,7 @@
 
   function drawRoute(way, mode, still) {
     routeLine = L.featureGroup().addTo(map);
-    routeStretch(way.line, markerColours().here, 'here', false);
+    routeStretch(way.line, mode, false);
     dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
@@ -2462,20 +2470,17 @@
     if (!still) fitRoute();
   }
 
-  /* A bus journey: the walks dashed in the dot's colour, each ride solid in
-     its line's colour, and the line in the bar saying which to take, when and
+  /* A bus journey: the walks dashed in a walk's green, each ride solid in the
+     bus's amber, and the line in the bar saying which to take, when and
      from where. Under it, the journeys on offer as small buttons, the one
      drawn pressed — pressing another draws that one instead. */
   function drawTrip(n) {
     var trip = routeTrips[n];
-    var c = markerColours();
     clearRouteLine();
     routeLine = L.featureGroup().addTo(map);
     trip.legs.forEach(function (leg) {
       if (leg.line.length < 2) return;
-      if (leg.name === undefined) routeStretch(leg.line, c.here, 'here', true);
-      else if (leg.color) routeStretch(leg.line, '#' + leg.color, null, false);
-      else routeStretch(leg.line, c.lit, 'lit', false);
+      routeStretch(leg.line, leg.name === undefined ? 'foot' : 'bus', leg.name === undefined);
     });
     var rides = tripRides(trip);
     var first = rides[0];
