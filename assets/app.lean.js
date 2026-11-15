@@ -892,7 +892,11 @@
       lit: cssVar('--accent-lit') || '#0072ce',
       muted: cssVar('--muted') || '#536879',
       paper: cssVar('--paper') || '#f2f8ff',
-      here: cssVar('--here') || '#c1420b'
+      here: cssVar('--here') || '#c1420b',
+      foot: cssVar('--way-foot') || '#1a8f4c',
+      bike: cssVar('--way-bike') || '#7ab317',
+      bus: cssVar('--way-bus') || '#e08a1e',
+      car: cssVar('--way-car') || '#d23b3b'
     };
   }
 
@@ -1427,9 +1431,9 @@
     }
   }
 
-  function routeStretch(line, colour, tone, dashed) {
+  function routeStretch(line, tone, dashed) {
     return L.polyline(line, {
-      color: colour,
+      color: markerColours()[tone],
       tone: tone,
       weight: dashed ? 4 : 5,
       opacity: .85,
@@ -1456,7 +1460,7 @@
 
   function drawRoute(way, mode, still) {
     routeLine = L.featureGroup().addTo(map);
-    routeStretch(way.line, markerColours().here, 'here', false);
+    routeStretch(way.line, mode, false);
     dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
@@ -1466,14 +1470,11 @@
 
   function drawTrip(n) {
     var trip = routeTrips[n];
-    var c = markerColours();
     clearRouteLine();
     routeLine = L.featureGroup().addTo(map);
     trip.legs.forEach(function (leg) {
       if (leg.line.length < 2) return;
-      if (leg.name === undefined) routeStretch(leg.line, c.here, 'here', true);
-      else if (leg.color) routeStretch(leg.line, '#' + leg.color, null, false);
-      else routeStretch(leg.line, c.lit, 'lit', false);
+      routeStretch(leg.line, leg.name === undefined ? 'foot' : 'bus', leg.name === undefined);
     });
     var rides = tripRides(trip);
     var first = rides[0];

@@ -2982,7 +2982,7 @@ screen. What is left is a bar, and the bar has four tabs: **Walk · Bike ·
 Bus · Car**. In Russian or Turkish the four do not fit a 390 px phone, so the
 row slides sideways rather than pushing the cross off the bar.
 
-- **Walk** is the line in the dot's colour and *22 min on foot · 1.8 km*, out
+- **Walk** is the line and *22 min on foot · 1.8 km*, out
   of the OpenStreetMap Germany foot router.
 - **Bike** is the same line from the same service's bike profile, *9 min by
   bike · 2.4 km*. That profile prefers cycle paths and lanes and, where there
@@ -2996,8 +2996,8 @@ row slides sideways rather than pushing the cross off the bar.
   and trolleybuses, and the trains and ferries besides. It is asked "from here,
   leaving now" and the bar says which to take, when and from where: *17 at
   14:05 from Vabaduse väljak · 22 min in all*. The walks to and from the stops
-  are drawn dashed in the dot's colour and each ride solid in its line's own
-  colour, and under the sentence the next journeys sit as small buttons —
+  are drawn dashed in a walk's green and each ride solid in the bus's amber,
+  and under the sentence the next journeys sit as small buttons —
   *14:05 · 17*, *14:12 · 3 → 17* — pressing one draws that one instead. A
   journey that is all walking is left out, because Walk says that better.
 
@@ -3018,6 +3018,14 @@ location to see the way.*, no route or a service that is down says so for that
 mode (*Couldn't find a walking route.*, *Couldn't find a bike route.*, *No bus or tram found right now.*,
 *Couldn't find a driving route.*), and the other tabs and the Google link are
 there in every case.
+
+**The colour is how green the way is.** A walk is green, a bike a lighter
+green, a bus amber and a car red, and both the line on the map and the tab
+that is pressed wear it, so the tab says what the line's colour means. The
+four are tokens, `--way-foot` to `--way-car`, restated in each style so they
+read on its ground. Every line used to be the blue of the dot, and a bus ride
+its timetable's colour; `/api/route` still sends that colour on a ride, and
+nothing on the page reads it now.
 
 **The way follows the dot.** A walk, a ride or a drive was drawn from where
 the visitor stood at the press and stayed that line however far they went —

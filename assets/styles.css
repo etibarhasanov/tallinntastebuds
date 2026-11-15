@@ -26,6 +26,11 @@
   --accent:     #a81e28;
   --accent-lit: #c9323d;
   --here:       #0b62c4;
+  /* The way there, by how green the way of getting there is: a walk, a bike,
+     a bus, a car. The line on the map and the pressed tab in the bar both
+     wear it — "The way there" below. Restated per style only so the four
+     read on that style's ground; the order from green to red never changes. */
+  --way-foot: #1a8f4c; --way-bike: #7ab317; --way-bus: #e08a1e; --way-car: #d23b3b;
 
   --shadow: 0 1px 2px rgba(74, 26, 22, .06), 0 8px 28px rgba(74, 26, 22, .14);
   --attrib-bg: rgba(255, 240, 234, .88);
@@ -1325,6 +1330,7 @@ body.lang-open .controls { z-index: 1250; }
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
   --here: #0b62c4;
+  --way-foot: #1a8f4c; --way-bike: #7ab317; --way-bus: #e08a1e; --way-car: #d23b3b;
   --story-ring: conic-gradient(from 210deg, #a81e28, #d84a2f, #f2a63c, #e1615a, #a81e28);
   --story-ring-seen: linear-gradient(#f0cec3, #f0cec3);
   /* Mid-dark and saturated, because a pin here is a glyph on paper standing
@@ -1357,6 +1363,7 @@ body.lang-open .controls { z-index: 1250; }
   --rest-ground: #25332c; --rest-muted: #9fb2a5;
   --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
   --here: #e0873a;
+  --way-foot: #4fd18a; --way-bike: #b5e04a; --way-bus: #f2a640; --way-car: #ff6b6b;
   /* The same ring in the dark style's own hue, with the ember arc left in it:
      a red ring on a green page would be the one thing on the site that did
      not follow the swatch you pressed. */
@@ -1392,6 +1399,7 @@ body.lang-open .controls { z-index: 1250; }
   --rest-ground: #e0e7d9; --rest-muted: #6b6c5f;
   --rest-shadow: 0 1px 2px rgba(48, 60, 40, .05);
   --here: #c0267e;
+  --way-foot: #1a8f4c; --way-bike: #7ab317; --way-bus: #e08a1e; --way-car: #d23b3b;
   --story-ring: conic-gradient(from 210deg, #1b4a8c, #2f7fc0, #f2a63c, #4f9bd6, #1b4a8c);
   --story-ring-seen: linear-gradient(#c6d6ea, #c6d6ea);
   --pin-accent: var(--accent);
@@ -1416,6 +1424,7 @@ body.lang-open .controls { z-index: 1250; }
   --rest-ground: #2e2638; --rest-muted: #b0a0bd;
   --rest-shadow: 0 1px 2px rgba(0, 0, 0, .28);
   --here: #e0873a;
+  --way-foot: #4fd18a; --way-bike: #b5e04a; --way-bus: #f2a640; --way-car: #ff6b6b;
   --story-ring: conic-gradient(from 210deg, #c9a6f2, #f0b8d8, #f2a63c, #dcc3fa, #c9a6f2);
   --story-ring-seen: linear-gradient(#43384f, #43384f);
   --pin-accent: var(--accent);
@@ -4750,8 +4759,9 @@ body.is-discover #btn-locate { display: none; }
    the one thing left to read and press. Under the toast, over everything else.
    Four rows: Walk · Bike · Bus · Car beside the cross, the line saying how
    long, the bus journeys on offer, and Google as a small link last. Nothing
-   here names a colour; a walk, a ride on a bike or a drive takes the dot's,
-   --here, and a bus its line's own. */
+   here names a colour: each way has a token, --way-foot to --way-car, green
+   to red by how ecological it is, and the line on the map and the tab that
+   is pressed both wear it. */
 .route-bar {
   position: fixed;
   z-index: 2400;
@@ -4799,6 +4809,10 @@ body.is-discover #btn-locate { display: none; }
 .route-mode { padding: 7px 12px; }
 .route-mode[aria-pressed="true"],
 .route-trip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.route-mode[data-mode="foot"][aria-pressed="true"] { background: var(--way-foot); border-color: var(--way-foot); }
+.route-mode[data-mode="bike"][aria-pressed="true"] { background: var(--way-bike); border-color: var(--way-bike); }
+.route-mode[data-mode="bus"][aria-pressed="true"] { background: var(--way-bus); border-color: var(--way-bus); }
+.route-mode[data-mode="car"][aria-pressed="true"] { background: var(--way-car); border-color: var(--way-car); }
 .route-say {
   margin: 0;
   grid-column: 1 / -1;
