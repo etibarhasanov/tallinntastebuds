@@ -257,7 +257,7 @@
   var hereAccuracy = null;
   var routeLine = null;   // the way drawn on the map, while the bar is up: a feature group
   var routeFor = null;    // the place it is the way to
-  var routeMode = /^(foot|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
+  var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var tileLayer = null;
@@ -2322,8 +2322,8 @@
      small Google link as the way on.
 
      The sheet steps out of the way while the line is up (body.route-on) so it
-     has the whole map, and the bar is the one thing left: Walk, Bus or Car, how
-     long, how far, and the cross. The mode pressed last is kept under
+     has the whole map, and the bar is the one thing left: Walk, Bike, Bus or
+     Car, how long, how far, and the cross. The mode pressed last is kept under
      ttb.routeMode, because somebody who takes the bus takes it to the next
      place too. Where the visitor is comes from the dot if the map already has
      one and from one reading otherwise, taken quietly — a reading asked for
@@ -2331,13 +2331,14 @@
      looking at. The route is /api/route; peatus.ee answers for the bus.
 
      The small link under it is the way out, and which app it leaves for
-     follows the tab: Google for a walk or a bus, which knows the footpaths
+     follows the tab: Google for a walk, a bike or a bus, which knows the footpaths
      and the timetables, and Waze for the car, which is what people in Tallinn
      drive with. Waze is given the pin rather than the name — its link has no
      place id to match, and a name it guesses at can land on the wrong
      street. */
-  var ROUTE_TRAVEL = { foot: 'walking', bus: 'transit', car: 'driving' };
-  var ROUTE_NONE = { foot: 'routeNone', bus: 'routeNoBus', car: 'routeNoCar' };
+  var ROUTE_TRAVEL = { foot: 'walking', bike: 'bicycling', bus: 'transit', car: 'driving' };
+  var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
+  var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
 
   function showRoute(place) {
     var token = ++routeToken;
@@ -2384,8 +2385,8 @@
   }
 
   /* One stretch of the way. `tone` says which of the style's colours it wears,
-     so applyMarkerColours() can repaint it when the style changes: the walk and
-     the drive are the dot's colour, a ride with no colour of its own the lit
+     so applyMarkerColours() can repaint it when the style changes: the walk, the
+     ride on a bike and the drive are the dot's colour, a ride with no colour of its own the lit
      pin's, and a ride the timetable gives a colour keeps it. */
   function routeStretch(line, colour, tone, dashed) {
     return L.polyline(line, {
@@ -2418,7 +2419,7 @@
   function drawRoute(way, mode) {
     routeLine = L.featureGroup().addTo(map);
     routeStretch(way.line, markerColours().here, 'here', false);
-    dom.routeSay.textContent = t(mode === 'car' ? 'routeCar' : 'routeWalk', {
+    dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });
@@ -12008,7 +12009,7 @@
    * body.route-on already makes). Open a place and the panel is the place
    * again; close it and the band is back. Directions is that: it opens the
    * nearest place left and draws the way to it, with the route bar's own
-   * Walk, Bus and Car.
+   * Walk, Bike, Bus and Car.
    *
    * THE DOT IS THE DEVICE
    *
