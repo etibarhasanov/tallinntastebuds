@@ -7292,8 +7292,13 @@
       (key ? '&destination_place_id=' + encodeURIComponent(key) : '');
   }
 
+  /* The button under the name. Still a real link to Google's route, and a
+     plain press draws the way on our own map first, exactly as the arrow in
+     the top strip does — ourWayFirst(). It went straight to Google for as
+     long as the arrow did not, so the same word did two things on one
+     panel. */
   function directionsButton(place, key) {
-    return TTBTrack.click(el('a', {
+    var link = TTBTrack.click(el('a', {
       className: 'link-btn is-primary',
       'data-directions': true,
       href: directionsUrl(place, key),
@@ -7301,6 +7306,16 @@
       rel: 'noopener',
       textContent: t('directions')
     }), 'directions', { place: place.name });
+    link.addEventListener('click', function (ev) { ourWayFirst(ev, place); });
+    return link;
+  }
+
+  /* Our map first, for both Directions links on a place. A modified click is
+     somebody asking for the link itself, and it is left to be one. */
+  function ourWayFirst(ev, place) {
+    if (!place || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+    ev.preventDefault();
+    showRoute(place);
   }
 
   function callButton(place) {
@@ -12631,11 +12646,7 @@
     dom.panelDirections.addEventListener('click', function (ev) {
       var place = byId(state.selected);
       TTBTrack.event('directions', { place: place ? place.name : '' });
-      /* Our map first. A modified click is somebody asking for the link
-         itself, and it is left to be one. */
-      if (!place || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
-      ev.preventDefault();
-      showRoute(place);
+      ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
     dom.routeModes.addEventListener('click', function (ev) {

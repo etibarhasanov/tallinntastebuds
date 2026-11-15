@@ -4153,7 +4153,7 @@
   }
 
   function directionsButton(place, key) {
-    return TTBTrack.click(el('a', {
+    var link = TTBTrack.click(el('a', {
       className: 'link-btn is-primary',
       'data-directions': true,
       href: directionsUrl(place, key),
@@ -4161,6 +4161,14 @@
       rel: 'noopener',
       textContent: t('directions')
     }), 'directions', { place: place.name });
+    link.addEventListener('click', function (ev) { ourWayFirst(ev, place); });
+    return link;
+  }
+
+  function ourWayFirst(ev, place) {
+    if (!place || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+    ev.preventDefault();
+    showRoute(place);
   }
 
   function callButton(place) {
@@ -7377,9 +7385,7 @@
     dom.panelDirections.addEventListener('click', function (ev) {
       var place = byId(state.selected);
       TTBTrack.event('directions', { place: place ? place.name : '' });
-      if (!place || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
-      ev.preventDefault();
-      showRoute(place);
+      ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
     dom.routeModes.addEventListener('click', function (ev) {

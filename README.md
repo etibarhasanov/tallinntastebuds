@@ -2973,7 +2973,8 @@ third copy and they are kept in step by hand.
 The way there has a button of its own in the same strip, between the share and
 the save mark: an arrow, kept up top so it does not scroll away with the
 write-up. **It shows the way on our own map before it hands anybody to
-Google.** A press takes the visitor's dot — or one quiet reading, which must not
+Google, and so does the Directions button under the name**, which went
+straight to Google for as long as the arrow did not. A press takes the visitor's dot — or one quiet reading, which must not
 fly the map off the place — asks `GET /api/route` for the way, and
 `showRoute()` in `assets/app.js` draws it on the map, fits the map to it and
 steps the sheet out of the way (`body.route-on`) so the line has the whole
