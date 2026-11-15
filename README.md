@@ -2975,11 +2975,16 @@ Google.** A press takes the visitor's dot — or one quiet reading, which must n
 fly the map off the place — asks `GET /api/route` for the way, and
 `showRoute()` in `assets/app.js` draws it on the map, fits the map to it and
 steps the sheet out of the way (`body.route-on`) so the line has the whole
-screen. What is left is a bar, and the bar has three tabs: **Walk · Bus ·
-Car**.
+screen. What is left is a bar, and the bar has four tabs: **Walk · Bike ·
+Bus · Car**. In Russian or Turkish the four do not fit a 390 px phone, so the
+row slides sideways rather than pushing the cross off the bar.
 
 - **Walk** is the line in the dot's colour and *22 min on foot · 1.8 km*, out
   of the OpenStreetMap Germany foot router.
+- **Bike** is the same line from the same service's bike profile, *9 min by
+  bike · 2.4 km*. That profile prefers cycle paths and lanes and, where there
+  is none, takes a pedestrian street or a footpath at walking pace — so one
+  line can cross the Old Town, where Google keeps riding and walking apart.
 - **Car** is the same line from the same service's car profile, *8 min by car
   · 3.1 km*. No traffic and no parking, so it is the length of the drive and
   not a promise about it.
@@ -3007,10 +3012,10 @@ of the panel has fetched it — the same address the Directions button under the
 name sends — so a modified click or a long press reaches it. A press the map
 cannot answer for does not end on nothing: no location shared says *Share your
 location to see the way.*, no route or a service that is down says so for that
-mode (*Couldn't find a walking route.*, *No bus or tram found right now.*,
+mode (*Couldn't find a walking route.*, *Couldn't find a bike route.*, *No bus or tram found right now.*,
 *Couldn't find a driving route.*), and the other tabs and the Google link are
 there in every case. No turn-by-turn and no live countdown; the route is
-`functions/api/route.js`, which rounds both ends, caches a walk or a drive a day
+`functions/api/route.js`, which rounds both ends, caches a walk, a ride or a drive a day
 and a bus journey a minute. The location is read, answered and forgotten —
 never stored or counted. Opening another place, the chat or a list puts the
 line away (`renderPanel()`); a language switch while the bar is up does not
@@ -8841,7 +8846,7 @@ the map holds no copy of a walk's state; `walkOnMap()` and `paintWalk()` in
 `assets/app.js` are the half only a map can do. The line is straight from
 door to door, which is the same estimate the totals are; **Directions** is the
 real one, the map's own route from the dot to the nearest place left, with
-Walk, Bus and Car. On the list's page the next place carries the same
+Walk, Bike, Bus and Car. On the list's page the next place carries the same
 **Directions**, a link that opens the map on that place with the way already
 drawn (`?at=…&go=1`). The dot is the device: the walk hands the map each
 position it reads, and a place typed into the Where sheet is never one of
@@ -16993,8 +16998,8 @@ functions/api/_flows.js    how people walk the diagrams on /admin/flows (not
 functions/api/lookup.js    asking Google Maps for a place nothing here knows,
                            inside the same budget as the refresh, and keeping
                            the answer
-functions/api/route.js     the way from here to a place — on foot, by bus or
-                           by car — rounded and cached a day
+functions/api/route.js     the way from here to a place — on foot, by bike,
+                           by bus or by car — rounded and cached a day
 functions/api/_admin.js    who the owner is (not a route: leading _)
 functions/api/geocode.js   a typed street to a point, for the add-a-place form,
                            for the Where sheet behind the map's locate button
@@ -19562,7 +19567,7 @@ The map, `assets/app.js`:
 | `directions`, `website`, `google_listing` | `place` — `directions` is the button under the name and the arrow in the top strip alike |
 | `route_google` | — the Open in Google Maps link on the route's bar, Walk or Bus |
 | `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
-| `route_mode` | `mode` (`foot`, `bus`, `car`), `place` — Walk, Bus or Car pressed on the route's bar |
+| `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |

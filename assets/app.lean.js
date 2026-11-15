@@ -79,7 +79,7 @@
   var hereAccuracy = null;
   var routeLine = null;   // the way drawn on the map, while the bar is up: a feature group
   var routeFor = null;    // the place it is the way to
-  var routeMode = /^(foot|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
+  var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var tileLayer = null;
@@ -1361,8 +1361,9 @@
     return directionsUrl(place, place.google ? place.id : row && row !== ASKING ? row.id : '');
   }
 
-  var ROUTE_TRAVEL = { foot: 'walking', bus: 'transit', car: 'driving' };
-  var ROUTE_NONE = { foot: 'routeNone', bus: 'routeNoBus', car: 'routeNoCar' };
+  var ROUTE_TRAVEL = { foot: 'walking', bike: 'bicycling', bus: 'transit', car: 'driving' };
+  var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
+  var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
 
   function showRoute(place) {
     var token = ++routeToken;
@@ -1438,7 +1439,7 @@
   function drawRoute(way, mode) {
     routeLine = L.featureGroup().addTo(map);
     routeStretch(way.line, markerColours().here, 'here', false);
-    dom.routeSay.textContent = t(mode === 'car' ? 'routeCar' : 'routeWalk', {
+    dom.routeSay.textContent = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });

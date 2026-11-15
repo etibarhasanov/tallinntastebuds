@@ -4748,9 +4748,10 @@ body.is-discover #btn-locate { display: none; }
 
 /* What stands on the map while a route is drawn: the sheet is gone, and this is
    the one thing left to read and press. Under the toast, over everything else.
-   Four rows: Walk · Bus · Car beside the cross, the line saying how long, the
-   bus journeys on offer, and Google as a small link last. Nothing here names a
-   colour; a walk or a drive takes the dot's, --here, and a ride its own. */
+   Four rows: Walk · Bike · Bus · Car beside the cross, the line saying how
+   long, the bus journeys on offer, and Google as a small link last. Nothing
+   here names a colour; a walk, a ride on a bike or a drive takes the dot's,
+   --here, and a bus its line's own. */
 .route-bar {
   position: fixed;
   z-index: 2400;
@@ -4770,12 +4771,20 @@ body.is-discover #btn-locate { display: none; }
   box-shadow: var(--shadow);
 }
 .route-bar[hidden] { display: none; }
+/* Four tabs fit a 390 px phone in English and not in Russian or Turkish, so
+   the row slides sideways under a finger rather than pushing the cross off
+   the bar: min-width lets the grid shrink it, and a tab never shrinks. */
 .route-modes {
   grid-column: 1;
   grid-row: 1;
   display: flex;
   gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.route-modes::-webkit-scrollbar { display: none; }
+.route-mode { flex: none; }
 .route-mode,
 .route-trip {
   padding: 7px 14px;
@@ -4787,6 +4796,7 @@ body.is-discover #btn-locate { display: none; }
   font-size: 13px;
   cursor: pointer;
 }
+.route-mode { padding: 7px 12px; }
 .route-mode[aria-pressed="true"],
 .route-trip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .route-say {

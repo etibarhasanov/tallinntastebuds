@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=389b747b">
+<link rel="stylesheet" href="assets/styles.lean.css?v=23b8eba2">
 </head>
 <body>
 
@@ -614,7 +614,7 @@
 <!-- The way there, drawn on the map, and the way out of it. Shown by showRoute()
      in assets/app.js when the arrow in a place's top strip is pressed: the
      sheet steps out of the way so the line has the whole map, and this is what
-     is left standing — Walk, Bus or Car, how long and how far, the next few
+     is left standing — Walk, Bike, Bus or Car, how long and how far, the next few
      journeys when it is the bus, and the cross that brings the sheet back.
      Google's own directions stay as a small link under it for whoever wants
      them — Waze's instead on the Car tab, its words written by showRoute(); it
@@ -623,6 +623,7 @@
 <div class="route-bar" id="route-bar" hidden>
   <div class="route-modes" id="route-modes" role="group" data-i18n-aria-label="routeModes" aria-label="How to get there">
     <button type="button" class="route-mode" data-mode="foot" aria-pressed="true" data-i18n="routeModeWalk">Walk</button>
+    <button type="button" class="route-mode" data-mode="bike" aria-pressed="false" data-i18n="routeModeBike">Bike</button>
     <button type="button" class="route-mode" data-mode="bus" aria-pressed="false" data-i18n="routeModeBus">Bus</button>
     <button type="button" class="route-mode" data-mode="car" aria-pressed="false" data-i18n="routeModeCar">Car</button>
   </div>
@@ -768,6 +769,6 @@
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=50bd333e" defer></script>
-<script src="assets/app.lean.js?v=b670adb5" defer></script>
+<script src="assets/app.lean.js?v=4d63e4a4" defer></script>
 </body>
 </html>

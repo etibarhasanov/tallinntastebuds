@@ -3272,12 +3272,18 @@ body.is-discover #btn-locate { display: none; }
   box-shadow: var(--shadow);
 }
 .route-bar[hidden] { display: none; }
+
 .route-modes {
   grid-column: 1;
   grid-row: 1;
   display: flex;
   gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.route-modes::-webkit-scrollbar { display: none; }
+.route-mode { flex: none; }
 .route-mode,
 .route-trip {
   padding: 7px 14px;
@@ -3289,6 +3295,7 @@ body.is-discover #btn-locate { display: none; }
   font-size: 13px;
   cursor: pointer;
 }
+.route-mode { padding: 7px 12px; }
 .route-mode[aria-pressed="true"],
 .route-trip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .route-say {
