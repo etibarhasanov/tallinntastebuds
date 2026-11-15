@@ -62,12 +62,13 @@ ref: functions/index.js the head for ?spot= and ?lang=</bpmn:documentation>
       <bpmn:outgoing>visitor-e31</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="discover" name="Reads Discover">
-      <bpmn:documentation>A plain arrival, on a phone or a desktop, opens on a page in front of the map: the map as one card, then new lists, the most opened places, a Play card offering lists to go round, swiped through one at a time with the reader's own walks first, popular lists and what is new on the map. Open map, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it. On a desktop the same shelves are laid out wide, with Play beside the map's card and no Places pill. The round button at the end of the find bar opens More from here — the account, Ask, the flashcards, the colour, feedback and privacy — since the rail is put away.
+      <bpmn:documentation>A plain arrival, on a phone or a desktop, opens on a page in front of the map: the map as one card, then new lists, the most opened places, a Play card offering lists to go round, swiped through one at a time with the reader's own walks first, popular lists and what is new on the map. Open map, a place on a shelf, the Places pill or an answer from the find bar leaves it for the map, and Back returns to it. A link about something — a place, a list, a chip — skips it. On a desktop the same shelves stand in another order — new lists, new on the map, overlooked places, popular lists — four lists at a time with arrows to the next four, and with no Play card and no Places pill. The round button at the end of the find bar opens More from here — the account, Ask, the flashcards, the colour, feedback and privacy — since the rail is put away.
 when: discover_map
 when: discover_list
 when: discover_place
 when: discover_play
 when: discover_play_more
+when: discover_lists_more
 when: discover_all
 ref: index.html #find-me
 ref: assets/discover.js

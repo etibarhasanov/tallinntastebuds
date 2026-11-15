@@ -14,7 +14,7 @@
  * on those, with the map as the first and biggest thing on the page, one press
  * away and already drawn underneath.
  *
- * FOUR SHELVES AND A CARD, IN THIS ORDER
+ * FOUR SHELVES AND A CARD, IN THIS ORDER ON A PHONE
  *
  *   New lists            newest public lists                 /api/discover
  *   Overlooked places    the five opened least on the map    /api/discover
@@ -37,12 +37,15 @@
  *
  * ONE PAGE, TWO WIDTHS
  *
- * A desktop opens on the same page, from the same answer, and nothing in this
- * file asks which it is on: the wide arrangement — the map's card with Play
- * beside it, lists four across, a shelf of places in one row, the routes in a
- * column where a phone swipes through them — is the last block of the page's
- * rules in assets/styles.css. The two things here that exist for it are the
- * blank Play in draw() and sky() running after the shelves.
+ * A desktop opens on the same page, from the same answer, and the owner
+ * arranged it differently there on 2026-11-15: the map's card across the top,
+ * then New lists, New on the map, Overlooked places and Popular lists, and no
+ * Play. So draw() asks how wide the window is — wide() — and that is the one
+ * place this file does; the redraw on a window dragged across the line is in
+ * mount(). How a shelf is laid out wide is the stylesheet's, in the last
+ * block of the page's rules in assets/styles.css. A shelf of lists carries
+ * two arrows there, arrows(), since a wide window shows four lists and a
+ * mouse has no thumb to bring the next four.
  *
  * WHY A FILE OF ITS OWN, AND A GLOBAL
  *
@@ -53,6 +56,11 @@
  */
 window.TTBDiscover = (function () {
   'use strict';
+
+  /* A desktop, as the stylesheet draws one: the number is its, the same line
+     every wide rule in assets/styles.css starts at. */
+  var wideMQ = window.matchMedia('(min-width: 861px)');
+  function wide() { return wideMQ.matches; }
 
   /* Fewer than this and a shelf is not drawn. */
   var MIN = 3;
@@ -128,14 +136,48 @@ window.TTBDiscover = (function () {
     return a;
   }
 
+  /* The two arrows at the head of a shelf of lists, which only a desktop
+     draws: four lists show there and the row moves a windowful a press, where
+     a phone has a thumb and a card cut at the edge to say so. They move the
+     row by its own width and the row's snap lands it on a card. Each is off
+     at its end of the row, and the pair is not drawn where every list
+     already fits. The one going on reports, since whether anybody looks past
+     the first four is the question the other four are there to answer. */
+  function arrows(row) {
+    var box = el('span', 'discover-arrows');
+    function arrow(label, path, dir) {
+      var b = el('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', label);
+      b.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="' + path + '"/></svg>';
+      b.addEventListener('click', function () { row.scrollBy({ left: dir * row.clientWidth }); });
+      box.appendChild(b);
+      return b;
+    }
+    var back = arrow(o.t('discoverPrev'), 'M10 3L5 8l5 5', -1);
+    var on = arrow(o.t('discoverNext'), 'M6 3l5 5-5 5', 1);
+    TTBTrack.click(on, 'discover_lists_more');
+    function sync() {
+      box.hidden = row.scrollWidth <= row.clientWidth + 1;
+      back.disabled = row.scrollLeft < 2;
+      on.disabled = row.scrollLeft + row.clientWidth > row.scrollWidth - 2;
+    }
+    row.addEventListener('scroll', sync, { passive: true });
+    /* Once the row is on the page and has a width to be asked about. */
+    window.requestAnimationFrame(sync);
+    return box;
+  }
+
   function listShelf(key, rows, href, track) {
     if (!rows || rows.length < MIN) return null;
     /* Google's six are English in the database; said here in the language. */
     TTBGoogleWords.lists(rows, o.t, o.lang());
     var box = el('section', 'discover-shelf');
-    box.appendChild(heading(key, href, track));
+    var head = heading(key, href, track);
+    box.appendChild(head);
     var row = el('div', 'discover-row');
     rows.forEach(function (list) { row.appendChild(listCard(list)); });
+    head.appendChild(arrows(row));
     box.appendChild(row);
     return box;
   }
@@ -188,7 +230,7 @@ window.TTBDiscover = (function () {
     return String(place.address || '').split(',')[0];
   }
 
-  function added(place) {
+  function addedIn(place) {
     return o.month(String(place.added || '').slice(0, 7));
   }
 
@@ -456,34 +498,29 @@ window.TTBDiscover = (function () {
     });
   }
 
-  /* Everything under the map's card, from whatever is known right now. Called
-     again when the route answers and when the language changes. The card's
-     map is drawn last, because on a desktop the card stands beside Play and
-     is as tall as Play is: Leaflet has to measure the box the shelves left
-     it, not the one they found. */
+  /* Everything under the map's card, from whatever is known right now, in
+     the order of the screen it is on — ONE PAGE, TWO WIDTHS at the top of
+     the file. Called again when the route answers, when the language changes
+     and when the window crosses from one width to the other. */
   function draw() {
-    shelves.textContent = '';
-    var parts = [];
-    if (data === null) {
-      /* The blank Play is a desktop's alone — the stylesheet hides it on a
-         phone — and holds the column beside the map's card, so the card does
-         not start wide and narrow when the routes arrive. */
-      var blank = el('section', 'discover-play is-waiting');
-      blank.setAttribute('aria-hidden', 'true');
-      parts.push(waiting('discoverNewLists'), blank, waiting('discoverPopularLists'));
-    } else if (data === false) {
-      parts.push(down());
-    } else {
-      parts.push(
-        listShelf('discoverNewLists', data.fresh, '/lists?sort=new', 'discover_all'),
-        placeShelf('discoverQuiet', 'discoverQuietSay', leastOpened(), street),
-        play(),
-        listShelf('discoverPopularLists', data.popular, '/lists', 'discover_all')
-      );
-    }
-    parts.push(placeShelf('discoverAdded', '', newest(), added));
-    parts.forEach(function (part) { if (part) shelves.appendChild(part); });
     sky();
+
+    shelves.textContent = '';
+    var added = placeShelf('discoverAdded', '', newest(), addedIn);
+    var parts;
+    if (data === null) {
+      var first = waiting('discoverNewLists');
+      var last = waiting('discoverPopularLists');
+      parts = wide() ? [first, added, last] : [first, last, added];
+    } else if (data === false) {
+      parts = [down(), added];
+    } else {
+      var fresh = listShelf('discoverNewLists', data.fresh, '/lists?sort=new', 'discover_all');
+      var quiet = placeShelf('discoverQuiet', 'discoverQuietSay', leastOpened(), street);
+      var popular = listShelf('discoverPopularLists', data.popular, '/lists', 'discover_all');
+      parts = wide() ? [fresh, added, quiet, popular] : [fresh, quiet, play(), popular, added];
+    }
+    parts.forEach(function (part) { if (part) shelves.appendChild(part); });
   }
 
   function load() {
@@ -561,6 +598,10 @@ window.TTBDiscover = (function () {
         TTBTrack.event('discover_map');
         o.onMap();
       });
+    }
+    /* A window dragged across the line is the other page's order. */
+    if (wideMQ.addEventListener) {
+      wideMQ.addEventListener('change', function () { if (up()) draw(); });
     }
     return { show: show, hide: hide, up: up, draw: draw, signed: signed };
   }
