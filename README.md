@@ -754,8 +754,10 @@ watched for as long as the map is on screen — `followHere()` in
 `assets/app.js` — and the dot and its accuracy ring move with every reading.
 Nothing else does: the map is not carried along under a thumb reading a
 street two blocks ahead, the list is not rebuilt every few seconds and
-measures from the dot again the next time something draws it, and a route
-already drawn stays as drawn with the dot travelling along it. The watch
+measures from the dot again the next time something draws it. A route
+already drawn is the one thing that follows: a walk, a ride or a drive is
+asked for again from where the dot now is, and a bus journey stays as drawn
+— **The way follows the dot** under **Sharing a place**. The watch
 stops when the tab is hidden and starts again, with a fresh reading, when it
 is back, so a phone in a pocket is not kept awake by a page nobody is looking
 at. A typed place is not followed: it is where somebody said they are.
@@ -3014,7 +3016,21 @@ cannot answer for does not end on nothing: no location shared says *Share your
 location to see the way.*, no route or a service that is down says so for that
 mode (*Couldn't find a walking route.*, *Couldn't find a bike route.*, *No bus or tram found right now.*,
 *Couldn't find a driving route.*), and the other tabs and the Google link are
-there in every case. No turn-by-turn and no live countdown; the route is
+there in every case.
+
+**The way follows the dot.** A walk, a ride or a drive was drawn from where
+the visitor stood at the press and stayed that line however far they went —
+down another street, or across town with the tab in a pocket — so the bar
+went on giving the time from a place they had left. Now, once the dot is
+sixty metres from where the way was asked from, `rerouteIfMoved()` asks for
+it again from where the dot is, at most once every twenty seconds: the line
+and the sentence in the bar change when the answer arrives, the old line
+stands until then, the map is not refitted under a thumb, and an answer that
+does not come leaves what was there. The bus does not follow — its answer is
+a departure somebody chose, and three journeys redrawn under a reader are
+worse than a line that starts a stop behind.
+
+No turn-by-turn and no live countdown; the route is
 `functions/api/route.js`, which rounds both ends, caches a walk, a ride or a drive a day
 and a bus journey a minute. The location is read, answered and forgotten —
 never stored or counted. Opening another place, the chat or a list puts the
