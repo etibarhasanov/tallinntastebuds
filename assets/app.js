@@ -1956,6 +1956,7 @@
         if (stretch.options.tone) stretch.setStyle({ color: c[stretch.options.tone] });
       });
     }
+    if (window.TTBRide) TTBRide.restyle();
   }
 
   /* Centre the chosen place in the part of the map you can actually see. The
@@ -2362,6 +2363,7 @@
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
       : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
+    dom.routeRide.hidden = mode !== 'bike' || !window.TTBRide;
     if (!again) dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
@@ -2463,11 +2465,42 @@
   function drawRoute(way, mode, still) {
     routeLine = L.featureGroup().addTo(map);
     routeStretch(way.line, mode, false);
-    dom.routeSay.textContent = t(ROUTE_SAY[mode], {
+    var said = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });
+    dom.routeSay.textContent = said;
     if (!still) fitRoute();
+    if (mode === 'bike' && window.TTBRide) drawRidden(way.line, said);
+  }
+
+  /* Under a bike route, faintly, the rides members have recorded near it —
+     confirmed bike routes, lines somebody has really cycled — and in the
+     bar how much of the suggested way runs along one. Asked after the way
+     is drawn and never waited for: no rides, or a route that does not
+     answer, leaves the bar exactly as it was. The group they go into is the
+     route's own, so clearRouteLine() takes them away with it. **Recorded
+     rides** in README.md. */
+  function drawRidden(line, said) {
+    var group = routeLine;
+    TTBRide.under(line).then(function (out) {
+      if (group !== routeLine || !out.rides.length) return;
+      out.rides.forEach(function (ride) {
+        L.polyline(ride, {
+          color: markerColours().bike,
+          tone: 'bike',
+          weight: 4,
+          opacity: .4,
+          lineCap: 'round',
+          lineJoin: 'round',
+          className: 'ride-line',
+          interactive: false
+        }).addTo(group).bringToBack();
+      });
+      dom.routeSay.textContent = said + '\n' + (out.along >= 50
+        ? t('rideAlong', { dist: routeDistance(out.along) })
+        : t('rideNearby'));
+    });
   }
 
   /* A bus journey: the walks dashed in a walk's green, each ride solid in the
@@ -3026,6 +3059,9 @@
     var name = state.account.user || '';
     dom.findMe.classList.toggle('is-me', !!name);
     dom.findMe.lastElementChild.textContent = name.charAt(0).toUpperCase();
+    /* And the ride card, whose first view asks somebody signed out to sign
+       in before it records — assets/ride.js. */
+    if (window.TTBRide) TTBRide.refresh();
   }
 
   /* The door to everybody's lists: the first pill on the rail, and the one
@@ -5465,6 +5501,26 @@
    * here is what the map does around it: the label that opens with the
    * station's name, whichever corner the button itself stands in.
    */
+  /* The bike ride recorder, assets/ride.js, on the card that stands where
+     the route bar does. Handed what it cannot reach on its own: the map,
+     the words, how a distance and a number are written here, the bike's
+     colour, and the account — it asks somebody signed out to sign in before
+     it records, since a ride is saved under an account. */
+  function mountRide() {
+    if (!window.TTBRide || !map) return;
+    TTBRide.mount(dom.rideCard, {
+      map: map,
+      t: t,
+      el: el,
+      distance: routeDistance,
+      formatDecimal: formatDecimal,
+      colour: function () { return markerColours().bike; },
+      signedIn: function () { return !!state.account.user; },
+      signIn: function () { openAccount('in', '', 'ride'); },
+      track: function (name) { TTBTrack.event(name); }
+    });
+  }
+
   function mountRadio() {
     window.TTBRadio.mount({
       button: dom.btnRadio,
@@ -12654,6 +12710,10 @@
       ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
+    dom.routeRide.addEventListener('click', function () {
+      TTBTrack.event('ride_open');
+      TTBRide.open();
+    });
     dom.routeModes.addEventListener('click', function (ev) {
       var tab = ev.target.closest ? ev.target.closest('.route-mode') : null;
       var place = routeFor ? byId(routeFor) : null;
@@ -13425,6 +13485,8 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
+      routeRide: $('route-ride'),
+      rideCard: $('ride-card'),
       walkBand: $('walk-band'),
       routeSay: $('route-say'),
       routeOut: $('route-out'),
@@ -13593,6 +13655,7 @@
       paintAccountRow();
       renderPanel();
       mountRadio();
+      mountRide();
       mountShell();
       mountDiscover();
       renderStoryRing();

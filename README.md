@@ -3113,6 +3113,73 @@ JSON-LD and the text stay the map's, the way a closed place's do, because a
 thousand addresses whose every word is Google's would be a thousand thin
 pages under this site's name, and none of them is somewhere it vouches for.
 
+## Recorded rides
+
+A bike ride somebody has really cycled is better evidence that a way can be
+ridden than any router's guess, and the site now keeps them. On the route
+bar, while **Bike** is the tab, a quiet **Record a ride** sits under the way
+out. It opens a card where the bar stood — the bar, a walk's band and the
+sheet step aside for it, and the suggested line stays on the map to ride
+along — and the card goes through five states in the order every sheet here
+is built:
+
+- **Record a ride**: what it does and the one thing that matters about a web
+  page doing it, *keep this page open and the screen on*. Signed out, it asks
+  for a sign-in first (`account_from_ride`), since a ride is saved under an
+  account; any member may record, and nobody approves a ride.
+- **Recording**: the distance, the time and the average, the line drawn as
+  it grows in the bike's green, **Finish** and **Pause**. Before the first
+  fix it says it is waiting for the location.
+- **Paused**: nothing is recorded, the clock stops, **Resume** and Finish.
+- **Save this ride?**: a line saying what saving means — a confirmed bike
+  route, no name shown, the first and last 200 m left off — an optional name,
+  **Save ride** and **Throw it away**. A ride under 700 m is *Too short to
+  keep* instead, with Keep riding.
+- **Saved**, and a way to close it.
+
+Under any bike route the map then asks `/api/rides` for the rides in the
+way's box and draws them faintly under the suggested line, and the bar adds
+*1.6 km of this way has been ridden before — the faint lines.* when at least
+fifty metres of the suggestion runs within twenty metres of one, or *The
+faint lines are rides people recorded nearby.* when it does not. The
+suggestion itself is still OpenStreetMap's: a recorded ride does not steer
+the router, it stands beside it. That is the boundary of the first version,
+on purpose — routing along members' rides is a router of our own, and the
+rides have to exist before it is worth writing.
+
+**A web page records only while it is looked at.** A browser stops telling a
+page where it is the moment the screen locks or the tab goes to the back —
+at once on an iPhone, soon after on Android — and no permission a page can
+ask for changes that. So the card says it before Start, `assets/ride.js` asks
+for the Screen Wake Lock while it records so the screen does not lock on its
+own, and a hidden page **pauses the ride outright** rather than drawing a
+straight line across whatever was ridden unseen. Recording with the phone in
+a pocket is a job for the iPhone app, which can ask for that; it would send
+its rides to the same route.
+
+**The ride is kept on the phone until it is saved**, under `ttb.ride`, every
+ten points and at every pause, so a reload, a sign-in by way of Google or a
+save that failed all come back to the same ride. Saving or throwing it away
+clears it.
+
+**Nobody's name is on a ride.** The points are sent once, on Save, and the
+server takes 200 m off each end before it stores anything — that is where a
+home or a workplace would be — works the length out itself, refuses a point
+outside Tallinn's box, an average past 45 km/h and a twenty-first ride in a
+day, and keeps who saved it without ever answering it. What anybody can read
+is the line, its length and its time. **Privacy** says the same in the
+visitor's words. A browser's location is whatever the browser says, as with
+a walk's check-in; a faked ride costs a faint line.
+
+`rides` is in `db/schema.sql` and is applied by hand. Until it is, the
+route answers `ready: false`, the Bike tab draws exactly what it did, and a
+save fails with the ride kept on the phone. The page half is
+`assets/ride.js` (`TTBRide`, mounted by `mountRide()` and asked by
+`drawRidden()` in `assets/app.js`), the server half `functions/api/rides.js`.
+It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
+`ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, and a save counts
+as `map:ride_save`.
+
 ## Languages
 
 Azerbaijani, English, Estonian, Finnish, French, German, Portuguese,
@@ -19594,6 +19661,11 @@ The map, `assets/app.js`:
 | `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
+| `ride_open` | — Record a ride on the route's bar, Bike tab |
+| `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
+| `ride_save` | — a ride the server kept |
+| `ride_throw` | — Throw it away |
+| `ride_signin` | — Sign in on the recorder, signed out |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
@@ -19629,7 +19701,7 @@ The map, `assets/app.js`:
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
-| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, or the Make a list that stood at the foot of Discover until 2026-11-14. One name per door because the site's own count keeps names and not parameters |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make`, `_ride` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, the Make a list that stood at the foot of Discover until 2026-11-14, or Sign in on the bike ride recorder. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
 | `account_try_up`, `_in` | — its button pressed |
 | `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
