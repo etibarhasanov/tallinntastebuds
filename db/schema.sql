@@ -2028,3 +2028,38 @@ CREATE TABLE IF NOT EXISTS walk_checks (
 );
 -- Everybody's comments on one list, newest first.
 CREATE INDEX IF NOT EXISTS idx_walk_checks_list ON walk_checks (list_id, checked_at);
+
+-- One row is one bike ride a member recorded on the map and saved — a
+-- confirmed bike route, a line somebody has really cycled. Drawn faintly
+-- under the Bike tab's suggested way by functions/api/rides.js, without a
+-- name on it: the rides are everybody's evidence, not anybody's profile.
+-- **Recorded rides** in README.md.
+CREATE TABLE IF NOT EXISTS rides (
+  -- Twelve hex characters, drawn by the Function.
+  id         TEXT    PRIMARY KEY,
+  -- users.id of whoever rode it. Never answered to anybody: it is here so a
+  -- day's cap can be counted and so a ride can be taken down by its owner's
+  -- account if it ever has to be.
+  user_id    TEXT    NOT NULL,
+  -- What they called it, or ''. 60 characters, capped in the Function.
+  name       TEXT    NOT NULL DEFAULT '',
+  -- The length of the stored line, worked out by the Function rather than
+  -- trusted from the page, and the seconds spent riding, pauses left out.
+  meters     INTEGER NOT NULL,
+  seconds    INTEGER NOT NULL,
+  -- The way, a JSON array of [lat, lng] at five decimals, a point every
+  -- dozen metres or so, with the first and last ENDS metres taken off so
+  -- where somebody starts and stops is not on the map.
+  line       TEXT    NOT NULL,
+  -- The box round the line, so a read can ask for the rides under a way
+  -- without parsing every line in the table.
+  south      REAL    NOT NULL,
+  west       REAL    NOT NULL,
+  north      REAL    NOT NULL,
+  east       REAL    NOT NULL,
+  created_at INTEGER NOT NULL
+);
+-- The rides under a way: the box test leads with the latitudes.
+CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);
+-- One person's rides today, for the cap.
+CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);

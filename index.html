@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=c43539a8">
+<link rel="stylesheet" href="assets/styles.lean.css?v=799960ed">
 </head>
 <body>
 
@@ -630,6 +630,8 @@
   <p class="route-say" id="route-say" role="status" aria-live="polite"></p>
   <div class="route-trips" id="route-trips" role="group" data-i18n-aria-label="routeTrips" aria-label="Departures" hidden></div>
   <a class="route-out" id="route-out" target="_blank" rel="noopener">Open in Google Maps</a>
+  <!-- Only on the Bike tab: the way into the ride recorder, assets/ride.js. -->
+  <button type="button" class="alt route-ride" id="route-ride" data-i18n="rideRecord" hidden>Record a ride</button>
   <button type="button" class="route-close" id="route-close" data-i18n-aria-label="close" aria-label="Close">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
@@ -640,6 +642,10 @@
      and walkOnMap() in assets/app.js puts them in. It stands where the sheet
      would, while the sheet would be the list. -->
 <div class="walk-band" id="walk-band" hidden></div>
+<!-- A bike ride being recorded, finished or saved: the card stands where the
+     route bar does and the bar steps aside for it. Empty here — its contents
+     are assets/ride.js's. Recorded rides in README.md. -->
+<section class="walk-band ride-card" id="ride-card" data-i18n-aria-label="rideTitle" aria-label="Record a ride" aria-live="polite" hidden></section>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <!-- The offer to keep a list somewhere better than this browser. Shown after
@@ -765,10 +771,13 @@
      global the list's own page hands its list to. Before the map's script,
      which asks it. -->
 <script src="assets/walk.js?v=4809fdb9" defer></script>
+<!-- A bike ride, recorded on the map's Bike tab and saved as a confirmed
+     route: TTBRide, mounted by mountRide() in assets/app.js. -->
+<script src="assets/ride.js?v=ccf9fe16" defer></script>
 <!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=50bd333e" defer></script>
-<script src="assets/app.lean.js?v=282ebed4" defer></script>
+<script src="assets/app.lean.js?v=e1114fd3" defer></script>
 </body>
 </html>
