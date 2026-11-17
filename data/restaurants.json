@@ -2554,7 +2554,7 @@
       "de": "Eine Kaffeerösterei mit richtig gutem Essen und einer tollen Atmosphäre im Raum. Einer der besseren Orte in der Stadt für ein Date. Ich habe dort die meiste Zeit verbracht, aus einem Grund: Es fühlt sich immer warm an."
     },
     "mustOrder": [
-      "Sandwich",
+      "new sandwich",
       "Bagel",
       "Coffee",
       "Flat bread <<<---"
@@ -2563,11 +2563,14 @@
     "photos": [
       "01.webp",
       "02.webp",
-      "03.jpg"
+      "03.jpg",
+      "04.webp",
+      "05.webp"
     ],
     "phone": "+372 5668 2150",
     "added": "2026-08-24",
-    "closed": false
+    "closed": false,
+    "updated": "2026-11-17"
   },
   {
     "id": "tuletorn",
