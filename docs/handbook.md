@@ -16514,12 +16514,16 @@ went in and what came out, so you can see it happen.
 **A HEIC goes through it too.** An iPhone shoots HEIC, and only Safari can
 open one. On the phone that never shows, but the same photographs on a laptop,
 picked in Chrome or Firefox, are files no canvas can draw. So the browser is
-always asked first, and only a HEIC it refuses is handed to heic2any, libheif
-built for the browser, which turns it into a full-size JPEG for the same
-squeeze. The decoder is 1.3 MB from unpkg, fetched the first time a HEIC is
-refused and never otherwise, and pinned to its version and its hash the way
-the map pins Leaflet. A 2 MB HEIC came out at 61 KB in about six seconds.
-`bitmapOf()` in `admin.html`.
+always asked first, and only a HEIC it refuses is handed to heic-to, a
+current libheif built for the browser, which turns it into a full-size JPEG
+for the same squeeze. The decoder is 3.2 MB from unpkg, fetched the first time
+a HEIC is refused and never otherwise, and pinned to its version and its hash
+the way the map pins Leaflet. It was heic2any for a day, whose libheif is from
+2020 and answered the owner's first real iPhone photograph with
+*ERR_LIBHEIF format not supported*: the phone keeps adding to what goes inside
+a HEIC, so the decoder has to be kept about as new as the phone, and that
+message again means a newer version and its hash in `bitmapOf()`'s
+neighbours in `admin.html`.
 
 **The button waits for the squeeze.** While the photographs are being
 shrunk, **Put it on the map** and **Save the changes** are greyed out, and

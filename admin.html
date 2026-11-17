@@ -551,18 +551,27 @@ ul.log li button.quiet { width: auto; display: inline-block; }
    * Linna's picture was one, and the place went on the map without it.
    *
    * So the browser is asked first, always, and only a HEIC it refuses is
-   * handed to heic2any — libheif built for the browser — which turns it into
-   * a full-size JPEG that then goes down the same ladder as everything else.
-   * 1.3 MB of decoder, fetched from unpkg the first time a HEIC is refused
-   * and never otherwise, pinned to its version and to its hash the way the
-   * map pins Leaflet: a script that writes to the repository's photographs
-   * runs on a page holding the owner's session, so what it is is not left to
-   * whoever controls the CDN that day. It applies the picture's own rotation
-   * as it decodes, and a JPEG drawn onto the canvas loses its EXIF the way
-   * every other photograph here does. */
+   * handed to heic-to — a current libheif built for the browser — which turns
+   * it into a full-size JPEG that then goes down the same ladder as
+   * everything else. 3.2 MB of decoder (about a third of that on the wire),
+   * fetched from unpkg the first time a HEIC is refused and never otherwise,
+   * pinned to its version and to its hash the way the map pins Leaflet: a
+   * script that writes to the repository's photographs runs on a page
+   * holding the owner's session, so what it is is not left to whoever
+   * controls the CDN that day. It applies the picture's own rotation as it
+   * decodes, and a JPEG drawn onto the canvas loses its EXIF the way every
+   * other photograph here does.
+   *
+   * It was heic2any for a day, and that is why the decoder is the current
+   * one rather than the famous one: heic2any's last release is from 2020, and
+   * its libheif answered the first real photograph from the owner's iPhone
+   * with "ERR_LIBHEIF format not supported". A HEIC is not one format — the
+   * phone keeps adding to what goes inside one — so the decoder has to be
+   * kept about as new as the phone. When it says that again, the fix is a
+   * newer version here, its hash beside it. */
   var HEIC_RE = /\.(heic|heif)$/i;
-  var HEIC_DECODER = 'https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js';
-  var HEIC_SRI = 'sha384-OTofQ0MEeiSgh62havBcemCIK0gqj809wX6UA0uPISNMRnR6NZyCdGzX3SbLrgwL';
+  var HEIC_DECODER = 'https://unpkg.com/heic-to@1.6.7/dist/iife/heic-to.js';
+  var HEIC_SRI = 'sha384-f0j56i/85T2+bZ9Y5sSaw7lvxHImEr3LuncAm2tNkfvJdhfcNBPj7ES//QWvXCYC';
   var heicReady = null;
 
   function isHeic(file) {
@@ -577,7 +586,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         tag.integrity = HEIC_SRI;
         tag.crossOrigin = 'anonymous';
         tag.onload = function () {
-          if (window.heic2any) resolve(window.heic2any);
+          if (window.HeicTo) resolve(window.HeicTo);
           else reject(new Error('The HEIC decoder loaded but did not start.'));
         };
         tag.onerror = function () {
@@ -598,8 +607,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(function (err) {
       if (!isHeic(file)) throw err;
       return heicDecoder()
-        .then(function (heic2any) { return heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 }); })
-        .then(function (out) { return createImageBitmap(Array.isArray(out) ? out[0] : out); });
+        .then(function (heicTo) { return heicTo({ blob: file, type: 'image/jpeg', quality: 0.92 }); })
+        .then(function (jpeg) { return createImageBitmap(jpeg); });
     });
   }
 
