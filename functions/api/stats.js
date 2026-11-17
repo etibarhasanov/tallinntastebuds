@@ -46,7 +46,7 @@
  *            ./_visits.js, which draws it back to the list's owner on
  *            /insights, and by ./admin/stats.js, which draws every opened
  *            list to the site's owner. It is never drawn on a row anybody
- *            else reads, and **Public lists** in README.md says why a
+ *            else reads, and **Public lists** in docs/handbook.md says why a
  *            ranking without a scoreboard is the point rather than an
  *            omission. The same open is also filed under the country it
  *            came from, into list_counts through countListOpen() in
@@ -74,21 +74,21 @@
  *            filed a second time by the day, into visitor_counts as the
  *            `rail` kind — countRail() in ./_visitors.js — which is what lets
  *            a change to the rail be read before and after. "The short rail"
- *            in README.md.
+ *            in docs/handbook.md.
  *   look     the directory's look somebody new to the site was dealt on
  *            their first open of /lists — `a` the page as it was or `b` at
  *            rest, from pickLook() in assets/lists.js — and, on the day it
  *            was dealt, `a-opened` / `b-opened` for the first list they
  *            opened from it and `a-kept` / `b-kept` for the first they kept.
  *            Six ids and no more, LOOK_IDS below. A test apart from the
- *            rails, with its own deal; "The lists' two looks" in README.md.
+ *            rails, with its own deal; "The lists' two looks" in docs/handbook.md.
  *   style    the colour somebody new to the site was dealt as their first
  *            page opened — red, green, blue or plum, from dealStyle() in
  *            assets/track.js — and after it, once each, `-opened` for the
  *            first place, post or deck opened that day, `-back` for the
  *            first visit on a later day, and `-changed` for the first press
  *            of the swatch. Sixteen ids, STYLE_IDS below. "The four styles,
- *            dealt" in README.md.
+ *            dealt" in docs/handbook.md.
  *
  * And four kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
@@ -195,7 +195,7 @@ const VENUE = 'venue';
    draws — the lists, Surprise me, More and the arrow — and the five rows
    behind More, the account, Learn Estonian, Ask, the colour and feedback,
    each counted under the id it had as a pill, so the numbers from before
-   the short rail and after it are one column. "The short rail" in README.md.
+   the short rail and after it are one column. "The short rail" in docs/handbook.md.
 
    Written out here because a pill is not a row in any file this side can
    open: the chips come out of data/taxonomy.json and this is markup. So it is

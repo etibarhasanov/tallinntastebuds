@@ -45,7 +45,7 @@
  * Estonian on cards is not the map, and a person learning the language should
  * not have to walk through a restaurant to reach it. Everything below the
  * FLASHCARDS line is that feature's and only that feature's — see **Taking it
- * out** under **Flashcards** in README.md.
+ * out** under **Flashcards** in docs/handbook.md.
  *
  * The subdomain is where a person types the address and not where the page
  * lives. `/flashcard` answers on every host, so the page can be driven under
@@ -88,7 +88,7 @@
  * ---------------------------------------------------------------------------
  * AND THE REPOSITORY'S OWN FILES, WHICH ARE NOT THE SITE
  *
- * There is no build, so the deployment is the repository: README.md, the
+ * There is no build, so the deployment is the repository: docs/handbook.md, the
  * .claude and .github directories, db/, exports/ and tools/ are files of it.
  * The NOT THE SITE block answers them the way it answers an address that was
  * never there, and says why.
@@ -131,7 +131,7 @@ const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
 /* The build output directory is the repository root, because there is no
    build — so every file in the repository is a file of the deployment, and
    until this block every one of them was served at the live address:
-   README.md, CLAUDE.md, wrangler.toml, .claude/settings.json, the workflows,
+   docs/handbook.md, CLAUDE.md, wrangler.toml, .claude/settings.json, the workflows,
    db/schema.sql, the Google export as a CSV and as SQL, the tools. The
    repository is public on GitHub as well, so none of that told anybody
    anything new on the day it was closed. What it did mean is that a file

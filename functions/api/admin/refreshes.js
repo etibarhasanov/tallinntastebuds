@@ -34,7 +34,7 @@
  * people to, or one the map holds shut for the moment that Google says is
  * open again. Sixty-odd rows, and the list is the whole reason a status flip
  * in the log below is something the owner finds rather than remembers. See
- * **Close a place instead of deleting it** in README.md.
+ * **Close a place instead of deleting it** in docs/handbook.md.
  *
  * `table` counts the rows the directory shows — not hidden, not missing, and
  * somewhere to eat, which is all the fill asks about, eatOnly() — so

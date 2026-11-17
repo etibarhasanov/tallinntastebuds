@@ -23,7 +23,7 @@ What is below is what is particular to each.
 **Lands:** `functions/api/_chess.js`, `tools/chessperf.mjs`, one step in
 `.github/workflows/validate.yml`, the three places in `CLAUDE.md` and the one
 in the `/site` skill that list what CI runs, a paragraph under **What the
-validator checks** in `README.md` and the two files under **Files**. Nothing a
+validator checks** in `docs/handbook.md` and the two files under **Files**. Nothing a
 visitor can see.
 
 **Why first:** everything else stands on it, and it is the one piece that can
@@ -72,7 +72,7 @@ it gets a caller.
    not moves or positions. The tool's header says what each is for.
 3. Add the step to `.github/workflows/validate.yml` beside `qrperf --check`,
    and update every place in `CLAUDE.md` and the skills that lists what CI
-   runs, and the paragraph in `README.md` under **What the validator checks**
+   runs, and the paragraph in `docs/handbook.md` under **What the validator checks**
    that says what is held to what.
 
 **Done when:** `node tools/chessperf.mjs --check` passes and is run by CI;

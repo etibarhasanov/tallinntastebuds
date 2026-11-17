@@ -28,7 +28,7 @@
  *
  * `_mostkept.js` and `mostKept()` were named for the order the page opened on
  * when it was written, and the page opens on the opens now. The rename is
- * three imports, a filename and about twenty mentions in README.md, all of it
+ * three imports, a filename and about twenty mentions in docs/handbook.md, all of it
  * churn in a diff about something else, and the argument the name makes — that
  * this file is the *order* the lists come back in, as against _lists.js, which
  * is the shape of one — is the argument it still needs to make. Renaming it is
@@ -249,7 +249,7 @@ function like(q) {
  *   user   the session, or null — only for whether *you* kept each row
  *
  * The order is the whole of this feature and it is the one thing on this site
- * that ranks. See **Public lists** in README.md, which sets out what that
+ * that ranks. See **Public lists** in docs/handbook.md, which sets out what that
  * costs and why it was chosen anyway.
  *
  * Lists nobody has opened are not filtered out. They sort to the bottom, where

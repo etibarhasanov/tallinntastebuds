@@ -10,7 +10,7 @@
  * four milliseconds of the ten the Workers free plan gives a request, paid
  * before the database was asked anything, and growing with every deck.
  * **Where the words are, and it is mostly not the database** under
- * **Flashcards** in README.md has the arithmetic.
+ * **Flashcards** in docs/handbook.md has the arithmetic.
  *
  * So the source stays exactly as it is, and this writes what the Functions
  * actually read out of it:

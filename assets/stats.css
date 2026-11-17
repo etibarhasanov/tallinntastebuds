@@ -8,7 +8,7 @@
  * rather than each row deciding for itself where its number goes.
  *
  * No colour is named anywhere below — rule 1 of **The design rules** in
- * README.md — so pressing the swatch on the map and coming back here brings
+ * docs/handbook.md — so pressing the swatch on the map and coming back here brings
  * the ranking with it. The numbers are in the mono, because a count is a fact
  * rather than a sentence, which is rule 2.
  */

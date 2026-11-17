@@ -35,7 +35,7 @@
      behind More walks them: light, dark, light, dark, so one press always changes the light as
      well as the colour. There were seven, one per colour of the spectrum, and
      then two; four is the owner's choice of how many colour worlds a member
-     can pick from — see **The four styles** in README.md. `dark` is the half
+     can pick from — see **The four styles** in docs/handbook.md. `dark` is the half
      that needs different tiles: dark cards over the pale Positron basemap
      would be unreadable. Which form controls the browser draws is not decided
      here: each block in assets/styles.css says `color-scheme` itself. */
@@ -708,7 +708,7 @@
      strings and every place's write-up, written by tools/languages.mjs out of
      data/ui.json and data/restaurants.json. Ten languages of both used to be
      most of what a phone downloaded before the map drew, to print one of
-     them; **Languages** in README.md has the numbers. The price is that a
+     them; **Languages** in docs/handbook.md has the numbers. The price is that a
      switch is a request now rather than a lookup, which is a few dozen
      kilobytes once per language somebody actually picks. */
   function loadLanguage(code) {
@@ -1595,7 +1595,7 @@
   }
 
   /* Which pin a place draws, and in which tone. The order is the feature —
-     see "The pins" in README.md.
+     see "The pins" in docs/handbook.md.
 
      A place on my map is the mark, always. Not "unless the list said
      otherwise": the mouth is this site saying it has eaten there, so a list
@@ -1664,7 +1664,7 @@
   /* Two kinds of shut door. `closed: true` is for good; `closed:
      "temporary"` is a door that should open again — Google's word for it,
      raised and lowered from the admin page's Google tab rather than by hand,
-     see **Close a place instead of deleting it** in README.md. Everything
+     see **Close a place instead of deleting it** in docs/handbook.md. Everything
      that asks "is it shut?" still asks `place.closed`, because a visitor is
      not sent to either; what differs is the word beside it, the note under
      it, and whether the pin keeps its colour. */
@@ -2613,7 +2613,7 @@
      is drawn and never waited for: no rides, or a route that does not
      answer, leaves the bar exactly as it was. The group they go into is the
      route's own, so clearRouteLine() takes them away with it. **Recorded
-     rides** in README.md. */
+     rides** in docs/handbook.md. */
   function drawRidden(line, said) {
     var group = routeLine;
     TTBRide.under(line).then(function (out) {
@@ -3464,7 +3464,7 @@
    * flashcards, the colour and feedback — as rows, in the account sheet's own menu shape
    * and under its own card. Built when it opens, because the colour row
    * names the side you are about to get and that is decided at the moment
-   * of opening. "The short rail" in README.md.
+   * of opening. "The short rail" in docs/handbook.md.
    *
    * Every row is the pill it was in the column of eight. It reports the
    * event that pill reported and is counted on /admin/stats under the pill's
@@ -4532,7 +4532,7 @@
      kept it off, and it is a type everywhere else — the label on a row, a
      word both searches and the chat find, a kind of Google venue. A ?type=
      link naming it is ignored for the same reason. See **What counts as
-     Coffee, and what counts as Tea** in README.md. */
+     Coffee, and what counts as Tea** in docs/handbook.md. */
   function usedTypeIds() {
     var used = {};
     state.places.forEach(function (p) {
@@ -7878,7 +7878,7 @@
    * two of them put the place among everything in the export, whether it is
    * open right now, the week, the number where mine has none, and the listing.
    *
-   * That breaks the oldest sentence in README.md on purpose, and the section
+   * That breaks the oldest sentence in docs/handbook.md on purpose, and the section
    * **Google, on a place of mine** there says where the line moved to. What it
    * keeps: the whole block sits under a heading that says whose it is, below
    * everything I wrote, and nothing sorts, filters or sizes a pin by it.
@@ -8234,7 +8234,7 @@
        place, it is full on a phone, and the place is worth reading as a
        visitor sees it before it is changed. ?edit= opens the admin page on
        this place's form. **Changing one** under **The admin page** in
-       README.md. */
+       docs/handbook.md. */
     if (window.TTBTrack && window.TTBTrack.owner) {
       dom.detail.appendChild(TTBTrack.click(el('a', {
         className: 'edit-row',
@@ -9854,7 +9854,7 @@
     if (typeof row.lat !== 'number' || typeof row.lng !== 'number') return false;
     /* The map's words for the row and the directory's, less one: the
        map files any place with a drinks licence under `pub` — VENUE_TYPES
-       in functions/api/_lib.js, and README.md says it is over-broad —
+       in functions/api/_lib.js, and docs/handbook.md says it is over-broad —
        which would answer "beer" with every restaurant that has a bar
        tag. The directory split beer from the rest of the bar, so `pub`
        here is the directory's word, and so is `bar`. */
@@ -9900,7 +9900,7 @@
    * other Google row. An answer with places in it goes straight onto the
    * map — showLooked() — and the dropdown, opened again on the same words,
    * draws Google's answers under their own heading after anything the roll
-   * already found. **Look for it on Google Maps** in README.md. */
+   * already found. **Look for it on Google Maps** in docs/handbook.md. */
   var FIND_LOOK_MIN = 5;
   var findCanLook = null;
   var findCanLookAsked = false;
@@ -10732,7 +10732,7 @@
 
          Distance is a fact about geography, not a verdict on a kitchen.
          Nothing here is scored or ranked, and **On "no scores, stars or
-         rankings"** in README.md says why that line is untouched by this
+         rankings"** in docs/handbook.md says why that line is untouched by this
          one.
 
          From the dot when there is one, from Raekoja plats when there is
@@ -12262,7 +12262,7 @@
    * places, so it can be followed here: the line through the places in the
    * walker's order, a number on each, a tick on the ones checked, the dot
    * where the walker is, and a band at the foot with the nearest place, the
-   * button that checks in and the way to it. **Walking a list** in README.md.
+   * button that checks in and the way to it. **Walking a list** in docs/handbook.md.
    *
    * NOTHING ABOUT THE WALK IS KEPT HERE
    *
@@ -12662,7 +12662,7 @@
   /* -------------------------------------------------------------- controls */
 
   /* The way to /chess, which has no door on the map on the owner's
-     instruction — **No door, on purpose** under **Chess** in README.md. Hold
+     instruction — **No door, on purpose** under **Chess** in docs/handbook.md. Hold
      Surprise me for five seconds and the page goes there instead of rolling
      the die. Five seconds is past any press that meant the die and past the
      half-second a phone takes to call a press long, so nobody arrives by

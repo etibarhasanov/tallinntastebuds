@@ -111,12 +111,12 @@
   <!-- Everybody else, first. What other people have written stands at the
        head of the rail, above the buttons that are about tonight; the
        account, which stood above it until 2026-11-05, is the first row
-       behind More now — "The short rail" in README.md. The map had no way to
+       behind More now — "The short rail" in docs/handbook.md. The map had no way to
        a list at all until this: the only door
        was your own account page, so a stranger never learnt lists existed.
        That page has no door either now, which leaves this one and the bar at
        the foot of a list. See "One door to the lists" under Lists in
-       README.md, which is the decision this reverses and why.
+       docs/handbook.md, which is the decision this reverses and why.
 
        An <a> and not a button, because the directory is an address somebody
        can open in a tab or send — the same reason the List half of the switch
@@ -165,7 +165,7 @@
   <!-- Under the die, and the door to the rest of what the map can do: the
        account, Ask, the flashcards, the colour, feedback, each a row in the
        sheet renderMore() in assets/app.js draws. They were pills of their
-       own, and "The short rail" in README.md is why they are not.
+       own, and "The short rail" in docs/handbook.md is why they are not.
 
        Counted on /admin/stats as `more`, the way every pill here is, and
        the rows in the sheet it opens count as the pills they were, so the
@@ -578,7 +578,7 @@
 <!-- The rest of the rail: the five doors the pills do not carry, as
      rows. Built by assets/app.js the way the account sheet is, because one
      row — the colour — names the side you are about to get, which is
-     decided at the moment it opens. "The short rail" in README.md. -->
+     decided at the moment it opens. "The short rail" in docs/handbook.md. -->
 <div class="scrim" id="more-scrim" role="dialog" aria-modal="true"
      data-i18n-aria-label="moreOpen" aria-label="More" hidden>
   <div class="account card" id="more-card"></div>
@@ -590,7 +590,7 @@
      off the same suggestions the add-a-place form draws, becomes the dot
      every distance on the map is measured from. Built by assets/app.js the
      way the two sheets above are, since the note at its top says why it
-     opened. See "Or type where you are" in README.md. -->
+     opened. See "Or type where you are" in docs/handbook.md. -->
 <div class="scrim" id="where-scrim" role="dialog" aria-modal="true"
      data-i18n-aria-label="whereTitle" aria-label="Where are you?" hidden>
   <div class="account card" id="where-card"></div>
@@ -645,7 +645,7 @@
 <div class="walk-band" id="walk-band" hidden></div>
 <!-- A bike ride being recorded, finished or saved: the card stands where the
      route bar does and the bar steps aside for it. Empty here — its contents
-     are assets/ride.js's. Recorded rides in README.md. -->
+     are assets/ride.js's. Recorded rides in docs/handbook.md. -->
 <section class="walk-band ride-card" id="ride-card" data-i18n-aria-label="rideTitle" aria-label="Record a ride" aria-live="polite" hidden></section>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
@@ -720,7 +720,7 @@
      here: the frame is made on each open and taken down on each close, so a
      page opened twice starts twice. A dialog to a screen reader, named after
      the page inside it, with the rest of the map inert while it is up.
-     "The map is the shell" in README.md. -->
+     "The map is the shell" in docs/handbook.md. -->
 <div class="shell" id="shell" role="dialog" aria-modal="true" hidden></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -731,11 +731,11 @@
      shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="assets/track.js?v=a26d8ccd" defer></script>
+<script src="assets/track.js?v=23760ccd" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
-<script src="assets/back.js?v=b25714ea" defer></script>
+<script src="assets/back.js?v=9d9a7dd8" defer></script>
 <!-- Shared with deal.html, verify.html and staff.html. The map uses only the
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
@@ -761,7 +761,7 @@
      map's own places wear the mark and nothing else can; a place off Google's
      export or one a list put on the screen wears a glyph. Before the page's
      own script and deferred like it, for the same reason as the basemap. -->
-<script src="assets/pins.js?v=f40dc701" defer></script>
+<script src="assets/pins.js?v=65d03c41" defer></script>
 <!-- The id this browser files a save or a heart under when nobody is signed
      in, shared with the feedback page. After track.js and before the page's own script,
      deferred like it, so document order puts the global in place first. -->
@@ -777,14 +777,14 @@
 <!-- The page's own script, as the copy tools/lean.mjs writes of assets/app.js:
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
-     a page that loads it directly. "The lean copies" in README.md. -->
+     a page that loads it directly. "The lean copies" in docs/handbook.md. -->
 <!-- A list read as a walk, which the map can follow: TTBWalk, the same
      global the list's own page hands its list to. Before the map's script,
      which asks it. -->
 <script src="assets/walk.js?v=4809fdb9" defer></script>
 <!-- A bike ride, recorded on the map's Bike tab and saved as a confirmed
      route: TTBRide, mounted by mountRide() in assets/app.js. -->
-<script src="assets/ride.js?v=ccf9fe16" defer></script>
+<script src="assets/ride.js?v=06e548b8" defer></script>
 <!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->

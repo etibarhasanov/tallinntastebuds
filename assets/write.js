@@ -35,7 +35,7 @@
  * their own where it exists and the first one where it does not; the blog
  * says so in their language. There is no machine translation here, on the
  * argument **A post is not held to the eleven languages** under **The blog** in
- * README.md makes: a translation is somebody's writing, or it is not there.
+ * docs/handbook.md makes: a translation is somebody's writing, or it is not there.
  *
  * THE CAPS
  *

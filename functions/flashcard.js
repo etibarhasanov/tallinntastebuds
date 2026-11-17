@@ -17,7 +17,7 @@
  *
  * Nothing on this site links to the flashcards except one pill on the map's
  * rail. That is deliberate — see **How it is found** under **Flashcards** in
- * README.md — and it is the blog's arrangement: unlinked and indexed, not
+ * docs/handbook.md — and it is the blog's arrangement: unlinked and indexed, not
  * unlinked and hidden. The page shipped with a
  * noindex for a day, on the reasoning that a deck somebody wrote is theirs
  * alone. That is still true and this does not touch it: what is indexed is the
@@ -325,7 +325,7 @@ function deckSays(deck, ui, lang) {
  * carries its three forms and a sentence in three languages — a quarter of
  * what the same block costs the map at its worst on an ordinary deck of
  * forty cards, and nearly all of it on the two-word verbs, which are a
- * hundred and twenty-five. See **Getting found** in README.md for the map's
+ * hundred and twenty-five. See **Getting found** in docs/handbook.md for the map's
  * half of that arithmetic.
  *
  * The English is what goes in the names and the descriptions of the page
@@ -484,7 +484,7 @@ function structuredData(request, decks, deck, lesson, song, talk) {
  * list's: ?lang=az on it is the sender having chosen Azerbaijani for whoever
  * they are sending it to, and a card that came back in English would be the
  * site answering a question nobody asked. That is the arrangement **Sharing a
- * place** in README.md describes, applied here — and it is not the argument
+ * place** in docs/handbook.md describes, applied here — and it is not the argument
  * the <main> is under, which has no reader to ask.
  *
  * It asks DECK_LANGS rather than data/ui.json's own keys, so the card a link

@@ -28,7 +28,7 @@ og-flashcard.png   page's own stylesheets and class names — a card with an
                    Estonian word on it where og.jpg has the mouth. The .png is
                    drawn from the .html by `node tools/ogcard.mjs`, which is
                    where the reasoning is; **When somebody sends the link**
-                   under **Flashcards** in README.md says why the site's own
+                   under **Flashcards** in docs/handbook.md says why the site's own
                    card was the wrong one for that page.
 ```
 

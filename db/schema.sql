@@ -140,18 +140,18 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              stranger dealt each, and `a-opened` and `b-opened`, the first
 --              place that stranger opened on the visit, until the short rail
 --              became everybody's on 2026-11-05. The rows are kept and read
---              by nothing. **The short rail** in README.md.
+--              by nothing. **The short rail** in docs/handbook.md.
 --   'look'     the directory's two looks, a test of its own: `a` and `b`,
 --              somebody new to the site dealt each on their first open of
 --              /lists, and `-opened` and `-kept` after either, the first list
 --              they opened and kept from it that day. LOOK_IDS in
---              functions/api/stats.js; **The lists' two looks** in README.md.
+--              functions/api/stats.js; **The lists' two looks** in docs/handbook.md.
 --   'style'    the four colours, a test of its own: `red`, `green`, `blue`
 --              and `plum`, somebody new to the site dealt each as their
 --              first page opened, and after each `-opened` (something opened
 --              that day), `-back` (a later day's visit) and `-changed` (the
 --              swatch pressed), once each. STYLE_IDS in functions/api/
---              stats.js; **The four styles, dealt** in README.md.
+--              stats.js; **The four styles, dealt** in docs/handbook.md.
 --
 -- ONE TABLE AND NOT FOUR
 --
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS press_counts (
 -- How often somebody's /u/<name> was opened, from where, and what on it was
 -- pressed — read by its owner alone, on /insights. functions/api/_visits.js
 -- writes and reads it, and its header is the reasoning; **Insights** under
--- **Profiles** in README.md is the page's half.
+-- **Profiles** in docs/handbook.md is the page's half.
 --
 -- It is the table press_counts' own header says it would become the day
 -- somebody asked "this month": the same upsert, with the day in the key.
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS view_seen (
 -- functions/api/_visits.js writes it, on the same open and under the same
 -- rules — a public list, not its owner, once a UTC day per visitor — and
 -- listCountries() in the same file reads it; **Your lists** under
--- **Insights** in README.md is the page's half.
+-- **Insights** in docs/handbook.md is the page's half.
 --
 -- profile_counts' shape, keyed on the list rather than on a person, because
 -- the question is about the list: whose it is is a join away, and the site's
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- ---------------------------------------------------------- visitor_counts
 -- Who came to the site, roughly, and what they did — read by the owner
 -- alone, on /admin/visitors. functions/api/_visitors.js writes and reads it,
--- and its header is the reasoning; **Visitors** in README.md is the page's
+-- and its header is the reasoning; **Visitors** in docs/handbook.md is the page's
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
@@ -437,7 +437,7 @@ CREATE TABLE IF NOT EXISTS visitor_live (
 -- one they reached, and which two they took one after the other. Read by the
 -- owner alone. functions/api/_flows.js writes and reads it, and its header
 -- is the reasoning; **The numbers on it** under **Who uses the site, drawn**
--- in README.md is the page's half.
+-- in docs/handbook.md is the page's half.
 --
 -- visitor_counts once more, per diagram: the day in the key, one row per
 -- fact per day, and a number. `flow` is a diagram's id out of
@@ -482,7 +482,7 @@ CREATE TABLE IF NOT EXISTS flow_counts (
 -- answer. countUse() in functions/api/_visitors.js writes it, once a write
 -- on saves, lists, flashcards or chess has gone through, and
 -- WHAT THE PRODUCTS WERE USED FOR, AND BY HOW MANY in that file's header is
--- the reasoning; **Usage, week by week** in README.md is the reading half.
+-- the reasoning; **Usage, week by week** in docs/handbook.md is the reading half.
 --
 -- `key` is an HMAC under SAVE_SALT of the week, the product and the
 -- account or device id, cut to 32 hex. No id is stored, and the key is a
@@ -813,7 +813,7 @@ CREATE TABLE IF NOT EXISTS lists (
   --
   -- This column cannot put the mark on anything, and cannot say what a place
   -- is either. A place on my map draws the mouth whatever its list chose (see
-  -- "The mark" in README.md), and the five kinds of place are what this site
+  -- "The mark" in docs/handbook.md), and the five kinds of place are what this site
   -- says a Google row IS rather than anything somebody picks.
   --
   -- LAST, BECAUSE THAT IS WHERE ALTER TABLE PUTS IT
@@ -1197,7 +1197,7 @@ CREATE TABLE IF NOT EXISTS google_venues (
   -- in ms. NULL on a row nothing has refreshed since the export loaded it.
   -- Written by refreshOnOpen() in functions/api/_refresh.js, which asks again
   -- when somebody opens the place and this is more than thirty days old; see
-  -- **Keeping it current** under **Google venues** in README.md.
+  -- **Keeping it current** under **Google venues** in docs/handbook.md.
   --
   -- It is also what keeps the export from undoing a refresh: on a row where
   -- this is set, db/google-venues.sql leaves those seven columns and
@@ -1309,7 +1309,7 @@ CREATE INDEX IF NOT EXISTS idx_city_venues_area ON city_venues (area, rank);
 -- Details, one place per call, a thousand free a month.
 --
 -- Only the database the key is set against ever fills this. The key goes in
--- Production alone, so preview's table stays empty; see README.md.
+-- Production alone, so preview's table stays empty; see docs/handbook.md.
 CREATE TABLE IF NOT EXISTS google_calls (
   day  TEXT    NOT NULL,              -- '2026-09-26', UTC
   kind TEXT    NOT NULL,
@@ -1426,7 +1426,7 @@ CREATE INDEX IF NOT EXISTS idx_google_scores_place ON google_scores (place_id, a
 -- What people would change about this site, and who agreed with them.
 --
 -- /feedback is the page, functions/api/feedback.js is the only thing that
--- writes either of these, and **Feedback** in README.md is the reasoning.
+-- writes either of these, and **Feedback** in docs/handbook.md is the reasoning.
 --
 -- SAYING SOMETHING NEEDS NO ACCOUNT, THE WAY A SAVE DOES NOT
 --
@@ -1554,7 +1554,7 @@ CREATE TABLE IF NOT EXISTS meta (
 -- cannot hold — the decks people write for themselves, how far each person has
 -- got, and which of the shipped cards readers say is wrong.
 --
--- See **Flashcards** in README.md, and functions/api/flashcard.js, which is
+-- See **Flashcards** in docs/handbook.md, and functions/api/flashcard.js, which is
 -- the only thing that writes any of these.
 --
 -- IT IS THE SAME ACCOUNT AS THE MAP
@@ -1614,7 +1614,7 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id,
 -- me again" deleted it. It is the `box` column now, and a row can say either
 -- thing: deleting threw away the one fact somebody wants after a run, which is
 -- which words they got wrong. See **The deck of what you got wrong** in
--- README.md.
+-- docs/handbook.md.
 --
 -- THE TWO COLUMNS AT THE BOTTOM ARE THE SPACING
 --
@@ -1628,7 +1628,7 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id,
 --
 -- The intervals themselves are BOXES in functions/api/flashcard.js, which is
 -- the copy that binds; nothing here knows what a box is worth. See
--- **Flashcards** in README.md.
+-- **Flashcards** in docs/handbook.md.
 --
 -- **These two columns were added after the table was.** A database that
 -- already had it needs them put on by hand:
@@ -1688,13 +1688,13 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_known_due ON flashcard_known (user_id, 
 -- mean that, a genitive that is not the genitive, a sentence no Estonian would
 -- say. The Estonian on this site is mine and has never been checked by anybody
 -- who grew up with the language — see **Three forms** under **Flashcards** in
--- README.md — so the people turning the cards over are the only proofreaders
+-- docs/handbook.md — so the people turning the cards over are the only proofreaders
 -- it has, and this is where they answer.
 --
 -- **Nothing reads this table but a person.** No route answers with it, no page
 -- draws a count off it, and the number never reaches the card: a "reported by
 -- 4" under a word would tell somebody learning it to distrust a card that is
--- very often perfectly right. The query is in **Flashcards** in README.md and
+-- very often perfectly right. The query is in **Flashcards** in docs/handbook.md and
 -- it is run by hand, the same way a piece of feedback is taken down.
 --
 -- ONLY THE DECKS THE SITE SHIPS
@@ -1745,7 +1745,7 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_has
 -- The route holds it to two days either side of the server's, and uses the
 -- server's when it is not, so a clock set wrong costs a day rather than a
 -- year of them. INSERT OR IGNORE, so the second answer of a day writes
--- nothing. See **Days in a row** under **Flashcards** in README.md, which is
+-- nothing. See **Days in a row** under **Flashcards** in docs/handbook.md, which is
 -- also where the decision this table reverses is written down.
 --
 -- Signed out nothing is written here: a stranger's days are kept in their own
@@ -1769,7 +1769,7 @@ CREATE TABLE IF NOT EXISTS flashcard_days (
 -- joins the waiting list: the queue is the private games still waiting, oldest
 -- first, so there is no third table to keep in step with this one. A duel is
 -- a row from the moment one member challenges another, waiting until the
--- other accepts. See **Chess** in README.md and the header of functions/api/chess.js.
+-- other accepts. See **Chess** in docs/handbook.md and the header of functions/api/chess.js.
 --
 -- The position is kept as FEN, the line every chess program reads, so any
 -- game here can be pasted into one and looked at. It is a cache of the moves
@@ -1874,7 +1874,7 @@ CREATE TABLE IF NOT EXISTS chess_moves (
 -- `named` is whether the author asked for their name on it: an anonymous note
 -- still has an owner, and the owner is never sent to anybody. The notes belong
 -- to one game, so a new game starts with none. **Notes for the next player**
--- under **Chess** in README.md.
+-- under **Chess** in docs/handbook.md.
 CREATE TABLE IF NOT EXISTS chess_notes (
   -- Sixteen hex characters.
   id         TEXT    PRIMARY KEY,
@@ -1913,7 +1913,7 @@ CREATE INDEX IF NOT EXISTS idx_chess_notes_ip ON chess_notes (ip_hash, at);
 -- an ask lapses as the game moves on, and a write deletes what has lapsed
 -- before it adds. A third kind, 'declined', is one row left by a player who
 -- turned a draw down, standing until they move. **Giving up, and agreeing a
--- draw** under **Chess** in README.md.
+-- draw** under **Chess** in docs/handbook.md.
 CREATE TABLE IF NOT EXISTS chess_asks (
   -- chess_games.id.
   game    TEXT    NOT NULL,
@@ -1936,7 +1936,7 @@ CREATE TABLE IF NOT EXISTS chess_asks (
 -- written in: a post is somebody's, in the language they first wrote it in
 -- (`lang`), and any of the site's other nine they add beside it. The page
 -- reads the reader's own where there is one and the first one where there is
--- not. **Everybody's posts** under **The blog** in README.md; the route is
+-- not. **Everybody's posts** under **The blog** in docs/handbook.md; the route is
 -- functions/api/posts.js and the caps are at the top of functions/api/_posts.js.
 CREATE TABLE IF NOT EXISTS posts (
   -- A slug out of the first title and four hex characters after it, so two
@@ -2038,7 +2038,7 @@ CREATE INDEX IF NOT EXISTS idx_walk_checks_list ON walk_checks (list_id, checked
 -- confirmed bike route, a line somebody has really cycled. Drawn faintly
 -- under the Bike tab's suggested way by functions/api/rides.js, without a
 -- name on it: the rides are everybody's evidence, not anybody's profile.
--- **Recorded rides** in README.md.
+-- **Recorded rides** in docs/handbook.md.
 CREATE TABLE IF NOT EXISTS rides (
   -- Twelve hex characters, drawn by the Function.
   id         TEXT    PRIMARY KEY,

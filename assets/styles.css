@@ -39,7 +39,7 @@
   /* The resting palette: what a page made of many cards wears instead of
      the brick and ceramic the map stands on. One reader, the directory's
      look B — [data-look="b"] .lists-body.is-all in assets/lists.css, and
-     "The lists' two looks" in README.md. Twenty cards of paper on wash, each
+     "The lists' two looks" in docs/handbook.md. Twenty cards of paper on wash, each
      with a pink city and red marks on it, is pink on pink on pink with
      nowhere for the eye to land; this is a paler ground with a breath of
      sage in it, so the accent and the marks are the only warm things on the
@@ -53,7 +53,7 @@
 
   /* The three tones a pin can wear, and there are three because that is what
      a five-pixel dot on the directory's map can carry. See "The pins" in
-     README.md: the mark goes on every place I have eaten at and cannot be
+     docs/handbook.md: the mark goes on every place I have eaten at and cannot be
      asked for, a list's marker draws in --pin-accent, and a row off Google's
      export draws what kind of door it is — somewhere you sit and eat, or
      somewhere you drink, or something baked.
@@ -750,7 +750,7 @@ a:hover { color: var(--accent-lit); }
    A place off Google's export, or one somebody put on a list. There is no
    photograph of it and no write-up, so the pin says the other true thing:
    what kind of place it is, or which list it came off. See "The pins" in
-   README.md.
+   docs/handbook.md.
 
    It is none of the three readings above, and saying so is the point.
    Filmed, photographed and write-up-only are three amounts of MY writing
@@ -1462,7 +1462,7 @@ body.lang-open .controls { z-index: 1250; }
    what everybody else has written; then the one that changes your evening,
    then the door to everything else: the account, Ask, the flashcards, the
    colour and feedback are rows behind More, "The short rail" in
-   README.md. */
+   docs/handbook.md. */
 
 .rail {
   position: fixed;
@@ -4972,7 +4972,7 @@ body.route-on .panel.is-open { visibility: hidden; pointer-events: none; }
    Two pages draw a walk — the list's own, in its Route view, and the map —
    and both put the same things in a band at the foot: assets/walk.js builds
    them, so they are styled here, where both pages read. **Walking a list** in
-   README.md. */
+   docs/handbook.md. */
 
 /* What just happened, said over the button. */
 .walk-msg { margin: 0; font-size: 14px; line-height: 1.4; text-align: center; }
@@ -5044,7 +5044,7 @@ body.walk-on .panel.is-open { visibility: hidden; pointer-events: none; }
    since it too stands where the route bar would, with its contents to the
    left the way a sheet's are. While it is up the route bar, a walk's band
    and the sheet step aside for it, and a bike route's line stays on the map
-   to ride along. Recorded rides in README.md. */
+   to ride along. Recorded rides in docs/handbook.md. */
 .ride-card { align-items: stretch; gap: 6px; padding: 14px 16px 12px 18px; }
 body.route-on .ride-card:not([hidden]) { display: flex; }
 body.ride-on .route-bar,

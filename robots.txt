@@ -11,7 +11,7 @@ Allow: /
 # that is ever not wanted it is two groups naming those two and nothing that
 # touches the search bots. Cloudflare sorts the same bots into Search, Agent
 # and Training at the edge, and a bot blocked there never reads this file at
-# all — README.md under **Getting found** says where that switch is.
+# all — docs/handbook.md under **Getting found** says where that switch is.
 
 # The discount pages are not. Each one is meaningless without a place in the
 # query string, and a crawled copy of a code that expires within the hour is

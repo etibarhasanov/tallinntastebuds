@@ -4,7 +4,7 @@
  * Every public list on this site, the most opened first, with a field to
  * search them. It is the one page here that puts one person's writing above
  * another's, and the argument for it — and the cost of it — is set out in
- * README.md under **Public lists**. This file is only how the page is served.
+ * docs/handbook.md under **Public lists**. This file is only how the page is served.
  *
  * It is lists.html again, the way /list/<id> is, and for two of the same
  * reasons and one of its own:
@@ -27,7 +27,7 @@
  * ruled out of one. What is left is the plural of the thing. Both of the old
  * addresses answer 301 to here — public.js and kept.js are those redirects and
  * nothing else — because an address that has been indexed is not a name you
- * get to take back, only one you get to forward. README.md under **Public
+ * get to take back, only one you get to forward. docs/handbook.md under **Public
  * lists** has the whole of it.
  *
  * This file is index.js and not something named after the page because

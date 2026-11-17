@@ -6,7 +6,7 @@
  * anybody asks the Bike tab for the way to a place, the rides under that way
  * are drawn faintly beneath the suggested line, and the bar says how much of
  * the suggestion somebody has actually ridden. The recorder is
- * assets/ride.js; **Recorded rides** in README.md is the reasoning.
+ * assets/ride.js; **Recorded rides** in docs/handbook.md is the reasoning.
  *
  * GET  /api/rides?bbox=<south>,<west>,<north>,<east>
  *

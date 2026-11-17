@@ -813,7 +813,7 @@
   }
 
   /* The directory's two looks against each other — "The lists' two looks" in
-     README.md: how many people new to the site were dealt each on their first
+     docs/handbook.md: how many people new to the site were dealt each on their first
      open of /lists, and the share of them that opened a list from it, and
      that kept one, on the day they were dealt it. Since the test began,
      because press_counts has no day. Opened is what
@@ -839,7 +839,7 @@
   }
 
   /* The four colours against each other — "The four styles, dealt" in
-     README.md, in three blocks under one verdict: how many people new to the site were dealt each as their first
+     docs/handbook.md, in three blocks under one verdict: how many people new to the site were dealt each as their first
      page opened, and the share of them that opened a place, a post or a
      deck that day, came back on a later day, and chose a different colour;
      then everyone dealt each colour in the range, with the per-visitor

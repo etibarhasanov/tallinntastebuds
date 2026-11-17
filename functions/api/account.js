@@ -58,7 +58,7 @@
  * Sending is not on the free plan — so every deployment this site has ever
  * had ran the paragraph above, with a few hundred lines underneath it that
  * only ever answered "not available". They are gone, and so are the two
- * columns and the table they wrote to; see **Accounts** in README.md.
+ * columns and the table they wrote to; see **Accounts** in docs/handbook.md.
  *
  * WHY AN ACCOUNT IS OPTIONAL
  *

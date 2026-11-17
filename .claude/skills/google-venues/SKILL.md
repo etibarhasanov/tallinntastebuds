@@ -31,7 +31,7 @@ The third is the one with no database in it at all, and the easiest to
 forget for that reason: `data/city.json` is a static asset the browser
 fetches, so a refresh that skips it fails CI rather than going quiet, and a
 refresh that runs it needs nothing loaded anywhere. See **Public lists** in
-`README.md` for what it draws.
+`docs/handbook.md` for what it draws.
 
 The second pair is the same export read again: six public lists — top ten
 restaurants, bakeries, cafés, bars, pizzerias, and a top twenty across all of
@@ -40,13 +40,13 @@ as, ordered by Google's rating weighed by its review count. The top twenty is
 not a pool of its own: it is the same arithmetic `/admin/google` ranks the whole
 city by, `overallOrder()` in `tools/googlevenues.mjs`, so it can never
 disagree with the rank that page already prints. **The six lists Google
-wrote** under **Google venues** in `README.md` is the argument and the
+wrote** under **Google venues** in `docs/handbook.md` is the argument and the
 arithmetic. They refresh with the export, and the validator holds them to it
 the same way.
 
 ## Read first
 
-- `README.md` → **Google venues**, all of it — **The six lists Google
+- `docs/handbook.md` → **Google venues**, all of it — **The six lists Google
   wrote** included — and **The directory**.
 - `exports/README.md` — how the raw export was cleaned, column by column, and
   where the upstream sweep lives. `exports/REVIEW.md` is the shortlisting
@@ -184,7 +184,7 @@ that move and never the name, address, category, tags or coordinates. Every
 answer's rating and review count is also added to `google_scores`, which is
 never pruned — the history of each place's numbers — with the export's pair
 ahead of a place's first answer.
-**Keeping it current** under **Google venues** in `README.md` is the whole of
+**Keeping it current** under **Google venues** in `docs/handbook.md` is the whole of
 it, and the **Google** tab on `/admin.html` is where to see what it did.
 
 What that means for this process:
@@ -202,7 +202,7 @@ What that means for this process:
   `rerankIfDue()` in `functions/api/_rank.js` renumbers it once a week from
   the numbers the table holds, the first time the Top 100 tab of
   `/admin/google` is asked for in a new week — **The week's ranking, and the
-  top hundred** under **Google venues** in `README.md`. So the delta in step
+  top hundred** under **Google venues** in `docs/handbook.md`. So the delta in step
   5 may find `rank` already moved on rows the export did not touch; that is
   the week's ranking, not a drift to report.
 
@@ -218,7 +218,7 @@ them to `google_venues` and do not add a reader of `city_venues` as part of a
 refresh. Showing a city is something new a visitor can see, and is described
 before it is built. The sweep commands and the cost are under **The other
 cities** in `exports/README.md`; **The other cities, kept and not shown** under
-**Google venues** in `README.md` is the argument. The load is the same yes as
+**Google venues** in `docs/handbook.md` is the argument. The load is the same yes as
 any other, production only.
 
 ## The rules of the table
@@ -243,7 +243,7 @@ any other, production only.
   screen count 1, 2, 4, 3. It is
   deliberately not the 300 `tools/googlelists.mjs` uses — that one singles out
   ten names for the city and wants a heavier thumb on a small count.
-  **Where a place stands** under **The directory** in `README.md` is the
+  **Where a place stands** under **The directory** in `docs/handbook.md` is the
   argument.
 - **`map_id`, `hidden`, `note` and `first_seen_at` are never touched.**
   `map_id` is set only when empty, from a match within 60 metres whose folded

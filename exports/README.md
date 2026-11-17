@@ -108,7 +108,7 @@ to carry, not this file's.
 
 In the database they can go sooner. Since the directory began refreshing an opened
 place from Google — **Keeping it current** under **Google venues** in the root
-`README.md` — the first time somebody opens Morii or Varkizana after the key is set,
+`docs/handbook.md` — the first time somebody opens Morii or Varkizana after the key is set,
 Google's own figure replaces the corrected one in `google_venues`. This file keeps
 the correction until the next export; the table carries Google's answer from then
 on, and the export will not put the correction back over it.
@@ -214,7 +214,7 @@ sheet flags them and `google_venues.hidden` is where they go.
 they are here, are the same sweep and the same cleaning as Tallinn's, one file a
 city, named after the id in `AREAS` in `tools/cityvenues.mjs`. They load into
 `city_venues`, which nothing on the site reads — **The other cities, kept and not
-shown** under **Google venues** in the root `README.md` is why.
+shown** under **Google venues** in the root `docs/handbook.md` is why.
 
 The sweep, from a checkout of `allRestaurants` with `GOOGLE_MAPS_API_KEY` set. One
 SQLite file a city, so a city's export is that city and nothing else, and one pass

@@ -8,8 +8,8 @@
  * board for whoever opens the page, signed in or not. A private game is one
  * member against the house, and it starts as a place in a public waiting
  * list. A third kind has no house in it: a duel is one member against another,
- * by challenge — **Member against member** under **Chess** in README.md.
- * **Chess** in README.md is the whole of it, and
+ * by challenge — **Member against member** under **Chess** in docs/handbook.md.
+ * **Chess** in docs/handbook.md is the whole of it, and
  * .claude/skills/chess/SKILL.md is the shape that was agreed before any of it
  * was written.
  *
@@ -172,7 +172,7 @@ const UNDO_GRACE_MS = 3000;
 
 /* A note is a line or two, not a letter: the length of a list's say, and
    restated as MAX_NOTE in assets/chess.js, which carries the only field that
-   writes it — **Notes for the next player** in README.md. Five an hour from one network is
+   writes it — **Notes for the next player** in docs/handbook.md. Five an hour from one network is
    room for a table of friends arguing about a move and stops a loop; fifty
    is as many as the card shows, the newest. */
 const MAX_NOTE = 280;

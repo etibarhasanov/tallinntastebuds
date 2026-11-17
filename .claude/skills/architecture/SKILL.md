@@ -18,10 +18,10 @@ kind have an answer already written down below.
 - `CLAUDE.md` → **Orient in two minutes, not twenty**, **Branches and
   deploys**, and **Something new is described before it is built**. A new
   page or route is new, and gets described before it gets built.
-- `README.md` → **The map is the shell**, **The radio**, **Flashcards** →
+- `docs/handbook.md` → **The map is the shell**, **The radio**, **Flashcards** →
   *Why a subdomain*, *Taking it out*, **Getting
   found**, **The security headers**, **The build budget**. `grep -n '^## '
-  README.md` is the table of contents with line numbers.
+  docs/handbook.md` is the table of contents with line numbers.
 - The header block of `assets/shell.js` and of `assets/radio.js`: the two
   files that know a page can be inside another page.
 
@@ -80,7 +80,7 @@ the map, and the map stays underneath — pins, panel, and the radio's
 of its own, same ids, same stylesheets, same scroll. Nothing in a page's
 script changes to be openable this way, and that is the point of the frame
 over the other shape, which is one document for the whole site. **The map
-is the shell** in `README.md` carries the reasoning; the header of
+is the shell** in `docs/handbook.md` carries the reasoning; the header of
 `assets/shell.js` carries the mechanics. The surface is a dialog, the map
 under it is `inert`, Back closes it, the address bar and the tab's title
 follow the page inside.

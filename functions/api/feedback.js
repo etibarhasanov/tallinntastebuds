@@ -71,7 +71,7 @@ import { googleReady } from './_google.js';
    people said rather than a page of essays — and the same bargain a list's
    intro and the line about yourself take at two hundred. Restated as a
    `maxlength` on the field in assets/feedback.js, the way every cap on this
-   site is; see **The caps** in README.md. */
+   site is; see **The caps** in docs/handbook.md. */
 const MAX_FEEDBACK = 500;
 
 /* How many pieces of feedback one network fingerprint may leave in an hour.
@@ -94,7 +94,7 @@ const PAGE = 20;
  * decide where it sits.
  *
  * The page has one order and no chips to choose it with — see **Feedback** in
- * README.md — and that order is "the most hearted first". On its own, that is
+ * docs/handbook.md — and that order is "the most hearted first". On its own, that is
  * a page where nothing new is ever seen: a sentence posted this afternoon
  * starts at nought hearts, sits below everything that has ever been agreed
  * with, and is therefore never read by anybody who might agree with it. Ten

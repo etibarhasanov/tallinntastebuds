@@ -6,7 +6,7 @@
  * THE MOUTH IS NOT ON THIS LIST, AND THAT IS THE POINT
  *
  * Every place on my map draws the mark — the mouth out of the painting, see
- * **The mark** in README.md — and nothing anybody types can put it on a place
+ * **The mark** in docs/handbook.md — and nothing anybody types can put it on a place
  * that is not. It is the one thing on this site that means "I have eaten here
  * and it is worth your evening", so it is not an option in a picker; it is
  * what being on the map looks like. A list wears one of the forty-five markers

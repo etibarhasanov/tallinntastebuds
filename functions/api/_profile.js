@@ -323,7 +323,7 @@ export function readSpeaks(raw) {
 export const LINE_LANGS = ['az', 'en', 'et', 'fi', 'pt', 'ru', 'es', 'tr', 'uk', 'fr', 'de'];
 
 /* The line's cap, and every version's. Two hundred because a line under a
-   title is what this is — **The line about yourself** in README.md — and
+   title is what this is — **The line about yourself** in docs/handbook.md — and
    restated in assets/edit.js, which carries the only boxes that write it. */
 export const MAX_ABOUT = 200;
 

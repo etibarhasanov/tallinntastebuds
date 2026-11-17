@@ -13,7 +13,7 @@
  * id. The index is a fraction of
  * the source and a deck's file is one deck; the header of the tool says
  * exactly what each holds, and **Where the words are, and it is mostly not
- * the database** under **Flashcards** in README.md says why.
+ * the database** under **Flashcards** in docs/handbook.md says why.
  *
  * This is the ways of reading that folder, shared by the two routes — and by
  * ../flashcard/mcp.js, the door an assistant reads the decks through — so that

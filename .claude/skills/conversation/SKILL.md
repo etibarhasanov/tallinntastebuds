@@ -23,7 +23,7 @@ costs less than the first.
 
 - The `/flashcards` skill, **The file** and **What else moves when the file
   moves**.
-- `README.md` → **Conversations, which are read**, under **Flashcards**: why
+- `docs/handbook.md` → **Conversations, which are read**, under **Flashcards**: why
   the name is on its own line, why every word is a press and the glossary
   they share, and what was done to
   the sheets' text. Then **The back of the card is in three languages** and

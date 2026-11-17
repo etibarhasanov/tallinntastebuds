@@ -18,7 +18,7 @@ one fact decides most of what follows.
 
 ## Read first
 
-- `README.md` → **Add a place** (the field table), **What counts as a
+- `docs/handbook.md` → **Add a place** (the field table), **What counts as a
   Restaurant**, **What counts as Laptop friendly**, **Get the coordinates**,
   **Copy a video permalink**, **Add photos**, **Close a place instead of
   deleting it**, and **The admin page** → **Adding a place** / **Changing
@@ -67,7 +67,7 @@ a place should be found by that are not its name, its types or its
 `mustOrder` — *pizza* and *pelmeni* for F-Hoone — for any place in the
 city, keyed by the map's id or Google's `place_id`. Nothing prints them.
 A new place whose write-up names a dish the entry does not carry gets a
-line there in the same commit; **What a place serves** in `README.md`.
+line there in the same commit; **What a place serves** in `docs/handbook.md`.
 
 ## The admin road
 
@@ -130,7 +130,7 @@ it does, in order:
    `photos` in the order they should show — and note that the **first one is
    also the place's social card**, the picture that comes up when somebody
    pastes its `?spot=` link into a chat. A place with no photos gets the mark
-   instead. `functions/index.js` and **Sharing a place** in `README.md`.
+   instead. `functions/index.js` and **Sharing a place** in `docs/handbook.md`.
 4. **Is it one place?** A room that is a bakery in the morning and a
    restaurant at night is two entries, and the laptop tag goes on the one it
    is true of. Fotografiska is the precedent.
@@ -150,7 +150,7 @@ it does, in order:
 7. **The counts.** The README says in prose how many places carry
    `restaurant` and `laptop` — "31 of the 78", "8 of the 78" — and names the
    closed places by name in **Close a place instead of deleting it**. `grep
-   -n 'of the 7' README.md` and move each one. The total is also spelled out
+   -n 'of the 7' docs/handbook.md` and move each one. The total is also spelled out
    in words — "seventy-nine" today; a "seventy-four" or "seventy-five" is a
    file written before the last sweep — across the README, the scripts, the
    Functions and the header of `tools/places.mjs`. A comment in an `assets/`
@@ -195,7 +195,7 @@ for a door that should open again, which is normally not typed at all: the
 **Google** tab on `/admin.html` lists every place where Google's status and
 the map disagree and saves the edit that moves it, both ways, landed like
 any other admin edit. **The map
-against Google** under **The admin page** in `README.md`. Either way, every `?spot=` link keeps
+against Google** under **The admin page** in `docs/handbook.md`. Either way, every `?spot=` link keeps
 working, the pin greys and gains a dashed ring, the row and the panel say so
 in every language, and **Surprise me** and the locate framing skip it on their
 own. It still sorts into the list by distance like everything else, greyed —

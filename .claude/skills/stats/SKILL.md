@@ -31,8 +31,8 @@ must keep, and where this area has gone wrong.
 
 ## Read first
 
-- `README.md` → the section for the page you are changing, and only that
-  one. `grep -n '^## ' README.md` finds them:
+- `docs/handbook.md` → the section for the page you are changing, and only that
+  one. `grep -n '^## ' docs/handbook.md` finds them:
   - **Statistics** — `/admin/stats`: which places, chips, pills and lists
     get opened, which members' posts get read, and the nine counts of what the site holds. **It counts
     opens, and an open is a gesture** and **A count and not a log** are the
@@ -231,7 +231,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `SIGNUP` in `functions/api/_visitors.js` | the `account_*` names the sheet and forms report; the error words `account.js` answers | the funnel |
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
 | `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
-| every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
+| every press name | the table under **Analytics** in `docs/handbook.md`; `when` in `data/flows.json` | the list |
 | the kinds list | the comment above `visitor_counts` in `db/schema.sql` — thirty today, `layout` among them and no longer written, `shown` the newest | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 | `SHAPE` in `functions/api/counter.js` | `COUNTER_SHAPE` in `assets/app.js`, which puts it on the address the flag counter is asked at | the counter's answer, so no cache hands the card an older one |
@@ -248,7 +248,7 @@ file adds:
    The same gesture on two pages reports the same name.
 2. `TTBTrack.event(name, params)` in the handler, `TTBTrack.click()` round an
    inline node, or `data-track` in the markup.
-3. A row in the **Analytics** table in `README.md`, in the same commit.
+3. A row in the **Analytics** table in `docs/handbook.md`, in the same commit.
 4. If it is a step somebody takes in a diagram, `when` in `data/flows.json`
    names it, then `node tools/flows.mjs`.
 5. If it is a step of signing up, `SIGNUP` in `_visitors.js` lists it, or the
@@ -298,7 +298,7 @@ cost is the whole chain, and all of it lands in one PR:
 6. The page: the card, the `ui.json` keys in all eleven languages — the
    `visitors*`, `found*`, `stats*` and `flows*` prefixes are the
    convention — `node tools/stamp.mjs`.
-7. `README.md`: a `###` under the page's section saying what it counts,
+7. `docs/handbook.md`: a `###` under the page's section saying what it counts,
    what it cannot, and from when.
 8. The `/api` skill's route-table row for the route.
 

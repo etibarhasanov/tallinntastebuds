@@ -34,7 +34,7 @@
  *
  * Learning Estonian through an English you are shaky in is two languages'
  * work, and the people this site is written for are the ones it was hardest
- * on. See **Flashcards** in README.md.
+ * on. See **Flashcards** in docs/handbook.md.
  *
  * It is on its own hostname because it is not the map, and a sixth card on
  * the account page reading "Flashcards" would have been a second product
@@ -72,7 +72,7 @@
  * same action a card is and kept in this tab the same way when there is no
  * account to write it to. lessonCard() is the whole of the drawing, and
  * **Grammar, which is read rather than turned over** under **Flashcards** in
- * README.md is the reasoning.
+ * docs/handbook.md is the reasoning.
  *
  * AND THE SONGS, WHICH ARE LISTENED TO
  *
@@ -81,7 +81,7 @@
  * line by line, what each line means under it and every word in it a press
  * that opens a box saying what that word means there. Heard it at the foot is
  * Got it again, under the deck id SONGS. songCard() is the drawing, and
- * **Songs, which are listened to** under **Flashcards** in README.md is the
+ * **Songs, which are listened to** under **Flashcards** in docs/handbook.md is the
  * reasoning.
  *
  * AND THE CONVERSATIONS, WHICH ARE READ
@@ -92,14 +92,14 @@
  * the page is being read in and a speaker beside it that says the turn aloud.
  * Read it at the foot is Got it again, under the deck id TALKS. talkCard() is
  * the drawing, and **Conversations, which are read** under **Flashcards** in
- * README.md is the reasoning.
+ * docs/handbook.md is the reasoning.
  *
  * WHERE YOU LEFT OFF
  *
  * The front door reopens what this device had open — the deck a run was going
  * in, or the lesson being read, or the song, or the conversation — rather than the shelf, for somebody signed
  * in. rememberHere() below writes it and boot() reads it; **Where you left
- * off** under **Flashcards** in README.md says why it is the device's and not
+ * off** under **Flashcards** in docs/handbook.md says why it is the device's and not
  * the account's.
  *
  * HOW ANYBODY FINDS IT, WHICH IS ONE PILL
@@ -111,11 +111,11 @@
  * row went after it: one door on the thing everybody opens first beats a
  * second one you have to sign in to reach, and the account page is shorter
  * for it. flash_open_rail is what the pill reports. See **How it is found**
- * under **Flashcards** in README.md.
+ * under **Flashcards** in docs/handbook.md.
  *
  * Unlinked is not hidden, though: the decks are in sitemap.xml and indexed,
  * which is the blog's arrangement rather than the split page's. See
- * **Flashcards** in README.md.
+ * **Flashcards** in docs/handbook.md.
  *
  * SIGNED OUT, EVERY DECK STILL WORKS
  *
@@ -738,7 +738,7 @@
    * ttb.flash.days, written by keep() on every answer and read by nothing but
    * the front door: the same two facts, kept where the person keeps them
    * rather than on a server that does not know who they are. See **Days in a
-   * row** under **Flashcards** in README.md.
+   * row** under **Flashcards** in docs/handbook.md.
    *
    * The day is the reader's own calendar day rather than Tallinn's, for the
    * reason **The spacing, which is off** gives for measuring from the answer:
@@ -1645,7 +1645,7 @@
    *
    * Moving between parts asks the route for nothing: the shelf is already in
    * hand, so it is a draw and an address. **The menu, and Start** under
-   * **Flashcards** in README.md.
+   * **Flashcards** in docs/handbook.md.
    */
 
   /* How long something new is called new: two weeks from the `added` day the
@@ -1873,7 +1873,7 @@
      It is `state.words`, which is to say the stages' own number said out loud
      rather than a second count of the same thing — the page was already
      deciding what opens on it and saying nothing about it. See gateFor() above
-     and **How many words you know** in README.md.
+     and **How many words you know** in docs/handbook.md.
 
      Only signed in, only where there is a database to have counted it, and
      only past nought. A nought here would be the page telling a stranger they
@@ -1890,7 +1890,7 @@
      device's own store, since a run of days is the one thing a stranger has
      that is worth counting. Nothing after a break — the front door has said
      how long it was, and a nought here would be the page scolding. See
-     **Days in a row** under **Flashcards** in README.md. */
+     **Days in a row** under **Flashcards** in docs/handbook.md. */
   function daysLine() {
     var days = daysNow(daysHere());
     return days.run ? countLine('flashDaysRun', days.run) : null;
@@ -2015,7 +2015,7 @@
    * the decks are a press away and nothing about them changed. Which stages
    * a person has opened is this device's, in localStorage, like the
    * language: it is a way of looking at the page and not a fact about them.
-   * **Find your level** under **Flashcards** in README.md.
+   * **Find your level** under **Flashcards** in docs/handbook.md.
    */
   var UNFOLD_KEY = 'ttb.flash.unfold';
 
@@ -2052,7 +2052,7 @@
      each list a lesson, then the deck of cards that uses only what it taught
      where the lesson names one, then the next lesson. The pairing is the
      lesson's own `deck` and the split is its `heading`, neither anything in
-     the ids. See **The cases, one at a time** in README.md. */
+     the ids. See **The cases, one at a time** in docs/handbook.md. */
   function grammarPart(ours) {
     var grammar = state.lessons.filter(function (l) { return !underCases(l); });
     var cases = state.lessons.filter(underCases);
@@ -3005,7 +3005,7 @@
      know it, and a page that decides that on somebody's behalf is a page arguing
      with them about their own memory. So the card is answered the way every
      card is and the event carries `hint`, which is what will say in a month
-     whether people hint and then know. See **The hint** in README.md. */
+     whether people hint and then know. See **The hint** in docs/handbook.md. */
   function hintLine(word) {
     if (state.run.hint || !hintOf(word)) return null;
 
@@ -3297,7 +3297,7 @@
    *
    * The Estonian here is mine and has not been read by anybody who grew up
    * with the language. The people turning these over are the only proofreaders
-   * it has. See **This card is wrong** under **Flashcards** in README.md.
+   * it has. See **This card is wrong** under **Flashcards** in docs/handbook.md.
    */
   function wrongLine(word) {
     if (state.deck.own || gathered(state.deck)) return null;
@@ -3398,7 +3398,7 @@
        The missed deck is the second sort of something, and it is not a count
        of what is known: every card in it is in box nought, so `mine` is nought
        there by construction and the button never appeared at all — on the one
-       deck README.md names it for. What it forgets there is the nought on
+       deck docs/handbook.md names it for. What it forgets there is the nought on
        every card in it at once, wherever the card came from.
 
        The review deck is the opposite case and gets no button: `mine` is the
@@ -3759,7 +3759,7 @@
    * render() rebuilds <main> and that would start the video again from the
    * beginning on every press. Nothing else on this page is on screen long
    * enough for that to matter; a song is. See **Songs, which are listened
-   * to** under **Flashcards** in README.md.
+   * to** under **Flashcards** in docs/handbook.md.
    */
 
   /* What a word is, for splitting a line into presses: a run of Latin
@@ -3957,7 +3957,7 @@
    * conversation, `talkWords` in data/decks.json, which tools/decks.mjs
    * writes into each conversation's file as the words that conversation
    * uses. See **Conversations, which are read** under **Flashcards** in
-   * README.md.
+   * docs/handbook.md.
    */
 
   function talkHead() {
@@ -4048,7 +4048,7 @@
    * and go with it, but which deck it was is this device's, and coming back
    * to it is the welcome a stranger who came back has earned. Nothing of it
    * reaches the server. boot() is the reader. See **Where you left off**
-   * under **Flashcards** in README.md.
+   * under **Flashcards** in docs/handbook.md.
    */
   var LAST_KEY = 'ttb.flash.last';
 
@@ -4120,7 +4120,7 @@
    * they are. Signed out there is no count of words to give, since the
    * answers were the tab's, so the line says the deck is where they were.
    * Gone with the first answer or the first walk anywhere: `hello` above.
-   * See **The front door** under **Flashcards** in README.md.
+   * See **The front door** under **Flashcards** in docs/handbook.md.
    */
   function helloLine() {
     if (!hello) return null;
@@ -4159,7 +4159,7 @@
    * again on their way in and files where they come to; this half asks the
    * questions, says Right, Almost or Not yet as each is answered, and draws
    * the ladder at the end. **Find your level** under **Flashcards** in
-   * README.md, and the header of functions/api/_level.js.
+   * docs/handbook.md, and the header of functions/api/_level.js.
    *
    * It stands over whatever was open — the first card of a stranger's door,
    * the shelf — at its own address, ?level=1, so the back button leaves it
@@ -4799,7 +4799,7 @@
     /* And where the address names nothing at all — no deck and no part of
        the shelf — the front door: a stranger is put in front of the first
        card of FIRST_DECK rather than a menu, which is **The front door**
-       under **Flashcards** in README.md. A link to a part of the shelf opens
+       under **Flashcards** in docs/handbook.md. A link to a part of the shelf opens
        that part, the way a link to a deck opens the deck. */
     var testing = new URLSearchParams(window.location.search).has('level');
     var door = !asked && !testing && !new URLSearchParams(window.location.search).has('part');

@@ -6,7 +6,7 @@
  * — each saying under its name how many people saved it, where anybody has.
  * Then Google's directory, only the venues somebody has opened on the map. Then
  * the filter chips, in full, which is the table that argues about the order of
- * the chip row: see **The order of the filter chips** in README.md. Then the
+ * the chip row: see **The order of the filter chips** in docs/handbook.md. Then the
  * nine pills across the map's two rails, in full, which is the table that
  * argues about what earns a slot on it. Then every list anybody has opened,
  * whose it is beside the title and the countries it was opened from on a
@@ -38,7 +38,7 @@
  * the same open is filed under the country it came from, which is what the
  * line under a list is made of. A post read keeps the list's rules, without
  * the countries. This page only reads. See **Statistics** in
- * README.md for what the numbers do and do not mean.
+ * docs/handbook.md for what the numbers do and do not mean.
  *
  * assets/country.js names a country and draws the line of them under a
  * list, and is loaded before this file.

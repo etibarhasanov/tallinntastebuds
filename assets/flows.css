@@ -8,7 +8,7 @@
  * the diagram itself — whose shapes are SVG drawn by assets/flows.js with a
  * class each and no colour of their own, so that pressing the swatch on the
  * map and coming back brings the diagram with it, which is rule 1 of **The
- * design rules** in README.md — and the numbers laid on it, at the bottom
+ * design rules** in docs/handbook.md — and the numbers laid on it, at the bottom
  * of this file.
  *
  * Who does a step is told by its outline: the accent for a person, the muted
@@ -197,7 +197,7 @@
 }
 
 /* ------------------------------------------------------- the numbers on it
- * See **The numbers on it** under **Who uses the site, drawn** in README.md.
+ * See **The numbers on it** under **Who uses the site, drawn** in docs/handbook.md.
  * The range row is the one /insights and /admin/visitors draw, the who
  * switch is the lists page's segmented control, and both sit over the
  * diagram in one wrapping row; the line under them says what was counted. */

@@ -23,9 +23,9 @@ here. It is the main rule and it applies to every line you touch.
   **Ask for somewhere**, **Restaurant discounts**, **The radio**, **Surprise
   me**, **Languages**, **The mark**, **The pins**, **The four styles** — and it
   carries the reasoning the code only hints at.
-  `grep -n '^## ' README.md` is the table of contents with line numbers;
+  `grep -n '^## ' docs/handbook.md` is the table of contents with line numbers;
   read the section, not the file.
-- `README.md` → **The design rules**: twelve rules a new sheet, page or
+- `docs/handbook.md` → **The design rules**: twelve rules a new sheet, page or
   button is held to. Two of them the validator enforces; the other ten are
   read by a person, and that person is you.
 - The header block of the file you are about to change. Most of the page
@@ -68,7 +68,7 @@ What the description has to settle before a stylesheet is worth opening:
   always — but say what changes between them.
 - **What it deliberately does not do yet.**
 
-Hold the description to **The design rules** in `README.md` — the twelve are
+Hold the description to **The design rules** in `docs/handbook.md` — the twelve are
 cheaper to fail in a paragraph than in `assets/`. Then post it and stop.
 Scaffolding written while the answer is outstanding is scaffolding somebody
 has to argue with later.
@@ -104,7 +104,7 @@ three pass pages keep light browser chrome under the dark style.
 `flashcard.js` carries the style half and a language half of its own shape: it
 does not fetch `data/ui.json` at all, but sends its candidates to
 `/api/flashcard` and prints from the one block that comes back — **One request
-on the way in** under **Flashcards** in `README.md` says why, and
+on the way in** under **Flashcards** in `docs/handbook.md` says why, and
 `assets/flashcard-first.js` is why that ask leaves from the head before the
 page's own scripts have arrived: `boot()` takes the early answer only when the
 address it would have asked is the same character for character, so a change
@@ -159,7 +159,7 @@ falls back to nothing but the key, which is safe only because the validator
 holds every language to the same set of keys. A language switch on the map
 is a request, and `setLanguage()` keeps the old language on screen until the
 new file has arrived. **One language at a time** under **Languages** in
-`README.md`. Every other page reads the same files for its strings — the
+`docs/handbook.md`. Every other page reads the same files for its strings — the
 pass pages through `TTBPass.load()` in `assets/pass.js`, the rest through a
 `loadWords()` of their own — each picking the language with its own
 `pickLanguage()` out of `data/lang/index.json` and then fetching that one.
@@ -188,7 +188,7 @@ gloss of a lesson, every line and word of a song, and every question and turn of
 Azerbaijani and Russian written; `means()` in `assets/flashcard.js` picks the
 one the page is being read in and falls back to the English. A key there is not
 a `ui.json` key and the parity rule does not reach it. See **Flashcards** in
-`README.md`, and the `/flashcards` skill for adding to that file or changing
+`docs/handbook.md`, and the `/flashcards` skill for adding to that file or changing
 the page.
 
 **Every touch of `localStorage` is inside `try/catch`.** It throws outright
@@ -207,7 +207,7 @@ rows of the More sheet in `renderMore()`, which count as the pills they stand
 for. `select()` in `assets/venues.js` posts too, as a `venue` that is counted
 nowhere, because only the owner can open the directory. A new way for a
 visitor to open a place is a third, and it belongs there in the same commit — see
-**Statistics** in `README.md`, which is also where the reasoning for what is
+**Statistics** in `docs/handbook.md`, which is also where the reasoning for what is
 deliberately *not* counted lives.
 
 **Every button reports.** A press that matters is reported — to the
@@ -218,7 +218,7 @@ params)` around a link or button built inline, and `data-track="name"` on
 one written straight into the markup. The name says what the person meant
 (`list_keep`, `place_close`), the parameters are what the handler already
 holds, and the event gets a row in the table under **Analytics** in
-`README.md` in the same commit — that table is the list, and a name that is
+`docs/handbook.md` in the same commit — that table is the list, and a name that is
 not in it is a name nobody will find in the console. `grep -n TTBTrack
 assets/<file>.js` shows what the page beside yours reports, and the same
 press on two pages reports the same name. The name also lands in
@@ -233,7 +233,7 @@ its parameters, so a page that shows one of the owner's things — a story, a
 post, a deck, a discount — also says which through `TTBTrack.about(what,
 id)`, once a load, and `ABOUT` in `functions/api/_visitors.js` holds the id
 to the file it ships in: **What was opened** under **Visitors** in
-`README.md`.
+`docs/handbook.md`.
 
 **And every page a visitor walks back from carries `assets/back.js`**, after
 `track.js` and before the page's own script: a swipe to the right from
@@ -242,7 +242,7 @@ and the `is-lifted`, `is-carrying` and `is-dragging` classes, to know where
 a sideways finger already means something — so a new thing that takes one
 says so in CSS the way the chips and the grips do, and needs nothing here.
 The map hears it only on the panel with a place open. **A swipe to the right
-is Back** in `README.md`.
+is Back** in `docs/handbook.md`.
 
 **And every page is watched, once somebody agrees to it.** That is the other
 half of analytics and it costs nothing per press: Microsoft Clarity records the
@@ -274,7 +274,7 @@ PR, because nobody reviewing the diff can see it.
 
 **Nothing asks first.** Clarity loads on sight, and the banner that stood in
 front of it for a day was taken out on purpose — **No consent banner** in
-`README.md` is the reasoning, and it is not an oversight to correct. Driving
+`docs/handbook.md` is the reasoning, and it is not an oversight to correct. Driving
 any page in a browser therefore records into the live Clarity project, including a preview; there is no longer a button to press to
 stay out of the numbers.
 
@@ -323,7 +323,7 @@ browser cannot import from `tools/`; change one, change the other.
   for `t()` calls cannot see because the picker builds those keys out of the
   ids. `mark` in either table fails outright, and so does a kind of place a
   list could pick — the mouth goes on a place I have eaten at, and what a
-  Google row IS is not somebody's to choose. **The pins** in `README.md`.
+  Google row IS is not somebody's to choose. **The pins** in `docs/handbook.md`.
 - **The six Google lists' words**: `assets/googlewords.js` translates the
   titles, intros and per-place lines `db/google-lists.sql` stores in English.
   Every list id in `tools/googlelists.mjs` needs a title key there and in
@@ -332,12 +332,12 @@ browser cannot import from `tools/`; change one, change the other.
   the scanner for `t()` calls cannot see them. The script is loaded by
   `index.html`, `lists.html` and `account.html`, before their own. **In eleven
   languages, in the browser** under **The six lists Google wrote** in
-  `README.md`.
+  `docs/handbook.md`.
 - **The links a profile carries**: `assets/links.js` and `functions/api/_profile.js`
   hold the same three networks, written out twice for the same reason the
   pins are, and the build fails when their ids, the addresses they build or
   the handle lengths they cap drift. **Where else you are** under
-  **Profiles** in `README.md`. The page of links under them is the other
+  **Profiles** in `docs/handbook.md`. The page of links under them is the other
   way round on purpose — addresses, not handles — and `assets/rows.js` is
   the one place that turns one into a player: **Your page** under
   **Profiles**.
@@ -369,7 +369,7 @@ no step 1 until the owner has answered it.
    `.lean.js` and `.lean.css` copy beside each — the same file with the
    comments taken out; `LEAN` at the top of the tool is the list — and CI
    refuses a copy that is not what the tool would write. Never edit a copy — **The lean copies**
-   under **Cache stamps** in `README.md`.
+   under **Cache stamps** in `docs/handbook.md`.
 3. `node tools/stamp.mjs`. It rewrites only the pages whose stamps changed,
    and CI refuses a stale one. Never type a hash by hand.
 4. `node tools/ogcard.mjs`, **if the change moved a colour token or anything
@@ -379,7 +379,7 @@ no step 1 until the owner has answered it.
    links them and wears the page's own class names — so a token that moved
    leaves a picture of last month's site on every link anybody sends. It needs
    a Chromium, it takes a second, and nothing in CI can see that it went
-   stale. **When somebody sends the link** under **Flashcards** in `README.md`.
+   stale. **When somebody sends the link** under **Flashcards** in `docs/handbook.md`.
 5. `node tools/languages.mjs`, if `data/ui.json` moved, and
    `node tools/decks.mjs`, if `data/decks.json` did — the Functions read the
    files it writes, never the source — then `node tools/validate.mjs`.
@@ -406,7 +406,7 @@ no step 1 until the owner has answered it.
    `page:` or a `view:` — or `/admin/flows` draws it with no number; a
    press renamed is a `when` renamed, and the validator holds the two to
    the README's **Analytics** table. **Who uses the site, drawn** in
-   `README.md`.
+   `docs/handbook.md`.
 8. The pass in `leave-it-better.md`, over every file in the diff, whole.
 
 ## Adding a language
@@ -425,7 +425,7 @@ complain about them:
    `functions/index.js` writes them into the head at that language's
    address, so both are written for a search result — the question people
    type first, then the kinds of place, then the site's name — rather than
-   for the page. **The words** under **Getting found** in `README.md` says
+   for the page. **The words** under **Getting found** in `docs/handbook.md` says
    which words, and why "best" is not among them.
 2. `data/taxonomy.json`: a label on every type. Fails without.
 3. `data/cuisines.json`: a label on every cuisine. Fails without.
@@ -438,7 +438,7 @@ complain about them:
 7. `data/blog.json`, optionally and rarely. A post is somebody's writing
    rather than an interface string: a new language is owed none of them, and
    a post it does not have falls back to English with a line in the new
-   language saying so. See **The blog** in `README.md`.
+   language saying so. See **The blog** in `docs/handbook.md`.
 8. `node tools/languages.mjs`, and commit `data/lang/`: the map reads the
    new language out of a file of its own there, and lists it in the switch
    out of `data/lang/index.json`.
@@ -472,7 +472,7 @@ deletes its file under `data/lang/` and the validator fails until it has, and
 somebody wrote in it — `post_texts.lang`, and the `lines` in `users.links`
 and `profile_rows.lines` — since a version in a language the site no longer
 speaks is dropped on the next read. **Which eleven, and why they changed**
-under **Languages** in `README.md` has the numbers that decided it.
+under **Languages** in `docs/handbook.md` has the numbers that decided it.
 
 ## The commit
 

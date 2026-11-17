@@ -15,19 +15,19 @@
  * `opened` and `kept`, how many of them opened a list from it and kept one
  * on that day. They are since the test began rather than in the range,
  * because they are one row each and have no day; the page says so. "The
- * lists' two looks" in README.md.
+ * lists' two looks" in docs/handbook.md.
  *
  * And `styles`, the four colours somebody new to the site is dealt as their
  * first page opens — the sixteen `style` rows: for each of red, green, blue
  * and plum, `given`, and `opened`, `back` and `changed`, how many of them
  * opened something that day, came back on a later one, and chose another
- * colour. "The four styles, dealt" in README.md. And `colours` out of
+ * colour. "The four styles, dealt" in docs/handbook.md. And `colours` out of
  * readVisitors(): everyone dealt each colour over the range, with the
  * per-visitor facts.
  *
  * The map's two rails were the third test here, under the `layout` kind,
  * until every visitor was given the short rail; their rows are still in
- * press_counts and nothing reads them. "The short rail" in README.md.
+ * press_counts and nothing reads them. "The short rail" in docs/handbook.md.
  *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.

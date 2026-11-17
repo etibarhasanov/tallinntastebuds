@@ -78,7 +78,7 @@
  * the map's panel for a place of mine asks when it opens, for the section
  * under the write-up that says what Google makes of the same door: the score,
  * where the score puts it, the week and the listing. See **Google, on a place
- * of mine** in README.md for why a map that ranks nothing now prints that.
+ * of mine** in docs/handbook.md for why a map that ranks nothing now prints that.
  *
  * Same row shape again, with one field only this half carries: `of`, how many
  * rows the last sync carried, so the panel can say "#42 of 1,111" without the

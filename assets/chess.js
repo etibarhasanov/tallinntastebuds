@@ -14,7 +14,7 @@
  * rather than only wait for the house — playCard() below. Under those, a card for
  * playing another member: find them by username, challenge them, and the game
  * they accept opens on the same board in the card's place — duelsCard() below.
- * **Chess** in README.md is the
+ * **Chess** in docs/handbook.md is the
  * whole of the feature and .claude/skills/chess/SKILL.md is the shape that was
  * agreed before any of it was written, the three faces and the order each
  * puts the cards in included — cards() below is that table.

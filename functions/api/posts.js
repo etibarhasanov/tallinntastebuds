@@ -7,7 +7,7 @@
  * in any of the site's eleven languages and as many of them as they care to.
  * It lands on /blog among the house's notes and on their profile, and
  * /blog?post=<id> is its address, the same address the house's posts have.
- * **Everybody's posts** under **The blog** in README.md.
+ * **Everybody's posts** under **The blog** in docs/handbook.md.
  *
  * GET
  *

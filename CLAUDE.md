@@ -15,10 +15,11 @@ served, and every tool in `tools/` is zero-dependency on purpose so it still
 runs in five years. If a change seems to want a bundler, it is the wrong
 change.
 
-`README.md` is nearly twenty thousand lines and is the real documentation — what
+`README.md` is a short front door. `docs/handbook.md` is over twenty thousand
+lines and is the real documentation — what
 counts as a Restaurant, how discounts work at the table, why Estonian is `et`.
 Read the section you need before touching that area, and only that section:
-`grep -n '^## ' README.md` is its table of contents with line numbers, and
+`grep -n '^## ' docs/handbook.md` is its table of contents with line numbers, and
 every skill names the sections it needs by heading. This file is the part
 every session needs *before* it starts — where things go, what to run, and
 what has bitten people already — and an index to the rest.
@@ -165,7 +166,7 @@ that do it. A change that gives somebody something new to do, takes something
 away, or moves where a step lives updates their flow in the same PR and runs
 `node tools/flows.mjs`. It is also the quickest answer to "what can a member
 actually do here" — read it before grepping for it. **Who uses the site,
-drawn** in `README.md`.
+drawn** in `docs/handbook.md`.
 
 ## Something new is described before it is built
 
@@ -219,7 +220,7 @@ enough to read on a phone, saying:
 - and the questions the session genuinely cannot answer for itself. Two real
   ones are worth more than twelve that include the obvious.
 
-Hold it to **The design rules** in `README.md` while writing it. They are
+Hold it to **The design rules** in `docs/handbook.md` while writing it. They are
 twelve rules a new sheet, page or button is held to, and it is cheaper to
 fail them in a paragraph than in a stylesheet.
 
@@ -364,7 +365,7 @@ its models are in `TallinnTasteBuds/Models/`.
   answers `{ user, saved }`. `POST /api/apple` takes `{ token, nonce }` and
   answers the same. The address, the parameter names and the two error
   words the app has sentences for — `ticket` and `apple` — are all part of
-  it. **The iPhone app signs in through these too** in `README.md`.
+  it. **The iPhone app signs in through these too** in `docs/handbook.md`.
 - Strings: the app asks `data/lang/<code>.json` for its words by the site's
   own keys — the account sheet's, the lists', `styleLabel` and the four
   style names among them — so a key renamed in `data/ui.json` is a sentence
@@ -465,7 +466,7 @@ Read out of Kohuke on 2026-11-11, the day it was written.
   you would look at on it. One `npx wrangler pages deploy . --branch=<name>`
   from a terminal makes one, and that is the owner's to run. If it starts
   coming up often, that is the signal to put previews back on some branches,
-  and **The build budget** in `README.md` says what that would cost.
+  and **The build budget** in `docs/handbook.md` says what that would cost.
 - **Push once anyway.** The reason is no longer the budget: a branch that goes
   up five times runs the validator five times and tells whoever is reading
   that it was not ready. Everything under **Before you push** is written to
@@ -503,7 +504,7 @@ forgotten generator is a bot commit on your branch now, not a red pull
 request. Run it yourself before the push anyway: it saves that second commit,
 the validator needs the tree caught up to say anything useful, and **if your
 next push is refused because the bot got there first, `git pull --rebase`**
-and push again. **The scripts that run themselves** in `README.md`.
+and push again. **The scripts that run themselves** in `docs/handbook.md`.
 
 | After changing | Run | It rewrites |
 |---|---|---|

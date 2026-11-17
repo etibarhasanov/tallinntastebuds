@@ -168,7 +168,7 @@ window.TTBLinks = (function () {
      itself, which is what is printed where the browser cannot name it in
      the reader's language. node tools/validate.mjs holds the codes here to
      the server's. **Which languages you speak** under **Profiles** in
-     README.md. */
+     docs/handbook.md. */
   var SPEAKS = {
     az: 'Azərbaycan dili', en: 'English', et: 'Eesti', fi: 'Suomi', pt: 'Português',
     ru: 'Русский', es: 'Español', tr: 'Türkçe', uk: 'Українська', fr: 'Français',
