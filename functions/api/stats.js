@@ -191,8 +191,9 @@ const VENUE = 'venue';
    before the rail was cut short, each with the string data/ui.json already
    names it by — the same string the door wears as its own label on the map,
    so the table reads as the rail does and nothing new was written into eleven
-   languages to name a button that is already named. Nine: the four the rail
-   draws — the lists, Surprise me, More and the arrow — and the five rows
+   languages to name a button that is already named. Ten: the five the rail
+   draws — the lists, Surprise me, More, the bike that records a ride, and
+   the arrow — and the five rows
    behind More, the account, Learn Estonian, Ask, the colour and feedback,
    each counted under the id it had as a pill, so the numbers from before
    the short rail and after it are one column. "The short rail" in docs/handbook.md.
@@ -212,6 +213,7 @@ export const RAIL_PILLS = [
   { id: 'ask', label: 'askOpen' },
   { id: 'style', label: 'styleLabel' },
   { id: 'locate', label: 'locate' },
+  { id: 'ride', label: 'rideRecord' },
   { id: 'feedback', label: 'feedbackTitle' }
 ];
 

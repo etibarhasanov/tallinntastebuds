@@ -197,7 +197,7 @@ ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:doc
       <bpmn:incoming>member-e20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="ride" name="Records a bike ride">
-      <bpmn:documentation>From Record a ride on the route bar's Bike tab: the phone's location while the page is open and the screen on, a point every dozen metres, paused when the page is hidden, kept on the phone until it is saved or thrown away.
+      <bpmn:documentation>From the bike button on the map, with nothing open and no destination, or from Record a ride on the route bar's Bike tab: the phone's location while the page is open and the screen on, a point every dozen metres, paused when the page is hidden, kept on the phone until it is saved or thrown away.
 when: ride_open
 when: ride_start
 when: ride_pause
@@ -205,6 +205,7 @@ when: ride_resume
 when: ride_finish
 when: ride_throw
 ref: assets/ride.js
+ref: index.html #btn-ride
 ref: assets/app.js mountRide()</bpmn:documentation>
       <bpmn:incoming>member-e21</bpmn:incoming>
       <bpmn:outgoing>member-e22</bpmn:outgoing>

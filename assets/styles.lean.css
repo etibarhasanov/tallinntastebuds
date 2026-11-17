@@ -976,6 +976,14 @@ body.lang-open .controls { z-index: 1250; }
 #btn-locate svg .here-arrow { fill: var(--here); }
 #btn-locate:hover { border-color: var(--here); color: var(--here); }
 
+#btn-ride svg { stroke: var(--way-bike); stroke-width: 1.8; }
+#btn-ride:hover { border-color: var(--way-bike); color: var(--way-bike); }
+#btn-ride[hidden] { display: none; }
+
+body.ride-on #btn-ride,
+body.route-on #btn-ride,
+body.walk-on #btn-ride { display: none; }
+
 .find {
   position: fixed;
   z-index: 1210;
@@ -2644,7 +2652,8 @@ body.is-discover #map { visibility: hidden; }
 body.is-discover .rail,
 body.is-discover .filter-bar,
 body.is-discover .find-area,
-body.is-discover #btn-locate { display: none; }
+body.is-discover #btn-locate,
+body.is-discover #btn-ride { display: none; }
 
 .discover-map {
   position: relative;
@@ -3935,6 +3944,16 @@ path.walk-line { stroke: var(--accent); stroke-opacity: .85; fill: none; }
   }
   #btn-locate svg { width: 24px; height: 24px; }
   #btn-locate.hint-open { padding: 0 16px 0 11px; }
+  #btn-ride {
+    position: fixed;
+    right: calc(var(--gap) + var(--safe-r));
+    bottom: var(--above-locate);
+    min-width: 48px;
+    height: 48px;
+    padding: 0 11px;
+  }
+  #btn-ride svg { width: 24px; height: 24px; }
+  body.panel-open #btn-ride { display: none; }
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
   }

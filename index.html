@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=125904c2">
+<link rel="stylesheet" href="assets/styles.lean.css?v=a78e65fe">
 </head>
 <body>
 
@@ -180,6 +180,19 @@
       <circle cx="18" cy="12" r="1.5" class="pip"/>
     </svg>
     <span class="rail-label" data-i18n="moreOpen">More</span>
+  </button>
+  <!-- Record a ride: the bike ride recorder, assets/ride.js, opened with no
+       place and no route under it — a ride is not on the way to anywhere.
+       The same card Record a ride on the route bar's Bike tab opens. Below
+       860px the stylesheet stands it in the corner above the arrow, the way
+       it does the arrow, and puts it away while the card, a sheet, a route
+       or a walk is up. Recorded rides in docs/handbook.md. -->
+  <button type="button" class="rail-btn" id="btn-ride" data-i18n-title="rideRecord" data-i18n-aria-label="rideRecord" aria-label="Record a ride" title="Record a ride">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/>
+      <path d="M6 16l4-7h5l3 7M10 9l2.5 7M13 6h3"/>
+    </svg>
+    <span class="rail-label" data-i18n="rideRecord">Record a ride</span>
   </button>
   <button type="button" class="rail-btn" id="btn-locate" data-i18n-aria-label="locate" aria-label="Show my location">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="here-arrow" d="M20.2 3.8 3.9 10.6l7 2.5 2.5 7z"/></svg>
@@ -784,11 +797,11 @@
 <script src="assets/walk.js?v=4809fdb9" defer></script>
 <!-- A bike ride, recorded on the map's Bike tab and saved as a confirmed
      route: TTBRide, mounted by mountRide() in assets/app.js. -->
-<script src="assets/ride.js?v=06e548b8" defer></script>
+<script src="assets/ride.js?v=2274a228" defer></script>
 <!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=713271b6" defer></script>
-<script src="assets/app.lean.js?v=b46b47cb" defer></script>
+<script src="assets/app.lean.js?v=cebaa497" defer></script>
 </body>
 </html>

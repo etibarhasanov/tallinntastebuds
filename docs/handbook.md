@@ -3123,10 +3123,16 @@ pages under this site's name, and none of them is somewhere it vouches for.
 A bike ride somebody has really cycled is better evidence that a way can be
 ridden than any router's guess, and the site now keeps them. On the route
 bar, while **Bike** is the tab, a quiet **Record a ride** sits under the way
-out. It opens a card where the bar stood — the bar, a walk's band and the
-sheet step aside for it, and the suggested line stays on the map to ride
-along — and the card goes through five states in the order every sheet here
-is built:
+out — and, since a ride is not on the way to anywhere, the same card opens
+from a bike button of its own on the map with nothing open at all, on the
+rail on a desktop and standing on the locate arrow on a phone. That was the
+first version's mistake: recording lived only under a place's directions,
+so going for a ride meant picking somewhere to ride to first. The button is
+put away while the card, a sheet, a route or a walk holds the foot of the
+map, and counted on the rail as `ride`. The card stands where the route bar
+does — the bar, a walk's band and the sheet step aside for it, and a bike
+route's line, where there is one, stays on the map to ride along — and goes
+through five states in the order every sheet here is built:
 
 - **Record a ride**: what it does and the one thing that matters about a web
   page doing it, *keep this page open and the screen on*. Signed out, it asks
@@ -14715,16 +14721,16 @@ both count the same gesture the same way. That is the rule —
 agree with the report beside it — and once per load is how it comes out for a
 place, every press for a pill.
 
-The nine are the four pills inside `#rail` — the lists, Surprise me,
-**More** and the arrow — and the five rows behind More, the account, Ask,
+The ten are the five pills inside `#rail` — the lists, Surprise me,
+**More**, the bike that records a ride and the arrow — and the five rows behind More, the account, Ask,
 Learn Estonian, the colour and feedback, each counted under the id it had
 when it was a pill. They are named in `RAIL_PILLS` in
-`functions/api/stats.js`, and again in `RAIL_PRESS` (the four) and
+`functions/api/stats.js`, and again in `RAIL_PRESS` (the five) and
 `renderMore()` (the five) in `assets/app.js`, which is the pair that has to
 be kept in step: a door counted on the map and not named in the route is a
 press answered `{ok:false}`. Neither file can import the other — the
 arrangement **The pins** has — so a door added to the rail is counted once
-it is written into both. One listener on the rail rather than four on the
+it is written into both. One listener on the rail rather than five on the
 buttons, since the lists door is a link that leaves the page and is hidden
 until `/api/account` answers. Because the rows kept the pills'
 ids, Ask pressed behind More today and Ask pressed on the old column are one
@@ -19056,8 +19062,9 @@ height.
 ## The short rail
 
 Every browser draws the same rail: **everybody's lists, Surprise me and
-More** down the left, with the locate arrow under them on a desktop and in
-the bottom-right corner on a phone; three chips standing outside the Filters
+More** down the left, with **Record a ride** and the locate arrow under them
+on a desktop and in the bottom-right corner on a phone, the bike standing on
+the arrow — **Recorded rides**; three chips standing outside the Filters
 drawer on a phone; and the other five doors — the account, Ask, the
 flashcards, the colour and feedback — as rows behind More. The account was
 the rail's top pill through the test and moved behind More on the owner's
@@ -19170,10 +19177,10 @@ most worth reading again in a few weeks — `visitor_counts`, kind `rail`, id
 
 ### What is counted
 
-- **The rail's presses, under nine ids.** `RAIL_PILLS` in
-  `functions/api/stats.js` names the four pills and the five rows behind
+- **The rail's presses, under ten ids.** `RAIL_PILLS` in
+  `functions/api/stats.js` names the five pills and the five rows behind
   More, which keep the ids they had as pills. `RAIL_PRESS` in
-  `assets/app.js` is the four and `renderMore()` the five. **Statistics** is
+  `assets/app.js` is the five and `renderMore()` the five. **Statistics** is
   the rest.
 - **The same presses by the day**, since 2026-11-05: every rail press is
   filed again into `visitor_counts` as its `rail` kind, by the pill's id and
@@ -19768,7 +19775,7 @@ The map, `assets/app.js`:
 | `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
-| `ride_open` | — Record a ride on the route's bar, Bike tab |
+| `ride_open` | `from` — `route`, Record a ride on the route's bar with Bike the tab, or `map`, the bike button on the map |
 | `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
 | `ride_save` | — a ride the server kept |
 | `ride_throw` | — Throw it away |
