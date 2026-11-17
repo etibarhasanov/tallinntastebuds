@@ -2826,6 +2826,15 @@ ul.log li button.quiet { width: auto; display: inline-block; }
           watchLanding(into, branch, place, function () {
             if (editing) editPicker(repo, into); else findStep(repo, into);
           });
+          /* Picked out of Google's directory: tie that row to the new id, or
+             the panel on the map has no hours for it — see the header of
+             functions/api/admin/tie.js. Said out loud only when it fails,
+             since the place lands either way and this is the one sign. */
+          if (google && !editing) {
+            tieGoogle(google.id, place.id).catch(function (err) {
+              say(into, err.message, 'bad');
+            });
+          }
         })
         .catch(function (err) {
           clear(out);
@@ -2836,6 +2845,23 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     });
 
     settle();
+  }
+
+  /* Google's row for a place just added, tied to it by map_id so its hours,
+     rating and phone show on the map. Rejects with a sentence for the page. */
+  function tieGoogle(key, id) {
+    return fetch('/api/admin/tie', {
+      method: 'POST', cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ place: key, map: id })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; });
+    }).then(function (answer) {
+      if (answer.ok) return;
+      throw new Error(answer.why === 'taken'
+        ? 'Google’s row for it is already tied to "' + answer.mapId + '", so this place will have no hours on the map until that is put right.'
+        : 'Could not tie it to Google’s row (' + (answer.why || answer.error || 'no answer') + '), so it will have no hours on the map until it is.');
+    });
   }
 
   /* A place is saved as one commit on a branch of its own, made through the
