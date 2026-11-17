@@ -2533,9 +2533,9 @@
     "lng": 24.7332009,
     "price": 2,
     "types": [
+      "casual",
       "coffee",
-      "date",
-      "casual"
+      "date"
     ],
     "blurb": {
       "az": "Həqiqətən yaxşı yeməyi və zalın gözəl ovqatı olan qəhvə qovurma evi. Şəhərdə görüşə getmək üçün ən yaxşı yerlərdən biri. Vaxtımın çoxunu orada keçirmişəm, bir səbəbə görə: orada həmişə isti hiss olunur.",
@@ -2550,14 +2550,18 @@
       "fr": "Une brûlerie de café avec une cuisine vraiment bonne et une super ambiance dans la salle. L'une des meilleures adresses en ville pour un rendez-vous galant. J'y ai passé le plus clair de mon temps, pour une seule raison : on s'y sent toujours au chaud.",
       "de": "Eine Kaffeerösterei mit richtig gutem Essen und einer tollen Atmosphäre im Raum. Einer der besseren Orte in der Stadt für ein Date. Ich habe dort die meiste Zeit verbracht, aus einem Grund: Es fühlt sich immer warm an."
     },
-    "mustOrder": [],
+    "mustOrder": [
+      "Sandwich",
+      "Bagel",
+      "Coffee",
+      "Flat bread <<<---"
+    ],
     "reel": "",
     "photos": [
       "01.webp",
       "02.webp",
       "03.jpg"
     ],
-    "website": "",
     "phone": "+372 5668 2150",
     "added": "2026-08-24",
     "closed": false

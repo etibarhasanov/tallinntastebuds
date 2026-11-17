@@ -1646,18 +1646,22 @@
   "lng": 24.7332009,
   "price": 2,
   "types": [
+   "casual",
    "coffee",
-   "date",
-   "casual"
+   "date"
   ],
-  "mustOrder": [],
+  "mustOrder": [
+   "Sandwich",
+   "Bagel",
+   "Coffee",
+   "Flat bread <<<---"
+  ],
   "reel": "",
   "photos": [
    "01.webp",
    "02.webp",
    "03.jpg"
   ],
-  "website": "",
   "phone": "+372 5668 2150",
   "added": "2026-08-24",
   "closed": false
