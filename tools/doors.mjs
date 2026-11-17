@@ -104,8 +104,8 @@ async function rides() {
   return [...seen.values()].filter((line) => Array.isArray(line) && line.length >= 2);
 }
 
-/* The router's way between two points by bike: its length and how far its
-   two ends are from the points asked about. Kept by the pair, since the
+/* The router's way between two points by bike: how short it can make it and
+   how far its two ends are from the points asked about. Kept by the pair, since the
    tightening asks about the same ends more than once. */
 const asked = new Map();
 async function routed(a, b) {
@@ -120,8 +120,11 @@ async function routed(a, b) {
       if (res.status === 404) break;
       if (!res.ok) continue;
       const way = await res.json();
+      /* The shortest of the ways it offers: its first is its quickest,
+         and a street it would have a bike pushed along comes second while
+         being the very way that was ridden. */
       found = {
-        meters: way.meters,
+        meters: Math.min(way.meters, ...(way.others || []).map((other) => other.meters)),
         snap: Math.max(metres(a, way.line[0]), metres(b, way.line[way.line.length - 1]))
       };
     } catch (e) { /* asked again */ }
