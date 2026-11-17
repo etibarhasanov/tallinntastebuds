@@ -78,7 +78,8 @@ it does, in order:
 
 1. **Find it**: a search over Google's directory (`/api/admin/venues`). A
    pick fills the name, address, pin, phone (into `+372 …` form), website and
-   price; a row already tied to a place opens its edit instead; **Not in the
+   price, and ticks the types Google's kitchens vouch for (`typesFrom()` in
+   `admin.html`); a row already tied to a place opens its edit instead; **Not in the
    list** opens the form blank. Edit starts from the place picker, or from
    the place itself: an admin's browser draws **Edit this place** at the foot
    of every place on the map, which opens `/admin.html?edit=<id>` on its form.

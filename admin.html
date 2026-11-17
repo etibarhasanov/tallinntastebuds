@@ -2289,6 +2289,41 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     q.focus();
   }
 
+  /* The map's types a Google row can vouch for, out of the kitchens
+     kitchensOf() in functions/api/venues.js reads off Google's category, tags
+     and name. A pick from the directory starts with these ticked and the owner
+     unticks what is wrong — saving re-reads the boxes, so a guess is never
+     written without being seen.
+
+     Only the types that are a fact about the place. Casual/Solo, Hidden gem,
+     Cheap eats, Laptop and Date are a verdict, and Google has none to give.
+     Caucasian is left out too: the directory has no Georgian or Armenian
+     kitchen to read it from. Bar and wine bar tick nothing on purpose — the
+     map has no type for them, and calling a wine bar a beer hall is the
+     mistake the `pub` pattern in venues.js was narrowed to stop making.
+     Restaurant is any kitchen that is a cuisine, which is as close as the
+     directory's row gets to Google calling it a restaurant: the category
+     itself is not in the row. */
+  var TYPE_OF_KITCHEN = {
+    bakery: 'bakery', coffee: 'coffee', tea: 'tea', pub: 'pub',
+    vegan: 'vegan', 'fine-dining': 'fine-dining',
+    japanese: 'asian', korean: 'asian', chinese: 'asian', thai: 'asian',
+    vietnamese: 'asian', indonesian: 'asian', malaysian: 'asian',
+    filipino: 'asian', taiwanese: 'asian', indian: 'asian', asian: 'asian'
+  };
+  var NOT_A_CUISINE = ['bakery', 'coffee', 'tea', 'pub', 'wine', 'bar',
+    'fast-food', 'breakfast', 'buffet', 'fine-dining', 'vegan'];
+
+  function typesFrom(kitchens) {
+    var out = [];
+    function add(id) { if (out.indexOf(id) === -1) out.push(id); }
+    (kitchens || []).forEach(function (k) {
+      if (TYPE_OF_KITCHEN[k]) add(TYPE_OF_KITCHEN[k]);
+      if (NOT_A_CUISINE.indexOf(k) === -1) add('restaurant');
+    });
+    return out;
+  }
+
   /* The three steps across the top of a place form, the one it is on lit. */
   function steps(on) {
     return el('div', { className: 'steps' }, ['1 Find it', '2 Your take', '3 Live'].map(function (t, i) {
@@ -2399,14 +2434,20 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     });
 
     var typeBox = el('div', { className: 'types' });
+    var guessed = google ? typesFrom(google.kitchens) : [];
     into.appendChild(el('label', { textContent: 'What kind of place' }));
     into.appendChild(typeBox);
+    if (google) {
+      into.appendChild(el('p', { className: 'hint', textContent: guessed.length
+        ? 'Ticked from Google’s tags. Change anything that is wrong.'
+        : 'Google’s tags did not match any of these, so pick them yourself.' }));
+    }
     fetch('data/taxonomy.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (tax) {
         clear(typeBox);
         tax.types.forEach(function (t) {
-          var on = editing && existing.types.indexOf(t.id) !== -1;
+          var on = editing ? existing.types.indexOf(t.id) !== -1 : guessed.indexOf(t.id) !== -1;
           var box = el('input', { type: 'checkbox', value: t.id, checked: on || null });
           box.addEventListener('change', settle);
           typeBox.appendChild(el('label', {}, [box, t.en]));
