@@ -16509,6 +16509,16 @@ numbers are `SHRINK_STEPS` and `PHOTO_BUDGET` at the top of the script in
 A 4 MB phone photograph comes out somewhere near 150 KB. The form prints what
 went in and what came out, so you can see it happen.
 
+**A HEIC goes through it too.** An iPhone shoots HEIC, and only Safari can
+open one. On the phone that never shows, but the same photographs on a laptop,
+picked in Chrome or Firefox, are files no canvas can draw. So the browser is
+always asked first, and only a HEIC it refuses is handed to heic2any, libheif
+built for the browser, which turns it into a full-size JPEG for the same
+squeeze. The decoder is 1.3 MB from unpkg, fetched the first time a HEIC is
+refused and never otherwise, and pinned to its version and its hash the way
+the map pins Leaflet. A 2 MB HEIC came out at 61 KB in about six seconds.
+`bitmapOf()` in `admin.html`.
+
 **The button waits for the squeeze.** While the photographs are being
 shrunk, **Put it on the map** and **Save the changes** are greyed out, and
 if they could not be read at all the press is refused with a line saying so
