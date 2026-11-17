@@ -3020,6 +3020,17 @@ comes back on the first: the ways from the new place are not the ones the
 button was pressed among. Rattatee reads the same field for the same choice
 on its card before a ride.
 
+**And each way says where it turns.** The router is asked for its steps as
+well as its line, and each way carries them as `steps`: the corner (`at`), how
+far along the way it is (`meters`), which way it bends (`turn` — `left`,
+`right`, `keep-left`, `keep-right`, `straight`, `around`, `roundabout` with
+its `exit`, and `arrive`, always last) and the street it is onto (`name`).
+Nothing on the site reads them. They are for Rattatee, which shows the next
+turn while riding and says it aloud in a recording of the owner's voice, one
+recording a word — which is why a sharp left is a left and there are eight
+words rather than the router's dozens. Setting off is not a step, and neither
+is a street renamed under somebody going straight on.
+
 The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
 the bus to one place takes it to the next. Google is a small link at the foot
 of the bar rather than the bar's button — ours is the answer, Google the way
