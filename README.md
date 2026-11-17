@@ -201,7 +201,8 @@ Field by field:
 | `photos` | Filenames inside `photos/<id>/`. Just the filenames. Use `[]` if there are none. |
 | `website` | Optional. An empty string and a missing key both mean "no website". |
 | `phone` | Optional. The number you would actually ring, international form with spaces: `+372 661 0180`. It becomes the **Call** button at the foot of the panel, next to **Directions** — a `tel:` link, so a phone hands it straight to the dialler — and a tappable row in the facts list just above it. An empty string and a missing key both mean "no number", and the button and the row both disappear. |
-| `added` | The day you added the place, `YYYY-MM-DD`. Optional, and nothing on the site reads it: it drove a **Just added** section at the top of the list until that section was taken out. It stays as a record of when each place went in, `/admin.html` still stamps one on every place it creates, and the validator still holds it to being a real date when it is there. |
+| `added` | The day you added the place, `YYYY-MM-DD`. Optional; `/admin.html` stamps one on every place it creates, and it orders **New on the map** on the front page. The older places' dates were read out of this repo's git history, and the validator holds it to being a real date when it is there. |
+| `updated` | The day an edit on `/admin.html` last gave the place new photographs, `YYYY-MM-DD`. Never typed: the edit form writes it, and nothing else does. It brings the place back to the front of **New on the map**, as *Updated* and the month. Optional, a real date, and never before `added`. |
 | `visited` | The month you last ate there, `YYYY-MM`. |
 | `closed` | `true` greys the pin out and draws a dashed ring round it; `"temporary"` keeps the ring and the colour, for a door that should open again. See below. |
 
@@ -16281,10 +16282,23 @@ The same form, filled in from the place as it stands. Everything is editable
 except the **id**, which is the folder the photographs live in and what every
 `?spot=` link ever shared points at.
 
+**It starts from the place itself.** In a browser signed in as one of the
+accounts `ADMINS` names, every place on the map ends with a dashed row,
+**Edit this place** — *Photos, write-up, open or closed* — and pressing it
+opens `/admin.html?edit=<id>` with that place's form already filled in.
+Nobody else sees the row: it is drawn off the `ttb_owner` cookie the account
+route sets for an admin (**THE OWNER'S BROWSER** in
+`functions/api/_admin.js`), which is not a lock, so a browser that signed
+out since still shows it and the admin page asks for the sign-in, then comes
+back to the same place. It sits at the foot rather than among the buttons at
+the top of the panel, which are what every visitor does to a place and are
+full on a phone. The **Edit a place** tab still opens on the picker, for a
+place you have not got open.
+
 **What the form does not ask about is not touched.** The entry written back is
 the object as it is in the file with only the fields above replaced, so the
-other ten write-ups, `visited`, `added` and any key added to the data since
-this page was written all ride along untouched. That is the whole reason an
+other ten write-ups, `visited`, `added`, `updated` and any key added to the
+data since this page was written all ride along untouched. That is the whole reason an
 edit is not a blank form you fill in and save.
 
 Two things it will tell you rather than decide for you:
@@ -16309,6 +16323,12 @@ file from the repository as well, since nothing else points at it. New ones are
 numbered **past the highest that has ever been there**, never into a gap a
 removal just made: `/photos/*` is cached for a week, so a reused filename would
 serve last month's picture to anybody who had already seen the old one.
+
+**New photographs are news.** An edit that adds at least one stamps
+`updated` with today's date in Tallinn, and the place goes back to the front
+of **New on the map** on the front page, its card saying *Updated* and the
+month. Nothing else an edit changes does that: a typo fixed or a phone
+number corrected is not something a visitor needs pointed at.
 
 ### The map against Google
 
@@ -16992,7 +17012,8 @@ instead of a minute after the merge.
 - a `price` outside 1–4 or off the 0.5 step, a malformed `visited` month, a
   malformed `website`
 - a `phone` that is not in international form — `+372 661 0180`, not `6610180`
-- a malformed `added` date — it has to be `YYYY-MM-DD`
+- a malformed `added` or `updated` date — it has to be `YYYY-MM-DD` — or an
+  `updated` before its `added`
 - a story with neither a `from` nor an `until`, an `until` before its `from`,
   neither a `video` nor a `photo` (or both), a file that is not in `stories/`,
   a `seconds` outside 2–20, a `spot` that is not a place, or both a `spot` and
@@ -17054,7 +17075,6 @@ instead of a minute after the merge.
 
 - blurbs that still contain `TODO` or `PLACEHOLDER`
 - places with no reel yet
-- places with no `added` date
 - open places with no `phone`, so there is nothing to call
 - blurbs missing a translation
 - taxonomy types nothing uses
@@ -18411,7 +18431,9 @@ and the places are `press_counts` read for its order alone — the five open
 places opened least, worked out in the route beside the map's roll, since a
 place nobody has opened has no row to be read. The fourth, *New
 on the map*, is the `added` date in `data/map.json`, which the map already
-holds — so the page is never empty: the map's card is markup, the last shelf
+holds — or `updated`, when an edit has given an older place new
+photographs since, and then the card says *Updated* and the month. A typo
+fixed is not news and does not bring a place back; only photographs do — so the page is never empty: the map's card is markup, the last shelf
 needs nothing, and the others arrive. A shelf with fewer than three things on
 it is left out rather than drawn thin. If the route does not answer, the
 three shelves are replaced by one sentence and **Try again**, and the map's
@@ -19714,6 +19736,7 @@ The map, `assets/app.js`:
 | `list_open` | `places_shown` |
 | `list_close`, `ask_close` | — the cross on the panel, by what it shut; on a list it puts it on the band rather than shutting it, and reports the press all the same |
 | `place_close` | `place` |
+| `place_edit` | `place` — **Edit this place** at the foot of a place, which only an admin's browser draws; it opens `/admin.html?edit=<id>`. Never counted by the site, since the owner's browser sends nothing to `/api/stats` |
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
 | `chess_open_hold` | — *Surprise me* held for five seconds, the way in to `/chess`; sent as the map leaves for it |
