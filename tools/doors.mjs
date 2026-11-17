@@ -31,6 +31,14 @@
  * out-and-back, which are ways the map has, and misses a crossing ridden
  * beside a road the router follows to a bridge and back.
  *
+ * And it has to be the long way round in BOTH directions. The first run
+ * over real rides found eleven doors and seven of them were one street: a
+ * one-way ridden against the arrows, or along the pavement beside it, which
+ * the router answers by going on to the next corner and coming back. That
+ * is a way the map has, the other way round, and a door there would send a
+ * stranger into the traffic. A real door is one the router cannot get
+ * through from either side.
+ *
  * A stretch that passes is then tightened, a point at a time from each end,
  * for as long as the saving holds: what is kept is the door itself and not
  * the hundred metres of ordinary street either side, which the router
@@ -132,6 +140,14 @@ async function doorsIn(line) {
     return way ? way.meters - ridden(i, j) : 0;
   };
 
+  /* Whether the router needs GAIN metres and RATIO more than was ridden to
+     get from one point of the ride to another, in that order. */
+  const longWay = async (from, to) => {
+    const way = await routed(line[from], line[to]);
+    const rode = Math.abs(ridden(from, to));
+    return Boolean(way) && way.meters - rode >= GAIN && way.meters >= rode * RATIO;
+  };
+
   const found = [];
   for (const start of [0, CHUNK / 2]) {
     let i = 0;
@@ -139,8 +155,7 @@ async function doorsIn(line) {
     while (i < line.length - 1) {
       let j = i + 1;
       while (j < line.length - 1 && ridden(i, j) < CHUNK) j++;
-      const way = await routed(line[i], line[j]);
-      if (way && way.meters - ridden(i, j) >= GAIN && way.meters >= ridden(i, j) * RATIO) found.push([i, j]);
+      if (await longWay(i, j) && await longWay(j, i)) found.push([Math.min(i, j), Math.max(i, j)]);
       i = j;
     }
   }
@@ -151,8 +166,9 @@ async function doorsIn(line) {
     while (j - i > 2 && await saving(i + 1, j) >= whole * 0.9) i++;
     while (j - i > 2 && await saving(i, j - 1) >= whole * 0.9) j--;
     const way = await routed(line[i], line[j]);
-    if (!way || way.snap > SNAP) continue;
-    doors.push({ meters: Math.round(ridden(i, j)), around: way.meters, line: line.slice(i, j + 1) });
+    const back = await routed(line[j], line[i]);
+    if (!way || !back || Math.max(way.snap, back.snap) > SNAP || !await longWay(j, i)) continue;
+    doors.push({ meters: Math.round(ridden(i, j)), around: Math.min(way.meters, back.meters), line: line.slice(i, j + 1) });
   }
   return doors;
 }

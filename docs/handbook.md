@@ -3283,7 +3283,11 @@ metres, twice, and puts each stretch's ends to `/api/route` by bike. A
 stretch the router needs a hundred metres and half as much again for is a
 door; it is then tightened to the part that makes the saving, and kept only
 where both ends are on the router's network, so the way in and the way on
-meet it. The first test tried was how far the ridden line strays from the
+meet it. It has to be the long way round in both directions: the first
+run over real rides found eleven doors, and seven were a one-way street
+ridden against the arrows or along its pavement, which the router answers
+by going on to the next corner and coming back — a way the map has, and a
+door that would send a stranger into the traffic. The first test tried was how far the ridden line strays from the
 router's, and it was wrong both ways: it flagged a lap of a courtyard and
 the far end of an out-and-back, and missed the crossing above, which runs
 beside the road the router takes.
