@@ -3121,15 +3121,17 @@ pages under this site's name, and none of them is somewhere it vouches for.
 ## Recorded rides
 
 A bike ride somebody has really cycled is better evidence that a way can be
-ridden than any router's guess, and the site now keeps them. On the route
-bar, while **Bike** is the tab, a quiet **Record a ride** sits under the way
-out — and, since a ride is not on the way to anywhere, the same card opens
-from a bike button of its own on the map with nothing open at all, on the
-rail on a desktop and standing on the locate arrow on a phone. That was the
-first version's mistake: recording lived only under a place's directions,
-so going for a ride meant picking somewhere to ride to first. The button is
-put away while the card, a sheet, a route or a walk holds the foot of the
-map, and counted on the rail as `ride`. The card stands where the route bar
+ridden than any router's guess, and the site now keeps them. A ride is not
+on the way to anywhere, so the recorder opens from a bike button of its own
+on the map with nothing open at all, on the rail on a desktop and standing
+on the locate arrow on a phone, and from **Record a ride** on the account
+page's **Your rides** card, which opens the map at `/?ride=1` with the card
+already up. The first version's mistake was the other way in: recording
+lived only under a place's directions, on the route bar's Bike tab, so
+going for a ride meant picking somewhere to ride to first. That link is
+gone. The button is put away while the card, a sheet, a route or a walk
+holds the foot of the map, and counted on the rail as `ride`. The card
+stands where the route bar
 does — the bar, a walk's band and the sheet step aside for it, and a bike
 route's line, where there is one, stays on the map to ride along — and goes
 through five states in the order every sheet here is built:
@@ -3177,8 +3179,18 @@ clears it.
 server takes 200 m off each end before it stores anything — that is where a
 home or a workplace would be — works the length out itself, refuses a point
 outside Tallinn's box, an average past 45 km/h and a twenty-first ride in a
-day, and keeps who saved it without ever answering it. What anybody can read
-is the line, its length and its time. **Privacy** says the same in the
+day, and keeps who saved it without answering it to anybody else. What
+anybody can read is the line, its length and its time.
+
+**Your rides, on the account page.** The one place a ride is under a name is
+its rider's own `/account.html`: a **Your rides** card between your lists
+and the ones you kept, a fold with the count on it, each ride a row — what
+you called it, or *Bike ride*, then how far, how long and the day — and
+**Record a ride** along its foot, an `.alt` because the page's one filled
+button is Make a list. It reads `GET /api/rides?mine=1`, which answers the
+session's own rides with their names and no lines, uncached. A row opens
+nothing yet: showing one ride on the map, and taking one down, are the next
+things this card would grow. **Privacy** says the same in the
 visitor's words. A browser's location is whatever the browser says, as with
 a walk's check-in; a faked ride costs a faint line.
 
@@ -3188,8 +3200,8 @@ save fails with the ride kept on the phone. The page half is
 `assets/ride.js` (`TTBRide`, mounted by `mountRide()` and asked by
 `drawRidden()` in `assets/app.js`), the server half `functions/api/rides.js`.
 It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
-`ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, and a save counts
-as `map:ride_save`.
+`ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, the account page
+`ride_record`, and a save counts as `map:ride_save`.
 
 ## Languages
 
@@ -5245,8 +5257,9 @@ Your lists             3 lists  a fold: six rows a list
 Lists you saved         1 list  a fold: six rows somebody else's
 ```
 
-Four cards, one thing each, in the order of how much each is yours: who you
-are, what you kept, what you wrote, and what you kept of other people's. There
+Five cards, one thing each, in the order of how much each is yours: who you
+are, what you kept, what you wrote, where you rode — **Your rides**, under
+**Recorded rides** — and what you kept of other people's. There
 was a fifth under them — **Everybody's lists**, the way on to the directory —
 and **Everybody's lists is not on this page** below is where it went. The last
 three were a group with a heading over them for a while, **Yours**, and
@@ -5441,7 +5454,7 @@ A closed fold is not the menu this page was made out of. A menu row said the
 name of another page; this one says how many of your things are behind it and
 opens them where you are standing. The last card on the page is a door and not
 a fold, and that is the distinction drawn rather than broken: there is
-nothing of yours behind it, only somewhere to go. Which of the three folds are
+nothing of yours behind it, only somewhere to go. Which of the four folds are
 open is remembered on the
 browser under `ttb.account.open`, so somebody who wants their saves in front of
 them every time opens them once. Which of them have been opened all the way is
@@ -19776,7 +19789,8 @@ The map, `assets/app.js`:
 | `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
-| `ride_open` | `from` — `route`, Record a ride on the route's bar with Bike the tab, or `map`, the bike button on the map |
+| `ride_open` | `from` — `map`, the bike button on the map, or `account`, the map opened at `/?ride=1` by Record a ride on the account page |
+| `ride_record` | — Record a ride on the account page's Your rides card, leaving for the map |
 | `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
 | `ride_save` | — a ride the server kept |
 | `ride_throw` | — Throw it away |
@@ -20632,8 +20646,8 @@ mark is the one exception to rule 1 below, and it is not really an exception:
 the colours are Google's and naming them anywhere else would be wrong.
 
 One pressable thing on the site is none of the four, and it is not a fifth: a
-card's own title, on the three that fold — the saved places, your lists and
-the ones you kept, all on `/account.html`. It is a `<summary>`, and what it is
+card's own title, on the four that fold — the saved places, your lists, your
+rides and the ones you kept, all on `/account.html`. It is a `<summary>`, and what it is
 made of was all here already: the title, the count and the `.menu-go`
 chevron. A control takes you
 somewhere or changes something; this one opens the card it is the title of. It

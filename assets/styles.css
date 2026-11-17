@@ -5090,9 +5090,6 @@ body.ride-on .panel.is-open { visibility: hidden; pointer-events: none; }
   font-size: 16px;
 }
 .ride-name:focus { outline: none; border-color: var(--accent); }
-/* On the route bar, under the way out, and only on the Bike tab. */
-.route-ride { grid-column: 1 / -1; justify-self: start; margin-left: -12px; }
-.route-ride[hidden] { display: none; }
 
 /* The line through the places, in the order they are being walked. The
    accent, by its class: Leaflet is handed no colour, so a change of style

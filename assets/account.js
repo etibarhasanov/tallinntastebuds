@@ -53,7 +53,8 @@
  *
  * So the page stops where it stops being about you. The order still runs from
  * what is most yours to what is least — who you are, what you saved, what you
- * wrote, what you kept of other people's — and there is nothing after it.
+ * wrote, where you rode, what you kept of other people's — and there is
+ * nothing after it.
  *
  * THE COLUMNS FOLD, AND THE WAYS ON DO NOT
  *
@@ -171,6 +172,10 @@
   var ACCOUNT_API = '/api/account';
   var VENUES_API = '/api/venues?ids=';
   var LISTS_API = '/api/lists';
+  var RIDES_API = '/api/rides?mine=1';
+  /* The map, with the ride recorder's card already up — mountRide() in
+     assets/app.js. */
+  var RECORD = '/?ride=1';
 
   /* The same two keys the map writes and the lists page reads. Walking from
      the map to here should not feel like leaving. */
@@ -178,7 +183,7 @@
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
 
-  /* Which of this page's three folds are open, comma-joined. Nothing
+  /* Which of this page's four folds are open, comma-joined. Nothing
      else on the site reads it, and a browser that refuses storage simply gets
      the folded page every time — which is the page a first visit gets
      anyway. */
@@ -218,7 +223,8 @@
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
-    kept: []         // the ones you kept, which are somebody else's
+    kept: [],        // the ones you kept, which are somebody else's
+    rides: []        // the bike rides you recorded, newest first
   };
 
   /* The one element on the page that is not furniture. Everything below
@@ -297,7 +303,7 @@
     });
   }
 
-  /* The three API calls, asked so that "the site did not answer" and "the site
+  /* The four API calls, asked so that "the site did not answer" and "the site
      answered no" stay apart: the first is a network the page cannot fix and
      the second is a fact about the deployment. A helper that threw on both
      would collapse them into one apology. */
@@ -482,7 +488,7 @@
     ].concat(kids));
 
     /* Written on the way out of the fold rather than read on the way in:
-       whichever of the three moved is the only one that changed. */
+       whichever of the four moved is the only one that changed. */
     box.addEventListener('toggle', function () {
       var open = openFolds().filter(function (n) { return n && n !== name; });
       if (box.open) open.push(name);
@@ -798,6 +804,48 @@
       column('kept', state.kept, listRow))]);
   }
 
+  /* The bike rides you recorded on the map — assets/ride.js — newest first:
+     what you called each, how far, how long and the day. The one place a
+     ride is under anybody's name, and only its rider reads it; on the map it
+     is a faint line with nobody's name on it, which the line under the title
+     says. The same shape as your lists: a fold with the count once there is
+     something in it, and the way to make one under it either way.
+
+     A row is not a link. There is nowhere to open a ride yet, and a chevron
+     on a row that goes nowhere is a promise the page cannot keep.
+
+     Record a ride is an `.alt`, where the mockup drew it filled: the accent
+     is spent once on this page, on Make a list — see foot(). */
+  function rideRow(ride) {
+    var day = new Date(ride.at);
+    var month = t('months').split('|')[day.getMonth()] || '';
+    var far = ride.meters < 1000
+      ? t('askMetres', { n: Math.round(ride.meters / 10) * 10 })
+      : t('askKm', { n: (ride.meters / 1000).toFixed(1) });
+    return el('li', { className: 'lists-index-row' }, [
+      el('div', { className: 'lists-all-card is-still' }, [
+        el('p', { className: 'lists-index-title', textContent: ride.name || t('rideUnnamed') }),
+        el('p', {
+          className: 'lists-all-meta mono',
+          textContent: [far, t('walkMin', { n: Math.max(1, Math.round(ride.seconds / 60)) }),
+            day.getDate() + ' ' + month].join(' · ')
+        })
+      ])
+    ]);
+  }
+
+  function ridesCard() {
+    var say = el('p', { className: 'lists-say', textContent: t('ridesWhat') });
+    var n = state.rides.length;
+    var kids = n
+      ? [fold('rides', t('ridesYours'), n === 1 ? t('ridesCountOne') : t('ridesCount', { n: n }),
+        [say].concat(column('rides', state.rides, rideRow)))]
+      : [heading(t('ridesYours'), 'h2'), say,
+        el('p', { className: 'lists-none', textContent: t('ridesNone') })];
+    kids.push(foot([link('rideRecord', RECORD, 'ride_record')]));
+    return card(kids);
+  }
+
   /* ------------------------------------------------------------------- you */
 
   /* The second line of the Insights row: last week's views where there are
@@ -1048,6 +1096,7 @@
       add(youCard());
       add(savedCard());
       add(listsCard());
+      add(ridesCard());
       add(keptCard());
     }
 
@@ -1090,7 +1139,8 @@
       loadWords(),
       getJSON(PLACES_URL).catch(function () { return []; }),
       ask(ACCOUNT_API),
-      ask(LISTS_API)
+      ask(LISTS_API),
+      ask(RIDES_API)
     ]).then(function (loaded) {
       state.ui = loaded[0].ui;
       state.lang = loaded[0].lang;
@@ -1125,6 +1175,7 @@
          be a second round trip, and a page that draws itself twice. */
       state.lists = loaded[3].out.lists || [];
       state.kept = loaded[3].out.kept || [];
+      state.rides = loaded[4].out.rides || [];
       /* A list somebody kept can be one Google wrote — see assets/googlewords.js. */
       TTBGoogleWords.lists(state.kept, t, state.lang);
 

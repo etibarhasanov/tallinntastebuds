@@ -1,10 +1,10 @@
 /**
  * Tallinn Tastebuds — recording a bike ride.
  *
- * Record a ride — the bike button on the map, or the link on the route bar
- * while Bike is the tab — opens a card at the foot of the map. A ride needs
- * no destination; the route bar's link is there only because somebody
- * looking at a bike route is somebody about to ride. Start asks the phone for its position over and over,
+ * Record a ride — the bike button on the map, or the button on the Your
+ * rides card of /account.html, which opens the map with ?ride=1 — opens a
+ * card at the foot of the map. A ride needs no destination, so nothing
+ * about it hangs off a place's directions. Start asks the phone for its position over and over,
  * keeps a point every dozen metres, draws the way as it grows and counts the
  * distance, the time and the average. Finish turns the card into a question
  * — save it, under an optional name, or throw it away — and a saved ride is
