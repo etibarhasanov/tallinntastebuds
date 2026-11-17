@@ -3185,8 +3185,8 @@ that made no sense beside the suggestion and said where they had been. A
 bike route joins one place to another; it is not a map of where members
 ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
 `GET /api/rides?bbox=` stays, because the iPhone app reads it — **What the
-app reads** in `CLAUDE.md` — and the rides are still kept for the day they
-steer a router rather than stand beside it.
+app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
+it steers the suggestion instead of standing beside it.
 
 **A web page records only while it is looked at.** A browser stops telling a
 page where it is the moment the screen locks or the tab goes to the back —
@@ -3259,6 +3259,59 @@ save fails with the ride kept on the phone. The page half is
 It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
 `ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, the account page
 `ride_record`, and a save counts as `map:ride_save`.
+
+## Doors
+
+A door is a stretch somebody really cycled between two points that
+OpenStreetMap's router can only join the long way round: a gap in a fence,
+a crossing, a path nobody has drawn. The first one found was west of
+Merimetsa, on the owner's ride of 2026-11-17 — 220 m ridden where the
+router goes a kilometre, up to a bridge and back. A bike route is a
+suggestion that joins one place to another, and a door is how a ride makes
+the suggestion better without being shown to anybody: the router's way to
+one end of the door, the door, and the router's way on from the other.
+
+**Not OpenStreetMap's to keep.** The other way to open one is to draw the
+path into OpenStreetMap, and the owner said no: somebody else can take it
+out again, and what a rider proved by riding it would go with it. So the
+doors are the site's own, in `data/doors.json`, and the bike route is the
+two together.
+
+**Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
+rides off `GET /api/rides?bbox=`, cuts each into stretches of two hundred
+metres, twice, and puts each stretch's ends to `/api/route` by bike. A
+stretch the router needs a hundred metres and half as much again for is a
+door; it is then tightened to the part that makes the saving, and kept only
+where both ends are on the router's network, so the way in and the way on
+meet it. The first test tried was how far the ridden line strays from the
+router's, and it was wrong both ways: it flagged a lap of a courtyard and
+the far end of an out-and-back, and missed the crossing above, which runs
+beside the road the router takes.
+
+**Anybody's ride opens one, and nobody approves it.** A ride needs no
+account, so a door does not either. That is the owner's decision for as
+long as the riders are few and known; a door that should not be one — a
+ride over a railway where there is no crossing — is a line taken out of
+`data/doors.json`, and the day strangers record is the day this paragraph
+is looked at again.
+
+**Used only where it clearly wins.** `viaDoor()` in
+`functions/api/route.js` looks at the doors as the crow flies first, asks
+the router about at most two, two requests each, and takes a way through a
+door only when it beats the router's own by eighty metres and by a seventh.
+It then goes first, the router's best becomes the first of `others`, and
+the answer keeps its shape — so the map, the iPhone app and Rattatee ride
+through a door without knowing there is one. The turn into a door and the
+turn out of it are `steps` worked out from how the line bends, in the
+router's own words and with no street name. One door a route, bikes only.
+
+**Never drawn.** A door is not a line on the map, a ride is not either, and
+the bar says what it always said. `data/doors.json` is public the way the
+rides are: lines with nobody's name and their ends already off.
+
+The tool is not one of the generators and the validator does not hold the
+file to it: what it writes depends on rides saved since it last ran and on
+a router outside the repository. It is run when there are new rides.
 
 ## Languages
 

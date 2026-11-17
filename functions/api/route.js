@@ -50,6 +50,14 @@
  * to a stop, a ride, maybe a change, a walk to the door. A journey that is
  * all walking is dropped, because Walk already says that better.
  *
+ * A BIKE ROUTE AND THE DOORS
+ *
+ * By bike the router's way is not always the answer. Where a saved ride
+ * crossed between two points the router can only join the long way round —
+ * a door, data/doors.json — and going through it is clearly shorter, the
+ * way through the door is the first one and the router's own is the first
+ * of `others`. Same fields, same words; DOORS below.
+ *
  * MORE THAN ONE WAY
  *
  * The router is asked for alternatives and answers the ones it thinks are
@@ -111,7 +119,7 @@
  * bar are still there.
  */
 
-import { json, nearTallinn } from './_lib.js';
+import { json, nearTallinn, km, dataFile } from './_lib.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -196,7 +204,7 @@ function decode(text) {
   return out;
 }
 
-async function street(mode, from, to) {
+async function street(context, mode, from, to) {
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
     '?overview=full&geometries=geojson&steps=true&alternatives=';
 
@@ -226,7 +234,130 @@ async function street(mode, from, to) {
   const others = routes.slice(1, 1 + OTHERS).map(way).filter((other) => other &&
     Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
     !(mode === 'foot' && other.meters > MAX_WALK));
-  return json({ meters: first.meters, seconds: first.seconds, line: first.line, steps: first.steps, others: others }, 200, 3600);
+
+  /* A bike way through a door goes first, and the router's own best becomes
+     the first of the others — still offered, a button down. */
+  const through = mode === 'bike' ? await viaDoor(context, from, to, first) : null;
+  const ways = through ? [through, first].concat(others).slice(0, 1 + OTHERS) : [first].concat(others);
+  const best = ways[0];
+  return json({ meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) }, 200, 3600);
+}
+
+/* ------------------------------------------------------------------ doors
+ * A door is a stretch somebody really cycled between two points the router
+ * can only join the long way round: a gap in a fence, a crossing, a path
+ * OpenStreetMap does not have. tools/doors.mjs finds them in the saved
+ * rides and writes data/doors.json — { id, meters, around, line } each —
+ * and a bike route is the router's way or, where it is clearly shorter, the
+ * router to one end of a door, the door, and the router on from the other.
+ * Doors in docs/handbook.md is the reasoning.
+ *
+ * A door is ridden either way. The ones worth asking about are picked as
+ * the crow flies first, since that costs nothing: a door whose ends are
+ * further from the two points than the saving it could make is not asked
+ * about. At most DOORS are, nearest-looking first, two requests each, and
+ * the first that wins is taken. A way with a door in it has to beat the
+ * router's by DOOR_GAIN metres and by a seventh, or it is noise: GPS error
+ * and a corner cut are worth a few metres each and neither is a door.
+ *
+ * Nothing waits on any of it: no file, a door that does not parse, a leg the
+ * router will not answer — each is the router's own way, exactly as before.
+ */
+const DOORS = 2;
+const DOOR_GAIN = 80;
+const DOOR_RATIO = 6 / 7;
+
+/* What a door is ridden at, in metres a second: fifteen kilometres an hour,
+   which is what the router's bike profile makes of a plain street. */
+const DOOR_SPEED = 4.2;
+
+/* Nearer than this to a door's end, the way starts or stops at the door and
+   there is no leg to ask the router for. */
+const AT_DOOR = 15;
+
+const metres = (a, b) => km({ lat: a[0], lng: a[1] }, { lat: b[0], lng: b[1] }) * 1000;
+
+async function viaDoor(context, from, to, first) {
+  let doors;
+  try { doors = await dataFile(context, '/data/doors.json'); } catch (e) { return null; }
+  if (!Array.isArray(doors)) return null;
+
+  const start = [from.lat, from.lng];
+  const end = [to.lat, to.lng];
+  const worth = (meters) => first.meters - meters >= DOOR_GAIN && meters <= first.meters * DOOR_RATIO;
+  const tries = [];
+  for (const door of doors) {
+    const line = door && Array.isArray(door.line) ? door.line : [];
+    if (line.length < 2 || !Number.isFinite(door.meters)) continue;
+    for (const way of [line, line.slice().reverse()]) {
+      const least = metres(start, way[0]) + door.meters + metres(way[way.length - 1], end);
+      if (worth(least)) tries.push({ line: way, meters: door.meters, least: least });
+    }
+  }
+  tries.sort((a, b) => a.least - b.least);
+
+  for (const door of tries.slice(0, DOORS)) {
+    const [head, tail] = await Promise.all([
+      leg(start, door.line[0]),
+      leg(door.line[door.line.length - 1], end)
+    ]);
+    if (!head || !tail || !worth(head.meters + door.meters + tail.meters)) continue;
+    return stitch(head, door, tail);
+  }
+  return null;
+}
+
+/* The router's one way between two points by bike, or a way of no length
+   where they are the same place, or null where it has none. */
+async function leg(a, b) {
+  if (metres(a, b) < AT_DOOR) return { meters: 0, seconds: 0, line: [], steps: [] };
+  try {
+    const res = await ask(OSRM.bike + a[1] + ',' + a[0] + ';' + b[1] + ',' + b[0] +
+      '?overview=full&geometries=geojson&steps=true&alternatives=false', 'bike');
+    if (!res.ok) return null;
+    const body = await res.json();
+    const found = body && body.code === 'Ok' && Array.isArray(body.routes) ? way(body.routes[0]) : null;
+    return found && Number.isFinite(found.meters) && Number.isFinite(found.seconds) ? found : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* The way in, the door and the way on as one way. The turn into the door
+   and the turn out of it are steps like any other — the router knows
+   neither, and a rider told nothing would ride past — worked out from how
+   the line bends there, in the router's own words and with no street to
+   name. The leg in loses its `arrive`, since it has not. */
+function stitch(head, door, tail) {
+  const into = head.meters;
+  const out = head.meters + door.meters;
+  const steps = head.steps.filter((s) => s.turn !== 'arrive');
+  const enter = bend(head.line, door.line);
+  if (enter) steps.push({ at: door.line[0], meters: into, turn: enter, name: '' });
+  const leave = bend(door.line, tail.line);
+  if (leave) steps.push({ at: door.line[door.line.length - 1], meters: out, turn: leave, name: '' });
+  for (const s of tail.steps) steps.push(Object.assign({}, s, { meters: s.meters + out }));
+  if (!tail.steps.length) steps.push({ at: door.line[door.line.length - 1], meters: out, turn: 'arrive', name: '' });
+  return {
+    meters: out + tail.meters,
+    seconds: head.seconds + Math.round(door.meters / DOOR_SPEED) + tail.seconds,
+    line: thin(head.line.concat(door.line, tail.line), MAX_POINTS),
+    steps: steps
+  };
+}
+
+/* The word for how the way bends where one line ends and the next begins,
+   or '' where it goes straight on or one of them has no length to bend. */
+function bend(before, after) {
+  if (before.length < 2 || after.length < 2) return '';
+  const heading = (a, b) => Math.atan2(
+    (b[1] - a[1]) * Math.cos(a[0] * Math.PI / 180), b[0] - a[0]) * 180 / Math.PI;
+  const turn = (heading(after[0], after[1]) -
+    heading(before[before.length - 2], before[before.length - 1]) + 540) % 360 - 180;
+  const size = Math.abs(turn);
+  if (size < 25) return '';
+  if (size > 155) return 'around';
+  return (size < 55 ? 'keep-' : '') + (turn < 0 ? 'left' : 'right');
 }
 
 function ask(url, mode) {
@@ -368,5 +499,5 @@ export async function onRequestGet(context) {
   const mode = q.get('mode') || 'foot';
   if (mode === 'bus') return transit(from, to);
   if (!OSRM[mode]) return json({ error: 'bad-mode' }, 400);
-  return street(mode, from, to);
+  return street(context, mode, from, to);
 }
