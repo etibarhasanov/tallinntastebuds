@@ -1477,7 +1477,16 @@
   "walkReplan": "Kürzester Weg von hier",
   "walkLeftSpan": "noch {n} · etwa {distance}",
   "walkReplanned": "Die kürzeste Reihenfolge für die übrigen Orte, beginnend bei {place}, dem Ort in deiner Nähe.",
-  "walkOpenList": "Liste öffnen"
+  "walkOpenList": "Liste öffnen",
+  "counterTitle": "Besucher",
+  "counterYesterday": "gestern",
+  "counterWeek": "7 Tage",
+  "counterAll": "insgesamt",
+  "counterAverage": "Durchschnittlicher Besuch",
+  "counterMinutes": "{m} Min. {s} s",
+  "counterSeconds": "{s} s",
+  "counterMore": "+ {n} weitere Länder",
+  "counterSince": "seit {date}"
  },
  "blurbs": {
   "180-degrees": "Das einzige Zwei-Sterne-Restaurant im Baltikum. Ein richtig schönes, experimentelles Lokal am Wasser in Noblessner, wo das Degustationsmenü dich Gang für Gang überraschen soll.",

@@ -1477,7 +1477,16 @@
   "walkReplan": "O mais curto a partir daqui",
   "walkLeftSpan": "faltam {n} · cerca de {distance}",
   "walkReplanned": "A ordem mais curta para os que faltam, a começar em {place}, o mais perto de ti.",
-  "walkOpenList": "Abrir a lista"
+  "walkOpenList": "Abrir a lista",
+  "counterTitle": "Visitantes",
+  "counterYesterday": "ontem",
+  "counterWeek": "7 dias",
+  "counterAll": "desde sempre",
+  "counterAverage": "Visita média",
+  "counterMinutes": "{m} min {s} s",
+  "counterSeconds": "{s} s",
+  "counterMore": "+ {n} outros países",
+  "counterSince": "desde {date}"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

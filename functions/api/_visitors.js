@@ -288,9 +288,10 @@
  *
  * It doubles the rows a report writes and the size of a day, which is
  * still bounded by the kinds rather than the traffic: an OPEN kind is
- * capped per device as it is overall, by its own kind. Two kinds are not
- * filed again — `device`, which would only say a phone is a phone, and
- * `phone`, which is phones already — and nor is anything counted by a
+ * capped per device as it is overall, by its own kind. Three kinds are not
+ * filed again — `device`, which would only say a phone is a phone,
+ * `phone`, which is phones already, and `shown`, which nothing reads by
+ * device — and nor is anything counted by a
  * route rather than a page, since no route knows the device: the chat
  * (`ask`), the products (`use`), the Google round trip's steps of signing
  * up and Right now. A device's view shows those for every device, and
@@ -385,9 +386,9 @@
  * a page's worth of them for each page that has a form; the languages are
  * the ones data/ui.json speaks, and WHAT IT WAS ABOUT is the stories, posts,
  * decks and deals the site ships. The countries, the sources, the presses,
- * the languages browsers ask for, `found` and the four kinds of HOW THEY
- * FOUND IT are not — a host, a press name or a search is whatever the
- * request says — so each of those kinds takes at most MAX_IDS ids a day,
+ * the languages browsers ask for, `found`, the four kinds of HOW THEY
+ * FOUND IT and the counter's `shown` are not — a host, a press name or a
+ * search is whatever the request says — so each of those kinds takes at most MAX_IDS ids a day,
  * the presses MAX_PRESS_IDS, and past that only ids already counted that
  * day go up. A press name must also be shaped like one, which every name
  * TTBTrack sends is, and a report carries at most MAX_NAMES of them.
@@ -472,6 +473,40 @@
  * is made — A VISITOR IS A BROWSER'S FIRST PAGE OF THE DAY. At this site's
  * size it is a fair reading of how busy it is right now, which is what the
  * card on /admin/visitors is for.
+ *
+ * THE FLAG COUNTER, AND THE DESKTOPS IN AMERICA
+ *
+ * Everything above is the owner's. One thing is not: the card at the top of
+ * Discover, on a desktop, that says how many people came yesterday,
+ * in the last seven days and since the count began, how long a visit lasts,
+ * and which countries they came from — an old-fashioned flag counter, which
+ * the owner asked for on 2026-11-17. GET /api/counter reads it through
+ * readCounter() below, and it is the one number out of this table a visitor
+ * ever sees.
+ *
+ * It has a kind of its own, `shown`, because the rows above cannot answer it
+ * honestly. Since the count began about two in three desktop visits have
+ * come from the United States, and they are not people: read against the
+ * days that had few of them, a visit from one stays about three seconds,
+ * presses nothing, opens no place, and mostly never even says it was put
+ * away — what a headless browser does when it is closed rather than hidden.
+ * 11 November had fifty of them and 699 seconds between all fifty. Put on a
+ * public card, they would make the site look American.
+ *
+ * So a visitor is filed under `shown` as `<who>:<country>` — who being new
+ * or back, as ever — once a day, on their first page, unless they are on a
+ * desktop in the United States. Those are filed at the end of that first
+ * page instead, by countLeave(), and only if they stayed ten seconds or
+ * pressed something or opened a place: a person on a laptop in Ohio usually
+ * does one of the three, and the visits above did none. One who leaves inside
+ * ten seconds having touched nothing is lost from the card, and that is the
+ * trade; the rows above still count them as they always did. Nowhere else
+ * is anybody judged, and nothing is filed by device a second time — the card
+ * has no device chips — so it is in ANY_DEVICE.
+ *
+ * Before `shown` was written the card is an estimate from the rows above,
+ * day by day — see readCounter() — and says nothing about it, because the
+ * difference is in the tens.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
@@ -567,7 +602,7 @@ const SIGNUP = new Set([
    names worth counting: it was a hundred, the busiest day came within
    fourteen of it, and the pages send a little over two hundred names — the
    table under **Analytics** in README.md is the list. */
-const OPEN = new Set(['country', 'from', 'press', 'asks', 'found', 'ref', 'tag', 'search', 'nothing']);
+const OPEN = new Set(['country', 'from', 'press', 'asks', 'found', 'ref', 'tag', 'search', 'nothing', 'shown']);
 const MAX_IDS = 100;
 const MAX_PRESS_IDS = 300;
 
@@ -587,7 +622,7 @@ export const DEVICES = ['phone', 'tablet', 'desktop'];
 
 /* The kinds not filed a second time by device, and the ones a device's view
    reads for every device because only a route counts them — BY DEVICE. */
-const ANY_DEVICE = new Set(['device', 'phone']);
+const ANY_DEVICE = new Set(['device', 'phone', 'shown']);
 const SHARED = new Set(['ask', 'use']);
 
 /* The device a report says it was made on, or null. */
@@ -759,6 +794,16 @@ function whoOf(body) {
   return WHO.includes(body.who) ? body.who : null;
 }
 
+/* The visits the counter waits on before it counts them, and how long one
+   has to stay to be counted when it pressed nothing — THE FLAG COUNTER. */
+const JUDGED_COUNTRY = 'US';
+const JUDGED_DEVICE = 'desktop';
+const HUMAN_SECS = 10;
+
+function judged(country, body) {
+  return country === JUDGED_COUNTRY && body.device === JUDGED_DEVICE;
+}
+
 /* One fact about a visit, filed under its kind of visitor and, where it was
    dealt one, under its colour as well — NEW AGAINST RETURNING and THE FOUR
    COLOURS. */
@@ -836,9 +881,10 @@ export async function countArrive(context, body) {
     const who = body.back === true ? 'back' : 'new';
     const site = siteOf(request);
     const source = sourceOf(body.from, request.headers.get('user-agent'), site);
+    const country = countryOf(request);
     facts.push(
       ['visitor', who, 1],
-      ['country', countryOf(request), 1],
+      ['country', country, 1],
       ['from', source, 1],
       ['entry', page, 1]
     );
@@ -851,6 +897,7 @@ export async function countArrive(context, body) {
     if (DEVICES.includes(body.device)) facts.push(['device', body.device, 1]);
     const phone = phoneOf(body);
     if (phone) facts.push(['phone', phone + ':visitors', 1]);
+    if (!judged(country, body)) facts.push(['shown', who + ':' + country, 1]);
   }
   if (body.stay === true && colour && whoOf(body) === 'new') {
     facts.push(['stay', stayOf(page) + ':' + colour + ':visitors', 1]);
@@ -1020,7 +1067,14 @@ export async function countLeave(context, body) {
   split(facts, colour, who, 'presses', pressed);
   split(facts, colour, who, 'login', signs.login);
   split(facts, colour, who, 'signup', signs.signup);
-  if (page === 'map') split(facts, colour, who, 'places', Math.min(MAX_PRESS, Math.round(Number(body.places) || 0)));
+  const places = Math.min(MAX_PRESS, Math.round(Number(body.places) || 0));
+  if (page === 'map') split(facts, colour, who, 'places', places);
+  /* A desktop in America, at the end of its first page today, if it did
+     anything a person does — THE FLAG COUNTER. */
+  if (body.first === true && who && judged(countryOf(request), body) &&
+      (secs >= HUMAN_SECS || pressed > 0 || places > 0)) {
+    facts.push(['shown', who + ':' + JUDGED_COUNTRY, 1]);
+  }
   facts.push(...await languageFacts(context, body, who));
   facts.push(...searchFacts(body));
   facts.push(...await aboutFacts(context, body));
@@ -1544,4 +1598,126 @@ export async function readFound(env, span, device) {
     tags: most(tags),
     searches: most(searches).map((s) => ({ ...s, nothing: nothing.get(s.id) || 0 }))
   };
+}
+
+/* ------------------------------------------------------- the counter
+ * What the card on Discover shows — THE FLAG COUNTER above, and
+ * GET /api/counter. Every figure is up to yesterday, UTC, so it moves once a
+ * day and the route can hold it in the colo until midnight.
+ *
+ *   yesterday, week, all   people new to the site on that day, in the seven
+ *                          days before today, and since the count began
+ *   secs                   the seconds a visit lasts, over the last
+ *                          COUNTER_SECS_DAYS days
+ *   countries              [{ id, n }], visits by country since the count
+ *                          began, most first, the first COUNTER_TOP of them
+ *   more                   how many countries are not in `countries`
+ *   since                  the first day there is a row for
+ *
+ * A day is read from `shown` where the whole of it was counted that way —
+ * every day after the first one that has a `shown` row, since the first was
+ * the day it shipped and is only partly in it. A day before that is
+ * estimated out of the rows that were there all along: the visitors and the
+ * countries, less the desktops in the United States, which BY DEVICE files
+ * from 2026-10-06. Of those desktops a day's share of new ones is that
+ * day's share across every desktop. Before 2026-10-06 nothing says which
+ * American was on a desktop, so those days are not estimated at all and the
+ * United States keeps all of its visits for them — about a hundred.
+ *
+ * Null where the table is not there. */
+const COUNTER_TOP = 8;
+const COUNTER_SECS_DAYS = 28;
+const NOWHERE = new Set(['XX', 'T1']);
+
+export async function readCounter(env) {
+  const until = today();
+  const yesterday = dayBack(1);
+  const weekFrom = dayBack(7);
+  const secsFrom = dayBack(COUNTER_SECS_DAYS);
+  try {
+    const began = await env.DB
+      .prepare("SELECT MIN(day) AS d FROM visitor_counts WHERE kind = 'shown'")
+      .first();
+    /* The first whole day counted as `shown`, or today when there is none
+       yet — so every day so far is estimated. */
+    const exactFrom = began && began.d ? nextDay(began.d) : until;
+
+    const [old, exact, secs, first] = await Promise.all([
+      env.DB.prepare(
+        "SELECT day, kind, id, n FROM visitor_counts WHERE day < ?1 AND day < ?2 AND (" +
+        "kind IN ('visitor', 'desktop.visitor', 'country') OR (kind = 'desktop.country' AND id = ?3))"
+      ).bind(exactFrom, until, JUDGED_COUNTRY).all(),
+      env.DB.prepare(
+        "SELECT day, id, n FROM visitor_counts WHERE kind = 'shown' AND day >= ?1 AND day < ?2"
+      ).bind(exactFrom, until).all(),
+      env.DB.prepare(
+        "SELECT SUM(n) AS n FROM visitor_counts WHERE kind = 'cohort' AND id IN ('new:secs', 'back:secs') " +
+        'AND day >= ?1 AND day < ?2'
+      ).bind(secsFrom, until).first(),
+      env.DB.prepare('SELECT MIN(day) AS d FROM visitor_counts').first()
+    ]);
+
+    /* day -> { fresh, visits }, and country -> visits, over both halves. */
+    const days = {};
+    const countries = {};
+    const into = (day) => days[day] || (days[day] = { fresh: 0, visits: 0 });
+
+    const byDay = {};
+    for (const r of old.results || []) {
+      const d = byDay[r.day] || (byDay[r.day] = { fresh: 0, back: 0, dFresh: 0, dBack: 0, us: 0, countries: {} });
+      if (r.kind === 'visitor') d[r.id === 'back' ? 'back' : 'fresh'] += r.n;
+      else if (r.kind === 'desktop.visitor') d[r.id === 'back' ? 'dBack' : 'dFresh'] += r.n;
+      else if (r.kind === 'desktop.country') d.us += r.n;
+      else d.countries[r.id] = (d.countries[r.id] || 0) + r.n;
+    }
+    for (const day of Object.keys(byDay)) {
+      const d = byDay[day];
+      const desktops = d.dFresh + d.dBack;
+      const day0 = into(day);
+      day0.fresh += d.fresh - (desktops ? d.us * d.dFresh / desktops : 0);
+      day0.visits += d.fresh + d.back - d.us;
+      for (const id of Object.keys(d.countries)) {
+        const n = d.countries[id] - (id === JUDGED_COUNTRY ? d.us : 0);
+        if (n > 0) countries[id] = (countries[id] || 0) + n;
+      }
+    }
+    for (const r of exact.results || []) {
+      const [who, id] = String(r.id).split(':');
+      const day0 = into(r.day);
+      if (who === 'new') day0.fresh += r.n;
+      day0.visits += r.n;
+      if (id) countries[id] = (countries[id] || 0) + r.n;
+    }
+
+    let all = 0;
+    let week = 0;
+    let lately = 0;
+    for (const day of Object.keys(days)) {
+      all += days[day].fresh;
+      if (day >= weekFrom) week += days[day].fresh;
+      if (day >= secsFrom) lately += days[day].visits;
+    }
+    const ranked = Object.keys(countries)
+      .filter((id) => !NOWHERE.has(id))
+      .map((id) => ({ id: id, n: Math.round(countries[id]) }))
+      .filter((r) => r.n > 0)
+      .sort((a, b) => b.n - a.n || (a.id < b.id ? -1 : 1));
+    return {
+      yesterday: Math.round(days[yesterday] ? days[yesterday].fresh : 0),
+      week: Math.round(week),
+      all: Math.round(all),
+      secs: lately > 0 && secs && secs.n ? Math.round(secs.n / lately) : 0,
+      countries: ranked.slice(0, COUNTER_TOP),
+      more: Math.max(0, ranked.length - COUNTER_TOP),
+      since: (first && first.d) || null
+    };
+  } catch (e) {
+    /* No table yet. */
+    return null;
+  }
+}
+
+/* The day after `day`, as the table files days. */
+function nextDay(day) {
+  return new Date(Date.parse(day + 'T00:00:00Z') + 86400000).toISOString().slice(0, 10);
 }

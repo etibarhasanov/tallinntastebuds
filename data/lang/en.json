@@ -1477,7 +1477,16 @@
   "walkReplan": "Shortest from here",
   "walkLeftSpan": "{n} left · about {distance}",
   "walkReplanned": "Shortest order for the places left, starting at {place}, the nearest to you.",
-  "walkOpenList": "Open the list"
+  "walkOpenList": "Open the list",
+  "counterTitle": "Visitors",
+  "counterYesterday": "yesterday",
+  "counterWeek": "7 days",
+  "counterAll": "all time",
+  "counterAverage": "Average visit",
+  "counterMinutes": "{m} min {s} s",
+  "counterSeconds": "{s} s",
+  "counterMore": "+ {n} more countries",
+  "counterSince": "since {date}"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

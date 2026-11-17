@@ -81,6 +81,7 @@ One write route, five read routes, five pages, nine tables.
 | who came and what they did | `admin/visitors.html` + `assets/visitors.js` | `GET /api/admin/visitors` (`readVisitors()` in `_visitors.js`) and `GET /api/admin/live` (`readLive()`) | `countArrive()` and `countLeave()` in `_visitors.js`, handed `arrive` and `leave` by `stats.js`; `countAsk()` from `ask.js`; `countSignup()` from `google.js`; `countUse()` from the write routes of saves, lists, flashcards and chess | `visitor_counts` (day, kind, id, n); `visitor_live` (a ring of sixty minutes); `usage_people` (week, product, key) |
 | how they found it | `admin/found.html` + `assets/found.js` | `GET /api/admin/found` (`readFound()`) | the same `countArrive()` and `countLeave()`, the kinds `FOUND` lists | `visitor_counts`, the kinds `from`, `found`, `ref`, `tag`, `search`, `nothing` |
 | who uses the site, drawn | `admin/flows.html` + `assets/flows.js` | `GET /api/admin/flows` (`readFlows()` in `_flows.js`) | `countFlows()` in `_flows.js`, called beside `countLeave()` for every `leave` | `flow_counts` (flow, day, who, id, n) |
+| the flag counter on Discover — the one count a visitor sees | the card `drawCounter()` draws in `assets/app.js`, beside the map's card on a desktop | `GET /api/counter` (`functions/api/counter.js`, `readCounter()` in `_visitors.js`) | `countArrive()`, and `countLeave()` for a desktop in the United States | `visitor_counts`, the kind `shown` |
 | a profile's own numbers — not the owner's page, but the same machinery | `insights.html` | `GET /api/insights` (`readInsights()` in `_visits.js`) | `countView()` and `countPress()` in `_visits.js`, handed `profile` and `profile-press` by `stats.js` | `profile_counts`; `view_seen` for the once-a-day rule |
 
 The browser's half is `assets/track.js`, loaded on every page but
@@ -209,9 +210,13 @@ decided against once:
   nowhere, after it sat in the city's ranking for a while;
 - a browser breakdown, a path for one visitor, anything finer than a day
   but **Right now**;
-- any number on the map, a pill, or a public page: the count is on the
-  owner's pages or it is nowhere, because a number under a name is a
-  score and **Public lists** says why there are none.
+- any number on the map, a pill, or a public page, with one exception: the
+  count is on the owner's pages or it is nowhere, because a number under a
+  name is a score and **Public lists** says why there are none. The
+  exception is the flag counter on Discover, on a desktop — people, countries and
+  time on the site, out of the `shown` kind through `GET /api/counter` —
+  which puts a number under no name; **The flag counter, and the desktops
+  in America** under **Visitors**.
 
 ## The copies to keep in step
 
@@ -227,7 +232,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
 | `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
 | every press name | the table under **Analytics** in `README.md`; `when` in `data/flows.json` | the list |
-| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — twenty-nine today, `layout` among them and no longer written | what the table holds |
+| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — thirty today, `layout` among them and no longer written, `shown` the newest | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 | `STAY_PAGES` in `functions/api/_visitors.js` | `firstStay()` in `assets/track.js`, which tells the map, the flashcards and `other` apart by the same addresses `PAGES` gives them; the three columns of `stays()` in `assets/visitors.js` | where a newcomer's time is told apart by colour — the `stay` kind |
 | `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |

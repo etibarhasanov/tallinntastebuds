@@ -1477,7 +1477,16 @@
   "walkReplan": "El más corto desde aquí",
   "walkLeftSpan": "quedan {n} · unos {distance}",
   "walkReplanned": "El orden más corto para los que quedan, empezando por {place}, el más cercano a ti.",
-  "walkOpenList": "Abrir la lista"
+  "walkOpenList": "Abrir la lista",
+  "counterTitle": "Visitantes",
+  "counterYesterday": "ayer",
+  "counterWeek": "7 días",
+  "counterAll": "desde siempre",
+  "counterAverage": "Visita media",
+  "counterMinutes": "{m} min {s} s",
+  "counterSeconds": "{s} s",
+  "counterMore": "+ {n} países más",
+  "counterSince": "desde el {date}"
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",
