@@ -2120,6 +2120,13 @@
    * If they never arrive the card is never there: nothing waits on it.
    */
   var counter = null;  // GET /api/counter's answer, once it was ready
+  /* SHAPE in functions/api/counter.js, written twice because the two
+     dialects cannot share it. It goes on the address so that an answer of
+     an older shape, kept by a browser or a cache in front of the route,
+     is never the one this script reads: on 2026-11-17 the card went from
+     yesterday to today, and browsers that had been told to keep the old
+     answer an hour went on drawing 0 today through a hard reload. */
+  var COUNTER_SHAPE = '2';
   var counterMQ = window.matchMedia('(min-width: 861px)');
 
   function loadCounter() {
@@ -2133,7 +2140,7 @@
       if (counterMQ.addEventListener) counterMQ.addEventListener('change', later);
       return;
     }
-    fetch('/api/counter').then(function (res) {
+    fetch('/api/counter?shape=' + COUNTER_SHAPE).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (got) {
       if (!got || got.ready !== true) return;

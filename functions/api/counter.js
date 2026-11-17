@@ -44,7 +44,11 @@ const TTL = 300;
 const EMPTY = { ready: false };
 
 /* The answer's own version, moved on when it gains a field the card cannot
-   draw without — the way SHAPE is in each of the owner's routes. */
+   draw without — the way SHAPE is in each of the owner's routes. The page
+   asks for it on the address, COUNTER_SHAPE in assets/app.js, so a copy of an
+   older answer kept by a browser or a cache in front of this route is under
+   another address and never read; this route reads nothing off the address,
+   and keys the colo on its own SHAPE. Move both together. */
 const SHAPE = '2';
 
 export async function onRequestGet(context) {
