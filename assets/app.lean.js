@@ -1604,29 +1604,6 @@
     dom.routeTrips.hidden = routeWays.length < 2;
 
     if (!still) fitRoute();
-    if (mode === 'bike' && window.TTBRide) drawRidden(way.line, said);
-  }
-
-  function drawRidden(line, said) {
-    var group = routeLine;
-    TTBRide.under(line).then(function (out) {
-      if (group !== routeLine || !out.rides.length) return;
-      out.rides.forEach(function (ride) {
-        L.polyline(ride, {
-          color: markerColours().bike,
-          tone: 'bike',
-          weight: 4,
-          opacity: .4,
-          lineCap: 'round',
-          lineJoin: 'round',
-          className: 'ride-line',
-          interactive: false
-        }).addTo(group).bringToBack();
-      });
-      dom.routeSay.textContent = said + '\n' + (out.along >= 50
-        ? t('rideAlong', { dist: routeDistance(out.along) })
-        : t('rideNearby'));
-    });
   }
 
   function drawTrip(n) {

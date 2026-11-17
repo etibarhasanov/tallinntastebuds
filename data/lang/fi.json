@@ -1326,8 +1326,6 @@
   "rideFailed": "Tallennus ei onnistunut. Ajo on tallessa tässä puhelimessa — yritä uudelleen.",
   "rideOften": "Tänään on jo kaksikymmentä ajoa, enempää yksi tili ei voi päivässä tallentaa. Ajo säilyy tässä puhelimessa huomiseen.",
   "rideFast": "Se oli nopeampaa kuin pyörällä ajetaan, joten sitä ei voi säilyttää.",
-  "rideAlong": "{dist} tästä reitistä on ajettu ennenkin — haaleat viivat.",
-  "rideNearby": "Haaleat viivat ovat lähistöllä tallennettuja ajoja.",
   "ridesYours": "Ajosi",
   "ridesWhat": "Tallentamasi pyöräilyt. Jokainen on kartalla vahvistettu pyöräreitti, ilman nimeäsi.",
   "ridesNone": "Ei vielä ajoja. Paina alta Tallenna ajo ja aja.",

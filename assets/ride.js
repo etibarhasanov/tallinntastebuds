@@ -1,15 +1,15 @@
 /**
  * Tallinn Tastebuds — recording a bike ride.
  *
- * Record a ride — the bike button on the map, or the button on the Your
- * rides card of /account.html, which opens the map with ?ride=1 — opens a
- * card at the foot of the map. A ride needs no destination, so nothing
+ * Record a ride — the button on the Your rides card of /account.html,
+ * which opens the map with ?ride=1 — opens a card at the foot of the map. A ride needs no destination, so nothing
  * about it hangs off a place's directions. Start asks the phone for its position over and over,
  * keeps a point every dozen metres, draws the way as it grows and counts the
  * distance, the time and the average. Finish turns the card into a question
  * — save it, under an optional name, or throw it away — and a saved ride is
- * a confirmed bike route: functions/api/rides.js keeps it, and from then on
- * the Bike tab draws it faintly under any way it runs beside. **Recorded
+ * a confirmed bike route: functions/api/rides.js keeps it. The map does not
+ * draw it back under anybody's bike route — a suggestion joins one place to
+ * another and nothing else. **Recorded
  * rides** in docs/handbook.md is the reasoning; this is the page half, and the
  * global is TTBRide, the way the walk's is TTBWalk.
  *
@@ -48,8 +48,7 @@
  * EVERYTHING HERE FAILS QUIET
  *
  * No geolocation, no wake lock, no table on the server: each costs its own
- * part and nothing else. The faint lines under a bike route are drawn only
- * when /api/rides answers with some.
+ * part and nothing else.
  */
 (function () {
   'use strict';
@@ -75,10 +74,6 @@
   /* The longest name, the server's MAX_NAME restated so the field stops at
      the keystroke. */
   var MAX_NAME = 60;
-
-  /* Within this many metres of a recorded ride, a stretch of a suggested
-     way counts as ridden before: a lane's width and a GPS fix's error. */
-  var ALONG = 20;
 
   var c = null;      // what assets/app.js handed over — mount()
   var card = null;
@@ -435,62 +430,6 @@
     if (!ride) { view = 'ready'; clearLine(); }
   }
 
-  /* --------------------------------------------- rides under a bike route */
-
-  /* The rides /api/rides keeps under a way, and how many metres of the way
-     run within ALONG of one of them: { rides: [line, …], along }. Nothing,
-     rather than a failure, when there are none or the route cannot answer. */
-  function under(way) {
-    var s = 90, w = 180, n = -90, e = -180;
-    way.forEach(function (p) {
-      s = Math.min(s, p[0]); n = Math.max(n, p[0]);
-      w = Math.min(w, p[1]); e = Math.max(e, p[1]);
-    });
-    return fetch(API + '?bbox=' + [s, w, n, e].map(function (v) { return v.toFixed(3); }).join(','))
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (out) {
-        var rides = out && out.rides ? out.rides.map(function (r) { return r.line; }) : [];
-        return { rides: rides, along: rides.length ? along(way, rides) : 0 };
-      }, function () { return { rides: [], along: 0 }; });
-  }
-
-  /* The way walked in steps of a few metres, each step counted when it lies
-     within ALONG of any stretch of any ride. Flat metres around the way's
-     own latitude, which across one city is exact enough. */
-  function along(way, rides) {
-    var rad = Math.PI / 180;
-    var lat0 = way[0][0];
-    var kx = Math.cos(lat0 * rad) * rad * 6371000;
-    var ky = rad * 6371000;
-    var flat = function (p) { return [p[1] * kx, p[0] * ky]; };
-    var segs = [];
-    rides.forEach(function (r) {
-      for (var i = 1; i < r.length; i++) segs.push([flat(r[i - 1]), flat(r[i])]);
-    });
-    var near = function (p) {
-      for (var i = 0; i < segs.length; i++) {
-        var a = segs[i][0], b = segs[i][1];
-        var dx = b[0] - a[0], dy = b[1] - a[1];
-        var len = dx * dx + dy * dy;
-        var k = len ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / len)) : 0;
-        var x = a[0] + k * dx - p[0], y = a[1] + k * dy - p[1];
-        if (x * x + y * y <= ALONG * ALONG) return true;
-      }
-      return false;
-    };
-    var total = 0;
-    for (var i = 1; i < way.length; i++) {
-      var a = flat(way[i - 1]), b = flat(way[i]);
-      var len = Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2));
-      var steps = Math.max(1, Math.ceil(len / 5));
-      for (var j = 0; j < steps; j++) {
-        var k = (j + .5) / steps;
-        if (near([a[0] + k * (b[0] - a[0]), a[1] + k * (b[1] - a[1])])) total += len / steps;
-      }
-    }
-    return total;
-  }
-
   /* ---------------------------------------------------------------- mount */
 
   /* `opts` is what the map hands over: its Leaflet map, its t() and el(),
@@ -517,7 +456,6 @@
   window.TTBRide = {
     mount: mount,
     open: open,
-    under: under,
     /* Drawn again when the account changes under an open card, so a
        sign-in from its own Sign in turns into Start recording. */
     refresh: function () { if (shown) draw(); },

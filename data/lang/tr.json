@@ -1326,8 +1326,6 @@
   "rideFailed": "Kaydedilemedi. Sürüş bu telefonda duruyor — yeniden dene.",
   "rideOften": "Bugün zaten yirmi sürüş var; bir hesap günde bundan fazlasını kaydedemez. Sürüş yarına kadar bu telefonda kalır.",
   "rideFast": "Bu, bir bisikletin gittiğinden hızlıydı, bu yüzden saklanamaz.",
-  "rideAlong": "Bu yolun {dist} kadarı daha önce sürülmüş — soluk çizgiler.",
-  "rideNearby": "Soluk çizgiler yakında kaydedilmiş sürüşler.",
   "ridesYours": "Sürüşlerin",
   "ridesWhat": "Kaydettiğin bisiklet sürüşleri. Her biri haritada onaylı bir bisiklet rotası; adın üzerinde yok.",
   "ridesNone": "Henüz sürüş yok. Aşağıdaki Sürüşü kaydet’e bas ve sür.",

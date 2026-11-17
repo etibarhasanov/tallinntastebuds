@@ -1326,8 +1326,6 @@
   "rideFailed": "Saxlanılmadı. Gediş bu telefonda qalıb — yenidən yoxla.",
   "rideOften": "Bu gün artıq iyirmi gediş var — bir hesab gündə bundan çox saxlaya bilməz. Gediş sabaha qədər bu telefonda qalır.",
   "rideFast": "Bu, velosipedin getdiyindən sürətli idi, ona görə saxlanıla bilməz.",
-  "rideAlong": "Bu yolun {dist} hissəsi artıq sürülüb — solğun xətlər.",
-  "rideNearby": "Solğun xətlər yaxınlıqda yazılmış gedişlərdir.",
   "ridesYours": "Gedişlərin",
   "ridesWhat": "Yazdığın velosiped gedişləri. Hər biri xəritədə təsdiqlənmiş velosiped marşrutudur, adın olmadan.",
   "ridesNone": "Hələ gediş yoxdur. Aşağıda «Gedişi yaz»-ı bas və sür.",

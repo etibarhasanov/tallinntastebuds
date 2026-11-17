@@ -2644,36 +2644,6 @@
     dom.routeTrips.hidden = routeWays.length < 2;
 
     if (!still) fitRoute();
-    if (mode === 'bike' && window.TTBRide) drawRidden(way.line, said);
-  }
-
-  /* Under a bike route, faintly, the rides members have recorded near it —
-     confirmed bike routes, lines somebody has really cycled — and in the
-     bar how much of the suggested way runs along one. Asked after the way
-     is drawn and never waited for: no rides, or a route that does not
-     answer, leaves the bar exactly as it was. The group they go into is the
-     route's own, so clearRouteLine() takes them away with it. **Recorded
-     rides** in docs/handbook.md. */
-  function drawRidden(line, said) {
-    var group = routeLine;
-    TTBRide.under(line).then(function (out) {
-      if (group !== routeLine || !out.rides.length) return;
-      out.rides.forEach(function (ride) {
-        L.polyline(ride, {
-          color: markerColours().bike,
-          tone: 'bike',
-          weight: 4,
-          opacity: .4,
-          lineCap: 'round',
-          lineJoin: 'round',
-          className: 'ride-line',
-          interactive: false
-        }).addTo(group).bringToBack();
-      });
-      dom.routeSay.textContent = said + '\n' + (out.along >= 50
-        ? t('rideAlong', { dist: routeDistance(out.along) })
-        : t('rideNearby'));
-    });
   }
 
   /* A bus journey: the walks dashed in a walk's green, each ride solid in the

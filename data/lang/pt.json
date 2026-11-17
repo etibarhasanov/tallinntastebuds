@@ -1326,8 +1326,6 @@
   "rideFailed": "Não foi guardado. O passeio ficou neste telemóvel — tenta de novo.",
   "rideOften": "Já são vinte passeios hoje, o máximo que uma conta pode guardar num dia. O passeio fica neste telemóvel até amanhã.",
   "rideFast": "Isso foi mais rápido do que anda uma bicicleta, por isso não pode ser guardado.",
-  "rideAlong": "{dist} deste caminho já foi feito de bicicleta — as linhas ténues.",
-  "rideNearby": "As linhas ténues são passeios gravados aqui perto.",
   "ridesYours": "Os teus passeios",
   "ridesWhat": "Os passeios de bicicleta que gravaste. Cada um é uma rota de bicicleta confirmada no mapa, sem o teu nome.",
   "ridesNone": "Ainda não há passeios. Carrega em Gravar um passeio aqui em baixo e pedala.",

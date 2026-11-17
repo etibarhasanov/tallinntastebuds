@@ -1326,8 +1326,6 @@
   "rideFailed": "Ei salvestunud. Sõit on selles telefonis alles — proovi uuesti.",
   "rideOften": "Täna on juba kakskümmend sõitu — rohkem ei saa üks konto päevas salvestada. Sõit jääb homseks selles telefonis alles.",
   "rideFast": "See oli kiirem, kui ratas sõidab, nii et seda ei saa alles jätta.",
-  "rideAlong": "{dist} sellest teest on varem läbi sõidetud — kahvatud jooned.",
-  "rideNearby": "Kahvatud jooned on läheduses salvestatud sõidud.",
   "ridesYours": "Sinu sõidud",
   "ridesWhat": "Rattasõidud, mille sa salvestasid. Igaüks neist on kaardil kinnitatud rattatee, ilma sinu nimeta.",
   "ridesNone": "Sõite veel pole. Vajuta allpool „Salvesta sõit“ ja sõida.",
