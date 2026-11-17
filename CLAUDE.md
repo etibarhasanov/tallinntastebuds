@@ -443,6 +443,39 @@ field, never rename or remove one** — and its models are in
 
 Read out of Kohuke on 2026-11-11, the day it was written.
 
+**And a third records rides.** Rattatee (`etibarhasanov/rattatee`, SwiftUI,
+bundle id `ee.tallinntastebuds.rattatee`) records a bike ride with the screen
+locked and the phone in a pocket, which a web page cannot, and saves it
+through the route the map's own recorder uses. No backend, the same
+accounts, the same cookie, the same rule — **add a field, never rename or
+remove one** — and its door is `Rattatee/Core/API.swift`.
+
+- `POST /api/rides` with `action: "save"`, `anon: true`, `name`, `seconds`
+  and `line`, signed in or not — it asks nobody to sign in, and `anon` is
+  what lets a save with no session through — whose points it sends as
+  `[lat, lng, t, acc]` — whole seconds since the ride began and whole
+  metres, kept in `rides.track` — reading `ride` with `id` and `meters`. A
+  ride waits on the phone until that answer comes, so the error words decide
+  what becomes of it: `short`, `fast` and `malformed` are final and the ride
+  is listed as not kept; `often` waits for
+  the next UTC midnight; any other word, and no answer at all, is tried
+  again. A new refusal that sending again cannot change has to be one of the
+  three final words, or an installed app will send that ride for ever.
+- `GET /api/account` for `user`, `appGoogle` and `appApple`, and `POST
+  /api/account` with `ticket`, `logout` and `delete` (`current`, `username`).
+- Signing in, as above: `/api/apple` has to accept its bundle id — `APP_IDS`
+  in `functions/api/_apple.js` — and the Google trip ends at
+  `tallinntastebuds://signin`, which it listens for under that name.
+- Numbers it restates, to be changed in both places: `STEP`, `SURE` and
+  `JUMP` out of `assets/ride.js`; its 700 m, which is `MIN_METERS` and twice
+  `ENDS`; `MAX_NAME`, `MAX_POINTS` and `nearTallinn()`'s box; and the 200 m
+  in the sentence on its save card.
+- Strings: none asked for. Its words are compiled in, in English, Estonian
+  and Russian, the `ride*` and `account*` ones copied out of `data/ui.json`
+  under the same keys, so a sentence fixed here is fixed there by hand.
+
+Written with Rattatee on 2026-11-17.
+
 ## Branches and deploys
 
 - **There is no `main`.** The default branch is

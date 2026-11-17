@@ -2045,6 +2045,12 @@ CREATE TABLE IF NOT EXISTS rides (
   -- users.id of whoever rode it. Never answered to anybody: it is here so a
   -- day's cap can be counted and so a ride can be taken down by its owner's
   -- account if it ever has to be.
+  --
+  -- Or nobody's. A ride saved with no account — Rattatee, the iPhone
+  -- recorder, asks for none — holds `net:` and a fingerprint of the network
+  -- it came from for the UTC day it was saved on, which is what its cap is
+  -- counted by, and '' from the next day on: its points, and nothing about
+  -- who sent them. A RIDE NEEDS NO ACCOUNT in functions/api/rides.js.
   user_id    TEXT    NOT NULL,
   -- What they called it, or ''. 60 characters, capped in the Function.
   name       TEXT    NOT NULL DEFAULT '',
