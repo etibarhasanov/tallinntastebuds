@@ -29,16 +29,23 @@
  *   the card is a list. Never cached. Signed out it is empty.
  *
  * POST /api/rides   { action: 'save', name, seconds, line }    a session
+ * POST /api/rides   { action: 'save', anon: true, … }           nobody
  *
  *   { ride: { id, meters, seconds } }
+ *
+ *   With a session the ride is filed under the account and is one of its
+ *   owner's on ?mine=1. With `anon: true` and no session it is filed under
+ *   nobody — A RIDE NEEDS NO ACCOUNT.
  *
  *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
  *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
  *   WAS PASSED.
  *
- *   Errors: 401 signed-out, 400 malformed, 400 short (under MIN_METERS once
- *   the ends are off), 400 fast (an average no bike rides at), 429 often
- *   (DAY_RIDES today already), 503 not-ready.
+ *   Errors: 401 signed-out (no session and no `anon`), 400 malformed, 400
+ *   short (under MIN_METERS once the ends are off), 400 fast (an average no
+ *   bike rides at), 429 often (DAY_RIDES today already, or NET_RIDES from
+ *   one network with no account), 503 not-ready, 503 no-salt (an `anon` save
+ *   where SAVE_SALT is not set).
  *
  * NOBODY'S NAME IS ON A RIDE
  *
@@ -49,6 +56,33 @@
  * ENDS metres from the start and from the finish, which is where a home or a
  * workplace would be. The middle of a ride says which streets are rideable;
  * its ends would say who.
+ *
+ * A RIDE NEEDS NO ACCOUNT
+ *
+ * What is wanted of a ride is its points: which streets, which way, how
+ * fast. Who rode it adds nothing to that, so Rattatee does not ask — people
+ * ride, press Save, and that is it — and a save that says `anon: true` and
+ * carries no session is kept with no account on it at all.
+ *
+ * It has to say so. The website's recorder asks for a sign-in before it
+ * records, so that the ride is one of Your rides afterwards, and a page whose
+ * session ran out mid-ride should still be told `signed-out` and offer the
+ * sheet rather than have the ride quietly filed under nobody. A session,
+ * where there is one, wins over the flag.
+ *
+ * Something still has to stand where the account's cap stood, or one script
+ * could fill the table. That is the network: the fingerprint ./saves.js
+ * uses, an HMAC of the address and the user agent under SAVE_SALT, written
+ * into `user_id` as `net:<hmac>` and capped at NET_RIDES a UTC day. It is
+ * coarser than an account on purpose — every copy of the app on one iOS
+ * version says the same user agent, so riders behind one carrier address
+ * share a day's cap, which is why it is twice an account's; a rider who hits
+ * it keeps the ride on the phone and it goes tomorrow, or today from an
+ * account. And it is needed only for the day it caps, so each such save
+ * first empties the `net:` of every ride from before today: what is left of
+ * an anonymous ride after midnight UTC is its points and nothing about who
+ * sent it. Without SAVE_SALT there is no fingerprint worth storing and the
+ * save is refused, `no-salt`, as ./saves.js refuses one.
  *
  * WHAT IS CHECKED, AND WHAT CANNOT BE
  *
@@ -85,7 +119,9 @@
  * again.
  */
 
-import { json, sessionUser, wrongDatabase, nearTallinn, km, randomHex } from './_lib.js';
+import {
+  json, sessionUser, wrongDatabase, nearTallinn, km, randomHex, clientIp, fingerprint
+} from './_lib.js';
 import { countUse } from './_visitors.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
@@ -112,6 +148,13 @@ const FASTEST = 45;
 /* Rides one account may save in a UTC day. Nobody rides twenty times a day;
    a loop that tried is stopped at twenty rows. */
 const DAY_RIDES = 20;
+
+/* Rides one network may save in a UTC day with no account — A RIDE NEEDS NO
+   ACCOUNT. Twice an account's, since a carrier's address is shared, and
+   NET is what its rows carry in `user_id` in front of the fingerprint: no
+   users.id begins with it, so ?mine=1 can never answer one. */
+const NET_RIDES = 40;
+const NET = 'net:';
 
 /* The longest name, the same sixty a list's title gets. Restated as
    MAX_NAME in assets/ride.js, whose field is the only one that writes it. */
@@ -197,17 +240,29 @@ export async function onRequestPost(context) {
   }
 
   const user = await sessionUser(request, env);
-  if (!user) return json({ error: 'signed-out' }, 401);
   if (!body || body.action !== 'save') return json({ error: 'malformed' }, 400);
 
+  /* Whose cap the ride counts against: the account's, or with `anon` and no
+     session the network's — A RIDE NEEDS NO ACCOUNT. */
+  let rider;
+  if (user) {
+    rider = { id: user.id, most: DAY_RIDES };
+  } else if (body.anon === true) {
+    if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
+    const net = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
+    rider = { id: NET + net, most: NET_RIDES, anon: true };
+  } else {
+    return json({ error: 'signed-out' }, 401);
+  }
+
   try {
-    return await countUse(context, 'map', 'ride_save', save(env, user, body), user);
+    return await countUse(context, 'map', 'ride_save', save(env, rider, body), user);
   } catch (e) {
     return json({ error: 'not-ready' }, 503);
   }
 }
 
-async function save(env, user, body) {
+async function save(env, rider, body) {
   const points = cleanLine(body.line);
   const seconds = Math.round(Number(body.seconds));
   if (!points || !Number.isFinite(seconds) || seconds < 1) return json({ error: 'malformed' }, 400);
@@ -225,18 +280,28 @@ async function save(env, user, body) {
 
   const day = new Date();
   day.setUTCHours(0, 0, 0, 0);
+  /* A network's fingerprint is kept for the day it caps and no longer: every
+     ride filed under one before today has it emptied here, on the way past.
+     The range is `net:` and everything after it up to `net;`, which is how
+     the (user_id, created_at) index is asked for a prefix. */
+  if (rider.anon) {
+    await env.DB
+      .prepare("UPDATE rides SET user_id = '' WHERE user_id >= ? AND user_id < ? AND created_at < ?")
+      .bind(NET, NET.slice(0, -1) + ';', day.getTime())
+      .run();
+  }
   const today = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM rides WHERE user_id = ? AND created_at >= ?')
-    .bind(user.id, day.getTime())
+    .bind(rider.id, day.getTime())
     .first();
-  if (today && today.n >= DAY_RIDES) return json({ error: 'often' }, 429);
+  if (today && today.n >= rider.most) return json({ error: 'often' }, 429);
 
   const id = randomHex(6);
   const lats = line.map((p) => p[0]);
   const lngs = line.map((p) => p[1]);
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, MAX_NAME) : '';
   const row = [
-    id, user.id, name, meters, seconds, JSON.stringify(line),
+    id, rider.id, name, meters, seconds, JSON.stringify(line),
     Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs), Date.now()
   ];
   const columns = 'id, user_id, name, meters, seconds, line, south, west, north, east, created_at';

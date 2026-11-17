@@ -3194,6 +3194,24 @@ nothing, so an older page or the iPhone app sending bare points still
 saves; it is never answered to anybody; and because the column was added by
 hand after the table, a save tries the insert with it and again without.
 
+**A ride needs no account.** What is wanted of a ride is its points, and
+who rode it adds nothing to them, so Rattatee asks for no sign-in: people
+ride, press Save, and that is it. A save that says `anon: true` and carries
+no session is kept with no account on it. It has to say so, because the
+website's recorder still asks for a sign-in first — that is what makes a
+ride one of **Your rides** — and a page whose session ran out mid-ride
+should be told `signed-out` and offer the sheet rather than have the ride
+filed under nobody. What stands where the account's cap stood is the
+network: the fingerprint the saves use, an HMAC of the address and the user
+agent under `SAVE_SALT`, written into `rides.user_id` as `net:<hmac>` and
+capped at forty a UTC day, twice an account's, since every copy of the app
+on one iOS version says the same user agent and a carrier's address is
+shared. A rider who hits it loses nothing: the ride waits on the phone and
+goes tomorrow, or today from an account. The fingerprint is kept for the
+day it caps and no longer — each such save first empties it from every ride
+of an earlier day — so what is left of an anonymous ride after midnight UTC
+is its points. Without `SAVE_SALT` the save is refused, `no-salt`.
+
 **Your rides, on the account page.** The one place a ride is under a name is
 its rider's own `/account.html`: a **Your rides** card between your lists
 and the ones you kept, a fold with the count on it, each ride a row — what
@@ -5153,9 +5171,10 @@ making an account under a drawn name for an Apple id that has never been
 here, the way Google's does. Only Apple's permanent id for the person is
 kept, in `identities` under `apple`. There is no secret to set: the app is
 the client, and `APPLE_APP_ID` exists only for a build signed under a bundle
-id other than the two `APP_IDS` in `_apple.js` names: `ee.tallinntastebuds.app`,
-the map's, and `ee.tallinntastebuds.kohuke`, the flashcards' — **Kohuke reads
-the flashcards** below. There is no Apple button on the
+id other than the three `APP_IDS` in `_apple.js` names: `ee.tallinntastebuds.app`,
+the map's, `ee.tallinntastebuds.kohuke`, the flashcards' — **Kohuke reads
+the flashcards** below — and `ee.tallinntastebuds.rattatee`, the ride
+recorder's, **Recorded rides**. There is no Apple button on the
 site — a web sign-in with Apple is a different integration, with a Services
 ID and a key — so an account made this way is reached from a browser by
 setting a password on it first. `functions/api/_apple.js` says the rest.
