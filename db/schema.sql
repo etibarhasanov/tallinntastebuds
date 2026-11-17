@@ -2062,7 +2062,17 @@ CREATE TABLE IF NOT EXISTS rides (
   west       REAL    NOT NULL,
   north      REAL    NOT NULL,
   east       REAL    NOT NULL,
-  created_at INTEGER NOT NULL
+  created_at INTEGER NOT NULL,
+  -- When each point of `line` was passed and how sure the phone was of it:
+  -- a JSON array of [seconds since the ride began, accuracy in metres], one
+  -- pair for each point of `line` in the same order, or '' for a ride saved
+  -- before 2026-11-17 or by a page that sent none. Never answered to
+  -- anybody: it is here for the day rides are matched to streets, where a
+  -- stretch ridden at walking pace should not count as rideable. Added by
+  -- hand with
+  --   ALTER TABLE rides ADD COLUMN track TEXT NOT NULL DEFAULT '';
+  -- and last in the table for that reason.
+  track      TEXT    NOT NULL DEFAULT ''
 );
 -- The rides under a way: the box test leads with the latitudes.
 CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);

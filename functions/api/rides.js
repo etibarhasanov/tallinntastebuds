@@ -32,6 +32,10 @@
  *
  *   { ride: { id, meters, seconds } }
  *
+ *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
+ *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
+ *   WAS PASSED.
+ *
  *   Errors: 401 signed-out, 400 malformed, 400 short (under MIN_METERS once
  *   the ends are off), 400 fast (an average no bike rides at), 429 often
  *   (DAY_RIDES today already), 503 not-ready.
@@ -55,6 +59,23 @@
  * whatever the browser says it is, the same as a walk's check-in — see IT
  * CAN BE FAKED in ./walk.js. A ride is drawn faintly and suggested nothing;
  * a faked one costs a faint line.
+ *
+ * WHEN EACH POINT WAS PASSED
+ *
+ * The rides are kept to be matched to streets one day, and a line alone
+ * cannot say whether a stretch was ridden or pushed: forty metres of
+ * pavement at walking pace looks exactly like forty metres of cycle lane.
+ * So a page may send two more numbers with each point, how many seconds
+ * into the ride it was and how sure the phone was of it, and they are kept
+ * beside the line in `track`, pair for pair, after the same ends come off.
+ * They are optional — the iPhone app and an old page send what they have —
+ * and all or nothing: one point without them and the ride is kept with no
+ * track rather than with a track that does not line up. They are never
+ * answered. When somebody passed a point is theirs in a way the point is
+ * not.
+ *
+ * `track` was added by hand after the table was, so a save tries the
+ * insert with it and, where the column is not there yet, again without.
  *
  * WHEN THE TABLE IS NOT THERE
  *
@@ -101,6 +122,12 @@ const MAX_NAME = 60;
    than this is not a way to a place. */
 const NEAR = 40;
 const MAX_BOX = 0.4;
+
+/* The latest a point may say it was passed, a day into the ride, and the
+   worst accuracy it may claim, a kilometre. Bounds on what is stored, not
+   judgements: the page keeps only fixes within thirty metres. */
+const MAX_SECONDS = 86400;
+const MAX_ACC = 1000;
 
 /* How many of somebody's own rides ?mine=1 answers. A year of commuting is
    more than this, and the card that reads it shows six until asked. */
@@ -185,7 +212,11 @@ async function save(env, user, body) {
   const seconds = Math.round(Number(body.seconds));
   if (!points || !Number.isFinite(seconds) || seconds < 1) return json({ error: 'malformed' }, 400);
 
-  const line = trimEnds(points);
+  const kept = trimEnds(points);
+  const line = kept.map((p) => [p[0], p[1]]);
+  /* WHEN EACH POINT WAS PASSED: every point carried the pair, or none is
+     kept. */
+  const track = kept.every((p) => p.length === 4) ? JSON.stringify(kept.map((p) => [p[2], p[3]])) : '';
   const meters = Math.round(lengthOf(line));
   if (meters < MIN_METERS) return json({ error: 'short' }, 400);
   /* The speed is judged on the whole of what was ridden, ends included,
@@ -204,23 +235,34 @@ async function save(env, user, body) {
   const lats = line.map((p) => p[0]);
   const lngs = line.map((p) => p[1]);
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, MAX_NAME) : '';
-  await env.DB
-    .prepare(
-      'INSERT INTO rides (id, user_id, name, meters, seconds, line, south, west, north, east, created_at) ' +
-      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    )
-    .bind(
-      id, user.id, name, meters, seconds, JSON.stringify(line),
-      Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs), Date.now()
-    )
-    .run();
+  const row = [
+    id, user.id, name, meters, seconds, JSON.stringify(line),
+    Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs), Date.now()
+  ];
+  const columns = 'id, user_id, name, meters, seconds, line, south, west, north, east, created_at';
+  try {
+    await env.DB
+      .prepare('INSERT INTO rides (' + columns + ', track) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(...row, track)
+      .run();
+  } catch (e) {
+    /* No `track` column here yet. The ride is worth keeping without it. */
+    await env.DB
+      .prepare('INSERT INTO rides (' + columns + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(...row)
+      .run();
+  }
   return json({ ride: { id, meters, seconds } }, 200);
 }
 
 /* The line a page sent, as [lat, lng] pairs at five decimals, or null when
    any of it is not a point inside the box the site covers. Refused whole
    rather than filtered: a ride with a point in another country is a ride
-   that went wrong somewhere, and its middle is no better evidence. */
+   that went wrong somewhere, and its middle is no better evidence.
+
+   A point that also carries a sane time and accuracy keeps them, as whole
+   numbers: [lat, lng, t, acc]. One that does not is the bare pair, and
+   save() then keeps no track at all. */
 function cleanLine(raw) {
   if (!Array.isArray(raw) || raw.length < 2 || raw.length > MAX_POINTS) return null;
   const out = [];
@@ -229,7 +271,10 @@ function cleanLine(raw) {
     const lat = Math.round(Number(p[0]) * 1e5) / 1e5;
     const lng = Math.round(Number(p[1]) * 1e5) / 1e5;
     if (!Number.isFinite(lat) || !Number.isFinite(lng) || !nearTallinn(lat, lng)) return null;
-    out.push([lat, lng]);
+    const t = Math.round(Number(p[2]));
+    const acc = Math.round(Number(p[3]));
+    const timed = p.length >= 4 && t >= 0 && t <= MAX_SECONDS && acc >= 0 && acc <= MAX_ACC;
+    out.push(timed ? [lat, lng, t, acc] : [lat, lng]);
   }
   return out;
 }
