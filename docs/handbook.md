@@ -16282,7 +16282,9 @@ the pin, the phone (rewritten into the `+372 …` form the validator wants), the
 website and the price band. The kinds of place start ticked from what Google
 says it is — Bakery, Coffee, Tea, Beer/pub, Asian, Vegan, Fine dining, and
 Restaurant for anything with a cuisine — out of the same kitchens the
-directory files it under, and a line under the boxes says so; the five that
+directory files it under — Asian only when that is the first of them, since
+Google hangs an Asian kitchen in the tags of places that are not, Siga la
+Vaca's Korean among them — and a line under the boxes says so; the five that
 are a verdict rather than a fact, Casual/Solo, Hidden gem, Cheap eats, Laptop
 and Date, are never guessed, and a bar or a wine bar ticks nothing, because
 the map has no type for either. A row already tied to a place on the map says
