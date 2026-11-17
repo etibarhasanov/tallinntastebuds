@@ -39,6 +39,12 @@
  * stranger into the traffic. A real door is one the router cannot get
  * through from either side.
  *
+ * And it has to leave the router's way. Two of the six the next run kept
+ * lay along a street the router's own line ran down: the two ends had been
+ * put on the pavements either side of it, and the router went to a corner
+ * and back to change sides. A stretch with SHARE of its points within ON
+ * metres of a way the router offers, there or back, is that way.
+ *
  * A stretch that passes is then tightened, a point at a time from each end,
  * for as long as the saving holds: what is kept is the door itself and not
  * the hundred metres of ordinary street either side, which the router
@@ -80,11 +86,34 @@ const SNAP = 20;
 const SAME = 30;
 const PAUSE = 1100;
 
+/* A stretch with this share of its points within ON metres of the router's
+   own ways is the router's way, not a door. */
+const ON = 10;
+const SHARE = 0.8;
+
 const rad = Math.PI / 180;
 function metres(a, b) {
   const x = (b[1] - a[1]) * rad * Math.cos((a[0] + b[0]) / 2 * rad);
   const y = (b[0] - a[0]) * rad;
   return Math.sqrt(x * x + y * y) * 6371000;
+}
+
+/* How far a point is from a line, in flat metres around the point, which
+   across one city is exact enough. */
+function offLine(p, line) {
+  const kx = Math.cos(p[0] * rad) * rad * 6371000;
+  const ky = rad * 6371000;
+  let least = Infinity;
+  for (let i = 1; i < line.length; i++) {
+    const ax = (line[i - 1][1] - p[1]) * kx;
+    const ay = (line[i - 1][0] - p[0]) * ky;
+    const dx = (line[i][1] - p[1]) * kx - ax;
+    const dy = (line[i][0] - p[0]) * ky - ay;
+    const len = dx * dx + dy * dy;
+    const k = len ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / len)) : 0;
+    least = Math.min(least, Math.hypot(ax + k * dx, ay + k * dy));
+  }
+  return least;
 }
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
@@ -125,7 +154,8 @@ async function routed(a, b) {
          being the very way that was ridden. */
       found = {
         meters: Math.min(way.meters, ...(way.others || []).map((other) => other.meters)),
-        snap: Math.max(metres(a, way.line[0]), metres(b, way.line[way.line.length - 1]))
+        snap: Math.max(metres(a, way.line[0]), metres(b, way.line[way.line.length - 1])),
+        lines: [way.line].concat((way.others || []).map((other) => other.line))
       };
     } catch (e) { /* asked again */ }
   }
@@ -171,6 +201,10 @@ async function doorsIn(line) {
     const way = await routed(line[i], line[j]);
     const back = await routed(line[j], line[i]);
     if (!way || !back || Math.max(way.snap, back.snap) > SNAP || !await longWay(j, i)) continue;
+    const stretch = line.slice(i, j + 1);
+    const ways = way.lines.concat(back.lines);
+    const onIt = stretch.filter((p) => ways.some((other) => offLine(p, other) <= ON)).length;
+    if (onIt >= stretch.length * SHARE) continue;
     doors.push({ meters: Math.round(ridden(i, j)), around: Math.min(way.meters, back.meters), line: line.slice(i, j + 1) });
   }
   return doors;
