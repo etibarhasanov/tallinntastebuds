@@ -1062,6 +1062,21 @@
     <xhtml:link rel="alternate" hreflang="uk" href="https://tallinntastebuds.ee/?spot=karu-talu-sokolaad&amp;lang=uk"/>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/?spot=keset-linna</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/?spot=keset-linna"/>
+    <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=az"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=de"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tallinntastebuds.ee/?spot=keset-linna"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=es"/>
+    <xhtml:link rel="alternate" hreflang="et" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=et"/>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=fi"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=tr"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tallinntastebuds.ee/?spot=keset-linna&amp;lang=uk"/>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/?spot=klorofull</loc>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/?spot=klorofull"/>
     <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/?spot=klorofull&amp;lang=az"/>

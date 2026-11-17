@@ -296,6 +296,14 @@
     "map": true
   },
   {
+    "id": "keset-linna",
+    "name": "Keset Linna",
+    "address": "Vabriku tänav 7, 10411 Tallinn",
+    "lat": 59.4422996,
+    "lng": 24.7331753,
+    "map": true
+  },
+  {
     "id": "klorofull",
     "name": "Klorofüll",
     "address": "Pärnu mnt 154, ruum 208, 11317 Tallinn",

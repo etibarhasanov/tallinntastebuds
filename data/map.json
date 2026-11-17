@@ -909,6 +909,29 @@
   "closed": false
  },
  {
+  "id": "keset-linna",
+  "name": "Keset Linna",
+  "address": "Vabriku tänav 7, 10411 Tallinn",
+  "lat": 59.4422996,
+  "lng": 24.7331753,
+  "price": 1,
+  "types": [
+   "casual",
+   "pub",
+   "hidden-gem"
+  ],
+  "mustOrder": [
+   "Pop Corn (don't order, just ask nicely, it is free)",
+   "Dart",
+   "Anderson beers"
+  ],
+  "reel": "",
+  "closed": false,
+  "added": "2026-11-17",
+  "website": "https://kesetlinna.ee/",
+  "photos": []
+ },
+ {
   "id": "klorofull",
   "name": "Klorofüll",
   "address": "Pärnu mnt 154, ruum 208, 11317 Tallinn",
