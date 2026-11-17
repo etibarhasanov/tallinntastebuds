@@ -6033,8 +6033,13 @@ answer is read, and every later ask that week reads what it made. Weeks are UTC
 and start on Monday, like the budget's days. A week the page is not opened is a
 week with no ranking, and the next one compares against the last that was made;
 the tab says which day that was. Two tabs opened in the same second make one
-ranking: a row in `google_reranks` is the claim, written `INSERT OR IGNORE` on
-the week, and only the request whose insert landed does the work.
+ranking: a row in `google_reranks` is the claim, inserted on the week, and only
+the request whose insert landed does the work. The ranking, the week's
+positions and the counts on the claim are then one batch, so a claim whose
+`ranked` is still empty is one that never finished — on 2026-11-16 a request
+died between the two and the tab read "the hundred highest of 0" — and the
+next ask takes over a claim left that way for two minutes, while the tab reads
+the newest ranking that did finish rather than an empty week.
 
 **The same arithmetic, written a third time.** The `ORDER BY` is `overallOrder()`
 in `tools/googlevenues.mjs` and `weigh()` in `assets/venues.js` in SQL — the

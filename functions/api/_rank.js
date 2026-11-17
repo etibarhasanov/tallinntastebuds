@@ -55,9 +55,10 @@
  *   google_reranks   one row per week the ranking was made: when, how many
  *                    rows got a rank, how many of the top hundred moved and
  *                    how many were not in it the week before. The row is also
- *                    the claim — INSERT OR IGNORE on the week, and only the
- *                    request whose insert landed does the work — so two tabs
- *                    opened in the same second make one ranking.
+ *                    the claim — inserted on the week, and only the request
+ *                    whose insert landed does the work — so two tabs opened
+ *                    in the same second make one ranking. A claim left with
+ *                    no counts for STALE_CLAIM is taken over; see below.
  *   google_ranks     every ranked row's position that week, keyed on the
  *                    week and the place. What next week's movement is read
  *                    against, and what a chart of a place's position would
@@ -142,18 +143,35 @@ const rerankSql = (only) =>
   ') ' +
   'UPDATE google_venues SET rank = (SELECT pos FROM scored WHERE scored.place_id = google_venues.place_id)';
 
+/* How long a claim may sit unfinished before another ask takes it over. A
+ * ranking is three statements in one batch and takes well under a second;
+ * D1 gives up on a statement at thirty. Two minutes is past both, so a claim
+ * this old with no counts on it is one whose request died between the claim
+ * and the batch — and on 2026-11-16 one did, leaving the week claimed, never
+ * ranked, and the tab reading "the hundred highest of 0" until the Monday
+ * after. Nothing in a Worker survives the isolate going away mid-request, so
+ * the catch below cannot be what cleans this up; the next ask has to be. */
+const STALE_CLAIM = 2 * 60 * 1000;
+
 /* Makes this week's ranking if there is not one yet, and says whether it did:
  * 'made', 'had' when the week already has one, 'not-ready' when the tables
  * are not applied, 'error' for anything else. Never throws.
  *
- * The claim first, then the ranking and the week's snapshot in one batch, then
- * the counts written onto the claim. A batch is one transaction, so the rank
- * column and google_ranks cannot disagree about the week; and a failure after
- * the claim gives the claim back, so the next ask tries again rather than a
- * week reading as ranked on the strength of nothing. The counts are read
- * against the newest earlier week, whichever that is — "moved" is a place
- * whose position differs from the last time it had one, and "entered" a place
- * in the hundred that was not in the hundred then. */
+ * The claim first, then the ranking, the week's snapshot and the counts
+ * written onto the claim in one batch. A batch is one transaction, so the
+ * rank column, google_ranks and the claim's counts cannot disagree about the
+ * week, and a claim with `ranked` still NULL is one whose batch never
+ * committed. Such a claim older than STALE_CLAIM is taken over by the next
+ * ask — the upsert's WHERE — and one younger is somebody else's ranking in
+ * progress, which this ask leaves alone and topOfWeek() reads past. A batch
+ * that throws gives the claim back too, so the next ask tries again rather
+ * than a week reading as ranked on the strength of nothing.
+ *
+ * The counts are read against the newest earlier week, whichever that is —
+ * "moved" is a place whose position differs from the last time it had one,
+ * and "entered" a place in the hundred that was not in the hundred then.
+ * They are read inside the batch, after the snapshot, which a transaction
+ * sees. */
 export async function rerankIfDue(env, now) {
   if (!env || !env.DB) return 'not-ready';
   const week = weekOf(now);
@@ -161,8 +179,13 @@ export async function rerankIfDue(env, now) {
   let claimed;
   try {
     claimed = await env.DB
-      .prepare('INSERT OR IGNORE INTO google_reranks (week, at) VALUES (?, ?) RETURNING week')
-      .bind(week, now)
+      .prepare(
+        'INSERT INTO google_reranks (week, at) VALUES (?1, ?2) ' +
+        'ON CONFLICT (week) DO UPDATE SET at = excluded.at ' +
+        'WHERE google_reranks.ranked IS NULL AND google_reranks.at < ?3 ' +
+        'RETURNING week'
+      )
+      .bind(week, now, now - STALE_CLAIM)
       .first();
   } catch (e) {
     return 'not-ready';
@@ -173,42 +196,44 @@ export async function rerankIfDue(env, now) {
     const only = await eatOnly(env);
     await env.DB.batch([
       env.DB.prepare(rerankSql(only)).bind(RANK_PRIOR),
+      /* Nothing should be here — a batch that died rolled back whole — but a
+         week taken over is a week whose snapshot is about to be written
+         again, and the primary key would refuse a second copy of it. */
+      env.DB.prepare('DELETE FROM google_ranks WHERE week = ?').bind(week),
       env.DB
         .prepare(
           'INSERT INTO google_ranks (week, place_id, rank) ' +
           'SELECT ?, place_id, rank FROM google_venues WHERE rank IS NOT NULL'
         )
-        .bind(week)
+        .bind(week),
+      env.DB
+        .prepare(
+          'UPDATE google_reranks SET ' +
+          '  ranked = (SELECT COUNT(*) FROM google_ranks WHERE week = ?1), ' +
+          '  moved = (' +
+          '    SELECT COUNT(*) FROM google_ranks now ' +
+          '    JOIN google_ranks was ON was.place_id = now.place_id ' +
+          '      AND was.week = (SELECT MAX(week) FROM google_ranks WHERE week < ?1) ' +
+          '    WHERE now.week = ?1 AND now.rank <= ?2 AND now.rank <> was.rank' +
+          '  ), ' +
+          '  entered = (' +
+          '    SELECT COUNT(*) FROM google_ranks now ' +
+          '    WHERE now.week = ?1 AND now.rank <= ?2 ' +
+          '      AND EXISTS (SELECT 1 FROM google_ranks WHERE week < ?1) ' +
+          '      AND NOT EXISTS (' +
+          '        SELECT 1 FROM google_ranks was WHERE was.place_id = now.place_id ' +
+          '          AND was.week = (SELECT MAX(week) FROM google_ranks WHERE week < ?1) ' +
+          '          AND was.rank <= ?2' +
+          '      )' +
+          '  ) ' +
+          'WHERE week = ?1'
+        )
+        .bind(week, TOP)
     ]);
-
-    await env.DB
-      .prepare(
-        'UPDATE google_reranks SET ' +
-        '  ranked = (SELECT COUNT(*) FROM google_ranks WHERE week = ?1), ' +
-        '  moved = (' +
-        '    SELECT COUNT(*) FROM google_ranks now ' +
-        '    JOIN google_ranks was ON was.place_id = now.place_id ' +
-        '      AND was.week = (SELECT MAX(week) FROM google_ranks WHERE week < ?1) ' +
-        '    WHERE now.week = ?1 AND now.rank <= ?2 AND now.rank <> was.rank' +
-        '  ), ' +
-        '  entered = (' +
-        '    SELECT COUNT(*) FROM google_ranks now ' +
-        '    WHERE now.week = ?1 AND now.rank <= ?2 ' +
-        '      AND EXISTS (SELECT 1 FROM google_ranks WHERE week < ?1) ' +
-        '      AND NOT EXISTS (' +
-        '        SELECT 1 FROM google_ranks was WHERE was.place_id = now.place_id ' +
-        '          AND was.week = (SELECT MAX(week) FROM google_ranks WHERE week < ?1) ' +
-        '          AND was.rank <= ?2' +
-        '      )' +
-        '  ) ' +
-        'WHERE week = ?1'
-      )
-      .bind(week, TOP)
-      .run();
     return 'made';
   } catch (e) {
     try {
-      await env.DB.prepare('DELETE FROM google_reranks WHERE week = ?').bind(week).run();
+      await env.DB.prepare('DELETE FROM google_reranks WHERE week = ? AND ranked IS NULL').bind(week).run();
     } catch (ignored) { /* the database is the thing that failed */ }
     return 'error';
   }
@@ -227,11 +252,17 @@ export async function rerankIfDue(env, now) {
  * was, and null when it had none — Google had no numbers for it then, or the
  * ranking before this one is the first. The page draws the arrow from the
  * two; `previous` null is the first ranking and the page says so instead.
+ * A claim whose batch has not committed — `ranked` still NULL, a ranking in
+ * progress or one whose request died — is not a ranking, and the one before
+ * it is answered instead, so the tab is a week behind rather than empty.
  * Null when no ranking has been made; throws when the tables are not there,
  * and the route turns that into `ready: false`. */
 export async function topOfWeek(env) {
   const made = await env.DB
-    .prepare('SELECT week, at, ranked, moved, entered FROM google_reranks ORDER BY week DESC LIMIT 1')
+    .prepare(
+      'SELECT week, at, ranked, moved, entered FROM google_reranks ' +
+      'WHERE ranked IS NOT NULL ORDER BY week DESC LIMIT 1'
+    )
     .first();
   if (!made) return null;
 
