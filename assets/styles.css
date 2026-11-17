@@ -4923,10 +4923,16 @@ body.is-discover #btn-ride { display: none; }
 .route-mode { padding: 7px 12px; }
 .route-mode[aria-pressed="true"],
 .route-trip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
-.route-mode[data-mode="foot"][aria-pressed="true"] { background: var(--way-foot); border-color: var(--way-foot); }
-.route-mode[data-mode="bike"][aria-pressed="true"] { background: var(--way-bike); border-color: var(--way-bike); }
+/* A way chosen among the ones on offer wears its mode's colour too, which
+   is the colour of the line it stands for; a bus departure has no mode on
+   it and keeps the accent. */
+.route-mode[data-mode="foot"][aria-pressed="true"],
+.route-trip[data-mode="foot"][aria-pressed="true"] { background: var(--way-foot); border-color: var(--way-foot); }
+.route-mode[data-mode="bike"][aria-pressed="true"],
+.route-trip[data-mode="bike"][aria-pressed="true"] { background: var(--way-bike); border-color: var(--way-bike); }
 .route-mode[data-mode="bus"][aria-pressed="true"] { background: var(--way-bus); border-color: var(--way-bus); }
-.route-mode[data-mode="car"][aria-pressed="true"] { background: var(--way-car); border-color: var(--way-car); }
+.route-mode[data-mode="car"][aria-pressed="true"],
+.route-trip[data-mode="car"][aria-pressed="true"] { background: var(--way-car); border-color: var(--way-car); }
 .route-say {
   margin: 0;
   grid-column: 1 / -1;

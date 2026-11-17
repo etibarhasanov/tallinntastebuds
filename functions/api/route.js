@@ -7,7 +7,14 @@
  *   mode is foot when it is left out.
  *
  *   foot, bike, car → { "meters": 1830, "seconds": 1320,
- *                 "line": [ [59.4370, 24.7536], … ] }
+ *                 "line": [ [59.4370, 24.7536], … ],
+ *                 "others": [ { "meters": 2100, "seconds": 1440,
+ *                               "line": [...] }, … ] }
+ *
+ *             `meters`, `seconds` and `line` are the way the router likes
+ *             best. `others` is up to OTHERS more it found between the same
+ *             two points, each in the same three fields — and empty where
+ *             it found the one, which on a short way is most of the time.
  *
  *   bus  → { "trips": [ { "seconds": 1320,
  *                   "legs": [ { "line": [...] },
@@ -38,6 +45,17 @@
  * leaving now" and answers up to TRIPS journeys, each a run of legs: a walk
  * to a stop, a ride, maybe a change, a walk to the door. A journey that is
  * all walking is dropped, because Walk already says that better.
+ *
+ * MORE THAN ONE WAY
+ *
+ * The router is asked for alternatives and answers the ones it thinks are
+ * worth a look: different streets, not much longer. They are what the bar on
+ * the map and the card in Rattatee offer as a choice, a small button each.
+ * The first way stays where it always was, at the top level, so a page or an
+ * installed app that reads `meters`, `seconds` and `line` and nothing else
+ * is answered exactly as before; `others` is the only thing added. The
+ * router says how long and how far and never why one is nicer, so neither
+ * does this.
  *
  * WHY A ROUTE HERE AND NOT A FETCH FROM THE BROWSER
  *
@@ -101,6 +119,11 @@ const MAX_WALK = 10000;
 /* How many journeys the bar offers: the next one and two after it. */
 const TRIPS = 3;
 
+/* And how many ways besides the first a walk, a ride or a drive is offered
+   with: three in all, the same count as the journeys, when the router finds
+   that many. */
+const OTHERS = 2;
+
 /* Tallinn is ~25 km across; a line of a few hundred vertices is plenty and
    keeps the answer small enough to send on a phone. A bus journey shares it
    out between its legs. */
@@ -156,14 +179,15 @@ function decode(text) {
 
 async function street(mode, from, to) {
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
-    '?overview=full&geometries=geojson&alternatives=false&steps=false';
+    '?overview=full&geometries=geojson&steps=false&alternatives=';
 
+  /* Asked for the others, and asked again for the one way if the router
+     will not answer that: a router that stops taking a count of
+     alternatives costs the buttons and never the line. */
   let res;
   try {
-    res = await fetch(url, {
-      headers: { 'user-agent': AGENT, accept: 'application/json' },
-      cf: { cacheTtl: CACHE_SECONDS[mode], cacheEverything: true }
-    });
+    res = await ask(url + OTHERS, mode);
+    if (!res.ok && res.status !== 429) res = await ask(url + 'false', mode);
   } catch (e) {
     return json({ error: 'upstream' }, 502);
   }
@@ -172,20 +196,40 @@ async function street(mode, from, to) {
 
   let body;
   try { body = await res.json(); } catch (e) { return json({ error: 'upstream' }, 502); }
-  const route = body && body.code === 'Ok' && Array.isArray(body.routes) ? body.routes[0] : null;
+  const routes = body && body.code === 'Ok' && Array.isArray(body.routes) ? body.routes : [];
+  const first = way(routes[0]);
+  if (!first) return json({ error: 'no-route' }, 404);
+  if (!Number.isFinite(first.meters) || !Number.isFinite(first.seconds)) return json({ error: 'upstream' }, 502);
+  if (mode === 'foot' && first.meters > MAX_WALK) return json({ error: 'too-far', meters: first.meters }, 422);
+
+  /* An alternative that came back broken, or a walk past the cap, is one
+     fewer button and not a refusal: the first way is the answer. */
+  const others = routes.slice(1, 1 + OTHERS).map(way).filter((other) => other &&
+    Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
+    !(mode === 'foot' && other.meters > MAX_WALK));
+  return json({ meters: first.meters, seconds: first.seconds, line: first.line, others: others }, 200, 3600);
+}
+
+function ask(url, mode) {
+  return fetch(url, {
+    headers: { 'user-agent': AGENT, accept: 'application/json' },
+    cf: { cacheTtl: CACHE_SECONDS[mode], cacheEverything: true }
+  });
+}
+
+/* One of the router's routes as the three fields the answer carries, or null
+   for one with no line to draw. */
+function way(route) {
   const coords = route && route.geometry && Array.isArray(route.geometry.coordinates)
     ? route.geometry.coordinates : null;
-  if (!coords || coords.length < 2) return json({ error: 'no-route' }, 404);
-
-  const meters = Math.round(Number(route.distance));
-  const seconds = Math.round(Number(route.duration));
-  if (!Number.isFinite(meters) || !Number.isFinite(seconds)) return json({ error: 'upstream' }, 502);
-  if (mode === 'foot' && meters > MAX_WALK) return json({ error: 'too-far', meters: meters }, 422);
-
+  if (!coords || coords.length < 2) return null;
   /* GeoJSON is [lon, lat]; this is the second place that flips it, as
      /api/geocode's shape() is the first. */
-  const line = thin(coords.map((c) => [c[1], c[0]]), MAX_POINTS);
-  return json({ meters: meters, seconds: seconds, line: line }, 200, 3600);
+  return {
+    meters: Math.round(Number(route.distance)),
+    seconds: Math.round(Number(route.duration)),
+    line: thin(coords.map((c) => [c[1], c[0]]), MAX_POINTS)
+  };
 }
 
 async function transit(from, to) {

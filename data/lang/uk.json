@@ -1285,6 +1285,8 @@
   "routeModeBus": "Автобус",
   "routeModeCar": "Авто",
   "routeTrips": "Відправлення",
+  "routeWay": "{min} хв · {dist}",
+  "routeWays": "Шляхи",
   "routeCar": "{min} хв автом · {dist}",
   "routeBus": "{lines} о {time} від зупинки {stop} · загалом {min} хв",
   "routeNoBus": "Зараз не знайдено ні автобуса, ні трамвая.",

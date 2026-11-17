@@ -1285,6 +1285,8 @@
   "routeModeBus": "Bussi",
   "routeModeCar": "Auto",
   "routeTrips": "Lähdöt",
+  "routeWay": "{min} min · {dist}",
+  "routeWays": "Reitit perille",
   "routeCar": "{min} min autolla · {dist}",
   "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
   "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",

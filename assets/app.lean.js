@@ -81,6 +81,7 @@
   var routeFor = null;    // the place it is the way to
   var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
+  var routeWays = null;   // the ways last answered for a walk, a ride or a drive: the first, then /api/route's `others`
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var routeFrom = null;   // where the way drawn was asked from, so a dot that has left it can ask again
   var routeAsked = 0;     // and when, so a moving dot asks at most once every ROUTE_REST
@@ -1514,8 +1515,10 @@
             if (!again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
             return;
           }
-          clearRouteLine();
-          drawRoute(way, mode, again);
+          routeWays = [way].concat((way.others || []).filter(function (other) {
+            return other && other.line && other.line.length > 1;
+          }));
+          drawRoute(0, mode, again);
         });
     }).catch(function () {
       if (token === routeToken && !again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
@@ -1539,12 +1542,12 @@
     }
   }
 
-  function routeStretch(line, tone, dashed) {
+  function routeStretch(line, tone, dashed, faint) {
     return L.polyline(line, {
       color: markerColours()[tone],
       tone: tone,
-      weight: dashed ? 4 : 5,
-      opacity: .85,
+      weight: dashed || faint ? 4 : 5,
+      opacity: faint ? .38 : .85,
       dashArray: dashed ? '2 8' : null,
       lineCap: 'round',
       lineJoin: 'round',
@@ -1566,14 +1569,40 @@
       : t('askKm', { n: formatDecimal(m / 1000, 1) });
   }
 
-  function drawRoute(way, mode, still) {
+  function drawRoute(n, mode, still) {
+    var way = routeWays[n];
+    clearRouteLine();
     routeLine = L.featureGroup().addTo(map);
+    routeWays.forEach(function (other, i) {
+      if (i !== n) routeStretch(other.line, mode, false, true);
+    });
     routeStretch(way.line, mode, false);
     var said = t(ROUTE_SAY[mode], {
       min: Math.max(1, Math.round(way.seconds / 60)),
       dist: routeDistance(way.meters)
     });
     dom.routeSay.textContent = said;
+
+    routeWays.forEach(function (other, i) {
+      var press = el('button', {
+        type: 'button',
+        className: 'route-trip',
+        'data-mode': mode,
+        'aria-pressed': String(i === n),
+        textContent: t('routeWay', {
+          min: Math.max(1, Math.round(other.seconds / 60)),
+          dist: routeDistance(other.meters)
+        })
+      });
+      press.addEventListener('click', function () {
+        TTBTrack.event('route_way', { n: i, mode: mode });
+        drawRoute(i, mode, true);
+      });
+      dom.routeTrips.appendChild(press);
+    });
+    dom.routeTrips.setAttribute('aria-label', t('routeWays'));
+    dom.routeTrips.hidden = routeWays.length < 2;
+
     if (!still) fitRoute();
     if (mode === 'bike' && window.TTBRide) drawRidden(way.line, said);
   }
@@ -1631,6 +1660,7 @@
       });
       dom.routeTrips.appendChild(press);
     });
+    dom.routeTrips.setAttribute('aria-label', t('routeTrips'));
     dom.routeTrips.hidden = routeTrips.length < 2;
     if (routeLine.getLayers().length) fitRoute();
   }
@@ -1654,6 +1684,7 @@
     routeFor = null;
     routeFrom = null;
     routeTrips = null;
+    routeWays = null;
     clearRouteLine();
     dom.routeBar.hidden = true;
     document.body.classList.remove('route-on');

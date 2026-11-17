@@ -1285,6 +1285,8 @@
   "routeModeBus": "Bus",
   "routeModeCar": "Auto",
   "routeTrips": "Abfahrten",
+  "routeWay": "{min} Min. · {dist}",
+  "routeWays": "Wege dorthin",
   "routeCar": "{min} Min. mit dem Auto · {dist}",
   "routeBus": "{lines} um {time} ab {stop} · {min} Min. insgesamt",
   "routeNoBus": "Gerade kein Bus und keine Tram gefunden.",

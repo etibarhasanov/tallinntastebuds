@@ -1285,6 +1285,8 @@
   "routeModeBus": "Bus",
   "routeModeCar": "Voiture",
   "routeTrips": "Départs",
+  "routeWay": "{min} min · {dist}",
+  "routeWays": "Itinéraires",
   "routeCar": "{min} min en voiture · {dist}",
   "routeBus": "{lines} à {time} depuis {stop} · {min} min en tout",
   "routeNoBus": "Aucun bus ni tram trouvé pour l’instant.",
