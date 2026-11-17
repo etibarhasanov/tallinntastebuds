@@ -3182,6 +3182,18 @@ outside Tallinn's box, an average past 45 km/h and a twenty-first ride in a
 day, and keeps who saved it without answering it to anybody else. What
 anybody can read is the line, its length and its time.
 
+**When each point was passed.** Since 2026-11-17 a point is sent as
+`[lat, lng, t, acc]` — the seconds since the ride's first point, by the
+clock, so a pause is a gap, and the fix's accuracy in metres — and the
+server keeps the last two beside the line in `rides.track`, pair for pair,
+after the same ends come off. Nothing reads it yet. It is for the day rides
+are matched to streets: a line alone cannot tell forty metres of cycle lane
+from forty metres of pavement pushed at walking pace, and a ride saved
+without its times can never be given them. The pair is optional and all or
+nothing, so an older page or the iPhone app sending bare points still
+saves; it is never answered to anybody; and because the column was added by
+hand after the table, a save tries the insert with it and again without.
+
 **Your rides, on the account page.** The one place a ride is under a name is
 its rider's own `/account.html`: a **Your rides** card between your lists
 and the ones you kept, a fold with the count on it, each ride a row — what

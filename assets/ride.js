@@ -35,7 +35,12 @@
  * WHAT IS SENT, AND WHAT IS NOT
  *
  * The points and the seconds, once, when Save is pressed — and nothing at
- * all while riding. The server takes the first and last two hundred metres
+ * all while riding. A point is [lat, lng, t, acc]: where, how many seconds
+ * after the first point it was passed — by the clock, so a pause shows as a
+ * gap — and how sure the phone was, in metres. The last two are for the day
+ * rides are matched to streets, when a stretch pushed at walking pace has
+ * to be told from one ridden; WHEN EACH POINT WAS PASSED in
+ * functions/api/rides.js. The server takes the first and last two hundred metres
  * off before it stores anything and never answers whose ride it was; the
  * card says both, since they are the two things somebody would want to
  * know before pressing Save.
@@ -79,9 +84,11 @@
   var card = null;
   var shown = false;
 
-  /* The ride on screen: its points as [lat, lng], the seconds ridden before
-     the current stretch, when the current stretch began (0 while paused),
-     the last fix's time, and which state the card is drawing. */
+  /* The ride on screen: its points as [lat, lng, t, acc], when the first of
+     them was passed (`t0`, which every t is counted from), the seconds
+     ridden before the current stretch, when the current stretch began (0
+     while paused), the last fix's time, and which state the card is
+     drawing. */
   var ride = null;
   var view = 'ready';
   var problem = '';
@@ -131,7 +138,7 @@
   function keep() {
     if (!ride) return;
     try {
-      window.localStorage.setItem(DRAFT, JSON.stringify({ points: ride.points, seconds: seconds() }));
+      window.localStorage.setItem(DRAFT, JSON.stringify({ points: ride.points, seconds: seconds(), t0: ride.t0 }));
     } catch (e) { /* the ride is still on screen */ }
   }
 
@@ -143,7 +150,7 @@
     try {
       var d = JSON.parse(window.localStorage.getItem(DRAFT) || 'null');
       if (d && d.points && d.points.length && typeof d.seconds === 'number') {
-        return { points: d.points, seconds: d.seconds, since: 0, last: 0 };
+        return { points: d.points, seconds: d.seconds, t0: d.t0 || 0, since: 0, last: 0 };
       }
     } catch (e) { /* nothing kept */ }
     return null;
@@ -153,7 +160,7 @@
 
   function start() {
     if (!navigator.geolocation) { view = 'blocked'; draw(); return; }
-    ride = ride || { points: [], seconds: 0, since: 0, last: 0 };
+    ride = ride || { points: [], seconds: 0, t0: 0, since: 0, last: 0 };
     ride.since = Date.now();
     ride.last = 0;
     view = ride.points.length ? 'recording' : 'waiting';
@@ -174,6 +181,8 @@
       if (d < STEP) return;
       if (ride.last && d / Math.max(1, (pos.timestamp - ride.last) / 1000) > JUMP) return;
     }
+    if (!ride.t0) ride.t0 = pos.timestamp;
+    at.push(Math.max(0, Math.round((pos.timestamp - ride.t0) / 1000)), Math.round(pos.coords.accuracy));
     ride.points.push(at);
     ride.last = pos.timestamp;
     if (view === 'waiting') { view = 'recording'; draw(); }
@@ -280,8 +289,11 @@
 
   function paintLine() {
     if (!ride || ride.points.length < 2) return;
+    /* Leaflet reads a point of two numbers or of three, and nothing of
+       four, so it is handed the where without the when. */
+    var path = ride.points.map(function (p) { return [p[0], p[1]]; });
     if (!line) {
-      line = window.L.polyline(ride.points, {
+      line = window.L.polyline(path, {
         color: c.colour(),
         weight: 5,
         opacity: .9,
@@ -291,7 +303,7 @@
         interactive: false
       }).addTo(c.map);
     } else {
-      line.setLatLngs(ride.points);
+      line.setLatLngs(path);
     }
   }
 
