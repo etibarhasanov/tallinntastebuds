@@ -1326,8 +1326,6 @@
   "rideFailed": "Nicht gespeichert. Die Fahrt bleibt auf diesem Handy — versuch es noch einmal.",
   "rideOften": "Das sind heute schon zwanzig Fahrten, mehr kann ein Konto an einem Tag nicht speichern. Die Fahrt bleibt bis morgen auf diesem Handy.",
   "rideFast": "Das war schneller, als ein Fahrrad fährt, deshalb kann sie nicht behalten werden.",
-  "rideAlong": "{dist} dieses Wegs ist schon gefahren worden — die blassen Linien.",
-  "rideNearby": "Die blassen Linien sind Fahrten, die hier in der Nähe aufgezeichnet wurden.",
   "ridesYours": "Deine Fahrten",
   "ridesWhat": "Die Radfahrten, die du aufgezeichnet hast. Jede ist eine bestätigte Radroute auf der Karte, ohne deinen Namen.",
   "ridesNone": "Noch keine Fahrten. Drück unten auf Fahrt aufzeichnen und fahr los.",

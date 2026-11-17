@@ -1326,8 +1326,6 @@
   "rideFailed": "It did not save. The ride is kept on this phone — try again.",
   "rideOften": "That is twenty rides today, the most one account can save in a day. The ride is kept on this phone for tomorrow.",
   "rideFast": "That was faster than a bike rides, so it cannot be kept.",
-  "rideAlong": "{dist} of this way has been ridden before — the faint lines.",
-  "rideNearby": "The faint lines are rides people recorded nearby.",
   "ridesYours": "Your rides",
   "ridesWhat": "The bike rides you recorded. Each one is a confirmed bike route on the map, without your name on it.",
   "ridesNone": "No rides yet. Press Record a ride below and ride.",

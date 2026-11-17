@@ -3176,15 +3176,17 @@ through five states in the order every sheet here is built:
   keep* instead, with Keep riding.
 - **Saved**, and a way to close it.
 
-Under any bike route the map then asks `/api/rides` for the rides in the
-way's box and draws them faintly under the suggested line, and the bar adds
-*1.6 km of this way has been ridden before — the faint lines.* when at least
-fifty metres of the suggestion runs within twenty metres of one, or *The
-faint lines are rides people recorded nearby.* when it does not. The
-suggestion itself is still OpenStreetMap's: a recorded ride does not steer
-the router, it stands beside it. That is the boundary of the first version,
-on purpose — routing along members' rides is a router of our own, and the
-rides have to exist before it is worth writing.
+**A bike route is a suggestion, and nothing else is drawn under it.** For
+a while the map asked `/api/rides` for the rides in the way's box and drew
+them faintly under the suggested line, with *1.6 km of this way has been
+ridden before* in the bar. On 2026-11-17 the owner opened Tete-a-Tete,
+pressed Bike, and saw one of their own rides drawn under the way — a line
+that made no sense beside the suggestion and said where they had been. A
+bike route joins one place to another; it is not a map of where members
+ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
+`GET /api/rides?bbox=` stays, because the iPhone app reads it — **What the
+app reads** in `CLAUDE.md` — and the rides are still kept for the day they
+steer a router rather than stand beside it.
 
 **A web page records only while it is looked at.** A browser stops telling a
 page where it is the moment the screen locks or the tab goes to the back —
@@ -3248,13 +3250,12 @@ session's own rides with their names and no lines, uncached. A row opens
 nothing yet: showing one ride on the map, and taking one down, are the next
 things this card would grow. **Privacy** says the same in the
 visitor's words. A browser's location is whatever the browser says, as with
-a walk's check-in; a faked ride costs a faint line.
+a walk's check-in; a faked ride costs a row nobody is shown.
 
 `rides` is in `db/schema.sql` and is applied by hand. Until it is, the
-route answers `ready: false`, the Bike tab draws exactly what it did, and a
+route answers `ready: false` and a
 save fails with the ride kept on the phone. The page half is
-`assets/ride.js` (`TTBRide`, mounted by `mountRide()` and asked by
-`drawRidden()` in `assets/app.js`), the server half `functions/api/rides.js`.
+`assets/ride.js` (`TTBRide`, mounted by `mountRide()` in `assets/app.js`), the server half `functions/api/rides.js`.
 It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
 `ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, the account page
 `ride_record`, and a save counts as `map:ride_save`.

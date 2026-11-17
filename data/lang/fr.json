@@ -1326,8 +1326,6 @@
   "rideFailed": "L'enregistrement a échoué. La balade est gardée sur ce téléphone — réessaie.",
   "rideOften": "Cela fait vingt balades aujourd'hui, le maximum qu'un compte peut enregistrer en un jour. La balade reste sur ce téléphone jusqu'à demain.",
   "rideFast": "C'était plus rapide qu'un vélo, donc elle ne peut pas être gardée.",
-  "rideAlong": "{dist} de ce chemin a déjà été fait à vélo — les lignes pâles.",
-  "rideNearby": "Les lignes pâles sont des balades enregistrées près d'ici.",
   "ridesYours": "Tes balades",
   "ridesWhat": "Les balades à vélo que tu as enregistrées. Chacune est un itinéraire vélo confirmé sur la carte, sans ton nom.",
   "ridesNone": "Pas encore de balade. Appuie sur Enregistrer une balade ci-dessous et roule.",

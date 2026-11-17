@@ -1,11 +1,12 @@
 /**
  * Tallinn Tastebuds — recorded rides, the confirmed bike routes.
  *
- * A member presses the bike button on the map, cycles, presses
- * Finish and Save, and the way they really went is kept here. Later, when
- * anybody asks the Bike tab for the way to a place, the rides under that way
- * are drawn faintly beneath the suggested line, and the bar says how much of
- * the suggestion somebody has actually ridden. The recorder is
+ * A member presses Record a ride on their account page, cycles, presses
+ * Finish and Save, and the way they really went is kept here. The website's
+ * map no longer draws them under a bike route — a suggested way joins one
+ * place to another, and somebody's own rides beside it read as nonsense and
+ * gave away where they ride from — but ?bbox= stays, because the iPhone app
+ * asks it and an installed app is a promise. The recorder is
  * assets/ride.js; **Recorded rides** in docs/handbook.md is the reasoning.
  *
  * GET  /api/rides?bbox=<south>,<west>,<north>,<east>

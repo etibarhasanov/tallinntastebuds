@@ -218,9 +218,9 @@ ref: functions/api/rides.js POST</bpmn:documentation>
       <bpmn:incoming>member-e22</bpmn:incoming>
       <bpmn:outgoing>member-e23</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="ride-done" name="A confirmed bike route, drawn faintly under bike ways near it">
-      <bpmn:documentation>ref: assets/app.js drawRidden()
-ref: functions/api/rides.js GET</bpmn:documentation>
+    <bpmn:endEvent id="ride-done" name="A confirmed bike route, kept and listed under Your rides">
+      <bpmn:documentation>ref: functions/api/rides.js POST
+ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
       <bpmn:incoming>member-e23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="deal" name="Opens a discount pass">
