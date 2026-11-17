@@ -2339,6 +2339,12 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   function placeForm(repo, into, existing, google) {
     var editing = !!existing;
     var shots = [];
+    /* Photographs picked and still being shrunk, or picked and refused.
+       Either way what is in `shots` is not what the owner chose, and saving
+       then wrote the place with no photographs and said nothing — Keset
+       Linna, the first place added after the Edit row went in. So the button
+       waits while they shrink, and a refusal is a complaint at the button. */
+    var photoState = 'none';   /* none | shrinking | ready | failed */
     var drop = {};        /* photos ticked for removal, by filename */
     var start = editing ? existing : google ? {
       name: google.name, address: google.address || '',
@@ -2588,12 +2594,15 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       var files = Array.prototype.slice.call(photoIn.files || []);
       shots = [];
       clear(thumbs);
-      if (!files.length) { settle(); return; }
+      photoState = files.length ? 'shrinking' : 'none';
+      settle();
+      if (!files.length) return;
       thumbs.appendChild(el('p', { className: 'hint', textContent: 'Shrinking ' + files.length + '…' }));
       Promise.all(files.map(function (f) {
         return shrink(f).then(function (small) { return { small: small, file: f }; });
       })).then(function (done) {
         shots = done;
+        photoState = 'ready';
         clear(thumbs);
         done.forEach(function (d, i) {
           var img = el('img', { alt: '' });
@@ -2617,7 +2626,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         settle();
       }).catch(function (err) {
         clear(thumbs);
+        photoState = 'failed';
         thumbs.appendChild(el('p', { className: 'hint', textContent: 'Could not read those. ' + err.message }));
+        settle();
       });
     });
 
@@ -2655,6 +2666,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
        than after the check has gone red. */
     function complaints() {
       var bad = [];
+      if (photoState === 'failed') {
+        bad.push('The photographs could not be read, so they would not be saved. Pick them again, or clear the field to save without them.');
+      }
       if (!nameIn.value.trim()) bad.push('It needs a name.');
       if (!SLUG_RE.test(idIn.value.trim())) bad.push('The id has to be a lowercase slug.');
       if (!addrIn.value.trim()) bad.push('It needs an address.');
@@ -2679,8 +2693,8 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     }
 
     function settle() {
-      go.disabled = !(nameIn.value.trim() && idIn.value.trim() && addrIn.value.trim()
-        && coords() && blurbIn.value.trim() && chosenTypes().length);
+      go.disabled = photoState === 'shrinking' || !(nameIn.value.trim() && idIn.value.trim()
+        && addrIn.value.trim() && coords() && blurbIn.value.trim() && chosenTypes().length);
     }
 
     go.addEventListener('click', function () {

@@ -16509,6 +16509,15 @@ numbers are `SHRINK_STEPS` and `PHOTO_BUDGET` at the top of the script in
 A 4 MB phone photograph comes out somewhere near 150 KB. The form prints what
 went in and what came out, so you can see it happen.
 
+**The button waits for the squeeze.** While the photographs are being
+shrunk, **Put it on the map** and **Save the changes** are greyed out, and
+if they could not be read at all the press is refused with a line saying so
+rather than saving without them. It used to do the opposite on both counts:
+the button stayed live through the squeeze, and a press in those seconds, or
+after a refusal, wrote the place with no photographs and no word about it.
+Keset Linna went on the map that way, its commit saying *with no photographs
+yet* about the picture that had been chosen for it.
+
 ### What it does to a video
 
 There is no ffmpeg in a browser. There is the next best thing, and it has been
