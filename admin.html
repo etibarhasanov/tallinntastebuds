@@ -2360,7 +2360,12 @@ ul.log li button.quiet { width: auto; display: inline-block; }
      mistake the `pub` pattern in venues.js was narrowed to stop making.
      Restaurant is any kitchen that is a cuisine, which is as close as the
      directory's row gets to Google calling it a restaurant: the category
-     itself is not in the row. */
+     itself is not in the row.
+
+     Asian is read off the leading kitchen only. kitchensOf() puts what
+     Google's category and cuisine say first and what only the tags say after,
+     and the tags are where Google is loose: Siga la Vaca, an Argentinian
+     steakhouse, carries "Korean Restaurant" among them, and came up Asian. */
   var TYPE_OF_KITCHEN = {
     bakery: 'bakery', coffee: 'coffee', tea: 'tea', pub: 'pub',
     vegan: 'vegan', 'fine-dining': 'fine-dining',
@@ -2374,8 +2379,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   function typesFrom(kitchens) {
     var out = [];
     function add(id) { if (out.indexOf(id) === -1) out.push(id); }
-    (kitchens || []).forEach(function (k) {
-      if (TYPE_OF_KITCHEN[k]) add(TYPE_OF_KITCHEN[k]);
+    (kitchens || []).forEach(function (k, i) {
+      var type = TYPE_OF_KITCHEN[k];
+      if (type && (type !== 'asian' || i === 0)) add(type);
       if (NOT_A_CUISINE.indexOf(k) === -1) add('restaurant');
     });
     return out;
