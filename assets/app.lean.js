@@ -1294,7 +1294,7 @@
 
     box.appendChild(el('h2', { id: 'counter-title', className: 'counter-title', textContent: t('counterTitle') }));
     var three = el('div', { className: 'counter-three' });
-    [['yesterday', 'counterYesterday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
+    [['today', 'counterToday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
       three.appendChild(el('p', { className: 'counter-figure' }, [
         el('b', { textContent: counterNumber(counter[f[0]] || 0) }),
         el('span', { textContent: t(f[1]) })

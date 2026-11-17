@@ -1479,7 +1479,7 @@
   "walkReplanned": "A ordem mais curta para os que faltam, a começar em {place}, o mais perto de ti.",
   "walkOpenList": "Abrir a lista",
   "counterTitle": "Visitantes",
-  "counterYesterday": "ontem",
+  "counterToday": "hoje",
   "counterWeek": "7 dias",
   "counterAll": "desde sempre",
   "counterAverage": "Visita média",

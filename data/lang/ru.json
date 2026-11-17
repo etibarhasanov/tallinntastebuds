@@ -1479,7 +1479,7 @@
   "walkReplanned": "Кратчайший порядок для оставшихся мест, начиная с ближайшего к вам: {place}.",
   "walkOpenList": "Открыть список",
   "counterTitle": "Посетители",
-  "counterYesterday": "вчера",
+  "counterToday": "сегодня",
   "counterWeek": "7 дней",
   "counterAll": "за всё время",
   "counterAverage": "Средний визит",

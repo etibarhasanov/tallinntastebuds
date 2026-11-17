@@ -2108,7 +2108,7 @@
   var SAVED_FILTER = 'saved';
 
   /* ------------------------------------------------------- the counter
-   * How many people came yesterday, in the last seven days and since the
+   * How many people came today, in the last seven days and since the
    * count began, how long a visit lasts, and the countries they came from,
    * under their flags: the old-fashioned flag counter, asked for by the owner
    * on 2026-11-17, at the top of Discover on a desktop, beside the map's
@@ -2195,7 +2195,7 @@
 
     box.appendChild(el('h2', { id: 'counter-title', className: 'counter-title', textContent: t('counterTitle') }));
     var three = el('div', { className: 'counter-three' });
-    [['yesterday', 'counterYesterday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
+    [['today', 'counterToday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
       three.appendChild(el('p', { className: 'counter-figure' }, [
         el('b', { textContent: counterNumber(counter[f[0]] || 0) }),
         el('span', { textContent: t(f[1]) })

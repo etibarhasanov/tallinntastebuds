@@ -1479,7 +1479,7 @@
   "walkReplanned": "Die kürzeste Reihenfolge für die übrigen Orte, beginnend bei {place}, dem Ort in deiner Nähe.",
   "walkOpenList": "Liste öffnen",
   "counterTitle": "Besucher",
-  "counterYesterday": "gestern",
+  "counterToday": "heute",
   "counterWeek": "7 Tage",
   "counterAll": "insgesamt",
   "counterAverage": "Durchschnittlicher Besuch",
