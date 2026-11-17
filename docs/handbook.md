@@ -3147,15 +3147,16 @@ pages under this site's name, and none of them is somewhere it vouches for.
 
 A bike ride somebody has really cycled is better evidence that a way can be
 ridden than any router's guess, and the site now keeps them. A ride is not
-on the way to anywhere, so the recorder opens from a bike button of its own
-on the map with nothing open at all, on the rail on a desktop and standing
-on the locate arrow on a phone, and from **Record a ride** on the account
-page's **Your rides** card, which opens the map at `/?ride=1` with the card
-already up. The first version's mistake was the other way in: recording
-lived only under a place's directions, on the route bar's Bike tab, so
-going for a ride meant picking somewhere to ride to first. That link is
-gone. The button is put away while the card, a sheet, a route or a walk
-holds the foot of the map, and counted on the rail as `ride`. The card
+on the way to anywhere, so the recorder opens from **Record a ride** on the
+account page's **Your rides** card, which opens the map at `/?ride=1` with
+the card already up — and from nowhere else. The first version's mistake
+was to put it under a place's directions, on the route bar's Bike tab, so
+going for a ride meant picking somewhere to ride to first; that link went.
+For a while after, a bike button of its own stood on the map, on the rail
+on a desktop and on the locate arrow on a phone; on 2026-11-17 the owner
+took it off, so the map is for places and recording is something a member
+goes to their account for. Its column on the rail's counts, `ride`, keeps
+what it counted and gains nothing more. The card
 stands where the route bar
 does — the bar, a walk's band and the sheet step aside for it, and a bike
 route's line, where there is one, stays on the map to ride along — and goes
@@ -19176,9 +19177,9 @@ height.
 ## The short rail
 
 Every browser draws the same rail: **everybody's lists, Surprise me and
-More** down the left, with **Record a ride** and the locate arrow under them
-on a desktop and in the bottom-right corner on a phone, the bike standing on
-the arrow — **Recorded rides**; three chips standing outside the Filters
+More** down the left, with the locate arrow under them on a desktop and in
+the bottom-right corner on a phone (the bike button that stood on it until
+2026-11-17 is gone — **Recorded rides**); three chips standing outside the Filters
 drawer on a phone; and the other five doors — the account, Ask, the
 flashcards, the colour and feedback — as rows behind More. The account was
 the rail's top pill through the test and moved behind More on the owner's
@@ -19890,7 +19891,7 @@ The map, `assets/app.js`:
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `route_way` | `n`, `mode` — another of the ways on offer for a walk, a ride or a drive pressed, 0 the router's first |
-| `ride_open` | `from` — `map`, the bike button on the map, or `account`, the map opened at `/?ride=1` by Record a ride on the account page |
+| `ride_open` | `from` — `account`, the map opened at `/?ride=1` by Record a ride on the account page; `map`, the bike button on the map, until it was taken off on 2026-11-17 |
 | `ride_record` | — Record a ride on the account page's Your rides card, leaving for the map |
 | `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
 | `ride_save` | — a ride the server kept |

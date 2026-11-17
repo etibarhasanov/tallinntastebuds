@@ -1330,7 +1330,7 @@
   "rideNearby": "Les lignes pâles sont des balades enregistrées près d'ici.",
   "ridesYours": "Tes balades",
   "ridesWhat": "Les balades à vélo que tu as enregistrées. Chacune est un itinéraire vélo confirmé sur la carte, sans ton nom.",
-  "ridesNone": "Pas encore de balade. Appuie sur le vélo sur la carte et roule.",
+  "ridesNone": "Pas encore de balade. Appuie sur Enregistrer une balade ci-dessous et roule.",
   "rideUnnamed": "Balade à vélo",
   "ridesCountOne": "1 balade",
   "ridesCount": "{n} balades",

@@ -213,6 +213,9 @@ export const RAIL_PILLS = [
   { id: 'ask', label: 'askOpen' },
   { id: 'style', label: 'styleLabel' },
   { id: 'locate', label: 'locate' },
+  /* The map's bike button, taken off on 2026-11-17: a ride is recorded
+     from the account page's Your rides card now. Nothing sends it any
+     more, and it stays so its column keeps what it counted. */
   { id: 'ride', label: 'rideRecord' },
   { id: 'feedback', label: 'feedbackTitle' }
 ];

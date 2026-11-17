@@ -1330,7 +1330,7 @@
   "rideNearby": "Las líneas tenues son paseos grabados cerca.",
   "ridesYours": "Tus paseos",
   "ridesWhat": "Los paseos en bici que grabaste. Cada uno es una ruta en bici confirmada en el mapa, sin tu nombre.",
-  "ridesNone": "Aún no hay paseos. Pulsa la bici en el mapa y pedalea.",
+  "ridesNone": "Aún no hay paseos. Pulsa Grabar un paseo aquí abajo y pedalea.",
   "rideUnnamed": "Paseo en bici",
   "ridesCountOne": "1 paseo",
   "ridesCount": "{n} paseos",

@@ -1330,7 +1330,7 @@
   "rideNearby": "Haaleat viivat ovat lähistöllä tallennettuja ajoja.",
   "ridesYours": "Ajosi",
   "ridesWhat": "Tallentamasi pyöräilyt. Jokainen on kartalla vahvistettu pyöräreitti, ilman nimeäsi.",
-  "ridesNone": "Ei vielä ajoja. Paina kartalla pyörää ja aja.",
+  "ridesNone": "Ei vielä ajoja. Paina alta Tallenna ajo ja aja.",
   "rideUnnamed": "Pyöräily",
   "ridesCountOne": "1 ajo",
   "ridesCount": "{n} ajoa",

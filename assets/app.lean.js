@@ -2722,7 +2722,6 @@
     'btn-lists': 'lists',
     'btn-random': 'random',
     'btn-more': 'more',
-    'btn-ride': 'ride',
     'btn-locate': 'locate'
   };
 
@@ -7589,11 +7588,6 @@
       ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
-    dom.btnRide.hidden = !window.TTBRide;
-    dom.btnRide.addEventListener('click', function () {
-      TTBTrack.event('ride_open', { from: 'map' });
-      TTBRide.open();
-    });
     dom.routeModes.addEventListener('click', function (ev) {
       var tab = ev.target.closest ? ev.target.closest('.route-mode') : null;
       var place = routeFor ? byId(routeFor) : null;
@@ -8131,7 +8125,6 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      btnRide: $('btn-ride'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
