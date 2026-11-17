@@ -58,6 +58,10 @@
  * way through the door is the first one and the router's own is the first
  * of `others`. Same fields, same words; DOORS below.
  *
+ * And by bike some streets are not offered at all. A way that rides Tartu
+ * maantee for more than a crossing is asked for again round it, and only
+ * the ways that keep off are answered — KEEPING OFF below.
+ *
  * MORE THAN ONE WAY
  *
  * The router is asked for alternatives and answers the ones it thinks are
@@ -239,7 +243,9 @@ async function street(context, mode, from, to) {
      the first of the others — still offered, a button down. */
   const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
   const through = mode === 'bike' ? await viaDoor(context, from, to, shortest) : null;
-  const ways = through ? [through, first].concat(others).slice(0, 1 + OTHERS) : [first].concat(others);
+  let ways = through ? [through, first].concat(others) : [first].concat(others);
+  if (mode === 'bike') ways = await keepOff(ways, from, to, shortest);
+  ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   return json({ meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) }, 200, 3600);
 }
@@ -313,8 +319,14 @@ async function viaDoor(context, from, to, shortest) {
    where they are the same place, or null where it has none. */
 async function leg(a, b) {
   if (metres(a, b) < AT_DOOR) return { meters: 0, seconds: 0, line: [], steps: [] };
+  return oneWay([a, b]);
+}
+
+/* The router's one way by bike through [lat, lng] points in order, or null
+   where it has none. */
+async function oneWay(points) {
   try {
-    const res = await ask(OSRM.bike + a[1] + ',' + a[0] + ';' + b[1] + ',' + b[0] +
+    const res = await ask(OSRM.bike + points.map((p) => p[1] + ',' + p[0]).join(';') +
       '?overview=full&geometries=geojson&steps=true&alternatives=false', 'bike');
     if (!res.ok) return null;
     const body = await res.json();
@@ -362,6 +374,124 @@ function bend(before, after) {
   return (size < 55 ? 'keep-' : '') + (turn < 0 ? 'left' : 'right');
 }
 
+/* ------------------------------------------------------------ keeping off
+ * Some streets the router likes and a rider does not. Tartu maantee is the
+ * first: a cycleway beside six lanes of traffic, from Viru väljak to the
+ * Ülemiste junction, which the router's bike profile reads as the best way
+ * into the centre from the south-east. The owner asked for it not to be
+ * offered. OSRM's public server cannot be told to avoid a street, so where
+ * a way rides one the router is asked again, through a point either side
+ * of the stretch ridden, KEEP_OFF_AWAY metres out and square to it, which
+ * it snaps to the nearest street it can ride — a parallel one.
+ *
+ * A way rides a street for as many metres of it as lie within the street's
+ * `width` of its line, not counting the first and last KEEP_OFF_ENDS: a
+ * place on Tartu maantee is still reached, and crossing it is not riding
+ * it. A way riding KEEP_OFF_MIN or less keeps off. A way round counts only
+ * when it is at most KEEP_OFF_LONGER times the shortest way, so a detour
+ * across the city is not offered as one.
+ *
+ * Where any way keeps off, only those are offered — the router's own in
+ * the router's order first, then the ways round, quickest first. Where
+ * none does, as from a door on Tartu maantee itself, the ones that ride
+ * least of it are, and a way down its whole length beside them is not.
+ * The answer's shape does not change, so the map and both apps simply get
+ * a different line. Nothing waits on it: a way round the router will not
+ * answer is one fewer to choose from, and no way round at all is the
+ * router's answer as it was.
+ */
+const KEEP_OFF = [
+  {
+    name: 'Tartu maantee',
+    width: 60,
+    line: [[59.43575, 24.7552], [59.4349, 24.758], [59.43339, 24.76096], [59.43279, 24.76266],
+      [59.43255, 24.76354], [59.43166, 24.76757], [59.43115, 24.76933], [59.42996, 24.77235],
+      [59.42935, 24.77385], [59.42845, 24.77592], [59.42765, 24.77767], [59.427, 24.77903],
+      [59.42569, 24.7816], [59.42475, 24.78383], [59.42405, 24.78543], [59.42292, 24.78737],
+      [59.42258, 24.78784]]
+  }
+];
+const KEEP_OFF_MIN = 150;
+const KEEP_OFF_ENDS = 150;
+const KEEP_OFF_AWAY = [350, 700];
+const KEEP_OFF_LONGER = 1.5;
+
+/* A point as metres east and north, near enough flat across a city. */
+const EAST = 111320 * Math.cos(59.43 * Math.PI / 180);
+const NORTH = 110540;
+const flat = (p) => [p[1] * EAST, p[0] * NORTH];
+
+/* How far a point is from a line, in metres. */
+function apart(p, line) {
+  const [x, y] = flat(p);
+  let least = Infinity;
+  for (let i = 1; i < line.length; i++) {
+    const [ax, ay] = flat(line[i - 1]);
+    const [bx, by] = flat(line[i]);
+    const dx = bx - ax;
+    const dy = by - ay;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)));
+    least = Math.min(least, Math.hypot(x - ax - t * dx, y - ay - t * dy));
+  }
+  return least;
+}
+
+/* How far a way rides the streets to keep off, and from where to where. */
+function ridden(way) {
+  let gone = 0;
+  let meters = 0;
+  let start = null;
+  let end = null;
+  for (let i = 1; i < way.line.length; i++) {
+    const a = way.line[i - 1];
+    const b = way.line[i];
+    const step = metres(a, b);
+    if (gone >= KEEP_OFF_ENDS && gone + step <= way.meters - KEEP_OFF_ENDS &&
+      KEEP_OFF.some((street) => apart(a, street.line) < street.width && apart(b, street.line) < street.width)) {
+      meters += step;
+      start = start || a;
+      end = b;
+    }
+    gone += step;
+  }
+  return { meters: meters, start: start, end: end };
+}
+
+async function keepOff(ways, from, to, shortest) {
+  const rides = ways.map(ridden);
+  const worst = rides.reduce((a, b) => (b.meters > a.meters ? b : a));
+  if (worst.meters <= KEEP_OFF_MIN) return ways;
+
+  const [sx, sy] = flat(worst.start);
+  const [ex, ey] = flat(worst.end);
+  const length = Math.hypot(ex - sx, ey - sy) || 1;
+  const middle = [(worst.start[0] + worst.end[0]) / 2, (worst.start[1] + worst.end[1]) / 2];
+  const vias = [];
+  for (const away of KEEP_OFF_AWAY) {
+    for (const side of [1, -1]) {
+      vias.push([
+        Number((middle[0] + (ex - sx) / length * away * side / NORTH).toFixed(5)),
+        Number((middle[1] - (ey - sy) / length * away * side / EAST).toFixed(5))
+      ]);
+    }
+  }
+  const round = (await Promise.all(vias.map((via) => oneWay([[from.lat, from.lng], via, [to.lat, to.lng]]))))
+    .filter((way) => way && way.meters <= shortest * KEEP_OFF_LONGER)
+    .sort((a, b) => a.seconds - b.seconds);
+
+  const all = ways.concat(round);
+  const on = rides.concat(round.map(ridden)).map((r) => r.meters);
+  const least = Math.min(...on);
+  const room = least <= KEEP_OFF_MIN ? KEEP_OFF_MIN : least + KEEP_OFF_MIN;
+
+  /* Two points either side can snap to one street: one button each. */
+  const kept = [];
+  all.forEach((way, i) => {
+    if (on[i] <= room && !kept.some((k) => Math.abs(k.meters - way.meters) < 20 && Math.abs(k.seconds - way.seconds) < 20)) kept.push(way);
+  });
+  return kept;
+}
+
 function ask(url, mode) {
   return fetch(url, {
     headers: { 'user-agent': AGENT, accept: 'application/json' },
@@ -401,10 +531,13 @@ function turnOf(maneuver) {
 function turns(route) {
   const out = [];
   let meters = 0;
-  for (const leg of Array.isArray(route.legs) ? route.legs : []) {
+  const legs = Array.isArray(route.legs) ? route.legs : [];
+  for (const leg of legs) {
     for (const s of Array.isArray(leg.steps) ? leg.steps : []) {
       const m = (s && s.maneuver) || {};
-      const turn = turnOf(m);
+      /* A way asked through a point — KEEPING OFF — arrives there too, and
+         rides on; only the last leg's arrival is one. */
+      const turn = turnOf(m) === 'arrive' && leg !== legs[legs.length - 1] ? '' : turnOf(m);
       const at = Array.isArray(m.location) ? [Number(m.location[1]), Number(m.location[0])] : [];
       if (turn && Number.isFinite(at[0]) && Number.isFinite(at[1])) {
         const step = {
