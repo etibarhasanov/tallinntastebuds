@@ -161,7 +161,7 @@ const PHONE = /^\+[1-9][0-9]{0,3}(?: [0-9]{2,4}){1,4}$/;
 
 const KNOWN_KEYS = new Set([
   'id', 'name', 'address', 'lat', 'lng', 'price', 'types', 'blurb',
-  'mustOrder', 'reel', 'reelSummary', 'links', 'photos', 'website', 'phone', 'added', 'visited', 'closed'
+  'mustOrder', 'reel', 'reelSummary', 'links', 'photos', 'website', 'phone', 'added', 'updated', 'visited', 'closed'
 ]);
 
 /* visited is deliberately absent: a place you have been to but not filmed has
@@ -1292,19 +1292,20 @@ if (places !== null) {
         warn(where, 'has no "phone", so there is nothing to call');
       }
 
-      /* added — the day this place first appeared in this file. It used to
-         drive a "Just added" section at the top of the list panel; that
-         section is gone, so nothing on the site reads this any more and a
-         place without one is not missing anything. It stays as a record of
-         when each place went in — the dates were read out of this repo's own
-         git history — and admin.html still stamps one on every place it
-         creates, so it is still held to being a real date when it is there.
-         What went with the section is the warning for a missing one: there is
-         no longer anything for it to nag you towards. */
-      if ('added' in place) {
-        if (!isNonEmptyString(place.added) || !/^\d{4}-\d{2}-\d{2}$/.test(place.added)) {
-          fail(where, `"added" must look like 2026-08-25, got ${JSON.stringify(place.added)}`);
+      /* added — the day this place first appeared in this file — and
+         updated — the day an edit on admin.html last gave it new
+         photographs. Together they order New on the map on /discover
+         (newsDay() in assets/discover.js), which is the one thing that reads
+         either. Both optional: the dates on the older places were read out of
+         this repo's git history, and a place nobody has re-photographed has
+         no `updated`. Held to being real dates when they are there. */
+      for (const key of ['added', 'updated']) {
+        if (key in place && (!isNonEmptyString(place[key]) || !/^\d{4}-\d{2}-\d{2}$/.test(place[key]))) {
+          fail(where, `"${key}" must look like 2026-08-25, got ${JSON.stringify(place[key])}`);
         }
+      }
+      if (place.updated && place.added && place.updated < place.added) {
+        fail(where, `"updated" (${place.updated}) is before "added" (${place.added})`);
       }
 
       /* visited — optional, but must be a real month when present */

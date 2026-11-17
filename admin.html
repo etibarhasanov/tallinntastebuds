@@ -62,7 +62,7 @@
      to revalidate, and the browser held last week's stats.css for four hours
      under this week's markup all the same — see PAGES in tools/stamp.mjs.
      What follows the links is only what a form has and a ranking does not. -->
-<link rel="stylesheet" href="/assets/styles.lean.css?v=2ad3abe3">
+<link rel="stylesheet" href="/assets/styles.lean.css?v=125904c2">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7968d8b">
 <link rel="stylesheet" href="/assets/stats.css?v=60bcdad6">
 <style>
@@ -960,7 +960,9 @@ ul.log li button.quiet { width: auto; display: inline-block; }
 
     var tabs = el('div', { className: 'tabs' });
     var panel = el('div');
-    var which = 'story';
+    /* The Edit row at the foot of a place on the map comes here as
+       ?edit=<id>, and opens on that place's form rather than on a story. */
+    var which = wantedEdit ? 'edit' : 'story';
 
     /* The tools were a fold once, shut when the door opened, because the
        five pages of numbers were a card above them and were what the door
@@ -2143,6 +2145,14 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     return handle;
   }
 
+  /* The place the map's Edit row asked for, taken once: the first time the
+     picker has the places it opens that one's form, and after that the tab
+     behaves the way it always did. */
+  var wantedEdit = (function () {
+    var m = /[?&]edit=([a-z0-9-]+)/.exec(window.location.search);
+    return m ? m[1] : '';
+  })();
+
   /* Which place to change. Closed ones are in the list too — reopening one is
      an edit like any other, and it is the only way back. */
   function editPicker(repo, into) {
@@ -2164,10 +2174,16 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         pick.appendChild(el('option', { value: pl.id,
           textContent: pl.name + (pl.closed ? ' (closed)' : '') }));
       });
-      pick.addEventListener('change', function () {
+      function open() {
         var chosen = places.filter(function (pl) { return pl.id === pick.value; })[0];
         if (chosen) placeForm(repo, into, chosen, null);
-      });
+      }
+      pick.addEventListener('change', open);
+      if (wantedEdit) {
+        pick.value = wantedEdit;
+        wantedEdit = '';
+        open();
+      }
     }).catch(function () {
       clear(pick);
       pick.appendChild(el('option', { value: '', textContent: 'Could not load the places' }));
@@ -2668,6 +2684,10 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       var fresh = shots.map(function (d, i) { return pad2(highest + i + 1) + '.' + d.small.ext; });
       var gone = dropped();
       place.photos = had.filter(function (f) { return gone.indexOf(f) === -1; }).concat(fresh);
+      /* New photographs on a place already on the map bring it back to the
+         front of New on the map on /discover, as Updated. Only photographs:
+         a typo fixed or a phone number corrected is not news. */
+      if (editing && fresh.length) place.updated = tallinnNow().slice(0, 10);
 
       go.disabled = true;
       back.disabled = true;
@@ -2975,7 +2995,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
         sub.textContent = 'Signed out.';
         var signIn = el('button', { type: 'button', textContent: 'Sign in' });
         signIn.addEventListener('click', function () {
-          window.location.href = '/?account=in&then=' + encodeURIComponent('/admin.html');
+          window.location.href = '/?account=in&then=' + encodeURIComponent('/admin.html' + window.location.search);
         });
         body.appendChild(el('h2', { textContent: 'Sign in with the owner’s account' }));
         body.appendChild(el('p', { className: 'small', textContent:

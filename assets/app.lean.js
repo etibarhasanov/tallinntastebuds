@@ -943,6 +943,8 @@
 
   var PLAY_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><path d="M3 1.8v6.4L8.4 5z"/></svg>';
 
+  var EDIT_GLYPH = '<svg viewBox="0 0 24 24" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+
   function isPaused(place) {
     return place.closed === 'temporary';
   }
@@ -4774,6 +4776,19 @@
     var google = el('div', { className: 'google-holder' });
     dom.detail.appendChild(google);
     googleBlock(place, google);
+
+    if (window.TTBTrack && window.TTBTrack.owner) {
+      dom.detail.appendChild(TTBTrack.click(el('a', {
+        className: 'edit-row',
+        href: '/admin.html?edit=' + encodeURIComponent(place.id)
+      }, [
+        el('span', { className: 'edit-glyph', 'aria-hidden': 'true', html: EDIT_GLYPH }),
+        el('span', {}, [
+          el('b', { textContent: t('placeEdit') }),
+          el('small', { textContent: t('placeEditNote') })
+        ])
+      ]), 'place_edit', { place: place.name }));
+    }
   }
 
   function reelProvider(url) {

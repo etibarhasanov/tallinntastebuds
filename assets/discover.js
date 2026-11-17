@@ -20,7 +20,7 @@
  *   Overlooked places    the five opened least on the map    /api/discover
  *   Play                 the game, and routes to swipe       /api/discover
  *   Popular lists        most opened lists                   /api/discover
- *   New on the map       the places added last               data/map.json
+ *   New on the map       the newest places, or new photos    data/map.json
  *
  * Three of them wait on the one route and the fourth on nothing, which is why
  * the page is never empty: the map's card is in the markup, the last shelf is
@@ -230,8 +230,20 @@ window.TTBDiscover = (function () {
     return String(place.address || '').split(',')[0];
   }
 
+  /* When a place last became news: the day it was added, or the day an edit
+     on /admin.html gave it new photographs, whichever is later. `updated` is
+     only ever written by that edit — savePlace's caller in admin.html. */
+  function newsDay(place) {
+    var added = place.added || '', updated = place.updated || '';
+    return updated > added ? updated : added;
+  }
+
+  /* The month it was added, or, for a place brought back by new
+     photographs, the month of those, said as an update. */
   function addedIn(place) {
-    return o.month(String(place.added || '').slice(0, 7));
+    var day = newsDay(place);
+    var month = o.month(day.slice(0, 7));
+    return day === (place.added || '') ? month : o.t('discoverUpdated', { month: month });
   }
 
   /* The places the route says are opened least, in its order — THE SHELF IS
@@ -247,8 +259,11 @@ window.TTBDiscover = (function () {
 
   function newest() {
     return open(o.places())
-      .filter(function (p) { return !!p.added; })
-      .sort(function (a, b) { return a.added < b.added ? 1 : a.added > b.added ? -1 : 0; });
+      .filter(function (p) { return !!newsDay(p); })
+      .sort(function (a, b) {
+        var x = newsDay(a), y = newsDay(b);
+        return x < y ? 1 : x > y ? -1 : 0;
+      });
   }
 
   /* How long a walk took: minutes and hours inside a day, days and hours past

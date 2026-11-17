@@ -30,9 +30,9 @@ one fact decides most of what follows.
 ## The entry
 
 `tools/validate.mjs` (the `restaurants.json` block, the `places.forEach`
-in it) knows eighteen keys — `id, name, address, lat, lng, price, types,
-blurb, mustOrder, reel, reelSummary, links, photos, website, phone, added, visited,
-closed` —
+in it) knows nineteen keys — `id, name, address, lat, lng, price, types,
+blurb, mustOrder, reel, reelSummary, links, photos, website, phone, added, updated,
+visited, closed` —
 and requires the first twelve. An unknown key is a warning ("typo?"), which is how `blrub` is caught.
 
 | Field | Rule | If wrong |
@@ -50,7 +50,8 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `photos` | array of bare filenames matching `\.(webp\|jpg\|jpeg\|png\|avif)$`, each present at `photos/<id>/` | error |
 | `website` | absent, `""`, or `https?://…` | error |
 | `phone` | absent, `""`, or `^\+[1-9][0-9]{0,3}( [0-9]{2,4}){1,4}$` — `+372 661 0180`. Absent on an open place warns | error / warning |
-| `added` | `YYYY-MM-DD` when present, and nothing reads it since **Just added** was taken out — absent is fine and warns about nothing. `/admin.html` still stamps one | error |
+| `added` | `YYYY-MM-DD` when present; it orders **New on the map** on the front page. Absent is fine and warns about nothing. `/admin.html` stamps one | error |
+| `updated` | `YYYY-MM-DD`, never before `added`. Written only by an edit on `/admin.html` that adds photographs, never by hand: it puts the place back at the front of **New on the map** as *Updated* | error |
 | `visited` | `YYYY-MM`; absent warns only when there is a reel to date it from | error / warning |
 | `closed` | `false`, `true`, or `"temporary"` — a door that should open again, Google's word, raised from the admin page's Google tab | error |
 
@@ -78,7 +79,9 @@ it does, in order:
 1. **Find it**: a search over Google's directory (`/api/admin/venues`). A
    pick fills the name, address, pin, phone (into `+372 …` form), website and
    price; a row already tied to a place opens its edit instead; **Not in the
-   list** opens the form blank. Edit starts from the place picker.
+   list** opens the form blank. Edit starts from the place picker, or from
+   the place itself: an admin's browser draws **Edit this place** at the foot
+   of every place on the map, which opens `/admin.html?edit=<id>` on its form.
 2. **Your take**: types, price, the **English** write-up only, must-orders
    one per line, photographs; the id (made from the name, `Põhja Pagar` →
    `pohja-pagar`, read-only when editing) and the reel under **More**. Editing
@@ -99,7 +102,8 @@ it does, in order:
    from the existing object, so the other ten write-ups, `visited`, `added`
    and any key the form does not know ride along untouched; blank `website`
    and `phone` are deleted from the object; `types` come out in checkbox
-   order. A new place gets `added` = today in Tallinn.
+   order. A new place gets `added` = today in Tallinn, and an edit that adds
+   photographs gets `updated` = today.
 5. **The `land` job in `.github/workflows/generated.yml`** replays that
    commit onto the default branch, runs `node tools/generate.mjs`, folds what
    it wrote into the commit, runs every check CI runs, pushes to the default

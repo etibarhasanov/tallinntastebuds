@@ -1658,6 +1658,9 @@
      watchButton(). A triangle, the one shape everybody reads as "a video". */
   var PLAY_GLYPH = '<svg viewBox="0 0 10 10" focusable="false"><path d="M3 1.8v6.4L8.4 5z"/></svg>';
 
+  /* The pencil on the owner's Edit row at the foot of a place. */
+  var EDIT_GLYPH = '<svg viewBox="0 0 24 24" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+
   /* Two kinds of shut door. `closed: true` is for good; `closed:
      "temporary"` is a door that should open again — Google's word for it,
      raised and lowered from the admin page's Google tab rather than by hand,
@@ -8221,6 +8224,29 @@
     var google = el('div', { className: 'google-holder' });
     dom.detail.appendChild(google);
     googleBlock(place, google);
+
+    /* The way to change this place, for the two accounts ADMINS names and
+       nobody else: their browsers carry ttb_owner (THE OWNER'S BROWSER in
+       functions/api/_admin.js), which is all TTBTrack.owner reads. Not a
+       lock — /admin.html is the lock, and a browser that is shown this row
+       after signing out is asked to sign in there. At the foot rather than
+       in the strip at the top: that strip is what every visitor does to a
+       place, it is full on a phone, and the place is worth reading as a
+       visitor sees it before it is changed. ?edit= opens the admin page on
+       this place's form. **Changing one** under **The admin page** in
+       README.md. */
+    if (window.TTBTrack && window.TTBTrack.owner) {
+      dom.detail.appendChild(TTBTrack.click(el('a', {
+        className: 'edit-row',
+        href: '/admin.html?edit=' + encodeURIComponent(place.id)
+      }, [
+        el('span', { className: 'edit-glyph', 'aria-hidden': 'true', html: EDIT_GLYPH }),
+        el('span', {}, [
+          el('b', { textContent: t('placeEdit') }),
+          el('small', { textContent: t('placeEditNote') })
+        ])
+      ]), 'place_edit', { place: place.name }));
+    }
   }
 
   /* The field is called "reel" whichever platform it points at — renaming it
