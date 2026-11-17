@@ -17,7 +17,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-five small Functions, no build step and no npm install. Adding a
+Static files, forty-seven small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -72,6 +72,7 @@ tools, and what is deliberately left out.
 - [Read by an assistant](#read-by-an-assistant)
 - [Close a place instead of deleting it](#close-a-place-instead-of-deleting-it)
 - [Sharing a place](#sharing-a-place)
+- [Recorded rides](#recorded-rides)
 - [Languages](#languages)
 - [Restaurant discounts](#restaurant-discounts)
 - [Saves](#saves)
@@ -102,6 +103,7 @@ tools, and what is deliberately left out.
 - [The pins](#the-pins)
 - [The four styles](#the-four-styles)
 - [The radio](#the-radio)
+- [Discover](#discover)
 - [The map is the shell](#the-map-is-the-shell)
 - [Surprise me](#surprise-me)
 - [The short rail](#the-short-rail)
@@ -4258,7 +4260,15 @@ There are two, and the difference matters more than it looks:
 | | database | who writes to it |
 |---|---|---|
 | **production** | `tallinntastebuds` | tallinntastebuds.ee |
-| **preview** | `tallinntastebuds-preview` | every preview deployment, and `wrangler pages dev` |
+| **preview** | `tallinntastebuds-preview` | a preview deployment made by hand, and nothing else for now |
+
+**Production is the only one that is kept.** Since 2026-09-29 every write —
+a `.sql` load, a schema change, a correction — goes to production alone, and
+preview is set aside until it is replicated from production. It is not
+loaded, not given schema changes and not kept in step, and its drift is
+expected. `wrangler pages dev` does not reach it either: Pages' dev server
+runs D1 as a local copy under `.wrangler/state`, named after the preview
+binding and empty until `db/schema.sql` is run into it with `--local`.
 
 Cloudflare Pages gives a project two environments. Production is whatever is
 deployed from the production branch; **preview is everything else** — a pull
@@ -5070,7 +5080,7 @@ URI to add — the one part of this that cannot be made to look after itself.
 `http://127.0.0.1:8788/api/google` is allowed too, which is what makes
 `wrangler pages dev` able to run the whole thing.
 
-And `db/schema.sql` applied to both databases, for the `identities` table.
+And `db/schema.sql` applied to production, for the `identities` table.
 
 **The deploy is safe before that happens, and it is written that way on
 purpose.** Nothing in this repository applies the schema — a person runs it,
@@ -9764,8 +9774,8 @@ count under somebody's name on a page strangers read would be a score, and
 there are none of those here. The same goes for a list: its opens are yours
 on this page and an order on `/lists`, and never a number on the list.
 
-**Turning it on** is three tables, applied by hand to both databases the way
-every table is — `db/schema.sql` is all `IF NOT EXISTS`. Both databases have
+**Turning it on** is three tables, applied by hand to production the way
+every table is — `db/schema.sql` is all `IF NOT EXISTS`. Production has
 `profile_counts`; on one that does not, profiles are not counted, the account
 page's row says what Insights is for instead of a number, and the page says
 the numbers are not switched on, with Your lists still under it. `view_seen`
@@ -12951,7 +12961,7 @@ and each is fenced or prefixed so it can be found by looking:
 And in Cloudflare: remove `flashcard.tallinntastebuds.ee` from the Pages
 project's **Custom domains**, and drop the four tables — `flashcard_reports`
 and `flashcard_known` first, then `flashcard_cards`, `flashcard_decks` — from
-both databases, along with their block in `db/schema.sql`.
+production, along with their block in `db/schema.sql`.
 
 **What it borrows and does not touch.** `functions/api/_lib.js` is imported
 from and not edited — `json()`, `sessionUser()`, `wrongDatabase()`,
@@ -14524,7 +14534,7 @@ Somebody else's is by hand and there is no route and no button for it:
 UPDATE feedback SET hidden = 1 WHERE id = '<the id>';
 ```
 
-through the write gate, against both databases. The column is there from the
+through the write gate, against production. The column is there from the
 first day precisely so that a **Take down** for the site's owner can be added
 later without a migration against a live table — see **What needs a yes** in
 `CLAUDE.md`, which is why a write is a separate sentence from a merge.
@@ -15994,7 +16004,7 @@ today's file: the read walks each pair along the diagram as it stands, so
 an arrow drawn next month carries the numbers from before it existed, and
 the moves card is the pairs no path joins. One row per diagram, day, who
 and id, bounded by the steps a diagram has rather than by the traffic, and
-applied by hand to both databases the way every table is; until it has
+applied by hand to production the way every table is; until it has
 been, the page says the numbers are not in yet under a diagram it has
 already drawn.
 
@@ -16610,17 +16620,18 @@ since a merge is the deploy.
 The reason that is not a loss is that the previews were not being looked at.
 Of 773 deployments, next to none of those URLs was opened: the review they
 were built for happened in the diff instead, and what checking there was ran
-under `npx wrangler pages dev .` — the same bindings against the same preview
-database, on your own machine, for nothing. Switching them off costs the thing
+under `npx wrangler pages dev .` — the same bindings against a local copy of
+the database, on your own machine, for nothing. Switching them off costs the thing
 that was not happening.
 
 Two things `pages dev` genuinely cannot show, and `CLAUDE.md` lists them: a
 `[env.preview]` change in `wrangler.toml`, which takes effect only once a
 preview carries it and which `pages dev` cannot reach because it reads the top
 level instead; and anything whose point is how it feels on a real phone, which
-a localhost is not. The database is not one of them — `pages dev` talks to the
-same remote `tallinntastebuds-preview` a preview deployment would, so a `db/`
-load can be watched arriving without deploying anything. For the two that are
+a localhost is not. The database is not one of them — `pages dev` runs D1 as a
+local copy under `.wrangler/state`, so a `db/` file loaded there with
+`wrangler d1 execute tallinntastebuds-preview --local --file=<file>` can be
+watched arriving without deploying anything or touching a remote row. For the two that are
 left there is no automation: one `npx wrangler pages deploy . --branch=<name>`
 from a terminal makes a preview when one is wanted, and a change that wants one
 says so in its pull request rather than working around it.
@@ -20154,9 +20165,11 @@ travelling to a third party to make a heatmap of a page whose only button is
 the way back.
 
 Data takes up to two hours to appear after the tag first goes out, and the
-dashboard will say the project is uninstalled until it does. A Cloudflare
-preview deploy carries the same tag as production and reports into the same
-project, so a branch driven hard enough shows up in the live numbers.
+dashboard will say the project is uninstalled until it does. The tag is
+written into the pages rather than set per environment, so a page opened
+anywhere — a preview deploy, or a localhost under `pages dev` or
+`http.server` — reports into the same project, and a change driven hard
+enough shows up in the live numbers.
 
 ### Getting found
 
