@@ -16279,12 +16279,19 @@ handed over once by `/api/admin/venues` and filtered on the phone, accents
 ignored, so `pohja` finds Põhja Pagar. Pick one and the part of the form that
 is facts rather than opinion is filled in from Google: the name, the address,
 the pin, the phone (rewritten into the `+372 …` form the validator wants), the
-website and the price band. A row already tied to a place on the map says
+website and the price band. The kinds of place start ticked from what Google
+says it is — Bakery, Coffee, Tea, Beer/pub, Asian, Vegan, Fine dining, and
+Restaurant for anything with a cuisine — out of the same kitchens the
+directory files it under, and a line under the boxes says so; the five that
+are a verdict rather than a fact, Casual/Solo, Hidden gem, Cheap eats, Laptop
+and Date, are never guessed, and a bar or a wine bar ticks nothing, because
+the map has no type for either. A row already tied to a place on the map says
 **on the map — edit** and opens that place's edit instead, so nothing goes in
 twice. **Not in the list — type it in by hand** opens the form blank, which is
 also what happens if the directory will not load.
 
-**Your take.** What only the owner can write: the kinds of place, the price,
+**Your take.** What only the owner can write: the kinds of place (checked,
+when Google ticked some), the price,
 a line about it in English, must-orders one to a line, and the photographs.
 Google's facts are folded under a single line that says they came from
 Google, and open to correct one. The id is made from the name — `Põhja Pagar`
