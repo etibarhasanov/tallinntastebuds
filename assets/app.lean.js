@@ -1226,6 +1226,7 @@
   var SAVED_FILTER = 'saved';
 
   var counter = null;  // GET /api/counter's answer, once it was ready
+  var COUNTER_SHAPE = '2';
   var counterMQ = window.matchMedia('(min-width: 861px)');
 
   function loadCounter() {
@@ -1238,7 +1239,7 @@
       if (counterMQ.addEventListener) counterMQ.addEventListener('change', later);
       return;
     }
-    fetch('/api/counter').then(function (res) {
+    fetch('/api/counter?shape=' + COUNTER_SHAPE).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (got) {
       if (!got || got.ready !== true) return;
