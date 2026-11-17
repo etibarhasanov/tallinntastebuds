@@ -112,8 +112,11 @@ ref: assets/discover.js newsDay()</bpmn:documentation>
       <bpmn:outgoing>owner-e14</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="place-commit" name="One commit on admin/add-&lt;id&gt; or admin/edit-&lt;id&gt;">
-      <bpmn:documentation>ref: admin.html savePlace()
-ref: data/restaurants.json</bpmn:documentation>
+      <bpmn:documentation>Picked from Google's directory, its row is tied to the new id the same moment, so the map has its hours.
+ref: admin.html savePlace()
+ref: data/restaurants.json
+ref: admin.html tieGoogle()
+ref: functions/api/admin/tie.js</bpmn:documentation>
       <bpmn:incoming>owner-e12</bpmn:incoming>
       <bpmn:incoming>owner-e14</bpmn:incoming>
       <bpmn:outgoing>owner-e15</bpmn:outgoing>

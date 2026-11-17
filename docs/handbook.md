@@ -16361,6 +16361,18 @@ lists), folds what they wrote into the same commit, runs every check CI runs,
 and pushes to the live branch if they pass. The admin branch is deleted after;
 the commit on the live branch is the record.
 
+**And Google's row is tied to it.** A place picked out of Google's directory
+gets its hours, rating and phone on the map through `google_venues.map_id`,
+which no commit can set: it is a column in the database. So once the branch is
+made, the page sends the row it picked and the new id to `POST
+/api/admin/tie`, and the route ties them — onto an empty column only, so a tie
+corrected by hand is never written over, and a row already tied to another
+place says which. Before it, the only thing that set the column was the export's
+matcher, loaded by hand, and a row the find bar had looked up on Google Maps
+was in no export at all: Keset Linna went live in November 2026 with no hours
+for exactly that reason. A place typed in by hand has no row to tie, and a
+tie that fails says so under the three rows.
+
 The page watches it happen, in three rows — **Saved**, **Rebuilt and
 checked**, **Live on tallinntastebuds.ee** — the second from the run on the
 branch, the third from `data/map.json` on the site carrying the place as it
