@@ -3321,6 +3321,38 @@ The tool is not one of the generators and the validator does not hold the
 file to it: what it writes depends on rides saved since it last ran and on
 a router outside the repository. It is run when there are new rides.
 
+## Roads a bike route keeps off
+
+Some streets the router's bike profile likes and nobody who rides them
+does. Tartu maantee is the first: a cycleway beside six lanes of traffic
+from Viru väljak to the Ülemiste junction, which the router took as the
+best way into the centre from the whole south-east — from Ülemiste to
+Magasini it rode half a kilometre of it, and both buttons it offered did.
+The owner asked, on 2026-11-17, for it not to be offered at all.
+
+**The router cannot be told, so it is asked again.** OpenStreetMap
+Germany's public router takes no list of streets to avoid. So where a way
+rides one — more than 150 m of its line within 60 m of the street's,
+leaving out the first and last 150 m, so a place on the street is still
+reached and crossing it is not riding it — `keepOff()` in
+`functions/api/route.js` asks for the way through a point on either side of
+the stretch ridden, 350 m and 700 m out and square to it. The router snaps
+each to the nearest street it can ride, which is a parallel one, and a way
+round longer than half as much again as the shortest is not a way round.
+
+**Only the ways that keep off are offered.** The router's own that already
+did, in its order, then the ways round, quickest first. Where nothing keeps
+off — a start on Tartu maantee itself, say — the ways riding least of it
+are, and one down its whole length beside them is not. The answer's shape
+does not move, so the map, the iPhone app and Rattatee are simply given a
+different line; the cost is up to four more router requests on a ride that
+touched the street, each cached a day like any other.
+
+**A street is a line in `KEEP_OFF`**, its name, its width and its middle,
+in the route itself rather than a data file: it is a decision the owner
+makes by name, not something a tool finds. The next one is a few lines
+there and a sentence here.
+
 ## Languages
 
 Azerbaijani, English, Estonian, Finnish, French, German, Portuguese,
