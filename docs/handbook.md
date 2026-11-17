@@ -13834,10 +13834,11 @@ already true of it, since an account there is an account here. **In the
 iPhone app** says what is not: that the app loads no analytics, that Apple
 draws its map where CARTO draws this one, that a position is sent here when
 somebody asks for the way to a place and what `/api/route` passes on, that
-going round a list and recording a ride work there as they do here and
-when the app reads the position more closely for them, that Apple is a
-third way in and what is kept of it, what stays on the phone, and where the
-app's own Delete account is. It is held to the code the way
+going round a list, recording a ride and the chat work there as they do
+here and when the app reads the position more closely for them, that Apple
+is a third way in and what is kept of it, that a save made in the app goes
+to the account while somebody is signed in, what stays on the phone, and
+where the app's own Delete account is. It is held to the code the way
 the rest is, and the list it was checked against is `docs/PRIVACY.md` in
 the app's repository — a change to what the app sends changes that file
 and this section together.

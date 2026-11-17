@@ -355,7 +355,34 @@ its models are in `TallinnTasteBuds/Models/`.
   and `GET /api/lookup` with `POST /api/lookup`, from the list picker's
   **Look for it on Google Maps**: `ready`, then `{ q }` answered by `ok`,
   `why` and `places` in those same rows. The app hides the button on
-  `why: 'no-key'` and says it is resting on any other refusal.
+  `why: 'no-key'` and says it is resting on any other refusal. The map's
+  search offers the same door from five letters.
+- Added on 2026-11-17, with Discover, the walk game, rides, the chat and
+  account saves:
+  - `data/map.json`'s `links` (`href`, `text` as a string or by language),
+    `added` and `updated`, which New on the map orders by.
+  - `GET /api/discover`: `fresh` and `popular` in the directory's list rows,
+    `quiet` as place ids, and `routes` with `id`, `title`, `pin`, `places`,
+    `finished`, `best` and `mode`.
+  - `GET /api/walk?list=` and `?mine=1`, and `POST /api/walk` with `start`
+    (`order`), `check` (`lat`, `lng`), `note` (`place`, `note`), `mode`,
+    `order` and `again`: the answer's `ready`, `user`, `radius`, `walk`
+    (`started`, `finished`, `mode`, `note`, `order`), `checks`, `board`,
+    `notes` and `checked`; `mine`'s `walks` with `id`, `title`, `pin`,
+    `checked` and `total`; and the error `far` with `place` and `meters`.
+  - `GET /api/rides?bbox=` (`rides`, each a `line`) and `POST /api/rides`
+    with `save`, `name`, `seconds` and `line`, and the errors `signed-out`,
+    `often`, `fast` and `short`.
+  - `GET /api/route` with `mode=bike`.
+  - `POST /api/ask` with `q`, `lang`, `wish`, `here` and `history`, reading
+    `ok`, `source` (`resting` included), `say`, `picks` (`id`, `why`, `far`),
+    `venues` and `at` (`here`, `label`, `where`).
+  - `POST /api/saves` with `place` and `on`, signed in. The app cannot show a
+    Turnstile challenge: switching Turnstile on refuses its saves with
+    `challenge`, and they then stay on the phone.
+  - `POST /api/account` with `password-change`, `username-change` (answered
+    with `user`), `display`, `about` and `links`, and the errors `current`,
+    `same`, `same-name`, `taken` and `bad-link` with `network`.
 - Signing in, which is three promises of its own. `GET /api/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
@@ -372,8 +399,9 @@ its models are in `TallinnTasteBuds/Models/`.
   that falls back to English in the app. Its own build checks the keys it
   borrows against a snapshot; nothing here does.
 
-The list was read out of the app on 2026-11-10. When the app starts asking
-for something else, add it here in the same week.
+The list was read out of the app on 2026-11-10 and brought up to date on
+2026-11-17. When the app starts asking for something else, add it here in
+the same week.
 
 **And a second app reads the flashcards.** Kohuke (`etibarhasanov/kohuke`,
 SwiftUI, bundle id `ee.tallinntastebuds.kohuke`) is `/flashcard` as an app of
