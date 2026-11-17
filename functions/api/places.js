@@ -113,7 +113,7 @@
  * three of my places first, best by Google's reviews, and everything after
  * that — mine included — in the order `rank` puts the whole export in. None
  * of the four is ever printed on a row of the bar; the owner's reasoning is
- * under **The find bar's order** in README.md. The picker reads none of them.
+ * under **The find bar's order** in docs/handbook.md. The picker reads none of them.
  *
  * WHAT A SHUT ROW IS FOR
  *

@@ -247,7 +247,7 @@ if (languages.length === 0) languages = ['en'];
    do not apply to it wholesale the way they do to a button — what it carries
    instead is the three it has been written in, in the shape a place's blurb
    is in: an object keyed by language, English required and the rest as they
-   arrive. See **Flashcards** in README.md; this block is all this file knows
+   arrive. See **Flashcards** in docs/handbook.md; this block is all this file knows
    about that feature.
 
    The one check here that is not about the file being well formed is the last:
@@ -297,7 +297,7 @@ if (decksFile !== null) {
        the page draws straight after the lesson that names it, under whichever
        heading the lesson is under. Only a deck a lesson names may have it,
        for the same reason. See **The cases, one at a time** under
-       **Flashcards** in README.md. */
+       **Flashcards** in docs/handbook.md. */
     const CASE_LEVEL = 'case';
     const caseDecks = new Set(
       (Array.isArray(decksFile.lessons) ? decksFile.lessons : [])
@@ -483,7 +483,7 @@ if (decksFile !== null) {
            than koka + na would be teaching the one thing the line is there to
            teach wrong. And the form it ends at has to be on the front, or the
            card is explaining a word it does not show. See **The cases, one at
-           a time** under **Flashcards** in README.md. */
+           a time** under **Flashcards** in docs/handbook.md. */
         if (card.build !== undefined) {
           const b = card.build;
           const name = `card "${card.id}" build`;
@@ -539,7 +539,7 @@ if (decksFile !== null) {
        name. Optional as a whole — a file with no "lessons" is the shelf without
        a grammar heading — and held to its shape where it is there. See
        **Grammar, which is read rather than turned over** under **Flashcards**
-       in README.md. */
+       in docs/handbook.md. */
     if (decksFile.lessons !== undefined && !Array.isArray(decksFile.lessons)) {
       fail('data/decks.json', '"lessons" must be an array');
     }
@@ -646,7 +646,7 @@ if (decksFile !== null) {
        because neither file can import the other. A word's `deck` is where its base
        form is taught, and has to be a deck with a card of that front, or the
        tap box would send somebody to a deck without it. See **Songs, which are
-       listened to** under **Flashcards** in README.md. */
+       listened to** under **Flashcards** in docs/handbook.md. */
     const WORD = /[A-Za-z\u00C0-\u024F]+/g;
     if (decksFile.songs !== undefined && !Array.isArray(decksFile.songs)) {
       fail('data/decks.json', '"songs" must be an array');
@@ -740,7 +740,7 @@ if (decksFile !== null) {
        says and an own entry its conversation does not. Where a word is
        taught on the shelf is not written here — tools/decks.mjs finds it.
        See **Conversations, which are read** under **Flashcards** in
-       README.md. */
+       docs/handbook.md. */
     if (decksFile.talks !== undefined && !Array.isArray(decksFile.talks)) {
       fail('data/decks.json', '"talks" must be an array');
     }
@@ -852,7 +852,7 @@ if (decksFile !== null) {
        as grammar. tools/decks.mjs writes them out and functions/api/_level.js
        draws a test from them: LEVEL_DRAW there is how many of each, and a
        stage with fewer than that is a test that cannot be drawn. See **Find
-       your level** under **Flashcards** in README.md. */
+       your level** under **Flashcards** in docs/handbook.md. */
     if (decksFile.level !== undefined && !Array.isArray(decksFile.level)) {
       fail('data/decks.json', '"level" must be an array of questions');
     }
@@ -953,7 +953,7 @@ if (taxonomy !== null) {
          when they mean this kind of place, in no language in particular —
          "cappuccino" for Coffee. Both searches on the map and the chat's
          reader match it like a label and nothing ever prints it; see
-         **Searching the list** in README.md. */
+         **Searching the list** in docs/handbook.md. */
       if ('words' in type && !isNonEmptyString(type.words)) {
         fail(where, `type "${type.id}" has "words" that is not a non-empty string of words joined by "/"`);
       }
@@ -1321,7 +1321,7 @@ if (places !== null) {
          the string is the one that is meant to go away again: the pin keeps
          its colour, the flag says so, and the admin page's Google tab is
          what raises and lowers it. See **Close a place instead of deleting
-         it** in README.md. */
+         it** in docs/handbook.md. */
       if (typeof place.closed !== 'boolean' && place.closed !== 'temporary') {
         fail(where, '"closed" must be true, false or "temporary"');
       }
@@ -1728,7 +1728,7 @@ if (existsSync(STORIES)) {
    always been written in the languages they have been written in. English is
    required because it is what the page falls back to, and a reader whose
    language a post is not in is told so in their own. See "The blog" in
-   README.md. */
+   docs/handbook.md. */
 
 const BLOG_KEYS = new Set(['id', 'date', 'link', 'title', 'standfirst', 'clip', 'body']);
 const BLOG_SAID = ['title', 'standfirst', 'body'];
@@ -2036,7 +2036,7 @@ if (catalogue !== null) {
 /* ------------------------------------------------------------ serves.json
    What somebody who ate there says a place serves, for any place in the
    city: the search finds a row by these words and nothing prints them —
-   **What a place serves** in README.md. Keyed by the id the roll gives the
+   **What a place serves** in docs/handbook.md. Keyed by the id the roll gives the
    row, so an entry for a place that is on neither half is a line that can
    never be found by, and the usual way to get one is a typo in the id. The
    `name` is for whoever reads the file and is held to nothing. */
@@ -2640,7 +2640,7 @@ if (existsSync(cssPath)) {
    tools/lean.mjs. A stale copy is a page running last week's code against
    this week's data, which is the stamps' failure by another road; a page
    that loads the source instead of the copy sends a phone three fifths prose.
-   "The lean copies" in README.md. */
+   "The lean copies" in docs/handbook.md. */
 for (const { src, copy } of staleLean()) {
   fail(copy, `is not what tools/lean.mjs would write from ${src} — run \`node tools/lean.mjs\` and commit the result`);
 }
@@ -2722,14 +2722,14 @@ if (flowDoc) {
   }
 
   /* And what a step is counted by — its `when`, which **The numbers on it**
-     in README.md explains. tools/flows.mjs holds the shape; this holds the
+     in docs/handbook.md explains. tools/flows.mjs holds the shape; this holds the
      names, which it cannot: a page is one of PAGES in
      functions/api/_visitors.js, and a press is a name the **Analytics**
-     tables in README.md list, since that table is the list of what every
+     tables in docs/handbook.md list, since that table is the list of what every
      page reports. A press renamed without its `when` would otherwise count
      nothing, quietly, for as long as nobody looked. */
   const pageIds = new Set(PAGES.map((p) => p.id));
-  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  const readme = readFileSync(join(ROOT, 'docs/handbook.md'), 'utf8');
   const start = readme.indexOf('\n### Analytics');
   const stop = readme.indexOf('\n### ', start + 1);
   const pressNames = new Set([...readme.slice(start, stop > start ? stop : undefined).matchAll(/`([a-z][a-z0-9_]*)`/g)].map((m) => m[1]));
@@ -2744,7 +2744,7 @@ if (flowDoc) {
         }
         const [name, page] = signal.split('@');
         if (page !== undefined && !pageIds.has(page)) fail(at, `"${signal}" names a page PAGES in functions/api/_visitors.js does not`);
-        if (!pressNames.has(name)) fail(at, `"${name}" is not a press name the Analytics tables in README.md list — every name TTBTrack sends has a row there`);
+        if (!pressNames.has(name)) fail(at, `"${name}" is not a press name the Analytics tables in docs/handbook.md list — every name TTBTrack sends has a row there`);
       }
     }
   }

@@ -52,7 +52,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var API = '/api/insights';
@@ -182,7 +182,7 @@
 
   /* --------------------------------------------------------------- dressing
    * Copied whole from assets/edit.js, which copied it from the account page:
-   * see "The two styles" in README.md. */
+   * see "The two styles" in docs/handbook.md. */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
     var stored = storeGet(STYLE_KEY);

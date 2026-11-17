@@ -3,7 +3,7 @@
  * /blog, and one post per thing this site does: the bookmark, the lists, the
  * discounts, the stories, the chat, the radio, the two styles. The map says
  * where to eat; this says what the site around it is doing and why, which is
- * the half that was only ever written down in README.md, where nobody who
+ * the half that was only ever written down in docs/handbook.md, where nobody who
  * opens the map is going to find it.
  *
  * WHAT IT IS MADE OF
@@ -21,7 +21,7 @@
  * lists, a divider, links off the site, places on the map as cards and
  * somebody's public list as a row of them — and blocks() below draws them as
  * text, never as HTML: what a post may hold is functions/api/_posts.js, and
- * **Everybody's posts** under **The blog** in README.md.
+ * **Everybody's posts** under **The blog** in docs/handbook.md.
  *
  * A LIST IN A POST
  *
@@ -29,7 +29,7 @@
  * through: a member's post carries it as a block of its own, and one of the
  * house's as a paragraph that is nothing but a link to it. Each is read from
  * /api/lists when the post is, and drawn by listBlock() — **A list inside a
- * post** under **The blog** in README.md.
+ * post** under **The blog** in docs/handbook.md.
  * Two states, the index and one post, decided by ?post=<id> and built into
  * the one <main> in blog.html, which is how lists.html and account.html are
  * put together too. Walking between them is pushState rather than a fresh
@@ -69,7 +69,7 @@
  * story's caption and a place's blurb are, and those have always been
  * written in the languages they have been written in. A post with nothing in
  * the reading language falls back to English and says so, in the reader's
- * own language, above the first paragraph. See "The blog" in README.md.
+ * own language, above the first paragraph. See "The blog" in docs/handbook.md.
  *
  * Plain browser JavaScript, ES5, one IIFE, no modules and no framework, the
  * same as every other file in assets/.
@@ -91,7 +91,7 @@
      this reader is in — written by tools/languages.mjs out of data/ui.json,
      which is eleven languages of every string the site has, 190 KB on the wire
      against this script's 8. **One language at a time** under **Languages**
-     in README.md. */
+     in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var POSTS_URL = '/data/blog.json';

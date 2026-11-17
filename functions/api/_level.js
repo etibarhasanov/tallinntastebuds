@@ -12,7 +12,7 @@
  * easy to hard, and at the end of them a stage: the first one whose questions
  * were not got right. Everything below it is skipped, and it opens.
  *
- * **Find your level** under **Flashcards** in README.md is the argument —
+ * **Find your level** under **Flashcards** in docs/handbook.md is the argument —
  * and what it replaced, since that section said for a year that there was no
  * test, "not even one to jump a stage with".
  *

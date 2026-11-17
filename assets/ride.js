@@ -8,7 +8,7 @@
  * — save it, under an optional name, or throw it away — and a saved ride is
  * a confirmed bike route: functions/api/rides.js keeps it, and from then on
  * the Bike tab draws it faintly under any way it runs beside. **Recorded
- * rides** in README.md is the reasoning; this is the page half, and the
+ * rides** in docs/handbook.md is the reasoning; this is the page half, and the
  * global is TTBRide, the way the walk's is TTBWalk.
  *
  * A WEB PAGE RECORDS ONLY WHILE IT IS LOOKED AT

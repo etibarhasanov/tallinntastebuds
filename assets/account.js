@@ -164,7 +164,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var PLACES_URL = '/data/places.json';
@@ -332,7 +332,7 @@
    * Copied whole from assets/lists.js, which copied it from the pass pages:
    * the style and the language are chosen on the map, written to localStorage,
    * and read by every other page. A page that skipped this block renders in
-   * red for somebody who chose green — see "The four styles" in README.md.
+   * red for somebody who chose green — see "The four styles" in docs/handbook.md.
    */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
@@ -395,7 +395,7 @@
      as well — the accent is spent once on this whole page, and it is spent on
      the one thing the page is asking for: the button that makes a list when
      somebody is signed in, and the offer of an account when nobody is. See
-     "The design rules" in README.md. */
+     "The design rules" in docs/handbook.md. */
   function foot(kids) {
     return el('p', { className: 'lists-row lists-foot' }, kids);
   }
@@ -843,10 +843,10 @@
            your handles and the rows — is written on /edit, beside a preview
            of the page itself. It was four boxes on this card, each with a
            Save of its own and none of them showing the page; see "Your page"
-           in README.md. */
+           in docs/handbook.md. */
         door('editDoor', t('editDoorWhy'), '/edit', 'edit_open'),
         /* What you have written for the blog, and the way to write more —
-           /write. See "Everybody's posts" under "The blog" in README.md. */
+           /write. See "Everybody's posts" under "The blog" in docs/handbook.md. */
         door('writeTitle', t('writeDoorWhy'), '/write', 'write_open'),
         /* How that page is doing, on /insights — and the one number worth
            having without opening it, as the row's own second line. */
@@ -900,7 +900,7 @@
    * has not signed up yet, which is by Continue with Google being right there
    * on the sheet the first time.
    *
-   * What it costs is said plainly in "Signing in with Google" in README.md:
+   * What it costs is said plainly in "Signing in with Google" in docs/handbook.md:
    * somebody with a password account who presses Continue with Google while
    * signed out still gets a second account, and there is no longer a step on
    * this site that joins the two.

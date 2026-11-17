@@ -459,7 +459,7 @@
 /* ---------- the pin picker ----------
 
    What this list's places wear on the map: one of forty-five markers. See
-   "The pins" in README.md, and assets/pins.js for the table. The mark is not
+   "The pins" in docs/handbook.md, and assets/pins.js for the table. The mark is not
    among them and cannot be — a place on the map draws the mouth whatever
    list it is on. There is no colour beside the grid: every marker draws in
    the style's accent, so this is one decision rather than two.
@@ -1583,7 +1583,7 @@
 
 /* One of the directory's two looks, dealt half and half to people new to the
    site — pickLook() in assets/lists.js, and **The lists' two looks** in
-   README.md. Look A is everything above, the page as it was; look B is this
+   docs/handbook.md. Look A is everything above, the page as it was; look B is this
    section and nothing else, every rule in it under [data-look="b"] on <html>,
    so taking the test out is deleting either this section or that attribute.
 
@@ -2445,7 +2445,7 @@ body.has-scrim { overflow: hidden; }
 /* ---------- a list read as a walk ----------
 
    The third view of one list — assets/walk.js draws it and **Walking a
-   list** in README.md is the reasoning. A card over the places, the places
+   list** in docs/handbook.md is the reasoning. A card over the places, the places
    on a rail in the order to walk them with the leg into each written beside
    it, the board of who finished — which opens, a row at a time, into how
    that person went round — and a band at the foot that holds the walk's one

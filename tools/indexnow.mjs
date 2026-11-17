@@ -87,7 +87,7 @@ import { dirname, join, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/* The host, spelled out — README.md under **Getting found** is the list of
+/* The host, spelled out — docs/handbook.md under **Getting found** is the list of
    files that name it. Bing is always told to fetch the key from here,
    whatever --probe says: --probe is where THIS tool reads it back from. */
 const SITE = 'https://tallinntastebuds.ee';

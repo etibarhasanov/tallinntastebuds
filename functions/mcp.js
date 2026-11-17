@@ -19,7 +19,7 @@
  *
  * It is added to an assistant as a custom connector by its address alone,
  * https://tallinntastebuds.ee/mcp — no key, no sign-in, no app to install.
- * **Read by an assistant** in README.md says how, and what it deliberately
+ * **Read by an assistant** in docs/handbook.md says how, and what it deliberately
  * leaves out.
  *
  * WHOSE PLACES, AND WHOSE LISTS
@@ -34,7 +34,7 @@
  * reaching for the rest of the city.
  *
  * The lists are the other kind of thing the site has: somebody's opinion,
- * under their name, in the order they put it in — **Lists** in README.md.
+ * under their name, in the order they put it in — **Lists** in docs/handbook.md.
  * A "top 10" there is its author's top ten and never the map's verdict, and
  * the six under `google-statistics` are Google's ratings under Google's
  * name. So `lists` answers with whose list it is on every

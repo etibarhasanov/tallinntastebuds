@@ -30,8 +30,8 @@ Two kinds of change come here, and they weigh differently:
 
 ## Read first
 
-- `README.md` → **Flashcards**, by its `###`s and never whole: the section is
-  two thousand lines and more. `grep -n '^##' README.md` and read between
+- `docs/handbook.md` → **Flashcards**, by its `###`s and never whole: the section is
+  two thousand lines and more. `grep -n '^##' docs/handbook.md` and read between
   `## Flashcards` and the heading after it. Which ones:
   - content: **Where the second thousand came from**, **The back of the card
     is in three languages**, **Four headings**, **Which decks are open**,
@@ -158,7 +158,7 @@ a lesson's example, `{ id, stage: "grammar", lesson, et, gap, wrong }`, with
 the word to leave out and at least two wrong forms. A card that is picked
 needs three neighbours in its deck whose meanings share no word with its own:
 the validator fails one that has fewer, and the fix is to ask it as `write` or
-to ask another card. **Find your level** in `README.md`.
+to ask another card. **Find your level** in `docs/handbook.md`.
 
 ### A conversation
 
@@ -213,7 +213,7 @@ than a check:
 - **`node tools/sitemap.mjs`.** Every deck, lesson and song is an address in
   `sitemap.xml`, and the validator fails a sitemap that was not re-run.
 - **The counts.** The number of decks and of cards is written into
-  `README.md`, the headers of `assets/flashcard.js`, `functions/api/flashcard.js`,
+  `docs/handbook.md`, the headers of `assets/flashcard.js`, `functions/api/flashcard.js`,
   `functions/flashcard.js`, `functions/api/_lib.js` and
   `functions/_middleware.js`, the schema's comment, the validator's banner —
   and into two sentences a visitor sees:
@@ -308,7 +308,7 @@ needs stamping for a content change.
   `lessonText()` there says so, and a new kind of lesson block prints
   nothing until `lessonText()` knows it. `node tools/mcpcheck.mjs --check`
   reads every deck and every lesson through it. **Read by an assistant,
-  the flashcards** in `README.md`.
+  the flashcards** in `docs/handbook.md`.
 - **`functions/api/say.js`** is Tartu's voice for exactly what is in
   `data/decks/spoken.json`, and reads nothing else. **Hearing it** says the
   sandbox a session works in cannot reach

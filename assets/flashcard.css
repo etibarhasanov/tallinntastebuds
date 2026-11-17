@@ -967,7 +967,7 @@
    under it to grey out. The line says what opens it and how far off that is,
    in the mono, because it is a count — and the rule in front of it is filled
    to how far the count has come, the same rule a deck's tile wears. See
-   **Which decks are open** under **Flashcards** in README.md. */
+   **Which decks are open** under **Flashcards** in docs/handbook.md. */
 .flash-opens {
   display: flex;
   align-items: center;

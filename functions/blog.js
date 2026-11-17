@@ -24,7 +24,7 @@
  * by a stranger or private. That was right while every post was about the site
  * itself. It stopped being right when the blog started carrying posts about
  * where to eat, which are the pages on this site most likely to be what
- * somebody typed; see **Found as text** under **The blog** in README.md.
+ * somebody typed; see **Found as text** under **The blog** in docs/handbook.md.
  *
  * IN ENGLISH, WHATEVER THE LINK ASKED FOR
  *

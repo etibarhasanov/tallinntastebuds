@@ -71,7 +71,7 @@ function weigh(bytes) {
                           : `${Math.round(bytes / 1024)} KB`;
 }
 
-/* The order README.md writes a story entry in. An entry this pass has touched
+/* The order docs/handbook.md writes a story entry in. An entry this pass has touched
    is rebuilt through it so a poster added here sits next to the video it
    belongs to, rather than at the end where it would read as an afterthought
    and make a worse diff. Unknown keys keep their place at the back, so a field

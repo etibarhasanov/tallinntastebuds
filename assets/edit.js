@@ -102,7 +102,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var ACCOUNT_API = '/api/account';
@@ -240,7 +240,7 @@
 
   /* --------------------------------------------------------------- dressing
    * Copied whole from assets/account.js, which copied it from the lists page:
-   * see "The two styles" in README.md. */
+   * see "The two styles" in docs/handbook.md. */
   function applyStyle() {
     var fromUrl = new URLSearchParams(window.location.search).get('style');
     var stored = storeGet(STYLE_KEY);
@@ -284,7 +284,7 @@
 
   /* ------------------------------------------------------------- the draft
    * A stored row is a title and one other thing, and which of the two is
-   * filled is what it is — see "Your page" in README.md. The form needs to
+   * filled is what it is — see "Your page" in docs/handbook.md. The form needs to
    * know what a row is *meant* to be while it is still empty, so the draft
    * carries a kind, and the kind is read back off the row on the way out. */
 
@@ -534,7 +534,7 @@
     box.appendChild(linesField());
 
     /* The handles take a pasted address and show what they made of it once
-       the field is left — **Where else you are** in README.md, and the
+       the field is left — **Where else you are** in docs/handbook.md, and the
        header of assets/links.js for why these three carry no maxlength.
        Each is one line: the site's glyph and the address with the handle
        missing off the end of it, then the box for the handle. The address
@@ -625,7 +625,7 @@
      box, and a note box, in every one of them; see rowItem(). A reader whose
      page is in one of them gets those versions; everybody else gets the page
      as first written. **Your page, in other languages** under **Profiles**
-     in README.md.
+     in docs/handbook.md.
 
      The first line is not tagged with a language — nothing asks which it was
      written in, and the menu offers all ten because of that — so somebody

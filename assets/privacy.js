@@ -6,7 +6,7 @@
  * visitor who reads in another language from the bare address to theirs —
  * /privacy?lang=et and the rest, the way the map is read — and puts the
  * page's few frame words, the skip link and the way home, into the language
- * the page is in. **Privacy** in README.md.
+ * the page is in. **Privacy** in docs/handbook.md.
  *
  * Plain browser JavaScript, one IIFE, ES5, like every file in assets/.
  */

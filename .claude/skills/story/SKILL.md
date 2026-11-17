@@ -21,7 +21,7 @@ the entry goes through a branch and a PR like everything else.
 
 ## Read first
 
-- `README.md` → **Stories**, and **The admin page** → **Posting a story** and
+- `docs/handbook.md` → **Stories**, and **The admin page** → **Posting a story** and
   **What it does to a video**.
 - `stories/README.md` — what a file should be and the `ffmpeg` lines.
 - The headers of `tools/stories.mjs`, `tools/storymedia.mjs` and
@@ -60,7 +60,7 @@ other.
 
 `/admin.html`, signed in on the site as the owner, on any device. The site
 writes with its own `GITHUB_TOKEN` secret through `/api/admin/github/` —
-**The token the site writes with** in `README.md`. It targets whatever GitHub
+**The token the site writes with** in `docs/handbook.md`. It targets whatever GitHub
 reports as the repo's default branch, and it needs nothing from a laptop.
 
 1. **Pick a photograph or a video.** A photo is shrunk on the device down the

@@ -18,7 +18,7 @@
  * WHY IT IS THE ONE PUBLIC NUMBER OUT OF visitor_counts
  *
  * Every other count on this site is on the owner's pages or nowhere, because
- * a number under a name is a score — **Public lists** in README.md is the
+ * a number under a name is a score — **Public lists** in docs/handbook.md is the
  * argument. This card puts no number under a place, a list or a person. It
  * says how many people came and from which countries, which scores nobody,
  * and the owner wanted the site to say it.

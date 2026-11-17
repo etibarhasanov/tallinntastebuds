@@ -4,7 +4,7 @@
  * scripts off it still says it and both ways on still work. This file does
  * the three things a script has to: wears the style the visitor chose, puts
  * the words into their language, and prints the address they asked for, so a
- * typo can be seen for what it is. **Not found** in README.md.
+ * typo can be seen for what it is. **Not found** in docs/handbook.md.
  *
  * The words come the way the blog's and the pass pages' do: the list of
  * languages out of data/lang/index.json, then the one this visitor reads in

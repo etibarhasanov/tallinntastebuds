@@ -5,7 +5,7 @@
  * the flashcards, the three around a game of chess, the
  * owner — with a chip for each, read out of data/flows.json, and
  * under the diagram whatever step was last pressed: its note and the files
- * and routes that do it. See **Who uses the site, drawn** in README.md.
+ * and routes that do it. See **Who uses the site, drawn** in docs/handbook.md.
  *
  * AND THE NUMBERS ON IT
  *
@@ -67,7 +67,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var NUMBERS = '/api/admin/flows';

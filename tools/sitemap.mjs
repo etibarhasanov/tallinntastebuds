@@ -74,7 +74,7 @@
  * know, so the profiles here are the ones the repository knows exist: one
  * /u/<name> per assets/faces/<name>.jpg. A profile is otherwise found through
  * the bylines on its lists, and a profile that is a page of links and no
- * lists — see **Your page** under **Profiles** in README.md — has no byline
+ * lists — see **Your page** under **Profiles** in docs/handbook.md — has no byline
  * anywhere, so without this a search could not reach it. A face in the
  * repository is the one signal that a profile is meant to be found by name.
  *
@@ -128,7 +128,7 @@ const POSTS = join(ROOT, 'data', 'blog.json');
 const FACES = join(ROOT, 'assets', 'faces');
 
 /* The host, spelled out. robots.txt, the pages' own og: tags,
-   tools/indexnow.mjs and functions/_shell.js each name it too — README.md
+   tools/indexnow.mjs and functions/_shell.js each name it too — docs/handbook.md
    under **Getting found** is the list to walk when it changes. */
 const SITE = 'https://tallinntastebuds.ee';
 

@@ -122,7 +122,7 @@
  * the map, the flashcards or anywhere else today also says, for somebody
  * new, that it is the first there — firstStay() below — so the time on
  * each can be read per newcomer by colour. dealStyle() below;
- * "The four styles, dealt" in README.md.
+ * "The four styles, dealt" in docs/handbook.md.
  *
  * TO REMOVE TRACKING
  *
@@ -183,7 +183,7 @@ window.TTBTrack = (function () {
      was not new to the site when they first opened /lists. Set as a
      Clarity tag where there is one, so a recording can be filtered to a
      look. The site's own count is where the test is read — "The lists' two
-     looks" in README.md. */
+     looks" in docs/handbook.md. */
   var LOOK_KEY = 'ttb.look';
 
   function look() {

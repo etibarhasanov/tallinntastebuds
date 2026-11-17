@@ -40,10 +40,10 @@
  * nowhere, since only the owner can open it. The
  * filters are the third array, in full, because there are fourteen of them,
  * and the rail is the fourth, in full, because there are nine across its
- * two shapes — "The short rail" in README.md. The lists are the fifth, and
+ * two shapes — "The short rail" in docs/handbook.md. The lists are the fifth, and
  * only the ones somebody has opened, capped at LISTS, each with the
  * countries it was opened from: the number a stranger never sees — the one
- * that orders /lists, **Public lists** in README.md — drawn here for the
+ * that orders /lists, **Public lists** in docs/handbook.md — drawn here for the
  * owner alone, beside where the readers were. And the posts members wrote
  * are the sixth, the same way: only the ones somebody has read, capped at
  * POSTS, each with its author — the number its author reads on /insights,
@@ -229,7 +229,7 @@ export async function onRequestGet(context) {
          opened, so it is still in the ranking — but a row at the bottom of one
          needs to say why it is there, or the table reads as a verdict on a
          restaurant that closed in March. See **Close a place instead of
-         deleting it** in README.md. */
+         deleting it** in docs/handbook.md. */
       closed: !!p.closed
     }))
     .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
@@ -299,7 +299,7 @@ export async function onRequestGet(context) {
  *
  * In full rather than only the pressed ones, for the reason the map's own
  * places are in full: a chip nobody has pressed is the answer to the question
- * this table is for. **The order of the filter chips** in README.md is what
+ * this table is for. **The order of the filter chips** in docs/handbook.md is what
  * that question is — the row is in a hand-written order today, and this is the
  * measurement that would argue for a different one.
  *

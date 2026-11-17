@@ -22,7 +22,7 @@
  * functions/api/feedback.js — and there are deliberately no chips here to
  * pick it with: two orders on a page like this is a control that makes the
  * reader responsible for a decision they have no way to have an opinion
- * about. **Feedback** in README.md is the argument in full.
+ * about. **Feedback** in docs/handbook.md is the argument in full.
  *
  * PUTTING YOUR NAME ON IT IS A SIGN-IN, AND IT HAPPENS IN THE SAME PRESS
  *
@@ -69,7 +69,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var API = '/api/feedback';
@@ -82,7 +82,7 @@
   /* Five hundred, and the server is the one that binds it — MAX_FEEDBACK in
      functions/api/feedback.js. This is the copy that stops somebody typing
      past it rather than finding out afterwards; see **The caps** in
-     README.md, which lists every number that lives in two places. */
+     docs/handbook.md, which lists every number that lives in two places. */
   var MAX_TEXT = 500;
   /* Three to twenty-four, as USERNAME_RE in functions/api/_account.js. */
   var MAX_NAME = 24;

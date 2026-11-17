@@ -44,7 +44,7 @@
   from restaurants.json, runs every check CI runs, and puts it on the live
   branch if they pass. The page watches that run and then the map, and says
   when the place is live — or why it is not. See **The admin page** in
-  README.md.
+  docs/handbook.md.
 -->
 <meta name="theme-color" content="#f7ddd4">
 
@@ -64,9 +64,9 @@
      What follows the links is only what a form has and a ranking does not. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=125904c2">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7968d8b">
-<link rel="stylesheet" href="/assets/stats.css?v=60bcdad6">
+<link rel="stylesheet" href="/assets/stats.css?v=4fe97d0d">
 <style>
-/* No colour is named below — rule 1 of The design rules in README.md — so
+/* No colour is named below — rule 1 of The design rules in docs/handbook.md — so
    the dark style the owner picked on the map reaches this page too. */
 
 .admin-card { padding: 22px 22px 20px; }
@@ -1660,7 +1660,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
   /* ---------------------------------------------------------- a discount
    * What a place takes off the bill, switched on or off, and the thing this
    * tab was built for: a rate that is drawn rather than named — base, spread
-   * and step, the three numbers README.md calls a roll. It commits straight
+   * and step, the three numbers docs/handbook.md calls a roll. It commits straight
    * to the publishing branch the way a story does. A discount is changed at
    * a counter's request on the afternoon it is asked for, and nothing needs
    * rebuilding after deals.json, so there is nothing to wait for; git keeps every version, so a change is undone by making
@@ -3009,7 +3009,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
       body.appendChild(el('p', { className: 'note', textContent:
         'Changing the site needs GITHUB_TOKEN set in the Pages project’s production ' +
         'secrets: a fine-grained token for this one repository with Contents read and ' +
-        'write and Actions read. README.md, under The admin page, has the steps.' }));
+        'write and Actions read. docs/handbook.md, under The admin page, has the steps.' }));
       /* At a desk the report is the work and this card a fact beside it. */
       body.classList.add('is-rail');
       var google = el('section', { className: 'card admin-card is-work' });

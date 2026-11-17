@@ -22,7 +22,7 @@ the functions you touch plus what they call and what calls them.
 - The README section for the feature: **Saves**, **Accounts**, **The
   account page**, **Lists**, **Profiles**, **Google venues**, **The
   directory**, **The pins**, **Ask for somewhere**. Each says what is cached, what is
-  deliberately not, and where a count comes from. `grep -n '^## ' README.md`
+  deliberately not, and where a count comes from. `grep -n '^## ' docs/handbook.md`
   is the table of contents with line numbers.
 - **Two databases, and never one** and **Setting it up**, before anything
   that touches a binding, a secret or the schema — read with **Production
@@ -80,7 +80,7 @@ kinds `POST /api/stats` takes are the `/stats` skill's table, and the chess
 route's shape is the `/chess` skill's. A **Writes** cell that says
 `countUse()` means `visitor_counts` and `usage_people`, every write that went
 through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
-`README.md`.
+`docs/handbook.md`.
 
 | Route | File | Writes | Cache | What to know |
 |---|---|---|---|---|
@@ -183,7 +183,7 @@ production sharing an id or a name.
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | optional, and both or neither. Without a *usable* pair `/api/account` answers `google: false`, every sheet draws the username and password alone, and `/api/google` sends a hand-typed request home. Nothing else changes. Usable is more than present: `googleReady()` trims both, requires every character of the id to be a letter, digit, dot, hyphen or underscore, requires it to end in `.apps.googleusercontent.com`, and requires it to be **longer** than that suffix — a value truncated to the bare suffix passes `endsWith()`, which is what broke the sign-in on the day it shipped. So a pasted newline, a zero-width character trimming cannot reach, a truncated id, or the secret in the id's box all read as absent rather than as a button that ends on Google's `invalid_client` page. Past those four, an `invalid_client` is the console and not the binding |
 | `APPLE_APP_ID` | optional. The bundle ids `/api/apple` accepts a token for, comma-separated; unset, it is the two in `APP_IDS` — `ee.tallinntastebuds.app`, the map's app, and `ee.tallinntastebuds.kohuke`, the flashcards' — and set, it replaces both. Not a secret, and needed only for an app build signed under another id — `_apple.js` |
 | `GOOGLE_MAPS_API_KEY` | optional, and **Production only**. Without it no Google place is refreshed and the directory keeps the export's numbers; `/api/admin/refreshes` answers `key: false` and the admin tab says so. In Preview as well it would be a second counter in a second database spending from the same free thousand a month, which is why it goes in one. `googleKey()` in `_refresh.js` trims it and holds it to the shape of a Google key, so a stray word in the box reads as absent |
-| `GITHUB_TOKEN` | optional, and **Production only**. A fine-grained token for this repository, Contents read and write and Actions read. Without it `/api/admin/github/` answers 503 `no-token` and `/admin.html` reads but cannot change anything — **The token the site writes with** in `README.md` |
+| `GITHUB_TOKEN` | optional, and **Production only**. A fine-grained token for this repository, Contents read and write and Actions read. Without it `/api/admin/github/` answers 503 `no-token` and `/admin.html` reads but cannot change anything — **The token the site writes with** in `docs/handbook.md` |
 | `ADMINS` var | nobody is the owner: everything under `/admin/` is 404 and everything under `/api/admin/` is 403, to everybody. A list of `users.id`, never usernames, one per environment block because the two databases hold different accounts; `_admin.js` says why it fails closed |
 | `AI` binding | `/api/ask` answers `source: "none"`, `note: "no-ai"`, and the chat says nothing on the map answers. Everything else is untouched |
 
@@ -220,7 +220,7 @@ the only thing stored is Google's `sub`. An account made this way has an
 **empty `pw_hash`**, and `matches()` in `account.js` is the one place that
 knows what that means: it refuses a sign-in against one rather than deriving
 PBKDF2 at nought iterations, which WebCrypto throws on. Read **Signing in with
-Google** in `README.md` before changing any of it.
+Google** in `docs/handbook.md` before changing any of it.
 
 **Every write is a prepared statement, and every write to a list is
 preceded by a read of `lists.owner`**: `onRequestPost` in `lists.js` loads
@@ -291,7 +291,7 @@ import the other, so they are written out twice — the same arrangement the
 story clock has. `node tools/validate.mjs` fails the build when they drift, so
 this one is enforced rather than remembered. `mark` is in neither, on purpose:
 the mouth goes on a place I have eaten at and a picker must not be able to
-hand it out. **The pins** in `README.md`.
+hand it out. **The pins** in `docs/handbook.md`.
 
 ## The rules of a write
 
@@ -403,7 +403,7 @@ no step 1 until the owner has answered it.
    gone. A step the site can see somebody take also says what it is counted
    by, in `when` — a page out of `PAGES` in `_visitors.js` or a press name
    the README's **Analytics** table lists — or it draws with no number on
-   `/admin/flows`. **Who uses the site, drawn** in `README.md`.
+   `/admin/flows`. **Who uses the site, drawn** in `docs/handbook.md`.
 5. The pass in `leave-it-better.md`.
 
 ## The commit

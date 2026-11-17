@@ -32,7 +32,7 @@
  *                      because this site does frame itself: the map opens
  *                      every page a visitor walks to in a frame over itself
  *                      — assets/shell.js, and "The map is the shell" in
- *                      README.md — and under 'none' that frame was blank.
+ *                      docs/handbook.md — and under 'none' that frame was blank.
  *                      Same origin only, so the two subdomains cannot frame
  *                      the map and the map does not frame them; every walk
  *                      from the map is to an address on its own host. This is

@@ -563,7 +563,7 @@
    * Somebody new to the site who opens /lists is dealt one of two looks for
    * it, half and half, and keeps it: 'a', the page as it was, or 'b', the
    * resting palette and the quieter desk — everything under [data-look="b"]
-   * in assets/lists.css. "The lists' two looks" in README.md is the whole of
+   * in assets/lists.css. "The lists' two looks" in docs/handbook.md is the whole of
    * it; this is the deal and the three things counted about it.
    *
    * A test of its own, beside the map's two rails and not inside them: its
@@ -1389,7 +1389,7 @@
    * one among them.
    *
    * It is the one page here that puts one person's writing above another's.
-   * The argument for that, and what it costs, is in README.md under **Public
+   * The argument for that, and what it costs, is in docs/handbook.md under **Public
    * lists** — this is only how it is drawn.
    *
    * The row is the index row restacked. The title, then one line led by the
@@ -2481,7 +2481,7 @@
    * for a member a walk to start, check in on and finish. assets/walk.js is
    * the view and functions/api/walk.js the rows behind it; what is here is
    * the switch, and the page's own pieces handed over so a card there is the
-   * card everywhere. **Walking a list** in README.md.
+   * card everywhere. **Walking a list** in docs/handbook.md.
    *
    * A list of one place is not a walk, and neither is one whose places the
    * catalogue has lost: two with somewhere to stand is the least there is an
@@ -2968,7 +2968,7 @@
    * What this list's places wear on the map.
    *
    * The map's own places are not among them. A place I have eaten at draws
-   * the mark — the mouth, see "The mark" in README.md — whatever list it is
+   * the mark — the mouth, see "The mark" in docs/handbook.md — whatever list it is
    * on and whatever that list chose, because the mouth is this site saying
    * it has been there and a list is somebody else saying they liked it.
    * Those are two different sentences and only one of them is mine to hand
@@ -3213,7 +3213,7 @@
    * name says so above the name field rather than opening the picker. Leaving
    * a draft leaves nothing: no row, no "0 places" on a profile.
    *
-   * "Named afterwards" under "Lists" in README.md. */
+   * "Named afterwards" under "Lists" in docs/handbook.md. */
   function draftList() {
     return {
       id: '', title: '', intro: '', public: true, by: state.me, mine: true,
@@ -3386,7 +3386,7 @@
      from a page whose own switch offers a map with the whole list on it. The
      switch is in the bar at the top and people read downwards. Google Maps is
      still a press away, behind Directions and See on Google on the card the
-     map draws. **Pressing a row is the third way across** in README.md is
+     map draws. **Pressing a row is the third way across** in docs/handbook.md is
      the argument in full.
 
      The id is the one the map seats the place under, which is what
@@ -3455,7 +3455,7 @@
      onto the map rather than the name across the top of it — design rule 8, a
      target the width of the card and not the width of however that place
      happens to be spelt. **Pressing a row is the third way across** in
-     README.md is the argument in full.
+     docs/handbook.md is the argument in full.
 
      A place the catalogue has lost is not dressed as a door, because it has
      nowhere to go: placeHref() gives it no address, placeName() draws the
@@ -4377,7 +4377,7 @@
   /* ------------------------------------------------------ on Google Maps
    * The picker's half of the map's own button — ON GOOGLE MAPS above
    * findLookUp() in assets/app.js, and **Look for it on Google Maps** in
-   * README.md. A press, never a search that fires by itself: each one is a
+   * docs/handbook.md. A press, never a search that fires by itself: each one is a
    * call against a budget. /api/lookup keeps what Google answers in
    * google_venues, so the row a tap then puts on the list is a Google place
    * like any other, with a card behind it, rather than a name and a pin
@@ -5211,7 +5211,7 @@
        page cannot start without. One language of them rather than the ten
        data/ui.json holds: the list of languages first, a few hundred bytes,
        then the one this reader is in, both written by tools/languages.mjs —
-       **One language at a time** under **Languages** in README.md. The switch
+       **One language at a time** under **Languages** in docs/handbook.md. The switch
        reloads the page in the language picked, so one is all it ever needs. */
     var strings = getJSON('/data/lang/index.json').then(function (names) {
       var lang = pickLanguage(Object.keys(names).sort());

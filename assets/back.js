@@ -10,7 +10,7 @@
  * the drag itself, and answers it the way the browser's own Back button
  * would: `history.back()`, nothing else. A place opened on the map closes,
  * because opening one is a history entry of its own (**Back** under
- * **Analytics** in README.md); a list goes back to the account page or the
+ * **Analytics** in docs/handbook.md); a list goes back to the account page or the
  * map it was opened from; a post on the blog goes back to the index.
  *
  * WHAT IT IS NOT

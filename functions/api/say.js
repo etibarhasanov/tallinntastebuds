@@ -17,7 +17,7 @@
  * each sentence of a grammar lesson asks for that sentence, and a form in a
  * lesson's paradigm, pressed, asks for itself — see sayLine(), examples() and
  * paradigm() in assets/flashcard.js and **Hearing it** under **Flashcards**
- * in README.md.
+ * in docs/handbook.md.
  *
  * WHOSE VOICE, AND WHY NOT OURS
  *

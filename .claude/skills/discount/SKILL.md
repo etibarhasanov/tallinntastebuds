@@ -50,7 +50,7 @@ stamper only rewrites references to `assets/*.js|css`, and `data/*` is served
 
 ## Read first
 
-- `README.md` → **Restaurant discounts**, end to end. One line in it is
+- `docs/handbook.md` → **Restaurant discounts**, end to end. One line in it is
   behind the code: the preview band is drawn on all three pass pages,
   `staff.html` included, not two.
 - The header of `assets/pass.js`, which is the whole mechanism in one file.

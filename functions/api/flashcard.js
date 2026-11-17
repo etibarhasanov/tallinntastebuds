@@ -23,7 +23,7 @@
  *
  * What the tables hold is the three things a file cannot: the decks people
  * write for themselves, how far each person has got, and which of the shipped
- * cards readers say is wrong. See **Flashcards** in README.md and the block at
+ * cards readers say is wrong. See **Flashcards** in docs/handbook.md and the block at
  * the end of db/schema.sql.
  *
  * AND THE GRAMMAR, WHICH IS READ RATHER THAN TURNED OVER
@@ -37,7 +37,7 @@
  * gathers known cards can see that row: wordsKnown() sums over the decks on
  * the shelf and gathered() reads only the decks the rows name, so a deck id
  * that is in neither is dropped rather than counted. See **Grammar, which is
- * read rather than turned over** under **Flashcards** in README.md.
+ * read rather than turned over** under **Flashcards** in docs/handbook.md.
  *
  * AND THE SONGS, WHICH ARE LISTENED TO
  *
@@ -48,7 +48,7 @@
  * shelf to look it up in — and Heard it is the `knew` action under SONG_DECK.
  * The words worth keeping are an ordinary deck in `decks`, with a level of
  * its own, and are counted like any other. See **Songs, which are listened
- * to** under **Flashcards** in README.md.
+ * to** under **Flashcards** in docs/handbook.md.
  *
  * AND WHERE A TEST PUT SOMEBODY
  *
@@ -57,7 +57,7 @@
  * naming the stage they came to — which opens it, and every stage under it,
  * whatever the count of words: gatesFor() below. ./_level.js holds the test,
  * the marking and the placing, and its header is the argument; **Find your
- * level** under **Flashcards** in README.md.
+ * level** under **Flashcards** in docs/handbook.md.
  *
  * AND THE CONVERSATIONS, WHICH ARE READ
  *
@@ -66,7 +66,7 @@
  * The shelf answer names them, ?deck=<talk id> answers one whole, and Read it
  * is the `knew` action under TALK_DECK. Nothing in a conversation is a card,
  * and nothing in the database is a conversation but that one row. See
- * **Conversations, which are read** under **Flashcards** in README.md.
+ * **Conversations, which are read** under **Flashcards** in docs/handbook.md.
  *
  * **Nothing here chooses which language a card is turned over into.** A deck
  * the site ships carries its name, the line under it and the back of every
@@ -299,7 +299,7 @@ const MISSED_DECK = 'missed';
  * The numbers are here rather than in data/decks.json or on the page because
  * a threshold is a rule about the count and the count is computed here; the
  * page prints whatever this answer carries, so there is one copy to move.
- * README.md, **Which decks are open** under **Flashcards**, is why a hundred
+ * docs/handbook.md, **Which decks are open** under **Flashcards**, is why a hundred
  * and four hundred.
  */
 const GATES = { more: 100, deep: 400 };
@@ -632,7 +632,7 @@ async function knownOf(env, user) {
  * Which days this person answered a card on, one row a day in
  * flashcard_days, for the line the front door opens with: "4 days in a row",
  * or "you've been away 9 days". **Days in a row** under **Flashcards** in
- * README.md is the argument for counting it at all, which this page refused
+ * docs/handbook.md is the argument for counting it at all, which this page refused
  * to do until November 2026.
  *
  * The day is the reader's own, sent by the page with every answer, because a
@@ -989,7 +989,7 @@ export async function onRequestGet(context) {
      and then opening it ran the three cards that had been got wrong. The run
      was right. Getting a word wrong does not take it out of the deck it
      belongs to — see mark() below, and **The deck of what you got wrong** in
-     README.md — so the row says so.
+     docs/handbook.md — so the row says so.
 
      It is waiting in the missed deck as well, and those are the same cards
      counted in two places on purpose. One place is the deck they came from
@@ -1008,7 +1008,7 @@ export async function onRequestGet(context) {
      draws its heading and the line saying what opens it out of `gates` and
      `words`, which every answer carries. A deck asked for by its address is
      not filtered, here or above: an arrival from a search result is not the
-     list, and **Which decks are open** in README.md says why each of the two
+     list, and **Which decks are open** in docs/handbook.md says why each of the two
      is held differently. */
   const list = decks.filter((d) => !shutAt(d.level, words, ready, gates)).map((d) => ({
     id: d.id,

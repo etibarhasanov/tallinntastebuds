@@ -65,7 +65,7 @@
  * Production only: the counter lives in whichever database the site is bound
  * to, so a key in Preview too would be a second counter spending from the same
  * free thousand. Without it, nothing here runs and the site is exactly what it
- * was — see **Keeping it current** under **Google venues** in README.md.
+ * was — see **Keeping it current** under **Google venues** in docs/handbook.md.
  *
  * WHAT IS WRITTEN
  *

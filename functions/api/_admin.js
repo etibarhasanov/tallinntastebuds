@@ -34,7 +34,7 @@
  * ./admin/github/[[path]].js, which writes to the repository with the
  * GITHUB_TOKEN secret — so an account named here, signed in on the site, is
  * the whole of the door to changing the site. See **The admin page** in
- * README.md.
+ * docs/handbook.md.
  *
  * FAILS CLOSED
  *

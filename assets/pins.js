@@ -4,7 +4,7 @@
  * order, which is the whole of the feature:
  *
  *   1. A place on my map draws THE MARK — the mouth out of the painting, at
- *      22px, see "The mark" in README.md. Nothing overrides it. A list that
+ *      22px, see "The mark" in docs/handbook.md. Nothing overrides it. A list that
  *      chose a croissant and put Pizza Hut and a place of mine side by side
  *      gets a croissant and a mouth, because the mouth is not decoration: it
  *      is this site saying it has eaten there. It is not in GLYPHS below and
@@ -199,7 +199,7 @@ window.TTBPins = (function () {
      is written down at all. What you eat takes the style's own accent, what
      you drink sea, what is baked amber — three is what a five-pixel dot on
      the directory's map can actually carry (see "The dots are not the map's
-     pins" in README.md), and the glyph is what tells the five apart.
+     pins" in docs/handbook.md), and the glyph is what tells the five apart.
 
      A marker has no tone because a list does not choose one: every marker
      draws in the accent, which is the colour of everything else on this site
@@ -225,7 +225,7 @@ window.TTBPins = (function () {
 
   /* Google's words, read into one of the five. The keys are ids out of
      data/taxonomy.json and data/cuisines.json, which are deliberately
-     disjoint — see "Cuisines, in eleven languages" in README.md — so one object
+     disjoint — see "Cuisines, in eleven languages" in docs/handbook.md — so one object
      can hold both without a collision.
 
      Everything not named here is somewhere you sit and eat, which is the

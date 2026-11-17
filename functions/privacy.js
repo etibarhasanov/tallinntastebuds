@@ -6,7 +6,7 @@
  * the one page on the site that has to be readable by anybody who asks —
  * a crawler, a reader with scripts off, somebody's lawyer — so the words are
  * written here on the server rather than drawn by a script, and nothing in
- * the browser draws over them. **Privacy** in README.md is the page's half.
+ * the browser draws over them. **Privacy** in docs/handbook.md is the page's half.
  *
  * ONE LANGUAGE PER ADDRESS
  *

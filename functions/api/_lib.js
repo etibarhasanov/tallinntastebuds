@@ -531,7 +531,7 @@ export async function catalogue(context) {
  * colo and kept, and that file is one of the four the render is keyed on.
  * Every other Function that prints a string reads one language's file,
  * through languageIndex() and wordsIn() below, and every page reads the
- * same — One language at a time under Languages in README.md.
+ * same — One language at a time under Languages in docs/handbook.md.
  */
 const files = new Map();
 
@@ -558,7 +558,7 @@ export async function dataFile(context, path) {
  * in all eleven languages, 810 KB — read to answer which languages there are,
  * and in wordsFor() below to pick one block out of it. The pages had gone
  * over to the index and one file each by then (One language at a time under
- * Languages in README.md); the Functions were the last readers of the whole
+ * Languages in docs/handbook.md); the Functions were the last readers of the whole
  * file, and on the flashcards a fresh isolate parsed it beside
  * data/decks.json, the two together most of the free plan's ten
  * milliseconds of CPU: measured in Node on an ordinary machine, 4.8 ms for
@@ -760,7 +760,7 @@ export async function wordsFor(context, asked, only) {
  * cannot overwrite a word that was never in it. One line per place, a word
  * the tables already read, and only ever more words, not fewer — a place
  * Google has wrong is `hidden`, which is the curation switch for that. See
- * **What counts as Coffee, and what counts as Tea** in README.md. */
+ * **What counts as Coffee, and what counts as Tea** in docs/handbook.md. */
 export const SAID_TOO = new Map([
   ['ChIJcQIweVCTkkYRZi0y-o4yPiM', 'tea house']  // Gourmet Coffee, L. Koidula 13a
 ]);
@@ -805,7 +805,7 @@ const VENUE_TYPES = [
  * on Google's place, with Google's name on it, which is the only shape in
  * which a number like that can be honest here. The one exception is the find
  * bar's order, which /api/places lends a place of mine its linked row's
- * numbers for and never prints — **The find bar's order** in README.md.
+ * numbers for and never prints — **The find bar's order** in docs/handbook.md.
  *
  * The contact half — the phone, the site, the week of opening hours and the
  * Google listing — is not here. It is added by venuesByIds() below, because

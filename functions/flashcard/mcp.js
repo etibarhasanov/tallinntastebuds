@@ -21,7 +21,7 @@
  *
  * The protocol — the transport, the handshake, the errors — is ../_mcp.js,
  * shared with the map's door and argued in its header. **Read by an
- * assistant, the flashcards** under **Flashcards** in README.md is this file
+ * assistant, the flashcards** under **Flashcards** in docs/handbook.md is this file
  * in prose, with how to connect it.
  *
  * THREE TOOLS

@@ -22,7 +22,7 @@
  * "Nothing matches", and nowhere to go. So from five letters the bar
  * offers to look on Google Maps, under whatever it found itself, and this
  * is what it asks. **Look for it on
- * Google Maps** under **Finding anywhere in Tallinn** in README.md.
+ * Google Maps** under **Finding anywhere in Tallinn** in docs/handbook.md.
  *
  * WHY THE ANSWER IS KEPT
  *

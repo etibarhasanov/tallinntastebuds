@@ -45,7 +45,7 @@
  *
  * A fine-grained personal access token scoped to this one repository, with
  * Contents read and write and Actions read, set as GITHUB_TOKEN in the Pages
- * project's production secrets — **The admin page** in README.md says how. It
+ * project's production secrets — **The admin page** in docs/handbook.md says how. It
  * is never sent to the browser.
  */
 

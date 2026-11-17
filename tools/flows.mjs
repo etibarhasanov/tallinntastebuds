@@ -9,7 +9,7 @@
  * per actor — the site among them where work is handed to it and back, and
  * otherwise its steps marked in the person's own lane — and every step names
  * the file or the route that does it, so the picture is also an index into
- * the code. **Who uses the site, drawn** in README.md says which is which.
+ * the code. **Who uses the site, drawn** in docs/handbook.md says which is which.
  *
  *   data/flows.json    the source, written by hand. A person, a lane per
  *                      actor, a step per thing they can do, an arrow per

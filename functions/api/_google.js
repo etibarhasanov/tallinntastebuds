@@ -13,7 +13,7 @@
  * A password reset by email was written for this site once and never ran:
  * Email Sending is not on the Cloudflare free plan, so the whole of it only
  * ever answered "not available" and it was taken out again — see **Accounts**
- * in README.md. This is the other thing an address is usually for, and it
+ * in docs/handbook.md. This is the other thing an address is usually for, and it
  * needs none: the browser goes to Google, the person signs in *there*, and
  * Google hands this site back a signed statement of who they are. Nothing is
  * sent, so there is nothing to send it with.
@@ -164,7 +164,7 @@ function clientSecret(env) {
    suffix, which is the one that actually happened. Refusing any of them reads
    to a visitor as Google simply not being switched on, which is a state this
    site already has and draws properly; the alternative is a button that every
-   visitor can press and nobody can use. **Turning it on** in README.md says
+   visitor can press and nobody can use. **Turning it on** in docs/handbook.md says
    how to tell these apart from outside. */
 export function googleReady(env) {
   const id = clientId(env);

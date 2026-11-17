@@ -89,7 +89,7 @@ win, where the house would abandon a private game; Rematch is a new challenge.
 One between two people at a time, five going for one member. No notice
 anywhere but this page. The first draft asked for both players to be in
 Tallinn with location on; the owner dropped it. **Member against member** in
-`README.md`.
+`docs/handbook.md`.
 
 **Giving up, and agreeing a draw**, asked for by the owner after the duels:
 under every game's moves, *Resign* and *Offer a draw*, each behind the
@@ -105,7 +105,7 @@ declines, it plays on. An ask short of two lapses two plies on, and so does
 an offer to the city; an offer to one person dies with their move. A public
 game ended this way starts the next one on its own, colours swapped — the
 owner's three answers: two in total, start on its own, visitors count.
-**Giving up, and agreeing a draw** in `README.md`.
+**Giving up, and agreeing a draw** in `docs/handbook.md`.
 
 Every board is the same component: an eyebrow naming the two sides, a mono line
 saying whose move it is, a sentence saying what that means for whoever is
@@ -139,7 +139,7 @@ for four choices in the segmented control the language switch is.
   in 700 ms, a castling rook with it, and an undone move glides home. Not on
   the first draw, a language switch or a poll several moves on, and not with
   reduced motion. Added at the owner's asking after 5¾ — **A move is seen to
-  happen** in `README.md`.
+  happen** in `docs/handbook.md`.
 - Check on the line; Checkmate, Stalemate or Draw with its reason when it ends,
   then *Tallinn Tastebuds starts the next game.* for readers and the button for
   the house.
@@ -174,7 +174,7 @@ for four choices in the segmented control the language switch is.
   visitor*; *Delete* under your own, *Hide* under anybody's for the house;
   once the game is over, the notes and *This game is over.* where the field
   was; past five in an hour, *That's a lot of notes*. Added at the owner's
-  asking between 5½ and 6 — **Notes for the next player** in `README.md`.
+  asking between 5½ and 6 — **Notes for the next player** in `docs/handbook.md`.
 - The language switch and the radio are the flashcards page's, in the same
   header, and the station follows the language. This is the map's origin, so
   the radio walks over from the map already playing.

@@ -8,7 +8,7 @@
  * WHY IT EXISTS. That one request — the decks, the deck the address names, who
  * is signed in and every word the page prints — is the whole of what stands
  * between opening the page and seeing a card. **One request on the way in**
- * under **Flashcards** in README.md is the argument for it being one. But it
+ * under **Flashcards** in docs/handbook.md is the argument for it being one. But it
  * was asked from the bottom of assets/flashcard.js, which is the largest
  * script on the site, behind the tag, the radio and the language switch; so
  * nothing went to the server until all four had come down the wire and run,

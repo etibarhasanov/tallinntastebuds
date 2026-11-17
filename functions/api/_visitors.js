@@ -41,7 +41,7 @@
  *
  * The date is written on to the visitor's device, and whether that needs
  * asking first is a question about the law rather than about this file.
- * **No consent banner** and **Visitors** in README.md say where it stands.
+ * **No consent banner** and **Visitors** in docs/handbook.md say where it stands.
  *
  * TIME IS TIME ON SCREEN
  *
@@ -219,14 +219,14 @@
  * Until then the map dealt strangers one of two rails, and the same facts
  * were counted a third time per rail and per kind of visitor, under the
  * `layout` kind as `<rail>:<who>:<fact>`, with the visitors on each rail as
- * `<rail>:new` and `<rail>:back`. **The short rail** in README.md says what
+ * `<rail>:new` and `<rail>:back`. **The short rail** in docs/handbook.md says what
  * that test found and why it ended. Its rows stay in the table and nothing
  * reads them any more.
  *
  * THE FOUR COLOURS
  *
  * Somebody new is dealt one of the four styles as their first page opens —
- * dealStyle() in assets/track.js, **The four styles, dealt** in README.md —
+ * dealStyle() in assets/track.js, **The four styles, dealt** in docs/handbook.md —
  * and the same facts are counted a third time per colour and per kind of
  * visitor, under the `style` kind as `<colour>:<who>:<fact>`, with the
  * visitors dealt each as `<colour>:new` and `<colour>:back`. Only a browser
@@ -302,7 +302,7 @@
  *
  * WHAT THE CHAT WAS ASKED
  *
- * The chat on the map — **Ask for somewhere** in README.md — is the one
+ * The chat on the map — **Ask for somewhere** in docs/handbook.md — is the one
  * thing on the site a press name cannot measure: `ask` says a question was
  * sent, and nothing says whether it was answered. So ./ask.js counts each
  * question itself, under the `ask` kind, once the answer has gone: `asked`,
@@ -601,7 +601,7 @@ const SIGNUP = new Set([
    above every name the pages can send, or it drops exactly the rare, late
    names worth counting: it was a hundred, the busiest day came within
    fourteen of it, and the pages send a little over two hundred names — the
-   table under **Analytics** in README.md is the list. */
+   table under **Analytics** in docs/handbook.md is the list. */
 const OPEN = new Set(['country', 'from', 'press', 'asks', 'found', 'ref', 'tag', 'search', 'nothing', 'shown']);
 const MAX_IDS = 100;
 const MAX_PRESS_IDS = 300;

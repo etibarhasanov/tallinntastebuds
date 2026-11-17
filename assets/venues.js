@@ -57,7 +57,7 @@
      written by tools/languages.mjs out of data/ui.json, which is eleven languages
      of every string the site has, 220 KB on the wire against the 25 or 30 of
      the one anybody is reading in. **One language at a time** under
-     **Languages** in README.md. */
+     **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var LANG_KEY = 'ttb.lang';
@@ -786,7 +786,7 @@
 
      Which is also why the kind is said in the fill and not in a glyph. Every
      other place on this site that draws a Google row draws its pin — a cup
-     for a café, a croissant for a bakery, see "The pins" in README.md — and
+     for a café, a croissant for a bakery, see "The pins" in docs/handbook.md — and
      eleven hundred of those would be eleven hundred elements again, which is
      the one thing this page was written to avoid. The tone carries as much of
      it as a five-pixel circle can: three colours for the five kinds, so the
