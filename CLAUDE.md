@@ -469,7 +469,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   'no-key'` and resting on any other refusal; and `GET /api/route` with
   `from`, `to` and `mode=bike`, reading `meters`, `seconds` and `line`,
   and `others` — up to two more ways, each in those same three fields —
-  for the choice on its card.
+  for the choice on its card. And, for the turn it shows and says while
+  riding, `steps` of the way and of each of the others: `at`, `meters`,
+  `turn` and `name`, and `exit` on a roundabout. The words of `turn` —
+  `left`, `right`, `keep-left`, `keep-right`, `straight`, `around`,
+  `roundabout`, `arrive` — are a recording each in the app, so a new word
+  is one an installed app stays silent at.
   And `GET /api/places` with no query, the whole roll, kept on the phone a
   week at a time so Where to? opens on the nearest places: `id`, `name`,
   `lat`, `lng` and `map` of each row.

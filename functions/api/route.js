@@ -8,13 +8,17 @@
  *
  *   foot, bike, car → { "meters": 1830, "seconds": 1320,
  *                 "line": [ [59.4370, 24.7536], … ],
+ *                 "steps": [ { "at": [59.4372, 24.7541], "meters": 140,
+ *                              "turn": "right", "name": "Narva maantee" },
+ *                            … ],
  *                 "others": [ { "meters": 2100, "seconds": 1440,
- *                               "line": [...] }, … ] }
+ *                               "line": [...], "steps": [...] }, … ] }
  *
  *             `meters`, `seconds` and `line` are the way the router likes
  *             best. `others` is up to OTHERS more it found between the same
  *             two points, each in the same three fields — and empty where
  *             it found the one, which on a short way is most of the time.
+ *             `steps` is where that way turns — see THE TURNS below.
  *
  *   bus  → { "trips": [ { "seconds": 1320,
  *                   "legs": [ { "line": [...] },
@@ -56,6 +60,21 @@
  * is answered exactly as before; `others` is the only thing added. The
  * router says how long and how far and never why one is nicer, so neither
  * does this.
+ *
+ * THE TURNS
+ *
+ * The router knows where a way turns as well as where it runs, and until
+ * Rattatee wanted to say them aloud nobody asked it. `steps` is that, one
+ * object a turn in the order they come: `at`, the corner; `meters`, how far
+ * along the way from its start the corner is; `turn`, one of the words in
+ * TURNS, or `roundabout` — with `exit`, counted from one, where the router
+ * counted it — or `arrive`, which is always the last; and `name`, the street
+ * the turn is onto, empty where the router has none. The words are few on
+ * purpose: each is one recording in the app, so a sharp left is a left and a
+ * slight one is keeping left. Setting off is not a step, and neither is a
+ * street that changes its name under a rider going straight on. It is a
+ * field added beside `line` in each way and nothing else moves, so the map
+ * and an app installed before it read what they always did.
  *
  * WHY A ROUTE HERE AND NOT A FETCH FROM THE BROWSER
  *
@@ -179,7 +198,7 @@ function decode(text) {
 
 async function street(mode, from, to) {
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
-    '?overview=full&geometries=geojson&steps=false&alternatives=';
+    '?overview=full&geometries=geojson&steps=true&alternatives=';
 
   /* Asked for the others, and asked again for the one way if the router
      will not answer that: a router that stops taking a count of
@@ -207,7 +226,7 @@ async function street(mode, from, to) {
   const others = routes.slice(1, 1 + OTHERS).map(way).filter((other) => other &&
     Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
     !(mode === 'foot' && other.meters > MAX_WALK));
-  return json({ meters: first.meters, seconds: first.seconds, line: first.line, others: others }, 200, 3600);
+  return json({ meters: first.meters, seconds: first.seconds, line: first.line, steps: first.steps, others: others }, 200, 3600);
 }
 
 function ask(url, mode) {
@@ -217,7 +236,60 @@ function ask(url, mode) {
   });
 }
 
-/* One of the router's routes as the three fields the answer carries, or null
+/* What the router calls the way a turn bends, and the word it is answered
+   with: its eight in six of ours, a recording each in Rattatee. */
+const TURNS = {
+  uturn: 'around',
+  'sharp left': 'left',
+  left: 'left',
+  'slight left': 'keep-left',
+  straight: 'straight',
+  'slight right': 'keep-right',
+  right: 'right',
+  'sharp right': 'right'
+};
+
+/* The word for one of the router's manoeuvres, or '' for one nobody needs
+   telling: setting off, leaving a roundabout the exit was already counted
+   for, and a street that is renamed or joined while going straight on. */
+function turnOf(maneuver) {
+  const type = String(maneuver.type || '');
+  if (type === 'arrive') return 'arrive';
+  if (type === 'roundabout' || type === 'rotary') return 'roundabout';
+  if (type === 'depart' || type === 'notification' || type.startsWith('exit ')) return '';
+  const turn = TURNS[maneuver.modifier] || '';
+  if (turn === 'straight' && (type === 'new name' || type === 'continue' || type === 'merge')) return '';
+  return turn;
+}
+
+/* Where one of the router's routes turns: THE TURNS in the header. A way
+   whose steps did not come, or came in a shape this does not know, has none
+   and is still a way. */
+function turns(route) {
+  const out = [];
+  let meters = 0;
+  for (const leg of Array.isArray(route.legs) ? route.legs : []) {
+    for (const s of Array.isArray(leg.steps) ? leg.steps : []) {
+      const m = (s && s.maneuver) || {};
+      const turn = turnOf(m);
+      const at = Array.isArray(m.location) ? [Number(m.location[1]), Number(m.location[0])] : [];
+      if (turn && Number.isFinite(at[0]) && Number.isFinite(at[1])) {
+        const step = {
+          at: [Number(at[0].toFixed(5)), Number(at[1].toFixed(5))],
+          meters: Math.round(meters),
+          turn: turn,
+          name: typeof s.name === 'string' ? s.name : ''
+        };
+        if (turn === 'roundabout' && Number.isInteger(m.exit) && m.exit > 0) step.exit = m.exit;
+        out.push(step);
+      }
+      meters += Number(s && s.distance) || 0;
+    }
+  }
+  return out;
+}
+
+/* One of the router's routes as the four fields the answer carries, or null
    for one with no line to draw. */
 function way(route) {
   const coords = route && route.geometry && Array.isArray(route.geometry.coordinates)
@@ -228,7 +300,8 @@ function way(route) {
   return {
     meters: Math.round(Number(route.distance)),
     seconds: Math.round(Number(route.duration)),
-    line: thin(coords.map((c) => [c[1], c[0]]), MAX_POINTS)
+    line: thin(coords.map((c) => [c[1], c[0]]), MAX_POINTS),
+    steps: turns(route)
   };
 }
 
