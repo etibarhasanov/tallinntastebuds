@@ -461,6 +461,13 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   the next UTC midnight; any other word, and no answer at all, is tried
   again. A new refusal that sending again cannot change has to be one of the
   three final words, or an installed app will send that ride for ever.
+- Its search for somewhere to ride to, Where to?: `GET /api/places?q=` with
+  `near` and `limit`, reading `id`, `name`, `address`, `category`, `lat`,
+  `lng` and `map`; `GET /api/geocode?q=`, reading `results` with `label`,
+  `where`, `lat` and `lng`; `GET /api/lookup` and `POST /api/lookup` as the
+  map app does, the button offered from five letters, hidden on `why:
+  'no-key'` and resting on any other refusal; and `GET /api/route` with
+  `from`, `to` and `mode=bike`, reading `meters`, `seconds` and `line`.
 - `GET /api/account` for `user`, `appGoogle` and `appApple`, and `POST
   /api/account` with `ticket`, `logout` and `delete` (`current`, `username`).
 - Signing in, as above: `/api/apple` has to accept its bundle id — `APP_IDS`
@@ -474,7 +481,7 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   and Russian, the `ride*` and `account*` ones copied out of `data/ui.json`
   under the same keys, so a sentence fixed here is fixed there by hand.
 
-Written with Rattatee on 2026-11-17.
+Written with Rattatee on 2026-11-17, and its search added the same day.
 
 ## Branches and deploys
 
