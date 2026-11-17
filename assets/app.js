@@ -4482,17 +4482,19 @@
    * #rail but these four is counted, and the radio is outside it — it stands
    * next to the language switch now — so it is not in this table.
    *
-   * RAIL_PILLS names nine, and the other five are the rows behind More:
+   * RAIL_PILLS names ten, and five of the others are the rows behind More:
    * the account, Learn Estonian, Ask, the colour and feedback, each counted
    * under the id it had when it was a pill of its own, through postPress() in
    * renderMore(), so the numbers from before the rail was cut short and
-   * after it are one column. More itself is a pill and counts as one.
+   * after it are one column. More itself is a pill and counts as one. The
+   * tenth is ride, the bike button the map had until 2026-11-17, when
+   * recording a ride moved to the account page alone; nothing presses it
+   * now, and it stays named there so its column keeps the counts it has.
    */
   var RAIL_PRESS = {
     'btn-lists': 'lists',
     'btn-random': 'random',
     'btn-more': 'more',
-    'btn-ride': 'ride',
     'btn-locate': 'locate'
   };
 
@@ -12920,14 +12922,6 @@
       ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
-    /* The ride recorder, from the map with nothing open: a ride has no
-       destination. Gone where the recorder did not load, since a button
-       that opens nothing is worse than none. */
-    dom.btnRide.hidden = !window.TTBRide;
-    dom.btnRide.addEventListener('click', function () {
-      TTBTrack.event('ride_open', { from: 'map' });
-      TTBRide.open();
-    });
     dom.routeModes.addEventListener('click', function (ev) {
       var tab = ev.target.closest ? ev.target.closest('.route-mode') : null;
       var place = routeFor ? byId(routeFor) : null;
@@ -13746,7 +13740,6 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
-      btnRide: $('btn-ride'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),

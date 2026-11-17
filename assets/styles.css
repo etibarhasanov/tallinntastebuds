@@ -1704,17 +1704,6 @@ body.lang-open .controls { z-index: 1250; }
 #btn-locate svg { stroke: var(--here); stroke-linejoin: round; }
 #btn-locate svg .here-arrow { fill: var(--here); }
 #btn-locate:hover { border-color: var(--here); color: var(--here); }
-/* Record a ride wears the bike's green, as the arrow wears the dot's blue:
-   the colour of what it is about, and the colour its line is drawn in. */
-#btn-ride svg { stroke: var(--way-bike); stroke-width: 1.8; }
-#btn-ride:hover { border-color: var(--way-bike); color: var(--way-bike); }
-#btn-ride[hidden] { display: none; }
-/* Away while the recorder's own card is up, and while a route or a walk
-   holds the foot of the map — those are where it is already, or in the
-   way of what is. */
-body.ride-on #btn-ride,
-body.route-on #btn-ride,
-body.walk-on #btn-ride { display: none; }
 
 /* ---------- the find bar ---------- */
 
@@ -4052,8 +4041,7 @@ body.is-discover #map { visibility: hidden; }
 body.is-discover .rail,
 body.is-discover .filter-bar,
 body.is-discover .find-area,
-body.is-discover #btn-locate,
-body.is-discover #btn-ride { display: none; }
+body.is-discover #btn-locate { display: none; }
 
 .discover-map {
   position: relative;
@@ -5985,21 +5973,6 @@ path.walk-line { stroke: var(--accent); stroke-opacity: .85; fill: none; }
   }
   #btn-locate svg { width: 24px; height: 24px; }
   #btn-locate.hint-open { padding: 0 16px 0 11px; }
-  /* Record a ride stands on the arrow, the same size and the same 10px of
-     air the toast keeps from it (--above-locate), and like the arrow it
-     leaves the rail's column for the corner a thumb is already in. Put
-     away under an open sheet rather than riding up on it: the sheet is a
-     place, and a ride is not about one. */
-  #btn-ride {
-    position: fixed;
-    right: calc(var(--gap) + var(--safe-r));
-    bottom: var(--above-locate);
-    min-width: 48px;
-    height: 48px;
-    padding: 0 11px;
-  }
-  #btn-ride svg { width: 24px; height: 24px; }
-  body.panel-open #btn-ride { display: none; }
   body.panel-open #btn-locate {
     bottom: calc(var(--sheet-h) + 10px + var(--safe-b));
   }

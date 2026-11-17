@@ -68,7 +68,6 @@ ref: functions/api/account.js GET</bpmn:documentation>
       <bpmn:outgoing>member-e5</bpmn:outgoing>
       <bpmn:outgoing>member-e15</bpmn:outgoing>
       <bpmn:outgoing>member-e18</bpmn:outgoing>
-      <bpmn:outgoing>member-e21</bpmn:outgoing>
       <bpmn:outgoing>member-e24</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="save" name="Saves a place">
@@ -89,6 +88,7 @@ ref: assets/account.js</bpmn:documentation>
       <bpmn:incoming>member-e6</bpmn:incoming>
       <bpmn:outgoing>member-e7</bpmn:outgoing>
       <bpmn:outgoing>member-e8</bpmn:outgoing>
+      <bpmn:outgoing>member-e21</bpmn:outgoing>
       <bpmn:outgoing>member-e27</bpmn:outgoing>
       <bpmn:outgoing>member-e30</bpmn:outgoing>
       <bpmn:outgoing>member-e33</bpmn:outgoing>
@@ -197,7 +197,7 @@ ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:doc
       <bpmn:incoming>member-e20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="ride" name="Records a bike ride">
-      <bpmn:documentation>From the bike button on the map, with nothing open and no destination, or from Record a ride on the account page's Your rides card, which lists the rides they saved: the phone's location while the page is open and the screen on, a point every dozen metres, paused when the page is hidden, kept on the phone until it is saved or thrown away.
+      <bpmn:documentation>From Record a ride on the account page's Your rides card, which lists the rides they saved and opens the map with the recorder up — the map itself has no button for it: the phone's location while the page is open and the screen on, a point every dozen metres, paused when the page is hidden, kept on the phone until it is saved or thrown away.
 when: ride_open
 when: ride_record
 when: ride_start
@@ -206,7 +206,6 @@ when: ride_resume
 when: ride_finish
 when: ride_throw
 ref: assets/ride.js
-ref: index.html #btn-ride
 ref: assets/app.js mountRide()
 ref: assets/account.js ridesCard()
 ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
@@ -357,7 +356,7 @@ ref: assets/app.js</bpmn:documentation>
     <bpmn:sequenceFlow id="member-e18" name="walk a list" sourceRef="what-now" targetRef="walk" />
     <bpmn:sequenceFlow id="member-e19" sourceRef="walk" targetRef="walk-check" />
     <bpmn:sequenceFlow id="member-e20" sourceRef="walk-check" targetRef="walk-done" />
-    <bpmn:sequenceFlow id="member-e21" name="record a ride" sourceRef="what-now" targetRef="ride" />
+    <bpmn:sequenceFlow id="member-e21" name="record a ride" sourceRef="account-what" targetRef="ride" />
     <bpmn:sequenceFlow id="member-e22" sourceRef="ride" targetRef="ride-keep" />
     <bpmn:sequenceFlow id="member-e23" sourceRef="ride-keep" targetRef="ride-done" />
     <bpmn:sequenceFlow id="member-e24" name="discount" sourceRef="what-now" targetRef="deal" />
@@ -420,24 +419,24 @@ ref: assets/app.js</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="860" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="make-list-di" bpmnElement="make-list">
-        <dc:Bounds x="855" y="688" width="120" height="70" />
+        <dc:Bounds x="855" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="list-create-di" bpmnElement="list-create">
-        <dc:Bounds x="1045" y="688" width="120" height="70" />
+        <dc:Bounds x="1045" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="fill-list-di" bpmnElement="fill-list">
-        <dc:Bounds x="1235" y="688" width="120" height="70" />
+        <dc:Bounds x="1235" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="list-edit-di" bpmnElement="list-edit">
-        <dc:Bounds x="1425" y="688" width="120" height="70" />
+        <dc:Bounds x="1425" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="public-di" bpmnElement="public">
-        <dc:Bounds x="1650" y="698" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="752" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1650" y="588" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="642" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="published-di" bpmnElement="published">
-        <dc:Bounds x="1847" y="705" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1847" y="595" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="private-di" bpmnElement="private">
         <dc:Bounds x="1847" y="1475" width="36" height="36" />
@@ -464,24 +463,24 @@ ref: assets/app.js</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="860" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ride-di" bpmnElement="ride">
-        <dc:Bounds x="475" y="468" width="120" height="70" />
+        <dc:Bounds x="855" y="688" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ride-keep-di" bpmnElement="ride-keep">
-        <dc:Bounds x="665" y="468" width="120" height="70" />
+        <dc:Bounds x="1045" y="688" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ride-done-di" bpmnElement="ride-done">
-        <dc:Bounds x="897" y="485" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1277" y="705" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1240" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
-        <dc:Bounds x="475" y="578" width="120" height="70" />
+        <dc:Bounds x="475" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="admit-di" bpmnElement="admit">
-        <dc:Bounds x="665" y="578" width="120" height="70" />
+        <dc:Bounds x="665" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="deal-done-di" bpmnElement="deal-done">
-        <dc:Bounds x="897" y="595" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="897" y="485" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="edit-page-di" bpmnElement="edit-page">
         <dc:Bounds x="855" y="798" width="120" height="70" />
@@ -579,34 +578,34 @@ ref: assets/app.js</bpmn:documentation>
       <bpmndi:BPMNEdge id="member-e8-di" bpmnElement="member-e8">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
-        <di:waypoint x="766" y="723" />
-        <di:waypoint x="855" y="723" />
-        <bpmndi:BPMNLabel><dc:Bounds x="770" y="693" width="81" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="766" y="613" />
+        <di:waypoint x="855" y="613" />
+        <bpmndi:BPMNLabel><dc:Bounds x="770" y="583" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e9-di" bpmnElement="member-e9">
-        <di:waypoint x="975" y="723" />
-        <di:waypoint x="1045" y="723" />
+        <di:waypoint x="975" y="613" />
+        <di:waypoint x="1045" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e10-di" bpmnElement="member-e10">
-        <di:waypoint x="1165" y="723" />
-        <di:waypoint x="1235" y="723" />
+        <di:waypoint x="1165" y="613" />
+        <di:waypoint x="1235" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e11-di" bpmnElement="member-e11">
-        <di:waypoint x="1355" y="723" />
-        <di:waypoint x="1425" y="723" />
+        <di:waypoint x="1355" y="613" />
+        <di:waypoint x="1425" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e12-di" bpmnElement="member-e12">
-        <di:waypoint x="1545" y="723" />
-        <di:waypoint x="1650" y="723" />
+        <di:waypoint x="1545" y="613" />
+        <di:waypoint x="1650" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e13-di" bpmnElement="member-e13">
-        <di:waypoint x="1700" y="723" />
-        <di:waypoint x="1847" y="723" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1704" y="693" width="139" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1700" y="613" />
+        <di:waypoint x="1847" y="613" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1704" y="583" width="139" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e14-di" bpmnElement="member-e14">
-        <di:waypoint x="1700" y="723" />
-        <di:waypoint x="1716" y="723" />
+        <di:waypoint x="1700" y="613" />
+        <di:waypoint x="1716" y="613" />
         <di:waypoint x="1716" y="1493" />
         <di:waypoint x="1847" y="1493" />
         <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1463" width="123" height="28" /></bpmndi:BPMNLabel>
@@ -642,34 +641,34 @@ ref: assets/app.js</bpmn:documentation>
         <di:waypoint x="897" y="393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e21-di" bpmnElement="member-e21">
+        <di:waypoint x="750" y="173" />
+        <di:waypoint x="766" y="173" />
+        <di:waypoint x="766" y="723" />
+        <di:waypoint x="855" y="723" />
+        <bpmndi:BPMNLabel><dc:Bounds x="770" y="693" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e22-di" bpmnElement="member-e22">
+        <di:waypoint x="975" y="723" />
+        <di:waypoint x="1045" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e23-di" bpmnElement="member-e23">
+        <di:waypoint x="1165" y="723" />
+        <di:waypoint x="1277" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="503" />
         <di:waypoint x="475" y="503" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e22-di" bpmnElement="member-e22">
+      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
         <di:waypoint x="595" y="503" />
         <di:waypoint x="665" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e23-di" bpmnElement="member-e23">
+      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
         <di:waypoint x="785" y="503" />
         <di:waypoint x="897" y="503" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
-        <di:waypoint x="370" y="63" />
-        <di:waypoint x="386" y="63" />
-        <di:waypoint x="386" y="613" />
-        <di:waypoint x="475" y="613" />
-        <bpmndi:BPMNLabel><dc:Bounds x="390" y="583" width="81" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
-        <di:waypoint x="595" y="613" />
-        <di:waypoint x="665" y="613" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
-        <di:waypoint x="785" y="613" />
-        <di:waypoint x="897" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e27-di" bpmnElement="member-e27">
         <di:waypoint x="750" y="173" />

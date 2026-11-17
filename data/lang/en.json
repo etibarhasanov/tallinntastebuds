@@ -1330,7 +1330,7 @@
   "rideNearby": "The faint lines are rides people recorded nearby.",
   "ridesYours": "Your rides",
   "ridesWhat": "The bike rides you recorded. Each one is a confirmed bike route on the map, without your name on it.",
-  "ridesNone": "No rides yet. Press the bike on the map and ride.",
+  "ridesNone": "No rides yet. Press Record a ride below and ride.",
   "rideUnnamed": "Bike ride",
   "ridesCountOne": "1 ride",
   "ridesCount": "{n} rides",

@@ -1330,7 +1330,7 @@
   "rideNearby": "Kahvatud jooned on läheduses salvestatud sõidud.",
   "ridesYours": "Sinu sõidud",
   "ridesWhat": "Rattasõidud, mille sa salvestasid. Igaüks neist on kaardil kinnitatud rattatee, ilma sinu nimeta.",
-  "ridesNone": "Sõite veel pole. Vajuta kaardil rattale ja sõida.",
+  "ridesNone": "Sõite veel pole. Vajuta allpool „Salvesta sõit“ ja sõida.",
   "rideUnnamed": "Rattasõit",
   "ridesCountOne": "1 sõit",
   "ridesCount": "{n} sõitu",
