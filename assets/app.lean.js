@@ -437,6 +437,7 @@
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
     discover.draw();
+    drawCounter();
     window.TTBRadio.language(code);
     paintAccountRow();
     renderStoryRing();
@@ -1223,6 +1224,109 @@
   var SAVED_KEY = 'ttb.saved';
 
   var SAVED_FILTER = 'saved';
+
+  var counter = null;  // GET /api/counter's answer, once it was ready
+  var counterMQ = window.matchMedia('(min-width: 861px)');
+
+  function loadCounter() {
+    if (!counterMQ.matches) {
+      var later = function () {
+        if (!counterMQ.matches) return;
+        if (counterMQ.removeEventListener) counterMQ.removeEventListener('change', later);
+        loadCounter();
+      };
+      if (counterMQ.addEventListener) counterMQ.addEventListener('change', later);
+      return;
+    }
+    fetch('/api/counter').then(function (res) {
+      return res.ok ? res.json() : null;
+    }).then(function (got) {
+      if (!got || got.ready !== true) return;
+      counter = got;
+      drawCounter();
+    }).catch(function () { /* no card, and nothing else changes */ });
+  }
+
+  var flagsDrawn = null;
+  function drawsFlags() {
+    if (flagsDrawn !== null) return flagsDrawn;
+    flagsDrawn = false;
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 16;
+      var ctx = canvas.getContext('2d');
+      ctx.font = '14px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = '#000';
+      ctx.fillText(flagOf('EE'), 0, 0);
+      var px = ctx.getImageData(0, 0, 16, 16).data;
+      for (var i = 0; i < px.length; i += 4) {
+        if (px[i + 3] && (px[i] !== px[i + 1] || px[i + 1] !== px[i + 2])) { flagsDrawn = true; break; }
+      }
+    } catch (e) { flagsDrawn = false; }
+    return flagsDrawn;
+  }
+
+  function flagOf(code) {
+    return String.fromCodePoint(0x1F1E6 + code.charCodeAt(0) - 65, 0x1F1E6 + code.charCodeAt(1) - 65);
+  }
+
+  function counterNumber(n) {
+    try { return new Intl.NumberFormat(state.lang).format(n); } catch (e) { return String(n); }
+  }
+
+  function counterTime(secs) {
+    var m = Math.floor(secs / 60);
+    return m ? t('counterMinutes', { m: m, s: secs % 60 }) : t('counterSeconds', { s: secs });
+  }
+
+  function counterDay(day) {
+    try {
+      return new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+        .format(new Date(day + 'T00:00:00Z'));
+    } catch (e) { return day; }
+  }
+
+  function drawCounter() {
+    var box = $('counter');
+    if (!counter || !box) return;
+    clear(box);
+
+    box.appendChild(el('h2', { id: 'counter-title', className: 'counter-title', textContent: t('counterTitle') }));
+    var three = el('div', { className: 'counter-three' });
+    [['yesterday', 'counterYesterday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
+      three.appendChild(el('p', { className: 'counter-figure' }, [
+        el('b', { textContent: counterNumber(counter[f[0]] || 0) }),
+        el('span', { textContent: t(f[1]) })
+      ]));
+    });
+    box.appendChild(three);
+
+    if (counter.secs > 0) {
+      box.appendChild(el('p', { className: 'counter-average' }, [
+        el('span', { textContent: t('counterAverage') }),
+        el('b', { textContent: counterTime(counter.secs) })
+      ]));
+    }
+
+    var flags = drawsFlags();
+    var rows = el('ul', { className: 'counter-countries' });
+    (counter.countries || []).forEach(function (c) {
+      if (!/^[A-Z]{2}$/.test(c.id)) return;
+      rows.appendChild(el('li', null, [
+        el('span', { className: flags ? 'counter-flag' : 'counter-code', 'aria-hidden': 'true', textContent: flags ? flagOf(c.id) : c.id }),
+        el('span', { className: 'counter-name', textContent: TTBCountry.name(c.id, state.lang, c.id) }),
+        el('span', { className: 'counter-n', textContent: counterNumber(c.n) })
+      ]));
+    });
+    box.appendChild(rows);
+
+    var foot = [];
+    if (counter.more > 0) foot.push(t('counterMore', { n: counterNumber(counter.more) }));
+    if (counter.since) foot.push(t('counterSince', { date: counterDay(counter.since) }));
+    if (foot.length) box.appendChild(el('p', { className: 'counter-foot', textContent: foot.join(' · ') }));
+    box.hidden = false;
+  }
 
   function loadSaves() {
     return fetch('/api/saves', { headers: { accept: 'application/json' } })
@@ -8075,6 +8179,7 @@
 
       loadSaves();
       loadAccount();
+      loadCounter();
 
       wireHistory();
 

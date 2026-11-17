@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=799960ed">
+<link rel="stylesheet" href="assets/styles.lean.css?v=2ad3abe3">
 </head>
 <body>
 
@@ -239,6 +239,7 @@
     </button>
   </div>
 </div>
+
 
 <!-- The find bar: everywhere in Tallinn, not just the places on this map.
      THIS IS NOT THE SEARCH IN THE PLACES COLUMN, AND THE TWO ARE DIFFERENT
@@ -691,6 +692,12 @@
       <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
     </button>
   </div>
+  <!-- The flag counter: how many people came, how long a visit lasts and
+       the countries they came from, beside the map's card on a desktop and
+       nowhere on a phone. Empty and hidden until GET /api/counter answers,
+       and drawn by drawCounter() in assets/app.js; if it never answers, the
+       map's card has the row to itself. -->
+  <aside class="counter card" id="counter" aria-labelledby="counter-title" hidden></aside>
   <div id="discover-shelves"></div>
   <!-- The end of the page: feedback and privacy, in the quiet words a
        page's last line is. They are More's two last rows, reported under the
@@ -763,6 +770,10 @@
      intros and the line under each place are English in the database. Before
      the page's own script, deferred like it. -->
 <script src="assets/googlewords.js?v=5b144c70" defer></script>
+<!-- A country's name in the reading language, for the flag counter: TTBCountry,
+     the global /insights and the owner's pages name countries with. Before
+     the page's own script, deferred like it. -->
+<script src="assets/country.js?v=3c14fff9" defer></script>
 <!-- The page's own script, as the copy tools/lean.mjs writes of assets/app.js:
      the same code with the comments taken out, a third of the bytes on the
      wire. assets/app.js is the file to read and to edit; the validator fails
@@ -778,6 +789,6 @@
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=50bd333e" defer></script>
-<script src="assets/app.lean.js?v=e1114fd3" defer></script>
+<script src="assets/app.lean.js?v=4e277250" defer></script>
 </body>
 </html>

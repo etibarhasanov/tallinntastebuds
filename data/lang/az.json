@@ -1477,7 +1477,16 @@
   "walkReplan": "Buradan ən qısa yol",
   "walkLeftSpan": "{n} qalıb · təxminən {distance}",
   "walkReplanned": "Qalan yerlər üçün ən qısa sıra, sənə ən yaxın olan {place} ilə başlayır.",
-  "walkOpenList": "Siyahını aç"
+  "walkOpenList": "Siyahını aç",
+  "counterTitle": "Ziyarətçilər",
+  "counterYesterday": "dünən",
+  "counterWeek": "7 gün",
+  "counterAll": "bütün dövr",
+  "counterAverage": "Orta ziyarət",
+  "counterMinutes": "{m} dəq {s} san",
+  "counterSeconds": "{s} san",
+  "counterMore": "+ daha {n} ölkə",
+  "counterSince": "{date} tarixindən"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

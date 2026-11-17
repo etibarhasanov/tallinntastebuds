@@ -1477,7 +1477,16 @@
     "walkReplan": "Buradan ən qısa yol",
     "walkLeftSpan": "{n} qalıb · təxminən {distance}",
     "walkReplanned": "Qalan yerlər üçün ən qısa sıra, sənə ən yaxın olan {place} ilə başlayır.",
-    "walkOpenList": "Siyahını aç"
+    "walkOpenList": "Siyahını aç",
+    "counterTitle": "Ziyarətçilər",
+    "counterYesterday": "dünən",
+    "counterWeek": "7 gün",
+    "counterAll": "bütün dövr",
+    "counterAverage": "Orta ziyarət",
+    "counterMinutes": "{m} dəq {s} san",
+    "counterSeconds": "{s} san",
+    "counterMore": "+ daha {n} ölkə",
+    "counterSince": "{date} tarixindən"
   },
   "en": {
     "langName": "English",
@@ -2957,7 +2966,16 @@
     "walkReplan": "Shortest from here",
     "walkLeftSpan": "{n} left · about {distance}",
     "walkReplanned": "Shortest order for the places left, starting at {place}, the nearest to you.",
-    "walkOpenList": "Open the list"
+    "walkOpenList": "Open the list",
+    "counterTitle": "Visitors",
+    "counterYesterday": "yesterday",
+    "counterWeek": "7 days",
+    "counterAll": "all time",
+    "counterAverage": "Average visit",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} more countries",
+    "counterSince": "since {date}"
   },
   "et": {
     "langName": "Eesti",
@@ -4437,7 +4455,16 @@
     "walkReplan": "Lühim tee siit",
     "walkLeftSpan": "{n} jäänud · umbes {distance}",
     "walkReplanned": "Lühim järjekord allesjäänud kohtadele, algab kohast {place}, mis on sulle lähim.",
-    "walkOpenList": "Ava nimekiri"
+    "walkOpenList": "Ava nimekiri",
+    "counterTitle": "Külastajad",
+    "counterYesterday": "eile",
+    "counterWeek": "7 päeva",
+    "counterAll": "kokku",
+    "counterAverage": "Keskmine külastus",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ veel {n} riiki",
+    "counterSince": "alates {date}"
   },
   "fi": {
     "langName": "Suomi",
@@ -5917,7 +5944,16 @@
     "walkReplan": "Lyhin reitti tästä",
     "walkLeftSpan": "{n} jäljellä · noin {distance}",
     "walkReplanned": "Lyhin järjestys jäljellä oleville paikoille, alkaa paikasta {place}, joka on sinua lähinnä.",
-    "walkOpenList": "Avaa lista"
+    "walkOpenList": "Avaa lista",
+    "counterTitle": "Kävijät",
+    "counterYesterday": "eilen",
+    "counterWeek": "7 päivää",
+    "counterAll": "kaikkiaan",
+    "counterAverage": "Keskimääräinen käynti",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} muuta maata",
+    "counterSince": "{date} alkaen"
   },
   "pt": {
     "langName": "Português",
@@ -7397,7 +7433,16 @@
     "walkReplan": "O mais curto a partir daqui",
     "walkLeftSpan": "faltam {n} · cerca de {distance}",
     "walkReplanned": "A ordem mais curta para os que faltam, a começar em {place}, o mais perto de ti.",
-    "walkOpenList": "Abrir a lista"
+    "walkOpenList": "Abrir a lista",
+    "counterTitle": "Visitantes",
+    "counterYesterday": "ontem",
+    "counterWeek": "7 dias",
+    "counterAll": "desde sempre",
+    "counterAverage": "Visita média",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} outros países",
+    "counterSince": "desde {date}"
   },
   "ru": {
     "langName": "Русский",
@@ -8877,7 +8922,16 @@
     "walkReplan": "Кратчайший путь отсюда",
     "walkLeftSpan": "осталось {n} · около {distance}",
     "walkReplanned": "Кратчайший порядок для оставшихся мест, начиная с ближайшего к вам: {place}.",
-    "walkOpenList": "Открыть список"
+    "walkOpenList": "Открыть список",
+    "counterTitle": "Посетители",
+    "counterYesterday": "вчера",
+    "counterWeek": "7 дней",
+    "counterAll": "за всё время",
+    "counterAverage": "Средний визит",
+    "counterMinutes": "{m} мин {s} с",
+    "counterSeconds": "{s} с",
+    "counterMore": "+ ещё стран: {n}",
+    "counterSince": "с {date}"
   },
   "es": {
     "langName": "Español",
@@ -10357,7 +10411,16 @@
     "walkReplan": "El más corto desde aquí",
     "walkLeftSpan": "quedan {n} · unos {distance}",
     "walkReplanned": "El orden más corto para los que quedan, empezando por {place}, el más cercano a ti.",
-    "walkOpenList": "Abrir la lista"
+    "walkOpenList": "Abrir la lista",
+    "counterTitle": "Visitantes",
+    "counterYesterday": "ayer",
+    "counterWeek": "7 días",
+    "counterAll": "desde siempre",
+    "counterAverage": "Visita media",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} países más",
+    "counterSince": "desde el {date}"
   },
   "tr": {
     "langName": "Türkçe",
@@ -11837,7 +11900,16 @@
     "walkReplan": "Buradan en kısa yol",
     "walkLeftSpan": "{n} kaldı · yaklaşık {distance}",
     "walkReplanned": "Kalan yerler için en kısa sıra, sana en yakın yer olan {place} ile başlıyor.",
-    "walkOpenList": "Listeyi aç"
+    "walkOpenList": "Listeyi aç",
+    "counterTitle": "Ziyaretçiler",
+    "counterYesterday": "dün",
+    "counterWeek": "7 gün",
+    "counterAll": "tüm zamanlar",
+    "counterAverage": "Ortalama ziyaret",
+    "counterMinutes": "{m} dk {s} sn",
+    "counterSeconds": "{s} sn",
+    "counterMore": "+ {n} ülke daha",
+    "counterSince": "{date} tarihinden beri"
   },
   "uk": {
     "langName": "Українська",
@@ -13317,7 +13389,16 @@
     "walkReplan": "Найкоротший шлях звідси",
     "walkLeftSpan": "залишилося {n} · близько {distance}",
     "walkReplanned": "Найкоротший порядок для решти місць, починаючи з найближчого до вас: {place}.",
-    "walkOpenList": "Відкрити список"
+    "walkOpenList": "Відкрити список",
+    "counterTitle": "Відвідувачі",
+    "counterYesterday": "вчора",
+    "counterWeek": "7 днів",
+    "counterAll": "за весь час",
+    "counterAverage": "Середній візит",
+    "counterMinutes": "{m} хв {s} с",
+    "counterSeconds": "{s} с",
+    "counterMore": "+ ще країн: {n}",
+    "counterSince": "з {date}"
   },
   "fr": {
     "langName": "Français",
@@ -14797,7 +14878,16 @@
     "walkReplan": "Le plus court d’ici",
     "walkLeftSpan": "il en reste {n} · environ {distance}",
     "walkReplanned": "L’ordre le plus court pour ceux qui restent, en partant de {place}, le plus proche de toi.",
-    "walkOpenList": "Ouvrir la liste"
+    "walkOpenList": "Ouvrir la liste",
+    "counterTitle": "Visiteurs",
+    "counterYesterday": "hier",
+    "counterWeek": "7 jours",
+    "counterAll": "depuis le début",
+    "counterAverage": "Visite moyenne",
+    "counterMinutes": "{m} min {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} autres pays",
+    "counterSince": "depuis le {date}"
   },
   "de": {
     "langName": "Deutsch",
@@ -16277,6 +16367,15 @@
     "walkReplan": "Kürzester Weg von hier",
     "walkLeftSpan": "noch {n} · etwa {distance}",
     "walkReplanned": "Die kürzeste Reihenfolge für die übrigen Orte, beginnend bei {place}, dem Ort in deiner Nähe.",
-    "walkOpenList": "Liste öffnen"
+    "walkOpenList": "Liste öffnen",
+    "counterTitle": "Besucher",
+    "counterYesterday": "gestern",
+    "counterWeek": "7 Tage",
+    "counterAll": "insgesamt",
+    "counterAverage": "Durchschnittlicher Besuch",
+    "counterMinutes": "{m} Min. {s} s",
+    "counterSeconds": "{s} s",
+    "counterMore": "+ {n} weitere Länder",
+    "counterSince": "seit {date}"
   }
 }

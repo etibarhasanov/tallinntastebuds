@@ -1477,7 +1477,16 @@
   "walkReplan": "Buradan en kısa yol",
   "walkLeftSpan": "{n} kaldı · yaklaşık {distance}",
   "walkReplanned": "Kalan yerler için en kısa sıra, sana en yakın yer olan {place} ile başlıyor.",
-  "walkOpenList": "Listeyi aç"
+  "walkOpenList": "Listeyi aç",
+  "counterTitle": "Ziyaretçiler",
+  "counterYesterday": "dün",
+  "counterWeek": "7 gün",
+  "counterAll": "tüm zamanlar",
+  "counterAverage": "Ortalama ziyaret",
+  "counterMinutes": "{m} dk {s} sn",
+  "counterSeconds": "{s} sn",
+  "counterMore": "+ {n} ülke daha",
+  "counterSince": "{date} tarihinden beri"
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",

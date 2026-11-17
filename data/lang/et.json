@@ -1477,7 +1477,16 @@
   "walkReplan": "Lühim tee siit",
   "walkLeftSpan": "{n} jäänud · umbes {distance}",
   "walkReplanned": "Lühim järjekord allesjäänud kohtadele, algab kohast {place}, mis on sulle lähim.",
-  "walkOpenList": "Ava nimekiri"
+  "walkOpenList": "Ava nimekiri",
+  "counterTitle": "Külastajad",
+  "counterYesterday": "eile",
+  "counterWeek": "7 päeva",
+  "counterAll": "kokku",
+  "counterAverage": "Keskmine külastus",
+  "counterMinutes": "{m} min {s} s",
+  "counterSeconds": "{s} s",
+  "counterMore": "+ veel {n} riiki",
+  "counterSince": "alates {date}"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

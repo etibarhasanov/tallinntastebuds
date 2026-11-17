@@ -758,6 +758,7 @@
     if (state.list) TTBGoogleWords.list(state.list, t, state.lang);
     renderPanel();
     discover.draw();
+    drawCounter();
     window.TTBRadio.language(code);
     /* The More sheet, if it is open, in the new language — its account row
        wears the name of whoever is signed in, or Account in these words. */
@@ -2105,6 +2106,128 @@
      Nothing on the chip row sets this one — the account sheet does, from
      savedRow(). */
   var SAVED_FILTER = 'saved';
+
+  /* ------------------------------------------------------- the counter
+   * How many people came yesterday, in the last seven days and since the
+   * count began, how long a visit lasts, and the countries they came from,
+   * under their flags: the old-fashioned flag counter, asked for by the owner
+   * on 2026-11-17, at the top of Discover on a desktop, beside the map's
+   * card. A phone has no room beside that card, and never asks.
+   *
+   * The numbers are GET /api/counter's, and that file says why they are the
+   * one count on this site a visitor sees. They move once a day, so they are
+   * asked for once a load and drawn again only when the language changes.
+   * If they never arrive the card is never there: nothing waits on it.
+   */
+  var counter = null;  // GET /api/counter's answer, once it was ready
+  var counterMQ = window.matchMedia('(min-width: 861px)');
+
+  function loadCounter() {
+    if (!counterMQ.matches) {
+      /* A window dragged wide later asks then, once. */
+      var later = function () {
+        if (!counterMQ.matches) return;
+        if (counterMQ.removeEventListener) counterMQ.removeEventListener('change', later);
+        loadCounter();
+      };
+      if (counterMQ.addEventListener) counterMQ.addEventListener('change', later);
+      return;
+    }
+    fetch('/api/counter').then(function (res) {
+      return res.ok ? res.json() : null;
+    }).then(function (got) {
+      if (!got || got.ready !== true) return;
+      counter = got;
+      drawCounter();
+    }).catch(function () { /* no card, and nothing else changes */ });
+  }
+
+  /* Whether this browser draws a flag out of two regional letters. Windows
+     does not: it prints the letters instead, so the card prints them itself,
+     as a small code, rather than leave two boxed letters where a flag should
+     be. Asked of a canvas once — a flag has colour in it, and two letters
+     drawn in the text colour have none. */
+  var flagsDrawn = null;
+  function drawsFlags() {
+    if (flagsDrawn !== null) return flagsDrawn;
+    flagsDrawn = false;
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 16;
+      var ctx = canvas.getContext('2d');
+      ctx.font = '14px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = '#000';
+      ctx.fillText(flagOf('EE'), 0, 0);
+      var px = ctx.getImageData(0, 0, 16, 16).data;
+      for (var i = 0; i < px.length; i += 4) {
+        if (px[i + 3] && (px[i] !== px[i + 1] || px[i + 1] !== px[i + 2])) { flagsDrawn = true; break; }
+      }
+    } catch (e) { flagsDrawn = false; }
+    return flagsDrawn;
+  }
+
+  /* Two letters as the two regional indicators a flag is spelt with. */
+  function flagOf(code) {
+    return String.fromCodePoint(0x1F1E6 + code.charCodeAt(0) - 65, 0x1F1E6 + code.charCodeAt(1) - 65);
+  }
+
+  function counterNumber(n) {
+    try { return new Intl.NumberFormat(state.lang).format(n); } catch (e) { return String(n); }
+  }
+
+  function counterTime(secs) {
+    var m = Math.floor(secs / 60);
+    return m ? t('counterMinutes', { m: m, s: secs % 60 }) : t('counterSeconds', { s: secs });
+  }
+
+  function counterDay(day) {
+    try {
+      return new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+        .format(new Date(day + 'T00:00:00Z'));
+    } catch (e) { return day; }
+  }
+
+  function drawCounter() {
+    var box = $('counter');
+    if (!counter || !box) return;
+    clear(box);
+
+    box.appendChild(el('h2', { id: 'counter-title', className: 'counter-title', textContent: t('counterTitle') }));
+    var three = el('div', { className: 'counter-three' });
+    [['yesterday', 'counterYesterday'], ['week', 'counterWeek'], ['all', 'counterAll']].forEach(function (f) {
+      three.appendChild(el('p', { className: 'counter-figure' }, [
+        el('b', { textContent: counterNumber(counter[f[0]] || 0) }),
+        el('span', { textContent: t(f[1]) })
+      ]));
+    });
+    box.appendChild(three);
+
+    if (counter.secs > 0) {
+      box.appendChild(el('p', { className: 'counter-average' }, [
+        el('span', { textContent: t('counterAverage') }),
+        el('b', { textContent: counterTime(counter.secs) })
+      ]));
+    }
+
+    var flags = drawsFlags();
+    var rows = el('ul', { className: 'counter-countries' });
+    (counter.countries || []).forEach(function (c) {
+      if (!/^[A-Z]{2}$/.test(c.id)) return;
+      rows.appendChild(el('li', null, [
+        el('span', { className: flags ? 'counter-flag' : 'counter-code', 'aria-hidden': 'true', textContent: flags ? flagOf(c.id) : c.id }),
+        el('span', { className: 'counter-name', textContent: TTBCountry.name(c.id, state.lang, c.id) }),
+        el('span', { className: 'counter-n', textContent: counterNumber(c.n) })
+      ]));
+    });
+    box.appendChild(rows);
+
+    var foot = [];
+    if (counter.more > 0) foot.push(t('counterMore', { n: counterNumber(counter.more) }));
+    if (counter.since) foot.push(t('counterSince', { date: counterDay(counter.since) }));
+    if (foot.length) box.appendChild(el('p', { className: 'counter-foot', textContent: foot.join(' · ') }));
+    box.hidden = false;
+  }
 
   /* Nothing on the map waits for this. The counts arrive when they arrive and
      the panel repaints if it is already open; if they never arrive — offline,
@@ -13689,6 +13812,8 @@
       /* And who is holding them. Same rules: last, unwaited, and the site is
          the site it always was if the answer never comes. */
       loadAccount();
+      /* And the flag counter on Discover, on a desktop: last and unwaited, the same. */
+      loadCounter();
 
       wireHistory();
 

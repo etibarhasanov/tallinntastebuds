@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Twenty-nine kinds, one
+-- the key, one row per fact per day, and a number. Thirty kinds, one
 -- of them no longer written:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
@@ -378,8 +378,13 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --   kind 'about'    id is '<what>:<id>', a story, a post, a deck or a
 --                   discount a page said it was about — WHAT IT WAS ABOUT in
 --                   _visitors.js — each id one the site ships
+--   kind 'shown'    id is '<who>:<country>', a visitor once a day for the
+--                   flag counter on Discover — a desktop in the United States
+--                   only once it has done something a person does. THE
+--                   FLAG COUNTER, AND THE DESKTOPS IN AMERICA in
+--                   _visitors.js; GET /api/counter reads it
 --
--- And every kind but 'device', 'phone' and the ones a route counts ('ask',
+-- And every kind but 'device', 'phone', 'shown' and the ones a route counts ('ask',
 -- 'use', a 'signup' of the Google round trip) a second time under the device
 -- the report was made on, the kind written '<device>.<kind>' — 'phone.view',
 -- 'desktop.press', 'tablet.rail' — with the same ids. No kind above has a
@@ -392,7 +397,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- says whether this is its first page today, and the table only ever hears
 -- the answer. The size is bounded by the day, not by the traffic — the
 -- kinds with ids nobody chose from a list (country, from, press, asks,
--- found, ref, tag, search, nothing) are capped at a hundred ids a day each
+-- found, ref, tag, search, nothing, shown) are capped at a hundred ids a day each
 -- in the code, the presses at three hundred, and each again per device — so a
 -- year is a hundred thousand short rows at the very most, and a busy day
 -- costs no more rows than a quiet one with the same pages in it.

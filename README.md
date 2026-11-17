@@ -15577,6 +15577,67 @@ everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the
 experiment is decided.
 
+### The flag counter, and the desktops in America
+
+One number out of this table is a visitor's to read. At the top of
+Discover, the page a desktop opens on, a card stands beside the map's card
+with the old flag counter on it: how many people came yesterday, in the last
+seven days and since the count began on 28 September 2026, how long a visit
+lasts on average over the last four weeks, and the eight countries most of
+them came from, under their flags, with how many more countries there were.
+The owner asked for it on 2026-11-17, after a mockup, and moved it there off
+the map the same day: it is the first page that should say it, not the map.
+
+`GET /api/counter` answers it — `functions/api/counter.js`, through
+`readCounter()` in `functions/api/_visitors.js` — and `drawCounter()` in
+`assets/app.js` draws it. Every figure stops at yesterday, UTC, so the route
+reads the database once a day per colo and the browser keeps the answer an
+hour. The two cards share a row and a height, the map's 340px — which is
+why it is eight countries and not ten. A phone has no room beside the map's
+card, and below 861px the counter is neither asked for nor drawn. If the
+route never answers, the map's card has the row to itself and nothing else
+on the page changes. A browser
+that cannot draw a flag out of two letters — Windows — gets the two letters
+themselves, small, where the flag would have been: `drawsFlags()` asks a
+canvas once. The countries are named in the reading language by
+`TTBCountry`, which is why the map loads `assets/country.js` now.
+
+**People, not visits, in the three figures.** Yesterday, seven days and all
+time count somebody on the first day they were ever here, so a person who
+comes every day is one in the all-time figure. The countries are visits:
+somebody from Finland who came on five days is five beside the Finnish flag.
+The average is per visit — every second on screen over the last 28 days,
+over the visits in them.
+
+**Why the United States is mostly not on it.** About two in three desktop
+visits since the count could tell desktops apart came from the United
+States, and they are not people. Read against the days that had few of
+them, one of those visits stays about three seconds, presses nothing, opens
+no place, and usually never says it was put away, which is what a browser
+run by a program does when it is closed rather than hidden; 11 November had
+fifty of them, and 699 seconds between all fifty. Clarity's recordings,
+filtered to the United States on a PC, are where to see one. So the counter
+has a kind of its own, `shown`: everybody is filed under it on their first
+page of the day, except a desktop in the United States, which is filed at
+the end of that page and only if it stayed ten seconds, pressed something or
+opened a place. Somebody in Ohio who leaves inside ten seconds having
+touched nothing is lost from the card, and that is the trade. Everything
+else on this page counts them exactly as before; the card is the only place
+anybody is judged.
+
+**Before the first day of `shown`** the card is an estimate, worked out day
+by day from the rows that were there all along: a day's visitors less its
+desktops in the United States, and of those a day's share of new ones is the
+day's share across all its desktops. Before 6 October nothing says which
+American was on a desktop, so those days keep every American — about a
+hundred of the United States' figure. The day `shown` began is estimated too,
+since only part of it was counted the new way. The estimate and the count
+differ by tens, and the card does not say which a figure is.
+
+It is the one count on the site a visitor sees, and it scores nobody: no
+number under a place, a list or a person, which is what **Public lists** and
+**Statistics** keep the counts off the public pages for.
+
 ### What it does not do
 
 No recordings and no heatmaps — that is Clarity, and nothing here replaces
