@@ -468,8 +468,21 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   map app does, the button offered from five letters, hidden on `why:
   'no-key'` and resting on any other refusal; and `GET /api/route` with
   `from`, `to` and `mode=bike`, reading `meters`, `seconds` and `line`.
+  And `GET /api/places` with no query, the whole roll, kept on the phone a
+  week at a time so Where to? opens on the nearest places: `id`, `name`,
+  `lat`, `lng` and `map` of each row.
+- Its lists, signed in: `GET /api/lists`, reading `lists` with `id`, `title`
+  and `n`; and `POST /api/lists` with `create` (`title`, answered `id` and
+  `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)
+  for a place tapped on the map that the roll does not have, and `add` (`id`,
+  `place`). The error words it has sentences for are `signed-out`, `full`,
+  `too-many` and `title`. An add it was keeping for later is tried again on
+  a 5xx and dropped on any 4xx, so a new refusal that sending again could
+  change must not be a 4xx.
 - `GET /api/account` for `user`, `appGoogle` and `appApple`, and `POST
-  /api/account` with `ticket`, `logout` and `delete` (`current`, `username`).
+  /api/account` with `create` and `login` (`username`, `password`, answered
+  `user`, refused with `taken`, `username`, `password`, `no-match` and
+  `slow-down`), `ticket`, `logout` and `delete` (`current`, `username`).
 - Signing in, as above: `/api/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.
@@ -478,10 +491,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `ENDS`; `MAX_NAME`, `MAX_POINTS` and `nearTallinn()`'s box; and the 200 m
   in the sentence on its save card.
 - Strings: none asked for. Its words are compiled in, in English, Estonian
-  and Russian, the `ride*` and `account*` ones copied out of `data/ui.json`
-  under the same keys, so a sentence fixed here is fixed there by hand.
+  and Russian, the `ride*`, `account*`, `list*` and `lists*` ones copied out
+  of `data/ui.json` under the same keys, so a sentence fixed here is fixed
+  there by hand.
 
-Written with Rattatee on 2026-11-17, and its search added the same day.
+Written with Rattatee on 2026-11-17, and its search, its username sign-in
+and its lists added the same day.
 
 ## Branches and deploys
 
