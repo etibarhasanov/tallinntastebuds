@@ -1479,7 +1479,7 @@
   "walkReplanned": "Shortest order for the places left, starting at {place}, the nearest to you.",
   "walkOpenList": "Open the list",
   "counterTitle": "Visitors",
-  "counterYesterday": "yesterday",
+  "counterToday": "today",
   "counterWeek": "7 days",
   "counterAll": "all time",
   "counterAverage": "Average visit",

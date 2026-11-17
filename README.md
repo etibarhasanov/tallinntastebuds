@@ -15581,18 +15581,21 @@ experiment is decided.
 
 One number out of this table is a visitor's to read. At the top of
 Discover, the page a desktop opens on, a card stands beside the map's card
-with the old flag counter on it: how many people came yesterday, in the last
+with the old flag counter on it: how many people came today, in the last
 seven days and since the count began on 28 September 2026, how long a visit
 lasts on average over the last four weeks, and the eight countries most of
 them came from, under their flags, with how many more countries there were.
 The owner asked for it on 2026-11-17, after a mockup, and moved it there off
 the map the same day: it is the first page that should say it, not the map.
+It said yesterday for its first hour, and the owner asked for today — the
+figure that moves while somebody is looking.
 
 `GET /api/counter` answers it — `functions/api/counter.js`, through
 `readCounter()` in `functions/api/_visitors.js` — and `drawCounter()` in
-`assets/app.js` draws it. Every figure stops at yesterday, UTC, so the route
-reads the database once a day per colo and the browser keeps the answer an
-hour. The two cards share a row and a height, the map's 340px — which is
+`assets/app.js` draws it. Every figure runs up to now, today's so far among
+them, and days are UTC days, so today begins at two in the morning in
+Tallinn; the route holds an answer five minutes in the colo and the browser
+as long, so the card is at most five minutes behind. The two cards share a row and a height, the map's 340px — which is
 why it is eight countries and not ten. A phone has no room beside the map's
 card, and below 861px the counter is neither asked for nor drawn. If the
 route never answers, the map's card has the row to itself and nothing else
@@ -15602,7 +15605,7 @@ themselves, small, where the flag would have been: `drawsFlags()` asks a
 canvas once. The countries are named in the reading language by
 `TTBCountry`, which is why the map loads `assets/country.js` now.
 
-**People, not visits, in the three figures.** Yesterday, seven days and all
+**People, not visits, in the three figures.** Today, seven days and all
 time count somebody on the first day they were ever here, so a person who
 comes every day is one in the all-time figure. The countries are visits:
 somebody from Finland who came on five days is five beside the Finnish flag.

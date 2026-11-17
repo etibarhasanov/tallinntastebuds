@@ -477,7 +477,7 @@
  * THE FLAG COUNTER, AND THE DESKTOPS IN AMERICA
  *
  * Everything above is the owner's. One thing is not: the card at the top of
- * Discover, on a desktop, that says how many people came yesterday,
+ * Discover, on a desktop, that says how many people came today,
  * in the last seven days and since the count began, how long a visit lasts,
  * and which countries they came from — an old-fashioned flag counter, which
  * the owner asked for on 2026-11-17. GET /api/counter reads it through
@@ -1602,17 +1602,22 @@ export async function readFound(env, span, device) {
 
 /* ------------------------------------------------------- the counter
  * What the card on Discover shows — THE FLAG COUNTER above, and
- * GET /api/counter. Every figure is up to yesterday, UTC, so it moves once a
- * day and the route can hold it in the colo until midnight.
+ * GET /api/counter. Every figure runs up to now, today's included, so it
+ * moves through the day and the route holds it in the colo five minutes.
  *
- *   yesterday, week, all   people new to the site on that day, in the seven
- *                          days before today, and since the count began
+ *   today, week, all       people new to the site today so far, in the last
+ *                          seven days counting today, and since the count
+ *                          began
  *   secs                   the seconds a visit lasts, over the last
- *                          COUNTER_SECS_DAYS days
+ *                          COUNTER_SECS_DAYS days, today's so far among them
  *   countries              [{ id, n }], visits by country since the count
  *                          began, most first, the first COUNTER_TOP of them
  *   more                   how many countries are not in `countries`
  *   since                  the first day there is a row for
+ *
+ * The owner asked for today rather than yesterday on the day it shipped:
+ * today is the figure that moves while somebody is looking, and a counter
+ * that only changes at midnight reads as one nobody is keeping.
  *
  * A day is read from `shown` where the whole of it was counted that way —
  * every day after the first one that has a `shown` row, since the first was
@@ -1630,30 +1635,29 @@ const COUNTER_SECS_DAYS = 28;
 const NOWHERE = new Set(['XX', 'T1']);
 
 export async function readCounter(env) {
-  const until = today();
-  const yesterday = dayBack(1);
-  const weekFrom = dayBack(7);
-  const secsFrom = dayBack(COUNTER_SECS_DAYS);
+  const now = today();
+  const weekFrom = dayBack(6);
+  const secsFrom = dayBack(COUNTER_SECS_DAYS - 1);
   try {
     const began = await env.DB
       .prepare("SELECT MIN(day) AS d FROM visitor_counts WHERE kind = 'shown'")
       .first();
-    /* The first whole day counted as `shown`, or today when there is none
-       yet — so every day so far is estimated. */
-    const exactFrom = began && began.d ? nextDay(began.d) : until;
+    /* The first whole day counted as `shown`, or tomorrow when there is
+       none yet — so every day so far, today's included, is estimated. */
+    const exactFrom = began && began.d ? nextDay(began.d) : nextDay(now);
 
     const [old, exact, secs, first] = await Promise.all([
       env.DB.prepare(
-        "SELECT day, kind, id, n FROM visitor_counts WHERE day < ?1 AND day < ?2 AND (" +
-        "kind IN ('visitor', 'desktop.visitor', 'country') OR (kind = 'desktop.country' AND id = ?3))"
-      ).bind(exactFrom, until, JUDGED_COUNTRY).all(),
+        "SELECT day, kind, id, n FROM visitor_counts WHERE day < ?1 AND (" +
+        "kind IN ('visitor', 'desktop.visitor', 'country') OR (kind = 'desktop.country' AND id = ?2))"
+      ).bind(exactFrom, JUDGED_COUNTRY).all(),
       env.DB.prepare(
-        "SELECT day, id, n FROM visitor_counts WHERE kind = 'shown' AND day >= ?1 AND day < ?2"
-      ).bind(exactFrom, until).all(),
+        "SELECT day, id, n FROM visitor_counts WHERE kind = 'shown' AND day >= ?1"
+      ).bind(exactFrom).all(),
       env.DB.prepare(
         "SELECT SUM(n) AS n FROM visitor_counts WHERE kind = 'cohort' AND id IN ('new:secs', 'back:secs') " +
-        'AND day >= ?1 AND day < ?2'
-      ).bind(secsFrom, until).first(),
+        'AND day >= ?1'
+      ).bind(secsFrom).first(),
       env.DB.prepare('SELECT MIN(day) AS d FROM visitor_counts').first()
     ]);
 
@@ -1703,7 +1707,7 @@ export async function readCounter(env) {
       .filter((r) => r.n > 0)
       .sort((a, b) => b.n - a.n || (a.id < b.id ? -1 : 1));
     return {
-      yesterday: Math.round(days[yesterday] ? days[yesterday].fresh : 0),
+      today: Math.round(days[now] ? days[now].fresh : 0),
       week: Math.round(week),
       all: Math.round(all),
       secs: lately > 0 && secs && secs.n ? Math.round(secs.n / lately) : 0,

@@ -1479,7 +1479,7 @@
   "walkReplanned": "Lühim järjekord allesjäänud kohtadele, algab kohast {place}, mis on sulle lähim.",
   "walkOpenList": "Ava nimekiri",
   "counterTitle": "Külastajad",
-  "counterYesterday": "eile",
+  "counterToday": "täna",
   "counterWeek": "7 päeva",
   "counterAll": "kokku",
   "counterAverage": "Keskmine külastus",
