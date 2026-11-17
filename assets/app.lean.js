@@ -1489,7 +1489,6 @@
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
       : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
-    dom.routeRide.hidden = mode !== 'bike' || !window.TTBRide;
     if (!again) dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
@@ -3301,6 +3300,13 @@
       signIn: function () { openAccount('in', '', 'ride'); },
       track: function (name) { TTBTrack.event(name); }
     });
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('ride') !== '1') return;
+    params.delete('ride');
+    var rest = params.toString();
+    window.history.replaceState(window.history.state, '', window.location.pathname + (rest ? '?' + rest : ''));
+    TTBTrack.event('ride_open', { from: 'account' });
+    TTBRide.open();
   }
 
   function mountRadio() {
@@ -7552,10 +7558,6 @@
       ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
-    dom.routeRide.addEventListener('click', function () {
-      TTBTrack.event('ride_open', { from: 'route' });
-      TTBRide.open();
-    });
     dom.btnRide.hidden = !window.TTBRide;
     dom.btnRide.addEventListener('click', function () {
       TTBTrack.event('ride_open', { from: 'map' });
@@ -8055,7 +8057,6 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
-      routeRide: $('route-ride'),
       rideCard: $('ride-card'),
       walkBand: $('walk-band'),
       routeSay: $('route-say'),

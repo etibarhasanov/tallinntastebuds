@@ -2496,7 +2496,6 @@
       ? 'https://waze.com/ul?ll=' + place.lat + ',' + place.lng + '&navigate=yes'
       : googleWay(place) + '&travelmode=' + ROUTE_TRAVEL[mode];
     dom.routeOut.textContent = t(mode === 'car' ? 'routeWaze' : 'routeGoogle');
-    dom.routeRide.hidden = mode !== 'bike' || !window.TTBRide;
     if (!again) dom.routeSay.textContent = t('routeFinding');
     dom.routeBar.hidden = false;
     document.body.classList.add('route-on');
@@ -5639,7 +5638,11 @@
      the route bar does. Handed what it cannot reach on its own: the map,
      the words, how a distance and a number are written here, the bike's
      colour, and the account — it asks somebody signed out to sign in before
-     it records, since a ride is saved under an account. */
+     it records, since a ride is saved under an account.
+
+     ?ride=1 is Record a ride on /account.html's Your rides card: the map
+     opens with the card already up, and the word comes off the address bar
+     so a reload or a copied link does not open it again. */
   function mountRide() {
     if (!window.TTBRide || !map) return;
     TTBRide.mount(dom.rideCard, {
@@ -5653,6 +5656,13 @@
       signIn: function () { openAccount('in', '', 'ride'); },
       track: function (name) { TTBTrack.event(name); }
     });
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('ride') !== '1') return;
+    params.delete('ride');
+    var rest = params.toString();
+    window.history.replaceState(window.history.state, '', window.location.pathname + (rest ? '?' + rest : ''));
+    TTBTrack.event('ride_open', { from: 'account' });
+    TTBRide.open();
   }
 
   function mountRadio() {
@@ -12867,13 +12877,9 @@
       ourWayFirst(ev, place);
     });
     dom.routeClose.addEventListener('click', clearRoute);
-    dom.routeRide.addEventListener('click', function () {
-      TTBTrack.event('ride_open', { from: 'route' });
-      TTBRide.open();
-    });
-    /* And from the map with nothing open: the same card, no destination.
-       Gone where the recorder did not load, since a button that opens
-       nothing is worse than none. */
+    /* The ride recorder, from the map with nothing open: a ride has no
+       destination. Gone where the recorder did not load, since a button
+       that opens nothing is worse than none. */
     dom.btnRide.hidden = !window.TTBRide;
     dom.btnRide.addEventListener('click', function () {
       TTBTrack.event('ride_open', { from: 'map' });
@@ -13650,7 +13656,6 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
-      routeRide: $('route-ride'),
       rideCard: $('ride-card'),
       walkBand: $('walk-band'),
       routeSay: $('route-say'),

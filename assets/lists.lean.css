@@ -890,6 +890,9 @@
 .lists-all-card:hover { border-color: var(--accent); }
 .lists-all-card:hover .lists-index-title { color: var(--accent); }
 
+.lists-all-card.is-still:hover { border-color: var(--hairline); }
+.lists-all-card.is-still:hover .lists-index-title { color: inherit; }
+
 .lists-index-row > .lists-keep-wrap {
   position: absolute;
   right: 18px;

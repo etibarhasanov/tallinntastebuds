@@ -3543,9 +3543,6 @@ body.ride-on .panel.is-open { visibility: hidden; pointer-events: none; }
 }
 .ride-name:focus { outline: none; border-color: var(--accent); }
 
-.route-ride { grid-column: 1 / -1; justify-self: start; margin-left: -12px; }
-.route-ride[hidden] { display: none; }
-
 path.walk-line { stroke: var(--accent); stroke-opacity: .85; fill: none; }
 
 .walk-num {

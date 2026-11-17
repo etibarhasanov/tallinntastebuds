@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — recorded rides, the confirmed bike routes.
  *
- * A member presses Record a ride on the map's Bike tab, cycles, presses
+ * A member presses the bike button on the map, cycles, presses
  * Finish and Save, and the way they really went is kept here. Later, when
  * anybody asks the Bike tab for the way to a place, the rides under that way
  * are drawn faintly beneath the suggested line, and the bar says how much of
@@ -18,6 +18,15 @@
  *   kilometre, so a hundred people asking about one street are one read.
  *   `ready: false` and no rides where the table is not applied — WHEN THE
  *   TABLE IS NOT THERE.
+ *
+ * GET  /api/rides?mine=1
+ *
+ *   { ready, user, rides: [ { id, name, meters, seconds, at } ] }
+ *
+ *   The session's own rides, newest first and at most MINE of them, for the
+ *   Your rides card on /account.html. The one answer here that carries a
+ *   name, because it goes only to whoever gave it, and it carries no line:
+ *   the card is a list. Never cached. Signed out it is empty.
  *
  * POST /api/rides   { action: 'save', name, seconds, line }    a session
  *
@@ -93,9 +102,15 @@ const MAX_NAME = 60;
 const NEAR = 40;
 const MAX_BOX = 0.4;
 
+/* How many of somebody's own rides ?mine=1 answers. A year of commuting is
+   more than this, and the card that reads it shows six until asked. */
+const MINE = 200;
+
 export async function onRequestGet(context) {
   const { env, request } = context;
-  const box = roundedBox(new URL(request.url).searchParams.get('bbox'));
+  const query = new URL(request.url).searchParams;
+  if (query.get('mine') === '1') return json(await mine(context), 200);
+  const box = roundedBox(query.get('bbox'));
   if (!box) return json({ error: 'malformed' }, 400);
   if (!env.DB || await wrongDatabase(env)) return json({ ready: false, rides: [] }, 200);
 
@@ -117,6 +132,28 @@ export async function onRequestGet(context) {
     return json({ ready: true, rides }, 200, 300);
   } catch (e) {
     return json({ ready: false, rides: [] }, 200);
+  }
+}
+
+/* The session's own rides — GET ?mine=1. */
+async function mine(context) {
+  const { env, request } = context;
+  const none = { ready: false, user: null, rides: [] };
+  if (!env.DB || await wrongDatabase(env)) return none;
+  const user = await sessionUser(request, env);
+  if (!user) return { ...none, ready: true };
+  try {
+    const { results } = await env.DB
+      .prepare(
+        'SELECT id, name, meters, seconds, created_at AS at FROM rides ' +
+        'WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
+      )
+      .bind(user.id, MINE)
+      .all();
+    return { ready: true, user: user.username, rides: results };
+  } catch (e) {
+    /* WHEN THE TABLE IS NOT THERE. */
+    return none;
   }
 }
 

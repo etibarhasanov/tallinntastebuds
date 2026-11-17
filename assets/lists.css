@@ -1352,6 +1352,10 @@
 .lists-all-card.has-keep { padding-bottom: 54px; }
 .lists-all-card:hover { border-color: var(--accent); }
 .lists-all-card:hover .lists-index-title { color: var(--accent); }
+/* A row that opens nothing — a ride on the account page — does not light
+   up as though it would. */
+.lists-all-card.is-still:hover { border-color: var(--hairline); }
+.lists-all-card.is-still:hover .lists-index-title { color: inherit; }
 
 /* The bookmark in the row's bottom corner, laid inside the card the way the
    map pill is on an index row: above the title's link in the stacking order, so
