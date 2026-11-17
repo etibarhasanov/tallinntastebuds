@@ -237,7 +237,8 @@ async function street(context, mode, from, to) {
 
   /* A bike way through a door goes first, and the router's own best becomes
      the first of the others — still offered, a button down. */
-  const through = mode === 'bike' ? await viaDoor(context, from, to, first) : null;
+  const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
+  const through = mode === 'bike' ? await viaDoor(context, from, to, shortest) : null;
   const ways = through ? [through, first].concat(others).slice(0, 1 + OTHERS) : [first].concat(others);
   const best = ways[0];
   return json({ meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) }, 200, 3600);
@@ -257,7 +258,8 @@ async function street(context, mode, from, to) {
  * further from the two points than the saving it could make is not asked
  * about. At most DOORS are, nearest-looking first, two requests each, and
  * the first that wins is taken. A way with a door in it has to beat the
- * router's by DOOR_GAIN metres and by a seventh, or it is noise: GPS error
+ * shortest way the router offered — its first is its quickest, not always
+ * that — by DOOR_GAIN metres and by a seventh, or it is noise: GPS error
  * and a corner cut are worth a few metres each and neither is a door.
  *
  * Nothing waits on any of it: no file, a door that does not parse, a leg the
@@ -277,14 +279,14 @@ const AT_DOOR = 15;
 
 const metres = (a, b) => km({ lat: a[0], lng: a[1] }, { lat: b[0], lng: b[1] }) * 1000;
 
-async function viaDoor(context, from, to, first) {
+async function viaDoor(context, from, to, shortest) {
   let doors;
   try { doors = await dataFile(context, '/data/doors.json'); } catch (e) { return null; }
   if (!Array.isArray(doors)) return null;
 
   const start = [from.lat, from.lng];
   const end = [to.lat, to.lng];
-  const worth = (meters) => first.meters - meters >= DOOR_GAIN && meters <= first.meters * DOOR_RATIO;
+  const worth = (meters) => shortest - meters >= DOOR_GAIN && meters <= shortest * DOOR_RATIO;
   const tries = [];
   for (const door of doors) {
     const line = door && Array.isArray(door.line) ? door.line : [];

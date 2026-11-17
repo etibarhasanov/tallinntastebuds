@@ -3280,8 +3280,8 @@ two together.
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
 rides off `GET /api/rides?bbox=`, cuts each into stretches of two hundred
 metres, twice, and puts each stretch's ends to `/api/route` by bike. A
-stretch the router needs a hundred metres and half as much again for is a
-door; it is then tightened to the part that makes the saving, and kept only
+stretch the router needs a hundred metres and half as much again for, by
+the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only
 where both ends are on the router's network, so the way in and the way on
 meet it. It has to be the long way round in both directions: the first
 run over real rides found eleven doors, and seven were a one-way street
@@ -3302,7 +3302,8 @@ is looked at again.
 **Used only where it clearly wins.** `viaDoor()` in
 `functions/api/route.js` looks at the doors as the crow flies first, asks
 the router about at most two, two requests each, and takes a way through a
-door only when it beats the router's own by eighty metres and by a seventh.
+door only when it beats the shortest way the router offered by eighty
+metres and by a seventh.
 It then goes first, the router's best becomes the first of `others`, and
 the answer keeps its shape — so the map, the iPhone app and Rattatee ride
 through a door without knowing there is one. The turn into a door and the
