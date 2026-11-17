@@ -1285,6 +1285,8 @@
   "routeModeBus": "Otobüs",
   "routeModeCar": "Araba",
   "routeTrips": "Kalkışlar",
+  "routeWay": "{min} dk · {dist}",
+  "routeWays": "Yollar",
   "routeCar": "{min} dk arabayla · {dist}",
   "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
   "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",

@@ -1285,6 +1285,8 @@
   "routeModeBus": "Autobús",
   "routeModeCar": "Coche",
   "routeTrips": "Salidas",
+  "routeWay": "{min} min · {dist}",
+  "routeWays": "Caminos",
   "routeCar": "{min} min en coche · {dist}",
   "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
   "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",

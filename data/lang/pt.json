@@ -1285,6 +1285,8 @@
   "routeModeBus": "Autocarro",
   "routeModeCar": "Carro",
   "routeTrips": "Partidas",
+  "routeWay": "{min} min · {dist}",
+  "routeWays": "Caminhos",
   "routeCar": "{min} min de carro · {dist}",
   "routeBus": "{lines} às {time} de {stop} · {min} min no total",
   "routeNoBus": "Nenhum autocarro ou elétrico encontrado agora.",

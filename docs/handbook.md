@@ -3006,6 +3006,20 @@ row slides sideways rather than pushing the cross off the bar.
   *14:05 · 17*, *14:12 · 3 → 17* — pressing one draws that one instead. A
   journey that is all walking is left out, because Walk says that better.
 
+**A walk, a ride or a drive comes with up to three ways.** `/api/route` asks
+the router for alternatives and answers the first way as it always did, with
+up to two more under `others`. Where there is more than one, each is a small
+button under the sentence — *9 min · 2.1 km*, *11 min · 2.6 km* — in the row
+the bus's departures sit in: the one chosen is drawn solid and its button
+wears the mode's colour, the others are faint lines in the same colour, and
+pressing another draws that one solid and changes the sentence, with the map
+left where it is. The buttons say how long and how far and nothing about
+which is nicer, because the router does not say. One way is no buttons, which
+is what a short way mostly is. A way asked for again because the dot moved
+comes back on the first: the ways from the new place are not the ones the
+button was pressed among. Rattatee reads the same field for the same choice
+on its card before a ride.
+
 The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
 the bus to one place takes it to the next. Google is a small link at the foot
 of the bar rather than the bar's button — ours is the answer, Google the way
@@ -3050,7 +3064,7 @@ and a bus journey a minute. The location is read, answered and forgotten —
 never stored or counted. Opening another place, the chat or a list puts the
 line away (`renderPanel()`); a language switch while the bar is up does not
 retranslate it. The arrow reports `directions`, a tab `route_mode`, a journey
-`route_trip`, the Google link `route_google` and the Waze link `route_waze`.
+`route_trip`, another way `route_way`, the Google link `route_google` and the Waze link `route_waze`.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
@@ -19852,6 +19866,7 @@ The map, `assets/app.js`:
 | `route_waze` | — the Open in Waze link the route's bar shows instead on Car |
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
+| `route_way` | `n`, `mode` — another of the ways on offer for a walk, a ride or a drive pressed, 0 the router's first |
 | `ride_open` | `from` — `map`, the bike button on the map, or `account`, the map opened at `/?ride=1` by Record a ride on the account page |
 | `ride_record` | — Record a ride on the account page's Your rides card, leaving for the map |
 | `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |

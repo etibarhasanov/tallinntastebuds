@@ -1285,6 +1285,8 @@
   "routeModeBus": "Avtobus",
   "routeModeCar": "Maşın",
   "routeTrips": "Reyslər",
+  "routeWay": "{min} dəq · {dist}",
+  "routeWays": "Yollar",
   "routeCar": "{min} dəq maşınla · {dist}",
   "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
   "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
