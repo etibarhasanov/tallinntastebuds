@@ -4450,6 +4450,7 @@
     'btn-lists': 'lists',
     'btn-random': 'random',
     'btn-more': 'more',
+    'btn-ride': 'ride',
     'btn-locate': 'locate'
   };
 
@@ -12867,7 +12868,15 @@
     });
     dom.routeClose.addEventListener('click', clearRoute);
     dom.routeRide.addEventListener('click', function () {
-      TTBTrack.event('ride_open');
+      TTBTrack.event('ride_open', { from: 'route' });
+      TTBRide.open();
+    });
+    /* And from the map with nothing open: the same card, no destination.
+       Gone where the recorder did not load, since a button that opens
+       nothing is worse than none. */
+    dom.btnRide.hidden = !window.TTBRide;
+    dom.btnRide.addEventListener('click', function () {
+      TTBTrack.event('ride_open', { from: 'map' });
       TTBRide.open();
     });
     dom.routeModes.addEventListener('click', function (ev) {
@@ -13689,6 +13698,7 @@
       askThread: $('ask-thread'),
       btnList: $('btn-list'),
       btnLocate: $('btn-locate'),
+      btnRide: $('btn-ride'),
       stories: $('stories'),
       storyStage: $('story-stage'),
       storyVideo: $('story-video'),
