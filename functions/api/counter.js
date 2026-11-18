@@ -27,8 +27,10 @@
  *
  * Today's figure moves all day, so the colo holds an answer five minutes,
  * under a key with today's date in it so midnight starts a new one, and the
- * browser keeps it as long. That is four reads of D1 per colo per five
- * minutes at the most, and none at all while nobody is looking.
+ * browser keeps it as long. Each of those reads today's rows alone, by the
+ * table's key; the days before today are read once per isolate a day —
+ * WHAT IT READS in ./_visitors.js, which is what it cost when they were read
+ * every five minutes.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
