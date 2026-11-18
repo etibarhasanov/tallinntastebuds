@@ -20,17 +20,23 @@
  *   `ready: false` and no rides where the table is not applied — WHEN THE
  *   TABLE IS NOT THERE.
  *
- * GET  /api/rides?mine=1
+ * GET  /api/rides?mine=1, or /api/rides with nothing asked
  *
- *   { ready, user, rides: [ { id, name, meters, seconds, at } ] }
+ *   { ready, user, rides: [ { id, name, meters, seconds, at, timed } ] }
  *
  *   The session's own rides, newest first and at most MINE of them, for the
- *   Your rides card on /account.html. The one answer here that carries a
- *   name, because it goes only to whoever gave it, and it carries no line:
- *   the card is a list. Never cached. Signed out it is empty.
+ *   Your rides card on /account.html and the iPhone app's Your rides. The
+ *   one answer here that carries a name, because it goes only to whoever
+ *   gave it, and it carries no line: the card is a list. `timed` says
+ *   whether the ride has a track, so the list can tell which rides will
+ *   have speeds when opened. Never cached. Signed out it is empty. One ride
+ *   whole, with what it says about itself, is GET /api/rides/<id> in
+ *   ./rides/[id].js.
  *
  * POST /api/rides   { action: 'save', name, seconds, line }    a session
  * POST /api/rides   { action: 'save', anon: true, … }           nobody
+ * POST /api/rides   { action: 'rename', id, name }             its rider
+ * POST /api/rides   { action: 'drop', id }                     its rider
  *
  *   { ride: { id, meters, seconds } }
  *
@@ -41,6 +47,11 @@
  *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
  *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
  *   WAS PASSED.
+ *
+ *   `rename` answers { ride: { id, name } } and `drop` { ok: true }; both
+ *   take a session and touch only a ride filed under it, and anything else
+ *   is 404 not-found, the answer GET /api/rides/<id> gives. A dropped ride
+ *   is gone from under the Bike tab too.
  *
  *   Errors: 401 signed-out (no session and no `anon`), 400 malformed, 400
  *   short (under MIN_METERS once the ends are off), 400 fast (an average no
@@ -106,8 +117,9 @@
  * They are optional — the iPhone app and an old page send what they have —
  * and all or nothing: one point without them and the ride is kept with no
  * track rather than with a track that does not line up. They are never
- * answered. When somebody passed a point is theirs in a way the point is
- * not.
+ * answered as they are: when somebody passed a point is theirs in a way the
+ * point is not, so the one thing made of them that leaves the server is the
+ * speeds ./rides/[id].js works out for the ride's own rider.
  *
  * `track` was added by hand after the table was, so a save tries the
  * insert with it and, where the column is not there yet, again without.
@@ -124,6 +136,7 @@ import {
   json, sessionUser, wrongDatabase, nearTallinn, km, randomHex, clientIp, fingerprint
 } from './_lib.js';
 import { countUse } from './_visitors.js';
+import { arrayOf } from './_rides.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
    IS ON A RIDE. Two hundred is a block or two: enough that a line stopping
@@ -180,7 +193,7 @@ const MINE = 200;
 export async function onRequestGet(context) {
   const { env, request } = context;
   const query = new URL(request.url).searchParams;
-  if (query.get('mine') === '1') return json(await mine(context), 200);
+  if (query.get('mine') === '1' || !query.has('bbox')) return json(await mine(context), 200);
   const box = roundedBox(query.get('bbox'));
   if (!box) return json({ error: 'malformed' }, 400);
   if (!env.DB || await wrongDatabase(env)) return json({ ready: false, rides: [] }, 200);
@@ -198,7 +211,7 @@ export async function onRequestGet(context) {
       id: row.id,
       meters: row.meters,
       seconds: row.seconds,
-      line: lineOf(row.line)
+      line: arrayOf(row.line)
     })).filter((ride) => ride.line.length > 1);
     return json({ ready: true, rides }, 200, 300);
   } catch (e) {
@@ -213,19 +226,51 @@ async function mine(context) {
   if (!env.DB || await wrongDatabase(env)) return none;
   const user = await sessionUser(request, env);
   if (!user) return { ...none, ready: true };
+  const read = (timed) => env.DB
+    .prepare(
+      'SELECT id, name, meters, seconds, created_at AS at, ' + timed + ' AS timed FROM rides ' +
+      'WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
+    )
+    .bind(user.id, MINE)
+    .all();
+  let got;
   try {
-    const { results } = await env.DB
-      .prepare(
-        'SELECT id, name, meters, seconds, created_at AS at FROM rides ' +
-        'WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
-      )
-      .bind(user.id, MINE)
-      .all();
-    return { ready: true, user: user.username, rides: results };
+    got = await read("track <> ''");
   } catch (e) {
-    /* WHEN THE TABLE IS NOT THERE. */
-    return none;
+    /* No `track` column yet, so no ride has one; or WHEN THE TABLE IS NOT
+       THERE, which the second read finds out. */
+    try {
+      got = await read('0');
+    } catch (e2) {
+      return none;
+    }
   }
+  const rides = got.results.map((r) => ({ ...r, timed: !!r.timed }));
+  return { ready: true, user: user.username, rides };
+}
+
+/* Renaming or deleting one of the session's own rides. The WHERE carries the
+   account, so a ride that is somebody else's changes nothing and is
+   not-found, the same as one that is not there. */
+async function own(env, user, body) {
+  const id = typeof body.id === 'string' ? body.id : '';
+  if (!/^[0-9a-f]{12}$/.test(id)) return json({ error: 'not-found' }, 404);
+  if (body.action === 'rename') {
+    if (typeof body.name !== 'string') return json({ error: 'malformed' }, 400);
+    const name = body.name.trim().slice(0, MAX_NAME);
+    const done = await env.DB
+      .prepare('UPDATE rides SET name = ? WHERE id = ? AND user_id = ?')
+      .bind(name, id, user.id)
+      .run();
+    if (!done.meta.changes) return json({ error: 'not-found' }, 404);
+    return json({ ride: { id, name } }, 200);
+  }
+  const done = await env.DB
+    .prepare('DELETE FROM rides WHERE id = ? AND user_id = ?')
+    .bind(id, user.id)
+    .run();
+  if (!done.meta.changes) return json({ error: 'not-found' }, 404);
+  return json({ ok: true }, 200);
 }
 
 export async function onRequestPost(context) {
@@ -241,6 +286,14 @@ export async function onRequestPost(context) {
   }
 
   const user = await sessionUser(request, env);
+  if (body && (body.action === 'rename' || body.action === 'drop')) {
+    if (!user) return json({ error: 'signed-out' }, 401);
+    try {
+      return await own(env, user, body);
+    } catch (e) {
+      return json({ error: 'not-ready' }, 503);
+    }
+  }
   if (!body || body.action !== 'save') return json({ error: 'malformed' }, 400);
 
   /* Whose cap the ride counts against: the account's, or with `anon` and no
@@ -370,15 +423,6 @@ function lengthOf(line) {
   let m = 0;
   for (let i = 1; i < line.length; i++) m += leg(line[i - 1], line[i]);
   return m;
-}
-
-function lineOf(text) {
-  try {
-    const line = JSON.parse(text);
-    return Array.isArray(line) ? line : [];
-  } catch (e) {
-    return [];
-  }
 }
 
 /* `south,west,north,east`, rounded outward to two decimals, inside the

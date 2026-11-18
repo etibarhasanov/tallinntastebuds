@@ -3246,10 +3246,29 @@ and the ones you kept, a fold with the count on it, each ride a row — what
 you called it, or *Bike ride*, then how far, how long and the day — and
 **Record a ride** along its foot, an `.alt` because the page's one filled
 button is Make a list. It reads `GET /api/rides?mine=1`, which answers the
-session's own rides with their names and no lines, uncached. A row opens
-nothing yet: showing one ride on the map, and taking one down, are the next
-things this card would grow. **Privacy** says the same in the
-visitor's words. A browser's location is whatever the browser says, as with
+session's own rides with their names and no lines, uncached — and so does
+`GET /api/rides` with nothing asked, which is how the iPhone app asks. A row
+on the website opens nothing yet: the page that opens one is the app's.
+
+**One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
+the same rides with a range — 7, 28, 90 days, all time — the distance, the
+riding time and the number of rides against the range before, a line of
+kilometres, and every ride a row that opens it. That page is `GET
+/api/rides/<id>` (`functions/api/rides/[id].js`): the ride's line on a map,
+its distance, time and average, and — where it has a `track` — the fastest
+kilometre, the top speed over two hundred metres, how long was spent
+standing, the speed along the way and each kilometre's time, all worked out
+on the server by `rideInsight()` in `functions/api/_rides.js` so every
+reader gets the same numbers. A ride with no track, saved before
+2026-11-17 or by a recorder that sent no times, has the first three and a
+sentence saying why there is no more. Only its rider can open it: the
+session is the only way to ask, and somebody else's ride is the same 404 as
+one that is not there. The same page renames a ride and deletes it, `POST
+/api/rides` with `rename` or `drop`, each touching only a ride filed under
+the session; a deleted ride is gone from under the Bike tab too. The track
+is never answered raw — the times a point was passed are the rider's, and
+only the speeds made of them reach even the rider. The privacy page does
+not mention rides yet, and should. A browser's location is whatever the browser says, as with
 a walk's check-in; a faked ride costs a row nobody is shown.
 
 `rides` is in `db/schema.sql` and is applied by hand. Until it is, the

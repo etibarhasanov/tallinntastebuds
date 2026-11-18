@@ -383,6 +383,16 @@ its models are in `TallinnTasteBuds/Models/`.
   - `POST /api/account` with `password-change`, `username-change` (answered
     with `user`), `display`, `about` and `links`, and the errors `current`,
     `same`, `same-name`, `taken` and `bad-link` with `network`.
+- Added on 2026-11-18, with Your rides: `GET /api/rides` with no query,
+  the same answer as `?mine=1` — `rides` with `id`, `name`, `meters`,
+  `seconds`, `at` and `timed`; `GET /api/rides/<id>`, reading `ride` with
+  `id`, `name`, `meters`, `seconds`, `at`, `line` and `insight` (`average`,
+  `timed`, `top`, `stopped`, `fastest` with `km` and `seconds`, `splits`
+  with `km`, `meters` and `seconds`, and `speed` with `at` and `kmh`), and
+  the errors `signed-out` and `not-found`; and `POST /api/rides` with
+  `rename` (`id`, `name`, answered `ride`) and `drop` (`id`, answered
+  `ok`), refused with `not-found`. Its recorder sends `[lat, lng, t, acc]`
+  points from then on, as the website's does.
 - Signing in, which is three promises of its own. `GET /api/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
