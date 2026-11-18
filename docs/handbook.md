@@ -3402,6 +3402,19 @@ nothing, so an older page or the iPhone app sending bare points still
 saves; it is never answered to anybody; and because the column was added by
 hand after the table, a save tries the insert with it and again without.
 
+**How high each point was.** Since 2026-11-18 Rattatee sends a fifth
+number, `[lat, lng, t, acc, alt]` — the fix's height above the sea in whole
+metres, from the phone's GPS — and the server keeps it in `rides.track` as
+a third number beside the time and the accuracy, `[t, acc, alt]`. It is
+all or nothing again, one level down: every kept point with a sane height
+(−100 to 1,000 m) or the ride keeps `[t, acc]` alone, so a track is pairs
+or triples and never a mix, and everything that reads it reads the first
+two and nothing past them. Nothing shows it yet. It is there so a ride can
+one day say where it climbed — the one thing about a ride its line and its
+times cannot — and, like the times, it is never answered to anybody. A GPS
+height is good to ten or twenty metres a point, so a climb is a trend
+across many points, not the step between two.
+
 **A ride needs no account.** What is wanted of a ride is its points, and
 who rode it adds nothing to them, so Rattatee asks for no sign-in: people
 ride, press Save, and that is it. A save that says `anon: true` and carries

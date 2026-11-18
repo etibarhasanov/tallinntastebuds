@@ -549,7 +549,9 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   and `line`, signed in or not — it asks nobody to sign in, and `anon` is
   what lets a save with no session through — whose points it sends as
   `[lat, lng, t, acc]` — whole seconds since the ride began and whole
-  metres, kept in `rides.track` — reading `ride` with `id` and `meters`. A
+  metres, kept in `rides.track` — and, from 2026-11-18, `[lat, lng, t, acc,
+  alt]` where the fix had a height, whole metres above the sea, kept there
+  as a third number; a point without one is sent as four — reading `ride` with `id` and `meters`. A
   ride waits on the phone until that answer comes, so the error words decide
   what becomes of it: `short`, `fast` and `malformed` are final and the ride
   is listed as not kept; `often` waits for

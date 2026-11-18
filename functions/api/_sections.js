@@ -126,7 +126,8 @@ export function pieces(points) {
 
 /* One ride's rows for `ride_sections`: [cell, meters, timed, paced,
    seconds, slow, stops] for every square its line crosses. `line` is [lat, lng]
-   pairs and `track` the [t, acc] pairs beside it, or nothing. A step over
+   pairs and `track` the [t, acc] pairs beside it — or [t, acc, alt], which
+   reads the same here — or nothing. A step over
    GAP is skipped rather than counted, so a ride stored before lines were
    cut at one cannot put its straight line into the table. */
 export function sectionsOf(line, track) {

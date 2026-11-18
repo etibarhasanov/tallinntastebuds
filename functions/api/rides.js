@@ -58,7 +58,8 @@
  *
  *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
  *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
- *   WAS PASSED.
+ *   WAS PASSED, or [lat, lng, t, acc, alt] with its height above the sea in
+ *   metres — HOW HIGH EACH POINT WAS.
  *
  *   `rename` answers { ride: { id, name } } and `drop` { ok: true }; both
  *   take a session and touch only a ride filed under it, and anything else
@@ -139,6 +140,20 @@
  *
  * `track` was added by hand after the table was, so a save tries the
  * insert with it and, where the column is not there yet, again without.
+ *
+ * HOW HIGH EACH POINT WAS
+ *
+ * Since 2026-11-18 Rattatee sends a fifth number, the fix's altitude above
+ * sea level in whole metres, so a ride can one day say where it climbed
+ * and why a stretch was slow — which a line on a flat map cannot. It rides
+ * in `track` as a third number, [t, acc, alt], under the same all-or-
+ * nothing rule one level down: a ride whose every kept point has a sane
+ * height keeps them, and one with a single point without keeps [t, acc]
+ * alone. So a track is pairs or triples, never a mix, and everything that
+ * reads it reads [0] and [1] and nothing past them — no new column, and no
+ * reader has to change. It is the phone's GPS height, good to ten or twenty
+ * metres a point; a climb is a trend across many of them, not a step
+ * between two. Never answered either, for the same reason as the times.
  *
  * A RIDE WITH A GAP IN IT
  *
@@ -240,6 +255,12 @@ const MAX_BOX = 0.4;
    judgements: the page keeps only fixes within thirty metres. */
 const MAX_SECONDS = 86400;
 const MAX_ACC = 1000;
+
+/* The heights a point may claim: the sea's edge less a margin for a bad fix,
+   to well over Suur Munamägi's 318 m, the highest ground in the Baltics.
+   HOW HIGH EACH POINT WAS. */
+const MIN_ALT = -100;
+const MAX_ALT = 1000;
 
 /* How many of somebody's own rides ?mine=1 answers. A year of commuting is
    more than this, and the card that reads it shows six until asked. */
@@ -411,8 +432,10 @@ async function save(env, rider, body) {
       const kept = trimEnds(run);
       const line = kept.map((p) => [p[0], p[1]]);
       /* WHEN EACH POINT WAS PASSED: every point carried the pair, or none
-         is kept. */
-      const track = kept.every((p) => p.length === 4) ? kept.map((p) => [p[2], p[3]]) : null;
+         is kept; and HOW HIGH EACH POINT WAS, every height or none. */
+      const timed = kept.every((p) => p.length >= 4);
+      const high = timed && kept.every((p) => p.length === 5);
+      const track = timed ? kept.map((p) => (high ? [p[2], p[3], p[4]] : [p[2], p[3]])) : null;
       return { line, track, meters: Math.round(lengthOf(line)) };
     })
     .filter((run) => run.meters >= MIN_METERS);
@@ -489,7 +512,9 @@ async function save(env, rider, body) {
 
    A point that also carries a sane time and accuracy keeps them, as whole
    numbers: [lat, lng, t, acc]. One that does not is the bare pair, and
-   save() then keeps no track at all. */
+   save() then keeps no track at all. A timed point that carries a sane
+   height as well keeps it too, [lat, lng, t, acc, alt] — HOW HIGH EACH
+   POINT WAS. */
 function cleanLine(raw) {
   if (!Array.isArray(raw) || raw.length < 2 || raw.length > MAX_POINTS) return null;
   const out = [];
@@ -501,7 +526,9 @@ function cleanLine(raw) {
     const t = Math.round(Number(p[2]));
     const acc = Math.round(Number(p[3]));
     const timed = p.length >= 4 && t >= 0 && t <= MAX_SECONDS && acc >= 0 && acc <= MAX_ACC;
-    out.push(timed ? [lat, lng, t, acc] : [lat, lng]);
+    const alt = Math.round(Number(p[4]));
+    const high = timed && p.length >= 5 && p[4] !== null && alt >= MIN_ALT && alt <= MAX_ALT;
+    out.push(high ? [lat, lng, t, acc, alt] : timed ? [lat, lng, t, acc] : [lat, lng]);
   }
   return out;
 }
