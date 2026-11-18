@@ -125,6 +125,7 @@ when: directions
 when: route_mode
 when: route_trip
 when: route_way
+when: route_train
 when: route_google
 when: route_waze
 when: website
@@ -133,7 +134,8 @@ when: google_listing
 when: reel_open
 ref: assets/app.js pressShare()
 ref: assets/app.js showRoute()
-ref: functions/api/route.js</bpmn:documentation>
+ref: functions/api/route.js
+ref: functions/api/v1/route.js</bpmn:documentation>
       <bpmn:incoming>visitor-e9</bpmn:incoming>
       <bpmn:outgoing>visitor-e10</bpmn:outgoing>
     </bpmn:userTask>

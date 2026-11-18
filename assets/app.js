@@ -259,7 +259,7 @@
   var routeFor = null;    // the place it is the way to
   var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
-  var routeWays = null;   // the ways last answered for a walk, a ride or a drive: the first, then /api/route's `others`
+  var routeWays = null;   // the ways last answered for a walk, a ride or a drive: the first, then `others`, then by bike `trains`
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var routeFrom = null;   // where the way drawn was asked from, so a dot that has left it can ask again
   var routeAsked = 0;     // and when, so a moving dot asks at most once every ROUTE_REST
@@ -2470,7 +2470,11 @@
      place too. Where the visitor is comes from the dot if the map already has
      one and from one reading otherwise, taken quietly — a reading asked for
      here must not fly the map to the visitor and off the place they are
-     looking at. The route is /api/route; peatus.ee answers for the bus.
+     looking at. The route is /api/v1/route, which is /api/route with a
+     version on it and, by bike, the trains — bike to a station, the train,
+     bike on — and /api/route itself where the versioned one does not
+     answer, which costs the trains and nothing else; peatus.ee answers for
+     the bus and the train.
 
      The small link under it is the way out, and which app it leaves for
      follows the tab: Google for a walk, a bike or a bus, which knows the footpaths
@@ -2508,9 +2512,23 @@
       if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
       routeFrom = L.latLng(from.lat, from.lng);
       routeAsked = Date.now();
-      return fetch('/api/route?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
-        .then(function (res) { return res.ok ? res.json() : null; })
+      var ask = '?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng;
+      return fetch('/api/v1/route' + ask)
+        .then(function (res) {
+          /* A refusal with a word in it is the route's answer, the same one
+             /api/route would give; anything else — a deployment from before
+             the version, a 5xx with no body — is asked again of the route
+             without it. */
+          if (res.ok || res.status === 400 || res.status === 404 || res.status === 422) {
+            return res.json().then(function (body) { return body && body.version ? body : Promise.reject(); });
+          }
+          return Promise.reject();
+        })
+        .catch(function () {
+          return fetch('/api/route' + ask).then(function (res) { return res.ok ? res.json() : null; });
+        })
         .then(function (way) {
+          if (way && way.error) way = null;
           if (token !== routeToken) return;
           if (mode === 'bus') {
             if (!way || !way.trips || !way.trips.length) { dom.routeSay.textContent = t('routeNoBus'); return; }
@@ -2522,11 +2540,14 @@
             if (!again) dom.routeSay.textContent = t(ROUTE_NONE[mode]);
             return;
           }
-          /* The router's first way, then the others it found. An answer
-             after the dot has moved comes back on the first: the ways from
-             the new place are not the ones a button was pressed among. */
+          /* The router's first way, then the others it found, then the
+             trains, each a way with `legs`. An answer after the dot has moved
+             comes back on the first: the ways from the new place are not the
+             ones a button was pressed among. */
           routeWays = [way].concat((way.others || []).filter(function (other) {
             return other && other.line && other.line.length > 1;
+          }), (way.trains || []).filter(function (train) {
+            return train && train.legs && train.legs.length;
           }));
           drawRoute(0, mode, again);
         });
@@ -2608,34 +2629,43 @@
      button and the line it chose are one colour — and pressing another
      draws that one solid instead, with the map left where it is, since all
      of them were in the frame already. One way is no buttons, which is what
-     a short way mostly is. */
+     a short way mostly is.
+
+     By bike a way can also be a train, one with `legs`: the rides to and
+     from the station in the bike's green and the train in the bus's amber,
+     the colour public transport already has here, its button last and
+     pressed in that amber too. Its sentence says when to set off, since a
+     train, unlike a street, leaves at a time. */
   function drawRoute(n, mode, still) {
     var way = routeWays[n];
     clearRouteLine();
     routeLine = L.featureGroup().addTo(map);
     routeWays.forEach(function (other, i) {
-      if (i !== n) routeStretch(other.line, mode, false, true);
+      if (i !== n) drawWay(other, mode, true);
     });
-    routeStretch(way.line, mode, false);
-    var said = t(ROUTE_SAY[mode], {
-      min: Math.max(1, Math.round(way.seconds / 60)),
-      dist: routeDistance(way.meters)
-    });
-    dom.routeSay.textContent = said;
+    drawWay(way, mode, false);
+    var min = Math.max(1, Math.round(way.seconds / 60));
+    var train = trainLeg(way);
+    dom.routeSay.textContent = train
+      ? t('routeTrain', { leave: way.leave, from: train.from, line: train.name, at: train.at, to: train.to, min: min })
+      : t(ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
 
     routeWays.forEach(function (other, i) {
+      var leg = trainLeg(other);
       var press = el('button', {
         type: 'button',
         className: 'route-trip',
-        'data-mode': mode,
+        'data-mode': leg ? 'bus' : mode,
         'aria-pressed': String(i === n),
-        textContent: t('routeWay', {
-          min: Math.max(1, Math.round(other.seconds / 60)),
-          dist: routeDistance(other.meters)
-        })
+        textContent: leg
+          ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
+          : t('routeWay', {
+            min: Math.max(1, Math.round(other.seconds / 60)),
+            dist: routeDistance(other.meters)
+          })
       });
       press.addEventListener('click', function () {
-        TTBTrack.event('route_way', { n: i, mode: mode });
+        TTBTrack.event(leg ? 'route_train' : 'route_way', { n: i, mode: mode });
         drawRoute(i, mode, true);
       });
       dom.routeTrips.appendChild(press);
@@ -2644,6 +2674,21 @@
     dom.routeTrips.hidden = routeWays.length < 2;
 
     if (!still) fitRoute();
+  }
+
+  /* One way on the map: its line, or for a train each leg in its own tone. */
+  function drawWay(way, mode, faint) {
+    if (!way.legs) { routeStretch(way.line, mode, false, faint); return; }
+    way.legs.forEach(function (leg) {
+      if (leg.line && leg.line.length > 1) routeStretch(leg.line, leg.kind === 'train' ? 'bus' : 'bike', false, faint);
+    });
+  }
+
+  /* The train in a way, or null for a way that is all one mode. */
+  function trainLeg(way) {
+    var legs = way.legs || [];
+    for (var i = 0; i < legs.length; i++) if (legs[i].kind === 'train') return legs[i];
+    return null;
   }
 
   /* A bus journey: the walks dashed in a walk's green, each ride solid in the

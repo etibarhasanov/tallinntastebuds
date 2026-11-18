@@ -6,7 +6,7 @@ blog about what all of it does and where to eat that members write in too, a pag
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
 through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, forty-seven Cloudflare Functions, two D1 databases (preview and
+Static files, fifty Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -393,6 +393,12 @@ its models are in `TallinnTasteBuds/Models/`.
   `rename` (`id`, `name`, answered `ride`) and `drop` (`id`, answered
   `ok`), refused with `not-found`. Its recorder sends `[lat, lng, t, acc]`
   points from then on, as the website's does.
+- Added on 2026-11-18, with the train by bike: `GET /api/v1/route`, asked
+  first with the same query as `/api/route` and answering the same fields
+  beside `version`, and by bike `trains`, each `seconds`, `meters`, `leave`
+  and `legs` — `kind` (`bike` or `train`) and `line`, and the train's
+  `name`, `from`, `to` and `at`. An answer without `version` is asked again
+  of `/api/route`, so `version` is the promise that `/api/v1/` answers.
 - Signing in, which is three promises of its own. `GET /api/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
@@ -488,6 +494,13 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   And `GET /api/places` with no query, the whole roll, kept on the phone a
   week at a time so Where to? opens on the nearest places: `id`, `name`,
   `lat`, `lng` and `map` of each row.
+- Its way by train, from 2026-11-18: `GET /api/v1/route` asked first with
+  `from`, `to` and `mode=bike`, an answer without `version` asked again of
+  `/api/route`; and of `trains`, `seconds`, `meters`, `leave` and `legs`, a
+  ride's `kind: "bike"`, `line` and `steps` in the words above, and the
+  train's `kind: "train"`, `line`, `name`, `from`, `to` and `at`. A train's
+  first ride ends in `arrive` at the station, which the app turns into the
+  train's own corner, so that word there is a promise too.
 - Its lists, signed in: `GET /api/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)

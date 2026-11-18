@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, forty-seven small Functions, no build step and no npm install. Adding a
+Static files, fifty small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -3069,13 +3069,43 @@ does not come leaves what was there. The bus does not follow — its answer is
 a departure somebody chose, and three journeys redrawn under a reader are
 worse than a line that starts a stop behind.
 
+**By bike, a train too.** An Elron train takes a bike, and from the right
+corner of the city it is the quicker way: the owner rode to Ülemiste on
+2026-11-17, took the train two stops and rode on, and saved the ride with a
+name saying so. So the Bike tab asks `/api/v1/route` rather than
+`/api/route`, and its answer carries `trains` beside the ways — peatus.ee
+asked once for bike and rail together, which says which station, which train
+and when, and the bike router asked for the ride to the station and the ride
+on, so those are the same streets and the same turns as any bike way. A
+train is offered as one more button after the bike ways — *16 min · train
+14:09*, pressed in the bus's amber — only where it beats the quickest of
+them, counted from setting off, and only for one that can be caught and
+leaves within the hour. The bar then says *Leave at 14:01: ride to Ülemiste,
+the RE33 at 14:09 to Kitseküla, ride on · 16 min*, and the map draws the
+rides green and the rail amber. The wait before setting off is not counted:
+trains through Tallinn run every half hour to hour, and counting it hid the
+train on the first morning it was tried. One train and no change, and no
+fare: the Tallinn card makes the train free for some and not for others, and
+the bar does not guess which.
+
+**Why a version.** Both apps read a bike route's ways out of `/api/route`
+and nothing else, and a train slipped into `others` would be offered on an
+installed phone as a ride along the rail. So `/api/route` answers exactly
+what it always has, and `/api/v1/route` is the same answer with
+`"version": 1`, an `API-Version: 1` header and the trains. Version 1 only
+ever gains fields; a rename or a removal is `/api/v2`, with this one still
+answering beside it. The page asks the versioned one first and, where it
+does not answer — a deployment from before it, a 5xx with no body — asks
+`/api/route` and offers no train; a new build of either app does the same,
+so a new app reads an old site and an old app reads a new one.
+
 No turn-by-turn and no live countdown; the route is
 `functions/api/route.js`, which rounds both ends, caches a walk, a ride or a drive a day
 and a bus journey a minute. The location is read, answered and forgotten —
 never stored or counted. Opening another place, the chat or a list puts the
 line away (`renderPanel()`); a language switch while the bar is up does not
 retranslate it. The arrow reports `directions`, a tab `route_mode`, a journey
-`route_trip`, another way `route_way`, the Google link `route_google` and the Waze link `route_waze`.
+`route_trip`, another way `route_way`, a train by bike `route_train`, the Google link `route_google` and the Waze link `route_waze`.
 
 **The link is built, not copied.** It is `/?spot=<id>` and nothing else — no
 `?type=` for the chips that happen to be pressed, no `?list=`, no `?lang=`,
@@ -3313,6 +3343,15 @@ test tried was how far the ridden line strays from the
 router's, and it was wrong both ways: it flagged a lap of a courtyard and
 the far end of an out-and-back, and missed the crossing above, which runs
 beside the road the router takes.
+
+**A ride is not all ridden.** The ride of 2026-11-17 that went two stops by
+train is one line with a straight 3.2 km segment from Ülemiste to Lilleküla
+across the rail yard, which the router can only go round — a door, by every
+test above, that would send riders over the tracks. So `tools/doors.mjs`
+cuts a ride wherever two points are more than `JUMP`, 250 m, apart, and looks
+for doors in each piece alone. The rides answer carries no times, and needs
+none for this: a recorder writes a point every few metres, so a gap that
+long is a train or a pause, never riding.
 
 **Anybody's ride opens one, and nobody approves it.** A ride needs no
 account, so a door does not either. That is the owner's decision for as
@@ -20004,6 +20043,7 @@ The map, `assets/app.js`:
 | `route_mode` | `mode` (`foot`, `bike`, `bus`, `car`), `place` — Walk, Bike, Bus or Car pressed on the route's bar |
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `route_way` | `n`, `mode` — another of the ways on offer for a walk, a ride or a drive pressed, 0 the router's first |
+| `route_train` | `n`, `mode` — a train by bike pressed, `n` counted among the ways before it — **By bike, a train too** |
 | `ride_open` | `from` — `account`, the map opened at `/?ride=1` by Record a ride on the account page; `map`, the bike button on the map, until it was taken off on 2026-11-17 |
 | `ride_record` | — Record a ride on the account page's Your rides card, leaving for the map |
 | `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
