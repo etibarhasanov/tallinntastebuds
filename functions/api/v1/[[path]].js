@@ -426,9 +426,11 @@ function index() {
  *   /api/lists    is   /api/v1/me/lists   your lists, and every write to one
  *
  * Every other is the old name under /api/v1/: /api/v1/account, /api/v1/saves
- * and so on down APPS. One is not in APPS because it has a file of its own:
- * /api/v1/route is ./route.js, which Pages finds before this catch-all —
- * everything /api/route answers, and by bike the trains as well. The old addresses stay where they are and answer
+ * and so on down APPS. Two are not in APPS because they have files of their
+ * own, which Pages finds before this catch-all: /api/v1/route is ./route.js —
+ * everything /api/route answers, and by bike the trains as well — and
+ * /api/v1/rides/<id> is ./rides/[id].js, one ride to its rider, a second
+ * segment this table has no room for. The old addresses stay where they are and answer
  * exactly as before, until no installed app asks for them — **The public
  * API** in docs/handbook.md says how that is decided. Nothing under
  * /api/admin/ is here, deliberately: functions/_middleware.js locks that

@@ -3422,7 +3422,14 @@ reader gets the same numbers. A ride with no track, saved before
 2026-11-17 or by a recorder that sent no times, has the first three and a
 sentence saying why there is no more. Only its rider can open it: the
 session is the only way to ask, and somebody else's ride is the same 404 as
-one that is not there. The same page renames a ride and deletes it, `POST
+one that is not there. Both apps ask it at `/api/v1/rides/<id>`, which is
+`functions/api/v1/rides/[id].js` re-exporting the same handler: the v1
+catch-all's table has one name an entry, and for the map app's first day
+with this page nothing answered that address, so every ride it opened read
+as not yours. Rattatee's ride page asks it too, for a ride saved signed in,
+and reads only the stored line, to draw over the phone's own — the phone
+has the whole ride and works the sums out of it, with the same
+`rideInsight()` ported to Swift. The same page renames a ride and deletes it, `POST
 /api/rides` with `rename` or `drop`, each touching only a ride filed under
 the session; a deleted ride is gone from under the Bike tab too. The track
 is never answered raw — the times a point was passed are the rider's, and
