@@ -119,17 +119,33 @@
     "live": true,
     "key": "XJFKHV3BHPSN74MP1QGYKN6CX8KFJ2EF",
     "offer": {
-      "en": "20% off your order",
-      "et": "20% soodustust tellimuselt",
-      "ru": "Скидка 20% на заказ",
-      "fi": "20% alennus tilauksesta",
-      "az": "Sifarişinizə 20% endirim",
-      "pt": "20% de desconto no seu pedido",
-      "es": "20% de descuento en tu pedido",
-      "tr": "Siparişinizde %20 indirim",
-      "uk": "Знижка 20% на замовлення",
-      "fr": "20 % sur ta commande",
-      "de": "20 % auf deine Bestellung"
+      "en": "15% off your order",
+      "et": "15% soodustust tellimuselt",
+      "ru": "Скидка 15% на заказ",
+      "fi": "15% alennus tilauksesta",
+      "az": "Sifarişinizə 15% endirim",
+      "pt": "15% de desconto no seu pedido",
+      "es": "15% de descuento en tu pedido",
+      "tr": "Siparişinizde %15 indirim",
+      "uk": "Знижка 15% на замовлення",
+      "fr": "15 % sur ta commande",
+      "de": "15 % auf deine Bestellung"
+    },
+    "student": {
+      "rate": 25,
+      "offer": {
+        "en": "25% off for students",
+        "et": "Üliõpilastele 25% soodustust",
+        "ru": "Студентам скидка 25%",
+        "fi": "Opiskelijoille 25% alennus",
+        "az": "Tələbələrə 25% endirim",
+        "pt": "25% de desconto para estudantes",
+        "es": "25% de descuento para estudiantes",
+        "tr": "Öğrencilere %25 indirim",
+        "uk": "Студентам знижка 25%",
+        "fr": "25 % pour les étudiants",
+        "de": "25 % für Studierende"
+      }
     }
   }
 ]

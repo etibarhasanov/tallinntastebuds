@@ -9,7 +9,9 @@
  * assets/pass.js counts that many steps up the run of rates the deal
  * declares. The number comes back either way, because this never reads
  * deals.json and so cannot know which kind of deal is being asked about;
- * a fixed deal ignores it. That split is deliberate: the three numbers an
+ * a fixed deal ignores it. And whether this account is a student's —
+ * users.student, which the owner sets by hand — for a deal that carries a
+ * student rate; every other deal ignores that too. That split is deliberate: the three numbers an
  * admin sets stay in the file, where everything else about a discount
  * already is, and nothing about any deal is in here.
  *
@@ -88,5 +90,17 @@ export async function onRequestGet(context) {
      function joins its two halves. */
   const hour = Math.floor(Date.now() / HOUR);
   const mac = await fingerprint(env.SAVE_SALT, 'draw|' + user.id + '|' + place, String(hour));
-  return json({ draw: parseInt(mac.slice(0, 8), 16) }, 200);
+  return json({ draw: parseInt(mac.slice(0, 8), 16), student: await isStudent(env, user.id) }, 200);
+}
+
+/* users.student, which nothing on the site writes — see db/schema.sql. A
+   database the ALTER has not reached yet throws on the column, and that is
+   read as nobody being a student rather than as a pass nobody can open. */
+async function isStudent(env, id) {
+  try {
+    const row = await env.DB.prepare('SELECT student FROM users WHERE id = ?').bind(id).first();
+    return !!(row && row.student === 1);
+  } catch {
+    return false;
+  }
 }

@@ -4409,6 +4409,7 @@
 
     return el('div', { className: 'deal-block' }, [
       offer ? el('p', { className: 'deal-offer', textContent: offer }) : null,
+      deal.student ? el('p', { className: 'muted-note', textContent: window.TTBPass.textFor(deal.student.offer, state.lang) }) : null,
       note ? el('p', { className: 'muted-note', textContent: t(note) }) : null,
       open
     ]);

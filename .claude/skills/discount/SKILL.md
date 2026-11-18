@@ -87,6 +87,7 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
 | `from`, `until` | `YYYY-MM-DD`, `from` not after `until`; both optional and inclusive | error |
 | `roll` | optional; `base`, `spread` and `step` whole numbers, `spread` a whole number of `step`s and at least one, the run `base ± spread` inside 1–99 | error |
+| `student` | optional; `rate` a whole number 1–99, `offer` translations with at least `en`; not beside a `roll` | error |
 | `roll` | more than twelve rates — `staff.html` lists a code for each | warning |
 | `offer` | every language carries `{rate}` when the deal has a `roll`, and none does when it has not | error |
 | a live deal | must carry `offer.en` | error |
@@ -172,6 +173,28 @@ many are switched on.
    `robots.txt`, and the QR points at whichever origin drew it, so a page
    driven on a local server verifies against itself rather than sending a
    waiter to the live site.
+
+## A student rate
+
+A fixed deal may carry `"student": { "rate": 25, "offer": { … all eleven … } }`:
+an account with `users.student = 1` is shown that line and signs that rate
+into its code (`p=25` in the QR), and everybody else gets the deal's own.
+**A rate for students** in `docs/handbook.md` is the reasoning. What to know:
+
+- The column is set by the owner, by hand, one account at a time:
+  `UPDATE users SET student = 1 WHERE id = '<id>'`. Nothing on the site
+  writes it, and a session does not either without the owner's yes.
+- Before any of it works the column has to exist in production:
+  `ALTER TABLE users ADD COLUMN student INTEGER NOT NULL DEFAULT 0`. Until
+  it does, `/api/pass` answers `student: false` for everyone and the deal
+  pays its everyday rate — nothing breaks.
+- The validator holds `rate` to 1–99, wants `offer.en` and warns on a live
+  deal missing a language, and refuses `student` beside a `roll`.
+- Drive it with `/api/pass` stubbed to `{ "draw": 0, "student": true }` and
+  `false`: the lede changes, the QR ends `&p=<rate>` only for the student,
+  `staff.html` shows two labelled rows, and the verify page prints the
+  student line for `p=<rate>` and **Not valid** for a student code with the
+  `p` taken off.
 
 ## A deal at a place that is not on the map
 

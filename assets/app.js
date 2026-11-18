@@ -7643,11 +7643,13 @@
        deal always explains itself, because a run of rates is not something
        anybody has met before — the rate is drawn on the way in and holds for
        the hour. A fixed one has nothing to explain until it is asking for a
-       sign-in, and then it says that much. */
+       sign-in, and then it says that much. A student rate is a line of its
+       own under the offer, in the deal's words, whoever is reading. */
     var note = rolled ? (signIn ? 'dealRollMembers' : 'dealRollHint') : (signIn ? 'dealMembers' : '');
 
     return el('div', { className: 'deal-block' }, [
       offer ? el('p', { className: 'deal-offer', textContent: offer }) : null,
+      deal.student ? el('p', { className: 'muted-note', textContent: window.TTBPass.textFor(deal.student.offer, state.lang) }) : null,
       note ? el('p', { className: 'muted-note', textContent: t(note) }) : null,
       open
     ]);

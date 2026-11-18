@@ -45,6 +45,18 @@
  * roll signs what it always signed, one code an hour for everybody who is
  * shown one.
  *
+ * A STUDENT RATE
+ *
+ * A fixed deal may also carry { rate, offer } under "student": what an
+ * account the owner has marked as a student in the database (users.student)
+ * gets instead of the deal's own line. The same request that opens the door
+ * says whether this account is one, so a student is decided by the server
+ * and not by anything the page could claim. The rate then rides in the code
+ * and the QR exactly as a drawn one does — "<place>:<hour>:25" and &p=25 —
+ * so a student's code does not verify as the everyday one or the other way
+ * round, and staff.html lists the two codes side by side. Everybody else
+ * signs what a fixed deal always signed.
+ *
  * WHAT THIS IS NOT
  *
  * There is no server behind the code, so the deal keys ship inside
@@ -170,10 +182,11 @@ window.TTBPass = (function () {
 
   /* The one gate, for a fixed deal and a rolled one alike: may this account
      be shown a pass, and if the deal has a roll, which rate did it draw. It
-     resolves to the rate, or to undefined for a deal that has no run to
-     count up — and rejects with 'sign-in' when nobody is signed in and
-     'unavailable' when the Function cannot answer at all, which are the two
-     cards deal.html draws instead of a code.
+     resolves to the rate, or on a fixed deal to its student rate when the
+     account is a student and to undefined otherwise — and rejects with
+     'sign-in' when nobody is signed in and 'unavailable' when the Function
+     cannot answer at all, which are the two cards deal.html draws instead
+     of a code.
 
      Every deal asks, so every deal fails the same way: a discount that
      appeared whenever this request was blocked would not be for members at
@@ -189,7 +202,7 @@ window.TTBPass = (function () {
       throw new Error('unavailable');
     }).then(function (out) {
       var run = rates(deal);
-      if (!run) return undefined;
+      if (!run) return deal.student && out.student === true ? deal.student.rate : undefined;
       if (typeof out.draw !== 'number') throw new Error('unavailable');
       return run[out.draw % run.length];
     });
@@ -288,7 +301,9 @@ window.TTBPass = (function () {
     /* A rolled deal's link names the rate, and it has to be one the deal can
        pay: the code is rebuilt around that number, so a link claiming a rate
        outside the run is not a discount link at all. A fixed deal's link
-       names none and any it carries is ignored. */
+       names none, unless it is a student's, which names the student rate;
+       anything else it carries is ignored, and the everyday code is what it
+       is checked against. */
     var run = rates(deal);
     if (run) {
       if (!/^[0-9]{1,2}$/.test(String(rate)) || run.indexOf(Number(rate)) === -1) {
@@ -296,6 +311,8 @@ window.TTBPass = (function () {
         return Promise.resolve(out);
       }
       out.rate = Number(rate);
+    } else if (deal.student && String(rate) === String(deal.student.rate)) {
+      out.rate = deal.student.rate;
     }
 
     var age = hourNow() - Number(hour);
@@ -375,11 +392,12 @@ window.TTBPass = (function () {
      its number goes — "{rate}% off your order" — and the validator refuses a
      rolled deal without it. The pass pages fill in the rate that was drawn;
      the map, where nothing has been drawn yet, fills in the run it could be,
-     "5–25% off your order". A fixed deal's line is printed as written. */
+     "5–25% off your order". A fixed deal's line is printed as written, or
+     its student line when the rate asked for is the student one. */
   function offerText(deal, lang, rate) {
     var text = textFor(deal.offer, lang);
     var run = rates(deal);
-    if (!run) return text;
+    if (!run) return deal.student && rate === deal.student.rate ? textFor(deal.student.offer, lang) : text;
     var shown = rate === undefined ? run[0] + '–' + run[run.length - 1] : rate;
     return text.split('{rate}').join(String(shown));
   }

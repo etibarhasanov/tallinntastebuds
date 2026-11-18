@@ -601,7 +601,20 @@ CREATE TABLE IF NOT EXISTS users (
   -- behind serves the page under the username. Sixty characters, capped in
   -- functions/api/account.js where it is written: the same cap as a list's
   -- title, because it is a heading.
-  display_name   TEXT    NOT NULL DEFAULT ''
+  display_name   TEXT    NOT NULL DEFAULT '',
+  -- 1 for an account the owner has checked is a student's, 0 for everybody
+  -- else. Nothing on the site writes it and nobody can set it on themselves:
+  -- the owner does, by hand, in the database —
+  -- UPDATE users SET student = 1 WHERE id = '<id>' — and the one reader is
+  -- functions/api/pass.js, which tells the pass page so, and a deal with a
+  -- "student" rate in data/deals.json pays that rate instead of its own.
+  --
+  -- LAST, AND FOR THE SAME REASON THE FOUR ABOVE ARE
+  --
+  -- ALTER TABLE users ADD COLUMN student INTEGER NOT NULL DEFAULT 0 — and
+  -- the reader survives its absence: a database one ALTER behind answers
+  -- that nobody is a student, and every deal pays its everyday rate.
+  student        INTEGER NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 
