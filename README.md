@@ -122,10 +122,11 @@ Or use `/admin.html`, which does the same and lands it on its own.
 per-language files, the sitemap, the SQL loads). Then the checks CI runs:
 
 ```bash
-node tools/validate.mjs && node tools/functions-check.mjs && node tools/qrperf.mjs --check && node tools/chessperf.mjs --check && node tools/mcpcheck.mjs --check && node tools/apicheck.mjs --check && node .claude/hooks/d1-write-gate.mjs --check
+node tools/validate.mjs && node tools/functions-check.mjs && node tools/sqlcheck.mjs && node tools/qrperf.mjs --check && node tools/chessperf.mjs --check && node tools/mcpcheck.mjs --check && node tools/apicheck.mjs --check && node .claude/hooks/d1-write-gate.mjs --check
 ```
 
-All need Node 18 or newer and nothing else. There is no test suite.
+All need Node 22 or newer and nothing else — 22 for `node:sqlite`, which
+`tools/sqlcheck.mjs` builds its database with. There is no test suite.
 
 ## Deploys
 

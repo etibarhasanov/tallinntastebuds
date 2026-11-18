@@ -39,7 +39,7 @@ does not have to:
   a discount, a deck), a fix that puts something back the way it was meant
   to look, and anything with no visible effect go straight to code.
 - **There is no test suite.** `node tools/validate.mjs`, `node
-  tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
+  tools/functions-check.mjs`, `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node
   tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check`, `node
   tools/apicheck.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
   --check` are the whole of CI. Anything with a visible effect is driven in a
@@ -58,6 +58,12 @@ does not have to:
   comments and the skills, and each skill says where its own copies live and
   gives the `grep` that finds them. Change a count, move the copies you are
   standing in, and say which you left.
+- **A read is paid for by the row, and the day has five million.** D1 bills
+  the rows a statement walks, not the rows it answers, and past five million
+  in a UTC day every read on the account fails until midnight — lists, saves,
+  sign-in. On 2026-11-18 one counter that re-read its whole table every five
+  minutes did that before noon. **Every read has a price, set before it is
+  written** below is the rule, and `node tools/sqlcheck.mjs` the backstop.
 - **The chat costs nothing and is easy to exhaust.** `/api/ask` runs on
   Workers AI's free daily allowance, and `pages dev` spends from the same
   pot as the live site, since that one binding runs remotely even there.
@@ -218,7 +224,9 @@ enough to read on a phone, saying:
 - what it deliberately does not do yet, so the boundary is a decision rather
   than an oversight;
 - what it costs — a table, a route, a page joining `PAGES` in
-  `tools/stamp.mjs`, a `.sql` file somebody has to load by hand;
+  `tools/stamp.mjs`, a `.sql` file somebody has to load by hand — and, for
+  anything that reads the database, its rows read a day at its worst,
+  worked out the way **Every read has a price** below says;
 - and the questions the session genuinely cannot answer for itself. Two real
   ones are worth more than twelve that include the obvious.
 
@@ -271,6 +279,56 @@ to throw away once it compiles.
 This is the owner's instruction in as many words: first clear functionality,
 later code. The half-hour a description takes is the cheapest half-hour in
 the process, and it is bought against writing the whole change twice.
+
+## Every read has a price, set before it is written
+
+D1 bills every row a statement walks — not the rows it answers with — and
+the free plan gives the whole account five million a day. Past that, every
+read fails until midnight UTC: the lists come back empty, saves and sign-in
+stop, and nothing on the page says why. On 2026-11-18 the flag counter on
+Discover took the site there before noon. It asked `visitor_counts` by kind
+and by a span of days, which the table's key — (day, kind, id) — cannot
+answer, so each refresh walked all 18,439 rows three times, every five
+minutes in every colo with a visitor. Its comment said "four reads per five
+minutes", which was true by statement count. Nobody had asked what each one
+cost, or what it would cost when the table was a year old.
+
+So the cost is part of the design and is settled before the code, by the
+session that writes it. Five rules, and a change that breaks one is wrong
+however small it is:
+
+1. **A read costs the same on day one and day one thousand.** A statement on
+   any route a visitor can reach reads a number of rows fixed by what it was
+   asked — one day, one list, one account — never by how old or big the
+   table is. If the cost grows with the table, the design is wrong, and a
+   cache in front of it only slows down how fast it goes wrong.
+2. **The key is chosen from the questions.** Before a table is created,
+   write down every question that will be asked of it, and pick the primary
+   key and indexes so each question names the front of one. A new question
+   for an old table the key cannot answer gets a new index, a new table, or a
+   different question — not a walk.
+3. **A total is kept when it is written, not added up when it is read.**
+   Anything a page shows as "all time", "this week" or "how many" is a row
+   that the write which changes it also updates, the way `save_counts` is.
+   Reading a history to sum it is for the owner's pages, and even there the
+   statement names its days.
+4. **Say the day's worst in numbers.** Rows per run, times runs a day — per
+   colo for anything cached at the edge, per isolate for anything kept in
+   memory — against the five million, in the description the owner reads
+   and again in the comment above the statement. Measure it rather than
+   guessing: the Cloudflare MCP tool `d1_database_query` answers every read
+   with `rows_read`, and it runs against production without a prompt.
+5. **Read the plan, and believe the meter over it.** `node tools/sqlcheck.mjs`
+   asks SQLite how every statement under `functions/` would run and fails the
+   build on a walk that is not listed in its `KNOWN` with what bounds it. It
+   cannot see how often a statement runs, nor a search that uses the front
+   of a key and then filters every row behind it; `rows_read` sees both.
+
+The same goes for anything else that is free up to a number a day: Workers
+AI's Neurons, Google's thousand calls a month, Pages' five hundred builds.
+The apps that read this backend are part of the sum too — **What the app
+reads** below — so a phone that asks a route every minute is a route asked
+a million times a day by a thousand phones.
 
 ## What needs a yes, and what does not
 
@@ -678,11 +736,13 @@ repo, a UI string present in one language and missing in another, a deal whose
 place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
-five more checks alongside it: `node tools/functions-check.mjs`, which imports
+six more checks alongside it: `node tools/functions-check.mjs`, which imports
 every module under `functions/` so that a name imported from a module that no
 longer exports it, or a syntax error, fails the build here — Pages bundles
 them into one Worker, and on a deploy that takes every route down rather than
-its own; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
+its own; `node tools/sqlcheck.mjs`, which asks SQLite's planner how every
+statement under `functions/` would read and fails on one that walks a whole
+table without being listed with what bounds it; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera; `node
 tools/chessperf.mjs --check`, which holds the rules of chess in
 `functions/api/_chess.js` to published move counts and to positions worked out
@@ -739,7 +799,7 @@ ones are the ones that ship broken.
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs`, `node tools/functions-check.mjs`,
-   `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
+   `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
    `node tools/mcpcheck.mjs --check`, `node tools/apicheck.mjs --check` and
    `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
    Red CI is yours to fix before anything else happens. **There is no preview

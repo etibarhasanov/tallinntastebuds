@@ -17655,8 +17655,10 @@ to read and write first.
 `npm install`. It runs on every push and pull request via
 `.github/workflows/validate.yml`.
 
-The same workflow runs four checks beside it. Three hold one piece of code
-each to answers recorded somewhere other than the code. `node tools/qrperf.mjs
+The same workflow runs seven checks beside it. Three hold one piece of code
+each to answers recorded somewhere other than the code; `tools/mcpcheck.mjs`
+and `tools/apicheck.mjs` hold the two doors an outside program reads through
+to what each promised, and their own sections say how. `node tools/qrperf.mjs
 --check` holds the QR encoder to the matrices it drew when they were last
 scanned with a real camera — see **Third-party pieces and their licences**.
 `node tools/chessperf.mjs --check` holds the rules of chess in
@@ -17667,7 +17669,20 @@ written in, and to every move a visitor could send from those six, which
 .claude/hooks/d1-write-gate.mjs --check` holds the gate in front of the two
 databases to its own cases.
 
-The fourth has no recorded answers, because the thing it holds the code to is
+The sixth holds every statement under `functions/` to what it costs.
+`node tools/sqlcheck.mjs` builds an empty database from `db/schema.sql`, asks
+SQLite's planner how each statement would run, and fails the build on one that
+walks a whole table — a `SCAN`, a key searched with nothing to seek by, or a
+key read from the beginning of time up to a date — unless it is listed in the
+tool's `KNOWN` with what bounds it. D1 bills the rows a statement walks, the
+free plan stops every read past five million a day, and on 18 November 2026 a
+counter on Discover that walked `visitor_counts` three times every five
+minutes got there before noon. The rules a statement is designed to before
+any of this are **Every read has a price, set before it is written** in
+`CLAUDE.md`; the check is what catches the one that was missed. It needs
+Node 22, for `node:sqlite`.
+
+The seventh has no recorded answers, because the thing it holds the code to is
 the deploy itself: `node tools/functions-check.mjs` imports every module under
 `functions/`. Pages bundles them into one Worker, so a route importing a name
 its module no longer exports, or a file with a syntax error in it, fails the
