@@ -17907,10 +17907,13 @@ CLAUDE.md                  what a session reads before it starts, and which
 .claude/settings.json      what a session may run without asking, the two
                            things it may never do to a database, and the hook
                            below
-.claude/hooks/             d1-write-gate.mjs: reads of D1 run, a write that
-                           names its rows and at most a hundred of them stops
-                           and asks, and anything bigger or vaguer is refused,
-                           because the rows are not the session's to decide
+.claude/hooks/             d1-write-gate.mjs: a read of D1 is priced and runs
+                           at 2,000 rows or fewer, a dearer one and a write
+                           that names its rows and at most a hundred of them
+                           stop and ask, and a write bigger or vaguer is
+                           refused, because the rows are not the session's to
+                           decide; run again after the query, it keeps the
+                           day's total of what was read
                            about. `--check` runs its own cases, and CI runs
                            that
 .claude/skills/            one checklist per kind of change — a place, a story,

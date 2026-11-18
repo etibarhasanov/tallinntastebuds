@@ -25,7 +25,8 @@
  *
  * The planner's answer, not D1's bill. Two things the plan does not show,
  * so they are still the author's to measure with `rows_read` against
- * production (the Cloudflare MCP tool reads it without a prompt):
+ * production (the Cloudflare MCP tool reads it without a prompt, a read of
+ * 2,000 rows or fewer — .claude/hooks/d1-write-gate.mjs prices it first):
  *
  *   - A SEARCH that uses only the front of a key, then filters the rest —
  *     `WHERE day >= ? AND kind = 'shown'` is a search on `day` that walks

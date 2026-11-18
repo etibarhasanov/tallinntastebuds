@@ -306,6 +306,16 @@ hand it out. **The pins** in `docs/handbook.md`.
 **Every read has a price, set before it is written** in `CLAUDE.md` is the
 rule; this is how it is done.
 
+**A read run by hand** — a question put to production through the Cloudflare
+MCP tool rather than by a Function — brings 2,000 rows at the most, rule 6
+there. `.claude/hooks/d1-write-gate.mjs` prices it from SQLite's plan before
+it runs and asks the owner about a dearer one; its header says how a plan
+becomes a number. Three things keep a question under the line: ask `EXPLAIN
+QUERY PLAN` first, which reads nothing; never join a table's unpacked JSON
+to itself — walk it once, with `LAG()` for the row before; and when a table
+is priced as having no size, measure it and add its line to `SIZES` in the
+gate, with the case that needed it in `CASES`.
+
 - **Name the key the statement uses**, out loud, in the comment above it:
   "a lookup on (user_id, deck_id)", "today's rows by (day, kind)". A
   statement whose `WHERE` does not start where the key starts — `kind = ?`
@@ -449,8 +459,9 @@ no step 1 until the owner has answered it.
    Cloudflare token it stops the server starting at all; **The house, and
    driving without a token** in the `/chess` skill is the way round it. To
    look at rows in a real database without a dev server, the Cloudflare MCP
-   tool `d1_database_query` reads either without a prompt and writes to
-   neither without one — see **The rules of a write**.
+   tool `d1_database_query` reads either without a prompt, 2,000 rows a
+   read at the most — **A read run by hand** under **The rules of a read**
+   — and writes to neither without one — see **The rules of a write**.
 4. Rewrite the README paragraph the change made wrong, and the header. A
    route added, removed or gated differently is a step in somebody's
    diagram: the `ref` in `data/flows.json` that names it moves too, then
