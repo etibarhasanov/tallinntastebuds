@@ -248,7 +248,12 @@
     document.documentElement.lang = data.lang;
     document.title = t('passTitle') + ' | Tallinn Tastebuds';
 
+    /* A deal for one language's readers is no deal at all to anybody
+       reading in another — the same answer as a place with none, so the page
+       does not say there is something here they are not being shown. See
+       "A deal for one language's readers" in docs/handbook.md. */
     var deal = P.find(data.deals, placeId);
+    if (deal && deal.langs && deal.langs.indexOf(data.lang) === -1) deal = null;
     if (!deal) { message(t('passNone')); return; }
 
     var dates = P.windowState(deal);

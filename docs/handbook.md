@@ -4207,10 +4207,14 @@ redraws the panel and the chips, so the deal appears and disappears with
 the switch. Leave the field out and a deal shows in every language, as all
 the others do.
 
-It is the map's door only. `deal.html`, `staff.html` and `verify.html` do
-not ask, on purpose: a guest who was shown the deal and switched their
-phone to English at the till still gets a code, and the counter's screen
-and the waiter's scan work in whatever language their phones are in. The
+Nothing a guest sees in another language says there is a discount at all:
+`deal.html` read in English answers **There is no discount at this place**,
+the same as a place with none. The owner's words: in English there should
+not be anything visible that there is a discount. The two pages that belong
+to the restaurant do not ask — `staff.html` and `verify.html` work in
+whatever language the counter's and the waiter's phones are in. The iOS app
+reads `data/deals.json` itself and knows nothing of `langs` until a build of
+its own learns it. The
 validator wants every language a live deal names to have an `offer` line.
 
 ### A rate for students
