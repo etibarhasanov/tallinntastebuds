@@ -1206,7 +1206,7 @@ function facts() {
   return out;
 }
 
-function countRows(figures, kind, id, n) {
+function tally(figures, kind, id, n) {
   if (kind === 'visitor') {
     figures.visitors += n;
     if (id === 'back') figures.back += n;
