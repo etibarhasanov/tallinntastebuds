@@ -5045,45 +5045,6 @@ body.route-on .walk-band { display: none; }
 /* The sheet out of the way, as for a route. */
 body.walk-on .panel.is-open { visibility: hidden; pointer-events: none; }
 
-/* The bike ride recorder, assets/ride.js: the walk band's shape and place,
-   since it too stands where the route bar would, with its contents to the
-   left the way a sheet's are. While it is up the route bar, a walk's band
-   and the sheet step aside for it, and a bike route's line stays on the map
-   to ride along. Recorded rides in docs/handbook.md. */
-.ride-card { align-items: stretch; gap: 6px; padding: 14px 16px 12px 18px; }
-body.route-on .ride-card:not([hidden]) { display: flex; }
-body.ride-on .route-bar,
-body.ride-on .walk-band:not(.ride-card) { display: none; }
-body.ride-on .panel.is-open { visibility: hidden; pointer-events: none; }
-.ride-card .go { width: 100%; margin-top: 4px; }
-.ride-card .alt { align-self: center; }
-.ride-top { margin: 0; display: flex; align-items: center; gap: 7px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
-.ride-title { margin: 0; font-family: var(--display); font-weight: 700; font-size: 20px; }
-.ride-why,
-.ride-said { margin: 0 0 6px; font-family: var(--body); font-size: 15px; line-height: 1.4; }
-.ride-said.is-bad { color: var(--accent); }
-/* Recording is a dot that is the accent; paused, an outline. A word beside
-   it says which in either case — design rule 10. */
-.ride-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
-.ride-dot.is-still { background: transparent; border: 1.5px solid var(--muted); }
-.ride-stats { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 2px 0 6px; }
-.ride-stat b { display: block; font-family: var(--display); font-weight: 700; font-size: 26px; font-variant-numeric: tabular-nums; }
-.ride-stat span { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-.ride-field { display: flex; flex-direction: column; gap: 4px; }
-.ride-label { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-.ride-name {
-  width: 100%;
-  padding: 10px 13px;
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-soft);
-  color: var(--ink);
-  font-family: var(--body);
-  /* Sixteen pixels, or iOS zooms the page into the field on focus. */
-  font-size: 16px;
-}
-.ride-name:focus { outline: none; border-color: var(--accent); }
-
 /* The line through the places, in the order they are being walked. The
    accent, by its class: Leaflet is handed no colour, so a change of style
    repaints it. */

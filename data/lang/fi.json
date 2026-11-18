@@ -1338,7 +1338,6 @@
   "rideFast": "Se oli nopeampaa kuin pyörällä ajetaan, joten sitä ei voi säilyttää.",
   "ridesYours": "Ajosi",
   "ridesWhat": "Tallentamasi pyöräilyt. Jokainen on kartalla vahvistettu pyöräreitti, ilman nimeäsi.",
-  "ridesNone": "Ei vielä ajoja. Paina alta Tallenna ajo ja aja.",
   "rideUnnamed": "Pyöräily",
   "ridesCountOne": "1 ajo",
   "ridesCount": "{n} ajoa",

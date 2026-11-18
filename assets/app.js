@@ -1964,7 +1964,6 @@
         if (stretch.options.tone) stretch.setStyle({ color: c[stretch.options.tone] });
       });
     }
-    if (window.TTBRide) TTBRide.restyle();
   }
 
   /* Centre the chosen place in the part of the map you can actually see. The
@@ -3257,9 +3256,6 @@
     var name = state.account.user || '';
     dom.findMe.classList.toggle('is-me', !!name);
     dom.findMe.lastElementChild.textContent = name.charAt(0).toUpperCase();
-    /* And the ride card, whose first view asks somebody signed out to sign
-       in before it records — assets/ride.js. */
-    if (window.TTBRide) TTBRide.refresh();
   }
 
   /* The door to everybody's lists: the first pill on the rail, and the one
@@ -5702,37 +5698,6 @@
    * here is what the map does around it: the label that opens with the
    * station's name, whichever corner the button itself stands in.
    */
-  /* The bike ride recorder, assets/ride.js, on the card that stands where
-     the route bar does. Handed what it cannot reach on its own: the map,
-     the words, how a distance and a number are written here, the bike's
-     colour, and the account — it asks somebody signed out to sign in before
-     it records, since a ride is saved under an account.
-
-     ?ride=1 is Record a ride on /account.html's Your rides card: the map
-     opens with the card already up, and the word comes off the address bar
-     so a reload or a copied link does not open it again. */
-  function mountRide() {
-    if (!window.TTBRide || !map) return;
-    TTBRide.mount(dom.rideCard, {
-      map: map,
-      t: t,
-      el: el,
-      distance: routeDistance,
-      formatDecimal: formatDecimal,
-      colour: function () { return markerColours().bike; },
-      signedIn: function () { return !!state.account.user; },
-      signIn: function () { openAccount('in', '', 'ride'); },
-      track: function (name) { TTBTrack.event(name); }
-    });
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('ride') !== '1') return;
-    params.delete('ride');
-    var rest = params.toString();
-    window.history.replaceState(window.history.state, '', window.location.pathname + (rest ? '?' + rest : ''));
-    TTBTrack.event('ride_open', { from: 'account' });
-    TTBRide.open();
-  }
-
   function mountRadio() {
     window.TTBRadio.mount({
       button: dom.btnRadio,
@@ -13718,7 +13683,6 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
-      rideCard: $('ride-card'),
       walkBand: $('walk-band'),
       routeSay: $('route-say'),
       routeOut: $('route-out'),
@@ -13887,7 +13851,6 @@
       paintAccountRow();
       renderPanel();
       mountRadio();
-      mountRide();
       mountShell();
       mountDiscover();
       renderStoryRing();

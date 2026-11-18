@@ -173,9 +173,6 @@
   var VENUES_API = '/api/venues?ids=';
   var LISTS_API = '/api/lists';
   var RIDES_API = '/api/rides?mine=1';
-  /* The map, with the ride recorder's card already up — mountRide() in
-     assets/app.js. */
-  var RECORD = '/?ride=1';
 
   /* The same two keys the map writes and the lists page reads. Walking from
      the map to here should not feel like leaving. */
@@ -805,18 +802,22 @@
       column('kept', state.kept, listRow))]);
   }
 
-  /* The bike rides you recorded on the map — assets/ride.js — newest first:
-     what you called each, how far, how long and the day. The one place a
-     ride is under anybody's name, and only its rider reads it; on the map it
-     is a faint line with nobody's name on it, which the line under the title
-     says. The same shape as your lists: a fold with the count once there is
-     something in it, and the way to make one under it either way.
+  /* The bike rides you recorded, newest first: what you called each, how
+     far, how long and the day. The one place a ride is under anybody's
+     name, and only its rider reads it, which the line under the title says.
+     The same shape as the lists you kept: a fold with the count on it, and
+     no card at all until there is a ride to list.
 
-     A row is not a link. There is nowhere to open a ride yet, and a chevron
-     on a row that goes nowhere is a promise the page cannot keep.
+     Nothing here records one. The website's own recorder, assets/ride.js,
+     was taken out on 2026-11-18: the site gives directions and takes
+     nobody's movements, and a ride is recorded in Rattatee, the iPhone app,
+     which saves it through /api/rides. So the card has no button along its
+     foot and no empty state — "No rides yet" could only send somebody to a
+     button that is not there.
 
-     Record a ride is an `.alt`, where the mockup drew it filled: the accent
-     is spent once on this page, on Make a list — see foot(). */
+     A row is not a link. There is nowhere on the website to open a ride,
+     and a chevron on a row that goes nowhere is a promise the page cannot
+     keep; the page that opens one is the app's. */
   function rideRow(ride) {
     var day = new Date(ride.at);
     var month = t('months').split('|')[day.getMonth()] || '';
@@ -836,15 +837,11 @@
   }
 
   function ridesCard() {
-    var say = el('p', { className: 'lists-say', textContent: t('ridesWhat') });
     var n = state.rides.length;
-    var kids = n
-      ? [fold('rides', t('ridesYours'), n === 1 ? t('ridesCountOne') : t('ridesCount', { n: n }),
-        [say].concat(column('rides', state.rides, rideRow)))]
-      : [heading(t('ridesYours'), 'h2'), say,
-        el('p', { className: 'lists-none', textContent: t('ridesNone') })];
-    kids.push(foot([link('rideRecord', RECORD, 'ride_record')]));
-    return card(kids);
+    if (!n) return null;
+    var say = el('p', { className: 'lists-say', textContent: t('ridesWhat') });
+    return card([fold('rides', t('ridesYours'), n === 1 ? t('ridesCountOne') : t('ridesCount', { n: n }),
+      [say].concat(column('rides', state.rides, rideRow)))]);
   }
 
   /* ------------------------------------------------------------------- you */

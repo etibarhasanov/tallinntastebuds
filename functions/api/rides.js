@@ -1,13 +1,16 @@
 /**
  * Tallinn Tastebuds — recorded rides, the confirmed bike routes.
  *
- * A member presses Record a ride on their account page, cycles, presses
- * Finish and Save, and the way they really went is kept here. The website's
+ * Somebody presses Record in Rattatee or the map app, on an iPhone, cycles,
+ * presses Finish and Save, and the way they really went is kept here. The
+ * website records nothing: its own recorder, assets/ride.js, was taken out
+ * on 2026-11-18, since the site gives directions and takes nobody's
+ * movements. The website's
  * map no longer draws them under a bike route — a suggested way joins one
  * place to another, and somebody's own rides beside it read as nonsense and
  * gave away where they ride from — but ?bbox= stays, because the iPhone app
- * asks it and an installed app is a promise. The recorder is
- * assets/ride.js; **Recorded rides** in docs/handbook.md is the reasoning.
+ * asks it and an installed app is a promise. **Recorded rides** in
+ * docs/handbook.md is the reasoning.
  *
  * GET  /api/rides?bbox=<south>,<west>,<north>,<east>
  *
@@ -188,8 +191,9 @@ import { arrayOf } from './_rides.js';
 const ENDS = 200;
 
 /* The shortest ride worth keeping once the ends are off: a ride round the
-   block is not a route. Restated as MIN_METERS in assets/ride.js, which
-   says so before the save rather than after it. */
+   block is not a route. Restated by each recorder as the 700 it has to
+   record — this and ENDS twice — so it can say so before the save rather
+   than after it: Rattatee's `shortest` in Rattatee/Core/Store.swift. */
 const MIN_METERS = 300;
 
 /* The most points one line may carry. The page keeps one every twelve
@@ -213,7 +217,7 @@ const NET_RIDES = 40;
 const NET = 'net:';
 
 /* The longest name, the same sixty a list's title gets. Restated as
-   MAX_NAME in assets/ride.js, whose field is the only one that writes it. */
+   `longestName` in Rattatee/Core/Store.swift, whose field stops there. */
 const MAX_NAME = 60;
 
 /* How many rides one read answers, and how large a box it may ask about —
