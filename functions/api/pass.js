@@ -59,7 +59,7 @@
  * the README says so in the same words.
  */
 
-import { json, fingerprint, sessionUser, wrongDatabase } from './_lib.js';
+import { json, fingerprint, sessionUser, tallinnDay, wrongDatabase } from './_lib.js';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /* Google's key: capitals, which no slug has, and the length of a real one. */
@@ -112,8 +112,5 @@ async function isStudent(env, id) {
     return false;
   }
   if (typeof until !== 'string' || !DAY.test(until)) return false;
-  /* sv-SE is the locale whose date reads YYYY-MM-DD, so the two compare as
-     strings. */
-  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Tallinn' });
-  return today <= until;
+  return tallinnDay() <= until;
 }

@@ -220,6 +220,7 @@
     linked: false,   // whether this account was reached through Google
     password: true,  // whether there is a password on it at all
     views: null,     // /u/<you> opened in the last 7 days, null without the table
+    student: null,   // { until, asked } — see studentCard(); null without the columns
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
@@ -924,6 +925,136 @@
     ]);
   }
 
+  /* -------------------------------------------------------------- student
+   * Where somebody says until when they study, and the card that says how
+   * that stands. Saying it is an ask and not the rate: the date goes to
+   * student_asked, and the student rate on a pass starts only once the owner
+   * has checked a card and copied it into student_until — "A rate for
+   * students" in docs/handbook.md, and action 'student' in
+   * functions/api/account.js for the three things this sends.
+   *
+   * Four states, read off the two dates. An ask waiting — asked and not the
+   * same as the confirmed one — says so, and offers to change it or take it
+   * back; where a confirmed date still holds beside it, it says that too. A confirmed date still to come says until when, with the two ways
+   * out of it. One that has passed, and none at all, are the form. Not drawn
+   * on a database without the columns, which /api/account answers by leaving
+   * `student` out.
+   *
+   * Private, so it is on this page and not on /edit: whether somebody is a
+   * student is between them and the places that give them more off, not a
+   * line on the page strangers read. */
+  function studentCard() {
+    if (!state.student) return null;
+    var box = card([]);
+    var editing = false;
+
+    function today() {
+      var d = new Date();
+      var m = d.getMonth() + 1, day = d.getDate();
+      return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+    }
+
+    /* 31 August 2027, in the reader's own language and order. */
+    function longDate(iso) {
+      var p = iso.split('-');
+      try {
+        return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).toLocaleDateString(state.lang, {
+          day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+        });
+      } catch (e) { return iso; }
+    }
+
+    function send(payload, btn) {
+      btn.disabled = true;
+      return post(payload).then(function (a) {
+        btn.disabled = false;
+        if (a.ok && a.out.student) {
+          state.student = a.out.student;
+          editing = false;
+          paint();
+          return null;
+        }
+        return a.out.error || 'fail';
+      }, function () {
+        btn.disabled = false;
+        return 'fail';
+      });
+    }
+
+    function word(key, onPress, className) {
+      var btn = el('button', { type: 'button', className: className || 'alt', textContent: t(key) });
+      btn.addEventListener('click', function () { onPress(btn); });
+      return btn;
+    }
+
+    function form(sayKey, vars) {
+      var now = today();
+      var input = el('input', {
+        className: 'lists-input', type: 'date', id: 'student-until',
+        min: now, max: String(+now.slice(0, 4) + 5) + now.slice(4),
+        value: state.student.asked || ''
+      });
+      var bad = el('p', { className: 'student-bad', role: 'alert', hidden: true });
+      var save = word('listsSave', function (btn) {
+        TTBTrack.event('student_ask');
+        send({ action: 'student', until: input.value }, btn).then(function (why) {
+          if (!why) return;
+          bad.textContent = t(why === 'student-date' ? 'accountStudentBad' : 'accountErrGeneric');
+          bad.hidden = false;
+        });
+      });
+      return [
+        el('p', { className: 'lists-say', textContent: t(sayKey, vars) }),
+        el('label', { className: 'muted-note', 'for': 'student-until', textContent: t('accountStudentUntil') }),
+        el('p', { className: 'student-row' }, [input, save]),
+        bad
+      ];
+    }
+
+    function paint() {
+      clear(box);
+      var s = state.student;
+      var waiting = !!s.asked && s.asked !== s.until;
+      var on = !!s.until && s.until >= today();
+      var kids;
+      var change = word('accountStudentChange', function () { editing = true; paint(); });
+
+      if (editing) kids = form('accountStudentWhat');
+      else if (waiting) {
+        /* A new date asked for on top of a confirmed one that still holds:
+           the confirmed one goes on paying meanwhile, so the sentence says
+           that rather than "the everyday one". */
+        kids = [
+          el('p', {
+            className: 'lists-say',
+            textContent: on
+              ? t('accountStudentAskedOn', { date: longDate(s.asked), until: longDate(s.until) })
+              : t('accountStudentAsked', { date: longDate(s.asked) })
+          }),
+          foot([change, word('accountStudentBack', function (btn) {
+            TTBTrack.event('student_back');
+            send({ action: 'student', back: true }, btn).then(function (why) { if (why) toast(t('accountErrGeneric')); });
+          })])
+        ];
+      } else if (on) {
+        kids = [
+          el('p', { className: 'lists-say', textContent: t('accountStudentIs', { date: longDate(s.until) }) }),
+          foot([change, word('accountStudentNot', function (btn) {
+            TTBTrack.event('student_not');
+            send({ action: 'student', until: '' }, btn).then(function (why) { if (why) toast(t('accountErrGeneric')); });
+          }, 'alt is-danger')])
+        ];
+      } else if (s.until) kids = form('accountStudentPast', { date: longDate(s.until) });
+      else kids = form('accountStudentWhat');
+
+      box.appendChild(el('p', { className: 'eyebrow', textContent: t('accountStudent') }));
+      kids.forEach(function (kid) { box.appendChild(kid); });
+    }
+
+    paint();
+    return box;
+  }
+
   /* --------------------------------------------------------------- Google
    * One word, and only on an account that actually has Google on it:
    * Disconnect, which is one row deleted and a redraw. A button rather than a
@@ -1094,6 +1225,7 @@
       add(savedCard());
     } else {
       add(youCard());
+      add(studentCard());
       add(savedCard());
       add(listsCard());
       add(ridesCard());
@@ -1165,6 +1297,7 @@
       state.password = state.user ? !!account.out.password : true;
       /* Only there once profile_counts is applied — see insightsWhy(). */
       state.views = typeof account.out.views === 'number' ? account.out.views : null;
+      state.student = account.out.student || null;
       state.saved = Object.prototype.toString.call(account.out.saved) === '[object Array]'
         ? account.out.saved
         : [];

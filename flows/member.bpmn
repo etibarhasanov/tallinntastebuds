@@ -49,6 +49,9 @@
         <bpmn:flowNodeRef>account</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>account-change</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>account-done</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>student-asked</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>student-done</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>sign-out</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>session-gone</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>visitor</bpmn:flowNodeRef>
@@ -93,8 +96,9 @@ ref: assets/account.js</bpmn:documentation>
       <bpmn:outgoing>member-e30</bpmn:outgoing>
       <bpmn:outgoing>member-e33</bpmn:outgoing>
       <bpmn:outgoing>member-e36</bpmn:outgoing>
-      <bpmn:outgoing>member-e39</bpmn:outgoing>
+      <bpmn:outgoing>member-e37</bpmn:outgoing>
       <bpmn:outgoing>member-e42</bpmn:outgoing>
+      <bpmn:outgoing>member-e45</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="account-read" name="Saves and lists read">
       <bpmn:incoming>member-e7</bpmn:incoming>
@@ -297,46 +301,64 @@ when: account_google_unlink
 ref: account.html
 ref: assets/account.js</bpmn:documentation>
       <bpmn:incoming>member-e36</bpmn:incoming>
-      <bpmn:outgoing>member-e37</bpmn:outgoing>
+      <bpmn:outgoing>member-e40</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-change" name="Changes it, signs other devices out on a new password">
       <bpmn:documentation>ref: functions/api/account.js POST password-change, username-change, google-unlink
 ref: functions/api/google.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e37</bpmn:incoming>
-      <bpmn:outgoing>member-e38</bpmn:outgoing>
+      <bpmn:incoming>member-e40</bpmn:incoming>
+      <bpmn:outgoing>member-e41</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="account-done" name="Account changed">
+      <bpmn:incoming>member-e41</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="student" name="Asks to be a student until a date">
+      <bpmn:documentation>On the Student card of the account page: an ask, not the rate. It can be changed or taken back while it waits, and 'I'm not a student' takes away a confirmed one too.
+when: student_ask
+when: student_back
+when: student_not
+ref: assets/account.js studentCard()</bpmn:documentation>
+      <bpmn:incoming>member-e37</bpmn:incoming>
+      <bpmn:outgoing>member-e38</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="student-asked" name="Keeps the date asked for, until the owner confirms it">
+      <bpmn:documentation>The student rate on a pass starts once the owner has copied the date into student_until by hand.
+ref: functions/api/account.js POST student</bpmn:documentation>
       <bpmn:incoming>member-e38</bpmn:incoming>
+      <bpmn:outgoing>member-e39</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="student-done" name="Waiting for the owner, or a student until that day">
+      <bpmn:incoming>member-e39</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="sign-out" name="Signs out">
       <bpmn:documentation>when: account_logout
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e39</bpmn:incoming>
-      <bpmn:outgoing>member-e40</bpmn:outgoing>
+      <bpmn:incoming>member-e42</bpmn:incoming>
+      <bpmn:outgoing>member-e43</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="session-gone" name="Deletes the session">
       <bpmn:documentation>ref: functions/api/account.js POST logout</bpmn:documentation>
-      <bpmn:incoming>member-e40</bpmn:incoming>
-      <bpmn:outgoing>member-e41</bpmn:outgoing>
+      <bpmn:incoming>member-e43</bpmn:incoming>
+      <bpmn:outgoing>member-e44</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="visitor" name="A visitor again">
-      <bpmn:incoming>member-e41</bpmn:incoming>
+      <bpmn:incoming>member-e44</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="delete" name="Deletes their account">
       <bpmn:documentation>Asks for the password, or the username on an account made through Google. No undo.
 when: account_delete
 ref: assets/account.js
 ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>member-e42</bpmn:incoming>
-      <bpmn:outgoing>member-e43</bpmn:outgoing>
+      <bpmn:incoming>member-e45</bpmn:incoming>
+      <bpmn:outgoing>member-e46</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-gone" name="Deletes the account and everything filed under it, keeps the numbers">
       <bpmn:documentation>ref: functions/api/account.js POST delete</bpmn:documentation>
-      <bpmn:incoming>member-e43</bpmn:incoming>
-      <bpmn:outgoing>member-e44</bpmn:outgoing>
+      <bpmn:incoming>member-e46</bpmn:incoming>
+      <bpmn:outgoing>member-e47</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="deleted" name="Nobody, on the map">
-      <bpmn:incoming>member-e44</bpmn:incoming>
+      <bpmn:incoming>member-e47</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="member-e1" sourceRef="signed-in" targetRef="what-now" />
     <bpmn:sequenceFlow id="member-e2" name="save" sourceRef="what-now" targetRef="save" />
@@ -374,22 +396,25 @@ ref: assets/app.js</bpmn:documentation>
     <bpmn:sequenceFlow id="member-e34" sourceRef="insights" targetRef="views" />
     <bpmn:sequenceFlow id="member-e35" sourceRef="views" targetRef="insights-done" />
     <bpmn:sequenceFlow id="member-e36" name="settings" sourceRef="account-what" targetRef="account" />
-    <bpmn:sequenceFlow id="member-e37" sourceRef="account" targetRef="account-change" />
-    <bpmn:sequenceFlow id="member-e38" sourceRef="account-change" targetRef="account-done" />
-    <bpmn:sequenceFlow id="member-e39" name="sign out" sourceRef="account-what" targetRef="sign-out" />
-    <bpmn:sequenceFlow id="member-e40" sourceRef="sign-out" targetRef="session-gone" />
-    <bpmn:sequenceFlow id="member-e41" sourceRef="session-gone" targetRef="visitor" />
-    <bpmn:sequenceFlow id="member-e42" name="delete" sourceRef="account-what" targetRef="delete" />
-    <bpmn:sequenceFlow id="member-e43" sourceRef="delete" targetRef="account-gone" />
-    <bpmn:sequenceFlow id="member-e44" sourceRef="account-gone" targetRef="deleted" />
+    <bpmn:sequenceFlow id="member-e37" name="student" sourceRef="account-what" targetRef="student" />
+    <bpmn:sequenceFlow id="member-e38" sourceRef="student" targetRef="student-asked" />
+    <bpmn:sequenceFlow id="member-e39" sourceRef="student-asked" targetRef="student-done" />
+    <bpmn:sequenceFlow id="member-e40" sourceRef="account" targetRef="account-change" />
+    <bpmn:sequenceFlow id="member-e41" sourceRef="account-change" targetRef="account-done" />
+    <bpmn:sequenceFlow id="member-e42" name="sign out" sourceRef="account-what" targetRef="sign-out" />
+    <bpmn:sequenceFlow id="member-e43" sourceRef="sign-out" targetRef="session-gone" />
+    <bpmn:sequenceFlow id="member-e44" sourceRef="session-gone" targetRef="visitor" />
+    <bpmn:sequenceFlow id="member-e45" name="delete" sourceRef="account-what" targetRef="delete" />
+    <bpmn:sequenceFlow id="member-e46" sourceRef="delete" targetRef="account-gone" />
+    <bpmn:sequenceFlow id="member-e47" sourceRef="account-gone" targetRef="deleted" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="member-diagram">
     <bpmndi:BPMNPlane id="member-plane" bpmnElement="member-collaboration">
       <bpmndi:BPMNShape id="member-pool-di" bpmnElement="member-pool" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1980" height="1540" />
+        <dc:Bounds x="0" y="0" width="1980" height="1650" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="member-lane-member-di" bpmnElement="member-lane-member" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="1950" height="1540" />
+        <dc:Bounds x="30" y="0" width="1950" height="1650" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="signed-in-di" bpmnElement="signed-in">
         <dc:Bounds x="137" y="45" width="36" height="36" />
@@ -441,8 +466,8 @@ ref: assets/app.js</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="1810" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="private-di" bpmnElement="private">
-        <dc:Bounds x="1847" y="1475" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="1515" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1847" y="1585" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="1625" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="keep-di" bpmnElement="keep">
         <dc:Bounds x="475" y="248" width="120" height="70" />
@@ -524,25 +549,35 @@ ref: assets/app.js</bpmn:documentation>
         <dc:Bounds x="1277" y="1145" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1185" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sign-out-di" bpmnElement="sign-out">
+      <bpmndi:BPMNShape id="student-di" bpmnElement="student">
         <dc:Bounds x="855" y="1238" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="session-gone-di" bpmnElement="session-gone">
+      <bpmndi:BPMNShape id="student-asked-di" bpmnElement="student-asked">
         <dc:Bounds x="1045" y="1238" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="visitor-di" bpmnElement="visitor">
+      <bpmndi:BPMNShape id="student-done-di" bpmnElement="student-done">
         <dc:Bounds x="1277" y="1255" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1295" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="delete-di" bpmnElement="delete">
+      <bpmndi:BPMNShape id="sign-out-di" bpmnElement="sign-out">
         <dc:Bounds x="855" y="1348" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-gone-di" bpmnElement="account-gone">
+      <bpmndi:BPMNShape id="session-gone-di" bpmnElement="session-gone">
         <dc:Bounds x="1045" y="1348" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="deleted-di" bpmnElement="deleted">
+      <bpmndi:BPMNShape id="visitor-di" bpmnElement="visitor">
         <dc:Bounds x="1277" y="1365" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1405" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delete-di" bpmnElement="delete">
+        <dc:Bounds x="855" y="1458" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="account-gone-di" bpmnElement="account-gone">
+        <dc:Bounds x="1045" y="1458" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleted-di" bpmnElement="deleted">
+        <dc:Bounds x="1277" y="1475" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1515" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="member-e1-di" bpmnElement="member-e1">
         <di:waypoint x="173" y="63" />
@@ -608,9 +643,9 @@ ref: assets/app.js</bpmn:documentation>
       <bpmndi:BPMNEdge id="member-e14-di" bpmnElement="member-e14">
         <di:waypoint x="1700" y="613" />
         <di:waypoint x="1716" y="613" />
-        <di:waypoint x="1716" y="1493" />
-        <di:waypoint x="1847" y="1493" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1463" width="123" height="28" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1716" y="1603" />
+        <di:waypoint x="1847" y="1603" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1573" width="123" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e15-di" bpmnElement="member-e15">
         <di:waypoint x="370" y="63" />
@@ -725,27 +760,27 @@ ref: assets/app.js</bpmn:documentation>
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1133" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e37-di" bpmnElement="member-e37">
-        <di:waypoint x="975" y="1163" />
-        <di:waypoint x="1045" y="1163" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
-        <di:waypoint x="1165" y="1163" />
-        <di:waypoint x="1277" y="1163" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e39-di" bpmnElement="member-e39">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1273" />
         <di:waypoint x="855" y="1273" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1243" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
+      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
         <di:waypoint x="975" y="1273" />
         <di:waypoint x="1045" y="1273" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
+      <bpmndi:BPMNEdge id="member-e39-di" bpmnElement="member-e39">
         <di:waypoint x="1165" y="1273" />
         <di:waypoint x="1277" y="1273" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
+        <di:waypoint x="975" y="1163" />
+        <di:waypoint x="1045" y="1163" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
+        <di:waypoint x="1165" y="1163" />
+        <di:waypoint x="1277" y="1163" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e42-di" bpmnElement="member-e42">
         <di:waypoint x="750" y="173" />
@@ -761,6 +796,21 @@ ref: assets/app.js</bpmn:documentation>
       <bpmndi:BPMNEdge id="member-e44-di" bpmnElement="member-e44">
         <di:waypoint x="1165" y="1383" />
         <di:waypoint x="1277" y="1383" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e45-di" bpmnElement="member-e45">
+        <di:waypoint x="750" y="173" />
+        <di:waypoint x="766" y="173" />
+        <di:waypoint x="766" y="1493" />
+        <di:waypoint x="855" y="1493" />
+        <bpmndi:BPMNLabel><dc:Bounds x="770" y="1463" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e46-di" bpmnElement="member-e46">
+        <di:waypoint x="975" y="1493" />
+        <di:waypoint x="1045" y="1493" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e47-di" bpmnElement="member-e47">
+        <di:waypoint x="1165" y="1493" />
+        <di:waypoint x="1277" y="1493" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

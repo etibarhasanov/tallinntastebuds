@@ -623,7 +623,18 @@ CREATE TABLE IF NOT EXISTS users (
   -- ALTER TABLE users ADD COLUMN student_until TEXT — and the reader
   -- survives its absence: a database one ALTER behind answers that nobody
   -- is a student, and every deal pays its everyday rate.
-  student_until  TEXT
+  student_until  TEXT,
+  -- The date this account asked to be a student until, from the card on
+  -- /account.html — action 'student' in functions/api/account.js. An ask,
+  -- not the rate: nothing reads it but that card and the owner, who checks
+  -- a student card and confirms by copying it across —
+  -- UPDATE users SET student_until = student_asked WHERE id = '<id>' — so
+  -- the two are equal once confirmed and differ while an ask is waiting.
+  -- Null for everybody who never asked.
+  --
+  -- ALTER TABLE users ADD COLUMN student_asked TEXT — and the card is not
+  -- drawn on a database without it.
+  student_asked  TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username COLLATE NOCASE);
 
