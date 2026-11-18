@@ -53,6 +53,10 @@
  *   is 404 not-found, the answer GET /api/rides/<id> gives. A dropped ride
  *   is gone from under the Bike tab too.
  *
+ *   A ride that was paused and went on somewhere else is kept as the runs
+ *   that were ridden, a row each — A RIDE WITH A GAP IN IT — and the answer
+ *   is the first run's id with the metres of them all.
+ *
  *   Errors: 401 signed-out (no session and no `anon`), 400 malformed, 400
  *   short (under MIN_METERS once the ends are off), 400 fast (an average no
  *   bike rides at), 429 often (DAY_RIDES today already, or NET_RIDES from
@@ -124,18 +128,47 @@
  * `track` was added by hand after the table was, so a save tries the
  * insert with it and, where the column is not there yet, again without.
  *
+ * A RIDE WITH A GAP IN IT
+ *
+ * A ride paused at one place and resumed at another — on the far side of a
+ * train, or after the phone was locked in a pocket, which pauses the page's
+ * recorder outright — arrives as one line with a step in it that nobody
+ * rode. The recorder refuses a step faster than a bike, but a pause makes
+ * any step slow: three kilometres of railway in eight minutes is 22 km/h.
+ * For a day those were stored as they came, and two of the first eleven
+ * rides were kept with a straight line across the city in them, 1.3 km and
+ * 3.2 km, answered by ?bbox= as somewhere that had been ridden and by the
+ * ride's own page as a kilometre it never rode.
+ *
+ * So the line is cut wherever two points are more than GAP apart — pieces()
+ * in ./_sections.js — and each run is kept as a ride of its own: its own
+ * row, the ride's name on each, the seconds shared out by length. ENDS
+ * comes off both ends of every run, not only the ride's, because where
+ * somebody stopped recording is as likely to be a door as where they began.
+ * A run under MIN_METERS after that is dropped, and a ride with no run left
+ * is `short`. One row a run and not one row with several lines, because
+ * `line` is one line to every page and installed app that reads it.
+ *
+ * WHAT THE RIDE SAYS ABOUT THE STREETS
+ *
+ * After the rows are in, each run's squares are added to `ride_sections` —
+ * ./_sections.js, which says what is counted and why. The ride is kept
+ * whether or not that works.
+ *
  * WHEN THE TABLE IS NOT THERE
  *
  * `rides` is in db/schema.sql and loaded by hand. Until it is, GET answers
  * `ready: false` and the Bike tab draws its way exactly as it did; a save
  * answers 503 `not-ready` and the page keeps the ride on the phone to try
- * again.
+ * again. `ride_sections` is loaded the same way and costs nothing while it
+ * is not: the save catches it.
  */
 
 import {
   json, sessionUser, wrongDatabase, nearTallinn, km, randomHex, clientIp, fingerprint
 } from './_lib.js';
 import { countUse } from './_visitors.js';
+import { pieces, sectionsOf, countSections } from './_sections.js';
 import { arrayOf } from './_rides.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
@@ -321,16 +354,26 @@ async function save(env, rider, body) {
   const seconds = Math.round(Number(body.seconds));
   if (!points || !Number.isFinite(seconds) || seconds < 1) return json({ error: 'malformed' }, 400);
 
-  const kept = trimEnds(points);
-  const line = kept.map((p) => [p[0], p[1]]);
-  /* WHEN EACH POINT WAS PASSED: every point carried the pair, or none is
-     kept. */
-  const track = kept.every((p) => p.length === 4) ? JSON.stringify(kept.map((p) => [p[2], p[3]])) : '';
-  const meters = Math.round(lengthOf(line));
-  if (meters < MIN_METERS) return json({ error: 'short' }, 400);
+  /* A RIDE WITH A GAP IN IT: the runs that were ridden, each without its
+     ends, and only those still long enough to be a route. */
+  const ridden = pieces(points);
+  const runs = ridden
+    .map((run) => {
+      const kept = trimEnds(run);
+      const line = kept.map((p) => [p[0], p[1]]);
+      /* WHEN EACH POINT WAS PASSED: every point carried the pair, or none
+         is kept. */
+      const track = kept.every((p) => p.length === 4) ? kept.map((p) => [p[2], p[3]]) : null;
+      return { line, track, meters: Math.round(lengthOf(line)) };
+    })
+    .filter((run) => run.meters >= MIN_METERS);
+  const meters = runs.reduce((sum, run) => sum + run.meters, 0);
+  if (!runs.length) return json({ error: 'short' }, 400);
   /* The speed is judged on the whole of what was ridden, ends included,
-     since the seconds are the whole ride's. */
-  if (lengthOf(points) / 1000 / (seconds / 3600) > FASTEST) return json({ error: 'fast' }, 400);
+     since the seconds are the whole ride's — and on nothing that was not:
+     the step across a gap is not in it. */
+  const rode = ridden.reduce((sum, run) => sum + lengthOf(run), 0);
+  if (rode / 1000 / (seconds / 3600) > FASTEST) return json({ error: 'fast' }, 400);
 
   const day = new Date();
   day.setUTCHours(0, 0, 0, 0);
@@ -350,28 +393,37 @@ async function save(env, rider, body) {
     .first();
   if (today && today.n >= rider.most) return json({ error: 'often' }, 429);
 
-  const id = randomHex(6);
-  const lats = line.map((p) => p[0]);
-  const lngs = line.map((p) => p[1]);
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, MAX_NAME) : '';
-  const row = [
-    id, rider.id, name, meters, seconds, JSON.stringify(line),
-    Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs), Date.now()
-  ];
+  const now = Date.now();
+  const rows = runs.map((run, i) => {
+    const lats = run.line.map((p) => p[0]);
+    const lngs = run.line.map((p) => p[1]);
+    return [
+      randomHex(6), rider.id, name, run.meters,
+      Math.max(1, Math.round(seconds * run.meters / meters)), JSON.stringify(run.line),
+      Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs),
+      /* A millisecond apart, so Your rides lists the runs in the order they
+         were ridden. */
+      now + i
+    ];
+  });
   const columns = 'id, user_id, name, meters, seconds, line, south, west, north, east, created_at';
   try {
-    await env.DB
+    await env.DB.batch(rows.map((row, i) => env.DB
       .prepare('INSERT INTO rides (' + columns + ', track) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-      .bind(...row, track)
-      .run();
+      .bind(...row, runs[i].track ? JSON.stringify(runs[i].track) : '')));
   } catch (e) {
     /* No `track` column here yet. The ride is worth keeping without it. */
-    await env.DB
+    await env.DB.batch(rows.map((row) => env.DB
       .prepare('INSERT INTO rides (' + columns + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-      .bind(...row)
-      .run();
+      .bind(...row)));
   }
-  return json({ ride: { id, meters, seconds } }, 200);
+  /* WHAT THE RIDE SAYS ABOUT THE STREETS. Not there yet, or failed: the
+     ride is kept, and the rebuild counts it. */
+  try {
+    for (const run of runs) await countSections(env, sectionsOf(run.line, run.track));
+  } catch (e) { /* tools/ridesections.mjs */ }
+  return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
 }
 
 /* The line a page sent, as [lat, lng] pairs at five decimals, or null when

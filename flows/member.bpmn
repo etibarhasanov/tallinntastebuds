@@ -213,8 +213,10 @@ ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
       <bpmn:outgoing>member-e22</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="ride-keep" name="Keeps the ride without its first and last 200 m, and without a name on it">
-      <bpmn:documentation>when: ride_save
-ref: functions/api/rides.js POST</bpmn:documentation>
+      <bpmn:documentation>A ride paused and resumed somewhere else is kept as the runs that were ridden, a row each. Each run is then counted into the squares of the city it crossed, which nothing reads yet.
+when: ride_save
+ref: functions/api/rides.js POST
+ref: functions/api/_sections.js</bpmn:documentation>
       <bpmn:incoming>member-e22</bpmn:incoming>
       <bpmn:outgoing>member-e23</bpmn:outgoing>
     </bpmn:serviceTask>

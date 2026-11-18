@@ -2084,3 +2084,38 @@ CREATE TABLE IF NOT EXISTS rides (
 CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);
 -- One person's rides today, for the cap.
 CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);
+
+-- One row is one square of the city, about twenty-eight metres a side, and
+-- what the rides that crossed it say about it: how many there were, how far
+-- and how long they spent in it, how many crossed it at walking pace and
+-- how many stood still in it. The first half of valuing a street — the half
+-- no rider has to say anything for. Filled by a save in
+-- functions/api/rides.js through functions/api/_sections.js, which says how
+-- each number is counted; read by nothing yet, and answered to nobody.
+--
+-- It holds nothing `rides` does not: tools/ridesections.mjs rebuilds it
+-- whole from that table, which is how the rides saved before it existed get
+-- into it, and how it is put right when the size of a square changes.
+-- **What the rides say about a street** in docs/handbook.md.
+CREATE TABLE IF NOT EXISTS ride_sections (
+  -- The square, by its row and column: round(lat / 0.00025) and
+  -- round(lng / 0.0005), as `237748:49478`.
+  cell       TEXT    PRIMARY KEY,
+  -- How many rides crossed it, each counted once, and the metres of them
+  -- that lie in it.
+  rides      INTEGER NOT NULL DEFAULT 0,
+  meters     INTEGER NOT NULL DEFAULT 0,
+  -- How many of those rides carried their times — rides.track — the
+  -- metres of theirs that have a time, and the seconds those took, a pause
+  -- of two minutes or more left out of both. The square's pace is `paced`
+  -- over `seconds`, and `slow` is out of `timed`, not out of `rides`.
+  timed      INTEGER NOT NULL DEFAULT 0,
+  paced      INTEGER NOT NULL DEFAULT 0,
+  seconds    INTEGER NOT NULL DEFAULT 0,
+  -- Timed rides that crossed it under 7 km/h, pushed or as good as, and
+  -- the times a ride stood twenty seconds or more in it: a light, a
+  -- crossing.
+  slow       INTEGER NOT NULL DEFAULT 0,
+  stops      INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL
+);

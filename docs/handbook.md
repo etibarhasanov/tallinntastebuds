@@ -3438,6 +3438,92 @@ It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
 `ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, the account page
 `ride_record`, and a save counts as `map:ride_save`.
 
+**A ride with a gap in it is kept as the runs that were ridden.** A ride
+paused at one place and resumed at another — the far side of a train, or
+after the phone was locked in a pocket, which pauses the page's recorder
+outright — arrives as one line with a step in it nobody rode. The recorder
+refuses a step faster than 60 km/h, but a pause makes any step slow: three
+kilometres of railway in eight minutes is 22 km/h. For the first day those
+were stored as they came, and two of the first eleven rides were kept with
+a straight line across the city in them, 1.3 km and 3.2 km: answered by
+`?bbox=` as somewhere that had been ridden, counted in the ride's length,
+and a split on the ride's own page that nobody rode. `tools/doors.mjs` had
+to cut them out again before it looked for doors. Since 2026-11-18 the
+server cuts a line wherever two points are more than 250 m apart — `GAP`
+in `functions/api/_sections.js`, the same `pieces()` the doors tool now
+borrows; the longest honest step in those rides was 150 m — and keeps each
+run as a ride of its own: a row
+each, the ride's name on both, the seconds shared out by length, the first
+and last 200 m off **every** run, since where somebody stopped recording is
+as likely to be a door as where they began. A run under 300 m after that is
+dropped, and a ride with none left is `short`. The answer is still one
+`ride`, the first run's id with the metres of them all, so nothing an
+installed app reads has moved; Your rides lists the runs as the rides they
+now are. It is a row a run and not a row with several lines because `line`
+is one line to every page and app that draws it. The page's recorder still
+draws the step while the ride is being recorded, and counts it in the
+distance on the card: what is stored is right and what is shown before
+saving is not yet.
+
+## What the rides say about a street
+
+A ride is evidence that a way can be cycled. Enough of them, read together,
+say something a single one cannot: which stretches people ride at twenty,
+which they push through at five, and where they stand waiting. That is the
+first half of valuing a street, and it needs nobody to say anything. A door
+(**Doors**) and a road kept off (**Roads a bike route keeps off**) are the
+two ways a route is already made better than the router's; both are a
+decision about one stretch, found or named. This is the ground under
+decisions like those: every stretch, counted. The
+second half is what riders think — *good route*, *I didn't like this bit* —
+and is not built: it is something a visitor would see, so it is drawn and
+agreed first. The point of both is a way that is better to ride, rather
+than the shortest or the quickest, which is all a router knows how to give.
+
+**The city is cut into squares**, 0.00025° by 0.0005°, about twenty-eight
+metres a side: a street and its pavements. `ride_sections` has a row for
+each square a ride has crossed —
+
+| Column | What it counts |
+|---|---|
+| `rides` | rides that crossed the square, each once |
+| `meters` | the metres of them that lie in it |
+| `timed` | how many of those rides carried their times |
+| `paced`, `seconds` | the timed rides' metres here and the seconds they took; the square's pace is one over the other |
+| `slow` | timed rides that crossed it under 7 km/h |
+| `stops` | times a ride stood twenty seconds or more in it and went under forty metres |
+
+A step of two minutes or more is the rider pausing — the clock in
+`rides.track` runs through a pause — and counts as distance only: a coffee
+is not a red light.
+
+**Squares and not streets, for now.** Matching a ride to OpenStreetMap's
+streets would say *this stretch of Pärnu mnt* where a square says *here*,
+and would tell a cycle lane from the carriageway beside it, which a square
+cannot. It also means asking a matching service on every save. The squares
+are arithmetic, and starting with them gives nothing away, because **the
+table holds nothing `rides` does not**: `node tools/ridesections.mjs`
+rebuilds it whole from the rides, through the same `sectionsOf()` a save
+uses, so the day streets are worth matching every ride is still there to be
+matched. The tool's header has the three terminal lines; it is how the
+rides saved before the table existed get into it.
+
+**A save nudges it.** One statement after the ride's rows are in, an upsert
+over the ride's squares handed in as one JSON parameter. Every other count
+here is recomputed rather than nudged; this one is not, because recomputing
+it is reading every ride there is. A nudge that fails — the table not
+applied yet among the reasons — costs the save nothing, and the rebuild
+puts it right.
+
+**Nothing reads it, and nothing answers it.** It is counts and no rider,
+and still it is not published: with one rider a square's pace is one
+person's afternoon. What it is for, in the order it would be built — a ride
+on Your rides saying how much of itself had been ridden before and where it
+waited; the Bike tab asking the router for its alternatives and offering
+the one riders made the most of; a warning on a stretch people push
+through. Each wants more than one rider's rides under it, and a square is
+only worth showing once several different rides agree about it.
+
 ## Doors
 
 A door is a stretch somebody really cycled between two points that
@@ -3477,7 +3563,7 @@ beside the road the router takes.
 train is one line with a straight 3.2 km segment from Ülemiste to Lilleküla
 across the rail yard, which the router can only go round — a door, by every
 test above, that would send riders over the tracks. So `tools/doors.mjs`
-cuts a ride wherever two points are more than `JUMP`, 250 m, apart, and looks
+cuts a ride wherever two points are more than `GAP`, 250 m, apart, and looks
 for doors in each piece alone. The rides answer carries no times, and needs
 none for this: a recorder writes a point every few metres, so a gap that
 long is a train or a pause, never riding.
