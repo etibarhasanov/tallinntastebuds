@@ -127,10 +127,10 @@ const MAX_DISPLAY = 60;
 const STUDENT_YEARS = 5;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
-/* The two student dates, for the card on /account.html: `until`, the day the
-   owner confirmed, and `asked`, the day this account asked for. Equal once
-   the owner has confirmed what was asked; different while an ask is waiting.
-   Both columns arrive by hand, so a database without them answers nothing
+/* The two student dates, for the card on /account.html: `until`, the day
+   this account is a student until, and `asked`, written beside it and equal
+   to it — they differed only while asks waited for the owner, which they no
+   longer do. `asked` stays in the answer so nothing reading it breaks. Both columns arrive by hand, so a database without them answers nothing
    and the card is not drawn — the bargain every optional column on this
    route takes. See "A rate for students" in docs/handbook.md. */
 async function readStudent(env, userId) {
@@ -641,22 +641,22 @@ export async function onRequestPost(context) {
 
   /* ------------------------------------------------ being a student
    *
-   * Somebody says until when they study, and that is an ask, not the rate:
-   * it goes in student_asked, and student_until — the column functions/api/
-   * pass.js reads — is the owner's alone, set by hand once they have checked
-   * a card. Saying it is not being it, so a date typed here buys nothing
-   * until somebody has looked. "A rate for students" in docs/handbook.md.
+   * Somebody says until when they study, and from then they are one: the
+   * date goes into student_until, the column functions/api/pass.js reads, and
+   * the next pass pays the student rate. Nobody checks it. It used to be an
+   * ask that waited for the owner to copy it across by hand, and the owner
+   * took that step out: a member who says they study is believed, and the
+   * worst a false one buys is a student rate at the few places that have
+   * one. student_asked is written alongside, equal, so a row never reads as
+   * an ask waiting. "A rate for students" in docs/handbook.md.
    *
-   * Three things to send:
+   * Two things to send:
    *
-   *   { until: 'YYYY-MM-DD' }  ask, or ask again with another date. A
-   *                            confirmed date stays in force meanwhile.
-   *   { back: true }           take back an ask that is waiting, which
-   *                            leaves whatever was confirmed as it was.
+   *   { until: 'YYYY-MM-DD' }  a student until that day, or a new day.
    *   { until: '' }            not a student: both dates go.
    *
    * The date is held to today and the STUDENT_YEARS after it, in Tallinn —
-   * one that has already passed would be an ask for nothing.
+   * one that has already passed would be a student of nothing.
    */
   if (action === 'student') {
     const user = await sessionUser(request, env);
@@ -664,10 +664,7 @@ export async function onRequestPost(context) {
 
     let sql;
     let binds;
-    if (body.back === true) {
-      sql = 'UPDATE users SET student_asked = student_until WHERE id = ?';
-      binds = [user.id];
-    } else if (body.until === '') {
+    if (body.until === '') {
       sql = 'UPDATE users SET student_asked = NULL, student_until = NULL WHERE id = ?';
       binds = [user.id];
     } else {
@@ -677,8 +674,8 @@ export async function onRequestPost(context) {
       /* A date that round-trips is a real one: 2027-02-30 does not. */
       const real = DAY.test(until) && new Date(until + 'T00:00:00Z').toISOString().slice(0, 10) === until;
       if (!real || until < today || until > last) return json({ error: 'student-date' }, 400);
-      sql = 'UPDATE users SET student_asked = ? WHERE id = ?';
-      binds = [until, user.id];
+      sql = 'UPDATE users SET student_until = ?, student_asked = ? WHERE id = ?';
+      binds = [until, until, user.id];
     }
 
     try {

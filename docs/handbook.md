@@ -4289,43 +4289,33 @@ on `deal.html` instead of the deal's own; everybody else gets the deal's own,
 exactly as before. Faxinin marketi was the first: 15% for any member, 25% for
 a student.
 
-**Who is a student is the owner's to say, in the database.** Nothing on the
-site writes the column and nobody can tick it for themselves: the owner checks
-whatever they check — a student card, a university address — and sets the
-last day it holds by hand, `UPDATE users SET student_until = '2027-08-31'
-WHERE id = '<id>'`, which the write gate asks about like any other write. A
-date and not a yes or no, because people stop being students and a flag
-stays set until somebody remembers to clear it; the date runs out on its
-own, read in Tallinn's timezone, the day itself included. A value that is
-not a date reads as not a student. `/api/pass` reads it on the same request that
+**Who is a student is theirs to say, and they are believed.** A member sets
+it on their own account, and nothing checks it: the owner's words were that
+if somebody sets it, they set it. The worst a false one buys is a student
+rate at the few places that have one, and a check would cost every honest
+student a wait for a person to look. The column holds the last day it
+holds, `users.student_until`. A date and not a yes or no, because people
+stop being students and a flag stays set until somebody remembers to clear
+it; the date runs out on its own, read in Tallinn's timezone, the day itself
+included. A value that is not a date reads as not a student. `/api/pass` reads it on the same request that
 opens the door and answers `student: true` or `false` beside the draw, so the
-page never decides it and a student cannot be claimed from the browser. A
+page never decides it: the pass page reads the server's answer. A
 database the `ALTER TABLE users ADD COLUMN student_until TEXT` has not
 reached answers `false` for everybody, and every deal pays its
 everyday rate.
 
-**Somebody asks, and the owner confirms.** A member can say they are a
-student on `/account.html`: a **Student** card under the one with their
-name, with a **Student until** date and Save. That is an ask and not the
-rate — it goes in `users.student_asked`, and the card says the student rate
-starts once Tallinn Tastebuds has confirmed it. The owner checks however
-they check, and confirms by copying the date across:
-
-```sql
-select id, username, student_asked, student_until from users
-where student_asked is not null and student_asked is not student_until
-```
-
-```sql
-UPDATE users SET student_until = student_asked WHERE id = '<id>'
-```
-
-The first is a read and lists every ask waiting; the second is one row,
-which the write gate asks about. Once the two dates are equal the card says
-**You count as a student until …**, with **Change the date** — a new ask,
-the confirmed date paying meanwhile — and **I'm not a student**, which
-clears both. An ask can be taken back while it waits. The date asked for is
-held to today and the five years after it, in Tallinn; one that has passed
+**Somebody says so, and that is it.** A member says they are a student on
+`/account.html`: a **Student** card under the one with their name, with a
+**Student until** date and Save. Save writes the date straight into
+`users.student_until`, and the next pass pays the student rate. The card
+then says **You count as a student until …**, with **Change the date** and
+**I'm not a student**, which clears it. Until 2026-11-18 this was an ask the
+owner confirmed by copying it across from `users.student_asked`; that step
+came out, and the column stays, written equal to `student_until` beside it,
+so `GET /api/account`'s `asked` keeps its meaning for anything reading it. The
+owner can still set or clear one by hand,
+`UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>'`, which the
+write gate asks about like any other write. The date is held to today and the five years after it, in Tallinn; one that has passed
 shows the form again, saying when it ran out. The card is private, on
 purpose: it is not on `/edit` or `/u/<name>`, because whether somebody is a
 student is not a line for strangers. `action: 'student'` in
@@ -20548,7 +20538,7 @@ The account page, `assets/account.js`:
 | `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
-| `student_ask`, `student_back`, `student_not` | — the Student card: a date asked for, an ask taken back, and both dates cleared. The date itself is not sent |
+| `student_ask`, `student_not` | — the Student card: a date set, and the date cleared. The date itself is not sent. `student_back`, an ask taken back, went with the asks on 2026-11-18 |
 | `radio_play`, `radio_stop`, `home` | as on the map |
 
 The editor for the page under your name, `assets/edit.js`:

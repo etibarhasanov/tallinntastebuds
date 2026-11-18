@@ -48,10 +48,11 @@
  * A STUDENT RATE
  *
  * A fixed deal may also carry { rate, offer } under "student": what an
- * account the owner has marked as a student in the database, until the day
- * in users.student_until, gets instead of the deal's own line. The same request that opens the door
- * says whether this account is one, so a student is decided by the server
- * and not by anything the page could claim. The rate then rides in the code
+ * account that has said it is a student, until the day in
+ * users.student_until, gets instead of the deal's own line. The member sets
+ * that on /account.html and nobody checks it; the same request that opens
+ * the door says whether this account is one, so the pass page reads the
+ * server's answer rather than deciding. The rate then rides in the code
  * and the QR exactly as a drawn one does — "<place>:<hour>:25" and &p=25 —
  * so a student's code does not verify as the everyday one or the other way
  * round, and staff.html lists the two codes side by side. Everybody else

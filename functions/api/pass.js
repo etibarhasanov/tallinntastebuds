@@ -10,7 +10,7 @@
  * declares. The number comes back either way, because this never reads
  * deals.json and so cannot know which kind of deal is being asked about;
  * a fixed deal ignores it. And whether this account is a student's —
- * users.student_until, a date the owner sets by hand — for a deal that
+ * users.student_until, a date the member sets on /account.html — for a deal that
  * carries a student rate; every other deal ignores that too. That split is
  * deliberate: the three numbers an
  * admin sets stay in the file, where everything else about a discount
@@ -98,11 +98,11 @@ export async function onRequestGet(context) {
 
 /* A student until the day in users.student_until, that day included, read
    in Tallinn's timezone — the restaurant's, and the day its till is on.
-   Nothing on the site writes the column: see db/schema.sql. A database the
+   The member writes the column on /account.html: see db/schema.sql. A database the
    ALTER has not reached yet throws on it, and that is read as nobody being a
    student rather than as a pass nobody can open; so is a value that is not
-   a date, since a typo in a hand-written UPDATE should cost the student
-   rate, not the discount. */
+   a date, since a typo in a hand-written UPDATE by the owner should cost
+   the student rate, not the discount. */
 async function isStudent(env, id) {
   let until;
   try {

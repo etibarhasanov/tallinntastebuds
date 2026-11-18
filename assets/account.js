@@ -927,18 +927,16 @@
 
   /* -------------------------------------------------------------- student
    * Where somebody says until when they study, and the card that says how
-   * that stands. Saying it is an ask and not the rate: the date goes to
-   * student_asked, and the student rate on a pass starts only once the owner
-   * has checked a card and copied it into student_until — "A rate for
-   * students" in docs/handbook.md, and action 'student' in
-   * functions/api/account.js for the three things this sends.
+   * that stands. Saying it is being it: the date goes straight into
+   * student_until and the next pass pays the student rate, with nobody
+   * checking — "A rate for students" in docs/handbook.md, and action
+   * 'student' in functions/api/account.js for the two things this sends.
    *
-   * Four states, read off the two dates. An ask waiting — asked and not the
-   * same as the confirmed one — says so, and offers to change it or take it
-   * back; where a confirmed date still holds beside it, it says that too. A confirmed date still to come says until when, with the two ways
-   * out of it. One that has passed, and none at all, are the form. Not drawn
-   * on a database without the columns, which /api/account answers by leaving
-   * `student` out.
+   * Three states, read off the one date. A date still to come says until
+   * when, with the two ways out of it: change it, or not a student. One that
+   * has passed, and none at all, are the form. Not drawn on a database
+   * without the columns, which /api/account answers by leaving `student`
+   * out.
    *
    * Private, so it is on this page and not on /edit: whether somebody is a
    * student is between them and the places that give them more off, not a
@@ -992,7 +990,7 @@
       var input = el('input', {
         className: 'lists-input', type: 'date', id: 'student-until',
         min: now, max: String(+now.slice(0, 4) + 5) + now.slice(4),
-        value: state.student.asked || ''
+        value: state.student.until || ''
       });
       var bad = el('p', { className: 'student-bad', role: 'alert', hidden: true });
       var save = word('listsSave', function (btn) {
@@ -1014,29 +1012,12 @@
     function paint() {
       clear(box);
       var s = state.student;
-      var waiting = !!s.asked && s.asked !== s.until;
       var on = !!s.until && s.until >= today();
       var kids;
       var change = word('accountStudentChange', function () { editing = true; paint(); });
 
       if (editing) kids = form('accountStudentWhat');
-      else if (waiting) {
-        /* A new date asked for on top of a confirmed one that still holds:
-           the confirmed one goes on paying meanwhile, so the sentence says
-           that rather than "the everyday one". */
-        kids = [
-          el('p', {
-            className: 'lists-say',
-            textContent: on
-              ? t('accountStudentAskedOn', { date: longDate(s.asked), until: longDate(s.until) })
-              : t('accountStudentAsked', { date: longDate(s.asked) })
-          }),
-          foot([change, word('accountStudentBack', function (btn) {
-            TTBTrack.event('student_back');
-            send({ action: 'student', back: true }, btn).then(function (why) { if (why) toast(t('accountErrGeneric')); });
-          })])
-        ];
-      } else if (on) {
+      else if (on) {
         kids = [
           el('p', { className: 'lists-say', textContent: t('accountStudentIs', { date: longDate(s.until) }) }),
           foot([change, word('accountStudentNot', function (btn) {

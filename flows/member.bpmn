@@ -312,22 +312,21 @@ ref: functions/api/google.js GET</bpmn:documentation>
     <bpmn:endEvent id="account-done" name="Account changed">
       <bpmn:incoming>member-e41</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="student" name="Asks to be a student until a date">
-      <bpmn:documentation>On the Student card of the account page: an ask, not the rate. It can be changed or taken back while it waits, and 'I'm not a student' takes away a confirmed one too.
+    <bpmn:userTask id="student" name="Says they are a student until a date">
+      <bpmn:documentation>On the Student card of the account page. Nobody checks it: the date is the rate from the next pass. It can be changed, and 'I'm not a student' clears it.
 when: student_ask
-when: student_back
 when: student_not
 ref: assets/account.js studentCard()</bpmn:documentation>
       <bpmn:incoming>member-e37</bpmn:incoming>
       <bpmn:outgoing>member-e38</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="student-asked" name="Keeps the date asked for, until the owner confirms it">
-      <bpmn:documentation>The student rate on a pass starts once the owner has copied the date into student_until by hand.
+    <bpmn:serviceTask id="student-asked" name="Keeps the date as the day they are a student until">
+      <bpmn:documentation>Written straight into student_until, which the pass reads.
 ref: functions/api/account.js POST student</bpmn:documentation>
       <bpmn:incoming>member-e38</bpmn:incoming>
       <bpmn:outgoing>member-e39</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="student-done" name="Waiting for the owner, or a student until that day">
+    <bpmn:endEvent id="student-done" name="A student until that day">
       <bpmn:incoming>member-e39</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="sign-out" name="Signs out">
