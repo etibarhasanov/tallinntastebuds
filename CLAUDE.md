@@ -522,6 +522,11 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `too-many` and `title`. An add it was keeping for later is tried again on
   a 5xx and dropped on any 4xx, so a new refusal that sending again could
   change must not be a 4xx.
+- Its ride page, from 2026-11-18: `GET /api/v1/rides/<id>`, signed in,
+  for a ride it saved — reading `ride` with `meters` and `line`, the stored
+  `[lat, lng]` pairs, which it draws over the phone's own line. It reads
+  nothing of `insight`, working the same sums out of the phone's points, and
+  `signed-out` and `not-found` just draw nothing.
 - `GET /api/account` for `user`, `appGoogle` and `appApple`, and `POST
   /api/account` with `create` and `login` (`username`, `password`, answered
   `user`, refused with `taken`, `username`, `password`, `no-match` and
