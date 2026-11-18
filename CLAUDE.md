@@ -453,7 +453,9 @@ its models are in `TallinnTasteBuds/Models/`.
     `venues` and `at` (`here`, `label`, `where`).
   - `POST /api/saves` with `place` and `on`, signed in. The app cannot show a
     Turnstile challenge: switching Turnstile on refuses its saves with
-    `challenge`, and they then stay on the phone.
+    `challenge`, and they then stay on the phone. A place on the phone the
+    account lacks is offered to it on sign-in, and since 2026-11-18 at most
+    once a day per place — before, on every foreground, for ever.
   - `POST /api/account` with `password-change`, `username-change` (answered
     with `user`), `display`, `about` and `links`, and the errors `current`,
     `same`, `same-name`, `taken` and `bad-link` with `network`.
@@ -552,8 +554,11 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   what becomes of it: `short`, `fast` and `malformed` are final and the ride
   is listed as not kept; `often` waits for
   the next UTC midnight; any other word, and no answer at all, is tried
-  again. A new refusal that sending again cannot change has to be one of the
-  three final words, or an installed app will send that ride for ever.
+  again — after a wait that doubles from a minute to six hours with each
+  failure, since 2026-11-18, where before it was every foreground and every
+  network change. A new refusal that sending again cannot change has to be
+  one of the three final words, or an installed app will send that ride for
+  ever, if slowly.
 - Its search for somewhere to ride to, Where to?: `GET /api/places?q=` with
   `near` and `limit`, reading `id`, `name`, `address`, `category`, `lat`,
   `lng` and `map`; `GET /api/geocode?q=`, reading `results` with `label`,
@@ -588,8 +593,8 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   for a place tapped on the map that the roll does not have, and `add` (`id`,
   `place`). The error words it has sentences for are `signed-out`, `full`,
   `too-many` and `title`. An add it was keeping for later is tried again on
-  a 5xx and dropped on any 4xx, so a new refusal that sending again could
-  change must not be a 4xx.
+  a 5xx, after the same doubling wait a ride has, and dropped on any 4xx, so
+  a new refusal that sending again could change must not be a 4xx.
 - Its ride page, from 2026-11-18: `GET /api/v1/rides/<id>`, signed in,
   for a ride it saved — reading `ride` with `meters` and `line`, the stored
   `[lat, lng]` pairs, which it draws over the phone's own line. It reads
