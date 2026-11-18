@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<!-- The map made to be put on somebody else's page in an <iframe>: pins, a
+     card, and a link back. Not a page anybody should land on from a search,
+     so noindex — it is the same places the map at / is indexed for. No
+     analytics and no count, deliberately: whoever opens it is a visitor to
+     somebody else's site, and Clarity recording them would be this site
+     watching another site's readers. **The map on your site** in
+     docs/handbook.md. -->
+<meta name="robots" content="noindex, follow">
+<title>Tallinn Tastebuds map</title>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&amp;display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+<!-- The tokens and the four styles from the map's stylesheet; the frame, the
+     chip, the card and the three notices are the page's own. -->
+<link rel="stylesheet" href="/assets/styles.lean.css?v=5e034bb1">
+<link rel="stylesheet" href="/assets/embed.css?v=9d4ea4e3">
+</head>
+<body class="embed-body">
+
+<div id="embed-map" class="embed-map" role="region" data-i18n-aria-label="embedMapLabel" aria-label="Map of places in Tallinn"></div>
+
+<div class="embed-chip" id="embed-chip" hidden>
+  <b class="embed-chip-title" id="embed-title"></b>
+  <span class="embed-chip-sub" id="embed-sub"></span>
+</div>
+
+<!-- One notice at a time: loading, the API out of reach, or nothing to show.
+     Each is in English here and put into the reader's language by the
+     script, so a page that never loads its words still says something. -->
+<div class="embed-notice" id="embed-loading" role="status">
+  <span class="embed-spin" aria-hidden="true"></span>
+  <b data-i18n="embedLoading">Loading places…</b>
+</div>
+<div class="embed-notice" id="embed-error" role="alert" hidden>
+  <b data-i18n="embedErrorTitle">The map can't reach Tallinn Tastebuds</b>
+  <p data-i18n="embedErrorBody">Check your connection and try again.</p>
+  <button type="button" class="embed-btn" id="embed-retry" data-i18n="embedRetry">Try again</button>
+</div>
+<div class="embed-notice" id="embed-empty" role="status" hidden>
+  <b data-i18n="embedEmptyTitle">Nothing to show here</b>
+  <p data-i18n="embedEmptyBody">This list is empty, private, or was taken down.</p>
+</div>
+
+<article class="embed-card" id="embed-card" hidden aria-live="polite">
+  <img class="embed-card-photo" id="embed-photo" alt="" hidden>
+  <button type="button" class="embed-card-close" id="embed-close" data-i18n-aria-label="close" aria-label="Close">×</button>
+  <div class="embed-card-in">
+    <h2 class="embed-card-name" id="embed-name"></h2>
+    <p class="embed-card-meta" id="embed-meta"></p>
+    <p class="embed-card-note" id="embed-note" hidden></p>
+    <ul class="embed-tags" id="embed-tags"></ul>
+    <a class="embed-btn" id="embed-open" target="_blank" rel="noopener" data-i18n="embedOpen">Open on Tallinn Tastebuds</a>
+  </div>
+</article>
+
+<a class="embed-by" id="embed-by" href="https://tallinntastebuds.ee/" target="_blank" rel="noopener"><span data-i18n="embedBy">Map by</span> <b>Tallinn Tastebuds</b></a>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+<script src="/assets/basemap.js?v=357d3794" defer></script>
+<script src="/assets/embed.js?v=9674045e" defer></script>
+</body>
+</html>

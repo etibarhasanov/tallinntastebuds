@@ -170,6 +170,7 @@ jobs:
             node tools/qrperf.mjs --check
             node tools/chessperf.mjs --check
             node tools/mcpcheck.mjs --check
+            node tools/apicheck.mjs --check
             node .claude/hooks/d1-write-gate.mjs --check
 
             if git push origin "HEAD:${LIVE}"; then landed=true; break; fi

@@ -35,8 +35,10 @@
  *                      docs/handbook.md — and under 'none' that frame was blank.
  *                      Same origin only, so the two subdomains cannot frame
  *                      the map and the map does not frame them; every walk
- *                      from the map is to an address on its own host. This is
- *                      a whole CSP header with one directive in it and not a
+ *                      from the map is to an address on its own host. /embed
+ *                      is the one page any site may frame; EMBEDS below says
+ *                      why. This is a whole CSP header with one directive in
+ *                      it and not a
  *                      content policy: the scripts, fonts, tiles and players
  *                      the pages load are untouched by it.
  *   COOP same-origin   a page opened from another site gets no handle on this
@@ -62,6 +64,18 @@ export const SECURITY = {
     'camera=(), microphone=(), payment=(), usb=(), serial=(), hid=(), browsing-topics=(), geolocation=(self)'
 };
 
+/* The one page another site may frame: /embed, the map made to be put on
+   somebody else's page in an <iframe> — **The map on your site** in
+   docs/handbook.md. It is a map and a card and nothing behind a session, so
+   the clickjacking frame-ancestors guards against has nothing to press on it:
+   it signs nobody in, saves nothing and writes nothing, and every link on it
+   opens the site in a new tab. Set rather than added, because the asset
+   server hands the file over already wearing `_headers`' `/*` lines — and
+   `_headers` says the same for the static spelling, for the day a request
+   reaches the file without passing through here. */
+const EMBEDS = new Set(['/embed', '/embed.html']);
+const EMBEDDABLE = "frame-ancestors *";
+
 /* The routes' answers are this site's pages' to read and nobody else's: a
    page on another site cannot load one into itself as a script or an image.
    Same-site rather than same-origin, because the flashcards ask /api/ from
@@ -82,5 +96,9 @@ export function secured(res, url) {
   };
   add(SECURITY);
   if (url.pathname.startsWith(API)) add(API_ONLY);
+  if (EMBEDS.has(url.pathname)) {
+    out.headers.set('Content-Security-Policy', EMBEDDABLE);
+    out.headers.delete('X-Frame-Options');
+  }
   return out;
 }

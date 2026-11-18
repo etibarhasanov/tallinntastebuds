@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty small Functions, no build step and no npm install. Adding a
+Static files, fifty-two small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -2787,6 +2787,135 @@ request allowance as the rest of the site, and for a list call a few small
 reads of D1 — one for a search, which reads every row of every public list
 and stops at `READ_CAP`, and the three `readList()` makes for one list. No
 table, no `.sql` file to load, no secret, no new binding.
+
+## The public API
+
+`https://tallinntastebuds.ee/api/v1` is the map and the public lists for
+anybody's code: an app, a web page, a script. `GET` only, JSON, no key, no
+account, `Access-Control-Allow-Origin: *`, and nothing counted.
+`functions/api/v1/[[path]].js` is the whole of it, and `/developers`
+(`developers.html`) is the page a stranger reads.
+
+| Address | What it answers |
+|---|---|
+| `/api/v1` | the version, the addresses, the docs |
+| `/api/v1/places` | the open places on the map: `q`, `type`, `max_price`, `near=lat,lng`, `radius`, `ids`, `lang`, `limit` (≤ 100), `offset` |
+| `/api/v1/places/<id>` | one place, every photo and a Google Maps link; a closed one is `404 closed` |
+| `/api/v1/lists` | the public lists of four places or more: `q`, `by`, `limit` (≤ 50), `offset` |
+| `/api/v1/lists/<id>` | one public list, its rows in its author's order, `approved: false` on a row the map does not have |
+| `/api/v1/types` | the fourteen kinds of place, named in all eleven languages |
+
+Every answer is `{ "version": 1, … }` and carries `API-Version: 1`. An error
+is `{ "version": 1, "error": { "code", "message" } }`, and the code is one of
+five: `bad-request`, `not-found`, `closed`, `method-not-allowed`,
+`unavailable`.
+
+**What it shares with `/mcp`.** The two doors read the same rows the same
+way — the words a search lands on, the public lists, a list's rows and where
+each opens — and that reading is `functions/_public.js`, which came out of
+`functions/mcp.js` the day the second door arrived. Each shapes its own
+answer.
+
+**What it does not hand on.** Google's half: the eleven hundred venues of the
+export, their hours, their ratings. Those are Google's under Google's terms,
+which allow showing them on this site and not passing them to whoever asks;
+`/mcp` lends an assistant the hours of my own places, this lends nobody
+anything. Nor directions or address search, which are other people's free
+services passed through (`/api/route`, `/api/geocode`). A place here is the
+map's own row, with the phone and website the map holds.
+
+**What it costs.** The places are `data/restaurants.json` through
+`mapPlaces()`, no database. The lists read D1: `publicLists()` is kept five
+minutes per isolate, and every answer five minutes in the colo, keyed on the
+address — so a loop over one address is answered from the colo, and a loop
+over a thousand reads the lists once per isolate per five minutes. A database
+that is down is `503 unavailable` on the lists and nothing else.
+
+### Versions, and the promise in the address
+
+v1 only ever gains. A field, a parameter or an address may be added; nothing
+there is renamed, removed, retyped or made to mean something else.
+`data/api-v1.json` freezes every answer's shape, and `node tools/apicheck.mjs
+--check`, in CI beside the validator, calls every address over the real data
+files with a stand-in database and fails when an answer has lost a field or
+changed a type. A field the answer has and the file does not is v1 gaining:
+`node tools/apicheck.mjs` without `--check` lists them, and they are frozen
+in the same commit that added them.
+
+A change that cannot be made that way is **version 2**, at `/api/v2`, beside
+v1 rather than instead of it. Then `SUNSET` at the top of the v1 route gets a
+date at least six months out, and from that day every v1 answer carries
+`Deprecation: true` and `Sunset: <date>` (RFC 9745 and RFC 8594), so a client
+that reads its headers is told. On the date, v1 goes.
+
+### The apps' routes, at their v1 addresses
+
+Everything the three apps ask for answers under `/api/v1` too, so a new build
+of each asks one version for everything: `/api/v1/account`, `/apple`,
+`/google`, `/saves`, `/profile`, `/pass`, `/discover`, `/walk`, `/rides`,
+`/route`, `/geocode`, `/lookup`, `/ask`, `/flashcard`, `/say`, and two
+renamed because the public reads above hold the name:
+
+| Old | v1 |
+|---|---|
+| `/api/places` | `/api/v1/find` — the city search, the map and Google's rows merged |
+| `/api/lists` | `/api/v1/me/lists` — your lists, and every write to one |
+
+Each is the site's own route called as it is — the same handler, the same
+cookie, the same answer — so an app on the old addresses and one on the new
+are talking to one piece of code, and `apicheck` holds the two to the same
+bytes. One has a file of its own instead: `/api/v1/route` is
+`functions/api/v1/route.js`, everything `/api/route` answers with `version`
+added, and by bike `trains` — **By bike, a train too** and **Why a version**.
+None of them carry the public reads' CORS or caching: they read a session. Nothing under `/api/admin/` is aliased — the middleware locks that
+prefix to the owner, and an alias would be a way round the lock — and the
+check says so.
+
+Google's sign-in starts at either address and comes back to `/api/google`
+whichever it started at: that is `GOOGLE_PATH` in `functions/api/_google.js`,
+registered in Google's console, and moving it is a change there first.
+
+**The old addresses go when the phones have moved.** Every old `/api/…`
+address answers exactly as before. The site's own pages still call them, and
+they deploy with the routes so they can move at any time; the installed apps
+cannot. The order is: each app's next build moves to `/api/v1`; it ships; the
+old addresses stay until App Store Connect says next to nobody is still on a
+build from before it — nothing on the site counts an app's requests, so the
+store's numbers by version are the measure, and `wrangler pages deployment
+tail` is how to see an old address still being asked — and only then come
+out, in one PR that moves the pages first. Until
+that PR, **What the app reads** in `CLAUDE.md` is a promise at both addresses.
+
+## The map on your site
+
+`https://tallinntastebuds.ee/embed` is the map made to sit in somebody else's
+page, in an `<iframe>`: pins, a chip saying whose places they are, one card
+at a time, and a link back. `embed.html`, `assets/embed.js` and
+`assets/embed.css`.
+
+| Address | Draws |
+|---|---|
+| `/embed?list=<id>` | one public list, with its author's line on each card |
+| `/embed?type=<type>` | every open place of that kind |
+| `/embed?ids=a,b,c` | just those |
+| `/embed` | every open place |
+
+`&lang=` and `&style=` on any of them. It reads `/api/v1` and nothing else —
+it is the public API's first user, and the proof that what `/developers`
+promises is enough to build a map with. A list row with no point is left
+off; a list that is empty, private or missing says **Nothing to show here**;
+an API out of reach says so with **Try again**.
+
+**The one page another site may frame.** Every other page is
+`frame-ancestors 'self'` — **The security headers** — and this one is
+`frame-ancestors *`, in `functions/_security.js` (`EMBEDS`) and in `_headers`.
+It signs nobody in and writes nothing, so a frame has nothing to trick
+anybody into pressing; every link opens the site in a new tab.
+
+**No analytics and no count.** Whoever opens it is reading somebody else's
+site, and Clarity recording them would be this site watching another site's
+readers. It is `noindex` for the same reason the places it shows are indexed
+at `/`.
 
 ## Close a place instead of deleting it
 
@@ -17731,7 +17860,10 @@ tools/mcpcheck.mjs         asks /mcp and /flashcard/mcp what an assistant
                            would, over the real data files, and holds the
                            answers to what was promised; --check is what CI
                            runs
-.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the check of the two MCP doors and the write gate, on every push
+tools/apicheck.mjs         calls every address of /api/v1 over the real data
+                           files and holds each answer to the shapes frozen
+                           in data/api-v1.json; --check is what CI runs
+.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the check of the two MCP doors, the check of the public API and the write gate, on every push
 .github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
 .github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, the backstop behind fillOnVisit(), so the day's Google budget is spent
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch

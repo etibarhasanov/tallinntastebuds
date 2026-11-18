@@ -65,7 +65,7 @@
  * PURPOSE in ./mcp.js is why, and it holds for both.
  */
 
-import { json, foldWords } from './api/_lib.js';
+import { json } from './api/_lib.js';
 
 /* Newest first: the one answered to a client that names none these servers
    speak. THE VERSIONS in the header. */
@@ -115,13 +115,9 @@ export function optionalNumber(args, key) {
 /* Whether a call names one thing to read rather than asking for a search. */
 export const named = (args) => args.id !== undefined && args.id !== null && args.id !== '';
 
-/* A query as words: folded, split on anything that is not a letter or a
-   digit, and the one-character pieces dropped, since "a" is in every name. */
-export function wordsOf(query) {
-  return foldWords(query)
-    .split(/[^\p{L}\p{N}]+/u)
-    .filter((w) => w.length > 1);
-}
+/* A query as words, the way both of the map's public doors split one —
+   ./_public.js — handed on to the flashcards' door from here. */
+export { wordsOf } from './_public.js';
 
 /* ------------------------------------------------------------ the results
  * The protocol's tool result: the object twice — as `structuredContent` for

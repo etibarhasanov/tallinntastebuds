@@ -419,6 +419,34 @@
         ["stats", "owner-only"],
         ["owner-only", "knows"]
       ]
+    },
+    {
+      "id": "developer",
+      "name": "Somebody building on the site",
+      "who": "A developer writing an app, a script or a web page against the public API at /api/v1, or putting the map on their own site with /embed. No account, no key, and nothing counted: none of this goes through assets/track.js, so this diagram carries no numbers.",
+      "lanes": [
+        { "id": "developer", "name": "Developer" },
+        { "id": "site", "name": "The site" }
+      ],
+      "nodes": [
+        {"id": "docs", "type": "start", "lane": "developer", "name": "Opens /developers", "note": "English only: the names and fields are English whatever the reader speaks.", "ref": ["developers.html"]},
+        {"id": "what-now", "type": "gateway", "lane": "developer", "name": "Code or a frame?"},
+        {"id": "call", "type": "user", "lane": "developer", "name": "Calls /api/v1 from their own code", "note": "GET only, JSON, any origin. Places, one place, the public lists, one list, the kinds of place.", "ref": ["functions/api/v1/[[path]].js"]},
+        {"id": "answer", "type": "service", "lane": "site", "name": "Answers in version 1's shape", "note": "The map's own rows and none of Google's. Five minutes in the colo. A field may be added and none taken away; a break is /api/v2, and v1 then carries Deprecation and Sunset.", "ref": ["functions/api/v1/[[path]].js", "functions/_public.js", "data/api-v1.json", "tools/apicheck.mjs"]},
+        {"id": "built", "type": "end", "lane": "developer", "name": "Their app shows the places"},
+        {"id": "frame", "type": "user", "lane": "developer", "name": "Puts /embed in an iframe on their page", "note": "?list=, ?type=, ?ids= or nothing, with &lang= and &style=.", "ref": ["embed.html", "assets/embed.js"]},
+        {"id": "draw", "type": "service", "lane": "site", "name": "Draws the map from /api/v1", "note": "The one page another site may frame. Every link opens the site in a new tab; nothing is counted.", "ref": ["assets/embed.js", "functions/_security.js EMBEDS"]},
+        {"id": "framed", "type": "end", "lane": "developer", "name": "The map on their site"}
+      ],
+      "edges": [
+        ["docs", "what-now"],
+        ["what-now", "call", "code"],
+        ["call", "answer"],
+        ["answer", "built"],
+        ["what-now", "frame", "a frame"],
+        ["frame", "draw"],
+        ["draw", "framed"]
+      ]
     }
   ]
 }

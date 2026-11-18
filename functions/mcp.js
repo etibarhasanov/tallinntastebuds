@@ -166,7 +166,7 @@
 import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours } from './api/_lib.js';
 import { door, bad, optionalString, optionalNumber, named, wordsOf, toolResult, toolError, MAX_QUERY, ANNOTATIONS } from './_mcp.js';
 import { readList, LIST_ID } from './api/_lists.js';
-import { MIN_ITEMS } from './api/_mostkept.js';
+import { DEFAULT_LANG, photoUrl, placeUrl, listUrl, mapsSearch, matchScore, byName, publicLists, matchLists, listRows } from './_public.js';
 import { SITE } from './_shell.js';
 
 /* How the server introduces itself in `initialize`. `name` is the id a
@@ -187,11 +187,6 @@ const SERVER = {
     { src: SITE + '/assets/logo/icon-48.png', mimeType: 'image/png', sizes: ['48x48'] }
   ]
 };
-
-/* The language a write-up falls back to when the one asked for is missing,
-   and the one a search is read in beside the asked-for one. The same
-   constant is DEFAULT_LANG in functions/index.js and assets/app.js. */
-const DEFAULT_LANG = 'en';
 
 /* How many places a search answers with unless asked, and the most it will
    however it is asked: a model reading ten write-ups has read the map. */
@@ -571,13 +566,9 @@ const TOOL_NAMES = ['places', 'lists', 'search', 'fetch'];
 /* ------------------------------------------------------------- a place
  * The row as a tool answers with it. The write-up in one language, the
  * dishes, and the three addresses the file does not carry: the place on the
- * map, its first photograph (a copy of photoOf() in functions/index.js, since
- * a route is not a module) and, on a place read by its id, the Google Maps
- * search.
+ * map, its first photograph and, on a place read by its id, the Google Maps
+ * search — the three addresses through ./_public.js.
  */
-function photoUrl(place, photo) {
-  return SITE + '/photos/' + encodeURIComponent(place.id) + '/' + encodeURIComponent(photo);
-}
 
 function entry(place, lang, google) {
   const photos = place.photos || [];
@@ -592,7 +583,7 @@ function entry(place, lang, google) {
     price: place.price,
     blurb: place.blurb && (place.blurb[lang] || place.blurb[DEFAULT_LANG]) || '',
     must_order: place.mustOrder || [],
-    url: SITE + '/?spot=' + encodeURIComponent(place.id),
+    url: placeUrl(place.id),
     photo: photos.length ? photoUrl(place, photos[0]) : null,
     /* Mine first, Google's only where mine is empty — the panel's rule, so
        nothing a few lines above on the map is contradicted here. */
@@ -621,18 +612,6 @@ function detail(place, lang, google) {
     added: place.added || null,
     maps_url: mapsSearch(place.name, place.address, g && g.key)
   };
-}
-
-/* A Google Maps search for a name and an address, which is a link anybody
-   could type and carries nothing out of the export: a place read by its id
-   has one, and so does a place on a list typed in by hand. With
-   Google's key beside it, the search opens that one listing rather than
-   Google's guess at the words — the address Google documents for it, and
-   the one the map's own panel sends. */
-function mapsSearch(name, address, key) {
-  return 'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent(address ? name + ', ' + address : name + ', Tallinn') +
-    (key ? '&query_place_id=' + encodeURIComponent(key) : '');
 }
 
 /* ------------------------------------------------------- Google's half
@@ -757,40 +736,10 @@ function primaryType(place, category) {
 }
 
 /* ------------------------------------------------------------- a search
- * What a query's words are matched against, per place: the name, the kinds
- * of place in the asked-for language and in English, the dishes, the
- * street, and the write-up in both languages — folded the way the map's
- * find bar folds, so an accent typed or left out makes no difference. The
- * weights say where a word landing counts for more: a word in the name is
- * the place, a word in the write-up is a mention.
+ * The places the words land on — matchScore() in ./_public.js — filtered by
+ * kind, price and distance, the primary type first when a kind is asked for,
+ * then the nearest, then the best matched, then by name.
  */
-const WEIGHTS = [['name', 4], ['kinds', 3], ['dishes', 3], ['where', 2], ['words', 1]];
-
-function haystack(place, types, lang) {
-  const kinds = (place.types || []).map((id) => {
-    const type = types.find((t) => t.id === id);
-    return type ? [type[lang], type[DEFAULT_LANG]].join(' ') : id;
-  });
-  const blurb = place.blurb || {};
-  return {
-    name: foldWords(place.name),
-    kinds: foldWords(kinds.join(' ')),
-    dishes: foldWords((place.mustOrder || []).join(' ')),
-    where: foldWords(place.address),
-    words: foldWords([blurb[lang], blurb[DEFAULT_LANG]].join(' '))
-  };
-}
-
-function score(hay, words) {
-  let total = 0;
-  for (const word of words) {
-    for (const [field, weight] of WEIGHTS) {
-      if (hay[field].includes(word)) { total += weight; break; }
-    }
-  }
-  return total;
-}
-
 function search(places, types, args, google) {
   const lang = args.language;
   const words = args.query ? wordsOf(args.query) : [];
@@ -801,7 +750,7 @@ function search(places, types, args, google) {
     if (args.max_price && place.price > args.max_price) continue;
     const far = at ? km(at, place) * 1000 : null;
     if (far !== null && args.radius_m && far > args.radius_m) continue;
-    const hits = words.length ? score(haystack(place, types, lang), words) : 0;
+    const hits = words.length ? matchScore(place, types, lang, words) : 0;
     if (words.length && !hits) continue;
     const g = google.get(place.id);
     const first = !!args.type && !!g && primaryType(place, g.category) === args.type;
@@ -811,9 +760,7 @@ function search(places, types, args, google) {
     if (a.first !== b.first) return a.first ? -1 : 1;
     if (at && a.far !== b.far) return a.far - b.far;
     if (b.hits !== a.hits) return b.hits - a.hits;
-    const x = foldWords(a.place.name);
-    const y = foldWords(b.place.name);
-    return x < y ? -1 : x > y ? 1 : 0;
+    return byName(a.place, b.place);
   });
   found = found.slice(0, args.limit);
   const out = {
@@ -869,74 +816,19 @@ function searchArgs(raw, types, langs) {
 }
 
 /* ------------------------------------------------------------- the lists
- * Every public list of MIN_ITEMS places or more, with its places' names, in
- * one read: the lists joined to their rows and grouped here, so a word can
- * land on a place deep in a list and not only on the three the lists page
- * prints. Every row of every public list, a couple of hundred today; it
- * grows with what people write, and READ_CAP is where it stops rather than
- * where it should ever arrive — the day it does, this wants the LIKE search
- * mostKept() in functions/api/_mostkept.js already runs, with its paging.
- *
- * The order is how well the words matched and then the title, alphabetical,
- * as a search of the places orders a tie: not how often a list is opened, which is
- * the lists page's order and a ranking this server has no reason to repeat.
+ * The public lists the words land on, and one list whole — both read and
+ * matched through ./_public.js, which the public API reads them through too.
  */
-const READ_CAP = 2000;
-
-const LIST_WEIGHTS = [['title', 4], ['intro', 3], ['by', 2], ['names', 2]];
-
-const listUrl = (id) => SITE + '/list/' + encodeURIComponent(id);
-
-async function publicLists(env) {
-  const { results } = await env.DB
-    .prepare(
-      'SELECT l.id AS id, l.title AS title, l.intro AS intro, u.username AS by, i.name AS name ' +
-      'FROM lists l LEFT JOIN users u ON u.id = l.owner ' +
-      'JOIN list_items i ON i.list_id = l.id ' +
-      'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?'
-    )
-    .bind(READ_CAP)
-    .all();
-  const lists = new Map();
-  for (const row of results) {
-    if (!lists.has(row.id)) {
-      lists.set(row.id, { id: row.id, title: row.title, intro: row.intro || '', by: row.by || null, names: [] });
-    }
-    lists.get(row.id).names.push(row.name);
-  }
-  return [...lists.values()].filter((l) => l.names.length >= MIN_ITEMS);
-}
-
 async function searchLists(env, raw) {
   const query = optionalString(raw, 'query', MAX_QUERY);
   const by = foldWords(optionalString(raw, 'by', 40)).trim();
   const limit = optionalNumber(raw, 'limit');
-  const words = wordsOf(query);
-
-  const found = [];
-  for (const list of await publicLists(env)) {
-    if (by && foldWords(list.by || '') !== by) continue;
-    const hay = {
-      title: foldWords(list.title),
-      intro: foldWords(list.intro),
-      by: foldWords(list.by || ''),
-      names: foldWords(list.names.join(' '))
-    };
-    let hits = 0;
-    for (const word of words) {
-      for (const [field, weight] of LIST_WEIGHTS) {
-        if (hay[field].includes(word)) { hits += weight; break; }
-      }
-    }
-    if (words.length && !hits) continue;
-    found.push({ list, hits, title: hay.title });
-  }
-  found.sort((a, b) => b.hits - a.hits || (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
+  const found = matchLists(await publicLists(env), wordsOf(query), by);
 
   const out = {
     lists: found
       .slice(0, limit === null ? DEFAULT_LIMIT : Math.min(MAX_LIMIT, Math.max(1, Math.floor(limit))))
-      .map(({ list }) => ({
+      .map((list) => ({
         id: list.id,
         title: list.title,
         intro: list.intro,
@@ -952,20 +844,13 @@ async function searchLists(env, raw) {
 
 /* One list, through readList() in functions/api/_lists.js — the same reader
    the list page seeds from, so the two cannot disagree about what is on it —
-   signed out, so a private list is the null it is to any stranger. Each row
-   in the author's order, said in the author's words, with its name, address
-   and point, its link on the map, and the map's id when the place is approved.
-   The list itself, or a tool error saying there is none. */
+   signed out, so a private list is the null it is to any stranger. Its rows
+   are listRows()'. The list itself, or a tool error saying there is none. */
 async function getList(context, raw, all) {
   const id = optionalString(raw, 'id', 60);
   if (!id) throw bad('id is required');
   const list = LIST_ID.test(id) ? await readList(context, id, null) : null;
   if (!list) return toolError('There is no public list with the id "' + id + '" on Tallinn Tastebuds.');
-
-  const closed = new Set(all.filter((p) => p.closed).map((p) => p.id));
-  /* A place on the map brings its video onto the list with it: the list
-     row does not carry one, the roll does. */
-  const reels = new Map(all.filter((p) => p.reel).map((p) => [p.id, p.reel]));
   return {
     id: list.id,
     title: list.title,
@@ -973,32 +858,7 @@ async function getList(context, raw, all) {
     by: list.by,
     places: list.items.length,
     url: listUrl(list.id),
-    items: list.items.map((row, i) => {
-      /* A Google row for a place on the map is `map` too, and carries the
-         map's id in `mapId`; a row of mine has only `map`, and its own id is
-         the map's. Every other Google row is on the map as well, out of the
-         find bar's roll, and ?spot= with its key opens it there — a Google
-         key always carries capitals, the rule paintShare() in assets/app.js
-         reads. Only a place typed in by hand, lowercase and in no roll, has
-         nowhere on the map to open, and gets a Google Maps search. */
-      const mapId = row.mapId || (row.map ? row.place : null);
-      const spot = mapId || (/[A-Z]/.test(row.place) ? row.place : null);
-      const out = {
-        position: i + 1,
-        name: row.name,
-        note: row.say || null,
-        must_order: row.mustOrder || null,
-        address: row.address || null,
-        lat: row.lat,
-        lng: row.lng,
-        approved: !!mapId,
-        place_id: mapId || null,
-        reel: mapId && reels.get(mapId) || null,
-        url: spot ? SITE + '/?spot=' + encodeURIComponent(spot) : mapsSearch(row.name, row.address)
-      };
-      if (mapId && closed.has(mapId)) out.closed = true;
-      return out;
-    })
+    items: listRows(list, all)
   };
 }
 

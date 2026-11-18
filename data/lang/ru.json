@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} мин {s} с",
   "counterSeconds": "{s} с",
   "counterMore": "+ ещё стран: {n}",
-  "counterSince": "с {date}"
+  "counterSince": "с {date}",
+  "embedMapLabel": "Карта мест в Таллине",
+  "embedLoading": "Загружаем места…",
+  "embedErrorTitle": "Карта не может связаться с Tallinn Tastebuds",
+  "embedErrorBody": "Проверьте подключение и попробуйте ещё раз.",
+  "embedRetry": "Попробовать ещё раз",
+  "embedEmptyTitle": "Здесь нечего показать",
+  "embedEmptyBody": "Этот список пуст, скрыт или удалён.",
+  "embedOpen": "Открыть на Tallinn Tastebuds",
+  "embedBy": "Карта:",
+  "embedListSub": "Мест: {n} · список на Tallinn Tastebuds",
+  "embedPlacesSub": "Мест на Tallinn Tastebuds: {n}",
+  "embedAllTitle": "Места в Таллине"
  },
  "blurbs": {
   "180-degrees": "Единственный ресторан с двумя звёздами Мишлен в Балтии. Очень крутое экспериментальное место на набережной Ноблесснера, где дегустационное меню удивляет блюдо за блюдом.",

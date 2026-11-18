@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<meta name="robots" content="index, follow">
+<!-- Analytics: Microsoft Clarity, the same one file every page loads. -->
+<script src="/assets/analytics.js?v=43d1c258" defer></script>
+<title>Tallinn Tastebuds API</title>
+<meta name="description" content="Read the places on the Tallinn Tastebuds map and its public lists from your own app or site, or put the map on your page. Free, no key, JSON.">
+<link rel="canonical" href="https://tallinntastebuds.ee/developers">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&amp;display=swap">
+
+<!-- The tokens and the card from the map's stylesheet, the frame from the
+     lists page's, a page of prose from the blog's — the privacy page's three
+     — and the code blocks and the table of addresses from its own.
+
+     In English alone, deliberately: it is for people writing code against
+     the API, whose names and fields are English whatever the reader speaks.
+     **The public API** in docs/handbook.md. -->
+<link rel="stylesheet" href="/assets/styles.lean.css?v=5e034bb1">
+<link rel="stylesheet" href="/assets/lists.lean.css?v=b9512044">
+<link rel="stylesheet" href="/assets/blog.css?v=b20fbff2">
+<link rel="stylesheet" href="/assets/developers.css?v=a4d2148c">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main">Skip to the text</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark">Tallinn Tastebuds</span>
+  </a>
+</header>
+
+<main class="lists-main dev" id="main" tabindex="-1">
+  <p class="eyebrow">For developers</p>
+  <h1 class="blog-title">Tallinn Tastebuds API <span class="dev-badge">v1 · stable</span></h1>
+  <p class="blog-lead">Read the places on the map and the public lists from your own app or site. Free, no key, JSON, any origin.</p>
+
+  <div class="blog-body">
+    <h2>The addresses</h2>
+    <p>Everything is <code>GET</code> on <code>https://tallinntastebuds.ee</code>.</p>
+    <ul class="dev-eps">
+      <li><code>/api/v1/places</code><span><code>q</code> words, <code>type</code>, <code>max_price</code> 1–4, <code>near=lat,lng</code>, <code>radius</code> in metres, <code>ids=a,b,c</code>, <code>lang</code>, <code>limit</code> up to 100, <code>offset</code></span></li>
+      <li><code>/api/v1/places/{id}</code><span>one place, with every photo and a Google Maps link</span></li>
+      <li><code>/api/v1/lists</code><span>the public lists: <code>q</code>, <code>by</code> a username, <code>limit</code> up to 50, <code>offset</code></span></li>
+      <li><code>/api/v1/lists/{id}</code><span>one public list, its places in its author's order</span></li>
+      <li><code>/api/v1/types</code><span>the kinds of place, named in all eleven languages</span></li>
+      <li><code>/api/v1</code><span>the version and these addresses, as JSON</span></li>
+    </ul>
+
+    <h2>An example</h2>
+    <pre><code>curl 'https://tallinntastebuds.ee/api/v1/places?type=bakery&amp;limit=1'</code></pre>
+    <pre><code>{
+  "version": 1,
+  "total": 17, "offset": 0, "limit": 1, "next": 1,
+  "places": [{
+    "id": "bekker-pagariari",
+    "name": "Bekker Pagariäri",
+    "address": "…", "lat": 59.44, "lng": 24.73,
+    "types": ["bakery"],
+    "price": 2,
+    "blurb": "…",
+    "must_order": ["…"],
+    "photo": "https://tallinntastebuds.ee/photos/…",
+    "phone": null, "website": null,
+    "reel": "https://www.instagram.com/reel/…",
+    "reel_summary": null,
+    "visited": "2025-06", "added": "2026-08-23",
+    "url": "https://tallinntastebuds.ee/?spot=bekker-pagariari"
+  }]
+}</code></pre>
+    <p>A search with <code>near</code> adds <code>distance_m</code> to each place and puts the nearest first. Otherwise the order is how well your words matched, then the name. It is never a ranking: being on the map is the verdict, and there are no scores.</p>
+    <p>Link every place to its <code>url</code>, and say the write-ups are Tallinn Tastebuds'. A list is its author's opinion, under their name, and not the map's. A list's place with <code>approved: false</code> is one its author added that is not on the map.</p>
+
+    <h2>Errors</h2>
+    <p>An error is <code>{ "version": 1, "error": { "code", "message" } }</code>. Branch on the code: <code>bad-request</code> (400), <code>not-found</code> (404), <code>closed</code> (404, the place has closed), <code>method-not-allowed</code> (405) and <code>unavailable</code> (503, the lists cannot be read right now; the places still can).</p>
+
+    <h2>Versions</h2>
+    <p>Version 1 only ever gains fields. A change that would break your code — a field renamed, removed or retyped — ships as <code>/api/v2</code>, beside this one. Version 1 then keeps answering for at least six months, and every answer carries <code>Deprecation</code> and a <code>Sunset</code> header saying when it stops. Every answer carries <code>API-Version: 1</code>.</p>
+    <p>Answers are cached for five minutes. There is no key and no rate limit beyond Cloudflare's own; be kind to it.</p>
+
+    <h2>Put the map on your site</h2>
+    <pre><code>&lt;iframe src="https://tallinntastebuds.ee/embed?list=<i>list-id</i>"
+  width="100%" height="480" style="border:0"
+  title="Map of places in Tallinn" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
+    <p>Instead of <code>list</code>: <code>type=bakery</code> for one kind of place, <code>ids=a,b,c</code> for just those, or nothing for the whole map. Add <code>lang=et</code> for the language and <code>style=green</code> for the colours (<code>red</code>, <code>green</code>, <code>blue</code> or <code>plum</code>).</p>
+
+    <h2>Not here</h2>
+    <p>Opening hours, ratings and the city's other restaurants are Google's, and are not handed on. Nor are directions or address search, which come from other people's free services. And the addresses above write nothing: saving and lists are done on the site.</p>
+
+    <h2>The site's own apps</h2>
+    <p>The Tallinn Tastebuds apps sign in, save and write through <code>/api/v1</code> as well: <code>/api/v1/account</code>, <code>/saves</code>, <code>/find</code>, <code>/me/lists</code>, <code>/rides</code>, <code>/walk</code>, <code>/flashcard</code> and the rest. Those take a signed-in session, answer only this site's pages and apps, and are not part of what this page offers — but they keep the same promise: version 1 only ever gains.</p>
+  </div>
+</main>
+</body>
+</html>

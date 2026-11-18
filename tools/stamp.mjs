@@ -44,6 +44,8 @@ export const PAGES = [
   'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
   'deal.html', 'verify.html', 'staff.html',
   'flashcard.html', 'edit.html', 'write.html', 'insights.html', 'chess.html', '404.html', 'privacy.html',
+  /* The public API's page and the map other sites frame — functions/api/v1/. */
+  'developers.html', 'embed.html',
   /* The owner's five, under admin/ — see functions/_middleware.js. */
   'admin/google.html', 'admin/stats.html', 'admin/visitors.html', 'admin/found.html',
   'admin/flows.html',

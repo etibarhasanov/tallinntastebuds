@@ -262,6 +262,31 @@
 /stories/*
   Cache-Control: public, max-age=604800
 
+# The map on somebody else's site, at /embed: the one page any site may put in
+# a frame. `!` takes off the two lines /* gave it and the line after puts the
+# open one back; functions/_security.js says the same to the answer the
+# middleware hands on, and EMBEDS there says why this page and no other.
+/embed
+  ! Content-Security-Policy
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *
+  Cache-Control: public, max-age=0, must-revalidate
+
+/embed.html
+  ! Content-Security-Policy
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *
+  Cache-Control: public, max-age=0, must-revalidate
+
+# The public API's page, for whoever is writing code against /api/v1. Spelled
+# both ways for the reason /edit is; indexed, since being found by somebody
+# looking for it is what it is for.
+/developers
+  Cache-Control: public, max-age=0, must-revalidate
+
+/developers.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 # The discount pages turn over an hourly code between them, so a cached copy
 # is a wrong copy. They are also the three pages that must never be indexed
 # or shown in a preview card, whatever a link unfurler decides to do with the

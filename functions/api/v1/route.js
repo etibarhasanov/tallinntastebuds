@@ -25,12 +25,13 @@
  */
 
 import { answerRoute } from '../route.js';
+import { VERSION } from '../../_public.js';
 
 export async function onRequestGet(context) {
   const res = await answerRoute(context, new URL(context.request.url).searchParams, true);
   let body;
   try { body = await res.json(); } catch (e) { body = { error: 'upstream' }; }
-  const out = new Response(JSON.stringify(Object.assign({ version: 1 }, body)), res);
-  out.headers.set('API-Version', '1');
+  const out = new Response(JSON.stringify(Object.assign({ version: VERSION }, body)), res);
+  out.headers.set('API-Version', String(VERSION));
   return out;
 }

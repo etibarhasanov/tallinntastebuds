@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} min {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ {n} muuta maata",
-  "counterSince": "{date} alkaen"
+  "counterSince": "{date} alkaen",
+  "embedMapLabel": "Tallinnan paikkojen kartta",
+  "embedLoading": "Ladataan paikkoja…",
+  "embedErrorTitle": "Kartta ei tavoita Tallinn Tastebudsia",
+  "embedErrorBody": "Tarkista yhteys ja yritä uudelleen.",
+  "embedRetry": "Yritä uudelleen",
+  "embedEmptyTitle": "Täällä ei ole mitään näytettävää",
+  "embedEmptyBody": "Tämä lista on tyhjä, yksityinen tai poistettu.",
+  "embedOpen": "Avaa Tallinn Tastebudsissa",
+  "embedBy": "Kartta:",
+  "embedListSub": "{n} paikkaa · lista Tallinn Tastebudsissa",
+  "embedPlacesSub": "{n} paikkaa Tallinn Tastebudsissa",
+  "embedAllTitle": "Paikat Tallinnassa"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

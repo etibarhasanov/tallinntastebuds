@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} хв {s} с",
   "counterSeconds": "{s} с",
   "counterMore": "+ ще країн: {n}",
-  "counterSince": "з {date}"
+  "counterSince": "з {date}",
+  "embedMapLabel": "Мапа місць у Таллінні",
+  "embedLoading": "Завантажуємо місця…",
+  "embedErrorTitle": "Мапа не може зв'язатися з Tallinn Tastebuds",
+  "embedErrorBody": "Перевірте з'єднання і спробуйте ще раз.",
+  "embedRetry": "Спробувати ще раз",
+  "embedEmptyTitle": "Тут нічого показати",
+  "embedEmptyBody": "Цей список порожній, прихований або видалений.",
+  "embedOpen": "Відкрити на Tallinn Tastebuds",
+  "embedBy": "Мапа:",
+  "embedListSub": "Місць: {n} · список на Tallinn Tastebuds",
+  "embedPlacesSub": "Місць на Tallinn Tastebuds: {n}",
+  "embedAllTitle": "Місця в Таллінні"
  },
  "blurbs": {
   "180-degrees": "Єдиний ресторан із двома зірками Мішлен у Балтії. Дуже приємне експериментальне місце на набережній Ноблесснера, де дегустаційне меню збудоване так, щоб дивувати вас страва за стравою.",

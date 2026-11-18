@@ -1,0 +1,107 @@
+{
+  "about": "The shapes of the public API's version 1, frozen. tools/apicheck.mjs calls every address of functions/api/v1/[[path]].js over the real data files and fails when an answer has lost a field listed here, or a field's type is not one of those written beside it. A field may be added to v1 and then added here; nothing here may ever be removed or narrowed — that is version 2. A key ending in ? is one an answer carries only sometimes, and a type 'a|b' allows either. **The public API** in docs/handbook.md.",
+  "shapes": {
+    "place": {
+      "id": "string",
+      "name": "string",
+      "address": "string",
+      "lat": "number",
+      "lng": "number",
+      "types": ["string"],
+      "price": "number|null",
+      "blurb": "string",
+      "must_order": ["string"],
+      "photo": "string|null",
+      "phone": "string|null",
+      "website": "string|null",
+      "reel": "string|null",
+      "reel_summary": "string|null",
+      "visited": "string|null",
+      "added": "string|null",
+      "url": "string",
+      "distance_m?": "number"
+    },
+    "listRow": {
+      "id": "string",
+      "title": "string",
+      "intro": "string",
+      "by": "string|null",
+      "places": "number",
+      "first_places": ["string"],
+      "url": "string"
+    },
+    "listItem": {
+      "position": "number",
+      "name": "string",
+      "note": "string|null",
+      "must_order": "string|null",
+      "address": "string|null",
+      "lat": "number|null",
+      "lng": "number|null",
+      "approved": "boolean",
+      "place_id": "string|null",
+      "reel": "string|null",
+      "url": "string",
+      "closed?": "boolean"
+    },
+    "error": {
+      "version": "number",
+      "error": { "code": "string", "message": "string" }
+    }
+  },
+  "answers": {
+    "/api/v1": {
+      "version": "number",
+      "name": "string",
+      "docs": "string",
+      "sunset": "string|null",
+      "endpoints": ["string"]
+    },
+    "/api/v1/places": {
+      "version": "number",
+      "total": "number",
+      "offset": "number",
+      "limit": "number",
+      "next": "number|null",
+      "places": ["@place"]
+    },
+    "/api/v1/places/{id}": {
+      "version": "number",
+      "place": {
+        "@": "place",
+        "photos": ["string"],
+        "maps_url": "string"
+      }
+    },
+    "/api/v1/lists": {
+      "version": "number",
+      "total": "number",
+      "offset": "number",
+      "limit": "number",
+      "next": "number|null",
+      "lists": ["@listRow"]
+    },
+    "/api/v1/lists/{id}": {
+      "version": "number",
+      "list": {
+        "id": "string",
+        "title": "string",
+        "intro": "string",
+        "by": "string|null",
+        "places": "number",
+        "url": "string",
+        "items": ["@listItem"]
+      }
+    },
+    "/api/v1/types": {
+      "version": "number",
+      "types": [{ "id": "string", "names": { "en": "string", "et": "string", "fi": "string", "az": "string", "ru": "string", "pt": "string", "es": "string", "tr": "string", "uk": "string", "fr": "string", "de": "string" } }]
+    }
+  },
+  "errors": ["bad-request", "not-found", "closed", "method-not-allowed", "unavailable"],
+  "headers": {
+    "Access-Control-Allow-Origin": "*",
+    "API-Version": "1"
+  },
+  "apps": ["account", "apple", "google", "saves", "find", "me/lists", "profile", "pass", "discover", "walk", "rides", "route", "geocode", "lookup", "ask", "flashcard", "say"]
+}
