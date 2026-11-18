@@ -1594,7 +1594,7 @@
     var train = trainLeg(way);
     dom.routeSay.textContent = train
       ? t('routeTrain', { leave: way.leave, from: train.from, line: train.name, at: train.at, to: train.to, min: min })
-      : t(ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
+      : t(way.ridden ? 'routeRidden' : ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
 
     routeWays.forEach(function (other, i) {
       var leg = trainLeg(other);
@@ -1605,7 +1605,7 @@
         'aria-pressed': String(i === n),
         textContent: leg
           ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
-          : t('routeWay', {
+          : t(other.ridden ? 'routeWayRidden' : 'routeWay', {
             min: Math.max(1, Math.round(other.seconds / 60)),
             dist: routeDistance(other.meters)
           })

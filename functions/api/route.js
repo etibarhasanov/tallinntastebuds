@@ -58,6 +58,10 @@
  * way through the door is the first one and the router's own is the first
  * of `others`. Same fields, same words; DOORS below.
  *
+ * And where people have ridden between the two points, the way they rode
+ * is the first one, with `ridden: true` beside it — at the top level for
+ * the first way, in the way itself among `others` — RIDDEN below.
+ *
  * And by bike some streets are not offered at all. A way that rides Tartu
  * maantee for more than a crossing is asked for again round it, and only
  * the ways that keep off are answered — KEEPING OFF below.
@@ -127,7 +131,9 @@
  * bar are still there.
  */
 
-import { json, nearTallinn, km, dataFile } from './_lib.js';
+import { json, nearTallinn, km, dataFile, wrongDatabase } from './_lib.js';
+import { pieces } from './_sections.js';
+import { arrayOf } from './_rides.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -247,15 +253,19 @@ async function street(context, mode, from, to, withTrains) {
     Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
     !(mode === 'foot' && other.meters > MAX_WALK));
 
-  /* A bike way through a door goes first, and the router's own best becomes
-     the first of the others — still offered, a button down. */
+  /* By bike a ridden way goes first, then a way through a door, and the
+     router's own best becomes the next of the others — still offered, a
+     button down. */
   const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
-  const through = mode === 'bike' ? await viaDoor(context, from, to, shortest) : null;
-  let ways = through ? [through, first].concat(others) : [first].concat(others);
+  const [through, rode] = mode === 'bike'
+    ? await Promise.all([viaDoor(context, from, to, shortest), viaRides(context, from, to, shortest, [first].concat(others))])
+    : [null, null];
+  let ways = (rode ? [rode] : []).concat(through ? [through, first] : [first], others);
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
+  if (best.ridden) answer.ridden = true;
   if (!asked) return json(answer, 200, 3600);
   /* A train leaves at a time and the time goes, so an answer with one in it
      is kept a minute, as a bus journey is; one without, the hour the ways
@@ -355,13 +365,16 @@ async function oneWay(points) {
    and the turn out of it are steps like any other — the router knows
    neither, and a rider told nothing would ride past — worked out from how
    the line bends there, in the router's own words and with no street to
-   name. The leg in loses its `arrive`, since it has not. */
+   name. So are the corners inside it, which a door of a few dozen metres
+   seldom has and a ridden way of a kilometre always does. The leg in loses
+   its `arrive`, since it has not. */
 function stitch(head, door, tail) {
   const into = head.meters;
   const out = head.meters + door.meters;
   const steps = head.steps.filter((s) => s.turn !== 'arrive');
   const enter = bend(head.line, door.line);
   if (enter) steps.push({ at: door.line[0], meters: into, turn: enter, name: '' });
+  for (const c of corners(door.line)) steps.push({ at: c.at, meters: into + c.meters, turn: c.turn, name: '' });
   const leave = bend(door.line, tail.line);
   if (leave) steps.push({ at: door.line[door.line.length - 1], meters: out, turn: leave, name: '' });
   for (const s of tail.steps) steps.push(Object.assign({}, s, { meters: s.meters + out }));
@@ -374,18 +387,262 @@ function stitch(head, door, tail) {
   };
 }
 
+/* Where a line somebody rode turns a corner, with how far along it each
+   corner is. The heading is read CORNER metres either side of a point
+   rather than from one step to the next, which a phone's few metres of
+   error would make a turn every time; a bend under a left or a right is not
+   one, and neither is turning round, which on a ridden line is a phone
+   wandering while its rider stood. One corner a CORNER, the sharpest. */
+const CORNER = 20;
+
+function corners(line) {
+  const along = [0];
+  for (let i = 1; i < line.length; i++) along.push(along[i - 1] + metres(line[i - 1], line[i]));
+  const out = [];
+  let a = 0;
+  let b = 0;
+  for (let i = 1; i < line.length - 1; i++) {
+    while (along[i] - along[a + 1] >= CORNER) a++;
+    while (b < line.length - 1 && along[b] - along[i] < CORNER) b++;
+    if (along[i] - along[a] < CORNER || along[b] - along[i] < CORNER) continue;
+    const turn = bend([line[a], line[i]], [line[i], line[b]]);
+    if (turn !== 'left' && turn !== 'right') continue;
+    const size = Math.abs(sharpness([line[a], line[i]], [line[i], line[b]]));
+    const last = out[out.length - 1];
+    if (last && along[i] - last.meters < CORNER) {
+      if (size > last.size) Object.assign(last, { at: line[i], meters: Math.round(along[i]), turn: turn, size: size });
+    } else {
+      out.push({ at: line[i], meters: Math.round(along[i]), turn: turn, size: size });
+    }
+  }
+  return out;
+}
+
+/* How far, in degrees either way, one line turns into the next. */
+function sharpness(before, after) {
+  const heading = (a, b) => Math.atan2(
+    (b[1] - a[1]) * Math.cos(a[0] * Math.PI / 180), b[0] - a[0]) * 180 / Math.PI;
+  return (heading(after[0], after[1]) -
+    heading(before[before.length - 2], before[before.length - 1]) + 540) % 360 - 180;
+}
+
 /* The word for how the way bends where one line ends and the next begins,
    or '' where it goes straight on or one of them has no length to bend. */
 function bend(before, after) {
   if (before.length < 2 || after.length < 2) return '';
-  const heading = (a, b) => Math.atan2(
-    (b[1] - a[1]) * Math.cos(a[0] * Math.PI / 180), b[0] - a[0]) * 180 / Math.PI;
-  const turn = (heading(after[0], after[1]) -
-    heading(before[before.length - 2], before[before.length - 1]) + 540) % 360 - 180;
+  const turn = sharpness(before, after);
   const size = Math.abs(turn);
   if (size < 25) return '';
   if (size > 155) return 'around';
   return (size < 55 ? 'keep-' : '') + (turn < 0 ? 'left' : 'right');
+}
+
+/* ----------------------------------------------------------------- ridden
+ * A way made of the stretches people have ridden. A door is the one stretch
+ * the router cannot find; this is every stretch it could find, and would
+ * not have chosen. The saved rides near the two points — anybody's, no name
+ * with them and their first and last 200 m already off — are read out of
+ * `rides`, cut where they were not ridden, and joined into one network:
+ * each ride along its own line, and from one ride to another where they
+ * meet or cross, within RIDDEN_HOP. The start and the door join it at any
+ * point within RIDDEN_REACH as the crow flies. A metre nobody rode — a hop,
+ * the way on and the way off — costs RIDDEN_OFF ridden ones, and the
+ * router's shortest way is in the network at the same price, so the
+ * cheapest way across is ridden only where riding it is worth that. It is
+ * pieces of several rides where no one ride went the whole way.
+ *
+ * What is answered is the ridden line as it was ridden, between the
+ * router's way on to it and its way off, stitched the way a door is, with
+ * its corners as `steps` and no street to name. Offered where at least
+ * RIDDEN_MIN metres and RIDDEN_SHARE of it were ridden, where it is no more
+ * than RIDDEN_LONGER times the shortest way, and where the router did not
+ * offer that way itself. It goes first, the answer says `ridden: true`
+ * beside it, and the bar says somebody rode it; the router's own follow.
+ * It is then kept off Tartu maantee like every other way, so a ride down
+ * that opens nothing.
+ *
+ * It costs a read of `rides`, at most two router requests and a few
+ * milliseconds: only points that could lie on a way short enough are
+ * joined — the ellipse with the two ends as its foci — and a longer trip
+ * is joined more coarsely, RIDDEN_NODES points across it at most, and the
+ * newest RIDDEN_READ rides are read and no more than RIDDEN_POINTS points
+ * of them.
+ * Nothing waits on it — no database, no ride near, a leg the router will
+ * not answer — each is the ways exactly as they were.
+ */
+const RIDDEN_READ = 40;
+const RIDDEN_POINTS = 8000;
+const RIDDEN_REACH = 450;
+const RIDDEN_HOP = 40;
+const RIDDEN_OFF = 3;
+const RIDDEN_SPACE = 12;
+const RIDDEN_NODES = 300;
+const RIDDEN_MIN = 200;
+const RIDDEN_SHARE = 0.5;
+const RIDDEN_LONGER = 1.4;
+
+/* A way with this share of its points within RIDDEN_NEAR metres of another
+   is that way. */
+const RIDDEN_NEAR = 25;
+const RIDDEN_SAME = 0.8;
+
+async function viaRides(context, from, to, shortest, offered) {
+  const env = context.env || {};
+  if (!env.DB) return null;
+  const start = [from.lat, from.lng];
+  const end = [to.lat, to.lng];
+  const most = shortest * RIDDEN_LONGER;
+  const pad = (most - metres(start, end)) / 2 + RIDDEN_REACH;
+  let rows;
+  try {
+    if (await wrongDatabase(env)) return null;
+    ({ results: rows } = await env.DB
+      .prepare('SELECT line FROM rides WHERE south <= ? AND north >= ? AND west <= ? AND east >= ? ' +
+        'ORDER BY created_at DESC LIMIT ?')
+      .bind(
+        Math.max(start[0], end[0]) + pad / NORTH, Math.min(start[0], end[0]) - pad / NORTH,
+        Math.max(start[1], end[1]) + pad / EAST, Math.min(start[1], end[1]) - pad / EAST, RIDDEN_READ)
+      .all());
+  } catch (e) {
+    return null;
+  }
+
+  /* The network. Node 0 is the start and 1 the end; every other is a point
+     of a ride inside the ellipse, `space` metres from the last one kept,
+     remembered as [piece, index] so the way can be drawn from the points
+     between. An edge is [to, cost, ridden]. */
+  const space = Math.max(RIDDEN_SPACE, Math.min(RIDDEN_HOP * 0.7, most / RIDDEN_NODES));
+  const xy = [flat(start), flat(end)];
+  const gap = (a, b) => Math.hypot(xy[a][0] - xy[b][0], xy[a][1] - xy[b][1]);
+  const where = [null, null];
+  const edges = [[], []];
+  const link = (a, b, cost, ridden) => {
+    edges[a].push([b, cost, ridden]);
+    edges[b].push([a, cost, ridden]);
+  };
+  let read = 0;
+  for (const row of rows || []) {
+    const whole = arrayOf(row.line).filter((p) => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1]));
+    read += whole.length;
+    if (read > RIDDEN_POINTS) break;
+    for (const piece of pieces(whole)) {
+      let last = -1;
+      let rode = 0;
+      for (let i = 0; i < piece.length; i++) {
+        const at = flat(piece[i]);
+        if (i) rode += metres(piece[i - 1], piece[i]);
+        if (Math.hypot(at[0] - xy[0][0], at[1] - xy[0][1]) + Math.hypot(at[0] - xy[1][0], at[1] - xy[1][1]) > most) {
+          last = -1;
+          continue;
+        }
+        if (last !== -1 && Math.hypot(at[0] - xy[last][0], at[1] - xy[last][1]) < space) continue;
+        const n = xy.push(at) - 1;
+        where.push([piece, i]);
+        edges.push([]);
+        if (last !== -1) link(last, n, rode, true);
+        last = n;
+        rode = 0;
+      }
+    }
+  }
+  if (xy.length < 4) return null;
+  link(0, 1, shortest * RIDDEN_OFF, false);
+
+  /* The hops, through a grid of squares RIDDEN_HOP a side: from each point
+     to the nearest point of each other piece in reach. Its own piece is
+     joined along its line already. */
+  const cells = new Map();
+  for (let n = 2; n < xy.length; n++) {
+    const cx = Math.floor(xy[n][0] / RIDDEN_HOP);
+    const cy = Math.floor(xy[n][1] / RIDDEN_HOP);
+    const nearest = new Map();
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (const m of cells.get((cx + dx) + ':' + (cy + dy)) || []) {
+          if (where[m][0] === where[n][0]) continue;
+          const d = gap(m, n);
+          const best = nearest.get(where[m][0]);
+          if (d <= RIDDEN_HOP && (!best || d < best[1])) nearest.set(where[m][0], [m, d]);
+        }
+      }
+    }
+    for (const [m, d] of nearest.values()) link(m, n, d * RIDDEN_OFF, false);
+    const key = cx + ':' + cy;
+    if (!cells.has(key)) cells.set(key, []);
+    cells.get(key).push(n);
+    for (const at of [0, 1]) {
+      const d = gap(at, n);
+      if (d <= RIDDEN_REACH) link(at, n, d * RIDDEN_OFF, false);
+    }
+  }
+
+  /* The cheapest way from 0 to 1: Dijkstra over a binary heap of
+     [cost, node]. */
+  const cost = new Float64Array(xy.length).fill(Infinity);
+  const back = new Int32Array(xy.length).fill(-1);
+  cost[0] = 0;
+  const heap = [[0, 0]];
+  while (heap.length) {
+    const top = heap[0];
+    const last = heap.pop();
+    if (heap.length) {
+      let i = 0;
+      for (;;) {
+        let k = 2 * i + 1;
+        if (k >= heap.length) break;
+        if (k + 1 < heap.length && heap[k + 1][0] < heap[k][0]) k++;
+        if (heap[k][0] >= last[0]) break;
+        heap[i] = heap[k];
+        i = k;
+      }
+      heap[i] = last;
+    }
+    const [c, n] = top;
+    if (c > cost[n]) continue;
+    if (n === 1) break;
+    for (const [m, step] of edges[n]) {
+      if (c + step >= cost[m]) continue;
+      cost[m] = c + step;
+      back[m] = n;
+      let i = heap.push(null) - 1;
+      while (i && heap[(i - 1) >> 1][0] > cost[m]) {
+        heap[i] = heap[(i - 1) >> 1];
+        i = (i - 1) >> 1;
+      }
+      heap[i] = [cost[m], m];
+    }
+  }
+  if (back[1] < 2) return null;
+
+  /* The way as a line: every point of a ride between two of its nodes, in
+     the order ridden or against it, and a hop straight across. */
+  const path = [];
+  for (let n = back[1]; n > 0; n = back[n]) path.unshift(n);
+  const line = [where[path[0]][0][where[path[0]][1]]];
+  let rode = 0;
+  for (let k = 1; k < path.length; k++) {
+    const [piece, i] = where[path[k - 1]];
+    const [next, j] = where[path[k]];
+    if (piece === next && edges[path[k - 1]].some((e) => e[0] === path[k] && e[2])) {
+      for (let t = i; t !== j; t += j > i ? 1 : -1) {
+        const on = piece[t + (j > i ? 1 : -1)];
+        rode += metres(piece[t], on);
+        line.push(on);
+      }
+    } else {
+      line.push(next[j]);
+    }
+  }
+  if (rode < RIDDEN_MIN) return null;
+
+  const stretch = { line: line, meters: Math.round(line.reduce((sum, p, i) => sum + (i ? metres(line[i - 1], p) : 0), 0)) };
+  const [head, tail] = await Promise.all([leg(start, line[0]), leg(line[line.length - 1], end)]);
+  if (!head || !tail) return null;
+  const found = stitch(head, stretch, tail);
+  if (found.meters > most || rode < found.meters * RIDDEN_SHARE) return null;
+  if (offered.some((way) => found.line.filter((p) => apart(p, way.line) <= RIDDEN_NEAR).length >=
+    found.line.length * RIDDEN_SAME)) return null;
+  return Object.assign(found, { ridden: true });
 }
 
 /* ------------------------------------------------------------ keeping off

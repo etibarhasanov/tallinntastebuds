@@ -3601,6 +3601,57 @@ The tool is not one of the generators and the validator does not hold the
 file to it: what it writes depends on rides saved since it last ran and on
 a router outside the repository. It is run when there are new rides.
 
+## Ways people have ridden
+
+A door is the one stretch the router cannot find. This is the rest: the
+streets it could find and would not have chosen. On 2026-11-18 the owner
+rode to Faxinin marketi, came back, asked the Bike tab the way there, and
+was offered two ways in from the north, neither of them the one just
+ridden — the router has a bike pushed along 28 m of Keldrimäe and goes
+round it. The ride was not a door, since it was the longer way. It was
+simply a way somebody had ridden and liked, and nothing read it.
+
+**The saved rides are a network.** `viaRides()` in `functions/api/route.js`
+reads the newest rides under the trip out of `rides` — anybody's, by the
+owner's decision, with nobody's name and their ends already off — cuts
+them where they were not ridden, and joins them: each along its own line,
+and one to another where they meet or cross, within forty metres. The
+start and the door join at any point within 450 m. A metre nobody rode
+costs three ridden ones, and the router's shortest way is in the network at
+that price too, so the cheapest way across is a ridden one only where
+riding is worth it. Where no single ride went the whole way it is pieces of
+several, which is what the owner asked for: use the sections, build it
+together.
+
+**Answered as it was ridden.** The router's way on to the ridden line, the
+line itself, and the router's way off, stitched the way a door is, with the
+line's own corners as `steps` — no street names, since nobody asked a
+router. Putting the ridden line to the router as points to pass through was
+tried first and was worse: it snapped a point to the far side of a path and
+went round the block to reach it.
+
+**Offered first, and said.** Where at least 200 m and half of the way were
+ridden, where it is no more than 1.4 times the shortest way, and where the
+router had not offered the same way itself. It goes first with `ridden:
+true` beside it, the button reads *Ridden · 4 min · 950 m* and the sentence
+ends *a way people have ridden* — because it is seldom the shortest, and a
+longer way put first with no reason given reads as a mistake. The router's
+own ways follow, and the answer's shape is otherwise what it was, so both
+apps draw and speak it without knowing.
+
+**What it costs.** One read of `rides` and two router requests on a bike
+route, and it is the one thing in `/api/route` that opens the database; no
+database, or no ride near, is the answer exactly as before. A long trip is
+joined more coarsely and no more than forty rides and eight thousand points
+are read, so the arithmetic stays a few milliseconds. `ride_sections` is
+not read yet: a square says how a stretch was ridden, not which way the
+ride went on, and the lines say both. The day there are riders enough to
+weigh one stretch against another, the squares are where the weight is.
+
+**Anybody's ride, and nobody approves it**, as with a door, and with the
+same caveat: a ride somewhere nobody should cycle is offered until it is
+taken out of `rides`.
+
 ## Roads a bike route keeps off
 
 Some streets the router's bike profile likes and nobody who rides them
