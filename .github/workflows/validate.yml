@@ -26,7 +26,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # 22 for node:sqlite, which tools/sqlcheck.mjs builds its database
+          # with; nothing else here needs more than 20.
+          node-version: '22'
 
       # No `npm install` step, and there never should be one:
       # tools/validate.mjs has no dependencies.
@@ -40,6 +42,14 @@ jobs:
       # so importing each one under Node asks the question the deploy would.
       - name: Load every Function
         run: node tools/functions-check.mjs
+
+      # Every statement under functions/, asked of SQLite's planner against
+      # db/schema.sql: one that walks a whole table fails unless it is listed
+      # with what bounds it. D1 bills the rows a statement walks, and on
+      # 18 November 2026 three that walked visitor_counts took the site past
+      # the free plan's five million reads a day before noon.
+      - name: Check how every query reads
+        run: node tools/sqlcheck.mjs
 
       # The encoder that draws the discount QR. --check compares every fixture
       # against the matrix it drew when it was last scanned with a real camera

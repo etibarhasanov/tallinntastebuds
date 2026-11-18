@@ -60,6 +60,9 @@ What the description has to settle before a Function is worth opening:
   that discovers it.
 - **What it caps**, if it takes anything a person typed, and the second home
   that cap needs under **Caps live in two places** below.
+- **What it reads, and how often** — each statement's key, its rows read
+  measured against production, and the day's worst in rows. **The rules of a
+  read** below; a description without the number is not finished.
 
 Then post it and stop. A schema written while the answer is outstanding is
 the most expensive kind of guess: it is the one that has already been loaded
@@ -298,6 +301,44 @@ this one is enforced rather than remembered. `mark` is in neither, on purpose:
 the mouth goes on a place I have eaten at and a picker must not be able to
 hand it out. **The pins** in `docs/handbook.md`.
 
+## The rules of a read
+
+**Every read has a price, set before it is written** in `CLAUDE.md` is the
+rule; this is how it is done.
+
+- **Name the key the statement uses**, out loud, in the comment above it:
+  "a lookup on (user_id, deck_id)", "today's rows by (day, kind)". A
+  statement whose `WHERE` does not start where the key starts — `kind = ?`
+  on a table keyed (day, kind, id), `day = ?` on one keyed (flow, day, …),
+  `deck_id = ?` on one keyed (user_id, deck_id, …) — walks the table, however
+  small its answer.
+- **Measure it.** Run the statement through the Cloudflare MCP
+  `d1_database_query` against production with real values; the answer's
+  `meta.rows_read` is what D1 bills. Write the number and the date into the
+  comment, the way `tagRoom()` in `_flows.js` and `AUTHOR` in `_posts.js`
+  carry theirs.
+- **Multiply it.** Rows per run times runs a day, the worst day: per page
+  view, per colo every TTL, per isolate every TTL, per cron. Against five
+  million. A route the apps call is called by every installed phone.
+- **Watch the column types on a join.** `posts.owner` was declared INTEGER
+  and holds `users.id`, which is TEXT; SQLite compares the two by the
+  INTEGER side, so `u.id = p.owner` could not use users' key and walked every
+  account for every post read. A join on a column whose declared type is not
+  the other side's is a walk until it is cast.
+- **A total the page shows is a row, kept by the write.** Never a `SUM` or
+  `COUNT(*)` over a history on a public route — `save_counts` beside
+  `saves` is the pattern, and `RECOUNT_SQL` in `saves.js` the way it stays
+  true.
+- **`MIN` and `MAX` are one row only on the key's first column.**
+  `MIN(day)` on a table keyed by day reads one row; `MIN(day) WHERE kind = ?`
+  reads every row until it finds that kind; `MIN(day)` on a table keyed by
+  flow first reads all of it. `FIRST_DAY` in `_flows.js` is the way round
+  the last: step from one flow to the next by the key.
+- **Then `node tools/sqlcheck.mjs`.** A walk it reports is fixed, or added to
+  `KNOWN` in the tool with what bounds it in numbers — the size of the table
+  and why it stays that size, or how rarely it runs. "It is small" is not a
+  bound; "a ring of sixty slots" is.
+
 ## The rules of a write
 
 Reading is free: `d1_database_query` answers a `SELECT` straight away, and
@@ -377,6 +418,8 @@ no step 1 until the owner has answered it.
    re-read against what the code now does.
 2. `node tools/validate.mjs`. It checks `wrangler.toml`, the `KITCHENS`
    patterns in `venues.js` against the export, and the generated SQL. Then
+   `node tools/sqlcheck.mjs`, which asks SQLite how every statement reads —
+   **The rules of a read** above. Then
    `node tools/functions-check.mjs`, which imports every module under
    `functions/` the way the deploy bundles them: a name imported from a
    module that no longer exports it, or a syntax error, fails here rather
@@ -424,7 +467,10 @@ what it costs per request, and what has to be applied by hand and where.
 
 **The pull request** in `CLAUDE.md` is the sequence, and this process adds:
 
-- `node tools/functions-check.mjs` beside the validator, every time.
+- `node tools/functions-check.mjs` and `node tools/sqlcheck.mjs` beside the
+  validator, every time.
+- The body says what each statement it adds or changes reads, in rows,
+  measured against production, and the day's worst.
 - If `db/schema.sql` changed, apply it to the **local** database before
   driving — `wrangler d1 execute tallinntastebuds-preview --local
   --file=db/schema.sql` — so `pages dev` has the table the code expects. The
@@ -472,6 +518,14 @@ what it costs per request, and what has to be applied by hand and where.
   pattern, read the sentence in a language that is not English before
   deciding the two agree, and when people give up on a form, read the funnel
   before the code: it says which word the route refused them with.
+- A counter that re-read its whole history on every refresh. The flag
+  counter on Discover asked `visitor_counts` by kind and by a span of days,
+  which its key (day, kind, id) cannot answer, so every five minutes in every
+  colo it walked all 18,439 rows three times: 46,258 rows a refresh. On
+  2026-11-18 that spent the account's five million reads before noon, and
+  every route that reads the database answered empty until midnight UTC. Its
+  comment counted statements, not rows. **The rules of a read**, and `node
+  tools/sqlcheck.mjs` behind them.
 - An export taken out of `_lib.js` by the commit that wrote its replacement,
   while a route still imported the old name. An ES module resolves its
   imports before any of it runs and Pages bundles everything under
