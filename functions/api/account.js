@@ -92,7 +92,8 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey, openSession
+  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey, openSession,
+  tallinnDay
 } from './_lib.js';
 import {
   asUsername, MIN_PASSWORD, HOLD_DAYS,
@@ -118,6 +119,32 @@ import { postsReady } from './_posts.js';
    as a maxlength in assets/edit.js, which carries the only box that writes
    it. */
 const MAX_DISPLAY = 60;
+
+/* How far ahead somebody may say they will still be studying: a degree's
+   length, near enough, and far enough to stop a date that was a typo for
+   this year landing in the next century. Restated in the sentence
+   accountStudentBad prints in data/ui.json. */
+const STUDENT_YEARS = 5;
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/* The two student dates, for the card on /account.html: `until`, the day the
+   owner confirmed, and `asked`, the day this account asked for. Equal once
+   the owner has confirmed what was asked; different while an ask is waiting.
+   Both columns arrive by hand, so a database without them answers nothing
+   and the card is not drawn — the bargain every optional column on this
+   route takes. See "A rate for students" in docs/handbook.md. */
+async function readStudent(env, userId) {
+  try {
+    const row = await env.DB
+      .prepare('SELECT student_until, student_asked FROM users WHERE id = ?')
+      .bind(userId)
+      .first();
+    if (!row) return undefined;
+    return { until: row.student_until || null, asked: row.student_asked || null };
+  } catch (e) {
+    return undefined;
+  }
+}
 
 /* The places this account has saved, so a fresh device can draw its marks
    filled the moment somebody signs in on it. It stays here rather than going
@@ -302,6 +329,8 @@ export async function onRequestGet(context) {
        profile_counts is not applied yet, and the row says what it is for
        instead; see ./_visits.js. */
     views: (await recentViews(env, user.id)) ?? undefined,
+    /* The student dates, for the card that asks for one — readStudent(). */
+    student: await readStudent(env, user.id),
     saved: await savedByUser(env, user.id)
   }, 200);
 
@@ -608,6 +637,59 @@ export async function onRequestPost(context) {
       .run();
 
     return json({ display: display }, 200);
+  }
+
+  /* ------------------------------------------------ being a student
+   *
+   * Somebody says until when they study, and that is an ask, not the rate:
+   * it goes in student_asked, and student_until — the column functions/api/
+   * pass.js reads — is the owner's alone, set by hand once they have checked
+   * a card. Saying it is not being it, so a date typed here buys nothing
+   * until somebody has looked. "A rate for students" in docs/handbook.md.
+   *
+   * Three things to send:
+   *
+   *   { until: 'YYYY-MM-DD' }  ask, or ask again with another date. A
+   *                            confirmed date stays in force meanwhile.
+   *   { back: true }           take back an ask that is waiting, which
+   *                            leaves whatever was confirmed as it was.
+   *   { until: '' }            not a student: both dates go.
+   *
+   * The date is held to today and the STUDENT_YEARS after it, in Tallinn —
+   * one that has already passed would be an ask for nothing.
+   */
+  if (action === 'student') {
+    const user = await sessionUser(request, env);
+    if (!user) return json({ error: 'signed-out' }, 401);
+
+    let sql;
+    let binds;
+    if (body.back === true) {
+      sql = 'UPDATE users SET student_asked = student_until WHERE id = ?';
+      binds = [user.id];
+    } else if (body.until === '') {
+      sql = 'UPDATE users SET student_asked = NULL, student_until = NULL WHERE id = ?';
+      binds = [user.id];
+    } else {
+      const until = typeof body.until === 'string' ? body.until : '';
+      const today = tallinnDay();
+      const last = String(Number(today.slice(0, 4)) + STUDENT_YEARS) + today.slice(4);
+      /* A date that round-trips is a real one: 2027-02-30 does not. */
+      const real = DAY.test(until) && new Date(until + 'T00:00:00Z').toISOString().slice(0, 10) === until;
+      if (!real || until < today || until > last) return json({ error: 'student-date' }, 400);
+      sql = 'UPDATE users SET student_asked = ? WHERE id = ?';
+      binds = [until, user.id];
+    }
+
+    try {
+      await env.DB.prepare(sql).bind(...binds).run();
+    } catch (e) {
+      /* The columns are not there yet: a deploy that reached the site before
+         the ALTER did. The card is not drawn then, so this is somebody who
+         had the page open across the deploy. */
+      return json({ error: 'student-off' }, 503);
+    }
+    return json({ student: await readStudent(env, user.id) }, 200);
   }
 
   /* ------------------------------------------- where else you are

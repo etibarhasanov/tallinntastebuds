@@ -1127,6 +1127,12 @@
    button once; a list is named on its own page now, /list/new. */
 .lists-new { margin: 16px 0 0; }
 
+/* The date box and its Save on the student card of the account page — see
+   studentCard() in assets/account.js. The box takes what the row leaves. */
+.student-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 6px 0 0; }
+.student-row .lists-input { flex: 1 1 160px; min-width: 0; }
+.student-bad { margin: 8px 0 0; color: var(--accent); font-size: 13.5px; }
+
 /* "Give the list a name first", over the name field of a list not made yet —
    see sayNameFirst() in assets/lists.js. The field under it is the answer. */
 .lists-name-first { margin: 0 0 10px; }

@@ -4304,6 +4304,35 @@ database the `ALTER TABLE users ADD COLUMN student_until TEXT` has not
 reached answers `false` for everybody, and every deal pays its
 everyday rate.
 
+**Somebody asks, and the owner confirms.** A member can say they are a
+student on `/account.html`: a **Student** card under the one with their
+name, with a **Student until** date and Save. That is an ask and not the
+rate — it goes in `users.student_asked`, and the card says the student rate
+starts once Tallinn Tastebuds has confirmed it. The owner checks however
+they check, and confirms by copying the date across:
+
+```sql
+select id, username, student_asked, student_until from users
+where student_asked is not null and student_asked is not student_until
+```
+
+```sql
+UPDATE users SET student_until = student_asked WHERE id = '<id>'
+```
+
+The first is a read and lists every ask waiting; the second is one row,
+which the write gate asks about. Once the two dates are equal the card says
+**You count as a student until …**, with **Change the date** — a new ask,
+the confirmed date paying meanwhile — and **I'm not a student**, which
+clears both. An ask can be taken back while it waits. The date asked for is
+held to today and the five years after it, in Tallinn; one that has passed
+shows the form again, saying when it ran out. The card is private, on
+purpose: it is not on `/edit` or `/u/<name>`, because whether somebody is a
+student is not a line for strangers. `action: 'student'` in
+`functions/api/account.js` is the write, and `GET /api/account` answers
+`student: { until, asked }` for the card, or leaves it out where the columns
+are missing, and the card is not drawn.
+
 **The rate travels in the code, as a drawn one does.** A student's code is
 `HMAC(key, "<place-id>:<hour>:25")` and the QR carries `p=25`, so a student's
 code does not verify as the everyday one or the other way round, and
@@ -20519,6 +20548,7 @@ The account page, `assets/account.js`:
 | `profile_share` | `name`, `method` (`sheet`/`copy`) — the Share pill on a profile that is a page |
 | `account_google_unlink` | — Google taken off the one kind of account that has it |
 | `account_logout` | — |
+| `student_ask`, `student_back`, `student_not` | — the Student card: a date asked for, an ask taken back, and both dates cleared. The date itself is not sent |
 | `radio_play`, `radio_stop`, `home` | as on the map |
 
 The editor for the page under your name, `assets/edit.js`:

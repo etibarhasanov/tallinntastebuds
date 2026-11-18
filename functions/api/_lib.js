@@ -1116,3 +1116,13 @@ export async function claimDeviceSaves(env, userId, clientId) {
 export function countsKey(request) {
   return new Request(new URL('/api/saves', request.url).toString());
 }
+
+/* Today in Tallinn, 'YYYY-MM-DD' — the day the restaurants' tills are on,
+   which is the day a student's date is read against. sv-SE is the locale
+   whose date reads that way, so two of these compare as strings, and so does
+   one against a date somebody wrote by hand. Two callers: ./pass.js, which
+   asks whether a student's date has passed, and ./account.js, which holds a
+   date somebody asks for to today and the years after it. */
+export function tallinnDay() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Tallinn' });
+}
