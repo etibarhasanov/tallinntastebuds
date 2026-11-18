@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} min {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ {n} outros países",
-  "counterSince": "desde {date}"
+  "counterSince": "desde {date}",
+  "embedMapLabel": "Mapa de lugares em Tallinn",
+  "embedLoading": "A carregar os lugares…",
+  "embedErrorTitle": "O mapa não consegue chegar ao Tallinn Tastebuds",
+  "embedErrorBody": "Verifica a ligação e tenta outra vez.",
+  "embedRetry": "Tentar outra vez",
+  "embedEmptyTitle": "Nada para mostrar aqui",
+  "embedEmptyBody": "Esta lista está vazia, é privada ou foi retirada.",
+  "embedOpen": "Abrir no Tallinn Tastebuds",
+  "embedBy": "Mapa de",
+  "embedListSub": "{n} lugares · uma lista no Tallinn Tastebuds",
+  "embedPlacesSub": "{n} lugares no Tallinn Tastebuds",
+  "embedAllTitle": "Lugares em Tallinn"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

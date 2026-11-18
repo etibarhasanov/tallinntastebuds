@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} dəq {s} san",
   "counterSeconds": "{s} san",
   "counterMore": "+ daha {n} ölkə",
-  "counterSince": "{date} tarixindən"
+  "counterSince": "{date} tarixindən",
+  "embedMapLabel": "Tallindəki yerlərin xəritəsi",
+  "embedLoading": "Yerlər yüklənir…",
+  "embedErrorTitle": "Xəritə Tallinn Tastebuds-a çata bilmir",
+  "embedErrorBody": "Bağlantını yoxla və yenidən cəhd et.",
+  "embedRetry": "Yenidən cəhd et",
+  "embedEmptyTitle": "Burada göstəriləcək heç nə yoxdur",
+  "embedEmptyBody": "Bu siyahı boşdur, gizlidir və ya silinib.",
+  "embedOpen": "Tallinn Tastebuds-da aç",
+  "embedBy": "Xəritə:",
+  "embedListSub": "{n} yer · Tallinn Tastebuds-da siyahı",
+  "embedPlacesSub": "Tallinn Tastebuds-da {n} yer",
+  "embedAllTitle": "Tallindəki yerlər"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

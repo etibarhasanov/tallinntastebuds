@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} min {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ veel {n} riiki",
-  "counterSince": "alates {date}"
+  "counterSince": "alates {date}",
+  "embedMapLabel": "Tallinna kohtade kaart",
+  "embedLoading": "Kohad laadivad…",
+  "embedErrorTitle": "Kaart ei jõua Tallinn Tastebudsini",
+  "embedErrorBody": "Kontrolli ühendust ja proovi uuesti.",
+  "embedRetry": "Proovi uuesti",
+  "embedEmptyTitle": "Siin pole midagi näidata",
+  "embedEmptyBody": "See nimekiri on tühi, privaatne või eemaldatud.",
+  "embedOpen": "Ava Tallinn Tastebudsis",
+  "embedBy": "Kaart:",
+  "embedListSub": "{n} kohta · nimekiri Tallinn Tastebudsis",
+  "embedPlacesSub": "{n} kohta Tallinn Tastebudsis",
+  "embedAllTitle": "Kohad Tallinnas"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

@@ -4,9 +4,10 @@ A full-screen map of places in Tallinn, plus discounts, stories, saves,
 lists, profiles, a directory of the city, a chat that answers with places, a
 blog about what all of it does and where to eat that members write in too, a page of which places get opened, a page of
 who comes to the site and what they do, a page of how they found it, a page of links on every profile, a door at `/mcp`
-through which an AI assistant reads the places and the public lists, and — on a subdomain of its own — a deck of Estonian
+through which an AI assistant reads the places and the public lists, a public API at `/api/v1` with the map to put
+on another site at `/embed`, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, fifty Cloudflare Functions, two D1 databases (preview and
+Static files, fifty-two Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -39,8 +40,9 @@ does not have to:
   to look, and anything with no visible effect go straight to code.
 - **There is no test suite.** `node tools/validate.mjs`, `node
   tools/functions-check.mjs`, `node tools/qrperf.mjs --check`, `node
-  tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check` and `node
-  .claude/hooks/d1-write-gate.mjs --check` are the whole of CI. Anything with a visible effect is driven in a
+  tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check`, `node
+  tools/apicheck.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
+  --check` are the whole of CI. Anything with a visible effect is driven in a
   browser; the `/site` and `/api` skills say how. Do not go looking for a
   test runner, and do not write one into a PR that was about something else.
 - **Line numbers in the docs are not to be trusted; names are.** The skills
@@ -339,6 +341,17 @@ anything irreversible: they are checklists rather than background reading, and
 the step that gets skipped is always the one nobody re-read.
 
 ## What the app reads
+
+**Every route below answers at two addresses**: its old one under `/api/`,
+and its v1 one under `/api/v1/` — the same name, except `/api/places`, which
+is `/api/v1/find`, and `/api/lists`, which is `/api/v1/me/lists`. The apps
+are moving to the v1 addresses, a build at a time; the old ones stay, and
+the promise below holds at both, until **The old addresses go when the
+phones have moved** in `docs/handbook.md` says they can come out. A route
+the apps start reading joins `APPS` in `functions/api/v1/[[path]].js` and
+`apps` in `data/api-v1.json` the same day. The public half of `/api/v1` —
+places, lists and types for anybody's code — is a promise of its own,
+frozen in `data/api-v1.json` and held by `node tools/apicheck.mjs --check`.
 
 The iOS app (`etibarhasanov/TallinnTasteBudsApp`, SwiftUI) signs in with the
 site's own `ttb_s` cookie and reads the same backend the pages do, through
@@ -662,7 +675,9 @@ tools/chessperf.mjs --check`, which holds the rules of chess in
 by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` and the flashcards'
 `/flashcard/mcp` over the real
 data files the way an assistant would and holds the answers to what it was
-promised; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
+promised; `node tools/apicheck.mjs --check`, which calls every address of the
+public API at `/api/v1` and fails when an answer has lost a field or changed a
+type that `data/api-v1.json` froze; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
 gate's own cases so that the thing standing between a session and the database
 cannot be loosened without the build saying so.
 
@@ -711,8 +726,8 @@ ones are the ones that ship broken.
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs`, `node tools/functions-check.mjs`,
    `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
-   `node tools/mcpcheck.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
-   --check` on the push and on the PR.
+   `node tools/mcpcheck.mjs --check`, `node tools/apicheck.mjs --check` and
+   `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
    Red CI is yours to fix before anything else happens. **There is no preview
    URL** — pushing the branch deploys nothing, and the PR's checks carry no
    Cloudflare link. Anything with a visible effect gets driven under `npx

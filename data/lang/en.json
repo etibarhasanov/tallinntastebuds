@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} min {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ {n} more countries",
-  "counterSince": "since {date}"
+  "counterSince": "since {date}",
+  "embedMapLabel": "Map of places in Tallinn",
+  "embedLoading": "Loading places…",
+  "embedErrorTitle": "The map can't reach Tallinn Tastebuds",
+  "embedErrorBody": "Check your connection and try again.",
+  "embedRetry": "Try again",
+  "embedEmptyTitle": "Nothing to show here",
+  "embedEmptyBody": "This list is empty, private, or was taken down.",
+  "embedOpen": "Open on Tallinn Tastebuds",
+  "embedBy": "Map by",
+  "embedListSub": "{n} places · a list on Tallinn Tastebuds",
+  "embedPlacesSub": "{n} places on Tallinn Tastebuds",
+  "embedAllTitle": "Places in Tallinn"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

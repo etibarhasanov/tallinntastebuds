@@ -44,9 +44,23 @@ The flashcards have their own at `https://flashcard.tallinntastebuds.ee/mcp`.
 Both read and never write. **Read by an assistant** in the handbook has the
 details.
 
+## Build on it
+
+The map and the public lists are a public API too — `GET`, JSON, no key, any
+origin — and the map can be put on your own page in an `<iframe>`:
+
+```
+https://tallinntastebuds.ee/api/v1/places?type=bakery
+https://tallinntastebuds.ee/embed?list=<list id>
+```
+
+`https://tallinntastebuds.ee/developers` has every address. Version 1 only
+ever gains fields; a break is `/api/v2`, beside it. **The public API** and
+**The map on your site** in the handbook have the details.
+
 ## How it is built
 
-Static files, fifty Cloudflare Functions, a Cloudflare D1 database and a
+Static files, fifty-two Cloudflare Functions, a Cloudflare D1 database and a
 Workers AI binding for the chat. **No build step and no `npm install`**: the
 files in the repo are the files that get served, and every tool in `tools/` is
 zero-dependency Node.
@@ -57,7 +71,7 @@ zero-dependency Node.
 | `assets/` | browser JavaScript (ES5, served raw) and CSS |
 | `data/` | the places, languages, discounts, stories and decks, as JSON |
 | `photos/`, `stories/`, `clips/` | media |
-| `functions/` | the Cloudflare Functions behind `/api/`, `/mcp` and the pages that are written on the server |
+| `functions/` | the Cloudflare Functions behind `/api/`, `/api/v1/`, `/mcp` and the pages that are written on the server |
 | `db/` | `schema.sql` and the generated loads for D1 |
 | `tools/` | generators and the validator |
 | `exports/` | the Google Places export |
@@ -108,7 +122,7 @@ Or use `/admin.html`, which does the same and lands it on its own.
 per-language files, the sitemap, the SQL loads). Then the checks CI runs:
 
 ```bash
-node tools/validate.mjs && node tools/functions-check.mjs && node tools/qrperf.mjs --check && node tools/chessperf.mjs --check && node tools/mcpcheck.mjs --check && node .claude/hooks/d1-write-gate.mjs --check
+node tools/validate.mjs && node tools/functions-check.mjs && node tools/qrperf.mjs --check && node tools/chessperf.mjs --check && node tools/mcpcheck.mjs --check && node tools/apicheck.mjs --check && node .claude/hooks/d1-write-gate.mjs --check
 ```
 
 All need Node 18 or newer and nothing else. There is no test suite.

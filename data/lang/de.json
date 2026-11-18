@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} Min. {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ {n} weitere Länder",
-  "counterSince": "seit {date}"
+  "counterSince": "seit {date}",
+  "embedMapLabel": "Karte der Orte in Tallinn",
+  "embedLoading": "Orte werden geladen…",
+  "embedErrorTitle": "Die Karte erreicht Tallinn Tastebuds nicht",
+  "embedErrorBody": "Prüfe deine Verbindung und versuche es noch einmal.",
+  "embedRetry": "Noch einmal",
+  "embedEmptyTitle": "Hier gibt es nichts zu zeigen",
+  "embedEmptyBody": "Diese Liste ist leer, privat oder wurde entfernt.",
+  "embedOpen": "Auf Tallinn Tastebuds öffnen",
+  "embedBy": "Karte von",
+  "embedListSub": "{n} Orte · eine Liste auf Tallinn Tastebuds",
+  "embedPlacesSub": "{n} Orte auf Tallinn Tastebuds",
+  "embedAllTitle": "Orte in Tallinn"
  },
  "blurbs": {
   "180-degrees": "Das einzige Zwei-Sterne-Restaurant im Baltikum. Ein richtig schönes, experimentelles Lokal am Wasser in Noblessner, wo das Degustationsmenü dich Gang für Gang überraschen soll.",

@@ -1,0 +1,60 @@
+/* Tallinn Tastebuds — developers.html, the public API's page.
+ *
+ * The page is the privacy page's frame and the blog's prose; this is only
+ * what a page about code has and theirs do not: the badge that says which
+ * version is current, the list of addresses, and the blocks of code. Nothing
+ * here names a colour.
+ */
+
+.dev-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--yes);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.dev code,
+.dev pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.dev pre {
+  margin: 8px 0 14px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: var(--radius-soft);
+  background: var(--ink);
+  color: var(--paper);
+  line-height: 1.5;
+}
+.dev pre i { font-style: normal; color: var(--hairline); }
+
+/* One row an address: the path, and under it what it takes. */
+.dev .dev-eps {
+  list-style: none;
+  margin: 8px 0 14px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  background: var(--paper);
+}
+.dev-eps li {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--hairline);
+}
+.dev-eps li:first-child { border-top: 0; }
+.dev-eps code { font-weight: 600; color: var(--ink); }
+.dev-eps span { font-size: 14px; color: var(--muted); }
+.dev-eps span code { font-weight: 400; color: var(--muted); }

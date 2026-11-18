@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} dk {s} sn",
   "counterSeconds": "{s} sn",
   "counterMore": "+ {n} ülke daha",
-  "counterSince": "{date} tarihinden beri"
+  "counterSince": "{date} tarihinden beri",
+  "embedMapLabel": "Tallinn'deki mekânların haritası",
+  "embedLoading": "Mekânlar yükleniyor…",
+  "embedErrorTitle": "Harita Tallinn Tastebuds'a ulaşamıyor",
+  "embedErrorBody": "Bağlantını kontrol et ve tekrar dene.",
+  "embedRetry": "Tekrar dene",
+  "embedEmptyTitle": "Burada gösterilecek bir şey yok",
+  "embedEmptyBody": "Bu liste boş, gizli ya da kaldırılmış.",
+  "embedOpen": "Tallinn Tastebuds'ta aç",
+  "embedBy": "Harita:",
+  "embedListSub": "{n} mekân · Tallinn Tastebuds'ta bir liste",
+  "embedPlacesSub": "Tallinn Tastebuds'ta {n} mekân",
+  "embedAllTitle": "Tallinn'deki mekânlar"
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",

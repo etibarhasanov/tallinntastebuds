@@ -1497,7 +1497,19 @@
   "counterMinutes": "{m} min {s} s",
   "counterSeconds": "{s} s",
   "counterMore": "+ {n} autres pays",
-  "counterSince": "depuis le {date}"
+  "counterSince": "depuis le {date}",
+  "embedMapLabel": "Carte des adresses à Tallinn",
+  "embedLoading": "Chargement des adresses…",
+  "embedErrorTitle": "La carte n'arrive pas à joindre Tallinn Tastebuds",
+  "embedErrorBody": "Vérifiez votre connexion et réessayez.",
+  "embedRetry": "Réessayer",
+  "embedEmptyTitle": "Rien à montrer ici",
+  "embedEmptyBody": "Cette liste est vide, privée ou a été retirée.",
+  "embedOpen": "Ouvrir sur Tallinn Tastebuds",
+  "embedBy": "Carte par",
+  "embedListSub": "{n} adresses · une liste sur Tallinn Tastebuds",
+  "embedPlacesSub": "{n} adresses sur Tallinn Tastebuds",
+  "embedAllTitle": "Adresses à Tallinn"
  },
  "blurbs": {
   "180-degrees": "Le seul restaurant deux étoiles Michelin des pays baltes. Une adresse expérimentale vraiment chouette sur le front de mer de Noblessner, où le menu dégustation est pensé pour te surprendre, plat après plat.",
