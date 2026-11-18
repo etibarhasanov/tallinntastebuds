@@ -62,6 +62,10 @@
  * maantee for more than a crossing is asked for again round it, and only
  * the ways that keep off are answered — KEEPING OFF below.
  *
+ * And by bike a way can be a train: ride to a station, an Elron train with
+ * the bike on it, ride on. Those are `trains`, answered beside the ways by
+ * /api/v1/route only, never here — TRAINS below says why.
+ *
  * MORE THAN ONE WAY
  *
  * The router is asked for alternatives and answers the ones it thinks are
@@ -208,7 +212,11 @@ function decode(text) {
   return out;
 }
 
-async function street(context, mode, from, to) {
+async function street(context, mode, from, to, withTrains) {
+  /* Asked at once, beside the router, so the train costs no time of its
+     own; read only once the bike ways are known, since a train is offered
+     only where it beats them. TRAINS below. */
+  const asked = withTrains && mode === 'bike' ? departures(from, to) : null;
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
     '?overview=full&geometries=geojson&steps=true&alternatives=';
 
@@ -247,7 +255,13 @@ async function street(context, mode, from, to) {
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
-  return json({ meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) }, 200, 3600);
+  const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
+  if (!asked) return json(answer, 200, 3600);
+  /* A train leaves at a time and the time goes, so an answer with one in it
+     is kept a minute, as a bus journey is; one without, the hour the ways
+     alone would be. */
+  answer.trains = await byTrain(from, to, await asked, Math.min(...ways.map((w) => w.seconds)));
+  return json(answer, 200, answer.trains.length ? CACHE_SECONDS.bus : 3600);
 }
 
 /* ------------------------------------------------------------------ doors
@@ -626,13 +640,184 @@ async function transit(from, to) {
   return json({ trips: trips }, 200, CACHE_SECONDS.bus);
 }
 
-export async function onRequestGet(context) {
-  const q = new URL(context.request.url).searchParams;
+/* ----------------------------------------------------------------- trains
+ * A bike goes on an Elron train, and from the right corner of the city the
+ * train is quicker: ride to Ülemiste, ride the RE33 two stops, ride on. The
+ * owner did exactly that on 2026-11-17 and saved the ride. So by bike, and
+ * only where it is asked for — /api/v1/route, through `withTrains` — the
+ * answer carries `trains` beside the ways:
+ *
+ *   "trains": [ { "seconds": 960, "meters": 5120, "leave": "14:01",
+ *                 "legs": [ { "kind": "bike", "meters": 1330, "seconds": 330,
+ *                             "line": [...], "steps": [...] },
+ *                           { "kind": "train", "name": "RE33",
+ *                             "from": "Ülemiste", "to": "Kitseküla",
+ *                             "at": "14:09", "until": "14:13",
+ *                             "meters": 3366, "line": [...] },
+ *                           { "kind": "bike", ... } ] } ]
+ *
+ * `seconds` is from setting off to the door: the ride to the station,
+ * TRAIN_BOARD on the platform, the train and the ride on. `leave` is when
+ * to set off. The wait before that is not counted, because it is spent at
+ * home or at the table rather than on the way, and counting it hid the train
+ * nearly always: on the first morning it was tried the next one from
+ * Ülemiste was forty-one minutes off, and an Elron line runs every half hour
+ * to hour. So a train is a way with a time on it, the way a bus journey is,
+ * and the bar says when it goes. A bike leg is the
+ * same four fields a way has, and its last step `arrive` — at the station
+ * for the first, at the door for the last; a leg of no length, from a door
+ * on the platform, is left out.
+ *
+ * Not in /api/route, and that is the reason for a version: both apps read
+ * the bike ways out of that answer and nothing else, and a train is not a
+ * way they can draw or speak. /api/route answers them exactly as before.
+ *
+ * Where it comes from: peatus.ee is asked once for bike and rail together —
+ * the planner carries the bike on board — and says which station, which
+ * train and when. It says nothing about which way to turn, so the two rides
+ * either side are asked of the same bike router every way here comes from,
+ * kept off the same streets, and they are what the turns are spoken from.
+ * One train and no change: two trains with a bike is not a way anybody
+ * takes across a city.
+ *
+ * Offered only where it is quicker than the quickest bike way, and then
+ * the next one that can still be caught and leaves within TRAIN_WAIT, at
+ * most TRAINS of them, each from a different pair of stations. Nothing waits on it: the planner down, slow
+ * or with nothing to say, a ride to a station the router will not answer —
+ * each is `trains: []` and the ways exactly as they were.
+ */
+const TRAINS = 2;
+
+/* Departures asked for: the planner answers the next few, the first of
+   which may already be out of reach once the ride to the station is known. */
+const TRAIN_ASK = 4;
+
+/* Seconds on the platform before the train: buying nothing, but lifting a
+   bike up the step of an Elron car and finding the bike space. */
+const TRAIN_BOARD = 120;
+
+/* How long ahead a train is worth offering: an hour, which is the gap
+   between Elron's trains through Tallinn at its emptiest. Past it the way
+   is a plan for later, and the planner's next departures are not asked
+   that far anyway. */
+const TRAIN_WAIT = 3600;
+
+/* Each departure the planner offers with one train in it: the stations, as
+   names and points, when it leaves and arrives, and the rail between. */
+async function departures(from, to) {
+  const place = 'name lat lon';
+  const query = '{ plan(from: {lat: ' + from.lat + ', lon: ' + from.lng + '}, ' +
+    'to: {lat: ' + to.lat + ', lon: ' + to.lng + '}, numItineraries: ' + TRAIN_ASK + ', ' +
+    'transportModes: [{mode: BICYCLE}, {mode: RAIL}]) { itineraries { legs { ' +
+    'mode transitLeg startTime endTime distance route { shortName } ' +
+    'from { ' + place + ' } to { ' + place + ' } legGeometry { points } } } } }';
+  try {
+    const res = await fetch(PEATUS, {
+      method: 'POST',
+      headers: { 'user-agent': AGENT, accept: 'application/json', 'content-type': 'application/json' },
+      body: JSON.stringify({ query: query })
+    });
+    if (!res.ok) return [];
+    const body = await res.json();
+    if (body && Array.isArray(body.errors) && body.errors.length) console.error('peatus trains', body.errors[0].message);
+    const plan = body && body.data && body.data.plan;
+    return (plan && Array.isArray(plan.itineraries) ? plan.itineraries : []).map((it) => {
+      const rides = (Array.isArray(it.legs) ? it.legs : []).filter((l) => l.transitLeg);
+      const train = rides[0];
+      if (rides.length !== 1 || train.mode !== 'RAIL' || !train.from || !train.to) return null;
+      const at = Number(train.startTime);
+      const until = Number(train.endTime);
+      const line = train.legGeometry && train.legGeometry.points ? decode(train.legGeometry.points) : [];
+      if (!Number.isFinite(at) || !Number.isFinite(until) || line.length < 2) return null;
+      return {
+        name: (train.route && train.route.shortName) || '',
+        from: { name: train.from.name || '', lat: Number(train.from.lat), lng: Number(train.from.lon) },
+        to: { name: train.to.name || '', lat: Number(train.to.lat), lng: Number(train.to.lon) },
+        at: at,
+        until: until,
+        meters: Math.round(Number(train.distance)) || 0,
+        line: line
+      };
+    }).filter(Boolean);
+  } catch (e) {
+    return [];
+  }
+}
+
+/* The departures as ways to choose: a ride to the station and one from it
+   for each pair of stations, and the first departure of each pair that can
+   be caught within TRAIN_WAIT, kept where it beats `quickest`, the best
+   bike way's seconds. */
+async function byTrain(from, to, found, quickest) {
+  const pairs = new Map();
+  for (const d of found) {
+    const key = d.from.name + '>' + d.to.name;
+    if (!pairs.has(key)) pairs.set(key, []);
+    pairs.get(key).push(d);
+  }
+  const now = Date.now();
+  const out = [];
+  for (const list of Array.from(pairs.values()).slice(0, TRAINS)) {
+    const first = list[0];
+    const [head, tail] = await Promise.all([
+      ride(from, first.from),
+      ride(first.to, to)
+    ]);
+    if (!head || !tail) continue;
+    const setOff = (d) => d.at - (head.seconds + TRAIN_BOARD) * 1000;
+    const go = list.slice().sort((a, b) => a.at - b.at)
+      .find((d) => setOff(d) >= now && setOff(d) - now <= TRAIN_WAIT * 1000);
+    if (!go) continue;
+    const seconds = head.seconds + TRAIN_BOARD + Math.round((go.until - go.at) / 1000) + tail.seconds;
+    if (seconds >= quickest) continue;
+    const legs = [];
+    if (head.meters) legs.push(Object.assign({ kind: 'bike' }, head));
+    legs.push({
+      kind: 'train',
+      name: go.name,
+      from: go.from.name,
+      to: go.to.name,
+      at: CLOCK.format(new Date(go.at)),
+      until: CLOCK.format(new Date(go.until)),
+      meters: go.meters,
+      line: thin(go.line, MAX_POINTS / 3)
+    });
+    if (tail.meters) legs.push(Object.assign({ kind: 'bike' }, tail));
+    out.push({
+      seconds: seconds,
+      meters: head.meters + go.meters + tail.meters,
+      leave: CLOCK.format(new Date(setOff(go))),
+      legs: legs
+    });
+  }
+  return out.sort((a, b) => a.seconds - b.seconds);
+}
+
+/* A bike leg to or from a station: the router's way, kept off the streets
+   every bike way keeps off, with its line thinned to a third of a way's. */
+async function ride(a, b) {
+  const start = [a.lat, a.lng];
+  const end = [b.lat, b.lng];
+  if (!start.concat(end).every(Number.isFinite)) return null;
+  const one = await leg(start, end);
+  if (!one || !one.meters) return one;
+  const [kept] = await keepOff([one], { lat: a.lat, lng: a.lng }, { lat: b.lat, lng: b.lng }, one.meters);
+  const way = kept || one;
+  return { meters: way.meters, seconds: way.seconds, line: thin(way.line, MAX_POINTS / 3), steps: way.steps };
+}
+
+/* The route, asked by /api/route and by /api/v1/route, which differ in
+   one thing: whether a bike way comes with its trains. */
+export function answerRoute(context, q, withTrains) {
   const from = point(q.get('from'), 4);
   const to = point(q.get('to'), 5);
   if (!from || !to) return json({ error: 'bad-points' }, 400);
   const mode = q.get('mode') || 'foot';
   if (mode === 'bus') return transit(from, to);
   if (!OSRM[mode]) return json({ error: 'bad-mode' }, 400);
-  return street(context, mode, from, to);
+  return street(context, mode, from, to, withTrains);
+}
+
+export function onRequestGet(context) {
+  return answerRoute(context, new URL(context.request.url).searchParams, false);
 }

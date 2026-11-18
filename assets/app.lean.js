@@ -81,7 +81,7 @@
   var routeFor = null;    // the place it is the way to
   var routeMode = /^(foot|bike|bus|car)$/.test(storeGet('ttb.routeMode') || '') ? storeGet('ttb.routeMode') : 'foot';
   var routeTrips = null;  // the bus journeys last answered, while Bus is up
-  var routeWays = null;   // the ways last answered for a walk, a ride or a drive: the first, then /api/route's `others`
+  var routeWays = null;   // the ways last answered for a walk, a ride or a drive: the first, then `others`, then by bike `trains`
   var routeToken = 0;     // which press an answer belongs to, so a late one is dropped
   var routeFrom = null;   // where the way drawn was asked from, so a dot that has left it can ask again
   var routeAsked = 0;     // and when, so a moving dot asks at most once every ROUTE_REST
@@ -1501,9 +1501,19 @@
       if (!from) { dom.routeSay.textContent = t('routeLocate'); return null; }
       routeFrom = L.latLng(from.lat, from.lng);
       routeAsked = Date.now();
-      return fetch('/api/route?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng)
-        .then(function (res) { return res.ok ? res.json() : null; })
+      var ask = '?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng;
+      return fetch('/api/v1/route' + ask)
+        .then(function (res) {
+          if (res.ok || res.status === 400 || res.status === 404 || res.status === 422) {
+            return res.json().then(function (body) { return body && body.version ? body : Promise.reject(); });
+          }
+          return Promise.reject();
+        })
+        .catch(function () {
+          return fetch('/api/route' + ask).then(function (res) { return res.ok ? res.json() : null; });
+        })
         .then(function (way) {
+          if (way && way.error) way = null;
           if (token !== routeToken) return;
           if (mode === 'bus') {
             if (!way || !way.trips || !way.trips.length) { dom.routeSay.textContent = t('routeNoBus'); return; }
@@ -1517,6 +1527,8 @@
           }
           routeWays = [way].concat((way.others || []).filter(function (other) {
             return other && other.line && other.line.length > 1;
+          }), (way.trains || []).filter(function (train) {
+            return train && train.legs && train.legs.length;
           }));
           drawRoute(0, mode, again);
         });
@@ -1574,28 +1586,31 @@
     clearRouteLine();
     routeLine = L.featureGroup().addTo(map);
     routeWays.forEach(function (other, i) {
-      if (i !== n) routeStretch(other.line, mode, false, true);
+      if (i !== n) drawWay(other, mode, true);
     });
-    routeStretch(way.line, mode, false);
-    var said = t(ROUTE_SAY[mode], {
-      min: Math.max(1, Math.round(way.seconds / 60)),
-      dist: routeDistance(way.meters)
-    });
-    dom.routeSay.textContent = said;
+    drawWay(way, mode, false);
+    var min = Math.max(1, Math.round(way.seconds / 60));
+    var train = trainLeg(way);
+    dom.routeSay.textContent = train
+      ? t('routeTrain', { leave: way.leave, from: train.from, line: train.name, at: train.at, to: train.to, min: min })
+      : t(ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
 
     routeWays.forEach(function (other, i) {
+      var leg = trainLeg(other);
       var press = el('button', {
         type: 'button',
         className: 'route-trip',
-        'data-mode': mode,
+        'data-mode': leg ? 'bus' : mode,
         'aria-pressed': String(i === n),
-        textContent: t('routeWay', {
-          min: Math.max(1, Math.round(other.seconds / 60)),
-          dist: routeDistance(other.meters)
-        })
+        textContent: leg
+          ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
+          : t('routeWay', {
+            min: Math.max(1, Math.round(other.seconds / 60)),
+            dist: routeDistance(other.meters)
+          })
       });
       press.addEventListener('click', function () {
-        TTBTrack.event('route_way', { n: i, mode: mode });
+        TTBTrack.event(leg ? 'route_train' : 'route_way', { n: i, mode: mode });
         drawRoute(i, mode, true);
       });
       dom.routeTrips.appendChild(press);
@@ -1604,6 +1619,19 @@
     dom.routeTrips.hidden = routeWays.length < 2;
 
     if (!still) fitRoute();
+  }
+
+  function drawWay(way, mode, faint) {
+    if (!way.legs) { routeStretch(way.line, mode, false, faint); return; }
+    way.legs.forEach(function (leg) {
+      if (leg.line && leg.line.length > 1) routeStretch(leg.line, leg.kind === 'train' ? 'bus' : 'bike', false, faint);
+    });
+  }
+
+  function trainLeg(way) {
+    var legs = way.legs || [];
+    for (var i = 0; i < legs.length; i++) if (legs[i].kind === 'train') return legs[i];
+    return null;
   }
 
   function drawTrip(n) {

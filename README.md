@@ -46,7 +46,7 @@ details.
 
 ## How it is built
 
-Static files, forty-seven Cloudflare Functions, a Cloudflare D1 database and a
+Static files, fifty Cloudflare Functions, a Cloudflare D1 database and a
 Workers AI binding for the chat. **No build step and no `npm install`**: the
 files in the repo are the files that get served, and every tool in `tools/` is
 zero-dependency Node.
