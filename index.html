@@ -78,7 +78,7 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
-<link rel="stylesheet" href="assets/styles.lean.css?v=5e034bb1">
+<link rel="stylesheet" href="assets/styles.lean.css?v=4f81ed66">
 </head>
 <body>
 
@@ -641,10 +641,6 @@
      and walkOnMap() in assets/app.js puts them in. It stands where the sheet
      would, while the sheet would be the list. -->
 <div class="walk-band" id="walk-band" hidden></div>
-<!-- A bike ride being recorded, finished or saved: the card stands where the
-     route bar does and the bar steps aside for it. Empty here — its contents
-     are assets/ride.js's. Recorded rides in docs/handbook.md. -->
-<section class="walk-band ride-card" id="ride-card" data-i18n-aria-label="rideTitle" aria-label="Record a ride" aria-live="polite" hidden></section>
 <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
 
 <!-- The offer to keep a list somewhere better than this browser. Shown after
@@ -780,13 +776,10 @@
      global the list's own page hands its list to. Before the map's script,
      which asks it. -->
 <script src="assets/walk.js?v=4809fdb9" defer></script>
-<!-- A bike ride, recorded on the map's Bike tab and saved as a confirmed
-     route: TTBRide, mounted by mountRide() in assets/app.js. -->
-<script src="assets/ride.js?v=09cccafc" defer></script>
 <!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
 <script src="assets/discover.js?v=713271b6" defer></script>
-<script src="assets/app.lean.js?v=3bc7a18d" defer></script>
+<script src="assets/app.lean.js?v=74a02fcd" defer></script>
 </body>
 </html>

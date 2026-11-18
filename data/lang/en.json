@@ -1338,7 +1338,6 @@
   "rideFast": "That was faster than a bike rides, so it cannot be kept.",
   "ridesYours": "Your rides",
   "ridesWhat": "The bike rides you recorded. Each one is a confirmed bike route on the map, without your name on it.",
-  "ridesNone": "No rides yet. Press Record a ride below and ride.",
   "rideUnnamed": "Bike ride",
   "ridesCountOne": "1 ride",
   "ridesCount": "{n} rides",

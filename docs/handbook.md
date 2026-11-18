@@ -3305,35 +3305,38 @@ pages under this site's name, and none of them is somewhere it vouches for.
 ## Recorded rides
 
 A bike ride somebody has really cycled is better evidence that a way can be
-ridden than any router's guess, and the site now keeps them. A ride is not
-on the way to anywhere, so the recorder opens from **Record a ride** on the
-account page's **Your rides** card, which opens the map at `/?ride=1` with
-the card already up — and from nowhere else. The first version's mistake
-was to put it under a place's directions, on the route bar's Bike tab, so
-going for a ride meant picking somewhere to ride to first; that link went.
-For a while after, a bike button of its own stood on the map, on the rail
-on a desktop and on the locate arrow on a phone; on 2026-11-17 the owner
-took it off, so the map is for places and recording is something a member
-goes to their account for. Its column on the rail's counts, `ride`, keeps
-what it counted and gains nothing more. The card
-stands where the route bar
-does — the bar, a walk's band and the sheet step aside for it, and a bike
-route's line, where there is one, stays on the map to ride along — and goes
-through five states in the order every sheet here is built:
+ridden than any router's guess, and the site keeps them. **It does not
+record them.** A ride is recorded in Rattatee, the iPhone app, which can do
+it with the screen locked and the phone in a pocket, and saved through
+`POST /api/rides`; the website gives directions, and what the rides are for
+here is steering those directions — **Doors**, below.
 
-- **Record a ride**: what it does and the one thing that matters about a web
-  page doing it, *keep this page open and the screen on*. Signed out, it asks
-  for a sign-in first (`account_from_ride`), since a ride is saved under an
-  account; any member may record, and nobody approves a ride.
-- **Recording**: the distance, the time and the average, the line drawn as
-  it grows in the bike's green, **Finish** and **Pause**. Before the first
-  fix it says it is waiting for the location.
-- **Paused**: nothing is recorded, the clock stops, **Resume** and Finish.
-- **Save this ride?**: a line saying what saving means — a confirmed bike
-  route, no name shown, the first and last 200 m left off — an optional name,
-  **Save ride** and **Throw it away**. A ride under 700 m is *Too short to
-  keep* instead, with Keep riding.
-- **Saved**, and a way to close it.
+**The website had a recorder of its own, and on 2026-11-18 the owner took
+it out.** It opened first from a place's directions, on the route bar's Bike
+tab, which meant picking somewhere to ride to before going for a ride; then
+from a bike button of its own on the map, which the owner took off on
+2026-11-17; and last from **Record a ride** on the account page's **Your
+rides** card, which opened the map at `/?ride=1` with a card where the
+route bar stands: Record a ride, Recording, Paused, Save this ride?, Saved.
+It was `assets/ride.js`, `TTBRide`, mounted by `mountRide()` in
+`assets/app.js`. Two things were wrong with it. A browser stops telling a
+page where it is the moment the screen locks or the tab goes to the back, so
+a page records only while it is looked at, and a ride recorded by holding a
+lit phone is not one anybody takes twice. And the owner's line is that the
+site is for directions and takes nobody's movements: people press a place
+and are shown the way, and that is all the map asks of them. So the file,
+the card, its styles and the door on the account page went together. The
+rail's `ride` column on `/admin/stats` and `account_from_ride` among the
+sign-up doors keep what they counted and gain nothing more.
+
+**Its strings stayed, for the iPhone app.** The map app in
+`etibarhasanov/TallinnTasteBudsApp` has a recorder of its own and prints it
+with the site's `ride*` keys out of `data/lang/<code>.json` — **What the
+app reads** in `CLAUDE.md` — so a key deleted here is a sentence that falls
+back to English on a phone that cannot be updated in a day. Nothing on the
+website prints them now except `rideUnnamed`, on the account page. They go
+when that app's recorder does and its installed versions have aged out,
+not before. `ridesNone` was the website's alone and went.
 
 **A bike route is a suggestion, and nothing else is drawn under it.** For
 a while the map asked `/api/rides` for the rides in the way's box and drew
@@ -3346,21 +3349,6 @@ ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
 `GET /api/rides?bbox=` stays, because the iPhone app reads it — **What the
 app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
 it steers the suggestion instead of standing beside it.
-
-**A web page records only while it is looked at.** A browser stops telling a
-page where it is the moment the screen locks or the tab goes to the back —
-at once on an iPhone, soon after on Android — and no permission a page can
-ask for changes that. So the card says it before Start, `assets/ride.js` asks
-for the Screen Wake Lock while it records so the screen does not lock on its
-own, and a hidden page **pauses the ride outright** rather than drawing a
-straight line across whatever was ridden unseen. Recording with the phone in
-a pocket is a job for the iPhone app, which can ask for that; it would send
-its rides to the same route.
-
-**The ride is kept on the phone until it is saved**, under `ttb.ride`, every
-ten points and at every pause, so a reload, a sign-in by way of Google or a
-save that failed all come back to the same ride. Saving or throwing it away
-clears it.
 
 **Nobody's name is on a ride.** The points are sent once, on Save, and the
 server takes 200 m off each end before it stores anything — that is where a
@@ -3384,11 +3372,11 @@ hand after the table, a save tries the insert with it and again without.
 **A ride needs no account.** What is wanted of a ride is its points, and
 who rode it adds nothing to them, so Rattatee asks for no sign-in: people
 ride, press Save, and that is it. A save that says `anon: true` and carries
-no session is kept with no account on it. It has to say so, because the
-website's recorder still asks for a sign-in first — that is what makes a
-ride one of **Your rides** — and a page whose session ran out mid-ride
-should be told `signed-out` and offer the sheet rather than have the ride
-filed under nobody. What stands where the account's cap stood is the
+no session is kept with no account on it. It has to say so, because a
+recorder that does ask for a sign-in first — the map app's, and the
+website's while it had one — is making a ride one of **Your rides**, and
+when its session ran out mid-ride it should be told `signed-out` and offer
+the sheet rather than have the ride filed under nobody. What stands where the account's cap stood is the
 network: the fingerprint the saves use, an HMAC of the address and the user
 agent under `SAVE_SALT`, written into `rides.user_id` as `net:<hmac>` and
 capped at forty a UTC day, twice an account's, since every copy of the app
@@ -3402,9 +3390,10 @@ is its points. Without `SAVE_SALT` the save is refused, `no-salt`.
 **Your rides, on the account page.** The one place a ride is under a name is
 its rider's own `/account.html`: a **Your rides** card between your lists
 and the ones you kept, a fold with the count on it, each ride a row — what
-you called it, or *Bike ride*, then how far, how long and the day — and
-**Record a ride** along its foot, an `.alt` because the page's one filled
-button is Make a list. It reads `GET /api/rides?mine=1`, which answers the
+you called it, or *Bike ride*, then how far, how long and the day. Nothing
+on it records one, and somebody with no rides has no card: the only
+sentence an empty one could say is where to go and record, and that is an
+app, not a button here. It reads `GET /api/rides?mine=1`, which answers the
 session's own rides with their names and no lines, uncached — and so does
 `GET /api/rides` with nothing asked, which is how the iPhone app asks. A row
 on the website opens nothing yet: the page that opens one is the app's.
@@ -3447,16 +3436,17 @@ a walk's check-in; a faked ride costs a row nobody is shown.
 
 `rides` is in `db/schema.sql` and is applied by hand. Until it is, the
 route answers `ready: false` and a
-save fails with the ride kept on the phone. The page half is
-`assets/ride.js` (`TTBRide`, mounted by `mountRide()` in `assets/app.js`), the server half `functions/api/rides.js`.
-It reports `ride_open`, `ride_start`, `ride_pause`, `ride_resume`,
-`ride_finish`, `ride_save`, `ride_throw` and `ride_signin`, the account page
-`ride_record`, and a save counts as `map:ride_save`.
+save fails with the ride kept on the phone. The server half is
+`functions/api/rides.js`, and there is no page half any more: the account
+page's `ridesCard()` reads, and nothing writes. A save counts as
+`map:ride_save`; the presses the website's recorder reported — `ride_open`,
+`ride_record`, `ride_start`, `ride_pause`, `ride_resume`, `ride_finish`,
+`ride_throw` and `ride_signin` — are sent by nothing now.
 
 **A ride with a gap in it is kept as the runs that were ridden.** A ride
 paused at one place and resumed at another — the far side of a train, or
-after the phone was locked in a pocket, which pauses the page's recorder
-outright — arrives as one line with a step in it nobody rode. The recorder
+after the phone was locked in a pocket, which paused the website's
+recorder outright while it had one — arrives as one line with a step in it nobody rode. The recorder
 refuses a step faster than 60 km/h, but a pause makes any step slow: three
 kilometres of railway in eight minutes is 22 km/h. For the first day those
 were stored as they came, and two of the first eleven rides were kept with
@@ -20453,12 +20443,7 @@ The map, `assets/app.js`:
 | `route_trip` | `n` — another of the bus journeys on offer pressed, 0 the first |
 | `route_way` | `n`, `mode` — another of the ways on offer for a walk, a ride or a drive pressed, 0 the router's first |
 | `route_train` | `n`, `mode` — a train by bike pressed, `n` counted among the ways before it — **By bike, a train too** |
-| `ride_open` | `from` — `account`, the map opened at `/?ride=1` by Record a ride on the account page; `map`, the bike button on the map, until it was taken off on 2026-11-17 |
-| `ride_record` | — Record a ride on the account page's Your rides card, leaving for the map |
-| `ride_start`, `ride_pause`, `ride_resume`, `ride_finish` | — the recorder's buttons; `ride_resume` is also Keep riding on a ride too short to keep |
-| `ride_save` | — a ride the server kept |
-| `ride_throw` | — Throw it away |
-| `ride_signin` | — Sign in on the recorder, signed out |
+| `ride_save` | — a ride the server kept, counted by `functions/api/rides.js` itself. The website's recorder reported `ride_open`, `ride_record`, `ride_start`, `ride_pause`, `ride_resume`, `ride_finish`, `ride_throw` and `ride_signin` beside it until it was taken out on 2026-11-18 |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
@@ -20494,7 +20479,7 @@ The map, `assets/app.js`:
 | `account_password_change`, `account_rename`, `account_delete` | — on success |
 | `account_nudge` | `taken` |
 | `account_nudge_shown`, `account_nudge_faded` | — the offer put up, and it taking itself away unanswered after nine seconds |
-| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make`, `_ride` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, the Make a list that stood at the foot of Discover until 2026-11-14, or Sign in on the bike ride recorder. One name per door because the site's own count keeps names and not parameters |
+| `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make`, `_ride` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, the Make a list that stood at the foot of Discover until 2026-11-14, or Sign in on the website's bike ride recorder, until it was taken out on 2026-11-18. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
 | `account_try_up`, `_in` | — its button pressed |
 | `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |

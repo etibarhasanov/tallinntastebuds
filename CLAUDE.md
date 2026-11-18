@@ -478,7 +478,7 @@ Read out of Kohuke on 2026-11-11, the day it was written.
 **And a third records rides.** Rattatee (`etibarhasanov/rattatee`, SwiftUI,
 bundle id `ee.tallinntastebuds.rattatee`) records a bike ride with the screen
 locked and the phone in a pocket, which a web page cannot, and saves it
-through the route the map's own recorder uses. No backend, the same
+through `/api/rides`. It is the recorder: the website has none. No backend, the same
 accounts, the same cookie, the same rule — **add a field, never rename or
 remove one** — and its door is `Rattatee/Core/API.swift`.
 
@@ -537,10 +537,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
 - Signing in, as above: `/api/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.
-- Numbers it restates, to be changed in both places: `STEP`, `SURE` and
-  `JUMP` out of `assets/ride.js`; its 700 m, which is `MIN_METERS` and twice
-  `ENDS`; `MAX_NAME`, `MAX_POINTS` and `nearTallinn()`'s box; and the 200 m
-  in the sentence on its save card.
+- Numbers it restates, to be changed in both places: its 700 m, which is
+  `MIN_METERS` and twice `ENDS` in `functions/api/rides.js`; `MAX_NAME`,
+  `MAX_POINTS` and `nearTallinn()`'s box; and the 200 m in the sentence on
+  its save card. How far apart its points are, how sure a fix has to be and
+  how fast a jump may be are its own now: the website's recorder, which
+  they were copied from, was taken out on 2026-11-18.
 - Strings: none asked for. Its words are compiled in, in English, Estonian
   and Russian, the `ride*`, `account*`, `list*` and `lists*` ones copied out
   of `data/ui.json` under the same keys, so a sentence fixed here is fixed

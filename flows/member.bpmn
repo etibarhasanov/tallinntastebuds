@@ -7,7 +7,7 @@
     <bpmn:participant id="member-pool" name="A member, signed in" processRef="member-process" />
   </bpmn:collaboration>
   <bpmn:process id="member-process" name="A member, signed in" isExecutable="false">
-    <bpmn:documentation>Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, walking a list and checking in at its places, recording a bike ride, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.</bpmn:documentation>
+    <bpmn:documentation>Somebody with an account: a username and a password or Google. Everything a visitor can do, plus saves that follow them, lists of their own, keeping other people's lists, walking a list and checking in at its places, the bike rides they recorded in the iPhone app, discount codes, a page under their name, posts on the blog, and flashcards (drawn on its own). A save, a keep and a discount happen where they are; everything else starts on the account page.</bpmn:documentation>
     <bpmn:laneSet id="member-lanes">
       <bpmn:lane id="member-lane-member" name="Member">
         <bpmn:flowNodeRef>signed-in</bpmn:flowNodeRef>
@@ -32,7 +32,6 @@
         <bpmn:flowNodeRef>walk-check</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>walk-done</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ride</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ride-keep</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ride-done</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>deal</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>admit</bpmn:flowNodeRef>
@@ -71,7 +70,7 @@ ref: functions/api/account.js GET</bpmn:documentation>
       <bpmn:outgoing>member-e5</bpmn:outgoing>
       <bpmn:outgoing>member-e15</bpmn:outgoing>
       <bpmn:outgoing>member-e18</bpmn:outgoing>
-      <bpmn:outgoing>member-e24</bpmn:outgoing>
+      <bpmn:outgoing>member-e23</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="save" name="Saves a place">
       <bpmn:documentation>when: save_place
@@ -92,13 +91,13 @@ ref: assets/account.js</bpmn:documentation>
       <bpmn:outgoing>member-e7</bpmn:outgoing>
       <bpmn:outgoing>member-e8</bpmn:outgoing>
       <bpmn:outgoing>member-e21</bpmn:outgoing>
-      <bpmn:outgoing>member-e27</bpmn:outgoing>
-      <bpmn:outgoing>member-e30</bpmn:outgoing>
-      <bpmn:outgoing>member-e33</bpmn:outgoing>
+      <bpmn:outgoing>member-e26</bpmn:outgoing>
+      <bpmn:outgoing>member-e29</bpmn:outgoing>
+      <bpmn:outgoing>member-e32</bpmn:outgoing>
+      <bpmn:outgoing>member-e35</bpmn:outgoing>
       <bpmn:outgoing>member-e36</bpmn:outgoing>
-      <bpmn:outgoing>member-e37</bpmn:outgoing>
-      <bpmn:outgoing>member-e42</bpmn:outgoing>
-      <bpmn:outgoing>member-e45</bpmn:outgoing>
+      <bpmn:outgoing>member-e41</bpmn:outgoing>
+      <bpmn:outgoing>member-e44</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="account-read" name="Saves and lists read">
       <bpmn:incoming>member-e7</bpmn:incoming>
@@ -200,99 +199,80 @@ ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:doc
     <bpmn:endEvent id="walk-done" name="Finished, on the list's board">
       <bpmn:incoming>member-e20</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="ride" name="Records a bike ride">
-      <bpmn:documentation>From Record a ride on the account page's Your rides card, which lists the rides they saved and opens the map with the recorder up — the map itself has no button for it: the phone's location while the page is open and the screen on, a point every dozen metres, paused when the page is hidden, kept on the phone until it is saved or thrown away.
-when: ride_open
-when: ride_record
-when: ride_start
-when: ride_pause
-when: ride_resume
-when: ride_finish
-when: ride_throw
-ref: assets/ride.js
-ref: assets/app.js mountRide()
+    <bpmn:userTask id="ride" name="Reads the bike rides they recorded">
+      <bpmn:documentation>The Your rides card on the account page, there once they have a ride: what each was called, how far, how long and the day. Nothing on the website records one — a ride is recorded in Rattatee, the iPhone app, and saved under the account it is signed in to.
 ref: assets/account.js ridesCard()
 ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
       <bpmn:incoming>member-e21</bpmn:incoming>
       <bpmn:outgoing>member-e22</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="ride-keep" name="Keeps the ride without its first and last 200 m, and without a name on it">
-      <bpmn:documentation>A ride paused and resumed somewhere else is kept as the runs that were ridden, a row each. Each run is then counted into the squares of the city it crossed, which nothing reads yet.
-when: ride_save
-ref: functions/api/rides.js POST
-ref: functions/api/_sections.js</bpmn:documentation>
+    <bpmn:endEvent id="ride-done" name="Their rides, listed">
       <bpmn:incoming>member-e22</bpmn:incoming>
-      <bpmn:outgoing>member-e23</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="ride-done" name="A confirmed bike route, kept and listed under Your rides">
-      <bpmn:documentation>ref: functions/api/rides.js POST
-ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
-      <bpmn:incoming>member-e23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="deal" name="Opens a discount pass">
       <bpmn:documentation>when: page:deal
 ref: deal.html
 ref: assets/deal.js</bpmn:documentation>
-      <bpmn:incoming>member-e24</bpmn:incoming>
-      <bpmn:outgoing>member-e25</bpmn:outgoing>
+      <bpmn:incoming>member-e23</bpmn:incoming>
+      <bpmn:outgoing>member-e24</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="admit" name="Admits the account, draws the hour's rate">
       <bpmn:documentation>when: pass_shown
 ref: functions/api/pass.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e25</bpmn:incoming>
-      <bpmn:outgoing>member-e26</bpmn:outgoing>
+      <bpmn:incoming>member-e24</bpmn:incoming>
+      <bpmn:outgoing>member-e25</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="deal-done" name="Shows the code (see the discount diagram)">
-      <bpmn:incoming>member-e26</bpmn:incoming>
+      <bpmn:incoming>member-e25</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="edit-page" name="Edits the page under their name">
       <bpmn:documentation>A line about themselves, three handles, the languages they speak, a page of links with their public lists among it in the order they drag them — the line and the links in as many of the site's languages as they write them in.
 when: page:edit
 ref: edit.html
 ref: assets/edit.js</bpmn:documentation>
-      <bpmn:incoming>member-e27</bpmn:incoming>
-      <bpmn:outgoing>member-e28</bpmn:outgoing>
+      <bpmn:incoming>member-e26</bpmn:incoming>
+      <bpmn:outgoing>member-e27</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="page-saved" name="Stores the page">
       <bpmn:documentation>when: edit_save
 ref: functions/api/account.js POST display, about, lines, links, speaks, rows</bpmn:documentation>
-      <bpmn:incoming>member-e28</bpmn:incoming>
-      <bpmn:outgoing>member-e29</bpmn:outgoing>
+      <bpmn:incoming>member-e27</bpmn:incoming>
+      <bpmn:outgoing>member-e28</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="page-done" name="Profile up to date">
-      <bpmn:incoming>member-e29</bpmn:incoming>
+      <bpmn:incoming>member-e28</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="write" name="Writes a post for the blog">
       <bpmn:documentation>Headings, bold, links, lists, quotes, places from the map and public lists a reader swipes through, ten at the most, in as many of the site's languages as they write it in. A draft until they publish it; 20,000 characters, 10 new a day, 200 in all.
 when: page:write
 ref: write.html
 ref: assets/write.js</bpmn:documentation>
-      <bpmn:incoming>member-e30</bpmn:incoming>
-      <bpmn:outgoing>member-e31</bpmn:outgoing>
+      <bpmn:incoming>member-e29</bpmn:incoming>
+      <bpmn:outgoing>member-e30</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="post-saved" name="Stores it, a draft or published">
       <bpmn:documentation>when: write_publish
 ref: functions/api/posts.js POST save, delete</bpmn:documentation>
-      <bpmn:incoming>member-e31</bpmn:incoming>
-      <bpmn:outgoing>member-e32</bpmn:outgoing>
+      <bpmn:incoming>member-e30</bpmn:incoming>
+      <bpmn:outgoing>member-e31</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="post-live" name="On /blog and their profile">
-      <bpmn:incoming>member-e32</bpmn:incoming>
+      <bpmn:incoming>member-e31</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="insights" name="Reads who opened it, their lists and their posts">
       <bpmn:documentation>when: page:insights
 ref: insights.html
 ref: assets/insights.js</bpmn:documentation>
-      <bpmn:incoming>member-e33</bpmn:incoming>
-      <bpmn:outgoing>member-e34</bpmn:outgoing>
+      <bpmn:incoming>member-e32</bpmn:incoming>
+      <bpmn:outgoing>member-e33</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="views" name="Counts views of their own page, lists and posts">
       <bpmn:documentation>ref: functions/api/insights.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e34</bpmn:incoming>
-      <bpmn:outgoing>member-e35</bpmn:outgoing>
+      <bpmn:incoming>member-e33</bpmn:incoming>
+      <bpmn:outgoing>member-e34</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="insights-done" name="Knows who looked">
-      <bpmn:incoming>member-e35</bpmn:incoming>
+      <bpmn:incoming>member-e34</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="account" name="Changes password, username or Google">
       <bpmn:documentation>when: account_password_change
@@ -300,64 +280,64 @@ when: account_rename
 when: account_google_unlink
 ref: account.html
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e36</bpmn:incoming>
-      <bpmn:outgoing>member-e40</bpmn:outgoing>
+      <bpmn:incoming>member-e35</bpmn:incoming>
+      <bpmn:outgoing>member-e39</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-change" name="Changes it, signs other devices out on a new password">
       <bpmn:documentation>ref: functions/api/account.js POST password-change, username-change, google-unlink
 ref: functions/api/google.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e40</bpmn:incoming>
-      <bpmn:outgoing>member-e41</bpmn:outgoing>
+      <bpmn:incoming>member-e39</bpmn:incoming>
+      <bpmn:outgoing>member-e40</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="account-done" name="Account changed">
-      <bpmn:incoming>member-e41</bpmn:incoming>
+      <bpmn:incoming>member-e40</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="student" name="Says they are a student until a date">
       <bpmn:documentation>On the Student card of the account page. Nobody checks it: the date is the rate from the next pass. It can be changed, and 'I'm not a student' clears it.
 when: student_ask
 when: student_not
 ref: assets/account.js studentCard()</bpmn:documentation>
-      <bpmn:incoming>member-e37</bpmn:incoming>
-      <bpmn:outgoing>member-e38</bpmn:outgoing>
+      <bpmn:incoming>member-e36</bpmn:incoming>
+      <bpmn:outgoing>member-e37</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="student-asked" name="Keeps the date as the day they are a student until">
       <bpmn:documentation>Written straight into student_until, which the pass reads.
 ref: functions/api/account.js POST student</bpmn:documentation>
-      <bpmn:incoming>member-e38</bpmn:incoming>
-      <bpmn:outgoing>member-e39</bpmn:outgoing>
+      <bpmn:incoming>member-e37</bpmn:incoming>
+      <bpmn:outgoing>member-e38</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="student-done" name="A student until that day">
-      <bpmn:incoming>member-e39</bpmn:incoming>
+      <bpmn:incoming>member-e38</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="sign-out" name="Signs out">
       <bpmn:documentation>when: account_logout
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e42</bpmn:incoming>
-      <bpmn:outgoing>member-e43</bpmn:outgoing>
+      <bpmn:incoming>member-e41</bpmn:incoming>
+      <bpmn:outgoing>member-e42</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="session-gone" name="Deletes the session">
       <bpmn:documentation>ref: functions/api/account.js POST logout</bpmn:documentation>
-      <bpmn:incoming>member-e43</bpmn:incoming>
-      <bpmn:outgoing>member-e44</bpmn:outgoing>
+      <bpmn:incoming>member-e42</bpmn:incoming>
+      <bpmn:outgoing>member-e43</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="visitor" name="A visitor again">
-      <bpmn:incoming>member-e44</bpmn:incoming>
+      <bpmn:incoming>member-e43</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="delete" name="Deletes their account">
       <bpmn:documentation>Asks for the password, or the username on an account made through Google. No undo.
 when: account_delete
 ref: assets/account.js
 ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>member-e45</bpmn:incoming>
-      <bpmn:outgoing>member-e46</bpmn:outgoing>
+      <bpmn:incoming>member-e44</bpmn:incoming>
+      <bpmn:outgoing>member-e45</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-gone" name="Deletes the account and everything filed under it, keeps the numbers">
       <bpmn:documentation>ref: functions/api/account.js POST delete</bpmn:documentation>
-      <bpmn:incoming>member-e46</bpmn:incoming>
-      <bpmn:outgoing>member-e47</bpmn:outgoing>
+      <bpmn:incoming>member-e45</bpmn:incoming>
+      <bpmn:outgoing>member-e46</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="deleted" name="Nobody, on the map">
-      <bpmn:incoming>member-e47</bpmn:incoming>
+      <bpmn:incoming>member-e46</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="member-e1" sourceRef="signed-in" targetRef="what-now" />
     <bpmn:sequenceFlow id="member-e2" name="save" sourceRef="what-now" targetRef="save" />
@@ -379,33 +359,32 @@ ref: assets/app.js</bpmn:documentation>
     <bpmn:sequenceFlow id="member-e18" name="walk a list" sourceRef="what-now" targetRef="walk" />
     <bpmn:sequenceFlow id="member-e19" sourceRef="walk" targetRef="walk-check" />
     <bpmn:sequenceFlow id="member-e20" sourceRef="walk-check" targetRef="walk-done" />
-    <bpmn:sequenceFlow id="member-e21" name="record a ride" sourceRef="account-what" targetRef="ride" />
-    <bpmn:sequenceFlow id="member-e22" sourceRef="ride" targetRef="ride-keep" />
-    <bpmn:sequenceFlow id="member-e23" sourceRef="ride-keep" targetRef="ride-done" />
-    <bpmn:sequenceFlow id="member-e24" name="discount" sourceRef="what-now" targetRef="deal" />
-    <bpmn:sequenceFlow id="member-e25" sourceRef="deal" targetRef="admit" />
-    <bpmn:sequenceFlow id="member-e26" sourceRef="admit" targetRef="deal-done" />
-    <bpmn:sequenceFlow id="member-e27" name="their page" sourceRef="account-what" targetRef="edit-page" />
-    <bpmn:sequenceFlow id="member-e28" sourceRef="edit-page" targetRef="page-saved" />
-    <bpmn:sequenceFlow id="member-e29" sourceRef="page-saved" targetRef="page-done" />
-    <bpmn:sequenceFlow id="member-e30" name="write a post" sourceRef="account-what" targetRef="write" />
-    <bpmn:sequenceFlow id="member-e31" sourceRef="write" targetRef="post-saved" />
-    <bpmn:sequenceFlow id="member-e32" sourceRef="post-saved" targetRef="post-live" />
-    <bpmn:sequenceFlow id="member-e33" name="insights" sourceRef="account-what" targetRef="insights" />
-    <bpmn:sequenceFlow id="member-e34" sourceRef="insights" targetRef="views" />
-    <bpmn:sequenceFlow id="member-e35" sourceRef="views" targetRef="insights-done" />
-    <bpmn:sequenceFlow id="member-e36" name="settings" sourceRef="account-what" targetRef="account" />
-    <bpmn:sequenceFlow id="member-e37" name="student" sourceRef="account-what" targetRef="student" />
-    <bpmn:sequenceFlow id="member-e38" sourceRef="student" targetRef="student-asked" />
-    <bpmn:sequenceFlow id="member-e39" sourceRef="student-asked" targetRef="student-done" />
-    <bpmn:sequenceFlow id="member-e40" sourceRef="account" targetRef="account-change" />
-    <bpmn:sequenceFlow id="member-e41" sourceRef="account-change" targetRef="account-done" />
-    <bpmn:sequenceFlow id="member-e42" name="sign out" sourceRef="account-what" targetRef="sign-out" />
-    <bpmn:sequenceFlow id="member-e43" sourceRef="sign-out" targetRef="session-gone" />
-    <bpmn:sequenceFlow id="member-e44" sourceRef="session-gone" targetRef="visitor" />
-    <bpmn:sequenceFlow id="member-e45" name="delete" sourceRef="account-what" targetRef="delete" />
-    <bpmn:sequenceFlow id="member-e46" sourceRef="delete" targetRef="account-gone" />
-    <bpmn:sequenceFlow id="member-e47" sourceRef="account-gone" targetRef="deleted" />
+    <bpmn:sequenceFlow id="member-e21" name="your rides" sourceRef="account-what" targetRef="ride" />
+    <bpmn:sequenceFlow id="member-e22" sourceRef="ride" targetRef="ride-done" />
+    <bpmn:sequenceFlow id="member-e23" name="discount" sourceRef="what-now" targetRef="deal" />
+    <bpmn:sequenceFlow id="member-e24" sourceRef="deal" targetRef="admit" />
+    <bpmn:sequenceFlow id="member-e25" sourceRef="admit" targetRef="deal-done" />
+    <bpmn:sequenceFlow id="member-e26" name="their page" sourceRef="account-what" targetRef="edit-page" />
+    <bpmn:sequenceFlow id="member-e27" sourceRef="edit-page" targetRef="page-saved" />
+    <bpmn:sequenceFlow id="member-e28" sourceRef="page-saved" targetRef="page-done" />
+    <bpmn:sequenceFlow id="member-e29" name="write a post" sourceRef="account-what" targetRef="write" />
+    <bpmn:sequenceFlow id="member-e30" sourceRef="write" targetRef="post-saved" />
+    <bpmn:sequenceFlow id="member-e31" sourceRef="post-saved" targetRef="post-live" />
+    <bpmn:sequenceFlow id="member-e32" name="insights" sourceRef="account-what" targetRef="insights" />
+    <bpmn:sequenceFlow id="member-e33" sourceRef="insights" targetRef="views" />
+    <bpmn:sequenceFlow id="member-e34" sourceRef="views" targetRef="insights-done" />
+    <bpmn:sequenceFlow id="member-e35" name="settings" sourceRef="account-what" targetRef="account" />
+    <bpmn:sequenceFlow id="member-e36" name="student" sourceRef="account-what" targetRef="student" />
+    <bpmn:sequenceFlow id="member-e37" sourceRef="student" targetRef="student-asked" />
+    <bpmn:sequenceFlow id="member-e38" sourceRef="student-asked" targetRef="student-done" />
+    <bpmn:sequenceFlow id="member-e39" sourceRef="account" targetRef="account-change" />
+    <bpmn:sequenceFlow id="member-e40" sourceRef="account-change" targetRef="account-done" />
+    <bpmn:sequenceFlow id="member-e41" name="sign out" sourceRef="account-what" targetRef="sign-out" />
+    <bpmn:sequenceFlow id="member-e42" sourceRef="sign-out" targetRef="session-gone" />
+    <bpmn:sequenceFlow id="member-e43" sourceRef="session-gone" targetRef="visitor" />
+    <bpmn:sequenceFlow id="member-e44" name="delete" sourceRef="account-what" targetRef="delete" />
+    <bpmn:sequenceFlow id="member-e45" sourceRef="delete" targetRef="account-gone" />
+    <bpmn:sequenceFlow id="member-e46" sourceRef="account-gone" targetRef="deleted" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="member-diagram">
     <bpmndi:BPMNPlane id="member-plane" bpmnElement="member-collaboration">
@@ -491,12 +470,9 @@ ref: assets/app.js</bpmn:documentation>
       <bpmndi:BPMNShape id="ride-di" bpmnElement="ride">
         <dc:Bounds x="855" y="688" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ride-keep-di" bpmnElement="ride-keep">
-        <dc:Bounds x="1045" y="688" width="120" height="70" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ride-done-di" bpmnElement="ride-done">
-        <dc:Bounds x="1277" y="705" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1240" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1087" y="705" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
         <dc:Bounds x="475" y="468" width="120" height="70" />
@@ -685,129 +661,125 @@ ref: assets/app.js</bpmn:documentation>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e22-di" bpmnElement="member-e22">
         <di:waypoint x="975" y="723" />
-        <di:waypoint x="1045" y="723" />
+        <di:waypoint x="1087" y="723" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e23-di" bpmnElement="member-e23">
-        <di:waypoint x="1165" y="723" />
-        <di:waypoint x="1277" y="723" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="503" />
         <di:waypoint x="475" y="503" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
+      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
         <di:waypoint x="595" y="503" />
         <di:waypoint x="665" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
+      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
         <di:waypoint x="785" y="503" />
         <di:waypoint x="897" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e27-di" bpmnElement="member-e27">
+      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="833" />
         <di:waypoint x="855" y="833" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="803" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e28-di" bpmnElement="member-e28">
+      <bpmndi:BPMNEdge id="member-e27-di" bpmnElement="member-e27">
         <di:waypoint x="975" y="833" />
         <di:waypoint x="1045" y="833" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e29-di" bpmnElement="member-e29">
+      <bpmndi:BPMNEdge id="member-e28-di" bpmnElement="member-e28">
         <di:waypoint x="1165" y="833" />
         <di:waypoint x="1277" y="833" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e30-di" bpmnElement="member-e30">
+      <bpmndi:BPMNEdge id="member-e29-di" bpmnElement="member-e29">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="943" />
         <di:waypoint x="855" y="943" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="913" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e31-di" bpmnElement="member-e31">
+      <bpmndi:BPMNEdge id="member-e30-di" bpmnElement="member-e30">
         <di:waypoint x="975" y="943" />
         <di:waypoint x="1045" y="943" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e32-di" bpmnElement="member-e32">
+      <bpmndi:BPMNEdge id="member-e31-di" bpmnElement="member-e31">
         <di:waypoint x="1165" y="943" />
         <di:waypoint x="1277" y="943" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e33-di" bpmnElement="member-e33">
+      <bpmndi:BPMNEdge id="member-e32-di" bpmnElement="member-e32">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1053" />
         <di:waypoint x="855" y="1053" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1023" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e34-di" bpmnElement="member-e34">
+      <bpmndi:BPMNEdge id="member-e33-di" bpmnElement="member-e33">
         <di:waypoint x="975" y="1053" />
         <di:waypoint x="1045" y="1053" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e35-di" bpmnElement="member-e35">
+      <bpmndi:BPMNEdge id="member-e34-di" bpmnElement="member-e34">
         <di:waypoint x="1165" y="1053" />
         <di:waypoint x="1277" y="1053" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e36-di" bpmnElement="member-e36">
+      <bpmndi:BPMNEdge id="member-e35-di" bpmnElement="member-e35">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1163" />
         <di:waypoint x="855" y="1163" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1133" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e37-di" bpmnElement="member-e37">
+      <bpmndi:BPMNEdge id="member-e36-di" bpmnElement="member-e36">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1273" />
         <di:waypoint x="855" y="1273" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1243" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
+      <bpmndi:BPMNEdge id="member-e37-di" bpmnElement="member-e37">
         <di:waypoint x="975" y="1273" />
         <di:waypoint x="1045" y="1273" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e39-di" bpmnElement="member-e39">
+      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
         <di:waypoint x="1165" y="1273" />
         <di:waypoint x="1277" y="1273" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
+      <bpmndi:BPMNEdge id="member-e39-di" bpmnElement="member-e39">
         <di:waypoint x="975" y="1163" />
         <di:waypoint x="1045" y="1163" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
+      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
         <di:waypoint x="1165" y="1163" />
         <di:waypoint x="1277" y="1163" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e42-di" bpmnElement="member-e42">
+      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1383" />
         <di:waypoint x="855" y="1383" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1353" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e43-di" bpmnElement="member-e43">
+      <bpmndi:BPMNEdge id="member-e42-di" bpmnElement="member-e42">
         <di:waypoint x="975" y="1383" />
         <di:waypoint x="1045" y="1383" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e44-di" bpmnElement="member-e44">
+      <bpmndi:BPMNEdge id="member-e43-di" bpmnElement="member-e43">
         <di:waypoint x="1165" y="1383" />
         <di:waypoint x="1277" y="1383" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e45-di" bpmnElement="member-e45">
+      <bpmndi:BPMNEdge id="member-e44-di" bpmnElement="member-e44">
         <di:waypoint x="750" y="173" />
         <di:waypoint x="766" y="173" />
         <di:waypoint x="766" y="1493" />
         <di:waypoint x="855" y="1493" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1463" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e46-di" bpmnElement="member-e46">
+      <bpmndi:BPMNEdge id="member-e45-di" bpmnElement="member-e45">
         <di:waypoint x="975" y="1493" />
         <di:waypoint x="1045" y="1493" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e47-di" bpmnElement="member-e47">
+      <bpmndi:BPMNEdge id="member-e46-di" bpmnElement="member-e46">
         <di:waypoint x="1165" y="1493" />
         <di:waypoint x="1277" y="1493" />
       </bpmndi:BPMNEdge>

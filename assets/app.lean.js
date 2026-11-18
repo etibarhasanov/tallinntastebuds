@@ -1150,7 +1150,6 @@
         if (stretch.options.tone) stretch.setStyle({ color: c[stretch.options.tone] });
       });
     }
-    if (window.TTBRide) TTBRide.restyle();
   }
 
   var lastSheetKey = null;
@@ -1972,7 +1971,6 @@
     var name = state.account.user || '';
     dom.findMe.classList.toggle('is-me', !!name);
     dom.findMe.lastElementChild.textContent = name.charAt(0).toUpperCase();
-    if (window.TTBRide) TTBRide.refresh();
   }
 
   function paintListsButton() {
@@ -3321,28 +3319,6 @@
     document.addEventListener('focusout', function () {
       setTimeout(syncRailReveal, 0);
     });
-  }
-
-  function mountRide() {
-    if (!window.TTBRide || !map) return;
-    TTBRide.mount(dom.rideCard, {
-      map: map,
-      t: t,
-      el: el,
-      distance: routeDistance,
-      formatDecimal: formatDecimal,
-      colour: function () { return markerColours().bike; },
-      signedIn: function () { return !!state.account.user; },
-      signIn: function () { openAccount('in', '', 'ride'); },
-      track: function (name) { TTBTrack.event(name); }
-    });
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('ride') !== '1') return;
-    params.delete('ride');
-    var rest = params.toString();
-    window.history.replaceState(window.history.state, '', window.location.pathname + (rest ? '?' + rest : ''));
-    TTBTrack.event('ride_open', { from: 'account' });
-    TTBRide.open();
   }
 
   function mountRadio() {
@@ -8089,7 +8065,6 @@
       panelShare: $('panel-share'),
       panelDirections: $('panel-directions'),
       routeBar: $('route-bar'),
-      rideCard: $('ride-card'),
       walkBand: $('walk-band'),
       routeSay: $('route-say'),
       routeOut: $('route-out'),
@@ -8215,7 +8190,6 @@
       paintAccountRow();
       renderPanel();
       mountRadio();
-      mountRide();
       mountShell();
       mountDiscover();
       renderStoryRing();

@@ -412,7 +412,10 @@
  *                                    link from another page, the way back
  *                                    from Google, the Make a list that
  *                                    Discover ended in until 2026-11-14,
- *                                    and the bike ride recorder's Sign in
+ *                                    and the website's bike ride recorder's
+ *                                    Sign in, until that recorder was taken
+ *                                    out on 2026-11-18 — kept so a range
+ *                                    before then still reads
  *   account_sheet_<view>             the sheet up, on 'up' (make one) or
  *                                    'in'; 'google' was naming a Google
  *                                    account, a step there is no longer, and
