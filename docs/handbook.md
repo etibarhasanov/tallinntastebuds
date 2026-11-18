@@ -9006,6 +9006,17 @@ asked. Five hundred random `?q=` against the export read it twice rather than
 five hundred times. Only a roll with Google's half in it is kept, so a
 database that failed once is asked again on the next request.
 
+And since 18 November 2026 in the colo's cache too, under `rollKey()`. An
+isolate is not a place: a colo runs as many as the traffic wants and throws
+them away as it likes, and each new one read the table again — 8,620 rows
+that day, the most of any table on `/admin/stats`, for seven cold isolates.
+An isolate with no copy now asks the colo before the database, and the one
+that builds the roll leaves it there, so the table is read once per colo per
+five minutes: 1,209 rows a build, 348,000 a day at the very most for a colo
+asked without a pause, where that was the price of every isolate in it. The
+copy keeps the time it was built, so the two together are never older than
+the five minutes.
+
 **One search of the city.** `/api/places?q=<words>` answers with the twenty
 rows of the roll the words reach best, from two letters typed, and it is the
 one search every client but the map's find bar asks: the iOS app, the picker
@@ -14576,7 +14587,11 @@ one network once. `login_fails` deletes its own rows past the fifteen
 minutes, and `view_seen` its own past the day. An audit in November 2026
 found the four kept theirs for as long as the row lived; that is what the
 function is for, and a new table that files a fingerprint joins `FORGET`
-there.
+there — with a partial index on its date beside it in `db/schema.sql`, of the
+rows still holding one (`idx_saves_forget` is the pattern). The function runs
+after every save, and until 18 November 2026 nothing was keyed on the date,
+so each save walked the whole of `saves` to find the none that were due.
+With the index a run reads what it clears and nothing else.
 
 ## The blog
 

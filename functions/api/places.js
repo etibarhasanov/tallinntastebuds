@@ -59,6 +59,18 @@
  * Google Maps reaches the roll within the five minutes, which is the same
  * time the browser was already allowed to keep the old one.
  *
+ * And, since 2026-11-18, in the colo as well, under rollKey(). An isolate is
+ * not a place: a colo runs as many as the traffic wants and throws them away
+ * as it likes, and each new one read the table again — 8,620 rows on the day
+ * this was measured, the most of any table, for seven cold isolates. So an
+ * isolate with no copy asks the colo's cache before the database, and one
+ * that builds the roll leaves it there for ROLL_TTL. The table is now read
+ * once per colo per five minutes: 1,209 rows a build on 18 Nov 2026, 288
+ * builds a day at the very most, 348,000 rows a day for a colo that is asked
+ * without a pause — where before that was the price of each isolate in it.
+ * A copy out of the colo keeps the time it was built, so the two together
+ * are still never older than the five minutes.
+ *
  * WHAT A ROW CARRIES BEYOND A NAME, AND FOR WHOM
  *
  * The map's find bar searches this same roll — see the find section of
@@ -215,8 +227,35 @@ const ROLL_TTL = 5 * 60 * 1000;
 let kept = null;
 let keptAt = 0;
 
+/* Where the colo keeps the merged roll. An address no request can be
+   answered from: a Function runs before the cache is looked in, and this one
+   answers /api/places itself. */
+function rollKey(request) {
+  return new Request(new URL('/api/places/roll', request.url).toString());
+}
+
+/* The colo's copy, if it has one that is still inside ROLL_TTL, kept in the
+   isolate under the time it was built. Anything thrown is no copy. */
+async function colosRoll(context) {
+  try {
+    const hit = await caches.default.match(rollKey(context.request));
+    if (!hit) return null;
+    const built = Number(hit.headers.get('x-built'));
+    if (!(built > 0) || Date.now() - built >= ROLL_TTL) return null;
+    const roll = await hit.json();
+    if (!Array.isArray(roll) || !roll.length) return null;
+    kept = roll;
+    keptAt = built;
+    return roll;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function cityRoll(context) {
   if (kept && Date.now() - keptAt < ROLL_TTL) return kept;
+  const shared = await colosRoll(context);
+  if (shared) return shared;
   const { env } = context;
   let whole = false;
 
@@ -317,6 +356,18 @@ async function cityRoll(context) {
   if (whole) {
     kept = out;
     keptAt = Date.now();
+    /* For the colo's other isolates, after the answer. A put that fails is
+       an isolate that reads the table itself, as every one did before. */
+    try {
+      const copy = new Response(JSON.stringify(out), {
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
+          'cache-control': 'public, max-age=' + ROLL_TTL / 1000,
+          'x-built': String(keptAt)
+        }
+      });
+      context.waitUntil(caches.default.put(rollKey(context.request), copy));
+    } catch (e) { /* no cache here, or no waitUntil: the isolate's copy stands */ }
   }
   return out;
 }

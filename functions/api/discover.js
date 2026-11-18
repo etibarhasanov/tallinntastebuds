@@ -128,19 +128,36 @@ async function shelf(context, sort) {
   }
 }
 
-/* The places opened least — THE SHELF IS THE QUIET END. Every row of the kind
-   is read, because the bottom of the map is the roll less the rows and not a
-   query: Google's venues are counted under the same kind and are simply never
-   looked up. A count or a roll that cannot be read is an empty shelf, never a
-   map of noughts. */
+/* How many ids one statement names: D1 binds a hundred values at most. */
+const NAMED = 90;
+
+/* The places opened least — THE SHELF IS THE QUIET END. The bottom of the map
+   is the roll less the rows and not a query, so the count of every open place
+   on the map is read — but of those places and no others, each a lookup on
+   the key (kind, id). It read every row of the kind until 2026-11-18, and
+   Google's venues are counted under the same kind: 276 rows that day for the
+   74 open places wanted, on the way to the whole city's thirteen hundred.
+   Now it is the map's own places and no more, however many venues anybody
+   opens — 148 rows read against production that day, two a place — and 288
+   runs a day in a colo at the most: 43,000 rows.
+   A count or a roll that cannot be read is an empty shelf, never a map of
+   noughts. */
 async function quiet(context) {
   try {
-    const { results } = await context.env.DB
-      .prepare("SELECT id, n FROM press_counts WHERE kind = 'place'")
-      .all();
-    const n = new Map(results.map((row) => [row.id, row.n]));
-    return (await mapPlaces(context))
-      .filter((place) => !place.closed)
+    const open = (await mapPlaces(context)).filter((place) => !place.closed);
+    const reads = [];
+    for (let i = 0; i < open.length; i += NAMED) {
+      const ids = open.slice(i, i + NAMED).map((place) => place.id);
+      reads.push(context.env.DB
+        .prepare("SELECT id, n FROM press_counts WHERE kind = 'place' AND id IN (" + ids.map(() => '?').join(', ') + ')')
+        .bind(...ids)
+        .all());
+    }
+    const n = new Map();
+    for (const { results } of await Promise.all(reads)) {
+      for (const row of results) n.set(row.id, row.n);
+    }
+    return open
       .map((place) => ({ id: place.id, n: n.get(place.id) || 0 }))
       .sort((a, b) => a.n - b.n || (a.id < b.id ? -1 : 1))
       .slice(0, QUIET)

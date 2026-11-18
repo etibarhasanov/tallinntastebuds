@@ -67,6 +67,13 @@ CREATE INDEX IF NOT EXISTS idx_saves_ip ON saves (place_id, ip_hash);
 -- until something notices. Both databases have it now.
 CREATE INDEX IF NOT EXISTS idx_saves_owner ON saves (owner);
 
+-- The rows still holding a fingerprint, by their date, and no others:
+-- forgetFingerprints() in functions/api/_lib.js clears the ones past their
+-- window after every write, and without this it walked the whole table to
+-- find them. Partial, so a cleared row leaves the index and a run with
+-- nothing due reads nothing.
+CREATE INDEX IF NOT EXISTS idx_saves_forget ON saves (created_at) WHERE length(ip_hash) = 64;
+
 -- The counts, one row per place, maintained by the write that changes them.
 --
 -- This is not a cache of the table above; it is the answer the map reads, and
@@ -1568,6 +1575,8 @@ CREATE INDEX IF NOT EXISTS idx_feedback_live ON feedback (hidden, created_at DES
 -- left in the last hour. The primary key cannot serve it — it is the id, and
 -- this asks about ip_hash.
 CREATE INDEX IF NOT EXISTS idx_feedback_ip ON feedback (ip_hash, created_at);
+-- As idx_saves_forget, for forgetFingerprints().
+CREATE INDEX IF NOT EXISTS idx_feedback_forget ON feedback (created_at) WHERE length(ip_hash) = 64;
 
 
 -- One row is one person putting a heart on one piece of feedback: agreement,
@@ -1817,6 +1826,8 @@ CREATE TABLE IF NOT EXISTS flashcard_reports (
 -- The cap's lookup: how many cards this fingerprint has reported in the last
 -- hour. The primary key starts with the deck, so it cannot answer this one.
 CREATE INDEX IF NOT EXISTS idx_flashcard_reports_ip ON flashcard_reports (ip_hash, created_at);
+-- As idx_saves_forget, for forgetFingerprints().
+CREATE INDEX IF NOT EXISTS idx_flashcard_reports_forget ON flashcard_reports (created_at) WHERE length(ip_hash) = 64;
 
 -- One row is one day somebody answered at least one card: what the front door
 -- says "4 days in a row" and "you've been away 9 days" out of. flashcard_known
@@ -1987,6 +1998,8 @@ CREATE TABLE IF NOT EXISTS chess_notes (
 CREATE INDEX IF NOT EXISTS idx_chess_notes_game ON chess_notes (game, hidden, at);
 -- The cap's lookup: how many notes this fingerprint has left in the last hour.
 CREATE INDEX IF NOT EXISTS idx_chess_notes_ip ON chess_notes (ip_hash, at);
+-- As idx_saves_forget, for forgetFingerprints().
+CREATE INDEX IF NOT EXISTS idx_chess_notes_forget ON chess_notes (at) WHERE length(ip_hash) = 64;
 
 -- One row is one person's name on a side's ask to end a game short of mate:
 -- a draw, or giving the game up. A side that is one person — the house, the

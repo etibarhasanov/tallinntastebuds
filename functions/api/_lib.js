@@ -132,25 +132,32 @@ export async function fingerprint(secret, ip, ua) {
    throws. Four statements run apart rather than as one batch(), which is one
    transaction: a table not applied yet fails its own statement and leaves the
    other three to land. Each touches only the rows that have aged past their
-   window since the last run, so it is a read and a handful of writes. */
+   window since the last run, so it is a read and a handful of writes.
+
+   And it reads only those rows. Until 2026-11-18 it did not: nothing was
+   keyed on the date, so every save walked the whole of `saves` to find the
+   none that were due — 61 rows that day, and a row more for every save ever
+   made. Each table now has a partial index on its date, of the rows still
+   holding a fingerprint and no others (idx_*_forget in db/schema.sql), and
+   the WHERE below is written the way the index is so SQLite will use it: a
+   run with nothing due reads nothing, and one with something due reads what
+   it clears. Where the index is not applied yet the statement is the walk
+   it was, and right all the same. The four are written out rather than
+   built from a table of names, so tools/sqlcheck.mjs can read their plans. */
 const FINGERPRINT_DAY = 24 * 60 * 60 * 1000;
 const FINGERPRINT_MONTH = 30 * FINGERPRINT_DAY;
 
 const FORGET = [
-  ['feedback', "''", 'created_at', FINGERPRINT_DAY],
-  ['chess_notes', "''", 'at', FINGERPRINT_DAY],
-  ['saves', "''", 'created_at', FINGERPRINT_MONTH],
-  ['flashcard_reports', "'#' || rowid", 'created_at', FINGERPRINT_MONTH]
+  ["UPDATE feedback SET ip_hash = '' WHERE length(ip_hash) = 64 AND created_at < ?", FINGERPRINT_DAY],
+  ["UPDATE chess_notes SET ip_hash = '' WHERE length(ip_hash) = 64 AND at < ?", FINGERPRINT_DAY],
+  ["UPDATE saves SET ip_hash = '' WHERE length(ip_hash) = 64 AND created_at < ?", FINGERPRINT_MONTH],
+  ["UPDATE flashcard_reports SET ip_hash = '#' || rowid WHERE length(ip_hash) = 64 AND created_at < ?", FINGERPRINT_MONTH]
 ];
 
 export function forgetFingerprints(env) {
   const now = Date.now();
-  return Promise.all(FORGET.map(([table, cleared, at, keep]) =>
-    env.DB
-      .prepare(`UPDATE ${table} SET ip_hash = ${cleared} WHERE length(ip_hash) = 64 AND ${at} < ?`)
-      .bind(now - keep)
-      .run()
-      .catch(() => {})
+  return Promise.all(FORGET.map(([sql, keep]) =>
+    env.DB.prepare(sql).bind(now - keep).run().catch(() => {})
   ));
 }
 
