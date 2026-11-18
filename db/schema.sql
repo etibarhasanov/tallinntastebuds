@@ -1975,7 +1975,9 @@ CREATE TABLE IF NOT EXISTS posts (
   -- posts called "My ten places" are two addresses. Never changes once made:
   -- it is what /blog?post= names and what a search engine filed.
   id           TEXT    PRIMARY KEY,
-  -- users.id.
+  -- users.id. Declared INTEGER by mistake and holding TEXT, which a join on
+  -- it cannot match by users' key: join through AUTHOR in
+  -- functions/api/_posts.js, which casts it back.
   owner        INTEGER NOT NULL,
   -- The language it was first written in, one of the site's ten.
   lang         TEXT    NOT NULL,

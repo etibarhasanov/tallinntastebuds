@@ -257,13 +257,26 @@ function viaOf(request, via) {
 }
 
 /* Whether a tag may be filed today: it already was, or the day has room
-   for one more — MAX_VIA_TAGS. A failed read files nothing under it. */
-async function tagRoom(env, day, via) {
+   for one more — MAX_VIA_TAGS. A failed read files nothing under it.
+
+   The table's key is (flow, day, who, id), so both questions name every
+   flow a row can be filed under — each diagram, and each again per device —
+   and the tags as a range of the key rather than a LIKE. Asked by day and
+   who alone, they walked the whole table twice, 28,462 rows on 18 November
+   2026 for every report from a tab that came by a tagged link; named, they
+   read the day's tagged rows and nothing else — 107 for 7 November, a day
+   with two tags, against 19,749, and the same answer. Seven diagrams and
+   three devices bind 28 of the hundred values D1 allows. */
+async function tagRoom(env, day, via, flows) {
+  const filed = flows.flatMap((f) => [f.id].concat(DEVICES.map((d) => d + '.' + f.id)));
+  if (!filed.length) return false;
+  const named = filed.map((_, i) => '?' + (i + 3)).join(', ');
   try {
     const row = await env.DB.prepare(
-      'SELECT EXISTS (SELECT 1 FROM flow_counts WHERE day = ?1 AND who = ?2) AS had, ' +
-      "(SELECT COUNT(DISTINCT who) FROM flow_counts WHERE day = ?1 AND who LIKE 'tag:%') AS tags"
-    ).bind(day, via).first();
+      `SELECT EXISTS (SELECT 1 FROM flow_counts WHERE flow IN (${named}) AND day = ?1 AND who = ?2) AS had, ` +
+      `(SELECT COUNT(DISTINCT who) FROM flow_counts WHERE flow IN (${named}) AND day = ?1 ` +
+      "AND who >= 'tag:' AND who < 'tag;') AS tags"
+    ).bind(day, via, ...filed).first();
     return !!row && (row.had === 1 || row.tags < MAX_VIA_TAGS);
   } catch (e) {
     return false;
@@ -341,7 +354,7 @@ export async function countFlows(context, body) {
   const day = today();
   /* The same facts again under how the tab arrived — ARRIVED VIA. */
   let via = viaOf(request, body.via);
-  if (via && via.indexOf('tag:') === 0 && !(await tagRoom(env, day, via))) via = null;
+  if (via && via.indexOf('tag:') === 0 && !(await tagRoom(env, day, via, flows))) via = null;
   const filed = via ? facts.concat(facts.map(([flow, , id]) => [flow, via, id])) : facts;
   /* And all of it again under the device — BY DEVICE. */
   const device = DEVICES.includes(body.device) ? body.device : null;
@@ -356,6 +369,17 @@ export async function countFlows(context, body) {
 }
 
 /* ------------------------------------------------------------- reading */
+
+/* The first day anything was counted, under any flow. MIN(day) over the
+   whole table cannot use the key, which starts with the flow, and read every
+   row — 14,231 on 18 November 2026, and a few hundred more each day. So it
+   steps from one flow to the next by the key and asks each its own first
+   day, which the key answers at once: a few rows per flow, 54 that day,
+   however long the table gets. */
+const FIRST_DAY =
+  'WITH RECURSIVE f(flow) AS (SELECT MIN(flow) FROM flow_counts ' +
+  'UNION ALL SELECT (SELECT MIN(flow) FROM flow_counts WHERE flow > f.flow) FROM f WHERE f.flow IS NOT NULL) ' +
+  'SELECT MIN((SELECT MIN(day) FROM flow_counts WHERE flow = f.flow)) AS day FROM f WHERE f.flow IS NOT NULL';
 
 /* One diagram over `span` days, or null where there is no table yet —
  * one device's half of it where `device` names one, BY DEVICE.
@@ -397,7 +421,7 @@ export async function readFlows(env, flow, span, device) {
       env.DB.prepare('SELECT who, id, n FROM flow_counts WHERE flow = ? AND day >= ?').bind(filed, cut).all(),
       device
         ? env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts WHERE flow = ?').bind(filed).first()
-        : env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts').first()
+        : env.DB.prepare(FIRST_DAY).first()
     ]);
   } catch (e) {
     return null;
