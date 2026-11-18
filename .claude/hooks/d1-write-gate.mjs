@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 /**
- * Tallinn Tastebuds — a write to D1 is the owner's decision, not a session's.
+ * Tallinn Tastebuds — a write to D1 is the owner's decision, not a session's,
+ * and a read is priced before it runs.
  *
  * A PreToolUse hook on the Cloudflare MCP tool `d1_database_query`, wired in
  * .claude/settings.json. It reads the tool call on stdin and answers with one
  * of three permission decisions:
  *
  *   allow   the SQL is read-only — SELECT, a CTE that only selects, EXPLAIN,
- *           or a PRAGMA being asked rather than set. Checking the state of a
+ *           or a PRAGMA being asked rather than set — and by the planner's
+ *           account it reads READ_MAX rows or fewer. Checking the state of a
  *           table is how any of this gets verified, and a prompt per SELECT
  *           would mean a dozen prompts to answer one question.
+ *   ask     a read priced past READ_MAX, one this cannot price, or any read
+ *           once the day's hand-run reads have passed DAY_MAX or one of them
+ *           came back dearer than READ_MAX — A READ HAS A PRICE below.
  *   ask     a write that names its rows and names at most a hundred of them.
  *           The prompt carries the database, the count and the statements, so
  *           what is about to be written is on the screen before the yes, and
@@ -49,6 +54,12 @@
  * `ask` is one keystroke and the cost of a wrong `deny` is a sentence saying
  * so. The cost of a wrong `allow` is somebody else's rows.
  *
+ * THE SAME FILE RUNS AFTER THE QUERY, AS `--after`
+ *
+ * A PostToolUse hook on the same tool, which reads what the query really
+ * cost out of its answer and keeps the day's total — THE METER below. One
+ * file, so the two numbers that bound a read are written once.
+ *
  * Zero dependencies, like every other tool in this repository, and it runs
  * from whatever directory Claude Code starts it in — the database names come
  * from wrangler.toml when it can be found, and the raw id is printed when it
@@ -56,7 +67,7 @@
  * weaker.
  */
 
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 /* Statements that only read. Everything outside this list — INSERT, UPDATE,
    DELETE, REPLACE, CREATE, DROP, ALTER, ATTACH, VACUUM, BEGIN, a PRAGMA with
@@ -272,14 +283,290 @@ function rowsTouched(part, keys) {
   return bound || null;
 }
 
+/* A READ HAS A PRICE, AND IT IS WORKED OUT BEFORE THE READ IS RUN
+ *
+ * D1 bills the rows a statement walks, and the free plan stops every read on
+ * the account at five million a day. On 2026-11-18 a session answering "how
+ * long did I wait at each stop" joined the points of each ride to themselves
+ * — json_each against json_each, no key between them — and that one
+ * statement read 6,602,979 rows out of a table of fifteen. The same question
+ * walked once, with LAG(), read 29,228. Nothing stood in front of either:
+ * a read was a read and ran.
+ *
+ * The owner's rule since: no hand-run read brings more than READ_MAX rows.
+ * So a read is priced the way tools/sqlcheck.mjs prices the Functions' — an
+ * empty database built from db/schema.sql, SQLite's own EXPLAIN QUERY PLAN —
+ * and the plan is turned into rows with the sizes in SIZES:
+ *
+ *   SCAN t                 the whole table, SIZES[t]
+ *   SEARCH t … (a=?)       one row where every primary-key column is pinned,
+ *                          SEEK where an index is only entered by its front,
+ *                          and the whole table where the bound is a range —
+ *                          `day >= ?` is every day since
+ *   SCAN … VIRTUAL TABLE   json_each and its kind, UNPACKED rows a time: a
+ *                          ride's line is a thousand points
+ *   one inside another     multiplied, which is the whole of what went wrong
+ *
+ * It is an estimate and errs dear: a range is priced as the table, and a
+ * subquery's answer as everything it read. What that costs is a prompt, and
+ * the prompt carries the number. What the estimate cannot see — a table that
+ * grew past its line in SIZES, a search that filters behind its key — the
+ * meter sees afterwards, and one read that comes back past READ_MAX makes
+ * every read after it ask until midnight UTC.
+ *
+ * A read this cannot price asks: a table with no size here, a statement the
+ * planner will not take, a Node without node:sqlite (before 22.5). Fail
+ * closed, as with a write.
+ */
+const READ_MAX = 2000;
+/* Ten reads at the ceiling: 0.4% of the day's five million. Past it a read
+   is still possible, and is the owner's to allow. */
+const DAY_MAX = 20000;
+const UNPACKED = 1000;
+const SEEK = 100;
+
+/* Rows in each table of production, 2026-11-18. MAX(rowid) for a table with
+   one, which reads a row a table — forty-one for the lot:
+ *
+ *   SELECT (SELECT MAX(rowid) FROM saves) saves, (SELECT MAX(rowid) FROM …
+ *
+ * and for the tables WITHOUT ROWID only where the number is written down
+ * elsewhere. A table missing here has no price, so a walk of it asks; add
+ * the line when one is measured. A table that has grown past its line is
+ * caught by the meter, which is the day to measure it again. */
+const SIZES = {
+  saves: 62, save_counts: 39, press_counts: 715, profile_counts: 305, view_seen: 426,
+  list_counts: 117, counter_days: 51, counter_total: 1, users: 81, username_holds: 3,
+  profile_rows: 81, sessions: 105, login_fails: 21, identities: 49, lists: 39,
+  list_items: 451, list_keeps: 8, added_places: 10, google_venues: 1177, google_calls: 55,
+  google_refreshes: 717, google_reranks: 6, google_ranks: 6639, google_scores: 1209,
+  feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
+  flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
+  chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
+  rides: 15, ride_sections: 1920,
+  /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
+     ring that is sixty rows for ever. */
+  visitor_counts: 18439, visitor_live: 60,
+  /* The schema's own list of tables and indexes. */
+  sqlite_master: 200, sqlite_schema: 200
+};
+
+/* An empty copy of the schema to ask the planner, or null where this Node
+   has no SQLite or the schema cannot be read. Built once a run. */
+let planner;
+async function plannerFor(root) {
+  if (planner !== undefined) return planner;
+  planner = null;
+  const emit = process.emitWarning;
+  try {
+    /* node:sqlite says it is experimental on every import, on stderr, where
+       a hook's answer is read from. */
+    process.emitWarning = () => {};
+    const { DatabaseSync } = await import('node:sqlite');
+    const db = new DatabaseSync(':memory:');
+    db.exec(readFileSync(`${root}/db/schema.sql`, 'utf8'));
+    planner = db;
+  } catch (e) {
+    /* Priced as unknown, which asks. */
+  } finally {
+    process.emitWarning = emit;
+  }
+  return planner;
+}
+
+/* The name a plan calls each table by: its own, or the alias the statement
+   gave it. A word after a table that is SQL's and not an alias is neither. */
+const NOT_ALIAS = /^(where|on|join|left|inner|cross|natural|group|order|limit|union|using|window|having|as)$/;
+function aliases(part) {
+  const names = new Map();
+  for (const [, table, alias] of part.matchAll(/(?:\bfrom|\bjoin|,)\s+([a-z_0-9]+)(?:\s+(?:as\s+)?([a-z_0-9]+))?/g)) {
+    if (!(table in SIZES) && !tablesKnown.has(table)) continue;
+    names.set(table, table);
+    if (alias && !NOT_ALIAS.test(alias)) names.set(alias, table);
+  }
+  return names;
+}
+/* Every table the schema has, so one with no line in SIZES is told from a
+   subquery's name: the first has no price, the second is rows already read. */
+let tablesKnown = new Set();
+
+/* What one statement would read, by its plan: a number, Infinity where a
+   table it walks has no size — `unsized` then names it — or null where the
+   planner would not take it. */
+function priceOf(db, part, keys) {
+  let plan;
+  try {
+    plan = db.prepare(`EXPLAIN QUERY PLAN ${part}`).all();
+  } catch (e) {
+    return { rows: null, why: e.message };
+  }
+  const names = aliases(part);
+  const under = new Map();
+  for (const node of plan) under.set(node.parent, (under.get(node.parent) || []).concat(node));
+  const made = new Map();
+  let unsized = '';
+
+  const sized = (table) => {
+    if (table in SIZES) return Math.max(SIZES[table], 1);
+    unsized = table;
+    return Infinity;
+  };
+  const searched = (table, how) => {
+    const bound = /\(([^()]*)\)\s*$/.exec(how);
+    /* Nothing to seek by: one end of the key for a bare MIN or MAX, and
+       from one end to the other for anything with a WHERE behind it. */
+    if (!bound) return / where /.test(part) ? sized(table) : 1;
+    const terms = bound[1].split(' AND ');
+    if (terms.some((term) => /[<>]/.test(term))) return sized(table);
+    const whole = /PRIMARY KEY/.test(how) && terms.length >= (keys.get(table) || ['rowid']).length;
+    return whole ? 1 : Math.min(SEEK, table in SIZES ? sized(table) : SEEK);
+  };
+  /* A lone walk with a LIMIT and nothing to filter, sort or add up stops
+     where the LIMIT does. */
+  const peek = plan.length === 1 && !/ where |\b(count|sum|avg|min|max|total|group_concat)\s*\(/.test(part)
+    ? / limit (\d+)(?: offset \d+)?$/.exec(part)
+    : null;
+
+  /* Nothing, however many times, is nothing — and not what Infinity times
+     nought comes to, which would read as a statement with no price to pay. */
+  const times = (loops, each) => (each ? loops * each : 0);
+  /* `loops` is how many times the next thing down runs; `rows` what has
+     been read. A loop inside a loop multiplies, a subquery beside one adds. */
+  const walk = (parent) => {
+    let loops = 1;
+    let rows = 0;
+    let looped = false;
+    let out = 0;
+    for (const node of under.get(parent) || []) {
+      const step = /^(SCAN|SEARCH) (\S+)(.*)$/.exec(node.detail);
+      if (step) {
+        const [, kind, name, how] = step;
+        let each;
+        if (name === 'CONSTANT') each = 1;
+        else if (/VIRTUAL TABLE/.test(how)) each = UNPACKED;
+        else if (names.has(name)) each = kind === 'SCAN' ? sized(names.get(name)) : searched(names.get(name), how);
+        else each = made.get(name) || UNPACKED;
+        if (peek) each = Math.min(each, Number(peek[1]) || 1);
+        /* A subquery's rows were counted where it was made. */
+        if (/VIRTUAL TABLE/.test(how) || names.has(name)) rows += loops * each;
+        loops *= each;
+        looped = true;
+        rows += times(loops, walk(node.id).rows);
+      } else if (/^CORRELATED/.test(node.detail)) {
+        rows += times(loops, walk(node.id).rows);
+      } else {
+        const inner = walk(node.id);
+        rows += inner.rows;
+        out += inner.loops;
+        const name = /^(?:MATERIALIZE|CO-ROUTINE) (\S+)/.exec(node.detail);
+        if (name) made.set(name[1], inner.loops);
+      }
+    }
+    return { rows, loops: looped ? loops : Math.max(out, 1) };
+  };
+  return { rows: walk(0).rows, unsized };
+}
+
+/* The whole call priced: [rows, sentence]. Rows is null where there is no
+   price to give, and the sentence says why. */
+async function price(parts, root, keys) {
+  const asked = parts.filter((part) => /^(select|with)\b/.test(part));
+  if (!asked.length) return [0, ''];
+  const db = await plannerFor(root);
+  if (!db) return [null, 'this Node has no node:sqlite (22.5 or later) or db/schema.sql could not be read'];
+  tablesKnown = new Set(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all().map((row) => row.name));
+  let rows = 0;
+  for (const part of asked) {
+    const one = priceOf(db, part, keys);
+    if (one.rows === null) return [null, `the planner would not take it (${one.why})`];
+    if (!Number.isFinite(one.rows)) return [null, `it walks ${one.unsized}, which has no size in SIZES in .claude/hooks/d1-write-gate.mjs`];
+    rows += one.rows;
+  }
+  return [Math.round(rows), ''];
+}
+
+/* THE METER
+ *
+ * What the reads run by hand have really cost today, in .wrangler/ beside
+ * the dev server's own scratch — ignored by git, and gone with the machine,
+ * which in a cloud session is the session. `over` is every call that came
+ * back past READ_MAX: the estimate was wrong about it, so the estimate is
+ * not trusted again until the day turns.
+ *
+ * It counts this tool's reads and nothing else. The site's own are in
+ * read_meter, the terminal's are nowhere, and the bill is Cloudflare's
+ * dashboard: D1, the database, Metrics, Row Metrics.
+ */
+const today = () => new Date().toISOString().slice(0, 10);
+const ledgerPath = (root) => `${root}/.wrangler/d1-reads.json`;
+function ledger(root) {
+  try {
+    const kept = JSON.parse(readFileSync(ledgerPath(root), 'utf8'));
+    if (kept && kept.day === today()) return kept;
+  } catch (e) {
+    /* No reads yet today, or none that were written down. */
+  }
+  return { day: today(), rows: 0, calls: 0, over: [] };
+}
+
+/* After the query: add what it read, and say so where it was too much. The
+   answer is searched as text because the tool has wrapped it differently
+   from one version to the next, and `rows_read` is the one name D1 gives. */
+function meter(input) {
+  const root = (input && (input.cwd || input.project_dir)) || process.cwd();
+  const text = JSON.stringify((input && input.tool_response) || '');
+  const rows = [...text.matchAll(/rows_read\\*"\s*:\s*(\d+)/g)].reduce((sum, m) => sum + Number(m[1]), 0);
+  const kept = ledger(root);
+  kept.rows += rows;
+  kept.calls += 1;
+  if (rows > READ_MAX) kept.over.push(rows);
+  try {
+    mkdirSync(`${root}/.wrangler`, { recursive: true });
+    writeFileSync(ledgerPath(root), JSON.stringify(kept));
+  } catch (e) {
+    /* A total that cannot be kept is a meter that under-reads, not a query
+       that failed. */
+  }
+  if (rows <= READ_MAX) return;
+  process.stdout.write(JSON.stringify({
+    hookSpecificOutput: {
+      hookEventName: 'PostToolUse',
+      additionalContext:
+        `That query read ${rows.toLocaleString('en')} rows, and no hand-run read is to bring more than ` +
+        `${READ_MAX.toLocaleString('en')}. Tell the owner now, with the number. Every read asks until midnight UTC; ` +
+        'before the next one, say what made this one dear and how the next is bounded.'
+    }
+  }));
+}
+
 /* The decision and the sentence that goes with it, kept apart from stdin so
    --check below can ask the same question of a table of SQL. */
-function verdict(sql, where, root = process.cwd()) {
+async function verdict(sql, where, root = process.cwd(), kept = { rows: 0, over: [] }) {
   const parts = statements(sql);
   if (!parts.length) {
     return ['ask', `Nothing here reads as SQL, so the gate is asking rather than guessing. Target: ${where}.`];
   }
-  if (readsOnly(sql)) return ['allow', `Read-only query against ${where}.`];
+  if (readsOnly(sql)) {
+    const [rows, why] = await price(parts, root, primaryKeys(root));
+    const limit = `no hand-run read is to bring more than ${READ_MAX.toLocaleString('en')}`;
+    if (rows === null) {
+      return ['ask', `This read of ${where} has no price: ${why}. Run it if its size is known some other way; ${limit}.`];
+    }
+    /* EXPLAIN and a PRAGMA read nothing, and are how a dear read is looked
+       into, so neither is held up by the day's total. */
+    if (!rows) return ['allow', `Read-only query against ${where}, which reads no rows.`];
+    const about = `about ${rows.toLocaleString('en')} rows by the planner's account`;
+    if (rows > READ_MAX) {
+      return ['ask', `This read of ${where} would walk ${about}, and ${limit}. Use a key, name the days, or walk the rows once instead of joining them to themselves.`];
+    }
+    if (kept.over.length) {
+      return ['ask', `A read earlier today came back at ${Math.max(...kept.over).toLocaleString('en')} rows, past the ${READ_MAX.toLocaleString('en')} it was priced under, so every read of ${where} asks until midnight UTC. This one: ${about}.`];
+    }
+    if (kept.rows + rows > DAY_MAX) {
+      return ['ask', `Reads run by hand have read ${kept.rows.toLocaleString('en')} rows today, and ${DAY_MAX.toLocaleString('en')} is where they start asking. This one of ${where}: ${about}.`];
+    }
+    return ['allow', `Read-only query against ${where}, ${about}.`];
+  }
 
   const heads = parts.map((part) => part.split(' ').slice(0, 6).join(' '));
   const listed = `Statements: ${heads.join(' | ')}.`;
@@ -358,6 +645,26 @@ const CASES = [
   /* The name of a café, not a verb. */
   ['allow', "SELECT name FROM google_venues WHERE name LIKE '%update%'"],
   ['allow', 'WITH top AS (SELECT * FROM lists LIMIT 5) SELECT * FROM top'],
+
+  /* A read is priced. The one that read 6,602,979 rows on 2026-11-18: each
+     ride's points joined to its own, twice over. */
+  ['ask', "WITH p AS (SELECT r.id, l.key k, json_extract(l.value,'$[0]') lat, json_extract(t.value,'$[0]') t FROM rides r, json_each(r.line) l, json_each(r.track) t WHERE t.key = l.key) SELECT a.id, b.t - a.t dt FROM p a JOIN p b ON b.id = a.id AND b.k = a.k + 1"],
+  /* And the same question walked once, which read 29,228: under the day's
+     allowance by a long way and still fifteen times the line, so it asks. */
+  ['ask', "SELECT r.id, t.key, json_extract(t.value,'$[0]') - LAG(json_extract(t.value,'$[0]')) OVER (PARTITION BY r.id ORDER BY t.key) dt FROM rides r, json_each(r.track) t"],
+  /* A whole table under the line runs; one over it, or with no size, asks. */
+  ['allow', 'SELECT COUNT(*) n, SUM(meters) m FROM rides'],
+  ['allow', 'SELECT COUNT(*) cells, SUM(stops) stops FROM ride_sections'],
+  ['ask', 'SELECT * FROM visitor_counts'],
+  ['ask', "SELECT kind, SUM(n) FROM visitor_counts WHERE day >= '2026-11-01' GROUP BY kind"],
+  ['ask', 'SELECT * FROM flow_counts'],
+  /* By its whole key, and a peek at the top of a big one. */
+  ['allow', "SELECT n FROM visitor_counts WHERE day = '2026-11-18' AND kind = 'shown' AND id = ''"],
+  ['allow', 'SELECT * FROM visitor_counts LIMIT 5'],
+  ['ask', 'SELECT COUNT(*) FROM visitor_counts LIMIT 5'],
+  /* Two small tables with nothing joining them are one big read. */
+  ['ask', 'SELECT COUNT(*) FROM list_items a, list_items b'],
+  ['allow', "SELECT name FROM sqlite_master WHERE type = 'table'"],
   /* An apostrophe inside a literal is content, not a comment, and the write
      after it is still a write. This got through the first version. */
   ['deny', "SELECT 'it--s'; UPDATE saves SET count = 1 WHERE id = 'x'"],
@@ -418,7 +725,7 @@ const CASES = [
 if (process.argv.includes('--check')) {
   let bad = 0;
   for (const [want, sql] of CASES) {
-    const [got] = verdict(sql, 'a database', process.cwd());
+    const [got] = await verdict(sql, 'a database', process.cwd());
     if (got !== want) {
       bad++;
       console.log(`FAIL  wanted ${want}, got ${got}: ${JSON.stringify(sql).slice(0, 90)}`);
@@ -426,24 +733,27 @@ if (process.argv.includes('--check')) {
   }
   console.log(bad
     ? `\nd1-write-gate: ${bad} of ${CASES.length} cases wrong.`
-    : `d1-write-gate — ${CASES.length} cases, every write asks and every read runs.`);
+    : `d1-write-gate — ${CASES.length} cases, every write asks and every read is priced.`);
   process.exit(bad ? 1 : 0);
 }
+const AFTER = process.argv.includes('--after');
 
 let raw = '';
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', (chunk) => { raw += chunk; });
-process.stdin.on('end', () => {
+process.stdin.on('end', async () => {
   let input;
   try {
     input = JSON.parse(raw);
   } catch (e) {
+    if (AFTER) return;
     answer('ask', 'The D1 gate could not read this tool call, so it is asking rather than guessing.');
   }
+  if (AFTER) return meter(input);
 
   const sql = (input && input.tool_input && input.tool_input.sql) || '';
   const root = (input && (input.cwd || input.project_dir)) || process.cwd();
   const where = databaseName(input && input.tool_input && input.tool_input.database_id, root);
 
-  answer(...verdict(sql, where, root));
+  answer(...await verdict(sql, where, root, ledger(root)));
 });

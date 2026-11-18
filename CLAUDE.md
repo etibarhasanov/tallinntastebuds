@@ -100,8 +100,10 @@ does not have to:
   from production, so it is not loaded, not kept in step, and a difference
   between the two is not worth reporting. **Production only, for now**
   below is the whole of it. The Cloudflare MCP `d1_database_query` tool
-  reads either database without a prompt. It writes to neither without one:
-  `.claude/hooks/d1-write-gate.mjs`
+  reads either database without a prompt while the read is small: the same
+  hook prices it first, and one that would walk more than 2,000 rows asks —
+  rule 6 of **Every read has a price** below. It writes to neither without
+  a prompt: `.claude/hooks/d1-write-gate.mjs`
   stops every write, refuses one past a hundred rows or one whose size is not
   in the statement, and never runs `DROP` at all. That and the two hard
   denials in `.claude/settings.json` are the owner's standing instruction and
@@ -297,7 +299,7 @@ minutes", which was true by statement count. Nobody had asked what each one
 cost, or what it would cost when the table was a year old.
 
 So the cost is part of the design and is settled before the code, by the
-session that writes it. Five rules, and a change that breaks one is wrong
+session that writes it. Six rules, and a change that breaks one is wrong
 however small it is:
 
 1. **A read costs the same on day one and day one thousand.** A statement on
@@ -320,12 +322,27 @@ however small it is:
    memory — against the five million, in the description the owner reads
    and again in the comment above the statement. Measure it rather than
    guessing: the Cloudflare MCP tool `d1_database_query` answers every read
-   with `rows_read`, and it runs against production without a prompt.
+   with `rows_read`, and a read of 2,000 rows or fewer runs against
+   production without a prompt.
 5. **Read the plan, and believe the meter over it.** `node tools/sqlcheck.mjs`
    asks SQLite how every statement under `functions/` would run and fails the
    build on a walk that is not listed in its `KNOWN` with what bounds it. It
    cannot see how often a statement runs, nor a search that uses the front
    of a key and then filters every row behind it; `rows_read` sees both.
+6. **A read run by hand brings 2,000 rows at the most.** The owner's line,
+   drawn on 2026-11-18, the day a session answering a question about fifteen
+   rides joined each ride's points to themselves and read 6,602,979 rows in
+   one statement — more than the day's allowance, from a table of fifteen.
+   The same answer, each ride walked once with `LAG()`, read 29,228. So
+   `.claude/hooks/d1-write-gate.mjs` prices every read before it runs, from
+   SQLite's own plan and the table sizes written in it, and asks the owner
+   about one past 2,000 or one it cannot price. After each query the same
+   file, as `--after`, adds what it really read to the day's total: past
+   20,000 every read asks, and one that came back dearer than its price
+   makes every read ask until midnight UTC. Ask `EXPLAIN QUERY PLAN` first
+   — it reads nothing — and where an answer needs every row of something,
+   say so and let the owner decide, rather than finding a shape the gate
+   does not recognise.
 
 The same goes for anything else that is free up to a number a day: Workers
 AI's Neurons, Google's thousand calls a month, Pages' five hundred builds.
@@ -345,14 +362,16 @@ yours.
 **Two live things are not yours, and one of them is a database.** The rows in
 D1 — production `tallinntastebuds` and preview `tallinntastebuds-preview` —
 belong to the person whose site this is and to the people who saved a place or
-made a list. Reading them is free and is how everything gets verified. Writing
-to them is a decision, and it is theirs:
+made a list. Reading them is how everything gets verified, and is unprompted
+up to 2,000 rows a read — rule 6 above. Writing to them is a decision, and it
+is theirs:
 
 - **Every write asks.** `INSERT`, `UPDATE`, `DELETE`, any DDL, and loading
   `db/google-venues.sql`, `db/google-lists.sql` or `db/schema.sql`.
   `.claude/hooks/d1-write-gate.mjs` — a `PreToolUse` hook wired in
   `.claude/settings.json` — classifies the SQL of every `d1_database_query`
-  call and lets reads through, so the prompt is not something to remember.
+  call and lets a small read through, so the prompt is not something to
+  remember.
   Do not route around it: not with a shell `wrangler` command, not with a
   Function written to do the write when it is called.
 - **The ask carries the change.** Which database, which table, which columns,
