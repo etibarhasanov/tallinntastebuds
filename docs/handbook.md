@@ -3350,6 +3350,21 @@ ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
 app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
 it steers the suggestion instead of standing beside it.
 
+**Found by the square, not by reading every ride.** Both `?bbox=` and the
+ridden way under a bike route ask for the newest rides whose box meets a
+box, and a box is four ranges no key answers — so until 2026-11-18 each
+asking read every ride there was, with its line, and every ride Rattatee
+saved made every bike route dearer for ever. Now a save also files each
+ride under the squares of the city its line passes through, 1/50 by 1/25 of
+a degree, about 2.2 km a side, in `ride_cells`; a read looks under the
+squares beneath the box, the newest few of each by the key, and asks `rides`
+for those by id. The worst read is a fixed number of rows however many
+rides there are. A ride whose box meets the one asked about while its line
+never comes within a square of it is no longer answered, which it should
+not have been — one ride across the city has a box over half of it.
+`functions/api/_ridecells.js` is the whole of it, and **Every read has a
+price, set before it is written** in `CLAUDE.md` is why.
+
 **Nobody's name is on a ride.** The points are sent once, on Save, and the
 server takes 200 m off each end before it stores anything — that is where a
 home or a workplace would be — works the length out itself, refuses a point

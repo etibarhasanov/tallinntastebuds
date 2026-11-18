@@ -158,6 +158,7 @@
 import { json, nearTallinn, km, dataFile, wrongDatabase } from './_lib.js';
 import { pieces } from './_sections.js';
 import { arrayOf } from './_rides.js';
+import { ridesIn } from './_ridecells.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -545,7 +546,9 @@ function bend(before, after) {
  * It is then kept off Tartu maantee like every other way, so a ride down
  * that opens nothing.
  *
- * It costs a read of `rides`, at most two router requests and a few
+ * It costs a read of `rides` by the squares the ellipse's box covers —
+ * ./_ridecells.js, a fixed number of rows however many rides there are —
+ * at most two router requests and a few
  * milliseconds: only points that could lie on a way short enough are
  * joined — the ellipse with the two ends as its foci — and a longer trip
  * is joined more coarsely, RIDDEN_NODES points across it at most, and the
@@ -580,13 +583,10 @@ async function viaRides(context, from, to, shortest, offered) {
   let rows;
   try {
     if (await wrongDatabase(env)) return null;
-    ({ results: rows } = await env.DB
-      .prepare('SELECT line FROM rides WHERE south <= ? AND north >= ? AND west <= ? AND east >= ? ' +
-        'ORDER BY created_at DESC LIMIT ?')
-      .bind(
-        Math.max(start[0], end[0]) + pad / NORTH, Math.min(start[0], end[0]) - pad / NORTH,
-        Math.max(start[1], end[1]) + pad / EAST, Math.min(start[1], end[1]) - pad / EAST, RIDDEN_READ)
-      .all());
+    rows = await ridesIn(env, {
+      south: Math.min(start[0], end[0]) - pad / NORTH, north: Math.max(start[0], end[0]) + pad / NORTH,
+      west: Math.min(start[1], end[1]) - pad / EAST, east: Math.max(start[1], end[1]) + pad / EAST
+    }, 'line', RIDDEN_READ);
   } catch (e) {
     return null;
   }

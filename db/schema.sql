@@ -2114,10 +2114,38 @@ CREATE TABLE IF NOT EXISTS rides (
   -- and last in the table for that reason.
   track      TEXT    NOT NULL DEFAULT ''
 );
--- The rides under a way: the box test leads with the latitudes.
+-- The rides under a way: the box test leads with the latitudes. No read uses
+-- it since ride_cells below; a box is four ranges and no index answers it.
 CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);
 -- One person's rides today, for the cap.
 CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);
+
+-- One row is one ride passing through one square of the city, 1/50 by 1/25 of
+-- a degree — about 2.2 km a side — so the rides near a way are found
+-- by the key instead of by reading every ride: functions/api/_ridecells.js,
+-- which says what a read costs. Filled by a save in functions/api/rides.js
+-- and emptied of a ride by its drop. Holds nothing `rides` does not, so it is
+-- rebuilt from that table — the rides saved before it, or a new square size —
+-- with one statement, the arithmetic of cellOf() in SQL:
+--   INSERT OR IGNORE INTO ride_cells (cell, created_at, ride)
+--     SELECT DISTINCT CAST(json_extract(p.value, '$[0]') * 50 AS INTEGER) * 10000
+--          + CAST(json_extract(p.value, '$[1]') * 25 AS INTEGER), r.created_at, r.id
+--     FROM rides r, json_each(r.line) p;
+-- A load for a terminal once there are more than a hundred rows of it.
+--
+-- The questions it is asked, and the key that answers each:
+--   the newest rides through one square       (cell, created_at) — the key
+--   the squares of one ride, to drop them     (ride) — idx_ride_cells_ride
+CREATE TABLE IF NOT EXISTS ride_cells (
+  -- The square: trunc(lat * 50) * 10000 + trunc(lng * 25), both positive here.
+  cell       INTEGER NOT NULL,
+  -- rides.created_at, so the newest come first by the key.
+  created_at INTEGER NOT NULL,
+  -- rides.id.
+  ride       TEXT    NOT NULL,
+  PRIMARY KEY (cell, created_at, ride)
+) WITHOUT ROWID;
+CREATE INDEX IF NOT EXISTS idx_ride_cells_ride ON ride_cells (ride);
 
 -- One row is one square of the city, about twenty-eight metres a side, and
 -- what the rides that crossed it say about it: how many there were, how far
