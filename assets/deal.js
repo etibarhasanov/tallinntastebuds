@@ -57,7 +57,9 @@
      map wondering where they were.
 
      A rolled deal says it differently: there is a rate to draw rather than
-     one waiting, and the button is the draw. */
+     one waiting, and the button is the draw. A deal with a student rate says
+     that one too, under the everyday line, since which of the two somebody
+     gets is only known once they are signed in. */
   function signIn(data, deal) {
     var rolled = !!P.rates(deal);
     P.clear(card);
@@ -69,6 +71,9 @@
       el('h1', { className: 'pass-name', textContent: deal.name })
     ]));
     card.appendChild(el('p', { className: 'pass-lede', textContent: P.offerText(deal, data.lang) }));
+    if (deal.student) {
+      card.appendChild(el('p', { className: 'pass-terms', textContent: P.textFor(deal.student.offer, data.lang) }));
+    }
     card.appendChild(el('p', { className: 'pass-terms', textContent: t(rolled ? 'passRollSignIn' : 'passSignIn') }));
     card.appendChild(el('div', { className: 'pass-foot' }, [
       TTBTrack.click(el('a', {
@@ -159,7 +164,8 @@
     /* The door first, then the code — and on a rolled deal the same request
        is the draw, because the code is made around the rate it comes back
        with. A fixed deal draws nothing and its code is the one it always
-       was; it still has to knock. */
+       was, unless the account is a student and the deal has a student rate,
+       which is signed into the code the same way; it still has to knock. */
     P.admit(deal, placeId).then(function (drawn) {
       rate = drawn;
       return P.code(deal.key, placeId, hour, rate);
@@ -168,7 +174,7 @@
       /* Not a press, but the one moment this page exists for: a code was
          put in front of somebody. Once per hour on a page left open. */
       var shown = { place: deal.name, live: deal.live ? 'yes' : 'no' };
-      if (run) shown.rate = rate;
+      if (rate !== undefined) shown.rate = rate;
       TTBTrack.event('pass_shown', shown);
       /* And which place's, for the site's own count, once a load — WHAT IT
          WAS ABOUT in functions/api/_visitors.js. A deal not switched on yet
@@ -184,8 +190,10 @@
         el('h1', { className: 'pass-name', textContent: deal.name })
       ]));
 
-      var offer = P.textFor(deal.offer, data.lang);
-      if (run) card.appendChild(rolledLede(offer, run, rate));
+      /* A fixed deal's line is its own, or its student line when the door
+         said this account is a student. */
+      var offer = P.offerText(deal, data.lang, rate);
+      if (run) card.appendChild(rolledLede(P.textFor(deal.offer, data.lang), run, rate));
       else if (offer) card.appendChild(el('p', { className: 'pass-lede', textContent: offer }));
 
       /* The QR carries the whole answer — which place, which hour, which code,

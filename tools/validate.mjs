@@ -1353,9 +1353,16 @@ if (places !== null) {
    the site sends people without being somewhere it vouches for. Such a key
    is in no file here, only in google_venues, so it is held to the shape of
    one and its name is taken on trust: see "A discount at a place that is
-   not on the map" in the README. */
+   not on the map" in the README.
 
-const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll']);
+   A deal may also carry a student rate — { rate, offer } — paid instead of
+   the offer to an account whose users.student is 1, which the owner sets in
+   the database by hand. Its code signs that rate the way a roll's does, so
+   it is one second code an hour beside the deal's own, and it is held apart
+   from a roll: a run of rates and a rate that depends on who you are would
+   need a staff page nobody could read down. */
+
+const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll', 'student']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
 const ROLL_KEYS = ['base', 'spread', 'step'];
 const ROLL_MAX_RATES = 12;
@@ -1450,6 +1457,34 @@ if (deals !== null && !Array.isArray(deals)) {
           fail(where, `"roll" runs from ${roll.base - roll.spread}% to ${roll.base + roll.spread}% — every rate has to be between 1 and 99`);
         } else if (roll.spread / roll.step * 2 + 1 > ROLL_MAX_RATES) {
           warn(where, `"roll" has ${roll.spread / roll.step * 2 + 1} rates, and the counter's screen lists a code for each of them`);
+        }
+      }
+    }
+
+    if (deal.student !== undefined) {
+      const student = deal.student;
+      if (!isPlainObject(student)) {
+        fail(where, '"student" must be an object like { "rate": 25, "offer": { "en": "25% off for students" } }');
+      } else {
+        for (const key of Object.keys(student)) {
+          if (key !== 'rate' && key !== 'offer') warn(where, `unknown key "student.${key}"`);
+        }
+        if (!Number.isInteger(student.rate) || student.rate < 1 || student.rate > 99) {
+          fail(where, '"student.rate" must be a whole number between 1 and 99');
+        }
+        if (rolled) fail(where, 'a deal has a "roll" or a "student" rate, not both');
+        if (!isPlainObject(student.offer) || !isNonEmptyString(student.offer.en)) {
+          fail(where, '"student.offer" needs at least "en" — it is the line a student and the waiter read');
+        } else {
+          for (const lang of Object.keys(student.offer)) {
+            if (!languages.includes(lang)) fail(where, `"student.offer" has unknown language "${lang}"`);
+            else if (!isNonEmptyString(student.offer[lang])) fail(where, `"student.offer.${lang}" is empty`);
+          }
+          if (deal.live === true) {
+            for (const lang of languages) {
+              if (!isNonEmptyString(student.offer[lang])) warn(where, `live deal has no "student.offer" in ${lang}`);
+            }
+          }
         }
       }
     }

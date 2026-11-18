@@ -10,7 +10,9 @@
  * A deal with a roll has a code per rate rather than one an hour, and this
  * page lists them all: the counter reads the guest's five characters down
  * the list and finds the rate beside them, which is how a code drawn for 10%
- * is not read as 25% by anybody.
+ * is not read as 25% by anybody. A deal with a student rate is listed the
+ * same way, two rows — everybody's code and a student's — each beside the
+ * line the guest's own page is showing.
  */
 (function () {
   'use strict';
@@ -24,12 +26,13 @@
 
   /* One code for a fixed deal; for a rolled deal, a row per rate with its
      code beside it, lowest rate first, the order the guest's page tumbles
-     through them. */
-  function codes(run, values) {
+     through them. A student deal's two rows are labelled with their offer
+     lines, since the everyday rate is a number only its words carry. */
+  function codes(run, values, label) {
     if (!run) return el('p', { className: 'pass-code', textContent: values[0] });
     return el('ul', { className: 'staff-rates' }, run.map(function (rate, i) {
       return el('li', { className: 'staff-rate' }, [
-        el('span', { className: 'staff-rate-pct', textContent: rate + '%' }),
+        el('span', { className: 'staff-rate-pct', textContent: label ? label(rate) : rate + '%' }),
         el('span', { className: 'pass-code', textContent: values[i] })
       ]);
     }));
@@ -37,7 +40,8 @@
 
   function draw(data, deal, t) {
     var hour = P.hourNow();
-    var run = P.rates(deal);
+    var run = P.rates(deal) || (deal.student ? [undefined, deal.student.rate] : null);
+    var label = deal.student ? function (rate) { return P.offerText(deal, data.lang, rate); } : null;
 
     /* The current code and the one before it: the verifier accepts both, so
        the counter should be able to see both. On a rolled deal that is a set
@@ -60,7 +64,7 @@
         el('h1', { className: 'pass-name', textContent: deal.name })
       ]));
 
-      card.appendChild(codes(run, sets[0]));
+      card.appendChild(codes(run, sets[0], label));
       card.appendChild(el('p', {
         className: 'pass-clock',
         textContent: t('staffChanges', { time: P.clockOf(P.hourStart(hour + 1)) })
@@ -68,7 +72,7 @@
 
       card.appendChild(el('div', { className: 'staff-also' }, [
         el('p', { className: 'eyebrow', textContent: t('staffAlso') }),
-        codes(run, sets[1])
+        codes(run, sets[1], label)
       ]));
 
       card.appendChild(el('p', { className: 'pass-terms', textContent: t(run ? 'staffRollNote' : 'staffNote') }));

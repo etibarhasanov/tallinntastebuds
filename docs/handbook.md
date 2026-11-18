@@ -4183,6 +4183,46 @@ reads the key out of `deals.json` can mint a code for 25% without drawing
 anything or signing in to anything, and a human at the counter is the control
 against that, as it always was.
 
+### A rate for students
+
+A fixed deal can pay somebody more for being a student. Give it a
+`student` —
+
+```json
+"student": { "rate": 25, "offer": { "en": "25% off for students", … all eleven … } }
+```
+
+— and an account whose `users.student` is 1 is shown that line and that rate
+on `deal.html` instead of the deal's own; everybody else gets the deal's own,
+exactly as before. Faxinin marketi was the first: 15% for any member, 25% for
+a student.
+
+**Who is a student is the owner's to say, in the database.** Nothing on the
+site writes the column and nobody can tick it for themselves: the owner checks
+whatever they check — a student card, a university address — and sets it by
+hand, `UPDATE users SET student = 1 WHERE id = '<id>'`, which the write gate
+asks about like any other write. `/api/pass` reads it on the same request that
+opens the door and answers `student: true` or `false` beside the draw, so the
+page never decides it and a student cannot be claimed from the browser. A
+database the `ALTER TABLE users ADD COLUMN student INTEGER NOT NULL DEFAULT 0`
+has not reached answers `false` for everybody, and every deal pays its
+everyday rate.
+
+**The rate travels in the code, as a drawn one does.** A student's code is
+`HMAC(key, "<place-id>:<hour>:25")` and the QR carries `p=25`, so a student's
+code does not verify as the everyday one or the other way round, and
+`verify.html` prints the student line when it checked the student rate.
+`staff.html` lists two rows, each labelled with its offer line: everybody's
+code and a student's. The map's panel shows the student line under the offer,
+and the pill keeps the everyday rate — it is what most people who see it will
+get.
+
+**A roll and a student rate do not go together**, and the validator refuses
+a deal with both: a staff page listing every rate twice over is not one a
+counter can read down. And [What this is not](#what-this-is-not) applies
+here unchanged — the key is in a public file, so anybody can mint a student's
+code without being one. The column decides who the offer is *for*.
+
 ### Switching one on
 
 Add an entry to `data/deals.json`:
@@ -4210,6 +4250,7 @@ Add an entry to `data/deals.json`:
 | `terms` | Optional small print |
 | `from`, `until` | Optional, inclusive. Outside them the button disappears |
 | `roll` | Optional. `{ "base", "spread", "step" }`, a run of rates drawn per member per hour instead of one rate, with `{rate}` in every `offer` line — see [A rate that is drawn](#a-rate-that-is-drawn) |
+| `student` | Optional. `{ "rate", "offer" }`, what an account with `users.student = 1` gets instead of the deal's own line and rate; not beside a `roll` — see [A rate for students](#a-rate-for-students) |
 
 Generate a key with:
 
