@@ -73,6 +73,14 @@ export const MAX_POSTS = 200;
 export const MAX_NEW_A_DAY = 10;
 /* A page of the index, of a profile's posts and of one's own on /write. */
 export const PAGE_SIZE = 10;
+/* Who wrote a post: `users u` joined on its owner. posts.owner was declared
+   INTEGER and holds users.id, which is TEXT, and SQLite compares the two
+   with the INTEGER side's affinity — which the key of users cannot answer, so
+   `u.id = p.owner` walked every account for every post read, 83 rows on
+   18 November 2026 and one more with each sign-up. Cast back to TEXT the two
+   match on the key: 2 rows for the same answer. Every join of a post to its
+   author goes through this, /api/admin/stats included. */
+export const AUTHOR = 'users u ON u.id = CAST(p.owner AS TEXT)';
 
 export const LANGS = LINE_LANGS;
 
@@ -304,7 +312,7 @@ export async function readPage(env, where, binds, before) {
     .prepare(
       'SELECT p.id AS id, p.lang AS lang, p.status AS status, p.created_at AS created_at, ' +
       'p.updated_at AS updated_at, p.published_at AS published_at, u.username AS author ' +
-      'FROM posts p JOIN users u ON u.id = p.owner ' +
+      'FROM posts p JOIN ' + AUTHOR + ' ' +
       'WHERE ' + clauses.join(' AND ') + ' ' +
       'ORDER BY COALESCE(p.published_at, p.updated_at) DESC, p.id DESC LIMIT ?'
     )
@@ -357,7 +365,7 @@ export async function readPost(env, id, viewer) {
     .prepare(
       'SELECT p.id AS id, p.owner AS owner, p.lang AS lang, p.status AS status, ' +
       'p.created_at AS created_at, p.updated_at AS updated_at, p.published_at AS published_at, ' +
-      'u.username AS author FROM posts p JOIN users u ON u.id = p.owner WHERE p.id = ?'
+      'u.username AS author FROM posts p JOIN ' + AUTHOR + ' WHERE p.id = ?'
     )
     .bind(id)
     .first();

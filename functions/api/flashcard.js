@@ -1211,15 +1211,21 @@ async function rename(context, body, user, deck) {
   return json({ deck: await ownDeckAnswer(env, deck, user) }, 200);
 }
 
-/* And it takes everything in it, including what anybody had learnt off it.
+/* And it takes everything in it, including what its owner had learnt off it.
    There is no archive and no undo: what this deletes is a list of words
    somebody typed, and keeping a copy of it against their wishes would be the
-   site deciding it knew better. */
+   site deciding it knew better.
+
+   Only the owner can study their own deck — deckOf() opens it for nobody
+   else — so every progress row on it is theirs, and naming them makes the
+   delete a lookup on flashcard_known's key (user_id, deck_id, card_id)
+   rather than a walk of every learner's rows: 2,737 of them in November
+   2026. The same in dropCard() below. */
 async function dropDeck(context, user, deck) {
   const { env } = context;
 
   await env.DB.batch([
-    env.DB.prepare('DELETE FROM flashcard_known WHERE deck_id = ?').bind(deck.id),
+    env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?').bind(user.id, deck.id),
     env.DB.prepare('DELETE FROM flashcard_cards WHERE deck_id = ?').bind(deck.id),
     env.DB.prepare('DELETE FROM flashcard_decks WHERE id = ? AND owner = ?').bind(deck.id, user.id)
   ]);
@@ -1252,7 +1258,7 @@ async function addCard(context, body, user, deck) {
   return json({ deck: await ownDeckAnswer(env, deck, user) }, 200);
 }
 
-/* The card goes and what anybody knew about it goes with it. Leaving the
+/* The card goes and what its owner knew about it goes with it. Leaving the
    progress row would put a card somebody deleted back into their count the
    next time a card was minted with the same id, which is never — but the row
    would still be a fact about nothing. */
@@ -1264,7 +1270,7 @@ async function dropCard(context, body, user, deck) {
 
   const now = Date.now();
   await env.DB.batch([
-    env.DB.prepare('DELETE FROM flashcard_known WHERE deck_id = ? AND card_id = ?').bind(deck.id, id),
+    env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?').bind(user.id, deck.id, id),
     env.DB.prepare('DELETE FROM flashcard_cards WHERE id = ? AND deck_id = ?').bind(id, deck.id),
     env.DB.prepare('UPDATE flashcard_decks SET updated_at = ? WHERE id = ?').bind(now, deck.id)
   ]);

@@ -92,6 +92,7 @@ import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST, POST } from '../sta
 /* The countries under a list, read the way /insights reads them. */
 import { listCountries } from '../_visits.js';
 import { askedDevice } from '../_visitors.js';
+import { AUTHOR } from '../_posts.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -451,7 +452,7 @@ async function read(env, rows, lang) {
       env.DB
         .prepare(
           'SELECT p.id, p.lang, p.status, u.username FROM posts p ' +
-          'LEFT JOIN users u ON u.id = p.owner WHERE p.id IN (' + marks + ')'
+          'LEFT JOIN ' + AUTHOR + ' WHERE p.id IN (' + marks + ')'
         )
         .bind(...ids)
         .all(),
