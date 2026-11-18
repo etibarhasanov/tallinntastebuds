@@ -228,8 +228,23 @@ const API_PREFIX = '/api/';
 /* The security headers, onto whatever route() below answers. */
 import { secured } from './_security.js';
 
+/* ----------------------------------------------------------------- METER */
+/* Every route's database, counted by the rows each statement reads, and
+   what the isolate counted written now and then after the answer has gone —
+   ./api/_meter.js says why and what it costs. Wrapped here, once, because
+   this is the one door every route is called through. */
+import { meter, flush } from './api/_meter.js';
+/* ------------------------------------------------------------- end METER */
+
 export async function onRequest(context) {
-  return secured(await route(context), new URL(context.request.url));
+  /* An env that will not take the wrapper is a site that goes uncounted,
+     never one that does not answer. */
+  try {
+    if (context.env && context.env.DB) context.env.DB = meter(context.env.DB);
+  } catch (e) { /* uncounted */ }
+  const res = secured(await route(context), new URL(context.request.url));
+  if (context.env && context.env.DB && context.waitUntil) context.waitUntil(flush(context.env.DB));
+  return res;
 }
 
 async function route(context) {

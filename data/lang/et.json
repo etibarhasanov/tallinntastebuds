@@ -1518,7 +1518,11 @@
   "embedBy": "Kaart:",
   "embedListSub": "{n} kohta · nimekiri Tallinn Tastebudsis",
   "embedPlacesSub": "{n} kohta Tallinn Tastebudsis",
-  "embedAllTitle": "Kohad Tallinnas"
+  "embedAllTitle": "Kohad Tallinnas",
+  "statsReadsHead": "Andmebaasi lugemised täna",
+  "statsReadsLead": "Read, mida sait on alates keskööst UTC järgi oma andmebaasist lugenud, tabelite kaupa. Tasuta pakett peatab kõik lugemised viie miljoni juures päevas, ja kui seitse kümnest on käes, lõpetab esimesena lugemise Avasta loendur. Siin on loetud ainult saidi enda lugemised: arve on Cloudflare’i töölaual.",
+  "statsReadsToday": "Täna loetud",
+  "statsReadsShare": "Päeva viiest miljonist"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

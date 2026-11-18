@@ -1640,9 +1640,11 @@ export async function readFound(env, span, device) {
  * table has. The counter asked both, once per colo every five minutes, which
  * on 2026-11-18 had the account through D1's five million free reads a day
  * before noon and every route that reads the database answering empty until
- * midnight. So every question here names its days: the days before today,
- * which cannot change, are read once per isolate a day by counterPast(), the
- * days written into the statement, and every five minutes after that the
+ * midnight. So every question here names its days, and the days before
+ * today, which cannot change, are not read from here at all: each is added up
+ * once, the first time the counter is read after it ends, into counter_days
+ * and the running total counter_total — counterPast() — and the card reads
+ * those, 28 rows once per isolate a day. Every five minutes after that the
  * counter reads today's rows and nothing else.
  *
  * Null where the table is not there. */
@@ -1658,6 +1660,7 @@ export async function readCounter(env) {
     const countries = {};
     for (const day of Object.keys(past.days)) days[day] = { ...past.days[day] };
     Object.assign(countries, past.countries);
+    const before = past.fresh;
 
     /* Today alone: a handful of key lookups, the only rows that move. */
     const [rows, secs] = await Promise.all([
@@ -1670,12 +1673,14 @@ export async function readCounter(env) {
     ]);
     addCounterRows(days, countries, rows.results || []);
 
+    /* `all` is the total's every day before today, and today's; `days`
+       holds the last COUNTER_SECS_DAYS of them and today, which is all the
+       week and the seconds need. */
     const weekFrom = dayBack(6);
-    let all = 0;
+    const all = before + (days[now] ? days[now].fresh : 0);
     let week = 0;
     let lately = 0;
     for (const day of Object.keys(days)) {
-      all += days[day].fresh;
       if (day >= weekFrom) week += days[day].fresh;
       if (day >= past.secsFrom) lately += days[day].visits;
     }
@@ -1700,8 +1705,22 @@ export async function readCounter(env) {
   }
 }
 
-/* Every day before today, which cannot change, read once per isolate a day
-   — WHAT IT READS above. Throws where the table is not there. */
+/* Every day before today, which cannot change — WHAT IT READS above. They
+   are kept as they are counted rather than summed as they are read: each
+   finished day is one row of counter_days, and counter_total is every day
+   up to `through` added together, so the card reads one row and the last
+   COUNTER_SECS_DAYS days of the other — 28 rows, on day one and on day one
+   thousand — once per isolate a day.
+
+   A day goes in the first time the counter is read after it ends, by
+   fold() below, which counts that day alone out of visitor_counts by the
+   key and adds it to the total in the same batch. Two isolates folding the
+   same day at once are one fold: the total is only moved from the
+   `through` it was read at, and the day rows are INSERT OR IGNORE. The
+   first fold of all is every day since the count began, which is how the
+   tables fill themselves on the day they are applied.
+
+   Throws where a table is not there. */
 let pastMemo = null;
 async function counterPast(env, now) {
   if (pastMemo && pastMemo.now === now) return pastMemo.value;
@@ -1712,43 +1731,87 @@ async function counterPast(env, now) {
 
 async function readPast(env, now) {
   const secsFrom = dayBack(COUNTER_SECS_DAYS - 1);
-  const first = await env.DB.prepare('SELECT MIN(day) AS d FROM visitor_counts').first();
-  const since = first && DAY.test(first.d || '') ? first.d : null;
-  const days = {};
-  const countries = {};
-  const out = { since, exact: false, secsFrom, secs: 0, days, countries };
-  if (!since || since >= now) return out;
-
-  const before = [];
-  for (let d = since; d < now; d = nextDay(d)) before.push(d);
-
-  /* The first whole day counted as `shown` is the day after the first that
-     has a row of it; every day up to and including that one is estimated,
-     and so is today when no day before it has one. */
-  const began = await env.DB
-    .prepare("SELECT day FROM visitor_counts WHERE day IN (" + quoted(before) + ") AND kind = 'shown' ORDER BY day LIMIT 1")
-    .first();
-  const exactFrom = began && DAY.test(began.day || '') ? nextDay(began.day) : nextDay(now);
-  out.exact = exactFrom <= now;
-
-  const old = before.filter((d) => d < exactFrom);
-  const exact = before.filter((d) => d >= exactFrom);
-  const lately = before.filter((d) => d >= secsFrom);
-  const [o, e, s] = await Promise.all([
-    old.length ? env.DB.prepare(estimateSql('IN (' + quoted(old) + ')')).bind(null, JUDGED_COUNTRY).all() : { results: [] },
-    exact.length
-      ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day IN (" + quoted(exact) + ") AND kind = 'shown'").all()
-      : { results: [] },
-    lately.length
-      ? env.DB.prepare(
-        "SELECT SUM(n) AS n FROM visitor_counts WHERE day IN (" + quoted(lately) + ") AND kind = 'cohort' " +
-        "AND id IN ('new:secs', 'back:secs')"
-      ).first()
-      : null
-  ]);
-  addCounterRows(days, countries, (o.results || []).concat(e.results || []));
-  out.secs = (s && s.n) || 0;
+  const yesterday = dayBack(1);
+  let total = await env.DB.prepare('SELECT since, through, exact_from, fresh, countries FROM counter_total WHERE id = 1').first();
+  if (!total || !total.through || total.through < yesterday) {
+    await fold(env, total, yesterday);
+    total = await env.DB.prepare('SELECT since, through, exact_from, fresh, countries FROM counter_total WHERE id = 1').first();
+  }
+  const out = {
+    since: (total && total.since) || null,
+    exact: !!(total && total.exact_from && total.exact_from <= now),
+    secsFrom, secs: 0, fresh: 0, days: {}, countries: {}
+  };
+  if (!total || !total.through) return out;
+  out.fresh = total.fresh || 0;
+  out.countries = parsed(total.countries);
+  const { results } = await env.DB
+    .prepare('SELECT day, fresh, visits, secs FROM counter_days WHERE day >= ?')
+    .bind(secsFrom)
+    .all();
+  for (const r of results) {
+    out.days[r.day] = { fresh: r.fresh, visits: r.visits };
+    out.secs += r.secs;
+  }
   return out;
+}
+
+/* The days after the total's `through`, up to and including `last`, each
+   counted on its own and added to the total — see counterPast(). */
+async function fold(env, total, last) {
+  let since = total && total.since;
+  if (!since) {
+    const first = await env.DB.prepare('SELECT MIN(day) AS d FROM visitor_counts').first();
+    since = first && DAY.test(first.d || '') ? first.d : null;
+  }
+  if (!since || since > last) return;
+  await env.DB
+    .prepare('INSERT OR IGNORE INTO counter_total (id, since, through, exact_from, fresh, countries) VALUES (1, ?, NULL, NULL, 0, ?)')
+    .bind(since, '{}')
+    .run();
+  const was = (total && total.through) || null;
+  let exactFrom = (total && total.exact_from) || null;
+  let fresh = (total && total.fresh) || 0;
+  const countries = parsed(total && total.countries);
+  const rows = [];
+  for (let day = was ? nextDay(was) : since; day <= last; day = nextDay(day)) {
+    /* A day is read from `shown` from the day after the first that has a
+       row of it — the counter's own rule, above readCounter(). */
+    if (!exactFrom) {
+      const began = await env.DB
+        .prepare("SELECT 1 AS y FROM visitor_counts WHERE day = ?1 AND kind = 'shown' LIMIT 1")
+        .bind(day).first();
+      if (began) exactFrom = nextDay(day);
+    }
+    const [got, secs] = await Promise.all([
+      exactFrom && day >= exactFrom
+        ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind = 'shown'").bind(day).all()
+        : env.DB.prepare(estimateSql('= ?1')).bind(day, JUDGED_COUNTRY).all(),
+      env.DB.prepare(
+        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'cohort' AND id IN ('new:secs', 'back:secs')"
+      ).bind(day).first()
+    ]);
+    const days = {};
+    addCounterRows(days, countries, got.results || []);
+    const d = days[day] || { fresh: 0, visits: 0 };
+    fresh += d.fresh;
+    rows.push([day, d.fresh, d.visits, (secs && secs.n) || 0]);
+  }
+  if (!rows.length) return;
+  await env.DB.batch(rows.map((r) => env.DB
+    .prepare('INSERT OR IGNORE INTO counter_days (day, fresh, visits, secs) VALUES (?, ?, ?, ?)')
+    .bind(...r)).concat(env.DB
+    .prepare('UPDATE counter_total SET through = ?, exact_from = ?, fresh = ?, countries = ? WHERE id = 1 AND through IS ?')
+    .bind(last, exactFrom, fresh, JSON.stringify(countries), was)));
+}
+
+function parsed(text) {
+  try {
+    const value = JSON.parse(text || '{}');
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  } catch (e) {
+    return {};
+  }
 }
 
 /* The rows a day is estimated from, for the days `match` names: the
@@ -1797,11 +1860,8 @@ function addCounterRows(days, countries, rows) {
   }
 }
 
-/* Days written into the SQL rather than bound, since D1 binds at most a
-   hundred values and the count is older than that; every one is made by
-   nextDay() from a day DAY has passed, so nothing a request sent is in it. */
+/* What a day looks like, as the table files them. */
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
-const quoted = (days) => days.map((d) => "'" + d + "'").join(', ');
 
 /* The day after `day`, as the table files days. */
 function nextDay(day) {

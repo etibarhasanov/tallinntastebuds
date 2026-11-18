@@ -1518,7 +1518,11 @@
   "embedBy": "Xəritə:",
   "embedListSub": "{n} yer · Tallinn Tastebuds-da siyahı",
   "embedPlacesSub": "Tallinn Tastebuds-da {n} yer",
-  "embedAllTitle": "Tallindəki yerlər"
+  "embedAllTitle": "Tallindəki yerlər",
+  "statsReadsHead": "Bu gün verilənlər bazasından oxunanlar",
+  "statsReadsLead": "Saytın UTC ilə gecə yarısından bəri öz verilənlər bazasından oxuduğu sətirlər, cədvəllər üzrə. Pulsuz plan gündə beş milyonda bütün oxumaları dayandırır, onda yeddisi keçəndə isə Kəşf et-dəki sayğac oxumağı birinci dayandırır. Burada yalnız saytın öz oxumaları sayılır: hesab Cloudflare panelindədir.",
+  "statsReadsToday": "Bu gün oxunub",
+  "statsReadsShare": "Günün beş milyonundan"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

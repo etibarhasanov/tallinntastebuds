@@ -85,6 +85,7 @@
     ready: false,   // whether the numbers came back at all
     opens: 0,
     held: null,     // what the site holds, nine counts — holdings() below
+    reads: null,    // { today, limit, brake, tables: [{ name, n }] } — readsCard() below
     map: [],
     venues: [],
     filters: [],
@@ -368,6 +369,30 @@
     ]);
   }
 
+  /* The day's database reads — ../functions/api/_meter.js: how many rows
+     the site has read since midnight UTC against the free plan's five
+     million, and by which table, most first. First on the page because it is
+     the one number here that can take the site down. */
+  function readsCard() {
+    var r = state.reads;
+    var share = r.limit ? Math.round(r.today / r.limit * 100) : 0;
+    var figure = function (label, text) {
+      return el('div', { className: 'ins-kpi' }, [
+        el('dt', { className: 'eyebrow', textContent: t(label) }),
+        el('dd', null, [el('div', { className: 'ins-kpi-n', textContent: text })])
+      ]);
+    };
+    return card([
+      el('h2', { className: 'lists-title', textContent: t('statsReadsHead') }),
+      el('p', { className: 'stats-lead', textContent: t('statsReadsLead') }),
+      el('dl', { className: 'ins-kpis vis-kpis' }, [
+        figure('statsReadsToday', r.today.toLocaleString(state.lang)),
+        figure('statsReadsShare', share + '%')
+      ]),
+      r.tables.length ? ranking(r.tables) : null
+    ]);
+  }
+
   /* Whether a list was opened before its countries were counted: the line
      under it then adds up to less than its number, and the sentence under
      the table says why, only where it is true. A list with no countries
@@ -403,6 +428,7 @@
       devices(),
       state.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null
     ]));
+    if (state.reads) stack.appendChild(readsCard());
     if (opened) stack.appendChild(card([headline()]));
     stack.appendChild(table('statsMapHead', 'statsMapLead', opened && state.map, spot));
 
@@ -514,6 +540,7 @@
         state.ready = !!out.ready;
         state.opens = out.opens || 0;
         state.held = out.held || null;
+        state.reads = out.reads || null;
         state.map = out.map || [];
         state.venues = out.venues || [];
         state.filters = out.filters || [];

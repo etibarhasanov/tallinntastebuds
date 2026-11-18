@@ -1518,7 +1518,11 @@
   "embedBy": "Mapa de",
   "embedListSub": "{n} lugares · uma lista no Tallinn Tastebuds",
   "embedPlacesSub": "{n} lugares no Tallinn Tastebuds",
-  "embedAllTitle": "Lugares em Tallinn"
+  "embedAllTitle": "Lugares em Tallinn",
+  "statsReadsHead": "Leituras da base de dados hoje",
+  "statsReadsLead": "Linhas que o site leu da sua base de dados desde a meia-noite UTC, por tabela. O plano gratuito para todas as leituras aos cinco milhões por dia, e passadas sete em cada dez o contador do Descobrir é o primeiro a parar de ler. Só as leituras do próprio site contam aqui: a fatura está no painel da Cloudflare.",
+  "statsReadsToday": "Lido hoje",
+  "statsReadsShare": "Dos cinco milhões do dia"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

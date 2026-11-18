@@ -1518,7 +1518,11 @@
   "embedBy": "Carte par",
   "embedListSub": "{n} adresses · une liste sur Tallinn Tastebuds",
   "embedPlacesSub": "{n} adresses sur Tallinn Tastebuds",
-  "embedAllTitle": "Adresses à Tallinn"
+  "embedAllTitle": "Adresses à Tallinn",
+  "statsReadsHead": "Lectures de la base de données aujourd’hui",
+  "statsReadsLead": "Les lignes que le site a lues dans sa base de données depuis minuit UTC, par table. L’offre gratuite arrête toute lecture à cinq millions par jour, et passé sept sur dix le compteur de Découvrir est le premier à cesser de lire. Seules les lectures du site lui-même sont comptées ici : la facture est dans le tableau de bord de Cloudflare.",
+  "statsReadsToday": "Lu aujourd’hui",
+  "statsReadsShare": "Des cinq millions du jour"
  },
  "blurbs": {
   "180-degrees": "Le seul restaurant deux étoiles Michelin des pays baltes. Une adresse expérimentale vraiment chouette sur le front de mer de Noblessner, où le menu dégustation est pensé pour te surprendre, plat après plat.",

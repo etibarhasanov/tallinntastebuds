@@ -414,6 +414,59 @@ CREATE TABLE IF NOT EXISTS visitor_counts (
   PRIMARY KEY (day, kind, id)
 ) WITHOUT ROWID;
 
+-- ------------------------------------------------------ the counter's totals
+-- The flag counter on Discover — THE FLAG COUNTER in
+-- functions/api/_visitors.js — kept as it is counted rather than summed as
+-- it is read. Each finished day is added up once out of visitor_counts, the
+-- first time the counter is read after it ends, into a row of counter_days
+-- and into the one row of counter_total, in one batch. Both fill themselves
+-- from every day since the count began on the first read after they are
+-- applied, so loading them is the two statements and nothing else.
+--
+-- The questions they are asked, and the key that answers each:
+--   everything up to yesterday               counter_total, id = 1
+--   the last 28 days, for a week and seconds counter_days, day >= ?
+--
+-- One row a finished day: the people new that day and every visit, as the
+-- counter estimates them before `shown` and counts them after, and the
+-- seconds on screen.
+CREATE TABLE IF NOT EXISTS counter_days (
+  day     TEXT    PRIMARY KEY,
+  fresh   REAL    NOT NULL,
+  visits  REAL    NOT NULL,
+  secs    INTEGER NOT NULL
+);
+-- One row, id 1: every day from `since` to `through` added together — the
+-- people new and the visits by country as a JSON object — and the first day
+-- read from `shown`, once there is one. `through` is NULL until the first
+-- fold, and a fold only moves it from the value it read.
+CREATE TABLE IF NOT EXISTS counter_total (
+  id          INTEGER PRIMARY KEY CHECK (id = 1),
+  since       TEXT    NOT NULL,
+  through     TEXT,
+  exact_from  TEXT,
+  fresh       REAL    NOT NULL DEFAULT 0,
+  countries   TEXT    NOT NULL DEFAULT '{}'
+);
+
+-- ------------------------------------------------------------ read_meter
+-- How many rows the site's Functions read from this database, a row a UTC day
+-- and table — functions/api/_meter.js, which counts every statement's
+-- meta.rows_read in the isolate and adds it here every quarter of an hour.
+-- Read by the brake on the flag counter and by /admin/stats. A floor, not
+-- the bill: reads from a terminal, from the Cloudflare MCP tool and from an
+-- isolate thrown away unflushed are not in it.
+--
+-- The questions it is asked, and the key that answers each:
+--   today so far, by table                   day = ?
+--   the last fortnight, a total a day        day >= ?
+CREATE TABLE IF NOT EXISTS read_meter (
+  day   TEXT    NOT NULL,
+  what  TEXT    NOT NULL,
+  rows  INTEGER NOT NULL,
+  PRIMARY KEY (day, what)
+) WITHOUT ROWID;
+
 -- ------------------------------------------------------------ visitor_live
 -- Pages opened in each of the last sixty minutes, for the Right now card on
 -- /admin/visitors. THE LAST HALF HOUR in functions/api/_visitors.js is the

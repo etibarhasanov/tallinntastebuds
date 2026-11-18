@@ -93,6 +93,7 @@ import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST, POST } from '../sta
 import { listCountries } from '../_visits.js';
 import { askedDevice } from '../_visitors.js';
 import { AUTHOR } from '../_posts.js';
+import { readsByTable, DAY_READS, BRAKE } from '../_meter.js';
 
 /* Five minutes in the colo, which is what the page is allowed to be stale by.
  *
@@ -284,9 +285,21 @@ export async function onRequestGet(context) {
     env.DB.prepare(HELD[k]).first().then((row) => (row && row.n) || 0, () => 0)));
   const held = Object.fromEntries(kinds.map((k, i) => [k, counts[i]]));
 
+  /* The day's database reads so far, by table — ../_meter.js. One row a
+     table read today, by the key; null where read_meter is not there. Not
+     filed by device: a read is the site's, not a visitor's. */
+  const day = new Date().toISOString().slice(0, 10);
+  const byTable = await readsByTable(env.DB, day);
+  const reads = byTable && {
+    today: byTable.reduce((sum, r) => sum + r.rows, 0),
+    limit: DAY_READS,
+    brake: BRAKE,
+    tables: byTable.map((r) => ({ name: r.what, n: r.rows }))
+  };
+
   const res = json(
     {
-      ready: true, opens: opens, held: held,
+      ready: true, opens: opens, held: held, reads: reads,
       map: map, venues: venues, filters: filters, rail: rail, lists: lists, posts: posts,
       ...words
     },
