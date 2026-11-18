@@ -87,6 +87,7 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
 | `from`, `until` | `YYYY-MM-DD`, `from` not after `until`; both optional and inclusive | error |
 | `roll` | optional; `base`, `spread` and `step` whole numbers, `spread` a whole number of `step`s and at least one, the run `base ± spread` inside 1–99 | error |
+| `langs` | optional; a non-empty list of codes `ui.json` knows, each with an `offer` line on a live deal — the map shows the deal in those languages only | error |
 | `student` | optional; `rate` a whole number 1–99, `offer` translations with at least `en`; not beside a `roll` | error |
 | `roll` | more than twelve rates — `staff.html` lists a code for each | warning |
 | `offer` | every language carries `{rate}` when the deal has a `roll`, and none does when it has not | error |
@@ -155,7 +156,8 @@ many are switched on.
 5. **`live: true`**, validate again — the live count goes up by one — and
    drive `index.html` on the same server: `liveDealFor()` in `assets/app.js`
    wants `live` **and** today inside `from`..`until` **and** the place not
-   closed, so a deal whose `from` is next week shows nothing on the map yet.
+   closed **and**, where the deal has `langs`, the site read in one of
+   them, so a deal whose `from` is next week shows nothing on the map yet.
    When it is on, the place's list row and panel head carry a pill with the
    percentage parsed out of the offer text — **−15%**, or the word
    **Discount** for an offer with no number in it — and the **Discount** chip

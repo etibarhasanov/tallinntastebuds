@@ -117,6 +117,7 @@
     "id": "faxinin-marketi",
     "name": "Faxinin marketi",
     "live": true,
+    "langs": ["az"],
     "key": "XJFKHV3BHPSN74MP1QGYKN6CX8KFJ2EF",
     "offer": {
       "en": "15% off your order",

@@ -4196,6 +4196,23 @@ reads the key out of `deals.json` can mint a code for 25% without drawing
 anything or signing in to anything, and a human at the counter is the control
 against that, as it always was.
 
+### A deal for one language's readers
+
+A deal can name the languages it is shown in — `"langs": ["az"]` — and the
+map leaves it off in every other one: no pill, no offer, no button, and no
+place under the Discount chip. Faxinin marketi's is the first, and is for the
+people who read the site in Azerbaijani; in English, or any of the other
+nine, the market is on the map without a discount. Switching language
+redraws the panel and the chips, so the deal appears and disappears with
+the switch. Leave the field out and a deal shows in every language, as all
+the others do.
+
+It is the map's door only. `deal.html`, `staff.html` and `verify.html` do
+not ask, on purpose: a guest who was shown the deal and switched their
+phone to English at the till still gets a code, and the counter's screen
+and the waiter's scan work in whatever language their phones are in. The
+validator wants every language a live deal names to have an `offer` line.
+
 ### A rate for students
 
 A fixed deal can pay somebody more for being a student. Give it a
@@ -4264,6 +4281,7 @@ Add an entry to `data/deals.json`:
 | `from`, `until` | Optional, inclusive. Outside them the button disappears |
 | `roll` | Optional. `{ "base", "spread", "step" }`, a run of rates drawn per member per hour instead of one rate, with `{rate}` in every `offer` line — see [A rate that is drawn](#a-rate-that-is-drawn) |
 | `student` | Optional. `{ "rate", "offer" }`, what an account with `users.student = 1` gets instead of the deal's own line and rate; not beside a `roll` — see [A rate for students](#a-rate-for-students) |
+| `langs` | Optional. The language codes the map shows the deal in, `["az"]`; left out, it shows in all of them — see [A deal for one language's readers](#a-deal-for-one-languages-readers) |
 
 Generate a key with:
 

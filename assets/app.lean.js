@@ -289,7 +289,8 @@
   }
 
   function dealIsOn(deal) {
-    return deal.live === true && window.TTBPass.windowState(deal) === 'open';
+    return deal.live === true && window.TTBPass.windowState(deal) === 'open' &&
+      (!deal.langs || deal.langs.indexOf(state.lang) !== -1);
   }
 
   function googleDeals() {
