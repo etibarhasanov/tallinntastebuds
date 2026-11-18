@@ -3729,15 +3729,24 @@ does. Tartu maantee is the first: a cycleway beside six lanes of traffic
 from Viru väljak to the Ülemiste junction, which the router took as the
 best way into the centre from the whole south-east — from Ülemiste to
 Magasini it rode half a kilometre of it, and both buttons it offered did.
-The owner asked, on 2026-11-17, for it not to be offered at all.
+The owner asked, on 2026-11-17, for it not to be offered at all, and on
+2026-11-18 for two more: Liivalaia, its whole length from Pärnu maantee to
+Juhkentali, and Pärnu maantee from the lights at Vabaduse väljak down to
+the Liivalaia crossing. Before, from Kristiine to Juhkentali rode 870 m of
+Liivalaia, and from Vabaduse väljak south 690 m of Pärnu maantee; after,
+the first takes Kesk-Ameerika and Vana-Lõuna and the second Kaarli
+puiestee, riding Pärnu maantee only for the last door on it.
 
 **The router cannot be told, so it is asked again.** OpenStreetMap
 Germany's public router takes no list of streets to avoid. So where a way
-rides one — more than 150 m of its line within 60 m of the street's,
+rides one — more than 150 m of its line within the street's width of
+the street's line (60 m for Tartu maantee, 40 m for the two narrower ones,
+whose quiet neighbours run close beside them),
 leaving out the first and last 150 m, so a place on the street is still
 reached and crossing it is not riding it — `keepOff()` in
 `functions/api/route.js` asks for the way through a point on either side of
-the stretch ridden, 350 m and 700 m out and square to it. The router snaps
+the stretch ridden — on the street it rides most, where it rides two —
+350 m and 700 m out and square to it. The router snaps
 each to the nearest street it can ride, which is a parallel one, and a way
 round longer than half as much again as the shortest is not a way round.
 

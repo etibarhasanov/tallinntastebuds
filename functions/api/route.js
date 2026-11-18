@@ -66,8 +66,9 @@
  * the first way, in the way itself among `others` — RIDDEN below.
  *
  * And by bike some streets are not offered at all. A way that rides Tartu
- * maantee for more than a crossing is asked for again round it, and only
- * the ways that keep off are answered — KEEPING OFF below.
+ * maantee, Liivalaia, or Pärnu maantee from Vabaduse väljak to Liivalaia,
+ * for more than a crossing is asked for again round it, and only the ways
+ * that keep off are answered — KEEPING OFF below.
  *
  * And by bike a way can be a train: ride to a station, an Elron train with
  * the bike on it, ride on. Those are `trains`, answered beside the ways by
@@ -568,8 +569,8 @@ function bend(before, after) {
  * than RIDDEN_LONGER times the shortest way, and where the router did not
  * offer that way itself. It goes first, the answer says `ridden: true`
  * beside it, and the bar says somebody rode it; the router's own follow.
- * It is then kept off Tartu maantee like every other way, so a ride down
- * that opens nothing.
+ * It is then kept off the streets in KEEP_OFF like every other way, so a
+ * ride down Tartu maantee opens nothing.
  *
  * It costs a read of `rides` by the squares the ellipse's box covers —
  * ./_ridecells.js, a fixed number of rows however many rides there are —
@@ -759,10 +760,17 @@ async function viaRides(context, from, to, shortest, offered) {
  * first: a cycleway beside six lanes of traffic, from Viru väljak to the
  * Ülemiste junction, which the router's bike profile reads as the best way
  * into the centre from the south-east. The owner asked for it not to be
- * offered. OSRM's public server cannot be told to avoid a street, so where
- * a way rides one the router is asked again, through a point either side
- * of the stretch ridden, KEEP_OFF_AWAY metres out and square to it, which
- * it snaps to the nearest street it can ride — a parallel one.
+ * offered. Liivalaia, and Pärnu maantee from the lights at Vabaduse väljak
+ * down to the Liivalaia crossing, followed on 2026-11-18: the same six
+ * lanes and buses, and the owner rides neither. OSRM's public server cannot
+ * be told to avoid a street, so where a way rides one the router is asked
+ * again, through a point either side of the stretch ridden, KEEP_OFF_AWAY
+ * metres out and square to it, which it snaps to the nearest street it can
+ * ride — a parallel one. A way down Pärnu maantee and on along Liivalaia
+ * rides two, and the stretch the points are set beside is the street it
+ * rides most: a stretch from the first street's start to the second's end
+ * is a diagonal through neither, and the points either side of it land on
+ * the streets themselves.
  *
  * A way rides a street for as many metres of it as lie within the street's
  * `width` of its line, not counting the first and last KEEP_OFF_ENDS: a
@@ -789,6 +797,26 @@ const KEEP_OFF = [
       [59.42935, 24.77385], [59.42845, 24.77592], [59.42765, 24.77767], [59.427, 24.77903],
       [59.42569, 24.7816], [59.42475, 24.78383], [59.42405, 24.78543], [59.42292, 24.78737],
       [59.42258, 24.78784]]
+  },
+  {
+    /* Its whole length, from the Pärnu maantee crossing to Juhkentali; the
+       line is the router's own, read off its car profile on 2026-11-18.
+       Forty metres rather than sixty, since Kaupmehe and Tatari run close
+       beside it and riding those is the point. */
+    name: 'Liivalaia',
+    width: 40,
+    line: [[59.42719, 24.74268], [59.42719, 24.74318], [59.42726, 24.74376], [59.4274, 24.74466],
+      [59.42762, 24.74605], [59.42791, 24.74777], [59.42813, 24.7492], [59.42833, 24.75051],
+      [59.42841, 24.75103], [59.42889, 24.75404], [59.42911, 24.75536], [59.42925, 24.75611]]
+  },
+  {
+    /* From the lights at Vabaduse väljak down to the Liivalaia crossing,
+       and no further: the owner's stretch, the router's line. */
+    name: 'Pärnu maantee',
+    width: 40,
+    line: [[59.43248, 24.74567], [59.43194, 24.74558], [59.43159, 24.74548], [59.43098, 24.74528],
+      [59.4305, 24.74508], [59.43009, 24.74443], [59.42969, 24.7438], [59.4293, 24.74337],
+      [59.42877, 24.74281], [59.42837, 24.74247], [59.42729, 24.74254]]
   }
 ];
 const KEEP_OFF_MIN = 150;
@@ -816,25 +844,27 @@ function apart(p, line) {
   return least;
 }
 
-/* How far a way rides the streets to keep off, and from where to where. */
+/* How far a way rides the streets to keep off, all of them together, and
+   from where to where on the one it rides most. */
 function ridden(way) {
+  const on = KEEP_OFF.map(() => ({ meters: 0, start: null, end: null }));
   let gone = 0;
-  let meters = 0;
-  let start = null;
-  let end = null;
   for (let i = 1; i < way.line.length; i++) {
     const a = way.line[i - 1];
     const b = way.line[i];
     const step = metres(a, b);
-    if (gone >= KEEP_OFF_ENDS && gone + step <= way.meters - KEEP_OFF_ENDS &&
-      KEEP_OFF.some((street) => apart(a, street.line) < street.width && apart(b, street.line) < street.width)) {
-      meters += step;
-      start = start || a;
-      end = b;
+    if (gone >= KEEP_OFF_ENDS && gone + step <= way.meters - KEEP_OFF_ENDS) {
+      const k = KEEP_OFF.findIndex((street) => apart(a, street.line) < street.width && apart(b, street.line) < street.width);
+      if (k >= 0) {
+        on[k].meters += step;
+        on[k].start = on[k].start || a;
+        on[k].end = b;
+      }
     }
     gone += step;
   }
-  return { meters: meters, start: start, end: end };
+  const most = on.reduce((x, y) => (y.meters > x.meters ? y : x));
+  return { meters: on.reduce((sum, street) => sum + street.meters, 0), start: most.start, end: most.end };
 }
 
 async function keepOff(ways, from, to, shortest, heading = null) {
