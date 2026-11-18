@@ -83,8 +83,6 @@ const KNOWN = [
   { file: 'api/_posts.js', has: 'ORDER BY COALESCE(p.published_at, p.updated_at) DESC', why: "readPage()'s WHERE is its caller's — p.status = 'published' or p.owner = ? in posts.js — and each searches an index of posts" },
   { file: 'api/_flows.js', has: 'WITH RECURSIVE f(flow)', why: 'FIRST_DAY: MIN(flow) and MIN(day) per flow are each one row by the key, 54 rows in all on 18 Nov 2026 — the planner cannot tell its parts apart' },
   { file: 'api/_visitors.js', has: 'SELECT MIN(day) AS day FROM visitor_counts WHERE kind', why: 'stops at the first day the kind has a row, so it reads the days before that kind began and no more: 1,757 rows on 18 Nov 2026 for the latest, and that number does not grow. The owner\'s pages only' },
-  { file: 'api/rides.js', has: 'FROM rides WHERE south <=', why: 'NOT SAFE FOR LONG: every ride in Tallinn overlaps the city\'s box, so this reads every ride with its line. 14 rides on 18 Nov 2026. Needs rides filed by grid cell, a schema change waiting on the owner' },
-  { file: 'api/route.js', has: 'FROM rides WHERE south <=', why: 'the same walk as rides.js, on every bike route asked for: the same fix' },
 ];
 const ADMIN = 'api/admin/';
 

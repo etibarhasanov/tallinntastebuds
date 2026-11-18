@@ -161,6 +161,13 @@
  * is `short`. One row a run and not one row with several lines, because
  * `line` is one line to every page and installed app that reads it.
  *
+ * WHERE IT IS FILED
+ *
+ * A ride is also filed under the squares of the city its line passes
+ * through, in `ride_cells`, so ?bbox= and the ridden way in ./route.js find
+ * the rides near a way by a key rather than by reading every ride there is.
+ * ./_ridecells.js is the whole of it; a drop takes the squares with it.
+ *
  * WHAT THE RIDE SAYS ABOUT THE STREETS
  *
  * After the rows are in, each run's squares are added to `ride_sections` —
@@ -172,8 +179,9 @@
  * `rides` is in db/schema.sql and loaded by hand. Until it is, GET answers
  * `ready: false` and the Bike tab draws its way exactly as it did; a save
  * answers 503 `not-ready` and the page keeps the ride on the phone to try
- * again. `ride_sections` is loaded the same way and costs nothing while it
- * is not: the save catches it.
+ * again. `ride_sections` and `ride_cells` are loaded the same way and cost
+ * nothing while they are not: the save catches both. Without `ride_cells`
+ * ?bbox= answers `ready: false`, the same as without `rides`.
  */
 
 import {
@@ -182,6 +190,7 @@ import {
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, countSections } from './_sections.js';
 import { arrayOf } from './_rides.js';
+import { ridesIn, fileCells } from './_ridecells.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
    IS ON A RIDE. Two hundred is a block or two: enough that a line stopping
@@ -252,14 +261,9 @@ export async function onRequestGet(context) {
   if (!env.DB || await wrongDatabase(env)) return json({ ready: false, rides: [] }, 200);
 
   try {
-    const { results } = await env.DB
-      .prepare(
-        'SELECT id, meters, seconds, line FROM rides ' +
-        'WHERE south <= ? AND north >= ? AND west <= ? AND east >= ? ' +
-        'ORDER BY created_at DESC LIMIT ?'
-      )
-      .bind(box.north, box.south, box.east, box.west, NEAR)
-      .all();
+    /* By the squares of the city each ride passes through, not by reading
+       every ride's box — WHAT A READ COSTS in ./_ridecells.js. */
+    const results = await ridesIn(env, box, 'id, meters, seconds, line', NEAR);
     const rides = results.map((row) => ({
       id: row.id,
       meters: row.meters,
@@ -343,6 +347,11 @@ async function own(env, user, body) {
     .bind(id, user.id)
     .run();
   if (!done.meta.changes) return json({ error: 'not-found' }, 404);
+  /* And its squares, by idx_ride_cells_ride. Left behind they would name a
+     ride that is not there, which a read drops at the lookup by id. */
+  try {
+    await env.DB.prepare('DELETE FROM ride_cells WHERE ride = ?').bind(id).run();
+  } catch (e) { /* No ride_cells yet. */ }
   return json({ ok: true }, 200);
 }
 
@@ -458,6 +467,13 @@ async function save(env, rider, body) {
       .prepare('INSERT INTO rides (' + columns + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .bind(...row)));
   }
+  /* The squares it passes through, so a read of the rides near a way can
+     find it by the key — ./_ridecells.js. Not there yet, or failed: the
+     ride is kept, and the rebuild beside ride_cells in db/schema.sql
+     files it. */
+  try {
+    await env.DB.batch(rows.map((row, i) => fileCells(env, row[0], row[10], runs[i].line)));
+  } catch (e) { /* No ride_cells yet. */ }
   /* WHAT THE RIDE SAYS ABOUT THE STREETS. Not there yet, or failed: the
      ride is kept, and the rebuild counts it. */
   try {
