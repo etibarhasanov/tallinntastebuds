@@ -179,15 +179,18 @@ many are switched on.
 ## A student rate
 
 A fixed deal may carry `"student": { "rate": 25, "offer": { … all eleven … } }`:
-an account with `users.student = 1` is shown that line and signs that rate
+an account whose `users.student_until` has not passed is shown that line and signs that rate
 into its code (`p=25` in the QR), and everybody else gets the deal's own.
 **A rate for students** in `docs/handbook.md` is the reasoning. What to know:
 
-- The column is set by the owner, by hand, one account at a time:
-  `UPDATE users SET student = 1 WHERE id = '<id>'`. Nothing on the site
-  writes it, and a session does not either without the owner's yes.
+- The column is a date, the last day the account counts as a student's,
+  set by the owner, by hand, one account at a time:
+  `UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>'`. It is
+  read in Tallinn's timezone, inclusive; a value that is not `YYYY-MM-DD`
+  reads as not a student. Nothing on the site writes it, and a session does
+  not either without the owner's yes.
 - Before any of it works the column has to exist in production:
-  `ALTER TABLE users ADD COLUMN student INTEGER NOT NULL DEFAULT 0`. Until
+  `ALTER TABLE users ADD COLUMN student_until TEXT`. Until
   it does, `/api/pass` answers `student: false` for everyone and the deal
   pays its everyday rate — nothing breaks.
 - The validator holds `rate` to 1–99, wants `offer.en` and warns on a live
