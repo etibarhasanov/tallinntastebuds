@@ -3412,7 +3412,15 @@ on the website opens nothing yet: the page that opens one is the app's.
 **One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
 the same rides with a range — 7, 28, 90 days, all time — the distance, the
 riding time and the number of rides against the range before, a line of
-kilometres, and every ride a row that opens it. That page is `GET
+kilometres, **Where you rode** — every ride of the range drawn on one map,
+each a see-through line, so a street ridden more than once comes out darker
+— and every ride a row that opens it. The map asks `GET
+/api/rides?mine=1&lines=1`: the list again with a `line` on each ride,
+thinned to a point every fifty metres or so (`THIN` in
+`functions/api/rides.js`), since the map is the size of a card and two
+hundred whole lines are megabytes. Only with `lines=1`, so the list the
+account page and an installed app ask for is the size it was. The page
+that opens one ride is `GET
 /api/rides/<id>` (`functions/api/rides/[id].js`): the ride's line on a map,
 its distance, time and average, and — where it has a `track` — the fastest
 kilometre, the top speed over two hundred metres, how long was spent
