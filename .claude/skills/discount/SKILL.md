@@ -87,7 +87,7 @@ What `tools/validate.mjs` holds each field to (the `deals.json` block:
 | `offer`, `terms` | objects keyed by language code; only codes `ui.json` knows; no empty strings | error |
 | `from`, `until` | `YYYY-MM-DD`, `from` not after `until`; both optional and inclusive | error |
 | `roll` | optional; `base`, `spread` and `step` whole numbers, `spread` a whole number of `step`s and at least one, the run `base ± spread` inside 1–99 | error |
-| `langs` | optional; a non-empty list of codes `ui.json` knows, each with an `offer` line on a live deal — the map shows the deal in those languages only | error |
+| `langs` | optional; a non-empty list of codes `ui.json` knows, each with an `offer` line on a live deal — the map and `deal.html` show the deal in those languages only, and answer `passNone` in the rest | error |
 | `student` | optional; `rate` a whole number 1–99, `offer` translations with at least `en`; not beside a `roll` | error |
 | `roll` | more than twelve rates — `staff.html` lists a code for each | warning |
 | `offer` | every language carries `{rate}` when the deal has a `roll`, and none does when it has not | error |

@@ -1364,9 +1364,8 @@ if (places !== null) {
 
    And a deal may name the languages it is shown in — "langs": ["az"] — for
    an offer meant for the people who read the site in one of them. The map
-   leaves the deal off in every other language, and the pass pages do not
-   ask: a guest who was shown it and switched language at the till still
-   gets a code, and the staff and verify pages work in any. */
+   and the guest's deal.html leave the deal off in every other language; the
+   staff and verify pages are the restaurant's and work in any. */
 
 const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll', 'student', 'langs']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
