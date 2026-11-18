@@ -1360,9 +1360,15 @@ if (places !== null) {
    the database by hand. Its code signs that rate the way a roll's does, so
    it is one second code an hour beside the deal's own, and it is held apart
    from a roll: a run of rates and a rate that depends on who you are would
-   need a staff page nobody could read down. */
+   need a staff page nobody could read down.
 
-const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll', 'student']);
+   And a deal may name the languages it is shown in — "langs": ["az"] — for
+   an offer meant for the people who read the site in one of them. The map
+   leaves the deal off in every other language, and the pass pages do not
+   ask: a guest who was shown it and switched language at the till still
+   gets a code, and the staff and verify pages work in any. */
+
+const DEAL_KEYS = new Set(['id', 'name', 'live', 'key', 'offer', 'terms', 'from', 'until', 'roll', 'student', 'langs']);
 const DEAL_KEY_CHARS = /^[0-9A-HJKMNP-TV-Z]{16,64}$/;
 const ROLL_KEYS = ['base', 'spread', 'step'];
 const ROLL_MAX_RATES = 12;
@@ -1497,6 +1503,19 @@ if (deals !== null && !Array.isArray(deals)) {
         const has = typeof deal.offer[lang] === 'string' && deal.offer[lang].includes(RATE_SLOT);
         if (rolled && !has) fail(where, `"offer.${lang}" needs ${RATE_SLOT} where the drawn rate goes, since this deal has a roll`);
         if (!rolled && has) fail(where, `"offer.${lang}" writes ${RATE_SLOT}, which only a deal with a "roll" fills in`);
+      }
+    }
+
+    if (deal.langs !== undefined) {
+      if (!Array.isArray(deal.langs) || !deal.langs.length) {
+        fail(where, '"langs" must be a list of language codes like ["az"], or left out to show the deal in every language');
+      } else {
+        for (const lang of deal.langs) {
+          if (!languages.includes(lang)) fail(where, `"langs" has unknown language "${lang}"`);
+          else if (deal.live === true && !(isPlainObject(deal.offer) && isNonEmptyString(deal.offer[lang]))) {
+            fail(where, `"langs" shows the deal in ${lang}, which has no "offer" line`);
+          }
+        }
       }
     }
 

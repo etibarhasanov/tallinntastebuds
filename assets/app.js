@@ -551,10 +551,12 @@
     return false;
   }
 
-  /* A place only shows a discount when one is set up, switched on, and
-     inside whatever run of dates it was given. Everything else — an entry
-     still being drafted, a campaign that has finished, a place that has
-     closed — leaves the panel exactly as it was before any of this existed.
+  /* A place only shows a discount when one is set up, switched on, inside
+     whatever run of dates it was given, and — where the deal names
+     languages — read in one of them. Everything else — an entry still being
+     drafted, a campaign that has finished, a place that has closed, a deal
+     for Azerbaijani readers looked at in English — leaves the panel exactly
+     as it was before any of this existed.
 
      assets/pass.js owns the date arithmetic and is loaded alongside this
      file; if it ever fails to arrive, no place has a deal and the map is
@@ -566,7 +568,8 @@
   }
 
   function dealIsOn(deal) {
-    return deal.live === true && window.TTBPass.windowState(deal) === 'open';
+    return deal.live === true && window.TTBPass.windowState(deal) === 'open' &&
+      (!deal.langs || deal.langs.indexOf(state.lang) !== -1);
   }
 
   /* The live deals filed under Google's key rather than under a place of
