@@ -3158,7 +3158,11 @@ Nothing on the site reads them. They are for Rattatee, which shows the next
 turn while riding and says it aloud in a recording of the owner's voice, one
 recording a word — which is why a sharp left is a left and there are eight
 words rather than the router's dozens. Setting off is not a step, and neither
-is a street renamed under somebody going straight on.
+is a street renamed under somebody going straight on. One step is not a
+corner: `tunnel`, where the way goes into one, so the app can say "enter the
+tunnel" on the Veerenni path under the railway. The router flags each short
+stretch under a junction as a tunnel of its own, so stretches less than
+`TUNNEL_GAP` apart are one tunnel and one step.
 
 The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
 the bus to one place takes it to the next. Google is a small link at the foot
