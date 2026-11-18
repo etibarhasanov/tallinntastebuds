@@ -4226,20 +4226,24 @@ A fixed deal can pay somebody more for being a student. Give it a
 "student": { "rate": 25, "offer": { "en": "25% off for students", … all eleven … } }
 ```
 
-— and an account whose `users.student` is 1 is shown that line and that rate
+— and an account whose `users.student_until` has not passed is shown that line and that rate
 on `deal.html` instead of the deal's own; everybody else gets the deal's own,
 exactly as before. Faxinin marketi was the first: 15% for any member, 25% for
 a student.
 
 **Who is a student is the owner's to say, in the database.** Nothing on the
 site writes the column and nobody can tick it for themselves: the owner checks
-whatever they check — a student card, a university address — and sets it by
-hand, `UPDATE users SET student = 1 WHERE id = '<id>'`, which the write gate
-asks about like any other write. `/api/pass` reads it on the same request that
+whatever they check — a student card, a university address — and sets the
+last day it holds by hand, `UPDATE users SET student_until = '2027-08-31'
+WHERE id = '<id>'`, which the write gate asks about like any other write. A
+date and not a yes or no, because people stop being students and a flag
+stays set until somebody remembers to clear it; the date runs out on its
+own, read in Tallinn's timezone, the day itself included. A value that is
+not a date reads as not a student. `/api/pass` reads it on the same request that
 opens the door and answers `student: true` or `false` beside the draw, so the
 page never decides it and a student cannot be claimed from the browser. A
-database the `ALTER TABLE users ADD COLUMN student INTEGER NOT NULL DEFAULT 0`
-has not reached answers `false` for everybody, and every deal pays its
+database the `ALTER TABLE users ADD COLUMN student_until TEXT` has not
+reached answers `false` for everybody, and every deal pays its
 everyday rate.
 
 **The rate travels in the code, as a drawn one does.** A student's code is
@@ -4284,7 +4288,7 @@ Add an entry to `data/deals.json`:
 | `terms` | Optional small print |
 | `from`, `until` | Optional, inclusive. Outside them the button disappears |
 | `roll` | Optional. `{ "base", "spread", "step" }`, a run of rates drawn per member per hour instead of one rate, with `{rate}` in every `offer` line — see [A rate that is drawn](#a-rate-that-is-drawn) |
-| `student` | Optional. `{ "rate", "offer" }`, what an account with `users.student = 1` gets instead of the deal's own line and rate; not beside a `roll` — see [A rate for students](#a-rate-for-students) |
+| `student` | Optional. `{ "rate", "offer" }`, what an account whose `users.student_until` has not passed gets instead of the deal's own line and rate; not beside a `roll` — see [A rate for students](#a-rate-for-students) |
 | `langs` | Optional. The language codes the map shows the deal in, `["az"]`; left out, it shows in all of them — see [A deal for one language's readers](#a-deal-for-one-languages-readers) |
 
 Generate a key with:

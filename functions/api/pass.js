@@ -10,8 +10,9 @@
  * declares. The number comes back either way, because this never reads
  * deals.json and so cannot know which kind of deal is being asked about;
  * a fixed deal ignores it. And whether this account is a student's —
- * users.student, which the owner sets by hand — for a deal that carries a
- * student rate; every other deal ignores that too. That split is deliberate: the three numbers an
+ * users.student_until, a date the owner sets by hand — for a deal that
+ * carries a student rate; every other deal ignores that too. That split is
+ * deliberate: the three numbers an
  * admin sets stay in the file, where everything else about a discount
  * already is, and nothing about any deal is in here.
  *
@@ -64,6 +65,8 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /* Google's key: capitals, which no slug has, and the length of a real one. */
 const GOOGLE = /^[A-Za-z0-9_-]{16,128}$/;
 const HOUR = 3600000;
+/* users.student_until, as the owner writes it. */
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -93,14 +96,24 @@ export async function onRequestGet(context) {
   return json({ draw: parseInt(mac.slice(0, 8), 16), student: await isStudent(env, user.id) }, 200);
 }
 
-/* users.student, which nothing on the site writes — see db/schema.sql. A
-   database the ALTER has not reached yet throws on the column, and that is
-   read as nobody being a student rather than as a pass nobody can open. */
+/* A student until the day in users.student_until, that day included, read
+   in Tallinn's timezone — the restaurant's, and the day its till is on.
+   Nothing on the site writes the column: see db/schema.sql. A database the
+   ALTER has not reached yet throws on it, and that is read as nobody being a
+   student rather than as a pass nobody can open; so is a value that is not
+   a date, since a typo in a hand-written UPDATE should cost the student
+   rate, not the discount. */
 async function isStudent(env, id) {
+  let until;
   try {
-    const row = await env.DB.prepare('SELECT student FROM users WHERE id = ?').bind(id).first();
-    return !!(row && row.student === 1);
+    const row = await env.DB.prepare('SELECT student_until FROM users WHERE id = ?').bind(id).first();
+    until = row && row.student_until;
   } catch {
     return false;
   }
+  if (typeof until !== 'string' || !DAY.test(until)) return false;
+  /* sv-SE is the locale whose date reads YYYY-MM-DD, so the two compare as
+     strings. */
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Tallinn' });
+  return today <= until;
 }

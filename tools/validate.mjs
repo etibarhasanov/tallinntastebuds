@@ -1356,8 +1356,8 @@ if (places !== null) {
    not on the map" in the README.
 
    A deal may also carry a student rate — { rate, offer } — paid instead of
-   the offer to an account whose users.student is 1, which the owner sets in
-   the database by hand. Its code signs that rate the way a roll's does, so
+   the offer to an account whose users.student_until has not passed, a date
+   the owner sets in the database by hand. Its code signs that rate the way a roll's does, so
    it is one second code an hour beside the deal's own, and it is held apart
    from a roll: a run of rates and a rate that depends on who you are would
    need a staff page nobody could read down.
