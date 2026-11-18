@@ -334,6 +334,13 @@ rule; this is how it is done.
   reads every row until it finds that kind; `MIN(day)` on a table keyed by
   flow first reads all of it. `FIRST_DAY` in `_flows.js` is the way round
   the last: step from one flow to the next by the key.
+- **After it ships, watch the meter.** `functions/_middleware.js` hands every
+  route's `env.DB` through `meter()` in `_meter.js`, which adds up every
+  statement's `rows_read` by the first table it names and writes it into
+  `read_meter` every quarter of an hour; `/admin/stats` opens on today's, by
+  table. A table climbing there that nothing new should have made dearer is
+  the first sign. `braking()` is the brake a nice-to-have reader checks before
+  it reads — the flag counter does — and it is true past `BRAKE` of the day.
 - **Then `node tools/sqlcheck.mjs`.** A walk it reports is fixed, or added to
   `KNOWN` in the tool with what bounds it in numbers — the size of the table
   and why it stays that size, or how rarely it runs. "It is small" is not a

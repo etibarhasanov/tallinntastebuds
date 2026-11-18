@@ -1518,7 +1518,11 @@
   "embedBy": "Karte von",
   "embedListSub": "{n} Orte · eine Liste auf Tallinn Tastebuds",
   "embedPlacesSub": "{n} Orte auf Tallinn Tastebuds",
-  "embedAllTitle": "Orte in Tallinn"
+  "embedAllTitle": "Orte in Tallinn",
+  "statsReadsHead": "Datenbank-Lesezugriffe heute",
+  "statsReadsLead": "Zeilen, die die Seite seit Mitternacht UTC aus ihrer Datenbank gelesen hat, nach Tabelle. Der kostenlose Tarif stoppt jeden Lesezugriff bei fünf Millionen am Tag, und ab sieben von zehn hört der Zähler auf Entdecken als Erstes auf zu lesen. Gezählt werden hier nur die Lesezugriffe der Seite selbst: die Rechnung steht im Cloudflare-Dashboard.",
+  "statsReadsToday": "Heute gelesen",
+  "statsReadsShare": "Von den fünf Millionen des Tages"
  },
  "blurbs": {
   "180-degrees": "Das einzige Zwei-Sterne-Restaurant im Baltikum. Ein richtig schönes, experimentelles Lokal am Wasser in Noblessner, wo das Degustationsmenü dich Gang für Gang überraschen soll.",

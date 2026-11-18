@@ -16288,15 +16288,22 @@ canvas once. The countries are named in the reading language by
 
 **What it costs to read.** `visitor_counts` is keyed on day, kind and id,
 so the counter asks only questions that name their days. The days before
-today cannot change and are read once per isolate a day; every five minutes
-after that it reads today's rows and nothing else. It did not start that
+today cannot change, so each is added up once, the first time the counter is
+read after it ends, into a row of `counter_days` and the running total in
+`counter_total`; the card reads those, 28 rows once per isolate a day however
+long the count has run, and every five minutes after that today's rows and
+nothing else. Both tables fill themselves from the whole history on the
+first read after they are applied. It did not start that
 way: for its first day it asked for `kind = 'shown'` across every day and
 for everything before a date, two questions the key cannot answer, so each
 colo read nearly the whole table every five minutes. On 2026-11-18 that had
 the account through D1's five million free reads a day by late morning, and
 every route that reads the database answered empty until midnight UTC —
 Discover with no lists on it, profiles that would not open. **WHAT IT READS**
-in `functions/api/_visitors.js` has the detail.
+in `functions/api/_visitors.js` has the detail. And it is the first thing to
+stop: past seven in ten of the day's five million, as `read_meter` counts
+them, `/api/counter` answers as though it had no table, so the rest of the day
+goes to lists, saves and signing in — THE BRAKE in `functions/api/_meter.js`.
 
 **People, not visits, in the three figures.** Today, seven days and all
 time count somebody on the first day they were ever here, so a person who

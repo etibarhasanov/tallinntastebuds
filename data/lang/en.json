@@ -1518,7 +1518,11 @@
   "embedBy": "Map by",
   "embedListSub": "{n} places · a list on Tallinn Tastebuds",
   "embedPlacesSub": "{n} places on Tallinn Tastebuds",
-  "embedAllTitle": "Places in Tallinn"
+  "embedAllTitle": "Places in Tallinn",
+  "statsReadsHead": "Database reads today",
+  "statsReadsLead": "Rows the site has read from its database since midnight UTC, by table. The free plan stops every read at five million a day, and past seven in ten of them the counter on Discover stops reading first. Only the site’s own reads are counted here: the Cloudflare dashboard is the bill.",
+  "statsReadsToday": "Read today",
+  "statsReadsShare": "Of the day’s five million"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

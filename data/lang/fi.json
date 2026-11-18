@@ -1518,7 +1518,11 @@
   "embedBy": "Kartta:",
   "embedListSub": "{n} paikkaa · lista Tallinn Tastebudsissa",
   "embedPlacesSub": "{n} paikkaa Tallinn Tastebudsissa",
-  "embedAllTitle": "Paikat Tallinnassa"
+  "embedAllTitle": "Paikat Tallinnassa",
+  "statsReadsHead": "Tietokantalukuja tänään",
+  "statsReadsLead": "Rivit, jotka sivusto on lukenut tietokannastaan UTC-keskiyön jälkeen, taulukoittain. Ilmaispaketti pysäyttää kaikki luvut viiteen miljoonaan päivässä, ja kun seitsemän kymmenestä on käytetty, Löydä-sivun laskuri lopettaa lukemisen ensimmäisenä. Tässä lasketaan vain sivuston omat luvut: lasku on Cloudflaren hallintapaneelissa.",
+  "statsReadsToday": "Luettu tänään",
+  "statsReadsShare": "Päivän viidestä miljoonasta"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

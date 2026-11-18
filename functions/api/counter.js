@@ -28,19 +28,23 @@
  * Today's figure moves all day, so the colo holds an answer five minutes,
  * under a key with today's date in it so midnight starts a new one, and the
  * browser keeps it as long. Each of those reads today's rows alone, by the
- * table's key; the days before today are read once per isolate a day —
- * WHAT IT READS in ./_visitors.js, which is what it cost when they were read
- * every five minutes.
+ * table's key; the days before today are a running total, counter_total and
+ * the last 28 rows of counter_days, read once per isolate a day — WHAT IT
+ * READS in ./_visitors.js, which is what it cost when they were read every
+ * five minutes.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
- * `{ ready: false }`, 200: no database, the other environment's, or
- * visitor_counts not there. The page draws no card at all.
+ * `{ ready: false }`, 200: no database, the other environment's,
+ * visitor_counts not there, or the day's D1 reads past THE BRAKE in
+ * ./_meter.js, which stops this card first so lists, saves and signing in
+ * keep what is left. The page draws no card at all.
  */
 
 import { json, wrongDatabase } from './_lib.js';
 import { readCounter } from './_visitors.js';
 import { today } from './_visits.js';
+import { braking } from './_meter.js';
 
 const TTL = 300;
 const EMPTY = { ready: false };
@@ -61,6 +65,10 @@ export async function onRequestGet(context) {
   const key = counterKey(request);
   const hit = await cache.match(key);
   if (hit) return hit;
+
+  /* The card is a nice-to-have, so it is the first thing to stop reading
+     when the day's reads are running out — THE BRAKE in ./_meter.js. */
+  if (await braking(env.DB)) return json(EMPTY, 200, TTL);
 
   const counted = await readCounter(env);
   if (!counted) return json(EMPTY, 200, TTL);

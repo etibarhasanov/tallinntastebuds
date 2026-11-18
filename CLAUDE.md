@@ -64,6 +64,9 @@ does not have to:
   sign-in. On 2026-11-18 one counter that re-read its whole table every five
   minutes did that before noon. **Every read has a price, set before it is
   written** below is the rule, and `node tools/sqlcheck.mjs` the backstop.
+  `/admin/stats` opens on the day's reads so far, by table, out of
+  `read_meter` (`functions/api/_meter.js`), and past seven in ten of the five
+  million the flag counter stops reading first.
 - **The chat costs nothing and is easy to exhaust.** `/api/ask` runs on
   Workers AI's free daily allowance, and `pages dev` spends from the same
   pot as the live site, since that one binding runs remotely even there.
