@@ -3718,6 +3718,32 @@ in the route itself rather than a data file: it is a decision the owner
 makes by name, not something a tool finds. The next one is a few lines
 there and a sentence here.
 
+## A new way sets off the way the rider is going
+
+Rattatee asks for a new way by itself once its rider has plainly left the
+old one, and until 2026-11-18 it asked with where they were and nothing
+else. The router answers the shortest way from a spot, and for somebody
+riding away from the old way that is back the way they came: "turn around",
+again, a hundred and fifty metres after they rode past it the first time —
+and again every hundred and fifty after. The owner's word for what it
+should do: see which way the person wants to go, and if they keep going,
+find the way from that direction.
+
+**`heading` is that direction.** `GET /api/route` and `/api/v1/route` take
+it beside `from` and `to`, in degrees from north, and the router is told
+the way must leave the first point within 45° of it — its `bearings` — so
+the line goes on ahead of the rider and turns where it next can. It is
+rounded to 15° so riders on one street share a cached answer. A heading
+that is not a number is no heading, and so is one the router has no street
+for: the question is asked again without it, and nobody is refused for it.
+
+**With a heading, only the router's ways.** No way through a door and none
+put together from saved rides: both are stitched outward from the spot in
+whichever direction they happen to run. The streets a bike way keeps off
+are still kept off, the ways round asked for with the same heading. A page
+or an app that sends none is answered exactly as before, which is every
+caller but a reroute in Rattatee.
+
 ## Languages
 
 Azerbaijani, English, Estonian, Finnish, French, German, Portuguese,

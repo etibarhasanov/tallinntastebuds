@@ -517,6 +517,10 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   train's `kind: "train"`, `line`, `name`, `from`, `to` and `at`. A train's
   first ride ends in `arrive` at the station, which the app turns into the
   train's own corner, so that word there is a promise too.
+- Its new way mid-ride, from 2026-11-18: the same two questions with
+  `heading` beside them, whole degrees from north, the way the rider is
+  going — answered in the same fields, the way setting off that way. An
+  answer that ignored it would be read just the same.
 - Its lists, signed in: `GET /api/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)
