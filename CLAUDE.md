@@ -406,6 +406,9 @@ its models are in `TallinnTasteBuds/Models/`.
   `rename` (`id`, `name`, answered `ride`) and `drop` (`id`, answered
   `ok`), refused with `not-found`. Its recorder sends `[lat, lng, t, acc]`
   points from then on, as the website's does.
+- Added on 2026-11-18, with Where you rode: `GET /api/rides?mine=1&lines=1`,
+  the same answer with `line` on each ride, `[lat, lng]` pairs thinned by
+  the site, which the app draws together on one map.
 - Added on 2026-11-18, with the train by bike: `GET /api/v1/route`, asked
   first with the same query as `/api/route` and answering the same fields
   beside `version`, and by bike `trains`, each `seconds`, `meters`, `leave`

@@ -33,6 +33,15 @@
  *   whole, with what it says about itself, is GET /api/rides/<id> in
  *   ./rides/[id].js.
  *
+ * GET  /api/rides?mine=1&lines=1
+ *
+ *   The same answer with a `line` on every ride, [lat, lng] pairs thinned to
+ *   a point every THIN metres or so, for Where you rode on the iPhone app's
+ *   Your rides: every ride of a range drawn on one map. Thinned because the
+ *   map is the size of a card and two hundred whole lines are megabytes; a
+ *   ride whole is still GET /api/rides/<id>. Only with `lines=1`, so the
+ *   list an installed app and the account page ask for is the size it was.
+ *
  * POST /api/rides   { action: 'save', name, seconds, line }    a session
  * POST /api/rides   { action: 'save', anon: true, … }           nobody
  * POST /api/rides   { action: 'rename', id, name }             its rider
@@ -223,10 +232,17 @@ const MAX_ACC = 1000;
    more than this, and the card that reads it shows six until asked. */
 const MINE = 200;
 
+/* How far apart, in metres, the points of a line ?lines=1 answers are. The
+   page keeps one every dozen metres; at fifty a corner is still a corner on
+   a map of the whole city, and a ten-kilometre ride is two hundred points. */
+const THIN = 50;
+
 export async function onRequestGet(context) {
   const { env, request } = context;
   const query = new URL(request.url).searchParams;
-  if (query.get('mine') === '1' || !query.has('bbox')) return json(await mine(context), 200);
+  if (query.get('mine') === '1' || !query.has('bbox')) {
+    return json(await mine(context, query.get('lines') === '1'), 200);
+  }
   const box = roundedBox(query.get('bbox'));
   if (!box) return json({ error: 'malformed' }, 400);
   if (!env.DB || await wrongDatabase(env)) return json({ ready: false, rides: [] }, 200);
@@ -253,7 +269,7 @@ export async function onRequestGet(context) {
 }
 
 /* The session's own rides — GET ?mine=1. */
-async function mine(context) {
+async function mine(context, lines) {
   const { env, request } = context;
   const none = { ready: false, user: null, rides: [] };
   if (!env.DB || await wrongDatabase(env)) return none;
@@ -261,7 +277,8 @@ async function mine(context) {
   if (!user) return { ...none, ready: true };
   const read = (timed) => env.DB
     .prepare(
-      'SELECT id, name, meters, seconds, created_at AS at, ' + timed + ' AS timed FROM rides ' +
+      'SELECT id, name, meters, seconds, created_at AS at, ' + timed + ' AS timed' +
+      (lines ? ', line' : '') + ' FROM rides ' +
       'WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
     )
     .bind(user.id, MINE)
@@ -278,8 +295,27 @@ async function mine(context) {
       return none;
     }
   }
-  const rides = got.results.map((r) => ({ ...r, timed: !!r.timed }));
+  const rides = got.results.map((r) => lines
+    ? { ...r, timed: !!r.timed, line: thinned(arrayOf(r.line)) }
+    : { ...r, timed: !!r.timed });
   return { ready: true, user: user.username, rides };
+}
+
+/* A line with a point every THIN metres of riding or so, its first and last
+   kept — what ?lines=1 answers. */
+function thinned(line) {
+  if (line.length < 3) return line;
+  const out = [line[0]];
+  let run = 0;
+  for (let i = 1; i < line.length - 1; i++) {
+    run += leg(line[i - 1], line[i]);
+    if (run >= THIN) {
+      out.push(line[i]);
+      run = 0;
+    }
+  }
+  out.push(line[line.length - 1]);
+  return out;
 }
 
 /* Renaming or deleting one of the session's own rides. The WHERE carries the
