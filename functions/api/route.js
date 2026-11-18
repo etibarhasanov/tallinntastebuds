@@ -53,10 +53,11 @@
  * A BIKE ROUTE AND THE DOORS
  *
  * By bike the router's way is not always the answer. Where a saved ride
- * crossed between two points the router can only join the long way round —
- * a door, data/doors.json — and going through it is clearly shorter, the
- * way through the door is the first one and the router's own is the first
- * of `others`. Same fields, same words; DOORS below.
+ * crossed between two points the router can only join the long way round,
+ * or by a path it has a bike pushed along — a door, data/doors.json — and
+ * going through it is better, the way through the door, or through as
+ * many as three, is the first one and the router's own is the first of
+ * `others`. Same fields, same words; DOORS below.
  *
  * And where people have ridden between the two points, the way they rode
  * is the first one, with `ridden: true` beside it — at the top level for
@@ -255,12 +256,20 @@ async function street(context, mode, from, to, withTrains) {
 
   /* By bike a ridden way goes first, then a way through a door, and the
      router's own best becomes the next of the others — still offered, a
-     button down. */
+     button down. Not where it is the door's line pushed, though: that is
+     one way twice, the slower time under a button of its own. */
   const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
+  let ways = [first].concat(others);
   const [through, rode] = mode === 'bike'
-    ? await Promise.all([viaDoor(context, from, to, shortest), viaRides(context, from, to, shortest, [first].concat(others))])
+    ? await Promise.all([
+      viaDoor(await doors(context), [from.lat, from.lng], [to.lat, to.lng], Math.min(...ways.map(reach)), DOORS_DEEP),
+      viaRides(context, from, to, shortest, ways)])
     : [null, null];
-  let ways = (rode ? [rode] : []).concat(through ? [through, first] : [first], others);
+  if (through) {
+    ways = [through].concat(ways.filter((other) =>
+      Math.abs(other.meters - through.meters) > SAME_WAY || other.seconds < through.seconds));
+  }
+  if (rode) ways.unshift(rode);
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
@@ -276,32 +285,57 @@ async function street(context, mode, from, to, withTrains) {
 
 /* ------------------------------------------------------------------ doors
  * A door is a stretch somebody really cycled between two points the router
- * can only join the long way round: a gap in a fence, a crossing, a path
- * OpenStreetMap does not have. tools/doors.mjs finds them in the saved
- * rides and writes data/doors.json — { id, meters, around, line } each —
- * and a bike route is the router's way or, where it is clearly shorter, the
+ * can only join the long way round, or only by having the bike pushed: a
+ * gap in a fence, a crossing, a path OpenStreetMap does not have, a path
+ * across a park it has as a footpath. tools/doors.mjs finds them in the
+ * saved rides and writes data/doors.json — { id, meters, around, line }
+ * each — and a bike route is the router's way or, where it is better, the
  * router to one end of a door, the door, and the router on from the other.
  * Doors in docs/handbook.md is the reasoning.
+ *
+ * Better is measured by reach(): a way's metres, or the metres a ride
+ * covers at PACE in the time the router gives it where that is more. An
+ * ordinary street comes out at its own length; a path the router pushes a
+ * bike along comes out at more than twice it, which is what it costs a
+ * rider. A door is ridden, so it reaches exactly as far as it is long, and
+ * a way through one goes first wherever it reaches DOOR_GAIN metres and a
+ * tenth less than the best the router offered. Less than that is noise:
+ * GPS error and a corner cut are worth a few metres each and neither is a
+ * door. The bar was eighty metres and a seventh, by length alone, until
+ * the owner asked for a door to be offered more readily.
  *
  * A door is ridden either way. The ones worth asking about are picked as
  * the crow flies first, since that costs nothing: a door whose ends are
  * further from the two points than the saving it could make is not asked
  * about. At most DOORS are, nearest-looking first, two requests each, and
- * the first that wins is taken. A way with a door in it has to beat the
- * shortest way the router offered — its first is its quickest, not always
- * that — by DOOR_GAIN metres and by a seventh, or it is noise: GPS error
- * and a corner cut are worth a few metres each and neither is a door.
+ * the first that wins is taken.
+ *
+ * And a way can go through more than one. The way in to a door and the way
+ * on from it are ways between two points like any other, so each is put to
+ * the doors again, DOORS_DEEP times over: three doors a route at the most,
+ * and twelve requests where every one of them was worth asking about.
  *
  * Nothing waits on any of it: no file, a door that does not parse, a leg the
  * router will not answer — each is the router's own way, exactly as before.
  */
 const DOORS = 2;
-const DOOR_GAIN = 80;
-const DOOR_RATIO = 6 / 7;
+const DOORS_DEEP = 1;
+const DOOR_GAIN = 50;
+const DOOR_RATIO = 0.9;
 
 /* What a door is ridden at, in metres a second: fifteen kilometres an hour,
    which is what the router's bike profile makes of a plain street. */
 const DOOR_SPEED = 4.2;
+
+/* And what the router makes of a street once its corners are counted,
+   twelve: the pace a way's time is turned back into metres at. The same
+   number is in tools/doors.mjs, which measures a way the same way. */
+const PACE = 3.3;
+const reach = (way) => Math.max(way.meters, way.seconds * PACE);
+
+/* Two ways within this many metres of each other in length are taken for
+   one line. */
+const SAME_WAY = 25;
 
 /* Nearer than this to a door's end, the way starts or stops at the door and
    there is no leg to ask the router for. */
@@ -309,32 +343,42 @@ const AT_DOOR = 15;
 
 const metres = (a, b) => km({ lat: a[0], lng: a[1] }, { lat: b[0], lng: b[1] }) * 1000;
 
-async function viaDoor(context, from, to, shortest) {
-  let doors;
-  try { doors = await dataFile(context, '/data/doors.json'); } catch (e) { return null; }
-  if (!Array.isArray(doors)) return null;
-
-  const start = [from.lat, from.lng];
-  const end = [to.lat, to.lng];
-  const worth = (meters) => shortest - meters >= DOOR_GAIN && meters <= shortest * DOOR_RATIO;
-  const tries = [];
-  for (const door of doors) {
+/* The doors as { meters, line }, each both ways round, or none. */
+async function doors(context) {
+  let file;
+  try { file = await dataFile(context, '/data/doors.json'); } catch (e) { return []; }
+  const both = [];
+  for (const door of Array.isArray(file) ? file : []) {
     const line = door && Array.isArray(door.line) ? door.line : [];
     if (line.length < 2 || !Number.isFinite(door.meters)) continue;
-    for (const way of [line, line.slice().reverse()]) {
-      const least = metres(start, way[0]) + door.meters + metres(way[way.length - 1], end);
-      if (worth(least)) tries.push({ line: way, meters: door.meters, least: least });
-    }
+    both.push({ meters: door.meters, line: line }, { meters: door.meters, line: line.slice().reverse() });
   }
-  tries.sort((a, b) => a.least - b.least);
+  return both;
+}
 
-  for (const door of tries.slice(0, DOORS)) {
+/* The way from one [lat, lng] to another through a door, where that
+   reaches less than `best` — the least reach of the ways the router has
+   between them — by enough, or null. `deep` is how many more times its
+   two legs may be put through a door of their own. */
+async function viaDoor(all, start, end, best, deep) {
+  const worth = (meters) => best - meters >= DOOR_GAIN && meters <= best * DOOR_RATIO;
+  const tries = all
+    .map((door) => ({ door: door, least: metres(start, door.line[0]) + door.meters + metres(door.line[door.line.length - 1], end) }))
+    .filter((t) => worth(t.least))
+    .sort((a, b) => a.least - b.least);
+
+  for (const { door } of tries.slice(0, DOORS)) {
     const [head, tail] = await Promise.all([
       leg(start, door.line[0]),
       leg(door.line[door.line.length - 1], end)
     ]);
-    if (!head || !tail || !worth(head.meters + door.meters + tail.meters)) continue;
-    return stitch(head, door, tail);
+    if (!head || !tail || !worth(reach(head) + door.meters + reach(tail))) continue;
+    if (!deep) return stitch(head, door, tail);
+    const [in2, on2] = await Promise.all([
+      viaDoor(all, start, door.line[0], reach(head), deep - 1),
+      viaDoor(all, door.line[door.line.length - 1], end, reach(tail), deep - 1)
+    ]);
+    return stitch(in2 || head, door, on2 || tail);
   }
   return null;
 }

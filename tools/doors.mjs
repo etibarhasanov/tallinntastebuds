@@ -52,8 +52,31 @@
  * its ends have to lie within SNAP metres of where the router starts and
  * stops, or the way in and the way on would not meet it.
  *
+ * A PATH THE ROUTER PUSHES A BIKE ALONG
+ *
+ * The router's way is measured by its time as well as its length. A park
+ * path OpenStreetMap has as a footpath is a way the router knows and has a
+ * bike pushed along, at walking pace: across Kalamaja kalmistupark it
+ * answered the very line the owner rode, 266 m in 171 seconds, and so sent
+ * every route round by Tööstuse instead. Somebody rode it, so it is a door.
+ * A way therefore counts as the metres a ride covers in the time the
+ * router gives it, at PACE, where that is more than its length — an
+ * ordinary street comes out at its own length and a pushed path at more
+ * than twice it — and a way it pushes is not one a stretch can be
+ * dismissed for lying along.
+ *
  * Two rides through one door are one door: ends within SAME metres of each
- * other, either way round, and the shorter line is kept.
+ * other, either way round, or most of the shorter line lying along the
+ * longer, and the shorter line is kept.
+ *
+ * AND THE DOORS IT ALREADY HAD
+ *
+ * /api/rides answers the newest forty rides of a box, and a ride can be
+ * deleted by its rider. A door found last month is no less a door for its
+ * ride having gone, so the doors already in data/doors.json are kept and
+ * the new ones joined to them, one door for two that are the same. A door
+ * that should not be one is a line taken out of the file by hand, and it
+ * stays out for as long as the ride that made it is not found again.
  *
  * And a ride is not all ridden. The owner rode to Ülemiste on 2026-11-17,
  * took the train two stops with the bike and rode on, and saved it as one
@@ -78,7 +101,7 @@
  * means running this twice costs the second run next to nothing.
  */
 import { createHash } from 'node:crypto';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { pieces } from '../functions/api/_sections.js';
@@ -98,6 +121,13 @@ const RATIO = 1.5;
 const SNAP = 20;
 const SAME = 30;
 
+/* What the router makes of a plain street by bike, in metres a second:
+   twelve kilometres an hour once its corners are counted. A way slower
+   than PUSHED of that is one it has a bike pushed along for most of. The
+   same PACE is in functions/api/route.js, which measures a way the same
+   way. */
+const PACE = 3.3;
+const PUSHED = 2 / 3;
 const PAUSE = 1100;
 
 /* A stretch with this share of its points within ON metres of the router's
@@ -130,6 +160,12 @@ function offLine(p, line) {
   return least;
 }
 
+/* The share of a line's points that lie within ON metres of any of some
+   other lines. */
+function onLines(line, others) {
+  return line.filter((p) => others.some((other) => offLine(p, other) <= ON)).length / line.length;
+}
+
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
 async function rides() {
@@ -147,9 +183,11 @@ async function rides() {
   return [...seen.values()].filter((line) => Array.isArray(line) && line.length >= 2);
 }
 
-/* The router's way between two points by bike: how short it can make it and
-   how far its two ends are from the points asked about. Kept by the pair, since the
-   tightening asks about the same ends more than once. */
+/* The router's way between two points by bike: how short it can make it,
+   counted as A PATH THE ROUTER PUSHES A BIKE ALONG says, how far its two
+   ends are from the points asked about, and the lines of the ways it
+   rides. Kept by the pair, since the tightening asks about the same ends
+   more than once. */
 const asked = new Map();
 async function routed(a, b) {
   const key = a.join(',') + ';' + b.join(',');
@@ -163,13 +201,11 @@ async function routed(a, b) {
       if (res.status === 404) break;
       if (!res.ok) continue;
       const way = await res.json();
-      /* The shortest of the ways it offers: its first is its quickest,
-         and a street it would have a bike pushed along comes second while
-         being the very way that was ridden. */
+      const ways = [way].concat(way.others || []);
       found = {
-        meters: Math.min(way.meters, ...(way.others || []).map((other) => other.meters)),
+        meters: Math.round(Math.min(...ways.map((w) => Math.max(w.meters, w.seconds * PACE)))),
         snap: Math.max(metres(a, way.line[0]), metres(b, way.line[way.line.length - 1])),
-        lines: [way.line].concat((way.others || []).map((other) => other.line))
+        lines: ways.filter((w) => w.meters >= w.seconds * PACE * PUSHED).map((w) => w.line)
       };
     } catch (e) { /* asked again */ }
   }
@@ -217,8 +253,7 @@ async function doorsIn(line) {
     if (!way || !back || Math.max(way.snap, back.snap) > SNAP || !await longWay(j, i)) continue;
     const stretch = line.slice(i, j + 1);
     const ways = way.lines.concat(back.lines);
-    const onIt = stretch.filter((p) => ways.some((other) => offLine(p, other) <= ON)).length;
-    if (onIt >= stretch.length * SHARE) continue;
+    if (onLines(stretch, ways) >= SHARE) continue;
     doors.push({ meters: Math.round(ridden(i, j)), around: Math.min(way.meters, back.meters), line: line.slice(i, j + 1) });
   }
   return doors;
@@ -232,19 +267,28 @@ function piecesOf(line) {
 const lines = (await rides()).flatMap(piecesOf);
 console.log(lines.length + ' ridden pieces');
 
-const doors = [];
+/* The doors the file already has first — AND THE DOORS IT ALREADY HAD —
+   then each one found, joined to its twin where it has one. */
+let doors = [];
+try { doors = JSON.parse(readFileSync(OUT, 'utf8')); } catch (e) { /* no file yet */ }
+const had = doors.length;
+
+function keep(door) {
+  const a = door.line[0];
+  const b = door.line[door.line.length - 1];
+  const twin = doors.findIndex((other) => {
+    const c = other.line[0];
+    const d = other.line[other.line.length - 1];
+    const [short, long] = door.meters < other.meters ? [door, other] : [other, door];
+    return (metres(a, c) <= SAME && metres(b, d) <= SAME) || (metres(a, d) <= SAME && metres(b, c) <= SAME) ||
+      onLines(short.line, [long.line]) >= SHARE;
+  });
+  if (twin === -1) doors.push(door);
+  else if (door.meters < doors[twin].meters) doors[twin] = door;
+}
+
 for (const line of lines) {
-  for (const door of await doorsIn(line)) {
-    const a = door.line[0];
-    const b = door.line[door.line.length - 1];
-    const twin = doors.findIndex((other) => {
-      const c = other.line[0];
-      const d = other.line[other.line.length - 1];
-      return (metres(a, c) <= SAME && metres(b, d) <= SAME) || (metres(a, d) <= SAME && metres(b, c) <= SAME);
-    });
-    if (twin === -1) doors.push(door);
-    else if (door.meters < doors[twin].meters) doors[twin] = door;
-  }
+  for (const door of await doorsIn(line)) keep(door);
 }
 
 const out = doors.map((door) => ({
@@ -257,7 +301,7 @@ const out = doors.map((door) => ({
 for (const door of out) {
   console.log(door.id + '  ' + door.meters + ' m ridden, ' + door.around + ' m by the router  ' + door.line[0].join(','));
 }
-console.log(out.length + ' doors');
+console.log(out.length + ' doors, ' + had + ' of them in the file already');
 
 if (!process.argv.includes('--dry')) {
   writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');

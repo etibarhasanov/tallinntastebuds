@@ -3574,6 +3574,27 @@ router's, and it was wrong both ways: it flagged a lap of a courtyard and
 the far end of an out-and-back, and missed the crossing above, which runs
 beside the road the router takes.
 
+**A path the router pushes a bike along is a door too.** The owner rode
+across Kalamaja kalmistupark on 2026-11-17 and the map still sent every
+route round by Tööstuse. The router has the park's paths — OpenStreetMap
+draws them as footpaths — and has a bike pushed along them at walking pace:
+it answered the very line that was ridden, 266 m in 171 seconds, and by
+length alone that is a way the map has. So a way is measured by what it
+costs a rider: its metres, or the metres a ride covers in the router's
+time for it, at `PACE`, twelve kilometres an hour, where that is more. An
+ordinary street comes out at its own length and a pushed path at more than
+twice it, and a way the router pushes is not one a stretch can be dismissed
+for lying along. The tool and the route measure the same way, with the same
+number.
+
+**A run adds to the file.** `/api/rides` answers the newest forty rides of
+a box and a rider can delete theirs, so a run that wrote only what it found
+lost the Merimetsa door the day its ride was no longer answered. The doors
+already in `data/doors.json` are kept, the new ones are joined to them, and
+two that are one — ends within thirty metres, or most of the shorter lying
+along the longer — are the shorter. A door taken out by hand stays out for
+as long as its ride is not found again.
+
 **A ride is not all ridden.** The ride of 2026-11-17 that went two stops by
 train is one line with a straight 3.2 km segment from Ülemiste to Lilleküla
 across the rail yard, which the router can only go round — a door, by every
@@ -3590,16 +3611,21 @@ ride over a railway where there is no crossing — is a line taken out of
 `data/doors.json`, and the day strangers record is the day this paragraph
 is looked at again.
 
-**Used only where it clearly wins.** `viaDoor()` in
+**Used wherever it wins.** `viaDoor()` in
 `functions/api/route.js` looks at the doors as the crow flies first, asks
 the router about at most two, two requests each, and takes a way through a
-door only when it beats the shortest way the router offered by eighty
-metres and by a seventh.
-It then goes first, the router's best becomes the first of `others`, and
-the answer keeps its shape — so the map, the iPhone app and Rattatee ride
-through a door without knowing there is one. The turn into a door and the
-turn out of it are `steps` worked out from how the line bends, in the
-router's own words and with no street name. One door a route, bikes only.
+door when it beats the best way the router offered by fifty metres and by
+a tenth, both counted as above. The bar was eighty metres and a seventh,
+by length alone, until 2026-11-18, when the owner asked for a door to be
+offered more readily. It then goes first, the router's best becomes the
+first of `others` — unless it is the same line pushed, which would be one
+way under two buttons — and the answer keeps its shape, so the map, the
+iPhone app and Rattatee ride through a door without knowing there is one.
+The turn into a door and the turn out of it are `steps` worked out from
+how the line bends, in the router's own words and with no street name.
+Bikes only, and up to three doors a route: the way in to a door and the
+way on from it are each put to the doors once more, twelve router requests
+at the most.
 
 **Never drawn.** A door is not a line on the map, a ride is not either, and
 the bar says what it always said. `data/doors.json` is public the way the
