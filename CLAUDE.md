@@ -576,9 +576,10 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `roundabout`, `arrive`, and `tunnel` where the way goes into one — are a
   recording each in the app, so a new word
   is one an installed app stays silent at.
-  And `GET /api/places` with no query, the whole roll, kept on the phone a
-  week at a time so Where to? opens on the nearest places: `id`, `name`,
-  `lat`, `lng` and `map` of each row.
+  `GET /api/places` with no query, the whole roll, it asked for once a week
+  until 2026-11-18, reading `id`, `name`, `lat`, `lng` and `map` of each row;
+  builds since search only when somebody types, by `?q=`. Installed copies
+  still ask it, so the route stays, and its answer keeps those fields.
 - Its way by train, from 2026-11-18: `GET /api/v1/route` asked first with
   `from`, `to` and `mode=bike`, an answer without `version` asked again of
   `/api/route`; and of `trains`, `seconds`, `meters`, `leave` and `legs`, a
