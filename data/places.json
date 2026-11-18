@@ -184,6 +184,14 @@
     "map": true
   },
   {
+    "id": "faxinin-marketi",
+    "name": "Faxinin marketi",
+    "address": "Keldrimäe 9, 10113 Tallinn",
+    "lat": 59.4294216,
+    "lng": 24.7663429,
+    "map": true
+  },
+  {
     "id": "ferment",
     "name": "Ferment",
     "address": "Peetri 6, 10414 Tallinn",

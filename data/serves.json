@@ -10,6 +10,7 @@
     { "id": "chakra", "name": "Chakra", "serves": ["indian", "bhaji"] },
     { "id": "chocolala", "name": "Chocolala", "serves": ["chocolate", "hot chocolate"] },
     { "id": "dvin", "name": "DVIN", "serves": ["georgian", "napoleon cake"] },
+    { "id": "faxinin-marketi", "name": "Faxinin marketi", "serves": ["azerbaijani", "fruit", "pomegranate", "quince", "feijoa", "jam", "market"] },
     { "id": "f-hoone", "name": "F-Hoone", "serves": ["pizza", "pelmeni", "breakfast", "lunch", "sandwiches", "terrace"] },
     { "id": "faehlmanni-kohvik", "name": "Faehlmanni kohvik", "serves": ["brunch", "coffee"] },
     { "id": "ferment", "name": "Ferment", "serves": ["pizza", "bread"] },
