@@ -62,8 +62,10 @@
  * paused in one street and resumed in another is the same straight line.
  * The rides answer has no times to tell a train from a fast descent, but it
  * does not need them: a recorder writes a point every few metres, so two
- * points JUMP apart were not joined by riding, and a ride is cut there and
- * each piece looked at on its own.
+ * points GAP apart were not joined by riding, and a ride is cut there and
+ * each piece looked at on its own. Since 2026-11-18 a save is cut the same
+ * way before it is stored — pieces() in functions/api/_sections.js, which
+ * this borrows — so the cut here is for the rides saved before that.
  *
  * WHAT IT ASKS, AND HOW OFTEN
  *
@@ -79,6 +81,7 @@ import { createHash } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { pieces } from '../functions/api/_sections.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'data', 'doors.json');
@@ -95,11 +98,6 @@ const RATIO = 1.5;
 const SNAP = 20;
 const SAME = 30;
 
-/* Two points of a ride further apart than this were not ridden between: a
-   train, or a pause. Forty seconds at thirty kilometres an hour, with a fix
-   a few seconds apart, and a minute of GPS lost under a bridge, are both
-   well under it. */
-const JUMP = 250;
 const PAUSE = 1100;
 
 /* A stretch with this share of its points within ON metres of the router's
@@ -226,15 +224,9 @@ async function doorsIn(line) {
   return doors;
 }
 
-/* A ride as the pieces that were ridden: cut wherever two points are JUMP
-   apart, and a piece of one point dropped. */
+/* A ride as the pieces that were ridden, a piece of one point dropped. */
 function piecesOf(line) {
-  const pieces = [[line[0]]];
-  for (let i = 1; i < line.length; i++) {
-    if (metres(line[i - 1], line[i]) > JUMP) pieces.push([]);
-    pieces[pieces.length - 1].push(line[i]);
-  }
-  return pieces.filter((piece) => piece.length >= 2);
+  return pieces(line).filter((piece) => piece.length >= 2);
 }
 
 const lines = (await rides()).flatMap(piecesOf);
