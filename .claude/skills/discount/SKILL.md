@@ -184,17 +184,14 @@ into its code (`p=25` in the QR), and everybody else gets the deal's own.
 **A rate for students** in `docs/handbook.md` is the reasoning. What to know:
 
 - The column is a date, the last day the account counts as a student's,
-  set by the owner, by hand, one account at a time:
-  `UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>'`. It is
   read in Tallinn's timezone, inclusive; a value that is not `YYYY-MM-DD`
-  reads as not a student. Nothing on the site writes it, and a session does
-  not either without the owner's yes.
-- Members ask on `/account.html`'s Student card, which writes
-  `users.student_asked` and nothing else; the owner lists the asks waiting
-  with `select id, username, student_asked, student_until from users where
-  student_asked is not null and student_asked is not student_until` and
-  confirms one with `UPDATE users SET student_until = student_asked WHERE
-  id = '<id>'`. **A rate for students** in the handbook.
+  reads as not a student. Members set it themselves on `/account.html`'s
+  Student card, and nobody checks it — the owner's call, on 2026-11-18:
+  if somebody sets it, they set it. Save writes `student_until` (and
+  `student_asked`, equal, kept for the account route's `asked`). The owner
+  can still set one by hand,
+  `UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>'`, which
+  a session does not run without the owner's yes.
 - Before any of it works the column has to exist in production:
   `ALTER TABLE users ADD COLUMN student_until TEXT`. Until
   it does, `/api/pass` answers `student: false` for everyone and the deal

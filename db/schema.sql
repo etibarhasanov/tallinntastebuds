@@ -603,10 +603,10 @@ CREATE TABLE IF NOT EXISTS users (
   -- title, because it is a heading.
   display_name   TEXT    NOT NULL DEFAULT '',
   -- The last day this account counts as a student's, 'YYYY-MM-DD', and
-  -- inclusive; null for everybody else. Nothing on the site writes it and
-  -- nobody can set it on themselves: the owner does, by hand, in the
-  -- database, with the date off whatever they checked — the expiry on a
-  -- student card, the end of an academic year —
+  -- inclusive; null for everybody else. The member sets it on themselves,
+  -- on the Student card of /account.html — action 'student' in
+  -- functions/api/account.js — and nobody checks it; the owner can still
+  -- set one by hand,
   -- UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>' — and
   -- the one reader is functions/api/pass.js, which tells the pass page so,
   -- and a deal with a "student" rate in data/deals.json pays that rate
@@ -624,13 +624,12 @@ CREATE TABLE IF NOT EXISTS users (
   -- survives its absence: a database one ALTER behind answers that nobody
   -- is a student, and every deal pays its everyday rate.
   student_until  TEXT,
-  -- The date this account asked to be a student until, from the card on
-  -- /account.html — action 'student' in functions/api/account.js. An ask,
-  -- not the rate: nothing reads it but that card and the owner, who checks
-  -- a student card and confirms by copying it across —
-  -- UPDATE users SET student_until = student_asked WHERE id = '<id>' — so
-  -- the two are equal once confirmed and differ while an ask is waiting.
-  -- Null for everybody who never asked.
+  -- The date this account last said it is a student until, written equal
+  -- to student_until by the card on /account.html. It was an ask the owner
+  -- confirmed by copying it across until 2026-11-18, when the asking came
+  -- out and a member's word became the rate; it stays so that
+  -- GET /api/account's `asked` keeps answering. Null for everybody who
+  -- never said.
   --
   -- ALTER TABLE users ADD COLUMN student_asked TEXT — and the card is not
   -- drawn on a database without it.
