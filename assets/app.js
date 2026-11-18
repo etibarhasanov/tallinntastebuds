@@ -2638,7 +2638,12 @@
      from the station in the bike's green and the train in the bus's amber,
      the colour public transport already has here, its button last and
      pressed in that amber too. Its sentence says when to set off, since a
-     train, unlike a street, leaves at a time. */
+     train, unlike a street, leaves at a time.
+
+     And by bike the first way can be one people have ridden — `ridden` on
+     it, put together from the saved rides by /api/route. Its button and its
+     sentence say so, since that is the only reason it is first: it is
+     seldom the shortest. */
   function drawRoute(n, mode, still) {
     var way = routeWays[n];
     clearRouteLine();
@@ -2651,7 +2656,7 @@
     var train = trainLeg(way);
     dom.routeSay.textContent = train
       ? t('routeTrain', { leave: way.leave, from: train.from, line: train.name, at: train.at, to: train.to, min: min })
-      : t(ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
+      : t(way.ridden ? 'routeRidden' : ROUTE_SAY[mode], { min: min, dist: routeDistance(way.meters) });
 
     routeWays.forEach(function (other, i) {
       var leg = trainLeg(other);
@@ -2662,7 +2667,7 @@
         'aria-pressed': String(i === n),
         textContent: leg
           ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
-          : t('routeWay', {
+          : t(other.ridden ? 'routeWayRidden' : 'routeWay', {
             min: Math.max(1, Math.round(other.seconds / 60)),
             dist: routeDistance(other.meters)
           })
