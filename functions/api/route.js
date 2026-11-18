@@ -116,7 +116,10 @@
  * the turn is onto, empty where the router has none. The words are few on
  * purpose: each is one recording in the app, so a sharp left is a left and a
  * slight one is keeping left. Setting off is not a step, and neither is a
- * street that changes its name under a rider going straight on. It is a
+ * street that changes its name under a rider going straight on. Corners
+ * closer together than KNOT are one step, said as the turn they make
+ * between them, since a phone says a corner forty metres out and would
+ * otherwise be saying the next while the rider is in this one. It is a
  * field added beside `line` in each way and nothing else moves, so the map
  * and an app installed before it read what they always did.
  *
@@ -463,11 +466,12 @@ function stitch(head, door, tail) {
   if (leave) steps.push({ at: door.line[door.line.length - 1], meters: out, turn: leave, name: '' });
   for (const s of tail.steps) steps.push(Object.assign({}, s, { meters: s.meters + out }));
   if (!tail.steps.length) steps.push({ at: door.line[door.line.length - 1], meters: out, turn: 'arrive', name: '' });
+  const line = head.line.concat(door.line, tail.line);
   return {
     meters: out + tail.meters,
     seconds: head.seconds + Math.round(door.meters / DOOR_SPEED) + tail.seconds,
-    line: thin(head.line.concat(door.line, tail.line), MAX_POINTS),
-    steps: steps
+    line: thin(line, MAX_POINTS),
+    steps: untie(steps, line)
   };
 }
 
@@ -910,6 +914,72 @@ function turns(route) {
   return out;
 }
 
+/* Corners nearer each other than this are one corner to a rider. The router
+   names every one it passes, and on a bike way through town they come in
+   knots: a crossing taken on the pavements is a right, a left ten metres on
+   and a right again, each true where it stands. Rattatee says a corner once
+   it is within forty metres, so the second of a knot was being said while
+   the rider was still in the first — "left" in the middle of a right turn,
+   which is how this was found. A knot is said as the one turn it makes
+   overall, measured CORNER metres before its first corner and after its
+   last, under the last corner's street, at the first corner; one that comes
+   out straight, a jog across a road, is not said at all. A knot is held to
+   twice KNOT end to end, so a pavement zigzagging for a block is a few
+   knots in turn rather than one that swallows the real corner after it.
+
+   Tried on eighteen bike ways across town and their alternatives: 974
+   turns, a third of them within forty metres of the one before, became 643
+   with 37; and a turn whose side disagreed with how the line bends 25 m
+   either side of it went from 34 to 10. Forty metres instead of thirty
+   left two crowded but strung corners into knots long enough to say the
+   wrong side 20 times, so thirty it is. */
+const KNOT = 30;
+
+/* The words a knot is made of: a roundabout keeps its exit and the arrival
+   is the arrival, so neither is folded into anything. */
+const KNOTTED = new Set(['left', 'right', 'keep-left', 'keep-right', 'straight', 'around']);
+
+function untie(steps, line) {
+  if (steps.length < 2 || line.length < 2) return steps;
+  const along = [0];
+  for (let i = 1; i < line.length; i++) along.push(along[i - 1] + metres(line[i - 1], line[i]));
+  const vertex = (at) => {
+    let best = 0;
+    let near = Infinity;
+    line.forEach((p, i) => {
+      const d = metres(p, at);
+      if (d < near) { near = d; best = i; }
+    });
+    return best;
+  };
+  const out = [];
+  for (let i = 0; i < steps.length;) {
+    let j = i;
+    while (j + 1 < steps.length && KNOTTED.has(steps[i].turn) && KNOTTED.has(steps[j + 1].turn) &&
+      steps[j + 1].meters - steps[j].meters < KNOT && steps[j + 1].meters - steps[i].meters < KNOT * 2) j++;
+    if (j === i) {
+      out.push(steps[i++]);
+      continue;
+    }
+    const first = vertex(steps[i].at);
+    const last = Math.max(first, vertex(steps[j].at));
+    let back = first;
+    while (back > 0 && along[first] - along[back] < CORNER) back--;
+    let ahead = last;
+    while (ahead < line.length - 1 && along[ahead] - along[last] < CORNER) ahead++;
+    /* At either end of the line there may be nothing to read a heading off:
+       the knot is said as the router said it. */
+    if (back === first || ahead === last) {
+      out.push(...steps.slice(i, j + 1));
+    } else {
+      const turn = bend([line[back], line[first]], [line[last], line[ahead]]);
+      if (turn) out.push(Object.assign({}, steps[i], { turn: turn, name: steps[j].name }));
+    }
+    i = j + 1;
+  }
+  return out;
+}
+
 /* One of the router's routes as the four fields the answer carries, or null
    for one with no line to draw. */
 function way(route) {
@@ -918,11 +988,12 @@ function way(route) {
   if (!coords || coords.length < 2) return null;
   /* GeoJSON is [lon, lat]; this is the second place that flips it, as
      /api/geocode's shape() is the first. */
+  const line = coords.map((c) => [c[1], c[0]]);
   return {
     meters: Math.round(Number(route.distance)),
     seconds: Math.round(Number(route.duration)),
-    line: thin(coords.map((c) => [c[1], c[0]]), MAX_POINTS),
-    steps: turns(route)
+    line: thin(line, MAX_POINTS),
+    steps: untie(turns(route), line)
   };
 }
 

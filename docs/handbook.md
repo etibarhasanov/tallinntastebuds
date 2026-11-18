@@ -3160,6 +3160,20 @@ recording a word — which is why a sharp left is a left and there are eight
 words rather than the router's dozens. Setting off is not a step, and neither
 is a street renamed under somebody going straight on.
 
+**Corners in a knot are one turn.** On a bike way through town the router
+names every corner of a crossing taken on the pavements — a right, a left ten
+metres on, a right again — and a third of all its turns were within forty
+metres of the one before. Rattatee says a turn once it is forty metres off, so
+it was saying the second corner of a knot while the rider was still in the
+first: "left" in the middle of a right turn, which is how the owner found it.
+Corners closer together than `KNOT`, thirty metres, are now one step at the
+first of them, said as the turn the knot makes from twenty metres before it to
+twenty after, under the last corner's street; a knot that comes out straight —
+a jog across a road — is not said at all, and none is longer than sixty
+metres end to end. `untie()` in `functions/api/route.js` does it, to the
+router's ways and to a way stitched through a door alike, and its comment has
+the numbers it was tuned on.
+
 The tab pressed last is kept under `ttb.routeMode`, since somebody who takes
 the bus to one place takes it to the next. Google is a small link at the foot
 of the bar rather than the bar's button — ours is the answer, Google the way
