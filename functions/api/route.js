@@ -458,8 +458,8 @@ async function oneWay(points, heading = null) {
 /* The way in, the door and the way on as one way. The turn into the door
    and the turn out of it are steps like any other — the router knows
    neither, and a rider told nothing would ride past — worked out from how
-   the line bends there, in the router's own words and with no street to
-   name. So are the corners inside it, which a door of a few dozen metres
+   the line bends there, CORNER metres either side, in the router's own
+   words and with no street to name. So are the corners inside it, which a door of a few dozen metres
    seldom has and a ridden way of a kilometre always does. The leg in loses
    its `arrive`, since it has not. */
 function stitch(head, door, tail) {
@@ -521,10 +521,22 @@ function sharpness(before, after) {
 }
 
 /* The word for how the way bends where one line ends and the next begins,
-   or '' where it goes straight on or one of them has no length to bend. */
+   or '' where it goes straight on or one of them has no length to bend.
+
+   Read CORNER metres either side of the joint, as corners() reads a ridden
+   line, and not from the one step each side. Where a door begins and ends
+   that step is a phone's, a dozen metres long, and on a straight path along
+   Järvevana tee it swung by a third of a right angle from one point to the
+   next — enough to make a keep right a turn right, which is what Rattatee
+   said there. */
 function bend(before, after) {
   if (before.length < 2 || after.length < 2) return '';
-  const turn = sharpness(before, after);
+  const joint = before[before.length - 1];
+  let back = before.length - 2;
+  while (back > 0 && metres(before[back], joint) < CORNER) back--;
+  let on = 1;
+  while (on < after.length - 1 && metres(after[0], after[on]) < CORNER) on++;
+  const turn = sharpness([before[back], joint], [after[0], after[on]]);
   const size = Math.abs(turn);
   if (size < 25) return '';
   if (size > 155) return 'around';
