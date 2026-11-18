@@ -2,9 +2,11 @@
  * Tallinn Tastebuds — the way from here to a place: on foot, by bike, by bus
  * or by car.
  *
- * GET /api/route?from=59.4370,24.7536&to=59.4389,24.7291[&mode=foot|bike|car|bus]
+ * GET /api/route?from=59.4370,24.7536&to=59.4389,24.7291[&mode=foot|bike|car|bus][&heading=250]
  *
- *   mode is foot when it is left out.
+ *   mode is foot when it is left out. heading is the way the asker is
+ *   already moving, in degrees from north — SETTING OFF THE WAY THEY ARE
+ *   GOING below.
  *
  *   foot, bike, car → { "meters": 1830, "seconds": 1320,
  *                 "line": [ [59.4370, 24.7536], … ],
@@ -70,6 +72,27 @@
  * And by bike a way can be a train: ride to a station, an Elron train with
  * the bike on it, ride on. Those are `trains`, answered beside the ways by
  * /api/v1/route only, never here — TRAINS below says why.
+ *
+ * SETTING OFF THE WAY THEY ARE GOING
+ *
+ * A way asked for in the middle of a ride is not the same question as one
+ * asked for standing still. Rattatee asks again when its rider has plainly
+ * left the way, and the router, told only where they are, answers the
+ * shortest way from that spot — which for somebody riding away from the old
+ * way is "turn around", the advice they have just ridden a hundred and
+ * fifty metres past. So it sends `heading` with that question, and the
+ * router is told to leave the first point within HEADING_RANGE degrees of
+ * it: the new way goes on the way the rider is going and turns where it
+ * next can. It is rounded to HEADING_STEP degrees so riders on one street
+ * share a cached answer, and a heading that is not a number is no heading
+ * rather than a refusal, as is one the router has no street for.
+ *
+ * With a heading the answer is the router's own ways, kept off the streets
+ * every bike way keeps off, and nothing put together from doors or saved
+ * rides: those are stitched from the spot outward in whichever direction
+ * they run, and one that started backwards would be the same "turn around"
+ * under another name. Nothing else about the answer changes, and a page or
+ * an app that sends none is answered exactly as before.
  *
  * MORE THAN ONE WAY
  *
@@ -171,6 +194,11 @@ const OTHERS = 2;
    out between its legs. */
 const MAX_POINTS = 600;
 
+/* A heading is rounded to this many degrees, and the way must set off
+   within this many either side of it. */
+const HEADING_STEP = 15;
+const HEADING_RANGE = 45;
+
 const CLOCK = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/Tallinn', hour: '2-digit', minute: '2-digit', hour12: false
 });
@@ -219,7 +247,13 @@ function decode(text) {
   return out;
 }
 
-async function street(context, mode, from, to, withTrains) {
+/* `heading`, where the asker gave one, as the router takes it: for the
+   first of `points` points, and none for the rest. */
+function bearings(heading, points) {
+  return heading === null ? '' : '&bearings=' + heading + ',' + HEADING_RANGE + ';'.repeat(points - 1);
+}
+
+async function street(context, mode, from, to, withTrains, heading) {
   /* Asked at once, beside the router, so the train costs no time of its
      own; read only once the bike ways are known, since a train is offered
      only where it beats them. TRAINS below. */
@@ -229,11 +263,16 @@ async function street(context, mode, from, to, withTrains) {
 
   /* Asked for the others, and asked again for the one way if the router
      will not answer that: a router that stops taking a count of
-     alternatives costs the buttons and never the line. */
+     alternatives costs the buttons and never the line. Before either, with
+     a heading, asked to set off that way — and without it where the router
+     has no street there running that way. */
+  const tries = (heading === null ? [] : [OTHERS + bearings(heading, 2)]).concat([OTHERS, 'false']);
   let res;
   try {
-    res = await ask(url + OTHERS, mode);
-    if (!res.ok && res.status !== 429) res = await ask(url + 'false', mode);
+    for (const tail of tries) {
+      res = await ask(url + tail, mode);
+      if (res.ok || res.status === 429) break;
+    }
   } catch (e) {
     return json({ error: 'upstream' }, 502);
   }
@@ -257,10 +296,11 @@ async function street(context, mode, from, to, withTrains) {
   /* By bike a ridden way goes first, then a way through a door, and the
      router's own best becomes the next of the others — still offered, a
      button down. Not where it is the door's line pushed, though: that is
-     one way twice, the slower time under a button of its own. */
+     one way twice, the slower time under a button of its own. And neither
+     with a heading, which only the router's ways set off by. */
   const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
   let ways = [first].concat(others);
-  const [through, rode] = mode === 'bike'
+  const [through, rode] = mode === 'bike' && heading === null
     ? await Promise.all([
       viaDoor(await doors(context), [from.lat, from.lng], [to.lat, to.lng], Math.min(...ways.map(reach)), DOORS_DEEP),
       viaRides(context, from, to, shortest, ways)])
@@ -270,7 +310,7 @@ async function street(context, mode, from, to, withTrains) {
       Math.abs(other.meters - through.meters) > SAME_WAY || other.seconds < through.seconds));
   }
   if (rode) ways.unshift(rode);
-  if (mode === 'bike') ways = await keepOff(ways, from, to, shortest);
+  if (mode === 'bike') ways = await keepOff(ways, from, to, shortest, heading);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
@@ -390,12 +430,12 @@ async function leg(a, b) {
   return oneWay([a, b]);
 }
 
-/* The router's one way by bike through [lat, lng] points in order, or null
-   where it has none. */
-async function oneWay(points) {
+/* The router's one way by bike through [lat, lng] points in order, setting
+   off by `heading` where there is one, or null where it has none. */
+async function oneWay(points, heading = null) {
   try {
     const res = await ask(OSRM.bike + points.map((p) => p[1] + ',' + p[0]).join(';') +
-      '?overview=full&geometries=geojson&steps=true&alternatives=false', 'bike');
+      '?overview=full&geometries=geojson&steps=true&alternatives=false' + bearings(heading, points.length), 'bike');
     if (!res.ok) return null;
     const body = await res.json();
     const found = body && body.code === 'Ok' && Array.isArray(body.routes) ? way(body.routes[0]) : null;
@@ -772,7 +812,7 @@ function ridden(way) {
   return { meters: meters, start: start, end: end };
 }
 
-async function keepOff(ways, from, to, shortest) {
+async function keepOff(ways, from, to, shortest, heading = null) {
   const rides = ways.map(ridden);
   const worst = rides.reduce((a, b) => (b.meters > a.meters ? b : a));
   if (worst.meters <= KEEP_OFF_MIN) return ways;
@@ -790,7 +830,7 @@ async function keepOff(ways, from, to, shortest) {
       ]);
     }
   }
-  const round = (await Promise.all(vias.map((via) => oneWay([[from.lat, from.lng], via, [to.lat, to.lng]]))))
+  const round = (await Promise.all(vias.map((via) => oneWay([[from.lat, from.lng], via, [to.lat, to.lng]], heading))))
     .filter((way) => way && way.meters <= shortest * KEEP_OFF_LONGER)
     .sort((a, b) => a.seconds - b.seconds);
 
@@ -1116,7 +1156,13 @@ export function answerRoute(context, q, withTrains) {
   const mode = q.get('mode') || 'foot';
   if (mode === 'bus') return transit(from, to);
   if (!OSRM[mode]) return json({ error: 'bad-mode' }, 400);
-  return street(context, mode, from, to, withTrains);
+  /* Whole degrees from north, rounded and wrapped: 359 is north too. */
+  const raw = q.get('heading');
+  const degrees = raw === null || raw.trim() === '' ? NaN : Number(raw);
+  const heading = Number.isFinite(degrees)
+    ? (Math.round(degrees / HEADING_STEP) * HEADING_STEP % 360 + 360) % 360
+    : null;
+  return street(context, mode, from, to, withTrains, heading);
 }
 
 export function onRequestGet(context) {
