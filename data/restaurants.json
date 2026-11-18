@@ -833,6 +833,42 @@
     "closed": true
   },
   {
+    "id": "faxinin-marketi",
+    "name": "Faxinin marketi",
+    "address": "Keldrimäe 9, 10113 Tallinn",
+    "lat": 59.4294216,
+    "lng": 24.7663429,
+    "price": 1,
+    "types": [
+      "caucasian"
+    ],
+    "blurb": {
+      "az": "Orijinal meyvə və məhsulları birbaşa Azərbaycandan gətirən kiçik market. Nar dadı verən nar, yumruq boyda heyva, banka-banka feyxoa mürəbbəsi və son yüklə nə gəlibsə. Nə təzə gəldiyini soruşun və hər şeydən bir az evə aparın.",
+      "en": "A small market that brings the OG fruits and products straight from Azerbaijan. Pomegranates that taste like pomegranates, quince the size of your fist, jars of feijoa jam, and whatever else came in on the last load. Ask what is new and take a bit of everything home.",
+      "et": "Väike turg, mis toob päris puuviljad ja tooted otse Aserbaidžaanist. Granaatõunad, mis maitsevad nagu granaatõunad, rusikasuurused küdooniad, purgid feijoa moosiga ja kõik muu, mis viimase koormaga tuli. Küsi, mis on uut, ja vii natuke kõike koju.",
+      "fi": "Pieni kauppa, joka tuo aidot hedelmät ja tuotteet suoraan Azerbaidžanista. Granaattiomenat, jotka maistuvat granaattiomenilta, nyrkin kokoisia kvitteneitä, purkeittain feijoahilloa ja kaikkea muuta, mitä viimeisen kuorman mukana tuli. Kysy, mitä on uutta, ja vie kotiin vähän kaikkea.",
+      "pt": "Um pequeno mercado que traz a fruta e os produtos de raiz diretamente do Azerbaijão. Romãs que sabem a romã, marmelos do tamanho de um punho, frascos de doce de feijoa e o que mais tiver chegado na última carga. Pergunte o que há de novo e leve um pouco de tudo para casa.",
+      "ru": "Маленький рынок, который привозит настоящие фрукты и продукты прямо из Азербайджана. Гранаты со вкусом гранатов, айва размером с кулак, банки варенья из фейхоа и всё, что пришло с последней поставкой. Спросите, что нового, и унесите домой всего понемногу.",
+      "es": "Un pequeño mercado que trae la fruta y los productos de verdad directamente desde Azerbaiyán. Granadas que saben a granada, membrillos del tamaño de un puño, tarros de mermelada de feijoa y lo que haya llegado en el último cargamento. Pregunta qué hay de nuevo y llévate un poco de todo a casa.",
+      "tr": "Gerçek meyveleri ve ürünleri doğrudan Azerbaycan'dan getiren küçük bir market. Nar tadında narlar, yumruk büyüklüğünde ayvalar, kavanoz kavanoz feijoa reçeli ve son yükle ne geldiyse. Yeni ne geldiğini sorun ve her şeyden biraz eve götürün.",
+      "uk": "Маленький ринок, що привозить справжні фрукти й продукти просто з Азербайджану. Гранати зі смаком гранатів, айва завбільшки з кулак, банки варення з фейхоа і все, що прийшло з останньою поставкою. Спитайте, що нового, і заберіть додому всього потроху.",
+      "fr": "Un petit marché qui fait venir les vrais fruits et produits tout droit d'Azerbaïdjan. Des grenades qui ont le goût de grenade, des coings gros comme le poing, des pots de confiture de feijoa et tout ce qui est arrivé avec le dernier chargement. Demande ce qu'il y a de nouveau et rapporte un peu de tout à la maison.",
+      "de": "Ein kleiner Markt, der die echten Früchte und Produkte direkt aus Aserbaidschan holt. Granatäpfel, die nach Granatapfel schmecken, Quitten so groß wie eine Faust, Gläser mit Feijoa-Marmelade und was sonst mit der letzten Lieferung kam. Frag, was neu ist, und nimm von allem ein bisschen mit nach Hause."
+    },
+    "mustOrder": [],
+    "reel": "",
+    "photos": [
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp"
+    ],
+    "website": "",
+    "phone": "+372 5687 9210",
+    "added": "2026-11-18",
+    "closed": false
+  },
+  {
     "id": "ferment",
     "name": "Ferment",
     "address": "Peetri 6, 10414 Tallinn",

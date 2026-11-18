@@ -4103,6 +4103,19 @@ The staff link is the same shape with the key in it:
 https://tallinntastebuds.ee/staff.html?r=ChIJjT6uOdiVkkYRwHK_f2mL67M
 ```
 
+**And then it came onto the map.** On 2026-11-18 the owner sent four
+photographs from Keldrimäe (pomegranates, quince, jars of feijoa jam) and
+the line that it brings the OG fruits and products from Azerbaijan, so
+Faxinin marketi is a place of mine now, `faxinin-marketi`, and its deal moved
+under that slug with the same key. The paragraphs above are still how a deal
+under Google's key works, and still the road for the next one; they are just
+no longer about this market. Two things followed the move. The staff link is
+now `staff.html?r=faxinin-marketi`, and the one under the key stopped
+answering, so the new one had to be sent to the counter. And the
+`google_venues` row wants `map_id` set to the slug, the one-row write that
+ties it to the map, because the export the `SET map_id` lines are generated
+from was cut before the market was in it.
+
 ### A rate that is drawn
 
 A deal can offer a rate it does not name. Give it a `roll` —

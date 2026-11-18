@@ -534,6 +534,29 @@
   "closed": true
  },
  {
+  "id": "faxinin-marketi",
+  "name": "Faxinin marketi",
+  "address": "Keldrimäe 9, 10113 Tallinn",
+  "lat": 59.4294216,
+  "lng": 24.7663429,
+  "price": 1,
+  "types": [
+   "caucasian"
+  ],
+  "mustOrder": [],
+  "reel": "",
+  "photos": [
+   "01.webp",
+   "02.webp",
+   "03.webp",
+   "04.webp"
+  ],
+  "website": "",
+  "phone": "+372 5687 9210",
+  "added": "2026-11-18",
+  "closed": false
+ },
+ {
   "id": "ferment",
   "name": "Ferment",
   "address": "Peetri 6, 10414 Tallinn",
