@@ -120,6 +120,15 @@
  * field added beside `line` in each way and nothing else moves, so the map
  * and an app installed before it read what they always did.
  *
+ * One step is not a corner: `tunnel`, where the way goes into one, with the
+ * tunnel's name where the router has it, so Rattatee can say "enter the
+ * tunnel" on the Veerenni path under the railway. The router marks the
+ * stretch after a junction as a tunnel rather than the tunnel itself, so a
+ * path under four tracks is four short tunnels to it; tunnel stretches less
+ * than TUNNEL_GAP apart are one tunnel and said once. A word an app does not
+ * know is one it leaves out, so a phone with Rattatee from before it hears
+ * the turns it always did.
+ *
  * WHY A ROUTE HERE AND NOT A FETCH FROM THE BROWSER
  *
  * The same reasons /api/geocode is one. The upstreams are free public
@@ -880,12 +889,33 @@ function turnOf(maneuver) {
   return turn;
 }
 
+/* How far past the last stretch of tunnel the next one is a tunnel of its
+   own rather than more of the same one: THE TURNS in the header. */
+const TUNNEL_GAP = 100;
+
+/* How far into one of the router's steps a point on its line is: along the
+   line, vertex by vertex, to the vertex nearest the point. A junction is
+   one of the line's vertices, so nearest is the one. */
+function into(s, location) {
+  const line = s.geometry && Array.isArray(s.geometry.coordinates) ? s.geometry.coordinates : [];
+  let best = 0;
+  let near = Infinity;
+  let along = 0;
+  for (let i = 0; i < line.length; i++) {
+    if (i) along += km({ lat: line[i - 1][1], lng: line[i - 1][0] }, { lat: line[i][1], lng: line[i][0] }) * 1000;
+    const off = Math.abs(line[i][0] - location[0]) + Math.abs(line[i][1] - location[1]);
+    if (off < near) { near = off; best = along; }
+  }
+  return best;
+}
+
 /* Where one of the router's routes turns: THE TURNS in the header. A way
    whose steps did not come, or came in a shape this does not know, has none
    and is still a way. */
 function turns(route) {
   const out = [];
   let meters = 0;
+  let tunnel = -Infinity;
   const legs = Array.isArray(route.legs) ? route.legs : [];
   for (const leg of legs) {
     for (const s of Array.isArray(leg.steps) ? leg.steps : []) {
@@ -903,6 +933,19 @@ function turns(route) {
         };
         if (turn === 'roundabout' && Number.isInteger(m.exit) && m.exit > 0) step.exit = m.exit;
         out.push(step);
+      }
+      for (const i of s && Array.isArray(s.intersections) ? s.intersections : []) {
+        if (!Array.isArray(i.classes) || !i.classes.includes('tunnel') || !Array.isArray(i.location)) continue;
+        const along = meters + into(s, i.location);
+        if (along - tunnel > TUNNEL_GAP) {
+          out.push({
+            at: [Number(Number(i.location[1]).toFixed(5)), Number(Number(i.location[0]).toFixed(5))],
+            meters: Math.round(along),
+            turn: 'tunnel',
+            name: typeof s.name === 'string' ? s.name : ''
+          });
+        }
+        tunnel = along;
       }
       meters += Number(s && s.distance) || 0;
     }
