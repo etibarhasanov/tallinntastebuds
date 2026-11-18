@@ -6955,13 +6955,18 @@ somebody has just pressed play on. A place Google does not list, a database
 that cannot answer, and a request that fails all draw nothing — no heading
 over an empty section.
 
-**The total is how many rows the last sync carried**, sent as `of` beside the
-row, because that is the roll `ranked()` in `tools/googlevenues.mjs` numbered.
-It is not `MAX(rank)`: on the day this landed both databases carried a rank on
-three hundred rows and not eleven hundred, a load of `db/google-venues.sql`
-that had stopped after six batches, and the maximum would have said *of 300*.
-A row whose rank has not arrived draws no position line and everything else;
-reloading the file fills the rest in.
+**The total is how many places the week's ranking numbered**, sent as `of`
+beside the row: `ranked` on the newest finished row of `google_reranks`, which
+`rerankIfDue()` writes in the same batch as the ranks, so the position and the
+total come from one ranking. It is one row read. It is not `MAX(rank)`: on the
+day this landed both databases carried a rank on three hundred rows and not
+eleven hundred, a load that had stopped after six batches, and the maximum
+would have said *of 300*. And it is no longer `COUNT(*)` over `google_venues`,
+which it was until 2026-11-18: SQLite keeps no count, so every panel that
+opened walked all 1,177 rows for a number that moves once a week, and it
+counted rows the ranking had skipped, so the last place read *#1,110 of
+1,166*. A row whose rank has not arrived draws no position line and
+everything else, and so does a database with no finished week.
 
 ### The six lists Google wrote
 

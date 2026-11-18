@@ -81,15 +81,23 @@
  * of mine** in docs/handbook.md for why a map that ranks nothing now prints that.
  *
  * Same row shape again, with one field only this half carries: `of`, how many
- * rows the last sync carried, so the panel can say "#42 of 1,111" without the
- * eleven hundred rows /admin/google counts to get the same number. Every row the
- * export holds, closed and hidden ones included, because that is the roll
- * ranked() in tools/googlevenues.mjs numbered — and deliberately not
- * MAX(rank), which reads the same on a database that took the whole file and
- * says "of 300" on one where a load stopped after six batches, as both did
- * in September 2026. A row whose rank did not arrive sends no `rank`, and the
- * panel prints no line for it. The directory sends no `of` — it counts what it
- * has, and eleven hundred copies of one number is sixteen kilobytes of nothing.
+ * places the week's ranking gave a position to, so the panel can say "#42 of
+ * 1,110". It is `ranked` on the newest finished row of `google_reranks`, which
+ * rerankIfDue() in _rank.js writes in the same batch as the ranks themselves,
+ * so the position and the total always come from the same ranking. One row
+ * read, by the table's key from its newest end.
+ *
+ * Until 2026-11-18 it was `COUNT(*)` over google_venues on every panel that
+ * opened. SQLite keeps no row count, so that walked the whole table — 1,177
+ * rows, measured against production, for one number that changes once a week
+ * — and it counted every row the sync carried rather than the rows the week
+ * ranked, so the last place on the ranking read "#1,110 of 1,166". MAX(rank)
+ * is not the answer either: it reads the same on a full table and on one
+ * where a load stopped part-way, as both did in September 2026. A row whose
+ * rank did not arrive sends no `rank`, and a database with no finished week
+ * sends no `of`; the panel prints no line for either. The directory sends no
+ * `of` — it counts what it has, and eleven hundred copies of one number is
+ * sixteen kilobytes of nothing.
  *
  * The directory's filter applies here rather than the `?ids=` half's absence
  * of one: a row switched off with `hidden`, or one the last sync no longer
@@ -370,8 +378,8 @@ function entry(row) {
   return out;
 }
 
-/* Whether google_venues has the `rank` column, remembered for the life of the
-   isolate. `undefined` until the first answer has been asked for.
+/* Whether google_venues has the `rank` column — and google_reranks, which
+   `?map=` reads the total from — remembered for the life of the isolate. `undefined` until the first answer has been asked for.
 
    db/schema.sql is CREATE TABLE IF NOT EXISTS and nothing in CI applies it, so
    the column arrives by a hand-run ALTER on each database — and the code is
@@ -381,8 +389,8 @@ function entry(row) {
    503 saying the city has no restaurants in it, over a number on a card.
 
    So it is asked once and then known, which is readingPins()' arrangement in
-   _pins.js for the same reason. Only "no such column" is caught; a database
-   that is down is still a database that is down. */
+   _pins.js for the same reason. Only "no such column" and "no such table" are
+   caught; a database that is down is still a database that is down. */
 let ranks;
 
 /* One query builder for every answer this route gives, so the whole roll,
@@ -400,14 +408,24 @@ function roll(env, withRank, ids, mine, only, kind) {
     'SELECT place_id, name, category, cuisine, tags, rating, reviews, price, status, ' +
     'address, postal_code, city, phone, website, opening_hours, latitude, longitude, map_id' + kind +
     (withRank ? ', rank' : '') +
-    (withRank && mine ? ', (SELECT COUNT(*) FROM google_venues WHERE missing_since IS NULL) AS ranked' : '') + ' ' +
+    (withRank && mine
+      /* One row of google_reranks by its key — see the header for why not a
+         COUNT(*). A week still being made has `ranked` NULL and is skipped. */
+      ? ", (SELECT ranked FROM google_reranks WHERE ranked IS NOT NULL ORDER BY week DESC LIMIT 1) AS ranked"
+      : '') + ' ' +
     'FROM google_venues ' +
     (mine
       /* LIMIT 1 because nothing stops two rows carrying the same map_id — the
          matcher only ever fills an empty one, but a hand-set one could — and
          a panel has one place on it. The directory's filter, for the reason
-         at the top. */
-      ? 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1'
+         at the top.
+
+         Written so the planner takes idx_google_venues_map, the one place's
+         row: `map_id IS NOT NULL` lets a partial index on that condition
+         serve a bound `?`, and the `+` on `hidden` stops (hidden, status)
+         looking as good — which it did, and production read 125 rows a
+         panel through it where this reads one (2026-11-18). */
+      ? 'WHERE map_id = ? AND map_id IS NOT NULL AND +hidden = 0 AND missing_since IS NULL LIMIT 1'
       : ids
       /* No hidden/missing clause on this half, and that is deliberate. It
          answers a venue somebody has already been shown and has pressed;
@@ -436,7 +454,7 @@ async function readingRanks(env, ids, mine) {
     ranks = true;
     return out;
   } catch (e) {
-    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
+    if (!/no such (column|table)/i.test(String((e && e.message) || e))) throw e;
     ranks = false;
     return roll(env, false, ids, mine, only, kind);
   }
