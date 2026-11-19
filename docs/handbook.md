@@ -3227,7 +3227,9 @@ on, so those are the same streets and the same turns as any bike way. A
 train is offered as one more button after the bike ways — *16 min · train
 14:09*, pressed in the bus's amber — only where it beats the quickest of
 them, counted from setting off, and only for one that can be caught and
-leaves within the hour. The bar then says *Leave at 14:01: ride to Ülemiste,
+leaves within the hour. One train at most, the quickest: two pairs of
+stations are worked out and the quicker is kept, since two trains beside the
+bike ways read as the same way twice. The bar then says *Leave at 14:01: ride to Ülemiste,
 the RE33 at 14:09 to Kitseküla, ride on · 16 min*, and the map draws the
 rides green and the rail amber. The wait before setting off is not counted:
 trains through Tallinn run every half hour to hour, and counting it hid the

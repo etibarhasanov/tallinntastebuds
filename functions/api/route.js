@@ -1275,12 +1275,20 @@ async function transit(from, to) {
  * takes across a city.
  *
  * Offered only where it is quicker than the quickest bike way, and then
- * the next one that can still be caught and leaves within TRAIN_WAIT, at
- * most TRAINS of them, each from a different pair of stations. Nothing waits on it: the planner down, slow
+ * the next one that can still be caught and leaves within TRAIN_WAIT. Up to
+ * TRAIN_PAIRS pairs of stations are worked out and the quickest of them is
+ * offered, TRAINS in all: two trains beside the bike ways read as two
+ * nearly-the-same ways on the bar, and the owner asked on 2026-11-19 for one
+ * train and the rest bike. Nothing waits on it: the planner down, slow
  * or with nothing to say, a ride to a station the router will not answer —
  * each is `trains: []` and the ways exactly as they were.
  */
-const TRAINS = 2;
+const TRAINS = 1;
+
+/* Pairs of stations a train is worked out for before the quickest is kept:
+   two router requests each, so the cost is what it was when two were
+   offered. */
+const TRAIN_PAIRS = 2;
 
 /* Departures asked for: the planner answers the next few, the first of
    which may already be out of reach once the ride to the station is known. */
@@ -1341,7 +1349,7 @@ async function departures(from, to) {
 /* The departures as ways to choose: a ride to the station and one from it
    for each pair of stations, and the first departure of each pair that can
    be caught within TRAIN_WAIT, kept where it beats `quickest`, the best
-   bike way's seconds. */
+   bike way's seconds — and of those, the quickest TRAINS. */
 async function byTrain(from, to, found, quickest) {
   const pairs = new Map();
   for (const d of found) {
@@ -1351,7 +1359,7 @@ async function byTrain(from, to, found, quickest) {
   }
   const now = Date.now();
   const out = [];
-  for (const list of Array.from(pairs.values()).slice(0, TRAINS)) {
+  for (const list of Array.from(pairs.values()).slice(0, TRAIN_PAIRS)) {
     const first = list[0];
     const [head, tail] = await Promise.all([
       ride(from, first.from),
@@ -1384,7 +1392,7 @@ async function byTrain(from, to, found, quickest) {
       legs: legs
     });
   }
-  return out.sort((a, b) => a.seconds - b.seconds);
+  return out.sort((a, b) => a.seconds - b.seconds).slice(0, TRAINS);
 }
 
 /* A bike leg to or from a station: the router's way, kept off the streets
