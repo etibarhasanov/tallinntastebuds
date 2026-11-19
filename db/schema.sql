@@ -1312,7 +1312,22 @@ CREATE TABLE IF NOT EXISTS google_venues (
   --   ALTER TABLE google_venues ADD COLUMN kind TEXT NOT NULL DEFAULT 'eat';
   -- Until they run, /api/lookup answers no-database and the button is a
   -- polite dead end; nothing else notices.
-  kind TEXT NOT NULL DEFAULT 'eat'
+  kind TEXT NOT NULL DEFAULT 'eat',
+
+  -- When anything a reader shows last changed on this row, in ms: a place
+  -- looked up, tied to one of mine, or asked about again by the refresh.
+  -- venuesChanged() in functions/api/_lib.js writes it, and the copy of this
+  -- table every isolate keeps — googleTable() there — reads only the rows
+  -- past its last look, through idx_google_venues_changed below, rather
+  -- than all of them again. NULL on a row nothing has changed since the
+  -- column arrived; the week's ranking and an export load change every row
+  -- and say so in `meta` instead of stamping 1,177 rows. Appended, with its
+  -- index, the way `rank` was — the ALTER first, or the index has no column:
+  --   ALTER TABLE google_venues ADD COLUMN changed_at INTEGER;
+  --   CREATE INDEX IF NOT EXISTS idx_google_venues_changed ON google_venues (changed_at);
+  -- Until they run, the copy is read whole each time something changed and
+  -- the stamp on a row fails quietly; nothing else notices.
+  changed_at INTEGER
 );
 
 -- Best-first, which is the order the export itself is sorted in and the order
@@ -1321,6 +1336,8 @@ CREATE INDEX IF NOT EXISTS idx_google_venues_rating ON google_venues (rating DES
 -- The 60 that are already on the map, and the ones still to be looked at.
 CREATE INDEX IF NOT EXISTS idx_google_venues_map ON google_venues (map_id) WHERE map_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_google_venues_open ON google_venues (hidden, status);
+-- The rows changed since an isolate last looked: changed_at above.
+CREATE INDEX IF NOT EXISTS idx_google_venues_changed ON google_venues (changed_at);
 
 -- -------------------------------------------------------- the other cities
 -- Tartu, Narva and Pärnu, out of the same Google sweep as Tallinn, cleaned into

@@ -163,7 +163,8 @@
  * hostname means.
  */
 
-import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours } from './api/_lib.js';
+import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours,
+  googleTable } from './api/_lib.js';
 import { door, bad, optionalString, optionalNumber, named, wordsOf, toolResult, toolError, MAX_QUERY, ANNOTATIONS } from './_mcp.js';
 import { readList, LIST_ID } from './api/_lists.js';
 import { DEFAULT_LANG, photoUrl, placeUrl, listUrl, mapsSearch, matchScore, byName, publicLists, matchLists, listRows } from './_public.js';
@@ -633,18 +634,17 @@ function detail(place, lang, google) {
  * and logged, so the owner's review list is one `wrangler pages deployment
  * tail` away. On the day this was written all sixty-three links passed.
  *
- * One statement, sixty-odd rows, kept five minutes per isolate like the rest
- * of what this route reads, since the join moves once a month and the hours
- * when somebody opens a place on the map. A database that is missing, wrong
+ * Sixty-odd rows, out of the copy of google_venues the isolate keeps —
+ * googleTable() in ./api/_lib.js, which reads only the rows that changed
+ * since it last looked — and built again only when that moved. A database that is missing, wrong
  * or down is an empty map: every place answers with its Google fields null,
  * and the places tool answers as it did before there were any.
  */
-const GOOGLE_TTL = 5 * 60 * 1000;
 const SAME_DOOR = 150;
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const HOURS_SOURCE = 'Google Maps, through the Google Places API';
 let google = null;
-let googleAt = 0;
+let googleVersion = -1;
 
 /* The words of a name that say which place it is rather than what kind. */
 const GENERIC = new Set([
@@ -666,23 +666,15 @@ function sameDoor(place, row) {
 }
 
 async function googleRows(env, places) {
-  if (google && Date.now() - googleAt < GOOGLE_TTL) return google;
   if (!env.DB || await wrongDatabase(env)) return new Map();
-  let results;
-  try {
-    ({ results } = await env.DB
-      .prepare(
-        'SELECT map_id, place_id, name, category, status, opening_hours, phone, website, latitude, longitude, ' +
-        'refreshed_at, synced_at FROM google_venues ' +
-        'WHERE map_id IS NOT NULL AND hidden = 0 AND missing_since IS NULL'
-      )
-      .all());
-  } catch (e) {
-    return new Map();
-  }
+  const table = await googleTable(env).catch(() => null);
+  if (!table) return new Map();
+  if (google && googleVersion === table.version) return google;
+  const results = [...table.rows.values()]
+    .filter((row) => row.map_id != null && !row.hidden && row.missing_since == null);
   const byId = new Map(places.map((p) => [p.id, p]));
   google = new Map();
-  for (const row of results || []) {
+  for (const row of results) {
     /* The first row wins where two carry one map_id, which nothing stops —
        the same LIMIT 1 /api/venues?map= takes. */
     const place = byId.get(row.map_id);
@@ -707,7 +699,7 @@ async function googleRows(env, places) {
       } : null
     });
   }
-  googleAt = Date.now();
+  googleVersion = table.version;
   return google;
 }
 

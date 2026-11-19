@@ -895,6 +895,183 @@ export async function eatOnly(env) {
   return kindColumn ? " AND kind = 'eat'" : '';
 }
 
+/* ---------------------------------------------------------- Google's rows
+ * google_venues, kept in the isolate once, for everything that reads it whole.
+ *
+ * Four things read the table whole: the roll /api/places searches, the two
+ * slices the chat picks from, and the one /mcp dresses a place with. Each
+ * used to keep a copy of its own and read it again on a clock — five
+ * minutes for the roll and the chat's thousand rows, one minute for the
+ * chat's linked rows — though the table changes a few times a week. Every
+ * isolate awake all day read it about 750,000 times a row; on 2026-11-18 it
+ * was the dearest table on the meter. So there is one copy here, every
+ * column of every row, and each reader takes its slice out of memory.
+ *
+ * HOW IT LEARNS WHAT CHANGED
+ *
+ * A row that changes is stamped with `changed_at`, and two rows of `meta`
+ * say when anything did: `venues_at` when some rows changed, `venues_all_at`
+ * when all of them may have. venuesChanged() below writes both kinds, and it
+ * is called by everything that changes what a reader would answer — a place
+ * looked up (lookup.js) or tied to a place of mine (admin/tie.js), the one
+ * row a refresh asked Google about (_refresh.js), the week's ranking, which
+ * renumbers every row (_rank.js) — and the last lines of
+ * db/google-venues.sql say all of it changed.
+ *
+ * The copy asks the two `meta` rows every CHECK_EVERY: two rows by the key.
+ * Nothing moved, and that is the whole cost. Some rows moved, and it reads
+ * just those — changed_at past the last look, a range on
+ * idx_google_venues_changed — and swaps them in. All of it moved, and it
+ * reads the table again.
+ *
+ * And a search that finds nothing asks sooner, at most once per MISS_EVERY,
+ * because the likeliest reason a word finds nothing is a place somebody has
+ * just looked up on Google Maps through another isolate. That check costs
+ * the two rows and the new ones, so a loop of made-up words costs two rows a
+ * minute and not the table each time — which a search of the table by name
+ * would, since a name cannot be found by an index.
+ *
+ * The isolate a writer ran in looks at once; the others within CHECK_EVERY,
+ * or a minute after somebody searched for the new place. A correction run by
+ * hand stamps nothing, so the whole table is read again after WHOLE_EVERY
+ * whatever the stamps say.
+ *
+ * The day's worst, per isolate awake all day: 96 reads of two rows, the rows
+ * that changed — thirty or so from the refresh, a few looked up — and the
+ * table once, 1,177 rows. A few thousand, where it was 750,000.
+ *
+ * BEFORE THE COLUMN IS THERE
+ *
+ * `changed_at` and its index arrive by hand (db/schema.sql), and this is
+ * live before. Reading only the changed rows then fails on "no such column",
+ * and the copy reads the table whole instead — once a stamp moves, never on
+ * the clock. The stamp on a row fails quietly the same way. A database
+ * without the `meta` rows reads as nothing having changed; one whose `meta`
+ * cannot be read keeps the copy it has. And `SELECT *` is on purpose: rank,
+ * kind and the rest arrived the same way, and a row carries whichever of
+ * them the table has, where naming them would throw. */
+const SOME_CHANGED = 'venues_at';
+const ALL_CHANGED = 'venues_all_at';
+const CHECK_EVERY = 15 * 60 * 1000;
+const MISS_EVERY = 60 * 1000;
+const WHOLE_EVERY = 24 * 60 * 60 * 1000;
+/* How far back a look reaches past the last one, for the clocks of two
+   isolates that disagree and a write that landed while the look was being
+   made. A row read twice is swapped in twice and nothing else. */
+const SKEW = 2 * 60 * 1000;
+
+let google = null;
+let reading = null;
+let version = 0;
+
+/* { rows: Map of place_id -> row, version }, or null where the table has
+   never been read. `version` moves whenever any row did, which is what a
+   reader keeps its slice by. `soon` is a search that found nothing. */
+export async function googleTable(env, soon) {
+  if (!env.DB) return null;
+  const now = Date.now();
+  if (google && now - google.at < WHOLE_EVERY && now - google.looked < (soon ? MISS_EVERY : CHECK_EVERY)) {
+    return google;
+  }
+  if (!reading) reading = lookAgain(env).finally(() => { reading = null; });
+  return reading;
+}
+
+async function lookAgain(env) {
+  const now = Date.now();
+  let marks = null;
+  try {
+    /* Two rows of meta by its key. */
+    const { results } = await env.DB
+      .prepare('SELECT key, value FROM meta WHERE key IN (?, ?)')
+      .bind(SOME_CHANGED, ALL_CHANGED)
+      .all();
+    const value = (key) => ((results || []).find((row) => row.key === key) || {}).value || '';
+    marks = { some: value(SOME_CHANGED), all: value(ALL_CHANGED) };
+  } catch (e) {
+    /* No meta, or no database: keep what there is, and look again later. */
+    if (google) {
+      google.looked = now;
+      return google;
+    }
+  }
+
+  if (google && marks && now - google.at < WHOLE_EVERY && marks.all === google.all) {
+    if (marks.some === google.some) {
+      google.looked = now;
+      return google;
+    }
+    try {
+      /* The rows changed since the last look: a range on
+         idx_google_venues_changed, as many rows as changed. */
+      const { results } = await env.DB
+        .prepare('SELECT * FROM google_venues WHERE changed_at > ?')
+        .bind(google.since)
+        .all();
+      const rows = new Map(google.rows);
+      for (const row of results || []) rows.set(row.place_id, row);
+      google = { ...google, rows, version: ++version, some: marks.some, looked: now, since: now - SKEW };
+      return google;
+    } catch (e) {
+      /* No changed_at yet: read it whole, below. */
+    }
+  }
+
+  try {
+    /* The whole table, 1,177 rows on 2026-11-19 — once a day, after the
+       week's ranking or an export, and before the column is there once a
+       change. */
+    const { results } = await env.DB.prepare('SELECT * FROM google_venues').all();
+    google = {
+      rows: new Map((results || []).map((row) => [row.place_id, row])),
+      version: ++version,
+      some: marks ? marks.some : '',
+      all: marks ? marks.all : '',
+      at: now,
+      looked: now,
+      since: now - SKEW
+    };
+  } catch (e) {
+    /* The database is down: the copy there was, or none. */
+  }
+  return google;
+}
+
+/* Says what changed, after a writer's own write has gone through: `ids` the
+   Google keys of the rows it changed, or 'all'. Run apart from the write and
+   never throwing, so it can cost the readers a late look and never the write
+   itself. This isolate looks again on its next read. */
+export async function venuesChanged(env, ids) {
+  const now = Date.now();
+  if (google) google.looked = 0;
+  const all = ids === 'all';
+  const keys = all ? [] : (ids || []).filter((id) => typeof id === 'string' && id).slice(0, 50);
+  if (keys.length) {
+    try {
+      await env.DB
+        .prepare('UPDATE google_venues SET changed_at = ? WHERE place_id IN (' + keys.map(() => '?').join(', ') + ')')
+        .bind(now, ...keys)
+        .run();
+    } catch (e) {
+      /* No changed_at yet: the stamp below is still worth writing. */
+    }
+  }
+  if (!all && !keys.length) return;
+  const mark = 'INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value';
+  try {
+    await env.DB.batch([SOME_CHANGED].concat(all ? [ALL_CHANGED] : [])
+      .map((key) => env.DB.prepare(mark).bind(key, String(now))));
+  } catch (e) {
+    /* No meta table: the readers find out within WHOLE_EVERY. */
+  }
+}
+
+/* A row that is somewhere to eat or drink: what eatOnly() asks in SQL, for a
+   row already in memory. A table without `kind` has nothing else in it. */
+export function eats(row) {
+  return row.kind === undefined || row.kind === null || row.kind === 'eat';
+}
+
 /* The venues behind a set of ids, as a Map. Ids that are not in the table —
    a catalogue slug, a key from an export that no longer carries it — are
    simply not in the answer, which is what every caller here already handles.

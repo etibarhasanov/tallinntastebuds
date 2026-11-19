@@ -188,7 +188,8 @@
  * press the page sends says only that something was typed.
  */
 
-import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wrongDatabase, eatOnly } from './_lib.js';
+import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wrongDatabase,
+  googleTable, eats } from './_lib.js';
 /* What a Google row cooks, in the directory's ids, off the one table that
    decides it — and in the order the directory says them, so a card here reads
    the same as a card there. See the note above KITCHENS for why it is that
@@ -432,41 +433,30 @@ function openUntil(week, now) {
  * `map_id` — read for the two things they lend the map: the week, and what
  * Google files the place as cooking.
  *
- * One statement with no parameters and sixty rows back. It is not
+ * Sixty rows, out of the copy of google_venues the isolate keeps —
+ * googleTable() in _lib.js — rather than a statement of their own. It is not
  * venuesByIds() in _lib.js, which goes the other way — a handful of Google
  * keys in, their whole entries out — and asking it this question would mean
  * knowing the Google key for each of my places before asking, which is the
  * thing this join exists to answer.
  *
- * Kept a minute: the join changes when somebody links a row in the database,
- * which is a monthly thing, and a D1 round trip a question for it was
- * measurable on the slow path. A minute rather than five so a link made by
- * hand shows up while the person is still looking. A database that is
- * missing, wrong or simply has nothing linked yet gives an empty list, and
+ * It was read on its own every minute, so that a link made by hand showed
+ * up while the person was still looking — the rows read again 1,440 times a
+ * day per isolate. The admin page's tie stamps the row it tied now, and the
+ * copy picks it up within CHECK_EVERY there. A database that is
+ * missing or simply has nothing linked yet gives an empty list, and
  * both readers of it take that as "not known" rather than as "none".
  */
 let linked = null;
-let linkedAt = 0;
+let linkedVersion = -1;
 
 async function linkedRows(env) {
-  if (linked && Date.now() - linkedAt < 60000) return linked;
-  if (!env.DB) return [];
-
-  let rows = [];
-  try {
-    const out = await env.DB
-      .prepare(
-        'SELECT map_id, opening_hours, category, cuisine, tags FROM google_venues ' +
-        "WHERE map_id IS NOT NULL AND status = 'Open'"
-      )
-      .all();
-    rows = out.results || [];
-  } catch (e) {
-    return [];
-  }
-  linked = rows;
-  linkedAt = Date.now();
-  return rows;
+  const table = await googleTable(env).catch(() => null);
+  if (!table) return [];
+  if (linked && linkedVersion === table.version) return linked;
+  linked = [...table.rows.values()].filter((row) => row.map_id != null && row.status === 'Open');
+  linkedVersion = table.version;
+  return linked;
 }
 
 /* My places that are open right now, as id -> the time it shuts. Every
@@ -498,12 +488,12 @@ function cooksOf(rows) {
  *
  * Every open, unhidden, still-present row that is not already one of my
  * places — those sixty are on the map roll with a write-up, and offering the
- * Google copy of one beside it would be the same door twice. Kept for five
- * minutes per isolate the way the catalogue is: the table changes when a
- * refresh is loaded and not otherwise, and reading a thousand rows a question
- * for a table that changes monthly is work for nothing. /api/venues reads it
- * fresh because it is a cached GET; this is a POST and has to remember for
- * itself.
+ * Google copy of one beside it would be the same door twice. Taken out of
+ * the copy of the table the isolate keeps, googleTable() in _lib.js, and
+ * built again only when that moved: reading a thousand rows a question, or
+ * every five minutes, for a table that changes a few times a week is work
+ * for nothing. /api/venues reads it fresh because it is a cached GET; this
+ * is a POST and has to remember for itself.
  *
  * Each row is carried three ways at once: the card the browser draws (see
  * venueCard() in _lib.js), the week for "open now", and a folded haystack of
@@ -511,30 +501,18 @@ function cooksOf(rows) {
  * are matched against.
  */
 let venues = null;
-let venuesAt = 0;
+let venuesVersion = -1;
 
 async function googleVenues(env) {
-  if (venues && Date.now() - venuesAt < 300000) return venues;
-  if (!env.DB) return [];
+  const table = await googleTable(env).catch(() => null);
+  if (!table) return [];
+  if (venues && venuesVersion === table.version) return venues;
 
-  let rows = [];
-  try {
-    /* Not a museum the find bar looked up on Google: the chat answers with
-       somewhere to eat or drink, `kind = 'eat'`. eatOnly() in _lib.js. */
-    const only = await eatOnly(env);
-    const out = await env.DB
-      .prepare(
-        'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
-        'address, postal_code, city, phone, website, opening_hours, maps_url, ' +
-        'latitude, longitude, map_id FROM google_venues ' +
-        "WHERE hidden = 0 AND missing_since IS NULL AND status = 'Open' " +
-        'AND map_id IS NULL AND latitude IS NOT NULL' + only
-      )
-      .all();
-    rows = out.results || [];
-  } catch (e) {
-    return [];
-  }
+  /* Not a museum the find bar looked up on Google: the chat answers with
+     somewhere to eat or drink — eats() in _lib.js. */
+  const rows = [...table.rows.values()].filter((row) =>
+    !row.hidden && row.missing_since == null && row.status === 'Open' &&
+    row.map_id == null && row.latitude != null && eats(row));
 
   venues = rows.map((row) => ({
     card: {
@@ -544,7 +522,7 @@ async function googleVenues(env) {
     week: venueHours(row.opening_hours),
     hay: foldWords([row.name, row.category, row.cuisine, row.tags, row.address].join(' '))
   }));
-  venuesAt = Date.now();
+  venuesVersion = table.version;
   return venues;
 }
 

@@ -43,7 +43,7 @@
  * deploy or a sync changes it, it is the same for everybody, and it is the
  * one big answer on the page. Five minutes.
  *
- * Five minutes in two places, and the second is the one that matters. The
+ * And a second keeping besides, which is the one that matters. The
  * `max-age` only tells the browser; Cloudflare does not keep a Function's
  * answer at the edge because of it, so every request still ran this file.
  * And building the roll reads every row of google_venues — 1,127 rows read
@@ -52,12 +52,16 @@
  * half thousand asks of this route, `?q=` with a word nobody typed before
  * included, and every read the site makes fails until midnight UTC — the
  * saves, the lists, signing in. So the merged roll is also kept in the
- * isolate for ROLL_TTL, the way ./ask.js and ../mcp.js keep their copies of
- * the same table: a bare GET and every `?q=` inside those five minutes are
- * answered out of memory, and the table is read about once per isolate per
- * five minutes however hard the route is asked. A place somebody looks up on
- * Google Maps reaches the roll within the five minutes, which is the same
- * time the browser was already allowed to keep the old one.
+ * isolate: a bare GET and every `?q=` are answered out of memory. It used to be
+ * kept five minutes, which was still the table read whole every five minutes
+ * by every isolate awake — 9,225 rows on the meter by the afternoon of
+ * 2026-11-18, the dearest table there. Now the roll is built out of the one
+ * copy of the table the isolate keeps, googleTable() in ./_lib.js, which
+ * reads only the rows that changed since it last looked, and is built again
+ * only when that copy moved. A `?q=` that finds nothing from three letters
+ * asks it to look at once — at most once a minute — and searches again, so a
+ * place somebody has just looked up on Google Maps through another isolate
+ * is found by the next person to type its name.
  *
  * WHAT A ROW CARRIES BEYOND A NAME, AND FOR WHOM
  *
@@ -131,7 +135,8 @@
  * else's to say.
  */
 
-import { json, catalogue, dataFile, nearTallinn, tagsOf, venueEntry, venuesByIds, wrongDatabase, eatOnly } from './_lib.js';
+import { json, catalogue, dataFile, nearTallinn, tagsOf, venueEntry, venuesByIds, wrongDatabase,
+  googleTable } from './_lib.js';
 import { find, findIndex } from './_find.js';
 import { kitchensOf } from './venues.js';
 
@@ -168,57 +173,35 @@ function tagsFor(row) {
   return [...new Set(tags)];
 }
 
-/* The export's half of the roll, with `rank` when the table has it. The
-   column arrived by a hand-run ALTER (db/schema.sql says so beside it), and a
-   SELECT naming a column that is not there throws — which here would cost the
-   find bar and the picker all eleven hundred of Google's rows over one number
-   used for ordering. So a database without it is asked again without it, the
-   way rankedRows() in ./venues.js does, and the bar falls back on the score. */
-let ranks;
-async function googleRows(env) {
-  /* And `kind`, when the table has it, so a museum somebody looked up on
-     Google Maps reaches the find bar saying so — eatOnly() in ./_lib.js is
-     the same once-per-isolate question, and its clause is only non-empty
-     where the column is there to select. */
-  const kind = (await eatOnly(env)) ? ', kind' : '';
-  const select = (withRank) => env.DB
-    .prepare(
-      'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
-      'address, postal_code, city, latitude, longitude, map_id, status' + kind + (withRank ? ', rank ' : ' ') +
-      'FROM google_venues ' +
-      /* hidden is the curation switch — a duplicate, or a car park Google
-         thinks is a restaurant. missing_since is a row the last sync no
-         longer carried. A place Google calls temporarily closed is kept,
-         and says so: see WHAT A SHUT ROW IS FOR at the top. */
-      'WHERE hidden = 0 AND missing_since IS NULL'
-    )
-    .all();
-  if (ranks === false) return select(false);
-  try {
-    const answer = await select(true);
-    ranks = true;
-    return answer;
-  } catch (e) {
-    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
-    ranks = false;
-    return select(false);
-  }
+/* The export's half of the roll, out of the copy of google_venues the
+   isolate keeps — googleTable() in ./_lib.js. hidden is the curation switch —
+   a duplicate, or a car park Google thinks is a restaurant. missing_since is
+   a row the last sync no longer carried. A place Google calls temporarily
+   closed is kept, and says so: see WHAT A SHUT ROW IS FOR at the top. A row
+   carries `rank` and `kind` where the table has them, and the roll does
+   without where it does not. */
+function googleRows(table) {
+  return [...table.rows.values()].filter((row) => !row.hidden && row.missing_since == null);
 }
 
 /* The whole roll, merged and sorted: what a bare GET answers, and what ?q=
-   searches. Null when the map's half cannot be read. Kept for ROLL_TTL — see
-   WHY IT IS CACHED at the top — but only a roll that has Google's half in it,
-   so a database that failed to answer once is asked again on the next
-   request rather than leaving the find bar without the city for five
-   minutes. */
-const ROLL_TTL = 5 * 60 * 1000;
+   searches. Null when the map's half cannot be read. Built again only when
+   the table's copy moved — see WHY IT IS CACHED at the top — and only a roll
+   that has Google's half in it is kept, so a database that failed to answer
+   is asked again on the next request rather than leaving the find bar without
+   the city. The map's half is a file of the deployment, and a deploy is a new
+   isolate, so it cannot go stale under the keeping. `soon` is a search that
+   found nothing: see googleTable(). */
 let kept = null;
-let keptAt = 0;
+let keptVersion = -1;
 
-async function cityRoll(context) {
-  if (kept && Date.now() - keptAt < ROLL_TTL) return kept;
+async function cityRoll(context, soon) {
   const { env } = context;
-  let whole = false;
+  let table = null;
+  if (env.DB && !(await wrongDatabase(env))) {
+    table = await googleTable(env, soon).catch(() => null);
+  }
+  if (kept && table && table.version === keptVersion) return kept;
 
   /* The map's places first: they carry ids that are already written into
      lists, and they are the only rows that link to a write-up. Unreadable is
@@ -255,46 +238,38 @@ async function cityRoll(context) {
      database with the schema applied but no sync run against it has the table
      and no rows in it, and the picker should still open on the map's places
      rather than on an error. */
-  if (env.DB && !(await wrongDatabase(env))) {
-    try {
-      const { results } = await googleRows(env);
-      whole = true;
+  if (table) {
+    /* The open rows first, so that of two rows with one name — a branch
+       that shut and the one still trading — the open one is the one the
+       name keeps. */
+    const rows = googleRows(table);
+    rows.sort((a, b) => (a.status === SHUT) - (b.status === SHUT));
 
-      /* The open rows first, so that of two rows with one name — a branch
-         that shut and the one still trading — the open one is the one the
-         name keeps. */
-      const rows = (results || []).filter(Boolean);
-      rows.sort((a, b) => (a.status === SHUT) - (b.status === SHUT));
-
-      for (const row of rows) {
-        if (typeof row.name !== 'string' || !row.name) continue;
-        if (ids.has(row.place_id)) continue;
-        if (row.map_id && ids.has(row.map_id)) {
-          /* The row goes, and what Google says it cooks stays with the place
-             it is a row for — and so do Google's numbers for it, which the
-             find bar orders my places by and never prints: see "The find
-             bar's order" at the top. */
-          const place = mine.get(row.map_id);
-          place.kitchens = kitchensOf(row);
-          place.tags = tagsFor(row);
-          if (typeof row.rating === 'number') place.rating = row.rating;
-          if (typeof row.reviews === 'number') place.reviews = row.reviews;
-          if (typeof row.rank === 'number') place.rank = row.rank;
-          if (row.category) place.category = row.category;
-          continue;
-        }
-        const name = fold(row.name);
-        if (names.has(name)) continue;
-        ids.add(row.place_id);
-        names.add(name);
-        const entry = { ...venueEntry(row), kitchens: kitchensOf(row), tags: tagsFor(row), category: row.category || '' };
-        if (typeof row.rank === 'number') entry.rank = row.rank;
-        if (row.status === SHUT) entry.closed = true;
-        out.push(entry);
+    for (const row of rows) {
+      if (typeof row.name !== 'string' || !row.name) continue;
+      if (ids.has(row.place_id)) continue;
+      if (row.map_id && ids.has(row.map_id)) {
+        /* The row goes, and what Google says it cooks stays with the place
+           it is a row for — and so do Google's numbers for it, which the
+           find bar orders my places by and never prints: see "The find
+           bar's order" at the top. */
+        const place = mine.get(row.map_id);
+        place.kitchens = kitchensOf(row);
+        place.tags = tagsFor(row);
+        if (typeof row.rating === 'number') place.rating = row.rating;
+        if (typeof row.reviews === 'number') place.reviews = row.reviews;
+        if (typeof row.rank === 'number') place.rank = row.rank;
+        if (row.category) place.category = row.category;
+        continue;
       }
-    } catch (e) {
-      /* No table, or a database that cannot answer. The map's places are
-         still a roll, and the picker still opens. */
+      const name = fold(row.name);
+      if (names.has(name)) continue;
+      ids.add(row.place_id);
+      names.add(name);
+      const entry = { ...venueEntry(row), kitchens: kitchensOf(row), tags: tagsFor(row), category: row.category || '' };
+      if (typeof row.rank === 'number') entry.rank = row.rank;
+      if (row.status === SHUT) entry.closed = true;
+      out.push(entry);
     }
   }
 
@@ -314,9 +289,9 @@ async function cityRoll(context) {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 
-  if (whole) {
+  if (table) {
     kept = out;
-    keptAt = Date.now();
+    keptVersion = table.version;
   }
   return out;
 }
@@ -408,6 +383,15 @@ export async function onRequestGet(context) {
 
   const roll = await cityRoll(context);
   if (!roll) return json({ error: 'places' }, 503);
-  if (query.has('q')) return json(await search(context, roll, query), 200, 300);
-  return json(roll, 200, 300);
+  if (!query.has('q')) return json(roll, 200, 300);
+
+  /* Nothing found from three letters, and the likeliest reason is a place
+     somebody has just looked up on Google Maps through another isolate: ask
+     the table what changed, at most once a minute — googleTable() in
+     ./_lib.js — and search again if anything did. */
+  const found = await search(context, roll, query);
+  if (found.length || String(query.get('q') || '').trim().length < 3) return json(found, 200, 300);
+  const again = await cityRoll(context, true);
+  if (!again || again === roll) return json(found, 200, 300);
+  return json(await search(context, again, query), 200, 300);
 }
