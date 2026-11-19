@@ -362,7 +362,10 @@ Reading is free: `d1_database_query` answers a `SELECT` straight away, and
 checking the state of a table is how everything here gets verified. Writing is
 not, and the split is machinery rather than good intentions —
 `.claude/hooks/d1-write-gate.mjs`, wired as a `PreToolUse` hook in
-`.claude/settings.json`, classifies the SQL and hands back `allow` or `ask`.
+`.claude/settings.json`, classifies the SQL and hands back `allow`, `ask` or
+`deny` — for `d1_database_query`, and since 2026-11-19 for every other door
+into D1 a session has: `wrangler d1` in the shell, curl to D1's API, and any
+MCP tool that names D1 or Cloudflare.
 Its cases live in the file it guards and CI runs them (`--check`).
 
 The procedure around it, which no hook can enforce and you have to:
