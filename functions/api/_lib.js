@@ -898,8 +898,9 @@ export async function eatOnly(env) {
 /* ---------------------------------------------------------- Google's rows
  * google_venues, kept in the isolate once, for everything that reads it whole.
  *
- * Four things read the table whole: the roll /api/places searches, the two
- * slices the chat picks from, and the one /mcp dresses a place with. Each
+ * Five things read the table whole: the roll /api/places searches, the two
+ * slices the chat picks from, the one /mcp dresses a place with, and the
+ * owner's count of what is due — admin/refreshes.js. The first four each
  * used to keep a copy of its own and read it again on a clock — five
  * minutes for the roll and the chat's thousand rows, one minute for the
  * chat's linked rows — though the table changes a few times a week. Every
@@ -932,7 +933,9 @@ export async function eatOnly(env) {
  * would, since a name cannot be found by an index.
  *
  * The isolate a writer ran in looks at once; the others within CHECK_EVERY,
- * or a minute after somebody searched for the new place. A correction run by
+ * or a minute after somebody searched for the new place. The owner's report
+ * looks every time it is asked, since it is read just after a refresh was
+ * pressed, perhaps in another isolate: the two rows and whatever changed. A correction run by
  * hand stamps nothing, so the whole table is read again after WHOLE_EVERY
  * whatever the stamps say.
  *
@@ -966,11 +969,13 @@ let version = 0;
 
 /* { rows: Map of place_id -> row, version }, or null where the table has
    never been read. `version` moves whenever any row did, which is what a
-   reader keeps its slice by. `soon` is a search that found nothing. */
+   reader keeps its slice by. `soon` is a search that found nothing, and
+   'now' the owner's report, which looks whatever the clock says. */
 export async function googleTable(env, soon) {
   if (!env.DB) return null;
   const now = Date.now();
-  if (google && now - google.at < WHOLE_EVERY && now - google.looked < (soon ? MISS_EVERY : CHECK_EVERY)) {
+  const every = soon === 'now' ? 0 : soon ? MISS_EVERY : CHECK_EVERY;
+  if (google && now - google.at < WHOLE_EVERY && now - google.looked < every) {
     return google;
   }
   if (!reading) reading = lookAgain(env).finally(() => { reading = null; });

@@ -6652,7 +6652,12 @@ line when it was drawn and two of them stood below the top hundred, so it
 costs a handful of calls. `rank` is the
 last ranking's, which is made when the Top 100 tab is opened in a new week,
 so a place that crossed a line waits by the tier it was in until the next
-one. "Due now" on the Google tab of `/admin.html` counts by the same rule.
+one. "Due now" on the Google tab of `/admin.html` counts by the same rule,
+out of the copy of `google_venues` the isolate keeps rather than by a
+statement: as one it walked every row the directory shows each time the tab
+was opened, and now an open reads the two `meta` rows, the rows changed since
+the copy last looked, and `google_scores` for the few places a busy month
+could make due.
 
 **A visit is the clock, because GitHub's was not one.** The fill shipped on
 2026-11-05 with `.github/workflows/google-refresh.yml` as its only clock,
@@ -9020,7 +9025,8 @@ dearest table on the meter on 2026-11-18 — 9,225 rows by the afternoon, and
 about 3.4 million a day with ten isolates awake, counting the chat's copy
 beside it, which was read again every minute. So an isolate now keeps one
 copy of `google_venues`, every column of every row, and the roll here, the
-chat's two slices and `/mcp`'s are taken out of it in memory —
+chat's two slices, `/mcp`'s and the owner's count of what is due are taken
+out of it in memory —
 `googleTable()` in `functions/api/_lib.js`. A row that changes is stamped
 with `changed_at`, and `venues_at` in `meta` says that some did, by
 `venuesChanged()` from everything that changes what a reader shows: a place

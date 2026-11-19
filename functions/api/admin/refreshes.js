@@ -37,10 +37,29 @@
  * **Close a place instead of deleting it** in docs/handbook.md.
  *
  * `table` counts the rows the directory shows — not hidden, not missing, and
- * somewhere to eat, which is all the fill asks about, eatOnly() — so
+ * somewhere to eat, which is all the fill asks about — so
  * its total is the number on /admin/google rather than the number in the table.
  * `due` is the ones the fill would ask about right now: older than their tier
  * allows — TIERS in ../_refresh.js. `refreshAfterDays` is an open's thirty.
+ *
+ * WHAT IT READS
+ *
+ * `table` and `map` are counted here, out of the copy of google_venues the
+ * isolate keeps — googleTable() in ../_lib.js — and not by a statement. As
+ * one, with DUE_SQL inside a SUM, the count walked every row the directory
+ * shows, 1,117 of them through an index and then the table, each time the
+ * tab was opened. The copy is asked to look now rather than on its clock, so
+ * a report read just after a refresh has that refresh in it: two rows of
+ * meta and the rows changed since the last look, thirty-odd on a day the
+ * whole allowance is spent, and the table once, 1,179 rows on 2026-11-19,
+ * in an isolate that had no copy. Whether a place is busy is asked of
+ * google_scores only for the rows it could make due — below the top four
+ * hundred, refreshed more than a month ago and not yet past their tier's
+ * wait, a few hundred at the most — at half a dozen rows each, busyAmong().
+ * Beside them the log's fifty rows and
+ * a name each, and the day's and month's calls. A dozen opens a day is some
+ * thousands of rows against the five million, and none of it grows with
+ * google_scores.
  *
  * WHO MAY READ IT
  *
@@ -79,8 +98,8 @@
  * second lock on a route that spends.
  */
 
-import { json, wrongDatabase, eatOnly } from '../_lib.js';
-import { BUDGET, DUE_SQL, REFRESH_AFTER, googleKey, refreshFill, spent } from '../_refresh.js';
+import { json, wrongDatabase, googleTable } from '../_lib.js';
+import { BUDGET, REFRESH_AFTER, busyAmong, googleKey, refreshAfter, refreshFill, spent } from '../_refresh.js';
 
 /* Fifty lines of the log: a few days of opens on an ordinary week, and a
    screen and a half on a phone. */
@@ -104,18 +123,11 @@ export async function onRequestGet(context) {
   if (!env.DB || (await wrongDatabase(env))) return json({ ready: false, key });
 
   try {
-    const only = await eatOnly(env);
-    const [counts, calls, log, tied] = await Promise.all([
-      env.DB
-        .prepare(
-          'SELECT COUNT(*) AS total, ' +
-          'SUM(CASE WHEN refreshed_at IS NOT NULL THEN 1 ELSE 0 END) AS refreshed, ' +
-          'SUM(CASE WHEN ' + DUE_SQL + ' THEN 1 ELSE 0 END) AS due ' +
-          'FROM google_venues WHERE hidden = 0 AND missing_since IS NULL' + only
-        )
-        .bind(now)
-        .first(),
+    const [table, calls, log] = await Promise.all([
+      googleTable(env, 'now'),
       spent(env, 'details', now),
+      /* The newest fifty by google_refreshes' index on `at`, and a name each
+         by google_venues' key. */
       env.DB
         .prepare(
           'SELECT r.at, r.place_id, r.outcome, r.changes, r.note, v.name ' +
@@ -123,11 +135,21 @@ export async function onRequestGet(context) {
           'ORDER BY r.at DESC LIMIT ?'
         )
         .bind(RECENT)
-        .all(),
-      env.DB
-        .prepare('SELECT map_id, status, missing_since FROM google_venues WHERE map_id IS NOT NULL')
         .all()
     ]);
+    const rows = table ? [...table.rows.values()] : [];
+    /* No copy, or a table without the column the refresh stamps. */
+    if (!table || (rows.length && rows[0].refreshed_at === undefined)) return json({ ready: false, key });
+
+    /* A row from before `kind` was applied has none, and is somewhere to eat. */
+    const shown = rows.filter((row) => !row.hidden && row.missing_since == null && (row.kind == null || row.kind === 'eat'));
+    const last = (row) => Number(row.refreshed_at) || 0;
+    const wait = (row, busy) => refreshAfter(row.rank, row.status, busy);
+    /* Busy only shortens a wait, so it is asked for the rows it would make
+       due and no others. */
+    const busy = await busyAmong(env, shown
+      .filter((row) => last(row) > now - wait(row, false) && last(row) <= now - wait(row, true))
+      .map((row) => row.place_id));
 
     return json({
       ready: true,
@@ -141,9 +163,9 @@ export async function onRequestGet(context) {
         monthCap: BUDGET.details.month
       },
       table: {
-        total: Number(counts && counts.total) || 0,
-        refreshed: Number(counts && counts.refreshed) || 0,
-        due: Number(counts && counts.due) || 0
+        total: shown.length,
+        refreshed: shown.filter((row) => row.refreshed_at != null).length,
+        due: shown.filter((row) => last(row) <= now - wait(row, busy.has(row.place_id))).length
       },
       recent: (log.results || []).map((row) => ({
         at: row.at,
@@ -153,7 +175,7 @@ export async function onRequestGet(context) {
         changes: parsed(row.changes),
         note: row.note || ''
       })),
-      map: (tied.results || []).map((row) => ({
+      map: rows.filter((row) => row.map_id != null).map((row) => ({
         id: row.map_id,
         status: row.status || '',
         missing: row.missing_since != null

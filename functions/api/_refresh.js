@@ -205,6 +205,29 @@ const BUSY_SQL =
   'AND b.at = (SELECT MAX(c.at) FROM google_scores c WHERE c.place_id = a.place_id AND c.at < a.at) ' +
   'AND (a.reviews - b.reviews) * ' + (30 * DAY) + ' >= ' + BUSY_A_MONTH + ' * (a.at - b.at))';
 
+/* The busy ones among these Google keys, as a Set. Each key is a lookup on
+   google_venues' primary key, and for a row that has been refreshed three
+   more on idx_google_scores_place (place_id, at): the answer stamped with its
+   refreshed_at, the newest before it, and that one's row. Half a dozen rows
+   a key, whatever the size of either table, and fifty keys a statement,
+   under D1's hundred bound values. Throws where google_scores has not been
+   applied. */
+export async function busyAmong(env, ids) {
+  const busy = new Set();
+  for (let i = 0; i < ids.length; i += 50) {
+    const some = ids.slice(i, i + 50);
+    const { results } = await env.DB
+      .prepare(
+        'SELECT place_id FROM google_venues ' +
+        'WHERE place_id IN (' + some.map(() => '?').join(', ') + ') AND ' + BUSY_SQL
+      )
+      .bind(...some)
+      .all();
+    for (const row of results || []) busy.add(row.place_id);
+  }
+  return busy;
+}
+
 /* The wait for one row, and the same two answers as SQL over google_venues —
    the tier's number, for the order, and its wait, for what is due — written
    from TIERS so the three cannot disagree. Every value inlined is a number
@@ -237,8 +260,10 @@ const AFTER_SQL = "CASE WHEN status = '" + CLOSED + "' THEN " + REFRESH_AFTER + 
   tiered((t) => t.after, REFRESH_AFTER);
 
 /* Whether a row is due, as a WHERE clause with one `?` for now. Read by the
-   fill below and by ./admin/refreshes.js, whose "Due now" is this
-   count. */
+   fill below. ./admin/refreshes.js counts "Due now" by the same rule out of
+   refreshAfter() and busyAmong(), over the copy of the table the isolate
+   keeps, since as a count this clause walked every row the directory shows
+   each time the tab was opened. */
 export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ? - (' + AFTER_SQL + ')';
 
 /* The spending limit, per kind of call. `details` is Place Details Enterprise,
@@ -629,11 +654,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
   let wait = source === 'open' ? REFRESH_AFTER : refreshAfter(before.rank, before.status);
   if (wait > REFRESH_AFTER) {
     try {
-      const row = await env.DB
-        .prepare('SELECT ' + BUSY_SQL + ' AS busy FROM google_venues WHERE place_id = ?')
-        .bind(placeId)
-        .first();
-      wait = refreshAfter(before.rank, before.status, !!(row && row.busy));
+      wait = refreshAfter(before.rank, before.status, (await busyAmong(env, [placeId])).has(placeId));
     } catch (e) {
       /* google_scores not applied to this database yet: nothing is busy. */
     }
