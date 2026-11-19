@@ -23,12 +23,16 @@
  * The squares under the box asked about, and in each the newest entries
  * and no more, newest first by the key: a fixed number of rows per
  * square however many rides the city has, then a lookup by id for each ride
- * found. The squares are written into the statement as numbers — they are
- * worked out here and no request can reach them — since a big box is more
- * squares than D1 binds values. Past MAX_CELLS squares a box is not a way to
- * anywhere and answers no rides, and past ROWS the share of each square
- * shrinks, so the worst read is ROWS rows of `ride_cells` and CANDIDATES
- * lookups of `rides`, on day one and on day one thousand.
+ * found. The squares are counted out by SQLite from the box's first and
+ * last row and column, which are worked out here — NEWEST says why. Each
+ * square is read twice by the key, once to find where its newest entries
+ * begin and once to read them, so a square costs about twice its share.
+ * Its share is CANDIDATES, or less once ROWS spread over the squares is
+ * less, and past MAX_CELLS squares a box is not a way to anywhere and
+ * answers no rides. So the worst read is about twice ROWS rows of
+ * `ride_cells` and CANDIDATES lookups of `rides`, on day one and on day one
+ * thousand: a box of a hundred squares or more. A box across town is
+ * nearer twenty squares, forty entries a square, about 1,600 rows.
  *
  * A square is coarser than the box, so a ride whose line meets one of its
  * squares may still miss the box. The ids found are therefore asked of
@@ -42,7 +46,7 @@
  *
  * `ride_cells` is in db/schema.sql and loaded by hand, and the rides saved
  * before it are filed by the rebuild written beside it there. Until then a read
- * throws, which both routes already answer as "no rides", and a save files
+ * throws, which ./rides.js already answers as "no rides", and a save files
  * nothing and keeps the ride.
  */
 
@@ -58,10 +62,15 @@ const ROW = 10000;
 const MAX_CELLS = 400;
 const ROWS = 4000;
 
-/* How many rides the squares may offer before the box is asked of them.
-   A square reaches past the box, so some of what it offers is outside; this
-   many leaves room for that and is still a fixed number of lookups. */
-const CANDIDATES = 100;
+/* How many rides the squares may offer before the box is asked of them,
+   and the most entries read under any one square. Forty, because its one
+   caller keeps forty — NEAR in ./rides.js, since the ridden way in
+   ./route.js reads `ride_sections` instead. It was a hundred, to leave
+   room for the rides a square offers that miss the box; that room cost two
+   and a half times the rows under every square, for sixty rides nobody
+   kept. Now a box whose newest forty include some that miss it answers
+   fewer than forty, the price of the cheaper read. */
+const CANDIDATES = 40;
 
 export function cellOf(lat, lng) {
   return Math.trunc(lat * PER_LAT) * ROW + Math.trunc(lng * PER_LNG);
