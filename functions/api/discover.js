@@ -16,8 +16,9 @@
  * WHAT IT IS MADE OF, AND WHY NOTHING IN IT IS NEW
  *
  * The two shelves of lists are the directory's own query — mostKept() in
- * _mostkept.js, under the two orders /lists already offers — cut to SHELF
- * rows and to the fields a card prints. So a list is on a shelf exactly when
+ * _mostkept.js, under the two orders /lists already offers — asked for as a
+ * shelf of SHELF rows, three names and no dots each, and cut to the fields a
+ * card prints. So a list is on a shelf exactly when
  * it is on /lists: public, and past MIN_ITEMS there. Google's six are ranked
  * among everybody else's, which is that file's decision and its argument.
  *
@@ -122,7 +123,7 @@ const card = (row) => ({
 
 async function shelf(context, sort) {
   try {
-    return (await mostKept(context, { sort })).all.slice(0, SHELF).map(card);
+    return (await mostKept(context, { sort, shelf: SHELF })).all.map(card);
   } catch (e) {
     return [];
   }
