@@ -19274,7 +19274,12 @@ way every page does (**The map is the shell**), and closing it lands back
 here.
 
 **Where the shelves come from.** One request, `GET /api/discover`, answers
-three of them: the two shelves of lists are the directory's own query under
+three of them, and keeps its answer: five minutes in the colo and an hour as
+one row of `kept_answers` in the database, because putting it together reads
+about 850 rows and a colo's copy had usually gone by the time the next
+visitor came. A colo without a copy reads the one row; the first request to
+find it an hour old builds it again, so a list made public is on its shelf
+within the hour. The two shelves of lists are the directory's own query under
 two of its orders, so a list is on a shelf exactly when it is on `/lists`,
 and the places are `press_counts` read for its order alone — the five open
 places opened least, worked out in the route beside the map's roll, since a

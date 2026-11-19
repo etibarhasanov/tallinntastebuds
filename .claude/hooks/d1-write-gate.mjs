@@ -336,7 +336,7 @@ const SEEK = 100;
  * caught by the meter, which is the day to measure it again. */
 const SIZES = {
   saves: 62, save_counts: 39, press_counts: 715, profile_counts: 305, view_seen: 426,
-  list_counts: 117, counter_days: 51, counter_total: 1, users: 81, username_holds: 3,
+  list_counts: 117, counter_days: 51, counter_total: 1, kept_answers: 1, users: 81, username_holds: 3,
   profile_rows: 81, sessions: 105, login_fails: 21, identities: 49, lists: 39,
   list_items: 451, list_keeps: 8, added_places: 10, google_venues: 1177, google_calls: 55,
   google_refreshes: 717, google_reranks: 6, google_ranks: 6639, google_scores: 1209,

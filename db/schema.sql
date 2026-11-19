@@ -449,6 +449,23 @@ CREATE TABLE IF NOT EXISTS counter_total (
   countries   TEXT    NOT NULL DEFAULT '{}'
 );
 
+-- ---------------------------------------------------------- kept_answers
+-- An answer that is the same for everybody and dear to put together, kept
+-- whole as text, so a colo without its own copy reads one row by the key
+-- rather than every row the answer is made of. `name` is the answer and the
+-- shape it has, `at` when it was put together, in milliseconds; the route
+-- that owns the name builds it again once it is older than the route allows.
+-- One row today: GET /api/discover's, 'discover:1', an hour at the most —
+-- WHO MAY ASK, AND WHAT IT COSTS in functions/api/discover.js. The one
+-- question asked of it is "the answer of this name", which is the key.
+-- Without the table the route builds its answer on every colo miss, as it
+-- did before there was one.
+CREATE TABLE IF NOT EXISTS kept_answers (
+  name  TEXT    PRIMARY KEY,
+  body  TEXT    NOT NULL,
+  at    INTEGER NOT NULL
+);
+
 -- ------------------------------------------------------------ read_meter
 -- How many rows the site's Functions read from this database, a row a UTC day
 -- and table — functions/api/_meter.js, which counts every statement's

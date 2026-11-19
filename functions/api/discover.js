@@ -74,9 +74,24 @@
  *
  * Anybody, signed in or not, and the answer is the same for all of them — it
  * reads no session, which is what lets it be kept: five minutes in the
- * browser and five in the colo, the way GET /api/saves keeps its counts. A
- * list made a minute ago is on the shelf within five, and nothing here is
- * worth a purge.
+ * browser and five in the colo, the way GET /api/saves keeps its counts.
+ *
+ * And an hour in the database, which is the copy that does the work. Putting
+ * the answer together reads about 850 rows — the two shelves 172 and 142, the
+ * places' opens 276, and five lists whole, measured on 2026-11-19 — and the
+ * colo's copy is one colo's for five minutes, where a visitor came every
+ * thirteen: nearly every one of them found it gone and paid for the whole
+ * answer again. So the finished answer is one row of kept_answers, read by
+ * its key, and a colo without a copy reads that row instead: one row, in
+ * every colo, whatever the lists and the opens grow to. It is put together
+ * again by the first request to find it older than KEPT_FOR — 24 times a day
+ * at the most, about 20,000 rows of the day's five million, and a write each.
+ * Two requests finding it old at once both build it and the later write
+ * stands. A list made public is on the shelf within the hour, and nothing
+ * here is worth a purge.
+ *
+ * Where kept_answers has not been applied the row is neither read nor kept,
+ * and every colo builds its own answer as it did before.
  *
  * Without a database, or on the wrong one, the answer is three empty shelves
  * rather than an error: the page draws the map's own card, leaves the lists
@@ -104,6 +119,12 @@ const QUIET = 5;
 const ROUTES = 5;
 
 const TTL = 300;
+
+/* How long the answer kept in the database stands — WHO MAY ASK, AND WHAT IT
+   COSTS — and the name it is kept under, which moves when the answer's shape
+   does, so a deployment is not handed the one before's. */
+const KEPT_FOR = 60 * 60 * 1000;
+const KEPT_AS = 'discover:1';
 
 const EMPTY = { fresh: [], popular: [], quiet: [], route: null, routes: [] };
 
@@ -206,6 +227,40 @@ async function routes(context, fallback) {
     .filter(Boolean);
 }
 
+/* The answer as text: the database's copy while it is younger than KEPT_FOR,
+   a lookup on kept_answers' key and one row read, and otherwise put together
+   and kept for the next colo to ask. */
+async function kept(context) {
+  const { env } = context;
+  let table = true;
+  try {
+    const row = await env.DB.prepare('SELECT body, at FROM kept_answers WHERE name = ?').bind(KEPT_AS).first();
+    if (row && Date.now() - row.at < KEPT_FOR) return row.body;
+  } catch (e) {
+    table = false;
+  }
+
+  const [fresh, popular, places] = await Promise.all([
+    shelf(context, 'new'),
+    shelf(context, 'views'),
+    quiet(context)
+  ]);
+  const play = await routes(context, popular.map((list) => list.id));
+  const body = JSON.stringify({ fresh, popular, quiet: places, route: play[0] || null, routes: play });
+
+  if (table) {
+    context.waitUntil(env.DB
+      .prepare(
+        'INSERT INTO kept_answers (name, body, at) VALUES (?, ?, ?) ' +
+        'ON CONFLICT(name) DO UPDATE SET body = excluded.body, at = excluded.at'
+      )
+      .bind(KEPT_AS, body, Date.now())
+      .run()
+      .catch(() => { /* the next request builds it again */ }));
+  }
+  return body;
+}
+
 export async function onRequestGet(context) {
   const { env, request } = context;
   if (!env.DB || await wrongDatabase(env)) return json(EMPTY, 200, TTL);
@@ -215,15 +270,7 @@ export async function onRequestGet(context) {
   const hit = await cache.match(key);
   if (hit) return withNotModified(request, hit);
 
-  const [fresh, popular, places] = await Promise.all([
-    shelf(context, 'new'),
-    shelf(context, 'views'),
-    quiet(context)
-  ]);
-
-  const play = await routes(context, popular.map((list) => list.id));
-
-  const body = JSON.stringify({ fresh, popular, quiet: places, route: play[0] || null, routes: play });
+  const body = await kept(context);
   const res = new Response(body, {
     headers: {
       'content-type': 'application/json; charset=utf-8',
