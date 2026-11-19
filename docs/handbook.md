@@ -3809,6 +3809,21 @@ to Toompea three ways became two, and the second lost 89 m at Vana-Lõuna.
 A hook of twenty-odd metres round a traffic island, which the router also
 calls a turn round, is not a spur and stays.
 
+**And its pockets.** The point does not always snap to a dead end. The same
+day the owner sent a second picture: a way from Herne to Narva maantee that
+left the path beside the athletics hall, went down one lane of its car park
+to the point that was keeping it off Liivalaia, and came back up another
+lane to the same path 37 m further on, 120 m ridden for those 37. That is
+not a spur — it comes back by another way, and further along — so
+`unpocket()` looks around each point a way was asked through for two points
+of the line no more than `POCKET_GAP` apart with `POCKET_RATIO` times that
+ridden between them, and asks the router for the way straight across; where
+that is as much shorter, it is ridden instead. The router is asked rather
+than the gap trusted, since a ramp up to a bridge looks the same from above.
+It is done to the ways that are answered and not to each one tried: one more
+router request for each point an answered way went through that has a
+pocket, six at the most, and no row.
+
 **A street is a line in `KEEP_OFF`**, its name, its width and its middle,
 in the route itself rather than a data file: it is a decision the owner
 makes by name, not something a tool finds. The next one is a few lines
