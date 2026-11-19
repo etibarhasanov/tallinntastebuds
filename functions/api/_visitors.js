@@ -1244,10 +1244,23 @@ function paired(one, two, a, b) {
  * after midnight is filed under the new day, THE VIEWS THAT REPORTED.
  *
  * So a day two or more behind is read from the table once and kept in the
- * colo for DAY_KEPT, one entry a day, and only yesterday and today are read
- * on every open: about a thousand rows, however long the range and however
- * old the table. Yesterday rather than today alone because a batch begun a
- * moment before midnight can land a moment after it.
+ * colo for DAY_KEPT, one entry a day, and only today is read from the
+ * table: however long the range and however old the table, one day's rows.
+ * Yesterday joins the kept days SETTLE_AFTER past midnight UTC and is read
+ * with today until then, because a batch begun a moment before midnight can
+ * land a moment after it, and nothing writes a day once it has ended.
+ *
+ * And today's rows are kept too, for TODAY_KEPT, one entry the two pages,
+ * every language, range and device chip share. Each of those is an answer
+ * of its own in the colo, so before this every chip pressed and every page
+ * opened read the recent days again: on 2026-11-19 Cloudflare's insights
+ * had this statement at twelve runs and 101,940 rows in six hours, about
+ * 8,500 a run, yesterday and the morning — the busiest statement on the
+ * account. Now a run reads today alone, a few thousand rows by the evening,
+ * and at most once in TODAY_KEPT per colo however many chips are pressed:
+ * the day's worst, the owner's pages held open all day, 720 runs of today's
+ * rows, and in practice a dozen. TODAY_KEPT is short because the answers
+ * are already five minutes old at most and this adds to that.
  *
  * A day not in the colo yet is read with the others missing, in one range
  * from the oldest of them to the newest — on a page opened for the first
@@ -1255,8 +1268,9 @@ function paired(one, two, a, b) {
  * /api/admin/, which nobody but the owner reaches, like the answers
  * themselves. `origin` is the address they are kept under; without one the
  * range is read whole, as it always was. */
-const SETTLED = 2;
+const SETTLE_AFTER = 15 * 60000;
 const DAY_KEPT = 45 * 86400;
+const TODAY_KEPT = 120;
 const DAY_SHAPE = '1';
 
 function daysBetween(from, to) {
@@ -1284,11 +1298,11 @@ async function fromColo(cache, key) {
   }
 }
 
-async function intoColo(cache, key, value) {
+async function intoColo(cache, key, value, seconds = DAY_KEPT) {
   if (!cache) return;
   try {
     await cache.put(key, new Response(JSON.stringify(value), {
-      headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=' + DAY_KEPT }
+      headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=' + seconds }
     }));
   } catch (e) {
     /* Read again next time. */
@@ -1299,15 +1313,25 @@ async function intoColo(cache, key, value) {
    Throws where the table is not there, as the read it replaces did. */
 async function rowsSince(env, origin, first) {
   const cache = origin && typeof caches !== 'undefined' ? caches.default : null;
-  const settled = dayBack(SETTLED);
+  /* The last day nothing will be written to: yesterday, once SETTLE_AFTER
+     has passed today, and the day before until then. */
+  const settled = new Date(Date.now() - SETTLE_AFTER - 86400000).toISOString().slice(0, 10);
   const days = first <= settled ? daysBetween(first, settled) : [];
   const keys = days.map((day) => keptAt(origin, 'visitor-day', day));
-  const kept = await Promise.all(keys.map((key) => fromColo(cache, key)));
+  const recent = first > settled ? first : nextDay(settled);
+  const recentKey = keptAt(origin, 'visitor-recent', recent);
+  const [kept, keptRecent] = await Promise.all([
+    Promise.all(keys.map((key) => fromColo(cache, key))),
+    fromColo(cache, recentKey)
+  ]);
   const missing = days.filter((day, i) => !Array.isArray(kept[i]));
 
-  /* Yesterday and today, by the key's first column: a range of two days. */
-  const recent = first > settled ? first : dayBack(SETTLED - 1);
-  const reads = [env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(recent).all()];
+  /* The days after `settled` — today, and yesterday in the first minutes
+     of a day — by the key's first column, unless the colo read them a
+     moment ago. 8,500 rows for two days on 2026-11-19. */
+  const reads = [Array.isArray(keptRecent)
+    ? { results: keptRecent }
+    : env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(recent).all()];
   /* The days missing from the colo, the same way: a range by the key. */
   if (missing.length) {
     reads.push(env.DB
@@ -1316,6 +1340,7 @@ async function rowsSince(env, origin, first) {
       .all());
   }
   const [fresh, old] = await Promise.all(reads);
+  if (!Array.isArray(keptRecent)) await intoColo(cache, recentKey, fresh.results || [], TODAY_KEPT);
 
   const byDay = new Map(days.map((day, i) => [day, Array.isArray(kept[i]) ? kept[i] : null]));
   if (old) {
@@ -1407,8 +1432,8 @@ async function firstDay(env, origin, name, sql, ...binds) {
  *              deals: [{ id, shown, verified }] }, each most first
  *
  * The range and the one before it through rowsSince() — THE DAYS THAT HAVE
- * ENDED, KEPT IN THE COLO — so two days read from the table on an ordinary
- * open; the rest is arithmetic on at most 179 days of a few hundred rows.
+ * ENDED, KEPT IN THE COLO — so today alone read from the table on an
+ * ordinary open, and not even that twice in two minutes; the rest is arithmetic on at most 179 days of a few hundred rows.
  *
  * Who did what is counted only over the days that have `cohort` rows, and
  * the visitors divided among it only over the same days, so a range reaching

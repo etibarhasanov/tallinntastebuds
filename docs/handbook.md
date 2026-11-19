@@ -16335,8 +16335,14 @@ November 2026's five hundred and thirty a day — and that was read again for
 every device chip, every language and every range, every five minutes,
 though a day that has ended never changes. Since 2026-11-19 a day two or
 more behind is read once and kept in the colo for forty-five days, an entry
-a day, and only yesterday and today come from the table on each open: about
-a thousand rows, however long the range and however old the table. The two
+a day, and only yesterday and today came from the table on each open. That
+was still the dearest statement on the account on 2026-11-19 — twelve runs
+and 101,940 rows in six hours, every chip pressed and every page opened
+reading the recent days again — so since the same day yesterday joins the
+kept days a quarter of an hour after midnight UTC, and today's rows are
+kept two minutes in the colo for both pages and every chip to share: one
+day's rows at most once in two minutes, however long the range and however
+old the table. The two
 `MIN(day)` questions each page asks — when the count began, and when it began
 telling new from returning — are kept there the same way once they have an
 answer, where each walked the key until its kind turned up. **THE DAYS THAT
