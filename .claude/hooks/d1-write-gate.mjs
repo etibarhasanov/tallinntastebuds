@@ -364,6 +364,9 @@ const SIZES = {
      run, fourteen times, before this line existed to price it. read_meter is
      a row a day and table. */
   flow_counts: 14238, read_meter: 21,
+  /* WITHOUT ROWID, and not in production until db/schema.sql is run again:
+     a row a person and deck, which were 148 pairs on 2026-11-19. */
+  flashcard_progress: 148,
   /* Not in production: nothing loads db/city-venues.sql there yet. Priced as
      the three cities' export would be when it is, rather than left unpriced. */
   city_venues: 5000,

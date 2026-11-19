@@ -1772,15 +1772,15 @@ CREATE INDEX IF NOT EXISTS idx_flashcard_cards_deck ON flashcard_cards (deck_id,
 --
 -- and every row already in it becomes a card in box one that is due, which is
 -- exactly right: it was known, and it has been waiting long enough to be
--- asked again. The route survives their absence — readingBoxes() there asks
--- once per isolate and falls back to answering everything as due — so the
--- afternoon between a deploy and the ALTER is a page that works without
--- spacing rather than a page that does not work.
+-- asked again. Production has had them since October 2026, and the route no
+-- longer answers without them.
 --
 -- The deck id is stored beside the card id rather than being looked up,
 -- because the question this table is asked is "how much of each deck does
 -- this person know", and the answer wanted to be one GROUP BY rather than a
--- join against a file the database cannot see. The built-in decks are in
+-- join against a file the database cannot see. That GROUP BY is not run on a
+-- read any more — flashcard_progress below keeps its answer — but it is how
+-- that table is filled. The built-in decks are in
 -- data/decks.json and have no row in flashcard_decks to join to at all.
 --
 -- Nothing cleans up after a deleted deck but the Function that deletes it,
@@ -1813,10 +1813,53 @@ CREATE TABLE IF NOT EXISTS flashcard_known (
   due_at  INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (user_id, deck_id, card_id)
 );
--- "What is due in this deck for this person", which is every read this table
--- has. The primary key covers the user and the deck; this carries the date so
--- the count does not have to touch the rows it is about to leave out.
+-- One person's rows deck by deck, in the order the review deck has always
+-- been gathered in: standingOf() in functions/api/flashcard.js reads that
+-- deck as the first MAX_CARDS rows of this index, and a deck's or the
+-- lessons' rows through it as well.
 CREATE INDEX IF NOT EXISTS idx_flashcard_known_due ON flashcard_known (user_id, deck_id, due_at);
+-- One person's cards in one box, which is the missed deck — box nought — read
+-- without walking every card they know, in the same order as the index
+-- above. Added with flashcard_progress on 2026-11-19.
+CREATE INDEX IF NOT EXISTS idx_flashcard_known_box ON flashcard_known (user_id, box, deck_id, due_at);
+
+-- One row is how much of one deck one person knows: how many of its cards
+-- are in a box above nought, and how many are in box nought. It is a total of
+-- flashcard_known, kept by the write that changes it rather than added up by
+-- the read that shows it — rule 3 of **Every read has a price** in CLAUDE.md.
+-- Every answer of /api/flashcard used to read all of a person's rows to get
+-- these numbers: 785 for the heaviest learner on 2026-11-19, and growing with
+-- every word. The shelf reads one row here a deck now.
+--
+-- tallied() in functions/api/flashcard.js sends every write that moves a card
+-- in one batch with the statement that moves its deck's row here, so the two
+-- cannot disagree. The rows filed under a deck id that is no deck — grammar,
+-- songs, talks, level — have no tally: nothing counts them.
+--
+-- Until the table is there the route answers the old way, from every row,
+-- and its writes go without the tally.
+CREATE TABLE IF NOT EXISTS flashcard_progress (
+  user_id TEXT    NOT NULL,
+  -- A deck id as flashcard_known has it: a shipped deck's, or a minted one.
+  deck_id TEXT    NOT NULL,
+  known   INTEGER NOT NULL DEFAULT 0,
+  missed  INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, deck_id)
+) WITHOUT ROWID;
+-- **And it is filled here, the one statement in this file that is not IF NOT
+-- EXISTS.** A table made empty on a database whose flashcard_known has rows
+-- would be read as nobody knowing anything, so the statement that fills it
+-- follows the one that makes it, and running this file is never the way to
+-- get one without the other. It counts every row of flashcard_known — 3,956
+-- on 2026-11-19, into 148 tallies, too many for the D1 gate's hundred, which
+-- is why it is a line in a file run from a terminal — and REPLACE makes it
+-- right however often it is run: a tally kept wrong by anything is counted
+-- again. The same deck ids are left out as the route leaves out.
+INSERT OR REPLACE INTO flashcard_progress (user_id, deck_id, known, missed)
+  SELECT user_id, deck_id, SUM(box > 0), SUM(box = 0)
+  FROM flashcard_known
+  WHERE deck_id NOT IN ('grammar', 'songs', 'talks', 'level')
+  GROUP BY user_id, deck_id;
 
 -- One row is one reader saying a shipped card is wrong: a word that does not
 -- mean that, a genitive that is not the genitive, a sentence no Estonian would

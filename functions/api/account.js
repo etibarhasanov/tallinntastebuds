@@ -919,7 +919,7 @@ export async function onRequestPost(context) {
    *   added_places                  the places it added by hand, unless a
    *                                 list somebody else wrote still has one
    *   flashcard_decks, _cards,      the decks it wrote and what it knew
-   *   flashcard_known
+   *   flashcard_known, _progress
    *   walks, walk_checks            the lists it walked, where it checked in
    *                                 and what it said there
    *
@@ -1031,6 +1031,11 @@ export async function onRequestPost(context) {
         env.DB.prepare('DELETE FROM walk_checks WHERE user_id = ?').bind(id),
         env.DB.prepare('DELETE FROM walks WHERE user_id = ?').bind(id)
       ]);
+    } catch (e) { /* not applied here yet */ }
+    /* And the tallies of what it knew, flashcard_progress, for the same
+       reason: the rows they count went in the batch above. */
+    try {
+      await env.DB.prepare('DELETE FROM flashcard_progress WHERE user_id = ?').bind(id).run();
     } catch (e) { /* not applied here yet */ }
 
     return signedOut(request, { deleted: true, user: null });
