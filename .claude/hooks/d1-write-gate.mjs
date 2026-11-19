@@ -3,9 +3,12 @@
  * Tallinn Tastebuds — a write to D1 is the owner's decision, not a session's,
  * and a read is priced before it runs.
  *
- * A PreToolUse hook on the Cloudflare MCP tool `d1_database_query`, wired in
- * .claude/settings.json. It reads the tool call on stdin and answers with one
- * of three permission decisions:
+ * A PreToolUse hook wired in .claude/settings.json to every door a session
+ * has into D1 — the Cloudflare MCP tool `d1_database_query`, any other MCP
+ * tool that names D1 or Cloudflare, and the shell, for `wrangler d1` and
+ * curl to D1's API; EVERY DOOR, NOT ONE TOOL below says how each is read. It
+ * reads the call on stdin and answers with one of three permission
+ * decisions, or with no word for a call that does not reach D1:
  *
  *   allow   the SQL is read-only — SELECT, a CTE that only selects, EXPLAIN,
  *           or a PRAGMA being asked rather than set — and by the planner's
@@ -632,6 +635,231 @@ async function verdict(sql, where, root = process.cwd(), kept = { rows: 0, over:
     `the rows and columns named above are the ones you mean to change. ${listed}`];
 }
 
+/* EVERY DOOR, NOT ONE TOOL
+ *
+ * The gate began as a hook on one tool, `d1_database_query`, and on
+ * 2026-11-19 that was found to be one door of several. The same rows answer
+ * a `wrangler d1 execute --remote` typed into a shell, a curl to Cloudflare's
+ * D1 API, and a tool of another Cloudflare MCP server — the newer API server
+ * at mcp.cloudflare.com runs any call to the account. So the hook is wired to
+ * Bash and to every MCP tool whose name says D1 or Cloudflare, and decide()
+ * below reads each kind of call down to the SQL it would run, then hands that
+ * to verdict() as if it had come through the one tool. What it cannot read
+ * down to SQL asks; what restores, imports or deletes a database is refused.
+ *
+ *   d1_database_query, or any tool with d1 in its name and a `sql`, `query`
+ *     or `command`         priced and decided as ever
+ *   a D1 tool that deletes, drops, restores or imports
+ *                          deny: a database is not dropped from here
+ *   any other D1 tool that queries, executes or exports
+ *                          ask: there is no SQL to price
+ *   another tool whose input names D1's API
+ *                          ask, or deny where it restores
+ *   wrangler d1 execute --remote --command "…" or --file f
+ *                          the SQL, or the file's, priced and decided
+ *   wrangler d1 execute with neither --remote nor --local
+ *                          ask: which database it reaches has changed
+ *                          between wrangler versions
+ *   wrangler d1 migrations apply --remote, export --remote
+ *                          ask: a change of shape, and every row of a table
+ *   wrangler d1 time-travel restore, wrangler d1 delete
+ *                          deny
+ *   curl or anything else naming api.cloudflare.com's /d1/
+ *                          ask, or deny where it restores
+ *   --local, and anything that is not D1 at all
+ *                          no word: the ordinary permissions decide
+ *
+ * A shell command is never answered `allow`. The hook's allow would let the
+ * whole line through, and the part after `&&` is not the gate's to wave on —
+ * so a cheap read through wrangler gets no word and the usual permissions
+ * decide it, while a dear one still asks and a refused one is still refused.
+ */
+const RANK = { allow: 0, ask: 1, deny: 2 };
+
+/* A shell line into commands of words: quotes kept together and taken off,
+   a backslash escaping the next character, and ; & | and newlines ending a
+   command. Not a shell — a reader good enough to find `wrangler d1` and its
+   flags, with the raw line searched as well below for whatever it misses. */
+function shellCommands(line) {
+  const commands = [];
+  let words = [];
+  let word = null;
+  const push = () => { if (word !== null) words.push(word); word = null; };
+  const end = () => { push(); if (words.length) commands.push(words); words = []; };
+  const src = String(line || '');
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    if (c === "'") {
+      const close = src.indexOf("'", i + 1);
+      word = (word || '') + src.slice(i + 1, close === -1 ? src.length : close);
+      i = close === -1 ? src.length : close;
+    } else if (c === '"') {
+      let j = i + 1;
+      let text = '';
+      while (j < src.length && src[j] !== '"') {
+        if (src[j] === '\\' && j + 1 < src.length) { text += src[j + 1]; j += 2; } else { text += src[j]; j++; }
+      }
+      word = (word || '') + text;
+      i = j;
+    } else if (c === '\\' && i + 1 < src.length) {
+      if (src[i + 1] !== '\n') word = (word || '') + src[i + 1];
+      i++;
+    } else if (c === ';' || c === '&' || c === '|' || c === '\n') {
+      end();
+    } else if (/\s/.test(c)) {
+      push();
+    } else {
+      word = (word || '') + c;
+    }
+  }
+  end();
+  /* `bash -c '…'` and its kin: the quoted line is a line of its own. */
+  const inner = [];
+  for (const cmd of commands) {
+    for (let k = 0; k < cmd.length - 1; k++) {
+      if (/^(ba|z|da)?sh$/.test(cmd[k].split('/').pop()) && cmd[k + 1] === '-c' && cmd[k + 2]) {
+        inner.push(...shellCommands(cmd[k + 2]));
+      }
+    }
+  }
+  return commands.concat(inner);
+}
+
+/* `--name value` or `--name=value`, or null. */
+function flag(words, name) {
+  for (let k = 0; k < words.length; k++) {
+    if (words[k] === name) return words[k + 1] === undefined ? '' : words[k + 1];
+    if (words[k].startsWith(name + '=')) return words[k].slice(name.length + 1);
+  }
+  return null;
+}
+
+/* Where a shell's relative --file is found: the directory the command runs
+   in, which a wrapper may hand over as run_cwd when it points cwd elsewhere. */
+function shellFile(name, input, root) {
+  const base = (input && (input.run_cwd || input.cwd)) || root;
+  const path = name.startsWith('/') ? name : `${base}/${name}`;
+  return readFileSync(path, 'utf8');
+}
+
+/* One `wrangler … d1 …` command into what it would do: { sql, where } to be
+   priced, a [decision, reason], or null for no word. */
+function wranglerCall(words, input, root) {
+  const at = words.indexOf('d1');
+  const sub = words[at + 1] || '';
+  const rest = words.slice(at + 2);
+  const remote = words.includes('--remote');
+  const local = words.includes('--local');
+  /* The database is the first plain word after the subcommand, and after
+     time-travel's own verb — `time-travel restore <name>`. */
+  const named = sub === 'time-travel' ? rest.slice(1) : rest;
+  const name = named.find((w) => !w.startsWith('-')) || 'a database';
+  const target = `${name}${remote ? ' (remote)' : ''}`;
+  if (sub === 'delete') return ['deny', `wrangler d1 delete removes a whole database (${name}). The owner's rule is that tables are never dropped, and a database is all of them.`];
+  if (sub === 'time-travel') {
+    return words.includes('restore')
+      ? ['deny', `wrangler d1 time-travel restore puts ${name} back to an earlier minute and throws away every save, list and sign-up since. That is the owner's to run from their own terminal, never a session's.`]
+      : null;
+  }
+  if (local && !remote) return null;
+  if (sub === 'execute') {
+    if (!remote) {
+      return ['ask', `wrangler d1 execute on ${name} says neither --local nor --remote, and which one it reaches has changed between wrangler versions. Say --local for the copy under .wrangler/state; a --remote read is priced like any other.`];
+    }
+    const command = flag(words, '--command');
+    if (command) return { sql: command, where: target };
+    const file = flag(words, '--file');
+    if (file) {
+      try {
+        return { sql: shellFile(file, input, root), where: `${target}, from ${file}` };
+      } catch (e) {
+        return ['ask', `wrangler d1 execute --remote --file ${file}: the gate could not read the file to price it, so it is asking.`];
+      }
+    }
+    return ['ask', `wrangler d1 execute --remote on ${name} with no --command or --file the gate can read, so it is asking rather than guessing.`];
+  }
+  if (sub === 'migrations') {
+    return words.includes('apply') ? ['ask', `wrangler d1 migrations apply --remote changes the shape of ${name}. That is the owner's call.`] : null;
+  }
+  if (sub === 'export') {
+    return ['ask', `wrangler d1 export --remote reads every row of every table it takes from ${name}, and no hand-run read is to bring more than ${READ_MAX.toLocaleString('en')}. Export the schema only (--no-data), or ask the owner.`];
+  }
+  if (/^(create|list|info|insights)$/.test(sub)) return null;
+  return ['ask', `wrangler d1 ${sub} --remote on ${name} is a command the gate does not know, so it is asking.`];
+}
+
+/* Anything else that names D1's API in Cloudflare's: asked about, and refused
+   where it restores. */
+function apiCall(text) {
+  if (!/\/d1\/database|d1\s*\.?\s*database|\bd1\b/i.test(text)) return null;
+  if (/time[_-]?travel|\/restore\b|\brestore\b/i.test(text)) {
+    return ['deny', 'This reaches D1 to restore a database to an earlier point, which throws away everything written since. That is the owner\'s to run, never a session\'s.'];
+  }
+  if (/\/(query|raw|import|export)\b|\bquery\b|\bimport\b|\bexport\b/i.test(text)) {
+    return ['ask', 'This reaches D1 through a door the gate cannot read down to SQL, so it cannot price it. Use d1_database_query, which is priced, or say what it reads and how many rows.'];
+  }
+  return null;
+}
+
+/* What a call would do, as a list: { sql, where } to price, [decision,
+   reason], or nothing. Null where the call is not the gate's at all. */
+function callsIn(input, root) {
+  const tool = String((input && input.tool_name) || '');
+  const ti = (input && input.tool_input) || {};
+  if (tool === 'Bash') {
+    const line = String(ti.command || '');
+    const found = [];
+    let wrangler = false;
+    for (const words of shellCommands(line)) {
+      const at = words.indexOf('d1');
+      if (at > 0 && words.slice(0, at).some((w) => /(^|\/)wrangler(@[^\s]*)?$/.test(w))) {
+        wrangler = true;
+        const one = wranglerCall(words, input, root);
+        if (one) found.push(one);
+      }
+    }
+    /* What the reader missed, the raw line still shows. */
+    if (!wrangler && /wrangler[\s\S]*\bd1\b/.test(line)) {
+      found.push(['ask', 'This runs wrangler d1 in a shape the gate cannot read (a variable, a script, a quote it lost), so it is asking.']);
+    }
+    if (/api\.cloudflare\.com/i.test(line)) {
+      const one = apiCall(line);
+      if (one) found.push(one);
+    }
+    return found.length ? found : null;
+  }
+  if (!tool.startsWith('mcp__')) return null;
+  const sql = [ti.sql, ti.query, ti.command].find((v) => typeof v === 'string');
+  if (/d1/i.test(tool)) {
+    if (/(delete|drop|restore|import)/i.test(tool)) {
+      return [['deny', `${tool} would delete, restore or load a D1 database. Not from a session: that is the owner's, from their own terminal.`]];
+    }
+    if (sql !== undefined) {
+      return [{ sql, where: databaseName(ti.database_id || ti.databaseId, root) }];
+    }
+    if (/(query|execute|raw|export)/i.test(tool)) {
+      return [['ask', `${tool} reaches D1 without SQL the gate can read, so it cannot be priced and is asking.`]];
+    }
+    return null;
+  }
+  const one = apiCall(JSON.stringify(ti));
+  return one ? [one] : null;
+}
+
+/* The one answer for a call: the most severe of its parts, or null for no
+   word. A shell line never gets `allow` — see above. */
+async function decide(input, root, kept) {
+  const calls = callsIn(input, root);
+  if (!calls) return null;
+  let worst = null;
+  for (const call of calls) {
+    const one = Array.isArray(call) ? call : await verdict(call.sql, call.where, root, kept);
+    if (!worst || RANK[one[0]] > RANK[worst[0]]) worst = one;
+  }
+  if (input.tool_name === 'Bash' && worst && worst[0] === 'allow') return null;
+  return worst;
+}
+
 function answer(decision, reason) {
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {
@@ -741,6 +969,45 @@ const CASES = [
   ['ask', '']
 ];
 
+/* Whole calls, through every door the hook is wired to. null is no word. */
+const sh = (command) => ({ tool_name: 'Bash', tool_input: { command } });
+const mcp = (tool_name, tool_input) => ({ tool_name, tool_input });
+const PROD = '3eb14127-0ef6-4935-954b-e0a593d465ba';
+const CALLS = [
+  [null, sh('ls -la && git status')],
+  [null, sh('node tools/validate.mjs')],
+  [null, sh('npx wrangler d1 execute tallinntastebuds-preview --local --file=db/schema.sql')],
+  /* Cheap, so no word: the shell's own permissions decide, never the gate's allow. */
+  [null, sh('npx wrangler d1 execute tallinntastebuds --remote --command "SELECT COUNT(*) FROM saves"')],
+  ['ask', sh('npx wrangler d1 execute tallinntastebuds --remote --command "SELECT COUNT(*) FROM flow_counts"')],
+  ['ask', sh("npx wrangler d1 execute tallinntastebuds --remote --command='SELECT * FROM visitor_counts'")],
+  ['deny', sh('npx wrangler d1 execute tallinntastebuds --remote --command "DELETE FROM saves"')],
+  ['deny', sh('npx wrangler d1 execute tallinntastebuds --remote --command "DROP TABLE saves"')],
+  ['ask', sh('wrangler d1 execute tallinntastebuds --command "SELECT 1"')],
+  ['deny', sh('npx wrangler d1 execute tallinntastebuds --remote --file=db/google-venues.sql')],
+  ['ask', sh('npx wrangler d1 execute tallinntastebuds --remote --file=no/such/file.sql')],
+  ['ask', sh('cd /tmp && npx wrangler d1 execute tallinntastebuds --remote --command "SELECT 1"; npx wrangler d1 export tallinntastebuds --remote --output=x.sql')],
+  ['deny', sh('npx wrangler d1 time-travel restore tallinntastebuds --timestamp=1700000000')],
+  ['deny', sh('npx wrangler d1 delete tallinntastebuds -y')],
+  ['ask', sh('npx wrangler d1 migrations apply tallinntastebuds --remote')],
+  [null, sh('npx wrangler d1 list')],
+  ['ask', sh("bash -c 'npx wrangler d1 execute tallinntastebuds --remote --command \"SELECT * FROM flow_counts\"'")],
+  ['ask', sh('W=wrangler; npx $W d1 execute tallinntastebuds --remote --command "SELECT 1"')],
+  ['ask', sh(`curl -X POST https://api.cloudflare.com/client/v4/accounts/x/d1/database/${PROD}/query -d '{"sql":"SELECT 1"}'`)],
+  ['deny', sh(`curl -X POST https://api.cloudflare.com/client/v4/accounts/x/d1/database/${PROD}/time_travel/restore`)],
+  ['allow', mcp('mcp__Cloudflare_Developer_Platform__d1_database_query', { database_id: PROD, sql: 'SELECT COUNT(*) FROM saves' })],
+  ['ask', mcp('mcp__Cloudflare_Developer_Platform__d1_database_query', { database_id: PROD, sql: 'SELECT COUNT(*) FROM flow_counts' })],
+  ['ask', mcp('mcp__cloudflare_d1__query', { databaseId: PROD, query: 'SELECT * FROM visitor_counts' })],
+  ['deny', mcp('mcp__cloudflare_d1__query', { databaseId: PROD, query: 'DELETE FROM saves' })],
+  ['ask', mcp('mcp__cloudflare_d1__execute', { databaseId: PROD })],
+  ['deny', mcp('mcp__Cloudflare_Developer_Platform__d1_database_delete', { database_id: PROD })],
+  [null, mcp('mcp__Cloudflare_Developer_Platform__d1_databases_list', {})],
+  [null, mcp('mcp__Cloudflare_Developer_Platform__workers_list', {})],
+  ['ask', mcp('mcp__cloudflare-api__execute', { code: `await cf.request('POST', '/accounts/x/d1/database/${PROD}/query', { sql: 'SELECT 1' })` })],
+  ['deny', mcp('mcp__cloudflare-api__execute', { code: `await cf.request('POST', '/accounts/x/d1/database/${PROD}/time_travel/restore')` })],
+  [null, mcp('mcp__cloudflare-api__execute', { code: "await cf.request('GET', '/zones')" })]
+];
+
 if (process.argv.includes('--check')) {
   let bad = 0;
   /* Every table the schema creates has a size, so a walk of a new one is
@@ -760,9 +1027,17 @@ if (process.argv.includes('--check')) {
       console.log(`FAIL  wanted ${want}, got ${got}: ${JSON.stringify(sql).slice(0, 90)}`);
     }
   }
+  for (const [want, input] of CALLS) {
+    const got = await decide(input, process.cwd(), { rows: 0, over: [] });
+    const word = got ? got[0] : null;
+    if (word !== want) {
+      bad++;
+      console.log(`FAIL  wanted ${want}, got ${word}: ${JSON.stringify(input.tool_input).slice(0, 90)}`);
+    }
+  }
   console.log(bad
-    ? `\nd1-write-gate: ${bad} of ${CASES.length} cases wrong.`
-    : `d1-write-gate — ${CASES.length} cases, every write asks and every read is priced.`);
+    ? `\nd1-write-gate: ${bad} of ${CASES.length + CALLS.length} cases wrong.`
+    : `d1-write-gate — ${CASES.length + CALLS.length} cases, every write asks and every read is priced, through every door.`);
   process.exit(bad ? 1 : 0);
 }
 const AFTER = process.argv.includes('--after');
@@ -778,11 +1053,17 @@ process.stdin.on('end', async () => {
     if (AFTER) return;
     answer('ask', 'The D1 gate could not read this tool call, so it is asking rather than guessing.');
   }
-  if (AFTER) return meter(input);
-
-  const sql = (input && input.tool_input && input.tool_input.sql) || '';
   const root = (input && (input.cwd || input.project_dir)) || process.cwd();
-  const where = databaseName(input && input.tool_input && input.tool_input.database_id, root);
-
-  answer(...await verdict(sql, where, root, ledger(root)));
+  /* A call from before tool_name was read, or a test, is the one tool. */
+  if (input && !input.tool_name) input.tool_name = 'mcp__Cloudflare_Developer_Platform__d1_database_query';
+  const calls = callsIn(input, root);
+  if (!calls) process.exit(0);
+  if (AFTER) {
+    /* Only what reached a remote database is the day's. */
+    if (calls.some((c) => !Array.isArray(c))) meter(input);
+    return;
+  }
+  const decided = await decide(input, root, ledger(root));
+  if (!decided) process.exit(0);
+  answer(...decided);
 });

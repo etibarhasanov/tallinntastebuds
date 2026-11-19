@@ -373,7 +373,11 @@ is theirs:
   call and lets a small read through, so the prompt is not something to
   remember.
   Do not route around it: not with a shell `wrangler` command, not with a
-  Function written to do the write when it is called.
+  Function written to do the write when it is called. Since 2026-11-19 the
+  hook sits on those doors too — `wrangler d1` in the shell, curl to D1's
+  API, and any MCP tool that names D1 or Cloudflare — and refuses a
+  restore or a deleted database outright. Rattatee's sessions run the same
+  file, from a checkout of this one beside it.
 - **The ask carries the change.** Which database, which table, which columns,
   how many rows, and the values from and to — worked out by diffing the
   database against the repository, not assumed. "This loads the export" is
