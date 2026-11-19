@@ -540,8 +540,9 @@
      the page in this tab is still sent after the page has gone. */
   function tell(payload) {
     /* Nothing from the owner's browser — THE OWNER'S BROWSER in
-       functions/api/_admin.js. Signed in, the server would drop it anyway. */
-    if (window.TTBTrack && window.TTBTrack.owner) return;
+       functions/api/_admin.js. Signed in, the server would drop it anyway.
+       Nor from a browser a program is driving, which is nobody. */
+    if (window.TTBTrack && (window.TTBTrack.owner || window.TTBTrack.driven)) return;
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },

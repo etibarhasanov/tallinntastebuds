@@ -2704,6 +2704,7 @@
   var counted = {};
 
   function postPress(kind, id) {
+    if (window.TTBTrack && window.TTBTrack.driven) return;
     if (window.TTBTrack && window.TTBTrack.owner) {
       if (kind !== 'place') return;
       kind = 'venue';

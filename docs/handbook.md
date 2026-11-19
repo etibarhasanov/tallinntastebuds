@@ -16431,6 +16431,33 @@ It is the one count on the site a visitor sees, and it scores nobody: no
 number under a place, a list or a person, which is what **Public lists** and
 **Statistics** keep the counts off the public pages for.
 
+### Not a program
+
+Since 2026-11-19 a browser a program is driving counts nothing on the live
+site. Playwright, Puppeteer and Selenium all set `navigator.webdriver`, and a
+person's browser never does; where it is set on tallinntastebuds.ee or a
+subdomain, `assets/track.js` sends no report, and the map, the lists and the
+blog post no press of their own — the way the owner's browser is left out,
+through `driven` on `TTBTrack` beside `owner`. `/api/stats` refuses a
+`HeadlessChrome` user agent on those hosts besides, for a page still holding
+the script from before; and `assets/analytics.js` loads Clarity on neither
+those browsers nor any host but the site's. The owner asked for it, with
+every Claude Code session in mind that opens the site to take a picture of
+it: those run a headless Chromium in a data centre in the United States, and
+they were very likely a good part of the three-second American desktops
+above.
+
+Under `pages dev` the count still hears a driven browser, because there it
+writes a copy of the database on the machine, and **Driving it** in the
+`/stats` skill is a Playwright session making a row there.
+
+What it cannot do: tell yesterday's rows apart. Nothing about a report's
+browser is kept, so the days before stay as they were, and the difference
+shows from the day it shipped. A program that hides the flag still counts,
+and so does a crawler with a screen; the flag counter's judging of the
+American desktops stays until a week of counts says whether it is still
+needed.
+
 ### What it does not do
 
 No recordings and no heatmaps — that is Clarity, and nothing here replaces
@@ -21008,10 +21035,15 @@ the way back.
 
 Data takes up to two hours to appear after the tag first goes out, and the
 dashboard will say the project is uninstalled until it does. The tag is
-written into the pages rather than set per environment, so a page opened
-anywhere — a preview deploy, or a localhost under `pages dev` or
-`http.server` — reports into the same project, and a change driven hard
-enough shows up in the live numbers.
+written into the pages, but it loads only on tallinntastebuds.ee and its
+subdomains, and never in a browser a program is driving —
+`navigator.webdriver`, which Playwright, Puppeteer and Selenium set and a
+person's browser does not. So a localhost under `pages dev` or
+`http.server`, a `pages.dev` preview, and every Claude Code session that
+opens the live site to look at it record nothing, and the site's own count
+leaves the same driven browsers out (**Not a program** below). Since
+2026-11-19; before, a change driven hard enough showed up in the live
+numbers.
 
 ### Getting found
 

@@ -604,7 +604,7 @@
   var OPENED_KEY = 'ttb.opened';
 
   function countRead(id) {
-    if (window.TTBTrack && window.TTBTrack.owner) return;
+    if (window.TTBTrack && (window.TTBTrack.owner || window.TTBTrack.driven)) return;
     var day = new Date().toISOString().slice(0, 10);
     try {
       var kept = JSON.parse(localStorage.getItem(OPENED_KEY) || 'null');

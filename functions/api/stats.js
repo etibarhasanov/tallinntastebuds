@@ -142,6 +142,24 @@
  * are the list owner's numbers on /insights. Since 2026-10-06; a page
  * holding an older script sends no device and is counted once, as before.
  *
+ * NOT A PROGRAM
+ *
+ * A browser a program is driving is nobody visiting. assets/track.js and the
+ * pages that post here send nothing where navigator.webdriver is set, which
+ * Playwright, Puppeteer and Selenium all set and a person's browser never
+ * does; that covers every Claude Code session that opens the site to look at
+ * it. This route keeps the one backstop it can check without a query: a
+ * user agent that says HeadlessChrome — the headless shell Playwright
+ * launches by default — is answered {ok:false} before anything is counted,
+ * for a page holding a script from before the browser's check. Both only on
+ * tallinntastebuds.ee and its subdomains: under `pages dev` the count is a
+ * copy on the machine, and a session driving a change to it with Playwright
+ * has to be able to make a row — **Driving it** in the /stats skill. Since
+ * 2026-11-19. Before it, two in three desktop visits from the United States
+ * were three-second visits that pressed nothing — **The flag counter, and
+ * the desktops in America** in docs/handbook.md — and the rows they left
+ * cannot be told apart now, so the days before stay as they were.
+ *
  * WHAT A FAILURE LOOKS LIKE
  *
  * Every ending is 200 with {ok:false} unless the request itself was
@@ -246,6 +264,11 @@ export const DEAL_FILTER = 'discount';
    a query. */
 const GOOGLE_KEY = /^[A-Za-z0-9_-]{16,128}$/;
 
+/* The user agent of a browser with no screen, and the hosts it is refused
+   on — NOT A PROGRAM above. */
+const HEADLESS = /HeadlessChrome/;
+const LIVE = /(^|\.)tallinntastebuds\.ee$/;
+
 /* ------------------------------------------------------- the ranking moved */
 
 /* The ranking is GET /api/admin/stats now. Without this, a GET here falls
@@ -276,6 +299,11 @@ export async function onRequestPost(context) {
      not land is nothing the person who pressed the thing should hear about,
      and the page is not listening anyway. */
   if (!env.DB) return json({ ok: false }, 200);
+  /* A headless browser is a program, and counts nothing — NOT A PROGRAM in
+     the header. Ahead of everything, the refresh included. */
+  if (LIVE.test(new URL(request.url).hostname) && HEADLESS.test(request.headers.get('user-agent') || '')) {
+    return json({ ok: false }, 200);
+  }
   if (await wrongDatabase(env)) return json({ ok: false }, 200);
 
   /* The day's leftover Google calls, spent on the oldest rows a few at a

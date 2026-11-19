@@ -289,7 +289,7 @@
   }
 
   function tell(payload) {
-    if (window.TTBTrack && window.TTBTrack.owner) return;
+    if (window.TTBTrack && (window.TTBTrack.owner || window.TTBTrack.driven)) return;
     fetch('/api/stats', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
