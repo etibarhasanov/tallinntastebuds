@@ -625,6 +625,11 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
   answer that ignored it would be read just the same.
+- Its named ways, from 2026-11-19: `style` on the way and on each of
+  `others`, by bike — `ridden`, `fastest`, `safest`, `quietest` or
+  `shortest` — which its card prints on the button, and up to four `others`
+  where there were two. A way without one is a button with no name, and a
+  word it does not know is read as none, so a sixth kind is a field added.
 - Its lists, signed in: `GET /api/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)

@@ -3432,6 +3432,8 @@ body.is-discover #btn-locate { display: none; }
   scrollbar-width: none;
 }
 .route-trips[hidden] { display: none; }
+
+.route-trips.is-named { flex-wrap: wrap; overflow-x: visible; }
 .route-trip { flex: none; padding: 5px 11px; font-family: var(--mono); font-size: 11.5px; }
 
 .route-out {

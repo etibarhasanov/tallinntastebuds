@@ -2487,6 +2487,11 @@
   var ROUTE_TRAVEL = { foot: 'walking', bike: 'bicycling', bus: 'transit', car: 'driving' };
   var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
   var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
+  /* The button of a bike way that has a name: `style` in /api/route. */
+  var ROUTE_STYLE = {
+    ridden: 'routeWayRidden', fastest: 'routeWayFastest', safest: 'routeWaySafest',
+    quietest: 'routeWayQuietest', shortest: 'routeWayShortest'
+  };
 
   /* `again` is the same way asked for a second time because the dot has
      moved — rerouteIfMoved(). The line that is up stays up until the new one
@@ -2642,7 +2647,14 @@
      And by bike the first way can be one people have ridden — `ridden` on
      it, put together from the saved rides by /api/route. Its button and its
      sentence say so, since that is the only reason it is first: it is
-     seldom the shortest. */
+     seldom the shortest.
+
+     And by bike the ways can have names — `style` on each, from /api/route
+     where its second router answered: ridden, fastest, safest, quietest,
+     shortest, five at the most. Each button then says which it is, and the
+     row wraps onto a second line instead of sliding, so the one chosen is
+     never off the side of a phone. A way with no name is drawn as it
+     always was. */
   function drawRoute(n, mode, still) {
     var way = routeWays[n];
     clearRouteLine();
@@ -2666,7 +2678,7 @@
         'aria-pressed': String(i === n),
         textContent: leg
           ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
-          : t(other.ridden ? 'routeWayRidden' : 'routeWay', {
+          : t(ROUTE_STYLE[other.style] || (other.ridden ? 'routeWayRidden' : 'routeWay'), {
             min: Math.max(1, Math.round(other.seconds / 60)),
             dist: routeDistance(other.meters)
           })
@@ -2679,6 +2691,7 @@
     });
     dom.routeTrips.setAttribute('aria-label', t('routeWays'));
     dom.routeTrips.hidden = routeWays.length < 2;
+    dom.routeTrips.classList.toggle('is-named', routeWays.some(function (other) { return !!other.style; }));
 
     if (!still) fitRoute();
   }
@@ -2752,6 +2765,7 @@
     if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     dom.routeTrips.hidden = true;
     dom.routeTrips.textContent = '';
+    dom.routeTrips.classList.remove('is-named');
   }
 
   /* Gone: the line, the bar, and the sheet comes back as it was left. Also what

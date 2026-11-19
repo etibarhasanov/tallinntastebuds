@@ -20,6 +20,8 @@
  *             best. `others` is up to OTHERS more it found between the same
  *             two points, each in the same three fields — and empty where
  *             it found the one, which on a short way is most of the time.
+ *             By bike each way can carry `style`, its kind, and the others
+ *             can be four — BY BIKE, A WAY OF EACH KIND below.
  *             `steps` is where that way turns — see THE TURNS below.
  *
  *   bus  → { "trips": [ { "seconds": 1320,
@@ -108,6 +110,26 @@
  * is answered exactly as before; `others` is the only thing added. The
  * router says how long and how far and never why one is nicer, so neither
  * does this.
+ *
+ * BY BIKE, A WAY OF EACH KIND
+ *
+ * By bike the choice has names. A second router, BRouter, reads the same
+ * OpenStreetMap streets by other rules, and is asked for three ways the
+ * first one would not pick: the safest, which keeps to cycle paths and off
+ * the road; the quietest, which keeps to streets with next to no traffic;
+ * and the shortest, whatever it runs over. With the way people rode and
+ * the first router's own best — the fastest — that is five at the most,
+ * each with `style` beside it: `ridden`, `fastest`, `safest`, `quietest` or
+ * `shortest`, in that order, the first at the top level as ever and the
+ * rest in `others`. Two that turn out to be one way are offered once,
+ * under the earlier name, so five is seldom five. STYLES below.
+ *
+ * Where the second router does not answer, or answers nothing the first
+ * had not found, the answer is what it was before there were names: no
+ * `style` anywhere, and up to OTHERS more of the first router's own. With
+ * a heading too, which only the first router sets off by. A page or an app
+ * from before the names reads `others` as it always did, and draws a
+ * button a way with nothing on it but how long and how far.
  *
  * THE TURNS
  *
@@ -206,6 +228,29 @@ const TRIPS = 3;
    that many. */
 const OTHERS = 2;
 
+/* BRouter, the second router a bike way is asked of, and the three kinds of
+   way it is asked for: the word the answer carries and the profile of
+   BRouter's that draws it. `safety` keeps to cycleways and away from cars;
+   `fastbike-verylowtraffic` keeps to the streets with least traffic on
+   them; `shortest` is the least distance over anything a bike can be taken
+   along, steps included. On 2026-11-19, from the Old Town to Tondiraba and
+   from Mustamäe to Kadriorg, the three shared between a fiftieth and nine
+   tenths of their line with BRouter's ordinary bike way, and each answered
+   in under a second.
+
+   It is somebody's free public server, as the first router is: asked once
+   a kind for the same two rounded points and kept a day, and given
+   STYLE_WAIT milliseconds, since a way is not worth waiting on a second
+   router for. One that is late, or down, is one button fewer. */
+const BROUTER = 'https://brouter.de/brouter';
+const STYLES = [['safest', 'safety'], ['quietest', 'fastbike-verylowtraffic'], ['shortest', 'shortest']];
+const STYLE_WAIT = 2500;
+
+/* What a bike is pushed at, in metres a second, where one of those ways
+   takes steps or a pavement no sign gives to bikes: five kilometres an
+   hour. The first router counts such a stretch at walking pace too. */
+const PUSHED = 1.4;
+
 /* Tallinn is ~25 km across; a line of a few hundred vertices is plenty and
    keeps the answer small enough to send on a phone. A bus journey shares it
    out between its legs. */
@@ -275,6 +320,9 @@ async function street(context, mode, from, to, withTrains, heading) {
      own; read only once the bike ways are known, since a train is offered
      only where it beats them. TRAINS below. */
   const asked = withTrains && mode === 'bike' ? departures(from, to) : null;
+  /* And the second router beside them both, for the ways with a name:
+     BY BIKE, A WAY OF EACH KIND in the header. */
+  const drawn = mode === 'bike' && heading === null ? drawnWays(from, to) : null;
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
     '?overview=full&geometries=geojson&steps=true&alternatives=';
 
@@ -327,20 +375,82 @@ async function street(context, mode, from, to, withTrains, heading) {
       Math.abs(other.meters - through.meters) > SAME_WAY || other.seconds < through.seconds));
   }
   if (rode) ways.unshift(rode);
+  /* The second router's ways are timed at the pace the first made of this
+     trip, so a minute means the same on every button. */
+  if (drawn) ways = ways.concat(paced(await drawn, Math.max(PACE, first.meters / (first.seconds || 1))));
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest, heading);
-  if (mode === 'bike' || mode === 'foot') {
-    ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
-  }
-  ways = ways.slice(0, 1 + OTHERS);
+  if (mode === 'bike' || mode === 'foot') ways = ways.map(unspur);
+  ways = (drawn && named(ways)) || (mode === 'car' ? ways : once(ways)).slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
   if (best.ridden) answer.ridden = true;
+  if (best.style) answer.style = best.style;
   if (!asked) return json(answer, 200, 3600);
   /* A train leaves at a time and the time goes, so an answer with one in it
      is kept a minute, as a bus journey is; one without, the hour the ways
      alone would be. */
   answer.trains = await byTrain(from, to, await asked, Math.min(...ways.map((w) => w.seconds)));
   return json(answer, 200, answer.trains.length ? CACHE_SECONDS.bus : 3600);
+}
+
+/* ----------------------------------------------------------------- styles
+ * The second router's ways, one a kind in STYLES and fewer where it did not
+ * answer in time: each a line, its length, and how much of that is pushed
+ * rather than ridden. BRouter says what every stretch of a way is tagged as
+ * — `messages`, a row a stretch — and a stretch is pushed where it is steps,
+ * a pedestrian street or a footway, and nothing on it says a bike may ride.
+ */
+async function drawnWays(from, to) {
+  const found = await Promise.all(STYLES.map(async ([style, profile]) => {
+    try {
+      const res = await ask(BROUTER + '?lonlats=' + from.lng + ',' + from.lat + '|' + to.lng + ',' + to.lat +
+        '&profile=' + profile + '&alternativeidx=0&format=geojson', 'bike', STYLE_WAIT);
+      if (!res.ok) return null;
+      const feature = (await res.json()).features[0];
+      const line = feature.geometry.coordinates.map((c) => [c[1], c[0]]);
+      const meters = Number(feature.properties['track-length']);
+      if (line.length < 2 || !(meters > 0)) return null;
+      const rows = feature.properties.messages || [];
+      const length = rows.length ? rows[0].indexOf('Distance') : -1;
+      const tags = rows.length ? rows[0].indexOf('WayTags') : -1;
+      let pushed = 0;
+      for (const row of rows.slice(1)) {
+        const on = ' ' + row[tags] + ' ';
+        if (/ highway=(steps|pedestrian|footway) /.test(on) && !/ bicycle=(yes|designated|permissive) /.test(on)) {
+          pushed += Number(row[length]) || 0;
+        }
+      }
+      return { style: style, meters: meters, pushed: Math.min(pushed, meters), line: line };
+    } catch (e) {
+      return null;
+    }
+  }));
+  return found.filter(Boolean);
+}
+
+/* Those ways in the answer's own fields. The second router's turns are in
+   words of its own and name no street, so the corners are read off the
+   line the way a ridden way's are — stitch(), with no leg either side. */
+function paced(drawn, pace) {
+  const none = { meters: 0, seconds: 0, line: [], steps: [] };
+  return drawn.map((d) => Object.assign(stitch(none, d, none), {
+    seconds: Math.round((d.meters - d.pushed) / pace + d.pushed / PUSHED),
+    style: d.style
+  }));
+}
+
+/* The ways under their names, in the order of the header, or null where
+   none of the second router's is left to offer: kept off a street, or one
+   of the first router's ways drawn twice. The first router's others have no
+   name and are not offered beside ways that have. */
+function named(ways) {
+  const rode = ways.find((way) => way.ridden);
+  const fastest = ways.find((way) => !way.ridden && !way.style);
+  const all = once([
+    rode && Object.assign({}, rode, { style: 'ridden' }),
+    fastest && Object.assign({}, fastest, { style: 'fastest' })
+  ].filter(Boolean).concat(ways.filter((way) => way.style)));
+  return all.some((way) => STYLES.some(([style]) => style === way.style)) ? all : null;
 }
 
 /* ------------------------------------------------------------------ doors
@@ -608,6 +718,11 @@ const ALIKE_SHARE = 0.8;
 
 function alike(a, b) {
   return a.line.filter((p) => apart(p, b.line) <= ALIKE_NEAR).length >= a.line.length * ALIKE_SHARE;
+}
+
+/* The ways with each line offered once, the earlier of two alike kept. */
+function once(ways) {
+  return ways.filter((way, i) => !ways.slice(0, i).some((before) => alike(way, before)));
 }
 
 async function viaRides(context, from, to, shortest, offered) {
@@ -999,10 +1114,13 @@ async function keepOff(ways, from, to, shortest, heading = null) {
   return kept;
 }
 
-function ask(url, mode) {
+/* An upstream asked, its answer kept as long as that mode's ways are, and
+   given up on after `wait` milliseconds where there is one. */
+function ask(url, mode, wait) {
   return fetch(url, {
     headers: { 'user-agent': AGENT, accept: 'application/json' },
-    cf: { cacheTtl: CACHE_SECONDS[mode], cacheEverything: true }
+    cf: { cacheTtl: CACHE_SECONDS[mode], cacheEverything: true },
+    signal: wait ? AbortSignal.timeout(wait) : undefined
   });
 }
 
