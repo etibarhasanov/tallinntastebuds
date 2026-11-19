@@ -3758,6 +3758,21 @@ does not move, so the map, the iPhone app and Rattatee are simply given a
 different line; the cost is up to four more router requests on a ride that
 touched the street, each cached a day like any other.
 
+**A way round loses its spurs.** The router reaches the point it was asked
+through wherever that snapped, and sometimes that is up a side street or
+into a square it then rides out of the way it came. On 2026-11-19 the owner
+sent a picture from Rattatee: a way from the south to Toompea with a stub
+at Vabaduse väljak, 90 m up into the square and back, and a turn round said
+at its tip. So by bike and on foot every way, the router's own included,
+has each stretch cut where it goes out and comes straight back over its own
+line — `unspur()` in the same file, about half a millisecond a way — with
+its metres and a share of its seconds off and a turn said where it was cut;
+two ways that were one once that is done are offered once. A drive keeps
+them, since a one-way street can make turning round real. From the south
+to Toompea three ways became two, and the second lost 89 m at Vana-Lõuna.
+A hook of twenty-odd metres round a traffic island, which the router also
+calls a turn round, is not a spur and stays.
+
 **A street is a line in `KEEP_OFF`**, its name, its width and its middle,
 in the route itself rather than a data file: it is a decision the owner
 makes by name, not something a tool finds. The next one is a few lines

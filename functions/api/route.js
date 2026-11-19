@@ -70,6 +70,9 @@
  * for more than a crossing is asked for again round it, and only the ways
  * that keep off are answered — KEEPING OFF below.
  *
+ * And by bike and on foot no way rides out and straight back the way it
+ * came — SPURS below.
+ *
  * And by bike a way can be a train: ride to a station, an Elron train with
  * the bike on it, ride on. Those are `trains`, answered beside the ways by
  * /api/v1/route only, never here — TRAINS below says why.
@@ -325,6 +328,9 @@ async function street(context, mode, from, to, withTrains, heading) {
   }
   if (rode) ways.unshift(rode);
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest, heading);
+  if (mode === 'bike' || mode === 'foot') {
+    ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
+  }
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
@@ -594,10 +600,15 @@ const RIDDEN_MIN = 200;
 const RIDDEN_SHARE = 0.5;
 const RIDDEN_LONGER = 1.4;
 
-/* A way with this share of its points within RIDDEN_NEAR metres of another
-   is that way. */
-const RIDDEN_NEAR = 25;
-const RIDDEN_SAME = 0.8;
+/* A way with this share of its points within ALIKE_NEAR metres of another
+   is that way: a ridden way the router already offered, or two ways that
+   were one once their spurs came off. */
+const ALIKE_NEAR = 25;
+const ALIKE_SHARE = 0.8;
+
+function alike(a, b) {
+  return a.line.filter((p) => apart(p, b.line) <= ALIKE_NEAR).length >= a.line.length * ALIKE_SHARE;
+}
 
 async function viaRides(context, from, to, shortest, offered) {
   const env = context.env || {};
@@ -750,9 +761,95 @@ async function viaRides(context, from, to, shortest, offered) {
   if (!head || !tail) return null;
   const found = stitch(head, stretch, tail);
   if (found.meters > most || rode < found.meters * RIDDEN_SHARE) return null;
-  if (offered.some((way) => found.line.filter((p) => apart(p, way.line) <= RIDDEN_NEAR).length >=
-    found.line.length * RIDDEN_SAME)) return null;
+  if (offered.some((way) => alike(found, way))) return null;
   return Object.assign(found, { ridden: true });
+}
+
+/* ------------------------------------------------------------------ spurs
+ * Nobody rides up a street and straight back down it to go on, and the
+ * router's answers sometimes do. Asked through a point — KEEPING OFF — it
+ * reaches the point wherever that snapped, up a side street or into a
+ * square, and comes out the way it went in: on 2026-11-19 a way from the
+ * south to Toompea rode 90 m up into Vabaduse väljak and back, a stub on
+ * the line with a turn round said at its tip, and another from the same
+ * start a stub at Vana-Lõuna. A start on the wrong side of a one-way street
+ * does the same at the first metres. So by bike and on foot a way loses
+ * every stretch where it goes out and comes back over its own line: from a
+ * point to where the line returns within SPUR_NEAR of it, SPUR_MIN or more
+ * further along, where every point going out is within SPUR_WIDE of the
+ * way back and every point coming back is within it of the way out — so a
+ * loop round a block, which comes back by other streets, is not one. The
+ * turns inside it go, one is said where it was cut if the way bends there,
+ * and its metres come off the way's, and its seconds by the same share.
+ * Two ways that differed only by a spur are then one, and the second goes.
+ * A drive keeps its turns round, which a one-way street can make real.
+ */
+const SPUR_NEAR = 12;
+const SPUR_MIN = 30;
+const SPUR_WIDE = 20;
+
+function unspur(found) {
+  let way = found;
+  for (let cut = spur(way.line); cut; cut = spur(way.line)) {
+    const { i, j, at, gone } = cut;
+    const line = way.line.slice(0, i + 1).concat(way.line.slice(j + 1));
+    const steps = way.steps.filter((s) => s.turn === 'arrive' || s.meters < at - 1 || s.meters > at + gone + 1)
+      .map((s) => (s.meters > at ? Object.assign({}, s, { meters: Math.max(0, Math.round(s.meters - gone)) }) : s));
+    const turn = bend(line.slice(0, i + 1), line.slice(i));
+    if (turn) {
+      const after = steps.findIndex((s) => s.meters > at);
+      steps.splice(after < 0 ? steps.length : after, 0, { at: line[i], meters: Math.round(at), turn: turn, name: '' });
+    }
+    way = Object.assign({}, way, {
+      meters: Math.max(0, Math.round(way.meters - gone)),
+      seconds: Math.round(way.seconds * Math.max(0, 1 - gone / (way.meters || 1))),
+      line: line,
+      steps: untie(steps, line)
+    });
+  }
+  return way;
+}
+
+/* The first spur on a line, from its root at `i` to its return at `j`, `at`
+   metres along and `gone` long, or null. Measured flat, and each point is
+   held only against the points in the squares SPUR_NEAR a side around it,
+   as viaRides() joins its rides: every pair of a line of MAX_POINTS by
+   metres() was seven milliseconds of a Function's ten. */
+function spur(line) {
+  const xy = line.map(flat);
+  const gap = (a, b) => Math.hypot(xy[a][0] - xy[b][0], xy[a][1] - xy[b][1]);
+  const along = [0];
+  for (let k = 1; k < line.length; k++) along.push(along[k - 1] + gap(k - 1, k));
+  const square = (k) => [Math.floor(xy[k][0] / SPUR_NEAR), Math.floor(xy[k][1] / SPUR_NEAR)];
+  const cells = new Map();
+  xy.forEach((p, k) => {
+    const key = square(k).join(':');
+    if (!cells.has(key)) cells.set(key, []);
+    cells.get(key).push(k);
+  });
+  for (let i = 0; i < line.length - 2; i++) {
+    const [cx, cy] = square(i);
+    const back = [];
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (const j of cells.get((cx + dx) + ':' + (cy + dy)) || []) {
+          if (along[j] - along[i] >= SPUR_MIN && gap(i, j) <= SPUR_NEAR) back.push(j);
+        }
+      }
+    }
+    /* The furthest return first, so a spur is cut from its root. */
+    for (const j of back.sort((x, y) => y - x)) {
+      let tip = i;
+      for (let k = i + 1; k < j; k++) if (gap(i, k) > gap(i, tip)) tip = k;
+      if (tip === i) continue;
+      const out = line.slice(i, tip + 1);
+      const home = line.slice(tip, j + 1);
+      if (out.every((p) => apart(p, home) <= SPUR_WIDE) && home.every((p) => apart(p, out) <= SPUR_WIDE)) {
+        return { i: i, j: j, at: along[i], gone: along[j] - along[i] };
+      }
+    }
+  }
+  return null;
 }
 
 /* ------------------------------------------------------------ keeping off
