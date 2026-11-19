@@ -1081,7 +1081,7 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     /* The label, not the panel: a redraw here would take a half-written
        story with it. Quiet on any failure — the tab itself says why when it
        is opened. */
-    Promise.all([readRefreshes(), loadPlaces(true)])
+    Promise.all([readRefreshes('map'), loadPlaces(true)])
       .then(function (got) {
         disagree = mapAgainstGoogle(got[0], got[1]).length;
         var last = tabs.lastChild;
@@ -1166,8 +1166,11 @@ ul.log li button.quiet { width: auto; display: inline-block; }
     return name + ' ' + from + ' → ' + to;
   }
 
-  function readRefreshes() {
-    return fetch('/api/admin/refreshes', { cache: 'no-store' })
+  /* `only` is 'map' for the count on the tab's label: Google's word on my
+     places and nothing else, which is a few dozen rows rather than a walk of
+     the whole directory — see ?only=map in functions/api/admin/refreshes.js. */
+  function readRefreshes(only) {
+    return fetch('/api/admin/refreshes' + (only ? '?only=' + only : ''), { cache: 'no-store' })
       .then(function (res) {
         if (res.status === 403) throw new Error('sign in on the site as the owner first');
         if (!res.ok) throw new Error('HTTP ' + res.status);

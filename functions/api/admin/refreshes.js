@@ -36,6 +36,9 @@
  * in the log below is something the owner finds rather than remembers. See
  * **Close a place instead of deleting it** in docs/handbook.md.
  *
+ * GET /api/admin/refreshes?only=map answers `ready`, `key` and `map` alone:
+ * the count on the tab's label, asked on every open of the admin page.
+ *
  * `table` counts the rows the directory shows — not hidden, not missing, and
  * somewhere to eat, which is all the fill asks about, eatOnly() — so
  * its total is the number on /admin/google rather than the number in the table.
@@ -96,6 +99,19 @@ function parsed(text) {
   }
 }
 
+/* Google's word on every row tied to a place on my map: the `map` of the
+   answer, shared by the whole report and by ?only=map. */
+async function tied(env) {
+  const { results } = await env.DB
+    .prepare('SELECT map_id, status, missing_since FROM google_venues WHERE map_id IS NOT NULL')
+    .all();
+  return (results || []).map((row) => ({
+    id: row.map_id,
+    status: row.status || '',
+    missing: row.missing_since != null
+  }));
+}
+
 export async function onRequestGet(context) {
   const { env } = context;
   const key = !!googleKey(env);
@@ -103,9 +119,23 @@ export async function onRequestGet(context) {
 
   if (!env.DB || (await wrongDatabase(env))) return json({ ready: false, key });
 
+  /* ?only=map is the count on the Google tab's label, asked every time the
+     admin page opens — on the Story tab, before anybody has asked for the
+     report. It needs `map` and nothing else, and the whole report walks every
+     row of google_venues for `table`: some 1,100 rows read to draw one digit.
+     This is the tied rows alone, a range on the partial idx_google_venues_map,
+     seventy rows an open. The tab reads the whole report when it is opened. */
+  if (new URL(context.request.url).searchParams.get('only') === 'map') {
+    try {
+      return json({ ready: true, key, map: await tied(env) });
+    } catch (e) {
+      return json({ ready: false, key });
+    }
+  }
+
   try {
     const only = await eatOnly(env);
-    const [counts, calls, log, tied] = await Promise.all([
+    const [counts, calls, log, map] = await Promise.all([
       env.DB
         .prepare(
           'SELECT COUNT(*) AS total, ' +
@@ -124,9 +154,7 @@ export async function onRequestGet(context) {
         )
         .bind(RECENT)
         .all(),
-      env.DB
-        .prepare('SELECT map_id, status, missing_since FROM google_venues WHERE map_id IS NOT NULL')
-        .all()
+      tied(env)
     ]);
 
     return json({
@@ -153,11 +181,7 @@ export async function onRequestGet(context) {
         changes: parsed(row.changes),
         note: row.note || ''
       })),
-      map: (tied.results || []).map((row) => ({
-        id: row.map_id,
-        status: row.status || '',
-        missing: row.missing_since != null
-      }))
+      map
     });
   } catch (e) {
     /* A table or the column not applied yet. */
