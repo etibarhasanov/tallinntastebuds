@@ -532,6 +532,18 @@ export function build() {
     );
   }
 
+  /* And last, that all of the table changed, so the copy of it each isolate
+     keeps is read again whole at its next look rather than the next day —
+     googleTable() in functions/api/_lib.js. Both marks, because a look that
+     sees only the first moved reads the rows stamped since, and nothing here
+     stamps a row. */
+  for (const key of ['venues_at', 'venues_all_at']) {
+    out.push(
+      `INSERT INTO meta (key, value) VALUES ('${key}', ${NOW})\n` +
+      'ON CONFLICT(key) DO UPDATE SET value = excluded.value;'
+    );
+  }
+
   return {
     sql: out.join('\n\n') + '\n',
     statements: out,

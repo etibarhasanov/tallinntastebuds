@@ -37,7 +37,7 @@
  * ./github/ keep, since the session cookie is SameSite=Lax.
  */
 
-import { json, wrongDatabase } from '../_lib.js';
+import { json, wrongDatabase, venuesChanged } from '../_lib.js';
 
 /* A Google place id and a restaurants.json id, by shape. Anything else is
    not looked up at all. */
@@ -62,7 +62,12 @@ export async function onRequestPost(context) {
     .prepare('UPDATE google_venues SET map_id = ? WHERE place_id = ? AND (map_id IS NULL OR map_id = ?)')
     .bind(map, place, map)
     .run();
-  if (done.meta && done.meta.changes) return json({ ok: true });
+  if (done.meta && done.meta.changes) {
+    /* The chat and /mcp lend a tied place Google's hours — googleTable() in
+       ../_lib.js is how they hear of it. */
+    await venuesChanged(env, [place]);
+    return json({ ok: true });
+  }
 
   const row = await env.DB
     .prepare('SELECT map_id FROM google_venues WHERE place_id = ?')

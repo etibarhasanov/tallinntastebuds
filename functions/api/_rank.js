@@ -78,7 +78,7 @@
  * due rows first, because the budget and the claim on a row live there.
  */
 
-import { eatOnly } from './_lib.js';
+import { eatOnly, venuesChanged } from './_lib.js';
 
 /* How many reviews a place needs before its own rating counts for half —
    the same hundred as PRIOR in assets/venues.js and RANK_PRIOR in
@@ -230,6 +230,9 @@ export async function rerankIfDue(env, now) {
         )
         .bind(week, TOP)
     ]);
+    /* Every row's `rank`, which the find bar orders by: the copies other
+       isolates keep read the table again — googleTable() in ./_lib.js. */
+    await venuesChanged(env, 'all');
     return 'made';
   } catch (e) {
     try {

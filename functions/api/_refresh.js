@@ -126,7 +126,7 @@
  * never hears about it.
  */
 
-import { eatOnly } from './_lib.js';
+import { eatOnly, venuesChanged } from './_lib.js';
 import { TOP } from './_rank.js';
 
 /* How old a row's numbers may get before an open asks Google again. A month,
@@ -693,6 +693,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
         .bind(at, placeId)
         .run();
       written = true;
+      await venuesChanged(env, [placeId]);
       await log(env, at, placeId, source, 'gone', null, 'Google does not know this place any more');
       return 'gone';
     }
@@ -725,6 +726,9 @@ export async function refreshOnOpen(env, id, source = 'open') {
         row.website, row.opening_hours, at, closedForGood ? 1 : 0, at, placeId)
       .run();
     written = true;
+    /* The one row, to the copies of the table the isolates keep —
+       googleTable() in ./_lib.js. */
+    await venuesChanged(env, [placeId]);
     await keepScores(env, placeId, before, row, at, was, source);
 
     const any = Object.keys(moved).length > 0;

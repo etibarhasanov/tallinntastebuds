@@ -31,8 +31,8 @@
  * WHY IT SEARCHES MEMORY AND NOT THE DATABASE
  *
  * The other shape was a table of words in D1 and a range read per search. It
- * was costed and left: the roll is already in the isolate for five minutes
- * (ROLL_TTL in ./places.js), so a search here reads no rows at all, where a
+ * was costed and left: the roll is already in the isolate (cityRoll() in
+ * ./places.js), so a search here reads no rows at all, where a
  * word index read between a hundred and fourteen hundred per search —
  * "restaurant" lands on two places in three — and a loop of made-up words
  * would have spent the day's reads the way the uncached roll once could. A

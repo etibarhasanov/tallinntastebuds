@@ -9008,12 +9008,36 @@ the whole of `google_venues` again, 1,127 rows read for one answer. D1's free
 plan reads five million rows a day for the whole site, so about four and a
 half thousand asks of this one route, from anybody with a loop, would have
 spent the day and failed every read after it: the saves, the lists, signing
-in. The merged roll is now kept in the isolate under `ROLL_TTL`, the way
-`ask.js` and `mcp.js` already kept their copies of the same table, and the
-table is read about once per isolate per five minutes however the route is
-asked. Five hundred random `?q=` against the export read it twice rather than
-five hundred times. Only a roll with Google's half in it is kept, so a
-database that failed once is asked again on the next request.
+in. The merged roll is now kept in the isolate, the way `ask.js` and
+`mcp.js` keep their copies of the same table, and the table is read about
+once per isolate per five minutes however the route is asked. Five hundred
+random `?q=` against the export read it twice rather than five hundred times.
+Only a roll with Google's half in it is kept, so a database that failed once
+is asked again on the next request.
+
+**Only what changed.** Once per isolate per five minutes was still the
+dearest table on the meter on 2026-11-18 — 9,225 rows by the afternoon, and
+about 3.4 million a day with ten isolates awake, counting the chat's copy
+beside it, which was read again every minute. So an isolate now keeps one
+copy of `google_venues`, every column of every row, and the roll here, the
+chat's two slices and `/mcp`'s are taken out of it in memory —
+`googleTable()` in `functions/api/_lib.js`. A row that changes is stamped
+with `changed_at`, and `venues_at` in `meta` says that some did, by
+`venuesChanged()` from everything that changes what a reader shows: a place
+looked up, a row tied to a place on the map, the one row a refresh asked
+Google about. The week's ranking and an export load change every row and
+say so in `venues_all_at` instead. Every fifteen minutes the copy reads the
+two `meta` rows; if some rows moved it reads just those, a range on
+`idx_google_venues_changed`, and if all of them did it reads the table. A
+search here that finds nothing from three letters makes it look at once, at
+most once a minute, since the likeliest reason is a place just looked up
+through another isolate — two rows and the new one, where searching the
+table by name would have been every row, a name being nothing an index can
+find. And the whole table once a day regardless, for a correction run by
+hand, which stamps nothing. A few thousand rows a day per isolate, where it
+was about 750,000. The column and its index are applied by hand —
+`db/schema.sql` says so beside them — and until they are, the copy is read
+whole each time something changed.
 
 **One search of the city.** `/api/places?q=<words>` answers with the twenty
 rows of the roll the words reach best, from two letters typed, and it is the

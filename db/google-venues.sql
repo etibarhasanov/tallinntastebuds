@@ -2909,3 +2909,9 @@ UPDATE google_venues SET map_id = 'ariran' WHERE place_id = 'ChIJAwQUdoGUkkYRft_
 UPDATE google_venues SET map_id = 'badam' WHERE place_id = 'ChIJvcRW8vCVkkYRLZQ8UtBb4kE' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'kokomo' WHERE place_id = 'ChIJ8fqXMWGTkkYR4yJmeLSLG04' AND map_id IS NULL;
+
+INSERT INTO meta (key, value) VALUES ('venues_at', CAST(strftime('%s','now') AS INTEGER) * 1000)
+ON CONFLICT(key) DO UPDATE SET value = excluded.value;
+
+INSERT INTO meta (key, value) VALUES ('venues_all_at', CAST(strftime('%s','now') AS INTEGER) * 1000)
+ON CONFLICT(key) DO UPDATE SET value = excluded.value;

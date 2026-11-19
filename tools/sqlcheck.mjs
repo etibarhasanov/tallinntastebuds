@@ -66,7 +66,7 @@ const ALL = process.argv.includes('--all');
    in numbers, the way the ones here do. Everything under api/admin/ is the
    owner's alone and is read a few times a day: ADMIN below. */
 const KNOWN = [
-  { file: 'api/places.js', has: 'FROM google_venues', why: 'the whole roll is the answer; read once per isolate per ROLL_TTL (5 min), ~1,200 rows' },
+  { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows: once a day per isolate, and after the week's ranking or an export load; between them only the rows changed_at names" },
   { file: 'api/venues.js', has: 'FROM google_venues', why: 'the directory is the whole roll; cached at the edge' },
   { file: 'api/_refresh.js', has: 'FROM google_venues', why: 'the refresh of Google places: a scheduled job and the owner, ~1,200 rows' },
   { file: 'api/_rank.js', has: 'google_venues', why: 'the weekly re-rank, once a week' },

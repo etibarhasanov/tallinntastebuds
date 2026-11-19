@@ -73,7 +73,7 @@
  * the five-minute cache on /api/places has not caught up with yet.
  */
 
-import { json, wrongDatabase, venueEntry } from './_lib.js';
+import { json, wrongDatabase, venueEntry, venuesChanged } from './_lib.js';
 import { googleKey, spend } from './_refresh.js';
 import { kitchensOf } from './venues.js';
 
@@ -271,6 +271,9 @@ export async function onRequestPost(context) {
         )
         .bind(row.place_id, row.name, row.category, row.status, row.address, row.postal_code,
           row.city, row.tags, row.latitude, row.longitude, row.maps_url, now, now, row.kind, row.found_at)));
+      /* So the copies of the table other isolates keep pick these rows up —
+         googleTable() in ./_lib.js. */
+      await venuesChanged(env, rows.map((row) => row.place_id));
     }
   } catch (e) {
     return json({ ok: false, why: 'no-database' });
