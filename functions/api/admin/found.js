@@ -53,7 +53,7 @@ export async function onRequestGet(context) {
   if (!env.DB) return json(empty, 200);
   if (await wrongDatabase(env)) return json(empty, 200);
 
-  const found = await readFound(env, span, device);
+  const found = await readFound(env, span, device, request.url);
   if (!found) return json(empty, 200);
 
   const res = json({ ready: true, ...found, device: device, lang: lang, ui: ui }, 200, TTL);
