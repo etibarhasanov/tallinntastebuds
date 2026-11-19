@@ -355,6 +355,12 @@ however small it is:
    `saved` on every sign-in — the route still answers it whole, put
    together from the pages, because an app cut at the first page would
    lose the rest without a word.
+   `node tools/sqlcheck.mjs` holds the line: a SELECT under `functions/`
+   carries a `LIMIT` of a hundred or less, or is read by its key — every
+   column of a unique key pinned with `=` or a short `IN` list — or is one
+   aggregate row, and any other fails the build unless it is in the tool's
+   `ROWS` with what bounds it in numbers. The reads there marked `fix` are
+   owed, and `--all` lists them.
 
 The same goes for anything else that is free up to a number a day: Workers
 AI's Neurons, Google's thousand calls a month, Pages' five hundred builds.
@@ -830,7 +836,8 @@ longer exports it, or a syntax error, fails the build here — Pages bundles
 them into one Worker, and on a deploy that takes every route down rather than
 its own; `node tools/sqlcheck.mjs`, which asks SQLite's planner how every
 statement under `functions/` would read and fails on one that walks a whole
-table without being listed with what bounds it; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
+table, or can answer more than a hundred rows, without being listed with what
+bounds it; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera; `node
 tools/chessperf.mjs --check`, which holds the rules of chess in
 `functions/api/_chess.js` to published move counts and to positions worked out

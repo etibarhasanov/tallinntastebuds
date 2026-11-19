@@ -18416,7 +18416,12 @@ The sixth holds every statement under `functions/` to what it costs.
 SQLite's planner how each statement would run, and fails the build on one that
 walks a whole table — a `SCAN`, a key searched with nothing to seek by, or a
 key read from the beginning of time up to a date — unless it is listed in the
-tool's `KNOWN` with what bounds it. D1 bills the rows a statement walks, the
+tool's `KNOWN` with what bounds it. It holds every `SELECT` to the owner's
+other line, drawn on 19 November 2026 — no query answers more than a hundred
+rows, and more than that is paginated — and fails on one past it that is not
+in `ROWS` with what bounds it; the reads there marked `fix` are owed, and
+`--all` lists them. A statement it cannot rebuild is priced by hand in
+`UNREAD`, or fails too. D1 bills the rows a statement walks, the
 free plan stops every read past five million a day, and on 18 November 2026 a
 counter on Discover that walked `visitor_counts` three times every five
 minutes got there before noon. The rules a statement is designed to before
