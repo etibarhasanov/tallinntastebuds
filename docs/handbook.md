@@ -3147,8 +3147,7 @@ which is nicer, because the router does not say. One way is no buttons, which
 is what a short way mostly is. A way asked for again because the dot moved
 comes back on the first: the ways from the new place are not the ones the
 button was pressed among. Rattatee reads the same field for the same choice
-on its card before a ride. By bike the ways can be as many as five and have
-names: **By bike, a way of each kind** below.
+on its card before a ride.
 
 **And each way says where it turns.** The router is asked for its steps as
 well as its line, and each way carries them as `steps`: the corner (`at`), how
@@ -3780,48 +3779,6 @@ calls a turn round, is not a spur and stays.
 in the route itself rather than a data file: it is a decision the owner
 makes by name, not something a tool finds. The next one is a few lines
 there and a sentence here.
-
-## By bike, a way of each kind
-
-Until 2026-11-19 a bike ride came with up to three ways and nothing to tell
-them apart but minutes and metres. Now each can say what kind of way it is:
-**Ridden**, the way people rode, where anybody has; **Fastest**, the first
-router's own best, which is what was first before; and three a second
-router draws — **Safest**, kept to cycle paths and off the road;
-**Quietest**, kept to the streets with least traffic; **Shortest**, the
-least distance over anything a bike can be taken along. Five at the most, in
-that order, each with `style` beside it in `/api/route`'s answer — `ridden`,
-`fastest`, `safest`, `quietest`, `shortest` — the first at the top level
-and the rest in `others`, where the ways always were.
-
-The second router is BRouter, at brouter.de: the same OpenStreetMap streets
-read by other rules, one profile a kind — `STYLES` in
-`functions/api/route.js`. Its ways are put into the answer's own fields the
-way a ridden way is, the corners read off the line and no street named, and
-timed at the pace the first router made of the same trip, with any stretch
-of steps or of pavement no sign gives to bikes counted at walking pace — so
-a minute means the same on every button, and a shortest way down a
-staircase does not come out the quickest. They are kept off the streets in
-`KEEP_OFF` and lose their spurs like every other way, and two ways that are
-one line are offered once, under the earlier name: five is seldom five, and
-on four trips across town on the day it was written it was three or four.
-
-**The bar says the name on the button** — *Safest · 14 min · 4.0 km* — and
-the row wraps onto a second line rather than sliding, the owner's choice of
-the two that were drawn, so the way chosen is never off the side of a phone.
-The sentence above stays how long and how far.
-
-**Where the second router does not answer** — it is given two and a half
-seconds, and it is somebody's free server — or answers nothing the first
-had not found, the answer is exactly what it was: no `style` anywhere, and
-up to two more of the first router's own ways. The same with a `heading`,
-which only the first router sets off by, so a new way mid-ride has no names.
-An app or a page from before the names reads `others` as it always did and
-draws a button a way, unnamed; it may now draw four of them.
-
-**What it costs.** No row of the database. Three requests to BRouter beside
-the first router's, for a ride nobody has asked for between those two
-rounded points that day; each is kept a day at the edge like the rest.
 
 ## A new way sets off the way the rider is going
 
