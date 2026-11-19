@@ -1232,6 +1232,122 @@ function paired(one, two, a, b) {
     .sort((x, y) => y[a] - x[a] || y[b] - x[b] || x.id.localeCompare(y.id));
 }
 
+/* THE DAYS THAT HAVE ENDED, KEPT IN THE COLO
+ *
+ * The owner's two pages read a range of days and the range before it, so
+ * /admin/visitors over ninety days is a hundred and seventy-nine days of
+ * rows: every row the table has until it is half a year old, and about
+ * ninety-five thousand after that at November 2026's five hundred and
+ * thirty a day. And it was read again for every device chip, which keeps a
+ * quarter of what it reads, for every language, for every range, and every
+ * five minutes — though a day that has ended never changes. A report filed
+ * after midnight is filed under the new day, THE VIEWS THAT REPORTED.
+ *
+ * So a day two or more behind is read from the table once and kept in the
+ * colo for DAY_KEPT, one entry a day, and only yesterday and today are read
+ * on every open: about a thousand rows, however long the range and however
+ * old the table. Yesterday rather than today alone because a batch begun a
+ * moment before midnight can land a moment after it.
+ *
+ * A day not in the colo yet is read with the others missing, in one range
+ * from the oldest of them to the newest — on a page opened for the first
+ * time in a colo, the whole range, once. The entries live under
+ * /api/admin/, which nobody but the owner reaches, like the answers
+ * themselves. `origin` is the address they are kept under; without one the
+ * range is read whole, as it always was. */
+const SETTLED = 2;
+const DAY_KEPT = 45 * 86400;
+const DAY_SHAPE = '1';
+
+function daysBetween(from, to) {
+  const out = [];
+  for (let t = Date.parse(from + 'T00:00:00Z'), end = Date.parse(to + 'T00:00:00Z'); t <= end; t += 86400000) {
+    out.push(new Date(t).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+function keptAt(origin, path, name) {
+  const url = new URL('/api/admin/' + path, origin);
+  url.searchParams.set('k', name);
+  url.searchParams.set('shape', DAY_SHAPE);
+  return new Request(url.toString());
+}
+
+async function fromColo(cache, key) {
+  if (!cache) return null;
+  try {
+    const hit = await cache.match(key);
+    return hit ? await hit.json() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function intoColo(cache, key, value) {
+  if (!cache) return;
+  try {
+    await cache.put(key, new Response(JSON.stringify(value), {
+      headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=' + DAY_KEPT }
+    }));
+  } catch (e) {
+    /* Read again next time. */
+  }
+}
+
+/* Every visitor_counts row from `first` to today, as [{ day, kind, id, n }].
+   Throws where the table is not there, as the read it replaces did. */
+async function rowsSince(env, origin, first) {
+  const cache = origin && typeof caches !== 'undefined' ? caches.default : null;
+  const settled = dayBack(SETTLED);
+  const days = first <= settled ? daysBetween(first, settled) : [];
+  const keys = days.map((day) => keptAt(origin, 'visitor-day', day));
+  const kept = await Promise.all(keys.map((key) => fromColo(cache, key)));
+  const missing = days.filter((day, i) => !Array.isArray(kept[i]));
+
+  /* Yesterday and today, by the key's first column: a range of two days. */
+  const recent = first > settled ? first : dayBack(SETTLED - 1);
+  const reads = [env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(recent).all()];
+  /* The days missing from the colo, the same way: a range by the key. */
+  if (missing.length) {
+    reads.push(env.DB
+      .prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND day <= ?')
+      .bind(missing[0], missing[missing.length - 1])
+      .all());
+  }
+  const [fresh, old] = await Promise.all(reads);
+
+  const byDay = new Map(days.map((day, i) => [day, Array.isArray(kept[i]) ? kept[i] : null]));
+  if (old) {
+    const read = new Map(missing.map((day) => [day, []]));
+    for (const row of old.results || []) {
+      if (read.has(row.day)) read.get(row.day).push(row);
+    }
+    await Promise.all([...read].map(([day, rows]) => {
+      byDay.set(day, rows);
+      return intoColo(cache, keptAt(origin, 'visitor-day', day), rows);
+    }));
+  }
+  return [...byDay.values()].flat().concat(fresh.results || []);
+}
+
+/* The first day a kind was counted, as the { day } MIN(day) answers, or null
+   for never. Once there is one it
+   cannot move — every row written since is today's — so it is kept in the
+   colo beside the days. Each of these walks the key until the kind turns up
+   — 1,757 rows for the latest on 2026-11-18, and as many on every open
+   before this kept it — and asks again while the answer is null. */
+async function firstDay(env, origin, name, sql, ...binds) {
+  const cache = origin && typeof caches !== 'undefined' ? caches.default : null;
+  const key = keptAt(origin || 'https://x.invalid', 'visitor-first', name);
+  const kept = await fromColo(cache, key);
+  if (kept && typeof kept.day === 'string') return kept;
+  const row = await env.DB.prepare(sql).bind(...binds).first();
+  if (!row || typeof row.day !== 'string') return null;
+  await intoColo(cache, key, { day: row.day });
+  return { day: row.day };
+}
+
 /* One range, or null where there is no table yet. `ui` is the reading
  * language's block, which names the pages and the three networks.
  *
@@ -1290,15 +1406,16 @@ function paired(one, two, a, b) {
  *              posts: [{ id, n }], decks: [{ id, n }],
  *              deals: [{ id, shown, verified }] }, each most first
  *
- * One read of the range and the one before it; the rest is arithmetic on at
- * most 180 days of a hundred-odd rows each.
+ * The range and the one before it through rowsSince() — THE DAYS THAT HAVE
+ * ENDED, KEPT IN THE COLO — so two days read from the table on an ordinary
+ * open; the rest is arithmetic on at most 179 days of a few hundred rows.
  *
  * Who did what is counted only over the days that have `cohort` rows, and
  * the visitors divided among it only over the same days, so a range reaching
  * back past the day it began is not a week of visitors over two days of what
  * they did. A page's `secsLeft` is held to the days that have `left` rows
  * the same way, for the same reason. */
-export async function readVisitors(env, span, ui, spoken, device) {
+export async function readVisitors(env, span, ui, spoken, device, origin) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
   const day = today();
@@ -1307,17 +1424,19 @@ export async function readVisitors(env, span, ui, spoken, device) {
   let since;
   let began;
   try {
+    /* The days through the colo — THE DAYS THAT HAVE ENDED, KEPT IN THE
+       COLO — and the two first days kept there too. */
     [rows, since, began] = await Promise.all([
-      env.DB.prepare('SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?').bind(first).all(),
+      rowsSince(env, origin, first),
       device
-        ? env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?').bind(at + 'view').first()
-        : env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts').first(),
-      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?').bind(at + 'cohort').first()
+        ? firstDay(env, origin, at + 'view', 'SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?', at + 'view')
+        : firstDay(env, origin, 'any', 'SELECT MIN(day) AS day FROM visitor_counts'),
+      firstDay(env, origin, at + 'cohort', 'SELECT MIN(day) AS day FROM visitor_counts WHERE kind = ?', at + 'cohort')
     ]);
   } catch (e) {
     return null;
   }
-  rows = forDevice(rows.results || [], device);
+  rows = forDevice(rows, device);
 
   const now = blank();
   const was = blank();
@@ -1544,25 +1663,28 @@ function foundBlank() {
  *   tags       [{ id, n }] the tagged links, the owner's and `share`
  *   searches   [{ id, n, nothing }] words searched for here, `nothing`
  *              being how many of those times the field found nothing */
-export async function readFound(env, span, device) {
+export async function readFound(env, span, device, origin) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
   const at = device ? device + '.' : '';
   const kinds = FOUND.map((k) => at + k);
-  const marks = kinds.map(() => '?').join(', ');
+  const wanted = new Set(kinds);
   const began = ['found', 'ref', 'tag', 'search'].map((k) => at + k);
   let rows;
   let since;
   try {
+    /* The same days /admin/visitors reads, out of the same colo — THE DAYS
+       THAT HAVE ENDED, KEPT IN THE COLO — and this page's kinds kept out of
+       them here. A `kind IN` beside the day read every row of the range
+       either way, the key being the day first. */
     [rows, since] = await Promise.all([
-      env.DB.prepare(`SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND kind IN (${marks})`)
-        .bind(first, ...kinds).all(),
-      env.DB.prepare('SELECT MIN(day) AS day FROM visitor_counts WHERE kind IN (?, ?, ?, ?)').bind(...began).first()
+      rowsSince(env, origin, first),
+      firstDay(env, origin, at + 'found-any', 'SELECT MIN(day) AS day FROM visitor_counts WHERE kind IN (?, ?, ?, ?)', ...began)
     ]);
   } catch (e) {
     return null;
   }
-  rows = { results: forDevice(rows.results || [], device) };
+  rows = { results: forDevice(rows.filter((r) => wanted.has(r.kind)), device) };
 
   const now = foundBlank();
   const was = foundBlank();

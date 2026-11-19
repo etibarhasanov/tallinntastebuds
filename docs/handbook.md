@@ -16327,6 +16327,21 @@ everything else the site writes, against forty-odd on a day now; the day
 that is close, the rail's copies are the ones to stop writing, once the
 experiment is decided.
 
+Reading it is the other half of the cost. `/admin/visitors` and
+`/admin/found` read the range asked for and the range before it, so ninety
+days is a hundred and seventy-nine days of rows — the whole table until it
+is half a year old, and about ninety-five thousand rows after that at
+November 2026's five hundred and thirty a day — and that was read again for
+every device chip, every language and every range, every five minutes,
+though a day that has ended never changes. Since 2026-11-19 a day two or
+more behind is read once and kept in the colo for forty-five days, an entry
+a day, and only yesterday and today come from the table on each open: about
+a thousand rows, however long the range and however old the table. The two
+`MIN(day)` questions each page asks — when the count began, and when it began
+telling new from returning — are kept there the same way once they have an
+answer, where each walked the key until its kind turned up. **THE DAYS THAT
+HAVE ENDED, KEPT IN THE COLO** in `functions/api/_visitors.js`.
+
 ### The flag counter, and the desktops in America
 
 One number out of this table is a visitor's to read. At the top of

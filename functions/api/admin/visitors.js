@@ -76,7 +76,7 @@ export async function onRequestGet(context) {
   if (await wrongDatabase(env)) return json(empty, 200);
 
   const spoken = langs.map((l) => l.code);
-  const [visitors, deals] = await Promise.all([readVisitors(env, span, ui, spoken, device), readDeals(env, device)]);
+  const [visitors, deals] = await Promise.all([readVisitors(env, span, ui, spoken, device, request.url), readDeals(env, device)]);
   if (!visitors) return json(empty, 200);
 
   const res = json({ ready: true, ...visitors, ...deals, device: device, lang: lang, ui: ui }, 200, TTL);
