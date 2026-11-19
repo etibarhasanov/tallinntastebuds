@@ -70,7 +70,13 @@
  * functions/flashcard/mcp.js reads words.json beside the index and a deck's
  * or a lesson's own file. functions/api/_visitors.js reads the index for the ids a
  * visitor's report may say it was about. Nothing in a browser reads any of
- * them: the page asks /api/flashcard, which answers with what it read.
+ * them: the page asks /api/flashcard, which answers with what it read. One
+ * app does, since 2026-11-19: Kohuke fetches a deck's, a lesson's, a song's
+ * or a conversation's own file, and the index for the names of the decks,
+ * wherever it can put the route's answer together without the route — so
+ * the shape of data/decks/<id>.json and of the index's `decks` is a promise
+ * to a phone that cannot be updated in a day: add a field, never rename or
+ * remove one. **What the app reads** in CLAUDE.md has the whole of it.
  * tools/validate.mjs and tools/sitemap.mjs read the source, as they always
  * did, and the validator fails the build on a file here that is not what
  * this would write.

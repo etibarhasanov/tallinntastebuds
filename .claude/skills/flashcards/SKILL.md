@@ -205,6 +205,13 @@ than a check:
 
 ## What else moves when the file moves
 
+- **Kohuke reads `data/decks/` too.** The app fetches a deck's, a lesson's,
+  a song's or a conversation's own file, and the index's `decks`, and
+  repeats in Swift what `deckAnswer()`, `lessonAnswer()`, `songAnswer()` and
+  `talkAnswer()` do to one. So a field in those files may be added and
+  never renamed or removed, and something new the route would do to a file
+  on its way out goes into the file instead: **What the app reads** in
+  `CLAUDE.md`.
 - **`node tools/decks.mjs`.** The Functions read `data/decks/`, not the
   source, so a deck that is not written out is a deck the page cannot find.
   The validator fails a file there that is not what the tool would write, and

@@ -558,6 +558,25 @@ field, never rename or remove one** — and its models are in
   `review` — are written into the app. So are the error words it has
   sentences for: `name`, `front`, `back`, `too-many`, `full`, `often`,
   `not-found`, `signed-out`.
+- Files, since 2026-11-19: `data/decks/<id>.json` — a deck, a lesson, a song
+  or a conversation as `tools/decks.mjs` writes it — and
+  `data/decks/index.json`, of which it reads `decks`, each one's `id` and
+  `name`. Kohuke fetches the file rather than the route wherever the shelf
+  already says what somebody knows of it — a lesson, a song or a
+  conversation always, a deck where none of its cards are known, all are,
+  or as many as the phone's last copy has — because a file runs no Function
+  and reads no row. So the shape of those files is the same promise the
+  route's answer is: a field added, never renamed or removed, and the
+  folder stays out of `_routes.json`'s Functions.
+- **And it does to a file what the route does.** `Store.fromFiles()` in
+  `Kohuke/Core/Store.swift` repeats `deckAnswer()`, `lessonAnswer()`,
+  `songAnswer()` and `talkAnswer()`: `own`, each card's `deck`, `known` and
+  `due`, an empty `forms` and a `sentence` without its `et` and `en` left
+  out, `read` and `heard`, and a deck a song, a conversation or one of
+  their words points at turned into its `id` and `name`. A change to what
+  one of the four does to a file is a change there too, and a phone keeps
+  the old one for months — so the new thing goes in the file, where both
+  read it, rather than in the Function alone.
 - `GET /api/say?take=&text=`, answering a WAV.
 - Signing in, as above, with two things of its own: `/api/apple` has to
   accept its bundle id — `APP_IDS` in `functions/api/_apple.js` — and the
@@ -571,7 +590,8 @@ field, never rename or remove one** — and its models are in
   and the two that are not stages (`case`, `song`), `MAX_NAME`, `MAX_SIDE`
   and `SAY_TAKE`.
 
-Read out of Kohuke on 2026-11-11, the day it was written.
+Read out of Kohuke on 2026-11-11, the day it was written, and the files on
+2026-11-19, the day it began reading them.
 
 **And a third records rides.** Rattatee (`etibarhasanov/rattatee`, SwiftUI,
 bundle id `ee.tallinntastebuds.rattatee`) records a bike ride with the screen
