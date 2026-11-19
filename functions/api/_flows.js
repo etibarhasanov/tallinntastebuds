@@ -53,31 +53,12 @@
  * the page can put a member's map against a stranger's. Nothing else about
  * the person is kept, and nothing here could tell two of them apart.
  *
- * ARRIVED VIA
- *
- * And each is filed a second time under how its tab arrived, so a diagram
- * can be drawn for the people one link brought: a weekend's campaign
- * landed on one place, and the question was what they did after it, which
- * `in` and `out` pool with everybody else. assets/track.js keeps the tab's
- * first `?from=` tag and the origin of the site that sent it, and every
- * report from that tab carries them, on whichever page — the referrer of
- * a later page is this site, so without it only the landing page could be
- * told apart. The tag wins where there is one, `tag:fb-kartul`, since it
- * is the owner's own label for a link; otherwise the source, read by
- * sourceOf() the way a visitor's is, `src:facebook` — the in-app browsers
- * by their user agent, which every page of the tab still sends. A tab
- * opened from a link on this site arrived from here and is filed under
- * nothing more, and so is a report from a page holding yesterday's script.
- *
- * Bounded the way the rest is. The sources are VIA_SOURCES, every other
- * host being `src:other`; a tag is TAG's shape and a day takes at most
- * MAX_VIA_TAGS of them across the diagrams, past which only the ones
- * already counted that day go up — one lookup per tagged report, before
- * its batch. The rows a segment adds are the same diagram-bounded rows
- * `in` and `out` hold, so a day is that many again per segment that came.
- * A read walks the MAX_VIAS segments with the most steps over the range.
- * It began on 5 October 2026: the days before have `in` and `out` alone,
- * and the weekend's Facebook campaign it was written for is not in it.
+ * Until 2026-11-19 each was filed a third time under how its tab arrived —
+ * `src:facebook`, `tag:fb-kartul` — so a diagram could be drawn for the
+ * people one link brought. It doubled the rows a report wrote, and
+ * /admin/found answers where people came from without it, so it stopped
+ * when D1's hundred thousand writes a day came into sight; those rows stay
+ * and are not read.
  *
  * THE WALK, WHICH IS WHERE THE ARROWS COME FROM
  *
@@ -117,34 +98,19 @@
  * day already counted. It cannot tell a tab closed from a page left open
  * with nothing more pressed, and it does not try.
  *
- * TIME AT A STEP
- *
- * The report carries `at` beside the trail, the on-screen second into the
- * stretch each name happened at, and `secs`, the stretch's length; the page
- * itself is at nought on its first report. A counted step's time is from
- * it to the next counted step of the same diagram in the same stretch, or
- * to the end of the stretch where none followed: how long somebody looked
- * at a place before sharing it, or before putting the phone down. A stretch
- * is a page on screen until it was hidden, so a tab brought back from
- * behind another app starts its clock again and its first step pairs with
- * the last one before with no time on it — the hour it sat hidden was not
- * time spent at anything. Capped at MAX_SECS, the cap ./_visitors.js puts
- * on a stretch.
- *
- * A time is filed as one of BUCKETS, `t:<step>:<i>`, in the same table: a
- * median wants the spread, and a sum would be one tab left on a desk for
- * half an hour outweighing a hundred glances. Nine rows a step at most, a
- * day and a who, bounded by the diagram rather than the traffic. A report
- * from a page holding yesterday's script carries no `at` and is counted
- * without times.
+ * Until 2026-11-19 the time spent at each step was filed too, as one of
+ * eight buckets, `t:<step>:<i>`: nearly half of what a report wrote, for a
+ * figure under each step nobody decided anything by. It stopped with the
+ * segments above, and its rows are passed over.
  *
  * BY DEVICE
  *
- * Every fact is filed a second time under its device, the flow written
- * `<device>.<flow>` — `phone.visitor`, `desktop.member` — the way
- * ./_visitors.js files its kinds, and BY DEVICE there is the reasoning.
- * readFlows() reads the plain flow for every device, or one device's,
- * when /admin/flows asks for it with `?device=`. Since 2026-10-06.
+ * Every fact a phone reports is filed a second time under `phone.<flow>` —
+ * `phone.visitor` — the way ./_visitors.js files its kinds, and BY DEVICE
+ * there is the reasoning. readFlows() reads the plain flow for every
+ * device, the phones' for `?device=phone`, and both for `?device=other`,
+ * every device less the phones. Since 2026-10-06; tablets and desktops had
+ * flows of their own until 2026-11-19, which are not read.
  *
  * WHAT IS BOUNDED, AND HOW
  *
@@ -152,7 +118,7 @@
  * a busy day and a quiet one with the same journeys in them are the same
  * number of rows, and a day is at most the counted steps of a diagram plus
  * the pairs anybody took, under each of `in` and `out`, and as much again
- * under the device. A trail is at most
+ * for a phone. A trail is at most
  * MAX_TRAIL names, and a name has to be shaped like one. Per page put away
  * that is one session lookup and a handful of upserts in a batch of their
  * own, so a missing flow_counts never fails the day's visitor facts.
@@ -165,8 +131,7 @@
 
 import { sessionUser, dataFile } from './_lib.js';
 import { today, dayBack } from './_visits.js';
-import { pageOf, stepBefore, MAX_SECS, TAG, DEVICES } from './_visitors.js';
-import { sourceOf, siteOf } from './_visits.js';
+import { pageOf, stepBefore, lessPhone } from './_visitors.js';
 
 /* The most names one report may carry — the visitor's diagram counts eleven
    steps, so forty is every button on a page and then some — and the shape a
@@ -175,33 +140,6 @@ const MAX_TRAIL = 40;
 const NAME = /^[a-z][a-z0-9_]*$/;
 
 const WHO = ['out', 'in'];
-
-/* How a tab arrived — ARRIVED VIA. The sources sourceOf() names that a
-   segment keeps by name, every other host being `other`; the tags a day may
-   take; and how many segments a read walks. */
-const VIA_SOURCES = ['facebook', 'instagram', 'tiktok', 'search', 'direct'];
-const MAX_VIA_TAGS = 20;
-const MAX_VIAS = 12;
-const VIA = /^(src|tag):/;
-
-/* The upper edges, in seconds, of the buckets a time at a step is filed
-   under — TIME AT A STEP — the last bucket being everything past the last
-   edge. They ride in the answer as `buckets`, and assets/flows.js reads
-   them from there to say what each count spans, so this is the one copy. */
-export const BUCKETS = [5, 10, 20, 30, 60, 120, 300, 600];
-const TIME = 't:';
-
-function bucketOf(secs) {
-  let i = 0;
-  while (i < BUCKETS.length && secs >= BUCKETS[i]) i++;
-  return i;
-}
-
-/* A second off the report, or null where it is not one. */
-function second(v) {
-  const n = Number(v);
-  return Number.isFinite(n) && n >= 0 ? Math.min(MAX_SECS, Math.round(n)) : null;
-}
 
 const ADD =
   'INSERT INTO flow_counts (flow, day, who, id, n) VALUES (?1, ?2, ?3, ?4, ?5) ' +
@@ -244,63 +182,18 @@ function earlierOf(request, sent) {
   return before ? candidates(before.kind, before.page) : [];
 }
 
-/* The segment a report is filed under as well as `in` or `out` — ARRIVED
-   VIA — or null: no `via` on it, or a tab that arrived from this site. */
-function viaOf(request, via) {
-  if (!via || typeof via !== 'object') return null;
-  const tag = typeof via.tag === 'string' ? via.tag.toLowerCase() : '';
-  if (tag && TAG.test(tag)) return 'tag:' + tag;
-  const from = typeof via.from === 'string' ? via.from : '';
-  const source = sourceOf(from, request.headers.get('user-agent'), siteOf(request));
-  if (source === 'here') return null;
-  return 'src:' + (VIA_SOURCES.includes(source) ? source : 'other');
-}
-
-/* Whether a tag may be filed today: it already was, or the day has room
-   for one more — MAX_VIA_TAGS. A failed read files nothing under it.
-
-   The table's key is (flow, day, who, id), so both questions name every
-   flow a row can be filed under — each diagram, and each again per device —
-   and the tags as a range of the key rather than a LIKE. Asked by day and
-   who alone, they walked the whole table twice, 28,462 rows on 18 November
-   2026 for every report from a tab that came by a tagged link; named, they
-   read the day's tagged rows and nothing else — 107 for 7 November, a day
-   with two tags, against 19,749, and the same answer. Seven diagrams and
-   three devices bind 28 of the hundred values D1 allows. */
-async function tagRoom(env, day, via, flows) {
-  const filed = flows.flatMap((f) => [f.id].concat(DEVICES.map((d) => d + '.' + f.id)));
-  if (!filed.length) return false;
-  const named = filed.map((_, i) => '?' + (i + 3)).join(', ');
-  try {
-    const row = await env.DB.prepare(
-      `SELECT EXISTS (SELECT 1 FROM flow_counts WHERE flow IN (${named}) AND day = ?1 AND who = ?2) AS had, ` +
-      `(SELECT COUNT(DISTINCT who) FROM flow_counts WHERE flow IN (${named}) AND day = ?1 ` +
-      "AND who >= 'tag:' AND who < 'tag;') AS tags"
-    ).bind(day, via, ...filed).first();
-    return !!row && (row.had === 1 || row.tags < MAX_VIA_TAGS);
-  } catch (e) {
-    return false;
-  }
-}
-
 /* A page put away: `trail` the names in order, `opened` whether this is the
-   page's first report, `earlier` the step before — see WHAT ARRIVES. True
-   when something was counted. */
+   page's first report, `earlier` the step before — see WHAT ARRIVES — and
+   `device`, of which a phone is filed again. True when something was
+   counted. */
 export async function countFlows(context, body) {
   const { request, env } = context;
   const page = pageOf(request, body.id);
 
-  /* The names, each with its second where the report carried one that
-     lines up with the trail — TIME AT A STEP. */
   const sent = Array.isArray(body.trail) ? body.trail.slice(0, MAX_TRAIL) : [];
-  const ats = Array.isArray(body.at) && body.at.length === (Array.isArray(body.trail) ? body.trail.length : -1) ? body.at : null;
-  const trail = [];
-  sent.forEach((name, i) => {
-    if (typeof name === 'string' && NAME.test(name) && name !== 'page') trail.push({ name, at: ats ? second(ats[i]) : null });
-  });
+  const trail = sent.filter((name) => typeof name === 'string' && NAME.test(name) && name !== 'page');
   const opened = body.opened === true;
   if (!trail.length && !opened) return false;
-  const until = ats ? second(body.secs) : null;
 
   /* The signals in the order they happened. The step before is not counted
      again — the report that carried it did that — and on a later stretch of
@@ -309,8 +202,8 @@ export async function countFlows(context, body) {
   const seq = [];
   const earlier = earlierOf(request, body.earlier);
   if (earlier.length) seq.push({ any: earlier, before: true, taken: !opened });
-  if (opened) seq.push({ any: candidates('page', page), at: ats ? 0 : null });
-  for (const item of trail) seq.push({ any: candidates(item.name, page), at: item.at });
+  if (opened) seq.push({ any: candidates('page', page) });
+  for (const name of trail) seq.push({ any: candidates(name, page) });
 
   let flows;
   try {
@@ -325,7 +218,6 @@ export async function countFlows(context, body) {
     const index = signalIndex(flow);
     if (!index.size) continue;
     const seen = new Set();
-    const timed = [];
     let prev = null;
     for (const item of seq) {
       const step = item.any.map((s) => index.get(s)).find(Boolean);
@@ -340,25 +232,13 @@ export async function countFlows(context, body) {
       facts.push([flow.id, who, step]);
       if (prev && prev !== step) facts.push([flow.id, who, prev + '>' + step]);
       prev = step;
-      timed.push({ step, at: item.at });
     }
-    /* Each step's time, to the next one or to the end of the stretch. */
-    timed.forEach((x, i) => {
-      const next = i + 1 < timed.length ? timed[i + 1].at : until;
-      if (x.at === null || next === null || next < x.at) return;
-      facts.push([flow.id, who, TIME + x.step + ':' + bucketOf(next - x.at)]);
-    });
   }
   if (!facts.length) return false;
 
   const day = today();
-  /* The same facts again under how the tab arrived — ARRIVED VIA. */
-  let via = viaOf(request, body.via);
-  if (via && via.indexOf('tag:') === 0 && !(await tagRoom(env, day, via, flows))) via = null;
-  const filed = via ? facts.concat(facts.map(([flow, , id]) => [flow, via, id])) : facts;
-  /* And all of it again under the device — BY DEVICE. */
-  const device = DEVICES.includes(body.device) ? body.device : null;
-  const all = device ? filed.concat(filed.map(([flow, w, id]) => [device + '.' + flow, w, id])) : filed;
+  /* And all of it again for a phone — BY DEVICE. */
+  const all = body.device === 'phone' ? facts.concat(facts.map(([flow, w, id]) => ['phone.' + flow, w, id])) : facts;
   try {
     await env.DB.batch(all.map(([flow, w, id]) => env.DB.prepare(ADD).bind(flow, day, w, id, 1)));
     return true;
@@ -381,8 +261,9 @@ const FIRST_DAY =
   'UNION ALL SELECT (SELECT MIN(flow) FROM flow_counts WHERE flow > f.flow) FROM f WHERE f.flow IS NOT NULL) ' +
   'SELECT MIN((SELECT MIN(day) FROM flow_counts WHERE flow = f.flow)) AS day FROM f WHERE f.flow IS NOT NULL';
 
-/* One diagram over `span` days, or null where there is no table yet —
- * one device's half of it where `device` names one, BY DEVICE.
+/* One diagram over `span` days, or null where there is no table yet — the
+ * phones' half of it for `phone`, and every device's less the phones' for
+ * `other`, BY DEVICE.
  *
  *   flow       the diagram's id
  *   span       1, 7, 28 or 90
@@ -390,8 +271,7 @@ const FIRST_DAY =
  *   since      the first day anything was counted, or null for never
  *   counted    the ids of the steps that carry `when`, in the file's order
  *   handover   the ids of the steps that begin on somebody else's device
- *   who        { all, out, in }, each walked — see THE WALK — and one more
- *              for each segment in `via`, keyed by its id:
+ *   who        { all, out, in }, each walked — see THE WALK:
  *     views    how many page views the diagram's start counted
  *     steps    { id: n } every step with a number: the counted ones with
  *              their zeros, and the ones the walk could reach
@@ -402,66 +282,49 @@ const FIRST_DAY =
  *     stopped  { id: n } the counted steps' people who took no counted
  *              step after it and were not walked into an end — WHERE
  *              PEOPLE STOPPED
- *     times    { id: [n, …] } a counted step's times, one count per bucket
- *              of BUCKETS and one past it — TIME AT A STEP
- *   buckets    BUCKETS, so the page can say what each count spans
- *   via        [{ id, views }] the segments the range has — `src:facebook`,
- *              `tag:fb-kartul` — most views first, MAX_VIAS of them at most:
- *              ARRIVED VIA
  *
- * One read of the range's rows for this diagram; the rest is arithmetic on
- * a few dozen rows a day. */
+ * One read of the range's rows for this diagram — and for `other`, the
+ * phones' beside them — and the rest is arithmetic on a few dozen rows a
+ * day. The segments and the times of the days before 2026-11-19 are in the
+ * same rows and passed over: their `who` is neither `in` nor `out`, and
+ * their id begins `t:`. */
 export async function readFlows(env, flow, span, device) {
   const cut = dayBack(span - 1);
-  const filed = device ? device + '.' + flow.id : flow.id;
+  const phoned = 'phone.' + flow.id;
+  /* The flow or flows read: the same one twice where only one is wanted,
+     so it is one statement whatever the view. */
+  const [one, two] = device === 'phone' ? [phoned, phoned] : device ? [flow.id, phoned] : [flow.id, flow.id];
   let rows;
   let since;
   try {
     [rows, since] = await Promise.all([
-      env.DB.prepare('SELECT who, id, n FROM flow_counts WHERE flow = ? AND day >= ?').bind(filed, cut).all(),
-      device
-        ? env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts WHERE flow = ?').bind(filed).first()
+      env.DB.prepare('SELECT flow, day, who, id, n FROM flow_counts WHERE flow IN (?, ?) AND day >= ?')
+        .bind(one, two, cut).all(),
+      device === 'phone'
+        ? env.DB.prepare('SELECT MIN(day) AS day FROM flow_counts WHERE flow = ?').bind(phoned).first()
         : env.DB.prepare(FIRST_DAY).first()
     ]);
   } catch (e) {
     return null;
   }
+  let read = (rows.results || []).filter((r) => WHO.includes(r.who) && r.id.indexOf('t:') !== 0);
+  if (device === 'other') {
+    read = lessPhone(read.filter((r) => r.flow === flow.id), read.filter((r) => r.flow === phoned),
+      (r) => r.day + '\u0000' + r.who + '\u0000' + r.id);
+  }
 
-  const fresh = () => ({ steps: new Map(), pairs: new Map(), times: new Map() });
+  const fresh = () => ({ steps: new Map(), pairs: new Map() });
   const sums = { all: fresh() };
   for (const w of WHO) sums[w] = fresh();
-  for (const r of rows.results || []) {
-    /* A segment is a second filing of facts `in` and `out` already hold,
-       so it sums into itself alone — never into everybody. */
-    const segment = VIA.test(r.who);
-    if (segment && !sums[r.who]) sums[r.who] = fresh();
-    if (!sums[r.who]) continue;
-    for (const into of segment ? [sums[r.who]] : [sums[r.who], sums.all]) {
-      if (r.id.indexOf(TIME) === 0) {
-        const cut = r.id.lastIndexOf(':');
-        const id = r.id.slice(TIME.length, cut);
-        const i = Number(r.id.slice(cut + 1));
-        if (!(i >= 0 && i <= BUCKETS.length)) continue;
-        if (!into.times.has(id)) into.times.set(id, new Array(BUCKETS.length + 1).fill(0));
-        into.times.get(id)[i] += r.n;
-        continue;
-      }
+  for (const r of read) {
+    for (const into of [sums[r.who], sums.all]) {
       const map = r.id.indexOf('>') === -1 ? into.steps : into.pairs;
       map.set(r.id, (map.get(r.id) || 0) + r.n);
     }
   }
 
   const out = {};
-  for (const w of Object.keys(sums)) if (!VIA.test(w)) out[w] = walk(flow, sums[w]);
-
-  /* The segments with the most steps taken, each walked like a who, and
-     then put busiest first by the views their walk says they had. */
-  const stepsOf = (id) => Array.from(sums[id].steps.values()).reduce((a, n) => a + n, 0);
-  const via = Object.keys(sums).filter((w) => VIA.test(w))
-    .sort((x, y) => stepsOf(y) - stepsOf(x) || x.localeCompare(y))
-    .slice(0, MAX_VIAS)
-    .map((id) => { out[id] = walk(flow, sums[id]); return { id, views: out[id].views }; })
-    .sort((x, y) => y.views - x.views || x.id.localeCompare(y.id));
+  for (const w of Object.keys(sums)) out[w] = walk(flow, sums[w]);
   return {
     flow: flow.id,
     span: span,
@@ -469,9 +332,7 @@ export async function readFlows(env, flow, span, device) {
     since: (since && since.day) || null,
     counted: (flow.nodes || []).filter((n) => n.when && n.when.length).map((n) => n.id),
     handover: (flow.nodes || []).filter((n) => n.handover).map((n) => n.id),
-    buckets: BUCKETS,
-    who: out,
-    via
+    who: out
   };
 }
 
@@ -598,9 +459,6 @@ function walk(flow, sums) {
     if (reached > 0) stopped[a] = finished ? 0 : Math.max(0, reached - (tookAny.get(a) || 0));
   }
 
-  const times = {};
-  for (const [id, counts] of sums.times) if (g.counted.has(id)) times[id] = counts;
-
   const drawn = {};
   for (const [key, n] of arrows) if (n > 0) drawn[key] = n;
   return {
@@ -609,7 +467,6 @@ function walk(flow, sums) {
     arrows: drawn,
     pairs,
     moves: moves.sort((x, y) => y.n - x.n || (x.from + x.to).localeCompare(y.from + y.to)),
-    stopped,
-    times
+    stopped
   };
 }

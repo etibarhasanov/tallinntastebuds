@@ -213,16 +213,6 @@
    own loses to the flex above. */
 .flows-controls[hidden] { display: none; }
 .flows-controls .ins-range { margin: 0; }
-/* How the tab arrived — ARRIVED VIA in functions/api/_flows.js — on a row
-   of its own under the range and the who, since a campaign's tags can be
-   more than fit beside them on a phone. Hidden until a range has one. */
-.flows-controls .flows-via { flex-basis: 100%; align-items: center; }
-.flows-controls .flows-via[hidden] { display: none; }
-.flows-via-label {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 11.5px;
-}
 
 .flows-counted {
   margin: 0 0 12px;
@@ -260,16 +250,6 @@
   font-size: 10.5px;
   font-weight: 500;
 }
-.flow-time {
-  fill: var(--muted);
-  font-family: var(--mono);
-  font-size: 10.5px;
-  paint-order: stroke;
-  stroke: var(--wash);
-  stroke-width: 4px;
-  stroke-linejoin: round;
-}
-
 /* A count on an arrow: after the arrow's label where it has one, otherwise
    under the arrow itself, on a stroke of the lane's own wash so the line
    does not cut through the digits — arrowNumbers() in assets/flows.js says
@@ -320,30 +300,3 @@
 .flows-detail-n b { font-family: var(--mono); font-weight: 500; font-size: 13px; }
 .flows-detail-n p { margin: 0; }
 
-/* The spread of a pressed step's times: one bar in four shades of the
-   accent, short times palest, and the same four written out under it. */
-.flows-times { margin-top: 12px; }
-.flows-time-bar {
-  display: flex;
-  gap: 2px;
-  height: 10px;
-  margin-top: 6px;
-  border-radius: 5px;
-  overflow: hidden;
-}
-.flows-time-bar span { flex-basis: 0; min-width: 3px; }
-.flows-times .is-0 { background: var(--accent); opacity: .3; }
-.flows-times .is-1 { background: var(--accent); opacity: .55; }
-.flows-times .is-2 { background: var(--accent); opacity: .8; }
-.flows-times .is-3 { background: var(--accent); }
-.flows-detail-n .flows-time-key {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin-top: 8px;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 11.5px;
-}
-.flows-time-key span { display: inline-flex; align-items: center; gap: 6px; }
-.flows-time-key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }

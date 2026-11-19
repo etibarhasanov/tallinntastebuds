@@ -15718,11 +15718,9 @@ are**, **How they found it** and **What they did**. It was one column of
 twenty cards in the order they were written, which put the tests twelfth,
 under the countries and the languages, and the owner went looking for the
 lists' test the day it began and could not find it. The tests come first
-because they are what the page is most often opened for, the lists' card
-before the rails' because the rails' is three tables long and would push the
-short ones a screen and a half down, with **Time on phones** after the
-looks and the colours' before the rails; and a test's card is drawn from the day it begins, noughts and all, rather than
-waiting for its first newcomer.
+because they are what the page is most often opened for, and a test's card
+is drawn from the day it begins, noughts and all, rather than waiting for
+its first newcomer.
 `group()` in `assets/visitors.js` draws a heading only over a group with a
 card in it.
 
@@ -15771,16 +15769,15 @@ its own.
   share of them **returning**, **page views**, **time per visitor** and
   **clicks per visitor**. Today is not set against yesterday: half a day
   against a whole one says nothing.
-- **Tests**: **The lists' two looks**, the directory's own test; **Time on
-  phones**, how long newcomers on a phone stay by colour and rail; and **The
-  four colours**, the colour row's — see **The tests** and **Time on
-  phones** below. The map's two rails were a test here until 2026-11-05;
-  **The short rail** has what they found.
+- **Tests**: **The lists' two looks**, the directory's own test — see **The
+  tests** below. The map's two rails were a test here until 2026-11-05, and
+  the four colours until 2026-11-19; **The short rail** and **The four
+  styles, dealt** have what they found.
 - **Who they are**: a bar a day of new and returning visitors (a bar a week
-  for ninety days, and none for today), **new against returning** — see
-  **New against returning** below — a bar an hour of the day on Tallinn's
-  clock, **phone, tablet or desktop**, **countries**, and **languages** with
-  the switches between them — see **The language it was read in** below.
+  for ninety days, and none for today), a bar an hour of the day on
+  Tallinn's clock, **phone, tablet or desktop**, **countries**, and
+  **languages**, the one each visitor arrived in — see **The language it was
+  read in** below.
 - **How they found it**: **where they came from**, and which address a
   search engine landed them on. `/admin/found` takes both apart.
 - **What they did**: **signing up**, how far people got with the sign-in
@@ -15939,33 +15936,27 @@ until the owner next signs in. **THE OWNER'S BROWSER** in
 
 ### The language it was read in
 
-Every page writes the language it is read in on to `<html lang>`, and
-`assets/track.js` watches that attribute, so the seconds on screen are split
-by whatever it said while they passed. The card has two tables with a row per
-language and a column each for new and returning visitors: how many
-**visitors** arrived in it — the language on screen before any switch, which
-is the one the site picked for them out of `?lang=`, their saved choice or
-the browser's — and how much **time** the site was read in it. Time follows a
-switch: somebody who arrives in English and changes to Russian after a
-minute is one visitor under English, one minute under English and the rest
-under Russian. Two tables of two columns rather than one of four, because
-four numbers and a language name do not fit across a phone.
+The card has a row per language and a column each for new and returning
+visitors: how many **visitors** arrived in it — the language on screen before
+any switch, which is the one the site picked for them out of `?lang=`, their
+saved choice or the browser's. `assets/track.js` keeps it off `<html lang>`
+until the first switch, and it rides on the report a page sends when it is
+put away, so a visitor's language is counted when their first page of the
+day is hidden or closed rather than as it opens, and a phone that kills a tab
+outright loses it the way it loses the last stretch of time. Every code is
+checked against the languages `data/ui.json` speaks, so the `lang` kind is a
+closed list.
 
-Under it, **Changed language** ranks the switches as pairs, English →
-Russian, out of the `language_select` event the map's and the flashcards'
-switches already send — a language people keep leaving shows up as the left
-half of a pair.
+Until 2026-11-19 the card also had the **time** read in each language, the
+seconds on screen split by what `<html lang>` said while they passed, and a
+**Changed language** ranking of every switch as a pair. They were a write
+per language on every report for two tables nothing was decided by, and
+they went when D1's hundred thousand writes a day came into sight — **Rows
+by the day, not by the visit** below. Their rows are still in the table.
 
-It rides on the report a page sends when it is put away, so a visitor's
-language is counted when their first page of the day is hidden or closed
-rather than as it opens, and a phone that kills a tab outright loses it the
-way it loses the last stretch of time. Every code is checked against the
-languages `data/ui.json` speaks, so the `lang` kind is a closed list. Nothing
-from before it landed was counted.
-
-What that alone could not say is which language is missing: a browser that
-asks for German and gets English is counted under English there. So under the
-two tables, **Browsers asked for** is the language each visitor's browser
+What the arrival alone cannot say is which language is missing: a browser
+that asks for German and gets English is counted under English there. So
+under the table, **Browsers asked for** is the language each visitor's browser
 asks for — the two letters of `navigator.language`, once per visitor off the
 first page of the day, spoken here or not — with the ones the site does not
 speak marked. It is the one thing on this page read straight off the browser
@@ -15975,128 +15966,79 @@ site has. An open list, capped a day the way the countries are.
 
 ### New against returning
 
-Everything a visit does — pages, seconds, presses, places opened on the map,
-sign-ins and accounts made — is counted a second time under the kind of
-visitor it was, so the page can put a first day here against a later one.
-Sign-ins and accounts made are the `account_login` and `account_create`
-presses picked out of the whole of the same report, however many other
-names it carries; a place opened is one of `TTBTrack.view()`'s on the map.
-The blog and the flashcards report views the same way, and theirs are a
-post and a deck, so they are not counted as places — they were, until the
-blog's readers started turning up as people who opened places. Pages, time,
-clicks and places are per visitor, and
-sign-ins and accounts are counts, because one person can sign in three times
-and a share of that would be a number about nothing.
-
-This began after the visitors did, so a range that reaches back past its
-first day has visitors on days that have nothing else to divide among them.
-Those days are left out of this card and the colours' — the visitors along
-with the rest — and a line under each says from when.
+The figures at the top say how many visitors were new and how many had come
+before, and the bars under them split each day the same way, out of the
+`visitor` kind. Until 2026-11-19 everything a visit did — pages, seconds,
+presses, places opened, sign-ins and accounts made — was counted a second
+time under the kind of visitor it was, for a card that set a first day here
+against a later one fact by fact. At a hundred visitors a day it said little
+the figures did not, and it was two to six writes on every report, so it
+went with the colour test. **Today so far** still says who signed in and
+made an account: those are the `account_login` and `account_create`
+presses, read out of the day's `press` rows.
 
 ### The tests
 
 The site has dealt newcomers more than one version of something, at random,
 to see which holds them better, and the **Tests** group is where each is
-read. The map's two rails were the first, and the card that read them — the
-strangers dealt each and the share who opened a place, everyone on each rail
-over the range, and a two-proportion z-test over the first block — is gone
-with the full rail: **The short rail** has what it found and why it ended.
-Its rows are still in `press_counts` and `visitor_counts` under `layout`,
-and nothing reads them.
+read. The map's two rails were the first, and its card is gone with the full
+rail: **The short rail** has what it found and why it ended. The four
+colours were the second, and its cards — the four colours side by side, time
+on phones by colour and rail, and a newcomer's time on the map and the
+flashcards by colour — went on 2026-11-19 when the owner ended it: **The
+four styles, dealt** has what it found. Their rows are still in
+`press_counts` and `visitor_counts` under `layout`, `style`, `phone` and
+`stay`, and nothing reads them.
 
-**The lists' two looks** reads the directory's own test in one block: how
-many newcomers each look was dealt, and the share of them that opened a list
-from it and kept one that day, under one sentence — a two-proportion z-test
-at the usual 95%, **too early to call** until each arm has thirty newcomers
-(`FEWEST` in `assets/visitors.js`), then **no clear difference yet** or one
-look **ahead** once the gap is bigger than chance would make. The six `look`
-rows of `press_counts`, which have no day, so they are all-time rather than
-the range; **The lists' two looks** has the rest.
-
-**The four colours** reads the colour test the same way, a
-column per colour: newcomers dealt each, and the share that opened something
-that day, came back another day and chose another colour, under a verdict
-that sets the best colour against the worst; then everyone dealt each colour
-over the range and its new visitors alone, with the per-visitor figures
-**New against returning** has, out of the `style` kind of `visitor_counts`. **The four styles,
-dealt** has the rest.
-
-### Time on phones
-
-The rails and the colours were two tests dealt independently, and the owner's
-question about them was one question: how long does somebody new on a phone
-stay, by the colour and the rail they got? Neither card could say. Both mix
-phones with desktops, and a desktop always drew the full rail unless its
-owner picked otherwise, so the rails' time per visitor was partly a
-comparison of desks against phones; and the time a visit spent was never
-filed with its device at all — `device` was counted once, on the day's first
-page, and nowhere near the seconds.
-
-So the card is one grid, the colours down the side and the rails across —
-full, short, and **no rail yet** for a newcomer who never reached the map —
-with **all rails** as the last column and **all colours** as the last row,
-so the margins are each test alone and the cells are the two together. Each
-cell is the time per new visitor over the range, and a second grid under it
-is the head count each average was taken over: four minutes out of three
-visitors is three visitors. The line over them says a cell under thirty is
-too few to compare. There is no verdict sentence, because a time is not the
-yes-or-no the z-test is asked of; and no median, because a count is a sum
-and a median needs every visit.
-
-**Where a visitor's cell comes from.** The arm is pinned, not read off each
-report. A newcomer who lands on the flashcards has no rail until they open
-the map, and read fresh their visit would be counted under no rail and their
-minutes on the map under one, dividing a cell's time by visitors it never
-had. So `assets/track.js`, on a phone newcomer's first page of the day,
-writes `<rail>:<colour>` into `ttb.phoneday` with the date — `pinPhone()` —
-and every report until midnight UTC carries it as `phone`. Since
-2026-11-05 every newcomer draws the short rail, so the rail is always `b`,
-the short rail's column, and the full rail's and **no rail yet** hold the
-days before. Only a colour that was dealt counts, the colours' rule: a newcomer who
-arrived on a link carrying a colour is in no cell. Returning visitors,
-tablets and desktops are in none either.
-
-**What is counted:** the `phone` kind of `visitor_counts`,
-`<rail>:<colour>:visitors` on that first page and `<rail>:<colour>:secs` on
-every report after, closed to `PHONE_ARMS` in `functions/api/_visitors.js` —
-three rails by four colours, two facts — **TIME ON PHONES** there. It counts
-from the day it shipped, 2026-10-05; nothing before that can be split by
-device.
+**The lists' two looks** is the test still running, and it reads the
+directory's own test in one block: how many newcomers each look was dealt,
+and the share of them that opened a list from it and kept one that day,
+under one sentence — a two-proportion z-test at the usual 95%, **too early
+to call** until each arm has thirty newcomers (`FEWEST` in
+`assets/visitors.js`), then **no clear difference yet** or one look
+**ahead** once the gap is bigger than chance would make. The six `look` rows
+of `press_counts`, which have no day, so they are all-time rather than the
+range; **The lists' two looks** has the rest. It stayed when the colours
+went because it costs a row or two per newcomer, not per report.
 
 ### By device
 
-Every number on the four count pages can be read for one kind of device. A
-row of chips beside the range — **All devices**, **Phone**, **Tablet**,
-**Desktop** — sits on `/admin/visitors`, `/admin/found` and `/admin/flows`,
-and at the head of `/admin/stats`, which has no range; the address keeps the
-choice as `?device=` on the first three pages, so a reload lands on it. All
-is the page as it always was.
+Every number on the four count pages can be read for phones and for
+everything else. A row of chips beside the range — **All devices**,
+**Phone**, **Not phone** — sits on `/admin/visitors`, `/admin/found` and
+`/admin/flows`, and at the head of `/admin/stats`, which has no range; the
+address keeps the choice as `?device=phone` or `?device=other` on the first
+three pages, so a reload lands on it. All is the page as it always was.
 
 The device is the one **When they come, on what, and not the owner** above
 describes: `device()` in `assets/track.js`, a mouse for the primary pointer
 being a desktop, a laptop with a touchscreen included. Every report a page
-sends carries it now, and so does every press the map and the lists post,
-and the count files each fact twice — once as before and once under its
-device, the kind written `<device>.<kind>`: `phone.view`, `desktop.press`,
-`tablet.layout`. `press_counts` does the same with its kinds, so
-`desktop.rail` is the rail's pills pressed on a computer, and `flow_counts`
-with its flows, `phone.visitor`. No kind or flow had a dot in it before, so a
-row without one is every device and a row with one is one device, in the same
-tables under the same keys, and nothing had to be applied to the database.
-The routes take `?device=` and read the half asked for, through `forDevice()`
-in `functions/api/_visitors.js`, and the edge cache keys on it.
+sends carries it, and so does every press the map and the lists post, and a
+report from a phone is filed twice — once as before and once under the
+kind written `phone.<kind>`: `phone.view`, `phone.press`. `press_counts`
+does the same with its kinds, `phone.rail`, and `flow_counts` with its
+flows, `phone.visitor`. **Not phone** costs no row at all: it is every
+device less the phones, worked out as the page is read — `lessPhone()` in
+`functions/api/_visitors.js` — so a tablet and a desktop are written once.
+No kind or flow had a dot in it before, so a row without one is every device
+and a row with one is the phones, in the same tables under the same keys,
+and nothing had to be applied to the database.
 
-It doubles the rows each report writes, which a day can afford: the size is
-still bounded by the kinds, and each open kind is capped per device as it is
-overall. What it cannot split is anything a route counts rather than a page,
-because no route knows the device — the chat, the products, the Google round
-trip's sign-up steps, Right now — and the saves and what the site holds on
-`/admin/stats`, which are not presses. A device's view shows those for every
-device, and a line under the chips says so. **Time on phones** is phones
-already, and shows under Phone alone. And it began on 2026-10-06, the same day
-the map stopped dealing a rail to newcomers on a laptop or a tablet: nothing
-before it can be split, and a range reaching back past it shows a device's
-numbers only from then.
+From 2026-10-06 to 2026-11-19 tablets and desktops were filed under
+`tablet.` and `desktop.` as well, and the chips were four: every report's
+writes doubled, which is most of what had the free hundred thousand writes
+a day in sight by mid-November. The owner reads the site as phones and the
+rest, so those two went. Their rows are kept and read by nothing, and all
+less phones gives the same answer over those days too.
+
+What it cannot split is anything a route counts rather than a page, because
+no route knows the device — the chat, the products, the Google round trip's
+sign-up steps, Right now — and the saves and what the site holds on
+`/admin/stats`, which are not presses. A view of one side shows those for
+every device, and a line under the chips says so. And it began on
+2026-10-06, the day the map stopped dealing a rail to newcomers on a laptop
+or a tablet: nothing before it can be split, and a range reaching back past
+it shows the phones' numbers only from then.
 
 ### Signing up
 
@@ -16294,11 +16236,9 @@ actions are counted and the people are not.
 `visitor_counts` is `profile_counts` for the whole site: one row per fact per
 day and a number, keyed `(day, kind, id)` and `WITHOUT ROWID` because the key
 is the only way it is read. A busy day costs no more rows than a quiet one
-with the same pages in it. The pages, the two visitor kinds, the rails and
-the six facts counted under new, returning and each rail are lists in
-`functions/api/_visitors.js` — forty ids a day at most between them — and
-the languages are the ones `data/ui.json` speaks, four rows a language a day
-at most and one per pair of a switch somebody pressed; the countries, the sources and the
+with the same pages in it. The pages, the two visitor kinds and the rails are lists
+in `functions/api/_visitors.js`, and the languages are the ones
+`data/ui.json` speaks, two rows a language a day at most; the countries, the sources and the
 press names are whatever a request says, so each of those takes at most a
 hundred ids a day, after which only ids already counted that day go up. The
 press names take three hundred: they are the one open kind whose names the
@@ -16313,22 +16253,26 @@ nothing needs deleting. The day it stops being small the answer is a monthly
 roll-up, and it is not worth writing before then.
 
 Per page load that is two requests to `POST /api/stats` — the page opened,
-and a stretch on screen with its presses — and one batch of upserts each:
-one row for a page view and one for its hour, two for it as new or returning
-and on its rail, seven more on a visitor's first page of the day — the
-visitor, the country, the source, the page landed on, the rail, the
-language the browser asked for and the device — and on the way out one for
-the time, one per press name, and two for each of the time, the presses, the
-places, a sign-in and an account made that the stretch had, one per language
-it was read in and one per switch, on a visitor's first page one for the
-language they arrived in, and on a page's first report one for having
-reported, one if nothing was pressed and one for the page before it. That is
-fourteen to twenty writes for an ordinary page, and a question to the chat
-is two to seven more. On the free plan's hundred thousand
-writes a day it is room for six thousand page views a day or so alongside
-everything else the site writes, against forty-odd on a day now; the day
-that is close, the rail's copies are the ones to stop writing, once the
-experiment is decided.
+and a stretch on screen with its presses — and one batch of upserts each,
+with the diagrams' own batch beside the second. Measured under `pages dev`
+on 2026-11-19, a newcomer's first page with two presses on it wrote 81 rows
+on a phone and 79 on a desktop: every fact twice by the device, again under
+new or returning, again under the colour dealt, the time again per language,
+and the diagrams' steps again under how the tab arrived and again per time
+bucket. On the free plan's hundred thousand writes a day that ran out
+somewhere past twelve hundred visitors a day, and the site was at a hundred.
+
+So on 2026-11-19 the owner kept what they read and the rest stopped: the
+colour test ended, new against returning fact by fact went, the language
+kept only the one people arrived in, the diagrams lost their times and their
+segments, and only a phone is filed a second time. The same visit writes 37
+rows on a phone and 20 on a desktop — the visitor, the country, the source,
+the page landed on, the language asked for, the device, the view and its
+hour on the way in; the time, each press name, the language arrived in and
+whether anything was pressed on the way out; a row a step and a pair on the
+diagrams that recognise it; and the phone's copy of all of that. Room, at
+the same mix, for something over three thousand visitors a day before the
+writes are the limit.
 
 Reading it is the other half of the cost. `/admin/visitors` and
 `/admin/found` read the range asked for and the range before it, so ninety
@@ -16345,10 +16289,10 @@ reading the recent days again — so since the same day yesterday joins the
 kept days a quarter of an hour after midnight UTC, and today's rows are
 kept two minutes in the colo for both pages and every chip to share: one
 day's rows at most once in two minutes, however long the range and however
-old the table. The two
-`MIN(day)` questions each page asks — when the count began, and when it began
-telling new from returning — are kept there the same way once they have an
-answer, where each walked the key until its kind turned up. **THE DAYS THAT
+old the table. The
+`MIN(day)` question each page asks — when the count began — is kept there
+the same way once it has an answer, where it walked the key until its kind
+turned up. **THE DAYS THAT
 HAVE ENDED, KEPT IN THE COLO** in `functions/api/_visitors.js`.
 
 ### The flag counter, and the desktops in America
@@ -16754,9 +16698,9 @@ parameter the count never sees — a scan reads `pass_verify` whether the
 verdict was valid or refused — the ends carry no number rather than a
 guess, and a pressed one says so.
 
-**Where they stopped, and how long they spent.** An arrow says where
-people went; it cannot say where they did not. So every counted step
-carries two marks of its own, on a line under it. A dashed pill —
+**Where they stopped.** An arrow says where people went; it cannot say
+where they did not. So every counted step carries a mark of its own, on a
+line under it. A dashed pill —
 *106 stopped* — is how many of the people who reached it took no counted
 step after it: they closed the page, or went quiet, or did something no
 diagram counts, and the page cannot tell those apart and does not try.
@@ -16767,23 +16711,13 @@ one on *Opens a place* the people who looked and went no further. It is
 the step's number less its pairs out, worked out when the page is read,
 so it reaches back over every day already counted.
 
-Beside it is the typical time at the step — *~55 s* — from reaching it to
-the next counted step of the same diagram, or to the page being put away
-where none came: how long somebody looked at a place before sharing it, or
-before putting the phone down. It is the time on screen the visitors page
-already counts, split at each step, and a stretch is a page on screen until
-it was hidden, so a tab brought back from behind another app starts its
-clock again rather than counting the hour it sat there. Each time is filed
-in `flow_counts` as one of nine buckets — `t:<step>:<i>`, edges at 5, 10,
-20, 30 seconds, one, two, five and ten minutes, `BUCKETS` in
-`functions/api/_flows.js` — because a median wants the spread and a sum
-would let one tab left on a desk outweigh a hundred glances; the page
-reads the median along the bucket it falls in. A pressed step's card
-spells both out, with the spread as one bar in four parts — under ten
-seconds, to a minute, to five, past it — and **Step by step** carries the
-stopped as a column and the time on the line under each name, dropping the
-share of views on a phone to make room. Times start the day this landed;
-before it, a step has a pill and no time.
+A pressed step's card spells it out, and **Step by step** carries it as a
+column. Until 2026-11-19 a typical time at each step sat beside the pill,
+out of eight buckets of seconds filed per step — `t:<step>:<i>` — with its
+spread as a bar in the step's card. It was nearly half of what a report
+wrote to `flow_counts` for a figure nobody decided anything by, and it
+went when D1's hundred thousand writes a day came into sight; those rows
+are passed over.
 
 **Signed in and signed out** is the session on the request, which the server
 knows and the page does not need to; everybody is the two added together.
@@ -16828,42 +16762,17 @@ owner decides.
 
 ### Arrived via
 
-The weekend of 3 and 4 October 2026 ran two campaigns, a Facebook post that
-landed on Kartul and an Instagram story that landed on a list, and the
-question afterwards was what the Facebook people did once they were in.
-Nothing here could say. `in` and `out` pool everybody, and only the first
-page of a visit knows where it came from — every later page's referrer is
-this site — so a campaign's people were in the diagrams, mixed with
-everybody else's, and could not be taken back out.
-
-So each tab now remembers how it arrived. `assets/track.js` keeps the first
-page's `?from=` tag and the origin of the site that sent it under `ttb.via`
-in `sessionStorage`, and every report from that tab carries them, and
-`countFlows()` in `functions/api/_flows.js` files the diagram's steps a
-second time under the segment: the tag where there is one —
-`tag:fb-kartul` — since that is the owner's own label for a link, and
-otherwise the source, read the way a visitor's is — `src:facebook`,
-`src:instagram`, `src:tiktok`, `src:search`, `src:direct`, or `src:other`
-for any other site. A tab opened from a link on this site is filed under
-nothing more. Over the diagram, under the range and the who, a row of chips
-says **Arrived via**: *Anywhere*, then each segment the range has with its
-page views, busiest first; pressing one draws the same diagram, the same
-cards and the same stops for those people alone.
-
-**What it costs.** No table and no column: the segment is another `who` in
-`flow_counts`, so the rows a day holds are the diagram-bounded ones `in` and
-`out` already have, again per segment that came. The sources are a closed
-list; a tag has the shape the `tag` kind under **How they found it** takes,
-and a day files at most twenty of them, past which only the day's own go up
-— one lookup per tagged report. A read walks the twelve busiest segments.
-
-**What it does not do.** Reach back: it began on 5 October 2026, and the
-weekend it was written for is not in it — Clarity's recordings and Google's
-path exploration are where that weekend can still be read. Say which place
-somebody landed on, unless the link's tag says so, which is why a campaign's
-link carries `?from=` with the place in it — `?from=fb-kartul` rather than a
-bare link. Join a segment to the other pages' numbers: it is the diagrams
-alone. Follow a tab into a second tab, which starts with no segment.
+From 5 October to 19 November 2026 each tab remembered how it arrived — the
+first page's `?from=` tag, or the site that sent it — and the diagrams were
+filed a second time under it, `tag:fb-kartul` or `src:facebook`, with a row
+of **Arrived via** chips over the diagram to draw it for one link's people
+alone. It was written after a weekend's Facebook campaign whose people could
+not be taken back out of everybody else. It doubled what a report wrote to
+`flow_counts`, and `/admin/found` answers where people came from without
+it, so it went with the step times. The rows are kept and read by nothing,
+and `ttb.via` in a browser's `sessionStorage` is no longer written or read.
+A campaign's link still carries `?from=` with the place in it, and its
+visitors are on `/admin/found` under the tag.
 
 ## The admin page
 
@@ -20048,7 +19957,7 @@ most worth reading again in a few weeks — `visitor_counts`, kind `rail`, id
   the rest.
 - **The same presses by the day**, since 2026-11-05: every rail press is
   filed again into `visitor_counts` as its `rail` kind, by the pill's id and
-  under the device beside it, through `countRail()` in
+  again for a phone, through `countRail()` in
   `functions/api/_visitors.js`. `press_counts` has no day, so this is what
   lets the next change to the rail be read before and after. Nothing draws
   it yet.
@@ -20058,9 +19967,9 @@ newcomers dealt each rail and the first place each opened — the `layout`
 kind in `visitor_counts`, every visit's facts split by rail, and the rail on
 every report and as a Clarity tag. The rows stay where they are and nothing
 reads them, so the numbers above can be read again; the two cards that drew
-them on `/admin/visitors` are gone. **Time on phones** still files a phone
-newcomer under a rail as well as a colour, and from 2026-11-05 that rail is
-always the short one.
+them on `/admin/visitors` are gone. **Time on phones** filed a phone
+newcomer under a rail as well as a colour, always the short one from
+2026-11-05, until it went with the colour test on 2026-11-19.
 
 ---
 
@@ -20147,148 +20056,57 @@ the record of what was decided.
 
 ## The four styles, dealt
 
-The four colours on the swatch — **The four styles** — are a test as well as
-a choice. Somebody new to the site is dealt one of them at random, a quarter
-each — or Red or Blue, a half each, on a phone — as their first page opens,
-and the site counts what they do with it.
-It is a test of its own beside the lists' two looks, as it was beside the
-rails while they were one: its own key, its own roll and its own kind, so a
-browser can hold any combination of them.
+The four colours on the swatch — **The four styles** — were a test as well
+as a choice from October to 19 November 2026, and are only a choice now.
+Somebody new to the site was dealt one of them at random as their first page
+opened — a quarter each, and from 2026-11-13 Red or Blue, a half each, on a
+phone — and the site counted what they did with it. Since the test ended
+nobody is dealt anything: a newcomer opens in Red, `DEFAULT_STYLE` on every
+page, a colour chosen on the swatch or carried on a link is kept as it
+always was, and a browser that was dealt one keeps it, since it sits in
+`ttb.style` like a chosen one.
 
-### Who gets it
+### What it found
 
-`dealStyle()` in `assets/track.js`, as that file loads. Every page loads it
-before its own script, so the colour is in place before anything is painted,
-on whichever page somebody lands — the map, a list from Instagram, a deck,
-the blog:
+No colour reliably ahead. Six weeks of phone newcomers, read by the week,
+had Red and Blue level at the top on time and places opened per newcomer,
+Green the most often low, and each swinging more from one week to the next
+than the four differed from each other — which is why phones were dealt the
+two leaders alone from 2026-11-13. With thirty to fifty phone newcomers a
+week, four arms would not have come apart for months, and two level ones
+are the same colour: the owner chose Red, the one every page already drew
+when nothing was stored.
 
-1. **Somebody new**, by `TTBTrack.newcomer()` — the browser's first day here
-   is today, the same `new` every report on **Visitors** is filed under — and
-   never the owner's browser, which the count never hears.
-2. **No colour already chosen.** A colour in `ttb.style` — pressed on the
-   swatch, or from before the test — is kept and nothing is dealt.
-3. **No colour in the address.** A link that carries `?style=` opens in that
-   colour, which is what the person sharing it saw, and is not dealt or
-   counted.
+### How it was dealt and counted
 
-**On a phone it is Red or Blue, a half each, since 2026-11-13.** Six weeks
-of phone newcomers, read by the week, had no colour reliably ahead: Red and
-Blue were level at the top on time and places opened per newcomer, Green was
-the most often low, and each swung more from one week to the next than the
-four differed from each other. With thirty to fifty phone newcomers a week
-four arms would not have come apart for months, so the two that led share
-them all — `STYLE_PHONE_DEALS` beside `STYLE_DEALS`. A tablet and a desktop
-are still dealt all four. A phone dealt Green or Plum before that day keeps
-it and is counted under it, so those two rows on the phone's reading are the
-earlier newcomers coming back and not new ones, and the verdict over the
-four, which waits for thirty in every colour, has nothing new to say on the
-**Phone** chip: there, read Red against Blue.
+`dealStyle()` in `assets/track.js` dealt the colour as that file loaded, to
+a newcomer by `TTBTrack.newcomer()` with no colour stored and none in the
+address, and wrote it into `ttb.style` and into `ttb.styledeal` with the day
+and what had been told. It was counted three ways:
 
-The deal is written into `ttb.style`, the key every page already reads its
-colour from, so no page knows there is a test; and into `ttb.styledeal`,
-which keeps the colour, the day and which of the three facts below have been
-told. A deal storage cannot keep is not made: the page draws Red and counts
-nobody. A dealt colour is a stored one to the map, which writes it into the
-address as `?style=` the way it writes a chosen one, so a link somebody dealt
-Blue copies and sends opens in Blue — and the person it reaches arrives on a
-link that carries a colour, and is left out. The flashcards live on their own address and keep their own storage,
-so somebody new who goes from the map to the flashcards on their first day
-is dealt there too, possibly a different colour — the one leak in the test,
-and a small one.
+- **`style` in `press_counts`**, sixteen rows: each colour dealt, and after
+  each, once per browser, `-opened`, `-back` and `-changed`.
+- **`style` in `visitor_counts`**: every visit's pages, seconds, presses,
+  places opened, sign-ins and accounts made as `<colour>:<who>:<fact>`, so
+  it could say which colour people stayed longest in.
+- **`stay` and `phone` in `visitor_counts`**, from 2026-10-05 and
+  2026-11-06: a newcomer's time on the map, the flashcards and the rest by
+  colour, and time on phones by colour and rail.
 
-### What is counted
-
-- **`style`, a seventh kind in `press_counts`**, sixteen rows: `red`,
-  `green`, `blue` and `plum`, once per newcomer dealt each; and after each,
-  once per browser, `-opened` for the first place, post or deck opened on
-  the day it was dealt, `-back` for the first visit on a later day, and
-  `-changed` for the first press of the swatch — somebody choosing a
-  different colour than the one they were given. `STYLE_IDS` in
-  `functions/api/stats.js` is the closed list the route holds them to.
-- **`style` as a Clarity tag**, on every page where a colour was dealt,
-  beside `look`.
-- **`style` in `visitor_counts`**, the way the rails were in it under
-  `layout` while there were two: both of the site's own reports carry the dealt colour, and
-  `countArrive()` and `countLeave()` file the visitors dealt each colour as
-  `<colour>:new` and `<colour>:back`, and every visit's pages, seconds,
-  presses, places opened, sign-ins and accounts made as
-  `<colour>:<who>:<fact>`. Per day, so it reads over any range on
-  `/admin/visitors`; and every visit, not one fact per browser, so it says
-  which colour people stay longest in — **The four colours** in
-  `functions/api/_visitors.js`.
-
-`/admin/visitors` sets the four side by side in **The four colours**, under
-**Tests** after the looks' card and time on phones, in three blocks: how many newcomers
-each was dealt, and the share that opened something that day, came back
-another day, and chose another colour; then everyone dealt each colour in the
-range — visitors, the returning share, and pages, time, clicks and places
-opened per visitor, sign-ins and accounts made; then the colour's new
-visitors alone. Four arms rather than two, so the sentence over them sets the
-best colour on `opened` against the worst one, with the same two-proportion
-z-test the other cards use, and says **too early to call** until every colour
-has thirty. `back` and `changed` are beside it and not under it: `back` takes
-days to arrive, and `changed` is the plainest reading of whether a colour was
-liked, but is rare.
-
-**How to read it when deciding.** The verdict is one number and a colour can
-win it by accident of who landed that day, so a decision rests on the
-per-visitor block agreeing with it: the colour to keep is the one whose new
-visitors stay longest and open most places, whose `changed` share is lowest,
-and whose `back` share is not the worst — on at least a fortnight's range,
-once every column has a hundred or so. Two colours level on all of that are
-the same colour, and the one the owner prefers wins.
-
-What it will take: around sixty newcomers arrive on an ordinary day, so
-thirty a colour is two or three days, and a real difference between four is
-likelier a few weeks.
-
-### On the map and on the flashcards, apart
-
-The owner means to choose the colour by device, and the counts above cannot
-say where the time went: `secs` under `style` is the whole visit, the map and
-the flashcards and the lists together, and `time` per page has no colour. So
-since 2026-11-06 a newcomer's time is counted a fourth way, under the `stay`
-kind in `visitor_counts`, by where it was spent and the colour dealt:
-`<page>:<colour>:secs` on every report a newcomer under a dealt colour sends,
-and `<page>:<colour>:visitors` once a day per page, on the first report from
-it — `firstStay()` in `assets/track.js` keeps the once-a-day in
-`ttb.stayday`. The page is `map`, `flashcard` or `other` for everything else
-(`STAY_PAGES` in `functions/api/_visitors.js`), so twenty-four ids a day at
-most, and every row is filed again by device the way every fact is (**By
-device**), which is how phones and desktops are read apart. Returning
-visitors, a colour chosen or carried on a link, and the owner are not in it,
-the test's own rules.
-
-`/admin/visitors` draws it at the foot of **The four colours**, in two small
-tables of a colour a row and three columns — Map, Flashcards and Other pages,
-the last being the lists, profiles, the blog, the account, the discounts and
-everything else: time per newcomer as minutes and seconds, then the newcomers
-behind each cell. The device chips split it as they split everything, so
-**Phone** and **Desktop** are the two readings the owner chooses between.
-
-What it cannot say: **which colour one person met.** The flashcards keep
-their own storage on their own address and deal their own colour, so a
-newcomer who goes from the map to the flashcards may be Blue on one and Plum
-on the other, and is counted under each where they were. A column says which
-colour holds people on that product; two columns side by side are not one
-person's day. And nothing before 2026-11-06 can be split by page.
-
-What it will take: about sixty phone newcomers a colour arrive in a month,
-fewer of them on the flashcards, so a cell is worth comparing at thirty or so
-— two to four weeks on a range of twenty-eight days. It is worth keeping
-only while the colours are dealt.
+`/admin/visitors` read them as **The four colours** and **Time on phones**,
+under **Tests**. Between them they were about a third of the writes a page
+view made, which is what ended the test once its answer was in: D1's free
+hundred thousand writes a day had come into sight.
 
 ### Ending it
 
-When the numbers say so, delete `dealStyle()`, `styleTold()`, `styleDeal()`,
-`firstStay()` and their calls in `assets/track.js`, `STYLE_IDS` and the
-`style` kind in `functions/api/stats.js`, the `stay` kind and `STAY_PAGES` in
-`functions/api/_visitors.js`, the card and its strings. The colours stay as a
-choice, everybody new opens in Red again — or `DEFAULT_STYLE` in every page
-moves to the colour that won — and the sixteen rows stay in `press_counts`
-as the record of what was decided.
-
----
+Done on 2026-11-19: `dealStyle()`, `styleTold()`, `styleDeal()`,
+`pinPhone()`, `firstStay()` and their calls are out of `assets/track.js`;
+the `style` kind out of `functions/api/stats.js`; `style`, `stay` and
+`phone` out of `functions/api/_visitors.js`; the two cards and their
+strings out of the page. `ttb.styledeal`, `ttb.phoneday` and `ttb.stayday`
+stay in the browsers that have them and are read by nothing. The rows stay
+in `press_counts` and `visitor_counts` as the record of what was decided.
 
 ## A swipe to the right is Back
 
@@ -20957,7 +20775,6 @@ opened:
 | `flow_step` | `flow`, `step` — a step pressed, to read what it does and where it lives |
 | `flow_range` | `flow`, `days` — a range chip pressed over the diagram, for the numbers on it |
 | `flow_who` | `flow`, `who` (`all`/`out`/`in`) — the who switch over the diagram |
-| `flow_via` | `flow`, `via` (`anywhere`, `src:<source>`, `tag:<tag>`) — a chip in the Arrived via row over the diagram |
 | `home` | — |
 
 And every page that carries `assets/back.js` — the map, the lists, the account

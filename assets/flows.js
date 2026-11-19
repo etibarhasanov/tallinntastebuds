@@ -17,18 +17,12 @@
  * they mean; this file only draws them by id, on the shapes it has already
  * drawn. See **The numbers on it** under **Who uses the site, drawn**.
  *
- * And on every counted step two things an arrow cannot say: how many of
- * the people who reached it stopped there — a dashed pill, because they
- * are the ones no arrow carries away — and the typical time spent at it,
- * the median of the route's buckets, under it. The pressed step's card
- * spells both out, with the spread of the times as a bar.
- *
- * And a row of chips for how the tab arrived — a source, Facebook or a
- * search engine, or the `?from=` tag on the owner's own link — which draws
- * the same diagram for only the people one link brought: the segments the
- * answer's `via` lists, busiest first, each with its views. Choosing one
- * sets the who switch aside until a who is pressed again. ARRIVED VIA in
- * functions/api/_flows.js is what they are and from when.
+ * And on every counted step the thing an arrow cannot say: how many of the
+ * people who reached it stopped there — a dashed pill, because they are the
+ * ones no arrow carries away — which the pressed step's card spells out.
+ * The typical time at a step and a row of chips for how the tab arrived
+ * were here too until 2026-11-19, when the count stopped filing them —
+ * functions/api/_flows.js says why.
  *
  * WHAT IT DRAWS FROM
  *
@@ -81,12 +75,6 @@
   var WHO_LABEL = { all: 'flowsEverybody', out: 'flowsSignedOut', 'in': 'flowsSignedIn' };
   var DEFAULT_WHO = { visitor: 'out', member: 'in' };
 
-  /* What a segment of `via` is called: a source by the word /admin/visitors
-     already uses for it, or by its own name, and a tag as the link carries
-     it. */
-  var VIA_LABEL = { 'src:search': 'insightsSearch', 'src:direct': 'insightsDirect', 'src:other': 'flowsViaOther' };
-  var VIA_NAME = { 'src:facebook': 'Facebook', 'src:instagram': 'Instagram', 'src:tiktok': 'TikTok' };
-
   /* An arrow's width says what its number says — rule 10 of the design
      rules — between these two, by the square root of its share of the
      busiest arrow, so the quiet ones still read as lines. And how many of
@@ -95,12 +83,6 @@
   var ARROW_MAX = 4.5;
   var NEXT_SHOWN = 4;
   var MOVES_SHOWN = 10;
-
-  /* The spread of a step's times, in the pressed step's card, is the
-     route's buckets gathered into four — under 10 s, to a minute, to five,
-     and past it — since nine bars on a phone read as noise. Upper edges in
-     seconds; the last group is everything past the last. */
-  var TIME_GROUPS = [10, 60, 300];
 
   var NS = {
     bpmn: 'http://www.omg.org/spec/BPMN/20100524/MODEL',
@@ -137,7 +119,6 @@
     span: 7,         // the range, in days
     device: '',      // one of DEVICE_IDS, '' for every device — BY DEVICE
     who: 'all',      // which of the answer's three whos the switch is on
-    via: '',         // the segment on screen instead, or '' for the who — ARRIVED VIA
     numbers: null,   // the answer for the flow on screen, or null
     asked: 0         // how many times the numbers were asked for, so a late answer is dropped
   };
@@ -585,59 +566,6 @@
     return (state.steps[id] || {}).name || id;
   }
 
-  /* A number of seconds as the page says a time: seconds under a minute,
-     to the nearest five past ten, and minutes past it, to the half under
-     ten. */
-  function duration(secs) {
-    if (secs < 10) return t('flowsSecs', { n: num(Math.max(1, Math.round(secs))) });
-    if (secs < 60) return t('flowsSecs', { n: num(Math.min(55, Math.round(secs / 5) * 5)) });
-    var mins = secs / 60;
-    mins = mins < 10 ? Math.round(mins * 2) / 2 : Math.round(mins);
-    try { return t('flowsMins', { n: mins.toLocaleString(state.lang) }); } catch (e) { return t('flowsMins', { n: String(mins) }); }
-  }
-
-  /* The typical time at a step: the median of its bucket counts, read
-     along the bucket it falls in as though its times were spread evenly
-     there. Past the last edge there is nothing to read along, so it says
-     "over" the edge. Null where no time was counted. */
-  function typical(counts, edges) {
-    var total = 0;
-    (counts || []).forEach(function (n) { total += n; });
-    if (!total) return null;
-    var half = total / 2;
-    var below = 0;
-    for (var i = 0; i < counts.length; i++) {
-      if (below + counts[i] >= half && counts[i] > 0) {
-        if (i >= edges.length) return t('flowsOver', { d: duration(edges[edges.length - 1]) });
-        var lo = i ? edges[i - 1] : 0;
-        return '~' + duration(lo + (edges[i] - lo) * (half - below) / counts[i]);
-      }
-      below += counts[i];
-    }
-    return null;
-  }
-
-  /* The bucket counts gathered into TIME_GROUPS, each with what it spans. */
-  function spread(counts, edges) {
-    var groups = TIME_GROUPS.map(function (hi, i) {
-      return { n: 0, label: i ? duration(TIME_GROUPS[i - 1]) + '–' + duration(hi) : t('flowsUnder', { d: duration(hi) }) };
-    });
-    groups.push({ n: 0, label: t('flowsOver', { d: duration(TIME_GROUPS[TIME_GROUPS.length - 1]) }) });
-    (counts || []).forEach(function (n, i) {
-      var hi = i < edges.length ? edges[i] : Infinity;
-      var g = 0;
-      while (g < TIME_GROUPS.length && hi > TIME_GROUPS[g]) g++;
-      groups[g].n += n;
-    });
-    return groups;
-  }
-
-  function timeOf(id) {
-    var d = state.numbers;
-    var who = d && d.who && d.who[shown()];
-    return who && who.times && d.buckets ? typical(who.times[id], d.buckets) : null;
-  }
-
   function rangeLabel() {
     return state.span === 1 ? t('visitorsToday') : t('insightsDays', { n: state.span });
   }
@@ -649,10 +577,10 @@
     nodes.counted.appendChild(document.createTextNode(t(key)));
   }
 
-  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js, and
-     BY DEVICE in functions/api/_flows.js. */
-  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
-  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+  /* Every device, the phones, and everything else — DEVICE_IDS in
+     assets/visitors.js, and BY DEVICE in functions/api/_flows.js. */
+  var DEVICE_IDS = ['', 'phone', 'other'];
+  var DEVICES = { phone: 'visitorsPhone', other: 'devicesOther' };
 
   function devices() {
     var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
@@ -694,51 +622,14 @@
     return el('div', { className: 'lists-seg', role: 'radiogroup', 'aria-label': t('flowsWho') }, WHO.map(function (who) {
       var input = el('input', { type: 'radio', name: 'flows-who', value: who });
       input.addEventListener('change', function () {
-        if (!input.checked || (who === state.who && !state.via)) return;
+        if (!input.checked || who === state.who) return;
         state.who = who;
-        state.via = '';
         syncControls();
         if (window.TTBTrack) window.TTBTrack.event('flow_who', { flow: state.current.id, who: who });
         paint();
       });
       return el('label', { className: 'lists-seg-opt', 'data-who': who }, [input, t(WHO_LABEL[who])]);
     }));
-  }
-
-  /* The answer's key for what is on screen: the segment, or the who. */
-  function shown() {
-    return state.via || state.who;
-  }
-
-  function viaLabel(id) {
-    if (VIA_LABEL[id]) return t(VIA_LABEL[id]);
-    if (VIA_NAME[id]) return VIA_NAME[id];
-    return id.indexOf('tag:') === 0 ? '?from=' + id.slice(4) : id;
-  }
-
-  /* The chips for how a tab arrived, out of the answer on screen — see the
-     top. Hidden where the range has no segment. A segment the new range
-     does not carry falls back to the who. */
-  function viaRow() {
-    var d = state.numbers;
-    var list = (d && d.ready && d.via) || [];
-    if (state.via && !list.some(function (v) { return v.id === state.via; })) state.via = '';
-    clear(nodes.via);
-    nodes.via.hidden = !list.length;
-    if (!list.length) return;
-    nodes.via.appendChild(el('span', { className: 'flows-via-label', textContent: t('flowsVia') }));
-    [{ id: '', views: null }].concat(list).forEach(function (v) {
-      var chip = el('button', { type: 'button', className: 'chip', 'aria-pressed': v.id === state.via ? 'true' : 'false',
-        textContent: v.id ? viaLabel(v.id) + ' · ' + num(v.views) : t('flowsViaAnywhere') });
-      chip.addEventListener('click', function () {
-        if (v.id === state.via) return;
-        state.via = v.id;
-        syncControls();
-        if (window.TTBTrack) window.TTBTrack.event('flow_via', { flow: state.current.id, via: v.id || 'anywhere' });
-        paint();
-      });
-      nodes.via.appendChild(chip);
-    });
   }
 
   function syncControls() {
@@ -752,7 +643,7 @@
     }
     var opts = nodes.controls.querySelectorAll('.lists-seg-opt');
     for (var o = 0; o < opts.length; o++) {
-      var on = !state.via && opts[o].getAttribute('data-who') === state.who;
+      var on = opts[o].getAttribute('data-who') === state.who;
       opts[o].classList.toggle('is-on', on);
       opts[o].querySelector('input').checked = on;
     }
@@ -797,12 +688,11 @@
   /* The answer, for the who on screen, drawn. */
   function paint() {
     clearNumbers();
-    viaRow();
     syncControls();
     var d = state.numbers;
     if (!d) return;
-    if (!d.ready || !d.who || !d.who[shown()]) { say('flowsNotYet'); return; }
-    var who = d.who[shown()];
+    if (!d.ready || !d.who || !d.who[state.who]) { say('flowsNotYet'); return; }
+    var who = d.who[state.who];
     var any = Object.keys(who.steps).some(function (id) { return who.steps[id] > 0; });
     if (any) countedLine(who, d.since); else say('flowsNothing');
     badges(who);
@@ -816,7 +706,7 @@
     clear(nodes.counted);
     nodes.counted.classList.remove('is-error');
     nodes.counted.appendChild(el('b', { textContent: t('flowsViews', { n: num(who.views) }) }));
-    nodes.counted.appendChild(document.createTextNode(' · ' + (state.via ? viaLabel(state.via) : t(WHO_LABEL[state.who])) +
+    nodes.counted.appendChild(document.createTextNode(' · ' + t(WHO_LABEL[state.who]) +
       (state.device ? ' · ' + t(DEVICES[state.device]) : '') + ' · ' + rangeLabel()));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
@@ -851,40 +741,28 @@
     });
   }
 
-  /* The two marks on a counted step, on a line of their own under it: how
-     many stopped there, as a dashed pill, and the typical time spent at it.
-     Under a task the pill ends where the count above it does and the time
-     stands just left of it, so the two read as one line however narrow the
-     box; an event's label is already under it, so both go under the label,
-     the time and then the pill. Neither is drawn where it would say nought
-     or nothing: a quiet diagram stays as it was. */
+  /* The mark on a counted step, on a line of its own under it: how many
+     stopped there, as a dashed pill. Under a task the pill ends where the
+     count above it does; an event's label is already under it, so the pill
+     goes under the label. Not drawn where it would say nought: a quiet
+     diagram stays as it was. */
   function marks(id, shape, who) {
     var b = shape.box;
     var stopped = (who.stopped || {})[id] || 0;
-    var time = timeOf(id);
-    if (!time && !(stopped > 0)) return;
+    if (!(stopped > 0)) return;
     var task = shape.task || !shape.label;
     var under = task ? b.y + b.h : shape.label.y + shape.label.h;
     var cx = b.x + b.w / 2;
-    var text = stopped > 0 ? t('flowsStopped', { n: num(stopped) }) : '';
-    var w = text ? 12 + text.length * 6.3 : 0;
+    var text = t('flowsStopped', { n: num(stopped) });
+    var w = 12 + text.length * 6.3;
     var pillX = task ? b.x + b.w + 8 - w : cx - w / 2;
-    var pillY = task || !time ? under + 13 : under + 30;
-    if (time) {
-      var tl = task && text
-        ? svg('text', { 'class': 'flow-time', x: pillX - 6, y: under + 17, 'text-anchor': 'end' })
-        : svg('text', { 'class': 'flow-time', x: cx, y: under + 17, 'text-anchor': 'middle' });
-      tl.textContent = time;
-      state.drawn.counts.appendChild(tl);
-    }
-    if (text) {
-      var g = svg('g', { 'class': 'flow-stopped' });
-      g.appendChild(svg('rect', { x: pillX, y: pillY - 8, width: w, height: 16, rx: 8 }));
-      var label = svg('text', { x: pillX + w / 2, y: pillY + 3.8, 'text-anchor': 'middle' });
-      label.textContent = text;
-      g.appendChild(label);
-      state.drawn.counts.appendChild(g);
-    }
+    var pillY = under + 13;
+    var g = svg('g', { 'class': 'flow-stopped' });
+    g.appendChild(svg('rect', { x: pillX, y: pillY - 8, width: w, height: 16, rx: 8 }));
+    var label = svg('text', { x: pillX + w / 2, y: pillY + 3.8, 'text-anchor': 'middle' });
+    label.textContent = text;
+    g.appendChild(label);
+    state.drawn.counts.appendChild(g);
   }
 
   /* A number and a width on every arrow walked. Where the number goes is
@@ -941,15 +819,10 @@
       .sort(function (a, b) { return b.n - a.n || stepName(a.id).localeCompare(stepName(b.id)); });
   }
 
-  /* The line under a step's name in the table: its typical time, then
-     where its people went. */
+  /* The line under a step's name in the table: where its people went. */
   function nextLine(who, id) {
     var next = nextOf(who, id).slice(0, NEXT_SHOWN);
-    var parts = [];
-    var time = timeOf(id);
-    if (time) parts.push(time);
-    if (next.length) parts.push('→ ' + next.map(function (x) { return stepName(x.id) + ' ' + num(x.n); }).join(' · '));
-    return parts.join(' · ');
+    return next.length ? '→ ' + next.map(function (x) { return stepName(x.id) + ' ' + num(x.n); }).join(' · ') : '';
   }
 
   function table(label, heads, rows, wide) {
@@ -1011,10 +884,9 @@
      many times for one the route filled in, or why it has none. */
   function detailNumbers(id, handover) {
     var d = state.numbers;
-    if (!d || !d.ready || !d.who || !d.who[shown()]) return null;
-    var who = d.who[shown()];
+    if (!d || !d.ready || !d.who || !d.who[state.who]) return null;
+    var who = d.who[state.who];
     var parts = [];
-    var bar = null;
     if (d.counted.indexOf(id) !== -1) {
       var n = who.steps[id] || 0;
       var next = nextOf(who, id);
@@ -1026,11 +898,6 @@
         }).join(' · ') + '.');
       }
       if (stopped > 0) parts.push(t('flowsDetailStopped', { n: num(stopped) }));
-      if (n > 0) {
-        var time = timeOf(id);
-        parts.push(time ? t('flowsDetailTime', { d: time }) : t('flowsDetailNoTime'));
-        if (time) bar = timeBar(who.times[id], d.buckets);
-      }
       if (handover) parts.push(t('flowsDetailHandover'));
     } else if (handover) {
       parts.push(t('flowsDetailHandover'));
@@ -1039,28 +906,7 @@
     } else {
       parts.push(t('flowsDetailNoNumber'));
     }
-    return el('div', { className: 'flows-detail-n' }, [el('p', { textContent: parts.join(' ') }), bar]);
-  }
-
-  /* The spread of a step's times as one bar of four parts, each as wide as
-     its share, and the same four written out under it, so the bar is never
-     the only place a number is. */
-  function timeBar(counts, edges) {
-    var groups = spread(counts, edges);
-    var total = 0;
-    groups.forEach(function (g) { total += g.n; });
-    if (!total) return null;
-    var shown = groups.filter(function (g) { return g.n > 0; });
-    return el('div', { className: 'flows-times' }, [
-      el('p', { className: 'flows-where', textContent: t('flowsTimeSpread') }),
-      el('div', { className: 'flows-time-bar', 'aria-hidden': 'true' }, groups.map(function (g, i) {
-        return g.n ? el('span', { className: 'is-' + i, style: 'flex-grow:' + g.n }) : null;
-      })),
-      el('p', { className: 'flows-time-key' }, shown.map(function (g) {
-        var i = groups.indexOf(g);
-        return el('span', null, [el('i', { className: 'is-' + i, 'aria-hidden': 'true' }), g.label + ' ' + Math.round(100 * g.n / total) + '%']);
-      }))
-    ]);
+    return el('div', { className: 'flows-detail-n' }, [el('p', { textContent: parts.join(' ') })]);
   }
 
   function open(flow, first) {
@@ -1069,7 +915,6 @@
     state.numbers = null;
     state.asked += 1;
     state.who = DEFAULT_WHO[flow.id] || 'all';
-    state.via = '';
 
     var chips = nodes.chips.querySelectorAll('.chip');
     for (var i = 0; i < chips.length; i++) {
@@ -1144,8 +989,7 @@
     /* The numbers' furniture: the range and the who over the diagram with
        the line that says what was counted, and the two cards under the
        detail, hidden until an answer fills them. */
-    nodes.via = el('div', { className: 'ins-range flows-via', role: 'group', 'aria-label': t('flowsVia'), hidden: true });
-    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), devices(), whoSwitch(), nodes.via]);
+    nodes.controls = el('div', { className: 'flows-controls' }, [ranges(), devices(), whoSwitch()]);
     nodes.counted = el('p', { className: 'flows-counted', 'aria-live': 'polite' });
     nodes.stepsTable = el('div');
     nodes.stepsCard = el('section', { className: 'card flows-detail', hidden: true }, [

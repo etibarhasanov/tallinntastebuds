@@ -4,9 +4,9 @@
  *   GET ?lang=&device=
  *                the whole ranking, the page's words beside it, and five
  *                minutes of edge cache on the pair. What /admin/stats draws.
- *                `device` is phone, tablet or desktop for the presses made
- *                on that device alone — BY DEVICE in ../stats.js — and
- *                every device without. The saves and what the site holds
+ *                `device` is `phone` for the presses made on phones and
+ *                `other` for every device's less those — BY DEVICE in
+ *                ../stats.js — and every device without. The saves and what the site holds
  *                are not presses and stay the same under any device.
  *
  * The presses themselves are counted by POST /api/stats in ../stats.js, which
@@ -91,7 +91,7 @@ import {
 import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST, POST } from '../stats.js';
 /* The countries under a list, read the way /insights reads them. */
 import { listCountries } from '../_visits.js';
-import { askedDevice } from '../_visitors.js';
+import { askedDevice, lessPhone } from '../_visitors.js';
 import { AUTHOR } from '../_posts.js';
 import { readsByTable, DAY_READS, BRAKE } from '../_meter.js';
 
@@ -183,12 +183,16 @@ export async function onRequestGet(context) {
     /* No table yet — see the header. */
     return json(empty, 200);
   }
-  /* Every device's rows, which have no dot in their kind, or one device's
-     with the device taken back off — BY DEVICE in ../stats.js. */
-  const at = device ? device + '.' : '';
-  rows = rows
-    .filter((row) => (device ? row.kind.startsWith(at) : !row.kind.includes('.')))
-    .map((row) => (device ? { ...row, kind: row.kind.slice(at.length) } : row));
+  /* Every device's rows, which have no dot in their kind; the phones', with
+     `phone.` taken back off; or every device's less the phones' — BY DEVICE
+     in ../stats.js. A kind is one row per id either side. */
+  const all = rows.filter((row) => !row.kind.includes('.'));
+  const phone = rows
+    .filter((row) => row.kind.startsWith('phone.'))
+    .map((row) => ({ ...row, kind: row.kind.slice('phone.'.length) }));
+  rows = device === 'phone' ? phone
+       : device ? lessPhone(all, phone, (row) => row.kind + '\u0000' + row.id)
+       : all;
 
   const counted = new Map();
   for (const row of rows) counted.set(row.kind + '\u0000' + row.id, row.n);

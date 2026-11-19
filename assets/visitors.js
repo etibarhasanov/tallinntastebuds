@@ -5,11 +5,9 @@
  * range and its five figures, and under them four groups, each under a
  * heading — see group():
  *
- *   Tests            the directory's two looks, time on phones by colour
- *                    and rail, then the four colours, ending in where a
- *                    newcomer's time went under each
- *   Who they are     a bar a day, new against returning, a bar an hour,
- *                    phone against desktop, countries, languages
+ *   Tests            the directory's two looks
+ *   Who they are     a bar a day, a bar an hour, phone against desktop,
+ *                    countries, the languages they arrived in
  *   How they found it  where they came from, where search landed them
  *   What they did    signing up, pages, journeys, presses, and which
  *                    stories, posts, decks and discounts were opened
@@ -66,11 +64,7 @@
      them. */
   var LOOKS = { a: 'visitorsLookA', b: 'visitorsLookB' };
 
-  /* And the four colours by the id dealStyle() in assets/track.js deals them,
-     named by the words the swatch itself uses. */
-  var COLOURS = { red: 'styleRed', green: 'styleGreen', blue: 'styleBlue', plum: 'stylePlum' };
-
-  /* How many strangers each arm of a test needs before the arms are set
+  /* How many strangers each arm of the test needs before the arms are set
      against each other at all. Thirty is where a share out of them stops swinging ten
      points on one visitor; below it the page says it is too early rather
      than print a verdict on four against five. */
@@ -78,14 +72,15 @@
 
   var SOURCES = { search: 'insightsSearch', here: 'insightsHere', direct: 'insightsDirect' };
 
-  /* What a browser is driven with, by the ids assets/track.js decides. */
-  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+  /* What a browser is driven with, by the ids assets/track.js decides, and
+     `other`, which is everything that is not a phone. */
+  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop', other: 'devicesOther' };
 
-  /* The device switch over the range: every device, then each alone, as
-     `?device=` asks the route for it — BY DEVICE in
-     functions/api/_visitors.js. '' is every device. The same four on
-     /admin/stats, /admin/found and /admin/flows. */
-  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
+  /* The device switch over the range: every device, the phones, and every
+     device less the phones, as `?device=` asks the route for them — BY
+     DEVICE in functions/api/_visitors.js. '' is every device. The same
+     three on /admin/stats, /admin/found and /admin/flows. */
+  var DEVICE_IDS = ['', 'phone', 'other'];
 
   /* Signing up — SIGNING UP in functions/api/_visitors.js. The three views
      of the sheet, which are the table's columns; what put the sheet up, by
@@ -213,11 +208,6 @@
     }
   }
 
-  function switchName(r) {
-    var pair = r.id.split('>');
-    return languageName(pair[0]) + ' → ' + languageName(pair[1]);
-  }
-
   function sourceName(r) {
     if (r.name) return r.name;
     return SOURCES[r.id] ? t(SOURCES[r.id]) : r.id;
@@ -297,7 +287,7 @@
     return row;
   }
 
-  /* Every device or one, beside the range — see DEVICE_IDS. */
+  /* Every device, the phones or the rest, beside the range — see DEVICE_IDS. */
   function devices() {
     var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
     var on = state.data.device || '';
@@ -708,27 +698,6 @@
     return card(kids);
   }
 
-  /* The per-visitor rows the two cards below share, as [label, of(row)]
-     over a row carrying `visitors` and the facts _visitors.js counts. */
-  function perVisitor() {
-    return [
-      [t('visitorsPagesPer'), function (r) { return num(per(r.views, r.visitors), 1); }],
-      [t('visitorsTime'), function (r) { return duration(per(r.secs, r.visitors)); }],
-      [t('visitorsPresses'), function (r) { return num(per(r.presses, r.visitors), 1); }],
-      [t('visitorsPlaces'), function (r) { return num(per(r.places, r.visitors), 1); }],
-      [t('visitorsSignIns'), function (r) { return num(r.login); }],
-      [t('visitorsSignUps'), function (r) { return num(r.signup); }]
-    ];
-  }
-
-  /* A line saying from when a card's numbers run, where that is inside the
-     range — the range reaching back past the day they began. */
-  function splitSince() {
-    var d = state.data;
-    if (!d.split || d.split <= d.from) return null;
-    return el('p', { className: 'ins-note', textContent: t('visitorsSplitSince', { date: dateLabel(d.split, true) }) });
-  }
-
   /* A figure per row, a column for each of a set of rows. */
   function sideBySide(label, cols, heads, rows) {
     return grid(label, heads, rows,
@@ -736,32 +705,14 @@
       function (f) { return cols.map(f[1]); });
   }
 
-  /* What a new visitor does against a returning one, per visitor, over the
-     days that tell them apart. Absent until either has been counted. */
-  function cohorts() {
-    var cols = state.data.cohorts;
-    if (!cols.some(function (c) { return c.visitors; })) return null;
-    var heads = cols.map(function (c) { return t(c.id === 'new' ? 'visitorsNew' : 'visitorsReturning'); });
-    var rows = [[t('visitorsVisitors'), function (c) { return num(c.visitors); }]].concat(perVisitor());
-    return card([
-      el('h2', { className: 'lists-title', textContent: t('visitorsCohorts') }),
-      el('p', { className: 'stats-lead', textContent: t('visitorsCohortsLead') }),
-      sideBySide(t('visitorsCohorts'), cols, heads, rows),
-      splitSince()
-    ]);
-  }
-
   /* The languages, new visitors against returning ones: how many arrived in
-     each, and how long the site was read in each. Time follows a switch, so
-     the minutes of somebody who arrived in English and changed to Russian
-     are English's up to the switch and Russian's after it. Two tables of a
-     language a row rather than one of four columns, which would not fit
-     across a phone. Under them, the languages browsers asked for, spoken
-     here or not — WHICH LANGUAGE THE BROWSER ASKED FOR in
-     functions/api/_visitors.js — with the ones the site lacks marked, since
-     that is what the list is for. The tables ride on the put-away report
-     and the list on the page opening, so either can have rows while the
-     other has none. */
+     each — the one the site chose for them, before any switch. Under it, the
+     languages browsers asked for, spoken here or not — WHICH LANGUAGE THE
+     BROWSER ASKED FOR in functions/api/_visitors.js — with the ones the site
+     lacks marked, since that is what the list is for. The table rides on the
+     put-away report and the list on the page opening, so either can have
+     rows while the other has none. The time read in each language was a
+     second table until 2026-11-19. */
   function languages() {
     var rows = state.data.languages;
     var asked = state.data.asked;
@@ -775,10 +726,7 @@
       kids.push(
         el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsVisitors') }),
         grid(t('visitorsVisitors'), heads, rows, name,
-          function (l) { return [num(l.visitors.new), num(l.visitors.back)]; }),
-        el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsTimeShort') }),
-        grid(t('visitorsTimeShort'), heads, rows, name,
-          function (l) { return [duration(l.secs.new), duration(l.secs.back)]; }));
+          function (l) { return [num(l.visitors.new), num(l.visitors.back)]; }));
     }
     if (asked.length) {
       kids.push(
@@ -790,9 +738,8 @@
     return card(kids);
   }
 
-  /* Whether the two arms of a test — the directory's looks, or the best and
-     worst of the four colours —
-     opened something at rates that differ by more than chance: a
+  /* Whether the directory's two looks opened something at rates that differ
+     by more than chance: a
      two-proportion z-test on `opened` out of `given`, with 1.96 as the line,
      which is the ordinary 95%. Said in words, and only once each arm has
      FEWEST strangers — see there. `names` is the arms' keys, and `words`
@@ -836,145 +783,6 @@
         [t('visitorsLookKept'), function (id) { return share(d[id].kept, d[id].given); }]
       ])
     ]);
-  }
-
-  /* The four colours against each other — "The four styles, dealt" in
-     docs/handbook.md, in three blocks under one verdict: how many people new to the site were dealt each as their first
-     page opened, and the share of them that opened a place, a post or a
-     deck that day, came back on a later day, and chose a different colour;
-     then everyone dealt each colour in the range, with the per-visitor
-     figures; then the colour's new visitors alone. Four arms rather than
-     two, so the verdict sets the best colour on `opened` against the worst
-     one, with the same z-test the other two cards use, and only once every
-     colour has FEWEST — the weakest arm is the one that decides whether
-     there is anything to say yet. Drawn from the day the test began,
-     noughts and all, the way the lists' looks are — see looks(). */
-  function colours() {
-    var d = state.data.styles;
-    var arms = Object.keys(COLOURS);
-    var lived = (state.data.colours || []).filter(function (c) { return COLOURS[c.id]; });
-    var anyLived = lived.some(function (c) { return c.visitors; });
-    if (!d) return null;
-    var heads = arms.map(function (id) { return t(COLOURS[id]); });
-    var rate = function (id) { return d[id].given ? d[id].opened / d[id].given : 0; };
-    var fewest = Math.min.apply(null, arms.map(function (id) { return d[id].given; }));
-    var said;
-    if (fewest < FEWEST) {
-      said = el('p', { className: 'vis-verdict', textContent: t('visitorsStyleEarly', { n: num(fewest), min: FEWEST }) });
-    } else {
-      var ranked = arms.slice().sort(function (x, y) { return rate(y) - rate(x); });
-      var best = ranked[0], worst = ranked[ranked.length - 1];
-      said = verdict({ a: d[best], b: d[worst] }, { a: COLOURS[best], b: COLOURS[worst] },
-        ['visitorsStyleEarly', 'visitorsStyleNone', 'visitorsStyleAhead']);
-    }
-    var kids = [
-      el('h2', { className: 'lists-title', textContent: t('visitorsStyles') }),
-      el('p', { className: 'stats-lead', textContent: t('visitorsStylesLead') }),
-      said,
-      el('h3', { className: 'eyebrow vis-sub', textContent: t('visitorsStylesNew') }),
-      sideBySide(t('visitorsStylesNew'), arms, heads, [
-        [t('visitorsStyleDealt'), function (id) { return num(d[id].given); }],
-        [t('visitorsStyleOpened'), function (id) { return share(d[id].opened, d[id].given); }],
-        [t('visitorsStyleBack'), function (id) { return share(d[id].back, d[id].given); }],
-        [t('visitorsStyleChanged'), function (id) { return share(d[id].changed, d[id].given); }]
-      ])
-    ];
-    if (anyLived) {
-      var visitors = [t('visitorsVisitors'), function (c) { return num(c.visitors); }];
-      var block = function (key, cols, rows) {
-        return [el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }), sideBySide(t(key), cols, heads, rows)];
-      };
-      kids = kids
-        .concat(block('visitorsColoursEveryone', lived, [visitors,
-          [t('visitorsReturning'), function (c) { return share(c.back, c.visitors); }]].concat(perVisitor())))
-        .concat(block('visitorsNewOnly', lived.map(function (c) { return c.fresh; }), [visitors].concat(perVisitor())))
-        .concat([splitSince()]);
-    }
-    return card(kids.concat(stays(arms)));
-  }
-
-  /* The day the `stay` kind began counting — ON THE MAP AND ON THE
-     FLASHCARDS in functions/api/_visitors.js — said under its tables. */
-  var STAY_SINCE = '2026-11-06';
-
-  /* Where a newcomer's time went, by the colour they were dealt: the map,
-     the flashcards and every other page, as time per newcomer and then the
-     newcomers themselves, so a long average out of three is read as three.
-     The device chips split it the way they split everything. The foot says
-     the two products deal their colours apart. Drawn noughts and all, like
-     time on phones; `stays` is missing only in a colo's answer from before
-     it existed. */
-  function stays(arms) {
-    var rows = state.data.stays;
-    if (!rows) return [];
-    var byId = {};
-    rows.forEach(function (r) { byId[r.id] = r; });
-    var heads = [t('visitorsStayMap'), t('visitorsStayCards'), t('visitorsStayOther')];
-    var name = function (id) { return t(COLOURS[id]); };
-    var table = function (key, show) {
-      return [
-        el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }),
-        grid(t(key), heads, arms.filter(function (id) { return byId[id]; }), name, function (id) {
-          return ['map', 'flashcard', 'other'].map(function (place) { return show(byId[id][place]); });
-        })
-      ];
-    };
-    return table('visitorsStays', function (c) { return c.visitors ? clock(c.secs / c.visitors) : '–'; })
-      .concat(table('visitorsStaysCount', function (c) { return num(c.visitors); }))
-      .concat([el('p', { className: 'ins-note', textContent: t('visitorsStaysFoot', { date: dateLabel(STAY_SINCE, true), min: FEWEST }) })]);
-  }
-
-  /* Time on phones — TIME ON PHONES in functions/api/_visitors.js: how long
-     somebody new on a phone stayed, by the colour they were dealt down the
-     side and the rail across, with a column for those who never reached the
-     map and so were dealt no rail, and a total each way — the last column
-     is the colours alone, the last row the rails alone. Every newcomer has
-     drawn the short rail since 2026-11-05, so a range after that fills its
-     column alone and the others hold the days before. Then the same grid
-     as head counts, so a long average out of three visitors is read as the
-     three it is. No verdict: a time is not the yes-or-no the z-test asks
-     about. Drawn from the day it began counting, noughts and all, like the
-     other tests. */
-  function phones() {
-    var cells = state.data.phones;
-    if (!cells) return null;
-    var RAIL_COLS = ['a', 'b', 'none', ''];
-    var COLOUR_ROWS = Object.keys(COLOURS).concat(['']);
-    var sum = function (rail, colour) {
-      var out = { visitors: 0, secs: 0 };
-      cells.forEach(function (c) {
-        var at = c.id.indexOf(':');
-        if ((rail && c.id.slice(0, at) !== rail) || (colour && c.id.slice(at + 1) !== colour)) return;
-        out.visitors += c.visitors;
-        out.secs += c.secs;
-      });
-      return out;
-    };
-    var heads = [t('visitorsLayoutFull'), t('visitorsLayoutShort'), t('visitorsNoRail'), t('visitorsAllRails')];
-    var name = function (colour) { return colour ? t(COLOURS[colour]) : t('visitorsAllColours'); };
-    var table = function (key, show) {
-      return [
-        el('h3', { className: 'eyebrow vis-sub', textContent: t(key) }),
-        grid(t(key), heads, COLOUR_ROWS, name, function (colour) {
-          return RAIL_COLS.map(function (rail) { return show(sum(rail, colour)); });
-        })
-      ];
-    };
-    return card([
-      el('h2', { className: 'lists-title', textContent: t('visitorsPhones') }),
-      el('p', { className: 'stats-lead', textContent: t('visitorsPhonesLead', { min: FEWEST }) })
-    ].concat(
-      table('visitorsPhonesTime', function (c) { return c.visitors ? clock(c.secs / c.visitors) : '–'; }),
-      table('visitorsPhonesCount', function (c) { return num(c.visitors); })
-    ));
-  }
-
-  /* A time as minutes and seconds, 3:48 — for a grid four times across,
-     where duration()'s "3m 48s" breaks onto two lines in every cell. */
-  function clock(secs) {
-    secs = Math.round(secs);
-    var s = secs % 60;
-    return Math.floor(secs / 60) + ':' + (s < 10 ? '0' : '') + s;
   }
 
   /* A heading and the cards under it, or nothing at all where every card
@@ -1099,22 +907,17 @@
     } else {
       /* Four groups under the range, each under a heading of its own, so the
          page is four things to look for rather than twenty cards in the
-         order they were built. The tests first, straight under the figures:
-         they are what a look at this page is most often for, and at the
-         twelfth card they were found by scrolling past everything else. The
-         short cards before the long inside it — the lists' looks is a few
-         rows and time on phones two small grids, the colours three tables —
-         so the short ones are not a screen and a half
-         under the heading. A group with nothing in it draws no heading. */
-      group(stack, 'visitorsTests', [looks(), phones(), colours()]);
+         order they were built. The test first, straight under the figures:
+         it is what a look at this page is most often for, and at the
+         twelfth card the tests were found by scrolling past everything
+         else. A group with nothing in it draws no heading. */
+      group(stack, 'visitorsTests', [looks()]);
       group(stack, 'visitorsWho', [
         d.series ? card(chart()) : null,
-        cohorts(),
         hours(),
         d.devices.length ? ranking(t('visitorsDevices'), d.devices, function (r) { return DEVICES[r.id] ? t(DEVICES[r.id]) : r.id; }) : null,
         d.countries.length ? ranking(t('insightsCountry'), d.countries, function (r) { return countryName(r.id); }) : null,
-        d.languages.length || d.asked.length ? languages() : null,
-        d.switches.length ? ranking(t('visitorsSwitches'), d.switches, switchName) : null
+        d.languages.length || d.asked.length ? languages() : null
       ]);
       group(stack, 'numbersFound', [sources(), found()]);
       group(stack, 'visitorsDid', [
