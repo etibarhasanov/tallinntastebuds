@@ -187,8 +187,10 @@
  *
  * After the rows are in, each run's squares are added to `ride_sections` —
  * ./_sections.js, which says what is counted and why, and which a bike
- * route in ./route.js is weighed by. The ride is kept whether or not that
- * works.
+ * route in ./route.js is weighed by. Not every square takes every ride: one
+ * that has counted fifty takes one ride in ten, and none past a hundred,
+ * since a row updated is a row D1 bills. The ride is kept whether or not
+ * any of that works.
  *
  * WHEN THE TABLE IS NOT THERE
  *
@@ -501,7 +503,9 @@ async function save(env, rider, body) {
   /* WHAT THE RIDE SAYS ABOUT THE STREETS. Not there yet, or failed: the
      ride is kept, and the rebuild counts it. */
   try {
-    for (const run of runs) await countSections(env, sectionsOf(run.line, run.track));
+    for (const [i, run] of runs.entries()) {
+      await countSections(env, sectionsOf(run.line, run.track), rows[i][0]);
+    }
   } catch (e) { /* tools/ridesections.mjs */ }
   return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
 }

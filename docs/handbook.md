@@ -3545,7 +3545,7 @@ column, and south-east —
 
 | Column | What it counts |
 |---|---|
-| `rides` | rides that crossed the square that way, each once |
+| `rides` | rides counted crossing the square that way, each once — every one to fifty, then one in ten, none past a hundred |
 | `meters` | the metres of them that lie in it |
 | `timed` | how many of those rides carried their times |
 | `paced`, `seconds` | the timed rides' metres ridden here and the seconds they took; the square's pace is one over the other |
@@ -3597,6 +3597,24 @@ here is recomputed rather than nudged; this one is not, because recomputing
 it is reading every ride there is. A nudge that fails — the table not
 applied yet among the reasons — costs the save nothing, and the rebuild
 puts it right.
+
+**A square takes fifty rides, then one in ten, then none.** D1 bills a row
+that is written, and a row updated is a row written: a ride crosses some
+fifty squares a kilometre, so counted whole a ride of five is 250 rows
+every time it is saved, new streets or not, and the free plan's hundred
+thousand a day is four hundred such rides and nothing else on the site. So
+a square counts every ride until it has fifty, which is enough to put the
+share that held their pace within fourteen points or so; after that one
+ride in ten, so it still follows a lane painted or a street dug up; and at
+a hundred none, until the number is raised. A square nobody has ridden is
+always written, since a new street is the news worth paying for. Which
+rides are the one in ten is read off the ride's id rather than drawn by
+chance, so the rebuild fills every square as the saves did. Nothing is
+lost by it — every ride is whole in `rides` — and a row is written a
+hundred times in its life and no more, however many rides there are.
+`FULL`, `TENTH` and `MOST` in `functions/api/_sections.js` are the three
+numbers and `roomFor()` the rule; a number changed there holds from the
+next save, and for the rides already passed over the rebuild applies it.
 
 **One thing reads it, and nothing answers it.** A bike route weighs its
 ways by it. It is counts and no rider, and still no square is published:

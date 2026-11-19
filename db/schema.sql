@@ -2317,8 +2317,10 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   -- square alone, `237748:49478`, is from before 2026-11-19 and is read by
   -- nothing; the rebuild empties the table of them.
   cell       TEXT    PRIMARY KEY,
-  -- How many rides crossed it that way, each counted once, and the metres
-  -- of them that lie in it.
+  -- How many rides were counted crossing it that way, each once, and the
+  -- metres of them that lie in it. Every ride to fifty, one in ten after
+  -- that and none past a hundred — roomFor() in functions/api/_sections.js
+  -- — so past fifty it is fewer than passed.
   rides      INTEGER NOT NULL DEFAULT 0,
   meters     INTEGER NOT NULL DEFAULT 0,
   -- How many of those rides carried their times — rides.track — the
