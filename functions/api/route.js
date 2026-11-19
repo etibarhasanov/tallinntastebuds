@@ -1031,6 +1031,12 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
  * the first for a block is that way. The quicker first, after the ways
  * that were there. A trip under SIDE_FROM has no sides to speak of.
  *
+ * SIDE_LONGER is as much as it is because the shortest way is often one
+ * somebody rode straight through the Old Town, and a way round it, before
+ * its spurs come off, is over half as far again: held to half, which a way
+ * round a street to keep off is, that ride was offered no way west on the
+ * day this shipped.
+ *
  * It costs two router requests, and up to eight more a side where that
  * side has to be taken off a street SIDE_TURNS times, for a ride with fewer
  * than three ways that nobody asked for between those two points that day,
@@ -1042,7 +1048,7 @@ const SIDE_FROM = 1000;
 const SIDE_SHARE = 0.3;
 const SIDE_LEAST = 300;
 const SIDE_MOST = 1200;
-const SIDE_LONGER = 1.5;
+const SIDE_LONGER = 1.75;
 const SIDE_TURNS = 2;
 
 async function eitherSide(ways, from, to) {
@@ -1061,13 +1067,15 @@ async function eitherSide(ways, from, to) {
      that, still through its side's point, SIDE_TURNS times at the most:
      west of Toompea the router's way is Liivalaia and Pärnu maantee, the
      first turn leaves a block of Liivalaia in it, and the second is
-     Kentmanni and Tatari. Four router requests a turn. */
+     Kentmanni and Tatari. Four router requests a turn. keepOff() holds
+     its ways round to KEEP_OFF_LONGER times the length it is given, so it
+     is given one that makes that SIDE_LONGER times the shortest. */
   const round = (await Promise.all(vias.map(async (via) => {
     let found = [await oneWay([ends[0], via, ends[1]])].filter(Boolean);
     for (let turn = 0; turn < SIDE_TURNS && found.length; turn++) {
       const least = found.reduce((a, b) => (ridden(b).meters < ridden(a).meters ? b : a));
       if (ridden(least).meters <= KEEP_OFF_MIN) break;
-      found = await keepOff([least], from, to, shortest, null, via);
+      found = await keepOff([least], from, to, shortest * SIDE_LONGER / KEEP_OFF_LONGER, null, via);
     }
     return found;
   })))

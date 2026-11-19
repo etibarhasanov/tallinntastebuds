@@ -3800,8 +3800,10 @@ rides a street to keep off is asked for again round that street, still
 through its side's point, and once more if it still does: west of Toompea
 that turns Liivalaia and Pärnu maantee into Kentmanni, Tatari and Kaarli
 puiestee. A way round is offered where it then keeps off, is no more than
-half as long again as the shortest way offered, and is not a way already
-there. On that ride the answer became three: the one that was there, one
+three quarters as long again as the shortest way offered — the shortest is
+often a ride somebody saved straight through the Old Town, and a way round
+it is over half as far again before its spurs come off — and is not a way
+already there. On that ride the answer became three: the one that was there, one
 east by Rävala puiestee, and one west by Toompuiestee.
 
 The ways that were offered before are offered still, in the same order and
