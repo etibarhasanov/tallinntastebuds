@@ -99,9 +99,8 @@ const DOTS = 10;
 
 /* The three orders the page can be read in, and the two columns each one
  * sorts by before the id breaks the tie. `views` is the page's own order and
- * the default: how many times the list has been opened, out of press_counts,
- * which is the same table the map's places are ranked from. `kept` and `new`
- * are the two ways past the top of it. Each is two numbers descending and then
+ * the default: how many times the list has been opened. `kept` and `new` are
+ * the two ways past the top of it. Each is two numbers descending and then
  * the id ascending, which is what lets one cursor shape page all three.
  *
  * WHY OPENS AND NOT KEEPS
@@ -123,46 +122,15 @@ const DOTS = 10;
  * the default — lands on the page's own order, because sortOf() answers
  * `views` for every key it does not know.
  *
- * The first column is an expression and not a name because two of the three
- * sort on something the query joins in; it is a constant in this file, never a
- * value from the request — the request chooses a key, and an unknown key is
+ * Every column is on `lists` itself — the read in mostKept() says why the
+ * opens and the keeps are. The column is a constant in this file, never a
+ * value from the request: the request chooses a key, and an unknown key is
  * the default. */
 const SORTS = {
-  views: { a: 'COALESCE(v.n, 0)', b: 'l.updated_at', keys: ['views', 'updated_at'], opens: true },
-  kept:  { a: 'COALESCE(c.n, 0)', b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
-  new:   { a: 'l.created_at',     b: 'l.updated_at', keys: ['created_at', 'updated_at'] }
+  views: { a: 'l.opens',      b: 'l.updated_at', keys: ['views', 'updated_at'] },
+  kept:  { a: 'l.keeps',      b: 'l.updated_at', keys: ['keeps', 'updated_at'] },
+  new:   { a: 'l.created_at', b: 'l.updated_at', keys: ['created_at', 'updated_at'] }
 };
-
-/* What press_counts files a list's opens under. `place` and `filter` are the
-   other two and are in functions/api/stats.js, which is the only thing that
-   writes any of them; this file only reads. The string is in both places
-   because neither imports the other, and db/schema.sql names all three. */
-const OPENS = 'list';
-
-/* Whether press_counts is on this database, asked once per isolate and then
- * remembered — null until the first statement has answered.
- *
- * It is readingPins()'s pattern in _pins.js, one table up: db/schema.sql is
- * applied by hand and there is always an afternoon between a deploy and
- * somebody running it, so every reader here survives what it is waiting for.
- * The difference is which error says so — a missing table rather than a
- * missing column — and that the fallback is a page in a slightly wrong order
- * rather than a page with plainer pins. Anything else thrown is somebody
- * else's problem and goes up. */
-let hasOpens = null;
-
-async function readingOpens(env, make) {
-  if (hasOpens === false) return make(false);
-  try {
-    const out = await make(true);
-    hasOpens = true;
-    return out;
-  } catch (e) {
-    if (!/no such table/i.test(String((e && e.message) || e))) throw e;
-    hasOpens = false;
-    return make(false);
-  }
-}
 
 /* The sort the request asked for, or the default. Exported for the same
    reason query() is: functions/lists/index.js seeds the order back into the
@@ -278,27 +246,11 @@ export async function mostKept(context, opts) {
      honest answer to that. */
   const at = CURSOR.exec(from || '');
 
-  /* The first column of the sort, as this statement can spell it: the opens
-     are a table that arrives by hand like every other, so on a database it
-     has not reached yet this is a constant nought and the join below is not in
-     the statement at all. Every list then ties on it and the page falls
-     through to the edit time, which is a page rather than a 500 — the same
-     promise readingPins() keeps for the pin column.
-
-     COALESCE(NULL, 0) and not `0`, which is the whole of why this line is
-     worth a paragraph: a bare integer in an ORDER BY is an SQLite *ordinal*,
-     an alias for that numbered column, so `ORDER BY 0 DESC` is not a constant
-     at all — it is a reference to a column before the first one, and SQLite
-     answers "1st ORDER BY term out of range". The same `0` in the WHERE the
-     cursor builds means what it looks like, which is what makes the mistake
-     survive a reading. Anything that is not a plain integer literal is read as
-     the expression it is. */
-  const first = (opens) => (order.opens && !opens ? 'COALESCE(NULL, 0)' : order.a);
-  const after = (opens) => (at
-    ? ' AND (' + first(opens) + ' < ? ' +
-      'OR (' + first(opens) + ' = ? AND ' + order.b + ' < ?) ' +
-      'OR (' + first(opens) + ' = ? AND ' + order.b + ' = ? AND l.id > ?))'
-    : '');
+  const after = at
+    ? ' AND (' + order.a + ' < ? ' +
+      'OR (' + order.a + ' = ? AND ' + order.b + ' < ?) ' +
+      'OR (' + order.a + ' = ? AND ' + order.b + ' = ? AND l.id > ?))'
+    : '';
   const afterBind = at
     ? [Number(at[1]), Number(at[1]), Number(at[2]), Number(at[1]), Number(at[2]), at[3]]
     : [];
@@ -343,60 +295,41 @@ export async function mostKept(context, opts) {
 
   /* The lists themselves, and nothing about what is on them.
 
-     This asks list_items one question — is there a fourth row — and it asks it
-     as EXISTS with an OFFSET rather than as a count, so it stops at the fourth
-     row of each list instead of reading all twenty. The join it replaced read
-     every item of every public list on the site to put twenty rows on a page,
-     which is the one table here that grows fastest: a place count is not worth
-     that, and the page does not need one until it knows which twenty lists it
-     is drawing.
+     Every number this sorts and filters by is a column on `lists`, kept by
+     the write that changes it rather than worked out here: `items` by add(),
+     drop() in functions/api/lists.js, `keeps` by keep() there, and `opens`
+     by POST /api/stats,
+     copied off press_counts in the batch that bumps it. Each is set to a
+     recount of its own source, on that source's key, so none of them can
+     drift from the rows it counts.
 
-     OFFSET rather than `pos = 2`, because pos is not contiguous. drop() takes
-     a row out and leaves the numbering alone — only order() renumbers — so a
-     list of four can sit at 0, 5, 9 and 12, and asking for pos 3 would miss it.
-     Counting rows cannot be fooled that way.
-
-     The keeps are grouped in a subquery and joined. Ordering by them means
-     knowing them for every candidate list, so this one is unavoidable — but
-     list_keeps is the small table: a keep needs an account and one account
-     holds two hundred at the most.
-
-     And the opens are joined the way the keeps are, on the primary key of
-     press_counts — one indexed seek per candidate row, and no row can be
-     multiplied by it because (kind, id) is that key. The kind is written into
-     the statement rather than bound, which is the same licence DOTS takes
-     above and for the same reason: it is a constant in this file and no
-     request can reach it.
-
-     Both of these are functions of what the database turns out to have rather
-     than strings, because neither answer is known until the first statement
-     has been tried — see readingPins() in _pins.js and readingOpens() below,
-     each of which asks once per isolate and then knows. */
-  const select = (pins, opens) =>
+     This statement used to work all three out: a GROUP BY over every row of
+     list_keeps, a seek into press_counts per list, and an EXISTS … OFFSET 3
+     into each list's items for the four-place floor — 50 to 100 rows a page
+     at 26 lists, filed by the meter under `lists` because that is the first
+     table it named, and growing with lists times keeps times items. Now it
+     reads `lists` and nothing else but a key lookup into `users` per row: all
+     of `lists`, since the sort has no index — 26 rows on 19 Nov 2026, and the
+     owner's call that a table this size does not want three. That grows with
+     the number of lists alone. tools/sqlcheck.mjs cannot see this statement,
+     since it is put together from parts, so that bound lives here. */
+  const select = (pins) =>
     'SELECT l.id AS id, l.title AS title, l.owner AS owner, ' +
     'l.created_at AS created_at, l.updated_at AS updated_at, ' +
     pinSelect(pins) +
-    'u.username AS by, COALESCE(c.n, 0) AS keeps' +
-    (order.opens ? ', ' + first(opens) + ' AS views' : '') + mineSel + ' ' +
+    'u.username AS by, l.keeps AS keeps, l.opens AS views' + mineSel + ' ' +
     'FROM lists l ' +
-    'LEFT JOIN users u ON u.id = l.owner ' +
-    'LEFT JOIN (SELECT list_id, COUNT(*) AS n FROM list_keeps GROUP BY list_id) c ' +
-    '  ON c.list_id = l.id' +
-    (order.opens && opens
-      ? " LEFT JOIN press_counts v ON v.kind = '" + OPENS + "' AND v.id = l.id"
-      : '') +
+    'LEFT JOIN users u ON u.id = l.owner' +
     mine + ' ' +
-    'WHERE l.public = 1 ' +
-    '  AND EXISTS (SELECT 1 FROM list_items i WHERE i.list_id = l.id ' +
-    '              LIMIT 1 OFFSET ?)';
+    'WHERE l.public = 1 AND l.items >= ?';
 
-  const { results } = await readingOpens(env, (opens) => readingPins(env, (pins) => env.DB
+  const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
-      select(pins, opens) + search + after(opens) + ' ' +
-      'ORDER BY ' + first(opens) + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
+      select(pins) + search + after + ' ' +
+      'ORDER BY ' + order.a + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
     )
-    .bind(...mineBind, MIN_ITEMS - 1, ...searchBind, ...afterBind, PAGE + 1)
-    .all()));
+    .bind(...mineBind, MIN_ITEMS, ...searchBind, ...afterBind, PAGE + 1)
+    .all());
 
   const more = results.length > PAGE;
   const rows = more ? results.slice(0, PAGE) : results;

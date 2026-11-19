@@ -426,8 +426,7 @@ export async function recentViews(env, owner) {
  *
  * One read, the owner's lists joined to their counts on the primary key, and
  * one more for the countries. A database without press_counts answers the
- * lists with noughts rather than nothing, the way readingOpens() in
- * ./_mostkept.js survives the same. */
+ * lists with noughts rather than nothing. */
 export async function listViews(env, owner) {
   const read = (opens) => env.DB
     .prepare(

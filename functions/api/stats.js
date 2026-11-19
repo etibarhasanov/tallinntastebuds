@@ -386,10 +386,20 @@ export async function onRequestPost(context) {
       'ON CONFLICT(kind, id) DO UPDATE SET n = press_counts.n + 1'
     )
     .bind(k, id);
+  const bumps = device ? [bump(kind), bump(device + '.' + kind)] : [bump(kind)];
+  /* A list's opens, copied onto the list's own row so /lists can sort by them
+     without joining press_counts — mostKept() in ./_mostkept.js. Copied off
+     the total the statement before it just bumped, one row on its key, rather
+     than nudged a second time, so the two cannot disagree. */
+  if (kind === LIST) {
+    bumps.push(env.DB
+      .prepare('UPDATE lists SET opens = (SELECT n FROM press_counts WHERE kind = ? AND id = ?) WHERE id = ?')
+      .bind(LIST, id, id));
+  }
   try {
     /* And again under the device — BY DEVICE. One batch, so the two never
        disagree about whether the press landed. */
-    await env.DB.batch(device ? [bump(kind), bump(device + '.' + kind)] : [bump(kind)]);
+    await env.DB.batch(bumps);
   } catch (e) {
     /* No table yet, or the write failed. Either way nothing was counted and
        nobody is waiting to hear it. */
