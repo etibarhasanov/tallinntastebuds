@@ -92,7 +92,7 @@
 
 import {
   json, sha256Hex, randomHex, derivePassword, pwIterations, sessionCookie,
-  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey, openSession,
+  sessionUser, sessionTokens, SESSION_DAYS, wrongDatabase, RECOUNT_SQL, countsKey, openSession, savedBy,
   tallinnDay
 } from './_lib.js';
 import {
@@ -144,18 +144,6 @@ async function readStudent(env, userId) {
   } catch (e) {
     return undefined;
   }
-}
-
-/* The places this account has saved, so a fresh device can draw its marks
-   filled the moment somebody signs in on it. It stays here rather than going
-   into ./_account.js with the rest: this is the one thing in the answer that
-   is about the map, and the feedback page has no use for it. */
-async function savedByUser(env, userId) {
-  const { results } = await env.DB
-    .prepare('SELECT place_id FROM saves WHERE owner = ? ORDER BY created_at DESC')
-    .bind(userId)
-    .all();
-  return results.map((r) => r.place_id);
 }
 
 /* An answer that clears the session cookie: signing out, and deleting the
@@ -331,7 +319,7 @@ export async function onRequestGet(context) {
     views: (await recentViews(env, user.id)) ?? undefined,
     /* The student dates, for the card that asks for one — readStudent(). */
     student: await readStudent(env, user.id),
-    saved: await savedByUser(env, user.id)
+    saved: await savedBy(env, user.id)
   }, 200);
 
   /* The owner's browser is told so, and counts nothing from here on —
@@ -967,10 +955,7 @@ export async function onRequestPost(context) {
 
     const id = user.id;
     const now = Date.now();
-    const { results: saved } = await env.DB
-      .prepare('SELECT place_id FROM saves WHERE owner = ?')
-      .bind(id)
-      .all();
+    const saved = await savedBy(env, id);
 
     const statements = [
       'DELETE FROM saves WHERE owner = ?',
@@ -1007,7 +992,7 @@ export async function onRequestPost(context) {
         .bind(id, user.username, now),
       env.DB.prepare('DELETE FROM username_holds WHERE released_at < ?').bind(now - HOLD_DAYS * 86400000)
     );
-    for (const { place_id: place } of saved) {
+    for (const place of saved) {
       statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));
     }
 
@@ -1075,7 +1060,7 @@ export async function onRequestPost(context) {
 
     const token = await openSession(env, userId);
     return new Response(
-      JSON.stringify({ user: row.username, saved: await savedByUser(env, userId) }),
+      JSON.stringify({ user: row.username, saved: await savedBy(env, userId) }),
       {
         headers: {
           'content-type': 'application/json; charset=utf-8',
@@ -1097,7 +1082,7 @@ export async function onRequestPost(context) {
   if (!entered.ok) return json({ error: entered.error }, entered.status);
 
   return new Response(
-    JSON.stringify({ user: entered.username, saved: await savedByUser(env, entered.userId) }),
+    JSON.stringify({ user: entered.username, saved: await savedBy(env, entered.userId) }),
     {
       headers: {
         'content-type': 'application/json; charset=utf-8',

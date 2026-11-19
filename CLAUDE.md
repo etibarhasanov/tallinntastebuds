@@ -301,7 +301,7 @@ minutes", which was true by statement count. Nobody had asked what each one
 cost, or what it would cost when the table was a year old.
 
 So the cost is part of the design and is settled before the code, by the
-session that writes it. Six rules, and a change that breaks one is wrong
+session that writes it. Seven rules, and a change that breaks one is wrong
 however small it is:
 
 1. **A read costs the same on day one and day one thousand.** A statement on
@@ -345,6 +345,16 @@ however small it is:
    — it reads nothing — and where an answer needs every row of something,
    say so and let the owner decide, rather than finding a shape the gate
    does not recognise.
+7. **No statement answers more than a hundred rows, and most far fewer.**
+   The owner's line, drawn on 2026-11-19: storing is not capped — a person
+   may save as many places as they like — but reading is, and pagination is
+   the way to limit it. A list that can grow is read a page of `PAGE` (fifty)
+   at a time on its key, each page after the last one's key, with
+   `inPages()` in `functions/api/_lib.js`; `savedBy()` beside it is the
+   worked example. Where an app reads the answer whole —
+   `saved` on every sign-in — the route still answers it whole, put
+   together from the pages, because an app cut at the first page would
+   lose the rest without a word.
 
 The same goes for anything else that is free up to a number a day: Workers
 AI's Neurons, Google's thousand calls a month, Pages' five hundred builds.

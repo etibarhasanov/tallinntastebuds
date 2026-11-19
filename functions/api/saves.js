@@ -47,7 +47,7 @@
 import {
   json, clientIp, fingerprint, sessionUser, knownPlaces, wrongDatabase,
   addedByIds, isAdded, RECOUNT_SQL, countsKey, weakTag, withNotModified,
-  forgetFingerprints
+  forgetFingerprints, inPages, PAGE
 } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
@@ -141,10 +141,21 @@ export async function onRequestGet(context) {
 
   /* Only the places somebody has actually saved. A row at zero is a place
      that was saved and then unsaved, and the client draws nothing at zero
-     anyway, so sending it is bytes for no one. */
-  const { results } = await context.env.DB
-    .prepare('SELECT place_id, n FROM save_counts WHERE n > 0')
-    .all();
+     anyway, so sending it is bytes for no one.
+
+     A page of PAGE at a time on the primary key, each after the last
+     place_id — inPages() in ./_lib.js — because one row a saved place
+     outgrows any page as saving grows, and pagination is the limit. The
+     answer is still every count: the map and the apps read it whole. On
+     2026-11-19, 39 rows and one page; the zeros between are walked too, and
+     the cache in front makes it once a minute per colo. */
+  const db = context.env.DB;
+  const results = await inPages(
+    (after) => db
+      .prepare('SELECT place_id, n FROM save_counts WHERE place_id > ? AND n > 0 ORDER BY place_id LIMIT ' + PAGE)
+      .bind(after === null ? '' : after),
+    (row) => row.place_id
+  );
 
   const counts = {};
   for (const row of results) counts[row.place_id] = row.n;

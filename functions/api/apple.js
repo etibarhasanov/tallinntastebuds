@@ -41,7 +41,7 @@
  * read of Apple's keys.
  */
 
-import { json, wrongDatabase, openSession, sessionCookie, SESSION_DAYS } from './_lib.js';
+import { json, wrongDatabase, openSession, sessionCookie, SESSION_DAYS, savedBy } from './_lib.js';
 import { APPLE, appleSubject } from './_apple.js';
 import { identityUser } from './_google.js';
 import { makeIdentityAccount } from './_account.js';
@@ -75,14 +75,11 @@ export async function onRequestPost(context) {
   const row = await env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(userId).first();
   if (!row) return json({ error: 'apple' }, 500);
 
-  const { results } = await env.DB
-    .prepare('SELECT place_id FROM saves WHERE owner = ? ORDER BY created_at DESC')
-    .bind(userId)
-    .all();
+  const saved = await savedBy(env, userId);
 
   const token = await openSession(env, userId);
   return new Response(
-    JSON.stringify({ user: row.username, saved: results.map((r) => r.place_id) }),
+    JSON.stringify({ user: row.username, saved: saved }),
     {
       headers: {
         'content-type': 'application/json; charset=utf-8',

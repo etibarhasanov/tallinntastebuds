@@ -339,6 +339,14 @@ gate, with the case that needed it in `CASES`.
   `COUNT(*)` over a history on a public route — `save_counts` beside
   `saves` is the pattern, and `RECOUNT_SQL` in `saves.js` the way it stays
   true.
+- **A page of fifty, never a hundred rows a statement.** Rule 7 in
+  `CLAUDE.md`. A `WHERE` that can match more than `PAGE` rows goes through
+  `inPages()` in `_lib.js`, ordered by a key and continued after the last
+  row's — `savedBy()` pages on `(owner, rowid)`, the save counts on
+  `place_id`, a game's moves on `(game, ply)`, a person's added places on
+  `(owner, created_at, rowid)` with a row-value cursor so a tie is neither
+  skipped nor read twice. A cap on what can be stored does not stand in for
+  the page. Never `OFFSET`: it walks every row it skips.
 - **`MIN` and `MAX` are one row only on the key's first column.**
   `MIN(day)` on a table keyed by day reads one row; `MIN(day) WHERE kind = ?`
   reads every row until it finds that kind; `MIN(day)` on a table keyed by
