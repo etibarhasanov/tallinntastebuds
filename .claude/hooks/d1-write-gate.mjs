@@ -54,6 +54,14 @@
  * `ask` is one keystroke and the cost of a wrong `deny` is a sentence saying
  * so. The cost of a wrong `allow` is somebody else's rows.
  *
+ * RATTATEE RUNS THIS FILE TOO
+ *
+ * The Cloudflare connector is the account's, so a session on
+ * etibarhasanov/rattatee reaches the same databases. Its
+ * `.claude/hooks/d1-gate.mjs` runs this file, from this checkout's root, when
+ * the two sit side by side, and asks about every query when they do not. A
+ * change here is a change there; the answer it hands back is this one's.
+ *
  * THE SAME FILE RUNS AFTER THE QUERY, AS `--after`
  *
  * A PostToolUse hook on the same tool, which reads what the query really
@@ -343,10 +351,19 @@ const SIZES = {
   feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
   flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
   chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
-  rides: 15, ride_sections: 1920,
+  rides: 15, ride_sections: 1920, ride_cells: 39, usage_people: 37, flashcard_days: 15,
   /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
      ring that is sixty rows for ever. */
   visitor_counts: 18439, visitor_live: 60,
+  /* WITHOUT ROWID too, counted by hand on 2026-11-18 at 22:51 UTC. flow_counts
+     is keyed (flow, day, who, id), so a question by day walks all of it — on
+     2026-11-18 one asked it once per day of visitor_counts, 54,000 rows a
+     run, fourteen times, before this line existed to price it. read_meter is
+     a row a day and table. */
+  flow_counts: 14238, read_meter: 21,
+  /* Not in production: nothing loads db/city-venues.sql there yet. Priced as
+     the three cities' export would be when it is, rather than left unpriced. */
+  city_venues: 5000,
   /* The schema's own list of tables and indexes. */
   sqlite_master: 200, sqlite_schema: 200
 };
@@ -719,11 +736,23 @@ const CASES = [
   ['ask', 'VACUUM'],
   /* The comment hides the first semicolon, not the statement after it. */
   ['deny', "SELECT 1 -- ; UPDATE saves SET count = 0\n; UPDATE saves SET count = 1 WHERE id = 'x'"],
+  /* 2026-11-18: each day of visitor_counts walked flow_counts whole. */
+  ['ask', 'SELECT v.day, v.n, (SELECT COUNT(*) FROM flow_counts f WHERE f.day = v.day) AS flow_rows FROM (SELECT day, COUNT(*) AS n FROM visitor_counts GROUP BY day) v'],
   ['ask', '']
 ];
 
 if (process.argv.includes('--check')) {
   let bad = 0;
+  /* Every table the schema creates has a size, so a walk of a new one is
+     priced rather than asked about as unknown — the prompt then says what it
+     would cost. A table added to db/schema.sql adds its line above. */
+  const schema = readFileSync(`${process.cwd()}/db/schema.sql`, 'utf8');
+  for (const [, table] of schema.matchAll(/^CREATE TABLE IF NOT EXISTS ([a-z_0-9]+)/gm)) {
+    if (!(table in SIZES)) {
+      bad++;
+      console.log(`FAIL  ${table} is in db/schema.sql and has no line in SIZES`);
+    }
+  }
   for (const [want, sql] of CASES) {
     const [got] = await verdict(sql, 'a database', process.cwd());
     if (got !== want) {
