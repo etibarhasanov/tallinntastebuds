@@ -1479,10 +1479,6 @@
   var ROUTE_TRAVEL = { foot: 'walking', bike: 'bicycling', bus: 'transit', car: 'driving' };
   var ROUTE_NONE = { foot: 'routeNone', bike: 'routeNoBike', bus: 'routeNoBus', car: 'routeNoCar' };
   var ROUTE_SAY = { foot: 'routeWalk', bike: 'routeBike', car: 'routeCar' };
-  var ROUTE_STYLE = {
-    ridden: 'routeWayRidden', fastest: 'routeWayFastest', safest: 'routeWaySafest',
-    quietest: 'routeWayQuietest', shortest: 'routeWayShortest'
-  };
 
   function showRoute(place, again) {
     var token = ++routeToken;
@@ -1608,7 +1604,7 @@
         'aria-pressed': String(i === n),
         textContent: leg
           ? t('routeTrainWay', { min: Math.max(1, Math.round(other.seconds / 60)), at: leg.at })
-          : t(ROUTE_STYLE[other.style] || (other.ridden ? 'routeWayRidden' : 'routeWay'), {
+          : t(other.ridden ? 'routeWayRidden' : 'routeWay', {
             min: Math.max(1, Math.round(other.seconds / 60)),
             dist: routeDistance(other.meters)
           })
@@ -1621,7 +1617,6 @@
     });
     dom.routeTrips.setAttribute('aria-label', t('routeWays'));
     dom.routeTrips.hidden = routeWays.length < 2;
-    dom.routeTrips.classList.toggle('is-named', routeWays.some(function (other) { return !!other.style; }));
 
     if (!still) fitRoute();
   }
@@ -1687,7 +1682,6 @@
     if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     dom.routeTrips.hidden = true;
     dom.routeTrips.textContent = '';
-    dom.routeTrips.classList.remove('is-named');
   }
 
   function clearRoute() {
