@@ -105,10 +105,46 @@
  * A recording with no times cannot be told either way, and counts as it
  * always did, in `rides` and `meters`.
  *
+ * A SQUARE TAKES FIFTY RIDES, THEN ONE IN TEN, THEN NONE
+ *
+ * D1 bills a row that is written, and a row updated is a row written. A
+ * ride crosses some fifty squares a kilometre, so counted whole a ride of
+ * five is 250 rows written every time it is saved, whether or not one of
+ * them is new — under `wrangler dev` on 2026-11-19 a square updated was one
+ * row written, a new one two, and one the upsert's WHERE left alone none.
+ * The free plan has a hundred thousand a day for the whole account, which
+ * is four hundred such rides and nothing else. And past a point a ride
+ * says nothing new: fifty through a square put the share that held their
+ * pace within fourteen points or so, and the five-hundredth moves it by
+ * nothing a way is chosen by.
+ *
+ * So a square takes every ride until it has counted FULL of them. After
+ * that it takes one ride in TENTH, so it still follows what riders do
+ * there — a lane painted, a street dug up — for a tenth of the writing.
+ * At MOST it takes none, until MOST is raised: the owner's line, drawn on
+ * 2026-11-19, a cap to be moved once the squares reach it. And a square
+ * nobody has ridden is written whatever else is full, since a new street
+ * is the news worth paying for.
+ *
+ * Which rides are the one in ten is read off the ride's id — roomFor() —
+ * and not drawn by chance at the save, so the rebuild, going through the
+ * rides in the order they were saved, fills every square as the saves did.
+ * The id was drawn at random, so the tenth is a fair sample of the rest.
+ *
+ * What it changes: past FULL, `rides` is the rides counted and not the
+ * rides that passed. What it loses: nothing, because every ride is whole
+ * in `rides` and a rebuild under other numbers counts them again. What a
+ * save writes now: a row for each of its squares still under FULL, a tenth
+ * of the rest on average, none at MOST. And a row is written MOST times in
+ * its life and no more — a city ridden down every street both ways is
+ * three hundred thousand rows by a rough count, so thirty million writes
+ * in all, however many rides there are.
+ *
  * NUDGED, AND REBUILT
  *
- * A save adds its ride's squares to the table in one statement, an upsert
- * over the rows it is handed as JSON. Every other count on the site is
+ * A save adds its ride's squares to the table, those with room for it, in
+ * one statement: an upsert over the rows it is handed as JSON. Every
+ * other count on the site is
  * recomputed rather than nudged, and this one is not, because recomputing
  * it is reading every ride there is; so the rebuild is a tool and a
  * terminal's job, and is what puts right a table a nudge was lost from. A
@@ -174,6 +210,15 @@ const PAUSE = 120;
    ACROSS IT. Eight, forty-five degrees each: a street's two directions are
    four apart, and a bend has to be a real one to change the point. */
 const DIRS = 8;
+
+/* How many rides a square counts whole, how many of the rides after those
+   it takes one of, and where it stops taking any — A SQUARE TAKES FIFTY
+   RIDES, THEN ONE IN TEN, THEN NONE. Raising MOST lets the squares that
+   reached it take rides again from the next save on; the rebuild holds
+   every ride there is to all three. */
+const FULL = 50;
+const TENTH = 10;
+const MOST = 100;
 
 /* Metres between two [lat, lng] points. Flat-earth arithmetic, which over
    a step of a dozen metres is right to the centimetre. */
@@ -315,12 +360,24 @@ export function sectionsOf(line, track) {
   ]);
 }
 
-/* Add rows to the table — NUDGED, AND REBUILT. One statement whatever the
-   ride's length: the rows go in as one JSON parameter and json_each() deals
-   them out. `WHERE true` is what SQLite needs to tell an upsert's ON from a
-   join's. Throws where the table is not applied, or has no `steady` yet;
-   the caller decides what that costs. */
-export async function countSections(env, rows) {
+/* How many rides a square has to be under to take the ride with this id:
+   MOST for one ride in TENTH, FULL for the rest. Read off the id, which
+   randomHex() drew, so a ride is the same answer at its save and in the
+   rebuild; a ride with no id is not one of the tenth. */
+export function roomFor(id) {
+  const drawn = /^[0-9a-f]{8}/.test(String(id)) ? parseInt(String(id).slice(0, 8), 16) : 1;
+  return drawn % TENTH === 0 ? MOST : FULL;
+}
+
+/* Add the rows of the ride with this id to the table — NUDGED, AND
+   REBUILT. One statement whatever the ride's length: the rows go in as one
+   JSON parameter and json_each() deals them out. `WHERE true` is what
+   SQLite needs to tell an upsert's ON from a join's. A square nobody has
+   ridden goes in whatever the ride; one with no room for this ride —
+   roomFor() — is left as it was, and costs no row written. Throws where the
+   table is not applied, or has no `steady` yet; the caller decides what
+   that costs. */
+export async function countSections(env, rows, id) {
   if (!rows.length) return;
   await env.DB
     .prepare(
@@ -330,9 +387,10 @@ export async function countSections(env, rows) {
       'ON CONFLICT (cell) DO UPDATE SET ' +
       'rides = rides + 1, meters = meters + excluded.meters, timed = timed + excluded.timed, ' +
       'paced = paced + excluded.paced, seconds = seconds + excluded.seconds, steady = steady + excluded.steady, ' +
-      'slow = slow + excluded.slow, stops = stops + excluded.stops, updated_at = excluded.updated_at'
+      'slow = slow + excluded.slow, stops = stops + excluded.stops, updated_at = excluded.updated_at ' +
+      'WHERE ride_sections.rides < ?3'
     )
-    .bind(JSON.stringify(rows), Date.now())
+    .bind(JSON.stringify(rows), Date.now(), roomFor(id))
     .run();
 }
 

@@ -16,13 +16,15 @@
  *     column first:
  *       wrangler d1 execute tallinntastebuds --remote --command \
  *         "ALTER TABLE ride_sections ADD COLUMN steady INTEGER NOT NULL DEFAULT 0"
+ *   - how many rides a square takes changed — FULL, TENTH or MOST in the
+ *     Function — and the rides the old numbers passed over are wanted.
  *
  * It cannot read D1 and does not try: it turns one file into another, and
  * the two ends are a terminal's. Three lines, the rides out, the SQL made,
  * the SQL in:
  *
  *   wrangler d1 execute tallinntastebuds --remote --json \
- *     --command "SELECT id, line, track FROM rides" > rides.json
+ *     --command "SELECT id, created_at, line, track FROM rides" > rides.json
  *   node tools/ridesections.mjs rides.json > ride-sections.sql
  *   wrangler d1 execute tallinntastebuds --remote --file=ride-sections.sql
  *
@@ -32,12 +34,15 @@
  * a session — it is past the hundred rows .claude/hooks/d1-write-gate.mjs
  * lets one through at, on purpose.
  *
- * The counting is sectionsOf(), imported from the Function rather than
- * written again, so the rebuild and the nudge cannot come to disagree.
+ * The counting is sectionsOf(), and which rides a square still has room
+ * for roomFor(), both imported from the Function rather than written
+ * again, so the rebuild and the nudge cannot come to disagree. A square
+ * takes the rides in the order they came, which is why `created_at` is
+ * asked for: the rides are gone through oldest first, as the saves were.
  */
 
 import { readFileSync } from 'node:fs';
-import { sectionsOf } from '../functions/api/_sections.js';
+import { sectionsOf, roomFor } from '../functions/api/_sections.js';
 
 /* Rows to an INSERT. SQLite takes thousands; this keeps a statement short
    enough to read when one of them is refused. */
@@ -65,11 +70,13 @@ const parsed = (text) => {
 
 /* cell -> [rides, meters, timed, paced, seconds, steady, slow, stops] */
 const cells = new Map();
-for (const ride of rides) {
+for (const ride of rides.sort((a, b) => (a.created_at || 0) - (b.created_at || 0))) {
   const line = parsed(ride.line);
   if (!line) continue;
+  const room = roomFor(ride.id);
   for (const [cell, ...counts] of sectionsOf(line, parsed(ride.track))) {
     const sum = cells.get(cell) || [0, 0, 0, 0, 0, 0, 0, 0];
+    if (sum[0] >= room) continue;
     sum[0] += 1;
     counts.forEach((n, i) => { sum[i + 1] += n; });
     cells.set(cell, sum);
