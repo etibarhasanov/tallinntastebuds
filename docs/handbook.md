@@ -13902,8 +13902,30 @@ the size it was — and for none with a deck, which comes back at four KB
 instead of seventy. Left out, the block is whole, which is what this page
 still asks for and why nothing on it changed.
 
+**And the words it takes from the files.** A deck's cards, a lesson's body,
+a song's verses and a conversation's scenes are the same for everybody, and
+`tools/decks.mjs` already writes each as a file of its own under
+`data/decks/` for the Functions to read. A file is handed over by the asset
+server: no Function runs, no row is read, and an unchanged one is a 304. So
+since 2026-11-19 Kohuke fetches `data/decks/<id>.json` itself and puts the
+route's answer together on the phone, wherever the shelf it already has
+says what somebody knows of the thing: a lesson, a song or a conversation
+always, with read or heard off its row; a deck where its row says none of
+its cards are known, or all of them, or as many as the copy the phone kept
+— which it marks card by card as they are answered. `/api/flashcard` is
+still asked for the shelf, for every answer, for the two gathered decks,
+for a deck somebody wrote, for a deck in a stage that has not opened, and
+for a deck whose cards were answered somewhere the phone did not see,
+because only the table knows which. It also asks less often: the shelf on
+coming forward only when the last one is five minutes old, and a deck it
+holds not at all while that deck agrees with its row. What a learner costs
+the database is then the shelf and the answers, and the words cost nothing.
+
 **What that makes a promise.** A phone keeps the build it has for months, so
-the shape of every answer above is now something an installed app decodes:
+the files under `data/decks/` are something an installed app decodes as
+well as the route's answers, and what the route does to a file on its way
+out is written a second time in Swift. The shape of every answer above is
+now something an installed app decodes:
 a field may be added and may never be renamed or removed. **What the app
 reads** in `CLAUDE.md` lists Kohuke's half beside the map app's — the
 fields, the actions, the error words, and the handful of numbers it restates
