@@ -10,7 +10,12 @@
  *   - the table was applied after rides had been saved, so they are not in
  *     it — the first eleven were;
  *   - a save's nudge was lost, or a ride was taken down;
- *   - the size of a square, or what is counted in one, changed.
+ *   - the size of a square, or what is counted in one, changed — as on
+ *     2026-11-19, when a square became a square crossed one way, a run and
+ *     a walk stopped counting, and `steady` was added, which wants its
+ *     column first:
+ *       wrangler d1 execute tallinntastebuds --remote --command \
+ *         "ALTER TABLE ride_sections ADD COLUMN steady INTEGER NOT NULL DEFAULT 0"
  *
  * It cannot read D1 and does not try: it turns one file into another, and
  * the two ends are a terminal's. Three lines, the rides out, the SQL made,
@@ -58,13 +63,13 @@ const parsed = (text) => {
   }
 };
 
-/* cell -> [rides, meters, timed, paced, seconds, slow, stops] */
+/* cell -> [rides, meters, timed, paced, seconds, steady, slow, stops] */
 const cells = new Map();
 for (const ride of rides) {
   const line = parsed(ride.line);
   if (!line) continue;
   for (const [cell, ...counts] of sectionsOf(line, parsed(ride.track))) {
-    const sum = cells.get(cell) || [0, 0, 0, 0, 0, 0, 0];
+    const sum = cells.get(cell) || [0, 0, 0, 0, 0, 0, 0, 0];
     sum[0] += 1;
     counts.forEach((n, i) => { sum[i + 1] += n; });
     cells.set(cell, sum);
@@ -76,9 +81,9 @@ const rows = [...cells].sort().map(([cell, sum]) => `('${cell}', ${sum.join(', '
 const out = ['DELETE FROM ride_sections;'];
 for (let i = 0; i < rows.length; i += BATCH) {
   out.push(
-    'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, slow, stops, updated_at) VALUES\n' +
+    'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, steady, slow, stops, updated_at) VALUES\n' +
     rows.slice(i, i + BATCH).join(',\n') + ';'
   );
 }
 console.log(out.join('\n'));
-console.error(`${rides.length} rides, ${cells.size} squares`);
+console.error(`${rides.length} rides, ${cells.size} squares and ways across them`);

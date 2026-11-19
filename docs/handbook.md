@@ -3371,11 +3371,12 @@ ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
 app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
 it steers the suggestion instead of standing beside it.
 
-**Found by the square, not by reading every ride.** Both `?bbox=` and the
-ridden way under a bike route ask for the newest rides whose box meets a
-box, and a box is four ranges no key answers — so until 2026-11-18 each
-asking read every ride there was, with its line, and every ride Rattatee
-saved made every bike route dearer for ever. Now a save also files each
+**Found by the square, not by reading every ride.** `?bbox=` asks for the
+newest rides whose box meets a box — and for a day so did the ridden way
+under a bike route, which weighs squares now and reads no ride — and a box
+is four ranges no key answers, so until 2026-11-18 each asking read every
+ride there was, with its line, and every ride Rattatee saved made every
+bike route dearer for ever. Now a save also files each
 ride under the squares of the city its line passes through, 1/50 by 1/25 of
 a degree, about 2.2 km a side, in `ride_cells`; a read looks under the
 squares beneath the box, the newest few of each by the key, and asks `rides`
@@ -3522,34 +3523,61 @@ saving is not yet.
 ## What the rides say about a street
 
 A ride is evidence that a way can be cycled. Enough of them, read together,
-say something a single one cannot: which stretches people ride at twenty,
-which they push through at five, and where they stand waiting. That is the
-first half of valuing a street, and it needs nobody to say anything. A door
-(**Doors**) and a road kept off (**Roads a bike route keeps off**) are the
-two ways a route is already made better than the router's; both are a
-decision about one stretch, found or named. This is the ground under
-decisions like those: every stretch, counted. The
-second half is what riders think — *good route*, *I didn't like this bit* —
-and is not built: it is something a visitor would see, so it is drawn and
-agreed first. The point of both is a way that is better to ride, rather
-than the shortest or the quickest, which is all a router knows how to give.
+say something a single one cannot: which stretches people ride at their own
+pace, which they push through at five, and where they stand waiting. That
+is the first half of valuing a street, and it needs nobody to say anything.
+A door (**Doors**) and a road kept off (**Roads a bike route keeps off**)
+are a decision about one stretch, found or named. This is the ground under
+decisions like those: every stretch, counted, and since 2026-11-19 what a
+bike route is chosen by — **Ways people have ridden**. The second half is
+what riders think — *good route*, *I didn't like this bit* — and is not
+built: it is something a visitor would see, so it is drawn and agreed
+first. The point of both is a way that is better to ride, rather than the
+shortest or the quickest, which is all a router knows how to give.
 
 **The city is cut into squares**, 0.00025° by 0.0005°, about twenty-eight
-metres a side: a street and its pavements. `ride_sections` has a row for
-each square a ride has crossed —
+metres a side: a street and its pavements. **And a square is counted one
+way across it**, by eight compass points, because up a street is not down
+it: the owner rode home downhill, asked the way back the next day, and was
+offered the way they had come. `ride_sections` has a row for each square a
+ride has crossed and each way it crossed it, keyed `237748:49478:3` — row,
+column, and south-east —
 
 | Column | What it counts |
 |---|---|
-| `rides` | rides that crossed the square, each once |
+| `rides` | rides that crossed the square that way, each once |
 | `meters` | the metres of them that lie in it |
 | `timed` | how many of those rides carried their times |
-| `paced`, `seconds` | the timed rides' metres here and the seconds they took; the square's pace is one over the other |
+| `paced`, `seconds` | the timed rides' metres ridden here and the seconds they took; the square's pace is one over the other |
+| `steady` | timed rides that crossed it at four fifths or more of their own pace |
 | `slow` | timed rides that crossed it under 7 km/h |
 | `stops` | times a ride stood twenty seconds or more in it and went under forty metres |
 
-A step of two minutes or more is the rider pausing — the clock in
+**Held against the rider, not against a number.** Fast is not good: an
+electric bike does thirty down a road nobody would choose. What says a
+stretch rides well is that people keep there the pace they keep everywhere
+else, so `steady` holds each ride against its own average and the electric
+bike and the city bike count the same. A hill shows by itself, slow going
+up and held coming down, in two rows.
+
+**A wait is not a pace.** A stop is counted in `stops` and its seconds are
+in nothing else. Until 2026-11-19 they were in the square's pace, so thirty
+seconds at a red light made a square somebody rode at twenty count as
+pushed. A step of two minutes or more is the rider pausing — the clock in
 `rides.track` runs through a pause — and counts as distance only: a coffee
 is not a red light.
+
+**Not every recording is a ride, nor all of one.** The recorder has been
+taken for a run and for a walk, and one recording can be twenty minutes
+walked and twenty ridden. So a timed recording is cut into stretches
+first: wherever its pace, a minute at a time, stays under 11 km/h for five
+minutes or more it was on foot, and that part counts nowhere. Each stretch
+left has to look like a bike by itself — 10 km/h or more, with a tenth of
+it at 15 or more — and is held against its own pace. Speed is all there is
+to tell by, so a jogger and a very slow cyclist are not always told apart,
+and the doubt is settled against counting. `sectionsOf()` in
+`functions/api/_sections.js` is the whole of it, and its header the
+reasoning.
 
 **Squares and not streets, for now.** Matching a ride to OpenStreetMap's
 streets would say *this stretch of Pärnu mnt* where a square says *here*,
@@ -3559,8 +3587,9 @@ are arithmetic, and starting with them gives nothing away, because **the
 table holds nothing `rides` does not**: `node tools/ridesections.mjs`
 rebuilds it whole from the rides, through the same `sectionsOf()` a save
 uses, so the day streets are worth matching every ride is still there to be
-matched. The tool's header has the three terminal lines; it is how the
-rides saved before the table existed get into it.
+matched. The tool's header has the terminal lines; it is how the rides
+saved before the table existed get into it, and how the table was given its
+directions.
 
 **A save nudges it.** One statement after the ride's rows are in, an upsert
 over the ride's squares handed in as one JSON parameter. Every other count
@@ -3569,14 +3598,12 @@ it is reading every ride there is. A nudge that fails — the table not
 applied yet among the reasons — costs the save nothing, and the rebuild
 puts it right.
 
-**Nothing reads it, and nothing answers it.** It is counts and no rider,
-and still it is not published: with one rider a square's pace is one
-person's afternoon. What it is for, in the order it would be built — a ride
-on Your rides saying how much of itself had been ridden before and where it
-waited; the Bike tab asking the router for its alternatives and offering
-the one riders made the most of; a warning on a stretch people push
-through. Each wants more than one rider's rides under it, and a square is
-only worth showing once several different rides agree about it.
+**One thing reads it, and nothing answers it.** A bike route weighs its
+ways by it. It is counts and no rider, and still no square is published:
+with one rider a square's pace is one person's afternoon. What else it is
+for — a ride on Your rides saying how much of itself had been ridden before
+and where it waited; a warning on a stretch people push through. Each
+wants more than one rider's rides under it.
 
 ## Doors
 
@@ -3680,50 +3707,56 @@ A door is the one stretch the router cannot find. This is the rest: the
 streets it could find and would not have chosen. On 2026-11-18 the owner
 rode to Faxinin marketi, came back, asked the Bike tab the way there, and
 was offered two ways in from the north, neither of them the one just
-ridden — the router has a bike pushed along 28 m of Keldrimäe and goes
-round it. The ride was not a door, since it was the longer way. It was
-simply a way somebody had ridden and liked, and nothing read it.
+ridden. It was simply a way somebody had ridden and liked, and nothing read
+it.
 
-**The saved rides are a network.** `viaRides()` in `functions/api/route.js`
-reads the newest rides under the trip out of `rides` — anybody's, by the
-owner's decision, with nobody's name and their ends already off — cuts
-them where they were not ridden, and joins them: each along its own line,
-and one to another where they meet or cross, within forty metres. The
-start and the door join at any point within 450 m. A metre nobody rode
-costs three ridden ones, and the router's shortest way is in the network at
-that price too, so the cheapest way across is a ridden one only where
-riding is worth it. Where no single ride went the whole way it is pieces of
-several, which is what the owner asked for: use the sections, build it
-together.
+**For a day the saved rides were a network.** The newest forty lines near
+a trip were joined where they met and the cheapest way across them was
+stitched to the router's. It did what was asked and it was wrong three
+ways, each found by riding: it followed whoever had ridden last rather
+than what most rides said; it ran a ride in either direction, so a ride
+home downhill was offered as the way back up; and it read lines where the
+rides had already been counted, a cost that grew with them.
 
-**Answered as it was ridden.** The router's way on to the ridden line, the
-line itself, and the router's way off, stitched the way a door is, with the
-line's own corners as `steps` — no street names, since nobody asked a
-router. Putting the ridden line to the router as points to pass through was
-tried first and was worse: it snapped a point to the far side of a path and
-went round the block to reach it.
+**Now the ways are weighed, not made.** The router and the doors offer
+their ways as before, with the ways round either side — kept off the
+streets in `KEEP_OFF`, their spurs off — and `riddenFirst()` in
+`functions/api/route.js` asks
+`riddenShare()` in `_sections.js` about each: how much of its length lies
+on squares people have ridden *in the direction it runs*, and how much of
+that they rode at their own pace (**What the rides say about a street**).
+The number of rides only decides whether a square has been ridden at all:
+that everybody goes one way does not make it the better one.
 
-**Offered first, and said.** Where at least 200 m and half of the way were
-ridden, where it is no more than 1.4 times the shortest way, and where the
-router had not offered the same way itself. It goes first with `ridden:
-true` beside it, the button reads *Ridden · 4 min · 950 m* and the sentence
-ends *a way people have ridden* — because it is seldom the shortest, and a
-longer way put first with no reason given reads as a mistake. The router's
-own ways follow, and the answer's shape is otherwise what it was, so both
-apps draw and speak it without knowing.
+**Offered first, and said.** The way with the best score is the ridden
+way, where at least 200 m and half of it were ridden and it is no more
+than 1.4 times the shortest. It goes first with `ridden: true` beside it,
+the button reads *Ridden · 4 min · 950 m* and the sentence ends *a way
+people have ridden*. It is one of the ways already there, moved to the
+front, and the rest follow in the order they had. The answer's shape is
+what it was, so both apps draw and speak it without knowing.
 
-**What it costs.** One read of `rides` and two router requests on a bike
-route, and it is the one thing in `/api/route` that opens the database; no
-database, or no ride near, is the answer exactly as before. A long trip is
-joined more coarsely and no more than forty rides and eight thousand points
-are read, so the arithmetic stays a few milliseconds. `ride_sections` is
-not read yet: a square says how a stretch was ridden, not which way the
-ride went on, and the lines say both. The day there are riders enough to
-weigh one stretch against another, the squares are where the weight is.
+**What it gives up.** A way no router knows is no longer invented from
+somebody's line: a ride across a yard is offered once it is a door, which
+`tools/doors.mjs` finds in the same rides. And a new cycle path scores
+nothing until it has been ridden. With three ways from one router and two
+round, there are few to choose between: more ways to weigh is the next
+thing this wants, and the day the five kinds were tried and taken back is
+why it is not here yet.
+
+**What it costs.** One read of `ride_sections` on a bike route, a lookup
+on the key for each square and direction under the ways, and it is the one
+thing in `/api/route` that opens the database. Six hundred rows at the
+very worst however many rides there are — a longer trip is sampled more
+coarsely to stay under it — so five million a day is 8,300 routes nobody
+had asked for that hour. No router is asked anything more. No database, no
+table, or a table still waiting for its rebuild, is the answer exactly as
+the routers gave it. With a `heading` nothing is weighed: a new way every
+few hundred metres should not be a read each.
 
 **Anybody's ride, and nobody approves it**, as with a door, and with the
-same caveat: a ride somewhere nobody should cycle is offered until it is
-taken out of `rides`.
+same caveat: a ride somewhere nobody should cycle counts until it is taken
+out of `rides` and the table rebuilt.
 
 ## Roads a bike route keeps off
 
@@ -3801,9 +3834,8 @@ through its side's point, and once more if it still does: west of Toompea
 that turns Liivalaia and Pärnu maantee into Kentmanni, Tatari and Kaarli
 puiestee. A way round is offered where it then keeps off, is no more than
 three quarters as long again as the shortest way offered — the shortest is
-often a ride somebody saved straight through the Old Town, and a way round
-it is over half as far again before its spurs come off — and is not a way
-already there. On that ride the answer became three: the one that was there, one
+often straight through the Old Town, and a way round it is over half as far
+again before its spurs come off — and is not a way already there. On that ride the answer became three: the one that was there, one
 east by Rävala puiestee, and one west by Toompuiestee.
 
 The ways that were offered before are offered still, in the same order and
@@ -3836,9 +3868,9 @@ rounded to 15° so riders on one street share a cached answer. A heading
 that is not a number is no heading, and so is one the router has no street
 for: the question is asked again without it, and nobody is refused for it.
 
-**With a heading, only the router's ways.** No way through a door and none
-put together from saved rides: both are stitched outward from the spot in
-whichever direction they happen to run. The streets a bike way keeps off
+**With a heading, only the router's ways.** No way through a door, which
+is stitched outward from the spot in whichever direction it happens to run,
+and no way put first as ridden, which is a read of the database. The streets a bike way keeps off
 are still kept off, the ways round asked for with the same heading. A page
 or an app that sends none is answered exactly as before, which is every
 caller but a reroute in Rattatee.

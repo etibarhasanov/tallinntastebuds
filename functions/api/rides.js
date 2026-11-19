@@ -179,15 +179,16 @@
  * WHERE IT IS FILED
  *
  * A ride is also filed under the squares of the city its line passes
- * through, in `ride_cells`, so ?bbox= and the ridden way in ./route.js find
- * the rides near a way by a key rather than by reading every ride there is.
+ * through, in `ride_cells`, so ?bbox= finds the rides near a way by a key
+ * rather than by reading every ride there is.
  * ./_ridecells.js is the whole of it; a drop takes the squares with it.
  *
  * WHAT THE RIDE SAYS ABOUT THE STREETS
  *
  * After the rows are in, each run's squares are added to `ride_sections` —
- * ./_sections.js, which says what is counted and why. The ride is kept
- * whether or not that works.
+ * ./_sections.js, which says what is counted and why, and which a bike
+ * route in ./route.js is weighed by. The ride is kept whether or not that
+ * works.
  *
  * WHEN THE TABLE IS NOT THERE
  *
